@@ -1,0 +1,27 @@
+{
+    "name": "@pabloai/adyen-efp-server",
+    "private": true,
+    "keywords": [
+        "adyen",
+        "adyen-efp",
+        "efp",
+        "finance",
+        "platforms",
+        "adyen-for-platforms",
+        "components"
+    ],
+    "main": "index.js",
+    "version": "1.0.0",
+    "license": "MIT",
+    "repository": "github:pabloai/adyen-efp",
+    "bugs": {
+        "url": "https://support.adyen.com/"
+    },
+    "devDependencies": {
+        "dotenv": "^9.0.0",
+        "express": "^4.17.1",
+        "express-openapi-validator": "^4.13.7",
+        "request": "^2.81.0"
+    },
+    "dependencies": {}
+}
