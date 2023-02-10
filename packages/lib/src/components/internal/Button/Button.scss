@@ -1,0 +1,272 @@
+@import '../../../style/index';
+
+.adyen-fp-button {
+    $base: &;
+    background: $color-black;
+    border: 0;
+    border-radius: $border-radius-medium;
+    color: $color-white;
+    cursor: pointer;
+    font-size: $font-size-medium;
+    font-weight: 500;
+    height: 48px;
+    margin: 0;
+    padding: 15px;
+    text-decoration: none;
+    transition: background 0.3s ease-out, box-shadow 0.3s ease-out;
+    width: 100%;
+
+    &:focus {
+        box-shadow: 0 0 0 2px $color-blue-light;
+        outline: 0;
+    }
+
+    &:hover {
+        background: #1c3045;
+        box-shadow: 0 0, 0 2px 4px -1px rgba(0, 0, 0, 0.2), 0 4px 5px 0 rgba(0, 0, 0, 0.14);
+    }
+
+    &:active {
+        background: #3a4a5c;
+    }
+
+    &:hover:focus {
+        box-shadow: 0 0 0 2px $color-blue-light, 0 3px 4px rgba(0, 15, 45, 0.2);
+    }
+
+    &:disabled {
+        &,
+        &:hover {
+            box-shadow: none;
+            cursor: not-allowed;
+            opacity: 0.4;
+            user-select: all;
+        }
+    }
+
+    &--loading {
+        background: $color-gray-darker;
+        box-shadow: none;
+        pointer-events: none;
+        user-select: none;
+    }
+
+    &--pay {
+        margin-top: 24px;
+        display: flex;
+        justify-content: center;
+
+        &:disabled {
+            opacity: 1;
+        }
+    }
+
+    &--standalone {
+        margin-top: 0;
+    }
+
+    &--inline {
+        display: block;
+        width: auto;
+        height: auto;
+        padding: 10px 8px;
+        font-size: 0.81em;
+    }
+
+    &--ghost {
+        background: none;
+        border: 0;
+        color: $color-black;
+
+        &:hover {
+            background: $color-gray-lighter;
+            box-shadow: none;
+        }
+
+        &:active {
+            background: $color-gray-light;
+            box-shadow: none;
+        }
+    }
+
+    &--circle {
+        align-items: center;
+        height: 40px;
+        justify-content: center;
+        min-width: auto;
+        padding: 0;
+        width: 40px;
+        border-radius: 50%;
+    }
+
+    &--secondary {
+        padding: 10px 12px;
+        background: $color-white;
+        border: 1px solid $color-black;
+        color: $color-black;
+
+        &:hover {
+            background: $color-gray-lighter;
+            box-shadow: 0 2px 4px rgba(27, 42, 60, 0.2), 0 4px 5px rgba(27, 42, 60, 0.14);
+        }
+
+        &:active,
+        &:active:hover {
+            background: $color-gray-lighter;
+            box-shadow: none;
+        }
+
+        &:disabled {
+            &,
+            &:hover {
+                box-shadow: none;
+                cursor: not-allowed;
+                border-color: #99a3ad;
+                background-color: $color-gray-lighter;
+                opacity: 0.5;
+                user-select: all;
+            }
+        }
+
+        .adyen-fp-spinner {
+            border-color: $color-black;
+            border-top-color: transparent;
+        }
+    }
+
+    &--action {
+        padding: 10px 12px;
+        background: rgba(0, 102, 255, 0.1);
+        border: 1px solid transparent;
+        color: $color-blue;
+
+        &:hover {
+            background: rgba(0, 102, 255, 0.2);
+            box-shadow: none;
+        }
+
+        &:active,
+        &:active:hover {
+            background: rgba(0, 102, 255, 0.3);
+            box-shadow: none;
+        }
+    }
+
+    &--small {
+        font-size: $font-size-small;
+        height: 36px;
+        padding: 10px 14px;
+    }
+
+    &--filter {
+        @extend #{$base}--small;
+        background: $color-white;
+        border: 1px solid $color-gray;
+        color: $color-black;
+
+        &:hover {
+            background: $color-gray-lighter;
+            box-shadow: 0 2px 4px rgba(27, 42, 60, 0.14);
+        }
+
+        &:active,
+        &:active:hover {
+            background: $color-gray-lighter;
+            border-color: #99a3ad;
+            box-shadow: none;
+        }
+
+        &:disabled,
+        &:disabled:hover {
+            box-shadow: none;
+            cursor: not-allowed;
+            opacity: 0.5;
+            user-select: all;
+        }
+
+        .adyen-fp-spinner {
+            border-color: $color-black;
+            border-top-color: transparent;
+        }
+
+        &#{$base}--active {
+            background: rgba(0, 102, 255, 0.1);
+            border: 1px solid $color-blue;
+            color: $color-blue;
+
+            #{$base}__text {
+                padding-right: 22px;
+                position: relative;
+
+                &:after {
+                    content: '×';
+                    margin-left: 10px;
+                    font-size: 20px;
+                    position: absolute;
+                    line-height: 20px;
+                    top: -3px;
+                }
+            }
+        }
+    }
+
+    &--link {
+        background: transparent;
+        border: 1px solid transparent;
+        color: $color-blue;
+        font-weight: 400;
+        border-radius: $border-radius-small;
+        padding: 2px;
+
+        &:hover,
+        &:active,
+        &:active:hover {
+            background: transparent;
+            text-decoration: underline;
+            box-shadow: none;
+        }
+    }
+
+    &--completed {
+        &,
+        &:hover,
+        &:active,
+        &:active:hover {
+            background: $color-green;
+            color: $color-white;
+        }
+
+        .adyen-fp-button__icon {
+            filter: brightness(0) invert(1);
+        }
+    }
+
+    &__content {
+        height: 100%;
+        align-items: center;
+        display: flex;
+        justify-content: center;
+    }
+
+    &__icon {
+        margin-right: 12px;
+
+        [dir='rtl'] & {
+            margin-right: 0;
+            margin-left: 12px;
+        }
+    }
+
+    &__text {
+        display: block;
+        justify-content: center;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .adyen-fp-spinner {
+        border-color: $color-white;
+        border-top-color: transparent;
+    }
+}

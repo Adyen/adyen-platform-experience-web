@@ -1,0 +1,42 @@
+@import '../../../style/index';
+
+.adyen-fp-pagination {
+    display: flex;
+    text-align: right;
+    padding: 8px 24px;
+
+    &__context {
+        align-items: center;
+        display: flex;
+    }
+
+    &__controls {
+        display: flex;
+        margin-left: auto;
+    }
+
+    .adyen-fp-button {
+        display: block;
+
+        &--next {
+            .adyen-fp-button__content:before {
+                content: '';
+                transform: rotate(225deg);
+            }
+        }
+
+        &__content:before {
+            content: '';
+            border: 2px solid $color-gray-darker;
+            height: 8px;
+            width: 8px;
+            border-top: 0;
+            border-right: 0;
+            transform: rotate(45deg);
+        }
+
+        &__text {
+            display: none;
+        }
+    }
+}
