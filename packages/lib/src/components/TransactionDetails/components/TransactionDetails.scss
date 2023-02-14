@@ -1,0 +1,9 @@
+@import '~/style/index';
+
+.adyen-fp-transaction {
+
+    &__details {
+        margin-top: $spacing-xlarge;
+        padding: 0 $spacing-large;
+    }
+}
