@@ -16,7 +16,6 @@ export function DateFilterBody(props) {
     const { i18n } = useCoreContext();
 
     const handleFilterValueUpdate = field => e => {
-        console.log(field);
         props.updateFilterValue(e);
     };
 

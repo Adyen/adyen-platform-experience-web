@@ -1,7 +1,6 @@
 import { CustomTranslations, Locales } from '../language/types';
 import { AmountExtended } from '../types';
 import { AnalyticsOptions } from './Analytics/types';
-import { RiskModuleOptions } from './RiskModule/RiskModule';
 
 export interface CoreOptions {
     session?: any;
@@ -50,8 +49,6 @@ export interface CoreOptions {
     loadingContext?: string;
 
     analytics?: AnalyticsOptions;
-
-    risk?: RiskModuleOptions;
 
     [key: string]: any;
 }

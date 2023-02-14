@@ -62,7 +62,6 @@ export default function Address(props: AddressProps) {
     }, [props.data]);
 
     useEffect((): void => {
-        console.log('useEffect');
         const optionalFields = specifications.getOptionalFieldsForCountry(data.country);
         const processedData = ADDRESS_SCHEMA.reduce((acc, cur) => {
             const isOptional = optionalFields.includes(cur);
