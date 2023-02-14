@@ -1,0 +1,10 @@
+@import '~/style/index';
+
+.adyen-fp-account-holder {
+    &__details {
+        display: flex;
+        justify-content: space-between;
+        margin-top: $spacing-xlarge;
+        padding: 0 $spacing-large;
+    }
+}
