@@ -1,5 +1,4 @@
 import { ComponentChild, render } from 'preact';
-import getProp from '../utils/getProp';
 import EventEmitter from './EventEmitter';
 import uuid from '../utils/uuid';
 import Core from '../core';
@@ -47,10 +46,7 @@ class BaseElement<P extends BaseElementProps> {
      * Note: this does not ensure validity, check isValid first
      */
     get data(): any {
-        const clientData = getProp(this.props, 'modules.risk.data');
-
         return {
-            ...(clientData && { riskData: { clientData } }),
             ...this.formatData(),
             clientStateDataIndicator: true
         };
