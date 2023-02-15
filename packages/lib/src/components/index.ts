@@ -2,7 +2,6 @@ import uuid from '../utils/uuid';
 import './shared.scss';
 
 // External Components
-import Address from './Address';
 import Transactions from './Transactions';
 import TransactionDetails from './TransactionDetails';
 import AccountHolder from './AccountHolder';
@@ -14,7 +13,6 @@ const componentsMap = {
     transactions: Transactions,
     transactionDetails: TransactionDetails,
     accountHolder: AccountHolder,
-    address: Address,
 
     default: null,
 };
