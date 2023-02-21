@@ -30,6 +30,7 @@
     &__scrollable-area {
         max-height: 240px;
         overflow: auto;
+        padding-top: 2px;
         padding-right: $spacing-medium;
     }
 }
