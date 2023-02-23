@@ -1,5 +1,5 @@
 import { getMyTransactions } from '../../utils/services';
-import { AdyenFP, Transactions } from '@pabloai/adyen-fp';
+import { AdyenFP, transactionList } from '@pabloai/adyen-fp';
 import '@pabloai/adyen-fp/dist/adyen-fp.css';
 import '../../../config/polyfills';
 import '../../utils/utils';
@@ -11,7 +11,7 @@ import '../../assets/style/style.scss';
         const adyenFP = await AdyenFP();
 
         adyenFP
-            .create(Transactions, {
+            .create(transactionList, {
                 transactions,
                 onFilterChange: async (state, component) => {
                     const transactions = await getMyTransactions(state.filters);
