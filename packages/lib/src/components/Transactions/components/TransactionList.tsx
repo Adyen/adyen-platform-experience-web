@@ -8,7 +8,7 @@ import Button from 'src/components/internal/Button';
 import DataGridCell from 'src/components/internal/DataGrid/DataGridCell';
 import './Transactions.scss';
 
-function Transactions(props) {
+function TransactionList(props) {
     const { i18n } = useCoreContext();
     const fields = ['id', 'type', 'balanceAccountId', 'accountHolderId', 'amount', 'createdAt', 'description'];
     const columns = fields.map(key => ({ key, label: i18n.get(getLabel(key)) }));
@@ -83,4 +83,4 @@ function Transactions(props) {
     );
 }
 
-export default Transactions;
+export default TransactionList;

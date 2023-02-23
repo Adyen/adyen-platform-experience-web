@@ -6,7 +6,7 @@ import Alert from '../../internal/Alert';
 import TextFilter from '../../internal/FilterBar/filters/TextFilter';
 import DateFilter from '../../internal/FilterBar/filters/DateFilter';
 import { getCursor, getRequestParams } from './utils';
-import TransactionsList from './TransactionsList';
+import TransactionList from './TransactionList';
 import './Transactions.scss';
 
 function Transactions(props) {
@@ -76,7 +76,7 @@ function Transactions(props) {
             )}
 
             {props.transactions?.data?.length ? (
-                <TransactionsList
+                <TransactionList
                     loading={loading}
                     hasNextPage={hasNextPage}
                     transactions={props.transactions}
