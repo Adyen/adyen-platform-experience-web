@@ -73,7 +73,7 @@ class BaseElement<P extends BaseElementProps> {
             this.unmount(); // new, if this._node exists then we are "remounting" so we first need to unmount if it's not already been done
         } else {
             // Set up analytics, once
-            if (this.props.modules && this.props.modules.analytics && !this.props.isDropin) {
+            if (this.props.modules && this.props.modules.analytics) {
                 this.props.modules.analytics.send({
                     containerWidth: this._node && this._node.offsetWidth,
                     component: this.constructor['analyticsType'] ?? this.constructor['type'],

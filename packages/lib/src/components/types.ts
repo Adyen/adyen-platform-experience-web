@@ -11,7 +11,6 @@ export interface BaseElementProps {
     modules?: {
         analytics: Analytics;
     };
-    isDropin?: boolean;
 }
 
 export interface IUIElement {
@@ -21,7 +20,6 @@ export interface IUIElement {
     type: string;
     elementRef: any;
     submit(): void;
-    setElementStatus(status: UIElementStatus, props: any): UIElement;
     setStatus(status: UIElementStatus, props?: { message?: string; [key: string]: any }): UIElement;
     showValidation(): void;
     setState(newState: object): void;
@@ -39,8 +37,6 @@ export interface UIElementProps extends BaseElementProps {
     onError?: (error, element?: UIElement) => void;
     beforeRedirect?: (resolve, reject, redirectData, element: UIElement) => void;
 
-    isInstantPayment?: boolean;
-
     type?: string;
     name?: string;
     icon?: string;
@@ -52,15 +48,6 @@ export interface UIElementProps extends BaseElementProps {
      * @defaultValue true
      */
     showPayButton?: boolean;
-
-    /**
-     *  Set to false to not set the Component status to 'loading' when onSubmit is triggered.
-     *  @defaultValue true
-     */
-    setStatusAutomatically?: boolean;
-
-    /** @internal */
-    payButton?: (options) => h.JSX.Element;
 
     /** @internal */
     loadingContext?: string;

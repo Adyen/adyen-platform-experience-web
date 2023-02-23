@@ -10,13 +10,12 @@ export class UIElement<P extends UIElementProps = any> extends BaseElement<P> im
     public elementRef: any;
 
     constructor(props: P) {
-        super({ setStatusAutomatically: true, ...props });
+        super(props);
         this.submit = this.submit.bind(this);
         this.setState = this.setState.bind(this);
         this.onValid = this.onValid.bind(this);
         this.onComplete = this.onComplete.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
-        this.setElementStatus = this.setElementStatus.bind(this);
 
         this.elementRef = (props && props.elementRef) || this;
     }
@@ -49,7 +48,7 @@ export class UIElement<P extends UIElementProps = any> extends BaseElement<P> im
     }
 
     /**
-     * Submit payment method data. If the form is not valid, it will trigger validation.
+     * Submit data. If the form is not valid, it will trigger validation.
      */
     public submit(): void {
         if (!this.isValid) {
@@ -65,11 +64,6 @@ export class UIElement<P extends UIElementProps = any> extends BaseElement<P> im
         return this;
     }
 
-    public setElementStatus(status: UIElementStatus, props?: any): this {
-        this.elementRef?.setStatus(status, props);
-        return this;
-    }
-
     public setStatus(status: UIElementStatus, props?): this {
         if (this.componentRef?.setStatus) {
             this.componentRef.setStatus(status, props);
@@ -78,13 +72,6 @@ export class UIElement<P extends UIElementProps = any> extends BaseElement<P> im
     }
 
     protected handleError = (error: AdyenFPError): void => {
-        /**
-         * Set status using elementRef, which:
-         * - If Drop-in, will set status for Dropin component, and then it will propagate the new status for the active payment method component
-         * - If Component, it will set its own status
-         */
-        this.setElementStatus('ready');
-
         if (this.props.onError) {
             this.props.onError(error, this.elementRef);
         }
@@ -112,7 +99,7 @@ export class UIElement<P extends UIElementProps = any> extends BaseElement<P> im
     }
 
     /**
-     * Get the element accessible name, used in the aria-label of the button that controls selected payment method
+     * Get the element accessible name, used in the aria-label of the button that controls selected component
      */
     get accessibleName(): string {
         return this.displayName;
