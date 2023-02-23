@@ -2,19 +2,19 @@ import uuid from '../utils/uuid';
 import './shared.scss';
 
 // External Components
+import AccountHolder from './AccountHolder';
+import BalanceAccount from './BalanceAccount';
 import Transactions from './Transactions';
 import TransactionDetails from './TransactionDetails';
-import AccountHolder from './AccountHolder';
 
 /**
  * Maps each component with a Component element.
  */
 const componentsMap = {
-    transactions: Transactions,
-    transactionDetails: TransactionDetails,
     accountHolder: AccountHolder,
-
-    default: null,
+    balanceAccount: BalanceAccount,
+    transactionList: Transactions,
+    transactionDetails: TransactionDetails,
 };
 
 /**
@@ -25,7 +25,7 @@ const componentsMap = {
  * @returns new Component or null
  */
 export const getComponent = (componentType, props) => {
-    const Component = componentsMap[componentType] || componentsMap.default;
+    const Component = componentsMap[componentType] || null;
     return Component ? new Component({ ...props, id: `${componentType}-${uuid()}` }) : null;
 };
 
