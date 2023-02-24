@@ -1,0 +1,67 @@
+.adyen-fp-phone-input {
+    direction: ltr;
+
+    .adyen-fp-input-wrapper {
+        width: 100%;
+
+        .adyen-fp-input {
+            padding: 0;
+            height: auto;
+
+            &:focus {
+                border: 1px solid #0075FF;
+                box-shadow: 0 0 0 2px #99c2ff;
+            }
+        }
+
+        .adyen-fp-dropdown__button {
+            width: auto;
+            border: 0;
+            height: 35px;
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+
+            &:after {
+                left: 40px;
+                box-sizing: revert;
+                height: 10px;
+            }
+        }
+
+        .adyen-fp-input--phoneNumber {
+            margin-left: 8px;
+            height: 35px;
+            padding-left: 15px;
+            border: 1px solid transparent;
+        }
+
+        .adyen-fp-input-wrapper--phoneInput {
+            display: flex;
+            align-items: center;
+
+            &:focus {
+                border: 1px solid #0075FF;
+                box-shadow: 0 0 0 2px #99c2ff;
+            }
+        }
+
+        .adyen-fp-phoneNumber {
+            display: flex;
+            align-items: center;
+            margin-left: 65px;
+            width: 100%;
+        }
+
+        .adyen-fp-countryFlag {
+            position: absolute;
+        }
+
+        .adyen-fp-dropdown__button--active {
+            box-shadow: none;
+
+            &:hover {
+                box-shadow: none;
+            }
+        }
+    }
+}

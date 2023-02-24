@@ -1,0 +1,67 @@
+@import 'src/style';
+
+.adyen-fp {
+    &-title {
+        color: $color-black;
+        font-size: $font-size-xlarge;
+        font-weight: 600;
+        line-height: 24px;
+        margin: 16px 0;
+    }
+
+    &-subtitle {
+        color: $color-black;
+        display: block;
+        font-size: $font-size-small;
+        font-weight: 700;
+        letter-spacing: 1.2px;
+        padding: 0 0 $spacing-medium;
+        text-transform: uppercase;
+    }
+
+    &-label {
+        color: $color-gray-darker;
+        display: block;
+        font-size: $font-size-small;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        padding: 0 0 $spacing-xsmall;
+    }
+
+    &-amount {
+        &--positive {
+            color: $color-green;
+        }
+
+        &--negative {
+            color: $color-red;
+        }
+    }
+
+    &-tag {
+        background: $color-gray-light;
+        border-radius: $border-radius-xlarge;
+        color: $color-black;
+        display: inline-block;
+        font-size: $font-size-xsmall;
+        font-weight: normal;
+        padding: $spacing-xsmall $spacing-small;
+        position: relative;
+        top: -2px;
+    }
+
+    &-details-section {
+        background: $color-white;
+        border: 1px solid $color-gray;
+        border-radius: $border-radius-xlarge;
+        display: flex;
+        justify-content: space-between;
+        margin-top: $spacing-large;
+        padding: $spacing-large;
+    }
+}
+
+pre {
+    margin-top: 60px;
+    display: none;
+}

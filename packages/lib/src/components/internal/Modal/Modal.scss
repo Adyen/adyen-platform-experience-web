@@ -1,0 +1,113 @@
+@import '../../../style/index';
+
+.adyen-fp-modal-wrapper {
+    align-items: center;
+    display: flex;
+    height: 100%;
+    left: 0;
+    overflow-y: auto;
+    overscroll-behavior-y: contain;
+    padding: 24px;
+    position: fixed;
+    top: 0;
+    visibility: hidden;
+    width: 100%;
+    z-index: 10;
+
+    &:before {
+        background: rgba(0, 17, 44, 0.5);
+        content: '';
+        height: 100%;
+        left: 0;
+        opacity: 0;
+        position: fixed;
+        top: 0;
+        transition: opacity 0.2s linear;
+        width: 100%;
+        z-index: 10;
+    }
+
+    &--open {
+        visibility: visible;
+
+        &:before {
+            opacity: 1;
+        }
+
+        .adyen-fp-modal {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+}
+
+.adyen-fp-modal {
+    border-radius: $border-radius-large;
+    background-color: $color-white;
+    margin: auto;
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+    opacity: 0;
+    transform: scale(0.7);
+    position: relative;
+    z-index: 11;
+
+    [dir='rtl'] & {
+        direction: rtl;
+    }
+
+    // @include tablet-portrait-up {
+    //     min-height: 200px;
+    //     transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease;
+    //     width: 464px;
+    // }
+
+    &__content {
+        padding: 24px 16px;
+    }
+
+    &__header {
+        align-items: center;
+        border-bottom: 1px solid $color-gray-light;
+        display: flex;
+        font-size: $font-size-medium;
+        font-weight: bold;
+        justify-content: space-between;
+        padding: 14px 14px 10px 16px;
+    }
+
+    &__header-icon {
+        background: transparent;
+        border: none;
+        border-radius: 50%;
+        cursor: pointer;
+        height: 38px;
+        margin: 0;
+        padding: 0;
+        transition: background 0.1s linear;
+        width: 38px;
+
+        &:hover {
+            background: $color-gray-lighter;
+        }
+
+        &:focus {
+            background: $color-gray-light;
+            outline: 0;
+        }
+    }
+
+    .adyen-fp-label__text {
+        font-size: $font-size-medium;
+        margin-bottom: $spacing-xsmall;
+    }
+
+    &__footer {
+        // background: $color-gray-lighter;
+        display: flex;
+        gap: $spacing-small;
+
+        .adyen-fp-button:first-child {
+            margin-left: auto;
+        }
+    }
+}

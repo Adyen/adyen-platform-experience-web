@@ -1,0 +1,89 @@
+@import '../../../style/index';
+
+.adyen-fp-data-grid {
+    $base: &;
+    font-size: $font-size-small;
+    margin: 8px 0 36px;
+    overflow: hidden;
+    text-align: left;
+
+    &--outline {
+        border-radius: $border-radius-medium;
+        border: 1px solid $color-gray-light;
+
+        #{$base}__cell {
+            border-bottom: 1px solid $color-gray-light;
+        }
+    }
+
+    &--scrollable #{$base}__table-wrapper {
+        overflow: auto;
+    }
+
+    &--loading {
+        border-color: transparent;
+    }
+
+    &__table {
+        border-spacing: 0;
+        border-collapse: separate;
+    }
+
+    &__head {
+        border-left: 1px solid transparent;
+        border-right: 1px solid transparent;
+        box-sizing: border-box;
+        height: 100%;
+        overflow: visible;
+        padding: 16px;
+        position: relative;
+    }
+
+    &__body {
+    }
+
+    &__row {
+        overflow: hidden;
+        vertical-align: top;
+
+        #{$base}__body &:last-child #{$base}__cell {
+            border-bottom: 0;
+        }
+    }
+
+    th.adyen-fp-data-grid__cell {
+        background: $color-gray-lighter;
+        text-transform: uppercase;
+        font-size: $font-size-small;
+        font-weight: 700;
+        color: $color-gray-darker;
+        padding-top: 16px;
+        padding-bottom: 16px;
+    }
+
+    &__cell {
+        background: $color-white;
+        box-sizing: border-box;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        padding: 16px 24px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+
+        .adyen-fp-button--link {
+            display: block;
+            height: initial;
+            margin: -2px -4px;
+        }
+    }
+
+    &__footer {
+        background: $color-white;
+        border-top: 1px solid #dce0e5;
+    }
+
+    .adyen-fp-spinner__wrapper {
+        padding: $spacing-xxxlarge;
+    }
+}

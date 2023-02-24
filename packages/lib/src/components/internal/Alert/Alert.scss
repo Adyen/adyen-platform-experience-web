@@ -1,0 +1,32 @@
+@import '../../../style/index';
+
+.adyen-fp-alert-message {
+    display: flex;
+    border-radius: $border-radius-medium;
+    margin: 0 0 $spacing-medium;
+    text-align: left;
+    padding: $spacing-medium-small;
+    font-size: $font-size-small;
+
+    &--error {
+        background: $color-red-light;
+    }
+
+    &--info {
+        background: $color-gray-light;
+    }
+    
+    &--warning {
+        background: $color-orange-light;
+    }
+    
+    &--info {
+        background: $color-blue-lighter;
+    }
+    
+    &__icon {
+        width: 14px;
+        height: 14px;
+        margin-right: $spacing-small;
+    }
+}

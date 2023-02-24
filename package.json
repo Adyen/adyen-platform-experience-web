@@ -1,0 +1,33 @@
+{
+    "name": "@pabloai/adyen-fp-main",
+    "version": "1.0.0",
+    "keywords": [
+        "adyen",
+        "adyen-fp",
+        "fp",
+        "finance",
+        "platforms",
+        "adyen-for-platforms",
+        "components"
+    ],
+    "publishConfig": {
+        "registry": "https://registry.npmjs.org/"
+    },
+    "private": true,
+    "workspaces": [
+        "./packages/*"
+    ],
+    "scripts": {
+        "start": "concurrently --kill-others-on-fail \"npm run start -w @pabloai/adyen-fp\" \"npm run start -w @pabloai/adyen-fp-playground\" --names \"lib,playground\"",
+        "build": "npm --workspace @pabloai/adyen-fp build",
+        "lint": "npm --workspace @pabloai/adyen-fp lint",
+        "test": "npm --workspace @pabloai/adyen-fp test",
+        "test:watch": "npm --workspace @pabloai/adyen-fp test:watch",
+        "test:coverage": "npm --workspace @pabloai/adyen-fp test:coverage",
+        "test:e2e": "npm build && npm workspace @pabloai/adyen-fp-e2e test:e2e",
+        "type-check": "npm workspace @pabloai/adyen-fp type-check"
+    },
+    "dependencies": {
+        "concurrently": "^7.0.0"
+    }
+}

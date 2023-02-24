@@ -1,0 +1,53 @@
+{
+    "name": "@pabloai/adyen-fp",
+    "private": true,
+    "keywords": [
+        "adyen",
+        "adyen-fp",
+        "fp",
+        "finance",
+        "platforms",
+        "adyen-for-platforms",
+        "components"
+    ],
+    "main": "dist/adyen-fp.js",
+    "version": "1.0.0",
+    "license": "MIT",
+    "repository": "github:pabloai/adyen-fp",
+    "bugs": {
+        "url": "https://support.adyen.com/"
+    },
+    "scripts": {
+        "start": "npm run dev-server",
+        "dev-server": "cross-env NODE_ENV=development webpack --watch --config config/webpack.dev.js",
+        "build": "rm -rf dist/ && webpack --config config/webpack.prod.js"
+    },
+    "devDependencies": {
+        "autoprefixer": "^9.8.8",
+        "cross-env": "^7.0.3",
+        "css-loader": "^4.3.0",
+        "css-minimizer-webpack-plugin": "^3.2.0",
+        "dotenv": "^9.0.0",
+        "enzyme": "^3.11.0",
+        "enzyme-adapter-preact-pure": "^3.3.0",
+        "mini-css-extract-plugin": "^2.4.5",
+        "postcss": "^8.3.11",
+        "prettier": "^2.4.1",
+        "sass": "^1.43.4",
+        "sass-loader": "^12.3.0",
+        "style-loader": "^3.3.1",
+        "terser-webpack-plugin": "^5.2.4",
+        "ts-loader": "^9.2.6",
+        "typescript": "^4.4.4",
+        "webpack": "^5.61.0",
+        "webpack-cli": "^4.9.1",
+        "webpack-dev-server": "^4.4.0",
+        "webpack-merge": "^5.8.0"
+    },
+    "dependencies": {
+        "classnames": "^2.3.1",
+        "core-js": "^3.20.2",
+        "preact": "^10.5.15",
+        "whatwg-fetch": "^3.6.2"
+    }
+}

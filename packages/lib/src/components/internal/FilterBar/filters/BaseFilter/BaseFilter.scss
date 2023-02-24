@@ -1,0 +1,20 @@
+@import '../../../../../style/index';
+
+.adyen-fp-filter {
+    .adyen-fp-button,
+    .adyen-fp-field {
+        width: initial;
+    }
+
+    .adyen-fp-modal-wrapper--filter {
+        .adyen-fp-modal {
+            width: 400px;
+        }
+    }
+
+    &__footer {
+        .adyen-fp-button:first-child {
+            margin-left: auto;
+        }
+    }
+}
