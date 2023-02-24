@@ -4,6 +4,9 @@ const getTransactions = require('./api/transactions');
 const getTransactionById = require('./api/transactions-id');
 const getBalanceAccountById = require('./api/balance-account-id');
 const getAccountHoldersById = require('./api/account-holders-id');
+const getBalanceAccounts = require('./api/balance-accounts');
+const getBalancePlatforms = require('./api/balance-platforms');
+const getAccountHolders = require('./api/account-holders');
 const express = require('express');
 
 const defaultPort = 3030;
@@ -25,6 +28,12 @@ module.exports = (app = express(), options = []) => {
     app.get('/balanceAccounts/:id', getBalanceAccountById);
 
     app.get('/accountHolders/:id', getAccountHoldersById);
+
+    app.get('/accountHolders/:id/balanceAccounts', getBalanceAccounts);
+
+    app.get('/balancePlatforms/:id', getBalancePlatforms);
+
+    app.get('/balancePlatforms/:id/accountHolders', getAccountHolders);
 
     if (options.listen) {
         const port = process.env.PORT || defaultPort;

@@ -12,7 +12,7 @@ function uuidv4() {
 module.exports = () => {
     let COMMIT_HASH = null;
     let COMMIT_BRANCH = null;
-    const ADYEN_BUILD_ID = `@pabloai/adyen-fp-${uuidv4()}`;
+    const ADYEN_BUILD_ID = `@Adyen/adyen-fp-web-${uuidv4()}`;
 
     try {
         COMMIT_HASH = childProcess
