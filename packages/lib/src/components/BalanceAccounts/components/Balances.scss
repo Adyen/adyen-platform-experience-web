@@ -1,0 +1,30 @@
+@import '~/style/index';
+
+.adyen-fp-balances {
+    font-size: $font-size-medium;
+    margin-bottom: 20px;
+    padding-top: 4px;
+    position: relative;
+    top: -2px;
+
+    &__title {
+        display: flex;
+        gap: $spacing-small;
+        font-weight: 600;
+        margin-bottom: $spacing-small;
+    }
+
+    &__item {
+        display: flex;
+        margin-bottom: $spacing-small;
+    }
+
+    &__key {
+        width: 160px;
+    }
+
+    &-scrollable {
+        max-height: 240px;
+        overflow: auto;
+    }
+}
