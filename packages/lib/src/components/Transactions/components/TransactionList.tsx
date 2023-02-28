@@ -20,56 +20,48 @@ function TransactionList(props) {
             loading={props.loading}
             customCells={{
                 id: (key, item) => (
-                    <DataGridCell key={key}>
-                        {!!props.onTransactionSelected ? (
-                            <Button variant={'link'} onClick={() => props.onTransactionSelected({ id: item[key] })}>
-                                {item[key]}
-                            </Button>
-                        ) : (
-                            item[key]
-                        )}
-                    </DataGridCell>
+                   !!props.onTransactionSelected ? (
+                        <Button variant={'link'} onClick={() => props.onTransactionSelected({ id: item[key] })}>
+                            {item[key]}
+                        </Button>
+                    ) : (
+                        item[key]
+                    )
                 ),
                 balanceAccountId: (key, item) => (
-                    <DataGridCell key={key}>
-                        {!!props.onBalanceAccountSelected ? (
-                            <Button variant={'link'} onClick={() => props.onBalanceAccountSelected({ id: item[key] })}>
-                                {item[key]}
-                            </Button>
-                        ) : (
-                            item[key]
-                        )}
-                    </DataGridCell>
+                    !props.onBalanceAccountSelected ? (
+                        <Button variant={'link'} onClick={() => props.onBalanceAccountSelected({ id: item[key] })}>
+                            {item[key]}
+                        </Button>
+                    ) : (
+                        item[key]
+                    )
                 ),
                 accountHolderId: (key, item) => (
-                    <DataGridCell key={key}>
-                        {!!props.onAccountSelected ? (
-                            <Button variant={'link'} onClick={() => props.onAccountSelected({ id: item[key] })}>
-                                {item[key]}
-                            </Button>
-                        ) : (
-                            item[key]
-                        )}
-                    </DataGridCell>
+                    !props.onAccountSelected ? (
+                        <Button variant={'link'} onClick={() => props.onAccountSelected({ id: item[key] })}>
+                            {item[key]}
+                        </Button>
+                    ) : (
+                        item[key]
+                    )
                 ),
-                createdAt: (key, item) => <DataGridCell key={key}>{i18n.fullDate(item[key])}</DataGridCell>,
-                type: (key, item) => <DataGridCell key={key}>{i18n.get(getLabel(item[key]))}</DataGridCell>,
+                createdAt: (key, item) => i18n.fullDate(item[key]),
+                type: (key, item) => i18n.get(getLabel(item[key])),
                 amount: (key, item) => {
                     const amount = item[key]?.currency
                         ? i18n.amount(item[key].value, item[key].currency, { currencyDisplay: 'code', showSign: true })
                         : null;
-                    const isPositive = amount && amount.indexOf('-') === -1;
+                    const isPositive = amount?.indexOf('-') === -1;
                     return (
-                        <DataGridCell key={key}>
-                            <div
-                                class={classnames('adyen-fp-amount', {
-                                    'adyen-fp-amount--positive': isPositive,
-                                    'adyen-fp-amount--negative': !isPositive,
-                                })}
-                            >
-                                {amount}
-                            </div>
-                        </DataGridCell>
+                        <div
+                            class={classnames('adyen-fp-amount', {
+                                'adyen-fp-amount--positive': isPositive,
+                                'adyen-fp-amount--negative': !isPositive,
+                            })}
+                        >
+                            {amount}
+                        </div>
                     );
                 },
             }}
