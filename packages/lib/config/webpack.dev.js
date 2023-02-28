@@ -18,7 +18,7 @@ module.exports = merge(webpackConfig, {
             },
         }),
         new MiniCssExtractPlugin({
-            filename: `adyen-fp.css`,
+            filename: `adyen-fp-web.css`,
         }),
     ],
     optimization: {

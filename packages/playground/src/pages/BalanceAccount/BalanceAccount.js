@@ -1,6 +1,6 @@
 import { getBalanceAccountById } from '../../utils/services';
-import { AdyenFP, balanceAccount } from '@Adyen/adyen-fp-web';
-import '@Adyen/adyen-fp-web/dist/adyen-fp.css';
+import { AdyenFP, balanceAccount } from '@adyen/adyen-fp-web';
+import '@adyen/adyen-fp-web/dist/adyen-fp-web.css';
 import '../../../config/polyfills';
 import '../../utils/utils';
 import '../../assets/style/style.scss';
