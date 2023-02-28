@@ -1,5 +1,5 @@
 {
-    "name": "@Adyen/adyen-fp-web-server",
+    "name": "@adyen/adyen-fp-web-server",
     "private": true,
     "keywords": [
         "adyen",

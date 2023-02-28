@@ -1,5 +1,5 @@
 {
-    "name": "@Adyen/adyen-fp-web-playground",
+    "name": "@adyen/adyen-fp-web-playground",
     "private": true,
     "keywords": [
         "adyen",
@@ -21,7 +21,7 @@
         "dev-server": "cross-env NODE_ENV=development webpack-dev-server --config config/webpack.dev.js"
     },
     "devDependencies": {
-        "@Adyen/adyen-fp-web-server": "file:packages/server",
+        "@adyen/adyen-fp-web-server": "file:packages/server",
         "autoprefixer": "^9.8.8",
         "cross-env": "^7.0.3",
         "css-loader": "^4.3.0",
@@ -41,7 +41,7 @@
         "webpack-merge": "^5.8.0"
     },
     "dependencies": {
-        "@Adyen/adyen-fp-web": "file:packages/lib",
+        "@adyen/adyen-fp-web": "file:packages/lib",
         "whatwg-fetch": "^3.6.2"
     }
 }
