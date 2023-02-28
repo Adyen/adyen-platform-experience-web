@@ -3,6 +3,7 @@ import './shared.scss';
 
 // External Components
 import AccountHolder from './AccountHolder';
+import AccountHolders from './AccountHolders';
 import BalanceAccount from './BalanceAccount';
 import Transactions from './Transactions';
 import TransactionDetails from './TransactionDetails';
@@ -12,6 +13,7 @@ import TransactionDetails from './TransactionDetails';
  */
 const componentsMap = {
     accountHolder: AccountHolder,
+    accountHolders: AccountHolders,
     balanceAccount: BalanceAccount,
     transactionList: Transactions,
     transactionDetails: TransactionDetails,
