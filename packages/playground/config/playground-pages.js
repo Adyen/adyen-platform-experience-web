@@ -7,6 +7,7 @@ const pages = [
     { name: 'Transaction', id: 'Transaction' },
     { name: 'Balance account', id: 'BalanceAccount' },
     { name: 'Account holder', id: 'AccountHolder' },
+    { name: 'Account holders', id: 'AccountHolders' },
 ];
 
 const htmlPageGenerator = ({ id }, index) =>

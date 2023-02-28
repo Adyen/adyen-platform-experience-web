@@ -31,3 +31,11 @@ export const getAccountHolderById = id =>
             return response;
         })
         .catch(console.error);
+
+export const getAccountHolders = () =>
+    httpGet(`accountHolders`)
+        .then(response => {
+            if (response.error) throw 'Could not retrieve the account holders';
+            return response;
+        })
+        .catch(console.error);
