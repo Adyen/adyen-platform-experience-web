@@ -1,6 +1,6 @@
 # Adyen FP
 
-[![npm](https://img.shields.io/npm/v/@Adyen/adyen-fp-web.svg)](http://npm.im/pablo/adyen-fp)
+[![npm](https://img.shields.io/npm/v/@adyen/adyen-fp-web.svg)](http://npm.im/pablo/adyen-fp)
 
 Adyen FP provides you with the building blocks to create an internal dashboard for your platform customers.
 
@@ -19,14 +19,14 @@ We only provide full support when you use one of these methods of installation.
 1. Install the [Adyen FP Node package](https://www.npmjs.com/package/@adyen/adyen-fp):
 
   ```sh
-  npm install @Adyen/adyen-fp-web --save
+  npm install @adyen/adyen-fp-web --save
   ```
 
 2. Import Adyen FP into your application:
 
   ```js
-  import AdyenFp from '@Adyen/adyen-fp-web';
-  import '@Adyen/adyen-fp-web/dist/adyen-fp.css';
+  import AdyenFp from '@adyen/adyen-fp-web';
+  import '@adyen/adyen-fp-web/dist/adyen-fp-web.css';
   ```
 
 ## Development
@@ -64,22 +64,3 @@ For other questions, [contact our support team](https://support.adyen.com/hc/en-
 ## License
 
 This repository is available under the [MIT license](LICENSE).
-
-## Components
-
-### Now
-- Transactions list
-- Transaction details
-- Account holder details
-- Balance account details
-
-### Next
-- Balance accounts list
-  - `GET` [`/accountHolders/{id}/balanceAccounts`](https://docs.adyen.com/api-explorer/balanceplatform/2/get/accountHolders/_id_/balanceAccounts)
-- Account holders list
-    - `GET` [`/balancePlatforms/{id}/accountHolders`](https://docs.adyen.com/api-explorer/balanceplatform/2/get/balancePlatforms/_id_/accountHolders)
-
-
-### Later
-- Capital request
-- Capital loans
