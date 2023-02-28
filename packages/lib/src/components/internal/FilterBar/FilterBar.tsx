@@ -11,12 +11,14 @@ export default function FilterBar(props) {
     return (
         <div class="adyen-fp-filter-bar">
             {props.children}
-            <Button
-                label={i18n.get('button.resetAll')}
-                classNameModifiers={['ghost', 'small', 'reset']}
-                disabled={!disableResetButton}
-                onClick={props.resetFilters}
-            />
+            {!!props.resetFilters && (
+                <Button
+                    label={i18n.get('button.resetAll')}
+                    classNameModifiers={['ghost', 'small', 'reset']}
+                    disabled={!disableResetButton}
+                    onClick={props.resetFilters}
+                />
+            )}
         </div>
     );
 }
