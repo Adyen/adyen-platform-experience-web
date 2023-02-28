@@ -5,6 +5,7 @@ require('dotenv').config({ path: path.resolve('../../', '.env') });
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const webpackConfig = require('./webpack.config');
 const currentVersion = require('./version')();
+const FILENAME = 'adyen-fp-web';
 
 module.exports = merge(webpackConfig, {
     mode: 'development',
@@ -18,7 +19,7 @@ module.exports = merge(webpackConfig, {
             },
         }),
         new MiniCssExtractPlugin({
-            filename: `adyen-fp-web.css`,
+            filename: `${FILENAME}.css`,
         }),
     ],
     optimization: {
