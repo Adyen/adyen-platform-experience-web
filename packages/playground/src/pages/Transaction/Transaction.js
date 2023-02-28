@@ -1,7 +1,7 @@
 import { getTransactionById } from '../../utils/services';
-import { AdyenFP, transactionDetails } from '@pabloai/adyen-fp';
+import { AdyenFP, transactionDetails } from '@adyen/adyen-fp-web';
 import { getSearchParameters } from '../../utils/utils';
-import '@pabloai/adyen-fp/dist/adyen-fp.css';
+import '@adyen/adyen-fp-web/dist/adyen-fp-web.css';
 import '../../../config/polyfills';
 import '../../utils/utils';
 import '../../assets/style/style.scss';

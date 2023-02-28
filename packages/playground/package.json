@@ -1,5 +1,5 @@
 {
-    "name": "@pabloai/adyen-fp-playground",
+    "name": "@adyen/adyen-fp-web-playground",
     "private": true,
     "keywords": [
         "adyen",
@@ -12,7 +12,7 @@
     ],
     "version": "1.0.0",
     "license": "MIT",
-    "repository": "github:pabloai/adyen-fp",
+    "repository": "github:Adyen/adyen-fp-web",
     "bugs": {
         "url": "https://support.adyen.com/"
     },
@@ -21,7 +21,7 @@
         "dev-server": "cross-env NODE_ENV=development webpack-dev-server --config config/webpack.dev.js"
     },
     "devDependencies": {
-        "@pabloai/adyen-fp-server": "file:packages/server",
+        "@adyen/adyen-fp-web-server": "file:packages/server",
         "autoprefixer": "^9.8.8",
         "cross-env": "^7.0.3",
         "css-loader": "^4.3.0",
@@ -41,7 +41,7 @@
         "webpack-merge": "^5.8.0"
     },
     "dependencies": {
-        "@pabloai/adyen-fp": "file:packages/lib",
+        "@adyen/adyen-fp-web": "file:packages/lib",
         "whatwg-fetch": "^3.6.2"
     }
 }

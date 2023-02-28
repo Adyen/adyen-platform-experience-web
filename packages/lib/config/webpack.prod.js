@@ -5,7 +5,7 @@ const TerserPlugin = require('terser-webpack-plugin');
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 const webpackConfig = require('./webpack.config');
 const currentVersion = require('./version')();
-const FILENAME = 'adyen-fp';
+const FILENAME = 'adyen-fp-web';
 
 const DefinePluginConfig = new webpack.DefinePlugin({
     'process.env.NODE_ENV': JSON.stringify('production'),
@@ -38,6 +38,7 @@ module.exports = merge(webpackConfig, {
         }),
     ],
     optimization: {
+        minimize: true,
         minimizer: [
             new TerserPlugin({
                 terserOptions: {
@@ -76,7 +77,7 @@ module.exports = merge(webpackConfig, {
                 // sourceMap: shouldUseSourceMap,
                 extractComments: false,
             }),
-            new OptimizeCSSAssetsPlugin()
+            new CssMinimizerPlugin()
         ],
     },
 });

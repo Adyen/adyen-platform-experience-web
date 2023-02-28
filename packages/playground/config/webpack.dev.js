@@ -1,7 +1,7 @@
 const webpack = require('webpack');
 const { merge } = require('webpack-merge');
 const baseConfig = require('./webpack.config');
-const devServer = require('@pabloai/adyen-fp-server');
+const devServer = require('@adyen/adyen-fp-web-server');
 const { htmlPages, playgroundEntry } = require('./playground-pages');
 const path = require('path');
 const host = process.env.HOST || '0.0.0.0';

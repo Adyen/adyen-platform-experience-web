@@ -1,5 +1,5 @@
 {
-    "name": "@pabloai/adyen-fp",
+    "name": "@adyen/adyen-fp-web",
     "private": true,
     "keywords": [
         "adyen",
@@ -13,7 +13,7 @@
     "main": "dist/adyen-fp.js",
     "version": "1.0.0",
     "license": "MIT",
-    "repository": "github:pabloai/adyen-fp",
+    "repository": "github:Adyen/adyen-fp-web",
     "bugs": {
         "url": "https://support.adyen.com/"
     },

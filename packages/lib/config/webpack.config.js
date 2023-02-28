@@ -1,6 +1,6 @@
 const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const FILENAME = 'adyen-fp';
+const FILENAME = 'adyen-fp-web';
 const shouldUseSourceMap = true;
 
 module.exports = {
