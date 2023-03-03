@@ -67,7 +67,11 @@ function DataGridBody(props) {
             {props.data.map(item => (
                 <tr class="adyen-fp-data-grid__row" key={item}>
                     {props.columns.map(({ key }) => {
-                        if (props.customCells[key]) return props.customCells[key](key, item);
+                        if (props.customCells?.[key]) return (
+                            <DataGridCell key={key}>
+                                {props.customCells[key](key, item)}
+                            </DataGridCell>
+                        );
 
                         return <DataGridCell key={key}>{item[key]}</DataGridCell>;
                     })}

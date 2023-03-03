@@ -3,8 +3,8 @@ import CoreProvider from '../../core/Context/CoreProvider';
 import UIElement from '../UIElement';
 import AccountHolderDetails from './components/AccountHolderDetails';
 
-export class BalanceAccountElement extends UIElement {
-    public static type = 'transactions';
+export class AccountHolderElement extends UIElement {
+    public static type = 'accountHolder';
 
     get isValid() {
         return !!this.state.isValid;
@@ -42,4 +42,4 @@ export class BalanceAccountElement extends UIElement {
     }
 }
 
-export default BalanceAccountElement;
+export default AccountHolderElement;
