@@ -26,7 +26,8 @@
         "test:coverage": "npm run test -- --coverage",
         "type-check": "tsc --noEmit",
         "lint": "eslint 'src/**/*.{js,ts,tsx}' --quiet",
-        "lint:fix": "npm run lint -- --fix"
+        "lint:fix": "npm run lint -- --fix",
+        "types:watch": "npm run type-check -- --watch"
     },
     "devDependencies": {
         "@types/jest": "^27.4.0",
