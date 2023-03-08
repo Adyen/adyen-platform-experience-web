@@ -1,4 +1,4 @@
-import { ComponentChildren, Fragment, toChildArray } from 'preact';
+import { ComponentChildren, toChildArray } from 'preact';
 import classnames from 'classnames';
 import Spinner from '../Spinner';
 import DataGridCell from './DataGridCell';
@@ -39,7 +39,7 @@ function DataGrid(props: DataGridProps) {
             {props.loading ? (
                 <Spinner />
             ) : (
-                <Fragment>
+                <>
                     <div class="adyen-fp-data-grid__table-wrapper">
                         <table class="adyen-fp-data-grid__table">
                             <thead class="adyen-fp-data-grid__head">
@@ -55,7 +55,7 @@ function DataGrid(props: DataGridProps) {
                         </table>
                     </div>
                     {footer}
-                </Fragment>
+                </>
             )}
         </div>
     );

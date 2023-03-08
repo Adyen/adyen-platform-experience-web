@@ -1,4 +1,4 @@
-import { Component, h, toChildArray } from 'preact';
+import { Component, toChildArray } from 'preact';
 import { CoreContext } from './CoreContext';
 
 interface CoreProviderProps {

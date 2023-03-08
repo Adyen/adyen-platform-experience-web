@@ -1,4 +1,3 @@
-import { h, Fragment } from 'preact';
 import useCoreContext from '../../../core/Context/useCoreContext';
 import { useState } from 'preact/hooks';
 
@@ -17,7 +16,7 @@ function RedirectButton({ payButton, onSubmit, amount = null, name, ...props }) 
     };
 
     return (
-        <Fragment>
+        <>
             {payButton({
                 ...props,
                 status,
@@ -25,7 +24,7 @@ function RedirectButton({ payButton, onSubmit, amount = null, name, ...props }) 
                 label: payButtonLabel(),
                 onClick: onSubmit
             })}
-        </Fragment>
+        </>
     );
 }
 

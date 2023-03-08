@@ -1,4 +1,3 @@
-import { h, Fragment } from 'preact';
 import cx from 'classnames';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { SelectButtonProps } from '../types';
@@ -42,10 +41,10 @@ function SelectButton(props: SelectButtonProps) {
             id={props.id}
         >
             {!showList || !props.filterable ? (
-                <Fragment>
+                <>
                     <span className="adyen-fp-dropdown__button__text">{active.selectedOptionName || active.name || props.placeholder}</span>
                     {active.icon && <Img className="adyen-fp-dropdown__button__icon" src={active.icon} alt={active.name} />}
-                </Fragment>
+                </>
             ) : (
                 <input
                     aria-autocomplete="list"

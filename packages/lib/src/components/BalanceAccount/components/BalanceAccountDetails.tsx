@@ -1,4 +1,3 @@
-import { Fragment } from 'preact';
 import useCoreContext from 'src/core/Context/useCoreContext';
 import './BalanceAccountDetails.scss';
 import StatsBar from 'src/components/internal/StatsBar';
@@ -54,7 +53,7 @@ function BalanceAccountDetails(props) {
                         </div>
 
                         {!!balanceAccount.platformPaymentConfiguration && (
-                            <Fragment>
+                            <>
                                 <div class="adyen-fp-field">
                                     <div class="adyen-fp-label">Sales day closing time</div>
                                     <div class="adyen-fp-value">{balanceAccount.platformPaymentConfiguration.salesDayClosingTime}</div>
@@ -64,7 +63,7 @@ function BalanceAccountDetails(props) {
                                     <div class="adyen-fp-label">Settlement delay days</div>
                                     <div class="adyen-fp-value">{balanceAccount.platformPaymentConfiguration.settlementDelayDays}</div>
                                 </div>
-                            </Fragment>
+                            </>
                         )}
 
                         {!!balanceAccount.referenceForBeneficiary && (
