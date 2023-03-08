@@ -1,4 +1,3 @@
-import { h } from 'preact';
 import cx from 'classnames';
 import { SelectItemProps } from '../types';
 import styles from '../Select.module.scss';

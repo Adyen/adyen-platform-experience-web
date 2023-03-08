@@ -1,4 +1,4 @@
-import { Fragment, h } from 'preact';
+import { Fragment } from 'preact';
 import useCoreContext from 'src/core/Context/useCoreContext';
 import './BalanceAccountDetails.scss';
 import StatsBar from 'src/components/internal/StatsBar';

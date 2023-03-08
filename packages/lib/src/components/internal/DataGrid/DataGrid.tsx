@@ -1,4 +1,4 @@
-import { ComponentChildren, Fragment, h, toChildArray } from 'preact';
+import { ComponentChildren, Fragment, toChildArray } from 'preact';
 import classnames from 'classnames';
 import Spinner from '../Spinner';
 import DataGridCell from './DataGridCell';

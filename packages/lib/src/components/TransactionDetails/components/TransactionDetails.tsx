@@ -1,4 +1,3 @@
-import { h } from 'preact';
 import useCoreContext from 'src/core/Context/useCoreContext';
 import StatsBar from 'src/components/internal/StatsBar';
 import Status from 'src/components/internal/Status';

@@ -1,4 +1,3 @@
-import { h } from 'preact';
 import Fieldset from '../../FormFields/Fieldset';
 import { ReadOnlyAddressProps } from '../types';
 import { FALLBACK_VALUE } from '../constants';

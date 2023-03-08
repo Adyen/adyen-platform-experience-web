@@ -1,4 +1,3 @@
-import { h } from 'preact';
 import { useEffect, useMemo } from 'preact/hooks';
 import Fieldset from '../FormFields/Fieldset';
 import Field from '../FormFields/Field';

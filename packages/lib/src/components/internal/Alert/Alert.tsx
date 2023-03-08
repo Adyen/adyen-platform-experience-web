@@ -1,4 +1,4 @@
-import { ComponentChildren, h } from 'preact';
+import { ComponentChildren } from 'preact';
 import cx from 'classnames';
 import Icon from '../Icon';
 import './Alert.scss';

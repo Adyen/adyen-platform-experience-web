@@ -1,4 +1,3 @@
-import { h } from 'preact';
 import { useState } from 'preact/hooks';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import Modal from '../../../Modal';

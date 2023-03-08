@@ -1,6 +1,5 @@
 import cx from 'classnames';
 import './ButtonGroup.scss';
-import { h } from 'preact';
 
 const ButtonGroup = ({ options = [], name, onChange }) => (
     <div className="adyen-fp-button-group">

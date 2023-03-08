@@ -1,4 +1,4 @@
-import { Component, h } from 'preact';
+import { Component } from 'preact';
 import classNames from 'classnames';
 import Spinner from '../Spinner';
 import useCoreContext from '../../../core/Context/useCoreContext';

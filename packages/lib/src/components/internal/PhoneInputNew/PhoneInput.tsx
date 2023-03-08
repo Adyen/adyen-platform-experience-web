@@ -1,4 +1,3 @@
-import { h } from 'preact';
 import { useCallback, useEffect, useMemo } from 'preact/hooks';
 import classNames from 'classnames';
 import Field from '../FormFields/Field';

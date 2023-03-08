@@ -1,4 +1,3 @@
-import { h } from 'preact';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import BaseFilter from '../BaseFilter';
 import Field from '../../../FormFields/Field';

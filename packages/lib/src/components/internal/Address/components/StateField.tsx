@@ -1,4 +1,3 @@
-import { h } from 'preact';
 import { useState, useLayoutEffect } from 'preact/hooks';
 import { renderFormField } from '../../FormFields';
 import Field from '../../FormFields/Field';

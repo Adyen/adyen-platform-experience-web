@@ -1,4 +1,4 @@
-import { ComponentChildren, h } from 'preact';
+import { ComponentChildren } from 'preact';
 import classNames from 'classnames';
 import Spinner from '../../internal/Spinner';
 import styles from './LoadingWrapper.module.scss';

@@ -1,4 +1,3 @@
-import { h } from 'preact';
 import Field from '../../FormFields/Field';
 import StateField from './StateField';
 import CountryField from './CountryField';

@@ -1,4 +1,3 @@
-import { h } from 'preact';
 import classnames from 'classnames';
 import useCoreContext from '../../../core/Context/useCoreContext';
 import Button from '../Button';

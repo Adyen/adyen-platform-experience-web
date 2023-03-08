@@ -1,4 +1,4 @@
-import { ComponentChild, h } from 'preact';
+import { ComponentChild } from 'preact';
 import cx from 'classnames';
 import './Checkbox.scss';
 
