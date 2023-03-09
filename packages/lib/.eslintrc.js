@@ -8,7 +8,7 @@ module.exports = {
         'plugin:@typescript-eslint/recommended' /*'prettier/@typescript-eslint'*/
     ],
     parserOptions: {
-        ecmaVersion: 2018,
+        ecmaVersion: 2020,
         sourceType: 'module',
         ecmaFeatures: {
             modules: true,
@@ -19,7 +19,7 @@ module.exports = {
         browser: true,
         node: true,
         jest: true,
-        es6: true
+        es2020: true
     },
     settings: {
         react: {
@@ -27,8 +27,11 @@ module.exports = {
             version: '16.0'
         },
         'import/resolver': {
-            webpack: {
-                config: 'config/webpack.dev.js'
+            node: {
+                "extensions": [".js", ".jsx", ".ts", ".tsx"]
+            },
+            typescript: {
+                project: './tsconfig.json'
             }
         }
     },
