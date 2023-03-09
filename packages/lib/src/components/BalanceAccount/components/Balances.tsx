@@ -1,4 +1,3 @@
-import { h } from 'preact';
 import { useMemo } from 'preact/hooks';
 import useCoreContext from 'src/core/Context/useCoreContext';
 import './Balances.scss';

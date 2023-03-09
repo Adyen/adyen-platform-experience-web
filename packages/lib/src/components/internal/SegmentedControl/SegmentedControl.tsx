@@ -1,4 +1,3 @@
-import { h } from 'preact';
 import cx from 'classnames';
 import './SegmentedControl.scss';
 

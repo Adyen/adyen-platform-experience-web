@@ -1,4 +1,3 @@
-import { h } from 'preact';
 import './StatsBar.scss';
 
 export default function StatsBar(props) {

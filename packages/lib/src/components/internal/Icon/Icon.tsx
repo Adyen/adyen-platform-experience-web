@@ -1,4 +1,3 @@
-import { h } from 'preact';
 import useCoreContext from '../../../core/Context/useCoreContext';
 import getImageUrl from '../../../utils/get-image';
 import cx from 'classnames';

@@ -1,4 +1,3 @@
-import { h } from 'preact';
 import './ContactDetails.scss';
 
 export default function ContactDetails({ address, phoneNumber, emailAddress }) {

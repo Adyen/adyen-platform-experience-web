@@ -1,4 +1,3 @@
-import { h } from 'preact';
 import { Amount, AmountExtended } from '../types';
 import Language from '../language/Language';
 import UIElement from './UIElement';

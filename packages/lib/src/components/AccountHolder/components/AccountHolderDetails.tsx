@@ -1,4 +1,3 @@
-import { h } from 'preact';
 import Status from 'src/components/internal/Status';
 import ContactDetails from './ContactDetails';
 import StatsBar from 'src/components/internal/StatsBar';

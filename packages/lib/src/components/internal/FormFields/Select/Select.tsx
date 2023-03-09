@@ -1,4 +1,3 @@
-import { h } from 'preact';
 import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import cx from 'classnames';
 import SelectButton from './components/SelectButton';

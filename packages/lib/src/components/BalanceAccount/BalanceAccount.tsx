@@ -1,4 +1,3 @@
-import { h } from 'preact';
 import CoreProvider from '../../core/Context/CoreProvider';
 import UIElement from '../UIElement';
 import BalanceAccountDetails from './components/BalanceAccountDetails';

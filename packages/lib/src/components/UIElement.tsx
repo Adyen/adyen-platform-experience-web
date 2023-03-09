@@ -1,4 +1,3 @@
-import { h } from 'preact';
 import BaseElement from './BaseElement';
 import getImage from '../utils/get-image';
 import { IUIElement, UIElementProps } from './types';

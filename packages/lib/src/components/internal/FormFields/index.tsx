@@ -1,4 +1,3 @@
-import { h } from 'preact';
 import InputText from './InputText';
 import InputDate from './InputDate';
 import InputTelephone from './InputTelephone';

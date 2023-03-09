@@ -1,6 +1,6 @@
 import { formatCustomTranslations, formatLocale, getTranslation, interpolateElement, loadTranslations, matchLocale, parseLocale } from './utils';
 import translations from './translations';
-import {createElement, h} from 'preact';
+import { createElement } from 'preact';
 const defaultSupportedLocales = Object.keys(locales);
 
 describe('parseLocale()', () => {

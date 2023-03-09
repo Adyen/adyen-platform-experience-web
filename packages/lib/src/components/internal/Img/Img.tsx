@@ -2,7 +2,6 @@ import { JSX } from 'preact';
 import { useRef, useState, useEffect } from 'preact/hooks';
 import cx from 'classnames';
 import './Img.scss';
-import { h } from 'preact';
 import { ImgProps } from './types';
 
 export default function Img(props: ImgProps) {

@@ -1,4 +1,3 @@
-import { h } from 'preact';
 import { useMemo } from 'preact/hooks';
 import InputBase from '../InputBase';
 import { checkDateInputSupport, formatDate } from './utils';

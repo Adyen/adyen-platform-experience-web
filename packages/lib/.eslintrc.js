@@ -4,6 +4,7 @@ module.exports = {
     extends: [
         'eslint:recommended',
         'plugin:react/recommended',
+        'plugin:react/jsx-runtime',
         'plugin:@typescript-eslint/eslint-recommended',
         'plugin:@typescript-eslint/recommended' /*'prettier/@typescript-eslint'*/
     ],
@@ -23,8 +24,7 @@ module.exports = {
     },
     settings: {
         react: {
-            pragma: 'h',
-            version: '16.0'
+            version: '17.0'
         },
         'import/resolver': {
             node: {

@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import { cloneElement, ComponentChild, Fragment, FunctionalComponent, h, toChildArray, VNode } from 'preact';
+import { cloneElement, ComponentChild, FunctionalComponent, h, toChildArray, VNode } from 'preact';
 import Spinner from '../../Spinner';
 import Icon from '../../Icon';
 import { ARIA_ERROR_SUFFIX } from '../../../../core/Errors/constants';
@@ -67,7 +67,7 @@ const Field: FunctionalComponent<FieldProps> = props => {
 
     const renderContent = useCallback(() => {
         return (
-            <Fragment>
+            <>
                 {typeof label === 'string' && (
                     <span
                         className={classNames({
@@ -133,7 +133,7 @@ const Field: FunctionalComponent<FieldProps> = props => {
                         {errorMessage}
                     </span>
                 )}
-            </Fragment>
+            </>
         );
     }, [children, errorMessage, isLoading, isValid, label, onFocusHandler, onBlurHandler]);
 

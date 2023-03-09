@@ -1,4 +1,3 @@
-import { h } from 'preact';
 import Fieldset from '../FormFields/Fieldset';
 import { ReadOnlyCompanyDetailsProps } from './types';
 

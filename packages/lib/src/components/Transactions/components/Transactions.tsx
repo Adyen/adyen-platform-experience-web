@@ -1,4 +1,3 @@
-import { h } from 'preact';
 import { useEffect, useMemo, useState } from 'preact/hooks';
 import useCoreContext from 'src/core/Context/useCoreContext';
 import FilterBar from '../../internal/FilterBar';
