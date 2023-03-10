@@ -43,7 +43,7 @@ const formatDate = (value: string): string => {
  * unformatDate('22/11/1990');
  * // '1990-11-22'
  */
-const unformatDate = (value = ''): string => {
+const unformatDate = (value = ''): string | null => {
     if (value.indexOf('/') === -1) return value;
     const [day = '', month = '', year = ''] = value.split('/');
     if (!day || !month || !year) return null;

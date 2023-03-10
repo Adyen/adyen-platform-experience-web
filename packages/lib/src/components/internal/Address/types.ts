@@ -10,7 +10,7 @@ export type StringObject = {
 
 export interface AddressProps {
     allowedCountries?: string[];
-    countryCode?: string;
+    countryCode: string;
     data?: object;
     label?: string;
     onChange: (newState) => void;

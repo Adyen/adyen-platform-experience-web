@@ -5,6 +5,7 @@ import { CoreOptions } from './types';
 import { processGlobalOptions } from './utils';
 import BPSession from './FPSession';
 import Language from '../language';
+import BaseElement from '../../dist/types/components/BaseElement';
 
 class Core {
     public static readonly version = {
@@ -13,10 +14,10 @@ class Core {
         branch: process.env.COMMIT_BRANCH,
         buildId: process.env.ADYEN_BUILD_ID,
     };
-    public session: BPSession;
+    public session?: BPSession;
     public modules: any;
-    public options: CoreOptions;
-    public components = [];
+    public options?: CoreOptions;
+    public components: BaseElement<any>[] = [];
 
     constructor(options: CoreOptions) {
         this.create = this.create.bind(this);
@@ -100,13 +101,13 @@ class Core {
         this.options = { ...this.options, ...options };
         this.modules = {
             // analytics: new Analytics(this.options),
-            i18n: new Language(this.options.locale, this.options.translations),
+            i18n: new Language(this.options?.locale, this.options?.translations),
         };
 
         // Check for clientKey/environment mismatch
-        const clientKeyType = this.options.clientKey?.substring(0, 3);
-        if (['test', 'live'].includes(clientKeyType) && !this.options.loadingContext.includes(clientKeyType)) {
-            throw new Error(`Error: you are using a ${clientKeyType} clientKey against the ${this.options.environment} environment`);
+        const clientKeyType = this.options?.clientKey?.substring(0, 3) ?? '';
+        if (['test', 'live'].includes(clientKeyType) && !this.options?.loadingContext?.includes(clientKeyType)) {
+            throw new Error(`Error: you are using a ${clientKeyType} clientKey against the ${this.options?.environment} environment`);
         }
 
         return this;

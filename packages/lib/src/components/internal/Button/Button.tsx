@@ -13,14 +13,14 @@ class Button extends Component<ButtonProps, ButtonState> {
         label: '',
         inline: false,
         target: '_self',
-        onClick: () => {}
+        onClick: () => {},
     };
 
     public onClick = e => {
         e.preventDefault();
 
         if (!this.props.disabled) {
-            this.props.onClick(e, { complete: this.complete });
+            this.props.onClick?.(e, { complete: this.complete });
         }
     };
 
@@ -41,7 +41,7 @@ class Button extends Component<ButtonProps, ButtonState> {
             ...(variant !== 'primary' ? [variant] : []),
             ...(inline ? ['inline'] : []),
             ...(completed ? ['completed'] : []),
-            ...(status === 'loading' || status === 'redirect' ? ['loading'] : [])
+            ...(status === 'loading' || status === 'redirect' ? ['loading'] : []),
         ];
 
         const buttonClasses = classNames(['adyen-fp-button', ...modifiers.map(m => `adyen-fp-button--${m}`)]);
@@ -59,7 +59,7 @@ class Button extends Component<ButtonProps, ButtonState> {
                     {buttonIcon}
                     <span className="adyen-fp-button__text">{label}</span>
                 </span>
-            )
+            ),
         };
 
         const buttonText = buttonStates[status] || buttonStates.default;

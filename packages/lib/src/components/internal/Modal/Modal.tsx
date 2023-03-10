@@ -1,12 +1,13 @@
 import { useEffect, useRef } from 'preact/hooks';
 import cx from 'classnames';
 import './Modal.scss';
+import { ModalProps } from './types';
 
-export default function Modal({ title, children, classNameModifiers = [], isOpen, onClose, isDismissible = true }) {
-    const modalContainerRef = useRef(null);
+export default function Modal({ title, children, classNameModifiers = [], isOpen, onClose, isDismissible = true }: ModalProps) {
+    const modalContainerRef = useRef<HTMLDivElement>(null);
 
     const handleClickOutside = e => {
-        if (isDismissible && open && !modalContainerRef?.current.contains(e.target)) {
+        if (isDismissible && isOpen && !modalContainerRef?.current?.contains(e.target)) {
             onClose();
         }
     };

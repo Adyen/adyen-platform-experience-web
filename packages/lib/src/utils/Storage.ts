@@ -8,12 +8,16 @@ class Storage<T> {
         this.key = this.prefix + key;
     }
 
-    public get(): T {
-        try {
-            return JSON.parse(this.storage.getItem(this.key));
-        } catch (err) {
-            return null;
+    public get(): T | null {
+        const storageItem = this.storage.getItem(this.key);
+        if (storageItem) {
+            try {
+                return JSON.parse(storageItem);
+            } catch (err) {
+                return null;
+            }
         }
+        return null;
     }
 
     public set(value: T) {

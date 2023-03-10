@@ -12,13 +12,13 @@ const Field: FunctionalComponent<FieldProps> = props => {
     //
     const {
         children,
-        className,
-        classNameModifiers,
+        className = '',
+        classNameModifiers = [],
         dir,
         disabled,
         errorMessage,
         helper,
-        inputWrapperModifiers,
+        inputWrapperModifiers = [],
         isCollatingErrors,
         isLoading,
         isValid,
@@ -30,11 +30,11 @@ const Field: FunctionalComponent<FieldProps> = props => {
         onFocus,
         onFocusField,
         showValidIcon,
-        useLabelElement,
+        useLabelElement = true,
         // Redeclare prop names to avoid internal clashes
         filled: propsFilled,
         focused: propsFocused,
-        i18n
+        i18n,
     } = props;
 
     const uniqueId = useRef(getUniqueId(`adyen-fp-${name}`));
@@ -72,7 +72,7 @@ const Field: FunctionalComponent<FieldProps> = props => {
                     <span
                         className={classNames({
                             'adyen-fp-label__text': true,
-                            'adyen-fp-label__text--error': errorMessage
+                            'adyen-fp-label__text--error': errorMessage,
                         })}
                     >
                         {label}
@@ -85,25 +85,17 @@ const Field: FunctionalComponent<FieldProps> = props => {
                 {labelEndAdornment && <span className="adyen-fp-label-adornment--end">{labelEndAdornment}</span>}
 
                 {helper && <span className={'adyen-fp-helper-text'}>{helper}</span>}
-                <div
-                    className={classNames([
-                        'adyen-fp-input-wrapper',
-                        ...inputWrapperModifiers.map(m => `adyen-fp-input-wrapper--${m}`)
-                    ])}
-                    dir={dir}
-                >
-                    {toChildArray(children).map(
-                        (child: ComponentChild): ComponentChild => {
-                            const childProps = {
-                                isValid,
-                                onFocusHandler,
-                                onBlurHandler,
-                                isInvalid: !!errorMessage,
-                                ...(name && { uniqueId: uniqueId.current })
-                            };
-                            return cloneElement(child as VNode, childProps);
-                        }
-                    )}
+                <div className={classNames(['adyen-fp-input-wrapper', ...inputWrapperModifiers.map(m => `adyen-fp-input-wrapper--${m}`)])} dir={dir}>
+                    {toChildArray(children).map((child: ComponentChild): ComponentChild => {
+                        const childProps = {
+                            isValid,
+                            onFocusHandler,
+                            onBlurHandler,
+                            isInvalid: !!errorMessage,
+                            ...(name && { uniqueId: uniqueId.current }),
+                        };
+                        return cloneElement(child as VNode, childProps);
+                    })}
 
                     {isLoading && (
                         <span className="adyen-fp-input__inline-validation adyen-fp-input__inline-validation--loading">
@@ -144,8 +136,8 @@ const Field: FunctionalComponent<FieldProps> = props => {
                 'adyen-fp-label': true,
                 'adyen-fp-label--focused': focused,
                 'adyen-fp-label--filled': filled,
-                'adyen-fp-label--disabled': disabled
-            })
+                'adyen-fp-label--disabled': disabled,
+            }),
         };
 
         return useLabelElement ? (
@@ -170,7 +162,7 @@ const Field: FunctionalComponent<FieldProps> = props => {
                 classNameModifiers.map(m => `adyen-fp-field--${m}`),
                 {
                     'adyen-fp-field--error': errorMessage,
-                    'adyen-fp-field--valid': isValid
+                    'adyen-fp-field--valid': isValid,
                 }
             )}
         >
@@ -188,12 +180,4 @@ const Field: FunctionalComponent<FieldProps> = props => {
         </div>
     );
 };
-
-Field.defaultProps = {
-    className: '',
-    classNameModifiers: [],
-    inputWrapperModifiers: [],
-    useLabelElement: true
-};
-
 export default Field;

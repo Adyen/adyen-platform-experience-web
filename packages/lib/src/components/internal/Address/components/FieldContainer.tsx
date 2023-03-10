@@ -23,14 +23,14 @@ function getErrorMessage(errors: AddressStateError, fieldName: string, i18n: Lan
 function FieldContainer(props: FieldContainerProps) {
     const {
         i18n,
-        commonProps: { isCollatingErrors }
+        commonProps: { isCollatingErrors },
     } = useCoreContext();
     const { classNameModifiers = [], data, errors, valid, fieldName, onInput, onBlur, trimOnBlur, maxlength, disabled } = props;
 
     const value: string = data[fieldName];
-    const selectedCountry: string = data.country;
-    const isOptional: boolean = props.specifications.countryHasOptionalField(selectedCountry, fieldName);
-    const labelKey: string = props.specifications.getKeyForField(fieldName, selectedCountry);
+    const selectedCountry = data.country ?? '';
+    const isOptional: boolean = !!selectedCountry && props.specifications.countryHasOptionalField(selectedCountry, fieldName);
+    const labelKey: string = selectedCountry ? props.specifications.getKeyForField(fieldName, selectedCountry) : '';
     const optionalLabel = isOptional ? ` ${i18n.get('field.title.optional')}` : '';
     const label = `${i18n.get(labelKey)}${optionalLabel}`;
     const errorMessage = getErrorMessage(errors, fieldName, i18n);
@@ -65,7 +65,7 @@ function FieldContainer(props: FieldContainerProps) {
                     label={label}
                     classNameModifiers={classNameModifiers}
                     errorMessage={errorMessage}
-                    isValid={valid[fieldName]}
+                    isValid={valid?.[fieldName]}
                     name={fieldName}
                     isCollatingErrors={isCollatingErrors}
                 >
@@ -78,7 +78,7 @@ function FieldContainer(props: FieldContainerProps) {
                         isCollatingErrors,
                         maxlength,
                         trimOnBlur,
-                        disabled
+                        disabled,
                     })}
                 </Field>
             );

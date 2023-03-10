@@ -18,8 +18,6 @@
         // TODO Delete all of the options below to use strict type checking
         "noImplicitAny": false,
         "strictFunctionTypes":  false,
-        "strictNullChecks": false,
-        "strictPropertyInitialization":  false,
         "noImplicitThis": false,
 
         "stripInternal": true,

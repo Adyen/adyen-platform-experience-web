@@ -44,7 +44,7 @@ export default function BaseFilter(props) {
     };
 
     return (
-        <div class={`adyen-fp-filter adyen-fp-filter--${props.type}`}>
+        <div className={`adyen-fp-filter adyen-fp-filter--${props.type}`}>
             <Button
                 variant={'filter'}
                 label={props.value || props.label}

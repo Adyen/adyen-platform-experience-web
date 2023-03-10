@@ -5,7 +5,7 @@ import { isEmpty } from '../../../utils/validator-utils';
 
 const createPatternByDigits = (digits: number) => {
     return {
-        pattern: new RegExp(`\\d{${digits}}`)
+        pattern: new RegExp(`\\d{${digits}}`),
     };
 };
 
@@ -49,7 +49,7 @@ const postalCodePatterns = {
     SE: createPatternByDigits(5),
     SG: createPatternByDigits(6),
     SK: createPatternByDigits(5),
-    US: createPatternByDigits(5)
+    US: createPatternByDigits(5),
 };
 
 export const getAddressValidationRules = (specifications): ValidatorRules => {
@@ -66,9 +66,9 @@ export const getAddressValidationRules = (specifications): ValidatorRules => {
                         translationKey: 'invalidFormatExpects',
                         translationObject: {
                             values: {
-                                format: countrySpecificFormatters[country]?.postalCode.format || null
-                            }
-                        }
+                                format: countrySpecificFormatters[country]?.postalCode?.format || null,
+                            },
+                        },
                     };
 
                     if (isEmpty(val)) return null;
@@ -79,7 +79,7 @@ export const getAddressValidationRules = (specifications): ValidatorRules => {
                 // Default rule
                 return isEmpty(val) ? null : true;
             },
-            errorMessage: ERROR_CODES[ERROR_MSG_INCOMPLETE_FIELD]
+            errorMessage: ERROR_CODES[ERROR_MSG_INCOMPLETE_FIELD],
         },
         houseNumberOrName: {
             validate: (value, context) => {
@@ -88,13 +88,13 @@ export const getAddressValidationRules = (specifications): ValidatorRules => {
                 return isOptional || (isEmpty(value) ? null : true);
             },
             modes: ['blur'],
-            errorMessage: ERROR_CODES[ERROR_MSG_INCOMPLETE_FIELD]
+            errorMessage: ERROR_CODES[ERROR_MSG_INCOMPLETE_FIELD],
         },
         default: {
-            validate: value => (isEmpty(value) ? null : true), // true, if there are chars other than spaces
+            validate: value => (isEmpty(value) ? false : true), // true, if there are chars other than spaces
             modes: ['blur'],
-            errorMessage: ERROR_CODES[ERROR_MSG_INCOMPLETE_FIELD]
-        }
+            errorMessage: ERROR_CODES[ERROR_MSG_INCOMPLETE_FIELD],
+        },
     };
     return addressValidationRules;
 };

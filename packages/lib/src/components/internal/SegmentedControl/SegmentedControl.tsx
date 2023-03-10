@@ -9,12 +9,10 @@ interface SegmentedControlProps<T> {
     onChange(value: T, event: MouseEvent): void;
 }
 
-function SegmentedControl<T>({ classNameModifiers, selectedValue, disabled = false, options, onChange }: SegmentedControlProps<T>) {
+function SegmentedControl<T>({ classNameModifiers = [], selectedValue, disabled = false, options, onChange }: SegmentedControlProps<T>) {
     if (!options || options.length === 0) {
         return null;
     }
-
-    debugger;
 
     return (
         <div
@@ -31,7 +29,7 @@ function SegmentedControl<T>({ classNameModifiers, selectedValue, disabled = fal
                     key={value}
                     onClick={(event: MouseEvent) => onChange(value, event)}
                     className={cx('adyen-fp-segmented-control-segment', {
-                        'adyen-fp-segmented-control-segment--selected': selectedValue === value
+                        'adyen-fp-segmented-control-segment--selected': selectedValue === value,
                     })}
                     type="button"
                     {...htmlProps}

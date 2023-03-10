@@ -2,6 +2,8 @@ import { h } from 'preact';
 import { defaultTranslation, FALLBACK_LOCALE } from './config';
 import translations from './translations';
 
+export type Locale = keyof typeof translations | `${string}-${string}`;
+
 /**
  * Convert to ISO 639-1
  */
@@ -16,7 +18,7 @@ const toTwoLetterCode = locale => locale.toLowerCase().substring(0, 2);
  * matchLocale('en-GB');
  * // 'en-US'
  */
-export function matchLocale(locale: string, supportedLocales: any): string {
+export function matchLocale(locale: string, supportedLocales: Locale[]): Locale | null {
     if (!locale || typeof locale !== 'string') return null;
     return supportedLocales.find(supLoc => toTwoLetterCode(supLoc) === toTwoLetterCode(locale)) || null;
 }
@@ -29,12 +31,12 @@ export function matchLocale(locale: string, supportedLocales: any): string {
  * formatLocale('En_us');
  * // 'en-US'
  */
-export function formatLocale(localeParam: string): string {
+export function formatLocale(localeParam: string): Locale | null {
     const locale = localeParam.replace('_', '-');
     const format = new RegExp('([a-z]{2})([-])([A-Z]{2})');
 
     // If it's already formatted, return the locale
-    if (format.test(locale)) return locale;
+    if (format.test(locale)) return locale as Locale;
 
     // Split the string in two
     const [languageCode, countryCode] = locale.split('-');
@@ -43,7 +45,7 @@ export function formatLocale(localeParam: string): string {
     if (!languageCode || !countryCode) return null;
 
     // Ensure correct format and join the strings back together
-    const fullLocale = [languageCode.toLowerCase(), countryCode.toUpperCase()].join('-');
+    const fullLocale = `${languageCode.toLowerCase()}-${countryCode.toUpperCase()}` as Locale;
 
     return fullLocale.length === 5 ? fullLocale : null;
 }
@@ -55,15 +57,15 @@ export function formatLocale(localeParam: string): string {
  * @param locale -
  * @param supportedLocales -
  */
-export function parseLocale(locale: string, supportedLocales: string[] = []): string {
+export function parseLocale(locale: string, supportedLocales: Locale[] = []): Locale | null {
     if (!locale || locale.length < 1 || locale.length > 5) return FALLBACK_LOCALE;
 
     const formattedLocale = formatLocale(locale);
-    const hasMatch = supportedLocales.indexOf(formattedLocale) > -1;
+    const hasMatch = formattedLocale && supportedLocales.indexOf(formattedLocale) > -1;
 
     if (hasMatch) return formattedLocale;
 
-    return matchLocale(formattedLocale || locale, supportedLocales);
+    return matchLocale(formattedLocale ?? locale, supportedLocales);
 }
 
 /**
@@ -71,7 +73,7 @@ export function parseLocale(locale: string, supportedLocales: string[] = []): st
  * @param customTranslations -
  * @param supportedLocales -
  */
-export function formatCustomTranslations(customTranslations: object = {}, supportedLocales: string[]): object {
+export function formatCustomTranslations(customTranslations: object = {}, supportedLocales: Locale[]): Record<`${string}-${string}`, any> {
     return Object.keys(customTranslations).reduce((acc, cur) => {
         const formattedLocale = formatLocale(cur) || parseLocale(cur, supportedLocales);
         if (formattedLocale) {
@@ -94,7 +96,7 @@ const replaceTranslationValues = (translation, values) => {
  *
  * @internal
  */
-export const getTranslation = (translations: object, key: string, options: { [key: string]: any } = { values: {}, count: 0 }): string => {
+export const getTranslation = (translations: object, key: string, options: { [key: string]: any } = { values: {}, count: 0 }): string | null => {
     const keyPlural = `${key}__plural`;
     const keyForCount = count => `${key}__${count}`;
 
@@ -117,9 +119,9 @@ export const getTranslation = (translations: object, key: string, options: { [ke
  * @param locale - The locale the user wants to use
  * @param customTranslations -
  */
-export const loadTranslations = async (locale: string, customTranslations: object = {}) => {
+export const loadTranslations = async (locale: Locale | string, customTranslations: object = {}) => {
     // Match locale to one of our available locales (e.g. es-AR => es-ES)
-    const localeToLoad = parseLocale(locale, Object.keys(translations)) || FALLBACK_LOCALE;
+    const localeToLoad = parseLocale(locale, Object.keys(translations) as Locale[]) || FALLBACK_LOCALE;
     const loadedLocale = await translations[localeToLoad]();
 
     return {
@@ -143,6 +145,6 @@ export const interpolateElement = (translation: string, renderFunctions: Array<(
         // math to get the index of the renderFunction that should be used
         // since we split on tokens, that means the index of the render function is half of the index of the string
         const indexInFunctionArray = Math.floor(index / 2);
-        return index % 2 === 0 ? term : renderFunctions[indexInFunctionArray](term);
+        return index % 2 === 0 ? term : renderFunctions[indexInFunctionArray]?.(term);
     });
 };

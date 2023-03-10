@@ -10,12 +10,12 @@ interface LoadingWrapperProps {
 
 const LoadingWrapper = ({ children, status }: LoadingWrapperProps) => {
     const wrapperClass = classNames('adyen-fp-loading-input__form', styles['loading-input__form'], {
-        [styles['loading-input__form--loading']]: status === 'loading'
+        [styles['loading-input__form--loading'] ?? 'loading-input__form--loading']: status === 'loading',
     });
 
     const spinnerClass = classNames({
-        [styles['loading-input__spinner']]: true,
-        [styles['loading-input__spinner--active']]: status === 'loading'
+        [styles['loading-input__spinner'] ?? 'loading-input__spinner']: true,
+        [styles['loading-input__spinner--active'] ?? 'loading-input__spinner--active']: status === 'loading',
     });
 
     return (

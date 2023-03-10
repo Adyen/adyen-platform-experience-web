@@ -16,7 +16,7 @@ export const getLabel = key => {
     return labels[key] || key;
 };
 
-export const getCursor = (dir: string, transactions): string => {
+export const getCursor = (dir: string, transactions): string | null => {
     try {
         if (transactions._links?.[dir]?.href) {
             const url = new URL(transactions._links[dir].href);

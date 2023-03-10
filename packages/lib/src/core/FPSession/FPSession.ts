@@ -1,17 +1,14 @@
 import setupSession from '../Services/sessions/setup-session';
 import Storage from '../../utils/Storage';
 import { sanitizeSession } from './utils';
-import {
-    Session,
-    SessionConfiguration
-} from '../../types';
+import { Session, SessionConfiguration } from '../../types';
 
 class FPSession {
     private readonly session: Session;
     private readonly storage: Storage<Session>;
     public readonly clientKey: string;
     public readonly loadingContext: string;
-    public configuration: SessionConfiguration;
+    public configuration?: SessionConfiguration;
 
     constructor(rawSession: Session, clientKey: string, loadingContext: string) {
         const session = sanitizeSession(rawSession) as Session;
