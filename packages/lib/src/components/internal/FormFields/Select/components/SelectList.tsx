@@ -3,9 +3,9 @@ import SelectListItem from './SelectListItem';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { SelectListProps } from '../types';
 import styles from '../Select.module.scss';
-import { forwardRef, MutableRefObject } from 'preact/compat';
+import { ForwardedRef, forwardRef } from 'preact/compat';
 
-const SelectList = forwardRef(({ active, items, showList, textFilter, ...props }: SelectListProps, ref: MutableRefObject<HTMLUListElement>) => {
+const SelectList = forwardRef(({ active, items, showList, textFilter, ...props }: SelectListProps, ref: ForwardedRef<HTMLUListElement>) => {
     const { i18n } = useCoreContext();
     const filteredItems = items.filter(item => !textFilter || item.name.toLowerCase().includes(textFilter));
 
