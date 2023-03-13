@@ -23,13 +23,13 @@ function Select({
     placeholder,
     uniqueId,
     isCollatingErrors,
-    isIconOnLeftSide = false
+    isIconOnLeftSide = false,
 }: SelectProps) {
-    const filterInputRef = useRef(null);
-    const selectContainerRef = useRef(null);
-    const toggleButtonRef = useRef(null);
-    const selectListRef = useRef(null);
-    const [textFilter, setTextFilter] = useState<string>(null);
+    const filterInputRef = useRef<HTMLInputElement>(null);
+    const selectContainerRef = useRef<HTMLDivElement>(null);
+    const toggleButtonRef = useRef<HTMLButtonElement>(null);
+    const selectListRef = useRef<HTMLUListElement>(null);
+    const [textFilter, setTextFilter] = useState<string>('');
     const [showList, setShowList] = useState<boolean>(false);
     const selectListId: string = useMemo(() => `select-${uuid()}`, []);
 
@@ -39,7 +39,7 @@ function Select({
      * Closes the selectList, empties the text filter and focuses the button element
      */
     const closeList = () => {
-        setTextFilter(null);
+        setTextFilter('');
         setShowList(false);
         if (toggleButtonRef.current) toggleButtonRef.current.focus();
     };
@@ -48,11 +48,12 @@ function Select({
      * Closes the select list and fires an onChange
      * @param e - Event
      */
-    const handleSelect = (e: Event) => {
+    const handleSelect = e => {
         e.preventDefault();
 
         // If the target is not one of the list items, select the first list item
-        const target: HTMLInputElement = selectListRef.current.contains(e.currentTarget) ? e.currentTarget : selectListRef.current.firstElementChild;
+        const target: HTMLUListElement =
+            e.currentTarget && selectListRef?.current?.contains(e.currentTarget) ? e.currentTarget : selectListRef?.current?.firstElementChild;
 
         if (!target.getAttribute('data-disabled')) {
             closeList();
@@ -77,7 +78,7 @@ function Select({
             e.preventDefault();
             setShowList(true);
             if (selectListRef.current?.firstElementChild) {
-                selectListRef.current.firstElementChild.focus();
+                (selectListRef.current.firstElementChild as HTMLLIElement).focus();
             }
         } else if (e.shiftKey && e.key === keys.tab) {
             // Shift-Tab out of Select - close list re. a11y guidelines (above)
@@ -91,14 +92,15 @@ function Select({
      * Close the select list when clicking outside the list
      * @param e - MouseEvent
      */
-    const handleClickOutside = (e: MouseEvent) => {
+    const handleClickOutside = e => {
         // use composedPath so it can also check when inside a web component
         // if composedPath is not available fallback to e.target
-        const clickIsOutside = e.composedPath
-            ? !e.composedPath().includes(selectContainerRef.current)
-            : !selectContainerRef.current.contains(e.target);
+        const clickIsOutside =
+            selectContainerRef.current && e.composedPath
+                ? !e.composedPath().includes(selectContainerRef.current)
+                : !selectContainerRef.current?.contains(e.target);
         if (clickIsOutside) {
-            setTextFilter(null);
+            setTextFilter('');
             setShowList(false);
         }
     };
@@ -174,16 +176,11 @@ function Select({
 
     return (
         <div
-            className={cx([
-                'adyen-fp-dropdown',
-                styles['adyen-fp-dropdown'],
-                className,
-                ...classNameModifiers.map(m => `adyen-fp-dropdown--${m}`)
-            ])}
+            className={cx(['adyen-fp-dropdown', styles['adyen-fp-dropdown'], className, ...classNameModifiers.map(m => `adyen-fp-dropdown--${m}`)])}
             ref={selectContainerRef}
         >
             <SelectButton
-                id={uniqueId ?? null}
+                id={uniqueId ?? undefined}
                 active={active}
                 filterInputRef={filterInputRef}
                 filterable={filterable}
@@ -198,7 +195,7 @@ function Select({
                 showList={showList}
                 toggleButtonRef={toggleButtonRef}
                 toggleList={toggleList}
-                ariaDescribedBy={!isCollatingErrors && uniqueId ? `${uniqueId}${ARIA_ERROR_SUFFIX}` : null}
+                ariaDescribedBy={!isCollatingErrors && uniqueId ? `${uniqueId}${ARIA_ERROR_SUFFIX}` : ''}
             />
             <SelectList
                 active={active}
@@ -207,7 +204,7 @@ function Select({
                 onKeyDown={handleListKeyDown}
                 onSelect={handleSelect}
                 selectListId={selectListId}
-                selectListRef={selectListRef}
+                ref={selectListRef}
                 showList={showList}
                 textFilter={textFilter}
             />
@@ -221,7 +218,7 @@ Select.defaultProps = {
     filterable: true,
     items: [],
     readonly: false,
-    onChange: () => {}
+    onChange: () => {},
 };
 
 export default Select;

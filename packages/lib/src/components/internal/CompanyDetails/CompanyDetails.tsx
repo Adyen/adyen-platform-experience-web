@@ -17,17 +17,19 @@ export default function CompanyDetails(props: CompanyDetailsProps) {
     const { handleChangeFor, triggerValidation, data, valid, errors, isValid } = useForm<CompanyDetailsSchema>({
         schema: requiredFields,
         rules: props.validationRules,
-        defaultData: props.data
+        defaultData: props.data,
     });
 
     const generateFieldName = (name: string): string => `${namePrefix ? `${namePrefix}.` : ''}${name}`;
 
-    const eventHandler = (mode: string): Function => (e: Event): void => {
-        const { name } = e.target as HTMLInputElement;
-        const key = name.split(`${namePrefix}.`).pop();
+    const eventHandler =
+        (mode: string): Function =>
+        (e: Event): void => {
+            const { name } = e.target as HTMLInputElement;
+            const key = name.split(`${namePrefix}.`).pop();
 
-        handleChangeFor(key, mode)(e);
-    };
+            if (key) handleChangeFor(key, mode)(e);
+        };
 
     useEffect(() => {
         const formattedData = getFormattedData(data);
@@ -41,7 +43,7 @@ export default function CompanyDetails(props: CompanyDetailsProps) {
 
     return (
         <Fieldset classNameModifiers={[label]} label={label}>
-            {requiredFields.includes('name') && (
+            {requiredFields?.includes('name') && (
                 <Field label={i18n.get('companyDetails.name')} classNameModifiers={['name']} errorMessage={!!errors.name}>
                     {renderFormField('text', {
                         name: generateFieldName('name'),
@@ -49,12 +51,12 @@ export default function CompanyDetails(props: CompanyDetailsProps) {
                         classNameModifiers: ['name'],
                         onInput: eventHandler('input'),
                         onBlur: eventHandler('blur'),
-                        spellCheck: false
+                        spellCheck: false,
                     })}
                 </Field>
             )}
 
-            {requiredFields.includes('registrationNumber') && (
+            {requiredFields?.includes('registrationNumber') && (
                 <Field
                     label={i18n.get('companyDetails.registrationNumber')}
                     classNameModifiers={['registrationNumber']}
@@ -66,7 +68,7 @@ export default function CompanyDetails(props: CompanyDetailsProps) {
                         classNameModifiers: ['registrationNumber'],
                         onInput: eventHandler('input'),
                         onBlur: eventHandler('blur'),
-                        spellCheck: false
+                        spellCheck: false,
                     })}
                 </Field>
             )}
@@ -79,5 +81,5 @@ CompanyDetails.defaultProps = {
     onChange: () => {},
     visibility: 'editable',
     requiredFields: companyDetailsSchema,
-    validationRules: companyDetailsValidationRules
+    validationRules: companyDetailsValidationRules,
 };

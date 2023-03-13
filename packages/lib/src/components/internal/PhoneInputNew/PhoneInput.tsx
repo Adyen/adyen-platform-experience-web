@@ -13,7 +13,7 @@ import { getUniqueId } from '../../../utils/idGenerator';
 function PhoneInput(props: PhoneInputProps) {
     const {
         i18n,
-        commonProps: { isCollatingErrors }
+        commonProps: { isCollatingErrors },
     } = useCoreContext();
 
     const schema = props.requiredFields || [...(props?.items?.length ? ['phonePrefix'] : []), 'phoneNumber'];
@@ -26,7 +26,7 @@ function PhoneInput(props: PhoneInputProps) {
         schema,
         defaultData: props.data,
         rules: phoneValidationRules,
-        formatters: phoneFormatters
+        formatters: phoneFormatters,
     });
 
     useEffect(() => {
@@ -56,7 +56,7 @@ function PhoneInput(props: PhoneInputProps) {
      */
     const getRelatedUniqueId = () => {
         const holder = document.querySelector('.adyen-fp-phone-input--new [uniqueid]');
-        return holder ? holder.getAttribute('uniqueid') : null;
+        return holder?.getAttribute('uniqueid') ?? '';
     };
 
     const getPhoneFieldError = useCallback(
@@ -83,7 +83,7 @@ function PhoneInput(props: PhoneInputProps) {
                 label={props.phoneNumberKey ? i18n.get(props.phoneNumberKey) : i18n.get('telephoneNumber')}
                 className={classNames({
                     'adyen-fp-field': true,
-                    'adyen-fp-field--phone-input': true
+                    'adyen-fp-field--phone-input': true,
                 })}
                 inputWrapperModifiers={['phone-input']}
                 isValid={valid.phoneNumber}
@@ -107,7 +107,7 @@ function PhoneInput(props: PhoneInputProps) {
                         'adyen-fp-input--invalid': !!errors.phoneNumber || !!errors.phonePrefix,
                         'adyen-fp-input--valid': (showPrefix ? valid.phonePrefix : true) && valid.phoneNumber,
                         // Style from local PhoneInput.scss
-                        'adyen-fp-input-holder--phone-input': true
+                        'adyen-fp-input-holder--phone-input': true,
                     })}
                 >
                     {showPrefix &&
@@ -119,7 +119,7 @@ function PhoneInput(props: PhoneInputProps) {
                             placeholder: i18n.get('infix'),
                             selected: data.phonePrefix,
                             isCollatingErrors,
-                            uniqueId: uniqueIDPhonePrefix
+                            uniqueId: uniqueIDPhonePrefix,
                         })}
 
                     {showNumber && (
@@ -131,7 +131,7 @@ function PhoneInput(props: PhoneInputProps) {
                                 onInput={handleChangeFor('phoneNumber', 'input')}
                                 onBlur={handleChangeFor('phoneNumber', 'blur')}
                                 // readOnly={props.phoneNumberIsReadonly}
-                                placeholder={props.placeholders.phoneNumber || '123456789'}
+                                placeholder={props.placeholders?.phoneNumber || '123456789'}
                                 className="adyen-fp-input adyen-fp-input adyen-fp-input--phone-number"
                                 autoCorrect="off"
                                 aria-required={true}
@@ -162,7 +162,7 @@ function PhoneInput(props: PhoneInputProps) {
 }
 
 PhoneInput.defaultProps = {
-    phoneLabel: 'telephoneNumber'
+    phoneLabel: 'telephoneNumber',
 };
 
 export default PhoneInput;

@@ -23,7 +23,7 @@ function Transactions(props) {
         const newPage = dir === 'prev' ? page - 1 : page + 1;
         setPage(newPage);
         const cursor = getCursor(dir, props.transactions);
-        const newFilters = { ...filters, cursor };
+        const newFilters = { ...filters, cursor: cursor ?? '' };
         setFilters(newFilters);
         if (cursor) props.onFilterChange({ filters: newFilters }, props.elementRef);
     };
@@ -45,7 +45,7 @@ function Transactions(props) {
     }, [props.transactions]);
 
     return (
-        <div class="adyen-fp-transactions">
+        <div className="adyen-fp-transactions">
             <div className="adyen-fp-title">{i18n.get('transactions')}</div>
             {!!props.onFilterChange && (
                 <FilterBar filters={filters} resetFilters={handleFilterReset}>
@@ -53,24 +53,26 @@ function Transactions(props) {
                         label={i18n.get('balanceAccount')}
                         name={'balanceAccountId'}
                         classNameModifiers={['balanceAccount']}
-                        value={filters.balanceAccountId}
+                        value={filters?.balanceAccountId}
                         onChange={handleFilterChange}
                     />
                     <TextFilter
                         label={i18n.get('account')}
                         name={'accountHolderId'}
                         classNameModifiers={['account']}
-                        value={filters.accountHolderId}
+                        value={filters?.accountHolderId}
                         onChange={handleFilterChange}
                     />
-                    <DateFilter
-                        label={i18n.get('createdSince')}
-                        name={'createdSince'}
-                        classNameModifiers={['createdSince']}
-                        from={i18n.fullDate(filters.createdSince)}
-                        to={i18n.fullDate(filters.createdUntil)}
-                        onChange={handleFilterChange}
-                    />
+                    {filters?.createdSince && filters?.createdUntil && (
+                        <DateFilter
+                            label={i18n.get('createdSince')}
+                            name={'createdSince'}
+                            classNameModifiers={['createdSince']}
+                            from={i18n.fullDate(filters.createdSince)}
+                            to={i18n.fullDate(filters.createdUntil)}
+                            onChange={handleFilterChange}
+                        />
+                    )}
                 </FilterBar>
             )}
 
@@ -86,7 +88,7 @@ function Transactions(props) {
                     onTransactionSelected={props.onTransactionSelected}
                     showPagination={!!props.onFilterChange}
                 />
-            ) : !filters.balancePlatform && !filters.balanceAccountId && !filters.accountHolderId ? (
+            ) : !filters?.balancePlatform && !filters?.balanceAccountId && !filters?.accountHolderId ? (
                 <Alert type="info">{i18n.get('toStart')}</Alert>
             ) : (
                 <Alert icon={'cross'}>{i18n.get('unableToLoadTransactions')}</Alert>

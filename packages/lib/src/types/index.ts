@@ -18,10 +18,10 @@ export interface AmountExtended extends Amount {
     currencyDisplay?: string;
 }
 
-export type AddressField = typeof ADDRESS_SCHEMA[number];
+export type AddressField = (typeof ADDRESS_SCHEMA)[number];
 
 export type AddressData = {
-    [key in AddressField]?: string;
+    [key in AddressField]: string;
 };
 
 export interface PersonalDetailsSchema {

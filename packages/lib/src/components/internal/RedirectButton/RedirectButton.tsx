@@ -1,7 +1,8 @@
 import useCoreContext from '../../../core/Context/useCoreContext';
 import { useState } from 'preact/hooks';
+import { RedirectButtonProps } from './types';
 
-function RedirectButton({ payButton, onSubmit, amount = null, name, ...props }) {
+function RedirectButton({ payButton, onSubmit, amount, name, ...props }: RedirectButtonProps) {
     const { i18n } = useCoreContext();
     const [status, setStatus] = useState('ready');
 
@@ -22,7 +23,7 @@ function RedirectButton({ payButton, onSubmit, amount = null, name, ...props }) 
                 status,
                 classNameModifiers: ['standalone'],
                 label: payButtonLabel(),
-                onClick: onSubmit
+                onClick: onSubmit,
             })}
         </>
     );

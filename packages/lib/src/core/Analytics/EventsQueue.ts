@@ -7,7 +7,7 @@ class EventsQueue {
         this.events.push(event);
     }
 
-    run(checkoutAttemptId?: string) {
+    run(checkoutAttemptId: string) {
         const promises = this.events.map(e => e(checkoutAttemptId));
         this.events = [];
 

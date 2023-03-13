@@ -30,11 +30,11 @@ class ValidationResult {
 }
 
 class Validator {
-    public rules: ValidatorRules = {
+    public rules: ValidatorRules & { default: ValidatorRule } = {
         default: {
             validate: () => true,
-            modes: ['blur', 'input']
-        }
+            modes: ['blur', 'input'],
+        },
     };
 
     constructor(rules) {
@@ -44,7 +44,7 @@ class Validator {
     setRules(newRules) {
         this.rules = {
             ...this.rules,
-            ...newRules
+            ...newRules,
         };
     }
 

@@ -5,27 +5,30 @@ import { ValidatorRules } from '../../../utils/Validator/types';
 const isDateOfBirthValid = value => {
     if (!value) return false;
     const rawValue = unformatDate(value);
-    const ageDiff = Date.now() - Date.parse(rawValue);
-    const age = new Date(ageDiff).getFullYear() - 1970;
-    return age >= 18;
+    if (rawValue) {
+        const ageDiff = Date.now() - Date.parse(rawValue);
+        const age = new Date(ageDiff).getFullYear() - 1970;
+        return age >= 18;
+    }
+    return false;
 };
 
 export const personalDetailsValidationRules: ValidatorRules = {
     default: {
         validate: value => value && value.length > 0,
-        modes: ['blur']
+        modes: ['blur'],
     },
     dateOfBirth: {
         validate: value => isDateOfBirthValid(value),
         errorMessage: 'dateOfBirth.invalid',
-        modes: ['blur']
+        modes: ['blur'],
     },
     telephoneNumber: {
         validate: value => telephoneNumber.test(value),
-        modes: ['blur']
+        modes: ['blur'],
     },
     shopperEmail: {
         validate: value => email.test(value),
-        modes: ['blur']
-    }
+        modes: ['blur'],
+    },
 };

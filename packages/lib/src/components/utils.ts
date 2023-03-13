@@ -3,7 +3,7 @@ import { UIElementStatus } from './types';
 const ALLOWED_PROPERTIES = ['action', 'resultCode', 'sessionData', 'order'];
 
 export function getSanitizedResponse(response) {
-    const removedProperties = [];
+    const removedProperties: string[] = [];
 
     const sanitizedObject = Object.keys(response).reduce((acc, cur) => {
         if (!ALLOWED_PROPERTIES.includes(cur)) {
@@ -31,5 +31,6 @@ export function resolveFinalResult(result): [status: UIElementStatus, statusProp
         case 'Refused':
             return ['error'];
         default:
+            return ['error'];
     }
 }

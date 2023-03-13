@@ -12,7 +12,7 @@ class BaseElement<P extends BaseElementProps> {
     public _node;
     public _component;
     public eventEmitter = new EventEmitter();
-    protected readonly _parentInstance: Core;
+    protected readonly _parentInstance?: Core;
 
     protected constructor(props: P) {
         this.props = this.formatProps({ ...this.constructor['defaultProps'], ...props });
@@ -48,7 +48,7 @@ class BaseElement<P extends BaseElementProps> {
     get data(): any {
         return {
             ...this.formatData(),
-            clientStateDataIndicator: true
+            clientStateDataIndicator: true,
         };
     }
 
@@ -77,7 +77,7 @@ class BaseElement<P extends BaseElementProps> {
                 this.props.modules.analytics.send({
                     containerWidth: this._node && this._node.offsetWidth,
                     component: this.constructor['analyticsType'] ?? this.constructor['type'],
-                    flavor: 'components'
+                    flavor: 'components',
                 });
             }
         }
@@ -127,7 +127,7 @@ class BaseElement<P extends BaseElementProps> {
 
         const newComponent = component || this.render();
 
-        render(newComponent, this._node, null);
+        render(newComponent, this._node, undefined);
 
         return this;
     }

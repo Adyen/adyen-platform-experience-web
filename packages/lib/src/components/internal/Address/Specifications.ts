@@ -5,7 +5,15 @@ import { AddressField } from '../../../types';
 const SCHEMA_MAX_DEPTH = 2;
 
 class Specifications {
-    private specifications: AddressSpecifications;
+    private specifications: AddressSpecifications & {
+        default: {
+            hasDataset: boolean;
+            labels: StringObject;
+            optionalFields?: AddressField[];
+            placeholders: StringObject;
+            schema: AddressSchema;
+        };
+    };
 
     constructor(specifications?) {
         this.specifications = { ...ADDRESS_SPECIFICATIONS, ...specifications };
@@ -72,7 +80,7 @@ class Specifications {
      * @param country - The selected country
      */
     getPlaceholderKeyForField(fieldName: string, country: string): string {
-        return this.specifications?.[country]?.placeholders?.[fieldName] || this.specifications?.default?.placeholders?.[fieldName];
+        return this.specifications?.[country]?.placeholders?.[fieldName] || this.specifications?.default?.placeholders[fieldName] || '';
     }
 
     /**

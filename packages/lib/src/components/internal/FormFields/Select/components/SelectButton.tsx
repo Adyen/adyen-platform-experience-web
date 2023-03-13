@@ -21,13 +21,13 @@ function SelectButton(props: SelectButtonProps) {
             aria-haspopup="listbox"
             className={cx({
                 'adyen-fp-dropdown__button': true,
-                [styles['adyen-fp-dropdown__button']]: true,
+                [styles['adyen-fp-dropdown__button'] ?? 'adyen-fp-dropdown__button']: true,
                 'adyen-fp-dropdown__button--readonly': readonly,
                 'adyen-fp-dropdown__button--active': showList,
-                [styles['adyen-fp-dropdown__button--active']]: showList,
+                [styles['adyen-fp-dropdown__button--active'] ?? 'adyen-fp-dropdown__button--active']: showList,
                 'adyen-fp-dropdown__button--invalid': props.isInvalid,
                 'adyen-fp-dropdown__button--valid': props.isValid,
-                'adyen-fp-dropdown__button-icon--left': isIconOnLeftSide
+                'adyen-fp-dropdown__button-icon--left': isIconOnLeftSide,
             })}
             filterable={props.filterable}
             onClick={!readonly ? props.toggleList : null}

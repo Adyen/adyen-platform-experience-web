@@ -14,13 +14,13 @@ import { getMaxLengthByFieldAndCountry } from '../../../utils/validator-utils';
 export default function Address(props: AddressProps) {
     const { label = '', requiredFields, visibility, iOSFocusedField = null } = props;
     const specifications = useMemo(() => new Specifications(props.specifications), [props.specifications]);
-    const requiredFieldsSchema = specifications.getAddressSchemaForCountryFlat(props.countryCode).filter(field => requiredFields.includes(field));
+    const requiredFieldsSchema = specifications.getAddressSchemaForCountryFlat(props.countryCode).filter(field => requiredFields?.includes(field));
 
     const { data, errors, valid, isValid, handleChangeFor, triggerValidation } = useForm<AddressData>({
         schema: requiredFieldsSchema,
         defaultData: props.data,
         rules: props.validationRules || getAddressValidationRules(specifications),
-        formatters: addressFormatters
+        formatters: addressFormatters,
     });
 
     /**
@@ -35,10 +35,10 @@ export default function Address(props: AddressProps) {
      * - Applies validation on postalCode field in case it has any value
      */
     useEffect((): void => {
-        const stateOrProvince = specifications.countryHasDataset(data.country) ? '' : FALLBACK_VALUE;
+        const stateOrProvince = data.country && specifications.countryHasDataset(data.country) ? '' : FALLBACK_VALUE;
         const newData = { ...data, stateOrProvince };
 
-        requiredFields.forEach(fieldName => {
+        requiredFields?.forEach(fieldName => {
             handleChangeFor(fieldName, 'input')(newData[fieldName] ?? '');
         });
 
@@ -52,7 +52,7 @@ export default function Address(props: AddressProps) {
      * property is provided during the creation of the payment method
      */
     useEffect((): void => {
-        const stateFieldIsRequired = requiredFields.includes('stateOrProvince');
+        const stateFieldIsRequired = requiredFields?.includes('stateOrProvince');
         const countryHasStatesDataset = data.country && specifications.countryHasDataset(data.country);
         const addressShouldHaveState = stateFieldIsRequired && countryHasStatesDataset;
         const stateOrProvince = data.stateOrProvince || (addressShouldHaveState ? '' : FALLBACK_VALUE);
@@ -64,9 +64,9 @@ export default function Address(props: AddressProps) {
         const optionalFields = specifications.getOptionalFieldsForCountry(data.country);
         const processedData = ADDRESS_SCHEMA.reduce((acc, cur) => {
             const isOptional = optionalFields.includes(cur);
-            const isRequired = requiredFields.includes(cur);
+            const isRequired = requiredFields?.includes(cur);
             const newValue = data[cur];
-            const initialValue = props.data[cur];
+            const initialValue = props.data?.[cur];
             // recover default data values which are not requiredFields, or prefill with 'N/A'
             const fallbackValue = !isRequired && !newValue && !!initialValue ? initialValue : FALLBACK_VALUE;
             const value = (isOptional && !newValue) || !isRequired ? fallbackValue : newValue;
@@ -82,13 +82,13 @@ export default function Address(props: AddressProps) {
     if (visibility === 'hidden') return null;
     if (visibility === 'readOnly') return <ReadOnlyAddress data={data} label={label} />;
 
-    const getComponent = (fieldName: string, { classNameModifiers = [] }) => {
-        if (!requiredFields.includes(fieldName)) return null;
+    const getComponent = (fieldName: string, { classNameModifiers = [] }: { classNameModifiers?: string[] }) => {
+        if (!requiredFields?.includes(fieldName)) return null;
 
         return (
             <FieldContainer
                 key={fieldName}
-                allowedCountries={props.allowedCountries}
+                allowedCountries={props.allowedCountries ?? []}
                 classNameModifiers={[...classNameModifiers, fieldName]}
                 data={data}
                 errors={errors}
@@ -98,7 +98,7 @@ export default function Address(props: AddressProps) {
                 onBlur={handleChangeFor(fieldName, 'blur')}
                 onDropdownChange={handleChangeFor(fieldName, 'blur')}
                 specifications={specifications}
-                maxlength={getMaxLengthByFieldAndCountry(countrySpecificFormatters, fieldName, data.country, true)}
+                maxlength={getMaxLengthByFieldAndCountry(countrySpecificFormatters, fieldName, data.country, true) ?? undefined}
                 trimOnBlur={true}
                 disabled={!enabledFields.includes(fieldName)}
             />
@@ -106,9 +106,7 @@ export default function Address(props: AddressProps) {
     };
 
     const getWrapper = group => (
-        <div className="adyen-fp-field-group">
-            {group.map(([field, size]) => getComponent(field, { classNameModifiers: [`col-${size}`] }))}
-        </div>
+        <div className="adyen-fp-field-group">{group.map(([field, size]) => getComponent(field, { classNameModifiers: [`col-${size}`] }))}</div>
     );
 
     const addressSchema = specifications.getAddressSchemaForCountry(data.country);
@@ -126,5 +124,5 @@ Address.defaultProps = {
     onChange: () => {},
     visibility: 'editable',
     requiredFields: ADDRESS_SCHEMA,
-    specifications: {}
+    specifications: {},
 };

@@ -26,9 +26,11 @@ export default function Img(props: ImgProps) {
 
     useEffect(() => {
         const image = backgroundUrl ? new Image() : imageRef.current;
-        image.src = backgroundUrl || src;
-        image.onload = handleLoad;
-        setLoaded(!!image.complete);
+        if (image) {
+            image.src = backgroundUrl || src;
+            image.onload = handleLoad;
+        }
+        setLoaded(!!image?.complete);
     }, []);
 
     if (backgroundUrl) {

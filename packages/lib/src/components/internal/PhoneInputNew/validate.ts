@@ -13,19 +13,19 @@ export const phoneValidationRules: ValidatorRules = {
             // TODO improve this switching mechanism *if* we get any more country based regexs
             const testRegex = context.state.data.phonePrefix === '+351' ? portugueseRegex : defaultRegex;
 
-            return isEmpty(value) ? null : testRegex.test(value);
+            return isEmpty(value) ? false : testRegex.test(value);
         },
-        errorMessage: 'invalidPhoneNumber'
+        errorMessage: 'invalidPhoneNumber',
     },
     phonePrefix: {
         modes: ['blur'],
         validate: phonePrefix => !!phonePrefix,
-        errorMessage: 'invalidCountryCode'
-    }
+        errorMessage: 'invalidCountryCode',
+    },
 };
 
 export const phoneFormatters: FormatRules = {
     phoneNumber: {
-        formatter: val => val.replace(getFormattingRegEx('^\\d', 'g'), '')
-    }
+        formatter: val => val.replace(getFormattingRegEx('^\\d', 'g'), ''),
+    },
 };

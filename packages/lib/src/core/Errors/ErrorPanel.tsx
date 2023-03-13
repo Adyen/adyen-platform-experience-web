@@ -14,13 +14,7 @@ export interface ErrorPanelProps {
     showPanel?: boolean;
 }
 
-export function ErrorPanel({
-    id = 'ariaConsolidatedErrorField',
-    heading = 'Errors:',
-    errors,
-    callbackFn = null,
-    showPanel = false
-}: ErrorPanelProps) {
+export function ErrorPanel({ id = 'ariaConsolidatedErrorField', heading = 'Errors:', errors, callbackFn, showPanel = false }: ErrorPanelProps) {
     if (!errors) return null;
 
     const { errorMessages } = errors;

@@ -10,7 +10,7 @@ export default function CountryField(props: CountryFieldProps) {
     const {
         i18n,
         loadingContext,
-        commonProps: { isCollatingErrors }
+        commonProps: { isCollatingErrors },
     } = useCoreContext();
     const [countries, setCountries] = useState<CountryFieldItem[]>([]);
     const [loaded, setLoaded] = useState<boolean>(false);
@@ -51,7 +51,7 @@ export default function CountryField(props: CountryFieldProps) {
                 selected: value,
                 items: countries,
                 readonly: readOnly && !!value,
-                isCollatingErrors
+                isCollatingErrors,
             })}
         </Field>
     );

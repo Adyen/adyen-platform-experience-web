@@ -25,7 +25,7 @@ const collectId = ({ loadingContext, clientKey, experiments }: CollectIdProps) =
     const options = {
         errorLevel: 'silent' as const,
         loadingContext: loadingContext,
-        path: `v2/analytics/id?clientKey=${clientKey}`
+        path: `v2/analytics/id?clientKey=${clientKey}`,
     };
 
     return (): Promise<string> => {
@@ -35,7 +35,7 @@ const collectId = ({ loadingContext, clientKey, experiments }: CollectIdProps) =
         const storage = new Storage<CheckoutAttemptIdSession>('checkout-attempt-id', window.sessionStorage);
         const checkoutAttemptIdSession = storage.get();
 
-        if (confirmSessionDurationIsMaxFifteenMinutes(checkoutAttemptIdSession)) {
+        if (checkoutAttemptIdSession && confirmSessionDurationIsMaxFifteenMinutes(checkoutAttemptIdSession)) {
             return Promise.resolve(checkoutAttemptIdSession.id);
         }
 

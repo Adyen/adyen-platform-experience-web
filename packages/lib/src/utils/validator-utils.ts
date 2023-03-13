@@ -35,7 +35,7 @@ export const CHARACTER_PATTERNS: { [key: string]: RegExp } = {
     digitsHyphen: /^[\d-]+$/,
     noHtml: /^[^<>&]+$/,
     alphaNum: /^\d[a-zA-Z0-9]{6,11}$/,
-    noSpecialChars: getValidatingRegEx(SPECIAL_CHARS, true)
+    noSpecialChars: getValidatingRegEx(SPECIAL_CHARS, true),
 };
 
 export const exactLength = (input: string, length: number) => {
@@ -48,7 +48,7 @@ export const exactLength = (input: string, length: number) => {
 export const validateForSpecialChars = name => {
     const hasNoLength = !name.length;
     // RegEx .test, if run against empty string, will return false
-    return CHARACTER_PATTERNS.noSpecialChars.test(name) || hasNoLength;
+    return CHARACTER_PATTERNS.noSpecialChars?.test(name) || hasNoLength;
 };
 
 // Trim start and never allow more than 1 space on the end
