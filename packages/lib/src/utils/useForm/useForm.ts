@@ -23,7 +23,7 @@ function useForm<FormSchema>(props: FormProps): Form<FormSchema> {
         { defaultData, schema: schema ?? [], processField, fieldProblems },
         init
     );
-    const isValid = useMemo(() => state.schema?.reduce((acc, val) => acc && state.valid[val], true), [state.schema, state.valid]);
+    const isValid = useMemo(() => state.schema?.reduce((acc, val) => (acc && state.valid[val]) ?? false, true), [state.schema, state.valid]);
 
     const getTargetValue = (key, e) => {
         if (!e.target) return e;

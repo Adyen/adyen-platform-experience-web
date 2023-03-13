@@ -146,7 +146,7 @@ function Select({
      * Updates the state with the current text filter value
      * @param e - KeyboardEvent
      */
-    const handleTextFilter = (e: KeyboardEvent) => {
+    const handleTextFilter = (e: Event) => {
         const value: string = (e.target as HTMLInputElement).value;
         setTextFilter(value.toLowerCase());
     };
