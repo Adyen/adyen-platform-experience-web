@@ -5,7 +5,6 @@ import DataGrid from '../../internal/DataGrid';
 import Pagination from '../../internal/Pagination';
 import { getLabel } from './utils';
 import Button from 'src/components/internal/Button';
-import DataGridCell from 'src/components/internal/DataGrid/DataGridCell';
 import './Transactions.scss';
 
 function TransactionList(props) {
@@ -29,7 +28,7 @@ function TransactionList(props) {
                     )
                 ),
                 balanceAccountId: (key, item) => (
-                    !props.onBalanceAccountSelected ? (
+                    !!props.onBalanceAccountSelected ? (
                         <Button variant={'link'} onClick={() => props.onBalanceAccountSelected({ id: item[key] })}>
                             {item[key]}
                         </Button>
@@ -38,7 +37,7 @@ function TransactionList(props) {
                     )
                 ),
                 accountHolderId: (key, item) => (
-                    !props.onAccountSelected ? (
+                    !!props.onAccountSelected ? (
                         <Button variant={'link'} onClick={() => props.onAccountSelected({ id: item[key] })}>
                             {item[key]}
                         </Button>
