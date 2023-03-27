@@ -19,7 +19,7 @@ export default function CountryField(props: CountryFieldProps) {
     useLayoutEffect(() => {
         getDataset('countries', loadingContext, i18n.locale)
             .then(response => {
-                const countriesFilter = country => allowedCountries.includes(country.id);
+                const countriesFilter = (country: CountryFieldItem) => allowedCountries.includes(country.id);
                 const newCountries = allowedCountries.length ? response.filter(countriesFilter) : response;
                 setCountries(newCountries || []);
                 setReadOnly(newCountries.length === 1 || readOnly);

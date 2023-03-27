@@ -31,7 +31,7 @@ export type FormState<FormSchema extends Record<string, unknown>> = {
 };
 
 export type FormProps<FormSchema extends Record<string, unknown>, Props = {}> = {
-    rules?: ValidatorRules;
+    rules?: ValidatorRules<FormSchema>;
     formatters?: any;
     defaultData?: Partial<FormSchema>;
     fieldProblems?: any;

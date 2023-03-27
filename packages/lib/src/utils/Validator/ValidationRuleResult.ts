@@ -1,17 +1,18 @@
-import { ErrorMessageObject } from './types';
+import { ErrorMessageObject, ValidationContext, ValidatorMode, ValidatorRule } from './types';
+import { ValueOf } from '../types';
 
 /**
  * Holds the result of a validation
  */
-export class ValidationRuleResult {
+export class ValidationRuleResult<FormSchema extends Record<string, any>> {
     private readonly shouldValidate: boolean;
     public isValid: boolean;
     public errorMessage: string | ErrorMessageObject;
 
-    constructor(rule, value, mode, context) {
-        this.shouldValidate = rule.modes.includes(mode);
+    constructor(rule: ValidatorRule<FormSchema>, value: ValueOf<FormSchema>, mode?: ValidatorMode, context?: ValidationContext<FormSchema>) {
+        this.shouldValidate = mode ? rule.modes.includes(mode) : false;
         this.isValid = rule.validate(value, context);
-        this.errorMessage = rule.errorMessage;
+        this.errorMessage = rule.errorMessage ?? '';
     }
 
     /**

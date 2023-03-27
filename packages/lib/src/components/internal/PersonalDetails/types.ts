@@ -3,7 +3,7 @@ import { ValidatorRules } from '../../../utils/Validator/types';
 
 type PersonalDetailsPlaceholders = Omit<PersonalDetailsSchema, 'gender'>;
 
-export interface PersonalDetailsProps<FormSchema> {
+export interface PersonalDetailsProps<FormSchema extends Record<string, any>> {
     label?: string;
     namePrefix?: string;
     requiredFields: Extract<keyof FormSchema, string>[];
@@ -13,7 +13,7 @@ export interface PersonalDetailsProps<FormSchema> {
     placeholders?: PersonalDetailsPlaceholders;
     readonly?: boolean;
     ref?: any;
-    validationRules?: ValidatorRules;
+    validationRules?: ValidatorRules<FormSchema>;
 }
 
 export interface PersonalDetailsStateError {

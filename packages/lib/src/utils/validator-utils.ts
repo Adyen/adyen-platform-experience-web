@@ -17,7 +17,7 @@ export const getMaxLengthByFieldAndCountry = (
 };
 
 // Not null or undefined or only spaces
-export const isEmpty = (input: string) => !!(input == null || /^[\s]*$/.test(input));
+export const isEmpty = (input?: string) => !!(input == null || /^[\s]*$/.test(input));
 
 export const isString = (input: string) => typeof input === 'string';
 export const hasText = (input: string) => isString(input) && !isEmpty(input);

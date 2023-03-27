@@ -18,7 +18,7 @@ export function PhoneInput(props: PhoneInputComponentProps) {
             phoneNumber: {
                 modes: ['blur'],
                 errorMessage: 'error.va.gen.01',
-                validate: phone => phone?.length > 6,
+                validate: (phone: PhoneInputSchema['phoneNumber']) => !!phone && phone.length > 6,
             },
         },
     });

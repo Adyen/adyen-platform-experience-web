@@ -3,7 +3,7 @@ import Fieldset from '../FormFields/Fieldset';
 import ReadOnlyAddress from './components/ReadOnlyAddress';
 import { getAddressValidationRules } from './validate';
 import { addressFormatters, countrySpecificFormatters } from './validate.formats';
-import { AddressProps } from './types';
+import { AddressFieldsGroup, AddressProps } from './types';
 import { AddressData } from '../../../types';
 import FieldContainer from './components/FieldContainer';
 import useForm from '../../../utils/useForm';
@@ -11,12 +11,12 @@ import Specifications from './Specifications';
 import { ADDRESS_SCHEMA, FALLBACK_VALUE } from './constants';
 import { getMaxLengthByFieldAndCountry } from '../../../utils/validator-utils';
 
-export default function Address(props: AddressProps) {
+export default function Address(props: AddressProps<AddressData>) {
     const { label = '', requiredFields, visibility, iOSFocusedField = null } = props;
     const specifications = useMemo(() => new Specifications(props.specifications), [props.specifications]);
     const requiredFieldsSchema = specifications.getAddressSchemaForCountryFlat(props.countryCode).filter(field => requiredFields?.includes(field));
 
-    const { data, errors, valid, isValid, handleChangeFor, triggerValidation } = useForm<AddressData, AddressProps>({
+    const { data, errors, valid, isValid, handleChangeFor, triggerValidation } = useForm<AddressData, AddressProps<AddressData>>({
         schema: requiredFieldsSchema,
         defaultData: props.data,
         rules: props.validationRules || getAddressValidationRules(specifications),
@@ -72,9 +72,9 @@ export default function Address(props: AddressProps) {
             const value = (isOptional && !newValue) || !isRequired ? fallbackValue : newValue;
             if (value?.length) acc[cur] = value;
             return acc;
-        }, {});
+        }, {} as AddressData);
 
-        props.onChange({ data: processedData, valid, errors, isValid });
+        props.onChange?.({ data: processedData, valid, errors, isValid });
     }, [props.data, data, valid, errors, isValid]);
 
     this.showValidation = triggerValidation;
@@ -82,7 +82,7 @@ export default function Address(props: AddressProps) {
     if (visibility === 'hidden') return null;
     if (visibility === 'readOnly') return <ReadOnlyAddress data={data} label={label} />;
 
-    const getComponent = (fieldName: string, { classNameModifiers = [] }: { classNameModifiers?: string[] }) => {
+    const getComponent = (fieldName: keyof AddressData, { classNameModifiers = [] }: { classNameModifiers?: string[] }) => {
         if (!requiredFields?.includes(fieldName)) return null;
 
         return (
@@ -105,7 +105,7 @@ export default function Address(props: AddressProps) {
         );
     };
 
-    const getWrapper = group => (
+    const getWrapper = (group: AddressFieldsGroup) => (
         <div className="adyen-fp-field-group">{group.map(([field, size]) => getComponent(field, { classNameModifiers: [`col-${size}`] }))}</div>
     );
 

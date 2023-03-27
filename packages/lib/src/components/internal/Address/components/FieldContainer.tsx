@@ -6,7 +6,11 @@ import { AddressState, FieldContainerProps } from '../types';
 import useCoreContext from '../../../../core/Context/useCoreContext';
 import Language from '../../../../language/Language';
 
-function getErrorMessage(errors: AddressState, fieldName: string, i18n: Language): string | boolean {
+function getErrorMessage<FormSchema extends Record<string, any>>(
+    errors: AddressState<FormSchema>,
+    fieldName: string,
+    i18n: Language
+): string | boolean {
     if (typeof errors[fieldName]?.errorMessage === 'object') {
         const { translationKey, translationObject } = errors[fieldName].errorMessage;
         return i18n.get(translationKey, translationObject);
@@ -20,7 +24,7 @@ function getErrorMessage(errors: AddressState, fieldName: string, i18n: Language
  * NOT TO BE USED: if you just want to add a Country or State dropdown outside of an Address component
  * - then you should implement <CountryField> or <StateField> directly
  */
-function FieldContainer(props: FieldContainerProps) {
+function FieldContainer<FormSchema extends Record<string, any>>(props: FieldContainerProps<FormSchema>) {
     const {
         i18n,
         commonProps: { isCollatingErrors },
@@ -33,7 +37,7 @@ function FieldContainer(props: FieldContainerProps) {
     const labelKey: string = selectedCountry ? props.specifications.getKeyForField(fieldName, selectedCountry) : '';
     const optionalLabel = isOptional ? ` ${i18n.get('field.title.optional')}` : '';
     const label = `${i18n.get(labelKey)}${optionalLabel}`;
-    const errorMessage = getErrorMessage(errors, fieldName, i18n);
+    const errorMessage = getErrorMessage<FormSchema>(errors, fieldName, i18n);
 
     switch (fieldName) {
         case 'country':

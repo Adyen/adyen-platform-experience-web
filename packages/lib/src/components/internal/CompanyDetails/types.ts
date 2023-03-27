@@ -16,7 +16,7 @@ export interface CompanyDetailsProps<FormSchema extends Record<string, any>> {
     onChange: (newState: object) => void;
     readonly?: boolean;
     ref?: any;
-    validationRules?: ValidatorRules;
+    validationRules?: ValidatorRules<FormSchema>;
 }
 
 export interface ReadOnlyCompanyDetailsProps {

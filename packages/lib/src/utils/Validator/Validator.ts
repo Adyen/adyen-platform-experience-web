@@ -1,10 +1,10 @@
-import { ValidatorRules, ValidatorRule, FieldContext, FieldData } from './types';
+import { ValidatorRules, ValidatorRule, FieldData, ValidationContext } from './types';
 import { ValidationRuleResult } from './ValidationRuleResult';
 
-class ValidationResult {
-    private validationResults: ValidationRuleResult[];
+class ValidationResult<FormSchema extends Record<string, any>> {
+    private validationResults: ValidationRuleResult<FormSchema>[];
 
-    constructor(results: ValidationRuleResult[]) {
+    constructor(results: ValidationRuleResult<FormSchema>[]) {
         this.validationResults = results;
     }
 
@@ -29,19 +29,19 @@ class ValidationResult {
     }
 }
 
-class Validator {
-    public rules: ValidatorRules & { default: ValidatorRule } = {
+class Validator<FormSchema extends Record<string, any>> {
+    public rules: ValidatorRules<FormSchema> & { default: ValidatorRule<FormSchema> } = {
         default: {
             validate: () => true,
             modes: ['blur', 'input'],
         },
     };
 
-    constructor(rules) {
+    constructor(rules: ValidatorRules<FormSchema>) {
         this.setRules(rules);
     }
 
-    setRules(newRules) {
+    setRules(newRules: ValidatorRules<FormSchema>) {
         this.rules = {
             ...this.rules,
             ...newRules,
@@ -51,8 +51,8 @@ class Validator {
     /**
      * Get all validation rules for a field
      */
-    private getRulesFor(field: string): ValidatorRule[] {
-        let fieldRules: ValidatorRule | ValidatorRule[] = this.rules[field] ?? this.rules['default'];
+    private getRulesFor(field: string): ValidatorRule<FormSchema>[] {
+        let fieldRules: ValidatorRule<FormSchema> | ValidatorRule<FormSchema>[] = this.rules[field] ?? this.rules['default'];
 
         if (!Array.isArray(fieldRules)) {
             fieldRules = [fieldRules];
@@ -64,7 +64,8 @@ class Validator {
     /**
      * Validates a field
      */
-    validate({ key, value, mode = 'blur' }: FieldData, context?: FieldContext) {
+
+    validate({ key, value, mode = 'blur' }: FieldData<FormSchema>, context?: ValidationContext<FormSchema>) {
         const fieldRules = this.getRulesFor(key);
         const validationRulesResult = fieldRules.map(rule => new ValidationRuleResult(rule, value, mode, context));
 

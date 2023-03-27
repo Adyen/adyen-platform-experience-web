@@ -1,4 +1,6 @@
 import { ValidationRuleResult } from './ValidationRuleResult';
+import { ValueOf } from '../types';
+import { SchemaKeys } from '../useForm/types';
 
 export type ValidatorMode = 'blur' | 'input';
 
@@ -15,31 +17,33 @@ export type CountryRuleset = {
     [country: string]: Ruleset;
 };
 
-type FormatterFn = (value, context?) => string;
+type FormatterFn<FormSchema extends Record<string, any>> = (value: any, context?: ValidationContext<FormSchema>) => string;
 
-export interface Format {
-    formatter?: FormatterFn;
+export interface Format<FormSchema extends Record<string, any> = {}> {
+    formatter?: FormatterFn<FormSchema>;
     format?: string;
     maxlength?: number;
 }
 
-export type FormatRules = { [field: string]: Format };
+export type FormatRules<FormSchema extends Record<string, any>> = { [field: string]: Format<FormSchema> };
 
-export type CountryFormatRules = { [country: string]: FormatRules };
+export type CountryFormatRules<FormSchema extends Record<string, any> = {}> = { [country: string]: FormatRules<FormSchema> };
 
-export interface ValidatorRule {
-    validate: (value, context?) => boolean;
+export type ValidationContext<FormSchema> = { state: { data: Partial<FormSchema> } };
+
+export interface ValidatorRule<FormSchema extends Record<string, any>> {
+    validate: (value: ValueOf<FormSchema>, context?: ValidationContext<FormSchema>) => boolean;
     errorMessage?: string | ErrorMessageObject;
     modes: ValidatorMode[];
 }
 
-export type ValidatorRules = { [field: string]: ValidatorRule | ValidatorRule[] };
+export type ValidatorRules<FormSchema extends Record<string, any>> = { [field: string]: ValidatorRule<FormSchema> | ValidatorRule<FormSchema>[] };
 
-export type CountryBasedValidatorRules = { [country: string]: ValidatorRules };
+export type CountryBasedValidatorRules<FormSchema extends Record<string, any>> = { [country: string]: ValidatorRules<FormSchema> };
 
-export interface FieldData {
-    key: string;
-    value: string;
+export interface FieldData<FormSchema extends Record<string, any>> {
+    key: SchemaKeys<FormSchema>;
+    value: ValueOf<FormSchema>;
     mode?: ValidatorMode;
 }
 
@@ -49,4 +53,4 @@ export interface FieldContext {
     };
 }
 
-export type ValidationRuleResults = { [key: string]: ValidationRuleResult };
+export type ValidationRuleResults<FormSchema extends Record<string, any>> = { [key: string]: ValidationRuleResult<FormSchema> };

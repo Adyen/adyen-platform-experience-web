@@ -28,7 +28,7 @@ export type FieldProcessor<Schema extends Record<string, any>> = (
         mode: ValidatorMode;
     },
     state: { state: { data: Partial<Schema> } }
-) => [string, { isValid: boolean; hasError(arg?: boolean): boolean; getError(arg?: boolean): ValidationRuleResult | undefined }];
+) => [string, { isValid: boolean; hasError(arg?: boolean): boolean; getError(arg?: boolean): ValidationRuleResult<Schema> | undefined }];
 export interface DefaultState<Schema extends Record<string, any>> {
     schema: SchemaKeys<Schema>[];
     defaultData: Partial<Schema>;
