@@ -1,13 +1,14 @@
 import { DataSet, DataSetItem } from '../../../core/Services/data-set';
+import { SchemaKeys } from '../../../utils/useForm/types';
 
-export interface PhoneInputSchema {
+export type PhoneInputSchema = {
     phoneNumber?: string;
     phonePrefix?: string;
-}
+};
 
-export interface PhoneInputProps {
+export interface PhoneInputProps<FormSchema extends Record<string, any>> {
     items: DataSet;
-    requiredFields?: string[];
+    requiredFields?: SchemaKeys<FormSchema>[];
     data: {
         phonePrefix?: string;
         phoneNumber?: string;

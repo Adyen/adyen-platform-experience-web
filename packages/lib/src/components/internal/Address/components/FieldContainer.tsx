@@ -2,11 +2,11 @@ import Field from '../../FormFields/Field';
 import StateField from './StateField';
 import CountryField from './CountryField';
 import { renderFormField } from '../../FormFields';
-import { AddressStateError, FieldContainerProps } from '../types';
+import { AddressState, FieldContainerProps } from '../types';
 import useCoreContext from '../../../../core/Context/useCoreContext';
 import Language from '../../../../language/Language';
 
-function getErrorMessage(errors: AddressStateError, fieldName: string, i18n: Language): string | boolean {
+function getErrorMessage(errors: AddressState, fieldName: string, i18n: Language): string | boolean {
     if (typeof errors[fieldName]?.errorMessage === 'object') {
         const { translationKey, translationObject } = errors[fieldName].errorMessage;
         return i18n.get(translationKey, translationObject);

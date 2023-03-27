@@ -16,7 +16,7 @@ export default function Address(props: AddressProps) {
     const specifications = useMemo(() => new Specifications(props.specifications), [props.specifications]);
     const requiredFieldsSchema = specifications.getAddressSchemaForCountryFlat(props.countryCode).filter(field => requiredFields?.includes(field));
 
-    const { data, errors, valid, isValid, handleChangeFor, triggerValidation } = useForm<AddressData>({
+    const { data, errors, valid, isValid, handleChangeFor, triggerValidation } = useForm<AddressData, AddressProps>({
         schema: requiredFieldsSchema,
         defaultData: props.data,
         rules: props.validationRules || getAddressValidationRules(specifications),

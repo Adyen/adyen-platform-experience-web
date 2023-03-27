@@ -1,6 +1,6 @@
 import { ValidationRuleResult } from './ValidationRuleResult';
 
-type ValidatorMode = 'blur' | 'input';
+export type ValidatorMode = 'blur' | 'input';
 
 export type ErrorMessageObject = {
     translationKey: string;

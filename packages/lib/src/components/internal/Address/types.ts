@@ -11,7 +11,7 @@ export type StringObject = {
 export interface AddressProps {
     allowedCountries?: string[];
     countryCode: string;
-    data?: object;
+    data?: AddressData;
     label?: string;
     onChange: (newState) => void;
     requiredFields?: string[];
@@ -23,7 +23,7 @@ export interface AddressProps {
     iOSFocusedField?: string;
 }
 
-export interface AddressStateError {
+export interface AddressState {
     street?: ValidationRuleResult;
     houseNumberOrName?: ValidationRuleResult;
     postalCode?: ValidationRuleResult;
@@ -36,7 +36,7 @@ export interface FieldContainerProps {
     allowedCountries: string[];
     classNameModifiers: string[];
     data: AddressData;
-    errors: AddressStateError;
+    errors: AddressState;
     fieldName: string;
     key: string;
     valid?: object;

@@ -4,7 +4,7 @@ export interface PhoneInputComponentProps {
     onChange: (state) => void;
     onValid: () => void;
     payButton: () => void;
-
+    phoneLabel?: string;
     selected: string;
     items: [];
     minLength: number;

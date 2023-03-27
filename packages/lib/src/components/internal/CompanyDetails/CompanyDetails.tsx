@@ -8,14 +8,18 @@ import useCoreContext from '../../../core/Context/useCoreContext';
 import { getFormattedData } from './utils';
 import { CompanyDetailsSchema, CompanyDetailsProps } from './types';
 import useForm from '../../../utils/useForm';
+import { SchemaKeys } from '../../../utils/useForm/types';
 
-const companyDetailsSchema = ['name', 'registrationNumber'];
+const companyDetailsSchema: SchemaKeys<CompanyDetailsSchema>[] = ['name', 'registrationNumber'];
 
-export default function CompanyDetails(props: CompanyDetailsProps) {
+export default function CompanyDetails(props: CompanyDetailsProps<CompanyDetailsSchema>) {
     const { label = '', namePrefix, requiredFields, visibility } = props;
     const { i18n } = useCoreContext();
-    const { handleChangeFor, triggerValidation, data, valid, errors, isValid } = useForm<CompanyDetailsSchema>({
-        schema: requiredFields,
+    const { handleChangeFor, triggerValidation, data, valid, errors, isValid } = useForm<
+        CompanyDetailsSchema,
+        CompanyDetailsProps<CompanyDetailsSchema>
+    >({
+        schema: requiredFields ?? companyDetailsSchema,
         rules: props.validationRules,
         defaultData: props.data,
     });
