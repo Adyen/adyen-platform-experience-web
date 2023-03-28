@@ -1,29 +1,30 @@
-import CURRENCY_CODES from './constants/currency-codes';
-import CURRENCY_DECIMALS from './constants/currency-decimals';
+import CURRENCY_CODES, { CurrencyCode } from './constants/currency-codes';
+import CURRENCY_DECIMALS, { CurrencyDecimalCode } from './constants/currency-decimals';
 
 /**
  * @internal
  * @param currencyCode -
  * Get divider amount
  */
-export const getDivider = (currencyCode: string): number => CURRENCY_DECIMALS[currencyCode] || 100;
+export const getDivider = (currencyCode: CurrencyDecimalCode): number => CURRENCY_DECIMALS[currencyCode] || 100;
 
 /**
  * @internal
  * @param currencyCode -
  * Returns whether a CURRENCY CODE is valid
  */
-export const isValidCurrencyCode = (currencyCode: string): boolean => !!CURRENCY_CODES[currencyCode];
+export const isValidCurrencyCode = (currencyCode: CurrencyCode): boolean => !!CURRENCY_CODES[currencyCode];
 
 /**
  * @internal
  */
-export const getCurrencyCode = (currencyCode: string): string => (isValidCurrencyCode(currencyCode) ? CURRENCY_CODES[currencyCode] : false);
+export const getCurrencyCode = (currencyCode: CurrencyCode): string | null =>
+    isValidCurrencyCode(currencyCode) ? CURRENCY_CODES[currencyCode] : null;
 
 /**
  * @internal
  */
-export const getDecimalAmount = (amount: number | string, currencyCode: string): number => {
+export const getDecimalAmount = (amount: number | string, currencyCode: CurrencyDecimalCode): number => {
     const divider = getDivider(currencyCode);
     return parseInt(String(amount), 10) / divider;
 };
@@ -31,7 +32,7 @@ export const getDecimalAmount = (amount: number | string, currencyCode: string):
 /**
  * @internal
  */
-export const getLocalisedAmount = (amount: number, locale: string, currencyCode: string, options = {}): string => {
+export const getLocalisedAmount = (amount: number, locale: string, currencyCode: CurrencyDecimalCode, options = {}): string => {
     const stringAmount = amount.toString(); // Changing amount to string to avoid 0-value from returning false
 
     const decimalAmount = getDecimalAmount(stringAmount, currencyCode);

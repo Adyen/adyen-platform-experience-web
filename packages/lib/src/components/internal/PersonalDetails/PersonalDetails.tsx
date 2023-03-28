@@ -12,6 +12,7 @@ import { getFormattedData } from './utils';
 import useForm from '../../../utils/useForm';
 import './PersonalDetails.scss';
 import { SchemaKeys } from '../../../utils/useForm/types';
+import { ValidatorMode } from '../../../utils/Validator/types';
 
 const personalDetailsRequiredFields: SchemaKeys<PersonalDetailsSchema>[] = [
     'firstName',
@@ -46,12 +47,12 @@ export default function PersonalDetails(props: PersonalDetailsProps<PersonalDeta
     });
 
     const eventHandler =
-        (mode: string): Function =>
+        (mode: ValidatorMode): Function =>
         (e: Event): void => {
             const { name } = e.target as HTMLInputElement;
             const key = name.split(`${namePrefix}.`).pop();
 
-            if (key) handleChangeFor(key, mode)(e);
+            if (key) handleChangeFor(key as keyof PersonalDetailsSchema, mode)(e);
         };
 
     const generateFieldName = (name: string): string => `${namePrefix ? `${namePrefix}.` : ''}${name}`;

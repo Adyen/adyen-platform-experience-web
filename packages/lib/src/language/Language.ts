@@ -3,6 +3,7 @@ import { defaultTranslation, FALLBACK_LOCALE } from './config';
 import { getLocalisedAmount } from '../utils/amount-util';
 import translations from './translations/index';
 import DateTimeFormatOptions = Intl.DateTimeFormatOptions;
+import { CurrencyDecimalCode } from '../utils/constants/currency-decimals';
 
 export class Language {
     public readonly locale: Locale | string;
@@ -48,7 +49,7 @@ export class Language {
      * @param currencyCode - Currency code of the amount
      * @param options - Options for String.prototype.toLocaleString
      */
-    amount(amount: number, currencyCode: string, options?: object): string {
+    amount(amount: number, currencyCode: CurrencyDecimalCode, options?: object): string {
         const localisedAmount = getLocalisedAmount(amount, this.locale, currencyCode, options);
         if (options && options['showSign'] && amount !== 0) {
             return localisedAmount.includes('-') ? `- ${localisedAmount.replace('-', '')}` : `+ ${localisedAmount}`;

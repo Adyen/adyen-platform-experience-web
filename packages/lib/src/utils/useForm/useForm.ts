@@ -36,7 +36,7 @@ function useForm<FormSchema extends Record<string, any>, Props>(props: FormProps
     };
 
     /** Formats, validates, and stores a new value for a form field */
-    const handleChangeFor = (key: Extract<keyof FormSchema, string>, mode: ValidatorMode) => {
+    const handleChangeFor = (key: Extract<keyof FormSchema, string>, mode?: ValidatorMode) => {
         return (e: Event) => {
             const value = getTargetValue(key, e);
             dispatch({ type: 'updateField', payload: { key, value, mode } });

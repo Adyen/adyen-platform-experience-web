@@ -9,8 +9,8 @@ function StoreDetails({ storeDetails = false, ...props }) {
     const { i18n } = useCoreContext();
     const [value, setValue] = useState(storeDetails);
 
-    const onChange = e => {
-        setValue(e.target.checked);
+    const onChange = (e: InputEvent) => {
+        setValue((e.target as HTMLInputElement)?.checked);
     };
 
     useEffect(() => {
@@ -23,7 +23,7 @@ function StoreDetails({ storeDetails = false, ...props }) {
                 onChange,
                 label: i18n.get('storeDetails'),
                 value,
-                name: 'storeDetails'
+                name: 'storeDetails',
             })}
         </div>
     );
