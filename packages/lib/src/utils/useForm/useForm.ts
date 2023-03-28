@@ -1,15 +1,16 @@
 import { useCallback, useEffect, useMemo, useReducer } from 'preact/hooks';
 import Validator from '../Validator';
-import { getReducer, init } from './reducer';
-import { Form, FormState, FormProps } from './types';
+import { DefaultState, FieldProcessor, getReducer, init } from './reducer';
+import { Form, FormState, FormProps, FieldErrors, ReducerPayloadParams, SchemaKeys, FieldProblems } from './types';
+import { ValidatorMode } from '../Validator/types';
 
-function useForm<FormSchema>(props: FormProps): Form<FormSchema> {
+function useForm<FormSchema extends Record<string, any>, Props>(props: FormProps<FormSchema, Props>): Form<FormSchema> {
     const { rules = {}, formatters = {}, defaultData = {}, fieldProblems = {}, schema = [] } = props;
 
     const validator = useMemo(() => new Validator(rules), [rules]);
 
     /** Formats and validates a field */
-    const processField = ({ key, value, mode }, fieldContext) => {
+    const processField: FieldProcessor<FormSchema> = ({ key, value, mode }, fieldContext) => {
         // Find a formatting function either stored under 'key' or a level deeper under a 'formatter' property
         const formatterFn = formatters?.[key]?.formatter ? formatters[key].formatter : formatters?.[key];
         const formattedValue = formatterFn && typeof formatterFn === 'function' ? formatterFn(value ?? '', fieldContext) : value;
@@ -18,41 +19,56 @@ function useForm<FormSchema>(props: FormProps): Form<FormSchema> {
         return [formattedValue, validationResult];
     };
 
-    const [state, dispatch] = useReducer<FormState<FormSchema>, any, any>(
-        getReducer(processField),
+    const [state, dispatch] = useReducer<FormState<FormSchema>, ReducerPayloadParams<FormSchema>, DefaultState<FormSchema>>(
+        getReducer<FormSchema>(processField),
         { defaultData, schema: schema ?? [], processField, fieldProblems },
         init
     );
     const isValid = useMemo(() => state.schema?.reduce((acc, val) => (acc && state.valid[val]) ?? false, true), [state.schema, state.valid]);
 
-    const getTargetValue = (key, e) => {
-        if (!e.target) return e;
+    const getTargetValue = (key: Extract<keyof FormSchema, string>, e: Event) => {
+        if (!e.target) return null;
 
-        if (e.target.type === 'checkbox') {
+        if ((e.target as HTMLInputElement)?.type === 'checkbox') {
             return !state.data[key];
         }
-        return e.target.value;
+        return (e.target as HTMLInputElement).value;
     };
 
     /** Formats, validates, and stores a new value for a form field */
-    const handleChangeFor = (key, mode) => {
-        return e => {
+    const handleChangeFor = (key: Extract<keyof FormSchema, string>, mode: ValidatorMode) => {
+        return (e: Event) => {
             const value = getTargetValue(key, e);
-            dispatch({ type: 'updateField', key, value, mode });
+            dispatch({ type: 'updateField', payload: { key, value, mode } });
         };
     };
 
     /** Validates every field in the form OR just those in selectedSchema */
-    const triggerValidation = useCallback((selectedSchema = null) => {
-        dispatch({ type: 'validateForm', selectedSchema });
+    const triggerValidation = useCallback((selectedSchema: Extract<keyof FormSchema, string>[] | null = null) => {
+        dispatch({ type: 'validateForm', payload: { selectedSchema } });
     }, []);
 
-    const setErrors = useCallback((key, value) => dispatch({ type: 'setErrors', key, value }), []);
-    const setValid = useCallback((key, value) => dispatch({ type: 'setValid', key, value }), []);
-    const setData = useCallback((key, value) => dispatch({ type: 'setData', key, value }), []);
-    const setSchema = useCallback(schema => dispatch({ type: 'setSchema', schema, defaultData }), [state.schema, defaultData]);
-    const mergeForm = useCallback(formValue => dispatch({ type: 'mergeForm', formValue }), []);
-    const setFieldProblems = useCallback(fieldProblems => dispatch({ type: 'setFieldProblems', fieldProblems }), [state.schema, defaultData]);
+    const setErrors = useCallback(
+        (key: Extract<keyof FormSchema, string>, value: FieldErrors) => dispatch({ type: 'setErrors', payload: { key, value } }),
+        []
+    );
+    const setValid = useCallback(
+        (key: Extract<keyof FormSchema, string>, value: Boolean) => dispatch({ type: 'setValid', payload: { key, value } }),
+        []
+    );
+    const setData = useCallback(
+        (key: Extract<keyof FormSchema, string>, value: FormSchema[typeof key]) => dispatch({ type: 'setData', payload: { key, value } }),
+        []
+    );
+    const setSchema = useCallback(
+        (schema: SchemaKeys<FormSchema>[]) => dispatch({ type: 'setSchema', payload: { schema, defaultData } }),
+        [state.schema, defaultData]
+    );
+    const mergeForm = useCallback((formValue: FormState<FormSchema>) => dispatch({ type: 'mergeForm', payload: { formValue } }), []);
+    const setFieldProblems = useCallback(
+        (fieldProblems: FieldProblems<FormSchema>) => dispatch({ type: 'setFieldProblems', payload: { fieldProblems } }),
+        [state.schema, defaultData]
+    );
 
     // Set reducer fields problems if fieldProblems prop changes
     useEffect(() => {

@@ -1,7 +1,8 @@
 import { CountryFormatRules, FormatRules, Format } from '../../../utils/Validator/types';
 import { getFormattingRegEx, SPECIAL_CHARS, trimValWithOneSpace } from '../../../utils/validator-utils';
+import { AddressData } from '../../../types';
 
-const createFormatByDigits = (digits): Format => {
+const createFormatByDigits = (digits: number): Format => {
     const format = new Array(digits).fill('9').join('');
     return {
         // Formatter - excludes non digits and limits to maxlength
@@ -12,12 +13,14 @@ const createFormatByDigits = (digits): Format => {
 };
 
 const specialCharsRegEx = getFormattingRegEx(SPECIAL_CHARS);
-const formattingFn = val => trimValWithOneSpace(val).replace(specialCharsRegEx, '');
+const formattingFn = (val: string) => trimValWithOneSpace(val).replace(specialCharsRegEx, '');
 
-export const addressFormatters: FormatRules = {
+export const addressFormatters: FormatRules<AddressData> = {
     postalCode: {
         formatter: (val, context) => {
-            const country = context.state.data.country;
+            const country = context?.state.data.country;
+
+            if (!country) return val;
 
             // Country specific formatting rule
             const specificRule = countrySpecificFormatters[country]?.postalCode?.formatter;

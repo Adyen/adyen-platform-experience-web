@@ -9,18 +9,25 @@ import { phoneFormatters, phoneValidationRules } from './validate';
 import { PhoneInputProps, PhoneInputSchema } from './types';
 import { ARIA_ERROR_SUFFIX } from '../../../core/Errors/constants';
 import { getUniqueId } from '../../../utils/idGenerator';
+import { SchemaKeys } from '../../../utils/useForm/types';
 
-function PhoneInput(props: PhoneInputProps) {
+function PhoneInput(props: PhoneInputProps<PhoneInputSchema>) {
     const {
         i18n,
         commonProps: { isCollatingErrors },
     } = useCoreContext();
 
-    const schema = props.requiredFields || [...(props?.items?.length ? ['phonePrefix'] : []), 'phoneNumber'];
+    const optionalSchemaKeys: SchemaKeys<PhoneInputSchema>[] = ['phonePrefix'];
+
+    const schema: SchemaKeys<PhoneInputSchema>[] = props.requiredFields || [...(props?.items?.length ? optionalSchemaKeys : []), 'phoneNumber'];
+
     const showPrefix = schema.includes('phonePrefix') && !!props?.items?.length;
     const showNumber = schema.includes('phoneNumber');
 
-    const { handleChangeFor, data, valid, errors, isValid, triggerValidation, setSchema } = useForm<PhoneInputSchema>({
+    const { handleChangeFor, data, valid, errors, isValid, triggerValidation, setSchema } = useForm<
+        PhoneInputSchema,
+        PhoneInputProps<PhoneInputSchema>
+    >({
         i18n,
         ...props,
         schema,

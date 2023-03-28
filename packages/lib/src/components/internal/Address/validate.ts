@@ -2,6 +2,7 @@ import { ValidatorRules, ValidatorRule } from '../../../utils/Validator/types';
 import { countrySpecificFormatters } from './validate.formats';
 import { ERROR_CODES, ERROR_MSG_INCOMPLETE_FIELD } from '../../../core/Errors/constants';
 import { isEmpty } from '../../../utils/validator-utils';
+import { AddressData } from '../../../types';
 
 const createPatternByDigits = (digits: number) => {
     return {
@@ -52,17 +53,17 @@ const postalCodePatterns = {
     US: createPatternByDigits(5),
 };
 
-export const getAddressValidationRules = (specifications): ValidatorRules => {
-    const addressValidationRules: ValidatorRules = {
+export const getAddressValidationRules = (specifications): ValidatorRules<AddressData> => {
+    const addressValidationRules: ValidatorRules<AddressData> = {
         postalCode: {
             modes: ['blur'],
-            validate: (val, context) => {
-                const country = context.state.data.country;
+            validate: (val: AddressData['postalCode'], context) => {
+                const country = context?.state.data.country;
 
                 // Country specific rule
                 if (country) {
                     // Dynamically create errorMessage
-                    (addressValidationRules.postalCode as ValidatorRule).errorMessage = {
+                    (addressValidationRules.postalCode as ValidatorRule<AddressData>).errorMessage = {
                         translationKey: 'invalidFormatExpects',
                         translationObject: {
                             values: {
@@ -83,7 +84,7 @@ export const getAddressValidationRules = (specifications): ValidatorRules => {
         },
         houseNumberOrName: {
             validate: (value, context) => {
-                const selectedCountry = context.state?.data?.country;
+                const selectedCountry = context?.state?.data?.country;
                 const isOptional = selectedCountry && specifications.countryHasOptionalField(selectedCountry, 'houseNumberOrName');
                 return isOptional || (isEmpty(value) ? null : true);
             },

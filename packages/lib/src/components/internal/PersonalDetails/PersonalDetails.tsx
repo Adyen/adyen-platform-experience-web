@@ -11,18 +11,38 @@ import { PersonalDetailsSchema } from '../../../types';
 import { getFormattedData } from './utils';
 import useForm from '../../../utils/useForm';
 import './PersonalDetails.scss';
+import { SchemaKeys } from '../../../utils/useForm/types';
 
-const personalDetailsSchema = ['firstName', 'lastName', 'gender', 'dateOfBirth', 'shopperEmail', 'telephoneNumber'];
+const personalDetailsRequiredFields: SchemaKeys<PersonalDetailsSchema>[] = [
+    'firstName',
+    'lastName',
+    'gender',
+    'dateOfBirth',
+    'shopperEmail',
+    'telephoneNumber',
+];
 
-export default function PersonalDetails(props: PersonalDetailsProps) {
-    const { label = '', namePrefix, placeholders, requiredFields, visibility } = props;
+export default function PersonalDetails(props: PersonalDetailsProps<PersonalDetailsSchema>) {
+    const {
+        label = '',
+        namePrefix,
+        placeholders = {},
+        requiredFields = personalDetailsRequiredFields,
+        visibility = 'editable',
+        onChange = () => {},
+        validationRules = personalDetailsValidationRules,
+        data: defaultData = {},
+    } = props;
 
     const { i18n } = useCoreContext();
     const isDateInputSupported = useMemo(checkDateInputSupport, []);
-    const { handleChangeFor, triggerValidation, data, valid, errors, isValid } = useForm<PersonalDetailsSchema>({
+    const { handleChangeFor, triggerValidation, data, valid, errors, isValid } = useForm<
+        PersonalDetailsSchema,
+        PersonalDetailsProps<PersonalDetailsSchema>
+    >({
         schema: requiredFields,
-        rules: props.validationRules,
-        defaultData: props.data,
+        rules: validationRules,
+        defaultData: defaultData,
     });
 
     const eventHandler =
@@ -39,7 +59,7 @@ export default function PersonalDetails(props: PersonalDetailsProps) {
 
     useEffect(() => {
         const formattedData = getFormattedData(data);
-        props.onChange({ data: formattedData, valid, errors, isValid });
+        onChange?.({ data: formattedData, valid, errors, isValid });
     }, [data, valid, errors, isValid]);
 
     this.showValidation = triggerValidation;
@@ -158,12 +178,3 @@ export default function PersonalDetails(props: PersonalDetailsProps) {
         </Fieldset>
     );
 }
-
-PersonalDetails.defaultProps = {
-    data: {},
-    onChange: () => {},
-    placeholders: {},
-    requiredFields: personalDetailsSchema,
-    validationRules: personalDetailsValidationRules,
-    visibility: 'editable',
-};

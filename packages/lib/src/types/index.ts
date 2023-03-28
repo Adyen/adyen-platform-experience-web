@@ -24,14 +24,14 @@ export type AddressData = {
     [key in AddressField]: string;
 };
 
-export interface PersonalDetailsSchema {
+export type PersonalDetailsSchema = {
     firstName?: string;
     lastName?: string;
     gender?: string;
     dateOfBirth?: string;
     shopperEmail?: string;
     telephoneNumber?: string;
-}
+};
 
 /**
  * {@link https://docs.adyen.com/api-explorer/#/PaymentSetupAndVerificationService/v52/post/payments__reqParam_browserInfo API Explorer /payments browserInfo}

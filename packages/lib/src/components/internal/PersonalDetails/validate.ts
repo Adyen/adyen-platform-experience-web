@@ -1,6 +1,7 @@
 import { email, telephoneNumber } from '../../../utils/regex';
 import { unformatDate } from '../FormFields/InputDate/utils';
 import { ValidatorRules } from '../../../utils/Validator/types';
+import { PersonalDetailsSchema } from '../../../types';
 
 const isDateOfBirthValid = value => {
     if (!value) return false;
@@ -13,9 +14,9 @@ const isDateOfBirthValid = value => {
     return false;
 };
 
-export const personalDetailsValidationRules: ValidatorRules = {
+export const personalDetailsValidationRules: ValidatorRules<PersonalDetailsSchema> = {
     default: {
-        validate: value => value && value.length > 0,
+        validate: value => !!value && value.length > 0,
         modes: ['blur'],
     },
     dateOfBirth: {
@@ -24,11 +25,11 @@ export const personalDetailsValidationRules: ValidatorRules = {
         modes: ['blur'],
     },
     telephoneNumber: {
-        validate: value => telephoneNumber.test(value),
+        validate: (value: PersonalDetailsSchema['telephoneNumber']) => !!value && telephoneNumber.test(value),
         modes: ['blur'],
     },
     shopperEmail: {
-        validate: value => email.test(value),
+        validate: (value: PersonalDetailsSchema['shopperEmail']) => !!value && email.test(value),
         modes: ['blur'],
     },
 };
