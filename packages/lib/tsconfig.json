@@ -16,7 +16,7 @@
         "noUncheckedIndexedAccess": true,
 
         // TODO Delete all of the options below to use strict type checking
-        "noImplicitAny": false,
+        // "noImplicitAny": false,
         "noImplicitThis": false,
 
         "stripInternal": true,
