@@ -17,10 +17,10 @@ function PhoneInput(props: PhoneInputProps<PhoneInputSchema>) {
         commonProps: { isCollatingErrors },
     } = useCoreContext();
 
-    const schema: SchemaKeys<PhoneInputSchema>[] = props.requiredFields || ['phoneNumber'];
-    if (props?.items?.length) {
-        schema.unshift('phonePrefix');
-    }
+    const optionalSchemaKeys: SchemaKeys<PhoneInputSchema>[] = ['phonePrefix'];
+
+    const schema: SchemaKeys<PhoneInputSchema>[] = props.requiredFields || [...(props?.items?.length ? optionalSchemaKeys : []), 'phoneNumber'];
+
     const showPrefix = schema.includes('phonePrefix') && !!props?.items?.length;
     const showNumber = schema.includes('phoneNumber');
 
