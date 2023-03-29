@@ -1,5 +1,6 @@
-import components from '../components';
 import { ADDRESS_SCHEMA } from '../components/internal/Address/constants';
+import componentsMap from '../components';
+import { ValueOf } from '../utils/types';
 
 /**
  * {@link https://docs.adyen.com/api-explorer/#/PaymentSetupAndVerificationService/v52/payments__reqParam_amount API Explorer /payments amount}
@@ -50,7 +51,8 @@ export interface BrowserInfo {
 /**
  * Available components
  */
-export type Components = typeof components;
+export type ComponentMap = typeof componentsMap;
+export type ComponentOptions<Name extends keyof ComponentMap> = ConstructorParameters<ComponentMap[Name]>[0];
 
 /**
  * Visibility options for a fieldset
@@ -76,3 +78,10 @@ export type SessionSetupResponse = {
     returnUrl: string;
     configuration: SessionConfiguration;
 };
+
+export function isKeyOfComponent(component: string): component is keyof ComponentMap {
+    return !!componentsMap[component as keyof ComponentMap];
+}
+export function isAvailableOfComponent(component: any): component is ValueOf<ComponentMap> {
+    return !!(Object.keys(componentsMap) as (keyof typeof componentsMap)[])?.find(key => componentsMap[key] === component);
+}
