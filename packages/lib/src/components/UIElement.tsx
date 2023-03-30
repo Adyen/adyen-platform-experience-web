@@ -6,7 +6,7 @@ import { UIElementStatus } from './types';
 
 export class UIElement<P extends UIElementProps = any> extends BaseElement<P> implements IUIElement {
     protected componentRef: UIElement | null;
-    public elementRef: any;
+    public elementRef: UIElement | null;
 
     constructor(props: P) {
         super(props);

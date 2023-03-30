@@ -7,8 +7,10 @@ import DateFilter from '../../internal/FilterBar/filters/DateFilter';
 import { getCursor, getRequestParams } from './utils';
 import TransactionList from './TransactionList';
 import './Transactions.scss';
+import { TransactionsPageProps } from '../types';
+import { PageChangeOptions } from '../../internal/Pagination/type';
 
-function Transactions(props) {
+function Transactions(props: TransactionsPageProps) {
     const { i18n } = useCoreContext();
     const [page, setPage] = useState(1);
     const [loading, setLoading] = useState(false);
@@ -18,21 +20,21 @@ function Transactions(props) {
         return !!props.transactions?._links?.next;
     }, [props.transactions]);
 
-    const handlePageChange = (dir: string): void => {
+    const handlePageChange = (dir: PageChangeOptions): void => {
         setLoading(true);
         const newPage = dir === 'prev' ? page - 1 : page + 1;
         setPage(newPage);
         const cursor = getCursor(dir, props.transactions);
         const newFilters = { ...filters, cursor: cursor ?? '' };
         setFilters(newFilters);
-        if (cursor) props.onFilterChange({ filters: newFilters }, props.elementRef);
+        if (cursor) props.onFilterChange?.({ filters: newFilters }, props.elementRef);
     };
 
-    const handleFilterChange = (newFilter): void => {
+    const handleFilterChange = (newFilter: { [p: string]: string }): void => {
         setLoading(true);
         const newFilters = { ...filters, ...newFilter };
         setFilters(newFilters);
-        props.onFilterChange({ filters: newFilters }, props.elementRef);
+        props.onFilterChange?.({ filters: newFilters }, props.elementRef);
         setPage(1);
     };
 
