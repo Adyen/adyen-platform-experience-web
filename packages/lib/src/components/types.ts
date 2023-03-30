@@ -27,6 +27,7 @@ export interface IUIElement {
 export type UIElementStatus = 'ready' | 'loading' | 'error' | 'success';
 
 export interface UIElementProps extends BaseElementProps {
+    id?: string;
     session?: BPSession;
     onChange?: (state: any, element: UIElement) => void;
     onValid?: (state: any, element: UIElement) => void;

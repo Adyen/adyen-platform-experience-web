@@ -5,7 +5,7 @@ import AdyenFPError from '../core/Errors/AdyenFPError';
 import { UIElementStatus } from './types';
 
 export class UIElement<P extends UIElementProps = any> extends BaseElement<P> implements IUIElement {
-    protected componentRef: any;
+    protected componentRef: UIElement | null;
     public elementRef: any;
 
     constructor(props: P) {
@@ -15,7 +15,7 @@ export class UIElement<P extends UIElementProps = any> extends BaseElement<P> im
         this.onValid = this.onValid.bind(this);
         this.onComplete = this.onComplete.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
-
+        this.componentRef = null;
         this.elementRef = (props && props.elementRef) || this;
     }
 

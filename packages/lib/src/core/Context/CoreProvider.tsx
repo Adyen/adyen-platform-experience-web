@@ -2,7 +2,7 @@ import { Component, toChildArray } from 'preact';
 import { CoreContext } from './CoreContext';
 
 interface CoreProviderProps {
-    loadingContext: string;
+    loadingContext?: string;
     i18n: any;
     children?: any;
     commonProps?: CommonPropsTypes;
@@ -34,7 +34,7 @@ class CoreProvider extends Component<CoreProviderProps> {
         if (this.state.loaded) {
             return (
                 <CoreContext.Provider
-                    value={{ i18n: this.props.i18n, loadingContext: this.props.loadingContext, commonProps: this.props.commonProps || {} }}
+                    value={{ i18n: this.props.i18n, loadingContext: this.props.loadingContext ?? '', commonProps: this.props.commonProps || {} }}
                 >
                     {toChildArray(children)}
                 </CoreContext.Provider>

@@ -2,8 +2,9 @@ import Status from 'src/components/internal/Status';
 import ContactDetails from './ContactDetails';
 import StatsBar from 'src/components/internal/StatsBar';
 import './AccountHolderDetails.scss';
+import { AccountHolderDetailsProps } from '../types';
 
-function BalanceAccountDetails({ accountHolder }) {
+const AccountHolderDetails = ({ accountHolder }: AccountHolderDetailsProps) => {
     return (
         <div class="adyen-fp-account-holder">
             <p class="adyen-fp-title">Account holder</p>
@@ -41,7 +42,7 @@ function BalanceAccountDetails({ accountHolder }) {
                     {!!accountHolder.contactDetails && (
                         <ContactDetails
                             address={accountHolder.contactDetails.address}
-                            phoneNumber={accountHolder.contactDetails.phone?.number}
+                            phoneNumber={accountHolder.contactDetails.phone}
                             emailAddress={accountHolder.contactDetails?.email}
                         />
                     )}
@@ -53,6 +54,6 @@ function BalanceAccountDetails({ accountHolder }) {
             </pre>
         </div>
     );
-}
+};
 
-export default BalanceAccountDetails;
+export default AccountHolderDetails;
