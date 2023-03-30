@@ -32,10 +32,9 @@ export interface UIElementProps extends BaseElementProps {
     onValid?: (state: any, element: UIElement) => void;
     beforeSubmit?: (state: any, element: UIElement, actions: any) => Promise<void>;
     onSubmit?: (state: any, element: UIElement) => void;
-    onComplete?: (state, element: UIElement) => void;
-    onError?: (error, element?: UIElement) => void;
-    beforeRedirect?: (resolve, reject, redirectData, element: UIElement) => void;
-
+    onComplete?: (state: BaseElementProps, element: UIElement) => void;
+    onError?: (error: any, element?: UIElement) => void;
+    beforeRedirect?: (resolve: any, reject: any, redirectData: any, element: UIElement) => void;
     type?: string;
     name?: string;
     icon?: string;
@@ -60,3 +59,15 @@ export interface UIElementProps extends BaseElementProps {
     /** @internal */
     i18n?: Language;
 }
+export type BaseElementState = {
+    errors?: {
+        [key: string]: any;
+    };
+    valid?: {
+        [key: string]: boolean;
+    };
+    fieldProblems?: {
+        [key: string]: any;
+    };
+    isValid?: boolean;
+};
