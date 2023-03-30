@@ -1,6 +1,7 @@
 import { ADDRESS_SCHEMA } from '../components/internal/Address/constants';
 import componentsMap from '../components';
 import { ValueOf } from '../utils/types';
+import { AddressSchema, AddressSpecifications, StringObject } from '../components/internal/Address/types';
 
 /**
  * {@link https://docs.adyen.com/api-explorer/#/PaymentSetupAndVerificationService/v52/payments__reqParam_amount API Explorer /payments amount}
@@ -24,6 +25,8 @@ export type AddressField = (typeof ADDRESS_SCHEMA)[number];
 export type AddressData = {
     [key in AddressField]: string;
 };
+
+export type Specification = AddressSpecifications;
 
 export type PersonalDetailsSchema = {
     firstName?: string;

@@ -17,7 +17,7 @@ export interface AddressProps<FormSchema extends Record<string, any>> {
     onChange?: (newState: FormState<FormSchema>) => void;
     requiredFields?: SchemaKeys<FormSchema>[];
     ref?: any;
-    specifications?: AddressSpecifications;
+    specifications: AddressSpecifications;
     validationRules?: ValidatorRules<FormSchema>;
     visibility?: string;
     overrideSchema?: AddressSpecifications;
@@ -38,9 +38,9 @@ export interface FieldContainerProps<FormSchema extends Record<string, any>> {
     classNameModifiers: string[];
     data: AddressData;
     errors: AddressState<FormSchema>;
-    fieldName: string;
+    fieldName: keyof AddressData;
     key: string;
-    valid?: object;
+    valid?: { [k: string]: any };
     onInput?: (e: Event) => void;
     onBlur?: (e: Event) => void;
     onDropdownChange: (e: Event) => void;
@@ -90,12 +90,17 @@ export interface StateFieldItem {
 export type AddressFieldsGroup = [AddressField, number][];
 export type AddressSchema = (AddressField | AddressFieldsGroup)[];
 
-export interface AddressSpecifications {
-    [key: string]: {
-        hasDataset?: boolean;
-        labels?: StringObject;
-        optionalFields?: AddressField[];
-        placeholders?: StringObject;
-        schema?: AddressSchema;
-    };
-}
+type SpecificationFields = {
+    hasDataset?: boolean;
+    labels?: StringObject;
+    optionalFields?: AddressField[];
+    placeholders?: StringObject;
+    schema?: AddressSchema;
+};
+
+export type AddressSpecifications = {
+    countryHasOptionalField?: (country: string, field: string) => boolean;
+    default: SpecificationFields & { schema: AddressSchema };
+} & {
+    [key: string]: SpecificationFields;
+};
