@@ -1,7 +1,8 @@
 export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'action' | 'filter' | 'link';
+export type ButtonStatus = 'loading' | 'redirect' | 'default';
 
 export interface ButtonProps {
-    status?: string;
+    status?: ButtonStatus;
     /**
      * Class name modifiers will be used as: `adyen-fp-image--${modifier}`
      */
@@ -15,7 +16,7 @@ export interface ButtonProps {
     href?: string;
     target?: string;
     rel?: string;
-    onClick?: (e, callbacks) => void;
+    onClick?: (e: Event, callbacks: { [k: string]: (...args: any) => void }) => void;
 }
 
 export interface ButtonState {
