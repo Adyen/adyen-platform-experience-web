@@ -16,7 +16,7 @@ export interface ButtonProps {
     href?: string;
     target?: string;
     rel?: string;
-    onClick?: (e: Event, callbacks: { [k: string]: (...args: any) => void }) => void;
+    onClick?: (e?: Event, callbacks?: { [k: string]: (...args: any) => void }) => void;
 }
 
 export interface ButtonState {

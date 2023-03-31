@@ -6,8 +6,9 @@ import Field from '../../../FormFields/Field';
 import InputText from '../../../FormFields/InputText';
 import '../../../FormFields';
 import './BaseFilter.scss';
+import { BaseFilterProps } from './types';
 
-export default function BaseFilter(props) {
+export default function BaseFilter(props: BaseFilterProps) {
     const { i18n } = useCoreContext();
     const [editMode, setEditMode] = useState(false);
     const [filterValue, setFilterValue] = useState('');
@@ -16,8 +17,8 @@ export default function BaseFilter(props) {
         setEditMode(!editMode);
     };
 
-    const updateFilterValue = e => {
-        setFilterValue(e.target.value);
+    const updateFilterValue = (e: Event) => {
+        setFilterValue((e.target as HTMLInputElement).value);
     };
 
     const updateFilters = () => {
@@ -35,9 +36,9 @@ export default function BaseFilter(props) {
         setEditMode(!editMode);
     };
 
-    const BaseFilterBody = props => {
+    const BaseFilterBody = (props: { fieldName?: string; label: string; classNameModifiers?: string[]; value?: string }) => {
         return (
-            <Field label={props.label} classNameModifiers={[props.classNameModifiers]} name={props.fieldName}>
+            <Field label={props.label} classNameModifiers={props.classNameModifiers ? props.classNameModifiers : []} name={props.fieldName}>
                 <InputText name={props.fieldName} value={props.value} onInput={updateFilterValue} />
             </Field>
         );
@@ -48,7 +49,7 @@ export default function BaseFilter(props) {
             <Button
                 variant={'filter'}
                 label={props.value || props.label}
-                classNameModifiers={[...[props.value ? ['active'] : []], ...props.classNameModifiers]}
+                classNameModifiers={[...(props.value ? ['active'] : []), ...(props?.classNameModifiers ?? [])]}
                 onClick={handleClick}
             />
 
