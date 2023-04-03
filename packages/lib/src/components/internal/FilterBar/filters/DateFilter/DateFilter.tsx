@@ -33,7 +33,12 @@ export function DateFilterBody(props: { to?: string; from?: string; updateFilter
                 <InputText name={'from'} value={props.from} onInput={handleFilterValueUpdate('from')} />
             </Field>
             <Field label={i18n.get('to')} name={'to'}>
-                <InputText name={'to'} value={props.to} onInput={handleFilterValueUpdate('to')} placeholder={!props.to ? i18n.get('notSet') : null} />
+                <InputText
+                    name={'to'}
+                    value={props.to}
+                    onInput={handleFilterValueUpdate('to')}
+                    placeholder={!props.to ? i18n.get('notSet') : undefined}
+                />
             </Field>
             <br />
         </div>

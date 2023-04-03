@@ -1,15 +1,16 @@
 import { useState, useEffect } from 'preact/hooks';
 import { renderFormField } from '../FormFields';
 import useCoreContext from '../../../core/Context/useCoreContext';
+import { HTMLAttributes } from 'preact/compat';
 
 /**
  * "Store details" generic checkbox
  */
-function StoreDetails({ storeDetails = false, ...props }) {
+function StoreDetails({ storeDetails = false, ...props }: { storeDetails: boolean; onChange: (value: boolean) => void }) {
     const { i18n } = useCoreContext();
     const [value, setValue] = useState(storeDetails);
 
-    const onChange = (e: InputEvent) => {
+    const onChange: HTMLAttributes<HTMLInputElement>['onChange'] = e => {
         setValue((e.target as HTMLInputElement)?.checked);
     };
 
@@ -22,7 +23,7 @@ function StoreDetails({ storeDetails = false, ...props }) {
             {renderFormField('boolean', {
                 onChange,
                 label: i18n.get('storeDetails'),
-                value,
+                value: `${value}`,
                 name: 'storeDetails',
             })}
         </div>

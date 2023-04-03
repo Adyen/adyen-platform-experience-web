@@ -84,7 +84,7 @@ function FieldContainer<Schema extends Record<string, any>>(props: FieldContaine
                         onInput,
                         onBlur,
                         isCollatingErrors,
-                        maxlength,
+                        maxLength: maxlength,
                         trimOnBlur,
                         disabled,
                     })}

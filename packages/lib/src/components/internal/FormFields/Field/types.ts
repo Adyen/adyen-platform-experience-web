@@ -1,5 +1,6 @@
-import { h, Component, ComponentChildren } from 'preact';
+import { Component, ComponentChildren, JSX } from 'preact';
 import Language from '../../../../language';
+import { HTMLAttributes } from 'preact/compat';
 
 export interface FieldProps {
     className?: string;
@@ -14,12 +15,12 @@ export interface FieldProps {
     isLoading?: boolean;
     isValid?: boolean;
     label?: string | Component;
-    labelEndAdornment?: string | h.JSX.Element;
-    onBlur?;
-    onFocus?;
-    onFocusField?;
-    onFieldBlur?;
-    dir?;
+    labelEndAdornment?: string | JSX.Element;
+    onBlur?: (e: JSX.TargetedEvent<HTMLInputElement>) => void;
+    onFocus?: (e: JSX.TargetedEvent<HTMLInputElement>) => void;
+    onFocusField?: () => void;
+    onFieldBlur?: (e: JSX.TargetedEvent<HTMLInputElement>) => void;
+    dir?: HTMLAttributes<HTMLDivElement>['dir'];
     name?: string;
     showValidIcon?: boolean;
     isCollatingErrors?: boolean;

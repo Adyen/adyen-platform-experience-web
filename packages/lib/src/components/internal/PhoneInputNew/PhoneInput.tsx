@@ -125,7 +125,7 @@ function PhoneInput(props: PhoneInputProps<PhoneInputSchema>) {
                             // readonly: props.phonePrefixIsReadonly,
                             placeholder: i18n.get('infix'),
                             selected: data.phonePrefix,
-                            isCollatingErrors,
+                            isCollatingErrors: !!isCollatingErrors,
                             uniqueId: uniqueIDPhonePrefix,
                         })}
 
