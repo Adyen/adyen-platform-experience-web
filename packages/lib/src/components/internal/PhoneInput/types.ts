@@ -1,7 +1,7 @@
 import Language from '../../../language/Language';
 
 export interface PhoneInputComponentProps {
-    onChange: (state) => void;
+    onChange: (state: Record<string, any>) => void;
     onValid: () => void;
     payButton: () => void;
     phoneLabel?: string;
