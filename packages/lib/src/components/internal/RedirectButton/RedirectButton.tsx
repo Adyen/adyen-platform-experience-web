@@ -6,7 +6,7 @@ function RedirectButton({ payButton, onSubmit, amount, name, ...props }: Redirec
     const { i18n } = useCoreContext();
     const [status, setStatus] = useState('ready');
 
-    this.setStatus = newStatus => {
+    this.setStatus = (newStatus: string) => {
         setStatus(newStatus);
     };
 
