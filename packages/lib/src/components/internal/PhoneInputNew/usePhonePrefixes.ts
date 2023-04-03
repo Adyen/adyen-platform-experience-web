@@ -1,17 +1,17 @@
 import { useLayoutEffect, useState } from 'preact/hooks';
 import getDataset from '../../../core/Services/get-dataset';
 import { DataSet } from '../../../core/Services/data-set';
-import { PhonePrefixes } from './types';
+import { PhonePrefixes, PhonePrefixesProps } from './types';
 import AdyenFPError from '../../../core/Errors/AdyenFPError';
 
-function usePhonePrefixes({ allowedCountries, loadingContext, handleError }): PhonePrefixes {
+function usePhonePrefixes({ allowedCountries, loadingContext, handleError }: PhonePrefixesProps): PhonePrefixes {
     const [loadingStatus, setLoadingStatus] = useState<string>('loading');
     const [phonePrefixes, setPhonePrefixes] = useState<DataSet>([]);
 
     useLayoutEffect(() => {
-        getDataset('phonenumbers', loadingContext)
+        getDataset<{ id: string; prefix: string }[]>('phonenumbers', loadingContext)
             .then(response => {
-                const countriesFilter = country => allowedCountries.includes(country.id);
+                const countriesFilter = (country: { id: string }) => allowedCountries.includes(country.id);
                 const filteredCountries = allowedCountries.length ? response.filter(countriesFilter) : response;
                 const mappedCountries = filteredCountries.map(item => {
                     // Get country flags (magic! - shifts the country code characters to the correct position of the emoji in the unicode space)
