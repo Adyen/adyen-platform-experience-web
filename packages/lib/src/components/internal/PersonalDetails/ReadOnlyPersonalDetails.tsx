@@ -1,7 +1,7 @@
 import Fieldset from '../FormFields/Fieldset';
 import { ReadOnlyPersonalDetailsProps } from './types';
 
-const ReadOnlyPersonalDetails = ({ data }) => {
+const ReadOnlyPersonalDetails = ({ data }: { data: ReadOnlyPersonalDetailsProps }) => {
     const { firstName, lastName, shopperEmail, telephoneNumber }: ReadOnlyPersonalDetailsProps = data;
 
     return (
