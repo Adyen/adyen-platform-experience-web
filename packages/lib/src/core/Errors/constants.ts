@@ -71,7 +71,9 @@ export const ERROR_CODES = {
     [ERROR_MSG_INCORRECTLY_FILLED_ACH_ACCOUNT_NUMBER]: 'error.va.sf-ach-num.02',
 
     [ERROR_MSG_EMPTY_ACH_BANK_LOCATION_ID]: 'error.va.sf-ach-loc.01',
-    [ERROR_MSG_INCORRECTLY_FILLED_ACH_BANK_LOCATION_ID]: 'error.va.sf-ach-loc.02'
+    [ERROR_MSG_INCORRECTLY_FILLED_ACH_BANK_LOCATION_ID]: 'error.va.sf-ach-loc.02',
 };
+
+export type ErrorCodeKey = keyof typeof ERROR_CODES;
 
 export const DEFAULT_ERROR = ERROR_CODES[ERROR_MSG_INCOMPLETE_FIELD];

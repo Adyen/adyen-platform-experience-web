@@ -5,7 +5,7 @@ import { API_VERSION } from './constants';
 
 /**
  */
-function setupSession(session: Session, options): Promise<SessionSetupResponse> {
+function setupSession(session: Session, options: Record<string, any>): Promise<SessionSetupResponse> {
     const path = `${API_VERSION}/sessions/${session.id}/setup?clientKey=${session.clientKey}`;
     const data = {
         sessionData: session.data,

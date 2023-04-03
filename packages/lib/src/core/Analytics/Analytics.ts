@@ -35,7 +35,7 @@ class Analytics {
         }
     }
 
-    send(event) {
+    send(event: Record<string, any>) {
         const { enabled, payload, telemetry } = this.props;
 
         if (enabled === true) {
@@ -48,7 +48,7 @@ class Analytics {
             }
 
             if (telemetry === true) {
-                const telemetryTask = checkoutAttemptId =>
+                const telemetryTask = (checkoutAttemptId: string) =>
                     this.logTelemetry({ ...event, ...(payload && { ...payload }), checkoutAttemptId }).catch(() => {});
 
                 this.queue.add(telemetryTask);
