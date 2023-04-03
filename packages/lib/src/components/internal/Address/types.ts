@@ -4,6 +4,7 @@ import { ValidatorRules } from '../../../utils/Validator/types';
 import { ValidationRuleResult } from '../../../utils/Validator/ValidationRuleResult';
 import { FormState, SchemaKeys } from '../../../utils/useForm/types';
 import { TargetedEvent } from 'preact/compat';
+import { SetTriggerValidation } from '../../types';
 
 // Describes an object with unknown keys whose value is always a string
 export type StringObject = {
@@ -23,6 +24,7 @@ export interface AddressProps<FormSchema extends Record<string, any>> {
     visibility?: string;
     overrideSchema?: AddressSpecifications;
     iOSFocusedField?: string;
+    setTriggerValidation?: SetTriggerValidation;
 }
 
 export interface AddressState<FormSchema extends Record<string, any>> {

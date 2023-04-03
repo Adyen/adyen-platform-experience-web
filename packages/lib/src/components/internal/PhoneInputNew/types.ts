@@ -1,6 +1,6 @@
 import { DataSet, DataSetItem } from '../../../core/Services/data-set';
 import { SchemaKeys } from '../../../utils/useForm/types';
-import { Ref } from 'preact/compat';
+import { Ref, StateUpdater } from 'preact/compat';
 import AdyenFPError from '../../../core/Errors/AdyenFPError';
 
 export type PhoneInputSchema = {
@@ -23,6 +23,7 @@ export interface PhoneInputProps<FormSchema extends Record<string, any>> {
         phoneNumber?: string;
     };
     ref?: Ref<HTMLElement>;
+    setTriggerValidation?: (callback: StateUpdater<string>) => void;
 }
 
 export interface PhonePrefixes {

@@ -1,9 +1,11 @@
 import Language from '../../../language/Language';
+import { SetTriggerValidation } from '../../types';
+import { StateUpdater } from 'preact/compat';
 
 export interface PhoneInputComponentProps {
     onChange: (state: Record<string, any>) => void;
     onValid: () => void;
-    payButton: () => void;
+    payButton: (args: { status: string }) => void;
     phoneLabel?: string;
     selected: string;
     items: [];
@@ -17,6 +19,8 @@ export interface PhoneInputComponentProps {
         phonePrefix: string;
         phoneNumber: string;
     };
+    setTriggerValidation?: SetTriggerValidation;
+    setUIElementStatus?: (callback: StateUpdater<string>) => void;
 }
 
 export interface PhoneInputState {

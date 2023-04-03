@@ -6,9 +6,7 @@ function RedirectButton({ payButton, onSubmit, amount, name, ...props }: Redirec
     const { i18n } = useCoreContext();
     const [status, setStatus] = useState('ready');
 
-    this.setStatus = (newStatus: string) => {
-        setStatus(newStatus);
-    };
+    props.setUIElementStatus?.((newStatus: string) => setStatus(newStatus));
 
     const payButtonLabel = () => {
         const isZeroAuth = amount && {}.hasOwnProperty.call(amount, 'value') && amount.value === 0;

@@ -51,7 +51,7 @@ function PhoneInput(props: PhoneInputProps<PhoneInputSchema>) {
         props.onChange({ data, valid, errors, isValid });
     }, [data, valid, errors, isValid]);
 
-    this.triggerValidation = triggerValidation;
+    props.setTriggerValidation?.(triggerValidation);
 
     /**
      * The <Field> element assigns a uniqueId which it uses for the \<label for=\> attribute.
