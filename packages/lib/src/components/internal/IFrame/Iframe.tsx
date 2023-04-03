@@ -10,7 +10,7 @@ interface IframeProps {
     allow?: string;
     name?: string;
     title?: string;
-    callback?: (contentWindow) => void;
+    callback?: (contentWindow: Window | null) => void;
 }
 
 class Iframe extends Component<IframeProps> {
@@ -21,40 +21,40 @@ class Iframe extends Component<IframeProps> {
         minHeight: '0',
         src: null,
         allow: null,
-        title: 'components iframe'
+        title: 'components iframe',
     };
 
-    private iframeEl;
+    private iframeEl: HTMLIFrameElement | null = null;
 
     iframeOnLoad() {
-        if (this.props.callback && typeof this.props.callback === 'function') {
+        if (this.props.callback && typeof this.props.callback === 'function' && this.iframeEl) {
             this.props.callback(this.iframeEl.contentWindow);
         }
     }
 
     componentDidMount() {
-        if (this.iframeEl.addEventListener) {
+        if (this.iframeEl?.addEventListener) {
             this.iframeEl.addEventListener('load', this.iframeOnLoad.bind(this), false);
-        } else if (this.iframeEl.attachEvent) {
+        } else if ((this.iframeEl as any)?.attachEvent) {
             // IE fallback
-            this.iframeEl.attachEvent('onload', this.iframeOnLoad.bind(this));
+            (this.iframeEl as any).attachEvent('onload', this.iframeOnLoad.bind(this));
         } else {
-            this.iframeEl.onload = this.iframeOnLoad.bind(this);
+            if (this.iframeEl) this.iframeEl.onload = this.iframeOnLoad.bind(this);
         }
     }
 
     componentWillUnmount() {
-        if (this.iframeEl.removeEventListener) {
+        if (this.iframeEl?.removeEventListener) {
             this.iframeEl.removeEventListener('load', this.iframeOnLoad.bind(this), false);
-        } else if (this.iframeEl.detachEvent) {
+        } else if ((this.iframeEl as any).detachEvent) {
             // IE fallback
-            this.iframeEl.detachEvent('onload', this.iframeOnLoad.bind(this));
+            (this.iframeEl as any).detachEvent('onload', this.iframeOnLoad.bind(this));
         } else {
-            this.iframeEl.onload = null;
+            if (this.iframeEl) this.iframeEl.onload = null;
         }
     }
 
-    render({ name, src, width, height, minWidth, minHeight, allow, title }) {
+    render({ name, src, width, height, minWidth, minHeight, allow, title }: IframeProps) {
         return (
             <iframe
                 ref={ref => {
@@ -69,11 +69,9 @@ class Iframe extends Component<IframeProps> {
                 style={{ border: 0 }}
                 frameBorder="0"
                 title={title}
-                /* eslint-disable react/no-unknown-property */
                 referrerpolicy="origin"
                 min-width={minWidth}
                 min-height={minHeight}
-                /* eslint-enable react/no-unknown-property */
             />
         );
     }
