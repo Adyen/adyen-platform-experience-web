@@ -5,8 +5,8 @@ import './AccountHolderDetails.scss';
 
 function BalanceAccountDetails({ accountHolder }) {
     return (
-        <div class="adyen-fp-account-holder">
-            <p class="adyen-fp-title">Account holder</p>
+        <div className="adyen-fp-account-holder">
+            <p className="adyen-fp-title">Account holder</p>
 
             <div className="adyen-fp-details-container">
                 <StatsBar
@@ -24,17 +24,17 @@ function BalanceAccountDetails({ accountHolder }) {
                 />
 
                 <div className="adyen-fp-details-section">
-                    <div class="adyen-fp-account-holder__legal-entity">
-                        <div class="adyen-fp-subtitle">Legal entity</div>
+                    <div className="adyen-fp-account-holder__legal-entity">
+                        <div className="adyen-fp-subtitle">Legal entity</div>
 
-                        <div class="adyen-fp-field">
-                            <div class="adyen-fp-label">Legal entity ID</div>
-                            <div class="adyen-fp-value">{accountHolder.legalEntityId}</div>
+                        <div className="adyen-fp-field">
+                            <div className="adyen-fp-label">Legal entity ID</div>
+                            <div className="adyen-fp-value">{accountHolder.legalEntityId}</div>
                         </div>
 
-                        <div class="adyen-fp-field">
-                            <div class="adyen-fp-label">Description</div>
-                            <div class="adyen-fp-value">{accountHolder.description}</div>
+                        <div className="adyen-fp-field">
+                            <div className="adyen-fp-label">Description</div>
+                            <div className="adyen-fp-value">{accountHolder.description}</div>
                         </div>
                     </div>
 

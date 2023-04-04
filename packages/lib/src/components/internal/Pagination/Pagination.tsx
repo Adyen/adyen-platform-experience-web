@@ -12,13 +12,13 @@ export default function Pagination(props) {
     };
 
     return (
-        <div aria-label={i18n.get('paginatedNavigation')} class={`adyen-fp-pagination ${classnames({})}`}>
-            <div class="adyen-fp-pagination__context">
+        <div aria-label={i18n.get('paginatedNavigation')} className={`adyen-fp-pagination ${classnames({})}`}>
+            <div className="adyen-fp-pagination__context">
                 <span>
                     {i18n.get('pagination.page')} {props.page}
                 </span>
             </div>
-            <div class="adyen-fp-pagination__controls">
+            <div className="adyen-fp-pagination__controls">
                 <Button
                     aria-label={i18n.get('pagination.previousPage')}
                     variant={'ghost'}

@@ -9,8 +9,8 @@ function BalanceAccountDetails(props) {
     const { balanceAccount } = props;
 
     return (
-        <div class="adyen-fp-balance-account">
-            <div class="adyen-fp-title">Balance account</div>
+        <div className="adyen-fp-balance-account">
+            <div className="adyen-fp-title">Balance account</div>
 
             <div className="adyen-fp-details-container">
                 <StatsBar
@@ -39,37 +39,37 @@ function BalanceAccountDetails(props) {
                         <Balances balances={balanceAccount.balances} defaultCurrency={balanceAccount.defaultCurrencyCode} />
                     )}
 
-                    <div class="adyen-fp-balance-account__account">
-                        <div class="adyen-fp-subtitle">Account configuration</div>
+                    <div className="adyen-fp-balance-account__account">
+                        <div className="adyen-fp-subtitle">Account configuration</div>
 
-                        <div class="adyen-fp-field">
-                            <div class="adyen-fp-label">Account holder ID</div>
-                            <div class="adyen-fp-value">{balanceAccount.accountHolderId}</div>
+                        <div className="adyen-fp-field">
+                            <div className="adyen-fp-label">Account holder ID</div>
+                            <div className="adyen-fp-value">{balanceAccount.accountHolderId}</div>
                         </div>
 
-                        <div class="adyen-fp-field">
-                            <div class="adyen-fp-label">Timezone</div>
-                            <div class="adyen-fp-value">{balanceAccount.timeZone}</div>
+                        <div className="adyen-fp-field">
+                            <div className="adyen-fp-label">Timezone</div>
+                            <div className="adyen-fp-value">{balanceAccount.timeZone}</div>
                         </div>
 
                         {!!balanceAccount.platformPaymentConfiguration && (
                             <>
-                                <div class="adyen-fp-field">
-                                    <div class="adyen-fp-label">Sales day closing time</div>
-                                    <div class="adyen-fp-value">{balanceAccount.platformPaymentConfiguration.salesDayClosingTime}</div>
+                                <div className="adyen-fp-field">
+                                    <div className="adyen-fp-label">Sales day closing time</div>
+                                    <div className="adyen-fp-value">{balanceAccount.platformPaymentConfiguration.salesDayClosingTime}</div>
                                 </div>
 
-                                <div class="adyen-fp-field">
-                                    <div class="adyen-fp-label">Settlement delay days</div>
-                                    <div class="adyen-fp-value">{balanceAccount.platformPaymentConfiguration.settlementDelayDays}</div>
+                                <div className="adyen-fp-field">
+                                    <div className="adyen-fp-label">Settlement delay days</div>
+                                    <div className="adyen-fp-value">{balanceAccount.platformPaymentConfiguration.settlementDelayDays}</div>
                                 </div>
                             </>
                         )}
 
                         {!!balanceAccount.referenceForBeneficiary && (
-                            <div class="adyen-fp-field">
-                                <div class="adyen-fp-label">{i18n.get('referenceForBeneficiary')}</div>
-                                <div class="adyen-fp-value">{balanceAccount.referenceForBeneficiary}</div>
+                            <div className="adyen-fp-field">
+                                <div className="adyen-fp-label">{i18n.get('referenceForBeneficiary')}</div>
+                                <div className="adyen-fp-value">{balanceAccount.referenceForBeneficiary}</div>
                             </div>
                         )}
                     </div>
