@@ -7,7 +7,7 @@ export default function Pagination(props) {
     const { i18n } = useCoreContext();
 
     const handleClick = (dir, newPage) => {
-        // props.changePage(newPage);
+        props.changePage?.(newPage);
         props.onChange(dir);
     };
 
