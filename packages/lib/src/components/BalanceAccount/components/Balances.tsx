@@ -23,12 +23,11 @@ function Balances(props: BalancesProps) {
             <div className="adyen-fp-subtitle">Balances</div>
             <div className="adyen-fp-balances__container">
                 <div className="adyen-fp-balances__scrollable-area">
-                    {balances?.map(balance => (
-
-                        <div className="adyen-fp-balances__group">
+                    {balances?.map((balance, i) => (
+                        <div className="adyen-fp-balances__group" key={`balance-${i}`}>
                             <div className="adyen-fp-balances__title">
                                 {balance.currency}
-                                {balance.currency === props.defaultCurrency && <div class="adyen-fp-tag">Default</div>}
+                                {balance.currency === props.defaultCurrency && <div className="adyen-fp-tag">Default</div>}
                             </div>
                             <div className="adyen-fp-balances__item">
                                 <div className="adyen-fp-balances__key">Current balance</div>
