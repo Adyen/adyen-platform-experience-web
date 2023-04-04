@@ -165,7 +165,9 @@ const CURRENCY_CODES = {
     XPF: '₣',
     YER: '﷼',
     ZAR: 'R',
-    ZWD: 'Z$'
+    ZWD: 'Z$',
 };
+
+export type CurrencyCode = keyof typeof CURRENCY_CODES;
 
 export default CURRENCY_CODES;

@@ -5,7 +5,7 @@ import { CoreOptions } from './types';
 import { processGlobalOptions } from './utils';
 import BPSession from './FPSession';
 import Language from '../language';
-import BaseElement from '../../dist/types/components/BaseElement';
+import BaseElement from '../components/BaseElement';
 
 class Core {
     public static readonly version = {

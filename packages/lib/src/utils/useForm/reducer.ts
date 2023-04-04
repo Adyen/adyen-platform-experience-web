@@ -25,7 +25,7 @@ export type FieldProcessor<Schema extends Record<string, any>> = (
     field: {
         key: Extract<keyof Schema, string>;
         value: unknown;
-        mode: ValidatorMode;
+        mode?: ValidatorMode;
     },
     state: { state: { data: Partial<Schema> } }
 ) => [string, { isValid: boolean; hasError(arg?: boolean): boolean; getError(arg?: boolean): ValidationRuleResult<Schema> | undefined }];

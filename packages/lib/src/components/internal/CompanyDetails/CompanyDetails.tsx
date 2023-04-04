@@ -9,6 +9,7 @@ import { getFormattedData } from './utils';
 import { CompanyDetailsSchema, CompanyDetailsProps } from './types';
 import useForm from '../../../utils/useForm';
 import { SchemaKeys } from '../../../utils/useForm/types';
+import { ValidatorMode } from '../../../utils/Validator/types';
 
 const companyDetailsSchema: SchemaKeys<CompanyDetailsSchema>[] = ['name', 'registrationNumber'];
 
@@ -27,10 +28,10 @@ export default function CompanyDetails(props: CompanyDetailsProps<CompanyDetails
     const generateFieldName = (name: string): string => `${namePrefix ? `${namePrefix}.` : ''}${name}`;
 
     const eventHandler =
-        (mode: string): Function =>
+        (mode: ValidatorMode): Function =>
         (e: Event): void => {
             const { name } = e.target as HTMLInputElement;
-            const key = name.split(`${namePrefix}.`).pop();
+            const key = name.split(`${namePrefix}.`).pop() as keyof CompanyDetailsSchema;
 
             if (key) handleChangeFor(key, mode)(e);
         };
