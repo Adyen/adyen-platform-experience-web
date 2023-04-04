@@ -1,11 +1,12 @@
 import UIElement from '../components/UIElement';
 import components from '../components';
-import { Components } from '../types';
 import { CoreOptions } from './types';
 import { processGlobalOptions } from './utils';
 import BPSession from './FPSession';
 import Language from '../language';
 import BaseElement from '../components/BaseElement';
+import { ComponentMap, ComponentOptions, isAvailableOfComponent, isKeyOfComponent } from '../types';
+import { ValueOf } from '../utils/types';
 
 class Core {
     public static readonly version = {
@@ -16,11 +17,12 @@ class Core {
     };
     public session?: BPSession;
     public modules: any;
-    public options?: CoreOptions;
+    public options: CoreOptions;
     public components: BaseElement<any>[] = [];
 
     constructor(options: CoreOptions) {
         this.create = this.create.bind(this);
+        this.options = options;
         this.setOptions(options);
     }
 
@@ -54,12 +56,21 @@ class Core {
      *
      * @returns new UIElement
      */
-    public create<T extends keyof Components>(component: T, options?): InstanceType<Components[T]>;
-    public create<T extends new (...args: any) => T, P extends ConstructorParameters<T>>(component: T, options?: P[0]): T;
-    public create(component: string, options?);
+
+    public create(component: string, options: any): any;
+    public create<ComponentName extends keyof ComponentMap>(
+        component: ComponentName,
+        options: ComponentOptions<ComponentName>
+    ): InstanceType<ComponentMap[ComponentName]>;
+    public create<T extends ValueOf<ComponentMap>, P extends ConstructorParameters<T>>(component: T, options: P[0]): InstanceType<T>;
     public create(component: any, options?: any): any {
-        const props = this.getPropsForComponent(options);
-        return component ? this.handleCreate(component, props) : this.handleCreateError();
+        if (typeof component === 'string') {
+            const props = this.getPropsForComponent(options);
+            isKeyOfComponent(component) ? this.handleCreate<typeof component>(component, props) : this.handleCreateError();
+        } else {
+            const props = this.getPropsForComponent(options);
+            return component ? this.handleCreate<typeof component>(component, props) : this.handleCreateError();
+        }
     }
 
     /**
@@ -83,7 +94,7 @@ class Core {
      * @param component - reference to the component to be removed
      * @returns this - the element instance
      */
-    public remove = (component): this => {
+    public remove = (component: BaseElement<any>): this => {
         this.components = this.components.filter(c => c._id !== component._id);
         component.unmount();
 
@@ -97,7 +108,7 @@ class Core {
      * @param options - the config object passed when AdyenFP is initialised
      * @returns this
      */
-    private setOptions = (options): this => {
+    private setOptions = (options: CoreOptions): this => {
         this.options = { ...this.options, ...options };
         this.modules = {
             // analytics: new Analytics(this.options),
@@ -118,7 +129,7 @@ class Core {
      * @param options - options that will be merged to the global Checkout props
      * @returns props for a new UIElement
      */
-    private getPropsForComponent(options) {
+    private getPropsForComponent(options: any) {
         return {
             ...options,
             i18n: this.modules.i18n,
@@ -140,14 +151,23 @@ class Core {
      *
      * @returns new UIElement
      */
-    private handleCreate(Component, options: any = {}): UIElement {
+    private handleCreate<T extends keyof ComponentMap>(Component: keyof ComponentMap, options: any): ComponentMap[T];
+    private handleCreate<T extends ValueOf<ComponentMap>>(Component: T, options: any): InstanceType<T>;
+    private handleCreate(Component: any, options: any = {}): any {
         const isValidClass = Component.prototype instanceof UIElement;
+        /**
+         * Usual initial point of entry to this function (Component is a String).
+         * When Component is defined as a string - retrieve a component from the componentsMap and recall this function passing in a valid class
+         */
+        if (typeof Component === 'string' && isKeyOfComponent(Component)) {
+            return this.handleCreate<ComponentMap[typeof Component]>(components[Component], { type: Component, ...options });
+        }
 
         /**
          * Final entry point (Component is a Class):
          * Once we receive a valid class for a Component - create a new instance of it
          */
-        if (isValidClass) {
+        if (isValidClass && isAvailableOfComponent(Component)) {
             /**
              * Find which creation scenario we are in - we need to know when we're creating a Dropin, a PM within the Dropin, or a standalone stored card.
              */
@@ -160,16 +180,7 @@ class Core {
              * 2. the options that have been passed to the final call of this function (see comment on \@param, above)
              */
             const component = new Component({ ...globalOptions, ...options });
-
             return component;
-        }
-
-        /**
-         * Usual initial point of entry to this function (Component is a String).
-         * When Component is defined as a string - retrieve a component from the componentsMap and recall this function passing in a valid class
-         */
-        if (typeof Component === 'string' && components[Component]) {
-            return this.handleCreate(components[Component], { type: Component, ...options });
         }
 
         return this.handleCreateError(Component);
@@ -178,7 +189,7 @@ class Core {
     /**
      * @internal
      */
-    private handleCreateError(component?): never {
+    private handleCreateError(component?: ValueOf<ComponentMap>): never {
         const componentName = component?.name || 'The passed component';
         const errorMessage = component ? `${componentName} is not a valid component` : 'No component was passed';
 
