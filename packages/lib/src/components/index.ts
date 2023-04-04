@@ -6,6 +6,7 @@ import AccountHolder from './AccountHolder';
 import BalanceAccount from './BalanceAccount';
 import Transactions from './Transactions';
 import TransactionDetails from './TransactionDetails';
+import { ComponentMap } from '../types';
 
 /**
  * Maps each component with a Component element.
@@ -24,7 +25,7 @@ const componentsMap = {
  * @param props - for the new Component element
  * @returns new Component or null
  */
-export const getComponent = (componentType, props) => {
+export const getComponent = (componentType: keyof ComponentMap, props: ConstructorParameters<ComponentMap[typeof componentType]>) => {
     const Component = componentsMap[componentType] || null;
     return Component ? new Component({ ...props, id: `${componentType}-${uuid()}` }) : null;
 };
@@ -35,10 +36,8 @@ export const getComponent = (componentType, props) => {
  * @param componentsConfig - global componentsConfiguration
  * @returns component configuration
  */
-export const getComponentConfiguration = (type: string, componentsConfig = {}) => {
-    let pmType = type;
-
-    return componentsConfig[pmType] || {};
+export const getComponentConfiguration = (type: string, componentsConfig: Record<string, any> = {}) => {
+    return componentsConfig[type] || {};
 };
 
 export default componentsMap;

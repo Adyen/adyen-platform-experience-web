@@ -1,11 +1,13 @@
 import CoreProvider from '../../core/Context/CoreProvider';
 import UIElement from '../UIElement';
 import Transactions from './components/Transactions';
+import { TransactionsPageProps } from './types';
 
 export class TransactionsElement extends UIElement {
     public static type = 'transactions';
 
-    constructor(props) {
+    // TODO assign correct prop type
+    constructor(props: any) {
         super(props);
         this.elementRef = (props && props.elementRef) || this;
     }
@@ -18,7 +20,7 @@ export class TransactionsElement extends UIElement {
         return this.props.name;
     }
 
-    formatProps(props) {
+    formatProps(props: TransactionsPageProps) {
         return props;
     }
 
@@ -39,7 +41,7 @@ export class TransactionsElement extends UIElement {
         return (
             <CoreProvider i18n={this.props.i18n} loadingContext={this.props.loadingContext}>
                 <Transactions
-                    ref={ref => {
+                    ref={(ref: UIElement) => {
                         this.componentRef = ref;
                     }}
                     {...this.props}

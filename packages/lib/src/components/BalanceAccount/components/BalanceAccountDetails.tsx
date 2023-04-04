@@ -3,8 +3,9 @@ import './BalanceAccountDetails.scss';
 import StatsBar from 'src/components/internal/StatsBar';
 import Status from 'src/components/internal/Status';
 import Balances from './Balances';
+import { BalanceAccountDetailsProps } from '../types';
 
-function BalanceAccountDetails(props) {
+function BalanceAccountDetails(props: BalanceAccountDetailsProps) {
     const { i18n } = useCoreContext();
     const { balanceAccount } = props;
 
@@ -64,13 +65,6 @@ function BalanceAccountDetails(props) {
                                     <div class="adyen-fp-value">{balanceAccount.platformPaymentConfiguration.settlementDelayDays}</div>
                                 </div>
                             </>
-                        )}
-
-                        {!!balanceAccount.referenceForBeneficiary && (
-                            <div class="adyen-fp-field">
-                                <div class="adyen-fp-label">{i18n.get('referenceForBeneficiary')}</div>
-                                <div class="adyen-fp-value">{balanceAccount.referenceForBeneficiary}</div>
-                            </div>
                         )}
                     </div>
                 </div>

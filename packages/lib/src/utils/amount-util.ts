@@ -6,7 +6,7 @@ import CURRENCY_DECIMALS, { CurrencyDecimalCode } from './constants/currency-dec
  * @param currencyCode -
  * Get divider amount
  */
-export const getDivider = (currencyCode: CurrencyDecimalCode): number => CURRENCY_DECIMALS[currencyCode] || 100;
+export const getDivider = (currencyCode: CurrencyCode): number => CURRENCY_DECIMALS[currencyCode as CurrencyDecimalCode] || 100;
 
 /**
  * @internal
@@ -24,7 +24,7 @@ export const getCurrencyCode = (currencyCode: CurrencyCode): string | null =>
 /**
  * @internal
  */
-export const getDecimalAmount = (amount: number | string, currencyCode: CurrencyDecimalCode): number => {
+export const getDecimalAmount = (amount: number | string, currencyCode: CurrencyCode): number => {
     const divider = getDivider(currencyCode);
     return parseInt(String(amount), 10) / divider;
 };
@@ -32,7 +32,7 @@ export const getDecimalAmount = (amount: number | string, currencyCode: Currency
 /**
  * @internal
  */
-export const getLocalisedAmount = (amount: number, locale: string, currencyCode: CurrencyDecimalCode, options: Record<string, any> = {}): string => {
+export const getLocalisedAmount = (amount: number, locale: string, currencyCode: CurrencyCode, options: Record<string, any> = {}): string => {
     const stringAmount = amount.toString(); // Changing amount to string to avoid 0-value from returning false
 
     const decimalAmount = getDecimalAmount(stringAmount, currencyCode);
