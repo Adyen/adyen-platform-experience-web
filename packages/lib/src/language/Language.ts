@@ -1,22 +1,24 @@
-import { formatCustomTranslations, formatLocale, getTranslation, loadTranslations, Locale, parseLocale } from './utils';
+import { formatCustomTranslations, formatLocale, getTranslation, loadTranslations, LocaleKey, parseLocale } from './utils';
 import { defaultTranslation, FALLBACK_LOCALE } from './config';
 import { getLocalisedAmount } from '../utils/amount-util';
 import translations from './translations/index';
 import DateTimeFormatOptions = Intl.DateTimeFormatOptions;
+import { CurrencyDecimalCode } from '../utils/constants/currency-decimals';
+import { CustomTranslations, TranslationOptions } from './types';
 
 export class Language {
-    public readonly locale: Locale | string;
+    public readonly locale: LocaleKey | string;
     public readonly languageCode: string;
-    public translations: object = defaultTranslation;
-    public readonly customTranslations: Record<`${string}-${string}`, any>;
+    public translations: Record<string, string> = defaultTranslation;
+    public readonly customTranslations: Record<string, any>;
     public loaded: Promise<any>;
-    private readonly supportedLocales: Locale[];
+    private readonly supportedLocales: LocaleKey[] | string[];
 
-    constructor(locale: string = FALLBACK_LOCALE, customTranslations: object = {}) {
-        const defaultLocales = Object.keys(translations) as Locale[];
+    constructor(locale: string = FALLBACK_LOCALE, customTranslations: CustomTranslations = {}) {
+        const defaultLocales = Object.keys(translations) as LocaleKey[];
         this.customTranslations = formatCustomTranslations(customTranslations, defaultLocales);
 
-        const localesFromCustomTranslations = Object.keys(this.customTranslations) as `${string}-${string}`[];
+        const localesFromCustomTranslations = Object.keys(this.customTranslations) as string[];
         this.supportedLocales = [...defaultLocales, ...localesFromCustomTranslations].filter((v, i, a) => a.indexOf(v) === i); // our locales + validated custom locales
         this.locale = formatLocale(locale) || parseLocale(locale, this.supportedLocales) || locale;
         const [languageCode] = this.locale.split('-');
@@ -33,7 +35,7 @@ export class Language {
      * @param options - Translation options
      * @returns Translated string
      */
-    get(key: string, options?): string {
+    get(key: string, options?: TranslationOptions): string {
         const translation = getTranslation(this.translations, key, options);
         if (translation !== null) {
             return translation;
@@ -48,7 +50,7 @@ export class Language {
      * @param currencyCode - Currency code of the amount
      * @param options - Options for String.prototype.toLocaleString
      */
-    amount(amount: number, currencyCode: string, options?: object): string {
+    amount(amount: number, currencyCode: CurrencyDecimalCode, options?: Record<string, any>): string {
         const localisedAmount = getLocalisedAmount(amount, this.locale, currencyCode, options);
         if (options && options['showSign'] && amount !== 0) {
             return localisedAmount.includes('-') ? `- ${localisedAmount.replace('-', '')}` : `+ ${localisedAmount}`;

@@ -10,7 +10,7 @@ export interface ErrorPanelProps {
     id?: string;
     heading?: string;
     errors: ErrorPanelObj;
-    callbackFn?: (who) => void;
+    callbackFn?: (who: ErrorPanelObj) => void;
     showPanel?: boolean;
 }
 

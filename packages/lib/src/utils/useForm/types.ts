@@ -40,14 +40,14 @@ export type FormProps<FormSchema extends Record<string, unknown>, Props = {}> = 
 } & { [k in keyof Props]?: Props[k] };
 
 export interface Form<FormSchema extends Record<string, unknown>> extends FormState<FormSchema> {
-    handleChangeFor: (key: string, mode?: string) => (e: any) => void;
+    handleChangeFor: (key: SchemaKeys<FormSchema>, mode?: ValidatorMode) => (e: any) => void;
     triggerValidation: (schema?: any) => void;
     setSchema: (schema: any) => void;
-    setData: (key: string, value: any) => void;
-    setValid: (key: string, value: any) => void;
-    setErrors: (key: string, value: any) => void;
-    mergeForm: (formValue: any) => void;
+    setData: (key: SchemaKeys<FormSchema>, value: FormSchema[Extract<keyof FormSchema, string>]) => void;
+    setValid: (key: Extract<keyof FormSchema, string>, value: Boolean) => void;
+    setErrors: (key: Extract<keyof FormSchema, string>, value: FieldErrors) => void;
     setFieldProblems: (fieldProblems: FieldProblems<FormSchema>) => void;
+    mergeForm: (formValue: FormState<FormSchema>) => void;
 }
 
 type BaseReducerAction<FormSchema extends Record<string, unknown>> = {
@@ -56,7 +56,7 @@ type BaseReducerAction<FormSchema extends Record<string, unknown>> = {
 };
 
 export interface ReducerActionType<FormSchema extends Record<string, unknown>> {
-    updateField: BaseReducerAction<FormSchema> & { mode: ValidatorMode };
+    updateField: BaseReducerAction<FormSchema> & { mode?: ValidatorMode };
     validateForm: { selectedSchema: SchemaKeys<FormSchema>[] | null };
     setErrors: BaseReducerAction<FormSchema>;
     setValid: BaseReducerAction<FormSchema>;

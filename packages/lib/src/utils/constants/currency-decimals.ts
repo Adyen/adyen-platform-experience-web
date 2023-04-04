@@ -28,7 +28,8 @@ const CURRENCY_DECIMALS = {
     KWD: 1000,
     OMR: 1000,
     LYD: 1000,
-    TND: 1000
+    TND: 1000,
 };
 
+export type CurrencyDecimalCode = keyof typeof CURRENCY_DECIMALS;
 export default CURRENCY_DECIMALS;
