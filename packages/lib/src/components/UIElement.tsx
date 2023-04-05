@@ -1,12 +1,12 @@
 import BaseElement from './BaseElement';
 import getImage from '../utils/get-image';
-import { IUIElement, UIElementProps } from './types';
+import { BaseElementProps, IUIElement, UIElementProps } from './types';
 import AdyenFPError from '../core/Errors/AdyenFPError';
 import { UIElementStatus } from './types';
 
 export class UIElement<P extends UIElementProps = any> extends BaseElement<P> implements IUIElement {
-    protected componentRef: any;
-    public elementRef: any;
+    protected componentRef: UIElement | null;
+    public elementRef: UIElement | null;
 
     constructor(props: P) {
         super(props);
@@ -15,7 +15,7 @@ export class UIElement<P extends UIElementProps = any> extends BaseElement<P> im
         this.onValid = this.onValid.bind(this);
         this.onComplete = this.onComplete.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
-
+        this.componentRef = null;
         this.elementRef = (props && props.elementRef) || this;
     }
 
@@ -34,6 +34,7 @@ export class UIElement<P extends UIElementProps = any> extends BaseElement<P> im
     }
 
     private onSubmit(): void {
+        //
     }
 
     private onValid() {
@@ -42,7 +43,7 @@ export class UIElement<P extends UIElementProps = any> extends BaseElement<P> im
         return state;
     }
 
-    onComplete(state): void {
+    onComplete(state: BaseElementProps): void {
         if (this.props.onComplete) this.props.onComplete(state, this.elementRef);
     }
 
@@ -63,7 +64,7 @@ export class UIElement<P extends UIElementProps = any> extends BaseElement<P> im
         return this;
     }
 
-    public setStatus(status: UIElementStatus, props?): this {
+    public setStatus(status: UIElementStatus, props: P): this {
         if (this.componentRef?.setStatus) {
             this.componentRef.setStatus(status, props);
         }
@@ -87,14 +88,14 @@ export class UIElement<P extends UIElementProps = any> extends BaseElement<P> im
      * Get the element icon URL for the current environment
      */
     get icon(): string {
-        return this.props.icon ?? getImage({ loadingContext: this.props.loadingContext })(this.constructor['type']);
+        return this.props.icon ?? getImage({ loadingContext: this.props.loadingContext })((this.constructor as typeof UIElement)?.type);
     }
 
     /**
      * Get the element's displayable name
      */
     get displayName(): string {
-        return this.props.name || this.constructor['type'];
+        return this.props.name || (this.constructor as typeof UIElement)?.type;
     }
 
     /**
@@ -108,7 +109,7 @@ export class UIElement<P extends UIElementProps = any> extends BaseElement<P> im
      * Return the type of an element
      */
     get type(): string {
-        return this.props.type || this.constructor['type'];
+        return this.props.type || (this.constructor as typeof UIElement)?.type;
     }
 }
 

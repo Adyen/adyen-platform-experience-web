@@ -1,5 +1,8 @@
-export const getLabel = key => {
-    const labels = {
+import { TransactionsPageProps } from '../types';
+import { PageChangeOptions } from '../../internal/Pagination/type';
+
+export const getLabel = (key: string) => {
+    const labels: Record<string, string> = {
         id: 'paymentId',
         type: 'transactionType',
         createdAt: 'creationTime',
@@ -16,10 +19,10 @@ export const getLabel = key => {
     return labels[key] || key;
 };
 
-export const getCursor = (dir: string, transactions): string | null => {
+export const getCursor = (dir: PageChangeOptions, transactions: TransactionsPageProps['transactions']): string | null => {
     try {
         if (transactions._links?.[dir]?.href) {
-            const url = new URL(transactions._links[dir].href);
+            const url = new URL(transactions?._links?.[dir]?.href ?? '');
             return url.searchParams.get('cursor');
         }
     } catch (e) {
@@ -28,11 +31,11 @@ export const getCursor = (dir: string, transactions): string | null => {
     return null;
 };
 
-export const getRequestParams = transactions => {
+export const getRequestParams = (transactions: TransactionsPageProps['transactions']) => {
     try {
         const links = transactions?._links || {};
-        const link = links['prev'] || links['next'] || {};
-        if (link.href) {
+        const link = links['prev'] || links['next'];
+        if (link?.href) {
             const url = new URL(link.href);
             const { cursor, ...params } = Object.fromEntries(url.searchParams);
             return params;

@@ -6,48 +6,48 @@ import { getLabel } from './utils';
 import Button from 'src/components/internal/Button';
 import DataGridCell from 'src/components/internal/DataGrid/DataGridCell';
 import './Transactions.scss';
+import { Transaction, TransactionListProps } from '../types';
 
-function TransactionList(props) {
+function TransactionList(props: TransactionListProps) {
     const { i18n } = useCoreContext();
-    const fields = ['id', 'type', 'balanceAccountId', 'accountHolderId', 'amount', 'createdAt', 'description'];
+    const fields: (keyof Transaction)[] = ['id', 'type', 'balanceAccountId', 'accountHolderId', 'amount', 'createdAt', 'description'];
+
     const columns = fields.map(key => ({ key, label: i18n.get(getLabel(key)) }));
 
     return (
-        <DataGrid
+        <DataGrid<Transaction>
             columns={columns}
             data={props.transactions.data}
             loading={props.loading}
             customCells={{
-                id: (key, item) =>
-                    !!props.onTransactionSelected ? (
-                        <Button variant={'link'} onClick={() => props.onTransactionSelected({ id: item[key] })}>
-                            {item[key]}
+                id: ({ value }) =>
+                    props.onTransactionSelected ? (
+                        <Button variant={'link'} onClick={() => props.onTransactionSelected?.({ id: value })}>
+                            {value}
                         </Button>
                     ) : (
-                        item[key]
+                        value
                     ),
-                balanceAccountId: (key, item) =>
+                balanceAccountId: ({ value }) =>
                     !props.onBalanceAccountSelected ? (
-                        <Button variant={'link'} onClick={() => props.onBalanceAccountSelected({ id: item[key] })}>
-                            {item[key]}
+                        <Button variant={'link'} onClick={() => props.onBalanceAccountSelected?.({ id: value })}>
+                            {value}
                         </Button>
                     ) : (
-                        item[key]
+                        value
                     ),
-                accountHolderId: (key, item) =>
+                accountHolderId: ({ value }) =>
                     !props.onAccountSelected ? (
-                        <Button variant={'link'} onClick={() => props.onAccountSelected({ id: item[key] })}>
-                            {item[key]}
+                        <Button variant={'link'} onClick={() => props.onAccountSelected?.({ id: value })}>
+                            {value}
                         </Button>
                     ) : (
-                        item[key]
+                        value
                     ),
-                createdAt: (key, item) => i18n.fullDate(item[key]),
-                type: (key, item) => i18n.get(getLabel(item[key])),
-                amount: (key, item) => {
-                    const amount = item[key]?.currency
-                        ? i18n.amount(item[key].value, item[key].currency, { currencyDisplay: 'code', showSign: true })
-                        : null;
+                createdAt: ({ value }) => i18n.fullDate(value),
+                type: ({ value }) => i18n.get(getLabel(value)),
+                amount: ({ value }) => {
+                    const amount = value?.currency ? i18n.amount(value.value, value.currency, { currencyDisplay: 'code', showSign: true }) : null;
                     const isPositive = amount?.indexOf('-') === -1;
                     return (
                         <div

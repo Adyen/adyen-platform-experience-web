@@ -27,15 +27,15 @@ export interface IUIElement {
 export type UIElementStatus = 'ready' | 'loading' | 'error' | 'success';
 
 export interface UIElementProps extends BaseElementProps {
+    id?: string;
     session?: BPSession;
-    onChange?: (state: any, element: UIElement) => void;
-    onValid?: (state: any, element: UIElement) => void;
+    onChange?: (state: any, element: UIElement | null) => void;
+    onValid?: (state: any, element: UIElement | null) => void;
     beforeSubmit?: (state: any, element: UIElement, actions: any) => Promise<void>;
-    onSubmit?: (state: any, element: UIElement) => void;
-    onComplete?: (state, element: UIElement) => void;
-    onError?: (error, element?: UIElement) => void;
-    beforeRedirect?: (resolve, reject, redirectData, element: UIElement) => void;
-
+    onSubmit?: (state: any, element: UIElement | null) => void;
+    onComplete?: (state: BaseElementProps, element: UIElement | null) => void;
+    onError?: (error: any, element?: UIElement | null) => void;
+    beforeRedirect?: (resolve: any, reject: any, redirectData: any, element: UIElement) => void;
     type?: string;
     name?: string;
     icon?: string;
@@ -60,3 +60,15 @@ export interface UIElementProps extends BaseElementProps {
     /** @internal */
     i18n?: Language;
 }
+export type BaseElementState = {
+    errors?: {
+        [key: string]: any;
+    };
+    valid?: {
+        [key: string]: boolean;
+    };
+    fieldProblems?: {
+        [key: string]: any;
+    };
+    isValid?: boolean;
+};

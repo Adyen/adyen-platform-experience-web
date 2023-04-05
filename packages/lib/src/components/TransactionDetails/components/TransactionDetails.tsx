@@ -2,13 +2,14 @@ import useCoreContext from 'src/core/Context/useCoreContext';
 import StatsBar from 'src/components/internal/StatsBar';
 import Status from 'src/components/internal/Status';
 import './TransactionDetails.scss';
+import { TransactionDetailsProps } from '../types';
 
-function TransactionsDetails(props) {
+function TransactionsDetails(props: TransactionDetailsProps) {
     const { i18n } = useCoreContext();
     const { transaction } = props;
 
-    const getLabel = key => {
-        const labels = {
+    const getLabel = (key: string) => {
+        const labels: Record<string, string> = {
             internal: 'category.internal',
         };
 
