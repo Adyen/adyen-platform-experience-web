@@ -9,7 +9,7 @@ interface ContactDetailsProps {
 }
 export default function ContactDetails({ address, phoneNumber, emailAddress }: ContactDetailsProps) {
     return (
-        <div class="adyen-fp-contact-details">
+        <div className="adyen-fp-contact-details">
             <div className="adyen-fp-subtitle">Contact details</div>
             {!!phoneNumber && <div className="adyen-fp-contact-details adyen-fp-contact-details--phone">{phoneNumber.number}</div>}
 

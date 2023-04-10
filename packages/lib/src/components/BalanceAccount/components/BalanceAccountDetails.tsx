@@ -18,19 +18,19 @@ function BalanceAccountDetails(props: BalanceAccountDetailsProps) {
                     featured={true}
                     items={[
                         {
-                            label: 'Balance account ID',
+                            label: i18n.get('balanceAccountId'),
                             value: balanceAccount.id,
                         },
                         {
-                            label: 'Default currency',
+                            label: i18n.get('defaultCurrency'),
                             value: balanceAccount.defaultCurrencyCode,
                         },
                         {
-                            label: 'Created',
+                            label: i18n.get('created'),
                             value: 'N/A',
                         },
                         {
-                            label: 'Status',
+                            label: i18n.get('status'),
                             value: <Status type={'success'} label={balanceAccount.status} />,
                         },
                     ]}

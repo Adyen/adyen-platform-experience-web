@@ -8,7 +8,7 @@ import { API_VERSION } from './constants';
 function setupSession(session: Session, options): Promise<SessionSetupResponse> {
     const path = `${API_VERSION}/sessions/${session.id}/setup?clientKey=${session.clientKey}`;
     const data = {
-        sessionData: session.data
+        sessionData: session.data,
     };
 
     return httpPost<SessionSetupResponse>(
@@ -16,7 +16,8 @@ function setupSession(session: Session, options): Promise<SessionSetupResponse> 
             loadingContext: session.loadingContext,
             path,
             errorLevel: 'fatal',
-            errorMessage: 'ERROR: Invalid ClientKey'
+            errorMessage: 'ERROR: Invalid ClientKey',
+            ...(options ?? {}),
         },
         data
     );

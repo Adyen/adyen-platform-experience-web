@@ -20,11 +20,11 @@ export default function DateFilter(props: DateFilterProps) {
     );
 }
 
-export function DateFilterBody(props: { to?: string; from?: string; updateFilterValue: (e: Event) => void } & BaseFilterProps) {
+export function DateFilterBody(props: { to?: string; from?: string; updateFilterValue: (e: Event, field: string) => void } & BaseFilterProps) {
     const { i18n } = useCoreContext();
 
     const handleFilterValueUpdate = (field: string) => (e: Event) => {
-        props.updateFilterValue?.(e);
+        props.updateFilterValue?.(e, field);
     };
 
     return (

@@ -31,5 +31,9 @@
     "reference": "Reference",
     "transactions": "Transactions",
     "from": "From",
-    "to": "To"
+    "to": "To",
+    "balanceAccountId": "Balance account ID",
+    "defaultCurrency": "Default currency",
+    "created": "Created",
+    "status": "Status"
 }

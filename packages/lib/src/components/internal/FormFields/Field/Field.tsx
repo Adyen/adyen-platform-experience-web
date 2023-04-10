@@ -79,7 +79,6 @@ const Field: FunctionalComponent<FieldProps> = props => {
                     </span>
                 )}
 
-                {/*@ts-ignore - function is callable*/}
                 {typeof label === 'function' && label()}
 
                 {labelEndAdornment && <span className="adyen-fp-label-adornment--end">{labelEndAdornment}</span>}
