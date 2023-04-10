@@ -51,7 +51,7 @@ function TransactionList(props: TransactionListProps) {
                     const isPositive = amount?.indexOf('-') === -1;
                     return (
                         <div
-                            class={classnames('adyen-fp-amount', {
+                            className={classnames('adyen-fp-amount', {
                                 'adyen-fp-amount--positive': isPositive,
                                 'adyen-fp-amount--negative': !isPositive,
                             })}

@@ -31,7 +31,7 @@ function DataGrid<T extends { [k: string]: any }>(props: DataGridProps<T>) {
 
     return (
         <div
-            class={classnames('adyen-fp-data-grid', {
+            className={classnames('adyen-fp-data-grid', {
                 'adyen-fp-data-grid--condensed': props.condensed,
                 'adyen-fp-data-grid--outline': props.outline,
                 'adyen-fp-data-grid--scrollable': props.scrollable,
@@ -42,12 +42,12 @@ function DataGrid<T extends { [k: string]: any }>(props: DataGridProps<T>) {
                 <Spinner />
             ) : (
                 <>
-                    <div class="adyen-fp-data-grid__table-wrapper">
-                        <table class="adyen-fp-data-grid__table">
-                            <thead class="adyen-fp-data-grid__head">
-                                <tr class="adyen-fp-data-grid__row">
+                    <div className="adyen-fp-data-grid__table-wrapper">
+                        <table className="adyen-fp-data-grid__table">
+                            <thead className="adyen-fp-data-grid__head">
+                                <tr className="adyen-fp-data-grid__row">
                                     {props.columns.map(item => (
-                                        <th class="adyen-fp-data-grid__cell" key={item.key}>
+                                        <th className="adyen-fp-data-grid__cell" key={item.key}>
                                             {item.label}
                                         </th>
                                     ))}
@@ -65,9 +65,9 @@ function DataGrid<T extends { [k: string]: any }>(props: DataGridProps<T>) {
 
 function DataGridBody<T extends { [k: string]: any }>(props: DataGridProps<T>) {
     return (
-        <tbody class="adyen-fp-data-grid__body">
+        <tbody className="adyen-fp-data-grid__body">
             {props.data.map(item => (
-                <tr class="adyen-fp-data-grid__row" key={item}>
+                <tr className="adyen-fp-data-grid__row" key={item}>
                     {props.columns.map(({ key }) => {
                         if (props.customCells?.[key])
                             return (
@@ -89,8 +89,9 @@ function DataGridBody<T extends { [k: string]: any }>(props: DataGridProps<T>) {
 }
 
 DataGrid.Footer = DataGridFooter;
+
 function DataGridFooter({ children }: { children: ComponentChild }) {
-    return <div class="adyen-fp-data-grid__footer">{children}</div>;
+    return <div className="adyen-fp-data-grid__footer">{children}</div>;
 }
 
 DataGrid.defaultProps = {

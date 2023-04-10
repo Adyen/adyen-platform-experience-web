@@ -8,7 +8,7 @@ export default function FilterBar(props) {
     const disableResetButton = useMemo(() => !!props.filters || !!Object.keys(props.filters).length, [props.filters]);
 
     return (
-        <div class="adyen-fp-filter-bar">
+        <div className="adyen-fp-filter-bar">
             {props.children}
             {!!props.resetFilters && (
                 <Button
