@@ -1,4 +1,4 @@
-import { h, Component, ComponentChildren } from 'preact';
+import { h, ComponentChildren, ComponentChild } from 'preact';
 import Language from '../../../../language';
 
 export interface FieldProps {
@@ -13,7 +13,7 @@ export interface FieldProps {
     inputWrapperModifiers?: string[];
     isLoading?: boolean;
     isValid?: boolean;
-    label?: string | Component;
+    label?: string | ComponentChild;
     labelEndAdornment?: string | h.JSX.Element;
     onBlur?;
     onFocus?;

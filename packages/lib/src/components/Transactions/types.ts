@@ -1,5 +1,4 @@
 import { CurrencyCode } from '../../utils/constants/currency-codes';
-import { MutableRef } from 'preact/hooks';
 import UIElement from '../UIElement';
 import { PageChangeOptions } from '../internal/Pagination/type';
 

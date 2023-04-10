@@ -80,7 +80,7 @@ function TransactionsDetails(props: TransactionDetailsProps) {
 
                         <div className="adyen-fp-field">
                             <div className="adyen-fp-label">{i18n.get('Category')}</div>
-                            <div className="adyen-fp-value">{i18n.get(`category.${transaction.category}`)}</div>
+                            <div className="adyen-fp-value">{i18n.get(getLabel(transaction.category))}</div>
                         </div>
 
                         {!!transaction.referenceForBeneficiary && (
