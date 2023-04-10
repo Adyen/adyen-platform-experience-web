@@ -1,6 +1,7 @@
 import Button from '../../../Button';
+import { FilterButtonProps } from './types';
 
-export default function FilterButton(props) {    
+export default function FilterButton(props: FilterButtonProps) {
     return (
         <Button
             label={props.activeFilter ?? props.label}
