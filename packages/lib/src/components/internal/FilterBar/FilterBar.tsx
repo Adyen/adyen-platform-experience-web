@@ -2,10 +2,12 @@ import { useMemo } from 'preact/hooks';
 import useCoreContext from '../../../core/Context/useCoreContext';
 import Button from '../Button';
 import './FilterBar.scss';
+import { FilterBarProps } from './types';
+import { PropsWithChildren } from 'preact/compat';
 
-export default function FilterBar(props) {
+export default function FilterBar(props: PropsWithChildren<FilterBarProps>) {
     const { i18n } = useCoreContext();
-    const disableResetButton = useMemo(() => !!props.filters || !!Object.keys(props.filters).length, [props.filters]);
+    const disableResetButton = useMemo(() => (!!props.filters || props.filters ? !!Object.keys(props.filters).length : false), [props.filters]);
 
     return (
         <div className="adyen-fp-filter-bar">

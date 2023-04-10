@@ -3,6 +3,7 @@ import { countrySpecificFormatters } from './validate.formats';
 import { ERROR_CODES, ERROR_MSG_INCOMPLETE_FIELD } from '../../../core/Errors/constants';
 import { isEmpty } from '../../../utils/validator-utils';
 import { AddressData } from '../../../types';
+import Specifications from './Specifications';
 
 const createPatternByDigits = (digits: number) => {
     return {
@@ -10,7 +11,7 @@ const createPatternByDigits = (digits: number) => {
     };
 };
 
-const postalCodePatterns = {
+const postalCodePatterns: Record<string, { pattern: RegExp }> = {
     AT: createPatternByDigits(4),
     AU: createPatternByDigits(4),
     BE: { pattern: /(?:(?:[1-9])(?:\d{3}))/ },
@@ -51,9 +52,9 @@ const postalCodePatterns = {
     SG: createPatternByDigits(6),
     SK: createPatternByDigits(5),
     US: createPatternByDigits(5),
-};
+} as const;
 
-export const getAddressValidationRules = (specifications): ValidatorRules<AddressData> => {
+export const getAddressValidationRules = (specifications: Specifications): ValidatorRules<AddressData> => {
     const addressValidationRules: ValidatorRules<AddressData> = {
         postalCode: {
             modes: ['blur'],
@@ -72,21 +73,21 @@ export const getAddressValidationRules = (specifications): ValidatorRules<Addres
                         },
                     };
 
-                    if (isEmpty(val)) return null;
+                    if (isEmpty(val)) return false;
 
                     const pattern = postalCodePatterns[country]?.pattern;
                     return pattern ? pattern.test(val) : !!val; // No pattern? Accept any, filled, value.
                 }
                 // Default rule
-                return isEmpty(val) ? null : true;
+                return isEmpty(val) ? false : true;
             },
             errorMessage: ERROR_CODES[ERROR_MSG_INCOMPLETE_FIELD],
         },
         houseNumberOrName: {
             validate: (value, context) => {
                 const selectedCountry = context?.state?.data?.country;
-                const isOptional = selectedCountry && specifications.countryHasOptionalField(selectedCountry, 'houseNumberOrName');
-                return isOptional || (isEmpty(value) ? null : true);
+                const isOptional = selectedCountry && specifications.countryHasOptionalField?.(selectedCountry, 'houseNumberOrName');
+                return isOptional || (isEmpty(value) ? false : true);
             },
             modes: ['blur'],
             errorMessage: ERROR_CODES[ERROR_MSG_INCOMPLETE_FIELD],

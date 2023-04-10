@@ -3,19 +3,28 @@ import BaseFilter from '../BaseFilter';
 import Field from '../../../FormFields/Field';
 import InputText from '../../../FormFields/InputText';
 import './DateFilter.scss';
+import { DateFilterProps } from './types';
+import { BaseFilterProps } from '../BaseFilter/types';
 
-export default function DateFilter(props) {
+export default function DateFilter(props: DateFilterProps) {
     const { i18n } = useCoreContext();
-    const value = props.from ? `${props.from} - ${props.to || i18n.get('notSet')}` : null;
+    const value = props.from ? `${props.from} - ${props.to || i18n.get('notSet')}` : undefined;
 
-    return <BaseFilter {...props} value={value} type={'date'} body={props => <DateFilterBody {...{ ...props, from: props.from, to: props.to }} />} />;
+    return (
+        <BaseFilter
+            {...props}
+            value={value}
+            type={'date'}
+            body={baseProps => <DateFilterBody {...{ ...baseProps, from: props.from, to: props.to }} />}
+        />
+    );
 }
 
-export function DateFilterBody(props) {
+export function DateFilterBody(props: { to?: string; from?: string; updateFilterValue: (e: Event) => void } & BaseFilterProps) {
     const { i18n } = useCoreContext();
 
-    const handleFilterValueUpdate = field => e => {
-        props.updateFilterValue(e);
+    const handleFilterValueUpdate = (field: string) => (e: Event) => {
+        props.updateFilterValue?.(e);
     };
 
     return (

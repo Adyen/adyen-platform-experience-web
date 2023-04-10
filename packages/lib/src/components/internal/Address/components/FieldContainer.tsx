@@ -5,17 +5,21 @@ import { renderFormField } from '../../FormFields';
 import { AddressState, FieldContainerProps } from '../types';
 import useCoreContext from '../../../../core/Context/useCoreContext';
 import Language from '../../../../language/Language';
+import { ErrorMessageObject } from '../../../../utils/Validator/types';
 
-function getErrorMessage<FormSchema extends Record<string, any>>(
-    errors: AddressState<FormSchema>,
-    fieldName: string,
+function getErrorMessage<Schema extends Record<string, any>>(
+    errors: AddressState<Schema>,
+    fieldName: keyof AddressState<Schema>,
     i18n: Language
 ): string | boolean {
-    if (typeof errors[fieldName]?.errorMessage === 'object') {
-        const { translationKey, translationObject } = errors[fieldName].errorMessage;
-        return i18n.get(translationKey, translationObject);
+    if (typeof errors[fieldName]?.errorMessage === 'string') {
+        return errors[fieldName] ? i18n.get(errors[fieldName]?.errorMessage as string) : !!errors[fieldName];
     }
-    return i18n.get(errors[fieldName]?.errorMessage) || !!errors[fieldName];
+    if (errors[fieldName]) {
+        const { translationKey, translationObject } = errors[fieldName]?.errorMessage as ErrorMessageObject;
+        return errors[fieldName] ? i18n.get(translationKey, translationObject) : false;
+    }
+    return false;
 }
 
 /**
@@ -24,7 +28,7 @@ function getErrorMessage<FormSchema extends Record<string, any>>(
  * NOT TO BE USED: if you just want to add a Country or State dropdown outside of an Address component
  * - then you should implement <CountryField> or <StateField> directly
  */
-function FieldContainer<FormSchema extends Record<string, any>>(props: FieldContainerProps<FormSchema>) {
+function FieldContainer<Schema extends Record<string, any>>(props: FieldContainerProps<Schema>) {
     const {
         i18n,
         commonProps: { isCollatingErrors },
@@ -37,7 +41,7 @@ function FieldContainer<FormSchema extends Record<string, any>>(props: FieldCont
     const labelKey: string = selectedCountry ? props.specifications.getKeyForField(fieldName, selectedCountry) : '';
     const optionalLabel = isOptional ? ` ${i18n.get('field.title.optional')}` : '';
     const label = `${i18n.get(labelKey)}${optionalLabel}`;
-    const errorMessage = getErrorMessage<FormSchema>(errors, fieldName, i18n);
+    const errorMessage = getErrorMessage<Schema>(errors, fieldName, i18n);
 
     switch (fieldName) {
         case 'country':
