@@ -11,17 +11,19 @@ export default function BaseFilter(props) {
     const { i18n } = useCoreContext();
     const [editMode, setEditMode] = useState(false);
     const [filterValue, setFilterValue] = useState('');
+    const [filterName, setFilterName] = useState('');
 
     const handleClick = () => {
         setEditMode(!editMode);
     };
 
-    const updateFilterValue = e => {
+    const updateFilterValue = (e, field) => {
         setFilterValue(e.target.value);
+        setFilterName(field);
     };
 
     const updateFilters = () => {
-        props.onChange({ [props.name]: filterValue });
+        props.onChange({ [filterName ?? props.name]: filterValue });
         toggleModal();
     };
 
