@@ -1,4 +1,3 @@
-import { h } from 'preact';
 import cx from 'classnames';
 import './RadioGroup.scss';
 import { RadioGroupProps } from './types';

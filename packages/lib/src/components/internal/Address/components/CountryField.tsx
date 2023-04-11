@@ -1,4 +1,3 @@
-import { h } from 'preact';
 import { useState, useLayoutEffect } from 'preact/hooks';
 import { renderFormField } from '../../FormFields';
 import Field from '../../FormFields/Field';
@@ -11,7 +10,7 @@ export default function CountryField(props: CountryFieldProps) {
     const {
         i18n,
         loadingContext,
-        commonProps: { isCollatingErrors }
+        commonProps: { isCollatingErrors },
     } = useCoreContext();
     const [countries, setCountries] = useState<CountryFieldItem[]>([]);
     const [loaded, setLoaded] = useState<boolean>(false);
@@ -20,7 +19,7 @@ export default function CountryField(props: CountryFieldProps) {
     useLayoutEffect(() => {
         getDataset('countries', loadingContext, i18n.locale)
             .then(response => {
-                const countriesFilter = country => allowedCountries.includes(country.id);
+                const countriesFilter = (country: CountryFieldItem) => allowedCountries.includes(country.id);
                 const newCountries = allowedCountries.length ? response.filter(countriesFilter) : response;
                 setCountries(newCountries || []);
                 setReadOnly(newCountries.length === 1 || readOnly);
@@ -52,7 +51,7 @@ export default function CountryField(props: CountryFieldProps) {
                 selected: value,
                 items: countries,
                 readonly: readOnly && !!value,
-                isCollatingErrors
+                isCollatingErrors,
             })}
         </Field>
     );

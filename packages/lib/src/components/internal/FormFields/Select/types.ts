@@ -48,7 +48,6 @@ export interface SelectListProps {
     onKeyDown: (e: KeyboardEvent) => void;
     onSelect: (e: Event) => void;
     selectListId: string;
-    selectListRef;
     showList: boolean;
     textFilter: string;
     isIconOnLeftSide: boolean;

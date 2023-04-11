@@ -1,13 +1,12 @@
 import { AddressSchema, AddressSpecifications, StringObject } from './types';
 import { ADDRESS_SPECIFICATIONS } from './constants';
-import { AddressField } from '../../../types';
+import { AddressField, Specification } from '../../../types';
 
 const SCHEMA_MAX_DEPTH = 2;
 
 class Specifications {
     private specifications: AddressSpecifications;
-
-    constructor(specifications?) {
+    constructor(specifications: Specification) {
         this.specifications = { ...ADDRESS_SPECIFICATIONS, ...specifications };
     }
 
@@ -44,7 +43,7 @@ class Specifications {
      * @param country - The selected country
      * @returns StringObject
      */
-    getAddressLabelsForCountry(country: string): StringObject {
+    getAddressLabelsForCountry(country: string): StringObject | undefined {
         return this.specifications?.[country]?.labels || this.specifications.default.labels;
     }
 
@@ -72,7 +71,7 @@ class Specifications {
      * @param country - The selected country
      */
     getPlaceholderKeyForField(fieldName: string, country: string): string {
-        return this.specifications?.[country]?.placeholders?.[fieldName] || this.specifications?.default?.placeholders?.[fieldName];
+        return this.specifications?.[country]?.placeholders?.[fieldName] || this.specifications?.default?.placeholders?.[fieldName] || '';
     }
 
     /**

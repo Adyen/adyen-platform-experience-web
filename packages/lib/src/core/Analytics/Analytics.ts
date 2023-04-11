@@ -9,10 +9,10 @@ class Analytics {
         enabled: true,
         telemetry: true,
         checkoutAttemptId: null,
-        experiments: []
+        experiments: [],
     };
 
-    public checkoutAttemptId: string = null;
+    public checkoutAttemptId: string | null = null;
     public props;
     private readonly logEvent;
     private readonly logTelemetry;
@@ -23,14 +23,14 @@ class Analytics {
         this.props = { ...Analytics.defaultProps, ...analytics };
         this.logEvent = logEvent({ loadingContext, locale });
         this.logTelemetry = postTelemetry({ loadingContext, locale, clientKey });
-        this.collectId = collectId({ loadingContext, clientKey, experiments: this.props.experiments });
+        this.collectId = collectId({ loadingContext: loadingContext ?? '', clientKey: clientKey ?? '', experiments: this.props.experiments });
 
         const { telemetry, enabled } = this.props;
         if (telemetry === true && enabled === true) {
             if (this.props.checkoutAttemptId) {
                 // handle prefilled checkoutAttemptId
                 this.checkoutAttemptId = this.props.checkoutAttemptId;
-                this.queue.run(this.checkoutAttemptId);
+                if (this.checkoutAttemptId) this.queue.run(this.checkoutAttemptId);
             }
         }
     }
@@ -43,7 +43,7 @@ class Analytics {
                 // fetch a new checkoutAttemptId if none is already available
                 this.collectId().then(checkoutAttemptId => {
                     this.checkoutAttemptId = checkoutAttemptId;
-                    this.queue.run(this.checkoutAttemptId);
+                    if (this.checkoutAttemptId) this.queue.run(this.checkoutAttemptId);
                 });
             }
 

@@ -1,4 +1,3 @@
-import { h } from 'preact';
 import classnames from 'classnames';
 import useCoreContext from '../../../core/Context/useCoreContext';
 import Button from '../Button';
@@ -8,18 +7,18 @@ export default function Pagination(props) {
     const { i18n } = useCoreContext();
 
     const handleClick = (dir, newPage) => {
-        // props.changePage(newPage);
+        props.changePage?.(newPage);
         props.onChange(dir);
     };
 
     return (
-        <div aria-label={i18n.get('paginatedNavigation')} class={`adyen-fp-pagination ${classnames({})}`}>
-            <div class="adyen-fp-pagination__context">
+        <div aria-label={i18n.get('paginatedNavigation')} className={`adyen-fp-pagination ${classnames({})}`}>
+            <div className="adyen-fp-pagination__context">
                 <span>
                     {i18n.get('pagination.page')} {props.page}
                 </span>
             </div>
-            <div class="adyen-fp-pagination__controls">
+            <div className="adyen-fp-pagination__controls">
                 <Button
                     aria-label={i18n.get('pagination.previousPage')}
                     variant={'ghost'}

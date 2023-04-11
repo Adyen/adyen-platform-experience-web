@@ -1,21 +1,22 @@
 import { FieldsetVisibility } from '../../../types';
 import { ValidatorRules } from '../../../utils/Validator/types';
+import { SchemaKeys } from '../../../utils/useForm/types';
 
-export interface CompanyDetailsSchema {
+export type CompanyDetailsSchema = {
     name?: string;
     registrationNumber?: string;
-}
+};
 
-export interface CompanyDetailsProps {
+export interface CompanyDetailsProps<FormSchema extends Record<string, any>> {
     label?: string;
     namePrefix?: string;
-    requiredFields?: string[];
+    requiredFields?: SchemaKeys<FormSchema>[];
     visibility?: FieldsetVisibility;
     data: CompanyDetailsSchema;
     onChange: (newState: object) => void;
     readonly?: boolean;
     ref?: any;
-    validationRules?: ValidatorRules;
+    validationRules?: ValidatorRules<FormSchema>;
 }
 
 export interface ReadOnlyCompanyDetailsProps {

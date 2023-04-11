@@ -1,7 +1,7 @@
-import { h } from 'preact';
 import CoreProvider from '../../core/Context/CoreProvider';
 import UIElement from '../UIElement';
 import AccountHolderDetails from './components/AccountHolderDetails';
+import { AccountHolderDetailsProps } from './types';
 
 export class AccountHolderElement extends UIElement {
     public static type = 'accountHolder';
@@ -11,10 +11,10 @@ export class AccountHolderElement extends UIElement {
     }
 
     get displayName() {
-        return this.props.name;
+        return this.props.name ?? this.type;
     }
 
-    formatProps(props) {
+    formatProps(props: AccountHolderDetailsProps) {
         return props;
     }
 
@@ -30,13 +30,7 @@ export class AccountHolderElement extends UIElement {
     render() {
         return (
             <CoreProvider i18n={this.props.i18n} loadingContext={this.props.loadingContext}>
-                <AccountHolderDetails
-                    ref={ref => {
-                        this.componentRef = ref;
-                    }}
-                    {...this.props}
-                    onChange={this.setState}
-                />
+                <AccountHolderDetails {...this.props} onChange={this.props.onChange ?? this.setState} />
             </CoreProvider>
         );
     }

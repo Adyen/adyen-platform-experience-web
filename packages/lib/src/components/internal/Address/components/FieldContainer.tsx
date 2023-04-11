@@ -1,18 +1,25 @@
-import { h } from 'preact';
 import Field from '../../FormFields/Field';
 import StateField from './StateField';
 import CountryField from './CountryField';
 import { renderFormField } from '../../FormFields';
-import { AddressStateError, FieldContainerProps } from '../types';
+import { AddressState, FieldContainerProps } from '../types';
 import useCoreContext from '../../../../core/Context/useCoreContext';
 import Language from '../../../../language/Language';
+import { ErrorMessageObject } from '../../../../utils/Validator/types';
 
-function getErrorMessage(errors: AddressStateError, fieldName: string, i18n: Language): string | boolean {
-    if (typeof errors[fieldName]?.errorMessage === 'object') {
-        const { translationKey, translationObject } = errors[fieldName].errorMessage;
-        return i18n.get(translationKey, translationObject);
+function getErrorMessage<Schema extends Record<string, any>>(
+    errors: AddressState<Schema>,
+    fieldName: keyof AddressState<Schema>,
+    i18n: Language
+): string | boolean {
+    if (typeof errors[fieldName]?.errorMessage === 'string') {
+        return errors[fieldName] ? i18n.get(errors[fieldName]?.errorMessage as string) : !!errors[fieldName];
     }
-    return i18n.get(errors[fieldName]?.errorMessage) || !!errors[fieldName];
+    if (errors[fieldName]) {
+        const { translationKey, translationObject } = errors[fieldName]?.errorMessage as ErrorMessageObject;
+        return errors[fieldName] ? i18n.get(translationKey, translationObject) : false;
+    }
+    return false;
 }
 
 /**
@@ -21,20 +28,20 @@ function getErrorMessage(errors: AddressStateError, fieldName: string, i18n: Lan
  * NOT TO BE USED: if you just want to add a Country or State dropdown outside of an Address component
  * - then you should implement <CountryField> or <StateField> directly
  */
-function FieldContainer(props: FieldContainerProps) {
+function FieldContainer<Schema extends Record<string, any>>(props: FieldContainerProps<Schema>) {
     const {
         i18n,
-        commonProps: { isCollatingErrors }
+        commonProps: { isCollatingErrors },
     } = useCoreContext();
     const { classNameModifiers = [], data, errors, valid, fieldName, onInput, onBlur, trimOnBlur, maxlength, disabled } = props;
 
     const value: string = data[fieldName];
-    const selectedCountry: string = data.country;
-    const isOptional: boolean = props.specifications.countryHasOptionalField(selectedCountry, fieldName);
-    const labelKey: string = props.specifications.getKeyForField(fieldName, selectedCountry);
+    const selectedCountry = data.country ?? '';
+    const isOptional: boolean = !!selectedCountry && props.specifications.countryHasOptionalField(selectedCountry, fieldName);
+    const labelKey: string = selectedCountry ? props.specifications.getKeyForField(fieldName, selectedCountry) : '';
     const optionalLabel = isOptional ? ` ${i18n.get('field.title.optional')}` : '';
     const label = `${i18n.get(labelKey)}${optionalLabel}`;
-    const errorMessage = getErrorMessage(errors, fieldName, i18n);
+    const errorMessage = getErrorMessage<Schema>(errors, fieldName, i18n);
 
     switch (fieldName) {
         case 'country':
@@ -66,7 +73,7 @@ function FieldContainer(props: FieldContainerProps) {
                     label={label}
                     classNameModifiers={classNameModifiers}
                     errorMessage={errorMessage}
-                    isValid={valid[fieldName]}
+                    isValid={valid?.[fieldName]}
                     name={fieldName}
                     isCollatingErrors={isCollatingErrors}
                 >
@@ -79,7 +86,7 @@ function FieldContainer(props: FieldContainerProps) {
                         isCollatingErrors,
                         maxlength,
                         trimOnBlur,
-                        disabled
+                        disabled,
                     })}
                 </Field>
             );

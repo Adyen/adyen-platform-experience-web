@@ -6,23 +6,27 @@
         "moduleResolution": "node",
         "module": "esnext",
         "target": "es2021",
-        "jsx": "react",
-        "jsxFactory": "h",
+        "jsx": "react-jsx",
+        "jsxImportSource": "preact",
         "resolveJsonModule": true,
         "allowSyntheticDefaultImports": true,
         "esModuleInterop": true,
-        "strictNullChecks": false,
 
+        "strict": true,
+        "noUncheckedIndexedAccess": true,
+
+        // TODO Delete all of the options below to use strict type checking
         "noImplicitAny": false,
-        "strictPropertyInitialization": false,
-        "suppressImplicitAnyIndexErrors": true,
+        "noImplicitThis": false,
+
         "stripInternal": true,
-
         "importHelpers": true,
-
         "sourceMap": true,
-        "baseUrl": "./"
+        "baseUrl": "./",
+        "paths": {
+            "react": ["./node_modules/preact/compat/"]
+        }
     },
-    "include": ["src/"],
+    "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.d.ts", "tests/**/*.ts"],
     "exclude": ["node_modules", "**/*.test.*"]
 }

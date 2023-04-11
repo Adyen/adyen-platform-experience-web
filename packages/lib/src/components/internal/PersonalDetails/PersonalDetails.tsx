@@ -1,4 +1,3 @@
-import { h } from 'preact';
 import { useEffect, useMemo } from 'preact/hooks';
 import Fieldset from '../FormFields/Fieldset';
 import Field from '../FormFields/Field';
@@ -12,33 +11,56 @@ import { PersonalDetailsSchema } from '../../../types';
 import { getFormattedData } from './utils';
 import useForm from '../../../utils/useForm';
 import './PersonalDetails.scss';
+import { SchemaKeys } from '../../../utils/useForm/types';
+import { ValidatorMode } from '../../../utils/Validator/types';
 
-const personalDetailsSchema = ['firstName', 'lastName', 'gender', 'dateOfBirth', 'shopperEmail', 'telephoneNumber'];
+const personalDetailsRequiredFields: SchemaKeys<PersonalDetailsSchema>[] = [
+    'firstName',
+    'lastName',
+    'gender',
+    'dateOfBirth',
+    'shopperEmail',
+    'telephoneNumber',
+];
 
-export default function PersonalDetails(props: PersonalDetailsProps) {
-    const { label = '', namePrefix, placeholders, requiredFields, visibility } = props;
+export default function PersonalDetails(props: PersonalDetailsProps<PersonalDetailsSchema>) {
+    const {
+        label = '',
+        namePrefix,
+        placeholders = {},
+        requiredFields = personalDetailsRequiredFields,
+        visibility = 'editable',
+        onChange = () => {},
+        validationRules = personalDetailsValidationRules,
+        data: defaultData = {},
+    } = props;
 
     const { i18n } = useCoreContext();
     const isDateInputSupported = useMemo(checkDateInputSupport, []);
-    const { handleChangeFor, triggerValidation, data, valid, errors, isValid } = useForm<PersonalDetailsSchema>({
+    const { handleChangeFor, triggerValidation, data, valid, errors, isValid } = useForm<
+        PersonalDetailsSchema,
+        PersonalDetailsProps<PersonalDetailsSchema>
+    >({
         schema: requiredFields,
-        rules: props.validationRules,
-        defaultData: props.data
+        rules: validationRules,
+        defaultData: defaultData,
     });
 
-    const eventHandler = (mode: string): Function => (e: Event): void => {
-        const { name } = e.target as HTMLInputElement;
-        const key = name.split(`${namePrefix}.`).pop();
+    const eventHandler =
+        (mode: ValidatorMode): Function =>
+        (e: Event): void => {
+            const { name } = e.target as HTMLInputElement;
+            const key = name.split(`${namePrefix}.`).pop();
 
-        handleChangeFor(key, mode)(e);
-    };
+            if (key) handleChangeFor(key as keyof PersonalDetailsSchema, mode)(e);
+        };
 
     const generateFieldName = (name: string): string => `${namePrefix ? `${namePrefix}.` : ''}${name}`;
     const getErrorMessage = error => (error && error.errorMessage ? i18n.get(error.errorMessage) : !!error);
 
     useEffect(() => {
         const formattedData = getFormattedData(data);
-        props.onChange({ data: formattedData, valid, errors, isValid });
+        onChange?.({ data: formattedData, valid, errors, isValid });
     }, [data, valid, errors, isValid]);
 
     this.showValidation = triggerValidation;
@@ -48,7 +70,7 @@ export default function PersonalDetails(props: PersonalDetailsProps) {
 
     return (
         <Fieldset classNameModifiers={['personalDetails']} label={label}>
-            {requiredFields.includes('firstName') && (
+            {requiredFields?.includes('firstName') && (
                 <Field
                     label={i18n.get('firstName')}
                     classNameModifiers={['col-50', 'firstName']}
@@ -61,13 +83,13 @@ export default function PersonalDetails(props: PersonalDetailsProps) {
                         classNameModifiers: ['firstName'],
                         onInput: eventHandler('input'),
                         onBlur: eventHandler('blur'),
-                        placeholder: placeholders.firstName,
-                        spellCheck: false
+                        placeholder: placeholders?.firstName,
+                        spellCheck: false,
                     })}
                 </Field>
             )}
 
-            {requiredFields.includes('lastName') && (
+            {requiredFields?.includes('lastName') && (
                 <Field label={i18n.get('lastName')} classNameModifiers={['col-50', 'lastName']} errorMessage={!!errors.lastName} name={'lastName'}>
                     {renderFormField('text', {
                         name: generateFieldName('lastName'),
@@ -75,13 +97,13 @@ export default function PersonalDetails(props: PersonalDetailsProps) {
                         classNameModifiers: ['lastName'],
                         onInput: eventHandler('input'),
                         onBlur: eventHandler('blur'),
-                        placeholder: placeholders.lastName,
-                        spellCheck: false
+                        placeholder: placeholders?.lastName,
+                        spellCheck: false,
                     })}
                 </Field>
             )}
 
-            {requiredFields.includes('gender') && (
+            {requiredFields?.includes('gender') && (
                 <Field errorMessage={!!errors.gender} classNameModifiers={['gender']} name={'gender'} useLabelElement={false}>
                     {renderFormField('radio', {
                         i18n,
@@ -89,21 +111,21 @@ export default function PersonalDetails(props: PersonalDetailsProps) {
                         value: data.gender,
                         items: [
                             { id: 'MALE', name: 'male' },
-                            { id: 'FEMALE', name: 'female' }
+                            { id: 'FEMALE', name: 'female' },
                         ],
                         classNameModifiers: ['gender'],
                         onInput: eventHandler('input'),
-                        onChange: eventHandler('blur')
+                        onChange: eventHandler('blur'),
                     })}
                 </Field>
             )}
 
-            {requiredFields.includes('dateOfBirth') && (
+            {requiredFields?.includes('dateOfBirth') && (
                 <Field
                     label={i18n.get('dateOfBirth')}
                     classNameModifiers={['col-50', 'lastName']}
                     errorMessage={getErrorMessage(errors.dateOfBirth)}
-                    helper={isDateInputSupported ? null : i18n.get('dateOfBirth.format')}
+                    helper={isDateInputSupported ? undefined : i18n.get('dateOfBirth.format')}
                     name={'dateOfBirth'}
                 >
                     {renderFormField('date', {
@@ -112,12 +134,12 @@ export default function PersonalDetails(props: PersonalDetailsProps) {
                         classNameModifiers: ['dateOfBirth'],
                         onInput: eventHandler('input'),
                         onBlur: eventHandler('blur'),
-                        placeholder: placeholders.dateOfBirth
+                        placeholder: placeholders?.dateOfBirth,
                     })}
                 </Field>
             )}
 
-            {requiredFields.includes('shopperEmail') && (
+            {requiredFields?.includes('shopperEmail') && (
                 <Field
                     label={i18n.get('shopperEmail')}
                     classNameModifiers={['shopperEmail']}
@@ -131,12 +153,12 @@ export default function PersonalDetails(props: PersonalDetailsProps) {
                         classNameModifiers: ['shopperEmail'],
                         onInput: eventHandler('input'),
                         onBlur: eventHandler('blur'),
-                        placeholder: placeholders.shopperEmail
+                        placeholder: placeholders?.shopperEmail,
                     })}
                 </Field>
             )}
 
-            {requiredFields.includes('telephoneNumber') && (
+            {requiredFields?.includes('telephoneNumber') && (
                 <Field
                     label={i18n.get('telephoneNumber')}
                     classNameModifiers={['telephoneNumber']}
@@ -150,19 +172,10 @@ export default function PersonalDetails(props: PersonalDetailsProps) {
                         classNameModifiers: ['telephoneNumber'],
                         onInput: eventHandler('input'),
                         onBlur: eventHandler('blur'),
-                        placeholder: placeholders.telephoneNumber
+                        placeholder: placeholders?.telephoneNumber,
                     })}
                 </Field>
             )}
         </Fieldset>
     );
 }
-
-PersonalDetails.defaultProps = {
-    data: {},
-    onChange: () => {},
-    placeholders: {},
-    requiredFields: personalDetailsSchema,
-    validationRules: personalDetailsValidationRules,
-    visibility: 'editable'
-};

@@ -25,4 +25,4 @@ export default {
     'sv-SE': () => import('./sv-SE.json'),
     'zh-CN': () => import('./zh-CN.json'),
     'zh-TW': () => import('./zh-TW.json'),
-};
+} as const;

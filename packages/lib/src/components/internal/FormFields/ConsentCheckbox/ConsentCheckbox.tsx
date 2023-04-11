@@ -1,4 +1,3 @@
-import { h } from 'preact';
 import Field from '../Field';
 import Checkbox from '../Checkbox';
 

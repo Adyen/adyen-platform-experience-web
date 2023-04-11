@@ -2,8 +2,8 @@ import { UIElementStatus } from './types';
 
 const ALLOWED_PROPERTIES = ['action', 'resultCode', 'sessionData', 'order'];
 
-export function getSanitizedResponse(response) {
-    const removedProperties = [];
+export function getSanitizedResponse(response: Record<string, any>) {
+    const removedProperties: string[] = [];
 
     const sanitizedObject = Object.keys(response).reduce((acc, cur) => {
         if (!ALLOWED_PROPERTIES.includes(cur)) {
@@ -12,14 +12,14 @@ export function getSanitizedResponse(response) {
             acc[cur] = response[cur];
         }
         return acc;
-    }, {});
+    }, {} as Record<string, any>);
 
     if (removedProperties.length) console.warn(`The following properties should not be passed to the client: ${removedProperties.join(', ')}`);
 
     return sanitizedObject;
 }
 
-export function resolveFinalResult(result): [status: UIElementStatus, statusProps?: any] {
+export function resolveFinalResult(result: { resultCode: string } & { [key: string]: any }): [status: UIElementStatus, statusProps?: any] {
     switch (result.resultCode) {
         case 'Authorised':
         case 'Received':
@@ -31,5 +31,6 @@ export function resolveFinalResult(result): [status: UIElementStatus, statusProp
         case 'Refused':
             return ['error'];
         default:
+            return ['error'];
     }
 }

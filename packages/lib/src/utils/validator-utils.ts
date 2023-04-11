@@ -17,10 +17,10 @@ export const getMaxLengthByFieldAndCountry = (
 };
 
 // Not null or undefined or only spaces
-export const isEmpty = input => !!(input == null || /^[\s]*$/.test(input));
+export const isEmpty = (input?: string) => !!(input == null || /^[\s]*$/.test(input));
 
-export const isString = input => typeof input === 'string' || input instanceof String;
-export const hasText = input => isString(input) && !isEmpty(input);
+export const isString = (input: string | String) => typeof input === 'string' || input instanceof String;
+export const hasText = (input: string) => isString(input) && !isEmpty(input);
 
 export const SPECIAL_CHARS = '?\\-\\+_=!@#$%^&*(){}~<>\\[\\]\\/\\\\'; // N.B. difficulty escaping \
 
@@ -35,7 +35,7 @@ export const CHARACTER_PATTERNS: { [key: string]: RegExp } = {
     digitsHyphen: /^[\d-]+$/,
     noHtml: /^[^<>&]+$/,
     alphaNum: /^\d[a-zA-Z0-9]{6,11}$/,
-    noSpecialChars: getValidatingRegEx(SPECIAL_CHARS, true)
+    noSpecialChars: getValidatingRegEx(SPECIAL_CHARS, true),
 };
 
 export const exactLength = (input: string, length: number) => {
@@ -45,10 +45,10 @@ export const exactLength = (input: string, length: number) => {
     return input.length === length;
 };
 
-export const validateForSpecialChars = name => {
+export const validateForSpecialChars = (name: string) => {
     const hasNoLength = !name.length;
     // RegEx .test, if run against empty string, will return false
-    return CHARACTER_PATTERNS.noSpecialChars.test(name) || hasNoLength;
+    return CHARACTER_PATTERNS.noSpecialChars?.test(name) || hasNoLength;
 };
 
 // Trim start and never allow more than 1 space on the end

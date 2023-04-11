@@ -2,23 +2,25 @@ import { ComponentChild, render } from 'preact';
 import EventEmitter from './EventEmitter';
 import uuid from '../utils/uuid';
 import Core from '../core';
-import { BaseElementProps } from './types';
+import { BaseElementProps, BaseElementState } from './types';
 
 class BaseElement<P extends BaseElementProps> {
-    public readonly _id = `${this.constructor['type']}-${uuid()}`;
+    public static type: string;
+    public static analyticsType: string;
+    public readonly _id = `${(this.constructor as typeof BaseElement)?.type}-${uuid()}`;
     public props: P;
-    public state;
+    public state: BaseElementState;
     protected static defaultProps = {};
-    public _node;
-    public _component;
+    public _node: Document | ShadowRoot | DocumentFragment | Element | null;
+    public _component: ComponentChild | Error;
     public eventEmitter = new EventEmitter();
-    protected readonly _parentInstance: Core;
+    protected readonly _parentInstance?: Core;
 
     protected constructor(props: P) {
-        this.props = this.formatProps({ ...this.constructor['defaultProps'], ...props });
+        this.props = this.formatProps({ ...(this.constructor as typeof BaseElement)?.defaultProps, ...props });
         this._parentInstance = this.props._parentInstance;
         this._node = null;
-        this.state = {};
+        this.state = {} as BaseElementState;
     }
 
     /**
@@ -48,7 +50,7 @@ class BaseElement<P extends BaseElementProps> {
     get data(): any {
         return {
             ...this.formatData(),
-            clientStateDataIndicator: true
+            clientStateDataIndicator: true,
         };
     }
 
@@ -62,8 +64,15 @@ class BaseElement<P extends BaseElementProps> {
      * @param domNode - Node (or selector) where we will mount the element
      * @returns this - the element instance we mounted
      */
-    public mount(domNode: HTMLElement | string): this {
-        const node = typeof domNode === 'string' ? document.querySelector(domNode) : domNode;
+    public mount(domNode: string): this;
+    public mount(domNode: HTMLElement): this;
+    public mount(domNode: any): any {
+        let node;
+        if (typeof domNode === 'string') {
+            node = document.querySelector(domNode);
+        } else {
+            node = domNode;
+        }
 
         if (!node) {
             throw new Error('Component could not mount. Root node was not found.');
@@ -75,9 +84,9 @@ class BaseElement<P extends BaseElementProps> {
             // Set up analytics, once
             if (this.props.modules && this.props.modules.analytics) {
                 this.props.modules.analytics.send({
-                    containerWidth: this._node && this._node.offsetWidth,
-                    component: this.constructor['analyticsType'] ?? this.constructor['type'],
-                    flavor: 'components'
+                    containerWidth: node && node.offsetWidth,
+                    component: (this.constructor as typeof BaseElement)?.analyticsType ?? (this.constructor as typeof BaseElement)?.type,
+                    flavor: 'components',
                 });
             }
         }
@@ -107,7 +116,7 @@ class BaseElement<P extends BaseElementProps> {
         // /*
         this.props = this.formatProps({ ...this.props, ...props });
         this._component = this.render();
-        render(this._component, this._node);
+        if (this._node) render(this._component, this._node);
 
         return this;
 
@@ -120,14 +129,14 @@ class BaseElement<P extends BaseElementProps> {
      * Should be "private" & undocumented (although being a public function is useful for testing).
      * Left in for legacy reasons
      */
-    public remount(component?): this {
+    public remount(component: BaseElement<any>): this {
         if (!this._node) {
             throw new Error('Component is not mounted.');
         }
 
         const newComponent = component || this.render();
 
-        render(newComponent, this._node, null);
+        render(newComponent, this._node, undefined);
 
         return this;
     }

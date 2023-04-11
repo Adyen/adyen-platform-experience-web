@@ -4,11 +4,12 @@ module.exports = {
     extends: [
         'eslint:recommended',
         'plugin:react/recommended',
+        'plugin:react/jsx-runtime',
         'plugin:@typescript-eslint/eslint-recommended',
         'plugin:@typescript-eslint/recommended' /*'prettier/@typescript-eslint'*/
     ],
     parserOptions: {
-        ecmaVersion: 2018,
+        ecmaVersion: 2020,
         sourceType: 'module',
         ecmaFeatures: {
             modules: true,
@@ -19,16 +20,18 @@ module.exports = {
         browser: true,
         node: true,
         jest: true,
-        es6: true
+        es2020: true
     },
     settings: {
         react: {
-            pragma: 'h',
-            version: '16.0'
+            version: '17.0'
         },
         'import/resolver': {
-            webpack: {
-                config: 'config/webpack.dev.js'
+            node: {
+                "extensions": [".js", ".jsx", ".ts", ".tsx"]
+            },
+            typescript: {
+                project: './tsconfig.json'
             }
         }
     },

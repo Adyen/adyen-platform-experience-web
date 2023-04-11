@@ -1,8 +1,8 @@
 import cx from 'classnames';
 import './ButtonGroup.scss';
-import { h } from 'preact';
+import { ButtonGroupProps } from './types';
 
-const ButtonGroup = ({ options = [], name, onChange }) => (
+const ButtonGroup = ({ options = [], name, onChange }: ButtonGroupProps) => (
     <div className="adyen-fp-button-group">
         {options.map(({ label, selected, value, disabled }, index) => (
             <label
@@ -10,7 +10,7 @@ const ButtonGroup = ({ options = [], name, onChange }) => (
                 className={cx({
                     'adyen-fp-button': true,
                     'adyen-fp-button--selected': selected,
-                    'adyen-fp-button--disabled': disabled
+                    'adyen-fp-button--disabled': disabled,
                 })}
             >
                 <input

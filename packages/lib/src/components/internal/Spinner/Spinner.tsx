@@ -1,4 +1,3 @@
-import { h } from 'preact';
 import './Spinner.scss';
 
 interface SpinnerProps {

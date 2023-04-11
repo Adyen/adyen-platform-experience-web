@@ -2,14 +2,16 @@ import { ValidatorRules, ValidatorRule } from '../../../utils/Validator/types';
 import { countrySpecificFormatters } from './validate.formats';
 import { ERROR_CODES, ERROR_MSG_INCOMPLETE_FIELD } from '../../../core/Errors/constants';
 import { isEmpty } from '../../../utils/validator-utils';
+import { AddressData } from '../../../types';
+import Specifications from './Specifications';
 
 const createPatternByDigits = (digits: number) => {
     return {
-        pattern: new RegExp(`\\d{${digits}}`)
+        pattern: new RegExp(`\\d{${digits}}`),
     };
 };
 
-const postalCodePatterns = {
+const postalCodePatterns: Record<string, { pattern: RegExp }> = {
     AT: createPatternByDigits(4),
     AU: createPatternByDigits(4),
     BE: { pattern: /(?:(?:[1-9])(?:\d{3}))/ },
@@ -49,52 +51,52 @@ const postalCodePatterns = {
     SE: createPatternByDigits(5),
     SG: createPatternByDigits(6),
     SK: createPatternByDigits(5),
-    US: createPatternByDigits(5)
-};
+    US: createPatternByDigits(5),
+} as const;
 
-export const getAddressValidationRules = (specifications): ValidatorRules => {
-    const addressValidationRules: ValidatorRules = {
+export const getAddressValidationRules = (specifications: Specifications): ValidatorRules<AddressData> => {
+    const addressValidationRules: ValidatorRules<AddressData> = {
         postalCode: {
             modes: ['blur'],
-            validate: (val, context) => {
-                const country = context.state.data.country;
+            validate: (val: AddressData['postalCode'], context) => {
+                const country = context?.state.data.country;
 
                 // Country specific rule
                 if (country) {
                     // Dynamically create errorMessage
-                    (addressValidationRules.postalCode as ValidatorRule).errorMessage = {
+                    (addressValidationRules.postalCode as ValidatorRule<AddressData>).errorMessage = {
                         translationKey: 'invalidFormatExpects',
                         translationObject: {
                             values: {
-                                format: countrySpecificFormatters[country]?.postalCode.format || null
-                            }
-                        }
+                                format: countrySpecificFormatters[country]?.postalCode?.format || null,
+                            },
+                        },
                     };
 
-                    if (isEmpty(val)) return null;
+                    if (isEmpty(val)) return false;
 
                     const pattern = postalCodePatterns[country]?.pattern;
                     return pattern ? pattern.test(val) : !!val; // No pattern? Accept any, filled, value.
                 }
                 // Default rule
-                return isEmpty(val) ? null : true;
+                return isEmpty(val) ? false : true;
             },
-            errorMessage: ERROR_CODES[ERROR_MSG_INCOMPLETE_FIELD]
+            errorMessage: ERROR_CODES[ERROR_MSG_INCOMPLETE_FIELD],
         },
         houseNumberOrName: {
             validate: (value, context) => {
-                const selectedCountry = context.state?.data?.country;
-                const isOptional = selectedCountry && specifications.countryHasOptionalField(selectedCountry, 'houseNumberOrName');
-                return isOptional || (isEmpty(value) ? null : true);
+                const selectedCountry = context?.state?.data?.country;
+                const isOptional = selectedCountry && specifications.countryHasOptionalField?.(selectedCountry, 'houseNumberOrName');
+                return isOptional || (isEmpty(value) ? false : true);
             },
             modes: ['blur'],
-            errorMessage: ERROR_CODES[ERROR_MSG_INCOMPLETE_FIELD]
+            errorMessage: ERROR_CODES[ERROR_MSG_INCOMPLETE_FIELD],
         },
         default: {
-            validate: value => (isEmpty(value) ? null : true), // true, if there are chars other than spaces
+            validate: value => (isEmpty(value) ? false : true), // true, if there are chars other than spaces
             modes: ['blur'],
-            errorMessage: ERROR_CODES[ERROR_MSG_INCOMPLETE_FIELD]
-        }
+            errorMessage: ERROR_CODES[ERROR_MSG_INCOMPLETE_FIELD],
+        },
     };
     return addressValidationRules;
 };

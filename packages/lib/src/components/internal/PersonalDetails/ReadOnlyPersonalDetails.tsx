@@ -1,4 +1,3 @@
-import { h, Fragment } from 'preact';
 import Fieldset from '../FormFields/Fieldset';
 import { ReadOnlyPersonalDetailsProps } from './types';
 
@@ -10,16 +9,16 @@ const ReadOnlyPersonalDetails = ({ data }) => {
             {firstName && `${firstName} `}
             {lastName && `${lastName} `}
             {shopperEmail && (
-                <Fragment>
+                <>
                     <br />
                     {shopperEmail}
-                </Fragment>
+                </>
             )}
             {telephoneNumber && (
-                <Fragment>
+                <>
                     <br />
                     {telephoneNumber}
-                </Fragment>
+                </>
             )}
         </Fieldset>
     );

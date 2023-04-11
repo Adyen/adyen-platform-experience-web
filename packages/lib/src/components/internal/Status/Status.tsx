@@ -1,4 +1,3 @@
-import { h } from 'preact';
 import cx from 'classnames';
 import useCoreContext from '../../../core/Context/useCoreContext';
 import './Status.scss';

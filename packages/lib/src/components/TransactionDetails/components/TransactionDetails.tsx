@@ -1,15 +1,15 @@
-import { h } from 'preact';
 import useCoreContext from 'src/core/Context/useCoreContext';
 import StatsBar from 'src/components/internal/StatsBar';
 import Status from 'src/components/internal/Status';
 import './TransactionDetails.scss';
+import { TransactionDetailsProps } from '../types';
 
-function TransactionsDetails(props) {
+function TransactionsDetails(props: TransactionDetailsProps) {
     const { i18n } = useCoreContext();
     const { transaction } = props;
 
-    const getLabel = key => {
-        const labels = {
+    const getLabel = (key: string) => {
+        const labels: Record<string, string> = {
             internal: 'category.internal',
         };
 
@@ -17,8 +17,8 @@ function TransactionsDetails(props) {
     };
 
     return (
-        <div class="adyen-fp-transaction">
-            <div class="adyen-fp-title">Transaction details</div>
+        <div className="adyen-fp-transaction">
+            <div className="adyen-fp-title">Transaction details</div>
 
             <div className="adyen-fp-details-container">
                 <StatsBar
@@ -49,44 +49,44 @@ function TransactionsDetails(props) {
                         },
                     ]}
                 />
-                <div class="adyen-fp-details-section">
+                <div className="adyen-fp-details-section">
                     <div>
-                        <div class="adyen-fp-subtitle">Processing information</div>
+                        <div className="adyen-fp-subtitle">Processing information</div>
 
-                        <div class="adyen-fp-field">
-                            <div class="adyen-fp-label">{i18n.get('paymentId')}</div>
-                            <div class="adyen-fp-value">{transaction.id}</div>
+                        <div className="adyen-fp-field">
+                            <div className="adyen-fp-label">{i18n.get('paymentId')}</div>
+                            <div className="adyen-fp-value">{transaction.id}</div>
                         </div>
 
-                        <div class="adyen-fp-field">
-                            <div class="adyen-fp-label">Transfer ID</div>
-                            <div class="adyen-fp-value">{transaction.transferId}</div>
+                        <div className="adyen-fp-field">
+                            <div className="adyen-fp-label">Transfer ID</div>
+                            <div className="adyen-fp-value">{transaction.transferId}</div>
                         </div>
 
-                        <div class="adyen-fp-field">
-                            <div class="adyen-fp-label">Type</div>
-                            <div class="adyen-fp-value">{i18n.get(`txType.${transaction.type}`)}</div>
+                        <div className="adyen-fp-field">
+                            <div className="adyen-fp-label">Type</div>
+                            <div className="adyen-fp-value">{i18n.get(`txType.${transaction.type}`)}</div>
                         </div>
 
-                        <div class="adyen-fp-field">
-                            <div class="adyen-fp-label">{i18n.get('balanceAccount')}</div>
-                            <div class="adyen-fp-value">{transaction.balanceAccountId}</div>
+                        <div className="adyen-fp-field">
+                            <div className="adyen-fp-label">{i18n.get('balanceAccount')}</div>
+                            <div className="adyen-fp-value">{transaction.balanceAccountId}</div>
                         </div>
 
-                        <div class="adyen-fp-field">
-                            <div class="adyen-fp-label">{i18n.get('Reference')}</div>
-                            <div class="adyen-fp-value">{i18n.get(transaction.reference)}</div>
+                        <div className="adyen-fp-field">
+                            <div className="adyen-fp-label">{i18n.get('Reference')}</div>
+                            <div className="adyen-fp-value">{i18n.get(transaction.reference)}</div>
                         </div>
 
-                        <div class="adyen-fp-field">
-                            <div class="adyen-fp-label">{i18n.get('Category')}</div>
-                            <div class="adyen-fp-value">{i18n.get(`category.${transaction.category}`)}</div>
+                        <div className="adyen-fp-field">
+                            <div className="adyen-fp-label">{i18n.get('Category')}</div>
+                            <div className="adyen-fp-value">{i18n.get(getLabel(transaction.category))}</div>
                         </div>
 
                         {!!transaction.referenceForBeneficiary && (
-                            <div class="adyen-fp-field">
-                                <div class="adyen-fp-label">{i18n.get('referenceForBeneficiary')}</div>
-                                <div class="adyen-fp-value">{transaction.referenceForBeneficiary}</div>
+                            <div className="adyen-fp-field">
+                                <div className="adyen-fp-label">{i18n.get('referenceForBeneficiary')}</div>
+                                <div className="adyen-fp-value">{transaction.referenceForBeneficiary}</div>
                             </div>
                         )}
                     </div>

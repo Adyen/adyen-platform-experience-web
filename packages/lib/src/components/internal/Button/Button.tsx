@@ -1,9 +1,9 @@
-import { Component, h } from 'preact';
+import { Component } from 'preact';
 import classNames from 'classnames';
 import Spinner from '../Spinner';
 import useCoreContext from '../../../core/Context/useCoreContext';
 import './Button.scss';
-import { ButtonProps, ButtonState } from './types';
+import { ButtonProps, ButtonState, ButtonStatus } from './types';
 
 class Button extends Component<ButtonProps, ButtonState> {
     public static defaultProps = {
@@ -13,14 +13,14 @@ class Button extends Component<ButtonProps, ButtonState> {
         label: '',
         inline: false,
         target: '_self',
-        onClick: () => {}
+        onClick: () => {},
     };
 
-    public onClick = e => {
+    public onClick = (e: any) => {
         e.preventDefault();
 
         if (!this.props.disabled) {
-            this.props.onClick(e, { complete: this.complete });
+            this.props.onClick?.(e, { complete: this.complete });
         }
     };
 
@@ -31,7 +31,7 @@ class Button extends Component<ButtonProps, ButtonState> {
         }, delay);
     };
 
-    render({ classNameModifiers = [], disabled, href, icon, inline, label, status, variant }, { completed }) {
+    render({ classNameModifiers = [], disabled, href, icon, inline, label, status, variant }: ButtonProps, { completed }: { completed: boolean }) {
         const { i18n } = useCoreContext();
 
         const buttonIcon = icon ? <img className="adyen-fp-button__icon" src={icon} alt="" aria-hidden="true" /> : '';
@@ -41,12 +41,12 @@ class Button extends Component<ButtonProps, ButtonState> {
             ...(variant !== 'primary' ? [variant] : []),
             ...(inline ? ['inline'] : []),
             ...(completed ? ['completed'] : []),
-            ...(status === 'loading' || status === 'redirect' ? ['loading'] : [])
+            ...(status === 'loading' || status === 'redirect' ? ['loading'] : []),
         ];
 
         const buttonClasses = classNames(['adyen-fp-button', ...modifiers.map(m => `adyen-fp-button--${m}`)]);
 
-        const buttonStates = {
+        const buttonStates: { [k in ButtonStatus]: any } = {
             loading: <Spinner size="medium" />,
             redirect: (
                 <span className="adyen-fp-button__content">
@@ -59,10 +59,10 @@ class Button extends Component<ButtonProps, ButtonState> {
                     {buttonIcon}
                     <span className="adyen-fp-button__text">{label}</span>
                 </span>
-            )
+            ),
         };
 
-        const buttonText = buttonStates[status] || buttonStates.default;
+        const buttonText = (status ? buttonStates[status] : undefined) || buttonStates.default;
 
         if (href) {
             return (

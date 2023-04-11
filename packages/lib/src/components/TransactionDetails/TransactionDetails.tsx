@@ -1,10 +1,10 @@
-import { h } from 'preact';
 import CoreProvider from '../../core/Context/CoreProvider';
 import UIElement from '../UIElement';
 import TransactionDetails from './components/TransactionDetails';
+import { TransactionDetailsProps } from './types';
 
 export class TransactionsElement extends UIElement {
-    public static type = 'transactions';
+    public static type = 'transactionsDetails';
 
     get isValid() {
         return !!this.state.isValid;
@@ -14,7 +14,7 @@ export class TransactionsElement extends UIElement {
         return this.props.name;
     }
 
-    formatProps(props) {
+    formatProps(props: TransactionDetailsProps) {
         return props;
     }
 
@@ -31,7 +31,7 @@ export class TransactionsElement extends UIElement {
         return (
             <CoreProvider i18n={this.props.i18n} loadingContext={this.props.loadingContext}>
                 <TransactionDetails
-                    ref={ref => {
+                    ref={(ref: UIElement) => {
                         this.componentRef = ref;
                     }}
                     {...this.props}

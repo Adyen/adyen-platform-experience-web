@@ -1,4 +1,3 @@
-import { h } from 'preact';
 import { useEffect, useState } from 'preact/hooks';
 import classNames from 'classnames';
 import renderFormField from '../FormFields';
@@ -6,22 +5,22 @@ import Field from '../FormFields/Field';
 import useForm from '../../../utils/useForm';
 import useCoreContext from '../../../core/Context/useCoreContext';
 import './PhoneInput.scss';
-import { PhoneInputSchema } from './types';
+import { PhoneInputComponentProps, PhoneInputSchema } from './types';
 
-export function PhoneInput(props) {
+export function PhoneInput(props: PhoneInputComponentProps) {
     const { i18n } = useCoreContext();
     const [status, setStatus] = useState('ready');
     const showPrefix = !!props?.items?.length;
-    const { handleChangeFor, triggerValidation, data, valid, errors, isValid } = useForm<PhoneInputSchema>({
-        schema: [...(showPrefix ? ['phonePrefix'] : []), 'phoneNumber'],
+    const { handleChangeFor, triggerValidation, data, valid, errors, isValid } = useForm<PhoneInputSchema, PhoneInputComponentProps>({
+        schema: showPrefix ? ['phonePrefix', 'phoneNumber'] : ['phoneNumber'],
         defaultData: { ...(showPrefix ? { phonePrefix: props.selected } : {}) },
         rules: {
             phoneNumber: {
                 modes: ['blur'],
                 errorMessage: 'error.va.gen.01',
-                validate: phone => phone?.length > 6
-            }
-        }
+                validate: (phone: PhoneInputSchema['phoneNumber']) => !!phone && phone.length > 6,
+            },
+        },
     });
 
     useEffect(() => {
@@ -34,9 +33,9 @@ export function PhoneInput(props) {
         <div className="adyen-fp-phone-input">
             <Field
                 errorMessage={!!errors.phoneNumber}
-                label={i18n.get(props.phoneLabel)}
+                label={props.phoneLabel ? i18n.get(props.phoneLabel) : ''}
                 className={classNames({
-                    'adyen-fp-input--phone-number': true
+                    'adyen-fp-input--phone-number': true,
                 })}
                 inputWrapperModifiers={['phoneInput']}
             >
@@ -44,7 +43,7 @@ export function PhoneInput(props) {
                     <div
                         className={classNames({
                             'adyen-fp-input': true,
-                            'adyen-fp-input--invalid': !!errors.phoneNumber
+                            'adyen-fp-input--invalid': !!errors.phoneNumber,
                         })}
                     >
                         {!!showPrefix && (
@@ -56,7 +55,7 @@ export function PhoneInput(props) {
                                     name: props.prefixName,
                                     onChange: handleChangeFor('phonePrefix'),
                                     placeholder: i18n.get('infix'),
-                                    selected: data.phonePrefix
+                                    selected: data.phonePrefix,
                                 })}
 
                                 <div className="adyen-fp-phoneNumber">
@@ -84,7 +83,7 @@ export function PhoneInput(props) {
 }
 
 PhoneInput.defaultProps = {
-    phoneLabel: 'telephoneNumber'
+    phoneLabel: 'telephoneNumber',
 };
 
 export default PhoneInput;

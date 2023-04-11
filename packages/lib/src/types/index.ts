@@ -1,5 +1,7 @@
-import components from '../components';
 import { ADDRESS_SCHEMA } from '../components/internal/Address/constants';
+import componentsMap from '../components';
+import { ValueOf } from '../utils/types';
+import { AddressSchema, AddressSpecifications, StringObject } from '../components/internal/Address/types';
 
 /**
  * {@link https://docs.adyen.com/api-explorer/#/PaymentSetupAndVerificationService/v52/payments__reqParam_amount API Explorer /payments amount}
@@ -18,20 +20,22 @@ export interface AmountExtended extends Amount {
     currencyDisplay?: string;
 }
 
-export type AddressField = typeof ADDRESS_SCHEMA[number];
+export type AddressField = (typeof ADDRESS_SCHEMA)[number];
 
 export type AddressData = {
-    [key in AddressField]?: string;
+    [key in AddressField]: string;
 };
 
-export interface PersonalDetailsSchema {
+export type Specification = AddressSpecifications;
+
+export type PersonalDetailsSchema = {
     firstName?: string;
     lastName?: string;
     gender?: string;
     dateOfBirth?: string;
     shopperEmail?: string;
     telephoneNumber?: string;
-}
+};
 
 /**
  * {@link https://docs.adyen.com/api-explorer/#/PaymentSetupAndVerificationService/v52/post/payments__reqParam_browserInfo API Explorer /payments browserInfo}
@@ -50,7 +54,8 @@ export interface BrowserInfo {
 /**
  * Available components
  */
-export type Components = typeof components;
+export type ComponentMap = typeof componentsMap;
+export type ComponentOptions<Name extends keyof ComponentMap> = ConstructorParameters<ComponentMap[Name]>[0];
 
 /**
  * Visibility options for a fieldset
@@ -76,3 +81,10 @@ export type SessionSetupResponse = {
     returnUrl: string;
     configuration: SessionConfiguration;
 };
+
+export function isKeyOfComponent(component: string): component is keyof ComponentMap {
+    return !!componentsMap[component as keyof ComponentMap];
+}
+export function isAvailableOfComponent(component: any): component is ValueOf<ComponentMap> {
+    return !!(Object.keys(componentsMap) as (keyof typeof componentsMap)[])?.find(key => componentsMap[key] === component);
+}

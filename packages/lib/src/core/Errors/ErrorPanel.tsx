@@ -1,4 +1,3 @@
-import { h } from 'preact';
 import { useEffect } from 'preact/hooks';
 import './ErrorPanel.scss';
 
@@ -11,17 +10,11 @@ export interface ErrorPanelProps {
     id?: string;
     heading?: string;
     errors: ErrorPanelObj;
-    callbackFn?: (who) => void;
+    callbackFn?: (who: ErrorPanelObj) => void;
     showPanel?: boolean;
 }
 
-export function ErrorPanel({
-    id = 'ariaConsolidatedErrorField',
-    heading = 'Errors:',
-    errors,
-    callbackFn = null,
-    showPanel = false
-}: ErrorPanelProps) {
+export function ErrorPanel({ id = 'ariaConsolidatedErrorField', heading = 'Errors:', errors, callbackFn, showPanel = false }: ErrorPanelProps) {
     if (!errors) return null;
 
     const { errorMessages } = errors;

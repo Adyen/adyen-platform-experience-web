@@ -7,3 +7,5 @@ export type CustomTranslations = {
         [message: string]: string;
     };
 };
+
+export type TranslationOptions = { values?: Record<string, string | number>; count?: number };

@@ -1,4 +1,4 @@
-import { h, ComponentChildren } from 'preact';
+import { ComponentChildren } from 'preact';
 import cx from 'classnames';
 import useCoreContext from '../../../../core/Context/useCoreContext';
 import './Fieldset.scss';

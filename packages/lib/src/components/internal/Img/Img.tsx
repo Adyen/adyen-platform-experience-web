@@ -2,7 +2,6 @@ import { JSX } from 'preact';
 import { useRef, useState, useEffect } from 'preact/hooks';
 import cx from 'classnames';
 import './Img.scss';
-import { h } from 'preact';
 import { ImgProps } from './types';
 
 export default function Img(props: ImgProps) {
@@ -27,9 +26,11 @@ export default function Img(props: ImgProps) {
 
     useEffect(() => {
         const image = backgroundUrl ? new Image() : imageRef.current;
-        image.src = backgroundUrl || src;
-        image.onload = handleLoad;
-        setLoaded(!!image.complete);
+        if (image) {
+            image.src = backgroundUrl || src;
+            image.onload = handleLoad;
+        }
+        setLoaded(!!image?.complete);
     }, []);
 
     if (backgroundUrl) {

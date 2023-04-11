@@ -1,7 +1,8 @@
 import { formatCustomTranslations, formatLocale, getTranslation, interpolateElement, loadTranslations, matchLocale, parseLocale } from './utils';
 import translations from './translations';
-import {createElement, h} from 'preact';
-const defaultSupportedLocales = Object.keys(locales);
+import { createElement } from 'preact';
+
+const defaultSupportedLocales = Object.keys(translations) as (keyof typeof translations)[];
 
 describe('parseLocale()', () => {
     test('should return the passed locale if formatted properly', () => {
@@ -28,7 +29,7 @@ describe('parseLocale()', () => {
     });
 
     test('should return FALLBACK_LOCALE when an empty string is send', () => {
-        expect(parseLocale('')).toBe('en-US');
+        expect(parseLocale('', defaultSupportedLocales)).toBe('en-US');
     });
 
     test('should return null when a locale is not matched', () => {
@@ -126,8 +127,8 @@ describe('formatCustomTranslations()', () => {
     test('should work when custom translations are already in the defaultSupportedLocales', () => {
         const customTranslations = {
             'en-US': {
-                customTranslation: 'customString'
-            }
+                customTranslation: 'customString',
+            },
         };
 
         expect(formatCustomTranslations(customTranslations, defaultSupportedLocales)).toEqual(customTranslations);
@@ -136,14 +137,14 @@ describe('formatCustomTranslations()', () => {
     test('should work when custom translations contain a partial ', () => {
         const customTranslations = {
             en: {
-                customTranslation: 'customString'
-            }
+                customTranslation: 'customString',
+            },
         };
 
         const expectedCustomTranslations = {
             'en-US': {
-                customTranslation: 'customString'
-            }
+                customTranslation: 'customString',
+            },
         };
 
         expect(formatCustomTranslations(customTranslations, defaultSupportedLocales)).toEqual(expectedCustomTranslations);
@@ -152,14 +153,14 @@ describe('formatCustomTranslations()', () => {
     test('should format new locales', () => {
         const customTranslations = {
             'es-ar': {
-                customTranslation: 'customString'
-            }
+                customTranslation: 'customString',
+            },
         };
 
         const expectedCustomTranslations = {
             'es-AR': {
-                customTranslation: 'customString'
-            }
+                customTranslation: 'customString',
+            },
         };
 
         expect(formatCustomTranslations(customTranslations, defaultSupportedLocales)).toEqual(expectedCustomTranslations);
@@ -168,14 +169,14 @@ describe('formatCustomTranslations()', () => {
     test('should format new locales', () => {
         const customTranslations = {
             'ca-ca': {
-                customTranslation: 'customString'
-            }
+                customTranslation: 'customString',
+            },
         };
 
         const expectedCustomTranslations = {
             'ca-CA': {
-                customTranslation: 'customString'
-            }
+                customTranslation: 'customString',
+            },
         };
 
         expect(formatCustomTranslations(customTranslations, defaultSupportedLocales)).toEqual(expectedCustomTranslations);
@@ -184,14 +185,14 @@ describe('formatCustomTranslations()', () => {
     test('should format new partial locales if properly added in the defaultSupportedLocales', () => {
         const customTranslations = {
             ca: {
-                customTranslation: 'customString'
-            }
+                customTranslation: 'customString',
+            },
         };
         const defaultSupportedLocales = ['es-ES', 'ca-CA'];
         const expectedCustomTranslations = {
             'ca-CA': {
-                customTranslation: 'customString'
-            }
+                customTranslation: 'customString',
+            },
         };
 
         expect(formatCustomTranslations(customTranslations, defaultSupportedLocales)).toEqual(expectedCustomTranslations);
@@ -202,11 +203,11 @@ describe('loadTranslations()', () => {
     test('should accept customTranslations without a countryCode for default defaultSupportedLocales', () => {
         loadTranslations('es-ES', {
             'es-ES': {
-                'creditCard.numberField.title': 'es string'
+                'creditCard.numberField.title': 'es string',
             },
             'es-AR': {
-                'creditCard.numberField.title': 'es-AR'
-            }
+                'creditCard.numberField.title': 'es-AR',
+            },
         }).then(translations => {
             expect(translations['creditCard.numberField.title']).toBe('es string');
         });
@@ -215,11 +216,11 @@ describe('loadTranslations()', () => {
     test('should return the passed locale if formatted properly', () => {
         loadTranslations('ca-CA', {
             'es-ES': {
-                'creditCard.numberField.title': 'es'
+                'creditCard.numberField.title': 'es',
             },
             'ca-CA': {
-                'creditCard.numberField.title': 'ca'
-            }
+                'creditCard.numberField.title': 'ca',
+            },
         }).then(translations => {
             expect(translations['creditCard.numberField.title']).toBe('ca');
         });
@@ -228,8 +229,8 @@ describe('loadTranslations()', () => {
     test('should return the passed locale if formatted properly', () => {
         loadTranslations('ca-CA', {
             'ca-CA': {
-                'creditCard.numberField.title': 'ca-CA'
-            }
+                'creditCard.numberField.title': 'ca-CA',
+            },
         }).then(translations => {
             expect(translations['creditCard.numberField.title']).toBe('ca-CA');
         });

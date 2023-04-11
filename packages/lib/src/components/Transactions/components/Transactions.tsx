@@ -1,4 +1,3 @@
-import { h } from 'preact';
 import { useEffect, useMemo, useState } from 'preact/hooks';
 import useCoreContext from 'src/core/Context/useCoreContext';
 import FilterBar from '../../internal/FilterBar';
@@ -8,8 +7,10 @@ import DateFilter from '../../internal/FilterBar/filters/DateFilter';
 import { getCursor, getRequestParams } from './utils';
 import TransactionList from './TransactionList';
 import './Transactions.scss';
+import { TransactionsPageProps } from '../types';
+import { PageChangeOptions } from '../../internal/Pagination/type';
 
-function Transactions(props) {
+function Transactions(props: TransactionsPageProps) {
     const { i18n } = useCoreContext();
     const [page, setPage] = useState(1);
     const [loading, setLoading] = useState(false);
@@ -19,21 +20,21 @@ function Transactions(props) {
         return !!props.transactions?._links?.next;
     }, [props.transactions]);
 
-    const handlePageChange = (dir: string): void => {
+    const handlePageChange = (dir: PageChangeOptions): void => {
         setLoading(true);
         const newPage = dir === 'prev' ? page - 1 : page + 1;
         setPage(newPage);
         const cursor = getCursor(dir, props.transactions);
-        const newFilters = { ...filters, cursor };
+        const newFilters = { ...filters, cursor: cursor ?? '' };
         setFilters(newFilters);
-        if (cursor) props.onFilterChange({ filters: newFilters }, props.elementRef);
+        if (cursor) props.onFilterChange?.({ filters: newFilters }, props.elementRef);
     };
 
-    const handleFilterChange = (newFilter): void => {
+    const handleFilterChange = (newFilter: { [p: string]: string }): void => {
         setLoading(true);
         const newFilters = { ...filters, ...newFilter };
         setFilters(newFilters);
-        props.onFilterChange({ filters: newFilters }, props.elementRef);
+        props.onFilterChange?.({ filters: newFilters }, props.elementRef);
         setPage(1);
     };
 
@@ -46,7 +47,7 @@ function Transactions(props) {
     }, [props.transactions]);
 
     return (
-        <div class="adyen-fp-transactions">
+        <div className="adyen-fp-transactions">
             <div className="adyen-fp-title">{i18n.get('transactions')}</div>
             {!!props.onFilterChange && (
                 <FilterBar filters={filters} resetFilters={handleFilterReset}>
@@ -54,24 +55,26 @@ function Transactions(props) {
                         label={i18n.get('balanceAccount')}
                         name={'balanceAccountId'}
                         classNameModifiers={['balanceAccount']}
-                        value={filters.balanceAccountId}
+                        value={filters?.balanceAccountId}
                         onChange={handleFilterChange}
                     />
                     <TextFilter
                         label={i18n.get('account')}
                         name={'accountHolderId'}
                         classNameModifiers={['account']}
-                        value={filters.accountHolderId}
+                        value={filters?.accountHolderId}
                         onChange={handleFilterChange}
                     />
-                    <DateFilter
-                        label={i18n.get('createdSince')}
-                        name={'createdSince'}
-                        classNameModifiers={['createdSince']}
-                        from={i18n.fullDate(filters.createdSince)}
-                        to={i18n.fullDate(filters.createdUntil)}
-                        onChange={handleFilterChange}
-                    />
+                    {filters?.createdSince && filters?.createdUntil && (
+                        <DateFilter
+                            label={i18n.get('createdSince')}
+                            name={'createdSince'}
+                            classNameModifiers={['createdSince']}
+                            from={i18n.fullDate(filters.createdSince)}
+                            to={i18n.fullDate(filters.createdUntil)}
+                            onChange={handleFilterChange}
+                        />
+                    )}
                 </FilterBar>
             )}
 
@@ -87,7 +90,7 @@ function Transactions(props) {
                     onTransactionSelected={props.onTransactionSelected}
                     showPagination={!!props.onFilterChange}
                 />
-            ) : !filters.balancePlatform && !filters.balanceAccountId && !filters.accountHolderId ? (
+            ) : !filters?.balancePlatform && !filters?.balanceAccountId && !filters?.accountHolderId ? (
                 <Alert type="info">{i18n.get('toStart')}</Alert>
             ) : (
                 <Alert icon={'cross'}>{i18n.get('unableToLoadTransactions')}</Alert>
