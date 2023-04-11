@@ -13,6 +13,7 @@ import useForm from '../../../utils/useForm';
 import './PersonalDetails.scss';
 import { SchemaKeys } from '../../../utils/useForm/types';
 import { ValidatorMode } from '../../../utils/Validator/types';
+import { JSX } from 'preact';
 
 const personalDetailsRequiredFields: SchemaKeys<PersonalDetailsSchema>[] = [
     'firstName',
@@ -47,8 +48,8 @@ export default function PersonalDetails(props: PersonalDetailsProps<PersonalDeta
     });
 
     const eventHandler =
-        (mode: ValidatorMode): Function =>
-        (e: Event): void => {
+        (mode: ValidatorMode) =>
+        (e: JSX.TargetedEvent<HTMLInputElement>): void => {
             const { name } = e.target as HTMLInputElement;
             const key = name.split(`${namePrefix}.`).pop();
 
@@ -56,7 +57,7 @@ export default function PersonalDetails(props: PersonalDetailsProps<PersonalDeta
         };
 
     const generateFieldName = (name: string): string => `${namePrefix ? `${namePrefix}.` : ''}${name}`;
-    const getErrorMessage = error => (error && error.errorMessage ? i18n.get(error.errorMessage) : !!error);
+    const getErrorMessage = (error: { errorMessage?: string }) => (error && error.errorMessage ? i18n.get(error.errorMessage) : !!error);
 
     useEffect(() => {
         const formattedData = getFormattedData(data);
@@ -114,7 +115,6 @@ export default function PersonalDetails(props: PersonalDetailsProps<PersonalDeta
                             { id: 'FEMALE', name: 'female' },
                         ],
                         classNameModifiers: ['gender'],
-                        onInput: eventHandler('input'),
                         onChange: eventHandler('blur'),
                     })}
                 </Field>

@@ -10,6 +10,7 @@ import { CompanyDetailsSchema, CompanyDetailsProps } from './types';
 import useForm from '../../../utils/useForm';
 import { SchemaKeys } from '../../../utils/useForm/types';
 import { ValidatorMode } from '../../../utils/Validator/types';
+import { TargetedEvent } from 'preact/compat';
 
 const companyDetailsSchema: SchemaKeys<CompanyDetailsSchema>[] = ['name', 'registrationNumber'];
 
@@ -28,8 +29,8 @@ export default function CompanyDetails(props: CompanyDetailsProps<CompanyDetails
     const generateFieldName = (name: string): string => `${namePrefix ? `${namePrefix}.` : ''}${name}`;
 
     const eventHandler =
-        (mode: ValidatorMode): Function =>
-        (e: Event): void => {
+        (mode: ValidatorMode) =>
+        (e: TargetedEvent<HTMLInputElement, Event>): void => {
             const { name } = e.target as HTMLInputElement;
             const key = name.split(`${namePrefix}.`).pop() as keyof CompanyDetailsSchema;
 

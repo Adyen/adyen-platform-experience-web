@@ -10,7 +10,7 @@ export default function StateField(props: StateFieldProps) {
     const {
         i18n,
         loadingContext,
-        commonProps: { isCollatingErrors }
+        commonProps: { isCollatingErrors },
     } = useCoreContext();
     const [states, setStates] = useState<StateFieldItem[]>([]);
     const [loaded, setLoaded] = useState<boolean>(false);
@@ -53,8 +53,8 @@ export default function StateField(props: StateFieldProps) {
                 selected: value,
                 placeholder: i18n.get(placeholderKey),
                 items: states,
-                readonly: readOnly && !!value,
-                isCollatingErrors
+                readonly: readOnly ? !!value : false,
+                isCollatingErrors: !!isCollatingErrors,
             })}
         </Field>
     );

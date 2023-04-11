@@ -1,5 +1,7 @@
 import { DataSet, DataSetItem } from '../../../core/Services/data-set';
 import { SchemaKeys } from '../../../utils/useForm/types';
+import { Ref } from 'preact/compat';
+import AdyenFPError from '../../../core/Errors/AdyenFPError';
 
 export type PhoneInputSchema = {
     phoneNumber?: string;
@@ -13,17 +15,23 @@ export interface PhoneInputProps<FormSchema extends Record<string, any>> {
         phonePrefix?: string;
         phoneNumber?: string;
     };
-    onChange: (obj) => void;
+    onChange: (obj: Record<string, any>) => void;
     phoneNumberKey?: string;
     phonePrefixErrorKey?: string;
     phoneNumberErrorKey?: string;
     placeholders?: {
         phoneNumber?: string;
     };
-    ref?;
+    ref?: Ref<HTMLElement>;
 }
 
 export interface PhonePrefixes {
     phonePrefixes: DataSetItem[];
     loadingStatus: string;
+}
+
+export interface PhonePrefixesProps {
+    allowedCountries: string[];
+    loadingContext?: string;
+    handleError?: (err: AdyenFPError) => void;
 }

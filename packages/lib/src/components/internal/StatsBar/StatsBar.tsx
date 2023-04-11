@@ -1,6 +1,7 @@
 import './StatsBar.scss';
+import { StatsBarProps } from './types';
 
-export default function StatsBar(props) {
+export default function StatsBar(props: StatsBarProps) {
     return (
         <div className="adyen-fp-stats-bar">
             {props.items.map(item => (

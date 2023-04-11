@@ -3,7 +3,7 @@ import { unformatDate } from '../FormFields/InputDate/utils';
 import { ValidatorRules } from '../../../utils/Validator/types';
 import { PersonalDetailsSchema } from '../../../types';
 
-const isDateOfBirthValid = value => {
+const isDateOfBirthValid = (value?: string) => {
     if (!value) return false;
     const rawValue = unformatDate(value);
     if (rawValue) {

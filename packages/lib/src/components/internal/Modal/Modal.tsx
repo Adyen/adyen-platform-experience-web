@@ -2,17 +2,24 @@ import { useEffect, useRef } from 'preact/hooks';
 import cx from 'classnames';
 import './Modal.scss';
 import { ModalProps } from './types';
+import { TargetedEvent } from 'preact/compat';
 
+function targetIsNode(e: EventTarget | null): e is Node {
+    if (!e || !('nodeType' in e)) {
+        return false;
+    }
+    return true;
+}
 export default function Modal({ title, children, classNameModifiers = [], isOpen, onClose, isDismissible = true }: ModalProps) {
     const modalContainerRef = useRef<HTMLDivElement>(null);
 
-    const handleClickOutside = e => {
-        if (isDismissible && isOpen && !modalContainerRef?.current?.contains(e.target)) {
+    const handleClickOutside = (e: TargetedEvent<Node, MouseEvent>) => {
+        if (isDismissible && isOpen && targetIsNode(e.target) && !modalContainerRef?.current?.contains(e.target)) {
             onClose();
         }
     };
 
-    const handleEscKey = e => {
+    const handleEscKey = (e: KeyboardEvent) => {
         if (e.key === 'Escape' && isOpen && isDismissible) {
             onClose();
         }

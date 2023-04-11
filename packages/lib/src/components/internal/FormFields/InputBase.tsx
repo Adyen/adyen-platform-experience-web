@@ -2,9 +2,11 @@ import { h } from 'preact';
 import { useCallback } from 'preact/hooks';
 import classNames from 'classnames';
 import { ARIA_ERROR_SUFFIX } from '../../../core/Errors/constants';
+import { InputBaseProps } from './types';
+import { TargetedEvent } from 'preact/compat';
 
-export default function InputBase(props) {
-    const { autoCorrect, classNameModifiers, isInvalid, isValid, readonly = null, spellCheck, type, uniqueId, isCollatingErrors, disabled } = props;
+export default function InputBase(props: InputBaseProps) {
+    const { autoCorrect, classNameModifiers, isInvalid, isValid, readonly = false, spellCheck, type, uniqueId, isCollatingErrors, disabled } = props;
 
     /**
      * To avoid confusion with misplaced/misdirected onChange handlers - InputBase only accepts onInput, onBlur & onFocus handlers.
@@ -15,8 +17,8 @@ export default function InputBase(props) {
     }
 
     const handleInput = useCallback(
-        (event: h.JSX.TargetedEvent<HTMLInputElement>) => {
-            props.onInput(event);
+        (event: TargetedEvent<HTMLInputElement, Event>) => {
+            props.onInput?.(event);
         },
         [props.onInput]
     );
@@ -54,9 +56,9 @@ export default function InputBase(props) {
         props.className,
         {
             'adyen-fp-input--invalid': isInvalid,
-            'adyen-fp-input--valid': isValid
+            'adyen-fp-input--valid': isValid,
         },
-        classNameModifiers.map(m => `adyen-fp-input--${m}`)
+        classNameModifiers?.map(m => `adyen-fp-input--${m}`)
     );
 
     // Don't spread classNameModifiers etc to input element (it ends up as an attribute on the element itself)
@@ -85,5 +87,5 @@ export default function InputBase(props) {
 InputBase.defaultProps = {
     type: 'text',
     classNameModifiers: [],
-    onInput: () => {}
+    onInput: () => {},
 };

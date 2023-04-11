@@ -1,11 +1,12 @@
 import cx from 'classnames';
 import useCoreContext from '../../../core/Context/useCoreContext';
 import './Status.scss';
+import { StatusProps } from './types';
 
-export default function Status(props) {
+export default function Status(props: StatusProps) {
     const { i18n } = useCoreContext();
-    const getLabel = key => {
-        const labels = {
+    const getLabel = (key: string) => {
+        const labels: Record<string, string> = {
             booked: 'status.booked',
             active: 'status.active',
             inactive: 'status.inactive',
@@ -14,7 +15,7 @@ export default function Status(props) {
         return labels[key] || key;
     };
 
-    const getType = type => {
+    const getType = (type: string) => {
         switch (type) {
             case 'booked':
             case 'active':

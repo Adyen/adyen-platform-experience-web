@@ -1,6 +1,7 @@
 import { unformatDate } from '../FormFields/InputDate/utils';
+import { PersonalDetailsSchema } from '../../../types';
 
-export const getFormattedData = data => {
+export const getFormattedData = (data: PersonalDetailsSchema) => {
     const { firstName, lastName, gender, dateOfBirth, shopperEmail, telephoneNumber } = data;
 
     return {
@@ -8,11 +9,11 @@ export const getFormattedData = data => {
             shopperName: {
                 ...(firstName && { firstName }),
                 ...(lastName && { lastName }),
-                ...(gender && { gender })
-            }
+                ...(gender && { gender }),
+            },
         }),
         ...(dateOfBirth && { dateOfBirth: unformatDate(dateOfBirth) }),
         ...(shopperEmail && { shopperEmail }),
-        ...(telephoneNumber && { telephoneNumber })
+        ...(telephoneNumber && { telephoneNumber }),
     };
 };

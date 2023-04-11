@@ -50,8 +50,8 @@ export default function CountryField(props: CountryFieldProps) {
                 placeholder: i18n.get('select.country'),
                 selected: value,
                 items: countries,
-                readonly: readOnly && !!value,
-                isCollatingErrors,
+                readonly: readOnly ? !!value : false,
+                isCollatingErrors: !!isCollatingErrors,
             })}
         </Field>
     );

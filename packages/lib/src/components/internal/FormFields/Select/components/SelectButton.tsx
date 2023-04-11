@@ -3,11 +3,18 @@ import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { SelectButtonProps } from '../types';
 import styles from '../Select.module.scss';
 import Img from '../../../Img';
+import { HTMLAttributes, PropsWithChildren } from 'preact/compat';
+import { MutableRef } from 'preact/hooks';
+import { Ref } from 'preact';
 
-function SelectButtonElement({ filterable, toggleButtonRef, ...props }) {
-    if (filterable) return <div {...props} ref={toggleButtonRef} />;
+function SelectButtonElement({
+    filterable,
+    toggleButtonRef,
+    ...props
+}: PropsWithChildren<SelectButtonProps & Partial<HTMLAttributes<HTMLButtonElement | HTMLDivElement>>>) {
+    if (filterable) return <div {...props} ref={toggleButtonRef as Ref<HTMLDivElement>} />;
 
-    return <button {...props} ref={toggleButtonRef} />;
+    return <button {...props} ref={toggleButtonRef as MutableRef<HTMLButtonElement>} />;
 }
 
 function SelectButton(props: SelectButtonProps) {
@@ -30,20 +37,20 @@ function SelectButton(props: SelectButtonProps) {
                 'adyen-fp-dropdown__button-icon--left': isIconOnLeftSide,
             })}
             filterable={props.filterable}
-            onClick={!readonly ? props.toggleList : null}
-            onKeyDown={!readonly ? props.onButtonKeyDown : null}
-            role={props.filterable ? 'button' : null}
-            tabIndex="0"
-            title={active.name || props.placeholder}
+            onClick={!readonly ? props.toggleList : undefined}
+            onKeyDown={!readonly ? props.onButtonKeyDown : undefined}
+            role={props.filterable ? 'button' : undefined}
+            tabIndex={0}
+            title={active?.name || props.placeholder}
             toggleButtonRef={props.toggleButtonRef}
-            type={!props.filterable ? 'button' : null}
+            type={!props.filterable ? 'button' : ''}
             aria-describedby={props.ariaDescribedBy}
-            id={props.id}
+            id={props.id ?? ''}
         >
             {!showList || !props.filterable ? (
                 <>
-                    <span className="adyen-fp-dropdown__button__text">{active.selectedOptionName || active.name || props.placeholder}</span>
-                    {active.icon && <Img className="adyen-fp-dropdown__button__icon" src={active.icon} alt={active.name} />}
+                    <span className="adyen-fp-dropdown__button__text">{active?.selectedOptionName || active?.name || props.placeholder}</span>
+                    {active?.icon && <Img className="adyen-fp-dropdown__button__icon" src={active.icon} alt={active.name} />}
                 </>
             ) : (
                 <input

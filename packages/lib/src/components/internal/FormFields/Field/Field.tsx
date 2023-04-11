@@ -128,27 +128,30 @@ const Field: FunctionalComponent<FieldProps> = props => {
         );
     }, [children, errorMessage, isLoading, isValid, label, onFocusHandler, onBlurHandler]);
 
-    const LabelOrDiv = useCallback(({ onFocusField, focused, filled, disabled, name, uniqueId, useLabelElement, children }) => {
-        const defaultWrapperProps = {
-            onClick: onFocusField,
-            className: classNames({
-                'adyen-fp-label': true,
-                'adyen-fp-label--focused': focused,
-                'adyen-fp-label--filled': filled,
-                'adyen-fp-label--disabled': disabled,
-            }),
-        };
+    const LabelOrDiv = useCallback(
+        ({ onFocusField, focused, filled, disabled, name, uniqueId, useLabelElement, children }: FieldProps & { uniqueId: string }) => {
+            const defaultWrapperProps = {
+                onClick: onFocusField,
+                className: classNames({
+                    'adyen-fp-label': true,
+                    'adyen-fp-label--focused': focused,
+                    'adyen-fp-label--filled': filled,
+                    'adyen-fp-label--disabled': disabled,
+                }),
+            };
 
-        return useLabelElement ? (
-            <label {...defaultWrapperProps} htmlFor={name && uniqueId}>
-                {children}
-            </label>
-        ) : (
-            <div {...defaultWrapperProps} role={'form'}>
-                {children}
-            </div>
-        );
-    }, []);
+            return useLabelElement ? (
+                <label {...defaultWrapperProps} htmlFor={name && uniqueId}>
+                    {children}
+                </label>
+            ) : (
+                <div {...defaultWrapperProps} role={'form'}>
+                    {children}
+                </div>
+            );
+        },
+        []
+    );
 
     /**
      * RENDER

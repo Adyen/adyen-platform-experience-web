@@ -3,6 +3,7 @@ import Specifications from './Specifications';
 import { ValidatorRules } from '../../../utils/Validator/types';
 import { ValidationRuleResult } from '../../../utils/Validator/ValidationRuleResult';
 import { FormState, SchemaKeys } from '../../../utils/useForm/types';
+import { TargetedEvent } from 'preact/compat';
 
 // Describes an object with unknown keys whose value is always a string
 export type StringObject = {
@@ -41,7 +42,7 @@ export interface FieldContainerProps<FormSchema extends Record<string, any>> {
     fieldName: keyof AddressData;
     key: string;
     valid?: { [k: string]: any };
-    onInput?: (e: Event) => void;
+    onInput: (e: TargetedEvent<HTMLInputElement, Event>) => void;
     onBlur?: (e: Event) => void;
     onDropdownChange: (e: Event) => void;
     readOnly?: boolean;

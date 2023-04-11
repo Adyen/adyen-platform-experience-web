@@ -48,12 +48,14 @@ function Select({
      * Closes the select list and fires an onChange
      * @param e - Event
      */
-    const handleSelect = e => {
+    const handleSelect = (e: Event) => {
         e.preventDefault();
 
         // If the target is not one of the list items, select the first list item
-        const target: HTMLUListElement =
-            e.currentTarget && selectListRef?.current?.contains(e.currentTarget) ? e.currentTarget : selectListRef?.current?.firstElementChild;
+        const target: HTMLUListElement | undefined | null =
+            e.currentTarget && selectListRef?.current?.contains(e.currentTarget as HTMLUListElement)
+                ? (e.currentTarget as HTMLUListElement)
+                : (selectListRef?.current?.firstElementChild as HTMLUListElement);
 
         if (!target.getAttribute('data-disabled')) {
             closeList();
@@ -92,13 +94,13 @@ function Select({
      * Close the select list when clicking outside the list
      * @param e - MouseEvent
      */
-    const handleClickOutside = e => {
+    const handleClickOutside = (e: MouseEvent) => {
         // use composedPath so it can also check when inside a web component
         // if composedPath is not available fallback to e.target
         const clickIsOutside =
             selectContainerRef.current && e.composedPath
                 ? !e.composedPath().includes(selectContainerRef.current)
-                : !selectContainerRef.current?.contains(e.target);
+                : !selectContainerRef.current?.contains(e.target as HTMLElement);
         if (clickIsOutside) {
             setTextFilter('');
             setShowList(false);

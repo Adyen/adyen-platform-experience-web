@@ -1,3 +1,5 @@
+import { JSX, Ref } from 'preact';
+
 export interface SelectItem {
     disabled?: boolean;
     icon?: string;
@@ -7,39 +9,40 @@ export interface SelectItem {
 }
 
 export interface SelectProps {
-    className: string;
-    classNameModifiers: string[];
-    filterable: boolean;
-    isInvalid: boolean;
+    className?: string;
+    classNameModifiers?: string[];
+    filterable?: boolean;
+    isInvalid?: boolean;
     isValid?: boolean;
     items: SelectItem[];
     name?: string;
-    onChange: (e) => void;
-    placeholder: string;
-    readonly: boolean;
-    selected: string;
+    onChange: (...args: any) => void;
+    placeholder?: string;
+    readonly?: boolean;
+    selected?: string;
     uniqueId?: string;
-    isCollatingErrors: boolean;
+    isCollatingErrors?: boolean;
     isIconOnLeftSide?: boolean;
 }
 
 export interface SelectButtonProps {
-    active: SelectItem;
-    filterInputRef;
+    className?: string;
+    active?: SelectItem;
+    filterInputRef?: Ref<HTMLInputElement>;
     filterable: boolean;
-    isInvalid: boolean;
+    isInvalid?: boolean;
     isValid?: boolean;
-    onButtonKeyDown: (e: KeyboardEvent) => void;
-    onInput: (e: Event) => void;
-    placeholder: string;
-    readonly: boolean;
-    selectListId: string;
-    showList: boolean;
-    toggleButtonRef;
-    toggleList: (e: Event) => void;
+    onButtonKeyDown?: (e: KeyboardEvent) => void;
+    onInput?: (e: Event) => void;
+    placeholder?: string;
+    readonly?: boolean;
+    selectListId?: string;
+    showList?: boolean;
+    toggleButtonRef: Ref<HTMLButtonElement>;
+    toggleList?: (e: Event) => void;
     id?: string;
-    ariaDescribedBy: string;
-    isIconOnLeftSide: boolean;
+    ariaDescribedBy?: string;
+    isIconOnLeftSide?: boolean;
 }
 
 export interface SelectListProps {

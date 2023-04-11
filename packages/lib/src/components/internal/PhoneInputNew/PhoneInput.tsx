@@ -67,7 +67,7 @@ function PhoneInput(props: PhoneInputProps<PhoneInputSchema>) {
     };
 
     const getPhoneFieldError = useCallback(
-        field => {
+        (field: string) => {
             if (errors[field]) {
                 const propsField = field === 'phoneNumber' ? 'phoneNumberErrorKey' : 'phonePrefixErrorKey';
                 const key = props[propsField] ? props[propsField] : errors[field].errorMessage;
@@ -125,7 +125,7 @@ function PhoneInput(props: PhoneInputProps<PhoneInputSchema>) {
                             // readonly: props.phonePrefixIsReadonly,
                             placeholder: i18n.get('infix'),
                             selected: data.phonePrefix,
-                            isCollatingErrors,
+                            isCollatingErrors: !!isCollatingErrors,
                             uniqueId: uniqueIDPhonePrefix,
                         })}
 
