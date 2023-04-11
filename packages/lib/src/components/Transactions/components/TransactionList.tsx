@@ -28,7 +28,7 @@ function TransactionList(props: TransactionListProps) {
                         value
                     ),
                 balanceAccountId: ({ value }) =>
-                    !props.onBalanceAccountSelected ? (
+                    props.onBalanceAccountSelected ? (
                         <Button variant={'link'} onClick={() => props.onBalanceAccountSelected?.({ id: value })}>
                             {value}
                         </Button>
@@ -36,7 +36,7 @@ function TransactionList(props: TransactionListProps) {
                         value
                     ),
                 accountHolderId: ({ value }) =>
-                    !props.onAccountSelected ? (
+                    props.onAccountSelected ? (
                         <Button variant={'link'} onClick={() => props.onAccountSelected?.({ id: value })}>
                             {value}
                         </Button>
