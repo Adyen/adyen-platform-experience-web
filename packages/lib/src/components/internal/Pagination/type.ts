@@ -1,7 +1,7 @@
 export interface PaginationProps {
     page: number;
     hasNextPage: boolean;
-    changePage: (dir: PageChangeOptions) => void;
+    changePage?: (page: number) => void;
     onChange: (dir: PageChangeOptions) => void;
 }
 export enum PageChangeOptions {

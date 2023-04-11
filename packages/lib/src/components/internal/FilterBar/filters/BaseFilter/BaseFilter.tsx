@@ -18,10 +18,10 @@ export default function BaseFilter(props: BaseFilterProps) {
         setEditMode(!editMode);
     };
 
-    const updateFilterValue = (e: Event, field: string) => {
+    const updateFilterValue = (e: Event, field?: string) => {
         setFilterValue((e.target as HTMLInputElement).value);
-        setFilterName(field);
-
+        setFilterName(field ?? '');
+    };
     const updateFilters = () => {
         props.onChange({ [filterName ?? props.name]: filterValue });
         toggleModal();

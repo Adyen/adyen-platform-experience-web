@@ -63,7 +63,7 @@ function TransactionList(props: TransactionListProps) {
         >
             {props.showPagination && (
                 <DataGrid.Footer>
-                    <Pagination page={props.page} hasNextPage={props.hasNextPage} changePage={props.onPageChange} onChange={props.onPageChange} />
+                    <Pagination page={props.page} hasNextPage={props.hasNextPage} changePage={props.onPageChange} onChange={props.onChange} />
                 </DataGrid.Footer>
             )}
         </DataGrid>
