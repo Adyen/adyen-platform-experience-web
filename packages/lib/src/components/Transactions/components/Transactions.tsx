@@ -84,7 +84,7 @@ function Transactions(props: TransactionsPageProps) {
                     hasNextPage={hasNextPage}
                     transactions={props.transactions}
                     page={page}
-                    onChange={handlePageChange}
+                    onPageChange={handlePageChange}
                     onAccountSelected={props.onAccountSelected}
                     onBalanceAccountSelected={props.onBalanceAccountSelected}
                     onTransactionSelected={props.onTransactionSelected}
