@@ -54,6 +54,6 @@ export interface TransactionListProps {
     showPagination: boolean;
     page: number;
     hasNextPage: boolean;
-    onPageChange(dir: string): void;
+    onPageChange: (dir: PageChangeOptions) => void;
     loading: boolean;
 }

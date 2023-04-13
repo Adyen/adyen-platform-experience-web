@@ -7,5 +7,5 @@ export interface BaseFilterProps {
     type?: string;
     label: string;
     classNameModifiers?: string[];
-    body?: (args: BaseFilterProps & { updateFilterValue: (e: Event) => void }) => JSX.Element;
+    body?: (args: BaseFilterProps & { updateFilterValue: (e: Event, field: string) => void }) => JSX.Element;
 }

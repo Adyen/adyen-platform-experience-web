@@ -1,4 +1,4 @@
-import { Component, ComponentChildren, JSX } from 'preact';
+import { ComponentChild, ComponentChildren, JSX } from 'preact';
 import Language from '../../../../language';
 import { HTMLAttributes } from 'preact/compat';
 
@@ -14,7 +14,7 @@ export interface FieldProps {
     inputWrapperModifiers?: string[];
     isLoading?: boolean;
     isValid?: boolean;
-    label?: string | Component;
+    label?: string | ComponentChild;
     labelEndAdornment?: string | JSX.Element;
     onBlur?: (e: JSX.TargetedEvent<HTMLInputElement>) => void;
     onFocus?: (e: JSX.TargetedEvent<HTMLInputElement>) => void;
