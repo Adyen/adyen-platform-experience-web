@@ -78,10 +78,10 @@ const renderDateFilterModalBody = (() => {
         return (
             <>
                 <Field label={i18n.get('from')} name={'from'}>
-                    <InputText name={'from'} defaultValue={initialFrom} onInput={handleFromInput} />
+                    <InputText name={'from'} value={initialFrom} onInput={handleFromInput} />
                 </Field>
                 <Field label={i18n.get('to')} name={'to'}>
-                    <InputText name={'to'} defaultValue={initialTo} onInput={handleToInput} />
+                    <InputText name={'to'} value={initialTo} onInput={handleToInput} />
                 </Field>
             </>
         );

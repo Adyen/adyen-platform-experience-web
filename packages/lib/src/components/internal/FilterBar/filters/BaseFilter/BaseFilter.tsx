@@ -37,7 +37,7 @@ const fallbackRender = (() => {
         }, [editAction, name, onChange, onValueUpdated]);
 
         return <Field label={props.label} classNameModifiers={props.classNameModifiers ?? []} name={name}>
-            <InputText name={name} defaultValue={currentValue.current} onInput={handleInput} />
+            <InputText name={name} value={props.value} onInput={handleInput} />
         </Field>;
     };
 
@@ -55,11 +55,11 @@ const BaseFilterEditModalBody = <T extends BaseFilterProps>({
     const editAction = useContext(editActionContext);
 
     const onValueUpdated = useCallback((currentValue: string) => {
-        updateValueChanged(currentValue !== props.value);
+        updateValueChanged(props.value ? currentValue !== props.value : !!currentValue);
     }, [props.value, updateValueChanged]);
 
     useEffect(() => {
-        updateWithInitialValue(props.value != undefined);
+        updateWithInitialValue(!!props.value);
     }, [props.value, updateWithInitialValue]);
 
     return renderModalBody({ ...props, editAction, onValueUpdated });

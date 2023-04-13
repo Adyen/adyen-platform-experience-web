@@ -62,13 +62,14 @@ export default function InputBase(props: InputBaseProps) {
     );
 
     // Don't spread classNameModifiers etc to input element (it ends up as an attribute on the element itself)
-    const { classNameModifiers: cnm, uniqueId: uid, isInvalid: iiv, isValid: iv, isCollatingErrors: ce, ...newProps } = props;
+    const { classNameModifiers: cnm, value, uniqueId: uid, isInvalid: iiv, isValid: iv, isCollatingErrors: ce, ...newProps } = props;
 
     return (
         <input
             id={uniqueId}
             {...newProps}
             type={type}
+            defaultValue={value ?? ''}
             className={inputClassNames}
             readOnly={readonly}
             spellCheck={spellCheck}
