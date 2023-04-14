@@ -1,84 +1,65 @@
-import { createContext } from 'preact';
-import { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'preact/hooks';
+import { BaseFilterProps, EditAction, FilterEditModalRenderProps, FilterProps } from './types';
+import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import useBooleanState from '../../../../../hooks/useBooleanState';
 import Modal from '../../../Modal';
 import Button from '../../../Button';
 import Field from '../../../FormFields/Field';
 import InputText from '../../../FormFields/InputText';
+import { isEmpty } from '../../../../../utils/validator-utils';
 import '../../../FormFields';
 import './BaseFilter.scss';
-import {
-    BaseFilterProps,
-    EditAction,
-    FilterEditModalProps,
-    FilterEditModalRenderProps,
-    FilterProps
-} from './types';
 
-const fallbackRender = (() => {
+const isValueEmptyFallback = (value?: string) => !value || isEmpty(value);
+
+const renderFallback = (() => {
     const DefaultEditModalBody = <T extends BaseFilterProps>(props: FilterEditModalRenderProps<T>) => {
         const { editAction, name, onChange, onValueUpdated } = props;
-        const currentValue = useRef(props.value ?? '');
+        const [ currentValue, setCurrentValue ] = useState(props.value);
 
         const handleInput = useCallback((e: Event) => {
-            currentValue.current = (e.target as HTMLInputElement).value;
-            onValueUpdated(currentValue.current);
-        }, [onValueUpdated]);
+            const value = (e.target as HTMLInputElement).value.trim();
+            setCurrentValue(value);
+            onValueUpdated(value);
+        }, [onValueUpdated, setCurrentValue]);
 
         useEffect(() => {
             if (editAction === EditAction.CLEAR) {
-                onValueUpdated(currentValue.current = '');
+                const value = '';
+                setCurrentValue(value);
+                onValueUpdated(value);
             }
 
-            if (editAction !== EditAction.NONE) {
-                onChange({ [name]: currentValue.current });
+            if (editAction === EditAction.APPLY) {
+                onChange({ [name]: currentValue ?? '' });
             }
-        }, [editAction, name, onChange, onValueUpdated]);
+        }, [currentValue, editAction, name, onChange, onValueUpdated, setCurrentValue]);
 
         return <Field label={props.label} classNameModifiers={props.classNameModifiers ?? []} name={name}>
-            <InputText name={name} value={props.value} onInput={handleInput} />
+            <InputText name={name} value={currentValue} onInput={handleInput} />
         </Field>;
     };
 
     return <T extends BaseFilterProps>(props: FilterEditModalRenderProps<T>) => <DefaultEditModalBody<T> {...props} />;
 })();
 
-const BaseFilterEditModalBody = <T extends BaseFilterProps>({
-    render,
-    editActionContext,
-    updateValueChanged,
-    updateWithInitialValue,
-    ...props
-}: FilterEditModalProps<T>) => {
-    const renderModalBody = useMemo(() => render ?? fallbackRender<T>, [render]);
-    const editAction = useContext(editActionContext);
-
-    const onValueUpdated = useCallback((currentValue: string) => {
-        updateValueChanged(props.value ? currentValue !== props.value : !!currentValue);
-    }, [props.value, updateValueChanged]);
-
-    useEffect(() => {
-        updateWithInitialValue(!!props.value);
-    }, [props.value, updateWithInitialValue]);
-
-    return renderModalBody({ ...props, editAction, onValueUpdated });
-};
-
-export default function BaseFilter<T extends BaseFilterProps = BaseFilterProps>(props: FilterProps<T>) {
+export default function BaseFilter<T extends BaseFilterProps = BaseFilterProps>({ render, ...props }: FilterProps<T>) {
     const { i18n } = useCoreContext();
     const [ editAction, setEditAction ] = useState(EditAction.NONE);
     const [ editMode, _updateEditMode ] = useBooleanState(false);
-    const [ editModalMounting, _updateEditModalMounting ] = useBooleanState(false);
+    const [ editModalMounting, updateEditModalMounting ] = useBooleanState(false);
+    const [ hasEmptyValue, updateHasEmptyValue ] = useBooleanState(false);
+    const [ hasInitialValue, updateHasInitialValue ] = useBooleanState(false);
     const [ valueChanged, updateValueChanged ] = useBooleanState(false);
-    const [ withInitialValue, _updateWithInitialValue ] = useBooleanState(false);
 
-    const updateWithInitialValue = useCallback((withInitialValue: boolean) => {
-        if (editModalMounting) {
-            _updateEditModalMounting(false);
-            _updateWithInitialValue(withInitialValue);
-        }
-    }, [editModalMounting, _updateEditModalMounting, _updateWithInitialValue]);
+    const isValueEmpty = useMemo(() => props.isValueEmpty ?? isValueEmptyFallback, [props.isValueEmpty]);
+    const renderModalBody = useMemo(() => render ?? renderFallback<T>, [render]);
+
+    const onValueUpdated = useCallback((currentValue: string) => {
+        const hasEmptyValue = isValueEmpty(currentValue);
+        updateHasEmptyValue(hasEmptyValue);
+        updateValueChanged(hasInitialValue ? currentValue !== props.value : !hasEmptyValue);
+    }, [props.value, isValueEmpty, updateValueChanged, updateHasEmptyValue, hasInitialValue]);
 
     const updateEditMode = useCallback((mode: boolean) => {
         if (mode === editMode) return;
@@ -86,25 +67,31 @@ export default function BaseFilter<T extends BaseFilterProps = BaseFilterProps>(
         if (mode) {
             setEditAction(EditAction.NONE);
             updateValueChanged(false);
-            _updateWithInitialValue(false);
+            updateHasEmptyValue(false);
+            updateHasInitialValue(false);
         }
 
         _updateEditMode(mode);
-        _updateEditModalMounting(mode);
-    }, [editMode, setEditAction, _updateEditMode, _updateEditModalMounting, updateValueChanged, _updateWithInitialValue]);
+        updateEditModalMounting(mode);
+    }, [editMode, setEditAction, _updateEditMode, updateEditModalMounting, updateValueChanged, updateHasEmptyValue, updateHasInitialValue]);
 
     const applyFilter = useCallback(() => setEditAction(EditAction.APPLY), [setEditAction]);
     const clearFilter = useCallback(() => setEditAction(EditAction.CLEAR), [setEditAction]);
     const closeEditModal = useCallback(() => updateEditMode(false), [updateEditMode]);
     const handleClick = useCallback(() => updateEditMode(true), [updateEditMode]);
 
-    const EditActionContext = useMemo(() => createContext(EditAction.NONE), []);
+    useEffect(() => {
+        if (editModalMounting) {
+            const hasEmptyValue = isValueEmpty(props.value);
+            updateEditModalMounting(false);
+            updateHasEmptyValue(hasEmptyValue);
+            updateHasInitialValue(!hasEmptyValue);
+        }
+    }, [props.value, editModalMounting, isValueEmpty, updateEditModalMounting, updateHasEmptyValue, updateHasInitialValue]);
 
     useEffect(() => {
-        if (editAction !== EditAction.NONE) {
-            closeEditModal();
-            setEditAction(EditAction.NONE);
-        }
+        if (editAction === EditAction.APPLY) closeEditModal();
+        if (editAction !== EditAction.NONE) setEditAction(EditAction.NONE);
     }, [closeEditModal, editAction, setEditAction]);
 
     return (
@@ -122,18 +109,15 @@ export default function BaseFilter<T extends BaseFilterProps = BaseFilterProps>(
                 isOpen={editMode}
                 onClose={closeEditModal}
             >
-                { editMode && <EditActionContext.Provider value={editAction}>
-                    <BaseFilterEditModalBody<T>
-                        {...props}
-                        editActionContext={EditActionContext}
-                        updateValueChanged={updateValueChanged}
-                        updateWithInitialValue={updateWithInitialValue} />
+                { editMode && <>
+                    { renderModalBody({ ...props, editAction, onValueUpdated }) }
 
                     <div className="adyen-fp-modal__footer">
-                        { withInitialValue && <Button
+                        <Button
                             label={i18n.get('clear')}
                             classNameModifiers={['ghost', 'small']}
-                            onClick={clearFilter} /> }
+                            onClick={clearFilter}
+                            disabled={hasEmptyValue} />
 
                         <Button
                             label={i18n.get('apply')}
@@ -141,7 +125,7 @@ export default function BaseFilter<T extends BaseFilterProps = BaseFilterProps>(
                             onClick={applyFilter}
                             disabled={!valueChanged} />
                     </div>
-                </EditActionContext.Provider> }
+                </> }
             </Modal>
         </div>
     );

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef } from 'preact/hooks';
+import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
 import { EditAction, FilterEditModalRenderProps, FilterProps } from '../BaseFilter/types';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import BaseFilter from '../BaseFilter';
@@ -17,7 +17,8 @@ const computeDateFilterValue = (i18n, fromDate?: string, toDate?: string) => {
 };
 
 const resolveDate = (date?: any) => {
-    try { if (date) return new Date(date).toISOString(); } catch (e) {}
+    try { if (date) return new Date(date).toISOString(); }
+    catch (e) { /* invalid date: fallback to empty string */ }
     return '';
 };
 
@@ -26,62 +27,53 @@ const renderDateFilterModalBody = (() => {
         const { editAction, from, to, onChange, onValueUpdated } = props;
 
         const { i18n } = useCoreContext();
-        const fromValue = useRef(from);
-        const toValue = useRef(to);
-        const initialFrom = useMemo(() => from && i18n.fullDate(from), [i18n, from]);
-        const initialTo = useMemo(() => to && i18n.fullDate(to), [i18n, to]);
+        const [ fromValue, setFromValue ] = useState(from);
+        const [ toValue, setToValue ] = useState(to);
+        const [ fromInputValue, setFromInputValue ] = useState(() => from && i18n.fullDate(from));
+        const [ toInputValue, setToInputValue ] = useState(() => to && i18n.fullDate(to));
+
+        const updateValueState = useCallback((field: 'from' | 'to', value: string) => {
+            const isFromField = field === 'from';
+            const setInputValue = isFromField ? setFromInputValue : setToInputValue;
+            const setValue = isFromField ? setFromValue : setToValue;
+
+            setInputValue(value);
+            setValue(resolveDate(value));
+        }, [setFromInputValue, setFromValue, setToInputValue, setToValue]);
 
         const handleInput = useCallback((e: Event, field: 'from' | 'to') => {
-            try {
-                const value = new Date((e.target as HTMLInputElement).value).toISOString();
-
-                field === 'from'
-                    ? fromValue.current = value
-                    : toValue.current = value;
-            } catch (e) {
-                // Use value from props given invalid date input
-                field === 'from'
-                    ? fromValue.current = from
-                    : toValue.current = to;
-            }
-
-            onValueUpdated(computeDateFilterValue(i18n, fromValue.current, toValue.current));
-        }, [i18n, from, to, onValueUpdated]);
+            updateValueState(field, (e.target as HTMLInputElement).value.trim());
+        }, [updateValueState]);
 
         const handleFromInput = useCallback((e: Event) => handleInput(e, 'from'), [handleInput]);
         const handleToInput = useCallback((e: Event) => handleInput(e, 'to'), [handleInput]);
 
         useEffect(() => {
-            // // [TODO]: Need to revisit this behaviour and agree on proper handling
-            // // Prevent clearing date filter since it is required
-            // if (editAction === EditAction.CLEAR) {
-            //     fromValue.current = toValue.current = '';
-            //     onValueUpdated(computeDateFilterValue(i18n));
-            // }
-            //
-            // if (editAction !== EditAction.NONE) {
-            //     onChange({
-            //         createdSince: fromValue.current,
-            //         createdUntil: toValue.current
-            //     });
-            // }
+            onValueUpdated(computeDateFilterValue(i18n, fromValue, toValue));
+        }, [i18n, fromValue, toValue, onValueUpdated]);
 
+        useEffect(() => {
+            if (editAction === EditAction.CLEAR) {
+                (['from', 'to'] as const).forEach(field => updateValueState(field, ''));
+            }
+
+            // [TODO]: Define this requirement somewhere else and pass it as prop
             // Only update filters when both from and to dates are defined
-            if (editAction === EditAction.APPLY && fromValue.current && toValue.current) {
+            if (editAction === EditAction.APPLY && fromValue && toValue) {
                 onChange({
-                    createdSince: fromValue.current,
-                    createdUntil: toValue.current
+                    createdSince: fromValue,
+                    createdUntil: toValue
                 });
             }
-        }, [i18n, editAction, onChange, onValueUpdated]);
+        }, [editAction, fromValue, toValue, onChange, updateValueState]);
 
         return (
             <>
                 <Field label={i18n.get('from')} name={'from'}>
-                    <InputText name={'from'} value={initialFrom} onInput={handleFromInput} />
+                    <InputText name={'from'} value={fromInputValue} onInput={handleFromInput} />
                 </Field>
                 <Field label={i18n.get('to')} name={'to'}>
-                    <InputText name={'to'} value={initialTo} onInput={handleToInput} />
+                    <InputText name={'to'} value={toInputValue} onInput={handleToInput} />
                 </Field>
             </>
         );
