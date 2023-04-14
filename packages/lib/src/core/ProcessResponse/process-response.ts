@@ -3,7 +3,7 @@
  * @param response - to be processed
  * @returns a new object describing the response result (ready for onStatusChange)
  */
-const processCompleteResponse = (response) => {
+const processCompleteResponse = response => {
     switch (response.resultCode.toLowerCase()) {
         case 'refused':
         case 'error':
@@ -26,7 +26,7 @@ const processCompleteResponse = (response) => {
  * @param response - to be processed
  * @returns a new object describing the response result (ready for onStatusChange)
  */
-export const processResponse = (response) => {
+export const processResponse = response => {
     if (!response.type && response.resultCode) {
         return processCompleteResponse(response);
     }

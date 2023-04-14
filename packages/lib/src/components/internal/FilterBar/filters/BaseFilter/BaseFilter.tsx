@@ -1,71 +1,132 @@
-import { useState } from 'preact/hooks';
+import { BaseFilterProps, EditAction, FilterEditModalRenderProps, FilterProps } from './types';
+import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
+import useBooleanState from '../../../../../hooks/useBooleanState';
 import Modal from '../../../Modal';
 import Button from '../../../Button';
 import Field from '../../../FormFields/Field';
 import InputText from '../../../FormFields/InputText';
+import { isEmpty } from '../../../../../utils/validator-utils';
 import '../../../FormFields';
 import './BaseFilter.scss';
-import { BaseFilterProps } from './types';
 
-export default function BaseFilter(props: BaseFilterProps) {
+const isValueEmptyFallback = (value?: string) => !value || isEmpty(value);
+
+const renderFallback = (() => {
+    const DefaultEditModalBody = <T extends BaseFilterProps>(props: FilterEditModalRenderProps<T>) => {
+        const { editAction, name, onChange, onValueUpdated } = props;
+        const [ currentValue, setCurrentValue ] = useState(props.value);
+
+        const handleInput = useCallback((e: Event) => {
+            const value = (e.target as HTMLInputElement).value.trim();
+            setCurrentValue(value);
+            onValueUpdated(value);
+        }, [onValueUpdated, setCurrentValue]);
+
+        useEffect(() => {
+            if (editAction === EditAction.CLEAR) {
+                const value = '';
+                setCurrentValue(value);
+                onValueUpdated(value);
+            }
+
+            if (editAction === EditAction.APPLY) {
+                onChange({ [name]: currentValue ?? '' });
+            }
+        }, [currentValue, editAction, name, onChange, onValueUpdated, setCurrentValue]);
+
+        return <Field label={props.label} classNameModifiers={props.classNameModifiers ?? []} name={name}>
+            <InputText name={name} value={currentValue} onInput={handleInput} />
+        </Field>;
+    };
+
+    return <T extends BaseFilterProps>(props: FilterEditModalRenderProps<T>) => <DefaultEditModalBody<T> {...props} />;
+})();
+
+export default function BaseFilter<T extends BaseFilterProps = BaseFilterProps>({ render, ...props }: FilterProps<T>) {
     const { i18n } = useCoreContext();
-    const [editMode, setEditMode] = useState(false);
-    const [filterValue, setFilterValue] = useState('');
-    const [filterName, setFilterName] = useState('');
+    const [ editAction, setEditAction ] = useState(EditAction.NONE);
+    const [ editMode, _updateEditMode ] = useBooleanState(false);
+    const [ editModalMounting, updateEditModalMounting ] = useBooleanState(false);
+    const [ hasEmptyValue, updateHasEmptyValue ] = useBooleanState(false);
+    const [ hasInitialValue, updateHasInitialValue ] = useBooleanState(false);
+    const [ valueChanged, updateValueChanged ] = useBooleanState(false);
 
-    const handleClick = () => {
-        setEditMode(!editMode);
-    };
+    const isValueEmpty = useMemo(() => props.isValueEmpty ?? isValueEmptyFallback, [props.isValueEmpty]);
+    const renderModalBody = useMemo(() => render ?? renderFallback<T>, [render]);
 
-    const updateFilterValue = (e: Event, field?: string) => {
-        setFilterValue((e.target as HTMLInputElement).value);
-        setFilterName(field ?? '');
-    };
-    const updateFilters = () => {
-        props.onChange({ [filterName ?? props.name]: filterValue });
-        toggleModal();
-    };
+    const onValueUpdated = useCallback((currentValue: string) => {
+        const hasEmptyValue = isValueEmpty(currentValue);
+        updateHasEmptyValue(hasEmptyValue);
+        updateValueChanged(hasInitialValue ? currentValue !== props.value : !hasEmptyValue);
+    }, [props.value, isValueEmpty, updateValueChanged, updateHasEmptyValue, hasInitialValue]);
 
-    const clearFilter = () => {
-        if (props.value) props.onChange({ [props.name]: '' });
-        setFilterValue('');
-        toggleModal();
-    };
+    const updateEditMode = useCallback((mode: boolean) => {
+        if (mode === editMode) return;
 
-    const toggleModal = () => {
-        setEditMode(!editMode);
-    };
+        if (mode) {
+            setEditAction(EditAction.NONE);
+            updateValueChanged(false);
+            updateHasEmptyValue(false);
+            updateHasInitialValue(false);
+        }
 
-    const BaseFilterBody = (props: { fieldName?: string; label: string; classNameModifiers?: string[]; value?: string }) => {
-        return (
-            <Field label={props.label} classNameModifiers={props.classNameModifiers ? props.classNameModifiers : []} name={props.fieldName}>
-                <InputText name={props.fieldName} value={props.value} onInput={updateFilterValue} />
-            </Field>
-        );
-    };
+        _updateEditMode(mode);
+        updateEditModalMounting(mode);
+    }, [editMode, setEditAction, _updateEditMode, updateEditModalMounting, updateValueChanged, updateHasEmptyValue, updateHasInitialValue]);
+
+    const applyFilter = useCallback(() => setEditAction(EditAction.APPLY), [setEditAction]);
+    const clearFilter = useCallback(() => setEditAction(EditAction.CLEAR), [setEditAction]);
+    const closeEditModal = useCallback(() => updateEditMode(false), [updateEditMode]);
+    const handleClick = useCallback(() => updateEditMode(true), [updateEditMode]);
+
+    useEffect(() => {
+        if (editModalMounting) {
+            const hasEmptyValue = isValueEmpty(props.value);
+            updateEditModalMounting(false);
+            updateHasEmptyValue(hasEmptyValue);
+            updateHasInitialValue(!hasEmptyValue);
+        }
+    }, [props.value, editModalMounting, isValueEmpty, updateEditModalMounting, updateHasEmptyValue, updateHasInitialValue]);
+
+    useEffect(() => {
+        if (editAction === EditAction.APPLY) closeEditModal();
+        if (editAction !== EditAction.NONE) setEditAction(EditAction.NONE);
+    }, [closeEditModal, editAction, setEditAction]);
 
     return (
         <div className={`adyen-fp-filter adyen-fp-filter--${props.type}`}>
             <Button
                 variant={'filter'}
                 label={props.value || props.label}
-                classNameModifiers={[...(props.value ? ['active'] : []), ...(props?.classNameModifiers ?? [])]}
+                classNameModifiers={[...(props.value ? ['active'] : []), ...(props.classNameModifiers ?? [])]}
                 onClick={handleClick}
             />
 
-            <Modal title={i18n.get('editFilter')} isOpen={editMode} onClose={toggleModal} classNameModifiers={['filter']}>
-                {props.body ? props.body({ ...props, updateFilterValue }) : <BaseFilterBody {...props} />}
+            <Modal
+                title={i18n.get('editFilter')}
+                classNameModifiers={['filter']}
+                isOpen={editMode}
+                onClose={closeEditModal}
+            >
+                { editMode && <>
+                    { renderModalBody({ ...props, editAction, onValueUpdated }) }
 
-                <div className="adyen-fp-modal__footer">
-                    <Button classNameModifiers={['ghost', 'small']} label={i18n.get('clear')} onClick={clearFilter} disabled={!filterValue} />
-                    <Button classNameModifiers={['small']} label={i18n.get('apply')} onClick={updateFilters} disabled={!filterValue} />
-                </div>
+                    <div className="adyen-fp-modal__footer">
+                        <Button
+                            label={i18n.get('clear')}
+                            classNameModifiers={['ghost', 'small']}
+                            onClick={clearFilter}
+                            disabled={hasEmptyValue} />
+
+                        <Button
+                            label={i18n.get('apply')}
+                            classNameModifiers={['small']}
+                            onClick={applyFilter}
+                            disabled={!valueChanged} />
+                    </div>
+                </> }
             </Modal>
         </div>
     );
 }
-
-// <Portal into={'body'}>
-//     <div class="adyen-fp-popover"></div>
-// </Portal>

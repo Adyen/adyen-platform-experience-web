@@ -39,7 +39,11 @@ function Transactions(props: TransactionsPageProps) {
     };
 
     const handleFilterReset = () => {
-        setFilters({});
+        if (filters !== defaultFilters) {
+            const emptyFilters = {};
+            setFilters(emptyFilters);
+            props.onFilterChange?.({ filters: emptyFilters }, props.elementRef);
+        }
     };
 
     useEffect(() => {
@@ -65,16 +69,14 @@ function Transactions(props: TransactionsPageProps) {
                         value={filters?.accountHolderId}
                         onChange={handleFilterChange}
                     />
-                    {filters?.createdSince && filters?.createdUntil && (
-                        <DateFilter
-                            label={i18n.get('createdSince')}
-                            name={'createdSince'}
-                            classNameModifiers={['createdSince']}
-                            from={i18n.fullDate(filters.createdSince)}
-                            to={i18n.fullDate(filters.createdUntil)}
-                            onChange={handleFilterChange}
-                        />
-                    )}
+                    <DateFilter
+                        label={i18n.get('dateRange')}
+                        name={'createdSince'}
+                        classNameModifiers={['createdSince']}
+                        from={filters?.createdSince ?? defaultFilters?.createdSince}
+                        to={filters?.createdUntil ?? defaultFilters?.createdUntil}
+                        onChange={handleFilterChange}
+                    />
                 </FilterBar>
             )}
 

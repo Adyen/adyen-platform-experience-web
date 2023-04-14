@@ -33,10 +33,6 @@ export class TransactionsElement extends UIElement {
         };
     }
 
-    // handleFilterChange(filters) {
-    //     if (this.props.onFilterChange) this.props.onFilterChange({filters}, this.elementRef);
-    // }
-
     render() {
         return (
             <CoreProvider i18n={this.props.i18n} loadingContext={this.props.loadingContext}>
