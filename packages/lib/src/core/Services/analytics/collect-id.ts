@@ -20,7 +20,7 @@ function confirmSessionDurationIsMaxFifteenMinutes(checkoutAttemptIdSession: Che
  * @returns a function returning a promise containing the response of the call
  */
 const collectId = ({ loadingContext, clientKey, experiments }: CollectIdProps) => {
-    let promise;
+    let promise: Promise<string>;
 
     const options = {
         errorLevel: 'silent' as const,

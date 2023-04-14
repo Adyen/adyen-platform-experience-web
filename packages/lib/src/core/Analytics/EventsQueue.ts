@@ -3,7 +3,7 @@ type EventItem = (checkoutAttemptId: string) => Promise<any>;
 class EventsQueue {
     public events: EventItem[] = [];
 
-    add(event) {
+    add(event: EventItem) {
         this.events.push(event);
     }
 

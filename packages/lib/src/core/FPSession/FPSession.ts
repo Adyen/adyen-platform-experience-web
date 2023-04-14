@@ -45,7 +45,7 @@ class FPSession {
     /**
      * Fetches data from a session
      */
-    setupSession(options) {
+    setupSession(options: Record<string, any>) {
         return setupSession(this, options).then(response => {
             if (response.configuration) {
                 this.configuration = { ...response.configuration };

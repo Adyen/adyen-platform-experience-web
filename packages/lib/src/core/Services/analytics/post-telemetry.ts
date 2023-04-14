@@ -1,16 +1,17 @@
 import { httpPost } from '../http';
+import { LogConfig } from './types';
 
 /**
  * Log event to Adyen
  * @param config -
  */
-const logTelemetry = config => event => {
+const logTelemetry = (config: LogConfig) => (event: Record<string, any>) => {
     if (!config.clientKey) return Promise.reject();
 
     const options = {
         errorLevel: 'silent' as const,
         loadingContext: config.loadingContext,
-        path: `v2/analytics/log?clientKey=${config.clientKey}`
+        path: `v2/analytics/log?clientKey=${config.clientKey}`,
     };
 
     const telemetryEvent = {
@@ -21,7 +22,7 @@ const logTelemetry = config => event => {
         userAgent: navigator.userAgent,
         referrer: window.location.href,
         screenWidth: window.screen.width,
-        ...event
+        ...event,
     };
 
     return httpPost(options, telemetryEvent);

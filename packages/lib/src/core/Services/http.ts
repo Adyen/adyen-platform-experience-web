@@ -6,7 +6,7 @@ interface HttpOptions {
     accept?: string;
     contentType?: string;
     errorMessage?: string;
-    headers?;
+    headers?: Record<string, string>[];
     loadingContext?: string;
     method?: string;
     path: string;
@@ -37,11 +37,11 @@ export function http<T>(options: HttpOptions, data?: any): Promise<T> {
         headers: {
             Accept: 'application/json, text/plain, */*',
             'Content-Type': method === 'POST' ? 'application/json' : 'text/plain',
-            ...headers
+            ...headers,
         },
         redirect: 'follow',
         referrerPolicy: 'no-referrer-when-downgrade',
-        ...(data && { body: JSON.stringify(data) })
+        ...(data && { body: JSON.stringify(data) }),
     };
 
     const url = `${loadingContext}${path}`;
