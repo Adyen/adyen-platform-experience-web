@@ -14,7 +14,7 @@ export interface FieldProps {
     inputWrapperModifiers?: string[];
     isLoading?: boolean;
     isValid?: boolean;
-    label?: string | Component;
+    label?: string | Component | (() => string | Component);
     labelEndAdornment?: string | JSX.Element;
     onBlur?: (e: JSX.TargetedEvent<HTMLInputElement>) => void;
     onFocus?: (e: JSX.TargetedEvent<HTMLInputElement>) => void;

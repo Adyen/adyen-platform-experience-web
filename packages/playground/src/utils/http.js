@@ -12,10 +12,15 @@ export const httpPost = (endpoint, data) =>
 
 export const httpGet = (endpoint, request = {}) => {
     const url = new URL(`${protocol}//${host}/${endpoint}`);
-    const searchParams = new URLSearchParams(request).toString();
+    const searchParams = new URLSearchParams(request);
 
-    return fetch(`${url}?${searchParams}`, {
-        method: 'get',
+    searchParams.forEach((value, param) => {
+        const decodedValue = decodeURIComponent(value);
+        if (decodedValue) url.searchParams.set(param, decodedValue);
+    });
+
+    return fetch(url, {
+        method: 'GET',
         headers: {
             Accept: 'application/json, text/plain, */*',
             'Content-Type': 'application/json'

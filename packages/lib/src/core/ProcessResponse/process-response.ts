@@ -5,6 +5,7 @@ import { Response } from './types';
  * @param response - to be processed
  * @returns a new object describing the response result (ready for onStatusChange)
  */
+ 
 const processCompleteResponse = (response: Response) => {
     switch (response.resultCode?.toLowerCase()) {
         case 'refused':

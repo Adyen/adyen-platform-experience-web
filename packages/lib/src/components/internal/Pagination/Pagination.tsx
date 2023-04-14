@@ -7,8 +7,7 @@ import { PageChangeOptions, PaginationProps } from './type';
 export default function Pagination(props: PaginationProps) {
     const { i18n } = useCoreContext();
 
-    const handleClick = (dir: PageChangeOptions, newPage: number) => {
-        props.changePage?.(newPage);
+    const handleClick = (dir: PageChangeOptions) => {
         props.onChange(dir);
     };
 
@@ -25,7 +24,7 @@ export default function Pagination(props: PaginationProps) {
                     variant={'ghost'}
                     disabled={props.page === 1}
                     classNameModifiers={['circle', 'prev']}
-                    onClick={() => handleClick(PageChangeOptions.PREV, props.page - 1)}
+                    onClick={() => handleClick(PageChangeOptions.PREV)}
                     label={'Previous'}
                 />
                 <Button
@@ -33,7 +32,7 @@ export default function Pagination(props: PaginationProps) {
                     variant={'ghost'}
                     disabled={!props.hasNextPage}
                     classNameModifiers={['circle', 'next']}
-                    onClick={() => handleClick(PageChangeOptions.NEXT, props.page + 1)}
+                    onClick={() => handleClick(PageChangeOptions.NEXT)}
                     label={'Next'}
                 />
             </div>

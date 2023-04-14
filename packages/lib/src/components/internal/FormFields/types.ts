@@ -13,7 +13,7 @@ export interface InputBaseProps {
     uniqueId?: string;
     isCollatingErrors?: boolean;
     disabled?: boolean;
-    onInput?: (e: TargetedEvent<HTMLInputElement, Event>) => void;
+    onInput?: (e: TargetedEvent<HTMLInputElement, Event>, field?: string) => void;
     onKeyUp?: (e: JSX.TargetedEvent<HTMLInputElement>) => void;
     onBlur?: (e: JSX.TargetedEvent<HTMLInputElement>) => void;
     onFocusHandler?: (e: JSX.TargetedEvent<HTMLInputElement>) => void;

@@ -1,4 +1,4 @@
-import { JSX, Ref } from 'preact';
+import { Ref } from 'preact';
 
 export interface SelectItem {
     disabled?: boolean;
