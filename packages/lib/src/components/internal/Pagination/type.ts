@@ -1,7 +1,9 @@
+import { PageNeighbours } from '../../../hooks/usePartialRecordSet';
+
 export interface PaginationProps {
     page: number;
     hasNextPage: boolean;
-    onChange: (dir: PageChangeOptions) => void;
+    onChange: (dir: PageNeighbours) => void;
 }
 export enum PageChangeOptions {
     NEXT = 'next',
