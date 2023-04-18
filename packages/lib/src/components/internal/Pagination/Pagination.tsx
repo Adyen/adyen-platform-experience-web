@@ -2,12 +2,13 @@ import classnames from 'classnames';
 import useCoreContext from '../../../core/Context/useCoreContext';
 import Button from '../Button';
 import './Pagination.scss';
-import { PageChangeOptions, PaginationProps } from './type';
+import { PaginationProps } from './type';
+import { PageNeighbours } from '../../../hooks/usePartialRecordSet';
 
 export default function Pagination(props: PaginationProps) {
     const { i18n } = useCoreContext();
 
-    const handleClick = (dir: PageChangeOptions) => {
+    const handleClick = (dir: PageNeighbours) => {
         props.onChange(dir);
     };
 
@@ -24,7 +25,7 @@ export default function Pagination(props: PaginationProps) {
                     variant={'ghost'}
                     disabled={props.page === 1}
                     classNameModifiers={['circle', 'prev']}
-                    onClick={() => handleClick(PageChangeOptions.PREV)}
+                    onClick={() => handleClick(PageNeighbours.PREV)}
                     label={'Previous'}
                 />
                 <Button
@@ -32,7 +33,7 @@ export default function Pagination(props: PaginationProps) {
                     variant={'ghost'}
                     disabled={!props.hasNextPage}
                     classNameModifiers={['circle', 'next']}
-                    onClick={() => handleClick(PageChangeOptions.NEXT)}
+                    onClick={() => handleClick(PageNeighbours.NEXT)}
                     label={'Next'}
                 />
             </div>

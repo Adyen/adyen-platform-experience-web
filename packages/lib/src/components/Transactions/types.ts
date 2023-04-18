@@ -1,6 +1,6 @@
 import { CurrencyCode } from '../../utils/constants/currency-codes';
+import { PageNeighbours } from '../../hooks/usePartialRecordSet';
 import UIElement from '../UIElement';
-import { PageChangeOptions } from '../internal/Pagination/type';
 
 export interface Transaction {
     accountHolderId: string;
@@ -34,8 +34,7 @@ export interface TransactionsPageProps {
     transactions: {
         data: Transaction[];
         _links?: {
-            [PageChangeOptions.NEXT]?: { href: string };
-            [PageChangeOptions.PREV]?: { href: string };
+            [K in PageNeighbours]?: { href: string };
         };
     };
     elementRef: UIElement | null;
@@ -54,6 +53,6 @@ export interface TransactionListProps {
     showPagination: boolean;
     page: number;
     hasNextPage: boolean;
-    onPageChange: (dir: PageChangeOptions) => void;
+    onPageChange: (dir: PageNeighbours) => void;
     loading: boolean;
 }
