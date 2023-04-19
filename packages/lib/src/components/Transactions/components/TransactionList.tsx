@@ -1,5 +1,7 @@
+import { useMemo } from 'preact/hooks';
 import classnames from 'classnames';
 import useCoreContext from 'src/core/Context/useCoreContext';
+import Alert from '../../internal/Alert';
 import DataGrid from '../../internal/DataGrid';
 import Pagination from '../../internal/Pagination';
 import { getLabel } from './utils';
@@ -12,41 +14,46 @@ function TransactionList(props: TransactionListProps) {
     const fields: (keyof Transaction)[] = ['id', 'type', 'balanceAccountId', 'accountHolderId', 'amount', 'createdAt', 'description'];
 
     const columns = fields.map(key => ({ key, label: i18n.get(getLabel(key)) }));
+    const showAlert = useMemo(() => !(props.loading || props.transactions.length), [props.loading, props.transactions]);
 
-    return (
-        <DataGrid<Transaction>
+    return showAlert
+        ? <Alert icon={'cross'}>{i18n.get('unableToLoadTransactions')}</Alert>
+        : <DataGrid<Transaction>
             columns={columns}
-            data={props.transactions.data}
+            data={props.transactions}
             loading={props.loading}
             customCells={{
-                id: ({ value }) =>
+                id: ({value}) =>
                     props.onTransactionSelected ? (
-                        <Button variant={'link'} onClick={() => props.onTransactionSelected?.({ id: value })}>
+                        <Button variant={'link'} onClick={() => props.onTransactionSelected?.({id: value})}>
                             {value}
                         </Button>
                     ) : (
                         value
                     ),
-                balanceAccountId: ({ value }) =>
+                balanceAccountId: ({value}) =>
                     props.onBalanceAccountSelected ? (
-                        <Button variant={'link'} onClick={() => props.onBalanceAccountSelected?.({ id: value })}>
+                        <Button variant={'link'} onClick={() => props.onBalanceAccountSelected?.({id: value})}>
                             {value}
                         </Button>
                     ) : (
                         value
                     ),
-                accountHolderId: ({ value }) =>
+                accountHolderId: ({value}) =>
                     props.onAccountSelected ? (
-                        <Button variant={'link'} onClick={() => props.onAccountSelected?.({ id: value })}>
+                        <Button variant={'link'} onClick={() => props.onAccountSelected?.({id: value})}>
                             {value}
                         </Button>
                     ) : (
                         value
                     ),
-                createdAt: ({ value }) => i18n.fullDate(value),
-                type: ({ value }) => i18n.get(getLabel(value)),
-                amount: ({ value }) => {
-                    const amount = value?.currency ? i18n.amount(value.value, value.currency, { currencyDisplay: 'code', showSign: true }) : null;
+                createdAt: ({value}) => i18n.fullDate(value),
+                type: ({value}) => i18n.get(getLabel(value)),
+                amount: ({value}) => {
+                    const amount = value?.currency ? i18n.amount(value.value, value.currency, {
+                        currencyDisplay: 'code',
+                        showSign: true
+                    }) : null;
                     const isPositive = amount?.indexOf('-') === -1;
                     return (
                         <div
@@ -61,13 +68,11 @@ function TransactionList(props: TransactionListProps) {
                 },
             }}
         >
-            {props.showPagination && (
+            { props.showPagination &&
                 <DataGrid.Footer>
-                    <Pagination page={props.page} hasNextPage={props.hasNextPage} onChange={props.onPageChange} />
-                </DataGrid.Footer>
-            )}
-        </DataGrid>
-    );
+                    <Pagination page={props.page} hasNextPage={props.hasNextPage} onChange={props.onPageChange}/>
+                </DataGrid.Footer> }
+        </DataGrid>;
 }
 
 export default TransactionList;

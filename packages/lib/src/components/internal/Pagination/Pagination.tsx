@@ -3,7 +3,7 @@ import useCoreContext from '../../../core/Context/useCoreContext';
 import Button from '../Button';
 import './Pagination.scss';
 import { PaginationProps } from './type';
-import { PageNeighbours } from '../../../hooks/usePartialRecordSet';
+import { PageNeighbours } from '../../../hooks/usePaginatedRecords';
 
 export default function Pagination(props: PaginationProps) {
     const { i18n } = useCoreContext();

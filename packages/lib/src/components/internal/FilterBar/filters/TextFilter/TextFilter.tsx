@@ -1,6 +1,7 @@
 import BaseFilter from '../BaseFilter';
-import { BaseFilterProps } from '../BaseFilter/types';
+import { FilterProps } from '../BaseFilter/types';
+import { TextFilterProps } from './types';
 
-export default function TextFilter(props: BaseFilterProps) {
-    return <BaseFilter {...props} type={'text'} />;
+export default function TextFilter<T extends TextFilterProps = TextFilterProps>(props: FilterProps<T>) {
+    return <BaseFilter<T> {...props} type={'text'} />;
 }
