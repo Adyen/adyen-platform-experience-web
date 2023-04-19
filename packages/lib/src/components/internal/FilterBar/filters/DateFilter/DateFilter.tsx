@@ -6,19 +6,24 @@ import Field from '../../../FormFields/Field';
 import InputText from '../../../FormFields/InputText';
 import { DateFilterProps } from './types';
 import './DateFilter.scss';
+import Language from '../../../../../language';
 
-const computeDateFilterValue = (i18n, fromDate?: string, toDate?: string) => {
+const computeDateFilterValue = (i18n: Language, fromDate?: string, toDate?: string) => {
     const from = fromDate && i18n.fullDate(fromDate);
     const to = toDate && i18n.fullDate(toDate);
 
     if (from && to) return `${from} - ${to}`;
     if (from) return i18n.get('filter.date.since', { values: { date: from } });
     if (to) return i18n.get('filter.date.until', { values: { date: to } });
+    return '';
 };
 
 const resolveDate = (date?: any) => {
-    try { if (date) return new Date(date).toISOString(); }
-    catch (e) { /* invalid date: fallback to empty string */ }
+    try {
+        if (date) return new Date(date).toISOString();
+    } catch (e) {
+        /* invalid date: fallback to empty string */
+    }
     return '';
 };
 
@@ -27,23 +32,29 @@ const renderDateFilterModalBody = (() => {
         const { editAction, from, to, onChange, onValueUpdated } = props;
 
         const { i18n } = useCoreContext();
-        const [ fromValue, setFromValue ] = useState(from);
-        const [ toValue, setToValue ] = useState(to);
-        const [ fromInputValue, setFromInputValue ] = useState(() => from && i18n.fullDate(from));
-        const [ toInputValue, setToInputValue ] = useState(() => to && i18n.fullDate(to));
+        const [fromValue, setFromValue] = useState(from);
+        const [toValue, setToValue] = useState(to);
+        const [fromInputValue, setFromInputValue] = useState(() => from && i18n.fullDate(from));
+        const [toInputValue, setToInputValue] = useState(() => to && i18n.fullDate(to));
 
-        const updateValueState = useCallback((field: 'from' | 'to', value: string) => {
-            const isFromField = field === 'from';
-            const setInputValue = isFromField ? setFromInputValue : setToInputValue;
-            const setValue = isFromField ? setFromValue : setToValue;
+        const updateValueState = useCallback(
+            (field: 'from' | 'to', value: string) => {
+                const isFromField = field === 'from';
+                const setInputValue = isFromField ? setFromInputValue : setToInputValue;
+                const setValue = isFromField ? setFromValue : setToValue;
 
-            setInputValue(value);
-            setValue(resolveDate(value));
-        }, [setFromInputValue, setFromValue, setToInputValue, setToValue]);
+                setInputValue(value);
+                setValue(resolveDate(value));
+            },
+            [setFromInputValue, setFromValue, setToInputValue, setToValue]
+        );
 
-        const handleInput = useCallback((e: Event, field: 'from' | 'to') => {
-            updateValueState(field, (e.target as HTMLInputElement).value.trim());
-        }, [updateValueState]);
+        const handleInput = useCallback(
+            (e: Event, field: 'from' | 'to') => {
+                updateValueState(field, (e.target as HTMLInputElement).value.trim());
+            },
+            [updateValueState]
+        );
 
         const handleFromInput = useCallback((e: Event) => handleInput(e, 'from'), [handleInput]);
         const handleToInput = useCallback((e: Event) => handleInput(e, 'to'), [handleInput]);
@@ -62,7 +73,7 @@ const renderDateFilterModalBody = (() => {
             if (editAction === EditAction.APPLY && fromValue && toValue) {
                 onChange({
                     createdSince: fromValue,
-                    createdUntil: toValue
+                    createdUntil: toValue,
                 });
             }
         }, [editAction, fromValue, toValue, onChange, updateValueState]);
@@ -90,11 +101,5 @@ export default function DateFilter<T extends DateFilterProps = DateFilterProps>(
     const toDate = useMemo(() => resolveDate(to), [to]);
     const value = useMemo(() => computeDateFilterValue(i18n, fromDate, toDate), [i18n, fromDate, toDate]);
 
-    return <BaseFilter<T>
-        {...props}
-        from={fromDate}
-        to={toDate}
-        value={value}
-        type={'date'}
-        render={renderDateFilterModalBody} />;
+    return <BaseFilter<T> {...props} from={fromDate} to={toDate} value={value} type={'date'} render={renderDateFilterModalBody} />;
 }
