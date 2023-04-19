@@ -1,6 +1,13 @@
 import { CurrencyCode } from '../../utils/constants/currency-codes';
-import { PageNeighbours } from '../../hooks/usePartialRecordSet';
+import { PageNeighbours } from '../../hooks/usePaginatedRecords';
 import UIElement from '../UIElement';
+
+export const enum TransactionFilterParam {
+    ACCOUNT_HOLDER = 'accountHolderId',
+    BALANCE_ACCOUNT = 'balanceAccountId',
+    CREATED_SINCE = 'createdSince',
+    CREATED_UNTIL = 'createdUntil',
+}
 
 export interface Transaction {
     accountHolderId: string;
@@ -44,9 +51,7 @@ export interface TransactionsPageProps {
     onAccountSelected?: OnSelection;
 }
 export interface TransactionListProps {
-    transactions: {
-        data: Transaction[];
-    };
+    transactions: Transaction[];
     onTransactionSelected?: OnSelection;
     onBalanceAccountSelected?: OnSelection;
     onAccountSelected?: OnSelection;

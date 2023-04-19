@@ -7,15 +7,15 @@ import '../../assets/style/style.scss';
 
 (async () => {
     try {
-        const transactions = await getMyTransactions();
+        // const transactions = await getMyTransactions();
         const adyenFP = await AdyenFP();
 
         adyenFP
             .create(transactionList, {
-                transactions,
+                transactions: { data: [] },
                 onFilterChange: async (state, component) => {
-                    const transactions = await getMyTransactions(state.filters);
-                    component.update({ transactions });
+                    // const transactions = await getMyTransactions(state.filters);
+                    // component.update({ transactions });
                 },
                 onTransactionSelected: ({ id }) => {
                     window.location.assign(`/transaction?id=${id}`);

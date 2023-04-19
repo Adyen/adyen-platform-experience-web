@@ -7,7 +7,7 @@ export enum EditAction {
 }
 
 export interface BaseFilterProps {
-    onChange: (args: { [k: string]: string }) => void;
+    onChange: (value?: any) => void;
     name: string;
     value?: string;
     type?: string;
@@ -27,5 +27,5 @@ export type FilterEditModalRenderProps<T extends BaseFilterProps> = Omit<
     keyof FilterCustomRenderProps<T>
 > & {
     editAction: EditAction;
-    onValueUpdated: (currentValue: string) => void;
+    onValueUpdated: (currentValue?: string) => void;
 };

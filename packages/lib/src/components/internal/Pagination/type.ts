@@ -1,4 +1,4 @@
-import { PageNeighbours } from '../../../hooks/usePartialRecordSet';
+import { PageNeighbours } from '../../../hooks/usePaginatedRecords';
 
 export interface PaginationProps {
     page: number;
