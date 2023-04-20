@@ -27,7 +27,8 @@
         "type-check": "tsc --noEmit",
         "lint": "eslint 'src/**/*.{js,ts,tsx}' --quiet",
         "lint:fix": "npm run lint -- --fix",
-        "types:watch": "npm run type-check -- --watch"
+        "types:watch": "npm run type-check -- --watch",
+        "format": "prettier --write 'src/**/*.{ts,js,css, scss, html}'"
     },
     "devDependencies": {
         "@types/jest": "^27.4.0",

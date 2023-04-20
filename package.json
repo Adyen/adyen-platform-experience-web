@@ -27,7 +27,8 @@
         "test:e2e": "npm run build && npm test:e2e -w @adyen/adyen-fp-web-e2e ",
         "type-check": "npm run type-check -w @adyen/adyen-fp-web ",
         "type:watch": "npm run types:watch -w @adyen/adyen-fp-web ",
-        "prepare": "husky install"
+        "prepare": "husky install",
+        "format:all": "npm run format -w @adyen/adyen-fp-web-playground && npm run format -w @adyen/adyen-fp-web"
     },
     "dependencies": {
         "concurrently": "^7.0.0"
