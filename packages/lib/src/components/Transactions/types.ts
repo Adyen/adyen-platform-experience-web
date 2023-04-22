@@ -1,5 +1,5 @@
 import { CurrencyCode } from '../../utils/constants/currency-codes';
-import { PageNeighbours } from '../../hooks/usePaginatedRecords';
+import { PageNeighbours, PaginationProps } from '../internal/Pagination/types';
 import UIElement from '../UIElement';
 
 export const enum TransactionFilterParam {
@@ -45,19 +45,16 @@ export interface TransactionsPageProps {
         };
     };
     elementRef: UIElement | null;
-    onFilterChange?: (filters: { filters: { [p: string]: string } }, ref: UIElement | null) => void;
+    onFilterChange?: (filters: { [p: string]: string }, ref: UIElement | null) => void;
     onTransactionSelected?: OnSelection;
     onBalanceAccountSelected?: OnSelection;
     onAccountSelected?: OnSelection;
 }
-export interface TransactionListProps {
+export interface TransactionListProps extends PaginationProps {
     transactions: Transaction[];
     onTransactionSelected?: OnSelection;
     onBalanceAccountSelected?: OnSelection;
     onAccountSelected?: OnSelection;
     showPagination: boolean;
-    page: number;
-    hasNextPage: boolean;
-    onPageChange: (dir: PageNeighbours) => void;
     loading: boolean;
 }

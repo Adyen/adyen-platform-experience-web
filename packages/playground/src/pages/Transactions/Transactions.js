@@ -14,7 +14,7 @@ import '../../assets/style/style.scss';
             .create(transactionList, {
                 transactions: { data: [] },
                 onFilterChange: async (state, component) => {
-                    // const transactions = await getMyTransactions(state.filters);
+                    // const transactions = await getMyTransactions(state);
                     // component.update({ transactions });
                 },
                 onTransactionSelected: ({ id }) => {

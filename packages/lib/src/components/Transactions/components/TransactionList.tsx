@@ -9,44 +9,45 @@ import Button from 'src/components/internal/Button';
 import './Transactions.scss';
 import { Transaction, TransactionListProps } from '../types';
 
-function TransactionList(props: TransactionListProps) {
+function TransactionList({
+     loading,
+     transactions,
+     onTransactionSelected,
+     onBalanceAccountSelected,
+     onAccountSelected,
+     showPagination,
+     ...paginationProps
+}: TransactionListProps) {
     const { i18n } = useCoreContext();
     const fields: (keyof Transaction)[] = ['id', 'type', 'balanceAccountId', 'accountHolderId', 'amount', 'createdAt', 'description'];
-
     const columns = fields.map(key => ({ key, label: i18n.get(getLabel(key)) }));
-    const showAlert = useMemo(() => !(props.loading || props.transactions.length), [props.loading, props.transactions]);
+    const showAlert = useMemo(() => !(loading || transactions.length), [loading, transactions]);
 
     return showAlert
         ? <Alert icon={'cross'}>{i18n.get('unableToLoadTransactions')}</Alert>
         : <DataGrid<Transaction>
             columns={columns}
-            data={props.transactions}
-            loading={props.loading}
+            data={transactions}
+            loading={loading}
             customCells={{
                 id: ({value}) =>
-                    props.onTransactionSelected ? (
-                        <Button variant={'link'} onClick={() => props.onTransactionSelected?.({id: value})}>
+                    onTransactionSelected ? (
+                        <Button variant={'link'} onClick={() => onTransactionSelected?.({id: value})}>
                             {value}
                         </Button>
-                    ) : (
-                        value
-                    ),
+                    ) : value,
                 balanceAccountId: ({value}) =>
-                    props.onBalanceAccountSelected ? (
-                        <Button variant={'link'} onClick={() => props.onBalanceAccountSelected?.({id: value})}>
+                    onBalanceAccountSelected ? (
+                        <Button variant={'link'} onClick={() => onBalanceAccountSelected?.({id: value})}>
                             {value}
                         </Button>
-                    ) : (
-                        value
-                    ),
+                    ) : value,
                 accountHolderId: ({value}) =>
-                    props.onAccountSelected ? (
-                        <Button variant={'link'} onClick={() => props.onAccountSelected?.({id: value})}>
+                    onAccountSelected ? (
+                        <Button variant={'link'} onClick={() => onAccountSelected?.({id: value})}>
                             {value}
                         </Button>
-                    ) : (
-                        value
-                    ),
+                    ) : value,
                 createdAt: ({value}) => i18n.fullDate(value),
                 type: ({value}) => i18n.get(getLabel(value)),
                 amount: ({value}) => {
@@ -54,23 +55,21 @@ function TransactionList(props: TransactionListProps) {
                         currencyDisplay: 'code',
                         showSign: true
                     }) : null;
+
                     const isPositive = amount?.indexOf('-') === -1;
-                    return (
-                        <div
-                            className={classnames('adyen-fp-amount', {
-                                'adyen-fp-amount--positive': isPositive,
-                                'adyen-fp-amount--negative': !isPositive,
-                            })}
-                        >
-                            {amount}
-                        </div>
-                    );
+
+                    return <div
+                        className={classnames('adyen-fp-amount', {
+                            'adyen-fp-amount--positive': isPositive,
+                            'adyen-fp-amount--negative': !isPositive,
+                        })}
+                    >{amount}</div>;
                 },
             }}
         >
-            { props.showPagination &&
+            { showPagination &&
                 <DataGrid.Footer>
-                    <Pagination page={props.page} hasNextPage={props.hasNextPage} onChange={props.onPageChange}/>
+                    <Pagination {...paginationProps} />
                 </DataGrid.Footer> }
         </DataGrid>;
 }

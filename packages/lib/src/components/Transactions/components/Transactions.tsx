@@ -1,13 +1,14 @@
-import { useMemo } from 'preact/hooks';
+import { useEffect, useMemo } from 'preact/hooks';
 import useCoreContext from 'src/core/Context/useCoreContext';
 import FilterBar from '../../internal/FilterBar';
 import TextFilter from '../../internal/FilterBar/filters/TextFilter';
 import DateFilter from '../../internal/FilterBar/filters/DateFilter';
 import TransactionList from './TransactionList';
-import usePaginatedRecords, { PaginatedRecordsFetcherParams, WithPageNeighbours } from '../../../hooks/usePaginatedRecords';
 import { Transaction, TransactionFilterParam, TransactionsPageProps } from '../types';
 import { DateRangeFilterParam } from '../../internal/FilterBar/filters/DateFilter/types';
 import './Transactions.scss';
+import { useCursorPaginatedRecords } from '../../internal/Pagination/hooks';
+import { PaginatedRecordsFetcherParams, WithEitherPages } from '../../internal/Pagination/hooks/types';
 
 const filterParams = [
     TransactionFilterParam.ACCOUNT_HOLDER,
@@ -16,7 +17,7 @@ const filterParams = [
     TransactionFilterParam.CREATED_UNTIL
 ];
 
-const fetchRecords = async (signal: AbortSignal, params: PaginatedRecordsFetcherParams<TransactionFilterParam, string> = {}) => {
+const fetchRecords = async ({ signal, ...params }: PaginatedRecordsFetcherParams<string, TransactionFilterParam>) => {
     const { host, protocol } = window.location;
     const url = new URL(`${protocol}//${host}/transactions`);
 
@@ -38,16 +39,30 @@ const fetchRecords = async (signal: AbortSignal, params: PaginatedRecordsFetcher
 
     if (links) {
         const neighbours = Object.fromEntries(Object.entries(links).map(([key, {href}]) => [key, new URL(href).searchParams]));
-        return [records, neighbours] as [Transaction[], WithPageNeighbours];
+        return [records, neighbours] as [Transaction[], WithEitherPages];
     }
 
     throw 'Could not retrieve transactions metadata';
 };
 
-function Transactions(props: any) {
+function Transactions({
+    elementRef,
+    onAccountSelected,
+    onBalanceAccountSelected,
+    onFilterChange,
+    onTransactionSelected
+}: any) {
     const { i18n } = useCoreContext();
-    const { canResetFilters, fetching, getFilter, hasNext, navigate, page, records, resetFilters, updateFilter } =
-        usePaginatedRecords<Transaction, TransactionFilterParam>(fetchRecords, filterParams);
+
+    const {
+        canResetFilters,
+        fetching,
+        filters,
+        records,
+        resetFilters,
+        updateFilters,
+        ...paginationProps
+    } = useCursorPaginatedRecords<Transaction, string, TransactionFilterParam>(fetchRecords, filterParams);
 
     const [
         updateAccountHolderFilter,
@@ -58,7 +73,7 @@ function Transactions(props: any) {
             switch (param) {
                 case TransactionFilterParam.ACCOUNT_HOLDER:
                 case TransactionFilterParam.BALANCE_ACCOUNT:
-                    updateFilter(param, value);
+                    updateFilters({ [param]: value });
                     break;
             }
         };
@@ -69,7 +84,7 @@ function Transactions(props: any) {
                     ? TransactionFilterParam.CREATED_SINCE
                     : TransactionFilterParam.CREATED_UNTIL;
 
-                updateFilter(filter, value);
+                updateFilters({ [filter]: value });
             }
         };
 
@@ -78,51 +93,49 @@ function Transactions(props: any) {
             _updateTextFilter(TransactionFilterParam.BALANCE_ACCOUNT),
             _updateDateFilter
         ];
-    }, [updateFilter]);
+    }, [updateFilters]);
 
-    // useEffect(() => {
-    //     props?.onFilterChange({ ...filters }, props.elementRef);
-    // }, [props?.onFilterChange, props.elementRef]);
+    useEffect(() => {
+        onFilterChange?.(filters, elementRef);
+    }, [filters, onFilterChange]);
 
     return <div className="adyen-fp-transactions">
         <div className="adyen-fp-title">{i18n.get('transactions')}</div>
 
-        { !!props.onFilterChange &&
+        { !!onFilterChange &&
             <FilterBar canResetFilters={canResetFilters} resetFilters={resetFilters}>
                 <TextFilter
                     classNameModifiers={['balanceAccount']}
                     label={i18n.get('balanceAccount')}
                     name={TransactionFilterParam.BALANCE_ACCOUNT}
-                    value={getFilter(TransactionFilterParam.BALANCE_ACCOUNT)}
+                    value={filters[TransactionFilterParam.BALANCE_ACCOUNT]}
                     onChange={updateBalanceAccountFilter}
                 />
                 <TextFilter
                     classNameModifiers={['account']}
                     label={i18n.get('account')}
                     name={TransactionFilterParam.ACCOUNT_HOLDER}
-                    value={getFilter(TransactionFilterParam.ACCOUNT_HOLDER)}
+                    value={filters[TransactionFilterParam.ACCOUNT_HOLDER]}
                     onChange={updateAccountHolderFilter}
                 />
                 <DateFilter
                     classNameModifiers={['createdSince']}
                     label={i18n.get('dateRange')}
                     name={TransactionFilterParam.CREATED_SINCE}
-                    from={getFilter(TransactionFilterParam.CREATED_SINCE)}
-                    to={getFilter(TransactionFilterParam.CREATED_UNTIL)}
+                    from={filters[TransactionFilterParam.CREATED_SINCE]}
+                    to={filters[TransactionFilterParam.CREATED_UNTIL]}
                     onChange={updateCreatedDateFilter}
                 />
             </FilterBar> }
 
         <TransactionList
             loading={fetching}
-            hasNextPage={hasNext}
             transactions={records}
-            page={page}
-            onPageChange={navigate}
-            onAccountSelected={props.onAccountSelected}
-            onBalanceAccountSelected={props.onBalanceAccountSelected}
-            onTransactionSelected={props.onTransactionSelected}
-            showPagination={true} />
+            onAccountSelected={onAccountSelected}
+            onBalanceAccountSelected={onBalanceAccountSelected}
+            onTransactionSelected={onTransactionSelected}
+            showPagination={true}
+            {...paginationProps} />
     </div>;
 }
 
