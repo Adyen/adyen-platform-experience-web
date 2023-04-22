@@ -1,5 +1,5 @@
 import { TransactionsPageProps } from '../types';
-import { PageNeighbours } from '../../../hooks/usePaginatedRecords';
+import { PageNeighbours } from '../../internal/Pagination/types';
 
 export const getLabel = (key: string) => {
     const labels: Record<string, string> = {
