@@ -8,21 +8,17 @@ import { Transaction, TransactionFilterParam, TransactionsPageProps } from '../t
 import { DateRangeFilterParam } from '../../internal/FilterBar/filters/DateFilter/types';
 import './Transactions.scss';
 import { useCursorPaginatedRecords } from '../../internal/Pagination/hooks';
-import { PaginatedRecordsFetcherParams, WithEitherPages } from '../../internal/Pagination/hooks/types';
+import { PaginatedRecordsFetcherParams } from '../../internal/Pagination/hooks/types';
+import { WithEitherPages } from "../../internal/Pagination/hooks/useCursorPagination";
 
-const filterParams = [
-    TransactionFilterParam.ACCOUNT_HOLDER,
-    TransactionFilterParam.BALANCE_ACCOUNT,
-    TransactionFilterParam.CREATED_SINCE,
-    TransactionFilterParam.CREATED_UNTIL
-];
+const DEFAULT_PAGINATED_TRANSACTIONS_LIMIT = 30;
 
-const fetchRecords = async ({ signal, ...params }: PaginatedRecordsFetcherParams<string, TransactionFilterParam>) => {
+const fetchTransactions = async ({ signal, ...params }: PaginatedRecordsFetcherParams<string, TransactionFilterParam>) => {
     const { host, protocol } = window.location;
     const url = new URL(`${protocol}//${host}/transactions`);
 
     for (const [param, value] of Object.entries(params)) {
-        if (value) url.searchParams.set(param, value);
+        if (value) url.searchParams.set(param, value as string);
     }
 
     const response = await fetch(url, {
@@ -45,6 +41,17 @@ const fetchRecords = async ({ signal, ...params }: PaginatedRecordsFetcherParams
     throw 'Could not retrieve transactions metadata';
 };
 
+const paginatedTransactionsInitOptions = {
+    fetchRecords: fetchTransactions,
+    filterParams: [
+        TransactionFilterParam.ACCOUNT_HOLDER,
+        TransactionFilterParam.BALANCE_ACCOUNT,
+        TransactionFilterParam.CREATED_SINCE,
+        TransactionFilterParam.CREATED_UNTIL
+    ],
+    limit: DEFAULT_PAGINATED_TRANSACTIONS_LIMIT
+};
+
 function Transactions({
     elementRef,
     onAccountSelected,
@@ -62,7 +69,7 @@ function Transactions({
         resetFilters,
         updateFilters,
         ...paginationProps
-    } = useCursorPaginatedRecords<Transaction, string, TransactionFilterParam>(fetchRecords, filterParams);
+    } = useCursorPaginatedRecords<Transaction, string, TransactionFilterParam>(paginatedTransactionsInitOptions);
 
     const [
         updateAccountHolderFilter,

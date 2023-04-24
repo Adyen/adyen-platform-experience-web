@@ -1,15 +1,21 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
-import { PaginatedRecordsFetcher, UsePaginatedRecords } from './types';
-import useCursorPagination, { RequestPageCallbackParams, withNextPage, withPrevPage } from './useCursorPagination';
+import {
+    PaginatedRecordsInitOptions,
+    RequestPageCallbackParamsWithCursor,
+    RequestPageCallbackReturnValue,
+    UsePaginatedRecords
+} from './types';
+import useCursorPagination, { withNextPage, withPrevPage } from './useCursorPagination';
 import usePaginatedRecordsFilters from './usePaginatedRecordsFilters';
 import useBooleanState from '../../../../hooks/useBooleanState';
 import useMounted from '../../../../hooks/useMounted';
 import { ReactiveStateUpdateRequestWithField } from '../../../../hooks/useReactiveStateWithParams/types';
 
-const useCursorPaginatedRecords = <T extends Record<any, any>, FilterValue extends string, FilterParam extends string>(
-    fetchRecords: PaginatedRecordsFetcher<T, FilterValue, FilterParam>,
-    filterParams: FilterParam[] = []
-): UsePaginatedRecords<T, FilterValue, FilterParam> => {
+const useCursorPaginatedRecords = <T extends Record<any, any>, FilterValue extends string, FilterParam extends string>({
+   fetchRecords,
+   filterParams = [],
+   limit: pageLimit
+}: PaginatedRecordsInitOptions<T, URLSearchParams, FilterValue, FilterParam>): UsePaginatedRecords<T, URLSearchParams, FilterValue, FilterParam> => {
     const [ records, setRecords ] = useState<T[]>([]);
     const [ fetching, updateFetching ] = useBooleanState(false);
     const { defaultFilters, filters, updateFilters, ...filtersProps } = usePaginatedRecordsFilters<FilterValue, FilterParam>(filterParams);
@@ -19,12 +25,14 @@ const useCursorPaginatedRecords = <T extends Record<any, any>, FilterValue exten
     const $filtersVersion = useRef(0);
     const filtersVersion = useMemo(() => $filtersVersion.current++ || 1, [filters]);
 
-    const { goto, ...paginationProps } = useCursorPagination(
-        useCallback(async ({ cursor, signal }: RequestPageCallbackParams) => {
+    const { goto, page, pages, ...paginationProps } = useCursorPagination(
+        useCallback(async (
+            pageRequestParams: RequestPageCallbackParamsWithCursor
+        ): Promise<RequestPageCallbackReturnValue<URLSearchParams>> => {
             try {
                 if (!$mounted.current || <undefined>updateFetching(true)) return;
 
-                const [ records, paginationData ] = await fetchRecords({ ...filters, cursor, signal });
+                const [ records, paginationData ] = await fetchRecords({ ...filters, ...pageRequestParams });
 
                 if (!$requestedPageAtLeastOnce.current) {
                     const params =
@@ -43,19 +51,22 @@ const useCursorPaginatedRecords = <T extends Record<any, any>, FilterValue exten
                 }
 
                 $mounted.current && setRecords(records);
-                return paginationData;
+                return { ...paginationData, size: records.length };
             } catch (ex) {
                 $mounted.current && setRecords([]);
                 throw ex;
             } finally {
                 $mounted.current && updateFetching(false);
             }
-        }, [filtersVersion])
+        }, [filtersVersion]),
+        pageLimit
     );
 
-    useEffect(goto, [filtersVersion]);
+    useEffect(() => {
+        $mounted.current && goto(1);
+    }, [filtersVersion, pageLimit]);
 
-    return { fetching, filters, goto, records, updateFilters, ...filtersProps, ...paginationProps };
+    return { fetching, filters, goto, page, pages, records, updateFilters, ...filtersProps, ...paginationProps };
 };
 
 export default useCursorPaginatedRecords;

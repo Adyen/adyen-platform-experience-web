@@ -5,10 +5,8 @@ import Button from '../Button';
 import './Pagination.scss';
 import { PaginationProps } from './types';
 
-export default function Pagination({ next, page, pages, prev }: PaginationProps) {
+export default function Pagination({ next, hasNext, hasPrev, page, prev }: PaginationProps) {
     const { i18n } = useCoreContext();
-    const hasPrevPage = useMemo(() => !!page && page > 1, [page]);
-    const hasNextPage = useMemo(() => !!(page && pages) && page < pages, [page, pages]);
 
     return <div aria-label={i18n.get('paginatedNavigation')} className={`adyen-fp-pagination ${classnames({})}`}>
         <div className="adyen-fp-pagination__context">
@@ -19,7 +17,7 @@ export default function Pagination({ next, page, pages, prev }: PaginationProps)
             <Button
                 aria-label={i18n.get('pagination.previousPage')}
                 variant={'ghost'}
-                disabled={!hasPrevPage}
+                disabled={!hasPrev}
                 classNameModifiers={['circle', 'prev']}
                 onClick={prev}
                 label={'Previous'}
@@ -27,7 +25,7 @@ export default function Pagination({ next, page, pages, prev }: PaginationProps)
             <Button
                 aria-label={i18n.get('pagination.nextPage')}
                 variant={'ghost'}
-                disabled={!hasNextPage}
+                disabled={!hasNext}
                 classNameModifiers={['circle', 'next']}
                 onClick={next}
                 label={'Next'}

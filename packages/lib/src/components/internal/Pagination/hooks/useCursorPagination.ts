@@ -1,21 +1,33 @@
-import { useCallback, useEffect, useMemo, useRef } from 'preact/hooks';
-import { PaginatedRecordsFetcherParams, WithEitherPages, WithNextPage, WithPrevPage } from './types';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
+import { RequestPageCallback, RequestPageCallbackParamsWithCursor } from './types';
 import useBooleanState from '../../../../hooks/useBooleanState';
 import useMounted from '../../../../hooks/useMounted';
-import { UsePagination } from '../types';
+import {
+    UsePagination,
+    WithNextPageNeighbour,
+    WithPageNeighbours,
+    WithPrevPageNeighbour
+} from '../types';
 
-type MaybePromise<T extends any = any> = T | Promise<T>;
-export type RequestPageCallbackParams = Pick<PaginatedRecordsFetcherParams<any, any>, 'cursor' | 'signal'>;
-export type RequestPageCallback = (params: RequestPageCallbackParams) => MaybePromise<WithEitherPages | undefined>;
+export type WithEitherPages = WithPageNeighbours<URLSearchParams>;
+export type WithNextPage = WithNextPageNeighbour<URLSearchParams>;
+export type WithPrevPage = WithPrevPageNeighbour<URLSearchParams>;
 
 const noop = Object.freeze(() => {});
 const isParams = (value?: any) => value instanceof URLSearchParams;
 export const withNextPage = (value: WithEitherPages): value is WithNextPage => isParams((value as WithNextPage).next);
 export const withPrevPage = (value: WithEitherPages): value is WithPrevPage => isParams((value as WithPrevPage).prev);
 
-const useCursorPagination = <R extends RequestPageCallback>(requestPageCallback?: R): UsePagination => {
+export const DEFAULT_PAGE_LIMIT = 20;
+
+const useCursorPagination = (
+    requestPageCallback?: RequestPageCallback<URLSearchParams, RequestPageCallbackParamsWithCursor>,
+    pageLimit: number = DEFAULT_PAGE_LIMIT
+): UsePagination => {
     const $controller = useRef<AbortController>();
-    const $cursors = useRef<RequestPageCallbackParams['cursor'][]>([]);
+    const $cursors = useRef<RequestPageCallbackParamsWithCursor['cursor'][]>([]);
+    const $maxVisitedPage = useRef<number>();
+    const $maxVisitedPageSize = useRef<number>();
     const $page = useRef<number>();
 
     const $mounted = useMounted(useCallback(() => {
@@ -23,10 +35,12 @@ const useCursorPagination = <R extends RequestPageCallback>(requestPageCallback?
         $controller.current = undefined;
     }, []));
 
+    const [ page, setCurrentPage ] = useState($page.current);
     const [ paginationChanged, updatePaginationChanged ] = useBooleanState(false);
+    const limit = useMemo(() => Math.max(1, pageLimit || DEFAULT_PAGE_LIMIT), [pageLimit]);
 
     const updateCursor = useCallback((params: URLSearchParams, page: number) => {
-        const cursor = params.get('cursor') as RequestPageCallbackParams['cursor'];
+        const cursor = params.get('cursor') as RequestPageCallbackParamsWithCursor['cursor'];
         const currentCursor = $cursors.current[page - 1];
 
         if ((page === 1 || page === ($cursors.current.length || 1) + 1) && currentCursor === undefined) {
@@ -36,7 +50,8 @@ const useCursorPagination = <R extends RequestPageCallback>(requestPageCallback?
 
     const goto = useMemo(() => {
         $cursors.current.length = 0;
-        $page.current = undefined;
+        $maxVisitedPage.current = $maxVisitedPageSize.current = $page.current = undefined;
+        $mounted.current && setCurrentPage($page.current);
 
         return requestPageCallback
             ? (page: number = 1) => {
@@ -56,20 +71,36 @@ const useCursorPagination = <R extends RequestPageCallback>(requestPageCallback?
 
                 $controller.current?.abort();
                 $controller.current = new AbortController();
-                $page.current = requestedPage;
+
+                if (!$mounted.current) return;
+
+                if (($page.current = requestedPage) > 1 || $cursors.current.length) {
+                    setCurrentPage($page.current);
+                }
 
                 (async () => {
                     const { signal } = $controller.current as AbortController;
                     const cursor = $cursors.current[requestedPage - 1];
 
                     try {
-                        const data = await requestPageCallback({ cursor, signal });
+                        const data = await requestPageCallback({ cursor, limit, signal });
 
-                        if (!(data && (withNextPage(data) || withPrevPage(data)))) return;
+                        if (!data || !$mounted.current) return;
                         if (withNextPage(data)) updateCursor(data.next, requestedPage + 1);
                         if (withPrevPage(data)) updateCursor(data.prev, requestedPage - 1);
 
-                        $mounted.current && updatePaginationChanged(true);
+                        $maxVisitedPage.current = $page.current && Math.max($page.current, $maxVisitedPage.current || -Infinity);
+
+                        if ($page.current && $page.current === $maxVisitedPage.current) {
+                            $maxVisitedPageSize.current = data.size;
+                        }
+
+                        if ($page.current === 1 && data.size > 0) {
+                            setCurrentPage($page.current);
+                        }
+
+                        $page.current = undefined;
+                        updatePaginationChanged(true);
                     } catch (ex) {
                         if (signal.aborted) return;
                         console.error(ex); // throw ex;
@@ -77,19 +108,27 @@ const useCursorPagination = <R extends RequestPageCallback>(requestPageCallback?
                 })();
             }
             : noop as UsePagination['goto'];
-    }, [requestPageCallback]);
+    }, [limit, requestPageCallback]);
 
-    const page = useMemo(() => $page.current, [paginationChanged]);
-    const next = useCallback(() => { page && goto(page + 1) }, [goto, page]);
-    const prev = useCallback(() => { page && goto(page - 1) }, [goto, page]);
-    const pages = useMemo(() => $cursors.current.length || page || undefined, [page]);
+    const next = useCallback(() => { page && goto(Math.min(page + 1, $cursors.current.length)) }, [goto, page]);
+    const prev = useCallback(() => { page && goto(Math.max(page - 1, 1)) }, [goto, page]);
+    const pages = useMemo(() => $cursors.current.length || page || undefined, [page, paginationChanged]);
+    const hasNext = useMemo(() => !!(page && pages) && page < pages, [page, pages]);
+    const hasPrev = useMemo(() => !!page && page > 1, [page]);
+
+    const size = useMemo(() => (
+        $maxVisitedPage.current && ($maxVisitedPage.current - 1) * limit + ($maxVisitedPageSize.current || 0)
+    ), [limit, paginationChanged]);
+
+    const pageSize = useMemo(() => limit && Math.min(limit, size || Infinity), [size]);
 
     useEffect(() => {
-        if (paginationChanged) $mounted.current && updatePaginationChanged(false);
-        else if (page === $page.current) $page.current = undefined;
-    }, [page, paginationChanged]);
+        if ($mounted.current && paginationChanged) {
+             updatePaginationChanged(false);
+        }
+    }, [paginationChanged]);
 
-    return { goto, next, page, pages, prev };
+    return { goto, hasNext, hasPrev, limit, next, page, pages, pageSize, prev, size };
 };
 
 export default useCursorPagination;

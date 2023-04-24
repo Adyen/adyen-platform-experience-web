@@ -12,7 +12,10 @@ export type PrevPageNeighbour<T = any> = Omit<BothPageNeighbours<T>, PageNeighbo
 export type WithNextPageNeighbour<T = any> = BothPageNeighbours<T> | NextPageNeighbour<T>;
 export type WithPrevPageNeighbour<T = any> = BothPageNeighbours<T> | PrevPageNeighbour<T>;
 export type WithPageNeighbours<T = any> = WithNextPageNeighbour<T> | WithPrevPageNeighbour<T>;
+
 export type WithPaginationCursor<T extends Record<any, any> = {}> = T & { cursor?: string };
+export type WithPaginationLimit<T extends Record<any, any> = {}> = T & { limit?: number };
+export type WithPaginationRecordSize<T extends Record<any, any> = {}> = T & { size?: number };
 
 export interface UseFilters<S extends UseReactiveStateRecord> {
     canResetFilters: S['canResetState'];
@@ -22,11 +25,14 @@ export interface UseFilters<S extends UseReactiveStateRecord> {
     updateFilters: S['updateState'];
 }
 
-export interface UsePagination {
+export interface UsePagination extends Required<WithPaginationLimit>, WithPaginationRecordSize {
     goto: (page?: number) => void;
+    hasNext: boolean;
+    hasPrev: boolean;
     next: () => void;
     page: number | undefined;
     pages: number | undefined;
+    pageSize: number | undefined;
     prev: () => void;
 }
 
