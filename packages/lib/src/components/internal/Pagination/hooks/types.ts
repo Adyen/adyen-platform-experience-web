@@ -4,51 +4,65 @@ import {
     WithPageNeighbours,
     WithPaginationCursor,
     WithPaginationLimit,
+    WithPaginationOffset,
     WithPaginationRecordSize
 } from '../types';
 import { UseReactiveStateRecord } from '../../../../hooks/useReactiveStateWithParams/types';
 
-type MaybePromise<T extends any = any> = T | Promise<T>;
+type MaybePromise<T = any> = T | Promise<T>;
 
-export type PaginatedRecordsFetcherParams<FilterValue extends any, FilterParam extends string> =
+export type PaginatedRecordsFetcherParams<FilterValue, FilterParam extends string> =
     Partial<Record<FilterParam, FilterValue>> &
     Required<WithPaginationLimit> &
     { signal: AbortSignal };
 
-export type PaginatedRecordsFetcherReturnValue<T extends Record<any, any>, PageNeighbour extends any = any> =
+export type PaginatedRecordsFetcherReturnValue<T extends Record<any, any>, PageNeighbour> =
     [T[], WithPageNeighbours<PageNeighbour>];
 
-export type PaginatedRecordsFetcher<T extends Record<any, any>, PageNeighbour extends any, FilterValue extends any, FilterParam extends string> =
+export type PaginatedRecordsFetcher<T extends Record<any, any>, PageNeighbour, FilterValue, FilterParam extends string> =
     (params: PaginatedRecordsFetcherParams<FilterValue, FilterParam>) => MaybePromise<PaginatedRecordsFetcherReturnValue<T, PageNeighbour>>;
 
-export type RequestPageCallbackParams = Pick<PaginatedRecordsFetcherParams<any, any>, 'limit' | 'signal'>;
-export type RequestPageCallbackParamsWithCursor = RequestPageCallbackParams & WithPaginationCursor;
+export type RequestPageCallbackRequiredParam = 'limit' | 'signal';
+export type RequestPageCallbackRequiredParams = Pick<PaginatedRecordsFetcherParams<any, any>, RequestPageCallbackRequiredParam>;
+export type RequestPageCallbackParamsWithCursor = RequestPageCallbackRequiredParams & WithPaginationCursor;
+export type RequestPageCallbackParamsWithOffset = RequestPageCallbackRequiredParams & WithPaginationOffset;
 
-export type RequestPageCallbackReturnValue<PageNeighbour extends any> = (
+export type RequestPageCallbackOptionalParams<RequestPageParams extends RequestPageCallbackRequiredParams> =
+    Omit<RequestPageParams, RequestPageCallbackRequiredParam>;
+
+export type RequestPageCallbackReturnValue<PageNeighbour> = (
     PaginatedRecordsFetcherReturnValue<any, PageNeighbour>[1] &
     Required<WithPaginationRecordSize>
 ) | undefined;
 
-export type RequestPageCallback<PageNeighbour extends any, RequestPageParams extends RequestPageCallbackParams> =
-    (params: RequestPageParams) => MaybePromise<RequestPageCallbackReturnValue<PageNeighbour>>;
+export type RequestPageCallback<PageNeighbour, RequestPageParams extends RequestPageCallbackRequiredParams> = (
+    params: RequestPageCallbackOptionalParams<RequestPageParams> & RequestPageCallbackRequiredParams
+) => MaybePromise<RequestPageCallbackReturnValue<PageNeighbour>>;
 
-export type PaginatedRecordsInitOptions<T extends Record<any, any>, PageNeighbour extends any, FilterValue extends any, FilterParam extends string> =
+export type PaginatedRecordsInitOptions<T extends Record<any, any>, PageNeighbour, FilterValue, FilterParam extends string> =
     WithPaginationLimit<{
         fetchRecords: PaginatedRecordsFetcher<T, PageNeighbour, FilterValue, FilterParam>;
         filterParams?: FilterParam[];
     }>;
 
-export type UsePaginatedRecordsFilters<FilterValue extends any, FilterParam extends string> =
+export type UsePaginatedRecordsFilters<FilterValue, FilterParam extends string> =
     UseFilters<UseReactiveStateRecord<FilterValue, FilterParam>>;
 
-export interface UseFetchPaginatedRecords<T extends Record<any, any>, PageNeighbour extends any, FilterValue extends any, FilterParam extends string> {
+export interface UseFetchPaginatedRecords<T extends Record<any, any>, PageNeighbour> {
     exception: any;
     fetching: boolean;
     pagination: PaginatedRecordsFetcherReturnValue<T, PageNeighbour>[1];
     records: T[];
 }
 
-export interface UsePaginatedRecords<T extends Record<any, any>, PageNeighbour extends any, FilterValue extends any, FilterParam extends string> extends
+export interface UsePaginationSetupConfig<PageNeighbour, RequestPageParams extends RequestPageCallbackRequiredParams> {
+    getPageCount: () => number;
+    resetPageCount: () => void;
+    getPageParams: (page: number, limit: number) => RequestPageCallbackOptionalParams<RequestPageParams>;
+    updatePagination: (page: number, limit: number, paginationData: PaginatedRecordsFetcherReturnValue<any, PageNeighbour>[1]) => void;
+}
+
+export interface UsePaginatedRecords<T extends Record<any, any>, PageNeighbour, FilterValue, FilterParam extends string> extends
     UsePagination,
     Omit<UsePaginatedRecordsFilters<FilterValue, FilterParam>, 'defaultFilters'>,
-    Pick<UseFetchPaginatedRecords<T, PageNeighbour, FilterValue, FilterParam>, 'fetching' | 'records'> {}
+    Pick<UseFetchPaginatedRecords<T, PageNeighbour>, 'fetching' | 'records'> {}

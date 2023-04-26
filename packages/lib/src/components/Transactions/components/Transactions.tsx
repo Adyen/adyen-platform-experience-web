@@ -9,9 +9,17 @@ import { DateRangeFilterParam } from '../../internal/FilterBar/filters/DateFilte
 import './Transactions.scss';
 import { useCursorPaginatedRecords } from '../../internal/Pagination/hooks';
 import { PaginatedRecordsFetcherParams } from '../../internal/Pagination/hooks/types';
-import { WithEitherPages } from "../../internal/Pagination/hooks/useCursorPagination";
+import { WithEitherPages } from '../../internal/Pagination/hooks/useCursorPagination';
+import { PageNeighbour } from '../../internal/Pagination/types';
+
+type PaginationLink = Exclude<Exclude<TransactionsPageProps['transactions']['_links'], undefined>[PageNeighbour], undefined>;
 
 const DEFAULT_PAGINATED_TRANSACTIONS_LIMIT = 30;
+
+const pageNeighbours = [
+    PageNeighbour.NEXT,
+    PageNeighbour.PREV
+] as const;
 
 const fetchTransactions = async ({ signal, ...params }: PaginatedRecordsFetcherParams<string, TransactionFilterParam>) => {
     const { host, protocol } = window.location;
@@ -34,7 +42,12 @@ const fetchTransactions = async ({ signal, ...params }: PaginatedRecordsFetcherP
     const {data: records, _links: links} = (response as TransactionsPageProps['transactions']);
 
     if (links) {
-        const neighbours = Object.fromEntries(Object.entries(links).map(([key, {href}]) => [key, new URL(href).searchParams]));
+        const neighbours = Object.fromEntries(
+            (Object.entries(links) as [PageNeighbour, PaginationLink][])
+                .filter(([neighbour, link]) => pageNeighbours.includes(neighbour) && link)
+                .map(([key, {href}]) => [key, new URL(href).searchParams])
+        );
+
         return [records, neighbours] as [Transaction[], WithEitherPages];
     }
 

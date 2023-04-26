@@ -18,7 +18,7 @@ const useCursorPaginatedRecords = <T extends Record<any, any>, FilterValue exten
 }: PaginatedRecordsInitOptions<T, URLSearchParams, FilterValue, FilterParam>): UsePaginatedRecords<T, URLSearchParams, FilterValue, FilterParam> => {
     const [ records, setRecords ] = useState<T[]>([]);
     const [ fetching, updateFetching ] = useBooleanState(false);
-    const { defaultFilters, filters, updateFilters, ...filtersProps } = usePaginatedRecordsFilters<FilterValue, FilterParam>(filterParams);
+    const { defaultFilters, filters, updateFilters, ...filtersProps } = usePaginatedRecordsFilters<FilterValue, FilterParam>(filterParams, false);
 
     const $mounted = useMounted();
     const $requestedPageAtLeastOnce = useRef(false);

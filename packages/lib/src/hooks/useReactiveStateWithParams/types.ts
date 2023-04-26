@@ -1,11 +1,11 @@
-export type ReactiveStateRecord<V extends any = any, K extends string = string> = Record<K, V | undefined>;
-export type ReactiveStateUpdateRequestWithField<V extends any = any, K extends string = string> = Partial<ReactiveStateRecord<V, K>>;
-export type ReactiveStateUpdateRequest<V extends any = any, K extends string = string> = ReactiveStateUpdateRequestWithField<V, K> | 'reset';
+export type ReactiveStateRecord<Value = any, Param extends string = string> = Record<Param, Value | undefined>;
+export type ReactiveStateUpdateRequestWithField<Value = any, Param extends string = string> = Partial<ReactiveStateRecord<Value, Param>>;
+export type ReactiveStateUpdateRequest<Value = any, Param extends string = string> = ReactiveStateUpdateRequestWithField<Value, Param> | 'reset';
 
-export interface UseReactiveStateRecord<V extends any = any, K extends string = string> {
+export interface UseReactiveStateRecord<Value = any, Param extends string = string> {
     canResetState: boolean;
-    defaultState: Readonly<ReactiveStateRecord<V, K>>;
+    defaultState: Readonly<ReactiveStateRecord<Value, Param>>;
     resetState: () => void;
-    state: Readonly<ReactiveStateRecord<V, K>>;
-    updateState: (stateUpdateRequest: ReactiveStateUpdateRequestWithField<V, K>) => void;
+    state: Readonly<ReactiveStateRecord<Value, Param>>;
+    updateState: (stateUpdateRequest: ReactiveStateUpdateRequestWithField<Value, Param>) => void;
 }

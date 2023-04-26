@@ -9,20 +9,23 @@ import useBooleanState from '../useBooleanState';
 import useMounted from '../useMounted';
 
 // [TODO]: Modify hook to also accept object with initial values
-const useReactiveStateWithParams = <V extends any, K extends string = string>(params: K[] = []): UseReactiveStateRecord<V, K> => {
-    const $initialState = useRef(Object.freeze(Object.fromEntries(params.map(param => [param])) as ReactiveStateRecord<V, K>));
-    const $changedParams = useRef(new Set<K>());
+const useReactiveStateWithParams = <Value, Param extends string = string>(
+    params: Param[] = [],
+    isDefaultState = true
+): UseReactiveStateRecord<Value, Param> => {
+    const $initialState = useRef(Object.freeze(Object.fromEntries(params.map(param => [param])) as ReactiveStateRecord<Value, Param>));
+    const $changedParams = useRef(new Set<Param>());
     const $mounted = useMounted();
 
     const [ defaultState, setDefaultState ] = useState($initialState.current);
-    const [ hasDefaultState, updateHasDefaultState ] = useBooleanState(false);
+    const [ hasDefaultState, updateHasDefaultState ] = useBooleanState(isDefaultState);
     const [ hasPendingChanges, updateHasPendingChanges ] = useBooleanState(false);
     const [ state, setCurrentState ] = useState(defaultState);
 
     const canResetState = useMemo(() => !!$changedParams.current.size, [state]);
 
     const [ resetState, updateState ] = useMemo(() => {
-        const requestStateUpdate = (stateUpdateRequest: ReactiveStateUpdateRequest<V, K>) => {
+        const requestStateUpdate = (stateUpdateRequest: ReactiveStateUpdateRequest<Value, Param>) => {
             if (!$mounted.current) return;
             dispatch(latestStateUpdateRequest = stateUpdateRequest);
 
@@ -32,33 +35,33 @@ const useReactiveStateWithParams = <V extends any, K extends string = string>(pa
             });
         };
 
-        let latestStateUpdateRequest: ReactiveStateUpdateRequest<V, K> | null = null;
+        let latestStateUpdateRequest: ReactiveStateUpdateRequest<Value, Param> | null = null;
 
         return [
             () => requestStateUpdate('reset'),
-            (stateUpdateRequest: ReactiveStateUpdateRequestWithField<V, K>) => requestStateUpdate(stateUpdateRequest)
+            (stateUpdateRequest: ReactiveStateUpdateRequestWithField<Value, Param>) => requestStateUpdate(stateUpdateRequest)
         ];
     }, []);
 
     const [ STATE, dispatch ] = useReducer(
-        (state, stateUpdateRequest: ReactiveStateUpdateRequest<V, K>) => {
+        (state, stateUpdateRequest: ReactiveStateUpdateRequest<Value, Param>) => {
             if (stateUpdateRequest === 'reset') {
                 $changedParams.current.clear();
                 return defaultState;
             }
 
             let stateUpdated = false;
-            const updatedState = {...stateUpdateRequest} as ReactiveStateRecord<V, K>;
+            const updatedState = {...stateUpdateRequest} as ReactiveStateRecord<Value, Param>;
 
-            for (const [key, value] of Object.entries<V | undefined>(stateUpdateRequest)) {
-                const defaultValue = defaultState[key as K];
-                const updateValue = updatedState[key as K] = value || defaultValue;
+            for (const [key, value] of Object.entries<Value | undefined>(stateUpdateRequest)) {
+                const defaultValue = defaultState[key as Param];
+                const updateValue = updatedState[key as Param] = value || defaultValue;
 
                 hasDefaultState && $changedParams.current[
                     updateValue === defaultValue ? 'delete' : 'add'
-                ](key as K);
+                ](key as Param);
 
-                if (updateValue !== state[key as K]) stateUpdated = true;
+                if (updateValue !== state[key as Param]) stateUpdated = true;
             }
 
             if (stateUpdated) {

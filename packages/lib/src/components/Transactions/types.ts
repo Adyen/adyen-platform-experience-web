@@ -1,5 +1,5 @@
 import { CurrencyCode } from '../../utils/constants/currency-codes';
-import { PageNeighbours, PaginationProps } from '../internal/Pagination/types';
+import { PageNeighbour, PaginationProps } from '../internal/Pagination/types';
 import UIElement from '../UIElement';
 
 export const enum TransactionFilterParam {
@@ -41,7 +41,7 @@ export interface TransactionsPageProps {
     transactions: {
         data: Transaction[];
         _links?: {
-            [K in PageNeighbours]?: { href: string };
+            [K in PageNeighbour]?: { href: string };
         };
     };
     elementRef: UIElement | null;
