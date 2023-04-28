@@ -1,0 +1,13 @@
+.adyen-fp-collapsible-container {
+    &--with-transition {
+        transition: height 0.2s ease-out;
+    }
+    overflow: hidden;
+    display: block;
+    &__content {
+        overflow: auto;
+    }
+    &--hidden {
+        overflow: hidden;
+    }
+}
