@@ -1,17 +1,17 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
-import { RequestPageCallback, RequestPageCallbackRequiredParams, UsePaginationSetupConfig } from './types';
+import { RequestPageCallback, RequestPageCallbackParams, UsePaginationSetupConfig } from './types';
 import useBooleanState from '../../../../hooks/useBooleanState';
 import useMounted from '../../../../hooks/useMounted';
-import { UsePagination } from '../types';
+import { PaginationType, UsePagination } from '../types';
 
 export const DEFAULT_PAGE_LIMIT = 20;
 export const MAX_PAGE_LIMIT = 100;
 
 const noop = Object.freeze(() => {});
 
-const usePagination = <PageNeighbour, RequestPageParams extends RequestPageCallbackRequiredParams>(
-    paginationSetupConfig: UsePaginationSetupConfig<PageNeighbour, RequestPageParams>,
-    requestPageCallback?: RequestPageCallback<PageNeighbour, RequestPageParams>,
+const usePagination = <Pagination extends PaginationType>(
+    paginationSetupConfig: UsePaginationSetupConfig<Pagination>,
+    requestPageCallback?: RequestPageCallback<Pagination>,
     pageLimit: number = DEFAULT_PAGE_LIMIT
 ): UsePagination => {
     const $controller = useRef<AbortController>();
@@ -56,7 +56,7 @@ const usePagination = <PageNeighbour, RequestPageParams extends RequestPageCallb
 
                 (async () => {
                     const { signal } = $controller.current as AbortController;
-                    const params = { ...getPageParams(requestedPage, limit), limit, signal };
+                    const params = { ...getPageParams(requestedPage, limit), limit, signal } as RequestPageCallbackParams<Pagination>;
 
                     try {
                         const data = await requestPageCallback(params);

@@ -5,18 +5,55 @@ export const enum PageNeighbour {
     PREV = 'prev',
 }
 
-export type BothPageNeighbours<T = any> = { [P in PageNeighbour]: T };
-export type NextPageNeighbour<T = any> = Omit<BothPageNeighbours<T>, PageNeighbour.PREV>;
-export type PrevPageNeighbour<T = any> = Omit<BothPageNeighbours<T>, PageNeighbour.NEXT>;
+export const enum PaginationType {
+    CURSOR = 'cursor',
+    OFFSET = 'offset',
+}
 
-export type WithNextPageNeighbour<T = any> = BothPageNeighbours<T> | NextPageNeighbour<T>;
-export type WithPrevPageNeighbour<T = any> = BothPageNeighbours<T> | PrevPageNeighbour<T>;
-export type WithPageNeighbours<T = any> = WithNextPageNeighbour<T> | WithPrevPageNeighbour<T>;
+export type ForPaginationType<T extends PaginationType, CursorType, OffsetType> =
+    T extends PaginationType.CURSOR ? CursorType
+        : T extends PaginationType.OFFSET ? OffsetType
+            : never;
+
+type BothPageNeighbours<T = any> = { [P in PageNeighbour]: T };
+type NextPageNeighbour<T = any> = Omit<BothPageNeighbours<T>, PageNeighbour.PREV>;
+type PrevPageNeighbour<T = any> = Omit<BothPageNeighbours<T>, PageNeighbour.NEXT>;
+
+type WithNextPageNeighbour<T = any> = BothPageNeighbours<T> | NextPageNeighbour<T>;
+type WithPrevPageNeighbour<T = any> = BothPageNeighbours<T> | PrevPageNeighbour<T>;
+type WithPageNeighbours<T = any> = WithNextPageNeighbour<T> | WithPrevPageNeighbour<T>;
+
+type WhichPageNeighbour<T extends PaginationType> = ForPaginationType<T, URLSearchParams, boolean>;
+
+export type WithEitherPages<T extends PaginationType> = WithPageNeighbours<WhichPageNeighbour<T>>;
+export type WithNextPage<T extends PaginationType> = WithNextPageNeighbour<WhichPageNeighbour<T>>;
+export type WithPrevPage<T extends PaginationType> = WithPrevPageNeighbour<WhichPageNeighbour<T>>;
 
 export type WithPaginationCursor<T extends Record<any, any> = {}> = T & { cursor?: string };
 export type WithPaginationLimit<T extends Record<any, any> = {}> = T & { limit?: number };
 export type WithPaginationOffset<T extends Record<any, any> = {}> = T & { offset: number };
 export type WithPaginationRecordSize<T extends Record<any, any> = {}> = T & { size?: number };
+
+export type PaginatedResponseDataKeyword = 'hasNext' | 'hasPrevious' | '_links';
+export type PaginatedResponseDataField = Exclude<string, PaginatedResponseDataKeyword>;
+export type PaginatedResponseDataLink = { href: string };
+
+export type BasePaginatedResponseData<T = any, DataField extends PaginatedResponseDataField = 'data'> = {
+    [K in DataField]: T[];
+};
+
+export type PaginatedResponseDataWithLinks<T = any, DataField extends PaginatedResponseDataField = 'data'> = BasePaginatedResponseData<T, DataField> & {
+    _links: { [K in PageNeighbour]?: PaginatedResponseDataLink }
+};
+
+export type PaginatedResponseDataWithoutLinks<T = any, DataField extends PaginatedResponseDataField = 'data'> = BasePaginatedResponseData<T, DataField> & {
+    hasNext?: boolean;
+    hasPrevious?: boolean;
+};
+
+export type PaginatedResponseData<T = any, DataField extends PaginatedResponseDataField = 'data'> =
+    | PaginatedResponseDataWithLinks<T, DataField>
+    | PaginatedResponseDataWithoutLinks<T, DataField>;
 
 export interface UseFilters<S extends UseReactiveStateRecord> {
     canResetFilters: S['canResetState'];

@@ -1,6 +1,7 @@
 import { CurrencyCode } from '../../utils/constants/currency-codes';
-import { PageNeighbour, PaginationProps } from '../internal/Pagination/types';
+import { PaginatedResponseDataWithLinks, PaginationProps, PaginationType } from '../internal/Pagination/types';
 import UIElement from '../UIElement';
+import { RequestPageCallbackParams } from '../internal/Pagination/hooks/types';
 
 export const enum TransactionFilterParam {
     ACCOUNT_HOLDER = 'accountHolderId',
@@ -38,17 +39,13 @@ export interface Transaction {
 }
 type OnSelection = (selection: { id: string }) => void;
 export interface TransactionsPageProps {
-    transactions: {
-        data: Transaction[];
-        _links?: {
-            [K in PageNeighbour]?: { href: string };
-        };
-    };
+    transactions: PaginatedResponseDataWithLinks<Transaction, 'data'>;
     elementRef: UIElement | null;
-    onFilterChange?: (filters: { [p: string]: string }, ref: UIElement | null) => void;
+    onFilterChange?: (filters: { [p: string]: string | undefined }, ref: UIElement | null) => void;
     onTransactionSelected?: OnSelection;
     onBalanceAccountSelected?: OnSelection;
     onAccountSelected?: OnSelection;
+    updateTransactions?: (pageRequestParams: any, ref: UIElement | null) => void;
 }
 export interface TransactionListProps extends PaginationProps {
     transactions: Transaction[];

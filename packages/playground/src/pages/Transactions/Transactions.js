@@ -7,14 +7,14 @@ import '../../assets/style/style.scss';
 
 (async () => {
     try {
-        // const transactions = await getMyTransactions();
+        const transactions = await getMyTransactions();
         const adyenFP = await AdyenFP();
 
         adyenFP
             .create(transactionList, {
-                transactions: { data: [] },
-                onFilterChange: async (state, component) => {
-                    // const transactions = await getMyTransactions(state);
+                transactions,
+                onFilterChange: (filters, component) => {
+                    // const transactions = await getMyTransactions(filters);
                     // component.update({ transactions });
                 },
                 onTransactionSelected: ({ id }) => {
@@ -26,6 +26,10 @@ import '../../assets/style/style.scss';
                 onAccountSelected: ({ id }) => {
                     window.location.assign(`/accountholder?id=${id}`);
                 },
+                updateTransactions: async (params, component) => {
+                    const transactions = await getMyTransactions(params);
+                    component.update({ transactions });
+                }
             })
             .mount('.transactions-component-container');
     } catch (e) {

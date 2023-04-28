@@ -11,14 +11,14 @@ import useMounted from '../useMounted';
 // [TODO]: Modify hook to also accept object with initial values
 const useReactiveStateWithParams = <Value, Param extends string = string>(
     params: Param[] = [],
-    isDefaultState = true
+    initialStateSameAsDefault = true
 ): UseReactiveStateRecord<Value, Param> => {
     const $initialState = useRef(Object.freeze(Object.fromEntries(params.map(param => [param])) as ReactiveStateRecord<Value, Param>));
     const $changedParams = useRef(new Set<Param>());
     const $mounted = useMounted();
 
     const [ defaultState, setDefaultState ] = useState($initialState.current);
-    const [ hasDefaultState, updateHasDefaultState ] = useBooleanState(isDefaultState);
+    const [ hasDefaultState, updateHasDefaultState ] = useBooleanState(initialStateSameAsDefault);
     const [ hasPendingChanges, updateHasPendingChanges ] = useBooleanState(false);
     const [ state, setCurrentState ] = useState(defaultState);
 

@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'preact/hooks';
+import { useCallback, useEffect, useMemo } from 'preact/hooks';
 import useCoreContext from 'src/core/Context/useCoreContext';
 import FilterBar from '../../internal/FilterBar';
 import TextFilter from '../../internal/FilterBar/filters/TextFilter';
@@ -6,73 +6,32 @@ import DateFilter from '../../internal/FilterBar/filters/DateFilter';
 import TransactionList from './TransactionList';
 import { Transaction, TransactionFilterParam, TransactionsPageProps } from '../types';
 import { DateRangeFilterParam } from '../../internal/FilterBar/filters/DateFilter/types';
-import './Transactions.scss';
 import { useCursorPaginatedRecords } from '../../internal/Pagination/hooks';
-import { PaginatedRecordsFetcherParams } from '../../internal/Pagination/hooks/types';
-import { WithEitherPages } from '../../internal/Pagination/hooks/useCursorPagination';
-import { PageNeighbour } from '../../internal/Pagination/types';
+import './Transactions.scss';
 
-type PaginationLink = Exclude<Exclude<TransactionsPageProps['transactions']['_links'], undefined>[PageNeighbour], undefined>;
+const DEFAULT_PAGINATED_TRANSACTIONS_LIMIT = 10;
 
-const DEFAULT_PAGINATED_TRANSACTIONS_LIMIT = 30;
-
-const pageNeighbours = [
-    PageNeighbour.NEXT,
-    PageNeighbour.PREV
-] as const;
-
-const fetchTransactions = async ({ signal, ...params }: PaginatedRecordsFetcherParams<string, TransactionFilterParam>) => {
-    const { host, protocol } = window.location;
-    const url = new URL(`${protocol}//${host}/transactions`);
-
-    for (const [param, value] of Object.entries(params)) {
-        if (value) url.searchParams.set(param, value as string);
-    }
-
-    const response = await fetch(url, {
-        signal,
-        headers: {
-            Accept: 'application/json, text/plain, */*',
-            'Content-Type': 'application/json'
-        }
-    }).then(response => response.json());
-
-    if (response.error) throw 'Could not retrieve the list of transactions';
-
-    const {data: records, _links: links} = (response as TransactionsPageProps['transactions']);
-
-    if (links) {
-        const neighbours = Object.fromEntries(
-            (Object.entries(links) as [PageNeighbour, PaginationLink][])
-                .filter(([neighbour, link]) => pageNeighbours.includes(neighbour) && link)
-                .map(([key, {href}]) => [key, new URL(href).searchParams])
-        );
-
-        return [records, neighbours] as [Transaction[], WithEitherPages];
-    }
-
-    throw 'Could not retrieve transactions metadata';
-};
-
-const paginatedTransactionsInitOptions = {
-    fetchRecords: fetchTransactions,
-    filterParams: [
-        TransactionFilterParam.ACCOUNT_HOLDER,
-        TransactionFilterParam.BALANCE_ACCOUNT,
-        TransactionFilterParam.CREATED_SINCE,
-        TransactionFilterParam.CREATED_UNTIL
-    ],
-    limit: DEFAULT_PAGINATED_TRANSACTIONS_LIMIT
-};
+const transactionsFilterParams = [
+    TransactionFilterParam.ACCOUNT_HOLDER,
+    TransactionFilterParam.BALANCE_ACCOUNT,
+    TransactionFilterParam.CREATED_SINCE,
+    TransactionFilterParam.CREATED_UNTIL
+];
 
 function Transactions({
+    transactions,
     elementRef,
     onAccountSelected,
     onBalanceAccountSelected,
     onFilterChange,
-    onTransactionSelected
-}: any) {
+    onTransactionSelected,
+    updateTransactions
+}: TransactionsPageProps) {
     const { i18n } = useCoreContext();
+
+    const onPageRequest = useCallback((pageRequestParams: any) => {
+        updateTransactions?.(pageRequestParams, elementRef);
+    }, [updateTransactions, elementRef]);
 
     const {
         canResetFilters,
@@ -82,7 +41,16 @@ function Transactions({
         resetFilters,
         updateFilters,
         ...paginationProps
-    } = useCursorPaginatedRecords<Transaction, string, TransactionFilterParam>(paginatedTransactionsInitOptions);
+    } = useCursorPaginatedRecords<Transaction, 'data', string, TransactionFilterParam>(
+        useMemo(() => ({
+            data: transactions,
+            dataField: 'data',
+            filterParams: transactionsFilterParams,
+            initialFiltersSameAsDefault: true,
+            limit: DEFAULT_PAGINATED_TRANSACTIONS_LIMIT,
+            onPageRequest
+        }), [transactions])
+    );
 
     const [
         updateAccountHolderFilter,
@@ -115,9 +83,9 @@ function Transactions({
         ];
     }, [updateFilters]);
 
-    useEffect(() => {
-        onFilterChange?.(filters, elementRef);
-    }, [filters, onFilterChange]);
+    // useEffect(() => {
+    //     onFilterChange?.(filters, elementRef);
+    // }, [filters, onFilterChange]);
 
     return <div className="adyen-fp-transactions">
         <div className="adyen-fp-title">{i18n.get('transactions')}</div>
