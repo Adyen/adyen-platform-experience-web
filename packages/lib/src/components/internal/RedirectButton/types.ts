@@ -5,4 +5,5 @@ export interface RedirectButtonProps {
         value: number;
     };
     name: string;
+    setUIElementStatus?: (callback: (status: string) => void) => void;
 }

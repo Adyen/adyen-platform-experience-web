@@ -27,8 +27,9 @@ export function PhoneInput(props: PhoneInputComponentProps) {
         props.onChange({ data, valid, errors, isValid });
     }, [data, valid, errors, isValid]);
 
-    this.showValidation = triggerValidation;
-    this.setStatus = setStatus;
+    props.setTriggerValidation?.(triggerValidation);
+    props.setUIElementStatus?.(setStatus);
+
     return (
         <div className="adyen-fp-phone-input">
             <Field
@@ -77,7 +78,7 @@ export function PhoneInput(props: PhoneInputComponentProps) {
                     </div>
                 </div>
             </Field>
-            {this.props.showPayButton && this.props.payButton({ status })}
+            {props.showPayButton && props.payButton({ status })}
         </div>
     );
 }

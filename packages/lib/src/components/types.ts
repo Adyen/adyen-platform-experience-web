@@ -26,6 +26,8 @@ export interface IUIElement {
 
 export type UIElementStatus = 'ready' | 'loading' | 'error' | 'success';
 
+export type SetTriggerValidation = (callback: (schema?: Record<string, any>) => void) => void;
+
 export interface UIElementProps extends BaseElementProps {
     id?: string;
     session?: BPSession;
@@ -41,6 +43,8 @@ export interface UIElementProps extends BaseElementProps {
     icon?: string;
     amount?: Amount;
     secondaryAmount?: AmountExtended;
+    triggerValidation?: SetTriggerValidation;
+    setUIElementStatus?: (status: string) => void;
 
     /**
      * Show/Hide pay button

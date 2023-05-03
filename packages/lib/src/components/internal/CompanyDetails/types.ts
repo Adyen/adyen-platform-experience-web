@@ -1,6 +1,7 @@
 import { FieldsetVisibility } from '../../../types';
 import { ValidatorRules } from '../../../utils/Validator/types';
 import { SchemaKeys } from '../../../utils/useForm/types';
+import { SetTriggerValidation } from '../../types';
 
 export type CompanyDetailsSchema = {
     name?: string;
@@ -17,6 +18,7 @@ export interface CompanyDetailsProps<FormSchema extends Record<string, any>> {
     readonly?: boolean;
     ref?: any;
     validationRules?: ValidatorRules<FormSchema>;
+    setTriggerValidation?: SetTriggerValidation;
 }
 
 export interface ReadOnlyCompanyDetailsProps {

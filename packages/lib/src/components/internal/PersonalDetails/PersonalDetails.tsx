@@ -64,7 +64,7 @@ export default function PersonalDetails(props: PersonalDetailsProps<PersonalDeta
         onChange?.({ data: formattedData, valid, errors, isValid });
     }, [data, valid, errors, isValid]);
 
-    this.showValidation = triggerValidation;
+    props.setTriggerValidation?.(triggerValidation);
 
     if (visibility === 'hidden') return null;
     if (visibility === 'readOnly') return <ReadOnlyPersonalDetails {...props} data={data} />;

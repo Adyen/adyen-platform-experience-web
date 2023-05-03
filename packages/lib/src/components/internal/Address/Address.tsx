@@ -77,7 +77,7 @@ export default function Address(props: AddressProps<AddressData>) {
         props.onChange?.({ data: processedData, valid, errors, isValid });
     }, [props.data, data, valid, errors, isValid]);
 
-    this.showValidation = triggerValidation;
+    props.setTriggerValidation?.(triggerValidation);
 
     if (visibility === 'hidden') return null;
     if (visibility === 'readOnly') return <ReadOnlyAddress data={data} label={label} />;

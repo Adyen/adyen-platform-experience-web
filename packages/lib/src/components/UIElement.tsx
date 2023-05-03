@@ -17,6 +17,7 @@ export class UIElement<P extends UIElementProps = any> extends BaseElement<P> im
         this.onSubmit = this.onSubmit.bind(this);
         this.componentRef = null;
         this.elementRef = (props && props.elementRef) || this;
+        this.triggerValidation = undefined;
     }
 
     public setState(newState: object): void {
@@ -36,6 +37,10 @@ export class UIElement<P extends UIElementProps = any> extends BaseElement<P> im
     private onSubmit(): void {
         //
     }
+
+    private triggerValidation: (() => void) | undefined;
+
+    private setUIElementStatus: ((status: string) => void) | undefined;
 
     private onValid() {
         const state = { data: this.data };
@@ -60,13 +65,23 @@ export class UIElement<P extends UIElementProps = any> extends BaseElement<P> im
     }
 
     public showValidation(): this {
-        if (this.componentRef && this.componentRef.showValidation) this.componentRef.showValidation();
+        if (this.componentRef?.showValidation) {
+            this.componentRef.showValidation();
+        } else {
+            this.triggerValidation?.();
+        }
         return this;
     }
+
+    public setTriggerValidation = (callBack: () => void) => {
+        this.triggerValidation = callBack;
+    };
 
     public setStatus(status: UIElementStatus, props: P): this {
         if (this.componentRef?.setStatus) {
             this.componentRef.setStatus(status, props);
+        } else {
+            this.setUIElementStatus?.(status);
         }
         return this;
     }
