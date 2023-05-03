@@ -24,7 +24,7 @@ const computeDateFilterValue = (i18n: Language, fromDate?: string, toDate?: stri
 
 const resolveDate = (date?: any) => {
     try { if (date) return new Date(date).toISOString(); }
-    catch (e) { /* invalid date: fallback to empty string */ }
+    catch { /* invalid date: fallback to empty string */ }
     return '';
 };
 

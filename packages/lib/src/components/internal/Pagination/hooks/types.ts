@@ -51,12 +51,21 @@ export type PaginatedRecordsInitOptions<T, DataField extends PaginatedResponseDa
         dataField: DataField;
         filterParams?: FilterParam[];
         initialFiltersSameAsDefault?: boolean;
-        onPageRequest: (pageRequestParams: RequestPageCallbackOptionalParams<PaginationType> & PaginatedRecordsFetcherParams<FilterValue, FilterParam>) => void;
+        onPageRequest: (
+            pageRequestParams:
+                RequestPageCallbackOptionalParams<PaginationType> &
+                PaginatedRecordsFetcherParams<FilterValue, FilterParam>
+        ) => void;
     }>;
 
 export type BasePaginatedRecordsInitOptions<T, DataField extends PaginatedResponseDataField, FilterValue, FilterParam extends string> =
     PaginatedRecordsInitOptions<T, DataField, FilterValue, FilterParam> & {
         pagination: PaginationType;
+        initializeAndDerivePageLimit?: (
+            data: PaginatedRecordsFetcherReturnValue<PaginationType, T>,
+            recordsFilters: UsePaginatedRecordsFilters<FilterValue, FilterParam>,
+            currentPageLimit: number | undefined
+        ) => number | undefined;
     };
 
 export type UsePaginatedRecordsFilters<FilterValue, FilterParam extends string> =

@@ -1,4 +1,3 @@
-import { useMemo } from 'preact/hooks';
 import classnames from 'classnames';
 import useCoreContext from '../../../core/Context/useCoreContext';
 import Button from '../Button';

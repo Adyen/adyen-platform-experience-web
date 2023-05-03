@@ -13,9 +13,9 @@ import '../../assets/style/style.scss';
         adyenFP
             .create(transactionList, {
                 transactions,
-                onFilterChange: (filters, component) => {
-                    // const transactions = await getMyTransactions(filters);
-                    // component.update({ transactions });
+                onFilterChange: (/* filters, component */) => {
+                    // do something here with the updated filters
+                    // avoid refetching the transactions here
                 },
                 onTransactionSelected: ({ id }) => {
                     window.location.assign(`/transaction?id=${id}`);

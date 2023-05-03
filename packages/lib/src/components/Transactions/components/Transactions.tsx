@@ -9,7 +9,7 @@ import { DateRangeFilterParam } from '../../internal/FilterBar/filters/DateFilte
 import { useCursorPaginatedRecords } from '../../internal/Pagination/hooks';
 import './Transactions.scss';
 
-const DEFAULT_PAGINATED_TRANSACTIONS_LIMIT = 10;
+const DEFAULT_PAGINATED_TRANSACTIONS_LIMIT = 20;
 
 const transactionsFilterParams = [
     TransactionFilterParam.ACCOUNT_HOLDER,
@@ -46,7 +46,7 @@ function Transactions({
             data: transactions,
             dataField: 'data',
             filterParams: transactionsFilterParams,
-            initialFiltersSameAsDefault: true,
+            initialFiltersSameAsDefault: false,
             limit: DEFAULT_PAGINATED_TRANSACTIONS_LIMIT,
             onPageRequest
         }), [transactions])
@@ -83,9 +83,7 @@ function Transactions({
         ];
     }, [updateFilters]);
 
-    // useEffect(() => {
-    //     onFilterChange?.(filters, elementRef);
-    // }, [filters, onFilterChange]);
+    useEffect(() => onFilterChange?.(filters, elementRef), [filters, onFilterChange]);
 
     return <div className="adyen-fp-transactions">
         <div className="adyen-fp-title">{i18n.get('transactions')}</div>

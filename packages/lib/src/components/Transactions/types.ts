@@ -1,7 +1,6 @@
 import { CurrencyCode } from '../../utils/constants/currency-codes';
-import { PaginatedResponseDataWithLinks, PaginationProps, PaginationType } from '../internal/Pagination/types';
+import { PaginatedResponseDataWithLinks, PaginationProps } from '../internal/Pagination/types';
 import UIElement from '../UIElement';
-import { RequestPageCallbackParams } from '../internal/Pagination/hooks/types';
 
 export const enum TransactionFilterParam {
     ACCOUNT_HOLDER = 'accountHolderId',
