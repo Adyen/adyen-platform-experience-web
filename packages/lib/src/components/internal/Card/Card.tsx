@@ -19,19 +19,21 @@ const Card = ({
 }: PropsWithChildren<CardProps>) => {
     const [isOpen, setIsOpen] = useState(openByDefault);
     const toggleIsOpen = () => {
+        // onClickHandler?.();
         setIsOpen(!isOpen);
     };
     return (
-        <section
-            className={classNames('adyen-fp-card', { 'adyen-fp-card--filled': filled, 'adyen-fp-card--no-outline': noOutline })}
-            tabIndex={0}
-            role={'button'}
-            onClick={onClickHandler}
-        >
-            {(title || renderHeader) && (
-                <div className="adyen-fp-card__header">
-                    <div className={classNames({ 'adyen-fp-card__header-collapsible': collapsible })}>
-                        <div className="adyen-fp-card__collapse-button" onClick={toggleIsOpen} role="button" tabIndex={0}>
+        <section className={classNames('adyen-fp-card', { 'adyen-fp-card--filled': filled, 'adyen-fp-card--no-outline': noOutline })}>
+            <header className={classNames('adyen-fp-card__header', { 'adyen-fp-card__header-collapsible': collapsible })}>
+                {collapsible && (
+                    <div role="presentation">
+                        <button
+                            className="adyen-fp-card__collapse-button"
+                            aria-expanded={`${!!isOpen}`}
+                            aria-controls="collapsible-container-id"
+                            aria-label="useful-label-text"
+                            onClick={toggleIsOpen}
+                        >
                             <span
                                 className={classNames({
                                     'adyen-fp-card__collapsible-icon': collapsible,
@@ -39,16 +41,22 @@ const Card = ({
                                     'adyen-fp-card__collapsible-icon--opened': isOpen,
                                 })}
                             ></span>
-                        </div>
-                        <div className="adyen-fp-card__header-collapsible-content">
-                            {renderHeader ? renderHeader : <span className="adyen-fp-card__title">{title}</span>}
-                            <div v-if="subTitle" className="adyen-fp-card__subtitle">
-                                {subTitle}
-                            </div>
-                        </div>
+                        </button>
                     </div>
-                </div>
-            )}
+                )}
+                {(title || renderHeader) && (
+                    <div className="adyen-fp-card__header-collapsible-content">
+                        {renderHeader ? (
+                            renderHeader
+                        ) : (
+                            <span className="adyen-fp-card__title" onClick={onClickHandler}>
+                                {title}
+                            </span>
+                        )}
+                        {subTitle && <div className="adyen-fp-card__subtitle">{subTitle}</div>}
+                    </div>
+                )}
+            </header>
             <CollapsibleContainer isOpen={isOpen}>
                 <div
                     className={classNames('adyen-fp-card__body', {
@@ -58,8 +66,8 @@ const Card = ({
                 >
                     {children}
                 </div>
+                {(footer || renderFooter) && <footer className="adyen-fp-card__footer">{renderFooter ? renderFooter : footer}</footer>}
             </CollapsibleContainer>
-            {(footer || renderFooter) && <footer className="adyen-fp-card__footer">{renderFooter ? renderFooter : footer}</footer>}
         </section>
     );
 };

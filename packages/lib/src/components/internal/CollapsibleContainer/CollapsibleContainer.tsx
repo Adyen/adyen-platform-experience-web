@@ -15,6 +15,7 @@ function CollapsibleContainer({ isOpen, children }: PropsWithChildren<{ isOpen: 
         <div
             className={classNames('adyen-fp-collapsible-container', {
                 'adyen-fp-collapsible-container--with-transition': !isOpen || (isOpen && withAnimation),
+                'adyen-fp-collapsible-container--collapsed': !isOpen,
             })}
             style={{
                 height: isOpen ? height : 0,
