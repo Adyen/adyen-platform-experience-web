@@ -38,5 +38,7 @@
     "balanceAccountId": "Balance account ID",
     "defaultCurrency": "Default currency",
     "created": "Created",
-    "status": "Status"
+    "status": "Status",
+    "expandContent": "Expand content",
+    "hideContent": "Hide content"
 }

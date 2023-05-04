@@ -5,6 +5,7 @@ import classNames from 'classnames';
 import { useCallback, useState } from 'preact/hooks';
 import CollapsibleContainer from '../CollapsibleContainer/CollapsibleContainer';
 import { getUniqueId } from '../../../utils/idGenerator';
+import useCoreContext from '../../../core/Context/useCoreContext';
 const Card = ({
     title,
     subTitle,
@@ -16,11 +17,13 @@ const Card = ({
     noOutline,
     collapsible,
     openByDefault = true,
-    buttonAriaLabel = 'toggle-content',
+    buttonAriaLabel,
 }: PropsWithChildren<CardProps>) => {
+    const { i18n } = useCoreContext();
     const [isOpen, setIsOpen] = useState(openByDefault);
     const toggleIsOpen = useCallback(() => setIsOpen(isOpen => !isOpen), []);
     const ariaControllerId = getUniqueId();
+    const labelText = buttonAriaLabel || (isOpen ? i18n.get('hideContent') : i18n.get('expandContent'));
     return (
         <section className={classNames('adyen-fp-card', { 'adyen-fp-card--filled': filled, 'adyen-fp-card--no-outline': noOutline })}>
             <header className={classNames('adyen-fp-card__header', { 'adyen-fp-card__header-collapsible': collapsible })}>
@@ -30,7 +33,7 @@ const Card = ({
                             className="adyen-fp-card__collapse-button"
                             aria-expanded={`${!!isOpen}`}
                             aria-controls={ariaControllerId}
-                            aria-label={buttonAriaLabel}
+                            aria-label={labelText}
                             onClick={toggleIsOpen}
                         >
                             <span
