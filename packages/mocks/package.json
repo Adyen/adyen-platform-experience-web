@@ -1,0 +1,9 @@
+{
+    "name": "@adyen/adyen-fp-web-mocks",
+    "main": "index.ts",
+    "type": "module",
+    "description": "mocks",
+    "version": "1.0.0",
+    "license": "MIT",
+    "repository": "github:Adyen/adyen-fp-web"
+}

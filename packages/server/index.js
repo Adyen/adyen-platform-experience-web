@@ -1,9 +1,7 @@
 const path = require('path');
 require('dotenv').config({ path: path.resolve('../../', '.env') });
-const getTransactions = require('./api/transactions');
-const getTransactionById = require('./api/transactions-id');
-const getBalanceAccountById = require('./api/balance-account-id');
-const getAccountHoldersById = require('./api/account-holders-id');
+const mockedRoutes = require('./mock-server/src/routes');
+const testRoutes = require('./test-server/src/routes');
 const express = require('express');
 
 const defaultPort = 3030;
@@ -18,13 +16,9 @@ module.exports = (app = express(), options = []) => {
         next();
     });
 
-    app.get('/transactions', getTransactions);
+    const routes = process.env.MOCKED_MODE ? mockedRoutes : testRoutes;
 
-    app.get('/transactions/:id', getTransactionById);
-
-    app.get('/balanceAccounts/:id', getBalanceAccountById);
-
-    app.get('/accountHolders/:id', getAccountHoldersById);
+    app.use(routes);
 
     if (options.listen) {
         const port = process.env.PORT || defaultPort;

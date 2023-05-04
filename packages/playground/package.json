@@ -18,8 +18,9 @@
     },
     "scripts": {
         "start": "npm run dev-server",
+        "start:mock": "cross-env MOCKED_MODE=true npm run start",
         "dev-server": "cross-env NODE_ENV=development webpack-dev-server --config config/webpack.dev.js",
-        "format": "prettier --write 'src/**/*.{ts,js,css, scss, html}'"
+        "format": "prettier --write \"src/**/*.{ts,js,css, scss, html}\""
     },
     "devDependencies": {
         "@adyen/adyen-fp-web-server": "file:packages/server",

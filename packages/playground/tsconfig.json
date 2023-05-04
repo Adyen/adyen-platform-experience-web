@@ -1,4 +1,7 @@
 {
+    "ts-node": {
+        "module": "commonjs"
+    },
     "compilerOptions": {
         "allowJs": true,
         "checkJs": false,
@@ -24,6 +27,6 @@
 
         "baseUrl": "./"
     },
-    "include": ["src/"],
+    "include": ["src/", "../mocks/*.ts"],
     "exclude": ["node_modules", "**/*.test.*"]
 }

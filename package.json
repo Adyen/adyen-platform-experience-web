@@ -19,7 +19,8 @@
     ],
     "scripts": {
         "start": "concurrently --kill-others-on-fail \"npm run type:watch\" \"npm run start -w @adyen/adyen-fp-web\" \"npm run start -w @adyen/adyen-fp-web-playground\" --names \"lib,playground\"",
-        "build": "npm run build -w @adyen/adyen-fp-web",
+        "start:mocked": "concurrently --kill-others-on-fail \"npm run type:watch\" \"npm run start -w @adyen/adyen-fp-web\" \"npm run start:mock -w @adyen/adyen-fp-web-playground\" --names \"lib,playground\"",
+        "build": "npm run build -w @adyen/adyen-fp-web ",
         "lint": "npm run lint -w @adyen/adyen-fp-web",
         "test": "npm run test -w @adyen/adyen-fp-web",
         "test:watch": "npm run test:watch -w @adyen/adyen-fp-web",
