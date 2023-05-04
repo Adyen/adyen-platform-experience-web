@@ -15,9 +15,7 @@ export const useChildrenHeight = () => {
         if (ref.current) {
             const observer = new ResizeObserver(updateHeight);
 
-            if (ref.current) {
-                observer.observe(ref.current);
-            }
+            observer.observe(ref.current);
 
             return () => {
                 if (ref.current) observer.unobserve(ref.current);
