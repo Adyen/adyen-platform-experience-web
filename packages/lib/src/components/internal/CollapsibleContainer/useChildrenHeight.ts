@@ -13,9 +13,7 @@ export const useChildrenHeight = () => {
     }, [height]);
     useEffect(() => {
         if (ref.current) {
-            const observer = new ResizeObserver(() => {
-                updateHeight();
-            });
+            const observer = new ResizeObserver(updateHeight);
 
             if (ref.current) {
                 observer.observe(ref.current);
