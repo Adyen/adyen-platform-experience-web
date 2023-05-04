@@ -1,13 +1,14 @@
 .adyen-fp-collapsible-container {
-    &--with-transition {
-        transition: height 0.2s ease-out;
-    }
     overflow: hidden;
-    display: block;
-    &__content {
-        overflow: auto;
+    display: grid;
+    grid-template-rows: 1fr;
+    &--with-transition {
+        transition: grid-template-rows 0.2s ease-out;
     }
-    &--hidden {
+    &__content {
         overflow: hidden;
+    }
+    &--collapsed {
+        grid-template-rows: 0fr;
     }
 }

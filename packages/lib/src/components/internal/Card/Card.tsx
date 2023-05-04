@@ -2,10 +2,9 @@ import { CardProps } from './types';
 import { PropsWithChildren } from 'preact/compat';
 import './Card.scss';
 import classNames from 'classnames';
-import { useState } from 'preact/hooks';
+import { useCallback, useState } from 'preact/hooks';
 import CollapsibleContainer from '../CollapsibleContainer/CollapsibleContainer';
 const Card = ({
-    onClickHandler,
     title,
     subTitle,
     children,
@@ -18,10 +17,7 @@ const Card = ({
     openByDefault = true,
 }: PropsWithChildren<CardProps>) => {
     const [isOpen, setIsOpen] = useState(openByDefault);
-    const toggleIsOpen = () => {
-        // onClickHandler?.();
-        setIsOpen(!isOpen);
-    };
+    const toggleIsOpen = useCallback(() => setIsOpen(isOpen => !isOpen), []);
     return (
         <section className={classNames('adyen-fp-card', { 'adyen-fp-card--filled': filled, 'adyen-fp-card--no-outline': noOutline })}>
             <header className={classNames('adyen-fp-card__header', { 'adyen-fp-card__header-collapsible': collapsible })}>
@@ -31,7 +27,7 @@ const Card = ({
                             className="adyen-fp-card__collapse-button"
                             aria-expanded={`${!!isOpen}`}
                             aria-controls="collapsible-container-id"
-                            aria-label="useful-label-text"
+                            aria-label="tooggle-content"
                             onClick={toggleIsOpen}
                         >
                             <span
@@ -46,13 +42,7 @@ const Card = ({
                 )}
                 {(title || renderHeader) && (
                     <div className="adyen-fp-card__header-collapsible-content">
-                        {renderHeader ? (
-                            renderHeader
-                        ) : (
-                            <span className="adyen-fp-card__title" onClick={onClickHandler}>
-                                {title}
-                            </span>
-                        )}
+                        {renderHeader ? renderHeader : <span className="adyen-fp-card__title">{title}</span>}
                         {subTitle && <div className="adyen-fp-card__subtitle">{subTitle}</div>}
                     </div>
                 )}
