@@ -82,7 +82,6 @@ const createAwaitable = <T>() => {
 
     (async function refresh(): Promise<void> {
         try { await ($promise = new Promise(resolve => { $resolve = resolve })) }
-        catch {/* ignore rejection and proceed to refresh */}
         finally { return refresh() }
     })();
 
