@@ -11,4 +11,5 @@ export interface CardProps {
     noOutline?: boolean;
     openByDefault?: boolean;
     collapsible?: boolean;
+    buttonAriaLabel?: string;
 }

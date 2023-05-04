@@ -3,7 +3,7 @@ import { PropsWithChildren } from 'preact/compat';
 import './CollapsibleContainer.scss';
 import { useEffect, useState } from 'preact/hooks';
 
-function CollapsibleContainer({ isOpen, children }: PropsWithChildren<{ isOpen: boolean }>) {
+function CollapsibleContainer({ isOpen, accessibilityId, children }: PropsWithChildren<{ isOpen: boolean; accessibilityId: string }>) {
     const [withAnimation, setWithAnimation] = useState(false);
     useEffect(() => {
         if (!withAnimation && !isOpen) setWithAnimation(true);
@@ -11,6 +11,7 @@ function CollapsibleContainer({ isOpen, children }: PropsWithChildren<{ isOpen: 
 
     return (
         <div
+            id={accessibilityId}
             className={classNames('adyen-fp-collapsible-container', {
                 'adyen-fp-collapsible-container--with-transition': !isOpen || withAnimation,
                 'adyen-fp-collapsible-container--collapsed': !isOpen,
