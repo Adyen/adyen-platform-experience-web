@@ -25,7 +25,7 @@
         "test": "BABEL_ENV=test jest --config config/jest.config.js",
         "test:watch": "npm run test -- --watchAll",
         "test:coverage": "npm run test -- --coverage",
-        "type-check": "tsc --watch --preserveWatchOutput --noEmit",
+        "type-check": "tsc --watch --preserveWatchOutput",
         "types:build": "tsc --project tsconfig-build.json",
         "lint": "eslint 'src/**/*.{js,ts,tsx}' --quiet",
         "lint:fix": "npm run lint -- --fix",

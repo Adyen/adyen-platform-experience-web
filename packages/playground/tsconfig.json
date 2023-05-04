@@ -4,6 +4,7 @@
         "checkJs": false,
         "jsx": "react-jsx",
         "jsxImportSource": "preact",
+        "noEmit": true,
 
         "outDir": "dist",
         "declaration": true,
