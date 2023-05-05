@@ -1,5 +1,3 @@
-@import '../../../../style/index';
-
 .adyen-fp-field {
     display: block;
     margin-bottom: 16px;
@@ -17,9 +15,9 @@
 
 .adyen-fp-label__text,
 .adyen-fp-helper-text {
-    color: $color-black;
+    color: var(--adyen-fp-color-black);
     display: block;
-    font-size: $font-size-small;
+    font-size: var(--adyen-fp-font-size-small);
     font-weight: normal;
     line-height: 13px;
     padding-bottom: 5px;
@@ -32,7 +30,7 @@
 }
 
 .adyen-fp-helper-text {
-    color: $color-gray-darker;
+    color: var(--adyen-fp-color-gray-darker);
 }
 
 .adyen-fp-label__text {
@@ -45,18 +43,18 @@
 }
 
 .adyen-fp-label__text--error {
-    color: $color-alert;
+    color: var(--adyen-fp-color-alert);
 }
 
 .adyen-fp-label--focused .adyen-fp-label__text {
-    color: $color-primary;
+    color: var(--adyen-fp-color-primary);
 }
 
 .adyen-fp-error-text {
     display: flex;
-    color: $color-alert;
+    color: var(--adyen-fp-color-alert);
     font-weight: normal;
     margin-top: 4px;
-    font-size: $font-size-xsmall;
+    font-size: var(--adyen-fp-font-size-xsmall);
     align-items: center;
 }

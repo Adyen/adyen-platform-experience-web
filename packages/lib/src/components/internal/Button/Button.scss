@@ -1,13 +1,11 @@
-@import '../../../style/index';
-
 .adyen-fp-button {
     $base: &;
-    background: $color-black;
+    background: var(--adyen-fp-color-black);
     border: 0;
-    border-radius: $border-radius-medium;
-    color: $color-white;
+    border-radius: var(--adyen-fp-border-radius-medium);
+    color: var(--adyen-fp-color-white);
     cursor: pointer;
-    font-size: $font-size-medium;
+    font-size: var(--adyen-fp-font-size-medium);
     font-weight: 500;
     height: 48px;
     margin: 0;
@@ -17,7 +15,7 @@
     width: 100%;
 
     &:focus {
-        box-shadow: 0 0 0 2px $color-blue-light;
+        box-shadow: 0 0 0 2px var(--adyen-fp-color-blue-light);
         outline: 0;
     }
 
@@ -31,7 +29,7 @@
     }
 
     &:hover:focus {
-        box-shadow: 0 0 0 2px $color-blue-light, 0 3px 4px rgba(0, 15, 45, 0.2);
+        box-shadow: 0 0 0 2px var(--adyen-fp-color-blue-light), 0 3px 4px rgba(0, 15, 45, 0.2);
     }
 
     &:disabled {
@@ -45,7 +43,7 @@
     }
 
     &--loading {
-        background: $color-gray-darker;
+        background: var(--adyen-fp-color-gray-darker);
         box-shadow: none;
         pointer-events: none;
         user-select: none;
@@ -76,15 +74,15 @@
     &--ghost {
         background: none;
         border: 0;
-        color: $color-black;
+        color: var(--adyen-fp-color-black);
 
         &:hover {
-            background: $color-gray-lighter;
+            background: var(--adyen-fp-color-gray-lighter);
             box-shadow: none;
         }
 
         &:active {
-            background: $color-gray-light;
+            background: var(--adyen-fp-color-gray-light);
             box-shadow: none;
         }
     }
@@ -101,18 +99,18 @@
 
     &--secondary {
         padding: 10px 12px;
-        background: $color-white;
-        border: 1px solid $color-black;
-        color: $color-black;
+        background: var(--adyen-fp-color-white);
+        border: 1px solid var(--adyen-fp-color-black);
+        color: var(--adyen-fp-color-black);
 
         &:hover {
-            background: $color-gray-lighter;
+            background: var(--adyen-fp-color-gray-lighter);
             box-shadow: 0 2px 4px rgba(27, 42, 60, 0.2), 0 4px 5px rgba(27, 42, 60, 0.14);
         }
 
         &:active,
         &:active:hover {
-            background: $color-gray-lighter;
+            background: var(--adyen-fp-color-gray-lighter);
             box-shadow: none;
         }
 
@@ -122,14 +120,14 @@
                 box-shadow: none;
                 cursor: not-allowed;
                 border-color: #99a3ad;
-                background-color: $color-gray-lighter;
+                background-color: var(--adyen-fp-color-gray-lighter);
                 opacity: 0.5;
                 user-select: all;
             }
         }
 
         .adyen-fp-spinner {
-            border-color: $color-black;
+            border-color: var(--adyen-fp-color-black);
             border-top-color: transparent;
         }
     }
@@ -138,7 +136,7 @@
         padding: 10px 12px;
         background: rgba(0, 102, 255, 0.1);
         border: 1px solid transparent;
-        color: $color-blue;
+        color: var(--adyen-fp-color-blue);
 
         &:hover {
             background: rgba(0, 102, 255, 0.2);
@@ -153,25 +151,25 @@
     }
 
     &--small {
-        font-size: $font-size-small;
+        font-size: var(--adyen-fp-font-size-small);
         height: 36px;
         padding: 10px 14px;
     }
 
     &--filter {
         @extend #{$base}--small;
-        background: $color-white;
-        border: 1px solid $color-gray;
-        color: $color-black;
+        background: var(--adyen-fp-color-white);
+        border: 1px solid var(--adyen-fp-color-gray);
+        color: var(--adyen-fp-color-black);
 
         &:hover {
-            background: $color-gray-lighter;
+            background: var(--adyen-fp-color-gray-lighter);
             box-shadow: 0 2px 4px rgba(27, 42, 60, 0.14);
         }
 
         &:active,
         &:active:hover {
-            background: $color-gray-lighter;
+            background: var(--adyen-fp-color-gray-lighter);
             border-color: #99a3ad;
             box-shadow: none;
         }
@@ -185,14 +183,14 @@
         }
 
         .adyen-fp-spinner {
-            border-color: $color-black;
+            border-color: var(--adyen-fp-color-black);
             border-top-color: transparent;
         }
 
         &#{$base}--active {
             background: rgba(0, 102, 255, 0.1);
-            border: 1px solid $color-blue;
-            color: $color-blue;
+            border: 1px solid var(--adyen-fp-color-blue);
+            color: var(--adyen-fp-color-blue);
 
             #{$base}__text {
                 padding-right: 22px;
@@ -213,9 +211,9 @@
     &--link {
         background: transparent;
         border: 1px solid transparent;
-        color: $color-blue;
+        color: var(--adyen-fp-color-blue);
         font-weight: 400;
-        border-radius: $border-radius-small;
+        border-radius: var(--adyen-fp-border-radius-small);
         padding: 2px;
 
         &:hover,
@@ -232,8 +230,8 @@
         &:hover,
         &:active,
         &:active:hover {
-            background: $color-green;
-            color: $color-white;
+            background: var(--adyen-fp-color-green);
+            color: var(--adyen-fp-color-white);
         }
 
         .adyen-fp-button__icon {
@@ -266,7 +264,7 @@
     }
 
     .adyen-fp-spinner {
-        border-color: $color-white;
+        border-color: var(--adyen-fp-color-white);
         border-top-color: transparent;
     }
 }

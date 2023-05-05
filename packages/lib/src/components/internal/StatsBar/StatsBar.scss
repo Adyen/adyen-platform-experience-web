@@ -1,18 +1,16 @@
-@import '../../../style/index';
-
 .adyen-fp-stats-bar {
-    background: $color-gray-lighter;
+    background: var(--adyen-fp-color-gray-lighter);
     border: 1px solid transparent;
-    border-radius: $border-radius-xlarge;
-    padding: $spacing-large;
+    border-radius: var(--adyen-fp-border-radius-xlarge);
+    padding: var(--adyen-fp-spacing-large);
     display: flex;
     justify-content: space-between;
 
     &__label {
-        font-size: $font-size-small;
-        color: $color-gray-darker;
+        font-size: var(--adyen-fp-font-size-small);
+        color: var(--adyen-fp-color-gray-darker);
         letter-spacing: 0.25px;
-        margin-bottom: $spacing-xsmall;
+        margin-bottom: var(--adyen-fp-spacing-xsmall);
     }
 
     &__value {

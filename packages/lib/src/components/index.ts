@@ -1,4 +1,5 @@
 import uuid from '../utils/uuid';
+import '../style/index.scss';
 import './shared.scss';
 
 // External Components

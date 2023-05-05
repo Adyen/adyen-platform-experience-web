@@ -1,7 +1,5 @@
-@import '~/style/index';
-
 .adyen-fp-balances {
-    font-size: $font-size-medium;
+    font-size: var(--adyen-fp-font-size-medium);
     margin-bottom: 20px;
     padding-top: 4px;
     position: relative;
@@ -9,14 +7,14 @@
 
     &__title {
         display: flex;
-        gap: $spacing-small;
+        gap: var(--adyen-fp-spacing-small);
         font-weight: 600;
-        margin-bottom: $spacing-small;
+        margin-bottom: var(--adyen-fp-spacing-small);
     }
 
     &__item {
         display: flex;
-        margin-bottom: $spacing-small;
+        margin-bottom: var(--adyen-fp-spacing-small);
     }
 
     &__key {
@@ -31,6 +29,6 @@
         max-height: 240px;
         overflow: auto;
         padding-top: 2px;
-        padding-right: $spacing-medium;
+        padding-right: var(--adyen-fp-spacing-medium);
     }
 }

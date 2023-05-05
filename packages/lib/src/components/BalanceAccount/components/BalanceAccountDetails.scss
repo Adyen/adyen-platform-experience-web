@@ -1,15 +1,11 @@
-@import '~/style/index';
-
 .adyen-fp-balance-account {
-
     &__details {
         display: flex;
         justify-content: space-between;
-        margin-top: $spacing-xlarge;
-        padding: 0 $spacing-large;
+        margin-top: var(--adyen-fp-spacing-xlarge);
+        padding: 0 var(--adyen-fp-spacing-large);
     }
 
     &__account {
-
     }
 }

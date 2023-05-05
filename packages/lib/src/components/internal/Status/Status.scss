@@ -1,48 +1,46 @@
-@import '../../../style/index';
-
 .adyen-fp-status {
-    font-size: $font-size-medium;
+    font-size: var(--adyen-fp-font-size-medium);
     text-transform: capitalize;
 
     &:before {
-        background: $color-gray-dark;
+        background: var(--adyen-fp-color-gray-dark);
         border-radius: 50%;
         content: '';
         display: inline-block;
         margin-right: 5px;
-        height: $font-size-xxsmall;
+        height: var(--adyen-fp-font-size-xxsmall);
         position: relative;
         bottom: 1px;
-        width: $font-size-xxsmall;
+        width: var(--adyen-fp-font-size-xxsmall);
     }
 
     &--success:before {
-        background: $color-green;
+        background: var(--adyen-fp-color-green);
     }
 
     &--warning:before {
-        background: $color-orange;
+        background: var(--adyen-fp-color-orange);
     }
 
     &--error:before {
-        background: $color-red;
+        background: var(--adyen-fp-color-red);
     }
 
     &--small {
-        font-size: $font-size-small;
+        font-size: var(--adyen-fp-font-size-small);
 
         &:before {
-            height: $font-size-xxsmall;
-            width: $font-size-xxsmall;
+            height: var(--adyen-fp-font-size-xxsmall);
+            width: var(--adyen-fp-font-size-xxsmall);
         }
     }
 
     &--large {
-        font-size: $font-size-large;
+        font-size: var(--adyen-fp-font-size-large);
 
         &:before {
-            height: $font-size-medium;
-            width: $font-size-medium;
+            height: var(--adyen-fp-font-size-medium);
+            width: var(--adyen-fp-font-size-medium);
         }
     }
 }

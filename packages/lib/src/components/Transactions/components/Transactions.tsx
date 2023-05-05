@@ -6,7 +6,6 @@ import TextFilter from '../../internal/FilterBar/filters/TextFilter';
 import DateFilter from '../../internal/FilterBar/filters/DateFilter';
 import { getCursor, getRequestParams } from './utils';
 import TransactionList from './TransactionList';
-import './Transactions.scss';
 import { TransactionsPageProps } from '../types';
 import { PageChangeOptions } from '../../internal/Pagination/type';
 

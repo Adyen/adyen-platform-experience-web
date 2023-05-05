@@ -1,5 +1,3 @@
-@import '../../../style/index';
-
 .adyen-fp-spinner__wrapper {
     height: 100%;
     display: flex;
@@ -18,7 +16,7 @@
 }
 
 .adyen-fp-spinner {
-    border: 3px solid $color-primary;
+    border: 3px solid var(--adyen-fp-color-primary);
     border-radius: 50%;
     height: 43px;
     width: 43px;

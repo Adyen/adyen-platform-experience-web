@@ -1,5 +1,3 @@
-@import '../../../style/index';
-
 .adyen-fp-modal-wrapper {
     align-items: center;
     display: flex;
@@ -42,8 +40,8 @@
 }
 
 .adyen-fp-modal {
-    border-radius: $border-radius-large;
-    background-color: $color-white;
+    border-radius: var(--adyen-fp-border-radius-large);
+    background-color: var(--adyen-fp-color-white);
     margin: auto;
     transition: opacity 0.2s ease, visibility 0.2s ease;
     opacity: 0;
@@ -67,9 +65,9 @@
 
     &__header {
         align-items: center;
-        border-bottom: 1px solid $color-gray-light;
+        border-bottom: 1px solid var(--adyen-fp-color-gray-light);
         display: flex;
-        font-size: $font-size-medium;
+        font-size: var(--adyen-fp-font-size-medium);
         font-weight: bold;
         justify-content: space-between;
         padding: 14px 14px 10px 16px;
@@ -87,24 +85,24 @@
         width: 38px;
 
         &:hover {
-            background: $color-gray-lighter;
+            background: var(--adyen-fp-color-gray-lighter);
         }
 
         &:focus {
-            background: $color-gray-light;
+            background: var(--adyen-fp-color-gray-light);
             outline: 0;
         }
     }
 
     .adyen-fp-label__text {
-        font-size: $font-size-medium;
-        margin-bottom: $spacing-xsmall;
+        font-size: var(--adyen-fp-font-size-medium);
+        margin-bottom: var(--adyen-fp-spacing-xsmall);
     }
 
     &__footer {
-        // background: $color-gray-lighter;
+        // background: var(--adyen-fp-color-gray-lighter);
         display: flex;
-        gap: $spacing-small;
+        gap: var(--adyen-fp-spacing-small);
 
         .adyen-fp-button:first-child {
             margin-left: auto;

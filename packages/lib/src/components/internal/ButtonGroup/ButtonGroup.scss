@@ -1,5 +1,3 @@
-@import '../../../style/index';
-
 .adyen-fp-button-group {
     background: transparent;
     display: flex;
@@ -9,8 +7,8 @@
         background: transparent;
         border: 0;
         box-shadow: inset 0 0 0 1px #99a3ad;
-        color: $color-black;
-        font-size: $font-size-small;
+        color: var(--adyen-fp-color-black);
+        font-size: var(--adyen-fp-font-size-small);
         font-weight: normal;
         line-height: 40px;
         margin-right: 8px;
@@ -28,7 +26,7 @@
         }
 
         &:active {
-            background: $color-gray-lighter;
+            background: var(--adyen-fp-color-gray-lighter);
             box-shadow: inset 0 0 0 2px #99a3ad;
         }
 
@@ -46,9 +44,9 @@
             &:hover,
             &:active,
             &:active:hover {
-                background: $color-blue-lighter;
-                box-shadow: inset 0 0 0 2px $color-blue;
-                color: $color-blue;
+                background: var(--adyen-fp-color-blue-lighter);
+                box-shadow: inset 0 0 0 2px var(--adyen-fp-color-blue);
+                color: var(--adyen-fp-color-blue);
                 font-weight: 500;
                 height: 40px;
                 transition: none;
