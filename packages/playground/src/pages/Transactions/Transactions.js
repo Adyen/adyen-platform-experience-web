@@ -26,7 +26,7 @@ import '../../assets/style/style.scss';
                 onAccountSelected: ({ id }) => {
                     window.location.assign(`/accountholder?id=${id}`);
                 },
-                updateTransactions: async (params, component) => {
+                onUpdateTransactions: async (params, component) => {
                     const transactions = await getMyTransactions(params);
                     component.update({ transactions });
                 }

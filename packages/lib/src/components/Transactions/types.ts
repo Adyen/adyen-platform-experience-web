@@ -44,7 +44,7 @@ export interface TransactionsPageProps {
     onTransactionSelected?: OnSelection;
     onBalanceAccountSelected?: OnSelection;
     onAccountSelected?: OnSelection;
-    updateTransactions?: (pageRequestParams: any, ref: UIElement | null) => void;
+    onUpdateTransactions?: (pageRequestParams: any, ref: UIElement | null) => void;
 }
 export interface TransactionListProps extends PaginationProps {
     transactions: Transaction[];

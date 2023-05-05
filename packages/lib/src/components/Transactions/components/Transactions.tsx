@@ -25,13 +25,13 @@ function Transactions({
     onBalanceAccountSelected,
     onFilterChange,
     onTransactionSelected,
-    updateTransactions
+    onUpdateTransactions
 }: TransactionsPageProps) {
     const { i18n } = useCoreContext();
 
     const onPageRequest = useCallback((pageRequestParams: any) => {
-        updateTransactions?.(pageRequestParams, elementRef);
-    }, [updateTransactions, elementRef]);
+        onUpdateTransactions?.(pageRequestParams, elementRef);
+    }, [onUpdateTransactions, elementRef]);
 
     const {
         canResetFilters,
