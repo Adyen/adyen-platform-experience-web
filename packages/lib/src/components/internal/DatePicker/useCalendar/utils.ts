@@ -22,7 +22,7 @@ export const getDateStart = (date: CalendarDate = Date.now(), useTodayStartAsFal
         if (useTodayStartAsFallback) targetDate = new Date();
         else throw ex;
     }
-    return targetDate.setHours(0, 0, 0, 0);
+    return targetDate.setHours(12, 0, 0, 0);
 };
 
 export const getMonthStart = (date: CalendarDate = Date.now(), offset = 0) => {
@@ -32,7 +32,7 @@ export const getMonthStart = (date: CalendarDate = Date.now(), offset = 0) => {
 };
 
 export const getMonthEndDate = (date: CalendarDate = Date.now(), offset = 0) => (
-    new Date(getMonthStart(date, offset + 1) - 1).getDate() as CalendarMonthEndDate
+    new Date(getMonthStart(date, offset + 1) - DAY_MS).getDate() as CalendarMonthEndDate
 );
 
 export const getMonthStartDayOffset = (firstWeekDay: CalendarDay = 0, date: CalendarDate = Date.now(), offset = 0) => {
