@@ -1,0 +1,119 @@
+@import '../../../style/index';
+
+.adyen-fp-card {
+    background-color: $color-white;
+    border: $color-gray-dark 1px solid;
+    border-radius: $border-radius-medium;
+    overflow: hidden;
+    padding: 20px 24px;
+
+    &--filled {
+        background-color: $color-gray-lighter;
+    }
+
+    &--no-outline {
+        border: none;
+    }
+
+    &--clickable {
+        cursor: pointer;
+    }
+
+    &--with-footer {
+        padding-bottom: 16px;
+    }
+
+    &__body {
+        color: $color-gray-dark-2;
+        font-size: $font-size-base;
+        font-weight: $font-weight-regular;
+        line-height: $spacing-large;
+        &--with-title {
+            margin-top: 20px;
+        }
+    }
+
+    &__footer {
+        display: flex;
+        justify-content: flex-end;
+        padding-top: 16px;
+    }
+
+    &__header {
+        display: block;
+        width: 100%;
+    }
+    &__header-collapsible {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        width: 100%;
+    }
+
+    &__header-collapsible-content {
+        flex: 1;
+    }
+
+    &__collapse-button {
+        border: none;
+        display: flex;
+        padding: 0;
+        cursor: pointer;
+        transition: 0.1s ease-in-out;
+        align-items: center;
+        flex-shrink: 0;
+        height: 40px;
+        justify-content: center;
+        min-width: auto;
+        width: 40px;
+        border-radius: 50%;
+        background: $color-gray-light;
+        &:hover {
+            background: $color-gray;
+        }
+    }
+
+    &__collapsible-icon {
+        padding: 0;
+        transition: all 0.2s ease-in-out;
+        font-size: 1.3em;
+        &--collapsed {
+            &::before {
+                font-weight: $font-weight-bold;
+                display: inline-block;
+                content: '\2228';
+            }
+        }
+
+        &--opened {
+            &::before {
+                font-weight: $font-weight-bold;
+                display: inline-block;
+                content: '\2227';
+                margin-bottom: 2px;
+            }
+        }
+    }
+
+    &__title {
+        font-size: $font-size-medium;
+        font-weight: $font-weight-semi-bold;
+        line-height: $spacing-large;
+    }
+
+    &__title-container {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    &__subtitle {
+        align-items: center;
+        color: $color-gray-darker;
+        display: flex;
+        flex: none;
+        flex-grow: 0;
+        font-size: $font-size-small;
+        font-weight: $font-weight-regular;
+        line-height: $spacing-large;
+    }
+}
