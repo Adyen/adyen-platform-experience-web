@@ -46,16 +46,12 @@ export const getCalendarSlidingWindow = (months: CalendarSlidingWindowMonths = 1
 };
 
 export const createCalendar = () => {
-    let calendarDays: CalendarSlidingWindow['days'] | null = null;
-    let calendarTimestamp: CalendarSlidingWindow['timestamp'] | null = null;
+    let immutableDates: Readonly<CalendarSlidingWindow['dates']> = Object.freeze([]);
     let immutableOffsets: Readonly<CalendarSlidingWindow['offsets']> = Object.freeze([]);
 
-    const offsets: CalendarSlidingWindow['offsets'] = [];
-
     const $window = Object.create(null, {
-        days: { get: () => calendarDays },
-        offsets: { get: () => immutableOffsets },
-        timestamp: { get: () => calendarTimestamp }
+        dates: { get: () => immutableDates },
+        offsets: { get: () => immutableOffsets }
     }) as CalendarSlidingWindow;
 
     return (
@@ -64,8 +60,12 @@ export const createCalendar = () => {
         timestamp = Date.now(),
         offset = 0
     ) => {
+        const dates: CalendarSlidingWindow['dates'] = [];
+        const offsets: CalendarSlidingWindow['offsets'] = [];
         const [, windowMonthOffset ] = getCalendarSlidingWindow(calendarMonths, timestamp, offset);
-        offsets.length = 0;
+
+        let calendarEndIndex = MONTH_DAYS;
+        let calendarTimestamp = timestamp;
 
         for (let i = 0; i < calendarMonths; i++) {
             const thisMonthOffset = offset - windowMonthOffset + i;
@@ -75,7 +75,7 @@ export const createCalendar = () => {
             const monthStartIndex = ((offsets[i - 1]?.[2] as number) - startDayOffset) || 0;
             const monthStartDateIndex = monthStartIndex + startDayOffset;
             const monthEndDateIndex = monthStartDateIndex + monthEndDate;
-            const monthEndIndex = monthStartIndex + MONTH_DAYS;
+            const monthEndIndex = calendarEndIndex = monthStartIndex + MONTH_DAYS;
 
             if (i === 0) {
                 if (startDayOffset > 0) {
@@ -86,10 +86,15 @@ export const createCalendar = () => {
             }
 
             offsets[i] = [ monthStartIndex, monthStartDateIndex, monthEndDateIndex, monthEndIndex ];
-            calendarDays = monthEndIndex - 1;
         }
 
-        immutableOffsets = Object.freeze([...offsets]);
+        for (let i = 0; i < calendarEndIndex; i++) {
+            dates[i] = new Date(calendarTimestamp + i * DAY_MS).toISOString().replace(/T[\w\W]*$/, '');
+        }
+
+        immutableDates = Object.freeze(dates);
+        immutableOffsets = Object.freeze(offsets);
+
         return $window;
     };
 };

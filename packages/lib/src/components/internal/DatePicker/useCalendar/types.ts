@@ -5,9 +5,8 @@ export type CalendarSlidingWindowMonths = 1 | 2 | 3 | 4 | 6 | 12;
 export type CalendarMonthEndDate = 28 | 29 | 30 | 31;
 
 export interface CalendarSlidingWindow {
-    days: number;
+    dates: string[];
     offsets: Readonly<[number, number, number, number]>[];
-    timestamp: number;
 }
 
 export interface UseCalendarConfig {
