@@ -12,7 +12,7 @@ export const httpPost = (endpoint, data) =>
 
 export const httpGet = (endpoint, request = {}) => {
     const url = new URL(`${protocol}//${host}/${endpoint}`);
-    const searchParams = new URLSearchParams(request);
+    const searchParams = new URLSearchParams(Object.entries(request).filter(([param, value]) => value && param !== 'signal'));
 
     searchParams.forEach((value, param) => {
         const decodedValue = decodeURIComponent(value);
@@ -21,6 +21,7 @@ export const httpGet = (endpoint, request = {}) => {
 
     return fetch(url, {
         method: 'GET',
+        signal: request.signal,
         headers: {
             Accept: 'application/json, text/plain, */*',
             'Content-Type': 'application/json'

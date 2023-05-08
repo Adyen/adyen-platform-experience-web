@@ -1,4 +1,4 @@
 export interface FilterBarProps {
-    filters: Record<string, any> | null;
+    canResetFilters: boolean;
     resetFilters: () => void;
 }

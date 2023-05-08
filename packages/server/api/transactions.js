@@ -10,13 +10,14 @@ module.exports = (req, res) => {
         createdSince = '2022-05-30T15:07:40Z',
         createdUntil = new Date().toISOString(),
         balancePlatform = BALANCE_PLATFORM,
+        limit = LIMIT,
         accountHolderId,
         balanceAccountId,
         cursor
     } = req.query;
 
     const searchParams = new URLSearchParams({
-        limit: LIMIT,
+        limit: limit || LIMIT,
         ...(createdSince && { createdSince }),
         ...(createdUntil && { createdUntil }),
         ...(balancePlatform && { balancePlatform }),
