@@ -7,10 +7,10 @@ import {
 } from './types';
 import usePaginatedRecords from './usePaginatedRecords';
 import { hasNextPage, hasPrevPage } from './useCursorPagination';
-import { PaginatedResponseDataField, PaginationType } from '../types';
+import { PaginationType } from '../types';
 import { ReactiveStateUpdateRequestWithField } from '../../../../hooks/useReactiveStateWithParams/types';
 
-const useCursorPaginatedRecords = <T, DataField extends PaginatedResponseDataField, FilterValue extends string, FilterParam extends string>(
+const useCursorPaginatedRecords = <T, DataField extends string, FilterValue extends string, FilterParam extends string>(
     initOptions: PaginatedRecordsInitOptions<T, DataField, FilterValue, FilterParam>
 ): UsePaginatedRecords<T, FilterValue, FilterParam> => {
     const initializeAndDerivePageLimit = useCallback((

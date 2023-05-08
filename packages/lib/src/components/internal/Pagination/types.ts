@@ -35,23 +35,23 @@ export type WithPaginationOffset<T extends Record<any, any> = {}> = T & { offset
 export type WithPaginationRecordSize<T extends Record<any, any> = {}> = T & { size?: number };
 
 export type PaginatedResponseDataKeyword = 'hasNext' | 'hasPrevious' | '_links';
-export type PaginatedResponseDataField = Exclude<string, PaginatedResponseDataKeyword>;
+export type PaginatedResponseDataField<DataField extends string> = Exclude<DataField | PaginatedResponseDataKeyword, PaginatedResponseDataKeyword>;
 export type PaginatedResponseDataLink = { href: string };
 
-export type BasePaginatedResponseData<T = any, DataField extends PaginatedResponseDataField = 'data'> = {
-    [K in DataField]: T[];
+export type BasePaginatedResponseData<T = any, DataField extends string = 'data'> = {
+    [K in PaginatedResponseDataField<DataField>]: T[];
 };
 
-export type PaginatedResponseDataWithLinks<T = any, DataField extends PaginatedResponseDataField = 'data'> = BasePaginatedResponseData<T, DataField> & {
+export type PaginatedResponseDataWithLinks<T = any, DataField extends string = 'data'> = BasePaginatedResponseData<T, DataField> & {
     _links: { [K in PageNeighbour]?: PaginatedResponseDataLink }
 };
 
-export type PaginatedResponseDataWithoutLinks<T = any, DataField extends PaginatedResponseDataField = 'data'> = BasePaginatedResponseData<T, DataField> & {
+export type PaginatedResponseDataWithoutLinks<T = any, DataField extends string = 'data'> = BasePaginatedResponseData<T, DataField> & {
     hasNext?: boolean;
     hasPrevious?: boolean;
 };
 
-export type PaginatedResponseData<T = any, DataField extends PaginatedResponseDataField = 'data'> =
+export type PaginatedResponseData<T = any, DataField extends string = 'data'> =
     | PaginatedResponseDataWithLinks<T, DataField>
     | PaginatedResponseDataWithoutLinks<T, DataField>;
 

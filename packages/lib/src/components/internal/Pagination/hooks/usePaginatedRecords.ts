@@ -25,7 +25,7 @@ import {
 const pageNeighbours = [PageNeighbour.NEXT, PageNeighbour.PREV] as const;
 const offsetPaginatedResponseFields = ['hasNext', 'hasPrevious'] as const;
 
-const isCursorPaginatedResponseData = <T, DataField extends PaginatedResponseDataField>(
+const isCursorPaginatedResponseData = <T, DataField extends string>(
     data: PaginatedResponseData<T, DataField>
 ): data is PaginatedResponseDataWithLinks<T, DataField> => {
     if ((data as PaginatedResponseDataWithLinks<T, DataField>)._links) return true;
@@ -37,9 +37,9 @@ const isCursorPaginatedResponseData = <T, DataField extends PaginatedResponseDat
     return offsetPaginatedResponseFields.some(prop => dataProperties.includes(prop));
 };
 
-const parseCursorPaginatedResponseData = <T, DataField extends PaginatedResponseDataField>(
+const parseCursorPaginatedResponseData = <T, DataField extends string>(
     data: PaginatedResponseData<T, DataField>,
-    dataField: DataField = 'data' as DataField
+    dataField: PaginatedResponseDataField<DataField> = 'data' as PaginatedResponseDataField<DataField>
 ) => {
     const records = data[dataField] as T[];
 
@@ -56,9 +56,9 @@ const parseCursorPaginatedResponseData = <T, DataField extends PaginatedResponse
     throw new TypeError('MALFORMED_PAGINATED_DATA');
 };
 
-const parseOffsetPaginatedResponseData = <T, DataField extends PaginatedResponseDataField>(
+const parseOffsetPaginatedResponseData = <T, DataField extends string>(
     data: PaginatedResponseData<T, DataField>,
-    dataField: DataField = 'data' as DataField
+    dataField: PaginatedResponseDataField<DataField> = 'data' as PaginatedResponseDataField<DataField>
 ) => {
     const records = data[dataField] as T[];
 
@@ -94,9 +94,9 @@ const createAwaitable = <T>() => {
     };
 };
 
-const usePaginatedRecords = <T, DataField extends PaginatedResponseDataField, FilterValue extends string, FilterParam extends string>({
+const usePaginatedRecords = <T, DataField extends string, FilterValue extends string, FilterParam extends string>({
     data,
-    dataField = 'data' as DataField,
+    dataField = 'data' as PaginatedResponseDataField<DataField>,
     filterParams = [],
     initialFiltersSameAsDefault = true,
     initializeAndDerivePageLimit,

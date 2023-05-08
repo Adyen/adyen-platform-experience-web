@@ -45,10 +45,10 @@ export type RequestPageCallback<Pagination extends PaginationType> = (
     params: RequestPageCallbackParams<Pagination>
 ) => MaybePromise<RequestPageCallbackReturnValue<Pagination>>;
 
-export type PaginatedRecordsInitOptions<T, DataField extends PaginatedResponseDataField, FilterValue, FilterParam extends string> =
+export type PaginatedRecordsInitOptions<T, DataField extends string, FilterValue, FilterParam extends string> =
     WithPaginationLimit<{
         data: PaginatedResponseData<T, DataField>;
-        dataField: DataField;
+        dataField: PaginatedResponseDataField<DataField>;
         filterParams?: FilterParam[];
         initialFiltersSameAsDefault?: boolean;
         onPageRequest: (
@@ -58,7 +58,7 @@ export type PaginatedRecordsInitOptions<T, DataField extends PaginatedResponseDa
         ) => void;
     }>;
 
-export type BasePaginatedRecordsInitOptions<T, DataField extends PaginatedResponseDataField, FilterValue, FilterParam extends string> =
+export type BasePaginatedRecordsInitOptions<T, DataField extends string, FilterValue, FilterParam extends string> =
     PaginatedRecordsInitOptions<T, DataField, FilterValue, FilterParam> & {
         pagination: PaginationType;
         initializeAndDerivePageLimit?: (
