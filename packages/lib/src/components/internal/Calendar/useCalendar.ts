@@ -12,7 +12,7 @@ const useCalendar = ({ calendarMonths = 1, firstWeekDay = 0, startDate = Date.no
         return () => calendar(calendarMonths, firstWeekDay, monthTimestamp, monthOffset);
     })(), [calendarMonths, firstWeekDay, monthOffset, monthTimestamp]);
 
-    const goto = useCallback((offset = 0) => {
+    const offset = useCallback((offset = 0) => {
         setMonthOffset(monthOffset => monthOffset + offset * calendarMonths);
     }, [calendarMonths]);
 
@@ -20,7 +20,7 @@ const useCalendar = ({ calendarMonths = 1, firstWeekDay = 0, startDate = Date.no
         setDateTimestamp(() => getDateStart(startDate, true));
     }, [startDate]);
 
-    return { calendar, goto } as const;
+    return { calendar, offset } as const;
 };
 
 export default useCalendar;

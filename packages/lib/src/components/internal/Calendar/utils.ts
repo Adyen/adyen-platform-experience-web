@@ -1,6 +1,7 @@
 import {
     CalendarDate,
     CalendarDay,
+    CalendarFirstWeekDay,
     CalendarMonth,
     CalendarMonthEndDate,
     CalendarSlidingWindow,
@@ -56,7 +57,7 @@ export const createCalendar = () => {
 
     return (
         calendarMonths: CalendarSlidingWindowMonths = 1,
-        firstWeekDay: CalendarDay = 0,
+        firstWeekDay: CalendarFirstWeekDay = 0,
         timestamp = Date.now(),
         offset = 0
     ) => {
@@ -67,15 +68,14 @@ export const createCalendar = () => {
         let calendarEndIndex = MONTH_DAYS;
         let calendarTimestamp = timestamp;
 
-        for (let i = 0; i < calendarMonths; i++) {
+        for (let i = 0, prevMonthEndDateIndex = 0; i < calendarMonths; i++) {
             const thisMonthOffset = offset - windowMonthOffset + i;
             const startDayOffset = getMonthStartDayOffset(firstWeekDay, timestamp, thisMonthOffset);
             const monthEndDate = getMonthEndDate(timestamp, thisMonthOffset);
-
-            const monthStartIndex = ((offsets[i - 1]?.[2] as number) - startDayOffset) || 0;
-            const monthStartDateIndex = monthStartIndex + startDayOffset;
-            const monthEndDateIndex = monthStartDateIndex + monthEndDate;
+            const monthStartIndex = prevMonthEndDateIndex && prevMonthEndDateIndex - startDayOffset;
             const monthEndIndex = calendarEndIndex = monthStartIndex + MONTH_DAYS;
+
+            prevMonthEndDateIndex = monthStartIndex + startDayOffset + monthEndDate;
 
             if (i === 0) {
                 if (startDayOffset > 0) {
@@ -85,7 +85,7 @@ export const createCalendar = () => {
                 } else calendarTimestamp = getMonthStart(timestamp, thisMonthOffset);
             }
 
-            offsets[i] = [ monthStartIndex, monthStartDateIndex, monthEndDateIndex, monthEndIndex ];
+            offsets[i] = [ monthStartIndex, startDayOffset, prevMonthEndDateIndex - monthStartIndex, monthEndIndex ];
         }
 
         for (let i = 0; i < calendarEndIndex; i++) {
