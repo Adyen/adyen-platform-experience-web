@@ -4,97 +4,56 @@ import {
     CalendarFirstWeekDay,
     CalendarMonth,
     CalendarMonthEndDate,
-    CalendarSlidingWindow,
-    CalendarSlidingWindowMonths
+    CalendarSlidingWindowMonth
 } from './types';
 
 export const DAY_MS = 86400000;
 export const MONTH_DAYS = 42;
 
-const assertCalendarOffset = (offset: number) => {
-    if (!Number.isSafeInteger(offset)) throw new TypeError('INVALID_OFFSET');
+const WEEKEND_DAYS_SEED = Object.freeze([0, 1] as const);
+
+export const assertSafeInteger = (value: any) => {
+    if (!Number.isSafeInteger(value)) throw new TypeError('EXPECTS_SAFE_INTEGER');
 };
 
-export const getDateStart = (date: CalendarDate = Date.now(), useTodayStartAsFallback = false) => {
-    let targetDate: Date;
+export const mod = (num: number, modulo: number) => {
+    assertSafeInteger(num);
+    assertSafeInteger(modulo);
+    const mod = num % modulo;
+    return mod > 0 ? mod : (mod + modulo) % modulo;
+};
+
+export const getNoonTimestamp = (date: CalendarDate = Date.now(), useNoonTodayAsFallback = false) => {
+    let timestamp: Date;
     try {
-        targetDate = new Date(date);
+        timestamp = new Date(date);
     } catch (ex) {
-        if (useTodayStartAsFallback) targetDate = new Date();
+        if (useNoonTodayAsFallback) timestamp = new Date();
         else throw ex;
     }
-    return targetDate.setHours(12, 0, 0, 0);
+    return timestamp.setHours(12, 0, 0, 0);
 };
 
-export const getMonthStart = (date: CalendarDate = Date.now(), offset = 0) => {
-    assertCalendarOffset(offset);
-    const dateStart = new Date(getDateStart(date)); // @ts-ignore
-    return dateStart.setMonth(dateStart.getMonth() + offset, 1);
+export const getMonthTimestamp = (date: CalendarDate = Date.now(), offset = 0) => {
+    assertSafeInteger(offset);
+    const noonTimestamp = new Date(getNoonTimestamp(date)); // @ts-ignore
+    return noonTimestamp.setMonth(noonTimestamp.getMonth() + offset, 1);
 };
 
 export const getMonthEndDate = (date: CalendarDate = Date.now(), offset = 0) => (
-    new Date(getMonthStart(date, offset + 1) - DAY_MS).getDate() as CalendarMonthEndDate
+    new Date(getMonthTimestamp(date, offset + 1) - DAY_MS).getDate() as CalendarMonthEndDate
 );
 
-export const getMonthStartDayOffset = (firstWeekDay: CalendarDay = 0, date: CalendarDate = Date.now(), offset = 0) => {
-    const monthStartDay = new Date(getMonthStart(date, offset)).getDay() as CalendarDay;
-    return (monthStartDay - firstWeekDay + 7) % 7 as CalendarDay;
+export const getMonthFirstDayOffset = (firstWeekDay: CalendarFirstWeekDay = 0, date: CalendarDate = Date.now(), offset = 0) => {
+    const monthFirstDay = new Date(getMonthTimestamp(date, offset)).getDay() as CalendarDay;
+    return mod(monthFirstDay - firstWeekDay + 7, 7) as CalendarDay;
 };
 
-export const getCalendarSlidingWindow = (months: CalendarSlidingWindowMonths = 1, date: CalendarDate = Date.now(), offset = 0) => {
-    const dateMonth = new Date(getMonthStart(date, offset)).getMonth() as CalendarMonth;
+export const getCalendarSlidingWindow = (months: CalendarSlidingWindowMonth = 1, date: CalendarDate = Date.now(), offset = 0) => {
+    const dateMonth = new Date(getMonthTimestamp(date, offset)).getMonth() as CalendarMonth;
     return [Math.floor(dateMonth / months) * months, dateMonth % months] as const;
 };
 
-export const createCalendar = () => {
-    let immutableDates: Readonly<CalendarSlidingWindow['dates']> = Object.freeze([]);
-    let immutableOffsets: Readonly<CalendarSlidingWindow['offsets']> = Object.freeze([]);
-
-    const $window = Object.create(null, {
-        dates: { get: () => immutableDates },
-        offsets: { get: () => immutableOffsets }
-    }) as CalendarSlidingWindow;
-
-    return (
-        calendarMonths: CalendarSlidingWindowMonths = 1,
-        firstWeekDay: CalendarFirstWeekDay = 0,
-        timestamp = Date.now(),
-        offset = 0
-    ) => {
-        const dates: CalendarSlidingWindow['dates'] = [];
-        const offsets: CalendarSlidingWindow['offsets'] = [];
-        const [, windowMonthOffset ] = getCalendarSlidingWindow(calendarMonths, timestamp, offset);
-
-        let calendarEndIndex = MONTH_DAYS;
-        let calendarTimestamp = timestamp;
-
-        for (let i = 0, prevMonthEndDateIndex = 0; i < calendarMonths; i++) {
-            const thisMonthOffset = offset - windowMonthOffset + i;
-            const startDayOffset = getMonthStartDayOffset(firstWeekDay, timestamp, thisMonthOffset);
-            const monthEndDate = getMonthEndDate(timestamp, thisMonthOffset);
-            const monthStartIndex = prevMonthEndDateIndex && prevMonthEndDateIndex - startDayOffset;
-            const monthEndIndex = calendarEndIndex = monthStartIndex + MONTH_DAYS;
-
-            prevMonthEndDateIndex = monthStartIndex + startDayOffset + monthEndDate;
-
-            if (i === 0) {
-                if (startDayOffset > 0) {
-                    const prevMonthStart = getMonthStart(timestamp, thisMonthOffset - 1);
-                    const prevMonthEndDate = getMonthEndDate(timestamp, thisMonthOffset - 1);
-                    calendarTimestamp = prevMonthStart + (prevMonthEndDate - startDayOffset) * DAY_MS;
-                } else calendarTimestamp = getMonthStart(timestamp, thisMonthOffset);
-            }
-
-            offsets[i] = [ monthStartIndex, startDayOffset, prevMonthEndDateIndex - monthStartIndex, monthEndIndex ];
-        }
-
-        for (let i = 0; i < calendarEndIndex; i++) {
-            dates[i] = new Date(calendarTimestamp + i * DAY_MS).toISOString().replace(/T[\w\W]*$/, '');
-        }
-
-        immutableDates = Object.freeze(dates);
-        immutableOffsets = Object.freeze(offsets);
-
-        return $window;
-    };
-};
+export const getWeekendDays = (firstWeekDay: CalendarFirstWeekDay = 0) => Object.freeze(
+    WEEKEND_DAYS_SEED.map(seed => mod(6 - firstWeekDay + seed, 7)) as [CalendarDay, CalendarDay]
+);

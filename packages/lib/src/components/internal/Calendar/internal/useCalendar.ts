@@ -1,11 +1,12 @@
 import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
-import { createCalendar, getDateStart, getMonthStart } from './utils';
-import { UseCalendarConfig } from './types';
+import { getMonthTimestamp, getNoonTimestamp } from '../utils';
+import { UseCalendarConfig } from '../types';
+import createCalendar from './createCalendar';
 
 const useCalendar = ({ calendarMonths = 1, firstWeekDay = 0, startDate = Date.now() }: UseCalendarConfig = {}) => {
     const [ monthOffset, setMonthOffset ] = useState(0);
-    const [ dateTimestamp, setDateTimestamp ] = useState(() => getDateStart(startDate, true));
-    const monthTimestamp = useMemo(() => getMonthStart(dateTimestamp), [dateTimestamp]);
+    const [ dateTimestamp, setDateTimestamp ] = useState(() => getNoonTimestamp(startDate, true));
+    const monthTimestamp = useMemo(() => getMonthTimestamp(dateTimestamp), [dateTimestamp]);
 
     const calendar = useMemo((() => {
         const calendar = createCalendar();
@@ -17,7 +18,7 @@ const useCalendar = ({ calendarMonths = 1, firstWeekDay = 0, startDate = Date.no
     }, [calendarMonths]);
 
     useEffect(() => {
-        setDateTimestamp(() => getDateStart(startDate, true));
+        setDateTimestamp(() => getNoonTimestamp(startDate, true));
     }, [startDate]);
 
     return { calendar, offset } as const;
