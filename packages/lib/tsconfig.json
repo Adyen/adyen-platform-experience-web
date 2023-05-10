@@ -14,11 +14,12 @@
 
         "strict": true,
         "noUncheckedIndexedAccess": true,
-        
+
         "stripInternal": true,
         "importHelpers": true,
         "sourceMap": true,
         "baseUrl": "./",
+        "lib": ["ESNext", "DOM", "DOM.Iterable"],
         "paths": {
             "react": ["./node_modules/preact/compat/"]
         }
