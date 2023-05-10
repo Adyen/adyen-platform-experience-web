@@ -2,30 +2,14 @@ import { useRef, useState } from 'preact/hooks';
 import './Tabs.scss';
 import classNames from 'classnames';
 import useCoreContext from '../../../core/Context/useCoreContext';
-import { Children } from 'preact/compat';
-import { TabComponentProps, TabProps, TabsComponentChildren, TabsComponentOneChild } from './types';
-import { TranslationKey } from '../../../language/types';
+import { TabProps, TabComponentProps } from './types';
 
-export const Tab: <T extends TranslationKey>(props: TabProps<T>) => null = () => null;
+export const Tab: (props: TabProps) => null = () => null;
 
-function Tabs<T extends TabComponentProps | TabComponentProps[]>(
-    props: TabsComponentOneChild<T extends TabComponentProps ? T : never> | TabsComponentChildren<T extends TabComponentProps[] ? T : never>
-) {
-    const isArrayOfTabs = (child: any): child is TabComponentProps[] => Children.count(child) > 1;
-    const tabsArray = isArrayOfTabs(props.children) ? props.children : [props.children];
-
-    Children.forEach(props.children, child => {
-        if (child.type !== Tab) {
-            throw new Error('Tabs component only accepts Tab components as children.');
-        }
-    });
-
-    const availableTabs = tabsArray.filter(tab => !tab.props.disabled);
+function Tabs<T extends TabProps[]>(props: TabComponentProps<T>) {
+    const availableTabs = props.tabs.filter(tab => !tab.disabled);
     const { i18n } = useCoreContext();
-    const defaultTab =
-        !props.defaultActiveTab || !isArrayOfTabs(props.children)
-            ? 0
-            : props.children.findIndex(child => child.props.label === props.defaultActiveTab) || 0;
+    const defaultTab = !props.defaultActiveTab ? 0 : props.tabs.findIndex(tab => tab.label === props.defaultActiveTab);
     const [selectedIndex, setSelectedIndex] = useState(defaultTab === -1 ? 0 : defaultTab);
     const tabRefs = useRef<Record<number, HTMLButtonElement | null>>({});
     const setIndex = (index: number) => {
@@ -64,7 +48,7 @@ function Tabs<T extends TabComponentProps | TabComponentProps[]>(
                         onClick={() => setSelectedIndex(index)}
                         onFocus={() => setSelectedIndex(index)}
                     >
-                        {i18n.get(tab.props.label)}
+                        {i18n.get(tab.label)}
                     </button>
                 ))}
             </div>
@@ -78,7 +62,7 @@ function Tabs<T extends TabComponentProps | TabComponentProps[]>(
                         role="tabpanel"
                         aria-labelledby={`tab-id-${index}`}
                     >
-                        {tab.props.content}
+                        {tab.content}
                     </section>
                 ))}
             </div>
