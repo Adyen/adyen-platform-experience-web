@@ -1,5 +1,3 @@
-@import '../../../style/index';
-
 .structured-list {
     &__grid {
         display: flex;
@@ -43,27 +41,27 @@
     }
 
     &__item {
-        font-weight: $font-weight-regular;
-        line-height: $spacing-large;
+        font-weight: var(--adyen-fp-font-weight-regular);
+        line-height: var(--adyen-fp-spacing-large);
 
         + #{&} {
-            margin-top: $spacing-small;
+            margin-top: var(--adyen-fp-spacing-small);
         }
     }
 
     &__item--has-highlight:hover {
-        background-color: $color-gray-lighter;
-        border-radius: $border-radius-medium;
+        background-color: var(--adyen-fp-color-gray-lighter);
+        border-radius: var(--adyen-fp-border-radius-medium);
         transition: background-color 0.2s cubic-bezier(0.785, 0.135, 0.15, 0.86);
     }
 
     &__label {
-        color: $color-gray-darker;
+        color: var(--adyen-fp-color-gray-darker);
         overflow-wrap: anywhere;
     }
 
     &__content {
-        color: $color-black;
+        color: var(--adyen-fp-color-black);
         overflow-wrap: anywhere;
     }
 }
