@@ -5,22 +5,38 @@ export type CalendarMonth = CalendarDay | 7 | 8 | 9 | 10 | 11;
 export type CalendarSlidingWindowMonth = 1 | 2 | 3 | 4 | 6 | 12;
 export type CalendarMonthEndDate = 28 | 29 | 30 | 31;
 
-export type CalendarMonthView = Iterable<string> & {
-    [index: number]: string;
-    isFirstWeekDayAt: (index: number) => boolean;
-    isWeekendAt: (index: number) => boolean;
-    isWithinMonthAt: (index: number) => boolean;
+export type CalendarIterable<IteratorValue = any> = Iterable<IteratorValue> & {
+    [index: number]: IteratorValue;
+    map: CalendarMapIteratorFactory<IteratorValue>;
+    size: number;
+}
+
+export type CalendarMapIteratorCallback<IteratorValue = any, MappedValue = any> = (
+    item: CalendarIterable<IteratorValue>[number],
+    index: number,
+    month: CalendarIterable<IteratorValue>
+) => MappedValue;
+
+export type CalendarMapIteratorFactory<IteratorValue = any, MappedValue = any> = (
+    this: CalendarIterable<IteratorValue>,
+    callback?: CalendarMapIteratorCallback<IteratorValue, MappedValue>,
+    thisArg?: any
+) => Generator<MappedValue>;
+
+export type CalendarMonthView = CalendarIterable<string> & {
+    // isFirstWeekDayAt: (index: number) => boolean;
+    // isWeekendAt: (index: number) => boolean;
+    // isWithinMonthAt: (index: number) => boolean;
     month: number;
     year: number;
 };
-
-export interface CalendarSlidingWindow {
-    dates: string[];
-    offsets: Readonly<[number, number, number]>[];
-}
 
 export interface UseCalendarConfig {
     calendarMonths?: CalendarSlidingWindowMonth;
     firstWeekDay?: CalendarFirstWeekDay;
     startDate?: CalendarDate;
+}
+
+export interface CalendarProps extends UseCalendarConfig {
+    renderMonth?: CalendarMapIteratorCallback<CalendarMonthView>;
 }

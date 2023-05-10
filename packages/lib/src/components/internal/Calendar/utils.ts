@@ -9,8 +9,7 @@ import {
 
 export const DAY_MS = 86400000;
 export const MONTH_DAYS = 42;
-
-const WEEKEND_DAYS_SEED = Object.freeze([0, 1] as const);
+export const WEEKEND_DAYS_SEED = Object.freeze([0, 1] as const);
 
 export const assertSafeInteger = (value: any) => {
     if (!Number.isSafeInteger(value)) throw new TypeError('EXPECTS_SAFE_INTEGER');
