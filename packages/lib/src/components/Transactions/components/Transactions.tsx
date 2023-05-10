@@ -7,7 +7,6 @@ import TransactionList from './TransactionList';
 import { Transaction, TransactionFilterParam, TransactionsPageProps } from '../types';
 import { DateRangeFilterParam } from '../../internal/FilterBar/filters/DateFilter/types';
 import { useCursorPaginatedRecords } from '../../internal/Pagination/hooks';
-import './Transactions.scss';
 
 const DEFAULT_PAGINATED_TRANSACTIONS_LIMIT = 20;
 

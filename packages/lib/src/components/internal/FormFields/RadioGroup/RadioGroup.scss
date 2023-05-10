@@ -1,5 +1,3 @@
-@import '../../../../style/index';
-
 .adyen-fp-radio_group + .adyen-fp-input__inline-validation {
     display: none;
 }
@@ -16,7 +14,7 @@
     display: block;
     color: inherit;
 
-    font-size: $font-size-small;
+    font-size: var(--adyen-fp-font-size-small);
     font-weight: normal;
     line-height: 16px;
     overflow: visible;
@@ -29,8 +27,8 @@
 .adyen-fp-radio_group__label:before {
     content: '';
     position: absolute;
-    background-color: $color-white;
-    border: 1px solid $color-gray-dark;
+    background-color: var(--adyen-fp-color-white);
+    border: 1px solid var(--adyen-fp-color-gray-dark);
     border-radius: 50%;
     height: 16px;
     width: 16px;
@@ -41,7 +39,7 @@
 
 .adyen-fp-radio_group__label:hover:before {
     border-color: #99a3ad;
-    box-shadow: 0 0 0 2px $color-gray;
+    box-shadow: 0 0 0 2px var(--adyen-fp-color-gray);
     cursor: pointer;
 }
 
@@ -54,7 +52,7 @@
     top: 5px;
     height: 6px;
     width: 6px;
-    background-color: $color-white;
+    background-color: var(--adyen-fp-color-white);
     border-radius: 50%;
     transform: scale(0);
     transition: transform 0.2s ease-out;
@@ -62,13 +60,13 @@
 }
 
 .adyen-fp-radio_group__label:hover {
-    border-color: $color-primary;
+    border-color: var(--adyen-fp-color-primary);
     cursor: pointer;
 }
 
 .adyen-fp-radio_group__input:checked + .adyen-fp-radio_group__label:before,
 .adyen-fp-radio_group__label--selected {
-    background-color: $color-primary;
+    background-color: var(--adyen-fp-color-primary);
     border: 0;
     transition: all 0.2s ease-out;
 }
@@ -78,7 +76,7 @@
 }
 
 .adyen-fp-radio_group__input:focus + .adyen-fp-radio_group__label:before {
-    border-color: $color-primary;
+    border-color: var(--adyen-fp-color-primary);
     box-shadow: 0 0 0 2px rgba(0, 102, 255, 0.4);
 }
 
@@ -89,5 +87,5 @@
 }
 
 .adyen-fp-radio_group__label.adyen-fp-radio_group__label--invalid:before {
-    border: 1px solid $color-alert;
+    border: 1px solid var(--adyen-fp-color-alert);
 }

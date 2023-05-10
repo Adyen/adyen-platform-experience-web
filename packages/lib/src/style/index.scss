@@ -1,4 +1,12 @@
-@import './colors';
-@import './border-radius';
-@import './font';
-@import './spacings';
+@use './colors';
+@use './border-radius';
+@use './font';
+@use './spacings';
+
+:root {
+    @include colors.colors;
+    @include border-radius.border-radius;
+    @include font.font-sizes;
+    @include font.font-weight;
+    @include spacings.spacings;
+}

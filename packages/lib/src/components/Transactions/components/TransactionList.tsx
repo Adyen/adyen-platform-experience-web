@@ -6,7 +6,6 @@ import DataGrid from '../../internal/DataGrid';
 import Pagination from '../../internal/Pagination';
 import { getLabel } from './utils';
 import Button from 'src/components/internal/Button';
-import './Transactions.scss';
 import { Transaction, TransactionListProps } from '../types';
 
 function TransactionList({

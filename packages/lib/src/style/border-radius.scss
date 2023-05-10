@@ -1,4 +1,6 @@
-$border-radius-small: 3px;
-$border-radius-medium: 6px;
-$border-radius-large: 12px;
-$border-radius-xlarge: 24px;
+@mixin border-radius {
+    --adyen-fp-border-radius-small: 3px;
+    --adyen-fp-border-radius-medium: 6px;
+    --adyen-fp-border-radius-large: 12px;
+    --adyen-fp-border-radius-xlarge: 24px;
+}
