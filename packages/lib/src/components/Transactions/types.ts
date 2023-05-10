@@ -1,6 +1,13 @@
 import { CurrencyCode } from '../../utils/constants/currency-codes';
+import { PaginatedResponseDataWithLinks, PaginationProps } from '../internal/Pagination/types';
 import UIElement from '../UIElement';
-import { PageChangeOptions } from '../internal/Pagination/type';
+
+export const enum TransactionFilterParam {
+    ACCOUNT_HOLDER = 'accountHolderId',
+    BALANCE_ACCOUNT = 'balanceAccountId',
+    CREATED_SINCE = 'createdSince',
+    CREATED_UNTIL = 'createdUntil',
+}
 
 export interface Transaction {
     accountHolderId: string;
@@ -31,29 +38,19 @@ export interface Transaction {
 }
 type OnSelection = (selection: { id: string }) => void;
 export interface TransactionsPageProps {
-    transactions: {
-        data: Transaction[];
-        _links?: {
-            [PageChangeOptions.NEXT]?: { href: string };
-            [PageChangeOptions.PREV]?: { href: string };
-        };
-    };
+    transactions: PaginatedResponseDataWithLinks<Transaction, 'data'>;
     elementRef: UIElement | null;
-    onFilterChange?: (filters: { filters: { [p: string]: string } }, ref: UIElement | null) => void;
+    onFilterChange?: (filters: { [p: string]: string | undefined }, ref: UIElement | null) => void;
     onTransactionSelected?: OnSelection;
     onBalanceAccountSelected?: OnSelection;
     onAccountSelected?: OnSelection;
+    onUpdateTransactions?: (pageRequestParams: any, ref: UIElement | null) => void;
 }
-export interface TransactionListProps {
-    transactions: {
-        data: Transaction[];
-    };
+export interface TransactionListProps extends PaginationProps {
+    transactions: Transaction[];
     onTransactionSelected?: OnSelection;
     onBalanceAccountSelected?: OnSelection;
     onAccountSelected?: OnSelection;
     showPagination: boolean;
-    page: number;
-    hasNextPage: boolean;
-    onPageChange: (dir: PageChangeOptions) => void;
     loading: boolean;
 }

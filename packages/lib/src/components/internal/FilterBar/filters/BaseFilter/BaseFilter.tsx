@@ -21,7 +21,7 @@ const renderFallback = (() => {
             const value = (e.target as HTMLInputElement).value.trim();
             setCurrentValue(value);
             onValueUpdated(value);
-        }, [onValueUpdated, setCurrentValue]);
+        }, [onValueUpdated]);
 
         useEffect(() => {
             if (editAction === EditAction.CLEAR) {
@@ -31,9 +31,9 @@ const renderFallback = (() => {
             }
 
             if (editAction === EditAction.APPLY) {
-                onChange({ [name]: currentValue ?? '' });
+                onChange(currentValue ?? '');
             }
-        }, [currentValue, editAction, name, onChange, onValueUpdated, setCurrentValue]);
+        }, [currentValue, editAction, onChange, onValueUpdated]);
 
         return <Field label={props.label} classNameModifiers={props.classNameModifiers ?? []} name={name}>
             <InputText name={name} value={currentValue} onInput={handleInput} />
@@ -55,30 +55,35 @@ export default function BaseFilter<T extends BaseFilterProps = BaseFilterProps>(
     const isValueEmpty = useMemo(() => props.isValueEmpty ?? isValueEmptyFallback, [props.isValueEmpty]);
     const renderModalBody = useMemo(() => render ?? renderFallback<T>, [render]);
 
-    const onValueUpdated = useCallback((currentValue: string) => {
+    const onValueUpdated = useCallback((currentValue?: string) => {
         const hasEmptyValue = isValueEmpty(currentValue);
         updateHasEmptyValue(hasEmptyValue);
         updateValueChanged(hasInitialValue ? currentValue !== props.value : !hasEmptyValue);
-    }, [props.value, isValueEmpty, updateValueChanged, updateHasEmptyValue, hasInitialValue]);
+    }, [props.value, hasInitialValue, isValueEmpty]);
 
-    const updateEditMode = useCallback((mode: boolean) => {
-        if (mode === editMode) return;
+    const applyFilter = useCallback(() => setEditAction(EditAction.APPLY), []);
+    const clearFilter = useCallback(() => setEditAction(EditAction.CLEAR), []);
 
-        if (mode) {
-            setEditAction(EditAction.NONE);
-            updateValueChanged(false);
-            updateHasEmptyValue(false);
-            updateHasInitialValue(false);
-        }
+    const [ closeEditModal, handleClick ] = useMemo(() => {
+        const updateEditMode = (mode: boolean) => () => {
+            if (mode === editMode) return;
 
-        _updateEditMode(mode);
-        updateEditModalMounting(mode);
-    }, [editMode, setEditAction, _updateEditMode, updateEditModalMounting, updateValueChanged, updateHasEmptyValue, updateHasInitialValue]);
+            if (mode) {
+                setEditAction(EditAction.NONE);
+                updateValueChanged(false);
+                updateHasEmptyValue(false);
+                updateHasInitialValue(false);
+            }
 
-    const applyFilter = useCallback(() => setEditAction(EditAction.APPLY), [setEditAction]);
-    const clearFilter = useCallback(() => setEditAction(EditAction.CLEAR), [setEditAction]);
-    const closeEditModal = useCallback(() => updateEditMode(false), [updateEditMode]);
-    const handleClick = useCallback(() => updateEditMode(true), [updateEditMode]);
+            _updateEditMode(mode);
+            updateEditModalMounting(mode);
+        };
+
+        return [
+            updateEditMode(false),
+            updateEditMode(true),
+        ];
+    }, [editMode]);
 
     useEffect(() => {
         if (editModalMounting) {
@@ -87,12 +92,12 @@ export default function BaseFilter<T extends BaseFilterProps = BaseFilterProps>(
             updateHasEmptyValue(hasEmptyValue);
             updateHasInitialValue(!hasEmptyValue);
         }
-    }, [props.value, editModalMounting, isValueEmpty, updateEditModalMounting, updateHasEmptyValue, updateHasInitialValue]);
+    }, [props.value, editModalMounting, isValueEmpty]);
 
     useEffect(() => {
         if (editAction === EditAction.APPLY) closeEditModal();
         if (editAction !== EditAction.NONE) setEditAction(EditAction.NONE);
-    }, [closeEditModal, editAction, setEditAction]);
+    }, [closeEditModal, editAction]);
 
     return (
         <div className={`adyen-fp-filter adyen-fp-filter--${props.type}`}>

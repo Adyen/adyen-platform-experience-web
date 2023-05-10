@@ -1,103 +1,127 @@
-import { useEffect, useMemo, useState } from 'preact/hooks';
+import { useCallback, useEffect, useMemo } from 'preact/hooks';
 import useCoreContext from 'src/core/Context/useCoreContext';
 import FilterBar from '../../internal/FilterBar';
-import Alert from '../../internal/Alert';
 import TextFilter from '../../internal/FilterBar/filters/TextFilter';
 import DateFilter from '../../internal/FilterBar/filters/DateFilter';
-import { getCursor, getRequestParams } from './utils';
 import TransactionList from './TransactionList';
-import { TransactionsPageProps } from '../types';
-import { PageChangeOptions } from '../../internal/Pagination/type';
+import { Transaction, TransactionFilterParam, TransactionsPageProps } from '../types';
+import { DateRangeFilterParam } from '../../internal/FilterBar/filters/DateFilter/types';
+import { useCursorPaginatedRecords } from '../../internal/Pagination/hooks';
 
-function Transactions(props: TransactionsPageProps) {
+const DEFAULT_PAGINATED_TRANSACTIONS_LIMIT = 20;
+
+const transactionsFilterParams = [
+    TransactionFilterParam.ACCOUNT_HOLDER,
+    TransactionFilterParam.BALANCE_ACCOUNT,
+    TransactionFilterParam.CREATED_SINCE,
+    TransactionFilterParam.CREATED_UNTIL
+];
+
+function Transactions({
+    transactions,
+    elementRef,
+    onAccountSelected,
+    onBalanceAccountSelected,
+    onFilterChange,
+    onTransactionSelected,
+    onUpdateTransactions
+}: TransactionsPageProps) {
     const { i18n } = useCoreContext();
-    const [page, setPage] = useState(1);
-    const [loading, setLoading] = useState(false);
-    const defaultFilters = useMemo(() => getRequestParams(props.transactions), [props.transactions]);
-    const [filters, setFilters] = useState(defaultFilters);
-    const hasNextPage = useMemo(() => {
-        return !!props.transactions?._links?.next;
-    }, [props.transactions]);
 
-    const handlePageChange = (dir: PageChangeOptions): void => {
-        setLoading(true);
-        const newPage = dir === 'prev' ? page - 1 : page + 1;
-        setPage(newPage);
-        const cursor = getCursor(dir, props.transactions);
-        const newFilters = { ...filters, cursor: cursor ?? '' };
-        setFilters(newFilters);
-        if (cursor) props.onFilterChange?.({ filters: newFilters }, props.elementRef);
-    };
+    const onPageRequest = useCallback((pageRequestParams: any) => {
+        onUpdateTransactions?.(pageRequestParams, elementRef);
+    }, [onUpdateTransactions, elementRef]);
 
-    const handleFilterChange = (newFilter: { [p: string]: string }): void => {
-        setLoading(true);
-        const newFilters = { ...filters, ...newFilter };
-        setFilters(newFilters);
-        props.onFilterChange?.({ filters: newFilters }, props.elementRef);
-        setPage(1);
-    };
-
-    const handleFilterReset = () => {
-        if (filters !== defaultFilters) {
-            const emptyFilters = {};
-            setFilters(emptyFilters);
-            props.onFilterChange?.({ filters: emptyFilters }, props.elementRef);
-        }
-    };
-
-    useEffect(() => {
-        setLoading(false);
-    }, [props.transactions]);
-
-    return (
-        <div className="adyen-fp-transactions">
-            <div className="adyen-fp-title">{i18n.get('transactions')}</div>
-            {!!props.onFilterChange && (
-                <FilterBar filters={filters} resetFilters={handleFilterReset}>
-                    <TextFilter
-                        label={i18n.get('balanceAccount')}
-                        name={'balanceAccountId'}
-                        classNameModifiers={['balanceAccount']}
-                        value={filters?.balanceAccountId}
-                        onChange={handleFilterChange}
-                    />
-                    <TextFilter
-                        label={i18n.get('account')}
-                        name={'accountHolderId'}
-                        classNameModifiers={['account']}
-                        value={filters?.accountHolderId}
-                        onChange={handleFilterChange}
-                    />
-                    <DateFilter
-                        label={i18n.get('dateRange')}
-                        name={'createdSince'}
-                        classNameModifiers={['createdSince']}
-                        from={filters?.createdSince ?? defaultFilters?.createdSince}
-                        to={filters?.createdUntil ?? defaultFilters?.createdUntil}
-                        onChange={handleFilterChange}
-                    />
-                </FilterBar>
-            )}
-
-            {props.transactions?.data?.length ? (
-                <TransactionList
-                    loading={loading}
-                    hasNextPage={hasNextPage}
-                    transactions={props.transactions}
-                    page={page}
-                    onPageChange={handlePageChange}
-                    onAccountSelected={props.onAccountSelected}
-                    onBalanceAccountSelected={props.onBalanceAccountSelected}
-                    onTransactionSelected={props.onTransactionSelected}
-                    showPagination={!!props.onFilterChange}
-                />
-            ) : !filters?.balancePlatform && !filters?.balanceAccountId && !filters?.accountHolderId ? (
-                <Alert type="info">{i18n.get('toStart')}</Alert>
-            ) : (
-                <Alert icon={'cross'}>{i18n.get('unableToLoadTransactions')}</Alert>
-            )}
-        </div>
+    const {
+        canResetFilters,
+        fetching,
+        filters,
+        records,
+        resetFilters,
+        updateFilters,
+        ...paginationProps
+    } = useCursorPaginatedRecords<Transaction, 'data', string, TransactionFilterParam>(
+        useMemo(() => ({
+            data: transactions,
+            dataField: 'data',
+            filterParams: transactionsFilterParams,
+            initialFiltersSameAsDefault: false,
+            limit: DEFAULT_PAGINATED_TRANSACTIONS_LIMIT,
+            onPageRequest
+        }), [transactions])
     );
+
+    const [
+        updateAccountHolderFilter,
+        updateBalanceAccountFilter,
+        updateCreatedDateFilter
+    ] = useMemo(() => {
+        const _updateTextFilter = (param: TransactionFilterParam) => (value?: string) => {
+            switch (param) {
+                case TransactionFilterParam.ACCOUNT_HOLDER:
+                case TransactionFilterParam.BALANCE_ACCOUNT:
+                    updateFilters({ [param]: value });
+                    break;
+            }
+        };
+
+        const _updateDateFilter = (params: {[P in DateRangeFilterParam]?: string} = {}) => {
+            for (const [ param, value ] of Object.entries(params)) {
+                const filter = param === DateRangeFilterParam.FROM
+                    ? TransactionFilterParam.CREATED_SINCE
+                    : TransactionFilterParam.CREATED_UNTIL;
+
+                updateFilters({ [filter]: value });
+            }
+        };
+
+        return [
+            _updateTextFilter(TransactionFilterParam.ACCOUNT_HOLDER),
+            _updateTextFilter(TransactionFilterParam.BALANCE_ACCOUNT),
+            _updateDateFilter
+        ];
+    }, [updateFilters]);
+
+    useEffect(() => onFilterChange?.(filters, elementRef), [filters, onFilterChange]);
+
+    return <div className="adyen-fp-transactions">
+        <div className="adyen-fp-title">{i18n.get('transactions')}</div>
+
+        { !!onFilterChange &&
+            <FilterBar canResetFilters={canResetFilters} resetFilters={resetFilters}>
+                <TextFilter
+                    classNameModifiers={['balanceAccount']}
+                    label={i18n.get('balanceAccount')}
+                    name={TransactionFilterParam.BALANCE_ACCOUNT}
+                    value={filters[TransactionFilterParam.BALANCE_ACCOUNT]}
+                    onChange={updateBalanceAccountFilter}
+                />
+                <TextFilter
+                    classNameModifiers={['account']}
+                    label={i18n.get('account')}
+                    name={TransactionFilterParam.ACCOUNT_HOLDER}
+                    value={filters[TransactionFilterParam.ACCOUNT_HOLDER]}
+                    onChange={updateAccountHolderFilter}
+                />
+                <DateFilter
+                    classNameModifiers={['createdSince']}
+                    label={i18n.get('dateRange')}
+                    name={TransactionFilterParam.CREATED_SINCE}
+                    from={filters[TransactionFilterParam.CREATED_SINCE]}
+                    to={filters[TransactionFilterParam.CREATED_UNTIL]}
+                    onChange={updateCreatedDateFilter}
+                />
+            </FilterBar> }
+
+        <TransactionList
+            loading={fetching}
+            transactions={records}
+            onAccountSelected={onAccountSelected}
+            onBalanceAccountSelected={onBalanceAccountSelected}
+            onTransactionSelected={onTransactionSelected}
+            showPagination={true}
+            {...paginationProps} />
+    </div>;
 }
 
 export default Transactions;

@@ -13,9 +13,9 @@ import '../../assets/style/style.scss';
         adyenFP
             .create(transactionList, {
                 transactions,
-                onFilterChange: async (state, component) => {
-                    const transactions = await getMyTransactions(state.filters);
-                    component.update({ transactions });
+                onFilterChange: (/* filters, component */) => {
+                    // do something here with the updated filters
+                    // avoid refetching the transactions here
                 },
                 onTransactionSelected: ({ id }) => {
                     window.location.assign(`/transaction?id=${id}`);
@@ -26,6 +26,10 @@ import '../../assets/style/style.scss';
                 onAccountSelected: ({ id }) => {
                     window.location.assign(`/accountholder?id=${id}`);
                 },
+                onUpdateTransactions: async (params, component) => {
+                    const transactions = await getMyTransactions(params);
+                    component.update({ transactions });
+                }
             })
             .mount('.transactions-component-container');
     } catch (e) {
