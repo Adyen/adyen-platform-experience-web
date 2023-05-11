@@ -18,19 +18,19 @@ export const StructuredList = ({
     const valueWidth = splittedLayout[1] ?? DEFAULT_LAYOUT_VALUE;
     const formattedItems = useStructuredListItems(items);
     return (
-        <div className="structured-list">
+        <div className="adyen-fp-structured-list">
             {formattedItems.map(item => (
                 <div
                     v-for="item in itemsWithId"
                     key={item.id}
-                    className={classNames('structured-list__item structured-list__grid structured-list__item', {
-                        'structured-list__item--has-highlight': highlightable,
+                    className={classNames('adyen-fp-structured-list__item adyen-fp-structured-list__grid adyen-fp-structured-list__item', {
+                        'adyen-fp-structured-list__item--has-highlight': highlightable,
                     })}
                 >
-                    <div className={classNames('structured-list__label', `structured-list__grid--width-${labelWidth}-of-12`)}>
+                    <div className={classNames('adyen-fp-structured-list__label', `adyen-fp-structured-list__grid--width-${labelWidth}-of-12`)}>
                         {renderLabel ? renderLabel(item.label) : <div name="label">{item.label}</div>}
                     </div>
-                    <div className={classNames('structured-list__content', `structured-list__grid--width-${valueWidth}-of-12`)}>
+                    <div className={classNames('adyen-fp-structured-list__content', `adyen-fp-structured-list__grid--width-${valueWidth}-of-12`)}>
                         {renderValue ? renderValue(item.value) : <div>{item.value}</div>}
                     </div>
                 </div>
