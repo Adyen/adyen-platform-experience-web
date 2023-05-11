@@ -20,7 +20,9 @@
         "vite": "vite dev",
         "start": "vite dev",
         "dev-server": "cross-env NODE_ENV=development vite dev",
-        "format": "prettier --write 'src/**/*.{ts,js,css, scss, html}'"
+        "format": "prettier --write 'src/**/*.{ts,js,css, scss, html}'",
+        "type-check": "tsc --noEmit",
+        "types:watch": "npm run type-check -- --watch"
     },
     "devDependencies": {
         "@adyen/adyen-fp-web-server": "file:packages/server",

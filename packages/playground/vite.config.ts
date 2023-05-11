@@ -40,6 +40,7 @@ export default defineConfig(async ({ mode }) => {
                 '@adyen/adyen-fp-web': resolve(__dirname, '../lib/src'),
             },
             extensions: ['.ts', '.tsx', '.js', '.scss', '.css'],
+            preserveSymlinks: true,
         },
         css: {
             preprocessorOptions: {

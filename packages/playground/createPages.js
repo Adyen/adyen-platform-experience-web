@@ -5,7 +5,6 @@ const insertHeader = pages => {
     const links = pages.map(page => {
         const url = `/${page.route}/`;
         const isActivePage = window.location.pathname === url;
-        console.log(page.name);
         return `
             <li class="playground-nav__item ${isActivePage ? 'playground-nav__item--active' : ''}">
                 <a href="${url}" class="playground-nav__link">${page.name}</a>
