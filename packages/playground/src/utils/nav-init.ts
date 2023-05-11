@@ -1,27 +1,3 @@
-const { host, protocol } = window.location;
-
-export const httpPost = (endpoint, data) =>
-    fetch(`${protocol}//${host}/${endpoint}`, {
-        method: 'POST',
-        headers: {
-            Accept: 'application/json, text/plain, */*',
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
-    }).then(response => response.json());
-
-export const checkPaymentResult = resultCode => ['authorised', 'received', 'pending'].includes(resultCode?.toLowerCase());
-
-export const getSearchParameters = (search = window.location.search) =>
-    search
-        .replace(/\?/g, '')
-        .split('&')
-        .reduce((acc, cur) => {
-            const [key, prop = ''] = cur.split('=');
-            acc[key] = decodeURIComponent(prop);
-            return acc;
-        }, {});
-
 const insertHeader = pages => {
     const container = document.querySelector('header');
 
@@ -59,13 +35,15 @@ const addEventListeners = () => {
     document.querySelectorAll('.playground-nav__link').forEach(link => {
         link.addEventListener('click', e => {
             e.preventDefault();
-            const url = e.target.href + window.location.search;
+            const target = e.target as HTMLAnchorElement;
+            const url = target.href + window.location.search;
             window.location.assign(url);
         });
     });
 
-    document.querySelector('.playground-nav-button').addEventListener('click', e => {
-        e.target.classList.toggle('playground-nav-button--open');
+    document.querySelector('.playground-nav-button')?.addEventListener('click', e => {
+        const target = e.target as HTMLAnchorElement;
+        target.classList.toggle('playground-nav-button--open');
         document.body.classList.toggle('nav-open');
     });
 };

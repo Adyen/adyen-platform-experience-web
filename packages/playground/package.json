@@ -42,7 +42,6 @@
         "webpack-merge": "^5.8.0"
     },
     "dependencies": {
-        "@adyen/adyen-fp-web": "file:packages/lib",
-        "whatwg-fetch": "^3.6.2"
+        "@adyen/adyen-fp-web": "file:packages/lib"
     }
 }

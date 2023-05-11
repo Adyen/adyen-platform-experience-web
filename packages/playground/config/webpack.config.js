@@ -11,7 +11,8 @@ module.exports = {
             net: false,
             tls: false,
             child_process: false,
-        }
+        },
     },
+    experiments: { topLevelAwait: true },
     stats: { children: false },
 };

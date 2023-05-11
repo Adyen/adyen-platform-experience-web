@@ -8,12 +8,13 @@
 
         "moduleResolution": "node",
         "module": "esnext",
-        "target": "es5",
+        "target": "es2017",
         "jsx": "react-jsx",
         "jsxImportSource": "preact",
         "resolveJsonModule": true,
         "allowSyntheticDefaultImports": true,
         "esModuleInterop": true,
+        "strict": true,
 
         "noImplicitAny": false,
         "strictPropertyInitialization": false,
@@ -24,6 +25,7 @@
 
         "baseUrl": "./"
     },
+    "files": ["window.d.ts"],
     "include": ["src/"],
     "exclude": ["node_modules", "**/*.test.*"]
 }

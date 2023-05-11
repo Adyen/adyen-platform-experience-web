@@ -1,7 +1,8 @@
-const fetch = require('node-fetch');
-globalThis.fetch = fetch
-globalThis.Headers = fetch.Headers;
- 
+import nodeFetch, { Headers } from 'node-fetch';
+
+globalThis.fetch = nodeFetch;
+globalThis.Headers = Headers;
+
 class HttpClient {
     constructor(baseUrl, { apiKey, username, password }) {
         // Save baseUrl with stripped trailing slashes
@@ -21,24 +22,23 @@ class HttpClient {
     }
 
     async request(url, method, data) {
-        const response = await fetch(url, { 
+        const response = await fetch(url, {
             method,
             headers: this.authHeaders,
             body: JSON.stringify(data),
         });
-        const jsonData = await response.json();
-        return jsonData;
+        return await response.json();
     }
 
-    httpGet (url, data) {
+    httpGet(url, data) {
         return this.request(`${this.baseUrl}/${url}`, 'GET', data);
     }
 
-    httpPost (url, data) {
+    httpPost(url, data) {
         return this.request(`${this.baseUrl}/${url}`, 'POST', data);
     }
 
-    httpPatch (url, data) {
+    httpPatch(url, data) {
         return this.request(`${this.baseUrl}/${url}`, 'PATCH', data);
     }
 }
