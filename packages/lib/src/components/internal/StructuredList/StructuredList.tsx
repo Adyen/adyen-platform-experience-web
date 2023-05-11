@@ -6,16 +6,16 @@ export const StructuredListLayouts = ['3-9', '6-6', '4-8', '8-4', '5-7', '7-5'] 
 
 const DEFAULT_LAYOUT_LABEL = '6';
 const DEFAULT_LAYOUT_VALUE = '6';
-export const StructuredList = ({
+export default function StructuredList({
     items,
     highlightable,
     renderValue,
     renderLabel,
     layout = `${DEFAULT_LAYOUT_LABEL}-${DEFAULT_LAYOUT_VALUE}`,
-}: StructuredListProps) => {
-    const splittedLayout = layout.split('-');
-    const labelWidth = splittedLayout[0] ?? DEFAULT_LAYOUT_LABEL;
-    const valueWidth = splittedLayout[1] ?? DEFAULT_LAYOUT_VALUE;
+}: StructuredListProps) {
+    const splitLayout = layout.split('-');
+    const labelWidth = splitLayout[0] ?? DEFAULT_LAYOUT_LABEL;
+    const valueWidth = splitLayout[1] ?? DEFAULT_LAYOUT_VALUE;
     const formattedItems = useStructuredListItems(items);
     return (
         <div className="adyen-fp-structured-list">
@@ -37,4 +37,4 @@ export const StructuredList = ({
             ))}
         </div>
     );
-};
+}
