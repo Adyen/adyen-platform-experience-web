@@ -15,4 +15,6 @@ async function AdyenFP(props: CoreOptions): Promise<Core> {
     return await core.initialize();
 }
 
-export default { ...components, AdyenFP };
+const { accountHolder, balanceAccount, transactionList, transactionDetails } = components;
+
+export { AdyenFP, accountHolder, balanceAccount, transactionList, transactionDetails };

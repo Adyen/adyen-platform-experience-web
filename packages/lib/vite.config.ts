@@ -1,17 +1,42 @@
 import { defineConfig } from 'vite';
-import preact from '@preact/preset-vite';
-import { resolve } from 'node:path';
+import { preact } from '@preact/preset-vite';
+import currentVersion from './getVersion';
 
-const PLAYGROUND_PAGES_DIR = '../../playground/src/pages';
+export default defineConfig(({ mode }) => {
+    const isDev = mode === 'development';
+    const FILENAME = 'adyen-fp-web';
 
-export default defineConfig({
-    root: resolve(__dirname, PLAYGROUND_PAGES_DIR),
-    build: {
-        rollupOptions: {
-            input: {
-                main: resolve(__dirname, 'src/index.ts'),
+    return {
+        root: './',
+        plugins: [preact()],
+        build: {
+            sourcemap: isDev ? 'inline' : false,
+            cssCodeSplit: true,
+            minify: isDev ? false : 'terser',
+            outDir: 'dist',
+            assetsDir: '.',
+            rollupOptions: {
+                output: {
+                    entryFileNames: `${FILENAME}.js`,
+                    chunkFileNames: `${FILENAME}.js`,
+                    assetFileNames: `${FILENAME}.css`,
+                },
             },
         },
-    },
-    plugins: [preact()],
+        define: {
+            'process.env.VERSION': JSON.stringify(currentVersion.ADYEN_FP_VERSION),
+            'process.env.COMMIT_HASH': JSON.stringify(currentVersion.COMMIT_HASH),
+            'process.env.COMMIT_BRANCH': JSON.stringify(currentVersion.COMMIT_BRANCH),
+        },
+        server: {
+            host: 'localhost',
+            watch: {
+                // Vite's default is to exclude node_modules. To customize,
+                // add your own exclusions to the array
+                exclude: ['**/node_modules/**'],
+                usePolling: true,
+                interval: 500,
+            },
+        },
+    };
 });

@@ -5,12 +5,14 @@
 
         "moduleResolution": "node",
         "module": "esnext",
-        "target": "es2021",
+        "target": "esnext",
         "jsx": "react-jsx",
         "jsxImportSource": "preact",
         "resolveJsonModule": true,
         "allowSyntheticDefaultImports": true,
         "esModuleInterop": true,
+        "allowJs": true,
+        "isolatedModules": true,
 
         "strict": true,
         "noUncheckedIndexedAccess": true,
@@ -19,9 +21,10 @@
         "importHelpers": true,
         "sourceMap": true,
         "baseUrl": "./",
-        "lib": ["ESNext", "DOM", "DOM.Iterable"],
+        "lib": ["dom", "esnext"],
         "paths": {
-            "react": ["./node_modules/preact/compat/"]
+            "react": ["./node_modules/preact/compat/"],
+            "@/*": ["./src/*"]
         }
     },
     "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.d.ts", "tests/**/*.ts"],

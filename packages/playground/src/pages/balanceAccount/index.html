@@ -6,17 +6,14 @@
         <title>Adyen FP | Transactions</title>
         <meta name="description" content="Adyen FP Components page" />
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-        <meta http-equiv="Pragma" content="no-cache" />
-        <meta http-equiv="cache-control" content="no-cache, no-store, must-revalidate" />
     </head>
     <body>
         <header class="page-header"></header>
         <main>
-            <div class="transactions-component-container"></div>
+            <div class="address-component-container"></div>
+            <div class="balance-account-component-container"></div>
         </main>
 
-        <script type="text/javascript">
-            window.htmlPages = <%= JSON.stringify(htmlWebpackPlugin.htmlPages) || ''%>;
-        </script>
+        <script type="module" src="./BalanceAccount.js"></script>
     </body>
 </html>
