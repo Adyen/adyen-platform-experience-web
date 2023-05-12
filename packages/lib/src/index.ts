@@ -7,12 +7,15 @@ if (process.env.NODE_ENV === 'development') {
 
 import { CoreOptions } from './core/types';
 import Core from './core';
-import components from './components';
+import accountHolder from './components/AccountHolder';
+import balanceAccount from './components/BalanceAccount';
+import transactions from './components/Transactions';
+import transactionDetails from './components/TransactionDetails';
 /* eslint-enable */
 
-async function AdyenFP(props: CoreOptions): Promise<Core> {
+export async function AdyenFP(props: CoreOptions): Promise<Core> {
     const core = new Core(props);
     return await core.initialize();
 }
 
-export default { ...components, AdyenFP };
+export { accountHolder, balanceAccount, transactions, transactionDetails };

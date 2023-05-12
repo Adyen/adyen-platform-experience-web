@@ -14,6 +14,7 @@
     "version": "1.0.0",
     "license": "MIT",
     "repository": "github:Adyen/adyen-fp-web",
+    "types": "dist/types/index.d.ts",
     "bugs": {
         "url": "https://support.adyen.com/"
     },
