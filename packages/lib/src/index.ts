@@ -9,7 +9,7 @@ import { CoreOptions } from './core/types';
 import Core from './core';
 import accountHolder from './components/AccountHolder';
 import balanceAccount from './components/BalanceAccount';
-import transactions from './components/Transactions';
+import transactionList from './components/Transactions';
 import transactionDetails from './components/TransactionDetails';
 /* eslint-enable */
 
@@ -18,4 +18,4 @@ export async function AdyenFP(props: CoreOptions): Promise<Core> {
     return await core.initialize();
 }
 
-export { accountHolder, balanceAccount, transactions, transactionDetails };
+export { accountHolder, balanceAccount, transactionList, transactionDetails };

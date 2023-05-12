@@ -6,7 +6,7 @@ import '../../assets/style/style.scss';
 
 try {
     const transactions = await getMyTransactions();
-    const adyenFP = await AdyenFP();
+    const adyenFP = await AdyenFP({ locale: 'en-US' });
 
     adyenFP
         .create(transactionList, {
