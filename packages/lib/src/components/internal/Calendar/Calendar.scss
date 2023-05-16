@@ -1,0 +1,43 @@
+.calendar {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 20rem));
+  justify-content: center;
+
+  &__month {
+    margin-inline: 2rem;
+    text-align: center;
+
+    &-name {
+      font-size: 1.25em;
+      font-weight: 600;
+      margin-block-end: 2rem;
+    }
+  }
+
+  &__week {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    justify-content: space-around;
+
+    &:not(:last-child) {
+      margin-bottom: 0.75rem;
+    }
+  }
+
+  &__date {
+    $self: &;
+    $weekend: #{$self}--weekend;
+    $first-week-day: #{$self}--first-week-day;
+
+    color: black;
+    font-size: 0.875em;
+
+    &#{$weekend} {
+      color: green;
+    }
+
+    &#{$first-week-day} {
+      color: red;
+    }
+  }
+}

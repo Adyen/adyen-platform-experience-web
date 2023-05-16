@@ -5,38 +5,70 @@ export type CalendarMonth = CalendarDay | 7 | 8 | 9 | 10 | 11;
 export type CalendarSlidingWindowMonth = 1 | 2 | 3 | 4 | 6 | 12;
 export type CalendarMonthEndDate = 28 | 29 | 30 | 31;
 
-export type CalendarIterable<IteratorValue = any> = Iterable<IteratorValue> & {
+export interface CalendarIterable<IteratorValue> extends Iterable<IteratorValue> {
     [index: number]: IteratorValue;
     map: CalendarMapIteratorFactory<IteratorValue>;
     size: number;
 }
 
-export type CalendarMapIteratorCallback<IteratorValue = any, MappedValue = any> = (
+export type CalendarMapIteratorCallback<IteratorValue, MappedValue = any> = (
     item: CalendarIterable<IteratorValue>[number],
     index: number,
-    month: CalendarIterable<IteratorValue>
+    context: CalendarIterable<IteratorValue>
 ) => MappedValue;
 
-export type CalendarMapIteratorFactory<IteratorValue = any, MappedValue = any> = (
+export type CalendarMapIteratorFactory<IteratorValue, MappedValue = any> = (
     this: CalendarIterable<IteratorValue>,
     callback?: CalendarMapIteratorCallback<IteratorValue, MappedValue>,
     thisArg?: any
 ) => Generator<MappedValue>;
 
-export type CalendarMonthView = CalendarIterable<string> & {
-    // isFirstWeekDayAt: (index: number) => boolean;
-    // isWeekendAt: (index: number) => boolean;
-    // isWithinMonthAt: (index: number) => boolean;
-    month: number;
-    year: number;
-};
-
-export interface UseCalendarConfig {
-    calendarMonths?: CalendarSlidingWindowMonth;
-    firstWeekDay?: CalendarFirstWeekDay;
-    startDate?: CalendarDate;
+export interface CalendarDaysView extends CalendarIterable<string> {
+    isFirstWeekDayAt: (index: number) => boolean;
+    isWeekendAt: (index: number) => boolean;
 }
 
-export interface CalendarProps extends UseCalendarConfig {
-    renderMonth?: CalendarMapIteratorCallback<CalendarMonthView>;
+export interface CalendarMonthDaysView extends CalendarDaysView {
+    isWithinMonthAt: (index: number) => boolean;
+}
+
+export interface CalendarWeekView extends CalendarDaysView {
+    isTransitionWeek: boolean;
+}
+
+export interface CalendarMonthWeekView extends CalendarMonthDaysView, CalendarWeekView {}
+
+export interface CalendarMonthView extends CalendarMonthDaysView {
+    intersectsWithNext: boolean;
+    intersectsWithPrev: boolean;
+    month: number;
+    weeks: CalendarIterable<CalendarMonthWeekView>;
+    year: number;
+}
+
+export interface CalendarView extends CalendarDaysView {
+    months: CalendarIterable<CalendarMonthView>;
+    offset: number;
+    shift: (monthOffset: number) => number;
+    weeks: CalendarIterable<CalendarWeekView>;
+}
+
+export interface CalendarConfig {
+    calendarMonths?: CalendarSlidingWindowMonth;
+    firstWeekDay?: CalendarFirstWeekDay;
+    locale?: string;
+    originDate?: CalendarDate;
+    sinceDate?: CalendarDate;
+    untilDate?: CalendarDate;
+}
+
+export interface CalendarProps extends CalendarConfig {
+    allowSelection?: boolean;
+    getCustomRenderProps?: () => void;
+    trackCurrentDay?: boolean;
+}
+
+export interface DatePickerProps extends CalendarProps {
+    enforceDateRange?: boolean;
+    onDateChanged?: () => void;
 }

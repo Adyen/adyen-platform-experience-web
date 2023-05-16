@@ -1,133 +1,165 @@
+import createCalendarIterable from './createCalendarIterable';
 import {
+    CalendarConfig,
     CalendarDay,
-    CalendarFirstWeekDay,
-    CalendarIterable,
-    CalendarMapIteratorFactory,
     CalendarMonthView,
-    CalendarSlidingWindowMonth
+    CalendarMonthWeekView,
+    CalendarView,
+    CalendarWeekView
 } from '../types';
 import {
     DAY_MS,
-    getCalendarSlidingWindow,
+    getCalendarTimeSliceParameters,
     getMonthEndDate,
     getMonthFirstDayOffset,
     getMonthTimestamp,
     getWeekendDays,
-    MONTH_DAYS,
-    WEEKEND_DAYS_SEED
+    MONTH_DAYS
 } from '../utils';
 
-// let dateIndex: number;
-// let monthIndex: number;
-//
-// const isFirstWeekDay = new Proxy((index: number) => {}, {
-//     apply: (target, thisArg, args: [number]) => {
-//         if (!thisArg || thisArg !== monthContextStack.at(-1)) {
-//             throw new ReferenceError('ILLEGAL_PROPERTY_ACCESS');
-//         }
-//         return Reflect.apply(target, thisArg, args);
-//     }
-// });
+const createCalendar = (config: CalendarConfig, offset: number) => {
+    const cachedMonths: CalendarMonthView[] = [];
+    const cachedWeeks: CalendarWeekView[] = [];
+    const cachedOffsets: Array<readonly [number, number, number, number, number]> = [];
+    const transitionWeeks: number[] = [];
+    const timeSlice = getCalendarTimeSliceParameters(config, offset);
 
-const useProxySetTrap = () => false;
-const useProxyGetTrap = <T extends any>(accessor: (index: number) => T) =>
-    (target: CalendarIterable, property: string | symbol, receiver: any) => {
-        if (typeof property === 'string') {
-            const index = +property;
-            if (index >= 0 && index < target.size) {
-                return accessor(index);
-            }
-        }
-        return Reflect.get(target, property, receiver);
-    };
+    const { firstWeekDay = 0, locale } = config;
+    const [ numberOfMonths, originTimestamp, minOffset, maxOffset ] = timeSlice;
+    const calendarWeekends = getWeekendDays(firstWeekDay); // [TODO]: derive this based on locale (if possible)
 
-const calendarMapIteratorFactory: CalendarMapIteratorFactory = function* (callback = x => x, thisArg) {
-    for (let i = 0; i < this.size; i++) {
-        yield callback.call(thisArg, this[i], i, this);
-    }
-};
+    let days: number = 0;
+    let month: number;
+    let year: number;
+    let calendarStartMonthTimestamp: number;
+    let calendarStartMonthOffset = timeSlice[4];
 
-const calendarIterablePrototype = Object.freeze(Object.create(null, {
-    [Symbol.iterator]: { value(this: CalendarIterable) { return this.map(); }},
-    map: { value: calendarMapIteratorFactory }
-}));
+    const isFirstWeekDayAt = (index: number) => !(index % 7);
+    const isWeekendAt = (index: number) => calendarWeekends.includes((index % 7) as CalendarDay);
 
-// const createMonth = function (this: { endIndex: number; startIndex: number, weekendDays: Readonly<[CalendarDay, CalendarDay]> }) {
-//     return Object.create(monthPrototype, {
-//         isFirstWeekDayAt: { value: (index: number) => !(index % 7) },
-//         isWeekendAt: { value: (index: number) => this.weekendDays.includes((index % 7) as CalendarDay) },
-//         isWithinMonthAt: { value: (index: number) => index >= this.startIndex && index < this.endIndex }
-//     }) as CalendarMonthView;
-// };
+    const getCalendarDateByIndex = (startIndexOffset = 0) => (index: number) => (
+        new Date(calendarStartMonthTimestamp + (startIndexOffset + index) * DAY_MS)
+            .toISOString()
+            .replace(/T[\w\W]*$/, '')
+    );
 
-const createCalendar = () => {
-    let calendarDates: string[] = [];
-    let calendarOffsets: Readonly<[number, number, number]>[] = [];
-    let calendarIteratorItems: CalendarMonthView[] = [];
-    let calendarWeekends: Readonly<[CalendarDay, CalendarDay]> = WEEKEND_DAYS_SEED;
+    const shiftCalendar = (monthOffset: number) => {
+        const offset = Math.max(minOffset, Math.min(calendarStartMonthOffset + monthOffset, maxOffset));
 
-    const createCalendarMonth = (index: number) => {
-        const [ startIndex, monthStartIndex ] = calendarOffsets[index] as Readonly<[number, number, number]>;
-        const [ year, month ] = (calendarDates[startIndex + monthStartIndex] as string)
-            .replace(/-\d+$/, '')
-            .split('-')
-            .map(fragment => parseInt(fragment)) as [number, number];
-
-        return new Proxy(Object.create(calendarIterablePrototype, {
-            size: { value: MONTH_DAYS },
-            month: { value: month },
-            year: { value: year }
-        }) as CalendarMonthView, {
-            get: useProxyGetTrap(index => calendarDates[startIndex + index]),
-            set: useProxySetTrap
-        });
-    };
-
-    return (
-        calendarMonths: CalendarSlidingWindowMonth = 1,
-        firstWeekDay: CalendarFirstWeekDay = 0,
-        timestamp = Date.now(),
-        offset = 0
-    ) => {
-        const [, windowMonthOffset ] = getCalendarSlidingWindow(calendarMonths, timestamp, offset);
-        let calendarEndIndex = MONTH_DAYS;
-        let calendarTimestamp = timestamp;
-
-        calendarDates.length = calendarOffsets.length = calendarIteratorItems.length = 0;
-        calendarWeekends = getWeekendDays(firstWeekDay);
-
-        for (let i = 0, prevMonthEndDateIndex = 0; i < calendarMonths; i++) {
-            const thisMonthOffset = offset - windowMonthOffset + i;
-            const startDayOffset = getMonthFirstDayOffset(firstWeekDay, timestamp, thisMonthOffset);
-            const monthEndDate = getMonthEndDate(timestamp, thisMonthOffset);
-            const monthStartIndex = prevMonthEndDateIndex && prevMonthEndDateIndex - startDayOffset;
-
-            calendarEndIndex = monthStartIndex + MONTH_DAYS;
-            prevMonthEndDateIndex = monthStartIndex + startDayOffset + monthEndDate;
-
-            if (i === 0) {
-                if (startDayOffset > 0) {
-                    const prevMonthStart = getMonthTimestamp(timestamp, thisMonthOffset - 1);
-                    const prevMonthEndDate = getMonthEndDate(timestamp, thisMonthOffset - 1);
-                    calendarTimestamp = prevMonthStart + (prevMonthEndDate - startDayOffset) * DAY_MS;
-                } else calendarTimestamp = getMonthTimestamp(timestamp, thisMonthOffset);
-            }
-
-            for (let i = calendarDates.length; i < calendarEndIndex; i++) {
-                calendarDates[i] = new Date(calendarTimestamp + i * DAY_MS).toISOString().replace(/T[\w\W]*$/, '');
-            }
-
-            calendarOffsets[i] = [ monthStartIndex, startDayOffset, prevMonthEndDateIndex - monthStartIndex ];
-            calendarIteratorItems[i] = createCalendarMonth(i);
+        if (calendarStartMonthOffset !== offset) {
+            calendarStartMonthOffset = offset;
+            refreshCalendar();
         }
 
-        return new Proxy(Object.create(calendarIterablePrototype, {
-            size: { value: calendarMonths }
-        }) as CalendarIterable<CalendarMonthView>, {
-            get: useProxyGetTrap(index => calendarIteratorItems[index]),
-            set: useProxySetTrap
-        });
+        return calendarStartMonthOffset;
     };
+
+    const refreshCalendar = () => {
+        calendarStartMonthTimestamp = getMonthTimestamp(originTimestamp, calendarStartMonthOffset);
+
+        const startMonthDate = new Date(calendarStartMonthTimestamp);
+
+        month = startMonthDate.getMonth();
+        year = startMonthDate.getFullYear();
+        cachedMonths.length = cachedWeeks.length = cachedOffsets.length = transitionWeeks.length = 0;
+
+        for (let i = 0, transitionWeekIndex = -1, prevEndIndex = 0, prevEndWeekIndex = 0; i < numberOfMonths; i++) {
+            const startDayOffset = getMonthFirstDayOffset(firstWeekDay, calendarStartMonthTimestamp, i);
+            const endDate = getMonthEndDate(calendarStartMonthTimestamp, i);
+            const startIndex = prevEndIndex && prevEndIndex - startDayOffset;
+            const endIndex = startDayOffset + endDate;
+            const numberOfWeeks = Math.ceil(endIndex / 7);
+            const startWeekIndex = prevEndWeekIndex && prevEndWeekIndex + (startDayOffset && -1);
+            const endWeekIndex = prevEndWeekIndex = startWeekIndex + numberOfWeeks;
+
+            days = startIndex + MONTH_DAYS;
+            prevEndIndex = startIndex + endIndex;
+            cachedOffsets[i] = [startIndex, startDayOffset, endIndex, startWeekIndex, endWeekIndex] as const;
+
+            if (startDayOffset > 0 && transitionWeeks[transitionWeekIndex] !== startWeekIndex) {
+                transitionWeeks[++transitionWeekIndex] = startWeekIndex;
+            }
+
+            if (endIndex % 7 > 0 && transitionWeeks[transitionWeekIndex] !== endWeekIndex - 1) {
+                transitionWeeks[++transitionWeekIndex] = endWeekIndex - 1;
+            }
+        }
+
+        if (cachedOffsets[0] && cachedOffsets[0][1]) {
+            const prevMonthStart = getMonthTimestamp(calendarStartMonthTimestamp, -1);
+            const prevMonthEndDate = getMonthEndDate(calendarStartMonthTimestamp, -1);
+            calendarStartMonthTimestamp = prevMonthStart + (prevMonthEndDate - cachedOffsets[0][1]) * DAY_MS;
+        }
+    };
+
+    refreshCalendar();
+
+    return createCalendarIterable<string, CalendarView>({
+        isFirstWeekDayAt: { value: isFirstWeekDayAt },
+        isWeekendAt: { value: isWeekendAt },
+        months: {
+            value: createCalendarIterable<CalendarMonthView>({
+                size: { value: numberOfMonths }
+            }, monthIndex => {
+                if (cachedMonths[monthIndex]) return cachedMonths[monthIndex] as CalendarMonthView;
+
+                const [
+                    startIndex = 0,
+                    startDayOffset = 0,
+                    endIndex = 0,
+                    startWeekIndex = 0,
+                    endWeekIndex = 0
+                ] = cachedOffsets[monthIndex] || [];
+
+                const isWithinMonthAt = (index: number) => index >= startDayOffset && index < endIndex;
+
+                cachedMonths[monthIndex] = createCalendarIterable<string, CalendarMonthView>({
+                    intersectsWithNext: { value: transitionWeeks.includes(endWeekIndex - 1) },
+                    intersectsWithPrev: { value: transitionWeeks.includes(startWeekIndex) },
+                    isFirstWeekDayAt: { value: isFirstWeekDayAt },
+                    isWeekendAt: { value: isWeekendAt },
+                    isWithinMonthAt: { value: isWithinMonthAt },
+                    month: { value: (month + monthIndex) % 12 },
+                    size: { value: (endWeekIndex - startWeekIndex) * 7 },
+                    weeks: {
+                        value: createCalendarIterable<CalendarMonthWeekView>({
+                            size: { value: endWeekIndex - startWeekIndex }
+                        }, weekIndex => {
+                            const startIndexOffset = weekIndex * 7;
+
+                            return createCalendarIterable<string, CalendarMonthWeekView>({
+                                isFirstWeekDayAt: { value: isFirstWeekDayAt },
+                                isTransitionWeek: { value: transitionWeeks.includes(weekIndex) },
+                                isWeekendAt: { value: isWeekendAt },
+                                isWithinMonthAt: { value: (index: number) => isWithinMonthAt(startIndexOffset + index) },
+                                size: { value: 7 }
+                            }, getCalendarDateByIndex((startWeekIndex + weekIndex) * 7)) as CalendarMonthWeekView;
+                        })
+                    },
+                    year: { value: year + Math.floor((month + monthIndex) / 12) }
+                }, getCalendarDateByIndex(startIndex));
+
+                return cachedMonths[monthIndex] as CalendarMonthView;
+            })
+        },
+        offset: { get: () => calendarStartMonthOffset },
+        shift: { value: shiftCalendar },
+        size: { value: days },
+        weeks: {
+            value: createCalendarIterable<CalendarWeekView>({
+                size: { value: days / 7 }
+            }, weekIndex => {
+                cachedWeeks[weekIndex] = cachedWeeks[weekIndex] || createCalendarIterable<string, CalendarWeekView>({
+                    isFirstWeekDayAt: { value: isFirstWeekDayAt },
+                    isTransitionWeek: { value: transitionWeeks.includes(weekIndex) },
+                    isWeekendAt: { value: isWeekendAt },
+                    size: { value: 7 }
+                }, getCalendarDateByIndex(weekIndex * 7));
+
+                return cachedWeeks[weekIndex] as CalendarWeekView;
+            })
+        }
+    }, getCalendarDateByIndex(0)) as CalendarView;
 };
 
 export default createCalendar;
