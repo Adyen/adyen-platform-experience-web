@@ -9,7 +9,7 @@ import {
 } from './types';
 
 export const DAY_MS = 86400000;
-export const MONTH_DAYS = 42;
+export const MAX_MONTH_DAYS = 42;
 export const WEEKEND_DAYS_SEED = Object.freeze([0, 1] as const);
 export const CALENDAR_WINDOW_MONTHS = Object.freeze([1, 2, 3, 4, 6, 12] as CalendarSlidingWindowMonth[]);
 
@@ -37,7 +37,7 @@ export const getNoonTimestamp = (date: CalendarDate = Date.now(), useNoonTodayAs
 
 export const getMonthTimestamp = (date: CalendarDate = Date.now(), offset = 0) => {
     assertSafeInteger(offset);
-    const noonTimestamp = new Date(getNoonTimestamp(date)); // @ts-ignore
+    const noonTimestamp = new Date(getNoonTimestamp(date));
     return noonTimestamp.setMonth(noonTimestamp.getMonth() + offset, 1);
 };
 
@@ -48,11 +48,6 @@ export const getMonthEndDate = (date: CalendarDate = Date.now(), offset = 0) => 
 export const getMonthFirstDayOffset = (firstWeekDay: CalendarFirstWeekDay = 0, date: CalendarDate = Date.now(), offset = 0) => {
     const monthFirstDay = new Date(getMonthTimestamp(date, offset)).getDay() as CalendarDay;
     return mod(monthFirstDay - firstWeekDay + 7, 7) as CalendarDay;
-};
-
-export const getCalendarSlidingWindow = (months: CalendarSlidingWindowMonth = 1, date: CalendarDate = Date.now(), offset = 0) => {
-    const dateMonth = new Date(getMonthTimestamp(date, offset)).getMonth() as CalendarMonth;
-    return [Math.floor(dateMonth / months) * months, dateMonth % months] as const;
 };
 
 export const getWeekendDays = (firstWeekDay: CalendarFirstWeekDay = 0) => Object.freeze(

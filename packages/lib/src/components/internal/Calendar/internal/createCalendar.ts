@@ -4,6 +4,7 @@ import {
     CalendarDay,
     CalendarMonthView,
     CalendarMonthWeekView,
+    CalendarShift,
     CalendarView,
     CalendarWeekView
 } from '../types';
@@ -13,8 +14,7 @@ import {
     getMonthEndDate,
     getMonthFirstDayOffset,
     getMonthTimestamp,
-    getWeekendDays,
-    MONTH_DAYS
+    getWeekendDays
 } from '../utils';
 
 const createCalendar = (config: CalendarConfig, offset: number) => {
@@ -28,7 +28,7 @@ const createCalendar = (config: CalendarConfig, offset: number) => {
     const [ numberOfMonths, originTimestamp, minOffset, maxOffset ] = timeSlice;
     const calendarWeekends = getWeekendDays(firstWeekDay); // [TODO]: derive this based on locale (if possible)
 
-    let days: number = 0;
+    let days = 0;
     let month: number;
     let year: number;
     let calendarStartMonthTimestamp: number;
@@ -43,8 +43,25 @@ const createCalendar = (config: CalendarConfig, offset: number) => {
             .replace(/T[\w\W]*$/, '')
     );
 
-    const shiftCalendar = (monthOffset: number) => {
-        const offset = Math.max(minOffset, Math.min(calendarStartMonthOffset + monthOffset, maxOffset));
+    const shiftCalendar = (monthOffset: number, shift: CalendarShift = CalendarShift.MONTH) => {
+        let shiftOffset = monthOffset;
+
+        switch (shift) {
+            case CalendarShift.WINDOW:
+                shiftOffset *= numberOfMonths;
+                break;
+
+            case CalendarShift.YEAR:
+                shiftOffset *= 12;
+                break;
+
+            case CalendarShift.MONTH:
+            default:
+                shiftOffset *= 1;
+                break;
+        }
+
+        const offset = Math.max(minOffset, Math.min(calendarStartMonthOffset + shiftOffset, maxOffset));
 
         if (calendarStartMonthOffset !== offset) {
             calendarStartMonthOffset = offset;
@@ -72,7 +89,7 @@ const createCalendar = (config: CalendarConfig, offset: number) => {
             const startWeekIndex = prevEndWeekIndex && prevEndWeekIndex + (startDayOffset && -1);
             const endWeekIndex = prevEndWeekIndex = startWeekIndex + numberOfWeeks;
 
-            days = startIndex + MONTH_DAYS;
+            days = startIndex + numberOfWeeks * 7;
             prevEndIndex = startIndex + endIndex;
             cachedOffsets[i] = [startIndex, startDayOffset, endIndex, startWeekIndex, endWeekIndex] as const;
 
@@ -94,7 +111,8 @@ const createCalendar = (config: CalendarConfig, offset: number) => {
 
     refreshCalendar();
 
-    return createCalendarIterable<string, CalendarView>({
+    // [TODO]: Clean up calendar iterator properties with reusable logic and cache
+    const calendar = createCalendarIterable<string, CalendarView>({
         isFirstWeekDayAt: { value: isFirstWeekDayAt },
         isWeekendAt: { value: isWeekendAt },
         months: {
@@ -142,12 +160,10 @@ const createCalendar = (config: CalendarConfig, offset: number) => {
                 return cachedMonths[monthIndex] as CalendarMonthView;
             })
         },
-        offset: { get: () => calendarStartMonthOffset },
-        shift: { value: shiftCalendar },
-        size: { value: days },
+        size: { get: () => days },
         weeks: {
             value: createCalendarIterable<CalendarWeekView>({
-                size: { value: days / 7 }
+                size: { get: () => days / 7 }
             }, weekIndex => {
                 cachedWeeks[weekIndex] = cachedWeeks[weekIndex] || createCalendarIterable<string, CalendarWeekView>({
                     isFirstWeekDayAt: { value: isFirstWeekDayAt },
@@ -160,6 +176,8 @@ const createCalendar = (config: CalendarConfig, offset: number) => {
             })
         }
     }, getCalendarDateByIndex(0)) as CalendarView;
+
+    return [calendar, shiftCalendar] as const;
 };
 
 export default createCalendar;

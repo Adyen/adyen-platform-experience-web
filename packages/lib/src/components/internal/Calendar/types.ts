@@ -5,6 +5,12 @@ export type CalendarMonth = CalendarDay | 7 | 8 | 9 | 10 | 11;
 export type CalendarSlidingWindowMonth = 1 | 2 | 3 | 4 | 6 | 12;
 export type CalendarMonthEndDate = 28 | 29 | 30 | 31;
 
+export const enum CalendarShift {
+    MONTH = 'MONTH',
+    WINDOW = 'WINDOW',
+    YEAR = 'YEAR'
+}
+
 export interface CalendarIterable<IteratorValue> extends Iterable<IteratorValue> {
     [index: number]: IteratorValue;
     map: CalendarMapIteratorFactory<IteratorValue>;
@@ -48,8 +54,6 @@ export interface CalendarMonthView extends CalendarMonthDaysView {
 
 export interface CalendarView extends CalendarDaysView {
     months: CalendarIterable<CalendarMonthView>;
-    offset: number;
-    shift: (monthOffset: number) => number;
     weeks: CalendarIterable<CalendarWeekView>;
 }
 
