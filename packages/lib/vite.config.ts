@@ -28,15 +28,5 @@ export default defineConfig(({ mode }) => {
             'process.env.COMMIT_HASH': JSON.stringify(currentVersion.COMMIT_HASH),
             'process.env.COMMIT_BRANCH': JSON.stringify(currentVersion.COMMIT_BRANCH),
         },
-        server: {
-            host: 'localhost',
-            watch: {
-                // Vite's default is to exclude node_modules. To customize,
-                // add your own exclusions to the array
-                exclude: ['**/node_modules/**'],
-                usePolling: true,
-                interval: 500,
-            },
-        },
     };
 });

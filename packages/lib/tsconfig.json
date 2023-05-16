@@ -1,29 +1,32 @@
 {
     "compilerOptions": {
-        "declaration": true,
-        "declarationDir": "./dist/types",
-
-        "moduleResolution": "node",
+        "declarationMap": true,
+        "incremental": true,
+        "noEmitOnError": true,
+        "skipLibCheck": true,
+        //ECMAScript interoperability
         "module": "esnext",
         "target": "esnext",
-        "jsx": "react-jsx",
-        "jsxImportSource": "preact",
         "resolveJsonModule": true,
         "allowSyntheticDefaultImports": true,
         "esModuleInterop": true,
-        "allowJs": true,
         "isolatedModules": true,
-
-        "strict": true,
-        "noUncheckedIndexedAccess": true,
+        "moduleResolution": "node",
 
         "stripInternal": true,
         "importHelpers": true,
         "sourceMap": true,
+
+        "declaration": true,
+        "declarationDir": "./dist/types",
+
+        "jsx": "react-jsx",
+        "jsxImportSource": "preact",
+        "allowJs": true,
+
         "baseUrl": "./",
         "lib": ["dom", "esnext"],
         "paths": {
-            "react": ["./node_modules/preact/compat/"],
             "@/*": ["./src/*"]
         }
     },

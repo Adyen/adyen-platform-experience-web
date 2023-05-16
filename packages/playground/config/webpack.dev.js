@@ -16,6 +16,7 @@ module.exports = merge(baseConfig, {
                 __CLIENT_KEY__: JSON.stringify(process.env.CLIENT_KEY || null),
                 __CLIENT_ENV__: JSON.stringify(process.env.CLIENT_ENV || 'test'),
             },
+            'process.env.MOCKED_MODE': JSON.stringify(process.env.MOCKED_MODE === 'true'),
         }),
     ],
     devtool: 'cheap-module-source-map',
@@ -82,7 +83,7 @@ module.exports = merge(baseConfig, {
         host,
         compress: false,
         watchFiles: {
-            options: { usePolling: true }
+            options: { usePolling: true },
         },
     },
 });

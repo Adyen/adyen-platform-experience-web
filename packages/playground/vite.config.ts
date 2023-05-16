@@ -2,6 +2,7 @@ import { defineConfig } from 'vite';
 import { preact } from '@preact/preset-vite';
 import { resolve } from 'node:path';
 import { lstat, readdir } from 'node:fs/promises';
+import { mockApiProxies, mockServerPlugin } from './config/proxy/mockApiProxies';
 
 const playgroundDir = resolve(__dirname, 'src/pages');
 async function getPlaygroundEntrypoints() {
@@ -23,11 +24,10 @@ async function getPlaygroundEntrypoints() {
 
 export default defineConfig(async ({ mode }) => {
     const isDev = mode === 'development';
-
     return {
         root: playgroundDir,
         base: '',
-        plugins: [preact()],
+        plugins: [preact(), mode === 'mocked' && mockServerPlugin(8082)],
         build: {
             rollupOptions: {
                 input: await getPlaygroundEntrypoints(),
@@ -39,7 +39,6 @@ export default defineConfig(async ({ mode }) => {
             alias: {
                 '@adyen/adyen-fp-web': resolve(__dirname, '../lib/src'),
             },
-            extensions: ['.ts', '.tsx', '.js', '.scss', '.css'],
             preserveSymlinks: true,
         },
         css: {
@@ -50,13 +49,12 @@ export default defineConfig(async ({ mode }) => {
         server: {
             host: 'localhost',
             port: 3030,
-            strictPort: true,
-            watch: {
-                usePolling: true,
-            },
-            fs: {
-                strict: false,
-            },
+            proxy: mockApiProxies('localhost', 8082),
+        },
+        preview: {
+            host: 'localhost',
+            port: 3030,
+            proxy: mockApiProxies('localhost', 8082),
         },
         define: {
             'process.env.__CLIENT_KEY__': JSON.stringify(process.env.CLIENT_KEY || null),

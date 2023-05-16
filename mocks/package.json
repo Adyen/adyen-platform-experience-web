@@ -1,0 +1,17 @@
+{
+    "name": "@adyen/adyen-fp-web-mocks",
+    "private": true,
+    "main": "index",
+    "description": "mocks",
+    "version": "1.0.0",
+    "license": "MIT",
+    "repository": "github:Adyen/adyen-fp-web",
+    "type": "module",
+    "scripts": {
+        "types": "tsc",
+        "types:watch": "tsc --watch --preserveWatchOutput"
+    },
+    "dependencies": {
+        "typescript": "^4.9.4"
+    }
+}

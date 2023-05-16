@@ -5,14 +5,14 @@ import styles from '../Select.module.scss';
 import Img from '../../../Img';
 import { HTMLAttributes, PropsWithChildren } from 'preact/compat';
 import { MutableRef } from 'preact/hooks';
-import { Ref } from 'preact';
+// import { Ref } from 'preact';
 
 function SelectButtonElement({
     filterable,
     toggleButtonRef,
     ...props
 }: PropsWithChildren<SelectButtonProps & Partial<HTMLAttributes<HTMLButtonElement | HTMLDivElement>>>) {
-    if (filterable) return <div {...props} ref={toggleButtonRef as Ref<HTMLDivElement>} />;
+    if (filterable) return <div {...props} ref={toggleButtonRef as any} />;
 
     return <button {...props} ref={toggleButtonRef as MutableRef<HTMLButtonElement>} />;
 }

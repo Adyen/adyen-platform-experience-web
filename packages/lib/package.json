@@ -10,7 +10,7 @@
         "adyen-for-platforms",
         "components"
     ],
-    "main": "dist/adyen-fp-web.js",
+    "main": "dist/adyen-fp-web",
     "version": "1.0.0",
     "license": "MIT",
     "repository": "github:Adyen/adyen-fp-web",
@@ -24,7 +24,7 @@
         "test": "BABEL_ENV=test jest --config config/jest.config.js",
         "test:watch": "npm run test -- --watchAll",
         "test:coverage": "npm run test -- --coverage",
-        "type-check": "tsc --noEmit",
+        "type-check": "tsc --noEmit --watch",
         "lint": "eslint 'src/**/*.{js,ts,tsx}' --quiet",
         "lint:fix": "npm run lint -- --fix",
         "types:watch": "npm run type-check -- --watch",

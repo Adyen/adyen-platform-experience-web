@@ -1,4 +1,4 @@
-module.exports = ({ error, response = {}, body }, res) => {
+const handleCallback = ({ error, response = {}, body }, res) => {
     if (error) {
         console.error(error);
         return res.send(error);
@@ -10,3 +10,5 @@ module.exports = ({ error, response = {}, body }, res) => {
 
     res.send(body);
 };
+
+export default handleCallback;

@@ -28,3 +28,8 @@ stats.html
 # Vagrant
 Vagrantfile
 .vagrant
+
+# The `outDir` for declarations
+lib/
+# Build cache manifests
+*.tsbuildinfo

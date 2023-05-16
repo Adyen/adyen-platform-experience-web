@@ -1,23 +1,24 @@
-const { get } = require('request');
+import getHeaders from '../../../utils/getHeaders';
+import handleCallback from '../../../utils/handleCallback';
 const { BALANCE_PLATFORM, BTL_API_URL } = process.env;
-const getHeaders = require('../utils/getHeaders');
-const handleCallback = require('../utils/handleCallback');
+import { request } from 'express';
+
+const { get } = request;
 const LIMIT = 20;
 
-module.exports = (req, res) => {
+const test = (req, res) => {
     const endpoint = 'transactions';
     const {
         createdSince = '2022-05-30T15:07:40Z',
         createdUntil = new Date().toISOString(),
         balancePlatform = BALANCE_PLATFORM,
-        limit = LIMIT,
         accountHolderId,
         balanceAccountId,
-        cursor
+        cursor,
     } = req.query;
 
     const searchParams = new URLSearchParams({
-        limit: limit || LIMIT,
+        limit: LIMIT,
         ...(createdSince && { createdSince }),
         ...(createdUntil && { createdUntil }),
         ...(balancePlatform && { balancePlatform }),
@@ -29,8 +30,10 @@ module.exports = (req, res) => {
     const url = new URL(`${BTL_API_URL}/${endpoint}?${searchParams.toString()}`);
     const params = {
         url: url.href,
-        headers: getHeaders()
+        headers: getHeaders(),
     };
 
     get(params, (error, response, body) => handleCallback({ error, response, body }, res));
 };
+
+export default test;
