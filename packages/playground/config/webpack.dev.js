@@ -33,7 +33,7 @@ module.exports = merge(baseConfig, {
                 // back to the "file" loader at the end of the loader list.
                 oneOf: [
                     {
-                        test: [/\.js?$/],
+                        test: [/\.js?$/, /\.ts?$/],
                         include: [path.resolve(__dirname, '../src')],
                         exclude: /node_modules/,
                         use: [
@@ -82,7 +82,7 @@ module.exports = merge(baseConfig, {
         host,
         compress: false,
         watchFiles: {
-            options: { usePolling: true }
+            options: { usePolling: true },
         },
     },
 });
