@@ -59,6 +59,7 @@ export interface CalendarView extends CalendarDaysView {
 
 export interface CalendarConfig {
     calendarMonths?: CalendarSlidingWindowMonth;
+    dynamicMonthWeeks?: boolean;
     firstWeekDay?: CalendarFirstWeekDay;
     locale?: string;
     originDate?: CalendarDate;
@@ -68,11 +69,8 @@ export interface CalendarConfig {
 
 export interface CalendarProps extends CalendarConfig {
     allowSelection?: boolean;
+    explicitWeeks?: boolean;
     getCustomRenderProps?: () => void;
+    onlyMonthDays?: boolean;
     trackCurrentDay?: boolean;
-}
-
-export interface DatePickerProps extends CalendarProps {
-    enforceDateRange?: boolean;
-    onDateChanged?: () => void;
 }
