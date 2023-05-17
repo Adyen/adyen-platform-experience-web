@@ -1,4 +1,4 @@
-import { httpGet } from './http';
+import { httpGet } from './requests/http';
 
 export default function getDataset<T = any>(name: string, loadingContext?: string, locale?: string) {
     const options = {

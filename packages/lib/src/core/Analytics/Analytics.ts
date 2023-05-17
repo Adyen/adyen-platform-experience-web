@@ -12,7 +12,7 @@ class Analytics {
         experiments: [],
     };
 
-    public checkoutAttemptId: string | null = null;
+    public checkoutAttemptId: string | undefined = undefined;
     public props;
     private readonly logEvent;
     private readonly logTelemetry;

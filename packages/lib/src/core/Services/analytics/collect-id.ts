@@ -1,4 +1,4 @@
-import { httpPost } from '../http';
+import { httpPost } from '../requests/http';
 import Storage from '../../../utils/Storage';
 import { CheckoutAttemptIdSession, CollectIdProps } from './types';
 
@@ -20,7 +20,7 @@ function confirmSessionDurationIsMaxFifteenMinutes(checkoutAttemptIdSession: Che
  * @returns a function returning a promise containing the response of the call
  */
 const collectId = ({ loadingContext, clientKey, experiments }: CollectIdProps) => {
-    let promise: Promise<string>;
+    let promise: Promise<string | undefined>;
 
     const options = {
         errorLevel: 'silent' as const,
@@ -28,7 +28,7 @@ const collectId = ({ loadingContext, clientKey, experiments }: CollectIdProps) =
         path: `v2/analytics/id?clientKey=${clientKey}`,
     };
 
-    return (): Promise<string> => {
+    return (): Promise<string | undefined> => {
         if (promise) return promise;
         if (!clientKey) return Promise.reject();
 
@@ -39,7 +39,7 @@ const collectId = ({ loadingContext, clientKey, experiments }: CollectIdProps) =
             return Promise.resolve(checkoutAttemptIdSession.id);
         }
 
-        promise = httpPost(options, { experiments })
+        promise = httpPost<{ id: string }>(options, { experiments })
             .then(conversion => {
                 if (conversion.id) {
                     storage.set({ id: conversion.id, timestamp: Date.now() });
@@ -47,7 +47,7 @@ const collectId = ({ loadingContext, clientKey, experiments }: CollectIdProps) =
                 }
                 return undefined;
             })
-            .catch(() => {});
+            .catch(() => undefined);
 
         return promise;
     };
