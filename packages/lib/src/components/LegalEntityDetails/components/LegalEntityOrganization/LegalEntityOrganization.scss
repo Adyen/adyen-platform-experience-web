@@ -1,0 +1,33 @@
+@import '../../../../style/index';
+
+.adyen-fp-legal-entity-organization {
+    &--transfer-instrument {
+        width: 100%;
+
+        &__container {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        &__element-container {
+            display: flex;
+            flex-direction: column;
+        }
+        &__element-label {
+            color: $color-gray-darker;
+            font-size: $font-size-small;
+            font-weight: $font-weight-regular;
+        }
+        &__id {
+            color: $color-black;
+            font-weight: $font-weight-semi-bold !important;
+        }
+        &__account {
+            color: $color-black;
+            margin-top: auto;
+        }
+    }
+    &--transfer-instrument:not(:first-child) {
+        margin-top: 20px;
+    }
+}
