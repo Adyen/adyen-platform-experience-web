@@ -111,7 +111,6 @@ function Transactions({
                     />
                 </FilterBar>
             )}
-
             <TransactionList
                 loading={fetching}
                 transactions={records}

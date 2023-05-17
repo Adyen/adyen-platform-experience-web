@@ -17,13 +17,13 @@ import '../../assets/style/style.scss';
                     // avoid refetching the transactions here
                 },
                 onTransactionSelected: ({ id }) => {
-                    window.location.assign(`/transaction?id=${id}`);
+                    window.location.assign(`/transaction/?id=${id}`);
                 },
                 onBalanceAccountSelected: ({ id }) => {
-                    window.location.assign(`/balanceaccount?id=${id}`);
+                    window.location.assign(`/balanceAccount/?id=${id}`);
                 },
                 onAccountSelected: ({ id }) => {
-                    window.location.assign(`/accountholder?id=${id}`);
+                    window.location.assign(`/accountHolder/?id=${id}`);
                 },
                 onUpdateTransactions: async (params, component) => {
                     const transactions = await getMyTransactions(params);

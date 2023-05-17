@@ -19,12 +19,12 @@
     },
     "scripts": {
         "vite": "vite dev",
-        "start": "vite dev",
+        "start": "vite dev --config ../../vite.config.ts",
         "dev-server": "cross-env NODE_ENV=development vite dev",
         "type-check": "tsc --noEmit",
         "types:watch": "npm run type-check -- --watch",
         "start:webpack": "npm run dev-server",
-        "start:mock": "vite dev --mode mocked",
+        "start:mock": "vite dev --mode mocked --config ../../vite.config.ts",
         "mock-server": "vite-node ../server/run.js",
         "dev-server-web-p": "cross-env NODE_ENV=development webpack-dev-server --config config/webpack.dev.js",
         "format": "prettier --write \"src/**/*.{ts,js,css, scss, html}\""

@@ -2,9 +2,9 @@ import { defineConfig } from 'vite';
 import { preact } from '@preact/preset-vite';
 import { resolve } from 'node:path';
 import { lstat, readdir } from 'node:fs/promises';
-import { mockApiProxies, mockServerPlugin } from './config/proxy/mockApiProxies';
+import { mockApiProxies, mockServerPlugin } from './packages/server/proxy/mockApiProxies';
 
-const playgroundDir = resolve(__dirname, 'src/pages');
+const playgroundDir = resolve(__dirname, 'packages/playground/src/pages');
 async function getPlaygroundEntrypoints() {
     const playgroundPages = await readdir(playgroundDir);
 
@@ -26,7 +26,7 @@ export default defineConfig(async ({ mode }) => {
     const isDev = mode === 'development';
     return {
         root: playgroundDir,
-        base: '',
+        base: './',
         plugins: [preact(), mode === 'mocked' && mockServerPlugin(8082)],
         build: {
             rollupOptions: {
@@ -37,9 +37,8 @@ export default defineConfig(async ({ mode }) => {
         },
         resolve: {
             alias: {
-                '@adyen/adyen-fp-web': resolve(__dirname, '../lib/src'),
+                '@adyen/adyen-fp-web': resolve(__dirname, 'packages/lib/src'),
             },
-            preserveSymlinks: true,
         },
         css: {
             preprocessorOptions: {

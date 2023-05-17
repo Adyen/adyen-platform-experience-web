@@ -1,8 +1,16 @@
 import Router from 'express';
-import getLegalEntityById from './get-account-holder-id.js';
+import { ACCOUNT_HOLDERS } from '../../../../../mocks/index.js';
 
 const router = Router();
 
-router.use('/:id', getLegalEntityById);
+router.get('/:id', (req, res) => {
+    const matchingMock = ACCOUNT_HOLDERS.find(mock => mock.id === req.params.id);
+    if (!matchingMock) {
+        res.status(404).send('Cannot find matching Account Holder mock');
+        return;
+    }
+
+    res.json(matchingMock);
+});
 
 export default router;

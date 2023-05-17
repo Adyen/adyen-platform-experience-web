@@ -13,11 +13,10 @@ const certOptions = {
 };
 
 export const startServer = ({ expressInstance = express(), httpPort, httpsPort = httpPort + 1 }) => {
-    console.log('appss', app);
     const appInstance = app(expressInstance);
 
     const httpServer = http.createServer(appInstance).listen(httpPort, () => {
-        console.log(`The HTTP server is running on port ${httpPort}`);
+        console.log(`The HTTP server is running on ports ${httpPort}`);
     });
 
     const httpsServer = https.createServer(certOptions, appInstance).listen(httpsPort, () => {

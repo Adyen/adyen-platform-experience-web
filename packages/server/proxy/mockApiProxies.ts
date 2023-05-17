@@ -1,11 +1,11 @@
 import { Plugin, ProxyOptions } from 'vite';
 import { Server } from 'node:http';
-import { startServer } from '../../../server/server';
+import { startServer } from '../../server/server';
 
-const endpoints = ['/legalEntities'] as const satisfies Readonly<`/${string}`[]>;
+const endpoints = ['/legalEntities', '/accountHolders', '/transactions', '/balanceAccounts'] as const satisfies Readonly<`/${string}`[]>;
 
 export const mockApiProxies = (host: string, port: number) => {
-    const mockServerProxyOptions: ProxyOptions = { target: `http://${host}:${port}` as const };
+    const mockServerProxyOptions: ProxyOptions = { target: `http://${host}:${port}` };
     const apiProxy = {} as Record<(typeof endpoints)[number], ProxyOptions>;
     endpoints.forEach(endpoint => (apiProxy[endpoint] = mockServerProxyOptions));
     return apiProxy;
