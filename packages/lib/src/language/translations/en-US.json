@@ -13,6 +13,8 @@
     "notSet": "(Not set)",
     "filter.date.since": "Since {date}",
     "filter.date.until": "Until {date}",
+    "calendar.previousMonth": "Previous month",
+    "calendar.nextMonth": "Next month",
     "button.resetAll": "Reset all",
     "editFilter": "Edit filter",
     "balanceAccount": "Balance account",

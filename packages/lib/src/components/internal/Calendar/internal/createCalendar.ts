@@ -1,7 +1,7 @@
 import createCalendarIterable from './createCalendarIterable';
 import {
     CalendarConfig,
-    CalendarDay,
+    CalendarDay, CalendarIterable,
     CalendarMonthView,
     CalendarMonthWeekView,
     CalendarShift,
@@ -14,8 +14,16 @@ import {
     getMonthEndDate,
     getMonthFirstDayOffset,
     getMonthTimestamp,
-    getWeekendDays
+    getWeekendDays,
+    MAX_MONTH_DAYS
 } from '../utils';
+
+const DAY_OF_THE_WEEK_FORMATS = ['long', 'short', 'narrow'] as const;
+
+const computeMonthNumberOfDays = (numberOfWeeks: number) => Math.max(4, Math.min(numberOfWeeks, 6)) * 7;
+const getFixedMonthNumberOfDays = () => MAX_MONTH_DAYS;
+const isFirstWeekDayAt = (index: number) => !(index % 7);
+const isWeekendFactory = (weekends: readonly [CalendarDay, CalendarDay]) => (index: number) => weekends.includes((index % 7) as CalendarDay);
 
 const createCalendar = (config: CalendarConfig, offset: number) => {
     const cachedMonths: CalendarMonthView[] = [];
@@ -24,18 +32,16 @@ const createCalendar = (config: CalendarConfig, offset: number) => {
     const transitionWeeks: number[] = [];
     const timeSlice = getCalendarTimeSliceParameters(config, offset);
 
-    const { firstWeekDay = 0, locale } = config;
+    const { dynamicMonthWeeks, firstWeekDay = 0, locale } = config;
     const [ numberOfMonths, originTimestamp, minOffset, maxOffset ] = timeSlice;
-    const calendarWeekends = getWeekendDays(firstWeekDay); // [TODO]: derive this based on locale (if possible)
+    const getMonthNumberOfDays = dynamicMonthWeeks === true ? computeMonthNumberOfDays : getFixedMonthNumberOfDays;
+    const isWeekendAt = isWeekendFactory(getWeekendDays(firstWeekDay)); // [TODO]: derive this based on locale (if possible)
 
     let days = 0;
     let month: number;
     let year: number;
     let calendarStartMonthTimestamp: number;
     let calendarStartMonthOffset = timeSlice[4];
-
-    const isFirstWeekDayAt = (index: number) => !(index % 7);
-    const isWeekendAt = (index: number) => calendarWeekends.includes((index % 7) as CalendarDay);
 
     const getCalendarDateByIndex = (startIndexOffset = 0) => (index: number) => (
         new Date(calendarStartMonthTimestamp + (startIndexOffset + index) * DAY_MS)
@@ -86,19 +92,20 @@ const createCalendar = (config: CalendarConfig, offset: number) => {
             const startIndex = prevEndIndex && prevEndIndex - startDayOffset;
             const endIndex = startDayOffset + endDate;
             const numberOfWeeks = Math.ceil(endIndex / 7);
+            const numberOfDays = getMonthNumberOfDays(numberOfWeeks);
             const startWeekIndex = prevEndWeekIndex && prevEndWeekIndex + (startDayOffset && -1);
-            const endWeekIndex = prevEndWeekIndex = startWeekIndex + numberOfWeeks;
 
-            days = startIndex + numberOfWeeks * 7;
+            days = startIndex + numberOfDays;
             prevEndIndex = startIndex + endIndex;
-            cachedOffsets[i] = [startIndex, startDayOffset, endIndex, startWeekIndex, endWeekIndex] as const;
+            prevEndWeekIndex = startWeekIndex + numberOfWeeks;
+            cachedOffsets[i] = [startIndex, startDayOffset, endIndex, startWeekIndex, startWeekIndex + numberOfDays / 7] as const;
 
             if (startDayOffset > 0 && transitionWeeks[transitionWeekIndex] !== startWeekIndex) {
                 transitionWeeks[++transitionWeekIndex] = startWeekIndex;
             }
 
-            if (endIndex % 7 > 0 && transitionWeeks[transitionWeekIndex] !== endWeekIndex - 1) {
-                transitionWeeks[++transitionWeekIndex] = endWeekIndex - 1;
+            if (endIndex % 7 > 0 && transitionWeeks[transitionWeekIndex] !== prevEndWeekIndex - 1) {
+                transitionWeeks[++transitionWeekIndex] = prevEndWeekIndex - 1;
             }
         }
 
@@ -113,6 +120,14 @@ const createCalendar = (config: CalendarConfig, offset: number) => {
 
     // [TODO]: Clean up calendar iterator properties with reusable logic and cache
     const calendar = createCalendarIterable<string, CalendarView>({
+        daysOfTheWeek: {
+            value: createCalendarIterable<readonly [string, string, string]>({
+                size: { value: 7 },
+            }, index => {
+                const date = new Date(calendar[index] as string);
+                return Object.freeze(DAY_OF_THE_WEEK_FORMATS.map(weekday => date.toLocaleDateString(locale, { weekday })) as [string, string, string]);
+            })
+        },
         isFirstWeekDayAt: { value: isFirstWeekDayAt },
         isWeekendAt: { value: isWeekendAt },
         months: {

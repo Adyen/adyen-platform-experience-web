@@ -1,26 +1,36 @@
+ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
 .calendar {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(16rem, 20rem));
   justify-content: center;
 
-  &__month {
+  &-month {
     margin-inline: 2rem;
     text-align: center;
 
-    &-name {
+    &__name {
       font-size: 1.25em;
       font-weight: 600;
       margin-block-end: 2rem;
     }
-  }
 
-  &__week {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    justify-content: space-around;
+    &__grid-row {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      justify-content: space-around;
 
-    &:not(:last-child) {
-      margin-bottom: 0.75rem;
+      &:not(:last-child) {
+        margin-bottom: 0.75rem;
+      }
+    }
+
+    &__day-of-week {
+      text-decoration: none;
     }
   }
 

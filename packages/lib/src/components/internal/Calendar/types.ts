@@ -53,6 +53,7 @@ export interface CalendarMonthView extends CalendarMonthDaysView {
 }
 
 export interface CalendarView extends CalendarDaysView {
+    daysOfTheWeek: CalendarIterable<readonly [string, string, string]>;
     months: CalendarIterable<CalendarMonthView>;
     weeks: CalendarIterable<CalendarWeekView>;
 }
@@ -68,9 +69,8 @@ export interface CalendarConfig {
 }
 
 export interface CalendarProps extends CalendarConfig {
-    allowSelection?: boolean;
-    explicitWeeks?: boolean;
     getCustomRenderProps?: () => void;
     onlyMonthDays?: boolean;
+    onSelected?: (date: any) => void;
     trackCurrentDay?: boolean;
 }

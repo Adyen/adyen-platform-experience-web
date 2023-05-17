@@ -1,43 +1,95 @@
 import classnames from 'classnames';
 import useCalendar from './internal/useCalendar';
 import useCoreContext from '../../../core/Context/useCoreContext';
-import { CalendarProps } from './types';
-import { useMemo } from 'preact/hooks';
+import { CalendarProps, CalendarShift } from './types';
+import { useCallback, useMemo, useRef } from 'preact/hooks';
+import { Fragment } from 'preact';
+import Button from '../Button';
 import './Calendar.scss';
+
+const CalendarDate = ({ children, key }: any) => <Fragment key={key}>{ children }</Fragment>;
+const InteractiveCalendarDate = ({ children, ...props }: any) => <button {...props} tabIndex={-1}>{ children }</button>;
 
 export default function Calendar(props: CalendarProps) {
     const { i18n } = useCoreContext();
-    const [ calendar, shiftCalendar ] = useCalendar(useMemo(() => ({ ...props, locale: i18n.locale }), [i18n, props]));
+    const { calendar, postshift, preshift } = useCalendar(useMemo(() => ({ ...props, locale: i18n.locale }), [i18n, props]));
+    const calendarShift = useRef(CalendarShift.MONTH);
 
-    return <>
-        <button onClick={() => shiftCalendar(-1)}>&laquo;</button>
+    const CalendarDay = useMemo(() => typeof props.onSelected === 'function' ? InteractiveCalendarDate : CalendarDate, [props.onSelected]);
+    const leftShiftCalendar = useCallback(() => preshift(calendarShift.current), []);
+    const rightShiftCalendar = useCallback(() => postshift(calendarShift.current), []);
+
+    const captureNavigationClick = useCallback((evt: Event) => {
+        if ((evt.target as HTMLElement).closest('button')) {
+            if ((evt as MouseEvent).shiftKey) calendarShift.current = CalendarShift.YEAR;
+            else if ((evt as MouseEvent).altKey) calendarShift.current = CalendarShift.WINDOW;
+            else calendarShift.current = CalendarShift.MONTH;
+        }
+    }, []);
+
+    return <div role="grid">
+        <div role="group" onClickCapture={captureNavigationClick} style={{ textAlign: 'center' }}>
+            <Button
+                aria-label={i18n.get('calendar.previousMonth')}
+                variant={'ghost'}
+                // disabled={props.page === 1}
+                classNameModifiers={['circle', 'prev']}
+                onClick={leftShiftCalendar}
+                label={'◀︎'}
+            />
+            <Button
+                aria-label={i18n.get('calendar.nextMonth')}
+                variant={'ghost'}
+                // disabled={!props.hasNextPage}
+                classNameModifiers={['circle', 'next']}
+                onClick={rightShiftCalendar}
+                label={'▶︎'}
+            />
+        </div>
+
         <div className={'calendar'}>{
-            [...calendar.months.map(month => {
-                const monthKey = `${month.year}-${month.month + 1}`;
-                const humanizedMonth = new Date(monthKey).toLocaleDateString(i18n.locale, { month: 'short', year: 'numeric' });
+            [...calendar.months.map(view => {
+                const month = `${view.year}-${(`0` + (view.month + 1)).slice(-2)}`;
+                const humanizedMonth = new Date(month).toLocaleDateString(i18n.locale, { month: 'short', year: 'numeric' });
 
-                return <div key={monthKey} className={'calendar__month'}>
-                    <div className={'calendar__month-name'}>{humanizedMonth}</div>
-                    <div className={'calendar__month-grid'}>{
-                        [...month.weeks.map((week, index) => (
-                            <div key={`${monthKey}:${index}`} className={'calendar__week'}>{
+                return <div key={month} className={'calendar-month'} role="group" aria-label={humanizedMonth}>
+                    <div className={'calendar-month__name'}>
+                        <time dateTime={month}>{humanizedMonth}</time>
+                    </div>
+
+                    <div className={'calendar-month__grid'} role="rowgroup">
+                        <div className={'calendar-month__grid-row'} role="row">{
+                            [...calendar.daysOfTheWeek.map(([long,, short]) => (
+                                <div key={long} role="columnheader" aria-label={long}>
+                                    <abbr className={'calendar-month__day-of-week'} title={long}>{short}</abbr>
+                                </div>
+                            ))]
+                        }</div>
+
+                        <>{[...view.weeks.map((week, index) => (
+                            <div key={`${month}:${index}`} className={'calendar-month__grid-row'} role="row">{
                                 [...week.map((date, index) => {
                                     const isWithinMonth = week.isWithinMonthAt(index);
 
-                                    const classes = classnames('calendar__date', {
+                                    const classes = classnames('calendar-month__grid-cell', {
                                         'calendar__date--first-week-day': week.isFirstWeekDayAt(index),
                                         'calendar__date--weekend': week.isWeekendAt(index),
                                         'calendar__date--within-month': isWithinMonth
                                     });
 
-                                    return <span key={date} className={classes}>{isWithinMonth && +date.slice(-2)}</span>
+                                    return (props.onlyMonthDays !== true || isWithinMonth)
+                                        ? <CalendarDay key={date} role="gridcell" onClick={() => props.onSelected?.(date)}>
+                                            <time className={classes} dateTime={date}>{ +date.slice(-2) }</time>
+                                        </CalendarDay>
+                                        : <CalendarDate key={date}>
+                                            <span className={classes} role="gridcell"></span>
+                                        </CalendarDate>
                                 })]
                             }</div>
-                        ))]
-                    }</div>
+                        ))]}</>
+                    </div>
                 </div>;
             })]
         }</div>
-        <button onClick={() => shiftCalendar(1)}>&raquo;</button>
-    </>;
+    </div>;
 }
