@@ -7,7 +7,7 @@ import { AccountHolderDetailsProps } from '../types';
 const AccountHolderDetails = ({ accountHolder }: AccountHolderDetailsProps) => {
     return (
         <div className="adyen-fp-account-holder">
-            <p className="adyen-fp-title">Account holder</p>
+            <h1 className="adyen-fp-title">Account holder</h1>
 
             <div className="adyen-fp-details-container">
                 <StatsBar

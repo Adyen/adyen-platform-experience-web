@@ -1,7 +1,5 @@
 import mockedRoutes from './mock-server/src/routes';
-import testRoutes from './test-server/src/routes';
 import express from 'express';
-
 const defaultPort = 8082;
 
 export const app = (expressInstance, options = []) => {
@@ -13,9 +11,8 @@ export const app = (expressInstance, options = []) => {
         res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
         next();
     });
-    const routes = process.env.MOCKED_MODE ? mockedRoutes : mockedRoutes;
 
-    app.use(routes);
+    app.use(mockedRoutes);
 
     if (options.listen) {
         const port = process.env.PORT || defaultPort;

@@ -6,8 +6,9 @@ import '../../assets/style/style.scss';
 
 (async () => {
     try {
-        const transactions = await getMyTransactions();
         const adyenFP = await AdyenFP();
+
+        const transactions = await getMyTransactions();
 
         adyenFP
             .create(transactionList, {
@@ -26,6 +27,7 @@ import '../../assets/style/style.scss';
                     window.location.assign(`/accountHolder/?id=${id}`);
                 },
                 onUpdateTransactions: async (params, component) => {
+                    console.log(params);
                     const transactions = await getMyTransactions(params);
                     component.update({ transactions });
                 },

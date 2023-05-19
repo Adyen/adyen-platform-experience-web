@@ -5,9 +5,9 @@ export const httpPost = (endpoint, data) =>
         method: 'POST',
         headers: {
             Accept: 'application/json, text/plain, */*',
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
         },
-        body: JSON.stringify(data)
+        body: JSON.stringify(data),
     }).then(response => response.json());
 
 export const httpGet = (endpoint, request = {}) => {
@@ -24,7 +24,7 @@ export const httpGet = (endpoint, request = {}) => {
         signal: request.signal,
         headers: {
             Accept: 'application/json, text/plain, */*',
-            'Content-Type': 'application/json'
-        }
+            'Content-Type': 'application/json',
+        },
     }).then(response => response.json());
 };

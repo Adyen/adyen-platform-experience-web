@@ -3,6 +3,8 @@ import { preact } from '@preact/preset-vite';
 import { resolve } from 'node:path';
 import { lstat, readdir } from 'node:fs/promises';
 import { mockApiProxies, mockServerPlugin } from './packages/server/proxy/mockApiProxies';
+import { getEnvironment } from './envs/getEnvs';
+import { realApiProxies } from './packages/server/proxy/realApiProxies';
 
 const playgroundDir = resolve(__dirname, 'packages/playground/src/pages');
 async function getPlaygroundEntrypoints() {
@@ -23,7 +25,8 @@ async function getPlaygroundEntrypoints() {
 }
 
 export default defineConfig(async ({ mode }) => {
-    const isDev = mode === 'development';
+    const { lemApi, BTLApi, BCLApi, playground, mockServer } = getEnvironment(mode);
+
     return {
         root: playgroundDir,
         base: './',
@@ -48,7 +51,9 @@ export default defineConfig(async ({ mode }) => {
         server: {
             host: 'localhost',
             port: 3030,
-            proxy: mockApiProxies('localhost', 8082),
+            https: false,
+            proxy:
+                mode === 'mocked' ? mockApiProxies('localhost', 8082) : mode === 'development' ? realApiProxies(lemApi, BTLApi, BCLApi) : undefined,
         },
         preview: {
             host: 'localhost',
@@ -56,8 +61,7 @@ export default defineConfig(async ({ mode }) => {
             proxy: mockApiProxies('localhost', 8082),
         },
         define: {
-            'process.env.__CLIENT_KEY__': JSON.stringify(process.env.CLIENT_KEY || null),
-            'process.env.__CLIENT_ENV__': JSON.stringify(process.env.CLIENT_ENV || 'test'),
+            'process.env.VITE_BALANCE_PLATFORM': JSON.stringify(BTLApi.balancePlatform || null),
         },
     };
 });

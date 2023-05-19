@@ -1,12 +1,32 @@
 import { httpGet } from './http';
 
-export const getMyTransactions = request =>
-    httpGet('transactions', request)
+export const getMyTransactions = (request = {}) => {
+    const LIMIT = 20;
+    const {
+        createdSince = '2022-05-30T15:07:40Z',
+        createdUntil = new Date().toISOString(),
+        balancePlatform = process.env.VITE_BALANCE_PLATFORM,
+        accountHolderId,
+        balanceAccountId,
+        cursor,
+    } = request;
+
+    const searchParams = {
+        limit: LIMIT,
+        ...(createdSince && { createdSince }),
+        ...(createdUntil && { createdUntil }),
+        ...(balancePlatform && { balancePlatform }),
+        ...(accountHolderId && { accountHolderId }),
+        ...(balanceAccountId && { balanceAccountId }),
+        ...(cursor && { cursor }),
+    };
+    return httpGet('transactions', searchParams)
         .then(response => {
             if (response.error) throw 'Could not retrieve the list of transactions';
             return response;
         })
         .catch(console.error);
+};
 
 export const getTransactionById = id =>
     httpGet(`transactions/${id}`)
