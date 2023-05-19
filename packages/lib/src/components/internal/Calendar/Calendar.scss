@@ -1,9 +1,3 @@
-ol {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
 .calendar {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(16rem, 20rem));
@@ -16,30 +10,59 @@ ol {
     &__name {
       font-size: 1.25em;
       font-weight: 600;
-      margin-block-end: 2rem;
+      margin-block-end: 0.875rem;
     }
 
     &__grid-row {
       display: grid;
       grid-template-columns: repeat(7, 1fr);
       justify-content: space-around;
+    }
 
-      &:not(:last-child) {
-        margin-bottom: 0.75rem;
+    &__grid-cell {
+      position: relative;
+
+      &::before {
+        content: '';
+        display: block;
+        padding-top: 100%;
+        z-index: -1;
+      }
+
+      > :not(:only-child) {
+        display: none;
+      }
+
+      > :only-child {
+        align-items: center;
+        display: flex;
+        inset: 0;
+        justify-content: center;
+        position: absolute;
+      }
+
+      .adyen-fp-button {
+        border-radius: 50%;
+        height: auto;
+        overflow: hidden;
+        width: auto;
       }
     }
 
     &__day-of-week {
+      font-size: 0.875em;
+      font-weight: 700;
       text-decoration: none;
     }
   }
 
   &__date {
     $self: &;
+    $today: #{$self}--today;
     $weekend: #{$self}--weekend;
     $first-week-day: #{$self}--first-week-day;
 
-    color: black;
+    color: #4a4a4a;
     font-size: 0.875em;
 
     &#{$weekend} {
@@ -48,6 +71,28 @@ ol {
 
     &#{$first-week-day} {
       color: red;
+    }
+
+    &#{$today} {
+      align-items: center;
+      display: flex;
+      height: calc(100% - 2px);
+      justify-content: center;
+      position: relative;
+      width: calc(100% - 2px);
+
+      &:not(:hover) {
+        color: white;
+      }
+
+      &::before {
+        background: red;
+        border-radius: 50%;
+        content: '';
+        inset: 0;
+        position: absolute;
+        z-index: -1;
+      }
     }
   }
 }

@@ -1,7 +1,7 @@
 import createCalendarIterable from './createCalendarIterable';
 import {
     CalendarConfig,
-    CalendarDay, CalendarIterable,
+    CalendarDay,
     CalendarMonthView,
     CalendarMonthWeekView,
     CalendarShift,
@@ -21,6 +21,7 @@ import {
 const DAY_OF_THE_WEEK_FORMATS = ['long', 'short', 'narrow'] as const;
 
 const computeMonthNumberOfDays = (numberOfWeeks: number) => Math.max(4, Math.min(numberOfWeeks, 6)) * 7;
+const getCalendarDateString = (date: Date) => date.toISOString().replace(/T[\w\W]*$/, '');
 const getFixedMonthNumberOfDays = () => MAX_MONTH_DAYS;
 const isFirstWeekDayAt = (index: number) => !(index % 7);
 const isWeekendFactory = (weekends: readonly [CalendarDay, CalendarDay]) => (index: number) => weekends.includes((index % 7) as CalendarDay);
@@ -43,10 +44,8 @@ const createCalendar = (config: CalendarConfig, offset: number) => {
     let calendarStartMonthTimestamp: number;
     let calendarStartMonthOffset = timeSlice[4];
 
-    const getCalendarDateByIndex = (startIndexOffset = 0) => (index: number) => (
+    const getCalendarDateByIndex = (startIndexOffset = 0) => (index: number) => getCalendarDateString(
         new Date(calendarStartMonthTimestamp + (startIndexOffset + index) * DAY_MS)
-            .toISOString()
-            .replace(/T[\w\W]*$/, '')
     );
 
     const shiftCalendar = (monthOffset: number, shift: CalendarShift = CalendarShift.MONTH) => {
@@ -196,3 +195,4 @@ const createCalendar = (config: CalendarConfig, offset: number) => {
 };
 
 export default createCalendar;
+export { getCalendarDateString };

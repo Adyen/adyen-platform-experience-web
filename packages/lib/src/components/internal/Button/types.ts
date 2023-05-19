@@ -16,6 +16,7 @@ export interface ButtonProps {
     href?: string;
     target?: string;
     rel?: string;
+    tabIndex?: number;
     onClick?: (e?: Event, callbacks?: { [k: string]: (...args: any) => void }) => void;
 }
 

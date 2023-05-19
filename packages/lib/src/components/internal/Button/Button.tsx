@@ -31,7 +31,7 @@ class Button extends Component<ButtonProps, ButtonState> {
         }, delay);
     };
 
-    render({ classNameModifiers = [], disabled, href, icon, inline, label, status, variant }: ButtonProps, { completed }: { completed: boolean }) {
+    render({ classNameModifiers = [], disabled, href, icon, inline, label, status, tabIndex, variant }: ButtonProps, { completed }: { completed: boolean }) {
         const { i18n } = useCoreContext();
 
         const buttonIcon = icon ? <img className="adyen-fp-button__icon" src={icon} alt="" aria-hidden="true" /> : '';
@@ -66,14 +66,14 @@ class Button extends Component<ButtonProps, ButtonState> {
 
         if (href) {
             return (
-                <a className={buttonClasses} href={href} disabled={disabled} target={this.props.target} rel={this.props.rel}>
+                <a className={buttonClasses} href={href} disabled={disabled} tabIndex={tabIndex} target={this.props.target} rel={this.props.rel}>
                     {buttonText}
                 </a>
             );
         }
 
         return (
-            <button className={buttonClasses} type="button" disabled={disabled} onClick={this.onClick}>
+            <button className={buttonClasses} type="button" disabled={disabled} onClick={this.onClick} tabIndex={tabIndex}>
                 {buttonText}
                 {status !== 'loading' && status !== 'redirect' && this.props.children}
             </button>

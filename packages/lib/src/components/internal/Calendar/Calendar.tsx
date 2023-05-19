@@ -7,12 +7,14 @@ import { Fragment } from 'preact';
 import Button from '../Button';
 import './Calendar.scss';
 
-const CalendarDate = ({ children, key }: any) => <Fragment key={key}>{ children }</Fragment>;
-const InteractiveCalendarDate = ({ children, ...props }: any) => <button {...props} tabIndex={-1}>{ children }</button>;
+const CalendarDate = ({ children }: any) => <Fragment>{ children }</Fragment>;
+const InteractiveCalendarDate = ({ children, ...props }: any) => (
+    <Button variant={'ghost'} classNameModifiers={['circle']} tabIndex={-1} {...props}>{ children }</Button>
+);
 
 export default function Calendar(props: CalendarProps) {
     const { i18n } = useCoreContext();
-    const { calendar, postshift, preshift } = useCalendar(useMemo(() => ({ ...props, locale: i18n.locale }), [i18n, props]));
+    const { calendar, isToday, postshift, preshift } = useCalendar(useMemo(() => ({ ...props, locale: i18n.locale }), [i18n, props]));
     const calendarShift = useRef(CalendarShift.MONTH);
 
     const CalendarDay = useMemo(() => typeof props.onSelected === 'function' ? InteractiveCalendarDate : CalendarDate, [props.onSelected]);
@@ -60,7 +62,7 @@ export default function Calendar(props: CalendarProps) {
                     <div className={'calendar-month__grid'} role="rowgroup">
                         <div className={'calendar-month__grid-row'} role="row">{
                             [...calendar.daysOfTheWeek.map(([long,, short]) => (
-                                <div key={long} role="columnheader" aria-label={long}>
+                                <div key={long} className={'calendar-month__grid-cell'} role="columnheader" aria-label={long}>
                                     <abbr className={'calendar-month__day-of-week'} title={long}>{short}</abbr>
                                 </div>
                             ))]
@@ -70,20 +72,23 @@ export default function Calendar(props: CalendarProps) {
                             <div key={`${month}:${index}`} className={'calendar-month__grid-row'} role="row">{
                                 [...week.map((date, index) => {
                                     const isWithinMonth = week.isWithinMonthAt(index);
+                                    const isTodayDate = isToday(date);
+                                    const extraProps = isTodayDate ? { role: 'gridcell', tabIndex: 0 } : {};
 
-                                    const classes = classnames('calendar-month__grid-cell', {
+                                    const classes = classnames('calendar__date', {
                                         'calendar__date--first-week-day': week.isFirstWeekDayAt(index),
+                                        'calendar__date--today': isTodayDate,
                                         'calendar__date--weekend': week.isWeekendAt(index),
                                         'calendar__date--within-month': isWithinMonth
                                     });
 
-                                    return (props.onlyMonthDays !== true || isWithinMonth)
-                                        ? <CalendarDay key={date} role="gridcell" onClick={() => props.onSelected?.(date)}>
-                                            <time className={classes} dateTime={date}>{ +date.slice(-2) }</time>
-                                        </CalendarDay>
-                                        : <CalendarDate key={date}>
-                                            <span className={classes} role="gridcell"></span>
-                                        </CalendarDate>
+                                    return <div key={date} className={'calendar-month__grid-cell'}>{
+                                        (props.onlyMonthDays !== true || isWithinMonth) && (
+                                            <CalendarDay {...extraProps} onClick={() => props.onSelected?.(date)}>
+                                                <time className={classes} dateTime={date}>{ +date.slice(-2) }</time>
+                                            </CalendarDay>
+                                        )
+                                    }</div>
                                 })]
                             }</div>
                         ))]}</>
