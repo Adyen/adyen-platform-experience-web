@@ -14,7 +14,7 @@ const InteractiveCalendarDate = ({ children, ...props }: any) => (
 
 export default function Calendar(props: CalendarProps) {
     const { i18n } = useCoreContext();
-    const { calendar, isToday, postshift, preshift } = useCalendar(useMemo(() => ({ ...props, locale: i18n.locale }), [i18n, props]));
+    const { calendar, postshift, preshift, today } = useCalendar(useMemo(() => ({ ...props, locale: i18n.locale }), [i18n, props]));
     const calendarShift = useRef(CalendarShift.MONTH);
 
     const CalendarDay = useMemo(() => typeof props.onSelected === 'function' ? InteractiveCalendarDate : CalendarDate, [props.onSelected]);
@@ -29,8 +29,8 @@ export default function Calendar(props: CalendarProps) {
         }
     }, []);
 
-    return <div role="grid">
-        <div role="group" onClickCapture={captureNavigationClick} style={{ textAlign: 'center' }}>
+    return <div role="group" aria-label="calendar">
+        <div role="group" aria-label="calendar navigation" onClickCapture={captureNavigationClick} style={{ textAlign: 'center' }}>
             <Button
                 aria-label={i18n.get('calendar.previousMonth')}
                 variant={'ghost'}
@@ -49,52 +49,59 @@ export default function Calendar(props: CalendarProps) {
             />
         </div>
 
-        <div className={'calendar'}>{
+        <ol className={'calendar'} role="group" aria-label="calendar months">{
             [...calendar.months.map(view => {
                 const month = `${view.year}-${(`0` + (view.month + 1)).slice(-2)}`;
                 const humanizedMonth = new Date(month).toLocaleDateString(i18n.locale, { month: 'short', year: 'numeric' });
 
-                return <div key={month} className={'calendar-month'} role="group" aria-label={humanizedMonth}>
+                return <li key={month} className={'calendar-month'}>
                     <div className={'calendar-month__name'}>
-                        <time dateTime={month}>{humanizedMonth}</time>
+                        <time dateTime={month} aria-hidden="true">{humanizedMonth}</time>
                     </div>
 
-                    <div className={'calendar-month__grid'} role="rowgroup">
-                        <div className={'calendar-month__grid-row'} role="row">{
-                            [...calendar.daysOfTheWeek.map(([long,, short]) => (
-                                <div key={long} className={'calendar-month__grid-cell'} role="columnheader" aria-label={long}>
-                                    <abbr className={'calendar-month__day-of-week'} title={long}>{short}</abbr>
-                                </div>
+                    <table className={'calendar-month__grid'} role="grid" aria-label={humanizedMonth}>
+                        <thead>
+                            <tr className={'calendar-month__grid-row'}>{
+                                [...calendar.daysOfTheWeek.map(([long,, short]) => (
+                                    <th key={long} className={'calendar-month__grid-cell'} scope="col" aria-label={long}>
+                                        <abbr className={'calendar-month__day-of-week'} title={long}>{short}</abbr>
+                                    </th>
+                                ))]
+                            }</tr>
+                        </thead>
+
+                        <tbody>{
+                            [...view.weeks.map((week, index) => (
+                                <tr key={`${month}:${index}`} className={'calendar-month__grid-row'}>{
+                                    [...week.map((date, index) => {
+                                        const isWithinMonth = week.isWithinMonthAt(index);
+                                        const isTodayDate = date === today;
+
+                                        const classes = classnames('calendar__date', {
+                                            'calendar__date--first-week-day': week.isFirstWeekDayAt(index),
+                                            'calendar__date--today': isTodayDate,
+                                            'calendar__date--weekend': week.isWeekendAt(index),
+                                            'calendar__date--within-month': isWithinMonth
+                                        });
+
+                                        const extraProps = isTodayDate
+                                            ? { 'aria-selected': 'true', role: 'gridcell', tabIndex: 0 }
+                                            : { tabIndex: -1 };
+
+                                        return <td key={date} className={'calendar-month__grid-cell'} {...extraProps}>{
+                                            (props.onlyMonthDays !== true || isWithinMonth) && (
+                                                <CalendarDay onClick={() => props.onSelected?.(date)}>
+                                                    <time className={classes} dateTime={date}>{ +date.slice(-2) }</time>
+                                                </CalendarDay>
+                                            )
+                                        }</td>
+                                    })]
+                                }</tr>
                             ))]
-                        }</div>
-
-                        <>{[...view.weeks.map((week, index) => (
-                            <div key={`${month}:${index}`} className={'calendar-month__grid-row'} role="row">{
-                                [...week.map((date, index) => {
-                                    const isWithinMonth = week.isWithinMonthAt(index);
-                                    const isTodayDate = isToday(date);
-                                    const extraProps = isTodayDate ? { role: 'gridcell', tabIndex: 0 } : {};
-
-                                    const classes = classnames('calendar__date', {
-                                        'calendar__date--first-week-day': week.isFirstWeekDayAt(index),
-                                        'calendar__date--today': isTodayDate,
-                                        'calendar__date--weekend': week.isWeekendAt(index),
-                                        'calendar__date--within-month': isWithinMonth
-                                    });
-
-                                    return <div key={date} className={'calendar-month__grid-cell'}>{
-                                        (props.onlyMonthDays !== true || isWithinMonth) && (
-                                            <CalendarDay {...extraProps} onClick={() => props.onSelected?.(date)}>
-                                                <time className={classes} dateTime={date}>{ +date.slice(-2) }</time>
-                                            </CalendarDay>
-                                        )
-                                    }</div>
-                                })]
-                            }</div>
-                        ))]}</>
-                    </div>
-                </div>;
+                        }</tbody>
+                    </table>
+                </li>;
             })]
-        }</div>
+        }</ol>
     </div>;
 }

@@ -1,4 +1,5 @@
-import { useEffect, useRef } from 'preact/hooks';
+import { useEffect, useState } from 'preact/hooks';
+import { getCalendarDateString } from './createCalendar';
 
 const timeSecondInterval = (() => {
     let controller: AbortController;
@@ -51,18 +52,23 @@ const timeSecondInterval = (() => {
     };
 })();
 
-const useTimeNow = () => {
-    const now = useRef(new Date());
+const useToday = (watch = false) => {
+    const [ today, setToday ] = useState(getCalendarDateString(new Date()));
 
     useEffect(() => {
-        let disconnectTimeObserver: (() => void) | null = timeSecondInterval(() => (now.current = new Date()));
-        return () => {
-            disconnectTimeObserver?.();
-            disconnectTimeObserver = null;
-        };
-    }, []);
+        if (watch) {
+            let disconnectTimeObserver: (() => void) | null = timeSecondInterval(() => {
+                setToday(getCalendarDateString(new Date()));
+            });
 
-    return now;
+            return () => {
+                disconnectTimeObserver?.();
+                disconnectTimeObserver = null;
+            };
+        }
+    }, [watch]);
+
+    return today;
 };
 
-export default useTimeNow;
+export default useToday;
