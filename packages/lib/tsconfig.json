@@ -1,19 +1,21 @@
 {
     "extends": "../../tsconfig.json",
     "compilerOptions": {
+        "composite": true,
+
+        "baseUrl": "./",
         "declarationMap": true,
         "incremental": true,
         "noEmitOnError": true,
         "skipLibCheck": true,
 
-        "isolatedModules": true,
-        "moduleResolution": "node",
         "noEmit": true,
 
         "sourceMap": true,
 
         "declaration": true,
-        "declarationDir": "../../dist/types",
+        "outDir": "./dist",
+        "declarationDir": "./dist/types",
 
         "jsxImportSource": "preact",
         "jsx": "react-jsx",
@@ -22,6 +24,6 @@
             "@/*": ["./src/*"]
         }
     },
-    "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.d.ts", "tests/**/*.ts"],
-    "exclude": ["node_modules", "**/*.test.*"]
+    "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.d.ts", "tests/**/*.ts", "src/language/translations/*.json", "./scss.d.ts"],
+    "exclude": ["node_modules", "**/*.test.*", "dist"]
 }

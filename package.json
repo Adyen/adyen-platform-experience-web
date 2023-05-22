@@ -18,7 +18,7 @@
         "./packages/*"
     ],
     "scripts": {
-        "start": "concurrently --kill-others-on-fail \"npm run type:watch\" \"npm run start -w @adyen/adyen-fp-web-playground\" --names \"lib,tsc-lib,playground\" -c blue,green,cyan,yellow",
+        "start": "concurrently --kill-others-on-fail \"npm run types:watch\" \"npm run types:watch -w @adyen/adyen-fp-web-playground\" \"npm run start -w @adyen/adyen-fp-web-playground\" --names \"tsc-lib,tsc-playground,playground\" -c blue,green,cyan,yellow",
         "build": "rm -rf dist && concurrently \"vite build\" -n esm/cjs",
         "build:demo": "vite build --mode demo",
         "demo": "npm run build:demo && npm run demo:serve",
@@ -30,7 +30,7 @@
         "test:coverage": "npm run test:coverage -w @adyen/adyen-fp-web",
         "test:e2e": "npm run build && npm test:e2e -w @adyen/adyen-fp-web-e2e ",
         "type-check": "npm run type-check -w @adyen/adyen-fp-web",
-        "type:watch": "npm run types:watch -w @adyen/adyen-fp-web",
+        "types:watch": "npm run types:watch -w @adyen/adyen-fp-web",
         "prepare": "husky install",
         "format:all": "npm run format -w @adyen/adyen-fp-web-playground && npm run format -w @adyen/adyen-fp-web"
     },

@@ -9,9 +9,12 @@
         "esModuleInterop": true,
         "strict": true,
         "noUncheckedIndexedAccess": true,
-        "baseUrl": "./",
         "lib": ["dom", "esnext"],
         "stripInternal": true,
         "importHelpers": true
-    }
+    },
+    "paths": {
+        "@adyen/adyen-fp-web": ["packages/lib/src"]
+    },
+    "files": ["packages/lib/declarations/scss.d.ts", "packages/lib/declarations/whatwg-fetch.d.ts"]
 }

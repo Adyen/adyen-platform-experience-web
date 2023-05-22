@@ -17,10 +17,10 @@ class Core {
     };
     public session?: BPSession;
     public modules: any;
-    public options: CoreOptions;
+    public options?: CoreOptions;
     public components: BaseElement<any>[] = [];
 
-    constructor(options: CoreOptions) {
+    constructor(options?: CoreOptions) {
         this.create = this.create.bind(this);
         this.options = options;
         this.setOptions(options);
@@ -57,7 +57,6 @@ class Core {
      * @returns new UIElement
      */
 
-    public create(component: string, options: any): any;
     public create<ComponentName extends keyof ComponentMap>(
         component: ComponentName,
         options: ComponentOptions<ComponentName>
@@ -108,7 +107,7 @@ class Core {
      * @param options - the config object passed when AdyenFP is initialised
      * @returns this
      */
-    private setOptions = (options: CoreOptions): this => {
+    private setOptions = (options?: CoreOptions): this => {
         this.options = { ...this.options, ...options };
         this.modules = {
             // analytics: new Analytics(this.options),

@@ -17,17 +17,16 @@ import '../../assets/style/style.scss';
                     // do something here with the updated filters
                     // avoid refetching the transactions here
                 },
-                onTransactionSelected: ({ id }) => {
+                onTransactionSelected: ({ id }: { id: string }) => {
                     window.location.assign(`/transaction/?id=${id}`);
                 },
-                onBalanceAccountSelected: ({ id }) => {
+                onBalanceAccountSelected: ({ id }: { id: string }) => {
                     window.location.assign(`/balanceAccount/?id=${id}`);
                 },
-                onAccountSelected: ({ id }) => {
+                onAccountSelected: ({ id }: { id: string }) => {
                     window.location.assign(`/accountHolder/?id=${id}`);
                 },
-                onUpdateTransactions: async (params, component) => {
-                    console.log(params);
+                onUpdateTransactions: async (params: Record<string, any>, component: any) => {
                     const transactions = await getMyTransactions(params);
                     component.update({ transactions });
                 },

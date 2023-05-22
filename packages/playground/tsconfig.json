@@ -2,15 +2,17 @@
     "extends": "../../tsconfig.json",
     "compilerOptions": {
         "checkJs": false,
+        "jsx": "react-jsx",
+        "jsxImportSource": "preact",
 
-        "outDir": "./dist/",
+        "outDir": "dist",
         "declaration": true,
-
+        "declarationDir": "dist/types",
         "strictPropertyInitialization": false,
         "suppressImplicitAnyIndexErrors": true,
 
         "isolatedModules": true
     },
     "include": ["*.ts", "**/*.ts", "**/*.tsx", "**/*.d.ts"],
-    "exclude": ["node_modules", "**/*.test.*"]
+    "exclude": ["node_modules", "**/*.test.*", "dist"]
 }

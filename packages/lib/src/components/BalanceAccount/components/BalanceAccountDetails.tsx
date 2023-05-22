@@ -69,7 +69,6 @@ function BalanceAccountDetails(props: BalanceAccountDetailsProps) {
                     </div>
                 </div>
             </div>
-
             <pre>
                 <code>{JSON.stringify(balanceAccount, null, 2)}</code>
             </pre>

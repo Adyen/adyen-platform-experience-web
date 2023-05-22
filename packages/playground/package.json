@@ -21,7 +21,7 @@
         "vite": "vite dev",
         "start": "vite dev --config ../../vite.config.ts",
         "dev-server": "cross-env NODE_ENV=development vite dev",
-        "type-check": "tsc --noEmit",
+        "type-check": "tsc --watch --preserveWatchOutput",
         "types:watch": "npm run type-check -- --watch",
         "start:webpack": "npm run dev-server",
         "start:mock": "vite dev --mode mocked --config ../../vite.config.ts",
