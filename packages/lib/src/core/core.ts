@@ -66,7 +66,7 @@ class Core {
     public create(component: any, options?: any): any {
         if (typeof component === 'string') {
             const props = this.getPropsForComponent(options);
-            isKeyOfComponent(component) ? this.handleCreate<typeof component>(component, props) : this.handleCreateError();
+            return isKeyOfComponent(component) ? this.handleCreate<typeof component>(component, props) : this.handleCreateError();
         } else {
             const props = this.getPropsForComponent(options);
             return component ? this.handleCreate<typeof component>(component, props) : this.handleCreateError();
@@ -180,6 +180,7 @@ class Core {
              * 2. the options that have been passed to the final call of this function (see comment on \@param, above)
              */
             const component = new Component({ ...globalOptions, ...options });
+
             return component;
         }
 
