@@ -30,6 +30,6 @@ Vagrantfile
 .vagrant
 
 # The `outDir` for declarations
-lib/
+lib/dist
 # Build cache manifests
 *.tsbuildinfo

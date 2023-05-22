@@ -18,7 +18,7 @@
         "./packages/*"
     ],
     "scripts": {
-        "start": "concurrently --kill-others-on-fail \"npm run start -w @adyen/adyen-fp-web\" \"npm run type:watch\" \"npm run start -w @adyen/adyen-fp-web-playground\" --names \"lib,tsc-lib,playground\" -c blue,green,cyan,yellow",
+        "start": "concurrently --kill-others-on-fail \"npm run type:watch\" \"npm run start -w @adyen/adyen-fp-web-playground\" --names \"lib,tsc-lib,playground\" -c blue,green,cyan,yellow",
         "build": "npm run build -w @adyen/adyen-fp-web",
         "start:mocked": "concurrently --kill-others-on-fail \"npm run type:watch\" \"npm run start -w @adyen/adyen-fp-web\" \"npm run start:mock -w @adyen/adyen-fp-web-playground\" --names \"lib-types,lib,playground\" -c blue,green,cyan,yellow",
         "lint": "npm run lint -w @adyen/adyen-fp-web",

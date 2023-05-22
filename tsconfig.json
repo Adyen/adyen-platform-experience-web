@@ -1,0 +1,17 @@
+{
+    "compilerOptions": {
+        "allowJs": true,
+        "moduleResolution": "node",
+        "module": "esnext",
+        "target": "esnext",
+        "resolveJsonModule": true,
+        "allowSyntheticDefaultImports": true,
+        "esModuleInterop": true,
+        "strict": true,
+        "noUncheckedIndexedAccess": true,
+        "baseUrl": "./",
+        "lib": ["dom", "esnext"],
+        "stripInternal": true,
+        "importHelpers": true
+    }
+}

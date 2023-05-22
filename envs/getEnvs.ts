@@ -14,16 +14,12 @@ const parseEnv = (env: Record<string, string>) => ({
     BTLApi: {
         url: env.BTL_API_URL ?? '',
         version: env.LEM_API_VERSION ?? '',
-        username: env.WS_USER ?? '',
-        password: env.VITE_BASIC_PASS ?? '',
         balancePlatform: env.VITE_BALANCE_PLATFORM ?? '',
         apiKey: env.VITE_API_KEY ?? '',
     },
     BCLApi: {
         url: env.BCL_API_URL ?? '',
         version: env.KYC_API_VERSION ?? '',
-        username: env.WS_USER ?? '',
-        password: env.VITE_BASIC_PASS ?? '',
         balancePlatform: env.VITE_BALANCE_PLATFORM ?? '',
         apiKey: env.VITE_API_KEY ?? '',
     },

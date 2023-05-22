@@ -1,32 +1,23 @@
 {
+    "extends": "../../tsconfig.json",
     "compilerOptions": {
         "declarationMap": true,
         "incremental": true,
         "noEmitOnError": true,
         "skipLibCheck": true,
-        //ECMAScript interoperability
-        "module": "esnext",
-        "target": "esnext",
-        "resolveJsonModule": true,
-        "allowSyntheticDefaultImports": true,
-        "esModuleInterop": true,
+
         "isolatedModules": true,
         "moduleResolution": "node",
         "noEmit": true,
 
-        "stripInternal": true,
-        "importHelpers": true,
         "sourceMap": true,
 
         "declaration": true,
         "declarationDir": "./dist/types",
 
-        "jsx": "react-jsx",
         "jsxImportSource": "preact",
-        "allowJs": true,
+        "jsx": "react-jsx",
 
-        "baseUrl": "./",
-        "lib": ["dom", "esnext"],
         "paths": {
             "@/*": ["./src/*"]
         }

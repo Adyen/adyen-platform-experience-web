@@ -4,8 +4,8 @@ import getHeaders from '../utils/getHeaders';
 interface ApiOptions {
     url: string;
     version?: string;
-    username: string;
-    password: string;
+    username?: string;
+    password?: string;
     apiKey?: string;
 }
 
