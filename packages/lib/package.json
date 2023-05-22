@@ -17,6 +17,7 @@
     "bugs": {
         "url": "https://support.adyen.com/"
     },
+    "types": "../../dist/types/index.ts",
     "scripts": {
         "start": "vite dev",
         "dev-server": "cross-env NODE_ENV=development webpack --watch --config config/webpack.dev.js",

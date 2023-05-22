@@ -8,6 +8,7 @@ if (process.env.NODE_ENV === 'development') {
 import { CoreOptions } from './core/types';
 import Core from './core';
 import components from './components';
+
 /* eslint-enable */
 
 async function AdyenFP(props: CoreOptions): Promise<Core> {

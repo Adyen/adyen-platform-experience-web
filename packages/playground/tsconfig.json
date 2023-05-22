@@ -12,8 +12,5 @@
         "isolatedModules": true
     },
     "include": ["*.ts", "**/*.ts", "**/*.tsx", "**/*.d.ts"],
-    "paths": {
-        "@adyen/adyen-fp-web-mocks": ["../mocks/index.ts"]
-    },
     "exclude": ["node_modules", "**/*.test.*"]
 }

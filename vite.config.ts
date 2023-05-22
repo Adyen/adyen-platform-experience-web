@@ -5,10 +5,8 @@ import { lstat, readdir } from 'node:fs/promises';
 import { mockApiProxies, mockServerPlugin } from './packages/server/proxy/mockApiProxies';
 import { getEnvironment } from './envs/getEnvs';
 import { realApiProxies } from './packages/server/proxy/realApiProxies';
-import libPkg from './packages/lib/package.json';
 
 const playgroundDir = resolve(__dirname, 'packages/playground/src/pages');
-const externalDependencies = Object.keys(libPkg.dependencies);
 
 async function getPlaygroundEntrypoints() {
     const playgroundPages = await readdir(playgroundDir);
@@ -32,7 +30,7 @@ export default defineConfig(async ({ mode }) => {
     return {
         root: playgroundDir,
         base: './',
-        plugins: [preact(), mode === 'mocked' && mockServerPlugin(mockServer.port)],
+        plugins: [preact(), (mode === 'mocked' || mode === 'demo') && mockServerPlugin(mockServer.port)],
         build:
             mode === 'demo'
                 ? {
@@ -45,19 +43,17 @@ export default defineConfig(async ({ mode }) => {
                 : {
                       lib: {
                           name: 'AdyenFPComponents',
-                          entry: resolve(__dirname, 'src/index.ts'),
-                          formats: mode.includes('umd') ? ['umd'] : ['es', 'cjs'],
-                          fileName: format => `adyen-kyc-components.${mode === 'production-umd-debug' ? 'debug' : format}.js`,
+                          entry: resolve(__dirname, './packages/lib/src/index.ts'),
+                          formats: ['umd'],
+                          fileName: format => `adyen-fp-components.${format}.js`,
                       },
-                      minify: mode !== 'production-umd-debug',
-                      rollupOptions: mode.includes('umd')
-                          ? {
-                                output: {
-                                    inlineDynamicImports: false,
-                                    manualChunks: () => 'app', // the chunk name doesn't matter, all that matters is that all files go into a single chunk
-                                },
-                            }
-                          : { external: externalDependencies },
+                      minify: false,
+                      rollupOptions: {
+                          output: {
+                              inlineDynamicImports: false,
+                              manualChunks: () => 'app', // the chunk name doesn't matter, all that matters is that all files go into a single chunk
+                          },
+                      },
                       outDir: resolve(__dirname, 'dist'),
                       emptyOutDir: false,
                   },
