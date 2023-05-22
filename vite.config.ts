@@ -32,7 +32,7 @@ export default defineConfig(async ({ mode }) => {
     return {
         root: playgroundDir,
         base: './',
-        plugins: [preact(), mode === 'mocked' && mockServerPlugin(8082)],
+        plugins: [preact(), mode === 'mocked' && mockServerPlugin(mockServer.port)],
         build:
             mode === 'demo'
                 ? {

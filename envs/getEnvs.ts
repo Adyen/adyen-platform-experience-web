@@ -4,7 +4,7 @@ import { resolve } from 'node:path';
 
 export const envDir = resolve(__dirname);
 
-const parseEnv = (env: Record<string, string>) => ({
+const parseEnv = (env: Record<string, string | undefined>) => ({
     lemApi: {
         url: env.LEM_API_URL ?? '',
         version: env.LEM_API_VERSION ?? '',
@@ -25,12 +25,12 @@ const parseEnv = (env: Record<string, string>) => ({
     },
     playground: {
         host: env.PLAYGROUND_HOST ?? '',
-        port: parseInt(env.PLAYGROUND_PORT),
+        port: parseInt(env.PLAYGROUND_PORT ?? ''),
         clientKey: env.VITE_API_KEY ?? '',
         apiUrl: env.VITE_API_URL ?? '',
     },
     mockServer: {
-        port: parseInt(env.MOCK_SERVER_PORT),
+        port: parseInt(env.MOCK_SERVER_PORT ?? ''),
     },
 });
 
