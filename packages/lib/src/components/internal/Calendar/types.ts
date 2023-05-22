@@ -5,10 +5,21 @@ export type CalendarMonth = CalendarDay | 7 | 8 | 9 | 10 | 11;
 export type CalendarSlidingWindowMonth = 1 | 2 | 3 | 4 | 6 | 12;
 export type CalendarMonthEndDate = 28 | 29 | 30 | 31;
 
+export const enum CalendarCursorShift {
+    FIRST_MONTH_DAY,
+    FIRST_WEEK_DAY,
+    LAST_MONTH_DAY,
+    LAST_WEEK_DAY,
+    NEXT_WEEK,
+    NEXT_WEEK_DAY,
+    PREV_WEEK,
+    PREV_WEEK_DAY
+}
+
 export const enum CalendarShift {
-    MONTH = 'MONTH',
-    WINDOW = 'WINDOW',
-    YEAR = 'YEAR'
+    MONTH,
+    WINDOW,
+    YEAR
 }
 
 export interface CalendarIterable<IteratorValue> extends Iterable<IteratorValue> {

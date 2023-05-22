@@ -2,24 +2,65 @@ import classnames from 'classnames';
 import useCalendar from './internal/useCalendar';
 import useCoreContext from '../../../core/Context/useCoreContext';
 import { CalendarProps, CalendarShift } from './types';
-import { useCallback, useMemo, useRef } from 'preact/hooks';
-import { Fragment } from 'preact';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import Button from '../Button';
 import './Calendar.scss';
 
-const CalendarDate = ({ children }: any) => <Fragment>{ children }</Fragment>;
-const InteractiveCalendarDate = ({ children, ...props }: any) => (
-    <Button variant={'ghost'} classNameModifiers={['circle']} tabIndex={-1} {...props}>{ children }</Button>
-);
+const useSharedElementRef = ({ shouldRetainCurrentElement, withCurrentElement }: {
+    shouldRetainCurrentElement?: (currentElem: HTMLElement, candidateElem: HTMLElement) => any;
+    withCurrentElement?: (currentElement: HTMLElement) => any;
+} = {}) => {
+    const elementRef = useRef<HTMLElement>();
+    const elementCandidatesRef = useRef<HTMLElement[]>([]);
+
+    const nominateCandidateElement = useCallback((element?: HTMLElement | null) => {
+        if (element != undefined) elementCandidatesRef.current.push(element);
+    }, []);
+
+    const updateElementRef = useMemo(() => {
+        const retainCurrent = shouldRetainCurrentElement ?? (() => false);
+        const withCurrent = withCurrentElement ?? (() => {});
+
+        return () => {
+            let currentElement = elementRef.current;
+
+            for (const element of elementCandidatesRef.current) {
+                if (currentElement && retainCurrent(currentElement, element)) break;
+                currentElement = element;
+            }
+
+            elementCandidatesRef.current.length = 0;
+
+            if (currentElement && elementRef.current !== currentElement) {
+                withCurrent(elementRef.current = currentElement);
+            }
+        }
+    }, [shouldRetainCurrentElement, withCurrentElement]);
+
+    useEffect(updateElementRef);
+
+    return [elementRef, nominateCandidateElement] as const;
+};
+
+const SharedElementRefConfig = {
+    shouldRetainCurrentElement: (currentElement: HTMLElement, candidateElement: HTMLElement) => (
+        currentElement.dataset.thisDate === candidateElement.dataset.thisDate &&
+        currentElement.dataset.withinMonth === 'true'
+    ),
+    withCurrentElement: (currentElement: HTMLElement) => currentElement.focus()
+};
 
 export default function Calendar(props: CalendarProps) {
     const { i18n } = useCoreContext();
-    const { calendar, postshift, preshift, today } = useCalendar(useMemo(() => ({ ...props, locale: i18n.locale }), [i18n, props]));
+    const { calendar, cursorDate, postshift, preshift, today } = useCalendar(useMemo(() => ({ ...props, locale: i18n.locale }), [i18n, props]));
+    const [ focusedDate, setFocusedDate ] = useState(today);
     const calendarShift = useRef(CalendarShift.MONTH);
 
-    const CalendarDay = useMemo(() => typeof props.onSelected === 'function' ? InteractiveCalendarDate : CalendarDate, [props.onSelected]);
+    const [ cursorDateRef, nominateCursorDateRefCandidate ] = useSharedElementRef(SharedElementRefConfig);
+
     const leftShiftCalendar = useCallback(() => preshift(calendarShift.current), []);
     const rightShiftCalendar = useCallback(() => postshift(calendarShift.current), []);
+    const onSelected = useMemo(() => typeof props.onSelected === 'function' && props.onSelected, [props.onSelected]);
 
     const captureNavigationClick = useCallback((evt: Event) => {
         if ((evt.target as HTMLElement).closest('button')) {
@@ -49,13 +90,13 @@ export default function Calendar(props: CalendarProps) {
             />
         </div>
 
-        <ol className={'calendar'} role="group" aria-label="calendar months">{
+        <ol className={'calendar'} role="none">{
             [...calendar.months.map(view => {
                 const month = `${view.year}-${(`0` + (view.month + 1)).slice(-2)}`;
                 const humanizedMonth = new Date(month).toLocaleDateString(i18n.locale, { month: 'short', year: 'numeric' });
 
-                return <li key={month} className={'calendar-month'}>
-                    <div className={'calendar-month__name'}>
+                return <li key={month} className={'calendar-month'} role="none">
+                    <div className={'calendar-month__name'} role="none">
                         <time dateTime={month} aria-hidden="true">{humanizedMonth}</time>
                     </div>
 
@@ -75,24 +116,37 @@ export default function Calendar(props: CalendarProps) {
                                 <tr key={`${month}:${index}`} className={'calendar-month__grid-row'}>{
                                     [...week.map((date, index) => {
                                         const isWithinMonth = week.isWithinMonthAt(index);
-                                        const isTodayDate = date === today;
+                                        const isFocusedDate = date === focusedDate;
 
                                         const classes = classnames('calendar__date', {
                                             'calendar__date--first-week-day': week.isFirstWeekDayAt(index),
-                                            'calendar__date--today': isTodayDate,
+                                            // 'calendar__date--today': date === today,
                                             'calendar__date--weekend': week.isWeekendAt(index),
                                             'calendar__date--within-month': isWithinMonth
                                         });
 
-                                        const extraProps = isTodayDate
-                                            ? { 'aria-selected': 'true', role: 'gridcell', tabIndex: 0 }
-                                            : { tabIndex: -1 };
+                                        const extraProps = {} as any;
 
-                                        return <td key={date} className={'calendar-month__grid-cell'} {...extraProps}>{
+                                        if (date === cursorDate) {
+                                            extraProps.ref = (elem: HTMLElement | null) => {
+                                                if (elem) {
+                                                    elem.dataset.thisDate = date;
+                                                    elem.dataset.withinMonth = `${isWithinMonth}`;
+                                                    nominateCursorDateRefCandidate(elem);
+                                                }
+                                            };
+                                        }
+
+                                        if (onSelected) {
+                                            extraProps.onClick = () => {
+                                                setFocusedDate(date);
+                                                props.onSelected?.(date);
+                                            };
+                                        }
+
+                                        return <td key={date} className={'calendar-month__grid-cell'} tabIndex={-1} {...extraProps}>{
                                             (props.onlyMonthDays !== true || isWithinMonth) && (
-                                                <CalendarDay onClick={() => props.onSelected?.(date)}>
-                                                    <time className={classes} dateTime={date}>{ +date.slice(-2) }</time>
-                                                </CalendarDay>
+                                                <time className={classes} dateTime={date}>{+date.slice(-2)}</time>
                                             )
                                         }</td>
                                     })]
