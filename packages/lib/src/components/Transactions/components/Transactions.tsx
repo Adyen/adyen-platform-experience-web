@@ -4,7 +4,7 @@ import FilterBar from '../../internal/FilterBar';
 import TextFilter from '../../internal/FilterBar/filters/TextFilter';
 import DateFilter from '../../internal/FilterBar/filters/DateFilter';
 import TransactionList from './TransactionList';
-import { Transaction, TransactionFilterParam, TransactionsPageProps } from '../types';
+import { Transaction, TransactionFilterParam, TransactionsProps } from '../types';
 import { DateRangeFilterParam } from '../../internal/FilterBar/filters/DateFilter/types';
 import { useCursorPaginatedRecords } from '../../internal/Pagination/hooks';
 
@@ -25,7 +25,7 @@ function Transactions({
     onFilterChange,
     onTransactionSelected,
     onUpdateTransactions,
-}: TransactionsPageProps) {
+}: TransactionsProps) {
     const { i18n } = useCoreContext();
 
     const onPageRequest = useCallback(
