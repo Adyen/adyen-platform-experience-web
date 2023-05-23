@@ -23,7 +23,7 @@
         "build:demo": "vite build --mode demo",
         "demo": "npm run build:demo && npm run demo:serve",
         "demo:serve": "vite preview --mode demo",
-        "start:mocked": "concurrently --kill-others-on-fail \"npm run type:watch\" \"npm run start -w @adyen/adyen-fp-web\" \"npm run start:mock -w @adyen/adyen-fp-web-playground\" --names \"lib-types,lib,playground\" -c blue,green,cyan,yellow",
+        "start:mocked": "concurrently --kill-others-on-fail \"npm run types:watch\" \"npm run start:mock -w @adyen/adyen-fp-web-playground\" --names \"lib-types,playground\" -c blue,green,cyan,yellow",
         "lint": "npm run lint -w @adyen/adyen-fp-web",
         "test": "npm run test -w @adyen/adyen-fp-web",
         "test:watch": "npm run test:watch -w @adyen/adyen-fp-web",
