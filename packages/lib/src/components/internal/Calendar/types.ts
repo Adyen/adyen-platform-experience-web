@@ -5,26 +5,32 @@ export type CalendarMonth = CalendarDay | 7 | 8 | 9 | 10 | 11;
 export type CalendarSlidingWindowMonth = 1 | 2 | 3 | 4 | 6 | 12;
 export type CalendarMonthEndDate = 28 | 29 | 30 | 31;
 
-export const enum CalendarCursorShift {
-    FIRST_MONTH_DAY,
-    FIRST_WEEK_DAY,
-    LAST_MONTH_DAY,
-    LAST_WEEK_DAY,
-    NEXT_WEEK,
-    NEXT_WEEK_DAY,
-    PREV_WEEK,
-    PREV_WEEK_DAY
+export const enum CalendarTraversalDirection {
+    PREV,
+    NEXT
 }
 
 export const enum CalendarShift {
-    MONTH,
+    MONTH = 1,
     WINDOW,
     YEAR
+}
+
+export const enum CalendarCursorShift {
+    FIRST_MONTH_DAY,
+    LAST_MONTH_DAY,
+    FIRST_WEEK_DAY,
+    LAST_WEEK_DAY,
+    PREV_WEEK_DAY,
+    NEXT_WEEK_DAY,
+    PREV_WEEK,
+    NEXT_WEEK
 }
 
 export interface CalendarIterable<IteratorValue> extends Iterable<IteratorValue> {
     [index: number]: IteratorValue;
     map: CalendarMapIteratorFactory<IteratorValue>;
+    offset: number;
     size: number;
 }
 
@@ -85,3 +91,7 @@ export interface CalendarProps extends CalendarConfig {
     onSelected?: (date: any) => void;
     trackCurrentDay?: boolean;
 }
+
+export type ShiftCalendar = (monthOffset: number, shift?: CalendarShift) => number;
+export type ShiftCalendarCursor = (shift?: CalendarCursorShift) => number;
+export type CalendarViewRecord = readonly [ CalendarView, ShiftCalendar, ShiftCalendarCursor ];

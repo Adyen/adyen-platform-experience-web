@@ -67,36 +67,24 @@ ol {
   }
 
   &__date {
-    $self: &;
-    $today: #{$self}--today;
-    $weekend: #{$self}--weekend;
-    $first-week-day: #{$self}--first-week-day;
-
     color: #4a4a4a;
     font-size: 0.875em;
 
-    &#{$weekend} {
+    [data-weekend='true'] & {
       color: green;
     }
 
-    &#{$first-week-day} {
+    [data-first-week-day='true'] & {
       color: red;
     }
 
-    &#{$today} {
-      align-items: center;
-      display: flex;
-      height: calc(100% - 2px);
-      justify-content: center;
-      position: relative;
-      width: calc(100% - 2px);
-
+    [aria-selected='true'] & {
       &:not(:hover) {
         color: white;
       }
 
       &::before {
-        background: red;
+        background: black;
         border-radius: 50%;
         content: '';
         inset: 0;

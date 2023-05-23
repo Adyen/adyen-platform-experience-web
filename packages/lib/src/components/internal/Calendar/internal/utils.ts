@@ -6,7 +6,7 @@ import {
     CalendarMonth,
     CalendarMonthEndDate,
     CalendarSlidingWindowMonth
-} from './types';
+} from '../types';
 
 export const DAY_MS = 86400000;
 export const MAX_MONTH_DAYS = 42;

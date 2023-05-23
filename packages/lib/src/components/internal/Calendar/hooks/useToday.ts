@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'preact/hooks';
-import { getCalendarDateString } from './createCalendar';
+import { getCalendarDateString } from '../internal/createCalendar';
 
 const timeSecondInterval = (() => {
     let controller: AbortController;

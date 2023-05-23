@@ -7,7 +7,10 @@ import {
     CalendarMonthWeekView,
     CalendarShift,
     CalendarView,
-    CalendarWeekView
+    CalendarViewRecord,
+    CalendarWeekView,
+    ShiftCalendar,
+    ShiftCalendarCursor
 } from '../types';
 import {
     DAY_MS,
@@ -17,7 +20,7 @@ import {
     getMonthTimestamp,
     getWeekendDays,
     MAX_MONTH_DAYS
-} from '../utils';
+} from './utils';
 
 const DAY_OF_THE_WEEK_FORMATS = ['long', 'short', 'narrow'] as const;
 
@@ -51,7 +54,7 @@ const createCalendar = (config: CalendarConfig, offset: number) => {
         new Date(calendarStartMonthTimestamp + (startIndexOffset + index) * DAY_MS)
     );
 
-    const shiftCalendar = (monthOffset: number, shift: CalendarShift = CalendarShift.MONTH) => {
+    const shiftCalendar: ShiftCalendar = (monthOffset: number, shift: CalendarShift = CalendarShift.MONTH) => {
         let shiftOffset = monthOffset;
 
         switch (shift) {
@@ -79,7 +82,7 @@ const createCalendar = (config: CalendarConfig, offset: number) => {
         return calendarStartMonthOffset;
     };
 
-    const shiftCalendarCursor = (shift?: CalendarCursorShift) => {
+    const shiftCalendarCursor: ShiftCalendarCursor = (shift?: CalendarCursorShift) => {
         if (cursorMonth === undefined) cursorMonth = 0;
 
         const startIndex = cachedOffsets[cursorMonth]?.[0] || 0;
@@ -180,6 +183,7 @@ const createCalendar = (config: CalendarConfig, offset: number) => {
     const calendar = createCalendarIterable<string, CalendarView>({
         daysOfTheWeek: {
             value: createCalendarIterable<readonly [string, string, string]>({
+                offset: { value: 0 },
                 size: { value: 7 },
             }, index => {
                 const date = new Date(calendar[index] as string);
@@ -190,6 +194,7 @@ const createCalendar = (config: CalendarConfig, offset: number) => {
         isWeekendAt: { value: isWeekendAt },
         months: {
             value: createCalendarIterable<CalendarMonthView>({
+                offset: { value: 0 },
                 size: { value: numberOfMonths }
             }, monthIndex => {
                 if (cachedMonths[monthIndex]) return cachedMonths[monthIndex] as CalendarMonthView;
@@ -211,9 +216,11 @@ const createCalendar = (config: CalendarConfig, offset: number) => {
                     isWeekendAt: { value: isWeekendAt },
                     isWithinMonthAt: { value: isWithinMonthAt },
                     month: { value: (month + monthIndex) % 12 },
+                    offset: { value: 0 },
                     size: { value: (endWeekIndex - startWeekIndex) * 7 },
                     weeks: {
                         value: createCalendarIterable<CalendarMonthWeekView>({
+                            offset: { value: 0 },
                             size: { value: endWeekIndex - startWeekIndex }
                         }, weekIndex => {
                             const startIndexOffset = weekIndex * 7;
@@ -223,6 +230,7 @@ const createCalendar = (config: CalendarConfig, offset: number) => {
                                 isTransitionWeek: { value: transitionWeeks.includes(weekIndex) },
                                 isWeekendAt: { value: isWeekendAt },
                                 isWithinMonthAt: { value: (index: number) => isWithinMonthAt(startIndexOffset + index) },
+                                offset: { value: 0 },
                                 size: { value: 7 }
                             }, getCalendarDateByIndex((startWeekIndex + weekIndex) * 7)) as CalendarMonthWeekView;
                         })
@@ -233,15 +241,18 @@ const createCalendar = (config: CalendarConfig, offset: number) => {
                 return cachedMonths[monthIndex] as CalendarMonthView;
             })
         },
+        offset: { value: 0 },
         size: { get: () => days },
         weeks: {
             value: createCalendarIterable<CalendarWeekView>({
+                offset: { value: 0 },
                 size: { get: () => days / 7 }
             }, weekIndex => {
                 cachedWeeks[weekIndex] = cachedWeeks[weekIndex] || createCalendarIterable<string, CalendarWeekView>({
                     isFirstWeekDayAt: { value: isFirstWeekDayAt },
                     isTransitionWeek: { value: transitionWeeks.includes(weekIndex) },
                     isWeekendAt: { value: isWeekendAt },
+                    offset: { value: 0 },
                     size: { value: 7 }
                 }, getCalendarDateByIndex(weekIndex * 7));
 
@@ -250,7 +261,7 @@ const createCalendar = (config: CalendarConfig, offset: number) => {
         }
     }, getCalendarDateByIndex(0)) as CalendarView;
 
-    return [calendar, shiftCalendar, shiftCalendarCursor] as const;
+    return [calendar, shiftCalendar, shiftCalendarCursor] as CalendarViewRecord;
 };
 
 export default createCalendar;
