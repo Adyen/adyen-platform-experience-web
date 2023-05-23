@@ -18,5 +18,5 @@
     "paths": {
         "@adyen/adyen-fp-web": ["packages/lib/src"]
     },
-    "files": ["packages/lib/declarations/scss.d.ts", "packages/lib/declarations/whatwg-fetch.d.ts"]
+    "files": ["packages/lib/src/declarations/scss.d.ts", "packages/lib/src/declarations/whatwg-fetch.d.ts"]
 }

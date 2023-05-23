@@ -19,7 +19,7 @@
     ],
     "scripts": {
         "start": "concurrently --kill-others-on-fail \"npm run types:watch\" \"npm run start -w @adyen/adyen-fp-web-playground\" --names \"tsc-lib,playground\" -c blue,green,cyan,yellow",
-        "build": "rm -rf dist && concurrently \"vite build\" -n esm/cjs",
+        "build": "rm -rf dist && concurrently \"vite build\" \"npm run types:build -w @adyen/adyen-fp-web\" -n umd,types",
         "build:demo": "vite build --mode demo",
         "demo": "npm run build:demo && npm run demo:serve",
         "demo:serve": "vite preview --mode demo",

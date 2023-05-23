@@ -1,8 +1,6 @@
 {
     "extends": "../../tsconfig.json",
     "compilerOptions": {
-        "composite": true,
-
         "baseUrl": "./",
         "declarationMap": true,
         "incremental": true,
@@ -11,8 +9,8 @@
         "sourceMap": true,
 
         "declaration": true,
-        "outDir": "./dist",
-        "declarationDir": "./dist/types",
+        "outDir": "../../dist",
+        "declarationDir": "../../dist/types",
 
         "jsxImportSource": "preact",
         "jsx": "react-jsx",
@@ -21,6 +19,6 @@
             "@/*": ["./src/*"]
         }
     },
-    "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.d.ts", "tests/**/*.ts", "src/language/translations/*.json", "./scss.d.ts"],
+    "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.d.ts", "tests/**/*.ts", "src/language/translations/*.json"],
     "exclude": ["node_modules", "**/*.test.*", "dist"]
 }

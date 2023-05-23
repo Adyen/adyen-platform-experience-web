@@ -63,8 +63,9 @@ export default defineConfig(async ({ mode }) => {
             },
         },
         css: {
-            preprocessorOptions: {
-                scss: {},
+            modules: {
+                scopeBehaviour: 'local',
+                generateScopedName: name => name,
             },
         },
         server: {
