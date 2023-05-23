@@ -16,13 +16,13 @@ const htmlPageGenerator = ({ id }, index) =>
         templateParameters: () => ({ htmlWebpackPlugin: { htmlPages: pages } }),
         inject: 'body',
         chunks: [`AdyenDemo${id}`],
-        chunksSortMode: 'manual'
+        chunksSortMode: 'manual',
     });
 
 const htmlPages = pages.map(htmlPageGenerator);
 
 const playgroundEntry = pages.reduce((acc, { id }) => {
-    acc[`AdyenDemo${id}`] = resolve(`../../playground/src/pages/${id}/${id}.js`);
+    acc[`AdyenDemo${id}`] = resolve(`../../playground/src/pages/${id}/${id}.ts`);
     return acc;
 }, {});
 

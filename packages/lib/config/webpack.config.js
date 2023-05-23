@@ -12,7 +12,6 @@ module.exports = {
         path: path.join(__dirname, '../dist'),
         library: '[name]',
         libraryTarget: 'umd',
-        libraryExport: 'default',
         publicPath: '',
     },
     context: path.resolve(__dirname, '../src'),

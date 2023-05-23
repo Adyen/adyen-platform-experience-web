@@ -13,9 +13,9 @@ import transactionList from './components/Transactions';
 import transactionDetails from './components/TransactionDetails';
 /* eslint-enable */
 
-async function AdyenFP(props?: CoreOptions): Promise<Core> {
+export async function AdyenFP(props?: CoreOptions): Promise<Core> {
     const core = new Core(props ?? {});
     return await core.initialize();
 }
 
-export { AdyenFP, accountHolder, balanceAccount, transactionList, transactionDetails };
+export { accountHolder, balanceAccount, transactionList, transactionDetails };

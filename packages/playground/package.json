@@ -30,7 +30,7 @@
         "format": "prettier --write \"src/**/*.{ts,js,css, scss, html}\""
     },
     "devDependencies": {
-        "@adyen/adyen-fp-web-server": "file:packages/server",
+        "@adyen/adyen-fp-web-server": "file:../server/",
         "@preact/preset-vite": "^2.5.0",
         "autoprefixer": "^9.8.8",
         "cross-env": "^7.0.3",
@@ -53,7 +53,7 @@
         "webpack-merge": "^5.8.0"
     },
     "dependencies": {
-        "@adyen/adyen-fp-web": "file:packages/lib",
+        "@adyen/adyen-fp-web": "file:../lib/src",
         "whatwg-fetch": "^3.6.2"
     }
 }

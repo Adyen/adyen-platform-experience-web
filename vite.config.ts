@@ -39,6 +39,7 @@ export default defineConfig(async ({ mode }) => {
                       },
                       outDir: resolve(__dirname, '.demo'),
                       emptyOutDir: true,
+                      target: 'esnext',
                   }
                 : {
                       lib: {
