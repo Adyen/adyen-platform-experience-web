@@ -13,8 +13,8 @@ const SelectListItem = ({ item, selected, isIconOnLeftSide, ...props }: SelectIt
             {
                 'adyen-fp-dropdown__element--active': selected,
                 'adyen-fp-dropdown__element--disabled': !!item.disabled,
-                'adyen-fp-dropdown__element-icon--left': isIconOnLeftSide
-            }
+                'adyen-fp-dropdown__element-icon--left': isIconOnLeftSide,
+            },
         ])}
         // A change in Preact v10.11.1 means that all falsy values are assessed and set on data attributes.
         // In the case of data-disabled we only ever want it set if item.disabled is actually true, since the presence of the data-disabled attr,
@@ -27,7 +27,7 @@ const SelectListItem = ({ item, selected, isIconOnLeftSide, ...props }: SelectIt
         tabIndex={-1}
     >
         <span>{item.name}</span>
-        {item.icon && <Img className="adyen-fp-dropdown__element__icon" alt={item.name} src={item.icon} />}
+        {item.icon && <Img className="adyen-fp-dropdown__element-icon" alt={item.name} src={item.icon} />}
     </li>
 );
 

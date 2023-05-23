@@ -4,9 +4,9 @@
 @use './spacings';
 
 :root {
-    @include colors.colors;
-    @include border-radius.border-radius;
-    @include font.font-sizes;
-    @include font.font-weight;
-    @include spacings.spacings;
+    @include colors.adyen-fp-colors;
+    @include border-radius.adyen-fp-border-radius;
+    @include font.adyen-fp-font-sizes;
+    @include font.adyen-fp-font-weight;
+    @include spacings.adyen-fp-spacings;
 }

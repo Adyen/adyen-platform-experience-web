@@ -1,27 +1,28 @@
 .adyen-fp-spinner__wrapper {
-    height: 100%;
-    display: flex;
-    justify-content: center;
     align-items: center;
+    display: flex;
+    height: 100%;
+    justify-content: center;
 }
 
 .adyen-fp-spinner__wrapper--inline {
-    height: auto;
     display: inline-block;
+    height: auto;
     margin-right: 8px;
+
     [dir='rtl'] & {
-        margin-right: 0;
         margin-left: 8px;
+        margin-right: 0;
     }
 }
 
 .adyen-fp-spinner {
+    animation: rotateSpinner 1.5s infinite linear;
     border: 3px solid var(--adyen-fp-color-primary);
     border-radius: 50%;
+    border-top-color: transparent;
     height: 43px;
     width: 43px;
-    border-top-color: transparent;
-    animation: rotateSpinner 1.5s infinite linear;
 }
 
 .adyen-fp-spinner--large {
@@ -30,9 +31,9 @@
 }
 
 .adyen-fp-spinner--small {
+    border-width: 2px;
     height: 16px;
     width: 16px;
-    border-width: 2px;
 }
 
 .adyen-fp-spinner--medium {
@@ -44,6 +45,7 @@
     0% {
         transform: rotate(0deg);
     }
+
     100% {
         transform: rotate(360deg);
     }

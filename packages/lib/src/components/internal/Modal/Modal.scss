@@ -12,7 +12,7 @@
     width: 100%;
     z-index: 10;
 
-    &:before {
+    &::before {
         background: rgba(0, 17, 44, 0.5);
         content: '';
         height: 100%;
@@ -28,7 +28,7 @@
     &--open {
         visibility: visible;
 
-        &:before {
+        &::before {
             opacity: 1;
         }
 
@@ -40,13 +40,13 @@
 }
 
 .adyen-fp-modal {
-    border-radius: var(--adyen-fp-border-radius-large);
     background-color: var(--adyen-fp-color-white);
+    border-radius: var(--adyen-fp-border-radius-large);
     margin: auto;
-    transition: opacity 0.2s ease, visibility 0.2s ease;
     opacity: 0;
-    transform: scale(0.7);
     position: relative;
+    transform: scale(0.7);
+    transition: opacity 0.2s ease, visibility 0.2s ease;
     z-index: 11;
 
     [dir='rtl'] & {
@@ -75,7 +75,7 @@
 
     &__header-icon {
         background: transparent;
-        border: none;
+        border: 0;
         border-radius: 50%;
         cursor: pointer;
         height: 38px;

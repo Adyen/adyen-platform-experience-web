@@ -1,16 +1,16 @@
 .adyen-fp-error-panel {
-  margin-bottom: 20px;
+    margin-bottom: 20px;
 
-  .adyen-fp-error-panel__wrapper{
-    font-size: .75em;
-  }
+    .adyen-fp-error-panel__wrapper {
+        font-size: 0.75em;
+    }
 }
 
 .adyen-fp-error-panel--sr-only {
-  position:absolute;
-  left:-10000px;
-  top:auto;
-  width:1px;
-  height:1px;
-  overflow:hidden;
+    height: 1px;
+    left: -10000px;
+    overflow: hidden;
+    position: absolute;
+    top: auto;
+    width: 1px;
 }

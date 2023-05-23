@@ -1,5 +1,5 @@
 .adyen-fp-button {
-    $base: &;
+    $adyen-fp-button: &;
     background: var(--adyen-fp-color-black);
     border: 0;
     border-radius: var(--adyen-fp-border-radius-medium);
@@ -32,14 +32,12 @@
         box-shadow: 0 0 0 2px var(--adyen-fp-color-blue-light), 0 3px 4px rgba(0, 15, 45, 0.2);
     }
 
-    &:disabled {
-        &,
-        &:hover {
-            box-shadow: none;
-            cursor: not-allowed;
-            opacity: 0.4;
-            user-select: all;
-        }
+    &:disabled,
+    &:disabled:hover {
+        box-shadow: none;
+        cursor: not-allowed;
+        opacity: 0.4;
+        user-select: all;
     }
 
     &--loading {
@@ -50,9 +48,9 @@
     }
 
     &--pay {
-        margin-top: 24px;
         display: flex;
         justify-content: center;
+        margin-top: 24px;
 
         &:disabled {
             opacity: 1;
@@ -65,10 +63,10 @@
 
     &--inline {
         display: block;
-        width: auto;
+        font-size: 0.81em;
         height: auto;
         padding: 10px 8px;
-        font-size: 0.81em;
+        width: auto;
     }
 
     &--ghost {
@@ -89,19 +87,19 @@
 
     &--circle {
         align-items: center;
+        border-radius: 50%;
         height: 40px;
         justify-content: center;
         min-width: auto;
         padding: 0;
         width: 40px;
-        border-radius: 50%;
     }
 
     &--secondary {
-        padding: 10px 12px;
         background: var(--adyen-fp-color-white);
         border: 1px solid var(--adyen-fp-color-black);
         color: var(--adyen-fp-color-black);
+        padding: 10px 12px;
 
         &:hover {
             background: var(--adyen-fp-color-gray-lighter);
@@ -114,16 +112,14 @@
             box-shadow: none;
         }
 
-        &:disabled {
-            &,
-            &:hover {
-                box-shadow: none;
-                cursor: not-allowed;
-                border-color: #99a3ad;
-                background-color: var(--adyen-fp-color-gray-lighter);
-                opacity: 0.5;
-                user-select: all;
-            }
+        &:disabled,
+        &:disabled:hover {
+            background-color: var(--adyen-fp-color-gray-lighter);
+            border-color: #99a3ad;
+            box-shadow: none;
+            cursor: not-allowed;
+            opacity: 0.5;
+            user-select: all;
         }
 
         .adyen-fp-spinner {
@@ -133,10 +129,10 @@
     }
 
     &--action {
-        padding: 10px 12px;
         background: rgba(0, 102, 255, 0.1);
         border: 1px solid transparent;
         color: var(--adyen-fp-color-blue);
+        padding: 10px 12px;
 
         &:hover {
             background: rgba(0, 102, 255, 0.2);
@@ -157,7 +153,7 @@
     }
 
     &--filter {
-        @extend #{$base}--small;
+        @extend #{$adyen-fp-button}--small;
         background: var(--adyen-fp-color-white);
         border: 1px solid var(--adyen-fp-color-gray);
         color: var(--adyen-fp-color-black);
@@ -187,46 +183,48 @@
             border-top-color: transparent;
         }
 
-        &#{$base}--active {
+        &#{$adyen-fp-button}--active {
             background: rgba(0, 102, 255, 0.1);
             border: 1px solid var(--adyen-fp-color-blue);
             color: var(--adyen-fp-color-blue);
+        }
 
-            #{$base}__text {
-                padding-right: 22px;
-                position: relative;
+        &#{$adyen-fp-button}--active #{$adyen-fp-button}__text {
+            padding-right: 22px;
+            position: relative;
+        }
 
-                &:after {
-                    content: '×';
-                    margin-left: 10px;
-                    font-size: 20px;
-                    position: absolute;
-                    line-height: 20px;
-                    top: -3px;
-                }
-            }
+        &#{$adyen-fp-button}--active #{$adyen-fp-button}__text::after {
+            content: '×';
+            font-size: 20px;
+            line-height: 20px;
+            margin-left: 10px;
+            position: absolute;
+            top: -3px;
         }
     }
 
     &--link {
         background: transparent;
         border: 1px solid transparent;
+        border-radius: var(--adyen-fp-border-radius-small);
         color: var(--adyen-fp-color-blue);
         font-weight: 400;
-        border-radius: var(--adyen-fp-border-radius-small);
         padding: 2px;
 
         &:hover,
         &:active,
         &:active:hover {
             background: transparent;
-            text-decoration: underline;
             box-shadow: none;
+            text-decoration: underline;
         }
     }
 
     &--completed {
-        &,
+        background: var(--adyen-fp-color-green);
+        color: var(--adyen-fp-color-white);
+
         &:hover,
         &:active,
         &:active:hover {
@@ -240,9 +238,9 @@
     }
 
     &__content {
-        height: 100%;
         align-items: center;
         display: flex;
+        height: 100%;
         justify-content: center;
     }
 
@@ -250,8 +248,8 @@
         margin-right: 12px;
 
         [dir='rtl'] & {
-            margin-right: 0;
             margin-left: 12px;
+            margin-right: 0;
         }
     }
 

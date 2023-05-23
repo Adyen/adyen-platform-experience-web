@@ -2,13 +2,13 @@
     background: var(--adyen-fp-color-gray-lighter);
     border: 1px solid transparent;
     border-radius: var(--adyen-fp-border-radius-xlarge);
-    padding: var(--adyen-fp-spacing-large);
     display: flex;
     justify-content: space-between;
+    padding: var(--adyen-fp-spacing-large);
 
     &__label {
-        font-size: var(--adyen-fp-font-size-small);
         color: var(--adyen-fp-color-gray-darker);
+        font-size: var(--adyen-fp-font-size-small);
         letter-spacing: 0.25px;
         margin-bottom: var(--adyen-fp-spacing-xsmall);
     }
