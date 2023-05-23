@@ -14,7 +14,7 @@ import transactionDetails from './components/TransactionDetails';
 /* eslint-enable */
 
 async function AdyenFP(props?: CoreOptions): Promise<Core> {
-    const core = new Core(props);
+    const core = new Core(props ?? {});
     return await core.initialize();
 }
 

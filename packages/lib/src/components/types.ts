@@ -45,6 +45,7 @@ export interface UIElementProps extends BaseElementProps {
     secondaryAmount?: AmountExtended;
     triggerValidation?: SetTriggerValidation;
     setUIElementStatus?: (status: string) => void;
+    ref?: any;
 
     /**
      * Show/Hide pay button

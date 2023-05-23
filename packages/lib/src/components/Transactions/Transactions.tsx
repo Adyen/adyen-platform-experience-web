@@ -3,11 +3,11 @@ import UIElement from '../UIElement';
 import Transactions from './components/Transactions';
 import { TransactionsPageProps } from './types';
 
-export class TransactionsElement extends UIElement {
+export class TransactionsElement extends UIElement<TransactionsPageProps> {
     public static type = 'transactions';
 
     // TODO assign correct prop type
-    constructor(props: any) {
+    constructor(props: TransactionsPageProps) {
         super(props);
         this.elementRef = (props && props.elementRef) || this;
     }
@@ -17,7 +17,7 @@ export class TransactionsElement extends UIElement {
     }
 
     get displayName() {
-        return this.props.name;
+        return this.props.name ?? this.type;
     }
 
     formatProps(props: TransactionsPageProps) {
@@ -37,10 +37,10 @@ export class TransactionsElement extends UIElement {
         return (
             <CoreProvider i18n={this.props.i18n} loadingContext={this.props.loadingContext}>
                 <Transactions
-                    ref={(ref: UIElement) => {
+                    {...this.props}
+                    ref={(ref: UIElement<TransactionsPageProps>) => {
                         this.componentRef = ref;
                     }}
-                    {...this.props}
                     onChange={this.setState}
                     elementRef={this.elementRef}
                 />

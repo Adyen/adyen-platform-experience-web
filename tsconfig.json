@@ -1,5 +1,7 @@
 {
     "compilerOptions": {
+        "noEmitOnError": true,
+        "noEmit": true,
         "allowJs": true,
         "moduleResolution": "node",
         "module": "esnext",

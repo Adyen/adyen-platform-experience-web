@@ -51,7 +51,7 @@ export default defineConfig(async ({ mode }) => {
                       rollupOptions: {
                           output: {
                               inlineDynamicImports: false,
-                              manualChunks: () => 'app', // the chunk name doesn't matter, all that matters is that all files go into a single chunk
+                              manualChunks: () => 'app',
                           },
                       },
                       outDir: resolve(__dirname, 'dist'),

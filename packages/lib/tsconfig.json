@@ -6,10 +6,7 @@
         "baseUrl": "./",
         "declarationMap": true,
         "incremental": true,
-        "noEmitOnError": true,
         "skipLibCheck": true,
-
-        "noEmit": true,
 
         "sourceMap": true,
 

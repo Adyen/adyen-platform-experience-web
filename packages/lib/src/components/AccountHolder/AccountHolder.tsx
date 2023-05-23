@@ -3,7 +3,7 @@ import UIElement from '../UIElement';
 import AccountHolderDetails from './components/AccountHolderDetails';
 import { AccountHolderDetailsProps } from './types';
 
-export class AccountHolderElement extends UIElement {
+export class AccountHolderElement extends UIElement<AccountHolderDetailsProps> {
     public static type = 'accountHolder';
 
     get isValid() {

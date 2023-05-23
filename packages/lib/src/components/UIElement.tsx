@@ -5,10 +5,10 @@ import AdyenFPError from '../core/Errors/AdyenFPError';
 import { UIElementStatus } from './types';
 
 export class UIElement<P extends UIElementProps = any> extends BaseElement<P> implements IUIElement {
-    protected componentRef: UIElement | null;
-    public elementRef: UIElement | null;
+    protected componentRef: UIElement<P> | null;
+    public elementRef: UIElement<P> | null;
 
-    constructor(props: P) {
+    constructor(props: P & UIElementProps) {
         super(props);
         this.submit = this.submit.bind(this);
         this.setState = this.setState.bind(this);

@@ -17,10 +17,10 @@ class Core {
     };
     public session?: BPSession;
     public modules: any;
-    public options?: CoreOptions;
+    public options: CoreOptions;
     public components: BaseElement<any>[] = [];
 
-    constructor(options?: CoreOptions) {
+    constructor(options: CoreOptions) {
         this.create = this.create.bind(this);
         this.options = options;
         this.setOptions(options);
@@ -65,7 +65,7 @@ class Core {
     public create(component: any, options?: any): any {
         if (typeof component === 'string') {
             const props = this.getPropsForComponent(options);
-            return isKeyOfComponent(component) ? this.handleCreate<typeof component>(component, props) : this.handleCreateError();
+            isKeyOfComponent(component) ? this.handleCreate<typeof component>(component, props) : this.handleCreateError();
         } else {
             const props = this.getPropsForComponent(options);
             return component ? this.handleCreate<typeof component>(component, props) : this.handleCreateError();
@@ -107,7 +107,7 @@ class Core {
      * @param options - the config object passed when AdyenFP is initialised
      * @returns this
      */
-    private setOptions = (options?: CoreOptions): this => {
+    private setOptions = (options: CoreOptions): this => {
         this.options = { ...this.options, ...options };
         this.modules = {
             // analytics: new Analytics(this.options),
@@ -179,7 +179,6 @@ class Core {
              * 2. the options that have been passed to the final call of this function (see comment on \@param, above)
              */
             const component = new Component({ ...globalOptions, ...options });
-
             return component;
         }
 
