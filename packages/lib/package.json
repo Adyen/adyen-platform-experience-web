@@ -26,8 +26,9 @@
         "test:watch": "npm run test -- --watchAll",
         "test:coverage": "npm run test -- --coverage",
         "type-check": "tsc --noEmit",
-        "lint": "eslint 'src/**/*.{js,ts,tsx}' --quiet",
+        "lint": "eslint 'src/**/*.{js,ts,tsx}' --quiet && npm run lint:scss",
         "lint:fix": "npm run lint -- --fix",
+        "lint:scss": "stylelint 'src/**/*.scss' --fix",
         "types:watch": "npm run type-check -- --watch",
         "format": "prettier --write 'src/**/*.{ts,js,css, scss, html}'"
     },

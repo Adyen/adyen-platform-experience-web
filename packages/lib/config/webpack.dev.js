@@ -3,6 +3,7 @@ const { merge } = require('webpack-merge');
 const path = require('path');
 require('dotenv').config({ path: path.resolve('../../', '.env') });
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const StylelintPlugin = require('stylelint-webpack-plugin');
 const webpackConfig = require('./webpack.config');
 const currentVersion = require('./version')();
 const FILENAME = 'adyen-fp-web';
@@ -21,6 +22,7 @@ module.exports = merge(webpackConfig, {
         new MiniCssExtractPlugin({
             filename: `${FILENAME}.css`,
         }),
+        new StylelintPlugin(),
     ],
     optimization: {
         moduleIds: 'named',
