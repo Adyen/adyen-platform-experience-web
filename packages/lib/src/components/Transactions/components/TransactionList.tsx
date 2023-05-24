@@ -1,11 +1,11 @@
 import { useMemo } from 'preact/hooks';
 import classnames from 'classnames';
-import useCoreContext from '../../../core/Context/useCoreContext';
+import useCoreContext from '@src/core/Context/useCoreContext';
 import Alert from '../../internal/Alert';
 import DataGrid from '../../internal/DataGrid';
 import Pagination from '../../internal/Pagination';
 import { getLabel } from './utils';
-import Button from '../../internal/Button/Button';
+import Button from '@src/components/internal/Button/Button';
 import { Transaction, TransactionListProps } from '../types';
 
 function TransactionList({

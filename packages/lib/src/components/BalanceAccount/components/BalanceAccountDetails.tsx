@@ -1,7 +1,7 @@
-import useCoreContext from '../../../core/Context/useCoreContext';
+import useCoreContext from '@src/core/Context/useCoreContext';
 import './BalanceAccountDetails.scss';
-import StatsBar from '../../internal/StatsBar';
-import Status from '../../internal/Status';
+import StatsBar from '@src/components/internal/StatsBar';
+import Status from '@src/components/internal/Status';
 import Balances from './Balances';
 import { BalanceAccountDetailsProps } from '../types';
 

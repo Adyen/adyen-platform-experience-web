@@ -61,6 +61,7 @@ export default defineConfig(async ({ mode }) => {
         resolve: {
             alias: {
                 '@adyen/adyen-fp-web': resolve(__dirname, 'packages/lib/src'),
+                '@src': resolve(__dirname, 'packages/lib/src'),
             },
         },
         css: {

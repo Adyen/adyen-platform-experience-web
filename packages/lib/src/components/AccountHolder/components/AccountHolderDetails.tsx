@@ -1,6 +1,6 @@
-import Status from '../../internal/Status';
+import Status from '@src/components/internal/Status';
 import ContactDetails from './ContactDetails';
-import StatsBar from '../../internal/StatsBar';
+import StatsBar from '@src/components/internal/StatsBar';
 import './AccountHolderDetails.scss';
 import { AccountHolderDetailsProps } from '../types';
 

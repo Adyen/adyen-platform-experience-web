@@ -1,4 +1,4 @@
-import CoreProvider from '../../core/Context/CoreProvider';
+import CoreProvider from '@src/core/Context/CoreProvider';
 import UIElement from '../UIElement';
 import Transactions from './components/Transactions';
 import { TransactionsProps } from './types';
