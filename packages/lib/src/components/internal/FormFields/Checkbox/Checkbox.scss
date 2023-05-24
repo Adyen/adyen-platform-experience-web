@@ -2,14 +2,14 @@
     display: block;
 
     &__label {
-        position: relative;
-        padding-left: 24px;
+        color: var(--adyen-fp-color-black);
         cursor: pointer;
         display: inline-block;
-        line-height: 19px;
-        color: var(--adyen-fp-color-black);
         font-size: var(--adyen-fp-font-size-small);
         font-weight: normal;
+        line-height: 19px;
+        padding-left: 24px;
+        position: relative;
         user-select: none;
 
         [dir='rtl'] & {
@@ -20,45 +20,45 @@
 }
 
 .adyen-fp-checkbox__input {
-    position: absolute;
     opacity: 0;
     pointer-events: none;
+    position: absolute;
 
     &:checked {
         + .adyen-fp-checkbox__label {
-            &:before {
+            &::before {
                 opacity: 1;
             }
 
-            &:after {
-                border: 1px solid var(--adyen-fp-color-primary);
+            &::after {
                 background-color: var(--adyen-fp-color-primary);
+                border: 1px solid var(--adyen-fp-color-primary);
             }
         }
 
-        &:hover + .adyen-fp-checkbox__label:after {
-            box-shadow: 0 0 0 2px rgba(0, 102, 255, 0.4);
+        &:hover + .adyen-fp-checkbox__label::after {
             border-color: var(--adyen-fp-color-primary);
+            box-shadow: 0 0 0 2px rgba(0, 102, 255, 0.4);
         }
     }
 
-    &:focus + .adyen-fp-checkbox__label:after {
+    &:focus + .adyen-fp-checkbox__label::after {
         border: 1px solid var(--adyen-fp-color-primary);
         box-shadow: 0 0 0 2px var(--adyen-fp-color-blue-light);
     }
 
-    &:hover:not(:focus) + .adyen-fp-checkbox__label:after {
+    &:hover:not(:focus) + .adyen-fp-checkbox__label::after {
         border-color: #99a3ad;
         box-shadow: 0 0 0 2px var(--adyen-fp-color-gray);
     }
 
     /* Check */
-    + .adyen-fp-checkbox__label:before {
-        border-left: 1px solid transparent;
-        border-top: 1px solid transparent;
+    + .adyen-fp-checkbox__label::before {
         border-bottom: 2px solid var(--adyen-fp-color-white);
+        border-left: 1px solid transparent;
+        border-radius: 0 2px 1px;
         border-right: 2px solid var(--adyen-fp-color-white);
-        border-radius: 0 2px 1px 2px;
+        border-top: 1px solid transparent;
         content: '';
         height: 11px;
         left: 1px;
@@ -78,18 +78,18 @@
     }
 
     /* Box */
-    + .adyen-fp-checkbox__label:after {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 16px;
-        height: 16px;
-        border-radius: var(--adyen-fp-border-radius-small);
+    + .adyen-fp-checkbox__label::after {
         background-color: var(--adyen-fp-color-white);
         border: 1px solid var(--adyen-fp-color-gray-dark);
-        z-index: 0;
+        border-radius: var(--adyen-fp-border-radius-small);
+        content: '';
+        height: 16px;
+        left: 0;
+        position: absolute;
+        top: 0;
         transition: background 0.15s ease-out, border 0.05s ease-out, box-shadow 0.1s ease-out;
+        width: 16px;
+        z-index: 0;
 
         [dir='rtl'] & {
             left: auto;
@@ -102,10 +102,10 @@
     background: var(--adyen-fp-color-gray-light);
     border: 1px solid var(--adyen-fp-color-gray-light);
     border-radius: var(--adyen-fp-border-radius-medium);
-    padding: 14px 14px 13px 14px;
+    padding: 14px 14px 13px;
 
     [dir='rtl'] & {
-        padding: 14px 14px 13px 14px;
+        padding: 14px 14px 13px;
     }
 
     &.adyen-fp-field--error {

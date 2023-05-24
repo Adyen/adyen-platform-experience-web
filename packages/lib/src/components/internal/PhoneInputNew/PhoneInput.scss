@@ -7,27 +7,27 @@
 
         // inherited style (FormFields.scss)
         .adyen-fp-input {
-            padding: 0;
             height: auto;
+            padding: 0;
 
             &:focus-within {
-                 border: 1px solid #0075FF;
-
-                 .adyen-fp-dropdown--countrycode-selector {
-                     border-right: 1px solid #0075FF;
-                 }
-             }
+                border: 1px solid #0075ff;
+                /* stylelint-disable-next-line selector-max-compound-selectors, max-nesting-depth */
+                .adyen-fp-dropdown--countrycode-selector {
+                    border-right: 1px solid #0075ff;
+                }
+            }
         }
 
         // inherited style (Select.scss)
         .adyen-fp-dropdown__button {
-            width: auto;
             border: 0;
-            height: 35px;
-            border-top-right-radius: 0;
             border-bottom-right-radius: 0;
+            border-top-right-radius: 0;
+            height: 35px;
+            width: auto;
 
-            &:after {
+            &::after {
                 box-sizing: revert;
                 height: 10px;
             }
@@ -44,16 +44,16 @@
 
         // Example of better BEM naming i.e. 'adyen-fp-input' as the Base
         .adyen-fp-input--phone-number {
+            border: 1px solid transparent;
             height: 35px;
             line-height: 35px;
             min-height: 35px;
             padding-bottom: 0;
-            padding-top: 0;
-            border: 1px solid transparent;
             padding-left: 15px;
+            padding-top: 0;
 
             &:focus-within {
-                border: 1px solid #0075FF;
+                border: 1px solid #0075ff;
                 box-shadow: 0 0 0 2px #99c2ff;
             }
         }

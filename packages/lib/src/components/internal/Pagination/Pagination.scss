@@ -1,7 +1,7 @@
 .adyen-fp-pagination {
     display: flex;
-    text-align: right;
     padding: 8px 24px;
+    text-align: right;
 
     &__context {
         align-items: center;
@@ -17,20 +17,20 @@
         display: block;
 
         &--next {
-            .adyen-fp-button__content:before {
+            .adyen-fp-button__content::before {
                 content: '';
                 transform: rotate(225deg);
             }
         }
 
-        &__content:before {
-            content: '';
+        &__content::before {
             border: 2px solid var(--adyen-fp-color-gray-darker);
-            height: 8px;
-            width: 8px;
-            border-top: 0;
             border-right: 0;
+            border-top: 0;
+            content: '';
+            height: 8px;
             transform: rotate(45deg);
+            width: 8px;
         }
 
         &__text {

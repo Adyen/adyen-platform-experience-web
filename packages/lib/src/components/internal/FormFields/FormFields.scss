@@ -47,13 +47,14 @@
     margin-right: 8px;
 
     [dir='rtl'] & {
-        margin-right: 0;
         margin-left: 8px;
+        margin-right: 0;
     }
 }
 
 .adyen-fp-field-wrapper > .adyen-fp-field:nth-child(2) {
     margin-left: 8px;
+
     [dir='rtl'] & {
         margin-left: 0;
         margin-right: 8px;
@@ -65,20 +66,20 @@
 }
 
 .adyen-fp-input {
-    color: var(--adyen-fp-color-black);
-    caret-color: var(--adyen-fp-color-blue);
-    font-size: var(--adyen-fp-font-size-medium);
-    font-family: inherit;
-    display: block;
-    height: 40px;
     background: var(--adyen-fp-color-white);
     border: 1px solid var(--adyen-fp-color-gray-dark);
     border-radius: var(--adyen-fp-border-radius-medium);
+    caret-color: var(--adyen-fp-color-blue);
+    color: var(--adyen-fp-color-black);
+    display: block;
+    font-family: inherit;
+    font-size: var(--adyen-fp-font-size-medium);
+    height: 40px;
+    outline: none;
     padding: 5px 8px;
     position: relative;
-    outline: none;
-    width: 100%;
     transition: border 0.2s ease-out, box-shadow 0.2s ease-out;
+    width: 100%;
 }
 
 .adyen-fp-input:hover {
@@ -100,8 +101,8 @@
 }
 
 .adyen-fp-input-wrapper {
-    position: relative;
     display: block;
+    position: relative;
 }
 
 .adyen-fp-input-wrapper--block {
@@ -109,20 +110,21 @@
 }
 
 .adyen-fp-input__inline-validation {
-    position: absolute;
-    width: 16px;
     height: 16px;
+    position: absolute;
+    right: 14px;
     top: 50%;
     transform: translateY(-50%);
-    right: 14px;
+    width: 16px;
 
     [dir='rtl'] & {
-        right: auto;
         left: 14px;
+        right: auto;
     }
+
     [dir='ltr'] & {
-        right: 14px;
         left: auto;
+        right: 14px;
     }
 }
 

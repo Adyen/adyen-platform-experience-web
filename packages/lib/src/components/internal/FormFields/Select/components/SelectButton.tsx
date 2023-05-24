@@ -49,8 +49,8 @@ function SelectButton(props: SelectButtonProps) {
         >
             {!showList || !props.filterable ? (
                 <>
-                    <span className="adyen-fp-dropdown__button__text">{active?.selectedOptionName || active?.name || props.placeholder}</span>
-                    {active?.icon && <Img className="adyen-fp-dropdown__button__icon" src={active.icon} alt={active.name} />}
+                    <span className="adyen-fp-dropdown__button-text">{active?.selectedOptionName || active?.name || props.placeholder}</span>
+                    {active?.icon && <Img className="adyen-fp-dropdown__button-icon" src={active.icon} alt={active.name} />}
                 </>
             ) : (
                 <input

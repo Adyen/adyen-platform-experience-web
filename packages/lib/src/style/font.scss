@@ -1,4 +1,4 @@
-@mixin font-sizes {
+@mixin adyen-fp-font-sizes {
     --adyen-fp-font-size-xlarge: 1.75em;
     --adyen-fp-font-size-large: 1.5em;
     --adyen-fp-font-size-base: 1.3em;
@@ -8,7 +8,7 @@
     --adyen-fp-font-size-xxsmall: 0.68em;
 }
 
-@mixin font-weight {
+@mixin adyen-fp-font-weight {
     --adyen-fp-font-weight-thin: 100;
     --adyen-fp-font-weight-regular: 400;
     --adyen-fp-font-weight-medium: 500;
