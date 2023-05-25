@@ -4,7 +4,7 @@ ol {
   padding: 0;
 }
 
-.calendar {
+.adyen-fp-calendar {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(16rem, 20rem));
   justify-content: center;
@@ -49,13 +49,6 @@ ol {
           justify-content: center;
           position: absolute;
         }
-
-        .adyen-fp-button {
-          border-radius: 50%;
-          height: auto;
-          overflow: hidden;
-          width: auto;
-        }
       }
     }
 
@@ -79,9 +72,7 @@ ol {
     }
 
     [aria-selected='true'] & {
-      &:not(:hover) {
-        color: white;
-      }
+      color: white;
 
       &::before {
         background: black;

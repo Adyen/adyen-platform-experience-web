@@ -78,11 +78,14 @@ export const getMinimumNearestCalendarMonths = (calendarMonths: CalendarMonth = 
 };
 
 export const getCalendarTimeSliceParameters = ({ calendarMonths = 1, originDate, sinceDate, untilDate }: CalendarConfig, offset: number) => {
+    const noonTimestamp = getNoonTimestamp(originDate, true);
+    const relativeOriginDateIndex = new Date(noonTimestamp).getDate() - 1;
+
     let calendarStartMonthOffset = offset;
     let maxOffset = Infinity;
     let minOffset = -Infinity;
     let numberOfMonths = calendarMonths;
-    let originTimestamp = getMonthTimestamp(getNoonTimestamp(originDate, true));
+    let originTimestamp = getMonthTimestamp(noonTimestamp);
 
     try { getMonthTimestamp(originDate, offset); }
     catch { calendarStartMonthOffset = 0; }
@@ -108,5 +111,5 @@ export const getCalendarTimeSliceParameters = ({ calendarMonths = 1, originDate,
     calendarStartMonthOffset = Math.min(maxOffset, computedCalendarFrameEndOffset) - numberOfMonths + 1;
     maxOffset -= numberOfMonths - 1;
 
-    return [numberOfMonths, originTimestamp, minOffset, maxOffset, calendarStartMonthOffset] as const;
+    return [numberOfMonths, originTimestamp, minOffset, maxOffset, calendarStartMonthOffset, relativeOriginDateIndex] as const;
 };

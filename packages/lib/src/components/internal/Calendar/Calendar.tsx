@@ -12,8 +12,6 @@ export default function Calendar(props: CalendarProps) {
         useMemo(() => ({ ...props, locale: i18n.locale }), [i18n, props])
     );
 
-    const onSelected = useMemo(() => typeof props.onSelected === 'function' && props.onSelected, [props.onSelected]);
-
     return <div role="group" aria-label="calendar">
         <div role="group" aria-label="calendar navigation" style={{ textAlign: 'center' }}>{
             Directions.map(direction => {
@@ -40,22 +38,22 @@ export default function Calendar(props: CalendarProps) {
             })
         }</div>
 
-        <ol className={'calendar'} role="none" {...cursorRootProps}>{
+        <ol className={'adyen-fp-calendar'} role="none" {...cursorRootProps}>{
             [...calendar.months.map(view => {
                 const month = `${view.year}-${view.month + 1}`;
                 const humanizedMonth = new Date(month).toLocaleDateString(i18n.locale, { month: 'short', year: 'numeric' });
 
-                return <li key={month} className={'calendar-month'} role="none">
-                    <div className={'calendar-month__name'} role="none">
+                return <li key={month} className={'adyen-fp-calendar-month'} role="none">
+                    <div className={'adyen-fp-calendar-month__name'} role="none">
                         <time dateTime={month} aria-hidden="true">{humanizedMonth}</time>
                     </div>
 
-                    <table className={'calendar-month__grid'} role="grid" aria-label={humanizedMonth}>
+                    <table className={'adyen-fp-calendar-month__grid'} role="grid" aria-label={humanizedMonth}>
                         <thead>
-                            <tr className={'calendar-month__grid-row'}>{
+                            <tr className={'adyen-fp-calendar-month__grid-row'}>{
                                 [...calendar.daysOfTheWeek.map(([long,, short]) => (
-                                    <th key={long} className={'calendar-month__grid-cell'} scope="col" aria-label={long}>
-                                        <abbr className={'calendar-month__day-of-week'} title={long}>{short}</abbr>
+                                    <th key={long} className={'adyen-fp-calendar-month__grid-cell'} scope="col" aria-label={long}>
+                                        <abbr className={'adyen-fp-calendar-month__day-of-week'} title={long}>{short}</abbr>
                                     </th>
                                 ))]
                             }</tr>
@@ -63,8 +61,9 @@ export default function Calendar(props: CalendarProps) {
 
                         <tbody>{
                             [...view.weeks.map((week, index) => (
-                                <tr key={`${month}:${index}`} className={'calendar-month__grid-row'}>{
-                                    [...week.map((date, index) => {
+                                <tr key={`${month}:${index}`} className={'adyen-fp-calendar-month__grid-row'}>{
+                                    [...week.map((cursorPosition, index) => {
+                                        const date = calendar[cursorPosition] as string;
                                         const isWithinMonth = week.isWithinMonthAt(index);
 
                                         const extraProps = {
@@ -75,18 +74,11 @@ export default function Calendar(props: CalendarProps) {
                                             'data-within-month': `${isWithinMonth}`
                                         } as any;
 
-                                        if (onSelected) {
-                                            extraProps.onClick = () => {
-                                                // setFocusedDate(date);
-                                                props.onSelected?.(date);
-                                            };
-                                        }
+                                        augmentCursorElement(cursorPosition, extraProps);
 
-                                        augmentCursorElement(date, extraProps);
-
-                                        return <td key={date} className={'calendar-month__grid-cell'} tabIndex={-1} {...extraProps}>{
+                                        return <td key={date} className={'adyen-fp-calendar-month__grid-cell'} tabIndex={-1} {...extraProps}>{
                                             (props.onlyMonthDays !== true || isWithinMonth) && (
-                                                <time className={'calendar__date'} dateTime={date}>{+date.slice(-2)}</time>
+                                                <time className={'adyen-fp-calendar__date'} dateTime={date}>{+date.slice(-2)}</time>
                                             )
                                         }</td>
                                     })]

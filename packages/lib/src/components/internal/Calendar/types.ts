@@ -6,25 +6,27 @@ export type CalendarSlidingWindowMonth = 1 | 2 | 3 | 4 | 6 | 12;
 export type CalendarMonthEndDate = 28 | 29 | 30 | 31;
 
 export const enum CalendarTraversalDirection {
-    PREV,
-    NEXT
+    PREV = 'PREV',
+    NEXT = 'NEXT'
 }
 
 export const enum CalendarShift {
-    MONTH = 1,
-    WINDOW,
-    YEAR
+    MONTH = 'MONTH',
+    WINDOW = 'WINDOW',
+    YEAR = 'YEAR'
 }
 
 export const enum CalendarCursorShift {
-    FIRST_MONTH_DAY,
-    LAST_MONTH_DAY,
-    FIRST_WEEK_DAY,
-    LAST_WEEK_DAY,
-    PREV_WEEK_DAY,
-    NEXT_WEEK_DAY,
-    PREV_WEEK,
-    NEXT_WEEK
+    FIRST_MONTH_DAY = 'FIRST_MONTH_DAY',
+    LAST_MONTH_DAY = 'LAST_MONTH_DAY',
+    FIRST_WEEK_DAY = 'FIRST_WEEK_DAY',
+    LAST_WEEK_DAY = 'LAST_WEEK_DAY',
+    PREV_WEEK_DAY = 'PREV_WEEK_DAY',
+    NEXT_WEEK_DAY = 'NEXT_WEEK_DAY',
+    PREV_MONTH = 'PREV_MONTH',
+    NEXT_MONTH = 'NEXT_MONTH',
+    PREV_WEEK = 'PREV_WEEK',
+    NEXT_WEEK = 'NEXT_WEEK'
 }
 
 export interface CalendarIterable<IteratorValue> extends Iterable<IteratorValue> {
@@ -46,16 +48,16 @@ export type CalendarMapIteratorFactory<IteratorValue, MappedValue = any> = (
     thisArg?: any
 ) => Generator<MappedValue>;
 
-export interface CalendarDaysView extends CalendarIterable<string> {
+export interface CalendarDaysView<T> extends CalendarIterable<T> {
     isFirstWeekDayAt: (index: number) => boolean;
     isWeekendAt: (index: number) => boolean;
 }
 
-export interface CalendarMonthDaysView extends CalendarDaysView {
+export interface CalendarMonthDaysView extends CalendarDaysView<number> {
     isWithinMonthAt: (index: number) => boolean;
 }
 
-export interface CalendarWeekView extends CalendarDaysView {
+export interface CalendarWeekView extends CalendarDaysView<number> {
     isTransitionWeek: boolean;
 }
 
@@ -69,7 +71,7 @@ export interface CalendarMonthView extends CalendarMonthDaysView {
     year: number;
 }
 
-export interface CalendarView extends CalendarDaysView {
+export interface CalendarView extends CalendarDaysView<string> {
     daysOfTheWeek: CalendarIterable<readonly [string, string, string]>;
     months: CalendarIterable<CalendarMonthView>;
     weeks: CalendarIterable<CalendarWeekView>;
@@ -93,5 +95,5 @@ export interface CalendarProps extends CalendarConfig {
 }
 
 export type ShiftCalendar = (monthOffset: number, shift?: CalendarShift) => number;
-export type ShiftCalendarCursor = (shift?: CalendarCursorShift) => number;
+export type ShiftCalendarCursor = (shift?: CalendarCursorShift | number) => number;
 export type CalendarViewRecord = readonly [ CalendarView, ShiftCalendar, ShiftCalendarCursor ];
