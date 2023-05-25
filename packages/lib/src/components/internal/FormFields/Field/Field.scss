@@ -34,11 +34,10 @@
 }
 
 .adyen-fp-label__text {
-    transition: color 0.1s ease-out;
-
     display: block;
-    text-overflow: ellipsis;
     overflow: hidden;
+    text-overflow: ellipsis;
+    transition: color 0.1s ease-out;
     white-space: nowrap;
 }
 
@@ -51,10 +50,10 @@
 }
 
 .adyen-fp-error-text {
-    display: flex;
+    align-items: center;
     color: var(--adyen-fp-color-alert);
+    display: flex;
+    font-size: var(--adyen-fp-font-size-xsmall);
     font-weight: normal;
     margin-top: 4px;
-    font-size: var(--adyen-fp-font-size-xsmall);
-    align-items: center;
 }

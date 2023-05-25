@@ -7,8 +7,8 @@
 
     &__title {
         display: flex;
-        gap: var(--adyen-fp-spacing-small);
         font-weight: 600;
+        gap: var(--adyen-fp-spacing-small);
         margin-bottom: var(--adyen-fp-spacing-small);
     }
 
@@ -28,7 +28,7 @@
     &__scrollable-area {
         max-height: 240px;
         overflow: auto;
-        padding-top: 2px;
         padding-right: var(--adyen-fp-spacing-medium);
+        padding-top: 2px;
     }
 }

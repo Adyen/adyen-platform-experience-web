@@ -3,7 +3,7 @@ import { pages } from './pages';
 const insertHeader = pages => {
     const container = document.querySelector('header');
     const links = pages.map(page => {
-        const url = `/${page.id}/`;
+        const url = `/src/pages/${page.id}/`;
         const isActivePage = window.location.pathname === url;
         return `
             <li class="playground-nav__item ${isActivePage ? 'playground-nav__item--active' : ''}">

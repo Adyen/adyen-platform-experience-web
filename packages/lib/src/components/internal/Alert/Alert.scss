@@ -1,17 +1,13 @@
 .adyen-fp-alert-message {
-    display: flex;
     border-radius: var(--adyen-fp-border-radius-medium);
-    margin: 0 0 var(--adyen-fp-spacing-medium);
-    text-align: left;
-    padding: var(--adyen-fp-spacing-medium-small);
+    display: flex;
     font-size: var(--adyen-fp-font-size-small);
+    margin: 0 0 var(--adyen-fp-spacing-medium);
+    padding: var(--adyen-fp-spacing-medium-small);
+    text-align: left;
 
     &--error {
         background: var(--adyen-fp-color-red-light);
-    }
-
-    &--info {
-        background: var(--adyen-fp-color-gray-light);
     }
 
     &--warning {
@@ -23,8 +19,8 @@
     }
 
     &__icon {
-        width: 14px;
         height: 14px;
         margin-right: var(--adyen-fp-spacing-small);
+        width: 14px;
     }
 }

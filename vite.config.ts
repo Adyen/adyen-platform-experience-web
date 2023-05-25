@@ -5,6 +5,7 @@ import { lstat, readdir } from 'node:fs/promises';
 import { mockApiProxies, mockServerPlugin } from './packages/server/proxy/mockApiProxies';
 import { getEnvironment } from './envs/getEnvs';
 import { realApiProxies } from './packages/server/proxy/realApiProxies';
+import { checker } from 'vite-plugin-checker';
 
 const playgroundDir = resolve(__dirname, 'packages/playground/src/pages');
 
@@ -21,16 +22,24 @@ async function getPlaygroundEntrypoints() {
     const availableEntries: string[][] = entries.filter((entry): entry is string[] => Boolean(entry));
     return {
         ...Object.fromEntries(availableEntries),
-        index: resolve(playgroundDir, 'index.html'),
+        index: resolve(playgroundDir, '..', '..', 'index.html'),
     };
 }
 
 export default defineConfig(async ({ mode }) => {
     const { lemApi, BTLApi, BCLApi, playground, mockServer } = getEnvironment(mode);
     return {
-        root: playgroundDir,
         base: './',
-        plugins: [preact(), (mode === 'mocked' || mode === 'demo') && mockServerPlugin(mockServer.port)],
+        plugins: [
+            preact(),
+            (mode === 'mocked' || mode === 'development') &&
+                checker({
+                    stylelint: {
+                        lintCommand: 'stylelint ../lib/src/**/*.scss',
+                    },
+                }),
+            (mode === 'mocked' || mode === 'demo') && mockServerPlugin(mockServer.port),
+        ],
         build:
             mode === 'demo'
                 ? {

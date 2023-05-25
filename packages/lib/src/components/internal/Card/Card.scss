@@ -10,7 +10,7 @@
     }
 
     &--no-outline {
-        border: none;
+        border: 0;
     }
 
     &--clickable {
@@ -25,6 +25,7 @@
         color: var(--adyen-fp-color-gray-dark-2);
         font-weight: var(--adyen-fp-font-weight-regular);
         line-height: var(--adyen-fp-spacing-large);
+
         &--with-title {
             margin-top: 20px;
         }
@@ -40,9 +41,10 @@
         display: block;
         width: 100%;
     }
+
     &__header-collapsible {
-        display: flex;
         align-items: center;
+        display: flex;
         gap: 16px;
         width: 100%;
     }
@@ -52,41 +54,43 @@
     }
 
     &__collapse-button {
-        border: none;
-        display: flex;
-        padding: 0;
-        cursor: pointer;
-        transition: 0.1s ease-in-out;
         align-items: center;
+        background: var(--adyen-fp-color-gray-light);
+        border: 0;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
         flex-shrink: 0;
         height: 40px;
         justify-content: center;
         min-width: auto;
+        padding: 0;
+        transition: 0.1s ease-in-out;
         width: 40px;
-        border-radius: 50%;
-        background: var(--adyen-fp-color-gray-light);
+
         &:hover {
             background: var(--adyen-fp-color-gray);
         }
     }
 
     &__collapsible-icon {
+        font-size: 1.3em;
         padding: 0;
         transition: all 0.2s ease-in-out;
-        font-size: 1.3em;
+
         &--collapsed {
             &::before {
-                font-weight: var(--adyen-fp-font-weight-bold);
-                display: inline-block;
                 content: '\2228';
+                display: inline-block;
+                font-weight: var(--adyen-fp-font-weight-bold);
             }
         }
 
         &--opened {
             &::before {
-                font-weight: var(--adyen-fp-font-weight-bold);
-                display: inline-block;
                 content: '\2227';
+                display: inline-block;
+                font-weight: var(--adyen-fp-font-weight-bold);
                 margin-bottom: 2px;
             }
         }

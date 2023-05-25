@@ -97,10 +97,6 @@ main {
         font-size: 24px;
     }
 
-    &-status--success:before {
-        background: $color-green;
-    }
-
     &-stats-bar {
         --tw-bg-opacity: 1;
         background-color: rgba(229, 245, 255, var(--tw-bg-opacity));
@@ -130,7 +126,7 @@ main {
         }
 
         .adyen-fp-balances__scrollable-area {
-          padding: $spacing-medium;
+            padding: $spacing-medium;
             //    border: 1px solid $color-blue-light;
             //    border-radius: 12px;
             //    padding: $spacing-medium;
