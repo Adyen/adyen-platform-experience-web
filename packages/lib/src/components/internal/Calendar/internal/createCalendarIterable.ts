@@ -2,7 +2,7 @@ import { CalendarIterable, CalendarMapIteratorFactory } from '../types';
 
 const createCalendarIterable = (() => {
     const mapIteratorFactory: CalendarMapIteratorFactory<any> = function* (callback = x => x, thisArg) {
-        for (let i = this.offset; i < this.size; i++) {
+        for (let i = 0; i < this.size; i++) {
             yield callback.call(thisArg, this[i], i, this);
         }
     };
@@ -16,7 +16,7 @@ const createCalendarIterable = (() => {
         (target: CalendarIterable<V>, property: string | symbol, receiver: any) => {
             if (typeof property === 'string') {
                 const index = +property;
-                if (index >= target.offset && index < target.size) {
+                if (index >= 0 && index < target.size) {
                     return getter(index);
                 }
             }

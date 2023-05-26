@@ -32,7 +32,6 @@ export const enum CalendarCursorShift {
 export interface CalendarIterable<IteratorValue> extends Iterable<IteratorValue> {
     [index: number]: IteratorValue;
     map: CalendarMapIteratorFactory<IteratorValue>;
-    offset: number;
     size: number;
 }
 
@@ -82,6 +81,7 @@ export interface CalendarConfig {
     dynamicMonthWeeks?: boolean;
     firstWeekDay?: CalendarFirstWeekDay;
     locale?: string;
+    onlyMonthDays?: boolean;
     originDate?: CalendarDate;
     sinceDate?: CalendarDate;
     untilDate?: CalendarDate;
@@ -89,7 +89,6 @@ export interface CalendarConfig {
 
 export interface CalendarProps extends CalendarConfig {
     getCustomRenderProps?: () => void;
-    onlyMonthDays?: boolean;
     onSelected?: (date: any) => void;
     trackCurrentDay?: boolean;
 }

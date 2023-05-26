@@ -41,7 +41,7 @@ const createCalendar = (config: CalendarConfig, offset: number) => {
     const transitionWeeks: number[] = [];
     const timeSlice = getCalendarTimeSliceParameters(config, offset);
 
-    const { dynamicMonthWeeks, firstWeekDay = 0, locale } = config;
+    const { dynamicMonthWeeks, firstWeekDay = 0, locale, onlyMonthDays = false } = config;
     const [ numberOfMonths, originTimestamp, minOffset, maxOffset ] = timeSlice;
     const getMonthNumberOfDays = dynamicMonthWeeks === true ? computeMonthNumberOfDays : getFixedMonthNumberOfDays;
     const isWeekendAt = isWeekendFactory(getWeekendDays(firstWeekDay)); // [TODO]: derive this based on locale (if possible)
@@ -87,69 +87,78 @@ const createCalendar = (config: CalendarConfig, offset: number) => {
         }
     };
 
+    const cursorIntoNextMonthIfNecessary = () => {
+        if (++cursorMonth === numberOfMonths) {
+            cursorMonth = 0;
+            shiftCalendar(1, CalendarShift.WINDOW);
+        }
+        return relativeCursorPosition;
+    };
+
+    const cursorIntoNextMonthIfNecessaryForDaysOffset = (daysOffset = 1) => {
+        if (daysOffset > 0 && (relativeCursorPosition += daysOffset) > relativeCursorPositionMax) {
+            const nextRelativeCursorPosition = relativeCursorPosition -= relativeCursorPositionMax + 1;
+            const shouldRefreshCursorPosition = cursorMonth !== numberOfMonths - 1;
+
+            cursorIntoNextMonthIfNecessary();
+            if (shouldRefreshCursorPosition) refreshCursorPositionParameters();
+            else relativeCursorPosition = nextRelativeCursorPosition;
+        }
+
+        return relativeCursorPosition;
+    };
+
+    const cursorIntoPreviousMonthIfNecessary = () => {
+        if (--cursorMonth < 0) {
+            cursorMonth = numberOfMonths - 1;
+            shiftCalendar(-1, CalendarShift.WINDOW);
+        }
+        return relativeCursorPosition;
+    };
+
+    const cursorIntoPreviousMonthIfNecessaryForDaysOffset = (daysOffset = 1) => {
+        if (daysOffset > 0 && (relativeCursorPosition -= daysOffset) < 0) {
+            const relativeCursorPositionOffset = relativeCursorPosition += 1;
+            const shouldRefreshCursorPosition = cursorMonth > 0;
+
+            cursorIntoPreviousMonthIfNecessary();
+            if (shouldRefreshCursorPosition) refreshCursorPositionParameters();
+            relativeCursorPosition = relativeCursorPositionMax + relativeCursorPositionOffset;
+        }
+
+        return relativeCursorPosition;
+    };
+
     const updateCalendarRelativeCursorPosition = (shift: CalendarCursorShift) => {
         switch (shift) {
             case CalendarCursorShift.FIRST_MONTH_DAY: return relativeCursorPosition = 0;
             case CalendarCursorShift.LAST_MONTH_DAY: return relativeCursorPosition = relativeCursorPositionMax;
-            case CalendarCursorShift.NEXT_MONTH: {
-                if (++cursorMonth === numberOfMonths) {
-                    cursorMonth = 0;
-                    shiftCalendar(1, CalendarShift.WINDOW);
-                }
-                return relativeCursorPosition;
-            }
-            case CalendarCursorShift.PREV_MONTH: {
-                if (--cursorMonth < 0) {
-                    cursorMonth = numberOfMonths - 1;
-                    shiftCalendar(-1, CalendarShift.WINDOW);
-                }
-                return relativeCursorPosition;
-            }
-            case CalendarCursorShift.NEXT_WEEK: {
-                if ((relativeCursorPosition += 7) > relativeCursorPositionMax) {
-                    const nextRelativeCursorPosition = relativeCursorPosition -= relativeCursorPositionMax + 1;
-
-                    if (++cursorMonth === numberOfMonths) {
-                        cursorMonth = 0;
-                        shiftCalendar(1, CalendarShift.WINDOW);
-                        relativeCursorPosition = nextRelativeCursorPosition;
-                    } else refreshCursorPositionParameters();
-                }
-
-                return relativeCursorPosition;
-            }
-            case CalendarCursorShift.PREV_WEEK: {
-                if ((relativeCursorPosition -= 7) < 0) {
-                    const relativeCursorPositionOffset = relativeCursorPosition += 1;
-
-                    if (--cursorMonth < 0) {
-                        cursorMonth = numberOfMonths - 1;
-                        shiftCalendar(-1, CalendarShift.WINDOW);
-                    } else refreshCursorPositionParameters();
-
-                    relativeCursorPosition = relativeCursorPositionMax + relativeCursorPositionOffset;
-                }
-
-                return relativeCursorPosition;
-            }
+            case CalendarCursorShift.NEXT_MONTH: return cursorIntoNextMonthIfNecessary();
+            case CalendarCursorShift.PREV_MONTH: return cursorIntoPreviousMonthIfNecessary();
+            case CalendarCursorShift.NEXT_WEEK: return cursorIntoNextMonthIfNecessaryForDaysOffset(7);
+            case CalendarCursorShift.PREV_WEEK: return cursorIntoPreviousMonthIfNecessaryForDaysOffset(7);
         }
 
         const weekStart = Math.floor(cursorPosition / 7) * 7;
-
-        switch (shift) {
-            case CalendarCursorShift.FIRST_WEEK_DAY:
-                return relativeCursorPosition = Math.max(cursorMonthStart, weekStart) - cursorMonthStart;
-            case CalendarCursorShift.LAST_WEEK_DAY:
-                return relativeCursorPosition = Math.min(cursorMonthEnd, weekStart + 6) - cursorMonthStart;
-        }
-
         const weekDay = cursorPosition % 7;
 
         switch (shift) {
+            case CalendarCursorShift.FIRST_WEEK_DAY:
+                return onlyMonthDays
+                    ? relativeCursorPosition = Math.max(cursorMonthStart, weekStart) - cursorMonthStart
+                    : cursorIntoPreviousMonthIfNecessaryForDaysOffset(weekDay);
+            case CalendarCursorShift.LAST_WEEK_DAY:
+                return onlyMonthDays
+                    ? relativeCursorPosition = Math.min(cursorMonthEnd, weekStart + 6) - cursorMonthStart
+                    : cursorIntoNextMonthIfNecessaryForDaysOffset(6 - weekDay);
             case CalendarCursorShift.PREV_WEEK_DAY:
-                return relativeCursorPosition -= +(weekDay > 0 && relativeCursorPosition > 0);
+                return onlyMonthDays
+                    ? relativeCursorPosition -= +(weekDay > 0 && relativeCursorPosition > 0)
+                    : cursorIntoPreviousMonthIfNecessaryForDaysOffset(+(weekDay > 0));
             case CalendarCursorShift.NEXT_WEEK_DAY:
-                return relativeCursorPosition += +(weekDay < 6 && relativeCursorPosition < relativeCursorPositionMax);
+                return onlyMonthDays
+                    ? relativeCursorPosition += +(weekDay < 6 && relativeCursorPosition < relativeCursorPositionMax)
+                    : cursorIntoNextMonthIfNecessaryForDaysOffset(+(weekDay < 6));
         }
     };
 
@@ -258,7 +267,6 @@ const createCalendar = (config: CalendarConfig, offset: number) => {
     const calendar = createCalendarIterable<string, CalendarView>({
         daysOfTheWeek: {
             value: createCalendarIterable<readonly [string, string, string]>({
-                offset: { value: 0 },
                 size: { value: 7 },
             }, index => {
                 const date = new Date(calendar[index] as string);
@@ -269,7 +277,6 @@ const createCalendar = (config: CalendarConfig, offset: number) => {
         isWeekendAt: { value: isWeekendAt },
         months: {
             value: createCalendarIterable<CalendarMonthView>({
-                offset: { value: 0 },
                 size: { value: numberOfMonths }
             }, monthIndex => {
                 if (cachedMonths[monthIndex]) return cachedMonths[monthIndex] as CalendarMonthView;
@@ -291,11 +298,9 @@ const createCalendar = (config: CalendarConfig, offset: number) => {
                     isWeekendAt: { value: isWeekendAt },
                     isWithinMonthAt: { value: isWithinMonthAt },
                     month: { value: (month + monthIndex) % 12 },
-                    offset: { value: 0 },
                     size: { value: (endWeekIndex - startWeekIndex) * 7 },
                     weeks: {
                         value: createCalendarIterable<CalendarMonthWeekView>({
-                            offset: { value: 0 },
                             size: { value: endWeekIndex - startWeekIndex }
                         }, weekIndex => {
                             const startIndexOffset = weekIndex * 7;
@@ -305,7 +310,6 @@ const createCalendar = (config: CalendarConfig, offset: number) => {
                                 isTransitionWeek: { value: transitionWeeks.includes(weekIndex) },
                                 isWeekendAt: { value: isWeekendAt },
                                 isWithinMonthAt: { value: (index: number) => isWithinMonthAt(startIndexOffset + index) },
-                                offset: { value: 0 },
                                 size: { value: 7 }
                             }, withRelativeIndexFactory((startWeekIndex + weekIndex) * 7)) as CalendarMonthWeekView;
                         })
@@ -316,18 +320,15 @@ const createCalendar = (config: CalendarConfig, offset: number) => {
                 return cachedMonths[monthIndex] as CalendarMonthView;
             })
         },
-        offset: { value: 0 },
         size: { get: () => days },
         weeks: {
             value: createCalendarIterable<CalendarWeekView>({
-                offset: { value: 0 },
                 size: { get: () => days / 7 }
             }, weekIndex => {
                 cachedWeeks[weekIndex] = cachedWeeks[weekIndex] || createCalendarIterable<number, CalendarWeekView>({
                     isFirstWeekDayAt: { value: isFirstWeekDayAt },
                     isTransitionWeek: { value: transitionWeeks.includes(weekIndex) },
                     isWeekendAt: { value: isWeekendAt },
-                    offset: { value: 0 },
                     size: { value: 7 }
                 }, withRelativeIndexFactory(weekIndex * 7));
 

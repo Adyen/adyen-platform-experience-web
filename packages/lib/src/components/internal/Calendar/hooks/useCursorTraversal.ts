@@ -27,62 +27,75 @@ const useCursorTraversal = (calendarViewRecord: CalendarViewRecord, onSelected: 
     const [, setCursorPosition ] = useState(shiftCursor());
     const [, nominateCursorRefCandidate ] = useSharedElementRef(CursorDateRefConfig);
 
-    const augmentCursorElement = useCallback((index: number, cursorElementProps: Record<any, any>) => {
-        if (onSelected) {
-            cursorElementProps.onClick = () => {
-                const cursorPosition = shiftCursor(index);
-                setCursorPosition(cursorPosition);
-                onSelected(calendar[cursorPosition]);
-            };
-        }
+    const augmentCursorElement = useCallback((cursorPosition: number, cursorElementProps: Record<any, any>) => {
+        cursorElementProps['data-cursor-position'] = cursorPosition;
 
-        if (index === shiftCursor()) {
+        if (cursorPosition === shiftCursor()) {
             cursorElementProps.ref = (elem: HTMLElement | null) => {
                 elem && nominateCursorRefCandidate(elem);
             };
         }
-    }, [calendar, nominateCursorRefCandidate, onSelected, shiftCursor]);
-
-    const captureCursorElementClick = useCallback((evt: Event) => {
-        if (!onSelected) {
-            evt.preventDefault();
-            evt.stopImmediatePropagation();
-        }
-    }, [onSelected]);
-
-    const captureCursorKeypress = useCallback((evt: KeyboardEvent) => {
-        switch (evt.code) {
-            case InteractionKeyCode.ARROW_LEFT:
-                return setCursorPosition(shiftCursor(CalendarCursorShift.PREV_WEEK_DAY));
-            case InteractionKeyCode.ARROW_RIGHT:
-                return setCursorPosition(shiftCursor(CalendarCursorShift.NEXT_WEEK_DAY));
-            case InteractionKeyCode.ARROW_UP:
-                return setCursorPosition(shiftCursor(CalendarCursorShift.PREV_WEEK));
-            case InteractionKeyCode.ARROW_DOWN:
-                return setCursorPosition(shiftCursor(CalendarCursorShift.NEXT_WEEK));
-            case InteractionKeyCode.HOME:
-                return setCursorPosition(shiftCursor(
-                    evt.ctrlKey ? CalendarCursorShift.FIRST_MONTH_DAY : CalendarCursorShift.FIRST_WEEK_DAY
-                ));
-            case InteractionKeyCode.END:
-                return setCursorPosition(shiftCursor(
-                    evt.ctrlKey ? CalendarCursorShift.LAST_MONTH_DAY : CalendarCursorShift.LAST_WEEK_DAY
-                ));
-            case InteractionKeyCode.PAGE_UP:
-                return setCursorPosition(shiftCursor(CalendarCursorShift.PREV_MONTH));
-            case InteractionKeyCode.PAGE_DOWN:
-                return setCursorPosition(shiftCursor(CalendarCursorShift.NEXT_MONTH));
-            case InteractionKeyCode.SPACE:
-            case InteractionKeyCode.ENTER:
-                onSelected && onSelected(calendar[shiftCursor()]);
-                return;
-        }
-    }, [calendar, onSelected, shiftCursor]);
+    }, [nominateCursorRefCandidate, shiftCursor]);
 
     const cursorRootProps = useMemo(() => ({
-        onClickCapture: captureCursorElementClick,
-        onKeyDownCapture: captureCursorKeypress
-    }), [captureCursorElementClick, captureCursorKeypress]);
+        onClickCapture(evt: Event) {
+            if (onSelected) {
+                let cursorElement: HTMLElement | null = (evt.target as HTMLElement);
+
+                while (cursorElement && cursorElement !== evt.currentTarget) {
+                    const index = Number(cursorElement.dataset.cursorPosition);
+
+                    if (Number.isFinite(index)) {
+                        const currentCursorPosition = shiftCursor();
+                        const cursorPosition = shiftCursor(index);
+
+                        if (cursorPosition === index) {
+                            setCursorPosition(cursorPosition);
+                            onSelected(calendar[cursorPosition]);
+                        } else {
+                            shiftCursor(currentCursorPosition);
+                            setCursorPosition(currentCursorPosition);
+                        }
+
+                        break;
+                    }
+
+                    cursorElement = cursorElement.parentNode as HTMLElement;
+                }
+            } else {
+                evt.preventDefault();
+                evt.stopImmediatePropagation();
+            }
+        },
+        onKeyDownCapture(evt: KeyboardEvent) {
+            switch (evt.code) {
+                case InteractionKeyCode.ARROW_LEFT:
+                    return setCursorPosition(shiftCursor(CalendarCursorShift.PREV_WEEK_DAY));
+                case InteractionKeyCode.ARROW_RIGHT:
+                    return setCursorPosition(shiftCursor(CalendarCursorShift.NEXT_WEEK_DAY));
+                case InteractionKeyCode.ARROW_UP:
+                    return setCursorPosition(shiftCursor(CalendarCursorShift.PREV_WEEK));
+                case InteractionKeyCode.ARROW_DOWN:
+                    return setCursorPosition(shiftCursor(CalendarCursorShift.NEXT_WEEK));
+                case InteractionKeyCode.HOME:
+                    return setCursorPosition(shiftCursor(
+                        evt.ctrlKey ? CalendarCursorShift.FIRST_MONTH_DAY : CalendarCursorShift.FIRST_WEEK_DAY
+                    ));
+                case InteractionKeyCode.END:
+                    return setCursorPosition(shiftCursor(
+                        evt.ctrlKey ? CalendarCursorShift.LAST_MONTH_DAY : CalendarCursorShift.LAST_WEEK_DAY
+                    ));
+                case InteractionKeyCode.PAGE_UP:
+                    return setCursorPosition(shiftCursor(CalendarCursorShift.PREV_MONTH));
+                case InteractionKeyCode.PAGE_DOWN:
+                    return setCursorPosition(shiftCursor(CalendarCursorShift.NEXT_MONTH));
+                case InteractionKeyCode.SPACE:
+                case InteractionKeyCode.ENTER:
+                    onSelected && onSelected(calendar[shiftCursor()]);
+                    return;
+            }
+        }
+    }), [calendar, onSelected, shiftCursor]);
 
     return { augmentCursorElement, cursorRootProps } as const;
 };
