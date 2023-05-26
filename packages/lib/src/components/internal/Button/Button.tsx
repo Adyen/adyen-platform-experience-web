@@ -31,7 +31,10 @@ class Button extends Component<ButtonProps, ButtonState> {
         }, delay);
     };
 
-    render({ classNameModifiers = [], disabled, href, icon, inline, label, status, tabIndex, variant }: ButtonProps, { completed }: { completed: boolean }) {
+    render(
+        { classNameModifiers = [], disabled, href, icon, inline, label, status, tabIndex, variant }: ButtonProps,
+        { completed }: { completed: boolean }
+    ) {
         const { i18n } = useCoreContext();
 
         const buttonIcon = icon ? <img className="adyen-fp-button__icon" src={icon} alt="" aria-hidden="true" /> : '';

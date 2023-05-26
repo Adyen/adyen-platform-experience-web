@@ -2,9 +2,8 @@ import createCalendarIterable from './createCalendarIterable';
 import {
     CalendarConfig,
     CalendarCursorShift,
-    CalendarDay,
+    CalendarIterable,
     CalendarMonthView,
-    CalendarMonthWeekView,
     CalendarShift,
     CalendarView,
     CalendarViewRecord,
@@ -25,18 +24,18 @@ import {
 
 const DAY_OF_THE_WEEK_FORMATS = ['long', 'short', 'narrow'] as const;
 
+const withRelativeIndexFactory = (
+    startIndexOffset = 0,
+    withIndexCallback: (offsetIndex: number, initialIndex: number) => any = (x => x)
+) => (index: number) => withIndexCallback(startIndexOffset + index, index);
+
 const computeMonthNumberOfDays = (numberOfWeeks: number) => Math.max(4, Math.min(numberOfWeeks, 6)) * 7;
 const getFixedMonthNumberOfDays = () => MAX_MONTH_DAYS;
-const isFirstWeekDayAt = (index: number) => !(index % 7);
-const isWeekendFactory = (weekends: readonly [CalendarDay, CalendarDay]) => (index: number) => weekends.includes((index % 7) as CalendarDay);
-const withRelativeIndexFactory = (startIndexOffset = 0, withIndexCallback: (index: number) => any = (x => x)) =>
-    (index: number) => withIndexCallback(startIndexOffset + index);
-
 export const getCalendarDateString = (date: Date) => date.toISOString().replace(/T[\w\W]*$/, '');
 
 const createCalendar = (config: CalendarConfig, offset: number) => {
     const cachedMonths: CalendarMonthView[] = [];
-    const cachedWeeks: CalendarWeekView[] = [];
+    const cachedWeeks: CalendarIterable<number>[] = [];
     const cachedOffsets: Array<readonly [number, number, number, number, number]> = [];
     const transitionWeeks: number[] = [];
     const timeSlice = getCalendarTimeSliceParameters(config, offset);
@@ -44,7 +43,6 @@ const createCalendar = (config: CalendarConfig, offset: number) => {
     const { dynamicMonthWeeks, firstWeekDay = 0, locale, onlyMonthDays = false } = config;
     const [ numberOfMonths, originTimestamp, minOffset, maxOffset ] = timeSlice;
     const getMonthNumberOfDays = dynamicMonthWeeks === true ? computeMonthNumberOfDays : getFixedMonthNumberOfDays;
-    const isWeekendAt = isWeekendFactory(getWeekendDays(firstWeekDay)); // [TODO]: derive this based on locale (if possible)
 
     let days = 0;
     let month: number;
@@ -60,8 +58,13 @@ const createCalendar = (config: CalendarConfig, offset: number) => {
     let relativeCursorPosition = timeSlice[5];
 
     const getCalendarDateByIndex = withRelativeIndexFactory(0, (index: number) => (
-        getCalendarDateString(new Date(calendarStartMonthTimestamp + index * DAY_MS))
+        index >= 0 ? getCalendarDateString(new Date(calendarStartMonthTimestamp + index * DAY_MS)) : null
     ));
+
+    const getRelativeMonthDateIndexFactory = (monthStartIndex: number, monthEndIndex: number, startIndexOffset: number) =>
+        withRelativeIndexFactory(startIndexOffset, (offsetIndex: number) => (
+            (offsetIndex >= monthStartIndex && offsetIndex < monthEndIndex) ? offsetIndex : -1
+        ));
 
     const refreshCursorPositionParameters = () => {
         if (cursorMonth === undefined) {
@@ -264,17 +267,18 @@ const createCalendar = (config: CalendarConfig, offset: number) => {
     refreshCalendar();
 
     // [TODO]: Clean up calendar iterator properties with reusable logic and cache
-    const calendar = createCalendarIterable<string, CalendarView>({
+    const calendar = createCalendarIterable<string | null, CalendarView>({
         daysOfTheWeek: {
             value: createCalendarIterable<readonly [string, string, string]>({
                 size: { value: 7 },
             }, index => {
                 const date = new Date(calendar[index] as string);
-                return Object.freeze(DAY_OF_THE_WEEK_FORMATS.map(weekday => date.toLocaleDateString(locale, { weekday })) as [string, string, string]);
+                return Object.freeze(DAY_OF_THE_WEEK_FORMATS.map(
+                    weekday => date.toLocaleDateString(locale, { weekday })
+                ) as [string, string, string]);
             })
         },
-        isFirstWeekDayAt: { value: isFirstWeekDayAt },
-        isWeekendAt: { value: isWeekendAt },
+        firstWeekDay: { value: firstWeekDay },
         months: {
             value: createCalendarIterable<CalendarMonthView>({
                 size: { value: numberOfMonths }
@@ -289,46 +293,47 @@ const createCalendar = (config: CalendarConfig, offset: number) => {
                     endWeekIndex = 0
                 ] = cachedOffsets[monthIndex] || [];
 
-                const isWithinMonthAt = (index: number) => index >= startDayOffset && index < endIndex;
+                const numberOfWeeks = endWeekIndex - startWeekIndex;
+                const numberOfDays = numberOfWeeks * 7;
+                const monthStartIndex = startIndex + (onlyMonthDays ? startDayOffset : 0);
+                const monthEndIndex = startIndex + (onlyMonthDays ? endIndex : numberOfDays);
 
                 cachedMonths[monthIndex] = createCalendarIterable<number, CalendarMonthView>({
+                    end: { value: startIndex + endIndex },
                     intersectsWithNext: { value: transitionWeeks.includes(endWeekIndex - 1) },
                     intersectsWithPrev: { value: transitionWeeks.includes(startWeekIndex) },
-                    isFirstWeekDayAt: { value: isFirstWeekDayAt },
-                    isWeekendAt: { value: isWeekendAt },
-                    isWithinMonthAt: { value: isWithinMonthAt },
                     month: { value: (month + monthIndex) % 12 },
-                    size: { value: (endWeekIndex - startWeekIndex) * 7 },
+                    size: { value: numberOfDays },
+                    start: { value: startIndex + startDayOffset },
                     weeks: {
-                        value: createCalendarIterable<CalendarMonthWeekView>({
-                            size: { value: endWeekIndex - startWeekIndex }
+                        value: createCalendarIterable<CalendarWeekView>({
+                            size: { value: numberOfWeeks }
                         }, weekIndex => {
-                            const startIndexOffset = weekIndex * 7;
-
-                            return createCalendarIterable<number, CalendarMonthWeekView>({
-                                isFirstWeekDayAt: { value: isFirstWeekDayAt },
+                            return createCalendarIterable<number, CalendarWeekView>({
                                 isTransitionWeek: { value: transitionWeeks.includes(weekIndex) },
-                                isWeekendAt: { value: isWeekendAt },
-                                isWithinMonthAt: { value: (index: number) => isWithinMonthAt(startIndexOffset + index) },
                                 size: { value: 7 }
-                            }, withRelativeIndexFactory((startWeekIndex + weekIndex) * 7)) as CalendarMonthWeekView;
+                            }, getRelativeMonthDateIndexFactory(
+                                monthStartIndex,
+                                monthEndIndex,
+                                (startWeekIndex + weekIndex) * 7)
+                            ) as CalendarWeekView;
                         })
                     },
                     year: { value: year + Math.floor((month + monthIndex) / 12) }
-                }, withRelativeIndexFactory(startIndex));
+                }, getRelativeMonthDateIndexFactory(monthStartIndex, monthEndIndex, startIndex));
 
                 return cachedMonths[monthIndex] as CalendarMonthView;
             })
         },
         size: { get: () => days },
+        transitionWeeks: { get: () => transitionWeeks },
+        weekendDays: { value: getWeekendDays(firstWeekDay) }, // [TODO]: Refactor and derive this based on locale (if possible)
         weeks: {
             value: createCalendarIterable<CalendarWeekView>({
                 size: { get: () => days / 7 }
             }, weekIndex => {
                 cachedWeeks[weekIndex] = cachedWeeks[weekIndex] || createCalendarIterable<number, CalendarWeekView>({
-                    isFirstWeekDayAt: { value: isFirstWeekDayAt },
                     isTransitionWeek: { value: transitionWeeks.includes(weekIndex) },
-                    isWeekendAt: { value: isWeekendAt },
                     size: { value: 7 }
                 }, withRelativeIndexFactory(weekIndex * 7));
 

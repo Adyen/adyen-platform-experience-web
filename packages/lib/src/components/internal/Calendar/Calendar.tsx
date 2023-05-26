@@ -1,6 +1,6 @@
 import useCalendar from './hooks/useCalendar';
 import useCoreContext from '../../../core/Context/useCoreContext';
-import { CalendarProps, CalendarTraversalDirection } from './types';
+import { CalendarDay, CalendarProps, CalendarTraversalDirection } from './types';
 import { Directions } from './hooks/usePointerTraversal';
 import { useMemo } from 'preact/hooks';
 import Button from '../Button';
@@ -25,7 +25,6 @@ export default function Calendar(props: CalendarProps) {
                     label = '◀︎';
                 }
 
-                // @ts-ignore
                 return <Button
                     key={direction}
                     aria-label={i18n.get(`calendar.${labelModifier}Month`)}
@@ -63,22 +62,22 @@ export default function Calendar(props: CalendarProps) {
                             [...view.weeks.map((week, index) => (
                                 <tr key={`${month}:${index}`} className={'adyen-fp-calendar-month__grid-row'}>{
                                     [...week.map((cursorPosition, index) => {
-                                        const date = calendar[cursorPosition] as string;
-                                        const isWithinMonth = week.isWithinMonthAt(index);
+                                        const date = calendar[cursorPosition];
+                                        const weekday = cursorPosition % 7;
 
                                         const extraProps = {
                                             'data-date': date,
-                                            'data-first-week-day': `${week.isFirstWeekDayAt(index)}`,
+                                            'data-first-week-day': `${weekday === 0}`,
                                             'data-today': `${date === today}`,
-                                            'data-weekend': `${week.isWeekendAt(index)}`,
-                                            'data-within-month': `${isWithinMonth}`
+                                            'data-weekend': `${calendar.weekendDays.includes(weekday as CalendarDay)}`,
+                                            'data-within-month': `${cursorPosition >= view.start && cursorPosition < view.end}`
                                         } as any;
 
                                         augmentCursorElement(cursorPosition, extraProps);
 
                                         return <td key={date} className={'adyen-fp-calendar-month__grid-cell'} tabIndex={-1} {...extraProps}>{
-                                            (props.onlyMonthDays !== true || isWithinMonth) && (
-                                                <time className={'adyen-fp-calendar__date'} dateTime={date}>{+date.slice(-2)}</time>
+                                            cursorPosition >= 0 && (
+                                                <time className={'adyen-fp-calendar__date'} dateTime={date || ''}>{date && +date.slice(-2)}</time>
                                             )
                                         }</td>
                                     })]

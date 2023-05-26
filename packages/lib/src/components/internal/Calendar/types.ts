@@ -47,32 +47,25 @@ export type CalendarMapIteratorFactory<IteratorValue, MappedValue = any> = (
     thisArg?: any
 ) => Generator<MappedValue>;
 
-export interface CalendarDaysView<T> extends CalendarIterable<T> {
-    isFirstWeekDayAt: (index: number) => boolean;
-    isWeekendAt: (index: number) => boolean;
-}
-
-export interface CalendarMonthDaysView extends CalendarDaysView<number> {
-    isWithinMonthAt: (index: number) => boolean;
-}
-
-export interface CalendarWeekView extends CalendarDaysView<number> {
+export interface CalendarWeekView extends CalendarIterable<number> {
     isTransitionWeek: boolean;
 }
 
-export interface CalendarMonthWeekView extends CalendarMonthDaysView, CalendarWeekView {}
-
-export interface CalendarMonthView extends CalendarMonthDaysView {
+export interface CalendarMonthView extends CalendarIterable<number> {
+    end: number;
     intersectsWithNext: boolean;
     intersectsWithPrev: boolean;
     month: number;
-    weeks: CalendarIterable<CalendarMonthWeekView>;
+    start: number;
+    weeks: CalendarIterable<CalendarWeekView>;
     year: number;
 }
 
-export interface CalendarView extends CalendarDaysView<string> {
+export interface CalendarView extends CalendarIterable<string | null> {
     daysOfTheWeek: CalendarIterable<readonly [string, string, string]>;
+    firstWeekDay: CalendarFirstWeekDay;
     months: CalendarIterable<CalendarMonthView>;
+    weekendDays: Readonly<[CalendarDay, CalendarDay] | CalendarDay[]>;
     weeks: CalendarIterable<CalendarWeekView>;
 }
 

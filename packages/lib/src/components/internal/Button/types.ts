@@ -1,7 +1,7 @@
 export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'action' | 'filter' | 'link';
 export type ButtonStatus = 'loading' | 'redirect' | 'default';
 
-export interface ButtonProps {
+export interface ButtonProps extends Record<string, any> {
     status?: ButtonStatus;
     /**
      * Class name modifiers will be used as: `adyen-fp-image--${modifier}`
