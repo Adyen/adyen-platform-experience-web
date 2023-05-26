@@ -8,7 +8,7 @@ import { realApiProxies } from './packages/server/proxy/realApiProxies';
 import { checker } from 'vite-plugin-checker';
 
 const playgroundDir = resolve(__dirname, 'packages/playground/src/pages');
-
+const demoPlaygroundDir = resolve(__dirname, 'packages/playground/');
 async function getPlaygroundEntrypoints() {
     const playgroundPages = await readdir(playgroundDir);
 
@@ -29,6 +29,7 @@ async function getPlaygroundEntrypoints() {
 export default defineConfig(async ({ mode }) => {
     const { lemApi, BTLApi, BCLApi, playground, mockServer } = getEnvironment(mode);
     return {
+        root: mode === 'demo' ? demoPlaygroundDir : undefined,
         base: './',
         plugins: [
             preact(),
