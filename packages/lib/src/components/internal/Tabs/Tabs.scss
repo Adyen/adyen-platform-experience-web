@@ -1,32 +1,34 @@
 .adyen-fp-tabs {
-    font-weight: var(--adyen-fp-font-weight-thin);
-    line-height: 1.4;
     box-shadow: 0 -1px 0 0 #dce0e5 inset;
     display: inline-flex;
+    font-weight: var(--adyen-fp-font-weight-thin);
+    line-height: 1.4;
     margin: 0;
     text-align: center;
     width: 100%;
 
     &__tab {
-        outline: none;
         background: transparent;
-        color: var(--adyen-fp-color-black);
         border: 3px solid transparent;
+        color: var(--adyen-fp-color-black);
         cursor: pointer;
         display: flex;
         flex: 0 1 auto;
         flex-direction: column;
-        justify-content: space-around;
         font-family: inherit;
+        justify-content: space-around;
+        margin-right: var(--adyen-fp-spacing-small);
+        outline: none;
         padding: 0 var(--adyen-fp-spacing-medium) var(--adyen-fp-spacing-medium) var(--adyen-fp-spacing-medium);
         text-decoration: none;
         transition: border-bottom-color 0.2s cubic-bezier(0.22, 0.61, 0.36, 1), color 0.2s cubic-bezier(0.22, 0.61, 0.36, 1);
         white-space: nowrap;
-        margin-right: var(--adyen-fp-spacing-small);
     }
+
     &__tab:hover {
         border-bottom: 3px solid var(--adyen-fp-color-border-darker);
     }
+
     &__tab--active {
         border-bottom: 3px solid var(--adyen-fp-color-border-darker);
     }
@@ -36,6 +38,7 @@
     &__wrapper {
         padding-top: var(--adyen-fp-spacing-medium);
     }
+
     &__content {
         padding: 0 var(--adyen-fp-spacing-small);
     }
