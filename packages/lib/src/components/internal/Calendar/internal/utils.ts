@@ -9,13 +9,18 @@ import {
 } from '../types';
 
 export const DAY_MS = 86400000;
-export const MAX_MONTH_DAYS = 42;
-export const WEEKEND_DAYS_SEED = Object.freeze([0, 1] as const);
-export const CALENDAR_WINDOW_MONTHS = Object.freeze([1, 2, 3, 4, 6, 12] as CalendarSlidingWindowMonth[]);
+export const CALENDAR_WINDOW_MONTHS = [1, 2, 3, 4, 4, 6, 6, 6, 6, 6, 6, 12] as const;
+export const DAY_OF_WEEK_FORMATS = ['long', 'short', 'narrow'] as const;
+export const WEEKEND_DAYS_SEED = [0, 1] as const;
 
 export const assertSafeInteger = (value: any) => {
     if (!Number.isSafeInteger(value)) throw new TypeError('EXPECTS_SAFE_INTEGER');
 };
+
+export const withRelativeIndexFactory = (
+    indexOffset = 0,
+    indexCallback: (currentIndex: number, initialIndex: number) => any = (x => x)
+) => (index: number) => indexCallback(indexOffset + index, index);
 
 export const mod = (num: number, modulo: number) => {
     assertSafeInteger(num);
@@ -61,20 +66,7 @@ export const getRelativeMonthOffset = (originTimestamp: number, timestamp: numbe
 };
 
 export const getMinimumNearestCalendarMonths = (calendarMonths: CalendarMonth = 1) => {
-    if (CALENDAR_WINDOW_MONTHS.includes(calendarMonths as CalendarSlidingWindowMonth)) {
-        return calendarMonths as CalendarSlidingWindowMonth;
-    }
-
-    let min = 0;
-    let max = CALENDAR_WINDOW_MONTHS.length;
-
-    while (min < max) {
-        const mid = min + Math.floor((max - min) / 2);
-        if ((CALENDAR_WINDOW_MONTHS[mid] as CalendarSlidingWindowMonth) > calendarMonths) max = mid - 1;
-        else min = mid;
-    }
-
-    return CALENDAR_WINDOW_MONTHS[min] as CalendarSlidingWindowMonth;
+    return CALENDAR_WINDOW_MONTHS[calendarMonths - 1] as CalendarSlidingWindowMonth;
 };
 
 export const getCalendarTimeSliceParameters = ({ calendarMonths = 1, originDate, sinceDate, untilDate }: CalendarConfig, offset: number) => {

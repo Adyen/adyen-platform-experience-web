@@ -26,12 +26,26 @@ const createCalendarIterable = (() => {
     const ProxySetTrap = () => false;
 
     return <V, T extends CalendarIterable<V> = CalendarIterable<V>>(
-        iterablePropertyDescriptors: PropertyDescriptorMap & ThisType<T>,
+        iterablePropertyDescriptorsOrSize: (PropertyDescriptorMap & ThisType<T>) | (() => number) | number,
         iteratorValueGetter: (index: number) => V
-    ) => new Proxy(Object.create(IterablePrototype, iterablePropertyDescriptors) as T, {
-        get: ProxyGetTrap(iteratorValueGetter),
-        set: ProxySetTrap
-    }) as T;
+    ): T => {
+        if (typeof iterablePropertyDescriptorsOrSize === 'function') {
+            return createCalendarIterable<V, T>({
+                size: { get: iterablePropertyDescriptorsOrSize }
+            }, iteratorValueGetter);
+        }
+
+        if (typeof iterablePropertyDescriptorsOrSize === 'number') {
+            return createCalendarIterable<V, T>({
+                size: { value: iterablePropertyDescriptorsOrSize }
+            }, iteratorValueGetter);
+        }
+
+        return new Proxy(Object.create(IterablePrototype, iterablePropertyDescriptorsOrSize) as T, {
+            get: ProxyGetTrap(iteratorValueGetter),
+            set: ProxySetTrap
+        }) as T;
+    };
 })();
 
 export default createCalendarIterable;

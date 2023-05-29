@@ -50,7 +50,7 @@ export default function Calendar(props: CalendarProps) {
                     <table className={'adyen-fp-calendar-month__grid'} role="grid" aria-label={humanizedMonth}>
                         <thead>
                             <tr className={'adyen-fp-calendar-month__grid-row'}>{
-                                [...calendar.daysOfTheWeek.map(([long,, short]) => (
+                                [...calendar.daysOfWeek.map(([long,, short]) => (
                                     <th key={long} className={'adyen-fp-calendar-month__grid-cell'} scope="col" aria-label={long}>
                                         <abbr className={'adyen-fp-calendar-month__day-of-week'} title={long}>{short}</abbr>
                                     </th>
@@ -62,7 +62,12 @@ export default function Calendar(props: CalendarProps) {
                             [...view.weeks.map((week, index) => (
                                 <tr key={`${month}:${index}`} className={'adyen-fp-calendar-month__grid-row'}>{
                                     [...week.map((cursorPosition, index) => {
-                                        const date = calendar[cursorPosition];
+                                        if (cursorPosition < 0) {
+                                            const date = calendar[view.origin + index] as string;
+                                            return <td key={`${date}:0`} className={'adyen-fp-calendar-month__grid-cell'} tabIndex={-1}></td>;
+                                        }
+
+                                        const date = calendar[cursorPosition] as string;
                                         const weekday = cursorPosition % 7;
 
                                         const extraProps = {
@@ -75,11 +80,9 @@ export default function Calendar(props: CalendarProps) {
 
                                         augmentCursorElement(cursorPosition, extraProps);
 
-                                        return <td key={date} className={'adyen-fp-calendar-month__grid-cell'} tabIndex={-1} {...extraProps}>{
-                                            cursorPosition >= 0 && (
-                                                <time className={'adyen-fp-calendar__date'} dateTime={date || ''}>{date && +date.slice(-2)}</time>
-                                            )
-                                        }</td>
+                                        return <td key={date} className={'adyen-fp-calendar-month__grid-cell'} tabIndex={-1} {...extraProps}>
+                                            <time className={'adyen-fp-calendar__date'} dateTime={date}>{+date.slice(-2)}</time>
+                                        </td>
                                     })]
                                 }</tr>
                             ))]

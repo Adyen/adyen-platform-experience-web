@@ -52,9 +52,11 @@ export interface CalendarWeekView extends CalendarIterable<number> {
 }
 
 export interface CalendarMonthView extends CalendarIterable<number> {
+    days: CalendarMonthEndDate;
     end: number;
     intersectsWithNext: boolean;
     intersectsWithPrev: boolean;
+    origin: number;
     month: number;
     start: number;
     weeks: CalendarIterable<CalendarWeekView>;
@@ -62,7 +64,7 @@ export interface CalendarMonthView extends CalendarIterable<number> {
 }
 
 export interface CalendarView extends CalendarIterable<string | null> {
-    daysOfTheWeek: CalendarIterable<readonly [string, string, string]>;
+    daysOfWeek: CalendarIterable<readonly [string, string, string]>;
     firstWeekDay: CalendarFirstWeekDay;
     months: CalendarIterable<CalendarMonthView>;
     weekendDays: Readonly<[CalendarDay, CalendarDay] | CalendarDay[]>;
