@@ -2,11 +2,11 @@ import { useRef, useState } from 'preact/hooks';
 import './Tabs.scss';
 import classNames from 'classnames';
 import useCoreContext from '../../../core/Context/useCoreContext';
-import { Children } from 'preact/compat';
+import { Children, PropsWithChildren } from 'preact/compat';
 import { TabComponentProps, TabProps, TabsComponentChildren, TabsComponentOneChild } from './types';
 import { TranslationKey } from '../../../language/types';
 
-export const Tab: <T extends TranslationKey>(props: TabProps<T>) => null = () => null;
+export const Tab: <T extends TranslationKey>(props: PropsWithChildren<TabProps<T>>) => null = () => null;
 
 function Tabs<T extends TabComponentProps | TabComponentProps[]>(
     props: TabsComponentOneChild<T extends TabComponentProps ? T : never> | TabsComponentChildren<T extends TabComponentProps[] ? T : never>
@@ -78,7 +78,7 @@ function Tabs<T extends TabComponentProps | TabComponentProps[]>(
                         role="tabpanel"
                         aria-labelledby={`tab-id-${index}`}
                     >
-                        {tab.props.content}
+                        {tab.props.content ?? tab.props.children}
                     </section>
                 ))}
             </div>
