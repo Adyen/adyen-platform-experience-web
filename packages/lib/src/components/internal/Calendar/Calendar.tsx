@@ -1,3 +1,4 @@
+import { memo } from 'preact/compat';
 import { useMemo } from 'preact/hooks';
 import useCursorTraversal from './hooks/useCursorTraversal';
 import usePointerTraversal, { Directions } from './hooks/usePointerTraversal';
@@ -8,14 +9,14 @@ import useCoreContext from '../../../core/Context/useCoreContext';
 import Button from '../Button';
 import './Calendar.scss';
 
-export default function Calendar(props: CalendarProps) {
+export default memo(function Calendar(props: CalendarProps) {
     const { i18n } = useCoreContext();
     const { onSelected, trackToday } = props;
 
     const calendar = useMemo(() => {
         const { offset = 0, onSelected, trackToday, ...config } = props;
         return createCalendar({ ...config, locale: i18n.locale }, offset);
-    }, [i18n, props]);
+    }, [i18n.locale, props]);
 
     const today = useToday(trackToday);
     const onSelectedCallback = useMemo(() => typeof onSelected === 'function' && onSelected, [onSelected]);
@@ -50,15 +51,14 @@ export default function Calendar(props: CalendarProps) {
 
         <ol className={'adyen-fp-calendar'} role="none" {...cursorRootProps}>{
             [...calendar.months.map(view => {
-                const month = `${view.year}-${view.month + 1}`;
-                const humanizedMonth = new Date(month).toLocaleDateString(i18n.locale, { month: 'short', year: 'numeric' });
+                const month = `${view.year}-${view.month}`;
 
                 return <li key={month} className={'adyen-fp-calendar-month'} role="none">
                     <div className={'adyen-fp-calendar-month__name'} role="none">
-                        <time dateTime={month} aria-hidden="true">{humanizedMonth}</time>
+                        <time dateTime={month} aria-hidden="true">{view.displayName}</time>
                     </div>
 
-                    <table className={'adyen-fp-calendar-month__grid'} role="grid" aria-label={humanizedMonth}>
+                    <table className={'adyen-fp-calendar-month__grid'} role="grid" aria-label={view.displayName}>
                         <thead>
                             <tr className={'adyen-fp-calendar-month__grid-row'}>{
                                 [...calendar.daysOfWeek.map(([long,, short]) => (
@@ -74,25 +74,25 @@ export default function Calendar(props: CalendarProps) {
                                 <tr key={`${month}:${index}`} className={'adyen-fp-calendar-month__grid-row'}>{
                                     [...week.map((cursorPosition, index) => {
                                         if (cursorPosition < 0) {
-                                            const date = calendar[view.origin + index] as string;
-                                            return <td key={`${date}:0`} className={'adyen-fp-calendar-month__grid-cell'} tabIndex={-1}></td>;
+                                            const date = calendar[view.origin + index] as string[];
+                                            return <td key={`${date[0]}:0`} className={'adyen-fp-calendar-month__grid-cell'} tabIndex={-1}></td>;
                                         }
 
-                                        const date = calendar[cursorPosition] as string;
+                                        const date = calendar[cursorPosition] as string[];
                                         const weekday = cursorPosition % 7;
 
                                         const extraProps = {
-                                            'data-date': date,
+                                            'data-date': date[0],
                                             'data-first-week-day': `${weekday === 0}`,
-                                            'data-today': `${date === today}`,
+                                            'data-today': `${date[0] === today}`,
                                             'data-weekend': `${calendar.weekendDays.includes(weekday as CalendarDay)}`,
                                             'data-within-month': `${cursorPosition >= view.start && cursorPosition < view.end}`
                                         } as any;
 
                                         augmentCursorElement(cursorPosition, extraProps);
 
-                                        return <td key={date} className={'adyen-fp-calendar-month__grid-cell'} tabIndex={-1} {...extraProps}>
-                                            <time className={'adyen-fp-calendar__date'} dateTime={date}>{+date.slice(-2)}</time>
+                                        return <td key={date[0]} className={'adyen-fp-calendar-month__grid-cell'} tabIndex={-1} {...extraProps}>
+                                            <time className={'adyen-fp-calendar__date'} dateTime={date[0]}>{date[1]}</time>
                                         </td>
                                     })]
                                 }</tr>
@@ -103,4 +103,4 @@ export default function Calendar(props: CalendarProps) {
             })]
         }</ol>
     </div>;
-}
+});

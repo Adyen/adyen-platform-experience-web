@@ -60,7 +60,7 @@ const useCursorTraversal = (calendar: CalendarView, onSelected: false | ((date: 
                         return setCursorPosition(calendar.shiftCursor(CalendarCursorShift.NEXT_MONTH));
                     case InteractionKeyCode.SPACE:
                     case InteractionKeyCode.ENTER:
-                        onSelected && onSelected(calendar[calendar.shiftCursor()]);
+                        onSelected && onSelected(calendar[calendar.shiftCursor()]?.[0]);
                         return;
                 }
             }
@@ -76,7 +76,7 @@ const useCursorTraversal = (calendar: CalendarView, onSelected: false | ((date: 
                     if (Number.isFinite(index)) {
                         const cursorPosition = calendar.shiftCursor(index);
                         setCursorPosition(cursorPosition);
-                        onSelected(calendar[cursorPosition]);
+                        onSelected(calendar[cursorPosition]?.[0]);
                         break;
                     }
 
