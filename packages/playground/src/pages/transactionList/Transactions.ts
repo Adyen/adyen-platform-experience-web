@@ -16,13 +16,13 @@ try {
                 // avoid refetching the transactions here
             },
             onTransactionSelected: ({ id }) => {
-                window.location.assign(`/transaction/?id=${id}`);
+                window.location.assign(`/src/pages/transaction/?id=${id}`);
             },
             onBalanceAccountSelected: ({ id }) => {
-                window.location.assign(`/balanceAccount/?id=${id}`);
+                window.location.assign(`/src/pages/balanceAccount/?id=${id}`);
             },
             onAccountSelected: ({ id }) => {
-                window.location.assign(`/accountHolder/?id=${id}`);
+                window.location.assign(`/src/pages/accountHolder/?id=${id}`);
             },
             onUpdateTransactions: async (params, component) => {
                 const transactions = await getMyTransactions(params);
