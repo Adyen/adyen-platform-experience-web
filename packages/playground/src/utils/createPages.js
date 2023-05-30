@@ -1,4 +1,4 @@
-import { pages } from './pages';
+import { pages } from '../../pages';
 
 const insertHeader = pages => {
     const container = document.querySelector('header');

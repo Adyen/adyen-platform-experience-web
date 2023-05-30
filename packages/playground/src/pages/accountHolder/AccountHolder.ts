@@ -1,7 +1,7 @@
 import { getAccountHolderById } from '../../utils/services';
 import { AdyenFP, accountHolder } from '@adyen/adyen-fp-web';
 import { getSearchParameters } from '../../utils/utils';
-import '../../../createPages.js';
+import '../../utils/createPages.js';
 import '../../assets/style/style.scss';
 
 const DEFAULT_ACCOUNT_HOLDER = 'AH3227B2248HKJ5BHTQPKC5GX';

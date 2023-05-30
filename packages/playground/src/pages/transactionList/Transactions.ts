@@ -1,6 +1,6 @@
 import { getMyTransactions } from '../../utils/services';
 import { AdyenFP, transactionList } from '@adyen/adyen-fp-web';
-import '../../../createPages.js';
+import '../../utils/createPages.js';
 import '../../assets/style/style.scss';
 
 try {

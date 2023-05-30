@@ -1,7 +1,7 @@
 import { getBalanceAccountById } from '../../utils/services';
 import { AdyenFP, balanceAccount } from '@adyen/adyen-fp-web';
 import { getSearchParameters } from '../../utils/utils';
-import '../../../createPages.js';
+import '../../utils/createPages.js';
 import '../../assets/style/style.scss';
 
 const DEFAULT_BALANCE_ACCOUNT = 'BA3227C223222B5CWF3T45SWD';
