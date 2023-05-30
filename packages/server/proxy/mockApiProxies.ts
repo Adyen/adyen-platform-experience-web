@@ -13,12 +13,10 @@ export const mockApiProxies = (host: string, port: number) => {
 
 export const mockServerPlugin = (httpPort: number, httpsPort = httpPort + 1): Plugin => {
     let mockHttpServer: Server | undefined;
-    let mockHttpsServer: Server | undefined;
 
     const startMockServer = async () => {
-        const { httpServer, httpsServer } = startServer({ httpPort, httpsPort });
+        const { httpServer } = startServer({ httpPort, httpsPort });
         mockHttpServer = httpServer;
-        mockHttpsServer = httpsServer;
     };
 
     return {
@@ -27,9 +25,7 @@ export const mockServerPlugin = (httpPort: number, httpsPort = httpPort + 1): Pl
         configurePreviewServer: startMockServer,
         closeBundle() {
             mockHttpServer?.close();
-            mockHttpsServer?.close();
             mockHttpServer = undefined;
-            mockHttpsServer = undefined;
         },
     };
 };

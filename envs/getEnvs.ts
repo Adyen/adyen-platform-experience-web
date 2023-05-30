@@ -1,4 +1,3 @@
-// @ts-strict-ignore
 import { loadEnv } from 'vite';
 import { resolve } from 'node:path';
 
