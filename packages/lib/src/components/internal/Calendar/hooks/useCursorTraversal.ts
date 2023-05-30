@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState } from 'preact/hooks';
-import { CalendarCursorShift, CalendarViewRecord } from '../types';
+import { CalendarCursorShift, CalendarView } from '../types';
 import { InteractionKeyCode } from '../../../types';
 import { UseSharedElementRefConfig } from '../../../../hooks/useSharedElementRef/types';
 import useSharedElementRef from '../../../../hooks/useSharedElementRef';
@@ -22,46 +22,45 @@ const CursorDateRefConfig: UseSharedElementRefConfig = {
     }
 };
 
-const useCursorTraversal = (calendarViewRecord: CalendarViewRecord, onSelected: false | ((date: any) => void)) => {
-    const [ calendar,, shiftCursor ] = calendarViewRecord;
-    const [, setCursorPosition ] = useState(shiftCursor());
+const useCursorTraversal = (calendar: CalendarView, onSelected: false | ((date: any) => void)) => {
+    const [, setCursorPosition ] = useState(calendar.shiftCursor());
     const [, nominateCursorRefCandidate ] = useSharedElementRef(CursorDateRefConfig);
 
     const augmentCursorElement = useCallback((cursorPosition: number, cursorElementProps: Record<any, any>) => {
         if (cursorPosition < 0) return;
-        if (cursorPosition === shiftCursor()) {
+        if (cursorPosition === calendar.shiftCursor()) {
             cursorElementProps.ref = (elem: HTMLElement | null) => elem && nominateCursorRefCandidate(elem);
         }
         cursorElementProps['data-cursor-position'] = cursorPosition;
-    }, [nominateCursorRefCandidate, shiftCursor]);
+    }, [calendar, nominateCursorRefCandidate]);
 
     const cursorRootProps = useMemo(() => {
         const props = {
             onKeyDownCapture(evt: KeyboardEvent) {
                 switch (evt.code) {
                     case InteractionKeyCode.ARROW_LEFT:
-                        return setCursorPosition(shiftCursor(CalendarCursorShift.PREV_WEEK_DAY));
+                        return setCursorPosition(calendar.shiftCursor(CalendarCursorShift.PREV_WEEK_DAY));
                     case InteractionKeyCode.ARROW_RIGHT:
-                        return setCursorPosition(shiftCursor(CalendarCursorShift.NEXT_WEEK_DAY));
+                        return setCursorPosition(calendar.shiftCursor(CalendarCursorShift.NEXT_WEEK_DAY));
                     case InteractionKeyCode.ARROW_UP:
-                        return setCursorPosition(shiftCursor(CalendarCursorShift.PREV_WEEK));
+                        return setCursorPosition(calendar.shiftCursor(CalendarCursorShift.PREV_WEEK));
                     case InteractionKeyCode.ARROW_DOWN:
-                        return setCursorPosition(shiftCursor(CalendarCursorShift.NEXT_WEEK));
+                        return setCursorPosition(calendar.shiftCursor(CalendarCursorShift.NEXT_WEEK));
                     case InteractionKeyCode.HOME:
-                        return setCursorPosition(shiftCursor(
+                        return setCursorPosition(calendar.shiftCursor(
                             evt.ctrlKey ? CalendarCursorShift.FIRST_MONTH_DAY : CalendarCursorShift.FIRST_WEEK_DAY
                         ));
                     case InteractionKeyCode.END:
-                        return setCursorPosition(shiftCursor(
+                        return setCursorPosition(calendar.shiftCursor(
                             evt.ctrlKey ? CalendarCursorShift.LAST_MONTH_DAY : CalendarCursorShift.LAST_WEEK_DAY
                         ));
                     case InteractionKeyCode.PAGE_UP:
-                        return setCursorPosition(shiftCursor(CalendarCursorShift.PREV_MONTH));
+                        return setCursorPosition(calendar.shiftCursor(CalendarCursorShift.PREV_MONTH));
                     case InteractionKeyCode.PAGE_DOWN:
-                        return setCursorPosition(shiftCursor(CalendarCursorShift.NEXT_MONTH));
+                        return setCursorPosition(calendar.shiftCursor(CalendarCursorShift.NEXT_MONTH));
                     case InteractionKeyCode.SPACE:
                     case InteractionKeyCode.ENTER:
-                        onSelected && onSelected(calendar[shiftCursor()]);
+                        onSelected && onSelected(calendar[calendar.shiftCursor()]);
                         return;
                 }
             }
@@ -75,7 +74,7 @@ const useCursorTraversal = (calendarViewRecord: CalendarViewRecord, onSelected: 
                     const index = Number(cursorElement.dataset.cursorPosition);
 
                     if (Number.isFinite(index)) {
-                        const cursorPosition = shiftCursor(index);
+                        const cursorPosition = calendar.shiftCursor(index);
                         setCursorPosition(cursorPosition);
                         onSelected(calendar[cursorPosition]);
                         break;
@@ -87,7 +86,7 @@ const useCursorTraversal = (calendarViewRecord: CalendarViewRecord, onSelected: 
         }
 
         return props;
-    }, [calendar, onSelected, shiftCursor]);
+    }, [calendar, onSelected]);
 
     return { augmentCursorElement, cursorRootProps } as const;
 };

@@ -1,4 +1,4 @@
-import { CalendarShift, CalendarTraversalDirection, CalendarViewRecord } from '../types';
+import { CalendarShift, CalendarTraversalDirection, CalendarView } from '../types';
 import { useCallback, useMemo, useRef, useState } from 'preact/hooks';
 
 export const Directions = [CalendarTraversalDirection.PREV, CalendarTraversalDirection.NEXT] as const;
@@ -13,13 +13,12 @@ const getUnitCalendarShiftOffsetForDirection = (direction: CalendarTraversalDire
     direction === CalendarTraversalDirection.PREV ? -1 : 1
 );
 
-const usePointerTraversal = (calendarViewRecord: CalendarViewRecord) => {
-    const [, shift ] = calendarViewRecord;
-    const [, setOffset ] = useState(shift(0));
+const usePointerTraversal = (calendar: CalendarView) => {
+    const [, setOffset ] = useState(calendar.shift(0));
 
     const monthOffset = useRef(1);
     const calendarShift = useRef(CalendarShift.MONTH);
-    const shiftCalendar = useCallback(() => setOffset(shift(monthOffset.current, calendarShift.current)), [shift]);
+    const shiftCalendar = useCallback(() => setOffset(calendar.shift(monthOffset.current, calendarShift.current)), [calendar]);
 
     return useMemo(() => (
         Object.fromEntries(Directions.map(direction => {

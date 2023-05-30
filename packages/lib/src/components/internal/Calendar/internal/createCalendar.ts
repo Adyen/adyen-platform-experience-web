@@ -5,7 +5,6 @@ import {
     CalendarMonthView,
     CalendarShift,
     CalendarView,
-    CalendarViewRecord,
     CalendarWeekView,
     ShiftCalendar,
     ShiftCalendarCursor
@@ -81,6 +80,7 @@ const createCalendar = (config: CalendarConfig, offset: number) => {
 
             const getWeekViewByIndex = withRelativeIndexFactory(monthStartWeek, index => {
                 // return calendar.weeks[index];
+                // [TODO]: Consider provisioning override for month transition weeks
                 return createCalendarIterable<number, CalendarWeekView>({
                     isTransitionWeek: { value: transitionWeeks.includes(index) },
                     size: { value: 7 }
@@ -117,23 +117,25 @@ const createCalendar = (config: CalendarConfig, offset: number) => {
             }, getRelativeMonthDateIndexFactory(monthIterationStart, monthIterationEnd, monthOrigin));
         }
 
-        refreshCursor();
+        return refreshCursor();
     };
 
-    const refreshCursor = () => {
+    const refreshCursor = (): CalendarView => {
         if (cursorMonth === undefined) {
             cursorMonth = mod(offset - originMonthOffset, numberOfMonths);
-            refreshCursor();
-        } else {
-            cursorMonthView = cachedMonths[cursorMonth] as CalendarMonthView;
-            cursorPosition = cursorMonthView.start + relativeCursorPosition;
-
-            if (cursorPosition > cursorMonthView.end) {
-                // Currently stick to the end of the cursor month, ignoring offset spill-over adjustments
-                // [TODO]: Consider provisioning offset spill-over adjustments
-                relativeCursorPosition = (cursorPosition = cursorMonthView.end) - cursorMonthView.start;
-            }
+            return refreshCursor();
         }
+
+        cursorMonthView = cachedMonths[cursorMonth] as CalendarMonthView;
+        cursorPosition = cursorMonthView.start + relativeCursorPosition;
+
+        if (cursorPosition > cursorMonthView.end) {
+            // Currently stick to the end of the cursor month, ignoring offset spill-over adjustments
+            // [TODO]: Consider provisioning offset spill-over adjustments
+            relativeCursorPosition = (cursorPosition = cursorMonthView.end) - cursorMonthView.start;
+        }
+
+        return calendar;
     };
 
     const shiftCalendar: ShiftCalendar = (monthOffset: number, shift: CalendarShift = CalendarShift.MONTH) => {
@@ -257,6 +259,8 @@ const createCalendar = (config: CalendarConfig, offset: number) => {
         },
         firstWeekDay: { value: firstWeekDay },
         months: { value: createCalendarIterable<CalendarMonthView>(numberOfMonths, index => cachedMonths[index] as CalendarMonthView) },
+        shift: { value: shiftCalendar },
+        shiftCursor: { value: shiftCursor },
         size: { get: () => days },
         weekendDays: { value: getWeekendDays(firstWeekDay) }, // [TODO]: Refactor and derive this based on locale (if possible)
         weeks: {
@@ -269,9 +273,7 @@ const createCalendar = (config: CalendarConfig, offset: number) => {
         }
     }, getCalendarDateByIndex) as CalendarView;
 
-    refreshCalendar();
-
-    return [calendar, shiftCalendar, shiftCursor] as CalendarViewRecord;
+    return refreshCalendar();
 };
 
 export default createCalendar;

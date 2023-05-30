@@ -1,16 +1,27 @@
-import useCalendar from './hooks/useCalendar';
-import useCoreContext from '../../../core/Context/useCoreContext';
-import { CalendarDay, CalendarProps, CalendarTraversalDirection } from './types';
-import { Directions } from './hooks/usePointerTraversal';
 import { useMemo } from 'preact/hooks';
+import useCursorTraversal from './hooks/useCursorTraversal';
+import usePointerTraversal, { Directions } from './hooks/usePointerTraversal';
+import useToday from './hooks/useToday';
+import createCalendar from './internal/createCalendar';
+import { CalendarDay, CalendarProps, CalendarTraversalDirection } from './types';
+import useCoreContext from '../../../core/Context/useCoreContext';
 import Button from '../Button';
 import './Calendar.scss';
 
 export default function Calendar(props: CalendarProps) {
     const { i18n } = useCoreContext();
-    const { augmentCursorElement, calendar, cursorRootProps, pointerTraversalControls, today } = useCalendar(
-        useMemo(() => ({ ...props, locale: i18n.locale }), [i18n, props])
-    );
+    const { onSelected, trackToday } = props;
+
+    const calendar = useMemo(() => {
+        const { offset = 0, onSelected, trackToday, ...config } = props;
+        return createCalendar({ ...config, locale: i18n.locale }, offset);
+    }, [i18n, props]);
+
+    const today = useToday(trackToday);
+    const onSelectedCallback = useMemo(() => typeof onSelected === 'function' && onSelected, [onSelected]);
+    const pointerTraversalControls = usePointerTraversal(calendar);
+
+    const { augmentCursorElement, cursorRootProps } = useCursorTraversal(calendar, onSelectedCallback);
 
     return <div role="group" aria-label="calendar">
         <div role="group" aria-label="calendar navigation" style={{ textAlign: 'center' }}>{
