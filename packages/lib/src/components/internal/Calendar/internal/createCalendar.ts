@@ -5,9 +5,7 @@ import {
     CalendarMonthView,
     CalendarShift,
     CalendarView,
-    CalendarWeekView,
-    ShiftCalendar,
-    ShiftCalendarCursor
+    CalendarWeekView
 } from '../types';
 import {
     DAY_MS,
@@ -21,6 +19,27 @@ import {
     withRelativeIndexFactory
 } from './utils';
 
+const withEffectFactory = (() => {
+    type Effect = (...args: any[]) => any;
+    const noop = (fn: Effect) => fn;
+
+    return (watchEffect?: Effect) => {
+        if (watchEffect === undefined) return noop;
+
+        const effectStack: Effect[] = [];
+
+        return (fn: Effect) => (...args: any[]) => {
+            try {
+                effectStack.push(fn);
+                return fn(...args);
+            } finally {
+                effectStack.pop();
+                if (!effectStack.length) watchEffect();
+            }
+        };
+    };
+})();
+
 export const getCalendarDateString = (date: Date) => date.toISOString().replace(/T[\w\W]*$/, '');
 
 const createCalendar = (config: CalendarConfig, offset: number) => {
@@ -30,8 +49,9 @@ const createCalendar = (config: CalendarConfig, offset: number) => {
     const transitionWeeks: number[] = [];
     const timeSlice = getCalendarTimeSliceParameters(config, offset);
 
-    const { dynamicMonthWeeks = false, firstWeekDay = 0, locale, onlyMonthDays = false } = config;
+    const { dynamicMonthWeeks = false, firstWeekDay = 0, locale, onlyMonthDays = false, watch } = config;
     const [ numberOfMonths, originTimestamp, minOffset, maxOffset ] = timeSlice;
+    const withEffect = withEffectFactory(watch);
 
     let days = 0;
     let originMonth: number;
@@ -56,7 +76,7 @@ const createCalendar = (config: CalendarConfig, offset: number) => {
             (currentIndex >= monthStart && currentIndex <= monthEnd) ? currentIndex : -1
         ));
 
-    const refreshCalendar = () => {
+    const refresh = withEffect(() => {
         const firstMonthTimestamp = originMonthTimestamp = getMonthTimestamp(originTimestamp, originMonthOffset);
         const firstMonthDate = new Date(firstMonthTimestamp);
 
@@ -123,13 +143,13 @@ const createCalendar = (config: CalendarConfig, offset: number) => {
             }, getRelativeMonthDateIndexFactory(monthIterationStart, monthIterationEnd, monthOrigin));
         }
 
-        return refreshCursor();
-    };
+        resetCursor();
+    });
 
-    const refreshCursor = (): CalendarView => {
+    const resetCursor = withEffect((): void => {
         if (cursorMonth === undefined) {
             cursorMonth = mod(offset - originMonthOffset, numberOfMonths);
-            return refreshCursor();
+            return resetCursor();
         }
 
         cursorMonthView = cachedMonths[cursorMonth] as CalendarMonthView;
@@ -140,11 +160,9 @@ const createCalendar = (config: CalendarConfig, offset: number) => {
             // [TODO]: Consider provisioning offset spill-over adjustments
             relativeCursorPosition = (cursorPosition = cursorMonthView.end) - cursorMonthView.start;
         }
+    });
 
-        return calendar;
-    };
-
-    const shiftCalendar: ShiftCalendar = (monthOffset: number, shift: CalendarShift = CalendarShift.MONTH) => {
+    const shiftCalendar = (monthOffset: number, shift: CalendarShift = CalendarShift.MONTH) => {
         if (monthOffset) {
             let shiftOffset = monthOffset;
 
@@ -167,14 +185,12 @@ const createCalendar = (config: CalendarConfig, offset: number) => {
                 originMonthOffset = offset;
                 relativeCursorPosition = cursorPosition - cursorMonthView.start;
                 cursorPosition = (undefined as unknown) as number;
-                refreshCalendar();
+                refresh();
             }
         }
-
-        return originMonthOffset;
     };
 
-    const shiftCursor: ShiftCalendarCursor = (shift?: CalendarCursorShift | number) => {
+    const shiftCursor = withEffect((shift?: CalendarCursorShift | number) => {
         if (shift !== undefined) {
             if (typeof shift === 'number') {
                 cursorPosition = Math.max(0, Math.min(shift, days - 1));
@@ -189,11 +205,9 @@ const createCalendar = (config: CalendarConfig, offset: number) => {
                 }
             } else updateRelativeCursorPosition(shift);
 
-            refreshCursor();
+            resetCursor();
         }
-
-        return cursorPosition;
-    };
+    });
 
     const updateRelativeCursorPosition = (shift: CalendarCursorShift) => {
         switch (shift) {
@@ -228,7 +242,7 @@ const createCalendar = (config: CalendarConfig, offset: number) => {
             const shouldRefreshCursorPosition = cursorMonth !== numberOfMonths - 1;
 
             cursorIntoNextMonthIfNecessary();
-            if (shouldRefreshCursorPosition) refreshCursor();
+            if (shouldRefreshCursorPosition) resetCursor();
             else relativeCursorPosition = nextRelativeCursorPosition;
         } else if (daysOffset === undefined && ++cursorMonth === numberOfMonths) {
             cursorMonth = 0;
@@ -244,7 +258,7 @@ const createCalendar = (config: CalendarConfig, offset: number) => {
             const shouldRefreshCursorPosition = cursorMonth > 0;
 
             cursorIntoPreviousMonthIfNecessary();
-            if (shouldRefreshCursorPosition) refreshCursor();
+            if (shouldRefreshCursorPosition) resetCursor();
             relativeCursorPosition = cursorMonthView.days + relativeCursorPositionOffset - 1;
         } else if (daysOffset === undefined && --cursorMonth < 0) {
             cursorMonth = numberOfMonths - 1;
@@ -255,6 +269,7 @@ const createCalendar = (config: CalendarConfig, offset: number) => {
     };
 
     const calendar = createCalendarIterable<[string, string] | null, CalendarView>({
+        cursorPosition: { get: () => cursorPosition },
         daysOfWeek: {
             value: createCalendarIterable<readonly [string, string, string]>(7, index => (
                 cachedDaysOfWeek[index] || (cachedDaysOfWeek[index] = (() => {
@@ -279,7 +294,8 @@ const createCalendar = (config: CalendarConfig, offset: number) => {
         }
     }, getCalendarDateByIndex) as CalendarView;
 
-    return refreshCalendar();
+    refresh();
+    return calendar;
 };
 
 export default createCalendar;

@@ -29,9 +29,6 @@ export const enum CalendarCursorShift {
     NEXT_WEEK = 'NEXT_WEEK'
 }
 
-export type ShiftCalendar = (monthOffset: number, shift?: CalendarShift) => number;
-export type ShiftCalendarCursor = (shift?: CalendarCursorShift | number) => number;
-
 export interface CalendarIterable<IteratorValue> extends Iterable<IteratorValue> {
     [index: number]: IteratorValue;
     map: CalendarMapIteratorFactory<IteratorValue>;
@@ -68,11 +65,12 @@ export interface CalendarMonthView extends CalendarIterable<number> {
 }
 
 export interface CalendarView extends CalendarIterable<[string, string] | null> {
+    cursorPosition: number;
     daysOfWeek: CalendarIterable<readonly [string, string, string]>;
     firstWeekDay: CalendarFirstWeekDay;
     months: CalendarIterable<CalendarMonthView>;
-    shift: ShiftCalendar;
-    shiftCursor: ShiftCalendarCursor;
+    shift: (monthOffset: number, shift?: CalendarShift) => void;
+    shiftCursor: (shift?: CalendarCursorShift | number) => void;
     weekendDays: Readonly<[CalendarDay, CalendarDay] | CalendarDay[]>;
     weeks: CalendarIterable<CalendarWeekView>;
 }
@@ -86,6 +84,7 @@ export interface CalendarConfig {
     originDate?: CalendarDate;
     sinceDate?: CalendarDate;
     untilDate?: CalendarDate;
+    watch?: (...args: any[]) => any;
 }
 
 export interface CalendarProps extends CalendarConfig {

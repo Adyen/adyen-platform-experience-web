@@ -1,6 +1,6 @@
 import { memo } from 'preact/compat';
-import { useMemo } from 'preact/hooks';
-import useCursorTraversal from './hooks/useCursorTraversal';
+import { useMemo, useRef, useState } from 'preact/hooks';
+import useCursorRoot from './hooks/useCursorRoot';
 import usePointerTraversal, { Directions } from './hooks/usePointerTraversal';
 import useToday from './hooks/useToday';
 import createCalendar from './internal/createCalendar';
@@ -9,20 +9,22 @@ import useCoreContext from '../../../core/Context/useCoreContext';
 import Button from '../Button';
 import './Calendar.scss';
 
-export default memo(function Calendar(props: CalendarProps) {
+function Calendar(props: CalendarProps) {
     const { i18n } = useCoreContext();
     const { onSelected, trackToday } = props;
+    const [, setLastChanged ] = useState(performance.now());
 
     const calendar = useMemo(() => {
         const { offset = 0, onSelected, trackToday, ...config } = props;
-        return createCalendar({ ...config, locale: i18n.locale }, offset);
+        return createCalendar({ ...config, locale: i18n.locale, watch: () => setLastChanged(performance.now()) }, offset);
     }, [i18n.locale, props]);
 
     const today = useToday(trackToday);
     const onSelectedCallback = useMemo(() => typeof onSelected === 'function' && onSelected, [onSelected]);
     const pointerTraversalControls = usePointerTraversal(calendar);
 
-    const { augmentCursorElement, cursorRootProps } = useCursorTraversal(calendar, onSelectedCallback);
+    const cursorElementRef = useRef<HTMLElement | null>(null);
+    const cursorRootProps = useCursorRoot(calendar, cursorElementRef, onSelectedCallback);
 
     return <div role="group" aria-label="calendar">
         <div role="group" aria-label="calendar navigation" style={{ textAlign: 'center' }}>{
@@ -79,19 +81,21 @@ export default memo(function Calendar(props: CalendarProps) {
                                         }
 
                                         const date = calendar[cursorPosition] as string[];
-                                        const weekday = cursorPosition % 7;
+                                        const weekday = cursorPosition % 7 as CalendarDay;
+                                        const cellProps = { 'data-cursor-position': cursorPosition } as any;
 
-                                        const extraProps = {
-                                            'data-date': date[0],
-                                            'data-first-week-day': `${weekday === 0}`,
-                                            'data-today': `${date[0] === today}`,
-                                            'data-weekend': `${calendar.weekendDays.includes(weekday as CalendarDay)}`,
-                                            'data-within-month': `${cursorPosition >= view.start && cursorPosition < view.end}`
-                                        } as any;
+                                        if (cursorPosition >= view.start && cursorPosition <= view.end) {
+                                            if (cursorPosition === calendar.cursorPosition) {
+                                                cellProps.ref = cursorElementRef;
+                                            }
+                                            cellProps['data-within-month'] = true;
+                                        }
 
-                                        augmentCursorElement(cursorPosition, extraProps);
+                                        if (date[0] === today) cellProps['data-today'] = true;
+                                        if (weekday === 0) cellProps['data-first-week-day'] = true;
+                                        if (calendar.weekendDays.includes(weekday)) cellProps['data-weekend'] = true;
 
-                                        return <td key={date[0]} className={'adyen-fp-calendar-month__grid-cell'} tabIndex={-1} {...extraProps}>
+                                        return <td key={date[0]} className={'adyen-fp-calendar-month__grid-cell'} tabIndex={-1} {...cellProps}>
                                             <time className={'adyen-fp-calendar__date'} dateTime={date[0]}>{date[1]}</time>
                                         </td>
                                     })]
@@ -103,4 +107,6 @@ export default memo(function Calendar(props: CalendarProps) {
             })]
         }</ol>
     </div>;
-});
+}
+
+export default memo(Calendar);
