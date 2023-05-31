@@ -55,10 +55,10 @@ export default defineConfig(async ({ mode }) => {
                       lib: {
                           name: 'AdyenFPComponents',
                           entry: resolve(__dirname, './packages/lib/src/index.ts'),
-                          formats: ['umd'],
+                          formats: ['cjs', 'es'],
                           fileName: format => `adyen-fp-components.${format}.js`,
                       },
-                      minify: false,
+                      minify: true,
                       rollupOptions: {
                           output: {
                               inlineDynamicImports: false,

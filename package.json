@@ -17,9 +17,20 @@
     "workspaces": [
         "./packages/*"
     ],
+    "files": [
+        "./dist"
+    ],
+    "exports": {
+        ".": {
+            "types": "./dist/types/index.d.ts",
+            "require": "./dist/adyen-fp-components.cjs.js",
+            "import": "./dist/adyen-fp-components.es.js"
+        },
+        "./styles.css": "./dist/style.css"
+    },
     "scripts": {
         "start": "concurrently --kill-others-on-fail \"npm run types:watch\" \"npm run start -w @adyen/adyen-fp-web-playground\" --names \"tsc-lib,playground\" -c blue,green,cyan,yellow",
-        "build": "rm -rf dist && concurrently \"vite build\" \"npm run types:build -w @adyen/adyen-fp-web\" -n umd,types",
+        "build": "rm -rf dist && concurrently \"vite build\" \"npm run types:build -w @adyen/adyen-fp-web\" -n es-cjs,types",
         "build:demo": "vite build --mode demo",
         "demo": "npm run build:demo && npm run demo:serve",
         "demo:serve": "vite preview --mode demo",
