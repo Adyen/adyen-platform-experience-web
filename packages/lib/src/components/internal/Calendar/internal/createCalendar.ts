@@ -1,4 +1,5 @@
 import createCalendarIterable from './createCalendarIterable';
+import withSyncEffectCallback from '../../../../utils/sync-effect-callback';
 import {
     CalendarConfig,
     CalendarCursorShift,
@@ -19,27 +20,6 @@ import {
     withRelativeIndexFactory
 } from './utils';
 
-const withEffectFactory = (() => {
-    type Effect = (...args: any[]) => any;
-    const noop = (fn: Effect) => fn;
-
-    return (watchEffect?: Effect) => {
-        if (watchEffect === undefined) return noop;
-
-        const effectStack: Effect[] = [];
-
-        return (fn: Effect) => (...args: any[]) => {
-            try {
-                effectStack.push(fn);
-                return fn(...args);
-            } finally {
-                effectStack.pop();
-                if (!effectStack.length) watchEffect();
-            }
-        };
-    };
-})();
-
 export const getCalendarDateString = (date: Date) => date.toISOString().replace(/T[\w\W]*$/, '');
 
 const createCalendar = (config: CalendarConfig, offset: number) => {
@@ -51,7 +31,7 @@ const createCalendar = (config: CalendarConfig, offset: number) => {
 
     const { dynamicMonthWeeks = false, firstWeekDay = 0, locale, onlyMonthDays = false, watch } = config;
     const [ numberOfMonths, originTimestamp, minOffset, maxOffset ] = timeSlice;
-    const withEffect = withEffectFactory(watch);
+    const withEffect = withSyncEffectCallback(watch);
 
     let days = 0;
     let originMonth: number;

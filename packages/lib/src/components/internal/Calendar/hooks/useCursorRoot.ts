@@ -1,11 +1,11 @@
 import { MutableRef, useEffect, useMemo, useRef } from 'preact/hooks';
-import { CalendarCursorShift, CalendarView } from '../types';
+import { CalendarCursorRootProps, CalendarCursorShift, CalendarProps, CalendarView } from '../types';
 import { InteractionKeyCode } from '../../../types';
 
 const useCursorRoot = (
     calendar: CalendarView,
     cursorElementRef: MutableRef<HTMLElement | null>,
-    onSelectedCallback: false | ((date: any) => void)
+    withSelected: false | Exclude<CalendarProps['onSelected'], undefined>
 ) => {
     const previousElementRef = useRef(cursorElementRef.current);
 
@@ -53,13 +53,13 @@ const useCursorRoot = (
                         return calendar.shiftCursor(CalendarCursorShift.NEXT_MONTH);
                     case InteractionKeyCode.SPACE:
                     case InteractionKeyCode.ENTER:
-                        onSelectedCallback && onSelectedCallback(calendar[calendar.cursorPosition]?.[0]);
+                        withSelected && withSelected(calendar[calendar.cursorPosition]?.[0]);
                         return;
                 }
             }
-        } as { onKeyDownCapture: (evt: KeyboardEvent) => void, onClickCapture?: (evt: Event) => void };
+        } as CalendarCursorRootProps;
 
-        if (onSelectedCallback) {
+        if (withSelected) {
             props.onClickCapture = (evt: Event) => {
                 let cursorElement: HTMLElement | null = (evt.target as HTMLElement);
 
@@ -68,7 +68,7 @@ const useCursorRoot = (
 
                     if (Number.isFinite(index)) {
                         calendar.shiftCursor(index);
-                        onSelectedCallback(calendar[calendar.cursorPosition]?.[0]);
+                        withSelected(calendar[calendar.cursorPosition]?.[0]);
                         break;
                     }
 
@@ -78,7 +78,7 @@ const useCursorRoot = (
         }
 
         return props;
-    }, [calendar, onSelectedCallback]);
+    }, [calendar, withSelected]);
 };
 
 export default useCursorRoot;
