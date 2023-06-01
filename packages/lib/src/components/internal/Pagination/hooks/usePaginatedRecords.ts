@@ -32,7 +32,7 @@ const isCursorPaginatedResponseData = <T, DataField extends string>(
 
     const dataProperties = Object.getOwnPropertyNames(data as PaginatedResponseDataWithLinks<T, DataField>);
 
-    return offsetPaginatedResponseFields.some(prop => dataProperties.includes(prop));
+    return !offsetPaginatedResponseFields.some(prop => dataProperties.includes(prop));
 };
 
 const parseCursorPaginatedResponseData = <T, DataField extends string>(
@@ -108,7 +108,7 @@ const usePaginatedRecords = <T, DataField extends string, FilterValue extends st
     onPageRequest,
     pagination,
 }: BasePaginatedRecordsInitOptions<T, DataField, FilterValue, FilterParam>): UsePaginatedRecords<T, FilterValue, FilterParam> => {
-    const [pageLimit, setPageLimit] = useState(limit);
+    const [pageLimit, setPageLimit] = useState(data?.[dataField]?.length ?? limit);
     const [records, setRecords] = useState<T[]>([]);
     const [fetching, updateFetching] = useBooleanState(true);
     const [shouldRefresh, updateShouldRefresh] = useBooleanState(false);
