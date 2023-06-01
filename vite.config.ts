@@ -6,6 +6,9 @@ import { mockApiProxies, mockServerPlugin } from './packages/server/proxy/mockAp
 import { getEnvironment } from './envs/getEnvs';
 import { realApiProxies } from './packages/server/proxy/realApiProxies';
 import { checker } from 'vite-plugin-checker';
+import version from './packages/lib/config/version';
+
+const currentVersion = version();
 
 const playgroundDir = resolve(__dirname, 'packages/playground/src/pages');
 const demoPlaygroundDir = resolve(__dirname, 'packages/playground/');
@@ -98,6 +101,12 @@ export default defineConfig(async ({ mode }) => {
         },
         define: {
             'process.env.VITE_BALANCE_PLATFORM': JSON.stringify(BTLApi.balancePlatform || null),
+            'process.env': {
+                VITE_VERSION: JSON.stringify(currentVersion.ADYEN_FP_VERSION),
+                VITE_COMMIT_HASH: JSON.stringify(currentVersion.COMMIT_HASH),
+                VITE_COMMIT_BRANCH: JSON.stringify(currentVersion.COMMIT_BRANCH),
+                VITE_ADYEN_BUILD_ID: JSON.stringify(currentVersion.ADYEN_BUILD_ID),
+            },
         },
     };
 });

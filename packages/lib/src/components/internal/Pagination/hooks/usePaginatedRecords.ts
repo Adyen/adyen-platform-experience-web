@@ -32,7 +32,7 @@ const isCursorPaginatedResponseData = <T, DataField extends string>(
 
     const dataProperties = Object.getOwnPropertyNames(data as PaginatedResponseDataWithLinks<T, DataField>);
 
-    return offsetPaginatedResponseFields.some(prop => dataProperties.includes(prop));
+    return !offsetPaginatedResponseFields.some(prop => dataProperties.includes(prop));
 };
 
 const parseCursorPaginatedResponseData = <T, DataField extends string>(

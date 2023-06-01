@@ -4,7 +4,7 @@ import { BASIC_TRANSACTIONS_LIST, TRANSACTION_DETAILS_DEFAULT } from '../../../.
 const router = Router();
 
 router.get('/', (req, res) => {
-    res.json({ data: BASIC_TRANSACTIONS_LIST, _links: {} });
+    res.json({ data: BASIC_TRANSACTIONS_LIST });
 });
 router.get('/:id', (req, res) => {
     const matchingMock = [...BASIC_TRANSACTIONS_LIST, TRANSACTION_DETAILS_DEFAULT].find(mock => mock.id === req.params.id);

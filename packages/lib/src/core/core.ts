@@ -10,10 +10,10 @@ import { ValueOf } from '../utils/types';
 
 class Core {
     public static readonly version = {
-        version: process.env.VERSION,
-        revision: process.env.COMMIT_HASH,
-        branch: process.env.COMMIT_BRANCH,
-        buildId: process.env.ADYEN_BUILD_ID,
+        version: process.env.VITE_VERSION,
+        revision: process.env.VITE_COMMIT_HASH,
+        branch: process.env.VITE_COMMIT_BRANCH,
+        buildId: process.env.VITE_ADYEN_BUILD_ID,
     };
     public session?: BPSession;
     public modules: any;
