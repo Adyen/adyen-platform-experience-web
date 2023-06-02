@@ -10,16 +10,35 @@
         "adyen-for-platforms",
         "components"
     ],
-    "main": "src/index.ts",
+    "main": "./dist/types/index.d.ts",
     "version": "1.0.0",
     "license": "MIT",
     "repository": "github:Adyen/adyen-fp-web",
     "bugs": {
         "url": "https://support.adyen.com/"
     },
-    "types": "src/index.ts",
+    "types": "./dist/types/index.d.ts",
+    "files": [
+        "./dist"
+    ],
+    "exports": {
+        ".": {
+            "types": "./dist/types/index.d.ts",
+            "require": {
+                "types": "./dist/types/index.d.ts",
+                "default": "./dist/adyen-fp-components.cjs.js"
+            },
+            "import": {
+                "types": "./dist/types/index.d.ts",
+                "default": "./dist/adyen-fp-components.es.js"
+            }
+        },
+        "./styles.css": "./dist/style.css"
+    },
     "scripts": {
         "start": "vite dev",
+        "build": "rm -rf dist && vite build --config ../../vite.config.ts && tsc --project tsconfig-build.json",
+        "build:test": "rm -rf dist && vite build --config ../../vite.config.ts && tsc --project tsconfig-build.json && npm pack",
         "test": "BABEL_ENV=test jest --config config/jest.config.js",
         "test:watch": "npm run test -- --watchAll",
         "test:coverage": "npm run test -- --coverage",

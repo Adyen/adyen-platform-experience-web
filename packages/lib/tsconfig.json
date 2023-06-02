@@ -9,8 +9,8 @@
         "sourceMap": true,
 
         "declaration": true,
-        "outDir": "../../dist",
-        "declarationDir": "../../dist/types",
+        "outDir": "./dist",
+        "declarationDir": "./dist/types",
 
         "jsxImportSource": "preact",
         "jsx": "react-jsx",

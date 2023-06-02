@@ -7,6 +7,7 @@ import { getEnvironment } from './envs/getEnvs';
 import { realApiProxies } from './packages/server/proxy/realApiProxies';
 import { checker } from 'vite-plugin-checker';
 import version from './packages/lib/config/version';
+import packageJson from './packages/lib/package.json';
 
 const currentVersion = version();
 
@@ -28,6 +29,8 @@ async function getPlaygroundEntrypoints() {
         index: resolve(playgroundDir, '..', '..', 'index.html'),
     };
 }
+
+const externalDependencies = Object.keys(packageJson.dependencies);
 
 export default defineConfig(async ({ mode }) => {
     const { lemApi, BTLApi, BCLApi, playground, mockServer } = getEnvironment(mode);
@@ -62,13 +65,8 @@ export default defineConfig(async ({ mode }) => {
                           fileName: format => `adyen-fp-components.${format}.js`,
                       },
                       minify: true,
-                      rollupOptions: {
-                          output: {
-                              inlineDynamicImports: false,
-                              manualChunks: () => 'app',
-                          },
-                      },
-                      outDir: resolve(__dirname, 'dist'),
+                      rollupOptions: { external: externalDependencies },
+                      outDir: resolve(__dirname, 'packages', 'lib', 'dist'),
                       emptyOutDir: false,
                   },
         resolve: {
@@ -101,12 +99,10 @@ export default defineConfig(async ({ mode }) => {
         },
         define: {
             'process.env.VITE_BALANCE_PLATFORM': JSON.stringify(BTLApi.balancePlatform || null),
-            'process.env': {
-                VITE_VERSION: JSON.stringify(currentVersion.ADYEN_FP_VERSION),
-                VITE_COMMIT_HASH: JSON.stringify(currentVersion.COMMIT_HASH),
-                VITE_COMMIT_BRANCH: JSON.stringify(currentVersion.COMMIT_BRANCH),
-                VITE_ADYEN_BUILD_ID: JSON.stringify(currentVersion.ADYEN_BUILD_ID),
-            },
+            'process.env.VITE_VERSION': JSON.stringify(currentVersion.ADYEN_FP_VERSION),
+            'process.env.VITE_COMMIT_HASH': JSON.stringify(currentVersion.COMMIT_HASH),
+            'process.env.VITE_COMMIT_BRANCH': JSON.stringify(currentVersion.COMMIT_BRANCH),
+            'process.env.VITE_ADYEN_BUILD_ID': JSON.stringify(currentVersion.ADYEN_BUILD_ID),
         },
     };
 });

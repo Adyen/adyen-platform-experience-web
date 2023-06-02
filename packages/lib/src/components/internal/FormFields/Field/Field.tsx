@@ -118,8 +118,8 @@ const Field: FunctionalComponent<FieldProps> = props => {
                     <span
                         className={'adyen-fp-error-text'}
                         id={`${uniqueId.current}${ARIA_ERROR_SUFFIX}`}
-                        aria-hidden={isCollatingErrors ? 'true' : null}
-                        aria-live={isCollatingErrors ? null : 'polite'}
+                        aria-hidden={isCollatingErrors ? 'true' : undefined}
+                        aria-live={isCollatingErrors ? undefined : 'polite'}
                     >
                         {errorMessage}
                     </span>

@@ -38,7 +38,8 @@
     },
     "scripts": {
         "start": "concurrently --kill-others-on-fail \"npm run types:watch\" \"npm run start -w @adyen/adyen-fp-web-playground\" --names \"tsc-lib,playground\" -c blue,green,cyan,yellow",
-        "build": "rm -rf dist && concurrently \"vite build\" \"npm run types:build -w @adyen/adyen-fp-web\" -n es-cjs,types",
+        "build": "npm run build -w @adyen/adyen-fp-web",
+        "build:test": "npm run build:test -w @adyen/adyen-fp-web",
         "build:demo": "vite build --mode demo",
         "demo": "npm run build:demo && npm run demo:serve",
         "demo:serve": "vite preview --mode demo",
@@ -54,7 +55,8 @@
         "format:all": "npm run format -w @adyen/adyen-fp-web-playground && npm run format -w @adyen/adyen-fp-web"
     },
     "dependencies": {
-        "concurrently": "^7.0.0"
+        "concurrently": "^7.0.0",
+        "preact": "^10.13.2"
     },
     "devDependencies": {
         "husky": "^7.0.4",
