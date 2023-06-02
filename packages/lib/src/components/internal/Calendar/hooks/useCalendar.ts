@@ -1,25 +1,19 @@
 import { CalendarProps } from '../types';
-import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'preact/hooks';
+import { useCallback, useMemo, useState } from 'preact/hooks';
 import useCursorRoot from './useCursorRoot';
 import useToday from './useToday';
 import createCalendar from '../internal/createCalendar';
 import useCoreContext from '../../../../core/Context/useCoreContext';
 import useElementRef from '../../../../hooks/ref/useElementRef';
+import useDebouncedRequestAnimationFrameCallback from '../../../../hooks/useDebouncedRequestAnimationFrameCallback';
 
 const useCalendar = (props: CalendarProps) => {
     const { i18n } = useCoreContext();
     const { onSelected, trackToday } = props;
     const [, setLastChanged] = useState<DOMHighResTimeStamp>();
 
-    const raf = useRef<number>();
     const today = useToday(trackToday);
-
-    const cancelRaf = useCallback((nextRaf?: number) => {
-        cancelAnimationFrame(raf.current as number);
-        raf.current = nextRaf;
-    }, []);
-
-    const watch = useCallback(() => cancelRaf(requestAnimationFrame(() => setLastChanged(performance.now()))), []);
+    const watch = useDebouncedRequestAnimationFrameCallback(useCallback(() => setLastChanged(performance.now()), []));
 
     const calendar = useMemo(() => {
         const { offset = 0, onSelected, renderControl, trackToday, traversalControls, ...config } = props;
@@ -42,8 +36,6 @@ const useCalendar = (props: CalendarProps) => {
             }
         }, [])
     );
-
-    useLayoutEffect(() => cancelRaf);
 
     return { calendar, cursorElementRef, cursorRootProps, today } as const;
 };
