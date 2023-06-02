@@ -17,32 +17,11 @@
     "workspaces": [
         "./packages/*"
     ],
-    "main": "./dist/adyen-fp-components.es.js",
-    "types": "./dist/types/index.d.ts",
-    "files": [
-        "./dist"
-    ],
-    "exports": {
-        ".": {
-            "types": "./dist/types/index.d.ts",
-            "require": {
-                "types": "./dist/types/index.d.ts",
-                "default": "./dist/adyen-fp-components.cjs.js"
-            },
-            "import": {
-                "types": "./dist/types/index.d.ts",
-                "default": "./dist/adyen-fp-components.es.js"
-            }
-        },
-        "./styles.css": "./dist/style.css"
-    },
     "scripts": {
         "start": "concurrently --kill-others-on-fail \"npm run types:watch\" \"npm run start -w @adyen/adyen-fp-web-playground\" --names \"tsc-lib,playground\" -c blue,green,cyan,yellow",
         "build": "npm run build -w @adyen/adyen-fp-web",
         "build:test": "npm run build:test -w @adyen/adyen-fp-web",
-        "build:demo": "vite build --mode demo",
-        "demo": "npm run build:demo && npm run demo:serve",
-        "demo:serve": "vite preview --mode demo",
+        "demo": "npm run demo -w @adyen/adyen-fp-web-playground",
         "start:mocked": "concurrently --kill-others-on-fail \"npm run types:watch\" \"npm run start:mock -w @adyen/adyen-fp-web-playground\" --names \"lib-types,playground\" -c blue,green,cyan,yellow",
         "lint": "npm run lint -w @adyen/adyen-fp-web",
         "test": "npm run test -w @adyen/adyen-fp-web",
@@ -55,8 +34,7 @@
         "format:all": "npm run format -w @adyen/adyen-fp-web-playground && npm run format -w @adyen/adyen-fp-web"
     },
     "dependencies": {
-        "concurrently": "^7.0.0",
-        "preact": "^10.13.2"
+        "concurrently": "^7.0.0"
     },
     "devDependencies": {
         "husky": "^7.0.4",

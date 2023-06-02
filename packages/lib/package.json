@@ -37,8 +37,8 @@
     },
     "scripts": {
         "start": "vite dev",
-        "build": "rm -rf dist && vite build --config ../../vite.config.ts && tsc --project tsconfig-build.json",
-        "build:test": "rm -rf dist && vite build --config ../../vite.config.ts && tsc --project tsconfig-build.json && npm pack",
+        "build": "rm -rf dist && vite build --config ./config/vite.config.ts && npm run types:build",
+        "build:test": "npm run build && npm pack",
         "test": "BABEL_ENV=test jest --config config/jest.config.js",
         "test:watch": "npm run test -- --watchAll",
         "test:coverage": "npm run test -- --coverage",
