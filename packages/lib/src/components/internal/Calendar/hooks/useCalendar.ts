@@ -1,5 +1,5 @@
 import { CalendarProps } from '../types';
-import { useCallback, useMemo, useState } from 'preact/hooks';
+import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'preact/hooks';
 import useCursorRoot from './useCursorRoot';
 import useToday from './useToday';
 import createCalendar from '../internal/createCalendar';
@@ -9,14 +9,24 @@ import useElementRef from '../../../../hooks/useElementRef';
 const useCalendar = (props: CalendarProps) => {
     const { i18n } = useCoreContext();
     const { onSelected, trackToday } = props;
-    const [, setLastChanged] = useState(performance.now());
+    const [, setLastChanged] = useState<DOMHighResTimeStamp>();
 
-    const watch = useCallback(() => setLastChanged(performance.now()), []);
+    const raf = useRef<number>();
+    const today = useToday(trackToday);
+
+    const cancelRaf = useCallback((nextRaf?: number) => {
+        cancelAnimationFrame(raf.current as number);
+        raf.current = nextRaf;
+    }, []);
+
+    const watch = useCallback(() => cancelRaf(requestAnimationFrame(() => setLastChanged(performance.now()))), []);
 
     const calendar = useMemo(() => {
         const { offset = 0, onSelected, renderControl, trackToday, traversalControls, ...config } = props;
         return createCalendar({ ...config, watch, locale: i18n.locale }, offset);
     }, [i18n.locale, props]);
+
+    const cursorRootProps = useCursorRoot(calendar, onSelected);
 
     const cursorElementRef = useElementRef(
         useCallback((current: any, previous: any) => {
@@ -33,8 +43,7 @@ const useCalendar = (props: CalendarProps) => {
         }, [])
     );
 
-    const cursorRootProps = useCursorRoot(calendar, onSelected);
-    const today = useToday(trackToday);
+    useLayoutEffect(() => cancelRaf);
 
     return { calendar, cursorElementRef, cursorRootProps, today } as const;
 };

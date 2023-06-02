@@ -1,5 +1,5 @@
-import { createPortal, memo } from 'preact/compat';
-import { useCallback, useEffect, useRef, useState } from 'preact/hooks';
+import { createPortal } from 'preact/compat';
+import { useMemo, useState } from 'preact/hooks';
 import { DatePickerProps } from './types';
 import Button from '../Button';
 import Calendar from '../Calendar';
@@ -8,54 +8,50 @@ import useCoreContext from '../../../core/Context/useCoreContext';
 import useElementRef from '../../../hooks/useElementRef';
 import useIdRefs from '../../../hooks/useIdRefs';
 
-const CalendarNavigationControl = memo(({ directionModifier, label, labelModifier, traversal, ...restProps }: any) => {
-    const { i18n } = useCoreContext();
-
-    return (
-        <Button
-            aria-label={i18n.get(`calendar.${labelModifier}`)}
-            variant={'ghost'}
-            // disabled={true || false}
-            classNameModifiers={['circle', directionModifier]}
-            label={label}
-            {...restProps}
-        />
-    );
-});
-
 export default function DatePicker(props: DatePickerProps) {
-    const [mounted, setMounted] = useState(false);
-    const calendarControlsContainerElementRef = useRef(null);
+    const { i18n } = useCoreContext();
+    const [renderControl, setRenderControl] = useState<DatePickerProps['renderControl']>();
     const datePickerDialogRef = useElementRef();
 
-    const renderControl = useCallback(
-        (traversal: CalendarTraversal, controlRootProps: CalendarTraversalControlRootProps) => {
-            if (!calendarControlsContainerElementRef.current) return null;
+    const calendarControlsContainerRef = useElementRef(
+        useMemo(() => {
+            const renderControl = (traversal: CalendarTraversal, controlRootProps: CalendarTraversalControlRootProps) => {
+                if (!(calendarControlsContainerRef.current instanceof HTMLElement)) return null;
 
-            const props = { key: traversal } as any;
+                let directionModifier: string;
+                let labelModifier: string;
+                let label: string;
 
-            switch (traversal) {
-                case CalendarTraversal.PREV:
-                    props.directionModifier = 'prev';
-                    props.labelModifier = 'previous';
-                    props.label = '◀︎';
-                    break;
-                case CalendarTraversal.NEXT:
-                    props.directionModifier = props.labelModifier = 'next';
-                    props.label = '▶︎';
-                    break;
-                default:
-                    return null;
-            }
+                switch (traversal) {
+                    case CalendarTraversal.PREV:
+                        directionModifier = 'prev';
+                        labelModifier = 'previous';
+                        label = '◀︎';
+                        break;
+                    case CalendarTraversal.NEXT:
+                        directionModifier = labelModifier = 'next';
+                        label = '▶︎';
+                        break;
+                    default:
+                        return null;
+                }
 
-            return createPortal(<CalendarNavigationControl {...props} {...controlRootProps} />, calendarControlsContainerElementRef.current);
-        },
-        [mounted]
+                return createPortal(
+                    <Button
+                        aria-label={i18n.get(`calendar.${labelModifier}`)}
+                        variant={'ghost'}
+                        // disabled={true || false}
+                        classNameModifiers={['circle', directionModifier]}
+                        label={label}
+                        {...controlRootProps}
+                    />,
+                    calendarControlsContainerRef.current
+                );
+            };
+
+            return (current: any) => setRenderControl(current instanceof HTMLElement ? () => renderControl : undefined);
+        }, [])
     );
-
-    useEffect(() => {
-        !mounted && setMounted(mounted => !mounted);
-    }, [mounted]);
 
     return (
         <>
@@ -71,7 +67,7 @@ export default function DatePicker(props: DatePickerProps) {
                 ></div>
             </div>
             <div ref={datePickerDialogRef} role="dialog" aria-label="Choose date">
-                <div ref={calendarControlsContainerElementRef} role="group" style={{ textAlign: 'center' }} />
+                <div ref={calendarControlsContainerRef} role="group" style={{ textAlign: 'center' }} />
                 <Calendar {...props} traversalControls={CalendarTraversalControls.CONDENSED} renderControl={renderControl} />
             </div>
         </>

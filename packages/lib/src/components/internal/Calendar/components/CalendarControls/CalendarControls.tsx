@@ -9,9 +9,13 @@ function CalendarControls({ calendar, controls, renderControl }: CalendarControl
 
     const traversalControls = useTraversalControls(calendar, renderControl, controls);
 
-    return <>{([] as ComponentChild[]).concat(
-        TraversalControls.map(traversal => renderControl(traversal, traversalControls[traversal] as CalendarTraversalControlRootProps))
-    )}</>;
+    return (
+        <>
+            {([] as ComponentChild[]).concat(
+                TraversalControls.map(traversal => renderControl(traversal, traversalControls[traversal] as CalendarTraversalControlRootProps))
+            )}
+        </>
+    );
 }
 
 export default memo(CalendarControls);
