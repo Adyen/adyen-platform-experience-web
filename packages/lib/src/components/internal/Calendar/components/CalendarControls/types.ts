@@ -3,5 +3,5 @@ import { CalendarProps, CalendarTraversalControls, CalendarView } from '../../ty
 export interface CalendarControlsProps {
     calendar: CalendarView;
     controls?: CalendarTraversalControls;
-    renderControl: false | Exclude<CalendarProps['renderControl'], undefined>;
+    renderControl?: CalendarProps['renderControl'];
 }

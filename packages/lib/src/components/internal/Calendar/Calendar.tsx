@@ -6,13 +6,15 @@ import { CalendarProps } from './types';
 import './Calendar.scss';
 
 function Calendar(props: CalendarProps) {
-    const { trackToday, traversalControls } = props;
-    const { calendar, renderControl, withSelected } = useCalendar(props);
+    const { calendar, cursorElementRef, cursorRootProps, today } = useCalendar(props);
+    const { renderControl, traversalControls } = props;
 
-    return <div role="group" aria-label="calendar">
-        <CalendarControls calendar={calendar} controls={traversalControls} renderControl={renderControl} />
-        <CalendarGrid calendar={calendar} trackToday={trackToday} withSelected={withSelected} />
-    </div>;
+    return (
+        <div role="group" aria-label="calendar">
+            <CalendarControls calendar={calendar} controls={traversalControls} renderControl={renderControl} />
+            <CalendarGrid ref={cursorElementRef} calendar={calendar} cursorRootProps={cursorRootProps} today={today} />
+        </div>
+    );
 }
 
 export default memo(Calendar);
