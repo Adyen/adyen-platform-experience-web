@@ -4,7 +4,7 @@ import useCursorRoot from './useCursorRoot';
 import useToday from './useToday';
 import createCalendar from '../internal/createCalendar';
 import useCoreContext from '../../../../core/Context/useCoreContext';
-import useElementRef from '../../../../hooks/useElementRef';
+import useElementRef from '../../../../hooks/ref/useElementRef';
 
 const useCalendar = (props: CalendarProps) => {
     const { i18n } = useCoreContext();

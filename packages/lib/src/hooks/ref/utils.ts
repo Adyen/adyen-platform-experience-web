@@ -1,8 +1,4 @@
-import { MutableRef, Ref, useMemo } from 'preact/hooks';
-import { MutableRefObject, RefObject } from 'preact/compat';
-
-type List<T> = (List<T> | T)[];
-type Reference<T> = Ref<T> | RefObject<T> | MutableRef<T> | MutableRefObject<T>;
+import { List, Reference } from './types';
 
 const uniqueFlatten = <T, R>(
     uniqueItems: Set<T>,
@@ -30,7 +26,3 @@ export const flatten = (() => {
 
     return (...refs: List<Reference<any>>) => uniqueFlatten(new Set<Reference<any>>(), refs, flattenCallback) || '';
 })();
-
-const useIdRefs = (...refs: List<Reference<any>>) => useMemo(() => flatten(...refs), [refs]);
-
-export default useIdRefs;

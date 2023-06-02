@@ -1,57 +1,13 @@
-import { createPortal } from 'preact/compat';
-import { useMemo, useState } from 'preact/hooks';
+import useDatePickerCalendarControls from './hooks/useDatePickerCalendarControls';
 import { DatePickerProps } from './types';
-import Button from '../Button';
+import { CalendarTraversalControls } from '../Calendar/types';
+import useElementRef from '../../../hooks/ref/useElementRef';
+import useIdRefs from '../../../hooks/ref/useIdRefs';
 import Calendar from '../Calendar';
-import { CalendarTraversal, CalendarTraversalControlRootProps, CalendarTraversalControls } from '../Calendar/types';
-import useCoreContext from '../../../core/Context/useCoreContext';
-import useElementRef from '../../../hooks/useElementRef';
-import useIdRefs from '../../../hooks/useIdRefs';
 
 export default function DatePicker(props: DatePickerProps) {
-    const { i18n } = useCoreContext();
-    const [renderControl, setRenderControl] = useState<DatePickerProps['renderControl']>();
+    const [calendarControlsContainerRef, renderControl] = useDatePickerCalendarControls();
     const datePickerDialogRef = useElementRef();
-
-    const calendarControlsContainerRef = useElementRef(
-        useMemo(() => {
-            const renderControl = (traversal: CalendarTraversal, controlRootProps: CalendarTraversalControlRootProps) => {
-                if (!(calendarControlsContainerRef.current instanceof HTMLElement)) return null;
-
-                let directionModifier: string;
-                let labelModifier: string;
-                let label: string;
-
-                switch (traversal) {
-                    case CalendarTraversal.PREV:
-                        directionModifier = 'prev';
-                        labelModifier = 'previous';
-                        label = '◀︎';
-                        break;
-                    case CalendarTraversal.NEXT:
-                        directionModifier = labelModifier = 'next';
-                        label = '▶︎';
-                        break;
-                    default:
-                        return null;
-                }
-
-                return createPortal(
-                    <Button
-                        aria-label={i18n.get(`calendar.${labelModifier}`)}
-                        variant={'ghost'}
-                        // disabled={true || false}
-                        classNameModifiers={['circle', directionModifier]}
-                        label={label}
-                        {...controlRootProps}
-                    />,
-                    calendarControlsContainerRef.current
-                );
-            };
-
-            return (current: any) => setRenderControl(current instanceof HTMLElement ? () => renderControl : undefined);
-        }, [])
-    );
 
     return (
         <>
