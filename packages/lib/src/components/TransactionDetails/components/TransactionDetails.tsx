@@ -3,6 +3,7 @@ import StatsBar from 'src/components/internal/StatsBar';
 import Status from 'src/components/internal/Status';
 import './TransactionDetails.scss';
 import { TransactionDetailsProps } from '../types';
+import { TabsStories } from '../../internal/Tabs/Tabs.stories';
 
 function TransactionsDetails(props: TransactionDetailsProps) {
     const { i18n } = useCoreContext();
@@ -49,6 +50,7 @@ function TransactionsDetails(props: TransactionDetailsProps) {
                         },
                     ]}
                 />
+                <TabsStories />
                 <div className="adyen-fp-details-section">
                     <div>
                         <div className="adyen-fp-subtitle">Processing information</div>

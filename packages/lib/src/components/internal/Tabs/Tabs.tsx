@@ -50,12 +50,12 @@ function Tabs<T extends TabComponentProps | TabComponentProps[]>(
     };
     return (
         <>
-            <div className="adyen-fp-tabs" role="tablist" aria-orientation="horizontal" tabIndex={0}>
+            <div className="adyen-fp-tabs" role="tablist" aria-orientation="horizontal">
                 {availableTabs.map((tab, index) => (
                     <button
                         id={`tab-id-${index}`}
                         key={`tab-${index}`}
-                        className={classNames('adyen-fp-tabs__tab', { 'adyen-fp-tabs__tab--active': index === selectedIndex })}
+                        className="adyen-fp-tabs__tab"
                         role="tab"
                         aria-controls={`panel-id-${index}`}
                         aria-selected={selectedIndex === index}
@@ -63,8 +63,9 @@ function Tabs<T extends TabComponentProps | TabComponentProps[]>(
                         onKeyDown={onKeyDown}
                         onClick={() => setSelectedIndex(index)}
                         onFocus={() => setSelectedIndex(index)}
+                        tabIndex={selectedIndex === index ? 0 : -1}
                     >
-                        {i18n.get(tab.props.label)}
+                        <span className="adyen-fp-tabs__tab-content">{i18n.get(tab.props.label)}</span>
                     </button>
                 ))}
             </div>
