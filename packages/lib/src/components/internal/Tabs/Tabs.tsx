@@ -6,7 +6,7 @@ import { TabProps, TabComponentProps } from './types';
 function Tabs<T extends TabProps[]>(props: TabComponentProps<T>) {
     const availableTabs = props.tabs.filter(tab => !tab.disabled);
     const { i18n } = useCoreContext();
-    const defaultTab = !props.defaultActiveTab ? 0 : props.tabs.findIndex(tab => tab.label === props.defaultActiveTab);
+    const defaultTab = !props.defaultActiveTab ? 0 : props.tabs.findIndex(tab => tab.id === props.defaultActiveTab);
     const [selectedIndex, setSelectedIndex] = useState(defaultTab === -1 ? 0 : defaultTab);
     const tabRefs = useRef<Record<number, HTMLButtonElement | null>>({});
     const setIndex = (index: number) => {
