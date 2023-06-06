@@ -12,10 +12,12 @@ const EXAMPLE_TABS: TabProps[] = [
     {
         label: 'account',
         content: <ExampleContent content={'Account tab content'} />,
+        id: 'account',
     },
     {
         label: 'paymentId',
         content: <ExampleContent content={'Payment ID tab content'} />,
+        id: 'paymentId',
     },
 ];
 
@@ -32,10 +34,12 @@ export function TabsStories2() {
                 {
                     label: 'account',
                     content: <ExampleContent content={'Account tab content'} />,
+                    id: 'account',
                 },
                 {
                     label: 'paymentId',
                     content: <ExampleContent content={'Payment ID tab content'} />,
+                    id: 'paymentId',
                 },
             ]}
             defaultActiveTab={'paymentId'}
