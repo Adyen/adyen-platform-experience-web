@@ -1,6 +1,5 @@
 {
     "name": "@adyen/adyen-fp-web",
-    "private": true,
     "keywords": [
         "adyen",
         "adyen-fp",
