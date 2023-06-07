@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'preact/hooks';
 import { renderFormField } from '../FormFields';
-import useCoreContext from '../../../core/Context/useCoreContext';
+import useCoreContext from '@src/core/Context/useCoreContext';
 import { HTMLAttributes } from 'preact/compat';
 
 /**

@@ -1,7 +1,7 @@
 import uuidv4 from '../../../utils/uuid';
 import { StructuredListItem, ListValue } from './types';
 import { TranslationKey } from '../../../language/types';
-import useCoreContext from '../../../core/Context/useCoreContext';
+import useCoreContext from '@src/core/Context/useCoreContext';
 export const useStructuredListItems = (items: { [key in TranslationKey]?: ListValue | undefined }) => {
     const { i18n } = useCoreContext();
     return Object.keys(items).reduce((prev: StructuredListItem[], key) => {

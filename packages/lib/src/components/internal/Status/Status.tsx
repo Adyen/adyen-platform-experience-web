@@ -1,5 +1,5 @@
 import cx from 'classnames';
-import useCoreContext from '../../../core/Context/useCoreContext';
+import useCoreContext from '@src/core/Context/useCoreContext';
 import './Status.scss';
 import { StatusProps } from './types';
 
