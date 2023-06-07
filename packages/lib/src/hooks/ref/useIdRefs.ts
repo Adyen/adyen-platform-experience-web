@@ -1,36 +1,47 @@
-import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'preact/hooks';
-import { List, Reference } from './types';
-import useDebouncedRequestAnimationFrameCallback from '../useDebouncedRequestAnimationFrameCallback';
-import useRefWithCallback from './useRefWithCallback';
+import { useLayoutEffect, useRef, useState } from 'preact/hooks';
+import { createRefMapping } from './internal/namedRefRegistry';
+import { NamedRefRecord, List } from './types';
 
-const useIdRefs = (...refs: List<Reference<any>>) => {
-    const [ids, setIds] = useState('');
+const EXCESS_SPACE_REGEX = /^\s+|\s+(?=\s|$)/g;
+
+const $ElementRefProto = Object.freeze(
+    Object.create(null, {
+        toString: {
+            value(this: { ref: NamedRefRecord<Element> }) {
+                return this.ref[0]?.current?.id ?? '';
+            },
+        },
+    })
+);
+
+const uniqueFlatten = <T>(items: List<T>, uniqueItems: Set<T> = new Set<T>()) => {
+    for (const item of items) {
+        if (Array.isArray(item)) uniqueFlatten(item, uniqueItems);
+        else if (!uniqueItems.has(item)) uniqueItems.add(item);
+    }
+    return uniqueItems;
+};
+
+const useIdRefs = (...identifiers: List<string>) => {
+    const [id, setId] = useState('');
+    const references = useRef<{ ref: NamedRefRecord<Element> }[]>([]);
+
+    const effect = useRef(() => {
+        setId(references.current.join(' ').replace(EXCESS_SPACE_REGEX, ''));
+    });
 
     useLayoutEffect(() => {
-        const uniqueFlatten = (uniqueRefObjects: Set<Reference<any>>, refs: List<Reference<any>>) => {
-            for (const ref of refs) {
-                if (Array.isArray(ref)) uniqueFlatten(uniqueRefObjects, ref);
-                else if (!uniqueRefObjects.has(ref)) uniqueRefObjects.add(ref);
-            }
-            return uniqueRefObjects;
-        };
-
-        const reducer = (ids: string | undefined, ref: Reference<any>) => {
-            const elemId = ref?.current instanceof Element ? ref.current.id : '';
-            return elemId ? (ids ? `${ids} ${elemId}` : elemId) : ids ?? '';
-        };
-
-        const $refs = [...uniqueFlatten(new Set<Reference<any>>(), refs)];
-        const recompute = useDebouncedRequestAnimationFrameCallback(() => setIds($refs.reduce(reducer, '')));
-
-        for (const ref of $refs) {
-            useRefWithCallback((current: any) => {
-                if (current instanceof HTMLElement) recompute();
-            });
+        for (const identifier of uniqueFlatten(identifiers)) {
+            references.current.push(
+                Object.create($ElementRefProto, {
+                    ref: { value: createRefMapping<Element>(identifier, effect.current) },
+                })
+            );
         }
+        return () => references.current.forEach(reference => reference.ref[1].delete(effect.current));
     }, []);
 
-    return ids;
+    return id;
 };
 
 export default useIdRefs;

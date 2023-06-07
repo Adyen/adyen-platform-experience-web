@@ -8,7 +8,7 @@ const useDebouncedRequestAnimationFrameCallback = (frameCallback: FrameRequestCa
         raf.current = nextRaf;
     }, []);
 
-    useLayoutEffect(() => cancelRaf);
+    useLayoutEffect(() => cancelRaf, []);
 
     return useCallback(() => {
         cancelRaf(requestAnimationFrame(frameCallback));

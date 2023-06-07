@@ -1,15 +1,12 @@
 import { useCallback } from 'preact/hooks';
 import useCoreContext from '../../../../core/Context/useCoreContext';
-import useElementRef from '../../../../hooks/ref/useElementRef';
 import useDetachedRenderCallback from '../../../../hooks/ref/useDetachedRenderCallback';
 import { CalendarTraversal, CalendarTraversalControlRootProps } from '../../Calendar/types';
 import Button from '../../Button';
 
 const useDatePickerCalendarControls = () => {
     const { i18n } = useCoreContext();
-    const containerRef = useElementRef();
-    const render = useDetachedRenderCallback(
-        containerRef,
+    return useDetachedRenderCallback(
         useCallback(
             (container, traversal: CalendarTraversal, controlRootProps: CalendarTraversalControlRootProps) => {
                 if (!(container instanceof HTMLElement)) return null;
@@ -46,8 +43,6 @@ const useDatePickerCalendarControls = () => {
             [i18n]
         )
     );
-
-    return [containerRef, render] as const;
 };
 
 export default useDatePickerCalendarControls;

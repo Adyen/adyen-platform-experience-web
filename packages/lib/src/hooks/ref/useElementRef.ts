@@ -1,16 +1,22 @@
-import { useCallback } from 'preact/hooks';
+import { useMemo, useRef } from 'preact/hooks';
 import useRefWithCallback from './useRefWithCallback';
 import { getUniqueId } from '../../utils/idGenerator';
 
-const useElementRef = (withCallback?: (current: any, previous: any) => any) =>
-    useRefWithCallback(
-        useCallback(
-            (current: any, previous: any) => {
-                if (current instanceof Element) current.id = getUniqueId('adyen-fp');
-                withCallback?.(current, previous);
-            },
-            [withCallback]
-        )
+const useElementRef = (identifier: string) => {
+    const id = useRef<string>();
+
+    return useRefWithCallback<Element>(
+        useMemo(() => {
+            id.current = undefined;
+
+            return current => {
+                if (current instanceof Element) {
+                    current.id = id.current || (id.current = getUniqueId('adyen-fp'));
+                }
+            };
+        }, [identifier]),
+        identifier
     );
+};
 
 export default useElementRef;

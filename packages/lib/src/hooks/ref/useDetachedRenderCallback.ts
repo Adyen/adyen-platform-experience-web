@@ -1,29 +1,30 @@
 import { VNode } from 'preact';
 import { createPortal } from 'preact/compat';
 import { useMemo, useRef } from 'preact/hooks';
-import { Reference } from './types';
 import useRefWithCallback from './useRefWithCallback';
 
-const useDetachedRenderCallback = (renderContainerRef: Reference<any>, renderCallback: (container: Element, ...args: any[]) => VNode | null) => {
-    const $render = useRef<(...args: any[]) => VNode | null>();
+const useDetachedRenderCallback = (renderCallback: (container: Element, ...args: any[]) => VNode | null, renderContainerRefIdentifier?: string) => {
+    const renderFn = useRef<(...args: any[]) => VNode | null>();
 
-    useRefWithCallback(
+    const renderContainerRef = useRefWithCallback<Element>(
         useMemo(() => {
             const render =
-                (container: any) =>
+                (container: Element) =>
                 (...args: any[]) => {
                     const jsx = renderCallback(container, ...args);
                     return jsx && createPortal(jsx, container);
                 };
 
-            return (container: any) => {
-                $render.current = container instanceof HTMLElement ? render(container) : undefined;
+            renderFn.current = undefined;
+
+            return container => {
+                renderFn.current = container instanceof Element ? render(container) : undefined;
             };
-        }, [renderCallback]),
-        renderContainerRef
+        }, [renderCallback, renderContainerRefIdentifier]),
+        renderContainerRefIdentifier
     );
 
-    return $render.current;
+    return [renderFn.current, renderContainerRef] as const;
 };
 
 export default useDetachedRenderCallback;
