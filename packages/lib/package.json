@@ -33,7 +33,7 @@
                 "default": "./dist/adyen-fp-components.es.js"
             }
         },
-        "./styles.css": "./dist/style.css"
+        "./adyen-fp-web.css": "./dist/style.css"
     },
     "scripts": {
         "start": "vite dev",
