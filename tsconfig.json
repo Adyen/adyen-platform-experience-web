@@ -1,0 +1,21 @@
+{
+    "compilerOptions": {
+        "noEmitOnError": true,
+        "allowJs": true,
+        "moduleResolution": "node",
+        "module": "esnext",
+        "target": "esnext",
+        "resolveJsonModule": true,
+        "allowSyntheticDefaultImports": true,
+        "esModuleInterop": true,
+        "strict": true,
+        "noUncheckedIndexedAccess": true,
+        "lib": ["dom", "esnext"],
+        "stripInternal": true,
+        "importHelpers": true
+    },
+    "paths": {
+        "@adyen/adyen-fp-web": ["packages/lib/src"]
+    },
+    "files": ["packages/lib/src/declarations/scss.d.ts", "packages/lib/src/declarations/whatwg-fetch.d.ts"]
+}

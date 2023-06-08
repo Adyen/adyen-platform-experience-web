@@ -1,4 +1,6 @@
-export interface AccountHolderDetailsProps {
+import { UIElementProps } from '../types';
+
+export interface AccountHolderDetailsProps extends UIElementProps {
     accountHolder: {
         balancePlatform: string;
         description: string;
@@ -38,5 +40,5 @@ export interface AccountHolderDetailsProps {
             phone: { number: string; type: string };
         };
     };
-    onChange: (newState: Record<any, any>) => void;
+    onChange?: (newState: Record<any, any>) => void;
 }

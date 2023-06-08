@@ -26,7 +26,7 @@ const componentsMap = {
  * @param props - for the new Component element
  * @returns new Component or null
  */
-export const getComponent = (componentType: keyof ComponentMap, props: ConstructorParameters<ComponentMap[typeof componentType]>) => {
+export const getComponent = <Name extends keyof ComponentMap>(componentType: Name, props: any) => {
     const Component = componentsMap[componentType] || null;
     return Component ? new Component({ ...props, id: `${componentType}-${uuid()}` }) : null;
 };

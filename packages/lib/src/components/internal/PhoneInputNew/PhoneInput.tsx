@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import Field from '../FormFields/Field';
 import renderFormField from '../FormFields';
 import useForm from '../../../utils/useForm';
-import useCoreContext from '../../../core/Context/useCoreContext';
+import useCoreContext from '@src/core/Context/useCoreContext';
 import './PhoneInput.scss';
 import { phoneFormatters, phoneValidationRules } from './validate';
 import { PhoneInputProps, PhoneInputSchema } from './types';

@@ -5,7 +5,7 @@ import classNames from 'classnames';
 import { useCallback, useState } from 'preact/hooks';
 import CollapsibleContainer from '../CollapsibleContainer/CollapsibleContainer';
 import { getUniqueId } from '../../../utils/idGenerator';
-import useCoreContext from '../../../core/Context/useCoreContext';
+import useCoreContext from '@src/core/Context/useCoreContext';
 const Card = ({
     title,
     subTitle,

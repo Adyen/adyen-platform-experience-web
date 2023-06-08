@@ -6,7 +6,7 @@ interface HttpOptions {
     accept?: string;
     contentType?: string;
     errorMessage?: string;
-    headers?: Record<string, string>[];
+    headers?: Record<string, string>;
     loadingContext?: string;
     method?: string;
     path: string;
@@ -28,7 +28,6 @@ function isAdyenErrorResponse(data: any): data is AdyenErrorResponse {
 
 export function http<T>(options: HttpOptions, data?: any): Promise<T> {
     const { headers = [], errorLevel = 'warn', loadingContext = FALLBACK_CONTEXT, method = 'GET', path } = options;
-
     const request: RequestInit = {
         method,
         mode: 'cors',

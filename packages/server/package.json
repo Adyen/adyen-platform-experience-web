@@ -23,5 +23,5 @@
         "express-openapi-validator": "^4.13.7",
         "request": "^2.81.0"
     },
-    "dependencies": {}
+    "type": "module"
 }

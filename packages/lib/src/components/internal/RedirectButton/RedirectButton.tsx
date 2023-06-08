@@ -1,4 +1,4 @@
-import useCoreContext from '../../../core/Context/useCoreContext';
+import useCoreContext from '@src/core/Context/useCoreContext';
 import { useState } from 'preact/hooks';
 import { RedirectButtonProps } from './types';
 

@@ -1,7 +1,7 @@
 node_modules
 dist
 coverage
-
+*.tgz*
 *.log*
 .env
 .env*
@@ -28,3 +28,9 @@ stats.html
 # Vagrant
 Vagrantfile
 .vagrant
+
+# Build cache manifests
+*.tsbuildinfo
+
+.demo/
+demo

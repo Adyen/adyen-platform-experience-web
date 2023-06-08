@@ -1,13 +1,13 @@
-import Status from 'src/components/internal/Status';
+import Status from '@src/components/internal/Status';
 import ContactDetails from './ContactDetails';
-import StatsBar from 'src/components/internal/StatsBar';
+import StatsBar from '@src/components/internal/StatsBar';
 import './AccountHolderDetails.scss';
 import { AccountHolderDetailsProps } from '../types';
 
 const AccountHolderDetails = ({ accountHolder }: AccountHolderDetailsProps) => {
     return (
         <div className="adyen-fp-account-holder">
-            <p className="adyen-fp-title">Account holder</p>
+            <h1 className="adyen-fp-title">Account holder</h1>
 
             <div className="adyen-fp-details-container">
                 <StatsBar

@@ -13,4 +13,4 @@ type CollectIdProps = {
 
 type LogConfig = { locale?: string; loadingContext?: string; clientKey?: string };
 
-export { CheckoutAttemptIdSession, CollectIdProps, LogConfig };
+export type { CheckoutAttemptIdSession, CollectIdProps, LogConfig };

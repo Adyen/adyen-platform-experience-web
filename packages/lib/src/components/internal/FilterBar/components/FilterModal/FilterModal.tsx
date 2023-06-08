@@ -3,7 +3,7 @@ import Modal from '../../../Modal';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import Field from '../../../FormFields/Field';
 import InputText from '../../../FormFields/InputText';
-import Button from 'src/components/internal/Button';
+import Button from '@src/components/internal/Button';
 import './FilterModal.scss';
 import { FilterModalProps } from './types';
 

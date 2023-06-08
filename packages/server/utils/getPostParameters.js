@@ -1,6 +1,6 @@
 const { API_KEY, BASE_URL } = require('./config');
 
-module.exports = (endpoint, request) => {
+const getPostParameters = (endpoint, request) => {
     const body = JSON.stringify(request);
 
     return {
@@ -10,7 +10,9 @@ module.exports = (endpoint, request) => {
             'Access-Control-Allow-Origin': '*',
             'Content-Type': 'application/json',
             'Content-Length': Buffer.byteLength(body, 'utf8'),
-            'X-Api-Key': API_KEY
-        }
+            'X-Api-Key': API_KEY,
+        },
     };
 };
+
+export default getPostParameters;

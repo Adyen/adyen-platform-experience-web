@@ -1,6 +1,7 @@
 {
     "name": "@adyen/adyen-fp-web-playground",
     "private": true,
+    "type": "module",
     "keywords": [
         "adyen",
         "adyen-fp",
@@ -17,18 +18,25 @@
         "url": "https://support.adyen.com/"
     },
     "scripts": {
-        "start": "npm run dev-server",
-        "dev-server": "cross-env NODE_ENV=development webpack-dev-server --config config/webpack.dev.js",
-        "format": "prettier --write 'src/**/*.{ts,js,css, scss, html}'"
+        "vite": "vite dev",
+        "start": "vite dev --config ./vite.config.ts",
+        "build:demo": "vite build --mode demo --config ./vite.config.ts",
+        "demo": "npm run build:demo && npm run demo:serve",
+        "demo:serve": "vite preview --mode demo --config ./vite.config.ts",
+        "type-check": "tsc --watch --preserveWatchOutput",
+        "types:watch": "npm run type-check -- --watch",
+        "start:mock": "vite dev --mode mocked --config ./vite.config.ts",
+        "mock-server": "vite-node ../server/run.js",
+        "format": "prettier --write \"src/**/*.{ts,js,css, scss, html}\""
     },
     "devDependencies": {
-        "@adyen/adyen-fp-web-server": "file:packages/server",
+        "@adyen/adyen-fp-web-server": "file:../server",
+        "@preact/preset-vite": "^2.5.0",
         "autoprefixer": "^9.8.8",
         "cross-env": "^7.0.3",
         "css-loader": "^4.3.0",
-        "dotenv": "^9.0.0",
+        "dotenv": "^16.0.3",
         "file-loader": "^6.2.0",
-        "html-webpack-plugin": "^5.5.0",
         "postcss": "^8.3.11",
         "prettier": "^2.4.1",
         "sass": "^1.43.4",
@@ -36,12 +44,10 @@
         "style-loader": "^3.3.1",
         "ts-loader": "^9.2.6",
         "typescript": "^4.9.4",
-        "webpack": "^5.61.0",
-        "webpack-cli": "^4.9.1",
-        "webpack-dev-server": "^4.4.0",
-        "webpack-merge": "^5.8.0"
+        "vite": "^4.2.1",
+        "vite-node": "^0.30.1"
     },
     "dependencies": {
-        "@adyen/adyen-fp-web": "file:packages/lib"
+        "@adyen/adyen-fp-web": "file:../lib/src"
     }
 }

@@ -1,4 +1,4 @@
-import { TransactionsPageProps } from '../types';
+import { TransactionsProps } from '../types';
 import { PageNeighbour } from '../../internal/Pagination/types';
 
 export const getLabel = (key: string) => {
@@ -19,7 +19,7 @@ export const getLabel = (key: string) => {
     return labels[key] || key;
 };
 
-export const getCursor = (dir: PageNeighbour, transactions: TransactionsPageProps['transactions']): string | null => {
+export const getCursor = (dir: PageNeighbour, transactions: TransactionsProps['transactions']): string | null => {
     try {
         if (transactions._links?.[dir]?.href) {
             const url = new URL(transactions?._links?.[dir]?.href ?? '');
@@ -31,7 +31,7 @@ export const getCursor = (dir: PageNeighbour, transactions: TransactionsPageProp
     return null;
 };
 
-export const getRequestParams = (transactions: TransactionsPageProps['transactions']) => {
+export const getRequestParams = (transactions: TransactionsProps['transactions']) => {
     try {
         const links = transactions?._links || {};
         const link = links['prev'] || links['next'];
