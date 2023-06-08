@@ -1,4 +1,5 @@
 import Validator from './Validator';
+import { describe, expect, test } from 'vitest';
 
 const mockRules = {};
 
@@ -16,8 +17,8 @@ describe('Validator', () => {
             aNewField: {
                 validate: () => false,
                 errorMessage: 'test',
-                modes: ['blur']
-            }
+                modes: ['blur'],
+            },
         });
 
         expect(validator.validate({ key: 'aNewField', value: '123' }).hasError()).toBe(true);

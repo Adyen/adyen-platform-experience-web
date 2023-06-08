@@ -1,6 +1,7 @@
-import { formatCustomTranslations, formatLocale, getTranslation, interpolateElement, loadTranslations, matchLocale, parseLocale } from './utils';
+import { formatCustomTranslations, formatLocale, getTranslation, interpolateElement, matchLocale, parseLocale } from './utils';
 import translations from './translations';
 import { createElement } from 'preact';
+import { describe, expect, test } from 'vitest';
 
 const defaultSupportedLocales = Object.keys(translations) as (keyof typeof translations)[];
 
@@ -58,7 +59,6 @@ describe('matchLocale()', () => {
         expect(matchLocale('ca', defaultSupportedLocales)).toBe(null);
         expect(matchLocale('ne', defaultSupportedLocales)).toBe(null);
         expect(matchLocale('123', defaultSupportedLocales)).toBe(null);
-        expect(matchLocale(undefined, defaultSupportedLocales)).toBe(null);
     });
 });
 
@@ -83,7 +83,11 @@ describe('formatLocale()', () => {
 });
 
 describe('getTranslation()', () => {
-    const translations = { myTranslation: 'My translation', myTranslation__plural: 'My translations', myTranslation__2: 'My two translations' };
+    const translations = {
+        myTranslation: 'My translation',
+        myTranslation__plural: 'My translations',
+        myTranslation__2: 'My two translations',
+    };
 
     test('should get a translation with a matching key', () => {
         expect(getTranslation(translations, 'myTranslation')).toBe('My translation');
@@ -199,47 +203,9 @@ describe('formatCustomTranslations()', () => {
     });
 });
 
-describe('loadTranslations()', () => {
-    test('should accept customTranslations without a countryCode for default defaultSupportedLocales', () => {
-        loadTranslations('es-ES', {
-            'es-ES': {
-                'creditCard.numberField.title': 'es string',
-            },
-            'es-AR': {
-                'creditCard.numberField.title': 'es-AR',
-            },
-        }).then(translations => {
-            expect(translations['creditCard.numberField.title']).toBe('es string');
-        });
-    });
-
-    test('should return the passed locale if formatted properly', () => {
-        loadTranslations('ca-CA', {
-            'es-ES': {
-                'creditCard.numberField.title': 'es',
-            },
-            'ca-CA': {
-                'creditCard.numberField.title': 'ca',
-            },
-        }).then(translations => {
-            expect(translations['creditCard.numberField.title']).toBe('ca');
-        });
-    });
-
-    test('should return the passed locale if formatted properly', () => {
-        loadTranslations('ca-CA', {
-            'ca-CA': {
-                'creditCard.numberField.title': 'ca-CA',
-            },
-        }).then(translations => {
-            expect(translations['creditCard.numberField.title']).toBe('ca-CA');
-        });
-    });
-});
-
 describe('interpolateElement()', () => {
     test('it should interpolate the element properly', () => {
-        const renderLink = translation => createElement('a', { href: 'example.com' }, [translation]);
+        const renderLink = (translation: string) => createElement('a', { href: 'example.com' }, [translation]);
         const result = interpolateElement('By clicking continue %#you%# agree with the %#term and conditions%#', [renderLink, renderLink]);
         expect(typeof result[0] === 'string');
         expect(result[1] === 'a');

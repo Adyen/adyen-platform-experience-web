@@ -1,4 +1,5 @@
 import { getImageUrl } from './get-image';
+import { describe, expect, test } from 'vitest';
 
 describe('Ideal utils', () => {
     describe('getImageUrl', () => {
@@ -9,7 +10,7 @@ describe('Ideal utils', () => {
         test('Gets a full url with a parentContext', () => {
             const options = {
                 loadingContext,
-                parentFolder: 'ideal/'
+                parentFolder: 'ideal/',
             };
             expect(getImageUrl(options)(issuer)).toBe('http://adyen.com/images/logos/ideal/123.svg');
         });
@@ -17,7 +18,7 @@ describe('Ideal utils', () => {
         test('Gets an image under components/ folder', () => {
             const options = {
                 loadingContext,
-                imageFolder: 'components/'
+                imageFolder: 'components/',
             };
             expect(getImageUrl(options)('success')).toBe('http://adyen.com/images/components/success.svg');
         });
@@ -25,7 +26,7 @@ describe('Ideal utils', () => {
         test('Gets a full url without a parentContext (default ideal image)', () => {
             const options = {
                 loadingContext,
-                parentFolder: ''
+                parentFolder: '',
             };
             expect(getImageUrl(options)(type)).toBe('http://adyen.com/images/logos/ideal.svg');
         });
@@ -34,7 +35,7 @@ describe('Ideal utils', () => {
             const options = {
                 loadingContext,
                 parentFolder: 'ideal/',
-                extension: 'png'
+                extension: 'png',
             };
 
             expect(getImageUrl(options)(issuer)).toBe('http://adyen.com/images/logos/ideal/123.png');
