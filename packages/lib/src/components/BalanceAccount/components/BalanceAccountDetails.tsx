@@ -15,7 +15,6 @@ function BalanceAccountDetails(props: BalanceAccountDetailsProps) {
 
             <div className="adyen-fp-details-container">
                 <StatsBar
-                    featured={true}
                     items={[
                         {
                             label: i18n.get('balanceAccountId'),
