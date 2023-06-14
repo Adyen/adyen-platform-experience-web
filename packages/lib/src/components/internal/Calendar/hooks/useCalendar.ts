@@ -24,7 +24,7 @@ const useCalendar = (props: CalendarProps) => {
 
     const cursorElementRef = useRefWithCallback<Element>(
         useCallback((current, previous) => {
-            if (previous instanceof Element && previous !== current) {
+            if (previous instanceof Element) {
                 previous.setAttribute('tabindex', '-1');
                 previous.removeAttribute('aria-selected');
             }

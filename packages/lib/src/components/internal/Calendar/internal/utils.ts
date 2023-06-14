@@ -1,3 +1,4 @@
+import { unsignedModulo } from '../../../../utils/compute';
 import {
     CalendarConfig,
     CalendarDate,
@@ -5,7 +6,7 @@ import {
     CalendarFirstWeekDay,
     CalendarMonth,
     CalendarMonthEndDate,
-    CalendarSlidingWindowMonth
+    CalendarSlidingWindowMonth,
 } from '../types';
 
 export const DAY_MS = 86400000;
@@ -17,16 +18,15 @@ export const assertSafeInteger = (value: any) => {
     if (!Number.isSafeInteger(value)) throw new TypeError('EXPECTS_SAFE_INTEGER');
 };
 
-export const withRelativeIndexFactory = (
-    indexOffset = 0,
-    indexCallback: (currentIndex: number, initialIndex: number) => any = (x => x)
-) => (index: number) => indexCallback(indexOffset + index, index);
+export const withRelativeIndexFactory =
+    (indexOffset = 0, indexCallback: (currentIndex: number, initialIndex: number) => any = x => x) =>
+    (index: number) =>
+        indexCallback(indexOffset + index, index);
 
 export const mod = (num: number, modulo: number) => {
     assertSafeInteger(num);
     assertSafeInteger(modulo);
-    const mod = num % modulo;
-    return mod > 0 ? mod : (mod + modulo) % modulo;
+    return unsignedModulo(num, modulo);
 };
 
 export const getNoonTimestamp = (date: CalendarDate = Date.now(), useNoonTodayAsFallback = false) => {
@@ -46,23 +46,21 @@ export const getMonthTimestamp = (date: CalendarDate = Date.now(), offset = 0) =
     return noonTimestamp.setMonth(noonTimestamp.getMonth() + offset, 1);
 };
 
-export const getMonthEndDate = (date: CalendarDate = Date.now(), offset = 0) => (
-    new Date(getMonthTimestamp(date, offset + 1) - DAY_MS).getDate() as CalendarMonthEndDate
-);
+export const getMonthEndDate = (date: CalendarDate = Date.now(), offset = 0) =>
+    new Date(getMonthTimestamp(date, offset + 1) - DAY_MS).getDate() as CalendarMonthEndDate;
 
 export const getMonthFirstDayOffset = (firstWeekDay: CalendarFirstWeekDay = 0, date: CalendarDate = Date.now(), offset = 0) => {
     const monthFirstDay = new Date(getMonthTimestamp(date, offset)).getDay() as CalendarDay;
     return mod(monthFirstDay - firstWeekDay + 7, 7) as CalendarDay;
 };
 
-export const getWeekendDays = (firstWeekDay: CalendarFirstWeekDay = 0) => Object.freeze(
-    WEEKEND_DAYS_SEED.map(seed => mod(6 - firstWeekDay + seed, 7)) as [CalendarDay, CalendarDay]
-);
+export const getWeekendDays = (firstWeekDay: CalendarFirstWeekDay = 0) =>
+    Object.freeze(WEEKEND_DAYS_SEED.map(seed => mod(6 - firstWeekDay + seed, 7)) as [CalendarDay, CalendarDay]);
 
 export const getRelativeMonthOffset = (originTimestamp: number, timestamp: number) => {
     const date = new Date(timestamp);
     const origin = new Date(originTimestamp);
-    return (date.getMonth() - origin.getMonth()) + (date.getFullYear() - origin.getFullYear()) * 12;
+    return date.getMonth() - origin.getMonth() + (date.getFullYear() - origin.getFullYear()) * 12;
 };
 
 export const getMinimumNearestCalendarMonths = (calendarMonths: CalendarMonth = 1) => {
@@ -79,8 +77,11 @@ export const getCalendarTimeSliceParameters = ({ calendarMonths = 1, originDate,
     let numberOfMonths = calendarMonths;
     let originTimestamp = getMonthTimestamp(noonTimestamp);
 
-    try { getMonthTimestamp(originDate, offset); }
-    catch { calendarStartMonthOffset = 0; }
+    try {
+        getMonthTimestamp(originDate, offset);
+    } catch {
+        calendarStartMonthOffset = 0;
+    }
 
     if (sinceDate !== undefined) {
         const timestamp = getMonthTimestamp(sinceDate);
