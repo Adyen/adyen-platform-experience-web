@@ -1,8 +1,10 @@
+import elementWithFocus from './element';
 import { InteractionKeyCode } from '../../../components/types';
 import { unsignedModulo } from '../../../utils/compute';
 
 export interface TabbableRoot {
     activate: () => void;
+    active: boolean;
     current: Element | null;
     handleTab: (evt: KeyboardEvent) => boolean;
     next: () => Element | null;
@@ -24,6 +26,15 @@ export const SELECTORS = `
 
 export const ATTRIBUTES = ['contenteditable', 'controls', 'disabled', 'hidden', 'href', 'inert', 'tabindex'];
 const checkedRadios = new Map<HTMLFormElement, Map<string, HTMLInputElement | null>>();
+
+export const hasFocusWithin = (element: Element) => {
+    let parent = elementWithFocus()?.parentNode as Element | null;
+    while (parent) {
+        if (parent === element) return true;
+        parent = parent?.parentNode as Element | null;
+    }
+    return false;
+};
 
 export const isInput = (element: Element): element is HTMLInputElement => element.tagName === 'INPUT';
 export const isRadio = (element: Element): element is HTMLInputElement => isInput(element) && element.type === 'radio';
@@ -102,7 +113,7 @@ export const createTabbableRoot = (rootElement: Element, deferredActivation = fa
 
         for (const maybeTabbable of rootElement.querySelectorAll(SELECTORS)) {
             if (!isTabbable(maybeTabbable)) continue;
-            if (document.activeElement === maybeTabbable) currentTabbableIndex = tabbables.length;
+            if (elementWithFocus() === maybeTabbable) currentTabbableIndex = tabbables.length;
             tabbables.push(maybeTabbable);
         }
     };
@@ -127,10 +138,11 @@ export const createTabbableRoot = (rootElement: Element, deferredActivation = fa
         return false;
     };
 
-    !deferredActivation && activate();
+    if (hasFocusWithin(rootElement) || !deferredActivation) activate();
 
     return Object.create(null, {
         activate: { value: activate },
+        active: { get: () => active },
         current: { get: () => tabbables[currentTabbableIndex] ?? null },
         handleTab: { value: handleTab },
         next: { value: () => focusAt(++currentTabbableIndex) },

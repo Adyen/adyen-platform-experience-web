@@ -3,7 +3,7 @@ import useDatePickerCalendarControls from './hooks/useDatePickerCalendarControls
 import { DatePickerProps } from './types';
 import { CalendarTraversalControls } from '../Calendar/types';
 import { InteractionKeyCode } from '../../types';
-import createTabbableRoot from '../../../hooks/ally/focus/tabbable';
+import createTabbableRoot, { hasFocusWithin } from '../../../hooks/ally/focus/tabbable';
 import useElementRef from '../../../hooks/ref/useElementRef';
 import useIdRefs from '../../../hooks/ref/useIdRefs';
 import Calendar from '../Calendar';
@@ -16,13 +16,18 @@ export default function DatePicker(props: DatePickerProps) {
 
     useEffect(() => {
         let focusByKeyboard = false;
-        let interactionKeyPressed = false;
-        // let raf: number | undefined;
 
         if (datePickerDialogRef?.current) {
-            const root = createTabbableRoot(datePickerDialogRef.current);
+            const root = createTabbableRoot(datePickerDialogRef.current, true);
 
-            datePickerProps.current['onKeyDown'] = (evt: KeyboardEvent) => {
+            if (!root.active) {
+                datePickerDialogRef.current.addEventListener('focusin', function _listener() {
+                    (datePickerDialogRef?.current as Element)?.removeEventListener('focusin', _listener);
+                    root.activate();
+                });
+            }
+
+            datePickerProps.current.onKeyDownCapture = (evt: KeyboardEvent) => {
                 switch (evt.code) {
                     case InteractionKeyCode.ARROW_DOWN:
                     case InteractionKeyCode.ARROW_LEFT:
@@ -32,30 +37,20 @@ export default function DatePicker(props: DatePickerProps) {
                     case InteractionKeyCode.HOME:
                     case InteractionKeyCode.PAGE_DOWN:
                     case InteractionKeyCode.PAGE_UP:
+                        return (focusByKeyboard = true);
                     case InteractionKeyCode.TAB:
-                        interactionKeyPressed = true;
-                        break;
-                }
-
-                if (evt.code === InteractionKeyCode.TAB) {
-                    focusByKeyboard = root.handleTab(evt);
+                        return (focusByKeyboard = root.handleTab(evt));
                 }
             };
 
-            datePickerProps.current['onfocusin'] = (/*evt: Event*/) => {
-                // cancelAnimationFrame(raf as number);
-                // raf = requestAnimationFrame(() => {
-                //     raf = undefined;
-                //     console.log('here(1)...');
-                //
-                //     if (focusByKeyboard && !(focusByKeyboard = false)) return;
-                //     console.log('here(2)...');
-                //
-                //     const tabPosition = tabbableElements.indexOf(document.activeElement as Element);
-                //     if (tabPosition >= 0) currentTabPosition = tabPosition;
-                //     else (tabbableElements[currentTabPosition] as HTMLElement)?.focus();
-                // });
-                // console.log(document.activeElement);
+            datePickerProps.current.onfocusoutCapture = (evt: FocusEvent) => {
+                if (root.tabbables.includes(evt.relatedTarget as Element)) return;
+
+                if (!hasFocusWithin(datePickerDialogRef?.current as Element)) {
+                    console.log('deactivate...');
+                } else if (!focusByKeyboard || (focusByKeyboard = false)) {
+                    console.log('clicked...');
+                }
             };
         }
     }, []);
