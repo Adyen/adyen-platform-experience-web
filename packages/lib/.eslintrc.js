@@ -6,34 +6,34 @@ module.exports = {
         'plugin:react/recommended',
         'plugin:react/jsx-runtime',
         'plugin:@typescript-eslint/eslint-recommended',
-        'plugin:@typescript-eslint/recommended' /*'prettier/@typescript-eslint'*/
+        'plugin:@typescript-eslint/recommended' /*'prettier/@typescript-eslint'*/,
     ],
     parserOptions: {
         ecmaVersion: 2020,
         sourceType: 'module',
         ecmaFeatures: {
             modules: true,
-            jsx: true
-        }
+            jsx: true,
+        },
     },
     env: {
         browser: true,
         node: true,
         jest: true,
-        es2020: true
+        es2020: true,
     },
     settings: {
         react: {
-            version: '17.0'
+            version: '17.0',
         },
         'import/resolver': {
             node: {
-                "extensions": [".js", ".jsx", ".ts", ".tsx"]
+                extensions: ['.js', '.jsx', '.ts', '.tsx'],
             },
             typescript: {
-                project: './tsconfig.json'
-            }
-        }
+                project: './tsconfig.json',
+            },
+        },
     },
     rules: {
         'no-console': 0,
@@ -49,8 +49,8 @@ module.exports = {
                 js: 'never',
                 jsx: 'never',
                 ts: 'never',
-                tsx: 'never'
-            }
+                tsx: 'never',
+            },
         ],
         'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
         'max-len': [
@@ -61,8 +61,8 @@ module.exports = {
                 ignoreComments: true, // Allow long comments in the code
                 ignoreUrls: true,
                 ignoreStrings: true,
-                ignoreTemplateLiterals: true
-            }
+                ignoreTemplateLiterals: true,
+            },
         ],
         'prefer-destructuring': 'off',
         'arrow-parens': ['error', 'as-needed'],
@@ -98,6 +98,7 @@ module.exports = {
         // React Rules
         'react/prop-types': 'off',
         'react/display-name': 'off',
+        'react/jsx-no-literals': 'error',
 
         // TSDoc
         'tsdoc/syntax': 'warn',
@@ -118,15 +119,15 @@ module.exports = {
         'jsx-a11y/autocomplete-valid': 'error',
         'jsx-a11y/no-static-element-interactions': 'error',
         'jsx-a11y/no-noninteractive-tabindex': 'error',
-        'jsx-a11y/mouse-events-have-key-events': 'error'
+        'jsx-a11y/mouse-events-have-key-events': 'error',
     },
     overrides: [
         {
             // enable the rule specifically for TypeScript files
             files: ['*.ts', '*.tsx'],
             rules: {
-                '@typescript-eslint/explicit-member-accessibility': ['error', { accessibility: 'off', overrides: { properties: 'explicit' } }]
-            }
-        }
-    ]
+                '@typescript-eslint/explicit-member-accessibility': ['error', { accessibility: 'off', overrides: { properties: 'explicit' } }],
+            },
+        },
+    ],
 };

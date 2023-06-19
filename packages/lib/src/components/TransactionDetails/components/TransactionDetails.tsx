@@ -23,7 +23,7 @@ function TransactionsDetails(props: TransactionDetailsProps) {
 
     return (
         <div className="adyen-fp-transaction">
-            <div className="adyen-fp-title">Transaction details</div>
+            <div className="adyen-fp-title">{i18n.get('transactionDetails')}</div>
 
             <div className="adyen-fp-details-container">
                 <StatsBar
@@ -56,7 +56,7 @@ function TransactionsDetails(props: TransactionDetailsProps) {
                 />
                 <div className="adyen-fp-details-section">
                     <div>
-                        <div className="adyen-fp-subtitle">Processing information</div>
+                        <div className="adyen-fp-subtitle">{i18n.get('processingInformation')}</div>
 
                         <div className="adyen-fp-field">
                             <div className="adyen-fp-label">{i18n.get('paymentId')}</div>
@@ -64,12 +64,12 @@ function TransactionsDetails(props: TransactionDetailsProps) {
                         </div>
 
                         <div className="adyen-fp-field">
-                            <div className="adyen-fp-label">Transfer ID</div>
+                            <div className="adyen-fp-label">{i18n.get('transferID')}</div>
                             <div className="adyen-fp-value">{transaction.transferId}</div>
                         </div>
 
                         <div className="adyen-fp-field">
-                            <div className="adyen-fp-label">Type</div>
+                            <div className="adyen-fp-label">{i18n.get('type')}</div>
                             <div className="adyen-fp-value">{i18n.get(`txType.${transaction.type}`)}</div>
                         </div>
 
