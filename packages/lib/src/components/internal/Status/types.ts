@@ -1,5 +1,6 @@
+export type StatusType = 'booked' | 'active' | 'inactive';
 export interface StatusProps {
-    label: string;
+    label: StatusType;
     size: string;
     type: string;
 }

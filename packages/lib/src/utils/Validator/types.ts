@@ -1,11 +1,12 @@
 import { ValidationRuleResult } from './ValidationRuleResult';
 import { ValueOf } from '../types';
 import { SchemaKeys } from '../useForm/types';
+import { TranslationKey } from '@src/language/types';
 
 export type ValidatorMode = 'blur' | 'input';
 
 export type ErrorMessageObject = {
-    translationKey: string;
+    translationKey: TranslationKey;
     translationObject: any;
 };
 

@@ -4,7 +4,7 @@ import { RadioGroupProps } from './types';
 import { getUniqueId } from '../../../../utils/idGenerator';
 
 export default function RadioGroup(props: RadioGroupProps) {
-    const { items, i18n, name, onChange, value, isInvalid, uniqueId, className } = props;
+    const { items, name, onChange, value, isInvalid, uniqueId, className } = props;
     const uniqueIdBase = uniqueId?.replace(/[0-9]/g, '').substring(0, uniqueId.lastIndexOf('-'));
     return (
         <div className="adyen-fp-radio-group">
@@ -31,7 +31,7 @@ export default function RadioGroup(props: RadioGroupProps) {
                             ])}
                             htmlFor={uniqueId}
                         >
-                            {i18n.get(item.name)}
+                            {item.name}
                         </label>
                     </div>
                 );

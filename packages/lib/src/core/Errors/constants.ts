@@ -72,7 +72,7 @@ export const ERROR_CODES = {
 
     [ERROR_MSG_EMPTY_ACH_BANK_LOCATION_ID]: 'error.va.sf-ach-loc.01',
     [ERROR_MSG_INCORRECTLY_FILLED_ACH_BANK_LOCATION_ID]: 'error.va.sf-ach-loc.02',
-};
+} as const;
 
 export type ErrorCodeKey = keyof typeof ERROR_CODES;
 
