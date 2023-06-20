@@ -1,5 +1,5 @@
 .adyen-fp-tabs {
-    box-shadow: 0 -1px 0 0 #dce0e5 inset;
+    box-shadow: 0 -1px 0 0 var(--adyen-fp-color-border) inset;
     display: inline-flex;
     font-weight: var(--adyen-fp-font-weight-thin);
     line-height: 1.4;
@@ -19,13 +19,13 @@
         justify-content: space-around;
         margin-right: var(--adyen-fp-spacing-small);
         outline: none;
-        padding: 0 var(--adyen-fp-spacing-small) var(--adyen-fp-spacing-small) var(--adyen-fp-spacing-small);
+        padding: 0 var(--adyen-fp-spacing-small) var(--adyen-fp-spacing-small);
         transition: border-bottom-color 0.2s cubic-bezier(0.22, 0.61, 0.36, 1), color 0.2s cubic-bezier(0.22, 0.61, 0.36, 1);
         white-space: nowrap;
     }
 
     &__tab-content {
-        padding: 0 var(--adyen-fp-spacing-small) var(--adyen-fp-spacing-small) var(--adyen-fp-spacing-small);
+        padding: 0 var(--adyen-fp-spacing-small) var(--adyen-fp-spacing-small);
     }
 
     [role='tab']:focus,
@@ -35,7 +35,7 @@
     }
 
     [role='tab']:focus-visible .adyen-fp-tabs__tab-content {
-        border: 1px solid #0075ff;
+        border: 1px solid var(--adyen-fp-color-primary);
         border-radius: 3px;
     }
 }
