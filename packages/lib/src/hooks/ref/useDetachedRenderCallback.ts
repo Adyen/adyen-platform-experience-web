@@ -24,7 +24,7 @@ const useDetachedRenderCallback = (renderCallback: (container: Element, ...args:
         renderContainerRefIdentifier
     );
 
-    return [renderFn.current, renderContainerRef] as const;
+    return useMemo(() => [renderFn.current, renderContainerRef] as const, [renderFn.current, renderContainerRef]);
 };
 
 export default useDetachedRenderCallback;

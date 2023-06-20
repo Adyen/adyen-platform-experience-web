@@ -1,48 +1,64 @@
 import { CalendarProps } from '../types';
-import { useCallback, useLayoutEffect, useMemo, useState } from 'preact/hooks';
+import { useCallback, useMemo, useState } from 'preact/hooks';
 import useCursorRoot from './useCursorRoot';
 import useToday from './useToday';
 import createCalendar from '../internal/createCalendar';
 import useCoreContext from '../../../../core/Context/useCoreContext';
-import useRefWithCallback from '../../../../hooks/ref/useRefWithCallback';
-import useDebouncedRequestAnimationFrameCallback from '../../../../hooks/useDebouncedRequestAnimationFrameCallback';
+import { NamedRefCallback } from '../../../../hooks/ref/types';
+import useFocusCursorElementRef from '../../../../hooks/ref/useFocusCursorElementRef';
 
-const useCalendar = (props: CalendarProps) => {
-    const { i18n } = useCoreContext();
-    const { onSelected, trackToday } = props;
-    const [lastChanged, setLastChanged] = useState<DOMHighResTimeStamp>();
+const useCalendar = ({
+    calendarMonths,
+    dynamicMonthWeeks,
+    firstWeekDay,
+    offset = 0,
+    onlyMonthDays,
+    onSelected,
+    originDate,
+    sinceDate,
+    trackToday,
+    untilDate,
+}: CalendarProps) => {
+    const {
+        i18n: { locale },
+    } = useCoreContext();
+    const [, setRefreshCount] = useState(0);
 
     const today = useToday(trackToday);
-    const watch = useDebouncedRequestAnimationFrameCallback(useCallback(() => setLastChanged(performance.now()), []));
+    const watch = useCallback(() => setRefreshCount(current => ++current), []);
 
-    const calendar = useMemo(() => {
-        const { offset = 0, onSelected, renderControl, trackToday, traversalControls, ...config } = props;
-        return createCalendar({ ...config, watch, locale: i18n.locale }, offset);
-    }, [i18n.locale, props]);
+    const calendar = useMemo(
+        () =>
+            createCalendar(
+                {
+                    calendarMonths,
+                    dynamicMonthWeeks,
+                    firstWeekDay,
+                    locale,
+                    onlyMonthDays,
+                    originDate,
+                    sinceDate,
+                    untilDate,
+                    watch,
+                },
+                offset
+            ),
+        [calendarMonths, dynamicMonthWeeks, firstWeekDay, locale, offset, onlyMonthDays, originDate, sinceDate, untilDate]
+    );
 
     const cursorRootProps = useCursorRoot(calendar, onSelected);
 
-    const cursorElementRef = useRefWithCallback<Element>(
-        useCallback((current, previous) => {
-            if (previous instanceof Element) {
-                previous.setAttribute('tabindex', '-1');
-                previous.removeAttribute('aria-selected');
-            }
-
-            if (current instanceof Element) {
-                current.setAttribute('tabindex', '0');
-                current.setAttribute('aria-selected', 'true');
-            }
-        }, [])
+    const cursorElementRef = useFocusCursorElementRef(
+        useCallback(
+            ((current, previous) => {
+                if (previous instanceof Element) previous.removeAttribute('aria-selected');
+                if (current instanceof Element) current.setAttribute('aria-selected', 'true');
+            }) as NamedRefCallback<Element>,
+            []
+        )
     );
 
-    useLayoutEffect(() => {
-        if (cursorElementRef?.current instanceof HTMLElement) {
-            cursorElementRef.current.focus();
-        }
-    }, [lastChanged]);
-
-    return { calendar, cursorElementRef, cursorRootProps, today } as const;
+    return useMemo(() => ({ calendar, cursorElementRef, cursorRootProps, today } as const), [calendar, cursorElementRef, cursorRootProps, today]);
 };
 
 export default useCalendar;

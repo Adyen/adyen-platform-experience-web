@@ -47,7 +47,7 @@ const createCalendar = (config: CalendarConfig, offset: number) => {
     const getRelativeMonthDateIndexFactory = (monthStart: number, monthEnd: number, indexOffset: number) =>
         withRelativeIndexFactory(indexOffset, (currentIndex: number) => (currentIndex >= monthStart && currentIndex <= monthEnd ? currentIndex : -1));
 
-    const refresh = withEffect(() => {
+    const refresh = () => {
         const firstMonthTimestamp = (originMonthTimestamp = getMonthTimestamp(originTimestamp, originMonthOffset));
         const firstMonthDate = new Date(firstMonthTimestamp);
 
@@ -121,9 +121,9 @@ const createCalendar = (config: CalendarConfig, offset: number) => {
         }
 
         resetCursor();
-    });
+    };
 
-    const resetCursor = withEffect((): void => {
+    const resetCursor = (): void => {
         if (cursorMonth === undefined) {
             cursorMonth = mod(offset - originMonthOffset, numberOfMonths);
             return resetCursor();
@@ -137,9 +137,9 @@ const createCalendar = (config: CalendarConfig, offset: number) => {
             // [TODO]: Consider provisioning offset spill-over adjustments
             relativeCursorPosition = (cursorPosition = cursorMonthView.end) - cursorMonthView.start;
         }
-    });
+    };
 
-    const shiftCalendar = (monthOffset: number, shift: CalendarShift = CalendarShift.MONTH) => {
+    const shiftCalendar = withEffect((monthOffset: number, shift: CalendarShift = CalendarShift.MONTH) => {
         if (monthOffset) {
             let shiftOffset = monthOffset;
 
@@ -165,7 +165,7 @@ const createCalendar = (config: CalendarConfig, offset: number) => {
                 refresh();
             }
         }
-    };
+    });
 
     const shiftCursor = withEffect((shift?: CalendarCursorShift | number) => {
         if (shift !== undefined) {

@@ -1,4 +1,4 @@
-import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'preact/hooks';
+import { useCallback, useEffect, useMemo, useRef } from 'preact/hooks';
 import { attachCallback, createRefMapping, detachCallback, queueEffect } from './internal/namedRefRegistry';
 import { NamedRef, NamedRefCallback, NamedRefRecord } from './types';
 import { getUniqueId } from '../../utils/idGenerator';
@@ -10,9 +10,7 @@ const useRefWithCallback = <T = any>(withCallback: NamedRefCallback<T>, identifi
     const cachedId = useRef<string>();
     const defaultId = useRef<string>();
 
-    const [, setLastUpdated] = useState<DOMHighResTimeStamp>();
-
-    useLayoutEffect(
+    useEffect(
         useCallback(
             () => () => {
                 if (cachedCallback.current) {
@@ -40,7 +38,6 @@ const useRefWithCallback = <T = any>(withCallback: NamedRefCallback<T>, identifi
                         if (refCurrent === current) return;
 
                         try {
-                            setLastUpdated(performance.now());
                             try {
                                 for (const effect of reference[1]) queueEffect(effect);
                             } finally {
