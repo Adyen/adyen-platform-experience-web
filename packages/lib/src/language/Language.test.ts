@@ -6,7 +6,7 @@ describe('Language', () => {
         test('sets up locale and customTranslations', () => {
             const customTranslations = {
                 'es-ES': {
-                    'creditCard.numberField.title': 'es',
+                    account: 'es',
                 },
             };
 
@@ -19,7 +19,7 @@ describe('Language', () => {
         test('sets up locale without country code and customTranslations without countryCode', () => {
             const customTranslations = {
                 es: {
-                    'creditCard.numberField.title': 'es',
+                    paymentId: 'es',
                 },
             };
 
@@ -32,7 +32,7 @@ describe('Language', () => {
         test('sets up a custom locale and customTranslations', () => {
             const customTranslations = {
                 'ca-CA': {
-                    'creditCard.numberField.title': 'ca',
+                    paymentId: 'ca',
                 },
             };
 
@@ -45,7 +45,7 @@ describe('Language', () => {
         test('sets up a custom locale without countryCode and customTranslations', () => {
             const customTranslations = {
                 'ca-CA': {
-                    'creditCard.numberField.title': 'ca',
+                    paymentId: 'ca',
                 },
             };
 
@@ -58,7 +58,7 @@ describe('Language', () => {
         test.skip('falls back to FALLBACK_LOCALE and removes customTranslations that do not match a language/language_country code', () => {
             const customTranslations = {
                 FAKE: {
-                    'creditCard.numberField.title': 'ca',
+                    paymentId: 'ca',
                 },
             };
 
@@ -69,16 +69,16 @@ describe('Language', () => {
         });
     });
 
-    describe.skip('get', () => {
+    describe('get', () => {
         test('gets a string even if it is empty', () => {
             const lang = new Language('en-US', {
                 'en-US': {
-                    test: '',
+                    paymentId: 'customPaymentId',
                 },
             });
 
             lang.loaded.then(i18n => {
-                expect(i18n.get('test')).toBe('');
+                expect(i18n.get('paymentId')).toBe('customPaymentId');
             });
         });
     });

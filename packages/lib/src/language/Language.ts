@@ -26,6 +26,7 @@ export class Language {
 
         this.loaded = loadTranslations(this.locale, this.customTranslations).then(translations => {
             this.translations = translations;
+            return this;
         });
     }
 

@@ -1,4 +1,4 @@
-import { formatCustomTranslations, formatLocale, getTranslation, interpolateElement, matchLocale, parseLocale } from './utils';
+import { formatCustomTranslations, formatLocale, getTranslation, interpolateElement, matchLocale, parseLocale, loadTranslations } from './utils';
 import translations from './translations';
 import { createElement } from 'preact';
 import { describe, expect, test } from 'vitest';
@@ -131,7 +131,7 @@ describe('formatCustomTranslations()', () => {
     test('should work when custom translations are already in the defaultSupportedLocales', () => {
         const customTranslations = {
             'en-US': {
-                customTranslation: 'customString',
+                paymentId: 'customString',
             },
         };
 
@@ -141,13 +141,13 @@ describe('formatCustomTranslations()', () => {
     test('should work when custom translations contain a partial ', () => {
         const customTranslations = {
             en: {
-                customTranslation: 'customString',
+                paymentId: 'customString',
             },
         };
 
         const expectedCustomTranslations = {
             'en-US': {
-                customTranslation: 'customString',
+                paymentId: 'customString',
             },
         };
 
@@ -157,13 +157,13 @@ describe('formatCustomTranslations()', () => {
     test('should format new locales', () => {
         const customTranslations = {
             'es-ar': {
-                customTranslation: 'customString',
+                paymentId: 'customString',
             },
         };
 
         const expectedCustomTranslations = {
             'es-AR': {
-                customTranslation: 'customString',
+                paymentId: 'customString',
             },
         };
 
@@ -173,13 +173,13 @@ describe('formatCustomTranslations()', () => {
     test('should format new locales', () => {
         const customTranslations = {
             'ca-ca': {
-                customTranslation: 'customString',
+                paymentId: 'customString',
             },
         };
 
         const expectedCustomTranslations = {
             'ca-CA': {
-                customTranslation: 'customString',
+                paymentId: 'customString',
             },
         };
 
@@ -189,17 +189,58 @@ describe('formatCustomTranslations()', () => {
     test('should format new partial locales if properly added in the defaultSupportedLocales', () => {
         const customTranslations = {
             ca: {
-                customTranslation: 'customString',
+                paymentId: 'customString',
             },
         };
         const defaultSupportedLocales = ['es-ES', 'ca-CA'];
         const expectedCustomTranslations = {
             'ca-CA': {
-                customTranslation: 'customString',
+                paymentId: 'customString',
             },
         };
 
         expect(formatCustomTranslations(customTranslations, defaultSupportedLocales)).toEqual(expectedCustomTranslations);
+    });
+});
+
+describe('loadTranslations()', () => {
+    test('should accept customTranslations without a countryCode for default defaultSupportedLocales', () => {
+        loadTranslations('es-ES', {
+            'es-ES': {
+                account: 'es-ES account',
+            },
+            'es-AR': {
+                account: 'es-AR account',
+            },
+        } as const).then(translations => {
+            expect(translations['account']).toBe('es-ES account');
+        });
+    });
+
+    test('should return the passed locale if formatted properly', () => {
+        loadTranslations(
+            'ca-CA' as const,
+            {
+                'es-ES': {
+                    paymentId: 'paymentId es-ES',
+                },
+                'ca-CA': {
+                    paymentId: 'paymentId ca-CA',
+                },
+            } as const
+        ).then(translations => {
+            expect(translations['paymentId']).toBe('paymentId ca-CA');
+        });
+    });
+
+    test('should return the passed locale if formatted properly', () => {
+        loadTranslations('ca-CA', {
+            'ca-CA': {
+                'status.active': 'status.active ca-CA',
+            },
+        }).then(translations => {
+            expect(translations['status.active']).toBe('status.active ca-CA');
+        });
     });
 });
 

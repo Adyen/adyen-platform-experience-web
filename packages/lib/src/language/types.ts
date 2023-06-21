@@ -4,7 +4,7 @@ export type Locales = keyof typeof translations;
 
 export type CustomTranslations = {
     [key: string]: {
-        [message: string]: string;
+        [message in TranslationKey]?: string;
     };
 };
 
