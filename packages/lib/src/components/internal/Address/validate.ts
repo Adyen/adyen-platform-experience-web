@@ -1,6 +1,6 @@
 import { ValidatorRules, ValidatorRule } from '../../../utils/Validator/types';
 import { countrySpecificFormatters } from './validate.formats';
-import { ERROR_CODES, ERROR_MSG_INCOMPLETE_FIELD } from '../../../core/Errors/constants';
+import { ERROR_MSG_INCOMPLETE_FIELD } from '../../../core/Errors/constants';
 import { isEmpty } from '../../../utils/validator-utils';
 import { AddressData } from '../../../types';
 import Specifications from './Specifications';
@@ -81,7 +81,7 @@ export const getAddressValidationRules = (specifications: Specifications): Valid
                 // Default rule
                 return isEmpty(val) ? false : true;
             },
-            errorMessage: ERROR_CODES[ERROR_MSG_INCOMPLETE_FIELD],
+            errorMessage: ERROR_MSG_INCOMPLETE_FIELD,
         },
         houseNumberOrName: {
             validate: (value, context) => {
@@ -90,12 +90,12 @@ export const getAddressValidationRules = (specifications: Specifications): Valid
                 return isOptional || (isEmpty(value) ? false : true);
             },
             modes: ['blur'],
-            errorMessage: ERROR_CODES[ERROR_MSG_INCOMPLETE_FIELD],
+            errorMessage: ERROR_MSG_INCOMPLETE_FIELD,
         },
         default: {
             validate: value => (isEmpty(value) ? false : true), // true, if there are chars other than spaces
             modes: ['blur'],
-            errorMessage: ERROR_CODES[ERROR_MSG_INCOMPLETE_FIELD],
+            errorMessage: ERROR_MSG_INCOMPLETE_FIELD,
         },
     };
     return addressValidationRules;
