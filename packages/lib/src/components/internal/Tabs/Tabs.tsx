@@ -44,6 +44,7 @@ function Tabs<T extends TabProps[]>(props: TabComponentProps<T>) {
                         aria-selected={selectedIndex === index}
                         ref={el => (tabRefs.current[index] = el)}
                         onKeyDown={onKeyDown}
+                        // TODO revisit this solution when accessibility provisions are merged
                         onClick={index === selectedIndex ? undefined : () => setSelectedIndex(index)}
                         onFocus={() => setSelectedIndex(index)}
                         tabIndex={selectedIndex === index ? 0 : -1}
