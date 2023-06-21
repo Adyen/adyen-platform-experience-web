@@ -19,9 +19,7 @@ const useCalendar = ({
     trackToday,
     untilDate,
 }: CalendarProps) => {
-    const {
-        i18n: { locale },
-    } = useCoreContext();
+    const { i18n } = useCoreContext();
     const [, setRefreshCount] = useState(0);
 
     const today = useToday(trackToday);
@@ -34,7 +32,7 @@ const useCalendar = ({
                     calendarMonths,
                     dynamicMonthWeeks,
                     firstWeekDay,
-                    locale,
+                    locale: i18n.locale,
                     onlyMonthDays,
                     originDate,
                     sinceDate,
@@ -43,7 +41,7 @@ const useCalendar = ({
                 },
                 offset
             ),
-        [calendarMonths, dynamicMonthWeeks, firstWeekDay, locale, offset, onlyMonthDays, originDate, sinceDate, untilDate]
+        [calendarMonths, dynamicMonthWeeks, firstWeekDay, i18n, offset, onlyMonthDays, originDate, sinceDate, untilDate]
     );
 
     const cursorRootProps = useCursorRoot(calendar, onSelected);

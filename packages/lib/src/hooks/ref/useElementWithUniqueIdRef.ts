@@ -2,7 +2,7 @@ import { useMemo, useRef } from 'preact/hooks';
 import useRefWithCallback from './useRefWithCallback';
 import { getUniqueId } from '../../utils/idGenerator';
 
-const useElementRef = (identifier: string) => {
+const useElementWithUniqueIdRef = (identifier: string) => {
     const id = useRef<string>();
 
     return useRefWithCallback<Element>(
@@ -19,4 +19,4 @@ const useElementRef = (identifier: string) => {
     );
 };
 
-export default useElementRef;
+export default useElementWithUniqueIdRef;

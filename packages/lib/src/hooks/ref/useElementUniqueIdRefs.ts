@@ -22,7 +22,7 @@ const uniqueFlatten = <T>(items: List<T>, uniqueItems: Set<T> = new Set<T>()) =>
     return uniqueItems;
 };
 
-const useIdRefs = (...identifiers: List<string>) => {
+const useElementUniqueIdRefs = (...identifiers: List<string>) => {
     const [id, setId] = useState('');
     const references = useRef<{ ref: NamedRefRecord<Element> }[]>([]);
 
@@ -44,4 +44,4 @@ const useIdRefs = (...identifiers: List<string>) => {
     return id;
 };
 
-export default useIdRefs;
+export default useElementUniqueIdRefs;
