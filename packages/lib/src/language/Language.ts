@@ -38,6 +38,7 @@ export class Language {
      */
     get(key: string, options?: TranslationOptions): string {
         const translation = getTranslation(this.translations, key, options);
+        console.log('translation', translation);
         if (translation !== null) {
             return translation;
         }

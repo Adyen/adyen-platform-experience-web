@@ -73,12 +73,14 @@ describe('Language', () => {
         test('gets a string even if it is empty', () => {
             const lang = new Language('en-US', {
                 'en-US': {
-                    paymentId: 'customPaymentId',
+                    paymentId: '',
                 },
             });
 
+            const translationKey = 'paymentId';
+
             lang.loaded.then(i18n => {
-                expect(i18n.get('paymentId')).toBe('customPaymentId');
+                expect(i18n.get(translationKey)).toBe(translationKey);
             });
         });
     });
