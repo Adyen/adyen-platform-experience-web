@@ -1,4 +1,5 @@
 import { UIElementProps } from '../types';
+import { StatusType } from '@src/components/internal/Status/types';
 
 export interface AccountHolderDetailsProps extends UIElementProps {
     accountHolder: {
@@ -33,7 +34,7 @@ export interface AccountHolderDetailsProps extends UIElementProps {
             };
         };
         id: string;
-        status: string;
+        status: StatusType;
         contactDetails: {
             address: { city: string; country: string; houseNumberOrName: string; postalCode: string; street: string };
             email: string;

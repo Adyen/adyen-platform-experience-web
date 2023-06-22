@@ -7,18 +7,23 @@ import { TransactionDetailsProps } from '../types';
 function TransactionsDetails(props: TransactionDetailsProps) {
     const { i18n } = useCoreContext();
     const { transaction } = props;
+    const labels = {
+        internal: 'category.internal',
+    } as const;
 
+    const isKeyOfLabel = (key: any): key is keyof typeof labels => {
+        return Boolean(labels[key as keyof typeof labels]);
+    };
     const getLabel = (key: string) => {
-        const labels: Record<string, string> = {
-            internal: 'category.internal',
-        };
-
-        return labels[key] || key;
+        if (isKeyOfLabel(key)) {
+            return i18n.get(labels[key]);
+        }
+        return key;
     };
 
     return (
         <div className="adyen-fp-transaction">
-            <div className="adyen-fp-title">Transaction details</div>
+            <div className="adyen-fp-title">{i18n.get('transactionDetails')}</div>
 
             <div className="adyen-fp-details-container">
                 <StatsBar
@@ -51,7 +56,7 @@ function TransactionsDetails(props: TransactionDetailsProps) {
                 />
                 <div className="adyen-fp-details-section">
                     <div>
-                        <div className="adyen-fp-subtitle">Processing information</div>
+                        <div className="adyen-fp-subtitle">{i18n.get('processingInformation')}</div>
 
                         <div className="adyen-fp-field">
                             <div className="adyen-fp-label">{i18n.get('paymentId')}</div>
@@ -59,12 +64,12 @@ function TransactionsDetails(props: TransactionDetailsProps) {
                         </div>
 
                         <div className="adyen-fp-field">
-                            <div className="adyen-fp-label">Transfer ID</div>
+                            <div className="adyen-fp-label">{i18n.get('transferID')}</div>
                             <div className="adyen-fp-value">{transaction.transferId}</div>
                         </div>
 
                         <div className="adyen-fp-field">
-                            <div className="adyen-fp-label">Type</div>
+                            <div className="adyen-fp-label">{i18n.get('type')}</div>
                             <div className="adyen-fp-value">{i18n.get(`txType.${transaction.type}`)}</div>
                         </div>
 
@@ -74,13 +79,13 @@ function TransactionsDetails(props: TransactionDetailsProps) {
                         </div>
 
                         <div className="adyen-fp-field">
-                            <div className="adyen-fp-label">{i18n.get('Reference')}</div>
-                            <div className="adyen-fp-value">{i18n.get(transaction.reference)}</div>
+                            <div className="adyen-fp-label">{i18n.get('reference')}</div>
+                            <div className="adyen-fp-value">{transaction.reference}</div>
                         </div>
 
                         <div className="adyen-fp-field">
-                            <div className="adyen-fp-label">{i18n.get('Category')}</div>
-                            <div className="adyen-fp-value">{i18n.get(getLabel(transaction.category))}</div>
+                            <div className="adyen-fp-label">{i18n.get('category')}</div>
+                            <div className="adyen-fp-value">{getLabel(transaction.category)}</div>
                         </div>
 
                         {!!transaction.referenceForBeneficiary && (

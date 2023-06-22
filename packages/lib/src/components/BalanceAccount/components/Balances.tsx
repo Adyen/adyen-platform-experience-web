@@ -20,31 +20,31 @@ function Balances(props: BalancesProps) {
 
     return (
         <div className="adyen-fp-balances">
-            <div className="adyen-fp-subtitle">Balances</div>
+            <div className="adyen-fp-subtitle">{i18n.get('balances')}</div>
             <div className="adyen-fp-balances__container">
                 <div className="adyen-fp-balances__scrollable-area">
                     {balances?.map((balance, i) => (
                         <div className="adyen-fp-balances__group" key={`balance-${i}`}>
                             <div className="adyen-fp-balances__title">
                                 {balance.currency}
-                                {balance.currency === props.defaultCurrency && <div className="adyen-fp-tag">Default</div>}
+                                {balance.currency === props.defaultCurrency && <div className="adyen-fp-tag">{i18n.get('default')}</div>}
                             </div>
                             <div className="adyen-fp-balances__item">
-                                <div className="adyen-fp-balances__key">Current balance</div>
+                                <div className="adyen-fp-balances__key">{i18n.get('currentBalance')}</div>
                                 <div className="adyen-fp-balances__value">
                                     {i18n.amount(balance.balance, balance.currency, { currencyDisplay: 'code', showSign: true })}
                                 </div>
                             </div>
 
                             <div className="adyen-fp-balances__item">
-                                <div className="adyen-fp-balances__key">Available balance</div>
+                                <div className="adyen-fp-balances__key">{i18n.get('availableBalance')}</div>
                                 <div className="adyen-fp-balances__value">
                                     {i18n.amount(balance.available, balance.currency, { currencyDisplay: 'code', showSign: true })}
                                 </div>
                             </div>
 
                             <div className="adyen-fp-balances__item">
-                                <div className="adyen-fp-balances__key">Reserved balance</div>
+                                <div className="adyen-fp-balances__key">{i18n.get('reservedBalance')}</div>
                                 <div className="adyen-fp-balances__value">
                                     {i18n.amount(balance.reserved, balance.currency, { currencyDisplay: 'code', showSign: true })}
                                 </div>

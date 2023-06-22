@@ -61,8 +61,8 @@ class Specifications {
      * @param fieldName - The field to be searched
      * @param country - The selected country
      */
-    getKeyForField(fieldName: string, country: string): string {
-        return this.specifications?.[country]?.labels?.[fieldName] || this.specifications?.default?.labels?.[fieldName] || fieldName;
+    getKeyForField(fieldName: string, country: string) {
+        return this.specifications?.[country]?.labels?.[fieldName] || this.specifications?.default?.labels?.[fieldName] || '';
     }
 
     /**
@@ -70,7 +70,7 @@ class Specifications {
      * @param fieldName - The field to be searched
      * @param country - The selected country
      */
-    getPlaceholderKeyForField(fieldName: string, country: string): string {
+    getPlaceholderKeyForField(fieldName: string, country: string) {
         return this.specifications?.[country]?.placeholders?.[fieldName] || this.specifications?.default?.placeholders?.[fieldName] || '';
     }
 

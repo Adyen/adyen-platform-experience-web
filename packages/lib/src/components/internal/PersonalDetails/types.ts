@@ -1,11 +1,12 @@
 import { FieldsetVisibility, PersonalDetailsSchema } from '../../../types';
 import { ValidatorRules } from '../../../utils/Validator/types';
 import { SetTriggerValidation } from '../../types';
+import { TranslationKey } from '@src/language/types';
 
 type PersonalDetailsPlaceholders = Omit<PersonalDetailsSchema, 'gender'>;
 
 export interface PersonalDetailsProps<FormSchema extends Record<string, any>> {
-    label?: string;
+    label?: TranslationKey;
     namePrefix?: string;
     requiredFields: Extract<keyof FormSchema, string>[];
     visibility?: FieldsetVisibility;

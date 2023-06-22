@@ -2,6 +2,7 @@ import { CurrencyCode } from '../../utils/constants/currency-codes';
 import { PaginatedResponseDataWithLinks, PaginationProps } from '../internal/Pagination/types';
 import UIElement from '../UIElement';
 import { UIElementProps } from '../types';
+import { StatusType } from '@src/components/internal/Status/types';
 
 export const enum TransactionFilterParam {
     ACCOUNT_HOLDER = 'accountHolderId',
@@ -32,11 +33,12 @@ export interface Transaction {
     };
     reference: string;
     referenceForBeneficiary: string;
-    status: string;
+    status: StatusType;
     transferId: string;
-    type: string;
+    type: 'fee' | 'capture' | 'leftover' | 'manualCorrection' | 'internalTransfer' | 'balanceAdjustment';
     valueDate: string;
 }
+
 type OnSelection = (selection: { id: string }) => void;
 export interface TransactionsProps extends UIElementProps {
     transactions: PaginatedResponseDataWithLinks<Transaction, 'data'>;

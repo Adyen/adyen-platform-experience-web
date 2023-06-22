@@ -1,12 +1,13 @@
 import Language from '../../../language/Language';
 import { SetTriggerValidation } from '../../types';
 import { StateUpdater } from 'preact/compat';
+import { TranslationKey } from '@src/language/types';
 
 export interface PhoneInputComponentProps {
     onChange: (state: Record<string, any>) => void;
     onValid: () => void;
     payButton: (args: { status: string }) => void;
-    phoneLabel?: string;
+    phoneLabel?: TranslationKey;
     selected: string;
     items: [];
     minLength: number;
