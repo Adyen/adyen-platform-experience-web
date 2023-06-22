@@ -6,6 +6,7 @@ import { AddressState, FieldContainerProps } from '../types';
 import useCoreContext from '../../../../core/Context/useCoreContext';
 import Language from '../../../../language/Language';
 import { ErrorMessageObject } from '../../../../utils/Validator/types';
+import { TranslationKey } from '@src/language/types';
 
 function getErrorMessage<Schema extends Record<string, any>>(
     errors: AddressState<Schema>,
@@ -13,7 +14,7 @@ function getErrorMessage<Schema extends Record<string, any>>(
     i18n: Language
 ): string | boolean {
     if (typeof errors[fieldName]?.errorMessage === 'string') {
-        return errors[fieldName] ? i18n.get(errors[fieldName]?.errorMessage as string) : !!errors[fieldName];
+        return errors[fieldName] ? i18n.get(errors[fieldName]?.errorMessage as TranslationKey) : !!errors[fieldName];
     }
     if (errors[fieldName]) {
         const { translationKey, translationObject } = errors[fieldName]?.errorMessage as ErrorMessageObject;
@@ -38,9 +39,9 @@ function FieldContainer<Schema extends Record<string, any>>(props: FieldContaine
     const value: string = data[fieldName];
     const selectedCountry = data.country ?? '';
     const isOptional: boolean = !!selectedCountry && props.specifications.countryHasOptionalField(selectedCountry, fieldName);
-    const labelKey: string = selectedCountry ? props.specifications.getKeyForField(fieldName, selectedCountry) : '';
+    const labelKey = selectedCountry ? props.specifications.getKeyForField(fieldName, selectedCountry) : '';
     const optionalLabel = isOptional ? ` ${i18n.get('field.title.optional')}` : '';
-    const label = `${i18n.get(labelKey)}${optionalLabel}`;
+    const label = `${labelKey ? i18n.get(labelKey) : fieldName}${optionalLabel}`;
     const errorMessage = getErrorMessage<Schema>(errors, fieldName, i18n);
 
     switch (fieldName) {

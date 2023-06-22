@@ -18,7 +18,7 @@ function TransactionList({
     ...paginationProps
 }: TransactionListProps) {
     const { i18n } = useCoreContext();
-    const fields: (keyof Transaction)[] = ['id', 'type', 'balanceAccountId', 'accountHolderId', 'amount', 'createdAt', 'description'];
+    const fields = ['id', 'type', 'balanceAccountId', 'accountHolderId', 'amount', 'createdAt', 'description'] as const;
     const columns = fields.map(key => ({ key, label: i18n.get(getLabel(key)) }));
     const showAlert = useMemo(() => !(loading || transactions.length), [loading, transactions]);
 

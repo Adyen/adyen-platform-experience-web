@@ -97,6 +97,7 @@ module.exports = {
         // React Rules
         'react/prop-types': 'off',
         'react/display-name': 'off',
+        'react/jsx-no-literals': 'error',
 
         // TSDoc
         'tsdoc/syntax': 'warn',

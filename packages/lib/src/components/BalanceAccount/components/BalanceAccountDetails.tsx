@@ -11,7 +11,7 @@ function BalanceAccountDetails(props: BalanceAccountDetailsProps) {
 
     return (
         <div className="adyen-fp-balance-account">
-            <div className="adyen-fp-title">Balance account</div>
+            <div className="adyen-fp-title">{i18n.get('balanceAccount')}</div>
 
             <div className="adyen-fp-details-container">
                 <StatsBar
@@ -40,27 +40,27 @@ function BalanceAccountDetails(props: BalanceAccountDetailsProps) {
                     )}
 
                     <div className="adyen-fp-balance-account__account">
-                        <div className="adyen-fp-subtitle">Account configuration</div>
+                        <div className="adyen-fp-subtitle">{i18n.get('accountConfiguration')}</div>
 
                         <div className="adyen-fp-field">
-                            <div className="adyen-fp-label">Account holder ID</div>
+                            <div className="adyen-fp-label">{i18n.get('accountHolderID')}</div>
                             <div className="adyen-fp-value">{balanceAccount.accountHolderId}</div>
                         </div>
 
                         <div className="adyen-fp-field">
-                            <div className="adyen-fp-label">Timezone</div>
+                            <div className="adyen-fp-label">{i18n.get('timezone')}</div>
                             <div className="adyen-fp-value">{balanceAccount.timeZone}</div>
                         </div>
 
                         {!!balanceAccount.platformPaymentConfiguration && (
                             <>
                                 <div className="adyen-fp-field">
-                                    <div className="adyen-fp-label">Sales day closing time</div>
+                                    <div className="adyen-fp-label">{i18n.get('salesDayClosingTime')}</div>
                                     <div className="adyen-fp-value">{balanceAccount.platformPaymentConfiguration.salesDayClosingTime}</div>
                                 </div>
 
                                 <div className="adyen-fp-field">
-                                    <div className="adyen-fp-label">Settlement delay days</div>
+                                    <div className="adyen-fp-label">{i18n.get('settlementDelayDays')}</div>
                                     <div className="adyen-fp-value">{balanceAccount.platformPaymentConfiguration.settlementDelayDays}</div>
                                 </div>
                             </>

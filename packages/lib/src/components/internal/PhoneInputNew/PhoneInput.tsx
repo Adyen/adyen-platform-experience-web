@@ -87,7 +87,7 @@ function PhoneInput(props: PhoneInputProps<PhoneInputSchema>) {
         <div className="adyen-fp-phone-input--new">
             <Field
                 name={'phoneNumber'}
-                label={props.phoneNumberKey ? i18n.get(props.phoneNumberKey) : i18n.get('telephoneNumber')}
+                label={props.phoneNumberKey ? props.phoneNumberKey : i18n.get('telephoneNumber')}
                 className={classNames({
                     'adyen-fp-field': true,
                     'adyen-fp-field--phone-input': true,
@@ -142,7 +142,7 @@ function PhoneInput(props: PhoneInputProps<PhoneInputSchema>) {
                                 className="adyen-fp-input adyen-fp-input adyen-fp-input--phone-number"
                                 autoCorrect="off"
                                 aria-required={true}
-                                aria-label={props.phoneNumberKey ? i18n.get(props.phoneNumberKey) : i18n.get('telephoneNumber')}
+                                aria-label={props.phoneNumberKey ? props.phoneNumberKey : i18n.get('telephoneNumber')}
                                 aria-invalid={!valid.phoneNumber}
                                 aria-describedby={`${getRelatedUniqueId()}${ARIA_ERROR_SUFFIX}`}
                             />

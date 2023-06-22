@@ -1,18 +1,18 @@
 import cx from 'classnames';
 import useCoreContext from '@src/core/Context/useCoreContext';
 import './Status.scss';
-import { StatusProps } from './types';
+import { StatusProps, StatusType } from './types';
 
 export default function Status(props: StatusProps) {
     const { i18n } = useCoreContext();
-    const getLabel = (key: string) => {
-        const labels: Record<string, string> = {
+    const getLabel = (key: StatusType) => {
+        const labels = {
             booked: 'status.booked',
             active: 'status.active',
             inactive: 'status.inactive',
-        };
+        } as const;
 
-        return labels[key] || key;
+        return labels[key] ? i18n.get(labels[key]) : key;
     };
 
     const getType = (type: string) => {
@@ -31,7 +31,7 @@ export default function Status(props: StatusProps) {
 
     return (
         <div className={cx('adyen-fp-status', `adyen-fp-status--${getType(props.label)}`, `adyen-fp-status--${props.size}`)}>
-            {i18n.get(getLabel(props.label))}
+            {getLabel(props.label)}
         </div>
     );
 }

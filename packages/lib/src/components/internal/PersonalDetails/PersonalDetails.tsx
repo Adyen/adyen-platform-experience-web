@@ -14,6 +14,7 @@ import './PersonalDetails.scss';
 import { SchemaKeys } from '../../../utils/useForm/types';
 import { ValidatorMode } from '../../../utils/Validator/types';
 import { JSX } from 'preact';
+import { TranslationKey } from '@src/language/types';
 
 const personalDetailsRequiredFields: SchemaKeys<PersonalDetailsSchema>[] = [
     'firstName',
@@ -57,7 +58,8 @@ export default function PersonalDetails(props: PersonalDetailsProps<PersonalDeta
         };
 
     const generateFieldName = (name: string): string => `${namePrefix ? `${namePrefix}.` : ''}${name}`;
-    const getErrorMessage = (error: { errorMessage?: string }) => (error && error.errorMessage ? i18n.get(error.errorMessage) : !!error);
+    const getErrorMessage = (error: { errorMessage?: string }) =>
+        error && error.errorMessage ? i18n.get(error.errorMessage as TranslationKey) : !!error;
 
     useEffect(() => {
         const formattedData = getFormattedData(data);
@@ -111,8 +113,8 @@ export default function PersonalDetails(props: PersonalDetailsProps<PersonalDeta
                         name: generateFieldName('gender'),
                         value: data.gender,
                         items: [
-                            { id: 'MALE', name: 'male' },
-                            { id: 'FEMALE', name: 'female' },
+                            { id: 'MALE', name: i18n.get('male') },
+                            { id: 'FEMALE', name: i18n.get('female') },
                         ],
                         classNameModifiers: ['gender'],
                         onChange: eventHandler('blur'),

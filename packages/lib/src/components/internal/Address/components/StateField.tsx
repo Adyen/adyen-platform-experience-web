@@ -14,7 +14,7 @@ export default function StateField(props: StateFieldProps) {
     } = useCoreContext();
     const [states, setStates] = useState<StateFieldItem[]>([]);
     const [loaded, setLoaded] = useState<boolean>(false);
-    const placeholderKey: string = specifications.getPlaceholderKeyForField('stateOrProvince', selectedCountry);
+    const placeholderKey = specifications.getPlaceholderKeyForField('stateOrProvince', selectedCountry);
 
     useLayoutEffect(() => {
         if (!selectedCountry || !specifications.countryHasDataset(selectedCountry)) {
@@ -51,7 +51,7 @@ export default function StateField(props: StateFieldProps) {
                 name: 'stateOrProvince',
                 onChange: onDropdownChange,
                 selected: value,
-                placeholder: i18n.get(placeholderKey),
+                placeholder: placeholderKey && i18n.get(placeholderKey),
                 items: states,
                 readonly: readOnly ? !!value : false,
                 isCollatingErrors: !!isCollatingErrors,

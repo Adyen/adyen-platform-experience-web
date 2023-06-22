@@ -3,7 +3,7 @@ import { defaultTranslation, FALLBACK_LOCALE } from './config';
 import { getLocalisedAmount } from '../utils/amount-util';
 import translations from './translations/index';
 import DateTimeFormatOptions = Intl.DateTimeFormatOptions;
-import { CustomTranslations, TranslationOptions } from './types';
+import { CustomTranslations, TranslationKey, TranslationOptions } from './types';
 import { CurrencyCode } from '../utils/constants/currency-codes';
 
 export class Language {
@@ -36,7 +36,7 @@ export class Language {
      * @param options - Translation options
      * @returns Translated string
      */
-    get(key: string, options?: TranslationOptions): string {
+    get(key: TranslationKey, options?: TranslationOptions): string {
         const translation = getTranslation(this.translations, key, options);
         if (translation !== null) {
             return translation;

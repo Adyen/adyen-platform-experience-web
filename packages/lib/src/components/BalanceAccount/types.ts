@@ -1,5 +1,6 @@
 import { CurrencyCode } from '../../utils/constants/currency-codes';
 import { UIElementProps } from '../types';
+import { StatusType } from '@src/components/internal/Status/types';
 
 export interface BalanceAccountDetailsProps extends UIElementProps {
     balanceAccount: {
@@ -13,7 +14,7 @@ export interface BalanceAccountDetailsProps extends UIElementProps {
             reserved: number;
         }[];
         id: string;
-        status: string;
+        status: StatusType;
         platformPaymentConfiguration: { salesDayClosingTime: string; settlementDelayDays: number };
     };
     onChange?: (newState: Record<any, any>) => void;

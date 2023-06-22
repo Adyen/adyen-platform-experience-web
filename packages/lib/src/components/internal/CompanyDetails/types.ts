@@ -2,6 +2,7 @@ import { FieldsetVisibility } from '../../../types';
 import { ValidatorRules } from '../../../utils/Validator/types';
 import { SchemaKeys } from '../../../utils/useForm/types';
 import { SetTriggerValidation } from '../../types';
+import { TranslationKey } from '@src/language/types';
 
 export type CompanyDetailsSchema = {
     name?: string;
@@ -9,7 +10,7 @@ export type CompanyDetailsSchema = {
 };
 
 export interface CompanyDetailsProps<FormSchema extends Record<string, any>> {
-    label?: string;
+    label?: TranslationKey;
     namePrefix?: string;
     requiredFields?: SchemaKeys<FormSchema>[];
     visibility?: FieldsetVisibility;

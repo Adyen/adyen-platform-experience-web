@@ -5,6 +5,7 @@ import { ValidationRuleResult } from '../../../utils/Validator/ValidationRuleRes
 import { FormState, SchemaKeys } from '../../../utils/useForm/types';
 import { TargetedEvent } from 'preact/compat';
 import { SetTriggerValidation } from '../../types';
+import { TranslationKey } from '@src/language/types';
 
 // Describes an object with unknown keys whose value is always a string
 export type StringObject = {
@@ -15,7 +16,7 @@ export interface AddressProps<FormSchema extends Record<string, any>> {
     allowedCountries?: string[];
     countryCode: string;
     data?: AddressData;
-    label?: string;
+    label?: TranslationKey;
     onChange?: (newState: FormState<FormSchema>) => void;
     requiredFields?: SchemaKeys<FormSchema>[];
     ref?: any;
@@ -56,7 +57,7 @@ export interface FieldContainerProps<FormSchema extends Record<string, any>> {
 
 export interface ReadOnlyAddressProps {
     data: AddressData;
-    label: string;
+    label: TranslationKey | '';
 }
 
 export interface CountryFieldProps {
@@ -95,9 +96,13 @@ export type AddressSchema = (AddressField | AddressFieldsGroup)[];
 
 type SpecificationFields = {
     hasDataset?: boolean;
-    labels?: StringObject;
+    labels?: {
+        [key: string]: TranslationKey;
+    };
     optionalFields?: AddressField[];
-    placeholders?: StringObject;
+    placeholders?: {
+        [key: string]: TranslationKey;
+    };
     schema?: AddressSchema;
 };
 
