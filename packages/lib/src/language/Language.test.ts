@@ -55,7 +55,7 @@ describe('Language', () => {
             expect(lang.customTranslations['ca-CA']).toBeDefined();
         });
 
-        test.skip('falls back to FALLBACK_LOCALE and removes customTranslations that do not match a language/language_country code', () => {
+        test('falls back to FALLBACK_LOCALE and removes customTranslations that do not match a language/language_country code', () => {
             const customTranslations = {
                 FAKE: {
                     paymentId: 'ca',

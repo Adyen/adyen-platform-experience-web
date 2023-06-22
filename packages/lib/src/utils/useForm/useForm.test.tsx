@@ -1,3 +1,5 @@
+//TODO get rid of the following two comments once the tests are fixed
+
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
 import useForm from './useForm';
@@ -5,6 +7,7 @@ import { renderHook, act } from '@testing-library/preact';
 import { Form } from './types';
 import { beforeEach, describe, expect, it } from 'vitest';
 
+//TODO enable this test in a dedicated PR
 describe.skip('useForm', () => {
     const defaultSchema = ['firstName', 'lastName'];
     type defaultSchemaType = {

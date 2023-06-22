@@ -20,7 +20,7 @@ export class Language {
 
         const localesFromCustomTranslations = Object.keys(this.customTranslations) as string[];
         this.supportedLocales = [...defaultLocales, ...localesFromCustomTranslations].filter((v, i, a) => a.indexOf(v) === i); // our locales + validated custom locales
-        this.locale = formatLocale(locale) || parseLocale(locale, this.supportedLocales) || locale;
+        this.locale = formatLocale(locale) || parseLocale(locale, this.supportedLocales) || FALLBACK_LOCALE;
         const [languageCode] = this.locale.split('-');
         this.languageCode = languageCode as string;
 
@@ -38,7 +38,6 @@ export class Language {
      */
     get(key: string, options?: TranslationOptions): string {
         const translation = getTranslation(this.translations, key, options);
-        console.log('translation', translation);
         if (translation !== null) {
             return translation;
         }
