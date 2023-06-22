@@ -1,0 +1,51 @@
+.adyen-fp-tabs {
+    box-shadow: 0 -1px 0 0 var(--adyen-fp-color-border) inset;
+    display: inline-flex;
+    font-weight: var(--adyen-fp-font-weight-thin);
+    line-height: 1.4;
+    margin: 0;
+    text-align: center;
+    width: 100%;
+
+    &__tab {
+        background: transparent;
+        border: 3px solid transparent;
+        color: var(--adyen-fp-color-black);
+        cursor: pointer;
+        display: flex;
+        flex: 0 1 auto;
+        flex-direction: column;
+        font-family: inherit;
+        justify-content: space-around;
+        margin-right: var(--adyen-fp-spacing-small);
+        outline: none;
+        padding: 0 var(--adyen-fp-spacing-small) var(--adyen-fp-spacing-small);
+        transition: border-bottom-color 0.2s cubic-bezier(0.22, 0.61, 0.36, 1), color 0.2s cubic-bezier(0.22, 0.61, 0.36, 1);
+        white-space: nowrap;
+    }
+
+    &__tab-content {
+        padding: 0 var(--adyen-fp-spacing-small) var(--adyen-fp-spacing-small);
+    }
+
+    [role='tab']:focus,
+    [role='tab']:hover,
+    [role='tab'][aria-selected='true'] {
+        border-bottom: 3px solid var(--adyen-fp-color-border-darker);
+    }
+
+    [role='tab']:focus-visible .adyen-fp-tabs__tab-content {
+        border: 1px solid var(--adyen-fp-color-primary);
+        border-radius: 3px;
+    }
+}
+
+.adyen-fp-tabpanel {
+    &__wrapper {
+        padding-top: var(--adyen-fp-spacing-medium);
+    }
+
+    &__content {
+        padding: 0 var(--adyen-fp-spacing-small);
+    }
+}
