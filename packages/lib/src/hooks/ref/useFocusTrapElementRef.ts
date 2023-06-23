@@ -8,7 +8,8 @@ import useRefWithCallback from './useRefWithCallback';
 
 type TrackingRef = RefCallback<Element> | RefObject<Element> | MutableRef<Element | null> | MutableRefObject<Element | null>;
 
-const useFocusTrapElementRef = (trackingRef: TrackingRef | null) => {
+const useFocusTrapElementRef = (trackingRef: TrackingRef | null, onEscape: (interactionKeyPressed: boolean) => any) => {
+    const escapedFocus = useRef(false);
     const focusElement = useRef<Element | null>(null);
     const interactionKeyPressed = useRef(false);
     const tabbableRoot = useMemo(withTabbableRoot, []);
@@ -33,7 +34,7 @@ const useFocusTrapElementRef = (trackingRef: TrackingRef | null) => {
                             raf = undefined;
                         });
                     });
-                    break;
+                    return;
                 }
                 element = element.parentNode as Element | null;
             }
@@ -47,23 +48,19 @@ const useFocusTrapElementRef = (trackingRef: TrackingRef | null) => {
     const onFocusOutCapture = useCallback((evt: FocusEvent) => {
         if (tabbableRoot.tabbables.includes(evt.relatedTarget as Element)) return;
         if (focusIsWithin(evt.currentTarget as Element, evt.relatedTarget as Element | null)) return;
-        if (!interactionKeyPressed.current) {
-            /* [TODO]: trigger onEscapeFocusTrap callback */
-        }
+        if (interactionKeyPressed.current) return;
+
+        escapedFocus.current = true;
+
+        requestAnimationFrame(() => {
+            if (escapedFocus.current) onEscape((escapedFocus.current = false));
+        });
     }, []);
 
     const onKeyDownCapture = useMemo(() => {
         let raf: number | undefined;
 
-        const resetKeyboardActivity = () => {
-            interactionKeyPressed.current = false;
-            raf = undefined;
-        };
-
         return (evt: KeyboardEvent) => {
-            cancelAnimationFrame(raf as number);
-            resetKeyboardActivity();
-
             switch (evt.code) {
                 case InteractionKeyCode.ARROW_DOWN:
                 case InteractionKeyCode.ARROW_LEFT:
@@ -75,17 +72,21 @@ const useFocusTrapElementRef = (trackingRef: TrackingRef | null) => {
                 case InteractionKeyCode.PAGE_DOWN:
                 case InteractionKeyCode.PAGE_UP:
                 case InteractionKeyCode.TAB:
-                    raf = requestAnimationFrame(resetKeyboardActivity);
+                    cancelAnimationFrame(raf as number);
+                    raf = requestAnimationFrame(() => {
+                        raf = requestAnimationFrame(() => {
+                            interactionKeyPressed.current = false;
+                            raf = undefined;
+                        });
+                    });
                     interactionKeyPressed.current = true;
                     break;
             }
 
-            if (evt.code === InteractionKeyCode.ESCAPE) {
-                // [TODO]: Restore focus to the last focused element before the focus trap
-            } else if (evt.code === InteractionKeyCode.TAB) {
+            if (evt.code === InteractionKeyCode.TAB) {
                 evt.preventDefault();
                 tabbableRoot.current = evt.shiftKey ? -1 : 1;
-            }
+            } else if (evt.code === InteractionKeyCode.ESCAPE) onEscape(true);
         };
     }, []);
 
@@ -103,6 +104,7 @@ const useFocusTrapElementRef = (trackingRef: TrackingRef | null) => {
                 (current as HTMLElement).addEventListener('focusin', onFocusInCapture, true);
                 (current as HTMLElement).addEventListener('focusout', onFocusOutCapture, true);
                 current.addEventListener('click', onClickCapture, true);
+                escapedFocus.current = false;
                 tabbableRoot.root = current;
             } else tabbableRoot.root = null;
         }, [])

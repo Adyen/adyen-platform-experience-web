@@ -1,10 +1,10 @@
 import { VNode } from 'preact';
 import { createPortal } from 'preact/compat';
-import { useMemo, useRef } from 'preact/hooks';
+import { useMemo, useState } from 'preact/hooks';
 import useRefWithCallback from './useRefWithCallback';
 
 const useDetachedRenderCallback = (renderCallback: (container: Element, ...args: any[]) => VNode | null, renderContainerRefIdentifier?: string) => {
-    const renderFn = useRef<(...args: any[]) => VNode | null>();
+    const [renderFn, setRenderFn] = useState<(...args: any[]) => VNode | null>();
 
     const renderContainerRef = useRefWithCallback<Element>(
         useMemo(() => {
@@ -15,16 +15,14 @@ const useDetachedRenderCallback = (renderCallback: (container: Element, ...args:
                     return jsx && createPortal(jsx, container);
                 };
 
-            renderFn.current = undefined;
+            setRenderFn(undefined);
 
-            return container => {
-                renderFn.current = container instanceof Element ? render(container) : undefined;
-            };
+            return container => setRenderFn(container instanceof Element ? () => render(container) : undefined);
         }, [renderCallback, renderContainerRefIdentifier]),
         renderContainerRefIdentifier
     );
 
-    return useMemo(() => [renderFn.current, renderContainerRef] as const, [renderFn.current, renderContainerRef]);
+    return useMemo(() => [renderFn, renderContainerRef] as const, [renderFn, renderContainerRef]);
 };
 
 export default useDetachedRenderCallback;

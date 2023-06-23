@@ -13,6 +13,7 @@ export interface InputBaseProps {
     uniqueId?: string;
     isCollatingErrors?: boolean;
     disabled?: boolean;
+    onClick?: (e: JSX.TargetedEvent<HTMLInputElement>) => void;
     onInput?: (e: TargetedEvent<HTMLInputElement, Event>, field?: string) => void;
     onKeyUp?: (e: JSX.TargetedEvent<HTMLInputElement>) => void;
     onBlur?: (e: JSX.TargetedEvent<HTMLInputElement>) => void;
@@ -25,4 +26,5 @@ export interface InputBaseProps {
     value?: any;
     maxLength?: number;
     required?: boolean;
+    role?: string;
 }

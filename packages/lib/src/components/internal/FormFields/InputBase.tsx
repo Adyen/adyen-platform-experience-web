@@ -3,9 +3,9 @@ import { useCallback } from 'preact/hooks';
 import classNames from 'classnames';
 import { ARIA_ERROR_SUFFIX } from '../../../core/Errors/constants';
 import { InputBaseProps } from './types';
-import { TargetedEvent } from 'preact/compat';
+import { ForwardedRef, forwardRef, TargetedEvent } from 'preact/compat';
 
-export default function InputBase(props: InputBaseProps) {
+function InputBase(props: InputBaseProps, ref: ForwardedRef<HTMLInputElement | null>) {
     const { autoCorrect, classNameModifiers, isInvalid, isValid, readonly = false, spellCheck, type, uniqueId, isCollatingErrors, disabled } = props;
 
     /**
@@ -80,6 +80,7 @@ export default function InputBase(props: InputBaseProps) {
             onFocus={handleFocus}
             onKeyUp={handleKeyUp}
             disabled={disabled}
+            ref={ref}
         />
     );
 }
@@ -89,3 +90,5 @@ InputBase.defaultProps = {
     classNameModifiers: [],
     onInput: () => {},
 };
+
+export default forwardRef(InputBase);
