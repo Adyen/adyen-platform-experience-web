@@ -8,6 +8,7 @@ import BalanceAccount from './BalanceAccount';
 import Transactions from './Transactions';
 import TransactionDetails from './TransactionDetails';
 import { ComponentMap } from '../types';
+import LegalEntityDetails from '@src/components/LegalEntityDetails';
 
 /**
  * Maps each component with a Component element.
@@ -17,6 +18,7 @@ const componentsMap = {
     balanceAccount: BalanceAccount,
     transactionList: Transactions,
     transactionDetails: TransactionDetails,
+    legalEntityDetails: LegalEntityDetails,
 };
 
 /**

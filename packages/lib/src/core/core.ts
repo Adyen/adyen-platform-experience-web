@@ -65,7 +65,7 @@ class Core {
     public create(component: any, options?: any): any {
         if (typeof component === 'string') {
             const props = this.getPropsForComponent(options);
-            isKeyOfComponent(component) ? this.handleCreate<typeof component>(component, props) : this.handleCreateError();
+            return isKeyOfComponent(component) ? this.handleCreate<typeof component>(component, props) : this.handleCreateError();
         } else {
             const props = this.getPropsForComponent(options);
             return component ? this.handleCreate<typeof component>(component, props) : this.handleCreateError();

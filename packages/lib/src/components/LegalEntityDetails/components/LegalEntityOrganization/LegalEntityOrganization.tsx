@@ -1,11 +1,11 @@
-import { GetTransferInstrumentById, LegalEntityOrganization } from '../../types';
-import { StructuredList } from '../../../internal/StructuredList/StructuredList';
+import { GetTransferInstrumentById, ILegalEntityOrganization } from '../../types';
+import StructuredList from '../../../internal/StructuredList/StructuredList';
 import useCoreContext from '../../../../core/Context/useCoreContext';
 import Tabs from '../../../internal/Tabs/Tabs';
 import TransferInstrumentOverview from './TransferInstrumentOverview';
 
 interface LegalEntityOrganizationProps {
-    legalEntity: LegalEntityOrganization;
+    legalEntity: ILegalEntityOrganization;
     onGetTransferInstrument?: GetTransferInstrumentById;
 }
 function LegalEntityOrganization({ legalEntity, onGetTransferInstrument }: LegalEntityOrganizationProps) {
@@ -31,24 +31,31 @@ function LegalEntityOrganization({ legalEntity, onGetTransferInstrument }: Legal
         countryOfResidence: organization.registeredAddress.country,
     };
     return (
-        <Tabs defaultActiveTab={'overview'}>
-            <Tabs.Tab label={'overview'} content={<StructuredList items={organizationListItems} />} />
-            <Tabs.Tab
-                label={'transferInstruments'}
-                content={
-                    <div>
-                        {legalEntity.transferInstruments?.map(transferInstrument => (
-                            <TransferInstrumentOverview
-                                transferInstrument={transferInstrument}
-                                key={transferInstrument.id}
-                                onGetTransferInstrument={onGetTransferInstrument}
-                            />
-                        ))}
-                    </div>
-                }
-                disabled={!legalEntity.transferInstruments || legalEntity.transferInstruments.length === 0}
-            />
-        </Tabs>
+        <Tabs
+            tabs={[
+                {
+                    label: 'overview',
+                    content: <StructuredList items={organizationListItems} />,
+                    id: 'overview',
+                },
+                {
+                    label: 'transferInstruments',
+                    content: (
+                        <div>
+                            {legalEntity.transferInstruments?.map(transferInstrument => (
+                                <TransferInstrumentOverview
+                                    transferInstrument={transferInstrument}
+                                    key={transferInstrument.id}
+                                    onGetTransferInstrument={onGetTransferInstrument}
+                                />
+                            ))}
+                        </div>
+                    ),
+                    id: 'transferInstruments',
+                    disabled: !legalEntity.transferInstruments || legalEntity.transferInstruments.length === 0,
+                },
+            ]}
+        />
     );
 }
 

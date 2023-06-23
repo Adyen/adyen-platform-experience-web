@@ -146,7 +146,7 @@ interface SoleProprietor {
 type LEAssociationOrgType = { type: 'uboThroughOwnership' | 'uboThroughControl' | 'signatory' | 'ultimateParentCompany' };
 type LEAssociationSoleProprietorType = { type: 'soleProprietorship' };
 
-export type TransferInstrumentOverview = { accountIdentifier?: string; id: string; realLastFour?: string; trustedSource: boolean };
+export type TransferInstrumentOv = { accountIdentifier?: string; id: string; realLastFour?: string; trustedSource: boolean };
 export interface BankAccount {
     accountNumber: string;
     accountType: string;
@@ -181,26 +181,26 @@ interface LegalEntity {
     capabilities?: { [key: string]: Capability };
     reference?: string;
     problems?: Problem[];
-    transferInstruments?: TransferInstrumentOverview[];
+    transferInstruments?: TransferInstrumentOv[];
 }
 
-export interface LegalEntityOrganization extends LegalEntity {
+export interface ILegalEntityOrganization extends LegalEntity {
     type: 'organization';
     organization: Organization;
     entityAssociations?: LegalEntityAssociation<LEAssociationOrgType>[];
 }
-export interface LegalEntityIndividual extends LegalEntity {
+export interface ILegalEntityIndividual extends LegalEntity {
     type: 'individual';
     individual: Individual;
 }
-export interface LegalEntitySoleProprietor extends LegalEntity {
+export interface ILegalEntitySoleProprietor extends LegalEntity {
     type: 'soleProprietorship';
     soleProprietorship: SoleProprietor;
     entityAssociations?: LegalEntityAssociation<LEAssociationSoleProprietorType>[];
 }
 
 export interface LegalEntityDetailsProps extends UIElementProps {
-    legalEntity: LegalEntityOrganization | LegalEntityIndividual | LegalEntitySoleProprietor;
+    legalEntity: ILegalEntityOrganization | ILegalEntityIndividual | ILegalEntitySoleProprietor;
     onGetTransferInstrument?: GetTransferInstrumentById;
 }
 

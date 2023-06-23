@@ -1,8 +1,8 @@
-import { LegalEntitySoleProprietor } from '../../types';
-import { StructuredList } from '../../../internal/StructuredList/StructuredList';
+import { ILegalEntitySoleProprietor } from '../../types';
+import StructuredList from '../../../internal/StructuredList/StructuredList';
 import useCoreContext from '../../../../core/Context/useCoreContext';
 
-function LegalEntitySoleProprietor({ legalEntity }: { legalEntity: LegalEntitySoleProprietor }) {
+function LegalEntitySoleProprietor({ legalEntity }: { legalEntity: ILegalEntitySoleProprietor }) {
     const { i18n } = useCoreContext();
     const { soleProprietorship } = legalEntity;
     const individualListItems = {

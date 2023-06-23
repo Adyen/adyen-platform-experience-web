@@ -6,7 +6,7 @@ const router = Router();
 router.get('/:id', (req, res) => {
     const matchingMock = BALANCE_ACCOUNTS.find(mock => mock.id === req.params.id);
     if (!matchingMock) {
-        res.status(404).send('Cannot find matching Balance Account mock');
+        res.status(404).send(JSON.stringify('Cannot find matching Balance Account mock'));
         return;
     }
 

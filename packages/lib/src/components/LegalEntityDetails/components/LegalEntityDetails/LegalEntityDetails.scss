@@ -1,10 +1,8 @@
-@import '~/style/index';
-
 .adyen-legal-entity {
     &__details {
         display: flex;
         justify-content: space-between;
-        margin-top: $spacing-xlarge;
-        padding: 0 $spacing-large;
+        margin-top: var(--adyen-fp-spacing-large);
+        padding: 0 var(--adyen-fp-spacing-large);
     }
 }
