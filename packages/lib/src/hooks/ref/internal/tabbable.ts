@@ -1,5 +1,9 @@
+import { unsignedModulo } from '../../../utils/compute';
+
 export interface TabbableRoot {
-    rootElement: Element | null;
+    get current(): Element | null;
+    set current(maybeTabbableOrOffset: Element | number | null);
+    root: Element | null;
     tabbables: Element[];
 }
 
@@ -46,6 +50,19 @@ const shouldRefresh = (tabbables: Element[], records: MutationRecord[]) => {
     return false;
 };
 
+export const focusIsWithin = (rootElement: Element = document.body, elementWithFocus?: Element | null): boolean => {
+    if (elementWithFocus == undefined) return !!document.activeElement && focusIsWithin(rootElement, document.activeElement);
+
+    let parentElement = elementWithFocus?.parentNode as Element | null;
+
+    while (parentElement) {
+        if (parentElement === rootElement) return true;
+        parentElement = parentElement?.parentNode as Element | null;
+    }
+
+    return false;
+};
+
 export const isFocusable = (element: Element) =>
     !(
         // [TODO]: Include all of these checks
@@ -79,16 +96,35 @@ export const withTabbableRoot = () => {
     const observer = new MutationObserver(records => shouldRefresh(tabbables, records) && getTabbables());
     const tabbables: Element[] = [];
 
+    let currentIndex = -1;
     let root: Element | null = null;
+
+    const focusAt = (tabbableIndex: number) => {
+        if (tabbableIndex < 0) return;
+        const constrainedIndex = Math.min(tabbableIndex, tabbables.length - 1);
+        if (currentIndex !== constrainedIndex) currentIndex = constrainedIndex;
+        (tabbables[currentIndex] as HTMLElement)?.focus();
+    };
 
     const getTabbables = () => {
         tabbables.length = 0;
         if (!(root instanceof Element)) return;
         for (const maybeTabbable of root.querySelectorAll(SELECTORS)) isTabbable(maybeTabbable) && tabbables.push(maybeTabbable);
+        if (!focusIsWithin(root)) return;
+        tabbableRoot.current = document.activeElement;
     };
 
-    return Object.create(null, {
-        rootElement: {
+    const tabbableRoot = Object.create(null, {
+        current: {
+            get: () => tabbables[currentIndex] ?? null,
+            set: (maybeTabbableOrOffset: Element | number | null) => {
+                if (!maybeTabbableOrOffset) return;
+                if (typeof maybeTabbableOrOffset !== 'number') return focusAt(tabbables.indexOf(maybeTabbableOrOffset));
+                if (maybeTabbableOrOffset !== ~~maybeTabbableOrOffset) return;
+                return focusAt(unsignedModulo(currentIndex + maybeTabbableOrOffset, tabbables.length));
+            },
+        },
+        root: {
             get: () => root,
             set: (maybeElement?: any) => {
                 if (maybeElement === root) return;
@@ -111,6 +147,8 @@ export const withTabbableRoot = () => {
         },
         tabbables: { value: tabbables },
     }) as TabbableRoot;
+
+    return tabbableRoot;
 };
 
 export default withTabbableRoot;

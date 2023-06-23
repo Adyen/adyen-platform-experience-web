@@ -3,13 +3,12 @@ import { MutableRefObject } from 'preact/compat';
 import { MutableRef, useCallback, useMemo, useRef } from 'preact/hooks';
 import { NamedRef } from './types';
 import { InteractionKeyCode } from '../../components/types';
-import withTabbableRoot, { isFocusable } from './internal/tabbable';
+import withTabbableRoot, { focusIsWithin, isFocusable } from './internal/tabbable';
 import useRefWithCallback from './useRefWithCallback';
 
 type TrackingRef = RefCallback<Element> | RefObject<Element> | MutableRef<Element | null> | MutableRefObject<Element | null>;
 
 const useFocusTrapElementRef = (trackingRef: TrackingRef | null) => {
-    const focusShift = useRef(0);
     const focusElement = useRef<Element | null>(null);
     const interactionKeyPressed = useRef(false);
     const tabbableRoot = useMemo(withTabbableRoot, []);
@@ -42,44 +41,52 @@ const useFocusTrapElementRef = (trackingRef: TrackingRef | null) => {
     }, []);
 
     const onFocusInCapture = useCallback((evt: FocusEvent) => {
-        focusElement.current = evt.target as Element | null;
+        tabbableRoot.current = focusElement.current = evt.target as Element | null;
     }, []);
 
     const onFocusOutCapture = useCallback((evt: FocusEvent) => {
         if (tabbableRoot.tabbables.includes(evt.relatedTarget as Element)) return;
-
-        let parentElement = (evt.relatedTarget as Element | null)?.parentNode as Element | null;
-
-        while (parentElement) {
-            if (parent === evt.currentTarget) return;
-            parentElement = parentElement?.parentNode as Element | null;
+        if (focusIsWithin(evt.currentTarget as Element, evt.relatedTarget as Element | null)) return;
+        if (!interactionKeyPressed.current) {
+            /* [TODO]: trigger onEscapeFocusTrap callback */
         }
-
-        // [TODO]: trigger onEscapeFocusTrap() callback
     }, []);
 
-    const onKeyDownCapture = useCallback((evt: KeyboardEvent) => {
-        switch (evt.code) {
-            case InteractionKeyCode.ARROW_DOWN:
-            case InteractionKeyCode.ARROW_LEFT:
-            case InteractionKeyCode.ARROW_RIGHT:
-            case InteractionKeyCode.ARROW_UP:
-            case InteractionKeyCode.END:
-            case InteractionKeyCode.HOME:
-            case InteractionKeyCode.PAGE_DOWN:
-            case InteractionKeyCode.PAGE_UP:
-            case InteractionKeyCode.TAB:
-                requestAnimationFrame(() => {
-                    focusShift.current = 0;
-                    interactionKeyPressed.current = false;
-                });
-                interactionKeyPressed.current = true;
-                break;
-        }
+    const onKeyDownCapture = useMemo(() => {
+        let raf: number | undefined;
 
-        if (evt.code === InteractionKeyCode.TAB) {
-            focusShift.current = evt.shiftKey ? -1 : 1;
-        }
+        const resetKeyboardActivity = () => {
+            interactionKeyPressed.current = false;
+            raf = undefined;
+        };
+
+        return (evt: KeyboardEvent) => {
+            cancelAnimationFrame(raf as number);
+            resetKeyboardActivity();
+
+            switch (evt.code) {
+                case InteractionKeyCode.ARROW_DOWN:
+                case InteractionKeyCode.ARROW_LEFT:
+                case InteractionKeyCode.ARROW_RIGHT:
+                case InteractionKeyCode.ARROW_UP:
+                case InteractionKeyCode.END:
+                case InteractionKeyCode.ESCAPE:
+                case InteractionKeyCode.HOME:
+                case InteractionKeyCode.PAGE_DOWN:
+                case InteractionKeyCode.PAGE_UP:
+                case InteractionKeyCode.TAB:
+                    raf = requestAnimationFrame(resetKeyboardActivity);
+                    interactionKeyPressed.current = true;
+                    break;
+            }
+
+            if (evt.code === InteractionKeyCode.ESCAPE) {
+                // [TODO]: Restore focus to the last focused element before the focus trap
+            } else if (evt.code === InteractionKeyCode.TAB) {
+                evt.preventDefault();
+                tabbableRoot.current = evt.shiftKey ? -1 : 1;
+            }
+        };
     }, []);
 
     const focusTrapRef = useRefWithCallback<Element>(
@@ -92,12 +99,12 @@ const useFocusTrapElementRef = (trackingRef: TrackingRef | null) => {
             }
 
             if (current instanceof Element) {
-                (current as HTMLElement).removeEventListener('keydown', onKeyDownCapture, true);
+                (current as HTMLElement).addEventListener('keydown', onKeyDownCapture, true);
                 (current as HTMLElement).addEventListener('focusin', onFocusInCapture, true);
                 (current as HTMLElement).addEventListener('focusout', onFocusOutCapture, true);
                 current.addEventListener('click', onClickCapture, true);
-                tabbableRoot.rootElement = current;
-            } else tabbableRoot.rootElement = null;
+                tabbableRoot.root = current;
+            } else tabbableRoot.root = null;
         }, [])
     );
 
