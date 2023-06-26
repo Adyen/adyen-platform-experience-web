@@ -1,24 +1,21 @@
-import { useCallback, useMemo } from 'preact/hooks';
+import { useCallback } from 'preact/hooks';
 import { NamedRefCallback } from './types';
 import useRefWithCallback from './useRefWithCallback';
 
 const useFocusCursorElementRef = (withCallback?: NamedRefCallback<Element>) => {
-    const finallyCallback = useMemo(() => {
-        let raf: number | undefined;
-
-        return ((current, previous) => {
-            if (raf !== undefined) cancelAnimationFrame(raf as number);
-            if (previous instanceof Element) previous.setAttribute('tabindex', '-1');
+    const finallyCallback = useCallback(
+        ((current, previous) => {
+            if (previous instanceof Element) {
+                previous.setAttribute('tabindex', '-1');
+            }
             if (current instanceof Element) {
                 current.setAttribute('tabindex', '0');
-
-                raf = requestAnimationFrame(() => {
-                    (current as HTMLElement)?.focus();
-                    raf = undefined;
-                });
+                // schedule a microtask to focus the current element
+                Promise.resolve().then(() => (current as HTMLElement)?.focus());
             }
-        }) as NamedRefCallback<Element>;
-    }, []);
+        }) as NamedRefCallback<Element>,
+        []
+    );
 
     return useRefWithCallback<Element>(
         useCallback(

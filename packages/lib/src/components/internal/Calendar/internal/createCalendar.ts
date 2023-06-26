@@ -1,5 +1,5 @@
 import createCalendarIterable from './createCalendarIterable';
-import withSyncEffectCallback from '../../../../utils/sync-effect-callback';
+import withSyncEffectCallback from '../../../../utils/syncEffectCallback';
 import { CalendarConfig, CalendarCursorShift, CalendarMonthView, CalendarShift, CalendarView, CalendarWeekView } from '../types';
 import {
     DAY_MS,

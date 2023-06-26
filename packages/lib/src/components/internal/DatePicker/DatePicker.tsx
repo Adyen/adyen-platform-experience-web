@@ -24,24 +24,37 @@ export default function DatePicker(props: DatePickerProps) {
         useCallback((interactionKeyPressed: boolean) => {
             const inputElement = datePickerInputRef?.current as HTMLElement;
 
+            if (document.activeElement !== inputElement) {
+                updateShowPopup(false);
+            }
+
             if (interactionKeyPressed) {
                 inputElement?.focus();
             } else if (!document.activeElement) {
                 inputElement?.focus();
                 inputElement?.blur();
             }
-
-            updateShowPopup(false);
         }, [])
     );
 
     const calendarProps = useMemo(() => {
         const onSelected = (date: string) => {
-            setCurrentValue(date || '');
+            const update = date || '';
+
+            setCurrentValue(update);
+            update && updateShowPopup(false);
+
             props.onSelected?.(date);
+            update && props.onUpdated?.();
         };
-        return { ...props, onSelected, renderControl, traversalControls: CalendarTraversalControls.CONDENSED } as const;
-    }, [props, renderControl]);
+        return {
+            ...props,
+            originDate: currentValue || undefined,
+            onSelected,
+            renderControl,
+            traversalControls: CalendarTraversalControls.CONDENSED,
+        } as const;
+    }, [props, currentValue, renderControl]);
 
     const handleClick = useCallback((evt: Event) => {
         (evt.target as HTMLElement)?.focus();

@@ -1,4 +1,4 @@
-import { unsignedModulo } from '../../../../utils/compute';
+import unsignedModulo from '../../../../utils/unsignedModulo';
 import {
     CalendarConfig,
     CalendarDate,
