@@ -41,7 +41,7 @@ function LegalEntityOrganization({ legalEntity, onGetTransferInstrument }: Legal
                 {
                     label: 'transferInstruments',
                     content: (
-                        <div>
+                        <>
                             {legalEntity.transferInstruments?.map(transferInstrument => (
                                 <TransferInstrumentOverview
                                     transferInstrument={transferInstrument}
@@ -49,7 +49,7 @@ function LegalEntityOrganization({ legalEntity, onGetTransferInstrument }: Legal
                                     onGetTransferInstrument={onGetTransferInstrument}
                                 />
                             ))}
-                        </div>
+                        </>
                     ),
                     id: 'transferInstruments',
                     disabled: !legalEntity.transferInstruments || legalEntity.transferInstruments.length === 0,
