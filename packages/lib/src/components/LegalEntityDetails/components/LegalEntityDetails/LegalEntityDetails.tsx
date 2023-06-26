@@ -7,16 +7,17 @@ import Card from '../../../internal/Card/Card';
 import useCoreContext from '../../../../core/Context/useCoreContext';
 const LegalEntityDetails = ({ legalEntity, onGetTransferInstrument }: LegalEntityDetailsProps) => {
     const { i18n } = useCoreContext();
+
     return (
         <div className="adyen-legal-entity">
             <p className="adyen-fp-title">{i18n.get('legalEntityDetails')}</p>
 
             <Card>
-                {legalEntity.type === 'individual' ? (
+                {legalEntity?.type === 'individual' ? (
                     <LegalEntityIndividual legalEntity={legalEntity} />
-                ) : legalEntity.type === 'organization' ? (
+                ) : legalEntity?.type === 'organization' ? (
                     <LegalEntityOrganization legalEntity={legalEntity} onGetTransferInstrument={onGetTransferInstrument} />
-                ) : legalEntity.type === 'soleProprietorship' ? (
+                ) : legalEntity?.type === 'soleProprietorship' ? (
                     <LegalEntitySoleProprietor legalEntity={legalEntity} />
                 ) : null}
             </Card>

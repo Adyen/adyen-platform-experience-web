@@ -30,14 +30,7 @@ function TransferInstrumentOverview({ transferInstrument, onGetTransferInstrumen
                             <span className="adyen-fp-legal-entity-organization__transfer-instrument-element-label">
                                 {i18n.get('transferInstrumentId')}
                             </span>
-                            <span
-                                className="adyen-fp-legal-entity-organization__transfer-instrument-id"
-                                role="button"
-                                tabIndex={0}
-                                onClick={getTransferInstrumentDetails}
-                            >
-                                {transferInstrument.id}
-                            </span>
+                            <span className="adyen-fp-legal-entity-organization__transfer-instrument-id">{transferInstrument.id}</span>
                         </div>
                         <div className="adyen-fp-legal-entity-organization__transfer-instrument-element-container">
                             <span className="adyen-fp-legal-entity-organization__transfer-instrument-element-label">
