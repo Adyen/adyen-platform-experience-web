@@ -1,4 +1,6 @@
-export const ACCOUNT_HOLDER_1 = {
+import { AccountHolder } from '../../packages/lib/src/components/AccountHolder/types';
+
+export const ACCOUNT_HOLDER_1: AccountHolder = {
     balancePlatform: 'TestBalancePlatform',
     contactDetails: {
         address: { city: 'Amsterdam', country: 'NL', houseNumberOrName: '6', postalCode: '12336750', street: 'Simon Carmiggeltstraat' },
@@ -21,5 +23,5 @@ export const ACCOUNT_HOLDER_2 = {
     legalEntityId: 'LE3227C223222D5D8RQH439TN',
     id: 'AH3227C223222B5GG3XG7G5CF',
     status: 'active',
-};
-export const ACCOUNT_HOLDERS = [ACCOUNT_HOLDER_1, ACCOUNT_HOLDER_2];
+} as const;
+export const ACCOUNT_HOLDERS = [ACCOUNT_HOLDER_1, ACCOUNT_HOLDER_2] as const;
