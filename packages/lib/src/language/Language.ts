@@ -20,12 +20,13 @@ export class Language {
 
         const localesFromCustomTranslations = Object.keys(this.customTranslations) as string[];
         this.supportedLocales = [...defaultLocales, ...localesFromCustomTranslations].filter((v, i, a) => a.indexOf(v) === i); // our locales + validated custom locales
-        this.locale = formatLocale(locale) || parseLocale(locale, this.supportedLocales) || locale;
+        this.locale = formatLocale(locale) || parseLocale(locale, this.supportedLocales) || FALLBACK_LOCALE;
         const [languageCode] = this.locale.split('-');
         this.languageCode = languageCode as string;
 
         this.loaded = loadTranslations(this.locale, this.customTranslations).then(translations => {
             this.translations = translations;
+            return this;
         });
     }
 

@@ -27,7 +27,6 @@ function TransactionsDetails(props: TransactionDetailsProps) {
 
             <div className="adyen-fp-details-container">
                 <StatsBar
-                    featured={true}
                     items={[
                         {
                             label: 'Original amount',
@@ -50,7 +49,6 @@ function TransactionsDetails(props: TransactionDetailsProps) {
                         {
                             label: 'Status',
                             value: <Status type={'success'} label={transaction.status} />,
-                            highlight: true,
                         },
                     ]}
                 />

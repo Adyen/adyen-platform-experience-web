@@ -6,27 +6,27 @@ export interface AccountHolderDetailsProps extends UIElementProps {
         balancePlatform: string;
         description: string;
         legalEntityId: string;
-        reference: string;
-        capabilities: {
-            receiveFromPlatformPayments: {
+        reference?: string;
+        capabilities?: {
+            receiveFromPlatformPayments?: {
                 enabled: boolean;
                 requested: boolean;
                 allowed: boolean;
                 verificationStatus: string;
             };
-            receiveFromBalanceAccount: {
+            receiveFromBalanceAccount?: {
                 enabled: boolean;
                 requested: boolean;
                 allowed: boolean;
                 verificationStatus: string;
             };
-            sendToBalanceAccount: {
+            sendToBalanceAccount?: {
                 enabled: boolean;
                 requested: boolean;
                 allowed: boolean;
                 verificationStatus: string;
             };
-            sendToTransferInstrument: {
+            sendToTransferInstrument?: {
                 enabled: boolean;
                 requested: boolean;
                 allowed: boolean;

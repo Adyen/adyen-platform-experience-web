@@ -1,4 +1,5 @@
 import uuid from './uuid';
+import { describe, expect, test } from 'vitest';
 
 describe('uuid', () => {
     test('should generate a UUID of 36 characters', () => {

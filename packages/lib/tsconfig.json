@@ -19,6 +19,6 @@
             "@src/*": ["./src/*"]
         }
     },
-    "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.d.ts", "tests/**/*.ts", "src/language/translations/*.json"],
-    "exclude": ["node_modules", "**/*.test.*", "dist"]
+    "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.d.ts", "src/language/translations/*.json"],
+    "exclude": ["node_modules", "dist"]
 }

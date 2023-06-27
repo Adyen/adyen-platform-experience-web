@@ -32,5 +32,14 @@ export default defineConfig(() => {
             'process.env.VITE_COMMIT_BRANCH': JSON.stringify(currentVersion.COMMIT_BRANCH),
             'process.env.VITE_ADYEN_BUILD_ID': JSON.stringify(currentVersion.ADYEN_BUILD_ID),
         },
+        test: {
+            root: resolve(__dirname, '../src'),
+            setupFiles: [resolve(__dirname, '../config/setupTests.ts')],
+            coverage: {
+                provider: 'c8',
+                reporter: 'lcov',
+                reportsDirectory: resolve(__dirname, '../../../coverage'),
+            },
+        },
     };
 });

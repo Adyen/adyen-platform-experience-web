@@ -14,7 +14,6 @@ const AccountHolderDetails = ({ accountHolder }: AccountHolderDetailsProps) => {
 
             <div className="adyen-fp-details-container">
                 <StatsBar
-                    featured={true}
                     items={[
                         {
                             label: 'Account holder ID',
