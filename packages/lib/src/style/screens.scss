@@ -1,0 +1,37 @@
+$adyen-fp-breakpoints: (
+    'xs': 374px,
+    'sm': 375px,
+    'md': 500px,
+    'lg': 768px,
+    'xl': 1280px,
+);
+
+@mixin adyen-fp-screen-xs {
+    @media (max-width: map-get($adyen-fp-breakpoints, 'xs')) {
+        @content;
+    }
+}
+
+@mixin adyen-fp-screen-s {
+    @media (min-width: map-get($adyen-fp-breakpoints, 'sm')) {
+        @content;
+    }
+}
+
+@mixin adyen-fp-screen-md {
+    @media (min-width: map-get($adyen-fp-breakpoints, 'md')) {
+        @content;
+    }
+}
+
+@mixin adyen-fp-screen-lg {
+    @media (min-width: map-get($adyen-fp-breakpoints, 'lg')) {
+        @content;
+    }
+}
+
+@mixin adyen-fp-screen-xl {
+    @media (min-width: map-get($adyen-fp-breakpoints, 'xl')) {
+        @content;
+    }
+}
