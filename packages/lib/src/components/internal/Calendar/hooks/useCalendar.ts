@@ -4,7 +4,7 @@ import useCursorRoot from './useCursorRoot';
 import useToday from './useToday';
 import createCalendar from '../internal/createCalendar';
 import useCoreContext from '../../../../core/Context/useCoreContext';
-import { NamedRefCallback } from '../../../../hooks/ref/types';
+import { CallbackRefEffect } from '../../../../hooks/ref/types';
 import useFocusCursorElementRef from '../../../../hooks/ref/useFocusCursorElementRef';
 
 const useCalendar = ({
@@ -51,7 +51,7 @@ const useCalendar = ({
             ((current, previous) => {
                 if (previous instanceof Element) previous.removeAttribute('aria-selected');
                 if (current instanceof Element) current.setAttribute('aria-selected', 'true');
-            }) as NamedRefCallback<Element>,
+            }) as CallbackRefEffect<Element>,
             []
         )
     );

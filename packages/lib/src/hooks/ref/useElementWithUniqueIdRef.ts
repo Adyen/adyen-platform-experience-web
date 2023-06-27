@@ -1,21 +1,20 @@
-import { useMemo, useRef } from 'preact/hooks';
-import useRefWithCallback from './useRefWithCallback';
+import { useCallback, useRef } from 'preact/hooks';
+import { NullableTrackableRefArgument } from './types';
 import { getUniqueId } from '../../utils/idGenerator';
+import useRefWithCallback from './useRefWithCallback';
 
-const useElementWithUniqueIdRef = (identifier: string) => {
+const useElementWithUniqueIdRef = (ref?: NullableTrackableRefArgument<Element>) => {
     const id = useRef<string>();
 
     return useRefWithCallback<Element>(
-        useMemo(() => {
-            id.current = undefined;
-
-            return current => {
-                if (current instanceof Element) {
-                    current.id = id.current || (id.current = getUniqueId('adyen-fp'));
-                }
-            };
-        }, [identifier]),
-        identifier
+        useCallback(
+            current => {
+                if (!(current instanceof Element)) return;
+                current.id = id.current || (id.current = getUniqueId('adyen-fp'));
+            },
+            [ref]
+        ),
+        ref
     );
 };
 

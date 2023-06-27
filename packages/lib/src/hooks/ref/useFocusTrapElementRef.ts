@@ -1,14 +1,10 @@
-import { RefCallback, RefObject } from 'preact';
-import { MutableRefObject } from 'preact/compat';
-import { MutableRef, useCallback, useMemo, useRef } from 'preact/hooks';
-import { NamedRef } from './types';
+import { useCallback, useMemo, useRef } from 'preact/hooks';
+import { NullableTrackableRefArgument } from './types';
 import { InteractionKeyCode } from '../../components/types';
 import withTabbableRoot, { focusIsWithin, isFocusable } from './internal/tabbable';
 import useRefWithCallback from './useRefWithCallback';
 
-type TrackingRef = RefCallback<Element> | RefObject<Element> | MutableRef<Element | null> | MutableRefObject<Element | null>;
-
-const useFocusTrapElementRef = (trackingRef: TrackingRef | null, onEscape: (interactionKeyPressed: boolean) => any) => {
+const useFocusTrapElementRef = (trackingRef: NullableTrackableRefArgument<Element>, onEscape: (interactionKeyPressed: boolean) => any) => {
     const escapedFocus = useRef(false);
     const focusElement = useRef<Element | null>(null);
     const interactionKeyPressed = useRef(false);
@@ -90,7 +86,7 @@ const useFocusTrapElementRef = (trackingRef: TrackingRef | null, onEscape: (inte
         };
     }, []);
 
-    const focusTrapRef = useRefWithCallback<Element>(
+    return useRefWithCallback<Element>(
         useCallback((current, previous) => {
             if (previous instanceof Element) {
                 (previous as HTMLElement).removeEventListener('keydown', onKeyDownCapture, true);
@@ -107,27 +103,9 @@ const useFocusTrapElementRef = (trackingRef: TrackingRef | null, onEscape: (inte
                 escapedFocus.current = false;
                 tabbableRoot.root = current;
             } else tabbableRoot.root = null;
-        }, [])
+        }, []),
+        trackingRef
     );
-
-    return useMemo(() => {
-        if (trackingRef === null) return focusTrapRef;
-        let cachedCurrent: Element | null;
-
-        return Object.defineProperty(
-            typeof trackingRef === 'function'
-                ? (current: Element | null) => {
-                      trackingRef((cachedCurrent = current));
-                      focusTrapRef?.(current);
-                  }
-                : (current: Element | null) => {
-                      trackingRef.current = cachedCurrent = current;
-                      focusTrapRef?.(current);
-                  },
-            'current',
-            { get: () => cachedCurrent }
-        ) as NamedRef<Element>;
-    }, [focusTrapRef, trackingRef]);
 };
 
 export default useFocusTrapElementRef;

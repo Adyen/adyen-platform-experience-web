@@ -1,14 +1,14 @@
 import { useLayoutEffect, useRef, useState } from 'preact/hooks';
-import { createRefMapping } from './internal/namedRefRegistry';
-import { NamedRefRecord, List } from './types';
+import { detachEffect, registerRef } from './internal/registry';
+import { CallbackRefEffect, List, NullableTrackableRefArgument, TrackableRefRecord } from './types';
 
 const EXCESS_SPACE_REGEX = /^\s+|\s+(?=\s|$)/g;
 
 const $ElementRefProto = Object.freeze(
     Object.create(null, {
         toString: {
-            value(this: { ref: NamedRefRecord<Element> }) {
-                return this.ref[0]?.current?.id ?? '';
+            value(this: { ref: TrackableRefRecord<Element>[0] }) {
+                return this.ref.current?.id ?? '';
             },
         },
     })
@@ -22,24 +22,31 @@ const uniqueFlatten = <T>(items: List<T>, uniqueItems: Set<T> = new Set<T>()) =>
     return uniqueItems;
 };
 
-const useElementUniqueIdRefs = (...identifiers: List<string>) => {
+const useElementUniqueIdRefs = (...refs: List<NullableTrackableRefArgument<Element>>) => {
     const [id, setId] = useState('');
-    const references = useRef<{ ref: NamedRefRecord<Element> }[]>([]);
+    const references = useRef<{ ref: TrackableRefRecord<Element>[0] }[]>([]);
 
-    const effect = useRef(() => {
+    const effect = useRef<CallbackRefEffect<Element>>(() => {
         setId(references.current.join(' ').replace(EXCESS_SPACE_REGEX, ''));
     });
 
     useLayoutEffect(() => {
-        for (const identifier of uniqueFlatten(identifiers)) {
-            references.current.push(
-                Object.create($ElementRefProto, {
-                    ref: { value: createRefMapping<Element>(identifier, effect.current) },
-                })
-            );
+        for (const ref of uniqueFlatten(refs)) {
+            if (!ref) return;
+
+            const reference = Object.create($ElementRefProto, {
+                ref: { value: registerRef(ref, effect.current)[0] },
+            });
+
+            references.current.push(reference);
+            effect.current(reference.ref.current, null);
         }
-        return () => references.current.forEach(reference => reference.ref[1].delete(effect.current));
-    }, []);
+
+        return () => {
+            references.current.forEach(({ ref }) => detachEffect(ref, effect.current));
+            references.current.length = 0;
+        };
+    });
 
     return id;
 };

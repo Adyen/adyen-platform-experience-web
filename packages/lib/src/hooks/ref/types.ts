@@ -1,11 +1,13 @@
-import { RefCallback, RefObject } from 'preact';
-import { MutableRefObject } from 'preact/compat';
-import { MutableRef, Ref } from 'preact/hooks';
+import { RefCallback } from 'preact';
+import { ForwardedRef } from 'preact/compat';
+import { Ref } from 'preact/hooks';
 
-export type NamedRef<T = any> = RefCallback<T> & Readonly<RefObject<T>>;
-export type NamedRefCallback<T = any> = (current: T | null, previous: T | null) => any;
-export type NamedRefEffect = (...args: any[]) => any;
-export type NamedRefRecord<T = any> = [NamedRef<T> | null, Set<NamedRefEffect>, Map<NamedRefCallback<T>, number>];
-
+// [TODO]: This should belong to a shared type module
 export type List<T = any> = (List<T> | T)[];
-export type Reference<T = any> = Ref<T> | RefObject<T> | MutableRef<T | null> | MutableRefObject<T | null>;
+
+export type TrackableRef<T = any> = Exclude<ForwardedRef<T>, null>;
+export type CallbackRef<T = any> = RefCallback<T> & Ref<T> & Readonly<{ _ref: TrackableRef<T> }>;
+export type CallbackRefEffect<T = any> = (current: T | null, previous: T | null) => any;
+export type TrackableRefRecord<T = any> = [CallbackRef<T>, Map<CallbackRefEffect<T>, number>];
+export type TrackableRefArgument<T = any> = CallbackRef<T> | TrackableRef<T>;
+export type NullableTrackableRefArgument<T = any> = TrackableRefArgument<T> | null;

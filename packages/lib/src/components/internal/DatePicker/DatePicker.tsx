@@ -16,11 +16,10 @@ export default function DatePicker(props: DatePickerProps) {
     const [currentValue, setCurrentValue] = useState('');
     const [showPopup, updateShowPopup, toggleShowPopup] = useBooleanState(false);
     const [renderControl, calendarControlsContainerRef] = useDatePickerCalendarControls();
-    const a11yIds_datePicker = useElementUniqueIdRefs('datepicker-dialog');
-    const datePickerInputRef = useElementWithUniqueIdRef('datepicker-input');
+    const datePickerInputRef = useElementWithUniqueIdRef();
 
     const datePickerDialogRef = useFocusTrapElementRef(
-        useElementWithUniqueIdRef('datepicker-dialog'),
+        useElementWithUniqueIdRef(),
         useCallback((interactionKeyPressed: boolean) => {
             const inputElement = datePickerInputRef?.current as HTMLElement;
 
@@ -36,6 +35,8 @@ export default function DatePicker(props: DatePickerProps) {
             }
         }, [])
     );
+
+    const a11yIds_datePicker = useElementUniqueIdRefs(datePickerDialogRef);
 
     const calendarProps = useMemo(() => {
         const onSelected = (date: string) => {
