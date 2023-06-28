@@ -4,8 +4,8 @@ import useCursorRoot from './useCursorRoot';
 import useToday from './useToday';
 import createCalendar from '../internal/createCalendar';
 import useCoreContext from '../../../../core/Context/useCoreContext';
-import { CallbackRefEffect } from '../../../../hooks/ref/types';
-import useFocusCursorElementRef from '../../../../hooks/ref/useFocusCursorElementRef';
+import useFocusCursor from '../../../../hooks/element/useFocusCursor';
+import { ReflexAction } from '../../../../hooks/useReflex';
 
 const useCalendar = ({
     calendarMonths,
@@ -46,12 +46,12 @@ const useCalendar = ({
 
     const cursorRootProps = useCursorRoot(calendar, onSelected);
 
-    const cursorElementRef = useFocusCursorElementRef(
+    const cursorElementRef = useFocusCursor(
         useCallback(
             ((current, previous) => {
                 if (previous instanceof Element) previous.removeAttribute('aria-selected');
                 if (current instanceof Element) current.setAttribute('aria-selected', 'true');
-            }) as CallbackRefEffect<Element>,
+            }) as ReflexAction<Element>,
             []
         )
     );

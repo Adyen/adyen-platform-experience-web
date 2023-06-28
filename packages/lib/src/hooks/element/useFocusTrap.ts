@@ -1,10 +1,9 @@
 import { useCallback, useMemo, useRef } from 'preact/hooks';
-import { NullableTrackableRefArgument } from './types';
+import useReflex, { NullableReflexable } from '../useReflex';
 import { InteractionKeyCode } from '../../components/types';
-import withTabbableRoot, { focusIsWithin, isFocusable } from './internal/tabbable';
-import useRefWithCallback from './useRefWithCallback';
+import withTabbableRoot, { focusIsWithin, isFocusable } from '../../utils/tabbable';
 
-const useFocusTrapElementRef = (trackingRef: NullableTrackableRefArgument<Element>, onEscape: (interactionKeyPressed: boolean) => any) => {
+const useFocusTrap = (rootElementRef: NullableReflexable<Element>, onEscape: (interactionKeyPressed: boolean) => any) => {
     const escapedFocus = useRef(false);
     const focusElement = useRef<Element | null>(null);
     const interactionKeyPressed = useRef(false);
@@ -86,7 +85,7 @@ const useFocusTrapElementRef = (trackingRef: NullableTrackableRefArgument<Elemen
         };
     }, []);
 
-    return useRefWithCallback<Element>(
+    return useReflex<Element>(
         useCallback((current, previous) => {
             if (previous instanceof Element) {
                 (previous as HTMLElement).removeEventListener('keydown', onKeyDownCapture, true);
@@ -104,8 +103,8 @@ const useFocusTrapElementRef = (trackingRef: NullableTrackableRefArgument<Elemen
                 tabbableRoot.root = current;
             } else tabbableRoot.root = null;
         }, []),
-        trackingRef
+        rootElementRef
     );
 };
 
-export default useFocusTrapElementRef;
+export default useFocusTrap;

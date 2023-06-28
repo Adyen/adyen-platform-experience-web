@@ -1,8 +1,7 @@
 import { useCallback } from 'preact/hooks';
-import { CallbackRefEffect } from './types';
-import useRefWithCallback from './useRefWithCallback';
+import useReflex, { ReflexAction } from '../useReflex';
 
-const useFocusCursorElementRef = (callback?: CallbackRefEffect<Element>) => {
+const useFocusCursor = (callback?: ReflexAction<Element>) => {
     const finallyCallback = useCallback(
         ((current, previous) => {
             if (previous instanceof Element) previous.setAttribute('tabindex', '-1');
@@ -11,11 +10,11 @@ const useFocusCursorElementRef = (callback?: CallbackRefEffect<Element>) => {
                 // schedule a microtask to focus the current element
                 Promise.resolve().then(() => (current as HTMLElement)?.focus());
             }
-        }) as CallbackRefEffect<Element>,
+        }) as ReflexAction<Element>,
         []
     );
 
-    return useRefWithCallback<Element>(
+    return useReflex<Element>(
         useCallback(
             (current, previous) => {
                 try {
@@ -29,4 +28,4 @@ const useFocusCursorElementRef = (callback?: CallbackRefEffect<Element>) => {
     );
 };
 
-export default useFocusCursorElementRef;
+export default useFocusCursor;

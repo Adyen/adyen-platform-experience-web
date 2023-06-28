@@ -1,4 +1,4 @@
-import unsignedModulo from '../../../utils/unsignedModulo';
+import unsignedModulo from './unsignedModulo';
 
 export interface TabbableRoot {
     get current(): Element | null;

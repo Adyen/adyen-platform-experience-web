@@ -4,9 +4,9 @@ import { getCalendarDateString } from '../Calendar/internal/createCalendar';
 import { CalendarTraversalControls } from '../Calendar/types';
 import { InteractionKeyCode } from '../../types';
 import useDatePickerCalendarControls from './hooks/useDatePickerCalendarControls';
-import useElementWithUniqueIdRef from '../../../hooks/ref/useElementWithUniqueIdRef';
-import useElementUniqueIdRefs from '../../../hooks/ref/useElementUniqueIdRefs';
-import useFocusTrapElementRef from '../../../hooks/ref/useFocusTrapElementRef';
+import useUniqueIdentifier from '../../../hooks/element/useUniqueIdentifier';
+import useIdentifierString from '../../../hooks/element/useIdentifierString';
+import useFocusTrap from '../../../hooks/element/useFocusTrap';
 import useBooleanState from '../../../hooks/useBooleanState';
 import Calendar from '../Calendar';
 import InputText from '../FormFields/InputText';
@@ -16,10 +16,10 @@ export default function DatePicker(props: DatePickerProps) {
     const [currentValue, setCurrentValue] = useState('');
     const [showPopup, updateShowPopup, toggleShowPopup] = useBooleanState(false);
     const [renderControl, calendarControlsContainerRef] = useDatePickerCalendarControls();
-    const datePickerInputRef = useElementWithUniqueIdRef();
+    const datePickerInputRef = useUniqueIdentifier();
 
-    const datePickerDialogRef = useFocusTrapElementRef(
-        useElementWithUniqueIdRef(),
+    const datePickerDialogRef = useFocusTrap(
+        useUniqueIdentifier(),
         useCallback((interactionKeyPressed: boolean) => {
             const inputElement = datePickerInputRef?.current as HTMLElement;
 
@@ -36,7 +36,7 @@ export default function DatePicker(props: DatePickerProps) {
         }, [])
     );
 
-    const a11yIds_datePicker = useElementUniqueIdRefs(datePickerDialogRef);
+    const a11yIds_datePicker = useIdentifierString(datePickerDialogRef);
 
     const calendarProps = useMemo(() => {
         const onSelected = (date: string) => {

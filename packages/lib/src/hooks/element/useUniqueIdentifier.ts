@@ -1,12 +1,11 @@
 import { useCallback, useRef } from 'preact/hooks';
-import { NullableTrackableRefArgument } from './types';
+import useReflex, { NullableReflexable } from '../useReflex';
 import { getUniqueId } from '../../utils/idGenerator';
-import useRefWithCallback from './useRefWithCallback';
 
-const useElementWithUniqueIdRef = (ref?: NullableTrackableRefArgument<Element>) => {
+const useUniqueIdentifier = (ref?: NullableReflexable<Element>) => {
     const id = useRef<string>();
 
-    return useRefWithCallback<Element>(
+    return useReflex<Element>(
         useCallback(
             current => {
                 if (!(current instanceof Element)) return;
@@ -18,4 +17,4 @@ const useElementWithUniqueIdRef = (ref?: NullableTrackableRefArgument<Element>) 
     );
 };
 
-export default useElementWithUniqueIdRef;
+export default useUniqueIdentifier;
