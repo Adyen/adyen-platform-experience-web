@@ -11,7 +11,7 @@ export const ACCOUNT_HOLDER_1: AccountHolder = {
     legalEntityId: 'LE3227C223222D5D8RQH439TN',
     id: 'AH3227B2248HKJ5BHTQPKC5GX',
     status: 'active',
-};
+} as const;
 export const ACCOUNT_HOLDER_2 = {
     balancePlatform: 'BalancePlatform 2',
     contactDetails: {
