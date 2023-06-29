@@ -89,7 +89,6 @@ function PhoneInput(props: PhoneInputProps<PhoneInputSchema>) {
                 name={'phoneNumber'}
                 label={props.phoneNumberKey ? props.phoneNumberKey : i18n.get('telephoneNumber')}
                 className={classNames({
-                    'adyen-fp-field': true,
                     'adyen-fp-field--phone-input': true,
                 })}
                 inputWrapperModifiers={['phone-input']}

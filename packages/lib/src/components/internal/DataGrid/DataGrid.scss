@@ -1,5 +1,6 @@
 .adyen-fp-data-grid {
     $adyen-fp-data-grid: &;
+    $adyen-fp-data-grid__cell: #{$adyen-fp-data-grid}__cell;
     font-size: var(--adyen-fp-font-size-small);
     margin: 8px 0 36px;
     overflow: hidden;
@@ -9,7 +10,7 @@
         border: 1px solid var(--adyen-fp-color-gray-light);
         border-radius: var(--adyen-fp-border-radius-medium);
 
-        #{$adyen-fp-data-grid}__cell {
+        #{$adyen-fp-data-grid__cell} {
             border-bottom: 1px solid var(--adyen-fp-color-gray-light);
         }
     }
@@ -41,23 +42,12 @@
         overflow: hidden;
         vertical-align: top;
 
-        #{$adyen-fp-data-grid}__body &:last-child #{$adyen-fp-data-grid}__cell {
+        #{$adyen-fp-data-grid}__body &:last-child #{$adyen-fp-data-grid__cell} {
             border-bottom: 0;
         }
     }
 
-    /* stylelint-disable-next-line selector-no-qualifying-type */
-    th.adyen-fp-data-grid__cell {
-        background: var(--adyen-fp-color-gray-lighter);
-        color: var(--adyen-fp-color-gray-darker);
-        font-size: var(--adyen-fp-font-size-small);
-        font-weight: 700;
-        padding-bottom: 16px;
-        padding-top: 16px;
-        text-transform: uppercase;
-    }
-
-    &__cell {
+    #{$adyen-fp-data-grid__cell} {
         background: var(--adyen-fp-color-white);
         box-sizing: border-box;
         height: 100%;
@@ -71,6 +61,16 @@
             display: block;
             height: initial;
             margin: -2px -4px;
+        }
+
+        &#{$adyen-fp-data-grid__cell}--heading {
+            background: var(--adyen-fp-color-gray-lighter);
+            color: var(--adyen-fp-color-gray-darker);
+            font-size: var(--adyen-fp-font-size-small);
+            font-weight: 700;
+            padding-bottom: 16px;
+            padding-top: 16px;
+            text-transform: uppercase;
         }
     }
 
