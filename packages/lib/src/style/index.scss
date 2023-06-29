@@ -2,6 +2,7 @@
 @use './border-radius';
 @use './font';
 @use './spacings';
+@use './utils/grid' as grid;
 
 :root {
     @include colors.adyen-fp-colors;
@@ -10,3 +11,5 @@
     @include font.adyen-fp-font-weight;
     @include spacings.adyen-fp-spacings;
 }
+
+@include grid.adyen-fp-create-grid();

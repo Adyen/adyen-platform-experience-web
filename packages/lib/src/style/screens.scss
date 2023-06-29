@@ -1,37 +1,19 @@
-$adyen-fp-breakpoints: (
-    'xs': 374px,
-    'sm': 375px,
-    'md': 500px,
-    'lg': 768px,
-    'xl': 1280px,
-);
+@use './utils/breakpoints' as breakpoints;
 
-@mixin adyen-fp-screen-xs {
-    @media (max-width: map-get($adyen-fp-breakpoints, 'xs')) {
-        @content;
-    }
-}
+@mixin adyen-fp-from-screen-size($breakpoint) {
+    @if map-has-key(breakpoints.$adyen-fp-breakpoints, $breakpoint) {
+        $adyen-fp-breakpoint-value: map-get(breakpoints.$adyen-fp-breakpoints, $breakpoint);
 
-@mixin adyen-fp-screen-s {
-    @media (min-width: map-get($adyen-fp-breakpoints, 'sm')) {
-        @content;
-    }
-}
-
-@mixin adyen-fp-screen-md {
-    @media (min-width: map-get($adyen-fp-breakpoints, 'md')) {
-        @content;
-    }
-}
-
-@mixin adyen-fp-screen-lg {
-    @media (min-width: map-get($adyen-fp-breakpoints, 'lg')) {
-        @content;
-    }
-}
-
-@mixin adyen-fp-screen-xl {
-    @media (min-width: map-get($adyen-fp-breakpoints, 'xl')) {
-        @content;
+        @if $breakpoint == 'xs' {
+            @media (max-width: $adyen-fp-breakpoint-value) {
+                @content;
+            }
+        } @else {
+            @media (min-width: $adyen-fp-breakpoint-value) {
+                @content;
+            }
+        }
+    } @else {
+        @warn 'No such breakpoint exists in map.';
     }
 }

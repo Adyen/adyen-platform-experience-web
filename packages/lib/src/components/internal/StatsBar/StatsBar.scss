@@ -1,23 +1,14 @@
-@use '@styles/screens';
-
 .adyen-fp-stats-bar {
     background: var(--adyen-fp-color-gray-lighter);
     border: 1px solid transparent;
     border-radius: var(--adyen-fp-border-radius-xlarge);
-    display: flex;
-    flex-wrap: wrap;
     font-size: var(--adyen-fp-font-size-base);
     gap: var(--adyen-fp-spacing-medium);
-    justify-content: space-between;
     list-style-type: none;
     padding: var(--adyen-fp-spacing-large);
 
     &__item {
-        width: 100%;
-
-        @include screens.adyen-fp-screen-md() {
-            width: auto;
-        }
+        //
     }
 
     &__label {

@@ -1,0 +1,22 @@
+@use '../screens';
+@use './breakpoints' as breakpoints;
+
+@mixin adyen-fp-create-grid() {
+    .adyen-fp-grid {
+        display: grid;
+        grid-template-columns: repeat(12, minmax(0, 1fr));
+    }
+
+    @each $breakpoint in map-keys(breakpoints.$adyen-fp-breakpoints) {
+        @for $i from 1 through 12 {
+            @include screens.adyen-fp-from-screen-size($breakpoint) {
+                .#{$breakpoint}\:cols-#{$i} {
+                    grid-column: auto / span $i !important;
+                }
+            }
+            .cols-#{$i} {
+                grid-column: auto / span $i;
+            }
+        }
+    }
+}
