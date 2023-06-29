@@ -1,3 +1,4 @@
+import { CurrencyCode } from '@src/utils/constants/currency-codes';
 import { isValidCurrencyCode, getCurrencyCode, getLocalisedAmount, getLocalisedPercentage, getDivider } from './amount-util';
 import { beforeAll, afterEach, afterAll, describe, expect, test, vi, SpyInstance } from 'vitest';
 
@@ -17,9 +18,7 @@ describe('getDivider', () => {
         expect(getDivider('USD')).toBe(100);
         expect(getDivider('JPY')).toBe(1);
         expect(getDivider('BHD')).toBe(1000);
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore - TODO: check if below should be here since it is not part of the currency codes
-        expect(getDivider('MRO')).toBe(10);
+        expect(getDivider('MRO' as CurrencyCode)).toBe(10);
     });
 });
 

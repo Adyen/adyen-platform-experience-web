@@ -1,7 +1,3 @@
-//TODO get rid of the following two comments once the tests are fixed
-
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-nocheck
 import useForm from './useForm';
 import { renderHook, act } from '@testing-library/preact';
 import { Form } from './types';
@@ -10,14 +6,11 @@ import { beforeEach, describe, expect, it } from 'vitest';
 //TODO enable this test in a dedicated PR
 describe.skip('useForm', () => {
     const defaultSchema = ['firstName', 'lastName'];
-    type defaultSchemaType = {
-        firstName: string;
-        lastName: string;
-    };
-    const defaultData = { firstName: 'John' };
+    type DefaultSchemaType = { [key: string]: string };
+    const defaultData: Partial<DefaultSchemaType> = { firstName: 'John' };
 
     describe('schema', () => {
-        let useFormHook;
+        let useFormHook: { current: Form<Record<string, any>> };
         beforeEach(() => {
             const { result } = renderHook(() => useForm({ schema: defaultSchema }));
             useFormHook = result;
@@ -25,12 +18,12 @@ describe.skip('useForm', () => {
 
         it('should set a default schema', () => {
             expect(useFormHook.current.schema).toEqual(defaultSchema);
-            expect(useFormHook.current.data[defaultSchema[0]]).toEqual(null);
-            expect(useFormHook.current.errors[defaultSchema[0]]).toEqual(null);
-            expect(useFormHook.current.valid[defaultSchema[0]]).toEqual(false);
-            expect(useFormHook.current.data[defaultSchema[1]]).toEqual(null);
-            expect(useFormHook.current.valid[defaultSchema[1]]).toEqual(false);
-            expect(useFormHook.current.errors[defaultSchema[1]]).toEqual(null);
+            expect(useFormHook.current.data[defaultSchema[0] as string]).toEqual(null);
+            expect(useFormHook.current.errors[defaultSchema[0] as string]).toEqual(null);
+            expect(useFormHook.current.valid[defaultSchema[0] as string]).toEqual(false);
+            expect(useFormHook.current.data[defaultSchema[1] as string]).toEqual(null);
+            expect(useFormHook.current.valid[defaultSchema[1] as string]).toEqual(false);
+            expect(useFormHook.current.errors[defaultSchema[1] as string]).toEqual(null);
         });
 
         it('should update the schema', () => {
@@ -47,7 +40,7 @@ describe.skip('useForm', () => {
 
     describe('defaultData', () => {
         it('should set defaultData', () => {
-            const { result } = renderHook<unknown, Form<defaultSchemaType>>(() => useForm({ schema: defaultSchema, defaultData }));
+            const { result } = renderHook<Form<DefaultSchemaType>, Form<DefaultSchemaType>>(() => useForm({ schema: defaultSchema, defaultData }));
 
             expect(result.current.data.firstName).toEqual(defaultData.firstName);
             expect(result.current.data.lastName).toEqual(null);
@@ -78,7 +71,7 @@ describe.skip('useForm', () => {
         const firstNameValue = 'John';
 
         it('should handle changes for a field', () => {
-            const { result } = renderHook<unknown, Form<defaultSchemaType>>(() => useForm({ schema: defaultSchema }));
+            const { result } = renderHook<Form<DefaultSchemaType>, Form<DefaultSchemaType>>(() => useForm({ schema: defaultSchema }));
 
             act(() => {
                 result.current.handleChangeFor('firstName')(firstNameValue);
@@ -123,7 +116,7 @@ describe.skip('useForm', () => {
         });
 
         it('should set the value of a checkbox', () => {
-            const { result } = renderHook<unknown, Form<defaultSchemaType>>(() => useForm({ schema: defaultSchema }));
+            const { result } = renderHook<Form<DefaultSchemaType>, Form<DefaultSchemaType>>(() => useForm({ schema: defaultSchema }));
             const mockEvent = { target: { type: 'checkbox' } };
 
             // call once to set to "checked"
