@@ -60,7 +60,11 @@ const useReactiveStateWithParams = <Value, Param extends string = string>(
             }
         });
 
-        return stateUpdateFlags.some(flag => flag) ? Object.freeze({ ...state, ...stateUpdate }) : state;
+        if (stateUpdateFlags.some(flag => flag)) {
+            return hasDefaultState && $changedParams.current.size === 0 ? defaultState : Object.freeze({ ...state, ...stateUpdate });
+        }
+
+        return state;
     }, $initialState.current);
 
     useEffect(() => {
