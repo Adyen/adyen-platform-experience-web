@@ -83,10 +83,13 @@ const createAwaitable = <T>() => {
             await ($promise = new Promise(resolve => {
                 $resolve = resolve;
             }));
-        } finally {
-            // eslint-disable-next-line no-unsafe-finally
-            return refresh();
+        } catch {
+            /**
+             * Ignore the promise rejection — the goal is to guarantee that a new pending promise is created in its
+             * place the moment it is settled. The rejection will be handled later at the usage site of the promise.
+             */
         }
+        return refresh();
     })();
 
     return Object.create(null, {
