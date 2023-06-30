@@ -36,28 +36,31 @@ const useReactiveStateWithParams = <Value, Param extends string = string>(
             return defaultState;
         }
 
-        let stateUpdated = 0;
         const stateUpdate = { ...stateUpdateRequest } as ReactiveStateRecord<Value, Param>;
+        const stateUpdateFlags = [0];
 
         Object.entries<Value | undefined>(stateUpdate).forEach(([key, value], index) => {
             const currentValue = state[key as Param];
             const updateValue = value ?? undefined;
 
             if (updateValue !== currentValue) {
-                const updateFlag = 1 << index;
+                const flagIndex = Math.floor(index / 31);
+                const updateFlag = 1 << index % 31;
 
-                if ((stateUpdated |= updateFlag) && !hasDefaultState) return;
+                if ((stateUpdateFlags[flagIndex] |= updateFlag) && !hasDefaultState) return;
 
                 const defaultValue = defaultState[key as Param];
                 const resetsToDefaultValue = (stateUpdate[key as Param] = updateValue ?? defaultValue) === defaultValue;
 
-                if (resetsToDefaultValue && currentValue === defaultValue) stateUpdated &= ~updateFlag;
+                if (resetsToDefaultValue && currentValue === defaultValue) {
+                    stateUpdateFlags[flagIndex] &= ~updateFlag;
+                }
 
                 $changedParams.current[resetsToDefaultValue ? 'delete' : 'add'](key as Param);
             }
         });
 
-        return stateUpdated ? Object.freeze({ ...state, ...stateUpdate }) : state;
+        return stateUpdateFlags.some(flag => flag) ? Object.freeze({ ...state, ...stateUpdate }) : state;
     }, $initialState.current);
 
     useEffect(() => {
