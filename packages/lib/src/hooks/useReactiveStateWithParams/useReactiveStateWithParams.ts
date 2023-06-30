@@ -1,10 +1,5 @@
 import { useEffect, useMemo, useReducer, useRef, useState } from 'preact/hooks';
-import {
-    ReactiveStateRecord,
-    ReactiveStateUpdateRequest,
-    ReactiveStateUpdateRequestWithField,
-    UseReactiveStateRecord
-} from './types';
+import { ReactiveStateRecord, ReactiveStateUpdateRequest, ReactiveStateUpdateRequestWithField, UseReactiveStateRecord } from './types';
 import useBooleanState from '../useBooleanState';
 import useMounted from '../useMounted';
 
@@ -17,76 +12,65 @@ const useReactiveStateWithParams = <Value, Param extends string = string>(
     const $changedParams = useRef(new Set<Param>());
     const $mounted = useMounted();
 
-    const [ defaultState, setDefaultState ] = useState($initialState.current);
-    const [ hasDefaultState, updateHasDefaultState ] = useBooleanState(initialStateSameAsDefault);
-    const [ hasPendingChanges, updateHasPendingChanges ] = useBooleanState(false);
-    const [ state, setCurrentState ] = useState(defaultState);
+    const [defaultState, setDefaultState] = useState($initialState.current);
+    const [hasDefaultState, updateHasDefaultState] = useBooleanState(initialStateSameAsDefault);
+    const [state, setCurrentState] = useState(defaultState);
 
     const canResetState = useMemo(() => !!$changedParams.current.size, [state]);
 
-    const [ resetState, updateState ] = useMemo(() => {
+    const [resetState, updateState] = useMemo(() => {
         const requestStateUpdate = (stateUpdateRequest: ReactiveStateUpdateRequest<Value, Param>) => {
             if (!$mounted.current) return;
-            dispatch(latestStateUpdateRequest = stateUpdateRequest);
-
-            Promise.resolve().then(() => {
-                if (stateUpdateRequest !== latestStateUpdateRequest) return;
-                $mounted.current && updateHasPendingChanges(true);
-            });
+            dispatch(stateUpdateRequest);
         };
-
-        let latestStateUpdateRequest: ReactiveStateUpdateRequest<Value, Param> | null = null;
 
         return [
             () => requestStateUpdate('reset'),
-            (stateUpdateRequest: ReactiveStateUpdateRequestWithField<Value, Param>) => requestStateUpdate(stateUpdateRequest)
+            (stateUpdateRequest: ReactiveStateUpdateRequestWithField<Value, Param>) => requestStateUpdate(stateUpdateRequest),
         ];
     }, []);
 
-    const [ STATE, dispatch ] = useReducer(
-        (state, stateUpdateRequest: ReactiveStateUpdateRequest<Value, Param>) => {
-            if (stateUpdateRequest === 'reset') {
-                $changedParams.current.clear();
-                return defaultState;
-            }
+    const [STATE, dispatch] = useReducer((state, stateUpdateRequest: ReactiveStateUpdateRequest<Value, Param>) => {
+        if (stateUpdateRequest === 'reset') {
+            $changedParams.current.clear();
+            return defaultState;
+        }
 
-            let stateUpdated = false;
-            const updatedState = {...stateUpdateRequest} as ReactiveStateRecord<Value, Param>;
+        let stateUpdated = 0;
+        const stateUpdate = { ...stateUpdateRequest } as ReactiveStateRecord<Value, Param>;
 
-            for (const [key, value] of Object.entries<Value | undefined>(stateUpdateRequest)) {
+        Object.entries<Value | undefined>(stateUpdate).forEach(([key, value], index) => {
+            const currentValue = state[key as Param];
+            const updateValue = value ?? undefined;
+
+            if (updateValue !== currentValue) {
+                const updateFlag = 1 << index;
+
+                if ((stateUpdated |= updateFlag) && !hasDefaultState) return;
+
                 const defaultValue = defaultState[key as Param];
-                const updateValue = updatedState[key as Param] = value || defaultValue;
+                const resetsToDefaultValue = (stateUpdate[key as Param] = updateValue ?? defaultValue) === defaultValue;
 
-                hasDefaultState && $changedParams.current[
-                    updateValue === defaultValue ? 'delete' : 'add'
-                ](key as Param);
+                if (resetsToDefaultValue && currentValue === defaultValue) stateUpdated &= ~updateFlag;
 
-                if (updateValue !== state[key as Param]) stateUpdated = true;
+                $changedParams.current[resetsToDefaultValue ? 'delete' : 'add'](key as Param);
             }
+        });
 
-            if (stateUpdated) {
-                return hasDefaultState && $changedParams.current.size === 0
-                    ? defaultState
-                    : Object.freeze({ ...state, ...updatedState });
-            }
-
-            return state;
-        },
-        $initialState.current
-    );
+        return stateUpdated ? Object.freeze({ ...state, ...stateUpdate }) : state;
+    }, $initialState.current);
 
     useEffect(() => {
         if (!$mounted.current) return;
-        updateHasPendingChanges(false);
+        if (state === STATE) return;
 
-        if (!hasPendingChanges || state === STATE) return;
         setCurrentState(STATE);
 
         if (!hasDefaultState) {
             setDefaultState(STATE);
             updateHasDefaultState(true);
         }
-    }, [hasDefaultState, hasPendingChanges, state, STATE]);
+    }, [hasDefaultState, state, STATE]);
 
     return { canResetState, defaultState, resetState, state, updateState };
 };

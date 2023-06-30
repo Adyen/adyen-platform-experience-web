@@ -59,7 +59,7 @@ function Transactions({
             switch (param) {
                 case TransactionFilterParam.ACCOUNT_HOLDER:
                 case TransactionFilterParam.BALANCE_ACCOUNT:
-                    updateFilters({ [param]: value });
+                    updateFilters({ [param]: value || undefined });
                     break;
             }
         };
@@ -68,7 +68,7 @@ function Transactions({
             for (const [param, value] of Object.entries(params)) {
                 const filter = param === DateRangeFilterParam.FROM ? TransactionFilterParam.CREATED_SINCE : TransactionFilterParam.CREATED_UNTIL;
 
-                updateFilters({ [filter]: value });
+                updateFilters({ [filter]: value || undefined });
             }
         };
 
