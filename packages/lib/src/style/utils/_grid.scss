@@ -1,92 +1,73 @@
 @use '../screens';
 @use './breakpoints' as breakpoints;
 
-@mixin adyen-fp-create-grid() {
-    .adyen-fp-grid {
+@mixin adyen-fp-grid-classes($size, $prefix: '') {
+    .#{$prefix}adyen-fp-grid-cols-#{$size} {
         display: grid;
+        grid-template-columns: repeat($size, minmax(0, 1fr));
     }
+    .#{$prefix}adyen-fp-col-span-#{$size} {
+        grid-column: span $size / span $size;
+    }
+    .#{$prefix}adyen-fp-col-start-#{$size} {
+        grid-column-start: $size;
+    }
+    .#{$prefix}adyen-fp-col-end-#{$size} {
+        grid-column-end: $size;
+    }
+    .#{$prefix}adyen-fp-order-#{$size} {
+        order: $size;
+    }
+}
 
-    .adyen-fp-auto-cols-max {
+@mixin adyen-fp-grid-utilities($prefix: '') {
+    .#{$prefix}adyen-fp-auto-cols-max {
         grid-auto-columns: max-content;
     }
 
-    .adyen-fp-auto-cols-min {
+    .#{$prefix}adyen-fp-auto-cols-min {
         grid-auto-columns: min-content;
     }
 
-    .adyen-fp-auto-cols-auto {
+    .#{$prefix}adyen-fp-auto-cols-auto {
+        display: grid;
         grid-template-columns: repeat(auto-fit, minmax(100px, max-content));
     }
 
-    .adyen-fp-col-span-auto {
+    .#{$prefix}adyen-fp-col-span-auto {
         grid-column: auto;
     }
 
-    .adyen-fp-space-cols-between {
+    .#{$prefix}adyen-fp-space-cols-between {
         justify-content: space-between;
     }
 
-    .adyen-fp-cols-max {
+    .#{$prefix}adyen-fp-cols-max {
         grid-column: 1 / -1;
     }
+}
+
+@mixin adyen-fp-generate-responsive-grid-classes($size, $breakpoint: false) {
+    @if $breakpoint != false {
+        @include adyen-fp-grid-classes($size, '#{$breakpoint}\\:');
+    } @else {
+        @include adyen-fp-grid-classes($size);
+    }
+}
+
+@mixin adyen-fp-create-grid() {
+    @include adyen-fp-grid-utilities();
 
     @for $i from 1 through 12 {
-        .adyen-fp-grid-cols-#{$i} {
-            display: grid;
-            grid-template-columns: repeat($i, minmax(0, 1fr));
-        }
-        .adyen-fp-col-span-#{$i} {
-            grid-column: span $i / span $i;
-        }
-        .adyen-fp-col-start-#{$i} {
-            grid-column-start: $i;
-        }
-        .adyen-fp-col-end-#{$i} {
-            grid-column-end: $i;
-        }
-        .adyen-fp-order-#{$i} {
-            order: $i;
-        }
+        @include adyen-fp-generate-responsive-grid-classes($i);
     }
 
     @each $breakpoint in map-keys(breakpoints.$adyen-fp-breakpoints) {
         @include screens.adyen-fp-from-screen-size($breakpoint) {
-            .#{$breakpoint}\:adyen-fp-auto-cols-auto {
-                grid-template-columns: repeat(auto-fit, minmax(100px, max-content));
-            }
-            .#{$breakpoint}\:adyen-fp-space-cols-between {
-                justify-content: space-between;
-            }
-            .#{$breakpoint}\:adyen-fp-cols-max {
-                grid-column: 1 / -1;
-            }
-            .#{$breakpoint}\:adyen-fp-col-span-auto {
-                grid-column: auto;
-            }
-            @for $i from 1 through 12 {
-                .#{$breakpoint}\:adyen-fp-auto-cols-auto {
-                    grid-template-columns: repeat(auto-fit, minmax(100px, max-content));
-                }
-                .#{$breakpoint}\:adyen-fp-space-cols-between {
-                    justify-content: space-between;
-                }
+            @include adyen-fp-grid-utilities('#{$breakpoint}\\:');
 
-                .#{$breakpoint}\:adyen-fp-grid-cols-#{$i} {
-                    display: grid;
-                    grid-template-columns: repeat($i, minmax(0, 1fr));
-                }
-                .#{$breakpoint}\:adyen-fp-col-span-#{$i} {
-                    grid-column: span $i / span $i;
-                }
-                .#{$breakpoint}\:adyen-fp-col-start-#{$i} {
-                    grid-column-start: $i;
-                }
-                .#{$breakpoint}\:adyen-fp-col-end-#{$i} {
-                    grid-column-end: $i;
-                }
-                .#{$breakpoint}\:adyen-fp-order-#{$i} {
-                    order: $i;
-                }
+            @for $i from 1 through 12 {
+                @include adyen-fp-generate-responsive-grid-classes($i, $breakpoint);
             }
         }
     }
