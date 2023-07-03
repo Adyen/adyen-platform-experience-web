@@ -92,5 +92,6 @@
     "processingInformation": "Processing information",
     "transferID": "transferID",
     "type": "Type",
-    "incompleteField": "Incomplete field"
+    "incompleteField": "Incomplete field",
+    "N/A": "N/A"
 }

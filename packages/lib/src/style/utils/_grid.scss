@@ -4,18 +4,89 @@
 @mixin adyen-fp-create-grid() {
     .adyen-fp-grid {
         display: grid;
-        grid-template-columns: repeat(12, minmax(0, 1fr));
+    }
+
+    .adyen-fp-auto-cols-max {
+        grid-auto-columns: max-content;
+    }
+
+    .adyen-fp-auto-cols-min {
+        grid-auto-columns: min-content;
+    }
+
+    .adyen-fp-auto-cols-auto {
+        grid-template-columns: repeat(auto-fit, minmax(100px, max-content));
+    }
+
+    .adyen-fp-col-span-auto {
+        grid-column: auto;
+    }
+
+    .adyen-fp-space-cols-between {
+        justify-content: space-between;
+    }
+
+    .adyen-fp-cols-max {
+        grid-column: 1 / -1;
+    }
+
+    @for $i from 1 through 12 {
+        .adyen-fp-grid-cols-#{$i} {
+            display: grid;
+            grid-template-columns: repeat($i, minmax(0, 1fr));
+        }
+        .adyen-fp-col-span-#{$i} {
+            grid-column: span $i / span $i;
+        }
+        .adyen-fp-col-start-#{$i} {
+            grid-column-start: $i;
+        }
+        .adyen-fp-col-end-#{$i} {
+            grid-column-end: $i;
+        }
+        .adyen-fp-order-#{$i} {
+            order: $i;
+        }
     }
 
     @each $breakpoint in map-keys(breakpoints.$adyen-fp-breakpoints) {
-        @for $i from 1 through 12 {
-            @include screens.adyen-fp-from-screen-size($breakpoint) {
-                .#{$breakpoint}\:cols-#{$i} {
-                    grid-column: auto / span $i !important;
-                }
+        @include screens.adyen-fp-from-screen-size($breakpoint) {
+            .#{$breakpoint}\:adyen-fp-auto-cols-auto {
+                grid-template-columns: repeat(auto-fit, minmax(100px, max-content));
             }
-            .cols-#{$i} {
-                grid-column: auto / span $i;
+            .#{$breakpoint}\:adyen-fp-space-cols-between {
+                justify-content: space-between;
+            }
+            .#{$breakpoint}\:adyen-fp-cols-max {
+                grid-column: 1 / -1;
+            }
+            .#{$breakpoint}\:adyen-fp-col-span-auto {
+                grid-column: auto;
+            }
+            @for $i from 1 through 12 {
+                .#{$breakpoint}\:adyen-fp-auto-cols-auto {
+                    grid-template-columns: repeat(auto-fit, minmax(100px, max-content));
+                }
+                .#{$breakpoint}\:adyen-fp-space-cols-between {
+                    justify-content: space-between;
+                }
+
+                .#{$breakpoint}\:adyen-fp-grid-cols-#{$i} {
+                    display: grid;
+                    grid-template-columns: repeat($i, minmax(0, 1fr));
+                }
+                .#{$breakpoint}\:adyen-fp-col-span-#{$i} {
+                    grid-column: span $i / span $i;
+                }
+                .#{$breakpoint}\:adyen-fp-col-start-#{$i} {
+                    grid-column-start: $i;
+                }
+                .#{$breakpoint}\:adyen-fp-col-end-#{$i} {
+                    grid-column-end: $i;
+                }
+                .#{$breakpoint}\:adyen-fp-order-#{$i} {
+                    order: $i;
+                }
             }
         }
     }

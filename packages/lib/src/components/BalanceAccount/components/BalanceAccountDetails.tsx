@@ -15,10 +15,12 @@ function BalanceAccountDetails(props: BalanceAccountDetailsProps) {
 
             <div className="adyen-fp-details-container">
                 <StatsBar
+                    classNameModifiers={['adyen-fp-grid-cols-3']}
                     items={[
                         {
                             label: i18n.get('balanceAccountId'),
                             value: balanceAccount.id,
+                            classNameModifiers: ['adyen-fp-cols-max', 'md:adyen-fp-col-span-3', 'lg:adyen-fp-col-span-auto'],
                         },
                         {
                             label: i18n.get('defaultCurrency'),
@@ -26,7 +28,7 @@ function BalanceAccountDetails(props: BalanceAccountDetailsProps) {
                         },
                         {
                             label: i18n.get('created'),
-                            value: 'N/A',
+                            value: i18n.get('N/A'),
                         },
                         {
                             label: i18n.get('status'),

@@ -27,6 +27,7 @@ function TransactionsDetails(props: TransactionDetailsProps) {
 
             <div className="adyen-fp-details-container">
                 <StatsBar
+                    classNameModifiers={['adyen-fp-grid-cols-2']}
                     items={[
                         {
                             label: 'Original amount',
@@ -45,10 +46,12 @@ function TransactionsDetails(props: TransactionDetailsProps) {
                         {
                             label: 'Date',
                             value: i18n.fullDate(transaction.createdAt),
+                            classNameModifiers: ['adyen-fp-cols-max', 'md:adyen-fp-col-span-auto', 'adyen-fp-order-3'],
                         },
                         {
                             label: 'Status',
                             value: <Status type={'success'} label={transaction.status} />,
+                            classNameModifiers: ['adyen-fp-order-2', 'md:adyen-fp-order-3'],
                         },
                     ]}
                 />
