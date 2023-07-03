@@ -1,6 +1,5 @@
-import { useEffect, useMemo, useReducer, useRef, useState } from 'preact/hooks';
+import { useMemo, useReducer, useRef, useState } from 'preact/hooks';
 import { ReactiveStateRecord, ReactiveStateUpdateRequest, ReactiveStateUpdateRequestWithField, UseReactiveStateRecord } from './types';
-import useBooleanState from '../useBooleanState';
 import useMounted from '../useMounted';
 
 // [TODO]: Modify hook to also accept object with initial values
@@ -8,15 +7,14 @@ const useReactiveStateWithParams = <Value, Param extends string = string>(
     params: Param[] = [],
     initialStateSameAsDefault = true
 ): UseReactiveStateRecord<Value, Param> => {
-    const $initialState = useRef(Object.freeze(Object.fromEntries(params.map(param => [param])) as ReactiveStateRecord<Value, Param>));
+    const $state = useRef(Object.freeze(Object.fromEntries(params.map(param => [param])) as ReactiveStateRecord<Value, Param>));
+    const $hasDefaultState = useRef(initialStateSameAsDefault);
+    const $markedAsHavingDefaultState = useRef(initialStateSameAsDefault);
     const $changedParams = useRef(new Set<Param>());
+    const $stateVersion = useRef(0);
     const $mounted = useMounted();
 
-    const [defaultState, setDefaultState] = useState($initialState.current);
-    const [hasDefaultState, updateHasDefaultState] = useBooleanState(initialStateSameAsDefault);
-    const [state, setCurrentState] = useState(defaultState);
-
-    const canResetState = useMemo(() => !!$changedParams.current.size, [state]);
+    const [defaultState, setDefaultState] = useState($state.current);
 
     const [resetState, updateState] = useMemo(() => {
         const requestStateUpdate = (stateUpdateRequest: ReactiveStateUpdateRequest<Value, Param>) => {
@@ -30,7 +28,7 @@ const useReactiveStateWithParams = <Value, Param extends string = string>(
         ];
     }, []);
 
-    const [STATE, dispatch] = useReducer((state, stateUpdateRequest: ReactiveStateUpdateRequest<Value, Param>) => {
+    const [state, dispatch] = useReducer((state, stateUpdateRequest: ReactiveStateUpdateRequest<Value, Param>) => {
         if (stateUpdateRequest === 'reset') {
             $changedParams.current.clear();
             return defaultState;
@@ -47,7 +45,7 @@ const useReactiveStateWithParams = <Value, Param extends string = string>(
                 const flagIndex = Math.floor(index / 31);
                 const updateFlag = 1 << index % 31;
 
-                if ((stateUpdateFlags[flagIndex] |= updateFlag) && !hasDefaultState) return;
+                if ((stateUpdateFlags[flagIndex] |= updateFlag) && !$hasDefaultState.current) return;
 
                 const defaultValue = defaultState[key as Param];
                 const resetsToDefaultValue = (stateUpdate[key as Param] = updateValue ?? defaultValue) === defaultValue;
@@ -60,26 +58,41 @@ const useReactiveStateWithParams = <Value, Param extends string = string>(
             }
         });
 
-        if (stateUpdateFlags.some(flag => flag)) {
-            return hasDefaultState && $changedParams.current.size === 0 ? defaultState : Object.freeze({ ...state, ...stateUpdate });
-        }
+        const STATE = stateUpdateFlags.some(flag => flag)
+            ? $hasDefaultState.current && $changedParams.current.size === 0
+                ? defaultState
+                : Object.freeze({ ...state, ...stateUpdate })
+            : state;
 
-        return state;
-    }, $initialState.current);
-
-    useEffect(() => {
-        if (!$mounted.current) return;
-        if (state === STATE) return;
-
-        setCurrentState(STATE);
-
-        if (!hasDefaultState) {
+        if (!$hasDefaultState.current) {
+            // Mark as having default state on the first "non-reset" state update request,
+            // whether it results in a state update or not.
             setDefaultState(STATE);
-            updateHasDefaultState(true);
-        }
-    }, [hasDefaultState, state, STATE]);
+            $markedAsHavingDefaultState.current = true;
 
-    return { canResetState, defaultState, resetState, state, updateState };
+            // Queue a microtask to update $hasDefaultState,
+            // giving just enough time to recompute state version before the update.
+            Promise.resolve().then(() => {
+                $hasDefaultState.current = true;
+            });
+        }
+
+        return STATE;
+    }, $state.current);
+
+    const canResetState = useMemo(() => !!$changedParams.current.size, [state]);
+
+    const stateVersion = useMemo(() => {
+        if (!$hasDefaultState.current && $markedAsHavingDefaultState.current) {
+            $hasDefaultState.current = true;
+            // State version remains the same since default state should ideally be the initial state.
+            return $stateVersion.current;
+        }
+
+        return $state.current !== state && ($state.current = state) ? ++$stateVersion.current : $stateVersion.current;
+    }, [state]);
+
+    return { canResetState, defaultState, resetState, state, stateVersion, updateState };
 };
 
 export default useReactiveStateWithParams;

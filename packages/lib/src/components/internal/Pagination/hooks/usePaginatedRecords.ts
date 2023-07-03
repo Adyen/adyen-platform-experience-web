@@ -116,11 +116,9 @@ const usePaginatedRecords = <T, DataField extends string, FilterValue extends st
     const $mounted = useMounted();
     const $initialFetchInProgress = useRef(true);
     const $awaitable = useRef(createAwaitable<T>());
-    const $filtersVersion = useRef(0);
     const $recordsFilters = usePaginatedRecordsFilters<FilterValue, FilterParam>(filterParams, initialFiltersSameAsDefault);
 
-    const { defaultFilters, filters, updateFilters, ...filtersProps } = $recordsFilters;
-    const filtersVersion = useMemo(() => $filtersVersion.current++ || 1, [filters]);
+    const { defaultFilters, filters, filtersVersion, updateFilters, ...filtersProps } = $recordsFilters;
 
     const [parsePaginatedResponseData, usePagination] = useMemo(
         () =>

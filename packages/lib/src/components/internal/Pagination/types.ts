@@ -10,10 +10,11 @@ export const enum PaginationType {
     OFFSET = 'offset',
 }
 
-export type ForPaginationType<T extends PaginationType, CursorType, OffsetType> =
-    T extends PaginationType.CURSOR ? CursorType
-        : T extends PaginationType.OFFSET ? OffsetType
-            : never;
+export type ForPaginationType<T extends PaginationType, CursorType, OffsetType> = T extends PaginationType.CURSOR
+    ? CursorType
+    : T extends PaginationType.OFFSET
+    ? OffsetType
+    : never;
 
 type BothPageNeighbours<T = any> = { [P in PageNeighbour]: T };
 type NextPageNeighbour<T = any> = Omit<BothPageNeighbours<T>, PageNeighbour.PREV>;
@@ -43,7 +44,7 @@ export type BasePaginatedResponseData<T = any, DataField extends string = 'data'
 };
 
 export type PaginatedResponseDataWithLinks<T = any, DataField extends string = 'data'> = BasePaginatedResponseData<T, DataField> & {
-    _links: { [K in PageNeighbour]?: PaginatedResponseDataLink }
+    _links: { [K in PageNeighbour]?: PaginatedResponseDataLink };
 };
 
 export type PaginatedResponseDataWithoutLinks<T = any, DataField extends string = 'data'> = BasePaginatedResponseData<T, DataField> & {
@@ -57,8 +58,9 @@ export type PaginatedResponseData<T = any, DataField extends string = 'data'> =
 
 export interface UseFilters<S extends UseReactiveStateRecord> {
     canResetFilters: S['canResetState'];
-    defaultFilters: S['defaultState'],
+    defaultFilters: S['defaultState'];
     filters: S['state'];
+    filtersVersion: S['stateVersion'];
     resetFilters: S['resetState'];
     updateFilters: S['updateState'];
 }
@@ -74,6 +76,4 @@ export interface UsePagination extends Required<WithPaginationLimit>, WithPagina
     prev: () => void;
 }
 
-export type PaginationProps =
-    Omit<UsePagination, 'goto'> &
-    Partial<Pick<UsePagination, 'goto'>>;
+export type PaginationProps = Omit<UsePagination, 'goto'> & Partial<Pick<UsePagination, 'goto'>>;

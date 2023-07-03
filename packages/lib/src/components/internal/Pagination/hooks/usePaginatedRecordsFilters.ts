@@ -10,10 +10,11 @@ const usePaginatedRecordsFilters = <FilterValue, FilterParam extends string>(
         defaultState: defaultFilters,
         resetState: resetFilters,
         state: filters,
-        updateState: updateFilters
+        stateVersion: filtersVersion,
+        updateState: updateFilters,
     } = useReactiveStateWithParams<FilterValue>(filterParams, initialFiltersSameAsDefault);
 
-    return { canResetFilters, defaultFilters, filters, resetFilters, updateFilters };
+    return { canResetFilters, defaultFilters, filters, filtersVersion, resetFilters, updateFilters };
 };
 
 export default usePaginatedRecordsFilters;
