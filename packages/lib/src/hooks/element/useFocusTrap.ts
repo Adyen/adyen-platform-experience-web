@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useRef } from 'preact/hooks';
+import { InteractionKeyCode } from '@src/components/types';
 import useReflex, { NullableReflexable } from '../useReflex';
-import { InteractionKeyCode } from '../../components/types';
 import withTabbableRoot, { focusIsWithin, isFocusable } from '../../utils/tabbable';
 
 const useFocusTrap = (rootElementRef: NullableReflexable<Element>, onEscape: (interactionKeyPressed: boolean) => any) => {

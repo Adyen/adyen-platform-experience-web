@@ -42,8 +42,8 @@ const isCheckedRadio = (element: Element): element is HTMLInputElement => {
 const shouldRefresh = (tabbables: Element[], records: MutationRecord[]) => {
     for (const record of records) {
         if (record.type !== 'attributes') {
-            for (const node of record.addedNodes) if (isTabbable(node as Element)) return true;
-            for (const node of record.removedNodes) if (tabbables.includes(node as Element)) return true;
+            for (const node of Array.from(record.addedNodes)) if (isTabbable(node as Element)) return true;
+            for (const node of Array.from(record.removedNodes)) if (tabbables.includes(node as Element)) return true;
         } else if (isTabbable(record.target as Element)) return true;
         else if (tabbables.includes(record.target as Element)) return true;
     }
@@ -109,7 +109,7 @@ export const withTabbableRoot = () => {
     const getTabbables = () => {
         tabbables.length = 0;
         if (!(root instanceof Element)) return;
-        for (const maybeTabbable of root.querySelectorAll(SELECTORS)) isTabbable(maybeTabbable) && tabbables.push(maybeTabbable);
+        for (const maybeTabbable of Array.from(root.querySelectorAll(SELECTORS))) isTabbable(maybeTabbable) && tabbables.push(maybeTabbable);
         if (!focusIsWithin(root)) return;
         tabbableRoot.current = document.activeElement;
     };

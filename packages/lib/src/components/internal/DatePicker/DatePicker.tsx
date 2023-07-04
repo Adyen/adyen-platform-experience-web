@@ -1,8 +1,8 @@
 import { useCallback, useMemo, useState } from 'preact/hooks';
+import { InteractionKeyCode } from '@src/components/types';
 import { DatePickerProps } from './types';
 import { getCalendarDateString } from '../Calendar/internal/createCalendar';
 import { CalendarTraversalControls } from '../Calendar/types';
-import { InteractionKeyCode } from '../../types';
 import useDatePickerCalendarControls from './hooks/useDatePickerCalendarControls';
 import useUniqueIdentifier from '../../../hooks/element/useUniqueIdentifier';
 import useIdentifierString from '../../../hooks/element/useIdentifierString';

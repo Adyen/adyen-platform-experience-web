@@ -1,87 +1,89 @@
 ol {
-  list-style: none;
-  margin: 0;
-  padding: 0;
+    list-style: none;
+    margin: 0;
+    padding: 0;
 }
 
 .adyen-fp-calendar {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(16rem, 20rem));
-  justify-content: center;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(16rem, 20rem));
+    justify-content: center;
 
-  &-month {
-    margin-inline: 2rem;
-    text-align: center;
+    &-month {
+        $adyen-fp-calendar-month: &;
+        $adyen-fp-calendar-month__grid: #{$adyen-fp-calendar-month}__grid;
+        margin-inline: 2rem;
+        text-align: center;
 
-    &__name {
-      font-size: 1.25em;
-      font-weight: 600;
-      margin-block-end: 0.875rem;
-    }
-
-    &__grid {
-      width: 100%;
-
-      &-row {
-        display: grid;
-        grid-template-columns: repeat(7, 1fr);
-        justify-content: space-around;
-      }
-
-      &-cell {
-        position: relative;
-
-        &::before {
-          content: '';
-          display: block;
-          padding-top: 100%;
-          z-index: -1;
+        &__name {
+            font-size: 1.25em;
+            font-weight: 600;
+            margin-block-end: 0.875rem;
         }
 
-        > :not(:only-child) {
-          display: none;
+        &__grid {
+            width: 100%;
         }
 
-        > :only-child {
-          align-items: center;
-          display: flex;
-          inset: 0;
-          justify-content: center;
-          position: absolute;
+        #{$adyen-fp-calendar-month__grid}-row {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            justify-content: space-around;
         }
-      }
+
+        #{$adyen-fp-calendar-month__grid}-cell {
+            position: relative;
+
+            &::before {
+                content: '';
+                display: block;
+                padding-top: 100%;
+                z-index: -1;
+            }
+
+            > :not(:only-child) {
+                display: none;
+            }
+
+            > :only-child {
+                align-items: center;
+                display: flex;
+                inset: 0;
+                justify-content: center;
+                position: absolute;
+            }
+        }
+
+        &__day-of-week {
+            font-size: 0.875em;
+            font-weight: 700;
+            text-decoration: none;
+        }
     }
 
-    &__day-of-week {
-      font-size: 0.875em;
-      font-weight: 700;
-      text-decoration: none;
+    &__date {
+        color: #4a4a4a;
+        font-size: 0.875em;
+
+        [data-weekend='true'] & {
+            color: var(--adyen-fp-color-green);
+        }
+
+        [data-first-week-day='true'] & {
+            color: var(--adyen-fp-color-red);
+        }
+
+        [aria-selected='true'] & {
+            color: var(--adyen-fp-color-white);
+
+            &::before {
+                background: var(--adyen-fp-color-black);
+                border-radius: 50%;
+                content: '';
+                inset: 0;
+                position: absolute;
+                z-index: -1;
+            }
+        }
     }
-  }
-
-  &__date {
-    color: #4a4a4a;
-    font-size: 0.875em;
-
-    [data-weekend='true'] & {
-      color: green;
-    }
-
-    [data-first-week-day='true'] & {
-      color: red;
-    }
-
-    [aria-selected='true'] & {
-      color: white;
-
-      &::before {
-        background: black;
-        border-radius: 50%;
-        content: '';
-        inset: 0;
-        position: absolute;
-        z-index: -1;
-      }
-    }
-  }
 }
