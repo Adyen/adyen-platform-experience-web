@@ -47,7 +47,7 @@ function DataGrid<T extends { [k: string]: any }>(props: DataGridProps<T>) {
                             <thead className="adyen-fp-data-grid__head">
                                 <tr className="adyen-fp-data-grid__row">
                                     {props.columns.map(item => (
-                                        <th className="adyen-fp-data-grid__cell" key={item.key}>
+                                        <th className="adyen-fp-data-grid__cell adyen-fp-data-grid__cell--heading" key={item.key}>
                                             {item.label}
                                         </th>
                                     ))}

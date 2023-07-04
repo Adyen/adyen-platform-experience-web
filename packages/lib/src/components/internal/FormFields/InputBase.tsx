@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import { useCallback } from 'preact/hooks';
 import classNames from 'classnames';
-import { ARIA_ERROR_SUFFIX } from '../../../core/Errors/constants';
+import { ARIA_ERROR_SUFFIX } from '@src/core/Errors/constants';
 import { InputBaseProps } from './types';
 import { ForwardedRef, forwardRef, TargetedEvent } from 'preact/compat';
 

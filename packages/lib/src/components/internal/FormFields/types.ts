@@ -1,5 +1,7 @@
 import { JSX } from 'preact';
 import { TargetedEvent } from 'preact/compat';
+import { JSXInternal } from 'preact/src/jsx';
+import AriaRole = JSXInternal.AriaRole;
 
 export interface InputBaseProps {
     autoCapitalize?: 'off' | 'none' | 'on' | 'sentences' | 'words' | 'characters';
@@ -26,5 +28,5 @@ export interface InputBaseProps {
     value?: any;
     maxLength?: number;
     required?: boolean;
-    role?: string;
+    role?: AriaRole;
 }

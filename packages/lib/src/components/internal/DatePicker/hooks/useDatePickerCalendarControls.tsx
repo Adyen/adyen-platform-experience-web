@@ -12,7 +12,7 @@ const useDatePickerCalendarControls = () => {
                 if (!(targetElement instanceof HTMLElement)) return null;
 
                 let directionModifier: string;
-                let labelModifier: string;
+                let labelModifier: 'next' | 'previous';
                 let label: string;
 
                 switch (traversal) {
@@ -31,7 +31,7 @@ const useDatePickerCalendarControls = () => {
 
                 return (
                     <Button
-                        aria-label={i18n.get(`calendar.${labelModifier}`)}
+                        aria-label={i18n.get(`calendar.${labelModifier}Month`)}
                         variant={'ghost'}
                         // disabled={true || false}
                         classNameModifiers={['circle', directionModifier]}
