@@ -4,12 +4,12 @@
     @if map-has-key(breakpoints.$adyen-fp-breakpoints, $breakpoint) {
         $adyen-fp-breakpoint-value: map-get(breakpoints.$adyen-fp-breakpoints, $breakpoint);
 
-        @if $breakpoint == 'xs' {
-            @media (max-width: $adyen-fp-breakpoint-value) {
+        @if $breakpoint == 'sm' {
+            @container (max-width: #{$adyen-fp-breakpoint-value}) {
                 @content;
             }
         } @else {
-            @media (min-width: $adyen-fp-breakpoint-value) {
+            @container (min-width: #{$adyen-fp-breakpoint-value}) {
                 @content;
             }
         }

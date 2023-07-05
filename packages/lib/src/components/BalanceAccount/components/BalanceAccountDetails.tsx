@@ -20,7 +20,7 @@ function BalanceAccountDetails(props: BalanceAccountDetailsProps) {
                         {
                             label: i18n.get('balanceAccountId'),
                             value: balanceAccount.id,
-                            classNameModifiers: ['adyen-fp-cols-max', 'md:adyen-fp-col-span-3', 'lg:adyen-fp-col-span-auto'],
+                            classNameModifiers: ['adyen-fp-cols-max', 'md-adyen-fp-col-span-3', 'lg-adyen-fp-col-span-auto'],
                         },
                         {
                             label: i18n.get('defaultCurrency'),

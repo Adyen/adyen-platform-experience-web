@@ -3,24 +3,24 @@
     border: 1px solid transparent;
     border-radius: var(--adyen-fp-border-radius-xlarge);
     font-size: var(--adyen-fp-font-size-base);
-    gap: var(--adyen-fp-spacing-medium);
     list-style-type: none;
     padding: var(--adyen-fp-spacing-large);
 
-    &__item {
-        //
-    }
+    &__content {
+        gap: var(--adyen-fp-spacing-medium);
+        width: 100%;
 
-    &__label {
-        color: var(--adyen-fp-color-gray-darker);
-        font-size: var(--adyen-fp-font-size-small);
-        letter-spacing: 0.25px;
-        margin-bottom: var(--adyen-fp-spacing-xsmall);
-    }
+        &-label {
+            color: var(--adyen-fp-color-gray-darker);
+            font-size: var(--adyen-fp-font-size-small);
+            letter-spacing: 0.25px;
+            margin-bottom: var(--adyen-fp-spacing-xsmall);
+        }
 
-    &__value {
-        font-size: var(--adyen-fp-font-size-medium);
-        font-weight: 500;
-        overflow-x: auto;
+        &-value {
+            font-size: var(--adyen-fp-font-size-medium);
+            font-weight: 500;
+            overflow-x: auto;
+        }
     }
 }

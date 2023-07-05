@@ -29,7 +29,7 @@
         grid-auto-columns: min-content;
     }
 
-    .#{$prefix}adyen-fp-auto-cols-auto {
+    .#{$prefix}adyen-fp-cols-auto {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(100px, max-content));
     }
@@ -49,7 +49,7 @@
 
 @mixin adyen-fp-generate-responsive-grid-classes($size, $breakpoint: false) {
     @if $breakpoint != false {
-        @include adyen-fp-grid-classes($size, '#{$breakpoint}\\:');
+        @include adyen-fp-grid-classes($size, '#{$breakpoint}-');
     } @else {
         @include adyen-fp-grid-classes($size);
     }
@@ -58,13 +58,17 @@
 @mixin adyen-fp-create-grid() {
     @include adyen-fp-grid-utilities();
 
+    .adyen-fp-responsive-container {
+        container-type: inline-size;
+    }
+
     @for $i from 1 through 12 {
         @include adyen-fp-generate-responsive-grid-classes($i);
     }
 
     @each $breakpoint in map-keys(breakpoints.$adyen-fp-breakpoints) {
         @include screens.adyen-fp-from-screen-size($breakpoint) {
-            @include adyen-fp-grid-utilities('#{$breakpoint}\\:');
+            @include adyen-fp-grid-utilities('#{$breakpoint}-');
 
             @for $i from 1 through 12 {
                 @include adyen-fp-generate-responsive-grid-classes($i, $breakpoint);
