@@ -7,5 +7,6 @@ export interface UseReactiveStateRecord<Value = any, Param extends string = stri
     defaultState: Readonly<ReactiveStateRecord<Value, Param>>;
     resetState: () => void;
     state: Readonly<ReactiveStateRecord<Value, Param>>;
+    stateVersion: number;
     updateState: (stateUpdateRequest: ReactiveStateUpdateRequestWithField<Value, Param>) => void;
 }
