@@ -12,8 +12,11 @@ ol {
     &-month {
         $adyen-fp-calendar-month: &;
         $adyen-fp-calendar-month__grid: #{$adyen-fp-calendar-month}__grid;
-        margin-inline: 2rem;
         text-align: center;
+
+        &:not(:only-child) {
+            margin-inline: 2rem;
+        }
 
         &__name {
             font-size: 1.25em;
