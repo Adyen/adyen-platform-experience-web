@@ -35,7 +35,7 @@ function LegalEntityOrganization({ legalEntity, onGetTransferInstrument }: Legal
             tabs={[
                 {
                     label: 'overview',
-                    content: <StructuredList items={organizationListItems} />,
+                    content: <StructuredList items={organizationListItems} grid={false} />,
                     id: 'overview',
                 },
                 {

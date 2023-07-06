@@ -49,7 +49,9 @@ function Tabs<T extends TabProps[]>(props: TabComponentProps<T>) {
                         onFocus={() => setSelectedIndex(index)}
                         tabIndex={selectedIndex === index ? 0 : -1}
                     >
-                        <span className="adyen-fp-tabs__tab-content">{i18n.get(tab.label)}</span>
+                        <div className="adyen-fp-tabs__tab-content">
+                            <span className="adyen-fp-tabs__tab-content-tab-label">{i18n.get(tab.label)}</span>
+                        </div>
                     </button>
                 ))}
             </div>

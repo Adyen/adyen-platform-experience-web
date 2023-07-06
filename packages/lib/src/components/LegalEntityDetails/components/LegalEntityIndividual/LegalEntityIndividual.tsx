@@ -20,6 +20,7 @@ function LegalEntityIndividual({ legalEntity }: { legalEntity: ILegalEntityIndiv
                 }, ${individual.residentialAddress.city}`,
                 countryOfResidence: individual.residentialAddress.country,
             }}
+            grid={false}
         />
     );
 }

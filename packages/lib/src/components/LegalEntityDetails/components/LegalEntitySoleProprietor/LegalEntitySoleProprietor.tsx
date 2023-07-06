@@ -18,7 +18,7 @@ function LegalEntitySoleProprietor({ legalEntity }: { legalEntity: ILegalEntityS
         taxExempt: soleProprietorship.vatAbsenceReason ?? i18n.get('no'),
     };
 
-    return <StructuredList layout={'3-9'} items={individualListItems} />;
+    return <StructuredList layout={'3-9'} items={individualListItems} grid={false} />;
 }
 
 export default LegalEntitySoleProprietor;

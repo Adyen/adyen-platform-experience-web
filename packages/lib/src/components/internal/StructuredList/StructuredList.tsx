@@ -12,6 +12,7 @@ export default function StructuredList({
     renderValue,
     renderLabel,
     layout = `${DEFAULT_LAYOUT_LABEL}-${DEFAULT_LAYOUT_VALUE}`,
+    grid = true,
 }: StructuredListProps) {
     const splitLayout = layout.split('-');
     const labelWidth = splitLayout[0] ?? DEFAULT_LAYOUT_LABEL;
@@ -20,20 +21,20 @@ export default function StructuredList({
     return (
         <div className="adyen-fp-structured-list">
             {formattedItems.map(item => (
-                <div
-                    v-for="item in itemsWithId"
+                <dl
                     key={item.id}
-                    className={classNames('adyen-fp-structured-list__item adyen-fp-structured-list__grid adyen-fp-structured-list__item', {
+                    className={classNames('adyen-fp-structured-list__item adyen-fp-structured-list__item', {
                         'adyen-fp-structured-list__item--has-highlight': highlightable,
+                        'adyen-fp-structured-list__grid': grid,
                     })}
                 >
-                    <div className={classNames('adyen-fp-structured-list__label', `adyen-fp-structured-list__grid--width-${labelWidth}-of-12`)}>
+                    <dt className={classNames('adyen-fp-structured-list__label', `adyen-fp-structured-list__grid--width-${labelWidth}-of-12`)}>
                         {renderLabel ? renderLabel(item.label) : <div name="label">{item.label}</div>}
-                    </div>
-                    <div className={classNames('adyen-fp-structured-list__content', `adyen-fp-structured-list__grid--width-${valueWidth}-of-12`)}>
+                    </dt>
+                    <dd className={classNames('adyen-fp-structured-list__content', `adyen-fp-structured-list__grid--width-${valueWidth}-of-12`)}>
                         {renderValue ? renderValue(item.value) : <div>{item.value}</div>}
-                    </div>
-                </div>
+                    </dd>
+                </dl>
             ))}
         </div>
     );

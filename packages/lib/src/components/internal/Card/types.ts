@@ -12,4 +12,5 @@ export interface CardProps {
     openByDefault?: boolean;
     collapsible?: boolean;
     buttonAriaLabel?: string;
+    classNameModifiers?: string[];
 }

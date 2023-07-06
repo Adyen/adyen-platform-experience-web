@@ -12,4 +12,5 @@ export interface StructuredListProps {
     highlightable?: boolean;
     renderLabel?: (val: string) => ComponentChild;
     renderValue?: (val: ListValue) => ComponentChild;
+    grid?: boolean;
 }
