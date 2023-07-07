@@ -7,6 +7,31 @@ export type CalendarMonth = CalendarDay | 7 | 8 | 9 | 10 | 11;
 export type CalendarSlidingWindowMonth = 1 | 2 | 3 | 4 | 6 | 12;
 export type CalendarMonthEndDate = 28 | 29 | 30 | 31;
 
+export const enum CalendarFlag {
+    WEEK_START = 0x1,
+    WEEK_END = 0x2,
+    TODAY = 0x4,
+    MONTH_START = 0x10,
+    MONTH_END = 0x20,
+    WITHIN_MONTH = 0x40,
+    RANGE_START = 0x100,
+    RANGE_END = 0x200,
+    WITHIN_RANGE = 0x400,
+    SELECTION_START = 0x1000,
+    SELECTION_END = 0x2000,
+    WITHIN_SELECTION = 0x4000,
+    FAUX_SELECTION_START = 0x10000,
+    FAUX_SELECTION_END = 0x20000,
+    WITHIN_FAUX_SELECTION = 0x40000,
+}
+
+export const enum CalendarSelectionSnap {
+    FARTHEST_EDGE,
+    NEAREST_EDGE,
+    START_EDGE,
+    END_EDGE,
+}
+
 export const enum CalendarCursorShift {
     FIRST_MONTH_DAY = 'FIRST_MONTH_DAY',
     LAST_MONTH_DAY = 'LAST_MONTH_DAY',
@@ -17,13 +42,13 @@ export const enum CalendarCursorShift {
     PREV_MONTH = 'PREV_MONTH',
     NEXT_MONTH = 'NEXT_MONTH',
     PREV_WEEK = 'PREV_WEEK',
-    NEXT_WEEK = 'NEXT_WEEK'
+    NEXT_WEEK = 'NEXT_WEEK',
 }
 
 export const enum CalendarShift {
     MONTH = 'MONTH',
     WINDOW = 'WINDOW',
-    YEAR = 'YEAR'
+    YEAR = 'YEAR',
 }
 
 export const enum CalendarTraversal {
@@ -32,12 +57,12 @@ export const enum CalendarTraversal {
     PREV_WINDOW = 'PREV_WINDOW',
     NEXT_WINDOW = 'NEXT_WINDOW',
     PREV_YEAR = 'PREV_YEAR',
-    NEXT_YEAR = 'NEXT_YEAR'
+    NEXT_YEAR = 'NEXT_YEAR',
 }
 
 export const enum CalendarTraversalControls {
     CONDENSED = 'CONDENSED',
-    EXPANDED = 'EXPANDED'
+    EXPANDED = 'EXPANDED',
 }
 
 export interface CalendarIterable<IteratorValue> extends Iterable<IteratorValue> {

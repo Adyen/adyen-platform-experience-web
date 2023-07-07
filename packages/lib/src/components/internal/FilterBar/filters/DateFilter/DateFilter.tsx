@@ -6,7 +6,7 @@ import BaseFilter from '../BaseFilter';
 import Language from '../../../../../language';
 import Calendar from '@src/components/internal/Calendar/Calendar';
 import { DAY_MS } from '@src/components/internal/Calendar/internal/utils';
-import { CalendarTraversalControls } from '@src/components/internal/Calendar/types';
+import { CalendarSelectionSnap, CalendarTraversalControls } from '@src/components/internal/Calendar/types';
 import useDatePickerCalendarControls from '@src/components/internal/DatePicker/hooks/useDatePickerCalendarControls';
 import '@src/components/internal/DatePicker/DatePicker.scss';
 import './DateFilter.scss';
@@ -49,9 +49,13 @@ const renderDateFilterModalBody = (() => {
             });
 
             const updateValue = (field: DateRangeFilterParam, value: string | number) => {
+                if (fromTimestamp === toTimestamp && (fromTimestampOffset as number) > (toTimestampOffset as number)) {
+                    [fromTimestampOffset, toTimestampOffset] = [toTimestampOffset, fromTimestampOffset];
+                }
+
                 const isFromField = field === DateRangeFilterParam.FROM;
-                const setValue = isFromField ? setFromValue : setToValue;
                 const dateValue = typeof value === 'number' ? value + ((isFromField ? fromTimestampOffset : toTimestampOffset) || 0) : value;
+                const setValue = isFromField ? setFromValue : setToValue;
 
                 setValue(previous => {
                     const current = resolveDate(dateValue);
@@ -62,29 +66,60 @@ const renderDateFilterModalBody = (() => {
 
             const resetValues = () => dateRangeFilterParams.forEach(field => updateValue(field, ''));
 
-            const selectDate = (date: string) => {
+            const selectDate = (date: string, snapBehavior: CalendarSelectionSnap = CalendarSelectionSnap.FARTHEST_EDGE) => {
                 const timestamp = new Date(date).setHours(0, 0, 0, 0);
 
-                if (fromTimestamp || toTimestamp) {
-                    if (!fromTimestamp) {
-                        fromTimestamp = toTimestamp;
-                        timestamp - DAY_MS < (toTimestamp as number) ? (fromTimestamp = timestamp) : (toTimestamp = timestamp);
-                    } else if (!toTimestamp) {
-                        toTimestamp = fromTimestamp;
-                        timestamp < (fromTimestamp as number) ? (fromTimestamp = timestamp) : (toTimestamp = timestamp);
-                    } else if (timestamp < fromTimestamp) fromTimestamp = timestamp;
+                if (fromTimestamp === undefined && toTimestamp === undefined) fromTimestamp = timestamp;
+                else if (fromTimestamp !== undefined && toTimestamp !== undefined) {
+                    if (timestamp < fromTimestamp) fromTimestamp = timestamp;
                     else if (timestamp - DAY_MS >= toTimestamp) toTimestamp = timestamp;
-                    else if (timestamp - fromTimestamp > toTimestamp - timestamp) fromTimestamp = timestamp;
-                    else toTimestamp = timestamp;
-                } else fromTimestamp = timestamp;
+                    else {
+                        switch (snapBehavior) {
+                            case CalendarSelectionSnap.END_EDGE:
+                                toTimestamp = timestamp;
+                                break;
+                            case CalendarSelectionSnap.FARTHEST_EDGE:
+                            case CalendarSelectionSnap.NEAREST_EDGE: {
+                                let fromStart = timestamp - fromTimestamp;
+                                let toEnd = toTimestamp - timestamp;
 
-                timestamp === fromTimestamp && updateValue(DateRangeFilterParam.FROM, fromTimestamp);
-                timestamp === toTimestamp && updateValue(DateRangeFilterParam.TO, toTimestamp);
+                                if (snapBehavior === CalendarSelectionSnap.NEAREST_EDGE) [fromStart, toEnd] = [toEnd, fromStart];
+                                if (fromStart > toEnd) fromTimestamp = timestamp;
+                                else toTimestamp = timestamp;
+
+                                break;
+                            }
+                            case CalendarSelectionSnap.START_EDGE:
+                            default:
+                                fromTimestamp = timestamp;
+                                break;
+                        }
+                    }
+                } else if (fromTimestamp === undefined && toTimestamp !== undefined) {
+                    fromTimestamp = toTimestamp;
+                    timestamp - DAY_MS < (toTimestamp as number) ? (fromTimestamp = timestamp) : (toTimestamp = timestamp);
+                } else if (fromTimestamp !== undefined && toTimestamp === undefined) {
+                    toTimestamp = fromTimestamp;
+                    timestamp < (fromTimestamp as number) ? (fromTimestamp = timestamp) : (toTimestamp = timestamp);
+                }
+
+                if (fromTimestamp === undefined) fromTimestamp = toTimestamp;
+                if (toTimestamp === undefined) toTimestamp = fromTimestamp;
+
+                if (timestamp === fromTimestamp) updateValue(DateRangeFilterParam.FROM, fromTimestamp);
+                if (timestamp === toTimestamp) updateValue(DateRangeFilterParam.TO, toTimestamp);
+
+                return [fromTimestamp as number, toTimestamp as number];
             };
+
+            if (fromTimestampOffset === undefined) fromTimestampOffset = 0;
+            if (toTimestampOffset === undefined) toTimestampOffset = DAY_MS - 1;
+
+            const originDate = selectDate(new Date(fromTimestamp || toTimestamp || Date.now()).toISOString())[0];
 
             updateValue(DateRangeFilterParam.FROM, fromTimestamp || '');
             updateValue(DateRangeFilterParam.TO, toTimestamp || '');
-            setCalendarOriginDate(fromTimestamp || toTimestamp || undefined);
+            setCalendarOriginDate(originDate);
 
             return [selectDate, resetValues] as const;
         }, [from, to]);
