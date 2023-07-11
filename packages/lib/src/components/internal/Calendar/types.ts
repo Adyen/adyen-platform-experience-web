@@ -1,4 +1,4 @@
-import { ComponentChild } from 'preact';
+import { Attributes, ClassAttributes, ComponentChild, ComponentChildren, ComponentType, JSX } from 'preact';
 
 export type CalendarDate = Date | number | string;
 export type CalendarFirstWeekDay = 0 | 1;
@@ -10,7 +10,8 @@ export type CalendarMonthEndDate = 28 | 29 | 30 | 31;
 export const enum CalendarFlag {
     WEEK_START = 0x1,
     WEEK_END = 0x2,
-    TODAY = 0x4,
+    WEEKEND = 0x4,
+    TODAY = 0x8,
     MONTH_START = 0x10,
     MONTH_END = 0x20,
     WITHIN_MONTH = 0x40,
@@ -23,6 +24,12 @@ export const enum CalendarFlag {
     FAUX_SELECTION_START = 0x10000,
     FAUX_SELECTION_END = 0x20000,
     WITHIN_FAUX_SELECTION = 0x40000,
+}
+
+export const enum CalendarRenderToken {
+    DATE,
+    DAY_OF_WEEK,
+    MONTH_HEADER,
 }
 
 export const enum CalendarSelectionSnap {
@@ -126,13 +133,18 @@ export interface CalendarConfig {
 export interface CalendarProps extends CalendarConfig {
     offset?: number;
     onSelected?: (date: any) => void;
+    render?: CalendarRenderer<{
+        children?: ComponentChildren[] | ComponentChildren;
+        props?: CalendarRenderProps;
+        type?: keyof JSX.IntrinsicElements | ComponentType | string;
+    }>;
     renderControl?: (traversal: CalendarTraversal, controlRootProps: CalendarTraversalControlRootProps) => ComponentChild;
     trackToday?: boolean;
     traversalControls?: CalendarTraversalControls;
 }
 
 export interface CalendarCursorRootProps {
-    onClickCapture?: (evt: Event) => void;
+    onClickCapture: (evt: Event) => void;
     onKeyDownCapture: (evt: KeyboardEvent) => void;
 }
 
@@ -140,3 +152,31 @@ export interface CalendarTraversalControlRootProps {
     key: any;
     onClick: (evt: Event) => void;
 }
+
+export type CalendarRenderProps =
+    | (ClassAttributes<any> & (JSX.DOMAttributes<any> | JSX.SVGAttributes<any>))
+    | (Attributes & Record<string, any>)
+    | null;
+
+export interface CalendarRenderTokenContext {
+    [CalendarRenderToken.DATE]: {
+        className?: string;
+        displayDate: string;
+        dateTime: string;
+        dateTimeClassName?: string;
+        dateTimeProps?: CalendarRenderProps;
+        flags: number;
+        props?: CalendarRenderProps;
+    };
+    [CalendarRenderToken.DAY_OF_WEEK]: {
+        className?: string;
+        flags: number;
+    };
+    [CalendarRenderToken.MONTH_HEADER]: {};
+}
+
+export type CalendarRenderer<T = ComponentChild> = (
+    token: CalendarRenderToken,
+    ctx: CalendarRenderTokenContext[CalendarRenderToken],
+    render?: CalendarProps['render']
+) => T;

@@ -7,12 +7,12 @@ import './Calendar.scss';
 
 function Calendar(props: CalendarProps) {
     const { calendar, cursorElementRef, cursorRootProps, today } = useCalendar(props);
-    const { renderControl, traversalControls } = props;
+    const { render, renderControl, traversalControls } = props;
 
     return (
         <div role="group" aria-label="calendar">
             <CalendarControls calendar={calendar} controls={traversalControls} renderControl={renderControl} />
-            <CalendarGrid ref={cursorElementRef} calendar={calendar} cursorRootProps={cursorRootProps} today={today} />
+            <CalendarGrid ref={cursorElementRef} calendar={calendar} cursorRootProps={cursorRootProps} render={render} today={today} />
         </div>
     );
 }

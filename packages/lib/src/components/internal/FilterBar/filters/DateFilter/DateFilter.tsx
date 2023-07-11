@@ -6,7 +6,15 @@ import BaseFilter from '../BaseFilter';
 import Language from '../../../../../language';
 import Calendar from '@src/components/internal/Calendar/Calendar';
 import { DAY_MS } from '@src/components/internal/Calendar/internal/utils';
-import { CalendarSelectionSnap, CalendarTraversalControls } from '@src/components/internal/Calendar/types';
+import {
+    CalendarFlag,
+    CalendarProps,
+    CalendarRenderToken,
+    CalendarRenderTokenContext,
+    CalendarSelectionSnap,
+    CalendarTraversalControls,
+} from '@src/components/internal/Calendar/types';
+import { withFlag } from '@src/components/internal/Calendar/components/CalendarGrid/utils';
 import useDatePickerCalendarControls from '@src/components/internal/DatePicker/hooks/useDatePickerCalendarControls';
 import '@src/components/internal/DatePicker/DatePicker.scss';
 import './DateFilter.scss';
@@ -41,7 +49,7 @@ const renderDateFilterModalBody = (() => {
         const [calendarOriginDate, setCalendarOriginDate] = useState<number>();
         const [renderControl, calendarControlsContainerRef] = useDatePickerCalendarControls();
 
-        const [selectDate, resetValues] = useMemo(() => {
+        const [selectDate, resetValues, render] = useMemo(() => {
             let [[fromTimestampOffset, fromTimestamp] = [], [toTimestampOffset, toTimestamp] = []] = [from, to].map(dateValue => {
                 let date: Date | undefined | number = dateValue ? new Date(dateValue) : undefined;
                 const offset = date && +date - (date = date.setHours(0, 0, 0, 0));
@@ -64,9 +72,32 @@ const renderDateFilterModalBody = (() => {
                 });
             };
 
+            const render = ((token, ctx) => {
+                switch (token) {
+                    case CalendarRenderToken.DATE: {
+                        const { dateTime, flags } = ctx as CalendarRenderTokenContext[typeof token];
+                        const props = { flags } as any;
+
+                        if (withFlag(flags, CalendarFlag.WITHIN_MONTH)) {
+                            const timestamp = new Date(dateTime).setHours(0, 0, 0, 0);
+
+                            if (timestamp >= (fromTimestamp as number) && timestamp <= (toTimestamp as number))
+                                props.flags |= CalendarFlag.WITHIN_SELECTION;
+
+                            if (timestamp === fromTimestamp) props.flags |= CalendarFlag.SELECTION_START;
+                            if (timestamp === toTimestamp) props.flags |= CalendarFlag.SELECTION_END;
+                        }
+
+                        return { props };
+                    }
+                    default:
+                        return null;
+                }
+            }) as CalendarProps['render'];
+
             const resetValues = () => dateRangeFilterParams.forEach(field => updateValue(field, ''));
 
-            const selectDate = (date: string, snapBehavior: CalendarSelectionSnap = CalendarSelectionSnap.FARTHEST_EDGE) => {
+            const selectDate = (date: string, snapBehavior: CalendarSelectionSnap = CalendarSelectionSnap.START_EDGE) => {
                 const timestamp = new Date(date).setHours(0, 0, 0, 0);
 
                 if (fromTimestamp === undefined && toTimestamp === undefined) fromTimestamp = timestamp;
@@ -115,13 +146,13 @@ const renderDateFilterModalBody = (() => {
             if (fromTimestampOffset === undefined) fromTimestampOffset = 0;
             if (toTimestampOffset === undefined) toTimestampOffset = DAY_MS - 1;
 
-            const originDate = selectDate(new Date(fromTimestamp || toTimestamp || Date.now()).toISOString())[0];
+            const originDate = fromTimestamp || toTimestamp || Date.now();
 
             updateValue(DateRangeFilterParam.FROM, fromTimestamp || '');
             updateValue(DateRangeFilterParam.TO, toTimestamp || '');
             setCalendarOriginDate(originDate);
 
-            return [selectDate, resetValues] as const;
+            return [selectDate, resetValues, render] as const;
         }, [from, to]);
 
         useEffect(() => {
@@ -146,10 +177,12 @@ const renderDateFilterModalBody = (() => {
             <>
                 <div ref={calendarControlsContainerRef} className={'adyen-fp-datepicker__controls'} role="group" />
                 <Calendar
+                    dynamicMonthWeeks={false}
                     firstWeekDay={1}
                     onlyMonthDays={true}
                     onSelected={selectDate}
                     originDate={calendarOriginDate}
+                    render={render}
                     renderControl={renderControl}
                     traversalControls={CalendarTraversalControls.CONDENSED}
                 />
