@@ -16,7 +16,8 @@
         "jsx": "react-jsx",
 
         "paths": {
-            "@src/*": ["./src/*"]
+            "@src/*": ["./src/*"],
+            "@styles/*": ["./src/style/*"]
         }
     },
     "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.d.ts", "src/language/translations/*.json"],
