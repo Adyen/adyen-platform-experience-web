@@ -2,7 +2,7 @@ import classnames from 'classnames';
 import { toChildArray, VNode } from 'preact';
 import { useMemo } from 'preact/hooks';
 import { CalendarGridDateProps } from '@src/components/internal/Calendar/components/CalendarGrid/types';
-import { parseClassName, withFlag } from '@src/components/internal/Calendar/components/CalendarGrid/utils';
+import { parseClassName, hasFlag } from '@src/components/internal/Calendar/components/CalendarGrid/utils';
 import { CalendarFlag } from '@src/components/internal/Calendar/types';
 
 const TRUSTED_FLAGS =
@@ -44,7 +44,7 @@ export const CalendarGridDate = ({
     ...props
 }: CalendarGridDateProps) => {
     const classes = useMemo(() => parseClassName('adyen-fp-calendar-month__grid-cell', className), [className]);
-    const withinMonth = withFlag(flags, CalendarFlag.WITHIN_MONTH);
+    const withinMonth = hasFlag(flags, CalendarFlag.WITHIN_MONTH);
     const dataAttrs = { 'data-within-month': withinMonth } as any;
 
     let child = null;
@@ -92,16 +92,16 @@ export const CalendarGridDate = ({
             />
         );
 
-        dataAttrs['data-today'] = withFlag(flags, CalendarFlag.TODAY);
-        dataAttrs['data-first-week-day'] = withFlag(flags, CalendarFlag.WEEK_START);
-        dataAttrs['data-last-week-day'] = withFlag(flags, CalendarFlag.WEEK_END);
-        dataAttrs['data-weekend'] = withFlag(flags, CalendarFlag.WEEKEND);
-        dataAttrs['data-first-month-day'] = withFlag(flags, CalendarFlag.MONTH_START);
-        dataAttrs['data-last-month-day'] = withFlag(flags, CalendarFlag.MONTH_END);
-        dataAttrs['data-selection-start'] = withFlag(flags, CalendarFlag.SELECTION_START);
-        dataAttrs['data-selection-end'] = withFlag(flags, CalendarFlag.SELECTION_END);
-        dataAttrs['data-selection-start'] = withFlag(flags, CalendarFlag.SELECTION_START);
-        dataAttrs['data-within-selection'] = withFlag(flags, CalendarFlag.WITHIN_SELECTION);
+        dataAttrs['data-today'] = hasFlag(flags, CalendarFlag.TODAY);
+        dataAttrs['data-first-week-day'] = hasFlag(flags, CalendarFlag.WEEK_START);
+        dataAttrs['data-last-week-day'] = hasFlag(flags, CalendarFlag.WEEK_END);
+        dataAttrs['data-weekend'] = hasFlag(flags, CalendarFlag.WEEKEND);
+        dataAttrs['data-first-month-day'] = hasFlag(flags, CalendarFlag.MONTH_START);
+        dataAttrs['data-last-month-day'] = hasFlag(flags, CalendarFlag.MONTH_END);
+        dataAttrs['data-selection-start'] = hasFlag(flags, CalendarFlag.SELECTION_START);
+        dataAttrs['data-selection-end'] = hasFlag(flags, CalendarFlag.SELECTION_END);
+        dataAttrs['data-selection-start'] = hasFlag(flags, CalendarFlag.SELECTION_START);
+        dataAttrs['data-within-selection'] = hasFlag(flags, CalendarFlag.WITHIN_SELECTION);
     }
 
     return (
