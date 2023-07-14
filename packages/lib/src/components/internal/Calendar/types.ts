@@ -133,11 +133,7 @@ export interface CalendarConfig {
 export interface CalendarProps extends CalendarConfig {
     offset?: number;
     onSelected?: (date: any) => void;
-    render?: CalendarRenderer<{
-        children?: ComponentChildren[] | ComponentChildren;
-        props?: CalendarRenderProps;
-        type?: keyof JSX.IntrinsicElements | ComponentType | string;
-    }>;
+    prepare?: (...args: any[]) => any;
     renderControl?: (traversal: CalendarTraversal, controlRootProps: CalendarTraversalControlRootProps) => ComponentChild;
     trackToday?: boolean;
     traversalControls?: CalendarTraversalControls;
@@ -160,23 +156,21 @@ export type CalendarRenderProps =
 
 export interface CalendarRenderTokenContext {
     [CalendarRenderToken.DATE]: {
+        childClassName?: string;
+        childProps?: CalendarRenderProps;
         className?: string;
-        displayDate: string;
         dateTime: string;
-        dateTimeClassName?: string;
-        dateTimeProps?: CalendarRenderProps;
+        displayDate: string;
         flags: number;
         props?: CalendarRenderProps;
     };
     [CalendarRenderToken.DAY_OF_WEEK]: {
+        childClassName?: string;
+        childProps?: CalendarRenderProps;
         className?: string;
         flags: number;
+        labels: readonly [string, string, string];
+        props?: CalendarRenderProps;
     };
     [CalendarRenderToken.MONTH_HEADER]: {};
 }
-
-export type CalendarRenderer<T = ComponentChild> = (
-    token: CalendarRenderToken,
-    ctx: CalendarRenderTokenContext[CalendarRenderToken],
-    render?: CalendarProps['render']
-) => T;

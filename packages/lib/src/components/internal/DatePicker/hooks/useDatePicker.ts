@@ -29,7 +29,7 @@ const useDatePicker = ({ from, to }: DateRange) => {
     const [toValue, setToValue] = useState<string>();
     const [originDate, setOriginDate] = useState<number>();
 
-    const [selectDate, resetRange, renderer] = useMemo(() => {
+    const [selectDate, resetRange, prepare] = useMemo(() => {
         let [[fromTimestampOffset, fromTimestamp] = [], [toTimestampOffset, toTimestamp] = []] = [from, to].map(dateValue => {
             let date: Date | undefined | number = dateValue ? new Date(dateValue) : undefined;
             const offset = date && +date - (date = date.setHours(0, 0, 0, 0));
@@ -52,28 +52,22 @@ const useDatePicker = ({ from, to }: DateRange) => {
             });
         };
 
-        const render = ((token, ctx) => {
+        const prepare = ((token: CalendarRenderToken, ctx: any) => {
             switch (token) {
                 case CalendarRenderToken.DATE: {
-                    const { dateTime, flags } = ctx as CalendarRenderTokenContext[typeof token];
-                    const props = { flags } as any;
-
-                    if (hasFlag(flags, CalendarFlag.WITHIN_MONTH)) {
-                        const timestamp = new Date(dateTime).setHours(0, 0, 0, 0);
+                    if (hasFlag(ctx.flags, CalendarFlag.WITHIN_MONTH)) {
+                        const timestamp = new Date(ctx.dateTime).setHours(0, 0, 0, 0);
 
                         if (timestamp >= (fromTimestamp as number) && timestamp <= (toTimestamp as number))
-                            props.flags |= CalendarFlag.WITHIN_SELECTION;
+                            ctx.flags |= CalendarFlag.WITHIN_SELECTION;
 
-                        if (timestamp === fromTimestamp) props.flags |= CalendarFlag.SELECTION_START;
-                        if (timestamp === toTimestamp) props.flags |= CalendarFlag.SELECTION_END;
+                        if (timestamp === fromTimestamp) ctx.flags |= CalendarFlag.SELECTION_START;
+                        if (timestamp === toTimestamp) ctx.flags |= CalendarFlag.SELECTION_END;
                     }
-
-                    return { props };
+                    break;
                 }
-                default:
-                    return null;
             }
-        }) as CalendarProps['render'];
+        }) as CalendarProps['prepare'];
 
         const resetValues = () => dateRangeKeys.forEach(key => updateValue(key, ''));
 
@@ -132,10 +126,10 @@ const useDatePicker = ({ from, to }: DateRange) => {
         updateValue(DATE_RANGE_TO, toTimestamp || '');
         setOriginDate(originDate);
 
-        return [selectDate, resetValues, render] as const;
+        return [selectDate, resetValues, prepare] as const;
     }, [from, to]);
 
-    return { fromValue, originDate, renderer, resetRange, selectDate, toValue };
+    return { fromValue, originDate, prepare, resetRange, selectDate, toValue };
 };
 
 export default useDatePicker;

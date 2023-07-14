@@ -1,10 +1,12 @@
 import { forwardRef } from 'preact/compat';
-import { CalendarGridProps } from './types';
+import { CalendarGridDateProps, CalendarGridDayOfWeekProps, CalendarGridProps } from './types';
 import { CalendarDay, CalendarFlag, CalendarRenderToken, CalendarRenderTokenContext } from '../../types';
-import renderer from '@src/components/internal/Calendar/components/CalendarGrid/renderer';
+import { flagsProperty, property, propsProperty } from '@src/components/internal/Calendar/components/CalendarGrid/utils';
+import CalendarGridDate from '@src/components/internal/Calendar/components/CalendarGrid/CalendarGridDate';
+import CalendarGridDayOfWeek from '@src/components/internal/Calendar/components/CalendarGrid/CalendarGridDayOfWeek';
 import '../../Calendar.scss';
 
-export default forwardRef(function CalendarGrid({ calendar, cursorRootProps, render, today }: CalendarGridProps, cursorElementRef) {
+export default forwardRef(function CalendarGrid({ calendar, cursorRootProps, prepare, today }: CalendarGridProps, cursorElementRef) {
     return (
         <ol className={'adyen-fp-calendar'} role="none" {...cursorRootProps}>
             {[
@@ -23,13 +25,40 @@ export default forwardRef(function CalendarGrid({ calendar, cursorRootProps, ren
                                 <thead>
                                     <tr className={'adyen-fp-calendar-month__grid-row'}>
                                         {[
-                                            ...calendar.daysOfWeek.map(([long, , short]) => (
-                                                <th key={long} className={'adyen-fp-calendar-month__grid-cell'} scope="col" aria-label={long}>
-                                                    <abbr className={'adyen-fp-calendar-month__day-of-week'} title={long}>
-                                                        {short}
-                                                    </abbr>
-                                                </th>
-                                            )),
+                                            ...calendar.daysOfWeek.map((labels, index) => {
+                                                const [long, , short] = labels;
+                                                const props = { 'aria-label': long, key: long, scope: 'col' };
+                                                const weekday = (index % 7) as CalendarDay;
+
+                                                let flags = 0;
+
+                                                if (weekday === 0) flags |= CalendarFlag.WEEK_START;
+                                                if (weekday === 6) flags |= CalendarFlag.WEEK_END;
+                                                if (calendar.weekendDays.includes(weekday)) flags |= CalendarFlag.WEEKEND;
+
+                                                const renderProps = propsProperty.unwrapped<CalendarGridDayOfWeekProps>(
+                                                    {
+                                                        childClassName: property.mutable('adyen-fp-calendar__day-of-week'),
+                                                        childProps: {
+                                                            children: property.restricted(),
+                                                            className: '',
+                                                        },
+                                                        children: property.mutable<any>(CalendarGridDayOfWeek.CHILD),
+                                                        className: property.mutable('adyen-fp-calendar-month__grid-cell'),
+                                                        flags: flagsProperty(flags),
+                                                        label: short,
+                                                        props: {
+                                                            ...props,
+                                                            children: property.restricted(),
+                                                            className: '',
+                                                        },
+                                                    } as any,
+                                                    true
+                                                );
+
+                                                prepare?.(CalendarRenderToken.DAY_OF_WEEK, renderProps);
+                                                return <CalendarGridDayOfWeek {...renderProps} />;
+                                            }),
                                         ]}
                                     </tr>
                                 </thead>
@@ -70,19 +99,29 @@ export default forwardRef(function CalendarGrid({ calendar, cursorRootProps, ren
                                                             flags |= CalendarFlag.WITHIN_MONTH;
                                                         }
 
-                                                        return renderer(
-                                                            CalendarRenderToken.DATE,
+                                                        const renderProps = propsProperty.unwrapped<CalendarGridDateProps>(
                                                             {
-                                                                // [TODO]: Persistent classnames for date and date-time
-                                                                className: 'adyen-fp-calendar-month__grid-cell',
-                                                                dateTimeClassName: 'adyen-fp-calendar__date',
+                                                                childClassName: property.mutable('adyen-fp-calendar__date'),
+                                                                childProps: {
+                                                                    children: property.restricted(),
+                                                                    className: '',
+                                                                },
+                                                                children: property.restricted(),
+                                                                className: property.mutable('adyen-fp-calendar-month__grid-cell'),
                                                                 dateTime: date,
                                                                 displayDate,
-                                                                flags,
-                                                                props,
-                                                            } as CalendarRenderTokenContext[CalendarRenderToken.DATE],
-                                                            render
+                                                                flags: flagsProperty(flags, CalendarGridDate.TRUSTED_FLAGS),
+                                                                props: {
+                                                                    ...props,
+                                                                    children: property.restricted(),
+                                                                    className: '',
+                                                                },
+                                                            } as any,
+                                                            true
                                                         );
+
+                                                        prepare?.(CalendarRenderToken.DATE, renderProps);
+                                                        return <CalendarGridDate {...renderProps} />;
                                                     }),
                                                 ]}
                                             </tr>

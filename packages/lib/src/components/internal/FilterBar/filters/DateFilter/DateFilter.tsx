@@ -25,7 +25,7 @@ const renderDateFilterModalBody = (() => {
         const { editAction, from, to, onChange, onValueUpdated } = props;
 
         const { i18n } = useCoreContext();
-        const { fromValue, originDate, renderer, resetRange, selectDate, toValue } = useDatePicker({ from, to });
+        const { fromValue, originDate, prepare, resetRange, selectDate, toValue } = useDatePicker({ from, to });
         const [renderControl, calendarControlsContainerRef] = useDatePickerCalendarControls();
 
         useEffect(() => {
@@ -55,7 +55,7 @@ const renderDateFilterModalBody = (() => {
                     onlyMonthDays={true}
                     onSelected={selectDate}
                     originDate={originDate}
-                    render={renderer}
+                    prepare={prepare}
                     renderControl={renderControl}
                     traversalControls={CalendarTraversalControls.CONDENSED}
                 />
