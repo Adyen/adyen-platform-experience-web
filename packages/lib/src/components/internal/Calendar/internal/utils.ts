@@ -83,24 +83,36 @@ export const getCalendarTimeSliceParameters = ({ calendarMonths = 1, originDate,
         calendarStartMonthOffset = 0;
     }
 
-    if (sinceDate !== undefined) {
+    if (sinceDate !== undefined && untilDate !== undefined) {
+        const sinceTimestamp = getMonthTimestamp(sinceDate);
+        const untilTimestamp = getMonthTimestamp(untilDate);
+        const minRelativeMonthOffset = getRelativeMonthOffset(originTimestamp, sinceTimestamp);
+        const maxRelativeMonthOffset = getRelativeMonthOffset(originTimestamp, untilTimestamp);
+
+        if (minRelativeMonthOffset >= 0) {
+            originTimestamp = sinceTimestamp;
+            maxOffset = Math.max(0, maxRelativeMonthOffset - minRelativeMonthOffset);
+            minOffset = 0;
+        } else if (maxRelativeMonthOffset <= 0) {
+            originTimestamp = untilTimestamp;
+            maxOffset = 0;
+            minOffset = Math.min(0, minRelativeMonthOffset - maxRelativeMonthOffset);
+        } else {
+            maxOffset = maxRelativeMonthOffset;
+            minOffset = minRelativeMonthOffset;
+        }
+    } else if (sinceDate !== undefined) {
         const timestamp = getMonthTimestamp(sinceDate);
         const relativeMonthOffset = getRelativeMonthOffset(originTimestamp, timestamp);
 
-        if (relativeMonthOffset >= 0) {
-            originTimestamp = timestamp;
-            minOffset = 0;
-        } else minOffset = relativeMonthOffset;
-    }
-
-    if (untilDate !== undefined) {
+        if (relativeMonthOffset >= 0) originTimestamp = timestamp;
+        minOffset = Math.min(0, relativeMonthOffset);
+    } else if (untilDate !== undefined) {
         const timestamp = getMonthTimestamp(untilDate);
         const relativeMonthOffset = getRelativeMonthOffset(originTimestamp, timestamp);
 
-        if (relativeMonthOffset <= 0) {
-            originTimestamp = timestamp;
-            maxOffset = 0;
-        } else maxOffset = relativeMonthOffset;
+        if (relativeMonthOffset <= 0) originTimestamp = timestamp;
+        maxOffset = Math.max(0, relativeMonthOffset);
     }
 
     if (maxOffset < minOffset) throw new RangeError('INVALID_TIME_SLICE');
