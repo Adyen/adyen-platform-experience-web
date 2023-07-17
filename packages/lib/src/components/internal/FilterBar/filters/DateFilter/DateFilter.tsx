@@ -22,10 +22,10 @@ const computeDateFilterValue = (i18n: Language, fromDate?: string, toDate?: stri
 
 const renderDateFilterModalBody = (() => {
     const DateFilterEditModalBody = (props: FilterEditModalRenderProps<DateFilterProps>) => {
-        const { editAction, from, to, onChange, onValueUpdated } = props;
+        const { editAction, from, to, rangeStart, rangeEnd, onChange, onValueUpdated } = props;
 
         const { i18n } = useCoreContext();
-        const { fromValue, originDate, prepare, resetRange, selectDate, toValue } = useDatePicker({ from, to });
+        const { fromValue, originDate, prepare, resetRange, selectDate, toValue } = useDatePicker({ from, to, rangeStart, rangeEnd });
         const [renderControl, calendarControlsContainerRef] = useDatePickerCalendarControls();
 
         useEffect(() => {
@@ -54,6 +54,8 @@ const renderDateFilterModalBody = (() => {
                     firstWeekDay={1}
                     onlyMonthDays={true}
                     onSelected={selectDate}
+                    sinceDate={rangeStart ? new Date(rangeStart) : undefined}
+                    untilDate={rangeEnd ? new Date(rangeEnd) : undefined}
                     originDate={originDate}
                     prepare={prepare}
                     renderControl={renderControl}
@@ -67,12 +69,25 @@ const renderDateFilterModalBody = (() => {
 })();
 
 export default function DateFilter<T extends DateFilterProps = DateFilterProps>(props: FilterProps<T>) {
-    const { from, to } = props;
+    const { from, to, rangeStart, rangeEnd } = props;
 
     const { i18n } = useCoreContext();
     const fromDate = useMemo(() => resolveDate(from), [from]);
     const toDate = useMemo(() => resolveDate(to), [to]);
+    const rangeStartDate = useMemo(() => resolveDate(rangeStart), [rangeStart]);
+    const rangeEndDate = useMemo(() => resolveDate(rangeEnd), [rangeEnd]);
     const value = useMemo(() => computeDateFilterValue(i18n, fromDate, toDate), [i18n, fromDate, toDate]);
 
-    return <BaseFilter<T> {...props} from={fromDate} to={toDate} value={value} type={'date'} render={renderDateFilterModalBody} />;
+    return (
+        <BaseFilter<T>
+            {...props}
+            from={fromDate}
+            to={toDate}
+            rangeStart={rangeStartDate}
+            rangeEnd={rangeEndDate}
+            value={value}
+            type={'date'}
+            render={renderDateFilterModalBody}
+        />
+    );
 }

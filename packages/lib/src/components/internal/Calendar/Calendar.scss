@@ -61,6 +61,7 @@ ol {
                 margin: 0 -1px;
             }
 
+            &[data-within-selection='1'][data-range-start='1']::before,
             &[data-within-selection='1'][data-first-month-day='1']::before,
             &[data-within-selection='1']:first-child::before,
             &[data-selection-start='1']:nth-child(n)::before {
@@ -69,6 +70,7 @@ ol {
                 margin-left: 0;
             }
 
+            &[data-within-selection='1'][data-range-end='1']::before,
             &[data-within-selection='1'][data-last-month-day='1']::before,
             &[data-within-selection='1']:last-child::before,
             &[data-selection-end='1']:nth-child(n)::before {
@@ -86,7 +88,7 @@ ol {
     }
 
     &__date {
-        color: #4a4a4a;
+        color: var(--adyen-fp-color-gray-darker);
         font-size: 0.875em;
         z-index: 0;
 
@@ -112,6 +114,10 @@ ol {
                 position: absolute;
                 z-index: -1;
             }
+        }
+
+        :not([data-within-range='1']) > & {
+            color: var(--adyen-fp-color-gray);
         }
     }
 }

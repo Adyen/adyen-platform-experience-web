@@ -1,6 +1,15 @@
 import createCalendarIterable from './createCalendarIterable';
 import withSyncEffectCallback from '../../../../utils/syncEffectCallback';
-import { CalendarConfig, CalendarCursorShift, CalendarMonthView, CalendarShift, CalendarView, CalendarWeekView } from '../types';
+import {
+    CalendarConfig,
+    CalendarCursorShift,
+    CalendarDay,
+    CalendarFlag,
+    CalendarMonthView,
+    CalendarShift,
+    CalendarView,
+    CalendarWeekView,
+} from '../types';
 import {
     DAY_MS,
     DAY_OF_WEEK_FORMATS,
@@ -8,6 +17,7 @@ import {
     getMonthEndDate,
     getMonthFirstDayOffset,
     getMonthTimestamp,
+    getTimestamp,
     getWeekendDays,
     mod,
     withRelativeIndexFactory,
@@ -22,14 +32,22 @@ const createCalendar = (config: CalendarConfig, offset: number) => {
     const transitionWeeks: number[] = [];
     const timeSlice = getCalendarTimeSliceParameters(config, offset);
 
-    const { dynamicMonthWeeks = false, firstWeekDay = 0, locale, onlyMonthDays = false, watch } = config;
+    const { dynamicMonthWeeks = false, firstWeekDay = 0, locale, onlyMonthDays = false, sinceDate, untilDate, watch } = config;
     const [numberOfMonths, originTimestamp, minOffset, maxOffset] = timeSlice;
+    const weekendDays = getWeekendDays(firstWeekDay); // [TODO]: Refactor and derive this based on locale (if possible)
     const withEffect = withSyncEffectCallback(watch);
+
+    const rangeStartTimestamp = sinceDate ? getTimestamp(sinceDate) : -Infinity;
+    const rangeEndTimestamp = untilDate ? getTimestamp(untilDate) : Infinity;
+
+    let rangeMinCursorPosition = -1;
+    let rangeMaxCursorPosition = -1;
 
     let days = 0;
     let originMonth: number;
     let originMonthOffset = timeSlice[4];
     let originMonthTimestamp: number;
+    let originMonthStartDay: number;
     let originMonthYear: number;
 
     let cursorMonth: number;
@@ -39,7 +57,7 @@ const createCalendar = (config: CalendarConfig, offset: number) => {
 
     const getCalendarDateByIndex = withRelativeIndexFactory(0, (index: number) => {
         if (index < 0) return null;
-        const date = getCalendarDateString(new Date(originMonthTimestamp + index * DAY_MS));
+        const date = getCalendarDateString(new Date(new Date(originMonthTimestamp).setDate(originMonthStartDay + index + 1)));
         const displayDate = Number(date.slice(-2)).toLocaleString(locale);
         return [date, displayDate];
     });
@@ -51,6 +69,7 @@ const createCalendar = (config: CalendarConfig, offset: number) => {
         const firstMonthTimestamp = (originMonthTimestamp = getMonthTimestamp(originTimestamp, originMonthOffset));
         const firstMonthDate = new Date(firstMonthTimestamp);
 
+        originMonthStartDay = firstMonthDate.getDate();
         originMonth = firstMonthDate.getMonth();
         originMonthYear = firstMonthDate.getFullYear();
         cachedMonths.length = cachedWeeks.length = transitionWeeks.length = 0;
@@ -97,7 +116,8 @@ const createCalendar = (config: CalendarConfig, offset: number) => {
             if (i === 0 && firstDayOffset) {
                 const prevMonthTimestamp = getMonthTimestamp(firstMonthTimestamp, -1);
                 const prevMonthDays = getMonthEndDate(firstMonthTimestamp, -1);
-                originMonthTimestamp = prevMonthTimestamp + (prevMonthDays - firstDayOffset) * DAY_MS;
+                originMonthTimestamp = new Date(prevMonthTimestamp).setDate(prevMonthDays - firstDayOffset + 1);
+                originMonthStartDay = new Date(originMonthTimestamp).getDate();
             }
 
             days = monthOrigin + monthViewDays;
@@ -119,6 +139,17 @@ const createCalendar = (config: CalendarConfig, offset: number) => {
                 getRelativeMonthDateIndexFactory(monthIterationStart, monthIterationEnd, monthOrigin)
             );
         }
+
+        rangeMinCursorPosition =
+            rangeStartTimestamp && originMonthTimestamp < rangeStartTimestamp
+                ? Math.min(days, Math.round((rangeStartTimestamp - originMonthTimestamp) / DAY_MS))
+                : 0;
+
+        rangeMaxCursorPosition = rangeEndTimestamp
+            ? rangeEndTimestamp >= originMonthTimestamp
+                ? Math.min(days, Math.round((rangeEndTimestamp - originMonthTimestamp) / DAY_MS))
+                : -1
+            : days;
 
         resetCursor();
     };
@@ -268,11 +299,35 @@ const createCalendar = (config: CalendarConfig, offset: number) => {
                 ),
             },
             firstWeekDay: { value: firstWeekDay },
+            flags: {
+                value: createCalendarIterable<number>(
+                    () => days,
+                    index => {
+                        let flags = 0;
+
+                        if (index >= 0) {
+                            const date = new Date(originMonthTimestamp).setDate(originMonthStartDay + index);
+                            const weekday = (index % 7) as CalendarDay;
+
+                            if (weekday === 0) flags |= CalendarFlag.WEEK_START;
+                            if (weekday === 6) flags |= CalendarFlag.WEEK_END;
+                            if (weekendDays.includes(weekday)) flags |= CalendarFlag.WEEKEND;
+
+                            if (date >= rangeStartTimestamp && date <= rangeEndTimestamp) flags |= CalendarFlag.WITHIN_RANGE;
+
+                            if (date === rangeStartTimestamp) flags |= CalendarFlag.RANGE_START;
+                            if (date === rangeEndTimestamp) flags |= CalendarFlag.RANGE_END;
+                        }
+
+                        return flags;
+                    }
+                ),
+            },
             months: { value: createCalendarIterable<CalendarMonthView>(numberOfMonths, index => cachedMonths[index] as CalendarMonthView) },
             shift: { value: shiftCalendar },
             shiftCursor: { value: shiftCursor },
             size: { get: () => days },
-            weekendDays: { value: getWeekendDays(firstWeekDay) }, // [TODO]: Refactor and derive this based on locale (if possible)
+            weekendDays: { value: weekendDays },
             weeks: {
                 value: createCalendarIterable<CalendarWeekView>(
                     () => days / 7,

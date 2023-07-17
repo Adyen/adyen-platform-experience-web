@@ -1,4 +1,4 @@
-import { Attributes, ClassAttributes, ComponentChild, ComponentChildren, ComponentType, JSX } from 'preact';
+import { Attributes, ClassAttributes, ComponentChild, JSX } from 'preact';
 
 export type CalendarDate = Date | number | string;
 export type CalendarFirstWeekDay = 0 | 1;
@@ -111,6 +111,7 @@ export interface CalendarView extends CalendarIterable<[string, string] | null> 
     cursorPosition: number;
     daysOfWeek: CalendarIterable<readonly [string, string, string]>;
     firstWeekDay: CalendarFirstWeekDay;
+    flags: CalendarIterable<number>;
     months: CalendarIterable<CalendarMonthView>;
     shift: (monthOffset: number, shift?: CalendarShift) => void;
     shiftCursor: (shift?: CalendarCursorShift | number) => void;

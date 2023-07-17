@@ -20,16 +20,24 @@ const CalendarGridDate = (({
         const dataAttrs = { 'data-within-month': withinMonth } as any;
 
         if (withinMonth) {
+            const withinRange = hasFlag(flags, CalendarFlag.WITHIN_RANGE);
+
             dataAttrs['data-today'] = hasFlag(flags, CalendarFlag.TODAY);
             dataAttrs['data-first-week-day'] = hasFlag(flags, CalendarFlag.WEEK_START);
             dataAttrs['data-last-week-day'] = hasFlag(flags, CalendarFlag.WEEK_END);
             dataAttrs['data-weekend'] = hasFlag(flags, CalendarFlag.WEEKEND);
             dataAttrs['data-first-month-day'] = hasFlag(flags, CalendarFlag.MONTH_START);
             dataAttrs['data-last-month-day'] = hasFlag(flags, CalendarFlag.MONTH_END);
-            dataAttrs['data-selection-start'] = hasFlag(flags, CalendarFlag.SELECTION_START);
-            dataAttrs['data-selection-end'] = hasFlag(flags, CalendarFlag.SELECTION_END);
-            dataAttrs['data-selection-start'] = hasFlag(flags, CalendarFlag.SELECTION_START);
-            dataAttrs['data-within-selection'] = hasFlag(flags, CalendarFlag.WITHIN_SELECTION);
+
+            dataAttrs['data-within-range'] = withinRange;
+
+            if (withinRange) {
+                dataAttrs['data-range-end'] = hasFlag(flags, CalendarFlag.RANGE_END);
+                dataAttrs['data-range-start'] = hasFlag(flags, CalendarFlag.RANGE_START);
+                dataAttrs['data-selection-end'] = hasFlag(flags, CalendarFlag.SELECTION_END);
+                dataAttrs['data-selection-start'] = hasFlag(flags, CalendarFlag.SELECTION_START);
+                dataAttrs['data-within-selection'] = hasFlag(flags, CalendarFlag.WITHIN_SELECTION);
+            }
         }
 
         return [withinMonth, dataAttrs] as const;

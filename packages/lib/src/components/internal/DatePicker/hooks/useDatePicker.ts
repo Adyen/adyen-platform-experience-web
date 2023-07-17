@@ -7,13 +7,13 @@ import {
     CalendarSelectionSnap,
 } from '@src/components/internal/Calendar/types';
 import { hasFlag } from '@src/components/internal/Calendar/components/CalendarGrid/utils';
-import { DAY_MS } from '@src/components/internal/Calendar/internal/utils';
+import { DAY_MS, getTimestamp } from '@src/components/internal/Calendar/internal/utils';
 
 const dateRangeKeys = ['from', 'to'] as const;
 
 export const [DATE_RANGE_FROM, DATE_RANGE_TO] = dateRangeKeys;
 export type DateRangeKey = (typeof dateRangeKeys)[number];
-export type DateRange = { [K in DateRangeKey]?: string };
+export type DateRange = { [K in DateRangeKey | 'rangeStart' | 'rangeEnd']?: string };
 
 export const resolveDate = (date?: any) => {
     try {
@@ -24,25 +24,37 @@ export const resolveDate = (date?: any) => {
     return '';
 };
 
-const useDatePicker = ({ from, to }: DateRange) => {
+const useDatePicker = ({ from, to, rangeStart, rangeEnd }: DateRange) => {
     const [fromValue, setFromValue] = useState<string>();
     const [toValue, setToValue] = useState<string>();
     const [originDate, setOriginDate] = useState<number>();
 
     const [selectDate, resetRange, prepare] = useMemo(() => {
-        let [[fromTimestampOffset, fromTimestamp] = [], [toTimestampOffset, toTimestamp] = []] = [from, to].map(dateValue => {
+        const getTimestampOffset = (date: Date) => +date - date.setHours(0, 0, 0, 0);
+
+        const timestampOffset = getTimestampOffset(new Date());
+        const rangeStartTimestamp = rangeStart ? getTimestamp(rangeStart) + timestampOffset : -Infinity;
+        const rangeEndTimestamp = rangeEnd ? getTimestamp(rangeEnd) + timestampOffset : Infinity;
+
+        let [[fromTimestampOffset, fromTimestamp] = [], [toTimestampOffset, toTimestamp] = []] = [
+            from ? Math.max(+new Date(from), rangeStartTimestamp) : rangeStartTimestamp,
+            to ? Math.min(+new Date(to), rangeEndTimestamp) : rangeEndTimestamp,
+        ].map(dateValue => {
             let date: Date | undefined | number = dateValue ? new Date(dateValue) : undefined;
-            const offset = date && +date - (date = date.setHours(0, 0, 0, 0));
-            return [offset, date] as const;
+            const offset = date && getTimestampOffset(date);
+            return [offset, date && +date] as const;
         });
 
         const updateValue = (key: DateRangeKey, value: string | number) => {
+            let _fromTimestampOffset = fromTimestampOffset;
+            let _toTimestampOffset = toTimestampOffset;
+
             if (fromTimestamp === toTimestamp && (fromTimestampOffset as number) > (toTimestampOffset as number)) {
-                [fromTimestampOffset, toTimestampOffset] = [toTimestampOffset, fromTimestampOffset];
+                [_fromTimestampOffset, _toTimestampOffset] = [_toTimestampOffset, _fromTimestampOffset];
             }
 
             const isFrom = key === DATE_RANGE_FROM;
-            const dateValue = typeof value === 'number' ? value + ((isFrom ? fromTimestampOffset : toTimestampOffset) || 0) : value;
+            const dateValue = typeof value === 'number' ? value + ((isFrom ? _fromTimestampOffset : _toTimestampOffset) || 0) : value;
             const setValue = isFrom ? setFromValue : setToValue;
 
             setValue(previous => {
@@ -127,7 +139,7 @@ const useDatePicker = ({ from, to }: DateRange) => {
         setOriginDate(originDate);
 
         return [selectDate, resetValues, prepare] as const;
-    }, [from, to]);
+    }, [from, to, rangeStart, rangeEnd]);
 
     return { fromValue, originDate, prepare, resetRange, selectDate, toValue };
 };

@@ -9,7 +9,7 @@ export interface CalendarGridProps {
 }
 
 type CalendarGridDateExtendedProps = {
-    childClassName?: JSX.Signalish<string>;
+    childClassName?: JSX.Signalish<string | undefined>;
     childProps?: Exclude<CalendarGridDateExtendedProps['props'], undefined>;
     displayDate: string;
     flags?: number;
@@ -17,7 +17,7 @@ type CalendarGridDateExtendedProps = {
 };
 
 type CalendarGridDayOfWeekExtendedProps = {
-    childClassName?: JSX.Signalish<string>;
+    childClassName?: JSX.Signalish<string | undefined>;
     childProps?: Exclude<CalendarGridDayOfWeekExtendedProps['props'], undefined>;
     flags?: number;
     label: string;

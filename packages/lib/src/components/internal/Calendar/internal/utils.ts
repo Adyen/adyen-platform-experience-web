@@ -29,25 +29,25 @@ export const mod = (num: number, modulo: number) => {
     return unsignedModulo(num, modulo);
 };
 
-export const getNoonTimestamp = (date: CalendarDate = Date.now(), useNoonTodayAsFallback = false) => {
+export const getTimestamp = (date: CalendarDate = Date.now(), useTodayAsFallback = false) => {
     let timestamp: Date;
     try {
         timestamp = new Date(date);
     } catch (ex) {
-        if (useNoonTodayAsFallback) timestamp = new Date();
+        if (useTodayAsFallback) timestamp = new Date();
         else throw ex;
     }
-    return timestamp.setHours(12, 0, 0, 0);
+    return timestamp.setHours(0, 0, 0, 0);
 };
 
 export const getMonthTimestamp = (date: CalendarDate = Date.now(), offset = 0) => {
     assertSafeInteger(offset);
-    const noonTimestamp = new Date(getNoonTimestamp(date));
-    return noonTimestamp.setMonth(noonTimestamp.getMonth() + offset, 1);
+    const timestamp = new Date(getTimestamp(date));
+    return timestamp.setMonth(timestamp.getMonth() + offset, 1);
 };
 
 export const getMonthEndDate = (date: CalendarDate = Date.now(), offset = 0) =>
-    new Date(getMonthTimestamp(date, offset + 1) - DAY_MS).getDate() as CalendarMonthEndDate;
+    new Date(new Date(getMonthTimestamp(date, offset + 1)).setDate(0)).getDate() as CalendarMonthEndDate;
 
 export const getMonthFirstDayOffset = (firstWeekDay: CalendarFirstWeekDay = 0, date: CalendarDate = Date.now(), offset = 0) => {
     const monthFirstDay = new Date(getMonthTimestamp(date, offset)).getDay() as CalendarDay;
@@ -68,14 +68,14 @@ export const getMinimumNearestCalendarMonths = (calendarMonths: CalendarMonth = 
 };
 
 export const getCalendarTimeSliceParameters = ({ calendarMonths = 1, originDate, sinceDate, untilDate }: CalendarConfig, offset: number) => {
-    const noonTimestamp = getNoonTimestamp(originDate, true);
-    const relativeOriginDateIndex = new Date(noonTimestamp).getDate() - 1;
+    const timestamp = getTimestamp(originDate, true);
+    const relativeOriginDateIndex = new Date(timestamp).getDate() - 1;
 
     let calendarStartMonthOffset = offset;
     let maxOffset = Infinity;
     let minOffset = -Infinity;
     let numberOfMonths = calendarMonths;
-    let originTimestamp = getMonthTimestamp(noonTimestamp);
+    let originTimestamp = getMonthTimestamp(timestamp);
 
     try {
         getMonthTimestamp(originDate, offset);
@@ -85,12 +85,22 @@ export const getCalendarTimeSliceParameters = ({ calendarMonths = 1, originDate,
 
     if (sinceDate !== undefined) {
         const timestamp = getMonthTimestamp(sinceDate);
-        if ((minOffset = getRelativeMonthOffset(originTimestamp, timestamp)) >= 0) originTimestamp = timestamp;
+        const relativeMonthOffset = getRelativeMonthOffset(originTimestamp, timestamp);
+
+        if (relativeMonthOffset >= 0) {
+            originTimestamp = timestamp;
+            minOffset = 0;
+        } else minOffset = relativeMonthOffset;
     }
 
     if (untilDate !== undefined) {
         const timestamp = getMonthTimestamp(untilDate);
-        if ((maxOffset = getRelativeMonthOffset(originTimestamp, timestamp)) <= 0) originTimestamp = timestamp;
+        const relativeMonthOffset = getRelativeMonthOffset(originTimestamp, timestamp);
+
+        if (relativeMonthOffset <= 0) {
+            originTimestamp = timestamp;
+            maxOffset = 0;
+        } else maxOffset = relativeMonthOffset;
     }
 
     if (maxOffset < minOffset) throw new RangeError('INVALID_TIME_SLICE');

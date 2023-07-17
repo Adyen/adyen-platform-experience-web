@@ -6,7 +6,9 @@ export const enum DateRangeFilterParam {
 }
 
 export interface DateFilterProps extends BaseFilterProps {
-    onChange: (params?: {[P in DateRangeFilterParam]?: string}) => void;
+    onChange: (params?: { [P in DateRangeFilterParam]?: string }) => void;
+    rangeEnd?: string;
+    rangeStart?: string;
     [DateRangeFilterParam.FROM]?: string;
     [DateRangeFilterParam.TO]?: string;
 }

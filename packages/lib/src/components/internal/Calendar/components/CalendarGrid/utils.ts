@@ -12,6 +12,8 @@ export const parseClassName = (fallbackClassName: string, className: JSX.Signali
     return classes.replace(EXCESS_WHITESPACE_CHAR, '') || fallbackClassName.replace(EXCESS_WHITESPACE_CHAR, '') || undefined;
 };
 
+type ClassNames = { [K: string]: JSX.Signalish<string | undefined> };
+
 type PropertyDescriptor<T = any> = {
     configurable?: boolean;
     enumerable?: boolean;
@@ -90,7 +92,9 @@ export const flagsProperty = (value: number, trustedFlags?: number) => {
 
 export const propsProperty = (() => {
     type UnwrappedProps<T extends Record<string, any>> = {
-        [K in keyof T]: T[K] | (T[K] extends PropertyDescriptor<infer U> ? (U extends Record<string, any> ? UnwrappedProps<U> : U) : T[K]);
+        [K in keyof T]:
+            | (T[K] extends PropertyDescriptor<infer U> ? (U extends Record<string, any> ? UnwrappedProps<U> : U) : T[K])
+            | PropertyDescriptor<T[K]>;
     } & Record<string, any>;
 
     const propsProperty = <T extends Record<string, any> = {}>(props = {} as UnwrappedProps<T>, deepImmutable = false) => {
@@ -118,20 +122,20 @@ export const propsProperty = (() => {
         return property((props = {} as UnwrappedProps<T>) => Object.assign($props, props), $props);
     };
 
-    const unwrapped = <T extends { [P: string]: any } = {}>(props = {} as UnwrappedProps<T>, deepImmutable = false) => {
+    const unwrapped = <T extends Record<string, any> = {}>(props = {} as UnwrappedProps<T>, deepImmutable = false) => {
         const P = propsProperty(props, deepImmutable);
-        return Object.create(null, { P }).P as UnwrappedProps<T>;
+        return Object.create(null, { P }).P as T;
     };
 
     return Object.defineProperties(propsProperty, {
         unwrapped: { value: unwrapped },
     }) as {
         <T extends Record<string, any> = {}>(props?: UnwrappedProps<T>, deepImmutable?: boolean): PropertyDescriptor<UnwrappedProps<T>>;
-        unwrapped: <T extends Record<string, any> = {}>(props?: UnwrappedProps<T>, deepImmutable?: boolean) => UnwrappedProps<T>;
+        unwrapped: <T extends Record<string, any> = {}>(props?: UnwrappedProps<T>, deepImmutable?: boolean) => T;
     };
 })();
 
-export const useClassName = ({ className, fallbackClassName, requiredClassName }: { [K: string]: JSX.Signalish<string | undefined> } = {}) => {
+export const useClassName = ({ className, fallbackClassName, requiredClassName }: ClassNames = {}) => {
     return useMemo(
         () => classnames(parseClassName('', requiredClassName), parseClassName(parseClassName('', fallbackClassName) || '', className)),
         [className, fallbackClassName, requiredClassName]
