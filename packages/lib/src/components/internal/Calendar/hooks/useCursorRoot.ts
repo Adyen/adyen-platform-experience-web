@@ -21,7 +21,7 @@ const useCursorRoot = (calendar: CalendarView, onSelected: CalendarProps['onSele
 
                     if (Number.isFinite(index)) {
                         calendar.shiftCursor(index);
-                        triggerSelection?.();
+                        calendar.cursorPosition === index && triggerSelection?.();
                         break;
                     }
 

@@ -142,14 +142,14 @@ const createCalendar = (config: CalendarConfig, offset: number) => {
 
         rangeMinCursorPosition =
             rangeStartTimestamp && originMonthTimestamp < rangeStartTimestamp
-                ? Math.min(days, Math.round((rangeStartTimestamp - originMonthTimestamp) / DAY_MS))
+                ? Math.min(days - 1, Math.round((rangeStartTimestamp - originMonthTimestamp) / DAY_MS))
                 : 0;
 
         rangeMaxCursorPosition = rangeEndTimestamp
             ? rangeEndTimestamp >= originMonthTimestamp
-                ? Math.min(days, Math.round((rangeEndTimestamp - originMonthTimestamp) / DAY_MS))
+                ? Math.min(days - 1, Math.round((rangeEndTimestamp - originMonthTimestamp) / DAY_MS))
                 : -1
-            : days;
+            : days - 1;
 
         resetCursor();
     };
@@ -201,7 +201,11 @@ const createCalendar = (config: CalendarConfig, offset: number) => {
     const shiftCursor = withEffect((shift?: CalendarCursorShift | number) => {
         if (shift !== undefined) {
             if (typeof shift === 'number') {
-                cursorPosition = Math.max(0, Math.min(shift, days - 1));
+                const nextCursorPosition = Math.max(0, Math.min(shift, days - 1));
+
+                if (nextCursorPosition >= rangeMinCursorPosition && nextCursorPosition <= rangeMaxCursorPosition) {
+                    cursorPosition = nextCursorPosition;
+                } else return;
 
                 for (let i = 1; i <= numberOfMonths; i++) {
                     const nextRelativeCursorPosition = cursorPosition - (cachedMonths[i - 1] as CalendarMonthView).start;
@@ -220,9 +224,9 @@ const createCalendar = (config: CalendarConfig, offset: number) => {
     const updateRelativeCursorPosition = (shift: CalendarCursorShift) => {
         switch (shift) {
             case CalendarCursorShift.FIRST_MONTH_DAY:
-                return (relativeCursorPosition = 0);
+                return (relativeCursorPosition = Math.max(0, rangeMinCursorPosition - cursorMonthView.start));
             case CalendarCursorShift.LAST_MONTH_DAY:
-                return (relativeCursorPosition = cursorMonthView.days - 1);
+                return (relativeCursorPosition = Math.min(cursorMonthView.days - 1, rangeMaxCursorPosition - cursorMonthView.start));
             case CalendarCursorShift.NEXT_MONTH:
                 return cursorIntoNextMonthIfNecessary();
             case CalendarCursorShift.PREV_MONTH:
@@ -243,11 +247,11 @@ const createCalendar = (config: CalendarConfig, offset: number) => {
         switch (shift) {
             case CalendarCursorShift.FIRST_WEEK_DAY:
                 return onlyMonthDays
-                    ? (relativeCursorPosition = Math.max(cursorMonthView.start, weekStart) - cursorMonthView.start)
+                    ? (relativeCursorPosition = Math.max(cursorMonthView.start, weekStart, rangeMinCursorPosition) - cursorMonthView.start)
                     : cursorIntoPreviousMonthIfNecessary(weekDay);
             case CalendarCursorShift.LAST_WEEK_DAY:
                 return onlyMonthDays
-                    ? (relativeCursorPosition = Math.min(cursorMonthView.end, weekStart + 6) - cursorMonthView.start)
+                    ? (relativeCursorPosition = Math.min(cursorMonthView.end, weekStart + 6, rangeMaxCursorPosition) - cursorMonthView.start)
                     : cursorIntoNextMonthIfNecessary(6 - weekDay);
         }
     };
@@ -265,7 +269,7 @@ const createCalendar = (config: CalendarConfig, offset: number) => {
             shiftCalendar(1, CalendarShift.WINDOW);
         }
 
-        return relativeCursorPosition;
+        return (relativeCursorPosition = Math.min(relativeCursorPosition, rangeMaxCursorPosition - cursorMonthView.start));
     };
 
     const cursorIntoPreviousMonthIfNecessary = (daysOffset?: number) => {
@@ -281,7 +285,7 @@ const createCalendar = (config: CalendarConfig, offset: number) => {
             shiftCalendar(-1, CalendarShift.WINDOW);
         }
 
-        return relativeCursorPosition;
+        return (relativeCursorPosition = Math.max(relativeCursorPosition, rangeMinCursorPosition - cursorMonthView.start));
     };
 
     const calendar = createCalendarIterable<[string, string] | null, CalendarView>(
