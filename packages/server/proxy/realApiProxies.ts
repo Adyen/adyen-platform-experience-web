@@ -19,7 +19,7 @@ const makeProxyOptions = ({ url, version, username, password, apiKey, auth }: Ap
 });
 
 export const realApiProxies = (lemApiOptions: ApiOptions, btlApiOptions: ApiOptions, bclApiOptions: ApiOptions): Record<string, ProxyOptions> => {
-    const lemApiProxyOptions = makeProxyOptions(lemApiOptions, true);
+    const lemApiProxyOptions = makeProxyOptions(lemApiOptions);
     const btlApiProxyOptions = makeProxyOptions(btlApiOptions);
     const bclApiProxyOptions = makeProxyOptions(bclApiOptions);
     return {
