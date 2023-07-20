@@ -7,8 +7,7 @@ const parseEnv = (env: Record<string, string | undefined>) => ({
     lemApi: {
         url: env.LEM_API_URL ?? '',
         version: env.LEM_API_VERSION ?? '',
-        username: env.WS_USER ?? '',
-        password: env.VITE_BASIC_PASS ?? '',
+        apiKey: env.LEM_API_KEY,
     },
     BTLApi: {
         url: env.BTL_API_URL ?? '',

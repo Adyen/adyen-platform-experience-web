@@ -1,5 +1,6 @@
 import { ProxyOptions } from 'vite';
 import getHeaders from '../utils/getHeaders';
+import { getBasicAuthHeaders } from '../utils/getBasicAuthHeaders';
 
 interface ApiOptions {
     url: string;
@@ -7,12 +8,13 @@ interface ApiOptions {
     username?: string;
     password?: string;
     apiKey?: string;
+    auth?: string;
 }
 
-const makeProxyOptions = ({ url, version, username, password, apiKey }: ApiOptions): ProxyOptions => ({
+const makeProxyOptions = ({ url, version, username, password, apiKey, auth }: ApiOptions, basicAuth: boolean = false): ProxyOptions => ({
     target: `${url}${version ?? ''}`,
     ...(apiKey ? {} : { auth: `${username}:${password}` }),
-    headers: getHeaders(undefined, apiKey),
+    headers: basicAuth ? getBasicAuthHeaders({ user: username, pass: password }) : getHeaders(undefined, apiKey),
     changeOrigin: true,
 });
 
@@ -24,6 +26,6 @@ export const realApiProxies = (lemApiOptions: ApiOptions, btlApiOptions: ApiOpti
         '/transactions': btlApiProxyOptions,
         '/balanceAccounts': bclApiProxyOptions,
         '/accountHolders': bclApiProxyOptions,
-        '/legalEntity': lemApiProxyOptions,
+        '/legalEntities': lemApiProxyOptions,
     };
 };

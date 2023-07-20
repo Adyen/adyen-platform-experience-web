@@ -33,10 +33,10 @@ export const LEGAL_ENTITY_ORGANIZATION = {
     type: 'organization',
     documentDetails: [
         {
-            id: 'SE322LJ223222D5DNKVB65CMP',
+            id: 'LE322KH223222Q5J3VPCHFH82',
         },
     ],
-    id: 'SE322LJ223222D5DNKVB65CMP',
+    id: 'LE322KH223222Q5J3VPCHFH82',
     capabilities: {
         sendToTransferInstrument: {
             allowed: false,

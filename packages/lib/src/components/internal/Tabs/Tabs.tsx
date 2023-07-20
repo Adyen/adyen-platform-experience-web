@@ -4,7 +4,7 @@ import useCoreContext from '../../../core/Context/useCoreContext';
 import { TabProps, TabComponentProps } from './types';
 
 function Tabs<T extends TabProps[]>(props: TabComponentProps<T>) {
-    const availableTabs = props.tabs.filter(tab => !tab.disabled);
+    const availableTabs = props.tabs;
     const { i18n } = useCoreContext();
     const defaultTab = !props.defaultActiveTab ? 0 : props.tabs.findIndex(tab => tab.id === props.defaultActiveTab);
     const [selectedIndex, setSelectedIndex] = useState(defaultTab === -1 ? 0 : defaultTab);
@@ -48,8 +48,9 @@ function Tabs<T extends TabProps[]>(props: TabComponentProps<T>) {
                         onClick={index === selectedIndex ? undefined : () => setSelectedIndex(index)}
                         onFocus={() => setSelectedIndex(index)}
                         tabIndex={selectedIndex === index ? 0 : -1}
+                        disabled={tab.disabled}
                     >
-                        <span className="adyen-fp-tabs__tab-content">{i18n.get(tab.label)}</span>
+                        <span className="adyen-fp-tabs__tab-content-tab-label">{i18n.get(tab.label)}</span>
                     </button>
                 ))}
             </div>

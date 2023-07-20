@@ -1,4 +1,5 @@
 .adyen-fp-structured-list {
+    // TODO Change this to use the common grid system once is merged
     &__grid {
         display: flex;
 
@@ -23,8 +24,8 @@
         }
 
         &--width-6-of-12 {
-            flex: 0 0 66.6666666667%;
-            max-width: 66.6666666667%;
+            flex: 0 0 50%;
+            max-width: 50%;
         }
 
         &--width-7-of-12 {
@@ -51,6 +52,7 @@
     &__item {
         font-weight: var(--adyen-fp-font-weight-regular);
         line-height: var(--adyen-fp-spacing-large);
+        margin: 0;
 
         + #{&} {
             margin-top: var(--adyen-fp-spacing-small);
@@ -70,6 +72,7 @@
 
     &__content {
         color: var(--adyen-fp-color-black);
+        margin: 0;
         overflow-wrap: anywhere;
     }
 }
