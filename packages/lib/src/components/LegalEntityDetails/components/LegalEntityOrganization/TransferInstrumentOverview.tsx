@@ -1,8 +1,9 @@
-import { GetTransferInstrumentById, TransferInstrument, TransferInstrumentOv } from '../../types';
+import { GetTransferInstrumentById } from '../../types';
 import Card from '../../../internal/Card/Card';
 import './LegalEntityOrganization.scss';
 import useCoreContext from '../../../../core/Context/useCoreContext';
 import { useState } from 'preact/hooks';
+import { TransferInstrument, TransferInstrumentOv } from '../../../../types/models/transferInstrument';
 
 interface TransferInstrumentProps {
     transferInstrument: TransferInstrumentOv;

@@ -1,8 +1,9 @@
-import { GetTransferInstrumentById, ILegalEntityOrganization } from '../../types';
+import { GetTransferInstrumentById } from '../../types';
 import StructuredList from '../../../internal/StructuredList/StructuredList';
 import useCoreContext from '../../../../core/Context/useCoreContext';
 import Tabs from '../../../internal/Tabs/Tabs';
 import TransferInstrumentOverview from './TransferInstrumentOverview';
+import { ILegalEntityOrganization } from '../../../../types/models/api/legal-entities';
 
 interface LegalEntityOrganizationProps {
     legalEntity: ILegalEntityOrganization;

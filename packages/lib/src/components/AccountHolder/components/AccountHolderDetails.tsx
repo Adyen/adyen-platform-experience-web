@@ -2,10 +2,10 @@ import Status from '@src/components/internal/Status';
 import ContactDetails from './ContactDetails';
 import StatsBar from '@src/components/internal/StatsBar';
 import './AccountHolderDetails.scss';
-import { AccountHolderDetailsProps } from '../types';
+import { AccountHolderComponentProps } from '../types';
 import useCoreContext from '@src/core/Context/useCoreContext';
 
-const AccountHolderDetails = ({ accountHolder }: AccountHolderDetailsProps) => {
+const AccountHolderDetails = ({ accountHolder }: AccountHolderComponentProps) => {
     const { i18n } = useCoreContext();
 
     return (

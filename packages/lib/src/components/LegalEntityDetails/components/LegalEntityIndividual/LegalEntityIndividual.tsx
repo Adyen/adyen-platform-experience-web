@@ -1,5 +1,5 @@
-import { ILegalEntityIndividual } from '../../types';
 import StructuredList from '@src/components/internal/StructuredList';
+import { ILegalEntityIndividual } from '../../../../types/models/api/legal-entities';
 function LegalEntityIndividual({ legalEntity }: { legalEntity: ILegalEntityIndividual }) {
     const { individual } = legalEntity;
 

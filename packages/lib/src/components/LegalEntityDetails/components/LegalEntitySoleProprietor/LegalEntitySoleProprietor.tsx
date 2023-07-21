@@ -1,6 +1,6 @@
-import { ILegalEntitySoleProprietor } from '../../types';
 import StructuredList from '../../../internal/StructuredList/StructuredList';
 import useCoreContext from '../../../../core/Context/useCoreContext';
+import { ILegalEntitySoleProprietor } from '../../../../types/models/api/legal-entities';
 
 function LegalEntitySoleProprietor({ legalEntity }: { legalEntity: ILegalEntitySoleProprietor }) {
     const { i18n } = useCoreContext();

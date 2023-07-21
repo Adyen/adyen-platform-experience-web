@@ -1,9 +1,9 @@
 import CoreProvider from '../../core/Context/CoreProvider';
 import UIElement from '../UIElement';
 import BalanceAccountDetails from './components/BalanceAccountDetails';
-import { BalanceAccountDetailsProps } from '../BalanceAccount/types';
+import type { BalanceAccountComponentProps } from '../BalanceAccount/types';
 
-export class BalanceAccountElement extends UIElement<BalanceAccountDetailsProps> {
+export class BalanceAccountElement extends UIElement<BalanceAccountComponentProps> {
     public static type = 'balanceAccountDetails';
 
     get isValid() {
@@ -14,7 +14,7 @@ export class BalanceAccountElement extends UIElement<BalanceAccountDetailsProps>
         return this.props.name ?? this.type;
     }
 
-    formatProps(props: BalanceAccountDetailsProps) {
+    formatProps(props: BalanceAccountComponentProps) {
         return props;
     }
 
@@ -31,7 +31,7 @@ export class BalanceAccountElement extends UIElement<BalanceAccountDetailsProps>
         return (
             <CoreProvider i18n={this.props.i18n} loadingContext={this.props.loadingContext}>
                 <BalanceAccountDetails
-                    ref={(ref: UIElement<BalanceAccountDetailsProps>) => {
+                    ref={(ref: UIElement<BalanceAccountComponentProps>) => {
                         this.componentRef = ref;
                     }}
                     {...this.props}

@@ -1,8 +1,8 @@
 import { CurrencyCode } from '../../utils/constants/currency-codes';
-import { UIElementProps } from '../types';
-import { StatusType } from '@src/components/internal/Status/types';
+import type { UIElementProps } from '../types';
+import type { StatusType } from '@src/components/internal/Status/types';
 
-export interface BalanceAccountDetailsProps extends UIElementProps {
+export interface BalanceAccountComponentProps extends UIElementProps {
     balanceAccount: {
         accountHolderId: string;
         defaultCurrencyCode: CurrencyCode;
