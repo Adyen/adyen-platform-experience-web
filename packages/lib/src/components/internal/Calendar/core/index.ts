@@ -1,8 +1,6 @@
-const FROM_EDGE: unique symbol = Symbol();
-const TO_EDGE: unique symbol = Symbol();
-
-const mod = (int: number, modulo: number) => ((int % modulo) + modulo) % modulo;
-const struct = Function.prototype.call.bind(Object.create, null, null);
+import { getEdgesDistance, getMonthDays, mod, struct, structFrom } from './shared/utils';
+import { Month, Time, WeekDay, WithTimeEdges } from './shared/types';
+import $timeslice from './timeslice';
 
 const enum FrameSize {
     SIZE_1 = 1,
@@ -12,10 +10,6 @@ const enum FrameSize {
     SIZE_6 = 6,
     SIZE_12 = 12,
 }
-
-type WeekDay = 0 | 1 | 2 | 3 | 4 | 5 | 6;
-type Month = WeekDay | 7 | 8 | 9 | 10 | 11;
-type Time = Date | number | string;
 
 const enum TimeFlag {
     WEEK_START = 0x1,
@@ -68,49 +62,30 @@ type TimeFrameMonth = {
 
 type TimeMark = {
     readonly [K: number]: number | undefined;
-    readonly firstDayOffset: WeekDay;
     get firstWeekDay(): WeekDay;
     set firstWeekDay(firstWeekDay: WeekDay | null | undefined);
-    readonly month: Month;
+    readonly month: {
+        readonly index: Month;
+        readonly offset: WeekDay;
+        readonly timestamp: number;
+        readonly year: number;
+    };
     readonly shift: (offset?: number) => TimeMark;
     get timestamp(): number;
     set timestamp(time: Time | null | undefined);
-    readonly year: number;
 };
 
-type TimeSliceEdges<T = {}> = {
-    readonly from: T;
-    readonly to: T;
-};
-
-type TimeSlice = TimeSliceEdges<number> & {
-    readonly offsets: TimeSliceEdges<number>;
+type TimeSlice = WithTimeEdges<number> & {
+    readonly offsets: WithTimeEdges<number>;
     readonly origin: TimeMark;
     readonly span: number;
 };
 
-type TimeSliceFactory = {
-    (from?: Time, to?: Time): TimeSlice;
-    (time?: Time, edge?: typeof FROM_EDGE | typeof TO_EDGE): TimeSlice;
-    readonly Edge: {
-        readonly FROM: typeof FROM_EDGE;
-        readonly TO: typeof TO_EDGE;
-    };
-};
-
 export const timeslice = (() => {
-    const getEdgeDistance = (from: Time, to: Time) => {
-        if ((typeof from === 'number' && Math.abs(from) === Infinity) || (typeof to === 'number' && Math.abs(to) === Infinity)) return Infinity;
-
-        const fromDate = new Date(from);
-        const toDate = new Date(to);
-        return Math.abs(toDate.getMonth() - fromDate.getMonth() + (toDate.getFullYear() - fromDate.getFullYear()) * 12);
-    };
-
     const getEdgeDistances = (origin: Time, from: Time, to: Time) => {
-        const edgeDistance = getEdgeDistance(from, to);
-        const relativeFromEdgeOffset = getEdgeDistance(origin, from);
-        const relativeToEdgeOffset = getEdgeDistance(origin, to);
+        const edgeDistance = getEdgesDistance(from, to);
+        const relativeFromEdgeOffset = getEdgesDistance(origin, from);
+        const relativeToEdgeOffset = getEdgesDistance(origin, to);
 
         let fromEdgeOffset = Infinity;
         let toEdgeOffset = Infinity;
@@ -158,10 +133,8 @@ export const timeslice = (() => {
         let originMonth: Month;
         let originTimestamp: number;
         let originYear: number;
-        let referenceMonth: Month;
         let referenceTime: number;
-        let referenceYear: number;
-        let referenceDate: Date;
+        let referenceTimestamp: number;
         let weekStartDay: WeekDay;
 
         const withFirstWeekDay = (firstWeekDay: WeekDay | null = weekStartDay || 0) => {
@@ -176,31 +149,27 @@ export const timeslice = (() => {
         const withTime = (time?: Time | null) => {
             if (time != undefined) {
                 referenceTime = Math.max(from, Math.min(new Date(time).getTime(), to));
-                referenceDate = new Date(new Date(referenceTime).setHours(0, 0, 0, 0));
+                referenceTimestamp = new Date(referenceTime).setHours(0, 0, 0, 0);
+                const referenceDate = new Date(referenceTimestamp);
 
-                referenceMonth = referenceDate.getMonth() as Month;
-                referenceYear = referenceDate.getFullYear();
+                originMonth = referenceDate.getMonth() as Month;
+                originYear = referenceDate.getFullYear();
 
                 baseOffsetStartDate = (referenceDate.getDate() % 7) - referenceDate.getDay() - 7;
                 offsetStartDate = (baseOffsetStartDate + weekStartDay) % 7;
                 originTimestamp = referenceDate.setDate(offsetStartDate);
-
-                const date = new Date(originTimestamp);
-
-                originDate = date.getDate();
-                originMonth = date.getMonth() as Month;
-                originYear = date.getFullYear();
+                originDate = new Date(originTimestamp).getDate();
             }
         };
 
         const shiftMark = (offset?: number) => {
             if (offset && offset === ~~offset) {
-                withTime(new Date(originTimestamp).setMonth(originMonth + offset + (originDate > 1 ? 1 : 0), 1));
+                withTime(new Date(referenceTimestamp).setMonth(originMonth + offset));
             }
             return mark;
         };
 
-        const mark = Object.create(
+        const mark = structFrom(
             new Proxy(struct(), {
                 get: (target: {}, property: string | symbol, receiver: {}) => {
                     if (typeof property === 'string') {
@@ -214,18 +183,23 @@ export const timeslice = (() => {
                 set: () => true,
             }),
             {
-                firstDayOffset: { get: () => (1 - offsetStartDate) as WeekDay },
                 firstWeekDay: {
                     get: () => weekStartDay,
                     set: withFirstWeekDay,
                 },
-                month: { get: () => referenceMonth },
+                month: {
+                    value: struct({
+                        index: { get: () => originMonth },
+                        offset: { get: () => (1 - offsetStartDate) as WeekDay },
+                        timestamp: { get: () => originTimestamp },
+                        year: { get: () => originYear },
+                    }),
+                },
                 shift: { value: shiftMark },
                 timestamp: {
-                    get: () => originTimestamp,
+                    get: () => referenceTimestamp,
                     set: withTime,
                 },
-                year: { get: () => referenceYear },
             }
         ) as TimeMark;
 
@@ -234,42 +208,16 @@ export const timeslice = (() => {
         return mark;
     };
 
-    const timeslice = ((...args: any[]) => {
-        let endTimestamp = Infinity;
+    return (...args: any[]) => {
         let endEdgeOffset = Infinity;
         let startEdgeOffset = Infinity;
-        let startTimestamp = -Infinity;
         let originTimestamp = Infinity;
 
-        if (args.length >= 2) {
-            let timestamp = new Date(args[0]).getTime();
-
-            if (typeof args[1] === 'symbol') {
-                switch (args[1]) {
-                    case TO_EDGE:
-                        endTimestamp = timestamp;
-                        break;
-
-                    case FROM_EDGE:
-                    default:
-                        startTimestamp = timestamp;
-                        break;
-                }
-            } else {
-                startTimestamp = timestamp;
-                endTimestamp = new Date(args[1]).getTime();
-
-                if (endTimestamp < startTimestamp) {
-                    [endTimestamp, startTimestamp] = [startTimestamp, endTimestamp];
-                }
-            }
-        }
-
+        const { from: startTimestamp, to: endTimestamp, span } = $timeslice(...args);
         const originMark = timemark(startTimestamp, endTimestamp);
 
         const refreshEdgeDistancesIfNecessary = () => {
             if (originTimestamp === originMark.timestamp) return;
-
             [, startEdgeOffset, endEdgeOffset] = getEdgeDistances((originTimestamp = originMark.timestamp), startTimestamp, endTimestamp);
         };
 
@@ -300,16 +248,9 @@ export const timeslice = (() => {
                     return originMark;
                 },
             },
-            span: { value: startEdgeOffset + endEdgeOffset + 1 },
+            span: { value: span },
         }) as TimeSlice;
-    }) as TimeSliceFactory;
-
-    return Object.defineProperty(timeslice, 'Edge', {
-        value: struct({
-            FROM: { value: FROM_EDGE },
-            TO: { value: TO_EDGE },
-        }),
-    });
+    };
 })();
 
 export const timeframe = (() => {
@@ -328,20 +269,6 @@ export const timeframe = (() => {
         FrameSize.SIZE_12,
     ] as const;
 
-    const getMonthDays = (() => {
-        const MONTH_DAYS = [31, [28, 29] as const, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31] as const;
-
-        return (month: Month, year: number, offset = 0) => {
-            const nextMonth = month + offset;
-            const monthIndex = (nextMonth % 12) as Month;
-            const nextYear = year + Math.floor(nextMonth / 12);
-
-            const days = monthIndex === 1 ? MONTH_DAYS[1][(nextYear % 100 ? nextYear % 4 : nextYear % 400) && 1] : MONTH_DAYS[monthIndex];
-
-            return [days, monthIndex, nextYear] as const;
-        };
-    })();
-
     const timeframe = ((size?: FrameSize) => {
         let currentOriginTimestamp: number;
         let days: number;
@@ -354,25 +281,25 @@ export const timeframe = (() => {
         const months: TimeFrameMonth[] = [];
 
         const withSize = (size?: FrameSize | null) => {
-            let nextFrameSize = FRAME_SIZE_MAP[
+            frameSize = FRAME_SIZE_MAP[
                 (~~(size as FrameSize) === size ? Math.max(1, Math.min(timeSlice.span, size || frameSize || 1, 12)) : frameSize || 1) - 1
             ] as FrameSize;
-
-            if (frameSize === nextFrameSize) return;
-
-            frameSize = nextFrameSize;
-            timeSlice.origin.shift(0 - (timeSlice.origin.month % frameSize));
         };
 
         const updateMarkersIfNecessary = () => {
-            if (currentOriginTimestamp === timeSlice.origin.timestamp) return;
+            if (currentOriginTimestamp === timeSlice.origin.month.timestamp) return;
+
+            const { from: fromOffset, to: toOffset } = timeSlice.offsets;
+            const originMonth = timeSlice.origin.month;
+
+            timeSlice.origin.shift(Math.max(fromOffset, Math.min(0 - (originMonth.index % frameSize), toOffset - frameSize + 1)));
 
             markers.length = months.length = 0;
-            markers.push(timeSlice.origin.firstDayOffset);
+            markers.push(originMonth.offset);
 
             for (let i = 1, j = markers[0] as number; i <= frameSize; i++) {
                 const monthStartIndex = Math.floor(j / 7) * 7;
-                const [monthDays, month, year] = getMonthDays(timeSlice.origin.month, timeSlice.origin.year, i - 1);
+                const [monthDays, month, year] = getMonthDays(originMonth.index, originMonth.year, i - 1);
 
                 markers.push((j += monthDays));
 
@@ -392,7 +319,7 @@ export const timeframe = (() => {
                     set: () => true,
                 }) as { readonly [K: number]: number | undefined };
 
-                const flags = Object.create(
+                const flags = structFrom(
                     new Proxy(struct(), {
                         get: (target: {}, property: string | symbol, receiver: {}) => {
                             if (typeof property === 'string') {
@@ -432,7 +359,7 @@ export const timeframe = (() => {
                 );
 
                 months.push(
-                    Object.create(indexedAccessProxy, {
+                    structFrom(indexedAccessProxy, {
                         days: { value: days },
                         flags: { value: flags },
                         month: { value: month },
@@ -444,7 +371,7 @@ export const timeframe = (() => {
             }
 
             days = Math.ceil((markers[frameSize] as number) / 7) * 7;
-            currentOriginTimestamp = timeSlice.origin.timestamp;
+            currentOriginTimestamp = originMonth.timestamp;
         };
 
         withSize(size);
@@ -463,12 +390,19 @@ export const timeframe = (() => {
             timeslice: {
                 get: () => timeSlice,
                 set: (slice?: TimeSlice | null) => {
-                    const { firstWeekDay, timestamp } = timeSlice?.origin || {};
+                    const { timestamp } = timeSlice?.origin || {};
+
                     timeSlice = timeslice(slice?.from, slice?.to);
+                    timeSlice.origin.firstWeekDay = slice?.origin.firstWeekDay;
+                    timeSlice.origin.timestamp = timestamp;
+
+                    if (timeSlice.origin.timestamp < (slice?.from as number) || timeSlice.origin.timestamp > (slice?.to as number)) {
+                        timeSlice.origin.timestamp = slice?.origin.timestamp;
+                    }
+
                     timeSliceStartTimestamp = Math.abs(timeSlice.from) < Infinity ? new Date(timeSlice.from).setHours(0, 0, 0, 0) : timeSlice.from;
                     timeSliceEndTimestamp = Math.abs(timeSlice.to) < Infinity ? new Date(timeSlice.to).setHours(0, 0, 0, 0) : timeSlice.to;
-                    timeSlice.origin.timestamp = timestamp;
-                    timeSlice.origin.firstWeekDay = firstWeekDay;
+
                     withSize(frameSize);
                     updateMarkersIfNecessary();
                 },
@@ -486,5 +420,3 @@ export const timeframe = (() => {
         SIZE_12: { value: FrameSize.SIZE_12 },
     });
 })();
-
-export default timeslice;
