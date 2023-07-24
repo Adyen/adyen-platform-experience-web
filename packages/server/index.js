@@ -6,7 +6,7 @@ export const app = (expressInstance, options = []) => {
     const app = expressInstance || express();
     app.use(express.json());
     app.use(express.urlencoded({ extended: true }));
-    app.use((_, res, next) => {
+    app.use((_, res, next, ctx) => {
         res.header('Access-Control-Allow-Origin', '*');
         res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
         next();

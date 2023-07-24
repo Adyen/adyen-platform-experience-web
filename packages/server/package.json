@@ -20,6 +20,7 @@
     "devDependencies": {
         "dotenv": "^9.0.0",
         "express": "^4.17.1",
+        "msw": "^0.49.3",
         "request": "^2.81.0"
     },
     "type": "module"
