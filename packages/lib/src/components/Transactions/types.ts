@@ -1,8 +1,7 @@
-import { CurrencyCode } from '../../utils/constants/currency-codes';
 import { PaginatedResponseDataWithLinks, PaginationProps } from '../internal/Pagination/types';
 import UIElement from '../UIElement';
 import { UIElementProps } from '../types';
-import { StatusType } from '@src/components/internal/Status/types';
+import { ITransaction } from '../../types/models/api/transactions';
 
 export const enum TransactionFilterParam {
     ACCOUNT_HOLDER = 'accountHolderId',
@@ -11,37 +10,9 @@ export const enum TransactionFilterParam {
     CREATED_UNTIL = 'createdUntil',
 }
 
-export interface Transaction {
-    accountHolderId: string;
-    amount: {
-        currency: CurrencyCode;
-        value: number;
-    };
-    balanceAccountId: string;
-    balancePlatform: string;
-    bookingDate: string;
-    category: string;
-    counterparty: {
-        balanceAccountId: string;
-    };
-    createdAt: string;
-    description: string;
-    id: string;
-    instructedAmount: {
-        currency: CurrencyCode;
-        value: number;
-    };
-    reference: string;
-    referenceForBeneficiary: string;
-    status: StatusType;
-    transferId: string;
-    type: 'fee' | 'capture' | 'leftover' | 'manualCorrection' | 'internalTransfer' | 'balanceAdjustment';
-    valueDate: string;
-}
-
 type OnSelection = (selection: { id: string }) => void;
-export interface TransactionsProps extends UIElementProps {
-    transactions: PaginatedResponseDataWithLinks<Transaction, 'data'>;
+export interface TransactionsComponentProps extends UIElementProps {
+    transactions: PaginatedResponseDataWithLinks<ITransaction, 'data'>;
     elementRef?: UIElement | null;
     onFilterChange?: (filters: { [p: string]: string | undefined }, ref?: UIElement | null) => void;
     onTransactionSelected?: OnSelection;
@@ -51,7 +22,7 @@ export interface TransactionsProps extends UIElementProps {
     name?: string;
 }
 export interface TransactionListProps extends PaginationProps {
-    transactions: Transaction[];
+    transactions: ITransaction[];
     onTransactionSelected?: OnSelection;
     onBalanceAccountSelected?: OnSelection;
     onAccountSelected?: OnSelection;
