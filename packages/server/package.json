@@ -20,7 +20,6 @@
     "devDependencies": {
         "dotenv": "^9.0.0",
         "express": "^4.17.1",
-        "express-openapi-validator": "^4.13.7",
         "request": "^2.81.0"
     },
     "type": "module"
