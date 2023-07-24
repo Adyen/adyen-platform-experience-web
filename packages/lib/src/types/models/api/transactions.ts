@@ -44,7 +44,7 @@ export interface ITransaction {
         transferInstrumentId?: string;
     };
     createdAt: string;
-    description: string;
+    description?: string;
     id: string;
     instructedAmount: InstructedAmount;
     paymentInstrumentId?: string;

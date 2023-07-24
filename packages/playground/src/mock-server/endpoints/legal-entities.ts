@@ -1,5 +1,5 @@
 import { rest } from 'msw';
-import { MOCKED_LEGAL_ENTITIES } from '../../src/legalEntity';
+import { MOCKED_LEGAL_ENTITIES } from '../../../../../mocks/src/legalEntity';
 
 const PREFIX = '/legalEntities';
 

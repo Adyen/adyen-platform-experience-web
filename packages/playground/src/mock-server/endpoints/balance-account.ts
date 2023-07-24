@@ -1,5 +1,5 @@
 import { rest } from 'msw';
-import { BALANCE_ACCOUNTS } from '../../src/balanceAccounts';
+import { BALANCE_ACCOUNTS } from '../../../../../mocks/src/balanceAccounts';
 
 const PREFIX = '/balanceAccounts';
 

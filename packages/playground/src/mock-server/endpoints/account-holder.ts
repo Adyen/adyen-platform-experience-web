@@ -1,5 +1,5 @@
 import { rest } from 'msw';
-import { ACCOUNT_HOLDERS } from '../../src/accountHolders';
+import { ACCOUNT_HOLDERS } from '../../../../../mocks/src/accountHolders';
 
 const PREFIX = '/accountHolders';
 

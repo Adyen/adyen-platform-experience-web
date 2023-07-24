@@ -69,17 +69,12 @@ export default defineConfig(async ({ mode }) => {
             host: playground.host,
             port: playground.port,
             https: false,
-            proxy:
-                mode === 'mocked'
-                    ? mockApiProxies('localhost', mockServer.port)
-                    : mode === 'development'
-                    ? realApiProxies(lemApi, BTLApi, BCLApi)
-                    : undefined,
+            proxy: mode === 'mocked' ? undefined : realApiProxies(lemApi, BTLApi, BCLApi),
         },
         preview: {
             host: playground.host,
             port: playground.port,
-            proxy: mockApiProxies('localhost', mockServer.port),
+            proxy: undefined,
         },
         define: {
             'process.env.VITE_BALANCE_PLATFORM': JSON.stringify(BTLApi.balancePlatform || null),
