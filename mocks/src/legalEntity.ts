@@ -1,6 +1,7 @@
 import { MOCK_TRANSFER_INSTRUMENT_OVERVIEW } from './transferInstrument';
+import { ILegalEntityIndividual, ILegalEntityOrganization } from '@adyen/adyen-fp-web/src/types/models/api/legal-entities';
 
-export const LEGAL_ENTITY_ORGANIZATION = {
+export const LEGAL_ENTITY_ORGANIZATION: ILegalEntityOrganization = {
     transferInstruments: [MOCK_TRANSFER_INSTRUMENT_OVERVIEW],
     entityAssociations: [
         {
@@ -59,7 +60,7 @@ export const LEGAL_ENTITY_ORGANIZATION = {
     },
 };
 
-export const LEGAL_ENTITY_INDIVIDUAL = {
+export const LEGAL_ENTITY_INDIVIDUAL: ILegalEntityIndividual = {
     capabilities: {
         sendToTransferInstrument: {
             allowed: false,
@@ -112,6 +113,6 @@ export const LEGAL_ENTITY_INDIVIDUAL = {
     id: 'LE3222Z223222P5HR37WNF3LJ',
 };
 
-export const mockedIndividualLegalEntities = [LEGAL_ENTITY_INDIVIDUAL];
-export const mockedOrganizationLegalEntities = [LEGAL_ENTITY_ORGANIZATION];
-export const MOCKED_LEGAL_ENTITIES = [...mockedIndividualLegalEntities, ...mockedOrganizationLegalEntities];
+export const mockedIndividualLegalEntities = [LEGAL_ENTITY_INDIVIDUAL] as const;
+export const mockedOrganizationLegalEntities = [LEGAL_ENTITY_ORGANIZATION] as const;
+export const MOCKED_LEGAL_ENTITIES = [...mockedIndividualLegalEntities, ...mockedOrganizationLegalEntities] as const;

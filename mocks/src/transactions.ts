@@ -1,8 +1,10 @@
 import { ACCOUNT_HOLDER_1, ACCOUNT_HOLDER_2 } from './accountHolders';
 import { BALANCE_ACCOUNT_DETAILS_1, BALANCE_ACCOUNT_DETAILS_2, BALANCE_ACCOUNT_DETAILS_3, BALANCE_ACCOUNT_DETAILS_4 } from './balanceAccounts';
+import { ITransaction } from '@adyen/adyen-fp-web/src/types/models/api/transactions';
 
-const TRANSACTION_DETAILS_1 = {
+const TRANSACTION_DETAILS_1: ITransaction = {
     balancePlatform: 'TestBalancePlatform',
+    description: 'Description',
     id: '1WEPGD5VS767881Q',
     accountHolderId: ACCOUNT_HOLDER_1.id,
     amount: { currency: 'EUR', value: -10 },
@@ -16,10 +18,15 @@ const TRANSACTION_DETAILS_1 = {
     transferId: '1WEPGD5VS767880S',
     type: 'fee',
     valueDate: '2022-08-04T16:10:22+02:00',
+    referenceForBeneficiary: 'ac43b566-2a02-11ee-be56-0242ac120002',
+    counterparty: {
+        balanceAccountId: 'BA00000000000000000000001',
+    },
 };
-const TRANSACTION_DETAILS_2 = {
+const TRANSACTION_DETAILS_2: ITransaction = {
     balancePlatform: 'TestBalancePlatform',
     id: '1WEPGE5W23KIX9T7',
+    description: 'Description',
     accountHolderId: ACCOUNT_HOLDER_2.id,
     amount: { currency: 'EUR', value: 600000 },
     balanceAccountId: BALANCE_ACCOUNT_DETAILS_2.id,
@@ -33,10 +40,14 @@ const TRANSACTION_DETAILS_2 = {
     transferId: '1VVF0E5W23KILIGL',
     type: 'capture',
     valueDate: '2022-08-29T14:47:03+02:00',
+    counterparty: {
+        balanceAccountId: 'BA00000000000000000000001',
+    },
 };
-const TRANSACTION_DETAILS_3 = {
+const TRANSACTION_DETAILS_3: ITransaction = {
     balancePlatform: 'TestBalancePlatform',
     id: '1WEPGE5W23KIX9U5',
+    description: 'Description',
     accountHolderId: ACCOUNT_HOLDER_1.id,
     amount: { currency: 'EUR', value: 20000 },
     balanceAccountId: BALANCE_ACCOUNT_DETAILS_3.id,
@@ -50,11 +61,15 @@ const TRANSACTION_DETAILS_3 = {
     transferId: '1VVF0E5W23KIT89R',
     type: 'capture',
     valueDate: '2022-08-29T14:47:03+02:00',
+    counterparty: {
+        balanceAccountId: 'BA00000000000000000000001',
+    },
 };
-const TRANSACTION_DETAILS_4 = {
+const TRANSACTION_DETAILS_4: ITransaction = {
     balancePlatform: 'TestBalancePlatform',
     id: '1WEPGE5W2I3OPAQ6',
     accountHolderId: ACCOUNT_HOLDER_2.id,
+    description: 'Description',
     amount: { currency: 'EUR', value: -20 },
     balanceAccountId: BALANCE_ACCOUNT_DETAILS_4.id,
     bookingDate: '2022-08-30T15:11:35+02:00',
@@ -66,8 +81,12 @@ const TRANSACTION_DETAILS_4 = {
     transferId: '1VVF0E5W2I3OL7Z5',
     type: 'fee',
     valueDate: '2022-08-30T15:11:35+02:00',
+    referenceForBeneficiary: 'ac43b566-2a02-11ee-be56-ee0b3898',
+    counterparty: {
+        balanceAccountId: 'BA00000000000000000000001',
+    },
 };
-const TRANSACTION_DETAILS_5 = {
+const TRANSACTION_DETAILS_5: ITransaction = {
     balancePlatform: 'TestBalancePlatform',
     id: '1VVF0E5W838BKHRK',
     accountHolderId: ACCOUNT_HOLDER_1.id,
@@ -76,18 +95,22 @@ const TRANSACTION_DETAILS_5 = {
     bookingDate: '2022-09-13T17:00:44+02:00',
     category: 'platformPayment',
     createdAt: '2022-09-13T17:00:43+02:00',
-    description: '<auto>',
+    description: '',
     instructedAmount: { currency: 'EUR', value: 2190 },
     reference: 'e654fad1-6247-3e07-af20-cabf96d61ad7-ad4a8845-8bc7-374a-98ea-091fb3d55b48',
-    referenceForBeneficiary: '<auto>',
     status: 'booked',
     transferId: '1VVF0E5W838BKHQM',
     type: 'capture',
     valueDate: '2022-09-13T17:00:44+02:00',
+    referenceForBeneficiary: 'ac43b566-2a02-11ee-be56-0242ac120002',
+    counterparty: {
+        balanceAccountId: 'BA00000000000000000000001',
+    },
 };
-const TRANSACTION_DETAILS_6 = {
+const TRANSACTION_DETAILS_6: ITransaction = {
     balancePlatform: 'TestBalancePlatform',
     id: '1WEPGE5W838BO42V',
+    description: '',
     accountHolderId: ACCOUNT_HOLDER_2.id,
     amount: { currency: 'EUR', value: -30 },
     balanceAccountId: BALANCE_ACCOUNT_DETAILS_2.id,
@@ -100,8 +123,12 @@ const TRANSACTION_DETAILS_6 = {
     transferId: '1VVF0E5W838BKHOQ',
     type: 'fee',
     valueDate: '2022-09-13T17:00:43+02:00',
+    referenceForBeneficiary: 'ac43b566-2a02-11ee-be56-c7f52a88',
+    counterparty: {
+        balanceAccountId: 'BA00000000000000000000001',
+    },
 };
-const TRANSACTION_DETAILS_7 = {
+const TRANSACTION_DETAILS_7: ITransaction = {
     balancePlatform: 'TestBalancePlatform',
     id: '1WEPGE5W838BO47L',
     accountHolderId: ACCOUNT_HOLDER_1.id,
@@ -110,18 +137,22 @@ const TRANSACTION_DETAILS_7 = {
     bookingDate: '2022-09-13T17:00:44+02:00',
     category: 'platformPayment',
     createdAt: '2022-09-13T17:00:43+02:00',
-    description: '<auto>',
+    description: '',
     instructedAmount: { currency: 'EUR', value: 2231 },
     reference: 'c4ca3931-87f4-3c2d-92b1-9d9d79340c10-34dbb119-afbc-326e-8d70-3a6fca3874fc',
-    referenceForBeneficiary: '<auto>',
     status: 'booked',
     transferId: '1WEPGE5W838BO46N',
     type: 'capture',
     valueDate: '2022-09-13T17:00:44+02:00',
+    referenceForBeneficiary: 'ac43b566-2a02-11ee-be56-c7f52bdc',
+    counterparty: {
+        balanceAccountId: 'BA00000000000000000000001',
+    },
 };
-const TRANSACTION_DETAILS_8 = {
+const TRANSACTION_DETAILS_8: ITransaction = {
     balancePlatform: 'TestBalancePlatform',
     id: '1VVF0D5V370945D',
+    description: '',
     accountHolderId: ACCOUNT_HOLDER_2.id,
     amount: { currency: 'EUR', value: -9 },
     balanceAccountId: BALANCE_ACCOUNT_DETAILS_4.id,
@@ -134,10 +165,15 @@ const TRANSACTION_DETAILS_8 = {
     transferId: '1VVF0D5V3709DX5F',
     type: 'fee',
     valueDate: '2022-06-02T16:14:28+02:00',
+    referenceForBeneficiary: 'ac43b566-2a02-11ee-be56-11ee-be56',
+    counterparty: {
+        balanceAccountId: 'BA00000000000000000000001',
+    },
 };
-export const TRANSACTION_DETAILS_DEFAULT = {
+export const TRANSACTION_DETAILS_DEFAULT: ITransaction = {
     balancePlatform: 'TestBalancePlatform',
     id: '1VVF0D5V3709DX6D',
+    description: '',
     accountHolderId: 'AH3227B2248HKJ5BHTQPKC5GX',
     amount: { currency: 'EUR', value: -9 },
     balanceAccountId: BALANCE_ACCOUNT_DETAILS_1.id,
@@ -150,6 +186,10 @@ export const TRANSACTION_DETAILS_DEFAULT = {
     transferId: '1VVF0D5V3709DX5F',
     type: 'fee',
     valueDate: '2022-06-02T16:14:28+02:00',
+    referenceForBeneficiary: 'c7f530e6-2a02-11ee-be56-2a02-11ee',
+    counterparty: {
+        balanceAccountId: 'BA00000000000000000000001',
+    },
 };
 
 export const BASIC_TRANSACTIONS_LIST = [

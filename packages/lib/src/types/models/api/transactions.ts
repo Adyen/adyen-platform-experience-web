@@ -1,7 +1,32 @@
 import { CurrencyCode } from '../../../utils/constants/currency-codes';
-import { StatusType } from '../status';
+import { BankAccount } from '../bankAccount';
+import { IMerchant } from '../merchant';
 
-type TransactionType = 'fee' | 'capture' | 'leftover' | 'manualCorrection' | 'internalTransfer' | 'balanceAdjustment';
+type TransactionType =
+    | 'payment'
+    | 'capture'
+    | 'captureReversal'
+    | 'refund'
+    | 'refundReversal'
+    | 'chargeback'
+    | 'chargebackReversal'
+    | 'secondChargeback'
+    | 'atmWithdrawal'
+    | 'atmWithdrawalReversal'
+    | 'internalTransfer'
+    | 'manualCorrection'
+    | 'invoiceDeduction'
+    | 'depositCorrection'
+    | 'bankTransfer'
+    | 'miscCost'
+    | 'paymentCost'
+    | 'fee';
+
+type Category = 'platformPayment' | 'internal' | 'bank' | 'issuedCard';
+interface InstructedAmount {
+    currency: CurrencyCode;
+    value: number;
+}
 export interface ITransaction {
     accountHolderId: string;
     amount: {
@@ -11,20 +36,21 @@ export interface ITransaction {
     balanceAccountId: string;
     balancePlatform: string;
     bookingDate: string;
-    category: string;
+    category: Category;
     counterparty: {
         balanceAccountId: string;
+        bankAccount?: BankAccount;
+        merchant?: IMerchant;
+        transferInstrumentId?: string;
     };
     createdAt: string;
     description: string;
     id: string;
-    instructedAmount: {
-        currency: CurrencyCode;
-        value: number;
-    };
+    instructedAmount: InstructedAmount;
+    paymentInstrumentId?: string;
     reference: string;
     referenceForBeneficiary: string;
-    status: StatusType;
+    status: 'pending' | 'booked';
     transferId: string;
     type: TransactionType;
     valueDate: string;

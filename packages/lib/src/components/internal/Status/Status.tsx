@@ -10,6 +10,7 @@ export default function Status(props: StatusProps) {
             booked: 'status.booked',
             active: 'status.active',
             inactive: 'status.inactive',
+            pending: 'status.pending',
         } as const;
 
         return labels[key] ? i18n.get(labels[key]) : key;

@@ -56,7 +56,7 @@ function TransactionList({
                         value
                     ),
                 createdAt: ({ value }) => i18n.fullDate(value),
-                type: ({ value }) => i18n.get(getLabel(value)),
+                type: ({ value }) => value,
                 amount: ({ value }) => {
                     const amount = value?.currency
                         ? i18n.amount(value.value, value.currency, {

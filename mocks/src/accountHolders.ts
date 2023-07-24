@@ -1,6 +1,6 @@
 import { AccountHolder } from '../../packages/lib/src/types/models/api/account-holder';
 
-export const ACCOUNT_HOLDER_1 = {
+export const ACCOUNT_HOLDER_1: AccountHolder = {
     balancePlatform: 'TestBalancePlatform',
     contactDetails: {
         address: { city: 'Amsterdam', country: 'NL', houseNumberOrName: '6', postalCode: '12336750', street: 'Simon Carmiggeltstraat' },
@@ -37,8 +37,8 @@ export const ACCOUNT_HOLDER_1 = {
             verificationStatus: 'pending',
         },
     },
-} as const satisfies AccountHolder;
-export const ACCOUNT_HOLDER_2 = {
+};
+export const ACCOUNT_HOLDER_2: AccountHolder = {
     balancePlatform: 'BalancePlatform 2',
     contactDetails: {
         address: { city: 'Amsterdam', country: 'NL', houseNumberOrName: '6', postalCode: '12336750', street: 'Simon Carmiggeltstraat' },
@@ -63,5 +63,5 @@ export const ACCOUNT_HOLDER_2 = {
             verificationStatus: 'pending',
         },
     },
-} as const satisfies AccountHolder;
+};
 export const ACCOUNT_HOLDERS = [ACCOUNT_HOLDER_1, ACCOUNT_HOLDER_2] as const;
