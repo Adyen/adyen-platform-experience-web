@@ -1,6 +1,6 @@
 import { ACCOUNT_HOLDER_1, ACCOUNT_HOLDER_2 } from './accountHolders';
 import { BALANCE_ACCOUNT_DETAILS_1, BALANCE_ACCOUNT_DETAILS_2, BALANCE_ACCOUNT_DETAILS_3, BALANCE_ACCOUNT_DETAILS_4 } from './balanceAccounts';
-import { ITransaction } from '@adyen/adyen-fp-web/src/types/models/api/transactions';
+import type { ITransaction } from '@adyen/adyen-fp-web/src/types/models/api/transactions';
 
 const TRANSACTION_DETAILS_1: ITransaction = {
     balancePlatform: 'TestBalancePlatform',

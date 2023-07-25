@@ -1,5 +1,5 @@
-import { BankAccount } from './bankAccount';
-import { Problem } from './verification';
+import type { BankAccount } from './bankAccount';
+import type { Problem } from './verification';
 
 export type TransferInstrumentOv = { accountIdentifier?: string; id: string; realLastFour?: string; trustedSource: boolean };
 

@@ -1,5 +1,5 @@
-import { StatusType } from '../../../components/internal/Status/types';
-import { Capabilities } from '../capabilities';
+import type { StatusType } from '../../../components/internal/Status/types';
+import type { Capabilities } from '../capabilities';
 
 export interface AccountHolder {
     balancePlatform: string;

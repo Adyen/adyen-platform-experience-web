@@ -1,5 +1,5 @@
 import { MOCK_TRANSFER_INSTRUMENT_OVERVIEW } from './transferInstrument';
-import { ILegalEntityIndividual, ILegalEntityOrganization } from '@adyen/adyen-fp-web/src/types/models/api/legal-entities';
+import type { ILegalEntityIndividual, ILegalEntityOrganization } from '@adyen/adyen-fp-web/src/types/models/api/legal-entities';
 
 export const LEGAL_ENTITY_ORGANIZATION: ILegalEntityOrganization = {
     transferInstruments: [MOCK_TRANSFER_INSTRUMENT_OVERVIEW],

@@ -1,4 +1,4 @@
-import { Verification, Problem } from './verification';
+import type { Verification, Problem } from './verification';
 
 interface Capability {
     enabled?: boolean;

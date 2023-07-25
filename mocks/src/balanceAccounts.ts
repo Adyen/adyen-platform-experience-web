@@ -1,4 +1,4 @@
-import { BalanceAccount } from '@adyen/adyen-fp-web/src/types/models/api/balance-account';
+import type { BalanceAccount } from '@adyen/adyen-fp-web/src/types/models/api/balance-account';
 
 export const BALANCE_ACCOUNT_DETAILS_1: BalanceAccount = {
     accountHolderId: 'AH32272223222B5CWF3T48T9B',

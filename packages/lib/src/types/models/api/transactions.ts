@@ -1,6 +1,6 @@
-import { CurrencyCode } from '../../../utils/constants/currency-codes';
-import { BankAccount } from '../bankAccount';
-import { IMerchant } from '../merchant';
+import type { CurrencyCode } from '../../../utils/constants/currency-codes';
+import type { BankAccount } from '../bankAccount';
+import type { IMerchant } from '../merchant';
 
 type TransactionType =
     | 'payment'

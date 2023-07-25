@@ -1,4 +1,4 @@
-import { TransferInstrument, TransferInstrumentOv } from '@adyen/adyen-fp-web/src/types/models/transferInstrument';
+import type { TransferInstrument, TransferInstrumentOv } from '@adyen/adyen-fp-web/src/types/models/transferInstrument';
 
 export const MOCK_TRANSFER_INSTRUMENT_OVERVIEW: TransferInstrumentOv = {
     realLastFour: '8645',

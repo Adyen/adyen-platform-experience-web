@@ -1,4 +1,4 @@
-import { AccountHolder } from '../../packages/lib/src/types/models/api/account-holder';
+import type { AccountHolder } from '../../packages/lib/src/types/models/api/account-holder';
 
 export const ACCOUNT_HOLDER_1: AccountHolder = {
     balancePlatform: 'TestBalancePlatform',

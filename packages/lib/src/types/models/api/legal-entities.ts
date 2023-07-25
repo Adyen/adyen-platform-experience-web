@@ -1,8 +1,8 @@
-import { TransferInstrumentOv } from '../transferInstrument';
-import { Problem } from '../verification';
-import { Capabilities } from '../capabilities';
-import Address from '../address';
-import { Phone } from '../phone';
+import type { TransferInstrumentOv } from '../transferInstrument';
+import type { Problem } from '../verification';
+import type { Capabilities } from '../capabilities';
+import type { Address } from '../address';
+import type { Phone } from '../phone';
 
 export type TaxInformationType = 'SSN' | 'EIN' | 'ITIN' | 'ABN';
 
