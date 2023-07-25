@@ -1,4 +1,4 @@
-import { Amount, AmountExtended } from '../types';
+import { Amount, AmountExtended } from '../types/shared';
 import Language from '../language/Language';
 import UIElement from './UIElement';
 import Core from '../core';
@@ -18,7 +18,7 @@ export const enum InteractionKeyCode {
     PAGE_DOWN = 'PageDown',
     PAGE_UP = 'PageUp',
     SPACE = 'Space',
-    TAB = 'Tab'
+    TAB = 'Tab',
 }
 
 export interface BaseElementProps {

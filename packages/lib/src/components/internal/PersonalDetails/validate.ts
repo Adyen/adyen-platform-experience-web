@@ -1,7 +1,7 @@
 import { email, telephoneNumber } from '../../../utils/regex';
 import { unformatDate } from '../FormFields/InputDate/utils';
 import { ValidatorRules } from '../../../utils/Validator/types';
-import { PersonalDetailsSchema } from '../../../types';
+import { PersonalDetailsSchema } from './types';
 
 const isDateOfBirthValid = (value?: string) => {
     if (!value) return false;

@@ -7,7 +7,7 @@ import { personalDetailsValidationRules } from './validate';
 import useCoreContext from '@src/core/Context/useCoreContext';
 import { PersonalDetailsProps } from './types';
 import { checkDateInputSupport } from '../FormFields/InputDate/utils';
-import { PersonalDetailsSchema } from '../../../types';
+import { PersonalDetailsSchema } from './types';
 import { getFormattedData } from './utils';
 import useForm from '../../../utils/useForm';
 import './PersonalDetails.scss';

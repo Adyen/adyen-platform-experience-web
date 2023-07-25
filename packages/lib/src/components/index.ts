@@ -7,7 +7,7 @@ import AccountHolder from './AccountHolder';
 import BalanceAccount from './BalanceAccount';
 import Transactions from './Transactions';
 import TransactionDetails from './TransactionDetails';
-import { ComponentMap } from '../types';
+import { ComponentMap } from '../core/types';
 import LegalEntityDetails from '@src/components/LegalEntityDetails';
 
 /**

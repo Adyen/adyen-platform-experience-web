@@ -1,4 +1,4 @@
-import { Session } from '../../types';
+import { Session } from './types';
 
 export function sanitizeSession(session: Session): Partial<Session> {
     if (!session || !session.id) throw new Error('Invalid session');

@@ -1,11 +1,11 @@
 import UIElement from '../components/UIElement';
 import components from '../components';
-import { CoreOptions } from './types';
+import type { CoreOptions } from './types';
 import { processGlobalOptions } from './utils';
 import BPSession from './FPSession';
 import Language from '../language';
 import BaseElement from '../components/BaseElement';
-import { ComponentMap, ComponentOptions, isAvailableOfComponent, isKeyOfComponent } from '../types';
+import { ComponentMap, ComponentOptions, isAvailableOfComponent, isKeyOfComponent } from './types';
 import { ValueOf } from '../utils/types';
 
 class Core {

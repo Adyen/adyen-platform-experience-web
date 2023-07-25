@@ -1,6 +1,6 @@
 import { CountryFormatRules, FormatRules, Format } from '../../../utils/Validator/types';
 import { getFormattingRegEx, SPECIAL_CHARS, trimValWithOneSpace } from '../../../utils/validator-utils';
-import { AddressData } from '../../../types';
+import { AddressData } from './types';
 
 const createFormatByDigits = (digits: number): Format => {
     const format = new Array(digits).fill('9').join('');

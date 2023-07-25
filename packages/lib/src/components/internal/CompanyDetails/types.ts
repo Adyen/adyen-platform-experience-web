@@ -1,4 +1,4 @@
-import { FieldsetVisibility } from '../../../types';
+import { FieldsetVisibility } from '../../../types/shared';
 import { ValidatorRules } from '../../../utils/Validator/types';
 import { SchemaKeys } from '../../../utils/useForm/types';
 import { SetTriggerValidation } from '../../types';
