@@ -1,7 +1,8 @@
 import { rest } from 'msw';
-import { MOCKED_LEGAL_ENTITIES } from '../../../../../../mocks/src/legalEntity';
+import { MOCKED_LEGAL_ENTITIES } from '../../../../../mocks/src/legalEntity';
+import { endpoints } from '../endpoints';
 
-const PREFIX = '/legalEntities';
+const PREFIX = endpoints.legalEntities;
 
 export const legalEntitiesMocks = [
     rest.get(`${PREFIX}/:id`, (req, res, ctx) => {

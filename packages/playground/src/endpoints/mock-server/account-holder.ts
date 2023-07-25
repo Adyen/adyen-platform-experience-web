@@ -1,7 +1,8 @@
 import { rest } from 'msw';
-import { ACCOUNT_HOLDERS } from '../../../../../../mocks/src/accountHolders';
+import { ACCOUNT_HOLDERS } from '../../../../../mocks/src/accountHolders';
+import { endpoints } from '../endpoints';
 
-const PREFIX = '/accountHolders';
+const PREFIX = endpoints.accountHolder;
 
 export const accountHolderMocks = [
     rest.get(`${PREFIX}/:id`, (req, res, ctx) => {

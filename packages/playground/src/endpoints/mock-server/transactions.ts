@@ -1,10 +1,11 @@
 import { rest } from 'msw';
-import { BASIC_TRANSACTIONS_LIST, TRANSACTION_DETAILS_DEFAULT } from '../../../../../../mocks/src/transactions';
+import { BASIC_TRANSACTIONS_LIST, TRANSACTION_DETAILS_DEFAULT } from '../../../../../mocks/src/transactions';
+import { endpoints } from '../endpoints';
 
-const PREFIX = '/transactions';
+const PREFIX = endpoints.transactions;
 
 export const transactionsMocks = [
-    rest.get(`${PREFIX}`, (req, res, ctx) => {
+    rest.get(PREFIX, (req, res, ctx) => {
         return res(ctx.json({ data: BASIC_TRANSACTIONS_LIST }));
     }),
     rest.get(`${PREFIX}/:id`, (req, res, ctx) => {

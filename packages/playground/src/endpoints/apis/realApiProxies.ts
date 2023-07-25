@@ -1,6 +1,7 @@
 import { ProxyOptions } from 'vite';
 import getHeaders from './utils/getHeaders';
 import { getBasicAuthHeaders } from './utils/getBasicAuthHeaders';
+import { endpoints } from '../endpoints';
 
 interface ApiOptions {
     url: string;
@@ -22,10 +23,11 @@ export const realApiProxies = (lemApiOptions: ApiOptions, btlApiOptions: ApiOpti
     const lemApiProxyOptions = makeProxyOptions(lemApiOptions);
     const btlApiProxyOptions = makeProxyOptions(btlApiOptions);
     const bclApiProxyOptions = makeProxyOptions(bclApiOptions);
+
     return {
-        '/transactions': btlApiProxyOptions,
-        '/balanceAccounts': bclApiProxyOptions,
-        '/accountHolders': bclApiProxyOptions,
-        '/legalEntities': lemApiProxyOptions,
+        [endpoints.transactions]: btlApiProxyOptions,
+        [endpoints.balanceAccount]: bclApiProxyOptions,
+        [endpoints.accountHolder]: bclApiProxyOptions,
+        [endpoints.legalEntities]: lemApiProxyOptions,
     };
 };

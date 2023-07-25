@@ -12,7 +12,6 @@ export async function enableServerInMockedMode() {
     if (MOCK_MODES.includes(import.meta.env.MODE)) {
         await mockWorker.start({
             onUnhandledRequest: (request, print) => {
-                if (request.url.pathname.includes('@fs') || request.url.pathname.includes('.svg')) return;
                 print.warning();
             },
         });

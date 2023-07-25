@@ -1,7 +1,8 @@
 import { rest } from 'msw';
-import { BALANCE_ACCOUNTS } from '../../../../../../mocks/src/balanceAccounts';
+import { BALANCE_ACCOUNTS } from '../../../../../mocks/src/balanceAccounts';
+import { endpoints } from '../endpoints';
 
-const PREFIX = '/balanceAccounts';
+const PREFIX = endpoints.balanceAccount;
 
 export const balanceAccountMocks = [
     rest.get(`${PREFIX}/:id`, (req, res, ctx) => {
