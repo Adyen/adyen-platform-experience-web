@@ -2,6 +2,10 @@
 /* tslint:disable */
 
 /**
+ * - THIS FILE IS GENERATED AUTOMATICALLY BY RUNNING <npx msw init>, not created by us
+ */
+
+/**
  * Mock Service Worker (0.49.3).
  * @see https://github.com/mswjs/msw
  * - Please do NOT modify this file.
