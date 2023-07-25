@@ -9,8 +9,10 @@ export type TimeSlice = WithTimeEdges<number> & {
 };
 
 export type TimeSliceFactory = {
-    (from?: Time, to?: Time): TimeSlice;
-    (time?: Time, edge?: typeof FROM_EDGE | typeof TO_EDGE): TimeSlice;
+    (fromTime?: Time, toTime?: Time): TimeSlice;
+    (time?: Time, timeEdge?: TimeSliceEdge): TimeSlice;
     readonly FROM_EDGE: typeof FROM_EDGE;
     readonly TO_EDGE: typeof TO_EDGE;
 };
+
+export type TimeSliceEdge = typeof FROM_EDGE | typeof TO_EDGE;

@@ -1,5 +1,7 @@
-import { getEdgesDistance, getMonthDays, mod, struct, structFrom } from './shared/utils';
-import { Month, Time, WeekDay, WithTimeEdges } from './shared/types';
+import { getMonthDays, struct, structFrom } from './shared/utils';
+import { Month, WeekDay, WithTimeEdges } from './shared/types';
+import { TimeOrigin } from './timeorigin/types';
+import $timeorigin from './timeorigin';
 import $timeslice from './timeslice';
 
 const enum FrameSize {
@@ -60,198 +62,29 @@ type TimeFrameMonth = {
     readonly year: number;
 };
 
-type TimeMark = {
-    readonly [K: number]: number | undefined;
-    get firstWeekDay(): WeekDay;
-    set firstWeekDay(firstWeekDay: WeekDay | null | undefined);
-    readonly month: {
-        readonly index: Month;
-        readonly offset: WeekDay;
-        readonly timestamp: number;
-        readonly year: number;
-    };
-    readonly shift: (offset?: number) => TimeMark;
-    get timestamp(): number;
-    set timestamp(time: Time | null | undefined);
-};
-
 type TimeSlice = WithTimeEdges<number> & {
     readonly offsets: WithTimeEdges<number>;
-    readonly origin: TimeMark;
+    readonly origin: TimeOrigin;
     readonly span: number;
 };
 
-export const timeslice = (() => {
-    const getEdgeDistances = (origin: Time, from: Time, to: Time) => {
-        const edgeDistance = getEdgesDistance(from, to);
-        const relativeFromEdgeOffset = getEdgesDistance(origin, from);
-        const relativeToEdgeOffset = getEdgesDistance(origin, to);
+export const timeslice = (...args: any[]) => {
+    const timeSlice = $timeslice(...args);
+    const originMark = $timeorigin(timeSlice);
 
-        let fromEdgeOffset = Infinity;
-        let toEdgeOffset = Infinity;
-        let originTimestamp = new Date(origin).getTime();
-
-        if (relativeFromEdgeOffset < Infinity && relativeToEdgeOffset < Infinity) {
-            const fromTimestamp = new Date(from).getTime();
-            const toTimestamp = new Date(to).getTime();
-
-            if (originTimestamp < fromTimestamp) {
-                originTimestamp = fromTimestamp;
-                fromEdgeOffset = 0;
-                toEdgeOffset = edgeDistance;
-            } else if (originTimestamp > toTimestamp) {
-                originTimestamp = toTimestamp;
-                fromEdgeOffset = edgeDistance;
-                toEdgeOffset = 0;
-            } else {
-                fromEdgeOffset = relativeFromEdgeOffset;
-                toEdgeOffset = relativeToEdgeOffset;
-            }
-        } else if (relativeFromEdgeOffset < Infinity) {
-            const fromTimestamp = new Date(from).getTime();
-
-            if (originTimestamp < fromTimestamp) {
-                originTimestamp = fromTimestamp;
-                fromEdgeOffset = 0;
-            } else fromEdgeOffset = relativeFromEdgeOffset;
-        } else if (relativeToEdgeOffset < Infinity) {
-            const toTimestamp = new Date(to).getTime();
-
-            if (originTimestamp > toTimestamp) {
-                originTimestamp = toTimestamp;
-                toEdgeOffset = 0;
-            } else toEdgeOffset = relativeToEdgeOffset;
-        }
-
-        return [originTimestamp, fromEdgeOffset, toEdgeOffset] as const;
-    };
-
-    const timemark = (from: number, to: number, time?: Time, firstWeekDay?: WeekDay) => {
-        let baseOffsetStartDate: number;
-        let offsetStartDate: number;
-        let originDate: number;
-        let originMonth: Month;
-        let originTimestamp: number;
-        let originYear: number;
-        let referenceTime: number;
-        let referenceTimestamp: number;
-        let weekStartDay: WeekDay;
-
-        const withFirstWeekDay = (firstWeekDay: WeekDay | null = weekStartDay || 0) => {
-            const nextWeekStartDay = ~~(firstWeekDay as WeekDay) === firstWeekDay ? firstWeekDay : weekStartDay || 0;
-
-            if (nextWeekStartDay !== weekStartDay) {
-                weekStartDay = mod(nextWeekStartDay, 7) as WeekDay;
-                withTime(referenceTime || Date.now());
-            }
-        };
-
-        const withTime = (time?: Time | null) => {
-            if (time != undefined) {
-                referenceTime = Math.max(from, Math.min(new Date(time).getTime(), to));
-                referenceTimestamp = new Date(referenceTime).setHours(0, 0, 0, 0);
-                const referenceDate = new Date(referenceTimestamp);
-
-                originMonth = referenceDate.getMonth() as Month;
-                originYear = referenceDate.getFullYear();
-
-                baseOffsetStartDate = (referenceDate.getDate() % 7) - referenceDate.getDay() - 7;
-                offsetStartDate = (baseOffsetStartDate + weekStartDay) % 7;
-                originTimestamp = referenceDate.setDate(offsetStartDate);
-                originDate = new Date(originTimestamp).getDate();
-            }
-        };
-
-        const shiftMark = (offset?: number) => {
-            if (offset && offset === ~~offset) {
-                withTime(new Date(referenceTimestamp).setMonth(originMonth + offset));
-            }
-            return mark;
-        };
-
-        const mark = structFrom(
-            new Proxy(struct(), {
-                get: (target: {}, property: string | symbol, receiver: {}) => {
-                    if (typeof property === 'string') {
-                        const offset = +property;
-                        if (offset === ~~offset) {
-                            return offset ? new Date(originTimestamp).setDate(originDate + offset) : originTimestamp;
-                        }
-                    }
-                    return Reflect.get(target, property, receiver);
-                },
-                set: () => true,
+    return struct({
+        from: { get: () => timeSlice.from },
+        to: { get: () => timeSlice.to },
+        offsets: {
+            value: struct({
+                from: { get: () => originMark.offsets.from },
+                to: { get: () => originMark.offsets.to },
             }),
-            {
-                firstWeekDay: {
-                    get: () => weekStartDay,
-                    set: withFirstWeekDay,
-                },
-                month: {
-                    value: struct({
-                        index: { get: () => originMonth },
-                        offset: { get: () => (1 - offsetStartDate) as WeekDay },
-                        timestamp: { get: () => originTimestamp },
-                        year: { get: () => originYear },
-                    }),
-                },
-                shift: { value: shiftMark },
-                timestamp: {
-                    get: () => referenceTimestamp,
-                    set: withTime,
-                },
-            }
-        ) as TimeMark;
-
-        withFirstWeekDay(firstWeekDay);
-
-        return mark;
-    };
-
-    return (...args: any[]) => {
-        let endEdgeOffset = Infinity;
-        let startEdgeOffset = Infinity;
-        let originTimestamp = Infinity;
-
-        const { from: startTimestamp, to: endTimestamp, span } = $timeslice(...args);
-        const originMark = timemark(startTimestamp, endTimestamp);
-
-        const refreshEdgeDistancesIfNecessary = () => {
-            if (originTimestamp === originMark.timestamp) return;
-            [, startEdgeOffset, endEdgeOffset] = getEdgeDistances((originTimestamp = originMark.timestamp), startTimestamp, endTimestamp);
-        };
-
-        refreshEdgeDistancesIfNecessary();
-
-        return struct({
-            from: { value: startTimestamp },
-            to: { value: endTimestamp },
-            offsets: {
-                value: struct({
-                    from: {
-                        get: () => {
-                            refreshEdgeDistancesIfNecessary();
-                            return Math.min(0, 0 - startEdgeOffset);
-                        },
-                    },
-                    to: {
-                        get: () => {
-                            refreshEdgeDistancesIfNecessary();
-                            return endEdgeOffset;
-                        },
-                    },
-                }),
-            },
-            origin: {
-                get: () => {
-                    refreshEdgeDistancesIfNecessary();
-                    return originMark;
-                },
-            },
-            span: { value: span },
-        }) as TimeSlice;
-    };
-})();
+        },
+        origin: { get: () => originMark },
+        span: { get: () => timeSlice.span },
+    }) as TimeSlice;
+};
 
 export const timeframe = (() => {
     const FRAME_SIZE_MAP: Readonly<FrameSize[]> = [
@@ -390,14 +223,14 @@ export const timeframe = (() => {
             timeslice: {
                 get: () => timeSlice,
                 set: (slice?: TimeSlice | null) => {
-                    const { timestamp } = timeSlice?.origin || {};
+                    const { time } = timeSlice?.origin || {};
 
                     timeSlice = timeslice(slice?.from, slice?.to);
                     timeSlice.origin.firstWeekDay = slice?.origin.firstWeekDay;
-                    timeSlice.origin.timestamp = timestamp;
+                    timeSlice.origin.time = time;
 
-                    if (timeSlice.origin.timestamp < (slice?.from as number) || timeSlice.origin.timestamp > (slice?.to as number)) {
-                        timeSlice.origin.timestamp = slice?.origin.timestamp;
+                    if (timeSlice.origin.time < (slice?.from as number) || timeSlice.origin.time > (slice?.to as number)) {
+                        timeSlice.origin.time = slice?.origin.time;
                     }
 
                     timeSliceStartTimestamp = Math.abs(timeSlice.from) < Infinity ? new Date(timeSlice.from).setHours(0, 0, 0, 0) : timeSlice.from;
