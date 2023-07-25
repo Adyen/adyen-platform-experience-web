@@ -2,9 +2,8 @@ import { defineConfig } from 'vite';
 import { preact } from '@preact/preset-vite';
 import { resolve } from 'node:path';
 import { lstat, readdir } from 'node:fs/promises';
-import { mockApiProxies, mockServerPlugin } from '../server/proxy/mockApiProxies';
 import { getEnvironment } from '../../envs/getEnvs';
-import { realApiProxies } from '../server/proxy/realApiProxies';
+import { realApiProxies } from './src/endpoints/apis/realApiProxies';
 import { checker } from 'vite-plugin-checker';
 
 const playgroundDir = resolve(__dirname, 'src/pages');
@@ -39,7 +38,6 @@ export default defineConfig(async ({ mode }) => {
                         lintCommand: 'stylelint ../lib/src/**/*.scss',
                     },
                 }),
-            (mode === 'mocked' || mode === 'demo') && mockServerPlugin(mockServer.port),
         ],
         build:
             mode === 'demo'

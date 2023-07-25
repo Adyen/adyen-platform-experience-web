@@ -30,7 +30,6 @@
         "format": "prettier --write \"src/**/*.{ts,js,css, scss, html}\""
     },
     "devDependencies": {
-        "@adyen/adyen-fp-web-server": "file:../server",
         "@preact/preset-vite": "^2.5.0",
         "autoprefixer": "^9.8.8",
         "cross-env": "^7.0.3",

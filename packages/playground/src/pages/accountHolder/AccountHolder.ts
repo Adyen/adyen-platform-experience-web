@@ -3,7 +3,7 @@ import { AdyenFP, accountHolder } from '@adyen/adyen-fp-web';
 import { getSearchParameters } from '../../utils/utils';
 import '../../utils/createPages.js';
 import '../../assets/style/style.scss';
-import { enableServerInMockedMode } from '../../mock-server/utils';
+import { enableServerInMockedMode } from '../../endpoints/mock-server/utils';
 
 const DEFAULT_ACCOUNT_HOLDER = 'AH3227B2248HKJ5BHTQPKC5GX';
 

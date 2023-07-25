@@ -1,6 +1,6 @@
 import { ProxyOptions } from 'vite';
-import getHeaders from '../utils/getHeaders';
-import { getBasicAuthHeaders } from '../utils/getBasicAuthHeaders';
+import getHeaders from './utils/getHeaders';
+import { getBasicAuthHeaders } from './utils/getBasicAuthHeaders';
 
 interface ApiOptions {
     url: string;

@@ -3,7 +3,7 @@ import { AdyenFP, transactionDetails } from '@adyen/adyen-fp-web';
 import { getSearchParameters } from '../../utils/utils';
 import '../../utils/createPages.js';
 import '../../assets/style/style.scss';
-import { enableServerInMockedMode } from '../../mock-server/utils';
+import { enableServerInMockedMode } from '../../endpoints/mock-server/utils';
 
 try {
     await enableServerInMockedMode();

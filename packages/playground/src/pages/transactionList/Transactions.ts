@@ -2,7 +2,7 @@ import { getMyTransactions } from '../../utils/services';
 import { AdyenFP, transactionList } from '@adyen/adyen-fp-web';
 import '../../utils/createPages.js';
 import '../../assets/style/style.scss';
-import { enableServerInMockedMode } from '../../mock-server/utils';
+import { enableServerInMockedMode } from '../../endpoints/mock-server/utils';
 
 try {
     await enableServerInMockedMode();

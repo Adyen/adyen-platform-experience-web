@@ -1,5 +1,5 @@
 import { rest } from 'msw';
-import { BASIC_TRANSACTIONS_LIST, TRANSACTION_DETAILS_DEFAULT } from '../../../../../mocks/src/transactions';
+import { BASIC_TRANSACTIONS_LIST, TRANSACTION_DETAILS_DEFAULT } from '../../../../../../mocks/src/transactions';
 
 const PREFIX = '/transactions';
 
