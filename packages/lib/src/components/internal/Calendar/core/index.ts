@@ -3,6 +3,7 @@ import { Month, WeekDay, WithTimeEdges } from './shared/types';
 import { TimeOrigin } from './timeorigin/types';
 import $timeorigin from './timeorigin';
 import $timeslice from './timeslice';
+import $today from './today';
 
 const enum FrameSize {
     SIZE_1 = 1,
@@ -113,6 +114,13 @@ export const timeframe = (() => {
         const markers: number[] = [];
         const months: TimeFrameMonth[] = [];
 
+        let unwatchToday = $today.watch(() => {
+            todayTimestamp = $today.timestamp;
+            // observe if current view of the frame needs to know about the change
+        });
+
+        let todayTimestamp = $today.timestamp;
+
         const withSize = (size?: FrameSize | null) => {
             frameSize = FRAME_SIZE_MAP[
                 (~~(size as FrameSize) === size ? Math.max(1, Math.min(timeSlice.span, size || frameSize || 1, 12)) : frameSize || 1) - 1
@@ -164,7 +172,7 @@ export const timeframe = (() => {
                                     const index = monthStartIndex + offset;
                                     const weekDay = (index % 7) as WeekDay;
 
-                                    let flags = 0;
+                                    let flags = timestamp === todayTimestamp ? TimeFlag.TODAY : 0;
 
                                     if (index >= (markers[i - 1] as number) && index < j) {
                                         if (index === (markers[i - 1] as number)) flags |= TimeFlag.MONTH_START;
