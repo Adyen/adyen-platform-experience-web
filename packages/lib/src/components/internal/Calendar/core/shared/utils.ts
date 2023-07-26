@@ -1,7 +1,5 @@
+import { call, createObject } from './constants';
 import { Month, Time } from './types';
-
-const call = Function.prototype.bind.bind(Function.prototype.call);
-const createObject = Object.create;
 
 export const struct = call(createObject, null, null);
 export const structFrom = call(createObject, null);

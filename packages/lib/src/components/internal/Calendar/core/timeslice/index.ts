@@ -1,5 +1,6 @@
+import { FROM_EDGE, TO_EDGE } from './constants';
+import { TimeSlice, TimeSliceFactory } from './types';
 import { computeTimestampOffset, getEdgesDistance, struct } from '../shared/utils';
-import { FROM_EDGE, TimeSlice, TimeSliceFactory, TO_EDGE } from './types';
 
 const timeslice = (() => {
     const factory = ((...args: any[]) => {

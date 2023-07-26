@@ -136,7 +136,10 @@ const timeorigin = (() => {
                     get: () => currentTimestamp,
                     set: withTime,
                 },
-                timeslice: { set: withTimeSlice },
+                timeslice: {
+                    get: () => timeSlice,
+                    set: withTimeSlice,
+                },
             }
         ) as TimeOrigin;
 

@@ -15,5 +15,6 @@ export type TimeOrigin = {
     readonly shift: (offset?: number) => TimeOrigin;
     get time(): number;
     set time(time: Time | null | undefined);
+    get timeslice(): TimeSlice;
     set timeslice(timeSlice: TimeSlice | null | undefined);
 };

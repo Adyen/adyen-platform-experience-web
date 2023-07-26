@@ -1,0 +1,11 @@
+export const SHIFT_FRAME: unique symbol = Symbol();
+export const SHIFT_MONTH: unique symbol = Symbol();
+export const SHIFT_YEAR: unique symbol = Symbol();
+export const SIZE_MONTH_1: unique symbol = Symbol();
+export const SIZE_MONTH_2: unique symbol = Symbol();
+export const SIZE_MONTH_3: unique symbol = Symbol();
+export const SIZE_MONTH_4: unique symbol = Symbol();
+export const SIZE_MONTH_6: unique symbol = Symbol();
+export const SIZE_MONTH_12: unique symbol = Symbol();
+export const MONTH_SIZES_SYMBOLS = [SIZE_MONTH_1, SIZE_MONTH_2, SIZE_MONTH_3, SIZE_MONTH_4, SIZE_MONTH_6, SIZE_MONTH_12] as const;
+export const MONTH_SIZES = [1, 2, 3, 4, 6, 12] as const;

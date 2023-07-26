@@ -1,7 +1,5 @@
+import { FROM_EDGE, TO_EDGE } from './constants';
 import { Time, WithTimeEdges } from '../shared/types';
-
-export const FROM_EDGE: unique symbol = Symbol();
-export const TO_EDGE: unique symbol = Symbol();
 
 export type TimeSlice = WithTimeEdges<number> & {
     readonly offsets: WithTimeEdges<number>;
