@@ -1,6 +1,6 @@
+import { Observable } from '../shared/observable/types';
+
 export type Today = {
     readonly timestamp: number;
-    readonly watch: (callback: TodayWatchCallback) => () => void;
+    readonly watch: Observable['observe'];
 };
-
-export type TodayWatchCallback = (...args: any[]) => any;

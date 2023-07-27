@@ -1,13 +1,11 @@
+import $observable from '../shared/observable';
 import { struct } from '../shared/utils';
-import { Today, TodayWatchCallback } from './types';
+import { Today } from './types';
 
 const today = (() => {
-    let controller: AbortController;
     let timestamp: number;
     let tomorrowOffset: number;
-    let running = false;
-
-    const observers = new Set<TodayWatchCallback>();
+    let controller: AbortController;
 
     const getTimestamp = () => new Date().setHours(0, 0, 0, 0);
 
@@ -40,37 +38,24 @@ const today = (() => {
     const animationIntervalCallback = () => {
         if (Date.now() - timestamp < tomorrowOffset) return;
         refreshTimestamp();
-        observers.forEach(cb => cb(timestamp));
+        observable.notify(timestamp);
     };
 
-    const startInterval = () => {
-        if (!running && (running = true)) {
-            controller = new AbortController();
-            refreshTimestamp();
-            animationInterval(1000, controller.signal, animationIntervalCallback);
-        }
+    const observable = $observable();
+
+    observable.callback.resume = () => {
+        controller = new AbortController();
+        refreshTimestamp();
+        animationInterval(1000, controller.signal, animationIntervalCallback);
     };
 
-    const stopInterval = () => {
-        if (observers.size === 0) {
-            controller.abort();
-            running = false;
-        }
-    };
-
-    const observe = (callback: TodayWatchCallback) => {
-        if (!callback) return () => {};
-
-        observers.add(callback);
-        startInterval();
-        return () => {
-            observers.delete(callback) && stopInterval();
-        };
+    observable.callback.idle = () => {
+        controller.abort();
     };
 
     return struct({
-        timestamp: { get: () => (running ? timestamp : getTimestamp()) },
-        watch: { value: observe },
+        timestamp: { get: () => (observable.idle ? getTimestamp() : timestamp) },
+        watch: { value: observable.observe },
     }) as Today;
 })();
 
