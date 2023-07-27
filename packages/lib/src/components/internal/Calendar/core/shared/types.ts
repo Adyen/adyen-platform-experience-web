@@ -10,6 +10,7 @@ export const enum TimeFlag {
     MONTH_START = 0x10,
     MONTH_END = 0x20,
     WITHIN_MONTH = 0x40,
+    CURSOR = 0x80,
     RANGE_START = 0x100,
     RANGE_END = 0x200,
     WITHIN_RANGE = 0x400,

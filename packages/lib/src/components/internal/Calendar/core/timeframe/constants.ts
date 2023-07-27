@@ -1,3 +1,13 @@
+export const CURSOR_MONTH_START: unique symbol = Symbol();
+export const CURSOR_MONTH_END: unique symbol = Symbol();
+export const CURSOR_WEEK_START: unique symbol = Symbol();
+export const CURSOR_WEEK_END: unique symbol = Symbol();
+export const CURSOR_PREV_DAY: unique symbol = Symbol();
+export const CURSOR_NEXT_DAY: unique symbol = Symbol();
+export const CURSOR_PREV_MONTH: unique symbol = Symbol();
+export const CURSOR_NEXT_MONTH: unique symbol = Symbol();
+export const CURSOR_PREV_WEEK: unique symbol = Symbol();
+export const CURSOR_NEXT_WEEK: unique symbol = Symbol();
 export const SHIFT_FRAME: unique symbol = Symbol();
 export const SHIFT_MONTH: unique symbol = Symbol();
 export const SHIFT_YEAR: unique symbol = Symbol();

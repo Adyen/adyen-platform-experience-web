@@ -1,4 +1,14 @@
 import {
+    CURSOR_MONTH_END,
+    CURSOR_MONTH_START,
+    CURSOR_NEXT_DAY,
+    CURSOR_NEXT_MONTH,
+    CURSOR_NEXT_WEEK,
+    CURSOR_PREV_DAY,
+    CURSOR_PREV_MONTH,
+    CURSOR_PREV_WEEK,
+    CURSOR_WEEK_END,
+    CURSOR_WEEK_START,
     MONTH_SIZES,
     MONTH_SIZES_SYMBOLS,
     SHIFT_FRAME,
@@ -11,7 +21,7 @@ import {
     SIZE_MONTH_4,
     SIZE_MONTH_6,
 } from './constants';
-import { TimeFrame, TimeFrameFactory, TimeFrameMonth, TimeFrameMonthSize, TimeFrameShift, TimeFrameSize } from './types';
+import { TimeFrame, TimeFrameCursorShift, TimeFrameFactory, TimeFrameMonth, TimeFrameMonthSize, TimeFrameShift, TimeFrameSize } from './types';
 import { TimeFlag, WeekDay } from '../shared/types';
 import { clamp, getMonthDays, isBitSafeInteger, struct, structFrom } from '../shared/utils';
 import { TimeSlice } from '../timeslice/types';
@@ -33,12 +43,15 @@ const timeframe = (() => {
         });
 
         let days: number;
+        let cursorMonthIndex: number;
+        let cursorOffset: number;
         let originMonthTimestamp: number;
         let frameSize: TimeFrameMonthSize = 3;
         let timeorigin = $timeorigin();
         let todayTimestamp = $today.timestamp;
 
         const months: TimeFrameMonth[] = [];
+        const markers: number[] = [];
 
         const withSize = (size?: TimeFrameSize | null) => {
             // frameSize = FRAME_SIZE_MAP[
@@ -53,9 +66,9 @@ const timeframe = (() => {
             const timeslice = timeorigin.timeslice;
             const timeSliceStartTimestamp = timeslice.from + timeslice.offsets.from;
             const timeSliceEndTimestamp = timeslice.to + timeslice.offsets.to;
-            const markers = [originMonth.offset] as number[];
 
-            months.length = 0;
+            markers.length = months.length = 0;
+            markers.push(originMonth.offset);
 
             for (let i = 0, j = markers[markers.length - 1] as number; i < frameSize; i++) {
                 const monthStartIndex = Math.floor(j / 7) * 7;
@@ -99,6 +112,7 @@ const timeframe = (() => {
                                         flags |= TimeFlag.WITHIN_MONTH;
                                     }
 
+                                    if (index === cursorOffset) flags |= TimeFlag.CURSOR;
                                     if (weekDay === 0) flags |= TimeFlag.WEEK_START;
                                     else if (weekDay === 6) flags |= TimeFlag.WEEK_END;
                                     if ([5, 6].includes(weekDay)) flags |= TimeFlag.WEEKEND;
@@ -132,6 +146,8 @@ const timeframe = (() => {
 
             days = Math.ceil((markers[frameSize] as number) / 7) * 7;
             originMonthTimestamp = timeorigin.month.timestamp;
+            cursorOffset = Math.floor((timeorigin.time - originMonthTimestamp) / 86400000);
+            cursorMonthIndex = 0;
         };
 
         const shiftByOffset = (offset: number) => {
@@ -162,7 +178,49 @@ const timeframe = (() => {
             return timeframe;
         };
 
+        const shiftCursor = (cursorOffset: number) => {};
+
+        const shiftCursorByOffset = (offset: number) => {};
+
+        const withCursor = (shift: TimeFrameCursorShift | number) => {
+            // [TODO]: can provision `onlyMonthDays` cursor limits here
+            if (typeof shift === 'number' && shift >= 0 && shift < days) return shiftCursor(shift);
+
+            switch (shift) {
+                case CURSOR_PREV_DAY:
+                    return shiftCursorByOffset(-1);
+                case CURSOR_NEXT_DAY:
+                    return shiftCursorByOffset(1);
+                case CURSOR_PREV_WEEK:
+                    return shiftCursorByOffset(-7);
+                case CURSOR_NEXT_WEEK:
+                    return shiftCursorByOffset(7);
+                case CURSOR_WEEK_START:
+                    return shiftCursorByOffset(0 - (cursorOffset % 7));
+                case CURSOR_WEEK_END:
+                    return shiftCursorByOffset(6 - (cursorOffset % 7));
+                case CURSOR_PREV_MONTH:
+                    return shiftCursorByOffset(-getMonthDays(timeorigin.month.index, timeorigin.month.year, -1)[0]);
+                case CURSOR_NEXT_MONTH:
+                    return shiftCursorByOffset(getMonthDays(timeorigin.month.index, timeorigin.month.year)[0]);
+            }
+
+            const cursorMonthStartIndex = markers[cursorMonthIndex + 1] as number;
+            const cursorMonthEndIndex = cursorMonthStartIndex + (months[cursorMonthIndex] as TimeFrameMonth).days - 1;
+
+            switch (shift) {
+                case CURSOR_MONTH_START:
+                    return shiftCursor(cursorMonthStartIndex);
+                case CURSOR_MONTH_END:
+                    return shiftCursor(cursorMonthEndIndex);
+            }
+        };
+
         const timeframe = struct({
+            cursor: {
+                get: () => cursorOffset,
+                set: withCursor,
+            },
             days: { get: () => days },
             firstWeekDay: {
                 get: () => timeorigin.firstWeekDay,
@@ -198,6 +256,16 @@ const timeframe = (() => {
     }) as TimeFrameFactory;
 
     return Object.defineProperties(factory, {
+        CURSOR_MONTH_END: { value: CURSOR_MONTH_END },
+        CURSOR_MONTH_START: { value: CURSOR_MONTH_START },
+        CURSOR_NEXT_DAY: { value: CURSOR_NEXT_DAY },
+        CURSOR_NEXT_MONTH: { value: CURSOR_NEXT_MONTH },
+        CURSOR_NEXT_WEEK: { value: CURSOR_NEXT_WEEK },
+        CURSOR_PREV_DAY: { value: CURSOR_PREV_DAY },
+        CURSOR_PREV_MONTH: { value: CURSOR_PREV_MONTH },
+        CURSOR_PREV_WEEK: { value: CURSOR_PREV_WEEK },
+        CURSOR_WEEK_END: { value: CURSOR_WEEK_END },
+        CURSOR_WEEK_START: { value: CURSOR_WEEK_START },
         MONTH: { value: SIZE_MONTH_1 },
         MONTH_1: { value: SIZE_MONTH_1 },
         MONTH_2: { value: SIZE_MONTH_2 },

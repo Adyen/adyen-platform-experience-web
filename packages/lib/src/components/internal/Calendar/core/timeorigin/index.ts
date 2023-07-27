@@ -68,7 +68,7 @@ const timeorigin = (() => {
             const clampedOffset = clamp(fromOffset, offset || Infinity, toOffset);
 
             if (clampedOffset && isBitSafeInteger(clampedOffset)) {
-                const nextTimestamp = new Date(timestamp).setMonth(monthIndex + clampedOffset);
+                const nextTimestamp = new Date(currentTimestamp).setMonth(monthIndex + clampedOffset);
                 refreshTime(nextTimestamp);
             }
 
