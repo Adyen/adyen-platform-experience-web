@@ -1,12 +1,12 @@
 import { Month, Time, WeekDay } from '../shared/types';
 import { clamp, computeTimestampOffset, getEdgesDistance, isBitSafeInteger, isInfinite, mid, mod, struct, structFrom } from '../shared/utils';
-import timeslice from '../timeslice';
+import $timeslice from '../timeslice';
 import { TimeSlice } from '../timeslice/types';
 import { TimeOrigin } from './types';
 
 const timeorigin = (() => {
-    const getRelativeEdgeOffsets = (timestamp: number, timeSlice: TimeSlice = timeslice()) => {
-        const { from: fromTimestamp, to: toTimestamp, span } = timeSlice;
+    const getRelativeEdgeOffsets = (timestamp: number, timeslice: TimeSlice = $timeslice()) => {
+        const { from: fromTimestamp, to: toTimestamp, span } = timeslice;
         const relativeFromEdgeDistance = getEdgesDistance(timestamp, fromTimestamp);
         const relativeToEdgeDistance = getEdgesDistance(timestamp, toTimestamp);
         const timeSliceEdgesDistance = span - 1;
@@ -42,7 +42,7 @@ const timeorigin = (() => {
         return [timestamp, 0 - fromEdgeOffset, toEdgeOffset] as const;
     };
 
-    return (timeSlice: TimeSlice = timeslice()) => {
+    return (timeslice?: TimeSlice) => {
         let currentTimestamp: number = Date.now();
         let firstWeekDay: WeekDay;
         let monthDate: number;
@@ -53,53 +53,71 @@ const timeorigin = (() => {
         let timestamp: number;
         let timestampOffset: number;
 
-        let initialized = false;
         let fromOffset: number;
         let toOffset: number;
+        let forceTimeRefresh = false;
+        let withFallbackTimeSlice = timeslice === undefined;
+        let timeSlice = withFallbackTimeSlice ? $timeslice() : (timeslice as TimeSlice);
         let { from, to } = timeSlice;
 
-        const withFirstWeekDay = (weekDay?: WeekDay | null) => {
-            if (weekDay == undefined && !isBitSafeInteger(weekDay)) return;
-            if (firstWeekDay === (firstWeekDay = mod(weekDay, 7) as WeekDay)) return;
-            withTime(currentTimestamp);
+        const refreshTime = (time: number = currentTimestamp) => {
+            (forceTimeRefresh = true) && withTime(time);
+        };
+
+        const shiftTime = (offset?: number) => {
+            const clampedOffset = clamp(fromOffset, offset || Infinity, toOffset);
+
+            if (clampedOffset && isBitSafeInteger(clampedOffset)) {
+                const nextTimestamp = new Date(timestamp).setMonth(monthIndex + clampedOffset);
+                refreshTime(nextTimestamp);
+            }
+
+            return timeorigin;
+        };
+
+        const withFirstWeekDay = (day?: WeekDay | null) => {
+            if (day == undefined && !isBitSafeInteger(day)) return;
+            if (firstWeekDay === (firstWeekDay = mod(day, 7) as WeekDay)) return;
+            refreshTime();
         };
 
         const withTime = (time?: Time | null): void => {
             if (time == undefined) return withTime(Date.now());
 
-            let nextTimestamp = clamp(from, (time = new Date(time).getTime()), to);
+            let nextTimestamp = clamp(from, new Date(time).getTime(), to);
 
-            if (nextTimestamp !== time) nextTimestamp = mid(from, to);
-            if (isInfinite(nextTimestamp) || nextTimestamp != nextTimestamp) nextTimestamp = clamp(from, currentTimestamp, to);
-            if (initialized && nextTimestamp === currentTimestamp) return;
+            if (nextTimestamp != nextTimestamp) nextTimestamp = mid(from, to);
+            if (nextTimestamp != nextTimestamp || isInfinite(nextTimestamp)) nextTimestamp = clamp(from, currentTimestamp, to);
+            if (nextTimestamp === currentTimestamp && !forceTimeRefresh) return;
 
-            currentTimestamp = nextTimestamp;
+            forceTimeRefresh = false;
+            [currentTimestamp, fromOffset, toOffset] = getRelativeEdgeOffsets(nextTimestamp, timeSlice);
             timestamp = currentTimestamp - (timestampOffset = computeTimestampOffset(currentTimestamp));
 
             const timestampDate = new Date(timestamp);
-            const baseOffsetStartDate = (timestampDate.getDate() % 7) - timestampDate.getDay() - 7;
 
             monthIndex = timestampDate.getMonth() as Month;
             monthYear = timestampDate.getFullYear();
-            monthOffset = (1 - ((baseOffsetStartDate + firstWeekDay) % 7)) as WeekDay;
+            monthOffset = ((8 - ((timestampDate.getDate() - timestampDate.getDay() + firstWeekDay) % 7)) % 7) as WeekDay;
             monthTimestamp = timestampDate.setDate(1 - monthOffset);
             monthDate = new Date(monthTimestamp).getDate();
         };
 
-        const withTimeSlice = (timeSlice?: TimeSlice | null) => {
-            ({ from, to } = timeSlice = timeSlice || timeslice());
-            withTime(currentTimestamp);
-            [, fromOffset, toOffset] = getRelativeEdgeOffsets(currentTimestamp, timeSlice);
+        const withTimeSlice = (timeslice?: TimeSlice | null) => {
+            if (timeslice === timeSlice || (timeslice == undefined && withFallbackTimeSlice)) return;
+
+            const _withFallbackTimeSlice = timeslice == undefined;
+            const _timeSlice = _withFallbackTimeSlice ? $timeslice() : timeslice;
+            const edgeOffsets = getRelativeEdgeOffsets(currentTimestamp, _timeSlice);
+
+            ({ from, to } = timeSlice = _timeSlice);
+            [, fromOffset, toOffset] = edgeOffsets;
+            withFallbackTimeSlice = _withFallbackTimeSlice;
+
+            if (edgeOffsets[0] !== currentTimestamp) refreshTime(edgeOffsets[0]);
         };
 
-        const shiftTime = (offset?: number) => {
-            if (offset && isBitSafeInteger(offset)) {
-                withTime(new Date(timestamp).setMonth(monthIndex + offset));
-            }
-            return origin;
-        };
-
-        const origin = structFrom(
+        const timeorigin = structFrom(
             new Proxy(struct(), {
                 get: (target: {}, property: string | symbol, receiver: {}) => {
                     if (typeof property === 'string') {
@@ -144,10 +162,7 @@ const timeorigin = (() => {
         ) as TimeOrigin;
 
         withFirstWeekDay(0);
-        [, fromOffset, toOffset] = getRelativeEdgeOffsets(currentTimestamp, timeSlice);
-        initialized = true;
-
-        return origin;
+        return timeorigin;
     };
 })();
 

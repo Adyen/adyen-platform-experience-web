@@ -4,7 +4,7 @@ import { TimeSlice } from '../timeslice/types';
 export type TimeOrigin = {
     readonly [K: number]: number | undefined;
     get firstWeekDay(): WeekDay;
-    set firstWeekDay(firstWeekDay: WeekDay | null | undefined);
+    set firstWeekDay(day: WeekDay | null | undefined);
     readonly month: {
         readonly index: Month;
         readonly offset: WeekDay;

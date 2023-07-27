@@ -10,7 +10,7 @@ import {
     SIZE_MONTH_4,
     SIZE_MONTH_6,
 } from './constants';
-import { Month } from '../shared/types';
+import { Month, WeekDay } from '../shared/types';
 import { TimeSlice } from '../timeslice/types';
 
 export type TimeFrameShift = typeof SHIFT_FRAME | typeof SHIFT_MONTH | typeof SHIFT_YEAR;
@@ -26,10 +26,15 @@ export type TimeFrameSize =
 
 export type TimeFrame = {
     readonly days: number;
+    get firstWeekDay(): WeekDay;
+    set firstWeekDay(day: WeekDay | null | undefined);
     readonly months: TimeFrameMonth[];
     get size(): TimeFrameMonthSize;
     set size(size: TimeFrameSize | null | undefined);
-    set timeslice(time: TimeSlice | null | undefined);
+    readonly shift: (offset?: number, shift?: TimeFrameShift) => TimeFrame;
+    get timeslice(): TimeSlice;
+    set timeslice(timeslice: TimeSlice | null | undefined);
+    readonly timestamp: number;
     readonly weeks: number;
 };
 

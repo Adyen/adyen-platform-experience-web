@@ -11,9 +11,9 @@ import {
     SIZE_MONTH_4,
     SIZE_MONTH_6,
 } from './constants';
-import { TimeFrame, TimeFrameFactory, TimeFrameMonth, TimeFrameSize } from './types';
+import { TimeFrame, TimeFrameFactory, TimeFrameMonth, TimeFrameMonthSize, TimeFrameShift, TimeFrameSize } from './types';
 import { TimeFlag, WeekDay } from '../shared/types';
-import { getMonthDays, isBitSafeInteger, struct, structFrom } from '../shared/utils';
+import { clamp, getMonthDays, isBitSafeInteger, struct, structFrom } from '../shared/utils';
 import { TimeSlice } from '../timeslice/types';
 import $timeorigin from '../timeorigin';
 import $today from '../today';
@@ -33,8 +33,8 @@ const timeframe = (() => {
         });
 
         let days: number;
-        let originTimestamp: number;
-        let frameSize: (typeof MONTH_SIZES)[number] = 3;
+        let originMonthTimestamp: number;
+        let frameSize: TimeFrameMonthSize = 3;
         let timeorigin = $timeorigin();
         let todayTimestamp = $today.timestamp;
 
@@ -46,16 +46,11 @@ const timeframe = (() => {
             //     ] as FrameSize;
         };
 
-        const updateFrameIfNecessary = () => {
-            if (timeorigin.month.timestamp === originTimestamp) return;
+        const updateFrameIfNecessary = (): void => {
+            if (timeorigin.month.timestamp === originMonthTimestamp) return;
 
-            const { from: fromOffset, to: toOffset } = timeorigin.offsets;
             const originMonth = timeorigin.month;
             const timeslice = timeorigin.timeslice;
-            const shiftOffset = Math.max(fromOffset, Math.min(0 - (originMonth.index % frameSize), toOffset - frameSize + 1));
-
-            timeorigin.shift(shiftOffset);
-
             const timeSliceStartTimestamp = timeslice.from + timeslice.offsets.from;
             const timeSliceEndTimestamp = timeslice.to + timeslice.offsets.to;
             const markers = [originMonth.offset] as number[];
@@ -136,14 +131,46 @@ const timeframe = (() => {
             }
 
             days = Math.ceil((markers[frameSize] as number) / 7) * 7;
-            originTimestamp = timeorigin.month.timestamp;
+            originMonthTimestamp = timeorigin.month.timestamp;
         };
 
-        withSize(size);
-        updateFrameIfNecessary();
+        const shiftByOffset = (offset: number) => {
+            const clampedOffset = clamp(
+                timeorigin.offsets.from,
+                offset - (timeorigin.month.index % frameSize),
+                timeorigin.offsets.to - frameSize + 1
+            );
+            if (clampedOffset) {
+                timeorigin.shift(clampedOffset);
+                updateFrameIfNecessary();
+            }
+            return timeframe;
+        };
 
-        return struct({
+        const shiftFrame = (offset?: number, shift?: TimeFrameShift) => {
+            if (offset && isBitSafeInteger(offset)) {
+                switch (shift) {
+                    case SHIFT_MONTH:
+                        return shiftByOffset(offset);
+                    case SHIFT_YEAR:
+                        return shiftByOffset(offset * 12);
+                    case SHIFT_FRAME:
+                    default:
+                        return shiftByOffset(offset * frameSize);
+                }
+            }
+            return timeframe;
+        };
+
+        const timeframe = struct({
             days: { get: () => days },
+            firstWeekDay: {
+                get: () => timeorigin.firstWeekDay,
+                set: (day?: WeekDay | null) => {
+                    timeorigin.firstWeekDay = day;
+                    updateFrameIfNecessary();
+                },
+            },
             months: { value: months },
             size: {
                 get: () => frameSize,
@@ -152,15 +179,22 @@ const timeframe = (() => {
                     updateFrameIfNecessary();
                 },
             },
+            shift: { value: shiftFrame },
             timeslice: {
+                get: () => timeorigin.timeslice,
                 set: (timeslice?: TimeSlice | null) => {
                     timeorigin.timeslice = timeslice;
                     withSize(frameSize);
                     updateFrameIfNecessary();
                 },
             },
+            timestamp: { get: () => timeorigin.month.timestamp },
             weeks: { get: () => days / 7 },
         }) as TimeFrame;
+
+        withSize(size);
+        updateFrameIfNecessary();
+        return timeframe;
     }) as TimeFrameFactory;
 
     return Object.defineProperties(factory, {

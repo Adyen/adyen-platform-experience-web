@@ -10,6 +10,7 @@ const observable = () => {
     const resumeObservableIfIdle = () => {
         idle && !(idle = false) && callbacks.resume();
     };
+
     const idleObservableIfNecessary = () => {
         observers.size === 0 && (idle = true) && callbacks.idle();
     };
