@@ -11,10 +11,11 @@ export default {
     component: AccountHolderDetails,
 } satisfies Meta<typeof AccountHolderDetails>;
 
-export const AccountHolderStory: Story<typeof AccountHolderDetails> = (args, { loaded: { data } }) => <AccountHolderDetails accountHolder={data} />;
-
-AccountHolderStory.loaders = [
-    async () => ({
-        data: await getAccountHolderById(DEFAULT_ACCOUNT_HOLDER),
-    }),
-];
+export const AccountHolderStory: Story<typeof AccountHolderDetails> = {
+    loaders: [
+        async () => ({
+            data: await getAccountHolderById(DEFAULT_ACCOUNT_HOLDER),
+        }),
+    ],
+    render: (args, { loaded: { data } }) => <AccountHolderDetails {...args} accountHolder={data} />,
+};
