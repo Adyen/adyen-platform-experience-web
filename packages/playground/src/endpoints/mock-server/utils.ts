@@ -9,9 +9,10 @@ export function getMockHandlers(mocks: RestHandler<MockedRequest<DefaultBodyType
 
 const MOCK_MODES = ['mocked', 'demo'];
 export async function enableServerInMockedMode() {
-    if (MOCK_MODES.includes(import.meta.env.MODE)) {
+    if (process.env.VITE_MODE && MOCK_MODES.includes(process.env.VITE_MODE)) {
         await mockWorker.start({
             onUnhandledRequest: (request, print) => {
+                if (request.url.pathname.includes('@fs')) return;
                 print.warning();
             },
         });

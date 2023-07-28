@@ -7,7 +7,7 @@ export const ACCOUNT_HOLDER_1: AccountHolder = {
         email: 'john@doe.com',
         phone: { number: '+31205277777', type: 'landline' },
     },
-    description: 'Liable account holder for TestBalancePlatform',
+    description: 'Account holder for TestBalancePlatform',
     legalEntityId: 'LE3227C223222D5D8RQH439TN',
     id: 'AH3227B2248HKJ5BHTQPKC5GX',
     status: 'active',

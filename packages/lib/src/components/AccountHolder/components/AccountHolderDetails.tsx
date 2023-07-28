@@ -4,8 +4,9 @@ import StatsBar from '@src/components/internal/StatsBar';
 import './AccountHolderDetails.scss';
 import { AccountHolderComponentProps } from '../types';
 import useCoreContext from '@src/core/Context/useCoreContext';
+import { FunctionalComponent } from 'preact';
 
-const AccountHolderDetails = ({ accountHolder }: AccountHolderComponentProps) => {
+const AccountHolderDetails: FunctionalComponent<AccountHolderComponentProps> = ({ accountHolder }) => {
     const { i18n } = useCoreContext();
 
     return (

@@ -34,3 +34,5 @@ Vagrantfile
 
 .demo/
 demo
+
+storybook-static

@@ -76,6 +76,7 @@ export default defineConfig(async ({ mode }) => {
         },
         define: {
             'process.env.VITE_BALANCE_PLATFORM': JSON.stringify(BTLApi.balancePlatform || null),
+            'process.env.VITE_MODE': JSON.stringify(process.env.VITE_MODE ?? mode),
         },
     };
 });
