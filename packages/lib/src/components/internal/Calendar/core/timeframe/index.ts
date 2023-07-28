@@ -64,8 +64,8 @@ const timeframe = (() => {
 
             const originMonth = timeorigin.month;
             const timeslice = timeorigin.timeslice;
-            const timeSliceStartTimestamp = timeslice.from + timeslice.offsets.from;
-            const timeSliceEndTimestamp = timeslice.to + timeslice.offsets.to;
+            const timeSliceStartTimestamp = timeslice.from - timeslice.offsets.from;
+            const timeSliceEndTimestamp = timeslice.to - timeslice.offsets.to;
 
             markers.length = months.length = 0;
             markers.push(originMonth.offset);
@@ -106,20 +106,21 @@ const timeframe = (() => {
 
                                     let flags = timestamp === todayTimestamp ? TimeFlag.TODAY : 0;
 
+                                    if (weekDay === 0) flags |= TimeFlag.WEEK_START;
+                                    else if (weekDay === 6) flags |= TimeFlag.WEEK_END;
+                                    if ([5, 6].includes(weekDay)) flags |= TimeFlag.WEEKEND; // [TODO]: Derive weekend days (e.g from locale)
+
+                                    if (index === cursorOffset) flags |= TimeFlag.CURSOR;
+
                                     if (index >= (markers[i] as number) && index < j) {
                                         if (index === (markers[i] as number)) flags |= TimeFlag.MONTH_START;
                                         else if (index === j - 1) flags |= TimeFlag.MONTH_END;
                                         flags |= TimeFlag.WITHIN_MONTH;
                                     }
 
-                                    if (index === cursorOffset) flags |= TimeFlag.CURSOR;
-                                    if (weekDay === 0) flags |= TimeFlag.WEEK_START;
-                                    else if (weekDay === 6) flags |= TimeFlag.WEEK_END;
-                                    if ([5, 6].includes(weekDay)) flags |= TimeFlag.WEEKEND;
-
                                     if (timestamp >= timeSliceStartTimestamp && timestamp <= timeSliceEndTimestamp) {
-                                        if (index === timeSliceStartTimestamp) flags |= TimeFlag.RANGE_START;
-                                        if (index === timeSliceEndTimestamp) flags |= TimeFlag.RANGE_END;
+                                        if (timestamp === timeSliceStartTimestamp) flags |= TimeFlag.RANGE_START;
+                                        if (timestamp === timeSliceEndTimestamp) flags |= TimeFlag.RANGE_END;
                                         flags |= TimeFlag.WITHIN_RANGE;
                                     }
 
@@ -151,11 +152,7 @@ const timeframe = (() => {
         };
 
         const shiftByOffset = (offset: number) => {
-            const clampedOffset = clamp(
-                timeorigin.offsets.from,
-                offset - (timeorigin.month.index % frameSize),
-                timeorigin.offsets.to - frameSize + 1
-            );
+            const clampedOffset = clamp(timeorigin.offsets.from, offset, timeorigin.offsets.to - frameSize + 1);
             if (clampedOffset) {
                 timeorigin.shift(clampedOffset);
                 updateFrameIfNecessary();
@@ -178,42 +175,73 @@ const timeframe = (() => {
             return timeframe;
         };
 
-        const shiftCursor = (cursorOffset: number) => {};
+        const shiftCursor = (offset: number) => {
+            let firstMonthStartIndex = markers[0] as number;
+            let lastMonthEndIndex = (markers[frameSize - 1] as number) + (months[frameSize - 1] as TimeFrameMonth).days - 1;
+            let nextCursorOffset = cursorOffset + offset;
 
-        const shiftCursorByOffset = (offset: number) => {};
+            if (nextCursorOffset < firstMonthStartIndex) {
+                shiftFrame(-1);
+                lastMonthEndIndex = (markers[frameSize - 1] as number) + (months[frameSize - 1] as TimeFrameMonth).days - 1;
+                nextCursorOffset += lastMonthEndIndex - firstMonthStartIndex;
+                cursorMonthIndex = frameSize - 1;
+            } else if (nextCursorOffset > lastMonthEndIndex) {
+                shiftFrame(1);
+                firstMonthStartIndex = markers[0] as number;
+                nextCursorOffset += firstMonthStartIndex - (lastMonthEndIndex + 1);
+                cursorMonthIndex = 0;
+            }
+
+            const cursorMonthStartIndex = markers[cursorMonthIndex] as number;
+            const cursorMonthEndIndex = cursorMonthStartIndex + getMonthDays(timeorigin.month.index, timeorigin.month.year, cursorMonthIndex)[0] - 1;
+
+            if (nextCursorOffset < cursorMonthStartIndex) {
+                if (!cursorMonthIndex--) {
+                    shiftFrame(-1);
+                    lastMonthEndIndex = (markers[frameSize - 1] as number) + (months[frameSize - 1] as TimeFrameMonth).days - 1;
+                    cursorOffset = lastMonthEndIndex - (nextCursorOffset - cursorMonthStartIndex);
+                    cursorMonthIndex = frameSize - 1;
+                } else shiftCursor(nextCursorOffset - (cursorOffset = cursorMonthStartIndex));
+            } else if (nextCursorOffset > cursorMonthEndIndex) {
+                if (++cursorMonthIndex === frameSize) {
+                    shiftFrame(1);
+                    firstMonthStartIndex = markers[0] as number;
+                    cursorOffset = firstMonthStartIndex + (nextCursorOffset - cursorMonthEndIndex - 1);
+                    cursorMonthIndex = 0;
+                } else shiftCursor(nextCursorOffset - (cursorOffset = cursorMonthEndIndex));
+            } else cursorOffset = nextCursorOffset;
+        };
 
         const withCursor = (shift: TimeFrameCursorShift | number) => {
-            // [TODO]: can provision `onlyMonthDays` cursor limits here
-            if (typeof shift === 'number' && shift >= 0 && shift < days) return shiftCursor(shift);
-
             switch (shift) {
                 case CURSOR_PREV_DAY:
-                    return shiftCursorByOffset(-1);
+                    return shiftCursor(-1);
                 case CURSOR_NEXT_DAY:
-                    return shiftCursorByOffset(1);
+                    return shiftCursor(1);
                 case CURSOR_PREV_WEEK:
-                    return shiftCursorByOffset(-7);
+                    return shiftCursor(-7);
                 case CURSOR_NEXT_WEEK:
-                    return shiftCursorByOffset(7);
+                    return shiftCursor(7);
                 case CURSOR_WEEK_START:
-                    return shiftCursorByOffset(0 - (cursorOffset % 7));
+                    return shiftCursor(0 - (cursorOffset % 7));
                 case CURSOR_WEEK_END:
-                    return shiftCursorByOffset(6 - (cursorOffset % 7));
+                    return shiftCursor(6 - (cursorOffset % 7));
                 case CURSOR_PREV_MONTH:
-                    return shiftCursorByOffset(-getMonthDays(timeorigin.month.index, timeorigin.month.year, -1)[0]);
+                    return shiftCursor(-getMonthDays(timeorigin.month.index, timeorigin.month.year, cursorMonthIndex - 1)[0]);
                 case CURSOR_NEXT_MONTH:
-                    return shiftCursorByOffset(getMonthDays(timeorigin.month.index, timeorigin.month.year)[0]);
-            }
-
-            const cursorMonthStartIndex = markers[cursorMonthIndex + 1] as number;
-            const cursorMonthEndIndex = cursorMonthStartIndex + (months[cursorMonthIndex] as TimeFrameMonth).days - 1;
-
-            switch (shift) {
+                    return shiftCursor(getMonthDays(timeorigin.month.index, timeorigin.month.year, cursorMonthIndex)[0]);
                 case CURSOR_MONTH_START:
-                    return shiftCursor(cursorMonthStartIndex);
-                case CURSOR_MONTH_END:
-                    return shiftCursor(cursorMonthEndIndex);
+                    return shiftCursor((markers[cursorMonthIndex] as number) - cursorOffset);
+                case CURSOR_MONTH_END: {
+                    return shiftCursor(
+                        (markers[cursorMonthIndex] as number) +
+                            getMonthDays(timeorigin.month.index, timeorigin.month.year, cursorMonthIndex)[0] -
+                            (cursorOffset + 1)
+                    );
+                }
             }
+
+            if (shift >= 0 && shift < days) return shiftCursor(shift - cursorOffset);
         };
 
         const timeframe = struct({
@@ -251,7 +279,9 @@ const timeframe = (() => {
         }) as TimeFrame;
 
         withSize(size);
+        timeorigin.shift(0 - (timeorigin.month.index % frameSize));
         updateFrameIfNecessary();
+
         return timeframe;
     }) as TimeFrameFactory;
 

@@ -20,7 +20,7 @@ export const getEdgesDistance = (fromTime: Time, toTime: Time) => {
 };
 
 export const getMonthDays = (() => {
-    const DAYS = [31, [28, 29] as const, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31] as const;
+    const DAYS = [31, [29, 28] as const, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31] as const;
 
     return (month: Month, year: number, offset = 0) => {
         const nextMonth = month + offset;
