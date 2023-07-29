@@ -1,5 +1,5 @@
-import $observable from '../shared/observable';
-import { struct } from '../shared/utils';
+import $observable from '../observable';
+import { struct } from '../utils';
 import { Today } from './types';
 
 const today = (() => {

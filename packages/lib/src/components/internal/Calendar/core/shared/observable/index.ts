@@ -1,11 +1,24 @@
-import { Observable, ObservableCallback } from './types';
+import { Observable, ObservableCallable, ObservableCallback } from './types';
 import { noop } from '../constants';
 import { struct } from '../utils';
 
-const observable = () => {
+const observable = (instantNotification = false) => {
     let idle = true;
     const callbacks: Observable['callback'] = { idle: noop, resume: noop };
-    const observers = new Set<ObservableCallback>();
+    const observers = new Map<ObservableCallback, ObservableCallable<void>>();
+
+    const [captureNotificationArgs = noop, triggerInstantNotification = noop] = (() => {
+        if (!instantNotification) return [];
+        let lastNotificationArgs: any[];
+        return [
+            (...args: any[]) => {
+                lastNotificationArgs = args;
+            },
+            (callback: ObservableCallback) => {
+                lastNotificationArgs && callback(...lastNotificationArgs);
+            },
+        ];
+    })();
 
     const resumeObservableIfIdle = () => {
         idle && !(idle = false) && callbacks.resume();
@@ -16,19 +29,28 @@ const observable = () => {
     };
 
     const notifyObservers = (...args: any[]) => {
+        captureNotificationArgs(...args);
         if (idle) return false;
-        observers.forEach(cb => cb(...args));
+        observers.forEach((_, cb) => cb(...args));
         return true;
     };
 
     const observe = (callback?: ObservableCallback) => {
         if (!callback) return noop;
 
-        observers.add(callback);
-        resumeObservableIfIdle();
-        return () => {
-            observers.delete(callback) && idleObservableIfNecessary();
-        };
+        let unobserveCallback = observers.get(callback);
+
+        if (!unobserveCallback) {
+            unobserveCallback = () => {
+                observers.delete(callback) && idleObservableIfNecessary();
+            };
+
+            observers.set(callback, unobserveCallback);
+            resumeObservableIfIdle();
+            triggerInstantNotification(callback);
+        }
+
+        return unobserveCallback;
     };
 
     const callbackStruct = (() => {

@@ -20,8 +20,9 @@ import {
     SIZE_MONTH_4,
     SIZE_MONTH_6,
 } from './constants';
-import { Month, WeekDay } from '../shared/types';
-import { TimeSlice } from '../timeslice/types';
+import { Observable } from '../shared/observable/types';
+import { Month } from '../shared/types';
+import { TimeOrigin } from '../timeorigin/types';
 
 export type TimeFrameCursorShift =
     | typeof CURSOR_MONTH_START
@@ -46,34 +47,36 @@ export type TimeFrameSize =
     | typeof SIZE_MONTH_12
     | TimeFrameMonthSize;
 
-export type TimeFrame = {
+export type WithTimeFrameCursor = {
     get cursor(): number;
     set cursor(shift: TimeFrameCursorShift | number);
+};
+
+export type TimeFrame = {
+    [K: number]: TimeFrameMonth;
     readonly days: number;
-    get firstWeekDay(): WeekDay;
-    set firstWeekDay(day: WeekDay | null | undefined);
-    readonly months: TimeFrameMonth[];
-    get size(): TimeFrameMonthSize;
-    set size(size: TimeFrameSize | null | undefined);
-    readonly shift: (offset?: number, shift?: TimeFrameShift) => TimeFrame;
-    get timeslice(): TimeSlice;
-    set timeslice(timeslice: TimeSlice | null | undefined);
-    readonly timestamp: number;
-    readonly weeks: number;
+    get length(): TimeFrameMonthSize;
+    set length(length: TimeFrameSize | null | undefined);
+    readonly shift: (offset?: number, shift?: TimeFrameShift) => void;
 };
 
 export type TimeFrameMonth = {
-    readonly [K: number]: number | undefined;
-    readonly days: number;
-    readonly flags: { readonly [K: number]: number | undefined };
+    readonly [K: number]: number;
+    readonly flags: { readonly [K: number]: number };
+    readonly index: number;
+    readonly length: number;
     readonly month: Month;
-    readonly startTimestamp: number;
-    readonly weeks: number;
     readonly year: number;
 };
 
 export type TimeFrameFactory = {
-    (size?: TimeFrameSize): TimeFrame;
+    (length?: TimeFrameSize): TimeFrame &
+        WithTimeFrameCursor & {
+            firstWeekDay: TimeOrigin['firstWeekDay'];
+            origin: TimeOrigin['time'];
+            timeslice: TimeOrigin['timeslice'];
+            readonly watch: Observable['observe'];
+        };
     readonly CURSOR_MONTH_END: typeof CURSOR_MONTH_END;
     readonly CURSOR_MONTH_START: typeof CURSOR_MONTH_START;
     readonly CURSOR_NEXT_DAY: typeof CURSOR_NEXT_DAY;

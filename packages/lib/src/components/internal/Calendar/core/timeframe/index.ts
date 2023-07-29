@@ -21,268 +21,209 @@ import {
     SIZE_MONTH_4,
     SIZE_MONTH_6,
 } from './constants';
-import { TimeFrame, TimeFrameCursorShift, TimeFrameFactory, TimeFrameMonth, TimeFrameMonthSize, TimeFrameShift, TimeFrameSize } from './types';
-import { TimeFlag, WeekDay } from '../shared/types';
+import { TimeFrame, TimeFrameFactory, TimeFrameMonth, TimeFrameMonthSize, TimeFrameShift, TimeFrameSize } from './types';
+import today from '../shared/today';
+import timecursor from '../timecursor';
+import timeorigin from '../timeorigin';
+import $observable from '../shared/observable';
+import { ObservableCallable } from '../shared/observable/types';
+import { Month, TimeFlag, WeekDay } from '../shared/types';
 import { clamp, getMonthDays, isBitSafeInteger, struct, structFrom } from '../shared/utils';
-import { TimeSlice } from '../timeslice/types';
-import $timeorigin from '../timeorigin';
-import $today from '../today';
 
 const timeframe = (() => {
     const downsizedMonthSize = (size: TimeFrameSize, maxsize: TimeFrameSize) => {};
 
     const resolveMonthSize = (size: TimeFrameSize) => {
         const index = Math.max(typeof size === 'symbol' ? MONTH_SIZES_SYMBOLS.indexOf(size) : MONTH_SIZES.indexOf(size), 0);
-
         return [MONTH_SIZES_SYMBOLS[index], MONTH_SIZES[index]] as const;
     };
 
-    const factory = ((size?: TimeFrameSize) => {
-        const todayUnwatch = $today.watch(() => {
-            todayTimestamp = $today.timestamp;
-        });
+    const factory = ((length?: TimeFrameSize) => {
+        const cachedMonths: TimeFrameMonth[] = [];
+        const months: [Month, number, number, number, number][] = [];
+        const cursorObservable = $observable(true);
+        const observable = $observable();
+        const origin = timeorigin();
+
+        let unwatchOrigin = origin.watch(() => refreshFrame());
+
+        let unwatchToday = today.watch(() => {
+            todayTimestamp = today.timestamp;
+            refreshFrame(true);
+        }) as ObservableCallable<undefined>;
 
         let days: number;
-        let cursorMonthIndex: number;
-        let cursorOffset: number;
-        let originMonthTimestamp: number;
         let frameSize: TimeFrameMonthSize = 3;
-        let timeorigin = $timeorigin();
-        let todayTimestamp = $today.timestamp;
+        let originMonthTimestamp: number;
+        let todayTimestamp = today.timestamp;
 
-        const months: TimeFrameMonth[] = [];
-        const markers: number[] = [];
-
-        const withSize = (size?: TimeFrameSize | null) => {
-            // frameSize = FRAME_SIZE_MAP[
-            // (~~(size as FrameSize) === size ? Math.max(1, Math.min(timeSlice.span, size || frameSize || 1, 12)) : frameSize || 1) - 1
-            //     ] as FrameSize;
-        };
-
-        const updateFrameIfNecessary = (): void => {
-            if (timeorigin.month.timestamp === originMonthTimestamp) return;
-
-            const originMonth = timeorigin.month;
-            const timeslice = timeorigin.timeslice;
-            const timeSliceStartTimestamp = timeslice.from - timeslice.offsets.from;
-            const timeSliceEndTimestamp = timeslice.to - timeslice.offsets.to;
-
-            markers.length = months.length = 0;
-            markers.push(originMonth.offset);
-
-            for (let i = 0, j = markers[markers.length - 1] as number; i < frameSize; i++) {
-                const monthStartIndex = Math.floor(j / 7) * 7;
-                const [monthDays, month, year] = getMonthDays(originMonth.index, originMonth.year, i);
-
-                markers.push((j += monthDays));
-
-                const monthEndIndex = Math.ceil(j / 7) * 7;
-                const days = monthEndIndex - monthStartIndex;
-
-                const indexedAccessProxy = new Proxy(struct(), {
-                    get: (target: {}, property: string | symbol, receiver: {}) => {
-                        if (typeof property === 'string') {
-                            const offset = +property;
-                            if (isBitSafeInteger(offset) && offset >= 0 && offset < days) {
-                                return timeorigin[monthStartIndex + offset] as number;
-                            }
-                        }
-                        return Reflect.get(target, property, receiver);
-                    },
-                    set: () => true,
-                }) as TimeFrameMonth['flags'];
-
-                const flags = structFrom(
-                    new Proxy(struct(), {
-                        get: (target: {}, property: string | symbol, receiver: {}) => {
-                            if (typeof property === 'string') {
-                                const offset = +property;
-                                if (isBitSafeInteger(offset)) {
-                                    const timestamp = indexedAccessProxy[offset];
-                                    if (timestamp === undefined) return 0;
-
-                                    const index = monthStartIndex + offset;
-                                    const weekDay = (index % 7) as WeekDay;
-
-                                    let flags = timestamp === todayTimestamp ? TimeFlag.TODAY : 0;
-
-                                    if (weekDay === 0) flags |= TimeFlag.WEEK_START;
-                                    else if (weekDay === 6) flags |= TimeFlag.WEEK_END;
-                                    if ([5, 6].includes(weekDay)) flags |= TimeFlag.WEEKEND; // [TODO]: Derive weekend days (e.g from locale)
-
-                                    if (index === cursorOffset) flags |= TimeFlag.CURSOR;
-
-                                    if (index >= (markers[i] as number) && index < j) {
-                                        if (index === (markers[i] as number)) flags |= TimeFlag.MONTH_START;
-                                        else if (index === j - 1) flags |= TimeFlag.MONTH_END;
-                                        flags |= TimeFlag.WITHIN_MONTH;
-                                    }
-
-                                    if (timestamp >= timeSliceStartTimestamp && timestamp <= timeSliceEndTimestamp) {
-                                        if (timestamp === timeSliceStartTimestamp) flags |= TimeFlag.RANGE_START;
-                                        if (timestamp === timeSliceEndTimestamp) flags |= TimeFlag.RANGE_END;
-                                        flags |= TimeFlag.WITHIN_RANGE;
-                                    }
-
-                                    return flags;
-                                }
-                            }
-                            return Reflect.get(target, property, receiver);
-                        },
-                        set: () => true,
-                    })
-                );
-
-                months.push(
-                    structFrom(indexedAccessProxy, {
-                        days: { value: days },
-                        flags: { value: flags },
-                        month: { value: month },
-                        startTimestamp: { value: timeorigin[monthStartIndex] },
-                        weeks: { value: days / 7 },
-                        year: { value: year },
-                    }) as TimeFrameMonth
-                );
-            }
-
-            days = Math.ceil((markers[frameSize] as number) / 7) * 7;
-            originMonthTimestamp = timeorigin.month.timestamp;
-            cursorOffset = Math.floor((timeorigin.time - originMonthTimestamp) / 86400000);
-            cursorMonthIndex = 0;
-        };
-
-        const shiftByOffset = (offset: number) => {
-            const clampedOffset = clamp(timeorigin.offsets.from, offset, timeorigin.offsets.to - frameSize + 1);
+        const shiftFrameByOffset = (offset: number) => {
+            const clampedOffset = clamp(origin.offsets.from, offset, origin.offsets.to - frameSize + 1);
             if (clampedOffset) {
-                timeorigin.shift(clampedOffset);
-                updateFrameIfNecessary();
+                origin.shift(clampedOffset);
+                refreshFrame();
             }
-            return timeframe;
         };
 
         const shiftFrame = (offset?: number, shift?: TimeFrameShift) => {
             if (offset && isBitSafeInteger(offset)) {
                 switch (shift) {
                     case SHIFT_MONTH:
-                        return shiftByOffset(offset);
+                        return shiftFrameByOffset(offset);
                     case SHIFT_YEAR:
-                        return shiftByOffset(offset * 12);
+                        return shiftFrameByOffset(offset * 12);
                     case SHIFT_FRAME:
                     default:
-                        return shiftByOffset(offset * frameSize);
+                        return shiftFrameByOffset(offset * frameSize);
                 }
             }
-            return timeframe;
         };
 
-        const shiftCursor = (offset: number) => {
-            let firstMonthStartIndex = markers[0] as number;
-            let lastMonthEndIndex = (markers[frameSize - 1] as number) + (months[frameSize - 1] as TimeFrameMonth).days - 1;
-            let nextCursorOffset = cursorOffset + offset;
-
-            if (nextCursorOffset < firstMonthStartIndex) {
-                shiftFrame(-1);
-                lastMonthEndIndex = (markers[frameSize - 1] as number) + (months[frameSize - 1] as TimeFrameMonth).days - 1;
-                nextCursorOffset += lastMonthEndIndex - firstMonthStartIndex;
-                cursorMonthIndex = frameSize - 1;
-            } else if (nextCursorOffset > lastMonthEndIndex) {
-                shiftFrame(1);
-                firstMonthStartIndex = markers[0] as number;
-                nextCursorOffset += firstMonthStartIndex - (lastMonthEndIndex + 1);
-                cursorMonthIndex = 0;
-            }
-
-            const cursorMonthStartIndex = markers[cursorMonthIndex] as number;
-            const cursorMonthEndIndex = cursorMonthStartIndex + getMonthDays(timeorigin.month.index, timeorigin.month.year, cursorMonthIndex)[0] - 1;
-
-            if (nextCursorOffset < cursorMonthStartIndex) {
-                if (!cursorMonthIndex--) {
-                    shiftFrame(-1);
-                    lastMonthEndIndex = (markers[frameSize - 1] as number) + (months[frameSize - 1] as TimeFrameMonth).days - 1;
-                    cursorOffset = lastMonthEndIndex - (nextCursorOffset - cursorMonthStartIndex);
-                    cursorMonthIndex = frameSize - 1;
-                } else shiftCursor(nextCursorOffset - (cursorOffset = cursorMonthStartIndex));
-            } else if (nextCursorOffset > cursorMonthEndIndex) {
-                if (++cursorMonthIndex === frameSize) {
-                    shiftFrame(1);
-                    firstMonthStartIndex = markers[0] as number;
-                    cursorOffset = firstMonthStartIndex + (nextCursorOffset - cursorMonthEndIndex - 1);
-                    cursorMonthIndex = 0;
-                } else shiftCursor(nextCursorOffset - (cursorOffset = cursorMonthEndIndex));
-            } else cursorOffset = nextCursorOffset;
+        const withSize = (length?: TimeFrameSize | null) => {
+            // frameSize = FRAME_SIZE_MAP[
+            // (~~(size as FrameSize) === size ? Math.max(1, Math.min(timeSlice.span, size || frameSize || 1, 12)) : frameSize || 1) - 1
+            //     ] as FrameSize;
         };
 
-        const withCursor = (shift: TimeFrameCursorShift | number) => {
-            switch (shift) {
-                case CURSOR_PREV_DAY:
-                    return shiftCursor(-1);
-                case CURSOR_NEXT_DAY:
-                    return shiftCursor(1);
-                case CURSOR_PREV_WEEK:
-                    return shiftCursor(-7);
-                case CURSOR_NEXT_WEEK:
-                    return shiftCursor(7);
-                case CURSOR_WEEK_START:
-                    return shiftCursor(0 - (cursorOffset % 7));
-                case CURSOR_WEEK_END:
-                    return shiftCursor(6 - (cursorOffset % 7));
-                case CURSOR_PREV_MONTH:
-                    return shiftCursor(-getMonthDays(timeorigin.month.index, timeorigin.month.year, cursorMonthIndex - 1)[0]);
-                case CURSOR_NEXT_MONTH:
-                    return shiftCursor(getMonthDays(timeorigin.month.index, timeorigin.month.year, cursorMonthIndex)[0]);
-                case CURSOR_MONTH_START:
-                    return shiftCursor((markers[cursorMonthIndex] as number) - cursorOffset);
-                case CURSOR_MONTH_END: {
-                    return shiftCursor(
-                        (markers[cursorMonthIndex] as number) +
-                            getMonthDays(timeorigin.month.index, timeorigin.month.year, cursorMonthIndex)[0] -
-                            (cursorOffset + 1)
-                    );
+        const refreshFrame = (forceRefresh = false) => {
+            if (originMonthTimestamp === origin.month.timestamp && !forceRefresh) return;
+
+            cachedMonths.length = months.length = 0;
+            originMonthTimestamp = origin.month.timestamp;
+
+            for (let i = 0, j = origin.month.offset as number; ; ) {
+                const [monthDays, month, year] = getMonthDays(origin.month.index, origin.month.year, i);
+                const startIndex = j;
+                const originIndex = Math.floor(j / 7) * 7;
+                const nextStartIndex = Math.ceil((j += monthDays) / 7) * 7;
+                const numberOfDays = nextStartIndex - originIndex;
+
+                months.push([month, year, numberOfDays, originIndex, startIndex]);
+
+                if (++i === frameSize) {
+                    days = nextStartIndex;
+                    cursorObservable.notify(Math.floor((origin.time - origin.month.timestamp) / 86400000));
+                    observable.notify();
+                    break;
                 }
             }
-
-            if (shift >= 0 && shift < days) return shiftCursor(shift - cursorOffset);
         };
 
-        const timeframe = struct({
-            cursor: {
-                get: () => cursorOffset,
-                set: withCursor,
-            },
-            days: { get: () => days },
-            firstWeekDay: {
-                get: () => timeorigin.firstWeekDay,
-                set: (day?: WeekDay | null) => {
-                    timeorigin.firstWeekDay = day;
-                    updateFrameIfNecessary();
-                },
-            },
-            months: { value: months },
-            size: {
-                get: () => frameSize,
-                set: (size?: TimeFrameSize | null) => {
-                    withSize(size);
-                    updateFrameIfNecessary();
-                },
-            },
-            shift: { value: shiftFrame },
-            timeslice: {
-                get: () => timeorigin.timeslice,
-                set: (timeslice?: TimeSlice | null) => {
-                    timeorigin.timeslice = timeslice;
-                    withSize(frameSize);
-                    updateFrameIfNecessary();
-                },
-            },
-            timestamp: { get: () => timeorigin.month.timestamp },
-            weeks: { get: () => days / 7 },
-        }) as TimeFrame;
+        withSize(length);
+        origin.shift(0 - (origin.month.index % frameSize));
+        refreshFrame();
 
-        withSize(size);
-        timeorigin.shift(0 - (timeorigin.month.index % frameSize));
-        updateFrameIfNecessary();
+        const indexedMonthAccess = new Proxy(struct(), {
+            get: (target: {}, property: string | symbol, receiver: {}) => {
+                if (typeof property === 'string') {
+                    const offset = +property;
+                    if (isBitSafeInteger(offset) && offset >= 0 && offset < frameSize) {
+                        return (cachedMonths[offset] =
+                            cachedMonths[offset] ||
+                            (() => {
+                                const [month, year, numberOfDays, originIndex, startIndex] = months[offset] as (typeof months)[number];
 
-        return timeframe;
+                                const indexedAccessProxy = new Proxy(struct(), {
+                                    get: (target: {}, property: string | symbol, receiver: {}) => {
+                                        if (typeof property === 'string') {
+                                            const offset = +property;
+                                            if (isBitSafeInteger(offset) && offset >= 0 && offset < numberOfDays) {
+                                                return origin[originIndex + offset] as number;
+                                            }
+                                        }
+                                        return Reflect.get(target, property, receiver);
+                                    },
+                                    set: () => true,
+                                }) as TimeFrameMonth['flags'];
+
+                                const flags = structFrom(
+                                    new Proxy(struct(), {
+                                        get: (target: {}, property: string | symbol, receiver: {}) => {
+                                            if (typeof property === 'string') {
+                                                const offset = +property;
+                                                if (isBitSafeInteger(offset)) {
+                                                    const timestamp = indexedAccessProxy[offset];
+                                                    if (timestamp === undefined) return 0;
+
+                                                    const index = originIndex + offset;
+                                                    const weekDay = (index % 7) as WeekDay;
+
+                                                    let flags = timestamp === todayTimestamp ? TimeFlag.TODAY : 0;
+
+                                                    if (weekDay === 0) flags |= TimeFlag.WEEK_START;
+                                                    else if (weekDay === 6) flags |= TimeFlag.WEEK_END;
+                                                    if ([5, 6].includes(weekDay)) flags |= TimeFlag.WEEKEND; // [TODO]: Derive weekend days (e.g from locale)
+
+                                                    if (index === frame.cursor) flags |= TimeFlag.CURSOR;
+
+                                                    if (index >= startIndex && offset < numberOfDays) {
+                                                        if (index === startIndex) flags |= TimeFlag.MONTH_START;
+                                                        else if (offset === numberOfDays - 1) flags |= TimeFlag.MONTH_END;
+                                                        flags |= TimeFlag.WITHIN_MONTH;
+                                                    }
+
+                                                    const timeslice = origin.timeslice;
+                                                    const timeSliceStartTimestamp = timeslice.from - timeslice.offsets.from;
+                                                    const timeSliceEndTimestamp = timeslice.to - timeslice.offsets.to;
+
+                                                    if (timestamp >= timeSliceStartTimestamp && timestamp <= timeSliceEndTimestamp) {
+                                                        if (timestamp === timeSliceStartTimestamp) flags |= TimeFlag.RANGE_START;
+                                                        if (timestamp === timeSliceEndTimestamp) flags |= TimeFlag.RANGE_END;
+                                                        flags |= TimeFlag.WITHIN_RANGE;
+                                                    }
+
+                                                    return flags;
+                                                }
+                                            }
+                                            return Reflect.get(target, property, receiver);
+                                        },
+                                        set: () => true,
+                                    })
+                                );
+
+                                months[offset] = undefined as unknown as (typeof months)[number];
+
+                                return structFrom(indexedAccessProxy, {
+                                    flags: { value: flags },
+                                    index: { value: startIndex },
+                                    length: { value: numberOfDays },
+                                    month: { value: month },
+                                    year: { value: year },
+                                }) as TimeFrameMonth;
+                            })());
+                    }
+                }
+                return Reflect.get(target, property, receiver);
+            },
+            set: () => true,
+        });
+
+        const frame = timecursor(
+            structFrom(indexedMonthAccess, {
+                days: { get: () => days },
+                length: {
+                    get: () => frameSize,
+                    set: (length?: TimeFrameSize | null) => {
+                        withSize(length);
+                        refreshFrame();
+                    },
+                },
+                shift: { value: shiftFrame },
+            }) as TimeFrame,
+            cursorObservable.observe
+        );
+
+        const { firstWeekDay, time, timeslice } = Object.getOwnPropertyDescriptors(origin);
+
+        return Object.defineProperties(frame, {
+            firstWeekDay,
+            timeslice,
+            origin: {
+                get: () => origin.month.timestamp,
+                set: time.set,
+            },
+            watch: { value: observable.observe },
+        });
     }) as TimeFrameFactory;
 
     return Object.defineProperties(factory, {

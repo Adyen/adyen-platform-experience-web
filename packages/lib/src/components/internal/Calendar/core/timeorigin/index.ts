@@ -1,5 +1,6 @@
 import { Month, Time, WeekDay } from '../shared/types';
 import { clamp, computeTimestampOffset, getEdgesDistance, isBitSafeInteger, isInfinite, mid, mod, struct, structFrom } from '../shared/utils';
+import $observable from '../shared/observable';
 import $timeslice from '../timeslice';
 import { TimeSlice } from '../timeslice/types';
 import { TimeOrigin } from './types';
@@ -101,6 +102,8 @@ const timeorigin = (() => {
             monthOffset = ((8 - ((timestampDate.getDate() - timestampDate.getDay() + firstWeekDay) % 7)) % 7) as WeekDay;
             monthTimestamp = timestampDate.setDate(1 - monthOffset);
             monthDate = new Date(monthTimestamp).getDate();
+
+            observable.notify();
         };
 
         const withTimeSlice = (timeslice?: TimeSlice | null) => {
@@ -116,6 +119,8 @@ const timeorigin = (() => {
 
             if (edgeOffsets[0] !== currentTimestamp) refreshTime(edgeOffsets[0]);
         };
+
+        const observable = $observable();
 
         const timeorigin = structFrom(
             new Proxy(struct(), {
@@ -158,6 +163,7 @@ const timeorigin = (() => {
                     get: () => timeSlice,
                     set: withTimeSlice,
                 },
+                watch: { value: observable.observe },
             }
         ) as TimeOrigin;
 

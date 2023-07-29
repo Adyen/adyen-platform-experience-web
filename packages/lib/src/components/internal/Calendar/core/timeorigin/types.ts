@@ -1,3 +1,4 @@
+import { Observable } from '../shared/observable/types';
 import { Month, Time, WeekDay, WithTimeEdges } from '../shared/types';
 import { TimeSlice } from '../timeslice/types';
 
@@ -17,4 +18,5 @@ export type TimeOrigin = {
     set time(time: Time | null | undefined);
     get timeslice(): TimeSlice;
     set timeslice(timeSlice: TimeSlice | null | undefined);
+    readonly watch: Observable['observe'];
 };
