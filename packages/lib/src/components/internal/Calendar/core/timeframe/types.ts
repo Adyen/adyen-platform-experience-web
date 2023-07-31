@@ -52,6 +52,17 @@ export type WithTimeFrameCursor = {
     set cursor(shift: TimeFrameCursorShift | number);
 };
 
+export type TimeFrameAtoms = {
+    days: number;
+    length: TimeFrameMonthSize;
+    originTimestamp: number;
+    todayTimestamp: number;
+};
+
+export type TimeFrameCursorAtoms = {
+    index: number;
+};
+
 export type TimeFrame = {
     [K: number]: TimeFrameMonth;
     readonly days: number;
@@ -75,7 +86,7 @@ export type TimeFrameFactory = {
             firstWeekDay: TimeOrigin['firstWeekDay'];
             origin: TimeOrigin['time'];
             timeslice: TimeOrigin['timeslice'];
-            readonly watch: Observable['observe'];
+            readonly watch: Observable<TimeFrameAtoms>['observe'];
         };
     readonly CURSOR_MONTH_END: typeof CURSOR_MONTH_END;
     readonly CURSOR_MONTH_START: typeof CURSOR_MONTH_START;

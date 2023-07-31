@@ -2,6 +2,14 @@ import { Observable } from '../shared/observable/types';
 import { Month, Time, WeekDay, WithTimeEdges } from '../shared/types';
 import { TimeSlice } from '../timeslice/types';
 
+export type TimeOriginAtoms = {
+    firstWeekDay: WeekDay;
+    fromOffset: number;
+    monthTimestamp: number;
+    timestamp: number;
+    toOffset: number;
+};
+
 export type TimeOrigin = {
     readonly [K: number]: number | undefined;
     get firstWeekDay(): WeekDay;
@@ -18,5 +26,5 @@ export type TimeOrigin = {
     set time(time: Time | null | undefined);
     get timeslice(): TimeSlice;
     set timeslice(timeSlice: TimeSlice | null | undefined);
-    readonly watch: Observable['observe'];
+    readonly watch: Observable<TimeOriginAtoms>['observe'];
 };

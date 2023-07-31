@@ -21,12 +21,21 @@ import {
     SIZE_MONTH_4,
     SIZE_MONTH_6,
 } from './constants';
-import { TimeFrame, TimeFrameFactory, TimeFrameMonth, TimeFrameMonthSize, TimeFrameShift, TimeFrameSize } from './types';
+import {
+    TimeFrame,
+    TimeFrameAtoms,
+    TimeFrameCursorAtoms,
+    TimeFrameFactory,
+    TimeFrameMonth,
+    TimeFrameMonthSize,
+    TimeFrameShift,
+    TimeFrameSize,
+} from './types';
 import today from '../shared/today';
 import timecursor from '../timecursor';
 import timeorigin from '../timeorigin';
 import $observable from '../shared/observable';
-import { ObservableCallable } from '../shared/observable/types';
+import { ObservableAtoms, ObservableCallable } from '../shared/observable/types';
 import { Month, TimeFlag, WeekDay } from '../shared/types';
 import { clamp, getMonthDays, isBitSafeInteger, struct, structFrom } from '../shared/utils';
 
@@ -41,21 +50,24 @@ const timeframe = (() => {
     const factory = ((length?: TimeFrameSize) => {
         const cachedMonths: TimeFrameMonth[] = [];
         const months: [Month, number, number, number, number][] = [];
-        const cursorObservable = $observable(true);
-        const observable = $observable();
         const origin = timeorigin();
 
-        let unwatchOrigin = origin.watch(() => refreshFrame());
+        const frameAtoms = {
+            days: () => days,
+            length: () => frameSize,
+            originTimestamp: () => originMonthTimestamp,
+            todayTimestamp: () => today.timestamp,
+        } as ObservableAtoms<TimeFrameAtoms>;
 
-        let unwatchToday = today.watch(() => {
-            todayTimestamp = today.timestamp;
-            refreshFrame(true);
-        }) as ObservableCallable<undefined>;
+        const observable = $observable(frameAtoms);
+
+        const cursorObservable = $observable({
+            index: () => Math.floor((origin.time - origin.month.timestamp) / 86400000),
+        } as ObservableAtoms<TimeFrameCursorAtoms>);
 
         let days: number;
         let frameSize: TimeFrameMonthSize = 3;
         let originMonthTimestamp: number;
-        let todayTimestamp = today.timestamp;
 
         const shiftFrameByOffset = (offset: number) => {
             const clampedOffset = clamp(origin.offsets.from, offset, origin.offsets.to - frameSize + 1);
@@ -102,7 +114,7 @@ const timeframe = (() => {
 
                 if (++i === frameSize) {
                     days = nextStartIndex;
-                    cursorObservable.notify(Math.floor((origin.time - origin.month.timestamp) / 86400000));
+                    cursorObservable.notify();
                     observable.notify();
                     break;
                 }
@@ -110,7 +122,7 @@ const timeframe = (() => {
         };
 
         withSize(length);
-        origin.shift(0 - (origin.month.index % frameSize));
+        origin.shift(0 - (origin.month.index % frameSize)); // normalize initial in-frame position
         refreshFrame();
 
         const indexedMonthAccess = new Proxy(struct(), {
@@ -148,7 +160,7 @@ const timeframe = (() => {
                                                     const index = originIndex + offset;
                                                     const weekDay = (index % 7) as WeekDay;
 
-                                                    let flags = timestamp === todayTimestamp ? TimeFlag.TODAY : 0;
+                                                    let flags = timestamp === today.timestamp ? TimeFlag.TODAY : 0;
 
                                                     if (weekDay === 0) flags |= TimeFlag.WEEK_START;
                                                     else if (weekDay === 6) flags |= TimeFlag.WEEK_END;
@@ -200,9 +212,9 @@ const timeframe = (() => {
 
         const frame = timecursor(
             structFrom(indexedMonthAccess, {
-                days: { get: () => days },
+                days: { get: frameAtoms.days },
                 length: {
-                    get: () => frameSize,
+                    get: frameAtoms.length,
                     set: (length?: TimeFrameSize | null) => {
                         withSize(length);
                         refreshFrame();
@@ -212,6 +224,9 @@ const timeframe = (() => {
             }) as TimeFrame,
             cursorObservable.observe
         );
+
+        let unwatchOrigin = origin.watch(() => refreshFrame());
+        let unwatchToday = today.watch(() => refreshFrame(true)) as ObservableCallable<undefined>;
 
         const { firstWeekDay, time, timeslice } = Object.getOwnPropertyDescriptors(origin);
 

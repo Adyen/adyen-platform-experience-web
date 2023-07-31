@@ -1,9 +1,10 @@
 import { Month, Time, WeekDay } from '../shared/types';
 import { clamp, computeTimestampOffset, getEdgesDistance, isBitSafeInteger, isInfinite, mid, mod, struct, structFrom } from '../shared/utils';
 import $observable from '../shared/observable';
+import { ObservableAtoms } from '../shared/observable/types';
 import $timeslice from '../timeslice';
 import { TimeSlice } from '../timeslice/types';
-import { TimeOrigin } from './types';
+import { TimeOrigin, TimeOriginAtoms } from './types';
 
 const timeorigin = (() => {
     const getRelativeEdgeOffsets = (timestamp: number, timeslice: TimeSlice = $timeslice()) => {
@@ -120,7 +121,15 @@ const timeorigin = (() => {
             if (edgeOffsets[0] !== currentTimestamp) refreshTime(edgeOffsets[0]);
         };
 
-        const observable = $observable();
+        const atoms = {
+            firstWeekDay: () => firstWeekDay,
+            fromOffset: () => fromOffset,
+            monthTimestamp: () => monthTimestamp,
+            timestamp: () => currentTimestamp,
+            toOffset: () => toOffset,
+        } as ObservableAtoms<TimeOriginAtoms>;
+
+        const observable = $observable(atoms);
 
         const timeorigin = structFrom(
             new Proxy(struct(), {
@@ -137,26 +146,26 @@ const timeorigin = (() => {
             }),
             {
                 firstWeekDay: {
-                    get: () => firstWeekDay,
+                    get: atoms.firstWeekDay,
                     set: withFirstWeekDay,
                 },
                 month: {
                     value: struct({
                         index: { get: () => monthIndex },
                         offset: { get: () => monthOffset },
-                        timestamp: { get: () => monthTimestamp },
+                        timestamp: { get: atoms.monthTimestamp },
                         year: { get: () => monthYear },
                     }),
                 },
                 offsets: {
                     value: struct({
-                        from: { get: () => fromOffset },
-                        to: { get: () => toOffset },
+                        from: { get: atoms.fromOffset },
+                        to: { get: atoms.toOffset },
                     }),
                 },
                 shift: { value: shiftTime },
                 time: {
-                    get: () => currentTimestamp,
+                    get: atoms.timestamp,
                     set: withTime,
                 },
                 timeslice: {
