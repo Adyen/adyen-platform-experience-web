@@ -1,7 +1,7 @@
 import { Month, Time, WeekDay } from '../shared/types';
 import { clamp, computeTimestampOffset, getEdgesDistance, isBitSafeInteger, isInfinite, mid, mod, struct, structFrom } from '../shared/utils';
-import $observable from '../shared/observable';
-import { ObservableAtoms } from '../shared/observable/types';
+import $watchable from '../shared/watchable';
+import { WatchAtoms } from '../shared/watchable/types';
 import $timeslice from '../timeslice';
 import { TimeSlice } from '../timeslice/types';
 import { TimeOrigin, TimeOriginAtoms } from './types';
@@ -104,7 +104,7 @@ const timeorigin = (() => {
             monthTimestamp = timestampDate.setDate(1 - monthOffset);
             monthDate = new Date(monthTimestamp).getDate();
 
-            observable.notify();
+            watchable.notify();
         };
 
         const withTimeSlice = (timeslice?: TimeSlice | null) => {
@@ -127,9 +127,9 @@ const timeorigin = (() => {
             monthTimestamp: () => monthTimestamp,
             timestamp: () => currentTimestamp,
             toOffset: () => toOffset,
-        } as ObservableAtoms<TimeOriginAtoms>;
+        } as WatchAtoms<TimeOriginAtoms>;
 
-        const observable = $observable(atoms);
+        const watchable = $watchable(atoms);
 
         const timeorigin = structFrom(
             new Proxy(struct(), {
@@ -172,7 +172,7 @@ const timeorigin = (() => {
                     get: () => timeSlice,
                     set: withTimeSlice,
                 },
-                watch: { value: observable.observe },
+                watch: { value: watchable.watch },
             }
         ) as TimeOrigin;
 

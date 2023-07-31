@@ -34,8 +34,8 @@ import {
 import today from '../shared/today';
 import timecursor from '../timecursor';
 import timeorigin from '../timeorigin';
-import $observable from '../shared/observable';
-import { ObservableAtoms, ObservableCallable } from '../shared/observable/types';
+import $watchable from '../shared/watchable';
+import { WatchAtoms, WatchCallable } from '@src/components/internal/Calendar/core/shared/watchable/types';
 import { Month, TimeFlag, WeekDay } from '../shared/types';
 import { clamp, getMonthDays, isBitSafeInteger, struct, structFrom } from '../shared/utils';
 
@@ -57,13 +57,13 @@ const timeframe = (() => {
             length: () => frameSize,
             originTimestamp: () => originMonthTimestamp,
             todayTimestamp: () => today.timestamp,
-        } as ObservableAtoms<TimeFrameAtoms>;
+        } as WatchAtoms<TimeFrameAtoms>;
 
-        const observable = $observable(frameAtoms);
+        const watchable = $watchable(frameAtoms);
 
-        const cursorObservable = $observable({
+        const cursorWatchable = $watchable({
             index: () => Math.floor((origin.time - origin.month.timestamp) / 86400000),
-        } as ObservableAtoms<TimeFrameCursorAtoms>);
+        } as WatchAtoms<TimeFrameCursorAtoms>);
 
         let days: number;
         let frameSize: TimeFrameMonthSize = 3;
@@ -114,8 +114,8 @@ const timeframe = (() => {
 
                 if (++i === frameSize) {
                     days = nextStartIndex;
-                    cursorObservable.notify();
-                    observable.notify();
+                    cursorWatchable.notify();
+                    watchable.notify();
                     break;
                 }
             }
@@ -222,11 +222,11 @@ const timeframe = (() => {
                 },
                 shift: { value: shiftFrame },
             }) as TimeFrame,
-            cursorObservable.observe
+            cursorWatchable.watch
         );
 
         let unwatchOrigin = origin.watch(() => refreshFrame());
-        let unwatchToday = today.watch(() => refreshFrame(true)) as ObservableCallable<undefined>;
+        let unwatchToday = today.watch(() => refreshFrame(true)) as WatchCallable<undefined>;
 
         const { firstWeekDay, time, timeslice } = Object.getOwnPropertyDescriptors(origin);
 
@@ -237,7 +237,7 @@ const timeframe = (() => {
                 get: () => origin.month.timestamp,
                 set: time.set,
             },
-            watch: { value: observable.observe },
+            watch: { value: watchable.watch },
         });
     }) as TimeFrameFactory;
 

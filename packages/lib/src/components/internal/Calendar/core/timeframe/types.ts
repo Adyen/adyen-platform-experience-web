@@ -20,7 +20,7 @@ import {
     SIZE_MONTH_4,
     SIZE_MONTH_6,
 } from './constants';
-import { Observable } from '../shared/observable/types';
+import { Watchable } from '../shared/watchable/types';
 import { Month } from '../shared/types';
 import { TimeOrigin } from '../timeorigin/types';
 
@@ -86,7 +86,7 @@ export type TimeFrameFactory = {
             firstWeekDay: TimeOrigin['firstWeekDay'];
             origin: TimeOrigin['time'];
             timeslice: TimeOrigin['timeslice'];
-            readonly watch: Observable<TimeFrameAtoms>['observe'];
+            readonly watch: Watchable<TimeFrameAtoms>['watch'];
         };
     readonly CURSOR_MONTH_END: typeof CURSOR_MONTH_END;
     readonly CURSOR_MONTH_START: typeof CURSOR_MONTH_START;

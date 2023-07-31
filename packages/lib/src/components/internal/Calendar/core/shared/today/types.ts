@@ -1,6 +1,6 @@
-import { Observable } from '../observable/types';
+import { Watchable } from '../watchable/types';
 
 export type Today = {
     readonly timestamp: number;
-    readonly watch: Observable<{}>['observe'];
+    readonly watch: Watchable<{}>['watch'];
 };

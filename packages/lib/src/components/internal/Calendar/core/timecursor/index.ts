@@ -11,12 +11,12 @@ import {
     CURSOR_WEEK_START,
 } from '../timeframe/constants';
 import { TimeFrame, TimeFrameCursorAtoms, TimeFrameCursorShift, TimeFrameMonth, WithTimeFrameCursor } from '../timeframe/types';
-import { OBSERVABLE_DISCONNECT_SIGNAL } from '../shared/observable/constants';
-import { Observable, ObservableCallable } from '../shared/observable/types';
+import { UNWATCH_SIGNAL } from '../shared/watchable/constants';
+import { Watchable, WatchCallable } from '../shared/watchable/types';
 import { getMonthDays, isBitSafeInteger, struct } from '../shared/utils';
 import { TimeFrameCursorProperties } from './types';
 
-const timecursor = (frame: TimeFrame, watch?: Observable<TimeFrameCursorAtoms>['observe']) => {
+const timecursor = (frame: TimeFrame, watch?: Watchable<TimeFrameCursorAtoms>['watch']) => {
     let cursorIndex: number;
     let cursorMonthIndex: number;
 
@@ -121,10 +121,8 @@ const timecursor = (frame: TimeFrame, watch?: Observable<TimeFrameCursorAtoms>['
     };
 
     let unwatchFrame = watch?.(signalOrState => {
-        return signalOrState === OBSERVABLE_DISCONNECT_SIGNAL
-            ? ((unwatchFrame = unwatchFrame?.() as any) as void)
-            : resetCursorIndexes(signalOrState.index);
-    }) as ObservableCallable<undefined>;
+        return signalOrState === UNWATCH_SIGNAL ? ((unwatchFrame = unwatchFrame?.() as any) as void) : resetCursorIndexes(signalOrState.index);
+    }) as WatchCallable<undefined>;
 
     return Object.defineProperty(frame, 'cursor', {
         get: () => cursorIndex,

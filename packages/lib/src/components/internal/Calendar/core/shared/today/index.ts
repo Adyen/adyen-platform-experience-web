@@ -1,4 +1,4 @@
-import $observable from '../observable';
+import $watchable from '../watchable';
 import { struct } from '../utils';
 import { Today } from './types';
 
@@ -38,24 +38,24 @@ const today = (() => {
     const animationIntervalCallback = () => {
         if (Date.now() - timestamp < tomorrowOffset) return;
         refreshTimestamp();
-        observable.notify(timestamp);
+        watchable.notify();
     };
 
-    const observable = $observable();
+    const watchable = $watchable();
 
-    observable.callback.resume = () => {
+    watchable.callback.resume = () => {
         controller = new AbortController();
         refreshTimestamp();
         animationInterval(1000, controller.signal, animationIntervalCallback);
     };
 
-    observable.callback.idle = () => {
+    watchable.callback.idle = () => {
         controller.abort();
     };
 
     return struct({
-        timestamp: { get: () => (observable.idle ? getTimestamp() : timestamp) },
-        watch: { value: observable.observe },
+        timestamp: { get: () => (watchable.idle ? getTimestamp() : timestamp) },
+        watch: { value: watchable.watch },
     }) as Today;
 })();
 
