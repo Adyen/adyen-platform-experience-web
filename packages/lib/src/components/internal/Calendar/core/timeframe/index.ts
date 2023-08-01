@@ -34,8 +34,9 @@ import {
 import today from '../shared/today';
 import timecursor from '../timecursor';
 import timeorigin from '../timeorigin';
+import timeSelection from '../timeselection';
 import $watchable from '../shared/watchable';
-import { WatchAtoms, WatchCallable } from '@src/components/internal/Calendar/core/shared/watchable/types';
+import { WatchAtoms, WatchCallable } from '../shared/watchable/types';
 import { Month, TimeFlag, WeekDay } from '../shared/types';
 import { clamp, getMonthDays, isBitSafeInteger, struct, structFrom } from '../shared/utils';
 
@@ -51,6 +52,7 @@ const timeframe = (() => {
         const cachedMonths: TimeFrameMonth[] = [];
         const months: [Month, number, number, number, number][] = [];
         const origin = timeorigin();
+        const selection = timeSelection(origin);
 
         const frameAtoms = {
             days: () => days,
@@ -184,6 +186,15 @@ const timeframe = (() => {
                                                         flags |= TimeFlag.WITHIN_RANGE;
                                                     }
 
+                                                    const selectionStartTimestamp = selection.from - selection.offsets.from;
+                                                    const selectionEndTimestamp = selection.to - selection.offsets.to;
+
+                                                    if (timestamp >= selectionStartTimestamp && timestamp <= selectionEndTimestamp) {
+                                                        if (timestamp === selectionStartTimestamp) flags |= TimeFlag.SELECTION_START;
+                                                        if (timestamp === selectionEndTimestamp) flags |= TimeFlag.SELECTION_END;
+                                                        flags |= TimeFlag.WITHIN_SELECTION;
+                                                    }
+
                                                     return flags;
                                                 }
                                             }
@@ -226,16 +237,25 @@ const timeframe = (() => {
         );
 
         let unwatchOrigin = origin.watch(() => refreshFrame());
+        let unwatchSelection = selection.watch(() => refreshFrame(true)) as WatchCallable<undefined>;
         let unwatchToday = today.watch(() => refreshFrame(true)) as WatchCallable<undefined>;
 
         const { firstWeekDay, time, timeslice } = Object.getOwnPropertyDescriptors(origin);
+        const { from: selectionFrom, to: selectionTo, select } = Object.getOwnPropertyDescriptors(selection);
 
         return Object.defineProperties(frame, {
             firstWeekDay,
             timeslice,
+            select,
             origin: {
                 get: () => origin.month.timestamp,
                 set: time.set,
+            },
+            selection: {
+                value: struct({
+                    from: selectionFrom,
+                    to: selectionTo,
+                }),
             },
             watch: { value: watchable.watch },
         });

@@ -5,8 +5,7 @@ import { struct } from '../utils';
 
 const watchable = <T extends Record<string, any>>(atoms = {} as WatchAtoms<T>) => {
     const unwatchers = new WeakSet<WatchCallable<void>>();
-    const watchersMap = new WeakMap<WatchCallback<T>, number>();
-    const watchers = new Set<WatchCallback<T>>();
+    const watchers = new Map<WatchCallback<T>, number>();
 
     let snapshot: T | undefined;
 
@@ -58,7 +57,7 @@ const watchable = <T extends Record<string, any>>(atoms = {} as WatchAtoms<T>) =
         if (watchers.size === 0) return;
 
         if (signal === UNWATCH_SIGNAL) {
-            watchers.forEach(cb => cb(signal));
+            watchers.forEach((_, cb) => cb(signal));
             return true;
         }
 
@@ -67,7 +66,7 @@ const watchable = <T extends Record<string, any>>(atoms = {} as WatchAtoms<T>) =
 
         for (const key of Object.keys(snapshot) as (keyof T)[]) {
             if (snapshot[key] !== currentSnapshot[key] && snapshot[key] === snapshot[key]) {
-                watchers.forEach(cb => cb(snapshot as T));
+                watchers.forEach((_, cb) => cb(snapshot as T));
                 return true;
             }
         }
@@ -79,29 +78,24 @@ const watchable = <T extends Record<string, any>>(atoms = {} as WatchAtoms<T>) =
         if (!callback) return noop;
 
         const unwatch = () => {
-            let callbackWeight = watchersMap.get(callback) || 0;
+            let callbackWeight = watchers.get(callback) || 0;
 
             if (unwatchers.delete(unwatch)) {
-                watchersMap.set(callback, (callbackWeight = Math.max(0, --callbackWeight)));
+                watchers.set(callback, (callbackWeight = Math.max(0, --callbackWeight)));
             }
 
-            if (callbackWeight === 0) {
-                watchersMap.delete(callback);
-
-                if (watchers.delete(callback) && watchers.size === 0) {
-                    snapshot = undefined;
-                    callbacks.idle();
-                }
+            if (callbackWeight === 0 && watchers.delete(callback) && watchers.size === 0) {
+                snapshot = undefined;
+                callbacks.idle();
             }
         };
 
-        const callbackWeight = watchersMap.get(callback) || 0;
+        const callbackWeight = watchers.get(callback) || 0;
 
         unwatchers.add(unwatch);
-        watchersMap.set(callback, callbackWeight + 1);
+        watchers.set(callback, callbackWeight + 1);
 
         if (callbackWeight === 0) {
-            watchers.add(callback);
             snapshot = snapshot || { ...state };
             callbacks.resume();
         }

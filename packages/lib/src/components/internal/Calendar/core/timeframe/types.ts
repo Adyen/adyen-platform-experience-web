@@ -21,8 +21,9 @@ import {
     SIZE_MONTH_6,
 } from './constants';
 import { Watchable } from '../shared/watchable/types';
-import { Month } from '../shared/types';
+import { Month, WithTimeEdges } from '../shared/types';
 import { TimeOrigin } from '../timeorigin/types';
+import { TimeSelection } from '../timeselection/types';
 
 export type TimeFrameCursorShift =
     | typeof CURSOR_MONTH_START
@@ -85,6 +86,11 @@ export type TimeFrameFactory = {
         WithTimeFrameCursor & {
             firstWeekDay: TimeOrigin['firstWeekDay'];
             origin: TimeOrigin['time'];
+            readonly select: TimeSelection['select'];
+            readonly selection: {
+                from: TimeSelection['from'];
+                to: TimeSelection['to'];
+            };
             timeslice: TimeOrigin['timeslice'];
             readonly watch: Watchable<TimeFrameAtoms>['watch'];
         };
