@@ -4,10 +4,10 @@ import { TimeSlice } from '../timeslice/types';
 
 export type TimeOriginAtoms = {
     firstWeekDay: WeekDay;
-    fromOffset: number;
+    fromTimestamp: number;
     monthTimestamp: number;
     timestamp: number;
-    toOffset: number;
+    toTimestamp: number;
 };
 
 export type TimeOrigin = {
@@ -21,7 +21,7 @@ export type TimeOrigin = {
         readonly year: number;
     };
     readonly offsets: WithTimeEdges<number>;
-    readonly shift: (offset?: number) => TimeOrigin;
+    readonly shift: (offset?: number) => void;
     get time(): number;
     set time(time: Time | null | undefined);
     get timeslice(): TimeSlice;

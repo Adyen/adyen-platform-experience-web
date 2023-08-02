@@ -1,81 +1,35 @@
+import __TimeSelection__ from './base';
 import { EDGE_COLLAPSE, END_EDGE, FARTHEST_EDGE, NEAREST_EDGE, START_EDGE } from './constants';
-import { TimeSelection, TimeSelectionAtoms, TimeSelectionFactory, TimeSelectionSnapEdge } from './types';
-import { clamp, computeTimestampOffset, struct } from '../shared/utils';
-import { TimeOrigin } from '../timeorigin/types';
+import { TimeSelection, TimeSelectionFactory } from './types';
 import { Time } from '../shared/types';
-import $watchable from '../shared/watchable';
-import { WatchAtoms } from '../shared/watchable/types';
+import { struct } from '../shared/utils';
+import { TimeOrigin } from '../timeorigin/types';
 
 const timeSelection = (() => {
     const factory = ((timeorigin: TimeOrigin) => {
-        let { from, to } = timeorigin.timeslice;
-        let fromTimestamp = timeorigin.time;
-        let fromTimestampOffset = computeTimestampOffset(fromTimestamp);
-        let toTimestamp = fromTimestamp;
-        let toTimestampOffset = fromTimestampOffset;
-
-        const select = (time: Time, snapBehavior?: TimeSelectionSnapEdge | typeof EDGE_COLLAPSE) => {
-            const date = new Date(time);
-            const timestamp = clamp(from, date.getTime(), to);
-
-            if (snapBehavior === FARTHEST_EDGE) {
-                if (timestamp <= fromTimestamp) snapBehavior = END_EDGE;
-                else if (timestamp >= toTimestamp) snapBehavior = START_EDGE;
-            }
-
-            switch (snapBehavior) {
-                case START_EDGE:
-                    toTimestamp = Math.max(toTimestamp, (fromTimestamp = timestamp));
-                    break;
-                case END_EDGE:
-                    fromTimestamp = Math.min(fromTimestamp, (toTimestamp = timestamp));
-                    break;
-                case FARTHEST_EDGE:
-                case NEAREST_EDGE: {
-                    let fromDistance = Math.abs(timestamp - fromTimestamp);
-                    let toDistance = Math.abs(toTimestamp - timestamp);
-
-                    if (snapBehavior === NEAREST_EDGE) {
-                        [fromDistance, toDistance] = [toDistance, fromDistance];
-                    }
-
-                    if (fromDistance > toDistance) {
-                        fromTimestamp = timestamp;
-                    } else toTimestamp = timestamp;
-
-                    break;
-                }
-                case EDGE_COLLAPSE:
-                default:
-                    fromTimestamp = toTimestamp = timestamp;
-                    return;
-            }
-        };
-
-        const atoms = {
-            from: () => fromTimestamp,
-            to: () => toTimestamp,
-        } as WatchAtoms<TimeSelectionAtoms>;
-
-        const watchable = $watchable(atoms);
+        const base = new __TimeSelection__(timeorigin);
 
         return struct({
             from: {
-                get: atoms.from,
-                set: (time?: Time | null) => select(time == undefined ? timeorigin.time : time, START_EDGE),
+                get: () => base.selectionStartTimestamp,
+                set: (time?: Time | null) => {
+                    base.start = time;
+                },
             },
             to: {
-                get: atoms.to,
-                set: (time?: Time | null) => select(time == undefined ? timeorigin.time : time, END_EDGE),
+                get: () => base.selectionEndTimestamp,
+                set: (time?: Time | null) => {
+                    base.end = time;
+                },
             },
             offsets: {
                 value: struct({
-                    from: { get: () => fromTimestampOffset },
-                    to: { get: () => toTimestampOffset },
+                    from: { get: () => base.selectionStartTimestampOffset },
+                    to: { get: () => base.selectionEndTimestampOffset },
                 }),
             },
-            select: { value: select },
-            watch: { value: watchable.watch },
+            select: { value: base.updateSelection },
+            watch: { value: base.watchable.watch },
         }) as TimeSelection;
     }) as TimeSelectionFactory;
 

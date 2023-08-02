@@ -20,8 +20,8 @@ import {
     SIZE_MONTH_4,
     SIZE_MONTH_6,
 } from './constants';
+import { Month } from '../shared/types';
 import { Watchable } from '../shared/watchable/types';
-import { Month, WithTimeEdges } from '../shared/types';
 import { TimeOrigin } from '../timeorigin/types';
 import { TimeSelection } from '../timeselection/types';
 
@@ -60,10 +60,6 @@ export type TimeFrameAtoms = {
     todayTimestamp: number;
 };
 
-export type TimeFrameCursorAtoms = {
-    index: number;
-};
-
 export type TimeFrame = {
     [K: number]: TimeFrameMonth;
     readonly days: number;
@@ -80,6 +76,8 @@ export type TimeFrameMonth = {
     readonly month: Month;
     readonly year: number;
 };
+
+export type TimeFrameMonthMetrics = [Month, number, number, number, number];
 
 export type TimeFrameFactory = {
     (length?: TimeFrameSize): TimeFrame &

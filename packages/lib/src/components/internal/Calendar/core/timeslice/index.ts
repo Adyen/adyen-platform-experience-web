@@ -1,46 +1,22 @@
+import __TimeSlice__ from './base';
 import { FROM_EDGE, TO_EDGE } from './constants';
 import { TimeSlice, TimeSliceFactory } from './types';
-import { computeTimestampOffset, getEdgesDistance, struct } from '../shared/utils';
+import { struct } from '../shared/utils';
 
 const timeslice = (() => {
     const factory = ((...args: any[]) => {
-        let endTimestamp = Infinity;
-        let startTimestamp = -Infinity;
-
-        if (args.length >= 2) {
-            let timestamp = new Date(args[0]).getTime();
-
-            if (typeof args[1] !== 'symbol') {
-                startTimestamp = timestamp || startTimestamp;
-                endTimestamp = new Date(args[1]).getTime() || endTimestamp;
-
-                if (endTimestamp < startTimestamp) {
-                    [endTimestamp, startTimestamp] = [startTimestamp, endTimestamp];
-                }
-            } else if (timestamp === timestamp) {
-                switch (args[1]) {
-                    case TO_EDGE:
-                        endTimestamp = timestamp;
-                        break;
-
-                    case FROM_EDGE:
-                    default:
-                        startTimestamp = timestamp;
-                        break;
-                }
-            }
-        }
+        const base = new __TimeSlice__(...args);
 
         return struct({
-            from: { value: startTimestamp },
-            to: { value: endTimestamp },
+            from: { value: base.startTimestamp },
+            to: { value: base.endTimestamp },
             offsets: {
                 value: struct({
-                    from: { value: computeTimestampOffset(startTimestamp) },
-                    to: { value: computeTimestampOffset(endTimestamp) },
+                    from: { value: base.startTimestampOffset },
+                    to: { value: base.endTimestampOffset },
                 }),
             },
-            span: { value: getEdgesDistance(startTimestamp, endTimestamp) + 1 },
+            span: { value: base.numberOfMonths },
         }) as TimeSlice;
     }) as TimeSliceFactory;
 

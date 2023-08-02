@@ -1,6 +1,7 @@
 export type Time = Date | number | string;
 export type WeekDay = 0 | 1 | 2 | 3 | 4 | 5 | 6;
 export type Month = WeekDay | 7 | 8 | 9 | 10 | 11;
+export type MonthDays = 28 | 29 | 30 | 31;
 
 export const enum TimeFlag {
     WEEK_START = 0x1,
@@ -17,9 +18,6 @@ export const enum TimeFlag {
     SELECTION_START = 0x1000,
     SELECTION_END = 0x2000,
     WITHIN_SELECTION = 0x4000,
-    FAUX_SELECTION_START = 0x10000,
-    FAUX_SELECTION_END = 0x20000,
-    WITHIN_FAUX_SELECTION = 0x40000,
 }
 
 export type WithTimeEdges<T = {}> = {
