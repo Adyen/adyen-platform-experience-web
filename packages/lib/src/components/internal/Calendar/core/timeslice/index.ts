@@ -23,6 +23,8 @@ const timeslice = (() => {
     return Object.defineProperties(factory, {
         FROM_EDGE: { value: FROM_EDGE },
         TO_EDGE: { value: TO_EDGE },
+        SINCE_NOW: { get: () => factory(Date.now(), FROM_EDGE) },
+        UNTIL_NOW: { get: () => factory(Date.now(), TO_EDGE) },
     });
 })();
 

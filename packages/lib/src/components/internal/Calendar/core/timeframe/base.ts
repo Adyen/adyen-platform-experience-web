@@ -27,12 +27,12 @@ import {
 import { DAY_MS } from '../shared/constants';
 import today from '../shared/today';
 import { MonthDays, TimeFlag, WeekDay } from '../shared/types';
-import { clamp, getMonthDays, isBitSafeInteger, struct, structFrom } from '../shared/utils';
+import { clamp, getMonthDays, isBitSafeInteger, mod, struct, structFrom } from '../shared/utils';
 import watchable from '../shared/watchable';
 import { Watchable, WatchAtoms } from '../shared/watchable/types';
 import timeorigin from '../timeorigin';
 import timeselection from '../timeselection';
-import { TimeOrigin } from '../timeorigin/types';
+import { TimeOrigin, TimeOriginAtoms } from '../timeorigin/types';
 import { TimeSelection } from '../timeselection/types';
 
 const downsizeTimeFrame = (size: TimeFrameMonthSize, maxsize: number) => {
@@ -56,16 +56,21 @@ export default class __TimeFrame__ {
     #cachedFrameMonths: TimeFrameMonth[] = [];
     #frameMonthsMetrics: TimeFrameMonthMetrics[] = [];
 
-    #cursorIndex?: number;
-    #cursorMonthIndex?: number;
-    #maxCursorIndex?: number;
-    #minCursorIndex?: number;
     #numberOfDays?: number;
     #numberOfMonths?: TimeFrameMonthSize;
 
+    #cursorIndex?: number;
+    #cursorMonthIndex: number = 0;
+    #lastCursorDateTimestamp: number;
+    #maxCursorIndex?: number;
+    #minCursorIndex?: number;
+
     #originMonthTimestamp?: number;
+    #originTimeSliceStartTimestamp?: number;
     #originTimeSliceStartMonthTimestamp?: number;
+    #originTimeSliceEndTimestamp?: number;
     #originTimeSliceEndMonthTimestamp?: number;
+
     #selectionStartDayTimestamp?: number;
     #selectionEndDayTimestamp?: number;
 
@@ -74,6 +79,7 @@ export default class __TimeFrame__ {
     constructor(numberOfMonths?: TimeFrameSize) {
         this.#origin = timeorigin();
         this.#selection = timeselection(this.#origin);
+        this.#lastCursorDateTimestamp = this.#origin.time;
 
         this.#watchable = watchable({
             days: () => this.#numberOfDays as number,
@@ -86,17 +92,18 @@ export default class __TimeFrame__ {
         this.shiftFrameCursor = this.shiftFrameCursor.bind(this);
         this.numberOfMonths = numberOfMonths;
 
-        today.watch(() => this.#refreshFrame(true));
+        today.watch(this.#refreshFrame.bind(this));
 
         this.#origin.watch(snapshot => {
-            if (typeof snapshot === 'symbol') return;
-
-            if (this.#origin.timeslice.span < (this.#numberOfMonths as TimeFrameMonthSize)) {
-                this.numberOfMonths = downsizeTimeFrame(this.#numberOfMonths as TimeFrameMonthSize, this.#origin.timeslice.span);
-            } else this.#refreshFrame(true);
+            if (typeof snapshot !== 'symbol') this.#onOriginUpdated(snapshot);
         });
 
-        this.#selection.watch(() => this.#refreshFrame(true));
+        this.#selection.watch(() => {
+            const { from, to, offsets } = this.#selection;
+            this.#selectionStartDayTimestamp = from - offsets.from;
+            this.#selectionEndDayTimestamp = to - offsets.to;
+            this.#refreshFrame();
+        });
     }
 
     get cursorIndex() {
@@ -117,10 +124,8 @@ export default class __TimeFrame__ {
 
     set numberOfMonths(numberOfMonths: TimeFrameSize | null | undefined) {
         const nextNumberOfMonths = (numberOfMonths != undefined && resolveTimeFrameSize(numberOfMonths)) || 1;
-
         if (this.#numberOfMonths === (this.#numberOfMonths = nextNumberOfMonths)) return;
-        this.#origin.shift(0 - (this.#origin.month.index % this.#numberOfMonths)); // normalize initial in-frame position
-        this.#refreshFrame(true);
+        this.#shiftFrameByMonthOffset(this.#cursorMonthIndex - (new Date(this.#lastCursorDateTimestamp).getMonth() % nextNumberOfMonths));
     }
 
     get origin() {
@@ -145,6 +150,13 @@ export default class __TimeFrame__ {
         this.#shiftFrameByMonthOffset(this.#numberOfMonths as TimeFrameMonthSize);
         this.#cursorMonthIndex = 0;
         return this.#getFrameMonthStartOffsetByIndex(this.#cursorMonthIndex);
+    }
+
+    #reindexCursor(cursorIndex: number) {
+        if (cursorIndex < (this.#minCursorIndex as number) || cursorIndex > (this.#maxCursorIndex as number)) return;
+        if (cursorIndex < 0 || cursorIndex >= (this.#numberOfDays as number)) return;
+        this.#cursorIndex = cursorIndex;
+        this.#lastCursorDateTimestamp = this.#origin[this.#cursorIndex as number] as number;
     }
 
     #getFrameMonthByIndex(monthIndex: number): TimeFrameMonth | undefined {
@@ -254,9 +266,30 @@ export default class __TimeFrame__ {
         return getMonthDays(month, year, (this.#cursorMonthIndex as number) + cursorMonthOffset)[0];
     }
 
-    #refreshFrame(shouldForceRefresh = false) {
-        if (this.#originMonthTimestamp === this.#origin.month.timestamp && !shouldForceRefresh) return;
+    #getOriginMonthCursorOffsetForTimestamp(timestamp: number = this.#origin.month.timestamp) {
+        return Math.round((timestamp - this.#origin.month.timestamp) / DAY_MS);
+    }
 
+    #onOriginUpdated({ fromTimestamp, toTimestamp }: TimeOriginAtoms) {
+        if (this.#originTimeSliceStartTimestamp === fromTimestamp && this.#originTimeSliceEndTimestamp === toTimestamp) {
+            return this.#refreshFrame();
+        }
+
+        const { from, to, offsets, span } = this.#origin.timeslice;
+
+        this.#originTimeSliceStartTimestamp = from;
+        this.#originTimeSliceEndTimestamp = to;
+        this.#originTimeSliceStartMonthTimestamp = from - offsets.from;
+        this.#originTimeSliceEndMonthTimestamp = to - offsets.to;
+        this.#maxCursorIndex = this.#getOriginMonthCursorOffsetForTimestamp(this.#originTimeSliceEndMonthTimestamp);
+        this.#minCursorIndex = this.#getOriginMonthCursorOffsetForTimestamp(this.#originTimeSliceStartMonthTimestamp);
+
+        span >= (this.#numberOfMonths as TimeFrameMonthSize)
+            ? this.#shiftFrameByMonthOffset(0)
+            : (this.numberOfMonths = downsizeTimeFrame(this.#numberOfMonths as TimeFrameMonthSize, span));
+    }
+
+    #refreshFrame() {
         this.#cachedFrameMonths.length = this.#frameMonthsMetrics.length = 0;
         this.#originMonthTimestamp = this.#origin.month.timestamp;
 
@@ -270,20 +303,12 @@ export default class __TimeFrame__ {
             this.#frameMonthsMetrics.push([month, year, numberOfDays, originIndex, startIndex]);
 
             if (++i === this.#numberOfMonths) {
-                const timeslice = this.#origin.timeslice;
+                const date = new Date(this.#lastCursorDateTimestamp).getDate();
 
-                this.#originTimeSliceStartMonthTimestamp = timeslice.from - timeslice.offsets.from;
-                this.#originTimeSliceEndMonthTimestamp = timeslice.to - timeslice.offsets.to;
-                this.#selectionStartDayTimestamp = this.#selection.from - this.#selection.offsets.from;
-                this.#selectionEndDayTimestamp = this.#selection.to - this.#selection.offsets.to;
-
-                this.#cursorMonthIndex = 0;
-                this.#cursorIndex = Math.ceil((this.#origin.time - this.#origin.month.timestamp) / DAY_MS) - this.#origin.month.offset;
-                this.#maxCursorIndex = Math.round((this.#originTimeSliceEndMonthTimestamp - this.#origin.month.timestamp) / DAY_MS);
-                this.#minCursorIndex = Math.round((this.#originTimeSliceStartMonthTimestamp - this.#origin.month.timestamp) / DAY_MS);
-
+                this.#cursorIndex = (this.#getFrameMonthByIndex(this.#cursorMonthIndex as number) as TimeFrameMonth).index + date - 1;
                 this.#numberOfDays = nextStartIndex;
                 this.#watchable.notify();
+
                 break;
             }
         }
@@ -297,9 +322,11 @@ export default class __TimeFrame__ {
         );
 
         if (clampedMonthOffset) {
+            this.#cursorMonthIndex = mod((this.#cursorMonthIndex as number) - clampedMonthOffset, this.#numberOfMonths as TimeFrameMonthSize);
             this.#origin.shift(clampedMonthOffset);
-            this.#refreshFrame();
         }
+
+        this.#refreshFrame();
     }
 
     #shiftFrameCursorByOffset(offset: number) {
@@ -321,20 +348,20 @@ export default class __TimeFrame__ {
         if (nextCursorIndex < cursorMonthStartIndex) {
             if (!(this.#cursorMonthIndex as number)--) {
                 lastMonthEndIndex = this.#frameBackward();
-                this.#cursorIndex = lastMonthEndIndex - (nextCursorIndex - cursorMonthStartIndex);
+                this.#reindexCursor(lastMonthEndIndex - (nextCursorIndex - cursorMonthStartIndex));
             } else {
-                this.#cursorIndex = cursorMonthStartIndex;
-                this.#shiftFrameCursorByOffset(nextCursorIndex - this.#cursorIndex);
+                this.#reindexCursor(cursorMonthStartIndex);
+                this.#shiftFrameCursorByOffset(nextCursorIndex - (this.#cursorIndex as number));
             }
         } else if (nextCursorIndex > cursorMonthEndIndex) {
             if (++(this.#cursorMonthIndex as number) === (this.#numberOfMonths as TimeFrameMonthSize)) {
                 firstMonthStartIndex = this.#frameForward();
-                this.#cursorIndex = firstMonthStartIndex + (nextCursorIndex - cursorMonthEndIndex - 1);
+                this.#reindexCursor(firstMonthStartIndex + (nextCursorIndex - cursorMonthEndIndex - 1));
             } else {
-                this.#cursorIndex = cursorMonthEndIndex;
-                this.#shiftFrameCursorByOffset(nextCursorIndex - this.#cursorIndex);
+                this.#reindexCursor(cursorMonthEndIndex);
+                this.#shiftFrameCursorByOffset(nextCursorIndex - (this.#cursorIndex as number));
             }
-        } else this.#cursorIndex = nextCursorIndex;
+        } else this.#reindexCursor(nextCursorIndex);
     }
 
     shiftFrame(shiftBy?: number, shiftType?: TimeFrameShift) {

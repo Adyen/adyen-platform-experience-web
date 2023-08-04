@@ -148,9 +148,7 @@ export default class __TimeOrigin__ {
         this.#timeSliceEndMonthOffsetFromOrigin = edgeOffsets[1];
         this.#usingFallbackTimeSlice = _usingFallbackTimeSlice;
 
-        if (currentTimestamp !== this.#currentTimestamp) {
-            this.#refreshTime(currentTimestamp);
-        }
+        this.#refreshTime(currentTimestamp);
     }
 
     #refreshTime(time: number = this.#currentTimestamp as number) {
