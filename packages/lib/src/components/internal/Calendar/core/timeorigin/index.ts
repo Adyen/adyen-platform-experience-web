@@ -35,11 +35,16 @@ const timeorigin = (timeslice?: TimeSlice) => {
                     year: { get: () => base.originMonthYear },
                 }),
             },
-            offsets: {
-                value: struct({
-                    from: { get: () => base.timeSliceStartMonthOffsetFromOrigin },
-                    to: { get: () => base.timeSliceEndMonthOffsetFromOrigin },
-                }),
+            offset: {
+                value: Object.defineProperties(
+                    (monthOffset?: number) => {
+                        return base.getMonthStartTimestampByOriginMonthOffset(monthOffset);
+                    },
+                    {
+                        from: { get: () => base.timeSliceStartMonthOffsetFromOrigin },
+                        to: { get: () => base.timeSliceEndMonthOffsetFromOrigin },
+                    }
+                ),
             },
             shift: { value: base.shiftOriginByMonthOffset },
             time: {

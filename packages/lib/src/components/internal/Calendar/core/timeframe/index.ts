@@ -1,24 +1,24 @@
 import __TimeFrame__ from './base';
 import {
-    CURSOR_MONTH_END,
-    CURSOR_MONTH_START,
-    CURSOR_NEXT_DAY,
-    CURSOR_NEXT_MONTH,
-    CURSOR_NEXT_WEEK,
-    CURSOR_PREV_DAY,
-    CURSOR_PREV_MONTH,
-    CURSOR_PREV_WEEK,
-    CURSOR_WEEK_END,
-    CURSOR_WEEK_START,
+    CURSOR_BACKWARD,
+    CURSOR_BACKWARD_EDGE,
+    CURSOR_BLOCK_END,
+    CURSOR_BLOCK_START,
+    CURSOR_DOWNWARD,
+    CURSOR_FORWARD,
+    CURSOR_FORWARD_EDGE,
+    CURSOR_NEXT_BLOCK,
+    CURSOR_PREV_BLOCK,
+    CURSOR_UPWARD,
+    SHIFT_BLOCK,
     SHIFT_FRAME,
-    SHIFT_MONTH,
-    SHIFT_YEAR,
-    SIZE_MONTH_1,
-    SIZE_MONTH_12,
-    SIZE_MONTH_2,
-    SIZE_MONTH_3,
-    SIZE_MONTH_4,
-    SIZE_MONTH_6,
+    SHIFT_PERIOD,
+    SIZE_1,
+    SIZE_12,
+    SIZE_2,
+    SIZE_3,
+    SIZE_4,
+    SIZE_6,
 } from './constants';
 import { TimeFrame, TimeFrameFactory, TimeFrameSize } from './types';
 import { struct, structFrom } from '../shared/utils';
@@ -32,7 +32,7 @@ const timeframe = (() => {
         return structFrom(
             new Proxy(struct(), {
                 get: (target: {}, property: string | symbol, receiver: {}) => {
-                    return typeof property === 'string' ? base.getFrameMonthByIndex(+property) : Reflect.get(target, property, receiver);
+                    return typeof property === 'string' ? base.getFrameBlockByIndex(+property) : Reflect.get(target, property, receiver);
                 },
                 set: () => true,
             }),
@@ -46,9 +46,9 @@ const timeframe = (() => {
                 },
                 days: { get: () => base.numberOfDays },
                 length: {
-                    get: () => base.numberOfMonths,
+                    get: () => base.numberOfBlocks,
                     set: (length?: TimeFrameSize | null) => {
-                        base.numberOfMonths = length;
+                        base.numberOfBlocks = length;
                     },
                 },
                 origin: {
@@ -68,27 +68,25 @@ const timeframe = (() => {
     }) as TimeFrameFactory;
 
     return Object.defineProperties(factory, {
-        CURSOR_MONTH_END: { value: CURSOR_MONTH_END },
-        CURSOR_MONTH_START: { value: CURSOR_MONTH_START },
-        CURSOR_NEXT_DAY: { value: CURSOR_NEXT_DAY },
-        CURSOR_NEXT_MONTH: { value: CURSOR_NEXT_MONTH },
-        CURSOR_NEXT_WEEK: { value: CURSOR_NEXT_WEEK },
-        CURSOR_PREV_DAY: { value: CURSOR_PREV_DAY },
-        CURSOR_PREV_MONTH: { value: CURSOR_PREV_MONTH },
-        CURSOR_PREV_WEEK: { value: CURSOR_PREV_WEEK },
-        CURSOR_WEEK_END: { value: CURSOR_WEEK_END },
-        CURSOR_WEEK_START: { value: CURSOR_WEEK_START },
-        MONTH: { value: SIZE_MONTH_1 },
-        MONTH_1: { value: SIZE_MONTH_1 },
-        MONTH_2: { value: SIZE_MONTH_2 },
-        MONTH_3: { value: SIZE_MONTH_3 },
-        MONTH_4: { value: SIZE_MONTH_4 },
-        MONTH_6: { value: SIZE_MONTH_6 },
-        MONTH_12: { value: SIZE_MONTH_12 },
+        CURSOR_BACKWARD: { value: CURSOR_BACKWARD },
+        CURSOR_BACKWARD_EDGE: { value: CURSOR_BACKWARD_EDGE },
+        CURSOR_BLOCK_END: { value: CURSOR_BLOCK_END },
+        CURSOR_BLOCK_START: { value: CURSOR_BLOCK_START },
+        CURSOR_DOWNWARD: { value: CURSOR_DOWNWARD },
+        CURSOR_FORWARD: { value: CURSOR_FORWARD },
+        CURSOR_FORWARD_EDGE: { value: CURSOR_FORWARD_EDGE },
+        CURSOR_NEXT_BLOCK: { value: CURSOR_NEXT_BLOCK },
+        CURSOR_PREV_BLOCK: { value: CURSOR_PREV_BLOCK },
+        CURSOR_UPWARD: { value: CURSOR_UPWARD },
+        SHIFT_BLOCK: { value: SHIFT_BLOCK },
         SHIFT_FRAME: { value: SHIFT_FRAME },
-        SHIFT_MONTH: { value: SHIFT_MONTH },
-        SHIFT_YEAR: { value: SHIFT_YEAR },
-        YEAR: { value: SIZE_MONTH_12 },
+        SHIFT_PERIOD: { value: SHIFT_PERIOD },
+        SIZE_1: { value: SIZE_1 },
+        SIZE_2: { value: SIZE_2 },
+        SIZE_3: { value: SIZE_3 },
+        SIZE_4: { value: SIZE_4 },
+        SIZE_6: { value: SIZE_6 },
+        SIZE_12: { value: SIZE_12 },
     });
 })();
 

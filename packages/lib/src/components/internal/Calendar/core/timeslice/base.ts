@@ -27,7 +27,7 @@ export default class __TimeSlice__ {
                 this.#startTimestampOffset = computeTimestampOffset(this.#startTimestamp);
                 this.#endTimestampOffset = computeTimestampOffset(this.#endTimestamp);
                 this.#numberOfMonths = getEdgesDistance(this.#startTimestamp, this.#endTimestamp) + 1;
-            } else if (timestamp === timestamp) {
+            } else if (!isNaN(timestamp)) {
                 switch (args[1]) {
                     case TO_EDGE:
                         this.#endTimestamp = timestamp;

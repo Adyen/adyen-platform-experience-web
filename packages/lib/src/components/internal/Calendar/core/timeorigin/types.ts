@@ -20,8 +20,10 @@ export type TimeOrigin = {
         readonly timestamp: number;
         readonly year: number;
     };
-    readonly offsets: WithTimeEdges<number>;
-    readonly shift: (offset?: number) => void;
+    readonly offset: WithTimeEdges<number> & {
+        (monthOffset?: number): number;
+    };
+    readonly shift: (monthOffset?: number) => void;
     get time(): number;
     set time(time: Time | null | undefined);
     get timeslice(): TimeSlice;

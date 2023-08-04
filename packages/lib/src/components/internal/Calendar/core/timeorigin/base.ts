@@ -56,6 +56,7 @@ export default class __TimeOrigin__ {
     #originMonth?: Month;
     #originMonthFirstDayOffset?: WeekDay;
     #originMonthStartDate?: number;
+    #originMonthStartDateTimestamp?: number;
     #originMonthTimestamp?: number;
     #originMonthYear?: number;
 
@@ -79,6 +80,7 @@ export default class __TimeOrigin__ {
             toTimestamp: () => this.#timeslice.to,
         } as WatchAtoms<TimeOriginAtoms>);
 
+        this.getMonthStartTimestampByOriginMonthOffset = this.getMonthStartTimestampByOriginMonthOffset.bind(this);
         this.shiftOriginByMonthOffset = this.shiftOriginByMonthOffset.bind(this);
         this.updateOriginTime = this.updateOriginTime.bind(this);
         this.firstWeekDay = 0;
@@ -151,19 +153,32 @@ export default class __TimeOrigin__ {
         this.#refreshTime(currentTimestamp);
     }
 
+    #getClampedMonthOffset(monthOffset?: number): number | undefined {
+        const clampedMonthOffset = clamp(
+            this.#timeSliceStartMonthOffsetFromOrigin as number,
+            monthOffset || 0,
+            this.#timeSliceEndMonthOffsetFromOrigin as number
+        );
+
+        if (clampedMonthOffset && isBitSafeInteger(clampedMonthOffset)) {
+            return clampedMonthOffset;
+        }
+    }
+
     #refreshTime(time: number = this.#currentTimestamp as number) {
         this.#shouldForceTimeRefresh = true;
         this.updateOriginTime(time);
     }
 
-    shiftOriginByMonthOffset(monthOffset?: number) {
-        const clampedMonthOffset = clamp(
-            this.#timeSliceStartMonthOffsetFromOrigin as number,
-            monthOffset || Infinity,
-            this.#timeSliceEndMonthOffsetFromOrigin as number
-        );
+    getMonthStartTimestampByOriginMonthOffset(monthOffset?: number) {
+        const clampedMonthOffset = this.#getClampedMonthOffset(monthOffset) || 0;
+        return new Date(this.#originMonthStartDateTimestamp as number).setMonth((this.#originMonth as Month) + clampedMonthOffset);
+    }
 
-        if (clampedMonthOffset && isBitSafeInteger(clampedMonthOffset)) {
+    shiftOriginByMonthOffset(monthOffset?: number) {
+        const clampedMonthOffset = this.#getClampedMonthOffset(monthOffset);
+
+        if (clampedMonthOffset) {
             const nextTimestamp = new Date(this.#currentTimestamp as number).setMonth((this.#originMonth as Month) + clampedMonthOffset);
             this.#refreshTime(nextTimestamp);
         }
@@ -174,11 +189,11 @@ export default class __TimeOrigin__ {
 
         let nextTimestamp = clamp(this.#timeSliceStartTimestamp, new Date(time).getTime(), this.#timeSliceEndTimestamp);
 
-        if (nextTimestamp != nextTimestamp) {
+        if (isNaN(nextTimestamp)) {
             nextTimestamp = mid(this.#timeSliceStartTimestamp, this.#timeSliceEndTimestamp);
         }
 
-        if (nextTimestamp != nextTimestamp || isInfinite(nextTimestamp)) {
+        if (isNaN(nextTimestamp) || isInfinite(nextTimestamp)) {
             nextTimestamp = clamp(this.#timeSliceStartTimestamp, this.#currentTimestamp, this.#timeSliceEndTimestamp);
         }
 
@@ -196,6 +211,7 @@ export default class __TimeOrigin__ {
         this.#originMonth = date.getMonth() as Month;
         this.#originMonthYear = date.getFullYear();
         this.#originMonthFirstDayOffset = ((8 - ((date.getDate() - date.getDay() + (this.#firstWeekDay as number)) % 7)) % 7) as WeekDay;
+        this.#originMonthStartDateTimestamp = new Date(date).setDate(1);
         this.#originMonthTimestamp = date.setDate(1 - this.#originMonthFirstDayOffset);
         this.#originMonthStartDate = new Date(this.#originMonthTimestamp).getDate();
 
