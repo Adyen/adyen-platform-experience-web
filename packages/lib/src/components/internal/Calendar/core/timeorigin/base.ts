@@ -73,10 +73,8 @@ export default class __TimeOrigin__ {
         this.#timeSliceEndTimestamp = this.#timeslice.to;
 
         this.#watchable = watchable({
-            firstWeekDay: () => this.#firstWeekDay,
             fromTimestamp: () => this.#timeslice.from,
             monthTimestamp: () => this.#originMonthTimestamp as number,
-            timestamp: () => this.#currentTimestamp,
             toTimestamp: () => this.#timeslice.to,
         } as WatchAtoms<TimeOriginAtoms>);
 
@@ -153,7 +151,17 @@ export default class __TimeOrigin__ {
         this.#refreshTime(currentTimestamp);
     }
 
-    #getClampedMonthOffset(monthOffset?: number): number | undefined {
+    #refreshTime(time: number = this.#currentTimestamp as number) {
+        this.#shouldForceTimeRefresh = true;
+        this.updateOriginTime(time);
+    }
+
+    getMonthStartTimestampByOriginMonthOffset(monthOffset?: number) {
+        const offset = isBitSafeInteger(monthOffset) ? monthOffset : 0;
+        return new Date(this.#originMonthStartDateTimestamp as number).setMonth((this.#originMonth as Month) + offset);
+    }
+
+    shiftOriginByMonthOffset(monthOffset?: number) {
         const clampedMonthOffset = clamp(
             this.#timeSliceStartMonthOffsetFromOrigin as number,
             monthOffset || 0,
@@ -161,24 +169,6 @@ export default class __TimeOrigin__ {
         );
 
         if (clampedMonthOffset && isBitSafeInteger(clampedMonthOffset)) {
-            return clampedMonthOffset;
-        }
-    }
-
-    #refreshTime(time: number = this.#currentTimestamp as number) {
-        this.#shouldForceTimeRefresh = true;
-        this.updateOriginTime(time);
-    }
-
-    getMonthStartTimestampByOriginMonthOffset(monthOffset?: number) {
-        const clampedMonthOffset = this.#getClampedMonthOffset(monthOffset) || 0;
-        return new Date(this.#originMonthStartDateTimestamp as number).setMonth((this.#originMonth as Month) + clampedMonthOffset);
-    }
-
-    shiftOriginByMonthOffset(monthOffset?: number) {
-        const clampedMonthOffset = this.#getClampedMonthOffset(monthOffset);
-
-        if (clampedMonthOffset) {
             const nextTimestamp = new Date(this.#currentTimestamp as number).setMonth((this.#originMonth as Month) + clampedMonthOffset);
             this.#refreshTime(nextTimestamp);
         }

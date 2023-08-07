@@ -27,7 +27,7 @@ import {
 } from './types';
 import { DAY_MS } from '../shared/constants';
 import today from '../shared/today';
-import { MonthDays, TimeFlag, WeekDay } from '../shared/types';
+import { Month, MonthDays, TimeFlag, WeekDay } from '../shared/types';
 import { clamp, getMonthDays, isBitSafeInteger, mod, struct, structFrom } from '../shared/utils';
 import watchable from '../shared/watchable';
 import { Watchable, WatchAtoms } from '../shared/watchable/types';
@@ -36,11 +36,11 @@ import timeselection from '../timeselection';
 import { TimeOrigin, TimeOriginAtoms } from '../timeorigin/types';
 import { TimeSelection } from '../timeselection/types';
 
-const downsizeTimeFrame = (size: TimeFrameBlockSize, maxsize: number) => {
+const downsizeTimeFrame = (size: TimeFrameBlockSize, maxsize: number): TimeFrameBlockSize => {
     if (maxsize >= size) return size;
-    let i = SIZES.indexOf(size);
+    let i = Math.max(1, SIZES.indexOf(size));
     while (--i && maxsize < (SIZES[i] as TimeFrameBlockSize)) {}
-    return SIZES[i];
+    return SIZES[i] as TimeFrameBlockSize;
 };
 
 const resolveTimeFrameBlockSize = (size: TimeFrameSize) => {
@@ -49,31 +49,31 @@ const resolveTimeFrameBlockSize = (size: TimeFrameSize) => {
 };
 
 const getWeekendDays = (firstWeekDay: WeekDay = 0) =>
-    // [TODO]: Consider deriving the weekend days from locale
+    // [TODO]: Derive weekend days by locale
     Object.freeze(WEEKEND_DAYS_SEED.map(seed => mod(6 - firstWeekDay + seed, 7)) as [WeekDay, WeekDay]);
 
 export default class __TimeFrame__ {
     readonly #origin: TimeOrigin;
     readonly #selection: TimeSelection;
 
-    #daysOfWeekend: readonly WeekDay[];
+    #daysOfWeekend?: readonly WeekDay[];
+    #firstWeekDay?: WeekDay;
     #cachedFrameBlocks: TimeFrameMonth[] = [];
     #frameMonthsMetrics: TimeFrameMonthMetrics[] = [];
 
-    #numberOfBlocks?: TimeFrameBlockSize;
+    #numberOfBlocks: TimeFrameBlockSize = 1;
     #numberOfDays?: number;
     #numberOfMonths?: number;
 
     #cursorIndex?: number;
     #cursorBlockIndex: number = 0;
-    #lastCursorDateTimestamp: number;
+    #lastCursorDate: number;
     #maxCursorIndex?: number;
     #minCursorIndex?: number;
 
+    #originMonth: Month;
     #originMonthTimestamp?: number;
-    #originTimeSliceStartTimestamp?: number;
     #originTimeSliceStartMonthTimestamp?: number;
-    #originTimeSliceEndTimestamp?: number;
     #originTimeSliceEndMonthTimestamp?: number;
 
     #selectionStartDayTimestamp?: number;
@@ -84,12 +84,13 @@ export default class __TimeFrame__ {
     constructor(numberOfBlocks?: TimeFrameSize) {
         this.#origin = timeorigin();
         this.#selection = timeselection(this.#origin);
-        this.#lastCursorDateTimestamp = this.#origin.time;
-        this.#daysOfWeekend = getWeekendDays(this.#origin.firstWeekDay);
+        this.#lastCursorDate = new Date(this.#origin.time).getDate();
+        this.#originMonth = this.#origin.month.index;
 
         this.#watchable = watchable({
+            cursor: () => this.#cursorIndex as number,
             days: () => this.#numberOfDays as number,
-            length: () => this.#numberOfBlocks as TimeFrameBlockSize,
+            length: () => this.#numberOfBlocks,
             originTimestamp: () => this.#originMonthTimestamp as number,
             todayTimestamp: () => today.timestamp,
         } as WatchAtoms<TimeFrameAtoms>);
@@ -98,18 +99,23 @@ export default class __TimeFrame__ {
         this.shiftFrameCursor = this.shiftFrameCursor.bind(this);
         this.numberOfBlocks = numberOfBlocks;
 
-        today.watch(this.#refreshFrame.bind(this));
-
         this.#origin.watch(snapshot => {
             if (typeof snapshot !== 'symbol') this.#onOriginUpdated(snapshot);
         });
 
         this.#selection.watch(() => {
             const { from, to, offsets } = this.#selection;
-            this.#selectionStartDayTimestamp = from - offsets.from;
-            this.#selectionEndDayTimestamp = to - offsets.to;
-            this.#refreshFrame();
+            const startTimestamp = from - offsets.from;
+            const endTimestamp = to - offsets.to;
+
+            if (this.#selectionStartDayTimestamp !== startTimestamp || this.#selectionEndDayTimestamp !== endTimestamp) {
+                this.#selectionStartDayTimestamp = startTimestamp;
+                this.#selectionEndDayTimestamp = endTimestamp;
+                this.#refreshFrame();
+            }
         });
+
+        today.watch(this.#refreshFrame.bind(this));
     }
 
     get cursorIndex() {
@@ -125,13 +131,25 @@ export default class __TimeFrame__ {
     }
 
     get numberOfBlocks(): TimeFrameBlockSize {
-        return this.#numberOfBlocks as TimeFrameBlockSize;
+        return this.#numberOfBlocks;
     }
 
     set numberOfBlocks(numberOfBlocks: TimeFrameSize | null | undefined) {
         const nextNumberOfBlocks = (numberOfBlocks != undefined && resolveTimeFrameBlockSize(numberOfBlocks)) || 1;
-        if (this.#numberOfBlocks === (this.#numberOfBlocks = nextNumberOfBlocks)) return;
-        this.#shiftFrameByBlockOffset(this.#cursorBlockIndex - (new Date(this.#lastCursorDateTimestamp).getMonth() % nextNumberOfBlocks));
+
+        if (this.#numberOfBlocks === nextNumberOfBlocks) return;
+
+        const currentNumberOfBlocks = this.#numberOfBlocks;
+        const monthIndex = this.#originMonth + this.#cursorBlockIndex;
+
+        const monthOffset =
+            Math.floor(monthIndex / nextNumberOfBlocks) * nextNumberOfBlocks -
+            Math.floor(monthIndex / currentNumberOfBlocks) * currentNumberOfBlocks -
+            ((monthIndex % currentNumberOfBlocks) - this.#cursorBlockIndex);
+
+        this.#numberOfBlocks = nextNumberOfBlocks;
+        this.#origin.shift(this.#getClampedBlockOffset(monthOffset));
+        this.#refreshFrame();
     }
 
     get origin() {
@@ -146,27 +164,12 @@ export default class __TimeFrame__ {
         return this.#watchable;
     }
 
-    #frameBackward() {
-        this.#shiftFrameByBlockOffset(0 - (this.#numberOfBlocks as TimeFrameBlockSize));
-        this.#cursorBlockIndex = (this.#numberOfBlocks as TimeFrameBlockSize) - 1;
-        return this.#getFrameBlockEndOffsetByIndex(this.#cursorBlockIndex);
-    }
-
-    #frameForward() {
-        this.#shiftFrameByBlockOffset(this.#numberOfBlocks as TimeFrameBlockSize);
-        this.#cursorBlockIndex = 0;
-        return this.#getFrameBlockStartOffsetByIndex(this.#cursorBlockIndex);
-    }
-
-    #reindexCursor(cursorIndex: number) {
-        if (cursorIndex < (this.#minCursorIndex as number) || cursorIndex > (this.#maxCursorIndex as number)) return;
-        if (cursorIndex < 0 || cursorIndex >= (this.#numberOfDays as number)) return;
-        this.#cursorIndex = cursorIndex;
-        this.#lastCursorDateTimestamp = this.#origin[this.#cursorIndex as number] as number;
+    #getClampedBlockOffset(blockOffset: number) {
+        return clamp(this.#origin.offset.from, blockOffset || 0, this.#origin.offset.to - this.#numberOfBlocks + 1);
     }
 
     #getFrameBlockByIndex(blockIndex: number): TimeFrameMonth | undefined {
-        if (!(isBitSafeInteger(blockIndex) && blockIndex >= 0 && blockIndex < (this.#numberOfBlocks as TimeFrameBlockSize))) return;
+        if (!(isBitSafeInteger(blockIndex) && blockIndex >= 0 && blockIndex < this.#numberOfBlocks)) return;
 
         if (!this.#cachedFrameBlocks[blockIndex]) {
             const [month, year, numberOfDays, originIndex, startIndex] = this.#frameMonthsMetrics[blockIndex] as TimeFrameMonthMetrics;
@@ -200,7 +203,7 @@ export default class __TimeFrame__ {
 
                                 if (weekDay === 0) flags |= TimeFlag.WEEK_START;
                                 else if (weekDay === 6) flags |= TimeFlag.WEEK_END;
-                                if (this.#daysOfWeekend.includes(weekDay)) flags |= TimeFlag.WEEKEND;
+                                if ((this.#daysOfWeekend as WeekDay[]).includes(weekDay)) flags |= TimeFlag.WEEKEND;
 
                                 if (index === (this.#cursorIndex as number)) flags |= TimeFlag.CURSOR;
 
@@ -252,11 +255,7 @@ export default class __TimeFrame__ {
     }
 
     #getFrameBlockEndOffsetByIndex(blockIndex: number) {
-        return (
-            this.#getFrameBlockStartOffsetByIndex(blockIndex) +
-            this.#getDaysOfMonthForCursorBlockOffset(blockIndex - (this.#cursorBlockIndex as number)) -
-            1
-        );
+        return this.#getFrameBlockStartOffsetByIndex(blockIndex) + this.#getDaysOfMonthForCursorBlockOffset(blockIndex - this.#cursorBlockIndex) - 1;
     }
 
     #getFrameBlockStartOffsetByIndex(blockIndex: number) {
@@ -269,35 +268,73 @@ export default class __TimeFrame__ {
         }
 
         const { month, year } = this.#getFrameBlockByIndex(0) as TimeFrameMonth;
-        return getMonthDays(month, year, (this.#cursorBlockIndex as number) + cursorBlockOffset)[0];
+        return getMonthDays(month, year, this.#cursorBlockIndex + cursorBlockOffset)[0];
     }
 
-    #getOriginMonthCursorOffsetForTimestamp(timestamp: number = this.#origin.month.timestamp) {
-        return Math.round((timestamp - this.#origin.month.timestamp) / DAY_MS);
-    }
+    #onOriginUpdated({ monthTimestamp }: TimeOriginAtoms) {
+        const { from, to, offsets, span } = this.#origin.timeslice;
+        const originTimestamp = this.#origin.month.timestamp;
+        const startTimestamp = from - offsets.from;
+        const endTimestamp = to - offsets.to;
 
-    #onOriginUpdated({ fromTimestamp, toTimestamp }: TimeOriginAtoms) {
-        if (this.#originTimeSliceStartTimestamp === fromTimestamp && this.#originTimeSliceEndTimestamp === toTimestamp) {
-            return this.#refreshFrame();
+        let willRefreshFrame = false;
+        let willResizeFrame = false;
+        let originMonth = this.#origin.month.index;
+        let numberOfBlocks = this.#numberOfBlocks;
+
+        this.#maxCursorIndex = Math.round((endTimestamp - originTimestamp) / DAY_MS);
+        this.#minCursorIndex = Math.round((startTimestamp - originTimestamp) / DAY_MS);
+
+        if (span < numberOfBlocks) {
+            numberOfBlocks = downsizeTimeFrame(numberOfBlocks, span);
+            willResizeFrame = true;
         }
 
-        const { from, to, offsets, span } = this.#origin.timeslice;
+        if (this.#firstWeekDay !== this.#origin.firstWeekDay) {
+            this.#firstWeekDay = this.#origin.firstWeekDay;
+            this.#daysOfWeekend = getWeekendDays(this.#firstWeekDay);
+        }
 
-        this.#originTimeSliceStartTimestamp = from;
-        this.#originTimeSliceEndTimestamp = to;
-        this.#originTimeSliceStartMonthTimestamp = from - offsets.from;
-        this.#originTimeSliceEndMonthTimestamp = to - offsets.to;
-        this.#maxCursorIndex = this.#getOriginMonthCursorOffsetForTimestamp(this.#originTimeSliceEndMonthTimestamp);
-        this.#minCursorIndex = this.#getOriginMonthCursorOffsetForTimestamp(this.#originTimeSliceStartMonthTimestamp);
+        if (this.#originMonth !== originMonth) {
+            this.#cursorBlockIndex = mod(this.#cursorBlockIndex + (this.#originMonth - originMonth), numberOfBlocks);
+            this.#originMonth = originMonth;
+        }
 
-        span >= (this.#numberOfBlocks as TimeFrameBlockSize)
-            ? this.#shiftFrameByBlockOffset(0)
-            : (this.numberOfBlocks = downsizeTimeFrame(this.#numberOfBlocks as TimeFrameBlockSize, span));
+        if (this.#originMonth !== originMonth || this.#originMonthTimestamp !== monthTimestamp) {
+            this.#originMonthTimestamp = originTimestamp;
+            this.#daysOfWeekend = getWeekendDays(this.#origin.firstWeekDay);
+            willRefreshFrame = true;
+        }
+
+        if (this.#originTimeSliceStartMonthTimestamp !== startTimestamp || this.#originTimeSliceEndMonthTimestamp !== endTimestamp) {
+            this.#originTimeSliceStartMonthTimestamp = startTimestamp;
+            this.#originTimeSliceEndMonthTimestamp = endTimestamp;
+
+            let cursorBlockIndex = numberOfBlocks - 1;
+            const lastFrameMonthStartTimestamp = this.#origin.offset(cursorBlockIndex);
+            const clampedLastFrameMonthStartTimestamp = clamp(startTimestamp, lastFrameMonthStartTimestamp, endTimestamp);
+
+            if (clampedLastFrameMonthStartTimestamp !== lastFrameMonthStartTimestamp) {
+                let offset = cursorBlockIndex;
+                for (; --offset > 0 && this.#origin.offset(offset) > clampedLastFrameMonthStartTimestamp; ) {}
+
+                const monthOffset = offset - cursorBlockIndex;
+
+                this.#cursorBlockIndex = mod(this.#cursorBlockIndex - monthOffset, numberOfBlocks);
+                this.#originMonth = mod(this.#originMonth + monthOffset, 12) as Month;
+                this.#origin.shift(monthOffset);
+            }
+
+            willRefreshFrame = true;
+        }
+
+        if (willResizeFrame) {
+            this.numberOfBlocks = numberOfBlocks;
+        } else if (willRefreshFrame) this.#refreshFrame();
     }
 
     #refreshFrame() {
         this.#cachedFrameBlocks.length = this.#frameMonthsMetrics.length = 0;
-        this.#originMonthTimestamp = this.#origin.month.timestamp;
 
         for (let i = 0, j = this.#origin.month.offset as number; ; ) {
             const [monthDays, month, year] = getMonthDays(this.#origin.month.index, this.#origin.month.year, i);
@@ -309,67 +346,78 @@ export default class __TimeFrame__ {
             this.#frameMonthsMetrics.push([month, year, numberOfDays, originIndex, startIndex]);
 
             if (++i === this.#numberOfBlocks) {
-                const date = new Date(this.#lastCursorDateTimestamp).getDate();
-
-                this.#cursorIndex = (this.#getFrameBlockByIndex(this.#cursorBlockIndex as number) as TimeFrameMonth).index + date - 1;
-                this.#daysOfWeekend = getWeekendDays(this.#origin.firstWeekDay);
+                this.#cursorIndex = (this.#getFrameBlockByIndex(this.#cursorBlockIndex) as TimeFrameMonth).index + this.#lastCursorDate - 1;
+                this.#lastCursorDate = new Date(this.#origin[this.#cursorIndex] as number).getDate();
                 this.#numberOfDays = nextStartIndex;
                 this.#numberOfMonths = this.#numberOfBlocks;
                 this.#watchable.notify();
-
                 break;
             }
         }
     }
 
     #shiftFrameByBlockOffset(blockOffset: number) {
-        const clampedBlockOffset = clamp(
-            this.#origin.offset.from,
-            blockOffset || 0,
-            this.#origin.offset.to - (this.#numberOfBlocks as TimeFrameBlockSize) + 1
-        );
+        const clampedBlockOffset = this.#getClampedBlockOffset(blockOffset);
 
         if (clampedBlockOffset && isBitSafeInteger(clampedBlockOffset)) {
-            this.#cursorBlockIndex = mod((this.#cursorBlockIndex as number) - clampedBlockOffset, this.#numberOfBlocks as TimeFrameBlockSize);
+            this.#originMonth = mod(this.#originMonth + clampedBlockOffset, 12) as Month;
             this.#origin.shift(clampedBlockOffset);
+            this.#refreshFrame();
         }
-
-        this.#refreshFrame();
     }
 
-    #shiftFrameCursorByOffset(offset: number) {
-        let firstBlockStartIndex = this.#getFrameBlockStartOffsetByIndex(0);
-        let lastBlockEndIndex = this.#getFrameBlockEndOffsetByIndex((this.#numberOfBlocks as TimeFrameBlockSize) - 1);
-        let nextCursorIndex = clamp(this.#minCursorIndex as number, (this.#cursorIndex as number) + offset, this.#maxCursorIndex as number);
+    #shiftFrameCursorByOffset(offset: number): void {
+        const clampedNextCursorIndex = clamp(this.#minCursorIndex as number, (this.#cursorIndex as number) + offset, this.#maxCursorIndex as number);
+        const cursorBlockStartIndex = this.#getFrameBlockStartOffsetByIndex(this.#cursorBlockIndex);
+        const cursorBlockEndIndex = this.#getFrameBlockEndOffsetByIndex(this.#cursorBlockIndex);
 
-        if (nextCursorIndex < firstBlockStartIndex) {
-            lastBlockEndIndex = this.#frameBackward();
-            nextCursorIndex += lastBlockEndIndex + 1 - firstBlockStartIndex;
-        } else if (nextCursorIndex > lastBlockEndIndex) {
-            firstBlockStartIndex = this.#frameForward();
-            nextCursorIndex += firstBlockStartIndex - (lastBlockEndIndex + 1);
+        let containedNextCursorIndex = clamp(cursorBlockStartIndex, clampedNextCursorIndex, cursorBlockEndIndex);
+
+        if (containedNextCursorIndex === clampedNextCursorIndex) {
+            this.#lastCursorDate = new Date(this.#origin[containedNextCursorIndex] as number).getDate();
+            return this.#refreshFrame();
         }
 
-        const cursorBlockStartIndex = this.#getFrameBlockStartOffsetByIndex(this.#cursorBlockIndex as number);
-        const cursorBlockEndIndex = this.#getFrameBlockEndOffsetByIndex(this.#cursorBlockIndex as number);
+        const firstBlockStartIndex = this.#getFrameBlockStartOffsetByIndex(0);
+        const lastBlockEndIndex = this.#getFrameBlockEndOffsetByIndex(this.#numberOfBlocks - 1);
 
-        if (nextCursorIndex < cursorBlockStartIndex) {
-            if (!(this.#cursorBlockIndex as number)--) {
-                lastBlockEndIndex = this.#frameBackward();
-                this.#reindexCursor(lastBlockEndIndex - (nextCursorIndex - cursorBlockStartIndex));
-            } else {
-                this.#reindexCursor(cursorBlockStartIndex);
-                this.#shiftFrameCursorByOffset(nextCursorIndex - (this.#cursorIndex as number));
+        containedNextCursorIndex = clamp(firstBlockStartIndex, clampedNextCursorIndex, lastBlockEndIndex);
+
+        if (containedNextCursorIndex === clampedNextCursorIndex) {
+            if (containedNextCursorIndex < cursorBlockStartIndex) {
+                this.#cursorBlockIndex--;
+                return this.#shiftFrameBackwardForCursorCorrection(containedNextCursorIndex, cursorBlockStartIndex);
             }
-        } else if (nextCursorIndex > cursorBlockEndIndex) {
-            if (++(this.#cursorBlockIndex as number) === (this.#numberOfBlocks as TimeFrameBlockSize)) {
-                firstBlockStartIndex = this.#frameForward();
-                this.#reindexCursor(firstBlockStartIndex + (nextCursorIndex - cursorBlockEndIndex - 1));
-            } else {
-                this.#reindexCursor(cursorBlockEndIndex);
-                this.#shiftFrameCursorByOffset(nextCursorIndex - (this.#cursorIndex as number));
+
+            if (containedNextCursorIndex > cursorBlockEndIndex) {
+                this.#cursorBlockIndex++;
+                return this.#shiftFrameForwardForCursorCorrection(containedNextCursorIndex, cursorBlockEndIndex);
             }
-        } else this.#reindexCursor(nextCursorIndex);
+        }
+
+        if (clampedNextCursorIndex < firstBlockStartIndex) {
+            this.#origin.shift(this.#getClampedBlockOffset(0 - this.#numberOfBlocks));
+            this.#cursorBlockIndex = this.#numberOfBlocks - 1;
+            return this.#shiftFrameBackwardForCursorCorrection(clampedNextCursorIndex, firstBlockStartIndex);
+        }
+
+        if (clampedNextCursorIndex > lastBlockEndIndex) {
+            this.#origin.shift(this.#getClampedBlockOffset(this.#numberOfBlocks));
+            this.#cursorBlockIndex = 0;
+            return this.#shiftFrameForwardForCursorCorrection(clampedNextCursorIndex, lastBlockEndIndex);
+        }
+    }
+
+    #shiftFrameBackwardForCursorCorrection(nextCursorIndex: number, blockStartIndex: number) {
+        this.#lastCursorDate = new Date(this.#origin[blockStartIndex - 1] as number).getDate();
+        this.#refreshFrame();
+        return this.#shiftFrameCursorByOffset(nextCursorIndex - blockStartIndex + 1);
+    }
+
+    #shiftFrameForwardForCursorCorrection(nextCursorIndex: number, blockEndIndex: number) {
+        this.#lastCursorDate = 1;
+        this.#refreshFrame();
+        return this.#shiftFrameCursorByOffset(nextCursorIndex - blockEndIndex - 1);
     }
 
     shiftFrame(shiftBy?: number, shiftType?: TimeFrameShift) {
@@ -381,7 +429,7 @@ export default class __TimeFrame__ {
                     return this.#shiftFrameByBlockOffset(shiftBy * 12);
                 case SHIFT_FRAME:
                 default:
-                    return this.#shiftFrameByBlockOffset(shiftBy * (this.#numberOfBlocks as TimeFrameBlockSize));
+                    return this.#shiftFrameByBlockOffset(shiftBy * this.#numberOfBlocks);
             }
         }
     }
@@ -405,13 +453,9 @@ export default class __TimeFrame__ {
             case CURSOR_NEXT_BLOCK:
                 return this.#shiftFrameCursorByOffset(this.#getDaysOfMonthForCursorBlockOffset());
             case CURSOR_BLOCK_START:
-                return this.#shiftFrameCursorByOffset(
-                    this.#getFrameBlockStartOffsetByIndex(this.#cursorBlockIndex as number) - (this.#cursorIndex as number)
-                );
+                return this.#shiftFrameCursorByOffset(this.#getFrameBlockStartOffsetByIndex(this.#cursorBlockIndex) - (this.#cursorIndex as number));
             case CURSOR_BLOCK_END:
-                return this.#shiftFrameCursorByOffset(
-                    this.#getFrameBlockEndOffsetByIndex(this.#cursorBlockIndex as number) - (this.#cursorIndex as number)
-                );
+                return this.#shiftFrameCursorByOffset(this.#getFrameBlockEndOffsetByIndex(this.#cursorBlockIndex) - (this.#cursorIndex as number));
         }
 
         if (shiftTo >= 0 && shiftTo < (this.#numberOfDays as number)) {

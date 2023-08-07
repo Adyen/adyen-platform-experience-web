@@ -8,7 +8,6 @@ import { TimeOrigin, TimeOriginAtoms } from '../timeorigin/types';
 
 export default class __TimeSelection__ {
     #origin: TimeOrigin;
-    #originMonthStartTimestamp: number;
     #originTimeSliceStartTimestamp: number;
     #originTimeSliceEndTimestamp: number;
 
@@ -22,7 +21,6 @@ export default class __TimeSelection__ {
 
     constructor(origin: TimeOrigin) {
         this.#origin = origin;
-        this.#originMonthStartTimestamp = origin.month.timestamp;
         this.#originTimeSliceStartTimestamp = origin.timeslice.from;
         this.#originTimeSliceEndTimestamp = origin.timeslice.to;
         this.#selectionStartTimestamp = this.#selectionEndTimestamp = origin.time;
@@ -36,9 +34,7 @@ export default class __TimeSelection__ {
         this.#computeTimestampOffsets();
 
         this.#origin.watch(snapshot => {
-            if (typeof snapshot === 'symbol') return;
-            this.#onOriginUpdated(snapshot);
-            this.#watchable.notify();
+            if (typeof snapshot !== 'symbol') this.#onOriginUpdated(snapshot);
         });
     }
 
@@ -75,20 +71,17 @@ export default class __TimeSelection__ {
     #computeTimestampOffsets() {
         this.#selectionStartTimestampOffset = computeTimestampOffset(this.#selectionStartTimestamp);
         this.#selectionEndTimestampOffset = computeTimestampOffset(this.#selectionEndTimestamp);
+        this.#watchable.notify();
     }
 
-    #onOriginUpdated({ fromTimestamp, toTimestamp, monthTimestamp }: TimeOriginAtoms) {
-        if (!(this.#originTimeSliceStartTimestamp === fromTimestamp && this.#originTimeSliceEndTimestamp === toTimestamp)) {
+    #onOriginUpdated({ fromTimestamp, toTimestamp }: TimeOriginAtoms) {
+        if (this.#originTimeSliceStartTimestamp !== fromTimestamp || this.#originTimeSliceEndTimestamp !== toTimestamp) {
             this.#originTimeSliceStartTimestamp = this.#origin.timeslice.from;
             this.#originTimeSliceEndTimestamp = this.#origin.timeslice.to;
 
             this.#selectionStartTimestamp = Math.max(this.#selectionStartTimestamp, this.#originTimeSliceStartTimestamp);
             this.#selectionEndTimestamp = Math.min(this.#selectionEndTimestamp, this.#originTimeSliceEndTimestamp);
             this.#computeTimestampOffsets();
-        }
-
-        if (this.#originMonthStartTimestamp !== monthTimestamp) {
-            this.#originMonthStartTimestamp = this.#origin.month.timestamp;
         }
     }
 
@@ -131,6 +124,5 @@ export default class __TimeSelection__ {
         }
 
         this.#computeTimestampOffsets();
-        this.#watchable.notify();
     }
 }

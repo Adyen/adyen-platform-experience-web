@@ -3,10 +3,8 @@ import { Month, Time, WeekDay, WithTimeEdges } from '../shared/types';
 import { TimeSlice } from '../timeslice/types';
 
 export type TimeOriginAtoms = {
-    firstWeekDay: WeekDay;
     fromTimestamp: number;
     monthTimestamp: number;
-    timestamp: number;
     toTimestamp: number;
 };
 
