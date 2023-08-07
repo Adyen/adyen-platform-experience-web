@@ -4,9 +4,17 @@ import { disableControls, enabledDisabledCallbackRadioControls } from '../utils/
 import { TransactionsComponent } from '@adyen/adyen-fp-web';
 import { ElementProps, ElementStory } from '../utils/types';
 import { Container } from '../utils/Container';
+import { BASIC_TRANSACTIONS_LIST } from '../../../../../mocks';
 
 export default {
     title: 'screens/Transactions',
+    argTypes: {
+        onUpdateTransactions: disableControls,
+        onFilterChange: enabledDisabledCallbackRadioControls('onFilterChange', ['Passed', 'Not Passed']),
+        onTransactionSelected: enabledDisabledCallbackRadioControls('onTransactionSelected'),
+        onBalanceAccountSelected: enabledDisabledCallbackRadioControls('onBalanceAccountSelected'),
+        onAccountSelected: enabledDisabledCallbackRadioControls('onAccountSelected'),
+    },
     render: (args, context) => {
         if (context.loaded.data) {
             Object.assign(args, { transactions: context.loaded.data });
@@ -15,14 +23,13 @@ export default {
     },
 } satisfies Meta<ElementProps<typeof TransactionsComponent>>;
 
-export const BasicTransactionList: ElementStory<typeof TransactionsComponent> = {
-    argTypes: {
-        onUpdateTransactions: disableControls,
-        onFilterChange: enabledDisabledCallbackRadioControls('onFilterChange', ['Passed', 'Not Passed']),
-        onTransactionSelected: enabledDisabledCallbackRadioControls('onTransactionSelected'),
-        onBalanceAccountSelected: enabledDisabledCallbackRadioControls('onBalanceAccountSelected'),
-        onAccountSelected: enabledDisabledCallbackRadioControls('onAccountSelected'),
+export const Basic: ElementStory<typeof TransactionsComponent> = {
+    args: {
+        transactions: { data: BASIC_TRANSACTIONS_LIST, _links: {} },
     },
+};
+
+export const BasicTransactionList: ElementStory<typeof TransactionsComponent> = {
     args: {
         onUpdateTransactions: async (params, component) => {
             const transactions = await getMyTransactions(params);

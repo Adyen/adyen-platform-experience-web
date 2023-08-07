@@ -1,25 +1,43 @@
-import { Meta } from '@storybook/preact';
+import { Meta, StoryObj } from '@storybook/preact';
 import { getAccountHolderById } from '../../utils/services';
 import { Container } from '../utils/Container';
 import { AccountHolderComponent } from '@adyen/adyen-fp-web';
-import { ElementProps, ElementStory } from '../utils/types';
+import { ElementProps } from '../utils/types';
+import { ACCOUNT_HOLDER_1 } from '../../../../../mocks';
 
 const DEFAULT_ACCOUNT_HOLDER = process.env.VITE_DEFAULT_ACCOUNT_HOLDER_ID;
+
+interface IAccountHolderScreen {
+    customId?: string;
+    accountHolderProps: ElementProps<typeof AccountHolderComponent>;
+}
 
 export default {
     title: 'screens/AccountHolder',
     render: (args, context) => {
         if (context.loaded.data) {
-            Object.assign(args, { accountHolder: context.loaded.data });
+            args.accountHolderProps = { ...args.accountHolderProps, accountHolder: context.loaded.data };
         }
-        return <Container type={'accountHolder'} componentConfiguration={args} context={context} />;
+        return <Container type={'accountHolder'} componentConfiguration={args.accountHolderProps} context={context} />;
     },
-} satisfies Meta<ElementProps<typeof AccountHolderComponent>>;
+} satisfies Meta<IAccountHolderScreen>;
+export const Basic: StoryObj<IAccountHolderScreen> = {
+    args: {
+        accountHolderProps: {
+            accountHolder: ACCOUNT_HOLDER_1,
+        },
+    },
+};
 
-export const BasicAccountHolder: ElementStory<typeof AccountHolderComponent> = {
+export const ApiIntegration: StoryObj<IAccountHolderScreen> = {
+    argTypes: {
+        customId: {
+            control: 'text',
+        },
+    },
     loaders: [
-        async () => ({
-            data: await getAccountHolderById(DEFAULT_ACCOUNT_HOLDER),
+        async context => ({
+            data: await getAccountHolderById(context.args.customId ? context.args.customId : DEFAULT_ACCOUNT_HOLDER),
         }),
     ],
 };

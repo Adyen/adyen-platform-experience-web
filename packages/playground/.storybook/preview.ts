@@ -1,5 +1,4 @@
 import { Preview } from '@storybook/preact';
-
 import '../src/assets/style/style.scss';
 import '@adyen/adyen-fp-web/style/index.scss';
 import '@adyen/adyen-fp-web/components/shared.scss';
