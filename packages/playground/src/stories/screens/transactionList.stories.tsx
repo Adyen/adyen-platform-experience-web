@@ -1,14 +1,21 @@
-import { Meta } from '@storybook/preact';
-import { Story } from '../utils/story';
+import { Meta, StoryObj } from '@storybook/preact';
 import { getMyTransactions } from '../../utils/services';
-import Transactions from '@adyen/adyen-fp-web/components/Transactions/components/Transactions';
 import { disableControls, enabledDisabledCallbackRadioControls } from '../utils/controls';
+import { TransactionsComponent } from '@adyen/adyen-fp-web';
+import { ElementProps, ElementStory } from '../utils/types';
+import { Container } from '../utils/Container';
 
 export default {
-    component: Transactions,
-} satisfies Meta<typeof Transactions>;
+    title: 'screens/Transactions',
+    render: (args, context) => {
+        if (context.loaded.data) {
+            Object.assign(args, { transactions: context.loaded.data });
+        }
+        return <Container type={'transactionList'} componentConfiguration={args} context={context} />;
+    },
+} satisfies Meta<ElementProps<typeof TransactionsComponent>>;
 
-export const BasicTransactionList: Story<typeof Transactions> = {
+export const BasicTransactionList: ElementStory<typeof TransactionsComponent> = {
     argTypes: {
         onUpdateTransactions: disableControls,
         onFilterChange: enabledDisabledCallbackRadioControls('onFilterChange', ['Passed', 'Not Passed']),
@@ -27,6 +34,4 @@ export const BasicTransactionList: Story<typeof Transactions> = {
             data: await getMyTransactions(),
         }),
     ],
-
-    render: (args, { loaded: { data } }) => <Transactions {...args} transactions={data} />,
 };

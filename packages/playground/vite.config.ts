@@ -26,7 +26,7 @@ async function getPlaygroundEntrypoints() {
 }
 
 export default defineConfig(async ({ mode }) => {
-    const { lemApi, BTLApi, BCLApi, playground, mockServer } = getEnvironment(mode);
+    const { lemApi, BTLApi, BCLApi, playground, legalEntities } = getEnvironment(mode);
     return {
         root: mode === 'demo' ? demoPlaygroundDir : undefined,
         base: './',
@@ -77,6 +77,9 @@ export default defineConfig(async ({ mode }) => {
         define: {
             'process.env.VITE_BALANCE_PLATFORM': JSON.stringify(BTLApi.balancePlatform || null),
             'process.env.VITE_MODE': JSON.stringify(process.env.VITE_MODE ?? mode),
+            'process.env.VITE_ORG_LEGAL_ENTITY_ID': JSON.stringify(legalEntities.organization || null),
+            'process.env.VITE_IND_LEGAL_ENTITY_ID': JSON.stringify(legalEntities.individual || null),
+            'process.env.VITE_SOLE_PROPRIETORSHIP_LEGAL_ENTITY_ID': JSON.stringify(legalEntities.soleProprietorship || null),
         },
     };
 });
