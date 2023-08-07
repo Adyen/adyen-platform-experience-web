@@ -26,7 +26,7 @@ async function getPlaygroundEntrypoints() {
 }
 
 export default defineConfig(async ({ mode }) => {
-    const { lemApi, BTLApi, BCLApi, playground, legalEntities } = getEnvironment(mode);
+    const { lemApi, BTLApi, BCLApi, playground, envIds } = getEnvironment(mode);
     return {
         root: mode === 'demo' ? demoPlaygroundDir : undefined,
         base: './',
@@ -77,9 +77,12 @@ export default defineConfig(async ({ mode }) => {
         define: {
             'process.env.VITE_BALANCE_PLATFORM': JSON.stringify(BTLApi.balancePlatform || null),
             'process.env.VITE_MODE': JSON.stringify(process.env.VITE_MODE ?? mode),
-            'process.env.VITE_ORG_LEGAL_ENTITY_ID': JSON.stringify(legalEntities.organization || null),
-            'process.env.VITE_IND_LEGAL_ENTITY_ID': JSON.stringify(legalEntities.individual || null),
-            'process.env.VITE_SOLE_PROPRIETORSHIP_LEGAL_ENTITY_ID': JSON.stringify(legalEntities.soleProprietorship || null),
+            'process.env.VITE_ORG_LEGAL_ENTITY_ID': JSON.stringify(envIds.legalEntities.organization || null),
+            'process.env.VITE_IND_LEGAL_ENTITY_ID': JSON.stringify(envIds.legalEntities.individual || null),
+            'process.env.VITE_SOLE_PROPRIETORSHIP_LEGAL_ENTITY_ID': JSON.stringify(envIds.legalEntities.soleProprietorship || null),
+            'process.env.VITE_DEFAULT_TRANSACTION_ID': JSON.stringify(envIds.transaction.defaultId || null),
+            'process.env.VITE_DEFAULT_BALANCE_ACCOUNT_ID': JSON.stringify(envIds.balanceAccount.defaultId || null),
+            'process.env.VITE_DEFAULT_ACCOUNT_HOLDER_ID': JSON.stringify(envIds.accountHolder.defaultId || null),
         },
     };
 });

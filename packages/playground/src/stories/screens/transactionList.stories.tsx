@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from '@storybook/preact';
+import { Meta } from '@storybook/preact';
 import { getMyTransactions } from '../../utils/services';
 import { disableControls, enabledDisabledCallbackRadioControls } from '../utils/controls';
 import { TransactionsComponent } from '@adyen/adyen-fp-web';

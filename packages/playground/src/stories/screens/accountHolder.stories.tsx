@@ -4,7 +4,7 @@ import { Container } from '../utils/Container';
 import { AccountHolderComponent } from '@adyen/adyen-fp-web';
 import { ElementProps, ElementStory } from '../utils/types';
 
-const DEFAULT_ACCOUNT_HOLDER = 'AH3227B2248HKJ5BHTQPKC5GX';
+const DEFAULT_ACCOUNT_HOLDER = process.env.VITE_DEFAULT_ACCOUNT_HOLDER_ID;
 
 export default {
     title: 'screens/AccountHolder',

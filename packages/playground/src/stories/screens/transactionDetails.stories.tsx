@@ -4,7 +4,7 @@ import { TransactionsDetailsComponent } from '@adyen/adyen-fp-web';
 import { ElementProps, ElementStory } from '../utils/types';
 import { Container } from '../utils/Container';
 
-const DEFAULT_TRANSACTION_ID = '1VVF0D5V3709DX6D';
+const DEFAULT_TRANSACTION_ID = process.env.VITE_DEFAULT_TRANSACTION_ID;
 
 export default {
     title: 'screens/TransactionDetails',

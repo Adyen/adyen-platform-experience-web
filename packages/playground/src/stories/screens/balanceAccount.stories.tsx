@@ -4,7 +4,7 @@ import { Container } from '../utils/Container';
 import { BalanceAccountComponent } from '@adyen/adyen-fp-web';
 import { ElementProps, ElementStory } from '../utils/types';
 
-const DEFAULT_BALANCE_ACCOUNT = 'BA3227C223222B5CWF3T45SWD';
+const DEFAULT_BALANCE_ACCOUNT = process.env.VITE_DEFAULT_BALANCE_ACCOUNT_ID;
 
 export default {
     title: 'screens/BalanceAccount',
