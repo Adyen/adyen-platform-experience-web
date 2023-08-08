@@ -12,10 +12,7 @@ import {
     SHIFT_BLOCK,
     SHIFT_FRAME,
     SHIFT_PERIOD,
-    SIZES,
-    SIZES_SYMBOLS,
-    WEEKEND_DAYS_SEED,
-} from './constants';
+} from '../constants';
 import {
     TimeFrameAtoms,
     TimeFrameCursorShift,
@@ -24,33 +21,18 @@ import {
     TimeFrameBlockSize,
     TimeFrameShift,
     TimeFrameSize,
-} from './types';
-import { DAY_MS } from '../shared/constants';
-import today from '../shared/today';
-import { Month, MonthDays, TimeFlag, WeekDay } from '../shared/types';
-import { clamp, getMonthDays, isBitSafeInteger, mod, struct, structFrom } from '../shared/utils';
-import watchable from '../shared/watchable';
-import { Watchable, WatchAtoms } from '../shared/watchable/types';
-import timeorigin from '../timeorigin';
-import timeselection from '../timeselection';
-import { TimeOrigin, TimeOriginAtoms } from '../timeorigin/types';
-import { TimeSelection } from '../timeselection/types';
-
-const downsizeTimeFrame = (size: TimeFrameBlockSize, maxsize: number): TimeFrameBlockSize => {
-    if (maxsize >= size) return size;
-    let i = Math.max(1, SIZES.indexOf(size));
-    while (--i && maxsize < (SIZES[i] as TimeFrameBlockSize)) {}
-    return SIZES[i] as TimeFrameBlockSize;
-};
-
-const resolveTimeFrameBlockSize = (size: TimeFrameSize) => {
-    const index = Math.max(typeof size === 'symbol' ? SIZES_SYMBOLS.indexOf(size) : SIZES.indexOf(size), 0);
-    return SIZES[index];
-};
-
-const getWeekendDays = (firstWeekDay: WeekDay = 0) =>
-    // [TODO]: Derive weekend days by locale
-    Object.freeze(WEEKEND_DAYS_SEED.map(seed => mod(6 - firstWeekDay + seed, 7)) as [WeekDay, WeekDay]);
+} from '../types';
+import { downsizeTimeFrame, getWeekendDays, resolveTimeFrameBlockSize } from '../utils';
+import { DAY_MS } from '../../shared/constants';
+import today from '../../shared/today';
+import { Month, MonthDays, TimeFlag, WeekDay } from '../../shared/types';
+import { clamp, getMonthDays, isBitSafeInteger, mod, struct, structFrom } from '../../shared/utils';
+import watchable from '../../shared/watchable';
+import { Watchable, WatchAtoms } from '../../shared/watchable/types';
+import timeorigin from '../../timeorigin';
+import timeselection from '../../timeselection';
+import { TimeOrigin, TimeOriginAtoms } from '../../timeorigin/types';
+import { TimeSelection } from '../../timeselection/types';
 
 export default class __TimeFrame__ {
     readonly #origin: TimeOrigin;
@@ -62,8 +44,7 @@ export default class __TimeFrame__ {
     #frameMonthsMetrics: TimeFrameMonthMetrics[] = [];
 
     #numberOfBlocks: TimeFrameBlockSize = 1;
-    #numberOfDays?: number;
-    #numberOfMonths?: number;
+    #numberOfCells?: number;
 
     #cursorIndex?: number;
     #cursorBlockIndex: number = 0;
@@ -88,8 +69,8 @@ export default class __TimeFrame__ {
         this.#originMonth = this.#origin.month.index;
 
         this.#watchable = watchable({
+            cells: () => this.#numberOfCells as number,
             cursor: () => this.#cursorIndex as number,
-            days: () => this.#numberOfDays as number,
             length: () => this.#numberOfBlocks,
             originTimestamp: () => this.#originMonthTimestamp as number,
             todayTimestamp: () => today.timestamp,
@@ -126,8 +107,8 @@ export default class __TimeFrame__ {
         return this.#getFrameBlockByIndex;
     }
 
-    get numberOfDays() {
-        return this.#numberOfDays as number;
+    get numberOfCells() {
+        return this.#numberOfCells as number;
     }
 
     get numberOfBlocks(): TimeFrameBlockSize {
@@ -348,8 +329,7 @@ export default class __TimeFrame__ {
             if (++i === this.#numberOfBlocks) {
                 this.#cursorIndex = (this.#getFrameBlockByIndex(this.#cursorBlockIndex) as TimeFrameMonth).index + this.#lastCursorDate - 1;
                 this.#lastCursorDate = new Date(this.#origin[this.#cursorIndex] as number).getDate();
-                this.#numberOfDays = nextStartIndex;
-                this.#numberOfMonths = this.#numberOfBlocks;
+                this.#numberOfCells = nextStartIndex;
                 this.#watchable.notify();
                 break;
             }
@@ -458,7 +438,7 @@ export default class __TimeFrame__ {
                 return this.#shiftFrameCursorByOffset(this.#getFrameBlockEndOffsetByIndex(this.#cursorBlockIndex) - (this.#cursorIndex as number));
         }
 
-        if (shiftTo >= 0 && shiftTo < (this.#numberOfDays as number)) {
+        if (shiftTo >= 0 && shiftTo < (this.#numberOfCells as number)) {
             return this.#shiftFrameCursorByOffset(shiftTo - (this.#cursorIndex as number));
         }
     };

@@ -20,9 +20,12 @@ const timeslice = (() => {
         }) as TimeSlice;
     }) as TimeSliceFactory;
 
-    return Object.defineProperties(factory, {
+    const infinite = factory();
+
+    return Object.defineProperties(((...args: any[]) => (args.length === 0 ? infinite : factory(...args))) as TimeSliceFactory, {
         FROM_EDGE: { value: FROM_EDGE },
         TO_EDGE: { value: TO_EDGE },
+        INFINITE: { value: infinite },
         SINCE_NOW: { get: () => factory(Date.now(), FROM_EDGE) },
         UNTIL_NOW: { get: () => factory(Date.now(), TO_EDGE) },
     });

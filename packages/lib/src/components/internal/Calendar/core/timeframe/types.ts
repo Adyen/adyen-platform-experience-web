@@ -20,7 +20,7 @@ import {
     SIZE_4,
     SIZE_6,
 } from './constants';
-import { Month } from '../shared/types';
+import { Month, WithTimeEdges } from '../shared/types';
 import { Watchable } from '../shared/watchable/types';
 import { TimeOrigin } from '../timeorigin/types';
 import { TimeSelection } from '../timeselection/types';
@@ -41,13 +41,9 @@ export type TimeFrameShift = typeof SHIFT_BLOCK | typeof SHIFT_FRAME | typeof SH
 export type TimeFrameBlockSize = (typeof SIZES)[number];
 export type TimeFrameSize = typeof SIZE_1 | typeof SIZE_2 | typeof SIZE_3 | typeof SIZE_4 | typeof SIZE_6 | typeof SIZE_12 | TimeFrameBlockSize;
 
-export type WithTimeFrameCursor = {
-    get cursor(): number;
-    set cursor(shift: TimeFrameCursorShift | number);
-};
-
 export type TimeFrameAtoms = {
-    days: number;
+    cells: number;
+    cursor: number;
     length: TimeFrameBlockSize;
     originTimestamp: number;
     todayTimestamp: number;
@@ -55,10 +51,21 @@ export type TimeFrameAtoms = {
 
 export type TimeFrame = {
     [K: number]: TimeFrameMonth;
-    readonly days: number;
+    readonly cells: number;
+    get cursor(): number;
+    set cursor(shift: TimeFrameCursorShift | number);
+    firstWeekDay: TimeOrigin['firstWeekDay'];
     get length(): TimeFrameBlockSize;
     set length(length: TimeFrameSize | null | undefined);
+    origin: TimeOrigin['time'];
+    readonly select: TimeSelection['select'];
+    readonly selection: {
+        from: TimeSelection['from'];
+        to: TimeSelection['to'];
+    };
     readonly shift: (offset?: number, shift?: TimeFrameShift) => void;
+    timeslice: TimeOrigin['timeslice'];
+    readonly watch: Watchable<TimeFrameAtoms>['watch'];
 };
 
 export type TimeFrameMonth = {
@@ -70,21 +77,19 @@ export type TimeFrameMonth = {
     readonly year: number;
 };
 
+type BlockMetrics<T extends string> = {
+    [K in T]: WithTimeEdges<number> & { readonly cells: number };
+};
+
+export type TimeFrameBlockMetrics = BlockMetrics<'inner' | 'outer'> & {
+    readonly month: Month;
+    readonly year: number;
+};
+
 export type TimeFrameMonthMetrics = [Month, number, number, number, number];
 
 export type TimeFrameFactory = {
-    (length?: TimeFrameSize): TimeFrame &
-        WithTimeFrameCursor & {
-            firstWeekDay: TimeOrigin['firstWeekDay'];
-            origin: TimeOrigin['time'];
-            readonly select: TimeSelection['select'];
-            readonly selection: {
-                from: TimeSelection['from'];
-                to: TimeSelection['to'];
-            };
-            timeslice: TimeOrigin['timeslice'];
-            readonly watch: Watchable<TimeFrameAtoms>['watch'];
-        };
+    (length?: TimeFrameSize): TimeFrame;
     readonly CURSOR_BACKWARD: typeof CURSOR_BACKWARD;
     readonly CURSOR_BACKWARD_EDGE: typeof CURSOR_BACKWARD_EDGE;
     readonly CURSOR_BLOCK_END: typeof CURSOR_BLOCK_END;

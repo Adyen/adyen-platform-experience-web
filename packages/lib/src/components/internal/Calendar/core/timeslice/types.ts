@@ -11,6 +11,7 @@ export type TimeSliceFactory = {
     (time?: Time, timeEdge?: TimeSliceEdge): TimeSlice;
     readonly FROM_EDGE: typeof FROM_EDGE;
     readonly TO_EDGE: typeof TO_EDGE;
+    readonly INFINITE: TimeSlice;
     readonly SINCE_NOW: TimeSlice;
     readonly UNTIL_NOW: TimeSlice;
 };

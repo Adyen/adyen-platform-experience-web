@@ -1,4 +1,4 @@
-import __TimeFrame__ from './base';
+import __TimeFrame__ from './base/month';
 import {
     CURSOR_BACKWARD,
     CURSOR_BACKWARD_EDGE,
@@ -40,11 +40,11 @@ const timeframe = (() => {
                 firstWeekDay,
                 timeslice,
                 select,
+                cells: { get: () => base.numberOfCells },
                 cursor: {
                     get: () => base.cursorIndex,
                     set: base.shiftFrameCursor,
                 },
-                days: { get: () => base.numberOfDays },
                 length: {
                     get: () => base.numberOfBlocks,
                     set: (length?: TimeFrameSize | null) => {
