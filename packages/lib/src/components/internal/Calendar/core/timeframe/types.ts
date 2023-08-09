@@ -78,7 +78,7 @@ export type TimeFrameMonth = {
 };
 
 type BlockMetrics<T extends string> = {
-    [K in T]: WithTimeEdges<number> & { readonly cells: number };
+    [K in T]: WithTimeEdges<number> & { readonly units: number };
 };
 
 export type TimeFrameBlockMetrics = BlockMetrics<'inner' | 'outer'> & {

@@ -2,18 +2,20 @@ import __AbstractTimeFrame__ from './AbstractTimeFrame';
 import { TimeFrameBlockMetrics } from '../types';
 import { computeTimestampOffset, getEdgesDistance, struct } from '../../shared/utils';
 
-export default class __MinifiedTimeFrame__ extends __AbstractTimeFrame__ {
+const YEAR_MONTHS = 12;
+
+export default class __AnnualTimeFrame__ extends __AbstractTimeFrame__ {
     #currentTimestamp?: number;
 
-    protected getFrameBlockMetricsForIndex(blockIndex: number) {
-        const startIndex = blockIndex * 12;
-        const endIndex = startIndex + 11;
-        const numberOfCells = endIndex - startIndex + 1;
+    protected getMetricsForFrameBlockAtIndex(blockIndex: number) {
+        const startIndex = blockIndex * YEAR_MONTHS;
+        const endIndex = startIndex + YEAR_MONTHS - 1;
+        const numberOfUnits = endIndex - startIndex + 1;
 
         const sharedStruct = struct({
-            cells: { value: numberOfCells },
             from: { value: startIndex },
             to: { value: endIndex },
+            units: { value: numberOfUnits },
         });
 
         return struct({
@@ -22,6 +24,14 @@ export default class __MinifiedTimeFrame__ extends __AbstractTimeFrame__ {
             outer: { value: sharedStruct },
             year: { value: (this.origin as number) + blockIndex },
         }) as TimeFrameBlockMetrics;
+    }
+
+    protected getStartTimestampForFrameBlockAtOffset(blockOffset: number) {
+        return new Date(this.timestamp as number).setMonth(blockOffset * YEAR_MONTHS);
+    }
+
+    protected getUnitsForFrameBlockBeforeOrigin(): typeof YEAR_MONTHS {
+        return YEAR_MONTHS;
     }
 
     protected shiftOrigin(offset: number) {
@@ -36,12 +46,13 @@ export default class __MinifiedTimeFrame__ extends __AbstractTimeFrame__ {
     protected updateEdgeBlocksOffsetsRelativeToOrigin(fromTimestamp: number, toTimestamp: number) {
         this.fromBlockOffsetFromOrigin = new Date(fromTimestamp).getFullYear() - (this.origin as number);
         this.toBlockOffsetFromOrigin = new Date(toTimestamp).getFullYear() - (this.origin as number);
-        this.numberOfBlocks = Math.ceil((new Date(fromTimestamp).getMonth() + this.numberOfBlocks) / 12);
+        this.numberOfBlocks = Math.ceil((new Date(fromTimestamp).getMonth() + this.numberOfBlocks) / YEAR_MONTHS);
     }
 
     protected withOriginTimestamp(timestamp: number) {
         this.#currentTimestamp = timestamp - computeTimestampOffset(timestamp);
         const date = new Date(this.#currentTimestamp);
+        this.cursorOffset = date.getMonth();
         this.origin = date.getFullYear();
         this.timestamp = date.setMonth(1, 1);
     }

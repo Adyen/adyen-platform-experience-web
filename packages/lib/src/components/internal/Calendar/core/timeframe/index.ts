@@ -1,4 +1,4 @@
-import __TimeFrame__ from './base/month';
+import __TimeFrame__ from './base/TimeFrame';
 import {
     CURSOR_BACKWARD,
     CURSOR_BACKWARD_EDGE,
@@ -22,46 +22,75 @@ import {
 } from './constants';
 import { TimeFrame, TimeFrameFactory, TimeFrameSize } from './types';
 import { struct, structFrom } from '../shared/utils';
+import { Time, WeekDay } from '../shared/types';
+import { TimeSlice } from '../timeslice/types';
 
 const timeframe = (() => {
     const factory = ((length?: TimeFrameSize) => {
         const base = new __TimeFrame__(length);
-        const { firstWeekDay, time, timeslice } = Object.getOwnPropertyDescriptors(base.origin);
-        const { from: selectionFrom, to: selectionTo, select } = Object.getOwnPropertyDescriptors(base.selection);
+        // const { firstWeekDay, time, timeslice } = Object.getOwnPropertyDescriptors(base.origin);
+        // const { from: selectionFrom, to: selectionTo, select } = Object.getOwnPropertyDescriptors(base.selection);
 
         return structFrom(
             new Proxy(struct(), {
                 get: (target: {}, property: string | symbol, receiver: {}) => {
+                    // return typeof property === 'string' ? base.getFrameBlockByIndex(+property) : Reflect.get(target, property, receiver);
                     return typeof property === 'string' ? base.getFrameBlockByIndex(+property) : Reflect.get(target, property, receiver);
                 },
                 set: () => true,
             }),
             {
-                firstWeekDay,
-                timeslice,
-                select,
-                cells: { get: () => base.numberOfCells },
+                // firstWeekDay,
+                // timeslice,
+                // select,
+                firstWeekDay: {
+                    get: () => base.firstWeekDay,
+                    set: (day?: WeekDay | null) => {
+                        base.firstWeekDay = day;
+                    },
+                },
+                timeslice: {
+                    get: () => base.timeslice,
+                    set: (timeslice?: TimeSlice | null) => {
+                        base.timeslice = timeslice;
+                    },
+                },
+                select: { value: base.updateSelection.bind(base) },
+                cells: { get: () => base.units /* base.numberOfCells */ },
                 cursor: {
-                    get: () => base.cursorIndex,
-                    set: base.shiftFrameCursor,
+                    get: () => base.cursor, // base.cursorIndex,
+                    set: base.shiftFrameCursor.bind(base),
                 },
                 length: {
-                    get: () => base.numberOfBlocks,
+                    get: () => base.size, // base.numberOfBlocks,
                     set: (length?: TimeFrameSize | null) => {
-                        base.numberOfBlocks = length;
+                        // base.numberOfBlocks = length;
+                        base.size = length;
                     },
                 },
                 origin: {
-                    get: () => base.origin.month.timestamp,
-                    set: time.set,
+                    get: () => base.originTimestamp, // base.origin.month.timestamp,
+                    // set: time.set,
                 },
                 selection: {
                     value: struct({
-                        from: selectionFrom,
-                        to: selectionTo,
+                        // from: selectionFrom,
+                        // to: selectionTo,
+                        from: {
+                            get: () => base.selectionStart,
+                            set: (time?: Time | null) => {
+                                base.selectionStart = time;
+                            },
+                        },
+                        to: {
+                            get: () => base.selectionEnd,
+                            set: (time?: Time | null) => {
+                                base.selectionEnd = time;
+                            },
+                        },
                     }),
                 },
-                shift: { value: base.shiftFrame },
+                shift: { value: base.shiftFrame.bind(base) },
                 watch: { value: base.watchable.watch },
             }
         ) as TimeFrame;
