@@ -2,10 +2,8 @@ import { Preview } from '@storybook/preact';
 import '../src/assets/style/style.scss';
 import '@adyen/adyen-fp-web/style/index.scss';
 import '@adyen/adyen-fp-web/components/shared.scss';
-import { enableServerInMockedMode } from '../src/endpoints/mock-server/utils';
 import { createAdyenFP } from './utils/create-adyenFP';
-
-await enableServerInMockedMode();
+import { enableServerInMockedMode } from '../src/endpoints/mock-server/utils';
 
 const preview: Preview = {
     parameters: {
@@ -15,6 +13,9 @@ const preview: Preview = {
     },
     loaders: [
         async context => {
+            const env = (import.meta as any).env;
+            const isDemo = env.DEV && env.MODE === 'production';
+            if (isDemo || env.MODE === 'mocked') await enableServerInMockedMode();
             const adyenFP = await createAdyenFP(context);
             return { adyenFP };
         },

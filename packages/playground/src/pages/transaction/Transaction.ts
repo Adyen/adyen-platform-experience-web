@@ -1,5 +1,5 @@
 import { getTransactionById } from '../../utils/services';
-import { AdyenFP, transactionDetails } from '@adyen/adyen-fp-web';
+import { AdyenFP } from '@adyen/adyen-fp-web';
 import { getSearchParameters } from '../../utils/utils';
 import '../../utils/createPages.js';
 import '../../assets/style/style.scss';
@@ -13,7 +13,7 @@ try {
     const data = await getTransactionById(id || DEFAULT_TRANSACTION_ID);
     const adyenFP = await AdyenFP({ locale: 'en-US' });
 
-    adyenFP.create(transactionDetails, { transaction: data }).mount('.transaction-details-component-container');
+    adyenFP.create('transactionDetails', { transaction: data }).mount('.transaction-details-component-container');
 } catch (e) {
     console.error(e);
 }

@@ -1,5 +1,4 @@
 import { buildDevStandalone } from '@storybook/core-server';
-
 import packageJson from '../package.json';
 import { BuilderOptions, CLIOptions, LoadOptions, PackageJson } from '@storybook/types';
 

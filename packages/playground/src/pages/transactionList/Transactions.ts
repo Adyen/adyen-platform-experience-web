@@ -1,5 +1,5 @@
 import { getMyTransactions } from '../../utils/services';
-import { AdyenFP, transactionList } from '@adyen/adyen-fp-web';
+import { AdyenFP } from '@adyen/adyen-fp-web';
 import '../../utils/createPages.js';
 import '../../assets/style/style.scss';
 import { enableServerInMockedMode } from '../../endpoints/mock-server/utils';
@@ -12,7 +12,7 @@ try {
     const transactions = await getMyTransactions();
 
     adyenFP
-        .create(transactionList, {
+        .create('transactionList', {
             transactions,
             onFilterChange: (/* filters, component */) => {
                 // do something here with the updated filters

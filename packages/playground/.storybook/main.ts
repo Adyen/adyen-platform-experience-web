@@ -2,7 +2,6 @@ import { StorybookConfig } from '@storybook/preact-vite';
 import { mergeConfig } from 'vite';
 import { realApiProxies } from '../src/endpoints/apis/realApiProxies';
 import { getEnvironment } from '../../../envs/getEnvs';
-import { preact } from '@preact/preset-vite';
 import { checker } from 'vite-plugin-checker';
 
 const config: StorybookConfig = {
@@ -14,7 +13,8 @@ const config: StorybookConfig = {
     },
     staticDirs: [{ from: '../../../mocks', to: '/static' }],
     async viteFinal(config) {
-        const { lemApi, BTLApi, BCLApi, playground, mockServer } = getEnvironment('development');
+        const { lemApi, BTLApi, BCLApi } = getEnvironment(process.env.VITE_MODE ?? 'development');
+
         return mergeConfig(config, {
             server: {
                 proxy: realApiProxies(lemApi, BTLApi, BCLApi),
@@ -27,6 +27,9 @@ const config: StorybookConfig = {
                         },
                     }),
             ],
+            build: {
+                target: 'esnext',
+            },
         });
     },
 };
