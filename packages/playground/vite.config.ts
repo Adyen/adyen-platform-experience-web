@@ -47,7 +47,7 @@ export default defineConfig(async ({ mode }) => {
         },
         css: {
             modules: {
-                scopeBehaviour: 'local',
+                scopeBehaviour: mode === 'production' ? 'local' : undefined,
                 generateScopedName: name => name,
             },
         },
