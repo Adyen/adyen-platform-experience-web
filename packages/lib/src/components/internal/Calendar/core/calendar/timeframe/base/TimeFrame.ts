@@ -1,8 +1,8 @@
 import __AbstractTimeFrame__ from './AbstractTimeFrame';
-import { TimeFrameBlockMetrics } from '../types';
-import { DAY_MS } from '../../shared/constants';
-import { Month, MonthDays, WeekDay } from '../../shared/types';
-import { computeTimestampOffset, getEdgesDistance, getMonthDays, struct } from '../../shared/utils';
+import { DAY_MS } from '../../constants';
+import { Month, MonthDays, TimeFrameBlockMetrics, WeekDay } from '../../types';
+import { computeTimestampOffset, getEdgesDistance, getMonthDays } from '../../utils';
+import { struct } from '../../../shared/utils';
 
 export default class __TimeFrame__ extends __AbstractTimeFrame__ {
     protected declare currentTimestamp: number;
@@ -69,8 +69,8 @@ export default class __TimeFrame__ extends __AbstractTimeFrame__ {
     }
 
     protected updateEdgeBlocksOffsetsRelativeToOrigin(fromTimestamp: number, toTimestamp: number) {
-        this.fromBlockOffsetFromOrigin = 0 - getEdgesDistance(fromTimestamp, this.currentTimestamp);
-        this.toBlockOffsetFromOrigin = getEdgesDistance(toTimestamp, this.currentTimestamp);
+        this.fromBlockOffsetFromOrigin = this.getBlockTimestampOffsetFromOrigin(fromTimestamp);
+        this.toBlockOffsetFromOrigin = this.getBlockTimestampOffsetFromOrigin(toTimestamp);
         this.numberOfBlocks = this.toBlockOffsetFromOrigin - this.fromBlockOffsetFromOrigin + 1;
     }
 

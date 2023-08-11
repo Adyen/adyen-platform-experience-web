@@ -1,8 +1,8 @@
 import __AbstractTimeFrame__ from './AbstractTimeFrame';
-import { TimeFrameBlockMetrics } from '../types';
-import { computeTimestampOffset, getEdgesDistance, struct } from '../../shared/utils';
-
-const YEAR_MONTHS = 12;
+import { YEAR_MONTHS } from '../../constants';
+import { TimeFrameBlockMetrics } from '../../types';
+import { computeTimestampOffset, getEdgesDistance } from '../../utils';
+import { struct } from '../../../shared/utils';
 
 export default class __AnnualTimeFrame__ extends __AbstractTimeFrame__ {
     protected declare currentTimestamp: number;

@@ -1,16 +1,16 @@
-import __Watchable__ from './base';
+import __Watchable__ from './base/Watchable';
 import { Watchable, WatchAtoms } from './types';
 import { struct } from '../utils';
 
 const watchable = <T extends Record<string, any>>(watchableAtoms = {} as WatchAtoms<T>) => {
-    const base = new __Watchable__(watchableAtoms);
+    const instance = new __Watchable__(watchableAtoms);
 
     return struct({
-        callback: { value: base.idleCallbacks },
-        idle: { get: () => base.idle },
-        notify: { value: base.notifyWatchers },
-        snapshot: { get: () => base.snapshot as T },
-        watch: { value: base.watch },
+        callback: { value: instance.idleCallbacks },
+        idle: { get: () => instance.idle },
+        notify: { value: instance.notifyWatchers },
+        snapshot: { get: () => instance.snapshot as T },
+        watch: { value: instance.watch },
     }) as Watchable<T>;
 };
 

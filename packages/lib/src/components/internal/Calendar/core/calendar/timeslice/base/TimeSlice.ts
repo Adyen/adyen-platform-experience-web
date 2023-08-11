@@ -1,7 +1,6 @@
-import { FROM_EDGE, TO_EDGE } from './constants';
-import { TimeSliceEdge } from './types';
-import { Time } from '../shared/types';
-import { computeTimestampOffset, getEdgesDistance } from '../shared/utils';
+import { RANGE_FROM, RANGE_TO } from '../../constants';
+import { Time, TimeFrameRangeEdge } from '../../types';
+import { computeTimestampOffset, getEdgesDistance } from '../../utils';
 
 export default class __TimeSlice__ {
     readonly #numberOfMonths: number = Infinity;
@@ -11,7 +10,7 @@ export default class __TimeSlice__ {
     readonly #startTimestampOffset: number = 0;
 
     constructor(fromTime?: Time, toTime?: Time);
-    constructor(time?: Time, timeEdge?: TimeSliceEdge);
+    constructor(time?: Time, timeEdge?: TimeFrameRangeEdge);
     constructor(...args: any[]) {
         if (args.length >= 2) {
             let timestamp = new Date(args[0]).getTime();
@@ -29,12 +28,12 @@ export default class __TimeSlice__ {
                 this.#numberOfMonths = getEdgesDistance(this.#startTimestamp, this.#endTimestamp) + 1;
             } else if (!isNaN(timestamp)) {
                 switch (args[1]) {
-                    case TO_EDGE:
+                    case RANGE_TO:
                         this.#endTimestamp = timestamp;
                         this.#endTimestampOffset = computeTimestampOffset(this.#endTimestamp);
                         break;
 
-                    case FROM_EDGE:
+                    case RANGE_FROM:
                     default:
                         this.#startTimestamp = timestamp;
                         this.#startTimestampOffset = computeTimestampOffset(this.#startTimestamp);
