@@ -28,7 +28,6 @@
         "test:coverage": "npm run test:coverage -w @adyen/adyen-fp-web",
         "type-check": "npm run type-check -w @adyen/adyen-fp-web",
         "types:watch": "npm run types:watch -w @adyen/adyen-fp-web",
-        "prepare": "husky install",
         "format:all": "npm run format -w @adyen/adyen-fp-web-playground && npm run format -w @adyen/adyen-fp-web",
         "storybook": "npm run storybook -w @adyen/adyen-fp-web-playground",
         "storybook:mocked": "npm run storybook:mocked -w @adyen/adyen-fp-web-playground",
