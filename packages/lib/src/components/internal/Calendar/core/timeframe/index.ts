@@ -43,6 +43,7 @@ const timeframe = (() => {
                 // firstWeekDay,
                 // timeslice,
                 // select,
+                index: { value: base.index.bind(base) },
                 firstWeekDay: {
                     get: () => base.firstWeekDay,
                     set: (day?: WeekDay | null) => {
@@ -92,6 +93,7 @@ const timeframe = (() => {
                 },
                 shift: { value: base.shiftFrame.bind(base) },
                 watch: { value: base.watchable.watch },
+                width: { get: () => base.width },
             }
         ) as TimeFrame;
     }) as TimeFrameFactory;

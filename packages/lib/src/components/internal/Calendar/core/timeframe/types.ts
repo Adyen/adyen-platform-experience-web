@@ -51,6 +51,7 @@ export type TimeFrameAtoms = {
 
 export type TimeFrame = {
     [K: number]: TimeFrameMonth;
+    readonly index: (index: number) => number;
     readonly cells: number;
     get cursor(): number;
     set cursor(shift: TimeFrameCursorShift | number);
@@ -66,6 +67,7 @@ export type TimeFrame = {
     readonly shift: (offset?: number, shift?: TimeFrameShift) => void;
     timeslice: TimeOrigin['timeslice'];
     readonly watch: Watchable<TimeFrameAtoms>['watch'];
+    readonly width: number;
 };
 
 export type TimeFrameMonth = {
@@ -82,6 +84,8 @@ type BlockMetrics<T extends string> = {
 };
 
 export type TimeFrameBlockMetrics = BlockMetrics<'inner' | 'outer'> & {
+    readonly [K: number]: number;
+    readonly flags: { readonly [K: number]: number };
     readonly month: Month;
     readonly year: number;
 };

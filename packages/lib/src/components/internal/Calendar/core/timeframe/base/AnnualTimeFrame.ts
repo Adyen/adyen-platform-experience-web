@@ -5,7 +5,15 @@ import { computeTimestampOffset, getEdgesDistance, struct } from '../../shared/u
 const YEAR_MONTHS = 12;
 
 export default class __AnnualTimeFrame__ extends __AbstractTimeFrame__ {
-    #currentTimestamp?: number;
+    protected declare currentTimestamp: number;
+    protected declare origin: number;
+    protected declare timestamp: number;
+
+    protected lineWidth = 4;
+
+    protected getBlockTimestampOffsetFromOrigin(timestamp: number) {
+        return new Date(timestamp).getFullYear() - this.origin;
+    }
 
     protected getMetricsForFrameBlockAtIndex(blockIndex: number) {
         const startIndex = blockIndex * YEAR_MONTHS;
@@ -22,12 +30,16 @@ export default class __AnnualTimeFrame__ extends __AbstractTimeFrame__ {
             inner: { value: sharedStruct },
             month: { value: 0 },
             outer: { value: sharedStruct },
-            year: { value: (this.origin as number) + blockIndex },
+            year: { value: this.origin + blockIndex },
         }) as TimeFrameBlockMetrics;
     }
 
     protected getStartTimestampForFrameBlockAtOffset(blockOffset: number) {
-        return new Date(this.timestamp as number).setMonth(blockOffset * YEAR_MONTHS);
+        return new Date(this.timestamp).setMonth(blockOffset * YEAR_MONTHS);
+    }
+
+    protected getStartTimestampAtIndex(index: number) {
+        return new Date(this.timestamp).setMonth(index);
     }
 
     protected getUnitsForFrameBlockBeforeOrigin(): typeof YEAR_MONTHS {
@@ -35,25 +47,25 @@ export default class __AnnualTimeFrame__ extends __AbstractTimeFrame__ {
     }
 
     protected shiftOrigin(offset: number) {
-        this.withOriginTimestamp(new Date(this.timestamp as number).setFullYear((this.origin as number) + offset));
+        this.withOriginTimestamp(new Date(this.timestamp).setFullYear(this.origin + offset));
     }
 
     protected updateCursorRangeOffsetsRelativeToOrigin(fromTimestamp: number, toTimestamp: number) {
-        this.minCursorOffsetRelativeToOrigin = 0 - (getEdgesDistance(fromTimestamp, this.#currentTimestamp as number) + 1);
-        this.maxCursorOffsetRelativeToOrigin = getEdgesDistance(toTimestamp, this.#currentTimestamp as number);
+        this.minCursorOffsetRelativeToOrigin = 0 - (getEdgesDistance(fromTimestamp, this.currentTimestamp) + 1);
+        this.maxCursorOffsetRelativeToOrigin = getEdgesDistance(toTimestamp, this.currentTimestamp);
     }
 
     protected updateEdgeBlocksOffsetsRelativeToOrigin(fromTimestamp: number, toTimestamp: number) {
-        this.fromBlockOffsetFromOrigin = new Date(fromTimestamp).getFullYear() - (this.origin as number);
-        this.toBlockOffsetFromOrigin = new Date(toTimestamp).getFullYear() - (this.origin as number);
+        this.fromBlockOffsetFromOrigin = this.getBlockTimestampOffsetFromOrigin(fromTimestamp);
+        this.toBlockOffsetFromOrigin = this.getBlockTimestampOffsetFromOrigin(toTimestamp);
         this.numberOfBlocks = Math.ceil((new Date(fromTimestamp).getMonth() + this.numberOfBlocks) / YEAR_MONTHS);
     }
 
     protected withOriginTimestamp(timestamp: number) {
-        this.#currentTimestamp = timestamp - computeTimestampOffset(timestamp);
-        const date = new Date(this.#currentTimestamp);
+        this.currentTimestamp = timestamp - computeTimestampOffset(timestamp);
+        const date = new Date(this.currentTimestamp);
         this.cursorOffset = date.getMonth();
         this.origin = date.getFullYear();
-        this.timestamp = date.setMonth(1, 1);
+        this.timestamp = date.setMonth(0, 1);
     }
 }
