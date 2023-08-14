@@ -1,10 +1,12 @@
-export const MOCK_TRANSFER_INSTRUMENT_OVERVIEW = {
+import type { TransferInstrument, TransferInstrumentOv } from '@adyen/adyen-fp-web/src/types/models/transferInstrument';
+
+export const MOCK_TRANSFER_INSTRUMENT_OVERVIEW: TransferInstrumentOv = {
     realLastFour: '8645',
     accountIdentifier: 'NL**RTBO******5428',
     id: 'SE322LZ223222D5F96LNL8WNX',
     trustedSource: false,
 };
-export const MOCK_TRANSFER_INSTRUMENT = {
+export const MOCK_TRANSFER_INSTRUMENT: TransferInstrument = {
     bankAccount: {
         accountNumber: '987654321',
         accountType: 'CHECKING',

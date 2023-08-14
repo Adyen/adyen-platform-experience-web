@@ -12,7 +12,8 @@
         "strictPropertyInitialization": false,
         "suppressImplicitAnyIndexErrors": true,
 
-        "isolatedModules": true
+        "isolatedModules": true,
+        "types": ["vite/client"]
     },
     "include": ["*.ts", "**/*.ts", "**/*.tsx", "**/*.d.ts"],
     "exclude": ["node_modules", "**/*.test.*", "dist"]

@@ -1,4 +1,6 @@
-export const BALANCE_ACCOUNT_DETAILS_1 = {
+import type { BalanceAccount } from '@adyen/adyen-fp-web/src/types/models/api/balance-account';
+
+export const BALANCE_ACCOUNT_DETAILS_1: BalanceAccount = {
     accountHolderId: 'AH32272223222B5CWF3T48T9B',
     defaultCurrencyCode: 'EUR',
     platformPaymentConfiguration: { salesDayClosingTime: '17:00', settlementDelayDays: 0 },
@@ -18,13 +20,13 @@ export const BALANCE_ACCOUNT_DETAILS_1 = {
     status: 'active',
 };
 
-export const BALANCE_ACCOUNT_DETAILS_2 = {
+export const BALANCE_ACCOUNT_DETAILS_2: BalanceAccount = {
     accountHolderId: 'AH32272223222B5CWF3T48T9B',
     defaultCurrencyCode: 'EUR',
     platformPaymentConfiguration: { salesDayClosingTime: '17:00', settlementDelayDays: 0 },
     timeZone: 'Europe/Amsterdam',
     balances: [
-        { available: 64900, balance: 64900, currency: 'AUD', reserved: 0 },
+        { available: 649020, balance: 64900, currency: 'AUD', reserved: 0 },
         { available: -25383, balance: -25383, currency: 'CZK', reserved: 0 },
         { available: 188, balance: 188, currency: 'HUF', reserved: 0 },
         { available: 57000, balance: 57000, currency: 'SEK', reserved: 0 },
@@ -38,13 +40,13 @@ export const BALANCE_ACCOUNT_DETAILS_2 = {
     status: 'active',
 };
 
-export const BALANCE_ACCOUNT_DETAILS_3 = {
+export const BALANCE_ACCOUNT_DETAILS_3: BalanceAccount = {
     accountHolderId: 'AH32272223222B5CWF3T48T9B',
     defaultCurrencyCode: 'EUR',
     platformPaymentConfiguration: { salesDayClosingTime: '17:00', settlementDelayDays: 0 },
     timeZone: 'Europe/Amsterdam',
     balances: [
-        { available: 64900, balance: 64900, currency: 'AUD', reserved: 0 },
+        { available: 649040, balance: 64900, currency: 'AUD', reserved: 0 },
         { available: -25383, balance: -25383, currency: 'CZK', reserved: 0 },
         { available: 188, balance: 188, currency: 'HUF', reserved: 0 },
         { available: 57000, balance: 57000, currency: 'SEK', reserved: 0 },
@@ -58,13 +60,13 @@ export const BALANCE_ACCOUNT_DETAILS_3 = {
     status: 'active',
 };
 
-export const BALANCE_ACCOUNT_DETAILS_4 = {
+export const BALANCE_ACCOUNT_DETAILS_4: BalanceAccount = {
     accountHolderId: 'AH32272223222B5CWF3T48T9B',
     defaultCurrencyCode: 'EUR',
     platformPaymentConfiguration: { salesDayClosingTime: '17:00', settlementDelayDays: 0 },
     timeZone: 'Europe/Amsterdam',
     balances: [
-        { available: 64900, balance: 64900, currency: 'AUD', reserved: 0 },
+        { available: 649001, balance: 64900, currency: 'AUD', reserved: 0 },
         { available: -25383, balance: -25383, currency: 'CZK', reserved: 0 },
         { available: 188, balance: 188, currency: 'HUF', reserved: 0 },
         { available: 57000, balance: 57000, currency: 'SEK', reserved: 0 },
@@ -78,4 +80,4 @@ export const BALANCE_ACCOUNT_DETAILS_4 = {
     status: 'active',
 };
 
-export const BALANCE_ACCOUNTS = [BALANCE_ACCOUNT_DETAILS_1, BALANCE_ACCOUNT_DETAILS_2, BALANCE_ACCOUNT_DETAILS_3, BALANCE_ACCOUNT_DETAILS_4];
+export const BALANCE_ACCOUNTS = [BALANCE_ACCOUNT_DETAILS_1, BALANCE_ACCOUNT_DETAILS_2, BALANCE_ACCOUNT_DETAILS_3, BALANCE_ACCOUNT_DETAILS_4] as const;

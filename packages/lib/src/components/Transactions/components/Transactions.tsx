@@ -4,9 +4,10 @@ import FilterBar from '../../internal/FilterBar';
 import TextFilter from '../../internal/FilterBar/filters/TextFilter';
 import DateFilter from '../../internal/FilterBar/filters/DateFilter';
 import TransactionList from './TransactionList';
-import { Transaction, TransactionFilterParam, TransactionsProps } from '../types';
+import { TransactionFilterParam, TransactionsComponentProps } from '../types';
 import { DateRangeFilterParam } from '../../internal/FilterBar/filters/DateFilter/types';
 import { useCursorPaginatedRecords } from '../../internal/Pagination/hooks';
+import { ITransaction } from '../../../types/models/api/transactions';
 
 const DEFAULT_PAGINATED_TRANSACTIONS_LIMIT = 20;
 
@@ -25,7 +26,7 @@ function Transactions({
     onFilterChange,
     onTransactionSelected,
     onUpdateTransactions,
-}: TransactionsProps) {
+}: TransactionsComponentProps) {
     const { i18n } = useCoreContext();
 
     const onPageRequest = useCallback(
@@ -36,7 +37,7 @@ function Transactions({
     );
 
     const { canResetFilters, fetching, filters, records, resetFilters, updateFilters, ...paginationProps } = useCursorPaginatedRecords<
-        Transaction,
+        ITransaction,
         'data',
         string,
         TransactionFilterParam

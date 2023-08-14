@@ -1,7 +1,7 @@
 import setupSession from '../Services/sessions/setup-session';
 import Storage from '../../utils/Storage';
 import { sanitizeSession } from './utils';
-import { Session, SessionConfiguration } from '../../types';
+import { Session, SessionConfiguration } from './types';
 
 class FPSession {
     private readonly session: Session;

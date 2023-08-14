@@ -3,9 +3,9 @@ import './BalanceAccountDetails.scss';
 import StatsBar from '@src/components/internal/StatsBar';
 import Status from '@src/components/internal/Status';
 import Balances from './Balances';
-import { BalanceAccountDetailsProps } from '../types';
+import { BalanceAccountComponentProps } from '../types';
 
-function BalanceAccountDetails(props: BalanceAccountDetailsProps) {
+function BalanceAccountDetails(props: BalanceAccountComponentProps) {
     const { i18n } = useCoreContext();
     const { balanceAccount } = props;
 

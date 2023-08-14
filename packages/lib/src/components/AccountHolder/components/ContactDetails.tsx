@@ -1,7 +1,7 @@
 import './ContactDetails.scss';
-import { AccountHolderDetailsProps } from '../types';
+import { AccountHolderComponentProps } from '../../AccountHolder/types';
 
-type ContactDetails = AccountHolderDetailsProps['accountHolder']['contactDetails'];
+type ContactDetails = AccountHolderComponentProps['accountHolder']['contactDetails'];
 interface ContactDetailsProps {
     address?: ContactDetails['address'];
     phoneNumber?: ContactDetails['phone'];

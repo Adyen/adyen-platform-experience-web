@@ -6,7 +6,8 @@ import DataGrid from '../../internal/DataGrid';
 import Pagination from '../../internal/Pagination';
 import { getLabel } from './utils';
 import Button from '@src/components/internal/Button';
-import { Transaction, TransactionListProps } from '../types';
+import { TransactionListProps } from '../types';
+import { ITransaction } from '../../../types/models/api/transactions';
 
 function TransactionList({
     loading,
@@ -25,7 +26,7 @@ function TransactionList({
     return showAlert ? (
         <Alert icon={'cross'}>{i18n.get('unableToLoadTransactions')}</Alert>
     ) : (
-        <DataGrid<Transaction>
+        <DataGrid<ITransaction>
             columns={columns}
             data={transactions}
             loading={loading}
@@ -55,7 +56,7 @@ function TransactionList({
                         value
                     ),
                 createdAt: ({ value }) => i18n.fullDate(value),
-                type: ({ value }) => i18n.get(getLabel(value)),
+                type: ({ value }) => value,
                 amount: ({ value }) => {
                     const amount = value?.currency
                         ? i18n.amount(value.value, value.currency, {

@@ -1,9 +1,9 @@
 import CoreProvider from '../../core/Context/CoreProvider';
 import UIElement from '../UIElement';
 import TransactionDetails from './components/TransactionDetails';
-import { TransactionDetailsProps } from './types';
+import { TransactionDetailsComponentProps } from './types';
 
-export class TransactionsElement extends UIElement<TransactionDetailsProps> {
+export class TransactionsElement extends UIElement<TransactionDetailsComponentProps> {
     public static type = 'transactionsDetails';
 
     get isValid() {
@@ -14,7 +14,7 @@ export class TransactionsElement extends UIElement<TransactionDetailsProps> {
         return this.props.name ?? this.type;
     }
 
-    formatProps(props: TransactionDetailsProps) {
+    formatProps(props: TransactionDetailsComponentProps) {
         return props;
     }
 

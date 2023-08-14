@@ -2,7 +2,7 @@ import { ValidatorRules, ValidatorRule } from '../../../utils/Validator/types';
 import { countrySpecificFormatters } from './validate.formats';
 import { ERROR_MSG_INCOMPLETE_FIELD } from '../../../core/Errors/constants';
 import { isEmpty } from '../../../utils/validator-utils';
-import { AddressData } from '../../../types';
+import { AddressData } from './types';
 import Specifications from './Specifications';
 
 const createPatternByDigits = (digits: number) => {

@@ -1,6 +1,6 @@
-import { Transaction } from '../Transactions/types';
+import { ITransaction } from '../../types/models/api/transactions';
 import { UIElementProps } from '../types';
 
-export interface TransactionDetailsProps extends UIElementProps {
-    transaction: Transaction;
+export interface TransactionDetailsComponentProps extends UIElementProps {
+    transaction: ITransaction;
 }

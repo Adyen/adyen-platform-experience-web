@@ -4,7 +4,7 @@ import ReadOnlyAddress from './components/ReadOnlyAddress';
 import { getAddressValidationRules } from './validate';
 import { addressFormatters, countrySpecificFormatters } from './validate.formats';
 import { AddressFieldsGroup, AddressProps } from './types';
-import { AddressData } from '../../../types';
+import { AddressData } from './types';
 import FieldContainer from './components/FieldContainer';
 import useForm from '../../../utils/useForm';
 import Specifications from './Specifications';

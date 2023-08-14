@@ -1,4 +1,3 @@
-import { AddressField, AddressData } from '../../../types';
 import Specifications from './Specifications';
 import { ValidatorRules } from '../../../utils/Validator/types';
 import { ValidationRuleResult } from '../../../utils/Validator/ValidationRuleResult';
@@ -6,6 +5,13 @@ import { FormState, SchemaKeys } from '../../../utils/useForm/types';
 import { TargetedEvent } from 'preact/compat';
 import { SetTriggerValidation } from '../../types';
 import { TranslationKey } from '@src/language/types';
+import { ADDRESS_SCHEMA } from '../Address/constants';
+
+export type AddressField = (typeof ADDRESS_SCHEMA)[number];
+
+export type AddressData = {
+    [key in AddressField]: string;
+};
 
 // Describes an object with unknown keys whose value is always a string
 export type StringObject = {
@@ -112,3 +118,5 @@ export type AddressSpecifications = {
 } & {
     [key: string]: SpecificationFields;
 };
+
+export type Specification = AddressSpecifications;

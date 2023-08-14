@@ -2,9 +2,9 @@ import useCoreContext from '@src/core/Context/useCoreContext';
 import StatsBar from '@src/components/internal/StatsBar';
 import Status from '@src/components/internal/Status';
 import './TransactionDetails.scss';
-import { TransactionDetailsProps } from '../types';
+import { TransactionDetailsComponentProps } from '../types';
 
-function TransactionsDetails(props: TransactionDetailsProps) {
+function TransactionsDetails(props: TransactionDetailsComponentProps) {
     const { i18n } = useCoreContext();
     const { transaction } = props;
     const labels = {

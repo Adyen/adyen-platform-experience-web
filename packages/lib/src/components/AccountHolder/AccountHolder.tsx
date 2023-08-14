@@ -1,9 +1,9 @@
 import CoreProvider from '../../core/Context/CoreProvider';
 import UIElement from '../UIElement';
 import AccountHolderDetails from './components/AccountHolderDetails';
-import { AccountHolderDetailsProps } from './types';
+import { AccountHolderComponentProps } from './types';
 
-export class AccountHolderElement extends UIElement<AccountHolderDetailsProps> {
+export class AccountHolderElement extends UIElement<AccountHolderComponentProps> {
     public static type = 'accountHolder';
 
     get isValid() {
@@ -14,7 +14,7 @@ export class AccountHolderElement extends UIElement<AccountHolderDetailsProps> {
         return this.props.name ?? this.type;
     }
 
-    formatProps(props: AccountHolderDetailsProps) {
+    formatProps(props: AccountHolderComponentProps) {
         return props;
     }
 

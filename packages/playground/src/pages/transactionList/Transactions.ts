@@ -2,8 +2,11 @@ import { getMyTransactions } from '../../utils/services';
 import { AdyenFP, transactionList } from '@adyen/adyen-fp-web';
 import '../../utils/createPages.js';
 import '../../assets/style/style.scss';
+import { enableServerInMockedMode } from '../../endpoints/mock-server/utils';
 
 try {
+    await enableServerInMockedMode();
+
     const adyenFP = await AdyenFP();
 
     const transactions = await getMyTransactions();
