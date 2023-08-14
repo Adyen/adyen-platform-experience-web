@@ -1,3 +1,9 @@
+export const NOW = {
+    get current() {
+        return performance.now();
+    },
+};
+
 export const DAY_MS = 86400000;
 export const FIRST_WEEK_DAYS = [0, 1, 6] as const;
 export const FRAME_SIZES = [1, 2, 3, 4, 6, 12] as const;

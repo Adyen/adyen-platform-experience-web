@@ -1,21 +1,44 @@
 import __AbstractTimeFrame__ from './AbstractTimeFrame';
 import { YEAR_MONTHS } from '../../constants';
-import { TimeFrameBlockMetrics } from '../../types';
+import { Time, TimeFlag, TimeFrameBlock, TimeFrameSelection, TimeSlice } from '../../types';
 import { computeTimestampOffset, getEdgesDistance } from '../../utils';
-import { struct } from '../../../shared/utils';
+import { isBitSafeInteger, struct, structFrom } from '../../../shared/utils';
 
 export default class __AnnualTimeFrame__ extends __AbstractTimeFrame__ {
+    #fromTimestamp!: number;
+    #toTimestamp!: number;
+    #selectionStartDayTimestamp?: number;
+    #selectionEndDayTimestamp?: number;
+
     protected declare currentTimestamp: number;
     protected declare origin: number;
     protected declare timestamp: number;
 
     protected lineWidth = 4;
 
+    get timeslice(): TimeSlice {
+        return super.timeslice;
+    }
+
+    set timeslice(_timeslice: TimeSlice | null | undefined) {
+        super.timeslice = _timeslice;
+        this.#updateSelectionTimestamps();
+    }
+
+    #getStartOfMonthForTimestamp(timestamp?: number) {
+        return timestamp === undefined ? timestamp : new Date(timestamp - computeTimestampOffset(timestamp)).setDate(1);
+    }
+
+    #updateSelectionTimestamps() {
+        this.#selectionStartDayTimestamp = this.#getStartOfMonthForTimestamp(this.selectionStart);
+        this.#selectionEndDayTimestamp = this.#getStartOfMonthForTimestamp(this.selectionEnd);
+    }
+
     protected getBlockTimestampOffsetFromOrigin(timestamp: number) {
         return new Date(timestamp).getFullYear() - this.origin;
     }
 
-    protected getMetricsForFrameBlockAtIndex(blockIndex: number) {
+    protected getFrameBlockByIndex(blockIndex: number) {
         const startIndex = blockIndex * YEAR_MONTHS;
         const endIndex = startIndex + YEAR_MONTHS - 1;
         const numberOfUnits = endIndex - startIndex + 1;
@@ -26,20 +49,54 @@ export default class __AnnualTimeFrame__ extends __AbstractTimeFrame__ {
             units: { value: numberOfUnits },
         });
 
-        return struct({
+        const proxyForIndexPropertyAccess = new Proxy(struct(), {
+            get: (target: {}, property: string | symbol, receiver: {}) => {
+                if (typeof property === 'string') {
+                    const offset = +property;
+                    if (isBitSafeInteger(offset) && offset >= 0 && offset < numberOfUnits) {
+                        const index = startIndex + offset;
+                        const timestamp = new Date(this.timestamp).setMonth(index);
+                        const lineIndex = index % this.lineWidth;
+
+                        let flags = TimeFlag.WITHIN_BLOCK;
+
+                        if (index === this.cursor) flags |= TimeFlag.CURSOR;
+                        if (index === startIndex) flags |= TimeFlag.BLOCK_START;
+                        else if (index === endIndex) flags |= TimeFlag.BLOCK_END;
+
+                        if (lineIndex === 0) flags |= TimeFlag.LINE_START;
+                        else if (lineIndex === this.lineWidth - 1) flags |= TimeFlag.LINE_END;
+
+                        if (timestamp >= this.#fromTimestamp && timestamp <= this.#toTimestamp) {
+                            if (timestamp === this.#fromTimestamp) flags |= TimeFlag.RANGE_START;
+                            if (timestamp === this.#toTimestamp) flags |= TimeFlag.RANGE_END;
+                            flags |= TimeFlag.WITHIN_RANGE;
+                        }
+
+                        if (timestamp >= (this.#selectionStartDayTimestamp as number) && timestamp <= (this.#selectionEndDayTimestamp as number)) {
+                            if (timestamp === (this.#selectionStartDayTimestamp as number)) flags |= TimeFlag.SELECTION_START;
+                            if (timestamp === (this.#selectionEndDayTimestamp as number)) flags |= TimeFlag.SELECTION_END;
+                            flags |= TimeFlag.WITHIN_SELECTION;
+                        }
+
+                        return [timestamp, flags] as const;
+                    }
+                }
+                return Reflect.get(target, property, receiver);
+            },
+            set: () => true,
+        });
+
+        return structFrom(proxyForIndexPropertyAccess, {
             inner: { value: sharedStruct },
             month: { value: 0 },
             outer: { value: sharedStruct },
             year: { value: this.origin + blockIndex },
-        }) as TimeFrameBlockMetrics;
+        }) as TimeFrameBlock;
     }
 
     protected getStartTimestampForFrameBlockAtOffset(blockOffset: number) {
         return new Date(this.timestamp).setMonth(blockOffset * YEAR_MONTHS);
-    }
-
-    protected getStartTimestampAtIndex(index: number) {
-        return new Date(this.timestamp).setMonth(index);
     }
 
     protected getUnitsForFrameBlockBeforeOrigin(): typeof YEAR_MONTHS {
@@ -56,6 +113,8 @@ export default class __AnnualTimeFrame__ extends __AbstractTimeFrame__ {
     }
 
     protected updateEdgeBlocksOffsetsRelativeToOrigin(fromTimestamp: number, toTimestamp: number) {
+        this.#fromTimestamp = this.#getStartOfMonthForTimestamp(fromTimestamp) as number;
+        this.#toTimestamp = this.#getStartOfMonthForTimestamp(toTimestamp) as number;
         this.fromBlockOffsetFromOrigin = this.getBlockTimestampOffsetFromOrigin(fromTimestamp);
         this.toBlockOffsetFromOrigin = this.getBlockTimestampOffsetFromOrigin(toTimestamp);
         this.numberOfBlocks = Math.ceil((new Date(fromTimestamp).getMonth() + this.numberOfBlocks) / YEAR_MONTHS);
@@ -67,5 +126,10 @@ export default class __AnnualTimeFrame__ extends __AbstractTimeFrame__ {
         this.cursorOffset = date.getMonth();
         this.origin = date.getFullYear();
         this.timestamp = date.setMonth(0, 1);
+    }
+
+    updateSelection(time: Time, selection?: TimeFrameSelection) {
+        super.updateSelection(time, selection);
+        this.#updateSelectionTimestamps();
     }
 }

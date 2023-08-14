@@ -10,6 +10,7 @@ import {
     CURSOR_PREV_BLOCK,
     CURSOR_UPWARD,
     FIRST_WEEK_DAYS,
+    NOW,
     SELECTION_COLLAPSE,
     SELECTION_FARTHEST,
     SELECTION_FROM,
@@ -22,8 +23,7 @@ import {
 import type {
     FirstWeekDay,
     Time,
-    TimeFrameAtoms,
-    TimeFrameBlockMetrics,
+    TimeFrameBlock,
     TimeFrameCursor,
     TimeFrameSelection,
     TimeFrameShift,
@@ -34,7 +34,7 @@ import type {
 import { SLICE_UNBOUNDED } from '../../timeslice';
 import { downsizeTimeFrame, getWeekendDays, resolveTimeFrameBlockSize } from './utils';
 import { clamp, isBitSafeInteger, isInfinite, mid, mod } from '../../../shared/utils';
-import { Watchable, WatchAtoms } from '../../../shared/watchable/types';
+import { Watchable } from '../../../shared/watchable/types';
 import watchable from '../../../shared/watchable';
 
 export default abstract class __AbstractTimeFrame__ {
@@ -58,11 +58,11 @@ export default abstract class __AbstractTimeFrame__ {
     #maxBlockSize: TimeFrameSize = 12;
     #numberOfUnitsInFrame: number = 0;
 
-    #watchable?: Watchable<TimeFrameAtoms>;
+    #watchable?: Watchable<typeof NOW>;
 
     protected cursorOffset?: number;
     protected origin?: number;
-    protected frameBlocksMetrics: TimeFrameBlockMetrics[] = [];
+    protected frameBlocks: TimeFrameBlock[] = [];
     protected fromBlockOffsetFromOrigin: number = -Infinity;
     protected toBlockOffsetFromOrigin: number = Infinity;
     protected minCursorOffsetRelativeToOrigin: number = -Infinity;
@@ -73,8 +73,7 @@ export default abstract class __AbstractTimeFrame__ {
     protected abstract lineWidth: number;
 
     protected abstract getBlockTimestampOffsetFromOrigin(timestamp: number): number;
-    protected abstract getMetricsForFrameBlockAtIndex(blockIndex: number): TimeFrameBlockMetrics;
-    protected abstract getStartTimestampAtIndex(index: number): number;
+    protected abstract getFrameBlockByIndex(blockIndex: number): TimeFrameBlock;
     protected abstract getStartTimestampForFrameBlockAtOffset(blockOffset: number): number;
     protected abstract getUnitsForFrameBlockBeforeOrigin(): number;
     protected abstract shiftOrigin(offset: number): void;
@@ -82,23 +81,34 @@ export default abstract class __AbstractTimeFrame__ {
     protected abstract updateEdgeBlocksOffsetsRelativeToOrigin(fromTimestamp: number, toTimestamp: number): void;
     protected abstract withOriginTimestamp(timestamp: number): void;
 
-    constructor(blockSize?: TimeFrameSize) {
+    constructor(size?: TimeFrameSize) {
         this.firstWeekDay = 0;
         this.timeslice = SLICE_UNBOUNDED;
-        this.size = blockSize;
-        this.#watchable = watchable({ now: () => performance.now() } as WatchAtoms<any>);
+        this.size = size;
+        this.#watchable = watchable(NOW);
     }
 
-    index(index: number) {
-        return this.getStartTimestampAtIndex(index);
+    get cursor() {
+        return this.#cursorIndex;
     }
 
-    get watchable() {
-        return this.#watchable as Watchable<TimeFrameAtoms>;
+    get firstWeekDay(): FirstWeekDay {
+        return this.#firstWeekDay as FirstWeekDay;
     }
 
-    get getFrameBlockByIndex() {
-        return this.#getMetricsForFrameBlockAtIndex;
+    set firstWeekDay(day: FirstWeekDay | null | undefined) {
+        if (day != undefined) {
+            if (!FIRST_WEEK_DAYS.includes(day)) return;
+            if (this.#firstWeekDay === (this.#firstWeekDay = day)) return;
+
+            this.#daysOfWeekend = getWeekendDays(this.#firstWeekDay);
+            this.#withOriginTimestamp(this.timestamp as number);
+            this.#refreshFrame();
+        } else this.firstWeekDay = 0;
+    }
+
+    get getFrameBlockAtIndex() {
+        return this.#getFrameBlockAtIndex;
     }
 
     get selectionEnd(): number | undefined {
@@ -119,31 +129,12 @@ export default abstract class __AbstractTimeFrame__ {
         this.updateSelection(selectionTime, SELECTION_FROM);
     }
 
-    get firstWeekDay(): FirstWeekDay {
-        return this.#firstWeekDay as FirstWeekDay;
-    }
-
-    set firstWeekDay(day: FirstWeekDay | null | undefined) {
-        if (day != undefined) {
-            if (!FIRST_WEEK_DAYS.includes(day)) return;
-            if (this.#firstWeekDay === (this.#firstWeekDay = day)) return;
-
-            this.#daysOfWeekend = getWeekendDays(this.#firstWeekDay);
-            this.#withOriginTimestamp(this.timestamp as number);
-            this.#refreshFrameMetrics();
-        } else this.firstWeekDay = 0;
-    }
-
-    get cursor() {
-        return this.#cursorIndex;
-    }
-
     get size(): TimeFrameSize {
         return this.#size;
     }
 
-    set size(blockSize: TimeFrameSize | null | undefined) {
-        const nextBlockSize = Math.min((blockSize != undefined && resolveTimeFrameBlockSize(blockSize)) || 1, this.#maxBlockSize) as TimeFrameSize;
+    set size(size: TimeFrameSize | null | undefined) {
+        const nextBlockSize = Math.min((size != undefined && resolveTimeFrameBlockSize(size)) || 1, this.#maxBlockSize) as TimeFrameSize;
 
         if (this.#size === nextBlockSize) return;
 
@@ -156,10 +147,6 @@ export default abstract class __AbstractTimeFrame__ {
 
         this.#size = nextBlockSize;
         this.#shiftOrigin(frameOffset, true);
-    }
-
-    get width() {
-        return this.lineWidth;
     }
 
     get timeslice(): TimeSlice {
@@ -198,7 +185,7 @@ export default abstract class __AbstractTimeFrame__ {
 
         const cursorOffset = this.#cursorOffset;
 
-        this.#updateFrameMetricsRelativeToOrigin();
+        this.#updateFrameRelativeToOrigin();
 
         let cursorBlockIndex = this.#size - 1;
         const currentLastFrameBlockStartTimestamp = this.getStartTimestampForFrameBlockAtOffset(cursorBlockIndex);
@@ -222,14 +209,24 @@ export default abstract class __AbstractTimeFrame__ {
         return this.#numberOfUnitsInFrame;
     }
 
+    get watchable() {
+        return this.#watchable as Watchable<typeof NOW>;
+    }
+
+    get width() {
+        return this.lineWidth;
+    }
+
+    protected get weekend() {
+        return this.#daysOfWeekend;
+    }
+
     #getBlockUnitsForCursorBlockOffset(cursorBlockOffset: number = 0): number {
         if (!isBitSafeInteger(cursorBlockOffset)) {
             return this.#getBlockUnitsForCursorBlockOffset(0);
         }
         const offset = Math.min(this.#cursorBlockIndex + cursorBlockOffset, this.#size - 1);
-        return offset >= 0
-            ? (this.#getMetricsForFrameBlockAtIndex(offset) as TimeFrameBlockMetrics).inner.units
-            : this.getUnitsForFrameBlockBeforeOrigin();
+        return offset >= 0 ? (this.#getFrameBlockAtIndex(offset) as TimeFrameBlock).inner.units : this.getUnitsForFrameBlockBeforeOrigin();
     }
 
     #getClampedCursorIndex(cursorIndex: number) {
@@ -249,24 +246,21 @@ export default abstract class __AbstractTimeFrame__ {
         return timestamp;
     }
 
-    #getMetricsForFrameBlockAtIndex(blockIndex: number): TimeFrameBlockMetrics | undefined {
+    #getFrameBlockAtIndex(blockIndex: number): TimeFrameBlock | undefined {
         if (!(isBitSafeInteger(blockIndex) && blockIndex >= 0 && blockIndex < this.#size)) return;
-        if (!this.frameBlocksMetrics[blockIndex]) {
-            this.frameBlocksMetrics[blockIndex] = this.getMetricsForFrameBlockAtIndex(blockIndex) as TimeFrameBlockMetrics;
+        if (!this.frameBlocks[blockIndex]) {
+            this.frameBlocks[blockIndex] = this.getFrameBlockByIndex(blockIndex) as TimeFrameBlock;
         }
-        return this.frameBlocksMetrics[blockIndex];
+        return this.frameBlocks[blockIndex];
     }
 
-    #refreshFrameMetrics() {
+    #refreshFrame() {
         this.updateCursorRangeOffsetsRelativeToOrigin(this.#fromTimestamp, this.#toTimestamp);
-        this.frameBlocksMetrics.length = 0;
+        this.frameBlocks.length = 0;
 
-        const cursorBlock = this.#getMetricsForFrameBlockAtIndex(this.#cursorBlockIndex) as TimeFrameBlockMetrics;
-
-        const firstBlock = this.#cursorBlockIndex > 0 ? (this.#getMetricsForFrameBlockAtIndex(0) as TimeFrameBlockMetrics) : cursorBlock;
-
-        const lastBlock =
-            this.#cursorBlockIndex < this.#size - 1 ? (this.#getMetricsForFrameBlockAtIndex(this.#size - 1) as TimeFrameBlockMetrics) : cursorBlock;
+        const cursorBlock = this.#getFrameBlockAtIndex(this.#cursorBlockIndex) as TimeFrameBlock;
+        const firstBlock = this.#cursorBlockIndex > 0 ? (this.#getFrameBlockAtIndex(0) as TimeFrameBlock) : cursorBlock;
+        const lastBlock = this.#cursorBlockIndex < this.#size - 1 ? (this.#getFrameBlockAtIndex(this.#size - 1) as TimeFrameBlock) : cursorBlock;
 
         this.#cursorBlockStartIndex = cursorBlock.inner.from;
         this.#cursorBlockEndIndex = cursorBlock.inner.to;
@@ -286,7 +280,7 @@ export default abstract class __AbstractTimeFrame__ {
         if (containedNextCursorIndex === clampedNextCursorIndex) {
             this.#cursorIndex = containedNextCursorIndex;
             this.#cursorOffset = this.#cursorIndex - this.#cursorBlockStartIndex;
-            return this.#refreshFrameMetrics();
+            return this.#refreshFrame();
         }
 
         containedNextCursorIndex = clamp(this.#firstBlockStartIndex, clampedNextCursorIndex, this.#lastBlockEndIndex);
@@ -296,7 +290,7 @@ export default abstract class __AbstractTimeFrame__ {
                 const nextCursorOffset = containedNextCursorIndex - this.#cursorBlockStartIndex + 1;
                 this.#cursorBlockIndex--;
 
-                this.#refreshFrameMetrics();
+                this.#refreshFrame();
                 this.#cursorIndex = this.#getClampedCursorIndex(this.#cursorBlockEndIndex);
                 this.#cursorOffset = this.#cursorIndex - this.#cursorBlockStartIndex;
 
@@ -307,7 +301,7 @@ export default abstract class __AbstractTimeFrame__ {
                 const nextCursorOffset = containedNextCursorIndex - this.#cursorBlockEndIndex - 1;
                 this.#cursorBlockIndex++;
 
-                this.#refreshFrameMetrics();
+                this.#refreshFrame();
                 this.#cursorIndex = this.#getClampedCursorIndex(this.#cursorBlockStartIndex);
                 this.#cursorOffset = 0;
 
@@ -322,7 +316,7 @@ export default abstract class __AbstractTimeFrame__ {
             if (!shiftOffset) {
                 this.#cursorIndex = this.#getClampedCursorIndex(firstBlockStartIndex);
                 this.#cursorOffset = this.#cursorIndex - this.#cursorBlockStartIndex;
-                return this.#refreshFrameMetrics();
+                return this.#refreshFrame();
             }
 
             const cursorIndexOffset = this.#cursorOffset + offset + 1;
@@ -332,9 +326,8 @@ export default abstract class __AbstractTimeFrame__ {
             if (shiftOffset === -this.#size) {
                 this.#cursorBlockIndex = this.#size - 1;
                 this.#cursorIndex = this.#getClampedCursorIndex(this.#lastBlockEndIndex + cursorIndexOffset);
-                this.#cursorOffset =
-                    this.#cursorIndex - (this.#getMetricsForFrameBlockAtIndex(this.#cursorBlockIndex) as TimeFrameBlockMetrics).inner.from;
-                return this.#refreshFrameMetrics();
+                this.#cursorOffset = this.#cursorIndex - (this.#getFrameBlockAtIndex(this.#cursorBlockIndex) as TimeFrameBlock).inner.from;
+                return this.#refreshFrame();
             }
 
             return this.#shiftFrameCursorByOffset(offset);
@@ -347,7 +340,7 @@ export default abstract class __AbstractTimeFrame__ {
             if (!shiftOffset) {
                 this.#cursorIndex = this.#getClampedCursorIndex(lastBlockEndIndex);
                 this.#cursorOffset = this.#cursorIndex - this.#cursorBlockStartIndex;
-                return this.#refreshFrameMetrics();
+                return this.#refreshFrame();
             }
 
             const cursorIndexOffset = offset - (lastBlockEndIndex - this.#cursorIndex + 1);
@@ -357,9 +350,8 @@ export default abstract class __AbstractTimeFrame__ {
             if (shiftOffset === this.#size) {
                 this.#cursorBlockIndex = 0;
                 this.#cursorIndex = this.#getClampedCursorIndex(this.#firstBlockStartIndex + cursorIndexOffset);
-                this.#cursorOffset =
-                    this.#cursorIndex - (this.#getMetricsForFrameBlockAtIndex(this.#cursorBlockIndex) as TimeFrameBlockMetrics).inner.from;
-                return this.#refreshFrameMetrics();
+                this.#cursorOffset = this.#cursorIndex - (this.#getFrameBlockAtIndex(this.#cursorBlockIndex) as TimeFrameBlock).inner.from;
+                return this.#refreshFrame();
             }
 
             return this.#shiftFrameCursorByOffset(offset);
@@ -374,10 +366,10 @@ export default abstract class __AbstractTimeFrame__ {
             this.toBlockOffsetFromOrigin -= clampedOffset;
             this.#cursorBlockIndex = mod(this.#cursorBlockIndex - clampedOffset, this.#size);
         }
-        if (clampedOffset || forceRefresh) this.#refreshFrameMetrics();
+        if (clampedOffset || forceRefresh) this.#refreshFrame();
     }
 
-    #updateFrameMetricsRelativeToOrigin() {
+    #updateFrameRelativeToOrigin() {
         this.fromBlockOffsetFromOrigin = -Infinity;
         this.toBlockOffsetFromOrigin = Infinity;
         this.numberOfBlocks = this.#timeslice.span;
@@ -390,7 +382,7 @@ export default abstract class __AbstractTimeFrame__ {
         }
 
         this.#maxBlockSize = downsizeTimeFrame(12, this.numberOfBlocks);
-        this.#refreshFrameMetrics();
+        this.#refreshFrame();
     }
 
     #withOriginTimestamp(timestamp: number) {

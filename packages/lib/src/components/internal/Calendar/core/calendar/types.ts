@@ -11,6 +11,7 @@ import {
     CURSOR_UPWARD,
     FIRST_WEEK_DAYS,
     FRAME_SIZES,
+    NOW,
     RANGE_FROM,
     RANGE_TO,
     SHIFT_BLOCK,
@@ -41,20 +42,20 @@ export type Month = WeekDay | 7 | 8 | 9 | 10 | 11;
 export type MonthDays = 28 | 29 | 30 | 31;
 
 export const enum TimeFlag {
-    WEEK_START = 0x1,
-    WEEK_END = 0x2,
+    TODAY = 0x1,
+    CURSOR = 0x2,
     WEEKEND = 0x4,
-    TODAY = 0x8,
-    BLOCK_START = 0x10,
-    BLOCK_END = 0x20,
-    WITHIN_BLOCK = 0x40,
-    CURSOR = 0x80,
-    RANGE_START = 0x100,
-    RANGE_END = 0x200,
-    WITHIN_RANGE = 0x400,
+    LINE_START = 0x8,
+    LINE_END = 0x10,
+    WITHIN_BLOCK = 0x20,
+    BLOCK_START = 0x40,
+    BLOCK_END = 0x80,
+    WITHIN_RANGE = 0x100,
+    RANGE_START = 0x200,
+    RANGE_END = 0x400,
+    WITHIN_SELECTION = 0x800,
     SELECTION_START = 0x1000,
     SELECTION_END = 0x2000,
-    WITHIN_SELECTION = 0x4000,
 }
 
 export type TimeFrameCursor =
@@ -69,8 +70,6 @@ export type TimeFrameCursor =
     | typeof CURSOR_PREV_BLOCK
     | typeof CURSOR_UPWARD;
 
-export type TimeFrameRangeEdge = typeof RANGE_FROM | typeof RANGE_TO;
-
 export type TimeFrameSelection =
     | typeof SELECTION_COLLAPSE
     | typeof SELECTION_FARTHEST
@@ -78,79 +77,41 @@ export type TimeFrameSelection =
     | typeof SELECTION_NEAREST
     | typeof SELECTION_TO;
 
+export type TimeFrameRangeEdge = typeof RANGE_FROM | typeof RANGE_TO;
 export type TimeFrameShift = typeof SHIFT_BLOCK | typeof SHIFT_FRAME | typeof SHIFT_PERIOD;
-
 export type TimeFrameSize = (typeof FRAME_SIZES)[number];
 
-export type TimeFrameAtoms = {
-    cells: number;
-    cursor: number;
-    length: TimeFrameSize;
-    originTimestamp: number;
-    todayTimestamp: number;
+type TimeFrameBlockMetrics<T extends string> = {
+    [K in T]: WithTimeEdges<number> & { readonly units: number };
+};
+
+export type TimeFrameBlock = TimeFrameBlockMetrics<'inner' | 'outer'> & {
+    readonly [K: number]: readonly [number, number];
+    readonly month: Month;
+    readonly year: number;
 };
 
 export type TimeFrame = {
-    [K: number]: TimeFrameMonth;
-    readonly index: (index: number) => number;
-    readonly cells: number;
+    [K: number]: TimeFrameBlock;
     get cursor(): number;
     set cursor(shift: TimeFrameCursor | number);
     get firstWeekDay(): FirstWeekDay;
     set firstWeekDay(day: FirstWeekDay | null | undefined);
-    get length(): TimeFrameSize;
-    set length(length: TimeFrameSize | null | undefined);
-    readonly select: (time: Time, selection?: TimeFrameSelection) => void;
-    readonly selection: {
+    readonly highlight: {
+        (time: Time, selection?: TimeFrameSelection): void;
         get from(): number | undefined;
         set from(time: Time | null | undefined);
         get to(): number | undefined;
         set to(time: Time | null | undefined);
     };
+    readonly length: number;
+    readonly lineWidth: number;
     readonly shift: (offset?: number, shift?: TimeFrameShift) => void;
+    get size(): TimeFrameSize;
+    set size(length: TimeFrameSize | null | undefined);
     get timeslice(): TimeSlice;
     set timeslice(timeslice: TimeSlice | null | undefined);
-    readonly watch: Watchable<TimeFrameAtoms>['watch'];
-    readonly width: number;
-};
-
-export type TimeFrameMonth = {
-    readonly [K: number]: number;
-    readonly flags: { readonly [K: number]: number };
-    readonly index: number;
-    readonly length: number;
-    readonly month: Month;
-    readonly year: number;
-};
-
-type BlockMetrics<T extends string> = {
-    [K in T]: WithTimeEdges<number> & { readonly units: number };
-};
-
-export type TimeFrameBlockMetrics = BlockMetrics<'inner' | 'outer'> & {
-    readonly [K: number]: number;
-    readonly flags: { readonly [K: number]: number };
-    readonly month: Month;
-    readonly year: number;
-};
-
-export type TimeFrameMonthMetrics = [Month, number, number, number, number];
-
-export type TimeFrameFactory = {
-    (length?: TimeFrameSize): TimeFrame;
-    readonly CURSOR_BACKWARD: typeof CURSOR_BACKWARD;
-    readonly CURSOR_BLOCK_END: typeof CURSOR_BLOCK_END;
-    readonly CURSOR_BLOCK_START: typeof CURSOR_BLOCK_START;
-    readonly CURSOR_DOWNWARD: typeof CURSOR_DOWNWARD;
-    readonly CURSOR_FORWARD: typeof CURSOR_FORWARD;
-    readonly CURSOR_LINE_END: typeof CURSOR_LINE_END;
-    readonly CURSOR_LINE_START: typeof CURSOR_LINE_START;
-    readonly CURSOR_NEXT_BLOCK: typeof CURSOR_NEXT_BLOCK;
-    readonly CURSOR_PREV_BLOCK: typeof CURSOR_PREV_BLOCK;
-    readonly CURSOR_UPWARD: typeof CURSOR_UPWARD;
-    readonly SHIFT_BLOCK: typeof SHIFT_BLOCK;
-    readonly SHIFT_FRAME: typeof SHIFT_FRAME;
-    readonly SHIFT_PERIOD: typeof SHIFT_PERIOD;
+    readonly watch: Watchable<typeof NOW>['watch'];
 };
 
 export type TimeSlice = WithTimeEdges<number> & {
@@ -161,4 +122,57 @@ export type TimeSlice = WithTimeEdges<number> & {
 export type TimeSliceFactory = {
     (fromTime?: Time, toTime?: Time): TimeSlice;
     (time?: Time, timeEdge?: TimeFrameRangeEdge): TimeSlice;
+};
+
+export type TimeFrameFactory = {
+    (size: TimeFrameSize): TimeFrame;
+    readonly annual: (size: TimeFrameSize) => TimeFrame;
+    readonly cursor: Readonly<{
+        BACKWARD: typeof CURSOR_BACKWARD;
+        BLOCK_END: typeof CURSOR_BLOCK_END;
+        BLOCK_START: typeof CURSOR_BLOCK_START;
+        DOWNWARD: typeof CURSOR_DOWNWARD;
+        FORWARD: typeof CURSOR_FORWARD;
+        LINE_END: typeof CURSOR_LINE_END;
+        LINE_START: typeof CURSOR_LINE_START;
+        NEXT_BLOCK: typeof CURSOR_NEXT_BLOCK;
+        PREV_BLOCK: typeof CURSOR_PREV_BLOCK;
+        UPWARD: typeof CURSOR_UPWARD;
+    }>;
+    readonly flag: Readonly<{
+        BLOCK_END: TimeFlag;
+        BLOCK_START: TimeFlag;
+        CURSOR: TimeFlag;
+        LINE_END: TimeFlag;
+        LINE_START: TimeFlag;
+        RANGE_END: TimeFlag;
+        RANGE_START: TimeFlag;
+        SELECTION_END: TimeFlag;
+        SELECTION_START: TimeFlag;
+        TODAY: TimeFlag;
+        WEEKEND: TimeFlag;
+        WITHIN_BLOCK: TimeFlag;
+        WITHIN_RANGE: TimeFlag;
+        WITHIN_SELECTION: TimeFlag;
+    }>;
+    readonly range: TimeSliceFactory &
+        Readonly<{
+            FROM: typeof RANGE_FROM;
+            INFINITE: TimeSlice;
+            SINCE_NOW: TimeSlice;
+            UNTIL_NOW: TimeSlice;
+            TO: typeof RANGE_TO;
+        }>;
+    readonly selection: Readonly<{
+        COLLAPSE: typeof SELECTION_COLLAPSE;
+        FARTHEST: typeof SELECTION_FARTHEST;
+        FROM: typeof SELECTION_FROM;
+        NEAREST: typeof SELECTION_NEAREST;
+        TO: typeof SELECTION_TO;
+    }>;
+    shift: Readonly<{
+        BLOCK: typeof SHIFT_BLOCK;
+        FRAME: typeof SHIFT_FRAME;
+        PERIOD: typeof SHIFT_PERIOD;
+    }>;
 };
