@@ -33,7 +33,8 @@
         "storybook:mocked": "npm run storybook:mocked -w @adyen/adyen-fp-web-playground",
         "storybook:build": "npm run storybook:build -w @adyen/adyen-fp-web-playground",
         "storybook:demo": "npm run storybook:demo -w @adyen/adyen-fp-web-playground",
-        "demo:serve": "npm run demo:serve -w @adyen/adyen-fp-web-playground"
+        "demo:serve": "npm run demo:serve -w @adyen/adyen-fp-web-playground",
+        "prepare": "node ./prepare.js"
     },
     "dependencies": {
         "concurrently": "^7.0.0"
