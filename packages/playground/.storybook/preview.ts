@@ -14,8 +14,8 @@ const preview: Preview = {
     loaders: [
         async context => {
             const env = (import.meta as any).env;
-            const isDemo = env.DEV && env.MODE === 'production';
-            if (isDemo || env.MODE === 'mocked') await enableServerInMockedMode();
+            // const isDemo = env.DEV && env.MODE === 'production';
+            if (env.MODE === 'mocked') await enableServerInMockedMode();
             const adyenFP = await createAdyenFP(context);
             return { adyenFP };
         },
