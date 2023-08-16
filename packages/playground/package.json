@@ -30,7 +30,7 @@
         "storybook": "vite-node .storybook/runStorybook.ts",
         "storybook:mocked": "vite-node .storybook/runStorybook.ts --mode mocked",
         "storybook:build": "vite-node ./.storybook/buildStorybook.ts",
-        "storybook:demo": "vite-node ./.storybook/buildStorybook.ts && npm run demo:serve"
+        "storybook:demo": "vite-node ./.storybook/buildStorybook.ts --mode demo && npm run demo:serve"
     },
     "devDependencies": {
         "@preact/preset-vite": "^2.5.0",
