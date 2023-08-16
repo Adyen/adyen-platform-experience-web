@@ -23,6 +23,7 @@ export const realApiProxies = (lemApiOptions: ApiOptions, btlApiOptions: ApiOpti
     const lemApiProxyOptions = makeProxyOptions(lemApiOptions);
     const btlApiProxyOptions = makeProxyOptions(btlApiOptions);
     const bclApiProxyOptions = makeProxyOptions(bclApiOptions);
+
     return {
         [endpoints.transactions]: btlApiProxyOptions,
         [endpoints.balanceAccount]: bclApiProxyOptions,
