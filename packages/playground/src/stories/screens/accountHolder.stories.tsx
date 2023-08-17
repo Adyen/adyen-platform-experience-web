@@ -12,7 +12,7 @@ interface IAccountHolderScreen {
     accountHolderProps: ElementProps<typeof AccountHolderComponent>;
 }
 
-export default {
+const meta: Meta<IAccountHolderScreen> = {
     title: 'screens/AccountHolder',
     render: (args, context) => {
         if (context.loaded.data) {
@@ -20,7 +20,9 @@ export default {
         }
         return <Container type={'accountHolder'} componentConfiguration={args.accountHolderProps} context={context} />;
     },
-} satisfies Meta<IAccountHolderScreen>;
+};
+export default meta;
+
 export const Basic: StoryObj<IAccountHolderScreen> = {
     args: {
         accountHolderProps: {

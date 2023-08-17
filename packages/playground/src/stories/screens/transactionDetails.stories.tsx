@@ -7,7 +7,7 @@ import { TRANSACTION_DETAILS_DEFAULT } from '../../../../../mocks';
 
 const DEFAULT_TRANSACTION_ID = process.env.VITE_DEFAULT_TRANSACTION_ID;
 
-export default {
+const meta: Meta<ElementProps<typeof TransactionsDetailsComponent>> = {
     title: 'screens/TransactionDetails',
     render: (args, context) => {
         if (context.loaded.data) {
@@ -15,7 +15,8 @@ export default {
         }
         return <Container type={'transactionDetails'} componentConfiguration={args} context={context} />;
     },
-} satisfies Meta<ElementProps<typeof TransactionsDetailsComponent>>;
+};
+export default meta;
 
 export const Basic: ElementStory<typeof TransactionsDetailsComponent> = {
     args: {

@@ -16,12 +16,14 @@ interface ILegalEntityScreen {
     legalEntityProps: LegalEntityDetailsProps;
 }
 
-export default {
+const meta: Meta<ILegalEntityScreen> = {
     title: 'screens/LegalEntity',
     render: (args, context) => {
         return <Container type={'legalEntityDetails'} componentConfiguration={args.legalEntityProps} context={context} />;
     },
-} satisfies Meta<ILegalEntityScreen>;
+};
+export default meta;
+
 export const OrganizationNoTI: StoryObj<ILegalEntityScreen> = {
     args: {
         legalEntityProps: { legalEntity: LEGAL_ENTITY_ORGANIZATION },

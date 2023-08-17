@@ -6,7 +6,7 @@ import { ElementProps, ElementStory } from '../utils/types';
 import { Container } from '../utils/Container';
 import { BASIC_TRANSACTIONS_LIST } from '../../../../../mocks';
 
-export default {
+const meta: Meta<ElementProps<typeof TransactionsComponent>> = {
     title: 'screens/Transactions',
     argTypes: {
         onUpdateTransactions: disableControls,
@@ -21,7 +21,8 @@ export default {
         }
         return <Container type={'transactionList'} componentConfiguration={args} context={context} />;
     },
-} satisfies Meta<ElementProps<typeof TransactionsComponent>>;
+};
+export default meta;
 
 export const Basic: ElementStory<typeof TransactionsComponent> = {
     args: {

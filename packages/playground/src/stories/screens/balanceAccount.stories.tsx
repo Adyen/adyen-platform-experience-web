@@ -7,7 +7,7 @@ import { BALANCE_ACCOUNT_DETAILS_1 } from '../../../../../mocks';
 
 const DEFAULT_BALANCE_ACCOUNT = process.env.VITE_DEFAULT_BALANCE_ACCOUNT_ID;
 
-export default {
+const meta: Meta<ElementProps<typeof BalanceAccountComponent>> = {
     title: 'screens/BalanceAccount',
     render: (args, context) => {
         if (context.loaded.data) {
@@ -15,7 +15,8 @@ export default {
         }
         return <Container type={'balanceAccount'} componentConfiguration={args} context={context} />;
     },
-} satisfies Meta<ElementProps<typeof BalanceAccountComponent>>;
+};
+export default meta;
 
 export const Basic: ElementStory<typeof BalanceAccountComponent> = {
     args: {
