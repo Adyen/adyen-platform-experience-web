@@ -125,8 +125,8 @@ export type TimeSliceFactory = {
 };
 
 export type TimeFrameFactory = {
-    (size: TimeFrameSize): TimeFrame;
-    readonly annual: (size: TimeFrameSize) => TimeFrame;
+    (size?: TimeFrameSize): TimeFrame;
+    readonly annual: (size?: TimeFrameSize) => TimeFrame;
     readonly cursor: Readonly<{
         BACKWARD: typeof CURSOR_BACKWARD;
         BLOCK_END: typeof CURSOR_BLOCK_END;

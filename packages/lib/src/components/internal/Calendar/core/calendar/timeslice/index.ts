@@ -1,4 +1,4 @@
-import __TimeSlice__ from './base/TimeSlice';
+import __TimeSlice__ from './TimeSlice';
 import { RANGE_FROM, RANGE_TO } from '../constants';
 import { TimeSlice, TimeSliceFactory } from '../types';
 import { struct } from '../../shared/utils';

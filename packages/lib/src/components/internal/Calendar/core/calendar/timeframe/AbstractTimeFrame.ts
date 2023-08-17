@@ -1,4 +1,5 @@
 import {
+    $now,
     CURSOR_BACKWARD,
     CURSOR_BLOCK_END,
     CURSOR_BLOCK_START,
@@ -10,7 +11,6 @@ import {
     CURSOR_PREV_BLOCK,
     CURSOR_UPWARD,
     FIRST_WEEK_DAYS,
-    NOW,
     SELECTION_COLLAPSE,
     SELECTION_FARTHEST,
     SELECTION_FROM,
@@ -19,7 +19,7 @@ import {
     SHIFT_BLOCK,
     SHIFT_FRAME,
     SHIFT_PERIOD,
-} from '../../constants';
+} from '../constants';
 import type {
     FirstWeekDay,
     Time,
@@ -30,12 +30,12 @@ import type {
     TimeFrameSize,
     TimeSlice,
     WeekDay,
-} from '../../types';
-import { SLICE_UNBOUNDED } from '../../timeslice';
+} from '../types';
+import { SLICE_UNBOUNDED } from '../timeslice';
 import { downsizeTimeFrame, getWeekendDays, resolveTimeFrameBlockSize } from './utils';
-import { clamp, isBitSafeInteger, isInfinite, mid, mod } from '../../../shared/utils';
-import { Watchable } from '../../../shared/watchable/types';
-import watchable from '../../../shared/watchable';
+import { clamp, isBitSafeInteger, isInfinite, mid, mod } from '../../shared/utils';
+import { Watchable } from '../../shared/watchable/types';
+import watchable from '../../shared/watchable';
 
 export default abstract class __AbstractTimeFrame__ {
     #cursorBlockIndex: number = 0;
@@ -58,7 +58,7 @@ export default abstract class __AbstractTimeFrame__ {
     #maxBlockSize: TimeFrameSize = 12;
     #numberOfUnitsInFrame: number = 0;
 
-    #watchable?: Watchable<typeof NOW>;
+    #watchable?: Watchable<typeof $now>;
 
     protected cursorOffset?: number;
     protected origin?: number;
@@ -85,7 +85,7 @@ export default abstract class __AbstractTimeFrame__ {
         this.firstWeekDay = 0;
         this.timeslice = SLICE_UNBOUNDED;
         this.size = size;
-        this.#watchable = watchable(NOW);
+        this.#watchable = watchable($now);
     }
 
     get cursor() {
@@ -210,7 +210,7 @@ export default abstract class __AbstractTimeFrame__ {
     }
 
     get watchable() {
-        return this.#watchable as Watchable<typeof NOW>;
+        return this.#watchable as Watchable<typeof $now>;
     }
 
     get width() {

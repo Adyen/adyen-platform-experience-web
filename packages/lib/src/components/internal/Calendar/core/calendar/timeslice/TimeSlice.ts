@@ -1,6 +1,6 @@
-import { RANGE_FROM, RANGE_TO } from '../../constants';
-import { Time, TimeFrameRangeEdge } from '../../types';
-import { computeTimestampOffset, getEdgesDistance } from '../../utils';
+import { RANGE_FROM, RANGE_TO } from '../constants';
+import { Time, TimeFrameRangeEdge } from '../types';
+import { computeTimestampOffset, getEdgesDistance } from '../utils';
 
 export default class __TimeSlice__ {
     readonly #numberOfMonths: number = Infinity;

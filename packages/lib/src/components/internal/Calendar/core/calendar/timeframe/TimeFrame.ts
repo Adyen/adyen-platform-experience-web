@@ -1,9 +1,10 @@
 import __AbstractTimeFrame__ from './AbstractTimeFrame';
-import { DAY_MS } from '../../constants';
-import { Month, MonthDays, Time, TimeFlag, TimeFrameBlock, TimeFrameSelection, TimeFrameSize, TimeSlice, WeekDay } from '../../types';
-import today from '../../today';
-import { computeTimestampOffset, getEdgesDistance, getMonthDays } from '../../utils';
-import { isBitSafeInteger, struct, structFrom } from '../../../shared/utils';
+import { DAY_MS } from '../constants';
+import { Month, MonthDays, Time, TimeFlag, TimeFrameBlock, TimeFrameSelection, TimeFrameSize, TimeSlice, WeekDay } from '../types';
+import today from '../today';
+import { computeTimestampOffset, getEdgesDistance, getMonthDays } from '../utils';
+import { immutableProxyHandlers } from '../../shared/constants';
+import { isBitSafeInteger, struct, structFrom } from '../../shared/utils';
 
 export default class __TimeFrame__ extends __AbstractTimeFrame__ {
     protected fromTimestamp!: number;
@@ -41,13 +42,14 @@ export default class __TimeFrame__ extends __AbstractTimeFrame__ {
 
     protected getFrameBlockByIndex(blockIndex: number): TimeFrameBlock {
         const [monthDays, month, year] = getMonthDays(this.origin, this.originYear, blockIndex);
-        const innerStartIndex = blockIndex > 0 ? this.getFrameBlockByIndex(blockIndex - 1).inner.to : this.originMonthFirstDayOffset;
+        const innerStartIndex = blockIndex > 0 ? this.getFrameBlockByIndex(blockIndex - 1).inner.to + 1 : this.originMonthFirstDayOffset;
         const innerEndIndex = innerStartIndex + monthDays - 1;
         const outerStartIndex = Math.floor(innerStartIndex / 7) * 7;
         const outerEndAfterIndex = Math.ceil((innerEndIndex + 1) / 7) * 7;
         const numberOfUnits = outerEndAfterIndex - outerStartIndex;
 
         const proxyForIndexPropertyAccess = new Proxy(struct(), {
+            ...immutableProxyHandlers,
             get: (target: {}, property: string | symbol, receiver: {}) => {
                 if (typeof property === 'string') {
                     const offset = +property;
@@ -87,7 +89,6 @@ export default class __TimeFrame__ extends __AbstractTimeFrame__ {
                 }
                 return Reflect.get(target, property, receiver);
             },
-            set: () => true,
         });
 
         return structFrom(proxyForIndexPropertyAccess, {

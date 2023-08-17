@@ -1,8 +1,9 @@
 import __AbstractTimeFrame__ from './AbstractTimeFrame';
-import { YEAR_MONTHS } from '../../constants';
-import { Time, TimeFlag, TimeFrameBlock, TimeFrameSelection, TimeSlice } from '../../types';
-import { computeTimestampOffset, getEdgesDistance } from '../../utils';
-import { isBitSafeInteger, struct, structFrom } from '../../../shared/utils';
+import { YEAR_MONTHS } from '../constants';
+import { Time, TimeFlag, TimeFrameBlock, TimeFrameSelection, TimeSlice } from '../types';
+import { computeTimestampOffset, getEdgesDistance } from '../utils';
+import { immutableProxyHandlers } from '../../shared/constants';
+import { isBitSafeInteger, struct, structFrom } from '../../shared/utils';
 
 export default class __AnnualTimeFrame__ extends __AbstractTimeFrame__ {
     #fromTimestamp!: number;
@@ -50,6 +51,7 @@ export default class __AnnualTimeFrame__ extends __AbstractTimeFrame__ {
         });
 
         const proxyForIndexPropertyAccess = new Proxy(struct(), {
+            ...immutableProxyHandlers,
             get: (target: {}, property: string | symbol, receiver: {}) => {
                 if (typeof property === 'string') {
                     const offset = +property;
@@ -84,7 +86,6 @@ export default class __AnnualTimeFrame__ extends __AbstractTimeFrame__ {
                 }
                 return Reflect.get(target, property, receiver);
             },
-            set: () => true,
         });
 
         return structFrom(proxyForIndexPropertyAccess, {

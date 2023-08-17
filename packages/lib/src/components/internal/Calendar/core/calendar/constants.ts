@@ -1,10 +1,11 @@
-export const NOW = {
+export const $now = {
     get current() {
         return performance.now();
     },
 };
 
 export const DAY_MS = 86400000;
+export const DAY_OF_WEEK_FORMATS = ['narrow', 'short', 'long'] as const;
 export const FIRST_WEEK_DAYS = [0, 1, 6] as const;
 export const FRAME_SIZES = [1, 2, 3, 4, 6, 12] as const;
 export const WEEKEND_DAYS_SEED = [0, 1] as const;
