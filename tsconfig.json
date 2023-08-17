@@ -12,7 +12,8 @@
         "noUncheckedIndexedAccess": true,
         "lib": ["dom", "esnext"],
         "stripInternal": true,
-        "importHelpers": true
+        "importHelpers": true,
+        "types": ["node"]
     },
     "files": ["packages/lib/src/declarations/scss.d.ts", "packages/lib/src/declarations/whatwg-fetch.d.ts"]
 }
