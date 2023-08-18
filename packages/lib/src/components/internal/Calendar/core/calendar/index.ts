@@ -1,4 +1,3 @@
-import { FirstWeekDay, TimeFlag, TimeFrameCursor, TimeFrameSize, TimeSlice } from './types';
 import {
     CURSOR_BACKWARD,
     CURSOR_BLOCK_END,
@@ -22,99 +21,90 @@ import {
     SHIFT_FRAME,
     SHIFT_PERIOD,
 } from './constants';
-import { noop, pickFromCollection, struct, structFrom } from '../shared/utils';
-import { Indexed } from '../shared/indexed/types';
-import indexed from '../shared/indexed';
-import syncEffectCallback from '@src/utils/syncEffectCallback';
-import __AbstractTimeFrame__ from './timeframe/AbstractTimeFrame';
-import __AnnualTimeFrame__ from './timeframe/AnnualTimeFrame';
-import __TimeFrame__ from './timeframe/TimeFrame';
+import {
+    CalendarBlock,
+    CalendarBlockCellData,
+    CalendarConfig,
+    CalendarDayOfWeekData,
+    CalendarFactory,
+    IndexedCalendarBlock,
+    TimeFlag,
+    TimeFrameCursor,
+} from './types';
+import { AnnualTimeFrame, DefaultTimeFrame, TimeFrame } from './timeframe';
 import timeslice, { sinceNow, SLICE_UNBOUNDED, untilNow } from './timeslice';
+import { boolify, noop, pickFromCollection, struct, structFrom } from '../shared/utils';
+import { Indexed } from '../shared/indexed/types';
+import { WatchAtoms, WatchCallable } from '../shared/watchable/types';
+import indexed from '../shared/indexed';
+import watchable from '../shared/watchable';
+import syncEffectCallback from '@src/utils/syncEffectCallback';
 
-type CalendarConfig = {
-    blocks?: TimeFrameSize;
-    firstWeekDay?: FirstWeekDay;
-    locale?: string;
-    minified?: boolean;
-    timeslice?: TimeSlice;
-    withMinimumHeight?: boolean;
-    withRangeSelection?: boolean;
-};
-
-type CalendarBlock = {
-    readonly datetime: string;
-    readonly label: string;
-    readonly month: number;
-    readonly year: number;
-};
-
-type CalendarBlockCellData = readonly [string, string, number];
-type CalendarDayOfWeekData = readonly [string, string, string];
-type IndexedCalendarBlock = Indexed<CalendarBlockCellData> & CalendarBlock;
-
-const calendar = (watch?: (...args: any[]) => any) => {
-    let blocks: CalendarConfig['blocks'];
+const calendar = ((watchCallback?: WatchCallable<any>) => {
     let daysOfWeek: Indexed<CalendarDayOfWeekData>;
-    let firstWeekDay: CalendarConfig['firstWeekDay'];
-    let frame: __AbstractTimeFrame__;
-    let frameBlocksCached: IndexedCalendarBlock[] = [];
-    let locale: string;
-    let minified: CalendarConfig['minified'] = false;
-    let shiftFrame: __AbstractTimeFrame__['shiftFrame'];
+    let frame: TimeFrame;
+    let shiftFrame: TimeFrame['shiftFrame'];
     let unwatch: () => void;
+    let unwatchConfig: () => void;
 
-    // const currentConfig = {
-    //     withMinimumHeight: true,
-    //     withRangeSelection: false,
-    // };
+    let _config = {} as CalendarConfig;
+    let _frameBlocksCached = [] as IndexedCalendarBlock[];
+
+    const configWatchable = watchable({
+        blocks: () => _config?.blocks,
+        firstWeekDay: () => _config?.firstWeekDay,
+        locale: () => _config?.locale,
+        minified: () => _config?.minified,
+        timeslice: () => _config?.timeslice,
+        withMinimumHeight: () => _config?.withMinimumHeight,
+        withRangeSelection: () => _config?.withRangeSelection,
+    } as WatchAtoms<CalendarConfig>);
 
     const indexedFrameBlocks = indexed(
         () => frame?.size ?? 0,
         index => {
-            if (!frameBlocksCached[index]) {
+            if (!_frameBlocksCached[index]) {
                 const block = frame?.getFrameBlockAtIndex(index);
 
                 if (block) {
                     const date = new Date(`${block.year}-${1 + block.month}-1`);
 
-                    frameBlocksCached[index] = indexed<CalendarBlockCellData, CalendarBlock>(
+                    _frameBlocksCached[index] = indexed<CalendarBlockCellData, CalendarBlock>(
                         {
-                            datetime: { value: date.toLocaleDateString() },
-                            label: { value: date.toLocaleDateString(locale, { month: minified ? undefined : 'short', year: 'numeric' }) },
+                            datetime: { value: date.toISOString().slice(0, 10) },
+                            label: {
+                                value: date.toLocaleDateString(_config.locale, { month: _config.minified ? undefined : 'short', year: 'numeric' }),
+                            },
                             length: { value: block.outer.units },
                             month: { value: block.month },
                             year: { value: block.year },
                         },
                         index => {
                             const [timestamp, flags] = block[index] as (typeof block)[number];
-                            const date = new Date(timestamp);
+                            const date = new Date(new Date(timestamp).setHours(12)).toISOString();
 
-                            return [
-                                Number(date.toISOString().replace(/^(?:0[1-9]|[12][0-9]|3[01])/g, '')).toLocaleString(locale),
-                                date.toLocaleDateString(),
-                                flags as number,
-                            ] as const;
+                            return [Number(date.slice(8, 10)).toLocaleString(_config.locale), date.slice(0, 10), flags as number] as const;
                         }
                     );
                 }
             }
-            return frameBlocksCached[index];
+            return _frameBlocksCached[index];
         }
     );
 
     const watchEffect = syncEffectCallback(
         (() => {
-            let _firstWeekDay: FirstWeekDay;
+            let _firstWeekDay = _config.firstWeekDay ?? 0;
             let _daysOfWeekCached: (readonly [string, string, string])[] = [];
             let _locale: string;
 
             return () => {
-                if (!watch) return;
+                if (!watchCallback) return;
 
-                frameBlocksCached.length = 0;
+                _frameBlocksCached.length = 0;
 
-                if (!daysOfWeek || _firstWeekDay !== firstWeekDay || _locale !== locale) {
-                    _firstWeekDay = firstWeekDay as FirstWeekDay;
+                if (!daysOfWeek || _firstWeekDay !== (_config.firstWeekDay ?? 0) || _locale !== _config.locale) {
+                    _firstWeekDay = _config.firstWeekDay ?? 0;
                     _daysOfWeekCached.length = 0;
 
                     const originDate = new Date(frame?.getFrameBlockAtIndex(0)?.[0]?.[0] as number);
@@ -126,7 +116,7 @@ const calendar = (watch?: (...args: any[]) => any) => {
 
                             if (!isNaN(+date)) {
                                 _daysOfWeekCached[index] = Object.freeze(
-                                    DAY_OF_WEEK_FORMATS.map(format => date.toLocaleDateString(locale, { weekday: format }))
+                                    DAY_OF_WEEK_FORMATS.map(format => date.toLocaleDateString(_config.locale, { weekday: format }))
                                 ) as CalendarDayOfWeekData;
                             }
                         }
@@ -134,39 +124,56 @@ const calendar = (watch?: (...args: any[]) => any) => {
                     });
                 }
 
-                watch();
+                watchCallback();
             };
         })()
     );
 
-    const watchCallback = watchEffect(noop);
-
     let configure = watchEffect((config: CalendarConfig): void => {
-        const _minified = typeof config.minified === 'boolean' ? config.minified : minified;
+        _config = {
+            ..._config,
+            ...config,
+            blocks: pickFromCollection(FRAME_SIZES, _config.blocks, config.blocks),
+            firstWeekDay: pickFromCollection(FIRST_WEEK_DAYS, _config.firstWeekDay, config.firstWeekDay),
+            locale: config.locale ?? _config.locale ?? 'en',
+            minified: boolify(config.minified, _config.minified),
+            withMinimumHeight: boolify(config.withMinimumHeight, _config.withMinimumHeight),
+            withRangeSelection: boolify(config.withRangeSelection, _config.withRangeSelection),
+        };
 
-        if (!frame || _minified !== minified) {
-            unwatch?.();
-            frame = (minified = _minified) ? new __AnnualTimeFrame__() : new __TimeFrame__();
-            unwatch = frame.watchable.watch(watchCallback);
+        configWatchable.notify();
+
+        if (!unwatchConfig) {
+            unwatchConfig = configWatchable.watch(
+                (() => {
+                    let minified = !!_config.minified;
+                    const watchCallback = watchEffect(noop);
+
+                    return () => {
+                        if (!frame || minified !== _config.minified) {
+                            unwatch?.();
+                            frame = (minified = _config.minified as boolean) ? new AnnualTimeFrame() : new DefaultTimeFrame();
+                            shiftFrame = frame.shiftFrame.bind(frame);
+                            unwatch = frame.watchable.watch(watchCallback);
+                        }
+
+                        frame.timeslice = _config.timeslice;
+                        frame.firstWeekDay = _config.firstWeekDay;
+                        frame.size = _config.blocks;
+
+                        watchCallback();
+                    };
+                })()
+            );
         }
-
-        blocks = pickFromCollection(FRAME_SIZES, blocks, config.blocks);
-        firstWeekDay = pickFromCollection(FIRST_WEEK_DAYS, firstWeekDay, config.firstWeekDay);
-        locale = config.locale ?? 'en';
-
-        frame.timeslice = config.timeslice;
-        frame.firstWeekDay = firstWeekDay;
-        frame.size = blocks;
-
-        shiftFrame = frame.shiftFrame.bind(frame);
-
-        watchCallback();
     });
 
     let disconnect = () => {
         unwatch?.();
-        configure = disconnect = unwatch = shiftFrame = noop;
-        frame = null as unknown as __AbstractTimeFrame__;
+        unwatchConfig();
+        configure = disconnect = shiftFrame = noop;
+        unwatch = unwatchConfig = undefined as unknown as typeof unwatch;
+        frame = undefined as unknown as TimeFrame;
     };
 
     return struct({
@@ -175,18 +182,19 @@ const calendar = (watch?: (...args: any[]) => any) => {
         grid: {
             value: structFrom(indexedFrameBlocks, {
                 cursor: {
-                    get: () => frame?.cursor,
+                    get: () => frame?.cursor ?? -1,
                     set: (position: TimeFrameCursor | number) => {
                         frame && frame.shiftFrameCursor(position);
                     },
                 },
                 daysOfWeek: { get: () => daysOfWeek },
-                rowspan: { get: () => frame?.width },
+                // highlight: {},
+                rowspan: { get: () => frame?.width ?? 0 },
                 shift: { get: () => shiftFrame },
             }),
         },
-    });
-};
+    }) as ReturnType<CalendarFactory>;
+}) as CalendarFactory;
 
 export default Object.defineProperties(calendar, {
     cursor: {
@@ -196,10 +204,10 @@ export default Object.defineProperties(calendar, {
             BLOCK_START: { value: CURSOR_BLOCK_START },
             DOWNWARD: { value: CURSOR_DOWNWARD },
             FORWARD: { value: CURSOR_FORWARD },
-            LINE_END: { value: CURSOR_LINE_END },
-            LINE_START: { value: CURSOR_LINE_START },
             NEXT_BLOCK: { value: CURSOR_NEXT_BLOCK },
             PREV_BLOCK: { value: CURSOR_PREV_BLOCK },
+            ROW_END: { value: CURSOR_LINE_END },
+            ROW_START: { value: CURSOR_LINE_START },
             UPWARD: { value: CURSOR_UPWARD },
         }),
     },

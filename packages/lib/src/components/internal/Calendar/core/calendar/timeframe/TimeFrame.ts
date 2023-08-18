@@ -145,7 +145,7 @@ export default class __TimeFrame__ extends __AbstractTimeFrame__ {
         const date = new Date(this.currentTimestamp);
         const firstDayOffset = ((8 - ((date.getDate() - date.getDay() + this.firstWeekDay) % 7)) % 7) as WeekDay;
 
-        this.cursorOffset = date.getDate();
+        this.cursorOffset = date.getDate() - 1;
         this.origin = date.getMonth() as Month;
         this.originYear = date.getFullYear();
         this.originMonthFirstDayOffset = firstDayOffset;

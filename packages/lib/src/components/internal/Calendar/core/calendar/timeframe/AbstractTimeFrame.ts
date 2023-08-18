@@ -1,5 +1,4 @@
 import {
-    $now,
     CURSOR_BACKWARD,
     CURSOR_BLOCK_END,
     CURSOR_BLOCK_START,
@@ -33,9 +32,13 @@ import type {
 } from '../types';
 import { SLICE_UNBOUNDED } from '../timeslice';
 import { downsizeTimeFrame, getWeekendDays, resolveTimeFrameBlockSize } from './utils';
-import { clamp, isBitSafeInteger, isInfinite, mid, mod } from '../../shared/utils';
+import { clamp, isBitSafeInteger, isInfinite, mid, mod, struct } from '../../shared/utils';
 import { Watchable } from '../../shared/watchable/types';
 import watchable from '../../shared/watchable';
+
+const $now = struct({
+    current: { get: () => performance.now() },
+}) as { readonly current: number };
 
 export default abstract class __AbstractTimeFrame__ {
     #cursorBlockIndex: number = 0;
