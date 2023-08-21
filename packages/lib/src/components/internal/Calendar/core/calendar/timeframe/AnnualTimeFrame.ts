@@ -6,12 +6,12 @@ import { immutableProxyHandlers } from '../../shared/constants';
 import { isBitSafeInteger, struct, structFrom } from '../../shared/utils';
 
 export default class __AnnualTimeFrame__ extends __AbstractTimeFrame__ {
-    #fromTimestamp!: number;
-    #toTimestamp!: number;
-    #selectionStartDayTimestamp?: number;
-    #selectionEndDayTimestamp?: number;
+    protected fromTimestamp!: number;
+    protected toTimestamp!: number;
+    protected selectionStartDayTimestamp?: number;
+    protected selectionEndDayTimestamp?: number;
 
-    protected declare currentTimestamp: number;
+    protected declare monthDateTimestamp: number;
     protected declare origin: number;
     protected declare timestamp: number;
 
@@ -31,8 +31,8 @@ export default class __AnnualTimeFrame__ extends __AbstractTimeFrame__ {
     }
 
     #updateSelectionTimestamps() {
-        this.#selectionStartDayTimestamp = this.#getStartOfMonthForTimestamp(this.selectionStart);
-        this.#selectionEndDayTimestamp = this.#getStartOfMonthForTimestamp(this.selectionEnd);
+        this.selectionStartDayTimestamp = this.#getStartOfMonthForTimestamp(this.selectionStart);
+        this.selectionEndDayTimestamp = this.#getStartOfMonthForTimestamp(this.selectionEnd);
     }
 
     protected getBlockTimestampOffsetFromOrigin(timestamp: number) {
@@ -57,7 +57,7 @@ export default class __AnnualTimeFrame__ extends __AbstractTimeFrame__ {
                     const offset = +property;
                     if (isBitSafeInteger(offset) && offset >= 0 && offset < numberOfUnits) {
                         const index = startIndex + offset;
-                        const timestamp = new Date(this.timestamp).setMonth(index);
+                        const timestamp = this.index(index);
                         const lineIndex = index % this.lineWidth;
 
                         let flags = TimeFlag.WITHIN_BLOCK;
@@ -69,15 +69,15 @@ export default class __AnnualTimeFrame__ extends __AbstractTimeFrame__ {
                         if (lineIndex === 0) flags |= TimeFlag.LINE_START;
                         else if (lineIndex === this.lineWidth - 1) flags |= TimeFlag.LINE_END;
 
-                        if (timestamp >= this.#fromTimestamp && timestamp <= this.#toTimestamp) {
-                            if (timestamp === this.#fromTimestamp) flags |= TimeFlag.RANGE_START;
-                            if (timestamp === this.#toTimestamp) flags |= TimeFlag.RANGE_END;
+                        if (timestamp >= this.fromTimestamp && timestamp <= this.toTimestamp) {
+                            if (timestamp === this.fromTimestamp) flags |= TimeFlag.RANGE_START;
+                            if (timestamp === this.toTimestamp) flags |= TimeFlag.RANGE_END;
                             flags |= TimeFlag.WITHIN_RANGE;
                         }
 
-                        if (timestamp >= (this.#selectionStartDayTimestamp as number) && timestamp <= (this.#selectionEndDayTimestamp as number)) {
-                            if (timestamp === (this.#selectionStartDayTimestamp as number)) flags |= TimeFlag.SELECTION_START;
-                            if (timestamp === (this.#selectionEndDayTimestamp as number)) flags |= TimeFlag.SELECTION_END;
+                        if (timestamp >= (this.selectionStartDayTimestamp as number) && timestamp <= (this.selectionEndDayTimestamp as number)) {
+                            if (timestamp === (this.selectionStartDayTimestamp as number)) flags |= TimeFlag.SELECTION_START;
+                            if (timestamp === (this.selectionEndDayTimestamp as number)) flags |= TimeFlag.SELECTION_END;
                             flags |= TimeFlag.WITHIN_SELECTION;
                         }
 
@@ -104,29 +104,33 @@ export default class __AnnualTimeFrame__ extends __AbstractTimeFrame__ {
         return YEAR_MONTHS;
     }
 
-    protected shiftOrigin(offset: number) {
-        this.withOriginTimestamp(new Date(this.timestamp).setFullYear(this.origin + offset));
+    protected index(originIndexOffset: number) {
+        return new Date(this.timestamp).setMonth(originIndexOffset);
     }
 
-    protected updateCursorRangeOffsetsRelativeToOrigin(fromTimestamp: number, toTimestamp: number) {
-        this.minCursorOffsetRelativeToOrigin = 0 - (getEdgesDistance(fromTimestamp, this.currentTimestamp) + 1);
-        this.maxCursorOffsetRelativeToOrigin = getEdgesDistance(toTimestamp, this.currentTimestamp);
-    }
-
-    protected updateEdgeBlocksOffsetsRelativeToOrigin(fromTimestamp: number, toTimestamp: number) {
-        this.#fromTimestamp = this.#getStartOfMonthForTimestamp(fromTimestamp) as number;
-        this.#toTimestamp = this.#getStartOfMonthForTimestamp(toTimestamp) as number;
-        this.fromBlockOffsetFromOrigin = this.getBlockTimestampOffsetFromOrigin(fromTimestamp);
-        this.toBlockOffsetFromOrigin = this.getBlockTimestampOffsetFromOrigin(toTimestamp);
-        this.numberOfBlocks = Math.ceil((new Date(fromTimestamp).getMonth() + this.numberOfBlocks) / YEAR_MONTHS);
-    }
-
-    protected withOriginTimestamp(timestamp: number) {
-        this.currentTimestamp = timestamp - computeTimestampOffset(timestamp);
-        const date = new Date(this.currentTimestamp);
+    protected refreshOriginMetrics() {
+        const date = new Date(this.monthDateTimestamp);
         this.cursorOffset = date.getMonth();
         this.origin = date.getFullYear();
         this.timestamp = date.setMonth(0, 1);
+    }
+
+    protected shiftOrigin(offset: number) {
+        this.monthDateTimestamp = new Date(this.monthDateTimestamp).setFullYear(this.origin + offset);
+        this.refreshOriginMetrics();
+    }
+
+    protected updateCursorRangeOffsetsRelativeToOrigin(fromTimestamp: number, toTimestamp: number) {
+        this.minCursorOffsetRelativeToOrigin = 0 - getEdgesDistance(fromTimestamp, this.monthDateTimestamp);
+        this.maxCursorOffsetRelativeToOrigin = getEdgesDistance(toTimestamp, this.monthDateTimestamp);
+    }
+
+    protected updateEdgeBlocksOffsetsRelativeToOrigin(fromTimestamp: number, toTimestamp: number) {
+        this.fromTimestamp = this.#getStartOfMonthForTimestamp(fromTimestamp) as number;
+        this.toTimestamp = this.#getStartOfMonthForTimestamp(toTimestamp) as number;
+        this.fromBlockOffsetFromOrigin = this.getBlockTimestampOffsetFromOrigin(fromTimestamp);
+        this.toBlockOffsetFromOrigin = this.getBlockTimestampOffsetFromOrigin(toTimestamp);
+        this.numberOfBlocks = Math.ceil((new Date(fromTimestamp).getMonth() + this.numberOfBlocks) / YEAR_MONTHS);
     }
 
     updateSelection(time: Time, selection?: TimeFrameSelection) {

@@ -29,7 +29,7 @@ import {
     CalendarFactory,
     IndexedCalendarBlock,
     TimeFlag,
-    TimeFrameCursor,
+    TimeFrameShift,
 } from './types';
 import { AnnualTimeFrame, DefaultTimeFrame, TimeFrame } from './timeframe';
 import timeslice, { sinceNow, SLICE_UNBOUNDED, untilNow } from './timeslice';
@@ -39,6 +39,7 @@ import { WatchAtoms, WatchCallable } from '../shared/watchable/types';
 import indexed from '../shared/indexed';
 import watchable from '../shared/watchable';
 import syncEffectCallback from '@src/utils/syncEffectCallback';
+import { InteractionKeyCode } from '@src/components/types';
 
 const calendar = ((watchCallback?: WatchCallable<any>) => {
     let daysOfWeek: Indexed<CalendarDayOfWeekData>;
@@ -171,9 +172,48 @@ const calendar = ((watchCallback?: WatchCallable<any>) => {
     let disconnect = () => {
         unwatch?.();
         unwatchConfig();
-        configure = disconnect = shiftFrame = noop;
+        configure = disconnect = interaction = shiftFrame = noop as unknown as WatchCallable<any>;
         unwatch = unwatchConfig = undefined as unknown as typeof unwatch;
         frame = undefined as unknown as TimeFrame;
+    };
+
+    let interaction = (evt: Event): true | undefined => {
+        if (evt instanceof KeyboardEvent && evt.type === 'keydown') {
+            switch (evt.code) {
+                case InteractionKeyCode.ARROW_LEFT:
+                    frame.shiftFrameCursor(CURSOR_BACKWARD);
+                    break;
+                case InteractionKeyCode.ARROW_RIGHT:
+                    frame.shiftFrameCursor(CURSOR_FORWARD);
+                    break;
+                case InteractionKeyCode.ARROW_UP:
+                    frame.shiftFrameCursor(CURSOR_UPWARD);
+                    break;
+                case InteractionKeyCode.ARROW_DOWN:
+                    frame.shiftFrameCursor(CURSOR_DOWNWARD);
+                    break;
+                case InteractionKeyCode.HOME:
+                    frame.shiftFrameCursor(evt.ctrlKey ? CURSOR_BLOCK_START : CURSOR_LINE_START);
+                    break;
+                case InteractionKeyCode.END:
+                    frame.shiftFrameCursor(evt.ctrlKey ? CURSOR_BLOCK_END : CURSOR_LINE_END);
+                    break;
+                case InteractionKeyCode.PAGE_UP:
+                    frame.shiftFrameCursor(CURSOR_PREV_BLOCK);
+                    break;
+                case InteractionKeyCode.PAGE_DOWN:
+                    frame.shiftFrameCursor(CURSOR_NEXT_BLOCK);
+                    break;
+                case InteractionKeyCode.SPACE:
+                case InteractionKeyCode.ENTER:
+                    frame.updateSelection(frame.getTimestampAtIndex(frame.cursor));
+                    break;
+                default:
+                    return;
+            }
+
+            return true;
+        }
     };
 
     return struct({
@@ -181,16 +221,12 @@ const calendar = ((watchCallback?: WatchCallable<any>) => {
         disconnect: { value: () => disconnect() },
         grid: {
             value: structFrom(indexedFrameBlocks, {
-                cursor: {
-                    get: () => frame?.cursor ?? -1,
-                    set: (position: TimeFrameCursor | number) => {
-                        frame && frame.shiftFrameCursor(position);
-                    },
-                },
+                cursorIndex: { get: () => frame?.cursor ?? -1 },
                 daysOfWeek: { get: () => daysOfWeek },
                 // highlight: {},
+                interaction: { value: (evt: Event) => interaction(evt) },
                 rowspan: { get: () => frame?.width ?? 0 },
-                shift: { get: () => shiftFrame },
+                shift: { value: (shiftBy?: number, shiftType?: TimeFrameShift) => shiftFrame(shiftBy, shiftType) },
             }),
         },
     }) as ReturnType<CalendarFactory>;

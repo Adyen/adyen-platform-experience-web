@@ -31,14 +31,11 @@ import type {
     WeekDay,
 } from '../types';
 import { SLICE_UNBOUNDED } from '../timeslice';
+import { computeTimestampOffset } from '../utils';
 import { downsizeTimeFrame, getWeekendDays, resolveTimeFrameBlockSize } from './utils';
-import { clamp, isBitSafeInteger, isInfinite, mid, mod, struct } from '../../shared/utils';
+import { clamp, isBitSafeInteger, isInfinite, mid, mod } from '../../shared/utils';
 import { Watchable } from '../../shared/watchable/types';
 import watchable from '../../shared/watchable';
-
-const $now = struct({
-    current: { get: () => performance.now() },
-}) as { readonly current: number };
 
 export default abstract class __AbstractTimeFrame__ {
     #cursorBlockIndex: number = 0;
@@ -61,7 +58,7 @@ export default abstract class __AbstractTimeFrame__ {
     #maxBlockSize: TimeFrameSize = 12;
     #numberOfUnitsInFrame: number = 0;
 
-    #watchable?: Watchable<typeof $now>;
+    #watchable!: Watchable<{ readonly now: number }>;
 
     protected cursorOffset?: number;
     protected origin?: number;
@@ -71,7 +68,13 @@ export default abstract class __AbstractTimeFrame__ {
     protected minCursorOffsetRelativeToOrigin: number = -Infinity;
     protected maxCursorOffsetRelativeToOrigin: number = Infinity;
     protected numberOfBlocks: number = Infinity;
+    protected monthDateTimestamp?: number;
     protected timestamp?: number;
+
+    protected monthStartTimestamp?: number;
+    protected originMonthFirstDayOffset?: WeekDay;
+    protected originStartDate?: number;
+    protected originYear?: number;
 
     protected abstract lineWidth: number;
 
@@ -79,16 +82,17 @@ export default abstract class __AbstractTimeFrame__ {
     protected abstract getFrameBlockByIndex(blockIndex: number): TimeFrameBlock;
     protected abstract getStartTimestampForFrameBlockAtOffset(blockOffset: number): number;
     protected abstract getUnitsForFrameBlockBeforeOrigin(): number;
+    protected abstract index(originIndexOffset: number): number;
+    protected abstract refreshOriginMetrics(): void;
     protected abstract shiftOrigin(offset: number): void;
     protected abstract updateCursorRangeOffsetsRelativeToOrigin(fromTimestamp: number, toTimestamp: number): void;
     protected abstract updateEdgeBlocksOffsetsRelativeToOrigin(fromTimestamp: number, toTimestamp: number): void;
-    protected abstract withOriginTimestamp(timestamp: number): void;
 
     constructor(size?: TimeFrameSize) {
         this.firstWeekDay = 0;
         this.timeslice = SLICE_UNBOUNDED;
         this.size = size;
-        this.#watchable = watchable($now);
+        this.#watchable = watchable({ now: () => performance.now() });
     }
 
     get cursor() {
@@ -105,7 +109,7 @@ export default abstract class __AbstractTimeFrame__ {
             if (this.#firstWeekDay === (this.#firstWeekDay = day)) return;
 
             this.#daysOfWeekend = getWeekendDays(this.#firstWeekDay);
-            this.#withOriginTimestamp(this.timestamp as number);
+            this.#withOriginTimestamp();
             this.#refreshFrame();
         } else this.firstWeekDay = 0;
     }
@@ -114,12 +118,16 @@ export default abstract class __AbstractTimeFrame__ {
         return this.#getFrameBlockAtIndex;
     }
 
+    get getTimestampAtIndex() {
+        return this.index;
+    }
+
     get selectionEnd(): number | undefined {
         return this.#selectionEndTimestamp;
     }
 
     set selectionEnd(time: Time | null | undefined) {
-        const selectionTime = time == undefined ? (this.timestamp as number) : time;
+        const selectionTime = time == undefined ? (this.monthDateTimestamp as number) : time;
         this.updateSelection(selectionTime, SELECTION_TO);
     }
 
@@ -128,7 +136,7 @@ export default abstract class __AbstractTimeFrame__ {
     }
 
     set selectionStart(time: Time | null | undefined) {
-        const selectionTime = time == undefined ? (this.timestamp as number) : time;
+        const selectionTime = time == undefined ? (this.monthDateTimestamp as number) : time;
         this.updateSelection(selectionTime, SELECTION_FROM);
     }
 
@@ -143,10 +151,15 @@ export default abstract class __AbstractTimeFrame__ {
 
         const origin = (this.origin as number) + this.#cursorBlockIndex;
 
-        const frameOffset =
+        let frameOffset =
             Math.floor(origin / nextBlockSize) * nextBlockSize -
             Math.floor(origin / this.#size) * this.#size -
             ((origin % this.#size) - this.#cursorBlockIndex);
+
+        const nextLastFrameBlockOffset = frameOffset + nextBlockSize;
+        const nextToBlockOffset = this.toBlockOffsetFromOrigin - frameOffset;
+
+        frameOffset += Math.min(nextToBlockOffset, nextLastFrameBlockOffset) - nextLastFrameBlockOffset;
 
         this.#size = nextBlockSize;
         this.#shiftOrigin(frameOffset, true);
@@ -173,13 +186,13 @@ export default abstract class __AbstractTimeFrame__ {
             this.#selectionEndTimestamp = adjustedSelectionEndTimestamp;
         } else this.#selectionStartTimestamp = this.#selectionEndTimestamp = undefined;
 
-        if (this.timestamp === undefined) {
+        if (this.monthDateTimestamp === undefined) {
             this.#withOriginTimestamp(this.#getContainedTimestamp(Date.now()));
         } else {
-            const containedTimestamp = this.#getContainedTimestamp(this.timestamp);
+            const containedTimestamp = this.#getContainedTimestamp(this.monthDateTimestamp);
 
-            if (containedTimestamp !== this.timestamp) {
-                const timestamp = this.timestamp;
+            if (containedTimestamp !== this.monthDateTimestamp) {
+                const timestamp = this.monthDateTimestamp;
                 this.#withOriginTimestamp(containedTimestamp);
                 const blockOffset = this.getBlockTimestampOffsetFromOrigin(timestamp);
                 this.#cursorBlockIndex = mod(this.#cursorBlockIndex + blockOffset, this.#size);
@@ -213,7 +226,7 @@ export default abstract class __AbstractTimeFrame__ {
     }
 
     get watchable() {
-        return this.#watchable as Watchable<typeof $now>;
+        return this.#watchable;
     }
 
     get width() {
@@ -245,7 +258,7 @@ export default abstract class __AbstractTimeFrame__ {
         let timestamp = clamp(from, new Date(time).getTime(), to);
 
         if (isNaN(timestamp)) timestamp = mid(from, to);
-        if (isNaN(timestamp) || isInfinite(timestamp)) timestamp = clamp(from, this.timestamp as number, to);
+        if (isNaN(timestamp) || isInfinite(timestamp)) timestamp = clamp(from, this.monthDateTimestamp as number, to);
         return timestamp;
     }
 
@@ -270,8 +283,8 @@ export default abstract class __AbstractTimeFrame__ {
         this.#firstBlockStartIndex = firstBlock.inner.from;
         this.#lastBlockEndIndex = lastBlock.inner.to;
         this.#numberOfUnitsInFrame = lastBlock.outer.to;
-        this.#cursorIndex = this.#getClampedCursorIndex(this.#cursorBlockStartIndex + this.#cursorOffset);
-        this.#cursorOffset = this.#cursorIndex - this.#cursorBlockStartIndex;
+        this.#cursorOffset = this.#getClampedCursorIndex(this.#cursorOffset);
+        this.#cursorIndex = this.#cursorBlockStartIndex + this.#cursorOffset;
 
         this.#watchable?.notify();
     }
@@ -379,7 +392,7 @@ export default abstract class __AbstractTimeFrame__ {
 
         if (!isInfinite(this.#fromTimestamp) || !isInfinite(this.#toTimestamp)) {
             if (!isInfinite(this.#timeslice.span)) {
-                this.updateEdgeBlocksOffsetsRelativeToOrigin(this.#fromTimestamp, this.#toTimestamp);
+                this.updateEdgeBlocksOffsetsRelativeToOrigin(this.#timeslice.from, this.#timeslice.to);
             } else if (!isInfinite(this.#fromTimestamp)) this.fromBlockOffsetFromOrigin = 0;
             else if (!isInfinite(this.#toTimestamp)) this.toBlockOffsetFromOrigin = 0;
         }
@@ -388,8 +401,11 @@ export default abstract class __AbstractTimeFrame__ {
         this.#refreshFrame();
     }
 
-    #withOriginTimestamp(timestamp: number) {
-        this.withOriginTimestamp(timestamp);
+    #withOriginTimestamp(timestamp?: number) {
+        if (timestamp !== undefined) {
+            this.monthDateTimestamp = timestamp - computeTimestampOffset(timestamp);
+        }
+        this.refreshOriginMetrics();
         if (this.#cursorOffset === undefined) {
             this.#cursorOffset = this.cursorOffset || this.#cursorOffset || 0;
         }

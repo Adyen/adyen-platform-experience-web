@@ -4,7 +4,7 @@ import { Month, MonthDays, Time, TimeFlag, TimeFrameBlock, TimeFrameSelection, T
 import today from '../today';
 import { computeTimestampOffset, getEdgesDistance, getMonthDays } from '../utils';
 import { immutableProxyHandlers } from '../../shared/constants';
-import { isBitSafeInteger, struct, structFrom } from '../../shared/utils';
+import { isBitSafeInteger, isInfinite, struct, structFrom } from '../../shared/utils';
 
 export default class __TimeFrame__ extends __AbstractTimeFrame__ {
     protected fromTimestamp!: number;
@@ -12,11 +12,12 @@ export default class __TimeFrame__ extends __AbstractTimeFrame__ {
     protected selectionStartDayTimestamp?: number;
     protected selectionEndDayTimestamp?: number;
 
-    protected declare currentTimestamp: number;
+    protected declare monthStartTimestamp: number;
+    protected declare monthDateTimestamp: number;
+    protected declare origin: Month;
     protected declare originMonthFirstDayOffset: WeekDay;
     protected declare originStartDate: number;
     protected declare originYear: number;
-    protected declare origin: Month;
     protected declare timestamp: number;
 
     protected lineWidth = 7;
@@ -36,8 +37,8 @@ export default class __TimeFrame__ extends __AbstractTimeFrame__ {
     }
 
     protected getBlockTimestampOffsetFromOrigin(timestamp: number) {
-        const offset = getEdgesDistance(timestamp, this.timestamp);
-        return timestamp < this.timestamp ? 0 - offset : offset;
+        const offset = getEdgesDistance(timestamp, this.monthDateTimestamp);
+        return timestamp < this.monthDateTimestamp ? 0 - offset : offset;
     }
 
     protected getFrameBlockByIndex(blockIndex: number): TimeFrameBlock {
@@ -55,7 +56,7 @@ export default class __TimeFrame__ extends __AbstractTimeFrame__ {
                     const offset = +property;
                     if (isBitSafeInteger(offset) && offset >= 0 && offset < numberOfUnits) {
                         const index = outerStartIndex + offset;
-                        const timestamp = new Date(this.timestamp).setDate(this.originStartDate + index);
+                        const timestamp = this.index(index);
                         const weekDay = (index % this.lineWidth) as WeekDay;
 
                         let flags = timestamp === today.timestamp ? TimeFlag.TODAY : 0;
@@ -116,20 +117,40 @@ export default class __TimeFrame__ extends __AbstractTimeFrame__ {
     }
 
     protected getStartTimestampForFrameBlockAtOffset(blockOffset: number) {
-        return new Date(this.timestamp).setMonth(this.origin + blockOffset);
+        return new Date(this.monthStartTimestamp).setMonth(this.origin + blockOffset);
     }
 
     protected getUnitsForFrameBlockBeforeOrigin(): MonthDays {
         return getMonthDays(this.origin, this.originYear, -1)[0];
     }
 
+    protected index(originIndexOffset: number) {
+        return new Date(this.timestamp).setDate(this.originStartDate + originIndexOffset);
+    }
+
+    protected refreshOriginMetrics() {
+        const date = new Date(this.monthDateTimestamp);
+        const firstDayOffset = ((8 - ((date.getDate() - date.getDay() + this.firstWeekDay) % 7)) % 7) as WeekDay;
+
+        this.cursorOffset = date.getDate() - 1;
+        this.origin = date.getMonth() as Month;
+        this.originYear = date.getFullYear();
+        this.originMonthFirstDayOffset = firstDayOffset;
+        this.monthStartTimestamp = date.setDate(1);
+        this.timestamp = date.setDate(1 - firstDayOffset);
+        this.originStartDate = date.getDate();
+    }
+
     protected shiftOrigin(offset: number) {
-        this.withOriginTimestamp(new Date(this.currentTimestamp).setMonth(this.origin + offset));
+        this.monthDateTimestamp = new Date(this.monthDateTimestamp).setMonth(this.origin + offset);
+        this.refreshOriginMetrics();
     }
 
     protected updateCursorRangeOffsetsRelativeToOrigin(fromTimestamp: number, toTimestamp: number) {
-        this.minCursorOffsetRelativeToOrigin = Math.round((fromTimestamp - this.timestamp) / DAY_MS);
-        this.maxCursorOffsetRelativeToOrigin = Math.round((toTimestamp - this.timestamp) / DAY_MS);
+        this.minCursorOffsetRelativeToOrigin = isInfinite(fromTimestamp)
+            ? -Infinity
+            : Math.round((fromTimestamp - this.monthStartTimestamp) / DAY_MS);
+        this.maxCursorOffsetRelativeToOrigin = isInfinite(toTimestamp) ? Infinity : Math.round((toTimestamp - this.monthStartTimestamp) / DAY_MS);
     }
 
     protected updateEdgeBlocksOffsetsRelativeToOrigin(fromTimestamp: number, toTimestamp: number) {
@@ -138,19 +159,6 @@ export default class __TimeFrame__ extends __AbstractTimeFrame__ {
         this.fromBlockOffsetFromOrigin = this.getBlockTimestampOffsetFromOrigin(fromTimestamp);
         this.toBlockOffsetFromOrigin = this.getBlockTimestampOffsetFromOrigin(toTimestamp);
         this.numberOfBlocks = this.toBlockOffsetFromOrigin - this.fromBlockOffsetFromOrigin + 1;
-    }
-
-    protected withOriginTimestamp(timestamp: number) {
-        this.currentTimestamp = timestamp - computeTimestampOffset(timestamp);
-        const date = new Date(this.currentTimestamp);
-        const firstDayOffset = ((8 - ((date.getDate() - date.getDay() + this.firstWeekDay) % 7)) % 7) as WeekDay;
-
-        this.cursorOffset = date.getDate() - 1;
-        this.origin = date.getMonth() as Month;
-        this.originYear = date.getFullYear();
-        this.originMonthFirstDayOffset = firstDayOffset;
-        this.timestamp = date.setDate(1 - firstDayOffset);
-        this.originStartDate = new Date(this.timestamp).getDate();
     }
 
     private updateSelectionTimestamps() {

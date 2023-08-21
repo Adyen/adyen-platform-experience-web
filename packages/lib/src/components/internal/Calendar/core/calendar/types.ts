@@ -123,8 +123,7 @@ export type CalendarDayOfWeekData = readonly [string, string, string];
 export type IndexedCalendarBlock = Indexed<CalendarBlockCellData> & CalendarBlock;
 
 export type CalendarGrid = Indexed<IndexedCalendarBlock> & {
-    get cursor(): number;
-    set cursor(shift: TimeFrameCursor | number);
+    readonly cursorIndex: number;
     readonly daysOfWeek: Indexed<CalendarDayOfWeekData>;
     // readonly highlight: {
     //     (time: Time, selection?: TimeFrameSelection): void;
@@ -135,6 +134,7 @@ export type CalendarGrid = Indexed<IndexedCalendarBlock> & {
     //     get to(): number | undefined;
     //     set to(time: Time | null | undefined);
     // };
+    readonly interaction: (evt: Event) => true | undefined;
     readonly rowspan: number;
     readonly shift: (offset?: number, shift?: TimeFrameShift) => void;
 };
