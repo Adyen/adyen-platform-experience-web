@@ -27,13 +27,14 @@ import {
     CalendarConfig,
     CalendarDayOfWeekData,
     CalendarFactory,
+    CalendarInitCallbacks,
     IndexedCalendarBlock,
     TimeFlag,
     TimeFrameShift,
 } from './types';
 import { AnnualTimeFrame, DefaultTimeFrame, TimeFrame } from './timeframe';
 import timeslice, { sinceNow, SLICE_UNBOUNDED, untilNow } from './timeslice';
-import { boolify, noop, pickFromCollection, struct, structFrom } from '../shared/utils';
+import { boolify, isBitSafeInteger, noop, pickFromCollection, struct, structFrom } from '../shared/utils';
 import { Indexed } from '../shared/indexed/types';
 import { WatchAtoms, WatchCallable } from '../shared/watchable/types';
 import indexed from '../shared/indexed';
@@ -41,7 +42,9 @@ import watchable from '../shared/watchable';
 import syncEffectCallback from '@src/utils/syncEffectCallback';
 import { InteractionKeyCode } from '@src/components/types';
 
-const calendar = ((watchCallback?: WatchCallable<any>) => {
+const calendar = ((init = {} as CalendarInitCallbacks) => {
+    const { indexFromEvent, watch: watchCallback } = (typeof init === 'function' ? { watch: init } : init) as CalendarInitCallbacks;
+
     let daysOfWeek: Indexed<CalendarDayOfWeekData>;
     let frame: TimeFrame;
     let shiftFrame: TimeFrame['shiftFrame'];
@@ -100,7 +103,7 @@ const calendar = ((watchCallback?: WatchCallable<any>) => {
             let _locale: string;
 
             return () => {
-                if (!watchCallback) return;
+                if (typeof watchCallback !== 'function') return;
 
                 _frameBlocksCached.length = 0;
 
@@ -177,8 +180,8 @@ const calendar = ((watchCallback?: WatchCallable<any>) => {
         frame = undefined as unknown as TimeFrame;
     };
 
-    let interaction = (evt: Event): true | undefined => {
-        if (evt instanceof KeyboardEvent && evt.type === 'keydown') {
+    let interaction = (evt: Event, touchTarget?: any): true | undefined => {
+        if (evt instanceof KeyboardEvent) {
             switch (evt.code) {
                 case InteractionKeyCode.ARROW_LEFT:
                     frame.shiftFrameCursor(CURSOR_BACKWARD);
@@ -214,6 +217,22 @@ const calendar = ((watchCallback?: WatchCallable<any>) => {
 
             return true;
         }
+
+        if (evt instanceof MouseEvent) {
+            switch (touchTarget) {
+                default: {
+                    const cursorIndex = indexFromEvent?.(evt);
+
+                    if (!isBitSafeInteger(cursorIndex)) return;
+                    frame.shiftFrameCursor(cursorIndex);
+
+                    if (frame.cursor === cursorIndex) {
+                        frame.updateSelection(frame.getTimestampAtIndex(frame.cursor));
+                        return true;
+                    }
+                }
+            }
+        }
     };
 
     return struct({
@@ -224,7 +243,7 @@ const calendar = ((watchCallback?: WatchCallable<any>) => {
                 cursorIndex: { get: () => frame?.cursor ?? -1 },
                 daysOfWeek: { get: () => daysOfWeek },
                 // highlight: {},
-                interaction: { value: (evt: Event) => interaction(evt) },
+                interaction: { value: (evt: Event, touchTarget?: any) => interaction(evt, touchTarget) },
                 rowspan: { get: () => frame?.width ?? 0 },
                 shift: { value: (shiftBy?: number, shiftType?: TimeFrameShift) => shiftFrame(shiftBy, shiftType) },
             }),
@@ -233,20 +252,6 @@ const calendar = ((watchCallback?: WatchCallable<any>) => {
 }) as CalendarFactory;
 
 export default Object.defineProperties(calendar, {
-    cursor: {
-        value: struct({
-            BACKWARD: { value: CURSOR_BACKWARD },
-            BLOCK_END: { value: CURSOR_BLOCK_END },
-            BLOCK_START: { value: CURSOR_BLOCK_START },
-            DOWNWARD: { value: CURSOR_DOWNWARD },
-            FORWARD: { value: CURSOR_FORWARD },
-            NEXT_BLOCK: { value: CURSOR_NEXT_BLOCK },
-            PREV_BLOCK: { value: CURSOR_PREV_BLOCK },
-            ROW_END: { value: CURSOR_LINE_END },
-            ROW_START: { value: CURSOR_LINE_START },
-            UPWARD: { value: CURSOR_UPWARD },
-        }),
-    },
     flag: {
         value: struct({
             BLOCK_END: { value: TimeFlag.BLOCK_END },

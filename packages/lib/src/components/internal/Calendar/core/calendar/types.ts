@@ -134,29 +134,22 @@ export type CalendarGrid = Indexed<IndexedCalendarBlock> & {
     //     get to(): number | undefined;
     //     set to(time: Time | null | undefined);
     // };
-    readonly interaction: (evt: Event) => true | undefined;
+    readonly interaction: (evt: Event, touchTarget?: any) => true | undefined;
     readonly rowspan: number;
     readonly shift: (offset?: number, shift?: TimeFrameShift) => void;
 };
 
+export type CalendarInitCallbacks = {
+    indexFromEvent?: (evt: Event) => number | undefined;
+    watch?: WatchCallable<any>;
+};
+
 export type CalendarFactory = {
-    (watchCallback?: WatchCallable<any>): {
+    (init: CalendarInitCallbacks | WatchCallable<any>): {
         readonly configure: (config: CalendarConfig) => void;
         readonly disconnect: () => void;
         readonly grid: CalendarGrid;
     };
-    readonly cursor: Readonly<{
-        BACKWARD: typeof CURSOR_BACKWARD;
-        BLOCK_END: typeof CURSOR_BLOCK_END;
-        BLOCK_START: typeof CURSOR_BLOCK_START;
-        DOWNWARD: typeof CURSOR_DOWNWARD;
-        FORWARD: typeof CURSOR_FORWARD;
-        NEXT_BLOCK: typeof CURSOR_NEXT_BLOCK;
-        PREV_BLOCK: typeof CURSOR_PREV_BLOCK;
-        ROW_END: typeof CURSOR_LINE_END;
-        ROW_START: typeof CURSOR_LINE_START;
-        UPWARD: typeof CURSOR_UPWARD;
-    }>;
     readonly flag: Readonly<{
         BLOCK_END: TimeFlag;
         BLOCK_START: TimeFlag;
