@@ -9,6 +9,7 @@ import {
     CURSOR_NEXT_BLOCK,
     CURSOR_PREV_BLOCK,
     CURSOR_UPWARD,
+    DAY_OF_WEEK_FORMATS,
     FIRST_WEEK_DAYS,
     FRAME_SIZES,
     RANGE_FROM,
@@ -25,21 +26,22 @@ import {
 import { Indexed } from '../shared/indexed/types';
 import { Watchable, WatchCallable } from '../shared/watchable/types';
 
-type WithTimeEdges<T = {}> = {
-    readonly from: T;
-    readonly to: T;
-};
+type WithTimeEdges<T = {}> = Readonly<{
+    from: T;
+    to: T;
+}>;
 
-export type Today = {
-    readonly timestamp: number;
-    readonly watch: Watchable<{}>['watch'];
-};
+export type Today = Readonly<{
+    timestamp: number;
+    watch: Watchable<{}>['watch'];
+}>;
 
-export type Time = Date | number | string;
+export type DayOfWeekLabelFormat = (typeof DAY_OF_WEEK_FORMATS)[number];
 export type FirstWeekDay = (typeof FIRST_WEEK_DAYS)[number];
 export type WeekDay = FirstWeekDay | 2 | 3 | 4 | 5;
 export type Month = WeekDay | 7 | 8 | 9 | 10 | 11;
 export type MonthDays = 28 | 29 | 30 | 31;
+export type Time = Date | number | string;
 
 export const enum TimeFlag {
     TODAY = 0x1,
@@ -85,16 +87,18 @@ type TimeFrameBlockMetrics<T extends string> = {
     [K in T]: WithTimeEdges<number> & { readonly units: number };
 };
 
-export type TimeFrameBlock = TimeFrameBlockMetrics<'inner' | 'outer'> & {
-    readonly [K: number]: readonly [number, number];
-    readonly month: Month;
-    readonly year: number;
-};
+export type TimeFrameBlock = TimeFrameBlockMetrics<'inner' | 'outer'> &
+    Readonly<{
+        [K: number]: readonly [number, number];
+        month: Month;
+        year: number;
+    }>;
 
-export type TimeSlice = WithTimeEdges<number> & {
-    readonly offsets: WithTimeEdges<number>;
-    readonly span: number;
-};
+export type TimeSlice = WithTimeEdges<number> &
+    Readonly<{
+        offsets: WithTimeEdges<number>;
+        span: number;
+    }>;
 
 export type TimeSliceFactory = {
     (fromTime?: Time, toTime?: Time): TimeSlice;
@@ -111,33 +115,45 @@ export type CalendarConfig = {
     withRangeSelection?: boolean;
 };
 
-export type CalendarBlock = {
-    readonly datetime: string;
-    readonly label: string;
-    readonly month: number;
-    readonly year: number;
-};
+export type CalendarBlock = Readonly<{
+    datetime: string;
+    label: string;
+    month: number;
+    year: number;
+}>;
 
-export type CalendarBlockCellData = readonly [string, string, number];
-export type CalendarDayOfWeekData = readonly [string, string, string];
-export type IndexedCalendarBlock = Indexed<CalendarBlockCellData> & CalendarBlock;
+export type CalendarBlockCellData = Readonly<{
+    datetime: string;
+    flags: number;
+    index: number;
+    label: string;
+    timestamp: number;
+}>;
 
-export type CalendarGrid = Indexed<IndexedCalendarBlock> & {
-    readonly cursorIndex: number;
-    readonly daysOfWeek: Indexed<CalendarDayOfWeekData>;
-    // readonly highlight: {
-    //     (time: Time, selection?: TimeFrameSelection): void;
-    //     readonly clear: () => void;
-    //     readonly commit: () => void;
-    //     get from(): number | undefined;
-    //     set from(time: Time | null | undefined);
-    //     get to(): number | undefined;
-    //     set to(time: Time | null | undefined);
-    // };
-    readonly interaction: (evt: Event, touchTarget?: any) => true | undefined;
-    readonly rowspan: number;
-    readonly shift: (offset?: number, shift?: TimeFrameShift) => void;
-};
+export type CalendarDayOfWeekData = Readonly<{
+    flags: number;
+    labels: Readonly<{ [K in DayOfWeekLabelFormat]: string }>;
+}>;
+
+export type IndexedCalendarBlock = Indexed<Indexed<CalendarBlockCellData>> & CalendarBlock;
+
+export type CalendarGrid = Indexed<IndexedCalendarBlock> &
+    Readonly<{
+        cursorIndex: number;
+        daysOfWeek: Indexed<CalendarDayOfWeekData>;
+        // highlight: {
+        //     (time: Time, selection?: TimeFrameSelection): void;
+        //     readonly clear: () => void;
+        //     readonly commit: () => void;
+        //     get from(): number | undefined;
+        //     set from(time: Time | null | undefined);
+        //     get to(): number | undefined;
+        //     set to(time: Time | null | undefined);
+        // };
+        interaction: (evt: Event, touchTarget?: any) => true | undefined;
+        rowspan: number;
+        shift: (offset?: number, shift?: TimeFrameShift) => void;
+    }>;
 
 export type CalendarInitCallbacks = {
     indexFromEvent?: (evt: Event) => number | undefined;
@@ -145,11 +161,11 @@ export type CalendarInitCallbacks = {
 };
 
 export type CalendarFactory = {
-    (init: CalendarInitCallbacks | WatchCallable<any>): {
-        readonly configure: (config: CalendarConfig) => void;
-        readonly disconnect: () => void;
-        readonly grid: CalendarGrid;
-    };
+    (init: CalendarInitCallbacks | WatchCallable<any>): Readonly<{
+        configure: (config: CalendarConfig) => void;
+        disconnect: () => void;
+        grid: CalendarGrid;
+    }>;
     readonly flag: Readonly<{
         BLOCK_END: TimeFlag;
         BLOCK_START: TimeFlag;

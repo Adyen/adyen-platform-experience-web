@@ -31,6 +31,7 @@ import {
     IndexedCalendarBlock,
     TimeFlag,
     TimeFrameShift,
+    WeekDay,
 } from './types';
 import { AnnualTimeFrame, DefaultTimeFrame, TimeFrame } from './timeframe';
 import timeslice, { sinceNow, SLICE_UNBOUNDED, untilNow } from './timeslice';
@@ -72,22 +73,33 @@ const calendar = ((init = {} as CalendarInitCallbacks) => {
 
                 if (block) {
                     const date = new Date(`${block.year}-${1 + block.month}-1`);
+                    const blockStartIndex = block.outer.from;
 
-                    _frameBlocksCached[index] = indexed<CalendarBlockCellData, CalendarBlock>(
+                    _frameBlocksCached[index] = indexed<Indexed<CalendarBlockCellData>, CalendarBlock>(
                         {
                             datetime: { value: date.toISOString().slice(0, 10) },
                             label: {
                                 value: date.toLocaleDateString(_config.locale, { month: _config.minified ? undefined : 'short', year: 'numeric' }),
                             },
-                            length: { value: block.outer.units },
+                            length: { value: Math.ceil(block.outer.units / frame.width) },
                             month: { value: block.month },
                             year: { value: block.year },
                         },
                         index => {
-                            const [timestamp, flags] = block[index] as (typeof block)[number];
-                            const date = new Date(new Date(timestamp).setHours(12)).toISOString();
+                            const indexOffset = index * frame.width;
 
-                            return [Number(date.slice(8, 10)).toLocaleString(_config.locale), date.slice(0, 10), flags as number] as const;
+                            return indexed<CalendarBlockCellData>(frame.width, index => {
+                                const [timestamp, flags] = block[index + indexOffset] as (typeof block)[number];
+                                const date = new Date(new Date(timestamp).setHours(12)).toISOString();
+
+                                return struct({
+                                    datetime: { value: date.slice(0, 10) },
+                                    flags: { value: flags },
+                                    index: { value: blockStartIndex + index + indexOffset },
+                                    label: { value: Number(date.slice(8, 10)).toLocaleString(_config.locale) },
+                                    timestamp: { value: timestamp },
+                                }) as CalendarBlockCellData;
+                            });
                         }
                     );
                 }
@@ -99,7 +111,7 @@ const calendar = ((init = {} as CalendarInitCallbacks) => {
     const watchEffect = syncEffectCallback(
         (() => {
             let _firstWeekDay = _config.firstWeekDay ?? 0;
-            let _daysOfWeekCached: (readonly [string, string, string])[] = [];
+            let _daysOfWeekCached: CalendarDayOfWeekData[] = [];
             let _locale: string;
 
             return () => {
@@ -119,11 +131,27 @@ const calendar = ((init = {} as CalendarInitCallbacks) => {
                             const date = new Date(new Date(originDate).setDate(firstDate + index));
 
                             if (!isNaN(+date)) {
-                                _daysOfWeekCached[index] = Object.freeze(
-                                    DAY_OF_WEEK_FORMATS.map(format => date.toLocaleDateString(_config.locale, { weekday: format }))
-                                ) as CalendarDayOfWeekData;
+                                let flags = 0;
+                                const labels = struct() as CalendarDayOfWeekData['labels'];
+
+                                if (index === 0) flags |= TimeFlag.LINE_START;
+                                else if (index === 6) flags |= TimeFlag.LINE_END;
+                                if (frame.weekend.includes(index as WeekDay)) flags |= TimeFlag.WEEKEND;
+
+                                for (const format of DAY_OF_WEEK_FORMATS) {
+                                    Object.defineProperty(labels, format, {
+                                        enumerable: true,
+                                        value: date.toLocaleDateString(_config.locale, { weekday: format }),
+                                    });
+                                }
+
+                                _daysOfWeekCached[index] = struct({
+                                    flags: { enumerable: true, value: flags },
+                                    labels: { enumerable: true, value: labels },
+                                }) as CalendarDayOfWeekData;
                             }
                         }
+
                         return _daysOfWeekCached[index] as CalendarDayOfWeekData;
                     });
                 }

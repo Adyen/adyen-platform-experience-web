@@ -1,12 +1,7 @@
 import { useMemo, useRef } from 'preact/hooks';
-import {
-    CalendarProps,
-    CalendarShift,
-    CalendarTraversal,
-    CalendarTraversalControlRootProps,
-    CalendarTraversalControls,
-    CalendarView,
-} from '../types';
+import { CalendarProps, CalendarTraversal, CalendarTraversalControlRootProps, CalendarTraversalControls } from '../types';
+import { CalendarGrid, TimeFrameShift } from '../core/calendar/types';
+import calendar from '../core';
 
 const SharedEmptyControlsObject = Object.freeze(Object.create(null));
 const CondensedTraversalControls = [CalendarTraversal.PREV, CalendarTraversal.NEXT] as const;
@@ -20,21 +15,21 @@ export const TraversalControls = [
 ] as const;
 
 const getAutoCalendarShiftFromEvent = (evt: MouseEvent) => {
-    if (evt.shiftKey) return CalendarShift.YEAR;
-    if (evt.altKey) return CalendarShift.WINDOW;
-    return CalendarShift.MONTH;
+    if (evt.shiftKey) return calendar.shift.PERIOD;
+    if (evt.altKey) return calendar.shift.FRAME;
+    return calendar.shift.BLOCK;
 };
 
 const getCalendarShiftForTraversal = (traversal: CalendarTraversal) => {
     switch (traversal) {
         case CalendarTraversal.NEXT_YEAR:
         case CalendarTraversal.PREV_YEAR:
-            return CalendarShift.YEAR;
+            return calendar.shift.PERIOD;
         case CalendarTraversal.NEXT_WINDOW:
         case CalendarTraversal.PREV_WINDOW:
-            return CalendarShift.WINDOW;
+            return calendar.shift.FRAME;
         default:
-            return CalendarShift.MONTH;
+            return calendar.shift.BLOCK;
     }
 };
 
@@ -50,19 +45,19 @@ const getUnitCalendarShiftOffsetForTraversal = (traversal: CalendarTraversal) =>
 };
 
 const useTraversalControls = (
-    calendar: CalendarView,
+    grid: CalendarGrid,
     renderControl?: CalendarProps['renderControl'],
     controls: CalendarTraversalControls = CalendarTraversalControls.EXPANDED
 ) => {
     const monthOffset = useRef(1);
-    const calendarShift = useRef(CalendarShift.MONTH);
+    const calendarShift = useRef<TimeFrameShift>(calendar.shift.BLOCK);
 
     return useMemo(() => {
         if (!renderControl) return SharedEmptyControlsObject;
 
         const CONTROLS = controls === CalendarTraversalControls.CONDENSED ? CondensedTraversalControls : TraversalControls;
 
-        let getCalendarShiftFromEvent: (evt: MouseEvent) => CalendarShift;
+        let getCalendarShiftFromEvent: (evt: MouseEvent) => TimeFrameShift;
 
         if (controls === CalendarTraversalControls.CONDENSED) {
             getCalendarShiftFromEvent = getAutoCalendarShiftFromEvent;
@@ -78,14 +73,14 @@ const useTraversalControls = (
                     onClick: (evt: Event) => {
                         calendarShift.current = getCalendarShiftFromEvent?.(evt as MouseEvent) ?? traversalShift;
                         monthOffset.current = unitShiftOffset;
-                        calendar.shift(monthOffset.current, calendarShift.current);
+                        grid.shift(monthOffset.current, calendarShift.current);
                     },
                 } as CalendarTraversalControlRootProps;
 
                 return [traversal, controlRootProps];
             })
         );
-    }, [calendar, controls, renderControl]);
+    }, [grid, controls, renderControl]);
 };
 
 export default useTraversalControls;

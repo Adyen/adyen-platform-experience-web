@@ -7,11 +7,8 @@ import { immutableProxyHandlers } from '../../shared/constants';
 import { isBitSafeInteger, isInfinite, struct, structFrom } from '../../shared/utils';
 
 export default class __TimeFrame__ extends __AbstractTimeFrame__ {
-    protected fromTimestamp!: number;
-    protected toTimestamp!: number;
-    protected selectionStartDayTimestamp?: number;
-    protected selectionEndDayTimestamp?: number;
-
+    protected declare fromTimestamp: number;
+    protected declare toTimestamp: number;
     protected declare monthStartTimestamp: number;
     protected declare monthDateTimestamp: number;
     protected declare origin: Month;
@@ -113,7 +110,7 @@ export default class __TimeFrame__ extends __AbstractTimeFrame__ {
     }
 
     protected getStartOfDayForTimestamp(timestamp?: number) {
-        return timestamp === undefined ? timestamp : timestamp - computeTimestampOffset(timestamp);
+        return timestamp === undefined || isInfinite(timestamp) ? timestamp : timestamp - computeTimestampOffset(timestamp);
     }
 
     protected getStartTimestampForFrameBlockAtOffset(blockOffset: number) {

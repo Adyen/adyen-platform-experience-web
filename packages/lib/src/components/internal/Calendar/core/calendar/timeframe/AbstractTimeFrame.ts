@@ -76,6 +76,11 @@ export default abstract class __AbstractTimeFrame__ {
     protected originStartDate?: number;
     protected originYear?: number;
 
+    protected fromTimestamp: number = -Infinity;
+    protected toTimestamp: number = Infinity;
+    protected selectionStartDayTimestamp?: number;
+    protected selectionEndDayTimestamp?: number;
+
     protected abstract lineWidth: number;
 
     protected abstract getBlockTimestampOffsetFromOrigin(timestamp: number): number;
@@ -229,12 +234,12 @@ export default abstract class __AbstractTimeFrame__ {
         return this.#watchable;
     }
 
-    get width() {
-        return this.lineWidth;
+    get weekend() {
+        return this.#daysOfWeekend;
     }
 
-    protected get weekend() {
-        return this.#daysOfWeekend;
+    get width() {
+        return this.lineWidth;
     }
 
     #getBlockUnitsForCursorBlockOffset(cursorBlockOffset: number = 0): number {
@@ -391,10 +396,11 @@ export default abstract class __AbstractTimeFrame__ {
         this.numberOfBlocks = this.#timeslice.span;
 
         if (!isInfinite(this.#fromTimestamp) || !isInfinite(this.#toTimestamp)) {
-            if (!isInfinite(this.#timeslice.span)) {
-                this.updateEdgeBlocksOffsetsRelativeToOrigin(this.#timeslice.from, this.#timeslice.to);
-            } else if (!isInfinite(this.#fromTimestamp)) this.fromBlockOffsetFromOrigin = 0;
-            else if (!isInfinite(this.#toTimestamp)) this.toBlockOffsetFromOrigin = 0;
+            this.updateEdgeBlocksOffsetsRelativeToOrigin(this.#timeslice.from, this.#timeslice.to);
+
+            if (isInfinite(this.#timeslice.span)) {
+                isInfinite(this.#fromTimestamp) ? (this.toBlockOffsetFromOrigin = 0) : (this.fromBlockOffsetFromOrigin = 0);
+            }
         }
 
         this.#maxBlockSize = downsizeTimeFrame(12, this.numberOfBlocks);
@@ -449,7 +455,7 @@ export default abstract class __AbstractTimeFrame__ {
                 return this.#shiftFrameCursorByOffset(this.#getBlockUnitsForCursorBlockOffset(0));
         }
 
-        if (nextCursorPosition >= 0 && nextCursorPosition < this.units) {
+        if (nextCursorPosition >= this.#firstBlockStartIndex && nextCursorPosition <= this.#lastBlockEndIndex) {
             return this.#shiftFrameCursorByOffset(nextCursorPosition - this.cursor);
         }
     }

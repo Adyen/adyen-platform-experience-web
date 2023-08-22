@@ -1,11 +1,11 @@
 import classnames from 'classnames';
 import { JSX } from 'preact';
 import { useMemo } from 'preact/hooks';
-import { CalendarFlag } from '@src/components/internal/Calendar/types';
+import { TimeFlag } from '@src/components/internal/Calendar/core/calendar/types';
 
 const EXCESS_WHITESPACE_CHAR = /^\s+|\s+(?=\s|$)/g;
 
-export const hasFlag = (flags: number, flag: CalendarFlag): 1 | undefined => (flags & flag ? 1 : undefined);
+export const hasFlag = (flags: number, flag: TimeFlag): 1 | undefined => (flags & flag ? 1 : undefined);
 
 export const parseClassName = (fallbackClassName: string, className: JSX.Signalish<string | undefined>): undefined | string => {
     const classes = className ? (typeof className === 'string' ? className : className?.value ?? '') : '';
@@ -76,19 +76,6 @@ export const property = (() => {
         restricted: { value: () => prop<undefined>(false) },
     }) as PropertyFactory;
 })();
-
-export const flagsProperty = (value: number, trustedFlags?: number) => {
-    if (typeof trustedFlags !== 'number') return property.immutable(value);
-    if (trustedFlags <= 0) return property.mutable(value);
-
-    return property(
-        (() => {
-            let currentValue = value;
-            return (value?: number) => (currentValue |= (value || 0) & ~trustedFlags);
-        })(),
-        value
-    );
-};
 
 export const propsProperty = (() => {
     type UnwrappedProps<T extends Record<string, any>> = {

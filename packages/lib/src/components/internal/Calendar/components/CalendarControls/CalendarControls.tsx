@@ -4,10 +4,10 @@ import { CalendarControlsProps } from './types';
 import useTraversalControls, { TraversalControls } from '../../hooks/useTraversalControls';
 import { CalendarTraversalControlRootProps } from '../../types';
 
-function CalendarControls({ calendar, controls, renderControl }: CalendarControlsProps) {
+function CalendarControls({ controls, grid, renderControl }: CalendarControlsProps) {
     if (!renderControl) return null;
 
-    const traversalControls = useTraversalControls(calendar, renderControl, controls);
+    const traversalControls = useTraversalControls(grid, renderControl, controls);
 
     return (
         <>

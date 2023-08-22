@@ -1,40 +1,31 @@
 import { forwardRef } from 'preact/compat';
 import { CalendarGridDateProps, CalendarGridDayOfWeekProps, CalendarGridProps } from './types';
-import { CalendarDay, CalendarFlag, CalendarRenderToken } from '../../types';
-import { flagsProperty, hasFlag, property, propsProperty } from '@src/components/internal/Calendar/components/CalendarGrid/utils';
+import { CalendarRenderToken } from '../../types';
+import { hasFlag, property, propsProperty } from '@src/components/internal/Calendar/components/CalendarGrid/utils';
 import CalendarGridDate from '@src/components/internal/Calendar/components/CalendarGrid/CalendarGridDate';
 import CalendarGridDayOfWeek from '@src/components/internal/Calendar/components/CalendarGrid/CalendarGridDayOfWeek';
+import calendar from '../../core';
 import '../../Calendar.scss';
 
-export default forwardRef(function CalendarGrid({ calendar, cursorRootProps, prepare, today }: CalendarGridProps, cursorElementRef) {
+export default forwardRef(function CalendarGrid({ cursorRootProps, prepare, grid }: CalendarGridProps, cursorElementRef) {
     return (
         <ol className={'adyen-fp-calendar'} role="none" {...cursorRootProps}>
             {[
-                ...calendar.months.map(view => {
-                    const month = `${view.year}-${view.month}`;
-
+                ...grid.map(block => {
                     return (
-                        <li key={month} className={'adyen-fp-calendar-month'} role="none">
+                        <li key={block.datetime} className={'adyen-fp-calendar-month'} role="none">
                             <div className={'adyen-fp-calendar-month__name'} role="none">
-                                <time dateTime={month} aria-hidden="true">
-                                    {view.displayName}
+                                <time dateTime={block.datetime} aria-hidden="true">
+                                    {block.label}
                                 </time>
                             </div>
 
-                            <table className={'adyen-fp-calendar-month__grid'} role="grid" aria-label={view.displayName}>
+                            <table className={'adyen-fp-calendar-month__grid'} role="grid" aria-label={block.label}>
                                 <thead>
                                     <tr className={'adyen-fp-calendar-month__grid-row'}>
                                         {[
-                                            ...calendar.daysOfWeek.map((labels, index) => {
-                                                const [long, , short] = labels;
-                                                const props = { 'aria-label': long, key: long, scope: 'col' };
-                                                const weekday = (index % 7) as CalendarDay;
-
-                                                let flags = 0;
-
-                                                if (weekday === 0) flags |= CalendarFlag.WEEK_START;
-                                                if (weekday === 6) flags |= CalendarFlag.WEEK_END;
-                                                if (calendar.weekendDays.includes(weekday)) flags |= CalendarFlag.WEEKEND;
+                                            ...grid.daysOfWeek.map(({ flags, labels }) => {
+                                                const props = { 'aria-label': labels.long, key: labels.long, scope: 'col' };
 
                                                 const renderProps = propsProperty.unwrapped<CalendarGridDayOfWeekProps>(
                                                     {
@@ -45,8 +36,8 @@ export default forwardRef(function CalendarGrid({ calendar, cursorRootProps, pre
                                                         },
                                                         children: property.mutable<any>(CalendarGridDayOfWeek.CHILD),
                                                         className: property.mutable('adyen-fp-calendar-month__grid-cell'),
-                                                        flags: flagsProperty(flags),
-                                                        label: short,
+                                                        flags,
+                                                        label: labels.narrow,
                                                         props: {
                                                             ...props,
                                                             children: property.restricted(),
@@ -65,36 +56,18 @@ export default forwardRef(function CalendarGrid({ calendar, cursorRootProps, pre
 
                                 <tbody>
                                     {[
-                                        ...view.weeks.map((week, weekIndex) => (
-                                            <tr key={`${month}:${weekIndex}`} className={'adyen-fp-calendar-month__grid-row'}>
+                                        ...block.map((row, rowindex) => (
+                                            <tr key={`${block.month}:${rowindex}`} className={'adyen-fp-calendar-month__grid-row'}>
                                                 {[
-                                                    ...week.map((cursorPosition, index) => {
-                                                        const [date, displayDate] =
-                                                            cursorPosition < 0
-                                                                ? (calendar[view.origin + weekIndex * 7 + index] as string[])
-                                                                : (calendar[cursorPosition] as string[]);
-
+                                                    ...row.map(({ datetime, flags, index, label, timestamp }) => {
                                                         const props = {
-                                                            key: `${date}${cursorPosition < 0 ? ':0' : ''}`,
+                                                            'data-cursor-position': index,
+                                                            key: `${block.month}:${timestamp}`,
                                                             tabIndex: -1,
                                                         } as any;
 
-                                                        let flags = date === today ? CalendarFlag.TODAY : 0;
-
-                                                        if (cursorPosition >= view.start && cursorPosition <= view.end) {
-                                                            if (cursorPosition === calendar.cursorPosition) {
-                                                                props.ref = cursorElementRef;
-                                                            }
-
-                                                            if (cursorPosition === view.start) flags |= CalendarFlag.MONTH_START;
-                                                            if (cursorPosition === view.end) flags |= CalendarFlag.MONTH_END;
-
-                                                            flags |= calendar.flags[cursorPosition] || 0;
-                                                            flags |= CalendarFlag.WITHIN_MONTH;
-                                                        }
-
-                                                        if (cursorPosition >= 0 && hasFlag(flags, CalendarFlag.WITHIN_RANGE)) {
-                                                            props['data-cursor-position'] = cursorPosition;
+                                                        if (index === grid.cursorIndex && hasFlag(flags, calendar.flag.WITHIN_BLOCK)) {
+                                                            props.ref = cursorElementRef;
                                                         }
 
                                                         const renderProps = propsProperty.unwrapped<CalendarGridDateProps>(
@@ -106,9 +79,9 @@ export default forwardRef(function CalendarGrid({ calendar, cursorRootProps, pre
                                                                 },
                                                                 children: property.restricted(),
                                                                 className: property.mutable('adyen-fp-calendar-month__grid-cell'),
-                                                                dateTime: date,
-                                                                displayDate: displayDate as string,
-                                                                flags: flagsProperty(flags, CalendarGridDate.TRUSTED_FLAGS),
+                                                                dateTime: datetime,
+                                                                displayDate: label,
+                                                                flags,
                                                                 props: {
                                                                     ...props,
                                                                     children: property.restricted(),

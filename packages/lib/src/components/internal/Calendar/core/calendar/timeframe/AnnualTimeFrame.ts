@@ -3,17 +3,16 @@ import { YEAR_MONTHS } from '../constants';
 import { Time, TimeFlag, TimeFrameBlock, TimeFrameSelection, TimeSlice } from '../types';
 import { computeTimestampOffset, getEdgesDistance } from '../utils';
 import { immutableProxyHandlers } from '../../shared/constants';
-import { isBitSafeInteger, struct, structFrom } from '../../shared/utils';
+import { isBitSafeInteger, isInfinite, struct, structFrom } from '../../shared/utils';
 
 export default class __AnnualTimeFrame__ extends __AbstractTimeFrame__ {
-    protected fromTimestamp!: number;
-    protected toTimestamp!: number;
-    protected selectionStartDayTimestamp?: number;
-    protected selectionEndDayTimestamp?: number;
-
+    protected declare fromTimestamp: number;
+    protected declare toTimestamp: number;
     protected declare monthDateTimestamp: number;
     protected declare origin: number;
     protected declare timestamp: number;
+    protected declare selectionStartDayTimestamp?: number;
+    protected declare selectionEndDayTimestamp?: number;
 
     protected lineWidth = 4;
 
@@ -27,7 +26,7 @@ export default class __AnnualTimeFrame__ extends __AbstractTimeFrame__ {
     }
 
     #getStartOfMonthForTimestamp(timestamp?: number) {
-        return timestamp === undefined ? timestamp : new Date(timestamp - computeTimestampOffset(timestamp)).setDate(1);
+        return timestamp === undefined || isInfinite(timestamp) ? timestamp : new Date(timestamp - computeTimestampOffset(timestamp)).setDate(1);
     }
 
     #updateSelectionTimestamps() {

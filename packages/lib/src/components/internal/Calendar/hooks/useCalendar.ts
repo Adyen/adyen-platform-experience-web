@@ -1,50 +1,42 @@
-import { CalendarProps } from '../types';
-import { useCallback, useMemo, useState } from 'preact/hooks';
-import useCursorRoot from './useCursorRoot';
-import useToday from './useToday';
-import createCalendar from '../internal/createCalendar';
-import useCoreContext from '../../../../core/Context/useCoreContext';
-import useFocusCursor from '../../../../hooks/element/useFocusCursor';
+import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
+import useCoreContext from '@src/core/Context/useCoreContext';
 import { ReflexAction } from '@src/hooks/useReflex';
+import { CalendarConfig } from '../core/calendar/types';
+import useFocusCursor from '../../../../hooks/element/useFocusCursor';
+import calendar from '../core';
 
 const useCalendar = ({
-    calendarMonths,
-    dynamicMonthWeeks,
-    firstWeekDay,
-    offset = 0,
-    onlyMonthDays,
-    onSelected,
-    originDate,
-    sinceDate,
-    trackToday,
-    untilDate,
-}: CalendarProps) => {
+    // onlyMonthDays,
+    // onSelected,
+    ...config
+}: CalendarConfig) => {
     const { i18n } = useCoreContext();
-    const [, setRefreshCount] = useState(0);
+    const [, setLastMutationTimestamp] = useState<DOMHighResTimeStamp>(performance.now());
 
-    const today = useToday(trackToday);
-    const watch = useCallback(() => setRefreshCount(current => ++current), []);
-
-    const calendar = useMemo(
+    const { configure, disconnect, grid } = useMemo(
         () =>
-            createCalendar(
-                {
-                    calendarMonths,
-                    dynamicMonthWeeks,
-                    firstWeekDay,
-                    locale: i18n.locale,
-                    onlyMonthDays,
-                    originDate,
-                    sinceDate,
-                    untilDate,
-                    watch,
+            calendar({
+                indexFromEvent: (evt: Event): number | undefined => {
+                    let element: HTMLElement | null = evt.target as HTMLElement;
+
+                    while (element && element !== evt.currentTarget) {
+                        const index = Number(element.dataset.cursorPosition);
+                        if (Number.isFinite(index)) return index;
+                        element = element.parentNode as HTMLElement;
+                    }
                 },
-                offset
-            ),
-        [calendarMonths, dynamicMonthWeeks, firstWeekDay, i18n, offset, onlyMonthDays, originDate, sinceDate, untilDate]
+                watch: () => setLastMutationTimestamp(performance.now()),
+            }),
+        []
     );
 
-    const cursorRootProps = useCursorRoot(calendar, onSelected);
+    const cursorRootProps = useMemo(
+        () => ({
+            onClickCapture: grid.interaction,
+            onKeyDownCapture: (evt: KeyboardEvent) => grid.interaction(evt) && evt.preventDefault(),
+        }),
+        [grid]
+    );
 
     const cursorElementRef = useFocusCursor(
         useCallback(
@@ -56,7 +48,13 @@ const useCalendar = ({
         )
     );
 
-    return useMemo(() => ({ calendar, cursorElementRef, cursorRootProps, today } as const), [calendar, cursorElementRef, cursorRootProps, today]);
+    useEffect(() => disconnect, []);
+
+    useEffect(() => {
+        configure({ ...config, locale: config.locale || i18n.locale });
+    }, [i18n, config]);
+
+    return { cursorElementRef, cursorRootProps, grid };
 };
 
 export default useCalendar;

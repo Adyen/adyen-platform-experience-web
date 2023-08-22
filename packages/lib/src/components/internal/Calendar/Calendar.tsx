@@ -1,18 +1,22 @@
 import { memo } from 'preact/compat';
 import CalendarGrid from './components/CalendarGrid';
 import CalendarControls from './components/CalendarControls';
+import calendar from './core';
 import useCalendar from './hooks/useCalendar';
 import { CalendarProps } from './types';
 import './Calendar.scss';
 
-function Calendar(props: CalendarProps) {
-    const { calendar, cursorElementRef, cursorRootProps, today } = useCalendar(props);
-    const { prepare, renderControl, traversalControls } = props;
+function Calendar({ prepare, renderControl, traversalControls, ...props }: CalendarProps) {
+    const { cursorElementRef, cursorRootProps, grid } = useCalendar({
+        blocks: props.calendarMonths,
+        firstWeekDay: props.firstWeekDay,
+        timeslice: calendar.range(props.sinceDate, props.untilDate),
+    });
 
     return (
         <div role="group" aria-label="calendar">
-            <CalendarControls calendar={calendar} controls={traversalControls} renderControl={renderControl} />
-            <CalendarGrid ref={cursorElementRef} calendar={calendar} cursorRootProps={cursorRootProps} prepare={prepare} today={today} />
+            <CalendarControls controls={traversalControls} grid={grid} renderControl={renderControl} />
+            <CalendarGrid ref={cursorElementRef} cursorRootProps={cursorRootProps} grid={grid} prepare={prepare} />
         </div>
     );
 }

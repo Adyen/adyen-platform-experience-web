@@ -1,12 +1,12 @@
 import { useMemo, useState } from 'preact/hooks';
 import {
-    CalendarFlag,
+    // CalendarFlag,
     CalendarProps,
     CalendarRenderToken,
-    CalendarRenderTokenContext,
+    // CalendarRenderTokenContext,
     CalendarSelectionSnap,
 } from '@src/components/internal/Calendar/types';
-import { hasFlag } from '@src/components/internal/Calendar/components/CalendarGrid/utils';
+// import { hasFlag } from '@src/components/internal/Calendar/components/CalendarGrid/utils';
 import { DAY_MS, getTimestamp } from '@src/components/internal/Calendar/internal/utils';
 
 const dateRangeKeys = ['from', 'to'] as const;
@@ -67,15 +67,15 @@ const useDatePicker = ({ from, to, rangeStart, rangeEnd }: DateRange) => {
         const prepare = ((token: CalendarRenderToken, ctx: any) => {
             switch (token) {
                 case CalendarRenderToken.DATE: {
-                    if (hasFlag(ctx.flags, CalendarFlag.WITHIN_MONTH)) {
-                        const timestamp = new Date(ctx.dateTime).setHours(0, 0, 0, 0);
-
-                        if (timestamp >= (fromTimestamp as number) && timestamp <= (toTimestamp as number))
-                            ctx.flags |= CalendarFlag.WITHIN_SELECTION;
-
-                        if (timestamp === fromTimestamp) ctx.flags |= CalendarFlag.SELECTION_START;
-                        if (timestamp === toTimestamp) ctx.flags |= CalendarFlag.SELECTION_END;
-                    }
+                    // if (hasFlag(ctx.flags, CalendarFlag.WITHIN_MONTH)) {
+                    //     const timestamp = new Date(ctx.dateTime).setHours(0, 0, 0, 0);
+                    //
+                    //     if (timestamp >= (fromTimestamp as number) && timestamp <= (toTimestamp as number))
+                    //         ctx.flags |= CalendarFlag.WITHIN_SELECTION;
+                    //
+                    //     if (timestamp === fromTimestamp) ctx.flags |= CalendarFlag.SELECTION_START;
+                    //     if (timestamp === toTimestamp) ctx.flags |= CalendarFlag.SELECTION_END;
+                    // }
                     break;
                 }
             }

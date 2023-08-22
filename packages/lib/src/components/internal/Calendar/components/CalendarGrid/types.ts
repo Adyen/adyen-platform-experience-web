@@ -1,11 +1,11 @@
 import { JSX } from 'preact';
-import { CalendarCursorRootProps, CalendarProps, CalendarView } from '../../types';
+import { CalendarCursorRootProps, CalendarProps } from '../../types';
+import { CalendarGrid } from '../../core/calendar/types';
 
 export interface CalendarGridProps {
-    calendar: CalendarView;
     cursorRootProps: CalendarCursorRootProps;
+    grid: CalendarGrid;
     prepare?: CalendarProps['prepare'];
-    today: string;
 }
 
 type CalendarGridDateExtendedProps = {
