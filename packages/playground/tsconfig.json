@@ -5,7 +5,7 @@
         "jsx": "react-jsx",
         "jsxImportSource": "preact",
         "noEmit": true,
-
+        "skipLibCheck": true,
         "outDir": "dist",
         "declaration": true,
         "declarationDir": "dist/types",

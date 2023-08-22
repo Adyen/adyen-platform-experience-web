@@ -7,6 +7,7 @@ const makeProxyOptions = ({ url, version, username, password, apiKey }, basicAut
     ...(apiKey ? {} : { auth: `${username}:${password}` }),
     headers: basicAuth ? getBasicAuthHeaders({ user: username, pass: password }) : getHeaders(undefined, apiKey),
     changeOrigin: true,
+    rewrite: path => path.replace(/^\/api/, ''),
 });
 
 export const realApiProxies = (lemApiOptions, btlApiOptions, bclApiOptions) => {
