@@ -26,6 +26,15 @@ import {
 import { Indexed } from '../shared/indexed/types';
 import { Watchable, WatchCallable } from '../shared/watchable/types';
 
+type WithGetSetProperty<T> = {
+    get _(): T;
+    set _($: T);
+};
+
+type WithGetSetProperties<K extends string, T = any> = {
+    [P in K]: WithGetSetProperty<T>['_'];
+};
+
 type WithTimeEdges<T = {}> = Readonly<{
     from: T;
     to: T;
@@ -139,7 +148,10 @@ export type IndexedCalendarBlock = Indexed<Indexed<CalendarBlockCellData>> & Cal
 
 export type CalendarGrid = Indexed<IndexedCalendarBlock> &
     Readonly<{
-        cursorIndex: number;
+        cursor: {
+            event: WithGetSetProperty<KeyboardEvent | MouseEvent>['_'];
+            readonly index: number;
+        };
         daysOfWeek: Indexed<CalendarDayOfWeekData>;
         // highlight: {
         //     (time: Time, selection?: TimeFrameSelection): void;
@@ -150,9 +162,9 @@ export type CalendarGrid = Indexed<IndexedCalendarBlock> &
         //     get to(): number | undefined;
         //     set to(time: Time | null | undefined);
         // };
-        interaction: (evt: Event, touchTarget?: any) => true | undefined;
         rowspan: number;
         shift: (offset?: number, shift?: TimeFrameShift) => void;
+        traverse: WithGetSetProperties<'NEXT' | 'PREV', MouseEvent>;
     }>;
 
 export type CalendarInitCallbacks = {

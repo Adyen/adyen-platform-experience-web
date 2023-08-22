@@ -66,7 +66,7 @@ export default forwardRef(function CalendarGrid({ cursorRootProps, prepare, grid
                                                             tabIndex: -1,
                                                         } as any;
 
-                                                        if (index === grid.cursorIndex && hasFlag(flags, calendar.flag.WITHIN_BLOCK)) {
+                                                        if (index === grid.cursor.index && hasFlag(flags, calendar.flag.WITHIN_BLOCK)) {
                                                             props.ref = cursorElementRef;
                                                         }
 

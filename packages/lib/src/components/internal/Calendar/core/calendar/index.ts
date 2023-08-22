@@ -208,7 +208,7 @@ const calendar = ((init = {} as CalendarInitCallbacks) => {
         frame = undefined as unknown as TimeFrame;
     };
 
-    let interaction = (evt: Event, touchTarget?: any): true | undefined => {
+    let interaction = (evt: KeyboardEvent | MouseEvent, touchTarget?: number): true | undefined => {
         if (evt instanceof KeyboardEvent) {
             switch (evt.code) {
                 case InteractionKeyCode.ARROW_LEFT:
@@ -246,7 +246,7 @@ const calendar = ((init = {} as CalendarInitCallbacks) => {
             return true;
         }
 
-        if (evt instanceof MouseEvent) {
+        if (evt instanceof MouseEvent && evt.type === 'click') {
             switch (touchTarget) {
                 default: {
                     const cursorIndex = indexFromEvent?.(evt);
@@ -268,12 +268,26 @@ const calendar = ((init = {} as CalendarInitCallbacks) => {
         disconnect: { value: () => disconnect() },
         grid: {
             value: structFrom(indexedFrameBlocks, {
-                cursorIndex: { get: () => frame?.cursor ?? -1 },
+                cursor: {
+                    value: struct({
+                        event: (() => {
+                            let _event: KeyboardEvent | MouseEvent | undefined;
+                            return {
+                                get: () => _event,
+                                set: (evt: KeyboardEvent | MouseEvent) => {
+                                    _event = undefined;
+                                    evt && interaction(evt) && (_event = evt);
+                                },
+                            };
+                        })(),
+                        index: { get: () => frame?.cursor ?? -1 },
+                    }),
+                },
                 daysOfWeek: { get: () => daysOfWeek },
                 // highlight: {},
-                interaction: { value: (evt: Event, touchTarget?: any) => interaction(evt, touchTarget) },
                 rowspan: { get: () => frame?.width ?? 0 },
                 shift: { value: (shiftBy?: number, shiftType?: TimeFrameShift) => shiftFrame(shiftBy, shiftType) },
+                // traverse: {},
             }),
         },
     }) as ReturnType<CalendarFactory>;

@@ -32,8 +32,13 @@ const useCalendar = ({
 
     const cursorRootProps = useMemo(
         () => ({
-            onClickCapture: grid.interaction,
-            onKeyDownCapture: (evt: KeyboardEvent) => grid.interaction(evt) && evt.preventDefault(),
+            onClickCapture: (evt: MouseEvent) => {
+                grid.cursor.event = evt;
+            },
+            onKeyDownCapture: (evt: KeyboardEvent) => {
+                grid.cursor.event = evt;
+                grid.cursor.event === evt && evt.preventDefault();
+            },
         }),
         [grid]
     );
