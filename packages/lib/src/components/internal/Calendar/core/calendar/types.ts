@@ -50,9 +50,38 @@ export type FirstWeekDay = (typeof FIRST_WEEK_DAYS)[number];
 export type WeekDay = FirstWeekDay | 2 | 3 | 4 | 5;
 export type Month = WeekDay | 7 | 8 | 9 | 10 | 11;
 export type MonthDays = 28 | 29 | 30 | 31;
+export type MonthDay =
+    | 1
+    | 2
+    | 3
+    | 4
+    | 5
+    | 6
+    | 7
+    | 8
+    | 9
+    | 10
+    | 11
+    | 12
+    | 13
+    | 14
+    | 15
+    | 16
+    | 17
+    | 18
+    | 19
+    | 20
+    | 21
+    | 22
+    | 23
+    | 24
+    | 25
+    | 26
+    | 27
+    | MonthDays;
 export type Time = Date | number | string;
 
-export const enum TimeFlag {
+export enum TimeFlag {
     TODAY = 0x1,
     CURSOR = 0x2,
     WEEKEND = 0x4,
@@ -67,6 +96,7 @@ export const enum TimeFlag {
     WITHIN_SELECTION = 0x800,
     SELECTION_START = 0x1000,
     SELECTION_END = 0x2000,
+    ALL = 0x3fff,
 }
 
 export type TimeFrameCursor =
@@ -131,16 +161,20 @@ export type CalendarBlock = Readonly<{
     year: number;
 }>;
 
+export type CalendarFlagsRecord = Readonly<{
+    [K in keyof typeof TimeFlag]?: 1;
+}>;
+
 export type CalendarBlockCellData = Readonly<{
     datetime: string;
-    flags: number;
+    flags: CalendarFlagsRecord;
     index: number;
     label: string;
     timestamp: number;
 }>;
 
 export type CalendarDayOfWeekData = Readonly<{
-    flags: number;
+    flags: CalendarFlagsRecord;
     labels: Readonly<{ [K in DayOfWeekLabelFormat]: string }>;
 }>;
 
@@ -149,7 +183,7 @@ export type IndexedCalendarBlock = Indexed<Indexed<CalendarBlockCellData>> & Cal
 export type CalendarGrid = Indexed<IndexedCalendarBlock> &
     Readonly<{
         cursor: {
-            event: WithGetSetProperty<KeyboardEvent | MouseEvent>['_'];
+            event: WithGetSetProperty<Event>['_'];
             readonly index: number;
         };
         daysOfWeek: Indexed<CalendarDayOfWeekData>;
@@ -164,7 +198,7 @@ export type CalendarGrid = Indexed<IndexedCalendarBlock> &
         // };
         rowspan: number;
         shift: (offset?: number, shift?: TimeFrameShift) => void;
-        traverse: WithGetSetProperties<'NEXT' | 'PREV', MouseEvent>;
+        traverse: WithGetSetProperties<'NEXT' | 'PREV', Event>;
     }>;
 
 export type CalendarInitCallbacks = {
@@ -175,24 +209,8 @@ export type CalendarInitCallbacks = {
 export type CalendarFactory = {
     (init: CalendarInitCallbacks | WatchCallable<any>): Readonly<{
         configure: (config: CalendarConfig) => void;
-        disconnect: () => void;
         grid: CalendarGrid;
-    }>;
-    readonly flag: Readonly<{
-        BLOCK_END: TimeFlag;
-        BLOCK_START: TimeFlag;
-        CURSOR: TimeFlag;
-        HIGHLIGHTED: TimeFlag;
-        HIGHLIGHT_END: TimeFlag;
-        HIGHLIGHT_START: TimeFlag;
-        RANGE_END: TimeFlag;
-        RANGE_START: TimeFlag;
-        ROW_END: TimeFlag;
-        ROW_START: TimeFlag;
-        TODAY: TimeFlag;
-        WEEKEND: TimeFlag;
-        WITHIN_BLOCK: TimeFlag;
-        WITHIN_RANGE: TimeFlag;
+        kill: () => void;
     }>;
     readonly highlight: Readonly<{
         COLLAPSE: typeof SELECTION_COLLAPSE;

@@ -13,7 +13,7 @@ const useCalendar = ({
     const { i18n } = useCoreContext();
     const [, setLastMutationTimestamp] = useState<DOMHighResTimeStamp>(performance.now());
 
-    const { configure, disconnect, grid } = useMemo(
+    const { configure, grid, kill } = useMemo(
         () =>
             calendar({
                 indexFromEvent: (evt: Event): number | undefined => {
@@ -32,7 +32,7 @@ const useCalendar = ({
 
     const cursorRootProps = useMemo(
         () => ({
-            onClickCapture: (evt: MouseEvent) => {
+            onClickCapture: (evt: Event) => {
                 grid.cursor.event = evt;
             },
             onKeyDownCapture: (evt: KeyboardEvent) => {
@@ -53,7 +53,7 @@ const useCalendar = ({
         )
     );
 
-    useEffect(() => disconnect, []);
+    useEffect(() => kill, []);
 
     useEffect(() => {
         configure({ ...config, locale: config.locale || i18n.locale });

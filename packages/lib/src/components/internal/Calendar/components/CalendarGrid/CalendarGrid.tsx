@@ -1,10 +1,9 @@
 import { forwardRef } from 'preact/compat';
 import { CalendarGridDateProps, CalendarGridDayOfWeekProps, CalendarGridProps } from './types';
 import { CalendarRenderToken } from '../../types';
-import { hasFlag, property, propsProperty } from '@src/components/internal/Calendar/components/CalendarGrid/utils';
+import { property, propsProperty } from '@src/components/internal/Calendar/components/CalendarGrid/utils';
 import CalendarGridDate from '@src/components/internal/Calendar/components/CalendarGrid/CalendarGridDate';
 import CalendarGridDayOfWeek from '@src/components/internal/Calendar/components/CalendarGrid/CalendarGridDayOfWeek';
-import calendar from '../../core';
 import '../../Calendar.scss';
 
 export default forwardRef(function CalendarGrid({ cursorRootProps, prepare, grid }: CalendarGridProps, cursorElementRef) {
@@ -66,7 +65,7 @@ export default forwardRef(function CalendarGrid({ cursorRootProps, prepare, grid
                                                             tabIndex: -1,
                                                         } as any;
 
-                                                        if (index === grid.cursor.index && hasFlag(flags, calendar.flag.WITHIN_BLOCK)) {
+                                                        if (index === grid.cursor.index && flags?.WITHIN_BLOCK) {
                                                             props.ref = cursorElementRef;
                                                         }
 

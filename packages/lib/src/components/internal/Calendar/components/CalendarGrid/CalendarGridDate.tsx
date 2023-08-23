@@ -1,7 +1,6 @@
 import { useMemo } from 'preact/hooks';
 import { CalendarGridDateProps } from '@src/components/internal/Calendar/components/CalendarGrid/types';
-import { hasFlag, useClassName } from '@src/components/internal/Calendar/components/CalendarGrid/utils';
-import calendar from '@src/components/internal/Calendar/core';
+import { useClassName } from '@src/components/internal/Calendar/components/CalendarGrid/utils';
 
 const CalendarGridDate = ({
     childClassName,
@@ -9,33 +8,33 @@ const CalendarGridDate = ({
     className,
     dateTime,
     displayDate,
-    flags = 0,
+    flags,
     childProps: { children: _1, className: requiredChildClassName, ...childProps } = {} as Exclude<CalendarGridDateProps['childProps'], undefined>,
     props: { children: _2, className: requiredClassName, ...priorityProps } = {} as Exclude<CalendarGridDateProps['props'], undefined>,
     ...props
 }: CalendarGridDateProps) => {
     const [withinMonth, dataAttrs] = useMemo(() => {
-        const withinMonth = hasFlag(flags, calendar.flag.WITHIN_BLOCK);
+        const withinMonth = flags?.WITHIN_BLOCK;
         const dataAttrs = { 'data-within-month': withinMonth } as any;
 
         if (withinMonth) {
-            const withinRange = hasFlag(flags, calendar.flag.WITHIN_RANGE);
+            const withinRange = flags?.WITHIN_RANGE;
 
-            dataAttrs['data-today'] = hasFlag(flags, calendar.flag.TODAY);
-            dataAttrs['data-first-week-day'] = hasFlag(flags, calendar.flag.ROW_START);
-            dataAttrs['data-last-week-day'] = hasFlag(flags, calendar.flag.ROW_END);
-            dataAttrs['data-weekend'] = hasFlag(flags, calendar.flag.WEEKEND);
-            dataAttrs['data-first-month-day'] = hasFlag(flags, calendar.flag.BLOCK_START);
-            dataAttrs['data-last-month-day'] = hasFlag(flags, calendar.flag.BLOCK_END);
+            dataAttrs['data-today'] = flags?.TODAY;
+            dataAttrs['data-first-week-day'] = flags?.LINE_START;
+            dataAttrs['data-last-week-day'] = flags?.LINE_END;
+            dataAttrs['data-weekend'] = flags?.WEEKEND;
+            dataAttrs['data-first-month-day'] = flags?.BLOCK_START;
+            dataAttrs['data-last-month-day'] = flags?.BLOCK_END;
 
             dataAttrs['data-within-range'] = withinRange;
 
             if (withinRange) {
-                dataAttrs['data-range-end'] = hasFlag(flags, calendar.flag.RANGE_END);
-                dataAttrs['data-range-start'] = hasFlag(flags, calendar.flag.RANGE_START);
-                dataAttrs['data-selection-end'] = hasFlag(flags, calendar.flag.HIGHLIGHT_END);
-                dataAttrs['data-selection-start'] = hasFlag(flags, calendar.flag.HIGHLIGHT_START);
-                dataAttrs['data-within-selection'] = hasFlag(flags, calendar.flag.HIGHLIGHTED);
+                dataAttrs['data-range-end'] = flags?.RANGE_END;
+                dataAttrs['data-range-start'] = flags?.RANGE_START;
+                dataAttrs['data-selection-end'] = flags?.SELECTION_END;
+                dataAttrs['data-selection-start'] = flags?.SELECTION_START;
+                dataAttrs['data-within-selection'] = flags?.WITHIN_SELECTION;
             }
         }
 

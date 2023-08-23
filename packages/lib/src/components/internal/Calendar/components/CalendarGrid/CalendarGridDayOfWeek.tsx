@@ -1,14 +1,13 @@
 import { JSX } from 'preact';
 import { useMemo } from 'preact/hooks';
 import { CalendarGridDayOfWeekProps } from '@src/components/internal/Calendar/components/CalendarGrid/types';
-import { hasFlag, useClassName } from '@src/components/internal/Calendar/components/CalendarGrid/utils';
-import { CalendarFlag } from '@src/components/internal/Calendar/types';
+import { useClassName } from '@src/components/internal/Calendar/components/CalendarGrid/utils';
 
 const CalendarGridDayOfWeek = (({
     childClassName,
     children,
     className,
-    flags = 0,
+    flags,
     label,
     childProps: { children: _1, className: requiredChildClassName, ...childProps } = {} as Exclude<
         CalendarGridDayOfWeekProps['childProps'],
@@ -22,9 +21,9 @@ const CalendarGridDayOfWeek = (({
     const dataAttrs = useMemo(
         () =>
             ({
-                'data-first-week-day': hasFlag(flags, CalendarFlag.WEEK_START),
-                'data-last-week-day': hasFlag(flags, CalendarFlag.WEEK_END),
-                'data-weekend': hasFlag(flags, CalendarFlag.WEEKEND),
+                'data-first-week-day': flags?.LINE_START,
+                'data-last-week-day': flags?.LINE_END,
+                'data-weekend': flags?.WEEKEND,
             } as any),
         [flags]
     );

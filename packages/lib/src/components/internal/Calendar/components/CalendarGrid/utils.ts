@@ -1,11 +1,10 @@
 import classnames from 'classnames';
 import { JSX } from 'preact';
 import { useMemo } from 'preact/hooks';
-import { TimeFlag } from '@src/components/internal/Calendar/core/calendar/types';
+import { EMPTY_OBJECT } from '@src/components/internal/Calendar/core/shared/constants';
+import { toString } from '@src/components/internal/Calendar/core/shared/utils';
 
 const EXCESS_WHITESPACE_CHAR = /^\s+|\s+(?=\s|$)/g;
-
-export const hasFlag = (flags: number, flag: TimeFlag): 1 | undefined => (flags & flag ? 1 : undefined);
 
 export const parseClassName = (fallbackClassName: string, className: JSX.Signalish<string | undefined>): undefined | string => {
     const classes = className ? (typeof className === 'string' ? className : className?.value ?? '') : '';
@@ -33,17 +32,14 @@ type PropertyFactory = {
 };
 
 export const property = (() => {
-    const proto = Object.freeze(Object.create(null));
-    const toString = Function.prototype.call.bind(Object.prototype.toString);
-
     const descriptor = <T>(descriptor: PropertyDescriptor<T>) =>
         Object.freeze(
-            Object.create(proto, Object.fromEntries(Object.entries(descriptor).map(([field, value]) => [field, { value }])))
+            Object.create(EMPTY_OBJECT, Object.fromEntries(Object.entries(descriptor).map(([field, value]) => [field, { value }])))
         ) as PropertyDescriptor<T>;
 
     const isPropDescriptor = (value: any): value is PropertyDescriptor => {
         try {
-            return Object.getPrototypeOf(value) === proto;
+            return Object.getPrototypeOf(value) === EMPTY_OBJECT;
         } catch {
             return false;
         }

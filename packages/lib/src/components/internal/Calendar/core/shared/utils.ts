@@ -3,6 +3,7 @@ import { $createObject, immutableProxyHandlers } from './constants';
 export const call = Function.prototype.bind.bind(Function.prototype.call);
 export const struct = call($createObject, null, null);
 export const structFrom = call($createObject, null);
+export const toString = call(Object.prototype.toString);
 
 export const noop = new Proxy(() => {}, immutableProxyHandlers);
 
