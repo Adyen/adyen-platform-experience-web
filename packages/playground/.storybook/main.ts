@@ -20,7 +20,8 @@ const config: StorybookConfig = {
                 proxy: realApiProxies(lemApi, BTLApi, BCLApi),
             },
             plugins: [
-                (process.env.VITE_MODE === 'mocked' || process.env.VITE_MODE === 'development') &&
+                process.env.VITE_MODE &&
+                    ['mocked', 'development'].includes(process.env.VITE_MODE) &&
                     checker({
                         stylelint: {
                             lintCommand: 'stylelint ../lib/src/**/*.scss',
