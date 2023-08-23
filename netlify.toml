@@ -1,28 +1,6 @@
-[[redirects]]
-from = "/transactions"
-status = 200
-to = "https://balanceplatform-api-test.adyen.com/btl/v3/transactions"
-
-[[redirects]]
-from = "/transactions/*"
-status = 200
-to = "https://balanceplatform-api-test.adyen.com/btl/v3/transactions/:splat"
-
-[[redirects]]
-from = "/accountHolders/*"
-status = 200
-to = "https://balanceplatform-api-test.adyen.com/bcl/v2/accountHolders/:splat"
-
-[[redirects]]
-from = "/balanceAccounts/*"
-status = 200
-to = "https://balanceplatform-api-test.adyen.com/bcl/v2/balanceAccounts/:splat"
-
-[[redirects]]
-from = "/legalEntities/*"
-status = 200
-to = "https://kyc-test.adyen.com/lem/v3/legalEntities/:splat"
+[build]
+  edge_functions = "packages/playground/netlify/edge-functions"
 
 [[edge_functions]]
-  path = "/*"
-  function = "set-request-header"
+  path = "/api/*"
+  function = "proxy-requests"

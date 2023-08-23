@@ -1,25 +1,16 @@
-import { ProxyOptions } from 'vite';
-import getHeaders from './utils/getHeaders';
-import { getBasicAuthHeaders } from './utils/getBasicAuthHeaders';
-import { endpoints } from '../endpoints';
+import getHeaders from './utils/getHeaders.js';
+import { getBasicAuthHeaders } from './utils/getBasicAuthHeaders.js';
+import { endpoints } from '../endpoints.js';
 
-interface ApiOptions {
-    url: string;
-    version?: string;
-    username?: string;
-    password?: string;
-    apiKey?: string;
-    auth?: string;
-}
-
-const makeProxyOptions = ({ url, version, username, password, apiKey, auth }: ApiOptions, basicAuth: boolean = false): ProxyOptions => ({
+const makeProxyOptions = ({ url, version, username, password, apiKey }, basicAuth = false) => ({
     target: `${url}${version ?? ''}`,
     ...(apiKey ? {} : { auth: `${username}:${password}` }),
     headers: basicAuth ? getBasicAuthHeaders({ user: username, pass: password }) : getHeaders(undefined, apiKey),
     changeOrigin: true,
+    rewrite: path => path.replace(/^\/api/, ''),
 });
 
-export const realApiProxies = (lemApiOptions: ApiOptions, btlApiOptions: ApiOptions, bclApiOptions: ApiOptions): Record<string, ProxyOptions> => {
+export const realApiProxies = (lemApiOptions, btlApiOptions, bclApiOptions) => {
     const lemApiProxyOptions = makeProxyOptions(lemApiOptions);
     const btlApiProxyOptions = makeProxyOptions(btlApiOptions);
     const bclApiProxyOptions = makeProxyOptions(bclApiOptions);

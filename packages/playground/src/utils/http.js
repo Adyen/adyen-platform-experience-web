@@ -11,7 +11,7 @@ export const httpPost = (endpoint, data) =>
     }).then(response => response.json());
 
 export const httpGet = (endpoint, request = {}) => {
-    const url = new URL(`${protocol}//${host}/${endpoint}`);
+    const url = new URL(`${protocol}//${host}/api/${endpoint}`);
     const searchParams = new URLSearchParams(Object.entries(request).filter(([param, value]) => value && param !== 'signal'));
 
     searchParams.forEach((value, param) => {
