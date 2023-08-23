@@ -16,8 +16,6 @@ const meta: Meta<ElementProps<typeof BalanceAccountComponent>> = {
         return <Container type={'balanceAccount'} componentConfiguration={args} context={context} />;
     },
 };
-export default meta;
-
 export const Basic: ElementStory<typeof BalanceAccountComponent> = {
     args: {
         balanceAccount: BALANCE_ACCOUNT_DETAILS_1,
@@ -31,3 +29,5 @@ export const ApiIntegration: ElementStory<typeof BalanceAccountComponent> = {
         }),
     ],
 };
+
+export default meta;

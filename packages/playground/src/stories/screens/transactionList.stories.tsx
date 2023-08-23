@@ -22,8 +22,6 @@ const meta: Meta<ElementProps<typeof TransactionsComponent>> = {
         return <Container type={'transactionList'} componentConfiguration={args} context={context} />;
     },
 };
-export default meta;
-
 export const Basic: ElementStory<typeof TransactionsComponent> = {
     args: {
         transactions: { data: BASIC_TRANSACTIONS_LIST, _links: {} },
@@ -43,3 +41,5 @@ export const BasicTransactionList: ElementStory<typeof TransactionsComponent> = 
         }),
     ],
 };
+
+export default meta;

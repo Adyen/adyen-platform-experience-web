@@ -21,8 +21,6 @@ const meta: Meta<IAccountHolderScreen> = {
         return <Container type={'accountHolder'} componentConfiguration={args.accountHolderProps} context={context} />;
     },
 };
-export default meta;
-
 export const Basic: StoryObj<IAccountHolderScreen> = {
     args: {
         accountHolderProps: {
@@ -43,3 +41,5 @@ export const ApiIntegration: StoryObj<IAccountHolderScreen> = {
         }),
     ],
 };
+
+export default meta;

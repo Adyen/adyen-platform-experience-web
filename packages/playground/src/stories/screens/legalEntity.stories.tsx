@@ -22,8 +22,6 @@ const meta: Meta<ILegalEntityScreen> = {
         return <Container type={'legalEntityDetails'} componentConfiguration={args.legalEntityProps} context={context} />;
     },
 };
-export default meta;
-
 export const OrganizationNoTI: StoryObj<ILegalEntityScreen> = {
     args: {
         legalEntityProps: { legalEntity: LEGAL_ENTITY_ORGANIZATION },
@@ -41,6 +39,7 @@ export const Individual: StoryObj<ILegalEntityScreen> = {
         legalEntityProps: { legalEntity: LEGAL_ENTITY_INDIVIDUAL },
     },
 };
+
 export const ApiIntegration: StoryObj<ILegalEntityScreen> = {
     argTypes: {
         customId: { control: 'text' },
@@ -66,3 +65,5 @@ export const ApiIntegration: StoryObj<ILegalEntityScreen> = {
         return <Container type={'legalEntityDetails'} componentConfiguration={props} context={context} />;
     },
 };
+
+export default meta;
