@@ -1,7 +1,7 @@
 import { CustomTranslations, Locales } from '../language/types';
 import { AmountExtended } from '../types/shared';
 import { AnalyticsOptions } from './Analytics/types';
-import componentsMap from '@src/components';
+import componentsMap from '../components';
 import { ValueOf } from '@src/utils/types';
 
 export interface CoreOptions {
@@ -57,7 +57,6 @@ export interface CoreOptions {
 
 export type ComponentMap = typeof componentsMap;
 export type ComponentOptions<Name extends keyof ComponentMap> = ConstructorParameters<ComponentMap[Name]>[0];
-
 export function isKeyOfComponent(component: string): component is keyof ComponentMap {
     return !!componentsMap[component as keyof ComponentMap];
 }

@@ -26,11 +26,21 @@
         "type-check": "tsc --watch --preserveWatchOutput",
         "types:watch": "npm run type-check -- --watch",
         "start:mock": "vite dev --mode mocked --config ./vite.config.ts",
-        "mock-server": "vite-node ../server/run.js",
-        "format": "prettier --write \"src/**/*.{ts,js,css, scss, html}\""
+        "format": "prettier --write \"src/**/*.{ts,js,css, scss, html}\"",
+        "storybook": "vite-node .storybook/runStorybook.ts",
+        "storybook:mocked": "vite-node .storybook/runStorybook.ts --mode mocked",
+        "storybook:build": "vite-node ./.storybook/buildStorybook.ts",
+        "storybook:demo": "vite-node ./.storybook/buildStorybook.ts --mode demo && npm run demo:serve"
     },
     "devDependencies": {
         "@preact/preset-vite": "^2.5.0",
+        "@storybook/addon-a11y": "^7.0.4",
+        "@storybook/addon-essentials": "^7.0.4",
+        "@storybook/core-server": "^7.0.4",
+        "@storybook/manager-api": "^7.0.4",
+        "@storybook/preact": "^7.0.4",
+        "@storybook/preact-vite": "^7.0.4",
+        "@storybook/types": "^7.0.4",
         "autoprefixer": "^9.8.8",
         "cross-env": "^7.0.3",
         "css-loader": "^4.3.0",
@@ -48,6 +58,7 @@
         "vite-node": "^0.30.1"
     },
     "dependencies": {
-        "@adyen/adyen-fp-web": "file:../lib/src"
+        "@adyen/adyen-fp-web": "1.0.0",
+        "preact": "^10.13.2"
     }
 }

@@ -4,7 +4,6 @@ import { resolve } from 'node:path';
 import { lstat, readdir } from 'node:fs/promises';
 import { getEnvironment } from '../../envs/getEnvs';
 import { realApiProxies } from './src/endpoints/apis/realApiProxies';
-import { checker } from 'vite-plugin-checker';
 
 const playgroundDir = resolve(__dirname, 'src/pages');
 const demoPlaygroundDir = resolve(__dirname, './');
@@ -26,26 +25,15 @@ async function getPlaygroundEntrypoints() {
 }
 
 export default defineConfig(async ({ mode }) => {
-    const { lemApi, BTLApi, BCLApi, playground, mockServer } = getEnvironment(mode);
+    const { lemApi, BTLApi, BCLApi, playground, envIds } = getEnvironment(mode);
     return {
         root: mode === 'demo' ? demoPlaygroundDir : undefined,
         base: './',
-        plugins: [
-            preact(),
-            (mode === 'mocked' || mode === 'development') &&
-                checker({
-                    stylelint: {
-                        lintCommand: 'stylelint ../lib/src/**/*.scss',
-                    },
-                }),
-        ],
+        plugins: [preact()],
         build:
             mode === 'demo'
                 ? {
-                      rollupOptions: {
-                          input: await getPlaygroundEntrypoints(),
-                      },
-                      outDir: resolve(__dirname, '.demo'),
+                      outDir: resolve(__dirname, 'storybook-static'),
                       emptyOutDir: true,
                       target: 'esnext',
                   }
@@ -59,7 +47,7 @@ export default defineConfig(async ({ mode }) => {
         },
         css: {
             modules: {
-                scopeBehaviour: 'local',
+                scopeBehaviour: mode === 'production' ? 'local' : undefined,
                 generateScopedName: name => name,
             },
         },
@@ -76,6 +64,13 @@ export default defineConfig(async ({ mode }) => {
         },
         define: {
             'process.env.VITE_BALANCE_PLATFORM': JSON.stringify(BTLApi.balancePlatform || null),
+            'process.env.VITE_MODE': JSON.stringify(import.meta.env?.VITE_MODE ?? mode),
+            'process.env.VITE_ORG_LEGAL_ENTITY_ID': JSON.stringify(envIds.legalEntities.organization || null),
+            'process.env.VITE_IND_LEGAL_ENTITY_ID': JSON.stringify(envIds.legalEntities.individual || null),
+            'process.env.VITE_SOLE_PROPRIETORSHIP_LEGAL_ENTITY_ID': JSON.stringify(envIds.legalEntities.soleProprietorship || null),
+            'process.env.VITE_DEFAULT_TRANSACTION_ID': JSON.stringify(envIds.transaction.defaultId || null),
+            'process.env.VITE_DEFAULT_BALANCE_ACCOUNT_ID': JSON.stringify(envIds.balanceAccount.defaultId || null),
+            'process.env.VITE_DEFAULT_ACCOUNT_HOLDER_ID': JSON.stringify(envIds.accountHolder.defaultId || null),
         },
     };
 });

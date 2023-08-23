@@ -10,14 +10,14 @@ class BaseElement<P extends BaseElementProps> {
     public readonly _id = `${(this.constructor as typeof BaseElement)?.type}-${uuid()}`;
     public props: P;
     public state: BaseElementState;
-    protected static defaultProps = {};
+    public defaultProps = {};
     public _node: Document | ShadowRoot | DocumentFragment | Element | null;
     public _component: ComponentChild | Error;
     public eventEmitter = new EventEmitter();
     protected readonly _parentInstance?: Core;
 
     protected constructor(props: P) {
-        this.props = this.formatProps({ ...(this.constructor as typeof BaseElement)?.defaultProps, ...props });
+        this.props = this.formatProps({ ...this?.defaultProps, ...props });
         this._parentInstance = this.props._parentInstance;
         this._node = null;
         this.state = {} as BaseElementState;

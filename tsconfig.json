@@ -14,8 +14,5 @@
         "stripInternal": true,
         "importHelpers": true
     },
-    "paths": {
-        "@adyen/adyen-fp-web": ["packages/lib/src"]
-    },
     "files": ["packages/lib/src/declarations/scss.d.ts", "packages/lib/src/declarations/whatwg-fetch.d.ts"]
 }

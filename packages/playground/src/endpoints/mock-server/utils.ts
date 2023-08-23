@@ -9,11 +9,5 @@ export function getMockHandlers(mocks: RestHandler<MockedRequest<DefaultBodyType
 
 const MOCK_MODES = ['mocked', 'demo'];
 export async function enableServerInMockedMode() {
-    if (MOCK_MODES.includes(import.meta.env.MODE)) {
-        await mockWorker.start({
-            onUnhandledRequest: (request, print) => {
-                print.warning();
-            },
-        });
-    }
+    await mockWorker.start({});
 }

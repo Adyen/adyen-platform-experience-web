@@ -6,6 +6,12 @@ export const MOCK_TRANSFER_INSTRUMENT_OVERVIEW: TransferInstrumentOv = {
     id: 'SE322LZ223222D5F96LNL8WNX',
     trustedSource: false,
 };
+export const MOCK_TRANSFER_INSTRUMENT_OVERVIEW_2: TransferInstrumentOv = {
+    realLastFour: '3122',
+    accountIdentifier: 'NL**RTBO******9961',
+    id: 'SE199LZ223222D5F96GMP6PDT',
+    trustedSource: false,
+};
 export const MOCK_TRANSFER_INSTRUMENT: TransferInstrument = {
     bankAccount: {
         accountNumber: '987654321',

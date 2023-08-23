@@ -3,22 +3,28 @@ import '../style/index.scss';
 import './shared.scss';
 
 // External Components
-import AccountHolder from './AccountHolder';
-import BalanceAccount from './BalanceAccount';
-import Transactions from './Transactions';
-import TransactionDetails from './TransactionDetails';
+import { AccountHolderComponent } from './AccountHolder';
+import { BalanceAccountComponent } from './BalanceAccount';
+import { TransactionsComponent } from './Transactions';
+import { TransactionsDetailsComponent } from './TransactionDetails';
 import { ComponentMap } from '../core/types';
-import LegalEntityDetails from '@src/components/LegalEntityDetails';
+import { LegalEntityComponent } from './LegalEntityDetails';
+
+export * from './AccountHolder';
+export * from './BalanceAccount';
+export * from './LegalEntityDetails';
+export * from './Transactions';
+export * from './TransactionDetails';
 
 /**
  * Maps each component with a Component element.
  */
 const componentsMap = {
-    accountHolder: AccountHolder,
-    balanceAccount: BalanceAccount,
-    transactionList: Transactions,
-    transactionDetails: TransactionDetails,
-    legalEntityDetails: LegalEntityDetails,
+    accountHolder: AccountHolderComponent,
+    balanceAccount: BalanceAccountComponent,
+    transactionList: TransactionsComponent,
+    transactionDetails: TransactionsDetailsComponent,
+    legalEntityDetails: LegalEntityComponent,
 };
 
 /**

@@ -1,8 +1,7 @@
-import { MOCK_TRANSFER_INSTRUMENT_OVERVIEW } from './transferInstrument';
+import { MOCK_TRANSFER_INSTRUMENT_OVERVIEW, MOCK_TRANSFER_INSTRUMENT_OVERVIEW_2 } from './transferInstrument';
 import type { ILegalEntityIndividual, ILegalEntityOrganization } from '@adyen/adyen-fp-web/src/types/models/api/legal-entities';
 
 export const LEGAL_ENTITY_ORGANIZATION: ILegalEntityOrganization = {
-    transferInstruments: [MOCK_TRANSFER_INSTRUMENT_OVERVIEW],
     entityAssociations: [
         {
             jobTitle: 'CFO',
@@ -58,6 +57,11 @@ export const LEGAL_ENTITY_ORGANIZATION: ILegalEntityOrganization = {
             verificationStatus: 'pending',
         },
     },
+};
+
+export const LEGAL_ENTITY_ORGANIZATION_WITH_TI: ILegalEntityOrganization = {
+    ...LEGAL_ENTITY_ORGANIZATION,
+    transferInstruments: [MOCK_TRANSFER_INSTRUMENT_OVERVIEW, MOCK_TRANSFER_INSTRUMENT_OVERVIEW_2],
 };
 
 export const LEGAL_ENTITY_INDIVIDUAL: ILegalEntityIndividual = {
