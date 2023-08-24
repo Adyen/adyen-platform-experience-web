@@ -1,4 +1,4 @@
-import { FIRST_WEEK_DAYS, FRAME_SIZES } from '../../constants';
+import { CALENDAR_CONTROLS, FIRST_WEEK_DAYS, FRAME_SIZES } from '../../constants';
 import { AnnualTimeFrame, DefaultTimeFrame, TimeFrame } from '../../internal/timeframe';
 import { CalendarConfig, CalendarConfigurator } from '../../types';
 import { boolify, noop, pickFromCollection, struct } from '../../shared/utils';
@@ -8,12 +8,14 @@ import syncEffectCallback from '@src/utils/syncEffectCallback';
 
 const createConfigurator = (beforeEffectCallback?: WatchCallable<any>) => {
     let _config = {} as CalendarConfig;
+    let _pendingNotification = false;
     let _frame: TimeFrame;
     let _unwatch: () => void;
     let _unwatchFrame: () => void;
 
     const _watchable = watchable({
         blocks: () => _config?.blocks,
+        controls: () => _config?.controls,
         firstWeekDay: () => _config?.firstWeekDay,
         locale: () => _config?.locale,
         minified: () => _config?.minified,
@@ -25,7 +27,7 @@ const createConfigurator = (beforeEffectCallback?: WatchCallable<any>) => {
     const chainedCallback = syncEffectCallback(() => {
         if (typeof props.watch !== 'function') return;
         beforeEffectCallback?.();
-        props.watch();
+        props.watch.call(configurator.config);
     });
 
     const configurePropDescriptors = {} as {
@@ -34,6 +36,7 @@ const createConfigurator = (beforeEffectCallback?: WatchCallable<any>) => {
 
     const props = {
         cursorIndex: undefined,
+        shiftFactor: undefined,
         watch: undefined,
     } as { [K in keyof CalendarConfigurator['configure']]?: CalendarConfigurator['configure'][K] };
 
@@ -46,14 +49,11 @@ const createConfigurator = (beforeEffectCallback?: WatchCallable<any>) => {
     };
 
     let configure = (config: CalendarConfig): void => {
-        const idle = typeof props.watch !== 'function';
-
-        if (idle && _frame) return;
-
         _config = {
             ..._config,
             ...config,
             blocks: pickFromCollection(FRAME_SIZES, _config.blocks, config.blocks),
+            controls: pickFromCollection(CALENDAR_CONTROLS, _config.controls, config.controls),
             firstWeekDay: pickFromCollection(FIRST_WEEK_DAYS, _config.firstWeekDay, config.firstWeekDay),
             locale: config.locale ?? _config.locale ?? 'en',
             minified: boolify(config.minified, _config.minified),
@@ -61,14 +61,17 @@ const createConfigurator = (beforeEffectCallback?: WatchCallable<any>) => {
             withRangeSelection: boolify(config.withRangeSelection, _config.withRangeSelection),
         };
 
-        if (idle) {
-            _frame = (_config.minified as boolean) ? new AnnualTimeFrame() : new DefaultTimeFrame();
+        if (typeof props.watch !== 'function') {
+            if (!_frame) {
+                _frame = (_config.minified as boolean) ? new AnnualTimeFrame() : new DefaultTimeFrame();
 
-            _frame.timeslice = _config.timeslice;
-            _frame.firstWeekDay = _config.firstWeekDay;
-            _frame.size = _config.blocks;
+                _frame.timeslice = _config.timeslice;
+                _frame.firstWeekDay = _config.firstWeekDay;
+                _frame.size = _config.blocks;
 
-            beforeEffectCallback?.();
+                beforeEffectCallback?.();
+            } else _pendingNotification = true;
+
             return;
         }
 
@@ -99,26 +102,39 @@ const createConfigurator = (beforeEffectCallback?: WatchCallable<any>) => {
     };
 
     for (const key of Object.keys(props) as (keyof typeof props)[]) {
-        configurePropDescriptors[key] = {
-            get: () => props[key],
-            set: (value: (typeof props)[typeof key] | null) => {
-                if (value == undefined) props[key] = undefined;
-                else if (typeof value === 'function') props[key] = value;
-            },
+        let set = (value: WatchCallable<any, CalendarConfig> | null) => {
+            if (value == undefined) props[key] = undefined;
+            else if (typeof value === 'function') props[key] = value;
         };
+
+        if (key === 'watch') {
+            const setter = set;
+
+            set = (value: WatchCallable<any, CalendarConfig> | null) => {
+                setter(value);
+                if (typeof props[key] === 'function' && _pendingNotification) {
+                    _pendingNotification = false;
+                    _watchable.notify();
+                }
+            };
+        }
+
+        configurePropDescriptors[key] = { set, get: () => props[key] };
     }
 
-    return struct({
+    const configurator = struct({
         cleanup: { value: _cleanup },
         config: { get: () => ({ ..._config }) },
         configure: {
             value: Object.defineProperties((config?: CalendarConfig) => {
                 config && configure(config);
-                return { ..._config };
+                return _watchable.snapshot;
             }, configurePropDescriptors),
         },
         frame: { get: () => _frame },
     }) as CalendarConfigurator;
+
+    return configurator;
 };
 
 export default createConfigurator;

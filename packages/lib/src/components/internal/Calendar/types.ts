@@ -135,7 +135,7 @@ export interface CalendarProps extends CalendarConfig {
     offset?: number;
     onSelected?: (date: any) => void;
     prepare?: (...args: any[]) => any;
-    renderControl?: (traversal: CalendarTraversal, controlRootProps: CalendarTraversalControlRootProps) => ComponentChild;
+    renderControl?: (control: string, reactor: (...args: any[]) => any) => ComponentChild;
     trackToday?: boolean;
     traversalControls?: CalendarTraversalControls;
 }

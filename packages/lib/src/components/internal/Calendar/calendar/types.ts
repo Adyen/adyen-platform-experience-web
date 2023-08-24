@@ -1,4 +1,7 @@
 import {
+    CONTROLS_ALL,
+    CONTROLS_MINIMAL,
+    CONTROLS_NONE,
     CURSOR_BACKWARD,
     CURSOR_BLOCK_END,
     CURSOR_BLOCK_START,
@@ -32,9 +35,9 @@ export type WithGetSetProperty<T> = {
     set _($: T);
 };
 
-export type WithGetSetProperties<K extends string, T = any> = {
-    [P in K]: WithGetSetProperty<T>['_'];
-};
+// export type WithGetSetProperties<K extends string, T = any> = {
+//     [P in K]: WithGetSetProperty<T>['_'];
+// };
 
 export type WithTimeEdges<T = {}> = Readonly<{
     from: T;
@@ -70,6 +73,8 @@ export enum TimeFlag {
     SELECTION_END = 0x2000,
     ALL = 0x3fff,
 }
+
+export type TimeFlagProp = Exclude<keyof typeof TimeFlag, 'ALL'>;
 
 export type TimeFrameCursor =
     | typeof CURSOR_BACKWARD
@@ -116,8 +121,28 @@ export type TimeSliceFactory = {
     (time?: Time, timeEdge?: TimeFrameRangeEdge): TimeSlice;
 };
 
+export const enum CalendarShiftControlFlag {
+    PREV = 0x1,
+    BLOCK = 0x0,
+    FRAME = 0x2,
+    PERIOD = 0x4,
+}
+
+export enum CalendarShiftControlsFlag {
+    PREV_PERIOD = CalendarShiftControlFlag.PREV | CalendarShiftControlFlag.PERIOD,
+    PREV_FRAME = CalendarShiftControlFlag.PREV | CalendarShiftControlFlag.FRAME,
+    PREV = CalendarShiftControlFlag.PREV | CalendarShiftControlFlag.BLOCK,
+    NEXT = CalendarShiftControlFlag.BLOCK,
+    NEXT_FRAME = CalendarShiftControlFlag.FRAME,
+    NEXT_PERIOD = CalendarShiftControlFlag.PERIOD,
+}
+
+export type CalendarShiftControl = keyof typeof CalendarShiftControlsFlag;
+export type CalendarShiftControls = typeof CONTROLS_ALL | typeof CONTROLS_MINIMAL | typeof CONTROLS_NONE;
+
 export type CalendarConfig = {
     blocks?: TimeFrameSize;
+    controls?: CalendarShiftControls;
     firstWeekDay?: FirstWeekDay;
     locale?: string;
     minified?: boolean;
@@ -134,7 +159,7 @@ export type CalendarBlock = Readonly<{
 }>;
 
 export type CalendarFlagsRecord = Readonly<{
-    [K in keyof typeof TimeFlag]?: 1;
+    [K in TimeFlagProp]?: 1;
 }>;
 
 export type CalendarBlockCellData = Readonly<{
@@ -159,13 +184,21 @@ export type CalendarConfigurator = Readonly<{
     frame?: TimeFrame;
 }>;
 
+export type CalendarGridControls = Readonly<{
+    [P in CalendarShiftControl]?: (evt?: Event) => boolean;
+}>;
+
+export type CalendarGridControlEntry = [CalendarShiftControl, Exclude<CalendarGridControls[CalendarShiftControl], undefined>];
+
 export type CalendarGrid = Indexed<IndexedCalendarBlock> &
     Readonly<{
         config: {
             (config?: CalendarConfig): CalendarConfig;
-            cursorIndex: WithGetSetProperty<(evt: Event) => number | undefined>['_'];
-            watch: WithGetSetProperty<WatchCallable<any>>['_'];
+            cursorIndex: WithGetSetProperty<(this: CalendarConfig, evt: Event) => number | undefined>['_'];
+            shiftFactor: WithGetSetProperty<(this: CalendarConfig, evt: Event, target: CalendarShiftControl) => number | undefined>['_'];
+            watch: WithGetSetProperty<WatchCallable<any, CalendarConfig>>['_'];
         };
+        controls: Indexed<CalendarGridControlEntry> & CalendarGridControls;
         cursor: (evt?: Event) => boolean;
         daysOfWeek: Indexed<CalendarDayOfWeekData>;
         // highlight: {
@@ -177,8 +210,6 @@ export type CalendarGrid = Indexed<IndexedCalendarBlock> &
         //     get to(): number | undefined;
         //     set to(time: Time | null | undefined);
         // };
-        shift: (offset?: number, shift?: TimeFrameShift) => void;
-        traverse: WithGetSetProperties<'NEXT' | 'PREV', Event>;
     }>;
 
 export type CalendarInit = CalendarConfig | TimeFrameSize | WatchCallable<any>;
@@ -187,6 +218,11 @@ export type CalendarFactory = {
     (init: CalendarInit): Readonly<{
         grid: CalendarGrid;
         kill: () => void;
+    }>;
+    readonly controls: Readonly<{
+        ALL: typeof CONTROLS_ALL;
+        MINIMAL: typeof CONTROLS_MINIMAL;
+        NONE: typeof CONTROLS_NONE;
     }>;
     readonly highlight: Readonly<{
         COLLAPSE: typeof SELECTION_COLLAPSE;
@@ -201,9 +237,4 @@ export type CalendarFactory = {
             UNBOUNDED: TimeSlice;
             UNTIL_NOW: TimeSlice;
         }>;
-    shift: Readonly<{
-        BLOCK: typeof SHIFT_BLOCK;
-        FRAME: typeof SHIFT_FRAME;
-        PERIOD: typeof SHIFT_PERIOD;
-    }>;
 };

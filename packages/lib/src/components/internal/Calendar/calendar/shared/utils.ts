@@ -16,5 +16,7 @@ export const isInfinite = (value: any): value is number => isNumber(value) && 1 
 export const isBitSafeInteger = (value: any): value is number => isNumber(value) && value === ~~value;
 
 export const pickFromCollection = <C extends readonly any[]>(collection: C, defaultOption?: C[number], option?: C[number]) => {
-    return collection.includes(option) || option === undefined ? option : defaultOption;
+    if (collection.includes(option)) return option;
+    if (option == undefined) return collection[0];
+    return collection.includes(defaultOption) ? defaultOption : collection[0];
 };

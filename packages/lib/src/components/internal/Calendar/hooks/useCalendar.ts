@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
 import useCoreContext from '@src/core/Context/useCoreContext';
 import { ReflexAction } from '@src/hooks/useReflex';
-import { CalendarConfig } from '@src/components/internal/Calendar/calendar/types';
+import { CalendarConfig } from '../calendar/types';
 import useFocusCursor from '../../../../hooks/element/useFocusCursor';
 import calendar from '../calendar';
 
@@ -9,6 +9,7 @@ const useCalendar = ({
     // onlyMonthDays,
     // onSelected,
     blocks,
+    controls,
     firstWeekDay,
     minified,
     timeslice,
@@ -29,6 +30,13 @@ const useCalendar = ({
                 if (Number.isFinite(index)) return index;
                 element = element.parentNode as HTMLElement;
             }
+        };
+
+        grid.config.shiftFactor = function (evt: Event) {
+            if (this.controls !== calendar.controls.MINIMAL) return;
+            if ((evt as MouseEvent)?.shiftKey) return 12;
+            if ((evt as MouseEvent)?.altKey) return this.blocks;
+            return 1;
         };
 
         return { grid, kill };
@@ -59,8 +67,8 @@ const useCalendar = ({
     useEffect(() => kill, []);
 
     useEffect(() => {
-        grid.config({ blocks, firstWeekDay, minified, timeslice, withMinimumHeight, withRangeSelection, locale: i18n.locale });
-    }, [i18n, blocks, firstWeekDay, minified, timeslice, withMinimumHeight, withRangeSelection]);
+        grid.config({ blocks, controls, firstWeekDay, minified, timeslice, withMinimumHeight, withRangeSelection, locale: i18n.locale });
+    }, [i18n, grid, blocks, controls, firstWeekDay, minified, timeslice, withMinimumHeight, withRangeSelection]);
 
     return { cursorElementRef, cursorRootProps, grid };
 };

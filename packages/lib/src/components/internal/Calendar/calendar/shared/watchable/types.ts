@@ -1,6 +1,6 @@
 import { UNWATCH_SIGNAL } from './constants';
 
-export type WatchCallable<T> = (...args: any[]) => T;
+export type WatchCallable<T, ThisType = any> = (this: ThisType, ...args: any[]) => T;
 
 export type WatchCallback<T extends Record<string, any>> = {
     (snapshot: T): any;

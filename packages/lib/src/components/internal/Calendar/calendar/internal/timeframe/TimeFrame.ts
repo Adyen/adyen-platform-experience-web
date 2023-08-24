@@ -127,6 +127,14 @@ export default abstract class TimeFrame {
         return this.index;
     }
 
+    get isAtEnd() {
+        return !isInfinite(this.toBlockOffsetFromOrigin) && this.toBlockOffsetFromOrigin === this.#size - 1;
+    }
+
+    get isAtStart() {
+        return !isInfinite(this.fromBlockOffsetFromOrigin) && this.fromBlockOffsetFromOrigin === 0;
+    }
+
     get selectionEnd(): number | undefined {
         return this.#selectionEndTimestamp;
     }
