@@ -1,7 +1,7 @@
 import { useMemo, useRef } from 'preact/hooks';
 import { CalendarProps, CalendarTraversal, CalendarTraversalControlRootProps, CalendarTraversalControls } from '../types';
-import { CalendarGrid, TimeFrameShift } from '../core/calendar/types';
-import calendar from '../core';
+import { CalendarGrid, TimeFrameShift } from '@src/components/internal/Calendar/calendar/types';
+import calendar from '../calendar';
 
 const SharedEmptyControlsObject = Object.freeze(Object.create(null));
 const CondensedTraversalControls = [CalendarTraversal.PREV, CalendarTraversal.NEXT] as const;

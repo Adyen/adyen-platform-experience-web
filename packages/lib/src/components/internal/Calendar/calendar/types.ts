@@ -23,19 +23,20 @@ import {
     SELECTION_NEAREST,
     SELECTION_TO,
 } from './constants';
-import { Indexed } from '../shared/indexed/types';
-import { Watchable, WatchCallable } from '../shared/watchable/types';
+import { Indexed } from './shared/indexed/types';
+import { Watchable, WatchCallable } from './shared/watchable/types';
+import { TimeFrame } from '@src/components/internal/Calendar/calendar/internal/timeframe';
 
-type WithGetSetProperty<T> = {
+export type WithGetSetProperty<T> = {
     get _(): T;
     set _($: T);
 };
 
-type WithGetSetProperties<K extends string, T = any> = {
+export type WithGetSetProperties<K extends string, T = any> = {
     [P in K]: WithGetSetProperty<T>['_'];
 };
 
-type WithTimeEdges<T = {}> = Readonly<{
+export type WithTimeEdges<T = {}> = Readonly<{
     from: T;
     to: T;
 }>;
@@ -50,35 +51,6 @@ export type FirstWeekDay = (typeof FIRST_WEEK_DAYS)[number];
 export type WeekDay = FirstWeekDay | 2 | 3 | 4 | 5;
 export type Month = WeekDay | 7 | 8 | 9 | 10 | 11;
 export type MonthDays = 28 | 29 | 30 | 31;
-export type MonthDay =
-    | 1
-    | 2
-    | 3
-    | 4
-    | 5
-    | 6
-    | 7
-    | 8
-    | 9
-    | 10
-    | 11
-    | 12
-    | 13
-    | 14
-    | 15
-    | 16
-    | 17
-    | 18
-    | 19
-    | 20
-    | 21
-    | 22
-    | 23
-    | 24
-    | 25
-    | 26
-    | 27
-    | MonthDays;
 export type Time = Date | number | string;
 
 export enum TimeFlag {
@@ -180,12 +152,21 @@ export type CalendarDayOfWeekData = Readonly<{
 
 export type IndexedCalendarBlock = Indexed<Indexed<CalendarBlockCellData>> & CalendarBlock;
 
+export type CalendarConfigurator = Readonly<{
+    cleanup: () => void;
+    config: CalendarConfig;
+    configure: CalendarGrid['config'];
+    frame?: TimeFrame;
+}>;
+
 export type CalendarGrid = Indexed<IndexedCalendarBlock> &
     Readonly<{
-        cursor: {
-            event: WithGetSetProperty<Event>['_'];
-            readonly index: number;
+        config: {
+            (config?: CalendarConfig): CalendarConfig;
+            cursorIndex: WithGetSetProperty<(evt: Event) => number | undefined>['_'];
+            watch: WithGetSetProperty<WatchCallable<any>>['_'];
         };
+        cursor: (evt?: Event) => boolean;
         daysOfWeek: Indexed<CalendarDayOfWeekData>;
         // highlight: {
         //     (time: Time, selection?: TimeFrameSelection): void;
@@ -196,19 +177,14 @@ export type CalendarGrid = Indexed<IndexedCalendarBlock> &
         //     get to(): number | undefined;
         //     set to(time: Time | null | undefined);
         // };
-        rowspan: number;
         shift: (offset?: number, shift?: TimeFrameShift) => void;
         traverse: WithGetSetProperties<'NEXT' | 'PREV', Event>;
     }>;
 
-export type CalendarInitCallbacks = {
-    indexFromEvent?: (evt: Event) => number | undefined;
-    watch?: WatchCallable<any>;
-};
+export type CalendarInit = CalendarConfig | TimeFrameSize | WatchCallable<any>;
 
 export type CalendarFactory = {
-    (init: CalendarInitCallbacks | WatchCallable<any>): Readonly<{
-        configure: (config: CalendarConfig) => void;
+    (init: CalendarInit): Readonly<{
         grid: CalendarGrid;
         kill: () => void;
     }>;

@@ -1,6 +1,6 @@
 import { JSX } from 'preact';
 import { CalendarCursorRootProps, CalendarProps } from '../../types';
-import { CalendarFlagsRecord, CalendarGrid } from '../../core/calendar/types';
+import { CalendarFlagsRecord, CalendarGrid } from '@src/components/internal/Calendar/calendar/types';
 
 export interface CalendarGridProps {
     cursorRootProps: CalendarCursorRootProps;
@@ -12,14 +12,14 @@ type CalendarGridDateExtendedProps = {
     childClassName?: JSX.Signalish<string | undefined>;
     childProps?: Exclude<CalendarGridDateExtendedProps['props'], undefined>;
     displayDate: string;
-    flags?: CalendarFlagsRecord;
+    flags: CalendarFlagsRecord;
     props?: Omit<CalendarGridDateProps, keyof CalendarGridDateExtendedProps | 'dateTime'>;
 };
 
 type CalendarGridDayOfWeekExtendedProps = {
     childClassName?: JSX.Signalish<string | undefined>;
     childProps?: Exclude<CalendarGridDayOfWeekExtendedProps['props'], undefined>;
-    flags?: CalendarFlagsRecord;
+    flags: CalendarFlagsRecord;
     label: string;
     props?: Omit<CalendarGridDayOfWeekProps, keyof CalendarGridDayOfWeekExtendedProps>;
 };

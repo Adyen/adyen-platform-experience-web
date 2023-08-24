@@ -1,12 +1,16 @@
-import { DAY_OF_WEEK_FORMATS } from '../constants';
-import { TimeFrame } from '../timeframe';
-import { getWeekendDays } from '../timeframe/utils';
-import { CalendarDayOfWeekData, DayOfWeekLabelFormat, TimeFlag, WeekDay } from '../types';
+import { DAY_OF_WEEK_FORMATS } from '../../constants';
+import { getWeekendDays } from '@src/components/internal/Calendar/calendar/internal/timeframe/utils';
+import { CalendarConfigurator, CalendarDayOfWeekData, DayOfWeekLabelFormat, TimeFlag, WeekDay } from '../../types';
 import { struct } from '../../shared/utils';
 import indexed from '../../shared/indexed';
-import getFlagsRecord from './flagsRecord';
+import getFlagsRecord from '../flagsRecord';
 
-const getDaysOfWeek = (locale: string = 'en', frame?: TimeFrame) => {
+const getDaysOfWeek = (configurator: CalendarConfigurator) => {
+    const {
+        config: { locale = 'en-US' },
+        frame,
+    } = configurator;
+
     const daysOfWeekCached: CalendarDayOfWeekData[] = [];
     const firstWeekDay = frame?.firstWeekDay ?? 0;
     const weekendDays = frame?.weekend ?? getWeekendDays(firstWeekDay);

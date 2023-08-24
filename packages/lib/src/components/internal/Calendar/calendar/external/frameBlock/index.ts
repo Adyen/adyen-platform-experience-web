@@ -1,11 +1,11 @@
-import getFlagsRecord from './flagsRecord';
+import getFlagsRecord from '../flagsRecord';
 import indexed from '../../shared/indexed';
 import { Indexed } from '../../shared/indexed/types';
 import { struct } from '../../shared/utils';
-import { TimeFrame } from '../timeframe';
-import { CalendarBlock, CalendarBlockCellData, CalendarConfig } from '../types';
+import { CalendarBlock, CalendarBlockCellData, CalendarConfigurator } from '../../types';
 
-const getFrameBlock = (index: number, config: CalendarConfig, frame?: TimeFrame) => {
+const getFrameBlock = (configurator: CalendarConfigurator, index: number) => {
+    const { config, frame } = configurator;
     const block = frame?.getFrameBlockAtIndex(index);
 
     if (!block) return;

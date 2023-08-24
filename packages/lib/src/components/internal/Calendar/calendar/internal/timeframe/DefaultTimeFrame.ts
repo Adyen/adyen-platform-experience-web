@@ -1,12 +1,12 @@
-import __AbstractTimeFrame__ from './AbstractTimeFrame';
-import { DAY_MS } from '../constants';
-import { Month, MonthDays, Time, TimeFlag, TimeFrameBlock, TimeFrameSelection, TimeFrameSize, TimeSlice, WeekDay } from '../types';
+import TimeFrame from './TimeFrame';
+import { DAY_MS } from '../../constants';
+import { Month, MonthDays, Time, TimeFlag, TimeFrameBlock, TimeFrameSelection, TimeFrameSize, TimeSlice, WeekDay } from '../../types';
 import today from '../today';
 import { computeTimestampOffset, getEdgesDistance, getMonthDays } from '../utils';
 import { immutableProxyHandlers } from '../../shared/constants';
 import { isBitSafeInteger, isInfinite, struct, structFrom } from '../../shared/utils';
 
-export default class __TimeFrame__ extends __AbstractTimeFrame__ {
+export default class DefaultTimeFrame extends TimeFrame {
     protected declare fromTimestamp: number;
     protected declare toTimestamp: number;
     protected declare monthStartTimestamp: number;

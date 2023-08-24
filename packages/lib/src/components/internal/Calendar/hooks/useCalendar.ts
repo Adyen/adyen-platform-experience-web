@@ -1,43 +1,46 @@
 import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
 import useCoreContext from '@src/core/Context/useCoreContext';
 import { ReflexAction } from '@src/hooks/useReflex';
-import { CalendarConfig } from '../core/calendar/types';
+import { CalendarConfig } from '@src/components/internal/Calendar/calendar/types';
 import useFocusCursor from '../../../../hooks/element/useFocusCursor';
-import calendar from '../core';
+import calendar from '../calendar';
 
 const useCalendar = ({
     // onlyMonthDays,
     // onSelected,
-    ...config
-}: CalendarConfig) => {
+    blocks,
+    firstWeekDay,
+    minified,
+    timeslice,
+    withMinimumHeight,
+    withRangeSelection,
+}: Omit<CalendarConfig, 'locale'>) => {
     const { i18n } = useCoreContext();
     const [, setLastMutationTimestamp] = useState<DOMHighResTimeStamp>(performance.now());
 
-    const { configure, grid, kill } = useMemo(
-        () =>
-            calendar({
-                indexFromEvent: (evt: Event): number | undefined => {
-                    let element: HTMLElement | null = evt.target as HTMLElement;
+    const { grid, kill } = useMemo(() => {
+        const { grid, kill } = calendar(() => setLastMutationTimestamp(performance.now()));
 
-                    while (element && element !== evt.currentTarget) {
-                        const index = Number(element.dataset.cursorPosition);
-                        if (Number.isFinite(index)) return index;
-                        element = element.parentNode as HTMLElement;
-                    }
-                },
-                watch: () => setLastMutationTimestamp(performance.now()),
-            }),
-        []
-    );
+        grid.config.cursorIndex = (evt: Event): number | undefined => {
+            let element: HTMLElement | null = evt.target as HTMLElement;
+
+            while (element && element !== evt.currentTarget) {
+                const index = Number(element.dataset.cursorPosition);
+                if (Number.isFinite(index)) return index;
+                element = element.parentNode as HTMLElement;
+            }
+        };
+
+        return { grid, kill };
+    }, []);
 
     const cursorRootProps = useMemo(
         () => ({
             onClickCapture: (evt: Event) => {
-                grid.cursor.event = evt;
+                grid.cursor(evt);
             },
             onKeyDownCapture: (evt: KeyboardEvent) => {
-                grid.cursor.event = evt;
-                grid.cursor.event === evt && evt.preventDefault();
+                grid.cursor(evt) && evt.preventDefault();
             },
         }),
         [grid]
@@ -56,8 +59,8 @@ const useCalendar = ({
     useEffect(() => kill, []);
 
     useEffect(() => {
-        configure({ ...config, locale: config.locale || i18n.locale });
-    }, [i18n, config]);
+        grid.config({ blocks, firstWeekDay, minified, timeslice, withMinimumHeight, withRangeSelection, locale: i18n.locale });
+    }, [i18n, blocks, firstWeekDay, minified, timeslice, withMinimumHeight, withRangeSelection]);
 
     return { cursorElementRef, cursorRootProps, grid };
 };

@@ -1,4 +1,4 @@
-import __Watchable__ from './base/Watchable';
+import __Watchable__ from './Watchable';
 import { Watchable, WatchAtoms } from './types';
 import { struct } from '../utils';
 

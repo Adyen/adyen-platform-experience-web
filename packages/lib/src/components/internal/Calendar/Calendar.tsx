@@ -1,7 +1,7 @@
 import { memo } from 'preact/compat';
 import CalendarGrid from './components/CalendarGrid';
 import CalendarControls from './components/CalendarControls';
-import calendar from './core';
+import calendar from './calendar';
 import useCalendar from './hooks/useCalendar';
 import { CalendarProps } from './types';
 import './Calendar.scss';

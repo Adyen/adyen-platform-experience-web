@@ -1,4 +1,4 @@
-import { CalendarFlagsRecord, TimeFlag } from '../types';
+import { CalendarFlagsRecord, TimeFlag } from '../../types';
 import { immutableProxyHandlers } from '../../shared/constants';
 import { struct } from '../../shared/utils';
 

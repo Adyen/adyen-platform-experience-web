@@ -1,11 +1,11 @@
-import __AbstractTimeFrame__ from './AbstractTimeFrame';
-import { YEAR_MONTHS } from '../constants';
-import { Time, TimeFlag, TimeFrameBlock, TimeFrameSelection, TimeSlice } from '../types';
+import TimeFrame from './TimeFrame';
+import { YEAR_MONTHS } from '../../constants';
+import { Time, TimeFlag, TimeFrameBlock, TimeFrameSelection, TimeSlice } from '../../types';
 import { computeTimestampOffset, getEdgesDistance } from '../utils';
 import { immutableProxyHandlers } from '../../shared/constants';
 import { isBitSafeInteger, isInfinite, struct, structFrom } from '../../shared/utils';
 
-export default class __AnnualTimeFrame__ extends __AbstractTimeFrame__ {
+export default class AnnualTimeFrame extends TimeFrame {
     protected declare fromTimestamp: number;
     protected declare toTimestamp: number;
     protected declare monthDateTimestamp: number;

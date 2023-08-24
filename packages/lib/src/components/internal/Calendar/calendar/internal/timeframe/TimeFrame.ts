@@ -18,7 +18,7 @@ import {
     SHIFT_BLOCK,
     SHIFT_FRAME,
     SHIFT_PERIOD,
-} from '../constants';
+} from '../../constants';
 import type {
     FirstWeekDay,
     Time,
@@ -29,7 +29,7 @@ import type {
     TimeFrameSize,
     TimeSlice,
     WeekDay,
-} from '../types';
+} from '../../types';
 import { SLICE_UNBOUNDED } from '../timeslice';
 import { computeTimestampOffset } from '../utils';
 import { downsizeTimeFrame, getWeekendDays, resolveTimeFrameBlockSize } from './utils';
@@ -37,7 +37,7 @@ import { clamp, isBitSafeInteger, isInfinite, mid, mod } from '../../shared/util
 import { Watchable } from '../../shared/watchable/types';
 import watchable from '../../shared/watchable';
 
-export default abstract class __AbstractTimeFrame__ {
+export default abstract class TimeFrame {
     #cursorBlockIndex: number = 0;
     #cursorIndex: number = 0;
     #cursorOffset!: number;

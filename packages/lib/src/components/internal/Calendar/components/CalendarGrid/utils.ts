@@ -1,8 +1,8 @@
 import classnames from 'classnames';
 import { JSX } from 'preact';
 import { useMemo } from 'preact/hooks';
-import { EMPTY_OBJECT } from '@src/components/internal/Calendar/core/shared/constants';
-import { toString } from '@src/components/internal/Calendar/core/shared/utils';
+import { EMPTY_OBJECT } from '@src/components/internal/Calendar/calendar/shared/constants';
+import { toString } from '@src/components/internal/Calendar/calendar/shared/utils';
 
 const EXCESS_WHITESPACE_CHAR = /^\s+|\s+(?=\s|$)/g;
 

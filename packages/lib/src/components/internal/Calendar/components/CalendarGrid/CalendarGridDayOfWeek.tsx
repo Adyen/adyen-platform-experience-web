@@ -21,9 +21,9 @@ const CalendarGridDayOfWeek = (({
     const dataAttrs = useMemo(
         () =>
             ({
-                'data-first-week-day': flags?.LINE_START,
-                'data-last-week-day': flags?.LINE_END,
-                'data-weekend': flags?.WEEKEND,
+                'data-first-week-day': flags.LINE_START,
+                'data-last-week-day': flags.LINE_END,
+                'data-weekend': flags.WEEKEND,
             } as any),
         [flags]
     );

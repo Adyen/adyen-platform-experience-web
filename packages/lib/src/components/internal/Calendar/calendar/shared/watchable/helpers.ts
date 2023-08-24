@@ -1,5 +1,5 @@
-import { Watchable, WatchAtoms, WatchCallable } from '../types';
-import { noop, struct } from '../../utils';
+import { Watchable, WatchAtoms, WatchCallable } from './types';
+import { noop, struct } from '../utils';
 
 export const createLiveWatchableState = <T extends Record<string, any>>(watchableAtoms = {} as WatchAtoms<T>) => {
     const descriptors = {} as {
@@ -30,19 +30,17 @@ export const createWatchableIdleCallbacks = <T extends Record<string, any>>() =>
         [K in keyof typeof callbacks]: PropertyDescriptor;
     };
 
-    const factory = (type: keyof typeof callbacks) => ({
-        get: () => callbacks[type],
-        set: (callback?: WatchCallable<any> | null) => {
-            if (callback == undefined) {
-                callbacks[type] = noop;
-            } else if (typeof callback === 'function' && callback !== callbacks[type]) {
-                callbacks[type] = callback;
-            }
-        },
-    });
-
     for (const key of Object.keys(callbacks) as (keyof typeof callbacks)[]) {
-        descriptors[key] = factory(key);
+        descriptors[key] = {
+            get: () => callbacks[key],
+            set: (callback?: WatchCallable<any> | null) => {
+                if (callback == undefined) {
+                    callbacks[key] = noop;
+                } else if (typeof callback === 'function' && callback !== callbacks[key]) {
+                    callbacks[key] = callback;
+                }
+            },
+        };
     }
 
     return struct(descriptors) as Watchable<T>['callback'];

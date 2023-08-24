@@ -14,27 +14,27 @@ const CalendarGridDate = ({
     ...props
 }: CalendarGridDateProps) => {
     const [withinMonth, dataAttrs] = useMemo(() => {
-        const withinMonth = flags?.WITHIN_BLOCK;
+        const withinMonth = flags.WITHIN_BLOCK;
         const dataAttrs = { 'data-within-month': withinMonth } as any;
 
         if (withinMonth) {
-            const withinRange = flags?.WITHIN_RANGE;
+            const withinRange = flags.WITHIN_RANGE;
 
-            dataAttrs['data-today'] = flags?.TODAY;
-            dataAttrs['data-first-week-day'] = flags?.LINE_START;
-            dataAttrs['data-last-week-day'] = flags?.LINE_END;
-            dataAttrs['data-weekend'] = flags?.WEEKEND;
-            dataAttrs['data-first-month-day'] = flags?.BLOCK_START;
-            dataAttrs['data-last-month-day'] = flags?.BLOCK_END;
+            dataAttrs['data-today'] = flags.TODAY;
+            dataAttrs['data-first-week-day'] = flags.LINE_START;
+            dataAttrs['data-last-week-day'] = flags.LINE_END;
+            dataAttrs['data-weekend'] = flags.WEEKEND;
+            dataAttrs['data-first-month-day'] = flags.BLOCK_START;
+            dataAttrs['data-last-month-day'] = flags.BLOCK_END;
 
             dataAttrs['data-within-range'] = withinRange;
 
             if (withinRange) {
-                dataAttrs['data-range-end'] = flags?.RANGE_END;
-                dataAttrs['data-range-start'] = flags?.RANGE_START;
-                dataAttrs['data-selection-end'] = flags?.SELECTION_END;
-                dataAttrs['data-selection-start'] = flags?.SELECTION_START;
-                dataAttrs['data-within-selection'] = flags?.WITHIN_SELECTION;
+                dataAttrs['data-range-end'] = flags.RANGE_END;
+                dataAttrs['data-range-start'] = flags.RANGE_START;
+                dataAttrs['data-selection-end'] = flags.SELECTION_END;
+                dataAttrs['data-selection-start'] = flags.SELECTION_START;
+                dataAttrs['data-within-selection'] = flags.WITHIN_SELECTION;
             }
         }
 
