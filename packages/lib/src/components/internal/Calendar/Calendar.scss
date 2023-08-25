@@ -30,7 +30,7 @@ ol {
 
         #{$adyen-fp-calendar-month__grid}-row {
             display: grid;
-            grid-template-columns: repeat(7, 1fr);
+            grid-template-columns: repeat(var(--_adyen-fp-calendar-rowspan, 7), 1fr);
             justify-content: space-around;
         }
 

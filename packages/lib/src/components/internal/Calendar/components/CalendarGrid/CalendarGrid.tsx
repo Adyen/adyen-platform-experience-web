@@ -19,7 +19,12 @@ export default forwardRef(function CalendarGrid({ cursorRootProps, prepare, grid
                                 </time>
                             </div>
 
-                            <table className={'adyen-fp-calendar-month__grid'} role="grid" aria-label={block.label}>
+                            <table
+                                className={'adyen-fp-calendar-month__grid'}
+                                role="grid"
+                                aria-label={block.label}
+                                style={{ '--_adyen-fp-calendar-rowspan': block[0]?.length }}
+                            >
                                 <thead>
                                     <tr className={'adyen-fp-calendar-month__grid-row'}>
                                         {[

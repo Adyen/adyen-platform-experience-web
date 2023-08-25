@@ -27,13 +27,20 @@ const getFrameBlock = (configurator: CalendarConfigurator, index: number) => {
 
             return indexed<CalendarBlockCellData>(lineWidth, index => {
                 const [timestamp, flags] = block[index + indexOffset] as (typeof block)[number];
-                const date = new Date(new Date(timestamp).setHours(12)).toISOString();
+                const date = new Date(timestamp);
+                date.setHours(12);
+
+                const ISOString = date.toISOString();
 
                 return struct({
-                    datetime: { value: date.slice(0, 10) },
+                    datetime: { value: ISOString.slice(0, config.minified ? 7 : 10) },
                     flags: { value: getFlagsRecord(flags) },
                     index: { value: blockStartIndex + index + indexOffset },
-                    label: { value: Number(date.slice(8, 10)).toLocaleString(config.locale) },
+                    label: {
+                        value: config.minified
+                            ? date.toLocaleDateString(config.locale, { month: 'short' })
+                            : Number(ISOString.slice(8, 10)).toLocaleString(config.locale),
+                    },
                     timestamp: { value: timestamp },
                 }) as CalendarBlockCellData;
             });

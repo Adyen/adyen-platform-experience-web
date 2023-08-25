@@ -22,16 +22,7 @@ export default class AnnualTimeFrame extends TimeFrame {
 
     set timeslice(_timeslice: TimeSlice | null | undefined) {
         super.timeslice = _timeslice;
-        this.#updateSelectionTimestamps();
-    }
-
-    #getStartOfMonthForTimestamp(timestamp?: number) {
-        return timestamp === undefined || isInfinite(timestamp) ? timestamp : new Date(timestamp - computeTimestampOffset(timestamp)).setDate(1);
-    }
-
-    #updateSelectionTimestamps() {
-        this.selectionStartDayTimestamp = this.#getStartOfMonthForTimestamp(this.selectionStart);
-        this.selectionEndDayTimestamp = this.#getStartOfMonthForTimestamp(this.selectionEnd);
+        this.updateSelectionTimestamps();
     }
 
     protected getBlockTimestampOffsetFromOrigin(timestamp: number) {
@@ -95,6 +86,10 @@ export default class AnnualTimeFrame extends TimeFrame {
         }) as TimeFrameBlock;
     }
 
+    protected getStartOfMonthForTimestamp(timestamp?: number) {
+        return timestamp === undefined || isInfinite(timestamp) ? timestamp : new Date(timestamp - computeTimestampOffset(timestamp)).setDate(1);
+    }
+
     protected getStartTimestampForFrameBlockAtOffset(blockOffset: number) {
         return new Date(this.timestamp).setMonth(blockOffset * YEAR_MONTHS);
     }
@@ -125,15 +120,20 @@ export default class AnnualTimeFrame extends TimeFrame {
     }
 
     protected updateEdgeBlocksOffsetsRelativeToOrigin(fromTimestamp: number, toTimestamp: number) {
-        this.fromTimestamp = this.#getStartOfMonthForTimestamp(fromTimestamp) as number;
-        this.toTimestamp = this.#getStartOfMonthForTimestamp(toTimestamp) as number;
+        this.fromTimestamp = this.getStartOfMonthForTimestamp(fromTimestamp) as number;
+        this.toTimestamp = this.getStartOfMonthForTimestamp(toTimestamp) as number;
         this.fromBlockOffsetFromOrigin = this.getBlockTimestampOffsetFromOrigin(fromTimestamp);
         this.toBlockOffsetFromOrigin = this.getBlockTimestampOffsetFromOrigin(toTimestamp);
         this.numberOfBlocks = Math.ceil((new Date(fromTimestamp).getMonth() + this.numberOfBlocks) / YEAR_MONTHS);
     }
 
+    protected updateSelectionTimestamps() {
+        this.selectionStartDayTimestamp = this.getStartOfMonthForTimestamp(this.selectionStart);
+        this.selectionEndDayTimestamp = this.getStartOfMonthForTimestamp(this.selectionEnd);
+    }
+
     updateSelection(time: Time, selection?: TimeFrameSelection) {
         super.updateSelection(time, selection);
-        this.#updateSelectionTimestamps();
+        this.updateSelectionTimestamps();
     }
 }
