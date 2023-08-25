@@ -17,15 +17,15 @@ import {
     FirstWeekDay,
     IndexedCalendarBlock,
 } from './types';
+import getDaysOfWeek from './external/daysOfWeek';
+import getFrameBlock from './external/frameBlock';
+import createConfigurator from './external/configurator';
+import { getCalendarControls, getCursorReactor } from './external/reactors';
 import timeslice, { sinceNow, SLICE_UNBOUNDED, untilNow } from './internal/timeslice';
 import { noop, struct, structFrom } from './shared/utils';
 import { Indexed } from './shared/indexed/types';
 import { WatchCallable } from './shared/watchable/types';
 import indexed from './shared/indexed';
-import getDaysOfWeek from '@src/components/internal/Calendar/calendar/external/daysOfWeek';
-import getFrameBlock from '@src/components/internal/Calendar/calendar/external/frameBlock';
-import createConfigurator from '@src/components/internal/Calendar/calendar/external/configurator';
-import { getCalendarControls, getCursorReactor } from '@src/components/internal/Calendar/calendar/external/reactors';
 
 const calendar = ((init?: CalendarInit) => {
     const configurator = createConfigurator(
@@ -95,13 +95,13 @@ export default Object.defineProperties(calendar, {
             NONE: { value: CONTROLS_NONE },
         }),
     },
-    highlight: {
-        value: struct({
-            COLLAPSE: { value: SELECTION_COLLAPSE },
-            FARTHEST: { value: SELECTION_FARTHEST },
-            NEAREST: { value: SELECTION_NEAREST },
-        }),
-    },
+    // highlight: {
+    //     value: struct({
+    //         COLLAPSE: { value: SELECTION_COLLAPSE },
+    //         FARTHEST: { value: SELECTION_FARTHEST },
+    //         NEAREST: { value: SELECTION_NEAREST },
+    //     }),
+    // },
     range: {
         value: Object.defineProperties(timeslice.bind(void 0), {
             FROM: { value: RANGE_FROM },

@@ -224,11 +224,11 @@ export type CalendarFactory = {
         MINIMAL: typeof CONTROLS_MINIMAL;
         NONE: typeof CONTROLS_NONE;
     }>;
-    readonly highlight: Readonly<{
-        COLLAPSE: typeof SELECTION_COLLAPSE;
-        FARTHEST: typeof SELECTION_FARTHEST;
-        NEAREST: typeof SELECTION_NEAREST;
-    }>;
+    // readonly highlight: Readonly<{
+    //     COLLAPSE: typeof SELECTION_COLLAPSE;
+    //     FARTHEST: typeof SELECTION_FARTHEST;
+    //     NEAREST: typeof SELECTION_NEAREST;
+    // }>;
     readonly range: TimeSliceFactory &
         Readonly<{
             FROM: typeof RANGE_FROM;
