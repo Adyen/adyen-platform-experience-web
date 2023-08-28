@@ -45,6 +45,7 @@ export default abstract class TimeFrame {
     #firstWeekDay: FirstWeekDay = 0;
     #size: TimeFrameSize = 1;
     #timeslice!: TimeSlice;
+    #useMinimumLines: boolean = false;
 
     #fromTimestamp: number = -Infinity;
     #toTimestamp: number = Infinity;
@@ -236,6 +237,18 @@ export default abstract class TimeFrame {
 
     get units() {
         return this.#numberOfUnitsInFrame;
+    }
+
+    get useMinimumLines(): boolean {
+        return this.#useMinimumLines as boolean;
+    }
+
+    set useMinimumLines(bool: boolean | null | undefined) {
+        const currentBool = this.#useMinimumLines;
+
+        if (bool == undefined) this.#useMinimumLines = !!bool;
+        else if (bool === Boolean(bool)) this.#useMinimumLines = bool;
+        if (currentBool !== this.#useMinimumLines) this.#refreshFrame();
     }
 
     get watchable() {
@@ -469,26 +482,28 @@ export default abstract class TimeFrame {
     }
 
     updateSelection(time: Time, selection?: TimeFrameSelection) {
+        const currentStart = this.#selectionStartTimestamp as number;
+        const currentEnd = this.#selectionEndTimestamp as number;
         const timestamp = clamp(this.#timeslice.from, new Date(time).getTime(), this.#timeslice.to);
 
         if (selection === SELECTION_FARTHEST) {
-            if (timestamp <= (this.#selectionStartTimestamp as number)) selection = SELECTION_TO;
-            else if (timestamp >= (this.#selectionEndTimestamp as number)) selection = SELECTION_FROM;
+            if (timestamp <= currentStart) selection = SELECTION_TO;
+            else if (timestamp >= currentEnd) selection = SELECTION_FROM;
         }
 
         switch (selection) {
             case SELECTION_FROM:
                 this.#selectionStartTimestamp = timestamp;
-                this.#selectionEndTimestamp = Math.max(this.#selectionStartTimestamp, this.#selectionEndTimestamp as number);
+                this.#selectionEndTimestamp = Math.max(this.#selectionStartTimestamp, currentEnd);
                 break;
             case SELECTION_TO:
                 this.#selectionEndTimestamp = timestamp;
-                this.#selectionStartTimestamp = Math.min(this.#selectionStartTimestamp as number, this.#selectionEndTimestamp);
+                this.#selectionStartTimestamp = Math.min(currentStart, this.#selectionEndTimestamp);
                 break;
             case SELECTION_FARTHEST:
             case SELECTION_NEAREST: {
-                let startDistance = Math.abs(timestamp - (this.#selectionStartTimestamp as number));
-                let endDistance = Math.abs(timestamp - (this.#selectionEndTimestamp as number));
+                let startDistance = Math.abs(timestamp - currentStart);
+                let endDistance = Math.abs(timestamp - currentEnd);
 
                 if (selection === SELECTION_NEAREST) {
                     [startDistance, endDistance] = [endDistance, startDistance];
@@ -504,6 +519,10 @@ export default abstract class TimeFrame {
             default:
                 this.#selectionStartTimestamp = this.#selectionEndTimestamp = timestamp;
                 break;
+        }
+
+        if (this.#selectionStartTimestamp !== currentStart || this.#selectionEndTimestamp !== currentEnd) {
+            this.#refreshFrame();
         }
     }
 }

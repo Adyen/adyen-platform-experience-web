@@ -1,13 +1,4 @@
-import {
-    CONTROLS_ALL,
-    CONTROLS_MINIMAL,
-    CONTROLS_NONE,
-    RANGE_FROM,
-    RANGE_TO,
-    SELECTION_COLLAPSE,
-    SELECTION_FARTHEST,
-    SELECTION_NEAREST,
-} from './constants';
+import { CONTROLS_ALL, CONTROLS_MINIMAL, CONTROLS_NONE, RANGE_FROM, RANGE_TO } from './constants';
 import {
     CalendarDayOfWeekData,
     CalendarFactory,
@@ -17,9 +8,9 @@ import {
     FirstWeekDay,
     IndexedCalendarBlock,
 } from './types';
+import createConfigurator from './external/configurator';
 import getDaysOfWeek from './external/daysOfWeek';
 import getFrameBlock from './external/frameBlock';
-import createConfigurator from './external/configurator';
 import { getCalendarControls, getCursorReactor } from './external/reactors';
 import timeslice, { sinceNow, SLICE_UNBOUNDED, untilNow } from './internal/timeslice';
 import { noop, struct, structFrom } from './shared/utils';
@@ -79,7 +70,9 @@ const calendar = ((init?: CalendarInit) => {
     let cursorReactor = getCursorReactor(configurator);
     let daysOfWeek: Indexed<CalendarDayOfWeekData>;
 
-    typeof init === 'number' ? grid.config({ blocks: init }) : typeof init === 'function' ? (grid.config.watch = init) : grid.config(init);
+    if (typeof init === 'number') grid.config({ blocks: init });
+    else if (typeof init === 'function') grid.config.watch = init;
+    else grid.config(init);
 
     return struct({
         grid: { value: grid },
@@ -95,15 +88,8 @@ export default Object.defineProperties(calendar, {
             NONE: { value: CONTROLS_NONE },
         }),
     },
-    // highlight: {
-    //     value: struct({
-    //         COLLAPSE: { value: SELECTION_COLLAPSE },
-    //         FARTHEST: { value: SELECTION_FARTHEST },
-    //         NEAREST: { value: SELECTION_NEAREST },
-    //     }),
-    // },
     range: {
-        value: Object.defineProperties(timeslice.bind(void 0), {
+        value: Object.defineProperties(timeslice.bind(null), {
             FROM: { value: RANGE_FROM },
             TO: { value: RANGE_TO },
             UNBOUNDED: { value: SLICE_UNBOUNDED },

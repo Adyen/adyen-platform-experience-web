@@ -1,26 +1,32 @@
-import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import useCoreContext from '@src/core/Context/useCoreContext';
 import { ReflexAction } from '@src/hooks/useReflex';
-import { CalendarConfig } from '../calendar/types';
+import { CalendarProps, CalendarTraversalControls } from '../types';
 import useFocusCursor from '../../../../hooks/element/useFocusCursor';
 import calendar from '../calendar';
 
 const useCalendar = ({
+    calendarMonths,
+    dynamicMonthWeeks,
+    firstWeekDay,
+    locale,
+    // offset,
     // onlyMonthDays,
     // onSelected,
-    blocks,
-    controls,
-    firstWeekDay,
-    minified,
-    timeslice,
-    withMinimumHeight,
-    withRangeSelection,
-}: Omit<CalendarConfig, 'locale'>) => {
+    // originDate,
+    renderControl,
+    sinceDate,
+    traversalControls,
+    untilDate,
+}: CalendarProps) => {
     const { i18n } = useCoreContext();
     const [, setLastMutationTimestamp] = useState<DOMHighResTimeStamp>(performance.now());
 
     const { grid, kill } = useMemo(() => {
-        const { grid, kill } = calendar(() => setLastMutationTimestamp(performance.now()));
+        const { grid, kill } = calendar(function () {
+            setLastMutationTimestamp(performance.now());
+            config.current = this;
+        });
 
         grid.config.cursorIndex = (evt: Event): number | undefined => {
             let element: HTMLElement | null = evt.target as HTMLElement;
@@ -64,13 +70,29 @@ const useCalendar = ({
         )
     );
 
+    const config = useRef<ReturnType<typeof grid.config>>({});
+    const timeslice = useMemo(() => calendar.range(sinceDate, untilDate), [sinceDate, untilDate]);
+
     useEffect(() => kill, []);
 
     useEffect(() => {
-        grid.config({ blocks, controls, firstWeekDay, minified, timeslice, withMinimumHeight, withRangeSelection, locale: i18n.locale });
-    }, [i18n, grid, blocks, controls, firstWeekDay, minified, timeslice, withMinimumHeight, withRangeSelection]);
+        grid.config({
+            firstWeekDay,
+            timeslice,
+            blocks: calendarMonths,
+            controls: renderControl
+                ? traversalControls === CalendarTraversalControls.CONDENSED
+                    ? calendar.controls.MINIMAL
+                    : calendar.controls.ALL
+                : calendar.controls.NONE,
+            locale: locale ?? i18n.locale,
+            // minified,
+            withMinimumHeight: dynamicMonthWeeks,
+            withRangeSelection: true,
+        });
+    }, [i18n, grid, locale, timeslice, calendarMonths, dynamicMonthWeeks, firstWeekDay, renderControl, traversalControls]);
 
-    return { cursorElementRef, cursorRootProps, grid };
+    return { config, cursorElementRef, cursorRootProps, grid };
 };
 
 export default useCalendar;

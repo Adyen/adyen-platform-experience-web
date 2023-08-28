@@ -71,6 +71,7 @@ const createConfigurator = (beforeEffectCallback?: WatchCallable<any>) => {
         frame.timeslice = _config.timeslice;
         frame.firstWeekDay = _config.firstWeekDay;
         frame.size = _config.blocks;
+        frame.useMinimumLines = _config.withMinimumHeight;
     };
 
     let _configure = (config: CalendarConfig): void => {

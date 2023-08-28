@@ -184,6 +184,13 @@ export type CalendarConfigurator = Readonly<{
     frame?: TimeFrame;
 }>;
 
+export type CalendarHighlighter = Readonly<{
+    highlight: {
+        (): void;
+        readonly blank: boolean;
+    };
+}>;
+
 export type CalendarGridControls = Readonly<{
     [P in CalendarShiftControl]?: (evt?: Event) => boolean;
 }>;
@@ -212,7 +219,7 @@ export type CalendarGrid = Indexed<IndexedCalendarBlock> &
         // };
     }>;
 
-export type CalendarInit = CalendarConfig | TimeFrameSize | WatchCallable<any>;
+export type CalendarInit = CalendarConfig | TimeFrameSize | WatchCallable<any, CalendarConfig>;
 
 export type CalendarFactory = {
     (init: CalendarInit): Readonly<{
@@ -224,11 +231,6 @@ export type CalendarFactory = {
         MINIMAL: typeof CONTROLS_MINIMAL;
         NONE: typeof CONTROLS_NONE;
     }>;
-    // readonly highlight: Readonly<{
-    //     COLLAPSE: typeof SELECTION_COLLAPSE;
-    //     FARTHEST: typeof SELECTION_FARTHEST;
-    //     NEAREST: typeof SELECTION_NEAREST;
-    // }>;
     readonly range: TimeSliceFactory &
         Readonly<{
             FROM: typeof RANGE_FROM;

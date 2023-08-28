@@ -1,5 +1,5 @@
 import TimeFrame from './TimeFrame';
-import { DAY_MS } from '../../constants';
+import { DAY_MS, MAXIMUM_MONTH_UNITS } from '../../constants';
 import { Month, MonthDays, Time, TimeFlag, TimeFrameBlock, TimeFrameSelection, TimeFrameSize, TimeSlice, WeekDay } from '../../types';
 import today from '../today';
 import { computeTimestampOffset, getEdgesDistance, getMonthDays } from '../utils';
@@ -43,8 +43,8 @@ export default class DefaultTimeFrame extends TimeFrame {
         const innerStartIndex = blockIndex > 0 ? this.getFrameBlockByIndex(blockIndex - 1).inner.to + 1 : this.originMonthFirstDayOffset;
         const innerEndIndex = innerStartIndex + monthDays - 1;
         const outerStartIndex = Math.floor(innerStartIndex / 7) * 7;
-        const outerEndAfterIndex = Math.ceil((innerEndIndex + 1) / 7) * 7;
-        const numberOfUnits = outerEndAfterIndex - outerStartIndex;
+        const outerEndAfterIndex = this.useMinimumLines ? Math.ceil((innerEndIndex + 1) / 7) * 7 : outerStartIndex + MAXIMUM_MONTH_UNITS;
+        const numberOfUnits = this.useMinimumLines ? outerEndAfterIndex - outerStartIndex : MAXIMUM_MONTH_UNITS;
 
         const proxyForIndexPropertyAccess = new Proxy(struct(), {
             ...immutableProxyHandlers,

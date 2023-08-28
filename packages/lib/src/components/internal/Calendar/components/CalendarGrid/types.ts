@@ -3,6 +3,7 @@ import { CalendarCursorRootProps, CalendarProps } from '../../types';
 import { CalendarFlagsRecord, CalendarGrid } from '@src/components/internal/Calendar/calendar/types';
 
 export interface CalendarGridProps {
+    config: ReturnType<CalendarGrid['config']>;
     cursorRootProps: CalendarCursorRootProps;
     grid: CalendarGrid;
     prepare?: CalendarProps['prepare'];
