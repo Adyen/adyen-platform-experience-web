@@ -5,7 +5,7 @@ import {
     CalendarRenderToken,
     // CalendarRenderTokenContext,
     CalendarSelectionSnap,
-} from '@src/components/internal/Calendar/types';
+} from '@src/components/internal/Calendar/types.old';
 // import { hasFlag } from '@src/components/internal/Calendar/components/CalendarGrid/utils';
 import { DAY_MS, getTimestamp } from '@src/components/internal/Calendar/internal/utils';
 

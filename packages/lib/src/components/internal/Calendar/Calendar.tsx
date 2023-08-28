@@ -12,12 +12,18 @@ function Calendar(props: CalendarProps) {
         cursorRootProps,
         grid,
     } = useCalendar(props);
-    const { prepare, renderControl } = props;
 
     return (
         <div role="group" aria-label="calendar">
-            <CalendarControls config={config} grid={grid} renderControl={renderControl} />
-            <CalendarGrid ref={cursorElementRef} config={config} cursorRootProps={cursorRootProps} grid={grid} prepare={prepare} />
+            <CalendarControls config={config} grid={grid} renderControl={props.renderControl} />
+            <CalendarGrid
+                ref={cursorElementRef}
+                config={config}
+                cursorRootProps={cursorRootProps}
+                grid={grid}
+                onlyCellsWithin={props.onlyCellsWithin}
+                prepare={props.prepare}
+            />
         </div>
     );
 }

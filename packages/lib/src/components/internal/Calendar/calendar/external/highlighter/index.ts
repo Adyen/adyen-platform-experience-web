@@ -1,3 +1,4 @@
+import { SELECT_NONE, SELECT_ONE } from '../../constants';
 import { CalendarConfigurator, CalendarHighlighter } from '../../types';
 import { struct } from '../../shared/utils';
 
@@ -6,11 +7,11 @@ const createHighlighter = (configurator: CalendarConfigurator) => {
     let endTimestamp = configurator.frame?.selectionEnd;
 
     const highlight = (() => {
-        if (!configurator.frame) return;
+        if (!configurator.frame || configurator.config?.highlight === SELECT_NONE) return;
 
         const { frame } = configurator;
 
-        if (!configurator.config?.withRangeSelection || highlight.blank) {
+        if (configurator.config?.highlight === SELECT_ONE || highlight.blank) {
             frame.selectionStart = frame?.getTimestampAtIndex(frame.cursor);
         }
 

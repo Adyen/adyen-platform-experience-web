@@ -1,4 +1,4 @@
-import { CALENDAR_CONTROLS, FIRST_WEEK_DAYS, FRAME_SIZES } from '../../constants';
+import { CALENDAR_CONTROLS, CALENDAR_SELECTIONS, FIRST_WEEK_DAYS, FRAME_SIZES } from '../../constants';
 import { AnnualTimeFrame, DefaultTimeFrame, TimeFrame } from '../../internal/timeframe';
 import { CalendarConfig, CalendarConfigurator } from '../../types';
 import { EMPTY_OBJECT } from '../../shared/constants';
@@ -20,11 +20,11 @@ const createConfigurator = (beforeEffectCallback?: WatchCallable<any>) => {
         blocks: () => _config?.blocks,
         controls: () => _config?.controls,
         firstWeekDay: () => _config?.firstWeekDay,
+        highlight: () => _config?.highlight,
         locale: () => _config?.locale,
         minified: () => _config?.minified,
         timeslice: () => _config?.timeslice,
         withMinimumHeight: () => _config?.withMinimumHeight,
-        withRangeSelection: () => _config?.withRangeSelection,
     } as WatchAtoms<CalendarConfig>);
 
     let _chainedCallback = syncEffectCallback(() => {
@@ -81,10 +81,10 @@ const createConfigurator = (beforeEffectCallback?: WatchCallable<any>) => {
             blocks: pickFromCollection(FRAME_SIZES, _config.blocks, config.blocks),
             controls: pickFromCollection(CALENDAR_CONTROLS, _config.controls, config.controls),
             firstWeekDay: pickFromCollection(FIRST_WEEK_DAYS, _config.firstWeekDay, config.firstWeekDay),
+            highlight: pickFromCollection(CALENDAR_SELECTIONS, _config.highlight, config.highlight),
             locale: config.locale ?? _config.locale ?? 'en',
             minified: boolify(config.minified, _config.minified),
             withMinimumHeight: boolify(config.withMinimumHeight, _config.withMinimumHeight),
-            withRangeSelection: boolify(config.withRangeSelection, _config.withRangeSelection),
         };
 
         if (typeof _props?.watch !== 'function') {

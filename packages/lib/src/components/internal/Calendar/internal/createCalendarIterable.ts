@@ -1,4 +1,4 @@
-import { CalendarIterable, CalendarMapIteratorFactory } from '../types';
+import { CalendarIterable, CalendarMapIteratorFactory } from '../types.old';
 
 const createCalendarIterable = (() => {
     const mapIteratorFactory: CalendarMapIteratorFactory<any> = function* (callback = x => x, thisArg) {
@@ -7,12 +7,19 @@ const createCalendarIterable = (() => {
         }
     };
 
-    const IterablePrototype = Object.freeze(Object.create(null, {
-        [Symbol.iterator]: { value(this: CalendarIterable<any>) { return this.map(); }},
-        map: { value: mapIteratorFactory }
-    }));
+    const IterablePrototype = Object.freeze(
+        Object.create(null, {
+            [Symbol.iterator]: {
+                value(this: CalendarIterable<any>) {
+                    return this.map();
+                },
+            },
+            map: { value: mapIteratorFactory },
+        })
+    );
 
-    const ProxyGetTrap = <V>(getter: (index: number) => V) =>
+    const ProxyGetTrap =
+        <V>(getter: (index: number) => V) =>
         (target: CalendarIterable<V>, property: string | symbol, receiver: any) => {
             if (typeof property === 'string') {
                 const index = +property;
@@ -30,20 +37,26 @@ const createCalendarIterable = (() => {
         iteratorValueGetter: (index: number) => V
     ): T => {
         if (typeof iterablePropertyDescriptorsOrSize === 'function') {
-            return createCalendarIterable<V, T>({
-                size: { get: iterablePropertyDescriptorsOrSize }
-            }, iteratorValueGetter);
+            return createCalendarIterable<V, T>(
+                {
+                    size: { get: iterablePropertyDescriptorsOrSize },
+                },
+                iteratorValueGetter
+            );
         }
 
         if (typeof iterablePropertyDescriptorsOrSize === 'number') {
-            return createCalendarIterable<V, T>({
-                size: { value: iterablePropertyDescriptorsOrSize }
-            }, iteratorValueGetter);
+            return createCalendarIterable<V, T>(
+                {
+                    size: { value: iterablePropertyDescriptorsOrSize },
+                },
+                iteratorValueGetter
+            );
         }
 
         return new Proxy(Object.create(IterablePrototype, iterablePropertyDescriptorsOrSize) as T, {
             get: ProxyGetTrap(iteratorValueGetter),
-            set: ProxySetTrap
+            set: ProxySetTrap,
         }) as T;
     };
 })();

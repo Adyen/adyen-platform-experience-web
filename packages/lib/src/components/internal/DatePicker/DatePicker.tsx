@@ -2,13 +2,13 @@ import { useCallback, useMemo, useState } from 'preact/hooks';
 import { InteractionKeyCode } from '@src/components/types';
 import { DatePickerProps } from './types';
 import { getCalendarDateString } from '../Calendar/internal/createCalendar';
-import { CalendarTraversalControls } from '../Calendar/types';
 import useDatePickerCalendarControls from './hooks/useDatePickerCalendarControls';
 import useUniqueIdentifier from '../../../hooks/element/useUniqueIdentifier';
 import useIdentifierString from '../../../hooks/element/useIdentifierString';
 import useFocusTrap from '../../../hooks/element/useFocusTrap';
 import useBooleanState from '../../../hooks/useBooleanState';
 import Calendar from '../Calendar';
+import calendar from '../Calendar/calendar';
 import InputText from '../FormFields/InputText';
 import './DatePicker.scss';
 
@@ -50,10 +50,10 @@ export default function DatePicker(props: DatePickerProps) {
         };
         return {
             ...props,
-            originDate: currentValue || undefined,
-            onSelected,
+            controls: calendar.controls.MINIMAL,
+            onHighlight: onSelected,
+            // originDate: currentValue || undefined,
             renderControl,
-            traversalControls: CalendarTraversalControls.CONDENSED,
         } as const;
     }, [props, currentValue, renderControl]);
 

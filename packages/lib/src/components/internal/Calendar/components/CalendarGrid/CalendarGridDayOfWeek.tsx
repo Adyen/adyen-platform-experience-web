@@ -1,55 +1,57 @@
-import { JSX } from 'preact';
-import { useMemo } from 'preact/hooks';
-import { CalendarGridDayOfWeekProps } from '@src/components/internal/Calendar/components/CalendarGrid/types';
-import { useClassName } from '@src/components/internal/Calendar/components/CalendarGrid/utils';
+import { CalendarGridDayOfWeekProps, CalendarGridDayOfWeekRenderProps } from './types';
+import { getClassName, property, propsProperty } from './utils';
+import { EMPTY_OBJECT } from '../../calendar/shared/constants';
+import { CalendarGridRenderToken } from '../../types';
 
-const CalendarGridDayOfWeek = (({
-    childClassName,
-    children,
-    className,
-    flags,
-    label,
-    childProps: { children: _1, className: requiredChildClassName, ...childProps } = {} as Exclude<
-        CalendarGridDayOfWeekProps['childProps'],
-        undefined
-    >,
-    props: { children: _2, className: requiredClassName, ...priorityProps } = {} as Exclude<CalendarGridDayOfWeekProps['props'], undefined>,
-    ...props
-}: CalendarGridDayOfWeekProps) => {
-    if (children !== CalendarGridDayOfWeek.CHILD) return null;
+const DEFAULT_CELL_CLASSNAME = 'adyen-fp-calendar-month__grid-cell';
+const DEFAULT_CELL_ABBR_CLASSNAME = 'adyen-fp-calendar__day-of-week';
 
-    const dataAttrs = useMemo(
-        () =>
-            ({
-                'data-first-week-day': flags.LINE_START,
-                'data-last-week-day': flags.LINE_END,
-                'data-weekend': flags.WEEKEND,
-            } as any),
-        [flags]
+const getGridDayOfWeekRenderProps = (computedProps = EMPTY_OBJECT as any, prepare?: CalendarGridDayOfWeekProps['prepare']) => {
+    const renderProps = propsProperty.unwrapped<CalendarGridDayOfWeekRenderProps>(
+        {
+            childClassName: property.mutable(DEFAULT_CELL_ABBR_CLASSNAME),
+            childProps: {
+                children: property.restricted(),
+                className: '',
+            },
+            className: property.mutable(DEFAULT_CELL_CLASSNAME),
+            props: {
+                ...computedProps,
+                children: property.restricted(),
+                className: '',
+            },
+        },
+        true
     );
 
-    const classes = useClassName({ className, requiredClassName, fallbackClassName: 'adyen-fp-calendar-month__grid-cell' });
+    prepare?.(CalendarGridRenderToken.DAY_OF_WEEK, renderProps);
+    return renderProps;
+};
 
-    const childClasses = useClassName({
-        className: childClassName,
-        fallbackClassName: 'adyen-fp-calendar__day-of-week',
-        requiredClassName: requiredChildClassName,
-    });
+const CalendarGridDayOfWeek = ({ prepare, flags, labels: { long: longLabel, narrow: narrowLabel } }: CalendarGridDayOfWeekProps) => {
+    const props = {
+        'aria-label': longLabel,
+        'data-first-week-day': flags.LINE_START,
+        'data-last-week-day': flags.LINE_END,
+        'data-weekend': flags.WEEKEND,
+        key: longLabel,
+        scope: 'col',
+    };
+
+    const renderProps = getGridDayOfWeekRenderProps(props, prepare);
+    const { children: _, className, ...extendedProps } = renderProps.props || EMPTY_OBJECT;
+    const classes = getClassName(renderProps.className, DEFAULT_CELL_CLASSNAME, className);
+
+    const { children: __, className: childClassName, ...extendedChildProps } = renderProps.childProps || EMPTY_OBJECT;
+    const childClasses = getClassName(renderProps.childClassName, DEFAULT_CELL_ABBR_CLASSNAME, childClassName);
 
     return (
-        <th {...props} {...dataAttrs} {...priorityProps} className={classes}>
-            <abbr {...childProps} className={childClasses}>
-                {label}
+        <th {...extendedProps} {...props} className={classes}>
+            <abbr {...extendedChildProps} className={childClasses}>
+                {narrowLabel}
             </abbr>
         </th>
     );
-}) as {
-    (props: CalendarGridDayOfWeekProps): JSX.Element | null;
-    readonly CHILD: Readonly<{}>;
 };
-
-Object.defineProperty(CalendarGridDayOfWeek, 'CHILD', {
-    value: Object.freeze(Object.create(null)),
-});
 
 export default CalendarGridDayOfWeek;

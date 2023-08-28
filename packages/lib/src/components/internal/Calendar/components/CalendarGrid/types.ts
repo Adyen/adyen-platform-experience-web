@@ -1,29 +1,40 @@
 import { JSX } from 'preact';
-import { CalendarCursorRootProps, CalendarProps } from '../../types';
-import { CalendarFlagsRecord, CalendarGrid } from '@src/components/internal/Calendar/calendar/types';
+import { CalendarGridCursorRootProps, CalendarProps } from '../../types';
+import { CalendarBlockCellData, CalendarDayOfWeekData, CalendarGrid } from '../../calendar/types';
 
 export interface CalendarGridProps {
     config: ReturnType<CalendarGrid['config']>;
-    cursorRootProps: CalendarCursorRootProps;
+    cursorRootProps: CalendarGridCursorRootProps;
     grid: CalendarGrid;
+    onlyCellsWithin?: CalendarProps['onlyCellsWithin'];
     prepare?: CalendarProps['prepare'];
 }
 
 type CalendarGridDateExtendedProps = {
     childClassName?: JSX.Signalish<string | undefined>;
     childProps?: Exclude<CalendarGridDateExtendedProps['props'], undefined>;
-    displayDate: string;
-    flags: CalendarFlagsRecord;
-    props?: Omit<CalendarGridDateProps, keyof CalendarGridDateExtendedProps | 'dateTime'>;
+    props?: Omit<CalendarGridDateRenderProps, keyof CalendarGridDateExtendedProps>;
 };
 
 type CalendarGridDayOfWeekExtendedProps = {
     childClassName?: JSX.Signalish<string | undefined>;
     childProps?: Exclude<CalendarGridDayOfWeekExtendedProps['props'], undefined>;
-    flags: CalendarFlagsRecord;
-    label: string;
-    props?: Omit<CalendarGridDayOfWeekProps, keyof CalendarGridDayOfWeekExtendedProps>;
+    props?: Omit<CalendarGridDayOfWeekRenderProps, keyof CalendarGridDayOfWeekExtendedProps>;
 };
 
-export type CalendarGridDateProps = JSX.HTMLAttributes<HTMLTimeElement> & CalendarGridDateExtendedProps;
-export type CalendarGridDayOfWeekProps = JSX.HTMLAttributes<HTMLElement> & CalendarGridDayOfWeekExtendedProps;
+export type CalendarGridDateRenderProps = JSX.HTMLAttributes<HTMLTimeElement> & CalendarGridDateExtendedProps;
+export type CalendarGridDayOfWeekRenderProps = JSX.HTMLAttributes<HTMLElement> & CalendarGridDayOfWeekExtendedProps;
+
+type CalendarGridCellProps<T extends {} = {}> = T &
+    Pick<CalendarGridProps, 'grid' | 'prepare'> & {
+        block: CalendarGrid[number];
+        cell: number;
+    };
+
+export type CalendarGridDateProps = CalendarGridCellProps<
+    CalendarBlockCellData & {
+        onlyCellsWithin: CalendarGridProps['onlyCellsWithin'];
+        row: number;
+    }
+>;
+export type CalendarGridDayOfWeekProps = CalendarGridCellProps<CalendarDayOfWeekData>;

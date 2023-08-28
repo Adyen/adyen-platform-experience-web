@@ -1,4 +1,4 @@
-import { CONTROLS_ALL, CONTROLS_MINIMAL, CONTROLS_NONE, RANGE_FROM, RANGE_TO } from './constants';
+import { CONTROLS_ALL, CONTROLS_MINIMAL, CONTROLS_NONE, RANGE_FROM, RANGE_TO, SELECT_MANY, SELECT_NONE, SELECT_ONE } from './constants';
 import {
     CalendarDayOfWeekData,
     CalendarFactory,
@@ -86,6 +86,13 @@ export default Object.defineProperties(calendar, {
             ALL: { value: CONTROLS_ALL },
             MINIMAL: { value: CONTROLS_MINIMAL },
             NONE: { value: CONTROLS_NONE },
+        }),
+    },
+    highlight: {
+        value: struct({
+            ONE: { value: SELECT_ONE },
+            MANY: { value: SELECT_MANY },
+            NONE: { value: SELECT_NONE },
         }),
     },
     range: {

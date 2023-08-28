@@ -1,6 +1,7 @@
 import { CONTROLS_ALL, CONTROLS_MINIMAL, CONTROLS_NONE, SHIFT_BLOCK, SHIFT_FRAME, SHIFT_PERIOD } from '../../constants';
 import { TimeFrame } from '../../internal/timeframe';
 import indexed from '../../shared/indexed';
+import { enumerable } from '../../shared/utils';
 import {
     CalendarConfigurator,
     CalendarGrid,
@@ -66,19 +67,16 @@ const getCalendarControls = (() => {
             const shiftType = getShiftType(flags);
             const unitOffset = getUnitShiftOffset(flags);
 
-            controlDescriptors[control] = {
-                enumerable: true,
-                value: (...args: any[]) => {
-                    const canShift = determineShiftCapability(unitOffset, configurator.frame);
-                    if (!(canShift && args.length)) return canShift;
+            controlDescriptors[control] = enumerable((...args: any[]) => {
+                const canShift = determineShiftCapability(unitOffset, configurator.frame);
+                if (!(canShift && args.length)) return canShift;
 
-                    const shiftFactor = getShiftFactorFromEvent(configurator, control, args[0] as Event);
-                    if (shiftFactor === undefined) return false;
+                const shiftFactor = getShiftFactorFromEvent(configurator, control, args[0] as Event);
+                if (shiftFactor === undefined) return false;
 
-                    configurator.frame?.shiftFrame(unitOffset * shiftFactor, shiftType);
-                    return true;
-                },
-            };
+                configurator.frame?.shiftFrame(unitOffset * shiftFactor, shiftType);
+                return true;
+            });
         }
 
         return indexed<CalendarGridControlEntry, CalendarGridControls>(

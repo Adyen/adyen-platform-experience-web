@@ -20,6 +20,9 @@ import {
     SHIFT_BLOCK,
     SHIFT_FRAME,
     SHIFT_PERIOD,
+    SELECT_MANY,
+    SELECT_NONE,
+    SELECT_ONE,
     SELECTION_COLLAPSE,
     SELECTION_FARTHEST,
     SELECTION_FROM,
@@ -139,16 +142,17 @@ export enum CalendarShiftControlsFlag {
 
 export type CalendarShiftControl = keyof typeof CalendarShiftControlsFlag;
 export type CalendarShiftControls = typeof CONTROLS_ALL | typeof CONTROLS_MINIMAL | typeof CONTROLS_NONE;
+export type CalendarSelection = typeof SELECT_ONE | typeof SELECT_MANY | typeof SELECT_NONE;
 
 export type CalendarConfig = {
     blocks?: TimeFrameSize;
     controls?: CalendarShiftControls;
     firstWeekDay?: FirstWeekDay;
+    highlight?: CalendarSelection;
     locale?: string;
     minified?: boolean;
     timeslice?: TimeSlice;
     withMinimumHeight?: boolean;
-    withRangeSelection?: boolean;
 };
 
 export type CalendarBlock = Readonly<{
@@ -230,6 +234,11 @@ export type CalendarFactory = {
         ALL: typeof CONTROLS_ALL;
         MINIMAL: typeof CONTROLS_MINIMAL;
         NONE: typeof CONTROLS_NONE;
+    }>;
+    readonly highlight: Readonly<{
+        ONE: typeof SELECT_ONE;
+        MANY: typeof SELECT_MANY;
+        NONE: typeof SELECT_NONE;
     }>;
     readonly range: TimeSliceFactory &
         Readonly<{

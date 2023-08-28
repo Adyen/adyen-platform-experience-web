@@ -1,7 +1,7 @@
 import { DAY_OF_WEEK_FORMATS } from '../../constants';
 import { getWeekendDays } from '@src/components/internal/Calendar/calendar/internal/timeframe/utils';
 import { CalendarConfigurator, CalendarDayOfWeekData, DayOfWeekLabelFormat, TimeFlag, WeekDay } from '../../types';
-import { struct } from '../../shared/utils';
+import { enumerable, struct } from '../../shared/utils';
 import indexed from '../../shared/indexed';
 import getFlagsRecord from '../flagsRecord';
 
@@ -37,15 +37,12 @@ const getDaysOfWeek = (configurator: CalendarConfigurator) => {
         date = current.getDate() + 1;
 
         for (const format of DAY_OF_WEEK_FORMATS) {
-            labelDescriptors[format] = {
-                enumerable: true,
-                value: current.toLocaleDateString(locale, { weekday: format }),
-            };
+            labelDescriptors[format] = enumerable(current.toLocaleDateString(locale, { weekday: format }));
         }
 
         daysOfWeekCached[day++] = struct({
-            flags: { enumerable: true, value: getFlagsRecord(flags) },
-            labels: { enumerable: true, value: struct(labelDescriptors) },
+            flags: enumerable(getFlagsRecord(flags)),
+            labels: enumerable(struct(labelDescriptors)),
         }) as CalendarDayOfWeekData;
     }
 

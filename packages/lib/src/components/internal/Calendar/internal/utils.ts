@@ -7,12 +7,88 @@ import {
     CalendarMonth,
     CalendarMonthEndDate,
     CalendarSlidingWindowMonth,
-} from '../types';
+} from '../types.old';
+import calendar from '@src/components/internal/Calendar/calendar';
 
 export const DAY_MS = 86400000;
 export const CALENDAR_WINDOW_MONTHS = [1, 2, 3, 4, 4, 6, 6, 6, 6, 6, 6, 12] as const;
 export const DAY_OF_WEEK_FORMATS = ['long', 'short', 'narrow'] as const;
 export const WEEKEND_DAYS_SEED = [0, 1] as const;
+
+const { grid } = calendar(() => {
+    // console.clear();
+    //
+    // for (let i = 0; i < grid.length; i++) {
+    //     const frameBlock = grid[i] as typeof grid[number];
+    //
+    //     console.log(`%c${frameBlock.label}`, 'color:pink;font-weight:bold;', "\n");
+    //     console.log(`%c${Array.from(grid.daysOfWeek, ({ labels }) => labels.short).join(' ')}`, 'color:khaki;');
+    //
+    //     for (let i = 0; i < frameBlock.length; i++) {
+    //         const row = frameBlock[i] as typeof frameBlock[number];
+    //
+    //         console.log(...Array.from({ length: row?.length ?? 0 }, (_, index) => {
+    //             const { flags, label } = row?.[index] as typeof row[number];
+    //             return `0${
+    //                 !(flags.WITHIN_BLOCK)
+    //                     ? '--'
+    //                     : (flags.CURSOR)
+    //                         ? '//'
+    //                         : (flags.WITHIN_SELECTION)
+    //                             ? '=='
+    //                             : label
+    //             } `.slice(-3);
+    //         }));
+    //     }
+    //
+    //     console.log("\n");
+    // }
+});
+
+grid.config({
+    // blocks: 2,
+    // blocks: 3,
+    // blocks: 4,
+    // blocks: 6,
+    // blocks: 12,
+    firstWeekDay: 1,
+    // timeslice: calendar.range.SINCE_NOW,
+    // timeslice: calendar.range.UNTIL_NOW,
+    timeslice: calendar.range('2022-12-10', '2023-10-10'),
+});
+
+document.body.addEventListener('keydown', evt => {
+    grid.cursor(evt) && evt.preventDefault();
+});
+
+// grid.shift(-2);
+// grid.highlight.from = new Date().setDate(-10);
+
+// grid.cursor = calendar.cursor.FORWARD;
+// grid.cursor = calendar.cursor.FORWARD;
+// grid.cursor = calendar.cursor.FORWARD;
+// grid.cursor = calendar.cursor.FORWARD;
+// grid.cursor = calendar.cursor.FORWARD;
+// grid.cursor = calendar.cursor.UPWARD;
+// grid.cursor = calendar.cursor.BACKWARD;
+// grid.cursor = calendar.cursor.BACKWARD;
+// grid.cursor = calendar.cursor.BACKWARD;
+// grid.cursor = calendar.cursor.UPWARD;
+// grid.cursor = calendar.cursor.ROW_START;
+// grid.cursor = calendar.cursor.DOWNWARD;
+// grid.cursor = calendar.cursor.DOWNWARD;
+// grid.cursor = calendar.cursor.ROW_END;
+// grid.cursor = calendar.cursor.BLOCK_END;
+// grid.cursor = calendar.cursor.ROW_END;
+// grid.cursor = calendar.cursor.BLOCK_END;
+// grid.cursor = calendar.cursor.ROW_START;
+// grid.cursor = calendar.cursor.ROW_END;
+// grid.cursor = calendar.cursor.DOWNWARD;
+// grid.cursor = calendar.cursor.BLOCK_START;
+// grid.cursor = calendar.cursor.BLOCK_END;
+// grid.cursor = calendar.cursor.NEXT_BLOCK;
+// grid.cursor = calendar.cursor.PREV_BLOCK;
+// grid.cursor = calendar.cursor.PREV_BLOCK;
 
 export const assertSafeInteger = (value: any) => {
     if (!Number.isSafeInteger(value)) throw new TypeError('EXPECTS_SAFE_INTEGER');

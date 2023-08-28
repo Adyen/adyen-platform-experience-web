@@ -1,8 +1,7 @@
 import classnames from 'classnames';
 import { JSX } from 'preact';
-import { useMemo } from 'preact/hooks';
-import { EMPTY_OBJECT } from '@src/components/internal/Calendar/calendar/shared/constants';
-import { toString } from '@src/components/internal/Calendar/calendar/shared/utils';
+import { EMPTY_OBJECT } from '../../calendar/shared/constants';
+import { toString } from '../../calendar/shared/utils';
 
 const EXCESS_WHITESPACE_CHAR = /^\s+|\s+(?=\s|$)/g;
 
@@ -11,7 +10,11 @@ export const parseClassName = (fallbackClassName: string, className: JSX.Signali
     return classes.replace(EXCESS_WHITESPACE_CHAR, '') || fallbackClassName.replace(EXCESS_WHITESPACE_CHAR, '') || undefined;
 };
 
-type ClassNames = { [K: string]: JSX.Signalish<string | undefined> };
+export const getClassName = (
+    className?: JSX.Signalish<string | undefined>,
+    fallbackClassName?: JSX.Signalish<string | undefined>,
+    requiredClassName?: JSX.Signalish<string | undefined>
+) => classnames(parseClassName('', requiredClassName), parseClassName(parseClassName('', fallbackClassName) || '', className));
 
 type PropertyDescriptor<T = any> = {
     configurable?: boolean;
@@ -117,10 +120,3 @@ export const propsProperty = (() => {
         unwrapped: <T extends Record<string, any> = {}>(props?: UnwrappedProps<T>, deepImmutable?: boolean) => T;
     };
 })();
-
-export const useClassName = ({ className, fallbackClassName, requiredClassName }: ClassNames = {}) => {
-    return useMemo(
-        () => classnames(parseClassName('', requiredClassName), parseClassName(parseClassName('', fallbackClassName) || '', className)),
-        [className, fallbackClassName, requiredClassName]
-    );
-};

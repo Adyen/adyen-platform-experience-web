@@ -9,7 +9,7 @@ import {
     CalendarShift,
     CalendarView,
     CalendarWeekView,
-} from '../types';
+} from '../types.old';
 import {
     DAY_MS,
     DAY_OF_WEEK_FORMATS,

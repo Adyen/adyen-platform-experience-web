@@ -4,8 +4,8 @@ import { DateFilterProps, DateRangeFilterParam } from './types';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import BaseFilter from '../BaseFilter';
 import Language from '../../../../../language';
-import Calendar from '@src/components/internal/Calendar/Calendar';
-import { CalendarTraversalControls } from '@src/components/internal/Calendar/types';
+import Calendar from '@src/components/internal/Calendar';
+import calendar from '@src/components/internal/Calendar/calendar';
 import useDatePicker, { resolveDate } from '@src/components/internal/DatePicker/hooks/useDatePicker';
 import useDatePickerCalendarControls from '@src/components/internal/DatePicker/hooks/useDatePickerCalendarControls';
 import '@src/components/internal/DatePicker/DatePicker.scss';
@@ -50,16 +50,17 @@ const renderDateFilterModalBody = (() => {
             <>
                 <div ref={calendarControlsContainerRef} className={'adyen-fp-datepicker__controls'} role="group" />
                 <Calendar
-                    dynamicMonthWeeks={false}
+                    controls={calendar.controls.MINIMAL}
+                    dynamicBlockRows={false}
                     firstWeekDay={1}
-                    onlyMonthDays={true}
-                    onSelected={selectDate}
-                    sinceDate={rangeStart ? new Date(rangeStart) : undefined}
-                    untilDate={rangeEnd ? new Date(rangeEnd) : undefined}
-                    originDate={originDate}
+                    highlight={calendar.highlight.MANY}
+                    onHighlight={selectDate}
+                    onlyCellsWithin={false}
+                    // originDate={originDate}
                     prepare={prepare}
                     renderControl={renderControl}
-                    traversalControls={CalendarTraversalControls.CONDENSED}
+                    sinceDate={rangeStart ? new Date(rangeStart) : undefined}
+                    untilDate={rangeEnd ? new Date(rangeEnd) : undefined}
                 />
             </>
         );

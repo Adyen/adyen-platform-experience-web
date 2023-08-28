@@ -1,22 +1,21 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import useCoreContext from '@src/core/Context/useCoreContext';
 import { ReflexAction } from '@src/hooks/useReflex';
-import { CalendarProps, CalendarTraversalControls } from '../types';
+import { CalendarGridCursorRootProps, CalendarProps } from '../types';
 import useFocusCursor from '../../../../hooks/element/useFocusCursor';
 import calendar from '../calendar';
 
 const useCalendar = ({
-    calendarMonths,
-    dynamicMonthWeeks,
+    blocks,
+    controls,
+    dynamicBlockRows,
     firstWeekDay,
+    highlight,
     locale,
-    // offset,
-    // onlyMonthDays,
-    // onSelected,
+    onHighlight,
     // originDate,
     renderControl,
     sinceDate,
-    traversalControls,
     untilDate,
 }: CalendarProps) => {
     const { i18n } = useCoreContext();
@@ -49,14 +48,15 @@ const useCalendar = ({
     }, []);
 
     const cursorRootProps = useMemo(
-        () => ({
-            onClickCapture: (evt: Event) => {
-                grid.cursor(evt);
-            },
-            onKeyDownCapture: (evt: KeyboardEvent) => {
-                grid.cursor(evt) && evt.preventDefault();
-            },
-        }),
+        () =>
+            ({
+                onClickCapture: (evt: Event) => {
+                    grid.cursor(evt);
+                },
+                onKeyDownCapture: (evt: KeyboardEvent) => {
+                    grid.cursor(evt) && evt.preventDefault();
+                },
+            } as CalendarGridCursorRootProps),
         [grid]
     );
 
@@ -77,20 +77,16 @@ const useCalendar = ({
 
     useEffect(() => {
         grid.config({
+            blocks,
+            controls: renderControl ? controls ?? calendar.controls.MINIMAL : calendar.controls.NONE,
             firstWeekDay,
-            timeslice,
-            blocks: calendarMonths,
-            controls: renderControl
-                ? traversalControls === CalendarTraversalControls.CONDENSED
-                    ? calendar.controls.MINIMAL
-                    : calendar.controls.ALL
-                : calendar.controls.NONE,
+            highlight: onHighlight ? highlight ?? calendar.highlight.ONE : calendar.highlight.NONE,
             locale: locale ?? i18n.locale,
             // minified,
-            withMinimumHeight: dynamicMonthWeeks,
-            withRangeSelection: true,
+            timeslice,
+            withMinimumHeight: dynamicBlockRows,
         });
-    }, [i18n, grid, locale, timeslice, calendarMonths, dynamicMonthWeeks, firstWeekDay, renderControl, traversalControls]);
+    }, [blocks, controls, dynamicBlockRows, firstWeekDay, grid, highlight, i18n, locale, onHighlight, renderControl, timeslice]);
 
     return { config, cursorElementRef, cursorRootProps, grid };
 };

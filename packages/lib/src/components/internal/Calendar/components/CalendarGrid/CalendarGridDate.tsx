@@ -1,63 +1,87 @@
-import { useMemo } from 'preact/hooks';
-import { CalendarGridDateProps } from '@src/components/internal/Calendar/components/CalendarGrid/types';
-import { useClassName } from '@src/components/internal/Calendar/components/CalendarGrid/utils';
+import { forwardRef } from 'preact/compat';
+import { CalendarGridDateProps, CalendarGridDateRenderProps } from './types';
+import { getClassName, property, propsProperty } from './utils';
+import { EMPTY_OBJECT } from '../../calendar/shared/constants';
+import { CalendarGridRenderToken } from '../../types';
 
-const CalendarGridDate = ({
-    childClassName,
-    children,
-    className,
-    dateTime,
-    displayDate,
-    flags,
-    childProps: { children: _1, className: requiredChildClassName, ...childProps } = {} as Exclude<CalendarGridDateProps['childProps'], undefined>,
-    props: { children: _2, className: requiredClassName, ...priorityProps } = {} as Exclude<CalendarGridDateProps['props'], undefined>,
-    ...props
-}: CalendarGridDateProps) => {
-    const [withinMonth, dataAttrs] = useMemo(() => {
+const DEFAULT_DATE_CELL_CLASSNAME = 'adyen-fp-calendar-month__grid-cell';
+const DEFAULT_DATE_TIME_CLASSNAME = 'adyen-fp-calendar__date';
+
+const getGridDateRenderProps = (computedProps = EMPTY_OBJECT as any, prepare?: CalendarGridDateProps['prepare']) => {
+    const renderProps = propsProperty.unwrapped<CalendarGridDateRenderProps>(
+        {
+            childClassName: property.mutable(DEFAULT_DATE_TIME_CLASSNAME),
+            childProps: {
+                children: property.restricted(),
+                className: '',
+            },
+            className: property.mutable(DEFAULT_DATE_CELL_CLASSNAME),
+            props: {
+                ...computedProps,
+                children: property.restricted(),
+                className: '',
+            },
+        },
+        true
+    );
+
+    prepare?.(CalendarGridRenderToken.DATE, renderProps);
+    return renderProps;
+};
+
+const CalendarGridDate = forwardRef(
+    ({ grid, block, prepare, datetime, flags, index, label, onlyCellsWithin, timestamp }: CalendarGridDateProps, cursorElementRef) => {
         const withinMonth = flags.WITHIN_BLOCK;
-        const dataAttrs = { 'data-within-month': withinMonth } as any;
+
+        const props = {
+            'data-cursor-position': index,
+            'data-within-month': withinMonth,
+            key: `${block.month}:${timestamp}`,
+            tabIndex: -1,
+        } as any;
 
         if (withinMonth) {
             const withinRange = flags.WITHIN_RANGE;
 
-            dataAttrs['data-today'] = flags.TODAY;
-            dataAttrs['data-first-week-day'] = flags.LINE_START;
-            dataAttrs['data-last-week-day'] = flags.LINE_END;
-            dataAttrs['data-weekend'] = flags.WEEKEND;
-            dataAttrs['data-first-month-day'] = flags.BLOCK_START;
-            dataAttrs['data-last-month-day'] = flags.BLOCK_END;
+            props['data-today'] = flags.TODAY;
+            props['data-first-week-day'] = flags.LINE_START;
+            props['data-last-week-day'] = flags.LINE_END;
+            props['data-weekend'] = flags.WEEKEND;
+            props['data-first-month-day'] = flags.BLOCK_START;
+            props['data-last-month-day'] = flags.BLOCK_END;
 
-            dataAttrs['data-within-range'] = withinRange;
+            props['data-within-range'] = withinRange;
 
             if (withinRange) {
-                dataAttrs['data-range-end'] = flags.RANGE_END;
-                dataAttrs['data-range-start'] = flags.RANGE_START;
-                dataAttrs['data-selection-end'] = flags.SELECTION_END;
-                dataAttrs['data-selection-start'] = flags.SELECTION_START;
-                dataAttrs['data-within-selection'] = flags.WITHIN_SELECTION;
+                props['data-range-end'] = flags.RANGE_END;
+                props['data-range-start'] = flags.RANGE_START;
+                props['data-selection-end'] = flags.SELECTION_END;
+                props['data-selection-start'] = flags.SELECTION_START;
+                props['data-within-selection'] = flags.WITHIN_SELECTION;
             }
+
+            if (index === +grid.cursor) props.ref = cursorElementRef;
         }
 
-        return [withinMonth, dataAttrs] as const;
-    }, [flags]);
+        const renderProps = getGridDateRenderProps(props, prepare);
+        const { children: _, className, ...extendedProps } = renderProps.props || EMPTY_OBJECT;
+        const classes = getClassName(renderProps.className, DEFAULT_DATE_CELL_CLASSNAME, className);
 
-    const classes = useClassName({ className, requiredClassName, fallbackClassName: 'adyen-fp-calendar-month__grid-cell' });
-
-    const childClasses = useClassName({
-        className: childClassName,
-        fallbackClassName: 'adyen-fp-calendar__date',
-        requiredClassName: requiredChildClassName,
-    });
-
-    return (
-        <td {...props} {...dataAttrs} {...priorityProps} className={classes}>
-            {withinMonth && (
-                <time {...childProps} className={childClasses} dateTime={dateTime}>
-                    {displayDate}
-                </time>
-            )}
-        </td>
-    );
-};
+        return (
+            <td {...extendedProps} {...props} className={classes}>
+                {(!onlyCellsWithin || withinMonth) &&
+                    (() => {
+                        const { children: _, className, ...extendedProps } = renderProps.childProps || EMPTY_OBJECT;
+                        const classes = getClassName(renderProps.childClassName, DEFAULT_DATE_TIME_CLASSNAME, className);
+                        return (
+                            <time {...extendedProps} className={classes} dateTime={datetime}>
+                                {label}
+                            </time>
+                        );
+                    })()}
+            </td>
+        );
+    }
+);
 
 export default CalendarGridDate;
