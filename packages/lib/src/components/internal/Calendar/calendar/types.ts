@@ -33,19 +33,19 @@ import { Indexed } from './shared/indexed/types';
 import { Watchable, WatchCallable } from './shared/watchable/types';
 import { TimeFrame } from '@src/components/internal/Calendar/calendar/internal/timeframe';
 
-export type WithGetSetProperty<T> = {
+export type WithGetSetProperty<T = any> = {
     get _(): T;
     set _($: T);
 };
 
 // export type WithGetSetProperties<K extends string, T = any> = {
-//     [P in K]: WithGetSetProperty<T>['_'];
+//     [P in K]: WithGetSetProperty<T, X>['_'];
 // };
 
-export type WithTimeEdges<T = {}> = Readonly<{
+export type WithTimeEdges<T = {}> = {
     from: T;
     to: T;
-}>;
+};
 
 export type Today = Readonly<{
     timestamp: number;
@@ -103,7 +103,7 @@ export type TimeFrameShift = typeof SHIFT_BLOCK | typeof SHIFT_FRAME | typeof SH
 export type TimeFrameSize = (typeof FRAME_SIZES)[number];
 
 type TimeFrameBlockMetrics<T extends string> = {
-    [K in T]: WithTimeEdges<number> & { readonly units: number };
+    [K in T]: Readonly<WithTimeEdges<number>> & { readonly units: number };
 };
 
 export type TimeFrameBlock = TimeFrameBlockMetrics<'inner' | 'outer'> &
@@ -113,9 +113,9 @@ export type TimeFrameBlock = TimeFrameBlockMetrics<'inner' | 'outer'> &
         year: number;
     }>;
 
-export type TimeSlice = WithTimeEdges<number> &
+export type TimeSlice = Readonly<WithTimeEdges<number>> &
     Readonly<{
-        offsets: WithTimeEdges<number>;
+        offsets: Readonly<WithTimeEdges<number>>;
         span: number;
     }>;
 
@@ -182,18 +182,22 @@ export type CalendarDayOfWeekData = Readonly<{
 export type IndexedCalendarBlock = Indexed<Indexed<CalendarBlockCellData>> & CalendarBlock;
 
 export type CalendarConfigurator = Readonly<{
+    chain: (fn: WatchCallable<any>) => WatchCallable<any>;
     cleanup: () => void;
     config: CalendarConfig;
     configure: CalendarGrid['config'];
     frame?: TimeFrame;
 }>;
 
-export type CalendarHighlighter = Readonly<{
-    highlight: {
-        (): void;
-        readonly blank: boolean;
-    };
-}>;
+export type CalendarHighlighter = (() => void) &
+    WithTimeEdges<WithGetSetProperty<number | undefined>['_']> &
+    Readonly<{
+        blank: boolean;
+        erase: () => void;
+        faux: () => void;
+        inProgress: boolean;
+        restore: () => void;
+    }>;
 
 export type CalendarGridControls = Readonly<{
     [P in CalendarShiftControl]?: (evt?: Event) => boolean;
@@ -212,15 +216,7 @@ export type CalendarGrid = Indexed<IndexedCalendarBlock> &
         controls: Indexed<CalendarGridControlEntry> & CalendarGridControls;
         cursor: (evt?: Event) => boolean;
         daysOfWeek: Indexed<CalendarDayOfWeekData>;
-        // highlight: {
-        //     (time: Time, selection?: TimeFrameSelection): void;
-        //     readonly clear: () => void;
-        //     readonly commit: () => void;
-        //     get from(): number | undefined;
-        //     set from(time: Time | null | undefined);
-        //     get to(): number | undefined;
-        //     set to(time: Time | null | undefined);
-        // };
+        highlight: Pick<CalendarHighlighter, keyof WithTimeEdges | 'blank' | 'erase'>;
     }>;
 
 export type CalendarInit = CalendarConfig | TimeFrameSize | WatchCallable<any, CalendarConfig>;

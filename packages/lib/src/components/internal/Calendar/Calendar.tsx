@@ -1,17 +1,17 @@
-import { memo } from 'preact/compat';
+import { forwardRef, memo } from 'preact/compat';
 import CalendarGrid from './components/CalendarGrid';
 import CalendarControls from './components/CalendarControls';
 import useCalendar from './hooks/useCalendar';
 import { CalendarProps } from './types';
 import './Calendar.scss';
 
-function Calendar(props: CalendarProps) {
+const Calendar = forwardRef((props: CalendarProps, ref) => {
     const {
         config: { current: config },
         cursorElementRef,
         cursorRootProps,
         grid,
-    } = useCalendar(props);
+    } = useCalendar(props, ref);
 
     return (
         <div role="group" aria-label="calendar">
@@ -26,6 +26,6 @@ function Calendar(props: CalendarProps) {
             />
         </div>
     );
-}
+});
 
 export default memo(Calendar);

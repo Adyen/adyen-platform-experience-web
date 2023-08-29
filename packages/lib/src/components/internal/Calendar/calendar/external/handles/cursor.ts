@@ -12,19 +12,24 @@ import {
     CURSOR_UPWARD,
 } from '../../constants';
 import { isBitSafeInteger } from '../../shared/utils';
-import { CalendarConfigurator } from '../../types';
+import { CalendarConfigurator, CalendarHighlighter } from '../../types';
 import { InteractionKeyCode } from '@src/components/types';
 
-const getCursorReactor = (configurator: CalendarConfigurator) => {
-    const { highlight } = createHighlighter(configurator);
+const getCursorHandle = (configurator: CalendarConfigurator) => {
+    const MOUSE_EVENTS = ['click', 'mouseover', 'pointerover'];
+    const highlighter = createHighlighter(configurator);
 
-    return (evt?: Event): true | undefined => {
+    const handle = ((evt?: Event): true | undefined => {
         if (!(evt && configurator.frame && typeof configurator.configure.watch === 'function')) return;
 
         const { frame } = configurator;
 
         if (evt instanceof KeyboardEvent) {
             switch (evt.code) {
+                case InteractionKeyCode.SPACE:
+                case InteractionKeyCode.ENTER:
+                    highlighter();
+                    return true;
                 case InteractionKeyCode.ARROW_LEFT:
                     frame.shiftFrameCursor(CURSOR_BACKWARD);
                     break;
@@ -49,29 +54,37 @@ const getCursorReactor = (configurator: CalendarConfigurator) => {
                 case InteractionKeyCode.PAGE_DOWN:
                     frame.shiftFrameCursor(CURSOR_NEXT_BLOCK);
                     break;
-                case InteractionKeyCode.SPACE:
-                case InteractionKeyCode.ENTER:
-                    highlight();
-                    break;
                 default:
                     return;
             }
 
+            highlighter.faux();
             return true;
         }
 
-        if (evt instanceof MouseEvent && evt.type === 'click' && typeof configurator.configure.cursorIndex === 'function') {
+        if (evt instanceof MouseEvent && MOUSE_EVENTS.includes(evt.type) && typeof configurator.configure.cursorIndex === 'function') {
             const cursorIndex = configurator.configure.cursorIndex.call(configurator.config, evt);
 
             if (!isBitSafeInteger(cursorIndex)) return;
+
+            const isClick = evt.type === 'click';
+
+            if (!(isClick || highlighter.inProgress)) return;
             frame.shiftFrameCursor(cursorIndex);
 
             if (frame.cursor === cursorIndex) {
-                highlight();
+                isClick ? highlighter() : highlighter.faux();
                 return true;
             }
         }
+    }) as {
+        (evt?: Event): true | undefined;
+        highlighter: CalendarHighlighter;
     };
+
+    return Object.defineProperties(handle, {
+        highlighter: { value: highlighter },
+    });
 };
 
-export default getCursorReactor;
+export default getCursorHandle;

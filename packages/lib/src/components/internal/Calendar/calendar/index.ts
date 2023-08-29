@@ -11,11 +11,10 @@ import {
 import createConfigurator from './external/configurator';
 import getDaysOfWeek from './external/daysOfWeek';
 import getFrameBlock from './external/frameBlock';
-import { getCalendarControls, getCursorReactor } from './external/reactors';
+import { getCalendarControls, getCursorHandle } from './external/handles';
 import timeslice, { sinceNow, SLICE_UNBOUNDED, untilNow } from './internal/timeslice';
 import { noop, struct, structFrom } from './shared/utils';
 import { Indexed } from './shared/indexed/types';
-import { WatchCallable } from './shared/watchable/types';
 import indexed from './shared/indexed';
 
 const calendar = ((init?: CalendarInit) => {
@@ -52,22 +51,40 @@ const calendar = ((init?: CalendarInit) => {
         config: { value: configurator.configure },
         controls: { get: () => calendarControls },
         cursor: {
-            value: Object.defineProperties((evt?: Event) => !!(evt && cursorReactor(evt)), {
+            value: Object.defineProperties((evt?: Event) => !!(evt && cursorHandle(evt)), {
                 valueOf: { value: () => configurator.frame?.cursor ?? -1 },
             }),
         },
         daysOfWeek: { get: () => daysOfWeek },
-        // highlight: {},
+        highlight: {
+            value: struct({
+                blank: { get: () => highlighter.blank },
+                erase: { value: () => highlighter.erase() },
+                from: {
+                    get: () => highlighter.from,
+                    set: (time?: number) => {
+                        highlighter.from = time;
+                    },
+                },
+                to: {
+                    get: () => highlighter.to,
+                    set: (time?: number) => {
+                        highlighter.to = time;
+                    },
+                },
+            }),
+        },
     }) as CalendarGrid;
 
     let kill = () => {
         configurator.cleanup();
-        kill = cursorReactor = noop as unknown as WatchCallable<any>;
+        kill = cursorHandle = noop as unknown as any;
     };
 
     let blocks = [] as IndexedCalendarBlock[];
     let calendarControls = getCalendarControls(configurator);
-    let cursorReactor = getCursorReactor(configurator);
+    let cursorHandle = getCursorHandle(configurator);
+    let { highlighter } = cursorHandle;
     let daysOfWeek: Indexed<CalendarDayOfWeekData>;
 
     if (typeof init === 'number') grid.config({ blocks: init });

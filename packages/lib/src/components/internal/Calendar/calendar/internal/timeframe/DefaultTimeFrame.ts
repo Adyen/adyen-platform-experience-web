@@ -163,6 +163,11 @@ export default class DefaultTimeFrame extends TimeFrame {
         this.selectionEndDayTimestamp = this.getStartOfDayForTimestamp(this.selectionEnd);
     }
 
+    clearSelection() {
+        super.clearSelection();
+        this.updateSelectionTimestamps();
+    }
+
     updateSelection(time: Time, selection?: TimeFrameSelection) {
         super.updateSelection(time, selection);
         this.updateSelectionTimestamps();

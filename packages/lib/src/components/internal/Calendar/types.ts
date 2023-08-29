@@ -1,5 +1,13 @@
-import { ComponentChild } from 'preact';
-import { CalendarGridControlEntry, CalendarSelection, CalendarShiftControls, FirstWeekDay, Time, TimeFrameSize } from './calendar/types';
+import { VNode } from 'preact';
+import {
+    CalendarGridControlEntry,
+    CalendarHighlighter,
+    CalendarSelection,
+    CalendarShiftControls,
+    FirstWeekDay,
+    Time,
+    TimeFrameSize,
+} from './calendar/types';
 
 export const enum CalendarGridRenderToken {
     DATE,
@@ -9,7 +17,13 @@ export const enum CalendarGridRenderToken {
 
 export interface CalendarGridCursorRootProps {
     onClickCapture: (evt: Event) => void;
+    onMouseOverCapture: (evt: Event) => void;
+    onPointerOverCapture: (evt: Event) => void;
     onKeyDownCapture: (evt: KeyboardEvent) => void;
+}
+
+export interface CalendarHandle {
+    erase: CalendarHighlighter['erase'];
 }
 
 export interface CalendarProps {
@@ -21,9 +35,9 @@ export interface CalendarProps {
     locale?: string;
     onHighlight?: (...args: any[]) => any;
     onlyCellsWithin?: boolean;
-    // originDate?: Time;
+    originDate?: Time | Time[];
     prepare?: (renderToken: CalendarGridRenderToken, renderContext: any) => any;
-    renderControl?: (...args: CalendarGridControlEntry) => ComponentChild;
+    renderControl?: (...args: CalendarGridControlEntry) => VNode | null;
     sinceDate?: Time;
     untilDate?: Time;
 }

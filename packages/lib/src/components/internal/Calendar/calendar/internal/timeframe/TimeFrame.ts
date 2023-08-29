@@ -438,6 +438,12 @@ export default abstract class TimeFrame {
         }
     }
 
+    clearSelection() {
+        if (this.#selectionStartTimestamp === this.#selectionEndTimestamp && this.#selectionEndTimestamp === undefined) return;
+        this.#selectionStartTimestamp = this.#selectionEndTimestamp = undefined;
+        this.#refreshFrame();
+    }
+
     shiftFrame(shiftBy?: number, shiftType?: TimeFrameShift) {
         if (shiftBy && isBitSafeInteger(shiftBy)) {
             switch (shiftType) {

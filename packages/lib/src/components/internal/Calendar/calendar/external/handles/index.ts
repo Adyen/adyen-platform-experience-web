@@ -1,2 +1,2 @@
 export { default as getCalendarControls } from './controls';
-export { default as getCursorReactor } from './cursor';
+export { default as getCursorHandle } from './cursor';

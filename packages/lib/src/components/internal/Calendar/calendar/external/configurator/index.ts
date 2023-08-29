@@ -142,6 +142,7 @@ const createConfigurator = (beforeEffectCallback?: WatchCallable<any>) => {
     }
 
     const configurator = struct({
+        chain: { value: (fn: WatchCallable<any>) => _chainedCallback?.(fn) ?? fn },
         cleanup: { value: () => _cleanup?.() },
         config: { get: () => ({ ..._config }) },
         configure: {

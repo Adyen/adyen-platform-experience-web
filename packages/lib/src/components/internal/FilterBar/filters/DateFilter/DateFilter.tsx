@@ -1,15 +1,16 @@
-import { useEffect, useMemo } from 'preact/hooks';
+import { useEffect, useMemo, useRef } from 'preact/hooks';
 import { EditAction, FilterEditModalRenderProps, FilterProps } from '../BaseFilter/types';
 import { DateFilterProps, DateRangeFilterParam } from './types';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import BaseFilter from '../BaseFilter';
 import Language from '../../../../../language';
-import Calendar from '@src/components/internal/Calendar';
-import calendar from '@src/components/internal/Calendar/calendar';
-import useDatePicker, { resolveDate } from '@src/components/internal/DatePicker/hooks/useDatePicker';
-import useDatePickerCalendarControls from '@src/components/internal/DatePicker/hooks/useDatePickerCalendarControls';
-import '@src/components/internal/DatePicker/DatePicker.scss';
+import { EMPTY_OBJECT } from '../../../Calendar/calendar/shared/constants';
+import DatePicker from '../../../DatePicker/components/DatePicker';
+import { resolveDate } from '../../../DatePicker/hooks/useDatePicker';
+import { DatePickerHandle } from '../../../DatePicker/types';
+import '../../../DatePicker/DatePicker.scss';
 import './DateFilter.scss';
+import useMounted from '@src/hooks/useMounted';
 
 const computeDateFilterValue = (i18n: Language, fromDate?: string, toDate?: string) => {
     const from = fromDate && i18n.fullDate(fromDate);
@@ -22,47 +23,40 @@ const computeDateFilterValue = (i18n: Language, fromDate?: string, toDate?: stri
 
 const renderDateFilterModalBody = (() => {
     const DateFilterEditModalBody = (props: FilterEditModalRenderProps<DateFilterProps>) => {
-        const { editAction, from, to, rangeStart, rangeEnd, onChange, onValueUpdated } = props;
-
         const { i18n } = useCoreContext();
-        const { fromValue, originDate, prepare, resetRange, selectDate, toValue } = useDatePicker({ from, to, rangeStart, rangeEnd });
-        const [renderControl, calendarControlsContainerRef] = useDatePickerCalendarControls();
+        const datePickerRef = useRef<DatePickerHandle>();
+        const mounted = useMounted();
 
         useEffect(() => {
-            onValueUpdated(computeDateFilterValue(i18n, fromValue, toValue));
-        }, [i18n, fromValue, toValue, onValueUpdated]);
+            const { from = props.from, to = props.to } = datePickerRef.current ?? EMPTY_OBJECT;
+            props?.onValueUpdated(computeDateFilterValue(i18n, from, to));
+        }, [i18n, props.onValueUpdated]);
 
         useEffect(() => {
-            switch (editAction) {
+            switch (props.editAction) {
                 case EditAction.APPLY:
-                    onChange({
-                        [DateRangeFilterParam.FROM]: fromValue,
-                        [DateRangeFilterParam.TO]: toValue,
+                    const { from = '', to = '' } = datePickerRef.current ?? EMPTY_OBJECT;
+                    props?.onChange({
+                        [DateRangeFilterParam.FROM]: from,
+                        [DateRangeFilterParam.TO]: to,
                     });
                     break;
 
                 case EditAction.CLEAR:
-                    resetRange();
+                    datePickerRef.current?.reset();
             }
-        }, [editAction, fromValue, toValue, onChange, resetRange]);
+        }, [props.editAction, props.onChange]);
 
         return (
-            <>
-                <div ref={calendarControlsContainerRef} className={'adyen-fp-datepicker__controls'} role="group" />
-                <Calendar
-                    controls={calendar.controls.MINIMAL}
-                    dynamicBlockRows={false}
-                    firstWeekDay={1}
-                    highlight={calendar.highlight.MANY}
-                    onHighlight={selectDate}
-                    onlyCellsWithin={false}
-                    // originDate={originDate}
-                    prepare={prepare}
-                    renderControl={renderControl}
-                    sinceDate={rangeStart ? new Date(rangeStart) : undefined}
-                    untilDate={rangeEnd ? new Date(rangeEnd) : undefined}
-                />
-            </>
+            <DatePicker
+                ref={datePickerRef}
+                dynamicBlockRows={false}
+                firstWeekDay={1}
+                onlyCellsWithin={false}
+                originDate={[new Date(props.from as string), new Date(props.to as string)]}
+                sinceDate={props.rangeStart}
+                untilDate={props.rangeEnd}
+            />
         );
     };
 
