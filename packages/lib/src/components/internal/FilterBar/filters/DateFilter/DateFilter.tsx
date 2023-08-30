@@ -1,16 +1,13 @@
-import { useEffect, useMemo, useRef } from 'preact/hooks';
+import { useCallback, useEffect, useRef, useState } from 'preact/hooks';
 import { EditAction, FilterEditModalRenderProps, FilterProps } from '../BaseFilter/types';
 import { DateFilterProps, DateRangeFilterParam } from './types';
+import { CalendarHandle } from '../../../Calendar/types';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
+import useMounted from '@src/hooks/useMounted';
 import BaseFilter from '../BaseFilter';
 import Language from '../../../../../language';
-import { EMPTY_OBJECT } from '../../../Calendar/calendar/shared/constants';
-import DatePicker from '../../../DatePicker/components/DatePicker';
-import { resolveDate } from '../../../DatePicker/hooks/useDatePicker';
-import { DatePickerHandle } from '../../../DatePicker/types';
-import '../../../DatePicker/DatePicker.scss';
+import DatePicker from '../../../DatePicker';
 import './DateFilter.scss';
-import useMounted from '@src/hooks/useMounted';
 
 const computeDateFilterValue = (i18n: Language, fromDate?: string, toDate?: string) => {
     const from = fromDate && i18n.fullDate(fromDate);
@@ -21,29 +18,39 @@ const computeDateFilterValue = (i18n: Language, fromDate?: string, toDate?: stri
     if (to) return i18n.get('filter.date.until', { values: { date: to } });
 };
 
+const resolveDate = (date?: any) => {
+    try {
+        return new Date(date || '').toISOString();
+    } catch {
+        return '';
+    }
+};
+
 const renderDateFilterModalBody = (() => {
     const DateFilterEditModalBody = (props: FilterEditModalRenderProps<DateFilterProps>) => {
         const { i18n } = useCoreContext();
-        const datePickerRef = useRef<DatePickerHandle>();
+        const [lastUpdatedTimestamp, setLastUpdatedTimestamp] = useState<DOMHighResTimeStamp>(performance.now());
+        const datePickerRef = useRef<CalendarHandle>();
         const mounted = useMounted();
 
+        const onHighlight = useCallback(() => setLastUpdatedTimestamp(performance.now()), [setLastUpdatedTimestamp]);
+
         useEffect(() => {
-            const { from = props.from, to = props.to } = datePickerRef.current ?? EMPTY_OBJECT;
-            props?.onValueUpdated(computeDateFilterValue(i18n, from, to));
-        }, [i18n, props.onValueUpdated]);
+            if (!mounted.current) return;
+            props?.onValueUpdated(computeDateFilterValue(i18n, resolveDate(datePickerRef.current?.from), resolveDate(datePickerRef.current?.to)));
+        }, [i18n, lastUpdatedTimestamp, props.onValueUpdated]);
 
         useEffect(() => {
             switch (props.editAction) {
                 case EditAction.APPLY:
-                    const { from = '', to = '' } = datePickerRef.current ?? EMPTY_OBJECT;
                     props?.onChange({
-                        [DateRangeFilterParam.FROM]: from,
-                        [DateRangeFilterParam.TO]: to,
+                        [DateRangeFilterParam.FROM]: resolveDate(datePickerRef.current?.from),
+                        [DateRangeFilterParam.TO]: resolveDate(datePickerRef.current?.to),
                     });
                     break;
 
                 case EditAction.CLEAR:
-                    datePickerRef.current?.reset();
+                    datePickerRef.current?.clear();
             }
         }, [props.editAction, props.onChange]);
 
@@ -52,6 +59,7 @@ const renderDateFilterModalBody = (() => {
                 ref={datePickerRef}
                 dynamicBlockRows={false}
                 firstWeekDay={1}
+                onHighlight={onHighlight}
                 onlyCellsWithin={false}
                 originDate={[new Date(props.from as string), new Date(props.to as string)]}
                 sinceDate={props.rangeStart}
@@ -64,25 +72,20 @@ const renderDateFilterModalBody = (() => {
 })();
 
 export default function DateFilter<T extends DateFilterProps = DateFilterProps>(props: FilterProps<T>) {
-    const { from, to, rangeStart, rangeEnd } = props;
-
     const { i18n } = useCoreContext();
-    const fromDate = useMemo(() => resolveDate(from), [from]);
-    const toDate = useMemo(() => resolveDate(to), [to]);
-    const rangeStartDate = useMemo(() => resolveDate(rangeStart), [rangeStart]);
-    const rangeEndDate = useMemo(() => resolveDate(rangeEnd), [rangeEnd]);
-    const value = useMemo(() => computeDateFilterValue(i18n, fromDate, toDate), [i18n, fromDate, toDate]);
+    const fromDate = resolveDate(props.from);
+    const toDate = resolveDate(props.to);
 
     return (
         <BaseFilter<T>
             {...props}
             from={fromDate}
             to={toDate}
-            rangeStart={rangeStartDate}
-            rangeEnd={rangeEndDate}
-            value={value}
             type={'date'}
+            rangeStart={resolveDate(props.rangeStart)}
+            rangeEnd={resolveDate(props.rangeEnd)}
             render={renderDateFilterModalBody}
+            value={computeDateFilterValue(i18n, fromDate, toDate)}
         />
     );
 }

@@ -36,6 +36,8 @@ ol {
 
         #{$adyen-fp-calendar-month__grid}-cell {
             position: relative;
+            touch-action: manipulation;
+            user-select: none;
 
             &::before {
                 content: '';

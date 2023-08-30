@@ -2,15 +2,11 @@ import { Ref } from 'preact';
 import { useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'preact/hooks';
 import useCoreContext from '@src/core/Context/useCoreContext';
 import { ReflexAction } from '@src/hooks/useReflex';
+import { getDateObjectFromTimestamp } from '../calendar/internal/utils';
+import { EMPTY_OBJECT } from '../calendar/shared/constants';
 import { CalendarGridCursorRootProps, CalendarHandle, CalendarProps } from '../types';
 import useFocusCursor from '../../../../hooks/element/useFocusCursor';
 import calendar from '../calendar';
-
-export const normalizeCalendarOriginDate = (originDate?: CalendarProps['originDate']) => {
-    const origins = ([] as number[]).concat(originDate as ConcatArray<number>);
-    origins.length = 2;
-    return [...origins].map(Number).filter(Boolean) as [number | undefined, number | undefined];
-};
 
 const useCalendar = (
     {
@@ -29,8 +25,19 @@ const useCalendar = (
     ref: Ref<unknown>
 ) => {
     const { i18n } = useCoreContext();
-    const [, setLastMutationTimestamp] = useState<DOMHighResTimeStamp>(performance.now());
+    const [lastMutationTimestamp, setLastMutationTimestamp] = useState<DOMHighResTimeStamp>(performance.now());
     const timeslice = useMemo(() => calendar.range(sinceDate, untilDate), [sinceDate, untilDate]);
+    const config = useRef<ReturnType<typeof grid.config>>(EMPTY_OBJECT);
+
+    const activeControls = useMemo(
+        () => controls ?? (typeof renderControl === 'function' ? calendar.controls.MINIMAL : calendar.controls.NONE),
+        [controls, renderControl]
+    );
+
+    const activeHighlight = useMemo(
+        () => highlight ?? (typeof onHighlight === 'function' ? calendar.highlight.ONE : calendar.highlight.NONE),
+        [highlight, onHighlight]
+    );
 
     const { grid, kill } = useMemo(() => {
         const { grid, kill } = calendar(function () {
@@ -91,38 +98,51 @@ const useCalendar = (
         )
     );
 
-    const config = useRef<ReturnType<typeof grid.config>>({});
-
     useImperativeHandle(
         ref,
-        () =>
-            ({
-                erase: () => grid?.highlight.erase(),
-            } as CalendarHandle),
-        [grid]
+        () => {
+            const { erase, from, to } = grid?.highlight || EMPTY_OBJECT;
+            return {
+                clear: () => erase?.(),
+                get config() {
+                    return { ...(config.current ?? EMPTY_OBJECT) };
+                },
+                get from() {
+                    return getDateObjectFromTimestamp(from);
+                },
+                get to() {
+                    return getDateObjectFromTimestamp(to);
+                },
+            } as CalendarHandle;
+        },
+        [grid, lastMutationTimestamp]
     );
 
     useEffect(() => {
         grid.config({
             blocks,
-            controls: renderControl ? controls ?? calendar.controls.MINIMAL : calendar.controls.NONE,
+            controls: activeControls,
             firstWeekDay,
-            highlight: onHighlight ? highlight ?? calendar.highlight.ONE : calendar.highlight.NONE,
+            highlight: activeHighlight,
             locale: locale ?? i18n.locale,
             // minified,
             timeslice,
             withMinimumHeight: dynamicBlockRows,
         });
-    }, [blocks, controls, dynamicBlockRows, firstWeekDay, grid, highlight, i18n, locale, onHighlight, renderControl, timeslice]);
+    }, [activeControls, activeHighlight, blocks, dynamicBlockRows, firstWeekDay, grid, i18n, locale, timeslice]);
 
     useEffect(() => {
-        const origins = normalizeCalendarOriginDate(originDate);
+        const origins = ([] as number[])
+            .concat(originDate as ConcatArray<number>)
+            .slice(0, 2)
+            .map(Number)
+            .filter(Boolean);
         if (origins[0]) grid.highlight.from = +origins[0];
         if (origins[1]) grid.highlight.to = +origins[1];
         return kill;
     }, []);
 
-    return { config, cursorElementRef, cursorRootProps, grid };
+    return { cursorElementRef, cursorRootProps, grid };
 };
 
 export default useCalendar;

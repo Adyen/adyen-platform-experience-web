@@ -1,5 +1,6 @@
 import { VNode } from 'preact';
 import {
+    CalendarConfig,
     CalendarGridControlEntry,
     CalendarHighlighter,
     CalendarSelection,
@@ -23,7 +24,10 @@ export interface CalendarGridCursorRootProps {
 }
 
 export interface CalendarHandle {
-    erase: CalendarHighlighter['erase'];
+    clear: CalendarHighlighter['erase'];
+    config: CalendarConfig;
+    from?: Date;
+    to?: Date;
 }
 
 export interface CalendarProps {
@@ -33,7 +37,7 @@ export interface CalendarProps {
     firstWeekDay?: FirstWeekDay;
     highlight?: CalendarSelection;
     locale?: string;
-    onHighlight?: (...args: any[]) => any;
+    onHighlight?: (from?: number, to?: number) => any;
     onlyCellsWithin?: boolean;
     originDate?: Time | Time[];
     prepare?: (renderToken: CalendarGridRenderToken, renderContext: any) => any;
@@ -41,3 +45,6 @@ export interface CalendarProps {
     sinceDate?: Time;
     untilDate?: Time;
 }
+
+export type CalendarRenderControl = Exclude<CalendarProps['renderControl'], undefined>;
+export type CalendarControlRenderer = (targetElement: Element, ...args: CalendarGridControlEntry) => ReturnType<CalendarRenderControl>;
