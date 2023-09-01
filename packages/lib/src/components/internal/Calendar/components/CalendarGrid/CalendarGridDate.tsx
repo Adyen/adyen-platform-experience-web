@@ -43,7 +43,7 @@ const CalendarGridDate = forwardRef(
         if (withinMonth) {
             const withinRange = flags.WITHIN_RANGE;
 
-            props['data-today'] = flags.TODAY;
+            props['data-today'] = flags.CURRENT;
             props['data-first-week-day'] = flags.LINE_START;
             props['data-last-week-day'] = flags.LINE_END;
             props['data-weekend'] = flags.WEEKEND;

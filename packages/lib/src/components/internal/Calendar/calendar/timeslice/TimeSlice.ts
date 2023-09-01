@@ -1,5 +1,5 @@
-import { RANGE_FROM, RANGE_TO } from '../../constants';
-import { Time, TimeFrameRangeEdge } from '../../types';
+import { RANGE_FROM, RANGE_TO } from '../constants';
+import { Time, TimeFrameRangeEdge } from '../types';
 import { computeTimestampOffset, getEdgesDistance } from '../utils';
 
 export default class __TimeSlice__ {

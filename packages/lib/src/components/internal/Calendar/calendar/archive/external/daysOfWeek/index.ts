@@ -1,9 +1,9 @@
-import { DAY_OF_WEEK_FORMATS } from '../../constants';
-import { getWeekendDays } from '@src/components/internal/Calendar/calendar/internal/timeframe/utils';
-import { CalendarConfigurator, CalendarDayOfWeekData, DayOfWeekLabelFormat, TimeFlag, WeekDay } from '../../types';
-import { enumerable, struct } from '../../shared/utils';
-import indexed from '../../shared/indexed';
-import getFlagsRecord from '../flagsRecord';
+import { DAY_OF_WEEK_FORMATS } from '../../../constants';
+import { getWeekendDays } from '@src/components/internal/Calendar/calendar/timeframe/common/utils';
+import { CalendarConfigurator, CalendarDayOfWeekData, DayOfWeekLabelFormat, TimeFlag, WeekDay } from '../../../types';
+import { enumerable, struct } from '../../../shared/utils';
+import indexed from '../../../shared/indexed';
+import getFlagsRecord from '../../../timeframe/common/flags';
 
 const getDaysOfWeek = (configurator: CalendarConfigurator) => {
     const {

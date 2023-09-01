@@ -1,4 +1,4 @@
-import createHighlighter from '../highlighter';
+import createHighlighter from './highlighter';
 import {
     CURSOR_BACKWARD,
     CURSOR_BLOCK_END,
@@ -10,9 +10,9 @@ import {
     CURSOR_NEXT_BLOCK,
     CURSOR_PREV_BLOCK,
     CURSOR_UPWARD,
-} from '../../constants';
-import { isBitSafeInteger } from '../../shared/utils';
-import { CalendarConfigurator, CalendarHighlighter } from '../../types';
+} from '../constants';
+import { isBitSafeInteger } from '../shared/utils';
+import { CalendarConfigurator, CalendarHighlighter } from '../types';
 import { InteractionKeyCode } from '@src/components/types';
 
 const getCursorHandle = (configurator: CalendarConfigurator) => {

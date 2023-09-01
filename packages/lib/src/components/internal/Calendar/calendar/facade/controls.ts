@@ -1,7 +1,7 @@
-import { CONTROLS_ALL, CONTROLS_MINIMAL, CONTROLS_NONE, SHIFT_BLOCK, SHIFT_FRAME, SHIFT_PERIOD } from '../../constants';
-import { TimeFrame } from '../../internal/timeframe';
-import indexed from '../../shared/indexed';
-import { enumerable } from '../../shared/utils';
+import { CONTROLS_ALL, CONTROLS_MINIMAL, CONTROLS_NONE, SHIFT_BLOCK, SHIFT_FRAME, SHIFT_PERIOD } from '../constants';
+import { TimeFrame } from '@src/components/internal/Calendar/calendar/archive/internal/timeframe';
+import indexed from '../shared/indexed';
+import { enumerable } from '../shared/utils';
 import {
     CalendarConfigurator,
     CalendarGrid,
@@ -10,7 +10,7 @@ import {
     CalendarShiftControl,
     CalendarShiftControlFlag,
     CalendarShiftControlsFlag,
-} from '../../types';
+} from '../types';
 import { InteractionKeyCode } from '@src/components/types';
 
 const getCalendarControls = (() => {

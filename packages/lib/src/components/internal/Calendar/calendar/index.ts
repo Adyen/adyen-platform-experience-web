@@ -8,11 +8,11 @@ import {
     FirstWeekDay,
     IndexedCalendarBlock,
 } from './types';
-import createConfigurator from './external/configurator';
-import getDaysOfWeek from './external/daysOfWeek';
-import getFrameBlock from './external/frameBlock';
-import { getCalendarControls, getCursorHandle } from './external/handles';
-import timeslice, { sinceNow, SLICE_UNBOUNDED, untilNow } from './internal/timeslice';
+import createConfigurator from './facade/configurator';
+import getDaysOfWeek from '@src/components/internal/Calendar/calendar/archive/external/daysOfWeek';
+import getFrameBlock from '@src/components/internal/Calendar/calendar/archive/external/frameBlock';
+import { getCalendarControls, getCursorHandle } from '@src/components/internal/Calendar/calendar/archive/external/handles';
+import timeslice, { sinceNow, SLICE_UNBOUNDED, untilNow } from './timeslice';
 import { noop, struct, structFrom } from './shared/utils';
 import { Indexed } from './shared/indexed/types';
 import indexed from './shared/indexed';

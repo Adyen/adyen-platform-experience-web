@@ -1,10 +1,10 @@
-export const DAY_MS = 86400000;
+export const DAY_MS = 86400000 as const;
 export const DAY_OF_WEEK_FORMATS = ['narrow', 'short', 'long'] as const;
 export const FIRST_WEEK_DAYS = [0, 1, 6] as const;
 export const FRAME_SIZES = [1, 2, 3, 4, 6, 12] as const;
-export const MAXIMUM_MONTH_UNITS = 42;
+export const MAXIMUM_MONTH_UNITS = 42 as const;
 export const WEEKEND_DAYS_SEED = [0, 1] as const;
-export const YEAR_MONTHS = 12;
+export const YEAR_MONTHS = 12 as const;
 export const CONTROLS_ALL: unique symbol = Symbol();
 export const CONTROLS_MINIMAL: unique symbol = Symbol();
 export const CONTROLS_NONE: unique symbol = Symbol();

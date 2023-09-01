@@ -1,6 +1,6 @@
-import $watchable from '../../shared/watchable';
-import { struct } from '../../shared/utils';
-import { Today } from '../../types';
+import $watchable from '../shared/watchable';
+import { struct } from '../shared/utils';
+import { Today } from '../types';
 
 const today = (() => {
     let timestamp: number;

@@ -1,10 +1,10 @@
-import { CALENDAR_CONTROLS, CALENDAR_SELECTIONS, FIRST_WEEK_DAYS, FRAME_SIZES } from '../../constants';
-import { AnnualTimeFrame, DefaultTimeFrame, TimeFrame } from '../../internal/timeframe';
-import { CalendarConfig, CalendarConfigurator } from '../../types';
-import { EMPTY_OBJECT } from '../../shared/constants';
-import { boolify, noop, pickFromCollection, struct } from '../../shared/utils';
-import { WatchAtoms, WatchCallable } from '../../shared/watchable/types';
-import watchable from '../../shared/watchable';
+import { CALENDAR_CONTROLS, CALENDAR_SELECTIONS, FIRST_WEEK_DAYS, FRAME_SIZES } from '../constants';
+import { AnnualTimeFrame, DefaultTimeFrame, TimeFrame } from '@src/components/internal/Calendar/calendar/archive/internal/timeframe';
+import { CalendarConfig, CalendarConfigurator } from '../types';
+import { EMPTY_OBJECT } from '../shared/constants';
+import { boolify, noop, pickFromCollection, struct } from '../shared/utils';
+import { WatchAtoms, WatchCallable } from '../shared/watchable/types';
+import watchable from '../shared/watchable';
 import syncEffectCallback from '@src/utils/syncEffectCallback';
 
 const createConfigurator = (beforeEffectCallback?: WatchCallable<any>) => {

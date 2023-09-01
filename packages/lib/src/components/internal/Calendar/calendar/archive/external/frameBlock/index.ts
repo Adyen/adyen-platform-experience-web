@@ -1,8 +1,8 @@
-import getFlagsRecord from '../flagsRecord';
-import indexed from '../../shared/indexed';
-import { Indexed } from '../../shared/indexed/types';
-import { enumerable, struct } from '../../shared/utils';
-import { CalendarBlock, CalendarBlockCellData, CalendarConfigurator } from '../../types';
+import getFlagsRecord from '../../../timeframe/common/flags';
+import indexed from '../../../shared/indexed';
+import { Indexed } from '../../../shared/indexed/types';
+import { enumerable, struct } from '../../../shared/utils';
+import { CalendarBlock, CalendarBlockCellData, CalendarConfigurator } from '../../../types';
 
 const getFrameBlock = (configurator: CalendarConfigurator, index: number) => {
     const { config, frame } = configurator;

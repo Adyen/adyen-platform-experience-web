@@ -2,7 +2,7 @@ import { Ref } from 'preact';
 import { useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'preact/hooks';
 import useCoreContext from '@src/core/Context/useCoreContext';
 import { ReflexAction } from '@src/hooks/useReflex';
-import { getDateObjectFromTimestamp } from '../calendar/internal/utils';
+import { getDateObjectFromTimestamp } from '../calendar/utils';
 import { EMPTY_OBJECT } from '../calendar/shared/constants';
 import { CalendarGridCursorRootProps, CalendarHandle, CalendarProps } from '../types';
 import useFocusCursor from '../../../../hooks/element/useFocusCursor';

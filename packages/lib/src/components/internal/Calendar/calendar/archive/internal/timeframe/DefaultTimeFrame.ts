@@ -1,10 +1,10 @@
 import TimeFrame from './TimeFrame';
-import { DAY_MS, MAXIMUM_MONTH_UNITS } from '../../constants';
-import { Month, MonthDays, Time, TimeFlag, TimeFrameBlock, TimeFrameSelection, TimeFrameSize, TimeSlice, WeekDay } from '../../types';
-import today from '../today';
-import { computeTimestampOffset, getEdgesDistance, getMonthDays } from '../utils';
-import { immutableProxyHandlers } from '../../shared/constants';
-import { isBitSafeInteger, isInfinite, struct, structFrom } from '../../shared/utils';
+import { DAY_MS, MAXIMUM_MONTH_UNITS } from '../../../constants';
+import { Month, MonthDays, Time, TimeFlag, TimeFrameBlock, TimeFrameSelection, TimeFrameSize, TimeSlice, WeekDay } from '../../../types';
+import today from '../../../today';
+import { computeTimestampOffset, getEdgesDistance, getMonthDays } from '../../../utils';
+import { immutableProxyHandlers } from '../../../shared/constants';
+import { isBitSafeInteger, isInfinite, struct, structFrom } from '../../../shared/utils';
 
 export default class DefaultTimeFrame extends TimeFrame {
     protected declare fromTimestamp: number;
@@ -56,7 +56,7 @@ export default class DefaultTimeFrame extends TimeFrame {
                         const timestamp = this.index(index);
                         const weekDay = (index % this.lineWidth) as WeekDay;
 
-                        let flags = timestamp === today.timestamp ? TimeFlag.TODAY : 0;
+                        let flags = timestamp === today.timestamp ? TimeFlag.CURRENT : 0;
 
                         if (index === this.cursor) flags |= TimeFlag.CURSOR;
 

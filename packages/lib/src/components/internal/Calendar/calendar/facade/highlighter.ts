@@ -1,7 +1,7 @@
-import { SELECT_NONE, SELECT_ONE, SELECTION_COLLAPSE, SELECTION_FROM, SELECTION_TO } from '../../constants';
-import { EMPTY_OBJECT } from '../../shared/constants';
-import { structFrom } from '../../shared/utils';
-import { CalendarConfigurator, CalendarHighlighter } from '../../types';
+import { SELECT_NONE, SELECT_ONE, SELECTION_COLLAPSE, SELECTION_FROM, SELECTION_TO } from '../constants';
+import { EMPTY_OBJECT } from '../shared/constants';
+import { structFrom } from '../shared/utils';
+import { CalendarConfigurator, CalendarHighlighter } from '../types';
 
 const createHighlighter = (() => {
     const FAUX_SECRET = structFrom(EMPTY_OBJECT);

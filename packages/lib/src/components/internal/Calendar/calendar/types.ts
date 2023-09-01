@@ -31,7 +31,7 @@ import {
 } from './constants';
 import { Indexed } from './shared/indexed/types';
 import { Watchable, WatchCallable } from './shared/watchable/types';
-import { TimeFrame } from '@src/components/internal/Calendar/calendar/internal/timeframe';
+import { TimeFrame } from '@src/components/internal/Calendar/calendar/archive/internal/timeframe';
 
 export type WithGetSetProperty<T = any> = {
     get _(): T;
@@ -60,7 +60,7 @@ export type MonthDays = 28 | 29 | 30 | 31;
 export type Time = Date | number | string;
 
 export enum TimeFlag {
-    TODAY = 0x1,
+    CURRENT = 0x1,
     CURSOR = 0x2,
     WEEKEND = 0x4,
     LINE_START = 0x8,
