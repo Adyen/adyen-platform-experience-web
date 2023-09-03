@@ -1,17 +1,20 @@
-import __Watchable__ from './Watchable';
-import { Watchable, WatchAtoms } from './types';
+import syncEffect from './core/syncEffect';
+import __Watchable__ from './core/Watchable';
+import { WatchableFactory } from './types';
 import { struct } from '../utils';
 
-const watchable = <T extends Record<string, any>>(watchableAtoms = {} as WatchAtoms<T>) => {
+const watchable = (watchableAtoms => {
     const instance = new __Watchable__(watchableAtoms);
 
     return struct({
         callback: { value: instance.idleCallbacks },
         idle: { get: () => instance.idle },
         notify: { value: instance.notifyWatchers },
-        snapshot: { get: () => instance.snapshot as T },
+        snapshot: { get: () => instance.snapshot },
         watch: { value: instance.watch },
-    }) as Watchable<T>;
-};
+    });
+}) as WatchableFactory;
 
-export default watchable;
+export default Object.defineProperties(watchable, {
+    withSyncEffect: { value: syncEffect },
+});

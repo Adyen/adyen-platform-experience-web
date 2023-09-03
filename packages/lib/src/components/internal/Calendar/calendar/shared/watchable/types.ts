@@ -11,15 +11,20 @@ export type WatchAtoms<T extends Record<string, any>> = {
     [K in keyof T]: WatchCallable<T[K]> | T[K];
 };
 
-export type Watchable<T extends Record<string, any>> = {
-    readonly callback: {
+export type Watchable<T extends Record<string, any>> = Readonly<{
+    callback: {
         get idle(): WatchCallable<any>;
         set idle(callback: WatchCallable<any> | undefined);
         get resume(): WatchCallable<any>;
         set resume(callback: WatchCallable<any> | undefined);
     };
-    readonly idle: boolean;
-    readonly notify: WatchCallable<boolean | undefined>;
-    readonly snapshot: T;
-    readonly watch: (callback?: WatchCallback<T>) => WatchCallable<void>;
+    idle: boolean;
+    notify: WatchCallable<boolean | undefined>;
+    snapshot: T;
+    watch: (callback?: WatchCallback<T>) => WatchCallable<void>;
+}>;
+
+export type WatchableFactory = {
+    <T extends Record<string, any>>(watchableAtoms?: WatchAtoms<T>): Watchable<T>;
+    readonly withSyncEffect: (effect?: WatchCallable<any>) => <T extends WatchCallable<any> = WatchCallable<any>>(fn: T) => T;
 };

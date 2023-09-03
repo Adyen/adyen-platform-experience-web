@@ -1,19 +1,23 @@
 import TimeFrame from './TimeFrame';
-import today from '../today';
-import { computeTimestampOffset } from '../utils';
-import { YEAR_MONTHS } from '../constants';
-import { immutableProxyHandlers } from '../shared/constants';
-import { isBitSafeInteger, isInfinite, struct, structFrom } from '../shared/utils';
-import { CalendarDayOfWeekData, Time, TimeFlag, TimeFrameBlock } from '../types';
+import { computeTimestampOffset, getEdgesDistance } from '../../utils';
+import { YEAR_MONTHS } from '../../constants';
+import { immutableProxyHandlers } from '../../shared/constants';
+import { isBitSafeInteger, isInfinite, struct, structFrom } from '../../shared/utils';
+import { CalendarDayOfWeekData, Time, TimeFlag, TimeFrameBlock, TimeFrameSelection } from '../../types';
 
-export default class YearTimeFrame extends TimeFrame {
-    #currentDayTimestamp: number = this.#getStartForTimestamp(today.timestamp) as number;
+export default class YearFrame extends TimeFrame {
+    #currentDayTimestamp!: number;
     #fromTimestamp: number = -Infinity;
     #toTimestamp: number = Infinity;
     #numberOfBlocks: number = Infinity;
-    #selectionStartTimestamp?: number;
-    #selectionEndTimestamp?: number;
+    #selectionFromTimestamp?: number;
+    #selectionToTimestamp?: number;
     #lineWidth = 4 as const;
+
+    constructor() {
+        super();
+        this.initialize();
+    }
 
     protected get fromTimestamp() {
         return this.#fromTimestamp;
@@ -44,8 +48,8 @@ export default class YearTimeFrame extends TimeFrame {
     }
 
     #updateSelectionTimestamps() {
-        this.#selectionStartTimestamp = this.#getStartForTimestamp(this.selectionStart);
-        this.#selectionEndTimestamp = this.#getStartForTimestamp(this.selectionEnd);
+        this.#selectionFromTimestamp = this.#getStartForTimestamp(this.selectionStart);
+        this.#selectionToTimestamp = this.#getStartForTimestamp(this.selectionEnd);
     }
 
     protected getCursorBlockOriginTimestampOffset(timestamp: number): number {
@@ -109,9 +113,9 @@ export default class YearTimeFrame extends TimeFrame {
                             flags |= TimeFlag.WITHIN_RANGE;
                         }
 
-                        if (timestamp >= (this.#selectionStartTimestamp as number) && timestamp <= (this.#selectionEndTimestamp as number)) {
-                            if (timestamp === (this.#selectionStartTimestamp as number)) flags |= TimeFlag.SELECTION_START;
-                            if (timestamp === (this.#selectionEndTimestamp as number)) flags |= TimeFlag.SELECTION_END;
+                        if (timestamp >= (this.#selectionFromTimestamp as number) && timestamp <= (this.#selectionToTimestamp as number)) {
+                            if (timestamp === (this.#selectionFromTimestamp as number)) flags |= TimeFlag.SELECTION_START;
+                            if (timestamp === (this.#selectionToTimestamp as number)) flags |= TimeFlag.SELECTION_END;
                             flags |= TimeFlag.WITHIN_SELECTION;
                         }
 
@@ -135,6 +139,11 @@ export default class YearTimeFrame extends TimeFrame {
         return YEAR_MONTHS;
     }
 
+    protected getUnitsOffsetForTimestamp(startTimestamp: number, timestamp: number) {
+        const offset = getEdgesDistance(startTimestamp, timestamp);
+        return timestamp < startTimestamp ? 0 - offset : offset;
+    }
+
     protected reoriginate() {
         const date = new Date(this.originTimestamp);
         this.origin = date.getFullYear();
@@ -155,8 +164,20 @@ export default class YearTimeFrame extends TimeFrame {
         this.reoriginate();
     }
 
+    clearSelection() {
+        super.clearSelection();
+        this.#updateSelectionTimestamps();
+        this.refreshFrame(true);
+    }
+
     getTimestampAtIndex(indexOffset: number) {
         return new Date(this.originTimestamp).setMonth(indexOffset);
+    }
+
+    updateSelection(time: Time, selection?: TimeFrameSelection) {
+        super.updateSelection(time, selection);
+        this.#updateSelectionTimestamps();
+        this.refreshFrame(true);
     }
 
     withCurrentDayTimestamp(timestamp: number) {

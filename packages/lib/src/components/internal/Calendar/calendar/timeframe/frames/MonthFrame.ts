@@ -1,18 +1,28 @@
 import TimeFrame from './TimeFrame';
-import today from '../today';
-import { getWeekendDays } from './common/utils';
-import { computeTimestampOffset, getEdgesDistance, getMonthDays } from '../utils';
-import { DAY_OF_WEEK_FORMATS, MAXIMUM_MONTH_UNITS } from '../constants';
-import getFlagsRecord from './common/flags';
-import { immutableProxyHandlers } from '../shared/constants';
-import { enumerable, isBitSafeInteger, isInfinite, struct, structFrom } from '../shared/utils';
-import { CalendarDayOfWeekData, DayOfWeekLabelFormat, FirstWeekDay, Month, MonthDays, Time, TimeFlag, TimeFrameBlock, WeekDay } from '../types';
+import { getWeekendDays } from '../common/utils';
+import { computeTimestampOffset, getEdgesDistance, getMonthDays } from '../../utils';
+import { DAY_MS, DAY_OF_WEEK_FORMATS, MAXIMUM_MONTH_UNITS } from '../../constants';
+import createFlagsRecord from '../common/flags';
+import { immutableProxyHandlers } from '../../shared/constants';
+import { enumerable, isBitSafeInteger, isInfinite, struct, structFrom } from '../../shared/utils';
+import {
+    CalendarDayOfWeekData,
+    DayOfWeekLabelFormat,
+    FirstWeekDay,
+    Month,
+    MonthDays,
+    Time,
+    TimeFlag,
+    TimeFrameBlock,
+    TimeFrameSelection,
+    WeekDay,
+} from '../../types';
 
-export default class MonthTimeFrame extends TimeFrame {
+export default class MonthFrame extends TimeFrame {
     #daysInWeek = 7 as const;
     #daysOfWeekCached: CalendarDayOfWeekData[] = [];
     #daysOfWeekend: readonly WeekDay[] = getWeekendDays(this.firstWeekDay);
-    #currentDayTimestamp: number = this.#getStartForTimestamp(today.timestamp) as number;
+    #currentDayTimestamp!: number;
     #fromTimestamp: number = -Infinity;
     #toTimestamp: number = Infinity;
     #numberOfBlocks: number = Infinity;
@@ -20,11 +30,16 @@ export default class MonthTimeFrame extends TimeFrame {
     #originMonthStartOffset!: WeekDay;
     #originMonthStartTimestamp!: number;
     #originYear!: number;
-    #selectionStartTimestamp?: number;
-    #selectionEndTimestamp?: number;
+    #selectionFromTimestamp?: number;
+    #selectionToTimestamp?: number;
 
     protected daysInWeek: number = this.#daysInWeek;
     protected declare origin: Month;
+
+    constructor() {
+        super();
+        this.initialize();
+    }
 
     protected get fromTimestamp() {
         return this.#fromTimestamp;
@@ -49,7 +64,7 @@ export default class MonthTimeFrame extends TimeFrame {
     set dynamicBlockHeight(bool: boolean | null | undefined) {
         const current = this.dynamicBlockHeight;
         super.dynamicBlockHeight = bool;
-        if (this.dynamicBlockHeight !== current) this.refreshFrame();
+        if (this.dynamicBlockHeight !== current) this.refreshFrame(true);
     }
 
     get rowspan() {
@@ -82,8 +97,8 @@ export default class MonthTimeFrame extends TimeFrame {
     }
 
     #updateSelectionTimestamps() {
-        this.#selectionStartTimestamp = this.#getStartForTimestamp(this.selectionStart);
-        this.#selectionEndTimestamp = this.#getStartForTimestamp(this.selectionEnd);
+        this.#selectionFromTimestamp = this.#getStartForTimestamp(this.selectionStart);
+        this.#selectionToTimestamp = this.#getStartForTimestamp(this.selectionEnd);
     }
 
     protected getCursorBlockOriginTimestampOffset(timestamp: number): number {
@@ -111,7 +126,7 @@ export default class MonthTimeFrame extends TimeFrame {
             }
 
             this.#daysOfWeekCached[index] = struct({
-                flags: enumerable(getFlagsRecord(flags)),
+                flags: enumerable(createFlagsRecord(flags)),
                 labels: enumerable(struct(labelDescriptors)),
             }) as CalendarDayOfWeekData;
         }
@@ -172,9 +187,9 @@ export default class MonthTimeFrame extends TimeFrame {
                             flags |= TimeFlag.WITHIN_RANGE;
                         }
 
-                        if (timestamp >= (this.#selectionStartTimestamp as number) && timestamp <= (this.#selectionEndTimestamp as number)) {
-                            if (timestamp === (this.#selectionStartTimestamp as number)) flags |= TimeFlag.SELECTION_START;
-                            if (timestamp === (this.#selectionEndTimestamp as number)) flags |= TimeFlag.SELECTION_END;
+                        if (timestamp >= (this.#selectionFromTimestamp as number) && timestamp <= (this.#selectionToTimestamp as number)) {
+                            if (timestamp === (this.#selectionFromTimestamp as number)) flags |= TimeFlag.SELECTION_START;
+                            if (timestamp === (this.#selectionToTimestamp as number)) flags |= TimeFlag.SELECTION_END;
                             flags |= TimeFlag.WITHIN_SELECTION;
                         }
 
@@ -210,6 +225,10 @@ export default class MonthTimeFrame extends TimeFrame {
         return getMonthDays(this.origin, this.#originYear, index)[0];
     }
 
+    protected getUnitsOffsetForTimestamp(startTimestamp: number, timestamp: number) {
+        return Math.round((timestamp - startTimestamp) / DAY_MS);
+    }
+
     protected reoriginate() {
         const date = new Date(this.originTimestamp);
         const firstDayOffset = ((8 - ((date.getDate() - date.getDay() + this.firstWeekDay) % 7)) % 7) as WeekDay;
@@ -234,8 +253,20 @@ export default class MonthTimeFrame extends TimeFrame {
         this.reoriginate();
     }
 
+    clearSelection() {
+        super.clearSelection();
+        this.#updateSelectionTimestamps();
+        this.refreshFrame(true);
+    }
+
     getTimestampAtIndex(indexOffset: number) {
         return new Date(this.#originMonthStartTimestamp).setDate(this.#originMonthStartDate + indexOffset);
+    }
+
+    updateSelection(time: Time, selection?: TimeFrameSelection) {
+        super.updateSelection(time, selection);
+        this.#updateSelectionTimestamps();
+        this.refreshFrame(true);
     }
 
     withCurrentDayTimestamp(timestamp: number) {

@@ -1,10 +1,10 @@
 import TimeFrame from './TimeFrame';
-import { DAY_MS, MAXIMUM_MONTH_UNITS } from '../../../constants';
-import { Month, MonthDays, Time, TimeFlag, TimeFrameBlock, TimeFrameSelection, TimeFrameSize, TimeSlice, WeekDay } from '../../../types';
-import today from '../../../today';
-import { computeTimestampOffset, getEdgesDistance, getMonthDays } from '../../../utils';
-import { immutableProxyHandlers } from '../../../shared/constants';
-import { isBitSafeInteger, isInfinite, struct, structFrom } from '../../../shared/utils';
+import { DAY_MS, MAXIMUM_MONTH_UNITS } from '../../constants';
+import { Month, MonthDays, Time, TimeFlag, TimeFrameBlock, TimeFrameSelection, TimeFrameSize, TimeSlice, WeekDay } from '../../types';
+import today from '../../today';
+import { computeTimestampOffset, getEdgesDistance, getMonthDays } from '../../utils';
+import { immutableProxyHandlers } from '../../shared/constants';
+import { isBitSafeInteger, isInfinite, struct, structFrom } from '../../shared/utils';
 
 export default class DefaultTimeFrame extends TimeFrame {
     protected declare fromTimestamp: number;

@@ -1,9 +1,9 @@
 import TimeFrame from './TimeFrame';
-import { YEAR_MONTHS } from '../../../constants';
-import { Time, TimeFlag, TimeFrameBlock, TimeFrameSelection, TimeSlice } from '../../../types';
-import { computeTimestampOffset, getEdgesDistance } from '../../../utils';
-import { immutableProxyHandlers } from '../../../shared/constants';
-import { isBitSafeInteger, isInfinite, struct, structFrom } from '../../../shared/utils';
+import { YEAR_MONTHS } from '../../constants';
+import { Time, TimeFlag, TimeFrameBlock, TimeFrameSelection, TimeSlice } from '../../types';
+import { computeTimestampOffset, getEdgesDistance } from '../../utils';
+import { immutableProxyHandlers } from '../../shared/constants';
+import { isBitSafeInteger, isInfinite, struct, structFrom } from '../../shared/utils';
 
 export default class AnnualTimeFrame extends TimeFrame {
     protected declare fromTimestamp: number;

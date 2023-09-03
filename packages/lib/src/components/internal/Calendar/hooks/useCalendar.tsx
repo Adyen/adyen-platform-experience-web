@@ -6,7 +6,7 @@ import { getDateObjectFromTimestamp } from '../calendar/utils';
 import { EMPTY_OBJECT } from '../calendar/shared/constants';
 import { CalendarGridCursorRootProps, CalendarHandle, CalendarProps } from '../types';
 import useFocusCursor from '../../../../hooks/element/useFocusCursor';
-import calendar from '../calendar';
+import calendar from '../calendar/facade';
 
 const useCalendar = (
     {
@@ -20,7 +20,9 @@ const useCalendar = (
         originDate,
         renderControl,
         sinceDate,
+        trackCurrentDay,
         untilDate,
+        useYearView,
     }: CalendarProps,
     ref: Ref<unknown>
 ) => {
@@ -101,9 +103,11 @@ const useCalendar = (
     useImperativeHandle(
         ref,
         () => {
-            const { erase, from, to } = grid?.highlight || EMPTY_OBJECT;
+            const { from, to } = grid?.highlight || EMPTY_OBJECT;
             return {
-                clear: () => erase?.(),
+                clear: () => {
+                    grid?.highlight && (grid.highlight.from = undefined);
+                },
                 get config() {
                     return { ...(config.current ?? EMPTY_OBJECT) };
                 },
@@ -123,13 +127,14 @@ const useCalendar = (
             blocks,
             controls: activeControls,
             firstWeekDay,
+            fixedBlockHeight: !dynamicBlockRows,
             highlight: activeHighlight,
             locale: locale ?? i18n.locale,
-            // minified,
+            minified: useYearView,
             timeslice,
-            withMinimumHeight: dynamicBlockRows,
+            trackCurrentDay,
         });
-    }, [activeControls, activeHighlight, blocks, dynamicBlockRows, firstWeekDay, grid, i18n, locale, timeslice]);
+    }, [activeControls, activeHighlight, blocks, dynamicBlockRows, firstWeekDay, grid, i18n, locale, timeslice, trackCurrentDay, useYearView]);
 
     useEffect(() => {
         const origins = ([] as number[])

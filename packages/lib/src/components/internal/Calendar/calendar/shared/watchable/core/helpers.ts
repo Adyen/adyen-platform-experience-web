@@ -1,5 +1,5 @@
-import { Watchable, WatchAtoms, WatchCallable } from './types';
-import { noop, struct } from '../utils';
+import { Watchable, WatchAtoms, WatchCallable } from '../types';
+import { noop, struct } from '../../utils';
 
 export const createLiveWatchableState = <T extends Record<string, any>>(watchableAtoms = {} as WatchAtoms<T>) => {
     const descriptors = {} as {

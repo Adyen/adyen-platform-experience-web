@@ -1,8 +1,7 @@
 import { VNode } from 'preact';
 import {
     CalendarConfig,
-    CalendarGridControlEntry,
-    CalendarHighlighter,
+    CalendarGridControlRecord,
     CalendarSelection,
     CalendarShiftControls,
     FirstWeekDay,
@@ -24,7 +23,7 @@ export interface CalendarGridCursorRootProps {
 }
 
 export interface CalendarHandle {
-    clear: CalendarHighlighter['erase'];
+    clear: () => void;
     config: CalendarConfig;
     from?: Date;
     to?: Date;
@@ -41,10 +40,12 @@ export interface CalendarProps {
     onlyCellsWithin?: boolean;
     originDate?: Time | Time[];
     prepare?: (renderToken: CalendarGridRenderToken, renderContext: any) => any;
-    renderControl?: (...args: CalendarGridControlEntry) => VNode | null;
+    renderControl?: (...args: CalendarGridControlRecord) => VNode | null;
     sinceDate?: Time;
+    trackCurrentDay?: boolean;
     untilDate?: Time;
+    useYearView?: boolean;
 }
 
 export type CalendarRenderControl = Exclude<CalendarProps['renderControl'], undefined>;
-export type CalendarControlRenderer = (targetElement: Element, ...args: CalendarGridControlEntry) => ReturnType<CalendarRenderControl>;
+export type CalendarControlRenderer = (targetElement: Element, ...args: CalendarGridControlRecord) => ReturnType<CalendarRenderControl>;

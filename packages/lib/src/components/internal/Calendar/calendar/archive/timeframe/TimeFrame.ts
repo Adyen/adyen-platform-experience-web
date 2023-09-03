@@ -18,7 +18,7 @@ import {
     SHIFT_BLOCK,
     SHIFT_FRAME,
     SHIFT_PERIOD,
-} from '../../../constants';
+} from '../../constants';
 import type {
     FirstWeekDay,
     Time,
@@ -29,13 +29,13 @@ import type {
     TimeFrameSize,
     TimeSlice,
     WeekDay,
-} from '../../../types';
-import { SLICE_UNBOUNDED } from '../../../timeslice';
-import { computeTimestampOffset } from '../../../utils';
-import { downsizeTimeFrame, getWeekendDays, resolveTimeFrameBlockSize } from '../../../timeframe/common/utils';
-import { clamp, isBitSafeInteger, isInfinite, mid, mod } from '../../../shared/utils';
-import { Watchable } from '../../../shared/watchable/types';
-import watchable from '../../../shared/watchable';
+} from '../../types';
+import { UNBOUNDED_SLICE } from '../../timeslice';
+import { computeTimestampOffset } from '../../utils';
+import { downsizeTimeFrame, getWeekendDays, resolveTimeFrameBlockSize } from '../../timeframe/common/utils';
+import { clamp, isBitSafeInteger, isInfinite, mid, mod } from '../../shared/utils';
+import { Watchable } from '../../shared/watchable/types';
+import watchable from '../../shared/watchable';
 
 export default abstract class TimeFrame {
     #cursorBlockIndex: number = 0;
@@ -96,7 +96,7 @@ export default abstract class TimeFrame {
 
     constructor(size?: TimeFrameSize) {
         this.firstWeekDay = 0;
-        this.timeslice = SLICE_UNBOUNDED;
+        this.timeslice = UNBOUNDED_SLICE;
         this.size = size;
         this.#watchable = watchable({ now: () => performance.now() });
     }
@@ -184,7 +184,7 @@ export default abstract class TimeFrame {
     }
 
     set timeslice(_timeslice: TimeSlice | null | undefined) {
-        if (_timeslice === this.#timeslice || (_timeslice == undefined && this.#timeslice === SLICE_UNBOUNDED)) return;
+        if (_timeslice === this.#timeslice || (_timeslice == undefined && this.#timeslice === UNBOUNDED_SLICE)) return;
 
         const { from, to, offsets } = _timeslice as TimeSlice;
 

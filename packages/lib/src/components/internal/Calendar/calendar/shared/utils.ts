@@ -16,7 +16,7 @@ export const isNumber = (value: any): value is number => typeof value === 'numbe
 export const isInfinite = (value: any): value is number => isNumber(value) && 1 / value === 0;
 export const isBitSafeInteger = (value: any): value is number => isNumber(value) && value === ~~value;
 
-export const pickFromCollection = <C extends readonly any[]>(collection: C, defaultOption?: C[number], option?: C[number]) => {
+export const pickFromCollection = <C extends readonly any[]>(collection: C, option?: C[number], defaultOption?: C[number]) => {
     if (collection.includes(option)) return option;
     if (option == undefined) return collection[0];
     return collection.includes(defaultOption) ? defaultOption : collection[0];

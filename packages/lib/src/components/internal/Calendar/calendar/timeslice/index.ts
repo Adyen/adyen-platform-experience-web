@@ -19,8 +19,8 @@ const factory = ((...args: any[]) => {
     }) as TimeSlice;
 }) as TimeSliceFactory;
 
-export const SLICE_UNBOUNDED = factory();
+export const UNBOUNDED_SLICE = factory();
 export const sinceNow = () => factory(Date.now(), RANGE_FROM);
 export const untilNow = () => factory(Date.now(), RANGE_TO);
 
-export default ((...args: any[]) => (args.length === 0 ? SLICE_UNBOUNDED : factory(...args))) as TimeSliceFactory;
+export default ((...args: any[]) => (args.length === 0 ? UNBOUNDED_SLICE : factory(...args))) as TimeSliceFactory;

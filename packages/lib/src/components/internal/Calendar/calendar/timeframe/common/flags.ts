@@ -2,7 +2,7 @@ import { CalendarFlagsRecord, TimeFlag, TimeFlagProp } from '../../types';
 import { immutableProxyHandlers } from '../../shared/constants';
 import { struct } from '../../shared/utils';
 
-const getFlagsRecord = (() => {
+const createFlagsRecord = (() => {
     const CACHE = {} as { [K: number]: CalendarFlagsRecord };
     const FLAG_PROPS = Object.keys(TimeFlag).filter(prop => isNaN(+prop)) as TimeFlagProp[];
 
@@ -24,7 +24,7 @@ const getFlagsRecord = (() => {
                             case 'valueOf':
                                 return target.valueOf;
                             case Symbol.toStringTag:
-                                return 'Integer';
+                                return '_';
                             default:
                                 if (!isFlagProp(property)) return;
                         }
@@ -39,4 +39,4 @@ const getFlagsRecord = (() => {
     };
 })();
 
-export default getFlagsRecord;
+export default createFlagsRecord;

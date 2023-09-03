@@ -1,4 +1,4 @@
-import { Indexed, IndexedMapIteratorFactory } from './types';
+import { Indexed, IndexedMapIteratorCallback, IndexedMapIteratorFactory } from './types';
 import { $true } from '../constants';
 import { struct, structFrom } from '../utils';
 
@@ -13,10 +13,14 @@ const indexed = (() => {
         struct({
             [Symbol.iterator]: {
                 value(this: Indexed) {
-                    return this.map();
+                    return mapIteratorFactory.call(this);
                 },
             },
-            map: { value: mapIteratorFactory },
+            map: {
+                value(this: Indexed, callback?: IndexedMapIteratorCallback, thisArg?: any) {
+                    return [...mapIteratorFactory.call(this, callback, thisArg)];
+                },
+            },
         })
     );
 

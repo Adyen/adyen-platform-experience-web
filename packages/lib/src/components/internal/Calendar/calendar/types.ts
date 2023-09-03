@@ -28,10 +28,11 @@ import {
     SELECTION_FROM,
     SELECTION_NEAREST,
     SELECTION_TO,
+    CALENDAR_CONTROLS,
+    CALENDAR_SELECTIONS,
 } from './constants';
 import { Indexed } from './shared/indexed/types';
 import { Watchable, WatchCallable } from './shared/watchable/types';
-import { TimeFrame } from '@src/components/internal/Calendar/calendar/archive/internal/timeframe';
 
 export type WithGetSetProperty<T = any> = {
     get _(): T;
@@ -141,29 +142,30 @@ export enum CalendarShiftControlsFlag {
 }
 
 export type CalendarShiftControl = keyof typeof CalendarShiftControlsFlag;
-export type CalendarShiftControls = typeof CONTROLS_ALL | typeof CONTROLS_MINIMAL | typeof CONTROLS_NONE;
-export type CalendarSelection = typeof SELECT_ONE | typeof SELECT_MANY | typeof SELECT_NONE;
+export type CalendarShiftControls = (typeof CALENDAR_CONTROLS)[number];
+export type CalendarSelection = (typeof CALENDAR_SELECTIONS)[number];
 
 export type CalendarConfig = {
     blocks?: TimeFrameSize;
     controls?: CalendarShiftControls;
     firstWeekDay?: FirstWeekDay;
+    fixedBlockHeight?: boolean;
     highlight?: CalendarSelection;
     locale?: string;
     minified?: boolean;
     timeslice?: TimeSlice;
-    withMinimumHeight?: boolean;
+    trackCurrentDay?: boolean;
 };
+
+export type CalendarFlagsRecord = Readonly<{
+    [K in TimeFlagProp]?: 1;
+}>;
 
 export type CalendarBlock = Readonly<{
     datetime: string;
     label: string;
     month: number;
     year: number;
-}>;
-
-export type CalendarFlagsRecord = Readonly<{
-    [K in TimeFlagProp]?: 1;
 }>;
 
 export type CalendarBlockCellData = Readonly<{
@@ -181,29 +183,11 @@ export type CalendarDayOfWeekData = Readonly<{
 
 export type IndexedCalendarBlock = Indexed<Indexed<CalendarBlockCellData>> & CalendarBlock;
 
-export type CalendarConfigurator = Readonly<{
-    chain: (fn: WatchCallable<any>) => WatchCallable<any>;
-    cleanup: () => void;
-    config: CalendarConfig;
-    configure: CalendarGrid['config'];
-    frame?: TimeFrame;
-}>;
-
-export type CalendarHighlighter = (() => void) &
-    WithTimeEdges<WithGetSetProperty<number | undefined>['_']> &
-    Readonly<{
-        blank: boolean;
-        erase: () => void;
-        faux: () => void;
-        inProgress: boolean;
-        restore: () => void;
-    }>;
-
 export type CalendarGridControls = Readonly<{
     [P in CalendarShiftControl]?: (evt?: Event) => boolean;
 }>;
 
-export type CalendarGridControlEntry = [CalendarShiftControl, Exclude<CalendarGridControls[CalendarShiftControl], undefined>];
+export type CalendarGridControlRecord = [CalendarShiftControl, Exclude<CalendarGridControls[CalendarShiftControl], undefined>];
 
 export type CalendarGrid = Indexed<IndexedCalendarBlock> &
     Readonly<{
@@ -213,18 +197,17 @@ export type CalendarGrid = Indexed<IndexedCalendarBlock> &
             shiftFactor: WithGetSetProperty<(this: CalendarConfig, evt: Event, target: CalendarShiftControl) => number | undefined>['_'];
             watch: WithGetSetProperty<WatchCallable<any, CalendarConfig>>['_'];
         };
-        controls: Indexed<CalendarGridControlEntry> & CalendarGridControls;
+        controls: Indexed<CalendarGridControlRecord> & CalendarGridControls;
         cursor: (evt?: Event) => boolean;
-        daysOfWeek: Indexed<CalendarDayOfWeekData>;
-        highlight: Pick<CalendarHighlighter, keyof WithTimeEdges | 'blank' | 'erase'>;
+        highlight: WithTimeEdges<WithGetSetProperty<number | undefined>['_']> & Readonly<{ blank: boolean }>;
+        rowspan: number;
+        weekdays: Indexed<CalendarDayOfWeekData>;
     }>;
 
-export type CalendarInit = CalendarConfig | TimeFrameSize | WatchCallable<any, CalendarConfig>;
-
-export type CalendarFactory = {
-    (init: CalendarInit): Readonly<{
-        grid: CalendarGrid;
-        kill: () => void;
+export type CalendarFacade = {
+    (init?: CalendarConfig | TimeFrameSize | WatchCallable<any, CalendarConfig>): Readonly<{
+        readonly grid: CalendarGrid;
+        readonly kill: () => void;
     }>;
     readonly controls: Readonly<{
         ALL: typeof CONTROLS_ALL;
@@ -244,4 +227,16 @@ export type CalendarFactory = {
             UNBOUNDED: TimeSlice;
             UNTIL_NOW: TimeSlice;
         }>;
+};
+
+export type CalendarWatchAtoms = Partial<WithTimeEdges<number>> & {
+    blocks?: TimeFrameSize;
+    cells?: number;
+    controls?: CalendarShiftControls;
+    cursor?: number;
+    highlight?: CalendarSelection;
+    locale?: string;
+    minified?: boolean;
+    origin?: number;
+    today: number;
 };

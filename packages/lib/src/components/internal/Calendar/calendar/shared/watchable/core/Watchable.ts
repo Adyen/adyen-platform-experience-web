@@ -1,7 +1,7 @@
 import { createLiveWatchableState, createWatchableIdleCallbacks } from './helpers';
-import { Watchable, WatchAtoms, WatchCallable, WatchCallback } from './types';
-import { UNWATCH_SIGNAL } from './constants';
-import { noop } from '../utils';
+import { Watchable, WatchAtoms, WatchCallable, WatchCallback } from '../types';
+import { UNWATCH_SIGNAL } from '../constants';
+import { noop } from '../../utils';
 
 export default class __Watchable__<T extends Record<string, any>> {
     readonly #idleCallbacks: Watchable<T>['callback'];

@@ -1,5 +1,8 @@
 export interface Indexed<V = any> extends ArrayLike<V>, Iterable<V> {
-    map: IndexedMapIteratorFactory<V>;
+    map: (
+        this: Indexed<V>,
+        ...args: Parameters<IndexedMapIteratorFactory<V>>
+    ) => ReturnType<IndexedMapIteratorFactory<V>> extends Generator<infer MappedValue> ? MappedValue[] : never;
 }
 
 export type IndexedMapIteratorCallback<V = any, MappedValue = any> = {
