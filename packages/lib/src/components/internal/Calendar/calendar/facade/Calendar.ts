@@ -39,6 +39,7 @@ import {
     CalendarDayOfWeekData,
     CalendarGrid,
     CalendarGridControlRecord,
+    CalendarSelection,
     CalendarShiftControl,
     CalendarShiftControlFlag,
     CalendarShiftControlsFlag,
@@ -54,7 +55,10 @@ export default class Calendar {
     #highlightFrom?: number;
     #highlightTo?: number;
     #highlightInProgress = false;
+    #highlightSelection?: CalendarSelection = SELECT_NONE;
     #pendingWatchNotification = false;
+    #rangeOffsets?: [number, number, number, number, number, number];
+    #lastHighlightRange?: string = this.#rangeOffsets?.join(' ');
 
     #cursorIndexFromEvent?: CalendarGrid['config']['cursorIndex'];
     #shiftFactorFromEvent?: CalendarGrid['config']['shiftFactor'];
@@ -82,7 +86,7 @@ export default class Calendar {
         controls: () => pickFromCollection(CALENDAR_CONTROLS, this.#config.controls),
         cursor: () => this.#frame?.cursor,
         from: () => this.#frame?.selectionStart,
-        highlight: () => pickFromCollection(CALENDAR_SELECTIONS, this.#config.highlight),
+        highlight: () => this.#highlightSelection,
         locale: () => this.#frame?.locale,
         minified: () => boolify(this.#config.minified),
         origin: () => this.#frame?.getTimestampAtIndex(0),
@@ -159,7 +163,7 @@ export default class Calendar {
             controls: { value: this.#shiftControls },
             cursor: {
                 value: Object.defineProperties(
-                    Calendar.#withNotifyEffect.call(this, (evt?: Event) => !!(evt && this.#cursorHandle(evt))),
+                    (evt?: Event) => Calendar.#withNotifyEffect.call(this, (evt?: Event) => !!(evt && this.#cursorHandle(evt)))(evt),
                     {
                         valueOf: { value: () => this.#frame?.cursor ?? -1 },
                     }
@@ -169,26 +173,30 @@ export default class Calendar {
                 value: (() => {
                     const blank = () => this.#highlightFrom === this.#highlightTo && this.#highlightTo === undefined;
 
-                    const setter = (selection: typeof SELECTION_FROM | typeof SELECTION_TO) =>
+                    const setter = (selection: typeof SELECTION_FROM | typeof SELECTION_TO) => (time?: number | null) =>
                         Calendar.#withNotifyEffect.call(this, (time?: number | null) => {
+                            if (this.#destructed || !this.#highlightSelection || this.#highlightSelection === SELECT_NONE) return;
                             if (time == undefined) return this.#clearHighlight();
 
-                            this.#frame?.updateSelection(
-                                time,
-                                this.#lastWatchableSnapshot?.highlight === SELECT_ONE || blank() ? SELECTION_COLLAPSE : selection
-                            );
+                            if (this.#highlightSelection === SELECT_MANY && !blank()) {
+                                this.#frame?.updateSelection(time, selection);
+                                this.#rangeOffsets &&
+                                    this.#rangeHighlight(time, selection === SELECTION_FROM ? SELECTION_TO : SELECTION_FROM, this.#rangeOffsets);
+                            } else this.#frame?.updateSelection(time, SELECTION_COLLAPSE);
+
                             this.#highlightFrom = this.#frame?.selectionStart;
                             this.#highlightTo = this.#frame?.selectionEnd;
-                        });
+                            this.#frame?.shiftFrameToTimestamp(selection === SELECTION_FROM ? this.#highlightFrom : this.#highlightTo);
+                        })(time);
 
                     return struct({
                         blank: { get: blank },
                         from: {
-                            get: () => this.#frame?.selectionStart,
+                            get: () => this.#highlightFrom,
                             set: setter(SELECTION_FROM),
                         },
                         to: {
-                            get: () => this.#frame?.selectionEnd,
+                            get: () => this.#highlightTo,
                             set: setter(SELECTION_TO),
                         },
                     });
@@ -199,11 +207,19 @@ export default class Calendar {
         }
     ) as CalendarGrid;
 
+    static #RANGE_OFFSETS_FORMAT_REGEX = /^(?:0|[1-9]\d*)(\s+(?:0|[1-9]\d*)?){0,5}?$/;
     static #CURSOR_POINTER_INTERACTION_EVENTS = ['click', 'mouseover', 'pointerover'];
     static #DAYS_OF_WEEK_FALLBACK = indexed<CalendarDayOfWeekData, {}>(0, noop as any);
     static #SHIFT_ACTIVATION_KEYS = [InteractionKeyCode.ENTER, InteractionKeyCode.SPACE];
     static #SHIFT_ALL_CONTROLS = Object.keys(CalendarShiftControlsFlag).filter(control => isNaN(+control)) as CalendarShiftControl[];
     static #SHIFT_MINIMAL_CONTROLS = ['PREV', 'NEXT'] as CalendarShiftControl[];
+
+    static #getOffsetsFromRange(range?: string): [number, number, number, number, number, number] | undefined {
+        if (typeof range !== 'string') return;
+        if (!Calendar.#RANGE_OFFSETS_FORMAT_REGEX.test(range)) return;
+        const offsets = range.split(/\s+/);
+        return Array.from({ length: 6 }, (_, index) => parseInt(offsets[index] ?? '0')) as [number, number, number, number, number, number];
+    }
 
     static #getShiftOffsetType(flags: number) {
         switch (flags & ~CalendarShiftControlFlag.PREV) {
@@ -227,12 +243,18 @@ export default class Calendar {
         let controlsChanged = false;
         let highlightChanged = false;
         let selectionChanged = false;
+        const highlightRange = this.#rangeOffsets?.join(' ');
 
         for (const key of Object.keys(signalOrSnapshot) as (keyof typeof signalOrSnapshot)[]) {
             if (signalOrSnapshot[key] === this.#lastWatchableSnapshot?.[key]) continue;
             if (key === 'controls') controlsChanged = true;
             else if (key === 'highlight') highlightChanged = true;
             else if (key === 'from' || key === 'to') selectionChanged = true;
+        }
+
+        if (this.#lastHighlightRange !== highlightRange) {
+            this.#lastHighlightRange = highlightRange;
+            highlightChanged = true;
         }
 
         this.#lastWatchableSnapshot = signalOrSnapshot;
@@ -242,7 +264,7 @@ export default class Calendar {
         if (highlightChanged) this.#refreshHighlighting();
     };
 
-    static #withNotifyEffect(this: Calendar, fn: WatchCallable<any>) {
+    static #withNotifyEffect<T extends WatchCallable<any> = WatchCallable<any>>(this: Calendar, fn: T) {
         return this.#chainedNotifyCallback?.(fn) ?? fn;
     }
 
@@ -266,7 +288,16 @@ export default class Calendar {
     #configure(config: CalendarConfig) {
         if (this.#destructed) return;
 
+        this.#rangeOffsets = undefined;
+
+        const highlight = config?.highlight;
         const minified = boolify(this.#config.minified);
+
+        if (typeof highlight !== 'string') {
+            this.#highlightSelection = pickFromCollection(CALENDAR_SELECTIONS, highlight, this.#highlightSelection);
+        } else if ((this.#rangeOffsets = Calendar.#getOffsetsFromRange(highlight))) {
+            this.#highlightSelection = SELECT_MANY;
+        }
 
         this.#config = {
             ...this.#config,
@@ -275,7 +306,7 @@ export default class Calendar {
             controls: pickFromCollection(CALENDAR_CONTROLS, config?.controls, this.#config.controls),
             firstWeekDay: pickFromCollection(FIRST_WEEK_DAYS, config?.firstWeekDay, this.#config.firstWeekDay),
             fixedBlockHeight: boolify(config?.fixedBlockHeight, this.#config.fixedBlockHeight),
-            highlight: pickFromCollection(CALENDAR_SELECTIONS, config?.highlight, this.#config.highlight),
+            highlight: this.#highlightSelection,
             minified: boolify(config?.minified, this.#config.minified),
             trackCurrentDay: boolify(config?.trackCurrentDay, this.#config.trackCurrentDay),
         };
@@ -324,10 +355,10 @@ export default class Calendar {
                     this.#frame.shiftFrameCursor(evt.ctrlKey ? CURSOR_BLOCK_END : CURSOR_LINE_END);
                     break;
                 case InteractionKeyCode.PAGE_UP:
-                    this.#frame.shiftFrameCursor(CURSOR_PREV_BLOCK);
+                    evt.shiftKey ? this.#frame.shiftFrameByOffset(-1, SHIFT_PERIOD) : this.#frame.shiftFrameCursor(CURSOR_PREV_BLOCK);
                     break;
                 case InteractionKeyCode.PAGE_DOWN:
-                    this.#frame.shiftFrameCursor(CURSOR_NEXT_BLOCK);
+                    evt.shiftKey ? this.#frame.shiftFrameByOffset(1, SHIFT_PERIOD) : this.#frame.shiftFrameCursor(CURSOR_NEXT_BLOCK);
                     break;
                 case InteractionKeyCode.SPACE:
                 case InteractionKeyCode.ENTER:
@@ -371,7 +402,10 @@ export default class Calendar {
             this.#chainedWatchCallback =
             this.#cursorIndexFromEvent =
             this.#frame =
+            this.#highlightSelection =
+            this.#lastHighlightRange =
             this.#lastWatchableSnapshot =
+            this.#rangeOffsets =
             this.#shiftFactorFromEvent =
             this.#unwatch =
             this.#watchable =
@@ -394,16 +428,17 @@ export default class Calendar {
             const shiftOffsetType = Calendar.#getShiftOffsetType(flags);
             const shiftOffsetUnit = Calendar.#getShiftOffsetUnit(flags);
 
-            this.#shiftControlsHandles[index] = Calendar.#withNotifyEffect.call(this, (...args: any[]) => {
-                const canShift = this.#canShiftInDirection(shiftOffsetUnit);
-                if (!(canShift && args.length)) return canShift;
+            this.#shiftControlsHandles[index] = (...args: any[]) =>
+                Calendar.#withNotifyEffect.call(this, (...args: any[]) => {
+                    const canShift = this.#canShiftInDirection(shiftOffsetUnit);
+                    if (!(canShift && args.length)) return canShift;
 
-                const shiftFactor = this.#getShiftFactorFromEvent(control, args[0] as Event);
-                if (shiftFactor === undefined) return false;
+                    const shiftFactor = this.#getShiftFactorFromEvent(control, args[0] as Event);
+                    if (shiftFactor === undefined) return false;
 
-                this.#frame?.shiftFrameByOffset(shiftOffsetUnit * shiftFactor, shiftOffsetType);
-                return true;
-            });
+                    this.#frame?.shiftFrameByOffset(shiftOffsetUnit * shiftFactor, shiftOffsetType);
+                    return true;
+                })(...args);
         }
 
         return [control, this.#shiftControlsHandles[index] as CalendarGridControlRecord[1]];
@@ -431,9 +466,7 @@ export default class Calendar {
     #highlight(secretFauxHighlightingHint?: any) {
         if (this.#destructed || !this.#frame) return;
 
-        const selection = this.#watchable?.snapshot.highlight;
-
-        switch (selection) {
+        switch (this.#highlightSelection) {
             case SELECT_MANY:
             case SELECT_ONE:
                 break;
@@ -445,11 +478,27 @@ export default class Calendar {
         const cursor = this.#frame.cursor;
         const fromTimestamp = this.#frame.getTimestampAtIndex(cursor);
         const toTimestamp = this.#frame.getTimestampAtIndex(cursor + 1) - 1;
+        const range = this.#rangeOffsets;
 
-        if (selection === SELECT_ONE || this.#frame.blankSelection) {
-            this.#highlightInProgress = selection === SELECT_MANY;
-            this.#frame.updateSelection(fromTimestamp, SELECTION_FROM);
-            this.#frame.updateSelection(toTimestamp, SELECTION_TO);
+        if (this.#highlightSelection === SELECT_ONE || this.#frame.blankSelection || range) {
+            this.#highlightInProgress = !(this.#highlightSelection === SELECT_ONE || range);
+
+            if (this.#highlightSelection === SELECT_MANY && range) {
+                const selectionDirection = toTimestamp > (this.#frame.selectionEnd as number) ? SELECTION_FROM : SELECTION_TO;
+
+                selectionDirection === SELECTION_FROM
+                    ? this.#frame.updateSelection(toTimestamp, SELECTION_TO)
+                    : this.#frame.updateSelection(fromTimestamp, SELECTION_FROM);
+
+                this.#rangeHighlight(
+                    (selectionDirection === SELECTION_FROM ? this.#frame.selectionEnd : this.#frame.selectionStart) as number,
+                    selectionDirection,
+                    range
+                );
+            } else {
+                this.#frame.updateSelection(fromTimestamp, SELECTION_FROM);
+                this.#frame.updateSelection(toTimestamp, SELECTION_TO);
+            }
         } else {
             const isFauxHighlighting = secretFauxHighlightingHint === EMPTY_OBJECT;
 
@@ -472,10 +521,27 @@ export default class Calendar {
         this.#highlightFrom = this.#highlightTo = undefined;
     }
 
+    #rangeHighlight(
+        time: number,
+        selectionDirection: typeof SELECTION_FROM | typeof SELECTION_TO,
+        rangeOffsets?: [number, number, number, number, number, number]
+    ) {
+        if (!this.#frame) return;
+
+        const date = new Date(time);
+        const direction = selectionDirection === SELECTION_FROM ? -1 : 1;
+        const [years = 0, months = 0, days = 0, hours = 0, minutes = 0, seconds = 0] = rangeOffsets ?? [];
+
+        date.setFullYear(date.getFullYear() + years * direction, date.getMonth() + months * direction, date.getDate() + days * direction);
+        date.setHours(date.getHours() + hours * direction, date.getMinutes() + minutes * direction, date.getSeconds() + seconds * direction);
+
+        this.#frame.updateSelection(date.getTime() - direction, selectionDirection);
+    }
+
     #restoreHighlight() {
-        this.#clearHighlight();
         this.#highlightFrom && this.#frame?.updateSelection(this.#highlightFrom, SELECTION_FROM);
         this.#highlightTo && this.#frame?.updateSelection(this.#highlightTo, SELECTION_TO);
+        this.#highlightInProgress = false;
     }
 
     #reframe() {
@@ -484,6 +550,7 @@ export default class Calendar {
         this.#frame.timeslice = this.#config.timeslice;
         this.#frame.dynamicBlockHeight = !this.#config.fixedBlockHeight;
         this.#frame.firstWeekDay = this.#config.firstWeekDay;
+        this.#frame.locale = this.#config.locale;
         this.#frame.size = this.#config.blocks;
         this.#frame.trackCurrentDay = this.#config.trackCurrentDay;
 
@@ -491,20 +558,21 @@ export default class Calendar {
     }
 
     #refreshHighlighting() {
-        const selection = this.#watchable?.snapshot.highlight;
-
-        switch (selection) {
+        switch (this.#highlightSelection) {
             case SELECT_MANY:
+                if (this.#frame?.blankSelection === false && this.#rangeOffsets) {
+                    this.#rangeHighlight(this.#frame?.selectionStart as number, SELECTION_TO, this.#rangeOffsets);
+                }
+                break;
             case SELECT_ONE:
+                if (this.#frame?.blankSelection === false) {
+                    this.#frame?.updateSelection(new Date(this.#frame?.selectionStart as number).setHours(23, 59, 59, 999), SELECTION_TO);
+                }
                 break;
             case SELECT_NONE:
             default:
                 this.#clearHighlight();
                 return;
-        }
-
-        if (selection === SELECT_ONE && this.#frame?.blankSelection === false) {
-            this.#frame?.updateSelection(new Date(this.#frame?.selectionStart as number).setHours(23, 59, 59, 999), SELECTION_TO);
         }
     }
 

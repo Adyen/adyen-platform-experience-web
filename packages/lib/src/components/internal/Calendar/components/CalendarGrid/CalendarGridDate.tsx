@@ -1,8 +1,9 @@
-import { forwardRef } from 'preact/compat';
+import { forwardRef, memo } from 'preact/compat';
 import { CalendarGridDateProps, CalendarGridDateRenderProps } from './types';
 import { getClassName, property, propsProperty } from './utils';
 import { EMPTY_OBJECT } from '../../calendar/shared/constants';
 import { CalendarGridRenderToken } from '../../types';
+import memoComparator from '@src/utils/memoComparator';
 
 const DEFAULT_DATE_CELL_CLASSNAME = 'adyen-fp-calendar-month__grid-cell';
 const DEFAULT_DATE_TIME_CLASSNAME = 'adyen-fp-calendar__date';
@@ -84,4 +85,10 @@ const CalendarGridDate = forwardRef(
     }
 );
 
-export default CalendarGridDate;
+export default memo(
+    CalendarGridDate,
+    memoComparator({
+        block: memoComparator.exclude,
+        flags: value => +(value as number),
+    })
+);

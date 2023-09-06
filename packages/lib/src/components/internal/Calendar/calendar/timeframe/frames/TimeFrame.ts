@@ -44,6 +44,8 @@ import {
 } from '../../types';
 
 export default abstract class TimeFrame {
+    static #DEFAULT_LOCALE = 'en-US' as const;
+
     #cursorBlockIndex: number = 0;
     #cursorBlockStartIndex!: number;
     #cursorBlockEndIndex!: number;
@@ -56,6 +58,7 @@ export default abstract class TimeFrame {
     #effect?: WatchCallable<any>;
     #firstWeekDay: FirstWeekDay = 0;
     #frameBlocksCached: IndexedCalendarBlock[] = [];
+    #locale: string = TimeFrame.#DEFAULT_LOCALE;
     #maxFrameSize: TimeFrameSize = 12;
     #selectionStartTimestamp?: number;
     #selectionEndTimestamp?: number;
@@ -156,8 +159,24 @@ export default abstract class TimeFrame {
         return !isInfinite(this.#fromBlockOffsetFromOrigin) && this.#fromBlockOffsetFromOrigin === 0;
     }
 
-    get locale() {
-        return 'en-US'; // [TODO]: Get this from external configuration
+    get locale(): string {
+        return this.#locale;
+    }
+
+    set locale(locale: string | Intl.Locale | null | undefined) {
+        const currentLocale = this.#locale;
+
+        if (locale == undefined) {
+            this.#locale = TimeFrame.#DEFAULT_LOCALE;
+        } else if (typeof Intl !== 'undefined') {
+            try {
+                this.#locale = new Intl.Locale(locale as NonNullable<typeof locale>).toString();
+            } catch {
+                this.#locale = TimeFrame.#DEFAULT_LOCALE;
+            }
+        }
+
+        if (this.#locale !== currentLocale) this.refreshFrame(true);
     }
 
     get selectionStart() {
@@ -207,15 +226,7 @@ export default abstract class TimeFrame {
         this.#maxFrameSize = downsizeTimeFrame(12, this.numberOfBlocks);
         this.#size = downsizeTimeFrame(this.#size, this.numberOfBlocks);
 
-        if (this.#cursorTimestamp === undefined) {
-            this.#cursorTimestamp = this.originTimestamp = this.#getContainedTimestamp()[0];
-            this.#cursorOffset = this.getCursorBlockOriginTimestampOffset(this.#cursorTimestamp);
-        } else this.shiftFrameToTimestamp(this.#cursorTimestamp);
-
-        this.reoriginate();
-        [this.#fromBlockOffsetFromOrigin, this.#toBlockOffsetFromOrigin] = this.getEdgeBlockOffsetsFromOrigin();
-        this.#shiftOriginIfNecessary();
-        this.refreshFrame();
+        this.shiftFrameToTimestamp(this.#cursorTimestamp);
     }
 
     set trackCurrentDay(bool: boolean | null | undefined) {
@@ -359,7 +370,6 @@ export default abstract class TimeFrame {
             this.#cursorIndex = startIndex + this.#cursorOffset;
 
             const firstBlock = this.#cursorBlockIndex > 0 ? (this.getFrameBlockAtIndex(0) as TimeFrameBlock) : cursorBlock;
-
             const lastBlock = this.#cursorBlockIndex < this.#size - 1 ? (this.getFrameBlockAtIndex(this.#size - 1) as TimeFrameBlock) : cursorBlock;
 
             this.#cursorStartIndex = firstBlock.inner.from;
@@ -417,7 +427,15 @@ export default abstract class TimeFrame {
     }
 
     shiftFrameToTimestamp(timestamp?: number) {
-        // [TODO]: Implementation still pending
+        const containedTimestamp = this.#getContainedTimestamp(timestamp, false)[0];
+        this.#cursorOffset = this.getCursorBlockOriginTimestampOffset((this.#cursorTimestamp = this.originTimestamp = containedTimestamp));
+        this.reoriginate();
+
+        [this.#fromBlockOffsetFromOrigin, this.#toBlockOffsetFromOrigin] = this.getEdgeBlockOffsetsFromOrigin();
+        this.#shiftOriginIfNecessary();
+        this.refreshFrame();
+
+        this.#shiftFrameCursorByOffset(this.getUnitsOffsetForTimestamp(this.getTimestampAtIndex(this.#cursorIndex), containedTimestamp));
     }
 
     clearSelection() {

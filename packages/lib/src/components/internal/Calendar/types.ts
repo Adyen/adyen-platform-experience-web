@@ -34,7 +34,7 @@ export interface CalendarProps {
     controls?: CalendarShiftControls;
     dynamicBlockRows?: boolean;
     firstWeekDay?: FirstWeekDay;
-    highlight?: CalendarSelection;
+    highlight?: CalendarSelection | string;
     locale?: string;
     onHighlight?: (from?: number, to?: number) => any;
     onlyCellsWithin?: boolean;

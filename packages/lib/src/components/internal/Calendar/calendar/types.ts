@@ -150,7 +150,7 @@ export type CalendarConfig = {
     controls?: CalendarShiftControls;
     firstWeekDay?: FirstWeekDay;
     fixedBlockHeight?: boolean;
-    highlight?: CalendarSelection;
+    highlight?: CalendarSelection | string;
     locale?: string;
     minified?: boolean;
     timeslice?: TimeSlice;

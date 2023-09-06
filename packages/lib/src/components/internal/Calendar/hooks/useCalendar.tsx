@@ -6,7 +6,7 @@ import { getDateObjectFromTimestamp } from '../calendar/utils';
 import { EMPTY_OBJECT } from '../calendar/shared/constants';
 import { CalendarGridCursorRootProps, CalendarHandle, CalendarProps } from '../types';
 import useFocusCursor from '../../../../hooks/element/useFocusCursor';
-import calendar from '../calendar/facade';
+import calendar from '../calendar';
 
 const useCalendar = (
     {

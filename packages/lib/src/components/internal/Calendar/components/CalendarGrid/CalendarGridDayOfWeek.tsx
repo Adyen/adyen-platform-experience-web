@@ -1,7 +1,9 @@
+import { memo } from 'preact/compat';
 import { CalendarGridDayOfWeekProps, CalendarGridDayOfWeekRenderProps } from './types';
 import { getClassName, property, propsProperty } from './utils';
 import { EMPTY_OBJECT } from '../../calendar/shared/constants';
 import { CalendarGridRenderToken } from '../../types';
+import memoComparator from '@src/utils/memoComparator';
 
 const DEFAULT_CELL_CLASSNAME = 'adyen-fp-calendar-month__grid-cell';
 const DEFAULT_CELL_ABBR_CLASSNAME = 'adyen-fp-calendar__day-of-week';
@@ -54,4 +56,10 @@ const CalendarGridDayOfWeek = ({ prepare, flags, labels: { long: longLabel, narr
     );
 };
 
-export default CalendarGridDayOfWeek;
+export default memo(
+    CalendarGridDayOfWeek,
+    memoComparator({
+        block: memoComparator.exclude,
+        flags: value => +(value as number),
+    })
+);

@@ -26,9 +26,7 @@ export const createLiveWatchableState = <T extends Record<string, any>>(watchabl
 
 export const createWatchableIdleCallbacks = <T extends Record<string, any>>() => {
     const callbacks: Watchable<T>['callback'] = { idle: noop, resume: noop };
-    const descriptors = {} as {
-        [K in keyof typeof callbacks]: PropertyDescriptor;
-    };
+    const descriptors = {} as { [K in keyof typeof callbacks]: PropertyDescriptor };
 
     for (const key of Object.keys(callbacks) as (keyof typeof callbacks)[]) {
         descriptors[key] = {
