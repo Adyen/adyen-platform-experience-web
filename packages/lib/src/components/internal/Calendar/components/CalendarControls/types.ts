@@ -1,8 +1,7 @@
-import { CalendarGrid } from '../../calendar/types';
-import { CalendarRenderControl } from '../../types';
+import { CalendarProps, CalendarTraversalControls, CalendarView } from '../../types';
 
 export interface CalendarControlsProps {
-    config: ReturnType<CalendarGrid['config']>;
-    grid: CalendarGrid;
-    renderer?: CalendarRenderControl;
+    calendar: CalendarView;
+    controls?: CalendarTraversalControls;
+    renderControl?: CalendarProps['renderControl'];
 }
