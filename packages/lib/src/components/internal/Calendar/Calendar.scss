@@ -12,11 +12,8 @@ ol {
     &-month {
         $adyen-fp-calendar-month: &;
         $adyen-fp-calendar-month__grid: #{$adyen-fp-calendar-month}__grid;
+        margin-inline: 2rem;
         text-align: center;
-
-        &:not(:only-child) {
-            margin-inline: 2rem;
-        }
 
         &__name {
             font-size: 1.25em;
@@ -30,14 +27,12 @@ ol {
 
         #{$adyen-fp-calendar-month__grid}-row {
             display: grid;
-            grid-template-columns: repeat(var(--_adyen-fp-calendar-rowspan, 7), 1fr);
+            grid-template-columns: repeat(7, 1fr);
             justify-content: space-around;
         }
 
         #{$adyen-fp-calendar-month__grid}-cell {
             position: relative;
-            touch-action: manipulation;
-            user-select: none;
 
             &::before {
                 content: '';
@@ -57,69 +52,38 @@ ol {
                 justify-content: center;
                 position: absolute;
             }
-
-            &[data-within-selection='1']::before {
-                background: var(--adyen-fp-color-gray-light);
-                margin: 0 -1px;
-            }
-
-            &[data-within-selection='1'][data-range-start='1']::before,
-            &[data-within-selection='1'][data-first-month-day='1']::before,
-            &[data-within-selection='1']:first-child::before,
-            &[data-selection-start='1']:nth-child(n)::before {
-                border-bottom-left-radius: 50%;
-                border-top-left-radius: 50%;
-                margin-left: 0;
-            }
-
-            &[data-within-selection='1'][data-range-end='1']::before,
-            &[data-within-selection='1'][data-last-month-day='1']::before,
-            &[data-within-selection='1']:last-child::before,
-            &[data-selection-end='1']:nth-child(n)::before {
-                border-bottom-right-radius: 50%;
-                border-top-right-radius: 50%;
-                margin-right: 0;
-            }
         }
-    }
 
-    &__day-of-week {
-        font-size: 0.875em;
-        font-weight: 700;
-        text-decoration: none;
+        &__day-of-week {
+            font-size: 0.875em;
+            font-weight: 700;
+            text-decoration: none;
+        }
     }
 
     &__date {
-        color: var(--adyen-fp-color-gray-darker);
+        color: #4a4a4a;
         font-size: 0.875em;
-        z-index: 0;
 
-        [data-weekend='1'] & {
+        [data-weekend='true'] & {
             color: var(--adyen-fp-color-green);
         }
 
-        [data-first-week-day='1'] & {
+        [data-first-week-day='true'] & {
             color: var(--adyen-fp-color-red);
         }
 
-        //[aria-selected='true'] &,
-        [data-selection-start='1'] &,
-        [data-selection-end='1'] & {
+        [aria-selected='true'] & {
             color: var(--adyen-fp-color-white);
 
             &::before {
                 background: var(--adyen-fp-color-black);
                 border-radius: 50%;
                 content: '';
-                inset: 4px;
-                opacity: 0.45;
+                inset: 0;
                 position: absolute;
                 z-index: -1;
             }
-        }
-
-        :not([data-within-range='1']) > & {
-            color: var(--adyen-fp-color-gray);
         }
     }
 }
