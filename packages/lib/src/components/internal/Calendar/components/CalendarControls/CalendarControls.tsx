@@ -1,21 +1,16 @@
-import { ComponentChild } from 'preact';
 import { memo } from 'preact/compat';
 import { CalendarControlsProps } from './types';
-import useTraversalControls, { TraversalControls } from '../../hooks/useTraversalControls';
-import { CalendarTraversalControlRootProps } from '../../types';
+import calendar from '../../calendar';
+import memoComparator from '@src/utils/memoComparator';
 
-function CalendarControls({ calendar, controls, renderControl }: CalendarControlsProps) {
-    if (!renderControl) return null;
+const CalendarControls = ({ config, grid: { controls }, renderer }: CalendarControlsProps) => {
+    if (config.controls === calendar.controls.NONE || typeof renderer !== 'function') return null;
+    return <>{controls.map(([control, handle]) => renderer(control, handle))}</>;
+};
 
-    const traversalControls = useTraversalControls(calendar, renderControl, controls);
-
-    return (
-        <>
-            {([] as ComponentChild[]).concat(
-                TraversalControls.map(traversal => renderControl(traversal, traversalControls[traversal] as CalendarTraversalControlRootProps))
-            )}
-        </>
-    );
-}
-
-export default memo(CalendarControls);
+export default memo(
+    CalendarControls,
+    memoComparator({
+        config: value => value?.controls,
+    })
+);

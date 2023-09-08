@@ -1,50 +1,94 @@
-import { CalendarProps } from '../types';
-import { useCallback, useMemo, useState } from 'preact/hooks';
-import useCursorRoot from './useCursorRoot';
-import useToday from './useToday';
-import createCalendar from '../internal/createCalendar';
-import useCoreContext from '../../../../core/Context/useCoreContext';
+import { Ref } from 'preact';
+import { useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'preact/hooks';
+import useCoreContext from '@src/core/Context/useCoreContext';
+import { ReflexAction } from '@src/hooks/useReflex';
+import { getDateObjectFromTimestamp } from '../calendar/utils';
+import { EMPTY_OBJECT } from '../calendar/shared/constants';
+import { CalendarGridCursorRootProps, CalendarHandle, CalendarProps } from '../types';
 import useFocusCursor from '../../../../hooks/element/useFocusCursor';
-import { ReflexAction } from '../../../../hooks/useReflex';
+import calendar from '../calendar';
 
-const useCalendar = ({
-    calendarMonths,
-    dynamicMonthWeeks,
-    firstWeekDay,
-    offset = 0,
-    onlyMonthDays,
-    onSelected,
-    originDate,
-    sinceDate,
-    trackToday,
-    untilDate,
-}: CalendarProps) => {
+const useCalendar = (
+    {
+        blocks,
+        controls,
+        dynamicBlockRows,
+        firstWeekDay,
+        highlight,
+        locale,
+        onHighlight,
+        originDate,
+        renderControl,
+        sinceDate,
+        trackCurrentDay,
+        untilDate,
+        useYearView,
+    }: CalendarProps,
+    ref: Ref<unknown>
+) => {
     const { i18n } = useCoreContext();
-    const [, setRefreshCount] = useState(0);
+    const [lastMutationTimestamp, setLastMutationTimestamp] = useState<DOMHighResTimeStamp>(performance.now());
+    const timeslice = useMemo(() => calendar.slice(sinceDate, untilDate), [sinceDate, untilDate]);
+    const config = useRef<ReturnType<typeof grid.config>>(EMPTY_OBJECT);
 
-    const today = useToday(trackToday);
-    const watch = useCallback(() => setRefreshCount(current => ++current), []);
-
-    const calendar = useMemo(
-        () =>
-            createCalendar(
-                {
-                    calendarMonths,
-                    dynamicMonthWeeks,
-                    firstWeekDay,
-                    locale: i18n.locale,
-                    onlyMonthDays,
-                    originDate,
-                    sinceDate,
-                    untilDate,
-                    watch,
-                },
-                offset
-            ),
-        [calendarMonths, dynamicMonthWeeks, firstWeekDay, i18n, offset, onlyMonthDays, originDate, sinceDate, untilDate]
+    const activeControls = useMemo(
+        () => controls ?? (typeof renderControl === 'function' ? calendar.controls.MINIMAL : calendar.controls.NONE),
+        [controls, renderControl]
     );
 
-    const cursorRootProps = useCursorRoot(calendar, onSelected);
+    const activeHighlight = useMemo(
+        () => highlight ?? (typeof onHighlight === 'function' ? calendar.highlight.ONE : calendar.highlight.NONE),
+        [highlight, onHighlight]
+    );
+
+    const { grid, kill } = useMemo(() => {
+        const { grid, kill } = calendar(function () {
+            setLastMutationTimestamp(performance.now());
+            config.current = this;
+
+            if (highlightStart === grid.highlight.from && highlightEnd === grid.highlight.to) return;
+
+            highlightStart = grid.highlight.from;
+            highlightEnd = grid.highlight.to;
+            onHighlight?.(highlightStart, highlightEnd);
+        });
+
+        let { from: highlightStart, to: highlightEnd } = grid.highlight;
+
+        grid.config.cursorIndex = (evt: Event): number | undefined => {
+            let element: HTMLElement | null = evt.target as HTMLElement;
+
+            while (element && element !== evt.currentTarget) {
+                const index = Number(element.dataset.cursorPosition);
+                if (Number.isFinite(index)) return index;
+                element = element.parentNode as HTMLElement;
+            }
+        };
+
+        grid.config.shiftFactor = function (evt: Event) {
+            if (this.controls !== calendar.controls.MINIMAL) return;
+            if ((evt as MouseEvent)?.shiftKey) return 12;
+            if ((evt as MouseEvent)?.altKey) return this.blocks;
+            return 1;
+        };
+
+        return { grid, kill };
+    }, []);
+
+    const cursorRootProps = useMemo(() => {
+        const pointerHandle = (evt: Event) => {
+            grid.cursor(evt);
+        };
+
+        return {
+            onClickCapture: pointerHandle,
+            onMouseOverCapture: pointerHandle,
+            onPointerOverCapture: pointerHandle,
+            onKeyDownCapture: (evt: KeyboardEvent) => {
+                grid.cursor(evt) && evt.preventDefault();
+            },
+        } as CalendarGridCursorRootProps;
+    }, [grid]);
 
     const cursorElementRef = useFocusCursor(
         useCallback(
@@ -56,7 +100,54 @@ const useCalendar = ({
         )
     );
 
-    return useMemo(() => ({ calendar, cursorElementRef, cursorRootProps, today } as const), [calendar, cursorElementRef, cursorRootProps, today]);
+    useImperativeHandle(
+        ref,
+        () => {
+            const { from, to } = grid?.highlight || EMPTY_OBJECT;
+            return {
+                clear: () => {
+                    grid?.highlight && (grid.highlight.from = undefined);
+                },
+                get config() {
+                    return { ...(config.current ?? EMPTY_OBJECT) };
+                },
+                get from() {
+                    return getDateObjectFromTimestamp(from);
+                },
+                get to() {
+                    return getDateObjectFromTimestamp(to);
+                },
+            } as CalendarHandle;
+        },
+        [grid, lastMutationTimestamp]
+    );
+
+    useEffect(() => {
+        grid.config({
+            blocks,
+            controls: activeControls,
+            firstWeekDay,
+            fixedBlockHeight: !dynamicBlockRows,
+            highlight: activeHighlight,
+            locale: locale ?? i18n.locale,
+            minified: useYearView,
+            timeslice,
+            trackCurrentDay,
+        });
+    }, [activeControls, activeHighlight, blocks, dynamicBlockRows, firstWeekDay, grid, i18n, locale, timeslice, trackCurrentDay, useYearView]);
+
+    useEffect(() => {
+        const origins = ([] as number[])
+            .concat(originDate as ConcatArray<number>)
+            .slice(0, 2)
+            .map(Number)
+            .filter(Boolean);
+        if (origins[0]) grid.highlight.from = +origins[0];
+        if (origins[1]) grid.highlight.to = +origins[1];
+        return kill;
+    }, []);
+
+    return { cursorElementRef, cursorRootProps, grid };
 };
 
 export default useCalendar;

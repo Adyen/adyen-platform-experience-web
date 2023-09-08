@@ -1,27 +1,29 @@
 import { useCallback } from 'preact/hooks';
+import { CalendarControlRenderer, CalendarRenderControl } from '../types';
 import useCoreContext from '../../../../core/Context/useCoreContext';
 import useDetachedRender from '../../../../hooks/element/useDetachedRender';
-import { CalendarTraversal, CalendarTraversalControlRootProps } from '../../Calendar/types';
 import Button from '../../Button';
 
-const useDatePickerCalendarControls = () => {
+const useCalendarControlsRendering = (renderControl?: CalendarRenderControl) => {
     const { i18n } = useCoreContext();
+
     return useDetachedRender(
         useCallback(
-            (targetElement, traversal: CalendarTraversal, controlRootProps: CalendarTraversalControlRootProps) => {
+            ((targetElement, control, handle) => {
                 if (!(targetElement instanceof HTMLElement)) return null;
+                if (typeof renderControl === 'function') return renderControl(control, handle);
 
                 let directionModifier: string;
                 let labelModifier: 'next' | 'previous';
                 let label: string;
 
-                switch (traversal) {
-                    case CalendarTraversal.PREV:
+                switch (control) {
+                    case 'PREV':
                         directionModifier = 'prev';
                         labelModifier = 'previous';
                         label = '◀︎';
                         break;
-                    case CalendarTraversal.NEXT:
+                    case 'NEXT':
                         directionModifier = labelModifier = 'next';
                         label = '▶︎';
                         break;
@@ -33,16 +35,17 @@ const useDatePickerCalendarControls = () => {
                     <Button
                         aria-label={i18n.get(`calendar.${labelModifier}Month`)}
                         variant={'ghost'}
-                        // disabled={true || false}
+                        disabled={!handle()}
                         classNameModifiers={['circle', directionModifier]}
                         label={label}
-                        {...controlRootProps}
+                        key={control}
+                        onClick={handle}
                     />
                 );
-            },
-            [i18n]
+            }) as CalendarControlRenderer,
+            [i18n, renderControl]
         )
     );
 };
 
-export default useDatePickerCalendarControls;
+export default useCalendarControlsRendering;
