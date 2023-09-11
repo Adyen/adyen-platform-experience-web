@@ -14,11 +14,12 @@
 
         "jsxImportSource": "preact",
         "jsx": "react-jsx",
-
         "paths": {
             "@src/*": ["./src/*"],
             "@styles/*": ["./src/style/*"]
-        }
+        },
+
+        "types": ["@testing-library/jest-dom"]
     },
     "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.d.ts", "src/language/translations/*.json"],
     "exclude": ["node_modules", "dist"]
