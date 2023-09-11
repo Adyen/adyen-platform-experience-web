@@ -6,9 +6,9 @@ Adyen FP provides you with the building blocks to create an internal dashboard f
 
 ## Prerequisites
 
-* [Adyen test account](https://www.adyen.com/signup)
-* [API key](https://docs.adyen.com/development-resources/how-to-get-the-api-key)
-* [Client key](https://docs.adyen.com/development-resources/client-side-authentication#get-your-client-key)
+-   [Adyen test account](https://www.adyen.com/signup)
+-   [API key](https://docs.adyen.com/development-resources/how-to-get-the-api-key)
+-   [Client key](https://docs.adyen.com/development-resources/client-side-authentication#get-your-client-key)
 
 ## Installation
 
@@ -18,31 +18,34 @@ We only provide full support when you use one of these methods of installation.
 
 1. Install the [Adyen FP Node package](https://www.npmjs.com/package/@adyen/adyen-fp):
 
-  ```sh
-  npm install @adyen/adyen-fp-web --save
-  ```
+```sh
+npm install @adyen/adyen-fp-web --save
+```
 
 2. Import Adyen FP into your application:
 
-  ```js
-  import AdyenFp from '@adyen/adyen-fp-web';
-  import '@adyen/adyen-fp-web/dist/adyen-fp-web.css';
-  ```
+```js
+import AdyenFp from '@adyen/adyen-fp-web';
+import '@adyen/adyen-fp-web/dist/adyen-fp-web.css';
+```
 
 ## Development
 
 To run the development environment:
 
 1. Clone [this repository](https://github.com/Adyen/adyen-fp-web).
-2. Create a `.env` file on your project's root folder following the example in [`env.default`](env.default) and fill in the environment variables.
+2. Create a `.env` file on your project's root folder following the example in [`env.default`](envs/env.default) and fill in the environment variables.
 3. Install the dependencies by running:
-  ```sh
-  npm install
-  ```
+
+```sh
+npm install
+```
+
 4. Run the development environment, which starts a server listening on [http://localhost:3020](http://localhost:3030):
-  ```sh
-  npm start
-  ```
+
+```sh
+npm start
+```
 
 ## Contributing
 
@@ -52,8 +55,8 @@ Have a look at our [contributing guidelines](https://github.com/Adyen/.github/bl
 
 ## See also
 
-- [Documentation](https://docs.adyen.com/)
-- [API Explorer](https://docs.adyen.com/api-explorer/)
+-   [Documentation](https://docs.adyen.com/)
+-   [API Explorer](https://docs.adyen.com/api-explorer/)
 
 ## Support
 
