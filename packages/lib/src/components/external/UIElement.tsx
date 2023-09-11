@@ -1,8 +1,8 @@
-import BaseElement from '../BaseElement/BaseElement';
-import getImage from '../../../utils/get-image';
-import { BaseElementProps, IUIElement, UIElementProps } from '../../types';
-import AdyenFPError from '../../../core/Errors/AdyenFPError';
-import { UIElementStatus } from '../../types';
+import BaseElement from './BaseElement';
+import getImage from '../../utils/get-image';
+import { BaseElementProps, IUIElement, UIElementProps } from '../types';
+import AdyenFPError from '../../core/Errors/AdyenFPError';
+import { UIElementStatus } from '../types';
 
 export class UIElement<P extends UIElementProps = any> extends BaseElement<P> implements IUIElement {
     protected componentRef: UIElement<P> | null;

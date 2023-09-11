@@ -1,5 +1,5 @@
 import { PaginatedResponseDataWithLinks, PaginationProps } from '../../internal/Pagination/types';
-import UIElement from '../../internal/UIElement/UIElement';
+import UIElement from '../UIElement';
 import { UIElementProps } from '../../types';
 import { ITransaction } from '../../../types/models/api/transactions';
 

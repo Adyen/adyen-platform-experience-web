@@ -1,5 +1,5 @@
 import CoreProvider from '../../../core/Context/CoreProvider';
-import UIElement from '../../internal/UIElement/UIElement';
+import UIElement from '../UIElement';
 import LegalEntityDetails from './components/LegalEntityDetails/LegalEntityDetails';
 import { LegalEntityDetailsProps } from './types';
 

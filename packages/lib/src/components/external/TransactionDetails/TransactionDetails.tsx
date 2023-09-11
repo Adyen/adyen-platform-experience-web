@@ -1,5 +1,5 @@
 import CoreProvider from '../../../core/Context/CoreProvider';
-import UIElement from '../../internal/UIElement/UIElement';
+import UIElement from '../UIElement';
 import TransactionDetails from './components/TransactionDetails';
 import { TransactionDetailsComponentProps } from './types';
 

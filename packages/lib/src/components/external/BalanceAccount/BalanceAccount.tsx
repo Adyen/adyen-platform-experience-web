@@ -1,5 +1,5 @@
 import CoreProvider from '../../../core/Context/CoreProvider';
-import UIElement from '../../internal/UIElement/UIElement';
+import UIElement from '../UIElement';
 import BalanceAccountDetails from './components/BalanceAccountDetails';
 import type { BalanceAccountComponentProps } from './types';
 

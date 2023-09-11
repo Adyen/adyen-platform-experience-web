@@ -1,5 +1,5 @@
 import CoreProvider from '../../../core/Context/CoreProvider';
-import UIElement from '../../internal/UIElement/UIElement';
+import UIElement from '../UIElement';
 import AccountHolderDetails from './components/AccountHolderDetails';
 import { AccountHolderComponentProps } from './types';
 
