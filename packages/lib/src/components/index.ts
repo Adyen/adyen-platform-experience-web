@@ -3,18 +3,16 @@ import '../style/index.scss';
 import './shared.scss';
 
 // External Components
-import { AccountHolderComponent } from './AccountHolder';
-import { BalanceAccountComponent } from './BalanceAccount';
-import { TransactionsComponent } from './Transactions';
-import { TransactionsDetailsComponent } from './TransactionDetails';
+import {
+    AccountHolderComponent,
+    BalanceAccountComponent,
+    TransactionsComponent,
+    TransactionsDetailsComponent,
+    LegalEntityComponent,
+} from './external/index';
 import { ComponentMap } from '../core/types';
-import { LegalEntityComponent } from './LegalEntityDetails';
 
-export * from './AccountHolder';
-export * from './BalanceAccount';
-export * from './LegalEntityDetails';
-export * from './Transactions';
-export * from './TransactionDetails';
+export * from './external/index';
 
 /**
  * Maps each component with a Component element.
