@@ -29,7 +29,7 @@
         "type-check": "npm run type-check -w @adyen/adyen-fp-web",
         "types:watch": "npm run types:watch -w @adyen/adyen-fp-web",
         "format:all": "npm run format -w @adyen/adyen-fp-web-playground && npm run format -w @adyen/adyen-fp-web",
-        "storybook": "npm run storybook -w @adyen/adyen-fp-web-playground",
+        "storybook": "concurrently --kill-others-on-fail \"npm run types:watch\" \"npm run storybook -w @adyen/adyen-fp-web-playground\" ",
         "storybook:mocked": "npm run storybook:mocked -w @adyen/adyen-fp-web-playground",
         "storybook:build": "npm run storybook:build -w @adyen/adyen-fp-web-playground",
         "storybook:demo": "npm run storybook:demo -w @adyen/adyen-fp-web-playground",

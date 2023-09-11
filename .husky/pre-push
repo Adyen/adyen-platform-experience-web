@@ -1,0 +1,15 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+LIGHT_BLUE='\033[1;34m'
+YELLOW='\033[1;33m'
+NC='\033[0m'
+GREEN='\033[0;32m'
+
+echo "----- ${YELLOW}Pre-push hook checks started${NC} -----"
+
+echo "${LIGHT_BLUE}Checking for type errors...${NC}"
+npm run type-check
+
+# Successful check
+echo "${GREEN}✓✓✓✓✓ Types are correct!${NC}"

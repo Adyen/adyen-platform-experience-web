@@ -40,7 +40,7 @@
         "build:test": "npm run build && npm pack",
         "test": "vitest --config ./config/vite.config.ts",
         "test:coverage": "vitest --config ./config/vite.config.ts --coverage",
-        "type-check": "tsc --watch --preserveWatchOutput",
+        "type-check": "tsc --preserveWatchOutput",
         "types:build": "tsc --project tsconfig-build.json",
         "lint": "eslint 'src/**/*.{js,ts,tsx}' --quiet && npm run lint:scss",
         "lint:fix": "npm run lint -- --fix",
