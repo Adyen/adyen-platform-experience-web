@@ -1,13 +1,14 @@
-import { defineConfig } from 'vite';
+import { defineConfig, type PluginOption } from 'vite';
 import { resolve } from 'node:path';
 import version from './version';
 import packageJson from '../package.json';
 
 const currentVersion = version();
-
 const externalDependencies = Object.keys(packageJson.dependencies);
 
-export default defineConfig(() => {
+export default defineConfig(async ({ mode }) => {
+    const isAnalyseMode = mode === 'analyse';
+
     return {
         resolve: {
             alias: {
@@ -42,5 +43,13 @@ export default defineConfig(() => {
                 reportsDirectory: resolve(__dirname, '../../../coverage'),
             },
         },
+        plugins: [
+            isAnalyseMode &&
+                ((await import('rollup-plugin-visualizer')).visualizer({
+                    title: 'Adyen Platform bundle visualizer',
+                    gzipSize: true,
+                    open: true,
+                }) as PluginOption),
+        ],
     };
 });
