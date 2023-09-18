@@ -1,4 +1,3 @@
-import fetch from '../fetch';
 import AdyenFPError from '../../Errors/AdyenFPError';
 import { getRequestObject, handleFetchError, isAdyenErrorResponse } from './utils';
 import { HttpOptions } from './types';

@@ -1,7 +1,7 @@
 {
     "extends": "./tsconfig.json",
     "include": [],
-    "files": ["src/index.ts", "src/declarations/scss.d.ts", "src/declarations/vite-env.d.ts", "src/declarations/whatwg-fetch.d.ts"],
+    "files": ["src/index.ts", "src/declarations/scss.d.ts", "src/declarations/vite-env.d.ts"],
     "compilerOptions": {
         "rootDir": "src",
         "noEmit": false,
