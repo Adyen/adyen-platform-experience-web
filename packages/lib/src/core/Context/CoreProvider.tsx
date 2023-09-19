@@ -1,48 +1,28 @@
-import { Component, toChildArray } from 'preact';
+import { toChildArray } from 'preact';
+import { useEffect, useMemo } from 'preact/hooks';
 import { CoreContext } from './CoreContext';
+import { CoreProviderProps } from './types';
+import useBooleanState from '@src/hooks/useBooleanState';
 
-interface CoreProviderProps {
-    loadingContext?: string;
-    i18n: any;
-    children?: any;
-    commonProps?: CommonPropsTypes;
-}
-
-export interface CommonPropsTypes {
-    isCollatingErrors?: boolean;
-}
 /**
  * CoreProvider Component
  * Wraps a component delaying the render until after the i18n module is fully loaded
  */
-class CoreProvider extends Component<CoreProviderProps> {
-    public state = {
-        loaded: false,
-    };
+const CoreProvider = ({ i18n, children, commonProps: _commonProps, loadingContext: _loadingContext }: CoreProviderProps) => {
+    const [ready, setReady] = useBooleanState(false);
+    const commonProps = useMemo(() => _commonProps || {}, [_commonProps]);
+    const loadingContext = useMemo(() => _loadingContext ?? '', [_loadingContext]);
 
-    componentDidMount() {
-        if (this.props.i18n) {
-            this.props.i18n.loaded.then(() => {
-                this.setState({ loaded: true });
-            });
-        } else {
-            this.setState({ loaded: true });
-        }
-    }
+    useEffect(() => {
+        (async () => {
+            await i18n?.loaded;
+            setReady(true);
+        })().catch();
+    }, []);
 
-    render({ children }: CoreProviderProps) {
-        if (this.state.loaded) {
-            return (
-                <CoreContext.Provider
-                    value={{ i18n: this.props.i18n, loadingContext: this.props.loadingContext ?? '', commonProps: this.props.commonProps || {} }}
-                >
-                    {toChildArray(children)}
-                </CoreContext.Provider>
-            );
-        }
+    if (!ready) return null;
 
-        return null;
-    }
-}
+    return <CoreContext.Provider value={{ i18n, commonProps, loadingContext }}>{toChildArray(children)}</CoreContext.Provider>;
+};
 
 export default CoreProvider;
