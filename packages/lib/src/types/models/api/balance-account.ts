@@ -1,4 +1,4 @@
-import type { CurrencyCode } from '../../../utils/constants/currency-codes';
+import type { CurrencyCode } from '@src/localization/types';
 import type { StatusType } from '../status';
 
 export interface Balance {

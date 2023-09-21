@@ -6,5 +6,5 @@ export interface FilterModalProps {
     label: string;
     classNameModifiers: string[];
     fieldName: string;
-    value: HTMLAttributes['value'];
+    value: HTMLAttributes<any>['value'];
 }

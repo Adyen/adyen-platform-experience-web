@@ -4,14 +4,14 @@ import CountryField from './CountryField';
 import { renderFormField } from '../../FormFields';
 import { AddressState, FieldContainerProps } from '../types';
 import useCoreContext from '../../../../core/Context/useCoreContext';
-import Language from '../../../../language/Language';
+import Localization from '@src/localization/Localization';
 import { ErrorMessageObject } from '../../../../utils/Validator/types';
-import { TranslationKey } from '@src/language/types';
+import { TranslationKey } from '@src/localization/types';
 
 function getErrorMessage<Schema extends Record<string, any>>(
     errors: AddressState<Schema>,
     fieldName: keyof AddressState<Schema>,
-    i18n: Language
+    i18n: Localization['i18n']
 ): string | boolean {
     if (typeof errors[fieldName]?.errorMessage === 'string') {
         return errors[fieldName] ? i18n.get(errors[fieldName]?.errorMessage as TranslationKey) : !!errors[fieldName];

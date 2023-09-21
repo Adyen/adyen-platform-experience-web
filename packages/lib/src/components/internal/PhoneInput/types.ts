@@ -1,7 +1,7 @@
-import Language from '../../../language/Language';
+import Localization from '@src/localization';
 import { SetTriggerValidation } from '../../types';
 import { StateUpdater } from 'preact/compat';
-import { TranslationKey } from '@src/language/types';
+import { TranslationKey } from '@src/localization/types';
 
 export interface PhoneInputComponentProps {
     onChange: (state: Record<string, any>) => void;
@@ -15,7 +15,7 @@ export interface PhoneInputComponentProps {
     phoneName: string;
     showPayButton: boolean;
     isValid: boolean;
-    i18n?: Language;
+    i18n?: Localization['i18n'];
     data?: {
         phonePrefix: string;
         phoneNumber: string;

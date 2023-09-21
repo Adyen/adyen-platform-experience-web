@@ -1,5 +1,5 @@
 import { Amount, AmountExtended } from '../types/shared';
-import Language from '../language/Language';
+import Localization from '@src/localization';
 import UIElement from './external/UIElement';
 import Core from '../core';
 import Analytics from '../core/Analytics';
@@ -79,7 +79,7 @@ export interface UIElementProps extends BaseElementProps {
     elementRef?: any;
 
     /** @internal */
-    i18n?: Language;
+    i18n?: Localization['i18n'];
 }
 export type BaseElementState = {
     errors?: {

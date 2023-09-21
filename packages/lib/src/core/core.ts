@@ -3,7 +3,7 @@ import components from '../components';
 import type { CoreOptions } from './types';
 import { processGlobalOptions } from './utils';
 import BPSession from './FPSession';
-import Language from '../language';
+import Localization from '../localization';
 import BaseElement from '../components/external/BaseElement';
 import { ComponentMap, ComponentOptions, isAvailableOfComponent, isKeyOfComponent } from './types';
 import { ValueOf } from '../utils/types';
@@ -19,6 +19,7 @@ class Core {
     public modules: any;
     public options: CoreOptions;
     public components: BaseElement<any>[] = [];
+    public localization = new Localization();
 
     constructor(options: CoreOptions) {
         this.create = this.create.bind(this);
@@ -43,8 +44,7 @@ class Core {
         //         });
         // }
 
-        // return Promise.resolve(this);
-        return Promise.resolve(this);
+        return Promise.all([this.localization.ready]).then(() => this);
     }
 
     /**
@@ -109,9 +109,13 @@ class Core {
      */
     private setOptions = (options: CoreOptions): this => {
         this.options = { ...this.options, ...options };
+
+        this.localization.locale = this.options?.locale;
+        this.localization.customTranslations = this.options?.translations;
+
         this.modules = {
             // analytics: new Analytics(this.options),
-            i18n: new Language(this.options?.locale, this.options?.translations),
+            i18n: this.localization.i18n,
         };
 
         // Check for clientKey/environment mismatch
