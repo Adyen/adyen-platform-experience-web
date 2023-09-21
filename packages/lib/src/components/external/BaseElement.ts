@@ -1,7 +1,7 @@
 import { ComponentChild, render } from 'preact';
 import EventEmitter from './EventEmitter';
 import uuid from '../../utils/uuid';
-import Core from '../../core';
+import { Core } from '../../core';
 import { BaseElementProps, BaseElementState } from '../types';
 
 class BaseElement<P extends BaseElementProps> {

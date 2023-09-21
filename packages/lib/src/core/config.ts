@@ -1,7 +1,9 @@
 /**
  * FALLBACK_CONTEXT
  */
-export const FALLBACK_CONTEXT = 'https://checkoutshopper-live.adyen.com/checkoutshopper/';
+
+//TODO - Use real url once we have defined our BFF.
+export const FALLBACK_CONTEXT = 'Fallback Base URL';
 
 export const GENERIC_OPTIONS = [
     'countryCode',
@@ -12,10 +14,10 @@ export const GENERIC_OPTIONS = [
 
     // Events
     'onChange',
-    'onError'
+    'onError',
 ];
 
 export default {
     FALLBACK_CONTEXT,
-    GENERIC_OPTIONS
+    GENERIC_OPTIONS,
 };

@@ -12,6 +12,7 @@ export const getRequestObject = (options: HttpOptions, data?: any): RequestInit 
         headers: {
             Accept: 'application/json, text/plain, */*',
             'Content-Type': method === 'POST' ? 'application/json' : 'text/plain',
+            'X-Api-Key': options.clientKey,
             ...headers,
         },
         redirect: 'follow',
@@ -27,10 +28,9 @@ export function handleFetchError(message: string, level: ErrorLevel) {
         }
         case 'info':
         case 'warn':
-        case 'error': {
             console[level](message);
             break;
-        }
+        case 'error':
         default:
             throw new AdyenFPError('NETWORK_ERROR', message);
     }

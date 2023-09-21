@@ -71,6 +71,8 @@ export default defineConfig(async ({ mode }) => {
             'process.env.VITE_DEFAULT_TRANSACTION_ID': JSON.stringify(envIds.transaction.defaultId || null),
             'process.env.VITE_DEFAULT_BALANCE_ACCOUNT_ID': JSON.stringify(envIds.balanceAccount.defaultId || null),
             'process.env.VITE_DEFAULT_ACCOUNT_HOLDER_ID': JSON.stringify(envIds.accountHolder.defaultId || null),
+            'process.env.VITE_API_URL': JSON.stringify(playground.apiUrl || null),
+            'process.env.VITE_PLAYGROUND_PORT': JSON.stringify(playground.port || null),
         },
     };
 });

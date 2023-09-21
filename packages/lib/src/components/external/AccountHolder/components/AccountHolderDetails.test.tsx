@@ -9,20 +9,20 @@ import { noop } from '@src/utils/common';
 
 describe('AccountHolder component', () => {
     test('shows the Account holder ID', async () => {
-        const screen = render(<AccountHolderDetails accountHolder={ACCOUNT_HOLDER_1} onChange={noop} />);
+        const screen = render(<AccountHolderDetails accountHolderId={ACCOUNT_HOLDER_1.id} onChange={noop} />);
         const accountHolderId = screen.getByRole('listitem', { name: 'Account holder ID' });
         within(accountHolderId).getByText(ACCOUNT_HOLDER_1.id);
     });
 
     test('shows the status', async () => {
-        const screen = render(<AccountHolderDetails accountHolder={ACCOUNT_HOLDER_1} onChange={noop} />);
+        const screen = render(<AccountHolderDetails accountHolderId={ACCOUNT_HOLDER_1.id} onChange={noop} />);
 
         const status = screen.getByRole('listitem', { name: 'Status' });
         within(status).getByText(new RegExp(ACCOUNT_HOLDER_1.status, 'i'));
     });
 
     test('shows the legal entity details', async () => {
-        const screen = render(<AccountHolderDetails accountHolder={ACCOUNT_HOLDER_1} onChange={noop} />);
+        const screen = render(<AccountHolderDetails accountHolderId={ACCOUNT_HOLDER_1.id} onChange={noop} />);
 
         screen.getByText('Legal entity');
 
@@ -34,7 +34,7 @@ describe('AccountHolder component', () => {
     });
 
     test('shows the contact details', async () => {
-        const screen = render(<AccountHolderDetails accountHolder={ACCOUNT_HOLDER_1} onChange={noop} />);
+        const screen = render(<AccountHolderDetails accountHolderId={ACCOUNT_HOLDER_1.id} onChange={noop} />);
 
         screen.getByText('Contact details');
         screen.getByText(ACCOUNT_HOLDER_1.contactDetails.phone.number);

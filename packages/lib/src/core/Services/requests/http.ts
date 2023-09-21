@@ -4,9 +4,12 @@ import { HttpOptions } from './types';
 
 export function http<T>(options: HttpOptions, data?: any): Promise<T> {
     const { errorLevel = 'warn', loadingContext = '', path } = options;
+    // const url = `${loadingContext}${path}`;
+
     const request = getRequestObject(options, data);
 
-    const url = `${loadingContext}${path}`;
+    //TODO - Get rid of the "api" prefix once we have defined a loadingContext from our BFF.
+    const url = `${loadingContext}api/${path}`;
 
     return (
         fetch(url, request)

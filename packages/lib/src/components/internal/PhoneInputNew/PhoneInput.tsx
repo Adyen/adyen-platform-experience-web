@@ -12,10 +12,7 @@ import { getUniqueId } from '../../../utils/idGenerator';
 import { SchemaKeys } from '../../../utils/useForm/types';
 
 function PhoneInput(props: PhoneInputProps<PhoneInputSchema>) {
-    const {
-        i18n,
-        commonProps: { isCollatingErrors },
-    } = useCoreContext();
+    const { i18n, commonProps } = useCoreContext();
 
     const optionalSchemaKeys: SchemaKeys<PhoneInputSchema>[] = ['phonePrefix'];
 
@@ -124,7 +121,7 @@ function PhoneInput(props: PhoneInputProps<PhoneInputSchema>) {
                             // readonly: props.phonePrefixIsReadonly,
                             placeholder: i18n.get('infix'),
                             selected: data.phonePrefix,
-                            isCollatingErrors: !!isCollatingErrors,
+                            isCollatingErrors: !!commonProps?.isCollatingErrors,
                             uniqueId: uniqueIDPhonePrefix,
                         })}
 
@@ -149,7 +146,7 @@ function PhoneInput(props: PhoneInputProps<PhoneInputSchema>) {
                     )}
                 </div>
             </Field>
-            {!isCollatingErrors && (
+            {!commonProps?.isCollatingErrors && (
                 <div className="adyen-fp-phone-input__error-holder">
                     {showPrefix && getPhoneFieldError('phonePrefix') && (
                         <span className={'adyen-fp-error-text'} aria-live="polite" id={`${uniqueIDPhonePrefix}${ARIA_ERROR_SUFFIX}`}>

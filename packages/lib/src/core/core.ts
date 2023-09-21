@@ -1,7 +1,7 @@
 import UIElement from '../components/external/UIElement';
 import components from '../components';
 import type { CoreOptions } from './types';
-import { processGlobalOptions } from './utils';
+import { processGlobalOptions, resolveEnvironment } from './utils';
 import BPSession from './FPSession';
 import Localization from './Localization';
 import BaseElement from '../components/external/BaseElement';
@@ -20,11 +20,13 @@ class Core {
     public options: CoreOptions;
     public components: BaseElement<any>[] = [];
     public localization = new Localization();
+    public loadingContext?: string;
 
     constructor(options: CoreOptions) {
         this.create = this.create.bind(this);
         this.options = options;
         this.setOptions(options);
+        this.loadingContext = this.options.loadingContext ?? resolveEnvironment(this.options.environment);
     }
 
     initialize(): Promise<this> {
@@ -139,6 +141,7 @@ class Core {
             i18n: this.modules.i18n,
             modules: this.modules,
             session: this.session,
+            loadingContext: this.loadingContext,
             _parentInstance: this,
         };
     }

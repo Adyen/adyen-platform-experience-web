@@ -1,5 +1,5 @@
 import { CoreOptions } from './core/types';
-import Core from './core';
+import { Core } from './core';
 
 export * from './core';
 export * from './components';
