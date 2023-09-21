@@ -7,7 +7,7 @@ import { AccountHolderInfo } from '@src/components/external/AccountHolder/compon
 import type { AccountHolder } from '@src/types';
 import type { AccountHolderComponentProps } from '../types';
 
-const AccountHolderDetails = ({ accountHolderId, accountHolder }: AccountHolderComponentProps) => {
+const AccountHolderDetails = ({ accountHolderId, accountHolder, title }: AccountHolderComponentProps) => {
     const { i18n } = useCoreContext();
 
     const { data, error, isFetching } = useFetch<AccountHolder>({
@@ -19,7 +19,7 @@ const AccountHolderDetails = ({ accountHolderId, accountHolder }: AccountHolderC
 
     return (
         <div className="adyen-fp-account-holder">
-            <h1 className="adyen-fp-title">{i18n.get('accountHolder')}</h1>
+            {title && <h1 className="adyen-fp-title">{i18n.get(title)}</h1>}
 
             {!data && isFetching ? (
                 <Spinner />

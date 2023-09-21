@@ -7,7 +7,7 @@ import { BalanceAccountInfo } from '@src/components/external/BalanceAccount/comp
 import type { BalanceAccountComponentProps } from '../types';
 import type { BalanceAccount } from '@src/types';
 
-function BalanceAccountDetails({ balanceAccount, balanceAccountId }: BalanceAccountComponentProps) {
+function BalanceAccountDetails({ balanceAccount, balanceAccountId, title }: BalanceAccountComponentProps) {
     const { i18n } = useCoreContext();
 
     const { data, error, isFetching } = useFetch<BalanceAccount>({
@@ -19,7 +19,7 @@ function BalanceAccountDetails({ balanceAccount, balanceAccountId }: BalanceAcco
 
     return (
         <div className="adyen-fp-balance-account">
-            <div className="adyen-fp-title">{i18n.get('balanceAccount')}</div>
+            {title && <div className="adyen-fp-title">{i18n.get(title)}</div>}
 
             {isFetching && <Spinner />}
 

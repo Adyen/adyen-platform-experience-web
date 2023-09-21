@@ -135,5 +135,6 @@
     "unableToLoadAccountHolder": "Unable to load account holder",
     "unableToLoadBalanceAccount": "Unable to load balance account",
     "unableToLoadLegalEntity": "Unable to load legal entity",
-    "unableToLoadTransaction": "Unable to load transaction"
+    "unableToLoadTransaction": "Unable to load transaction",
+    "dismiss": "Dismiss"
 }

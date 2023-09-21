@@ -19,6 +19,7 @@ export interface TransactionsComponentProps extends UIElementProps {
     onTransactionSelected?: OnSelection;
     onBalanceAccountSelected?: OnSelection;
     onAccountSelected?: OnSelection;
+    showDetails?: DetailsOptions;
     onUpdateTransactions?: (pageRequestParams: any, ref?: UIElement | null) => void;
     name?: string;
     balancePlatformId?: string;
@@ -30,4 +31,11 @@ export interface TransactionListProps extends PaginationProps {
     onAccountSelected?: OnSelection;
     showPagination: boolean;
     loading: boolean;
+    showDetails?: DetailsOptions;
 }
+
+export type DetailsOptions = {
+    transaction?: boolean;
+    balanceAccount?: boolean;
+    accountHolder?: boolean;
+};

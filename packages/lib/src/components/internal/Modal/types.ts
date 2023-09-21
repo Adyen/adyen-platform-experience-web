@@ -1,5 +1,7 @@
 import { ComponentChildren } from 'preact';
 
+export type ModalSize = 'fluid' | 'small' | 'large' | 'extra-large' | 'full-screen';
+
 export interface ModalProps {
     title: string;
     children: ComponentChildren;
@@ -7,4 +9,7 @@ export interface ModalProps {
     isOpen: boolean;
     onClose(): void;
     isDismissible?: boolean;
+    headerWithBorder?: boolean;
+    size?: ModalSize;
+    dismissible?: boolean;
 }
