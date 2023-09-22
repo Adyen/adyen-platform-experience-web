@@ -9,10 +9,15 @@ import { AccountHolder } from '@src/types';
 import Spinner from '@src/components/internal/Spinner';
 import Alert from '@src/components/internal/Alert';
 
-const AccountHolderDetails = ({ accountHolderId }: AccountHolderComponentProps) => {
+const AccountHolderDetails = ({ accountHolderId, accountHolder }: AccountHolderComponentProps) => {
     const { i18n } = useCoreContext();
 
-    const { data, error, isFetching } = useFetch<AccountHolder>({ url: `accountHolders/${accountHolderId}` }, { enabled: !!accountHolderId });
+    const { data, error, isFetching } = useFetch<AccountHolder>(
+        { url: `accountHolders/${accountHolderId}` },
+        { enabled: !!accountHolderId && !accountHolder }
+    );
+
+    const accountHolderData = accountHolder ?? data;
 
     return (
         <div className="adyen-fp-account-holder">
@@ -22,18 +27,18 @@ const AccountHolderDetails = ({ accountHolderId }: AccountHolderComponentProps) 
                 <Spinner />
             ) : error ? (
                 <Alert icon={'cross'}>{error.message ?? i18n.get('unableToLoadAccountHolder')}</Alert>
-            ) : data ? (
+            ) : accountHolderData ? (
                 <>
                     <div className="adyen-fp-details-container">
                         <StatsBar
                             items={[
                                 {
                                     label: 'Account holder ID',
-                                    value: data?.id,
+                                    value: accountHolderData?.id,
                                 },
                                 {
                                     label: 'Status',
-                                    value: <Status type={'success'} label={data.status} />,
+                                    value: <Status type={'success'} label={accountHolderData.status} />,
                                 },
                             ]}
                         />
@@ -44,27 +49,27 @@ const AccountHolderDetails = ({ accountHolderId }: AccountHolderComponentProps) 
 
                                 <div className="adyen-fp-field">
                                     <div className="adyen-fp-label">{i18n.get('legalEntityID')}</div>
-                                    <div className="adyen-fp-value">{data.legalEntityId}</div>
+                                    <div className="adyen-fp-value">{accountHolderData.legalEntityId}</div>
                                 </div>
 
                                 <div className="adyen-fp-field">
                                     <div className="adyen-fp-label">{i18n.get('description')}</div>
-                                    <div className="adyen-fp-value">{data.description}</div>
+                                    <div className="adyen-fp-value">{accountHolderData.description}</div>
                                 </div>
                             </div>
 
-                            {!!data.contactDetails && (
+                            {!!accountHolderData.contactDetails && (
                                 <ContactDetails
-                                    address={data.contactDetails.address}
-                                    phoneNumber={data.contactDetails.phone}
-                                    emailAddress={data.contactDetails?.email}
+                                    address={accountHolderData.contactDetails.address}
+                                    phoneNumber={accountHolderData.contactDetails.phone}
+                                    emailAddress={accountHolderData.contactDetails?.email}
                                 />
                             )}
                         </div>
                     </div>
 
                     <pre>
-                        <code>{JSON.stringify(data, null, 2)}</code>
+                        <code>{JSON.stringify(accountHolderData, null, 2)}</code>
                     </pre>
                 </>
             ) : null}
