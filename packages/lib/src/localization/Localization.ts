@@ -35,7 +35,10 @@ export default class Localization {
 
     #customTranslations?: CustomTranslations;
     #translations: Record<string, string> = defaultTranslation;
-    #ready?: Promise<Localization>;
+    #ready: Promise<Localization> = Promise.resolve(this);
+
+    #currentRefresh?: Promise<void>;
+    #markRefreshAsDone?: () => void;
 
     #restamp: Restamp = restamper();
     #lastRefreshTimestamp: DOMHighResTimeStamp = performance.now();
@@ -55,21 +58,21 @@ export default class Localization {
     }
 
     set customTranslations(customTranslations: CustomTranslations | undefined | null) {
+        let translations: CustomTranslations | undefined = undefined;
+        let supportedLocales: (SupportedLocale | string)[] = DEFAULT_LOCALES;
+
         if (customTranslations != undefined) {
-            this.#customTranslations = formatCustomTranslations(customTranslations, DEFAULT_LOCALES);
-            const localesFromCustomTranslations = Object.keys(this.#customTranslations) as string[];
+            translations = formatCustomTranslations(customTranslations, DEFAULT_LOCALES);
+            const localesFromCustomTranslations = Object.keys(translations) as string[];
 
             // default locales + validated custom locales
-            this.#supportedLocales = [...DEFAULT_LOCALES, ...localesFromCustomTranslations].filter(
+            supportedLocales = [...DEFAULT_LOCALES, ...localesFromCustomTranslations].filter(
                 (locale, index, locales) => locales.indexOf(locale) === index
             );
-        } else {
-            this.#customTranslations = undefined;
-            this.#supportedLocales = DEFAULT_LOCALES;
         }
 
-        this.locale = this.#locale;
-        this.#refreshTranslations();
+        const nextLocale = Localization.#withLocale(this.#locale, supportedLocales);
+        this.#refreshTranslations(nextLocale, supportedLocales, translations);
     }
 
     get languageCode() {
@@ -86,18 +89,14 @@ export default class Localization {
 
     set locale(locale: SupportedLocale | string | undefined | null) {
         if (locale != undefined) {
-            const nextLocale = formatLocale(locale) || parseLocale(locale, this.#supportedLocales) || FALLBACK_LOCALE;
-
-            if (this.#locale !== nextLocale) {
-                this.#locale = nextLocale;
-                this.#languageCode = toTwoLetterCode(this.#locale);
-                this.#refreshTranslations();
-            }
+            const nextLocale = Localization.#withLocale(locale, this.#supportedLocales);
+            if (this.#locale === nextLocale) return;
+            this.#refreshTranslations(nextLocale, this.#supportedLocales, this.#customTranslations);
         } else this.locale = FALLBACK_LOCALE;
     }
 
-    get ready(): Promise<Localization> {
-        return Promise.resolve(this.#ready ?? this);
+    get ready() {
+        return this.#ready;
     }
 
     get timezone(): Restamp['tz'] {
@@ -108,13 +107,23 @@ export default class Localization {
         this.#restamp.tz = timezone;
     }
 
-    #refreshTranslations() {
-        // [TODO]: Handle promise rejection
-        this.#ready = loadTranslations(this.#locale, this.#customTranslations).then(translations => {
-            this.#translations = translations;
-            this.#lastRefreshTimestamp = performance.now();
-            return this;
+    #refreshTranslations(locale: SupportedLocale | string, supportedLocales: (SupportedLocale | string)[], customTranslations?: CustomTranslations) {
+        const currentRefresh = (this.#currentRefresh = Localization.#loadTranslations.call(this, locale, supportedLocales, customTranslations));
+
+        currentRefresh.then(() => {
+            if (this.#currentRefresh === currentRefresh) this.#markRefreshAsDone?.();
         });
+
+        if (this.#markRefreshAsDone === undefined) {
+            this.#eventEmitter.emit('refresh_in_progress', this);
+
+            this.#ready = new Promise<Localization>(resolve => {
+                this.#markRefreshAsDone = () => {
+                    this.#currentRefresh = this.#markRefreshAsDone = undefined;
+                    resolve(this);
+                };
+            });
+        }
     }
 
     /**
@@ -159,5 +168,23 @@ export default class Localization {
     fullDate(date: string) {
         const [, month, day, year, time] = new Date(this.#restamp(date)).toString().split(/\s+/g);
         return `${month} ${day}, ${year}, ${time}`;
+    }
+
+    static async #loadTranslations(
+        this: Localization,
+        locale: SupportedLocale | string,
+        supportedLocales: (SupportedLocale | string)[],
+        customTranslations?: CustomTranslations
+    ) {
+        this.#translations = await loadTranslations(locale, customTranslations);
+        this.#locale = locale;
+        this.#supportedLocales = supportedLocales;
+        this.#customTranslations = customTranslations;
+        this.#languageCode = toTwoLetterCode(this.#locale);
+        this.#lastRefreshTimestamp = performance.now();
+    }
+
+    static #withLocale(locale: SupportedLocale | string, supportedLocales: (SupportedLocale | string)[]) {
+        return formatLocale(locale) || parseLocale(locale, supportedLocales) || FALLBACK_LOCALE;
     }
 }
