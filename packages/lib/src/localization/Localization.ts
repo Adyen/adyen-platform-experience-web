@@ -157,8 +157,8 @@ export default class Localization {
      * @param options - Options for {@link Date.toLocaleDateString}
      */
     date(date: string, options: Intl.DateTimeFormatOptions = {}) {
-        const dateOptions = { ...DEFAULT_DATETIME_FORMAT, ...options };
-        return new Date(this.#restamp(date)).toLocaleDateString(this.#locale, dateOptions);
+        const dateOptions = { ...DEFAULT_DATETIME_FORMAT, timeZone: this.#restamp.tz, ...options };
+        return new Date(date).toLocaleDateString(this.#locale, dateOptions);
     }
 
     /**
