@@ -35,7 +35,7 @@ export default class Localization {
 
     #customTranslations?: CustomTranslations;
     #translations: Record<string, string> = defaultTranslation;
-    #ready: Promise<Localization> = Promise.resolve(this);
+    #ready: Promise<void> = Promise.resolve();
 
     #currentRefresh?: Promise<void>;
     #markRefreshAsDone?: () => void;
@@ -95,7 +95,7 @@ export default class Localization {
         } else this.locale = FALLBACK_LOCALE;
     }
 
-    get ready() {
+    get ready(): Promise<void> {
         return this.#ready;
     }
 
@@ -115,12 +115,13 @@ export default class Localization {
         });
 
         if (this.#markRefreshAsDone === undefined) {
-            this.#eventEmitter.emit('refresh_in_progress', this);
+            // [TODO]: Move event name to enum
+            this.#eventEmitter.emit('refresh_in_progress');
 
-            this.#ready = new Promise<Localization>(resolve => {
+            this.#ready = new Promise<void>(resolve => {
                 this.#markRefreshAsDone = () => {
                     this.#currentRefresh = this.#markRefreshAsDone = undefined;
-                    resolve(this);
+                    resolve();
                 };
             });
         }

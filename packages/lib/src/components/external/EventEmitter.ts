@@ -15,7 +15,7 @@ class EventEmitter {
         }
     };
 
-    public emit = (eventName: string, data: any): void => {
+    public emit = (eventName: string, data?: any): void => {
         if (this.events[eventName]) {
             this.events[eventName]?.forEach(fn => {
                 fn(data);

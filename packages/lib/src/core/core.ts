@@ -112,6 +112,7 @@ class Core {
 
         this.localization.locale = this.options?.locale;
         this.localization.customTranslations = this.options?.translations;
+        this.localization.timezone = this.options?.timezone;
 
         this.modules = {
             // analytics: new Analytics(this.options),
