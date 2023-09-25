@@ -10,6 +10,34 @@ const DEFAULT_DATETIME_FORMAT = { year: 'numeric', month: '2-digit', day: '2-dig
 const DEFAULT_LOCALES = Object.keys(translations) as SupportedLocale[];
 const EXCLUDE_PROPS = ['constructor', 'i18n', 'listen', 'unlisten'] as const;
 
+function createTranslationsLoader(this: Localization) {
+    type TranslationsLoader = {
+        load: (customTranslations?: CustomTranslations) => ReturnType<typeof loadTranslations>;
+        locale: SupportedLocale | string;
+        supportedLocales: (SupportedLocale | string)[];
+    };
+
+    let _locale = this.locale;
+    let _supportedLocales = this.supportedLocales;
+
+    return Object.create(null, {
+        load: { value: (customTranslations?: CustomTranslations) => loadTranslations(_locale, customTranslations) },
+        locale: {
+            get: () => _locale,
+            set: (locale: SupportedLocale | string) => {
+                _locale = formatLocale(locale) || parseLocale(locale, _supportedLocales) || FALLBACK_LOCALE;
+            },
+        },
+        supportedLocales: {
+            get: () => _locale,
+            set(this: TranslationsLoader, supportedLocales: (SupportedLocale | string)[]) {
+                _supportedLocales = supportedLocales;
+                this.locale = _locale;
+            },
+        },
+    }) as TranslationsLoader;
+}
+
 function getLocalizationProxyDescriptors(this: Localization) {
     const descriptors = {} as any;
 
@@ -35,6 +63,7 @@ export default class Localization {
 
     #customTranslations?: CustomTranslations;
     #translations: Record<string, string> = defaultTranslation;
+    #translationsLoader = createTranslationsLoader.call(this);
     #ready: Promise<void> = Promise.resolve();
 
     #currentRefresh?: Promise<void>;
@@ -71,8 +100,8 @@ export default class Localization {
             );
         }
 
-        const nextLocale = Localization.#withLocale(this.#locale, supportedLocales);
-        this.#refreshTranslations(nextLocale, supportedLocales, translations);
+        this.#translationsLoader.supportedLocales = supportedLocales;
+        this.#refreshTranslations(translations);
     }
 
     get languageCode() {
@@ -89,14 +118,18 @@ export default class Localization {
 
     set locale(locale: SupportedLocale | string | undefined | null) {
         if (locale != undefined) {
-            const nextLocale = Localization.#withLocale(locale, this.#supportedLocales);
-            if (this.#locale === nextLocale) return;
-            this.#refreshTranslations(nextLocale, this.#supportedLocales, this.#customTranslations);
+            this.#translationsLoader.locale = locale;
+            if (this.#locale === this.#translationsLoader.locale) return;
+            this.#refreshTranslations(this.#customTranslations);
         } else this.locale = FALLBACK_LOCALE;
     }
 
     get ready(): Promise<void> {
         return this.#ready;
+    }
+
+    get supportedLocales(): (SupportedLocale | string)[] {
+        return this.#supportedLocales;
     }
 
     get timezone(): Restamp['tz'] {
@@ -107,24 +140,38 @@ export default class Localization {
         this.#restamp.tz = timezone;
     }
 
-    #refreshTranslations(locale: SupportedLocale | string, supportedLocales: (SupportedLocale | string)[], customTranslations?: CustomTranslations) {
-        const currentRefresh = (this.#currentRefresh = Localization.#loadTranslations.call(this, locale, supportedLocales, customTranslations));
-
-        currentRefresh.then(() => {
-            if (this.#currentRefresh === currentRefresh) this.#markRefreshAsDone?.();
-        });
-
+    #refreshTranslations(customTranslations?: CustomTranslations) {
         if (this.#markRefreshAsDone === undefined) {
             // [TODO]: Move event name to enum
             this.#eventEmitter.emit('refresh_in_progress');
 
             this.#ready = new Promise<void>(resolve => {
                 this.#markRefreshAsDone = () => {
+                    resolve(this.#currentRefresh);
                     this.#currentRefresh = this.#markRefreshAsDone = undefined;
-                    resolve();
                 };
             });
         }
+
+        const currentRefreshDone = () => {
+            if (this.#currentRefresh === currentRefresh) this.#markRefreshAsDone?.();
+        };
+
+        const currentRefresh = (this.#currentRefresh = (async () => {
+            this.#translations = await this.#translationsLoader.load(customTranslations);
+            this.#locale = this.#translationsLoader.locale;
+            this.#supportedLocales = this.#translationsLoader.supportedLocales;
+            this.#customTranslations = customTranslations;
+            this.#languageCode = toTwoLetterCode(this.#locale);
+            this.#lastRefreshTimestamp = performance.now();
+        })());
+
+        currentRefresh.then(currentRefreshDone).catch(reason => {
+            currentRefreshDone();
+            // handle current refresh promise rejection
+            // throw reason;
+            console.error(reason);
+        });
     }
 
     /**
@@ -169,23 +216,5 @@ export default class Localization {
     fullDate(date: string) {
         const [, month, day, year, time] = new Date(this.#restamp(date)).toString().split(/\s+/g);
         return `${month} ${day}, ${year}, ${time}`;
-    }
-
-    static async #loadTranslations(
-        this: Localization,
-        locale: SupportedLocale | string,
-        supportedLocales: (SupportedLocale | string)[],
-        customTranslations?: CustomTranslations
-    ) {
-        this.#translations = await loadTranslations(locale, customTranslations);
-        this.#locale = locale;
-        this.#supportedLocales = supportedLocales;
-        this.#customTranslations = customTranslations;
-        this.#languageCode = toTwoLetterCode(this.#locale);
-        this.#lastRefreshTimestamp = performance.now();
-    }
-
-    static #withLocale(locale: SupportedLocale | string, supportedLocales: (SupportedLocale | string)[]) {
-        return formatLocale(locale) || parseLocale(locale, supportedLocales) || FALLBACK_LOCALE;
     }
 }
