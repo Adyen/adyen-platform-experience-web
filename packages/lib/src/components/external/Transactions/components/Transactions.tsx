@@ -8,8 +8,13 @@ import { TransactionFilterParam, TransactionsComponentProps } from '../types';
 import { DateRangeFilterParam } from '../../../internal/FilterBar/filters/DateFilter/types';
 import { useCursorPaginatedRecords } from '../../../internal/Pagination/hooks';
 import { ITransaction } from '../../../../types/models/api/transactions';
+import { PageNeighbour, PaginatedResponseDataWithLinks, PaginationType, WithEitherPages } from '@src/components/internal/Pagination/types';
+import { httpGet } from '@src/core/Services/requests/http';
+import { HttpOptions } from '@src/core/Services/requests/types';
 
-const DEFAULT_PAGINATED_TRANSACTIONS_LIMIT = 20;
+type PaginationLink = Exclude<Exclude<TransactionsComponentProps['transactions']['_links'], undefined>[PageNeighbour], undefined>;
+
+const DEFAULT_PAGINATED_TRANSACTIONS_LIMIT = '20';
 
 const transactionsFilterParams = [
     TransactionFilterParam.ACCOUNT_HOLDER,
@@ -17,7 +22,7 @@ const transactionsFilterParams = [
     TransactionFilterParam.CREATED_SINCE,
     TransactionFilterParam.CREATED_UNTIL,
 ];
-
+const pageNeighbours = [PageNeighbour.NEXT, PageNeighbour.PREV] as const;
 function Transactions({
     transactions,
     elementRef,
@@ -26,13 +31,56 @@ function Transactions({
     onFilterChange,
     onTransactionSelected,
     onUpdateTransactions,
+    balancePlatformId,
 }: TransactionsComponentProps) {
-    const { i18n } = useCoreContext();
+    const { i18n, loadingContext, clientKey } = useCoreContext();
+    const getTransactions = async (pageRequestParams: Record<TransactionFilterParam | 'cursor', string>) => {
+        const {
+            createdSince = '2022-05-30T15:07:40Z',
+            createdUntil = new Date().toISOString(),
+            balancePlatform = balancePlatformId,
+            accountHolderId,
+            balanceAccountId,
+            cursor,
+        } = pageRequestParams;
+
+        const searchParams = {
+            limit: DEFAULT_PAGINATED_TRANSACTIONS_LIMIT,
+            ...(createdSince && { createdSince }),
+            ...(createdUntil && { createdUntil }),
+            ...(balancePlatform && { balancePlatform }),
+            ...(accountHolderId && { accountHolderId }),
+            ...(balanceAccountId && { balanceAccountId }),
+            ...(cursor && { cursor }),
+        };
+
+        const request: HttpOptions = {
+            loadingContext: loadingContext,
+            clientKey,
+            path: 'transactions',
+            errorLevel: 'error',
+            params: searchParams,
+        };
+        const { data: records, _links: links } = await httpGet<PaginatedResponseDataWithLinks<ITransaction, 'data'>>(request);
+
+        if (links) {
+            const neighbours = Object.fromEntries(
+                (Object.entries(links) as [PageNeighbour, PaginationLink][])
+                    .filter(([neighbour, link]) => pageNeighbours.includes(neighbour) && link)
+                    .map(([key, { href }]) => [key, new URL(href).searchParams])
+            );
+
+            return [records, neighbours] as [ITransaction[], WithEitherPages<PaginationType.CURSOR>];
+        }
+
+        throw 'Could not retrieve transactions metadata';
+    };
 
     const onPageRequest = useCallback(
         (pageRequestParams: any) => {
             onUpdateTransactions?.(pageRequestParams, elementRef);
         },
+
         [onUpdateTransactions, elementRef]
     );
 
@@ -44,11 +92,12 @@ function Transactions({
     >(
         useMemo(
             () => ({
+                fetchRecords: getTransactions,
                 data: transactions,
                 dataField: 'data',
                 filterParams: transactionsFilterParams,
                 initialFiltersSameAsDefault: false,
-                limit: DEFAULT_PAGINATED_TRANSACTIONS_LIMIT,
+                limit: Number(DEFAULT_PAGINATED_TRANSACTIONS_LIMIT),
                 onPageRequest,
             }),
             [transactions]

@@ -44,6 +44,7 @@ export type RequestPageCallback<Pagination extends PaginationType> = (
 ) => MaybePromise<RequestPageCallbackReturnValue<Pagination>>;
 
 export type PaginatedRecordsInitOptions<T, DataField extends string, FilterValue, FilterParam extends string> = WithPaginationLimit<{
+    fetchRecords: (params?: any) => Promise<[T[], WithEitherPages<PaginationType.CURSOR>]>;
     data: PaginatedResponseData<T, DataField>;
     dataField: PaginatedResponseDataField<DataField>;
     filterParams?: FilterParam[];

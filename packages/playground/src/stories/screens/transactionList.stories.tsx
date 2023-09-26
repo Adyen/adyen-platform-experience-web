@@ -1,5 +1,4 @@
 import { Meta } from '@storybook/preact';
-import { getMyTransactions } from '../../utils/services';
 import { disableControls, enabledDisabledCallbackRadioControls } from '../utils/controls';
 import { TransactionsComponent } from '@adyen/adyen-fp-web';
 import { ElementProps, ElementStory } from '../utils/types';
@@ -19,6 +18,7 @@ const meta: Meta<ElementProps<typeof TransactionsComponent>> = {
         if (context.loaded.data) {
             Object.assign(args, { transactions: context.loaded.data });
         }
+
         return <Container type={'transactionList'} componentConfiguration={args} context={context} />;
     },
 };
@@ -30,16 +30,8 @@ export const Basic: ElementStory<typeof TransactionsComponent> = {
 
 export const BasicTransactionList: ElementStory<typeof TransactionsComponent> = {
     args: {
-        onUpdateTransactions: async (params, component) => {
-            const transactions = await getMyTransactions(params);
-            component?.update({ transactions });
-        },
+        balancePlatformId: process.env.VITE_BALANCE_PLATFORM,
     },
-    loaders: [
-        async () => ({
-            data: await getMyTransactions(),
-        }),
-    ],
 };
 
 export default meta;

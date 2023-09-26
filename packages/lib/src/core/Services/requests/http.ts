@@ -9,8 +9,16 @@ export function http<T>(options: HttpOptions, data?: any): Promise<T> {
     const request = getRequestObject(options, data);
 
     //TODO - Get rid of the "api" prefix once we have defined a loadingContext from our BFF.
-    const url = `${loadingContext}api/${path}`;
+    const url = new URL(`${loadingContext}api/${path}`);
 
+    if (options.params) {
+        const searchParams = new URLSearchParams(Object.entries(options.params).filter(([param, value]) => value && param !== 'signal'));
+
+        searchParams.forEach((value, param) => {
+            const decodedValue = decodeURIComponent(value);
+            if (decodedValue) url.searchParams.set(param, decodedValue);
+        });
+    }
     return (
         fetch(url, request)
             .then(async response => {

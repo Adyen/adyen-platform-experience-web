@@ -21,7 +21,7 @@ type FetchOptions = {
 };
 
 export function useFetch<T = unknown>(
-    endpoint: { url: string; requestOptions?: RequestInit },
+    endpoint: { url: string; loadingContext?: string; requestOptions?: RequestInit },
     fetchOptions: Partial<FetchOptions> = { keepPrevData: true }
 ): State<T> {
     const { loadingContext, clientKey } = useCoreContext();
@@ -61,7 +61,7 @@ export function useFetch<T = unknown>(
         dispatch({ type: 'loading' });
 
         const request: HttpOptions = {
-            loadingContext,
+            loadingContext: endpoint.loadingContext ?? loadingContext,
             clientKey,
             path: endpoint.url,
             headers: endpoint.requestOptions?.headers,

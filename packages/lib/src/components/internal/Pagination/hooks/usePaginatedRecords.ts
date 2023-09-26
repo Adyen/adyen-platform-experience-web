@@ -110,6 +110,7 @@ const usePaginatedRecords = <T, DataField extends string, FilterValue extends st
     limit,
     onPageRequest,
     pagination,
+    fetchRecords,
 }: BasePaginatedRecordsInitOptions<T, DataField, FilterValue, FilterParam>): UsePaginatedRecords<T, FilterValue, FilterParam> => {
     const [pageLimit, setPageLimit] = useState(data?.[dataField]?.length ?? limit);
     const [records, setRecords] = useState<T[]>([]);
@@ -134,44 +135,31 @@ const usePaginatedRecords = <T, DataField extends string, FilterValue extends st
     const { goto, page, pages, ...paginationProps } = usePagination(
         useCallback(
             async (pageRequestParams: RequestPageCallbackParams<PaginationType>): Promise<RequestPageCallbackReturnValue<PaginationType>> => {
-                let records: T[] = [];
-                let paginationData = {} as WithEitherPages<PaginationType>;
-                let willRefresh = false;
-
                 try {
                     if (!$mounted.current || <undefined>updateFetching(true)) return;
                     if (!$initialFetchInProgress.current) onPageRequest({ ...pageRequestParams, ...filters });
 
-                    [records, paginationData] = await $awaitable.current.promise;
-
+                    const [records, paginationData] = await fetchRecords({ ...filters, ...pageRequestParams });
                     if ($initialFetchInProgress.current) {
-                        try {
-                            const derivedPageLimit =
-                                initializeAndDerivePageLimit?.(
-                                    [records, paginationData] as PaginatedRecordsFetcherReturnValue<PaginationType, T>,
-                                    $recordsFilters,
-                                    pageLimit
-                                ) || pageLimit;
+                        const derivedPageLimit =
+                            initializeAndDerivePageLimit?.(
+                                [records, paginationData] as PaginatedRecordsFetcherReturnValue<PaginationType, T>,
+                                $recordsFilters,
+                                pageLimit
+                            ) || pageLimit;
 
-                            setPageLimit(derivedPageLimit);
+                        setPageLimit(derivedPageLimit);
+                        $initialFetchInProgress.current = false;
+                    }
 
-                            if (derivedPageLimit !== records.length) {
-                                updateShouldRefresh((willRefresh = true));
-                                return;
-                            }
-                        } catch (ex) {
-                            console.error(ex); /* throw ex; */
-                        } finally {
-                            $initialFetchInProgress.current = false;
-                        }
+                    if ($mounted.current) {
+                        setRecords(records);
+                        updateFetching(false);
                     }
 
                     return { ...paginationData, size: records.length };
-                } finally {
-                    if ($mounted.current) {
-                        setRecords(records);
-                        updateFetching(willRefresh);
-                    }
+                } catch (err) {
+                    console.error(err);
                 }
             },
             [filtersVersion, pageLimit]

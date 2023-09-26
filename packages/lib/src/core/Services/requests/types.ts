@@ -3,6 +3,7 @@ export type FetchErrorLevel = 'silent' | 'info' | 'warn' | 'error' | 'fatal';
 export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'OPTIONS' | 'PATCH';
 
 export interface HttpOptions {
+    path: string;
     accept?: string;
     contentType?: string;
     errorMessage?: string;
@@ -10,9 +11,9 @@ export interface HttpOptions {
     loadingContext?: string;
     clientKey?: string;
     method?: HttpMethod;
-    path: string;
     errorLevel?: FetchErrorLevel;
     errorHandler?: (response: any) => any;
+    params?: Record<string, string>;
 }
 
 export type ErrorLevel = 'silent' | 'info' | 'warn' | 'error' | 'fatal';

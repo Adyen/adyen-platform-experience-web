@@ -8,6 +8,7 @@ export const enum TransactionFilterParam {
     BALANCE_ACCOUNT = 'balanceAccountId',
     CREATED_SINCE = 'createdSince',
     CREATED_UNTIL = 'createdUntil',
+    BALANCE_PLATFORM_ID = 'balancePlatform',
 }
 
 type OnSelection = (selection: { id: string }) => void;
@@ -20,6 +21,7 @@ export interface TransactionsComponentProps extends UIElementProps {
     onAccountSelected?: OnSelection;
     onUpdateTransactions?: (pageRequestParams: any, ref?: UIElement | null) => void;
     name?: string;
+    balancePlatformId?: string;
 }
 export interface TransactionListProps extends PaginationProps {
     transactions: ITransaction[];
