@@ -18,6 +18,7 @@ function createTranslationsLoader(this: Localization) {
     };
 
     let _locale = this.locale;
+    let _preferredLocale = _locale;
     let _supportedLocales = this.supportedLocales;
 
     return Object.create(null, {
@@ -25,6 +26,7 @@ function createTranslationsLoader(this: Localization) {
         locale: {
             get: () => _locale,
             set: (locale: SupportedLocale | string) => {
+                _preferredLocale = locale;
                 _locale = formatLocale(locale) || parseLocale(locale, _supportedLocales) || FALLBACK_LOCALE;
             },
         },
@@ -32,7 +34,7 @@ function createTranslationsLoader(this: Localization) {
             get: () => _locale,
             set(this: TranslationsLoader, supportedLocales: (SupportedLocale | string)[]) {
                 _supportedLocales = supportedLocales;
-                this.locale = _locale;
+                this.locale = _preferredLocale;
             },
         },
     }) as TranslationsLoader;
