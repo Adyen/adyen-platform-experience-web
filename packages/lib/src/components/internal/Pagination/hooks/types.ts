@@ -40,11 +40,12 @@ export type RequestPageCallbackReturnValue<Pagination extends PaginationType> =
     | undefined;
 
 export type RequestPageCallback<Pagination extends PaginationType> = (
-    params: RequestPageCallbackParams<Pagination>
+    params: RequestPageCallbackParams<Pagination>,
+    signal?: AbortSignal
 ) => MaybePromise<RequestPageCallbackReturnValue<Pagination>>;
 
 export type PaginatedRecordsInitOptions<T, DataField extends string, FilterValue, FilterParam extends string> = WithPaginationLimit<{
-    fetchRecords: (params?: any) => Promise<PaginatedResponseData<T, DataField>>;
+    fetchRecords: (params?: any, signal?: AbortSignal) => Promise<PaginatedResponseData<T, DataField>>;
     data: PaginatedResponseData<T, DataField>;
     dataField: PaginatedResponseDataField<DataField>;
     filterParams?: FilterParam[];

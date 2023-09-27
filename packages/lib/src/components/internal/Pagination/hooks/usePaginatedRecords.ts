@@ -106,12 +106,15 @@ const usePaginatedRecords = <T, DataField extends string, FilterValue extends st
 
     const { goto, page, pages, ...paginationProps } = usePagination(
         useCallback(
-            async (pageRequestParams: RequestPageCallbackParams<PaginationType>): Promise<RequestPageCallbackReturnValue<PaginationType>> => {
+            async (
+                pageRequestParams: RequestPageCallbackParams<PaginationType>,
+                signal?: AbortSignal
+            ): Promise<RequestPageCallbackReturnValue<PaginationType>> => {
                 try {
                     if (!$mounted.current || <undefined>updateFetching(true)) return;
                     if (!$initialFetchInProgress.current) onPageRequest?.({ ...pageRequestParams, ...filters });
 
-                    const res = await fetchRecords({ ...filters, ...pageRequestParams });
+                    const res = await fetchRecords({ ...filters, ...pageRequestParams }, signal);
 
                     const { records, paginationData } = parsePaginatedResponseData<T, DataField>(res, dataField);
 

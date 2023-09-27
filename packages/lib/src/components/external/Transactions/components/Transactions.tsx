@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo } from 'preact/hooks';
+import { useEffect, useMemo } from 'preact/hooks';
 import useCoreContext from '@src/core/Context/useCoreContext';
 import FilterBar from '../../../internal/FilterBar';
 import TextFilter from '../../../internal/FilterBar/filters/TextFilter';
@@ -11,8 +11,11 @@ import { ITransaction } from '../../../../types/models/api/transactions';
 import { PaginatedResponseDataWithLinks } from '@src/components/internal/Pagination/types';
 import { httpGet } from '@src/core/Services/requests/http';
 import { HttpOptions } from '@src/core/Services/requests/types';
+import { parseSearchParams } from '@src/core/Services/requests/utils';
 
 const DEFAULT_PAGINATED_TRANSACTIONS_LIMIT = '20';
+const DEFAULT_CREATED_SINCE = new Date(new Date().setHours(0, 0, 0, 0)).toISOString();
+const DEFAULT_CREATED_UNTIL = new Date(new Date().setHours(23, 59, 59, 999)).toISOString();
 
 const transactionsFilterParams = [
     TransactionFilterParam.ACCOUNT_HOLDER,
@@ -20,6 +23,7 @@ const transactionsFilterParams = [
     TransactionFilterParam.CREATED_SINCE,
     TransactionFilterParam.CREATED_UNTIL,
 ];
+
 function Transactions({
     transactions,
     elementRef,
@@ -30,25 +34,15 @@ function Transactions({
     balancePlatformId,
 }: TransactionsComponentProps) {
     const { i18n, loadingContext, clientKey } = useCoreContext();
-    const getTransactions = async (pageRequestParams: Record<TransactionFilterParam | 'cursor', string>) => {
-        const {
-            createdSince = '2022-05-30T15:07:40Z',
-            createdUntil = new Date().toISOString(),
-            balancePlatform = balancePlatformId,
-            accountHolderId,
-            balanceAccountId,
-            cursor,
-        } = pageRequestParams;
-
-        const searchParams = {
+    const getTransactions = async (pageRequestParams: Record<TransactionFilterParam | 'cursor', string>, signal?: AbortSignal) => {
+        const requiredTransactionFields = {
+            createdSince: pageRequestParams.createdSince ?? DEFAULT_CREATED_SINCE,
+            createdUntil: pageRequestParams.createdUntil ?? DEFAULT_CREATED_UNTIL,
             limit: DEFAULT_PAGINATED_TRANSACTIONS_LIMIT,
-            ...(createdSince && { createdSince }),
-            ...(createdUntil && { createdUntil }),
-            ...(balancePlatform && { balancePlatform }),
-            ...(accountHolderId && { accountHolderId }),
-            ...(balanceAccountId && { balanceAccountId }),
-            ...(cursor && { cursor }),
+            balancePlatform: pageRequestParams.balancePlatform ?? balancePlatformId,
         };
+
+        const searchParams = parseSearchParams({ ...pageRequestParams, ...requiredTransactionFields });
 
         const request: HttpOptions = {
             loadingContext: loadingContext,
@@ -56,6 +50,7 @@ function Transactions({
             path: 'transactions',
             errorLevel: 'error',
             params: searchParams,
+            signal,
         };
         const data = await httpGet<PaginatedResponseDataWithLinks<ITransaction, 'data'>>(request);
 
