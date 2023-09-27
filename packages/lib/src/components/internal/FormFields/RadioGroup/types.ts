@@ -1,4 +1,4 @@
-import Language from '../../../../language/Language';
+import Localization from '@src/localization';
 import { JSX } from 'preact';
 
 interface RadioGroupItem {
@@ -10,7 +10,7 @@ export interface RadioGroupProps {
     className?: string;
     isInvalid?: boolean;
     items: RadioGroupItem[];
-    i18n: Language;
+    i18n: Localization['i18n'];
     name?: string;
     onChange: (e: JSX.TargetedEvent<HTMLInputElement>) => void;
     value?: string;

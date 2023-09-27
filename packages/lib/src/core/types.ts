@@ -1,4 +1,4 @@
-import { CustomTranslations, Locales } from '../language/types';
+import { CustomTranslations, SupportedLocale } from '@src/localization/types';
 import { AmountExtended } from '../types/shared';
 import { AnalyticsOptions } from './Analytics/types';
 import componentsMap from '../components';
@@ -22,7 +22,7 @@ export interface CoreOptions {
      * For adding a custom locale, see {@link https://docs.adyen.com/checkout/components-web/localization-components#create-localization | Create localization}.
      * @defaultValue 'en-US'
      */
-    locale?: Locales | string;
+    locale?: SupportedLocale | string;
 
     /**
      * Custom translations and localizations
@@ -51,6 +51,8 @@ export interface CoreOptions {
     loadingContext?: string;
 
     analytics?: AnalyticsOptions;
+
+    timezone?: Intl.DateTimeFormatOptions['timeZone'];
 
     [key: string]: any;
 }

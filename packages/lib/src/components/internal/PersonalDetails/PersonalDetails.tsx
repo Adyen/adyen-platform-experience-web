@@ -14,7 +14,7 @@ import './PersonalDetails.scss';
 import { SchemaKeys } from '../../../utils/useForm/types';
 import { ValidatorMode } from '../../../utils/Validator/types';
 import { JSX } from 'preact';
-import { TranslationKey } from '@src/language/types';
+import { TranslationKey } from '@src/localization/types';
 
 const personalDetailsRequiredFields: SchemaKeys<PersonalDetailsSchema>[] = [
     'firstName',

@@ -1,7 +1,7 @@
 import { FieldsetVisibility } from '../../../types/shared';
 import { ValidatorRules } from '../../../utils/Validator/types';
 import { SetTriggerValidation } from '../../types';
-import { TranslationKey } from '@src/language/types';
+import { TranslationKey } from '@src/localization/types';
 
 export type PersonalDetailsSchema = {
     firstName?: string;
