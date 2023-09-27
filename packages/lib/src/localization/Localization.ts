@@ -1,62 +1,11 @@
 import { getLocalisedAmount } from './amount/amount-util';
 import { defaultTranslation, FALLBACK_LOCALE } from './constants/locale';
+import { DEFAULT_DATETIME_FORMAT, DEFAULT_LOCALES, EXCLUDE_PROPS } from './constants/localization';
 import restamper from './datetime/restamper';
-import translations from './translations';
+import { createTranslationsLoader, getLocalizationProxyDescriptors } from './localization-utils';
 import { CurrencyCode, CustomTranslations, Restamp, SupportedLocale, TranslationKey, TranslationOptions } from './types';
-import { formatCustomTranslations, formatLocale, getTranslation, loadTranslations, parseLocale, toTwoLetterCode } from './utils';
+import { formatCustomTranslations, getTranslation, toTwoLetterCode } from './utils';
 import EventEmitter from '@src/components/external/EventEmitter';
-
-const DEFAULT_DATETIME_FORMAT = { year: 'numeric', month: '2-digit', day: '2-digit' } as Intl.DateTimeFormatOptions;
-const DEFAULT_LOCALES = Object.keys(translations) as SupportedLocale[];
-const EXCLUDE_PROPS = ['constructor', 'i18n', 'listen', 'unlisten'] as const;
-
-function createTranslationsLoader(this: Localization) {
-    type TranslationsLoader = {
-        load: (customTranslations?: CustomTranslations) => ReturnType<typeof loadTranslations>;
-        locale: SupportedLocale | string;
-        supportedLocales: (SupportedLocale | string)[];
-    };
-
-    let _locale = this.locale;
-    let _preferredLocale = _locale;
-    let _supportedLocales = this.supportedLocales;
-
-    return Object.create(null, {
-        load: { value: (customTranslations?: CustomTranslations) => loadTranslations(_locale, customTranslations) },
-        locale: {
-            get: () => _locale,
-            set: (locale: SupportedLocale | string) => {
-                _preferredLocale = locale;
-                _locale = formatLocale(locale) || parseLocale(locale, _supportedLocales) || FALLBACK_LOCALE;
-            },
-        },
-        supportedLocales: {
-            get: () => _locale,
-            set(this: TranslationsLoader, supportedLocales: (SupportedLocale | string)[]) {
-                _supportedLocales = supportedLocales;
-                this.locale = _preferredLocale;
-            },
-        },
-    }) as TranslationsLoader;
-}
-
-function getLocalizationProxyDescriptors(this: Localization) {
-    const descriptors = {} as any;
-
-    for (const [prop, descriptor] of Object.entries(Object.getOwnPropertyDescriptors(Localization.prototype))) {
-        if (EXCLUDE_PROPS.includes(prop as (typeof EXCLUDE_PROPS)[number])) continue;
-
-        if (typeof descriptor.get === 'function') {
-            descriptors[prop] = { get: descriptor.get.bind(this) };
-        } else if (typeof descriptor.value === 'function') {
-            descriptors[prop] = { value: descriptor.value.bind(this) };
-        } else {
-            descriptors[prop] = { get: () => this[prop as keyof Localization] };
-        }
-    }
-
-    return descriptors as { [K in keyof Localization['i18n']]: PropertyDescriptor };
-}
 
 export default class Localization {
     #locale: SupportedLocale | string = FALLBACK_LOCALE;
