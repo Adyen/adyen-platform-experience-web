@@ -1,5 +1,5 @@
-import { TransactionsComponentProps } from '../types';
-import { PageNeighbour } from '../../../internal/Pagination/types';
+import { PageNeighbour, PaginatedResponseDataWithLinks } from '../../../internal/Pagination/types';
+import { ITransaction } from '@src/types';
 
 const labels = {
     id: 'paymentId',
@@ -20,7 +20,7 @@ export const getLabel = (key: keyof typeof labels) => {
     return labels[key] || key;
 };
 
-export const getCursor = (dir: PageNeighbour, transactions: TransactionsComponentProps['transactions']): string | null => {
+export const getCursor = (dir: PageNeighbour, transactions: PaginatedResponseDataWithLinks<ITransaction, 'data'>): string | null => {
     try {
         if (transactions._links?.[dir]?.href) {
             const url = new URL(transactions?._links?.[dir]?.href ?? '');
@@ -32,7 +32,7 @@ export const getCursor = (dir: PageNeighbour, transactions: TransactionsComponen
     return null;
 };
 
-export const getRequestParams = (transactions: TransactionsComponentProps['transactions']) => {
+export const getRequestParams = (transactions: PaginatedResponseDataWithLinks<ITransaction, 'data'>) => {
     try {
         const links = transactions?._links || {};
         const link = links['prev'] || links['next'];

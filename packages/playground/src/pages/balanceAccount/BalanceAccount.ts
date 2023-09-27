@@ -1,4 +1,3 @@
-import { getBalanceAccountById } from '../../utils/services';
 import { AdyenFP } from '@adyen/adyen-fp-web';
 import { getSearchParameters } from '../../utils/utils';
 import '../../utils/createPages.js';
@@ -11,10 +10,9 @@ try {
     await enableServerInMockedMode();
 
     const { id } = getSearchParameters();
-    const adyenFP = await AdyenFP({ locale: 'en-US' });
-    const data = await getBalanceAccountById(id || DEFAULT_BALANCE_ACCOUNT);
+    const adyenFP = await AdyenFP({ locale: 'en-US', loadingContext: process.env.VITE_API_URL });
 
-    adyenFP.create('balanceAccount', { balanceAccount: data }).mount('.balance-account-component-container');
+    adyenFP.create('balanceAccount', { balanceAccountId: DEFAULT_BALANCE_ACCOUNT }).mount('.balance-account-component-container');
 } catch (e) {
     console.error(e);
 }

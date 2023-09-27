@@ -46,7 +46,6 @@ export type RequestPageCallback<Pagination extends PaginationType> = (
 
 export type PaginatedRecordsInitOptions<T, DataField extends string, FilterValue, FilterParam extends string> = WithPaginationLimit<{
     fetchRecords: (params?: any, signal?: AbortSignal) => Promise<PaginatedResponseData<T, DataField>>;
-    data: PaginatedResponseData<T, DataField>;
     dataField: PaginatedResponseDataField<DataField>;
     filterParams?: FilterParam[];
     initialFiltersSameAsDefault?: boolean;

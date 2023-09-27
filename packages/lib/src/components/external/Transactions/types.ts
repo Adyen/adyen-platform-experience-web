@@ -13,7 +13,6 @@ export const enum TransactionFilterParam {
 
 type OnSelection = (selection: { id: string }) => void;
 export interface TransactionsComponentProps extends UIElementProps {
-    transactions: PaginatedResponseDataWithLinks<ITransaction, 'data'>;
     elementRef?: UIElement | null;
     onFilterChange?: (filters: { [p: string]: string | undefined }, ref?: UIElement | null) => void;
     onTransactionSelected?: OnSelection;

@@ -1,19 +1,16 @@
-import { getMyTransactions } from '../../utils/services';
 import { AdyenFP } from '@adyen/adyen-fp-web';
 import '../../utils/createPages.js';
 import '../../assets/style/style.scss';
 import { enableServerInMockedMode } from '../../endpoints/mock-server/utils';
 
 try {
-    await enableServerInMockedMode();
+    // await enableServerInMockedMode();
 
-    const adyenFP = await AdyenFP();
-
-    const transactions = await getMyTransactions();
+    const adyenFP = await AdyenFP({ loadingContext: process.env.VITE_API_URL });
 
     adyenFP
         .create('transactionList', {
-            transactions,
+            balancePlatformId: process.env.VITE_BALANCE_PLATFORM ?? '',
             onFilterChange: (/* filters, component */) => {
                 // do something here with the updated filters
                 // avoid refetching the transactions here
@@ -26,10 +23,6 @@ try {
             },
             onAccountSelected: ({ id }) => {
                 window.location.assign(`/src/pages/accountHolder/?id=${id}`);
-            },
-            onUpdateTransactions: async (params, component) => {
-                const transactions = await getMyTransactions(params);
-                component?.update({ transactions });
             },
         })
         .mount('.transactions-component-container');

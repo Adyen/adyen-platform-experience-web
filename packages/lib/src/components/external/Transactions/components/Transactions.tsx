@@ -26,7 +26,6 @@ const transactionsFilterParams = [
 ];
 
 function Transactions({
-    transactions,
     elementRef,
     onAccountSelected,
     onBalanceAccountSelected,
@@ -67,13 +66,12 @@ function Transactions({
         useMemo(
             () => ({
                 fetchRecords: getTransactions,
-                data: transactions,
                 dataField: 'data',
                 filterParams: transactionsFilterParams,
                 initialFiltersSameAsDefault: false,
                 limit: Number(DEFAULT_PAGINATED_TRANSACTIONS_LIMIT),
             }),
-            [transactions]
+            []
         )
     );
 
