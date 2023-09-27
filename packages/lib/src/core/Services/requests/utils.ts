@@ -16,6 +16,7 @@ export const getRequestObject = (options: HttpOptions, data?: any): RequestInit 
             ...headers,
         },
         redirect: 'follow',
+        signal: options.signal,
         referrerPolicy: 'no-referrer-when-downgrade',
         ...(data && { body: JSON.stringify(data) }),
     };

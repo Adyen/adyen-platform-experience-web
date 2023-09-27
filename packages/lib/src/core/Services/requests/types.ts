@@ -14,6 +14,7 @@ export interface HttpOptions {
     errorLevel?: FetchErrorLevel;
     errorHandler?: (response: any) => any;
     params?: Record<string, string>;
+    signal?: AbortSignal;
 }
 
 export type ErrorLevel = 'silent' | 'info' | 'warn' | 'error' | 'fatal';

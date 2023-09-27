@@ -8,11 +8,9 @@ import { TransactionFilterParam, TransactionsComponentProps } from '../types';
 import { DateRangeFilterParam } from '../../../internal/FilterBar/filters/DateFilter/types';
 import { useCursorPaginatedRecords } from '../../../internal/Pagination/hooks';
 import { ITransaction } from '../../../../types/models/api/transactions';
-import { PageNeighbour, PaginatedResponseDataWithLinks, PaginationType, WithEitherPages } from '@src/components/internal/Pagination/types';
+import { PaginatedResponseDataWithLinks } from '@src/components/internal/Pagination/types';
 import { httpGet } from '@src/core/Services/requests/http';
 import { HttpOptions } from '@src/core/Services/requests/types';
-
-type PaginationLink = Exclude<Exclude<TransactionsComponentProps['transactions']['_links'], undefined>[PageNeighbour], undefined>;
 
 const DEFAULT_PAGINATED_TRANSACTIONS_LIMIT = '20';
 
@@ -22,7 +20,6 @@ const transactionsFilterParams = [
     TransactionFilterParam.CREATED_SINCE,
     TransactionFilterParam.CREATED_UNTIL,
 ];
-const pageNeighbours = [PageNeighbour.NEXT, PageNeighbour.PREV] as const;
 function Transactions({
     transactions,
     elementRef,
@@ -30,7 +27,6 @@ function Transactions({
     onBalanceAccountSelected,
     onFilterChange,
     onTransactionSelected,
-    onUpdateTransactions,
     balancePlatformId,
 }: TransactionsComponentProps) {
     const { i18n, loadingContext, clientKey } = useCoreContext();
@@ -61,28 +57,10 @@ function Transactions({
             errorLevel: 'error',
             params: searchParams,
         };
-        const { data: records, _links: links } = await httpGet<PaginatedResponseDataWithLinks<ITransaction, 'data'>>(request);
+        const data = await httpGet<PaginatedResponseDataWithLinks<ITransaction, 'data'>>(request);
 
-        if (links) {
-            const neighbours = Object.fromEntries(
-                (Object.entries(links) as [PageNeighbour, PaginationLink][])
-                    .filter(([neighbour, link]) => pageNeighbours.includes(neighbour) && link)
-                    .map(([key, { href }]) => [key, new URL(href).searchParams])
-            );
-
-            return [records, neighbours] as [ITransaction[], WithEitherPages<PaginationType.CURSOR>];
-        }
-
-        throw 'Could not retrieve transactions metadata';
+        return data;
     };
-
-    const onPageRequest = useCallback(
-        (pageRequestParams: any) => {
-            onUpdateTransactions?.(pageRequestParams, elementRef);
-        },
-
-        [onUpdateTransactions, elementRef]
-    );
 
     const { canResetFilters, fetching, filters, records, resetFilters, updateFilters, ...paginationProps } = useCursorPaginatedRecords<
         ITransaction,
@@ -98,7 +76,6 @@ function Transactions({
                 filterParams: transactionsFilterParams,
                 initialFiltersSameAsDefault: false,
                 limit: Number(DEFAULT_PAGINATED_TRANSACTIONS_LIMIT),
-                onPageRequest,
             }),
             [transactions]
         )

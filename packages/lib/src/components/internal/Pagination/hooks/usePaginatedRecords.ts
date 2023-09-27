@@ -48,7 +48,7 @@ const parseCursorPaginatedResponseData = <T, DataField extends string>(
                 .map(([neighbour, { href }]) => [neighbour, new URL(href).searchParams])
         ) as WithEitherPages<PaginationType.CURSOR>;
 
-        return [records, paginationData];
+        return { records, paginationData };
     }
 
     throw new TypeError('MALFORMED_PAGINATED_DATA');
@@ -68,37 +68,10 @@ const parseOffsetPaginatedResponseData = <T, DataField extends string>(
             [PageNeighbour.PREV]: hasPrevious === true,
         } as WithEitherPages<PaginationType.OFFSET>;
 
-        return [records, paginationData];
+        return { records, paginationData };
     }
 
     throw new TypeError('MALFORMED_PAGINATED_DATA');
-};
-
-const createAwaitable = <T>() => {
-    let $resolve: (valueOrReason: any) => void;
-    let $promise: Promise<PaginatedRecordsFetcherReturnValue<PaginationType, T>>;
-
-    (async function refresh(): Promise<void> {
-        try {
-            await ($promise = new Promise(resolve => {
-                $resolve = resolve;
-            }));
-        } catch {
-            /**
-             * Ignore the promise rejection — the goal is to guarantee that a new pending promise is created in its
-             * place the moment it is settled. The rejection will be handled later at the usage site of the promise.
-             */
-        }
-        return refresh();
-    })();
-
-    return Object.create(null, {
-        promise: { get: () => $promise },
-        resolve: { get: () => $resolve },
-    }) as {
-        promise: Promise<PaginatedRecordsFetcherReturnValue<PaginationType, T>>;
-        resolve: (valueOrReason: any) => void;
-    };
 };
 
 const usePaginatedRecords = <T, DataField extends string, FilterValue extends string, FilterParam extends string>({
@@ -119,7 +92,6 @@ const usePaginatedRecords = <T, DataField extends string, FilterValue extends st
 
     const $mounted = useMounted();
     const $initialFetchInProgress = useRef(true);
-    const $awaitable = useRef(createAwaitable<T>());
     const $recordsFilters = usePaginatedRecordsFilters<FilterValue, FilterParam>(filterParams, initialFiltersSameAsDefault);
 
     const { defaultFilters, filters, filtersVersion, updateFilters, ...filtersProps } = $recordsFilters;
@@ -137,9 +109,12 @@ const usePaginatedRecords = <T, DataField extends string, FilterValue extends st
             async (pageRequestParams: RequestPageCallbackParams<PaginationType>): Promise<RequestPageCallbackReturnValue<PaginationType>> => {
                 try {
                     if (!$mounted.current || <undefined>updateFetching(true)) return;
-                    if (!$initialFetchInProgress.current) onPageRequest({ ...pageRequestParams, ...filters });
+                    if (!$initialFetchInProgress.current) onPageRequest?.({ ...pageRequestParams, ...filters });
 
-                    const [records, paginationData] = await fetchRecords({ ...filters, ...pageRequestParams });
+                    const res = await fetchRecords({ ...filters, ...pageRequestParams });
+
+                    const { records, paginationData } = parsePaginatedResponseData<T, DataField>(res, dataField);
+
                     if ($initialFetchInProgress.current) {
                         const derivedPageLimit =
                             initializeAndDerivePageLimit?.(
@@ -171,8 +146,6 @@ const usePaginatedRecords = <T, DataField extends string, FilterValue extends st
         if (shouldRefresh) updateShouldRefresh(false);
         else goto(1);
     }, [goto, shouldRefresh]);
-
-    useEffect(() => $awaitable.current.resolve((async () => parsePaginatedResponseData(data, dataField))()), [data]);
 
     return { fetching, filters, goto, page, pages, records, updateFilters, ...filtersProps, ...paginationProps };
 };
