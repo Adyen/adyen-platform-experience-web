@@ -75,7 +75,6 @@ const parseOffsetPaginatedResponseData = <T, DataField extends string>(
 };
 
 const usePaginatedRecords = <T, DataField extends string, FilterValue extends string, FilterParam extends string>({
-    data,
     dataField = 'data' as PaginatedResponseDataField<DataField>,
     filterParams = [],
     initialFiltersSameAsDefault = true,
@@ -85,10 +84,11 @@ const usePaginatedRecords = <T, DataField extends string, FilterValue extends st
     pagination,
     fetchRecords,
 }: BasePaginatedRecordsInitOptions<T, DataField, FilterValue, FilterParam>): UsePaginatedRecords<T, FilterValue, FilterParam> => {
-    const [pageLimit, setPageLimit] = useState(data?.[dataField]?.length ?? limit);
+    const [pageLimit, setPageLimit] = useState(limit);
     const [records, setRecords] = useState<T[]>([]);
     const [fetching, updateFetching] = useBooleanState(true);
     const [shouldRefresh, updateShouldRefresh] = useBooleanState(false);
+    const [error, setError] = useState<Error>();
 
     const $mounted = useMounted();
     const $initialFetchInProgress = useRef(true);
@@ -137,7 +137,10 @@ const usePaginatedRecords = <T, DataField extends string, FilterValue extends st
 
                     return { ...paginationData, size: records.length };
                 } catch (err) {
+                    setError(err as Error);
                     console.error(err);
+                } finally {
+                    updateFetching(false);
                 }
             },
             [filtersVersion, pageLimit]
@@ -150,7 +153,7 @@ const usePaginatedRecords = <T, DataField extends string, FilterValue extends st
         else goto(1);
     }, [goto, shouldRefresh]);
 
-    return { fetching, filters, goto, page, pages, records, updateFilters, ...filtersProps, ...paginationProps };
+    return { fetching, filters, goto, page, pages, records, updateFilters, error, ...filtersProps, ...paginationProps };
 };
 
 export default usePaginatedRecords;

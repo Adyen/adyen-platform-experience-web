@@ -83,4 +83,5 @@ export interface UsePaginatedRecords<T, FilterValue, FilterParam extends string>
         Omit<UsePaginatedRecordsFilters<FilterValue, FilterParam>, 'defaultFilters' | 'filtersVersion'> {
     fetching: boolean;
     records: T[];
+    error?: Error;
 }

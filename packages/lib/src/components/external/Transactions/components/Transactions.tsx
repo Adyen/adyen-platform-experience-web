@@ -12,6 +12,7 @@ import { PaginatedResponseDataWithLinks } from '@src/components/internal/Paginat
 import { httpGet } from '@src/core/Services/requests/http';
 import { HttpOptions } from '@src/core/Services/requests/types';
 import { parseSearchParams } from '@src/core/Services/requests/utils';
+import Alert from '@src/components/internal/Alert';
 
 const DEFAULT_PAGINATED_TRANSACTIONS_LIMIT = '20';
 const DEFAULT_CREATED_SINCE = new Date(new Date().setHours(0, 0, 0, 0)).toISOString();
@@ -57,7 +58,7 @@ function Transactions({
         return data;
     };
 
-    const { canResetFilters, fetching, filters, records, resetFilters, updateFilters, ...paginationProps } = useCursorPaginatedRecords<
+    const { canResetFilters, fetching, filters, records, resetFilters, updateFilters, error, ...paginationProps } = useCursorPaginatedRecords<
         ITransaction,
         'data',
         string,
@@ -103,6 +104,8 @@ function Transactions({
 
     useEffect(() => onFilterChange?.(filters, elementRef), [filters, onFilterChange]);
 
+    const showAlert = useMemo(() => !fetching && error, [fetching, error]);
+
     return (
         <div className="adyen-fp-transactions">
             <div className="adyen-fp-title">{i18n.get('transactions')}</div>
@@ -133,15 +136,19 @@ function Transactions({
                     />
                 </FilterBar>
             )}
-            <TransactionList
-                loading={fetching}
-                transactions={records}
-                onAccountSelected={onAccountSelected}
-                onBalanceAccountSelected={onBalanceAccountSelected}
-                onTransactionSelected={onTransactionSelected}
-                showPagination={true}
-                {...paginationProps}
-            />
+            {showAlert ? (
+                <Alert icon={'cross'}>{error?.message ?? i18n.get('unableToLoadTransactions')}</Alert>
+            ) : (
+                <TransactionList
+                    loading={fetching}
+                    transactions={records}
+                    onAccountSelected={onAccountSelected}
+                    onBalanceAccountSelected={onBalanceAccountSelected}
+                    onTransactionSelected={onTransactionSelected}
+                    showPagination={true}
+                    {...paginationProps}
+                />
+            )}
         </div>
     );
 }

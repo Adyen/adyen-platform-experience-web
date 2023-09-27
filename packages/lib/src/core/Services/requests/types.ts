@@ -21,7 +21,7 @@ export type ErrorLevel = 'silent' | 'info' | 'warn' | 'error' | 'fatal';
 
 export type AdyenErrorResponse = {
     errorCode: string;
-    message: string;
-    errorType: string;
+    detail: string;
+    type: string;
     status: number;
 };

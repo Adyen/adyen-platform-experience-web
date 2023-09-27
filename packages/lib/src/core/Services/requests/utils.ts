@@ -38,7 +38,7 @@ export function handleFetchError(message: string, level: ErrorLevel) {
 }
 
 export function isAdyenErrorResponse(data: any): data is AdyenErrorResponse {
-    return data && data.errorCode && data.errorType && data.message && data.status;
+    return data && data.errorCode && data.type && data.detail && data.status;
 }
 
 export function parseSearchParams<T extends string>(parameters: Record<T, string>) {

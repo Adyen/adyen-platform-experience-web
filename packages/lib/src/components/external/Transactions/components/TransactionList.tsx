@@ -1,7 +1,5 @@
-import { useMemo } from 'preact/hooks';
 import classnames from 'classnames';
 import useCoreContext from '@src/core/Context/useCoreContext';
-import Alert from '../../../internal/Alert';
 import DataGrid from '../../../internal/DataGrid';
 import Pagination from '../../../internal/Pagination';
 import { getLabel } from './utils';
@@ -21,11 +19,8 @@ function TransactionList({
     const { i18n } = useCoreContext();
     const fields = ['id', 'type', 'balanceAccountId', 'accountHolderId', 'amount', 'createdAt', 'description'] as const;
     const columns = fields.map(key => ({ key, label: i18n.get(getLabel(key)) }));
-    const showAlert = useMemo(() => !(loading || transactions.length), [loading, transactions]);
 
-    return showAlert ? (
-        <Alert icon={'cross'}>{i18n.get('unableToLoadTransactions')}</Alert>
-    ) : (
+    return (
         <DataGrid<ITransaction>
             columns={columns}
             data={transactions}
