@@ -11,6 +11,13 @@ const preview: Preview = {
             hideNoControlsWarning: true,
         },
     },
+    argTypes: {
+        mockedApi: {
+            table: {
+                disable: true,
+            },
+        },
+    },
     loaders: [
         async context => {
             const env = (import.meta as any).env;
