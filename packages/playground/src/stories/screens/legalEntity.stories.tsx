@@ -25,7 +25,7 @@ const meta: Meta<ILegalEntityScreen> = {
                 type={'legalEntityDetails'}
                 componentConfiguration={{
                     ...args.legalEntityProps,
-                    legalEntityId: context.args.customId ? context.args.customId : context.args.legalEntityType ?? '',
+                    legalEntityId: (context.args.customId || context.args.legalEntityType) ?? '',
                 }}
                 context={context}
             />

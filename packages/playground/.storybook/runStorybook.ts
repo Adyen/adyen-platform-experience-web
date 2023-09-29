@@ -11,5 +11,5 @@ export const baseOptions: CLIOptions & LoadOptions & BuilderOptions = {
 
 buildDevStandalone({
     ...baseOptions,
-    port: process.env.VITE_PLAYGROUND_PORT ? Number(process.env.VITE_PLAYGROUND_PORT) : 6060,
+    port: process.env.VITE_PLAYGROUND_PORT ? Number(process.env.VITE_PLAYGROUND_PORT) : 6006,
 }).catch(console.error);

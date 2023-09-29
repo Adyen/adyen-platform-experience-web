@@ -20,7 +20,7 @@ const meta: Meta<IAccountHolderScreen> = {
             componentConfiguration={{
                 ...args.accountHolderProps,
                 accountHolder: args.accountHolder,
-                accountHolderId: context.args.customId ? context.args.customId : args.accountHolderProps?.accountHolderId,
+                accountHolderId: context.args.customId || args.accountHolderProps?.accountHolderId,
             }}
             context={context}
         />

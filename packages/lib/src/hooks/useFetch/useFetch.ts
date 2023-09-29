@@ -32,7 +32,7 @@ export function useFetch<T = unknown>(
     const initialState: State<T> = {
         error: undefined,
         data: undefined,
-        isFetching: fetchOptions.enabled !== false ? true : false,
+        isFetching: fetchOptions.enabled !== false,
     };
 
     // Keep state logic separated

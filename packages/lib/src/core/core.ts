@@ -26,7 +26,6 @@ class Core {
         this.create = this.create.bind(this);
         this.options = options;
         this.setOptions(options);
-        this.loadingContext = this.options.loadingContext ?? resolveEnvironment(this.options.environment);
     }
 
     initialize(): Promise<this> {
@@ -111,6 +110,7 @@ class Core {
      */
     private setOptions = (options: CoreOptions): this => {
         this.options = { ...this.options, ...options };
+        this.loadingContext = this.options.loadingContext ?? resolveEnvironment(this.options.environment);
 
         this.localization.locale = this.options?.locale;
         this.localization.customTranslations = this.options?.translations;
