@@ -4,9 +4,9 @@ import CountryField from './CountryField';
 import { renderFormField } from '../../FormFields';
 import { AddressState, FieldContainerProps } from '../types';
 import useCoreContext from '../../../../core/Context/useCoreContext';
-import Localization from '@src/localization/Localization';
+import Localization from '@src/core/Localization/Localization';
 import { ErrorMessageObject } from '../../../../utils/Validator/types';
-import { TranslationKey } from '@src/localization/types';
+import { TranslationKey } from '@src/core/Localization/types';
 
 function getErrorMessage<Schema extends Record<string, any>>(
     errors: AddressState<Schema>,

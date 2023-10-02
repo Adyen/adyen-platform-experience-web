@@ -3,7 +3,7 @@ import components from '../components';
 import type { CoreOptions } from './types';
 import { processGlobalOptions } from './utils';
 import BPSession from './FPSession';
-import Localization from '../localization';
+import Localization from './Localization';
 import BaseElement from '../components/external/BaseElement';
 import { ComponentMap, ComponentOptions, isAvailableOfComponent, isKeyOfComponent } from './types';
 import { ValueOf } from '../utils/types';

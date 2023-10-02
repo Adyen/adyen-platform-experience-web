@@ -1,6 +1,6 @@
 import { StructuredListLayouts } from './StructuredList';
 import { ComponentChild } from 'preact';
-import { TranslationKey } from '@src/localization/types';
+import { TranslationKey } from '@src/core/Localization/types';
 
 export type StructuredListItem = { label: string; id: string; value: any };
 

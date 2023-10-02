@@ -5,7 +5,7 @@ import { CalendarHandle } from '../../../Calendar/types';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import useMounted from '@src/hooks/useMounted';
 import BaseFilter from '../BaseFilter';
-import Localization from '../../../../../localization';
+import Localization from '@src/core/Localization';
 import DatePicker from '../../../DatePicker';
 import './DateFilter.scss';
 

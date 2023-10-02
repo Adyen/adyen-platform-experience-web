@@ -3,7 +3,7 @@ import { useEffect, useMemo } from 'preact/hooks';
 import { CoreContext } from './CoreContext';
 import { CoreProviderProps } from './types';
 import useBooleanState from '@src/hooks/useBooleanState';
-import Localization from '@src/localization';
+import Localization from '@src/core/Localization';
 
 /**
  * CoreProvider Component

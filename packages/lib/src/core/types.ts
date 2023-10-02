@@ -1,4 +1,4 @@
-import { CustomTranslations, SupportedLocale } from '@src/localization/types';
+import { CustomTranslations, SupportedLocale } from '@src/core/Localization/types';
 import { AmountExtended } from '../types/shared';
 import { AnalyticsOptions } from './Analytics/types';
 import componentsMap from '../components';
