@@ -1,117 +1,51 @@
-import { ComponentChild } from 'preact';
+import { VNode } from 'preact';
+import {
+    CalendarConfig,
+    CalendarGridControlRecord,
+    CalendarSelection,
+    CalendarShiftControls,
+    FirstWeekDay,
+    Time,
+    TimeFrameSize,
+} from './calendar/types';
 
-export type CalendarDate = Date | number | string;
-export type CalendarFirstWeekDay = 0 | 1;
-export type CalendarDay = CalendarFirstWeekDay | 2 | 3 | 4 | 5 | 6;
-export type CalendarMonth = CalendarDay | 7 | 8 | 9 | 10 | 11;
-export type CalendarSlidingWindowMonth = 1 | 2 | 3 | 4 | 6 | 12;
-export type CalendarMonthEndDate = 28 | 29 | 30 | 31;
-
-export const enum CalendarCursorShift {
-    FIRST_MONTH_DAY = 'FIRST_MONTH_DAY',
-    LAST_MONTH_DAY = 'LAST_MONTH_DAY',
-    FIRST_WEEK_DAY = 'FIRST_WEEK_DAY',
-    LAST_WEEK_DAY = 'LAST_WEEK_DAY',
-    PREV_WEEK_DAY = 'PREV_WEEK_DAY',
-    NEXT_WEEK_DAY = 'NEXT_WEEK_DAY',
-    PREV_MONTH = 'PREV_MONTH',
-    NEXT_MONTH = 'NEXT_MONTH',
-    PREV_WEEK = 'PREV_WEEK',
-    NEXT_WEEK = 'NEXT_WEEK'
+export const enum CalendarGridRenderToken {
+    DATE,
+    DAY_OF_WEEK,
+    MONTH_HEADER,
 }
 
-export const enum CalendarShift {
-    MONTH = 'MONTH',
-    WINDOW = 'WINDOW',
-    YEAR = 'YEAR'
-}
-
-export const enum CalendarTraversal {
-    PREV = 'PREV',
-    NEXT = 'NEXT',
-    PREV_WINDOW = 'PREV_WINDOW',
-    NEXT_WINDOW = 'NEXT_WINDOW',
-    PREV_YEAR = 'PREV_YEAR',
-    NEXT_YEAR = 'NEXT_YEAR'
-}
-
-export const enum CalendarTraversalControls {
-    CONDENSED = 'CONDENSED',
-    EXPANDED = 'EXPANDED'
-}
-
-export interface CalendarIterable<IteratorValue> extends Iterable<IteratorValue> {
-    [index: number]: IteratorValue;
-    map: CalendarMapIteratorFactory<IteratorValue>;
-    size: number;
-}
-
-export type CalendarMapIteratorCallback<IteratorValue, MappedValue = any> = (
-    item: CalendarIterable<IteratorValue>[number],
-    index: number,
-    context: CalendarIterable<IteratorValue>
-) => MappedValue;
-
-export type CalendarMapIteratorFactory<IteratorValue, MappedValue = any> = (
-    this: CalendarIterable<IteratorValue>,
-    callback?: CalendarMapIteratorCallback<IteratorValue, MappedValue>,
-    thisArg?: any
-) => Generator<MappedValue>;
-
-export interface CalendarWeekView extends CalendarIterable<number> {
-    isTransitionWeek: boolean;
-}
-
-export interface CalendarMonthView extends CalendarIterable<number> {
-    days: CalendarMonthEndDate;
-    displayName: string;
-    end: number;
-    intersectsWithNext: boolean;
-    intersectsWithPrev: boolean;
-    origin: number;
-    month: number;
-    start: number;
-    weeks: CalendarIterable<CalendarWeekView>;
-    year: number;
-}
-
-export interface CalendarView extends CalendarIterable<[string, string] | null> {
-    cursorPosition: number;
-    daysOfWeek: CalendarIterable<readonly [string, string, string]>;
-    firstWeekDay: CalendarFirstWeekDay;
-    months: CalendarIterable<CalendarMonthView>;
-    shift: (monthOffset: number, shift?: CalendarShift) => void;
-    shiftCursor: (shift?: CalendarCursorShift | number) => void;
-    weekendDays: Readonly<[CalendarDay, CalendarDay] | CalendarDay[]>;
-    weeks: CalendarIterable<CalendarWeekView>;
-}
-
-export interface CalendarConfig {
-    calendarMonths?: CalendarSlidingWindowMonth;
-    dynamicMonthWeeks?: boolean;
-    firstWeekDay?: CalendarFirstWeekDay;
-    locale?: string;
-    onlyMonthDays?: boolean;
-    originDate?: CalendarDate;
-    sinceDate?: CalendarDate;
-    untilDate?: CalendarDate;
-    watch?: (...args: any[]) => any;
-}
-
-export interface CalendarProps extends CalendarConfig {
-    offset?: number;
-    onSelected?: (date: any) => void;
-    renderControl?: (traversal: CalendarTraversal, controlRootProps: CalendarTraversalControlRootProps) => ComponentChild;
-    trackToday?: boolean;
-    traversalControls?: CalendarTraversalControls;
-}
-
-export interface CalendarCursorRootProps {
-    onClickCapture?: (evt: Event) => void;
+export interface CalendarGridCursorRootProps {
+    onClickCapture: (evt: Event) => void;
+    onMouseOverCapture: (evt: Event) => void;
+    onPointerOverCapture: (evt: Event) => void;
     onKeyDownCapture: (evt: KeyboardEvent) => void;
 }
 
-export interface CalendarTraversalControlRootProps {
-    key: any;
-    onClick: (evt: Event) => void;
+export interface CalendarHandle {
+    clear: () => void;
+    config: CalendarConfig;
+    from?: Date;
+    to?: Date;
 }
+
+export interface CalendarProps {
+    blocks?: TimeFrameSize;
+    controls?: CalendarShiftControls;
+    dynamicBlockRows?: boolean;
+    firstWeekDay?: FirstWeekDay;
+    highlight?: CalendarSelection | string;
+    locale?: string;
+    onHighlight?: (from?: number, to?: number) => any;
+    onlyCellsWithin?: boolean;
+    originDate?: Time | Time[];
+    prepare?: (renderToken: CalendarGridRenderToken, renderContext: any) => any;
+    renderControl?: (...args: CalendarGridControlRecord) => VNode | null;
+    sinceDate?: Time;
+    trackCurrentDay?: boolean;
+    untilDate?: Time;
+    useYearView?: boolean;
+}
+
+export type CalendarRenderControl = Exclude<CalendarProps['renderControl'], undefined>;
+export type CalendarControlRenderer = (targetElement: Element, ...args: CalendarGridControlRecord) => ReturnType<CalendarRenderControl>;

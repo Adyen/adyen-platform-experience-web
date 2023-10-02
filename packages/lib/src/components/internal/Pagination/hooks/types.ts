@@ -11,7 +11,7 @@ import {
     WithPaginationOffset,
     WithPaginationRecordSize,
 } from '../types';
-import { UseReactiveStateRecord } from '../../../../hooks/useReactiveStateWithParams/types';
+import { UseReactiveStateRecord } from '@src/hooks/useReactiveStateWithParams/types';
 
 type MaybePromise<T = any> = T | Promise<T>;
 
