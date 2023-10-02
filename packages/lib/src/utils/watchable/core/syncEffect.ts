@@ -1,5 +1,5 @@
 import { WatchCallable } from '../types';
-import { EMPTY_OBJECT } from '../../constants';
+import { EMPTY_OBJECT } from '@src/utils/common/constants';
 
 const createSyncEffectChain = (() => {
     const noop = <T extends WatchCallable<any> = WatchCallable<any>>(fn: T): T => fn;

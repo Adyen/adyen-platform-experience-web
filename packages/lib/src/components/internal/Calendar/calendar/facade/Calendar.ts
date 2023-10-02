@@ -27,11 +27,10 @@ import {
     SHIFT_FRAME,
     SHIFT_PERIOD,
 } from '../constants';
-import { EMPTY_OBJECT, immutableProxyHandlers } from '../shared/constants';
 import indexed from '../shared/indexed';
-import { boolify, isBitSafeInteger, noop, pickFromCollection, struct, structFrom } from '../shared/utils';
-import watchable from '../shared/watchable';
-import { Watchable, WatchableFactory, WatchCallable, WatchCallback } from '../shared/watchable/types';
+import { boolify, EMPTY_OBJECT, immutableProxyHandlers, isBitSafeInteger, noop, pickFromCollection, struct, structFrom } from '@src/utils/common';
+import watchable from '@src/utils/watchable';
+import { Watchable, WatchableFactory, WatchCallable, WatchCallback } from '@src/utils/watchable/types';
 import { MonthFrame, TimeFrame, YearFrame } from '../timeframe';
 import today from '../today';
 import {

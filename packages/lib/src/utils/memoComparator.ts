@@ -1,3 +1,5 @@
+import { noop } from '@src/utils/common';
+
 const memoComparator = (() => {
     const identity = <T = any>(value?: T) => value;
 
@@ -14,7 +16,7 @@ const memoComparator = (() => {
         exclude: () => void;
     };
 
-    return Object.defineProperty(comparator, 'exclude', { value: () => {} });
+    return Object.defineProperty(comparator, 'exclude', { value: noop });
 })();
 
 export default memoComparator;

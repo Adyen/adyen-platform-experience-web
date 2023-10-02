@@ -5,7 +5,8 @@ import restamper from './datetime/restamper';
 import { createTranslationsLoader, getLocalizationProxyDescriptors } from './localization-utils';
 import { CurrencyCode, CustomTranslations, Restamp, SupportedLocale, TranslationKey, TranslationOptions } from './types';
 import { formatCustomTranslations, getTranslation, toTwoLetterCode } from './utils';
-import EventEmitter from '@src/components/external/EventEmitter';
+import { noop, struct } from '@src/utils/common';
+import watchable from '@src/utils/watchable';
 
 export default class Localization {
     #locale: SupportedLocale | string = FALLBACK_LOCALE;
@@ -15,21 +16,18 @@ export default class Localization {
     #customTranslations?: CustomTranslations;
     #translations: Record<string, string> = defaultTranslation;
     #translationsLoader = createTranslationsLoader.call(this);
-    #ready: Promise<void> = Promise.resolve();
 
+    #ready: Promise<void> = Promise.resolve();
     #currentRefresh?: Promise<void>;
     #markRefreshAsDone?: () => void;
-
+    #refreshWatchable = watchable({ timestamp: () => performance.now() });
     #restamp: Restamp = restamper();
-    #lastRefreshTimestamp: DOMHighResTimeStamp = performance.now();
-    #eventEmitter: EventEmitter = new EventEmitter(); // [TODO]: Swap this with a watchable in the future
 
-    listen = this.#eventEmitter.on.bind(this.#eventEmitter);
-    unlisten = this.#eventEmitter.off.bind(this.#eventEmitter);
-
-    i18n: Omit<Localization, (typeof EXCLUDE_PROPS)[number]> = Object.create(null, getLocalizationProxyDescriptors.call(this));
+    watch = this.#refreshWatchable.watch.bind(undefined);
+    i18n: Omit<Localization, (typeof EXCLUDE_PROPS)[number]> = struct(getLocalizationProxyDescriptors.call(this));
 
     constructor(locale: SupportedLocale | string = FALLBACK_LOCALE) {
+        this.watch(noop);
         this.locale = locale;
     }
 
@@ -60,7 +58,7 @@ export default class Localization {
     }
 
     get lastRefreshTimestamp() {
-        return this.#lastRefreshTimestamp;
+        return this.#refreshWatchable.snapshot.timestamp;
     }
 
     get locale(): SupportedLocale | string {
@@ -93,9 +91,6 @@ export default class Localization {
 
     #refreshTranslations(customTranslations?: CustomTranslations) {
         if (this.#markRefreshAsDone === undefined) {
-            // [TODO]: Move event name to enum
-            this.#eventEmitter.emit('refresh_in_progress');
-
             this.#ready = new Promise<void>(resolve => {
                 this.#markRefreshAsDone = () => {
                     resolve(this.#currentRefresh);
@@ -114,7 +109,7 @@ export default class Localization {
             this.#supportedLocales = this.#translationsLoader.supportedLocales;
             this.#customTranslations = customTranslations;
             this.#languageCode = toTwoLetterCode(this.#locale);
-            this.#lastRefreshTimestamp = performance.now();
+            this.#refreshWatchable.notify();
         })());
 
         currentRefresh.then(currentRefreshDone).catch(reason => {
