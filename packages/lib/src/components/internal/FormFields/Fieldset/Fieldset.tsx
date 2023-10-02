@@ -2,7 +2,7 @@ import { ComponentChildren } from 'preact';
 import cx from 'classnames';
 import useCoreContext from '../../../../core/Context/useCoreContext';
 import './Fieldset.scss';
-import { TranslationKey } from '@src/localization/types';
+import { TranslationKey } from '@src/core/Localization/types';
 
 interface FieldsetProps {
     children: ComponentChildren;

@@ -1,7 +1,7 @@
-import Localization from '@src/localization';
+import Localization from '@src/core/Localization';
 import { SetTriggerValidation } from '../../types';
 import { StateUpdater } from 'preact/compat';
-import { TranslationKey } from '@src/localization/types';
+import { TranslationKey } from '@src/core/Localization/types';
 
 export interface PhoneInputComponentProps {
     onChange: (state: Record<string, any>) => void;

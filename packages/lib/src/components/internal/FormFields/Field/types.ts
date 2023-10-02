@@ -1,5 +1,5 @@
 import { Component, ComponentChildren, JSX } from 'preact';
-import Localization from '../../../../localization';
+import Localization from '@src/core/Localization';
 import { HTMLAttributes } from 'preact/compat';
 
 export interface FieldProps {
