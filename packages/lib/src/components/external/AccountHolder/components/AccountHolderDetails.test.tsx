@@ -4,8 +4,8 @@
 import AccountHolderDetails from './AccountHolderDetails';
 import { render, within } from '@testing-library/preact';
 import { describe, test } from 'vitest';
-import { noop } from '@src/utils/noop';
 import { ACCOUNT_HOLDER_1 } from '../../../../../../../mocks';
+import { noop } from '@src/utils/common';
 
 describe('AccountHolder component', () => {
     test('shows the Account holder ID', async () => {

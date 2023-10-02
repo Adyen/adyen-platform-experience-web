@@ -1,4 +1,4 @@
-import unsignedModulo from './unsignedModulo';
+import { mod } from '@src/utils/common';
 
 export interface TabbableRoot {
     get current(): Element | null;
@@ -123,7 +123,7 @@ export const withTabbableRoot = () => {
                 if (!maybeTabbableOrOffset) return;
                 if (typeof maybeTabbableOrOffset !== 'number') return focusAt(tabbables.indexOf(maybeTabbableOrOffset));
                 if (maybeTabbableOrOffset !== ~~maybeTabbableOrOffset) return;
-                return focusAt(unsignedModulo(currentIndex + maybeTabbableOrOffset, tabbables.length));
+                return focusAt(mod(currentIndex + maybeTabbableOrOffset, tabbables.length));
             },
         },
         root: {

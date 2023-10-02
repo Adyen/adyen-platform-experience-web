@@ -12,7 +12,7 @@ export const enumerable = (value: any) => ({ value, enumerable: true } as const)
 export const boolify = (value?: any, fallbackBoolean?: boolean) => (typeof value === 'boolean' ? value : !!fallbackBoolean);
 export const clamp = (min: number, value: number, max: number) => Math.max(min, Math.min(value, max));
 export const mid = (low: number, high: number) => low + Math.floor((high - low) / 2);
-export const mod = (value: number, mod: number) => ((value % mod) + mod) % mod;
+export const mod = (value: number, modulo: number) => ((value % modulo) + modulo) % modulo;
 export const isNumber = (value: any): value is number => typeof value === 'number';
 export const isInfinite = (value: any): value is number => isNumber(value) && 1 / value === 0;
 export const isBitSafeInteger = (value: any): value is number => isNumber(value) && value === ~~value;
