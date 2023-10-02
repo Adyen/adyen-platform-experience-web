@@ -32,7 +32,7 @@ import {
     CALENDAR_SELECTIONS,
 } from './constants';
 import { Indexed } from './shared/indexed/types';
-import { Watchable, WatchCallable } from './shared/watchable/types';
+import { Watchable, WatchCallable } from '@src/utils/watchable/types';
 
 export type WithGetSetProperty<T = any> = {
     get _(): T;

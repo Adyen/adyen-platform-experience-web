@@ -1,3 +1,4 @@
+export * from './constants';
 import { $createObject, immutableProxyHandlers } from './constants';
 
 export const call = Function.prototype.bind.bind(Function.prototype.call);

@@ -1,6 +1,6 @@
 import Calendar from './Calendar';
 import { CONTROLS_ALL, CONTROLS_MINIMAL, CONTROLS_NONE, RANGE_FROM, RANGE_TO, SELECT_MANY, SELECT_NONE, SELECT_ONE } from '../constants';
-import { enumerable, struct } from '../shared/utils';
+import { enumerable, struct } from '@src/utils/common';
 import timeslice, { sinceNow, UNBOUNDED_SLICE, untilNow } from '../timeslice';
 import { CalendarFacade } from '../types';
 

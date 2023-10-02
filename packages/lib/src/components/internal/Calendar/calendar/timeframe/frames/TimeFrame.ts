@@ -25,8 +25,8 @@ import {
 import createFlagsRecord from '../common/flags';
 import indexed from '../../shared/indexed';
 import { Indexed } from '../../shared/indexed/types';
-import { clamp, enumerable, isBitSafeInteger, isInfinite, mid, mod, struct } from '../../shared/utils';
-import { WatchCallable } from '../../shared/watchable/types';
+import { clamp, enumerable, isBitSafeInteger, isInfinite, mid, mod, struct } from '@src/utils/common';
+import { WatchCallable } from '@src/utils/watchable/types';
 import today from '../../today';
 import {
     CalendarBlock,

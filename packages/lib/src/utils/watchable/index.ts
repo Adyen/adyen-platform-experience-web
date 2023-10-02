@@ -1,7 +1,7 @@
 import syncEffect from './core/syncEffect';
 import __Watchable__ from './core/Watchable';
 import { WatchableFactory } from './types';
-import { struct } from '../utils';
+import { struct } from '../common';
 
 const watchable = (watchableAtoms => {
     const instance = new __Watchable__(watchableAtoms);

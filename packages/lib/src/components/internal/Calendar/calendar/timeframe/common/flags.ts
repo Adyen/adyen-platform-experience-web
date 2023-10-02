@@ -1,6 +1,5 @@
 import { CalendarFlagsRecord, TimeFlag, TimeFlagProp } from '../../types';
-import { immutableProxyHandlers } from '../../shared/constants';
-import { struct } from '../../shared/utils';
+import { immutableProxyHandlers, struct } from '@src/utils/common';
 
 const createFlagsRecord = (() => {
     const CACHE = {} as { [K: number]: CalendarFlagsRecord };

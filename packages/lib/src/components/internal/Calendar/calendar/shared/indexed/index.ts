@@ -1,6 +1,6 @@
 import { Indexed, IndexedMapIteratorCallback, IndexedMapIteratorFactory } from './types';
-import { $true } from '../constants';
-import { struct, structFrom } from '../utils';
+import { $true } from '@src/utils/common/constants';
+import { struct, structFrom } from '@src/utils/common';
 
 const indexed = (() => {
     const mapIteratorFactory: IndexedMapIteratorFactory = function* (callback = (x: any) => x, thisArg: any) {

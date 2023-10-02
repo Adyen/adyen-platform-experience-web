@@ -3,9 +3,9 @@ import { useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState 
 import useCoreContext from '@src/core/Context/useCoreContext';
 import { ReflexAction } from '@src/hooks/useReflex';
 import { getDateObjectFromTimestamp } from '../calendar/utils';
-import { EMPTY_OBJECT } from '../calendar/shared/constants';
+import { EMPTY_OBJECT } from '@src/utils/common/constants';
 import { CalendarGridCursorRootProps, CalendarHandle, CalendarProps } from '../types';
-import useFocusCursor from '../../../../hooks/element/useFocusCursor';
+import useFocusCursor from '@src/hooks/element/useFocusCursor';
 import calendar from '../calendar';
 
 const useCalendar = (

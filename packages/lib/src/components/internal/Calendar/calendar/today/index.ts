@@ -1,5 +1,5 @@
-import $watchable from '../shared/watchable';
-import { struct } from '../shared/utils';
+import $watchable from '@src/utils/watchable';
+import { struct } from '@src/utils/common';
 import { Today } from '../types';
 
 const today = (() => {

@@ -1,7 +1,6 @@
 import classnames from 'classnames';
 import { JSX } from 'preact';
-import { EMPTY_OBJECT } from '../../calendar/shared/constants';
-import { toString } from '../../calendar/shared/utils';
+import { EMPTY_OBJECT, toString } from '@src/utils/common';
 
 const EXCESS_WHITESPACE_CHAR = /^\s+|\s+(?=\s|$)/g;
 

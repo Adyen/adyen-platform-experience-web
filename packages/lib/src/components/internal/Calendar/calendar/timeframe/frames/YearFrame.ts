@@ -1,8 +1,7 @@
 import TimeFrame from './TimeFrame';
 import { computeTimestampOffset, getEdgesDistance } from '../../utils';
 import { YEAR_MONTHS } from '../../constants';
-import { immutableProxyHandlers } from '../../shared/constants';
-import { isBitSafeInteger, isInfinite, struct, structFrom } from '../../shared/utils';
+import { immutableProxyHandlers, isBitSafeInteger, isInfinite, struct, structFrom } from '@src/utils/common';
 import { CalendarDayOfWeekData, Time, TimeFlag, TimeFrameBlock, TimeFrameSelection } from '../../types';
 
 export default class YearFrame extends TimeFrame {
