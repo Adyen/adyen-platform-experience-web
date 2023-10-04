@@ -13,8 +13,7 @@ export default function FilterBar(props: PropsWithChildren<FilterBarProps>) {
             {!!props.resetFilters && (
                 <Button
                     label={i18n.get('button.clearAll')}
-                    classNameModifiers={['ghost', 'small', 'reset']}
-                    disabled={!props.canResetFilters}
+                    classNameModifiers={['tertiary', 'reset', !props.canResetFilters && 'hidden']}
                     onClick={props.resetFilters}
                 />
             )}

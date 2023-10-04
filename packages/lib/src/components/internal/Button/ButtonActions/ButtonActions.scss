@@ -1,0 +1,43 @@
+@import '@adyen/bento-design-tokens/dist/scss/bento/variables.scss';
+
+.button-actions {
+    $component-root: &;
+
+    container-type: inline-size;
+    flex-grow: 1;
+
+    &__container-wrapper {
+        display: flex;
+        flex-direction: column;
+        gap: $button-actions-vertical-stack-row-gap;
+    }
+
+    //@container (min-width: 250px) {
+    &--buttons-start {
+        flex-direction: row;
+        justify-content: start;
+    }
+
+    &--buttons-end {
+        column-gap: $button-actions-buttons-end-column-gap;
+        flex-direction: row;
+        justify-content: end;
+    }
+
+    &--fill-container {
+        column-gap: $button-actions-fill-container-column-gap;
+        display: grid;
+        grid-auto-columns: minmax(0, 1fr);
+        grid-auto-flow: column;
+    }
+
+    &--space-between {
+        flex-direction: unset;
+        justify-content: space-between;
+    }
+
+    &--vertical-stack {
+        // Empty as it is the default
+    }
+    //}
+}

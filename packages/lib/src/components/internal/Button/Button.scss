@@ -1,43 +1,51 @@
+@import '@adyen/bento-design-tokens/dist/scss/bento/variables.scss';
+
 .adyen-fp-button {
-    $adyen-fp-button: &;
-    background: var(--adyen-fp-color-black);
     border: 0;
-    border-radius: var(--adyen-fp-border-radius-medium);
-    color: var(--adyen-fp-color-white);
+    $adyen-fp-button: &;
+    align-items: center;
+    appearance: none;
+    border-radius: $button-border-radius;
+    box-shadow: $button-box-shadow;
     cursor: pointer;
-    font-size: var(--adyen-fp-font-size-medium);
-    font-weight: 500;
-    height: 48px;
-    margin: 0;
-    padding: 15px;
+    display: inline-flex;
+    height: fit-content;
+    justify-content: center;
+    padding: $button-padding;
     text-decoration: none;
-    transition: background 0.3s ease-out, box-shadow 0.3s ease-out;
-    width: 100%;
+    transition: 125ms cubic-bezier(0.785, 0.135, 0.15, 0.86);
+    transition-property: color, background-color, box-shadow;
+    user-select: none;
 
-    &:focus {
-        box-shadow: 0 0 0 2px var(--adyen-fp-color-blue-light);
-        outline: 0;
+    &__label {
+        display: inline-flex;
+        line-height: $button-line-height;
+        vertical-align: middle;
+        white-space: nowrap;
+        font-weight: 600;
+        padding: $button-padding;
     }
 
-    &:hover {
-        background: #1c3045;
-        box-shadow: 0 0, 0 2px 4px -1px rgba(0, 0, 0, 0.2), 0 4px 5px 0 rgba(0, 0, 0, 0.14);
+    &--hidden {
+        visibility: hidden;
     }
 
-    &:active {
-        background: #3a4a5c;
-    }
+    &--primary {
+        background-color: $button-primary-background-color;
+        color: $button-primary-color;
 
-    &:hover:focus {
-        box-shadow: 0 0 0 2px var(--adyen-fp-color-blue-light), 0 3px 4px rgba(0, 15, 45, 0.2);
-    }
+        &:hover {
+            background-color: $button-primary-hover-background-color;
+        }
 
-    &:disabled,
-    &:disabled:hover {
-        box-shadow: none;
-        cursor: not-allowed;
-        opacity: 0.4;
-        user-select: all;
+        &:active {
+            background-color: $button-primary-active-background-color;
+        }
+
+        &:disabled {
+            background-color: $button-primary-disabled-background-color;
+            color: $button-primary-disabled-color;
+        }
     }
 
     &--loading {
@@ -95,31 +103,65 @@
         width: 40px;
     }
 
-    &--secondary {
-        background: var(--adyen-fp-color-white);
-        border: 1px solid var(--adyen-fp-color-black);
-        color: var(--adyen-fp-color-black);
-        padding: 10px 12px;
+    &--reset {
+        background-color: transparent;
+        border: 0;
+        font: inherit;
+        text-align: inherit;
+    }
+
+    &--tertiary {
+        background-color: transparent;
+        box-shadow: $button-tertiary-box-shadow;
+        color: $button-tertiary-color;
+        height: $button-tertiary-height;
+        padding: $button-tertiary-padding;
+        text-decoration: $button-tertiary-text-decoration;
 
         &:hover {
-            background: var(--adyen-fp-color-gray-lighter);
-            box-shadow: 0 2px 4px rgba(27, 42, 60, 0.2), 0 4px 5px rgba(27, 42, 60, 0.14);
+            background-color: $button-tertiary-hover-background-color;
+            color: $button-tertiary-hover-color;
+            text-decoration: $button-tertiary-hover-text-decoration;
         }
 
-        &:active,
-        &:active:hover {
-            background: var(--adyen-fp-color-gray-lighter);
-            box-shadow: none;
+        &:active {
+            background-color: $button-tertiary-active-background-color;
+            color: $button-tertiary-active-color;
+            text-decoration: $button-tertiary-active-text-decoration;
+        }
+
+        &:disabled {
+            background-color: $button-tertiary-disabled-background-color;
+            color: $button-tertiary-disabled-color;
+        }
+    }
+
+    &--secondary {
+        background-color: $button-secondary-background-color;
+        box-shadow: $button-secondary-box-shadow;
+        color: $button-secondary-color;
+
+        &:hover {
+            background-color: $button-secondary-hover-background-color;
+            box-shadow: $button-secondary-hover-box-shadow;
+            color: $button-secondary-hover-color;
+        }
+
+        &:hover:not(:focus) {
+            box-shadow: $button-secondary-hover-box-shadow;
+        }
+
+        &:active {
+            background-color: $button-secondary-active-background-color;
+            box-shadow: $button-secondary-active-box-shadow;
+            color: $button-secondary-active-color;
         }
 
         &:disabled,
-        &:disabled:hover {
-            background-color: var(--adyen-fp-color-gray-lighter);
-            border-color: #99a3ad;
-            box-shadow: none;
-            cursor: not-allowed;
-            opacity: 0.5;
-            user-select: all;
+        &:disabled:not(:focus) {
+            background-color: $button-secondary-disabled-background-color;
+            box-shadow: $button-secondary-disabled-box-shadow;
+            color: $button-secondary-disabled-color;
         }
 
         .adyen-fp-spinner {
@@ -153,10 +195,10 @@
     }
 
     &--filter {
-        @extend #{$adyen-fp-button}--small;
+        @extend #{$adyen-fp-button}--secondary;
         background: var(--adyen-fp-color-white);
         border: 1px solid var(--adyen-fp-color-gray);
-        color: var(--adyen-fp-color-black);
+        ///color: bento.$adyen-fp-black;
 
         &:hover {
             background: var(--adyen-fp-color-gray-lighter);
@@ -255,14 +297,24 @@
 
     &__text {
         display: block;
+        font-size: $text-body-font-size;
+        font-weight: $text-body-stronger-font-weight;
         justify-content: center;
+        line-height: $filter-button-label-line-height;
+        ///line-height: $button-line-height;
         overflow: hidden;
+        padding: $filter-button-label-padding;
         text-overflow: ellipsis;
+        vertical-align: middle;
         white-space: nowrap;
     }
 
     .adyen-fp-spinner {
         border-color: var(--adyen-fp-color-white);
         border-top-color: transparent;
+    }
+
+    &:disabled {
+        cursor: not-allowed;
     }
 }

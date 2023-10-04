@@ -1,0 +1,67 @@
+.popover-container {
+    $component-root: &;
+    $arrow-border: 2px;
+    position: absolute;
+
+    &__arrow {
+        visibility: hidden;
+
+        &,
+        &::before {
+            background-color: inherit;
+            border-style: solid;
+            border-width: 1px;
+            height: 10px;
+            position: absolute;
+            width: 10px;
+        }
+
+        &::before {
+            content: '';
+            transform: rotate(45deg) scale(1, 1);
+            transition: transform 0.2s;
+            visibility: visible;
+        }
+
+        &[data-hide]::before {
+            transform: scale(0.1, 0.1);
+        }
+
+        [data-popper-placement^='top'] > & {
+            bottom: -4px;
+
+            &::before {
+                border-bottom-right-radius: $arrow-border;
+                border-color: transparent currentcolor currentcolor transparent;
+            }
+        }
+
+        [data-popper-placement^='bottom'] > & {
+            /* -6px instead of -4px because it looks better aligned with rest of border */
+            top: -6px;
+
+            &::before {
+                border-color: currentcolor transparent transparent currentcolor;
+                border-top-left-radius: $arrow-border;
+            }
+        }
+
+        [data-popper-placement^='left'] > & {
+            right: -4px;
+
+            &::before {
+                border-color: currentcolor currentcolor transparent transparent;
+                border-top-right-radius: $arrow-border;
+            }
+        }
+
+        [data-popper-placement^='right'] > & {
+            left: -6px;
+
+            &::before {
+                border-bottom-left-radius: $arrow-border;
+                border-color: transparent transparent currentcolor currentcolor;
+            }
+        }
+    }
+}

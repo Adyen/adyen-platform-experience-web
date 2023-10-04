@@ -42,6 +42,7 @@
         "watchTS": "tsc -b ./tsconfig.json --watch"
     },
     "dependencies": {
+        "@adyen/bento-design-tokens": "^0.4.7",
         "concurrently": "^7.0.0"
     },
     "devDependencies": {

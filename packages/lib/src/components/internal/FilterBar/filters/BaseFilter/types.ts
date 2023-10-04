@@ -9,11 +9,12 @@ export enum EditAction {
 export interface BaseFilterProps {
     onChange: (value?: any) => void;
     name: string;
-    value?: string;
+    value?: string | any[];
     type?: string;
     label: string;
     classNameModifiers?: string[];
-    isValueEmpty?: (value?: string) => boolean;
+    isValueEmpty?: (value?: string | any[]) => boolean;
+    appliedFilterAmount?: number;
 }
 
 interface FilterCustomRenderProps<T extends BaseFilterProps> {
@@ -22,10 +23,7 @@ interface FilterCustomRenderProps<T extends BaseFilterProps> {
 
 export type FilterProps<T extends BaseFilterProps> = T & FilterCustomRenderProps<T>;
 
-export type FilterEditModalRenderProps<T extends BaseFilterProps> = Omit<
-    FilterProps<T>,
-    keyof FilterCustomRenderProps<T>
-> & {
+export type FilterEditModalRenderProps<T extends BaseFilterProps> = Omit<FilterProps<T>, keyof FilterCustomRenderProps<T>> & {
     editAction: EditAction;
     onValueUpdated: (currentValue?: string) => void;
 };

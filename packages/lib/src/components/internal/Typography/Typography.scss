@@ -1,0 +1,84 @@
+@import '@adyen/bento-design-tokens/dist/scss/bento/variables.scss';
+
+.adyen-fp-typography {
+    $component-root: &;
+
+    // Reset preset browser margin on all elements
+    margin: 0;
+
+    // Caption
+    &--caption {
+        font-family: $text-caption-font-family;
+        font-size: $text-caption-font-size;
+        font-weight: $text-caption-font-weight;
+        letter-spacing: $text-caption-letter-spacing;
+        line-height: $text-caption-line-height;
+    }
+
+    &--caption-wide {
+        line-height: $text-caption-wide-line-height;
+    }
+
+    &--caption-stronger {
+        font-weight: $text-caption-stronger-font-weight;
+    }
+
+    // Body
+    &--body {
+        font-family: $text-body-font-family;
+        font-size: $text-body-font-size;
+        font-weight: $text-body-font-weight;
+        letter-spacing: $text-body-letter-spacing;
+        line-height: $text-body-line-height;
+    }
+
+    &--body-wide {
+        line-height: $text-body-wide-line-height;
+    }
+
+    &--body-stronger {
+        font-weight: $text-body-stronger-font-weight;
+    }
+
+    &--body-strongest {
+        font-weight: $text-body-strongest-font-weight;
+    }
+
+    // Subtitle
+    &--subtitle {
+        font-family: $text-subtitle-font-family;
+        font-size: $text-subtitle-font-size;
+        font-weight: $text-subtitle-font-weight;
+        letter-spacing: $text-subtitle-letter-spacing;
+        line-height: $text-subtitle-line-height;
+    }
+
+    &--subtitle-stronger {
+        font-weight: $text-subtitle-stronger-font-weight;
+    }
+
+    // Title
+    &--title {
+        font-family: $text-title-font-family;
+        font-size: $text-title-mobile-font-size;
+        font-weight: $text-title-font-weight;
+        letter-spacing: $text-title-letter-spacing;
+        line-height: $text-title-mobile-line-height;
+    }
+
+    &--title-m {
+        font-family: $text-title-m-font-family;
+        font-size: $text-title-m-mobile-font-size;
+        font-weight: $text-title-m-font-weight;
+        letter-spacing: $text-title-m-letter-spacing;
+        line-height: $text-title-m-mobile-line-height;
+    }
+
+    &--title-l {
+        font-family: $text-title-l-font-family;
+        font-size: $text-title-l-mobile-font-size;
+        font-weight: $text-title-l-font-weight;
+        letter-spacing: $text-title-l-letter-spacing;
+        line-height: $text-title-l-mobile-line-height;
+    }
+}

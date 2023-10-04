@@ -1,7 +1,44 @@
+@import '@adyen/bento-design-tokens/dist/scss/bento/variables.scss';
+
 .adyen-fp-filter {
     .adyen-fp-button,
     .adyen-fp-field {
         width: initial;
+    }
+
+    .adyen-fp-button {
+        align-items: center;
+        appearance: none;
+        background-color: $filter-button-background-color;
+        border: 1px solid $filter-button-border-color;
+        border-radius: $filter-button-border-radius;
+        color: $filter-button-font-color;
+        cursor: pointer;
+        display: inline-flex;
+        height: $filter-button-height;
+        justify-content: center;
+        padding: 0;
+        text-decoration: none;
+        user-select: none;
+
+        &__counter {
+            background-color: $filter-button-counter-background-color;
+            border-radius: $filter-button-counter-border-radius;
+            color: $filter-button-counter-font-color;
+            padding: $filter-button-counter-padding;
+        }
+
+        &__counter-wrapper {
+            align-items: center;
+            display: flex;
+            padding: $filter-button-counter-wrapper-padding;
+        }
+    }
+
+    .adyen-fp-modal-wrapper--filter {
+        .adyen-fp-modal {
+            width: 400px;
+        }
     }
 
     &__footer {

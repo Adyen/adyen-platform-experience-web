@@ -1,0 +1,101 @@
+@import '@adyen/bento-design-tokens/dist/scss/bento/variables.scss';
+
+.popover {
+    $component-root: &;
+
+    background: $popover-background-color;
+    border: $popover-border;
+    border-radius: $popover-border-radius;
+    box-shadow: $popover-box-shadow;
+    overflow: hidden;
+    //width: 100%;
+    width: 320px; //TODO: Change this add 200 and 480
+    z-index: $popover-z-index;
+
+    &#{$component-root}__arrow::before {
+        color: transparent;
+        display: none;
+    }
+
+    &--fit-content {
+        width: fit-content;
+    }
+
+    &--small {
+        width: 200px;
+    }
+
+    &--large {
+        width: 480px;
+    }
+
+    &--with-divider {
+        #{$component-root}__footer {
+            background-color: $popover-with-divider-footer-background-color;
+            border-top: $popover-with-divider-footer-border-top;
+            padding-top: $popover-with-divider-footer-padding-top;
+        }
+
+        //#{$component-root}__content {
+        //    padding: $popover-with-divider-content-padding;
+        //}
+    }
+
+    &--without-space {
+        #{$component-root}__header {
+            padding: $popover-without-space-padding;
+        }
+
+        #{$component-root}__content {
+            padding: $popover-without-space-padding;
+        }
+
+        #{$component-root}__footer {
+            padding: $popover-without-space-padding;
+        }
+    }
+
+    &__content {
+        padding: $popover-content-padding;
+
+        &--with-title {
+            padding: $popover-content-with-title-padding;
+        }
+    }
+
+    &__header {
+        align-items: baseline;
+        display: flex;
+        justify-content: space-between;
+        padding: $popover-header-padding;
+    }
+
+    &__header-title {
+        align-items: center;
+        column-gap: $popover-header-title-column-gap;
+        display: flex;
+    }
+
+    &__image {
+        display: flex;
+        overflow: hidden;
+
+        /**
+          * When the image is present, increase
+          * the margin-bottom of the header
+          */
+        + #{$component-root}__header {
+            padding: $popover-image-header-padding;
+        }
+    }
+
+    &__image-dismiss-button {
+        position: absolute;
+        right: $popover-image-dismiss-icon-right;
+        top: $popover-image-dismiss-icon-top;
+    }
+
+    &__footer {
+        padding: $popover-footer-padding;
+    }
+}

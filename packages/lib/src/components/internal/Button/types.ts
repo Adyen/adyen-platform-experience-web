@@ -1,4 +1,6 @@
-export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'action' | 'filter' | 'link';
+import { ComponentChildren } from 'preact';
+
+export type ButtonVariant = 'primary' | 'secondary' | 'tertiary' | 'ghost' | 'action' | 'filter' | 'link';
 export type ButtonStatus = 'loading' | 'redirect' | 'default';
 
 export interface ButtonProps extends Record<string, any> {
@@ -17,10 +19,18 @@ export interface ButtonProps extends Record<string, any> {
     target?: string;
     rel?: string;
     tabIndex?: number;
+    ariaAttributes: { [k: string]: any };
     onClick?: (e?: Event, callbacks?: { [k: string]: (...args: any) => void }) => void;
+    children: ComponentChildren;
     ariaLabel?: string;
 }
 
 export interface ButtonState {
     completed?: boolean;
+}
+
+export enum ButtonVariants {
+    PRIMARY = 'primary',
+    SECONDARY = 'secondary',
+    TERTIARY = 'tertiary',
 }
