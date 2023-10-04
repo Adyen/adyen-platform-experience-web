@@ -15,7 +15,7 @@
     "filter.date.until": "Until {date}",
     "calendar.previousMonth": "Previous month",
     "calendar.nextMonth": "Next month",
-    "button.resetAll": "Reset all",
+    "button.clearAll": "Clear all",
     "editFilter": "Edit filter",
     "balanceAccount": "Balance account",
     "balancePlatform": "Balance platform",
