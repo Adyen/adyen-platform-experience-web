@@ -4,7 +4,6 @@ import { HttpOptions } from './types';
 
 export function http<T>(options: HttpOptions, data?: any): Promise<T> {
     const { errorLevel = 'warn', loadingContext = '', path } = options;
-    // const url = `${loadingContext}${path}`;
 
     const request = getRequestObject(options, data);
 
@@ -12,9 +11,7 @@ export function http<T>(options: HttpOptions, data?: any): Promise<T> {
     const url = new URL(`${loadingContext}api/${path}`);
 
     if (options.params) {
-        const searchParams = new URLSearchParams(Object.entries(options.params).filter(([param, value]) => value && param !== 'signal'));
-
-        searchParams.forEach((value, param) => {
+        options.params.forEach((value, param) => {
             const decodedValue = decodeURIComponent(value);
             if (decodedValue) url.searchParams.set(param, decodedValue);
         });
@@ -54,8 +51,8 @@ export function http<T>(options: HttpOptions, data?: any): Promise<T> {
     );
 }
 
-export function httpGet<T>(options: HttpOptions, data?: any): Promise<T> {
-    return http<T>({ ...options, method: 'GET' }, data);
+export function httpGet<T>(options: HttpOptions): Promise<T> {
+    return http<T>({ ...options, method: 'GET' });
 }
 
 export function httpPost<T>(options: HttpOptions, data?: any): Promise<T> {

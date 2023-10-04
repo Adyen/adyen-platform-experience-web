@@ -41,10 +41,10 @@ export function isAdyenErrorResponse(data: any): data is AdyenErrorResponse {
     return data && data.errorCode && data.type && data.detail && data.status;
 }
 
-export function parseSearchParams<T extends string>(parameters: Record<T, string>) {
-    const params: Partial<typeof parameters> = {};
+export function parseSearchParams<T extends Record<string, any>>(parameters: T) {
+    const params: Record<string, string> = {};
     for (const param in parameters) {
-        if (parameters[param]) params[param] = parameters[param];
+        if (parameters[param]) params[param] = String(parameters[param]);
     }
-    return params;
+    return new URLSearchParams(params);
 }

@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'preact/hooks';
+import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
 import useCoreContext from '@src/core/Context/useCoreContext';
 import FilterBar from '../../../internal/FilterBar';
 import TextFilter from '../../../internal/FilterBar/filters/TextFilter';
@@ -34,28 +34,30 @@ function Transactions({
     balancePlatformId,
 }: TransactionsComponentProps) {
     const { i18n, loadingContext, clientKey } = useCoreContext();
-    const getTransactions = async (pageRequestParams: Record<TransactionFilterParam | 'cursor', string>, signal?: AbortSignal) => {
-        const requiredTransactionFields = {
-            createdSince: pageRequestParams.createdSince ?? DEFAULT_CREATED_SINCE,
-            createdUntil: pageRequestParams.createdUntil ?? DEFAULT_CREATED_UNTIL,
-            limit: DEFAULT_PAGINATED_TRANSACTIONS_LIMIT,
-            balancePlatform: pageRequestParams.balancePlatform ?? balancePlatformId,
-        };
+    const getTransactions = useCallback(
+        async (pageRequestParams: Record<TransactionFilterParam | 'cursor', string>, signal?: AbortSignal) => {
+            const requiredTransactionFields = {
+                createdSince: pageRequestParams.createdSince ?? DEFAULT_CREATED_SINCE,
+                createdUntil: pageRequestParams.createdUntil ?? DEFAULT_CREATED_UNTIL,
+                limit: DEFAULT_PAGINATED_TRANSACTIONS_LIMIT,
+                balancePlatform: pageRequestParams.balancePlatform ?? balancePlatformId,
+            };
 
-        const searchParams = parseSearchParams({ ...pageRequestParams, ...requiredTransactionFields });
+            const searchParams = parseSearchParams({ ...pageRequestParams, ...requiredTransactionFields });
+            const request: HttpOptions = {
+                loadingContext: loadingContext,
+                clientKey,
+                path: 'transactions',
+                errorLevel: 'error',
+                params: searchParams,
+                signal,
+            };
+            const data = await httpGet<PaginatedResponseDataWithLinks<ITransaction, 'data'>>(request);
 
-        const request: HttpOptions = {
-            loadingContext: loadingContext,
-            clientKey,
-            path: 'transactions',
-            errorLevel: 'error',
-            params: searchParams,
-            signal,
-        };
-        const data = await httpGet<PaginatedResponseDataWithLinks<ITransaction, 'data'>>(request);
-
-        return data;
-    };
+            return data;
+        },
+        [balancePlatformId]
+    );
 
     const { canResetFilters, fetching, filters, records, resetFilters, updateFilters, error, ...paginationProps } = useCursorPaginatedRecords<
         ITransaction,
@@ -71,7 +73,7 @@ function Transactions({
                 initialFiltersSameAsDefault: false,
                 limit: Number(DEFAULT_PAGINATED_TRANSACTIONS_LIMIT),
             }),
-            []
+            [getTransactions]
         )
     );
 

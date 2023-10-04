@@ -49,9 +49,6 @@ export type PaginatedRecordsInitOptions<T, DataField extends string, FilterValue
     dataField: PaginatedResponseDataField<DataField>;
     filterParams?: FilterParam[];
     initialFiltersSameAsDefault?: boolean;
-    onPageRequest?: (
-        pageRequestParams: RequestPageCallbackOptionalParams<PaginationType> & PaginatedRecordsFetcherParams<FilterValue, FilterParam>
-    ) => void;
 }>;
 
 export type BasePaginatedRecordsInitOptions<T, DataField extends string, FilterValue, FilterParam extends string> = PaginatedRecordsInitOptions<

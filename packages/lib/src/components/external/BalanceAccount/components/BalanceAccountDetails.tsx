@@ -10,10 +10,10 @@ import type { BalanceAccount } from '@src/types';
 function BalanceAccountDetails({ balanceAccount, balanceAccountId }: BalanceAccountComponentProps) {
     const { i18n } = useCoreContext();
 
-    const { data, error, isFetching } = useFetch<BalanceAccount>(
-        { url: `balanceAccounts/${balanceAccountId}` },
-        { enabled: !!balanceAccountId && !balanceAccount }
-    );
+    const { data, error, isFetching } = useFetch<BalanceAccount>({
+        url: `balanceAccounts/${balanceAccountId}`,
+        fetchOptions: { enabled: !!balanceAccountId && !balanceAccount },
+    });
 
     const balanceAccountData = balanceAccount ?? data;
 

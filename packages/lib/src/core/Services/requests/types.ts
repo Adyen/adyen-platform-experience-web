@@ -13,7 +13,7 @@ export interface HttpOptions {
     method?: HttpMethod;
     errorLevel?: FetchErrorLevel;
     errorHandler?: (response: any) => any;
-    params?: Record<string, string>;
+    params?: URLSearchParams;
     signal?: AbortSignal;
 }
 

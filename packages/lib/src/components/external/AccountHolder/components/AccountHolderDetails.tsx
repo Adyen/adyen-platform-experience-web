@@ -10,10 +10,10 @@ import type { AccountHolderComponentProps } from '../types';
 const AccountHolderDetails = ({ accountHolderId, accountHolder }: AccountHolderComponentProps) => {
     const { i18n } = useCoreContext();
 
-    const { data, error, isFetching } = useFetch<AccountHolder>(
-        { url: `accountHolders/${accountHolderId}` },
-        { enabled: !!accountHolderId && !accountHolder }
-    );
+    const { data, error, isFetching } = useFetch<AccountHolder>({
+        url: `accountHolders/${accountHolderId}`,
+        fetchOptions: { enabled: !!accountHolderId && !accountHolder },
+    });
 
     const accountHolderData = accountHolder ?? data;
 

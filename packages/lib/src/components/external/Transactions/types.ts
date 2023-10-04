@@ -1,4 +1,4 @@
-import { PaginatedResponseDataWithLinks, PaginationProps } from '../../internal/Pagination/types';
+import { PaginationProps } from '../../internal/Pagination/types';
 import UIElement from '../UIElement';
 import { UIElementProps } from '../../types';
 import { ITransaction } from '../../../types/models/api/transactions';
@@ -9,6 +9,7 @@ export const enum TransactionFilterParam {
     CREATED_SINCE = 'createdSince',
     CREATED_UNTIL = 'createdUntil',
     BALANCE_PLATFORM_ID = 'balancePlatform',
+    LIMIT = 'limit',
 }
 
 type OnSelection = (selection: { id: string }) => void;

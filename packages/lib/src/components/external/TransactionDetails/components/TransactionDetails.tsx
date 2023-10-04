@@ -10,10 +10,10 @@ import { TransactionData } from '@src/components/external/TransactionDetails/com
 function TransactionsDetails({ transaction, transactionId }: TransactionDetailsComponentProps) {
     const { i18n } = useCoreContext();
 
-    const { data, error, isFetching } = useFetch<ITransaction>(
-        { url: `transactions/${transactionId}` },
-        { enabled: !!transactionId && !transaction }
-    );
+    const { data, error, isFetching } = useFetch<ITransaction>({
+        url: `transactions/${transactionId}`,
+        fetchOptions: { enabled: !!transactionId && !transaction },
+    });
 
     const transactionData = transaction ?? data;
     return (

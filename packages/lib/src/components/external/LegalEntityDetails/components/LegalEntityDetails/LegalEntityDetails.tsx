@@ -13,10 +13,10 @@ import useCoreContext from '@src/core/Context/useCoreContext';
 const LegalEntityDetails = ({ legalEntity, legalEntityId, onGetTransferInstrument }: LegalEntityDetailsProps) => {
     const { i18n } = useCoreContext();
 
-    const { data, error, isFetching } = useFetch<ILegalEntityOrganization | ILegalEntityIndividual | ILegalEntitySoleProprietor>(
-        { url: `legalEntities/${legalEntityId}` },
-        { enabled: !!legalEntityId && !legalEntity }
-    );
+    const { data, error, isFetching } = useFetch<ILegalEntityOrganization | ILegalEntityIndividual | ILegalEntitySoleProprietor>({
+        url: `legalEntities/${legalEntityId}`,
+        fetchOptions: { enabled: !!legalEntityId && !legalEntity },
+    });
 
     const legalEntityData = legalEntity ?? data;
 

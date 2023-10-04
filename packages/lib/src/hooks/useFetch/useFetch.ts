@@ -2,6 +2,7 @@ import { useEffect, useReducer, useRef } from 'preact/hooks';
 import { httpGet } from '@src/core/Services/requests/http';
 import { ErrorLevel, HttpOptions } from '@src/core/Services/requests/types';
 import useCoreContext from '@src/core/Context/useCoreContext';
+import { parseSearchParams } from '@src/core/Services/requests/utils';
 
 interface State<T> {
     data?: T;
@@ -9,37 +10,43 @@ interface State<T> {
     isFetching: boolean;
 }
 
-type Cache<T> = { [url: string]: T };
+type Cache<T> = Map<string, T>;
 
 type Action<T> = { type: 'loading' } | { type: 'fetched'; payload: T } | { type: 'error'; payload: Error };
 
 type FetchOptions = {
     enabled: boolean;
-    refetchOnChange: string | number | (string | number)[];
     errorLevel: ErrorLevel;
     keepPrevData: boolean;
 };
 
+type UseFetchConfig = {
+    url: string;
+    loadingContext?: string;
+    params?: Record<string, string | number | Date>;
+    requestOptions?: RequestInit;
+    fetchOptions: Partial<FetchOptions>;
+};
 export function useFetch<T = unknown>(
-    endpoint: { url: string; loadingContext?: string; requestOptions?: RequestInit },
-    fetchOptions: Partial<FetchOptions> = { keepPrevData: true }
+    config: UseFetchConfig = {
+        url: '',
+        fetchOptions: { keepPrevData: true },
+    }
 ): State<T> {
     const { loadingContext, clientKey } = useCoreContext();
-    const cache = useRef<Cache<T>>({});
+    const cache = useRef<Cache<T>>(new Map());
     // Used to prevent state update if the component is unmounted
     const cancelRequest = useRef<boolean>(false);
-
     const initialState: State<T> = {
         error: undefined,
         data: undefined,
-        isFetching: fetchOptions.enabled !== false,
+        isFetching: config.fetchOptions.enabled !== false,
     };
 
-    // Keep state logic separated
     const fetchReducer = (state: State<T>, action: Action<T>): State<T> => {
         switch (action.type) {
             case 'loading':
-                return { ...initialState, isFetching: true, data: fetchOptions.keepPrevData ? state.data : undefined };
+                return { ...initialState, isFetching: true, data: config.fetchOptions.keepPrevData ? state.data : undefined };
             case 'fetched':
                 return { ...initialState, data: action.payload, isFetching: false };
             case 'error':
@@ -51,27 +58,39 @@ export function useFetch<T = unknown>(
 
     const [state, dispatch] = useReducer(fetchReducer, initialState);
 
+    const url = new URL(`${loadingContext}${config.url}`);
+
+    const request: HttpOptions = {
+        loadingContext: config.loadingContext ?? loadingContext,
+        clientKey,
+        path: config.url,
+        headers: config.requestOptions?.headers,
+        errorLevel: config.fetchOptions.errorLevel ?? 'error',
+    };
+
+    if (config.params) {
+        const searchParams = parseSearchParams(config.params);
+
+        searchParams.forEach((value, param) => url.searchParams.set(param, value));
+
+        request.params = searchParams;
+    }
+
     const fetchData = async () => {
         // If a cache exists for this url, return it
-        if (cache.current[endpoint.url]) {
-            dispatch({ type: 'fetched', payload: cache.current[endpoint.url]! });
+        if (cache.current.get(url.href)) {
+            dispatch({ type: 'fetched', payload: cache.current.get(url.href)! });
             return;
         }
 
         dispatch({ type: 'loading' });
 
-        const request: HttpOptions = {
-            loadingContext: endpoint.loadingContext ?? loadingContext,
-            clientKey,
-            path: endpoint.url,
-            headers: endpoint.requestOptions?.headers,
-            errorLevel: fetchOptions.errorLevel ?? 'error',
-        };
-
         try {
             if (cancelRequest.current) return;
-            const data = await httpGet<T>(request, endpoint.requestOptions?.body);
-            cache.current[endpoint.url] = data;
+            const data = await httpGet<T>(request);
+
+            cache.current.set(url.href, data);
+
             dispatch({ type: 'fetched', payload: data });
         } catch (error) {
             if (cancelRequest.current) return;
@@ -82,13 +101,13 @@ export function useFetch<T = unknown>(
     useEffect(() => {
         cancelRequest.current = false;
 
-        if (fetchOptions.enabled !== false) void fetchData();
+        if (config.fetchOptions.enabled !== false) void fetchData();
 
         // Avoid a possible state update after the component was unmounted
         return () => {
             cancelRequest.current = true;
         };
-    }, [endpoint.url, fetchOptions.refetchOnChange, fetchOptions.enabled]);
+    }, [config.url, config.fetchOptions.enabled, config.params]);
 
     return state;
 }

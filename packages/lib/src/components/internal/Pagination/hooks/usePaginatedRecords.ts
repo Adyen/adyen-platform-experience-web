@@ -80,7 +80,6 @@ const usePaginatedRecords = <T, DataField extends string, FilterValue extends st
     initialFiltersSameAsDefault = true,
     initializeAndDerivePageLimit,
     limit,
-    onPageRequest,
     pagination,
     fetchRecords,
 }: BasePaginatedRecordsInitOptions<T, DataField, FilterValue, FilterParam>): UsePaginatedRecords<T, FilterValue, FilterParam> => {
@@ -112,7 +111,6 @@ const usePaginatedRecords = <T, DataField extends string, FilterValue extends st
             ): Promise<RequestPageCallbackReturnValue<PaginationType>> => {
                 try {
                     if (!$mounted.current || <undefined>updateFetching(true)) return;
-                    if (!$initialFetchInProgress.current) onPageRequest?.({ ...pageRequestParams, ...filters });
 
                     const res = await fetchRecords({ ...filters, ...pageRequestParams }, signal);
 
@@ -127,6 +125,7 @@ const usePaginatedRecords = <T, DataField extends string, FilterValue extends st
                             ) || pageLimit;
 
                         setPageLimit(derivedPageLimit);
+
                         $initialFetchInProgress.current = false;
                     }
 
