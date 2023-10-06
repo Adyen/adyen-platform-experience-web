@@ -1,7 +1,8 @@
 import { UIElementProps } from '../../types';
-import { AccountHolder } from '../../../types/models/api/account-holder';
+import { AccountHolder } from '@src/types';
 
 export interface AccountHolderComponentProps extends UIElementProps {
-    accountHolder: AccountHolder;
+    accountHolder?: AccountHolder;
+    accountHolderId: string;
     onChange?: (newState: Record<any, any>) => void;
 }

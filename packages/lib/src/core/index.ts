@@ -1,2 +1,2 @@
-export { default } from './core';
+export { default as Core } from './core';
 export * from './types';

@@ -1,5 +1,4 @@
 import { Meta } from '@storybook/preact';
-import { getBalanceAccountById } from '../../utils/services';
 import { Container } from '../utils/Container';
 import { BalanceAccountComponent } from '@adyen/adyen-fp-web';
 import { ElementProps, ElementStory } from '../utils/types';
@@ -23,11 +22,9 @@ export const Basic: ElementStory<typeof BalanceAccountComponent> = {
 };
 
 export const ApiIntegration: ElementStory<typeof BalanceAccountComponent> = {
-    loaders: [
-        async () => ({
-            data: await getBalanceAccountById(DEFAULT_BALANCE_ACCOUNT),
-        }),
-    ],
+    args: {
+        balanceAccountId: DEFAULT_BALANCE_ACCOUNT,
+    },
 };
 
 export default meta;

@@ -4,17 +4,33 @@ import './LegalEntityDetails.scss';
 import LegalEntityIndividual from '../LegalEntityIndividual/LegalEntityIndividual';
 import LegalEntityOrganization from '../LegalEntityOrganization/LegalEntityOrganization';
 import LegalEntitySoleProprietor from '../LegalEntitySoleProprietor/LegalEntitySoleProprietor';
+import { useFetch } from '@src/hooks/useFetch/useFetch';
+import { ILegalEntityIndividual, ILegalEntityOrganization, ILegalEntitySoleProprietor } from '@src/types';
+import Spinner from '@src/components/internal/Spinner';
+import Alert from '@src/components/internal/Alert';
+import useCoreContext from '@src/core/Context/useCoreContext';
 
-const LegalEntityDetails = ({ legalEntity, onGetTransferInstrument }: LegalEntityDetailsProps) => {
+const LegalEntityDetails = ({ legalEntity, legalEntityId, onGetTransferInstrument }: LegalEntityDetailsProps) => {
+    const { i18n } = useCoreContext();
+
+    const { data, error, isFetching } = useFetch<ILegalEntityOrganization | ILegalEntityIndividual | ILegalEntitySoleProprietor>({
+        url: `legalEntities/${legalEntityId}`,
+        fetchOptions: { enabled: !!legalEntityId && !legalEntity },
+    });
+
+    const legalEntityData = legalEntity ?? data;
+
     return (
         <div className="adyen-fp-legal-entity">
             <Card classNameModifiers={['adyen-fp-legal-entity__container']}>
-                {legalEntity?.type === 'individual' ? (
-                    <LegalEntityIndividual legalEntity={legalEntity} />
-                ) : legalEntity?.type === 'organization' ? (
-                    <LegalEntityOrganization legalEntity={legalEntity} onGetTransferInstrument={onGetTransferInstrument} />
-                ) : legalEntity?.type === 'soleProprietorship' ? (
-                    <LegalEntitySoleProprietor legalEntity={legalEntity} />
+                {isFetching && <Spinner />}
+                {error && <Alert icon={'cross'}>{error.message ?? i18n.get('unableToLoadLegalEntity')}</Alert>}
+                {legalEntityData?.type === 'individual' ? (
+                    <LegalEntityIndividual legalEntity={legalEntityData} />
+                ) : legalEntityData?.type === 'organization' ? (
+                    <LegalEntityOrganization legalEntity={legalEntityData} onGetTransferInstrument={onGetTransferInstrument} />
+                ) : legalEntityData?.type === 'soleProprietorship' ? (
+                    <LegalEntitySoleProprietor legalEntity={legalEntityData} />
                 ) : null}
             </Card>
         </div>

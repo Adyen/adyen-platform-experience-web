@@ -30,10 +30,7 @@ function getErrorMessage<Schema extends Record<string, any>>(
  * - then you should implement <CountryField> or <StateField> directly
  */
 function FieldContainer<Schema extends Record<string, any>>(props: FieldContainerProps<Schema>) {
-    const {
-        i18n,
-        commonProps: { isCollatingErrors },
-    } = useCoreContext();
+    const { i18n, commonProps } = useCoreContext();
     const { classNameModifiers = [], data, errors, valid, fieldName, onInput, onBlur, trimOnBlur, maxlength, disabled } = props;
 
     const value: string = data[fieldName];
@@ -76,7 +73,7 @@ function FieldContainer<Schema extends Record<string, any>>(props: FieldContaine
                     errorMessage={errorMessage}
                     isValid={valid?.[fieldName]}
                     name={fieldName}
-                    isCollatingErrors={isCollatingErrors}
+                    isCollatingErrors={commonProps?.isCollatingErrors}
                 >
                     {renderFormField('text', {
                         classNameModifiers,
@@ -84,7 +81,7 @@ function FieldContainer<Schema extends Record<string, any>>(props: FieldContaine
                         value,
                         onInput,
                         onBlur,
-                        isCollatingErrors,
+                        isCollatingErrors: commonProps?.isCollatingErrors,
                         maxLength: maxlength,
                         trimOnBlur,
                         disabled,

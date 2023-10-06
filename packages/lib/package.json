@@ -9,7 +9,7 @@
         "adyen-for-platforms",
         "components"
     ],
-    "main": "./dist/types/index.d.ts",
+    "main": "./dist/adyen-fp-components.es.js",
     "version": "1.0.0",
     "license": "MIT",
     "repository": "github:Adyen/adyen-fp-web",
@@ -88,7 +88,6 @@
     "dependencies": {
         "classnames": "^2.3.1",
         "core-js": "^3.20.2",
-        "preact": "^10.13.2",
-        "whatwg-fetch": "^3.6.2"
+        "preact": "^10.13.2"
     }
 }

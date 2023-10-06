@@ -1,4 +1,4 @@
-import { httpPost } from '../http';
+import { httpPost } from '../requests/http';
 import Session from '../../FPSession';
 import { SessionSetupResponse } from '../../FPSession/types';
 import { API_VERSION } from './constants';

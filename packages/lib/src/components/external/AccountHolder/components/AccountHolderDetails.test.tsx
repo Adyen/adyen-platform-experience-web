@@ -1,28 +1,27 @@
 /**
  * @vitest-environment jsdom
  */
-import AccountHolderDetails from './AccountHolderDetails';
 import { render, within } from '@testing-library/preact';
 import { describe, test } from 'vitest';
 import { ACCOUNT_HOLDER_1 } from '../../../../../../../mocks';
-import { noop } from '@src/utils/common';
+import { AccountHolderInfo } from '@src/components/external/AccountHolder/components/AccountHolderInfo';
 
 describe('AccountHolder component', () => {
     test('shows the Account holder ID', async () => {
-        const screen = render(<AccountHolderDetails accountHolder={ACCOUNT_HOLDER_1} onChange={noop} />);
+        const screen = render(<AccountHolderInfo accountHolder={ACCOUNT_HOLDER_1} />);
         const accountHolderId = screen.getByRole('listitem', { name: 'Account holder ID' });
         within(accountHolderId).getByText(ACCOUNT_HOLDER_1.id);
     });
 
     test('shows the status', async () => {
-        const screen = render(<AccountHolderDetails accountHolder={ACCOUNT_HOLDER_1} onChange={noop} />);
+        const screen = render(<AccountHolderInfo accountHolder={ACCOUNT_HOLDER_1} />);
 
         const status = screen.getByRole('listitem', { name: 'Status' });
         within(status).getByText(new RegExp(ACCOUNT_HOLDER_1.status, 'i'));
     });
 
     test('shows the legal entity details', async () => {
-        const screen = render(<AccountHolderDetails accountHolder={ACCOUNT_HOLDER_1} onChange={noop} />);
+        const screen = render(<AccountHolderInfo accountHolder={ACCOUNT_HOLDER_1} />);
 
         screen.getByText('Legal entity');
 
@@ -34,7 +33,7 @@ describe('AccountHolder component', () => {
     });
 
     test('shows the contact details', async () => {
-        const screen = render(<AccountHolderDetails accountHolder={ACCOUNT_HOLDER_1} onChange={noop} />);
+        const screen = render(<AccountHolderInfo accountHolder={ACCOUNT_HOLDER_1} />);
 
         screen.getByText('Contact details');
         screen.getByText(ACCOUNT_HOLDER_1.contactDetails.phone.number);

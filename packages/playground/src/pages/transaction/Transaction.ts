@@ -1,4 +1,3 @@
-import { getTransactionById } from '../../utils/services';
 import { AdyenFP } from '@adyen/adyen-fp-web';
 import { getSearchParameters } from '../../utils/utils';
 import '../../utils/createPages.js';
@@ -10,10 +9,9 @@ try {
 
     const DEFAULT_TRANSACTION_ID = '1VVF0D5V3709DX6D';
     const { id } = getSearchParameters();
-    const data = await getTransactionById(id || DEFAULT_TRANSACTION_ID);
-    const adyenFP = await AdyenFP({ locale: 'en-US' });
+    const adyenFP = await AdyenFP({ locale: 'en-US', loadingContext: process.env.VITE_API_URL });
 
-    adyenFP.create('transactionDetails', { transaction: data }).mount('.transaction-details-component-container');
+    adyenFP.create('transactionDetails', { transactionId: DEFAULT_TRANSACTION_ID }).mount('.transaction-details-component-container');
 } catch (e) {
     console.error(e);
 }

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo } from 'preact/hooks';
+import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
 import useCoreContext from '@src/core/Context/useCoreContext';
 import FilterBar from '../../../internal/FilterBar';
 import TextFilter from '../../../internal/FilterBar/filters/TextFilter';
@@ -8,8 +8,15 @@ import { TransactionFilterParam, TransactionsComponentProps } from '../types';
 import { DateRangeFilterParam } from '../../../internal/FilterBar/filters/DateFilter/types';
 import { useCursorPaginatedRecords } from '../../../internal/Pagination/hooks';
 import { ITransaction } from '../../../../types/models/api/transactions';
+import { PaginatedResponseDataWithLinks } from '@src/components/internal/Pagination/types';
+import { httpGet } from '@src/core/Services/requests/http';
+import { HttpOptions } from '@src/core/Services/requests/types';
+import { parseSearchParams } from '@src/core/Services/requests/utils';
+import Alert from '@src/components/internal/Alert';
 
-const DEFAULT_PAGINATED_TRANSACTIONS_LIMIT = 20;
+const DEFAULT_PAGINATED_TRANSACTIONS_LIMIT = '20';
+const DEFAULT_CREATED_SINCE = new Date(new Date().setHours(0, 0, 0, 0)).toISOString();
+const DEFAULT_CREATED_UNTIL = new Date(new Date().setHours(23, 59, 59, 999)).toISOString();
 
 const transactionsFilterParams = [
     TransactionFilterParam.ACCOUNT_HOLDER,
@@ -19,24 +26,40 @@ const transactionsFilterParams = [
 ];
 
 function Transactions({
-    transactions,
     elementRef,
     onAccountSelected,
     onBalanceAccountSelected,
     onFilterChange,
     onTransactionSelected,
-    onUpdateTransactions,
+    balancePlatformId,
 }: TransactionsComponentProps) {
-    const { i18n } = useCoreContext();
+    const { i18n, loadingContext, clientKey } = useCoreContext();
+    const getTransactions = useCallback(
+        async (pageRequestParams: Record<TransactionFilterParam | 'cursor', string>, signal?: AbortSignal) => {
+            const requiredTransactionFields = {
+                createdSince: pageRequestParams.createdSince ?? DEFAULT_CREATED_SINCE,
+                createdUntil: pageRequestParams.createdUntil ?? DEFAULT_CREATED_UNTIL,
+                limit: DEFAULT_PAGINATED_TRANSACTIONS_LIMIT,
+                balancePlatform: pageRequestParams.balancePlatform ?? balancePlatformId,
+            };
 
-    const onPageRequest = useCallback(
-        (pageRequestParams: any) => {
-            onUpdateTransactions?.(pageRequestParams, elementRef);
+            const searchParams = parseSearchParams({ ...pageRequestParams, ...requiredTransactionFields });
+            const request: HttpOptions = {
+                loadingContext: loadingContext,
+                clientKey,
+                path: 'transactions',
+                errorLevel: 'error',
+                params: searchParams,
+                signal,
+            };
+            const data = await httpGet<PaginatedResponseDataWithLinks<ITransaction, 'data'>>(request);
+
+            return data;
         },
-        [onUpdateTransactions, elementRef]
+        [balancePlatformId]
     );
 
-    const { canResetFilters, fetching, filters, records, resetFilters, updateFilters, ...paginationProps } = useCursorPaginatedRecords<
+    const { canResetFilters, fetching, filters, records, resetFilters, updateFilters, error, ...paginationProps } = useCursorPaginatedRecords<
         ITransaction,
         'data',
         string,
@@ -44,14 +67,13 @@ function Transactions({
     >(
         useMemo(
             () => ({
-                data: transactions,
+                fetchRecords: getTransactions,
                 dataField: 'data',
                 filterParams: transactionsFilterParams,
                 initialFiltersSameAsDefault: false,
-                limit: DEFAULT_PAGINATED_TRANSACTIONS_LIMIT,
-                onPageRequest,
+                limit: Number(DEFAULT_PAGINATED_TRANSACTIONS_LIMIT),
             }),
-            [transactions]
+            [getTransactions]
         )
     );
 
@@ -81,6 +103,8 @@ function Transactions({
     }, [updateFilters]);
 
     useEffect(() => onFilterChange?.(filters, elementRef), [filters, onFilterChange]);
+
+    const showAlert = useMemo(() => !fetching && error, [fetching, error]);
 
     return (
         <div className="adyen-fp-transactions">
@@ -112,15 +136,19 @@ function Transactions({
                     />
                 </FilterBar>
             )}
-            <TransactionList
-                loading={fetching}
-                transactions={records}
-                onAccountSelected={onAccountSelected}
-                onBalanceAccountSelected={onBalanceAccountSelected}
-                onTransactionSelected={onTransactionSelected}
-                showPagination={true}
-                {...paginationProps}
-            />
+            {showAlert ? (
+                <Alert icon={'cross'}>{error?.message ?? i18n.get('unableToLoadTransactions')}</Alert>
+            ) : (
+                <TransactionList
+                    loading={fetching}
+                    transactions={records}
+                    onAccountSelected={onAccountSelected}
+                    onBalanceAccountSelected={onBalanceAccountSelected}
+                    onTransactionSelected={onTransactionSelected}
+                    showPagination={true}
+                    {...paginationProps}
+                />
+            )}
         </div>
     );
 }

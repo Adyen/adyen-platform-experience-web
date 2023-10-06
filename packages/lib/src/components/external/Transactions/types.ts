@@ -1,4 +1,4 @@
-import { PaginatedResponseDataWithLinks, PaginationProps } from '../../internal/Pagination/types';
+import { PaginationProps } from '../../internal/Pagination/types';
 import UIElement from '../UIElement';
 import { UIElementProps } from '../../types';
 import { ITransaction } from '../../../types/models/api/transactions';
@@ -8,11 +8,12 @@ export const enum TransactionFilterParam {
     BALANCE_ACCOUNT = 'balanceAccountId',
     CREATED_SINCE = 'createdSince',
     CREATED_UNTIL = 'createdUntil',
+    BALANCE_PLATFORM_ID = 'balancePlatform',
+    LIMIT = 'limit',
 }
 
 type OnSelection = (selection: { id: string }) => void;
 export interface TransactionsComponentProps extends UIElementProps {
-    transactions: PaginatedResponseDataWithLinks<ITransaction, 'data'>;
     elementRef?: UIElement | null;
     onFilterChange?: (filters: { [p: string]: string | undefined }, ref?: UIElement | null) => void;
     onTransactionSelected?: OnSelection;
@@ -20,6 +21,7 @@ export interface TransactionsComponentProps extends UIElementProps {
     onAccountSelected?: OnSelection;
     onUpdateTransactions?: (pageRequestParams: any, ref?: UIElement | null) => void;
     name?: string;
+    balancePlatformId?: string;
 }
 export interface TransactionListProps extends PaginationProps {
     transactions: ITransaction[];

@@ -1,10 +1,8 @@
 import { Meta } from '@storybook/preact';
-import { getMyTransactions } from '../../utils/services';
 import { disableControls, enabledDisabledCallbackRadioControls } from '../utils/controls';
 import { TransactionsComponent } from '@adyen/adyen-fp-web';
 import { ElementProps, ElementStory } from '../utils/types';
 import { Container } from '../utils/Container';
-import { BASIC_TRANSACTIONS_LIST } from '../../../../../mocks';
 
 const meta: Meta<ElementProps<typeof TransactionsComponent>> = {
     title: 'screens/Transactions',
@@ -19,27 +17,21 @@ const meta: Meta<ElementProps<typeof TransactionsComponent>> = {
         if (context.loaded.data) {
             Object.assign(args, { transactions: context.loaded.data });
         }
-        return <Container type={'transactionList'} componentConfiguration={args} context={context} />;
+
+        return <Container type={'transactionList'} componentConfiguration={args} context={context} mockedApi={args.mockedApi} />;
     },
 };
 export const Basic: ElementStory<typeof TransactionsComponent> = {
     args: {
-        transactions: { data: BASIC_TRANSACTIONS_LIST, _links: {} },
+        balancePlatformId: '',
+        mockedApi: true,
     },
 };
 
 export const BasicTransactionList: ElementStory<typeof TransactionsComponent> = {
     args: {
-        onUpdateTransactions: async (params, component) => {
-            const transactions = await getMyTransactions(params);
-            component?.update({ transactions });
-        },
+        balancePlatformId: process.env.VITE_BALANCE_PLATFORM,
     },
-    loaders: [
-        async () => ({
-            data: await getMyTransactions(),
-        }),
-    ],
 };
 
 export default meta;

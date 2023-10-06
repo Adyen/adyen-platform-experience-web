@@ -2,7 +2,8 @@ import { getLegalEntityById } from '../../utils/services';
 import { Meta, StoryObj } from '@storybook/preact';
 import { LEGAL_ENTITY_INDIVIDUAL, LEGAL_ENTITY_ORGANIZATION, LEGAL_ENTITY_ORGANIZATION_WITH_TI } from '../../../../../mocks';
 import { Container } from '../utils/Container';
-import { LegalEntityDetailsProps } from '@adyen/adyen-fp-web';
+import { LegalEntityComponent, LegalEntityDetailsProps } from '@adyen/adyen-fp-web';
+import { ElementProps } from '../utils/types';
 
 const LEGAL_ENTITY = {
     Organization: process.env.VITE_ORG_LEGAL_ENTITY_ID,
@@ -13,30 +14,39 @@ const LEGAL_ENTITY = {
 interface ILegalEntityScreen {
     customId?: string;
     legalEntityType?: string;
-    legalEntityProps: LegalEntityDetailsProps;
+    legalEntityProps: ElementProps<typeof LegalEntityComponent>;
 }
 
 const meta: Meta<ILegalEntityScreen> = {
     title: 'screens/LegalEntity',
     render: (args, context) => {
-        return <Container type={'legalEntityDetails'} componentConfiguration={args.legalEntityProps} context={context} />;
+        return (
+            <Container
+                type={'legalEntityDetails'}
+                componentConfiguration={{
+                    ...args.legalEntityProps,
+                    legalEntityId: (context.args.customId || context.args.legalEntityType) ?? '',
+                }}
+                context={context}
+            />
+        );
     },
 };
 export const OrganizationNoTI: StoryObj<ILegalEntityScreen> = {
     args: {
-        legalEntityProps: { legalEntity: LEGAL_ENTITY_ORGANIZATION },
+        legalEntityProps: { legalEntity: LEGAL_ENTITY_ORGANIZATION, legalEntityId: LEGAL_ENTITY_ORGANIZATION.id },
     },
 };
 
 export const OrganizationWithTI: StoryObj<ILegalEntityScreen> = {
     args: {
-        legalEntityProps: { legalEntity: LEGAL_ENTITY_ORGANIZATION_WITH_TI },
+        legalEntityProps: { legalEntity: LEGAL_ENTITY_ORGANIZATION_WITH_TI, legalEntityId: LEGAL_ENTITY_ORGANIZATION_WITH_TI.id },
     },
 };
 
 export const Individual: StoryObj<ILegalEntityScreen> = {
     args: {
-        legalEntityProps: { legalEntity: LEGAL_ENTITY_INDIVIDUAL },
+        legalEntityProps: { legalEntity: LEGAL_ENTITY_INDIVIDUAL, legalEntityId: LEGAL_ENTITY_INDIVIDUAL.id },
     },
 };
 
@@ -51,18 +61,6 @@ export const ApiIntegration: StoryObj<ILegalEntityScreen> = {
     },
     args: {
         legalEntityType: Object.keys(LEGAL_ENTITY)[0],
-    },
-    loaders: [
-        async context => ({
-            data: await getLegalEntityById(context.args.customId || context.args.legalEntityType),
-        }),
-    ],
-    render: (args, context) => {
-        const props: LegalEntityDetailsProps = {
-            ...args.legalEntityProps,
-            legalEntity: context.loaded.data,
-        };
-        return <Container type={'legalEntityDetails'} componentConfiguration={props} context={context} />;
     },
 };
 

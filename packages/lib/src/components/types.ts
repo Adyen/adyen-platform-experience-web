@@ -1,7 +1,7 @@
 import { Amount, AmountExtended } from '../types/shared';
 import Localization from '@src/core/Localization';
 import UIElement from './external/UIElement';
-import Core from '../core';
+import { Core } from '../core';
 import Analytics from '../core/Analytics';
 import BPSession from '../core/FPSession';
 

@@ -11,3 +11,6 @@ const MOCK_MODES = ['mocked', 'demo'];
 export async function enableServerInMockedMode() {
     await mockWorker.start({});
 }
+export function stopMockedServer() {
+    mockWorker.stop();
+}

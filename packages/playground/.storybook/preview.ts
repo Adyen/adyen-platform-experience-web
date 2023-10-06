@@ -11,11 +11,18 @@ const preview: Preview = {
             hideNoControlsWarning: true,
         },
     },
+    argTypes: {
+        mockedApi: {
+            table: {
+                disable: true,
+            },
+        },
+    },
     loaders: [
         async context => {
             const env = (import.meta as any).env;
             if (env.MODE === 'mocked' || env.VITE_MODE === 'demo') await enableServerInMockedMode();
-            const adyenFP = await createAdyenFP(context);
+            const adyenFP = await createAdyenFP({ ...context.coreOptions, loadingContext: process.env.VITE_API_URL });
             return { adyenFP };
         },
     ],

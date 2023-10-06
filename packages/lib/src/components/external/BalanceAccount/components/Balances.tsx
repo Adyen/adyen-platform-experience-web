@@ -1,11 +1,11 @@
 import { useMemo } from 'preact/hooks';
 import { CurrencyCode } from '@src/core/Localization/types';
 import useCoreContext from '@src/core/Context/useCoreContext';
-import { BalanceAccountComponentProps } from '../types';
 import './Balances.scss';
+import { BalanceAccount } from '@src/types';
 
 interface BalancesProps {
-    balances: BalanceAccountComponentProps['balanceAccount']['balances'];
+    balances: BalanceAccount['balances'];
     defaultCurrency: CurrencyCode;
 }
 function Balances(props: BalancesProps) {

@@ -2,14 +2,16 @@ import { CustomTranslations, SupportedLocale } from '@src/core/Localization/type
 import { AmountExtended } from '../types/shared';
 import { AnalyticsOptions } from './Analytics/types';
 import componentsMap from '../components';
-import { ValueOf } from '@src/utils/types';
+import { ValueOf } from '../utils/types';
+
+export type DevEnvironment = 'test' | 'live';
 
 export interface CoreOptions {
     session?: any;
     /**
      * Use test. When you're ready to accept live payments, change the value to one of our {@link https://docs.adyen.com/checkout/drop-in-web#testing-your-integration | live environments}.
      */
-    environment?: 'test' | 'live' | 'live-us' | 'live-au' | 'live-apse' | 'live-in' | string;
+    environment?: DevEnvironment;
 
     /**
      * A public key linked to your web service user, used for {@link https://docs.adyen.com/user-management/client-side-authentication | client-side authentication}.

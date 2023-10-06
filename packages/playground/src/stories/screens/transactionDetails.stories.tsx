@@ -1,5 +1,4 @@
 import { Meta } from '@storybook/preact';
-import { getTransactionById } from '../../utils/services';
 import { TransactionsDetailsComponent } from '@adyen/adyen-fp-web';
 import { ElementProps, ElementStory } from '../utils/types';
 import { Container } from '../utils/Container';
@@ -23,11 +22,9 @@ export const Basic: ElementStory<typeof TransactionsDetailsComponent> = {
 };
 
 export const ApiIntegration: ElementStory<typeof TransactionsDetailsComponent> = {
-    loaders: [
-        async () => ({
-            data: await getTransactionById(DEFAULT_TRANSACTION_ID),
-        }),
-    ],
+    args: {
+        transactionId: DEFAULT_TRANSACTION_ID,
+    },
 };
 
 export default meta;
