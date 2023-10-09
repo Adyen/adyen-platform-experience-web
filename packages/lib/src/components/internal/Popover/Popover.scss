@@ -1,7 +1,7 @@
 @import '@adyen/bento-design-tokens/dist/scss/bento/variables.scss';
 
-.popover {
-    $component-root: &;
+.adyen-fp-popover {
+    $adyen-fp-popover-component-root: &;
 
     background: $popover-background-color;
     border: $popover-border;
@@ -12,7 +12,7 @@
     width: 320px; //TODO: Change this add 200 and 480
     z-index: $popover-z-index;
 
-    &#{$component-root}__arrow::before {
+    &__arrow::before {
         color: transparent;
         display: none;
     }
@@ -30,7 +30,7 @@
     }
 
     &--with-divider {
-        #{$component-root}__footer {
+        #{$adyen-fp-popover-component-root}__footer {
             background-color: $popover-with-divider-footer-background-color;
             border-top: $popover-with-divider-footer-border-top;
             padding-top: $popover-with-divider-footer-padding-top;
@@ -42,15 +42,15 @@
     }
 
     &--without-space {
-        #{$component-root}__header {
+        #{$adyen-fp-popover-component-root}__header {
             padding: $popover-without-space-padding;
         }
 
-        #{$component-root}__content {
+        #{$adyen-fp-popover-component-root}__content {
             padding: $popover-without-space-padding;
         }
 
-        #{$component-root}__footer {
+        #{$adyen-fp-popover-component-root}__footer {
             padding: $popover-without-space-padding;
         }
     }
@@ -84,7 +84,7 @@
           * When the image is present, increase
           * the margin-bottom of the header
           */
-        + #{$component-root}__header {
+        + #{$adyen-fp-popover-component-root}__header {
             padding: $popover-image-header-padding;
         }
     }

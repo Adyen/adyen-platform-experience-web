@@ -76,6 +76,8 @@ export default function DateFilter<T extends DateFilterProps = DateFilterProps>(
     const fromDate = resolveDate(props.from);
     const toDate = resolveDate(props.to);
 
+    console.log(computeDateFilterValue(i18n, fromDate, toDate));
+
     return (
         <BaseFilter<T>
             {...props}
@@ -86,7 +88,7 @@ export default function DateFilter<T extends DateFilterProps = DateFilterProps>(
             rangeEnd={resolveDate(props.rangeEnd)}
             render={renderDateFilterModalBody}
             value={computeDateFilterValue(i18n, fromDate, toDate)}
-            appliedFilterAmount={+!!computeDateFilterValue(i18n, fromDate, toDate)}
+            appliedFilterAmount={+!!computeDateFilterValue(i18n, fromDate, toDate) && props.rangeEnd !== props.rangeStart}
         />
     );
 }

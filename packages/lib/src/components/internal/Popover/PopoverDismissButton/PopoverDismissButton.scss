@@ -1,8 +1,6 @@
 @import '@adyen/bento-design-tokens/dist/scss/bento/variables.scss';
 
-.popover-dismiss-button {
-    $component-root: &;
-
+.adyen-fp-popover-dismiss-button {
     cursor: pointer;
 
     &--on-image {

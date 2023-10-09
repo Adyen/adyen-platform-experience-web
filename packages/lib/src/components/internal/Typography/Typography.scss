@@ -1,8 +1,6 @@
 @import '@adyen/bento-design-tokens/dist/scss/bento/variables.scss';
 
 .adyen-fp-typography {
-    $component-root: &;
-
     // Reset preset browser margin on all elements
     margin: 0;
 

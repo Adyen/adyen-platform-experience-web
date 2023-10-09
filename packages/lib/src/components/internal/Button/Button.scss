@@ -1,10 +1,11 @@
 @import '@adyen/bento-design-tokens/dist/scss/bento/variables.scss';
 
 .adyen-fp-button {
-    border: 0;
     $adyen-fp-button: &;
+
     align-items: center;
     appearance: none;
+    border: 0;
     border-radius: $button-border-radius;
     box-shadow: $button-box-shadow;
     cursor: pointer;
@@ -22,8 +23,6 @@
         line-height: $button-line-height;
         vertical-align: middle;
         white-space: nowrap;
-        font-weight: 600;
-        padding: $button-padding;
     }
 
     &--hidden {

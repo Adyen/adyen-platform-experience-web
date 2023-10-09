@@ -67,11 +67,11 @@ function Popover({
         ? usePopoverPositioner([0, 15], position, targetElement)
         : useFocusTrap(usePopoverPositioner([0, 15], position, targetElement), onCloseFocusTrap);
     const conditionalClasses = () => ({
-        'popover--small': containerSize === PopoverContainerSize.SMALL,
-        'popover--with-divider': !!divider,
-        'popover--large': containerSize === PopoverContainerSize.LARGE,
-        'popover--fit-content': fitContent,
-        'popover--without-space': withoutSpace,
+        'adyen-fp-popover--small': containerSize === PopoverContainerSize.SMALL,
+        'adyen-fp-popover--with-divider': !!divider,
+        'adyen-fp-popover--large': containerSize === PopoverContainerSize.LARGE,
+        'adyen-fp-popover--fit-content': fitContent,
+        'adyen-fp-popover--without-space': withoutSpace,
     });
 
     const handleClickOutside = (e: Event) => {
@@ -81,20 +81,48 @@ function Popover({
         }
     };
 
-    const onEscape = (e: KeyboardEvent) => {
+    const onKeyDown = (e: KeyboardEvent) => {
         if (e.code === InteractionKeyCode.ESCAPE) {
             dismiss();
             targetElement.current.focus();
         }
     };
 
+    const isFocusable = (item: any) => {
+        if (item.tabIndex < 0) {
+            return false;
+        }
+        switch (item.tagName) {
+            case 'A':
+                return !!item.href;
+            case 'INPUT':
+                return item.type !== 'hidden' && !item.disabled;
+            case 'SELECT':
+            case 'TEXTAREA':
+            case 'BUTTON':
+                return !item.disabled;
+            default:
+                return false;
+        }
+    };
+
+    const findFirstFocusableElement = () => {
+        var focusable = Array.from(document.getElementsByClassName('adyen-fp-popover__content')?.[0]?.children ?? []);
+        return focusable.find(item => {
+            return isFocusable(item);
+        });
+    };
+
     useEffect(() => {
+        const focusable = findFirstFocusableElement() as HTMLElement;
+        console.log('focusable ', focusable);
+        focusable?.focus();
         document.addEventListener('click', handleClickOutside);
-        document.addEventListener('keydown', onEscape);
+        document.addEventListener('keydown', onKeyDown);
 
         return () => {
             document.removeEventListener('click', handleClickOutside);
-            document.removeEventListener('keydown', onEscape);
+            document.removeEventListener('keydown', onKeyDown);
         };
     }, []);
 
@@ -105,27 +133,28 @@ function Popover({
                     id="popover"
                     ref={popoverElement}
                     aria-label={ariaLabel}
-                    className={classNames('popover popover-container', conditionalClasses())}
+                    className={classNames('adyen-fp-popover adyen-fp-popover-container', conditionalClasses())}
                     role={PopoverContainerAriaRole.POPOVER}
                 >
+                    {/*TODO: Check this dismissable button*/}
                     {image && (
-                        <div className="popover__image">
+                        <div className="adyen-fp-popover__image">
                             {dismissible && <PopoverDismissButton click={dismiss} />}
                             {image}
                         </div>
                     )}
                     {title && (
-                        <div className={getModifierClasses('popover__header', 'popover__header', modifiers)}>
-                            <div className={'popover__header-title'}>
+                        <div className={getModifierClasses('adyen-fp-popover__header', 'adyen-fp-popover__header', modifiers)}>
+                            <div className={'adyen-fp-popover__header-title'}>
                                 {headerIcon ? { headerIcon } : null}
                                 <PopoverTitle title={title} isImageTitle={Boolean(image)}></PopoverTitle>
                             </div>
                             {dismissible && !image && <PopoverDismissButton click={dismiss} />}
                         </div>
                     )}
-                    {children && <div className="popover__content">{children}</div>}
+                    {children && <div className="adyen-fp-popover__content">{children}</div>}
                     {actions && (
-                        <div className="popover__footer">
+                        <div className="adyen-fp-popover__footer">
                             <ButtonActions actions={actions} layout={actionsLayout}></ButtonActions>
                         </div>
                     )}

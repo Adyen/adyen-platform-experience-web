@@ -1,5 +1,6 @@
 import Button from '@src/components/internal/Button';
 import './PopoverDismissButton.scss';
+
 interface PopoverDismissButtonProps {
     image?: boolean;
     click: () => void;
@@ -7,7 +8,7 @@ interface PopoverDismissButtonProps {
 
 export default function PopoverDismissButton({ image = false, click }: PopoverDismissButtonProps) {
     const getConditionalClasses = (): string => {
-        return image ? 'popover-dismiss-button--on-image' : '';
+        return image ? 'adyen-fp-popover-dismiss-button--on-image' : '';
     };
     return (
         <>

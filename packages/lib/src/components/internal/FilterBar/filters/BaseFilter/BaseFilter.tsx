@@ -7,9 +7,9 @@ import InputText from '../../../FormFields/InputText';
 import { isEmpty } from '@src/utils/validator-utils';
 import '../../../FormFields';
 import './BaseFilter.scss';
-import Popover from '@src/components/internal/Popover/Popover';
 import { ButtonVariants } from '@src/components/internal/Button/types';
 import useUniqueIdentifier from '@src/hooks/element/useUniqueIdentifier';
+import Popover from '@src/components/internal/Popover/Popover';
 
 const isValueEmptyFallback = (value?: string | any[]) => {
     if (typeof value === 'string') {
@@ -57,7 +57,6 @@ export default function BaseFilter<T extends BaseFilterProps = BaseFilterProps>(
     const [editAction, setEditAction] = useState(EditAction.NONE);
     const [editMode, _updateEditMode] = useBooleanState(false);
     const [editModalMounting, updateEditModalMounting] = useBooleanState(false);
-    const [hasEmptyValue, updateHasEmptyValue] = useBooleanState(false);
     const [hasInitialValue, updateHasInitialValue] = useBooleanState(false);
     const [valueChanged, updateValueChanged] = useBooleanState(false);
     const targetElement = useUniqueIdentifier();
@@ -68,7 +67,6 @@ export default function BaseFilter<T extends BaseFilterProps = BaseFilterProps>(
     const onValueUpdated = useCallback(
         (currentValue?: string) => {
             const hasEmptyValue = isValueEmpty(currentValue);
-            updateHasEmptyValue(hasEmptyValue);
             updateValueChanged(hasInitialValue ? currentValue !== props.value : !hasEmptyValue);
         },
         [props.value, hasInitialValue, isValueEmpty]
@@ -84,7 +82,6 @@ export default function BaseFilter<T extends BaseFilterProps = BaseFilterProps>(
             if (mode) {
                 setEditAction(EditAction.NONE);
                 updateValueChanged(false);
-                updateHasEmptyValue(false);
                 updateHasInitialValue(false);
             }
 
@@ -99,7 +96,6 @@ export default function BaseFilter<T extends BaseFilterProps = BaseFilterProps>(
         if (editModalMounting) {
             const hasEmptyValue = isValueEmpty(props.value);
             updateEditModalMounting(false);
-            updateHasEmptyValue(hasEmptyValue);
             updateHasInitialValue(!hasEmptyValue);
         }
     }, [props.value, editModalMounting, isValueEmpty]);
@@ -137,7 +133,11 @@ export default function BaseFilter<T extends BaseFilterProps = BaseFilterProps>(
                     ariaLabel={props.label}
                     variant={'primary'}
                     label={props.label}
-                    classNameModifiers={[...(props.value ? ['with-counter'] : []), ...(props.classNameModifiers ?? [])]}
+                    classNameModifiers={[
+                        ...(props.value ? ['with-counter'] : []),
+                        ...(props.classNameModifiers ?? []),
+                        ...(editMode ? ['active'] : []),
+                    ]}
                     onClick={handleClick}
                     ref={targetElement}
                 >
@@ -148,7 +148,6 @@ export default function BaseFilter<T extends BaseFilterProps = BaseFilterProps>(
                     )}
                 </Button>
             </div>
-
             {editMode && (
                 <Popover
                     title={i18n.get('editFilter')}

@@ -1,8 +1,6 @@
 @import '@adyen/bento-design-tokens/dist/scss/bento/variables.scss';
 
-.button-actions {
-    $component-root: &;
-
+.adyen-fp-button-actions {
     container-type: inline-size;
     flex-grow: 1;
 

@@ -1,11 +1,6 @@
 @import '@adyen/bento-design-tokens/dist/scss/bento/variables.scss';
 
 .adyen-fp-filter {
-    .adyen-fp-button,
-    .adyen-fp-field {
-        width: initial;
-    }
-
     .adyen-fp-button {
         align-items: center;
         appearance: none;
@@ -20,6 +15,14 @@
         padding: 0;
         text-decoration: none;
         user-select: none;
+        width: initial;
+
+        &__label {
+            display: inline-flex;
+            line-height: $filter-button-label-line-height;
+            padding: $filter-button-label-padding;
+            vertical-align: middle;
+        }
 
         &__counter {
             background-color: $filter-button-counter-background-color;
@@ -33,11 +36,10 @@
             display: flex;
             padding: $filter-button-counter-wrapper-padding;
         }
-    }
 
-    .adyen-fp-modal-wrapper--filter {
-        .adyen-fp-modal {
-            width: 400px;
+        &--active {
+            background: linear-gradient(0deg, #ffffff, #ffffff);
+            outline: 1px solid #00112c;
         }
     }
 

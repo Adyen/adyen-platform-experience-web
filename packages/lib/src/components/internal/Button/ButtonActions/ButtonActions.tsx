@@ -2,13 +2,14 @@ import { ButtonActionsLayout, ButtonActionsList } from '@src/components/internal
 import Button from '@src/components/internal/Button';
 import { ButtonVariants } from '@src/components/internal/Button/types';
 import './ButtonActions.scss';
+
 interface ButtonActionsProps {
     actions: ButtonActionsList;
     layout?: ButtonActionsLayout;
 }
 export default function ButtonActions({ actions, layout = ButtonActionsLayout.BUTTONS_END }: ButtonActionsProps) {
     const conditionalClasses = (): string => {
-        return `button-actions--${layout}`;
+        return `adyen-fp-button-actions--${layout}`;
     };
 
     const generateButtonVariantByIndex = (actionIndex: number) => {
@@ -17,8 +18,8 @@ export default function ButtonActions({ actions, layout = ButtonActionsLayout.BU
     };
 
     return (
-        <div className="button-actions">
-            <div className={`button-actions__container-wrapper ${conditionalClasses()}`} role="group">
+        <div className="adyen-fp-button-actions">
+            <div className={`adyen-fp-button-actions__container-wrapper ${conditionalClasses()}`} role="group">
                 {actions.reverse().map((button, index) => (
                     <Button
                         label={button.title}

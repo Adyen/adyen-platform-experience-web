@@ -1,6 +1,5 @@
-.popover-container {
-    $component-root: &;
-    $arrow-border: 2px;
+.adyen-fp-popover-container {
+    $adyen-fp-popover__arrow-border: 2px;
     position: absolute;
 
     &__arrow {
@@ -31,7 +30,7 @@
             bottom: -4px;
 
             &::before {
-                border-bottom-right-radius: $arrow-border;
+                border-bottom-right-radius: $adyen-fp-popover__arrow-border;
                 border-color: transparent currentcolor currentcolor transparent;
             }
         }
@@ -42,7 +41,7 @@
 
             &::before {
                 border-color: currentcolor transparent transparent currentcolor;
-                border-top-left-radius: $arrow-border;
+                border-top-left-radius: $adyen-fp-popover__arrow-border;
             }
         }
 
@@ -51,7 +50,7 @@
 
             &::before {
                 border-color: currentcolor currentcolor transparent transparent;
-                border-top-right-radius: $arrow-border;
+                border-top-right-radius: $adyen-fp-popover__arrow-border;
             }
         }
 
@@ -59,7 +58,7 @@
             left: -6px;
 
             &::before {
-                border-bottom-left-radius: $arrow-border;
+                border-bottom-left-radius: $adyen-fp-popover__arrow-border;
                 border-color: transparent transparent currentcolor currentcolor;
             }
         }
