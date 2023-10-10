@@ -5,8 +5,15 @@ import restamper from './datetime/restamper';
 import { createTranslationsLoader, getLocalizationProxyDescriptors } from './localization-utils';
 import { CurrencyCode, CustomTranslations, Restamp, SupportedLocale, TranslationKey, TranslationOptions } from './types';
 import { formatCustomTranslations, getTranslation, toTwoLetterCode } from './utils';
+import { createScopeChain } from '@src/utils/createScopeChain';
 import { noop, struct } from '@src/utils/common';
 import watchable from '@src/utils/watchable';
+
+type Promised<T> = Promise<T> | T;
+type Translations = Record<string, string>;
+export type TranslationsLoader = (locale: SupportedLocale | string) => Promised<Translations>;
+export type TranslationsPromise = Promise<Translations | void>;
+export type TranslationsScopeChain = ReturnType<typeof createScopeChain<{ readonly translations: TranslationsPromise }>>;
 
 export default class Localization {
     #locale: SupportedLocale | string = FALLBACK_LOCALE;
@@ -16,6 +23,10 @@ export default class Localization {
     #customTranslations?: CustomTranslations;
     #translations: Record<string, string> = defaultTranslation;
     #translationsLoader = createTranslationsLoader.call(this);
+
+    #nestedTranslationsCache = new WeakMap<TranslationsLoader, TranslationsPromise>();
+    #translationsChain: TranslationsScopeChain = createScopeChain();
+    #resetTranslationsChain = noop;
 
     #ready: Promise<void> = Promise.resolve();
     #currentRefresh?: Promise<void>;
@@ -27,6 +38,7 @@ export default class Localization {
     i18n: Omit<Localization, (typeof EXCLUDE_PROPS)[number]> = struct(getLocalizationProxyDescriptors.call(this));
 
     constructor(locale: SupportedLocale | string = FALLBACK_LOCALE) {
+        this.#translationsChainReset();
         this.watch(noop);
         this.locale = locale;
     }
@@ -104,11 +116,19 @@ export default class Localization {
         };
 
         const currentRefresh = (this.#currentRefresh = (async () => {
+            const locale = this.#locale;
+
             this.#translations = await this.#translationsLoader.load(customTranslations);
-            this.#locale = this.#translationsLoader.locale;
             this.#supportedLocales = this.#translationsLoader.supportedLocales;
-            this.#customTranslations = customTranslations;
+            this.#locale = this.#translationsLoader.locale;
             this.#languageCode = toTwoLetterCode(this.#locale);
+            this.#customTranslations = customTranslations;
+
+            if (this.#locale !== locale) {
+                this.#nestedTranslationsCache = new WeakMap();
+            }
+
+            this.#translationsChainReset();
             this.#refreshWatchable.notify();
         })());
 
@@ -120,6 +140,35 @@ export default class Localization {
         });
     }
 
+    #translationsChainReset() {
+        this.#resetTranslationsChain();
+        this.#resetTranslationsChain = () =>
+            this.#translationsChain.add({
+                translations: Promise.resolve(this.#translations),
+            });
+    }
+
+    load(loadTranslations?: TranslationsLoader): ReturnType<TranslationsScopeChain['add']> {
+        if (typeof loadTranslations !== 'function') return noop;
+
+        const promise = this.#nestedTranslationsCache.get(loadTranslations);
+
+        const translations =
+            promise ??
+            (async () => ({ ...(await loadTranslations(this.#locale)) }))().catch(reason => {
+                unloadTranslations(true);
+                console.error(reason);
+            });
+
+        const unloadTranslations = this.#translationsChain.add({ translations });
+
+        if (promise === undefined) {
+            this.#nestedTranslationsCache.set(loadTranslations, translations);
+        }
+
+        return unloadTranslations;
+    }
+
     /**
      * Returns a translated string from a key in the current {@link Localization.locale}
      * @param key - Translation key
@@ -129,6 +178,11 @@ export default class Localization {
     get(key: TranslationKey, options?: TranslationOptions): string {
         const translation = getTranslation(this.#translations, key, options);
         return translation !== null ? translation : key;
+        // for (const scope of this.#translationsChain.current) {
+        //     if (!scope) continue;
+        //     const translation = getTranslation(scope.translations., key, options);
+        //
+        // }
     }
 
     /**
