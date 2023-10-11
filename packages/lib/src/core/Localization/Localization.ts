@@ -14,8 +14,8 @@ import {
     TranslationsLoader,
 } from './types';
 import { formatCustomTranslations, getTranslation, toTwoLetterCode } from './utils';
-import { createScopeChain } from '@src/utils/createScopeChain';
 import { noop, struct } from '@src/utils/common';
+import { createScopeChain } from '@src/utils/scope';
 import watchable from '@src/utils/watchable';
 import { WatchCallable } from '@src/utils/watchable/types';
 
@@ -177,7 +177,7 @@ export default class Localization {
         });
 
         translationsPromise
-            .then(async value => {
+            .then(value => {
                 translations = value;
                 readyCallback?.();
             })
