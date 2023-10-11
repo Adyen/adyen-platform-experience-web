@@ -10,6 +10,10 @@ export type SupportedLocale = keyof typeof translations;
 
 export type TranslationKey = keyof ExtractReturnType<(typeof translations)['en-US']>;
 
+type Promised<T> = Promise<T> | T;
+export type Translations = Record<string, string>;
+export type TranslationsLoader = (locale: SupportedLocale | string) => Promised<Translations>;
+
 export type TranslationOptions = {
     values?: Record<string, string | number>;
     count?: number;

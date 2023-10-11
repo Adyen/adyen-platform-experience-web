@@ -3,17 +3,27 @@ import { defaultTranslation, FALLBACK_LOCALE } from './constants/locale';
 import { DEFAULT_DATETIME_FORMAT, DEFAULT_LOCALES, EXCLUDE_PROPS } from './constants/localization';
 import restamper from './datetime/restamper';
 import { createTranslationsLoader, getLocalizationProxyDescriptors } from './localization-utils';
-import { CurrencyCode, CustomTranslations, Restamp, SupportedLocale, TranslationKey, TranslationOptions } from './types';
+import {
+    CurrencyCode,
+    CustomTranslations,
+    Restamp,
+    SupportedLocale,
+    TranslationKey,
+    TranslationOptions,
+    Translations,
+    TranslationsLoader,
+} from './types';
 import { formatCustomTranslations, getTranslation, toTwoLetterCode } from './utils';
 import { createScopeChain } from '@src/utils/createScopeChain';
 import { noop, struct } from '@src/utils/common';
 import watchable from '@src/utils/watchable';
+import { WatchCallable } from '@src/utils/watchable/types';
 
-type Promised<T> = Promise<T> | T;
-type Translations = Record<string, string>;
-export type TranslationsLoader = (locale: SupportedLocale | string) => Promised<Translations>;
-export type TranslationsPromise = Promise<Translations | void>;
-export type TranslationsScopeChain = ReturnType<typeof createScopeChain<{ readonly translations: TranslationsPromise }>>;
+type TranslationsScopeChain = ReturnType<
+    typeof createScopeChain<{
+        readonly translations: Translations;
+    }>
+>;
 
 export default class Localization {
     #locale: SupportedLocale | string = FALLBACK_LOCALE;
@@ -24,7 +34,7 @@ export default class Localization {
     #translations: Record<string, string> = defaultTranslation;
     #translationsLoader = createTranslationsLoader.call(this);
 
-    #nestedTranslationsCache = new WeakMap<TranslationsLoader, TranslationsPromise>();
+    #nestedTranslationsCache = new WeakMap<TranslationsLoader, Promise<Translations>>();
     #translationsChain: TranslationsScopeChain = createScopeChain();
     #resetTranslationsChain = noop;
 
@@ -144,27 +154,37 @@ export default class Localization {
         this.#resetTranslationsChain();
         this.#resetTranslationsChain = () =>
             this.#translationsChain.add({
-                translations: Promise.resolve(this.#translations),
+                translations: this.#translations,
             });
     }
 
-    load(loadTranslations?: TranslationsLoader): ReturnType<TranslationsScopeChain['add']> {
+    load(loadTranslations?: TranslationsLoader, readyCallback?: WatchCallable<any>): ReturnType<TranslationsScopeChain['add']> {
         if (typeof loadTranslations !== 'function') return noop;
 
-        const promise = this.#nestedTranslationsCache.get(loadTranslations);
+        let translations = {} as Translations;
 
-        const translations =
-            promise ??
-            (async () => ({ ...(await loadTranslations(this.#locale)) }))().catch(reason => {
+        const promise = this.#nestedTranslationsCache.get(loadTranslations);
+        const translationsPromise = promise ?? (async () => ({ ...(await loadTranslations(this.#locale)) }))();
+
+        if (promise === undefined) {
+            this.#nestedTranslationsCache.set(loadTranslations, translationsPromise);
+        }
+
+        const unloadTranslations = this.#translationsChain.add({
+            get translations() {
+                return translations;
+            },
+        });
+
+        translationsPromise
+            .then(async value => {
+                translations = value;
+                readyCallback?.();
+            })
+            .catch(reason => {
                 unloadTranslations(true);
                 console.error(reason);
             });
-
-        const unloadTranslations = this.#translationsChain.add({ translations });
-
-        if (promise === undefined) {
-            this.#nestedTranslationsCache.set(loadTranslations, translations);
-        }
 
         return unloadTranslations;
     }
@@ -176,13 +196,13 @@ export default class Localization {
      * @returns Translated string
      */
     get(key: TranslationKey, options?: TranslationOptions): string {
-        const translation = getTranslation(this.#translations, key, options);
-        return translation !== null ? translation : key;
-        // for (const scope of this.#translationsChain.current) {
-        //     if (!scope) continue;
-        //     const translation = getTranslation(scope.translations., key, options);
-        //
-        // }
+        for (const scope of this.#translationsChain.current) {
+            if (!scope) continue;
+            const translation = getTranslation(scope.translations, key, options);
+            if (translation !== null) return translation;
+        }
+
+        return key;
     }
 
     /**
