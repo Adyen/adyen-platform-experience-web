@@ -1,6 +1,6 @@
 import { ValidatorMode, ValidatorRules } from '../Validator/types';
 import { ValueOf } from '../types';
-import Localization from '@src/core/Localization';
+import { CoreContextI18n } from '@src/core/Context/types';
 
 export interface FieldErrors {
     [key: string]: any;
@@ -36,7 +36,7 @@ export type FormProps<FormSchema extends Record<string, unknown>, Props = {}> = 
     defaultData?: Partial<FormSchema>;
     fieldProblems?: any;
     schema: SchemaKeys<FormSchema>[];
-    i18n?: Localization['i18n'];
+    i18n?: CoreContextI18n;
 } & { [k in keyof Props]?: Props[k] };
 
 export interface Form<FormSchema extends Record<string, unknown>> extends FormState<FormSchema> {
