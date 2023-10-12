@@ -154,23 +154,25 @@ export default class Localization {
             });
     }
 
-    load(loadTranslations?: TranslationsLoader, readyCallback?: WatchCallable<any>): ReturnType<TranslationsScopeChain['add']> {
-        if (typeof loadTranslations !== 'function') return noop;
+    load(loadTranslations: TranslationsLoader, readyCallback?: WatchCallable<any>): ReturnType<TranslationsScopeChain['add']> {
+        if (typeof loadTranslations !== 'function') throw new TypeError('Function required to load translations');
 
         let translations = {} as Translations;
 
         const promise = this.#nestedTranslationsCache.get(loadTranslations);
         const translationsPromise = promise ?? (async () => ({ ...(await loadTranslations(this.#locale)) }))();
 
+        const scopeRecord = this.#translationsChain.add(
+            struct({
+                translations: { get: () => translations },
+            })
+        );
+
+        const [, unloadTranslations] = scopeRecord;
+
         if (promise === undefined) {
             this.#nestedTranslationsCache.set(loadTranslations, translationsPromise);
         }
-
-        const unloadTranslations = this.#translationsChain.add({
-            get translations() {
-                return translations;
-            },
-        });
 
         translationsPromise
             .then(value => {
@@ -182,7 +184,7 @@ export default class Localization {
                 console.error(reason);
             });
 
-        return unloadTranslations;
+        return scopeRecord;
     }
 
     watch(callback: TranslationsRefreshWatchCallback) {

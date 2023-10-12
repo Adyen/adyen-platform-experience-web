@@ -16,19 +16,24 @@ const _useTranslations = (loadTranslations: CoreContextI18n['load'], translation
 
     const translationsLoader = useMemo(
         () =>
-            (async locale => {
+            (customTranslations || translations) &&
+            ((async locale => {
                 const _translations = translations?.[locale];
                 return {
                     ...(typeof _translations === 'function' ? await _translations() : _translations),
                     ...(!!customTranslations?.[locale] && customTranslations[locale]),
                 };
-            }) as TranslationsLoader,
+            }) as TranslationsLoader),
         [customTranslations, translations]
     );
 
     useMemo(() => {
         unloadTranslations.current();
-        unloadTranslations.current = loadTranslations(translationsLoader, translationsReadyCallback.current);
+        unloadTranslations.current = noop;
+
+        if (typeof translationsLoader === 'function') {
+            [, unloadTranslations.current] = loadTranslations(translationsLoader, translationsReadyCallback.current);
+        }
     }, [loadTranslations, translationsLoader]);
 
     useEffect(() => () => unloadTranslations.current(), []);

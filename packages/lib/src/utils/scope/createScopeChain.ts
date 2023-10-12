@@ -1,5 +1,5 @@
 import { struct } from '@src/utils/common';
-import { Scope, ScopeChain, ScopeChainOperation } from './types';
+import { Scope, ScopeChain, ScopeChainOperation, ScopeProxy } from './types';
 
 const createScopeChain = (() => {
     const _append = ((scope, root = null, current = null) => {
@@ -47,14 +47,21 @@ const createScopeChain = (() => {
                 prev: { writable: true },
             }) as NonNullable<Scope<T>>;
 
+            const scopeProxy = struct({
+                next: { get: () => scope.next },
+                prev: { get: () => scope.prev },
+            }) as ScopeProxy<T>;
+
             [root, current] = _append(scope, root, current);
 
-            return (isolatedDetach: boolean = false) => {
+            const detachScope = (isolatedDetach: boolean = false) => {
                 if ((isolatedDetach as any) !== true) {
                     if (scope.next === scope.prev && scope.prev === null && scope !== root) return;
                     [root, current] = _truncateAt(scope, root, current);
                 } else [root, current] = _remove(scope, root, current);
             };
+
+            return [scopeProxy, detachScope] as const;
         };
 
         return struct({
