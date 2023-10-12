@@ -12,18 +12,15 @@ import {
     TranslationOptions,
     Translations,
     TranslationsLoader,
+    TranslationsRefreshWatchable,
+    TranslationsRefreshWatchCallback,
+    TranslationsScopeChain,
 } from './types';
 import { formatCustomTranslations, getTranslation, toTwoLetterCode } from './utils';
 import { noop, struct } from '@src/utils/common';
 import { createScopeChain } from '@src/utils/scope';
 import watchable from '@src/utils/watchable';
 import { WatchCallable } from '@src/utils/watchable/types';
-
-type TranslationsScopeChain = ReturnType<
-    typeof createScopeChain<{
-        readonly translations: Translations;
-    }>
->;
 
 export default class Localization {
     #locale: SupportedLocale | string = FALLBACK_LOCALE;
@@ -41,10 +38,9 @@ export default class Localization {
     #ready: Promise<void> = Promise.resolve();
     #currentRefresh?: Promise<void>;
     #markRefreshAsDone?: () => void;
-    #refreshWatchable = watchable({ timestamp: () => performance.now() });
+    #refreshWatchable: TranslationsRefreshWatchable = watchable({ timestamp: () => performance.now() });
     #restamp: Restamp = restamper();
 
-    watch = this.#refreshWatchable.watch.bind(undefined);
     i18n: Omit<Localization, (typeof EXCLUDE_PROPS)[number]> = struct(getLocalizationProxyDescriptors.call(this));
 
     constructor(locale: SupportedLocale | string = FALLBACK_LOCALE) {
@@ -187,6 +183,10 @@ export default class Localization {
             });
 
         return unloadTranslations;
+    }
+
+    watch(callback: TranslationsRefreshWatchCallback) {
+        return this.#refreshWatchable.watch(callback);
     }
 
     /**

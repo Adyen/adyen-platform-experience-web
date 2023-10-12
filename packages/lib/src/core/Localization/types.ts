@@ -1,6 +1,8 @@
 import CURRENCY_CODES from './constants/currency-codes';
 import CURRENCY_DECIMALS from './constants/currency-decimals';
 import translations from './translations';
+import { ScopeChain } from '@src/utils/scope/types';
+import { Watchable } from '@src/utils/watchable/types';
 
 type ExtractReturnType<T> = T extends () => Promise<infer U> ? U : never;
 
@@ -11,8 +13,13 @@ export type SupportedLocale = keyof typeof translations;
 export type TranslationKey = keyof ExtractReturnType<(typeof translations)['en-US']>;
 
 type Promised<T> = Promise<T> | T;
+
 export type Translations = Record<string, string>;
 export type TranslationsLoader = (locale: SupportedLocale | string) => Promised<Translations>;
+export type TranslationsScopeChain = ScopeChain<{ readonly translations: Translations }>;
+
+export type TranslationsRefreshWatchable = Watchable<{ timestamp: number }>;
+export type TranslationsRefreshWatchCallback = NonNullable<Parameters<TranslationsRefreshWatchable['watch']>[0]>;
 
 export type TranslationOptions = {
     values?: Record<string, string | number>;
