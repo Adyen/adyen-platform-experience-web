@@ -1,21 +1,22 @@
 import classnames from 'classnames';
-import { useState } from 'preact/hooks';
 import useCoreContext from '@src/core/Context/useCoreContext';
 import DataGrid from '../../../internal/DataGrid';
 import Pagination from '../../../internal/Pagination';
 import { getLabel } from './utils';
 import Button from '@src/components/internal/Button';
-import { DetailsOptions, TransactionListProps } from '../types';
+import { TransactionListProps } from '../types';
 import { ITransaction } from '../../../../types/models/api/transactions';
 import Modal from '@src/components/internal/Modal';
 import { lazy, Suspense } from 'preact/compat';
 import Spinner from '@src/components/internal/Spinner';
 import { TranslationKey } from '@src/core/Localization/types';
 import { ModalSize } from '@src/components/internal/Modal/types';
+import useModalDetails from '@src/hooks/useModalDetails/useModalDetails';
+import { useMemo } from 'preact/hooks';
 
 type SelectedDetail = {
     title: TranslationKey;
-    selection: { type: 'account-holder' | 'transaction' | 'balance-account'; detail: string };
+    selection: { type: 'accountHolder' | 'transaction' | 'balanceAccount'; detail: string };
     modalSize?: ModalSize;
 };
 
@@ -28,8 +29,8 @@ function ModalContent({ selection }: SelectedDetail) {
     return (
         <Suspense fallback={<Spinner size="medium" />}>
             {selection.type === 'transaction' && <TransactionData transactionId={selection.detail} />}
-            {selection.type === 'account-holder' && <AccountHolderDetails accountHolderId={selection.detail} />}
-            {selection.type === 'balance-account' && <BalanceAccountDetails balanceAccountId={selection.detail} />}
+            {selection.type === 'accountHolder' && <AccountHolderDetails accountHolderId={selection.detail} />}
+            {selection.type === 'balanceAccount' && <BalanceAccountDetails balanceAccountId={selection.detail} />}
         </Suspense>
     );
 }
@@ -48,13 +49,25 @@ function TransactionList({
     const fields = ['id', 'type', 'balanceAccountId', 'accountHolderId', 'amount', 'createdAt', 'description'] as const;
     const columns = fields.map(key => ({ key, label: i18n.get(getLabel(key)) }));
 
-    const [selectedDetail, setSelectedDetail] = useState<SelectedDetail | null>(null);
+    const modalOptions = useMemo(
+        () => ({
+            transaction: {
+                showDetails: [showDetails?.transaction],
+                callback: onTransactionSelected,
+            },
+            accountHolder: {
+                showDetails: [showDetails?.accountHolder],
+                callback: onAccountSelected,
+            },
+            balanceAccount: {
+                showDetails: [showDetails?.balanceAccount],
+                callback: onBalanceAccountSelected,
+            },
+        }),
+        [showDetails, onTransactionSelected, onAccountSelected, onBalanceAccountSelected]
+    );
 
-    const detailsToShow: DetailsOptions = {
-        transaction: !!onTransactionSelected || showDetails?.transaction,
-        balanceAccount: !!onBalanceAccountSelected || showDetails?.balanceAccount,
-        accountHolder: !!onAccountSelected || showDetails?.accountHolder,
-    };
+    const { updateDetails, resetDetails, detailsToShow, selectedDetail } = useModalDetails(modalOptions);
 
     return (
         <>
@@ -64,16 +77,15 @@ function TransactionList({
                 loading={loading}
                 customCells={{
                     id: ({ value }) =>
-                        detailsToShow?.transaction ? (
+                        detailsToShow.transaction ? (
                             <Button
                                 variant={'link'}
                                 onClick={() => {
-                                    onTransactionSelected?.({ id: value });
-                                    setSelectedDetail({
+                                    updateDetails({
                                         title: 'transactionDetails',
                                         selection: { type: 'transaction', detail: value },
                                         modalSize: 'extra-large',
-                                    });
+                                    }).callback({ id: value });
                                 }}
                             >
                                 {value}
@@ -82,12 +94,15 @@ function TransactionList({
                             value
                         ),
                     balanceAccountId: ({ value }) =>
-                        detailsToShow?.balanceAccount ? (
+                        detailsToShow.balanceAccount ? (
                             <Button
                                 variant={'link'}
                                 onClick={() => {
-                                    onBalanceAccountSelected?.({ id: value });
-                                    setSelectedDetail({ title: 'balanceAccount', selection: { type: 'balance-account', detail: value } });
+                                    updateDetails({
+                                        title: 'balanceAccount',
+                                        selection: { type: 'balanceAccount', detail: value },
+                                        modalSize: 'extra-large',
+                                    }).callback({ id: value });
                                 }}
                             >
                                 {value}
@@ -96,12 +111,15 @@ function TransactionList({
                             value
                         ),
                     accountHolderId: ({ value }) =>
-                        detailsToShow?.accountHolder ? (
+                        detailsToShow.accountHolder ? (
                             <Button
                                 variant={'link'}
                                 onClick={() => {
-                                    onAccountSelected?.({ id: value });
-                                    setSelectedDetail({ title: 'accountHolder', selection: { type: 'account-holder', detail: value } });
+                                    updateDetails({
+                                        title: 'accountHolder',
+                                        selection: { type: 'accountHolder', detail: value },
+                                        modalSize: 'extra-large',
+                                    }).callback({ id: value });
                                 }}
                             >
                                 {value}
@@ -143,7 +161,7 @@ function TransactionList({
             <Modal
                 title={selectedDetail ? i18n.get(selectedDetail.title) : ''}
                 isOpen={!!selectedDetail}
-                onClose={() => setSelectedDetail(null)}
+                onClose={resetDetails}
                 size={selectedDetail?.modalSize ?? 'large'}
             >
                 {selectedDetail && <ModalContent {...selectedDetail} />}

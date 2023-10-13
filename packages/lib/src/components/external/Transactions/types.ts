@@ -12,7 +12,7 @@ export const enum TransactionFilterParam {
     LIMIT = 'limit',
 }
 
-type OnSelection = (selection: { id: string }) => void;
+export type OnSelection = (args: { id: string; showModal: () => void }) => void;
 export interface TransactionsComponentProps extends UIElementProps {
     elementRef?: UIElement | null;
     onFilterChange?: (filters: { [p: string]: string | undefined }, ref?: UIElement | null) => void;
