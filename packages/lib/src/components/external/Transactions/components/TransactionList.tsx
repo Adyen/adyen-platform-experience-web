@@ -9,31 +9,8 @@ import { ITransaction } from '../../../../types/models/api/transactions';
 import Modal from '@src/components/internal/Modal';
 import { lazy, Suspense } from 'preact/compat';
 import Spinner from '@src/components/internal/Spinner';
-import { TranslationKey } from '@src/core/Localization/types';
-import { ModalSize } from '@src/components/internal/Modal/types';
 import useModalDetails from '@src/hooks/useModalDetails/useModalDetails';
 import { useMemo } from 'preact/hooks';
-
-type SelectedDetail = {
-    title: TranslationKey;
-    selection: { type: 'accountHolder' | 'transaction' | 'balanceAccount'; detail: string };
-    modalSize?: ModalSize;
-};
-
-function ModalContent({ selection }: SelectedDetail) {
-    const TransactionData = lazy(() => import('../../TransactionDetails/components/TransactionDetails'));
-    const AccountHolderDetails = lazy(() => import('../../AccountHolder/components/AccountHolderDetails'));
-    const BalanceAccountDetails = lazy(() => import('../../BalanceAccount/components/BalanceAccountDetails'));
-
-    if (!selection) return null;
-    return (
-        <Suspense fallback={<Spinner size="medium" />}>
-            {selection.type === 'transaction' && <TransactionData transactionId={selection.detail} />}
-            {selection.type === 'accountHolder' && <AccountHolderDetails accountHolderId={selection.detail} />}
-            {selection.type === 'balanceAccount' && <BalanceAccountDetails balanceAccountId={selection.detail} />}
-        </Suspense>
-    );
-}
 
 function TransactionList({
     loading,
@@ -49,25 +26,36 @@ function TransactionList({
     const fields = ['id', 'type', 'balanceAccountId', 'accountHolderId', 'amount', 'createdAt', 'description'] as const;
     const columns = fields.map(key => ({ key, label: i18n.get(getLabel(key)) }));
 
-    const modalOptions = useMemo(
+    const transactionDetails = useMemo(
         () => ({
-            transaction: {
-                showDetails: [showDetails?.transaction],
-                callback: onTransactionSelected,
-            },
-            accountHolder: {
-                showDetails: [showDetails?.accountHolder],
-                callback: onAccountSelected,
-            },
-            balanceAccount: {
-                showDetails: [showDetails?.balanceAccount],
-                callback: onBalanceAccountSelected,
-            },
+            showDetails: [showDetails?.transaction],
+            callback: onTransactionSelected,
         }),
-        [showDetails, onTransactionSelected, onAccountSelected, onBalanceAccountSelected]
+        [showDetails?.transaction, onTransactionSelected]
+    );
+    const accountHolderDetails = useMemo(
+        () => ({
+            showDetails: [showDetails?.accountHolder],
+            callback: onAccountSelected,
+        }),
+        [showDetails?.accountHolder, onAccountSelected]
+    );
+    const balanceAccountDetails = useMemo(
+        () => ({
+            showDetails: [showDetails?.balanceAccount],
+            callback: onBalanceAccountSelected,
+        }),
+        [showDetails?.balanceAccount, onBalanceAccountSelected]
+    );
+
+    const modalOptions = useMemo(
+        () => ({ transaction: transactionDetails, accountHolder: accountHolderDetails, balanceAccount: balanceAccountDetails }),
+        [transactionDetails, accountHolderDetails, balanceAccountDetails]
     );
 
     const { updateDetails, resetDetails, detailsToShow, selectedDetail } = useModalDetails(modalOptions);
+
+    const ModalContent = lazy(() => import('./ModalContent'));
 
     return (
         <>
@@ -164,7 +152,11 @@ function TransactionList({
                 onClose={resetDetails}
                 size={selectedDetail?.modalSize ?? 'large'}
             >
-                {selectedDetail && <ModalContent {...selectedDetail} />}
+                {selectedDetail && (
+                    <Suspense fallback={<Spinner />}>
+                        <ModalContent {...selectedDetail} />
+                    </Suspense>
+                )}
             </Modal>
         </>
     );

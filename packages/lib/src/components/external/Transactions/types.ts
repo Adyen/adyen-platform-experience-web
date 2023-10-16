@@ -2,6 +2,8 @@ import { PaginationProps } from '../../internal/Pagination/types';
 import UIElement from '../UIElement';
 import { UIElementProps } from '../../types';
 import { ITransaction } from '../../../types/models/api/transactions';
+import { TranslationKey } from '@src/core/Localization/types';
+import { ModalSize } from '@src/components/internal/Modal/types';
 
 export const enum TransactionFilterParam {
     ACCOUNT_HOLDER = 'accountHolderId',
@@ -38,4 +40,9 @@ export type DetailsOptions = {
     transaction?: boolean;
     balanceAccount?: boolean;
     accountHolder?: boolean;
+};
+export type SelectedDetail = {
+    title: TranslationKey;
+    selection: { type: 'accountHolder' | 'transaction' | 'balanceAccount'; detail: string };
+    modalSize?: ModalSize;
 };
