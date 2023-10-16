@@ -12,6 +12,8 @@ import Spinner from '@src/components/internal/Spinner';
 import useModalDetails from '@src/hooks/useModalDetails/useModalDetails';
 import { useMemo } from 'preact/hooks';
 
+const ModalContent = lazy(() => import('./ModalContent'));
+
 function TransactionList({
     loading,
     transactions,
@@ -54,8 +56,6 @@ function TransactionList({
     );
 
     const { updateDetails, resetDetails, detailsToShow, selectedDetail } = useModalDetails(modalOptions);
-
-    const ModalContent = lazy(() => import('./ModalContent'));
 
     return (
         <>
