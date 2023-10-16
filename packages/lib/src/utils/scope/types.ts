@@ -1,5 +1,9 @@
-export type Scope<T extends {} = {}> = ({ [K in 'next' | 'prev']: Scope<T> } & T) | null;
-export type ScopeProxy<T extends {} = {}> = Readonly<Pick<NonNullable<Scope<T>>, 'next' | 'prev'>>;
+type ChainedScopePointer = 'next' | 'prev';
+
+export type Scope<T extends {} = {}> = ({ [K in ChainedScopePointer]: Scope<T> } & T) | null;
+
+export type ScopeProxy<T extends {} = {}> = Omit<NonNullable<Scope<T>>, ChainedScopePointer> &
+    Readonly<Pick<NonNullable<Scope<T>>, ChainedScopePointer>> & { chained: boolean };
 
 export type ScopeChain<T extends {} = {}> = Readonly<{
     add: (data?: T) => Readonly<[ScopeProxy<T>, (isolatedDetach?: boolean) => void]>;

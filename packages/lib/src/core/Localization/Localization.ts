@@ -148,10 +148,8 @@ export default class Localization {
 
     #translationsChainReset() {
         this.#resetTranslationsChain();
-        this.#resetTranslationsChain = () =>
-            this.#translationsChain.add({
-                translations: this.#translations,
-            });
+        const [, detachTranslationsRoot] = this.#translationsChain.add({ translations: this.#translations });
+        this.#resetTranslationsChain = detachTranslationsRoot.bind(void 0, false);
     }
 
     load(loadTranslations: TranslationsLoader, readyCallback?: WatchCallable<any>): ReturnType<TranslationsScopeChain['add']> {
@@ -199,7 +197,7 @@ export default class Localization {
      */
     get(key: TranslationKey, options?: TranslationOptions): string {
         for (const scope of this.#translationsChain.current) {
-            if (!scope) continue;
+            if (!(scope && scope.translations)) continue;
             const translation = getTranslation(scope.translations, key, options);
             if (translation !== null) return translation;
         }
