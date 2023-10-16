@@ -1,0 +1,59 @@
+name: Setup
+
+description: Setup Node.js, cache and install dependencies
+
+inputs:
+  NPM_TOKEN:
+    description: 'NPM token used to authenticate'
+  GITHUB_TOKEN:
+    description: 'Github token used to checkout repo'
+    default: ${{ github.token }}
+
+runs:
+  using: composite
+
+  steps:
+    - uses: actions/setup-node@v3
+      with:
+        node-version: 18.x
+
+    - name: Set up Git user
+      shell: bash
+      run: |
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+
+    - name: Set up Node
+      uses: actions/setup-node@v3
+      with:
+        node-version: 18
+
+    - name: Cache node modules
+      uses: actions/cache@v3
+      id: cache-npm
+      env:
+        cache-name: cache-node-modules
+      with:
+        path: node_modules
+        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-build-${{ env.cache-name }}-
+          ${{ runner.os }}-build-
+          ${{ runner.os }}-
+
+    - if: ${{ steps.cache-npm.outputs.cache-hit != 'true' }}
+      name: List the state of node modules
+      shell: bash
+      run: npm list
+      continue-on-error: true
+
+    # Skip post-install scripts here, as a malicious
+    # script could steal NODE_AUTH_TOKEN.
+    - if: ${{ steps.cache-npm.outputs.cache-hit != 'true' }}
+      shell: bash
+      run: |
+        npm config set //registry.npmjs.org/:_authToken ${{ inputs.NPM_TOKEN }}
+        npm install --ignore-script
+      env:
+        NODE_AUTH_TOKEN: ${{ inputs.NPM_READ_TOKEN }}
+        HUSKY: "0"

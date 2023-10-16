@@ -1,0 +1,28 @@
+name: Pull Request workflow
+
+on:
+  pull_request:
+    branches:
+      - main # or the name of your default branch
+    types: [opened, synchronize, reopened]
+    paths-ignore:
+      - README.md
+      - LICENSE
+      - .gitignore
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout the repo
+        uses: actions/checkout@v3
+
+      - name: Run the preliminary setup steps
+        uses: ./.github/actions/setup-env
+
+      - name: Run unit tests
+        run: npm run test
+
+      - name: Build library
+        run: npm run build
