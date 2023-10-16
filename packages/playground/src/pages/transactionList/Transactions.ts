@@ -15,7 +15,7 @@ try {
                 // do something here with the updated filters
                 // avoid refetching the transactions here
             },
-            onTransactionSelected: ({ id, showModal }) => {
+            onTransactionSelected: ({ showModal }) => {
                 showModal();
                 // window.location.assign(`/src/pages/transaction/?id=${id}`);
             },
@@ -24,9 +24,6 @@ try {
             },
             onAccountSelected: ({ id }) => {
                 window.location.assign(`/src/pages/accountHolder/?id=${id}`);
-            },
-            showDetails: {
-                transaction: true,
             },
         })
         .mount('.transactions-component-container');
