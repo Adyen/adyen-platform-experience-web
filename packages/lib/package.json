@@ -50,6 +50,7 @@
         "format": "prettier --write 'src/**/*.{ts,js,css, scss, html}'"
     },
     "devDependencies": {
+        "@playwright/test": "^1.38.0",
         "@preact/preset-vite": "^2.5.0",
         "@testing-library/jest-dom": "^5.16.5",
         "@testing-library/preact": "^3.2.3",

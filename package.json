@@ -27,6 +27,8 @@
         "lint": "npm run lint -w @adyen/adyen-fp-web",
         "test": "npm run test -w @adyen/adyen-fp-web",
         "test:coverage": "npm run test:coverage -w @adyen/adyen-fp-web",
+        "test:e2e": "playwright test",
+        "test:e2e:debug": "cross-env PWDEBUG=console playwright test --debug --project local-chrome",
         "type-check": "npm run type-check -w @adyen/adyen-fp-web",
         "types:watch": "npm run types:watch -w @adyen/adyen-fp-web && npm run types:watch -w @adyen/adyen-fp-web-playground",
         "format:all": "npm run format -w @adyen/adyen-fp-web-playground && npm run format -w @adyen/adyen-fp-web",
