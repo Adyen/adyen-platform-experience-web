@@ -15,8 +15,9 @@ try {
                 // do something here with the updated filters
                 // avoid refetching the transactions here
             },
-            onTransactionSelected: ({ id }) => {
-                window.location.assign(`/src/pages/transaction/?id=${id}`);
+            onTransactionSelected: ({ showModal }) => {
+                showModal();
+                // window.location.assign(`/src/pages/transaction/?id=${id}`);
             },
             onBalanceAccountSelected: ({ id }) => {
                 window.location.assign(`/src/pages/balanceAccount/?id=${id}`);

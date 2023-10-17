@@ -1,56 +1,85 @@
+$adyen-fp-modal-sizes: (
+    'fluid': (
+        'width': max-content,
+    ),
+    'small': (
+        'width': 480px,
+    ),
+    'large': (
+        'width': 800px,
+    ),
+    'extra-large': (
+        'height': 85%,
+        'width': 1200px,
+    ),
+);
+
 .adyen-fp-modal-wrapper {
     align-items: center;
+    background: rgba(0, 17, 44, 0.5);
+    bottom: 0;
+    content: '';
     display: flex;
     height: 100%;
+    justify-content: center;
     left: 0;
+    opacity: 0;
     overflow-y: auto;
     overscroll-behavior-y: contain;
-    padding: 24px;
     position: fixed;
+    right: 0;
     top: 0;
+    transition: opacity 0.2s linear;
     visibility: hidden;
     width: 100%;
     z-index: 10;
 
-    &::before {
-        background: rgba(0, 17, 44, 0.5);
-        content: '';
-        height: 100%;
-        left: 0;
-        opacity: 0;
-        position: fixed;
-        top: 0;
-        transition: opacity 0.2s linear;
-        width: 100%;
-        z-index: 10;
-    }
-
     &--open {
+        opacity: 1;
         visibility: visible;
-
-        &::before {
-            opacity: 1;
-        }
 
         .adyen-fp-modal {
             opacity: 1;
             transform: scale(1);
         }
     }
+
+    &--dismissible {
+        cursor: pointer;
+    }
 }
 
 .adyen-fp-modal {
     background-color: var(--adyen-fp-color-white);
     border-radius: var(--adyen-fp-border-radius-large);
-    margin: auto;
+    cursor: initial;
     opacity: 0;
-    position: relative;
-    transform: scale(0.7);
+    overflow-y: auto;
+    position: fixed;
     transition: opacity 0.2s ease, visibility 0.2s ease;
-    z-index: 11;
+    z-index: 20;
 
     [dir='rtl'] & {
         direction: rtl;
+    }
+
+    @each $name, $dimensions in $adyen-fp-modal-sizes {
+        &--#{$name} {
+            // Check if the height key exists in the map, otherwise use 'auto'
+            height: if(map-has-key($dimensions, 'height'), map-get($dimensions, 'height'), auto);
+
+            max-width: map-get($dimensions, 'width');
+
+            width: 95vw;
+        }
+    }
+
+    &--full-screen {
+        border-radius: 0;
+        height: 100%;
+        max-height: 100%;
+        max-width: 100%;
+        width: 100%;
     }
 
     // @include tablet-portrait-up {
@@ -60,27 +89,31 @@
     // }
 
     &__content {
-        padding: 24px 16px;
+        padding: var(--adyen-fp-spacing-medium);
     }
 
     &__header {
         align-items: center;
-        border-bottom: 1px solid var(--adyen-fp-color-gray-light);
+        color: var(--adyen-fp-color-black);
         display: flex;
-        font-size: var(--adyen-fp-font-size-medium);
-        font-weight: bold;
+        font-size: var(--adyen-fp-font-size-base);
+        font-weight: var(--adyen-fp-font-weight-semi-bold);
         justify-content: space-between;
         padding: 14px 14px 10px 16px;
+
+        &--with-border-bottom {
+            border-bottom: 1px solid var(--adyen-fp-color-gray-light);
+        }
     }
 
     &__header-icon {
-        background: transparent;
-        border: 0;
-        border-radius: 50%;
+        background: var(--adyen-fp-color-white);
+        border: 1px solid var(--adyen-fp-color-gray);
+        border-radius: 8px;
+
         cursor: pointer;
         height: 38px;
-        margin: 0;
-        padding: 0;
+        padding: 10px;
         transition: background 0.1s linear;
         width: 38px;
 

@@ -20,6 +20,8 @@ interface DataGridProps<Item extends { [k: string]: any }> {
     outline: boolean;
     scrollable: boolean;
     Footer?: any;
+    allowRowClick?: boolean;
+    handleRowClick?: (...args: any) => void;
     customCells?: {
         [k in keyof Partial<Item>]: ({ key, value, item }: { key: k; value: Item[k]; item: Item }) => ComponentChild;
     };
@@ -67,7 +69,11 @@ function DataGridBody<T extends { [k: string]: any }>(props: DataGridProps<T>) {
     return (
         <tbody className="adyen-fp-data-grid__body">
             {props.data.map(item => (
-                <tr className="adyen-fp-data-grid__row" key={item}>
+                <tr
+                    className={classnames('adyen-fp-data-grid__row', { 'adyen-fp-data-grid--clickable-row': props.allowRowClick })}
+                    key={item}
+                    onClick={props.allowRowClick ? () => props.handleRowClick?.(item) : undefined}
+                >
                     {props.columns.map(({ key }) => {
                         if (props.customCells?.[key])
                             return (

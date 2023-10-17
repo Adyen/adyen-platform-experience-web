@@ -2,6 +2,8 @@ import { PaginationProps } from '../../internal/Pagination/types';
 import UIElement from '../UIElement';
 import { UIElementProps } from '../../types';
 import { ITransaction } from '../../../types/models/api/transactions';
+import { TranslationKey } from '@src/core/Localization/types';
+import { ModalSize } from '@src/components/internal/Modal/types';
 
 export const enum TransactionFilterParam {
     ACCOUNT_HOLDER = 'accountHolderId',
@@ -12,13 +14,14 @@ export const enum TransactionFilterParam {
     LIMIT = 'limit',
 }
 
-type OnSelection = (selection: { id: string }) => void;
+export type OnSelection = (selection: { id: string; showModal: () => void }) => void;
 export interface TransactionsComponentProps extends UIElementProps {
     elementRef?: UIElement | null;
     onFilterChange?: (filters: { [p: string]: string | undefined }, ref?: UIElement | null) => void;
     onTransactionSelected?: OnSelection;
     onBalanceAccountSelected?: OnSelection;
     onAccountSelected?: OnSelection;
+    showDetails?: DetailsOptions;
     onUpdateTransactions?: (pageRequestParams: any, ref?: UIElement | null) => void;
     name?: string;
     balancePlatformId?: string;
@@ -30,4 +33,16 @@ export interface TransactionListProps extends PaginationProps {
     onAccountSelected?: OnSelection;
     showPagination: boolean;
     loading: boolean;
+    showDetails?: DetailsOptions;
 }
+
+export type DetailsOptions = {
+    transaction?: boolean;
+    balanceAccount?: boolean;
+    accountHolder?: boolean;
+};
+export type SelectedDetail = {
+    title: TranslationKey;
+    selection: { type: 'accountHolder' | 'transaction' | 'balanceAccount'; detail: string };
+    modalSize?: ModalSize;
+};

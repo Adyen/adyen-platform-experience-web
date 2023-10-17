@@ -7,7 +7,7 @@ import Alert from '@src/components/internal/Alert';
 import Spinner from '@src/components/internal/Spinner';
 import { TransactionData } from '@src/components/external/TransactionDetails/components/TransactionData';
 
-function TransactionsDetails({ transaction, transactionId }: TransactionDetailsComponentProps) {
+function TransactionsDetails({ transaction, transactionId, title }: TransactionDetailsComponentProps) {
     const { i18n } = useCoreContext();
 
     const { data, error, isFetching } = useFetch<ITransaction>({
@@ -18,7 +18,7 @@ function TransactionsDetails({ transaction, transactionId }: TransactionDetailsC
     const transactionData = transaction ?? data;
     return (
         <div className="adyen-fp-transaction">
-            <div className="adyen-fp-title">{i18n.get('transactionDetails')}</div>
+            {title && <div className="adyen-fp-title">{i18n.get(title)}</div>}
 
             {isFetching && <Spinner />}
 

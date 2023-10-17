@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
+import { useCallback, useEffect, useMemo } from 'preact/hooks';
 import useCoreContext from '@src/core/Context/useCoreContext';
 import FilterBar from '../../../internal/FilterBar';
 import TextFilter from '../../../internal/FilterBar/filters/TextFilter';
@@ -31,6 +31,7 @@ function Transactions({
     onBalanceAccountSelected,
     onFilterChange,
     onTransactionSelected,
+    showDetails,
     balancePlatformId,
 }: TransactionsComponentProps) {
     const { i18n, loadingContext, clientKey } = useCoreContext();
@@ -146,6 +147,7 @@ function Transactions({
                     onBalanceAccountSelected={onBalanceAccountSelected}
                     onTransactionSelected={onTransactionSelected}
                     showPagination={true}
+                    showDetails={showDetails}
                     {...paginationProps}
                 />
             )}

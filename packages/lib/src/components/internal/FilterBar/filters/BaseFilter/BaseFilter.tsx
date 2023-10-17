@@ -15,13 +15,16 @@ const isValueEmptyFallback = (value?: string) => !value || isEmpty(value);
 const renderFallback = (() => {
     const DefaultEditModalBody = <T extends BaseFilterProps>(props: FilterEditModalRenderProps<T>) => {
         const { editAction, name, onChange, onValueUpdated } = props;
-        const [ currentValue, setCurrentValue ] = useState(props.value);
+        const [currentValue, setCurrentValue] = useState(props.value);
 
-        const handleInput = useCallback((e: Event) => {
-            const value = (e.target as HTMLInputElement).value.trim();
-            setCurrentValue(value);
-            onValueUpdated(value);
-        }, [onValueUpdated]);
+        const handleInput = useCallback(
+            (e: Event) => {
+                const value = (e.target as HTMLInputElement).value.trim();
+                setCurrentValue(value);
+                onValueUpdated(value);
+            },
+            [onValueUpdated]
+        );
 
         useEffect(() => {
             if (editAction === EditAction.CLEAR) {
@@ -35,9 +38,11 @@ const renderFallback = (() => {
             }
         }, [currentValue, editAction, onChange, onValueUpdated]);
 
-        return <Field label={props.label} classNameModifiers={props.classNameModifiers ?? []} name={name}>
-            <InputText name={name} value={currentValue} onInput={handleInput} />
-        </Field>;
+        return (
+            <Field label={props.label} classNameModifiers={props.classNameModifiers ?? []} name={name}>
+                <InputText name={name} value={currentValue} onInput={handleInput} />
+            </Field>
+        );
     };
 
     return <T extends BaseFilterProps>(props: FilterEditModalRenderProps<T>) => <DefaultEditModalBody<T> {...props} />;
@@ -45,26 +50,29 @@ const renderFallback = (() => {
 
 export default function BaseFilter<T extends BaseFilterProps = BaseFilterProps>({ render, ...props }: FilterProps<T>) {
     const { i18n } = useCoreContext();
-    const [ editAction, setEditAction ] = useState(EditAction.NONE);
-    const [ editMode, _updateEditMode ] = useBooleanState(false);
-    const [ editModalMounting, updateEditModalMounting ] = useBooleanState(false);
-    const [ hasEmptyValue, updateHasEmptyValue ] = useBooleanState(false);
-    const [ hasInitialValue, updateHasInitialValue ] = useBooleanState(false);
-    const [ valueChanged, updateValueChanged ] = useBooleanState(false);
+    const [editAction, setEditAction] = useState(EditAction.NONE);
+    const [editMode, _updateEditMode] = useBooleanState(false);
+    const [editModalMounting, updateEditModalMounting] = useBooleanState(false);
+    const [hasEmptyValue, updateHasEmptyValue] = useBooleanState(false);
+    const [hasInitialValue, updateHasInitialValue] = useBooleanState(false);
+    const [valueChanged, updateValueChanged] = useBooleanState(false);
 
     const isValueEmpty = useMemo(() => props.isValueEmpty ?? isValueEmptyFallback, [props.isValueEmpty]);
     const renderModalBody = useMemo(() => render ?? renderFallback<T>, [render]);
 
-    const onValueUpdated = useCallback((currentValue?: string) => {
-        const hasEmptyValue = isValueEmpty(currentValue);
-        updateHasEmptyValue(hasEmptyValue);
-        updateValueChanged(hasInitialValue ? currentValue !== props.value : !hasEmptyValue);
-    }, [props.value, hasInitialValue, isValueEmpty]);
+    const onValueUpdated = useCallback(
+        (currentValue?: string) => {
+            const hasEmptyValue = isValueEmpty(currentValue);
+            updateHasEmptyValue(hasEmptyValue);
+            updateValueChanged(hasInitialValue ? currentValue !== props.value : !hasEmptyValue);
+        },
+        [props.value, hasInitialValue, isValueEmpty]
+    );
 
     const applyFilter = useCallback(() => setEditAction(EditAction.APPLY), []);
     const clearFilter = useCallback(() => setEditAction(EditAction.CLEAR), []);
 
-    const [ closeEditModal, handleClick ] = useMemo(() => {
+    const [closeEditModal, handleClick] = useMemo(() => {
         const updateEditMode = (mode: boolean) => () => {
             if (mode === editMode) return;
 
@@ -79,10 +87,7 @@ export default function BaseFilter<T extends BaseFilterProps = BaseFilterProps>(
             updateEditModalMounting(mode);
         };
 
-        return [
-            updateEditMode(false),
-            updateEditMode(true),
-        ];
+        return [updateEditMode(false), updateEditMode(true)];
     }, [editMode]);
 
     useEffect(() => {
@@ -108,29 +113,23 @@ export default function BaseFilter<T extends BaseFilterProps = BaseFilterProps>(
                 onClick={handleClick}
             />
 
-            <Modal
-                title={i18n.get('editFilter')}
-                classNameModifiers={['filter']}
-                isOpen={editMode}
-                onClose={closeEditModal}
-            >
-                { editMode && <>
-                    { renderModalBody({ ...props, editAction, onValueUpdated }) }
+            <Modal title={i18n.get('editFilter')} classNameModifiers={['filter']} isOpen={editMode} onClose={closeEditModal} size={'small'}>
+                {editMode && (
+                    <>
+                        {renderModalBody({ ...props, editAction, onValueUpdated })}
 
-                    <div className="adyen-fp-modal__footer">
-                        <Button
-                            label={i18n.get('clear')}
-                            classNameModifiers={['ghost', 'small']}
-                            onClick={clearFilter}
-                            disabled={hasEmptyValue} />
+                        <div className="adyen-fp-modal__footer">
+                            <Button
+                                label={i18n.get('clear')}
+                                classNameModifiers={['ghost', 'small']}
+                                onClick={clearFilter}
+                                disabled={hasEmptyValue}
+                            />
 
-                        <Button
-                            label={i18n.get('apply')}
-                            classNameModifiers={['small']}
-                            onClick={applyFilter}
-                            disabled={!valueChanged} />
-                    </div>
-                </> }
+                            <Button label={i18n.get('apply')} classNameModifiers={['small']} onClick={applyFilter} disabled={!valueChanged} />
+                        </div>
+                    </>
+                )}
             </Modal>
         </div>
     );
