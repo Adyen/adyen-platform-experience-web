@@ -23,3 +23,5 @@ export function resolveEnvironment(env?: DevEnvironment): string {
     };
     return env ? envs[env] : FALLBACK_CONTEXT;
 }
+
+export const normalizeLoadingContext = (loadingContext: string) => (loadingContext.endsWith('/') ? loadingContext : `${loadingContext}/`);

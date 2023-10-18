@@ -3,6 +3,7 @@ import { httpGet } from '@src/core/Services/requests/http';
 import { ErrorLevel, HttpOptions } from '@src/core/Services/requests/types';
 import useCoreContext from '@src/core/Context/useCoreContext';
 import { parseSearchParams } from '@src/core/Services/requests/utils';
+import { normalizeLoadingContext } from '@src/core/utils';
 
 interface State<T> {
     data?: T;
@@ -42,7 +43,6 @@ export function useFetch<T = unknown>(
         data: undefined,
         isFetching: config.fetchOptions.enabled !== false,
     };
-
     const fetchReducer = (state: State<T>, action: Action<T>): State<T> => {
         switch (action.type) {
             case 'loading':
@@ -58,7 +58,7 @@ export function useFetch<T = unknown>(
 
     const [state, dispatch] = useReducer(fetchReducer, initialState);
 
-    const url = new URL(`${loadingContext}${config.url}`);
+    const url = new URL(`${normalizeLoadingContext(loadingContext ?? '')}${config.url}`);
 
     const request: HttpOptions = {
         loadingContext: config.loadingContext ?? loadingContext,
