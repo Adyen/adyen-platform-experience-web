@@ -64,7 +64,7 @@ export default defineConfig(async ({ mode }) => {
         },
         define: {
             'process.env.VITE_BALANCE_PLATFORM': JSON.stringify(BTLApi.balancePlatform || null),
-            'process.env.VITE_MODE': JSON.stringify(import.meta.env?.VITE_MODE ?? mode),
+            'process.env.VITE_MODE': JSON.stringify(process.env.VITE_MODE ?? mode),
             'process.env.VITE_ORG_LEGAL_ENTITY_ID': JSON.stringify(envIds.legalEntities.organization || null),
             'process.env.VITE_IND_LEGAL_ENTITY_ID': JSON.stringify(envIds.legalEntities.individual || null),
             'process.env.VITE_SOLE_PROPRIETORSHIP_LEGAL_ENTITY_ID': JSON.stringify(envIds.legalEntities.soleProprietorship || null),
