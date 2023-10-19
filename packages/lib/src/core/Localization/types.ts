@@ -16,7 +16,8 @@ type Promised<T> = Promise<T> | T;
 
 export type Translations = Record<string, string>;
 export type TranslationsLoader = (locale: SupportedLocale | string) => Promised<Translations>;
-export type TranslationsScopeChain = ScopeChain<{ readonly translations: Translations }>;
+export type TranslationsScopeData = { readonly translations: Translations };
+export type TranslationsScopeChain = ScopeChain<TranslationsScopeData>;
 
 export type TranslationsRefreshWatchable = Watchable<{ timestamp: number }>;
 export type TranslationsRefreshWatchCallback = NonNullable<Parameters<TranslationsRefreshWatchable['watch']>[0]>;

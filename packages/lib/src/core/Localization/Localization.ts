@@ -148,8 +148,8 @@ export default class Localization {
 
     #translationsChainReset() {
         this.#resetTranslationsChain();
-        const [, detachTranslationsRoot] = this.#translationsChain.add({ translations: this.#translations });
-        this.#resetTranslationsChain = detachTranslationsRoot.bind(void 0, false);
+        const rootScopeHandle = this.#translationsChain.add({ translations: this.#translations });
+        this.#resetTranslationsChain = rootScopeHandle.detach.bind(void 0, false);
     }
 
     load(loadTranslations: TranslationsLoader, readyCallback?: WatchCallable<any>): ReturnType<TranslationsScopeChain['add']> {
@@ -160,13 +160,11 @@ export default class Localization {
         const promise = this.#nestedTranslationsCache.get(loadTranslations);
         const translationsPromise = promise ?? (async () => ({ ...(await loadTranslations(this.#locale)) }))();
 
-        const scopeRecord = this.#translationsChain.add(
-            struct({
-                translations: { get: () => translations },
-            })
-        );
-
-        const [, unloadTranslations] = scopeRecord;
+        const scopeHandle = this.#translationsChain.add({
+            get translations() {
+                return translations;
+            },
+        });
 
         if (promise === undefined) {
             this.#nestedTranslationsCache.set(loadTranslations, translationsPromise);
@@ -178,11 +176,11 @@ export default class Localization {
                 readyCallback?.();
             })
             .catch(reason => {
-                unloadTranslations(true);
+                scopeHandle.detach(true);
                 console.error(reason);
             });
 
-        return scopeRecord;
+        return scopeHandle;
     }
 
     watch(callback: TranslationsRefreshWatchCallback) {
@@ -197,8 +195,9 @@ export default class Localization {
      */
     get(key: TranslationKey, options?: TranslationOptions): string {
         for (const scope of this.#translationsChain.current) {
-            if (!(scope && scope.translations)) continue;
-            const translation = getTranslation(scope.translations, key, options);
+            const translations = scope?.data?.translations;
+            if (!translations) continue;
+            const translation = getTranslation(translations, key, options);
             if (translation !== null) return translation;
         }
 

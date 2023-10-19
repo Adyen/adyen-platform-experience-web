@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
-import { TranslationsLoader } from '@src/core/Localization/types';
-import { EMPTY_OBJECT, noop } from '@src/utils/common';
+import { TranslationsLoader, TranslationsScopeData } from '@src/core/Localization/types';
+import { EMPTY_OBJECT } from '@src/utils/common';
+import { ScopeHandle } from '@src/utils/scope/types';
 import { CoreContextI18n } from '../types';
 
 export type UseTranslationsOptions = {
@@ -11,7 +12,7 @@ export type UseTranslationsOptions = {
 const _useTranslations = (loadTranslations: CoreContextI18n['load'], translationOptions: UseTranslationsOptions = EMPTY_OBJECT) => {
     const { customTranslations, translations } = translationOptions;
     const [, setLastRefreshTimestamp] = useState(performance.now());
-    const unloadTranslations = useRef(noop);
+    const translationsScopeHandle = useRef<ScopeHandle<TranslationsScopeData>>();
     const translationsReadyCallback = useRef(() => setLastRefreshTimestamp(performance.now()));
 
     const translationsLoader = useMemo(
@@ -28,15 +29,15 @@ const _useTranslations = (loadTranslations: CoreContextI18n['load'], translation
     );
 
     useMemo(() => {
-        unloadTranslations.current();
-        unloadTranslations.current = noop;
+        translationsScopeHandle.current?.detach();
+        translationsScopeHandle.current = void 0;
 
         if (typeof translationsLoader === 'function') {
-            [, unloadTranslations.current] = loadTranslations(translationsLoader, translationsReadyCallback.current);
+            translationsScopeHandle.current = loadTranslations(translationsLoader, translationsReadyCallback.current);
         }
     }, [loadTranslations, translationsLoader]);
 
-    useEffect(() => () => unloadTranslations.current(), []);
+    useEffect(() => () => translationsScopeHandle.current?.detach(), []);
 };
 
 export default _useTranslations;

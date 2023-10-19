@@ -1,8 +1,8 @@
 import { struct } from '@src/utils/common';
-import { Scope, ScopeChain, ScopeChainOperation, ScopeProxy } from './types';
+import { Scope, ScopeChain, ScopeChainOperation, ScopeHandle } from './types';
 
 const createScopeChain = (() => {
-    const _isChained = <T extends {} = {}>(scope: NonNullable<Scope<T>>, root: Scope<T> = null): boolean =>
+    const _isChained = <T = any>(scope: NonNullable<Scope<T>>, root: Scope<T> = null): boolean =>
         scope.next !== scope.prev || (scope.prev === null && scope === root);
 
     const _append = ((scope, root = null, current = null) => {
@@ -45,38 +45,51 @@ const createScopeChain = (() => {
         return [root, current];
     }) as ScopeChainOperation;
 
-    return <T extends {} = {}>() => {
+    return <T = any>() => {
         let root: Scope<T> = null;
         let current: Scope<T> = null;
+        let size: number = 0;
 
-        const _createScope: ScopeChain<T>['add'] = (data?: T) => {
-            const extendedPropDescriptors = data && Object.getOwnPropertyDescriptors(data);
-            let scopeIsDetached = true;
+        const _createScope: ScopeChain<T>['add'] = data => {
+            const beforeCurrentScope = current;
 
             const scope = struct({
-                ...extendedPropDescriptors,
+                data: { value: data },
                 next: { writable: true },
                 prev: { writable: true },
             }) as NonNullable<Scope<T>>;
 
-            const scopeProxy = struct({
-                ...extendedPropDescriptors,
-                chained: { get: () => !scopeIsDetached },
-                next: { get: () => scope.next },
-                prev: { get: () => scope.prev },
-            }) as ScopeProxy<T>;
-
             [root, current] = _append(scope, root, current);
 
-            const detachScope = (isolatedDetach: boolean = false) => {
-                [root, current] = ((isolatedDetach as any) === true ? _remove : _truncateAt)(scope, root, current);
-                scopeIsDetached = false;
-            };
+            if (beforeCurrentScope !== current) size++;
 
-            return [scopeProxy, detachScope] as const;
+            return struct({
+                chained: { get: () => _isChained(scope, root) },
+                data: { value: data },
+                detach: {
+                    value: (isolatedDetach: boolean = false) => {
+                        const _root = root;
+                        const _current = current;
+                        const isolation = (isolatedDetach as any) === true;
+
+                        [root, current] = (isolation ? _remove : _truncateAt)(scope, root, current);
+
+                        if (root === _root && current === _current) return;
+
+                        if (isolation) size--;
+                        else if (root === current) size = root === null ? 0 : 1;
+                        else {
+                            size = 0;
+                            let _current = root;
+                            while (_current && size++) _current = _current.next;
+                        }
+                    },
+                },
+            }) as ScopeHandle<T>;
         };
 
         return struct({
+            size: { get: () => size },
             add: { value: _createScope },
             current: {
                 *get(): ScopeChain<T>['current'] {
