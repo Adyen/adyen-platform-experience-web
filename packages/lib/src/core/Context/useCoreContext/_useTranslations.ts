@@ -1,19 +1,16 @@
-import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
-import { TranslationsLoader, TranslationsScopeData } from '@src/core/Localization/types';
-import { EMPTY_OBJECT } from '@src/utils/common';
-import { ScopeHandle } from '@src/utils/scope/types';
-import { CoreContextI18n } from '../types';
+import { useEffect, useMemo, useRef } from 'preact/hooks';
+import { TranslationsLoader } from '@src/core/Localization/types';
+import { EMPTY_OBJECT, noop } from '@src/utils/common';
+import { CoreContextI18n, CoreContextScope, CoreContextThis, UseTranslationsOptions } from '../types';
 
-export type UseTranslationsOptions = {
-    customTranslations?: Record<string, Awaited<ReturnType<TranslationsLoader>>>;
-    translations?: Record<string, Awaited<ReturnType<TranslationsLoader>> | (() => ReturnType<TranslationsLoader>)>;
-};
-
-const _useTranslations = (loadTranslations: CoreContextI18n['load'], translationOptions: UseTranslationsOptions = EMPTY_OBJECT) => {
+export default function _useTranslations(
+    this: any,
+    loadTranslations: CoreContextI18n['load'],
+    translationOptions: UseTranslationsOptions = EMPTY_OBJECT
+) {
     const { customTranslations, translations } = translationOptions;
-    const [, setLastRefreshTimestamp] = useState(performance.now());
-    const translationsScopeHandle = useRef<ScopeHandle<TranslationsScopeData>>();
-    const translationsReadyCallback = useRef(() => setLastRefreshTimestamp(performance.now()));
+    const scopeHandle = useRef<CoreContextScope>();
+    const scopeUnstack = useRef<ReturnType<CoreContextThis['stack']>>(noop);
 
     const translationsLoader = useMemo(
         () =>
@@ -28,16 +25,25 @@ const _useTranslations = (loadTranslations: CoreContextI18n['load'], translation
         [customTranslations, translations]
     );
 
+    const withUnmountCallback = useMemo(() => {
+        const _unmount = () => scopeHandle.current?.detach();
+        return () => _unmount;
+    }, []);
+
     useMemo(() => {
-        translationsScopeHandle.current?.detach();
-        translationsScopeHandle.current = void 0;
+        scopeHandle.current?.detach();
+        scopeHandle.current = void 0;
 
         if (typeof translationsLoader === 'function') {
-            translationsScopeHandle.current = loadTranslations(translationsLoader, translationsReadyCallback.current);
+            scopeHandle.current = loadTranslations.call(this, translationsLoader);
+            scopeUnstack.current = (this as CoreContextThis).stack(scopeHandle.current);
         }
     }, [loadTranslations, translationsLoader]);
 
-    useEffect(() => () => translationsScopeHandle.current?.detach(), []);
-};
+    useEffect(() => {
+        scopeUnstack.current();
+        scopeUnstack.current = noop;
+    }, [loadTranslations, translationsLoader]);
 
-export default _useTranslations;
+    useEffect(withUnmountCallback, []);
+}

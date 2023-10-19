@@ -9,16 +9,21 @@ export default function _useCoreContextI18n(this: any, i18n: Localization['i18n'
     useEffect(() => i18n.watch(() => setLastRefreshTimestamp(i18n.lastRefreshTimestamp)), [i18n]);
 
     return useMemo(() => {
-        const { customTranslations, lastRefreshTimestamp, load, ready, watch, ...restDescriptors } = Object.getOwnPropertyDescriptors(i18n);
+        const { customTranslations, get, lastRefreshTimestamp, load, ready, watch, ...restDescriptors } = Object.getOwnPropertyDescriptors(i18n);
 
+        const __get__ = get.value as Localization['get'];
         const __load__ = load.value as Localization['load'];
         const __this__ = this;
+
+        get.value = function (this: any, ...args) {
+            /*if (this === __this__)*/ return __get__(...args);
+        } as CoreContextI18n['get'];
 
         load.value = function (this: any, ...args) {
             if (this === __this__) return __load__(...args);
             throw new Error('Illegal invocation');
         } as CoreContextI18n['load'];
 
-        return struct({ ...restDescriptors, load }) as CoreContextI18n;
+        return struct({ ...restDescriptors, get, load }) as CoreContextI18n;
     }, [i18n, lastRefreshTimestamp]);
 }
