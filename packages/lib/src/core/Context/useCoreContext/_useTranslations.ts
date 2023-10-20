@@ -1,16 +1,18 @@
-import { useEffect, useMemo, useRef } from 'preact/hooks';
-import { TranslationsLoader } from '@src/core/Localization/types';
-import { EMPTY_OBJECT, noop } from '@src/utils/common';
-import { CoreContextI18n, CoreContextScope, CoreContextThis, UseTranslationsOptions } from '../types';
+import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
+import { EMPTY_OBJECT } from '@src/utils/common';
+import { CoreContextI18n, CoreContextScope, UseTranslationsOptions } from '../types';
+import { TranslationsLoader } from './_translations/types';
 
-export default function _useTranslations(
-    this: any,
-    loadTranslations: CoreContextI18n['load'],
-    translationOptions: UseTranslationsOptions = EMPTY_OBJECT
-) {
+const _useTranslations = (loadTranslations: CoreContextI18n['load'], translationOptions: UseTranslationsOptions = EMPTY_OBJECT) => {
     const { customTranslations, translations } = translationOptions;
+    const [, setLastRefresh] = useState(performance.now());
     const scopeHandle = useRef<CoreContextScope>();
-    const scopeUnstack = useRef<ReturnType<CoreContextThis['stack']>>(noop);
+    const doneCallback = useRef((err: Error | null) => err === null && setLastRefresh(performance.now()));
+
+    const effectWithUnmountCallback = useMemo(() => {
+        const unmount = () => scopeHandle.current?.detach();
+        return () => unmount;
+    }, []);
 
     const translationsLoader = useMemo(
         () =>
@@ -25,25 +27,16 @@ export default function _useTranslations(
         [customTranslations, translations]
     );
 
-    const withUnmountCallback = useMemo(() => {
-        const _unmount = () => scopeHandle.current?.detach();
-        return () => _unmount;
-    }, []);
-
     useMemo(() => {
         scopeHandle.current?.detach();
         scopeHandle.current = void 0;
 
         if (typeof translationsLoader === 'function') {
-            scopeHandle.current = loadTranslations.call(this, translationsLoader);
-            scopeUnstack.current = (this as CoreContextThis).stack(scopeHandle.current);
+            scopeHandle.current = loadTranslations.call(this, translationsLoader, doneCallback.current);
         }
     }, [loadTranslations, translationsLoader]);
 
-    useEffect(() => {
-        scopeUnstack.current();
-        scopeUnstack.current = noop;
-    }, [loadTranslations, translationsLoader]);
+    useEffect(effectWithUnmountCallback, []);
+};
 
-    useEffect(withUnmountCallback, []);
-}
+export default _useTranslations;

@@ -10,17 +10,12 @@ import {
     SupportedLocale,
     TranslationKey,
     TranslationOptions,
-    Translations,
-    TranslationsLoader,
     TranslationsRefreshWatchable,
     TranslationsRefreshWatchCallback,
-    TranslationsScopeChain,
 } from './types';
 import { formatCustomTranslations, getTranslation, toTwoLetterCode } from './utils';
-import { noop, struct } from '@src/utils/common';
-import { createScopeChain } from '@src/utils/scope';
+import { EMPTY_OBJECT, noop, struct } from '@src/utils/common';
 import watchable from '@src/utils/watchable';
-import { WatchCallable } from '@src/utils/watchable/types';
 
 export default class Localization {
     #locale: SupportedLocale | string = FALLBACK_LOCALE;
@@ -31,10 +26,6 @@ export default class Localization {
     #translations: Record<string, string> = defaultTranslation;
     #translationsLoader = createTranslationsLoader.call(this);
 
-    #nestedTranslationsCache = new WeakMap<TranslationsLoader, Promise<Translations>>();
-    #translationsChain: TranslationsScopeChain = createScopeChain();
-    #resetTranslationsChain = noop;
-
     #ready: Promise<void> = Promise.resolve();
     #currentRefresh?: Promise<void>;
     #markRefreshAsDone?: () => void;
@@ -44,7 +35,6 @@ export default class Localization {
     i18n: Omit<Localization, (typeof EXCLUDE_PROPS)[number]> = struct(getLocalizationProxyDescriptors.call(this));
 
     constructor(locale: SupportedLocale | string = FALLBACK_LOCALE) {
-        this.#translationsChainReset();
         this.watch(noop);
         this.locale = locale;
     }
@@ -107,6 +97,10 @@ export default class Localization {
         this.#restamp.tz = timezone;
     }
 
+    get translations() {
+        return this.#translations;
+    }
+
     #refreshTranslations(customTranslations?: CustomTranslations) {
         if (this.#markRefreshAsDone === undefined) {
             this.#ready = new Promise<void>(resolve => {
@@ -122,65 +116,22 @@ export default class Localization {
         };
 
         const currentRefresh = (this.#currentRefresh = (async () => {
-            const locale = this.#locale;
-
             this.#translations = await this.#translationsLoader.load(customTranslations);
             this.#supportedLocales = this.#translationsLoader.supportedLocales;
             this.#locale = this.#translationsLoader.locale;
             this.#languageCode = toTwoLetterCode(this.#locale);
             this.#customTranslations = customTranslations;
-
-            if (this.#locale !== locale) {
-                this.#nestedTranslationsCache = new WeakMap();
-            }
-
-            this.#translationsChainReset();
             this.#refreshWatchable.notify();
         })());
 
         currentRefresh.then(currentRefreshDone).catch(reason => {
             currentRefreshDone();
-            // handle current refresh promise rejection
-            // throw reason;
-            console.error(reason);
-        });
-    }
-
-    #translationsChainReset() {
-        this.#resetTranslationsChain();
-        const rootScopeHandle = this.#translationsChain.add({ translations: this.#translations });
-        this.#resetTranslationsChain = rootScopeHandle.detach.bind(void 0, false);
-    }
-
-    load(loadTranslations: TranslationsLoader, readyCallback?: WatchCallable<any>): ReturnType<TranslationsScopeChain['add']> {
-        if (typeof loadTranslations !== 'function') throw new TypeError('Function required to load translations');
-
-        let translations = {} as Translations;
-
-        const promise = this.#nestedTranslationsCache.get(loadTranslations);
-        const translationsPromise = promise ?? (async () => ({ ...(await loadTranslations(this.#locale)) }))();
-
-        const scopeHandle = this.#translationsChain.add({
-            get translations() {
-                return translations;
-            },
-        });
-
-        if (promise === undefined) {
-            this.#nestedTranslationsCache.set(loadTranslations, translationsPromise);
-        }
-
-        translationsPromise
-            .then(value => {
-                translations = value;
-                readyCallback?.();
-            })
-            .catch(reason => {
-                scopeHandle.detach(true);
+            if (import.meta.env.DEV) {
+                // handle current refresh promise rejection
+                // throw reason;
                 console.error(reason);
-            });
-
-        return scopeHandle;
+            }
+        });
     }
 
     watch(callback: TranslationsRefreshWatchCallback) {
@@ -191,17 +142,12 @@ export default class Localization {
      * Returns a translated string from a key in the current {@link Localization.locale}
      * @param key - Translation key
      * @param options - Translation options
+     * @param translations — Translations object
      * @returns Translated string
      */
-    get(key: TranslationKey, options?: TranslationOptions): string {
-        for (const scope of this.#translationsChain.current) {
-            const translations = scope?.data?.translations;
-            if (!translations) continue;
-            const translation = getTranslation(translations, key, options);
-            if (translation !== null) return translation;
-        }
-
-        return key;
+    get(key: TranslationKey, options: TranslationOptions = EMPTY_OBJECT, translations = this.#translations): string {
+        const translation = getTranslation(translations, key, options);
+        return translation !== null ? translation : key;
     }
 
     /**

@@ -1,17 +1,22 @@
-type ChainedScopePointer = 'next' | 'prev';
+export type Scope<T = any> =
+    | ({
+          next: Set<ScopeWithPrev<T>> | null;
+          prev: Scope<T>;
+      } & { data: T })
+    | null;
 
-export type Scope<T = any> = ({ [K in ChainedScopePointer]: Scope<T> } & { data: T }) | null;
+export type ScopeWithPrev<T = any> = {
+    prev: NonNullable<Scope<T>>;
+} & Omit<NonNullable<Scope<T>>, 'prev'>;
 
-export type ScopeHandle<T = any> = {
-    chained: boolean;
+export type ScopeHandle<T = any> = Readonly<{
+    _scope: Scope<T>;
+    attached: boolean;
     data: NonNullable<Scope<T>>['data'];
     detach: (isolatedDetach?: boolean) => void;
-};
-
-export type ScopeChain<T = any> = Readonly<{
-    add: (data?: T) => ScopeHandle<T>;
-    current: Generator<Scope<T>, void, Scope<T> | undefined>;
-    size: number;
 }>;
 
-export type ScopeChainOperation = <T = any>(scope: NonNullable<Scope<T>>, root?: Scope<T>, current?: Scope<T>) => readonly [Scope<T>, Scope<T>];
+export type ScopeTree<T = any> = Readonly<{
+    add: (data?: T, parent?: Scope<T>) => ScopeHandle<T>;
+    trace: (scope?: Scope<T>) => Generator<Scope<T>, void, Scope<T> | undefined>;
+}>;

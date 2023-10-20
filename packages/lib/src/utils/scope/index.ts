@@ -1,1 +1,1 @@
-export { default as createScopeChain } from './createScopeChain';
+export { default as createScopeTree } from './tree/createScopeTree';

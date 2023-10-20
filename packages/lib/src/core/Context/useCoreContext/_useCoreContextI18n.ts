@@ -1,29 +1,30 @@
-import { useEffect, useMemo, useState } from 'preact/hooks';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import Localization from '@src/core/Localization';
-import { struct } from '@src/utils/common';
-import { CoreContextI18n } from '../types';
+import TranslationsManager from './_translations';
+import { noop } from '@src/utils/common';
 
-export default function _useCoreContextI18n(this: any, i18n: Localization['i18n'] = new Localization().i18n) {
-    const [lastRefreshTimestamp, setLastRefreshTimestamp] = useState(i18n.lastRefreshTimestamp);
+const _useCoreContextI18n = (i18n: Localization['i18n']) => {
+    const [lastRefresh, setLastRefresh] = useState(i18n.lastRefreshTimestamp);
+    const enhancedI18n = useMemo(() => new TranslationsManager(i18n).i18n, [i18n, lastRefresh]);
+    const watchI18n = useCallback(() => setLastRefresh(i18n.lastRefreshTimestamp), [i18n, setLastRefresh]);
+    const unwatchI18n = useRef(noop);
 
-    useEffect(() => i18n.watch(() => setLastRefreshTimestamp(i18n.lastRefreshTimestamp)), [i18n]);
+    const effectWithUnmountCallback = useMemo(() => {
+        const unmount = () => {
+            unwatchI18n.current?.();
+            unwatchI18n.current = null as unknown as typeof unwatchI18n.current;
+        };
+        return () => unmount;
+    }, []);
 
-    return useMemo(() => {
-        const { customTranslations, get, lastRefreshTimestamp, load, ready, watch, ...restDescriptors } = Object.getOwnPropertyDescriptors(i18n);
+    useEffect(effectWithUnmountCallback, []);
 
-        const __get__ = get.value as Localization['get'];
-        const __load__ = load.value as Localization['load'];
-        const __this__ = this;
+    useEffect(() => {
+        unwatchI18n.current?.();
+        unwatchI18n.current = i18n.watch(watchI18n);
+    }, [i18n, watchI18n]);
 
-        get.value = function (this: any, ...args) {
-            /*if (this === __this__)*/ return __get__(...args);
-        } as CoreContextI18n['get'];
+    return enhancedI18n;
+};
 
-        load.value = function (this: any, ...args) {
-            if (this === __this__) return __load__(...args);
-            throw new Error('Illegal invocation');
-        } as CoreContextI18n['load'];
-
-        return struct({ ...restDescriptors, get, load }) as CoreContextI18n;
-    }, [i18n, lastRefreshTimestamp]);
-}
+export default _useCoreContextI18n;
