@@ -1,18 +1,20 @@
 import type { PlaywrightTestConfig } from '@playwright/test';
 import { devices } from '@playwright/test';
-import { getEnvironment } from '../../../envs/getEnvs';
+import { getEnvironment } from './envs/getEnvs';
 
 const { playground } = getEnvironment(process.env.CI ? 'demo' : 'mocked');
+
+const baseUrl = `http://${playground.host}:${playground.port}`;
 
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
 const config: PlaywrightTestConfig = {
-    testDir: '../tests',
-    timeout: 20 * 1000,
+    testDir: './packages/lib/tests',
+    timeout: 30 * 1000,
     globalTimeout: 10 * 60 * 1000, // 10 minutes
     expect: {
-        timeout: 5000,
+        timeout: 1000,
     },
     fullyParallel: true,
 
@@ -30,7 +32,7 @@ const config: PlaywrightTestConfig = {
         /* Maximum time each action such as `click()` can take. Defaults to 0 (no limit). */
         actionTimeout: 1000,
         /* Base URL to use in actions like `await page.goto('/')`. */
-        baseURL: `http://${playground.host}:${playground.port}`,
+        baseURL: baseUrl,
 
         trace: 'on-first-retry',
         headless: !!process.env.CI,
@@ -69,9 +71,9 @@ const config: PlaywrightTestConfig = {
     ],
     /* Run your local dev server before starting the tests */
     webServer: {
-        command: process.env.CI ? 'npm run demo:serve' : 'npm run start:mocked',
-        port: playground.port,
+        command: process.env.CI ? 'npm run start:mocked' : 'npm run start:mocked',
         reuseExistingServer: !process.env.CI,
+        url: baseUrl,
     },
 };
 

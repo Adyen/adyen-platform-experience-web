@@ -55,7 +55,7 @@ module.exports = {
             'error',
             {
                 devDependencies: [
-                    'config/playwright.config.ts',
+                    'playwright.config.ts',
                     'config/vite.config.ts',
                     '**/*.test.{ts,tsx}',
                     'config/**/*.ts',

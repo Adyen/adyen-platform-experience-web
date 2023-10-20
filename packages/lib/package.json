@@ -41,6 +41,7 @@
         "build:analyse": "vite build --mode analyse --config ./config/vite.config.ts",
         "test": "vitest --config ./config/vite.config.ts",
         "test:coverage": "vitest --config ./config/vite.config.ts --coverage",
+        "test:e2e": "playwright test --project local-chrome",
         "type-check": "tsc --preserveWatchOutput",
         "types:build": "tsc --project tsconfig-build.json",
         "lint": "eslint 'src/**/*.{js,ts,tsx}' --quiet && npm run lint:scss",
