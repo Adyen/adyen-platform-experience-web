@@ -23,7 +23,6 @@ export default class TranslationsManager {
         let { locale } = i18n;
 
         this.#modifiedI18n = (() => {
-            const { get, load } = Object.getOwnPropertyDescriptors(TranslationsManager.prototype);
             const {
                 customTranslations,
                 get: _get,
@@ -33,6 +32,8 @@ export default class TranslationsManager {
                 watch,
                 ...restDescriptors
             } = Object.getOwnPropertyDescriptors(i18n);
+
+            const { get, load } = Object.getOwnPropertyDescriptors(TranslationsManager.prototype);
             const __get__ = (get.value as NonNullable<typeof get.value>).bind(this);
 
             load.value = (load.value as NonNullable<typeof load.value>).bind(this);
@@ -65,11 +66,19 @@ export default class TranslationsManager {
     }
 
     get(key: TranslationKey, options?: TranslationOptions): string {
-        for (const scope of this.#translationsChain.trace(this.#current)) {
-            let translations = scope?.data?.translations;
-            if (!translations) continue;
-            const translation = this.#i18n.get(key, options, translations);
-            if (!(translation === null || translation === key)) return translation;
+        const chain = this.#translationsChain.trace(this.#current);
+        let current = chain.next();
+
+        while (!current.done) {
+            const scope = current.value;
+
+            if (scope?.data) {
+                const { translations } = scope.data;
+                const translation = this.#i18n.get(key, options, translations);
+                if (!(translation === null || translation === key)) return translation;
+            }
+
+            current = chain.next();
         }
 
         return key;
@@ -100,7 +109,7 @@ export default class TranslationsManager {
                 doneCallback?.(null);
             })
             .catch(reason => {
-                scopeHandle.detach(true);
+                // scopeHandle.detach(true);
                 if (import.meta.env.DEV) console.error(reason);
                 doneCallback?.(new Error('No available translations'));
             });

@@ -7,7 +7,12 @@ const _useTranslations = (loadTranslations: CoreContextI18n['load'], translation
     const { customTranslations, translations } = translationOptions;
     const [, setLastRefresh] = useState(performance.now());
     const scopeHandle = useRef<CoreContextScope>();
-    const doneCallback = useRef((err: Error | null) => err === null && setLastRefresh(performance.now()));
+
+    const doneCallback = useRef((err: Error | null) => {
+        if (err === null) return setLastRefresh(performance.now());
+        if (!scopeHandle.current?._scope) return;
+        // const scope = scopeHandle.current._scope;
+    });
 
     const effectWithUnmountCallback = useMemo(() => {
         const unmount = () => scopeHandle.current?.detach();
