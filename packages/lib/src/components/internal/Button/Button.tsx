@@ -1,93 +1,61 @@
-import classNames from 'classnames';
-import Spinner from '../Spinner';
-import useCoreContext from '@src/core/Context/useCoreContext';
-import './Button.scss';
-import { ButtonProps, ButtonState, ButtonStatus } from './types';
-import { useState } from 'preact/hooks';
-import { forwardRef } from 'preact/compat';
-import Typography from '@src/components/internal/Typography/Typography';
 import { TypographyElement, TypographyVariant } from '@src/components/internal/Typography/types';
+import Typography from '@src/components/internal/Typography/Typography';
+import getModifierClasses from '@src/utils/get-modifier-classes';
 import { Ref } from 'preact';
+import { forwardRef } from 'preact/compat';
+import './Button.scss';
+import { ButtonProps } from './types';
 
 function Button(
     {
-        status = 'default',
         variant = 'primary',
         disabled = false,
-        label = '',
-        inline = false,
-        target = '_self',
-        onClick = () => {},
+        onClick,
         classNameModifiers = [],
-        href,
-        icon,
+        iconLeft,
+        iconRight,
+        type = 'button',
         tabIndex,
-        rel,
         children,
-    }: ButtonProps & ButtonState,
+        key,
+        ariaAttributes,
+    }: ButtonProps,
     ref: Ref<HTMLButtonElement>
 ) {
-    const [completed, setCompleted] = useState(false);
-
     const clickAction = (e: any) => {
         e.preventDefault();
 
         if (!disabled) {
-            onClick?.(e, { complete: completeAction });
+            onClick?.(e);
         }
     };
 
-    const completeAction = (delay = 1000) => {
-        setCompleted(true);
-        setTimeout(() => {
-            setCompleted(false);
-        }, delay);
-    };
+    const modifiers = [...classNameModifiers, ...[variant]];
 
-    const { i18n } = useCoreContext();
-
-    const buttonIcon = icon ? <img className="adyen-fp-button__icon" src={icon} alt="" aria-hidden="true" /> : '';
-
-    const modifiers = [
-        ...classNameModifiers,
-        ...[variant],
-        ...(inline ? ['inline'] : []),
-        ...(completed ? ['completed'] : []),
-        ...(status === 'loading' || status === 'redirect' ? ['loading'] : []),
-    ];
-
-    const buttonClasses = classNames(['adyen-fp-button', ...modifiers.map(m => `adyen-fp-button--${m}`)]);
-
-    const buttonStates: { [k in ButtonStatus]: any } = {
-        loading: <Spinner size="medium" />,
-        redirect: (
-            <span className="adyen-fp-button__content">
-                <Spinner size="medium" inline />
-                {i18n.get('payButton.redirecting')}
-            </span>
-        ),
-        default: (
-            <Typography className={'adyen-fp-button__label'} el={TypographyElement.SPAN} variant={TypographyVariant.BODY} stronger={true}>
-                {buttonIcon}
-                {label}
-            </Typography>
-        ),
-    };
-
-    const buttonText = (status ? buttonStates[status] : undefined) || buttonStates.default;
-
-    if (href) {
-        return (
-            <a className={buttonClasses} href={href} disabled={disabled} tabIndex={tabIndex} target={target} rel={rel}>
-                {buttonText}
-            </a>
-        );
-    }
+    const buttonClasses = getModifierClasses('adyen-fp-button', modifiers, 'adyen-fp-button');
 
     return (
-        <button className={buttonClasses} type="button" disabled={disabled} onClick={clickAction} tabIndex={tabIndex} ref={ref}>
-            {buttonText}
-            {status !== 'loading' && status !== 'redirect' && children}
+        <button
+            className={buttonClasses}
+            type={type}
+            key={key}
+            disabled={disabled}
+            onClick={clickAction}
+            tabIndex={tabIndex}
+            ref={ref}
+            role={'button'}
+            aria-controls={ariaAttributes?.['aria-controls']}
+            aria-expanded={ariaAttributes?.['aria-expended']}
+        >
+            {iconLeft && <span className="adyen-fp-button__icon-left">{iconLeft}</span>}
+            <Typography className={'adyen-fp-button__label'} el={TypographyElement.SPAN} variant={TypographyVariant.BODY} stronger={true}>
+                {children}
+            </Typography>
+            {iconRight && (
+                <span className="adyen-fp-button__icon-right" data-testid="icon-button-right">
+                    {iconRight}
+                </span>
+            )}
         </button>
     );
 }

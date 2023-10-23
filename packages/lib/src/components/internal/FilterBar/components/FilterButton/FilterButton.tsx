@@ -1,12 +1,30 @@
-import Button from '../../../Button';
+import { TypographyElement, TypographyVariant } from '@src/components/internal/Typography/types';
+import Typography from '@src/components/internal/Typography/Typography';
+import classNames from 'classnames';
+import { Ref } from 'preact';
+import { forwardRef } from 'preact/compat';
+import './FilterButton.scss';
 import { FilterButtonProps } from './types';
 
-export default function FilterButton(props: FilterButtonProps) {
+function FilterButton(
+    { ariaAttributes, classNameModifiers = [], children, type, disabled, tabIndex, onClick }: FilterButtonProps,
+    ref: Ref<HTMLButtonElement>
+) {
     return (
-        <Button
-            label={props.activeFilter ?? props.label}
-            classNameModifiers={['filter', 'small', 'secondary', ...(props.activeFilter ? 'active-filter' : [])]}
-            onClick={props.onClick}
-        />
+        <button
+            className={classNames('adyen-fp-filter-button', ...classNameModifiers.map(m => `adyen-fp-filter-button--${m}`))}
+            type={type}
+            disabled={disabled}
+            onClick={onClick}
+            tabIndex={tabIndex}
+            ref={ref}
+            role={'button'}
+            aria-expanded={ariaAttributes?.['aria-expended']}
+        >
+            <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY} stronger={true}>
+                {children}
+            </Typography>
+        </button>
     );
 }
+export default forwardRef(FilterButton);

@@ -1,5 +1,5 @@
-import { ButtonActionsLayout, ButtonActionsList } from '@src/components/internal/Button/ButtonActions/types';
 import Button from '@src/components/internal/Button';
+import { ButtonActionsLayout, ButtonActionsList } from '@src/components/internal/Button/ButtonActions/types';
 import { ButtonVariants } from '@src/components/internal/Button/types';
 import './ButtonActions.scss';
 
@@ -22,15 +22,12 @@ export default function ButtonActions({ actions, layout = ButtonActionsLayout.BU
             <div className={`adyen-fp-button-actions__container-wrapper ${conditionalClasses()}`} role="group">
                 {actions.reverse().map((button, index) => (
                     <Button
-                        label={button.title}
                         key={index}
-                        critical={button.critical}
                         disabled={button.disabled}
                         variant={button.variant || generateButtonVariantByIndex(index)}
                         onClick={button.event}
                     >
-                        {/*TO-DO: Add icon option here */}
-                        {/*{button.title}*/}
+                        {button.title}
                     </Button>
                 ))}
             </div>

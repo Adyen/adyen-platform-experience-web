@@ -1,5 +1,3 @@
-@import '@adyen/bento-design-tokens/dist/scss/bento/variables.scss';
-
 .adyen-fp-button-actions {
     container-type: inline-size;
     flex-grow: 1;
@@ -7,7 +5,7 @@
     &__container-wrapper {
         display: flex;
         flex-direction: column;
-        gap: $button-actions-vertical-stack-row-gap;
+        gap: var(--adyen-fp-action-button-gap);
     }
 
     //@container (min-width: 250px) {
@@ -17,13 +15,13 @@
     }
 
     &--buttons-end {
-        column-gap: $button-actions-buttons-end-column-gap;
+        column-gap: var(--adyen-fp-action-button-gap);
         flex-direction: row;
         justify-content: end;
     }
 
     &--fill-container {
-        column-gap: $button-actions-fill-container-column-gap;
+        column-gap: var(--adyen-fp-action-button-gap);
         display: grid;
         grid-auto-columns: minmax(0, 1fr);
         grid-auto-flow: column;

@@ -1,5 +1,5 @@
-import classnames from 'classnames';
 import useCoreContext from '@src/core/Context/useCoreContext';
+import classnames from 'classnames';
 import Button from '../Button';
 import './Pagination.scss';
 import { PaginationProps } from './types';
@@ -22,16 +22,18 @@ export default function Pagination({ next, hasNext, hasPrev, page, prev }: Pagin
                     disabled={!hasPrev}
                     classNameModifiers={['circle', 'prev']}
                     onClick={prev}
-                    label={'Previous'}
-                />
+                >
+                    Previous
+                </Button>
                 <Button
                     aria-label={i18n.get('pagination.nextPage')}
                     variant={'ghost'}
                     disabled={!hasNext}
                     classNameModifiers={['circle', 'next']}
                     onClick={next}
-                    label={'Next'}
-                />
+                >
+                    Next
+                </Button>
             </div>
         </div>
     );

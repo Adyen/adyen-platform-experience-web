@@ -1,0 +1,26 @@
+.adyen-fp--filter-button {
+    align-items: center;
+    cursor: pointer;
+    display: flex;
+    padding: 0;
+
+    &--active {
+        background: rgba(0, 102, 255, 0.1);
+        border: 1px solid var(--adyen-fp-color-blue);
+        color: var(--adyen-fp-color-blue);
+    }
+
+    &:disabled {
+        cursor: not-allowed;
+    }
+
+    &__icon-left {
+        align-items: center;
+        display: flex;
+    }
+
+    &__icon-right {
+        align-items: center;
+        display: flex;
+    }
+}

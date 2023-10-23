@@ -108,16 +108,9 @@ function Transactions({
 
     const showAlert = useMemo(() => !fetching && error, [fetching, error]);
 
-    const getAppliedFilterNumber = (filter: TransactionFilterParam): number => {
-        if (typeof filters[filter] === 'string' && filters[filter]) return 1;
-        if (Array.isArray(filters[filter])) return filters[filter]?.length || 0;
-        return 0;
-    };
-
     return (
         <div className="adyen-fp-transactions">
             <div className="adyen-fp-title">{i18n.get('transactions')}</div>
-
             {!!onFilterChange && (
                 <FilterBar canResetFilters={canResetFilters} resetFilters={resetFilters}>
                     <TextFilter
@@ -133,7 +126,6 @@ function Transactions({
                         name={TransactionFilterParam.ACCOUNT_HOLDER}
                         value={filters[TransactionFilterParam.ACCOUNT_HOLDER]}
                         onChange={updateAccountHolderFilter}
-                        appliedFilterAmount={getAppliedFilterNumber(TransactionFilterParam.ACCOUNT_HOLDER)}
                     />
                     <DateFilter
                         classNameModifiers={['createdSince']}

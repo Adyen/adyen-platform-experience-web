@@ -2,6 +2,7 @@
 @use './border-radius';
 @use './font';
 @use './spacings';
+@use './bento-mapping';
 
 :root {
     @include colors.adyen-fp-colors;
@@ -9,4 +10,10 @@
     @include font.adyen-fp-font-sizes;
     @include font.adyen-fp-font-weight;
     @include spacings.adyen-fp-spacings;
+    @include bento-mapping.adyen-fp-bento-filter-mapping;
+    @include bento-mapping.adyen-fp-bento-action-button-mapping;
+    @include bento-mapping.adyen-fp-bento-button-mapping;
+    @include bento-mapping.adyen-fp-bento-popover-mapping;
+    @include bento-mapping.adyen-fp-bento-link-mapping;
+    @include bento-mapping.adyen-fp-bento-typography-mapping;
 }

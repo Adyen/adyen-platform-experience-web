@@ -1,15 +1,17 @@
-import { BaseFilterProps, EditAction, FilterEditModalRenderProps, FilterProps } from './types';
+import { ButtonVariants } from '@src/components/internal/Button/types';
+import FilterButton from '@src/components/internal/FilterBar/components/FilterButton/FilterButton';
+import Popover from '@src/components/internal/Popover/Popover';
+import { TypographyElement, TypographyVariant } from '@src/components/internal/Typography/types';
+import Typography from '@src/components/internal/Typography/Typography';
+import useUniqueIdentifier from '@src/hooks/element/useUniqueIdentifier';
+import { isEmpty } from '@src/utils/validator-utils';
 import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import useBooleanState from '../../../../../hooks/useBooleanState';
-import Button from '../../../Button';
-import InputText from '../../../FormFields/InputText';
-import { isEmpty } from '@src/utils/validator-utils';
 import '../../../FormFields';
+import InputText from '../../../FormFields/InputText';
 import './BaseFilter.scss';
-import { ButtonVariants } from '@src/components/internal/Button/types';
-import useUniqueIdentifier from '@src/hooks/element/useUniqueIdentifier';
-import Popover from '@src/components/internal/Popover/Popover';
+import { BaseFilterProps, EditAction, FilterEditModalRenderProps, FilterProps } from './types';
 
 const isValueEmptyFallback = (value?: string | any[]) => {
     if (typeof value === 'string') {
@@ -106,11 +108,6 @@ export default function BaseFilter<T extends BaseFilterProps = BaseFilterProps>(
         if (editAction !== EditAction.NONE) setEditAction(EditAction.NONE);
     }, [closeEditModal, editAction]);
 
-    const checkTrimValue = (): boolean => {
-        if (!props.value) return true;
-        return typeof props.value === 'string' ? !Boolean(props.value) : false;
-    };
-
     const actions = [
         {
             title: i18n.get('apply'),
@@ -129,10 +126,7 @@ export default function BaseFilter<T extends BaseFilterProps = BaseFilterProps>(
     return (
         <>
             <div className={`adyen-fp-filter adyen-fp-filter--${props.type}`}>
-                <Button
-                    ariaLabel={props.label}
-                    variant={'primary'}
-                    label={props.label}
+                <FilterButton
                     classNameModifiers={[
                         ...(props.value ? ['with-counter'] : []),
                         ...(props.classNameModifiers ?? []),
@@ -141,12 +135,29 @@ export default function BaseFilter<T extends BaseFilterProps = BaseFilterProps>(
                     onClick={handleClick}
                     ref={targetElement}
                 >
-                    {!!props.appliedFilterAmount && (
-                        <div className="adyen-fp-button__counter-wrapper">
-                            <span className="adyen-fp-button__counter">{props.appliedFilterAmount}</span>
-                        </div>
-                    )}
-                </Button>
+                    <div class="adyen-fp-filter-button__default-container">
+                        <Typography
+                            el={TypographyElement.SPAN}
+                            variant={TypographyVariant.BODY}
+                            stronger={true}
+                            className="adyen-fp-filter-button__label"
+                        >
+                            {props.label}
+                        </Typography>
+                        {!!props.appliedFilterAmount && (
+                            <div className="adyen-fp-filter-button__counter-wrapper">
+                                <Typography
+                                    el={TypographyElement.SPAN}
+                                    variant={TypographyVariant.BODY}
+                                    stronger={true}
+                                    className="adyen-fp-filter-button__counter"
+                                >
+                                    {props.appliedFilterAmount}
+                                </Typography>
+                            </div>
+                        )}
+                    </div>
+                </FilterButton>
             </div>
             {editMode && (
                 <Popover
@@ -155,10 +166,11 @@ export default function BaseFilter<T extends BaseFilterProps = BaseFilterProps>(
                     open={editMode}
                     ariaLabel={'filter-popover'}
                     dismiss={closeEditModal}
+                    dismissible={true}
                     divider={true}
                     actions={actions}
                     targetElement={targetElement}
-                    disableFocusTrap={false}
+                    disableFocusTrap={true}
                 >
                     {renderModalBody({ ...props, editAction, onValueUpdated })}
                 </Popover>

@@ -1,17 +1,15 @@
-@import '@adyen/bento-design-tokens/dist/scss/bento/variables.scss';
-
 .adyen-fp-popover-dismiss-button {
     cursor: pointer;
 
     &--on-image {
-        color: $popover-dismiss-button-on-image-icon-color;
+        color: var(--adyen-fp-popover-dismiss-button-on-image-icon-color);
 
         &:hover {
-            color: $popover-dismiss-button-on-image-icon-hovered-color;
+            color: var(--adyen-fp-popover-dismiss-button-on-image-icon-hovered-color);
         }
 
         &:active {
-            color: $popover-dismiss-button-on-image-icon-active-color;
+            color: var(--adyen-fp-popover-dismiss-button-on-image-icon-active-color);
         }
     }
 }

@@ -1,13 +1,13 @@
-import { useCallback, useEffect, useRef, useState } from 'preact/hooks';
-import { EditAction, FilterEditModalRenderProps, FilterProps } from '../BaseFilter/types';
-import { DateFilterProps, DateRangeFilterParam } from './types';
-import { CalendarHandle } from '../../../Calendar/types';
-import useCoreContext from '../../../../../core/Context/useCoreContext';
-import useMounted from '@src/hooks/useMounted';
-import BaseFilter from '../BaseFilter';
 import Localization from '@src/core/Localization';
+import useMounted from '@src/hooks/useMounted';
+import { useCallback, useEffect, useRef, useState } from 'preact/hooks';
+import useCoreContext from '../../../../../core/Context/useCoreContext';
+import { CalendarHandle } from '../../../Calendar/types';
 import DatePicker from '../../../DatePicker';
+import BaseFilter from '../BaseFilter';
+import { EditAction, FilterEditModalRenderProps, FilterProps } from '../BaseFilter/types';
 import './DateFilter.scss';
+import { DateFilterProps, DateRangeFilterParam } from './types';
 
 const computeDateFilterValue = (i18n: Localization['i18n'], fromDate?: string, toDate?: string) => {
     const from = fromDate && i18n.fullDate(fromDate);
@@ -76,7 +76,9 @@ export default function DateFilter<T extends DateFilterProps = DateFilterProps>(
     const fromDate = resolveDate(props.from);
     const toDate = resolveDate(props.to);
 
-    console.log(computeDateFilterValue(i18n, fromDate, toDate));
+    const getAppliedFilterNumber = (): number => {
+        return !!computeDateFilterValue(i18n, fromDate, toDate) && !!props.from && !!props.to ? 1 : 0;
+    };
 
     return (
         <BaseFilter<T>
@@ -88,7 +90,7 @@ export default function DateFilter<T extends DateFilterProps = DateFilterProps>(
             rangeEnd={resolveDate(props.rangeEnd)}
             render={renderDateFilterModalBody}
             value={computeDateFilterValue(i18n, fromDate, toDate)}
-            appliedFilterAmount={+!!computeDateFilterValue(i18n, fromDate, toDate) && props.rangeEnd !== props.rangeStart}
+            appliedFilterAmount={getAppliedFilterNumber()}
         />
     );
 }

@@ -1,20 +1,19 @@
-import { PropsWithChildren } from 'preact/compat';
-import getModifierClasses from '@src/utils/get-modifierClasses';
-import PopoverTitle from '@src/components/internal/Popover/PopoverTitle/PopoverTitle';
-import PopoverDismissButton from '@src/components/internal/Popover/PopoverDismissButton/PopoverDismissButton';
-import { ButtonActionsLayout, ButtonActionsLayoutBasic, ButtonActionsList } from '@src/components/internal/Button/ButtonActions/types';
 import ButtonActions from '@src/components/internal/Button/ButtonActions/ButtonActions';
+import { ButtonActionsLayout, ButtonActionsLayoutBasic, ButtonActionsList } from '@src/components/internal/Button/ButtonActions/types';
+import PopoverDismissButton from '@src/components/internal/Popover/PopoverDismissButton/PopoverDismissButton';
+import PopoverTitle from '@src/components/internal/Popover/PopoverTitle/PopoverTitle';
 import { PopoverContainerAriaRole, PopoverContainerPosition, PopoverContainerSize } from '@src/components/internal/Popover/types';
-import './Popover.scss';
-import './PopoverContainer.scss';
-import classNames from 'classnames';
-import { MutableRef, useCallback, useEffect } from 'preact/hooks';
+import { InteractionKeyCode } from '@src/components/types';
 import useFocusTrap from '@src/hooks/element/useFocusTrap';
 import usePopoverPositioner from '@src/hooks/element/usePopoverPositioner';
-import { InteractionKeyCode } from '@src/components/types';
+import getModifierClasses from '@src/utils/get-modifier-classes';
+import classNames from 'classnames';
 import { ComponentChildren } from 'preact';
+import { PropsWithChildren } from 'preact/compat';
+import { MutableRef, useCallback, useEffect } from 'preact/hooks';
+import './Popover.scss';
+import './PopoverContainer.scss';
 
-//TODO: make large and small as enum
 interface PopoverProps {
     actions?: ButtonActionsList;
     actionsLayout?: ButtonActionsLayout;
@@ -23,7 +22,6 @@ interface PopoverProps {
     dismissible?: boolean;
     fitContent?: boolean;
     disableFocusTrap?: boolean;
-    fixedPositioning?: boolean;
     open?: boolean;
     modifiers?: string[];
     position?: PopoverContainerPosition;
@@ -115,7 +113,6 @@ function Popover({
 
     useEffect(() => {
         const focusable = findFirstFocusableElement() as HTMLElement;
-        console.log('focusable ', focusable);
         focusable?.focus();
         document.addEventListener('click', handleClickOutside);
         document.addEventListener('keydown', onKeyDown);
@@ -136,26 +133,25 @@ function Popover({
                     className={classNames('adyen-fp-popover adyen-fp-popover-container', conditionalClasses())}
                     role={PopoverContainerAriaRole.POPOVER}
                 >
-                    {/*TODO: Check this dismissable button*/}
                     {image && (
                         <div className="adyen-fp-popover__image">
-                            {dismissible && <PopoverDismissButton click={dismiss} />}
+                            {dismissible && <PopoverDismissButton onClick={dismiss} />}
                             {image}
                         </div>
                     )}
                     {title && (
-                        <div className={getModifierClasses('adyen-fp-popover__header', 'adyen-fp-popover__header', modifiers)}>
+                        <div className={getModifierClasses('adyen-fp-popover__header', modifiers, 'adyen-fp-popover__header')}>
                             <div className={'adyen-fp-popover__header-title'}>
                                 {headerIcon ? { headerIcon } : null}
-                                <PopoverTitle title={title} isImageTitle={Boolean(image)}></PopoverTitle>
+                                <PopoverTitle title={title} isImageTitle={Boolean(image)} />
                             </div>
-                            {dismissible && !image && <PopoverDismissButton click={dismiss} />}
+                            {dismissible && !image && <PopoverDismissButton onClick={dismiss} />}
                         </div>
                     )}
                     {children && <div className="adyen-fp-popover__content">{children}</div>}
                     {actions && (
                         <div className="adyen-fp-popover__footer">
-                            <ButtonActions actions={actions} layout={actionsLayout}></ButtonActions>
+                            <ButtonActions actions={actions} layout={actionsLayout} />
                         </div>
                     )}
                 </div>

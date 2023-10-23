@@ -3,16 +3,16 @@ import './PopoverDismissButton.scss';
 
 interface PopoverDismissButtonProps {
     image?: boolean;
-    click: () => void;
+    onClick: () => void;
 }
 
-export default function PopoverDismissButton({ image = false, click }: PopoverDismissButtonProps) {
+export default function PopoverDismissButton({ image = true, onClick }: PopoverDismissButtonProps) {
     const getConditionalClasses = (): string => {
         return image ? 'adyen-fp-popover-dismiss-button--on-image' : '';
     };
     return (
         <>
-            <Button className={getConditionalClasses()} variant={'tertiary'} onClick={click}>
+            <Button className={getConditionalClasses()} variant={'tertiary'} onClick={onClick}>
                 <svg role="img" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none">
                     <title>{'dismiss'}</title>
                     <path

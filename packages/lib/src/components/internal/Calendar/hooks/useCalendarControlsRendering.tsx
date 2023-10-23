@@ -38,10 +38,11 @@ const useCalendarControlsRendering = (renderControl?: CalendarRenderControl) => 
                         variant={'ghost'}
                         disabled={!handle()}
                         classNameModifiers={['circle', directionModifier]}
-                        label={label}
                         key={control}
                         onClick={handle}
-                    />
+                    >
+                        {label}
+                    </Button>
                 );
             }) as CalendarControlRenderer,
             [i18n, renderControl]

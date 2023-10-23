@@ -69,7 +69,6 @@
     background: var(--adyen-fp-color-white);
     border: 1px solid var(--adyen-fp-color-gray-dark);
     border-radius: var(--adyen-fp-border-radius-medium);
-    caret-color: var(--adyen-fp-color-blue);
     color: var(--adyen-fp-color-black);
     display: block;
     font-family: inherit;
@@ -162,8 +161,8 @@
 .adyen-fp-input:active:hover,
 .adyen-fp-input:focus:hover,
 .adyen-fp-input--focus:hover {
-    border: 1px solid var(--adyen-fp-color-primary);
-    box-shadow: 0 0 0 2px var(--adyen-fp-color-blue-light);
+    background: linear-gradient(0deg, #fff, #fff);
+    outline: 1px solid #00112c;
 }
 
 .adyen-fp-input[readonly],
