@@ -10,7 +10,7 @@ const test = base.extend<{
         await use(accountHolderPage);
     },
 });
-test('should select highlighted issuer and update pay button label', async ({ accountHolderPage }) => {
+test('account holder should show correct ID', async ({ accountHolderPage }) => {
     const accountHolder = accountHolderPage;
 
     await expect(accountHolder.accountHolderValue).toHaveText('AH3227B2248HKJ5BHTQPKC5GX');
