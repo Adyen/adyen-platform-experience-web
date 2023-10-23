@@ -51,11 +51,7 @@ function Button(
             <Typography className={'adyen-fp-button__label'} el={TypographyElement.SPAN} variant={TypographyVariant.BODY} stronger={true}>
                 {children}
             </Typography>
-            {iconRight && (
-                <span className="adyen-fp-button__icon-right" data-testid="icon-button-right">
-                    {iconRight}
-                </span>
-            )}
+            {iconRight && <span className="adyen-fp-button__icon-right">{iconRight}</span>}
         </button>
     );
 }
