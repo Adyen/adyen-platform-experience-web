@@ -5,4 +5,4 @@ export const pages = [
     { id: 'balanceAccount', name: 'Balance account' },
     { id: 'transaction', name: 'Transactions' },
     { id: 'legalEntityDetails', name: 'Legal entity details' },
-];
+] as const;
