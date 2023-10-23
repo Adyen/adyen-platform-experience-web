@@ -17,7 +17,6 @@ export interface CoreProviderProps {
 
 export type CoreContextI18n = TranslationsManager['i18n'];
 export type CoreContextProps = Omit<CoreProviderProps, 'i18n'> & { i18n: CoreContextI18n };
-export type CoreContextScope = ScopeHandle<TranslationsScopeData>;
 
 export type UseTranslationsOptions = {
     customTranslations?: Record<string, Awaited<ReturnType<TranslationsLoader>>>;

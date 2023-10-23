@@ -5,7 +5,7 @@ import _useTranslations from './_useTranslations';
 
 const useCoreContext = (options?: UseTranslationsOptions) => {
     const context = useContext(CoreContext);
-    _useTranslations(context.i18n.load, options);
+    _useTranslations(context.i18n, options);
     return context;
 };
 

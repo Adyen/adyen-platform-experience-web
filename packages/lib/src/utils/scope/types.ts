@@ -10,7 +10,7 @@ export type ScopeWithPrev<T = any> = {
 } & Omit<NonNullable<Scope<T>>, 'prev'>;
 
 export type ScopeHandle<T = any> = Readonly<{
-    _scope: Scope<T>;
+    _scope: NonNullable<Scope<T>>;
     attached: boolean;
     data: NonNullable<Scope<T>>['data'];
     detach: (isolatedDetach?: boolean) => void;

@@ -1,21 +1,16 @@
 import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { EMPTY_OBJECT } from '@src/utils/common';
-import { CoreContextI18n, CoreContextScope, UseTranslationsOptions } from '../types';
-import { TranslationsLoader } from './_translations/types';
+import { CoreContextI18n, UseTranslationsOptions } from '../types';
+import { TranslationsLoader, TranslationsScopeRecord } from './_translations/types';
 
-const _useTranslations = (loadTranslations: CoreContextI18n['load'], translationOptions: UseTranslationsOptions = EMPTY_OBJECT) => {
+const _useTranslations = (i18n: CoreContextI18n, translationOptions: UseTranslationsOptions = EMPTY_OBJECT) => {
     const { customTranslations, translations } = translationOptions;
     const [, setLastRefresh] = useState(performance.now());
-    const scopeHandle = useRef<CoreContextScope>();
-
-    const doneCallback = useRef((err: Error | null) => {
-        if (err === null) return setLastRefresh(performance.now());
-        if (!scopeHandle.current?._scope) return;
-        // const scope = scopeHandle.current._scope;
-    });
+    const doneCallback = useRef(() => setLastRefresh(performance.now()));
+    const trashScope = useRef<TranslationsScopeRecord['_trash']>();
 
     const effectWithUnmountCallback = useMemo(() => {
-        const unmount = () => scopeHandle.current?.detach();
+        const unmount = () => trashScope.current?.();
         return () => unmount;
     }, []);
 
@@ -33,13 +28,12 @@ const _useTranslations = (loadTranslations: CoreContextI18n['load'], translation
     );
 
     useMemo(() => {
-        scopeHandle.current?.detach();
-        scopeHandle.current = void 0;
+        trashScope.current = i18n.load(translationsLoader, doneCallback.current);
+    }, []);
 
-        if (typeof translationsLoader === 'function') {
-            scopeHandle.current = loadTranslations.call(this, translationsLoader, doneCallback.current);
-        }
-    }, [loadTranslations, translationsLoader]);
+    useMemo(() => {
+        trashScope.current?.refresh(translationsLoader, doneCallback.current);
+    }, [translationsLoader]);
 
     useEffect(effectWithUnmountCallback, []);
 };
