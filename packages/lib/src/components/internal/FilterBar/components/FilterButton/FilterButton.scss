@@ -1,4 +1,4 @@
-.adyen-fp--filter-button {
+.adyen-fp-filter-button {
     align-items: center;
     cursor: pointer;
     display: flex;
@@ -12,15 +12,5 @@
 
     &:disabled {
         cursor: not-allowed;
-    }
-
-    &__icon-left {
-        align-items: center;
-        display: flex;
-    }
-
-    &__icon-right {
-        align-items: center;
-        display: flex;
     }
 }
