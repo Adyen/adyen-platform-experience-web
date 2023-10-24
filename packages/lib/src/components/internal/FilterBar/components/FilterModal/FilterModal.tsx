@@ -23,12 +23,10 @@ export default function FilterModal(props: FilterModalProps) {
             </Field>
 
             <Button classNameModifiers={['tertiary']} disabled={!props.value}>
-                {' '}
-                Clear{' '}
+                Clear
             </Button>
             <Button onClick={updateFilters} disabled={!props.value}>
-                {' '}
-                Label{' '}
+                Label
             </Button>
         </Modal>
     );
