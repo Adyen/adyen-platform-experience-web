@@ -1,7 +1,6 @@
 import Localization from '@src/core/Localization';
-import { ScopeHandle } from '@src/utils/scope/types';
 import TranslationsManager from './useCoreContext/_translations';
-import { TranslationsLoader, TranslationsScopeData } from './useCoreContext/_translations/types';
+import { TranslationsLoader } from './useCoreContext/_translations/types';
 
 export interface CommonPropsTypes {
     isCollatingErrors?: boolean;

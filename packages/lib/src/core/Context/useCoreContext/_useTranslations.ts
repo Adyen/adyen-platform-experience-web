@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { EMPTY_OBJECT } from '@src/utils/common';
-import { CoreContextI18n, UseTranslationsOptions } from '../types';
-import { TranslationsLoader, TranslationsScopeRecord } from './_translations/types';
+import { UseTranslationsOptions } from '../types';
+import { TranslationsLoader, TranslationsManagerI18n, TranslationsScopeRecord } from './_translations/types';
 
-const _useTranslations = (i18n: CoreContextI18n, translationOptions: UseTranslationsOptions = EMPTY_OBJECT) => {
+const _useTranslations = (i18n: TranslationsManagerI18n, translationOptions: UseTranslationsOptions = EMPTY_OBJECT) => {
     const { customTranslations, translations } = translationOptions;
     const [, setLastRefresh] = useState(performance.now());
     const doneCallback = useRef(() => setLastRefresh(performance.now()));
@@ -28,13 +28,12 @@ const _useTranslations = (i18n: CoreContextI18n, translationOptions: UseTranslat
     );
 
     useMemo(() => {
-        trashScope.current = i18n.load(translationsLoader, doneCallback.current);
-    }, []);
+        trashScope.current
+            ? trashScope.current.refresh?.(translationsLoader, doneCallback.current)
+            : (trashScope.current = i18n.load(translationsLoader, doneCallback.current));
+    }, [i18n, translationsLoader]);
 
-    useMemo(() => {
-        trashScope.current?.refresh(translationsLoader, doneCallback.current);
-    }, [translationsLoader]);
-
+    useEffect(() => trashScope.current?.unstack?.(), [i18n, translationsLoader]);
     useEffect(effectWithUnmountCallback, []);
 };
 
