@@ -1,6 +1,6 @@
 import { Locator, Page } from '@playwright/test';
-import { BasePage } from '../../basePage';
-import { getPagePath } from '../../../utils/utils';
+import { BasePage } from '../basePage';
+import { getPagePath } from '../../utils/utils';
 
 export class AccountHolderPage extends BasePage {
     public readonly accountHolderValue: Locator;

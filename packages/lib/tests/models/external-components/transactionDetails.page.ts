@@ -1,6 +1,6 @@
 import { Locator, Page } from '@playwright/test';
-import { BasePage } from '../../basePage';
-import { getPagePath, getTranslatedKey } from '../../../utils/utils';
+import { BasePage } from '../basePage';
+import { getPagePath, getTranslatedKey } from '../../utils/utils';
 
 export class TransactionDetailsPage extends BasePage {
     public readonly transactionValue: Locator;

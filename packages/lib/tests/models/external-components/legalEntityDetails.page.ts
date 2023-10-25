@@ -1,8 +1,8 @@
 import { Locator, Page } from '@playwright/test';
-import { BasePage } from '../../basePage';
-import { getPagePath, getTranslatedKey } from '../../../utils/utils';
-import TabsPage from '../../internal-components/tabs';
-import StructuredListPage from '../../internal-components/structuredList';
+import { BasePage } from '../basePage';
+import { getPagePath, getTranslatedKey } from '../../utils/utils';
+import TabsPage from '../internal-components/tabs';
+import StructuredListPage from '../internal-components/structuredList';
 export class LegalEntityDetailsPage extends BasePage {
     public readonly legalEntityValues: Locator;
     public readonly transferInstruments: Locator;
