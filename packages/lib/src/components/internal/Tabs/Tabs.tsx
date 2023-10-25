@@ -32,7 +32,7 @@ function Tabs<T extends TabProps[]>(props: TabComponentProps<T>) {
     }, [availableTabs, selectedIndex]);
 
     return (
-        <section aria-label="tab-content">
+        <section aria-label={i18n.get('tabs')}>
             <div className="adyen-fp-tabs" role="tablist" aria-orientation="horizontal">
                 {availableTabs.map((tab, index) => (
                     <button

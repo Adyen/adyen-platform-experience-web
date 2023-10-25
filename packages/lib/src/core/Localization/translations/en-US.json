@@ -138,5 +138,10 @@
     "unableToLoadTransaction": "Unable to load transaction",
     "dismiss": "Dismiss",
     "organization": "Organization",
-    "individual": "individual"
+    "individual": "individual",
+    "originalAmount": "Original amount",
+    "instructedAmount": "Instructed amount",
+    "date": "Date",
+    "structuredList": "Structured list",
+    "tabs": "Tabs"
 }

@@ -1,12 +1,11 @@
-import { Locator, Page } from '@playwright/test';
+import { Locator } from '@playwright/test';
+import { getTranslatedKey } from '../../utils/utils';
 
 class TabsPage {
-    private page: Page;
     public rootElement: Locator;
 
-    constructor(page: Page) {
-        this.page = page;
-        this.rootElement = this.page.locator('.legal-entity-component-container');
+    constructor(rootElement: Locator) {
+        this.rootElement = rootElement.getByLabel(getTranslatedKey('tabs'));
     }
 
     getSelectedTab() {
@@ -18,11 +17,11 @@ class TabsPage {
     }
 
     getListValue(label: string) {
-        return this.rootElement.getByLabel('structured-list').getByLabel(label);
+        return this.rootElement.getByLabel(getTranslatedKey('structuredList')).getByLabel(label);
     }
 
     getTabContent(label: string) {
-        return this.rootElement.getByLabel('tab-content').locator(label);
+        return this.rootElement.locator(label);
     }
 }
 

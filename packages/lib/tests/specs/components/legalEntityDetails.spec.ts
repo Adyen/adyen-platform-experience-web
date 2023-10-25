@@ -59,8 +59,8 @@ test.describe('individual legal entity', async () => {
     testLE("individual legal entity shouldn't show tabs", async ({ legalEntityDetailsPage }) => {
         const legalEntityDetails = legalEntityDetailsPage;
 
-        await expect(legalEntityDetails.id).toHaveText(LEGAL_ENTITY_INDIVIDUAL.id);
-        await expect(legalEntityDetails.type).toHaveText(getTranslatedKey('individual'));
+        await expect(legalEntityDetails.legalEntityValues.getByLabel('value-id')).toHaveText(LEGAL_ENTITY_INDIVIDUAL.id);
+        await expect(legalEntityDetails.legalEntityValues.getByLabel('value-legalEntityType')).toHaveText(getTranslatedKey('individual'));
         await expect(legalEntityDetails.transferInstrumentsTab).not.toBeAttached();
     });
 });

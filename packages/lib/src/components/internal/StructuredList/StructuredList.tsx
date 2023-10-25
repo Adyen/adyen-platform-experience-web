@@ -2,6 +2,7 @@ import classNames from 'classnames';
 import { StructuredListProps } from './types';
 import './StructuredList.scss';
 import { useStructuredListItems } from './useStructuredListItems';
+import useCoreContext from '@src/core/Context/useCoreContext';
 export const StructuredListLayouts = ['3-9', '6-6', '4-8', '8-4', '5-7', '7-5'] as const satisfies ReadonlyArray<`${number}-${number}`>;
 
 const DEFAULT_LAYOUT_LABEL = '6';
@@ -18,8 +19,10 @@ export default function StructuredList({
     const labelWidth = splitLayout[0] ?? DEFAULT_LAYOUT_LABEL;
     const valueWidth = splitLayout[1] ?? DEFAULT_LAYOUT_VALUE;
     const formattedItems = useStructuredListItems(items);
+    const { i18n } = useCoreContext();
+
     return (
-        <div aria-label="structured-list" className="adyen-fp-structured-list">
+        <div aria-label={i18n.get('structuredList')} className="adyen-fp-structured-list">
             {formattedItems.map(item => (
                 <dl
                     key={item.id}
