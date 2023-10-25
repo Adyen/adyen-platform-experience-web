@@ -3,6 +3,7 @@ import { StructuredListProps } from './types';
 import './StructuredList.scss';
 import { useStructuredListItems } from './useStructuredListItems';
 import useCoreContext from '@src/core/Context/useCoreContext';
+import { TranslationKey } from '@src/core/Localization/types';
 export const StructuredListLayouts = ['3-9', '6-6', '4-8', '8-4', '5-7', '7-5'] as const satisfies ReadonlyArray<`${number}-${number}`>;
 
 const DEFAULT_LAYOUT_LABEL = '6';
@@ -35,7 +36,7 @@ export default function StructuredList({
                         {renderLabel ? renderLabel(item.label) : <div name="label">{item.label}</div>}
                     </dt>
                     <dd
-                        aria-label={`value-${item.key}`}
+                        aria-label={`${i18n.get(item.key as TranslationKey)} ${i18n.get('value')}`}
                         className={classNames('adyen-fp-structured-list__content', `adyen-fp-structured-list__grid--width-${valueWidth}-of-12`)}
                     >
                         {renderValue ? renderValue(item.value) : <div>{item.value}</div>}

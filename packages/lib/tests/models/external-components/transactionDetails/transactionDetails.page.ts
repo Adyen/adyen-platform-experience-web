@@ -7,6 +7,8 @@ export class TransactionDetailsPage extends BasePage {
 
     constructor(page: Page, rootElementSelector = '.transaction-details-component-container') {
         super(page, rootElementSelector, getPagePath('transaction'));
-        this.transactionValue = this.rootElement.getByLabel(getTranslatedKey('structuredList')).getByLabel('value-paymentId');
+        this.transactionValue = this.rootElement
+            .getByLabel(getTranslatedKey('structuredList'))
+            .getByLabel(`${getTranslatedKey('paymentId')} ${getTranslatedKey('value')}`);
     }
 }
