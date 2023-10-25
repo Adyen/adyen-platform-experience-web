@@ -14,7 +14,7 @@ function LegalEntityOrganization({ legalEntity, onGetTransferInstrument }: Legal
     const { organization } = legalEntity;
     const organizationListItems = {
         id: legalEntity.id,
-        legalEntityType: legalEntity.type,
+        legalEntityType: i18n.get(legalEntity.type),
         legalNameOfTheCompany: organization.legalName,
         companyType: organization.type,
         tradingName: organization.legalName ?? '-',
@@ -33,6 +33,7 @@ function LegalEntityOrganization({ legalEntity, onGetTransferInstrument }: Legal
     };
     return (
         <Tabs
+            test-id={''}
             tabs={[
                 {
                     label: 'overview',

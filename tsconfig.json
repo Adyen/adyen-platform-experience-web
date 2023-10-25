@@ -10,7 +10,7 @@
         "esModuleInterop": true,
         "strict": true,
         "noUncheckedIndexedAccess": true,
-        "lib": ["dom", "esnext"],
+        "lib": ["dom", "esnext", "es2015"],
         "stripInternal": true,
         "importHelpers": true,
         "types": ["node"]

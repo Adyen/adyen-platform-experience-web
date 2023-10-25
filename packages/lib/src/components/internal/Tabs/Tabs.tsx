@@ -32,12 +32,13 @@ function Tabs<T extends TabProps[]>(props: TabComponentProps<T>) {
     }, [availableTabs, selectedIndex]);
 
     return (
-        <>
+        <section aria-label="tab-content">
             <div className="adyen-fp-tabs" role="tablist" aria-orientation="horizontal">
                 {availableTabs.map((tab, index) => (
                     <button
                         id={`tab-id-${tab.id}`}
                         key={`tab-${tab.id}`}
+                        name={tab.id}
                         className="adyen-fp-tabs__tab"
                         role="tab"
                         aria-controls={`panel-id-${tab.id}`}
@@ -57,6 +58,7 @@ function Tabs<T extends TabProps[]>(props: TabComponentProps<T>) {
             <div className="adyen-fp-tabpanel__wrapper">
                 {availableTabs.map((tab, index) => (
                     <section
+                        name={tab.id}
                         className="adyen-fp-tabpanel__content"
                         id={`panel-id-${tab.id}`}
                         key={`tabpanel-${tab.id}`}
@@ -68,7 +70,7 @@ function Tabs<T extends TabProps[]>(props: TabComponentProps<T>) {
                     </section>
                 ))}
             </div>
-        </>
+        </section>
     );
 }
 export default Tabs;

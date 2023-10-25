@@ -19,7 +19,7 @@ export default function StructuredList({
     const valueWidth = splitLayout[1] ?? DEFAULT_LAYOUT_VALUE;
     const formattedItems = useStructuredListItems(items);
     return (
-        <div className="adyen-fp-structured-list">
+        <div aria-label="structured-list" className="adyen-fp-structured-list">
             {formattedItems.map(item => (
                 <dl
                     key={item.id}
@@ -31,7 +31,10 @@ export default function StructuredList({
                     <dt className={classNames('adyen-fp-structured-list__label', `adyen-fp-structured-list__grid--width-${labelWidth}-of-12`)}>
                         {renderLabel ? renderLabel(item.label) : <div name="label">{item.label}</div>}
                     </dt>
-                    <dd className={classNames('adyen-fp-structured-list__content', `adyen-fp-structured-list__grid--width-${valueWidth}-of-12`)}>
+                    <dd
+                        aria-label={`value-${item.key}`}
+                        className={classNames('adyen-fp-structured-list__content', `adyen-fp-structured-list__grid--width-${valueWidth}-of-12`)}
+                    >
                         {renderValue ? renderValue(item.value) : <div>{item.value}</div>}
                     </dd>
                 </dl>

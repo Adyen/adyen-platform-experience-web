@@ -19,7 +19,7 @@ function TransferInstrumentOverview({ transferInstrument, onGetTransferInstrumen
     const getTransferInstrumentDetails = async () => setTransferInstrumentDetails(await onGetTransferInstrument?.(transferInstrument.id));
 
     return (
-        <div className="adyen-fp-legal-entity-organization--transfer-instrument">
+        <div aria-label={`transfer-instrument-container`} className="adyen-fp-legal-entity-organization--transfer-instrument">
             <Card
                 filled
                 noOutline
@@ -31,13 +31,18 @@ function TransferInstrumentOverview({ transferInstrument, onGetTransferInstrumen
                             <span className="adyen-fp-legal-entity-organization__transfer-instrument-element-label">
                                 {i18n.get('transferInstrumentId')}
                             </span>
-                            <span className="adyen-fp-legal-entity-organization__transfer-instrument-id">{transferInstrument.id}</span>
+                            <span aria-label="transfer-instrument-id" className="adyen-fp-legal-entity-organization__transfer-instrument-id">
+                                {transferInstrument.id}
+                            </span>
                         </div>
                         <div className="adyen-fp-legal-entity-organization__transfer-instrument-element-container">
                             <span className="adyen-fp-legal-entity-organization__transfer-instrument-element-label">
                                 {i18n.get('accountIdentifier')}
                             </span>
-                            <span className="adyen-fp-legal-entity-organization__transfer-instrument-account">
+                            <span
+                                aria-label="transfer-instrument-account-identifier"
+                                className="adyen-fp-legal-entity-organization__transfer-instrument-account"
+                            >
                                 {transferInstrument.accountIdentifier}
                             </span>
                         </div>

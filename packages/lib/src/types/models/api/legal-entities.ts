@@ -130,3 +130,5 @@ export interface ILegalEntitySoleProprietor extends LegalEntity {
     soleProprietorship: SoleProprietorLE;
     entityAssociations?: LegalEntityAssociation<LEAssociationSoleProprietorType>[];
 }
+
+export type LegalEntities = ILegalEntityOrganization | ILegalEntityIndividual | ILegalEntitySoleProprietor;
