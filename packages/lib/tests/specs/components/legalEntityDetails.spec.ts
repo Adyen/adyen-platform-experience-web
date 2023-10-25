@@ -1,7 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { LegalEntityDetailsPage } from '../../models/external-components/legalEntityDetails/legalEntityDetails.page';
-import { getTranslatedKey } from '../../utils/utils';
-import { legalEntitiesEndpoint } from '../../utils/endpoints/legalEntities';
+import { getTranslatedKey, mockGETRoute } from '../../utils/utils';
 import { LEGAL_ENTITY_INDIVIDUAL, LEGAL_ENTITY_ORGANIZATION, LEGAL_ENTITY_ORGANIZATION_WITH_TI } from '../../../../../mocks';
 import { LegalEntities } from '../../../src';
 
@@ -11,7 +10,7 @@ const testWithMockedApi = (mockedResponse: LegalEntities) => {
     }>({
         legalEntityDetailsPage: async ({ page }, use) => {
             const legalEntityDetailsPage = new LegalEntityDetailsPage(page);
-            await legalEntitiesEndpoint.getById(page, mockedResponse);
+            await mockGETRoute({ page, response: mockedResponse, route: 'api/legalEntities' });
             await legalEntityDetailsPage.goto();
 
             await use(legalEntityDetailsPage);
