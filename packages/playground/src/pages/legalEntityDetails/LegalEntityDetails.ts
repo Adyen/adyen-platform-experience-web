@@ -4,7 +4,7 @@ import '../../assets/style/style.scss';
 import { enableServerInMockedMode } from '../../endpoints/mock-server/utils';
 import { getDefaultID } from '../../utils/utils';
 
-const DEFAULT_LEGAL_ENTITY_ID = getDefaultID('LE322KH223222Q5J3VPCHFH83');
+const DEFAULT_LEGAL_ENTITY_ID = getDefaultID('LE322KH223222Q5J3VPCHFH82');
 
 try {
     await enableServerInMockedMode();
