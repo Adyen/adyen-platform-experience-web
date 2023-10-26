@@ -1,3 +1,4 @@
+import { options } from 'preact';
 import Localization from '@src/core/Localization';
 import { EMPTY_OBJECT, noop, struct } from '@src/utils/common';
 import { createScopeTree } from '@src/utils/scope';
@@ -26,6 +27,17 @@ export default class TranslationsManager {
 
         this.#translationsTreeResetter = rootScopeHandle.detach.bind(void 0, false);
         this.#current = rootScopeHandle._scope;
+
+        const _diffed = options.diffed;
+
+        options.diffed = vnode => {
+            _diffed?.(vnode);
+            if (this.#current && this.#current !== rootScopeHandle._scope) {
+                const record = this.#translationsScopesMap.get(this.#current)!;
+                this.#current = record._prev;
+                record._prev = null;
+            }
+        };
     }
 
     get erase() {
@@ -93,15 +105,17 @@ export default class TranslationsManager {
         );
 
         const _trash = (() => {
-            if (!this.#translationsScopesMap.has(_scope)) return;
+            const record = this.#translationsScopesMap.get(_scope);
+
+            if (record === undefined) return;
 
             if (_scope?.data) {
                 // Destroy possible reference pointers down the tree from this scope to avoid potential memory leaks
                 _scope.data._source = _scope.data.translations = undefined as unknown as any;
             }
 
+            record._prev = null;
             detach(false);
-            this.#unstackTranslationsScope(_scope);
             this.#translationsScopesMap.delete(_scope);
         }) as TranslationsScopeRecord['_trash'];
 
@@ -113,7 +127,6 @@ export default class TranslationsManager {
             _translations: EMPTY_OBJECT,
             _trash: Object.defineProperties(_trash, {
                 refresh: { value: this.#refreshTranslationsScope.bind(this, _scope) },
-                unstack: { value: this.#unstackTranslationsScope.bind(this, _scope) },
             }),
         };
 
@@ -181,13 +194,6 @@ export default class TranslationsManager {
         record._locale = locale;
 
         return record._trash;
-    }
-
-    #unstackTranslationsScope(scope: NonNullable<Scope<TranslationsScopeData>>) {
-        // if (this.#current !== scope) throw new Error('Illegal unstack operation');
-        const record = this.#translationsScopesMap.get(scope)!;
-        this.#current = record._prev;
-        // record._prev = null;
     }
 
     get(key: TranslationKey, options?: TranslationOptions): string {

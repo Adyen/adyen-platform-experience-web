@@ -33,7 +33,6 @@ const _useTranslations = (i18n: TranslationsManagerI18n, translationOptions: Use
             : (trashScope.current = i18n.load(translationsLoader, doneCallback.current));
     }, [i18n, translationsLoader]);
 
-    useEffect(() => trashScope.current?.unstack?.(), [i18n, translationsLoader]);
     useEffect(effectWithUnmountCallback, []);
 };
 

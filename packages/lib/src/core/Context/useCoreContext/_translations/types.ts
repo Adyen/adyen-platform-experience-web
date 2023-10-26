@@ -25,7 +25,6 @@ export type TranslationsScopeRecord = {
     _trash: {
         (): void;
         readonly refresh: TranslationsManager['load'];
-        readonly unstack: () => void;
     };
 };
 
