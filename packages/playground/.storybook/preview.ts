@@ -20,8 +20,7 @@ const preview: Preview = {
     },
     loaders: [
         async context => {
-            const env = (import.meta as any).env;
-            if (env.VITE_MODE === 'mocked' || env.VITE_MODE === 'demo') await enableServerInMockedMode();
+            await enableServerInMockedMode();
             const adyenFP = await createAdyenFP({ ...context.coreOptions, loadingContext: process.env.VITE_API_URL });
             return { adyenFP };
         },

@@ -4,7 +4,7 @@ import '../../assets/style/style.scss';
 import { enableServerInMockedMode } from '../../endpoints/mock-server/utils';
 
 try {
-    // await enableServerInMockedMode();
+    await enableServerInMockedMode();
 
     const adyenFP = await AdyenFP({ loadingContext: process.env.VITE_API_URL });
 

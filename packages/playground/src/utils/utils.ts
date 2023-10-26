@@ -11,3 +11,5 @@ export const httpPost = (endpoint: string, data: Record<any, any>) =>
 export const getSearchParameters = (search: string = window.location.search): Record<string, string> => {
     return Object.fromEntries(new URLSearchParams(search).entries());
 };
+
+export const getDefaultID = (fallbackID: string) => (window as any).defaultID ?? fallbackID;

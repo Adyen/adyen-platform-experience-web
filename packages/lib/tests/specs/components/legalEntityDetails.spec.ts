@@ -1,16 +1,17 @@
 import { test, expect } from '@playwright/test';
 import { LegalEntityDetailsPage } from '../../models/external-components/legalEntityDetails.page';
-import { getTranslatedKey, mockGETRoute } from '../../utils/utils';
+import { getTranslatedKey, scriptToAddDefaultID } from '../../utils/utils';
 import { LEGAL_ENTITY_INDIVIDUAL, LEGAL_ENTITY_ORGANIZATION, LEGAL_ENTITY_ORGANIZATION_WITH_TI } from '../../../../../mocks';
-import { LegalEntities } from '../../../src';
 
-const testWithMockedApi = (mockedResponse: LegalEntities) => {
+const testWithMockedApi = (id: string) => {
     return test.extend<{
         legalEntityDetailsPage: LegalEntityDetailsPage;
     }>({
         legalEntityDetailsPage: async ({ page }, use) => {
             const legalEntityDetailsPage = new LegalEntityDetailsPage(page);
-            await mockGETRoute({ page, response: mockedResponse, route: 'api/legalEntities' });
+
+            await scriptToAddDefaultID(page, id);
+
             await legalEntityDetailsPage.goto();
 
             await use(legalEntityDetailsPage);
@@ -18,11 +19,10 @@ const testWithMockedApi = (mockedResponse: LegalEntities) => {
     });
 };
 test.describe('legal entity with transfer instruments', async () => {
-    const testLE = testWithMockedApi(LEGAL_ENTITY_ORGANIZATION_WITH_TI);
+    const testLE = testWithMockedApi(LEGAL_ENTITY_ORGANIZATION_WITH_TI.id);
 
     testLE('legal entity should show overview by default', async ({ legalEntityDetailsPage }) => {
         const legalEntityDetails = legalEntityDetailsPage;
-
         await expect(legalEntityDetails.selectedTab).toHaveText(getTranslatedKey('overview'));
         await expect(legalEntityDetails.legalEntityValues).toBeVisible();
         await expect(legalEntityDetails.id).toHaveText(LEGAL_ENTITY_ORGANIZATION_WITH_TI.id);
@@ -42,7 +42,7 @@ test.describe('legal entity with transfer instruments', async () => {
 });
 
 test.describe('legal entity without transfer instrument', async () => {
-    const testLE = testWithMockedApi(LEGAL_ENTITY_ORGANIZATION);
+    const testLE = testWithMockedApi(LEGAL_ENTITY_ORGANIZATION.id);
     testLE('legal entity with transfer instruments should have enabled the TI tab', async ({ legalEntityDetailsPage }) => {
         const legalEntityDetails = legalEntityDetailsPage;
 
@@ -54,7 +54,7 @@ test.describe('legal entity without transfer instrument', async () => {
 });
 
 test.describe('individual legal entity', async () => {
-    const testLE = testWithMockedApi(LEGAL_ENTITY_INDIVIDUAL);
+    const testLE = testWithMockedApi(LEGAL_ENTITY_INDIVIDUAL.id);
     testLE("individual legal entity shouldn't show tabs", async ({ legalEntityDetailsPage }) => {
         const legalEntityDetails = legalEntityDetailsPage;
 

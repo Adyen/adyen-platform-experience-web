@@ -119,5 +119,5 @@ export const LEGAL_ENTITY_INDIVIDUAL: ILegalEntityIndividual = {
 };
 
 export const mockedIndividualLegalEntities = [LEGAL_ENTITY_INDIVIDUAL] as const;
-export const mockedOrganizationLegalEntities = [LEGAL_ENTITY_ORGANIZATION] as const;
+export const mockedOrganizationLegalEntities = [LEGAL_ENTITY_ORGANIZATION, LEGAL_ENTITY_ORGANIZATION_WITH_TI] as const;
 export const MOCKED_LEGAL_ENTITIES = [...mockedIndividualLegalEntities, ...mockedOrganizationLegalEntities] as const;
