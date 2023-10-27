@@ -1,15 +1,16 @@
 import { Locator } from '@playwright/test';
-import { getTranslatedKey } from '../../utils/utils';
 
 class DataGridPage {
     public rootElement: Locator;
+    public readonly gridBody: Locator;
 
     constructor(rootElement: Locator) {
         this.rootElement = rootElement.getByRole('table');
+        this.gridBody = this.rootElement.locator('tbody');
     }
 
-    getValue(label: string) {
-        return this.rootElement.getByLabel(`${label} ${getTranslatedKey('value')}`);
+    getCell(label: string, row = 0) {
+        return this.gridBody.getByRole('row').nth(row).locator(`td[aria-labelledby="${label}"]`);
     }
 }
 

@@ -13,3 +13,5 @@ export const getSearchParameters = (search: string = window.location.search): Re
 };
 
 export const getDefaultID = (fallbackID: string) => (window as any).defaultID ?? fallbackID;
+
+export const TEST_CONFIG = (window as any).testConfig ?? {};

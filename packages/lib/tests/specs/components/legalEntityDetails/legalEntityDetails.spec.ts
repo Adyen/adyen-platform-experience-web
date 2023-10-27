@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
-import { LegalEntityDetailsPage } from '../../models/external-components/legalEntityDetails.page';
-import { getTranslatedKey, scriptToAddDefaultID } from '../../utils/utils';
-import { LEGAL_ENTITY_INDIVIDUAL, LEGAL_ENTITY_ORGANIZATION, LEGAL_ENTITY_ORGANIZATION_WITH_TI } from '../../../../../mocks';
+import { LegalEntityDetailsPage } from '../../../models/external-components/legalEntityDetails.page';
+import { getTranslatedKey, scriptToAddDefaultID } from '../../../utils/utils';
+import { LEGAL_ENTITY_INDIVIDUAL, LEGAL_ENTITY_ORGANIZATION, LEGAL_ENTITY_ORGANIZATION_WITH_TI } from '../../../../../../mocks';
 
 const testWithMockedApi = (id: string) => {
     return test.extend<{

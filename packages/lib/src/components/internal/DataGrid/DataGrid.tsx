@@ -47,9 +47,14 @@ function DataGrid<T extends { [k: string]: any }>(props: DataGridProps<T>) {
                     <div className="adyen-fp-data-grid__table-wrapper">
                         <table className="adyen-fp-data-grid__table">
                             <thead className="adyen-fp-data-grid__head">
-                                <tr className="adyen-fp-data-grid__row">
+                                <tr role="rowheader" className="adyen-fp-data-grid__row">
                                     {props.columns.map(item => (
-                                        <th className="adyen-fp-data-grid__cell adyen-fp-data-grid__cell--heading" key={item.key}>
+                                        <th
+                                            role="columnheader"
+                                            id={String(item.key)}
+                                            className="adyen-fp-data-grid__cell adyen-fp-data-grid__cell--heading"
+                                            key={item.key}
+                                        >
                                             {item.label}
                                         </th>
                                     ))}
@@ -77,7 +82,7 @@ function DataGridBody<T extends { [k: string]: any }>(props: DataGridProps<T>) {
                     {props.columns.map(({ key }) => {
                         if (props.customCells?.[key])
                             return (
-                                <DataGridCell key={key}>
+                                <DataGridCell role="gridcell" aria-labelledby={String(key)} key={key}>
                                     {props.customCells[key]({
                                         key,
                                         value: item[key],
@@ -86,7 +91,11 @@ function DataGridBody<T extends { [k: string]: any }>(props: DataGridProps<T>) {
                                 </DataGridCell>
                             );
 
-                        return <DataGridCell key={key}>{item[key]}</DataGridCell>;
+                        return (
+                            <DataGridCell role="gridcell" aria-labelledby={String(key)} key={key}>
+                                {item[key]}
+                            </DataGridCell>
+                        );
                     })}
                 </tr>
             ))}

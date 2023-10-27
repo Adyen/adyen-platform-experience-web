@@ -1,5 +1,5 @@
 import { test as base, expect } from '@playwright/test';
-import { AccountHolderPage } from '../../models/external-components/accountHolder.page';
+import { AccountHolderPage } from '../../../models/external-components/accountHolder.page';
 
 const test = base.extend<{
     accountHolderPage: AccountHolderPage;
