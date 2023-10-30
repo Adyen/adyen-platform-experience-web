@@ -9,5 +9,6 @@ Object.assign(window, {
         onAccountSelected: function ({ showModal }) {
             showModal();
         },
+        onFilterChange: () => {},
     },
 });

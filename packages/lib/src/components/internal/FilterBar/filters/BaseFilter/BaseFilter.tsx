@@ -107,6 +107,7 @@ export default function BaseFilter<T extends BaseFilterProps = BaseFilterProps>(
     return (
         <div className={`adyen-fp-filter adyen-fp-filter--${props.type}`}>
             <Button
+                ariaLabel={props.label}
                 variant={'filter'}
                 label={props.value || props.label}
                 classNameModifiers={[...(props.value ? ['active'] : []), ...(props.classNameModifiers ?? [])]}

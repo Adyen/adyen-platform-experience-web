@@ -9,8 +9,6 @@ try {
 
     const adyenFP = await AdyenFP({ loadingContext: process.env.VITE_API_URL });
 
-    console.dir((window as any).testConfig);
-
     adyenFP
         .create('transactionList', {
             balancePlatformId: process.env.VITE_BALANCE_PLATFORM ?? '',

@@ -14,6 +14,7 @@ class Button extends Component<ButtonProps, ButtonState> {
         inline: false,
         target: '_self',
         onClick: () => {},
+        ariaLabel: '',
     };
 
     public onClick = (e: any) => {
@@ -32,7 +33,7 @@ class Button extends Component<ButtonProps, ButtonState> {
     };
 
     render(
-        { classNameModifiers = [], disabled, href, icon, inline, label, status, tabIndex, variant }: ButtonProps,
+        { classNameModifiers = [], disabled, href, icon, inline, label, status, tabIndex, variant, ariaLabel }: ButtonProps,
         { completed }: { completed: boolean }
     ) {
         const { i18n } = useCoreContext();
@@ -76,7 +77,7 @@ class Button extends Component<ButtonProps, ButtonState> {
         }
 
         return (
-            <button className={buttonClasses} type="button" disabled={disabled} onClick={this.onClick} tabIndex={tabIndex}>
+            <button aria-label={ariaLabel} className={buttonClasses} type="button" disabled={disabled} onClick={this.onClick} tabIndex={tabIndex}>
                 {buttonText}
                 {status !== 'loading' && status !== 'redirect' && this.props.children}
             </button>
