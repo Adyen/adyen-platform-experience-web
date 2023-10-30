@@ -29,12 +29,13 @@ export default class TranslationsManager {
         this.#current = rootScopeHandle._scope;
 
         const _diffed = options.diffed;
+        let currentScope = this.#current!;
 
         options.diffed = vnode => {
             _diffed?.(vnode);
-            if (this.#current && this.#current !== rootScopeHandle._scope) {
+            if (this.#current && this.#current !== currentScope && this.#current !== rootScopeHandle._scope) {
                 const record = this.#translationsScopesMap.get(this.#current)!;
-                this.#current = record._prev;
+                currentScope = this.#current = record._prev!;
                 record._prev = null;
             }
         };

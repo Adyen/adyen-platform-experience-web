@@ -27,11 +27,9 @@ const _useTranslations = (i18n: TranslationsManagerI18n, translationOptions: Use
         [customTranslations, translations]
     );
 
-    useMemo(() => {
-        trashScope.current
-            ? trashScope.current.refresh?.(translationsLoader, doneCallback.current)
-            : (trashScope.current = i18n.load(translationsLoader, doneCallback.current));
-    }, [i18n, translationsLoader]);
+    trashScope.current
+        ? trashScope.current.refresh?.(translationsLoader, doneCallback.current)
+        : (trashScope.current = i18n.load(translationsLoader, doneCallback.current));
 
     useEffect(effectWithUnmountCallback, []);
 };
