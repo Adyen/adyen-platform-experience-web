@@ -8,8 +8,6 @@ on:
 
 jobs:
   e2e-local-mocked-api:
-    needs: is-pr-approved
-    if: needs.is-pr-approved.outputs.approved == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     env:
