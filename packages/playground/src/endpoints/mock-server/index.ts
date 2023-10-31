@@ -7,3 +7,7 @@ import { transactionsMocks } from './transactions';
 
 const mocks = [legalEntitiesMocks, balanceAccountMocks, accountHolderMocks, transactionsMocks];
 export const mockWorker = setupWorker(...getMockHandlers(mocks));
+
+console.log(accountHolderMocks);
+console.log(mocks);
+console.log(mockWorker);

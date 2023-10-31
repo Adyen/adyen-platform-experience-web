@@ -1,6 +1,6 @@
 import { DataSet, DataSetItem } from '../../../core/Services/data-set';
 import { SchemaKeys } from '../../../utils/useForm/types';
-import { Ref, StateUpdater } from 'preact/compat';
+import { Ref, StateUpdater } from 'preact/hooks';
 import AdyenFPError from '../../../core/Errors/AdyenFPError';
 
 export type PhoneInputSchema = {
