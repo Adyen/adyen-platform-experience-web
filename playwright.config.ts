@@ -73,7 +73,8 @@ const config: PlaywrightTestConfig = {
     webServer: {
         command: process.env.CI ? 'npm run demo:serve' : 'npm run start:mocked',
         reuseExistingServer: !process.env.CI,
-        url: baseUrl,
+        url: process.env.CI ? undefined : baseUrl,
+        port: process.env.CI ? playground.port : undefined,
     },
 };
 
