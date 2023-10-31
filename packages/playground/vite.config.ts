@@ -39,6 +39,7 @@ export default defineConfig(async ({ mode }) => {
                       rollupOptions: {
                           input: await getPlaygroundEntrypoints(),
                       },
+                      minify: false,
                   }
                 : undefined,
         resolve: {
