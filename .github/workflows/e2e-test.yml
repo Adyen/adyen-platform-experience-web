@@ -14,7 +14,8 @@ jobs:
       CI: true
       PLAYGROUND_HOST: localhost
       PLAYGROUND_PORT: 4173
-      VITE_API_URL: http://localhost:8083
+      VITE_API_URL: http://localhost:4173
+      MOCK_SERVER_PORT: 8083
     steps:
       - name: Checkout the repo
         uses: actions/checkout@v3
