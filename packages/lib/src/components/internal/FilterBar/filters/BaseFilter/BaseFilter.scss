@@ -40,7 +40,7 @@
     }
 
     &--active {
-        background: linear-gradient(0deg, #fff, #fff);
+        background: 1px solid var(--adyen-fp-filter-button-active-border-color);
         outline: 1px solid #00112c;
     }
 

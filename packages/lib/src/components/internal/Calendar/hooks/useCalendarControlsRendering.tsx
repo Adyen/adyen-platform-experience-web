@@ -1,3 +1,4 @@
+import { ButtonVariant } from '@src/components/internal/Button/types';
 import { useCallback } from 'preact/hooks';
 import { isFunction } from '@src/utils/common';
 import { CalendarControlRenderer, CalendarRenderControl } from '../types';
@@ -35,7 +36,7 @@ const useCalendarControlsRendering = (renderControl?: CalendarRenderControl) => 
                 return (
                     <Button
                         aria-label={i18n.get(`calendar.${labelModifier}Month`)}
-                        variant={'ghost'}
+                        variant={ButtonVariant.TERTIARY}
                         disabled={!handle()}
                         classNameModifiers={['circle', directionModifier]}
                         key={control}

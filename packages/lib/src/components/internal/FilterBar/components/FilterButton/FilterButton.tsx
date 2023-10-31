@@ -3,7 +3,6 @@ import Typography from '@src/components/internal/Typography/Typography';
 import classNames from 'classnames';
 import { Ref } from 'preact';
 import { forwardRef } from 'preact/compat';
-import './FilterButton.scss';
 import { FilterButtonProps } from './types';
 
 function FilterButton(
@@ -19,7 +18,7 @@ function FilterButton(
             tabIndex={tabIndex}
             ref={ref}
             role={'button'}
-            aria-expanded={ariaAttributes?.['aria-expended']}
+            {...ariaAttributes}
         >
             <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY} stronger={true}>
                 {children}

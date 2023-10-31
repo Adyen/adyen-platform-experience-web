@@ -1,4 +1,5 @@
 import Button from '@src/components/internal/Button';
+import { ButtonVariant } from '@src/components/internal/Button/types';
 import './PopoverDismissButton.scss';
 
 interface PopoverDismissButtonProps {
@@ -12,7 +13,7 @@ export default function PopoverDismissButton({ image = true, onClick }: PopoverD
     };
     return (
         <>
-            <Button className={getConditionalClasses()} variant={'tertiary'} onClick={onClick}>
+            <Button className={getConditionalClasses()} variant={ButtonVariant.TERTIARY} onClick={onClick}>
                 <svg role="img" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none">
                     <title>{'dismiss'}</title>
                     <path

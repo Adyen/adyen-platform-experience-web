@@ -1,14 +1,15 @@
 import { TypographyElement, TypographyVariant } from '@src/components/internal/Typography/types';
 import Typography from '@src/components/internal/Typography/Typography';
 import getModifierClasses from '@src/utils/get-modifier-classes';
+import classNames from 'classnames';
 import { Ref } from 'preact';
 import { forwardRef } from 'preact/compat';
 import './Button.scss';
-import { ButtonProps } from './types';
+import { ButtonProps, ButtonVariant } from './types';
 
 function Button(
     {
-        variant = 'primary',
+        variant = ButtonVariant.PRIMARY,
         disabled = false,
         onClick,
         classNameModifiers = [],
@@ -18,7 +19,8 @@ function Button(
         tabIndex,
         children,
         key,
-        ariaAttributes,
+        className,
+        ...restAttributes
     }: ButtonProps,
     ref: Ref<HTMLButtonElement>
 ) {
@@ -32,7 +34,7 @@ function Button(
 
     const modifiers = [...classNameModifiers, ...[variant]];
 
-    const buttonClasses = getModifierClasses('adyen-fp-button', modifiers, 'adyen-fp-button');
+    const buttonClasses = getModifierClasses(`${className} adyen-fp-button`, modifiers, 'adyen-fp-button');
 
     return (
         <button
@@ -44,8 +46,7 @@ function Button(
             tabIndex={tabIndex}
             ref={ref}
             role={'button'}
-            aria-controls={ariaAttributes?.['aria-controls']}
-            aria-expanded={ariaAttributes?.['aria-expended']}
+            {...restAttributes}
         >
             {iconLeft && <span className="adyen-fp-button__icon-left">{iconLeft}</span>}
             <Typography className={'adyen-fp-button__label'} el={TypographyElement.SPAN} variant={TypographyVariant.BODY} stronger={true}>

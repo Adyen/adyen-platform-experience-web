@@ -1,6 +1,6 @@
 import Localization from '@src/core/Localization';
 import useMounted from '@src/hooks/useMounted';
-import { useCallback, useEffect, useRef, useState } from 'preact/hooks';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { CalendarHandle } from '../../../Calendar/types';
 import DatePicker from '../../../DatePicker';
@@ -51,6 +51,10 @@ const renderDateFilterModalBody = (() => {
 
                 case EditAction.CLEAR:
                     datePickerRef.current?.clear();
+                    props?.onChange({
+                        [DateRangeFilterParam.FROM]: resolveDate(),
+                        [DateRangeFilterParam.TO]: resolveDate(),
+                    });
             }
         }, [props.editAction, props.onChange]);
 
@@ -76,9 +80,9 @@ export default function DateFilter<T extends DateFilterProps = DateFilterProps>(
     const fromDate = resolveDate(props.from);
     const toDate = resolveDate(props.to);
 
-    const getAppliedFilterNumber = (): number => {
-        return !!computeDateFilterValue(i18n, fromDate, toDate) && !!props.from && !!props.to ? 1 : 0;
-    };
+    const getAppliedFilterNumber = useMemo((): number => {
+        return !!computeDateFilterValue(i18n, fromDate, toDate) ? 1 : 0;
+    }, [i18n, fromDate, toDate]);
 
     return (
         <BaseFilter<T>
@@ -90,7 +94,7 @@ export default function DateFilter<T extends DateFilterProps = DateFilterProps>(
             rangeEnd={resolveDate(props.rangeEnd)}
             render={renderDateFilterModalBody}
             value={computeDateFilterValue(i18n, fromDate, toDate)}
-            appliedFilterAmount={getAppliedFilterNumber()}
+            appliedFilterAmount={getAppliedFilterNumber}
         />
     );
 }

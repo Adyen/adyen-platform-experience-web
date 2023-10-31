@@ -1,29 +1,21 @@
-import { ComponentChildren } from 'preact';
+import { ComponentChild, ComponentChildren } from 'preact';
+import { JSXInternal } from 'preact/src/jsx';
 
-export type ButtonVariant = 'primary' | 'secondary' | 'tertiary' | 'link';
-
-export interface ButtonProps extends Record<string, any> {
+interface _ButtonProps extends JSXInternal.HTMLAttributes<HTMLButtonElement> {
     classNameModifiers?: string[];
     variant?: ButtonVariant;
-    disabled?: boolean;
     iconLeft?: HTMLElement;
     iconRight?: HTMLElement;
     inline?: boolean;
-    tabIndex?: number;
-    type?: 'submit' | 'reset' | 'button';
-    ariaAttributes: { [k: string]: any };
-    key?: string;
-    onClick: (e?: Event, callbacks?: { [k: string]: (...args: any) => void }) => void;
-    children: ComponentChildren;
-    ariaLabel?: string;
 }
 
-export interface ButtonState {
-    completed?: boolean;
-}
+export type ButtonProps = Omit<_ButtonProps, 'children'> & {
+    children: NonNullable<ComponentChild> | NonNullable<ComponentChild>[];
+};
 
-export enum ButtonVariants {
+export enum ButtonVariant {
     PRIMARY = 'primary',
     SECONDARY = 'secondary',
     TERTIARY = 'tertiary',
+    LINK = 'link',
 }

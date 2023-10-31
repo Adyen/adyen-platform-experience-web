@@ -1,4 +1,5 @@
 import { ComponentChildren } from 'preact';
+import { JSXInternal } from 'preact/src/jsx';
 
 export interface FilterButtonProps {
     disabled?: boolean;
@@ -6,6 +7,6 @@ export interface FilterButtonProps {
     tabIndex?: number;
     type?: string;
     children: ComponentChildren;
-    ariaAttributes?: { [k: string]: any };
+    ariaAttributes?: JSXInternal.AriaAttributes;
     classNameModifiers?: string[];
 }

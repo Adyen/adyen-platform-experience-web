@@ -1,4 +1,4 @@
-import { ButtonVariants } from '@src/components/internal/Button/types';
+import { ButtonVariant } from '@src/components/internal/Button/types';
 import FilterButton from '@src/components/internal/FilterBar/components/FilterButton/FilterButton';
 import Popover from '@src/components/internal/Popover/Popover';
 import { TypographyElement, TypographyVariant } from '@src/components/internal/Typography/types';
@@ -13,12 +13,8 @@ import InputText from '../../../FormFields/InputText';
 import './BaseFilter.scss';
 import { BaseFilterProps, EditAction, FilterEditModalRenderProps, FilterProps } from './types';
 
-const isValueEmptyFallback = (value?: string | any[]) => {
-    if (typeof value === 'string') {
-        return isEmpty(value.trim());
-    }
-    if (Array.isArray(value)) return !value || !!value.length;
-    return !Boolean(value);
+const isValueEmptyFallback = (value?: string) => {
+    return !value || isEmpty(value);
 };
 
 const renderFallback = (() => {
@@ -40,7 +36,7 @@ const renderFallback = (() => {
                 const value = '';
                 setCurrentValue(value);
                 onValueUpdated(value);
-                onChange('');
+                onChange(value);
             }
 
             if (editAction === EditAction.APPLY) {
@@ -59,6 +55,7 @@ export default function BaseFilter<T extends BaseFilterProps = BaseFilterProps>(
     const [editAction, setEditAction] = useState(EditAction.NONE);
     const [editMode, _updateEditMode] = useBooleanState(false);
     const [editModalMounting, updateEditModalMounting] = useBooleanState(false);
+    const [hasEmptyValue, updateHasEmptyValue] = useBooleanState(false);
     const [hasInitialValue, updateHasInitialValue] = useBooleanState(false);
     const [valueChanged, updateValueChanged] = useBooleanState(false);
     const targetElement = useUniqueIdentifier();
@@ -84,6 +81,7 @@ export default function BaseFilter<T extends BaseFilterProps = BaseFilterProps>(
             if (mode) {
                 setEditAction(EditAction.NONE);
                 updateValueChanged(false);
+                updateHasEmptyValue(false);
                 updateHasInitialValue(false);
             }
 
@@ -98,6 +96,7 @@ export default function BaseFilter<T extends BaseFilterProps = BaseFilterProps>(
         if (editModalMounting) {
             const hasEmptyValue = isValueEmpty(props.value);
             updateEditModalMounting(false);
+            updateHasEmptyValue(hasEmptyValue);
             updateHasInitialValue(!hasEmptyValue);
         }
     }, [props.value, editModalMounting, isValueEmpty]);
@@ -111,15 +110,15 @@ export default function BaseFilter<T extends BaseFilterProps = BaseFilterProps>(
     const actions = [
         {
             title: i18n.get('apply'),
-            variant: ButtonVariants.PRIMARY,
+            variant: ButtonVariant.PRIMARY,
             event: applyFilter,
-            disabled: !valueChanged && isValueEmpty(),
+            disabled: !valueChanged,
         },
         {
             title: i18n.get('clear'),
-            variant: ButtonVariants.SECONDARY,
+            variant: ButtonVariant.SECONDARY,
             event: clearFilter,
-            disabled: !Boolean(props.value),
+            disabled: hasEmptyValue,
         },
     ];
 

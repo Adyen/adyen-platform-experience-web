@@ -9,11 +9,11 @@ export enum EditAction {
 export interface BaseFilterProps {
     onChange: (value?: any) => void;
     name: string;
-    value?: string | any[];
+    value?: string;
     type?: string;
     label: string;
     classNameModifiers?: string[];
-    isValueEmpty?: (value?: string | any[]) => boolean;
+    isValueEmpty?: (value?: string) => boolean;
     appliedFilterAmount?: number;
 }
 

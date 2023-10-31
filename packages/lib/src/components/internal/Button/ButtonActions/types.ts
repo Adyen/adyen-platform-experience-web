@@ -6,7 +6,6 @@ export interface ButtonActionObject {
     icon?: Node;
     disabled?: boolean;
     variant?: ButtonVariant;
-    critical?: boolean;
 }
 
 export type ButtonActionsList = Array<ButtonActionObject>;
