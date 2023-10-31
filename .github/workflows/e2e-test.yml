@@ -13,8 +13,8 @@ jobs:
     env:
       CI: true
       PLAYGROUND_HOST: localhost
-      PLAYGROUND_PORT: 3030
-      VITE_API_URL: http://localhost:8080
+      PLAYGROUND_PORT: 4173
+      VITE_API_URL: http://localhost:8083
     steps:
       - name: Checkout the repo
         uses: actions/checkout@v3
