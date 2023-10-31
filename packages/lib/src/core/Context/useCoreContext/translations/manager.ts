@@ -1,10 +1,10 @@
-import { options } from 'preact';
 import Localization from '@src/core/Localization';
 import { EMPTY_OBJECT, noop, struct } from '@src/utils/common';
 import { createScopeTree } from '@src/utils/scope';
 import { Scope } from '@src/utils/scope/types';
 import { TranslationKey, TranslationOptions } from '@src/core/Localization/types';
 import { TranslationsLoader, TranslationsManagerI18n, TranslationsScopeData, TranslationsScopeRecord, TranslationsScopeTree } from './types';
+import _onRenderHook from './onRenderHook';
 
 export default class TranslationsManager {
     #i18n!: Localization['i18n'];
@@ -25,19 +25,19 @@ export default class TranslationsManager {
             })
         );
 
-        this.#translationsTreeResetter = rootScopeHandle.detach.bind(void 0, false);
-        this.#current = rootScopeHandle._scope;
-
-        const _diffed = options.diffed;
-        let currentScope = this.#current!;
-
-        options.diffed = vnode => {
-            _diffed?.(vnode);
+        const uninstallRenderHook = _onRenderHook(() => {
             if (this.#current && this.#current !== currentScope && this.#current !== rootScopeHandle._scope) {
                 const record = this.#translationsScopesMap.get(this.#current)!;
                 currentScope = this.#current = record._prev!;
                 record._prev = null;
             }
+        }, true);
+
+        let currentScope = (this.#current = rootScopeHandle._scope!);
+
+        this.#translationsTreeResetter = () => {
+            rootScopeHandle.detach(false);
+            uninstallRenderHook();
         };
     }
 
