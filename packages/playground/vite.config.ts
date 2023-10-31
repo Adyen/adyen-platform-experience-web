@@ -33,9 +33,12 @@ export default defineConfig(async ({ mode }) => {
         build:
             mode === 'demo'
                 ? {
-                      outDir: resolve(__dirname, 'storybook-static'),
+                      outDir: resolve(__dirname, '.demo'),
                       emptyOutDir: true,
                       target: 'esnext',
+                      rollupOptions: {
+                          input: await getPlaygroundEntrypoints(),
+                      },
                   }
                 : undefined,
         resolve: {
