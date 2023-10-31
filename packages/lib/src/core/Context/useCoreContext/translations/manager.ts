@@ -41,10 +41,6 @@ export default class TranslationsManager {
         };
     }
 
-    get erase() {
-        return this.#translationsTreeResetter;
-    }
-
     get i18n(): TranslationsManagerI18n {
         return this.#modifiedI18n;
     }
@@ -59,6 +55,10 @@ export default class TranslationsManager {
         this.#useI18n(i18n as any);
     }
 
+    get reset() {
+        return this.#translationsTreeResetter;
+    }
+
     #useI18n(i18n: Localization['i18n']) {
         this.#modifiedI18n = (() => {
             const {
@@ -71,16 +71,14 @@ export default class TranslationsManager {
                 ...restDescriptors
             } = Object.getOwnPropertyDescriptors((this.#i18n = i18n));
 
-            const { get, load } = Object.getOwnPropertyDescriptors(TranslationsManager.prototype);
+            const { get } = Object.getOwnPropertyDescriptors(TranslationsManager.prototype);
             const __get__ = (get.value as NonNullable<typeof get.value>).bind(this);
-
-            load.value = (load.value as NonNullable<typeof load.value>).bind(this);
 
             get.value = ((...args) => {
                 return __get__(...args);
             }) as TranslationsManager['i18n']['get'];
 
-            return struct({ ...restDescriptors, get, load }) as TranslationsManager['i18n'];
+            return struct({ ...restDescriptors, get }) as TranslationsManager['i18n'];
         })();
     }
 

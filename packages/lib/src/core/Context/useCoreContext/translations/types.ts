@@ -32,5 +32,22 @@ type OverrideCallable<T extends (...args: any[]) => any, ReturnValue = ReturnTyp
 
 export type TranslationsManagerI18n = {
     get: OverrideCallable<TranslationsManager['get']>;
-    load: TranslationsManager['load'];
 } & Omit<Localization['i18n'], (typeof I18N_EXCLUDED_PROPS)[number]>;
+
+export type TranslationsContextThisBinding = Pick<TranslationsManager, 'load' | 'reset'> & {
+    /**
+     * @todo
+     *   Change the `i18n` parameter type from the union `Localization['i18n'] | TranslationsManagerI18n` to just
+     *   `Localization['i18n']` — when this package's TypeScript version has been bumped up to at least 5.1, which
+     *   supports unrelated types for getters and setters (@link https://www.typescriptlang.org/docs/handbook/release-notes/typescript-5-1.html#unrelated-types-for-getters-and-setters).
+     */
+    set i18n(i18n: Localization['i18n'] | TranslationsManager['i18n']);
+    get i18n(): TranslationsManager['i18n'];
+};
+
+export type UseTranslationsOptions = {
+    customTranslations?: Record<string, Awaited<ReturnType<TranslationsLoader>>>;
+    translations?: Record<string, Awaited<ReturnType<TranslationsLoader>> | (() => ReturnType<TranslationsLoader>)>;
+};
+
+export type WithTranslationsI18n<T extends { i18n?: any }> = Omit<T, 'i18n'> & Pick<TranslationsManager, 'i18n'>;

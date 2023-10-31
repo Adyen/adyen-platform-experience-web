@@ -1,6 +1,5 @@
 import Localization from '@src/core/Localization';
-import TranslationsManager from './useCoreContext/_translations';
-import { TranslationsLoader } from './useCoreContext/_translations/types';
+import { WithTranslationsI18n } from './useCoreContext/translations/types';
 
 export interface CommonPropsTypes {
     isCollatingErrors?: boolean;
@@ -14,10 +13,5 @@ export interface CoreProviderProps {
     clientKey?: string;
 }
 
-export type CoreContextI18n = TranslationsManager['i18n'];
-export type CoreContextProps = Omit<CoreProviderProps, 'i18n'> & { i18n: CoreContextI18n };
-
-export type UseTranslationsOptions = {
-    customTranslations?: Record<string, Awaited<ReturnType<TranslationsLoader>>>;
-    translations?: Record<string, Awaited<ReturnType<TranslationsLoader>> | (() => ReturnType<TranslationsLoader>)>;
-};
+export type CoreContextWithTranslations = WithTranslationsI18n<CoreProviderProps>;
+export type CoreContextWithTranslationsI18n = CoreContextWithTranslations['i18n'];
