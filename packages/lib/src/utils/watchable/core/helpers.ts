@@ -1,5 +1,5 @@
 import { Watchable, WatchAtoms, WatchCallable } from '../types';
-import { noop, struct } from '../../common';
+import { isFunction, noop, struct } from '../../common';
 
 export const createLiveWatchableState = <T extends Record<string, any>>(watchableAtoms = {} as WatchAtoms<T>) => {
     const descriptors = {} as {
@@ -15,7 +15,7 @@ export const createLiveWatchableState = <T extends Record<string, any>>(watchabl
             enumerable: true,
             get:
                 get ||
-                (typeof value === 'function'
+                (isFunction(value)
                     ? () => value() // ensures that the `this` binding of the getter function is preserved
                     : () => value),
         };
@@ -34,7 +34,7 @@ export const createWatchableIdleCallbacks = <T extends Record<string, any>>() =>
             set: (callback?: WatchCallable<any> | null) => {
                 if (callback == undefined) {
                     callbacks[key] = noop;
-                } else if (typeof callback === 'function' && callback !== callbacks[key]) {
+                } else if (isFunction(callback) && callback !== callbacks[key]) {
                     callbacks[key] = callback;
                 }
             },

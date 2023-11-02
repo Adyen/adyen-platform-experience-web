@@ -1,4 +1,5 @@
 import { NullableReflexable, Reflex, Reflexable, ReflexableRecord, ReflexableRef, ReflexAction } from './types';
+import { isFunction } from '@src/utils/common';
 
 const REGISTRY = new WeakMap<ReflexableRef, ReflexableRecord>();
 
@@ -9,7 +10,7 @@ const getRecordFromRegistry = <T = any>(ref: ReflexableRef<T>) => {
 };
 
 const isReflex = <T = any>(reflexable: NullableReflexable<T>): reflexable is Reflex<T> =>
-    typeof reflexable === 'function' &&
+    isFunction(reflexable) &&
     (reflexable as Reflex<T>)?._ref &&
     (reflexable as Reflex<T>)?._ref !== reflexable &&
     Object.getOwnPropertyNames((reflexable as Reflex<T>)?._ref).includes('current');
@@ -40,12 +41,11 @@ export const registerReflexable = <T = any>(reflexable: Reflexable<T>, action?: 
 
         let _current: T | null = null;
         const actions = new Map<ReflexAction<T>, number>().set(action, 1);
-        const updateCurrent =
-            typeof _ref === 'function'
-                ? _ref
-                : (instance: T | null) => {
-                      _ref.current = instance;
-                  };
+        const updateCurrent = isFunction(_ref)
+            ? _ref
+            : (instance: T | null) => {
+                  _ref.current = instance;
+              };
 
         const callbackRef = Object.defineProperties(
             (instance: T | null) => {

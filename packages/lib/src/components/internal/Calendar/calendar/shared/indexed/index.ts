@@ -1,6 +1,7 @@
 import { Indexed, IndexedMapIteratorCallback, IndexedMapIteratorFactory } from './types';
+import { isFunction, isNumber, struct, structFrom } from '@src/utils/common';
 import { $true } from '@src/utils/common/constants';
-import { struct, structFrom } from '@src/utils/common';
+import { isString } from '@src/utils/validator-utils';
 
 const indexed = (() => {
     const mapIteratorFactory: IndexedMapIteratorFactory = function* (callback = (x: any) => x, thisArg: any) {
@@ -27,7 +28,7 @@ const indexed = (() => {
     const ProxyGetTrap =
         <V>(getter: (index: number) => V) =>
         (target: Indexed<V>, property: string | symbol, receiver: any) => {
-            if (typeof property === 'string') {
+            if (isString(property)) {
                 const index = +property;
                 if (index >= 0 && index < target.length) {
                     return getter(index);
@@ -40,7 +41,7 @@ const indexed = (() => {
         iterablePropertyDescriptorsOrSize: PropertyDescriptorMap | (() => number) | number,
         iteratorValueGetter: (index: number) => V
     ): Indexed<V> & T => {
-        if (typeof iterablePropertyDescriptorsOrSize === 'function') {
+        if (isFunction(iterablePropertyDescriptorsOrSize)) {
             return indexed<V, T>(
                 {
                     length: { get: iterablePropertyDescriptorsOrSize },
@@ -49,7 +50,7 @@ const indexed = (() => {
             );
         }
 
-        if (typeof iterablePropertyDescriptorsOrSize === 'number') {
+        if (isNumber(iterablePropertyDescriptorsOrSize)) {
             return indexed<V, T>(
                 {
                     length: { value: iterablePropertyDescriptorsOrSize },

@@ -1,6 +1,7 @@
 import { AddressSchema, AddressSpecifications, StringObject } from './types';
 import { ADDRESS_SPECIFICATIONS } from './constants';
 import { Specification, AddressField } from './types';
+import { isString } from '@src/utils/validator-utils';
 
 const SCHEMA_MAX_DEPTH = 2;
 
@@ -84,7 +85,7 @@ class Specifications {
     getAddressSchemaForCountryFlat(country: string): AddressField[] {
         return this.getAddressSchemaForCountry(country)
             .flat(SCHEMA_MAX_DEPTH)
-            .filter((element): element is AddressField => typeof element === 'string');
+            .filter((element): element is AddressField => isString(element as AddressField));
     }
 }
 

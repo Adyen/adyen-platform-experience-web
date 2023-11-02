@@ -2,7 +2,7 @@ import { CustomTranslations, SupportedLocale } from './types';
 import { formatLocale, loadTranslations, parseLocale } from './utils';
 import { FALLBACK_LOCALE } from './constants/locale';
 import { EXCLUDE_PROPS } from './constants/localization';
-import { struct } from '@src/utils/common';
+import { isFunction, struct } from '@src/utils/common';
 import Localization from './Localization';
 
 export function createTranslationsLoader(this: Localization) {
@@ -41,9 +41,9 @@ export function getLocalizationProxyDescriptors(this: Localization) {
     for (const [prop, descriptor] of Object.entries(Object.getOwnPropertyDescriptors(Localization.prototype))) {
         if (EXCLUDE_PROPS.includes(prop as (typeof EXCLUDE_PROPS)[number])) continue;
 
-        if (typeof descriptor.get === 'function') {
+        if (isFunction(descriptor.get)) {
             descriptors[prop] = { get: descriptor.get.bind(this) };
-        } else if (typeof descriptor.value === 'function') {
+        } else if (isFunction(descriptor.value)) {
             descriptors[prop] = { value: descriptor.value.bind(this) };
         } else {
             descriptors[prop] = { get: () => this[prop as keyof Localization] };
