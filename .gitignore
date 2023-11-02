@@ -38,6 +38,7 @@ Vagrantfile
 demo
 
 packages/playground/storybook-static/
+package-lock.json
 
 playwright-report
 test-results
