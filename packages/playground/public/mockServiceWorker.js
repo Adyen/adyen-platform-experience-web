@@ -87,27 +87,25 @@ self.addEventListener('message', async function (event) {
         }
     }
 });
-
 self.addEventListener('fetch', function (event) {
     const { request } = event;
-    const accept = request.headers.get('accept') || '';
+    console.log(request);
+    console.log(activeClientIds);
 
+    const accept = request.headers.get('accept') || '';
     // Bypass server-sent events.
     if (accept.includes('text/event-stream')) {
         return;
     }
-
     // Bypass navigation requests.
     if (request.mode === 'navigate') {
         return;
     }
-
     // Opening the DevTools triggers the "only-if-cached" request
     // that cannot be handled by the worker. Bypass such requests.
     if (request.cache === 'only-if-cached' && request.mode !== 'same-origin') {
         return;
     }
-
     // Bypass all requests when there are no active clients.
     // Prevents the self-unregistered worked from handling requests
     // after it's been deleted (still remains active until the next reload).
