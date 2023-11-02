@@ -6,5 +6,7 @@ export type MemoComparator = {
 export type MemoComparatorCallback<T = {}> = (prev: T, next: T) => boolean;
 
 export type MemoComparatorGetters<T = {}> = {
-    [K in keyof T]?: (value?: T[K]) => any;
+    [K in MemoComparatorProp<T>]?: (value?: T[K]) => any;
 } & {};
+
+export type MemoComparatorProp<T = {}> = Extract<keyof T, string>;
