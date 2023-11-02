@@ -141,6 +141,9 @@ async function handleRequest(event, requestId) {
     const client = await resolveMainClient(event);
     const response = await getResponse(event, client, requestId);
 
+    console.log('responseHeaders', Object.fromEntries(response.headers.entries()));
+    console.log('response', response);
+
     // Send back the response clone for the "response:*" life-cycle events.
     // Ensure MSW is active and ready to handle the message, otherwise
     // this message will pend indefinitely.
