@@ -54,11 +54,3 @@ jobs:
           name: playwright-report-${{ github.sha }}
           path: playwright-report/
           retention-days: 3
-
-      - name: Upload report (on failure)
-        if: failure()
-        uses: actions/upload-artifact@v3
-        with:
-          name: demo
-          path: packages/playground/.demo
-          retention-days: 1
