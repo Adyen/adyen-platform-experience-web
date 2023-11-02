@@ -49,7 +49,7 @@ runs:
 
     # Skip post-install scripts here, as a malicious
     # script could steal NODE_AUTH_TOKEN.
-    - if: ${{ steps.cache-npm.outputs.cache-hit != 'true' }}
+    - name: Install dependencies
       shell: bash
       run: |
         npm config set //registry.npmjs.org/:_authToken ${{ inputs.NPM_TOKEN }}
