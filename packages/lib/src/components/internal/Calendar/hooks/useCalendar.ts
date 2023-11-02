@@ -3,6 +3,7 @@ import { useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState 
 import useCoreContext from '@src/core/Context/useCoreContext';
 import { ReflexAction } from '@src/hooks/useReflex';
 import { getDateObjectFromTimestamp } from '../calendar/utils';
+import { isFunction } from '@src/utils/common';
 import { EMPTY_OBJECT } from '@src/utils/common/constants';
 import { CalendarGridCursorRootProps, CalendarHandle, CalendarProps } from '../types';
 import useFocusCursor from '@src/hooks/element/useFocusCursor';
@@ -32,12 +33,12 @@ const useCalendar = (
     const config = useRef<ReturnType<typeof grid.config>>(EMPTY_OBJECT);
 
     const activeControls = useMemo(
-        () => controls ?? (typeof renderControl === 'function' ? calendar.controls.MINIMAL : calendar.controls.NONE),
+        () => controls ?? (isFunction(renderControl) ? calendar.controls.MINIMAL : calendar.controls.NONE),
         [controls, renderControl]
     );
 
     const activeHighlight = useMemo(
-        () => highlight ?? (typeof onHighlight === 'function' ? calendar.highlight.ONE : calendar.highlight.NONE),
+        () => highlight ?? (isFunction(onHighlight) ? calendar.highlight.ONE : calendar.highlight.NONE),
         [highlight, onHighlight]
     );
 

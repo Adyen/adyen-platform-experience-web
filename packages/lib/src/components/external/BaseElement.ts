@@ -3,6 +3,7 @@ import EventEmitter from './EventEmitter';
 import uuid from '../../utils/uuid';
 import { Core } from '../../core';
 import { BaseElementProps, BaseElementState } from '../types';
+import { isString } from '@src/utils/validator-utils';
 
 class BaseElement<P extends BaseElementProps> {
     public static type: string;
@@ -68,7 +69,7 @@ class BaseElement<P extends BaseElementProps> {
     public mount(domNode: HTMLElement): this;
     public mount(domNode: any): any {
         let node;
-        if (typeof domNode === 'string') {
+        if (isString(domNode)) {
             node = document.querySelector(domNode);
         } else {
             node = domNode;

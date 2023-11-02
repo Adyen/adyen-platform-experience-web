@@ -1,11 +1,12 @@
 import classnames from 'classnames';
 import { JSX } from 'preact';
 import { EMPTY_OBJECT, toString } from '@src/utils/common';
+import { isString } from '@src/utils/validator-utils';
 
 const EXCESS_WHITESPACE_CHAR = /^\s+|\s+(?=\s|$)/g;
 
 export const parseClassName = (fallbackClassName: string, className: JSX.Signalish<string | undefined>): undefined | string => {
-    const classes = className ? (typeof className === 'string' ? className : className?.value ?? '') : '';
+    const classes = className ? (isString(className) ? className : className?.value ?? '') : '';
     return classes.replace(EXCESS_WHITESPACE_CHAR, '') || fallbackClassName.replace(EXCESS_WHITESPACE_CHAR, '') || undefined;
 };
 

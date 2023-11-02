@@ -28,7 +28,18 @@ import {
     SHIFT_PERIOD,
 } from '../constants';
 import indexed from '../shared/indexed';
-import { boolify, EMPTY_OBJECT, immutableProxyHandlers, isBitSafeInteger, noop, pickFromCollection, struct, structFrom } from '@src/utils/common';
+import {
+    boolify,
+    EMPTY_OBJECT,
+    immutableProxyHandlers,
+    isBitSafeInteger,
+    isFunction,
+    noop,
+    pickFromCollection,
+    struct,
+    structFrom,
+} from '@src/utils/common';
+import { isString } from '@src/utils/validator-utils';
 import watchable from '@src/utils/watchable';
 import { Watchable, WatchableFactory, WatchCallable, WatchCallback } from '@src/utils/watchable/types';
 import { MonthFrame, TimeFrame, YearFrame } from '../timeframe';
@@ -121,7 +132,7 @@ export default class Calendar {
                             set: (fn: CalendarGrid['config']['cursorIndex'] | null | undefined) => {
                                 if (this.#destructed) return;
                                 if (fn == undefined) this.#cursorIndexFromEvent = undefined;
-                                else if (typeof fn === 'function') this.#cursorIndexFromEvent = fn;
+                                else if (isFunction(fn)) this.#cursorIndexFromEvent = fn;
                             },
                         },
                         shiftFactor: {
@@ -129,14 +140,14 @@ export default class Calendar {
                             set: (fn: CalendarGrid['config']['shiftFactor'] | null | undefined) => {
                                 if (this.#destructed) return;
                                 if (fn == undefined) this.#shiftFactorFromEvent = undefined;
-                                else if (typeof fn === 'function') this.#shiftFactorFromEvent = fn;
+                                else if (isFunction(fn)) this.#shiftFactorFromEvent = fn;
                             },
                         },
                         watch: {
                             get: () => this.#watchCallback,
                             set: (fn: CalendarGrid['config']['watch'] | null | undefined) => {
                                 if (this.#destructed) return;
-                                if (typeof fn === 'function') {
+                                if (isFunction(fn)) {
                                     this.#watchCallback = fn;
 
                                     if (!this.#watchableEffect) {
@@ -215,7 +226,7 @@ export default class Calendar {
     static #SHIFT_MINIMAL_CONTROLS = ['PREV', 'NEXT'] as CalendarShiftControl[];
 
     static #getOffsetsFromRange(range?: string): [number, number, number, number, number, number] | undefined {
-        if (typeof range !== 'string') return;
+        if (!isString(range)) return;
         if (!Calendar.#RANGE_OFFSETS_FORMAT_REGEX.test(range)) return;
         const offsets = range.split(/\s+/);
         return Array.from({ length: 6 }, (_, index) => parseInt(offsets[index] ?? '0')) as [number, number, number, number, number, number];
@@ -293,7 +304,7 @@ export default class Calendar {
         const highlight = config?.highlight;
         const minified = boolify(this.#config.minified);
 
-        if (typeof highlight !== 'string') {
+        if (!isString(highlight)) {
             this.#highlightSelection = pickFromCollection(CALENDAR_SELECTIONS, highlight, this.#highlightSelection);
         } else if ((this.#rangeOffsets = Calendar.#getOffsetsFromRange(highlight))) {
             this.#highlightSelection = SELECT_MANY;
@@ -311,7 +322,7 @@ export default class Calendar {
             trackCurrentDay: boolify(config?.trackCurrentDay, this.#config.trackCurrentDay),
         };
 
-        if (typeof this.#watchCallback !== 'function') {
+        if (!isFunction(this.#watchCallback)) {
             if (!this.#frame) {
                 this.#frame = this.#timeframe;
                 this.#reframe();
@@ -332,7 +343,7 @@ export default class Calendar {
     }
 
     #cursorHandle(evt?: Event): true | undefined {
-        if (!(evt && this.#frame && typeof this.#watchCallback === 'function')) return;
+        if (!(evt && this.#frame && isFunction(this.#watchCallback))) return;
 
         if (evt instanceof KeyboardEvent) {
             switch (evt.code) {
@@ -372,11 +383,7 @@ export default class Calendar {
             return true;
         }
 
-        if (
-            evt instanceof MouseEvent &&
-            Calendar.#CURSOR_POINTER_INTERACTION_EVENTS.includes(evt.type) &&
-            typeof this.#cursorIndexFromEvent === 'function'
-        ) {
+        if (evt instanceof MouseEvent && Calendar.#CURSOR_POINTER_INTERACTION_EVENTS.includes(evt.type) && isFunction(this.#cursorIndexFromEvent)) {
             const cursorIndex = this.#cursorIndexFromEvent.call(this.#currentConfig, evt);
 
             if (!isBitSafeInteger(cursorIndex)) return;
@@ -445,7 +452,7 @@ export default class Calendar {
     }
 
     #getShiftFactorFromEvent(target: CalendarShiftControl, evt?: Event): number | undefined {
-        if (!(this.#frame && typeof this.#watchCallback === 'function')) return;
+        if (!(this.#frame && isFunction(this.#watchCallback))) return;
 
         if (evt instanceof MouseEvent) {
             if (evt.type !== 'click') return;
@@ -455,7 +462,7 @@ export default class Calendar {
 
         let shiftFactor = 1;
 
-        if (typeof this.#shiftFactorFromEvent === 'function') {
+        if (isFunction(this.#shiftFactorFromEvent)) {
             const factor = Number(this.#shiftFactorFromEvent.call(this.#currentConfig, evt, target));
             shiftFactor = Number.isInteger(factor) && factor >= 1 ? factor : shiftFactor;
         }

@@ -3,6 +3,7 @@ import { computeTimestampOffset, getEdgesDistance } from '../../utils';
 import { YEAR_MONTHS } from '../../constants';
 import { immutableProxyHandlers, isBitSafeInteger, isInfinite, struct, structFrom } from '@src/utils/common';
 import { CalendarDayOfWeekData, Time, TimeFlag, TimeFrameBlock, TimeFrameSelection } from '../../types';
+import { isString } from '@src/utils/validator-utils';
 
 export default class YearFrame extends TimeFrame {
     #currentDayTimestamp!: number;
@@ -87,7 +88,7 @@ export default class YearFrame extends TimeFrame {
         const proxyForIndexPropertyAccess = new Proxy(struct(), {
             ...immutableProxyHandlers,
             get: (target: {}, property: string | symbol, receiver: {}) => {
-                if (typeof property === 'string') {
+                if (isString(property)) {
                     const offset = +property;
 
                     if (isBitSafeInteger(offset) && offset >= 0 && offset < numberOfUnits) {

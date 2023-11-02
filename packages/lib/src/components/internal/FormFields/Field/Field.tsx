@@ -1,5 +1,7 @@
 import classNames from 'classnames';
 import { cloneElement, ComponentChild, FunctionalComponent, h, toChildArray, VNode } from 'preact';
+import { isFunction } from '@src/utils/common';
+import { isString } from '@src/utils/validator-utils';
 import Spinner from '../../Spinner';
 import Icon from '../../Icon';
 import { ARIA_ERROR_SUFFIX } from '../../../../core/Errors/constants';
@@ -68,7 +70,7 @@ const Field: FunctionalComponent<FieldProps> = props => {
     const renderContent = useCallback(() => {
         return (
             <>
-                {typeof label === 'string' && (
+                {isString(label) && (
                     <span
                         className={classNames({
                             'adyen-fp-label__text': true,
@@ -79,7 +81,7 @@ const Field: FunctionalComponent<FieldProps> = props => {
                     </span>
                 )}
 
-                {typeof label === 'function' && label()}
+                {isFunction(label) && label()}
 
                 {labelEndAdornment && <span className="adyen-fp-label-adornment--end">{labelEndAdornment}</span>}
 
@@ -114,7 +116,7 @@ const Field: FunctionalComponent<FieldProps> = props => {
                         </span>
                     )}
                 </div>
-                {errorMessage && typeof errorMessage === 'string' && errorMessage.length && (
+                {errorMessage && isString(errorMessage) && errorMessage.length && (
                     <span
                         className={'adyen-fp-error-text'}
                         id={`${uniqueId.current}${ARIA_ERROR_SUFFIX}`}

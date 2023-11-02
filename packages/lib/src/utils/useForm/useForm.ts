@@ -3,6 +3,7 @@ import Validator from '../Validator';
 import { DefaultState, FieldProcessor, getReducer, init } from './reducer';
 import { Form, FormState, FormProps, FieldErrors, ReducerPayloadParams, SchemaKeys, FieldProblems } from './types';
 import { ValidatorMode } from '../Validator/types';
+import { isFunction } from '@src/utils/common';
 
 function useForm<FormSchema extends Record<string, any>, Props>(props: FormProps<FormSchema, Props>): Form<FormSchema> {
     const { rules = {}, formatters = {}, defaultData = {}, fieldProblems = {}, schema = [] } = props;
@@ -13,7 +14,7 @@ function useForm<FormSchema extends Record<string, any>, Props>(props: FormProps
     const processField: FieldProcessor<FormSchema> = ({ key, value, mode }, fieldContext) => {
         // Find a formatting function either stored under 'key' or a level deeper under a 'formatter' property
         const formatterFn = formatters?.[key]?.formatter ? formatters[key].formatter : formatters?.[key];
-        const formattedValue = formatterFn && typeof formatterFn === 'function' ? formatterFn(value ?? '', fieldContext) : value;
+        const formattedValue = formatterFn && isFunction(formatterFn) ? formatterFn(value ?? '', fieldContext) : value;
 
         const validationResult = validator.validate({ key, value: formattedValue, mode }, fieldContext);
         return [formattedValue, validationResult];

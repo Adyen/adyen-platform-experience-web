@@ -19,7 +19,7 @@ export const getMaxLengthByFieldAndCountry = (
 // Not null or undefined or only spaces
 export const isEmpty = (input?: string) => !!(input == null || /^[\s]*$/.test(input));
 
-export const isString = (input: string | String) => typeof input === 'string' || input instanceof String;
+export const isString = (input?: any): input is string => typeof input === 'string' || input instanceof String;
 export const hasText = (input: string) => isString(input) && !isEmpty(input);
 
 export const SPECIAL_CHARS = '?\\-\\+_=!@#$%^&*(){}~<>\\[\\]\\/\\\\'; // N.B. difficulty escaping \

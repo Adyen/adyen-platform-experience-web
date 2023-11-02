@@ -1,4 +1,5 @@
 import { Component } from 'preact';
+import { isFunction } from '@src/utils/common';
 
 interface IframeProps {
     width?: string;
@@ -27,7 +28,7 @@ class Iframe extends Component<IframeProps> {
     private iframeEl: HTMLIFrameElement | null = null;
 
     iframeOnLoad() {
-        if (this.props.callback && typeof this.props.callback === 'function' && this.iframeEl) {
+        if (this.props.callback && isFunction(this.props.callback) && this.iframeEl) {
             this.props.callback(this.iframeEl.contentWindow);
         }
     }
