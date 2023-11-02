@@ -1,13 +1,14 @@
 import Button from '@src/components/internal/Button';
 import { ButtonVariant } from '@src/components/internal/Button/types';
 import './PopoverDismissButton.scss';
+import { memo } from 'preact/compat';
 
 interface PopoverDismissButtonProps {
     image?: boolean;
     onClick: () => void;
 }
 
-export default function PopoverDismissButton({ image = true, onClick }: PopoverDismissButtonProps) {
+function PopoverDismissButton({ image = true, onClick }: PopoverDismissButtonProps) {
     const getConditionalClasses = (): string => {
         return image ? 'adyen-fp-popover-dismiss-button--on-image' : '';
     };
@@ -27,3 +28,5 @@ export default function PopoverDismissButton({ image = true, onClick }: PopoverD
         </>
     );
 }
+
+export default memo(PopoverDismissButton);

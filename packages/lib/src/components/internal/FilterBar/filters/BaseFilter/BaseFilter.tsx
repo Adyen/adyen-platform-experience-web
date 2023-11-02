@@ -107,56 +107,64 @@ export default function BaseFilter<T extends BaseFilterProps = BaseFilterProps>(
         if (editAction !== EditAction.NONE) setEditAction(EditAction.NONE);
     }, [closeEditModal, editAction]);
 
-    const actions = [
-        {
-            title: i18n.get('apply'),
-            variant: ButtonVariant.PRIMARY,
-            event: applyFilter,
-            disabled: !valueChanged,
-        },
-        {
-            title: i18n.get('clear'),
-            variant: ButtonVariant.SECONDARY,
-            event: clearFilter,
-            disabled: hasEmptyValue,
-        },
-    ];
+    const actions = useMemo(
+        () => [
+            {
+                title: i18n.get('apply'),
+                variant: ButtonVariant.PRIMARY,
+                event: applyFilter,
+                disabled: !valueChanged,
+            },
+            {
+                title: i18n.get('clear'),
+                variant: ButtonVariant.SECONDARY,
+                event: clearFilter,
+                disabled: hasEmptyValue,
+            },
+        ],
+        [applyFilter, valueChanged, hasEmptyValue, clearFilter]
+    );
 
     return (
         <>
             <div className={`adyen-fp-filter adyen-fp-filter--${props.type}`}>
-                <FilterButton
-                    classNameModifiers={[
-                        ...(props.value ? ['with-counter'] : []),
-                        ...(props.classNameModifiers ?? []),
-                        ...(editMode ? ['active'] : []),
-                    ]}
-                    onClick={handleClick}
-                    ref={targetElement}
-                >
-                    <div class="adyen-fp-filter-button__default-container">
-                        <Typography
-                            el={TypographyElement.SPAN}
-                            variant={TypographyVariant.BODY}
-                            stronger={true}
-                            className="adyen-fp-filter-button__label"
+                {useMemo(
+                    () => (
+                        <FilterButton
+                            classNameModifiers={[
+                                ...(props.value ? ['with-counter'] : []),
+                                ...(props.classNameModifiers ?? []),
+                                ...(editMode ? ['active'] : []),
+                            ]}
+                            onClick={handleClick}
+                            ref={targetElement}
                         >
-                            {props.label}
-                        </Typography>
-                        {!!props.appliedFilterAmount && (
-                            <div className="adyen-fp-filter-button__counter-wrapper">
+                            <div class="adyen-fp-filter-button__default-container">
                                 <Typography
                                     el={TypographyElement.SPAN}
                                     variant={TypographyVariant.BODY}
                                     stronger={true}
-                                    className="adyen-fp-filter-button__counter"
+                                    className="adyen-fp-filter-button__label"
                                 >
-                                    {props.appliedFilterAmount}
+                                    {props.label}
                                 </Typography>
+                                {!!props.appliedFilterAmount && (
+                                    <div className="adyen-fp-filter-button__counter-wrapper">
+                                        <Typography
+                                            el={TypographyElement.SPAN}
+                                            variant={TypographyVariant.BODY}
+                                            stronger={true}
+                                            className="adyen-fp-filter-button__counter"
+                                        >
+                                            {props.appliedFilterAmount}
+                                        </Typography>
+                                    </div>
+                                )}
                             </div>
-                        )}
-                    </div>
-                </FilterButton>
+                        </FilterButton>
+                    ),
+                    [props.label, props.appliedFilterAmount, editMode, props.classNameModifiers, props.value]
+                )}
             </div>
             {editMode && (
                 <Popover

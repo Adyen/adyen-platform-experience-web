@@ -1,10 +1,10 @@
 import { TypographyElement, TypographyVariant } from '@src/components/internal/Typography/types';
 import Typography from '@src/components/internal/Typography/Typography';
 import getModifierClasses from '@src/utils/get-modifier-classes';
-import classNames from 'classnames';
 import { Ref } from 'preact';
 import { forwardRef } from 'preact/compat';
 import './Button.scss';
+import { useMemo } from 'preact/hooks';
 import { ButtonProps, ButtonVariant } from './types';
 
 function Button(
@@ -34,7 +34,7 @@ function Button(
 
     const modifiers = [...classNameModifiers, ...[variant]];
 
-    const buttonClasses = getModifierClasses(`${className} adyen-fp-button`, modifiers, 'adyen-fp-button');
+    const buttonClasses = useMemo(() => getModifierClasses(`${className} adyen-fp-button`, modifiers, 'adyen-fp-button'), [className, modifiers]);
 
     return (
         <button

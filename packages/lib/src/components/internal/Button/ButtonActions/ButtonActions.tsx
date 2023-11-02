@@ -2,13 +2,14 @@ import Button from '@src/components/internal/Button';
 import { ButtonActionsLayout, ButtonActionsList } from '@src/components/internal/Button/ButtonActions/types';
 import { ButtonVariant } from '@src/components/internal/Button/types';
 import './ButtonActions.scss';
+import { memo } from 'preact/compat';
 import { useMemo } from 'preact/hooks';
 
 interface ButtonActionsProps {
     actions: ButtonActionsList;
     layout?: ButtonActionsLayout;
 }
-export default function ButtonActions({ actions, layout = ButtonActionsLayout.BUTTONS_END }: ButtonActionsProps) {
+function ButtonActions({ actions, layout = ButtonActionsLayout.BUTTONS_END }: ButtonActionsProps) {
     const conditionalClasses = (): string => {
         return `adyen-fp-button-actions--${layout}`;
     };
@@ -18,14 +19,12 @@ export default function ButtonActions({ actions, layout = ButtonActionsLayout.BU
         return actionIndex === lastActionIndex ? ButtonVariant.PRIMARY : ButtonVariant.SECONDARY;
     };
 
-    // const reversedActions = useMemo(() =>  {
-    //     return [...actions].reverse()
-    // }, [actions])
+    const reversedActions = useMemo(() => [...actions].reverse(), [actions]);
 
     return (
         <div className="adyen-fp-button-actions">
             <div className={`adyen-fp-button-actions__container-wrapper ${conditionalClasses()}`} role="group">
-                {actions.reverse().map((button, index) => (
+                {reversedActions.map((button, index) => (
                     <Button
                         aria-label={''}
                         key={index}
@@ -40,3 +39,5 @@ export default function ButtonActions({ actions, layout = ButtonActionsLayout.BU
         </div>
     );
 }
+
+export default memo(ButtonActions);

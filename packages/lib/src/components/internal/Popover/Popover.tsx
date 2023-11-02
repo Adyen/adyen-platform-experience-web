@@ -34,6 +34,32 @@ interface PopoverProps {
     dismiss: () => any;
     children: ComponentChildren;
 }
+
+const isFocusable = (item: any) => {
+    if (item.tabIndex < 0) {
+        return false;
+    }
+    switch (item.tagName) {
+        case 'A':
+            return !!item.href;
+        case 'INPUT':
+            return item.type !== 'hidden' && !item.disabled;
+        case 'SELECT':
+        case 'TEXTAREA':
+        case 'BUTTON':
+            return !item.disabled;
+        default:
+            return false;
+    }
+};
+
+const findFirstFocusableElement = () => {
+    const focusable = Array.from(document.getElementsByClassName('adyen-fp-popover__content')?.[0]?.children ?? []);
+    return focusable.find(item => {
+        return isFocusable(item);
+    });
+};
+
 function Popover({
     actions,
     disableFocusTrap = false,
@@ -72,44 +98,25 @@ function Popover({
         'adyen-fp-popover--without-space': withoutSpace,
     });
 
-    const handleClickOutside = (e: Event) => {
-        const element = document.getElementById('popover');
-        if (!element?.contains(e.target as Node)) {
-            dismiss();
-        }
-    };
+    const handleClickOutside = useCallback(
+        (e: Event) => {
+            const element = document.getElementById('popover');
+            if (!element?.contains(e.target as Node)) {
+                dismiss();
+            }
+        },
+        [dismiss]
+    );
 
-    const onKeyDown = (e: KeyboardEvent) => {
-        if (e.code === InteractionKeyCode.ESCAPE) {
-            dismiss();
-            targetElement.current.focus();
-        }
-    };
-
-    const isFocusable = (item: any) => {
-        if (item.tabIndex < 0) {
-            return false;
-        }
-        switch (item.tagName) {
-            case 'A':
-                return !!item.href;
-            case 'INPUT':
-                return item.type !== 'hidden' && !item.disabled;
-            case 'SELECT':
-            case 'TEXTAREA':
-            case 'BUTTON':
-                return !item.disabled;
-            default:
-                return false;
-        }
-    };
-
-    const findFirstFocusableElement = () => {
-        var focusable = Array.from(document.getElementsByClassName('adyen-fp-popover__content')?.[0]?.children ?? []);
-        return focusable.find(item => {
-            return isFocusable(item);
-        });
-    };
+    const onKeyDown = useCallback(
+        (e: KeyboardEvent) => {
+            if (e.code === InteractionKeyCode.ESCAPE) {
+                dismiss();
+                targetElement.current.focus();
+            }
+        },
+        [dismiss, targetElement]
+    );
 
     useEffect(() => {
         const focusable = findFirstFocusableElement() as HTMLElement;
