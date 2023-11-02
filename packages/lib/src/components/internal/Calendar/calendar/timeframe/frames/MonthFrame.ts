@@ -4,6 +4,7 @@ import { computeTimestampOffset, getEdgesDistance, getMonthDays } from '../../ut
 import { DAY_MS, DAY_OF_WEEK_FORMATS, MAXIMUM_MONTH_UNITS } from '../../constants';
 import createFlagsRecord from '../common/flags';
 import { enumerable, immutableProxyHandlers, isBitSafeInteger, isInfinite, struct, structFrom } from '@src/utils/common';
+import { isString } from '@src/utils/validator-utils';
 import {
     CalendarDayOfWeekData,
     DayOfWeekLabelFormat,
@@ -158,7 +159,7 @@ export default class MonthFrame extends TimeFrame {
         const proxyForIndexPropertyAccess = new Proxy(struct(), {
             ...immutableProxyHandlers,
             get: (target: {}, property: string | symbol, receiver: {}) => {
-                if (typeof property === 'string') {
+                if (isString(property)) {
                     const offset = +property;
 
                     if (isBitSafeInteger(offset) && offset >= 0 && offset < numberOfUnits) {

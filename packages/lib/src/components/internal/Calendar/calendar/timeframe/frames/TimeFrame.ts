@@ -25,7 +25,7 @@ import {
 import createFlagsRecord from '../common/flags';
 import indexed from '../../shared/indexed';
 import { Indexed } from '../../shared/indexed/types';
-import { clamp, enumerable, isBitSafeInteger, isInfinite, mid, mod, struct } from '@src/utils/common';
+import { clamp, enumerable, isBitSafeInteger, isFunction, isInfinite, mid, mod, struct } from '@src/utils/common';
 import { WatchCallable } from '@src/utils/watchable/types';
 import today from '../../today';
 import {
@@ -133,7 +133,7 @@ export default abstract class TimeFrame {
 
     set effect(effect: WatchCallable<any> | null | undefined) {
         if (effect == undefined) this.#effect = undefined;
-        else if (typeof effect === 'function') this.#effect = effect;
+        else if (isFunction(effect)) this.#effect = effect;
     }
 
     get firstWeekDay(): FirstWeekDay {

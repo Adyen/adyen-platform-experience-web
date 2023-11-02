@@ -7,13 +7,14 @@ import useCoreContext from '../../../../core/Context/useCoreContext';
 import { ErrorMessageObject } from '@src/utils/Validator/types';
 import { TranslationKey } from '@src/core/Localization/types';
 import { CoreContextWithTranslationsI18n } from '@src/core/Context/types';
+import { isString } from '@src/utils/validator-utils';
 
 function getErrorMessage<Schema extends Record<string, any>>(
     errors: AddressState<Schema>,
     fieldName: keyof AddressState<Schema>,
     i18n: CoreContextWithTranslationsI18n
 ): string | boolean {
-    if (typeof errors[fieldName]?.errorMessage === 'string') {
+    if (isString(errors[fieldName]?.errorMessage)) {
         return errors[fieldName] ? i18n.get(errors[fieldName]?.errorMessage as TranslationKey) : !!errors[fieldName];
     }
     if (errors[fieldName]) {

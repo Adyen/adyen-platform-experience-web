@@ -7,6 +7,7 @@ import Localization from './Localization';
 import BaseElement from '../components/external/BaseElement';
 import { ComponentMap, ComponentOptions, isAvailableOfComponent, isKeyOfComponent } from './types';
 import { ValueOf } from '../utils/types';
+import { isString } from '@src/utils/validator-utils';
 
 class Core {
     public static readonly version = {
@@ -64,7 +65,7 @@ class Core {
     ): InstanceType<ComponentMap[ComponentName]>;
     public create<T extends ValueOf<ComponentMap>, P extends ConstructorParameters<T>>(component: T, options: P[0]): InstanceType<T>;
     public create(component: any, options?: any): any {
-        if (typeof component === 'string') {
+        if (isString(component)) {
             const props = this.getPropsForComponent(options);
             return isKeyOfComponent(component) ? this.handleCreate<typeof component>(component, props) : this.handleCreateError();
         } else {
@@ -166,7 +167,7 @@ class Core {
          * Usual initial point of entry to this function (Component is a String).
          * When Component is defined as a string - retrieve a component from the componentsMap and recall this function passing in a valid class
          */
-        if (typeof Component === 'string' && isKeyOfComponent(Component)) {
+        if (isString(Component) && isKeyOfComponent(Component)) {
             return this.handleCreate<ComponentMap[typeof Component]>(components[Component], { type: Component, ...options });
         }
 

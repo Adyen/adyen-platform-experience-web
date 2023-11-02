@@ -1,12 +1,13 @@
 import { CalendarFlagsRecord, TimeFlag, TimeFlagProp } from '../../types';
 import { immutableProxyHandlers, struct } from '@src/utils/common';
+import { isString } from '@src/utils/validator-utils';
 
 const createFlagsRecord = (() => {
     const CACHE = {} as { [K: number]: CalendarFlagsRecord };
     const FLAG_PROPS = Object.keys(TimeFlag).filter(prop => isNaN(+prop)) as TimeFlagProp[];
 
     const isFlagProp = (property: string | symbol): property is TimeFlagProp =>
-        property !== 'ALL' && typeof property === 'string' && FLAG_PROPS.includes(property as TimeFlagProp);
+        property !== 'ALL' && isString(property) && FLAG_PROPS.includes(property as TimeFlagProp);
 
     return (flags: number): CalendarFlagsRecord => {
         const flagsTruncated = flags & TimeFlag.ALL;

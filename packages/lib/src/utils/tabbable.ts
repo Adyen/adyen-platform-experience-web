@@ -1,4 +1,4 @@
-import { mod } from '@src/utils/common';
+import { isNumber, mod } from '@src/utils/common';
 
 export interface TabbableRoot {
     get current(): Element | null;
@@ -121,7 +121,7 @@ export const withTabbableRoot = () => {
             get: () => tabbables[currentIndex] ?? null,
             set: (maybeTabbableOrOffset: Element | number | null) => {
                 if (!maybeTabbableOrOffset) return;
-                if (typeof maybeTabbableOrOffset !== 'number') return focusAt(tabbables.indexOf(maybeTabbableOrOffset));
+                if (!isNumber(maybeTabbableOrOffset)) return focusAt(tabbables.indexOf(maybeTabbableOrOffset));
                 if (maybeTabbableOrOffset !== ~~maybeTabbableOrOffset) return;
                 return focusAt(mod(currentIndex + maybeTabbableOrOffset, tabbables.length));
             },

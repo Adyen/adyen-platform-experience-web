@@ -1,6 +1,6 @@
 import Calendar from './Calendar';
 import { CONTROLS_ALL, CONTROLS_MINIMAL, CONTROLS_NONE, RANGE_FROM, RANGE_TO, SELECT_MANY, SELECT_NONE, SELECT_ONE } from '../constants';
-import { enumerable, struct } from '@src/utils/common';
+import { enumerable, isFunction, isNumber, struct } from '@src/utils/common';
 import timeslice, { sinceNow, UNBOUNDED_SLICE, untilNow } from '../timeslice';
 import { CalendarFacade } from '../types';
 
@@ -8,8 +8,8 @@ const calendar = (() => {
     const calendar = (init => {
         const { grid, kill } = new Calendar();
 
-        if (typeof init === 'number') grid.config({ blocks: init });
-        else if (typeof init === 'function')
+        if (isNumber(init)) grid.config({ blocks: init });
+        else if (isFunction(init))
             Promise.resolve().then(() => {
                 grid.config.watch = init;
             });

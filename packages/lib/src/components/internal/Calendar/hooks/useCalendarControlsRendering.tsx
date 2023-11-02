@@ -1,4 +1,5 @@
 import { useCallback } from 'preact/hooks';
+import { isFunction } from '@src/utils/common';
 import { CalendarControlRenderer, CalendarRenderControl } from '../types';
 import useCoreContext from '../../../../core/Context/useCoreContext';
 import useDetachedRender from '../../../../hooks/element/useDetachedRender';
@@ -11,7 +12,7 @@ const useCalendarControlsRendering = (renderControl?: CalendarRenderControl) => 
         useCallback(
             ((targetElement, control, handle) => {
                 if (!(targetElement instanceof HTMLElement)) return null;
-                if (typeof renderControl === 'function') return renderControl(control, handle);
+                if (isFunction(renderControl)) return renderControl(control, handle);
 
                 let directionModifier: string;
                 let labelModifier: 'next' | 'previous';
