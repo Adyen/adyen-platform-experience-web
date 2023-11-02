@@ -6,13 +6,11 @@ import { enableServerInMockedMode } from '../../endpoints/mock-server/utils';
 
 const DEFAULT_BALANCE_ACCOUNT = getDefaultID('BA3227C223222B5CWF3T45SWD');
 
-try {
-    await enableServerInMockedMode();
+enableServerInMockedMode()
+    .then(async () => {
+        const { id } = getSearchParameters();
+        const adyenFP = await AdyenFP({ locale: 'en-US', loadingContext: process.env.VITE_API_URL });
 
-    const { id } = getSearchParameters();
-    const adyenFP = await AdyenFP({ locale: 'en-US', loadingContext: process.env.VITE_API_URL });
-
-    adyenFP.create('balanceAccount', { balanceAccountId: id ?? DEFAULT_BALANCE_ACCOUNT }).mount('.balance-account-component-container');
-} catch (e) {
-    console.error(e);
-}
+        adyenFP.create('balanceAccount', { balanceAccountId: id ?? DEFAULT_BALANCE_ACCOUNT }).mount('.balance-account-component-container');
+    })
+    .catch(console.error);

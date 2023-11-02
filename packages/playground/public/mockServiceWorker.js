@@ -89,8 +89,6 @@ self.addEventListener('message', async function (event) {
 });
 self.addEventListener('fetch', function (event) {
     const { request } = event;
-    console.log(request);
-    console.log(activeClientIds);
 
     const accept = request.headers.get('accept') || '';
     // Bypass server-sent events.
@@ -139,16 +137,12 @@ async function handleRequest(event, requestId) {
     const client = await resolveMainClient(event);
     const response = await getResponse(event, client, requestId);
 
-    console.log('responseHeaders', Object.fromEntries(response.headers.entries()));
-    console.log('response', response);
-
     // Send back the response clone for the "response:*" life-cycle events.
     // Ensure MSW is active and ready to handle the message, otherwise
     // this message will pend indefinitely.
     if (client && activeClientIds.has(client.id)) {
         (async function () {
             const clonedResponse = response.clone();
-            console.log('--', Object.fromEntries(clonedResponse.headers.entries()));
 
             sendToClient(client, {
                 type: 'RESPONSE',
