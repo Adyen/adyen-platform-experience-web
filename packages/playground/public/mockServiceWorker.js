@@ -147,6 +147,8 @@ async function handleRequest(event, requestId) {
     if (client && activeClientIds.has(client.id)) {
         (async function () {
             const clonedResponse = response.clone();
+            console.log('--', Object.fromEntries(clonedResponse.headers.entries()));
+
             sendToClient(client, {
                 type: 'RESPONSE',
                 payload: {
