@@ -55,6 +55,7 @@ module.exports = {
             'error',
             {
                 devDependencies: [
+                    'playwright/test',
                     'playwright.config.ts',
                     'config/vite.config.ts',
                     '**/*.test.{ts,tsx}',
@@ -62,6 +63,7 @@ module.exports = {
                     'envs/**/*.ts',
                     'mocks/**/*.ts',
                     'tests/**/*.{ts,js}',
+                    'tests/**/**/*.spec.ts',
                     'src/utils/testing/**/*.{ts,tsx}',
                 ],
                 includeTypes: false,

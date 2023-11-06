@@ -23,7 +23,3 @@ export const scriptToAddDefaultID = async (page: Page, id: string) => {
 export const scriptToAddInitialConfig = async (context: BrowserContext, scriptPath: string) => {
     await context.addInitScript({ path: scriptPath });
 };
-
-export const noop = () => {};
-
-export const asyncNoop = async () => {};

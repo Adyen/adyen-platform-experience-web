@@ -7,6 +7,7 @@ export const structFrom = call($createObject, null);
 export const toString = call(Object.prototype.toString);
 
 export const noop = new Proxy(() => {}, immutableProxyHandlers);
+export const asyncNoop = async () => {};
 export const enumerable = (value: any) => ({ value, enumerable: true } as const);
 
 export const boolify = (value?: any, fallbackBoolean?: boolean) => (typeof value === 'boolean' ? value : !!fallbackBoolean);

@@ -33,7 +33,6 @@ function LegalEntityOrganization({ legalEntity, onGetTransferInstrument }: Legal
     };
     return (
         <Tabs
-            test-id={''}
             tabs={[
                 {
                     label: 'overview',

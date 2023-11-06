@@ -21,6 +21,6 @@
 
         "types": ["@testing-library/jest-dom", "node"]
     },
-    "include": ["**/*"],
+    "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.d.ts", "src/core/Localization/translations/*.json", "tests/**/*.ts"],
     "exclude": ["node_modules", "dist"]
 }
