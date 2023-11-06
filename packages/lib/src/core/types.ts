@@ -55,8 +55,6 @@ export interface CoreOptions {
     analytics?: AnalyticsOptions;
 
     timezone?: Intl.DateTimeFormatOptions['timeZone'];
-
-    [key: string]: any;
 }
 
 export type ComponentMap = typeof componentsMap;

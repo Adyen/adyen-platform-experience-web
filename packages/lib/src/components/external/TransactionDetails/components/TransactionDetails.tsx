@@ -6,8 +6,9 @@ import { ITransaction } from '@src/types';
 import Alert from '@src/components/internal/Alert';
 import Spinner from '@src/components/internal/Spinner';
 import { TransactionData } from '@src/components/external/TransactionDetails/components/TransactionData';
+import { ExternalUIComponentProps } from '@src/components/types';
 
-function TransactionsDetails({ transaction, transactionId, title }: TransactionDetailsComponentProps) {
+function TransactionsDetails({ transaction, transactionId, title }: ExternalUIComponentProps<TransactionDetailsComponentProps>) {
     const { i18n } = useCoreContext();
 
     const { data, error, isFetching } = useFetch<ITransaction>({

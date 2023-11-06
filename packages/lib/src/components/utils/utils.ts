@@ -1,4 +1,5 @@
 import { UIElementStatus } from '../types';
+import { Core } from '@src/core';
 
 const ALLOWED_PROPERTIES = ['action', 'resultCode', 'sessionData', 'order'];
 
@@ -33,4 +34,14 @@ export function resolveFinalResult(result: { resultCode: string } & { [key: stri
         default:
             return ['error'];
     }
+}
+
+export function parseComponentOptions<T>({ options, session }: { options: T; session: Core }) {
+    return {
+        ...options,
+        i18n: session.modules.i18n,
+        loadingContext: session.options.loadingContext,
+        modules: session.modules,
+        session: session.session,
+    };
 }

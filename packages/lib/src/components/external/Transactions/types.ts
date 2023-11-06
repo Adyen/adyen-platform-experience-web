@@ -1,6 +1,5 @@
 import { PaginationProps } from '../../internal/Pagination/types';
 import UIElement from '../UIElement';
-import { UIElementProps } from '../../types';
 import { ITransaction } from '../../../types/models/api/transactions';
 import { TranslationKey } from '@src/core/Localization/types';
 import { ModalSize } from '@src/components/internal/Modal/types';
@@ -15,14 +14,14 @@ export const enum TransactionFilterParam {
 }
 
 export type OnSelection = (selection: { id: string; showModal: () => void }) => void;
-export interface TransactionsComponentProps extends UIElementProps {
-    elementRef?: UIElement | null;
-    onFilterChange?: (filters: { [p: string]: string | undefined }, ref?: UIElement | null) => void;
+export interface TransactionsComponentProps {
+    elementRef?: UIElement<TransactionsComponentProps> | null;
+    onFilterChange?: (filters: { [p: string]: string | undefined }, ref?: UIElement<TransactionsComponentProps> | null) => void;
     onTransactionSelected?: OnSelection;
     onBalanceAccountSelected?: OnSelection;
     onAccountSelected?: OnSelection;
     showDetails?: DetailsOptions;
-    onUpdateTransactions?: (pageRequestParams: any, ref?: UIElement | null) => void;
+    onUpdateTransactions?: (pageRequestParams: any, ref?: UIElement<TransactionsComponentProps> | null) => void;
     name?: string;
     balancePlatformId?: string;
 }

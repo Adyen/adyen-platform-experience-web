@@ -9,6 +9,6 @@ const DEFAULT_LEGAL_ENTITY_ID = getDefaultID('LE322KH223222Q5J3VPCHFH82');
 enableServerInMockedMode()
     .then(async () => {
         const adyenFP = await AdyenFP({ locale: 'en-US', loadingContext: process.env.VITE_API_URL });
-        adyenFP.create('legalEntityDetails', { legalEntityId: DEFAULT_LEGAL_ENTITY_ID }).mount('.legal-entity-component-container');
+        adyenFP.create('legalEntityDetails', { legalEntityId: DEFAULT_LEGAL_ENTITY_ID, core: adyenFP  }).mount('.legal-entity-component-container');
     })
     .catch(console.error);

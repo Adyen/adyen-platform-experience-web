@@ -10,6 +10,7 @@ enableServerInMockedMode()
 
         adyenFP
             .create('transactionList', {
+                core: adyenFP,
                 balancePlatformId: process.env.VITE_BALANCE_PLATFORM ?? '',
                 onFilterChange: (/* filters, component */) => {
                     // do something here with the updated filters

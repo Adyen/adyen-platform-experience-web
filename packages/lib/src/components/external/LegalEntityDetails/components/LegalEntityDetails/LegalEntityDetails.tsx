@@ -9,8 +9,9 @@ import { ILegalEntityIndividual, ILegalEntityOrganization, ILegalEntitySolePropr
 import Spinner from '@src/components/internal/Spinner';
 import Alert from '@src/components/internal/Alert';
 import useCoreContext from '@src/core/Context/useCoreContext';
+import { ExternalUIComponentProps } from '@src/components/types';
 
-const LegalEntityDetails = ({ legalEntity, legalEntityId, onGetTransferInstrument }: LegalEntityDetailsProps) => {
+const LegalEntityDetails = ({ legalEntity, legalEntityId, onGetTransferInstrument }: ExternalUIComponentProps<LegalEntityDetailsProps>) => {
     const { i18n } = useCoreContext();
 
     const { data, error, isFetching } = useFetch<ILegalEntityOrganization | ILegalEntityIndividual | ILegalEntitySoleProprietor>({
