@@ -1,13 +1,8 @@
-import UIElement from '../components/external/UIElement';
-import components from '../components';
 import type { CoreOptions } from './types';
-import { processGlobalOptions, resolveEnvironment } from './utils';
+import { resolveEnvironment } from './utils';
 import BPSession from './FPSession';
 import Localization from './Localization';
 import BaseElement from '../components/external/BaseElement';
-import { ComponentMap, ComponentOptions, isAvailableOfComponent, isKeyOfComponent } from './types';
-import { ValueOf } from '../utils/types';
-import { isString } from '@src/utils/validator-utils';
 
 class Core {
     public static readonly version = {
@@ -24,7 +19,6 @@ class Core {
     public loadingContext?: string;
 
     constructor(options: CoreOptions) {
-        this.create = this.create.bind(this);
         this.options = options;
         this.setOptions(options);
     }
@@ -47,31 +41,6 @@ class Core {
         // }
 
         return Promise.all([this.localization.ready]).then(() => this);
-    }
-
-    /**
-     * Instantiates a new UIElement component ready to be mounted
-     *
-     * @param component - either the name of the component or a class
-     *
-     * @param options - an object with
-     *
-     * @returns new UIElement
-     */
-
-    public create<ComponentName extends keyof ComponentMap>(
-        component: ComponentName,
-        options: ComponentOptions<ComponentName>
-    ): InstanceType<ComponentMap[ComponentName]>;
-    public create<T extends ValueOf<ComponentMap>, P extends ConstructorParameters<T>>(component: T, options: P[0]): InstanceType<T>;
-    public create(component: any, options?: any): any {
-        if (isString(component)) {
-            const props = this.getPropsForComponent(options);
-            return isKeyOfComponent(component) ? this.handleCreate<typeof component>(component, props) : this.handleCreateError();
-        } else {
-            const props = this.getPropsForComponent(options);
-            return component ? this.handleCreate<typeof component>(component, props) : this.handleCreateError();
-        }
     }
 
     /**
@@ -145,63 +114,6 @@ class Core {
             loadingContext: this.loadingContext,
             _parentInstance: this,
         };
-    }
-
-    /**
-     * @internal
-     * A recursive creation function that finalises by calling itself with a reference to a valid component class which it then initialises
-     *
-     * @param Component - type varies:
-     *  - string
-     *  - class
-     *
-     * @param options - an object with options to be applied to the component
-     *
-     * @returns new UIElement
-     */
-    private handleCreate<T extends keyof ComponentMap>(Component: keyof ComponentMap, options: any): ComponentMap[T];
-    private handleCreate<T extends ValueOf<ComponentMap>>(Component: T, options: any): InstanceType<T>;
-    private handleCreate(Component: any, options: any = {}): any {
-        const isValidClass = Component.prototype instanceof UIElement;
-        /**
-         * Usual initial point of entry to this function (Component is a String).
-         * When Component is defined as a string - retrieve a component from the componentsMap and recall this function passing in a valid class
-         */
-        if (isString(Component) && isKeyOfComponent(Component)) {
-            return this.handleCreate<ComponentMap[typeof Component]>(components[Component], { type: Component, ...options });
-        }
-
-        /**
-         * Final entry point (Component is a Class):
-         * Once we receive a valid class for a Component - create a new instance of it
-         */
-        if (isValidClass && isAvailableOfComponent(Component)) {
-            /**
-             * Find which creation scenario we are in - we need to know when we're creating a Dropin, a PM within the Dropin, or a standalone stored card.
-             */
-            // Filtered global options
-            const globalOptions = processGlobalOptions(this.options);
-
-            /**
-             * Merge:
-             * 1. global options (a subset of the original config object sent when AdyenFP is initialised)
-             * 2. the options that have been passed to the final call of this function (see comment on \@param, above)
-             */
-            const component = new Component({ ...globalOptions, ...options });
-            return component;
-        }
-
-        return this.handleCreateError(Component);
-    }
-
-    /**
-     * @internal
-     */
-    private handleCreateError(component?: ValueOf<ComponentMap>): never {
-        const componentName = component?.name || 'The passed component';
-        const errorMessage = component ? `${componentName} is not a valid component` : 'No component was passed';
-
-        throw new Error(errorMessage);
     }
 }
 

@@ -1,6 +1,6 @@
 import CoreProvider from '../../../core/Context/CoreProvider';
 import UIElement from '../UIElement';
-import TransactionDetails from './components/TransactionDetails';
+import { TransactionDetails } from './components/TransactionDetails';
 import { TransactionDetailsComponentProps } from './types';
 
 export class TransactionsElement extends UIElement<TransactionDetailsComponentProps> {

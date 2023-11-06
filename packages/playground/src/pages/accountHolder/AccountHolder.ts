@@ -1,4 +1,4 @@
-import { AdyenFP } from '@adyen/adyen-fp-web';
+import { AdyenFP, AccountHolderComponent } from '@adyen/adyen-fp-web';
 import { getDefaultID, getSearchParameters } from '../../utils/utils';
 import '../../utils/createPages.js';
 import '../../assets/style/style.scss';
@@ -11,6 +11,7 @@ enableServerInMockedMode()
         const { id } = getSearchParameters();
         const adyenFP = await AdyenFP({ locale: 'en-US', loadingContext: process.env.VITE_API_URL });
 
-        adyenFP.create('accountHolder', { accountHolderId: id ?? DEFAULT_ACCOUNT_HOLDER }).mount('.account-holder-component-container');
-    })
-    .catch(console.error);
+        const accountHolderComponent = new AccountHolderComponent({ core: adyenFP, accountHolderId: id ?? DEFAULT_ACCOUNT_HOLDER });
+
+        accountHolderComponent.mount('.account-holder-component-container');
+    }).catch(console.error);

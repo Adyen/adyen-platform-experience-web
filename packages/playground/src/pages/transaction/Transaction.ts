@@ -1,4 +1,4 @@
-import { AdyenFP } from '@adyen/adyen-fp-web';
+import { AdyenFP, TransactionsDetailsComponent } from '@adyen/adyen-fp-web';
 import { getDefaultID, getSearchParameters } from '../../utils/utils';
 import '../../utils/createPages.js';
 import '../../assets/style/style.scss';
@@ -11,6 +11,7 @@ enableServerInMockedMode()
         const { id } = getSearchParameters();
         const adyenFP = await AdyenFP({ locale: 'en-US', loadingContext: process.env.VITE_API_URL });
 
-        adyenFP.create('transactionDetails', {  core: adyenFP, transactionId: id ?? DEFAULT_TRANSACTION_ID }).mount('.transaction-details-component-container');
-    })
+        const transactionsDetailsComponent = new TransactionsDetailsComponent({ core: adyenFP, transactionId: id ?? DEFAULT_TRANSACTION_ID });
+
+        transactionsDetailsComponent.mount('.transaction-details-component-container');    })
     .catch(console.error);
