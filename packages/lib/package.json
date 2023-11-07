@@ -41,6 +41,7 @@
         "build:analyse": "vite build --mode analyse --config ./config/vite.config.ts",
         "test": "vitest --config ./config/vite.config.ts",
         "test:coverage": "vitest --config ./config/vite.config.ts --coverage",
+        "test:e2e": "playwright test --project local-chrome",
         "type-check": "tsc --preserveWatchOutput",
         "types:build": "tsc --project tsconfig-build.json",
         "lint": "eslint 'src/**/*.{js,ts,tsx}' --quiet && npm run lint:scss",
@@ -50,6 +51,7 @@
         "format": "prettier --write 'src/**/*.{ts,js,css, scss, html}'"
     },
     "devDependencies": {
+        "@playwright/test": "^1.38.0",
         "@preact/preset-vite": "^2.5.0",
         "@testing-library/jest-dom": "^5.16.5",
         "@testing-library/preact": "^3.2.3",

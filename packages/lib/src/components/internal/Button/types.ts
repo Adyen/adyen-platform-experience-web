@@ -18,6 +18,7 @@ export interface ButtonProps extends Record<string, any> {
     rel?: string;
     tabIndex?: number;
     onClick?: (e?: Event, callbacks?: { [k: string]: (...args: any) => void }) => void;
+    ariaLabel?: string;
 }
 
 export interface ButtonState {

@@ -51,7 +51,24 @@ module.exports = {
                 tsx: 'never',
             },
         ],
-        'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
+        'import/no-extraneous-dependencies': [
+            'error',
+            {
+                devDependencies: [
+                    'playwright/test',
+                    'playwright.config.ts',
+                    'config/vite.config.ts',
+                    '**/*.test.{ts,tsx}',
+                    'config/**/*.ts',
+                    'envs/**/*.ts',
+                    'mocks/**/*.ts',
+                    'tests/**/*.{ts,js}',
+                    'tests/**/**/*.spec.ts',
+                    'src/utils/testing/**/*.{ts,tsx}',
+                ],
+                includeTypes: false,
+            },
+        ],
         'max-len': [
             'error',
             {

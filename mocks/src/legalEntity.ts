@@ -61,6 +61,7 @@ export const LEGAL_ENTITY_ORGANIZATION: ILegalEntityOrganization = {
 
 export const LEGAL_ENTITY_ORGANIZATION_WITH_TI: ILegalEntityOrganization = {
     ...LEGAL_ENTITY_ORGANIZATION,
+    id: 'LE322KH223222Q5J3VPCHFH83',
     transferInstruments: [MOCK_TRANSFER_INSTRUMENT_OVERVIEW, MOCK_TRANSFER_INSTRUMENT_OVERVIEW_2],
 };
 
@@ -118,5 +119,5 @@ export const LEGAL_ENTITY_INDIVIDUAL: ILegalEntityIndividual = {
 };
 
 export const mockedIndividualLegalEntities = [LEGAL_ENTITY_INDIVIDUAL] as const;
-export const mockedOrganizationLegalEntities = [LEGAL_ENTITY_ORGANIZATION] as const;
+export const mockedOrganizationLegalEntities = [LEGAL_ENTITY_ORGANIZATION, LEGAL_ENTITY_ORGANIZATION_WITH_TI] as const;
 export const MOCKED_LEGAL_ENTITIES = [...mockedIndividualLegalEntities, ...mockedOrganizationLegalEntities] as const;

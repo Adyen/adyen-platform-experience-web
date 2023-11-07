@@ -14,6 +14,7 @@ export const useStructuredListItems = (items: { [key in TranslationKey]?: ListVa
                       id: uniqueID,
                       label: i18n.get(itemKey),
                       value: items[itemKey],
+                      key,
                   },
               ]
             : prev;

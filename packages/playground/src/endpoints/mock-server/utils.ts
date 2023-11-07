@@ -9,7 +9,10 @@ export function getMockHandlers(mocks: RestHandler<MockedRequest<DefaultBodyType
 
 const MOCK_MODES = ['mocked', 'demo'];
 export async function enableServerInMockedMode() {
-    await mockWorker.start({});
+    const env = (import.meta as any).env;
+    if (MOCK_MODES.includes(env.VITE_MODE || env.MODE)) {
+        await mockWorker.start({});
+    }
 }
 export function stopMockedServer() {
     mockWorker.stop();

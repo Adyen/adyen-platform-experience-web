@@ -47,13 +47,10 @@ runs:
       run: npm list
       continue-on-error: true
 
-    # Skip post-install scripts here, as a malicious
-    # script could steal NODE_AUTH_TOKEN.
-    - if: ${{ steps.cache-npm.outputs.cache-hit != 'true' }}
+    - name: Install dependencies
       shell: bash
       run: |
-        npm config set //registry.npmjs.org/:_authToken ${{ inputs.NPM_TOKEN }}
-        npm install --ignore-script
+        npm config set //registry.npmjs.org/:_authToken ${{ inputs.NPM_READ_TOKEN }}
+        npm install
       env:
-        NODE_AUTH_TOKEN: ${{ inputs.NPM_READ_TOKEN }}
         HUSKY: "0"

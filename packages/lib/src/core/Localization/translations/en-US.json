@@ -136,5 +136,14 @@
     "unableToLoadBalanceAccount": "Unable to load balance account",
     "unableToLoadLegalEntity": "Unable to load legal entity",
     "unableToLoadTransaction": "Unable to load transaction",
-    "dismiss": "Dismiss"
+    "dismiss": "Dismiss",
+    "organization": "Organization",
+    "individual": "individual",
+    "originalAmount": "Original amount",
+    "instructedAmount": "Instructed amount",
+    "date": "Date",
+    "structuredList": "Structured list",
+    "tabs": "Tabs",
+    "value": "Value",
+    "filterBar": "Filter bar"
 }
