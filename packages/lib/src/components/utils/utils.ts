@@ -35,13 +35,3 @@ export function resolveFinalResult(result: { resultCode: string } & { [key: stri
             return ['error'];
     }
 }
-
-export function parseComponentOptions<T>({ options, session }: { options: T; session: Core }) {
-    return {
-        ...options,
-        i18n: session.modules.i18n,
-        loadingContext: session.options.loadingContext,
-        modules: session.modules,
-        session: session.session,
-    };
-}
