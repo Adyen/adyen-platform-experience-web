@@ -20,13 +20,28 @@ export default defineConfig(async ({ mode }) => {
             lib: {
                 name: 'AdyenFPComponents',
                 entry: resolve(__dirname, '../src/index.ts'),
-                formats: ['cjs', 'es'],
-                fileName: format => `adyen-fp-components.${format}.js`,
+                fileName: (format, entryName) => {
+                    if (entryName.includes('node_modules')) {
+                        return `${format}/${entryName.replace('node_modules', 'external')}.js`;
+                    }
+                    return `${format}/${entryName}.js`;
+                },
             },
-            minify: true,
-            rollupOptions: { external: externalDependencies },
+            rollupOptions: {
+                external: externalDependencies,
+                output: [
+                    {
+                        format: 'es',
+                        preserveModules: true,
+                        preserveModulesRoot: 'src',
+                        sourcemap: false,
+                        indent: false,
+                    },
+                    { format: 'cjs', sourcemap: true, indent: false },
+                ],
+            },
             outDir: resolve(__dirname, '..', 'dist'),
-            emptyOutDir: false,
+            emptyOutDir: true,
         },
         define: {
             'process.env.VITE_VERSION': JSON.stringify(currentVersion.ADYEN_FP_VERSION),

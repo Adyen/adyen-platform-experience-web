@@ -4,7 +4,7 @@ import { useFetch } from '@src/hooks/useFetch/useFetch';
 import Spinner from '@src/components/internal/Spinner';
 import Alert from '@src/components/internal/Alert';
 import { AccountHolderInfo } from '@src/components/external/AccountHolder/components/AccountHolderInfo';
-import type { AccountHolder } from '@src/types';
+import type { AccountHolder } from '../../../../types';
 import type { AccountHolderComponentProps } from '../types';
 
 const AccountHolderDetails = ({ accountHolderId, accountHolder, title }: AccountHolderComponentProps) => {

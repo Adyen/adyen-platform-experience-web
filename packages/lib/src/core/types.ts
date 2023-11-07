@@ -1,8 +1,6 @@
 import { CustomTranslations, SupportedLocale } from '@src/core/Localization/types';
 import { AmountExtended } from '../types/shared';
 import { AnalyticsOptions } from './Analytics/types';
-import componentsMap from '../components';
-import { ValueOf } from '../utils/types';
 
 export type DevEnvironment = 'test' | 'live';
 
@@ -55,13 +53,4 @@ export interface CoreOptions {
     analytics?: AnalyticsOptions;
 
     timezone?: Intl.DateTimeFormatOptions['timeZone'];
-}
-
-export type ComponentMap = typeof componentsMap;
-export type ComponentOptions<Name extends keyof ComponentMap> = ConstructorParameters<ComponentMap[Name]>[0];
-export function isKeyOfComponent(component: string): component is keyof ComponentMap {
-    return !!componentsMap[component as keyof ComponentMap];
-}
-export function isAvailableOfComponent(component: any): component is ValueOf<ComponentMap> {
-    return !!(Object.keys(componentsMap) as (keyof typeof componentsMap)[])?.find(key => componentsMap[key] === component);
 }

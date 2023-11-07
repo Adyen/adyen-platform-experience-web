@@ -1,5 +1,5 @@
 import './ContactDetails.scss';
-import { AccountHolder } from '@src/types';
+import { AccountHolder } from '../../../../types';
 
 type ContactDetails = AccountHolder['contactDetails'];
 interface ContactDetailsProps {

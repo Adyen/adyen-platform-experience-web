@@ -13,7 +13,7 @@ import { httpGet } from '@src/core/Services/requests/http';
 import { HttpOptions } from '@src/core/Services/requests/types';
 import { parseSearchParams } from '@src/core/Services/requests/utils';
 import Alert from '@src/components/internal/Alert';
-import { ExternalUIComponentProps } from '@src/components/types';
+import { ExternalUIComponentProps } from '../../../types';
 
 const DEFAULT_PAGINATED_TRANSACTIONS_LIMIT = '20';
 const DEFAULT_CREATED_SINCE = new Date(new Date().setHours(0, 0, 0, 0)).toISOString();

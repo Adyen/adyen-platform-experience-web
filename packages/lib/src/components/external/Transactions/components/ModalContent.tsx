@@ -2,7 +2,7 @@ import { lazy, Suspense } from 'preact/compat';
 import Spinner from '@src/components/internal/Spinner';
 import { SelectedDetail } from '@src/components';
 
-const { TransactionDetails } = lazy(() => import('../../TransactionDetails/components/TransactionDetails'));
+const TransactionDetails = lazy(() => import('../../TransactionDetails/components/TransactionDetails'));
 const AccountHolderDetails = lazy(() => import('../../AccountHolder/components/AccountHolderDetails'));
 const BalanceAccountDetails = lazy(() => import('../../BalanceAccount/components/BalanceAccountDetails'));
 function ModalContent({ selection }: SelectedDetail) {

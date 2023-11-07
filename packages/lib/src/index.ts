@@ -1,5 +1,7 @@
 import { CoreOptions } from './core/types';
 import { Core } from './core';
+import './components/shared.scss';
+import './style/index.scss';
 
 export * from './core';
 export * from './components';

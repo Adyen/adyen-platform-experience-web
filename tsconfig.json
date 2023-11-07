@@ -10,10 +10,9 @@
         "esModuleInterop": true,
         "strict": true,
         "noUncheckedIndexedAccess": true,
-        "lib": ["dom", "esnext", "es2015"],
+        "lib": ["ESNext", "DOM", "DOM.Iterable"],
         "stripInternal": true,
-        "importHelpers": true,
-        "types": ["node"]
+        "importHelpers": true
     },
     "files": ["packages/lib/src/declarations/scss.d.ts"]
 }

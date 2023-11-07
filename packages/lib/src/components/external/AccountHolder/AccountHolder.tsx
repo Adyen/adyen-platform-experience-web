@@ -2,7 +2,7 @@ import CoreProvider from '../../../core/Context/CoreProvider';
 import UIElement from '../UIElement';
 import AccountHolderDetails from './components/AccountHolderDetails';
 import { AccountHolderComponentProps } from './types';
-import { _UIComponentProps } from '@src/components/types';
+import { _UIComponentProps } from '../../types';
 
 export class AccountHolderElement extends UIElement<AccountHolderComponentProps> {
     public static type = 'accountHolder';
