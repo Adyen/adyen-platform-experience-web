@@ -3,9 +3,18 @@ import { defaultTranslation, FALLBACK_LOCALE } from './constants/locale';
 import { DEFAULT_DATETIME_FORMAT, DEFAULT_LOCALES, EXCLUDE_PROPS } from './constants/localization';
 import restamper from './datetime/restamper';
 import { createTranslationsLoader, getLocalizationProxyDescriptors } from './localization-utils';
-import { CurrencyCode, CustomTranslations, Restamp, SupportedLocale, TranslationKey, TranslationOptions } from './types';
+import {
+    CurrencyCode,
+    CustomTranslations,
+    Restamp,
+    SupportedLocale,
+    TranslationKey,
+    TranslationOptions,
+    TranslationsRefreshWatchable,
+    TranslationsRefreshWatchCallback,
+} from './types';
 import { formatCustomTranslations, getTranslation, toTwoLetterCode } from './utils';
-import { noop, struct } from '@src/utils/common';
+import { EMPTY_OBJECT, noop, struct } from '@src/utils/common';
 import watchable from '@src/utils/watchable';
 
 export default class Localization {
@@ -20,10 +29,9 @@ export default class Localization {
     #ready: Promise<void> = Promise.resolve();
     #currentRefresh?: Promise<void>;
     #markRefreshAsDone?: () => void;
-    #refreshWatchable = watchable({ timestamp: () => performance.now() });
+    #refreshWatchable: TranslationsRefreshWatchable = watchable({ timestamp: () => performance.now() });
     #restamp: Restamp = restamper();
 
-    watch = this.#refreshWatchable.watch.bind(undefined);
     i18n: Omit<Localization, (typeof EXCLUDE_PROPS)[number]> = struct(getLocalizationProxyDescriptors.call(this));
 
     constructor(locale: SupportedLocale | string = FALLBACK_LOCALE) {
@@ -89,6 +97,10 @@ export default class Localization {
         this.#restamp.tz = timezone;
     }
 
+    get translations() {
+        return this.#translations;
+    }
+
     #refreshTranslations(customTranslations?: CustomTranslations) {
         if (this.#markRefreshAsDone === undefined) {
             this.#ready = new Promise<void>(resolve => {
@@ -105,29 +117,36 @@ export default class Localization {
 
         const currentRefresh = (this.#currentRefresh = (async () => {
             this.#translations = await this.#translationsLoader.load(customTranslations);
-            this.#locale = this.#translationsLoader.locale;
             this.#supportedLocales = this.#translationsLoader.supportedLocales;
-            this.#customTranslations = customTranslations;
+            this.#locale = this.#translationsLoader.locale;
             this.#languageCode = toTwoLetterCode(this.#locale);
+            this.#customTranslations = customTranslations;
             this.#refreshWatchable.notify();
         })());
 
         currentRefresh.then(currentRefreshDone).catch(reason => {
             currentRefreshDone();
-            // handle current refresh promise rejection
-            // throw reason;
-            console.error(reason);
+            if (import.meta.env.DEV) {
+                // handle current refresh promise rejection
+                // throw reason;
+                console.error(reason);
+            }
         });
+    }
+
+    watch(callback: TranslationsRefreshWatchCallback) {
+        return this.#refreshWatchable.watch(callback);
     }
 
     /**
      * Returns a translated string from a key in the current {@link Localization.locale}
      * @param key - Translation key
      * @param options - Translation options
+     * @param translations — Translations object
      * @returns Translated string
      */
-    get(key: TranslationKey, options?: TranslationOptions): string {
-        const translation = getTranslation(this.#translations, key, options);
+    get(key: TranslationKey, options: TranslationOptions = EMPTY_OBJECT, translations = this.#translations): string {
+        const translation = getTranslation(translations, key, options);
         return translation !== null ? translation : key;
     }
 

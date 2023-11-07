@@ -1,6 +1,7 @@
 import CURRENCY_CODES from './constants/currency-codes';
 import CURRENCY_DECIMALS from './constants/currency-decimals';
 import translations from './translations';
+import { Watchable } from '@src/utils/watchable/types';
 
 type ExtractReturnType<T> = T extends () => Promise<infer U> ? U : never;
 
@@ -9,6 +10,9 @@ export type CurrencyDecimalCode = keyof typeof CURRENCY_DECIMALS;
 export type SupportedLocale = keyof typeof translations;
 
 export type TranslationKey = keyof ExtractReturnType<(typeof translations)['en-US']>;
+
+export type TranslationsRefreshWatchable = Watchable<{ timestamp: number }>;
+export type TranslationsRefreshWatchCallback = NonNullable<Parameters<TranslationsRefreshWatchable['watch']>[0]>;
 
 export type TranslationOptions = {
     values?: Record<string, string | number>;

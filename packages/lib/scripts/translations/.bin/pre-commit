@@ -1,0 +1,2 @@
+#!/usr/bin/env node
+(async files => require('../manifest').update(files))(process.argv.slice(2));

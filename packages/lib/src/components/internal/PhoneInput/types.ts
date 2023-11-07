@@ -1,6 +1,6 @@
-import Localization from '@src/core/Localization';
 import { SetTriggerValidation } from '../../types';
 import { StateUpdater } from 'preact/hooks';
+import { CoreContextWithTranslationsI18n } from '@src/core/Context/types';
 import { TranslationKey } from '@src/core/Localization/types';
 
 export interface PhoneInputComponentProps {
@@ -15,7 +15,7 @@ export interface PhoneInputComponentProps {
     phoneName: string;
     showPayButton: boolean;
     isValid: boolean;
-    i18n?: Localization['i18n'];
+    i18n?: CoreContextWithTranslationsI18n;
     data?: {
         phonePrefix: string;
         phoneNumber: string;

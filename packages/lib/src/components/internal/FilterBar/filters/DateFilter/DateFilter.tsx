@@ -5,11 +5,11 @@ import { CalendarHandle } from '../../../Calendar/types';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import useMounted from '@src/hooks/useMounted';
 import BaseFilter from '../BaseFilter';
-import Localization from '@src/core/Localization';
+import { CoreContextWithTranslationsI18n } from '@src/core/Context/types';
 import DatePicker from '../../../DatePicker';
 import './DateFilter.scss';
 
-const computeDateFilterValue = (i18n: Localization['i18n'], fromDate?: string, toDate?: string) => {
+const computeDateFilterValue = (i18n: CoreContextWithTranslationsI18n, fromDate?: string, toDate?: string) => {
     const from = fromDate && i18n.fullDate(fromDate);
     const to = toDate && i18n.fullDate(toDate);
 

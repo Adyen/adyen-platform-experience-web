@@ -1,5 +1,5 @@
 import { Component, ComponentChildren, JSX } from 'preact';
-import Localization from '@src/core/Localization';
+import { CoreContextWithTranslationsI18n } from '@src/core/Context/types';
 import { HTMLAttributes } from 'preact/compat';
 
 export interface FieldProps {
@@ -25,7 +25,7 @@ export interface FieldProps {
     showValidIcon?: boolean;
     isCollatingErrors?: boolean;
     useLabelElement?: boolean;
-    i18n?: Localization['i18n'];
+    i18n?: CoreContextWithTranslationsI18n;
 }
 
 export interface FieldState {

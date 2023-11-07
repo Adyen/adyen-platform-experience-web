@@ -1,4 +1,5 @@
 import Localization from '@src/core/Localization';
+import { WithTranslationsI18n } from './useCoreContext/translations/types';
 
 export interface CommonPropsTypes {
     isCollatingErrors?: boolean;
@@ -11,3 +12,6 @@ export interface CoreProviderProps {
     loadingContext?: string;
     clientKey?: string;
 }
+
+export type CoreContextWithTranslations = WithTranslationsI18n<CoreProviderProps>;
+export type CoreContextWithTranslationsI18n = CoreContextWithTranslations['i18n'];
