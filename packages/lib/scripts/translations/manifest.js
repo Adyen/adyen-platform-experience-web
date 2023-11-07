@@ -4,12 +4,18 @@ const path = require('path');
 const prettier = require('prettier');
 const { computeMd5Hash, sortJSON } = require('./utils');
 const {
-    TRANSLATIONS_SUB_PATH_REGEX,
+    PKG_ROOT_PATH,
+    TRANSLATIONS_GLOB_PATTERN,
     TRANSLATIONS_GLOB_ROOT_PATH,
     TRANSLATIONS_JSON_PATH,
-    TRANSLATIONS_DIRNAME,
-    TRANSLATIONS_GLOB_PATTERN,
+    TRANSLATIONS_SOURCE_FILE,
+    TRANSLATIONS_SOURCE_DIRNAME_TRIM_PATTERN,
 } = require('./constants');
+
+const PRETTY_OPTIONS = (async () => ({
+    ...(await prettier.resolveConfig(PKG_ROOT_PATH)),
+    parser: 'json',
+}))();
 
 const _getManifest = () =>
     (async () => require(TRANSLATIONS_JSON_PATH))()
@@ -39,14 +45,14 @@ const updateManifestIfNecessary = async (sourcePaths = []) => {
     let _manifestWillUpdate = false;
 
     for await (const _path of [...Object.keys(MANIFEST), ...sourcePaths]) {
-        const dir = path.dirname(_path).replace(TRANSLATIONS_SUB_PATH_REGEX, '');
+        const dir = path.dirname(_path).replace(TRANSLATIONS_SOURCE_DIRNAME_TRIM_PATTERN, '');
 
         if (!DIRS.has(dir)) {
             DIRS.add(dir);
         } else continue;
 
         const currentManifestData = MANIFEST[dir];
-        const translationsFilePath = path.resolve(TRANSLATIONS_GLOB_ROOT_PATH, _path, TRANSLATIONS_DIRNAME, 'en-US.json');
+        const translationsFilePath = path.resolve(TRANSLATIONS_GLOB_ROOT_PATH, dir, TRANSLATIONS_SOURCE_FILE);
         let translationsFileJson;
 
         try {
@@ -71,8 +77,7 @@ const updateManifestIfNecessary = async (sourcePaths = []) => {
         if (currentManifestData && currentManifestData.checksum === checksum) {
             _manifest[dir] = currentManifestData;
         } else {
-            const prettyOptions = { ...(await prettier.resolveConfigFile(translationsFilePath)), parser: 'json' };
-            const prettyJSON = await prettier.format(JSON.stringify(translationsFileJson), prettyOptions);
+            const prettyJSON = await prettier.format(JSON.stringify(translationsFileJson, null, 4), await PRETTY_OPTIONS);
             const translationsFile = await fs.open(translationsFilePath, 'w');
 
             await translationsFile.writeFile(prettyJSON);
@@ -106,11 +111,11 @@ const updateManifestIfNecessary = async (sourcePaths = []) => {
         (await new Promise(async (resolve, reject) => {
             let writeError = null;
 
-            const prettyOptions = { ...(await prettier.resolveConfigFile(TRANSLATIONS_JSON_PATH)), parser: 'json' };
             const prettyJSON = await prettier.format(
-                JSON.stringify({ _checksum: computeMd5Hash(_dictionary), _dictionary, _manifest }),
-                prettyOptions
+                JSON.stringify({ _checksum: computeMd5Hash(_dictionary), _dictionary, _manifest }, null, 4),
+                await PRETTY_OPTIONS
             );
+
             const writable = translationsJsonFileHandle.createWriteStream();
 
             writable.once('close', () => {

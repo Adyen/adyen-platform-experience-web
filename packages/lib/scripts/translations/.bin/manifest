@@ -1,0 +1,15 @@
+#!/usr/bin/env node
+
+const fs = require('fs/promises');
+const { get, update } = require('../manifest');
+const { TRANSLATIONS_JSON_PATH } = require('../constants');
+
+const _updateManifest = async (sourceFiles = []) => {
+    await get() && sourceFiles.length && await update(sourceFiles);
+};
+
+_updateManifest(process.argv.slice(2))
+    .catch(async reason => {
+        await fs.rm(TRANSLATIONS_JSON_PATH).catch(() => {});
+        throw reason;
+    });

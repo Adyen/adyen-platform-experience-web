@@ -13,16 +13,23 @@ const getClosestDirectory = (fileBasePath, rootScopePath = '/') => {
 
 const PKG_ROOT_PATH = getClosestDirectory('package.json');
 const TRANSLATIONS_DIRNAME = 'translations';
+const TRANSLATIONS_FILENAME = 'translations.json';
+const TRANSLATIONS_JSON_PATH = getClosestDirectory(TRANSLATIONS_FILENAME, CWD) ?? path.resolve(CWD, TRANSLATIONS_FILENAME);
+const TRANSLATIONS_SOURCE_FILE = `${TRANSLATIONS_DIRNAME}/en-US.json`;
+const TRANSLATIONS_GLOB_PATTERN = `**/${TRANSLATIONS_SOURCE_FILE}`;
 const TRANSLATIONS_GLOB_ROOT_PATH = path.resolve(PKG_ROOT_PATH, 'src');
-const TRANSLATIONS_GLOB_PATTERN = `**/${TRANSLATIONS_DIRNAME}/en-US.json`;
-const TRANSLATIONS_JSON_PATH = getClosestDirectory('translations.json', CWD) ?? path.resolve(CWD, 'translations.json');
-const TRANSLATIONS_SUB_PATH_REGEX = RegExp(`\\/${TRANSLATIONS_DIRNAME}(?:\\/.*)?$`);
+const TRANSLATIONS_SOURCE_DIRNAME_TRIM_PATTERN = RegExp(
+    `^${TRANSLATIONS_GLOB_ROOT_PATH}/?|/${TRANSLATIONS_DIRNAME}(?:/.*)?$`.replace('/', '\\/'),
+    'gi'
+);
 
 module.exports = {
     PKG_ROOT_PATH,
     TRANSLATIONS_DIRNAME,
+    TRANSLATIONS_FILENAME,
     TRANSLATIONS_GLOB_PATTERN,
     TRANSLATIONS_GLOB_ROOT_PATH,
     TRANSLATIONS_JSON_PATH,
-    TRANSLATIONS_SUB_PATH_REGEX,
+    TRANSLATIONS_SOURCE_DIRNAME_TRIM_PATTERN,
+    TRANSLATIONS_SOURCE_FILE,
 };

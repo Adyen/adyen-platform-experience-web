@@ -48,7 +48,8 @@
         "lint:fix": "npm run lint -- --fix",
         "lint:scss": "stylelint 'src/**/*.scss' --fix",
         "types:watch": "npm run type-check -- --watch",
-        "format": "prettier --write 'src/**/*.{ts,js,css, scss, html}'"
+        "format": "prettier --write 'src/**/*.{ts,js,css, scss, html}'",
+        "translations:manifest": "./scripts/translations/.bin/manifest"
     },
     "devDependencies": {
         "@playwright/test": "^1.38.0",
@@ -69,7 +70,7 @@
         "eslint-plugin-import": "^2.25.4",
         "eslint-plugin-jsx-a11y": "^6.5.1",
         "eslint-plugin-react": "^7.26.1",
-        "glob": "^10.3.4",
+        "glob": "^10.3.3",
         "jsdom": "^20.0.3",
         "mini-css-extract-plugin": "^2.4.5",
         "postcss": "^8.3.11",
