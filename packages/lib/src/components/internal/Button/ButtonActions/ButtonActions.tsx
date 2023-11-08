@@ -12,7 +12,7 @@ interface ButtonActionsProps {
 }
 function ButtonActions({ actions, layout = ButtonActionsLayout.BUTTONS_END }: ButtonActionsProps) {
     const conditionalClasses = (): string => {
-        return `adyen-fp-button-actions--${layout}`;
+        return `${BUTTON_ACTION_CLASSNAME}--${layout}`;
     };
 
     const generateButtonVariantByIndex = (actionIndex: number) => {

@@ -16,6 +16,7 @@
 }
 
 @mixin adyen-fp-bento-action-button-mapping {
+    --adyen-fp-button-actions-vertical-stack-row-gap: #{$button-actions-vertical-stack-row-gap};
     --adyen-fp-action-button-gap: #{$spacer-040};
 }
 

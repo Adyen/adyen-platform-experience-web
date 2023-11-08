@@ -5,7 +5,7 @@
     &__container-wrapper {
         display: flex;
         flex-direction: column;
-        gap: var(--adyen-fp-action-button-gap);
+        gap: var(--adyen-fp-button-actions-vertical-stack-row-gap);
     }
 
     //@container (min-width: 250px) {
