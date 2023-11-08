@@ -1,11 +1,17 @@
+import { useCallback, useMemo } from 'preact/hooks';
+import {
+    DEFAULT_BUTTON_CLASSNAME,
+    BUTTON_ICON_LEFT_CLASSNAME,
+    BUTTON_ICON_RIGHT_CLASSNAME,
+    BUTTON_LABEL_CLASSNAME,
+} from '@src/components/internal/Button/constants';
 import { TypographyElement, TypographyVariant } from '@src/components/internal/Typography/types';
 import Typography from '@src/components/internal/Typography/Typography';
 import getModifierClasses from '@src/utils/get-modifier-classes';
 import { Ref } from 'preact';
 import { forwardRef } from 'preact/compat';
-import './Button.scss';
-import { useMemo } from 'preact/hooks';
 import { ButtonProps, ButtonVariant } from './types';
+import './Button.scss';
 
 function Button(
     {
@@ -24,17 +30,21 @@ function Button(
     }: ButtonProps,
     ref: Ref<HTMLButtonElement>
 ) {
-    const clickAction = (e: any) => {
-        e.preventDefault();
+    const clickAction = useCallback(
+        (e: any) => {
+            e.preventDefault();
 
-        if (!disabled) {
-            onClick?.(e);
-        }
-    };
+            if (!disabled) {
+                onClick?.(e);
+            }
+        },
+        [disabled, onClick]
+    );
 
-    const modifiers = [...classNameModifiers, ...[variant]];
-
-    const buttonClasses = useMemo(() => getModifierClasses(`${className} adyen-fp-button`, modifiers, 'adyen-fp-button'), [className, modifiers]);
+    const buttonClasses = useMemo(
+        () => getModifierClasses(DEFAULT_BUTTON_CLASSNAME, [...classNameModifiers, variant], [DEFAULT_BUTTON_CLASSNAME, className]),
+        [className, classNameModifiers, variant]
+    );
 
     return (
         <button
@@ -48,11 +58,11 @@ function Button(
             role={'button'}
             {...restAttributes}
         >
-            {iconLeft && <span className="adyen-fp-button__icon-left">{iconLeft}</span>}
-            <Typography className={'adyen-fp-button__label'} el={TypographyElement.SPAN} variant={TypographyVariant.BODY} stronger={true}>
+            {iconLeft && <span className={BUTTON_ICON_LEFT_CLASSNAME}>{iconLeft}</span>}
+            <Typography className={BUTTON_LABEL_CLASSNAME} el={TypographyElement.SPAN} variant={TypographyVariant.BODY} stronger={true}>
                 {children}
             </Typography>
-            {iconRight && <span className="adyen-fp-button__icon-right">{iconRight}</span>}
+            {iconRight && <span className={BUTTON_ICON_RIGHT_CLASSNAME}>{iconRight}</span>}
         </button>
     );
 }

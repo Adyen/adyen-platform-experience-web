@@ -1,3 +1,4 @@
+import { DEFAULT_TYPOGRAPHY_CLASSNAME } from '@src/components/internal/Typography/constants';
 import cx from 'classnames';
 import { useMemo } from 'preact/hooks';
 import { TypographyElement, TypographyModifier, TypographyVariant } from './types';
@@ -22,29 +23,35 @@ function Typography({ el, className, stronger, strongest, variant, medium, large
     const conditionalClasses = useMemo(
         () => ({
             // Caption
-            [`adyen-fp-typography--${TypographyVariant.CAPTION}`]: variant === TypographyVariant.CAPTION,
-            [`adyen-fp-typography--${TypographyVariant.CAPTION}-${TypographyModifier.WIDE}`]: variant === TypographyVariant.CAPTION && wide,
-            [`adyen-fp-typography--${TypographyVariant.CAPTION}-${TypographyModifier.STRONGER}`]: variant === TypographyVariant.CAPTION && stronger,
+            [`${DEFAULT_TYPOGRAPHY_CLASSNAME}--${TypographyVariant.CAPTION}`]: variant === TypographyVariant.CAPTION,
+            [`${DEFAULT_TYPOGRAPHY_CLASSNAME}--${TypographyVariant.CAPTION}-${TypographyModifier.WIDE}`]:
+                variant === TypographyVariant.CAPTION && wide,
+            [`${DEFAULT_TYPOGRAPHY_CLASSNAME}--${TypographyVariant.CAPTION}-${TypographyModifier.STRONGER}`]:
+                variant === TypographyVariant.CAPTION && stronger,
 
             // Body
-            [`adyen-fp-typography--${TypographyVariant.BODY}`]: variant === TypographyVariant.BODY,
-            [`adyen-fp-typography--${TypographyVariant.BODY}-${TypographyModifier.WIDE}`]: variant === TypographyVariant.BODY && wide,
-            [`adyen-fp-typography--${TypographyVariant.BODY}-${TypographyModifier.STRONGER}`]: variant === TypographyVariant.BODY && stronger,
-            [`adyen-fp-typography--${TypographyVariant.BODY}-${TypographyModifier.STRONGEST}`]: variant === TypographyVariant.BODY && strongest,
+            [`${DEFAULT_TYPOGRAPHY_CLASSNAME}--${TypographyVariant.BODY}`]: variant === TypographyVariant.BODY,
+            [`${DEFAULT_TYPOGRAPHY_CLASSNAME}--${TypographyVariant.BODY}-${TypographyModifier.WIDE}`]: variant === TypographyVariant.BODY && wide,
+            [`${DEFAULT_TYPOGRAPHY_CLASSNAME}--${TypographyVariant.BODY}-${TypographyModifier.STRONGER}`]:
+                variant === TypographyVariant.BODY && stronger,
+            [`${DEFAULT_TYPOGRAPHY_CLASSNAME}--${TypographyVariant.BODY}-${TypographyModifier.STRONGEST}`]:
+                variant === TypographyVariant.BODY && strongest,
 
             // Subtitle
-            [`adyen-fp-typography--${TypographyVariant.SUBTITLE}`]: variant === TypographyVariant.SUBTITLE,
-            [`adyen-fp-typography--${TypographyVariant.SUBTITLE}-${TypographyModifier.STRONGER}`]: variant === TypographyVariant.SUBTITLE && stronger,
+            [`${DEFAULT_TYPOGRAPHY_CLASSNAME}--${TypographyVariant.SUBTITLE}`]: variant === TypographyVariant.SUBTITLE,
+            [`${DEFAULT_TYPOGRAPHY_CLASSNAME}--${TypographyVariant.SUBTITLE}-${TypographyModifier.STRONGER}`]:
+                variant === TypographyVariant.SUBTITLE && stronger,
 
             // Title
-            [`adyen-fp-typography--${TypographyVariant.TITLE}`]: variant === TypographyVariant.TITLE && !medium && !large,
-            [`adyen-fp-typography--${TypographyVariant.TITLE}-${TypographyModifier.MEDIUM}`]: variant === TypographyVariant.TITLE && medium,
-            [`adyen-fp-typography--${TypographyVariant.TITLE}-${TypographyModifier.LARGE}`]: variant === TypographyVariant.TITLE && large,
+            [`${DEFAULT_TYPOGRAPHY_CLASSNAME}--${TypographyVariant.TITLE}`]: variant === TypographyVariant.TITLE && !medium && !large,
+            [`${DEFAULT_TYPOGRAPHY_CLASSNAME}--${TypographyVariant.TITLE}-${TypographyModifier.MEDIUM}`]:
+                variant === TypographyVariant.TITLE && medium,
+            [`${DEFAULT_TYPOGRAPHY_CLASSNAME}--${TypographyVariant.TITLE}-${TypographyModifier.LARGE}`]: variant === TypographyVariant.TITLE && large,
         }),
         [variant, wide, stronger, medium, large, strongest]
     );
 
-    return <Tag className={cx([`adyen-fp-typography ${className}`, conditionalClasses])}>{children}</Tag>;
+    return <Tag className={cx([`${DEFAULT_TYPOGRAPHY_CLASSNAME}`, conditionalClasses, className])}>{children}</Tag>;
 }
 
 export default memo(Typography);

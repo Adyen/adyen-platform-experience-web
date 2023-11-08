@@ -1,5 +1,6 @@
 import Button from '@src/components/internal/Button';
 import { ButtonActionsLayout, ButtonActionsList } from '@src/components/internal/Button/ButtonActions/types';
+import { BUTTON_ACTION_CLASSNAME, BUTTON_ACTION_CONTAINER_CLASSNAME } from '@src/components/internal/Button/constants';
 import { ButtonVariant } from '@src/components/internal/Button/types';
 import './ButtonActions.scss';
 import { memo } from 'preact/compat';
@@ -22,8 +23,8 @@ function ButtonActions({ actions, layout = ButtonActionsLayout.BUTTONS_END }: Bu
     const reversedActions = useMemo(() => [...actions].reverse(), [actions]);
 
     return (
-        <div className="adyen-fp-button-actions">
-            <div className={`adyen-fp-button-actions__container-wrapper ${conditionalClasses()}`} role="group">
+        <div className={BUTTON_ACTION_CLASSNAME}>
+            <div className={`${BUTTON_ACTION_CONTAINER_CLASSNAME} ${conditionalClasses()}`} role="group">
                 {reversedActions.map((button, index) => (
                     <Button
                         aria-label={''}

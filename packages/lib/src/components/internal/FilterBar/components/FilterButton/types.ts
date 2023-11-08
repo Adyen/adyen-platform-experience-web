@@ -1,12 +1,10 @@
-import { ComponentChildren } from 'preact';
+import { ComponentChild, ComponentChildren } from 'preact';
 import { JSXInternal } from 'preact/src/jsx';
 
-export interface FilterButtonProps {
-    disabled?: boolean;
-    onClick?: (...args: any) => void;
-    tabIndex?: number;
-    type?: string;
-    children: ComponentChildren;
-    ariaAttributes?: JSXInternal.AriaAttributes;
+export interface _FilterButtonProps extends JSXInternal.HTMLAttributes<HTMLButtonElement> {
     classNameModifiers?: string[];
 }
+
+export type FilterButtonProps = Omit<_FilterButtonProps, 'children'> & {
+    children: NonNullable<ComponentChild> | NonNullable<ComponentChild>[];
+};

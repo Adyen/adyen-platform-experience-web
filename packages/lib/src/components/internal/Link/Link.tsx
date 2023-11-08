@@ -1,24 +1,28 @@
 import classNames from 'classnames';
-import { ComponentChildren } from 'preact';
-import { HTMLAttributes } from 'preact/compat';
+import { ComponentChild, ComponentChildren } from 'preact';
 import './Link.scss';
+import { useMemo } from 'preact/hooks';
+import { JSXInternal } from 'preact/src/jsx';
 
 export enum LinkVariant {
     DEFAULT = 'default',
     QUIET = 'quiet',
 }
-interface LinkProps extends HTMLAttributes<HTMLAnchorElement> {
-    children: ComponentChildren;
-    variant?: LinkVariant;
-    linkClasses?: string;
-    onClick?: () => any;
+interface _LinkProps extends JSXInternal.HTMLAttributes<HTMLAnchorElement> {
+    variant: LinkVariant;
 }
 
+export type LinkProps = Omit<_LinkProps, 'children'> & {
+    children: NonNullable<ComponentChild> | NonNullable<ComponentChild>[];
+};
+
+const DEFAULT_LINK_CLASSNAME = 'adyen-fp-link';
+
 //TO-DO: Add external and internal
-export default function Link({ linkClasses, children, variant = LinkVariant.DEFAULT, onClick, ...props }: LinkProps) {
-    const conditionalClasses = () => [...(linkClasses ? [linkClasses] : []), variant === LinkVariant.QUIET ? ['adyen-fp-link--quiet'] : []];
+export default function Link({ children, variant = LinkVariant.DEFAULT, ...props }: LinkProps) {
+    const conditionalClasses = useMemo(() => (variant === LinkVariant.QUIET ? `${DEFAULT_LINK_CLASSNAME}--quiet` : ''), [variant]);
     return (
-        <a {...props} className={classNames('adyen-fp-link', conditionalClasses())} onClick={onClick}>
+        <a {...props} className={`${DEFAULT_LINK_CLASSNAME} ${conditionalClasses}`}>
             {children}
         </a>
     );

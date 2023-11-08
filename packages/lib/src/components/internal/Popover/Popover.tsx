@@ -1,5 +1,14 @@
 import ButtonActions from '@src/components/internal/Button/ButtonActions/ButtonActions';
 import { ButtonActionsLayout, ButtonActionsLayoutBasic, ButtonActionsList } from '@src/components/internal/Button/ButtonActions/types';
+import {
+    DEFAULT_POPOVER_CLASSNAME,
+    POPOVER_CONTAINER_CLASSNAME,
+    POPOVER_CONTENT_CLASSNAME,
+    POPOVER_FOOTER_CLASSNAME,
+    POPOVER_HEADER_CLASSNAME,
+    POPOVER_HEADER_TITLE_CLASSNAME,
+    POPOVER_IMAGE_CLASSNAME,
+} from '@src/components/internal/Popover/constants';
 import PopoverDismissButton from '@src/components/internal/Popover/PopoverDismissButton/PopoverDismissButton';
 import PopoverTitle from '@src/components/internal/Popover/PopoverTitle/PopoverTitle';
 import { PopoverContainerAriaRole, PopoverContainerPosition, PopoverContainerSize } from '@src/components/internal/Popover/types';
@@ -10,7 +19,7 @@ import getModifierClasses from '@src/utils/get-modifier-classes';
 import classNames from 'classnames';
 import { ComponentChildren } from 'preact';
 import { PropsWithChildren } from 'preact/compat';
-import { MutableRef, useCallback, useEffect } from 'preact/hooks';
+import { MutableRef, useCallback, useEffect, useMemo } from 'preact/hooks';
 import './Popover.scss';
 import './PopoverContainer.scss';
 
@@ -90,13 +99,17 @@ function Popover({
     const popoverElement = disableFocusTrap
         ? usePopoverPositioner([0, 15], position, targetElement)
         : useFocusTrap(usePopoverPositioner([0, 15], position, targetElement), onCloseFocusTrap);
-    const conditionalClasses = () => ({
-        'adyen-fp-popover--small': containerSize === PopoverContainerSize.SMALL,
-        'adyen-fp-popover--with-divider': !!divider,
-        'adyen-fp-popover--large': containerSize === PopoverContainerSize.LARGE,
-        'adyen-fp-popover--fit-content': fitContent,
-        'adyen-fp-popover--without-space': withoutSpace,
-    });
+
+    const conditionalClasses = useMemo(
+        () => ({
+            'adyen-fp-popover--small': containerSize === PopoverContainerSize.SMALL,
+            'adyen-fp-popover--with-divider': !!divider,
+            'adyen-fp-popover--large': containerSize === PopoverContainerSize.LARGE,
+            'adyen-fp-popover--fit-content': fitContent,
+            'adyen-fp-popover--without-space': withoutSpace,
+        }),
+        [containerSize, divider, withoutSpace, fitContent]
+    );
 
     const handleClickOutside = useCallback(
         (e: Event) => {
@@ -137,27 +150,27 @@ function Popover({
                     id="popover"
                     ref={popoverElement}
                     aria-label={ariaLabel}
-                    className={classNames('adyen-fp-popover adyen-fp-popover-container', conditionalClasses())}
+                    className={classNames(`${DEFAULT_POPOVER_CLASSNAME} ${POPOVER_CONTAINER_CLASSNAME}`, conditionalClasses)}
                     role={PopoverContainerAriaRole.POPOVER}
                 >
                     {image && (
-                        <div className="adyen-fp-popover__image">
+                        <div className={POPOVER_IMAGE_CLASSNAME}>
                             {dismissible && <PopoverDismissButton onClick={dismiss} />}
                             {image}
                         </div>
                     )}
                     {title && (
-                        <div className={getModifierClasses('adyen-fp-popover__header', modifiers, 'adyen-fp-popover__header')}>
-                            <div className={'adyen-fp-popover__header-title'}>
+                        <div className={getModifierClasses(POPOVER_HEADER_CLASSNAME, modifiers, [POPOVER_HEADER_CLASSNAME])}>
+                            <div className={POPOVER_HEADER_TITLE_CLASSNAME}>
                                 {headerIcon ? { headerIcon } : null}
                                 <PopoverTitle title={title} isImageTitle={Boolean(image)} />
                             </div>
                             {dismissible && !image && <PopoverDismissButton onClick={dismiss} />}
                         </div>
                     )}
-                    {children && <div className="adyen-fp-popover__content">{children}</div>}
+                    {children && <div className={POPOVER_CONTENT_CLASSNAME}>{children}</div>}
                     {actions && (
-                        <div className="adyen-fp-popover__footer">
+                        <div className={POPOVER_FOOTER_CLASSNAME}>
                             <ButtonActions actions={actions} layout={actionsLayout} />
                         </div>
                     )}

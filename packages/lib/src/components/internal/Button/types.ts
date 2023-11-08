@@ -1,4 +1,4 @@
-import { ComponentChild, ComponentChildren } from 'preact';
+import { ComponentChild } from 'preact';
 import { JSXInternal } from 'preact/src/jsx';
 
 interface _ButtonProps extends JSXInternal.HTMLAttributes<HTMLButtonElement> {

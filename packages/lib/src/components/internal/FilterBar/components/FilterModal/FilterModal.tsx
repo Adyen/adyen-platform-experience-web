@@ -1,4 +1,5 @@
 import Button from '@src/components/internal/Button';
+import { ButtonVariant } from '@src/components/internal/Button/types';
 import { useState } from 'preact/hooks';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import Field from '../../../FormFields/Field';
@@ -22,7 +23,7 @@ export default function FilterModal(props: FilterModalProps) {
                 <InputText name={props.fieldName} value={props.value} />
             </Field>
 
-            <Button classNameModifiers={['tertiary']} disabled={!props.value}>
+            <Button variant={ButtonVariant.TERTIARY} disabled={!props.value}>
                 Clear
             </Button>
             <Button onClick={updateFilters} disabled={!props.value}>
