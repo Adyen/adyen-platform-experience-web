@@ -60,6 +60,12 @@ export default defineConfig(async ({ mode }) => {
             port: playground.port,
             https: false,
             proxy: mode === 'mocked' ? undefined : realApiProxies(lemApi, BTLApi, BCLApi),
+            watch: {
+                ignored: ['!**/node_modules/@adyen/adyen-fp-web/**'],
+            },
+        },
+        optimizeDeps: {
+            exclude: ['@adyen/adyen-fp-web'],
         },
         preview: {
             host: playground.host,

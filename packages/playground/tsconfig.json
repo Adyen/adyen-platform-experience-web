@@ -6,16 +6,15 @@
         "jsxImportSource": "preact",
         "noEmit": true,
         "skipLibCheck": true,
-        "outDir": "dist",
-        "declaration": true,
-        "declarationDir": "dist/types",
+
         "strictPropertyInitialization": false,
         "suppressImplicitAnyIndexErrors": true,
+
+        "resolveJsonModule": true,
 
         "isolatedModules": true,
         "types": ["vite/client"]
     },
     "include": ["*.ts", "**/*.ts", "**/*.tsx", "**/*.d.ts"],
-    "exclude": ["node_modules", "**/*.test.*", "dist"],
-    "references": [{ "path": "../lib" }]
+    "exclude": ["node_modules", "**/*.test.*", "dist"]
 }

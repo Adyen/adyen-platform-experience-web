@@ -14,4 +14,5 @@ enableServerInMockedMode()
         const accountHolderComponent = new AccountHolderComponent({ core: adyenFP, accountHolderId: id ?? DEFAULT_ACCOUNT_HOLDER });
 
         accountHolderComponent.mount('.account-holder-component-container');
-    }).catch(console.error);
+    })
+    .catch(console.error);

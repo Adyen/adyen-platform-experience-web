@@ -38,7 +38,8 @@
         "storybook:build": "npm run storybook:build -w @adyen/adyen-fp-web-playground",
         "storybook:demo": "npm run storybook:demo -w @adyen/adyen-fp-web-playground",
         "demo:serve": "npm run demo:serve -w @adyen/adyen-fp-web-playground",
-        "prepare": "node ./prepare.js && bash ./scripts/process-package-lock.sh"
+        "prepare": "node ./prepare.js && bash ./scripts/process-package-lock.sh",
+        "watchTS": "tsc -b ./tsconfig.json --watch"
     },
     "dependencies": {
         "concurrently": "^7.0.0"

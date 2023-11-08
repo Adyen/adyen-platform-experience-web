@@ -2,7 +2,7 @@ import CoreProvider from '@src/core/Context/CoreProvider';
 import UIElement from '../UIElement';
 import Transactions from './components/Transactions';
 import { TransactionsComponentProps } from './types';
-import { _UIComponentProps } from '@src/components/types';
+import { _UIComponentProps } from '../../types';
 
 export class TransactionsElement extends UIElement<TransactionsComponentProps> {
     public static type = 'transactions';
