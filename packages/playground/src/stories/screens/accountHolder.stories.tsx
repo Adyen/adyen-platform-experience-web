@@ -16,7 +16,7 @@ const meta: Meta<IAccountHolderScreen> = {
     title: 'screens/AccountHolder',
     render: (args, context) => (
         <Container
-            type={'accountHolder'}
+            component={'accountHolder'}
             componentConfiguration={{
                 ...args.accountHolderProps,
                 accountHolder: args.accountHolder,
