@@ -18,11 +18,12 @@ export const Container = <T extends new (args: any) => any>({ component, compone
     const Component = new component({ ...componentConfiguration, core: adyenFP });
 
     useEffect(() => {
-        if (mockedApi) void enableServerInMockedMode();
+        if (mockedApi) void enableServerInMockedMode(true);
 
         if (!adyenFP) {
             return;
         }
+
         Component.mount(container.current ?? '');
 
         return () => {

@@ -18,12 +18,12 @@ const meta: Meta<ElementProps<typeof TransactionsComponent>> = {
             Object.assign(args, { transactions: context.loaded.data });
         }
 
-        return <Container type={'transactionList'} componentConfiguration={args} context={context} mockedApi={args.mockedApi} />;
+        return <Container component={TransactionsComponent} componentConfiguration={args} context={context} mockedApi={args.mockedApi} />;
     },
 };
 export const Basic: ElementStory<typeof TransactionsComponent> = {
     args: {
-        balancePlatformId: '',
+        balancePlatformId: 'mocked',
         mockedApi: true,
     },
 };

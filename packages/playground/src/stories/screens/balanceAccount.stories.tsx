@@ -12,7 +12,7 @@ const meta: Meta<ElementProps<typeof BalanceAccountComponent>> = {
         if (context.loaded.data) {
             Object.assign(args, { balanceAccount: context.loaded.data });
         }
-        return <Container type={'balanceAccount'} componentConfiguration={args} context={context} />;
+        return <Container component={BalanceAccountComponent} componentConfiguration={args} context={context} />;
     },
 };
 export const Basic: ElementStory<typeof BalanceAccountComponent> = {
