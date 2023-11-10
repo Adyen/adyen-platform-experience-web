@@ -7,6 +7,7 @@ import { CurrencyCode, CustomTranslations, Restamp, SupportedLocale, Translation
 import { formatCustomTranslations, getTranslation, toTwoLetterCode } from './utils';
 import { noop, struct } from '@src/utils/common';
 import watchable from '@src/utils/watchable';
+import translations from './translations';
 
 export default class Localization {
     #locale: SupportedLocale | string = FALLBACK_LOCALE;
@@ -15,7 +16,7 @@ export default class Localization {
 
     #customTranslations?: CustomTranslations;
     #translations: Record<string, string> = defaultTranslation;
-    #translationsLoader = createTranslationsLoader.call(this);
+    #translationsLoader;
 
     #ready: Promise<void> = Promise.resolve();
     #currentRefresh?: Promise<void>;
@@ -23,11 +24,12 @@ export default class Localization {
     #refreshWatchable = watchable({ timestamp: () => performance.now() });
     #restamp: Restamp = restamper();
 
-    watch = this.#refreshWatchable.watch.bind(undefined);
-    i18n: Omit<Localization, (typeof EXCLUDE_PROPS)[number]> = struct(getLocalizationProxyDescriptors.call(this));
+    private watch = this.#refreshWatchable.watch.bind(undefined);
+    public i18n: Omit<Localization, (typeof EXCLUDE_PROPS)[number]> = struct(getLocalizationProxyDescriptors.call(this));
 
     constructor(locale: SupportedLocale | string = FALLBACK_LOCALE) {
         this.watch(noop);
+        this.#translationsLoader = createTranslationsLoader.call(this, translations);
         this.locale = locale;
     }
 
@@ -66,7 +68,7 @@ export default class Localization {
     }
 
     set locale(locale: SupportedLocale | string | undefined | null) {
-        if (locale != undefined) {
+        if (locale != undefined && this.#translationsLoader) {
             this.#translationsLoader.locale = locale;
             if (this.#locale === this.#translationsLoader.locale) return;
             this.#refreshTranslations(this.#customTranslations);

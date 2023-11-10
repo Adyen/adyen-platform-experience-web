@@ -1,7 +1,7 @@
 import { JSX } from 'preact';
 import { defaultTranslation, FALLBACK_LOCALE, LOCALE_FORMAT_REGEX } from './constants/locale';
 import { CustomTranslations, SupportedLocale, TranslationOptions } from './types';
-import translations from './translations';
+// import translations from './translations';
 
 const hasOwnProperty = Function.prototype.call.bind(Object.prototype.hasOwnProperty);
 
@@ -133,7 +133,7 @@ export const getTranslation = (
  * @param locale - The locale the user wants to use
  * @param customTranslations -
  */
-export const loadTranslations = async (locale: string, customTranslations: CustomTranslations = {}) => {
+export const loadTranslations = async (locale: string, translations: any, customTranslations: CustomTranslations = {}) => {
     // Match locale to one of our available locales (e.g. es-AR => es-ES)
     const localeToLoad = parseLocale(locale, Object.keys(translations) as SupportedLocale[]) || FALLBACK_LOCALE;
     const loadedLocale = await translations[localeToLoad]();

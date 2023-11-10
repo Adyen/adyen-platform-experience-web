@@ -45,6 +45,8 @@ export interface CoreOptions {
      */
     countryCode?: string;
 
+    localeList?: string[];
+
     /**
      * @internal
      * */

@@ -17,10 +17,12 @@ class Core {
     public components: BaseElement<any>[] = [];
     public localization = new Localization();
     public loadingContext?: string;
+    public localeList?: string[];
 
     constructor(options: CoreOptions) {
         this.options = options;
         this.setOptions(options);
+        this.localeList = options.localeList;
     }
 
     initialize(): Promise<this> {
