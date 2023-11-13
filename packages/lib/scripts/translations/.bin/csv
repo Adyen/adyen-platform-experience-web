@@ -1,0 +1,17 @@
+#!/usr/bin/env node
+
+const fs = require('fs/promises');
+const { program } = require('commander');
+const { TRANSLATIONS_CSV_PATH } = require('../constants');
+
+program
+    .name('translations-csv')
+    .description('Generate translations source CSV file')
+    .option('-S, --smartling', 'include Smartling instructions')
+    .option('-h, --header', 'include header line')
+    .parse();
+
+require('../csv').update(program.opts()).catch(async reason => {
+    await fs.rm(TRANSLATIONS_CSV_PATH).catch(() => {});
+    throw reason;
+});

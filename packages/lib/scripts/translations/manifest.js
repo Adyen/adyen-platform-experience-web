@@ -2,6 +2,7 @@ const fs = require('fs/promises');
 const path = require('path');
 const { glob } = require('glob');
 const { computeMd5Hash, prettifyJSON, sortJSON } = require('./utils');
+const { getWritableForFileAtPath } = require('./writable');
 const {
     TRANSLATIONS_GLOB_PATTERN,
     TRANSLATIONS_GLOB_ROOT_PATH,
@@ -10,7 +11,9 @@ const {
     TRANSLATIONS_SOURCE_DIRNAME_TRIM_PATTERN,
 } = require('./constants');
 
-const _getJsonFromPath = async filepath => {
+const EMPTINESS_CHECKSUM = computeMd5Hash({});
+
+const _sortJsonAtPath = async filepath => {
     const json = await sortJSON(filepath);
     const prettyJson = await prettifyJSON(json);
     const translationsFile = await fs.open(filepath, 'w');
@@ -56,7 +59,7 @@ const _generateManifestUpdateData = async () => {
 
             if (!checksum || checksum !== computeMd5Hash(json)) {
                 try {
-                    ({ checksum, json, lastModified } = await _getJsonFromPath(filepath));
+                    ({ checksum, json, lastModified } = await _sortJsonAtPath(filepath));
                     // file has changed or was recently added since after the last manifest
                     // the manifest should update
                     data._shouldUpdate ||= true;
@@ -89,44 +92,30 @@ const _generateManifestUpdateData = async () => {
     return Object.freeze(data);
 };
 
-const getManifest = () =>
-    (async () => require(TRANSLATIONS_JSON_PATH))().catch(async () => {
-        await updateManifestIfNecessary();
-        return getManifest();
-    });
+const getManifestData = (() => {
+    const _getManifestData = async () => require(TRANSLATIONS_JSON_PATH);
 
-const updateManifestIfNecessary = async () => {
-    const manifest = await _generateManifestUpdateData();
-    let translationsJsonFile = await fs.open(TRANSLATIONS_JSON_PATH, 'wx').catch(() => {});
+    return async () => {
+        let manifestFileAlreadyExisted = true;
 
-    if (!translationsJsonFile && manifest._shouldUpdate) {
-        // the translations.json file already exists and there is a pending manifest update
-        // attempt to re-open the file with the less restrictive `'w'` flag
-        translationsJsonFile = await fs.open(TRANSLATIONS_JSON_PATH, 'w').catch(() => {});
-    }
-
-    if (!translationsJsonFile) return;
-
-    await new Promise(async (resolve, reject) => {
-        const { _checksum, _dictionary, _manifest } = manifest;
-        const prettyJson = await prettifyJSON({ _checksum, _dictionary, _manifest });
-        const writable = translationsJsonFile.createWriteStream();
-        const writeComplete = writable.end.bind(writable);
-
-        let writeError = null;
-
-        writable.once('close', () => {
-            translationsJsonFile.close().then(
-                value => (writeError ? reject(writeError) : resolve(value)),
-                reason => reject(writeError || reason)
-            );
+        const manifestData = await _getManifestData().catch(async () => {
+            manifestFileAlreadyExisted = false;
+            await updateManifestIfNecessary();
+            return _getManifestData();
         });
 
-        writable.write(prettyJson, err => (writeError = err)) ? process.nextTick(writeComplete) : writable.once('drain', writeComplete);
-    });
+        return Object.freeze({ data: manifestData, generated: !manifestFileAlreadyExisted });
+    };
+})();
+
+const updateManifestIfNecessary = async () => {
+    const { _checksum, _dictionary, _manifest, _shouldUpdate } = await _generateManifestUpdateData();
+    const { end: writeEnd } = (await getWritableForFileAtPath(TRANSLATIONS_JSON_PATH, _shouldUpdate)) ?? {};
+    writeEnd && (await writeEnd(await prettifyJSON({ _checksum, _dictionary, _manifest })));
 };
 
 module.exports = {
-    get: getManifest,
+    EMPTINESS_CHECKSUM,
+    get: getManifestData,
     update: updateManifestIfNecessary,
 };
