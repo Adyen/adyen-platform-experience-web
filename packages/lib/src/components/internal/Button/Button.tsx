@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'preact/hooks';
+import useButton from '@src/components/internal/Button/hooks/useButton';
 import {
     DEFAULT_BUTTON_CLASSNAME,
     BUTTON_ICON_LEFT_CLASSNAME,
@@ -7,9 +7,11 @@ import {
 } from '@src/components/internal/Button/constants';
 import { TypographyElement, TypographyVariant } from '@src/components/internal/Typography/types';
 import Typography from '@src/components/internal/Typography/Typography';
-import getModifierClasses from '@src/utils/get-modifier-classes';
+import { parseClassName } from '@src/utils/class-name-utils';
+import { parseBoolean } from '@src/utils/common';
 import { Ref } from 'preact';
 import { forwardRef } from 'preact/compat';
+import { useMemo } from 'preact/hooks';
 import { ButtonProps, ButtonVariant } from './types';
 import './Button.scss';
 
@@ -30,29 +32,18 @@ function Button(
     }: ButtonProps,
     ref: Ref<HTMLButtonElement>
 ) {
-    const clickAction = useCallback(
-        (e: any) => {
-            e.preventDefault();
+    const classNameValue = useMemo(() => parseClassName('', className) || '', [className]);
+    const disabledValue = useMemo(() => parseBoolean(disabled), [disabled]);
 
-            if (!disabled) {
-                onClick?.(e);
-            }
-        },
-        [disabled, onClick]
-    );
-
-    const buttonClasses = useMemo(
-        () => getModifierClasses(DEFAULT_BUTTON_CLASSNAME, [...classNameModifiers, variant], [DEFAULT_BUTTON_CLASSNAME, className]),
-        [className, classNameModifiers, variant]
-    );
+    const { classes, click } = useButton(classNameValue, [...classNameModifiers, variant], DEFAULT_BUTTON_CLASSNAME, disabledValue, onClick);
 
     return (
         <button
-            className={buttonClasses}
+            className={classes}
             type={type}
             key={key}
             disabled={disabled}
-            onClick={clickAction}
+            onClick={click}
             tabIndex={tabIndex}
             ref={ref}
             role={'button'}

@@ -1,8 +1,13 @@
 import { PopoverContainerPosition } from '@src/components/internal/Popover/types';
-import { useCallback } from 'preact/hooks';
+import { MutableRef, useCallback } from 'preact/hooks';
 import useReflex, { NullableReflexable } from '../useReflex';
 
-const calculateOffset = (popover: Element | null, offset: any, targetElement: any, position: string) => {
+const calculateOffset = (
+    popover: Element | null,
+    offset: number[],
+    targetElement: MutableRef<Element | null>,
+    position: PopoverContainerPosition
+) => {
     if (offset.length < 3) {
         const oldLength = offset.length;
         offset.length = 3;
@@ -12,27 +17,27 @@ const calculateOffset = (popover: Element | null, offset: any, targetElement: an
     let dimensionX = 0;
     let dimensionY = 0;
     let dimensionZ = 0;
-    const targetPosition = targetElement?.current;
+    const currentTarget = targetElement?.current as HTMLElement;
     switch (position) {
         case PopoverContainerPosition.BOTTOM:
-            dimensionX = targetPosition?.offsetLeft + offset[0];
-            dimensionY = targetPosition.offsetTop + targetPosition.offsetHeight + offset[1];
-            dimensionZ = offset[2];
+            dimensionX = currentTarget?.offsetLeft + offset[0]!;
+            dimensionY = currentTarget?.offsetTop + currentTarget?.offsetHeight + offset[1]!;
+            dimensionZ = offset[2]!;
             break;
         case PopoverContainerPosition.TOP:
-            dimensionX = targetElement?.current?.offsetLeft + offset[0];
-            dimensionY = popover?.clientHeight ? targetElement?.current?.offsetTop - offset[1] - popover?.clientHeight : 0;
-            dimensionZ = offset[2];
+            dimensionX = currentTarget?.offsetLeft + offset[0]!;
+            dimensionY = popover?.clientHeight ? currentTarget?.offsetTop - offset[1]! - popover?.clientHeight : 0;
+            dimensionZ = offset[2]!;
             break;
         case PopoverContainerPosition.RIGHT:
-            dimensionX = targetElement?.current?.offsetLeft + targetElement?.current?.offsetWidth + offset[0];
-            dimensionY = targetElement?.current?.offsetTop + offset[1];
-            dimensionZ = offset[2];
+            dimensionX = currentTarget?.offsetLeft + currentTarget?.offsetWidth + offset[0]!;
+            dimensionY = currentTarget?.offsetTop + offset[1]!;
+            dimensionZ = offset[2]!;
             break;
         case PopoverContainerPosition.LEFT:
-            dimensionX = popover?.clientWidth ? targetElement?.current?.offsetLeft - popover?.clientWidth - offset[0] : 0;
-            dimensionY = targetElement?.current?.offsetTop + offset[1];
-            dimensionZ = offset[2];
+            dimensionX = popover?.clientWidth ? currentTarget?.offsetLeft - popover?.clientWidth - offset[0]! : 0;
+            dimensionY = currentTarget?.offsetTop + offset[1]!;
+            dimensionZ = offset[2]!;
             break;
     }
 
@@ -43,7 +48,12 @@ const calculateOffset = (popover: Element | null, offset: any, targetElement: an
         'translate3d('
     );
 };
-const usePopoverPositioner = (offset: any, position: any, targetElement: any, ref?: NullableReflexable<Element>) => {
+const usePopoverPositioner = (
+    offset: number[],
+    position: PopoverContainerPosition,
+    targetElement: MutableRef<Element | null>,
+    ref?: NullableReflexable<Element>
+) => {
     return useReflex<Element>(
         useCallback(
             current => {

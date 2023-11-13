@@ -1,6 +1,8 @@
+import useButton from '@src/components/internal/Button/hooks/useButton';
 import { TypographyElement, TypographyVariant } from '@src/components/internal/Typography/types';
 import Typography from '@src/components/internal/Typography/Typography';
-import getModifierClasses from '@src/utils/get-modifier-classes';
+import { parseClassName } from '@src/utils/class-name-utils';
+import { parseBoolean } from '@src/utils/common';
 import { Ref } from 'preact';
 import { forwardRef } from 'preact/compat';
 import { useMemo } from 'preact/hooks';
@@ -9,17 +11,14 @@ import './FilterButton.scss';
 
 const DEFAULT_FILTER_BUTTON_CLASSNAME = 'adyen-fp-filter-button';
 
-function FilterButton(
-    { className, classNameModifiers = [], children, type, disabled, tabIndex, onClick, ...props }: FilterButtonProps,
-    ref: Ref<HTMLButtonElement>
-) {
-    const classes = useMemo(
-        () => getModifierClasses(DEFAULT_FILTER_BUTTON_CLASSNAME, classNameModifiers, [DEFAULT_FILTER_BUTTON_CLASSNAME, className]),
-        [classNameModifiers, className]
-    );
+function FilterButton({ className, classNameModifiers = [], children, disabled, onClick, ...props }: FilterButtonProps, ref: Ref<HTMLButtonElement>) {
+    const classNameValue = useMemo(() => parseClassName('', className) || '', [className]);
+    const disabledValue = useMemo(() => parseBoolean(disabled), [disabled]);
+
+    const { classes, click } = useButton(classNameValue, classNameModifiers, DEFAULT_FILTER_BUTTON_CLASSNAME, disabledValue, onClick);
 
     return (
-        <button className={classes} type={type} disabled={disabled} onClick={onClick} tabIndex={tabIndex} ref={ref} role={'button'} {...props}>
+        <button className={classes} ref={ref} role={'button'} onClick={click} {...props}>
             <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY} stronger={true}>
                 {children}
             </Typography>

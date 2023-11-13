@@ -15,7 +15,8 @@ import { PopoverContainerAriaRole, PopoverContainerPosition, PopoverContainerSiz
 import { InteractionKeyCode } from '@src/components/types';
 import useFocusTrap from '@src/hooks/element/useFocusTrap';
 import usePopoverPositioner from '@src/hooks/element/usePopoverPositioner';
-import getModifierClasses from '@src/utils/get-modifier-classes';
+import { getModifierClasses } from '@src/utils/class-name-utils';
+import { isFocusable } from '@src/utils/tabbable';
 import classNames from 'classnames';
 import { ComponentChildren } from 'preact';
 import { PropsWithChildren } from 'preact/compat';
@@ -36,7 +37,7 @@ interface PopoverProps {
     position?: PopoverContainerPosition;
     containerSize?: PopoverContainerSize;
     title?: string;
-    targetElement: MutableRef<any>;
+    targetElement: MutableRef<Element | null>;
     withoutSpace?: boolean;
     image?: Node;
     headerIcon?: Node;
@@ -44,26 +45,8 @@ interface PopoverProps {
     children: ComponentChildren;
 }
 
-const isFocusable = (item: any) => {
-    if (item.tabIndex < 0) {
-        return false;
-    }
-    switch (item.tagName) {
-        case 'A':
-            return !!item.href;
-        case 'INPUT':
-            return item.type !== 'hidden' && !item.disabled;
-        case 'SELECT':
-        case 'TEXTAREA':
-        case 'BUTTON':
-            return !item.disabled;
-        default:
-            return false;
-    }
-};
-
 const findFirstFocusableElement = () => {
-    const focusable = Array.from(document.getElementsByClassName('adyen-fp-popover__content')?.[0]?.children ?? []);
+    const focusable = Array.from(document.getElementsByClassName(`${DEFAULT_POPOVER_CLASSNAME}__content`)?.[0]?.children ?? []);
     return focusable.find(item => {
         return isFocusable(item);
     });
@@ -92,7 +75,7 @@ function Popover({
     const onCloseFocusTrap = useCallback((interactionKeyPressed: boolean) => {
         dismiss();
         if (interactionKeyPressed) {
-            targetElement.current.focus();
+            (targetElement?.current as HTMLElement)?.focus();
         }
     }, []);
 
@@ -102,11 +85,11 @@ function Popover({
 
     const conditionalClasses = useMemo(
         () => ({
-            'adyen-fp-popover--small': containerSize === PopoverContainerSize.SMALL,
-            'adyen-fp-popover--with-divider': !!divider,
-            'adyen-fp-popover--large': containerSize === PopoverContainerSize.LARGE,
-            'adyen-fp-popover--fit-content': fitContent,
-            'adyen-fp-popover--without-space': withoutSpace,
+            [`${DEFAULT_POPOVER_CLASSNAME}--small`]: containerSize === PopoverContainerSize.SMALL,
+            [`${DEFAULT_POPOVER_CLASSNAME}--with-divider`]: !!divider,
+            [`${DEFAULT_POPOVER_CLASSNAME}--large`]: containerSize === PopoverContainerSize.LARGE,
+            [`${DEFAULT_POPOVER_CLASSNAME}--fit-content`]: fitContent,
+            [`${DEFAULT_POPOVER_CLASSNAME}--without-space`]: withoutSpace,
         }),
         [containerSize, divider, withoutSpace, fitContent]
     );
@@ -125,7 +108,7 @@ function Popover({
         (e: KeyboardEvent) => {
             if (e.code === InteractionKeyCode.ESCAPE) {
                 dismiss();
-                targetElement.current.focus();
+                (targetElement?.current as HTMLElement).focus();
             }
         },
         [dismiss, targetElement]

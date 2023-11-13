@@ -177,7 +177,7 @@ export default function BaseFilter<T extends BaseFilterProps = BaseFilterProps>(
                     divider={true}
                     actions={actions}
                     targetElement={targetElement}
-                    disableFocusTrap={true}
+                    disableFocusTrap={false}
                 >
                     {renderModalBody({ ...props, editAction, onValueUpdated })}
                 </Popover>
