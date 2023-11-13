@@ -1,11 +1,11 @@
-import { CustomTranslations, SupportedLocale } from './types';
+import { CustomTranslations, SupportedLocale, Translation } from './types';
 import { formatLocale, loadTranslations, parseLocale } from './utils';
 import { FALLBACK_LOCALE } from './constants/locale';
 import { EXCLUDE_PROPS } from './constants/localization';
 import { isFunction, struct } from '@src/utils/common';
 import Localization from './Localization';
 
-export function createTranslationsLoader(this: Localization, translations: any) {
+export function createTranslationsLoader(this: Localization, translations: { [k in SupportedLocale]?: Translation }) {
     type TranslationsLoader = {
         load: (customTranslations?: CustomTranslations) => ReturnType<typeof loadTranslations>;
         locale: SupportedLocale | string;

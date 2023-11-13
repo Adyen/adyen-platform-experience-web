@@ -3,16 +3,15 @@ import { defaultTranslation, FALLBACK_LOCALE } from './constants/locale';
 import { DEFAULT_DATETIME_FORMAT, DEFAULT_LOCALES, EXCLUDE_PROPS } from './constants/localization';
 import restamper from './datetime/restamper';
 import { createTranslationsLoader, getLocalizationProxyDescriptors } from './localization-utils';
-import { CurrencyCode, CustomTranslations, Restamp, SupportedLocale, TranslationKey, TranslationOptions } from './types';
+import { CurrencyCode, CustomTranslations, Restamp, SupportedLocale, Translation, TranslationKey, TranslationOptions } from './types';
 import { formatCustomTranslations, getTranslation, toTwoLetterCode } from './utils';
 import { noop, struct } from '@src/utils/common';
 import watchable from '@src/utils/watchable';
-import translations from './translations';
 
 export default class Localization {
     #locale: SupportedLocale | string = FALLBACK_LOCALE;
     #languageCode: string = toTwoLetterCode(this.#locale);
-    #supportedLocales: (SupportedLocale | string)[] = DEFAULT_LOCALES;
+    #supportedLocales: Readonly<SupportedLocale[]> | string[] = DEFAULT_LOCALES;
 
     #customTranslations?: CustomTranslations;
     #translations: Record<string, string> = defaultTranslation;
@@ -27,9 +26,12 @@ export default class Localization {
     private watch = this.#refreshWatchable.watch.bind(undefined);
     public i18n: Omit<Localization, (typeof EXCLUDE_PROPS)[number]> = struct(getLocalizationProxyDescriptors.call(this));
 
-    constructor(locale: SupportedLocale | string = FALLBACK_LOCALE) {
+    constructor(
+        locale: SupportedLocale | string = FALLBACK_LOCALE,
+        translationsFiles?: { [k in SupportedLocale]?: Translation } | { [k: string]: Translation }
+    ) {
         this.watch(noop);
-        this.#translationsLoader = createTranslationsLoader.call(this, translations);
+        this.#translationsLoader = createTranslationsLoader.call(this, translationsFiles || { 'en-US': defaultTranslation });
         this.locale = locale;
     }
 
@@ -39,7 +41,7 @@ export default class Localization {
 
     set customTranslations(customTranslations: CustomTranslations | undefined | null) {
         let translations: CustomTranslations | undefined = undefined;
-        let supportedLocales: (SupportedLocale | string)[] = DEFAULT_LOCALES;
+        let supportedLocales: (SupportedLocale | string)[] = [...DEFAULT_LOCALES];
 
         if (customTranslations != undefined) {
             translations = formatCustomTranslations(customTranslations, DEFAULT_LOCALES);
@@ -79,7 +81,7 @@ export default class Localization {
         return this.#ready;
     }
 
-    get supportedLocales(): (SupportedLocale | string)[] {
+    get supportedLocales(): Readonly<SupportedLocale[]> | string[] {
         return this.#supportedLocales;
     }
 

@@ -15,14 +15,13 @@ class Core {
     public modules: any;
     public options: CoreOptions;
     public components: BaseElement<any>[] = [];
-    public localization = new Localization();
+    public localization;
     public loadingContext?: string;
-    public localeList?: string[];
 
     constructor(options: CoreOptions) {
         this.options = options;
+        this.localization = new Localization(options.locale, options.availableTranslations);
         this.setOptions(options);
-        this.localeList = options.localeList;
     }
 
     initialize(): Promise<this> {

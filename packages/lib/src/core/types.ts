@@ -1,4 +1,4 @@
-import { CustomTranslations, SupportedLocale } from '@src/core/Localization/types';
+import { CustomTranslations, SupportedLocale, Translation } from '@src/core/Localization/types';
 import { AmountExtended } from '../types/shared';
 import { AnalyticsOptions } from './Analytics/types';
 
@@ -45,7 +45,7 @@ export interface CoreOptions {
      */
     countryCode?: string;
 
-    localeList?: string[];
+    availableTranslations?: { [k in SupportedLocale]: Translation };
 
     /**
      * @internal

@@ -58,7 +58,7 @@ export function formatLocale(locale: string): SupportedLocale | null {
  * @param locale -
  * @param supportedLocales -
  */
-export function parseLocale(locale: string, supportedLocales: SupportedLocale[] | string[]): SupportedLocale | null {
+export function parseLocale(locale: string, supportedLocales: Readonly<SupportedLocale[]> | string[]): SupportedLocale | null {
     const trimmedLocale = locale.trim();
 
     if (!trimmedLocale || trimmedLocale.length < 1 || trimmedLocale.length > 5) return FALLBACK_LOCALE;
@@ -67,7 +67,7 @@ export function parseLocale(locale: string, supportedLocales: SupportedLocale[] 
 
     if (formattedLocale && supportedLocales.indexOf(formattedLocale) > -1) return formattedLocale;
 
-    return matchLocale(formattedLocale ?? trimmedLocale, supportedLocales);
+    return matchLocale(formattedLocale ?? trimmedLocale, [...supportedLocales]);
 }
 
 /**
@@ -77,7 +77,7 @@ export function parseLocale(locale: string, supportedLocales: SupportedLocale[] 
  */
 export function formatCustomTranslations(
     customTranslations: CustomTranslations = {},
-    supportedLocales: SupportedLocale[] | string[]
+    supportedLocales: Readonly<SupportedLocale[]> | string[]
 ): Record<string, any> {
     return (Object.keys(customTranslations) as Extract<keyof CustomTranslations, string>[]).reduce((translations, locale) => {
         const formattedLocale = formatLocale(locale) || parseLocale(locale, supportedLocales);
@@ -136,7 +136,7 @@ export const getTranslation = (
 export const loadTranslations = async (locale: string, translations: any, customTranslations: CustomTranslations = {}) => {
     // Match locale to one of our available locales (e.g. es-AR => es-ES)
     const localeToLoad = parseLocale(locale, Object.keys(translations) as SupportedLocale[]) || FALLBACK_LOCALE;
-    const loadedLocale = await translations[localeToLoad]();
+    const loadedLocale = await translations[localeToLoad];
 
     return {
         ...defaultTranslation, // Default en-US translations (in case any other translation file is missing any key)
