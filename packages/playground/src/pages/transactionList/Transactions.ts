@@ -1,13 +1,13 @@
-import { AdyenFP, TransactionsComponent } from '@adyen/adyen-fp-web';
+import { AdyenFP, es_ES, TransactionsComponent } from '@adyen/adyen-fp-web';
 import '../../utils/createPages.js';
 import '../../assets/style/style.scss';
 
 import { enableServerInMockedMode } from '../../endpoints/mock-server/utils';
-import {  TEST_CONFIG } from '../../utils/utils';
+import { TEST_CONFIG } from '../../utils/utils';
 
 enableServerInMockedMode()
     .then(async () => {
-        const adyenFP = await AdyenFP({ loadingContext: process.env.VITE_API_URL });
+        const adyenFP = await AdyenFP({ loadingContext: process.env.VITE_API_URL, 'es-ES': es_ES });
 
         const transactionsComponent = new TransactionsComponent({
             core: adyenFP,
