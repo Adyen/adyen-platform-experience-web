@@ -1,0 +1,33 @@
+#!/usr/bin/env node
+
+const fs = require('fs/promises');
+const { program } = require('commander');
+const { TRANSLATIONS_CSV_PATH, TRANSLATIONS_JSON_PATH } = require('../constants');
+
+program
+    .name('translations')
+    .description('Generate translations source data')
+    .showHelpAfterError()
+
+    .option('-h, --header', 'include header line')
+    .option('-m, --manifest [filepath]', 'output manifest data to specified file or the default translations JSON file')
+    .option('-o, --output [filepath]', 'output translations data to specified file or the default translations source CSV file')
+    .option('-s, --silent', 'use without the --output option to prevent writing output to \'stdout\'')
+    .option('--smartling', 'include Smartling instructions (also includes header line)')
+
+    .action(({ manifest, output, ...restOptions }) => {
+        const csvFilePath = output === true ? TRANSLATIONS_CSV_PATH : output;
+        const manifestFilePath = manifest === true ? TRANSLATIONS_JSON_PATH : manifest;
+
+        require('../core/csv').export({
+            ...restOptions,
+            manifest: manifestFilePath,
+            output: csvFilePath
+        }).catch(async reason => {
+            output === true && await fs.rm(csvFilePath).catch(() => {});
+            manifest === true && await fs.rm(manifestFilePath).catch(() => {});
+            throw reason;
+        });
+    });
+
+program.parse();

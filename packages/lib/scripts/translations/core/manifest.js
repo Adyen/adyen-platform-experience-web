@@ -2,14 +2,15 @@ const fs = require('fs/promises');
 const path = require('path');
 const { glob } = require('glob');
 const { computeMd5Hash, prettifyJSON, sortJSON } = require('./utils');
-const { getWritableForFileAtPath } = require('./writable');
+const { getWritableForFileAtPath, getWritable } = require('./writable');
 const {
+    getClosestDirectory,
     TRANSLATIONS_GLOB_PATTERN,
     TRANSLATIONS_GLOB_ROOT_PATH,
     TRANSLATIONS_JSON_PATH,
     TRANSLATIONS_SOURCE_FILE,
     TRANSLATIONS_SOURCE_DIRNAME_TRIM_PATTERN,
-} = require('./constants');
+} = require('../constants');
 
 const EMPTINESS_CHECKSUM = computeMd5Hash({});
 
@@ -26,13 +27,13 @@ const _sortJsonAtPath = async filepath => {
     return { checksum, json, lastModified };
 };
 
-const _generateManifestUpdateData = async () => {
+const getManifestData = async () => {
     const data = {
         _checksum: null,
         _dictionary: {},
         _filesWithProblem: new Set(),
         _manifest: {},
-        _shouldUpdate: false,
+        _updated: false,
     };
 
     const [currentManifest, sourcePaths] = await Promise.all([
@@ -62,7 +63,7 @@ const _generateManifestUpdateData = async () => {
                     ({ checksum, json, lastModified } = await _sortJsonAtPath(filepath));
                     // file has changed or was recently added since after the last manifest
                     // the manifest should update
-                    data._shouldUpdate ||= true;
+                    data._updated ||= true;
                 } catch {
                     // there was some problem processing this file
                     data._filesWithProblem.add(filepath);
@@ -80,7 +81,7 @@ const _generateManifestUpdateData = async () => {
         } catch {
             // file has been removed from the filesystem since after the last manifest
             // the manifest should update
-            data._shouldUpdate ||= true;
+            data._updated ||= true;
         }
     }
 
@@ -92,30 +93,20 @@ const _generateManifestUpdateData = async () => {
     return Object.freeze(data);
 };
 
-const getManifestData = (() => {
-    const _getManifestData = async () => require(TRANSLATIONS_JSON_PATH);
+const exportManifest = async options => {
+    const { output } = await (async () => ({ ...options }))().catch(() => ({}));
+    const { _checksum, _dictionary, _manifest, _updated } = await getManifestData();
 
-    return async () => {
-        let manifestFileAlreadyExisted = true;
+    const { end: writeEnd } =
+        (output
+            ? await getWritableForFileAtPath(output, getClosestDirectory(output) === TRANSLATIONS_JSON_PATH ? _updated : true)
+            : await getWritable(process.stdout)) ?? {};
 
-        const manifestData = await _getManifestData().catch(async () => {
-            manifestFileAlreadyExisted = false;
-            await updateManifestIfNecessary();
-            return _getManifestData();
-        });
-
-        return Object.freeze({ data: manifestData, generated: !manifestFileAlreadyExisted });
-    };
-})();
-
-const updateManifestIfNecessary = async () => {
-    const { _checksum, _dictionary, _manifest, _shouldUpdate } = await _generateManifestUpdateData();
-    const { end: writeEnd } = (await getWritableForFileAtPath(TRANSLATIONS_JSON_PATH, _shouldUpdate)) ?? {};
     writeEnd && (await writeEnd(await prettifyJSON({ _checksum, _dictionary, _manifest })));
 };
 
 module.exports = {
     EMPTINESS_CHECKSUM,
+    export: exportManifest,
     get: getManifestData,
-    update: updateManifestIfNecessary,
 };

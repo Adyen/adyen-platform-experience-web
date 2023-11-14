@@ -49,7 +49,7 @@
         "lint:scss": "stylelint 'src/**/*.scss' --fix",
         "types:watch": "npm run type-check -- --watch",
         "format": "prettier --write 'src/**/*.{ts,js,css, scss, html}'",
-        "translations:manifest": "./scripts/translations/.bin/manifest"
+        "translations": "./scripts/translations/.bin/translations"
     },
     "devDependencies": {
         "@playwright/test": "^1.38.0",

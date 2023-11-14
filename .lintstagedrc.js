@@ -6,6 +6,6 @@ module.exports = {
 
     'packages/lib/src/**/translations/en-US.json': () => [
         // Update translations manifest
-        `npm run translations:manifest`,
+        `npm run translations -- --silent`,
     ],
 };

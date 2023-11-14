@@ -1,7 +1,7 @@
 const crypto = require('crypto');
 const path = require('path');
 const prettier = require('prettier');
-const { PKG_ROOT_PATH } = require('./constants');
+const { PKG_ROOT_PATH } = require('../constants');
 
 const useJSON = async filepath => {
     const _path = path.resolve(PKG_ROOT_PATH, filepath);
