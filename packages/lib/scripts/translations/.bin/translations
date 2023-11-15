@@ -1,33 +1,65 @@
 #!/usr/bin/env node
 
 const fs = require('fs/promises');
+const colors = require('ansi-colors');
+const path = require('path');
 const { program } = require('commander');
-const { TRANSLATIONS_CSV_PATH, TRANSLATIONS_JSON_PATH } = require('../constants');
+const { isTrue } = require('../core/utils');
+const { NOOP, TRANSLATIONS_CSV_PATH, TRANSLATIONS_JSON_PATH } = require('../constants');
+
+colors.alias('success', colors.bold.italic.white);
 
 program
     .name('translations')
-    .description('Generate translations source data')
-    .showHelpAfterError()
+    .description('Translations generation tools')
+    .usage('<generate|help|unpack> [options] [arguments...]')
+    .configureHelp({ sortSubcommands: true })
+    .showHelpAfterError();
 
+program.command('generate')
+    .description('generate translations source file')
     .option('-h, --header', 'include header line')
-    .option('-m, --manifest [filepath]', 'output manifest data to specified file or the default translations JSON file')
-    .option('-o, --output [filepath]', 'output translations data to specified file or the default translations source CSV file')
+    .option('-m, --manifest', 'output manifest data to specified output file or the default translations JSON file')
+    .option('-o, --output [filepath]', 'output translations data to specified output file or the default translations source CSV file')
     .option('-s, --silent', 'use without the --output option to prevent writing output to \'stdout\'')
     .option('--smartling', 'include Smartling instructions (also includes header line)')
+    .action(async ({ manifest, output, ...restOptions }, command) => {
+        let outputFilePath = isTrue(output)
+            ? isTrue(manifest) ? TRANSLATIONS_JSON_PATH : TRANSLATIONS_CSV_PATH
+            : output;
 
-    .action(({ manifest, output, ...restOptions }) => {
-        const csvFilePath = output === true ? TRANSLATIONS_CSV_PATH : output;
-        const manifestFilePath = manifest === true ? TRANSLATIONS_JSON_PATH : manifest;
+        try {
+            const options = {
+                ...restOptions,
+                output: (outputFilePath &&= path.resolve(outputFilePath))
+            };
 
-        require('../core/csv').export({
-            ...restOptions,
-            manifest: manifestFilePath,
-            output: csvFilePath
-        }).catch(async reason => {
-            output === true && await fs.rm(csvFilePath).catch(() => {});
-            manifest === true && await fs.rm(manifestFilePath).catch(() => {});
+            await (isTrue(manifest)
+                ? require('../core/manifest').export(options)
+                : require('../core/csv').export(options));
+
+            if (outputFilePath) {
+                console.log(colors.success(`${colors.greenBright('✓✓')} Translations data written to file: file://${outputFilePath}`), '\r\n');
+            } else if (isTrue(restOptions.silent)) {
+                console.log(colors.success(`${colors.greenBright('✓✓')} Translations data generated`), '\r\n');
+            }
+        } catch (reason) {
+            isTrue(output) && await fs.rm(outputFilePath).catch(NOOP);
             throw reason;
-        });
+        }
     });
 
-program.parse();
+program.command('unpack')
+    .description('unpack translations source file')
+    .argument('[source_file]', 'translations source file to be unpacked\r\n(when omitted, translations source will be read from \'stdin\')')
+    .option('-m, --manifest [filepath]', 'reference manifest file for unpacking the translations\r\n(when omitted, default translations JSON file will be used if available)')
+    .action((sourceFilePath, { manifest }) => {
+        const manifestFilePath = path.resolve((isTrue(manifest) ? TRANSLATIONS_JSON_PATH : manifest) ?? TRANSLATIONS_JSON_PATH);
+
+        require('../core/csv').unpack({
+            manifest: manifestFilePath,
+            source: sourceFilePath
+        }).catch(reason => { throw reason });
+    });
+
+program.parseAsync().catch(NOOP);

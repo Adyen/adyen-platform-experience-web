@@ -2,6 +2,10 @@ const { globSync } = require('glob');
 const path = require('path');
 const CWD = path.resolve(__dirname);
 
+const EMPTY_OBJ = Object.freeze({});
+const NOOP_OBJ = () => EMPTY_OBJ;
+const NOOP = () => {};
+
 const getClosestDirectory = (fileBasePath, cwd = process.cwd(), rootScopePath = '/') => {
     while (cwd && cwd !== rootScopePath) {
         const [closestFile] = globSync(fileBasePath, { cwd, absolute: true });
@@ -26,6 +30,9 @@ const TRANSLATIONS_SOURCE_DIRNAME_TRIM_PATTERN = RegExp(
 
 module.exports = {
     getClosestDirectory,
+    EMPTY_OBJ,
+    NOOP,
+    NOOP_OBJ,
     PKG_ROOT_PATH,
     TRANSLATIONS_CSV,
     TRANSLATIONS_CSV_PATH,

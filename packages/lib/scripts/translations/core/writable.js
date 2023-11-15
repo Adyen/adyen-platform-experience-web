@@ -1,12 +1,14 @@
 const fs = require('fs/promises');
+const { isCallable, isTrue } = require('./utils');
+const { NOOP } = require('../constants');
 
 const _getWriteHandleForFileAtPath = async (filePath, retryOpenIfExists) => {
-    let fileHandle = await fs.open(filePath, 'wx').catch(() => {});
-    let lessRestrictiveRetry = (await retryOpenIfExists) === true;
+    let fileHandle = await fs.open(filePath, 'wx').catch(NOOP);
+    let lessRestrictiveRetry = isTrue(await retryOpenIfExists);
 
     try {
-        if (typeof retryOpenIfExists === 'function') {
-            lessRestrictiveRetry = (await retryOpenIfExists()) === true;
+        if (isCallable(retryOpenIfExists)) {
+            lessRestrictiveRetry = isTrue(await retryOpenIfExists());
         }
     } catch (ex) {
         /* ignore exception and retain the current value for `lessRestrictiveRetry` */
@@ -16,7 +18,7 @@ const _getWriteHandleForFileAtPath = async (filePath, retryOpenIfExists) => {
     if (!fileHandle && lessRestrictiveRetry) {
         // the file already exists and there is an opportunity to retry opening it
         // attempt to re-open the file with the less restrictive `'w'` flag
-        fileHandle = await fs.open(filePath, 'w').catch(() => {});
+        fileHandle = await fs.open(filePath, 'w').catch(NOOP);
     }
 
     return fileHandle;
@@ -65,7 +67,7 @@ const getWritable = async (writable, initialize) => {
                 writeAbortController = null;
 
                 try {
-                    if (typeof onFinishCallback === 'function') {
+                    if (isCallable(onFinishCallback)) {
                         await onFinishCallback(writeError ?? null);
                     }
                     writeError == null ? resolve() : reject(writeError);
@@ -79,13 +81,13 @@ const getWritable = async (writable, initialize) => {
                 : writable.once('finish', onFinishListener);
         });
 
-        const onFinishCallback = typeof initialize === 'function' ? await initialize() : null;
+        const onFinishCallback = isCallable(initialize) ? await initialize() : null;
         return promise;
     })();
 
     const writeOperation = executor =>
-        typeof executor !== 'function'
-            ? writeOperation(() => {})
+        !isCallable(executor)
+            ? writeOperation(NOOP)
             : (...args) =>
                   (writePromise = (writePromise || Promise.resolve()).then(
                       () => writeCompletePromise || new Promise(resolve => executor(resolve, ...args))
