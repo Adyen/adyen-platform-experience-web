@@ -138,7 +138,7 @@ export const loadTranslations = async (
     translations?: { [k in SupportedLocale]?: Translation } | { [k: string]: Translation },
     customTranslations: CustomTranslations = {}
 ) => {
-    const translationFiles = translations ?? { 'en-US': en_US };
+    const translationFiles = translations ?? { 'en-US': en_US['en_US'] };
     // Match locale to one of our available locales (e.g. es-AR => es-ES)
     const localeToLoad = parseLocale(locale, Object.keys(translationFiles) as SupportedLocale[]) || FALLBACK_LOCALE;
     const loadedLocale = translationFiles[localeToLoad];

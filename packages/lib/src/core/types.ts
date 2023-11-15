@@ -1,6 +1,7 @@
-import { CustomTranslations, SupportedLocale, Translation } from '@src/core/Localization/types';
+import type { CustomTranslations, SupportedLocale, SupportedLocaleFiles, Translation } from './Localization/types';
 import { AmountExtended } from '../types/shared';
 import { AnalyticsOptions } from './Analytics/types';
+import { LangFile } from './Localization/types';
 
 export type DevEnvironment = 'test' | 'live';
 
@@ -45,7 +46,7 @@ export interface CoreOptions {
      */
     countryCode?: string;
 
-    availableTranslations?: { [k in SupportedLocale]: Translation };
+    availableTranslations?: LangFile[];
 
     loadingContext?: string;
 
