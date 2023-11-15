@@ -7,6 +7,7 @@ import { CurrencyCode, CustomTranslations, Restamp, SupportedLocale, Translation
 import { formatCustomTranslations, getTranslation, toTwoLetterCode } from './utils';
 import { noop, struct } from '@src/utils/common';
 import watchable from '@src/utils/watchable';
+import { en_US } from '@src/core';
 
 export default class Localization {
     #locale: SupportedLocale | string = FALLBACK_LOCALE;
@@ -15,7 +16,7 @@ export default class Localization {
 
     #customTranslations?: CustomTranslations;
     #translations: Record<string, string> = defaultTranslation;
-    #translationsLoader;
+    #translationsLoader = createTranslationsLoader.call(this);
 
     #ready: Promise<void> = Promise.resolve();
     #currentRefresh?: Promise<void>;
@@ -25,13 +26,14 @@ export default class Localization {
 
     private watch = this.#refreshWatchable.watch.bind(undefined);
     public i18n: Omit<Localization, (typeof EXCLUDE_PROPS)[number]> = struct(getLocalizationProxyDescriptors.call(this));
+    public preferredTranslations?: { [k in SupportedLocale]?: Translation } | { [k: string]: Translation };
 
     constructor(
         locale: SupportedLocale | string = FALLBACK_LOCALE,
         translationsFiles?: { [k in SupportedLocale]?: Translation } | { [k: string]: Translation }
     ) {
         this.watch(noop);
-        this.#translationsLoader = createTranslationsLoader.call(this, translationsFiles || { 'en-US': defaultTranslation });
+        this.preferredTranslations = translationsFiles && { ...translationsFiles, [FALLBACK_LOCALE]: en_US };
         this.locale = locale;
     }
 
@@ -70,7 +72,7 @@ export default class Localization {
     }
 
     set locale(locale: SupportedLocale | string | undefined | null) {
-        if (locale != undefined && this.#translationsLoader) {
+        if (locale != undefined) {
             this.#translationsLoader.locale = locale;
             if (this.#locale === this.#translationsLoader.locale) return;
             this.#refreshTranslations(this.#customTranslations);

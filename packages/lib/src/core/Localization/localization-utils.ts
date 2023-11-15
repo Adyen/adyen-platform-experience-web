@@ -5,7 +5,7 @@ import { EXCLUDE_PROPS } from './constants/localization';
 import { isFunction, struct } from '@src/utils/common';
 import Localization from './Localization';
 
-export function createTranslationsLoader(this: Localization, translations: { [k in SupportedLocale]?: Translation }) {
+export function createTranslationsLoader(this: Localization) {
     type TranslationsLoader = {
         load: (customTranslations?: CustomTranslations) => ReturnType<typeof loadTranslations>;
         locale: SupportedLocale | string;
@@ -17,7 +17,7 @@ export function createTranslationsLoader(this: Localization, translations: { [k 
     let _supportedLocales = this.supportedLocales;
 
     return struct({
-        load: { value: (customTranslations?: CustomTranslations) => loadTranslations(_locale, translations, customTranslations) },
+        load: { value: (customTranslations?: CustomTranslations) => loadTranslations(_locale, this.preferredTranslations, customTranslations) },
         locale: {
             get: () => _locale,
             set: (locale: SupportedLocale | string) => {

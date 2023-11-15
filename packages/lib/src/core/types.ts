@@ -47,10 +47,11 @@ export interface CoreOptions {
 
     availableTranslations?: { [k in SupportedLocale]: Translation };
 
+    loadingContext?: string;
+
     /**
      * @internal
      * */
-    loadingContext?: string;
 
     analytics?: AnalyticsOptions;
 

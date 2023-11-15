@@ -7,7 +7,7 @@ import { TEST_CONFIG } from '../../utils/utils';
 
 enableServerInMockedMode()
     .then(async () => {
-        const adyenFP = await AdyenFP({ loadingContext: process.env.VITE_API_URL, 'es-ES': es_ES });
+        const adyenFP = await AdyenFP({ loadingContext: process.env.VITE_API_URL, locale: 'es-ES' });
 
         const transactionsComponent = new TransactionsComponent({
             core: adyenFP,

@@ -1,7 +1,7 @@
 import { JSX } from 'preact';
 import { defaultTranslation, FALLBACK_LOCALE, LOCALE_FORMAT_REGEX } from './constants/locale';
-import { CustomTranslations, SupportedLocale, TranslationOptions } from './types';
-// import translations from './translations';
+import { CustomTranslations, SupportedLocale, Translation, TranslationOptions } from './types';
+import { en_US } from './translations';
 
 const hasOwnProperty = Function.prototype.call.bind(Object.prototype.hasOwnProperty);
 
@@ -133,14 +133,19 @@ export const getTranslation = (
  * @param locale - The locale the user wants to use
  * @param customTranslations -
  */
-export const loadTranslations = async (locale: string, translations: any, customTranslations: CustomTranslations = {}) => {
+export const loadTranslations = async (
+    locale: string,
+    translations?: { [k in SupportedLocale]?: Translation } | { [k: string]: Translation },
+    customTranslations: CustomTranslations = {}
+) => {
+    const translationFiles = translations ?? { 'en-US': en_US };
     // Match locale to one of our available locales (e.g. es-AR => es-ES)
-    const localeToLoad = parseLocale(locale, Object.keys(translations) as SupportedLocale[]) || FALLBACK_LOCALE;
-    const loadedLocale = await translations[localeToLoad];
+    const localeToLoad = parseLocale(locale, Object.keys(translationFiles) as SupportedLocale[]) || FALLBACK_LOCALE;
+    const loadedLocale = translationFiles[localeToLoad];
 
     return {
         ...defaultTranslation, // Default en-US translations (in case any other translation file is missing any key)
-        ...loadedLocale.default, // Merge with our locale file of the locale they are loading
+        ...loadedLocale, // Merge with our locale file of the locale they are loading
         ...(!!customTranslations[locale] && customTranslations[locale]), // Merge with their custom locales if available
     };
 };
