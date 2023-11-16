@@ -1,11 +1,13 @@
 const fs = require('fs');
+const path = require('path');
 const readline = require('readline');
 const $manifest = require('./manifest');
-const { isTrue, parseOptions } = require('./utils');
+const { isTrue, parseOptions, prettifyJSON } = require('./utils');
 const { getWritable, getWritableForFileAtPath } = require('./writable');
-const { EMPTY_OBJ } = require('../constants');
+const { EMPTY_OBJ, TRANSLATIONS_DIRNAME, TRANSLATIONS_GLOB_ROOT_PATH } = require('../constants');
 
-const QUOTED_FIELD_REGEX = /[",]|\r\n/;
+const QUOTED_FIELD_REGEX = /[",]|\r?\n/;
+const MATCH_FIELD_REGEX = /((?<=^|,)[^",\r\n]*?(?=,|$|\r?\n)|(?<=(?:^|,)")[\s\S]*?(?="(?:,|$|\r?\n)))/g;
 
 const _normalizeCSVField = field => {
     const shouldBeQuoted = QUOTED_FIELD_REGEX.test(field);
@@ -18,6 +20,60 @@ const _getManifestData = async manifestFilePath => {
     await $manifest.export({ output: manifestFilePath });
     return require(manifestFilePath);
 };
+
+const _parseSourceCSV = source =>
+    new Promise((resolve, reject) => {
+        let baseIndex = -1;
+        let currentHash = null;
+        let currentTranslations = null;
+        let lineNumber = 0;
+        let locales = null;
+        let translationsByHash = {};
+
+        const lineReader = readline.createInterface({
+            input: source ? fs.createReadStream(source) : process.stdin,
+        });
+
+        lineReader.once('close', () => resolve(translationsByHash));
+
+        lineReader.on('line', line => {
+            try {
+                if (lineNumber++ === 0) {
+                    locales = line
+                        .match(MATCH_FIELD_REGEX)
+                        .map(field => field.replace('""', '"'))
+                        .slice(1);
+
+                    baseIndex = locales.findIndex(locale => locale === 'en-US');
+
+                    if (baseIndex >= 0) return;
+                    throw new Error('Missing header record in translations source data');
+                }
+
+                const [translationKey, ...translations] = line.match(MATCH_FIELD_REGEX).map(field => field.replace('""', '"'));
+                const [hash, key] = translationKey.split(':');
+
+                if (currentHash !== hash) {
+                    currentTranslations = locales.reduce((templateObj, locale, index) => {
+                        if (index !== baseIndex) templateObj[locale] = {};
+                        return templateObj;
+                    }, {});
+
+                    translationsByHash[(currentHash = hash)] = currentTranslations;
+                }
+
+                translations.forEach((translation, index) => {
+                    if (index === baseIndex) return;
+                    const locale = locales[index];
+                    translation && (currentTranslations[locale][key] = translation);
+                });
+            } catch (ex) {
+                reject(ex);
+                translationsByHash = {};
+                lineReader.close();
+            }
+        });
+    });
 
 const exportCSV = async options => {
     const { header, output, silent, smartling } = await parseOptions(options);
@@ -47,65 +103,32 @@ const exportCSV = async options => {
 
 const unpackCSV = async options => {
     const { manifest: manifestFilePath, source } = await parseOptions(options);
-    const { _manifest: manifest } = await _getManifestData(manifestFilePath);
+    const { _checksum: checksum, _manifest: manifest } = await _getManifestData(manifestFilePath);
+    const files = {};
 
-    return new Promise(resolve => {
-        let baseIndex = -1;
-        let currentHash = null;
-        let currentTranslations = null;
-        let lineNumber = 0;
-        let locales = [];
-        let translationsTemplate = null;
-        let translationsByHash = {};
+    if (checksum && checksum !== $manifest.EMPTINESS_CHECKSUM) {
+        const translationsByHash = await _parseSourceCSV(source);
 
-        const lineReader = readline.createInterface({
-            input: source ? fs.createReadStream(source) : process.stdin,
-        });
+        for await (const [dir, { checksum }] of Object.entries(manifest)) {
+            const translations = translationsByHash[$manifest.getHashFromChecksum(checksum)];
+            if (translations === undefined) continue;
+            const dirname = path.resolve(TRANSLATIONS_GLOB_ROOT_PATH, dir, TRANSLATIONS_DIRNAME);
 
-        lineReader.on('line', line => {
-            if (lineNumber++ === 0) {
-                // line.replace(/(""[^"])(?=,|$)/g, (_, field) => {
-                //
-                // });
-
-                locales = line.split(',').shift();
-                baseIndex = locales.findIndex(locale => locale !== 'en-US');
-
-                translationsTemplate = Object.freeze(
-                    locales.reduce((templateObj, locale, index) => {
-                        if (index !== baseIndex) templateObj[locale] = {};
-                        return templateObj;
-                    }, {})
-                );
-
-                return;
+            for await (const [locale, json] of Object.entries(translations)) {
+                const filepath = path.resolve(dirname, `${locale}.json`);
+                try {
+                    const { end: writeEnd } = await getWritableForFileAtPath(filepath, true);
+                    writeEnd && (await writeEnd(await prettifyJSON(json)));
+                    files[filepath] = true;
+                } catch (ex) {
+                    files[filepath] = false;
+                    console.error(ex);
+                }
             }
+        }
+    }
 
-            const [translationKey, ...translations] = line.split(',');
-            const [hash, key] = translationKey.split(':');
-
-            if (currentHash !== hash) {
-                currentHash = hash;
-                currentTranslations = translationsByHash[currentHash] = { ...translationsTemplate };
-            }
-
-            translations.forEach((translation, index) => {
-                if (index === baseIndex) return;
-
-                // const locale = locales[index];
-                // const string = translation.replace(/^("?)(.*)\1$/, COMMA_WITH_SPACE);
-                //
-                // if (!!string) {
-                //     currentTranslations[locale][key] = string;
-                // }
-            });
-        });
-
-        lineReader.once('close', () => {
-            // end of input
-            resolve();
-        });
-    });
+    return Object.freeze(files);
 };
 
 module.exports = {

@@ -7,7 +7,8 @@ const { program } = require('commander');
 const { isTrue } = require('../core/utils');
 const { NOOP, TRANSLATIONS_CSV_PATH, TRANSLATIONS_JSON_PATH } = require('../constants');
 
-colors.alias('success', colors.bold.italic.white);
+colors.alias('error', colors.bold.italic.redBright);
+colors.alias('success', colors.bold.italic.bgGreen);
 
 program
     .name('translations')
@@ -23,7 +24,7 @@ program.command('generate')
     .option('-o, --output [filepath]', 'output translations data to specified output file or the default translations source CSV file')
     .option('-s, --silent', 'use without the --output option to prevent writing output to \'stdout\'')
     .option('--smartling', 'include Smartling instructions (also includes header line)')
-    .action(async ({ manifest, output, ...restOptions }, command) => {
+    .action(async ({ manifest, output, ...restOptions }) => {
         let outputFilePath = isTrue(output)
             ? isTrue(manifest) ? TRANSLATIONS_JSON_PATH : TRANSLATIONS_CSV_PATH
             : output;
@@ -39,12 +40,14 @@ program.command('generate')
                 : require('../core/csv').export(options));
 
             if (outputFilePath) {
-                console.log(colors.success(`${colors.greenBright('✓✓')} Translations data written to file: file://${outputFilePath}`), '\r\n');
+                console.log(colors.success('[Translations data written to file]'));
+                console.log(`${colors.greenBright('✓✓')} file://${outputFilePath}`);
             } else if (isTrue(restOptions.silent)) {
-                console.log(colors.success(`${colors.greenBright('✓✓')} Translations data generated`), '\r\n');
+                console.log(colors.success('[Translations data generated]'));
             }
         } catch (reason) {
             isTrue(output) && await fs.rm(outputFilePath).catch(NOOP);
+            console.error(colors.error(reason));
             throw reason;
         }
     });
@@ -53,13 +56,22 @@ program.command('unpack')
     .description('unpack translations source file')
     .argument('[source_file]', 'translations source file to be unpacked\r\n(when omitted, translations source will be read from \'stdin\')')
     .option('-m, --manifest [filepath]', 'reference manifest file for unpacking the translations\r\n(when omitted, default translations JSON file will be used if available)')
-    .action((sourceFilePath, { manifest }) => {
-        const manifestFilePath = path.resolve((isTrue(manifest) ? TRANSLATIONS_JSON_PATH : manifest) ?? TRANSLATIONS_JSON_PATH);
+    .action(async (sourceFilePath, { manifest }) => {
+        try {
+            const files = await require('../core/csv').unpack({
+                manifest: path.resolve((isTrue(manifest) ? TRANSLATIONS_JSON_PATH : manifest) ?? TRANSLATIONS_JSON_PATH),
+                source: sourceFilePath
+            });
 
-        require('../core/csv').unpack({
-            manifest: manifestFilePath,
-            source: sourceFilePath
-        }).catch(reason => { throw reason });
+            console.log(colors.success(`[Translations source file unpacked]`));
+
+            Object.keys(files).forEach(filepath => {
+                console.log(`${files[filepath] ? colors.greenBright('✓✓') : colors.redBright('--')} file://${filepath}`);
+            });
+        } catch (reason) {
+            console.error(colors.error(reason));
+            throw reason;
+        }
     });
 
 program.parseAsync().catch(NOOP);

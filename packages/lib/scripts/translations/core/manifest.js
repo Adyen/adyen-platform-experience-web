@@ -29,6 +29,8 @@ const _sortJsonAtPath = async filepath => {
     return { checksum, json, lastModified };
 };
 
+const getHashFromChecksum = checksum => checksum.slice(0, 8);
+
 const getManifestData = async () => {
     const data = {
         _checksum: null,
@@ -73,10 +75,10 @@ const getManifestData = async () => {
                 }
             }
 
-            const prefix = checksum.slice(0, 8);
+            const hash = getHashFromChecksum(checksum);
 
             for (const key of Object.keys(json)) {
-                data._dictionary[`${prefix}:${key}`] = json[key];
+                data._dictionary[`${hash}:${key}`] = json[key];
             }
 
             data._manifest[dir] = { checksum, lastModified };
@@ -113,4 +115,5 @@ module.exports = {
     EMPTINESS_CHECKSUM,
     export: exportManifest,
     get: getManifestData,
+    getHashFromChecksum,
 };
