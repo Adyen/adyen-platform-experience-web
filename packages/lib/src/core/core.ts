@@ -4,7 +4,7 @@ import BPSession from './FPSession';
 import Localization from './Localization';
 import BaseElement from '../components/external/BaseElement';
 
-class Core {
+class Core<T extends CoreOptions<T> = any> {
     public static readonly version = {
         version: process.env.VITE_VERSION,
         revision: process.env.VITE_COMMIT_HASH,
@@ -13,12 +13,12 @@ class Core {
     };
     public session?: BPSession;
     public modules: any;
-    public options: CoreOptions;
+    public options: CoreOptions<T>;
     public components: BaseElement<any>[] = [];
     public localization;
     public loadingContext?: string;
 
-    constructor(options: CoreOptions) {
+    constructor(options: CoreOptions<T>) {
         this.options = options;
         this.localization = new Localization(options.locale, options.availableTranslations);
         this.setOptions(options);
@@ -49,7 +49,7 @@ class Core {
      * @param options - props to update
      * @returns this - the element instance
      */
-    public update = (options: CoreOptions = {}): Promise<this> => {
+    public update = (options: CoreOptions<T> = {}): Promise<this> => {
         this.setOptions(options);
 
         return this.initialize().then(() => {
@@ -79,7 +79,7 @@ class Core {
      * @param options - the config object passed when AdyenFP is initialised
      * @returns this
      */
-    private setOptions = (options: CoreOptions): this => {
+    private setOptions = (options: CoreOptions<T>): this => {
         this.options = { ...this.options, ...options };
         this.loadingContext = this.options.loadingContext ?? resolveEnvironment(this.options.environment);
 

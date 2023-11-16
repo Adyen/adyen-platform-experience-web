@@ -1,11 +1,18 @@
-import type { CustomTranslations, SupportedLocale, SupportedLocaleFiles, Translation } from './Localization/types';
+import type { CustomTranslations } from './Localization/types';
 import { AmountExtended } from '../types/shared';
 import { AnalyticsOptions } from './Analytics/types';
 import { LangFile } from './Localization/types';
+import { ReplaceUnderscoreOrDash } from '../utils/types';
 
 export type DevEnvironment = 'test' | 'live';
 
-export interface CoreOptions {
+type ExtractKeys<T> = T extends any ? keyof T : never;
+
+type CreateUnionOfAvailableTranslations<T extends LangFile[] | undefined> = T extends NonNullable<T>
+    ? Extract<ReplaceUnderscoreOrDash<ExtractKeys<T[number]>, '_', '-'>, string>
+    : never;
+
+export interface CoreOptions<T extends CoreOptions<T> = any> {
     session?: any;
     /**
      * Use test. When you're ready to accept live payments, change the value to one of our {@link https://docs.adyen.com/checkout/drop-in-web#testing-your-integration | live environments}.
@@ -23,7 +30,9 @@ export interface CoreOptions {
      * For adding a custom locale, see {@link https://docs.adyen.com/checkout/components-web/localization-components#create-localization | Create localization}.
      * @defaultValue 'en-US'
      */
-    locale?: SupportedLocale | string;
+    locale?: T['availableTranslations'] extends NonNullable<T['availableTranslations']>
+        ? CreateUnionOfAvailableTranslations<T['availableTranslations']> | 'en-US'
+        : 'en-US' | undefined;
 
     /**
      * Custom translations and localizations
