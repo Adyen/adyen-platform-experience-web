@@ -5,7 +5,7 @@ const colors = require('ansi-colors');
 const path = require('path');
 const { program } = require('commander');
 const { isTrue } = require('../core/utils');
-const { NOOP, TRANSLATIONS_CSV_PATH, TRANSLATIONS_JSON_PATH } = require('../constants');
+const { EMPTY_OBJ, NOOP, TRANSLATIONS_CSV_PATH, TRANSLATIONS_JSON_PATH } = require('../constants');
 
 colors.alias('error', colors.bold.italic.redBright);
 colors.alias('success', colors.bold.italic.bgGreen);
@@ -58,8 +58,12 @@ program.command('unpack')
     .option('-m, --manifest [filepath]', 'reference manifest file for unpacking the translations\r\n(when omitted, default translations JSON file will be used if available)')
     .action(async (sourceFilePath, { manifest }) => {
         try {
+            const resolvedManifest = (isTrue(manifest) ? EMPTY_OBJ : manifest) ?? EMPTY_OBJ;
+            const manifestFilePath = path.resolve(resolvedManifest === EMPTY_OBJ ? TRANSLATIONS_JSON_PATH : resolvedManifest);
+
             const files = await require('../core/csv').unpack({
-                manifest: path.resolve((isTrue(manifest) ? TRANSLATIONS_JSON_PATH : manifest) ?? TRANSLATIONS_JSON_PATH),
+                deleteManifestFileAfterIfNotExisted: resolvedManifest === EMPTY_OBJ,
+                manifest: manifestFilePath,
                 source: sourceFilePath
             });
 

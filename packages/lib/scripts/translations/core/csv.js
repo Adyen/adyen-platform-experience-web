@@ -37,6 +37,7 @@ const _parseSourceCSV = source =>
         lineReader.once('close', () => resolve(translationsByHash));
 
         lineReader.on('line', line => {
+            if (line.startsWith('#')) return;
             try {
                 if (lineNumber++ === 0) {
                     locales = line
@@ -45,9 +46,8 @@ const _parseSourceCSV = source =>
                         .slice(1);
 
                     baseIndex = locales.findIndex(locale => locale === 'en-US');
-
-                    if (baseIndex >= 0) return;
-                    throw new Error('Missing header record in translations source data');
+                    if (baseIndex < 0) throw new Error('Missing header record in translations source data');
+                    return;
                 }
 
                 const [translationKey, ...translations] = line.match(MATCH_FIELD_REGEX).map(field => field.replace('""', '"'));
@@ -102,9 +102,15 @@ const exportCSV = async options => {
 };
 
 const unpackCSV = async options => {
-    const { manifest: manifestFilePath, source } = await parseOptions(options);
-    const { _checksum: checksum, _manifest: manifest } = await _getManifestData(manifestFilePath);
+    const { deleteManifestFileAfterIfNotExisted, manifest: manifestFilePath, source } = await parseOptions(options);
+    const manifestFileExists = fs.existsSync(manifestFilePath);
     const files = {};
+
+    const { _checksum: checksum, _manifest: manifest } = await _getManifestData(manifestFilePath).finally(() => {
+        if (isTrue(deleteManifestFileAfterIfNotExisted) && !manifestFileExists) {
+            fs.rmSync(manifestFilePath);
+        }
+    });
 
     if (checksum && checksum !== $manifest.EMPTINESS_CHECKSUM) {
         const translationsByHash = await _parseSourceCSV(source);
