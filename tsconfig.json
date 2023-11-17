@@ -10,10 +10,14 @@
         "esModuleInterop": true,
         "strict": true,
         "noUncheckedIndexedAccess": true,
-        "lib": ["dom", "esnext", "es2015"],
+        "lib": ["ESNext", "DOM", "DOM.Iterable"],
         "stripInternal": true,
         "importHelpers": true,
-        "types": ["node"]
+        "declarationMap": true
     },
-    "files": ["packages/lib/src/declarations/scss.d.ts"]
+    "files": [],
+    "references": [{ "path": "packages/lib" }],
+    "paths": {
+        "@adyen/adyen-fp-web": ["packages/lib/src"]
+    }
 }

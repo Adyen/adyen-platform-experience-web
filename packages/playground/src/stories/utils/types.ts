@@ -8,6 +8,6 @@ export type ComponentStory<T extends ComponentType<any> | keyof JSXInternal.Intr
 
 type GlobalStoriesProps = { mockedApi?: boolean };
 
-export type ElementProps<T extends new (...args: any) => any> = ConstructorParameters<T>[0] & GlobalStoriesProps;
+export type ElementProps<T extends new (...args: any) => any> = Omit<ConstructorParameters<T>[0] & GlobalStoriesProps, 'core'>;
 
 export type ElementStory<T extends new (...args: any) => any> = StoryObj<ElementProps<T> & GlobalStoriesProps>;

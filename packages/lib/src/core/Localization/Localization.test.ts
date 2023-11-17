@@ -1,10 +1,11 @@
 import Localization from './Localization';
 import { describe, expect, test } from 'vitest';
+import { es_ES } from '@src/core';
 
 describe('Localization', () => {
     describe('constructor', () => {
         test('sets up locale and customTranslations', () => {
-            const lang = new Localization('es-ES');
+            const lang = new Localization('es-ES', [es_ES]);
 
             lang.customTranslations = {
                 'es-ES': { account: 'es' },
@@ -17,7 +18,7 @@ describe('Localization', () => {
         });
 
         test('sets up locale without country code and customTranslations without countryCode', () => {
-            const lang = new Localization('es');
+            const lang = new Localization('es', [es_ES]);
 
             lang.customTranslations = {
                 es: { paymentId: 'es' },

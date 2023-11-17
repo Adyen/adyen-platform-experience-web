@@ -81,7 +81,7 @@
     "availableBalance": "Available balance",
     "reservedBalance": "Reserved balance",
     "accountConfiguration": "Account configuration",
-    "accountHolderID": "Account holder ID",
+    "accountHolderID": "Account HOLDER ID",
     "timezone": "Timezone",
     "salesDayClosingTime": "Sales day closing time",
     "settlementDelayDays": "Settlement delay days",
@@ -145,5 +145,6 @@
     "structuredList": "Structured list",
     "tabs": "Tabs",
     "value": "Value",
-    "filterBar": "Filter bar"
+    "filterBar": "Filter bar",
+    "default": "Default"
 }

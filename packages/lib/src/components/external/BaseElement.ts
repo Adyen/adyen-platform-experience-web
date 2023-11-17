@@ -4,12 +4,14 @@ import uuid from '../../utils/uuid';
 import { Core } from '../../core';
 import { BaseElementProps, BaseElementState } from '../types';
 import { isString } from '@src/utils/validator-utils';
+import Localization from '@src/core/Localization';
+import BPSession from '@src/core/FPSession/FPSession';
 
-class BaseElement<P extends BaseElementProps> {
+class BaseElement<P> {
     public static type: string;
     public static analyticsType: string;
     public readonly _id = `${(this.constructor as typeof BaseElement)?.type}-${uuid()}`;
-    public props: P;
+    public props: P & BaseElementProps;
     public state: BaseElementState;
     public defaultProps = {};
     public _node: Document | ShadowRoot | DocumentFragment | Element | null;
@@ -17,18 +19,28 @@ class BaseElement<P extends BaseElementProps> {
     public eventEmitter = new EventEmitter();
     protected readonly _parentInstance?: Core;
 
-    protected constructor(props: P) {
+    // provided by AdyenFPCore
+    public loadingContext?: string;
+    public clientKey?: string;
+    public i18n?: Localization['i18n'];
+    public session?: BPSession;
+
+    protected constructor(props: P & BaseElementProps) {
         this.props = this.formatProps({ ...this?.defaultProps, ...props });
         this._parentInstance = this.props._parentInstance;
         this._node = null;
         this.state = {} as BaseElementState;
+        this.loadingContext = this.props.core.options.loadingContext;
+        this.clientKey = this.props.core.options.clientKey;
+        this.i18n = this.props.core.modules.i18n;
+        this.session = this.props.core.session;
     }
 
     /**
      * Executed during creation of any element.
      * Gives a chance to any component to format the props we're receiving.
      */
-    protected formatProps(props: P) {
+    protected formatProps(props: P & BaseElementProps): any {
         return props;
     }
 

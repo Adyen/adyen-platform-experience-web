@@ -1,10 +1,12 @@
 import { CoreOptions } from './core/types';
 import { Core } from './core';
+import './components/shared.scss';
+import './style/index.scss';
 
 export * from './core';
 export * from './components';
 export * from './types';
-export async function AdyenFP(props?: CoreOptions): Promise<Core> {
-    const core = new Core(props ?? {});
+export async function AdyenFP<T extends CoreOptions<T>>(props?: T) {
+    const core = new Core<T>(props ?? {});
     return await core.initialize();
 }

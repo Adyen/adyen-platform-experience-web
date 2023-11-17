@@ -1,5 +1,5 @@
 import { PageNeighbour, PaginatedResponseDataWithLinks } from '../../../internal/Pagination/types';
-import { ITransaction } from '@src/types';
+import { ITransaction } from '../../../../types';
 
 const labels = {
     id: 'paymentId',

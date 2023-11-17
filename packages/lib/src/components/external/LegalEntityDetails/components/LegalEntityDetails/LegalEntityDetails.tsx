@@ -5,12 +5,13 @@ import LegalEntityIndividual from '../LegalEntityIndividual/LegalEntityIndividua
 import LegalEntityOrganization from '../LegalEntityOrganization/LegalEntityOrganization';
 import LegalEntitySoleProprietor from '../LegalEntitySoleProprietor/LegalEntitySoleProprietor';
 import { useFetch } from '@src/hooks/useFetch/useFetch';
-import { ILegalEntityIndividual, ILegalEntityOrganization, ILegalEntitySoleProprietor } from '@src/types';
+import { ILegalEntityIndividual, ILegalEntityOrganization, ILegalEntitySoleProprietor } from '../../../../../types';
 import Spinner from '@src/components/internal/Spinner';
 import Alert from '@src/components/internal/Alert';
 import useCoreContext from '@src/core/Context/useCoreContext';
+import { ExternalUIComponentProps } from '../../../../types';
 
-const LegalEntityDetails = ({ legalEntity, legalEntityId, onGetTransferInstrument }: LegalEntityDetailsProps) => {
+const LegalEntityDetails = ({ legalEntity, legalEntityId, onGetTransferInstrument }: ExternalUIComponentProps<LegalEntityDetailsProps>) => {
     const { i18n } = useCoreContext();
 
     const { data, error, isFetching } = useFetch<ILegalEntityOrganization | ILegalEntityIndividual | ILegalEntitySoleProprietor>({

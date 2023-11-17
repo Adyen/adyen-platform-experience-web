@@ -29,8 +29,8 @@ export class LegalEntityDetailsElement extends UIElement<LegalEntityDetailsProps
 
     render() {
         return (
-            <CoreProvider i18n={this.props.i18n} loadingContext={this.props.loadingContext}>
-                <LegalEntityDetails {...this.props} onChange={this.props.onChange ?? this.setState} />
+            <CoreProvider i18n={this.i18n} loadingContext={this.loadingContext}>
+                <LegalEntityDetails {...this.props} />
             </CoreProvider>
         );
     }

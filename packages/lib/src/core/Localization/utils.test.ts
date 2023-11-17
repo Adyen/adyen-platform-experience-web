@@ -1,9 +1,9 @@
 import { formatCustomTranslations, formatLocale, getTranslation, interpolateElement, matchLocale, parseLocale, loadTranslations } from './utils';
-import translations from './translations';
 import { createElement } from 'preact';
 import { describe, expect, test } from 'vitest';
+import { SUPPORTED_LOCALES } from '@src/core/Localization/constants/localization';
 
-const defaultSupportedLocales = Object.keys(translations) as (keyof typeof translations)[];
+const defaultSupportedLocales = SUPPORTED_LOCALES;
 
 describe('parseLocale()', () => {
     test('should return the passed locale if formatted properly', () => {
@@ -51,14 +51,14 @@ describe('parseLocale()', () => {
 
 describe('matchLocale()', () => {
     test('should match a two letter code', () => {
-        expect(matchLocale('en', defaultSupportedLocales)).toBe('en-US');
-        expect(matchLocale('es', defaultSupportedLocales)).toBe('es-ES');
+        expect(matchLocale('en', [...defaultSupportedLocales])).toBe('en-US');
+        expect(matchLocale('es', [...defaultSupportedLocales])).toBe('es-ES');
     });
 
     test('should return null if it cannot match the locale', () => {
-        expect(matchLocale('ca', defaultSupportedLocales)).toBe(null);
-        expect(matchLocale('ne', defaultSupportedLocales)).toBe(null);
-        expect(matchLocale('123', defaultSupportedLocales)).toBe(null);
+        expect(matchLocale('ca', [...defaultSupportedLocales])).toBe(null);
+        expect(matchLocale('ne', [...defaultSupportedLocales])).toBe(null);
+        expect(matchLocale('123', [...defaultSupportedLocales])).toBe(null);
     });
 });
 
