@@ -8,7 +8,7 @@ import { FilterBarProps } from './types';
 export default function FilterBar(props: PropsWithChildren<FilterBarProps>) {
     const { i18n } = useCoreContext();
     return (
-        <div aria-label={i18n.get('filterBar')} className="adyen-fp-filter-bar">
+        <div data-testid={i18n.get('filterBar')} aria-label={i18n.get('filterBar')} className="adyen-fp-filter-bar">
             {props.children}
             {props.canResetFilters && !!props.resetFilters && (
                 <Button variant={ButtonVariant.TERTIARY} onClick={props.resetFilters}>
