@@ -24,9 +24,7 @@ function Button(
         iconLeft,
         iconRight,
         type = 'button',
-        tabIndex,
         children,
-        key,
         className,
         ...restAttributes
     }: ButtonProps,
@@ -38,17 +36,7 @@ function Button(
     const { classes, click } = useButton(classNameValue, [...classNameModifiers, variant], DEFAULT_BUTTON_CLASSNAME, disabledValue, onClick);
 
     return (
-        <button
-            className={classes}
-            type={type}
-            key={key}
-            disabled={disabled}
-            onClick={click}
-            tabIndex={tabIndex}
-            ref={ref}
-            role={'button'}
-            {...restAttributes}
-        >
+        <button className={classes} type={type} disabled={disabled} onClick={click} ref={ref} role={'button'} {...restAttributes}>
             {iconLeft && <span className={BUTTON_ICON_LEFT_CLASSNAME}>{iconLeft}</span>}
             <Typography className={BUTTON_LABEL_CLASSNAME} el={TypographyElement.SPAN} variant={TypographyVariant.BODY} stronger={true}>
                 {children}

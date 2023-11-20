@@ -1,8 +1,7 @@
-import classNames from 'classnames';
-import { ComponentChild, ComponentChildren } from 'preact';
-import './Link.scss';
+import { ComponentChild } from 'preact';
 import { useMemo } from 'preact/hooks';
 import { JSXInternal } from 'preact/src/jsx';
+import './Link.scss';
 
 export enum LinkVariant {
     DEFAULT = 'default',

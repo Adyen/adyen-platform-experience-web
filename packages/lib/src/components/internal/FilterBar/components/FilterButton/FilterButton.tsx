@@ -11,14 +11,17 @@ import './FilterButton.scss';
 
 const DEFAULT_FILTER_BUTTON_CLASSNAME = 'adyen-fp-filter-button';
 
-function FilterButton({ className, classNameModifiers = [], children, disabled, onClick, ...props }: FilterButtonProps, ref: Ref<HTMLButtonElement>) {
+function FilterButton(
+    { className, classNameModifiers = [], children, disabled, onClick, ...restAttributes }: FilterButtonProps,
+    ref: Ref<HTMLButtonElement>
+) {
     const classNameValue = useMemo(() => parseClassName('', className) || '', [className]);
     const disabledValue = useMemo(() => parseBoolean(disabled), [disabled]);
 
     const { classes, click } = useButton(classNameValue, classNameModifiers, DEFAULT_FILTER_BUTTON_CLASSNAME, disabledValue, onClick);
 
     return (
-        <button className={classes} ref={ref} role={'button'} onClick={click} {...props}>
+        <button className={classes} ref={ref} role={'button'} onClick={click} {...restAttributes}>
             <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY} stronger={true}>
                 {children}
             </Typography>
