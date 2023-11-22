@@ -1,17 +1,13 @@
-import { ComponentChild } from 'preact';
+import { VNode } from 'preact';
 import { JSXInternal } from 'preact/src/jsx';
 
-interface _ButtonProps extends JSXInternal.HTMLAttributes<HTMLButtonElement> {
+export interface ButtonProps extends JSXInternal.HTMLAttributes<HTMLButtonElement> {
     classNameModifiers?: string[];
     variant?: ButtonVariant;
-    iconLeft?: HTMLElement;
-    iconRight?: HTMLElement;
+    iconLeft?: VNode<Element>;
+    iconRight?: VNode<Element>;
     inline?: boolean;
 }
-
-export type ButtonProps = Omit<_ButtonProps, 'children'> & {
-    children: NonNullable<ComponentChild> | NonNullable<ComponentChild>[];
-};
 
 export enum ButtonVariant {
     PRIMARY = 'primary',

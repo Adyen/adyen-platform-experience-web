@@ -5,7 +5,7 @@ class FilterBarPage {
     public rootElement: Locator;
 
     constructor(rootElement: Locator) {
-        this.rootElement = rootElement.getByTestId(getTranslatedKey('filterBar'));
+        this.rootElement = rootElement.getByLabel(getTranslatedKey('filterBar'));
     }
 
     getFilter(label: string) {
