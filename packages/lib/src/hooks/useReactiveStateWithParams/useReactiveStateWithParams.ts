@@ -1,6 +1,6 @@
 import { useMemo, useReducer, useRef, useState } from 'preact/hooks';
-import { ReactiveStateRecord, ReactiveStateUpdateRequest, ReactiveStateUpdateRequestWithField, UseReactiveStateRecord } from './types';
 import useMounted from '../useMounted';
+import { ReactiveStateRecord, ReactiveStateUpdateRequest, ReactiveStateUpdateRequestWithField, UseReactiveStateRecord } from './types';
 
 // [TODO]: Modify hook to also accept object with initial values
 const useReactiveStateWithParams = <Value, Param extends string = string>(

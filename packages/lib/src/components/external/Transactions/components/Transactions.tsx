@@ -111,7 +111,6 @@ function Transactions({
     return (
         <div className="adyen-fp-transactions">
             <div className="adyen-fp-title">{i18n.get('transactions')}</div>
-
             {!!onFilterChange && (
                 <FilterBar canResetFilters={canResetFilters} resetFilters={resetFilters}>
                     <TextFilter

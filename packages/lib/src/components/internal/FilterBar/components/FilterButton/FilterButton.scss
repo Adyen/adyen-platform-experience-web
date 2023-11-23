@@ -40,8 +40,7 @@
     }
 
     &--active {
-        background: 1px solid var(--adyen-fp-filter-button-active-border-color);
-        outline: 1px solid #00112c;
+        border: 1px solid var(--adyen-fp-filter-button-active-border-color);
     }
 
     &__footer {

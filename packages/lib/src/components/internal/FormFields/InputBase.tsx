@@ -1,9 +1,9 @@
-import { h } from 'preact';
-import { useCallback } from 'preact/hooks';
-import classNames from 'classnames';
 import { ARIA_ERROR_SUFFIX } from '@src/core/Errors/constants';
-import { InputBaseProps } from './types';
+import classNames from 'classnames';
+import { h } from 'preact';
 import { ForwardedRef, forwardRef, TargetedEvent } from 'preact/compat';
+import { useCallback } from 'preact/hooks';
+import { InputBaseProps } from './types';
 
 function InputBase(props: InputBaseProps, ref: ForwardedRef<HTMLInputElement | null>) {
     const { autoCorrect, classNameModifiers, isInvalid, isValid, readonly = false, spellCheck, type, uniqueId, isCollatingErrors, disabled } = props;
@@ -71,8 +71,6 @@ function InputBase(props: InputBaseProps, ref: ForwardedRef<HTMLInputElement | n
             type={type}
             className={inputClassNames}
             readOnly={readonly}
-            spellCheck={spellCheck}
-            autoCorrect={autoCorrect}
             aria-describedby={isCollatingErrors ? undefined : `${uniqueId}${ARIA_ERROR_SUFFIX}`}
             aria-invalid={isInvalid}
             onInput={handleInput}

@@ -1,9 +1,10 @@
+import Button from '@src/components/internal/Button';
+import { ButtonVariant } from '@src/components/internal/Button/types';
 import { useState } from 'preact/hooks';
-import Modal from '../../../Modal';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import Field from '../../../FormFields/Field';
 import InputText from '../../../FormFields/InputText';
-import Button from '@src/components/internal/Button';
+import Modal from '../../../Modal';
 import './FilterModal.scss';
 import { FilterModalProps } from './types';
 
@@ -22,8 +23,12 @@ export default function FilterModal(props: FilterModalProps) {
                 <InputText name={props.fieldName} value={props.value} />
             </Field>
 
-            <Button classNameModifiers={['ghost']} label="Clear" disabled={!props.value} />
-            <Button label="Apply" onClick={updateFilters} disabled={!props.value} />
+            <Button variant={ButtonVariant.TERTIARY} disabled={!props.value}>
+                Clear
+            </Button>
+            <Button onClick={updateFilters} disabled={!props.value}>
+                Label
+            </Button>
         </Modal>
     );
 }

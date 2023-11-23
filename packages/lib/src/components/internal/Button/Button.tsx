@@ -1,88 +1,49 @@
-import { Component } from 'preact';
-import classNames from 'classnames';
-import Spinner from '../Spinner';
-import useCoreContext from '@src/core/Context/useCoreContext';
+import useButton from '@src/components/internal/Button/hooks/useButton';
+import {
+    DEFAULT_BUTTON_CLASSNAME,
+    BUTTON_ICON_LEFT_CLASSNAME,
+    BUTTON_ICON_RIGHT_CLASSNAME,
+    BUTTON_LABEL_CLASSNAME,
+} from '@src/components/internal/Button/constants';
+import { TypographyElement, TypographyVariant } from '@src/components/internal/Typography/types';
+import Typography from '@src/components/internal/Typography/Typography';
+import { parseClassName } from '@src/utils/class-name-utils';
+import { parseBoolean } from '@src/utils/common';
+import { Ref } from 'preact';
+import { forwardRef } from 'preact/compat';
+import { useMemo } from 'preact/hooks';
+import { ButtonProps, ButtonVariant } from './types';
 import './Button.scss';
-import { ButtonProps, ButtonState, ButtonStatus } from './types';
 
-class Button extends Component<ButtonProps, ButtonState> {
-    public static defaultProps = {
-        status: 'default',
-        variant: 'primary',
-        disabled: false,
-        label: '',
-        inline: false,
-        target: '_self',
-        onClick: () => {},
-        ariaLabel: '',
-    };
+function Button(
+    {
+        variant = ButtonVariant.PRIMARY,
+        disabled = false,
+        onClick,
+        classNameModifiers = [],
+        iconLeft,
+        iconRight,
+        type = 'button',
+        children,
+        className,
+        ...restAttributes
+    }: ButtonProps,
+    ref: Ref<HTMLButtonElement>
+) {
+    const classNameValue = useMemo(() => parseClassName('', className) || '', [className]);
+    const disabledValue = useMemo(() => parseBoolean(disabled), [disabled]);
 
-    public onClick = (e: any) => {
-        e.preventDefault();
+    const { classes, click } = useButton(classNameValue, [...classNameModifiers, variant], DEFAULT_BUTTON_CLASSNAME, disabledValue, onClick);
 
-        if (!this.props.disabled) {
-            this.props.onClick?.(e, { complete: this.complete });
-        }
-    };
-
-    public complete = (delay = 1000) => {
-        this.setState({ completed: true });
-        setTimeout(() => {
-            this.setState({ completed: false });
-        }, delay);
-    };
-
-    render(
-        { classNameModifiers = [], disabled, href, icon, inline, label, status, tabIndex, variant, ariaLabel }: ButtonProps,
-        { completed }: { completed: boolean }
-    ) {
-        const { i18n } = useCoreContext();
-
-        const buttonIcon = icon ? <img className="adyen-fp-button__icon" src={icon} alt="" aria-hidden="true" /> : '';
-
-        const modifiers = [
-            ...classNameModifiers,
-            ...(variant !== 'primary' ? [variant] : []),
-            ...(inline ? ['inline'] : []),
-            ...(completed ? ['completed'] : []),
-            ...(status === 'loading' || status === 'redirect' ? ['loading'] : []),
-        ];
-
-        const buttonClasses = classNames(['adyen-fp-button', ...modifiers.map(m => `adyen-fp-button--${m}`)]);
-
-        const buttonStates: { [k in ButtonStatus]: any } = {
-            loading: <Spinner size="medium" />,
-            redirect: (
-                <span className="adyen-fp-button__content">
-                    <Spinner size="medium" inline />
-                    {i18n.get('payButton.redirecting')}
-                </span>
-            ),
-            default: (
-                <span className="adyen-fp-button__content">
-                    {buttonIcon}
-                    <span className="adyen-fp-button__text">{label}</span>
-                </span>
-            ),
-        };
-
-        const buttonText = (status ? buttonStates[status] : undefined) || buttonStates.default;
-
-        if (href) {
-            return (
-                <a className={buttonClasses} href={href} disabled={disabled} tabIndex={tabIndex} target={this.props.target} rel={this.props.rel}>
-                    {buttonText}
-                </a>
-            );
-        }
-
-        return (
-            <button aria-label={ariaLabel} className={buttonClasses} type="button" disabled={disabled} onClick={this.onClick} tabIndex={tabIndex}>
-                {buttonText}
-                {status !== 'loading' && status !== 'redirect' && this.props.children}
-            </button>
-        );
-    }
+    return (
+        <button className={classes} type={type} disabled={disabled} onClick={click} ref={ref} role={'button'} {...restAttributes}>
+            {iconLeft && <span className={BUTTON_ICON_LEFT_CLASSNAME}>{iconLeft}</span>}
+            <Typography className={BUTTON_LABEL_CLASSNAME} el={TypographyElement.SPAN} variant={TypographyVariant.BODY} stronger={true}>
+                {children}
+            </Typography>
+            {iconRight && <span className={BUTTON_ICON_RIGHT_CLASSNAME}>{iconRight}</span>}
+        </button>
+    );
 }
 
-export default Button;
+export default forwardRef(Button);

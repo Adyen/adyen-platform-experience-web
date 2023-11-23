@@ -1,0 +1,89 @@
+.adyen-fp-popover {
+    $adyen-fp-popover-component-root: &;
+
+    background: var(--adyen-fp-popover-background-color);
+    border: var(--adyen-fp-popover-border);
+    border-radius: var(--adyen-fp-popover-border-radius);
+    box-shadow: var(--adyen-fp-popover-box-shadow);
+    overflow: hidden;
+    width: 320px;
+    z-index: 10;
+
+    &--fit-content {
+        width: fit-content;
+    }
+
+    &--small {
+        width: 200px;
+    }
+
+    &--large {
+        width: 480px;
+    }
+
+    &--with-divider {
+        #{$adyen-fp-popover-component-root}__footer {
+            background-color: var(--adyen-fp-popover-with-divider-footer-background-color);
+            border-top: var(--adyen-fp-popover-with-divider-footer-border-top);
+            padding-top: var(--adyen-fp-popover-with-divider-footer-padding-top);
+        }
+    }
+
+    &--without-space {
+        #{$adyen-fp-popover-component-root}__header {
+            padding: var(--adyen-fp-popover-without-space-padding);
+        }
+
+        #{$adyen-fp-popover-component-root}__content {
+            padding: var(--adyen-fp-popover-without-space-padding);
+        }
+
+        #{$adyen-fp-popover-component-root}__footer {
+            padding: var(--adyen-fp-popover-without-space-padding);
+        }
+    }
+
+    &__content {
+        padding: var(--adyen-fp-popover-content-padding);
+
+        &--with-title {
+            padding: var(--adyen-fp-popover-content-with-title-padding);
+        }
+    }
+
+    &__header {
+        align-items: center;
+        display: flex;
+        justify-content: space-between;
+        padding: var(--adyen-fp-popover-header-padding);
+    }
+
+    &__header-title {
+        align-items: center;
+        column-gap: var(--adyen-fp-popover-header-title-column-gap);
+        display: flex;
+    }
+
+    &__image {
+        display: flex;
+        overflow: hidden;
+
+        /**
+          * When the image is present, increase
+          * the margin-bottom of the header
+          */
+        + #{$adyen-fp-popover-component-root}__header {
+            padding: var(--adyen-fp-popover-image-header-padding);
+        }
+    }
+
+    &__image-dismiss-button {
+        position: absolute;
+        right: var(--adyen-fp-popover-image-dismiss-icon-right);
+        top: var(--adyen-fp-popover-image-dismiss-icon-top);
+    }
+
+    &__footer {
+        padding: var(--adyen-fp-popover-footer-padding);
+    }
+}
