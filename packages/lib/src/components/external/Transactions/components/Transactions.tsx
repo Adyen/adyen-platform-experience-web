@@ -8,12 +8,13 @@ import { TransactionFilterParam, TransactionsComponentProps } from '../types';
 import { DateRangeFilterParam } from '../../../internal/FilterBar/filters/DateFilter/types';
 import { useCursorPaginatedRecords } from '../../../internal/Pagination/hooks';
 import { ITransaction } from '../../../../types/models/api/transactions';
-import { PaginatedResponseDataWithLinks } from '@src/components/internal/Pagination/types';
 import { httpGet } from '@src/core/Services/requests/http';
 import { HttpOptions } from '@src/core/Services/requests/types';
 import { parseSearchParams } from '@src/core/Services/requests/utils';
 import Alert from '@src/components/internal/Alert';
 import { ExternalUIComponentProps } from '../../../types';
+import { API_ENDPOINTS } from '@src/core/Services/requests/endpoints';
+import { SuccessGETResponse } from '@src/types/models/api/utils';
 
 const DEFAULT_PAGINATED_TRANSACTIONS_LIMIT = '20';
 const DEFAULT_CREATED_SINCE = new Date(new Date().setHours(0, 0, 0, 0)).toISOString();
@@ -49,12 +50,12 @@ function Transactions({
             const request: HttpOptions = {
                 loadingContext: loadingContext,
                 clientKey,
-                path: 'transactions',
+                path: API_ENDPOINTS.transactions.getTransactions,
                 errorLevel: 'error',
                 params: searchParams,
                 signal,
             };
-            const data = await httpGet<PaginatedResponseDataWithLinks<ITransaction, 'data'>>(request);
+            const data = await httpGet<SuccessGETResponse<'/transactions'>>(request);
 
             return data;
         },

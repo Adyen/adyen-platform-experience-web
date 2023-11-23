@@ -40,7 +40,7 @@ export type PaginatedResponseDataField<DataField extends string> = Exclude<DataF
 export type PaginatedResponseDataLink = { href: string };
 
 export type BasePaginatedResponseData<T = any, DataField extends string = 'data'> = {
-    [K in PaginatedResponseDataField<DataField>]: T[];
+    [K in PaginatedResponseDataField<DataField>]?: T[];
 };
 
 export type PaginatedResponseDataWithLinks<T = any, DataField extends string = 'data'> = BasePaginatedResponseData<T, DataField> & {

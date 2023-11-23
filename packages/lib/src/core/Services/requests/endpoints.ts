@@ -1,4 +1,4 @@
-import { FunctionOrStringLiteral } from '@src/core/Services/requests/types';
+import { FunctionOrStringLiteral } from './types';
 
 export const API_ENDPOINTS = {
     transactions: {

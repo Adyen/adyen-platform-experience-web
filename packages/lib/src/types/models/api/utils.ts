@@ -1,5 +1,6 @@
-import { paths } from '../openapi/schema';
-import type { API_ENDPOINTS } from '@src/core/Services/requests/endpoints';
+import type { paths } from '../openapi/schema';
+import type { API_ENDPOINTS } from '../../../core/Services/requests/endpoints';
+import { components } from '../openapi/schema';
 type AvailableHttpMethods = 'get' | 'post';
 
 type IsStringOrFunction<T> = T extends (...args: any) => any ? ReturnType<T> : T;
@@ -20,19 +21,4 @@ type NarrowByMethod<M extends AvailableHttpMethods, URL extends AvailablePaths =
 
 export type SuccessGETResponse<T extends NarrowByMethod<'get'>> = paths[T]['get']['responses'][200]['content']['application/json'];
 
-//////////////////////////////////////////////////////////////////////////
-
-/* const _USED_URLS = {
-    transactions: { get: ['/transactions', '/transactions/{id}'] },
-} as const satisfies Readonly<Record<string, Partial<Record<AvailableHttpMethods, Readonly<string[]>>>>>;
-
-type HasMethod<T, Method extends AvailableHttpMethods> = T extends { [k in Method]: Readonly<string[]> } ? T : never;
-
-
-export type AvailableUrls<Method extends AvailableHttpMethods, T extends typeof _USED_URLS = typeof _USED_URLS> = {
-    [K in keyof T]: T[K] extends HasMethod<T[K], Method> ? T[K][Method] : never;
-}[keyof T][number];
-
-export type SuccessGETResponse2<T extends AvailableUrls<'post'>> = paths[T]['get']['responses'][200]['content']['application/json']; */
-
-//////////////////////////////////////////////////////////////////////////
+export type Schema<T extends keyof components['schemas']> = components['schemas'][T];

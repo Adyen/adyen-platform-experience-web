@@ -1,7 +1,7 @@
 import AdyenFPError from '../../Errors/AdyenFPError';
 import { getRequestObject, handleFetchError, isAdyenErrorResponse } from './utils';
 import { HttpOptions } from './types';
-import { normalizeLoadingContext } from '@src/core/utils';
+import { normalizeLoadingContext, normalizeUrl } from '@src/core/utils';
 
 export function http<T>(options: HttpOptions, data?: any): Promise<T> {
     const { errorLevel = 'warn', loadingContext = '', path } = options;
@@ -9,7 +9,7 @@ export function http<T>(options: HttpOptions, data?: any): Promise<T> {
     const request = getRequestObject(options, data);
 
     //TODO - Get rid of the "api" prefix once we have defined a loadingContext from our BFF.
-    const url = new URL(`${normalizeLoadingContext(loadingContext)}api/${path}`);
+    const url = new URL(`${normalizeLoadingContext(loadingContext)}api${normalizeUrl(path)}`);
 
     if (options.params) {
         options.params.forEach((value, param) => {
