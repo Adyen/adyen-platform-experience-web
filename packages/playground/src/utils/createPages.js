@@ -13,6 +13,7 @@ const insertHeader = pages => {
     });
 
     const header = `
+      <div class="playground-header">
         <button type="button" class="playground-nav-button" aria-label="Toggle nav">
             <span aria-hidden></span>
         </button>
@@ -22,6 +23,7 @@ const insertHeader = pages => {
         <nav class="playground-nav">
             <ul class="playground-nav__list">${links.join('')}</ul>
         </nav>
+      </div>
     `;
 
     if (container) container.innerHTML = header;
