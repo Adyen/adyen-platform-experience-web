@@ -114,6 +114,10 @@
         @extend #{$adyen-fp-button}--tertiary;
         color: var(--adyen-fp-color-blue);
         cursor: pointer;
+        -webkit-user-select: text;
+        -moz-user-select: text;
+        -ms-user-select: text;
+        user-select: text;
 
         #{$adyen-fp-button}__label {
             text-decoration: var(--adyen-fp-link-text-decoration);
