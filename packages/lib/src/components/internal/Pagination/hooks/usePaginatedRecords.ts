@@ -112,7 +112,7 @@ const usePaginatedRecords = <T, DataField extends string, FilterValue extends st
                 try {
                     if (!$mounted.current || <undefined>updateFetching(true)) return;
 
-                    const res = await fetchRecords({ ...filters, ...pageRequestParams }, signal);
+                    const res = await fetchRecords({ ...pageRequestParams, ...filters }, signal);
 
                     const { records, paginationData } = parsePaginatedResponseData<T, DataField>(res, dataField);
 
@@ -127,6 +127,10 @@ const usePaginatedRecords = <T, DataField extends string, FilterValue extends st
                         setPageLimit(derivedPageLimit);
 
                         $initialFetchInProgress.current = false;
+                    }
+
+                    if (filters && filters['limit'] && filters['limit'] !== pageLimit) {
+                        setPageLimit(filters['limit']);
                     }
 
                     if ($mounted.current) {

@@ -15,15 +15,14 @@ import { parseSearchParams } from '@src/core/Services/requests/utils';
 import Alert from '@src/components/internal/Alert';
 import { ExternalUIComponentProps } from '../../../types';
 
-const DEFAULT_PAGINATED_TRANSACTIONS_LIMIT = '20';
 const DEFAULT_CREATED_SINCE = new Date(new Date().setHours(0, 0, 0, 0)).toISOString();
 const DEFAULT_CREATED_UNTIL = new Date(new Date().setHours(23, 59, 59, 999)).toISOString();
 
 const transactionsFilterParams = [
-    TransactionFilterParam.ACCOUNT_HOLDER,
-    TransactionFilterParam.BALANCE_ACCOUNT,
-    TransactionFilterParam.CREATED_SINCE,
-    TransactionFilterParam.CREATED_UNTIL,
+    { [TransactionFilterParam.ACCOUNT_HOLDER]: undefined },
+    { [TransactionFilterParam.BALANCE_ACCOUNT]: undefined },
+    { [TransactionFilterParam.CREATED_SINCE]: DEFAULT_CREATED_SINCE },
+    { [TransactionFilterParam.CREATED_UNTIL]: DEFAULT_CREATED_UNTIL },
 ];
 
 function Transactions({
@@ -34,14 +33,17 @@ function Transactions({
     onTransactionSelected,
     showDetails,
     balancePlatformId,
+    initialListLimit,
 }: ExternalUIComponentProps<TransactionsComponentProps>) {
+    const DEFAULT_PAGINATED_TRANSACTIONS_LIMIT = initialListLimit || '20';
+
     const { i18n, loadingContext, clientKey } = useCoreContext();
     const getTransactions = useCallback(
         async (pageRequestParams: Record<TransactionFilterParam | 'cursor', string>, signal?: AbortSignal) => {
             const requiredTransactionFields = {
                 createdSince: pageRequestParams.createdSince ?? DEFAULT_CREATED_SINCE,
                 createdUntil: pageRequestParams.createdUntil ?? DEFAULT_CREATED_UNTIL,
-                limit: DEFAULT_PAGINATED_TRANSACTIONS_LIMIT,
+                limit: pageRequestParams.limit ?? DEFAULT_PAGINATED_TRANSACTIONS_LIMIT,
                 balancePlatform: pageRequestParams.balancePlatform ?? balancePlatformId,
             };
 
@@ -61,7 +63,7 @@ function Transactions({
         [balancePlatformId]
     );
 
-    const { canResetFilters, fetching, filters, records, resetFilters, updateFilters, error, ...paginationProps } = useCursorPaginatedRecords<
+    const { canResetFilters, fetching, filters, records, resetFilters, updateFilters, error, limit, ...paginationProps } = useCursorPaginatedRecords<
         ITransaction,
         'data',
         string,
@@ -72,7 +74,7 @@ function Transactions({
                 fetchRecords: getTransactions,
                 dataField: 'data',
                 filterParams: transactionsFilterParams,
-                initialFiltersSameAsDefault: false,
+                initialFiltersSameAsDefault: true,
                 limit: Number(DEFAULT_PAGINATED_TRANSACTIONS_LIMIT),
             }),
             [getTransactions]
@@ -148,6 +150,8 @@ function Transactions({
                     onTransactionSelected={onTransactionSelected}
                     showPagination={true}
                     showDetails={showDetails}
+                    onLimitSelection={limit => updateFilters({ limit: String(limit) })}
+                    limit={limit}
                     {...paginationProps}
                 />
             )}

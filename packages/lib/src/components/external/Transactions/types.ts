@@ -24,6 +24,7 @@ export interface TransactionsComponentProps {
     onUpdateTransactions?: (pageRequestParams: any, ref?: UIElement<TransactionsComponentProps> | null) => void;
     name?: string;
     balancePlatformId?: string;
+    initialListLimit?: number;
 }
 export interface TransactionListProps extends PaginationProps {
     transactions: ITransaction[];
@@ -33,6 +34,7 @@ export interface TransactionListProps extends PaginationProps {
     showPagination: boolean;
     loading: boolean;
     showDetails?: DetailsOptions;
+    onLimitSelection: (limit: number) => void;
 }
 
 export type DetailsOptions = {

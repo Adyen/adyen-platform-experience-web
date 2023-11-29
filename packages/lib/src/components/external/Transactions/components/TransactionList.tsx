@@ -5,7 +5,6 @@ import Spinner from '@src/components/internal/Spinner';
 import useCoreContext from '@src/core/Context/useCoreContext';
 import useModalDetails from '@src/hooks/useModalDetails/useModalDetails';
 import classnames from 'classnames';
-import { ComponentChildren } from 'preact';
 import { lazy, Suspense } from 'preact/compat';
 import { useMemo } from 'preact/hooks';
 import { ITransaction } from '../../../../types/models/api/transactions';
@@ -24,6 +23,7 @@ function TransactionList({
     onAccountSelected,
     showPagination,
     showDetails,
+    onLimitSelection,
     ...paginationProps
 }: TransactionListProps) {
     const { i18n } = useCoreContext();
@@ -144,7 +144,7 @@ function TransactionList({
             >
                 {showPagination && (
                     <DataGrid.Footer>
-                        <Pagination {...paginationProps} />
+                        <Pagination {...paginationProps} limitSelector onLimitSelection={onLimitSelection} />
                     </DataGrid.Footer>
                 )}
             </DataGrid>

@@ -29,7 +29,6 @@ const useCursorPaginatedRecords = <T, DataField extends string, FilterValue exte
             }
 
             updateFilters(initialPaginationStateUpdateRequest);
-
             return currentPageLimit || limit;
         },
         []

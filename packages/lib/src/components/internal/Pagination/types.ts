@@ -74,6 +74,8 @@ export interface UsePagination extends Required<WithPaginationLimit>, WithPagina
     pages: number | undefined;
     pageSize: number | undefined;
     prev: () => void;
+    limitSelector?: boolean;
+    onLimitSelection?: (limit: number) => void;
 }
 
 export type PaginationProps = Omit<UsePagination, 'goto'> & Partial<Pick<UsePagination, 'goto'>>;

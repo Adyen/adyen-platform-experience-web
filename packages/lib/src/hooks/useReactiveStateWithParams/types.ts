@@ -6,7 +6,7 @@ export interface UseReactiveStateRecord<Value = any, Param extends string = stri
     canResetState: boolean;
     defaultState: Readonly<ReactiveStateRecord<Value, Param>>;
     resetState: () => void;
-    state: Readonly<ReactiveStateRecord<Value, Param>>;
+    state: Readonly<ReactiveStateRecord<Value, Param>> & { limit?: number };
     stateVersion: number;
     updateState: (stateUpdateRequest: ReactiveStateUpdateRequestWithField<Value, Param>) => void;
 }
