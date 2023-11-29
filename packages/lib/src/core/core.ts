@@ -1,4 +1,4 @@
-import type { CoreOptions } from './types';
+import type { CoreOptions, Session } from './types';
 import { resolveEnvironment } from './utils';
 import BPSession from './FPSession';
 import Localization from './Localization';
@@ -17,6 +17,7 @@ class Core<T extends CoreOptions<T> = any> {
     public components: BaseElement<any>[] = [];
     public localization;
     public loadingContext?: string;
+    public onSessionCreate?: any;
 
     constructor(options: CoreOptions<T>) {
         this.options = options;
@@ -24,7 +25,11 @@ class Core<T extends CoreOptions<T> = any> {
         this.setOptions(options);
     }
 
-    initialize(): Promise<this> {
+    async initialize(): Promise<this> {
+        if (this.options.onSessionCreate) {
+            const { token: sessionToken, clientKey } = await this.options.onSessionCreate();
+            this.session = new BPSession({ id: 'test', sessionData: 'sessionData' }, clientKey, this.options.loadingContext || '', sessionToken);
+        }
         // TODO: Enable once we have sessions working
         // if (this.options.session) {
         //     this.session = new Session(this.options.session, this.options.clientKey, this.options.loadingContext);
@@ -95,7 +100,15 @@ class Core<T extends CoreOptions<T> = any> {
         this.localization.locale = this.options?.locale;
         this.localization.customTranslations = this.options?.translations;
         this.localization.timezone = this.options?.timezone;
-
+        this.onSessionCreate = this.options.onSessionCreate;
+        if (this.options?.clientKey && this.options?.sessionToken) {
+            this.session = new BPSession(
+                { id: 'test', sessionData: 'sessionData' },
+                this?.options?.clientKey || '',
+                this.options.loadingContext || '',
+                this?.options?.sessionToken || ''
+            );
+        }
         this.modules = {
             // analytics: new Analytics(this.options),
             i18n: this.localization.i18n,

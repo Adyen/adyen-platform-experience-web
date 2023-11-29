@@ -7,10 +7,11 @@ class FPSession {
     private readonly session: Session;
     private readonly storage: Storage<Session>;
     public readonly clientKey: string;
+    public readonly sessionToken: string;
     public readonly loadingContext: string;
     public configuration?: SessionConfiguration;
 
-    constructor(rawSession: Session, clientKey: string, loadingContext: string) {
+    constructor(rawSession: Session, clientKey: string, loadingContext: string, sessionToken: string) {
         const session = sanitizeSession(rawSession) as Session;
         if (!clientKey) throw new Error('No clientKey available');
 
@@ -18,6 +19,7 @@ class FPSession {
         this.clientKey = clientKey;
         this.loadingContext = loadingContext;
         this.session = session;
+        this.sessionToken = sessionToken;
 
         if (!this.session.sessionData) {
             this.session = this.getStoredSession();

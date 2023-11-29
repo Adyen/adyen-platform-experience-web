@@ -1,8 +1,10 @@
+import adyenFPError from '@src/core/Errors/AdyenFPError';
 import { AdyenErrorResponse, ErrorLevel, HttpOptions } from './types';
 import AdyenFPError from '@src/core/Errors/AdyenFPError';
 
-export const getRequestObject = (options: HttpOptions, data?: any): RequestInit => {
+export const getRequestObject = (options: HttpOptions, data?: any, sessionToken?: string): RequestInit => {
     const { headers = [], method = 'GET' } = options;
+    const params = method === 'GET' ? data : sessionToken ? { ...data, session: sessionToken } : data;
 
     return {
         method,
@@ -13,16 +15,17 @@ export const getRequestObject = (options: HttpOptions, data?: any): RequestInit 
             Accept: 'application/json, text/plain, */*',
             'Content-Type': method === 'POST' ? 'application/json' : 'text/plain',
             'X-Api-Key': options.clientKey,
+            Authorization: `Bearer_${sessionToken}`,
             ...headers,
         },
         redirect: 'follow',
         signal: options.signal,
         referrerPolicy: 'no-referrer-when-downgrade',
-        ...(data && { body: JSON.stringify(data) }),
+        ...(params && { body: JSON.stringify(params) }),
     };
 };
 
-export function handleFetchError(message: string, level: ErrorLevel) {
+export function handleFetchError(message: string, level: ErrorLevel, type: keyof typeof AdyenFPError.errorTypes = 'NETWORK_ERROR') {
     switch (level) {
         case 'silent': {
             break;
@@ -33,7 +36,7 @@ export function handleFetchError(message: string, level: ErrorLevel) {
             break;
         case 'error':
         default:
-            throw new AdyenFPError('NETWORK_ERROR', message);
+            throw new AdyenFPError(type, message);
     }
 }
 

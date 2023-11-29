@@ -24,6 +24,8 @@ export interface CoreOptions<T extends CoreOptions<T> = any> {
      */
     clientKey?: string;
 
+    sessionToken?: string;
+
     /**
      * The shopper's locale. This is used to set the language rendered in the UI.
      * For a list of supported locales, see {@link https://docs.adyen.com/checkout/components-web/localization-components | Localization}.
@@ -66,4 +68,8 @@ export interface CoreOptions<T extends CoreOptions<T> = any> {
     analytics?: AnalyticsOptions;
 
     timezone?: Intl.DateTimeFormatOptions['timeZone'];
+
+    onSessionCreate?: Session;
 }
+
+export type Session = () => Promise<{ token: string; id: string; clientKey: string }>;

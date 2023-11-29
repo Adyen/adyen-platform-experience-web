@@ -1,5 +1,7 @@
 class AdyenFPError extends Error {
-    protected static errorTypes = {
+    public type: string;
+    //TODO: change this to protected
+    public static errorTypes = {
         /** Network error. */
         NETWORK_ERROR: 'NETWORK_ERROR',
 
@@ -10,12 +12,16 @@ class AdyenFPError extends Error {
         IMPLEMENTATION_ERROR: 'IMPLEMENTATION_ERROR',
 
         /** Generic error. */
-        ERROR: 'ERROR'
+        ERROR: 'ERROR',
+
+        /** Token expired */
+        EXPIRED_TOKEN: 'EXPIRED_TOKEN',
     };
 
     constructor(type: keyof typeof AdyenFPError.errorTypes, message?: string) {
         super(message);
 
+        this.type = AdyenFPError.errorTypes[type];
         this.name = AdyenFPError.errorTypes[type];
     }
 }

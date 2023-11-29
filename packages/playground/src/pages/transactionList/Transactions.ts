@@ -6,6 +6,10 @@ import { enableServerInMockedMode } from '../../endpoints/mock-server/utils';
 import { TEST_CONFIG } from '../../utils/utils';
 import { createLanguageButtons } from '../../utils/createLanguageButtons';
 
+const getMySessionToken = () => {
+    return Promise.resolve({ session: 'my-session-token', clientKey: 'client-key' });
+};
+
 enableServerInMockedMode()
     .then(async () => {
         let locale: 'en-US' | 'es-ES' = 'en-US' as const;
@@ -14,6 +18,10 @@ enableServerInMockedMode()
             loadingContext: process.env.VITE_API_URL,
             locale: locale,
             availableTranslations: [all_locales],
+            async onSessionCreate() {
+                return await getMySessionToken();
+                // return { sessionToken: session, clientKey };
+            }
         });
 
         createLanguageButtons({ locales: ['es-ES', 'en-US'], core: adyenFP });

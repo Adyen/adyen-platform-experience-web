@@ -1,4 +1,4 @@
-import CoreProvider from '../../../core/Context/CoreProvider';
+import { _UIComponentProps } from '@src/components/types';
 import UIElement from '../UIElement';
 import LegalEntityDetails from './components/LegalEntityDetails/LegalEntityDetails';
 import { LegalEntityDetailsProps } from './types';
@@ -6,34 +6,15 @@ import { LegalEntityDetailsProps } from './types';
 export class LegalEntityDetailsElement extends UIElement<LegalEntityDetailsProps> {
     public static type = 'legalEntityDetails' as const;
 
-    get isValid() {
-        return !!this.state.isValid;
+    constructor(props: _UIComponentProps<LegalEntityDetailsProps>) {
+        super(props);
+        this.elementRef = (props && props.elementRef) || this;
+        this.componentToRender = this.componentToRender.bind(this);
     }
 
-    get displayName() {
-        return this.props.name ?? this.type;
-    }
-
-    formatProps(props: LegalEntityDetailsProps) {
-        return props;
-    }
-
-    /**
-     * Formats the component data output
-     */
-    formatData() {
-        return {
-            ...this.state,
-        };
-    }
-
-    render() {
-        return (
-            <CoreProvider i18n={this.i18n} loadingContext={this.loadingContext}>
-                <LegalEntityDetails {...this.props} />
-            </CoreProvider>
-        );
-    }
+    componentToRender = () => {
+        return <LegalEntityDetails {...this.props} />;
+    };
 }
 
 export default LegalEntityDetailsElement;

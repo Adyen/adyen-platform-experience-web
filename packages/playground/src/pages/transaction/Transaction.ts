@@ -6,12 +6,24 @@ import { enableServerInMockedMode } from '../../endpoints/mock-server/utils';
 
 const DEFAULT_TRANSACTION_ID = getDefaultID('1VVF0D5V3709DX6D');
 
+const getMySessionToken = () => {
+    return Promise.resolve({ session: 'my-session-token', clientKey: 'client-key' });
+};
+
 enableServerInMockedMode()
     .then(async () => {
         const { id } = getSearchParameters();
-        const adyenFP = await AdyenFP({ locale: 'en-US', loadingContext: process.env.VITE_API_URL });
+        const adyenFP = await AdyenFP({
+            locale: 'en-US',
+            loadingContext: process.env.VITE_API_URL,
+            async onSessionCreate() {
+                const { session, clientKey } = await getMySessionToken();
+                return { sessionToken: session, clientKey };
+            },
+        });
 
         const transactionsDetailsComponent = new TransactionsDetailsComponent({ core: adyenFP, transactionId: id ?? DEFAULT_TRANSACTION_ID });
 
-        transactionsDetailsComponent.mount('.transaction-details-component-container');    })
+        transactionsDetailsComponent.mount('.transaction-details-component-container');
+    })
     .catch(console.error);
