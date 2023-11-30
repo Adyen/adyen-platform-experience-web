@@ -1,3 +1,7 @@
+@mixin adyenFpBgColor {
+    background-color: var(--adyen-fp-button-secondary-hover-background-color);
+}
+
 .adyen-fp-select-limit {
     border: 1px solid var(--adyen-fp-color-border);
     border-radius: var(--adyen-fp-border-radius-medium);
@@ -29,12 +33,19 @@
         border-style: solid;
         border-width: 0px;
         box-shadow: 0px 6px 12px rgba(0, 17, 44, 0.08), 0px 2px 4px rgba(0, 17, 44, 0.04), 0px 0px 0px 1px rgba(0, 17, 44, 0.06);
+        margin: 0;
         overflow-y: auto;
         padding: var(--adyen-fp-spacing-small) 0px;
         position: absolute;
         transform: translate3d(0px, 5px, 0px);
         width: 5.6rem;
         z-index: 2;
+    }
+
+    &__option {
+        &:focus {
+            @include adyenFpBgColor;
+        }
     }
 
     &__element {
@@ -45,10 +56,10 @@
         max-height: 30px;
         padding: var(--adyen-fp-spacing-small) var(--adyen-fp-spacing-medium-small);
         &--selected {
-            background-color: var(--adyen-fp-button-secondary-hover-background-color);
+            @include adyenFpBgColor;
         }
         &:hover {
-            background-color: var(--adyen-fp-button-secondary-hover-background-color);
+            @include adyenFpBgColor;
         }
     }
 }
