@@ -1,4 +1,5 @@
 export * from './constants';
+import { JSXInternal } from 'preact/src/jsx';
 import { $createObject, immutableProxyHandlers } from './constants';
 
 export const call = Function.prototype.bind.bind(Function.prototype.call);
@@ -31,3 +32,5 @@ export const pickFromCollection = <C extends readonly any[]>(collection: C, opti
     if (option == undefined) return collection[0];
     return collection.includes(defaultOption) ? defaultOption : collection[0];
 };
+export const parseBoolean = (value: boolean | JSXInternal.SignalLike<boolean | undefined> | undefined): boolean =>
+    value && typeof value !== 'boolean' && value?.value ? !!value?.value : !!value;

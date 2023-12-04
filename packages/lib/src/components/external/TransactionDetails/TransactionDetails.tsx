@@ -29,8 +29,8 @@ export class TransactionsElement extends UIElement<TransactionDetailsComponentPr
 
     render() {
         return (
-            <CoreProvider i18n={this.props.i18n} loadingContext={this.props.loadingContext}>
-                <TransactionDetails {...this.props} onChange={this.setState} />
+            <CoreProvider i18n={this.i18n} loadingContext={this.loadingContext}>
+                <TransactionDetails {...this.props} />
             </CoreProvider>
         );
     }

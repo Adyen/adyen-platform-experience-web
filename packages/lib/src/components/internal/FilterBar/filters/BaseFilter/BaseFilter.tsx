@@ -1,16 +1,21 @@
-import { BaseFilterProps, EditAction, FilterEditModalRenderProps, FilterProps } from './types';
+import { ButtonVariant } from '@src/components/internal/Button/types';
+import FilterButton from '@src/components/internal/FilterBar/components/FilterButton/FilterButton';
+import Popover from '@src/components/internal/Popover/Popover';
+import { TypographyElement, TypographyVariant } from '@src/components/internal/Typography/types';
+import Typography from '@src/components/internal/Typography/Typography';
+import useUniqueIdentifier from '@src/hooks/element/useUniqueIdentifier';
+import { isEmpty } from '@src/utils/validator-utils';
 import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import useBooleanState from '../../../../../hooks/useBooleanState';
-import Modal from '../../../Modal';
-import Button from '../../../Button';
-import Field from '../../../FormFields/Field';
-import InputText from '../../../FormFields/InputText';
-import { isEmpty } from '../../../../../utils/validator-utils';
 import '../../../FormFields';
+import InputText from '../../../FormFields/InputText';
 import './BaseFilter.scss';
+import { BaseFilterProps, EditAction, FilterEditModalRenderProps, FilterProps } from './types';
 
-const isValueEmptyFallback = (value?: string) => !value || isEmpty(value);
+const isValueEmptyFallback = (value?: string) => {
+    return !value || isEmpty(value);
+};
 
 const renderFallback = (() => {
     const DefaultEditModalBody = <T extends BaseFilterProps>(props: FilterEditModalRenderProps<T>) => {
@@ -31,6 +36,7 @@ const renderFallback = (() => {
                 const value = '';
                 setCurrentValue(value);
                 onValueUpdated(value);
+                onChange(value);
             }
 
             if (editAction === EditAction.APPLY) {
@@ -38,11 +44,7 @@ const renderFallback = (() => {
             }
         }, [currentValue, editAction, onChange, onValueUpdated]);
 
-        return (
-            <Field label={props.label} classNameModifiers={props.classNameModifiers ?? []} name={name}>
-                <InputText name={name} value={currentValue} onInput={handleInput} />
-            </Field>
-        );
+        return <InputText name={name} value={currentValue} onInput={handleInput} />;
     };
 
     return <T extends BaseFilterProps>(props: FilterEditModalRenderProps<T>) => <DefaultEditModalBody<T> {...props} />;
@@ -56,6 +58,7 @@ export default function BaseFilter<T extends BaseFilterProps = BaseFilterProps>(
     const [hasEmptyValue, updateHasEmptyValue] = useBooleanState(false);
     const [hasInitialValue, updateHasInitialValue] = useBooleanState(false);
     const [valueChanged, updateValueChanged] = useBooleanState(false);
+    const targetElement = useUniqueIdentifier();
 
     const isValueEmpty = useMemo(() => props.isValueEmpty ?? isValueEmptyFallback, [props.isValueEmpty]);
     const renderModalBody = useMemo(() => render ?? renderFallback<T>, [render]);
@@ -63,7 +66,6 @@ export default function BaseFilter<T extends BaseFilterProps = BaseFilterProps>(
     const onValueUpdated = useCallback(
         (currentValue?: string) => {
             const hasEmptyValue = isValueEmpty(currentValue);
-            updateHasEmptyValue(hasEmptyValue);
             updateValueChanged(hasInitialValue ? currentValue !== props.value : !hasEmptyValue);
         },
         [props.value, hasInitialValue, isValueEmpty]
@@ -101,37 +103,85 @@ export default function BaseFilter<T extends BaseFilterProps = BaseFilterProps>(
 
     useEffect(() => {
         if (editAction === EditAction.APPLY) closeEditModal();
+        if (editAction === EditAction.CLEAR) closeEditModal();
         if (editAction !== EditAction.NONE) setEditAction(EditAction.NONE);
     }, [closeEditModal, editAction]);
 
+    const actions = useMemo(
+        () => [
+            {
+                title: i18n.get('apply'),
+                variant: ButtonVariant.PRIMARY,
+                event: applyFilter,
+                disabled: !valueChanged,
+            },
+            {
+                title: i18n.get('clear'),
+                variant: ButtonVariant.SECONDARY,
+                event: clearFilter,
+                disabled: hasEmptyValue,
+            },
+        ],
+        [applyFilter, valueChanged, hasEmptyValue, clearFilter]
+    );
+
     return (
-        <div className={`adyen-fp-filter adyen-fp-filter--${props.type}`}>
-            <Button
-                ariaLabel={props.label}
-                variant={'filter'}
-                label={props.value || props.label}
-                classNameModifiers={[...(props.value ? ['active'] : []), ...(props.classNameModifiers ?? [])]}
-                onClick={handleClick}
-            />
-
-            <Modal title={i18n.get('editFilter')} classNameModifiers={['filter']} isOpen={editMode} onClose={closeEditModal} size={'small'}>
-                {editMode && (
-                    <>
-                        {renderModalBody({ ...props, editAction, onValueUpdated })}
-
-                        <div className="adyen-fp-modal__footer">
-                            <Button
-                                label={i18n.get('clear')}
-                                classNameModifiers={['ghost', 'small']}
-                                onClick={clearFilter}
-                                disabled={hasEmptyValue}
-                            />
-
-                            <Button label={i18n.get('apply')} classNameModifiers={['small']} onClick={applyFilter} disabled={!valueChanged} />
-                        </div>
-                    </>
+        <>
+            <div className={`adyen-fp-filter adyen-fp-filter--${props.type}`}>
+                {useMemo(
+                    () => (
+                        <FilterButton
+                            classNameModifiers={[
+                                ...(props.value ? ['with-counter'] : []),
+                                ...(props.classNameModifiers ?? []),
+                                ...(editMode ? ['active'] : []),
+                            ]}
+                            onClick={handleClick}
+                            ref={targetElement}
+                        >
+                            <div class="adyen-fp-filter-button__default-container">
+                                <Typography
+                                    el={TypographyElement.SPAN}
+                                    variant={TypographyVariant.BODY}
+                                    stronger={true}
+                                    className="adyen-fp-filter-button__label"
+                                >
+                                    {props.label}
+                                </Typography>
+                                {!!props.appliedFilterAmount && (
+                                    <div className="adyen-fp-filter-button__counter-wrapper">
+                                        <Typography
+                                            el={TypographyElement.SPAN}
+                                            variant={TypographyVariant.BODY}
+                                            stronger={true}
+                                            className="adyen-fp-filter-button__counter"
+                                        >
+                                            {props.appliedFilterAmount}
+                                        </Typography>
+                                    </div>
+                                )}
+                            </div>
+                        </FilterButton>
+                    ),
+                    [props.label, props.appliedFilterAmount, editMode, props.classNameModifiers, props.value]
                 )}
-            </Modal>
-        </div>
+            </div>
+            {editMode && (
+                <Popover
+                    title={i18n.get('editFilter')}
+                    modifiers={['filter']}
+                    open={editMode}
+                    ariaLabel={`${props.label}-popover`}
+                    dismiss={closeEditModal}
+                    dismissible={true}
+                    divider={true}
+                    actions={actions}
+                    targetElement={targetElement}
+                    disableFocusTrap={false}
+                >
+                    {renderModalBody({ ...props, editAction, onValueUpdated })}
+                </Popover>
+            )}
+        </>
     );
 }

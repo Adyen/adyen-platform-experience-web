@@ -1,12 +1,18 @@
-import { CustomTranslations, SupportedLocale } from '@src/core/Localization/types';
+import type { CustomTranslations } from './Localization/types';
 import { AmountExtended } from '../types/shared';
 import { AnalyticsOptions } from './Analytics/types';
-import componentsMap from '../components';
-import { ValueOf } from '../utils/types';
+import { LangFile } from './Localization/types';
+import { ReplaceUnderscoreOrDash } from '../utils/types';
 
 export type DevEnvironment = 'test' | 'live';
 
-export interface CoreOptions {
+type ExtractKeys<T> = T extends any ? keyof T : never;
+
+type CreateUnionOfAvailableTranslations<T extends LangFile[] | undefined> = T extends NonNullable<T>
+    ? Extract<ReplaceUnderscoreOrDash<ExtractKeys<T[number]>, '_', '-'>, string>
+    : never;
+
+export interface CoreOptions<T extends CoreOptions<T> = any> {
     session?: any;
     /**
      * Use test. When you're ready to accept live payments, change the value to one of our {@link https://docs.adyen.com/checkout/drop-in-web#testing-your-integration | live environments}.
@@ -24,7 +30,9 @@ export interface CoreOptions {
      * For adding a custom locale, see {@link https://docs.adyen.com/checkout/components-web/localization-components#create-localization | Create localization}.
      * @defaultValue 'en-US'
      */
-    locale?: SupportedLocale | string;
+    locale?: T['availableTranslations'] extends NonNullable<T['availableTranslations']>
+        ? CreateUnionOfAvailableTranslations<T['availableTranslations']> | 'en-US'
+        : 'en-US' | undefined;
 
     /**
      * Custom translations and localizations
@@ -47,23 +55,15 @@ export interface CoreOptions {
      */
     countryCode?: string;
 
+    availableTranslations?: LangFile[];
+
+    loadingContext?: string;
+
     /**
      * @internal
      * */
-    loadingContext?: string;
 
     analytics?: AnalyticsOptions;
 
     timezone?: Intl.DateTimeFormatOptions['timeZone'];
-
-    [key: string]: any;
-}
-
-export type ComponentMap = typeof componentsMap;
-export type ComponentOptions<Name extends keyof ComponentMap> = ConstructorParameters<ComponentMap[Name]>[0];
-export function isKeyOfComponent(component: string): component is keyof ComponentMap {
-    return !!componentsMap[component as keyof ComponentMap];
-}
-export function isAvailableOfComponent(component: any): component is ValueOf<ComponentMap> {
-    return !!(Object.keys(componentsMap) as (keyof typeof componentsMap)[])?.find(key => componentsMap[key] === component);
 }

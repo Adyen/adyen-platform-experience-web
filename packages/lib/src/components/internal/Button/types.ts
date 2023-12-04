@@ -1,26 +1,17 @@
-export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'action' | 'filter' | 'link';
-export type ButtonStatus = 'loading' | 'redirect' | 'default';
+import { VNode } from 'preact';
+import { JSXInternal } from 'preact/src/jsx';
 
-export interface ButtonProps extends Record<string, any> {
-    status?: ButtonStatus;
-    /**
-     * Class name modifiers will be used as: `adyen-fp-image--${modifier}`
-     */
+export interface ButtonProps extends JSXInternal.HTMLAttributes<HTMLButtonElement> {
     classNameModifiers?: string[];
     variant?: ButtonVariant;
-    disabled?: boolean;
-    label?: string;
-    secondaryLabel?: string;
-    icon?: string;
+    iconLeft?: VNode<Element>;
+    iconRight?: VNode<Element>;
     inline?: boolean;
-    href?: string;
-    target?: string;
-    rel?: string;
-    tabIndex?: number;
-    onClick?: (e?: Event, callbacks?: { [k: string]: (...args: any) => void }) => void;
-    ariaLabel?: string;
 }
 
-export interface ButtonState {
-    completed?: boolean;
+export enum ButtonVariant {
+    PRIMARY = 'primary',
+    SECONDARY = 'secondary',
+    TERTIARY = 'tertiary',
+    LINK = 'link',
 }

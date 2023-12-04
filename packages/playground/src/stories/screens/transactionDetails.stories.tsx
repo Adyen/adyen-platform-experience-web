@@ -12,7 +12,7 @@ const meta: Meta<ElementProps<typeof TransactionsDetailsComponent>> = {
         if (context.loaded.data) {
             Object.assign(args, { transaction: context.loaded.data });
         }
-        return <Container type={'transactionDetails'} componentConfiguration={args} context={context} />;
+        return <Container component={TransactionsDetailsComponent} componentConfiguration={args} context={context} />;
     },
 };
 export const Basic: ElementStory<typeof TransactionsDetailsComponent> = {

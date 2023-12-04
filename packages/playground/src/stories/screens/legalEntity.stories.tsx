@@ -1,8 +1,7 @@
-import { getLegalEntityById } from '../../utils/services';
 import { Meta, StoryObj } from '@storybook/preact';
 import { LEGAL_ENTITY_INDIVIDUAL, LEGAL_ENTITY_ORGANIZATION, LEGAL_ENTITY_ORGANIZATION_WITH_TI } from '../../../../../mocks';
 import { Container } from '../utils/Container';
-import { LegalEntityComponent, LegalEntityDetailsProps } from '@adyen/adyen-fp-web';
+import { LegalEntityComponent } from '@adyen/adyen-fp-web';
 import { ElementProps } from '../utils/types';
 
 const LEGAL_ENTITY = {
@@ -22,7 +21,7 @@ const meta: Meta<ILegalEntityScreen> = {
     render: (args, context) => {
         return (
             <Container
-                type={'legalEntityDetails'}
+                component={LegalEntityComponent}
                 componentConfiguration={{
                     ...args.legalEntityProps,
                     legalEntityId: (context.args.customId || context.args.legalEntityType) ?? '',

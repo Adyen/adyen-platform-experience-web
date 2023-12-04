@@ -1,16 +1,18 @@
-import classnames from 'classnames';
+import Button from '@src/components/internal/Button';
+import { ButtonVariant } from '@src/components/internal/Button/types';
+import Modal from '@src/components/internal/Modal';
+import Spinner from '@src/components/internal/Spinner';
 import useCoreContext from '@src/core/Context/useCoreContext';
+import useModalDetails from '@src/hooks/useModalDetails/useModalDetails';
+import classnames from 'classnames';
+import { ComponentChildren } from 'preact';
+import { lazy, Suspense } from 'preact/compat';
+import { useMemo } from 'preact/hooks';
+import { ITransaction } from '../../../../types/models/api/transactions';
 import DataGrid from '../../../internal/DataGrid';
 import Pagination from '../../../internal/Pagination';
-import { getLabel } from './utils';
-import Button from '@src/components/internal/Button';
 import { TransactionListProps } from '../types';
-import { ITransaction } from '../../../../types/models/api/transactions';
-import Modal from '@src/components/internal/Modal';
-import { lazy, Suspense } from 'preact/compat';
-import Spinner from '@src/components/internal/Spinner';
-import useModalDetails from '@src/hooks/useModalDetails/useModalDetails';
-import { useMemo } from 'preact/hooks';
+import { getLabel } from './utils';
 
 const ModalContent = lazy(() => import('./ModalContent'));
 
@@ -67,7 +69,7 @@ function TransactionList({
                     id: ({ value }) =>
                         detailsToShow.transaction ? (
                             <Button
-                                variant={'link'}
+                                variant={ButtonVariant.LINK}
                                 onClick={() => {
                                     updateDetails({
                                         title: 'transactionDetails',
@@ -84,7 +86,7 @@ function TransactionList({
                     balanceAccountId: ({ value }) =>
                         detailsToShow.balanceAccount ? (
                             <Button
-                                variant={'link'}
+                                variant={ButtonVariant.LINK}
                                 onClick={() => {
                                     updateDetails({
                                         title: 'balanceAccount',
@@ -101,7 +103,7 @@ function TransactionList({
                     accountHolderId: ({ value }) =>
                         detailsToShow.accountHolder ? (
                             <Button
-                                variant={'link'}
+                                variant={ButtonVariant.LINK}
                                 onClick={() => {
                                     updateDetails({
                                         title: 'accountHolder',

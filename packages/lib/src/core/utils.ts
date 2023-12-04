@@ -9,7 +9,8 @@ import { DevEnvironment, CoreOptions } from './types';
 export function processGlobalOptions(globalOptions?: CoreOptions) {
     return globalOptions
         ? Object.keys(globalOptions).reduce((r, e) => {
-              if (GENERIC_OPTIONS.includes(e)) r[e] = globalOptions[e];
+              const optionKey = e as keyof CoreOptions;
+              if (GENERIC_OPTIONS.includes(e)) r[optionKey] = globalOptions[optionKey];
               return r;
           }, {} as CoreOptions)
         : {};

@@ -29,7 +29,7 @@ export class BalanceAccountElement extends UIElement<BalanceAccountComponentProp
 
     render() {
         return (
-            <CoreProvider i18n={this.props.i18n} loadingContext={this.props.loadingContext}>
+            <CoreProvider i18n={this.i18n} loadingContext={this.loadingContext}>
                 <BalanceAccountDetails
                     ref={(ref: UIElement<BalanceAccountComponentProps>) => {
                         this.componentRef = ref;

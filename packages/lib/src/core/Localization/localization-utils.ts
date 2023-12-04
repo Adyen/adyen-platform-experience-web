@@ -1,4 +1,4 @@
-import { CustomTranslations, SupportedLocale } from './types';
+import { CustomTranslations, SupportedLocale, Translation } from './types';
 import { formatLocale, loadTranslations, parseLocale } from './utils';
 import { FALLBACK_LOCALE } from './constants/locale';
 import { EXCLUDE_PROPS } from './constants/localization';
@@ -17,7 +17,7 @@ export function createTranslationsLoader(this: Localization) {
     let _supportedLocales = this.supportedLocales;
 
     return struct({
-        load: { value: (customTranslations?: CustomTranslations) => loadTranslations(_locale, customTranslations) },
+        load: { value: (customTranslations?: CustomTranslations) => loadTranslations(_locale, this.preferredTranslations, customTranslations) },
         locale: {
             get: () => _locale,
             set: (locale: SupportedLocale | string) => {

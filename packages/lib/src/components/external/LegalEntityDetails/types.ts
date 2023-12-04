@@ -3,7 +3,7 @@ import { ILegalEntityIndividual, ILegalEntityOrganization, ILegalEntitySolePropr
 import { TransferInstrument } from '../../../types/models/transferInstrument';
 
 export type GetTransferInstrumentById = (id: string) => Promise<TransferInstrument>;
-export interface LegalEntityDetailsProps extends UIElementProps {
+export interface LegalEntityDetailsProps {
     legalEntity?: ILegalEntityOrganization | ILegalEntityIndividual | ILegalEntitySoleProprietor;
     legalEntityId: string;
     onGetTransferInstrument?: GetTransferInstrumentById;

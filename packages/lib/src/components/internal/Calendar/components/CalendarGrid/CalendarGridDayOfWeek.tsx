@@ -1,6 +1,7 @@
+import { getClassName } from '@src/utils/class-name-utils';
 import { memo } from 'preact/compat';
 import { CalendarGridDayOfWeekProps, CalendarGridDayOfWeekRenderProps } from './types';
-import { getClassName, property, propsProperty } from './utils';
+import { property, propsProperty } from './utils';
 import { EMPTY_OBJECT } from '@src/utils/common/constants';
 import { CalendarGridRenderToken } from '../../types';
 import memoComparator from '@src/utils/memoComparator';

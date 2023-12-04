@@ -13,6 +13,7 @@ import { httpGet } from '@src/core/Services/requests/http';
 import { HttpOptions } from '@src/core/Services/requests/types';
 import { parseSearchParams } from '@src/core/Services/requests/utils';
 import Alert from '@src/components/internal/Alert';
+import { ExternalUIComponentProps } from '../../../types';
 
 const DEFAULT_PAGINATED_TRANSACTIONS_LIMIT = '20';
 const DEFAULT_CREATED_SINCE = new Date(new Date().setHours(0, 0, 0, 0)).toISOString();
@@ -33,7 +34,7 @@ function Transactions({
     onTransactionSelected,
     showDetails,
     balancePlatformId,
-}: TransactionsComponentProps) {
+}: ExternalUIComponentProps<TransactionsComponentProps>) {
     const { i18n, loadingContext, clientKey } = useCoreContext();
     const getTransactions = useCallback(
         async (pageRequestParams: Record<TransactionFilterParam | 'cursor', string>, signal?: AbortSignal) => {
@@ -110,7 +111,6 @@ function Transactions({
     return (
         <div className="adyen-fp-transactions">
             <div className="adyen-fp-title">{i18n.get('transactions')}</div>
-
             {!!onFilterChange && (
                 <FilterBar canResetFilters={canResetFilters} resetFilters={resetFilters}>
                     <TextFilter

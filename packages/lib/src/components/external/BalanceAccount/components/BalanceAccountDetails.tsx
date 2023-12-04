@@ -5,9 +5,10 @@ import Spinner from '@src/components/internal/Spinner';
 import Alert from '@src/components/internal/Alert';
 import { BalanceAccountInfo } from '@src/components/external/BalanceAccount/components/BalanceAccountInfo';
 import type { BalanceAccountComponentProps } from '../types';
-import type { BalanceAccount } from '@src/types';
+import type { BalanceAccount } from '../../../../types';
+import { ExternalUIComponentProps } from '../../../types';
 
-function BalanceAccountDetails({ balanceAccount, balanceAccountId, title }: BalanceAccountComponentProps) {
+function BalanceAccountDetails({ balanceAccount, balanceAccountId, title }: ExternalUIComponentProps<BalanceAccountComponentProps>) {
     const { i18n } = useCoreContext();
 
     const { data, error, isFetching } = useFetch<BalanceAccount>({

@@ -8,9 +8,9 @@ export function getMockHandlers(mocks: RestHandler<MockedRequest<DefaultBodyType
 }
 
 const MOCK_MODES = ['mocked', 'demo'];
-export async function enableServerInMockedMode() {
+export async function enableServerInMockedMode(enabled?: boolean) {
     const env = (import.meta as any).env;
-    if (MOCK_MODES.includes(env.VITE_MODE || env.MODE)) {
+    if (enabled || MOCK_MODES.includes(env.VITE_MODE || env.MODE)) {
         await mockWorker.start({});
     }
 }

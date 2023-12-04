@@ -1,12 +1,12 @@
-import { useCallback, useEffect, useRef, useState } from 'preact/hooks';
-import { EditAction, FilterEditModalRenderProps, FilterProps } from '../BaseFilter/types';
-import { DateFilterProps, DateRangeFilterParam } from './types';
-import { CalendarHandle } from '../../../Calendar/types';
-import useCoreContext from '../../../../../core/Context/useCoreContext';
 import useMounted from '@src/hooks/useMounted';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
+import useCoreContext from '../../../../../core/Context/useCoreContext';
+import { CalendarHandle } from '../../../Calendar/types';
+import DatePicker from '../../../DatePicker';
 import BaseFilter from '../BaseFilter';
 import { CoreContextWithTranslationsI18n } from '@src/core/Context/types';
-import DatePicker from '../../../DatePicker';
+import { DateFilterProps, DateRangeFilterParam } from './types';
+import { EditAction, FilterEditModalRenderProps, FilterProps } from '../BaseFilter/types';
 import './DateFilter.scss';
 
 const computeDateFilterValue = (i18n: CoreContextWithTranslationsI18n, fromDate?: string, toDate?: string) => {
@@ -51,6 +51,10 @@ const renderDateFilterModalBody = (() => {
 
                 case EditAction.CLEAR:
                     datePickerRef.current?.clear();
+                    props?.onChange({
+                        [DateRangeFilterParam.FROM]: resolveDate(),
+                        [DateRangeFilterParam.TO]: resolveDate(),
+                    });
             }
         }, [props.editAction, props.onChange]);
 
@@ -76,6 +80,10 @@ export default function DateFilter<T extends DateFilterProps = DateFilterProps>(
     const fromDate = resolveDate(props.from);
     const toDate = resolveDate(props.to);
 
+    const getAppliedFilterNumber = useMemo((): number => {
+        return !!computeDateFilterValue(i18n, fromDate, toDate) ? 1 : 0;
+    }, [i18n, fromDate, toDate]);
+
     return (
         <BaseFilter<T>
             {...props}
@@ -86,6 +94,7 @@ export default function DateFilter<T extends DateFilterProps = DateFilterProps>(
             rangeEnd={resolveDate(props.rangeEnd)}
             render={renderDateFilterModalBody}
             value={computeDateFilterValue(i18n, fromDate, toDate)}
+            appliedFilterAmount={getAppliedFilterNumber}
         />
     );
 }

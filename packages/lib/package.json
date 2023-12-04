@@ -9,34 +9,39 @@
         "adyen-for-platforms",
         "components"
     ],
-    "main": "./dist/adyen-fp-components.es.js",
     "version": "1.0.0",
     "license": "MIT",
     "repository": "github:Adyen/adyen-fp-web",
     "bugs": {
         "url": "https://support.adyen.com/"
     },
-    "types": "./dist/types/index.d.ts",
     "files": [
-        "./dist"
+        "dist/**"
     ],
+    "sideEffects": [
+        "**/*.css"
+    ],
+    "main": "./dist/cjs/index.js",
+    "module": "./dist/es/index.js",
+    "types": "./dist/types/index.d.ts",
+    "style": "dist/style.css",
     "exports": {
         ".": {
             "types": "./dist/types/index.d.ts",
             "require": {
                 "types": "./dist/types/index.d.ts",
-                "default": "./dist/adyen-fp-components.cjs.js"
+                "default": "./dist/cjs/index.js"
             },
             "import": {
                 "types": "./dist/types/index.d.ts",
-                "default": "./dist/adyen-fp-components.es.js"
+                "default": "./dist/es/index.js"
             }
         },
         "./adyen-fp-web.css": "./dist/style.css"
     },
     "scripts": {
         "start": "vite dev",
-        "build": "rm -rf dist && vite build --config ./config/vite.config.ts && npm run types:build",
+        "build": "rm -rf ./dist && vite build --config ./config/vite.config.ts && npm run types:build",
         "build:test": "npm run build && npm pack",
         "build:analyse": "vite build --mode analyse --config ./config/vite.config.ts",
         "test": "vitest --config ./config/vite.config.ts",

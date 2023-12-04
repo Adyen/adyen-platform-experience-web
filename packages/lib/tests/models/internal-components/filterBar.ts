@@ -9,7 +9,7 @@ class FilterBarPage {
     }
 
     getFilter(label: string) {
-        return this.rootElement.getByLabel(label, { exact: true });
+        return this.rootElement.getByText(label, { exact: true });
     }
     getFilterButton(label: string) {
         return this.rootElement.getByRole('button', { name: label, exact: true });

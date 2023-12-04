@@ -1,9 +1,7 @@
-import { Amount, AmountExtended } from '../types/shared';
-import Localization from '@src/core/Localization';
 import UIElement from './external/UIElement';
-import { Core } from '../core';
+import { Core, CoreOptions } from '../core';
 import Analytics from '../core/Analytics';
-import BPSession from '../core/FPSession';
+import Localization from '@src/core/Localization';
 
 export const enum InteractionKeyCode {
     ARROW_DOWN = 'ArrowDown',
@@ -21,7 +19,13 @@ export const enum InteractionKeyCode {
     TAB = 'Tab',
 }
 
+export interface ICore {
+    options: CoreOptions;
+    i18n: Localization['i18n'];
+}
+
 export interface BaseElementProps {
+    core: Core;
     _parentInstance?: Core;
     modules?: {
         analytics: Analytics;
@@ -29,13 +33,15 @@ export interface BaseElementProps {
 }
 
 export interface IUIElement {
-    isValid: boolean;
     displayName: string;
     accessibleName: string;
     type: string;
     elementRef: any;
+}
+
+export interface IFormElement<P> {
     submit(): void;
-    setStatus(status: UIElementStatus, props?: { message?: string; [key: string]: any }): UIElement;
+    setStatus(status: UIElementStatus, props?: any): UIElement<P>;
     showValidation(): void;
     setState(newState: object): void;
 }
@@ -43,44 +49,26 @@ export interface IUIElement {
 export type UIElementStatus = 'ready' | 'loading' | 'error' | 'success';
 
 export type SetTriggerValidation = (callback: (schema?: Record<string, any>) => void) => void;
-
-export interface UIElementProps extends BaseElementProps {
+export interface UIElementProps {
     id?: string;
-    session?: BPSession;
-    onChange?: (state: any, element: UIElement | null) => void;
-    onValid?: (state: any, element: UIElement | null) => void;
-    beforeSubmit?: (state: any, element: UIElement, actions: any) => Promise<void>;
-    onSubmit?: (state: any, element: UIElement | null) => void;
-    onComplete?: (state: BaseElementProps, element: UIElement | null) => void;
-    onError?: (error: any, element?: UIElement | null) => void;
-    beforeRedirect?: (resolve: any, reject: any, redirectData: any, element: UIElement) => void;
-    type?: string;
     name?: string;
-    icon?: string;
-    amount?: Amount;
-    secondaryAmount?: AmountExtended;
-    triggerValidation?: SetTriggerValidation;
     setUIElementStatus?: (status: string) => void;
     ref?: any;
 
-    /**
-     * Show/Hide pay button
-     * @defaultValue true
-     */
-    showPayButton?: boolean;
-
-    /** @internal */
-    loadingContext?: string;
-
-    /** @internal */
-    clientKey?: string;
-
     /** @internal */
     elementRef?: any;
-
-    /** @internal */
-    i18n?: Localization['i18n'];
 }
+
+export interface FormProps<P> {
+    onChange?: (state: any, element: UIElement<P> | null) => void;
+    onValid?: (state: any, element: UIElement<P> | null) => void;
+    beforeSubmit?: (state: any, element: UIElement<P>, actions: any) => Promise<void>;
+    onSubmit?: (state: any, element: UIElement<P> | null) => void;
+    onComplete?: (state: BaseElementProps, element: UIElement<P> | null) => void;
+    onError?: (error: any, element?: UIElement<P> | null) => void;
+    triggerValidation?: SetTriggerValidation;
+}
+
 export type BaseElementState = {
     errors?: {
         [key: string]: any;
@@ -93,3 +81,7 @@ export type BaseElementState = {
     };
     isValid?: boolean;
 };
+
+export type _UIComponentProps<T> = BaseElementProps & UIElementProps & T & {};
+
+export type ExternalUIComponentProps<T> = UIElementProps & T & {};

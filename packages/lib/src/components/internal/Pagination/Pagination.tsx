@@ -1,11 +1,16 @@
-import classnames from 'classnames';
+import { ButtonVariant } from '@src/components/internal/Button/types';
 import useCoreContext from '@src/core/Context/useCoreContext';
+import classnames from 'classnames';
+import { useMemo } from 'preact/hooks';
 import Button from '../Button';
 import './Pagination.scss';
 import { PaginationProps } from './types';
 
 export default function Pagination({ next, hasNext, hasPrev, page, prev }: PaginationProps) {
     const { i18n } = useCoreContext();
+
+    const previousIcon = useMemo(() => <span>&lt;</span>, []);
+    const nextIcon = useMemo(() => <span>&gt;</span>, []);
 
     return (
         <div aria-label={i18n.get('paginatedNavigation')} className={`adyen-fp-pagination ${classnames({})}`}>
@@ -18,19 +23,19 @@ export default function Pagination({ next, hasNext, hasPrev, page, prev }: Pagin
             <div className="adyen-fp-pagination__controls">
                 <Button
                     aria-label={i18n.get('pagination.previousPage')}
-                    variant={'ghost'}
+                    variant={ButtonVariant.TERTIARY}
                     disabled={!hasPrev}
-                    classNameModifiers={['circle', 'prev']}
+                    iconLeft={previousIcon}
+                    classNameModifiers={['circle']}
                     onClick={prev}
-                    label={'Previous'}
                 />
                 <Button
                     aria-label={i18n.get('pagination.nextPage')}
-                    variant={'ghost'}
+                    variant={ButtonVariant.TERTIARY}
                     disabled={!hasNext}
-                    classNameModifiers={['circle', 'next']}
+                    iconRight={nextIcon}
+                    classNameModifiers={['circle']}
                     onClick={next}
-                    label={'Next'}
                 />
             </div>
         </div>

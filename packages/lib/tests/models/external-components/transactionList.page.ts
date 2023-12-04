@@ -48,6 +48,5 @@ export class TransactionListPage extends BasePage {
     async clearSingleInput(filter: 'accountHolderFilter' | 'balanceAccountFilter') {
         await this[filter].click();
         await this.clearFilterButton.click();
-        await this.applyFilterButton.click();
     }
 }

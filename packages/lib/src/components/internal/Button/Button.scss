@@ -1,87 +1,102 @@
 .adyen-fp-button {
     $adyen-fp-button: &;
-    background: var(--adyen-fp-color-black);
+
+    align-items: center;
+    appearance: none;
     border: 0;
-    border-radius: var(--adyen-fp-border-radius-medium);
-    color: var(--adyen-fp-color-white);
+    border-radius: var(--adyen-fp-filter-button-button-border-radius);
+    box-shadow: var(--adyen-fp-filter-button-box-shadow);
     cursor: pointer;
-    font-size: var(--adyen-fp-font-size-medium);
-    font-weight: 500;
-    height: 48px;
-    margin: 0;
-    padding: 15px;
+    display: inline-flex;
+    height: fit-content;
+    justify-content: center;
+    padding: var(--adyen-fp-filter-button-padding);
     text-decoration: none;
-    transition: background 0.3s ease-out, box-shadow 0.3s ease-out;
-    width: 100%;
+    transition: 125ms cubic-bezier(0.785, 0.135, 0.15, 0.86);
+    transition-property: color, background-color, box-shadow;
+    user-select: none;
 
-    &:focus {
-        box-shadow: 0 0 0 2px var(--adyen-fp-color-blue-light);
-        outline: 0;
+    &__label {
+        display: inline-flex;
+        line-height: var(--adyen-fp-filter-button-line-height);
+        vertical-align: middle;
+        white-space: nowrap;
     }
 
-    &:hover {
-        background: #1c3045;
-        box-shadow: 0 0, 0 2px 4px -1px rgba(0, 0, 0, 0.2), 0 4px 5px 0 rgba(0, 0, 0, 0.14);
+    &--hidden {
+        display: none;
     }
 
-    &:active {
-        background: #3a4a5c;
-    }
-
-    &:hover:focus {
-        box-shadow: 0 0 0 2px var(--adyen-fp-color-blue-light), 0 3px 4px rgba(0, 15, 45, 0.2);
-    }
-
-    &:disabled,
-    &:disabled:hover {
-        box-shadow: none;
-        cursor: not-allowed;
-        opacity: 0.4;
-        user-select: all;
-    }
-
-    &--loading {
-        background: var(--adyen-fp-color-gray-darker);
-        box-shadow: none;
-        pointer-events: none;
-        user-select: none;
-    }
-
-    &--pay {
-        display: flex;
-        justify-content: center;
-        margin-top: 24px;
-
-        &:disabled {
-            opacity: 1;
-        }
-    }
-
-    &--standalone {
-        margin-top: 0;
-    }
-
-    &--inline {
-        display: block;
-        font-size: 0.81em;
-        height: auto;
-        padding: 10px 8px;
-        width: auto;
-    }
-
-    &--ghost {
-        background: none;
-        border: 0;
-        color: var(--adyen-fp-color-black);
+    &--primary {
+        background-color: var(--adyen-fp-button-primary-background-color);
+        color: var(--adyen-fp-button-primary-color);
 
         &:hover {
-            background: var(--adyen-fp-color-gray-lighter);
-            box-shadow: none;
+            background-color: var(--adyen-fp-button-primary-hover-background-color);
         }
 
         &:active {
-            background: var(--adyen-fp-color-gray-light);
-            box-shadow: none;
+            background-color: var(--adyen-fp-button-primary-active-background-color);
+        }
+
+        &:disabled {
+            background-color: var(--adyen-fp-button-primary-disabled-background-color);
+            color: var(--adyen-fp-button-primary-disabled-color);
+        }
+    }
+
+    &--secondary {
+        background-color: var(--adyen-fp-button-secondary-background-color);
+        box-shadow: var(--adyen-fp-button-secondary-box-shadow);
+        color: var(--adyen-fp-button-secondary-color);
+
+        &:hover {
+            background-color: var(--adyen-fp-button-secondary-hover-background-color);
+            box-shadow: var(--adyen-fp-button-secondary-hover-box-shadow);
+            color: var(--adyen-fp-button-secondary-hover-color);
+        }
+
+        &:hover:not(:focus) {
+            box-shadow: var(--adyen-fp-button-secondary-hover-box-shadow);
+        }
+
+        &:active {
+            background-color: var(--adyen-fp-button-secondary-active-background-color);
+            box-shadow: var(--adyen-fp-button-secondary-active-box-shadow);
+            color: var(--adyen-fp-button-secondary-active-color);
+        }
+
+        &:disabled,
+        &:disabled:not(:focus) {
+            background-color: var(--adyen-fp-button-secondary-disabled-background-color);
+            box-shadow: var(--adyen-fp-button-secondary-disabled-box-shadow);
+            color: var(--adyen-fp-button-secondary-disabled-color);
+        }
+    }
+
+    &--tertiary {
+        background-color: transparent;
+        box-shadow: var(--adyen-fp-button-tertiary-box-shadow);
+        color: var(--adyen-fp-button-tertiary-color);
+        height: var(--adyen-fp-button-tertiary-height);
+        padding: var(--adyen-fp-button-tertiary-padding);
+        text-decoration: var(--adyen-fp-button-tertiary-text-decoration);
+
+        &:hover {
+            background-color: var(--adyen-fp-button-tertiary-hover-background-color);
+            color: var(--adyen-fp-button-tertiary-hover-color);
+            text-decoration: var(--adyen-fp-button-tertiary-hover-text-decoration);
+        }
+
+        &:active {
+            background-color: var(--adyen-fp-button-tertiary-active-background-color);
+            color: var(--adyen-fp-button-tertiary-active-color);
+            text-decoration: var(--adyen-fp-button-tertiary-active-text-decoration);
+        }
+
+        &:disabled {
+            background-color: var(--adyen-fp-button-tertiary-disabled-background-color);
+            color: var(--adyen-fp-button-tertiary-disabled-color);
         }
     }
 
@@ -95,174 +110,41 @@
         width: 40px;
     }
 
-    &--secondary {
-        background: var(--adyen-fp-color-white);
-        border: 1px solid var(--adyen-fp-color-black);
-        color: var(--adyen-fp-color-black);
-        padding: 10px 12px;
-
-        &:hover {
-            background: var(--adyen-fp-color-gray-lighter);
-            box-shadow: 0 2px 4px rgba(27, 42, 60, 0.2), 0 4px 5px rgba(27, 42, 60, 0.14);
-        }
-
-        &:active,
-        &:active:hover {
-            background: var(--adyen-fp-color-gray-lighter);
-            box-shadow: none;
-        }
-
-        &:disabled,
-        &:disabled:hover {
-            background-color: var(--adyen-fp-color-gray-lighter);
-            border-color: #99a3ad;
-            box-shadow: none;
-            cursor: not-allowed;
-            opacity: 0.5;
-            user-select: all;
-        }
-
-        .adyen-fp-spinner {
-            border-color: var(--adyen-fp-color-black);
-            border-top-color: transparent;
-        }
-    }
-
-    &--action {
-        background: rgba(0, 102, 255, 0.1);
-        border: 1px solid transparent;
-        color: var(--adyen-fp-color-blue);
-        padding: 10px 12px;
-
-        &:hover {
-            background: rgba(0, 102, 255, 0.2);
-            box-shadow: none;
-        }
-
-        &:active,
-        &:active:hover {
-            background: rgba(0, 102, 255, 0.3);
-            box-shadow: none;
-        }
-    }
-
-    &--small {
-        font-size: var(--adyen-fp-font-size-small);
-        height: 36px;
-        padding: 10px 14px;
-    }
-
-    &--filter {
-        @extend #{$adyen-fp-button}--small;
-        background: var(--adyen-fp-color-white);
-        border: 1px solid var(--adyen-fp-color-gray);
-        color: var(--adyen-fp-color-black);
-
-        &:hover {
-            background: var(--adyen-fp-color-gray-lighter);
-            box-shadow: 0 2px 4px rgba(27, 42, 60, 0.14);
-        }
-
-        &:active,
-        &:active:hover {
-            background: var(--adyen-fp-color-gray-lighter);
-            border-color: #99a3ad;
-            box-shadow: none;
-        }
-
-        &:disabled,
-        &:disabled:hover {
-            box-shadow: none;
-            cursor: not-allowed;
-            opacity: 0.5;
-            user-select: all;
-        }
-
-        .adyen-fp-spinner {
-            border-color: var(--adyen-fp-color-black);
-            border-top-color: transparent;
-        }
-
-        &#{$adyen-fp-button}--active {
-            background: rgba(0, 102, 255, 0.1);
-            border: 1px solid var(--adyen-fp-color-blue);
-            color: var(--adyen-fp-color-blue);
-        }
-
-        &#{$adyen-fp-button}--active #{$adyen-fp-button}__text {
-            padding-right: 22px;
-            position: relative;
-        }
-
-        &#{$adyen-fp-button}--active #{$adyen-fp-button}__text::after {
-            content: '×';
-            font-size: 20px;
-            line-height: 20px;
-            margin-left: 10px;
-            position: absolute;
-            top: -3px;
-        }
-    }
-
     &--link {
-        background: transparent;
-        border: 1px solid transparent;
-        border-radius: var(--adyen-fp-border-radius-small);
+        @extend #{$adyen-fp-button}--tertiary;
         color: var(--adyen-fp-color-blue);
-        font-weight: 400;
-        padding: 2px;
+        cursor: pointer;
+        -webkit-user-select: text;
+        -moz-user-select: text;
+        -ms-user-select: text;
+        user-select: text;
 
-        &:hover,
-        &:active,
-        &:active:hover {
-            background: transparent;
-            box-shadow: none;
-            text-decoration: underline;
+        #{$adyen-fp-button}__label {
+            text-decoration: var(--adyen-fp-link-text-decoration);
+        }
+
+        &:hover {
+            //color: var(--adyen-fp-link-hover-color);
+            color: var(--adyen-fp-color-blue-light);
+            text-decoration: var(--adyen-fp-link-hover-text-decoration);
+        }
+
+        &:active {
+            //color: var(--adyen-fp-link-active-color);
+            color: var(--adyen-fp-color-blue-light);
+        }
+
+        &:focus-visible {
+            border-radius: var(--adyen-fp-link-border-radius);
         }
     }
 
-    &--completed {
-        background: var(--adyen-fp-color-green);
-        color: var(--adyen-fp-color-white);
-
-        &:hover,
-        &:active,
-        &:active:hover {
-            background: var(--adyen-fp-color-green);
-            color: var(--adyen-fp-color-white);
-        }
-
-        .adyen-fp-button__icon {
-            filter: brightness(0) invert(1);
-        }
+    &__icon-left,
+    &__icon-right {
+        display: inline-flex;
     }
 
-    &__content {
-        align-items: center;
-        display: flex;
-        height: 100%;
-        justify-content: center;
-    }
-
-    &__icon {
-        margin-right: 12px;
-
-        [dir='rtl'] & {
-            margin-left: 12px;
-            margin-right: 0;
-        }
-    }
-
-    &__text {
-        display: block;
-        justify-content: center;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-    }
-
-    .adyen-fp-spinner {
-        border-color: var(--adyen-fp-color-white);
-        border-top-color: transparent;
+    &:disabled {
+        cursor: not-allowed;
     }
 }

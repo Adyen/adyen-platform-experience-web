@@ -4,7 +4,7 @@ import { ValidationRuleResult } from '../../../utils/Validator/ValidationRuleRes
 import { FormState, SchemaKeys } from '../../../utils/useForm/types';
 import { TargetedEvent } from 'preact/compat';
 import { SetTriggerValidation } from '../../types';
-import { TranslationKey } from '@src/core/Localization/types';
+import { TranslationKey } from '../../../core/Localization/types';
 import { ADDRESS_SCHEMA } from '../Address/constants';
 
 export type AddressField = (typeof ADDRESS_SCHEMA)[number];
