@@ -19,13 +19,6 @@
         padding: 0px var(--adyen-fp-spacing-medium-small);
         width: 100%;
     }
-    &__container {
-        // focus trap
-
-        &--hidden {
-            display: none;
-        }
-    }
     &__options-box {
         background: var(--adyen-fp-color-white);
         border-color: unset;
@@ -40,6 +33,11 @@
         transform: translate3d(0px, 5px, 0px);
         width: 5.6rem;
         z-index: 2;
+        [role='option'] {
+            &[aria-selected='true'] {
+                @include adyenFpBgColor;
+            }
+        }
     }
 
     &__option {
@@ -55,9 +53,7 @@
         justify-content: space-between;
         max-height: 30px;
         padding: var(--adyen-fp-spacing-small) var(--adyen-fp-spacing-medium-small);
-        &--selected {
-            @include adyenFpBgColor;
-        }
+
         &:hover {
             @include adyenFpBgColor;
         }

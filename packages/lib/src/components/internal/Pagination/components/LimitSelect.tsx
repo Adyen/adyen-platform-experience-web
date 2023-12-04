@@ -1,9 +1,8 @@
 import './LimitSelector.scss';
-import { useRef, useState } from 'preact/hooks';
+import { useCallback, useState } from 'preact/hooks';
 import useBooleanState from '@src/hooks/useBooleanState';
 import ChevronUp from './chevron-up';
 import ChevronDown from './chevron-down';
-import useFocusTrap from '@src/hooks/element/useFocusTrap';
 import ListBox from '@src/components/internal/Pagination/components/ListBox';
 import { InteractionKeyCode } from '@src/components/types';
 
@@ -17,10 +16,20 @@ const SelectList = ({ limit, onSelection }: SelectListProps) => {
     const [selectedLimit, setSelectedLimit] = useState(limit);
     const [opened, setOpened] = useBooleanState(false);
 
-    // Function to handle keyboard interactions
-
-    const listBoxRef = useRef<HTMLDivElement>(null);
-    const focusTrap = useFocusTrap(listBoxRef, () => setOpened(false));
+    const handleKeyDown = useCallback(
+        (e: KeyboardEvent) => {
+            switch (e.code) {
+                case InteractionKeyCode.ENTER:
+                case InteractionKeyCode.SPACE:
+                case InteractionKeyCode.ARROW_DOWN:
+                    setOpened(true);
+                    break;
+                default:
+                    break;
+            }
+        },
+        [setOpened]
+    );
 
     return (
         <>
@@ -30,13 +39,13 @@ const SelectList = ({ limit, onSelection }: SelectListProps) => {
                     onClick={() => {
                         setOpened(!opened);
                     }}
-                    tabIndex={0} // Make this div focusable
-                    onKeyDown={e => e.key === InteractionKeyCode.ENTER && setOpened(!opened)} // Allow toggling with the Enter key
-                    role="button" // Indicate that this div acts as a button
-                    aria-haspopup="listbox" // Indicate that this button controls a listbox
-                    aria-expanded={opened} // Indicate whether the listbox is expanded
+                    tabIndex={0}
+                    onKeyDown={handleKeyDown}
+                    role="button"
+                    aria-haspopup="listbox"
+                    aria-expanded={opened}
                 >
-                    <span className="">{selectedLimit}</span>
+                    <span>{selectedLimit}</span>
                     <div className="b-dropdown-default-textbox__chevron">
                         {opened ? <ChevronUp svg-title="opened" /> : <ChevronDown svg-title="closed" />}
                     </div>
@@ -49,10 +58,10 @@ const SelectList = ({ limit, onSelection }: SelectListProps) => {
                         onSelection(limit);
                         setSelectedLimit(limit);
                     }}
-                    dismiss={() => setOpened(false)}
-                    focusTrap={focusTrap}
+                    dismiss={() => {
+                        setOpened(false);
+                    }}
                     selection={selectedLimit}
-                    listBoxRef={listBoxRef}
                 />
             )}
         </>

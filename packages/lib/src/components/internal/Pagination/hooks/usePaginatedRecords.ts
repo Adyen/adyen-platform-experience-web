@@ -152,6 +152,10 @@ const usePaginatedRecords = <T, DataField extends string, FilterValue extends st
     );
 
     useEffect(() => {
+        if (fetching === true) setError(undefined);
+    }, [fetching]);
+
+    useEffect(() => {
         if (shouldRefresh) updateShouldRefresh(false);
         else goto(1);
     }, [goto, shouldRefresh]);
