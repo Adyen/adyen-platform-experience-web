@@ -35,7 +35,7 @@ enableServerInMockedMode()
             onAccountSelected: ({ id }) => {
                 window.location.assign(`/src/pages/accountHolder/?id=${id}`);
             },
-            initialListLimit: 5,
+            initialListLimit: 10,
             ...TEST_CONFIG,
         });
 
