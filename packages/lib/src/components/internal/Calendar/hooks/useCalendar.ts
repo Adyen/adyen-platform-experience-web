@@ -1,7 +1,7 @@
 import { Ref } from 'preact';
 import { useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'preact/hooks';
 import useCoreContext from '@src/core/Context/useCoreContext';
-import { ReflexAction } from '@src/hooks/useReflex';
+import type { ReflexAction } from '../../../../hooks/useReflex';
 import { getDateObjectFromTimestamp } from '../calendar/utils';
 import { isFunction } from '@src/utils/common';
 import { EMPTY_OBJECT } from '@src/utils/common/constants';

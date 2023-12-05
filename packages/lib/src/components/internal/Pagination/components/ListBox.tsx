@@ -10,15 +10,16 @@ type ListBoxProps = {
     selection: number;
 };
 
-const LIST_ID = 'listbox';
+const LIST_ID = 'listBox';
 const ListBox = ({ dismiss, onSelection, options, selection }: ListBoxProps) => {
     const [activeDescendant, setActiveDescendant] = useState(selection);
     const optionRefs = useRef(options.map(() => createRef())); // Create a ref for each option
 
     const setFocus = useCallback(
-        (index: number) => {
-            optionRefs.current[index]?.current.setAttribute('aria-selected', 'true');
-            optionRefs.current[index]?.current.focus();
+        (index?: number) => {
+            const selectedIndex = index ?? options.indexOf(selection);
+            optionRefs.current[selectedIndex]?.current.setAttribute('aria-selected', 'true');
+            optionRefs.current[selectedIndex]?.current.focus();
         },
         [optionRefs.current.length]
     );
@@ -55,16 +56,6 @@ const ListBox = ({ dismiss, onSelection, options, selection }: ListBoxProps) => 
         }
     };
 
-    const handleClickOutside = useCallback(
-        (e: Event) => {
-            const element = document.getElementById(LIST_ID);
-            if (!element?.contains(e.target as Node)) {
-                dismiss();
-            }
-        },
-        [dismiss]
-    );
-
     const containerRef = useRef<HTMLDivElement>(null);
 
     const handleFocusOut = useCallback(
@@ -76,22 +67,14 @@ const ListBox = ({ dismiss, onSelection, options, selection }: ListBoxProps) => 
 
     useEffect(() => {
         containerRef.current?.addEventListener('focusout', handleFocusOut);
-        const selectionIndex = options.indexOf(selection);
-        setFocus(selectionIndex);
+        setFocus();
 
         return () => {
-            document.removeEventListener('click', handleClickOutside);
+            document.removeEventListener('focusout', handleFocusOut);
         };
     }, []);
     return (
-        <div
-            ref={containerRef}
-            id={LIST_ID}
-            className="adyen-fp-select-limit__container"
-            role="listbox"
-            tabIndex={-1}
-            aria-labelledby="listbox-label"
-        >
+        <div ref={containerRef} id={LIST_ID} className="adyen-fp-select-limit__container" role="listbox" tabIndex={-1} aria-labelledby="listbox">
             <ul
                 aria-activedescendant={`${activeDescendant}`}
                 className="adyen-fp-select-limit__options-box"
