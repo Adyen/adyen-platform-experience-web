@@ -34,6 +34,7 @@ class BaseElement<P> {
         this.clientKey = this.props.core.options.clientKey;
         this.i18n = this.props.core.modules.i18n;
         this.session = this.props.core.session;
+        this.props.core.registerComponent(this);
     }
 
     /**

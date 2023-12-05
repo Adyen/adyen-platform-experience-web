@@ -87,11 +87,11 @@ h1,
 header p {
     font-size: 1.4em;
     font-weight: 200;
-    margin-bottom: 12px;
+    margin: 0;
     width: 100%;
 
     @media screen and (min-width: 1240px) {
-        margin-bottom: 30px;
+        margin-top: 30px;
     }
 }
 
@@ -99,7 +99,7 @@ header p {
     padding: 12px;
 
     @media screen and (min-width: 1240px) {
-        padding: 30px;
+        padding: 0px;
     }
 
     span {
@@ -274,5 +274,48 @@ h2 {
         &:hover {
             text-decoration: underline;
         }
+    }
+}
+
+.playground-header {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    width: 100%;
+    padding-left: 30px;
+    gap: 30px;
+
+    ul {
+        padding: 0;
+    }
+    @media screen and (max-width: 1239px) {
+        flex-direction: row;
+        align-items: center;
+        height: 100%;
+        padding: 10px;
+    }
+}
+
+.locale-selection-container {
+    margin-left: auto;
+    display: flex;
+    gap: 20px;
+    min-width: max-content;
+
+    @media screen and (min-width: 1240px) {
+        margin-left: 0;
+        min-width: auto;
+        flex-wrap: wrap;
+    }
+
+    button {
+        appearance: none;
+        background-color: $color-primary;
+        font-weight: bold;
+        color: #ffffff;
+        cursor: pointer;
+        padding: 10px 15px;
+        border: 2px;
+        border-radius: 5px;
     }
 }

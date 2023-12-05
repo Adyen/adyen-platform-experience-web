@@ -45,7 +45,7 @@ jobs:
 
       - name: Fetch latest Chrome stable version
         id: latest-chrome-version
-        run: echo "version=$( curl -s https://omahaproxy.appspot.com/linux )" >> $GITHUB_OUTPUT
+        run: echo "version=$( curl -s https://chromiumdash.appspot.com/fetch_releases?channel=Stable&platform=Linux&num=1 | jq '.[0].version' )" >> $GITHUB_OUTPUT
 
       - name: Cache Chrome
         id: cache-chrome

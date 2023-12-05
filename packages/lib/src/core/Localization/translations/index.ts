@@ -51,3 +51,30 @@ export const sl_SI = { sl_SI: _sl_SI };
 export const sv_SE = { sv_SE: _sv_SE };
 export const zh_CN = { zh_CN: _zh_CN };
 export const zh_TW = { zh_TW: _zh_TW };
+export const all_locales = {
+    zh_TW: _zh_TW,
+    zh_CN: _zh_CN,
+    sv_SE: _sv_SE,
+    sl_SI: _sl_SI,
+    sk_SK: _sk_SK,
+    ru_RU: _ru_RU,
+    ro_RO: _ro_RO,
+    pt_PT: _pt_PT,
+    pt_BR: _pt_BR,
+    pl_PL: _pl_PL,
+    no_NO: _no_NO,
+    nl_NL: _nl_NL,
+    ko_KR: _ko_KR,
+    ja_JP: _ja_JP,
+    it_IT: _it_IT,
+    hu_HU: _hu_HU,
+    hr_HR: _hr_HR,
+    fr_FR: _fr_FR,
+    fi_FI: _fi_FI,
+    es_ES: _es_ES,
+    el_GR: _el_GR,
+    de_DE: _de_DE,
+    da_DK: _da_DK,
+    cs_CZ: _cs_CZ,
+    ar: _ar,
+};
