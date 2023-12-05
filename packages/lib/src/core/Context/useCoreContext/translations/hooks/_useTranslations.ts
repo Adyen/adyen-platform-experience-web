@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
-import { EMPTY_OBJECT } from '@src/utils/common';
+import { EMPTY_OBJECT, isFunction } from '@src/utils/common';
 import { TranslationsContextThisBinding, UseTranslationsOptions } from '../types';
 import { TranslationsLoader, TranslationsScopeRecord } from '../types';
 
@@ -19,8 +19,9 @@ export default function _useTranslations(this: unknown, translationOptions: UseT
             (customTranslations || translations) &&
             ((async locale => {
                 const _translations = translations?.[locale];
+                await new Promise(resolve => setTimeout(resolve, 3000));
                 return {
-                    ...(typeof _translations === 'function' ? await _translations() : _translations),
+                    ...(isFunction(_translations) ? await _translations() : _translations),
                     ...(!!customTranslations?.[locale] && customTranslations[locale]),
                 };
             }) as TranslationsLoader),

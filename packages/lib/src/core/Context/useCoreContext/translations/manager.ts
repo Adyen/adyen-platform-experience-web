@@ -1,10 +1,11 @@
-import Localization from '@src/core/Localization';
-import { EMPTY_OBJECT, noop, struct } from '@src/utils/common';
+import { VNode } from 'preact';
 import { createScopeTree } from '@src/utils/scope';
 import { Scope } from '@src/utils/scope/types';
+import { EMPTY_OBJECT, isFunction, noop, struct } from '@src/utils/common';
 import { TranslationKey, TranslationOptions } from '@src/core/Localization/types';
 import { TranslationsLoader, TranslationsManagerI18n, TranslationsScopeData, TranslationsScopeRecord, TranslationsScopeTree } from './types';
-import _onRenderHook from './onRenderHook';
+import _preactRenderHook from '@src/utils/preactRenderHook';
+import Localization from '@src/core/Localization';
 
 export default class TranslationsManager {
     #i18n!: Localization['i18n'];
@@ -25,19 +26,33 @@ export default class TranslationsManager {
             })
         );
 
-        const uninstallRenderHook = _onRenderHook(() => {
-            if (this.#current && this.#current !== currentScope && this.#current !== rootScopeHandle._scope) {
-                const record = this.#translationsScopesMap.get(this.#current)!;
-                currentScope = this.#current = record._prev!;
-                record._prev = null;
-            }
+        const _vnodeParentScopes = new Map<VNode<{}>, Scope<TranslationsScopeData>>();
+
+        const uninstallDiffedHook = _preactRenderHook.diffed(vnode => {
+            if (!isFunction(vnode.type)) return;
+            const parentScope = _vnodeParentScopes.get(vnode);
+            if (parentScope === undefined) return;
+
+            if (this.#current === parentScope) {
+                _vnodeParentScopes.delete(vnode);
+            } else this.#current = parentScope;
         }, true);
 
-        let currentScope = (this.#current = rootScopeHandle._scope!);
+        const uninstallUnmountHook = _preactRenderHook.unmount(vnode => {
+            if (isFunction(vnode.type)) _vnodeParentScopes.delete(vnode);
+        }, true);
+
+        const uninstallVnodeHook = _preactRenderHook.vnode(vnode => {
+            if (isFunction(vnode.type)) _vnodeParentScopes.set(vnode, this.#current);
+        }, true);
+
+        this.#current = rootScopeHandle._scope;
 
         this.#translationsTreeResetter = () => {
             rootScopeHandle.detach(false);
-            uninstallRenderHook();
+            uninstallDiffedHook();
+            uninstallUnmountHook();
+            uninstallVnodeHook();
         };
     }
 
@@ -47,9 +62,9 @@ export default class TranslationsManager {
 
     /**
      * @todo
-     *   Change the `i18n` parameter type from the union `Localization['i18n'] | TranslationsManagerI18n` to just
+     *   Change the `i18n` parameter type from the union (`Localization['i18n'] | TranslationsManagerI18n`) to just
      *   `Localization['i18n']` — when this package's TypeScript version has been bumped up to at least 5.1, which
-     *   supports unrelated types for getters and setters (@link https://www.typescriptlang.org/docs/handbook/release-notes/typescript-5-1.html#unrelated-types-for-getters-and-setters).
+     *   supports [unrelated types for getters and setters](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-5-1.html#unrelated-types-for-getters-and-setters).
      */
     set i18n(i18n: Localization['i18n'] | TranslationsManagerI18n) {
         this.#useI18n(i18n as any);
@@ -140,7 +155,7 @@ export default class TranslationsManager {
         record._prev = this.#current;
         this.#current = scope;
 
-        loading: if (typeof load === 'function') {
+        loading: if (isFunction(load)) {
             if (load === record._load && locale === record._locale) break loading;
 
             const translationsPromise = (async () => ({ ...(await load(locale)) }))();

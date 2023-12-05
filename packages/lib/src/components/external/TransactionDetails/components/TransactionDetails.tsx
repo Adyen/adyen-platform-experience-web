@@ -2,7 +2,7 @@ import useCoreContext from '@src/core/Context/useCoreContext';
 import './TransactionDetails.scss';
 import { TransactionDetailsComponentProps } from '../types';
 import { useFetch } from '@src/hooks/useFetch/useFetch';
-import { ITransaction } from '../../../../types';
+import { ITransaction } from '@src/types';
 import Alert from '@src/components/internal/Alert';
 import Spinner from '@src/components/internal/Spinner';
 import { TransactionData } from '@src/components/external/TransactionDetails/components/TransactionData';
