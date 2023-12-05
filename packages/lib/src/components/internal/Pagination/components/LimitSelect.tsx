@@ -1,5 +1,5 @@
 import './LimitSelector.scss';
-import { useCallback, useState } from 'preact/hooks';
+import { useCallback, useRef, useState } from 'preact/hooks';
 import useBooleanState from '@src/hooks/useBooleanState';
 import ChevronUp from './chevron-up';
 import ChevronDown from './chevron-down';
@@ -31,10 +31,13 @@ const SelectList = ({ limit, onSelection }: SelectListProps) => {
         [setOpened]
     );
 
+    const buttonRef = useRef<HTMLDivElement>(null);
+
     return (
         <>
             <div className="adyen-fp-select-limit">
                 <div
+                    ref={buttonRef}
                     className="adyen-fp-select-limit__button"
                     onClick={() => {
                         setOpened(!opened);
@@ -60,6 +63,7 @@ const SelectList = ({ limit, onSelection }: SelectListProps) => {
                     }}
                     dismiss={() => {
                         setOpened(false);
+                        buttonRef.current?.focus();
                     }}
                     selection={selectedLimit}
                 />
