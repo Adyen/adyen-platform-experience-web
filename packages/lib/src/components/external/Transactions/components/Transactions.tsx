@@ -74,7 +74,7 @@ function Transactions({
                 fetchRecords: getTransactions,
                 dataField: 'data',
                 filterParams: transactionsFilterParams,
-                initialFiltersSameAsDefault: true,
+                initialFiltersSameAsDefault: false,
                 limit: Number(DEFAULT_PAGINATED_TRANSACTIONS_LIMIT),
             }),
             [getTransactions]

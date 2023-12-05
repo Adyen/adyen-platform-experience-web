@@ -3,6 +3,14 @@
 }
 
 .adyen-fp-select-limit {
+    button {
+        background: inherit;
+        color: inherit;
+        border: none;
+        font: inherit;
+        cursor: pointer;
+    }
+
     border: 1px solid var(--adyen-fp-color-border);
     border-radius: var(--adyen-fp-border-radius-medium);
     position: relative;

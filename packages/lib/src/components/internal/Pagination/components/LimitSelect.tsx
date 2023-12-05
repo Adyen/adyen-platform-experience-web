@@ -19,8 +19,6 @@ const SelectList = ({ limit, onSelection }: SelectListProps) => {
     const handleKeyDown = useCallback(
         (e: KeyboardEvent) => {
             switch (e.code) {
-                case InteractionKeyCode.ENTER:
-                case InteractionKeyCode.SPACE:
                 case InteractionKeyCode.ARROW_DOWN:
                     setOpened(true);
                     break;
@@ -31,12 +29,12 @@ const SelectList = ({ limit, onSelection }: SelectListProps) => {
         [setOpened]
     );
 
-    const buttonRef = useRef<HTMLDivElement>(null);
+    const buttonRef = useRef<HTMLButtonElement>(null);
 
     return (
         <>
             <div className="adyen-fp-select-limit">
-                <div
+                <button
                     ref={buttonRef}
                     className="adyen-fp-select-limit__button"
                     onClick={() => {
@@ -44,7 +42,6 @@ const SelectList = ({ limit, onSelection }: SelectListProps) => {
                     }}
                     tabIndex={0}
                     onKeyDown={handleKeyDown}
-                    role="button"
                     aria-haspopup="listbox"
                     aria-expanded={opened}
                 >
@@ -52,7 +49,7 @@ const SelectList = ({ limit, onSelection }: SelectListProps) => {
                     <div className="b-dropdown-default-textbox__chevron">
                         {opened ? <ChevronUp svg-title="opened" /> : <ChevronDown svg-title="closed" />}
                     </div>
-                </div>
+                </button>
             </div>
             {opened && (
                 <ListBox
@@ -63,7 +60,6 @@ const SelectList = ({ limit, onSelection }: SelectListProps) => {
                     }}
                     dismiss={() => {
                         setOpened(false);
-                        buttonRef.current?.focus();
                     }}
                     selection={selectedLimit}
                 />
