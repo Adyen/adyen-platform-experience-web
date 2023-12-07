@@ -1,0 +1,4 @@
+resolve:
+  http:
+    headers:
+      Authorization: 'Bearer YOUR_GITLAB_PERSONAL_ACCESS_TOKEN'
