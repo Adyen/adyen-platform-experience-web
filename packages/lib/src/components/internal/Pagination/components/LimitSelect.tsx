@@ -5,6 +5,8 @@ import ChevronUp from './chevron-up';
 import ChevronDown from './chevron-down';
 import ListBox from '@src/components/internal/Pagination/components/ListBox';
 import { InteractionKeyCode } from '@src/components/types';
+import useUniqueIdentifier from '@src/hooks/element/useUniqueIdentifier';
+import useIdentifierString from '@src/hooks/element/useIdentifierString';
 
 interface SelectListProps {
     limit: number;
@@ -30,7 +32,11 @@ const SelectList = ({ limit, onSelection }: SelectListProps) => {
     );
 
     const buttonRef = useRef<HTMLButtonElement>(null);
+    const listBoxRef = useUniqueIdentifier();
 
+    console.log(listBoxRef.current);
+
+    const identifier = useIdentifierString(listBoxRef);
     return (
         <>
             <div className="adyen-fp-select-limit">
@@ -44,6 +50,7 @@ const SelectList = ({ limit, onSelection }: SelectListProps) => {
                     onKeyDown={handleKeyDown}
                     aria-haspopup="listbox"
                     aria-expanded={opened}
+                    aria-controls={identifier}
                 >
                     <span>{selectedLimit}</span>
                     <div className="b-dropdown-default-textbox__chevron">
@@ -53,13 +60,15 @@ const SelectList = ({ limit, onSelection }: SelectListProps) => {
             </div>
             {opened && (
                 <ListBox
+                    ref={listBoxRef}
                     options={limitOptions}
                     onSelection={(limit: number) => {
                         onSelection(limit);
                         setSelectedLimit(limit);
                     }}
-                    dismiss={() => {
+                    dismiss={(focusController = false) => {
                         setOpened(false);
+                        if (focusController) buttonRef.current?.focus();
                     }}
                     selection={selectedLimit}
                 />

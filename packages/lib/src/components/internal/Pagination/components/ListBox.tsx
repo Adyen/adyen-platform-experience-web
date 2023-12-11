@@ -2,16 +2,16 @@ import { useCallback, useEffect, useRef, useState } from 'preact/hooks';
 import { InteractionKeyCode } from '@src/components/types';
 import { createRef } from 'preact';
 import { focusIsWithin } from '@src/utils/tabbable';
+import { forwardRef } from 'preact/compat';
 
 type ListBoxProps = {
-    dismiss: () => void;
+    dismiss: (focusController?: boolean) => void;
     onSelection: (limit: number) => void;
     options: number[];
     selection: number;
 };
 
-const LIST_ID = 'listBox';
-const ListBox = ({ dismiss, onSelection, options, selection }: ListBoxProps) => {
+const ListBox = forwardRef<any, ListBoxProps>(({ dismiss, onSelection, options, selection }, ref) => {
     const [activeDescendant, setActiveDescendant] = useState(selection);
     const optionRefs = useRef(options.map(() => createRef())); // Create a ref for each option
 
@@ -43,7 +43,7 @@ const ListBox = ({ dismiss, onSelection, options, selection }: ListBoxProps) => 
                 dismiss();
                 break;
             case InteractionKeyCode.ESCAPE:
-                dismiss();
+                dismiss(true);
                 break;
             case InteractionKeyCode.ARROW_DOWN:
                 focusOption(item, 'next');
@@ -56,17 +56,15 @@ const ListBox = ({ dismiss, onSelection, options, selection }: ListBoxProps) => 
         }
     };
 
-    const containerRef = useRef<HTMLDivElement>(null);
-
     const handleFocusOut = useCallback(
         (e: any) => {
-            if (!focusIsWithin(containerRef.current ?? undefined, e.relatedTarget)) dismiss();
+            if (!focusIsWithin((ref as any).current ?? undefined, e.relatedTarget)) dismiss();
         },
-        [containerRef.current]
+        [(ref as any).current]
     );
 
     useEffect(() => {
-        containerRef.current?.addEventListener('focusout', handleFocusOut);
+        (ref as any).current?.addEventListener('focusout', handleFocusOut);
         setFocus();
 
         return () => {
@@ -74,12 +72,16 @@ const ListBox = ({ dismiss, onSelection, options, selection }: ListBoxProps) => 
         };
     }, []);
     return (
-        <div ref={containerRef} id={LIST_ID} className="adyen-fp-select-limit__container" role="listbox" tabIndex={-1} aria-labelledby="listbox">
+        <div
+            ref={ref}
+            className="adyen-fp-select-limit__container"
+            role="listbox"
+            tabIndex={-1}
+            aria-labelledby="listbox"
+            aria-activedescendant={`${activeDescendant}`}
+        >
             <ul
-                aria-activedescendant={`${activeDescendant}`}
                 className="adyen-fp-select-limit__options-box"
-                role="listbox"
-                tabIndex={-1}
                 onKeyDown={event => {
                     if (event.code === InteractionKeyCode.ARROW_DOWN) {
                         const currentIndex = options.indexOf(selection);
@@ -109,6 +111,6 @@ const ListBox = ({ dismiss, onSelection, options, selection }: ListBoxProps) => 
             </ul>
         </div>
     );
-};
+});
 
 export default ListBox;
