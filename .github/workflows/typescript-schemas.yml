@@ -39,7 +39,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Create variables
-        run: npm run schemas:variables $env.REPO_URL $env.REPO_TOKEN $env.PROJECT_ID
+        run: npm run schemas:variables "${{ env.REPO_URL }}" "${{ env.REPO_TOKEN }}" "${{ env.PROJECT_ID }}"
 
       - name: Generate schemas
         run: npm run schemas:generate
