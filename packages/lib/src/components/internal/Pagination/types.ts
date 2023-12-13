@@ -1,4 +1,4 @@
-import { UseReactiveStateRecord } from '../../../hooks/useReactiveStateWithParams/types';
+import { UseReactiveStateRecord } from '@src/hooks/useReactiveStateWithParams/types';
 
 export const enum PageNeighbour {
     NEXT = 'next',
@@ -34,6 +34,11 @@ export type WithPaginationCursor<T extends Record<any, any> = {}> = T & { cursor
 export type WithPaginationLimit<T extends Record<any, any> = {}> = T & { limit?: number };
 export type WithPaginationOffset<T extends Record<any, any> = {}> = T & { offset: number };
 export type WithPaginationRecordSize<T extends Record<any, any> = {}> = T & { size?: number };
+
+export type WithPaginationLimitSelection<T extends Record<any, any> = {}> = T & {
+    limitOptions?: readonly number[];
+    onLimitSelection?: (limit: number) => void;
+};
 
 export type PaginatedResponseDataKeyword = 'hasNext' | 'hasPrevious' | '_links';
 export type PaginatedResponseDataField<DataField extends string> = Exclude<DataField | PaginatedResponseDataKeyword, PaginatedResponseDataKeyword>;
@@ -74,8 +79,6 @@ export interface UsePagination extends Required<WithPaginationLimit>, WithPagina
     pages: number | undefined;
     pageSize: number | undefined;
     prev: () => void;
-    limitSelector?: boolean;
-    onLimitSelection?: (limit: number) => void;
 }
 
-export type PaginationProps = Omit<UsePagination, 'goto'> & Partial<Pick<UsePagination, 'goto'>>;
+export type PaginationProps = WithPaginationLimitSelection<Omit<UsePagination, 'goto'> & Partial<Pick<UsePagination, 'goto'>>>;

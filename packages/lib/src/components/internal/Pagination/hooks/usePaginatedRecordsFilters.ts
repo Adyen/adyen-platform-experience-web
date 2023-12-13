@@ -1,8 +1,9 @@
+import { EMPTY_ARRAY } from '@src/utils/common';
 import { UsePaginatedRecordsFilters } from './types';
 import useReactiveStateWithParams from '../../../../hooks/useReactiveStateWithParams';
 
 const usePaginatedRecordsFilters = <FilterValue, FilterParam extends string>(
-    filterParams: Partial<Record<FilterParam, any>>[] = [],
+    filterParams: Partial<Record<FilterParam, any>>[] = EMPTY_ARRAY as [],
     initialFiltersSameAsDefault?: boolean
 ): UsePaginatedRecordsFilters<FilterValue, FilterParam> => {
     const {

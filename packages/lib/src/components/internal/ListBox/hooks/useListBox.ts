@@ -4,7 +4,7 @@ import useListBoxListeners from './useListBoxListeners';
 import useListBoxPrimitives from './useListBoxPrimitives';
 import { UseListBoxConfig } from '../types';
 
-const useListBox = <T extends any = any>(options: T[], config: UseListBoxConfig<T> = EMPTY_OBJECT) => {
+const useListBox = <T extends any = any>(options: readonly T[], config: UseListBoxConfig<T> = EMPTY_OBJECT) => {
     const { dispatch, state, ...primitives } = useListBoxPrimitives<T>(options, config);
     const focusRestorationTarget = useRef<HTMLElement | null>(null);
     const listeners = useListBoxListeners({ ...primitives, dispatch, focusRestorationTarget, state });

@@ -8,19 +8,14 @@ import { ReactiveStateUpdateRequestWithField } from '@src/hooks/useReactiveState
 const useCursorPaginatedRecords = <T, DataField extends string, FilterValue extends string, FilterParam extends string>(
     initOptions: PaginatedRecordsInitOptions<T, DataField, FilterValue, FilterParam>
 ): UsePaginatedRecords<T, FilterValue, FilterParam> => {
-    const initializeAndDerivePageLimit = useCallback(
-        (
-            data: PaginatedRecordsFetcherReturnValue<PaginationType, T>,
-            recordsFilters: UsePaginatedRecordsFilters<FilterValue, FilterParam>,
-            currentPageLimit: number | undefined
-        ) => {
-            const [records, paginationData] = data as PaginatedRecordsFetcherReturnValue<PaginationType.CURSOR, T>;
+    const initialize = useCallback(
+        (data: PaginatedRecordsFetcherReturnValue<PaginationType, T>, recordsFilters: UsePaginatedRecordsFilters<FilterValue, FilterParam>) => {
+            const [, paginationData] = data as PaginatedRecordsFetcherReturnValue<PaginationType.CURSOR, T>;
             const { filters, updateFilters } = recordsFilters;
 
             const params =
                 (hasNextPage(paginationData) && paginationData.next) || (hasPrevPage(paginationData) && paginationData.prev) || new URLSearchParams();
 
-            const limit = parseInt(params.get('limit') as string) || records.length || undefined;
             const initialPaginationStateUpdateRequest = {} as ReactiveStateUpdateRequestWithField<FilterValue, FilterParam>;
 
             for (const param of Object.keys(filters)) {
@@ -29,14 +24,13 @@ const useCursorPaginatedRecords = <T, DataField extends string, FilterValue exte
             }
 
             updateFilters(initialPaginationStateUpdateRequest);
-            return currentPageLimit || limit;
         },
         []
     );
 
     return usePaginatedRecords<T, DataField, FilterValue, FilterParam>({
         ...initOptions,
-        initializeAndDerivePageLimit,
+        initialize,
         pagination: PaginationType.CURSOR,
     });
 };

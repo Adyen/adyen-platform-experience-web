@@ -7,7 +7,7 @@ import useModalDetails from '@src/hooks/useModalDetails/useModalDetails';
 import classnames from 'classnames';
 import { lazy, Suspense } from 'preact/compat';
 import { useMemo } from 'preact/hooks';
-import { ITransaction } from '../../../../types/models/api/transactions';
+import { ITransaction } from '@src/types';
 import DataGrid from '../../../internal/DataGrid';
 import Pagination from '../../../internal/Pagination';
 import { TransactionListProps } from '../types';
@@ -23,6 +23,7 @@ function TransactionList({
     onAccountSelected,
     showPagination,
     showDetails,
+    limitOptions,
     onLimitSelection,
     ...paginationProps
 }: TransactionListProps) {
@@ -144,7 +145,7 @@ function TransactionList({
             >
                 {showPagination && (
                     <DataGrid.Footer>
-                        <Pagination {...paginationProps} limitSelector onLimitSelection={onLimitSelection} />
+                        <Pagination {...paginationProps} limitOptions={limitOptions} onLimitSelection={onLimitSelection} />
                     </DataGrid.Footer>
                 )}
             </DataGrid>

@@ -58,11 +58,10 @@ export type BasePaginatedRecordsInitOptions<T, DataField extends string, FilterV
     FilterParam
 > & {
     pagination: PaginationType;
-    initializeAndDerivePageLimit?: (
+    initialize?: (
         data: PaginatedRecordsFetcherReturnValue<PaginationType, T>,
-        recordsFilters: UsePaginatedRecordsFilters<FilterValue, FilterParam>,
-        currentPageLimit: number | undefined
-    ) => number | undefined;
+        recordsFilters: UsePaginatedRecordsFilters<FilterValue, FilterParam>
+    ) => any;
 };
 
 export type UsePaginatedRecordsFilters<FilterValue, FilterParam extends string> = UseFilters<UseReactiveStateRecord<FilterValue, FilterParam>>;

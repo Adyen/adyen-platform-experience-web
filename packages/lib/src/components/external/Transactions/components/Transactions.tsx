@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo } from 'preact/hooks';
+import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
 import useCoreContext from '@src/core/Context/useCoreContext';
 import FilterBar from '../../../internal/FilterBar';
 import TextFilter from '../../../internal/FilterBar/filters/TextFilter';
@@ -6,8 +6,9 @@ import DateFilter from '../../../internal/FilterBar/filters/DateFilter';
 import TransactionList from './TransactionList';
 import { TransactionFilterParam, TransactionsComponentProps } from '../types';
 import { DateRangeFilterParam } from '../../../internal/FilterBar/filters/DateFilter/types';
-import { useCursorPaginatedRecords } from '../../../internal/Pagination/hooks';
-import { ITransaction } from '../../../../types/models/api/transactions';
+import { useCursorPaginatedRecords, usePageLimit } from '../../../internal/Pagination/hooks';
+import { ITransaction } from '@src/types';
+import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '@src/components/internal/Pagination/constants';
 import { PaginatedResponseDataWithLinks } from '@src/components/internal/Pagination/types';
 import { httpGet } from '@src/core/Services/requests/http';
 import { HttpOptions } from '@src/core/Services/requests/types';
@@ -15,6 +16,7 @@ import { parseSearchParams } from '@src/core/Services/requests/utils';
 import Alert from '@src/components/internal/Alert';
 import { ExternalUIComponentProps } from '../../../types';
 
+const DEFAULT_PAGINATED_TRANSACTIONS_LIMIT = DEFAULT_PAGE_LIMIT;
 const DEFAULT_CREATED_SINCE = new Date(new Date().setHours(0, 0, 0, 0)).toISOString();
 const DEFAULT_CREATED_UNTIL = new Date(new Date().setHours(23, 59, 59, 999)).toISOString();
 
@@ -33,34 +35,31 @@ function Transactions({
     onTransactionSelected,
     showDetails,
     balancePlatformId,
-    initialListLimit,
+    initialListLimit = DEFAULT_PAGINATED_TRANSACTIONS_LIMIT,
 }: ExternalUIComponentProps<TransactionsComponentProps>) {
-    const DEFAULT_PAGINATED_TRANSACTIONS_LIMIT = initialListLimit || '20';
+    const [preferredLimit, setPreferredLimit] = useState(initialListLimit);
+    const { i18n, clientKey, loadingContext } = useCoreContext();
+    const { limit: pageLimit, limitOptions } = usePageLimit({ preferredLimit, limitOptions: LIMIT_OPTIONS });
 
-    const { i18n, loadingContext, clientKey } = useCoreContext();
     const getTransactions = useCallback(
         async (pageRequestParams: Record<TransactionFilterParam | 'cursor', string>, signal?: AbortSignal) => {
-            const requiredTransactionFields = {
-                createdSince: pageRequestParams.createdSince ?? DEFAULT_CREATED_SINCE,
-                createdUntil: pageRequestParams.createdUntil ?? DEFAULT_CREATED_UNTIL,
-                limit: pageRequestParams.limit ?? DEFAULT_PAGINATED_TRANSACTIONS_LIMIT,
-                balancePlatform: pageRequestParams.balancePlatform ?? balancePlatformId,
-            };
-
-            const searchParams = parseSearchParams({ ...pageRequestParams, ...requiredTransactionFields });
             const request: HttpOptions = {
                 loadingContext: loadingContext,
                 clientKey,
                 path: 'transactions',
                 errorLevel: 'error',
-                params: searchParams,
+                params: parseSearchParams({
+                    ...pageRequestParams,
+                    createdSince: pageRequestParams.createdSince ?? DEFAULT_CREATED_SINCE,
+                    createdUntil: pageRequestParams.createdUntil ?? DEFAULT_CREATED_UNTIL,
+                    balancePlatform: pageRequestParams.balancePlatform ?? balancePlatformId,
+                }),
                 signal,
             };
-            const data = await httpGet<PaginatedResponseDataWithLinks<ITransaction, 'data'>>(request);
 
-            return data;
+            return await httpGet<PaginatedResponseDataWithLinks<ITransaction, 'data'>>(request);
         },
-        [balancePlatformId]
+        [balancePlatformId, clientKey, loadingContext]
     );
 
     const { canResetFilters, fetching, filters, records, resetFilters, updateFilters, error, limit, ...paginationProps } = useCursorPaginatedRecords<
@@ -74,10 +73,10 @@ function Transactions({
                 fetchRecords: getTransactions,
                 dataField: 'data',
                 filterParams: transactionsFilterParams,
-                initialFiltersSameAsDefault: false,
-                limit: Number(DEFAULT_PAGINATED_TRANSACTIONS_LIMIT),
+                initialFiltersSameAsDefault: true,
+                limit: pageLimit,
             }),
-            [getTransactions]
+            [getTransactions, pageLimit]
         )
     );
 
@@ -94,7 +93,6 @@ function Transactions({
         const _updateDateFilter = (params: { [P in DateRangeFilterParam]?: string } = {}) => {
             for (const [param, value] of Object.entries(params)) {
                 const filter = param === DateRangeFilterParam.FROM ? TransactionFilterParam.CREATED_SINCE : TransactionFilterParam.CREATED_UNTIL;
-
                 updateFilters({ [filter]: value || undefined });
             }
         };
@@ -106,9 +104,12 @@ function Transactions({
         ];
     }, [updateFilters]);
 
-    useEffect(() => onFilterChange?.(filters, elementRef), [filters, onFilterChange]);
-
     const showAlert = useMemo(() => !fetching && error, [fetching, error]);
+    const updateLimit = useCallback((limit: number) => setPreferredLimit(limit), []);
+
+    useEffect(() => {
+        onFilterChange?.({ ...filters, limit: pageLimit }, elementRef);
+    }, [filters, onFilterChange, pageLimit]);
 
     return (
         <div className="adyen-fp-transactions">
@@ -150,8 +151,9 @@ function Transactions({
                     onTransactionSelected={onTransactionSelected}
                     showPagination={true}
                     showDetails={showDetails}
-                    onLimitSelection={limit => updateFilters({ limit: String(limit) })}
-                    limit={limit}
+                    limit={pageLimit}
+                    limitOptions={limitOptions}
+                    onLimitSelection={updateLimit}
                     {...paginationProps}
                 />
             )}

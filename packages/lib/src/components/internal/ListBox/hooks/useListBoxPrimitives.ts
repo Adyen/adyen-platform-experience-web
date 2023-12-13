@@ -4,9 +4,9 @@ import useUniqueIdentifier from '@src/hooks/element/useUniqueIdentifier';
 import useListBoxReducer from './useListBoxReducer';
 import { UseListBoxConfig } from '../types';
 
-const useListBoxPrimitives = <T extends any = any>(options: T[], { onCursorOption, onSelection, selectedOption }: UseListBoxConfig<T>) => {
-    const cachedOptions = useRef<T[]>();
-    const cachedSelectedOption = useRef<T>();
+const useListBoxPrimitives = <T extends any = any>(options: readonly T[], { onCursorOption, onSelection, selectedOption }: UseListBoxConfig<T>) => {
+    const cachedOptions = useRef<typeof options>();
+    const cachedSelectedOption = useRef<(typeof options)[number]>();
     const ref = useUniqueIdentifier();
 
     const [state, dispatch] = useListBoxReducer<T>();

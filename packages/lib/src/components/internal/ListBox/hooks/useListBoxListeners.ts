@@ -27,9 +27,14 @@ const useListBoxListeners = <T extends any = any>({ dispatch, focusRestorationTa
 
     const onfocusoutCapture = useCallback(
         (evt: FocusEvent) => {
-            if (!focusIsWithin(ref.current ?? undefined, evt.relatedTarget as Element)) {
-                return dispatch({ type: 'ESCAPE' });
-            }
+            const activeElement = evt.relatedTarget as Element;
+
+            const shouldEscape =
+                activeElement !== focusRestorationTarget.current &&
+                !focusIsWithin(ref.current ?? undefined, activeElement) &&
+                !focusIsWithin(focusRestorationTarget.current ?? undefined, activeElement);
+
+            shouldEscape && dispatch({ type: 'ESCAPE' });
         },
         [dispatch]
     );

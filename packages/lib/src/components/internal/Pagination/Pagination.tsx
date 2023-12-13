@@ -7,11 +7,22 @@ import './Pagination.scss';
 import { PaginationProps } from './types';
 import LimitSelect from '@src/components/internal/Pagination/components/LimitSelect';
 
-export default function Pagination({ next, hasNext, hasPrev, page, prev, limitSelector, limit, onLimitSelection }: PaginationProps) {
+export default function Pagination({ next, hasNext, hasPrev, page, prev, limit, limitOptions, onLimitSelection }: PaginationProps) {
     const { i18n } = useCoreContext();
 
     const previousIcon = useMemo(() => <span>&lt;</span>, []);
     const nextIcon = useMemo(() => <span>&gt;</span>, []);
+
+    const limitSelection = useMemo(
+        () =>
+            limitOptions &&
+            onLimitSelection && (
+                <div className="adyen-fp-pagination__limit-selector">
+                    <LimitSelect onSelection={onLimitSelection} options={limitOptions} selectedOption={limit} />
+                </div>
+            ),
+        [limitOptions, limit, onLimitSelection]
+    );
 
     return (
         <div aria-label={i18n.get('paginatedNavigation')} className={`adyen-fp-pagination ${classnames({})}`}>
@@ -19,11 +30,7 @@ export default function Pagination({ next, hasNext, hasPrev, page, prev, limitSe
                 <span>
                     {i18n.get('pagination.page')} {page}
                 </span>
-                {limitSelector && onLimitSelection && (
-                    <div className="adyen-fp-pagination__limit-selecto">
-                        <LimitSelect limit={limit} onSelection={onLimitSelection} />
-                    </div>
-                )}
+                {limitSelection}
             </div>
 
             <div className="adyen-fp-pagination__controls">
