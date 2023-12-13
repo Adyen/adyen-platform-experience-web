@@ -9,18 +9,22 @@ SECRETS_PATH="${SCRIPT_DIR}/variables"
 FOLDER_PATH="specs/platform-components"
 CA_CERTS=$(npm config get cafile)
 
-# Prompt for GitLab API token
-read -sp "Enter your GitLab API token: " API_TOKEN
-echo
+API_TOKEN="$1"
+REPO_URL="$2"
+PROJECT_ID="$3"
 
-# Prompt for repo URL in gitlab
-read -sp "Enter the repo URL: " REPO_URL
-echo
+if [ -z "$API_TOKEN" ] || [ -z "$REPO_URL" ] || [ -z "$PROJECT_ID" ]; then
 
-# Prompt for repo URL in gitlab
-read -sp "Enter the project ID: " PROJECT_ID
-echo
+    read -sp "Enter your GitLab API token: " API_TOKEN
+    echo
 
+    read -sp "Enter the repo URL: " REPO_URL
+    echo
+
+    read -sp "Enter the project ID: " PROJECT_ID
+    echo
+
+fi
 
 # Create the .env file with the input and hardcoded values
 echo "API_TOKEN=$API_TOKEN" > "$SECRETS_PATH"
