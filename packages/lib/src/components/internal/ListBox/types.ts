@@ -9,6 +9,12 @@ type UncontrolledProps = Pick<HTMLAttributes<any>, 'className' | 'aria-label' | 
 type UseListBox<T extends any = any> = ReturnType<typeof useListBox<T>>;
 type UseListBoxPrimitives<T extends any = any> = ReturnType<typeof useListBoxPrimitives<T>>;
 
+export type UseListBoxConfig<T extends any = any> = {
+    onCursorOption?: (option: T, index: number) => any;
+    onSelection?: (option: T, index: number) => any;
+    selectedOption?: T;
+};
+
 export type UseListBoxListenersContext<T extends any = any> = UseListBoxPrimitives<T> & { focusRestorationTarget: MutableRef<HTMLElement | null> };
 
 export type ListBoxProps<T extends any = any> = UncontrolledProps &
@@ -21,7 +27,6 @@ export type ListBoxProps<T extends any = any> = UncontrolledProps &
 export type ListBoxControlProps<T extends any = any> = UncontrolledProps &
     Pick<UseListBox<T>, 'expand' | 'state'> & {
         listBox: UseListBox<T>['ref'];
-        onSelection: (option: T) => any;
         render: (state: ListBoxState<T>) => ComponentChild;
     };
 

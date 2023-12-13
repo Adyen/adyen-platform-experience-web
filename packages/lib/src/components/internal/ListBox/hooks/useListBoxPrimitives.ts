@@ -2,35 +2,46 @@ import { useCallback, useEffect, useRef } from 'preact/hooks';
 import useReflex from '@src/hooks/useReflex';
 import useUniqueIdentifier from '@src/hooks/element/useUniqueIdentifier';
 import useListBoxReducer from './useListBoxReducer';
+import { UseListBoxConfig } from '../types';
 
-const useListBoxPrimitives = <T extends any = any>(options: T[], selectedOption?: T) => {
-    const [state, dispatch] = useListBoxReducer<T>();
+const useListBoxPrimitives = <T extends any = any>(options: T[], { onCursorOption, onSelection, selectedOption }: UseListBoxConfig<T>) => {
     const cachedOptions = useRef<T[]>();
     const cachedSelectedOption = useRef<T>();
     const ref = useUniqueIdentifier();
+
+    const [state, dispatch] = useListBoxReducer<T>();
+    const { activeIndex, activeOption, index, options: stateOptions } = state;
 
     const cursor = useReflex<Element>(
         useCallback(
             current => {
                 if (!(current instanceof Element)) return;
 
-                const index = Number((current as HTMLElement).dataset?.index);
+                const optionIndex = Number((current as HTMLElement).dataset?.index);
                 current.setAttribute('tabindex', '-1');
 
-                if (index === state.index) {
+                if (optionIndex === index) {
                     (current as HTMLElement)?.focus();
                 }
             },
-            [state]
+            [index]
         )
     );
+
+    useEffect(() => {
+        if (index >= 0) onCursorOption?.(stateOptions[index] as T, index);
+    }, [index]);
+
+    useEffect(() => {
+        if (activeIndex >= 0) onSelection?.(activeOption as T, activeIndex);
+    }, [activeIndex]);
 
     useEffect(() => {
         let $options: readonly T[];
         let uniqueOptions: Set<T>;
 
         if (options === cachedOptions.current) {
-            uniqueOptions = new Set(($options = state.options));
+            uniqueOptions = new Set(($options = stateOptions));
         } else {
             uniqueOptions = new Set((cachedOptions.current = options));
             $options = Object.freeze([...uniqueOptions]);
@@ -41,17 +52,17 @@ const useListBoxPrimitives = <T extends any = any>(options: T[], selectedOption?
             return dispatch({ type: 'RESET' });
         }
 
-        if ($options !== state.options || selectedOption !== cachedSelectedOption.current) {
+        if ($options !== stateOptions || selectedOption !== cachedSelectedOption.current) {
             selection: {
                 if (uniqueOptions.size === uniqueOptions.add(selectedOption as T).size) {
                     cachedSelectedOption.current = selectedOption;
                     break selection;
                 } else uniqueOptions.delete(selectedOption as T);
 
-                if (uniqueOptions.size === uniqueOptions.add(state.activeOption as T).size) {
-                    cachedSelectedOption.current = state.activeOption;
+                if (uniqueOptions.size === uniqueOptions.add(activeOption as T).size) {
+                    cachedSelectedOption.current = activeOption;
                     break selection;
-                } else uniqueOptions.delete(state.activeOption as T);
+                } else uniqueOptions.delete(activeOption as T);
 
                 cachedSelectedOption.current = cachedOptions.current[0];
             }
@@ -63,7 +74,7 @@ const useListBoxPrimitives = <T extends any = any>(options: T[], selectedOption?
                 arg: { ...state, index, activeIndex: index, activeOption: $options[index], options: $options },
             });
         }
-    }, [dispatch, options, selectedOption, state]);
+    }, [activeOption, dispatch, options, selectedOption, stateOptions]);
 
     return { cursor, dispatch, ref, state } as const;
 };

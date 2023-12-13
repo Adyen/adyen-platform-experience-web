@@ -1,5 +1,5 @@
 import { useReducer } from 'preact/hooks';
-import { mod } from '@src/utils/common';
+import { clamp, isInfinite, mod } from '@src/utils/common';
 import { INITIAL_STATE } from '../constants';
 import type { ListBoxState, ListBoxStateDispatchAction } from '../types';
 
@@ -41,6 +41,10 @@ const useListBoxReducer = <T extends any = any>() => {
                 const modulus = currentState.options.length;
 
                 if (modulus > 1) {
+                    if (isInfinite(action.arg)) {
+                        return Object.freeze({ ...currentState, index: clamp(0, action.arg, modulus - 1) });
+                    }
+
                     const skipOffset = ~~(action.arg ?? 1);
                     const current = currentState.index;
 

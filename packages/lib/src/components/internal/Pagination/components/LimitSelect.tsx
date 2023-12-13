@@ -21,7 +21,7 @@ const SELECT_LIST_CLASS = `${SELECT_OPTION_CLASS}s-box`;
 const SELECT_LIST_CONTAINER_CLASS = `${SELECT_BASE_CLASS}__container`;
 
 const SelectList = ({ limit, onSelection }: SelectListProps) => {
-    const { expand, ref, ...listBoxProps } = useListBox(LIMIT_OPTIONS, limit);
+    const { expand, ref, ...listBoxProps } = useListBox(LIMIT_OPTIONS, { onSelection, selectedOption: limit });
     const buttonControlRef = useRef<HTMLButtonElement | null>(null);
 
     const renderControl = useCallback(
@@ -49,7 +49,6 @@ const SelectList = ({ limit, onSelection }: SelectListProps) => {
                     listBox={ref}
                     className={SELECT_BUTTON_CLASS}
                     expand={expand}
-                    onSelection={onSelection}
                     render={renderControl}
                     state={listBoxProps.state}
                 />

@@ -44,6 +44,13 @@ const useListBoxListeners = <T extends any = any>({ dispatch, focusRestorationTa
                         arg: evt.code === InteractionKeyCode.ARROW_DOWN ? 1 : -1,
                     });
                     break;
+                case InteractionKeyCode.END:
+                case InteractionKeyCode.HOME:
+                    dispatch({
+                        type: 'NEXT',
+                        arg: (evt.code === InteractionKeyCode.END ? 1 : -1) * Infinity,
+                    });
+                    break;
                 case InteractionKeyCode.ENTER:
                 case InteractionKeyCode.ESCAPE:
                 case InteractionKeyCode.SPACE:
