@@ -9,11 +9,11 @@ SECRETS_PATH="${SCRIPT_DIR}/variables"
 FOLDER_PATH="specs/platform-components"
 CA_CERTS=$(npm config get cafile)
 
-API_TOKEN="$1"
-REPO_URL="$2"
-PROJECT_ID="$3"
+      REPO_URL: ${{ secrets.REPO_URL }}
+      REPO_TOKEN: ${{ secrets.REPO_TOKEN }}
+      PROJECT_ID: ${{ secrets.PROJECT_ID }}
 
-if [ -z "$API_TOKEN" ] || [ -z "$REPO_URL" ] || [ -z "$PROJECT_ID" ]; then
+if [ -z "$REPO_TOKEN" ] || [ -z "$REPO_URL" ] || [ -z "$PROJECT_ID" ]; then
 
     read -sp "Enter your GitLab API token: " API_TOKEN
     echo
@@ -27,7 +27,7 @@ if [ -z "$API_TOKEN" ] || [ -z "$REPO_URL" ] || [ -z "$PROJECT_ID" ]; then
 fi
 
 # Create the .env file with the input and hardcoded values
-echo "API_TOKEN=$API_TOKEN" > "$SECRETS_PATH"
+echo "API_TOKEN=$REPO_TOKEN" > "$SECRETS_PATH"
 echo "PROJECT_ID=$PROJECT_ID" >> "$SECRETS_PATH"
 echo "FOLDER_PATH=$FOLDER_PATH" >> "$SECRETS_PATH"
 echo "REPO_URL=$REPO_URL" >> "$SECRETS_PATH"
