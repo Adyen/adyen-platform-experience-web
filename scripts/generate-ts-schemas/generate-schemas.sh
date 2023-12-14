@@ -1,5 +1,11 @@
 #!/bin/bash
 
+ENV=$1
+
+if [ $ENV == "CI"] && [ "$npm_lifecycle_event" = "postinstall" ]; then
+    exit 0
+fi
+
 # Get root dir of the project
 SCRIPT_DIR=$(dirname "$0")
 PROJECT_ROOT_DIR=$(realpath "$SCRIPT_DIR/../..")
@@ -15,7 +21,7 @@ SCHEMAS_DIR=$(realpath "$PROJECT_ROOT_DIR/packages/lib/src/types/models/openapi"
 if [ ! -f "$SCRIPT_DIR/variables" ]; then
     if [ "$npm_lifecycle_event" = "postinstall" ]; then
         echo "TS schemas were not generated"
-        exit 0
+        exit 1
     else
         bash "$SCRIPT_DIR/setup-openapi-ts.sh"
     fi
@@ -48,7 +54,7 @@ response_body="${response:0:${#response}-3}"
 # Check if initial call succeeded
 if [ "$http_status" -ne 200 ]; then
     echo "$response_body"
-    exit 0
+    exit 1
 fi
 
 # Extract folders and names
