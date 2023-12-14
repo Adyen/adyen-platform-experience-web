@@ -3,10 +3,8 @@ import Session from '../../FPSession';
 import { SessionSetupResponse } from '../../FPSession/types';
 import { API_VERSION } from './constants';
 
-/**
- */
-function setupSession(session: Session, options: Record<string, any>): Promise<SessionSetupResponse> {
-    const path = `${API_VERSION}/sessions/${session.id}/setup?clientKey=${session.clientKey}`;
+function setupSession(session: Session, options?: Record<string, any>): Promise<SessionSetupResponse> {
+    const path = `${API_VERSION}/setup/?clientKey=${session.clientKey}`;
     const data = {
         sessionData: session.data,
     };
@@ -19,7 +17,8 @@ function setupSession(session: Session, options: Record<string, any>): Promise<S
             errorMessage: 'ERROR: Invalid ClientKey',
             ...(options ?? {}),
         },
-        data
+        data,
+        session.sessionToken
     );
 }
 

@@ -6,13 +6,11 @@ import BaseElement from './BaseElement';
 import getImage from '../../utils/get-image';
 import { BaseElementProps, IUIElement, UIElementProps } from '../types';
 import { UIElementStatus } from '../types';
-const defaultSessionCreate = () => Promise.resolve({ token: '', id: '', clientKey: '' });
 
 export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUIElement {
     protected componentRef: UIElement<P> | null;
     public elementRef: UIElement<P> | null;
     public componentToRender: (() => JSXInternal.Element) | null;
-    public onSessionCreate: () => Promise<{ token: string; id: string; clientKey: string }>;
     public sessionToken: string;
     public clientKey: string;
 
@@ -24,7 +22,6 @@ export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUI
         this.componentToRender = null;
         this.sessionToken = props?.core?.session?.sessionToken || '';
         this.clientKey = props?.core?.session?.clientKey || '';
-        this.onSessionCreate = props.core?.onSessionCreate || defaultSessionCreate;
     }
 
     get isValid() {
@@ -89,7 +86,7 @@ export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUI
 
     render() {
         return (
-            <AuthProvider sessionToken={this.sessionToken} clientKey={this.clientKey} onSessionCreate={this.onSessionCreate}>
+            <AuthProvider endpoints={[] as string[]} sessionToken={this.sessionToken} clientKey={this.clientKey}>
                 <CoreProvider i18n={this.i18n} loadingContext={this.loadingContext}>
                     {this.componentToRender && <>{this.componentToRender()}</>}
                 </CoreProvider>

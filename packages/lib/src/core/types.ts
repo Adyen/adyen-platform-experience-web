@@ -61,6 +61,8 @@ export interface CoreOptions<T extends CoreOptions<T> = any> {
 
     loadingContext?: string;
 
+    onError?: (e: any) => any;
+
     /**
      * @internal
      * */

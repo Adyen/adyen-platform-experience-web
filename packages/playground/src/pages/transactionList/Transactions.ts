@@ -6,8 +6,8 @@ import { enableServerInMockedMode } from '../../endpoints/mock-server/utils';
 import { TEST_CONFIG } from '../../utils/utils';
 import { createLanguageButtons } from '../../utils/createLanguageButtons';
 
-const getMySessionToken = () => {
-    return Promise.resolve({ session: 'my-session-token', clientKey: 'client-key' });
+const getMySessionToken = async () => {
+    return Promise.resolve({ id: '18fbb75e-b53b-40c3-88a4-3a1b7cc92bd1', token: Math.random().toString(), clientKey: Math.random().toString() });
 };
 
 enableServerInMockedMode()
@@ -45,6 +45,27 @@ enableServerInMockedMode()
             ...TEST_CONFIG,
         });
 
+        const transactionsComponent2 = new TransactionsComponent({
+            core: adyenFP,
+            balancePlatformId: process.env.VITE_BALANCE_PLATFORM ?? '',
+            onFilterChange: (/* filters, component */) => {
+                // do something here with the updated filters
+                // avoid refetching the transactions here
+            },
+            onTransactionSelected: ({ showModal }) => {
+                showModal();
+                // window.location.assign(`/src/pages/transaction/?id=${id}`);å
+            },
+            onBalanceAccountSelected: ({ id }) => {
+                window.location.assign(`/src/pages/balanceAccount/?id=${id}`);
+            },
+            onAccountSelected: ({ id }) => {
+                window.location.assign(`/src/pages/accountHolder/?id=${id}`);
+            },
+            ...TEST_CONFIG,
+        });
+
         transactionsComponent.mount('.transactions-component-container');
+        transactionsComponent2.mount('.transactions-component-container-2');
     })
     .catch(console.error);

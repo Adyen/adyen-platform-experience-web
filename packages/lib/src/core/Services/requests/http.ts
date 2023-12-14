@@ -24,6 +24,7 @@ export function http<T>(options: HttpOptions, data?: any, sessionToken?: string,
 
                 if (response.ok) return data;
 
+                //TODO: Fix here to throw correct error at right time
                 if (isAdyenErrorResponse(data)) {
                     // If an errorHandler has been passed use this rather than the default handleFetchError
                     return options.errorHandler ? options.errorHandler(data) : handleFetchError(data.detail, errorLevel);

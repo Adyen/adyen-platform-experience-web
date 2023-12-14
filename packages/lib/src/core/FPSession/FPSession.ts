@@ -12,6 +12,7 @@ class FPSession {
     public configuration?: SessionConfiguration;
 
     constructor(rawSession: Session, clientKey: string, loadingContext: string, sessionToken: string) {
+        //If there isn't any id then sanitize will throw invalid session error
         const session = sanitizeSession(rawSession) as Session;
         if (!clientKey) throw new Error('No clientKey available');
 
@@ -52,7 +53,6 @@ class FPSession {
             if (response.configuration) {
                 this.configuration = { ...response.configuration };
             }
-
             return response;
         });
     }

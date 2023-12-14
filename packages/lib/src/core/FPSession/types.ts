@@ -8,10 +8,11 @@ export type SessionConfiguration = {
 };
 
 export type SessionSetupResponse = {
-    id: string;
-    sessionData: string;
-    expiresAt: string;
-    components: any;
-    returnUrl: string;
+    // id: string;
+    // sessionData: string;
+    // expiresAt: string;
+    // components: any;
+    // returnUrl: string;
     configuration: SessionConfiguration;
+    endpoints: string[];
 };

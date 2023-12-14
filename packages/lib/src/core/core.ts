@@ -1,3 +1,4 @@
+import { SessionSetupResponse } from '@src/core/FPSession/types';
 import type { CoreOptions, Session } from './types';
 import { resolveEnvironment } from './utils';
 import BPSession from './FPSession';
@@ -25,11 +26,16 @@ class Core<T extends CoreOptions<T> = any> {
         this.setOptions(options);
     }
 
-    async initialize(): Promise<this> {
-        if (this.options.onSessionCreate) {
-            const { token: sessionToken, clientKey } = await this.options.onSessionCreate();
-            this.session = new BPSession({ id: 'test', sessionData: 'sessionData' }, clientKey, this.options.loadingContext || '', sessionToken);
+    async initialize(initSession: boolean = false): Promise<this> {
+        if (initSession || (!this.session && this.onSessionCreate)) {
+            await this.updateSession();
         }
+        // await this.updateSession();
+        // if (this.options.onSessionCreate) {
+        //     const { id, token: sessionToken, clientKey } = await this.options.onSessionCreate();
+        //     console.log('random token ', sessionToken);
+        //     this.session = new BPSession({ id: id, sessionData: 'sessionData' }, clientKey, this.options.loadingContext || '', sessionToken);
+        // }
         // TODO: Enable once we have sessions working
         // if (this.options.session) {
         //     this.session = new Session(this.options.session, this.options.clientKey, this.options.loadingContext);
@@ -49,15 +55,33 @@ class Core<T extends CoreOptions<T> = any> {
         return Promise.all([this.localization.ready]).then(() => this);
     }
 
+    public updateSession = async () => {
+        if (this.options.onSessionCreate) {
+            const { id, token: sessionToken, clientKey } = await this.options.onSessionCreate();
+            this.session = new BPSession({ id: id, sessionData: 'sessionData' }, clientKey, this.options.loadingContext || '', sessionToken);
+        }
+        this.session
+            ?.setupSession(this.options)
+            .then(sessionResponse => {
+                return this;
+            })
+            .catch(error => {
+                console.log('on error');
+                if (this.options.onError) this.options.onError(error);
+                return this;
+            });
+    };
+
     /**
      * Updates global configurations, resets the internal state and remounts each element.
      * @param options - props to update
+     * @param initSession - should session be initiated again
      * @returns this - the element instance
      */
-    public update = (options: CoreOptions<T> = {}): Promise<this> => {
+    public update = (options: CoreOptions<T> = {}, initSession: boolean = false): Promise<this> => {
         this.setOptions(options);
 
-        return this.initialize().then(() => {
+        return this.initialize(initSession).then(() => {
             // Update each component under this instance
             this.components.forEach(c => c.update(this.getPropsForComponent(this.options)));
 
@@ -101,14 +125,6 @@ class Core<T extends CoreOptions<T> = any> {
         this.localization.customTranslations = this.options?.translations;
         this.localization.timezone = this.options?.timezone;
         this.onSessionCreate = this.options.onSessionCreate;
-        if (this.options?.clientKey && this.options?.sessionToken) {
-            this.session = new BPSession(
-                { id: 'test', sessionData: 'sessionData' },
-                this?.options?.clientKey || '',
-                this.options.loadingContext || '',
-                this?.options?.sessionToken || ''
-            );
-        }
         this.modules = {
             // analytics: new Analytics(this.options),
             i18n: this.localization.i18n,
