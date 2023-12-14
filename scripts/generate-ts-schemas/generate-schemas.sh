@@ -2,7 +2,7 @@
 
 ENV=$1
 
-if [ $ENV == "CI"] && [ "$npm_lifecycle_event" = "postinstall" ]; then
+if [ "$ENV" == "CI" ] && [ "$npm_lifecycle_event" = "postinstall" ]; then
     exit 0
 fi
 
