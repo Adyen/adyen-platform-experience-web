@@ -38,6 +38,9 @@ jobs:
       - name: Checkout the repo
         uses: actions/checkout@v3
 
+      - name: Run the preliminary setup steps
+        uses: ./.github/actions/setup-env
+
       - name: Create variables
         run: npm run schemas:variables "${{ env.REPO_URL }}" "${{ env.REPO_TOKEN }}" "${{ env.PROJECT_ID }}"
 
