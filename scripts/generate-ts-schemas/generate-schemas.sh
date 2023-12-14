@@ -48,9 +48,7 @@ response_body="${response:0:${#response}-3}"
 # Check if initial call succeeded
 if [ "$http_status" -ne 200 ]; then
     echo "$response_body"
-    echo "$http_status"
-    echo "URL: $GROUPS_URL"
-    exit 1
+    exit 0
 fi
 
 # Extract folders and names
