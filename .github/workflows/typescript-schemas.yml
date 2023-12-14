@@ -28,6 +28,7 @@ jobs:
       approved: ${{ steps.check-approval.outcome == 'success' }}
   generate-schemas:
     needs: is-pr-approved
+    if: needs.is-pr-approved.outputs.approved == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     env:
