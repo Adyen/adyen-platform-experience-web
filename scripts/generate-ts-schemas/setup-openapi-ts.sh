@@ -9,9 +9,6 @@ SECRETS_PATH="${SCRIPT_DIR}/variables"
 FOLDER_PATH="specs/platform-components"
 CA_CERTS=$(npm config get cafile)
 
-      REPO_URL: ${{ secrets.REPO_URL }}
-      REPO_TOKEN: ${{ secrets.REPO_TOKEN }}
-      PROJECT_ID: ${{ secrets.PROJECT_ID }}
 
 if [ -z "$REPO_TOKEN" ] || [ -z "$REPO_URL" ] || [ -z "$PROJECT_ID" ]; then
 
