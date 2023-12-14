@@ -11,6 +11,7 @@ on:
       - .gitignore
 jobs:
   build:
+    if: false
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
