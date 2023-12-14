@@ -15,7 +15,7 @@ SCHEMAS_DIR=$(realpath "$PROJECT_ROOT_DIR/packages/lib/src/types/models/openapi"
 if [ ! -f "$SCRIPT_DIR/variables" ]; then
     if [ "$npm_lifecycle_event" = "postinstall" ]; then
         echo "TS schemas were not generated"
-        exit 1
+        exit 0
     else
         bash "$SCRIPT_DIR/setup-openapi-ts.sh"
     fi
