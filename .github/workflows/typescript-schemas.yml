@@ -34,6 +34,7 @@ jobs:
       REPO_URL: ${{ secrets.REPO_URL }}
       REPO_TOKEN: ${{ secrets.REPO_TOKEN }}
       PROJECT_ID: ${{ secrets.PROJECT_ID }}
+      ENV: "CI"
     steps:
       - name: Checkout the repo
         uses: actions/checkout@v3
@@ -45,7 +46,7 @@ jobs:
         run: npm run schemas:variables "${{ env.REPO_URL }}" "${{ env.REPO_TOKEN }}" "${{ env.PROJECT_ID }}"
 
       - name: Generate schemas
-        run: npm run schemas:generate "CI"
+        run: npm run schemas:generate
 
       - name: Build library
         run: npm run build
