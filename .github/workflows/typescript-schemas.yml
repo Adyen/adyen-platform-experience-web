@@ -34,7 +34,7 @@ jobs:
       REPO_URL: ${{ secrets.REPO_URL }}
       REPO_TOKEN: ${{ secrets.REPO_TOKEN }}
       PROJECT_ID: ${{ secrets.PROJECT_ID }}
-      ENV: "CI"
+      CI: true
     steps:
       - name: Checkout the repo
         uses: actions/checkout@v3
