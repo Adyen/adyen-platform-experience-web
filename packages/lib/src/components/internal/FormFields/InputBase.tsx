@@ -1,4 +1,5 @@
 import { ARIA_ERROR_SUFFIX } from '@src/core/Errors/constants';
+import { hasOwnProperty } from '@src/utils/common';
 import classNames from 'classnames';
 import { h } from 'preact';
 import { ForwardedRef, forwardRef, TargetedEvent } from 'preact/compat';
@@ -12,7 +13,7 @@ function InputBase(props: InputBaseProps, ref: ForwardedRef<HTMLInputElement | n
      * To avoid confusion with misplaced/misdirected onChange handlers - InputBase only accepts onInput, onBlur & onFocus handlers.
      * The first 2 being the means by which we expect useForm--handleChangeFor validation functionality to be applied.
      */
-    if (Object.prototype.hasOwnProperty.call(props, 'onChange')) {
+    if (hasOwnProperty(props, 'onChange')) {
         console.error('Error: Form fields that rely on InputBase may not have an onChange property');
     }
 
