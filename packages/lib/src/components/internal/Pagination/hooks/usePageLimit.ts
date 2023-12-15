@@ -2,6 +2,7 @@ import { useMemo, useRef } from 'preact/hooks';
 import { DEFAULT_PAGE_LIMIT } from '../constants';
 import { getClampedPageLimit } from '../utils';
 import { isNumber, mid } from '@src/utils/common';
+import { BasePaginatedRecordsInitOptions } from './types';
 
 export const getNearestFromSortedUniqueNums = (nums: number[], target: number): number => {
     const lastindex = nums.length - 1;
@@ -21,7 +22,10 @@ export const getNearestFromSortedUniqueNums = (nums: number[], target: number): 
     }
 };
 
-const usePageLimit = ({ limitOptions, preferredLimit = DEFAULT_PAGE_LIMIT }: { limitOptions?: readonly number[]; preferredLimit?: number }) => {
+const usePageLimit = ({
+    preferredLimit = DEFAULT_PAGE_LIMIT,
+    preferredLimitOptions,
+}: Pick<BasePaginatedRecordsInitOptions<any, any, any, any>, 'preferredLimit' | 'preferredLimitOptions'>) => {
     const cachedLimitOptions = useRef<readonly number[]>();
     const cachedLimit = useRef<number>();
 
@@ -29,7 +33,7 @@ const usePageLimit = ({ limitOptions, preferredLimit = DEFAULT_PAGE_LIMIT }: { l
         try {
             const uniqueOptions = new Set<number>();
 
-            for (const option of limitOptions as number[]) {
+            for (const option of preferredLimitOptions as number[]) {
                 const limit = getClampedPageLimit(option);
                 if (limit > 0) uniqueOptions.add(limit);
             }
@@ -38,7 +42,7 @@ const usePageLimit = ({ limitOptions, preferredLimit = DEFAULT_PAGE_LIMIT }: { l
         } catch {
             /* ignore exception — no options available */
         }
-    }, [limitOptions]);
+    }, [preferredLimitOptions]);
 
     const limit = useMemo(() => {
         let limit = getClampedPageLimit(preferredLimit) || DEFAULT_PAGE_LIMIT;

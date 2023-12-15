@@ -1,13 +1,13 @@
 import { useMemo, useReducer, useRef, useState } from 'preact/hooks';
-import useMounted from '../useMounted';
+import { EMPTY_OBJECT } from '@src/utils/common';
+import useMounted from '@src/hooks/useMounted';
 import { ReactiveStateRecord, ReactiveStateUpdateRequest, ReactiveStateUpdateRequestWithField, UseReactiveStateRecord } from './types';
 
-// [TODO]: Modify hook to also accept object with initial values
-const useReactiveStateWithParams = <Value, Param extends string = string>(
-    params: Param[] = [],
+const useReactiveStateWithParams = <Value, Param extends string>(
+    params: ReactiveStateRecord<Value, Param> = EMPTY_OBJECT,
     initialStateSameAsDefault = true
 ): UseReactiveStateRecord<Value, Param> => {
-    const $state = useRef(Object.freeze(Object.fromEntries(params.map(param => [param])) as ReactiveStateRecord<Value, Param>));
+    const $state = useRef(Object.freeze({ ...params }) as ReactiveStateRecord<Value, Param>);
     const $hasDefaultState = useRef(initialStateSameAsDefault);
     const $markedAsHavingDefaultState = useRef(initialStateSameAsDefault);
     const $changedParams = useRef(new Set<Param>());

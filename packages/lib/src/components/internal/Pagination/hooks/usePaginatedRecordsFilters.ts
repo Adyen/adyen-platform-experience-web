@@ -1,8 +1,10 @@
+import { EMPTY_OBJECT } from '@src/utils/common';
 import { UsePaginatedRecordsFilters } from './types';
-import useReactiveStateWithParams from '../../../../hooks/useReactiveStateWithParams';
+import useReactiveStateWithParams from '@src/hooks/useReactiveStateWithParams';
+import { ReactiveStateRecord } from '@src/hooks/useReactiveStateWithParams/types';
 
 const usePaginatedRecordsFilters = <FilterValue, FilterParam extends string>(
-    filterParams: FilterParam[] = [],
+    filterParams: ReactiveStateRecord<FilterValue, FilterParam> = EMPTY_OBJECT,
     initialFiltersSameAsDefault?: boolean
 ): UsePaginatedRecordsFilters<FilterValue, FilterParam> => {
     const {
@@ -12,7 +14,7 @@ const usePaginatedRecordsFilters = <FilterValue, FilterParam extends string>(
         state: filters,
         stateVersion: filtersVersion,
         updateState: updateFilters,
-    } = useReactiveStateWithParams<FilterValue>(filterParams, initialFiltersSameAsDefault);
+    } = useReactiveStateWithParams<FilterValue, FilterParam>(filterParams, initialFiltersSameAsDefault);
 
     return { canResetFilters, defaultFilters, filters, filtersVersion, resetFilters, updateFilters };
 };
