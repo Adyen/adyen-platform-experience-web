@@ -6,6 +6,7 @@
     &__context {
         align-items: center;
         display: flex;
+        gap: var(--adyen-fp-spacing-medium);
     }
 
     &__controls {
