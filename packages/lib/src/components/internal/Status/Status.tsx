@@ -11,6 +11,7 @@ export default function Status(props: StatusProps) {
             active: 'status.active',
             inactive: 'status.inactive',
             pending: 'status.pending',
+            closed: 'status.closed',
         } as const;
 
         return labels[key] ? i18n.get(labels[key]) : key;

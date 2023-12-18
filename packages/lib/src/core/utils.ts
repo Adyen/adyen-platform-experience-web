@@ -26,3 +26,4 @@ export function resolveEnvironment(env?: DevEnvironment): string {
 }
 
 export const normalizeLoadingContext = (loadingContext: string) => (loadingContext.endsWith('/') ? loadingContext : `${loadingContext}/`);
+export const normalizeUrl = (url: string) => (url.startsWith('/') ? url : `/${url}`);

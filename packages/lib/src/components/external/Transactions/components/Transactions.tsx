@@ -16,6 +16,8 @@ import { parseSearchParams } from '@src/core/Services/requests/utils';
 import { isFunction } from '@src/utils/common';
 import Alert from '@src/components/internal/Alert';
 import { ExternalUIComponentProps } from '../../../types';
+import { API_ENDPOINTS } from '@src/core/Services/requests/endpoints';
+import { SuccessGETResponse } from '@src/types/models/api/utils';
 
 const DEFAULT_CREATED_SINCE = new Date(new Date().setHours(0, 0, 0, 0)).toISOString();
 const DEFAULT_CREATED_UNTIL = new Date(new Date().setHours(23, 59, 59, 999)).toISOString();
@@ -49,7 +51,7 @@ function Transactions({
             const request: HttpOptions = {
                 loadingContext: loadingContext,
                 clientKey,
-                path: 'transactions',
+                path: API_ENDPOINTS.transactions.getTransactions,
                 errorLevel: 'error',
                 params: parseSearchParams({
                     ...pageRequestParams,
