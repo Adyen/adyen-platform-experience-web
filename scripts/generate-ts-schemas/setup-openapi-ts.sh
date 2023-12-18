@@ -12,7 +12,7 @@ CA_CERTS=$(npm config get cafile)
 
 if [ -z "$REPO_TOKEN" ] || [ -z "$REPO_URL" ] || [ -z "$PROJECT_ID" ]; then
 
-    read -sp "Enter your GitLab API token: " API_TOKEN
+    read -sp "Enter your GitLab API token: " REPO_TOKEN
     echo
 
     read -sp "Enter the repo URL: " REPO_URL
