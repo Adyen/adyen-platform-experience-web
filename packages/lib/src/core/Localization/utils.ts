@@ -1,9 +1,8 @@
 import { JSX } from 'preact';
+import { hasOwnProperty } from '@src/utils/common';
 import { defaultTranslation, FALLBACK_LOCALE, LOCALE_FORMAT_REGEX } from './constants/locale';
 import { CustomTranslations, SupportedLocale, Translation, TranslationOptions } from './types';
 import { en_US } from './translations';
-
-const hasOwnProperty = Function.prototype.call.bind(Object.prototype.hasOwnProperty);
 
 /**
  * Convert to ISO 639-1

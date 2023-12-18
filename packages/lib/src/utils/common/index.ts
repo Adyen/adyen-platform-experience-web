@@ -3,13 +3,20 @@ import { JSXInternal } from 'preact/src/jsx';
 import { $createObject, immutableProxyHandlers } from './constants';
 
 export const call = Function.prototype.bind.bind(Function.prototype.call);
-export const struct = call($createObject, null, null);
-export const structFrom = call($createObject, null);
+export const struct = call($createObject, void 0, null);
+export const structFrom = call($createObject, void 0);
 export const toString = call(Object.prototype.toString);
+export const hasOwnProperty = call(Object.prototype.hasOwnProperty);
 
 export const noop = new Proxy(() => {}, immutableProxyHandlers);
 export const asyncNoop = async () => {};
-export const enumerable = (value: any) => ({ value, enumerable: true } as const);
+
+export const enumerable = <T extends any = any>(value: T, writable: boolean = false): TypedPropertyDescriptor<T> =>
+    ({
+        writable: (writable as any) === true,
+        enumerable: true,
+        value,
+    } as const);
 
 export const identity = <T = any>(value?: T) => value;
 export const boolify = (value?: any, fallbackBoolean?: boolean) => (typeof value === 'boolean' ? value : !!fallbackBoolean);

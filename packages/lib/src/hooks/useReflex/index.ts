@@ -1,3 +1,3 @@
-export { default } from './useReflex';
-export * from './registry';
+export { default } from './hooks/useReflex';
+export * from './errors';
 export * from './types';

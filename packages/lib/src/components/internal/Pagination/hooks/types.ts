@@ -11,7 +11,7 @@ import {
     WithPaginationOffset,
     WithPaginationRecordSize,
 } from '../types';
-import { UseReactiveStateRecord } from '@src/hooks/useReactiveStateWithParams/types';
+import { ReactiveStateRecord, UseReactiveStateRecord } from '@src/hooks/useReactiveState/types';
 
 type MaybePromise<T = any> = T | Promise<T>;
 
@@ -44,12 +44,16 @@ export type RequestPageCallback<Pagination extends PaginationType> = (
     signal?: AbortSignal
 ) => MaybePromise<RequestPageCallbackReturnValue<Pagination>>;
 
-export type PaginatedRecordsInitOptions<T, DataField extends string, FilterValue, FilterParam extends string> = WithPaginationLimit<{
-    fetchRecords: (params?: any, signal?: AbortSignal) => Promise<PaginatedResponseData<T, DataField>>;
+export type PaginatedRecordsInitOptions<T, DataField extends string, FilterValue, FilterParam extends string> = {
     dataField: PaginatedResponseDataField<DataField>;
-    filterParams?: FilterParam[];
+    fetchRecords: (params?: any, signal?: AbortSignal) => Promise<PaginatedResponseData<T, DataField>>;
+    filterParams?: ReactiveStateRecord<FilterValue, FilterParam>;
     initialFiltersSameAsDefault?: boolean;
-}>;
+    onFiltersChanged?: (filters: ReactiveStateRecord<FilterValue, FilterParam>) => any;
+    onLimitChanged?: (limit: number) => any;
+    preferredLimit?: number;
+    preferredLimitOptions?: readonly number[];
+};
 
 export type BasePaginatedRecordsInitOptions<T, DataField extends string, FilterValue, FilterParam extends string> = PaginatedRecordsInitOptions<
     T,
@@ -57,12 +61,11 @@ export type BasePaginatedRecordsInitOptions<T, DataField extends string, FilterV
     FilterValue,
     FilterParam
 > & {
-    pagination: PaginationType;
-    initializeAndDerivePageLimit?: (
+    initialize?: (
         data: PaginatedRecordsFetcherReturnValue<PaginationType, T>,
-        recordsFilters: UsePaginatedRecordsFilters<FilterValue, FilterParam>,
-        currentPageLimit: number | undefined
-    ) => number | undefined;
+        recordsFilters: UsePaginatedRecordsFilters<FilterValue, FilterParam>
+    ) => any;
+    pagination: PaginationType;
 };
 
 export type UsePaginatedRecordsFilters<FilterValue, FilterParam extends string> = UseFilters<UseReactiveStateRecord<FilterValue, FilterParam>>;
@@ -77,7 +80,9 @@ export interface UsePaginationSetupConfig<Pagination extends PaginationType> {
 export interface UsePaginatedRecords<T, FilterValue, FilterParam extends string>
     extends UsePagination,
         Omit<UsePaginatedRecordsFilters<FilterValue, FilterParam>, 'defaultFilters' | 'filtersVersion'> {
+    error: Error | undefined;
     fetching: boolean;
+    limitOptions: PaginatedRecordsInitOptions<T, any, FilterValue, FilterParam>['preferredLimitOptions'];
+    updateLimit: (limit: number) => void;
     records: T[];
-    error?: Error;
 }
