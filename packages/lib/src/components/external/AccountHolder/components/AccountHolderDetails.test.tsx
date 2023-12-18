@@ -17,7 +17,7 @@ describe('AccountHolder component', () => {
         const screen = render(<AccountHolderInfo accountHolder={ACCOUNT_HOLDER_1} />);
 
         const status = screen.getByRole('listitem', { name: 'Status' });
-        within(status).getByText(new RegExp(ACCOUNT_HOLDER_1.status, 'i'));
+        within(status).getByText(new RegExp(ACCOUNT_HOLDER_1.status!, 'i'));
     });
 
     test('shows the legal entity details', async () => {
@@ -29,15 +29,15 @@ describe('AccountHolder component', () => {
         screen.getByText(ACCOUNT_HOLDER_1.legalEntityId);
 
         screen.getByText('Description');
-        screen.getByText(ACCOUNT_HOLDER_1.description);
+        screen.getByText(ACCOUNT_HOLDER_1.description!);
     });
 
     test('shows the contact details', async () => {
         const screen = render(<AccountHolderInfo accountHolder={ACCOUNT_HOLDER_1} />);
 
         screen.getByText('Contact details');
-        screen.getByText(ACCOUNT_HOLDER_1.contactDetails.phone.number);
-        screen.getByText(ACCOUNT_HOLDER_1.contactDetails.email);
+        screen.getByText(ACCOUNT_HOLDER_1.contactDetails!.phone.number);
+        screen.getByText(ACCOUNT_HOLDER_1.contactDetails!.email);
         screen.getByText('Simon Carmiggeltstraat 6, 12336750');
         screen.getByText('Amsterdam, NL');
     });

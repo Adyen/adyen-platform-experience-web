@@ -166,7 +166,7 @@ export default class Localization {
      * @param currencyCode - Currency code of the amount
      * @param options - Options for String.prototype.toLocaleString
      */
-    amount(amount: number, currencyCode: CurrencyCode, options?: Record<string, any>): string {
+    amount(amount: number, currencyCode: string, options?: Record<string, any>): string {
         const localisedAmount = getLocalisedAmount(amount, this.#locale, currencyCode, options);
         if (options && options['showSign'] && amount !== 0) {
             return localisedAmount.includes('-') ? `- ${localisedAmount.replace('-', '')}` : `+ ${localisedAmount}`;

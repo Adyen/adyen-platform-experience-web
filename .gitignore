@@ -41,3 +41,5 @@ packages/playground/storybook-static/
 
 playwright-report
 test-results
+
+scripts/generate-ts-schemas/variables

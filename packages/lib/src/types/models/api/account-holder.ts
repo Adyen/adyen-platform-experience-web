@@ -8,7 +8,7 @@ export interface AccountHolder {
     reference?: string;
     capabilities: Capabilities;
     id: string;
-    status: StatusType;
+    status?: StatusType;
     contactDetails: {
         address: { city: string; country: string; houseNumberOrName: string; postalCode: string; street: string };
         email: string;

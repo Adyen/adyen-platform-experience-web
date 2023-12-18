@@ -59,10 +59,10 @@ export const TransactionData = ({ transaction }: { transaction: ITransaction }) 
                             items={{
                                 paymentId: transaction.id,
                                 transferID: transaction.transferId,
-                                type: i18n.get(`txType.${transaction.type}`),
+                                type: transaction.type && i18n.get(`txType.${transaction.type!}`),
                                 balanceAccount: transaction.balanceAccountId,
                                 reference: transaction.reference,
-                                category: getLabel(transaction.category),
+                                category: transaction.category && getLabel(transaction.category),
                                 referenceForBeneficiary: transaction.referenceForBeneficiary,
                             }}
                             grid={false}
