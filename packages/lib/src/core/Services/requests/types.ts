@@ -25,3 +25,5 @@ export type AdyenErrorResponse = {
     type: string;
     status: number;
 };
+
+export type FunctionOrStringLiteral = `/${string}` | ((...params: any) => `/${string}`);

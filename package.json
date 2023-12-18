@@ -38,8 +38,11 @@
         "storybook:build": "npm run storybook:build -w @adyen/adyen-fp-web-playground",
         "storybook:demo": "npm run storybook:demo -w @adyen/adyen-fp-web-playground",
         "demo:serve": "npm run demo:serve -w @adyen/adyen-fp-web-playground",
+        "watchTS": "tsc -b ./tsconfig.json --watch",
+        "schemas:generate": "bash scripts/generate-ts-schemas/generate-schemas.sh",
+        "schemas:variables": "bash scripts/generate-ts-schemas/setup-openapi-ts.sh",
         "prepare": "node ./prepare.js && bash ./scripts/process-package-lock.sh",
-        "watchTS": "tsc -b ./tsconfig.json --watch"
+        "postinstall": "if [ \"$CI\" != \"true\" ]; then npm run schemas:generate; fi"
     },
     "dependencies": {
         "@adyen/bento-design-tokens": "^0.5.2",
