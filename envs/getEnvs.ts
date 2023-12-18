@@ -4,6 +4,11 @@ import { resolve } from 'node:path';
 export const envDir = resolve(__dirname);
 
 const parseEnv = (env: Record<string, string | undefined>) => ({
+    sessionApi: {
+        url: env.SESSION_API_URL ?? '',
+        token: env.SESSION_TOKEN ?? '',
+        cookie: env.SESSION_COOKIE ?? '',
+    },
     lemApi: {
         url: env.LEM_API_URL ?? '',
         version: env.LEM_API_VERSION ?? '',

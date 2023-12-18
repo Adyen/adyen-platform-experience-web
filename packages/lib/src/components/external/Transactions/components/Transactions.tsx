@@ -48,7 +48,7 @@ function Transactions({
     const preferredLimitOptions = useMemo(() => (allowLimitSelection ? LIMIT_OPTIONS : undefined), [allowLimitSelection]);
 
     const { i18n, clientKey, loadingContext } = useCoreContext();
-    const { httpProvider } = useSessionRequest(elementRef.props.core);
+    const { httpProvider } = useSessionRequest(args);
 
     const getTransactions = useCallback(
         async (pageRequestParams: Record<TransactionFilterParam | 'cursor', string>, signal?: AbortSignal) => {

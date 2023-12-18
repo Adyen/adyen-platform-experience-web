@@ -2,7 +2,7 @@ import adyenFPError from '@src/core/Errors/AdyenFPError';
 import { AdyenErrorResponse, ErrorLevel, HttpOptions } from './types';
 import AdyenFPError from '@src/core/Errors/AdyenFPError';
 
-export const getRequestObject = (options: HttpOptions, data?: any, sessionToken?: string): RequestInit => {
+export const getRequestObject = (options: HttpOptions, sessionToken?: string, data?: any): RequestInit => {
     const { headers = [], method = 'GET' } = options;
     const params = method === 'GET' ? data : sessionToken ? { ...data, session: sessionToken } : data;
 

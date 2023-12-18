@@ -13,6 +13,7 @@ export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUI
     public componentToRender: (() => JSXInternal.Element) | null;
     public sessionToken: string;
     public clientKey: string;
+    public error?: boolean;
 
     constructor(props: P & UIElementProps & BaseElementProps) {
         super(props);
@@ -22,6 +23,7 @@ export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUI
         this.componentToRender = null;
         this.sessionToken = props?.core?.session?.sessionToken || '';
         this.clientKey = props?.core?.session?.clientKey || '';
+        this.error = false;
     }
 
     get isValid() {
@@ -86,11 +88,17 @@ export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUI
 
     render() {
         return (
-            <AuthProvider endpoints={[] as string[]} sessionToken={this.sessionToken} clientKey={this.clientKey}>
-                <CoreProvider i18n={this.i18n} loadingContext={this.loadingContext}>
-                    {this.componentToRender && <>{this.componentToRender()}</>}
-                </CoreProvider>
-            </AuthProvider>
+            <>
+                {this.error ? (
+                    <div>Error occured</div>
+                ) : (
+                    <AuthProvider endpoints={[] as string[]} sessionToken={this.sessionToken} clientKey={this.clientKey}>
+                        <CoreProvider i18n={this.i18n} loadingContext={this.loadingContext}>
+                            {this.componentToRender && <>{this.componentToRender()}</>}
+                        </CoreProvider>
+                    </AuthProvider>
+                )}
+            </>
         );
     }
 }

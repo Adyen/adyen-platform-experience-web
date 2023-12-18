@@ -3,4 +3,5 @@ export const endpoints = {
     balanceAccount: '/api/balanceAccounts',
     transactions: '/api/transactions',
     legalEntities: '/api/legalEntities',
+    sessions: '/authe/api/v1/sessions',
 };

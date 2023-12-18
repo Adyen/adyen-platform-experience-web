@@ -26,7 +26,7 @@ async function getPlaygroundEntrypoints() {
 }
 
 export default defineConfig(async ({ mode }) => {
-    const { lemApi, BTLApi, BCLApi, playground, envIds } = getEnvironment(mode);
+    const { lemApi, BTLApi, BCLApi, playground, envIds, sessionApi } = getEnvironment(mode);
     return {
         root: mode === 'demo' ? demoPlaygroundDir : undefined,
         base: './',
@@ -69,7 +69,7 @@ export default defineConfig(async ({ mode }) => {
             host: playground.host,
             port: playground.port,
             https: false,
-            proxy: mode === 'mocked' ? undefined : realApiProxies(lemApi, BTLApi, BCLApi),
+            proxy: mode === 'mocked' ? undefined : realApiProxies(lemApi, BTLApi, BCLApi, sessionApi),
             watch: {
                 ignored: ['!**/node_modules/@adyen/adyen-fp-web/**'],
             },

@@ -10,15 +10,29 @@ const makeProxyOptions = ({ url, version, username, password, apiKey }, basicAut
     rewrite: path => path.replace(/^\/api/, ''),
 });
 
-export const realApiProxies = (lemApiOptions, btlApiOptions, bclApiOptions) => {
+const makeSessionProxyOptions = ({ url, token, cookie }) => ({
+    target: `${url}`,
+    headers: {
+        Authorization: `Basic ${token}`,
+        Cookie: `JSESSIONID=${cookie}`,
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+    },
+    changeOrigin: true,
+});
+
+export const realApiProxies = (lemApiOptions, btlApiOptions, bclApiOptions, sessionApiOptions) => {
     const lemApiProxyOptions = makeProxyOptions(lemApiOptions);
     const btlApiProxyOptions = makeProxyOptions(btlApiOptions);
     const bclApiProxyOptions = makeProxyOptions(bclApiOptions);
+    const sessionApiProxyOptions = makeSessionProxyOptions(sessionApiOptions);
+    console.log(sessionApiProxyOptions);
 
     return {
         [endpoints.transactions]: btlApiProxyOptions,
         [endpoints.balanceAccount]: bclApiProxyOptions,
         [endpoints.accountHolder]: bclApiProxyOptions,
         [endpoints.legalEntities]: lemApiProxyOptions,
+        [endpoints.sessions]: sessionApiProxyOptions,
     };
 };

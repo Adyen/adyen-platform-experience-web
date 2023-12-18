@@ -19,6 +19,7 @@ class Core<T extends CoreOptions<T> = any> {
     public localization;
     public loadingContext?: string;
     public onSessionCreate?: any;
+    public error?: boolean;
 
     constructor(options: CoreOptions<T>) {
         this.options = options;
@@ -27,15 +28,10 @@ class Core<T extends CoreOptions<T> = any> {
     }
 
     async initialize(initSession: boolean = false): Promise<this> {
-        if (initSession || (!this.session && this.onSessionCreate)) {
+        if (!this.error && (initSession || (!this.session && this.onSessionCreate))) {
             await this.updateSession();
         }
-        // await this.updateSession();
-        // if (this.options.onSessionCreate) {
-        //     const { id, token: sessionToken, clientKey } = await this.options.onSessionCreate();
-        //     console.log('random token ', sessionToken);
-        //     this.session = new BPSession({ id: id, sessionData: 'sessionData' }, clientKey, this.options.loadingContext || '', sessionToken);
-        // }
+
         // TODO: Enable once we have sessions working
         // if (this.options.session) {
         //     this.session = new Session(this.options.session, this.options.clientKey, this.options.loadingContext);
@@ -58,18 +54,21 @@ class Core<T extends CoreOptions<T> = any> {
     public updateSession = async () => {
         if (this.options.onSessionCreate) {
             const { id, token: sessionToken, clientKey } = await this.options.onSessionCreate();
-            this.session = new BPSession({ id: id, sessionData: 'sessionData' }, clientKey, this.options.loadingContext || '', sessionToken);
+            console.log(id);
+            // this.session = new BPSession({ id: id, sessionData: 'sessionData' }, clientKey, this.options.loadingContext || '', sessionToken);
         }
-        this.session
-            ?.setupSession(this.options)
-            .then(sessionResponse => {
-                return this;
-            })
-            .catch(error => {
-                console.log('on error');
-                if (this.options.onError) this.options.onError(error);
-                return this;
-            });
+        // this.session
+        //     ?.setupSession(this.options)
+        //     .then(sessionResponse => {
+        //         this.update({})
+        //         return this;
+        //     })
+        //     .catch(error => {
+        //         console.log('session error');
+        //         if (this.options.onError) this.options.onError(error);
+        //         this.update({error: true});
+        //         return this;
+        //     });
     };
 
     /**
@@ -130,6 +129,8 @@ class Core<T extends CoreOptions<T> = any> {
             i18n: this.localization.i18n,
         };
 
+        this.error = this.options.error;
+
         // Check for clientKey/environment mismatch
         const clientKeyType = this.options?.clientKey?.substring(0, 3) ?? '';
         if (['test', 'live'].includes(clientKeyType) && !this.options?.loadingContext?.includes(clientKeyType)) {
@@ -145,6 +146,14 @@ class Core<T extends CoreOptions<T> = any> {
      * @returns props for a new UIElement
      */
     private getPropsForComponent(options: any) {
+        console.log('props for component ', {
+            ...options,
+            i18n: this.modules.i18n,
+            modules: this.modules,
+            session: this.session,
+            loadingContext: this.loadingContext,
+            _parentInstance: this,
+        });
         return {
             ...options,
             i18n: this.modules.i18n,

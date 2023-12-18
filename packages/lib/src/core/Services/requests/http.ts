@@ -3,10 +3,10 @@ import { getRequestObject, handleFetchError, isAdyenErrorResponse } from './util
 import { HttpOptions } from './types';
 import { normalizeLoadingContext, normalizeUrl } from '@src/core/utils';
 
-export function http<T>(options: HttpOptions, data?: any, sessionToken?: string, clientKey?: string): Promise<T> {
+export function http<T>(options: HttpOptions, sessionToken?: string, clientKey?: string, data?: any): Promise<T> {
     const { errorLevel = 'warn', loadingContext = '', path } = options;
 
-    const request = getRequestObject(options, data, sessionToken);
+    const request = getRequestObject(options, sessionToken, data);
 
     //TODO - Get rid of the "api" prefix once we have defined a loadingContext from our BFF.
     const url = new URL(`${normalizeLoadingContext(loadingContext)}api${normalizeUrl(path)}`);
@@ -17,6 +17,7 @@ export function http<T>(options: HttpOptions, data?: any, sessionToken?: string,
             if (decodedValue) url.searchParams.set(param, decodedValue);
         });
     }
+
     return (
         fetch(url, request)
             .then(async response => {
