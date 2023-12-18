@@ -74,6 +74,15 @@ class Core<T extends CoreOptions<T> = any> {
 
     /**
      * @internal
+     * Register components in core to be able to update them all at once
+     */
+
+    public registerComponent = (component: BaseElement<any>) => {
+        this.components.push(component);
+    };
+
+    /**
+     * @internal
      * Enhances the config object passed when AdyenFP is initialised (environment, clientKey, etc...)
      * (Re)Initializes core properties & processes (i18n, etc...)
      * @param options - the config object passed when AdyenFP is initialised

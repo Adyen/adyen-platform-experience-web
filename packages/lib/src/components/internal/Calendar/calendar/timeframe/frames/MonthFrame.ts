@@ -122,7 +122,9 @@ export default class MonthFrame extends TimeFrame {
             };
 
             for (const format of DAY_OF_WEEK_FORMATS) {
-                labelDescriptors[format] = enumerable(date.toLocaleDateString(this.locale, { weekday: format }));
+                labelDescriptors[format] = enumerable(
+                    date.toLocaleDateString(this.locale, { weekday: format })
+                ) as (typeof labelDescriptors)[typeof format];
             }
 
             this.#daysOfWeekCached[index] = struct({
