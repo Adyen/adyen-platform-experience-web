@@ -103,6 +103,7 @@
     "status": "Status",
     "status.active": "Active",
     "status.booked": "Booked",
+    "status.closed": "Closed",
     "status.inactive": "Inactive",
     "status.pending": "Pending",
     "storeDetails": "Store details",
