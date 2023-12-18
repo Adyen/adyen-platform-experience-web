@@ -1,6 +1,6 @@
 import { PopoverContainerPosition } from '@src/components/internal/Popover/types';
 import { MutableRef, useCallback } from 'preact/hooks';
-import useReflex, { NullableReflexable } from '../useReflex';
+import useReflex, { Nullable, Reflexable } from '../useReflex';
 
 const calculateOffset = (
     popover: Element | null,
@@ -52,7 +52,7 @@ const usePopoverPositioner = (
     offset: number[],
     position: PopoverContainerPosition,
     targetElement: MutableRef<Element | null>,
-    ref?: NullableReflexable<Element>
+    ref?: Nullable<Reflexable<Element>>
 ) => {
     return useReflex<Element>(
         useCallback(

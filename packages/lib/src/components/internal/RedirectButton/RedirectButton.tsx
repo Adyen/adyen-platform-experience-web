@@ -1,4 +1,5 @@
 import useCoreContext from '@src/core/Context/useCoreContext';
+import { hasOwnProperty } from '@src/utils/common';
 import { useState } from 'preact/hooks';
 import { RedirectButtonProps } from './types';
 
@@ -9,7 +10,7 @@ function RedirectButton({ payButton, onSubmit, amount, name, ...props }: Redirec
     props.setUIElementStatus?.((newStatus: string) => setStatus(newStatus));
 
     const payButtonLabel = () => {
-        const isZeroAuth = amount && {}.hasOwnProperty.call(amount, 'value') && amount.value === 0;
+        const isZeroAuth = amount && hasOwnProperty(amount, 'value') && amount.value === 0;
         if (isZeroAuth) return `${i18n.get('preauthorizeWith')} ${name}`;
         return `${i18n.get('continueTo')} ${name}`;
     };

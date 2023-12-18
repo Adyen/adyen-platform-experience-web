@@ -5,7 +5,7 @@ import { TypographyElement, TypographyVariant } from '@src/components/internal/T
 import Typography from '@src/components/internal/Typography/Typography';
 import useUniqueIdentifier from '@src/hooks/element/useUniqueIdentifier';
 import { isEmpty } from '@src/utils/validator-utils';
-import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
+import { Ref, useCallback, useEffect, useMemo, useState } from 'preact/hooks';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import useBooleanState from '../../../../../hooks/useBooleanState';
 import '../../../FormFields';
@@ -58,7 +58,7 @@ export default function BaseFilter<T extends BaseFilterProps = BaseFilterProps>(
     const [hasEmptyValue, updateHasEmptyValue] = useBooleanState(false);
     const [hasInitialValue, updateHasInitialValue] = useBooleanState(false);
     const [valueChanged, updateValueChanged] = useBooleanState(false);
-    const targetElement = useUniqueIdentifier();
+    const targetElement = useUniqueIdentifier() as Ref<Element | null>;
 
     const isValueEmpty = useMemo(() => props.isValueEmpty ?? isValueEmptyFallback, [props.isValueEmpty]);
     const renderModalBody = useMemo(() => render ?? renderFallback<T>, [render]);
@@ -137,7 +137,7 @@ export default function BaseFilter<T extends BaseFilterProps = BaseFilterProps>(
                                 ...(editMode ? ['active'] : []),
                             ]}
                             onClick={handleClick}
-                            ref={targetElement}
+                            ref={targetElement as Ref<HTMLButtonElement | null>}
                         >
                             <div className="adyen-fp-filter-button__default-container">
                                 <Typography
