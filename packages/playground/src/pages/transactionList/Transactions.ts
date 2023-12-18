@@ -21,20 +21,23 @@ enableServerInMockedMode()
         const transactionsComponent = new TransactionsComponent({
             core: adyenFP,
             balancePlatformId: process.env.VITE_BALANCE_PLATFORM ?? '',
-            onFilterChange: (/* filters, component */) => {
-                // do something here with the updated filters
-                // avoid refetching the transactions here
-            },
-            onTransactionSelected: ({ showModal }) => {
-                showModal();
-                // window.location.assign(`/src/pages/transaction/?id=${id}`);å
-            },
             onBalanceAccountSelected: ({ id }) => {
                 window.location.assign(`/src/pages/balanceAccount/?id=${id}`);
             },
             onAccountSelected: ({ id }) => {
                 window.location.assign(`/src/pages/accountHolder/?id=${id}`);
             },
+            onTransactionSelected: ({ showModal }) => {
+                showModal();
+                // window.location.assign(`/src/pages/transaction/?id=${id}`);å
+            },
+            onFiltersChanged: (/* filters */) => {
+                // do something here with the updated filters
+            },
+            onLimitChanged: (/* limit */) => {
+                // do something here with the updated limit
+            },
+            preferredLimit: 10,
             ...TEST_CONFIG,
         });
 
