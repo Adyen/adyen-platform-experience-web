@@ -37,7 +37,6 @@ const CalendarGridDayOfWeek = ({ prepare, flags, labels: { long: longLabel, narr
         'data-first-week-day': flags.LINE_START,
         'data-last-week-day': flags.LINE_END,
         'data-weekend': flags.WEEKEND,
-        key: longLabel,
         scope: 'col',
     };
 
