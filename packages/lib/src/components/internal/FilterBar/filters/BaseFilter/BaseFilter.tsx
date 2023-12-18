@@ -139,7 +139,7 @@ export default function BaseFilter<T extends BaseFilterProps = BaseFilterProps>(
                             onClick={handleClick}
                             ref={targetElement as Ref<HTMLButtonElement | null>}
                         >
-                            <div className="adyen-fp-filter-button__default-container">
+                            <div class="adyen-fp-filter-button__default-container">
                                 <Typography
                                     el={TypographyElement.SPAN}
                                     variant={TypographyVariant.BODY}

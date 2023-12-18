@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
-import { EMPTY_ARRAY } from '@src/utils/common';
 import {
     BasePaginatedRecordsInitOptions,
     PaginatedRecordsFetcherReturnValue,
@@ -77,15 +76,17 @@ const parseOffsetPaginatedResponseData = <T, DataField extends string>(
 
 const usePaginatedRecords = <T, DataField extends string, FilterValue extends string, FilterParam extends string>({
     dataField = 'data' as PaginatedResponseDataField<DataField>,
-    filterParams = EMPTY_ARRAY as [],
+    filterParams = [],
     initialFiltersSameAsDefault = true,
-    initialize,
+    initializeAndDerivePageLimit,
     limit,
     pagination,
     fetchRecords,
 }: BasePaginatedRecordsInitOptions<T, DataField, FilterValue, FilterParam>): UsePaginatedRecords<T, FilterValue, FilterParam> => {
+    const [pageLimit, setPageLimit] = useState(limit);
     const [records, setRecords] = useState<T[]>([]);
     const [fetching, updateFetching] = useBooleanState(true);
+    const [shouldRefresh, updateShouldRefresh] = useBooleanState(false);
     const [error, setError] = useState<Error>();
 
     const $mounted = useMounted();
@@ -111,12 +112,20 @@ const usePaginatedRecords = <T, DataField extends string, FilterValue extends st
                 try {
                     if (!$mounted.current || <undefined>updateFetching(true)) return;
 
-                    const res = await fetchRecords({ ...pageRequestParams, ...filters }, signal);
+                    const res = await fetchRecords({ ...filters, ...pageRequestParams }, signal);
 
                     const { records, paginationData } = parsePaginatedResponseData<T, DataField>(res, dataField);
 
                     if ($initialFetchInProgress.current) {
-                        initialize?.([records, paginationData] as PaginatedRecordsFetcherReturnValue<PaginationType, T>, $recordsFilters);
+                        const derivedPageLimit =
+                            initializeAndDerivePageLimit?.(
+                                [records, paginationData] as PaginatedRecordsFetcherReturnValue<PaginationType, T>,
+                                $recordsFilters,
+                                pageLimit
+                            ) || pageLimit;
+
+                        setPageLimit(derivedPageLimit);
+
                         $initialFetchInProgress.current = false;
                     }
 
@@ -127,23 +136,21 @@ const usePaginatedRecords = <T, DataField extends string, FilterValue extends st
 
                     return { ...paginationData, size: records.length };
                 } catch (err) {
-                    if (signal?.aborted) return;
                     setError(err as Error);
                     console.error(err);
                 } finally {
                     updateFetching(false);
                 }
             },
-            [filtersVersion, limit]
+            [filtersVersion, pageLimit]
         ) as RequestPageCallback<PaginationType>,
-        limit
+        pageLimit
     );
 
-    useEffect(() => goto(1), [goto]);
-
     useEffect(() => {
-        if (fetching) setError(undefined);
-    }, [fetching]);
+        if (shouldRefresh) updateShouldRefresh(false);
+        else goto(1);
+    }, [goto, shouldRefresh]);
 
     return { fetching, filters, goto, page, pages, records, updateFilters, error, ...filtersProps, ...paginationProps };
 };

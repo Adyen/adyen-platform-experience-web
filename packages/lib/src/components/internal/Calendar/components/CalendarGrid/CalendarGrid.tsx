@@ -23,7 +23,7 @@ const CalendarGrid = forwardRef(({ cursorRootProps, onlyCellsWithin, prepare, gr
                     <thead>
                         <tr className={'adyen-fp-calendar-month__grid-row'}>
                             {grid.weekdays.map((data, index) => (
-                                <CalendarGridDayOfWeek key={data.labels.long} grid={grid} block={block} prepare={prepare} cell={index} {...data} />
+                                <CalendarGridDayOfWeek grid={grid} block={block} prepare={prepare} cell={index} {...data} />
                             ))}
                         </tr>
                     </thead>
@@ -32,7 +32,6 @@ const CalendarGrid = forwardRef(({ cursorRootProps, onlyCellsWithin, prepare, gr
                             <tr key={`${block.month}:${rowindex}`} className={'adyen-fp-calendar-month__grid-row'}>
                                 {row.map((data, index) => (
                                     <CalendarGridDate
-                                        key={`${block.month}:${data.timestamp}`}
                                         ref={cursorElementRef}
                                         grid={grid}
                                         block={block}
