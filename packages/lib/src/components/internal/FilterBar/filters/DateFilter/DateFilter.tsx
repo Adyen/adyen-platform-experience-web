@@ -81,7 +81,7 @@ export default function DateFilter<T extends DateFilterProps = DateFilterProps>(
     const toDate = resolveDate(props.to);
 
     const getAppliedFilterNumber = useMemo((): number => {
-        return !!computeDateFilterValue(i18n, fromDate, toDate) ? 1 : 0;
+        return computeDateFilterValue(i18n, fromDate, toDate) ? 1 : 0;
     }, [i18n, fromDate, toDate]);
 
     return (
