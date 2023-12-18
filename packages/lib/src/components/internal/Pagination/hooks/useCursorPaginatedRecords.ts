@@ -3,7 +3,7 @@ import { PaginatedRecordsFetcherReturnValue, PaginatedRecordsInitOptions, UsePag
 import usePaginatedRecords from './usePaginatedRecords';
 import { hasNextPage, hasPrevPage } from './useCursorPagination';
 import { PaginationType } from '../types';
-import { ReactiveStateUpdateRequestWithField } from '@src/hooks/useReactiveStateWithParams/types';
+import { ReactiveStateUpdateRequestWithField } from '@src/hooks/useReactiveState/types';
 
 const useCursorPaginatedRecords = <T, DataField extends string, FilterValue extends string, FilterParam extends string>(
     initOptions: PaginatedRecordsInitOptions<T, DataField, FilterValue, FilterParam>

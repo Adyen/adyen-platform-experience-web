@@ -1,4 +1,4 @@
-import { UseReactiveStateRecord } from '@src/hooks/useReactiveStateWithParams/types';
+import { UseReactiveStateRecord } from '@src/hooks/useReactiveState/types';
 
 export const enum PageNeighbour {
     NEXT = 'next',
@@ -65,7 +65,6 @@ export interface UseFilters<S extends UseReactiveStateRecord> {
     canResetFilters: S['canResetState'];
     defaultFilters: S['defaultState'];
     filters: S['state'];
-    filtersVersion: S['stateVersion'];
     resetFilters: S['resetState'];
     updateFilters: S['updateState'];
 }

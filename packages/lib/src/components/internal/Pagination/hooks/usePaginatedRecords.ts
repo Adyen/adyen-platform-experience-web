@@ -98,7 +98,7 @@ const usePaginatedRecords = <T, DataField extends string, FilterValue extends st
     const $recordsFilters = usePaginatedRecordsFilters<FilterValue, FilterParam>(filterParams, initialFiltersSameAsDefault);
 
     const { limit, limitOptions } = usePageLimit({ preferredLimit: preferredPageLimit, preferredLimitOptions });
-    const { defaultFilters, filters, filtersVersion, updateFilters, ...filtersProps } = $recordsFilters;
+    const { defaultFilters, filters, updateFilters, ...filtersProps } = $recordsFilters;
 
     const [parsePaginatedResponseData, usePagination] = useMemo(
         () =>
@@ -142,10 +142,14 @@ const usePaginatedRecords = <T, DataField extends string, FilterValue extends st
                     updateFetching(false);
                 }
             },
-            [filtersVersion, limit]
+            [filters, limit]
         ) as RequestPageCallback<PaginationType>,
         limit
     );
+
+    useMemo(() => {
+        $initialFetchInProgress.current = true;
+    }, [filterParams]);
 
     useEffect(() => goto(1), [goto]);
 
