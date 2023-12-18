@@ -53,6 +53,7 @@ const shouldRefresh = (tabbables: Element[], records: MutationRecord[]) => {
 };
 
 export const focusIsWithin = (rootElement: Element = document.body, elementWithFocus?: Element | null): boolean => {
+    if (rootElement === undefined) return false;
     if (elementWithFocus == undefined) return !!document.activeElement && focusIsWithin(rootElement, document.activeElement);
 
     let parentElement = elementWithFocus?.parentNode as Element | null;
