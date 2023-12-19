@@ -5,7 +5,9 @@ module.exports = {
     ],
 
     'packages/lib/src/**/translations/en-US.json': () => [
-        // Update translations manifest
-        `npm run translations -- generate -ms`,
+        // Generate translations manifest
+        'npm run translations -- generate --manifest',
+        // Generate translations source CSV (for Smartling)
+        'npm run translations -- generate --smartling',
     ],
 };

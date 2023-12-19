@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 
-const fs = require('fs/promises');
 const colors = require('ansi-colors');
 const path = require('path');
 const { program } = require('commander');
@@ -19,34 +18,33 @@ program
 
 program.command('generate')
     .description('generate translations source file')
-    .option('-h, --header', 'include header line')
+    .option('-h, --header', 'use without the --manifest option to include header line')
     .option('-m, --manifest', 'output manifest data to specified output file or the default translations JSON file')
-    .option('-o, --output [filepath]', 'output translations data to specified output file or the default translations source CSV file')
-    .option('-s, --silent', 'use without the --output option to prevent writing output to \'stdout\'')
-    .option('--smartling', 'include Smartling instructions (also includes header line)')
-    .action(async ({ manifest, output, ...restOptions }) => {
-        let outputFilePath = isTrue(output)
-            ? isTrue(manifest) ? TRANSLATIONS_JSON_PATH : TRANSLATIONS_CSV_PATH
-            : output;
+    .option('-o, --out', 'write generated translations data to \'stdout\' (omit to write data to the output file)')
+    .option('-s, --silent', 'use with the --out option to prevent writing output to \'stdout\'')
+    .option('--smartling', 'use without the --manifest option to include Smartling instructions (also includes header line)')
+    .action(async ({ manifest, out, silent, ...restOptions }) => {
+        const generateManifest = isTrue(manifest);
+        const writeToStdout = isTrue(out);
 
         try {
             const options = {
                 ...restOptions,
-                output: (outputFilePath &&= path.resolve(outputFilePath))
+                silent: writeToStdout && isTrue(silent),
+                output: !writeToStdout && path.resolve(generateManifest ? TRANSLATIONS_JSON_PATH : TRANSLATIONS_CSV_PATH),
             };
 
-            await (isTrue(manifest)
+            await (generateManifest
                 ? require('../core/manifest').export(options)
                 : require('../core/csv').export(options));
 
-            if (outputFilePath) {
+            if (options.output) {
                 console.log(colors.success('[Translations data written to file]'));
-                console.log(`${colors.greenBright('✓✓')} file://${outputFilePath}`);
-            } else if (isTrue(restOptions.silent)) {
+                console.log(`${colors.greenBright('✓✓')} file://${options.output}`);
+            } else if (options.silent) {
                 console.log(colors.success('[Translations data generated]'));
             }
         } catch (reason) {
-            isTrue(output) && await fs.rm(outputFilePath).catch(NOOP);
             console.error(colors.error(reason));
             throw reason;
         }

@@ -1,12 +1,15 @@
 const fs = require('fs/promises');
 const path = require('path');
 const { glob } = require('glob');
+const util = require('node:util');
+const exec = util.promisify(require('node:child_process').exec);
 const { computeMd5Hash, isTrue, parseOptions, prettifyJSON, sortJSON } = require('./utils');
 const { getWritableForFileAtPath, getWritable } = require('./writable');
 const {
     getClosestDirectory,
     EMPTY_OBJ,
     NOOP_OBJ,
+    PKG_ROOT_PATH,
     TRANSLATIONS_GLOB_PATTERN,
     TRANSLATIONS_GLOB_ROOT_PATH,
     TRANSLATIONS_JSON_PATH,
@@ -31,6 +34,29 @@ const _sortJsonAtPath = async filepath => {
 
 const getHashFromChecksum = checksum => checksum.slice(0, 8);
 
+const getTrackedSourcePaths = () =>
+    new Promise(async (resolve, reject) => {
+        const { stdout, stderr } = await exec(`git ls-files --cached | grep -i ${TRANSLATIONS_SOURCE_FILE}`);
+
+        if (stderr) return reject(stderr);
+
+        const trackedSourceFiles = new Set();
+
+        await Promise.all(
+            stdout.match(/([^\n]+)(?=\n)/gm).map(async _path => {
+                try {
+                    const filepath = path.resolve(PKG_ROOT_PATH, _path);
+                    await fs.access(filepath);
+                    trackedSourceFiles.add(filepath);
+                } catch (ex) {
+                    /* ignore exception */
+                }
+            })
+        );
+
+        resolve(trackedSourceFiles);
+    });
+
 const getManifestData = async () => {
     const data = {
         _checksum: null,
@@ -40,22 +66,19 @@ const getManifestData = async () => {
         _updated: false,
     };
 
-    const [currentManifest, sourcePaths] = await Promise.all([
+    const [currentManifest, sourcePaths, trackedPaths] = await Promise.all([
         (async () => require(TRANSLATIONS_JSON_PATH)?._manifest ?? EMPTY_OBJ)().catch(NOOP_OBJ), // current manifest
         glob(TRANSLATIONS_GLOB_PATTERN, { absolute: true, cwd: TRANSLATIONS_GLOB_ROOT_PATH }).catch(() => []), // translations source paths
+        getTrackedSourcePaths().catch(() => []), // Git-tracked translations source paths
     ]);
 
-    const normalizedFileEntriesFromCurrentManifest = Object.keys(currentManifest).map(dir => [
-        path.resolve(TRANSLATIONS_GLOB_ROOT_PATH, dir, TRANSLATIONS_SOURCE_FILE),
-        dir,
-    ]);
-
-    const normalizedFileEntriesFromSourcePaths = sourcePaths.map(_path => [
-        _path,
-        path.dirname(_path).replace(TRANSLATIONS_SOURCE_DIRNAME_TRIM_PATTERN, ''),
-    ]);
-
-    const fileEntriesMap = new Map([...normalizedFileEntriesFromSourcePaths, ...normalizedFileEntriesFromCurrentManifest]);
+    const fileEntriesMap = sourcePaths.reduce((fileEntriesMap, _path) => {
+        if (trackedPaths.has(_path)) {
+            const pathDir = path.dirname(_path).replace(TRANSLATIONS_SOURCE_DIRNAME_TRIM_PATTERN, '');
+            fileEntriesMap.set(_path, pathDir);
+        }
+        return fileEntriesMap;
+    }, new Map());
 
     for await (const [filepath, dir] of fileEntriesMap) {
         try {
