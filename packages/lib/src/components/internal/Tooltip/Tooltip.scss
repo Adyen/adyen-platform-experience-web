@@ -1,0 +1,29 @@
+.adyen-fp-tooltip {
+    &__controller {
+        width: fit-content;
+        position: relative;
+        overflow: visible;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        display: flex;
+        font-size: var(--adyen-fp-font-size-medium);
+        gap: 0;
+        padding: 0;
+        width: fit-content;
+    }
+
+    &__content {
+        background-color: lightskyblue;
+        padding: var(--adyen-fp-spacing-medium);
+        position: absolute;
+        inset: 0px auto auto 0px;
+        z-index: 999;
+
+        &--hidden {
+            opacity: 0;
+        }
+
+        transition: opacity 0.2s;
+    }
+}
