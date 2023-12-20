@@ -4,19 +4,28 @@ import { TooltipProps } from './types';
 import useBooleanState from '@src/hooks/useBooleanState';
 import { useTooltipListeners } from '@src/components/internal/Tooltip/useTooltipListeners';
 import { TooltipContent } from '@src/components/internal/Tooltip/TooltipContent';
+import useIdentifierString from '@src/hooks/element/useIdentifierString';
+import useUniqueIdentifier from '@src/hooks/element/useUniqueIdentifier';
+import { forwardRef } from 'preact/compat';
 
-export const Tooltip = ({ content, children }: TooltipProps) => {
+export const Tooltip = forwardRef(({ content, children, targetRef }: TooltipProps, ref) => {
+    console.log((targetRef as any)?.current);
+
     const [isVisible, setIsVisible] = useBooleanState(false);
 
     const controllerRef = useRef<HTMLButtonElement>(null);
-    const tooltipRef = useRef<HTMLDivElement>(null);
+
+    const tooltipRef = useUniqueIdentifier();
+
     const listeners = useTooltipListeners({ ref: tooltipRef, controlRef: controllerRef, setIsVisible });
+
+    const controllerIdentifier = useIdentifierString(tooltipRef);
 
     return (
         <>
-            <button className="adyen-fp-tooltip__controller" ref={controllerRef} tabIndex={0} aria-describedby="tooltip" {...listeners}>
+            <span className="adyen-fp-tooltip__controller" ref={controllerRef} aria-describedby={controllerIdentifier} {...listeners}>
                 {children}
-            </button>
+            </span>
             {isVisible && (
                 <TooltipContent
                     ref={tooltipRef}
@@ -28,4 +37,4 @@ export const Tooltip = ({ content, children }: TooltipProps) => {
             )}
         </>
     );
-};
+});

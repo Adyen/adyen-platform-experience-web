@@ -12,6 +12,8 @@ import DataGrid from '../../../internal/DataGrid';
 import Pagination from '../../../internal/Pagination';
 import { TransactionListProps } from '../types';
 import { getLabel } from './utils';
+import { Tooltip } from '@src/components/internal/Tooltip/Tooltip';
+import useToolTip from '@src/components/internal/Tooltip/useTooltip';
 
 const ModalContent = lazy(() => import('./ModalContent'));
 
@@ -57,6 +59,8 @@ function TransactionList({
     );
 
     const { updateDetails, resetDetails, detailsToShow, selectedDetail } = useModalDetails(modalOptions);
+
+    const { ref } = useToolTip();
 
     return (
         <>
@@ -117,7 +121,11 @@ function TransactionList({
                             value
                         ),
                     createdAt: ({ value }) => i18n.fullDate(value),
-                    type: ({ value }) => value,
+                    type: ({ value }) => {
+                        // const tooltip = useTooltip(setTooltipTargetRef);
+                        // eslint-disable-next-line react/no-unknown-property
+                        return <span ref={ref}>{value}</span>;
+                    },
                     amount: ({ value }) => {
                         const amount = value?.currency
                             ? i18n.amount(value.value, value.currency, {
@@ -135,7 +143,8 @@ function TransactionList({
                                     'adyen-fp-amount--negative': !isPositive,
                                 })}
                             >
-                                {amount}
+                                {/* eslint-disable-next-line react/no-unknown-property */}
+                                <span ref={ref}>{amount}</span>
                             </div>
                         );
                     },
@@ -159,6 +168,7 @@ function TransactionList({
                     </Suspense>
                 )}
             </Modal>
+            <Tooltip targetRef={ref} content={'TEST'} />
         </>
     );
 }
