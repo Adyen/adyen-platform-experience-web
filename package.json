@@ -42,6 +42,7 @@
         "schemas:generate": "bash scripts/generate-ts-schemas/generate-schemas.sh",
         "schemas:variables": "bash scripts/generate-ts-schemas/setup-openapi-ts.sh",
         "translations": "npm run translations -w @adyen/adyen-fp-web --",
+        "translations:generate": "npm run translations -- generate --manifest && npm run translations -- generate --smartling",
         "translations:unpack": "npm run translations -- unpack",
         "prepare": "node ./prepare.js && bash ./scripts/process-package-lock.sh",
         "postinstall": "if [ \"$CI\" != \"true\" ]; then npm run schemas:generate; fi"

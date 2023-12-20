@@ -13,3 +13,11 @@ npm run type-check
 
 # Successful check
 echo "${GREEN}✓✓✓✓✓ Types are correct!${NC}"
+
+echo "${LIGHT_BLUE}Regenerating translations source files...${NC}"
+git stash --include-untracked
+npm run translations:generate &&
+    git add . &&
+    git commit --amend --no-edit &&
+    echo "${GREEN}✓✓✓✓✓ Translations regeneration complete!${NC}"
+git stash pop
