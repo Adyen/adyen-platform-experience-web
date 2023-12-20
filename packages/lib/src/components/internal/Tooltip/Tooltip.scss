@@ -1,7 +1,5 @@
 .adyen-fp-tooltip {
     &__controller {
-        width: fit-content;
-        position: relative;
         overflow: visible;
         background: transparent;
         border: none;
@@ -11,19 +9,33 @@
         gap: 0;
         padding: 0;
         width: fit-content;
+        height: fit-content;
     }
 
-    &__content {
-        background-color: lightskyblue;
-        padding: var(--adyen-fp-spacing-medium);
-        position: absolute;
-        inset: 0px auto auto 0px;
-        z-index: 999;
-
+    &__container {
         &--hidden {
             opacity: 0;
         }
 
-        transition: opacity 0.2s;
+        transition: opacity 0.15s;
+    }
+
+    &__content {
+        background-color: var(--adyen-fp-color-black);
+        border-radius: var(--adyen-fp-spacing-xsmall);
+        color: var(--adyen-fp-color-white);
+        font-size: var(--adyen-fp-font-size-small);
+        padding: var(--adyen-fp-spacing-xsmall) var(--adyen-fp-spacing-small);
+        position: fixed;
+        inset: 0px auto auto 0px;
+        z-index: 999;
+    }
+
+    &__arrow {
+        background: var(--adyen-fp-color-black);
+        height: var(--adyen-fp-spacing-small);
+        position: fixed;
+        inset: 0px auto auto 0px;
+        width: var(--adyen-fp-spacing-small);
     }
 }
