@@ -3,6 +3,12 @@ export type Session = {
     sessionData: string;
 };
 
+export type SessionResponse = {
+    id: string;
+    token: string;
+    refreshToken: string;
+};
+
 export type SessionConfiguration = {
     enableStoreDetails: boolean;
 };
@@ -13,6 +19,6 @@ export type SessionSetupResponse = {
     // expiresAt: string;
     // components: any;
     // returnUrl: string;
-    configuration: SessionConfiguration;
-    endpoints: string[];
+    // configuration: SessionConfiguration;
+    endpoints: Record<string, { method: string; urls: string }>;
 };

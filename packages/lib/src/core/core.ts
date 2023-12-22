@@ -1,4 +1,4 @@
-import { SessionSetupResponse } from '@src/core/FPSession/types';
+import { SessionResponse, SessionSetupResponse } from '@src/core/FPSession/types';
 import type { CoreOptions, Session } from './types';
 import { resolveEnvironment } from './utils';
 import BPSession from './FPSession';
@@ -53,22 +53,27 @@ class Core<T extends CoreOptions<T> = any> {
 
     public updateSession = async () => {
         if (this.options.onSessionCreate) {
-            const { id, token: sessionToken, clientKey } = await this.options.onSessionCreate();
-            console.log(id);
-            // this.session = new BPSession({ id: id, sessionData: 'sessionData' }, clientKey, this.options.loadingContext || '', sessionToken);
+            const res = await this.options.onSessionCreate();
+            const body: SessionResponse = await res.json();
+            const { id, token, refreshToken } = body;
+            this.session = new BPSession(
+                { id: id, sessionData: 'sessionData' },
+                refreshToken,
+                'https://loop-platform-components-external.intapplb-np.nlzwo1o.adyen.com/platform-components-external/',
+                token
+            );
         }
-        // this.session
-        //     ?.setupSession(this.options)
-        //     .then(sessionResponse => {
-        //         this.update({})
-        //         return this;
-        //     })
-        //     .catch(error => {
-        //         console.log('session error');
-        //         if (this.options.onError) this.options.onError(error);
-        //         this.update({error: true});
-        //         return this;
-        //     });
+        return this.session
+            ?.setupSession(this.options)
+            .then(sessionResponse => {
+                this.update({});
+                return this;
+            })
+            .catch(error => {
+                if (this.options.onError) this.options.onError(error);
+                this.update({ error: true });
+                return this;
+            });
     };
 
     /**
@@ -146,14 +151,6 @@ class Core<T extends CoreOptions<T> = any> {
      * @returns props for a new UIElement
      */
     private getPropsForComponent(options: any) {
-        console.log('props for component ', {
-            ...options,
-            i18n: this.modules.i18n,
-            modules: this.modules,
-            session: this.session,
-            loadingContext: this.loadingContext,
-            _parentInstance: this,
-        });
         return {
             ...options,
             i18n: this.modules.i18n,

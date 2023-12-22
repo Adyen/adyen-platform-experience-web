@@ -19,14 +19,14 @@ const makeSessionProxyOptions = ({ url, token, cookie }) => ({
         'Access-Control-Allow-Origin': '*',
     },
     changeOrigin: true,
+    secure: false,
 });
 
-export const realApiProxies = (lemApiOptions, btlApiOptions, bclApiOptions, sessionApiOptions) => {
+export const realApiProxies = (lemApiOptions, btlApiOptions, bclApiOptions, sessionApiOptions, mode) => {
     const lemApiProxyOptions = makeProxyOptions(lemApiOptions);
     const btlApiProxyOptions = makeProxyOptions(btlApiOptions);
     const bclApiProxyOptions = makeProxyOptions(bclApiOptions);
     const sessionApiProxyOptions = makeSessionProxyOptions(sessionApiOptions);
-    console.log(sessionApiProxyOptions);
 
     return {
         [endpoints.transactions]: btlApiProxyOptions,

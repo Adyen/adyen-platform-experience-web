@@ -30,7 +30,7 @@ export function useSessionRequest(core: any): any {
                 // TODO: add new sessionToken to context
                 try {
                     //TODO: update core's session and it should automatically update all the components
-                    core?.core.updateSession();
+                    await core?.core.updateSession();
                     return await requestToSend(sessionToken);
                 } catch (e) {
                     console.log('new error ', e);

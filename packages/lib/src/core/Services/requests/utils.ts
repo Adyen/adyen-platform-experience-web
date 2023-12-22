@@ -4,7 +4,6 @@ import AdyenFPError from '@src/core/Errors/AdyenFPError';
 
 export const getRequestObject = (options: HttpOptions, sessionToken?: string, data?: any): RequestInit => {
     const { headers = [], method = 'GET' } = options;
-    const params = method === 'GET' ? data : sessionToken ? { ...data, session: sessionToken } : data;
 
     return {
         method,
@@ -14,14 +13,14 @@ export const getRequestObject = (options: HttpOptions, sessionToken?: string, da
         headers: {
             Accept: 'application/json, text/plain, */*',
             'Content-Type': method === 'POST' ? 'application/json' : 'text/plain',
-            'X-Api-Key': options.clientKey,
-            Authorization: `Bearer_${sessionToken}`,
+            // 'X-Api-Key': options.clientKey,
+            Authorization: `Bearer ${sessionToken}`,
             ...headers,
         },
         redirect: 'follow',
         signal: options.signal,
         referrerPolicy: 'no-referrer-when-downgrade',
-        ...(params && { body: JSON.stringify(params) }),
+        ...(data && { body: JSON.stringify(data) }),
     };
 };
 

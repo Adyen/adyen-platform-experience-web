@@ -76,4 +76,4 @@ export interface CoreOptions<T extends CoreOptions<T> = any> {
     error?: boolean;
 }
 
-export type Session = () => Promise<{ token: string; id: string; clientKey: string }>;
+export type Session = () => Promise<Response>;

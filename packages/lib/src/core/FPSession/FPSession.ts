@@ -1,7 +1,7 @@
 import setupSession from '../Services/sessions/setup-session';
 import Storage from '../../utils/Storage';
 import { sanitizeSession } from './utils';
-import { Session, SessionConfiguration } from './types';
+import { Session, SessionConfiguration, SessionSetupResponse } from './types';
 
 class FPSession {
     private readonly session: Session;
@@ -9,7 +9,7 @@ class FPSession {
     public readonly clientKey: string;
     public readonly sessionToken: string;
     public readonly loadingContext: string;
-    public configuration?: SessionConfiguration;
+    public configuration?: SessionSetupResponse;
 
     constructor(rawSession: Session, clientKey: string, loadingContext: string, sessionToken: string) {
         //If there isn't any id then sanitize will throw invalid session error
@@ -50,8 +50,8 @@ class FPSession {
      */
     setupSession(options: Record<string, any>) {
         return setupSession(this, options).then(response => {
-            if (response.configuration) {
-                this.configuration = { ...response.configuration };
+            if (response.endpoints) {
+                this.configuration = { ...response };
             }
             return response;
         });

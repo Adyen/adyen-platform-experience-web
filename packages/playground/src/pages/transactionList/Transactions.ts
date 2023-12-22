@@ -4,6 +4,7 @@ import '../../assets/style/style.scss';
 
 import { enableServerInMockedMode } from '../../endpoints/mock-server/utils';
 import { TEST_CONFIG } from '../../utils/utils';
+import sessionRequest from '../../utils/sessionRequest';
 import { createLanguageButtons } from '../../utils/createLanguageButtons';
 
 const getMySessionToken = async () => {
@@ -33,9 +34,8 @@ enableServerInMockedMode()
             locale: locale,
             availableTranslations: [all_locales],
             async onSessionCreate() {
-                return await getMySessionToken();
-                // return { sessionToken: session, clientKey };
-            }
+                return await sessionRequest();
+            },
         });
 
         createLanguageButtons({ locales: ['es-ES', 'en-US'], core: adyenFP });
@@ -59,27 +59,27 @@ enableServerInMockedMode()
             ...TEST_CONFIG,
         });
 
-        const transactionsComponent2 = new TransactionsComponent({
-            core: adyenFP,
-            balancePlatformId: process.env.VITE_BALANCE_PLATFORM ?? '',
-            onFilterChange: (/* filters, component */) => {
-                // do something here with the updated filters
-                // avoid refetching the transactions here
-            },
-            onTransactionSelected: ({ showModal }) => {
-                showModal();
-                // window.location.assign(`/src/pages/transaction/?id=${id}`);å
-            },
-            onBalanceAccountSelected: ({ id }) => {
-                window.location.assign(`/src/pages/balanceAccount/?id=${id}`);
-            },
-            onAccountSelected: ({ id }) => {
-                window.location.assign(`/src/pages/accountHolder/?id=${id}`);
-            },
-            ...TEST_CONFIG,
-        });
+        // const transactionsComponent2 = new TransactionsComponent({
+        //     core: adyenFP,
+        //     balancePlatformId: process.env.VITE_BALANCE_PLATFORM ?? '',
+        //     onFilterChange: (/* filters, component */) => {
+        //         // do something here with the updated filters
+        //         // avoid refetching the transactions here
+        //     },
+        //     onTransactionSelected: ({ showModal }) => {
+        //         showModal();
+        //         // window.location.assign(`/src/pages/transaction/?id=${id}`);å
+        //     },
+        //     onBalanceAccountSelected: ({ id }) => {
+        //         window.location.assign(`/src/pages/balanceAccount/?id=${id}`);
+        //     },
+        //     onAccountSelected: ({ id }) => {
+        //         window.location.assign(`/src/pages/accountHolder/?id=${id}`);
+        //     },
+        //     ...TEST_CONFIG,
+        // });
 
-        transactionsComponent.mount('.transactions-component-container');
-        transactionsComponent2.mount('.transactions-component-container-2');
+        setTimeout(() => transactionsComponent.mount('.transactions-component-container'), 1000);
+        // transactionsComponent2.mount('.transactions-component-container-2');
     })
     .catch(console.error);

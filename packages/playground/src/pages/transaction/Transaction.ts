@@ -3,12 +3,9 @@ import { getDefaultID, getSearchParameters } from '../../utils/utils';
 import '../../utils/createPages.js';
 import '../../assets/style/style.scss';
 import { enableServerInMockedMode } from '../../endpoints/mock-server/utils';
+import sessionRequest from '../../utils/sessionRequest';
 
 const DEFAULT_TRANSACTION_ID = getDefaultID('1VVF0D5V3709DX6D');
-
-const getMySessionToken = () => {
-    return Promise.resolve({ session: 'my-session-token', clientKey: 'client-key' });
-};
 
 enableServerInMockedMode()
     .then(async () => {
@@ -17,8 +14,7 @@ enableServerInMockedMode()
             locale: 'en-US',
             loadingContext: process.env.VITE_API_URL,
             async onSessionCreate() {
-                const { session, clientKey } = await getMySessionToken();
-                return { sessionToken: session, clientKey };
+                return await sessionRequest();
             },
         });
 
