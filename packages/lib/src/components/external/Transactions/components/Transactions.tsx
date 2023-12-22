@@ -42,6 +42,7 @@ function Transactions({
     preferredLimit = DEFAULT_PAGE_LIMIT,
     allowLimitSelection,
     withTitle,
+    ...args
 }: ExternalUIComponentProps<TransactionsComponentProps>) {
     const _onFiltersChanged = useMemo(() => (isFunction(onFiltersChanged) ? onFiltersChanged : void 0), [onFiltersChanged]);
     const _onLimitChanged = useMemo(() => (isFunction(onLimitChanged) ? onLimitChanged : void 0), [onLimitChanged]);
