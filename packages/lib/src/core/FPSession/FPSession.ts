@@ -1,26 +1,25 @@
 import setupSession from '../Services/sessions/setup-session';
 import Storage from '../../utils/Storage';
 import { sanitizeSession } from './utils';
-import { Session, SessionConfiguration, SessionSetupResponse } from './types';
+import { Session, SessionSetupResponse } from './types';
 
 class FPSession {
     private readonly session: Session;
     private readonly storage: Storage<Session>;
-    public readonly clientKey: string;
-    public readonly sessionToken: string;
     public readonly loadingContext: string;
+    public readonly sessionToken: string;
     public configuration?: SessionSetupResponse;
 
-    constructor(rawSession: Session, clientKey: string, loadingContext: string, sessionToken: string) {
+    //TODO: delete clientKey
+    //TODO: sessionData is sessionToken?
+    constructor(rawSession: Session, loadingContext: string) {
         //If there isn't any id then sanitize will throw invalid session error
         const session = sanitizeSession(rawSession) as Session;
-        if (!clientKey) throw new Error('No clientKey available');
 
         this.storage = new Storage('session');
-        this.clientKey = clientKey;
         this.loadingContext = loadingContext;
+        this.sessionToken = rawSession.sessionData;
         this.session = session;
-        this.sessionToken = sessionToken;
 
         if (!this.session.sessionData) {
             this.session = this.getStoredSession();
@@ -49,12 +48,16 @@ class FPSession {
      * Fetches data from a session
      */
     setupSession(options: Record<string, any>) {
-        return setupSession(this, options).then(response => {
-            if (response.endpoints) {
-                this.configuration = { ...response };
-            }
-            return response;
-        });
+        return setupSession(this.session.sessionData, options)
+            .then(response => {
+                if (response.endpoints) {
+                    this.configuration = { ...response };
+                }
+                return response;
+            })
+            .catch(e => {
+                throw e;
+            });
     }
 
     /**

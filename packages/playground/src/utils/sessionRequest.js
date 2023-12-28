@@ -10,8 +10,6 @@ const getMySessionToken = async () => {
         },
     };
     return fetch(url, { method: 'POST', body: JSON.stringify(body) });
-
-    // return Promise.resolve({ id: '18fbb75e-b53b-40c3-88a4-3a1b7cc92bd1', token: Math.random().toString(), clientKey: Math.random().toString() });
 };
 
 export default getMySessionToken;

@@ -32,48 +32,28 @@ class Core<T extends CoreOptions<T> = any> {
             await this.updateSession();
         }
 
-        // TODO: Enable once we have sessions working
-        // if (this.options.session) {
-        //     this.session = new Session(this.options.session, this.options.clientKey, this.options.loadingContext);
-
-        //     return this.session
-        //         .setupSession(this.options)
-        //         .then(sessionResponse => {
-        //             this.setOptions(sessionResponse);
-        //             return this;
-        //         })
-        //         .catch(error => {
-        //             if (this.options.onError) this.options.onError(error);
-        //             return this;
-        //         });
-        // }
-
         return Promise.all([this.localization.ready]).then(() => this);
     }
 
     public updateSession = async () => {
-        if (this.options.onSessionCreate) {
-            const res = await this.options.onSessionCreate();
-            const body: SessionResponse = await res.json();
-            const { id, token, refreshToken } = body;
-            this.session = new BPSession(
-                { id: id, sessionData: 'sessionData' },
-                refreshToken,
-                'https://loop-platform-components-external.intapplb-np.nlzwo1o.adyen.com/platform-components-external/',
-                token
-            );
+        try {
+            if (this.options.onSessionCreate) {
+                const res = await this.options.onSessionCreate();
+                const body: SessionResponse = await res.json();
+                const { id, token } = body;
+                this.session = new BPSession(
+                    { id: id, sessionData: token },
+                    'https://loop-platform-components-external.intapplb-np.nlzwo1o.adyen.com/platform-components-external/'
+                );
+                await this.session?.setupSession(this.options);
+                await this.update({});
+                return this;
+            }
+        } catch (error) {
+            if (this.options.onError) this.options.onError(error);
+            this.update({ error: true });
+            return this;
         }
-        return this.session
-            ?.setupSession(this.options)
-            .then(sessionResponse => {
-                this.update({});
-                return this;
-            })
-            .catch(error => {
-                if (this.options.onError) this.options.onError(error);
-                this.update({ error: true });
-                return this;
-            });
     };
 
     /**

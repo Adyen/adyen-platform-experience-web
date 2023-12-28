@@ -66,9 +66,8 @@ function Transactions({
                 }),
                 signal,
             };
-            const data = await httpProvider(request);
-
-            return await httpGet<PaginatedResponseDataWithLinks<ITransaction, 'data'>>(request);
+            return await httpProvider<PaginatedResponseDataWithLinks<ITransaction, 'data'>>(request, 'GET');
+            // return await httpGet<PaginatedResponseDataWithLinks<ITransaction, 'data'>>(request);
         },
         [balancePlatformId, clientKey, loadingContext]
     );

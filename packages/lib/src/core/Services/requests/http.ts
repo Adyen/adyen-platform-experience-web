@@ -1,9 +1,9 @@
 import AdyenFPError from '../../Errors/AdyenFPError';
-import { getRequestObject, handleFetchError, isAdyenErrorResponse } from './utils';
+import { getErrorType, getRequestObject, handleFetchError, isAdyenErrorResponse } from './utils';
 import { HttpOptions } from './types';
 import { normalizeLoadingContext, normalizeUrl } from '@src/core/utils';
 
-export function http<T>(options: HttpOptions, data?: any, sessionToken?: string, clientKey?: string): Promise<T> {
+export function http<T>(options: HttpOptions, data?: any, sessionToken?: string): Promise<T> {
     const { errorLevel = 'warn', loadingContext = '', path } = options;
 
     const request = getRequestObject(options, sessionToken, data);
@@ -21,18 +21,18 @@ export function http<T>(options: HttpOptions, data?: any, sessionToken?: string,
     return (
         fetch(url, request)
             .then(async response => {
-                const data = await response.json();
+                if (response.ok) return await response.json();
 
-                if (response.ok) return data;
+                const errorType = getErrorType(response.status);
 
                 //TODO: Fix here to throw correct error at right time
-                if (isAdyenErrorResponse(data)) {
+                if (isAdyenErrorResponse(response)) {
                     // If an errorHandler has been passed use this rather than the default handleFetchError
-                    return options.errorHandler ? options.errorHandler(data) : handleFetchError(data.detail, errorLevel);
+                    return options.errorHandler ? options.errorHandler(response) : handleFetchError(response.detail, errorLevel, errorType);
                 }
 
                 const errorMessage = options.errorMessage || `Service at ${url} is not available`;
-                return handleFetchError(errorMessage, errorLevel);
+                return handleFetchError(errorMessage, errorLevel, errorType);
             })
             /**
              * Catch block handles Network error, CORS error, or exception throw by the `handleFetchError`

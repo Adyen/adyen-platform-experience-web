@@ -1,48 +1,49 @@
 import useAuthContext from '@src/core/Auth/useAuthContext';
 import AdyenFPError from '@src/core/Errors/AdyenFPError';
-import { httpGet } from '@src/core/Services/requests/http';
-import { HttpOptions } from '@src/core/Services/requests/types';
+import { http, httpGet, httpPost } from '@src/core/Services/requests/http';
+import { HttpMethod, HttpOptions } from '@src/core/Services/requests/types';
 import { useCallback } from 'preact/hooks';
 
-export function useSessionRequest(core: any): any {
-    const { sessionToken, clientKey } = useAuthContext();
+//TODO: use this inside http code
+export function useSessionRequest(core: any) {
+    const { sessionToken } = useAuthContext();
 
     const httpCall = useCallback(
-        (request: HttpOptions) => (sessionToken: string) => {
-            if (request) {
-                return httpGet(request, sessionToken);
-            }
-        },
+        (request: HttpOptions, method?: HttpMethod, data?: any) =>
+            <T>(sessionToken: string) => {
+                switch (method) {
+                    case 'GET':
+                        return httpGet<T>(request, sessionToken);
+                    case 'POST':
+                        return httpPost<T>(request, data, sessionToken);
+                    default:
+                        return http<T>(request, data, sessionToken);
+                }
+            },
         []
     );
 
     const httpProvider = useCallback(
-        async (request: HttpOptions) => {
-            const requestToSend = httpCall(request);
-
+        async <T>(request: HttpOptions, method?: HttpMethod, data?: any) => {
+            const requestToSend = httpCall(request, method, data);
             try {
-                const data = await requestToSend(sessionToken);
-                return data;
-                // throw new AdyenFPError('EXPIRED_TOKEN', 'test');
+                return await requestToSend<T>(sessionToken);
             } catch (e: any) {
-                // TODO: make this e.type
-                // if(e.message === 'EXPIRED_TOKEN') {
-                // TODO: add new sessionToken to context
-                try {
-                    //TODO: update core's session and it should automatically update all the components
-                    await core?.core.updateSession();
-                    return await requestToSend(sessionToken);
-                } catch (e) {
-                    console.log('new error ', e);
-                    // return e;
+                if (e.type === AdyenFPError.errorTypes.EXPIRED_TOKEN) {
+                    try {
+                        await core?.core.update({}, true);
+                        return await requestToSend<T>(sessionToken);
+                    } catch (e) {
+                        return Promise.resolve(e) as Promise<T>;
+                    }
                 }
-                // }
+                return Promise.resolve(e) as Promise<T>;
             }
         },
-        [sessionToken, clientKey]
+        [sessionToken]
     );
 
-    return { httpProvider };
+    return { httpProvider } as const;
 }
 
 export default useSessionRequest;

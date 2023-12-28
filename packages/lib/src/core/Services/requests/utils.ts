@@ -1,6 +1,14 @@
-import adyenFPError from '@src/core/Errors/AdyenFPError';
 import { AdyenErrorResponse, ErrorLevel, HttpOptions } from './types';
 import AdyenFPError from '@src/core/Errors/AdyenFPError';
+
+export const getErrorType = (errorCode: number): keyof typeof AdyenFPError.errorTypes => {
+    switch (errorCode) {
+        case 401:
+            return 'EXPIRED_TOKEN';
+        default:
+            return 'NETWORK_ERROR';
+    }
+};
 
 export const getRequestObject = (options: HttpOptions, sessionToken?: string, data?: any): RequestInit => {
     const { headers = [], method = 'GET' } = options;
@@ -13,7 +21,6 @@ export const getRequestObject = (options: HttpOptions, sessionToken?: string, da
         headers: {
             Accept: 'application/json, text/plain, */*',
             'Content-Type': method === 'POST' ? 'application/json' : 'text/plain',
-            // 'X-Api-Key': options.clientKey,
             Authorization: `Bearer ${sessionToken}`,
             ...headers,
         },

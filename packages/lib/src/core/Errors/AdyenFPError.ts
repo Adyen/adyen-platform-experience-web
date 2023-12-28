@@ -1,6 +1,5 @@
 class AdyenFPError extends Error {
     public type: string;
-    //TODO: change this to protected
     public static errorTypes = {
         /** Network error. */
         NETWORK_ERROR: 'NETWORK_ERROR',

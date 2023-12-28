@@ -6,7 +6,6 @@ export type Session = {
 export type SessionResponse = {
     id: string;
     token: string;
-    refreshToken: string;
 };
 
 export type SessionConfiguration = {
@@ -14,11 +13,5 @@ export type SessionConfiguration = {
 };
 
 export type SessionSetupResponse = {
-    // id: string;
-    // sessionData: string;
-    // expiresAt: string;
-    // components: any;
-    // returnUrl: string;
-    // configuration: SessionConfiguration;
     endpoints: Record<string, { method: string; urls: string }>;
 };
