@@ -131,7 +131,6 @@ class BaseElement<P> {
         // /*
         this.props = this.formatProps({ ...this.props, ...props });
         this.error = this.props.core.error;
-        console.log('here on update');
         this._component = this.render();
         if (this._node) render(this._component, this._node);
 
