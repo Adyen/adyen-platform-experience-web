@@ -56,7 +56,7 @@ class FPSession {
                 return response;
             })
             .catch(e => {
-                throw e;
+                // throw e;
             });
     }
 

@@ -42,14 +42,15 @@ function Transactions({
     preferredLimit = DEFAULT_PAGE_LIMIT,
     allowLimitSelection,
     withTitle,
-    ...args
+    core
 }: ExternalUIComponentProps<TransactionsComponentProps>) {
     const _onFiltersChanged = useMemo(() => (isFunction(onFiltersChanged) ? onFiltersChanged : void 0), [onFiltersChanged]);
     const _onLimitChanged = useMemo(() => (isFunction(onLimitChanged) ? onLimitChanged : void 0), [onLimitChanged]);
     const preferredLimitOptions = useMemo(() => (allowLimitSelection ? LIMIT_OPTIONS : undefined), [allowLimitSelection]);
 
+    //TODO: Where this clientKey comes from??
     const { i18n, clientKey, loadingContext } = useCoreContext();
-    const { httpProvider } = useSessionRequest(args);
+    const { httpProvider } = useSessionRequest(core);
 
     const getTransactions = useCallback(
         async (pageRequestParams: Record<TransactionFilterParam | 'cursor', string>, signal?: AbortSignal) => {

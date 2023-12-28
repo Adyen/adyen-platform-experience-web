@@ -12,7 +12,6 @@ export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUI
     public elementRef: UIElement<P> | null;
     public componentToRender: (() => JSXInternal.Element) | null;
     public sessionToken: string;
-    public clientKey: string;
 
     constructor(props: P & UIElementProps & BaseElementProps) {
         super(props);
@@ -21,7 +20,6 @@ export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUI
         this.elementRef = (props && props.elementRef) || this;
         this.componentToRender = null;
         this.sessionToken = props?.core?.session?.sessionToken || '';
-        this.clientKey = props?.core?.session?.clientKey || '';
         this.error = props.core.error;
     }
 

@@ -1,3 +1,4 @@
+import { Core } from '@src/core';
 import useAuthContext from '@src/core/Auth/useAuthContext';
 import AdyenFPError from '@src/core/Errors/AdyenFPError';
 import { http, httpGet, httpPost } from '@src/core/Services/requests/http';
@@ -5,7 +6,7 @@ import { HttpMethod, HttpOptions } from '@src/core/Services/requests/types';
 import { useCallback } from 'preact/hooks';
 
 //TODO: use this inside http code
-export function useSessionRequest(core: any) {
+export function useSessionRequest(core: Core) {
     const { sessionToken } = useAuthContext();
 
     const httpCall = useCallback(
@@ -31,13 +32,13 @@ export function useSessionRequest(core: any) {
             } catch (e: any) {
                 if (e.type === AdyenFPError.errorTypes.EXPIRED_TOKEN) {
                     try {
-                        await core?.core.update({}, true);
+                        await core?.update({}, true);
                         return await requestToSend<T>(sessionToken);
                     } catch (e) {
-                        return Promise.resolve(e) as Promise<T>;
+                        return Promise.resolve(e);
                     }
                 }
-                return Promise.resolve(e) as Promise<T>;
+                return Promise.resolve(e);
             }
         },
         [sessionToken]
