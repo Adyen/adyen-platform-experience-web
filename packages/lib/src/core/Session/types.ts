@@ -1,8 +1,3 @@
-export type Session = {
-    id: string;
-    sessionData: string;
-};
-
 export type SessionResponse = {
     id: string;
     token: string;

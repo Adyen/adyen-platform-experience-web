@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from 'preact/hooks';
-import useSessionRequest from '@src/hooks/useSessionRequest/useSessionRequest';
+import useSessionAwareRequest from '@src/hooks/useSessionRequest/useSessionRequest';
 import useCoreContext from '@src/core/Context/useCoreContext';
 import FilterBar from '../../../internal/FilterBar';
 import TextFilter from '../../../internal/FilterBar/filters/TextFilter';
@@ -48,15 +48,13 @@ function Transactions({
     const _onLimitChanged = useMemo(() => (isFunction(onLimitChanged) ? onLimitChanged : void 0), [onLimitChanged]);
     const preferredLimitOptions = useMemo(() => (allowLimitSelection ? LIMIT_OPTIONS : undefined), [allowLimitSelection]);
 
-    //TODO: Where this clientKey comes from??
-    const { i18n, clientKey, loadingContext } = useCoreContext();
-    const { httpProvider } = useSessionRequest(core);
+    const { i18n, loadingContext } = useCoreContext();
+    const { httpProvider } = useSessionAwareRequest(core);
 
     const getTransactions = useCallback(
         async (pageRequestParams: Record<TransactionFilterParam | 'cursor', string>, signal?: AbortSignal) => {
-            const request: HttpOptions = {
+            const request: Parameters<typeof httpProvider>[0] = {
                 loadingContext: loadingContext,
-                clientKey,
                 path: API_ENDPOINTS.transactions.getTransactions,
                 errorLevel: 'error',
                 params: parseSearchParams({
@@ -68,9 +66,8 @@ function Transactions({
                 signal,
             };
             return await httpProvider<PaginatedResponseDataWithLinks<ITransaction, 'data'>>(request, 'GET');
-            // return await httpGet<PaginatedResponseDataWithLinks<ITransaction, 'data'>>(request);
         },
-        [balancePlatformId, clientKey, loadingContext]
+        [balancePlatformId, loadingContext]
     );
 
     const { canResetFilters, error, fetching, filters, limit, limitOptions, records, resetFilters, updateFilters, updateLimit, ...paginationProps } =

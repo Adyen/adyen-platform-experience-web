@@ -5,7 +5,7 @@ import { Core } from '../../core';
 import { BaseElementProps, BaseElementState } from '../types';
 import { isString } from '@src/utils/validator-utils';
 import Localization from '@src/core/Localization';
-import BPSession from '@src/core/FPSession/FPSession';
+import BPSession from '@src/core/Session/Session';
 
 class BaseElement<P> {
     public static type: string;

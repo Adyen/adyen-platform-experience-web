@@ -1,7 +1,7 @@
-import { SessionResponse, SessionSetupResponse } from '@src/core/FPSession/types';
-import type { CoreOptions, Session } from './types';
+import { SessionResponse } from '@src/core/Session/types';
+import type { CoreOptions } from './types';
 import { resolveEnvironment } from './utils';
-import BPSession from './FPSession';
+import Session from './Session';
 import Localization from './Localization';
 import BaseElement from '../components/external/BaseElement';
 
@@ -12,7 +12,7 @@ class Core<T extends CoreOptions<T> = any> {
         branch: process.env.VITE_COMMIT_BRANCH,
         buildId: process.env.VITE_ADYEN_BUILD_ID,
     };
-    public session?: BPSession;
+    public session?: Session;
     public modules: any;
     public options: CoreOptions<T>;
     public components: BaseElement<any>[] = [];
@@ -41,8 +41,8 @@ class Core<T extends CoreOptions<T> = any> {
                 const res = await this.options.onSessionCreate();
                 const body: SessionResponse = await res.json();
                 const { id, token } = body;
-                this.session = new BPSession(
-                    { id: id, sessionData: token },
+                this.session = new Session(
+                    { id: id, token: token },
                     'https://loop-platform-components-external.intapplb-np.nlzwo1o.adyen.com/platform-components-external/'
                 );
                 await this.session?.setupSession(this.options);

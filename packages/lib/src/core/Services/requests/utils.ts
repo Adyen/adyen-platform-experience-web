@@ -10,7 +10,7 @@ export const getErrorType = (errorCode: number): keyof typeof AdyenFPError.error
     }
 };
 
-export const getRequestObject = (options: HttpOptions, sessionToken?: string, data?: any): RequestInit => {
+export const getRequestObject = (options: HttpOptions, data?: any): RequestInit => {
     const { headers = [], method = 'GET' } = options;
 
     return {
@@ -21,13 +21,12 @@ export const getRequestObject = (options: HttpOptions, sessionToken?: string, da
         headers: {
             Accept: 'application/json, text/plain, */*',
             'Content-Type': method === 'POST' ? 'application/json' : 'text/plain',
-            Authorization: `Bearer ${sessionToken}`,
             ...headers,
         },
         redirect: 'follow',
         signal: options.signal,
         referrerPolicy: 'no-referrer-when-downgrade',
-        ...(data && { body: JSON.stringify(data) }),
+        ...(method === 'POST' && data && { body: JSON.stringify(data) }),
     };
 };
 

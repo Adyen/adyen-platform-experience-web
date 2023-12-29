@@ -3,10 +3,10 @@ import { getErrorType, getRequestObject, handleFetchError, isAdyenErrorResponse 
 import { HttpOptions } from './types';
 import { normalizeLoadingContext, normalizeUrl } from '@src/core/utils';
 
-export function http<T>(options: HttpOptions, data?: any, sessionToken?: string): Promise<T> {
+export function http<T>(options: HttpOptions, data?: any): Promise<T> {
     const { errorLevel = 'warn', loadingContext = '', path } = options;
 
-    const request = getRequestObject(options, sessionToken, data);
+    const request = getRequestObject(options, data);
 
     //TODO - Get rid of the "api" prefix once we have defined a loadingContext from our BFF.
     const url = new URL(`${normalizeLoadingContext(loadingContext)}api${normalizeUrl(path)}`);
@@ -54,10 +54,10 @@ export function http<T>(options: HttpOptions, data?: any, sessionToken?: string)
     );
 }
 
-export function httpGet<T>(options: HttpOptions, sessionToken?: string): Promise<T> {
-    return http<T>({ ...options, method: 'GET' }, null, sessionToken);
+export function httpGet<T>(options: Omit<HttpOptions, 'method'>): Promise<T> {
+    return http<T>({ ...options, method: 'GET' });
 }
 
-export function httpPost<T>(options: HttpOptions, data?: any, sessionToken?: string): Promise<T> {
-    return http<T>({ ...options, method: 'POST' }, data, sessionToken);
+export function httpPost<T>(options: Omit<HttpOptions, 'method'>, data?: any): Promise<T> {
+    return http<T>({ ...options, method: 'POST' }, data);
 }

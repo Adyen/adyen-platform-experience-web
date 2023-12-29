@@ -1,4 +1,4 @@
-import FPSession from '@src/core/FPSession';
+import Session from 'src/core/Session';
 import UIElement from './external/UIElement';
 import { Core, CoreOptions } from '../core';
 import Analytics from '../core/Analytics';

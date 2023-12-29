@@ -1,8 +1,8 @@
 import { httpPost } from '../requests/http';
-import { SessionSetupResponse } from '../../FPSession/types';
+import { SessionSetupResponse } from '@src/core/Session/types';
 import { API_VERSION } from './constants';
 
-function setupSession(sessionToken: string, options?: Record<string, any>): Promise<SessionSetupResponse> {
+function setupSession(token: string, options?: Record<string, any>): Promise<SessionSetupResponse> {
     const path = `${API_VERSION}/setup`;
 
     return httpPost<SessionSetupResponse>(
@@ -12,9 +12,11 @@ function setupSession(sessionToken: string, options?: Record<string, any>): Prom
             errorMessage: 'ERROR: Invalid ClientKey',
             ...(options ?? {}),
             loadingContext: 'https://loop-platform-components-external.intapplb-np.nlzwo1o.adyen.com/platform-components-external/',
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
         },
-        {},
-        sessionToken
+        {}
     );
 }
 

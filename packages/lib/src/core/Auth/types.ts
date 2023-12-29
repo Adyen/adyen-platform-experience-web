@@ -1,5 +1,5 @@
 export interface AuthProviderProps {
     children?: any;
-    sessionToken: string;
+    token: string;
     endpoints: string[];
 }

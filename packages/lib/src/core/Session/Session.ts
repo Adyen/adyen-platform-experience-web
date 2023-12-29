@@ -1,27 +1,25 @@
 import setupSession from '../Services/sessions/setup-session';
 import Storage from '../../utils/Storage';
 import { sanitizeSession } from './utils';
-import { Session, SessionSetupResponse } from './types';
+import { SessionResponse, SessionSetupResponse } from './types';
 
-class FPSession {
-    private readonly session: Session;
-    private readonly storage: Storage<Session>;
+class Session {
+    private readonly session: SessionResponse;
+    private readonly storage: Storage<SessionResponse>;
     public readonly loadingContext: string;
-    public readonly sessionToken: string;
+    public readonly token: string;
     public configuration?: SessionSetupResponse;
 
-    //TODO: delete clientKey
-    //TODO: sessionData is sessionToken?
-    constructor(rawSession: Session, loadingContext: string) {
+    constructor(rawSession: SessionResponse, loadingContext: string) {
         //If there isn't any id then sanitize will throw invalid session error
         const session = sanitizeSession(rawSession) as Session;
 
         this.storage = new Storage('session');
         this.loadingContext = loadingContext;
-        this.sessionToken = rawSession.sessionData;
+        this.token = rawSession.token;
         this.session = session;
 
-        if (!this.session.sessionData) {
+        if (!this.session.token) {
             this.session = this.getStoredSession();
         } else {
             this.storeSession();
@@ -33,14 +31,14 @@ class FPSession {
     }
 
     get data() {
-        return this.session.sessionData;
+        return this.session.token;
     }
 
     /**
      * Updates the session.data with the latest data blob
      */
     private updateSessionData(latestData: string): void {
-        this.session.sessionData = latestData;
+        this.session.token = latestData;
         this.storeSession();
     }
 
@@ -48,7 +46,7 @@ class FPSession {
      * Fetches data from a session
      */
     setupSession(options: Record<string, any>) {
-        return setupSession(this.session.sessionData, options)
+        return setupSession(this.session.token, options)
             .then(response => {
                 if (response.endpoints) {
                     this.configuration = { ...response };
@@ -56,14 +54,14 @@ class FPSession {
                 return response;
             })
             .catch(e => {
-                // throw e;
+                throw e;
             });
     }
 
     /**
      * Gets the stored session but only if the current id and the stored id match
      */
-    getStoredSession(): Session {
+    getStoredSession(): SessionResponse {
         const storedSession = this.storage.get();
         return this.id === storedSession?.id ? storedSession : this.session;
     }
@@ -72,7 +70,7 @@ class FPSession {
      * Stores the session
      */
     storeSession(): void {
-        this.storage.set({ id: this.session.id, sessionData: this.session.sessionData });
+        this.storage.set({ id: this.session.id, token: this.session.token });
     }
 
     /**
@@ -83,4 +81,4 @@ class FPSession {
     }
 }
 
-export default FPSession;
+export default Session;

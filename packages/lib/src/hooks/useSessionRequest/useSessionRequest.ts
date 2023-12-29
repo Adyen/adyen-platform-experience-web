@@ -5,35 +5,26 @@ import { http, httpGet, httpPost } from '@src/core/Services/requests/http';
 import { HttpMethod, HttpOptions } from '@src/core/Services/requests/types';
 import { useCallback } from 'preact/hooks';
 
-//TODO: use this inside http code
 export function useSessionRequest(core: Core) {
-    const { sessionToken } = useAuthContext();
+    const { token } = useAuthContext();
 
     const httpCall = useCallback(
-        (request: HttpOptions, method?: HttpMethod, data?: any) =>
-            <T>(sessionToken: string) => {
-                switch (method) {
-                    case 'GET':
-                        return httpGet<T>(request, sessionToken);
-                    case 'POST':
-                        return httpPost<T>(request, data, sessionToken);
-                    default:
-                        return http<T>(request, data, sessionToken);
-                }
-            },
+        (request: Omit<HttpOptions, 'method'>, method: HttpMethod, data?: any) =>
+            <T>(sessionToken: string) =>
+                http<T>({ ...request, headers: { ...request.headers, Authorization: `Bearer ${sessionToken}` }, method }, data),
         []
     );
 
     const httpProvider = useCallback(
-        async <T>(request: HttpOptions, method?: HttpMethod, data?: any) => {
+        async <T>(request: Omit<HttpOptions, 'method'>, method: HttpMethod, data?: any) => {
             const requestToSend = httpCall(request, method, data);
             try {
-                return await requestToSend<T>(sessionToken);
+                return await requestToSend<T>(token);
             } catch (e: any) {
                 if (e.type === AdyenFPError.errorTypes.EXPIRED_TOKEN) {
                     try {
                         await core?.update({}, true);
-                        return await requestToSend<T>(sessionToken);
+                        return await requestToSend<T>(token);
                     } catch (e) {
                         return Promise.resolve(e);
                     }
@@ -41,7 +32,7 @@ export function useSessionRequest(core: Core) {
                 return Promise.resolve(e);
             }
         },
-        [sessionToken]
+        [token]
     );
 
     return { httpProvider } as const;
