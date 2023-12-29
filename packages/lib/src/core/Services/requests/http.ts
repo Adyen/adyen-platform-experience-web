@@ -25,7 +25,6 @@ export function http<T>(options: HttpOptions, data?: any): Promise<T> {
 
                 const errorType = getErrorType(response.status);
 
-                //TODO: Fix here to throw correct error at right time
                 if (isAdyenErrorResponse(response)) {
                     // If an errorHandler has been passed use this rather than the default handleFetchError
                     return options.errorHandler ? options.errorHandler(response) : handleFetchError(response.detail, errorLevel, errorType);
