@@ -41,6 +41,6 @@ enableServerInMockedMode()
             ...TEST_CONFIG,
         });
 
-        setTimeout(() => transactionsComponent.mount('.transactions-component-container'), 1000);
+        transactionsComponent.mount('.transactions-component-container');
     })
     .catch(console.error);

@@ -4,15 +4,11 @@ import { resolve } from 'node:path';
 export const envDir = resolve(__dirname);
 
 const parseEnv = (env: Record<string, string | undefined>) => ({
-    sessionApi: {
-        url: env.SESSION_API_URL ?? '',
-        token: env.SESSION_TOKEN ?? '',
-        cookie: env.SESSION_COOKIE ?? '',
-    },
-    lemApi: {
-        url: env.LEM_API_URL ?? '',
-        version: env.LEM_API_VERSION ?? '',
-        apiKey: env.LEM_API_KEY,
+    BCLApi: {
+        url: env.BCL_API_URL ?? '',
+        version: env.KYC_API_VERSION ?? '',
+        balancePlatform: env.VITE_BALANCE_PLATFORM ?? '',
+        apiKey: env.VITE_API_KEY ?? '',
     },
     BTLApi: {
         url: env.BTL_API_URL ?? '',
@@ -20,16 +16,20 @@ const parseEnv = (env: Record<string, string | undefined>) => ({
         balancePlatform: env.VITE_BALANCE_PLATFORM ?? '',
         apiKey: env.VITE_API_KEY ?? '',
     },
-    BCLApi: {
-        url: env.BCL_API_URL ?? '',
-        version: env.KYC_API_VERSION ?? '',
-        balancePlatform: env.VITE_BALANCE_PLATFORM ?? '',
-        apiKey: env.VITE_API_KEY ?? '',
+    lemApi: {
+        url: env.LEM_API_URL ?? '',
+        version: env.LEM_API_VERSION ?? '',
+        apiKey: env.LEM_API_KEY,
     },
     loopApi: {
         url: env.LOOP_API_URL ?? '',
         version: env.LOOP_API_VERSION ?? '',
         apiKey: env.VITE_API_KEY ?? '',
+    },
+    sessionApi: {
+        url: env.SESSION_API_URL ?? '',
+        token: env.SESSION_TOKEN ?? '',
+        cookie: env.SESSION_COOKIE ?? '',
     },
     playground: {
         host: env.PLAYGROUND_HOST ?? '',
@@ -62,6 +62,5 @@ export type Environment = ReturnType<typeof parseEnv>;
 
 export const getEnvironment = (mode: string): Environment => {
     const envVars = { ...process.env, ...loadEnv(mode, envDir, '') };
-    const environment = parseEnv(envVars);
-    return environment;
+    return parseEnv(envVars);
 };
