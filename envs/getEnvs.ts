@@ -26,6 +26,11 @@ const parseEnv = (env: Record<string, string | undefined>) => ({
         balancePlatform: env.VITE_BALANCE_PLATFORM ?? '',
         apiKey: env.VITE_API_KEY ?? '',
     },
+    loopApi: {
+        url: env.LOOP_API_URL ?? '',
+        version: env.LOOP_API_VERSION ?? '',
+        apiKey: env.VITE_API_KEY ?? '',
+    },
     playground: {
         host: env.PLAYGROUND_HOST ?? '',
         port: parseInt(env.PLAYGROUND_PORT ?? ''),

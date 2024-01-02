@@ -41,10 +41,7 @@ class Core<T extends CoreOptions<T> = any> {
                 const res = await this.options.onSessionCreate();
                 const body: SessionResponse = await res.json();
                 const { id, token } = body;
-                this.session = new Session(
-                    { id: id, token: token },
-                    'https://loop-platform-components-external.intapplb-np.nlzwo1o.adyen.com/platform-components-external/'
-                );
+                this.session = new Session({ id: id, token: token }, this.loadingContext || '');
                 await this.session?.setupSession(this.options);
                 await this.update({});
                 return this;

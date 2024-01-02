@@ -1,9 +1,10 @@
+import Session from '@src/core/Session';
 import { httpPost } from '../requests/http';
 import { SessionSetupResponse } from '@src/core/Session/types';
 import { API_VERSION } from './constants';
 
-function setupSession(token: string, options?: Record<string, any>): Promise<SessionSetupResponse> {
-    const path = `${API_VERSION}/setup`;
+function setupSession(session: Session, options?: Record<string, any>): Promise<SessionSetupResponse> {
+    const path = `/platform-components-external/api/${API_VERSION}/setup`;
 
     return httpPost<SessionSetupResponse>(
         {
@@ -11,9 +12,9 @@ function setupSession(token: string, options?: Record<string, any>): Promise<Ses
             errorLevel: 'fatal',
             errorMessage: 'ERROR: Invalid ClientKey',
             ...(options ?? {}),
-            loadingContext: 'https://loop-platform-components-external.intapplb-np.nlzwo1o.adyen.com/platform-components-external/',
+            loadingContext: session.loadingContext,
             headers: {
-                Authorization: `Bearer ${token}`,
+                Authorization: `Bearer ${session.token}`,
             },
         },
         {}

@@ -7,6 +7,7 @@ const makeProxyOptions = ({ url, version, username, password, apiKey }, basicAut
     ...(apiKey ? {} : { auth: `${username}:${password}` }),
     headers: basicAuth ? getBasicAuthHeaders({ user: username, pass: password }) : getHeaders(undefined, apiKey),
     changeOrigin: true,
+    secure: false,
     rewrite: path => path.replace(/^\/api/, ''),
 });
 
@@ -22,11 +23,12 @@ const makeSessionProxyOptions = ({ url, token, cookie }) => ({
     secure: false,
 });
 
-export const realApiProxies = (lemApiOptions, btlApiOptions, bclApiOptions, sessionApiOptions, mode) => {
+export const realApiProxies = (lemApiOptions, btlApiOptions, bclApiOptions, sessionApiOptions, setupApiOptions, mode) => {
     const lemApiProxyOptions = makeProxyOptions(lemApiOptions);
     const btlApiProxyOptions = makeProxyOptions(btlApiOptions);
     const bclApiProxyOptions = makeProxyOptions(bclApiOptions);
     const sessionApiProxyOptions = makeSessionProxyOptions(sessionApiOptions);
+    const setupApiProxyOptions = makeProxyOptions(setupApiOptions);
 
     return {
         [endpoints.transactions]: btlApiProxyOptions,
@@ -34,5 +36,6 @@ export const realApiProxies = (lemApiOptions, btlApiOptions, bclApiOptions, sess
         [endpoints.accountHolder]: bclApiProxyOptions,
         [endpoints.legalEntities]: lemApiProxyOptions,
         [endpoints.sessions]: sessionApiProxyOptions,
+        [endpoints.setup]: setupApiProxyOptions,
     };
 };

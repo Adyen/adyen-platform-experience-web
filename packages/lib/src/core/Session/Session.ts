@@ -46,7 +46,7 @@ class Session {
      * Fetches data from a session
      */
     setupSession(options: Record<string, any>) {
-        return setupSession(this.session.token, options)
+        return setupSession(this, options)
             .then(response => {
                 if (response.endpoints) {
                     this.configuration = { ...response };
