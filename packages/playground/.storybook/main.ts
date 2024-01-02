@@ -13,11 +13,11 @@ const config: StorybookConfig = {
     },
     staticDirs: [{ from: '../../../mocks', to: '/static' }],
     async viteFinal(config) {
-        const { lemApi, BTLApi, BCLApi, sessionApi } = getEnvironment(process.env.VITE_MODE ?? 'development');
+        const { lemApi, BTLApi, BCLApi, loopApi, sessionApi } = getEnvironment(process.env.VITE_MODE ?? 'development');
 
         return mergeConfig(config, {
             server: {
-                proxy: realApiProxies(lemApi, BTLApi, BCLApi, sessionApi),
+                proxy: realApiProxies(lemApi, BTLApi, BCLApi, sessionApi, loopApi),
             },
             plugins: [
                 process.env.VITE_MODE &&
