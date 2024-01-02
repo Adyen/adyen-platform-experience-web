@@ -1,27 +1,24 @@
-import { MutableRef, useCallback, useMemo, useState } from 'preact/hooks';
-import { forwardRef } from 'preact/compat';
-import cx from 'classnames';
-import useReflex, { Reflexable } from '@src/hooks/useReflex';
+import { useCallback, useMemo, useState } from 'preact/hooks';
+import useReflex from '@src/hooks/useReflex';
+import { PropsWithChildren } from 'preact/compat';
 interface TooltipContentProps {
     isVisible: boolean;
-    controllerRef: MutableRef<any>;
-    onMouseLeave: any;
+    controllerRef?: HTMLElement;
     content: string;
 }
 
 const ARROW_HEIGHT = 5;
-export const TooltipContent = forwardRef<HTMLDivElement, TooltipContentProps>(({ isVisible, controllerRef, onMouseLeave, content }, tooltipRef) => {
+export const TooltipContent = ({ isVisible, controllerRef, content }: PropsWithChildren<TooltipContentProps>) => {
     const [tooltip, setTooltip] = useState({ width: 0, height: 0 });
 
     const contentRef = useReflex(
         useCallback(() => {
             if (isVisible) setTooltip({ width: contentRef?.current?.clientWidth ?? 0, height: contentRef?.current?.clientHeight ?? 0 });
-        }, [isVisible]),
-        tooltipRef as Reflexable<HTMLDivElement>
+        }, [isVisible])
     );
 
     const tooltipPosition = useMemo(() => {
-        const controllerRect = controllerRef.current?.getBoundingClientRect();
+        const controllerRect = controllerRef?.getBoundingClientRect();
 
         if (controllerRect) {
             return {
@@ -33,22 +30,17 @@ export const TooltipContent = forwardRef<HTMLDivElement, TooltipContentProps>(({
             top: 0,
             left: 0,
         };
-    }, [controllerRef.current, tooltip.width, tooltip.height]);
+    }, [controllerRef, tooltip.width, tooltip.height]);
 
     return (
-        <div
-            className={cx('adyen-fp-tooltip__container', {
-                'adyen-fp-tooltip__container--hidden': tooltip.width === 0,
-            })}
-        >
+        <>
             <div
                 style={`transform: translate3d(${tooltipPosition.left}px, ${tooltipPosition.top}px, 0px)`}
                 className="adyen-fp-tooltip__content"
-                id="tooltip"
+                id={`tooltip-${controllerRef?.id}`}
                 role="tooltip"
                 aria-hidden={!isVisible}
                 ref={contentRef}
-                onMouseLeave={onMouseLeave}
             >
                 {content}
             </div>
@@ -58,6 +50,6 @@ export const TooltipContent = forwardRef<HTMLDivElement, TooltipContentProps>(({
                     tooltipPosition.top + tooltip.height - ARROW_HEIGHT
                 }px, 0px) rotate(45deg)`}
             ></span>
-        </div>
+        </>
     );
-});
+};

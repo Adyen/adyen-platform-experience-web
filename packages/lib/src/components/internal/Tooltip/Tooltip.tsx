@@ -1,40 +1,32 @@
-import { useRef } from 'preact/hooks';
 import './Tooltip.scss';
 import { TooltipProps } from './types';
-import useBooleanState from '@src/hooks/useBooleanState';
-import { useTooltipListeners } from '@src/components/internal/Tooltip/useTooltipListeners';
 import { TooltipContent } from '@src/components/internal/Tooltip/TooltipContent';
-import useIdentifierString from '@src/hooks/element/useIdentifierString';
-import useUniqueIdentifier from '@src/hooks/element/useUniqueIdentifier';
-import { forwardRef } from 'preact/compat';
+import cx from 'classnames';
+import { render } from 'preact';
+import { useEffect } from 'preact/hooks';
+import { PropsWithChildren } from 'preact/compat';
 
-export const Tooltip = forwardRef(({ content, children, targetRef }: TooltipProps, ref) => {
-    console.log((targetRef as any)?.current);
+export const Tooltip = ({ content, targetRef, children }: PropsWithChildren<TooltipProps>) => {
+    useEffect(() => {
+        const container = document.createElement('div');
+        container.setAttribute('id', 'tooltip-container');
+        document.body.appendChild(container);
+        const Foo = () => <div>{'foo'}</div>;
 
-    const [isVisible, setIsVisible] = useBooleanState(false);
-
-    const controllerRef = useRef<HTMLButtonElement>(null);
-
-    const tooltipRef = useUniqueIdentifier();
-
-    const listeners = useTooltipListeners({ ref: tooltipRef, controlRef: controllerRef, setIsVisible });
-
-    const controllerIdentifier = useIdentifierString(tooltipRef);
+        render(<Foo />, container);
+    }, []);
 
     return (
-        <>
-            <span className="adyen-fp-tooltip__controller" ref={controllerRef} aria-describedby={controllerIdentifier} {...listeners}>
-                {children}
-            </span>
-            {isVisible && (
-                <TooltipContent
-                    ref={tooltipRef}
-                    isVisible={isVisible}
-                    content={content}
-                    controllerRef={controllerRef}
-                    onMouseLeave={listeners.onMouseLeave}
-                />
+        <div
+            className={cx('adyen-fp-tooltip__container', {
+                'adyen-fp-tooltip__container--hidden': !targetRef,
+            })}
+        >
+            {targetRef && (
+                <TooltipContent isVisible={true} content={content} controllerRef={targetRef}>
+                    {children}
+                </TooltipContent>
             )}
-        </>
+        </div>
     );
-});
+};

@@ -10,7 +10,9 @@ interface UseTooltipProps {
 
 export const useTooltipListeners = ({ ref, controlRef, setIsVisible }: UseTooltipProps) => {
     const onfocusoutCapture = useCallback(() => setIsVisible(false), [setIsVisible]);
-    const showTooltip = useCallback(() => setIsVisible(true), [setIsVisible]);
+    const showTooltip = useCallback(() => {
+        setIsVisible(true);
+    }, [setIsVisible]);
 
     const onMouseLeave = useCallback(
         (evt: FocusEvent) => {
@@ -33,5 +35,6 @@ export const useTooltipListeners = ({ ref, controlRef, setIsVisible }: UseToolti
                 break;
         }
     }, []);
+
     return { onfocusoutCapture, onMouseLeave, onKeyDown, onFocus: showTooltip, onMouseEnter: showTooltip };
 };

@@ -2,23 +2,20 @@ import { useEffect, useState } from 'preact/hooks';
 import useReflex from '@src/hooks/useReflex';
 import { enumerable, noop, struct } from '@src/utils/common';
 import watchable from '@src/utils/watchable';
+import { InteractionKeyCode } from '@src/components/types';
+import useUniqueIdentifier from '@src/hooks/element/useUniqueIdentifier';
+import uuidv4 from '@src/utils/uuid';
 
 const $tooltips = (() => {
     let currentTarget: HTMLElement | undefined;
-    let listeningForToolTips = false;
-    const TARGETS = new WeakSet<HTMLElement>();
+    const TARGETS = new Set<HTMLElement>();
 
     const __listener__ = (evt: Event) => {
-        let element: HTMLElement | null = evt.target as HTMLElement;
+        const element: HTMLElement | null = evt.target as HTMLElement;
 
-        while (element && element !== evt.currentTarget) {
-            if (TARGETS.has(element)) {
-                currentTarget = element;
-                $watchable.notify();
-                break;
-            }
-
-            element = element.parentNode as HTMLElement;
+        if (TARGETS.has(element)) {
+            currentTarget = element;
+            $watchable.notify();
         }
     };
 
@@ -27,24 +24,40 @@ const $tooltips = (() => {
         $watchable.notify();
     };
 
-    const startListeningForToolTips = () => {
-        if (!listeningForToolTips) {
-            document.body.addEventListener('mouseout', __reset__, true);
-            document.body.addEventListener('mouseover', __listener__, true);
-            listeningForToolTips = true;
+    const __keyDown__ = (evt: KeyboardEvent) => {
+        switch (evt.code) {
+            case InteractionKeyCode.ESCAPE:
+                __reset__();
+                break;
+            default:
+                break;
         }
     };
 
+    const startListeningForToolTips = (element: HTMLElement) => {
+        element.addEventListener('mouseout', __reset__, true);
+        element.addEventListener('mouseover', __listener__, true);
+        element.addEventListener('focus', __listener__, true);
+        element.addEventListener('keydown', __keyDown__, true);
+        element.addEventListener('focusout', __reset__, true);
+    };
+
     const stopListeningForToolTips = () => {
-        document.body.removeEventListener('mouseover', __listener__, true);
-        document.body.removeEventListener('mouseout', __reset__, true);
-        listeningForToolTips = false;
+        TARGETS.forEach(target => {
+            target.removeEventListener('mouseover', __listener__, true);
+            target.removeEventListener('mouseout', __reset__, true);
+            target.removeEventListener('focus', __listener__, true);
+            target.removeEventListener('keydown', __keyDown__, true);
+            target.removeEventListener('focusout', __reset__, true);
+        });
     };
 
     const registerToolTipTarget = (element?: HTMLElement | null) => {
         if (element instanceof HTMLElement) {
             TARGETS.add(element);
-            startListeningForToolTips();
+            element.setAttribute('id', uuidv4());
+            element.setAttribute('aria-describedby', `tooltip-${element.id}`);
+            startListeningForToolTips(element);
         }
     };
     const $watchable = watchable({
@@ -84,7 +97,8 @@ const useToolTip = () => {
     useEffect(() => {
         return $tooltips.watch(() => setState(performance.now()));
     }, []);
-    return { ref } as const;
+
+    return { ref, currentTarget: $tooltips.currentTarget } as const;
 };
 
 export default useToolTip;

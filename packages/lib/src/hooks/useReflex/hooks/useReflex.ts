@@ -6,7 +6,6 @@ const useReflex = <T = any>(action: ReflexAction<T>, reflexable?: Nullable<Refle
     const container = useRef(createReflexContainer<T>());
 
     useLayoutEffect(() => container.current.release, []);
-
     return useMemo(() => {
         container.current.update(action, reflexable);
         return container.current.reflex as Reflex<T>;

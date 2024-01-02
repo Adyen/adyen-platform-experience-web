@@ -60,7 +60,7 @@ function TransactionList({
 
     const { updateDetails, resetDetails, detailsToShow, selectedDetail } = useModalDetails(modalOptions);
 
-    const { ref } = useToolTip();
+    const { ref, currentTarget } = useToolTip();
 
     return (
         <>
@@ -122,9 +122,11 @@ function TransactionList({
                         ),
                     createdAt: ({ value }) => i18n.fullDate(value),
                     type: ({ value }) => {
-                        // const tooltip = useTooltip(setTooltipTargetRef);
-                        // eslint-disable-next-line react/no-unknown-property
-                        return <span ref={ref}>{value}</span>;
+                        return (
+                            <span tabIndex={0} role={'button'} ref={ref}>
+                                {value}
+                            </span>
+                        );
                     },
                     amount: ({ value }) => {
                         const amount = value?.currency
@@ -168,7 +170,7 @@ function TransactionList({
                     </Suspense>
                 )}
             </Modal>
-            <Tooltip targetRef={ref} content={'TEST'} />
+            <Tooltip targetRef={currentTarget} test={{ ref: ref.current, target: currentTarget }} content={'This is the meaning of payout'} />
         </>
     );
 }
