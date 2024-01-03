@@ -13,7 +13,7 @@ import Pagination from '../../../internal/Pagination';
 import { TransactionListProps } from '../types';
 import { getLabel } from './utils';
 import { Tooltip } from '@src/components/internal/Tooltip/Tooltip';
-import useToolTip from '@src/components/internal/Tooltip/useTooltip';
+import useToolTipPrimitives from '@src/components/internal/Tooltip/useTooltip';
 
 const ModalContent = lazy(() => import('./ModalContent'));
 
@@ -59,8 +59,6 @@ function TransactionList({
     );
 
     const { updateDetails, resetDetails, detailsToShow, selectedDetail } = useModalDetails(modalOptions);
-
-    const { ref, currentTarget } = useToolTip();
 
     return (
         <>
@@ -123,9 +121,10 @@ function TransactionList({
                     createdAt: ({ value }) => i18n.fullDate(value),
                     type: ({ value }) => {
                         return (
-                            <span tabIndex={0} role={'button'} ref={ref}>
-                                {value}
-                            </span>
+                            /* <Tooltip content={'This is the meaning of payout'}>
+                                <span role={'button'}>{value}</span>
+                            </Tooltip> */
+                            value
                         );
                     },
                     amount: ({ value }) => {
@@ -145,8 +144,7 @@ function TransactionList({
                                     'adyen-fp-amount--negative': !isPositive,
                                 })}
                             >
-                                {/* eslint-disable-next-line react/no-unknown-property */}
-                                <span ref={ref}>{amount}</span>
+                                <span>{amount}</span>
                             </div>
                         );
                     },
@@ -170,7 +168,6 @@ function TransactionList({
                     </Suspense>
                 )}
             </Modal>
-            <Tooltip targetRef={currentTarget} test={{ ref: ref.current, target: currentTarget }} content={'This is the meaning of payout'} />
         </>
     );
 }

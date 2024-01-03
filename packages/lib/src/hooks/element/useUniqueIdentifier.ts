@@ -2,10 +2,10 @@ import { useCallback, useRef } from 'preact/hooks';
 import useReflex, { Nullable, Reflexable } from '../useReflex';
 import { getUniqueId } from '@src/utils/idGenerator';
 
-const useUniqueIdentifier = (ref?: Nullable<Reflexable<Element>>) => {
+const useUniqueIdentifier = <T extends HTMLElement | Element = Element>(ref?: Nullable<Reflexable<T>>) => {
     const id = useRef<string>();
 
-    return useReflex<Element>(
+    return useReflex<T>(
         useCallback(
             (current, previous) => {
                 if (previous instanceof Element && previous.id === id.current) previous.id = '';

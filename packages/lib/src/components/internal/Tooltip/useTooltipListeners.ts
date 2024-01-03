@@ -1,40 +1,71 @@
 import { MutableRef, useCallback } from 'preact/hooks';
 import { focusIsWithin } from '@src/utils/tabbable';
 import { InteractionKeyCode } from '@src/components/types';
+import useBooleanState from '@src/hooks/useBooleanState';
 
 interface UseTooltipProps {
-    ref: MutableRef<any>;
-    controlRef: MutableRef<any>;
-    setIsVisible: (state: boolean) => void;
+    ref?: MutableRef<any>;
+    controlRef?: MutableRef<any>;
 }
 
-export const useTooltipListeners = ({ ref, controlRef, setIsVisible }: UseTooltipProps) => {
-    const onfocusoutCapture = useCallback(() => setIsVisible(false), [setIsVisible]);
-    const showTooltip = useCallback(() => {
-        setIsVisible(true);
-    }, [setIsVisible]);
+export interface TooltipListeners {
+    onfocusoutCapture: any;
+    onMouseLeave: any;
+    onKeyDown: any;
+    onFocus: any;
+    onMouseEnter: any;
+}
+export const useTooltipListeners = ({
+    ref,
+    controlRef,
+}: UseTooltipProps): {
+    isVisible: boolean;
+    listeners: TooltipListeners;
+} => {
+    const [isVisible, setIsVisible] = useBooleanState();
+
+    const showTooltip = useCallback((show = true) => {
+        setIsVisible(show);
+    }, []);
+
+    // listeners
+
+    const onfocusoutCapture = useCallback(() => {
+        setIsVisible(false);
+    }, []);
 
     const onMouseLeave = useCallback(
         (evt: FocusEvent) => {
             const activeElement = evt.relatedTarget as Element;
 
-            const shouldEscape =
-                !focusIsWithin(ref.current ?? undefined, activeElement) && !focusIsWithin(controlRef.current ?? undefined, activeElement);
+            /* const shouldEscape =
+                !focusIsWithin(ref.current ?? undefined, activeElement) && !focusIsWithin(controlRef.current ?? undefined, activeElement); */
 
-            shouldEscape && setIsVisible(false);
+            // shouldEscape &&
+
+            showTooltip(true);
         },
 
-        [setIsVisible]
+        []
     );
     const onKeyDown = useCallback((evt: KeyboardEvent) => {
         switch (evt.code) {
             case InteractionKeyCode.ESCAPE:
-                setIsVisible(false);
+                showTooltip(false);
                 break;
             default:
                 break;
         }
     }, []);
 
-    return { onfocusoutCapture, onMouseLeave, onKeyDown, onFocus: showTooltip, onMouseEnter: showTooltip };
+    return {
+        listeners: {
+            onfocusoutCapture,
+            onMouseLeave,
+            onKeyDown,
+            onFocus: showTooltip,
+            onMouseEnter: showTooltip,
+        },
+        isVisible,
+    };
 };

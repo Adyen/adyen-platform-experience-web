@@ -2,31 +2,36 @@ import './Tooltip.scss';
 import { TooltipProps } from './types';
 import { TooltipContent } from '@src/components/internal/Tooltip/TooltipContent';
 import cx from 'classnames';
-import { render } from 'preact';
-import { useEffect } from 'preact/hooks';
-import { PropsWithChildren } from 'preact/compat';
+import { cloneElement } from 'preact';
+import { createPortal, PropsWithChildren } from 'preact/compat';
+import useUniqueIdentifier from '@src/hooks/element/useUniqueIdentifier';
+import { useTooltipListeners } from '@src/components/internal/Tooltip/useTooltipListeners';
 
-export const Tooltip = ({ content, targetRef, children }: PropsWithChildren<TooltipProps>) => {
-    useEffect(() => {
-        const container = document.createElement('div');
-        container.setAttribute('id', 'tooltip-container');
-        document.body.appendChild(container);
-        const Foo = () => <div>{'foo'}</div>;
+export const Tooltip = ({ content, children, triggerRef, showTooltip }: PropsWithChildren<TooltipProps>) => {
+    const controllerRef = useUniqueIdentifier<HTMLElement>();
 
-        render(<Foo />, container);
-    }, []);
-
+    const { isVisible, listeners } = useTooltipListeners({});
     return (
-        <div
-            className={cx('adyen-fp-tooltip__container', {
-                'adyen-fp-tooltip__container--hidden': !targetRef,
-            })}
-        >
-            {targetRef && (
-                <TooltipContent isVisible={true} content={content} controllerRef={targetRef}>
-                    {children}
-                </TooltipContent>
-            )}
-        </div>
+        <>
+            {children
+                ? cloneElement(children, {
+                      ref: controllerRef,
+                      ...listeners,
+                      'aria-describedby': `tooltip-${controllerRef.current?.id}`,
+                  })
+                : null}
+
+            {(isVisible || showTooltip) &&
+                createPortal(
+                    <div
+                        className={cx('adyen-fp-tooltip__container', {
+                            'adyen-fp-tooltip__container--hidden': !isVisible && !showTooltip,
+                        })}
+                    >
+                        <TooltipContent isVisible={isVisible || Boolean(showTooltip)} content={content} controllerRef={triggerRef ?? controllerRef} />
+                    </div>,
+                    document.body
+                )}
+        </>
     );
 };
