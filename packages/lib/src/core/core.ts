@@ -98,7 +98,7 @@ class Core<T extends CoreOptions<T> = any> {
      */
     private setOptions = (options: CoreOptions<T>): this => {
         this.options = { ...this.options, ...options };
-        this.loadingContext = process.env.VITE_LOADING_CONTEXT ?? resolveEnvironment(this.options.environment);
+        this.loadingContext = process.env.VITE_LOADING_CONTEXT || resolveEnvironment(this.options.environment);
 
         this.localization.locale = this.options?.locale;
         this.localization.customTranslations = this.options?.translations;
