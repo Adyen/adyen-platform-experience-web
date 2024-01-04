@@ -2,16 +2,27 @@ import { useCallback, useMemo, useState } from 'preact/hooks';
 import useReflex, { Reflex } from '@src/hooks/useReflex';
 import { PropsWithChildren } from 'preact/compat';
 import { FunctionalComponent } from 'preact';
+
+type TooltipPosition = 'TOP' | 'BOTTOM' | 'RIGHT' | 'LEFT';
 interface TooltipContentProps {
     isVisible: boolean;
     controllerRef?: Reflex<HTMLElement>;
     content: string;
+    position?: TooltipPosition;
 }
 
 const ARROW_HEIGHT = 4;
-const TOOLTIP_GAP = 5;
+const TOOLTIP_GAP = 6;
 
-const calculateTooltipPosition = (controllerRect: DOMRect, tooltip: { width: number; height: number }) => {
+const calculateTooltipPosition = ({
+    position,
+    controllerRect,
+    tooltip,
+}: {
+    position: TooltipPosition;
+    controllerRect: DOMRect;
+    tooltip: { width: number; height: number };
+}) => {
     const horizontalCenter = controllerRect.left + window.scrollX + controllerRect.width / 2 - tooltip.width / 2;
     const verticalCenter = controllerRect.top - controllerRect.height / 2 + tooltip.height / 2 - TOOLTIP_GAP;
 
@@ -20,37 +31,65 @@ const calculateTooltipPosition = (controllerRect: DOMRect, tooltip: { width: num
     const rightPosition = controllerRect.left + controllerRect.width + ARROW_HEIGHT + TOOLTIP_GAP;
     const leftPosition = controllerRect.left - tooltip.width - ARROW_HEIGHT - TOOLTIP_GAP;
 
+    const arrowVerticalCenter = verticalCenter + tooltip.height / 2 - TOOLTIP_GAP + ARROW_HEIGHT / 2;
+    const arrowHorizontalCenter = horizontalCenter + tooltip.width / 2;
+
+    const arrowLeft = leftPosition + tooltip.width - ARROW_HEIGHT;
+    const arrowRight = rightPosition - ARROW_HEIGHT;
+    const arrowTop = topPosition + tooltip.height - ARROW_HEIGHT;
+    const arrowBottom = bottomPosition - ARROW_HEIGHT;
+
     const top = {
         top: topPosition,
         left: horizontalCenter,
-        arrowVertical: topPosition + tooltip.height - ARROW_HEIGHT,
-        arrowHorizontal: horizontalCenter + tooltip.width / 2,
+        arrowVertical: arrowTop,
+        arrowHorizontal: arrowHorizontalCenter,
     };
 
     const bottom = {
         top: bottomPosition,
         left: horizontalCenter,
-        arrowVertical: bottomPosition - ARROW_HEIGHT,
-        arrowHorizontal: horizontalCenter + tooltip.width / 2,
+        arrowVertical: arrowBottom,
+        arrowHorizontal: arrowHorizontalCenter,
     };
 
     const right = {
         top: verticalCenter,
         left: rightPosition,
-        arrowVertical: verticalCenter + tooltip.height / 2 - TOOLTIP_GAP + 1,
-        arrowHorizontal: rightPosition - ARROW_HEIGHT,
+        arrowVertical: arrowVerticalCenter,
+        arrowHorizontal: arrowRight,
     };
     const left = {
         top: verticalCenter,
         left: leftPosition,
-        arrowVertical: verticalCenter + tooltip.height / 2 - TOOLTIP_GAP + 1,
-        arrowHorizontal: leftPosition + tooltip.width - ARROW_HEIGHT,
+        arrowVertical: arrowVerticalCenter,
+        arrowHorizontal: arrowLeft,
     };
 
-    return left;
+    switch (position) {
+        case 'BOTTOM':
+            if (tooltip.height + ARROW_HEIGHT + TOOLTIP_GAP > controllerRect.top) return top;
+            return bottom;
+        case 'TOP':
+            if (tooltip.height + ARROW_HEIGHT + TOOLTIP_GAP > controllerRect.top) return bottom;
+            return top;
+        case 'RIGHT':
+            if (tooltip.width + ARROW_HEIGHT + TOOLTIP_GAP > window.innerWidth - controllerRect.right) return left;
+            return right;
+        case 'LEFT':
+            if (tooltip.width + ARROW_HEIGHT + TOOLTIP_GAP > controllerRect.left) return right;
+            return left;
+        default:
+            return top;
+    }
 };
 
-export const TooltipContent: FunctionalComponent<PropsWithChildren<TooltipContentProps>> = ({ isVisible, controllerRef, content }) => {
+export const TooltipContent: FunctionalComponent<PropsWithChildren<TooltipContentProps>> = ({
+    isVisible,
+    controllerRef,
+    content,
+    position = 'LEFT',
+}) => {
     const [tooltip, setTooltip] = useState({ width: 0, height: 0 });
 
     const contentRef = useReflex(
@@ -63,9 +102,7 @@ export const TooltipContent: FunctionalComponent<PropsWithChildren<TooltipConten
         const controllerRect = controllerRef?.current?.getBoundingClientRect();
 
         if (controllerRect) {
-            console.log('controllerRect.top', controllerRect.top);
-            console.log(tooltip.height);
-            return calculateTooltipPosition(controllerRect, tooltip);
+            return calculateTooltipPosition({ controllerRect, tooltip, position });
         }
         return {
             top: 0,

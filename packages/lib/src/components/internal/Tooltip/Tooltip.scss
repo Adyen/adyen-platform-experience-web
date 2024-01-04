@@ -37,5 +37,6 @@
         position: fixed;
         inset: 0px auto auto 0px;
         width: var(--adyen-fp-spacing-small);
+        z-index: 999;
     }
 }
