@@ -12,7 +12,6 @@ enableServerInMockedMode()
         const { id } = getSearchParameters();
         const adyenFP = await AdyenFP({
             locale: 'en-US',
-            loadingContext: process.env.VITE_API_URL,
             async onSessionCreate() {
                 return await sessionRequest();
             },

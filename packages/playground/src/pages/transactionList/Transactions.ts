@@ -12,8 +12,8 @@ enableServerInMockedMode()
         let locale: 'en-US' | 'es-ES' = 'en-US' as const;
 
         const adyenFP = await AdyenFP({
-            loadingContext: process.env.VITE_API_URL,
             locale: locale,
+            environment: 'test',
             availableTranslations: [all_locales],
             async onSessionCreate() {
                 return await sessionRequest();

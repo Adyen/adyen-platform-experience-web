@@ -1,12 +1,29 @@
 import { AdyenErrorResponse, ErrorLevel, HttpOptions } from './types';
 import AdyenFPError from '@src/core/Errors/AdyenFPError';
 
-export const getErrorType = (errorCode: number): keyof typeof AdyenFPError.errorTypes => {
+export const enum ErrorTypes {
+    /** Network error. */
+    NETWORK_ERROR = 'NETWORK_ERROR',
+
+    /** Shopper canceled the current transaction. */
+    CANCEL = 'CANCEL',
+
+    /** Implementation error. The method or parameter are incorrect or are not supported. */
+    IMPLEMENTATION_ERROR = 'IMPLEMENTATION_ERROR',
+
+    /** Generic error. */
+    ERROR = 'ERROR',
+
+    /** Token expired */
+    EXPIRED_TOKEN = 'EXPIRED_TOKEN',
+}
+
+export const getErrorType = (errorCode: number): ErrorTypes => {
     switch (errorCode) {
         case 401:
-            return 'EXPIRED_TOKEN';
+            return ErrorTypes.EXPIRED_TOKEN;
         default:
-            return 'NETWORK_ERROR';
+            return ErrorTypes.NETWORK_ERROR;
     }
 };
 
@@ -30,7 +47,7 @@ export const getRequestObject = (options: HttpOptions, data?: any): RequestInit 
     };
 };
 
-export function handleFetchError(message: string, level: ErrorLevel, type: keyof typeof AdyenFPError.errorTypes = 'NETWORK_ERROR') {
+export function handleFetchError(message: string, level: ErrorLevel, type: ErrorTypes = ErrorTypes.NETWORK_ERROR) {
     switch (level) {
         case 'silent': {
             break;

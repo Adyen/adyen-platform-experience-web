@@ -1,4 +1,6 @@
 const getMySessionToken = async () => {
+    // Here the merchant will call its own backend and their backend will call our backend
+    // at the end this method should return a data formed as { id: string, token:string }
     const url = new URL(`${process.env.VITE_API_URL}authe/api/v1/sessions`);
     const body = {
         allowOrigin: 'http://localhost',
@@ -9,7 +11,9 @@ const getMySessionToken = async () => {
             roles: ['Transfers List Component - Read'],
         },
     };
-    return fetch(url, { method: 'POST', body: JSON.stringify(body) });
+
+    const response = await fetch(url, { method: 'POST', body: JSON.stringify(body) });
+    return await response.json();
 };
 
 export default getMySessionToken;

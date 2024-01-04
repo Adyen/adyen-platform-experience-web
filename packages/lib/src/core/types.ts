@@ -1,3 +1,4 @@
+import { SessionResponse } from '@src/core/Session/types';
 import type { CustomTranslations } from './Localization/types';
 import { AmountExtended } from '../types/shared';
 import { AnalyticsOptions } from './Analytics/types';
@@ -18,11 +19,6 @@ export interface CoreOptions<T extends CoreOptions<T> = any> {
      * Use test. When you're ready to accept live payments, change the value to one of our {@link https://docs.adyen.com/checkout/drop-in-web#testing-your-integration | live environments}.
      */
     environment?: DevEnvironment;
-
-    /**
-     * A public key linked to your web service user, used for {@link https://docs.adyen.com/user-management/client-side-authentication | client-side authentication}.
-     */
-    clientKey?: string;
 
     /**
      * The shopper's locale. This is used to set the language rendered in the UI.
@@ -57,7 +53,7 @@ export interface CoreOptions<T extends CoreOptions<T> = any> {
 
     availableTranslations?: LangFile[];
 
-    loadingContext?: string;
+    onSessionCreate?: SessionRequest;
 
     onError?: (e: any) => any;
 
@@ -69,9 +65,7 @@ export interface CoreOptions<T extends CoreOptions<T> = any> {
 
     timezone?: Intl.DateTimeFormatOptions['timeZone'];
 
-    onSessionCreate?: SessionRequest;
-
     error?: boolean;
 }
 
-export type SessionRequest = () => Promise<Response>;
+export type SessionRequest = () => Promise<SessionResponse>;

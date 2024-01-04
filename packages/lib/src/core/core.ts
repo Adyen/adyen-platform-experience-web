@@ -1,5 +1,5 @@
-import { SessionResponse } from '@src/core/Session/types';
-import type { CoreOptions } from './types';
+import { FALLBACK_CONTEXT } from '@src/core/config';
+import type { CoreOptions, DevEnvironment } from './types';
 import { resolveEnvironment } from './utils';
 import Session from './Session';
 import Localization from './Localization';
@@ -17,13 +17,14 @@ class Core<T extends CoreOptions<T> = any> {
     public options: CoreOptions<T>;
     public components: BaseElement<any>[] = [];
     public localization;
-    public loadingContext?: string;
+    public loadingContext: string;
     public onSessionCreate?: any;
     public error?: boolean;
 
     constructor(options: CoreOptions<T>) {
         this.options = options;
         this.localization = new Localization(options.locale, options.availableTranslations);
+        this.loadingContext = FALLBACK_CONTEXT;
         this.setOptions(options);
     }
 
@@ -38,10 +39,7 @@ class Core<T extends CoreOptions<T> = any> {
     public updateSession = async () => {
         try {
             if (this.options.onSessionCreate) {
-                const res = await this.options.onSessionCreate();
-                const body: SessionResponse = await res.json();
-                const { id, token } = body;
-                this.session = new Session({ id: id, token: token }, this.loadingContext || '');
+                this.session = new Session(await this.options.onSessionCreate(), this.loadingContext!);
                 await this.session?.setupSession(this.options);
                 await this.update({});
                 return this;
@@ -100,7 +98,7 @@ class Core<T extends CoreOptions<T> = any> {
      */
     private setOptions = (options: CoreOptions<T>): this => {
         this.options = { ...this.options, ...options };
-        this.loadingContext = this.options.loadingContext ?? resolveEnvironment(this.options.environment);
+        this.loadingContext = process.env.VITE_LOADING_CONTEXT ?? resolveEnvironment(this.options.environment);
 
         this.localization.locale = this.options?.locale;
         this.localization.customTranslations = this.options?.translations;
@@ -114,10 +112,10 @@ class Core<T extends CoreOptions<T> = any> {
         this.error = this.options.error;
 
         // Check for clientKey/environment mismatch
-        const clientKeyType = this.options?.clientKey?.substring(0, 3) ?? '';
-        if (['test', 'live'].includes(clientKeyType) && !this.options?.loadingContext?.includes(clientKeyType)) {
-            throw new Error(`Error: you are using a ${clientKeyType} clientKey against the ${this.options?.environment} environment`);
-        }
+        // const clientKeyType = this.options?.clientKey?.substring(0, 3) ?? '';
+        // if (['test', 'live'].includes(clientKeyType) && !this.loadingContext?.includes(clientKeyType)) {
+        //     throw new Error(`Error: you are using a ${clientKeyType} clientKey against the ${this.options?.environment} environment`);
+        // }
 
         return this;
     };

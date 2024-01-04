@@ -7,16 +7,14 @@ class Session {
     private readonly session: SessionResponse;
     private readonly storage: Storage<SessionResponse>;
     public readonly loadingContext: string;
-    public readonly token: string;
     public configuration?: SessionSetupResponse;
 
     constructor(rawSession: SessionResponse, loadingContext: string) {
         //If there isn't any id then sanitize will throw invalid session error
-        const session = sanitizeSession(rawSession) as Session;
+        const session = sanitizeSession(rawSession) as SessionResponse;
 
         this.storage = new Storage('session');
         this.loadingContext = loadingContext;
-        this.token = rawSession.token;
         this.session = session;
 
         if (!this.session.token) {
@@ -30,7 +28,7 @@ class Session {
         return this.session.id;
     }
 
-    get data() {
+    get token() {
         return this.session.token;
     }
 

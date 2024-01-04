@@ -22,7 +22,6 @@ class BaseElement<P> {
 
     // provided by AdyenFPCore
     public loadingContext?: string;
-    public clientKey?: string;
     public i18n?: Localization['i18n'];
     public session?: BPSession;
 
@@ -31,8 +30,7 @@ class BaseElement<P> {
         this._parentInstance = this.props._parentInstance;
         this._node = null;
         this.state = {} as BaseElementState;
-        this.loadingContext = this.props.core.options.loadingContext;
-        this.clientKey = this.props.core.options.clientKey;
+        this.loadingContext = this.props.core.loadingContext;
         this.i18n = this.props.core.modules.i18n;
         this.session = this.props.core.session;
         this.props.core.registerComponent(this);

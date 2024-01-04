@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from 'preact/hooks';
-import useSessionAwareRequest from '@src/hooks/useSessionRequest/useSessionRequest';
+import useSessionAwareRequest from '@src/hooks/useSessionAwareRequest/useSessionAwareRequest';
 import useCoreContext from '@src/core/Context/useCoreContext';
 import FilterBar from '../../../internal/FilterBar';
 import TextFilter from '../../../internal/FilterBar/filters/TextFilter';
@@ -11,8 +11,6 @@ import { useCursorPaginatedRecords } from '../../../internal/Pagination/hooks';
 import { ITransaction } from '@src/types';
 import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '@src/components/internal/Pagination/constants';
 import { PaginatedResponseDataWithLinks } from '@src/components/internal/Pagination/types';
-import { httpGet } from '@src/core/Services/requests/http';
-import { HttpOptions } from '@src/core/Services/requests/types';
 import { parseSearchParams } from '@src/core/Services/requests/utils';
 import { isFunction } from '@src/utils/common';
 import Alert from '@src/components/internal/Alert';

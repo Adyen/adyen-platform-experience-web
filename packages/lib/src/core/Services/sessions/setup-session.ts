@@ -8,11 +8,11 @@ function setupSession(session: Session, options?: Record<string, any>): Promise<
 
     return httpPost<SessionSetupResponse>(
         {
-            path,
             errorLevel: 'fatal',
             errorMessage: 'ERROR: Invalid ClientKey',
             ...(options ?? {}),
             loadingContext: session.loadingContext,
+            path,
             headers: {
                 Authorization: `Bearer ${session.token}`,
             },

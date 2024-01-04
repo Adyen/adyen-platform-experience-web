@@ -17,10 +17,10 @@ export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUI
         super(props);
         this.setState = this.setState.bind(this);
         this.componentRef = null;
-        this.elementRef = (props && props.elementRef) || this;
+        this.elementRef = (this.props && this.props.elementRef) || this;
         this.componentToRender = null;
-        this.token = props?.core?.session?.token || '';
-        this.error = props.core.error;
+        this.token = this.props?.core?.session?.token || '';
+        this.error = this.props.core.error;
     }
 
     get isValid() {
