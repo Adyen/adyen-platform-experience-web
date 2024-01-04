@@ -43,8 +43,7 @@ const parseEnv = (env: Record<string, string | undefined>, environment: ENVIRONM
         },
         sessionApi: {
             url: env.SESSION_API_URL ?? '',
-            token: env.SESSION_TOKEN ?? '',
-            cookie: env.SESSION_COOKIE ?? '',
+            token: env.SESSION_AUTH_TOKEN ?? '',
         },
     },
     playground: {

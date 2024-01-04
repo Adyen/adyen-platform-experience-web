@@ -11,11 +11,10 @@ const makeProxyOptions = ({ url, version, username, password, apiKey }, basicAut
     rewrite: path => path.replace(/^\/api/, ''),
 });
 
-const makeSessionProxyOptions = ({ url, token, cookie }) => ({
+const makeSessionProxyOptions = ({ url, token }) => ({
     target: `${url}`,
     headers: {
         Authorization: `Basic ${token}`,
-        Cookie: `JSESSIONID=${cookie}`,
         'Content-Type': 'application/json',
         'Access-Control-Allow-Origin': '*',
     },
