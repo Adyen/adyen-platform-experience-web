@@ -1,15 +1,13 @@
-import createTimeRange from '../createTimeRange';
-import { startOfDay, startOfMonth } from '../utils';
+import createRangeTimestampsFactory from '../factory';
+import { nowTimestamp, startOfDay, startOfMonth } from '../utils';
 
-const thisMonth = createTimeRange({
-    get from() {
-        const date = new Date(this.to);
+const thisMonth = createRangeTimestampsFactory({
+    from: ({ now }) => {
+        const date = new Date(now);
         startOfDay(date);
         return startOfMonth(date);
     },
-    get to() {
-        return Date.now();
-    },
+    to: nowTimestamp,
 });
 
 export default thisMonth;

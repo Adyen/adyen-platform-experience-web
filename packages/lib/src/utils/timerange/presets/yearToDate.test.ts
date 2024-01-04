@@ -1,19 +1,19 @@
 import { beforeEach, describe, expect, test } from 'vitest';
 import yearToDate from './yearToDate';
-import type { TimeRange } from '../types';
+import type { RangeTimestamps } from '../types';
 
 describe('year to date', () => {
     type DateRange = {
         currentDate: Date;
         fromDate: Date;
         toDate: Date;
-        from: TimeRange['from'];
-        now: TimeRange['now'];
-        to: TimeRange['to'];
+        from: RangeTimestamps['from'];
+        now: RangeTimestamps['now'];
+        to: RangeTimestamps['to'];
     };
 
     beforeEach<DateRange>(context => {
-        const { from, now, to } = yearToDate;
+        const { from, now, to } = yearToDate();
         context.currentDate = new Date((context.now = now));
         context.fromDate = new Date((context.from = from));
         context.toDate = new Date((context.to = to));

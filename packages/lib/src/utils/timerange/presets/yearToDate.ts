@@ -1,15 +1,13 @@
-import createTimeRange from '../createTimeRange';
-import { startOfDay, startOfYear } from '../utils';
+import createRangeTimestampsFactory from '../factory';
+import { nowTimestamp, startOfDay, startOfYear } from '../utils';
 
-const yearToDate = createTimeRange({
-    get from() {
-        const date = new Date(this.to);
+const yearToDate = createRangeTimestampsFactory({
+    from: ({ now }) => {
+        const date = new Date(now);
         startOfDay(date);
         return startOfYear(date);
     },
-    get to() {
-        return Date.now();
-    },
+    to: nowTimestamp,
 });
 
 export default yearToDate;

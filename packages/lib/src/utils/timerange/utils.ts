@@ -1,17 +1,35 @@
 import { hasOwnProperty, isFunction } from '@src/utils/common';
-import type { RangeFromTimestampWithOffset, RangeTimestamp, RangeTimestampConfig, RangeTimestamps, UnwrappedRangeConstraintSource } from './types';
+import type {
+    RangeTimestamp,
+    RangeTimestampsConfig,
+    RangeTimestampsConfigContext,
+    RangeTimestampsConfigParameter,
+    RangeTimestampsConfigParameterValue,
+    RangeTimestampsConfigWithFromOffset,
+    RangeTimestampsConfigWithoutOffset,
+} from './types';
 
-export const getRangeConfigUnwrapper =
-    (config: RangeTimestampConfig) =>
-    <T = {}>(value: T): UnwrappedRangeConstraintSource<T> =>
-        isFunction(value) ? value.call(config) : value;
+export const getter = <T extends any = any>(get: () => T, enumerable: boolean = true): TypedPropertyDescriptor<T> =>
+    ({
+        enumerable: (enumerable as any) !== false,
+        get,
+    } as const);
 
-export const isRangeTimestamps = (config: RangeTimestampConfig): config is RangeTimestamps => !hasOwnProperty(config, 'offset');
+export const getRangeTimestampsConfigParameterUnwrapper =
+    (config: RangeTimestampsConfig, context: RangeTimestampsConfigContext) =>
+    <T = {}>(value: T): RangeTimestampsConfigParameterValue<T> =>
+        isFunction(value) ? value.call(config, context) : value;
 
-export const isRangeFromTimestampWithOffset = (config: Exclude<RangeTimestampConfig, RangeTimestamps>): config is RangeFromTimestampWithOffset =>
-    hasOwnProperty(config, 'from');
+export const isRangeTimestampsConfigWithoutOffset = (config: RangeTimestampsConfig): config is RangeTimestampsConfigWithoutOffset =>
+    !hasOwnProperty(config, 'offset');
 
-export const parseTimestamp = (timestamp: RangeTimestamp) => {
+export const isRangeTimestampsConfigWithFromOffset = (
+    config: Exclude<RangeTimestampsConfig, RangeTimestampsConfigWithoutOffset>
+): config is RangeTimestampsConfigWithFromOffset => hasOwnProperty(config, 'from');
+
+export const nowTimestamp = (({ now }) => now) satisfies RangeTimestampsConfigParameter<RangeTimestamp>;
+
+export const parseRangeTimestamp = (timestamp: RangeTimestamp) => {
     const parsedTimestamp = new Date(timestamp).getTime();
     return isNaN(parsedTimestamp) ? undefined : parsedTimestamp;
 };
