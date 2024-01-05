@@ -21,7 +21,7 @@ const createRangeTimestampsFactory =
         let { from, to, now: NOW } = EMPTY_OBJECT as RangeTimestamps;
 
         const nowSetter = (timestamp?: RangeTimestamp | null) => {
-            NOW = parseRangeTimestamp(timestamp as RangeTimestamp) ?? NOW;
+            NOW = parseRangeTimestamp((timestamp ?? Date.now()) as RangeTimestamp) ?? NOW;
 
             parsing: {
                 if (isRangeTimestampsConfigWithoutOffset(config)) {
@@ -59,14 +59,14 @@ const createRangeTimestampsFactory =
             if (from > to) [from, to] = [to, from];
         };
 
-        nowSetter(Date.now());
+        nowSetter();
 
         return struct({
             ...additionalContext,
             from: getter(() => from),
             to: getter(() => to),
             now: { ...nowDescriptor, set: nowSetter },
-        }) as RangeTimestamps<T>;
+        }) as RangeTimestamps<Omit<T, keyof RangeTimestamps>>;
     };
 
 export default createRangeTimestampsFactory;
