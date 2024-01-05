@@ -1,57 +1,28 @@
-import { MutableRef, useCallback } from 'preact/hooks';
-import { focusIsWithin } from '@src/utils/tabbable';
+import { useCallback } from 'preact/hooks';
 import { InteractionKeyCode } from '@src/components/types';
 import useBooleanState from '@src/hooks/useBooleanState';
 
-interface UseTooltipProps {
-    ref?: MutableRef<any>;
-    controlRef?: MutableRef<any>;
-}
-
 export interface TooltipListeners {
-    onfocusoutCapture: any;
-    onMouseLeave: any;
-    onKeyDown: any;
-    onFocus: any;
-    onMouseEnter: any;
+    onfocusoutCapture(): void;
+    onMouseLeave(): void;
+    onKeyDown(evt: Event): void;
+    onFocus(): void;
+    onMouseEnter(): void;
 }
-export const useTooltipListeners = ({
-    ref,
-    controlRef,
-}: UseTooltipProps): {
+export const useTooltipListeners = (): {
     isVisible: boolean;
     listeners: TooltipListeners;
 } => {
     const [isVisible, setIsVisible] = useBooleanState();
-
-    const showTooltip = useCallback((show = true) => {
-        setIsVisible(show);
-    }, []);
+    const showTooltip = useCallback(() => setIsVisible(true), []);
+    const hideTooltip = useCallback(() => setIsVisible(false), []);
 
     // listeners
 
-    const onfocusoutCapture = useCallback(() => {
-        setIsVisible(false);
-    }, []);
-
-    const onMouseLeave = useCallback(
-        (evt: FocusEvent) => {
-            const activeElement = evt.relatedTarget as Element;
-
-            /* const shouldEscape =
-                !focusIsWithin(ref.current ?? undefined, activeElement) && !focusIsWithin(controlRef.current ?? undefined, activeElement); */
-
-            // shouldEscape &&
-
-            showTooltip(true);
-        },
-
-        []
-    );
     const onKeyDown = useCallback((evt: KeyboardEvent) => {
         switch (evt.code) {
             case InteractionKeyCode.ESCAPE:
-                showTooltip(false);
+                hideTooltip();
                 break;
             default:
                 break;
@@ -60,8 +31,8 @@ export const useTooltipListeners = ({
 
     return {
         listeners: {
-            onfocusoutCapture,
-            onMouseLeave,
+            onfocusoutCapture: hideTooltip,
+            onMouseLeave: hideTooltip,
             onKeyDown,
             onFocus: showTooltip,
             onMouseEnter: showTooltip,

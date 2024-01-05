@@ -1,95 +1,9 @@
 import { useCallback, useMemo, useState } from 'preact/hooks';
-import useReflex, { Reflex } from '@src/hooks/useReflex';
-import { PropsWithChildren } from 'preact/compat';
-import { FunctionalComponent } from 'preact';
+import useReflex from '@src/hooks/useReflex';
+import { TooltipContentProps } from './types';
+import { calculateTooltipPosition } from './utils';
 
-type TooltipPosition = 'TOP' | 'BOTTOM' | 'RIGHT' | 'LEFT';
-interface TooltipContentProps {
-    isVisible: boolean;
-    controllerRef?: Reflex<HTMLElement>;
-    content: string;
-    position?: TooltipPosition;
-}
-
-const ARROW_HEIGHT = 4;
-const TOOLTIP_GAP = 6;
-
-const calculateTooltipPosition = ({
-    position,
-    controllerRect,
-    tooltip,
-}: {
-    position: TooltipPosition;
-    controllerRect: DOMRect;
-    tooltip: { width: number; height: number };
-}) => {
-    const horizontalCenter = controllerRect.left + window.scrollX + controllerRect.width / 2 - tooltip.width / 2;
-    const verticalCenter = controllerRect.top - controllerRect.height / 2 + tooltip.height / 2 - TOOLTIP_GAP;
-
-    const topPosition = controllerRect.top - controllerRect.height - ARROW_HEIGHT - TOOLTIP_GAP;
-    const bottomPosition = controllerRect.top + controllerRect.height + ARROW_HEIGHT + TOOLTIP_GAP;
-    const rightPosition = controllerRect.left + controllerRect.width + ARROW_HEIGHT + TOOLTIP_GAP;
-    const leftPosition = controllerRect.left - tooltip.width - ARROW_HEIGHT - TOOLTIP_GAP;
-
-    const arrowVerticalCenter = verticalCenter + tooltip.height / 2 - TOOLTIP_GAP + ARROW_HEIGHT / 2;
-    const arrowHorizontalCenter = horizontalCenter + tooltip.width / 2;
-
-    const arrowLeft = leftPosition + tooltip.width - ARROW_HEIGHT;
-    const arrowRight = rightPosition - ARROW_HEIGHT;
-    const arrowTop = topPosition + tooltip.height - ARROW_HEIGHT;
-    const arrowBottom = bottomPosition - ARROW_HEIGHT;
-
-    const top = {
-        top: topPosition,
-        left: horizontalCenter,
-        arrowVertical: arrowTop,
-        arrowHorizontal: arrowHorizontalCenter,
-    };
-
-    const bottom = {
-        top: bottomPosition,
-        left: horizontalCenter,
-        arrowVertical: arrowBottom,
-        arrowHorizontal: arrowHorizontalCenter,
-    };
-
-    const right = {
-        top: verticalCenter,
-        left: rightPosition,
-        arrowVertical: arrowVerticalCenter,
-        arrowHorizontal: arrowRight,
-    };
-    const left = {
-        top: verticalCenter,
-        left: leftPosition,
-        arrowVertical: arrowVerticalCenter,
-        arrowHorizontal: arrowLeft,
-    };
-
-    switch (position) {
-        case 'BOTTOM':
-            if (tooltip.height + ARROW_HEIGHT + TOOLTIP_GAP > controllerRect.top) return top;
-            return bottom;
-        case 'TOP':
-            if (tooltip.height + ARROW_HEIGHT + TOOLTIP_GAP > controllerRect.top) return bottom;
-            return top;
-        case 'RIGHT':
-            if (tooltip.width + ARROW_HEIGHT + TOOLTIP_GAP > window.innerWidth - controllerRect.right) return left;
-            return right;
-        case 'LEFT':
-            if (tooltip.width + ARROW_HEIGHT + TOOLTIP_GAP > controllerRect.left) return right;
-            return left;
-        default:
-            return top;
-    }
-};
-
-export const TooltipContent: FunctionalComponent<PropsWithChildren<TooltipContentProps>> = ({
-    isVisible,
-    controllerRef,
-    content,
-    position = 'LEFT',
-}) => {
+export const TooltipContent = ({ isVisible, controllerRef, content, position = 'top' }: TooltipContentProps) => {
     const [tooltip, setTooltip] = useState({ width: 0, height: 0 });
 
     const contentRef = useReflex(

@@ -12,8 +12,6 @@ import DataGrid from '../../../internal/DataGrid';
 import Pagination from '../../../internal/Pagination';
 import { TransactionListProps } from '../types';
 import { getLabel } from './utils';
-import { Tooltip } from '@src/components/internal/Tooltip/Tooltip';
-import useToolTipPrimitives from '@src/components/internal/Tooltip/useTooltip';
 
 const ModalContent = lazy(() => import('./ModalContent'));
 

@@ -6,7 +6,6 @@ import Alert from '@src/components/internal/Alert';
 import { AccountHolderInfo } from '@src/components/external/AccountHolder/components/AccountHolderInfo';
 import type { AccountHolder } from '../../../../types';
 import type { AccountHolderComponentProps } from '../types';
-import { Tooltip } from '@src/components/internal/Tooltip/Tooltip';
 
 const AccountHolderDetails = ({ accountHolderId, accountHolder, title }: AccountHolderComponentProps) => {
     const { i18n } = useCoreContext();
@@ -29,11 +28,6 @@ const AccountHolderDetails = ({ accountHolderId, accountHolder, title }: Account
             ) : accountHolderData ? (
                 <AccountHolderInfo accountHolder={accountHolderData} />
             ) : null}
-            <Tooltip content={'This is the meaning of payout'}>
-                <span style={'margin-left: 250px'} role={'button'}>
-                    {'value'}
-                </span>
-            </Tooltip>
         </div>
     );
 };

@@ -7,10 +7,10 @@ import { createPortal, PropsWithChildren } from 'preact/compat';
 import useUniqueIdentifier from '@src/hooks/element/useUniqueIdentifier';
 import { useTooltipListeners } from '@src/components/internal/Tooltip/useTooltipListeners';
 
-export const Tooltip = ({ content, children, triggerRef, showTooltip }: PropsWithChildren<TooltipProps>) => {
+export const Tooltip = ({ content, children, triggerRef, showTooltip, position }: PropsWithChildren<TooltipProps>) => {
     const controllerRef = useUniqueIdentifier<HTMLElement>();
 
-    const { isVisible, listeners } = useTooltipListeners({});
+    const { isVisible, listeners } = useTooltipListeners();
     return (
         <>
             {children
@@ -28,7 +28,12 @@ export const Tooltip = ({ content, children, triggerRef, showTooltip }: PropsWit
                             'adyen-fp-tooltip__container--hidden': !isVisible && !showTooltip,
                         })}
                     >
-                        <TooltipContent isVisible={isVisible || Boolean(showTooltip)} content={content} controllerRef={triggerRef ?? controllerRef} />
+                        <TooltipContent
+                            position={position}
+                            isVisible={isVisible || Boolean(showTooltip)}
+                            content={content}
+                            controllerRef={triggerRef ?? controllerRef}
+                        />
                     </div>,
                     document.body
                 )}
