@@ -1,15 +1,21 @@
 import type { RangeTimestamps } from '../../types';
 import type { Month, MonthDays } from '../../../types';
+import { getter } from '../../utils';
 
-export type DateRangeContext<T extends Record<any, any> = {}> = Readonly<{
+type _DateRangeContext = {
     fromDate: Date;
     nowDate: Date;
     toDate: Date;
-    from: RangeTimestamps['from'];
-    now: RangeTimestamps['now'];
-    to: RangeTimestamps['to'];
-}> &
-    Omit<Readonly<RangeTimestamps<T>>, 'from' | 'now' | 'to'>;
+};
+
+export type DateRangeContext<T extends Record<any, any> = {}> = Readonly<
+    _DateRangeContext & {
+        from: RangeTimestamps['from'];
+        now: RangeTimestamps['now'];
+        to: RangeTimestamps['to'];
+    }
+> &
+    Omit<RangeTimestamps<T>, 'from' | 'now' | 'to'>;
 
 export const isLeapYear = (year: number) => (year % 100 ? year % 4 : year % 400) === 0;
 
@@ -27,10 +33,14 @@ export const getMonthDays = (month: Month, year: number): MonthDays => {
     }
 };
 
-export const getDateRangeContext = <T extends Record<any, any> = {}>(factory: () => RangeTimestamps<T>): DateRangeContext<T> => {
-    const { from, now, to, ...restContextProps } = factory();
-    const fromDate = new Date(from);
-    const nowDate = new Date(now);
-    const toDate = new Date(to);
-    return { ...restContextProps, from, fromDate, now, nowDate, to, toDate };
+export const getDateRangeContext = <T extends Record<any, any> = {}>(
+    factory: () => RangeTimestamps<T> & Partial<_DateRangeContext>
+): DateRangeContext<T> => {
+    const rangeContext = factory();
+
+    return Object.defineProperties(rangeContext as DateRangeContext<T>, {
+        fromDate: getter(() => new Date(rangeContext.from)),
+        nowDate: getter(() => new Date(rangeContext.now)),
+        toDate: getter(() => new Date(rangeContext.to)),
+    });
 };

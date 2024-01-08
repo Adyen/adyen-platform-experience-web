@@ -4,17 +4,13 @@ import type { WeekDay } from '../../../types';
 import lastWeek from '../lastWeek';
 
 describe('last week', () => {
-    const runTestsFor = (firstWeekDay?: WeekDay) => {
-        let factory = lastWeek;
-        let which = 'default';
+    const lastWeekTimestamps = getDateRangeContext(lastWeek);
 
-        if (firstWeekDay !== undefined) {
-            factory = () => lastWeek(firstWeekDay);
-            which = `${firstWeekDay}`;
-        }
+    const runTestsFor = (firstWeekDay?: WeekDay) => {
+        const which = firstWeekDay === undefined ? 'default' : `${firstWeekDay}`;
 
         test(`should be previous week (firstWeekDay => ${which})`, () => {
-            const { firstWeekDay, fromDate, nowDate, to, toDate } = getDateRangeContext(factory);
+            const { firstWeekDay, fromDate, nowDate, to, toDate } = lastWeekTimestamps;
             const fromMonth = fromDate.getMonth();
             const fromYear = fromDate.getFullYear();
             const nowMonth = nowDate.getMonth();
@@ -26,7 +22,7 @@ describe('last week', () => {
             const lastDayOfLastWeek = toDate.getDate();
 
             expect(fromDate.getDay()).toBe(firstWeekDay); // first week day
-            expect(toDate.getDay()).toBe((firstWeekDay + 6) % 7); // last week day
+            expect(toDate.getDay()).toBe(((firstWeekDay as number) + 6) % 7); // last week day
 
             if (firstDayOfLastWeek < dateOfToday) {
                 expect(fromMonth).toBe(toMonth); // same month
@@ -69,12 +65,12 @@ describe('last week', () => {
         });
 
         test(`should have precise timestamps (firstWeekDay => ${which})`, () => {
-            const { firstWeekDay, from, to } = getDateRangeContext(factory);
+            const { firstWeekDay, from, to } = lastWeekTimestamps;
             const dateAfter = new Date(to + 1);
             const dateBefore = new Date(from - 1);
 
             expect(dateAfter.getDay()).toBe(firstWeekDay);
-            expect(dateBefore.getDay()).toBe((firstWeekDay + 6) % 7);
+            expect(dateBefore.getDay()).toBe(((firstWeekDay as number) + 6) % 7);
         });
     };
 
@@ -82,5 +78,8 @@ describe('last week', () => {
     runTestsFor();
 
     // test with all possible values for `firstWeekDay`
-    for (let i = 0; i < 7; i++) runTestsFor(i as WeekDay);
+    for (let i = 0; i < 7; i++) {
+        lastWeekTimestamps.firstWeekDay = i as WeekDay;
+        runTestsFor(lastWeekTimestamps.firstWeekDay);
+    }
 });
