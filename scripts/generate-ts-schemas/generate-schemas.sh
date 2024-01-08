@@ -32,8 +32,6 @@ CA_CERTS="$CA_CERTS"
 
 BRANCH_NAME="main"
 
-echo "PROJECT_ID: $PROJECT_ID"
-
 # Function to URL-encode the folder path
 urlencode() {
     echo -n "$1" | perl -MURI::Escape -ne 'print uri_escape($_)';
