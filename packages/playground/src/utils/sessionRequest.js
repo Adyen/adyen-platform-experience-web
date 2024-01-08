@@ -1,7 +1,9 @@
 const getMySessionToken = async () => {
     // Here the merchant will call its own backend and their backend will call our backend
     // at the end this method should return a data formed as { id: string, token:string }
-    const url = new URL(`${process.env.VITE_API_URL}authe/api/v1/sessions`);
+    const loadingContext = process.env.VITE_API_URL;
+    const normalizedLoadingContext = loadingContext.endsWith('/') ? loadingContext : `${loadingContext}/`;
+    const url = new URL(`${normalizedLoadingContext}authe/api/v1/sessions`);
     const body = {
         allowOrigin: 'http://localhost',
         reference: 'platfrom-operations',
