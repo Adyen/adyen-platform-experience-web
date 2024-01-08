@@ -17,7 +17,6 @@ import { isFunction } from '@src/utils/common';
 import Alert from '@src/components/internal/Alert';
 import { ExternalUIComponentProps } from '../../../types';
 import { API_ENDPOINTS } from '@src/core/Services/requests/endpoints';
-import { SuccessGETResponse } from '@src/types/models/api/utils';
 
 const DEFAULT_CREATED_SINCE = new Date(new Date().setHours(0, 0, 0, 0)).toISOString();
 const DEFAULT_CREATED_UNTIL = new Date(new Date().setHours(23, 59, 59, 999)).toISOString();
@@ -39,10 +38,11 @@ function Transactions({
     onFiltersChanged,
     onLimitChanged,
     preferredLimit = DEFAULT_PAGE_LIMIT,
+    allowLimitSelection,
 }: ExternalUIComponentProps<TransactionsComponentProps>) {
     const _onFiltersChanged = useMemo(() => (isFunction(onFiltersChanged) ? onFiltersChanged : void 0), [onFiltersChanged]);
     const _onLimitChanged = useMemo(() => (isFunction(onLimitChanged) ? onLimitChanged : void 0), [onLimitChanged]);
-    const preferredLimitOptions = useMemo(() => _onLimitChanged && LIMIT_OPTIONS, [_onLimitChanged]);
+    const preferredLimitOptions = useMemo(() => (allowLimitSelection ? LIMIT_OPTIONS : undefined), [allowLimitSelection]);
 
     const { i18n, clientKey, loadingContext } = useCoreContext();
 
