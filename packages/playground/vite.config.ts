@@ -4,6 +4,7 @@ import { resolve } from 'node:path';
 import { lstat, readdir } from 'node:fs/promises';
 import { getEnvironment } from '../../envs/getEnvs';
 import { realApiProxies } from './src/endpoints/apis/realApiProxies';
+import { checker } from 'vite-plugin-checker';
 
 const playgroundDir = resolve(__dirname, 'src/pages');
 const demoPlaygroundDir = resolve(__dirname, './');
@@ -29,7 +30,16 @@ export default defineConfig(async ({ mode }) => {
     return {
         root: mode === 'demo' ? demoPlaygroundDir : undefined,
         base: './',
-        plugins: [preact()],
+        plugins: [
+            preact(),
+            ['mocked', 'development'].includes(mode)
+                ? checker({
+                      stylelint: {
+                          lintCommand: 'stylelint ../lib/src/**/*.scss',
+                      },
+                  })
+                : undefined,
+        ],
         build:
             mode === 'demo'
                 ? {
