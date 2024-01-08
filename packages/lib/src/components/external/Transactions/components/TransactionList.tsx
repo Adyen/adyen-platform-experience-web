@@ -64,6 +64,7 @@ function TransactionList({
                 columns={columns}
                 data={transactions}
                 loading={loading}
+                allowRowClick={true}
                 customCells={{
                     id: ({ value }) =>
                         detailsToShow.transaction ? (
