@@ -1,11 +1,11 @@
 @mixin adyen-fp-font-sizes {
-    --adyen-fp-font-size-xlarge: 1.75em;
-    --adyen-fp-font-size-large: 1.5em;
-    --adyen-fp-font-size-base: 1.3em;
-    --adyen-fp-font-size-medium: 1em;
-    --adyen-fp-font-size-small: 0.81em;
-    --adyen-fp-font-size-xsmall: 0.75em;
-    --adyen-fp-font-size-xxsmall: 0.68em;
+    --adyen-fp-font-size-xlarge: 1.75rem;
+    --adyen-fp-font-size-large: 1.5rem;
+    --adyen-fp-font-size-base: 1rem;
+    --adyen-fp-font-size-medium: 0.875rem;
+    --adyen-fp-font-size-small: 0.81rem;
+    --adyen-fp-font-size-xsmall: 0.75rem;
+    --adyen-fp-font-size-xxsmall: 0.68rem;
 }
 
 @mixin adyen-fp-font-weight {

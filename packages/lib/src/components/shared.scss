@@ -36,18 +36,6 @@
         }
     }
 
-    &-tag {
-        background: var(--adyen-fp-color-gray-light);
-        border-radius: var(--adyen-fp-border-radius-xlarge);
-        color: var(--adyen-fp-color-black);
-        display: inline-block;
-        font-size: var(--adyen-fp-font-size-xsmall);
-        font-weight: normal;
-        padding: var(--adyen-fp-spacing-xsmall) var(--adyen-fp-spacing-small);
-        position: relative;
-        top: -2px;
-    }
-
     &-details-section {
         background: var(--adyen-fp-color-white);
         border: 1px solid var(--adyen-fp-color-gray);

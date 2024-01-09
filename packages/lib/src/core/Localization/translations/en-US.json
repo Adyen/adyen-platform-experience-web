@@ -162,5 +162,7 @@
     "value": "Value",
     "filterBar": "Filter bar",
     "default": "Default",
-    "contactDetails": "Contact details"
+    "contactDetails": "Contact details",
+    "booked": "Booked",
+    "pending": "Pending"
 }

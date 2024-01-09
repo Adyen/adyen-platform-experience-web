@@ -1,0 +1,33 @@
+.adyen-fp-tag {
+    align-items: center;
+    border-radius: 4px;
+    cursor: default;
+    display: inline-flex;
+    flex-direction: row;
+    font-weight: var(--adyen-fp-font-weight-medium);
+    gap: 6px;
+    height: 24px;
+    justify-content: center;
+    padding: var(--adyen-fp-spacing-xs) var(--adyen-fp-spacing-small);
+    width: fit-content;
+
+    &--success {
+        background: var(--adyen-fp-color-green-100);
+        color: var(--adyen-fp-color-green);
+    }
+
+    &--error {
+        background: var(--adyen-fp-color-red-light);
+        color: var(--adyen-fp-color-red);
+    }
+
+    &--default {
+        background: var(--adyen-fp-background-secondary);
+        color: var(--adyen-fp-color-black);
+    }
+
+    &--warning {
+        background: var(--adyen-fp-color-yellow);
+        color: var(--adyen-fp-color-yellow-dark);
+    }
+}

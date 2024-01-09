@@ -15,6 +15,7 @@ const labels = {
     balanceAdjustment: 'txType.balanceAdjustment',
     amount: 'amount',
     description: 'description',
+    status: 'status',
 } as const;
 export const getLabel = (key: keyof typeof labels) => {
     return labels[key] || key;
