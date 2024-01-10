@@ -97,6 +97,18 @@
         margin-bottom: var(--adyen-fp-spacing-medium);
     }
 
+    &__footer {
+        background: var(--adyen-fp-color-white);
+
+        .adyen-fp-pagination {
+            padding: 0;
+        }
+    }
+
+    .adyen-fp-spinner__wrapper {
+        padding: var(--adyen-fp-spacing-xxxlarge);
+    }
+
     &--outline {
         border: 1px solid var(--adyen-fp-color-gray-light);
         border-radius: var(--adyen-fp-border-radius-medium);
@@ -110,13 +122,9 @@
                 border-bottom: 1px solid var(--adyen-fp-color-gray-dark);
             }
         }
-    }
 
-    &__footer {
-        background: var(--adyen-fp-color-white);
-    }
-
-    .adyen-fp-spinner__wrapper {
-        padding: var(--adyen-fp-spacing-xxxlarge);
+        #{$adyen-fp-data-grid}__footer .adyen-fp-pagination {
+            padding: var(--adyen-fp-spacing-medium) var(--adyen-fp-spacing-small);
+        }
     }
 }
