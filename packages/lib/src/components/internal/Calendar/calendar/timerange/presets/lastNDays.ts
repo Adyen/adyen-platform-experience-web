@@ -1,5 +1,5 @@
 import createRangeTimestampsFactory from '../factory';
-import { getRangeTimestampsContextIntegerPropertyFactory, offsetForNDays, startOfDay } from '../utils';
+import { getRangeTimestampsContextIntegerPropertyFactory, nowTimestamp, startOfDay } from '../utils';
 
 export const MAX_NUM_DAYS = 365;
 export const MIN_NUM_DAYS = 1;
@@ -12,8 +12,12 @@ const lastNDays = (numberOfDays?: number) => {
 
     return createRangeTimestampsFactory(
         {
-            to: ({ now }) => startOfDay(new Date(now)) - 1,
-            offset: () => offsetForNDays(numberOfDaysContext.value),
+            from: ({ now }) => {
+                const date = new Date(now);
+                date.setDate(date.getDate() - numberOfDaysContext.value + 1);
+                return startOfDay(date);
+            },
+            to: nowTimestamp,
         },
         { numberOfDays: numberOfDaysContext.descriptor }
     )();

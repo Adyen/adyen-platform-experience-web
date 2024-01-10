@@ -27,12 +27,11 @@ describe('last {n} days', () => {
         const which = _numberOfDays ?? DEFAULT_NUM_DAYS;
 
         test(`should be {N} days before now day (N => ${which})`, () => {
-            const { numberOfDays, fromDate, nowDate } = lastNDaysTimestamps;
+            const { numberOfDays, fromDate, now } = lastNDaysTimestamps;
             const date = new Date(fromDate);
-            const nowDateStartTimestamp = new Date(nowDate).setHours(0, 0, 0, 0);
             const withinLastNDays = vi.fn();
 
-            while (date.getTime() < nowDateStartTimestamp) {
+            while (date.getTime() <= now) {
                 withinLastNDays();
                 date.setDate(date.getDate() + 1);
             }
@@ -41,11 +40,10 @@ describe('last {n} days', () => {
         });
 
         test(`should have precise timestamps (N => ${which})`, () => {
-            const { from, fromDate, nowDate, to } = lastNDaysTimestamps;
-            const dateAfter = new Date(to + 1);
+            const { from, fromDate, now, to } = lastNDaysTimestamps;
             const dateBefore = new Date(from - 1);
 
-            expect(dateAfter.getDay()).toBe(nowDate.getDay());
+            expect(to).toBe(now);
             expect(dateBefore.getDay()).toBe((fromDate.getDay() + 6) % 7);
         });
     };
