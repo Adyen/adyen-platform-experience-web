@@ -1,7 +1,7 @@
 import { describe, expect, test, vi } from 'vitest';
-import { getDateRangeContext } from './test-utils';
-import type { WeekDay } from '../../../types';
-import lastWeek from '../lastWeek';
+import { getDateRangeContext } from './shared/test-utils';
+import type { WeekDay } from '../../types';
+import lastWeek from './lastWeek';
 
 describe('last week', () => {
     const lastWeekTimestamps = getDateRangeContext(lastWeek);

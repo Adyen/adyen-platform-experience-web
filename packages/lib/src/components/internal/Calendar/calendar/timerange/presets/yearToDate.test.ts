@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest';
-import { getDateRangeContext } from './test-utils';
-import yearToDate from '../yearToDate';
+import { getDateRangeContext } from './shared/test-utils';
+import yearToDate from './yearToDate';
 
 describe('year to date', () => {
     test('should be current year', () => {

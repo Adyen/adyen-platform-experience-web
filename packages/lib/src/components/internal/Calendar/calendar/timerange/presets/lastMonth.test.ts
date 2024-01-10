@@ -1,7 +1,7 @@
 import { describe, expect, test } from 'vitest';
-import { getDateRangeContext, getMonthDays } from './test-utils';
-import type { Month } from '../../../types';
-import lastMonth from '../lastMonth';
+import { getDateRangeContext, getMonthDays } from './shared/test-utils';
+import type { Month } from '../../types';
+import lastMonth from './lastMonth';
 
 describe('last month', () => {
     test('should be previous month', () => {

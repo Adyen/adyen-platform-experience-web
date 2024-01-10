@@ -1,6 +1,6 @@
 import { describe, expect, test, vi } from 'vitest';
-import { getDateRangeContext } from './test-utils';
-import lastNDays, { DEFAULT_NUM_DAYS } from '../lastNDays';
+import { getDateRangeContext } from './shared/test-utils';
+import lastNDays, { DEFAULT_NUM_DAYS } from './lastNDays';
 
 describe('last {n} days', () => {
     test('should use normalized (clamped) numberOfDays integer', () => {

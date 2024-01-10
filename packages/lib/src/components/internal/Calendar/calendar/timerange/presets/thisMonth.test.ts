@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest';
-import { getDateRangeContext } from './test-utils';
-import thisMonth from '../thisMonth';
+import { getDateRangeContext } from './shared/test-utils';
+import thisMonth from './thisMonth';
 
 describe('this month', () => {
     test('should be current month', () => {
