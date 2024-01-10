@@ -24,6 +24,7 @@ export interface TransactionsComponentProps {
     onFiltersChanged?: (filters: { [P in TransactionFilterParam]?: string }) => any;
     onLimitChanged?: (limit: number) => any;
     preferredLimit?: number;
+    allowLimitSelection?: boolean;
     showDetails?: DetailsOptions;
 }
 export interface TransactionListProps extends WithPaginationLimitSelection<PaginationProps> {
