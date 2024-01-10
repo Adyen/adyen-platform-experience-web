@@ -16,19 +16,9 @@ const test = base.extend<{
 test('cells should show correct value and open correct modal ', async ({ transactionListPage, page }) => {
     const transactionDetails = transactionListPage;
 
-    await expect(transactionDetails.paymentIdCell.locator('button')).not.toBeAttached();
-    await expect(transactionDetails.paymentIdCell).toHaveText('1WEPGD5VS767881Q');
-    await expect(transactionDetails.balanceAccountCell.locator('button')).toBeAttached();
-    await expect(transactionDetails.balanceAccountCell).toHaveText('BA3227C223222B5CWF3T45SWD');
-    await transactionDetails.balanceAccountCell.click();
-    await expect(page.getByRole('dialog').getByLabel(getTranslatedKey('balanceAccountId')).getByLabel('value')).toHaveText(
-        'BA3227C223222B5CWF3T45SWD'
-    );
-    await page.getByRole('dialog').getByLabel(getTranslatedKey('dismiss')).click();
-    await transactionDetails.accountHolderCell.click();
-    await expect(page.getByRole('dialog').getByLabel(getTranslatedKey('accountHolderID')).getByLabel('value')).toHaveText(
-        'AH3227B2248HKJ5BHTQPKC5GX'
-    );
+    await transactionDetails.firstRow.click();
+
+    await expect(page.getByRole('dialog').getByLabel(`${getTranslatedKey('paymentId')} Value`)).toHaveText('1WEPGD5VS767881Q');
 });
 
 test.describe('Filters', () => {
