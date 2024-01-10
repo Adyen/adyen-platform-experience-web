@@ -3,14 +3,16 @@ import classnames from 'classnames';
 import Spinner from '../Spinner';
 import DataGridCell from './DataGridCell';
 import './DataGrid.scss';
-import { InteractionKeyCode } from '@src/components/types';
-import { useCallback } from 'preact/hooks';
 
-export default DataGrid;
+export enum CellTextPosition {
+    CENTER = 'center',
+    RIGHT = 'right',
+}
 
 interface DataGridColumn<Item> {
     label: string;
     key: keyof Item;
+    position?: CellTextPosition;
 }
 
 interface DataGridProps<Item extends Array<Item>, ClickedField extends keyof Item[number]> {
@@ -53,7 +55,10 @@ function DataGrid<Items extends Array<any>, ClickedField extends keyof Items[num
                                         <th
                                             role="columnheader"
                                             id={String(item.key)}
-                                            className="adyen-fp-data-grid__cell adyen-fp-data-grid__cell--heading"
+                                            className={classnames('adyen-fp-data-grid__cell adyen-fp-data-grid__cell--heading', {
+                                                'adyen-fp-data-grid__cell--right': item.position === CellTextPosition.RIGHT,
+                                                'adyen-fp-data-grid__cell--center': item.position === CellTextPosition.CENTER,
+                                            })}
                                             key={item.key}
                                         >
                                             {item.label}
@@ -119,3 +124,5 @@ DataGrid.defaultProps = {
     outline: true,
     scrollable: true,
 };
+
+export default DataGrid;

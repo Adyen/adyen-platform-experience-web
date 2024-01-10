@@ -146,6 +146,7 @@
     "txType.installmentReversal": "Installment reversal",
     "txType.repayment": "Repayment",
     "txType.reserveAdjustment": "Reserve adjustment",
+    "txAmount": "Amount ($)",
     "unableToLoadAccountHolder": "Unable to load account holder",
     "txType.secondChargebackCorrection": "Second chargeback correction",
     "unableToLoadBalanceAccount": "Unable to load balance account",
@@ -164,5 +165,6 @@
     "default": "Default",
     "contactDetails": "Contact details",
     "booked": "Booked",
-    "pending": "Pending"
+    "pending": "Pending",
+    "transactionsOverview": "Transactions overview"
 }

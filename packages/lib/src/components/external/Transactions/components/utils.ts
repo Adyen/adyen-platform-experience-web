@@ -3,8 +3,8 @@ import { ITransaction } from '../../../../types';
 
 const labels = {
     id: 'paymentId',
-    type: 'transactionType',
-    createdAt: 'creationTime',
+    type: 'type',
+    createdAt: 'date',
     balanceAccountId: 'balanceAccount',
     accountHolderId: 'account',
     fee: 'txType.fee',
@@ -13,7 +13,7 @@ const labels = {
     manualCorrection: 'txType.manualCorrection',
     internalTransfer: 'txType.internalTransfer',
     balanceAdjustment: 'txType.balanceAdjustment',
-    amount: 'amount',
+    amount: 'txAmount',
     description: 'description',
     status: 'status',
 } as const;

@@ -4,9 +4,8 @@
     cursor: default;
     display: inline-flex;
     flex-direction: row;
+    font-size: var(--adyen-fp-font-size-xsmall);
     font-weight: var(--adyen-fp-font-weight-medium);
-    gap: 6px;
-    height: 24px;
     justify-content: center;
     padding: var(--adyen-fp-spacing-xs) var(--adyen-fp-spacing-small);
     width: fit-content;

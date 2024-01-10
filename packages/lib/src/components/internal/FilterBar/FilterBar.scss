@@ -2,5 +2,5 @@
     display: flex;
     flex-wrap: wrap;
     gap: var(--adyen-fp-spacing-small);
-    margin-bottom: var(--adyen-fp-spacing-medium);
+    padding: var(--adyen-fp-spacing-medium-small) 0;
 }

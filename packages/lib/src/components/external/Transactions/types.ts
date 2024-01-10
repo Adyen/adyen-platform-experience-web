@@ -18,20 +18,17 @@ export interface TransactionsComponentProps {
     name?: string;
     balancePlatformId?: string;
     elementRef?: UIElement<TransactionsComponentProps> | null;
-    onAccountSelected?: OnSelection;
-    onBalanceAccountSelected?: OnSelection;
     onTransactionSelected?: OnSelection;
     onFiltersChanged?: (filters: { [P in TransactionFilterParam]?: string }) => any;
     onLimitChanged?: (limit: number) => any;
     preferredLimit?: number;
     allowLimitSelection?: boolean;
     showDetails?: DetailsOptions;
+    withTitle?: boolean;
 }
 export interface TransactionListProps extends WithPaginationLimitSelection<PaginationProps> {
     transactions: ITransaction[];
     onTransactionSelected?: OnSelection;
-    onBalanceAccountSelected?: OnSelection;
-    onAccountSelected?: OnSelection;
     showPagination: boolean;
     loading: boolean;
     showDetails?: DetailsOptions;

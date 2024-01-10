@@ -12,22 +12,14 @@ import { getLabel } from './utils';
 import './TransactionList.scss';
 import { Tag } from '@src/components/internal/Tag/Tag';
 import { TagVariant } from '@src/components/internal/Tag/types';
+import { CellTextPosition } from '@src/components/internal/DataGrid/DataGrid';
 
 const ModalContent = lazy(() => import('./ModalContent'));
 
-function TransactionList({
-    loading,
-    transactions,
-    onTransactionSelected,
-    onBalanceAccountSelected,
-    onAccountSelected,
-    showPagination,
-    showDetails,
-    ...paginationProps
-}: TransactionListProps) {
+function TransactionList({ loading, transactions, onTransactionSelected, showPagination, showDetails, ...paginationProps }: TransactionListProps) {
     const { i18n } = useCoreContext();
     const fields = ['createdAt', 'status', 'type', 'amount'] as const;
-    const columns = fields.map(key => ({ key, label: i18n.get(getLabel(key)) }));
+    const columns = fields.map(key => ({ key, label: i18n.get(getLabel(key)), position: key === 'amount' ? CellTextPosition.RIGHT : undefined }));
 
     const transactionDetails = useMemo(
         () => ({
@@ -60,7 +52,7 @@ function TransactionList({
                 customCells={{
                     status: ({ value }) => {
                         //TODO modify variant once we use the real status field from the BE
-                        return <Tag label={i18n.get(value)} variant={value === 'booked' ? TagVariant.SUCCESS : TagVariant.DEFAULT} />;
+                        return <Tag label={i18n.get(value)} variant={value === 'booked' ? TagVariant.SUCCESS : TagVariant.ERROR} />;
                     },
                     type: ({ value }) => {
                         return value ? i18n.get(`txType.${value}`) : null;
@@ -74,7 +66,7 @@ function TransactionList({
                               })
                             : null;
 
-                        return <div className={classnames('adyen-fp-transactions-list__amount')}>{amount}</div>;
+                        return <div className={classnames('adyen-fp-transactions__amount')}>{amount}</div>;
                     },
                 }}
             >

@@ -9,8 +9,6 @@ const meta: Meta<ElementProps<typeof TransactionsComponent>> = {
     argTypes: {
         onFiltersChanged: enabledDisabledCallbackRadioControls('onFiltersChanged', ['Passed', 'Not Passed']),
         onTransactionSelected: enabledDisabledCallbackRadioControls('onTransactionSelected'),
-        onBalanceAccountSelected: enabledDisabledCallbackRadioControls('onBalanceAccountSelected'),
-        onAccountSelected: enabledDisabledCallbackRadioControls('onAccountSelected'),
         onLimitChanged: enabledDisabledCallbackRadioControls('onLimitChanged', ['Passed', 'Not Passed']),
         preferredLimit: { type: 'number', min: 0, max: 100 },
         allowLimitSelection: { type: 'boolean' },
@@ -18,6 +16,7 @@ const meta: Meta<ElementProps<typeof TransactionsComponent>> = {
     args: {
         preferredLimit: 10,
         allowLimitSelection: true,
+        withTitle: true,
     },
     render: (args, context) => {
         if (context.loaded.data) {

@@ -17,6 +17,9 @@ import { isFunction } from '@src/utils/common';
 import Alert from '@src/components/internal/Alert';
 import { ExternalUIComponentProps } from '../../../types';
 import { API_ENDPOINTS } from '@src/core/Services/requests/endpoints';
+import './TransactionList.scss';
+import Typography from '@src/components/internal/Typography/Typography';
+import { TypographyVariant } from '@src/components/internal/Typography/types';
 
 const DEFAULT_CREATED_SINCE = new Date(new Date().setHours(0, 0, 0, 0)).toISOString();
 const DEFAULT_CREATED_UNTIL = new Date(new Date().setHours(23, 59, 59, 999)).toISOString();
@@ -31,14 +34,13 @@ const transactionsFilterParams = {
 
 function Transactions({
     balancePlatformId,
-    onAccountSelected,
-    onBalanceAccountSelected,
     onTransactionSelected,
     showDetails,
     onFiltersChanged,
     onLimitChanged,
     preferredLimit = DEFAULT_PAGE_LIMIT,
     allowLimitSelection,
+    withTitle,
 }: ExternalUIComponentProps<TransactionsComponentProps>) {
     const _onFiltersChanged = useMemo(() => (isFunction(onFiltersChanged) ? onFiltersChanged : void 0), [onFiltersChanged]);
     const _onLimitChanged = useMemo(() => (isFunction(onLimitChanged) ? onLimitChanged : void 0), [onLimitChanged]);
@@ -112,8 +114,13 @@ function Transactions({
 
     return (
         <div className="adyen-fp-transactions">
-            <div className="adyen-fp-title">{i18n.get('transactions')}</div>
-            {!!_onFiltersChanged && (
+            <div className="adyen-fp-transactions__container">
+                {withTitle && (
+                    <Typography large variant={TypographyVariant.TITLE}>
+                        {i18n.get('transactionsOverview')}
+                    </Typography>
+                )}
+
                 <FilterBar canResetFilters={canResetFilters} resetFilters={resetFilters}>
                     <TextFilter
                         classNameModifiers={['balanceAccount']}
@@ -138,24 +145,22 @@ function Transactions({
                         onChange={updateCreatedDateFilter}
                     />
                 </FilterBar>
-            )}
-            {showAlert ? (
-                <Alert icon={'cross'}>{error?.message ?? i18n.get('unableToLoadTransactions')}</Alert>
-            ) : (
-                <TransactionList
-                    loading={fetching}
-                    transactions={records}
-                    onAccountSelected={onAccountSelected}
-                    onBalanceAccountSelected={onBalanceAccountSelected}
-                    onTransactionSelected={onTransactionSelected}
-                    showPagination={true}
-                    showDetails={showDetails}
-                    limit={limit}
-                    limitOptions={limitOptions}
-                    onLimitSelection={updateLimit}
-                    {...paginationProps}
-                />
-            )}
+                {showAlert ? (
+                    <Alert icon={'cross'}>{error?.message ?? i18n.get('unableToLoadTransactions')}</Alert>
+                ) : (
+                    <TransactionList
+                        loading={fetching}
+                        transactions={records}
+                        onTransactionSelected={onTransactionSelected}
+                        showPagination={true}
+                        showDetails={showDetails}
+                        limit={limit}
+                        limitOptions={limitOptions}
+                        onLimitSelection={updateLimit}
+                        {...paginationProps}
+                    />
+                )}
+            </div>
         </div>
     );
 }
