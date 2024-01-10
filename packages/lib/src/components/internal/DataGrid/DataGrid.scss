@@ -93,9 +93,17 @@
         }
     }
 
+    #{$adyen-fp-data-grid}__table-wrapper {
+        margin-bottom: var(--adyen-fp-spacing-medium);
+    }
+
     &--outline {
         border: 1px solid var(--adyen-fp-color-gray-light);
         border-radius: var(--adyen-fp-border-radius-medium);
+
+        #{$adyen-fp-data-grid}__table-wrapper {
+            margin-bottom: 0;
+        }
 
         #{$adyen-fp-data-grid}__body #{$adyen-fp-data-grid}__row {
             &:last-child #{$adyen-fp-data-grid__cell} {
