@@ -16,10 +16,14 @@ import { CellTextPosition } from '@src/components/internal/DataGrid/DataGrid';
 
 const ModalContent = lazy(() => import('./ModalContent'));
 
+const FIELDS = ['createdAt', 'status', 'type', 'amount'] as const;
+
 function TransactionList({ loading, transactions, onTransactionSelected, showPagination, showDetails, ...paginationProps }: TransactionListProps) {
     const { i18n } = useCoreContext();
-    const fields = ['createdAt', 'status', 'type', 'amount'] as const;
-    const columns = fields.map(key => ({ key, label: i18n.get(getLabel(key)), position: key === 'amount' ? CellTextPosition.RIGHT : undefined }));
+    const columns = useMemo(
+        () => FIELDS.map(key => ({ key, label: i18n.get(getLabel(key)), position: key === 'amount' ? CellTextPosition.RIGHT : undefined })),
+        [i18n]
+    );
 
     const transactionDetails = useMemo(
         () => ({
@@ -33,13 +37,16 @@ function TransactionList({ loading, transactions, onTransactionSelected, showPag
 
     const { updateDetails, resetDetails, selectedDetail } = useModalDetails(modalOptions);
 
-    const onRowClick = useCallback((value: string) => {
-        updateDetails({
-            title: 'transactionDetails',
-            selection: { type: 'transaction', detail: value },
-            modalSize: 'extra-large',
-        }).callback({ id: value });
-    }, []);
+    const onRowClick = useCallback(
+        (value: string) => {
+            updateDetails({
+                title: 'transactionDetails',
+                selection: { type: 'transaction', detail: value },
+                modalSize: 'extra-large',
+            }).callback({ id: value });
+        },
+        [updateDetails]
+    );
 
     return (
         <>
