@@ -3,6 +3,7 @@ import classnames from 'classnames';
 import Spinner from '../Spinner';
 import DataGridCell from './DataGridCell';
 import './DataGrid.scss';
+import { useCallback, useMemo } from 'preact/hooks';
 
 export enum CellTextPosition {
     CENTER = 'center',
@@ -77,18 +78,16 @@ function DataGrid<Items extends Array<any>, ClickedField extends keyof Items[num
 }
 
 function DataGridBody<Items extends Array<any>, ClickedField extends keyof Items[number]>(props: DataGridProps<Items, ClickedField>) {
+    const classNames = useMemo(() => classnames('adyen-fp-data-grid__row', { 'adyen-fp-data-grid--clickable-row': Boolean(props.onRowClick) }), []);
+    const onClickCallBack = useCallback(
+        (item: Items[number]) => () => props.onRowClick?.retrievedField && props.onRowClick?.callback?.(item[props.onRowClick.retrievedField]),
+        [props.onRowClick]
+    );
+    const handleOnClick = useMemo(() => (props.onRowClick ? onClickCallBack : undefined), [props.onRowClick]);
     return (
         <tbody className="adyen-fp-data-grid__body">
             {props.data.map(item => (
-                <tr
-                    className={classnames('adyen-fp-data-grid__row', { 'adyen-fp-data-grid--clickable-row': Boolean(props.onRowClick) })}
-                    key={item}
-                    onClick={
-                        props.onRowClick
-                            ? () => props.onRowClick?.retrievedField && props.onRowClick?.callback?.(item[props.onRowClick.retrievedField])
-                            : undefined
-                    }
-                >
+                <tr className={classNames} key={item} onClick={handleOnClick?.(item)}>
                     {props.columns.map(({ key }) => {
                         if (props.customCells?.[key])
                             return (
