@@ -15,7 +15,7 @@ interface DataGridColumn<Item> {
     position?: CellTextPosition;
 }
 
-interface DataGridProps<Item extends Array<Item>, ClickedField extends keyof Item[number]> {
+interface DataGridProps<Item extends Array<any>, ClickedField extends keyof Item[number]> {
     children: ComponentChildren;
     columns: DataGridColumn<Item[number]>[];
     condensed: boolean;
