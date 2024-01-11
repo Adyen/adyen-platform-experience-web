@@ -1,12 +1,13 @@
 module.exports = {
     parser: '@typescript-eslint/parser',
-    plugins: ['react', '@typescript-eslint', 'import', 'jsx-a11y'],
+    plugins: ['react', '@typescript-eslint', 'import', 'jsx-a11y', 'react-hooks'],
     extends: [
         'eslint:recommended',
         'plugin:react/recommended',
         'plugin:react/jsx-runtime',
         'plugin:@typescript-eslint/eslint-recommended',
         'plugin:@typescript-eslint/recommended' /*'prettier/@typescript-eslint'*/,
+        'plugin:react-hooks/recommended',
     ],
     parserOptions: {
         ecmaVersion: 2020,
@@ -115,6 +116,7 @@ module.exports = {
         'react/prop-types': 'off',
         'react/display-name': 'off',
         'react/jsx-no-literals': 'error',
+        'react-hooks/exhaustive-deps': 'error',
 
         // a11y
         'jsx-a11y/alt-text': 'error',
