@@ -10,7 +10,7 @@ const meta: Meta<ElementProps<typeof TransactionsComponent>> = {
         onFiltersChanged: enabledDisabledCallbackRadioControls('onFiltersChanged', ['Passed', 'Not Passed']),
         onTransactionSelected: enabledDisabledCallbackRadioControls('onTransactionSelected'),
         onLimitChanged: enabledDisabledCallbackRadioControls('onLimitChanged', ['Passed', 'Not Passed']),
-        preferredLimit: { type: 'number', min: 0, max: 100 },
+        preferredLimit: { type: 'number', min: 1, max: 100 },
         allowLimitSelection: { type: 'boolean' },
     },
     args: {
