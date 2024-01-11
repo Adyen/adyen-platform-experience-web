@@ -78,7 +78,10 @@ function DataGrid<Items extends Array<any>, ClickedField extends keyof Items[num
 }
 
 function DataGridBody<Items extends Array<any>, ClickedField extends keyof Items[number]>(props: DataGridProps<Items, ClickedField>) {
-    const classNames = useMemo(() => classnames('adyen-fp-data-grid__row', { 'adyen-fp-data-grid--clickable-row': Boolean(props.onRowClick) }), []);
+    const classNames = useMemo(
+        () => classnames('adyen-fp-data-grid__row', { 'adyen-fp-data-grid--clickable-row': Boolean(props.onRowClick) }),
+        [props.onRowClick]
+    );
     const onClickCallBack = useCallback(
         (item: Items[number]) => () => props.onRowClick?.retrievedField && props.onRowClick?.callback?.(item[props.onRowClick.retrievedField]),
         [props.onRowClick]
