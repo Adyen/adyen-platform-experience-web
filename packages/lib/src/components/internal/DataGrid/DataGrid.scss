@@ -1,19 +1,9 @@
 .adyen-fp-data-grid {
     $adyen-fp-data-grid: &;
     $adyen-fp-data-grid__cell: #{$adyen-fp-data-grid}__cell;
-    font-size: var(--adyen-fp-font-size-small);
-    margin: 8px 0 36px;
+    font-size: var(--adyen-fp-font-size-medium);
     overflow: hidden;
     text-align: left;
-
-    &--outline {
-        border: 1px solid var(--adyen-fp-color-gray-light);
-        border-radius: var(--adyen-fp-border-radius-medium);
-
-        #{$adyen-fp-data-grid__cell} {
-            border-bottom: 1px solid var(--adyen-fp-color-gray-light);
-        }
-    }
 
     &--scrollable #{$adyen-fp-data-grid}__table-wrapper {
         overflow: auto;
@@ -25,11 +15,16 @@
 
     &--clickable-row {
         cursor: pointer;
+
+        &:hover {
+            background: var(--adyen-fp-color-gray-100);
+        }
     }
 
     &__table {
         border-collapse: separate;
         border-spacing: 0;
+        width: 100%;
     }
 
     &__head {
@@ -43,23 +38,27 @@
     }
 
     &__row {
+        background: var(--adyen-fp-color-white);
         overflow: hidden;
         vertical-align: top;
 
-        #{$adyen-fp-data-grid}__body &:last-child #{$adyen-fp-data-grid__cell} {
+        #{$adyen-fp-data-grid__cell} {
+            border-bottom: 1px solid var(--adyen-fp-color-gray-lighter);
+        }
+        #{$adyen-fp-data-grid}__body {
             border-bottom: 0;
         }
     }
 
     #{$adyen-fp-data-grid__cell} {
-        background: var(--adyen-fp-color-white);
         box-sizing: border-box;
         height: 100%;
         overflow: hidden;
-        padding: 16px 24px;
+        padding: var(--adyen-fp-spacing-medium);
         text-overflow: ellipsis;
+        vertical-align: middle;
         white-space: nowrap;
-        width: 100%;
+        width: auto;
 
         .adyen-fp-button--link {
             display: block;
@@ -67,23 +66,65 @@
             margin: -2px -4px;
         }
 
-        &#{$adyen-fp-data-grid__cell}--heading {
-            background: var(--adyen-fp-color-gray-lighter);
-            color: var(--adyen-fp-color-gray-darker);
-            font-size: var(--adyen-fp-font-size-small);
-            font-weight: 700;
-            padding-bottom: 16px;
-            padding-top: 16px;
-            text-transform: uppercase;
+        &--right {
+            text-align: right;
         }
+
+        &--center {
+            text-align: center;
+        }
+
+        &#{$adyen-fp-data-grid__cell}--heading {
+            border-bottom-color: var(--adyen-fp-color-gray-dark);
+            color: var(--adyen-fp-color-black);
+            font-weight: var(--adyen-fp-font-weight-semi-bold);
+            padding: var(--adyen-fp-spacing-medium);
+            position: relative;
+
+            &:not(:last-child)::after {
+                background: var(--adyen-fp-color-gray-light);
+                bottom: 25%;
+                content: '';
+                position: absolute;
+                right: 0;
+                top: 25%;
+                width: 1px;
+            }
+        }
+    }
+
+    #{$adyen-fp-data-grid}__table-wrapper {
+        margin-bottom: var(--adyen-fp-spacing-medium);
     }
 
     &__footer {
         background: var(--adyen-fp-color-white);
-        border-top: 1px solid #dce0e5;
+
+        .adyen-fp-pagination {
+            padding: 0;
+        }
     }
 
     .adyen-fp-spinner__wrapper {
         padding: var(--adyen-fp-spacing-xxxlarge);
+    }
+
+    &--outline {
+        border: 1px solid var(--adyen-fp-color-gray-light);
+        border-radius: var(--adyen-fp-border-radius-medium);
+
+        #{$adyen-fp-data-grid}__table-wrapper {
+            margin-bottom: 0;
+        }
+
+        #{$adyen-fp-data-grid}__body #{$adyen-fp-data-grid}__row {
+            &:last-child #{$adyen-fp-data-grid__cell} {
+                border-bottom: 1px solid var(--adyen-fp-color-gray-dark);
+            }
+        }
+
+        #{$adyen-fp-data-grid}__footer .adyen-fp-pagination {
+            padding: var(--adyen-fp-spacing-medium) var(--adyen-fp-spacing-small);
+        }
     }
 }

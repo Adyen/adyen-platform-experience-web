@@ -39,7 +39,7 @@ export default function Pagination({ next, hasNext, hasPrev, page, prev, limit, 
                     variant={ButtonVariant.TERTIARY}
                     disabled={!hasPrev}
                     iconLeft={previousIcon}
-                    classNameModifiers={['circle']}
+                    classNameModifiers={!hasPrev ? ['disabled'] : undefined}
                     onClick={prev}
                 />
                 <Button
@@ -47,7 +47,7 @@ export default function Pagination({ next, hasNext, hasPrev, page, prev, limit, 
                     variant={ButtonVariant.TERTIARY}
                     disabled={!hasNext}
                     iconRight={nextIcon}
-                    classNameModifiers={['circle']}
+                    classNameModifiers={!hasNext ? ['disabled'] : undefined}
                     onClick={next}
                 />
             </div>

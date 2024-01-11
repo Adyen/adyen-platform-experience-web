@@ -3,31 +3,35 @@ import classnames from 'classnames';
 import Spinner from '../Spinner';
 import DataGridCell from './DataGridCell';
 import './DataGrid.scss';
+import { useCallback, useMemo } from 'preact/hooks';
 
-export default DataGrid;
+export enum CellTextPosition {
+    CENTER = 'center',
+    RIGHT = 'right',
+}
 
 interface DataGridColumn<Item> {
     label: string;
     key: keyof Item;
+    position?: CellTextPosition;
 }
 
-interface DataGridProps<Item extends { [k: string]: any }> {
+interface DataGridProps<Item extends Array<any>, ClickedField extends keyof Item[number]> {
     children: ComponentChildren;
-    columns: DataGridColumn<Item>[];
+    columns: DataGridColumn<Item[number]>[];
     condensed: boolean;
-    data: Item[];
+    data: Item;
     loading: boolean;
     outline: boolean;
     scrollable: boolean;
     Footer?: any;
-    allowRowClick?: boolean;
-    handleRowClick?: (...args: any) => void;
+    onRowClick?: { retrievedField: ClickedField; callback: (value: Item[0][ClickedField]) => void };
     customCells?: {
-        [k in keyof Partial<Item>]: ({ key, value, item }: { key: k; value: Item[k]; item: Item }) => ComponentChild;
+        [k in keyof Partial<Item[number]>]: ({ key, value, item }: { key: k; value: Item[number][k]; item: Item[number] }) => ComponentChild;
     };
 }
 
-function DataGrid<T extends { [k: string]: any }>(props: DataGridProps<T>) {
+function DataGrid<Items extends Array<any>, ClickedField extends keyof Items[number]>(props: DataGridProps<Items, ClickedField>) {
     const children = toChildArray(props.children);
     const footer = children.find((child: ComponentChild) => (child as any)?.['type'] === DataGridFooter);
 
@@ -52,7 +56,10 @@ function DataGrid<T extends { [k: string]: any }>(props: DataGridProps<T>) {
                                         <th
                                             role="columnheader"
                                             id={String(item.key)}
-                                            className="adyen-fp-data-grid__cell adyen-fp-data-grid__cell--heading"
+                                            className={classnames('adyen-fp-data-grid__cell adyen-fp-data-grid__cell--heading', {
+                                                'adyen-fp-data-grid__cell--right': item.position === CellTextPosition.RIGHT,
+                                                'adyen-fp-data-grid__cell--center': item.position === CellTextPosition.CENTER,
+                                            })}
                                             key={item.key}
                                         >
                                             {item.label}
@@ -60,7 +67,7 @@ function DataGrid<T extends { [k: string]: any }>(props: DataGridProps<T>) {
                                     ))}
                                 </tr>
                             </thead>
-                            <DataGridBody<T> {...props} />
+                            <DataGridBody<Items, ClickedField> {...props} />
                         </table>
                     </div>
                     {footer}
@@ -70,19 +77,24 @@ function DataGrid<T extends { [k: string]: any }>(props: DataGridProps<T>) {
     );
 }
 
-function DataGridBody<T extends { [k: string]: any }>(props: DataGridProps<T>) {
+function DataGridBody<Items extends Array<any>, ClickedField extends keyof Items[number]>(props: DataGridProps<Items, ClickedField>) {
+    const classNames = useMemo(
+        () => classnames('adyen-fp-data-grid__row', { 'adyen-fp-data-grid--clickable-row': Boolean(props.onRowClick) }),
+        [props.onRowClick]
+    );
+    const onClickCallBack = useCallback(
+        (item: Items[number]) => () => props.onRowClick?.retrievedField && props.onRowClick?.callback?.(item[props.onRowClick.retrievedField]),
+        [props.onRowClick]
+    );
+    const handleOnClick = useMemo(() => (props.onRowClick ? onClickCallBack : undefined), [props.onRowClick]);
     return (
         <tbody className="adyen-fp-data-grid__body">
             {props.data.map(item => (
-                <tr
-                    className={classnames('adyen-fp-data-grid__row', { 'adyen-fp-data-grid--clickable-row': props.allowRowClick })}
-                    key={item}
-                    onClick={props.allowRowClick ? () => props.handleRowClick?.(item) : undefined}
-                >
+                <tr className={classNames} key={item} onClick={handleOnClick?.(item)}>
                     {props.columns.map(({ key }) => {
                         if (props.customCells?.[key])
                             return (
-                                <DataGridCell role="gridcell" aria-labelledby={String(key)} key={key}>
+                                <DataGridCell aria-labelledby={String(key)} key={key}>
                                     {props.customCells[key]({
                                         key,
                                         value: item[key],
@@ -92,7 +104,7 @@ function DataGridBody<T extends { [k: string]: any }>(props: DataGridProps<T>) {
                             );
 
                         return (
-                            <DataGridCell role="gridcell" aria-labelledby={String(key)} key={key}>
+                            <DataGridCell aria-labelledby={String(key)} key={key}>
                                 {item[key]}
                             </DataGridCell>
                         );
@@ -114,3 +126,5 @@ DataGrid.defaultProps = {
     outline: true,
     scrollable: true,
 };
+
+export default DataGrid;

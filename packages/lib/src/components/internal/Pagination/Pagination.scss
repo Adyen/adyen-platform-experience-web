@@ -1,6 +1,6 @@
 .adyen-fp-pagination {
     display: flex;
-    padding: 8px 24px;
+    padding: var(--adyen-fp-spacing-medium) var(--adyen-fp-spacing-small);
     text-align: right;
 
     &__context {
@@ -11,11 +11,14 @@
 
     &__controls {
         display: flex;
+        gap: var(--adyen-fp-spacing-medium);
         margin-left: auto;
     }
 
     .adyen-fp-button {
         display: block;
+        font-weight: var(--adyen-fp-font-weight-bold);
+        width: var(--adyen-fp-spacing-medium);
 
         &--next {
             .adyen-fp-button__content::before {

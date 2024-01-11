@@ -7,9 +7,6 @@ import FilterBarPage from '../internal-components/filterBar';
 import { ITransaction } from '@src/types';
 import { BASIC_TRANSACTIONS_LIST } from '../../../../../mocks';
 export class TransactionListPage extends BasePage {
-    public readonly paymentIdCell: Locator;
-    public readonly balanceAccountCell: Locator;
-    public readonly accountHolderCell: Locator;
     private dataGrid: DataGridPage;
     public dataGridBody: Locator;
     public filterBar: Locator;
@@ -19,6 +16,7 @@ export class TransactionListPage extends BasePage {
     public clearFilterButton: Locator;
     public applyFilterButton: Locator;
     public filterSingleInput: Locator;
+    public firstRow: Locator;
     public gridCount: number;
 
     constructor(page: Page, mockedList: ITransaction[] = BASIC_TRANSACTIONS_LIST, rootElementSelector = '.transactions-component-container') {
@@ -27,9 +25,7 @@ export class TransactionListPage extends BasePage {
         this.dataGrid = dataGrid;
         this.dataGridBody = dataGrid.gridBody;
         this.gridCount = mockedList.length;
-        this.paymentIdCell = dataGrid.getCell('id');
-        this.balanceAccountCell = dataGrid.getCell('balanceAccountId');
-        this.accountHolderCell = dataGrid.getCell('accountHolderId');
+        this.firstRow = dataGrid.getRow();
 
         const filterBar = new FilterBarPage(this.rootElement);
         this.filterBar = filterBar.rootElement;
