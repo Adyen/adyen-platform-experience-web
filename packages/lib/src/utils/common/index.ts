@@ -20,7 +20,7 @@ export const enumerable = <T extends any = any>(value: T, writable: boolean = fa
 
 export const identity = <T = any>(value?: T) => value;
 export const boolify = (value?: any, fallbackBoolean?: boolean) => (typeof value === 'boolean' ? value : !!fallbackBoolean);
-export const clamp = (min: number, value: number, max: number) => Math.max(min, Math.min(value, max));
+export const clamp = <T extends number = number>(min: T, value: T, max: T) => Math.max(min as number, Math.min(value as number, max as number));
 export const mid = (low: number, high: number) => low + Math.floor((high - low) / 2);
 export const mod = (value: number, modulo: number) => ((value % modulo) + modulo) % modulo;
 export const isFunction = (value: any): value is (...args: any[]) => any => typeof value === 'function';
