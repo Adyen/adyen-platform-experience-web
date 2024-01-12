@@ -2,11 +2,13 @@
     // Palette
     --adyen-fp-color-black: #00112c;
     --adyen-fp-color-gray-darker: #687282;
-    --adyen-fp-color-gray-dark: #b9c4c9;
+    --adyen-fp-color-gray-dark: #c9cdd3;
     --adyen-fp-color-gray-dark-2: #4e5152;
     --adyen-fp-color-gray: #d4d9db;
-    --adyen-fp-color-gray-light: #e6e9eb;
-    --adyen-fp-color-gray-lighter: #f7f8f9;
+    --adyen-fp-color-gray-light: #d1d5da;
+    --adyen-fp-color-gray-lighter: #eeeff1;
+    --adyen-fp-color-gray-100: #f7f7f8;
+
     --adyen-fp-color-white: #fff;
 
     --adyen-fp-color-new-gray-darker: #707070;
@@ -15,19 +17,28 @@
     --adyen-fp-color-blue: #0075ff;
     --adyen-fp-color-blue-light: #99c2ff;
     --adyen-fp-color-blue-lighter: #e5efff;
-    --adyen-fp-color-green: #089a43;
+
+    --adyen-fp-color-green: #067934;
+    --adyen-fp-color-green-100: #edfaf3;
+
     --adyen-fp-color-orange: #ffae42;
     --adyen-fp-color-orange-light: #ffeacc;
     --adyen-fp-color-orange-dark: #7f4a00;
-    --adyen-fp-color-red: #c12424;
-    --adyen-fp-color-red-light: #fbe6ed;
+
+    --adyen-fp-color-red: #c72727;
+    --adyen-fp-color-red-light: #fef4f4;
+
+    --adyen-fp-color-yellow: #fff5e9;
+    --adyen-fp-color-yellow-dark: #9b5700;
 
     // Application
     --adyen-fp-color-primary: var(--adyen-fp-color-blue);
     --adyen-fp-color-success: var(--adyen-fp-color-green);
-    --adyen-fp-color-warning: var(--adyen-fp-color-orange);
     --adyen-fp-color-alert: var(--adyen-fp-color-red);
     --adyen-fp-color-disabled: var(--adyen-fp-color-gray-light);
+    --adyen-fp-color-warning: var(--adyen-fp-color-gray-light);
+
+    --adyen-fp-background-secondary: var(--adyen-fp-color-gray-100);
 
     // Border colors
     --adyen-fp-color-border-dark: var(--adyen-fp-color-gray-dark);

@@ -1,20 +1,21 @@
-@mixin adyenFpBgColor {
+@mixin adyen-fp-background-color {
     background-color: var(--adyen-fp-button-secondary-hover-background-color);
 }
 
 .adyen-fp-select-limit {
-    button {
-        background: inherit;
-        color: inherit;
-        border: none;
-        font: inherit;
-        cursor: pointer;
-    }
-
     border: 1px solid var(--adyen-fp-color-border);
     border-radius: var(--adyen-fp-border-radius-medium);
     position: relative;
     width: 5.6rem;
+
+    button {
+        background: inherit;
+        border: unset;
+        color: inherit;
+        cursor: pointer;
+        font: inherit;
+    }
+
     &__button {
         align-items: center;
         background: transparent;
@@ -27,6 +28,7 @@
         padding: 0 var(--adyen-fp-spacing-medium-small);
         width: 100%;
     }
+
     &__options-box {
         background: var(--adyen-fp-color-white);
         border-color: unset;
@@ -38,19 +40,20 @@
         overflow-y: auto;
         padding: var(--adyen-fp-spacing-small) 0;
         position: absolute;
-        transform: translate3d(0px, 5px, 0px);
+        transform: translate3d(0, 5px, 0);
         width: 5.6rem;
         z-index: 2;
+
         [role='option'] {
             &[aria-selected='true'] {
-                @include adyenFpBgColor;
+                @include adyen-fp-background-color;
             }
         }
     }
 
     &__option {
         &:focus {
-            @include adyenFpBgColor;
+            @include adyen-fp-background-color;
         }
     }
 
@@ -63,7 +66,7 @@
         padding: var(--adyen-fp-spacing-small) var(--adyen-fp-spacing-medium-small);
 
         &:hover {
-            @include adyenFpBgColor;
+            @include adyen-fp-background-color;
         }
     }
 }

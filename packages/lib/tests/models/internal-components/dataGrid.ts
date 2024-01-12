@@ -12,6 +12,9 @@ class DataGridPage {
     getCell(label: string, row = 0) {
         return this.gridBody.getByRole('row').nth(row).locator(`td[aria-labelledby="${label}"]`);
     }
+    getRow(row = 0) {
+        return this.gridBody.getByRole('row').nth(row);
+    }
 }
 
 export default DataGridPage;

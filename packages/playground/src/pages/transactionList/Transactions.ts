@@ -21,15 +21,10 @@ enableServerInMockedMode()
         const transactionsComponent = new TransactionsComponent({
             core: adyenFP,
             balancePlatformId: process.env.VITE_BALANCE_PLATFORM ?? '',
-            onBalanceAccountSelected: ({ id }) => {
-                window.location.assign(`/src/pages/balanceAccount/?id=${id}`);
-            },
-            onAccountSelected: ({ id }) => {
-                window.location.assign(`/src/pages/accountHolder/?id=${id}`);
-            },
+            withTitle: true,
             onTransactionSelected: ({ showModal }) => {
                 showModal();
-                // window.location.assign(`/src/pages/transaction/?id=${id}`);å
+                // window.location.assign(`/src/pages/transaction/?id=${id}`);
             },
             onFiltersChanged: (/* filters */) => {
                 // do something here with the updated filters
@@ -37,6 +32,7 @@ enableServerInMockedMode()
             onLimitChanged: (/* limit */) => {
                 // do something here with the updated limit
             },
+            allowLimitSelection: true,
             preferredLimit: 10,
             ...TEST_CONFIG,
         });
