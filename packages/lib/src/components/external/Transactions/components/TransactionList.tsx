@@ -1,33 +1,29 @@
-import Button from '@src/components/internal/Button';
-import { ButtonVariant } from '@src/components/internal/Button/types';
 import Modal from '@src/components/internal/Modal';
 import Spinner from '@src/components/internal/Spinner';
 import useCoreContext from '@src/core/Context/useCoreContext';
 import useModalDetails from '@src/hooks/useModalDetails/useModalDetails';
 import classnames from 'classnames';
 import { lazy, Suspense } from 'preact/compat';
-import { useMemo } from 'preact/hooks';
-import { ITransaction } from '@src/types';
+import { useCallback, useMemo } from 'preact/hooks';
 import DataGrid from '../../../internal/DataGrid';
 import Pagination from '../../../internal/Pagination';
 import { TransactionListProps } from '../types';
 import { getLabel } from './utils';
+import './TransactionList.scss';
+import { Tag } from '@src/components/internal/Tag/Tag';
+import { TagVariant } from '@src/components/internal/Tag/types';
+import { CellTextPosition } from '@src/components/internal/DataGrid/DataGrid';
 
 const ModalContent = lazy(() => import('./ModalContent'));
 
-function TransactionList({
-    loading,
-    transactions,
-    onTransactionSelected,
-    onBalanceAccountSelected,
-    onAccountSelected,
-    showPagination,
-    showDetails,
-    ...paginationProps
-}: TransactionListProps) {
+const FIELDS = ['createdAt', 'status', 'type', 'amount'] as const;
+
+function TransactionList({ loading, transactions, onTransactionSelected, showPagination, showDetails, ...paginationProps }: TransactionListProps) {
     const { i18n } = useCoreContext();
-    const fields = ['id', 'type', 'balanceAccountId', 'accountHolderId', 'amount', 'createdAt', 'description'] as const;
-    const columns = fields.map(key => ({ key, label: i18n.get(getLabel(key)) }));
+    const columns = useMemo(
+        () => FIELDS.map(key => ({ key, label: i18n.get(getLabel(key)), position: key === 'amount' ? CellTextPosition.RIGHT : undefined })),
+        [i18n]
+    );
 
     const transactionDetails = useMemo(
         () => ({
@@ -36,88 +32,39 @@ function TransactionList({
         }),
         [showDetails?.transaction, onTransactionSelected]
     );
-    const accountHolderDetails = useMemo(
-        () => ({
-            showDetails: [showDetails?.accountHolder],
-            callback: onAccountSelected,
-        }),
-        [showDetails?.accountHolder, onAccountSelected]
-    );
-    const balanceAccountDetails = useMemo(
-        () => ({
-            showDetails: [showDetails?.balanceAccount],
-            callback: onBalanceAccountSelected,
-        }),
-        [showDetails?.balanceAccount, onBalanceAccountSelected]
-    );
 
-    const modalOptions = useMemo(
-        () => ({ transaction: transactionDetails, accountHolder: accountHolderDetails, balanceAccount: balanceAccountDetails }),
-        [transactionDetails, accountHolderDetails, balanceAccountDetails]
-    );
+    const modalOptions = useMemo(() => ({ transaction: transactionDetails }), [transactionDetails]);
 
-    const { updateDetails, resetDetails, detailsToShow, selectedDetail } = useModalDetails(modalOptions);
+    const { updateDetails, resetDetails, selectedDetail } = useModalDetails(modalOptions);
+
+    const onRowClick = useCallback(
+        (value: string) => {
+            updateDetails({
+                title: 'transactionDetails',
+                selection: { type: 'transaction', detail: value },
+                modalSize: 'extra-large',
+            }).callback({ id: value });
+        },
+        [updateDetails]
+    );
 
     return (
         <>
-            <DataGrid<ITransaction>
+            <DataGrid
                 columns={columns}
                 data={transactions}
                 loading={loading}
+                onRowClick={{ retrievedField: 'id', callback: onRowClick }}
+                outline={false}
                 customCells={{
-                    id: ({ value }) =>
-                        detailsToShow.transaction ? (
-                            <Button
-                                variant={ButtonVariant.LINK}
-                                onClick={() => {
-                                    updateDetails({
-                                        title: 'transactionDetails',
-                                        selection: { type: 'transaction', detail: value },
-                                        modalSize: 'extra-large',
-                                    }).callback({ id: value });
-                                }}
-                            >
-                                {value}
-                            </Button>
-                        ) : (
-                            value
-                        ),
-                    balanceAccountId: ({ value }) =>
-                        detailsToShow.balanceAccount ? (
-                            <Button
-                                variant={ButtonVariant.LINK}
-                                onClick={() => {
-                                    updateDetails({
-                                        title: 'balanceAccount',
-                                        selection: { type: 'balanceAccount', detail: value },
-                                        modalSize: 'extra-large',
-                                    }).callback({ id: value });
-                                }}
-                            >
-                                {value}
-                            </Button>
-                        ) : (
-                            value
-                        ),
-                    accountHolderId: ({ value }) =>
-                        detailsToShow.accountHolder ? (
-                            <Button
-                                variant={ButtonVariant.LINK}
-                                onClick={() => {
-                                    updateDetails({
-                                        title: 'accountHolder',
-                                        selection: { type: 'accountHolder', detail: value },
-                                        modalSize: 'extra-large',
-                                    }).callback({ id: value });
-                                }}
-                            >
-                                {value}
-                            </Button>
-                        ) : (
-                            value
-                        ),
+                    status: ({ value }) => {
+                        //TODO modify variant once we use the real status field from the BE
+                        return <Tag label={i18n.get(value)} variant={value === 'booked' ? TagVariant.SUCCESS : TagVariant.ERROR} />;
+                    },
+                    type: ({ value }) => {
+                        return value ? i18n.get(`txType.${value}`) : null;
+                    },
                     createdAt: ({ value }) => i18n.fullDate(value),
-                    type: ({ value }) => value,
                     amount: ({ value }) => {
                         const amount = value?.currency
                             ? i18n.amount(value.value, value.currency, {
@@ -126,18 +73,7 @@ function TransactionList({
                               })
                             : null;
 
-                        const isPositive = amount?.indexOf('-') === -1;
-
-                        return (
-                            <div
-                                className={classnames('adyen-fp-amount', {
-                                    'adyen-fp-amount--positive': isPositive,
-                                    'adyen-fp-amount--negative': !isPositive,
-                                })}
-                            >
-                                {amount}
-                            </div>
-                        );
+                        return <div className={classnames('adyen-fp-transactions__amount')}>{amount}</div>;
                     },
                 }}
             >

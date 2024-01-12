@@ -1,0 +1,15 @@
+.adyen-fp-transactions {
+    &__container {
+        border: 1px solid var(--adyen-fp-color-gray-dark);
+        border-radius: var(--adyen-fp-spacing-small);
+        display: flex;
+        flex-direction: column;
+        gap: var(--adyen-fp-spacing-medium);
+        padding: 12px var(--adyen-fp-spacing-medium);
+    }
+
+    &__amount {
+        font-weight: var(--adyen-fp-font-weight-medium);
+        text-align: right;
+    }
+}

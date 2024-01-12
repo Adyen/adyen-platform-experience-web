@@ -1,5 +1,5 @@
 import { Meta } from '@storybook/preact';
-import { disableControls, enabledDisabledCallbackRadioControls } from '../utils/controls';
+import { enabledDisabledCallbackRadioControls } from '../utils/controls';
 import { TransactionsComponent } from '@adyen/adyen-fp-web';
 import { ElementProps, ElementStory } from '../utils/types';
 import { Container } from '../utils/Container';
@@ -7,11 +7,16 @@ import { Container } from '../utils/Container';
 const meta: Meta<ElementProps<typeof TransactionsComponent>> = {
     title: 'screens/Transactions',
     argTypes: {
-        onUpdateTransactions: disableControls,
-        onFilterChange: enabledDisabledCallbackRadioControls('onFilterChange', ['Passed', 'Not Passed']),
+        onFiltersChanged: enabledDisabledCallbackRadioControls('onFiltersChanged', ['Passed', 'Not Passed']),
         onTransactionSelected: enabledDisabledCallbackRadioControls('onTransactionSelected'),
-        onBalanceAccountSelected: enabledDisabledCallbackRadioControls('onBalanceAccountSelected'),
-        onAccountSelected: enabledDisabledCallbackRadioControls('onAccountSelected'),
+        onLimitChanged: enabledDisabledCallbackRadioControls('onLimitChanged', ['Passed', 'Not Passed']),
+        preferredLimit: { type: 'number', min: 1, max: 100 },
+        allowLimitSelection: { type: 'boolean' },
+    },
+    args: {
+        preferredLimit: 10,
+        allowLimitSelection: true,
+        withTitle: true,
     },
     render: (args, context) => {
         if (context.loaded.data) {
