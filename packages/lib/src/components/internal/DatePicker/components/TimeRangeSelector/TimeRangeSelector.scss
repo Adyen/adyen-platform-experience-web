@@ -1,0 +1,52 @@
+@use '../../../Pagination/components/LimitSelect' as *;
+
+.adyen-fp-select {
+    @include adyen-fp-selector;
+
+    display: flex;
+    margin-bottom: 1rem;
+
+    &,
+    &__button {
+        width: 100%;
+    }
+
+    &__button {
+        --adyen-fp-select-button-x-gutter: 0.625rem;
+        --adyen-fp-select-button-chevron-size: 1rem;
+
+        padding-left: var(--adyen-fp-select-button-x-gutter);
+        padding-right: calc(var(--adyen-fp-select-button-x-gutter) * 2 + var(--adyen-fp-select-button-chevron-size));
+        position: relative;
+
+        > .b-dropdown-default-textbox__chevron {
+            bottom: 0;
+            height: var(--adyen-fp-select-button-chevron-size);
+            margin: auto;
+            position: absolute;
+            right: calc(var(--adyen-fp-select-button-x-gutter) - 0.025rem);
+            top: 0;
+        }
+    }
+
+    &__container {
+        left: 0;
+        position: absolute;
+        top: 2.5rem;
+        width: 100%;
+    }
+
+    &__element {
+        font-size: 0.925rem;
+        margin: 0.0625rem 0;
+        max-height: none;
+    }
+
+    &__options-box {
+        width: calc(100% - 2px);
+    }
+
+    button {
+        font-size: 0.925rem;
+    }
+}

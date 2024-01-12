@@ -166,5 +166,12 @@
     "contactDetails": "Contact details",
     "booked": "Booked",
     "pending": "Pending",
-    "transactionsOverview": "Transactions overview"
+    "transactionsOverview": "Transactions overview",
+    "rangePreset.custom": "Custom",
+    "rangePreset.last7Days": "Last 7 days",
+    "rangePreset.lastMonth": "Last month",
+    "rangePreset.lastWeek": "Last week",
+    "rangePreset.thisMonth": "This month",
+    "rangePreset.thisWeek": "This week",
+    "rangePreset.yearToDate": "Year to date"
 }
