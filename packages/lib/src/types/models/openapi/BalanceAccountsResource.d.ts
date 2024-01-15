@@ -3,64 +3,59 @@
  * Do not make direct changes to the file.
  */
 
+
 export interface paths {
-    '/v1/balanceAccounts/{balanceAccountId}/transactions': {
-        /** @description Add @Operation annotation to provide a description */
-        get: operations['getTransactions'];
-    };
+  "/v1/balanceAccounts/{balanceAccountId}/transactions": {
+    /** @description Add @Operation annotation to provide a description */
+    get: operations["getTransactions"];
+  };
 }
 
 export type webhooks = Record<string, never>;
 
 export interface components {
-    schemas: {
-        /** @description Amount */
-        Amount: {
-            /** @description The three-character [ISO currency code](https://docs.adyen.com/development-resources/currency-codes). */
-            currency: string;
-            /**
-             * Format: int64
-             * @description The amount of the transaction, in [minor units](https://docs.adyen.com/development-resources/currency-codes).
-             */
-            value: number;
-        };
-        /**
-         * @description Category
-         * @enum {string}
-         */
-        Category: 'ATM' | 'Capital' | 'Correction' | 'Fee' | 'Payment' | 'Refund' | 'Chargeback' | 'Transfer' | 'Other';
-        /** @description Transactions made within the filters provided for given balanceAccountId */
-        SingleTransaction: {
-            amount: components['schemas']['Amount'];
-            category: components['schemas']['Category'];
-            /**
-             * Format: date-time
-             * @description Date created
-             */
-            creationDate: string;
-            /** @description ID */
-            id: string;
-            status: components['schemas']['Status'];
-        };
-        /**
-         * @description Status
-         * @enum {string}
-         */
-        Status: 'Pending' | 'Booked' | 'Rejected';
-        TransactionsResponse: {
-            /** @description Cursor for next page */
-            next: string;
-            /** @description Cursor for previous page */
-            previous: string;
-            /** @description Transactions made within the filters provided for given balanceAccountId */
-            transactions: components['schemas']['SingleTransaction'][];
-        };
+  schemas: {
+    /** @description Amount */
+    Amount: {
+      /** @description The three-character [ISO currency code](https://docs.adyen.com/development-resources/currency-codes). */
+      currency: string;
+      /**
+       * Format: int64
+       * @description The amount of the transaction, in [minor units](https://docs.adyen.com/development-resources/currency-codes).
+       */
+      value: number;
     };
-    responses: never;
-    parameters: never;
-    requestBodies: never;
-    headers: never;
-    pathItems: never;
+    /** @enum {string} */
+    Category: "ATM" | "Capital" | "Correction" | "Fee" | "Payment" | "Refund" | "Chargeback" | "Transfer" | "Other";
+    /** @description Transactions made within the filters provided for given balanceAccountId */
+    SingleTransaction: {
+      amount: components["schemas"]["Amount"];
+      category: components["schemas"]["Category"];
+      /**
+       * Format: date-time
+       * @description Date created
+       */
+      creationDate: string;
+      /** @description ID */
+      id: string;
+      status: components["schemas"]["Status"];
+    };
+    /** @enum {string} */
+    Status: "Pending" | "Booked" | "Rejected";
+    TransactionsResponse: {
+      /** @description Cursor for next page */
+      next: string;
+      /** @description Cursor for previous page */
+      previous: string;
+      /** @description Transactions made within the filters provided for given balanceAccountId */
+      transactions: components["schemas"]["SingleTransaction"][];
+    };
+  };
+  responses: never;
+  parameters: never;
+  requestBodies: never;
+  headers: never;
+  pathItems: never;
 }
 
 export type $defs = Record<string, never>;
@@ -68,26 +63,29 @@ export type $defs = Record<string, never>;
 export type external = Record<string, never>;
 
 export interface operations {
-    /** @description Add @Operation annotation to provide a description */
-    getTransactions: {
-        parameters: {
-            query?: {
-                cursor?: string;
-                createdSince?: string;
-                createdUntil?: string;
-                limit?: number;
-            };
-            path: {
-                balanceAccountId: string;
-            };
-        };
-        responses: {
-            /** @description OK - the request has succeeded. */
-            200: {
-                content: {
-                    'application/json': components['schemas']['TransactionsResponse'];
-                };
-            };
-        };
+
+  /** @description Add @Operation annotation to provide a description */
+  getTransactions: {
+    parameters: {
+      query?: {
+        cursor?: string;
+        createdSince?: string;
+        createdUntil?: string;
+        category?: components["schemas"]["Category"];
+        status?: components["schemas"]["Status"];
+        limit?: number;
+      };
+      path: {
+        balanceAccountId: string;
+      };
     };
+    responses: {
+      /** @description OK - the request has succeeded. */
+      200: {
+        content: {
+          "application/json": components["schemas"]["TransactionsResponse"];
+        };
+      };
+    };
+  };
 }
