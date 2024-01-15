@@ -47,10 +47,10 @@ const useListBoxPrimitives = <T extends any = any>(options: readonly T[], { onCu
             $options = Object.freeze([...uniqueOptions]);
         }
 
-        // if ($options.length === 0) {
-        //     cachedSelectedOption.current = undefined;
-        //     return dispatch({ type: 'RESET' });
-        // }
+        if ($options.length === 0) {
+            cachedSelectedOption.current = undefined;
+            return dispatch({ type: 'RESET' });
+        }
 
         if ($options !== stateOptions || selectedOption !== cachedSelectedOption.current) {
             selection: {

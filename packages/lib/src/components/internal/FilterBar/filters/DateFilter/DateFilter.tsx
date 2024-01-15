@@ -1,6 +1,7 @@
 import Localization from '@src/core/Localization';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
-import useCoreContext from '../../../../../core/Context/useCoreContext';
+import { EMPTY_OBJECT } from '@src/utils/common';
+import useCoreContext from '@src/core/Context/useCoreContext';
 import { CalendarHandle } from '../../../Calendar/types';
 import DatePicker from '../../../DatePicker';
 import BaseFilter from '../BaseFilter';
@@ -94,18 +95,16 @@ export default function DateFilter<T extends DateFilterProps = DateFilterProps>(
 
     const onChange = useCallback(
         (params => {
+            const { from, to, selectedPresetOption } = params ?? EMPTY_OBJECT;
             try {
-                if (params !== undefined) {
-                    const { from, to, selectedPresetOption } = params;
-                    selectedPresetOption && setSelectedPresetOption(selectedPresetOption);
-                    from && setFrom(resolveDate(from));
-                    to && setTo(resolveDate(to));
-                }
+                setSelectedPresetOption(selectedPresetOption ?? props.selectedPresetOption);
+                setFrom(resolveDate(from ?? props.from));
+                setTo(resolveDate(to ?? props.to));
             } finally {
-                props.onChange(params);
+                props.onChange({ from, to, selectedPresetOption });
             }
         }) as NonNullable<typeof props.onChange>,
-        [from, to, props.onChange]
+        [props.from, props.to, props.onChange, props.selectedPresetOption]
     );
 
     useMemo(() => setSelectedPresetOption(props.selectedPresetOption), [props.selectedPresetOption]);

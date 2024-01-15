@@ -106,13 +106,13 @@ function Transactions({
             for (const [param, value] of Object.entries(params) as [keyof typeof params, (typeof params)[keyof typeof params]][]) {
                 switch (param) {
                     case 'selectedPresetOption':
-                        setSelectedTimeRangePreset(value ?? defaultTimeRangePreset);
+                        setSelectedTimeRangePreset(value || defaultTimeRangePreset);
                         break;
                     case DateRangeFilterParam.FROM:
-                        updateFilters({ [TransactionFilterParam.CREATED_SINCE]: value || undefined });
+                        updateFilters({ [TransactionFilterParam.CREATED_SINCE]: value || DEFAULT_CREATED_SINCE });
                         break;
                     case DateRangeFilterParam.TO:
-                        updateFilters({ [TransactionFilterParam.CREATED_UNTIL]: value || undefined });
+                        updateFilters({ [TransactionFilterParam.CREATED_UNTIL]: value || DEFAULT_CREATED_UNTIL });
                         break;
                 }
             }
