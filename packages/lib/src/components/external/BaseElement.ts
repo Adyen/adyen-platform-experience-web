@@ -18,7 +18,7 @@ class BaseElement<P> {
     public _component: ComponentChild | Error;
     public eventEmitter = new EventEmitter();
     protected readonly _parentInstance?: Core;
-    public error?: boolean;
+    public sessionSetupError?: boolean;
 
     // provided by AdyenFPCore
     public loadingContext?: string;
@@ -128,7 +128,7 @@ class BaseElement<P> {
 
         // /*
         this.props = this.formatProps({ ...this.props, ...props });
-        this.error = this.props.core.error;
+        this.sessionSetupError = this.props.core.sessionSetupError;
         this._component = this.render();
         if (this._node) render(this._component, this._node);
 

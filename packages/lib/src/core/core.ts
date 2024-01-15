@@ -1,5 +1,5 @@
-import { FALLBACK_CONTEXT } from '@src/core/config';
-import type { CoreOptions, DevEnvironment } from './types';
+import { SessionRequest } from './types';
+import type { CoreOptions } from './types';
 import { resolveEnvironment } from './utils';
 import Session from './Session';
 import Localization from './Localization';
@@ -18,18 +18,19 @@ class Core<T extends CoreOptions<T> = any> {
     public components: BaseElement<any>[] = [];
     public localization;
     public loadingContext: string;
-    public onSessionCreate?: any;
-    public error?: boolean;
+    public onSessionCreate?: SessionRequest;
+    //TODO: Change the error handling strategy.
+    public sessionSetupError?: boolean;
 
     constructor(options: CoreOptions<T>) {
         this.options = options;
         this.localization = new Localization(options.locale, options.availableTranslations);
-        this.loadingContext = FALLBACK_CONTEXT;
+        this.loadingContext = process.env.VITE_LOADING_CONTEXT || resolveEnvironment(this.options.environment);
         this.setOptions(options);
     }
 
-    async initialize(initSession: boolean = false): Promise<this> {
-        if (!this.error && (initSession || (!this.session && this.onSessionCreate))) {
+    async initialize(initSession = false): Promise<this> {
+        if (!this.sessionSetupError && (initSession || (!this.session && this.onSessionCreate))) {
             await this.updateSession();
         }
 
@@ -46,7 +47,9 @@ class Core<T extends CoreOptions<T> = any> {
             }
         } catch (error) {
             if (this.options.onError) this.options.onError(error);
-            this.update({ error: true });
+            //TODO: this is heavy change the way to update core
+            this.sessionSetupError = true;
+            this.update();
             return this;
         }
     };
@@ -57,7 +60,7 @@ class Core<T extends CoreOptions<T> = any> {
      * @param initSession - should session be initiated again
      * @returns this - the element instance
      */
-    public update = (options: CoreOptions<T> = {}, initSession: boolean = false): Promise<this> => {
+    public update = (options: CoreOptions<T> = {}, initSession = false): Promise<this> => {
         this.setOptions(options);
 
         return this.initialize(initSession).then(() => {
@@ -98,7 +101,6 @@ class Core<T extends CoreOptions<T> = any> {
      */
     private setOptions = (options: CoreOptions<T>): this => {
         this.options = { ...this.options, ...options };
-        this.loadingContext = process.env.VITE_LOADING_CONTEXT || resolveEnvironment(this.options.environment);
 
         this.localization.locale = this.options?.locale;
         this.localization.customTranslations = this.options?.translations;
@@ -108,8 +110,6 @@ class Core<T extends CoreOptions<T> = any> {
             // analytics: new Analytics(this.options),
             i18n: this.localization.i18n,
         };
-
-        this.error = this.options.error;
 
         // Check for clientKey/environment mismatch
         // const clientKeyType = this.options?.clientKey?.substring(0, 3) ?? '';

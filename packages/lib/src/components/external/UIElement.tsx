@@ -20,7 +20,7 @@ export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUI
         this.elementRef = (this.props && this.props.elementRef) || this;
         this.componentToRender = null;
         this.token = this.props?.core?.session?.token || '';
-        this.error = this.props.core.error;
+        this.sessionSetupError = this.props.core.sessionSetupError;
     }
 
     get isValid() {
@@ -86,10 +86,10 @@ export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUI
     render() {
         return (
             <>
-                {this.error ? (
+                {this.sessionSetupError ? (
                     <div>Error occured</div>
                 ) : (
-                    <AuthProvider endpoints={[] as string[]} token={this.token}>
+                    <AuthProvider endpoints={this.session?.configuration?.endpoints || {}} token={this.token}>
                         <CoreProvider i18n={this.i18n} loadingContext={this.loadingContext}>
                             {this.componentToRender && <>{this.componentToRender()}</>}
                         </CoreProvider>

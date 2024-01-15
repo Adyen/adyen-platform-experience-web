@@ -4,5 +4,5 @@ export type SessionResponse = {
 };
 
 export type SessionSetupResponse = {
-    endpoints: Record<string, { method: string; urls: string }>;
+    endpoints: Record<string, { method: string; url: string }>;
 };

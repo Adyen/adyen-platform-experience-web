@@ -65,7 +65,7 @@ export interface CoreOptions<T extends CoreOptions<T> = any> {
 
     timezone?: Intl.DateTimeFormatOptions['timeZone'];
 
-    error?: boolean;
+    sessionSetupError?: boolean;
 }
 
 export type SessionRequest = () => Promise<SessionResponse>;
