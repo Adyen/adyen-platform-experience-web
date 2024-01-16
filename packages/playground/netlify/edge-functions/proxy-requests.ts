@@ -45,7 +45,7 @@ export default async (request: Request, context: any) => {
         });
         const data = await res.json();
         // @ts-ignore
-        return Response.json(data);
+        return Response.json(request);
     } catch (err) {
         console.log(err);
     }
