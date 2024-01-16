@@ -21,7 +21,7 @@ const preview: Preview = {
     loaders: [
         async context => {
             await enableServerInMockedMode();
-            const adyenFP = await createAdyenFP({ ...context.coreOptions, loadingContext: process.env.VITE_API_URL });
+            const adyenFP = await createAdyenFP({ ...context.coreOptions, loadingContext: process.env.DEPLOYED_URL ?? process.env.VITE_API_URL });
             return { adyenFP };
         },
     ],

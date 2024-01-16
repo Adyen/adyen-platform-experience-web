@@ -12,6 +12,7 @@ const meta: Meta<ElementProps<typeof TransactionsComponent>> = {
         onLimitChanged: enabledDisabledCallbackRadioControls('onLimitChanged', ['Passed', 'Not Passed']),
         preferredLimit: { type: 'number', min: 1, max: 100 },
         allowLimitSelection: { type: 'boolean' },
+        balancePlatformId: { type: 'string' },
     },
     args: {
         preferredLimit: 10,
@@ -34,9 +35,7 @@ export const Basic: ElementStory<typeof TransactionsComponent> = {
 };
 
 export const BasicTransactionList: ElementStory<typeof TransactionsComponent> = {
-    args: {
-        balancePlatformId: process.env.VITE_BALANCE_PLATFORM,
-    },
+    args: {},
 };
 
 export default meta;
