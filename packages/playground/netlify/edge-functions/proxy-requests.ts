@@ -41,7 +41,7 @@ export default async (request: Request, context: any) => {
 
     try {
         const res = await fetch(`${apiConfig.target}${url.pathname.replace('/api/', '/')}${url.search ?? ''}`, {
-            headers: { ...apiConfig.headers, request: request },
+            headers: apiConfig.headers,
         });
         const data = await res.json();
         // @ts-ignore
