@@ -1,6 +1,8 @@
 import { EMPTY_ARRAY, mod } from '@src/utils/common';
 import type { Restamp, RestampContext, RestampResult } from '../types';
 
+export const REGEX_TZ_OFFSET = /(?<=GMT)(?:[-+](?:0?\d|1[0-4])(?::?[0-5]\d)?)?$/;
+
 const restamper = (() => {
     const BASE_LOCALE = 'en-US' as const;
     const DIGITS_2 = '2-digit' as const;
@@ -14,12 +16,11 @@ const restamper = (() => {
     let setTimeZone: (this: RestampContext, timezone?: Restamp['tz'] | null) => void;
     let systemTimezoneFormatter: RestampContext['formatter'];
 
-    const REGEXP_TZ_OFFSET = /[-+](?:0?\d|1[0-4])(?::?[0-5]\d)?$/;
     const computeMinutesOffset = (hrs: number, mins: number) => (Math.abs(hrs * 60) + mins) * (hrs < 0 ? -1 : 1);
-    const parseOffset = (offset: string) => parseInt(offset);
+    const parseOffset = (offset: string) => parseInt(offset, 10) || 0;
 
     const getOffsetsFromFormattedDateString = (date?: string): readonly [number, number] => {
-        const offsets = date?.match(REGEXP_TZ_OFFSET)?.[0].split(':', 2).map(parseOffset) ?? (EMPTY_ARRAY as readonly number[]);
+        const offsets = date?.match(REGEX_TZ_OFFSET)?.[0].split(':', 2).map(parseOffset) ?? (EMPTY_ARRAY as readonly number[]);
         return Object.freeze(offsets.concat(0, 0).slice(0, 2) as [number, number]);
     };
 
@@ -58,13 +59,18 @@ const restamper = (() => {
 
         setTimeZone = function (timeZone) {
             if (timeZone != undefined) {
-                const nextFormatter = new Intl.DateTimeFormat(BASE_LOCALE, { ...FORMAT_OPTIONS, timeZone });
-                const nextTimeZone = nextFormatter.resolvedOptions().timeZone;
+                try {
+                    const nextFormatter = new Intl.DateTimeFormat(BASE_LOCALE, { ...FORMAT_OPTIONS, timeZone });
+                    const nextTimeZone = nextFormatter.resolvedOptions().timeZone;
 
-                if (this.TIMEZONE === nextTimeZone) return;
+                    if (this.TIMEZONE === nextTimeZone) return;
 
-                this.TIMEZONE = nextTimeZone;
-                this.formatter = nextFormatter;
+                    this.TIMEZONE = nextTimeZone;
+                    this.formatter = nextFormatter;
+                } catch (ex) {
+                    // Silently ignore invalid timezone updates
+                    if (import.meta.env.DEV) console.error(ex);
+                }
             } else {
                 this.TIMEZONE = SYSTEM_TIMEZONE;
                 this.formatter = systemTimezoneFormatter;
