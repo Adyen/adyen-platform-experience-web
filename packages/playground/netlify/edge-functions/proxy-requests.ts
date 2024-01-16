@@ -37,27 +37,16 @@ export default async (request: Request, context: any) => {
     // Find the matching API proxy configuration based on the pathname.
     const [match, apiConfig] = Object.entries(apis).find(([apiPath]) => url.pathname.startsWith(apiPath)) || [];
 
-    if (!match || !apiConfig) {
-        try {
-            const res = await fetch(request.url, {
-                headers: { ...request.headers, req: request.url, origin: url.origin },
-            });
-            const data = await res.json();
-            // @ts-ignore
-            return Response.json(request);
-        } catch (err) {
-            console.log(err);
-        }
-    } else {
-        try {
-            const res = await fetch(`${apiConfig.target}${url.pathname.replace('/api/', '/')}${url.search ?? ''}`, {
-                headers: { ...apiConfig.headers, req: request.url, url: url },
-            });
-            const data = await res.json();
-            // @ts-ignore
-            return Response.json(request);
-        } catch (err) {
-            console.log(err);
-        }
+    if (!match || !apiConfig) return;
+
+    try {
+        const res = await fetch(`${apiConfig.target}${url.pathname.replace('/api/', '/')}${url.search ?? ''}`, {
+            headers: apiConfig.headers,
+        });
+        const data = await res.json();
+        // @ts-ignore
+        return Response.json(data);
+    } catch (err) {
+        console.log(err);
     }
 };
