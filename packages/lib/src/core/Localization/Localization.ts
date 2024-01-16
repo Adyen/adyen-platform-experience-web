@@ -3,11 +3,11 @@ import { defaultTranslation, FALLBACK_LOCALE } from './constants/locale';
 import { DEFAULT_DATETIME_FORMAT, DEFAULT_LOCALES, EXCLUDE_PROPS } from './constants/localization';
 import restamper from './datetime/restamper';
 import { createTranslationsLoader, getLocalizationProxyDescriptors } from './localization-utils';
-import { CurrencyCode, CustomTranslations, LangFile, Restamp, SupportedLocale, Translation, TranslationKey, TranslationOptions } from './types';
+import { CustomTranslations, LangFile, Restamp, SupportedLocale, Translation, TranslationKey, TranslationOptions } from './types';
 import { formatCustomTranslations, getTranslation, toTwoLetterCode } from './utils';
 import { noop, struct } from '@src/utils/common';
 import watchable from '@src/utils/watchable';
-import { en_US } from './translations';
+import { en_US } from '@src/core';
 
 export default class Localization {
     #locale: SupportedLocale | string = FALLBACK_LOCALE;
@@ -168,7 +168,9 @@ export default class Localization {
      * @param date - Date to be localized
      */
     fullDate(date: string) {
-        const [, month, day, year, time] = new Date(this.#restamp(date)).toString().split(/\s+/g);
+        const { formatted, timestamp } = this.#restamp(date);
+        const restampedDateWithoutTimeZone = formatted?.replace(/\s+GMT[^]*$/, '') ?? timestamp;
+        const [, month, day, year, time] = new Date(restampedDateWithoutTimeZone).toString().split(/\s+/g);
         return `${month} ${day}, ${year}, ${time}`;
     }
 }
