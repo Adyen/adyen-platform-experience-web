@@ -13,6 +13,7 @@ import './TransactionList.scss';
 import { Tag } from '@src/components/internal/Tag/Tag';
 import { TagVariant } from '@src/components/internal/Tag/types';
 import { CellTextPosition } from '@src/components/internal/DataGrid/DataGrid';
+import { InteractionKeyCode } from '@src/components/types';
 
 const ModalContent = lazy(() => import('./ModalContent'));
 
@@ -73,7 +74,20 @@ function TransactionList({ loading, transactions, onTransactionSelected, showPag
                               })
                             : null;
 
-                        return <div className={classnames('adyen-fp-transactions__amount')}>{amount}</div>;
+                        return (
+                            <div
+                                onKeyDownCapture={e => {
+                                    if (e.code === InteractionKeyCode.ENTER) {
+                                        alert('test');
+                                    }
+                                }}
+                                tabIndex={0}
+                                role={'button'}
+                                className={classnames('adyen-fp-transactions__amount')}
+                            >
+                                {amount}
+                            </div>
+                        );
                     },
                 }}
             >
