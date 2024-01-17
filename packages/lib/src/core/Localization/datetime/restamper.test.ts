@@ -1,14 +1,9 @@
 import { beforeEach, describe, expect, expectTypeOf, test } from 'vitest';
 import type { Restamp, RestampResult } from '@src/core/Localization/types';
 import restamper, { REGEX_TZ_OFFSET } from './restamper';
+import { DST_TIMEZONES, NON_DST_TIMEZONES, getPastDatesMapForEachMonthInYear, runTimezoneTestRoutine, RestampContext } from './restampter-test-utils';
 
 describe('restamper', () => {
-    type RestampContext = Readonly<{
-        instance: Restamp;
-        offsets: RestampResult['offsets'];
-        timezone: Restamp['tz'];
-    }>;
-
     beforeEach<RestampContext>(context => {
         const instance = restamper();
 
@@ -57,5 +52,34 @@ describe('restamper', () => {
             expect(result.formatted).toBeTypeOf('string');
             expect(REGEX_TZ_OFFSET.test(result.formatted)).toBe(true); // formatted date should end with tz offset
         }
+    });
+
+    test<RestampContext>('should have correct offsets for non-DST timezones for times in the past', ({ instance }) => {
+        const pastDatesMap = getPastDatesMapForEachMonthInYear(instance);
+
+        NON_DST_TIMEZONES.forEach((timezoneOffsets, timezone) => {
+            instance.tz = timezone;
+
+            pastDatesMap.forEach((systemTimezoneResult, date) => {
+                const result = instance(date);
+                runTimezoneTestRoutine(timezoneOffsets, systemTimezoneResult, result);
+            });
+        });
+    });
+
+    test<RestampContext>('should have correct offsets for DST timezones for times in the past', ({ instance }) => {
+        const pastDatesMap = getPastDatesMapForEachMonthInYear(instance);
+
+        DST_TIMEZONES.forEach((timezoneOffsets, timezone) => {
+            instance.tz = timezone;
+
+            let index = 0;
+
+            for (const [date, systemTimezoneResult] of pastDatesMap) {
+                const result = instance(date);
+                const timezoneOffsetsForCurrentTime = timezoneOffsets[index++] as [number, number];
+                runTimezoneTestRoutine(timezoneOffsetsForCurrentTime, systemTimezoneResult, result);
+            }
+        });
     });
 });
