@@ -93,6 +93,7 @@ export default defineConfig(async ({ mode }) => {
             'process.env.VITE_DEFAULT_ACCOUNT_HOLDER_ID': JSON.stringify(envIds.accountHolder.defaultId || null),
             'process.env.VITE_API_URL': JSON.stringify(playground.apiUrl || null),
             'process.env.VITE_PLAYGROUND_PORT': JSON.stringify(playground.port || null),
+            'process.env.DEPLOYED_URL': JSON.stringify(process.env.DEPLOY_PRIME_URL || null),
         },
     };
 });
