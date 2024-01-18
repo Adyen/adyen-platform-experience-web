@@ -75,16 +75,7 @@ function TransactionList({ loading, transactions, onTransactionSelected, showPag
                             : null;
 
                         return (
-                            <div
-                                onKeyDownCapture={e => {
-                                    if (e.code === InteractionKeyCode.ENTER) {
-                                        alert('test');
-                                    }
-                                }}
-                                tabIndex={0}
-                                role={'button'}
-                                className={classnames('adyen-fp-transactions__amount')}
-                            >
+                            <div tabIndex={0} role={'button'} className={classnames('adyen-fp-transactions__amount')}>
                                 {amount}
                             </div>
                         );
