@@ -12,8 +12,7 @@ import { getLabel } from './utils';
 import './TransactionList.scss';
 import { Tag } from '@src/components/internal/Tag/Tag';
 import { TagVariant } from '@src/components/internal/Tag/types';
-import { CellTextPosition } from '@src/components/internal/DataGrid/DataGrid';
-import { InteractionKeyCode } from '@src/components/types';
+import { CellTextPosition } from '@src/components/internal/DataGrid/types';
 
 const ModalContent = lazy(() => import('./ModalContent'));
 
@@ -55,7 +54,6 @@ function TransactionList({ loading, transactions, onTransactionSelected, showPag
                 columns={columns}
                 data={transactions}
                 loading={loading}
-                onRowClick={{ retrievedField: 'id', callback: onRowClick }}
                 outline={false}
                 customCells={{
                     status: ({ value }) => {

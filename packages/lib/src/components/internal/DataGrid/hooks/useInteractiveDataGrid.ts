@@ -96,5 +96,5 @@ export const useInteractiveDataGrid = ({ totalRows }: { totalRows: number }) => 
         [state.index]
     );
 
-    return { listeners: { onKeyDownCapture, onFocusCapture }, ref, currentIndex: state.index };
+    return { listeners: { onKeyDownCapture, onFocusCapture }, ref, activeIndex: state.activeIndex, currentIndex: state.index };
 };
