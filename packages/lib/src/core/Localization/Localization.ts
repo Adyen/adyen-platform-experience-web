@@ -89,8 +89,8 @@ export default class Localization {
         return this.#supportedLocales;
     }
 
-    get timezone(): Restamp['tz'] {
-        return this.#restamp.tz;
+    get timezone(): Restamp['tz']['current'] {
+        return this.#restamp.tz.current;
     }
 
     set timezone(timezone: string | undefined | null) {
@@ -159,7 +159,7 @@ export default class Localization {
      * @param options - Options for {@link Date.toLocaleDateString}
      */
     date(date: string, options: Intl.DateTimeFormatOptions = {}) {
-        const dateOptions = { ...DEFAULT_DATETIME_FORMAT, timeZone: this.#restamp.tz, ...options };
+        const dateOptions = { ...DEFAULT_DATETIME_FORMAT, timeZone: this.#restamp.tz.current, ...options };
         return new Date(date).toLocaleDateString(this.#locale, dateOptions);
     }
 

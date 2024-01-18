@@ -36,12 +36,18 @@ export type CustomTranslations = {
 export type Restamp = {
     (): RestampResult;
     (time?: string | number | Date): RestampResult;
-    get tz(): string | undefined;
+    // [TODO]: Remove the following @ts-ignore directive after TS version has been bumped up to >=5.0.0.
+    // @ts-ignore
+    get tz(): {
+        get current(): string | undefined;
+        set current(timezone: string | undefined | null);
+        readonly system: string | undefined;
+    };
     set tz(timezone: string | undefined | null);
 };
 
 export type RestampContext = {
-    TIMEZONE: Restamp['tz'];
+    TIMEZONE: Restamp['tz']['current'];
     formatter?: Intl.DateTimeFormat;
 };
 

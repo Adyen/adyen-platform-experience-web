@@ -1,4 +1,4 @@
-import { EMPTY_ARRAY, mod } from '@src/utils/common';
+import { EMPTY_ARRAY, mod, struct } from '@src/utils/common';
 import type { Restamp, RestampContext, RestampResult } from '../types';
 
 export const REGEX_TZ_OFFSET = /(?<=GMT)(?:[-+](?:0?\d|1[0-4])(?::?[0-5]\d)?)?$/;
@@ -10,10 +10,10 @@ const restamper = (() => {
     const SHORT = 'short' as const;
 
     let FORMAT_OPTIONS: Readonly<Intl.DateTimeFormatOptions> | undefined;
-    let SYSTEM_TIMEZONE: Restamp['tz'];
+    let SYSTEM_TIMEZONE: Restamp['tz']['system'];
 
-    let getTimeZone: (this: RestampContext) => Restamp['tz'];
-    let setTimeZone: (this: RestampContext, timezone?: Restamp['tz'] | null) => void;
+    let getTimeZone: (this: RestampContext) => RestampContext['TIMEZONE'];
+    let setTimeZone: (this: RestampContext, timezone?: RestampContext['TIMEZONE'] | null) => void;
     let systemTimezoneFormatter: RestampContext['formatter'];
 
     const computeMinutesOffset = (hrs: number, mins: number) => (Math.abs(hrs * 60) + mins) * (hrs < 0 ? -1 : 1);
@@ -94,11 +94,15 @@ const restamper = (() => {
 
     return () => {
         const context = { TIMEZONE: SYSTEM_TIMEZONE } as RestampContext;
+        const set = setTimeZone?.bind(context);
+
+        const tz = struct({
+            current: { get: getTimeZone?.bind(context), set },
+            system: { value: SYSTEM_TIMEZONE },
+        });
+
         return Object.defineProperties(restamp.bind(context) as Restamp, {
-            tz: {
-                get: getTimeZone?.bind(context),
-                set: setTimeZone?.bind(context),
-            },
+            tz: { get: () => tz, set },
         });
     };
 })();

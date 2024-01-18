@@ -1,5 +1,7 @@
-import { EMPTY_OBJECT, struct } from '@src/utils/common';
-import type { RangeTimestamp, RangeTimestamps, RangeTimestampsConfig, RangeTimestampsConfigContext } from './types';
+import { EMPTY_OBJECT, enumerable, struct } from '@src/utils/common';
+import restamper from '@src/core/Localization/datetime/restamper';
+import type { Restamp } from '@src/core/Localization/types';
+import type { RangeTimestamp, RangeTimestampRestamper, RangeTimestamps, RangeTimestampsConfig, RangeTimestampsConfigContext } from './types';
 import {
     asPlainObject,
     getter,
@@ -17,8 +19,11 @@ const createRangeTimestampsFactory = <T extends Record<any, any> = {}>(
     const _additionalContext = asPlainObject(additionalContext);
 
     return () => {
+        const _restamper = restamper();
         const nowDescriptor = getter(() => NOW);
-        const configContext = struct({ now: nowDescriptor }) as RangeTimestampsConfigContext;
+        const tzDescriptor = getter(() => _restamper.tz.current);
+        const restamperDescriptor = enumerable<RangeTimestampRestamper>((...args) => _restamper(...args));
+        const configContext = struct({ now: nowDescriptor, restamp: restamperDescriptor, tz: tzDescriptor }) as RangeTimestampsConfigContext;
         const unwrap = getRangeTimestampsConfigParameterUnwrapper(_config, configContext);
 
         let { from, to, now: NOW } = EMPTY_OBJECT as RangeTimestamps;
@@ -62,12 +67,20 @@ const createRangeTimestampsFactory = <T extends Record<any, any> = {}>(
             if (from > to) [from, to] = [to, from];
         };
 
+        const tzSetter = (timezone?: Restamp['tz']['current'] | null) => {
+            const tz = _restamper.tz;
+            const currentTimezone = tz.current;
+            _restamper.tz = timezone;
+            if (tz.current !== currentTimezone) nowSetter(NOW);
+        };
+
         nowSetter();
 
         return struct({
             ..._additionalContext,
             from: getter(() => from),
             to: getter(() => to),
+            tz: { ...tzDescriptor, set: tzSetter },
             now: { ...nowDescriptor, set: nowSetter },
         }) as RangeTimestamps<Omit<T, keyof RangeTimestamps>>;
     };

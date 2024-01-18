@@ -8,14 +8,14 @@ type _DateRangeContext = {
     toDate: Date;
 };
 
-export type DateRangeContext<T extends Record<any, any> = {}> = Readonly<
-    _DateRangeContext & {
+export type DateRangeContext<T extends Record<any, any> = {}> = Readonly<_DateRangeContext> &
+    Readonly<{
         from: RangeTimestamps['from'];
-        now: RangeTimestamps['now'];
         to: RangeTimestamps['to'];
-    }
-> &
-    Omit<RangeTimestamps<T>, 'from' | 'now' | 'to'>;
+    }> & {
+        now: RangeTimestamps['now'];
+        tz: RangeTimestamps['tz'];
+    } & Omit<RangeTimestamps<T>, 'from' | 'now' | 'to' | 'tz'>;
 
 export const isLeapYear = (year: number) => (year % 100 ? year % 4 : year % 400) === 0;
 
@@ -44,3 +44,7 @@ export const getDateRangeContext = <T extends Record<any, any> = {}>(
         toDate: getter(() => new Date(rangeContext.to)),
     });
 };
+
+export const asTimestamp = (dates: any[]) => dates.map(date => new Date(date).getTime());
+
+export const TIMEZONE_TESTS_TIMESTAMPS = asTimestamp(['Apr 15, 2022, 1:30 PM GMT', 'Dec 31, 2023, 5:30 PM GMT', 'Jan 1, 2024, 3:30 AM GMT']);

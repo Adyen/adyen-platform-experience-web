@@ -4,7 +4,7 @@ import type { Restamp } from '@src/core/Localization/types';
 import { noop } from '@src/utils/common';
 import watchable from '@src/utils/watchable';
 
-const useTimezone = (timezone?: Restamp['tz']) => {
+const useTimezone = (timezone?: Restamp['tz']['current']) => {
     const _restamp = useMemo(restamper, []);
     const _unwatch = useRef(noop);
     const _cleanup = useCallback(() => _unwatch.current(), []);
@@ -12,7 +12,7 @@ const useTimezone = (timezone?: Restamp['tz']) => {
     const [, setLastUpdatedTimestamp] = useState<DOMHighResTimeStamp>(performance.now());
 
     useMemo(() => {
-        const currentTimezone = _restamp.tz;
+        const currentTimezone = _restamp.tz.current;
         try {
             _restamp.tz = timezone;
         } catch (ex) {

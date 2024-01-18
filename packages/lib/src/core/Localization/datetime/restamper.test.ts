@@ -15,22 +15,31 @@ describe('restamper', () => {
     });
 
     test<RestampContext>('should return restamp instance', ({ instance, timezone }) => {
-        const validTimezone = 'Asia/Tokyo';
+        const { system: systemTimezone } = timezone;
         const invalidTimezone = 'Unknown/Invalid_TZ';
+        const validTimezone = 'Asia/Tokyo';
 
         expectTypeOf<Restamp>(instance);
         expectTypeOf<RestampResult>(instance());
         expectTypeOf<RestampResult>(instance(new Date('2012-08-22')));
+        expectTypeOf<Restamp['tz']>(timezone);
 
         expect(instance).toHaveProperty('tz');
-        expect(timezone).toBeTypeOf('string');
+        expect(timezone).toHaveProperty('current');
+        expect(timezone).toHaveProperty('system');
+
+        expect(timezone.system).toBeTypeOf('string');
+        expect(timezone.current).toBeTypeOf('string');
+        expect(timezone.current).toBe(timezone.system);
 
         instance.tz = validTimezone;
-        expect(instance.tz).toBe(validTimezone);
+        expect(timezone.current).toBe(validTimezone);
+        expect(timezone.system).toBe(systemTimezone); // unchanged
 
         instance.tz = invalidTimezone;
-        expect(instance.tz).not.toBe(invalidTimezone);
-        expect(instance.tz).toBe(validTimezone);
+        expect(timezone.current).not.toBe(invalidTimezone); // invalid — ignored
+        expect(timezone.current).toBe(validTimezone); // unchanged
+        expect(timezone.system).toBe(systemTimezone); // unchanged
     });
 
     test<RestampContext>('should return restamp result for current time (when argument is omitted)', ({ instance }) => {

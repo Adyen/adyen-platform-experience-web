@@ -1,8 +1,8 @@
 import createRangeTimestampsFactory from '../factory';
-import { nowTimestamp, startOfYear } from '../utils';
+import { nowTimestamp, timezoneAwareStartOfYear } from '../utils';
 
 const yearToDate = createRangeTimestampsFactory({
-    from: ({ now }) => startOfYear(new Date(now)),
+    from: ({ now, restamp }) => timezoneAwareStartOfYear(restamp, now),
     to: nowTimestamp,
 });
 

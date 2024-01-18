@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { getDateRangeContext } from './shared/test-utils';
+import { asTimestamp, getDateRangeContext, TIMEZONE_TESTS_TIMESTAMPS } from './shared/test-utils';
 import yearToDate from './yearToDate';
 
 describe('year to date', () => {
@@ -32,5 +32,29 @@ describe('year to date', () => {
         expect(to).toBe(now);
         expect(monthBefore).toBe(11);
         expect(yearBefore).toBe(fromYear - 1);
+    });
+
+    test('should have precise timestamps for timezone', () => {
+        const range = getDateRangeContext(yearToDate);
+        const { now: initialNow, tz: initialTz } = range;
+
+        const TIMEZONES = new Map([
+            ['America/Toronto', asTimestamp(['Jan 1, 2022, 12:00 AM GMT-5', 'Jan 1, 2023, 12:00 AM GMT-5', 'Jan 1, 2023, 12:00 AM GMT-5'])],
+            ['Asia/Tokyo', asTimestamp(['Jan 1, 2022, 12:00 AM GMT+9', 'Jan 1, 2024, 12:00 AM GMT+9', 'Jan 1, 2024, 12:00 AM GMT+9'])],
+        ]);
+
+        TIMEZONES.forEach((fromTimestamps, timezone) => {
+            range.tz = timezone;
+
+            TIMEZONE_TESTS_TIMESTAMPS.forEach((timestamp, index) => {
+                range.now = timestamp;
+                expect(range.from).toBe(fromTimestamps[index]); // start of year for `timezone`
+                expect(range.to).toBe(timestamp); // always the `now` timestamp
+            });
+
+            // reset now and tz
+            range.now = initialNow;
+            range.tz = initialTz;
+        });
     });
 });

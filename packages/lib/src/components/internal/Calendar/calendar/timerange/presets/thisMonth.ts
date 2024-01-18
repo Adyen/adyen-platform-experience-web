@@ -1,8 +1,8 @@
 import createRangeTimestampsFactory from '../factory';
-import { nowTimestamp, startOfMonth } from '../utils';
+import { nowTimestamp, timezoneAwareStartOfMonth } from '../utils';
 
 const thisMonth = createRangeTimestampsFactory({
-    from: ({ now }) => startOfMonth(new Date(now)),
+    from: ({ now, restamp }) => timezoneAwareStartOfMonth(restamp, now),
     to: nowTimestamp,
 });
 
