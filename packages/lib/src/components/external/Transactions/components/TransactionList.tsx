@@ -55,6 +55,7 @@ function TransactionList({ loading, transactions, onTransactionSelected, showPag
                 data={transactions}
                 loading={loading}
                 outline={false}
+                onRowClick={{ retrievedField: 'id', callback: onRowClick }}
                 customCells={{
                     status: ({ value }) => {
                         //TODO modify variant once we use the real status field from the BE
