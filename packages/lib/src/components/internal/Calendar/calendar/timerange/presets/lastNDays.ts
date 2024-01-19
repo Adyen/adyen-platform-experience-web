@@ -12,10 +12,21 @@ const lastNDays = (numberOfDays?: number) => {
 
     return createRangeTimestampsFactory(
         {
-            from: ({ now }) => {
+            from: ({ now, system2Timezone, timezone2System, timezoneOffset }) => {
                 const date = new Date(now);
-                date.setDate(date.getDate() - numberOfDaysContext.value + 1);
-                return startOfDay(date);
+                let dateOffset = numberOfDaysContext.value - 1;
+
+                if (timezoneOffset(startOfDay(date))) {
+                    const restampedDate = new Date(timezone2System(now));
+                    const dateDiff = (date.getDate() - restampedDate.getDate()) as -1 | 1 | 0;
+
+                    if (dateDiff) {
+                        // Correction for difference between first (1) and last (28, 29, 30, 31) day of month
+                        dateOffset += dateDiff > 1 ? -1 : dateDiff < -1 ? 1 : dateDiff;
+                    }
+                }
+
+                return system2Timezone(date.setDate(date.getDate() - dateOffset));
             },
             to: nowTimestamp,
         },

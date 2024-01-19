@@ -1,5 +1,6 @@
 import { describe, expect, test } from 'vitest';
-import { asTimestamp, getDateRangeContext, TIMEZONE_TESTS_TIMESTAMPS } from './shared/test-utils';
+import { getDateRangeContext, TIMEZONE_TESTS_TIMESTAMPS } from './testing/fixtures';
+import { asTimestamp } from './testing/helpers';
 import yearToDate from './yearToDate';
 
 describe('year to date', () => {
@@ -36,7 +37,7 @@ describe('year to date', () => {
 
     test('should have precise timestamps for timezone', () => {
         const range = getDateRangeContext(yearToDate);
-        const { now: initialNow, tz: initialTz } = range;
+        const { now: initialNow, timezone: initialTimezone } = range;
 
         const TIMEZONES = new Map([
             ['America/Toronto', asTimestamp(['Jan 1, 2022, 12:00 AM GMT-5', 'Jan 1, 2023, 12:00 AM GMT-5', 'Jan 1, 2023, 12:00 AM GMT-5'])],
@@ -44,7 +45,7 @@ describe('year to date', () => {
         ]);
 
         TIMEZONES.forEach((fromTimestamps, timezone) => {
-            range.tz = timezone;
+            range.timezone = timezone;
 
             TIMEZONE_TESTS_TIMESTAMPS.forEach((timestamp, index) => {
                 range.now = timestamp;
@@ -54,7 +55,7 @@ describe('year to date', () => {
 
             // reset now and tz
             range.now = initialNow;
-            range.tz = initialTz;
+            range.timezone = initialTimezone;
         });
     });
 });

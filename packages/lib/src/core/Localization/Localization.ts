@@ -1,9 +1,9 @@
 import { getLocalisedAmount } from './amount/amount-util';
 import { defaultTranslation, FALLBACK_LOCALE } from './constants/locale';
 import { DEFAULT_DATETIME_FORMAT, DEFAULT_LOCALES, EXCLUDE_PROPS } from './constants/localization';
-import restamper from './datetime/restamper';
+import restamper, { RestamperWithTimezone } from './datetime/restamper';
 import { createTranslationsLoader, getLocalizationProxyDescriptors } from './localization-utils';
-import { CustomTranslations, LangFile, Restamp, SupportedLocale, Translation, TranslationKey, TranslationOptions } from './types';
+import { CustomTranslations, LangFile, SupportedLocale, Translation, TranslationKey, TranslationOptions } from './types';
 import { formatCustomTranslations, getTranslation, toTwoLetterCode } from './utils';
 import { noop, struct } from '@src/utils/common';
 import watchable from '@src/utils/watchable';
@@ -22,7 +22,7 @@ export default class Localization {
     #currentRefresh?: Promise<void>;
     #markRefreshAsDone?: () => void;
     #refreshWatchable = watchable({ timestamp: () => performance.now() });
-    #restamp: Restamp = restamper();
+    #restamp: RestamperWithTimezone = restamper();
 
     private watch = this.#refreshWatchable.watch.bind(undefined);
     public i18n: Omit<Localization, (typeof EXCLUDE_PROPS)[number]> = struct(getLocalizationProxyDescriptors.call(this));
@@ -89,7 +89,7 @@ export default class Localization {
         return this.#supportedLocales;
     }
 
-    get timezone(): Restamp['tz']['current'] {
+    get timezone(): RestamperWithTimezone['tz']['current'] {
         return this.#restamp.tz.current;
     }
 

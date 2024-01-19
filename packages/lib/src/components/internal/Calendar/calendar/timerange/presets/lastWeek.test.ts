@@ -1,5 +1,6 @@
 import { describe, expect, test, vi } from 'vitest';
-import { getDateRangeContext } from './shared/test-utils';
+import { getDateRangeContext, TIMEZONE_TESTS_TIMESTAMPS } from './testing/fixtures';
+import { asTimestamp } from './testing/helpers';
 import type { WeekDay } from '../../types';
 import lastWeek from './lastWeek';
 
@@ -82,4 +83,43 @@ describe('last week', () => {
         lastWeekTimestamps.firstWeekDay = i as WeekDay;
         runTestsFor(lastWeekTimestamps.firstWeekDay);
     }
+
+    test('should have precise timestamps for timezone (firstWeekDay => 1)', () => {
+        const range = getDateRangeContext(() => lastWeek(1));
+        const { now: initialNow, timezone: initialTimezone } = range;
+
+        const TIMEZONES = new Map([
+            [
+                'America/Toronto',
+                [
+                    asTimestamp(['Apr 4, 2022, 12:00 AM GMT-4', 'Apr 10, 2022, 23:59:59.999 GMT-4']),
+                    asTimestamp(['Dec 18, 2023, 12:00 AM GMT-5', 'Dec 24, 2023, 23:59:59.999 GMT-5']),
+                    asTimestamp(['Dec 18, 2023, 12:00 AM GMT-5', 'Dec 24, 2023, 23:59:59.999 GMT-5']),
+                ],
+            ],
+            [
+                'Asia/Tokyo',
+                [
+                    asTimestamp(['Apr 4, 2022, 12:00 AM GMT+9', 'Apr 10, 2022, 23:59:59.999 GMT+9']),
+                    asTimestamp(['Dec 25, 2023, 12:00 AM GMT+9', 'Dec 31, 2023, 23:59:59.999 GMT+9']),
+                    asTimestamp(['Dec 25, 2023, 12:00 AM GMT+9', 'Dec 31, 2023, 23:59:59.999 GMT+9']),
+                ],
+            ],
+        ]);
+
+        TIMEZONES.forEach((timestamps, timezone) => {
+            range.timezone = timezone;
+
+            TIMEZONE_TESTS_TIMESTAMPS.forEach((timestamp, index) => {
+                const [fromTimestamp, toTimestamp] = timestamps[index]!;
+                range.now = timestamp;
+                expect(range.from).toBe(fromTimestamp);
+                expect(range.to).toBe(toTimestamp);
+            });
+
+            // reset now and tz
+            range.now = initialNow;
+            range.timezone = initialTimezone;
+        });
+    });
 });

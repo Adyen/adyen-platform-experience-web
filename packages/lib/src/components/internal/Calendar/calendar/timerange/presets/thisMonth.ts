@@ -1,9 +1,3 @@
-import createRangeTimestampsFactory from '../factory';
-import { nowTimestamp, timezoneAwareStartOfMonth } from '../utils';
-
-const thisMonth = createRangeTimestampsFactory({
-    from: ({ now, restamp }) => timezoneAwareStartOfMonth(restamp, now),
-    to: nowTimestamp,
-});
-
+import offsetMonth from './shared/offsetMonth';
+const thisMonth = offsetMonth(0);
 export default thisMonth;

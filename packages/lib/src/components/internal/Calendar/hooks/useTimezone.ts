@@ -1,27 +1,26 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
-import restamper from '@src/core/Localization/datetime/restamper';
-import type { Restamp } from '@src/core/Localization/types';
+import restamper, { RestampContext } from '@src/core/Localization/datetime/restamper';
 import { noop } from '@src/utils/common';
 import watchable from '@src/utils/watchable';
 
-const useTimezone = (timezone?: Restamp['tz']['current']) => {
-    const _restamp = useMemo(restamper, []);
+const useTimezone = (timezone?: RestampContext['TIMEZONE']) => {
+    const _restamper = useMemo(restamper, []);
     const _unwatch = useRef(noop);
     const _cleanup = useCallback(() => _unwatch.current(), []);
-    const _watchable = useMemo(() => watchable({ tz: () => _restamp.tz! }), [_restamp]);
+    const _watchable = useMemo(() => watchable({ tz: () => _restamper.tz! }), [_restamper]);
     const [, setLastUpdatedTimestamp] = useState<DOMHighResTimeStamp>(performance.now());
 
     useMemo(() => {
-        const currentTimezone = _restamp.tz.current;
+        const currentTimezone = _restamper.tz.current;
         try {
-            _restamp.tz = timezone;
+            _restamper.tz = timezone;
         } catch (ex) {
-            _restamp.tz = currentTimezone;
+            _restamper.tz = currentTimezone;
             if (import.meta.env.DEV) console.error(ex);
         } finally {
             _watchable.notify();
         }
-    }, [_restamp, _watchable, timezone]);
+    }, [_restamper, _watchable, timezone]);
 
     useEffect(() => {
         _cleanup();
@@ -29,7 +28,7 @@ const useTimezone = (timezone?: Restamp['tz']['current']) => {
         return _cleanup;
     }, [_cleanup, _watchable]);
 
-    return { getTimezoneTimestamp: _restamp } as const;
+    return { getZonedTimestamp: _restamper } as const;
 };
 
 export default useTimezone;
