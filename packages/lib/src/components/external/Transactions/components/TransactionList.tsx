@@ -72,11 +72,7 @@ function TransactionList({ loading, transactions, onTransactionSelected, showPag
                               })
                             : null;
 
-                        return (
-                            <div tabIndex={0} role={'button'} className={classnames('adyen-fp-transactions__amount')}>
-                                {amount}
-                            </div>
-                        );
+                        return <span className={classnames('adyen-fp-transactions__amount')}>{amount}</span>;
                     },
                 }}
             >
