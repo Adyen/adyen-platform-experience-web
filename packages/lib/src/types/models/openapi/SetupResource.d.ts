@@ -3,37 +3,38 @@
  * Do not make direct changes to the file.
  */
 
+
 export interface paths {
-    '/v1/setup': {
-        /**
-         * Get allowed endpoints
-         * @description Provides the allowed endpoints for a given session
-         */
-        post: operations['setup'];
-    };
+  "/v1/setup": {
+    /**
+     * Get allowed endpoints
+     * @description Provides the allowed endpoints for a given session
+     */
+    post: operations["setup"];
+  };
 }
 
 export type webhooks = Record<string, never>;
 
 export interface components {
-    schemas: {
-        /** @description Allowed endpoints for a given session */
-        SetupEndpointResponse: {
-            method?: string;
-            url?: string;
-        };
-        SetupResponse: {
-            /** @description Allowed endpoints for a given session */
-            endpoints: {
-                [key: string]: components['schemas']['SetupEndpointResponse'];
-            };
-        };
+  schemas: {
+    /** @description Allowed endpoints for a given session */
+    SetupEndpointResponse: {
+      method?: string;
+      url?: string;
     };
-    responses: never;
-    parameters: never;
-    requestBodies: never;
-    headers: never;
-    pathItems: never;
+    SetupResponse: {
+      /** @description Allowed endpoints for a given session */
+      endpoints: {
+        [key: string]: components["schemas"]["SetupEndpointResponse"];
+      };
+    };
+  };
+  responses: never;
+  parameters: never;
+  requestBodies: never;
+  headers: never;
+  pathItems: never;
 }
 
 export type $defs = Record<string, never>;
@@ -41,18 +42,19 @@ export type $defs = Record<string, never>;
 export type external = Record<string, never>;
 
 export interface operations {
-    /**
-     * Get allowed endpoints
-     * @description Provides the allowed endpoints for a given session
-     */
-    setup: {
-        responses: {
-            /** @description OK - the request has succeeded. */
-            200: {
-                content: {
-                    'application/json': components['schemas']['SetupResponse'];
-                };
-            };
+
+  /**
+   * Get allowed endpoints
+   * @description Provides the allowed endpoints for a given session
+   */
+  setup: {
+    responses: {
+      /** @description OK - the request has succeeded. */
+      200: {
+        content: {
+          "application/json": components["schemas"]["SetupResponse"];
         };
+      };
     };
+  };
 }
