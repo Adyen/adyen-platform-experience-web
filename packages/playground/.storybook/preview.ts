@@ -3,7 +3,8 @@ import '../src/assets/style/style.scss';
 import '@adyen/adyen-fp-web/style/index.scss';
 import '@adyen/adyen-fp-web/components/shared.scss';
 import { createAdyenFP } from './utils/create-adyenFP';
-import { enableServerInMockedMode } from '../src/endpoints/mock-server/utils';
+import { enableServerInMockedMode, stopMockedServer } from '../src/endpoints/mock-server/utils';
+import sessionRequest from '../src/utils/sessionRequest';
 
 const preview: Preview = {
     parameters: {
@@ -21,7 +22,17 @@ const preview: Preview = {
     loaders: [
         async context => {
             await enableServerInMockedMode();
-            const adyenFP = await createAdyenFP(context.coreOptions);
+            const adyenFP = await createAdyenFP({
+                ...context.coreOptions,
+                onSessionCreate: async () => {
+                    if (context.args.mockedApi) {
+                        await enableServerInMockedMode(true);
+                    } else {
+                        stopMockedServer();
+                    }
+                    return await sessionRequest();
+                },
+            });
             return { adyenFP };
         },
     ],
