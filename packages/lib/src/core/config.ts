@@ -3,7 +3,7 @@
  */
 
 //TODO - Use real url once we have defined our BFF.
-export const FALLBACK_CONTEXT = 'Fallback Base URL';
+export const FALLBACK_CONTEXT = 'http://localhost:3030';
 
 export const GENERIC_OPTIONS = [
     'countryCode',

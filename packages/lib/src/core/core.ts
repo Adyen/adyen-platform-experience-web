@@ -1,6 +1,7 @@
+import { SessionRequest } from './types';
 import type { CoreOptions } from './types';
 import { resolveEnvironment } from './utils';
-import BPSession from './FPSession';
+import Session from './Session';
 import Localization from './Localization';
 import BaseElement from '../components/external/BaseElement';
 
@@ -11,48 +12,58 @@ class Core<T extends CoreOptions<T> = any> {
         branch: process.env.VITE_COMMIT_BRANCH,
         buildId: process.env.VITE_ADYEN_BUILD_ID,
     };
-    public session?: BPSession;
+    public session?: Session;
     public modules: any;
     public options: CoreOptions<T>;
     public components: BaseElement<any>[] = [];
     public localization;
-    public loadingContext?: string;
+    public loadingContext: string;
+    public onSessionCreate?: SessionRequest;
+    //TODO: Change the error handling strategy.
+    public sessionSetupError?: boolean;
 
     constructor(options: CoreOptions<T>) {
         this.options = options;
         this.localization = new Localization(options.locale, options.availableTranslations);
+        this.loadingContext = process.env.VITE_LOADING_CONTEXT || resolveEnvironment(this.options.environment);
         this.setOptions(options);
     }
 
-    initialize(): Promise<this> {
-        // TODO: Enable once we have sessions working
-        // if (this.options.session) {
-        //     this.session = new Session(this.options.session, this.options.clientKey, this.options.loadingContext);
-
-        //     return this.session
-        //         .setupSession(this.options)
-        //         .then(sessionResponse => {
-        //             this.setOptions(sessionResponse);
-        //             return this;
-        //         })
-        //         .catch(error => {
-        //             if (this.options.onError) this.options.onError(error);
-        //             return this;
-        //         });
-        // }
+    async initialize(initSession = false): Promise<this> {
+        if (!this.sessionSetupError && (initSession || (!this.session && this.onSessionCreate))) {
+            await this.updateSession();
+        }
 
         return Promise.all([this.localization.ready]).then(() => this);
     }
 
+    public updateSession = async () => {
+        try {
+            if (this.options.onSessionCreate) {
+                this.session = new Session(await this.options.onSessionCreate(), this.loadingContext!);
+                await this.session?.setupSession(this.options);
+                await this.update({});
+                return this;
+            }
+        } catch (error) {
+            if (this.options.onError) this.options.onError(error);
+            //TODO: this is heavy change the way to update core
+            this.sessionSetupError = true;
+            this.update();
+            return this;
+        }
+    };
+
     /**
      * Updates global configurations, resets the internal state and remounts each element.
      * @param options - props to update
+     * @param initSession - should session be initiated again
      * @returns this - the element instance
      */
-    public update = (options: CoreOptions<T> = {}): Promise<this> => {
+    public update = (options: CoreOptions<T> = {}, initSession = false): Promise<this> => {
         this.setOptions(options);
 
-        return this.initialize().then(() => {
+        return this.initialize(initSession).then(() => {
             // Update each component under this instance
             this.components.forEach(c => c.update(this.getPropsForComponent(this.options)));
 
@@ -90,22 +101,21 @@ class Core<T extends CoreOptions<T> = any> {
      */
     private setOptions = (options: CoreOptions<T>): this => {
         this.options = { ...this.options, ...options };
-        this.loadingContext = this.options.loadingContext ?? resolveEnvironment(this.options.environment);
 
         this.localization.locale = this.options?.locale;
         this.localization.customTranslations = this.options?.translations;
         this.localization.timezone = this.options?.timezone;
-
+        this.onSessionCreate = this.options.onSessionCreate;
         this.modules = {
             // analytics: new Analytics(this.options),
             i18n: this.localization.i18n,
         };
 
         // Check for clientKey/environment mismatch
-        const clientKeyType = this.options?.clientKey?.substring(0, 3) ?? '';
-        if (['test', 'live'].includes(clientKeyType) && !this.options?.loadingContext?.includes(clientKeyType)) {
-            throw new Error(`Error: you are using a ${clientKeyType} clientKey against the ${this.options?.environment} environment`);
-        }
+        // const clientKeyType = this.options?.clientKey?.substring(0, 3) ?? '';
+        // if (['test', 'live'].includes(clientKeyType) && !this.loadingContext?.includes(clientKeyType)) {
+        //     throw new Error(`Error: you are using a ${clientKeyType} clientKey against the ${this.options?.environment} environment`);
+        // }
 
         return this;
     };
