@@ -17,8 +17,8 @@ jobs:
 
     - name: install, coverage
       run: |
-        yarn --frozen-lockfile
-        yarn test:coverage
+        npm run ci
+        npm run test:coverage
       env:
         CI: true
 
