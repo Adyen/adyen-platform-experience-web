@@ -12,7 +12,7 @@ export interface DataGridColumn<Item> {
 }
 
 export interface DataGridProps<Item extends Array<any>, ClickedField extends keyof Item[number]> {
-    children: ComponentChildren;
+    children?: ComponentChildren;
     columns: DataGridColumn<Item[number]>[];
     condensed: boolean;
     data: Item;
