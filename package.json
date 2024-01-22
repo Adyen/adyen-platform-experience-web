@@ -18,7 +18,9 @@
         "./packages/*"
     ],
     "scripts": {
-        "start": "concurrently --kill-others-on-fail 'npm run types:watch' 'npm run start -w @adyen/adyen-fp-web-playground' --names 'tsc-lib,playground' -c blue,green,cyan,yellow",
+        "start": "npm run start:test",
+        "start:local": "concurrently --kill-others-on-fail 'npm run types:watch' 'npm run start:local -w @adyen/adyen-fp-web-playground' --names 'tsc-lib,playground' -c blue,green,cyan,yellow",
+        "start:test": "concurrently --kill-others-on-fail 'npm run types:watch' 'npm run start:test -w @adyen/adyen-fp-web-playground' --names 'tsc-lib,playground' -c blue,green,cyan,yellow",
         "build": "npm run build -w @adyen/adyen-fp-web",
         "build:demo": "npm run build:demo -w @adyen/adyen-fp-web-playground",
         "build:test": "npm run build:test -w @adyen/adyen-fp-web",

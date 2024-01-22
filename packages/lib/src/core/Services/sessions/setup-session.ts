@@ -1,25 +1,23 @@
+import Session from '@src/core/Session';
 import { httpPost } from '../requests/http';
-import Session from '../../FPSession';
-import { SessionSetupResponse } from '../../FPSession/types';
+import { SessionSetupResponse } from '@src/core/Session/types';
 import { API_VERSION } from './constants';
 
-/**
- */
-function setupSession(session: Session, options: Record<string, any>): Promise<SessionSetupResponse> {
-    const path = `${API_VERSION}/sessions/${session.id}/setup?clientKey=${session.clientKey}`;
-    const data = {
-        sessionData: session.data,
-    };
+function setupSession(session: Session, options?: Record<string, any>): Promise<SessionSetupResponse> {
+    const path = `/platform-components-external/api/${API_VERSION}/setup`;
 
     return httpPost<SessionSetupResponse>(
         {
-            loadingContext: session.loadingContext,
-            path,
             errorLevel: 'fatal',
             errorMessage: 'ERROR: Invalid ClientKey',
             ...(options ?? {}),
+            loadingContext: session.loadingContext,
+            path,
+            headers: {
+                Authorization: `Bearer ${session.token}`,
+            },
         },
-        data
+        {}
     );
 }
 

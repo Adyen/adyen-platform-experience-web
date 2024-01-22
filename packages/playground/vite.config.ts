@@ -2,7 +2,7 @@ import { defineConfig } from 'vite';
 import { preact } from '@preact/preset-vite';
 import { resolve } from 'node:path';
 import { lstat, readdir } from 'node:fs/promises';
-import { getEnvironment } from '../../envs/getEnvs';
+import { ENVIRONMENTS, getEnvironment } from '../../envs/getEnvs';
 import { realApiProxies } from './src/endpoints/apis/realApiProxies';
 import { checker } from 'vite-plugin-checker';
 
@@ -26,7 +26,7 @@ async function getPlaygroundEntrypoints() {
 }
 
 export default defineConfig(async ({ mode }) => {
-    const { lemApi, BTLApi, BCLApi, playground, envIds } = getEnvironment(mode);
+    const { apiConfigs, playground, envIds } = getEnvironment(mode, process.env.ENV as ENVIRONMENTS);
     return {
         root: mode === 'demo' ? demoPlaygroundDir : undefined,
         base: './',
@@ -69,7 +69,7 @@ export default defineConfig(async ({ mode }) => {
             host: playground.host,
             port: playground.port,
             https: false,
-            proxy: mode === 'mocked' ? undefined : realApiProxies(lemApi, BTLApi, BCLApi),
+            proxy: mode === 'mocked' ? undefined : realApiProxies(apiConfigs),
             watch: {
                 ignored: ['!**/node_modules/@adyen/adyen-fp-web/**'],
             },
@@ -83,7 +83,7 @@ export default defineConfig(async ({ mode }) => {
             proxy: undefined,
         },
         define: {
-            'process.env.VITE_BALANCE_PLATFORM': JSON.stringify(BTLApi.balancePlatform || null),
+            'process.env.VITE_BALANCE_PLATFORM': JSON.stringify(apiConfigs.BTLApi.balancePlatform || null),
             'process.env.VITE_MODE': JSON.stringify(process.env.VITE_MODE ?? mode),
             'process.env.VITE_ORG_LEGAL_ENTITY_ID': JSON.stringify(envIds.legalEntities.organization || null),
             'process.env.VITE_IND_LEGAL_ENTITY_ID': JSON.stringify(envIds.legalEntities.individual || null),
@@ -94,6 +94,7 @@ export default defineConfig(async ({ mode }) => {
             'process.env.VITE_API_URL': JSON.stringify(playground.apiUrl || null),
             'process.env.VITE_PLAYGROUND_PORT': JSON.stringify(playground.port || null),
             'process.env.DEPLOYED_URL': JSON.stringify(process.env.DEPLOY_PRIME_URL || null),
+            'process.env.VITE_LOADING_CONTEXT': JSON.stringify(playground.apiUrl || null),
         },
     };
 });

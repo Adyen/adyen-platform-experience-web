@@ -6,12 +6,10 @@ import { LogConfig } from './types';
  * @param config -
  */
 const logTelemetry = (config: LogConfig) => (event: Record<string, any>) => {
-    if (!config.clientKey) return Promise.reject();
-
     const options = {
         errorLevel: 'silent' as const,
         loadingContext: config.loadingContext,
-        path: `v2/analytics/log?clientKey=${config.clientKey}`,
+        path: `v2/analytics/log`,
     };
 
     const telemetryEvent = {

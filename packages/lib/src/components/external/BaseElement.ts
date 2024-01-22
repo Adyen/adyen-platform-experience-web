@@ -5,7 +5,7 @@ import { Core } from '../../core';
 import { BaseElementProps, BaseElementState } from '../types';
 import { isString } from '@src/utils/validator-utils';
 import Localization from '@src/core/Localization';
-import BPSession from '@src/core/FPSession/FPSession';
+import BPSession from '@src/core/Session/Session';
 
 class BaseElement<P> {
     public static type: string;
@@ -18,10 +18,10 @@ class BaseElement<P> {
     public _component: ComponentChild | Error;
     public eventEmitter = new EventEmitter();
     protected readonly _parentInstance?: Core;
+    public sessionSetupError?: boolean;
 
     // provided by AdyenFPCore
     public loadingContext?: string;
-    public clientKey?: string;
     public i18n?: Localization['i18n'];
     public session?: BPSession;
 
@@ -30,8 +30,7 @@ class BaseElement<P> {
         this._parentInstance = this.props._parentInstance;
         this._node = null;
         this.state = {} as BaseElementState;
-        this.loadingContext = this.props.core.options.loadingContext;
-        this.clientKey = this.props.core.options.clientKey;
+        this.loadingContext = this.props.core.loadingContext;
         this.i18n = this.props.core.modules.i18n;
         this.session = this.props.core.session;
         this.props.core.registerComponent(this);
@@ -129,6 +128,7 @@ class BaseElement<P> {
 
         // /*
         this.props = this.formatProps({ ...this.props, ...props });
+        this.sessionSetupError = this.props.core.sessionSetupError;
         this._component = this.render();
         if (this._node) render(this._component, this._node);
 
