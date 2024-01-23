@@ -17,7 +17,7 @@ jobs:
 
     - name: install, coverage
       run: |
-        npm run ci
+        npm ci
         npm run test:coverage
       env:
         CI: true
