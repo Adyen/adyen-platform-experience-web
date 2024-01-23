@@ -10,7 +10,7 @@ export interface HttpOptions {
     headers?: HeadersInit;
     loadingContext?: string;
     clientKey?: string;
-    method?: HttpMethod;
+    method: HttpMethod;
     errorLevel?: FetchErrorLevel;
     errorHandler?: (response: any) => any;
     params?: URLSearchParams;

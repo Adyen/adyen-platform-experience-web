@@ -48,6 +48,7 @@ export default defineConfig(async ({ mode }) => {
             'process.env.VITE_COMMIT_HASH': JSON.stringify(currentVersion.COMMIT_HASH),
             'process.env.VITE_COMMIT_BRANCH': JSON.stringify(currentVersion.COMMIT_BRANCH),
             'process.env.VITE_ADYEN_BUILD_ID': JSON.stringify(currentVersion.ADYEN_BUILD_ID),
+            'process.env.VITE_LOADING_CONTEXT': JSON.stringify(false),
         },
         test: {
             root: resolve(__dirname, '../src'),

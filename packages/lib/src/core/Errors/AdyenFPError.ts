@@ -1,22 +1,12 @@
+import { ErrorTypes } from '@src/core/Services/requests/utils';
+
 class AdyenFPError extends Error {
-    protected static errorTypes = {
-        /** Network error. */
-        NETWORK_ERROR: 'NETWORK_ERROR',
+    public type: string;
 
-        /** Shopper canceled the current transaction. */
-        CANCEL: 'CANCEL',
-
-        /** Implementation error. The method or parameter are incorrect or are not supported. */
-        IMPLEMENTATION_ERROR: 'IMPLEMENTATION_ERROR',
-
-        /** Generic error. */
-        ERROR: 'ERROR'
-    };
-
-    constructor(type: keyof typeof AdyenFPError.errorTypes, message?: string) {
+    constructor(type: ErrorTypes, message?: string) {
         super(message);
-
-        this.name = AdyenFPError.errorTypes[type];
+        this.type = type;
+        this.name = type;
     }
 }
 

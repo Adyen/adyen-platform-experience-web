@@ -3,7 +3,6 @@ import { StoryContext } from '@storybook/types';
 import { PreactRenderer } from '@storybook/preact';
 import { getStoryContextAdyenFP } from './get-story-context';
 import { enableServerInMockedMode, stopMockedServer } from '../../endpoints/mock-server/utils';
-import { CoreOptions } from '@adyen/adyen-fp-web';
 
 interface IContainer<T extends new (...args: any) => any> {
     component: T;
