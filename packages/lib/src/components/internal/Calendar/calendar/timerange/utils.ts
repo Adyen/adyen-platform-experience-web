@@ -24,8 +24,8 @@ export const getter = <T extends any = any>(get: () => T, enumerable: boolean = 
 
 export const createRangeTimestampsConfigRestampingContext = (restamper: RestamperWithTimezone) =>
     Object.freeze({
-        system2Timezone: enumerable((time?: Parameters<Restamper>[0]) => restamp(restamper, time, 1)),
-        timezone2System: enumerable((time?: Parameters<Restamper>[0]) => restamp(restamper, time, -1)),
+        systemToTimezone: enumerable((time?: Parameters<Restamper>[0]) => restamp(restamper, time, 1)),
+        timezoneToSystem: enumerable((time?: Parameters<Restamper>[0]) => restamp(restamper, time, -1)),
         timezoneOffset: enumerable((time?: Parameters<Restamper>[0]) => restamper(time).offset),
     }) as { [P in keyof RangeTimestampsConfigRestampingContext]: TypedPropertyDescriptor<RangeTimestampsConfigRestampingContext[P]> };
 

@@ -19,8 +19,8 @@ export type RangeTimestampsConfigParameter<T = {}> = T | ((context: RangeTimesta
 export type RangeTimestampsConfigParameterValue<T> = T extends (context: RangeTimestampsConfigContext) => infer U ? U : T;
 
 export type RangeTimestampsConfigRestampingContext = Readonly<{
-    system2Timezone: (time?: Parameters<Restamper>[0]) => RangeTimestamp;
-    timezone2System: (time?: Parameters<Restamper>[0]) => RangeTimestamp;
+    systemToTimezone: (time?: Parameters<Restamper>[0]) => RangeTimestamp;
+    timezoneToSystem: (time?: Parameters<Restamper>[0]) => RangeTimestamp;
     timezoneOffset: (time?: Parameters<Restamper>[0]) => number;
 }>;
 

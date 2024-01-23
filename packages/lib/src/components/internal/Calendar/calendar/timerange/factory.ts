@@ -54,7 +54,7 @@ const createRangeTimestampsFactory = <T extends Record<any, any> = {}>(
                 }
 
                 // revert timestamp to system timezone ahead of offset operations
-                date = new Date(configContext.timezone2System(date));
+                date = new Date(configContext.timezoneToSystem(date));
 
                 const [years = 0, months = 0, days = 0, hours = 0, minutes = 0, seconds = 0, ms = 0] = unwrap(_config.offsets);
 
@@ -68,7 +68,7 @@ const createRangeTimestampsFactory = <T extends Record<any, any> = {}>(
                 );
 
                 // restamp timestamp to current target timezone before update range
-                const timestamp = parseRangeTimestamp(configContext.system2Timezone(date)) ?? NOW;
+                const timestamp = parseRangeTimestamp(configContext.systemToTimezone(date)) ?? NOW;
 
                 withRangeFrom ? (to = timestamp) : (from = timestamp);
             }

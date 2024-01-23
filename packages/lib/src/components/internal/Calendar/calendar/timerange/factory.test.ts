@@ -118,16 +118,16 @@ describe('createRangeTimestampsFactory', () => {
     test('should use correct config context for callable config properties', () => {
         const todayTimestamps = createRangeTimestampsFactory({
             from: DAY_START,
-            to: ({ now, system2Timezone, timezone, timezone2System, timezoneOffset }) => {
+            to: ({ now, systemToTimezone, timezone, timezoneToSystem, timezoneOffset }) => {
                 expect(now).toBeTypeOf('number');
                 expect(timezone).toBeTypeOf('string');
-                expect(system2Timezone).toBeTypeOf('function');
-                expect(timezone2System).toBeTypeOf('function');
+                expect(systemToTimezone).toBeTypeOf('function');
+                expect(timezoneToSystem).toBeTypeOf('function');
                 expect(timezoneOffset).toBeTypeOf('function');
 
                 expect(timezone).toBe(SYSTEM_TIMEZONE);
-                expect(system2Timezone(now)).toBeTypeOf('number');
-                expect(timezone2System(now)).toBeTypeOf('number');
+                expect(systemToTimezone(now)).toBeTypeOf('number');
+                expect(timezoneToSystem(now)).toBeTypeOf('number');
                 expect(timezoneOffset(now)).toBe(0); // system timezone (no offset)
 
                 return now;

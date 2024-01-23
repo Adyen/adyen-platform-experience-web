@@ -10,21 +10,21 @@ const offsetMonth = (monthCount: number = 0) => {
     const restConfig = months ? { offsets: ONE_MONTH_OFFSETS } : { to: nowTimestamp };
 
     return createRangeTimestampsFactory({
-        from: ({ now, system2Timezone, timezone2System, timezoneOffset }) => {
+        from: ({ now, systemToTimezone, timezoneToSystem }) => {
             const date = new Date(now);
+            const restampedDate = new Date(timezoneToSystem(now));
+            const monthDiff = (date.getMonth() - restampedDate.getMonth()) as -1 | 1 | 0;
+
             let monthOffset = months;
 
-            if (timezoneOffset(startOfMonth(date))) {
-                const restampedDate = new Date(timezone2System(now));
-                const monthDiff = (date.getMonth() - restampedDate.getMonth()) as -1 | 1 | 0;
-
-                if (monthDiff) {
-                    // Correction for difference between first (0) and last (11) month
-                    monthOffset += monthDiff > 1 ? -1 : monthDiff < -1 ? 1 : monthDiff;
-                }
+            if (monthDiff) {
+                // Correction for difference between first (0) and last (11) month
+                monthOffset += monthDiff > 1 ? -1 : monthDiff < -1 ? 1 : monthDiff;
             }
 
-            return system2Timezone(date.setMonth(date.getMonth() - monthOffset));
+            startOfMonth(date);
+            date.setMonth(date.getMonth() - monthOffset);
+            return systemToTimezone(date);
         },
         ...restConfig,
     });

@@ -2,16 +2,14 @@ import createRangeTimestampsFactory from '../factory';
 import { nowTimestamp, startOfYear } from '../utils';
 
 const yearToDate = createRangeTimestampsFactory({
-    from: ({ now, system2Timezone, timezone2System, timezoneOffset }) => {
+    from: ({ now, systemToTimezone, timezoneToSystem }) => {
         const date = new Date(now);
+        const restampedDate = new Date(timezoneToSystem(now));
+        const yearOffset = (date.getFullYear() - restampedDate.getFullYear()) as -1 | 1 | 0;
 
-        if (timezoneOffset(startOfYear(date))) {
-            const restampedDate = new Date(timezone2System(now));
-            const yearOffset = (date.getFullYear() - restampedDate.getFullYear()) as -1 | 1 | 0;
-            date.setFullYear(date.getFullYear() - yearOffset);
-        }
-
-        return system2Timezone(date);
+        startOfYear(date);
+        date.setFullYear(date.getFullYear() - yearOffset);
+        return systemToTimezone(date);
     },
     to: nowTimestamp,
 });

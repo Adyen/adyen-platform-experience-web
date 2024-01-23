@@ -17,23 +17,23 @@ const offsetWeek = (weekCount: number = 0) => {
 
         return createRangeTimestampsFactory(
             {
-                from: ({ now, system2Timezone, timezone2System, timezoneOffset }) => {
+                from: ({ now, systemToTimezone, timezoneToSystem }) => {
                     const date = new Date(now);
+                    const restampedDate = new Date(timezoneToSystem(now));
+                    const dayDiff = (date.getDay() - restampedDate.getDay()) as -1 | 1 | 0;
 
-                    if (timezoneOffset(startOfDay(date))) {
-                        const restampedDate = new Date(timezone2System(now));
-                        let dayDiff = (date.getDay() - restampedDate.getDay()) as -1 | 1 | 0;
+                    startOfDay(date);
 
-                        if (dayDiff) {
-                            // Correction for difference between first (0) and last (6) week day
-                            dayDiff = dayDiff > 1 ? -1 : dayDiff < -1 ? 1 : dayDiff;
-                        }
-
-                        date.setDate(date.getDate() - dayDiff);
+                    if (dayDiff) {
+                        // Correction for difference between first (0) and last (6) week day
+                        const dateDiff = dayDiff > 1 ? -1 : dayDiff < -1 ? 1 : dayDiff;
+                        date.setDate(date.getDate() - dateDiff);
                     }
 
                     const dateOffset = startOfWeekOffset(firstWeekDayContext.value, date.getDay() as WeekDay) - weeks * 7;
-                    return system2Timezone(date.setDate(date.getDate() + dateOffset));
+                    date.setDate(date.getDate() + dateOffset);
+
+                    return systemToTimezone(date);
                 },
                 ...restConfig,
             },
