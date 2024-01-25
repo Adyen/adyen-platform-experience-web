@@ -1,23 +1,25 @@
-import { memo } from 'preact/compat';
+import { HTMLAttributes, memo } from 'preact/compat';
 import { useCallback, useRef } from 'preact/hooks';
-import ChevronUp from './chevron-up';
-import ChevronDown from './chevron-down';
-import { ListBox, ListBoxControl, ListBoxControlProps, ListBoxProps, useListBox, UseListBoxConfig } from '@src/components/internal/ListBox';
-import './LimitSelect.scss';
+import { ListBox, ListBoxControl, ListBoxControlProps, ListBoxProps, useListBox } from '@src/components/internal/ListBox';
+import ChevronUp from '@src/components/internal/Pagination/components/chevron-up';
+import ChevronDown from '@src/components/internal/Pagination/components/chevron-down';
+import { UseTimeRangeSelectionData } from './useTimeRangeSelection';
+import './TimeRangeSelector.scss';
 
-interface SelectListProps<T extends any = any> extends UseListBoxConfig<T> {
-    options: readonly T[];
-}
-
-const SELECT_BASE_CLASS = 'adyen-fp-select-limit';
+const SELECT_BASE_CLASS = 'adyen-fp-select';
 const SELECT_BUTTON_CLASS = `${SELECT_BASE_CLASS}__button`;
 const SELECT_OPTION_CLASS = `${SELECT_BASE_CLASS}__option`;
 const SELECT_OPTION_ELEMENT_CLASS = `${SELECT_BASE_CLASS}__element`;
 const SELECT_LIST_CLASS = `${SELECT_OPTION_CLASS}s-box`;
 const SELECT_LIST_CONTAINER_CLASS = `${SELECT_BASE_CLASS}__container`;
 
-const LimitSelect = ({ options, ...listBoxConfig }: SelectListProps) => {
-    const { expand, ref, ...listBoxProps } = useListBox(options, listBoxConfig);
+const TimeRangeSelector = ({
+    children,
+    onSelection,
+    options,
+    selectedOption,
+}: Pick<HTMLAttributes<any>, 'children'> & Omit<UseTimeRangeSelectionData, 'customSelection' | 'from' | 'to'>) => {
+    const { expand, ref, ...listBoxProps } = useListBox(options, { onSelection, selectedOption });
     const buttonControlRef = useRef<HTMLButtonElement | null>(null);
 
     const renderControl = useCallback(
@@ -28,12 +30,14 @@ const LimitSelect = ({ options, ...listBoxConfig }: SelectListProps) => {
                     {expanded ? <ChevronUp svg-title="opened" /> : <ChevronDown svg-title="closed" />}
                 </div>
             </>
-        )) as ListBoxControlProps<(typeof options)[number]>['render'],
+        )) as ListBoxControlProps<(typeof listBoxProps)['state']['options'][number]>['render'],
         []
     );
 
     const renderOption = useCallback(
-        (option => <span className={SELECT_OPTION_ELEMENT_CLASS}>{option}</span>) as ListBoxProps<(typeof options)[number]>['render'],
+        (option => <span className={SELECT_OPTION_ELEMENT_CLASS}>{option}</span>) as ListBoxProps<
+            (typeof listBoxProps)['state']['options'][number]
+        >['render'],
         []
     );
 
@@ -49,11 +53,13 @@ const LimitSelect = ({ options, ...listBoxConfig }: SelectListProps) => {
                     state={listBoxProps.state}
                 />
             </div>
+            {children}
             <ListBox
                 ref={ref}
                 className={SELECT_LIST_CONTAINER_CLASS}
                 listClassName={SELECT_LIST_CLASS}
                 optionClassName={SELECT_OPTION_CLASS}
+                aria-labelledby="listbox"
                 render={renderOption}
                 {...listBoxProps}
             />
@@ -61,4 +67,4 @@ const LimitSelect = ({ options, ...listBoxConfig }: SelectListProps) => {
     ) : null;
 };
 
-export default memo(LimitSelect);
+export default memo(TimeRangeSelector);

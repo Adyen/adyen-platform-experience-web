@@ -3,11 +3,11 @@ import { defaultTranslation, FALLBACK_LOCALE } from './constants/locale';
 import { DEFAULT_DATETIME_FORMAT, DEFAULT_LOCALES, EXCLUDE_PROPS } from './constants/localization';
 import restamper from './datetime/restamper';
 import { createTranslationsLoader, getLocalizationProxyDescriptors } from './localization-utils';
-import { CurrencyCode, CustomTranslations, LangFile, Restamp, SupportedLocale, Translation, TranslationKey, TranslationOptions } from './types';
+import { CustomTranslations, LangFile, Restamp, SupportedLocale, Translation, TranslationKey, TranslationOptions } from './types';
 import { formatCustomTranslations, getTranslation, toTwoLetterCode } from './utils';
 import { noop, struct } from '@src/utils/common';
 import watchable from '@src/utils/watchable';
-import { en_US } from './translations';
+import { en_US } from '@src/core';
 
 export default class Localization {
     #locale: SupportedLocale | string = FALLBACK_LOCALE;
@@ -158,7 +158,7 @@ export default class Localization {
      * @param date - Date to be localized
      * @param options - Options for {@link Date.toLocaleDateString}
      */
-    date(date: string, options: Intl.DateTimeFormatOptions = {}) {
+    date(date: number | string | Date, options: Intl.DateTimeFormatOptions = {}) {
         const dateOptions = { ...DEFAULT_DATETIME_FORMAT, timeZone: this.#restamp.tz, ...options };
         return new Date(date).toLocaleDateString(this.#locale, dateOptions);
     }
@@ -167,7 +167,7 @@ export default class Localization {
      * Returns a localized string for a full date
      * @param date - Date to be localized
      */
-    fullDate(date: string) {
+    fullDate(date: number | string | Date) {
         const [, month, day, year, time] = new Date(this.#restamp(date)).toString().split(/\s+/g);
         return `${month} ${day}, ${year}, ${time}`;
     }

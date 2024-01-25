@@ -115,8 +115,14 @@ const useCalendar = (
                 get from() {
                     return getDateObjectFromTimestamp(from);
                 },
+                set from(date) {
+                    grid?.highlight && date && (grid.highlight.from = date.getTime());
+                },
                 get to() {
                     return getDateObjectFromTimestamp(to);
+                },
+                set to(date) {
+                    grid?.highlight && date && (grid.highlight.to = date.getTime());
                 },
             } as CalendarHandle;
         },

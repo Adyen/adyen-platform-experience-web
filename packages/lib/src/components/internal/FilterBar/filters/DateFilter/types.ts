@@ -1,3 +1,4 @@
+import { UseTimeRangeSelectionConfig } from '@src/components/internal/DatePicker/components/TimeRangeSelector';
 import { BaseFilterProps } from '../BaseFilter/types';
 
 export const enum DateRangeFilterParam {
@@ -6,9 +7,11 @@ export const enum DateRangeFilterParam {
 }
 
 export interface DateFilterProps extends BaseFilterProps {
-    onChange: (params?: { [P in DateRangeFilterParam]?: string }) => void;
-    rangeEnd?: string;
-    rangeStart?: string;
+    onChange: (params?: { [P in DateRangeFilterParam | 'selectedPresetOption']?: string }) => void;
+    sinceDate?: string;
+    untilDate?: string;
+    selectedPresetOption?: string;
+    timeRangePresetOptions?: UseTimeRangeSelectionConfig['options'];
     [DateRangeFilterParam.FROM]?: string;
     [DateRangeFilterParam.TO]?: string;
 }

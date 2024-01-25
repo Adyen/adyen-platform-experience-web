@@ -172,5 +172,12 @@
     "Booked": "Booked",
     "Pending": "Pending",
     "Rejected": "Rejected",
-    "transactionsOverview": "Transactions overview"
+    "transactionsOverview": "Transactions overview",
+    "rangePreset.custom": "Custom",
+    "rangePreset.last7Days": "Last 7 days",
+    "rangePreset.lastMonth": "Last month",
+    "rangePreset.lastWeek": "Last week",
+    "rangePreset.thisMonth": "This month",
+    "rangePreset.thisWeek": "This week",
+    "rangePreset.yearToDate": "Year to date"
 }
