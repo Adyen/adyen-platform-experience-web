@@ -19,7 +19,8 @@
     },
     "scripts": {
         "vite": "vite dev",
-        "start": "vite dev --config ./vite.config.ts",
+        "start:local": "cross-env ENV=local vite dev --config ./vite.config.ts",
+        "start:test": "cross-env ENV=test vite dev --config ./vite.config.ts",
         "build:demo": "vite build --mode demo --config ./vite.config.ts",
         "demo": "npm run build:demo && npm run demo:serve",
         "demo:serve": "vite preview --mode demo --config ./vite.config.ts",

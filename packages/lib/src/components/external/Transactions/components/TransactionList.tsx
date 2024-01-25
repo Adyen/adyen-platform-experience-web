@@ -12,11 +12,11 @@ import { getLabel } from './utils';
 import './TransactionList.scss';
 import { Tag } from '@src/components/internal/Tag/Tag';
 import { TagVariant } from '@src/components/internal/Tag/types';
-import { CellTextPosition } from '@src/components/internal/DataGrid/DataGrid';
+import { CellTextPosition } from '@src/components/internal/DataGrid/types';
 
 const ModalContent = lazy(() => import('./ModalContent'));
 
-const FIELDS = ['createdAt', 'status', 'type', 'amount'] as const;
+const FIELDS = ['creationDate', 'status', 'type', 'amount'] as const;
 
 function TransactionList({ loading, transactions, onTransactionSelected, showPagination, showDetails, ...paginationProps }: TransactionListProps) {
     const { i18n } = useCoreContext();
@@ -54,17 +54,22 @@ function TransactionList({ loading, transactions, onTransactionSelected, showPag
                 columns={columns}
                 data={transactions}
                 loading={loading}
-                onRowClick={{ retrievedField: 'id', callback: onRowClick }}
                 outline={false}
+                onRowClick={{ retrievedField: 'id', callback: onRowClick }}
                 customCells={{
                     status: ({ value }) => {
                         //TODO modify variant once we use the real status field from the BE
-                        return <Tag label={i18n.get(value)} variant={value === 'booked' ? TagVariant.SUCCESS : TagVariant.ERROR} />;
+                        return (
+                            <Tag
+                                label={i18n.get(value)}
+                                variant={value === 'Booked' ? TagVariant.SUCCESS : value === 'Rejected' ? TagVariant.ERROR : TagVariant.DEFAULT}
+                            />
+                        );
                     },
                     type: ({ value }) => {
                         return value ? i18n.get(`txType.${value}`) : null;
                     },
-                    createdAt: ({ value }) => i18n.fullDate(value),
+                    creationDate: ({ value }) => i18n.fullDate(value),
                     amount: ({ value }) => {
                         const amount = value?.currency
                             ? i18n.amount(value.value, value.currency, {
@@ -73,7 +78,7 @@ function TransactionList({ loading, transactions, onTransactionSelected, showPag
                               })
                             : null;
 
-                        return <div className={classnames('adyen-fp-transactions__amount')}>{amount}</div>;
+                        return <span className={classnames('adyen-fp-transactions__amount')}>{amount}</span>;
                     },
                 }}
             >

@@ -29,11 +29,11 @@ export const TransactionData = ({ transaction }: { transaction: ITransaction }) 
                             label: i18n.get('originalAmount'),
                             value: i18n.amount(transaction.amount.value, transaction.amount.currency, { currencyDisplay: 'code' }),
                         },
-                        ...(transaction.instructedAmount
+                        ...(transaction.amount
                             ? [
                                   {
                                       label: i18n.get('instructedAmount'),
-                                      value: i18n.amount(transaction.instructedAmount.value, transaction.instructedAmount.currency, {
+                                      value: i18n.amount(transaction.amount.value, transaction.amount.currency, {
                                           currencyDisplay: 'code',
                                       }),
                                   },
@@ -41,7 +41,7 @@ export const TransactionData = ({ transaction }: { transaction: ITransaction }) 
                             : []),
                         {
                             label: i18n.get('date'),
-                            value: i18n.fullDate(transaction.createdAt),
+                            value: i18n.fullDate(transaction.creationDate),
                         },
                         {
                             label: i18n.get('status'),
@@ -58,12 +58,8 @@ export const TransactionData = ({ transaction }: { transaction: ITransaction }) 
                             layout={'3-9'}
                             items={{
                                 paymentId: transaction.id,
-                                transferID: transaction.transferId,
                                 type: transaction.type && i18n.get(`txType.${transaction.type!}`),
-                                balanceAccount: transaction.balanceAccountId,
-                                reference: transaction.reference,
                                 category: transaction.category && getLabel(transaction.category),
-                                referenceForBeneficiary: transaction.referenceForBeneficiary,
                             }}
                             grid={false}
                         />

@@ -1,7 +1,6 @@
 import { memo } from 'preact/compat';
 import { CalendarControlsProps } from './types';
 import calendar from '../../calendar';
-import memoComparator from '@src/utils/memoComparator';
 import { isFunction } from '@src/utils/common';
 
 const CalendarControls = ({ config, grid: { controls }, renderer }: CalendarControlsProps) => {
@@ -9,9 +8,4 @@ const CalendarControls = ({ config, grid: { controls }, renderer }: CalendarCont
     return <>{controls.map(([control, handle]) => renderer(control, handle))}</>;
 };
 
-export default memo(
-    CalendarControls,
-    memoComparator({
-        config: value => value?.controls,
-    })
-);
+export default memo(CalendarControls);

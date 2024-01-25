@@ -158,7 +158,7 @@ export default class Localization {
      * @param date - Date to be localized
      * @param options - Options for {@link Date.toLocaleDateString}
      */
-    date(date: string, options: Intl.DateTimeFormatOptions = {}) {
+    date(date: number | string | Date, options: Intl.DateTimeFormatOptions = {}) {
         const dateOptions = { ...DEFAULT_DATETIME_FORMAT, timeZone: this.#restamp.tz.current, ...options };
         return new Date(date).toLocaleDateString(this.#locale, dateOptions);
     }
@@ -167,7 +167,7 @@ export default class Localization {
      * Returns a localized string for a full date
      * @param date - Date to be localized
      */
-    fullDate(date: string) {
+    fullDate(date: number | string | Date) {
         const { formatted, timestamp } = this.#restamp(date);
         const restampedDateWithoutTimeZone = formatted?.replace(/\s+GMT[^]*$/, '') ?? timestamp;
         const [, month, day, year, time] = new Date(restampedDateWithoutTimeZone).toString().split(/\s+/g);

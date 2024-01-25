@@ -1,35 +1,15 @@
-import { ComponentChild, ComponentChildren, toChildArray } from 'preact';
+import { ComponentChild, toChildArray } from 'preact';
 import classnames from 'classnames';
 import Spinner from '../Spinner';
-import DataGridCell from './DataGridCell';
 import './DataGrid.scss';
-import { useCallback, useMemo } from 'preact/hooks';
+import { TableBody } from '@src/components/internal/DataGrid/components/TableBody';
+import { InteractiveBody } from '@src/components/internal/DataGrid/components/InteractiveBody';
+import { CellTextPosition, DataGridProps } from './types';
 
-export enum CellTextPosition {
-    CENTER = 'center',
-    RIGHT = 'right',
-}
-
-interface DataGridColumn<Item> {
-    label: string;
-    key: keyof Item;
-    position?: CellTextPosition;
-}
-
-interface DataGridProps<Item extends Array<any>, ClickedField extends keyof Item[number]> {
-    children: ComponentChildren;
-    columns: DataGridColumn<Item[number]>[];
-    condensed: boolean;
-    data: Item;
-    loading: boolean;
-    outline: boolean;
-    scrollable: boolean;
-    Footer?: any;
-    onRowClick?: { retrievedField: ClickedField; callback: (value: Item[0][ClickedField]) => void };
-    customCells?: {
-        [k in keyof Partial<Item[number]>]: ({ key, value, item }: { key: k; value: Item[number][k]; item: Item[number] }) => ComponentChild;
-    };
-}
+export const INITIAL_STATE = Object.freeze({
+    activeIndex: -1,
+    index: -1,
+});
 
 function DataGrid<Items extends Array<any>, ClickedField extends keyof Items[number]>(props: DataGridProps<Items, ClickedField>) {
     const children = toChildArray(props.children);
@@ -78,39 +58,18 @@ function DataGrid<Items extends Array<any>, ClickedField extends keyof Items[num
 }
 
 function DataGridBody<Items extends Array<any>, ClickedField extends keyof Items[number]>(props: DataGridProps<Items, ClickedField>) {
-    const classNames = useMemo(
-        () => classnames('adyen-fp-data-grid__row', { 'adyen-fp-data-grid--clickable-row': Boolean(props.onRowClick) }),
-        [props.onRowClick]
-    );
-    const onClickCallBack = useCallback(
-        (item: Items[number]) => () => props.onRowClick?.retrievedField && props.onRowClick?.callback?.(item[props.onRowClick.retrievedField]),
-        [props.onRowClick]
-    );
-    const handleOnClick = useMemo(() => (props.onRowClick ? onClickCallBack : undefined), [props.onRowClick]);
     return (
         <tbody className="adyen-fp-data-grid__body">
-            {props.data.map(item => (
-                <tr className={classNames} key={item} onClick={handleOnClick?.(item)}>
-                    {props.columns.map(({ key }) => {
-                        if (props.customCells?.[key])
-                            return (
-                                <DataGridCell aria-labelledby={String(key)} key={key}>
-                                    {props.customCells[key]({
-                                        key,
-                                        value: item[key],
-                                        item,
-                                    })}
-                                </DataGridCell>
-                            );
-
-                        return (
-                            <DataGridCell aria-labelledby={String(key)} key={key}>
-                                {item[key]}
-                            </DataGridCell>
-                        );
-                    })}
-                </tr>
-            ))}
+            {props.onRowClick ? (
+                <InteractiveBody<Items, ClickedField>
+                    data={props.data}
+                    columns={props.columns}
+                    onRowClick={props.onRowClick}
+                    customCells={props.customCells}
+                />
+            ) : (
+                <TableBody<Items, ClickedField> data={props.data} customCells={props.customCells} columns={props.columns} />
+            )}
         </tbody>
     );
 }

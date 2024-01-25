@@ -6,11 +6,10 @@ type CheckoutAttemptIdSession = {
 };
 
 type CollectIdProps = {
-    clientKey: string;
     loadingContext: string;
     experiments: Experiment[];
 };
 
-type LogConfig = { locale?: string; loadingContext?: string; clientKey?: string };
+type LogConfig = { locale?: string; loadingContext?: string };
 
 export type { CheckoutAttemptIdSession, CollectIdProps, LogConfig };

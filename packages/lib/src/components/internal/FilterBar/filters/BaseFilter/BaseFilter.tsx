@@ -1,3 +1,4 @@
+import { memo } from 'preact/compat';
 import { ButtonVariant } from '@src/components/internal/Button/types';
 import FilterButton from '@src/components/internal/FilterBar/components/FilterButton/FilterButton';
 import Popover from '@src/components/internal/Popover/Popover';
@@ -50,7 +51,7 @@ const renderFallback = (() => {
     return <T extends BaseFilterProps>(props: FilterEditModalRenderProps<T>) => <DefaultEditModalBody<T> {...props} />;
 })();
 
-export default function BaseFilter<T extends BaseFilterProps = BaseFilterProps>({ render, ...props }: FilterProps<T>) {
+const BaseFilter = <T extends BaseFilterProps = BaseFilterProps>({ render, ...props }: FilterProps<T>) => {
     const { i18n } = useCoreContext();
     const [editAction, setEditAction] = useState(EditAction.NONE);
     const [editMode, _updateEditMode] = useBooleanState(false);
@@ -184,4 +185,6 @@ export default function BaseFilter<T extends BaseFilterProps = BaseFilterProps>(
             )}
         </>
     );
-}
+};
+
+export default memo(BaseFilter);

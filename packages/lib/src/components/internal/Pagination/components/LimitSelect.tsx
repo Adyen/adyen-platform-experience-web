@@ -37,7 +37,7 @@ const LimitSelect = ({ options, ...listBoxConfig }: SelectListProps) => {
         []
     );
 
-    return (
+    return options.length > 1 ? (
         <>
             <div className={SELECT_BASE_CLASS}>
                 <ListBoxControl
@@ -54,12 +54,11 @@ const LimitSelect = ({ options, ...listBoxConfig }: SelectListProps) => {
                 className={SELECT_LIST_CONTAINER_CLASS}
                 listClassName={SELECT_LIST_CLASS}
                 optionClassName={SELECT_OPTION_CLASS}
-                aria-labelledby="listbox"
                 render={renderOption}
                 {...listBoxProps}
             />
         </>
-    );
+    ) : null;
 };
 
 export default memo(LimitSelect);

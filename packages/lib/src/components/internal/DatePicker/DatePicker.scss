@@ -20,4 +20,9 @@
             float: right;
         }
     }
+
+    &__selector-container {
+        position: relative;
+        z-index: 1;
+    }
 }

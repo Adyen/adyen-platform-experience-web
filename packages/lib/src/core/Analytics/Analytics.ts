@@ -19,11 +19,11 @@ class Analytics {
     private readonly queue = new EventsQueue();
     public readonly collectId;
 
-    constructor({ loadingContext, locale, clientKey, analytics }: CoreOptions) {
+    constructor({ loadingContext, locale, analytics }: CoreOptions & { loadingContext: string }) {
         this.props = { ...Analytics.defaultProps, ...analytics };
         this.logEvent = logEvent({ loadingContext, locale });
-        this.logTelemetry = postTelemetry({ loadingContext, locale, clientKey });
-        this.collectId = collectId({ loadingContext: loadingContext ?? '', clientKey: clientKey ?? '', experiments: this.props.experiments });
+        this.logTelemetry = postTelemetry({ loadingContext, locale });
+        this.collectId = collectId({ loadingContext: loadingContext ?? '', experiments: this.props.experiments });
 
         const { telemetry, enabled } = this.props;
         if (telemetry === true && enabled === true) {

@@ -1,3 +1,4 @@
+import { ErrorTypes } from '@src/core/Services/requests/utils';
 import { useLayoutEffect, useState } from 'preact/hooks';
 import getDataset from '../../../core/Services/get-dataset';
 import { DataSet } from '../../../core/Services/data-set';
@@ -32,7 +33,7 @@ function usePhonePrefixes({ allowedCountries, loadingContext, handleError }: Pho
             .catch(error => {
                 setPhonePrefixes([]);
                 setLoadingStatus('ready');
-                handleError?.(new AdyenFPError('ERROR', error));
+                handleError?.(new AdyenFPError(ErrorTypes.ERROR, error));
             });
     }, []);
 

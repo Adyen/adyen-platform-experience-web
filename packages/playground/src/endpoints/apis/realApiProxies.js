@@ -7,18 +7,35 @@ const makeProxyOptions = ({ url, version, username, password, apiKey }, basicAut
     ...(apiKey ? {} : { auth: `${username}:${password}` }),
     headers: basicAuth ? getBasicAuthHeaders({ user: username, pass: password }) : getHeaders(undefined, apiKey),
     changeOrigin: true,
+    secure: false,
     rewrite: path => path.replace(/^\/api/, ''),
 });
 
-export const realApiProxies = (lemApiOptions, btlApiOptions, bclApiOptions) => {
-    const lemApiProxyOptions = makeProxyOptions(lemApiOptions);
-    const btlApiProxyOptions = makeProxyOptions(btlApiOptions);
-    const bclApiProxyOptions = makeProxyOptions(bclApiOptions);
+const makeSessionProxyOptions = ({ url, token }) => ({
+    target: `${url}`,
+    headers: {
+        Authorization: `Basic ${token}`,
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+    },
+    changeOrigin: true,
+    secure: false,
+});
+
+export const realApiProxies = (configs, mode) => {
+    const { lemApi, BTLApi, BCLApi, sessionApi, platformComponentsApi } = configs;
+    const lemApiProxyOptions = makeProxyOptions(lemApi);
+    const btlApiProxyOptions = makeProxyOptions(BTLApi);
+    const bclApiProxyOptions = makeProxyOptions(BCLApi);
+    const sessionApiProxyOptions = makeSessionProxyOptions(sessionApi);
+    const platformComponentsApiProxyOptions = makeProxyOptions(platformComponentsApi);
 
     return {
         [endpoints.transactions]: btlApiProxyOptions,
         [endpoints.balanceAccount]: bclApiProxyOptions,
         [endpoints.accountHolder]: bclApiProxyOptions,
         [endpoints.legalEntities]: lemApiProxyOptions,
+        [endpoints.sessions]: sessionApiProxyOptions,
+        [endpoints.setup]: platformComponentsApiProxyOptions,
     };
 };
