@@ -4,10 +4,10 @@ import { ITransaction } from '../../../../types';
 const labels = {
     id: 'paymentId',
     type: 'type',
-    createdAt: 'date',
+    creationDate: 'date',
     balanceAccountId: 'balanceAccount',
     accountHolderId: 'account',
-    fee: 'txType.fee',
+    fee: 'txType.Fee',
     capture: 'txType.capture',
     leftover: 'txType.leftover',
     manualCorrection: 'txType.manualCorrection',
@@ -16,6 +16,7 @@ const labels = {
     amount: 'txAmount',
     description: 'description',
     status: 'status',
+    category: 'category',
 } as const;
 export const getLabel = (key: keyof typeof labels) => {
     return labels[key] || key;
