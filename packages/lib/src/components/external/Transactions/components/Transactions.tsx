@@ -1,4 +1,5 @@
 import { useCallback, useMemo, useState } from 'preact/hooks';
+import useSessionAwareRequest from '@src/hooks/useSessionAwareRequest/useSessionAwareRequest';
 import useCoreContext from '@src/core/Context/useCoreContext';
 import FilterBar from '../../../internal/FilterBar';
 import TextFilter from '../../../internal/FilterBar/filters/TextFilter';
@@ -10,8 +11,6 @@ import { useCursorPaginatedRecords } from '../../../internal/Pagination/hooks';
 import { ITransaction } from '@src/types';
 import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '@src/components/internal/Pagination/constants';
 import { PaginatedResponseDataWithLinks } from '@src/components/internal/Pagination/types';
-import { httpGet } from '@src/core/Services/requests/http';
-import { HttpOptions } from '@src/core/Services/requests/types';
 import { parseSearchParams } from '@src/core/Services/requests/utils';
 import { EMPTY_OBJECT, isFunction } from '@src/utils/common';
 import Alert from '@src/components/internal/Alert';
@@ -45,20 +44,21 @@ function Transactions({
     preferredLimit = DEFAULT_PAGE_LIMIT,
     allowLimitSelection,
     withTitle,
+    core
 }: ExternalUIComponentProps<TransactionsComponentProps>) {
     const _onFiltersChanged = useMemo(() => (isFunction(onFiltersChanged) ? onFiltersChanged : void 0), [onFiltersChanged]);
     const _onLimitChanged = useMemo(() => (isFunction(onLimitChanged) ? onLimitChanged : void 0), [onLimitChanged]);
     const preferredLimitOptions = useMemo(() => (allowLimitSelection ? LIMIT_OPTIONS : undefined), [allowLimitSelection]);
 
-    const { i18n, clientKey, loadingContext } = useCoreContext();
+    const { i18n, loadingContext } = useCoreContext();
+    const { httpProvider } = useSessionAwareRequest(core);
     const defaultTimeRangePreset = useMemo(() => i18n.get(DEFAULT_TIME_RANGE_PRESET), [i18n]);
     const [selectedTimeRangePreset, setSelectedTimeRangePreset] = useState(defaultTimeRangePreset);
 
     const getTransactions = useCallback(
         async (pageRequestParams: Record<TransactionFilterParam | 'cursor', string>, signal?: AbortSignal) => {
-            const request: HttpOptions = {
+            const request: Parameters<typeof httpProvider>[0] = {
                 loadingContext: loadingContext,
-                clientKey,
                 path: API_ENDPOINTS.transactions.getTransactions,
                 errorLevel: 'error',
                 params: parseSearchParams({
@@ -69,10 +69,9 @@ function Transactions({
                 }),
                 signal,
             };
-
-            return await httpGet<PaginatedResponseDataWithLinks<ITransaction, 'data'>>(request);
+            return await httpProvider<PaginatedResponseDataWithLinks<ITransaction, 'data'>>(request, 'GET');
         },
-        [balancePlatformId, clientKey, loadingContext]
+        [balancePlatformId, loadingContext]
     );
 
     const { canResetFilters, error, fetching, filters, limit, limitOptions, records, resetFilters, updateFilters, updateLimit, ...paginationProps } =

@@ -34,7 +34,7 @@ export function useFetch<T = unknown>(
         fetchOptions: { keepPrevData: true },
     }
 ): State<T> {
-    const { loadingContext, clientKey } = useCoreContext();
+    const { loadingContext } = useCoreContext();
     const cache = useRef<Cache<T>>(new Map());
     // Used to prevent state update if the component is unmounted
     const cancelRequest = useRef<boolean>(false);
@@ -60,9 +60,8 @@ export function useFetch<T = unknown>(
 
     const url = new URL(`${normalizeLoadingContext(loadingContext ?? '')}${config.url}`);
 
-    const request: HttpOptions = {
+    const request: Omit<HttpOptions, 'method'> = {
         loadingContext: config.loadingContext ?? loadingContext,
-        clientKey,
         path: config.url,
         headers: config.requestOptions?.headers,
         errorLevel: config.fetchOptions.errorLevel ?? 'error',

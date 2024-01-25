@@ -12,6 +12,7 @@ const meta: Meta<ElementProps<typeof TransactionsComponent>> = {
         onLimitChanged: enabledDisabledCallbackRadioControls('onLimitChanged', ['Passed', 'Not Passed']),
         preferredLimit: { type: 'number', min: 1, max: 100 },
         allowLimitSelection: { type: 'boolean' },
+        balancePlatformId: { type: 'string' },
     },
     args: {
         preferredLimit: 10,
@@ -27,16 +28,16 @@ const meta: Meta<ElementProps<typeof TransactionsComponent>> = {
     },
 };
 export const Basic: ElementStory<typeof TransactionsComponent> = {
+    name: 'Basic (Mocked)',
     args: {
         balancePlatformId: 'mocked',
         mockedApi: true,
     },
 };
 
-export const BasicTransactionList: ElementStory<typeof TransactionsComponent> = {
-    args: {
-        balancePlatformId: process.env.VITE_BALANCE_PLATFORM,
-    },
+export const BasicTransactionListApi: ElementStory<typeof TransactionsComponent> = {
+    name: 'Basic (API)',
+    args: {},
 };
 
 export default meta;

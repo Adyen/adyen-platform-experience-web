@@ -1,3 +1,4 @@
+import { Core } from '@src/core';
 import { PaginationProps, WithPaginationLimitSelection } from '../../internal/Pagination/types';
 import UIElement from '../UIElement';
 import { ITransaction } from '@src/types';
@@ -25,6 +26,7 @@ export interface TransactionsComponentProps {
     allowLimitSelection?: boolean;
     showDetails?: DetailsOptions;
     withTitle?: boolean;
+    core: Core;
 }
 export interface TransactionListProps extends WithPaginationLimitSelection<PaginationProps> {
     transactions: ITransaction[];

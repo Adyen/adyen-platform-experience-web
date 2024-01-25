@@ -1,5 +1,5 @@
 import AdyenFPError from '../../Errors/AdyenFPError';
-import { getRequestObject, handleFetchError, isAdyenErrorResponse } from './utils';
+import { getErrorType, getRequestObject, handleFetchError, isAdyenErrorResponse } from './utils';
 import { HttpOptions } from './types';
 import { normalizeLoadingContext, normalizeUrl } from '@src/core/utils';
 
@@ -17,20 +17,21 @@ export function http<T>(options: HttpOptions, data?: any): Promise<T> {
             if (decodedValue) url.searchParams.set(param, decodedValue);
         });
     }
+
     return (
         fetch(url, request)
             .then(async response => {
-                const data = await response.json();
+                if (response.ok) return await response.json();
 
-                if (response.ok) return data;
+                const errorType = getErrorType(response.status);
 
-                if (isAdyenErrorResponse(data)) {
+                if (isAdyenErrorResponse(response)) {
                     // If an errorHandler has been passed use this rather than the default handleFetchError
-                    return options.errorHandler ? options.errorHandler(data) : handleFetchError(data.detail, errorLevel);
+                    return options.errorHandler ? options.errorHandler(response) : handleFetchError(response.detail, errorLevel, errorType);
                 }
 
                 const errorMessage = options.errorMessage || `Service at ${url} is not available`;
-                return handleFetchError(errorMessage, errorLevel);
+                return handleFetchError(errorMessage, errorLevel, errorType);
             })
             /**
              * Catch block handles Network error, CORS error, or exception throw by the `handleFetchError`
@@ -52,10 +53,10 @@ export function http<T>(options: HttpOptions, data?: any): Promise<T> {
     );
 }
 
-export function httpGet<T>(options: HttpOptions): Promise<T> {
+export function httpGet<T>(options: Omit<HttpOptions, 'method'>): Promise<T> {
     return http<T>({ ...options, method: 'GET' });
 }
 
-export function httpPost<T>(options: HttpOptions, data?: any): Promise<T> {
+export function httpPost<T>(options: Omit<HttpOptions, 'method'>, data?: any): Promise<T> {
     return http<T>({ ...options, method: 'POST' }, data);
 }

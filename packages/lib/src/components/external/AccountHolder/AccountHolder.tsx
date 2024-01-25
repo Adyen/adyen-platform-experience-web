@@ -1,4 +1,3 @@
-import CoreProvider from '../../../core/Context/CoreProvider';
 import UIElement from '../UIElement';
 import AccountHolderDetails from './components/AccountHolderDetails';
 import { AccountHolderComponentProps } from './types';
@@ -7,34 +6,15 @@ import { _UIComponentProps } from '../../types';
 export class AccountHolderElement extends UIElement<AccountHolderComponentProps> {
     public static type = 'accountHolder';
 
-    get isValid() {
-        return !!this.state.isValid;
+    constructor(props: _UIComponentProps<AccountHolderComponentProps>) {
+        super(props);
+        this.elementRef = (props && props.elementRef) || this;
+        this.componentToRender = this.componentToRender.bind(this);
     }
 
-    get displayName() {
-        return this.props.name ?? this.type;
-    }
-
-    formatProps(props: _UIComponentProps<AccountHolderComponentProps>) {
-        return props;
-    }
-
-    /**
-     * Formats the component data output
-     */
-    formatData() {
-        return {
-            ...this.state,
-        };
-    }
-
-    render() {
-        return (
-            <CoreProvider i18n={this.i18n} loadingContext={this.loadingContext}>
-                <AccountHolderDetails {...this.props} onChange={this.props.onChange ?? this.setState} />
-            </CoreProvider>
-        );
-    }
+    componentToRender = () => {
+        return <AccountHolderDetails {...this.props} onChange={this.props.onChange ?? this.setState} />;
+    };
 }
 
 export default AccountHolderElement;

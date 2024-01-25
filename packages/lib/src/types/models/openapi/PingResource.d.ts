@@ -3,22 +3,23 @@
  * Do not make direct changes to the file.
  */
 
+
 export interface paths {
-    '/v1/ping': {
-        /** @description Add @Operation annotation to provide a description */
-        get: operations['ping'];
-    };
+  "/v1/ping": {
+    /** @description Add @Operation annotation to provide a description */
+    get: operations["ping"];
+  };
 }
 
 export type webhooks = Record<string, never>;
 
 export interface components {
-    schemas: never;
-    responses: never;
-    parameters: never;
-    requestBodies: never;
-    headers: never;
-    pathItems: never;
+  schemas: never;
+  responses: never;
+  parameters: never;
+  requestBodies: never;
+  headers: never;
+  pathItems: never;
 }
 
 export type $defs = Record<string, never>;
@@ -26,15 +27,16 @@ export type $defs = Record<string, never>;
 export type external = Record<string, never>;
 
 export interface operations {
-    /** @description Add @Operation annotation to provide a description */
-    ping: {
-        responses: {
-            /** @description OK - the request has succeeded. */
-            200: {
-                content: {
-                    'application/json': string;
-                };
-            };
+
+  /** @description Add @Operation annotation to provide a description */
+  ping: {
+    responses: {
+      /** @description OK - the request has succeeded. */
+      200: {
+        content: {
+          "application/json": string;
         };
+      };
     };
+  };
 }
