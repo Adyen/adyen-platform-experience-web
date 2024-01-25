@@ -17,6 +17,8 @@ const labels = {
     description: 'description',
     status: 'status',
     category: 'category',
+    paymentMethod: 'paymentMethod',
+    currency: 'currency',
 } as const;
 export const getLabel = (key: keyof typeof labels) => {
     return labels[key] || key;

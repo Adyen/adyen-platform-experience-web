@@ -180,4 +180,6 @@
     "rangePreset.thisMonth": "This month",
     "rangePreset.thisWeek": "This week",
     "rangePreset.yearToDate": "Year to date"
+    "paymentMethod": "Payment method",
+    "currency": "Currency"
 }

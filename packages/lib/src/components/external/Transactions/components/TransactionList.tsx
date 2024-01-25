@@ -16,12 +16,12 @@ import { CellTextPosition } from '@src/components/internal/DataGrid/types';
 
 const ModalContent = lazy(() => import('./ModalContent'));
 
-const FIELDS = ['creationDate', 'status', 'type', 'amount'] as const;
+const FIELDS = ['creationDate', 'status', 'paymentMethod', 'type', 'currency', 'amount'] as const;
 
 function TransactionList({ loading, transactions, onTransactionSelected, showPagination, showDetails, ...paginationProps }: TransactionListProps) {
     const { i18n } = useCoreContext();
     const columns = useMemo(
-        () => FIELDS.map(key => ({ key, label: i18n.get(getLabel(key)), position: key === 'amount' ? CellTextPosition.RIGHT : undefined })),
+        () => FIELDS.map(key => ({ key: key, label: i18n.get(getLabel(key)), position: key === 'amount' ? CellTextPosition.RIGHT : undefined })),
         [i18n]
     );
 
@@ -79,6 +79,9 @@ function TransactionList({ loading, transactions, onTransactionSelected, showPag
                             : null;
 
                         return <span className={classnames('adyen-fp-transactions__amount')}>{amount}</span>;
+                    },
+                    currency: ({ item }) => {
+                        return <Tag label={item.amount.currency} />;
                     },
                 }}
             >
