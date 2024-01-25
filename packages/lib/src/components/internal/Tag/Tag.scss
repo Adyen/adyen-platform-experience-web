@@ -7,7 +7,8 @@
     font-size: var(--adyen-fp-font-size-xsmall);
     font-weight: var(--adyen-fp-font-weight-medium);
     justify-content: center;
-    padding: var(--adyen-fp-spacing-xs) var(--adyen-fp-spacing-small);
+    min-width: 2.5rem;
+    padding: var(--adyen-fp-spacing-xsmall) var(--adyen-fp-spacing-small);
     width: fit-content;
 
     &--success {
@@ -22,7 +23,7 @@
 
     &--default {
         background: var(--adyen-fp-background-secondary);
-        color: var(--adyen-fp-color-black);
+        color: var(--adyen-fp-label-secondary);
     }
 
     &--warning {
