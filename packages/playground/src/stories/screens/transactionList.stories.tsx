@@ -28,13 +28,15 @@ const meta: Meta<ElementProps<typeof TransactionsComponent>> = {
     },
 };
 export const Basic: ElementStory<typeof TransactionsComponent> = {
+    name: 'Basic (Mocked)',
     args: {
         balancePlatformId: 'mocked',
         mockedApi: true,
     },
 };
 
-export const BasicTransactionList: ElementStory<typeof TransactionsComponent> = {
+export const BasicTransactionListApi: ElementStory<typeof TransactionsComponent> = {
+    name: 'Basic (API)',
     args: {},
 };
 
