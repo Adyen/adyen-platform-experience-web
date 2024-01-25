@@ -12,7 +12,7 @@ import { getLabel } from './utils';
 import './TransactionList.scss';
 import { Tag } from '@src/components/internal/Tag/Tag';
 import { TagVariant } from '@src/components/internal/Tag/types';
-import { CellTextPosition } from '@src/components/internal/DataGrid/DataGrid';
+import { CellTextPosition } from '@src/components/internal/DataGrid/types';
 
 const ModalContent = lazy(() => import('./ModalContent'));
 
@@ -54,8 +54,8 @@ function TransactionList({ loading, transactions, onTransactionSelected, showPag
                 columns={columns}
                 data={transactions}
                 loading={loading}
-                onRowClick={{ retrievedField: 'id', callback: onRowClick }}
                 outline={false}
+                onRowClick={{ retrievedField: 'id', callback: onRowClick }}
                 customCells={{
                     status: ({ value }) => {
                         //TODO modify variant once we use the real status field from the BE
@@ -78,7 +78,7 @@ function TransactionList({ loading, transactions, onTransactionSelected, showPag
                               })
                             : null;
 
-                        return <div className={classnames('adyen-fp-transactions__amount')}>{amount}</div>;
+                        return <span className={classnames('adyen-fp-transactions__amount')}>{amount}</span>;
                     },
                 }}
             >

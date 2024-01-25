@@ -16,8 +16,10 @@
     &--clickable-row {
         cursor: pointer;
 
-        &:hover {
+        &:hover,
+        &:focus {
             background: var(--adyen-fp-color-gray-100);
+            outline-offset: -1px;
         }
     }
 
