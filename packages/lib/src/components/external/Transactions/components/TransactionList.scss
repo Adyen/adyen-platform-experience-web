@@ -9,6 +9,7 @@
     }
 
     &__amount {
+        display: block;
         font-weight: var(--adyen-fp-font-weight-medium);
         text-align: right;
     }
