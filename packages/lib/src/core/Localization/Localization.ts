@@ -1,9 +1,9 @@
 import { getLocalisedAmount } from './amount/amount-util';
 import { defaultTranslation, FALLBACK_LOCALE } from './constants/locale';
 import { DEFAULT_DATETIME_FORMAT, DEFAULT_LOCALES, EXCLUDE_PROPS } from './constants/localization';
-import restamper from './datetime/restamper';
+import restamper, { RestamperWithTimezone } from './datetime/restamper';
 import { createTranslationsLoader, getLocalizationProxyDescriptors } from './localization-utils';
-import { CustomTranslations, LangFile, Restamp, SupportedLocale, Translation, TranslationKey, TranslationOptions } from './types';
+import { CustomTranslations, LangFile, SupportedLocale, Translation, TranslationKey, TranslationOptions } from './types';
 import { formatCustomTranslations, getTranslation, toTwoLetterCode } from './utils';
 import { noop, struct } from '@src/utils/common';
 import watchable from '@src/utils/watchable';
@@ -22,7 +22,7 @@ export default class Localization {
     #currentRefresh?: Promise<void>;
     #markRefreshAsDone?: () => void;
     #refreshWatchable = watchable({ timestamp: () => performance.now() });
-    #restamp: Restamp = restamper();
+    #restamp: RestamperWithTimezone = restamper();
 
     private watch = this.#refreshWatchable.watch.bind(undefined);
     public i18n: Omit<Localization, (typeof EXCLUDE_PROPS)[number]> = struct(getLocalizationProxyDescriptors.call(this));
@@ -89,8 +89,8 @@ export default class Localization {
         return this.#supportedLocales;
     }
 
-    get timezone(): Restamp['tz'] {
-        return this.#restamp.tz;
+    get timezone(): RestamperWithTimezone['tz']['current'] {
+        return this.#restamp.tz.current;
     }
 
     set timezone(timezone: string | undefined | null) {
@@ -159,7 +159,7 @@ export default class Localization {
      * @param options - Options for {@link Date.toLocaleDateString}
      */
     date(date: number | string | Date, options: Intl.DateTimeFormatOptions = {}) {
-        const dateOptions = { ...DEFAULT_DATETIME_FORMAT, timeZone: this.#restamp.tz, ...options };
+        const dateOptions = { ...DEFAULT_DATETIME_FORMAT, timeZone: this.#restamp.tz.current, ...options };
         return new Date(date).toLocaleDateString(this.#locale, dateOptions);
     }
 
@@ -168,7 +168,9 @@ export default class Localization {
      * @param date - Date to be localized
      */
     fullDate(date: number | string | Date) {
-        const [, month, day, year, time] = new Date(this.#restamp(date)).toString().split(/\s+/g);
+        const { formatted, timestamp } = this.#restamp(date);
+        const restampedDateWithoutTimeZone = formatted?.replace(/\s+GMT[^]*$/, '') ?? timestamp;
+        const [, month, day, year, time] = new Date(restampedDateWithoutTimeZone).toString().split(/\s+/g);
         return `${month} ${day}, ${year}, ${time}`;
     }
 }

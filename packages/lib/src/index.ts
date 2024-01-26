@@ -1,4 +1,4 @@
-import { CoreOptions } from './core/types';
+import { CoreOptions } from '@src/core';
 import { Core } from './core';
 import './components/shared.scss';
 import './style/index.scss';

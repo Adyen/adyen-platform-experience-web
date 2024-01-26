@@ -9,7 +9,7 @@ import DataGrid from '@src/components/internal/DataGrid';
 
 const columns = [
     {
-        key: 'createdAt',
+        key: 'creationDate',
         label: 'Date',
     },
     {

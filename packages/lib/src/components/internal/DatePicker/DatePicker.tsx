@@ -2,7 +2,7 @@ import { forwardRef } from 'preact/compat';
 import { Ref, useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { noop } from '@src/utils/common';
 import useReflex from '@src/hooks/useReflex';
-import { DEFAULT_FIRST_WEEK_DAY } from '@src/components/internal/Calendar/calendar/timerange/presets/shared/weekAgo';
+import { DEFAULT_FIRST_WEEK_DAY } from '@src/components/internal/Calendar/calendar/timerange/presets/shared/offsetWeek';
 import { DateFilterProps } from '@src/components/internal/FilterBar/filters/DateFilter/types';
 import TimeRangeSelector, { useTimeRangeSelection } from './components/TimeRangeSelector';
 import Calendar from '../Calendar';

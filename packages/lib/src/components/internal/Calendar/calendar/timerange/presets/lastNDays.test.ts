@@ -1,5 +1,6 @@
 import { describe, expect, test, vi } from 'vitest';
-import { getDateRangeContext } from './shared/test-utils';
+import { getDateRangeContext, TIMEZONE_TESTS_TIMESTAMPS } from './testing/fixtures';
+import { asTimestamp } from './testing/helpers';
 import lastNDays, { DEFAULT_NUM_DAYS } from './lastNDays';
 
 describe('last {n} days', () => {
@@ -55,5 +56,29 @@ describe('last {n} days', () => {
     [3, 7, 10, 25, 100].forEach(numberOfDays => {
         lastNDaysTimestamps.numberOfDays = numberOfDays;
         runTestsFor(lastNDaysTimestamps.numberOfDays);
+    });
+
+    test('should have precise timestamps for timezone (N => 7)', () => {
+        const range = getDateRangeContext(() => lastNDays(7));
+        const { now: initialNow, timezone: initialTimezone } = range;
+
+        const TIMEZONES = new Map([
+            ['America/Toronto', asTimestamp(['Apr 9, 2022, 12:00 AM GMT-4', 'Dec 25, 2023, 12:00 AM GMT-5', 'Dec 25, 2023, 12:00 AM GMT-5'])],
+            ['Asia/Tokyo', asTimestamp(['Apr 9, 2022, 12:00 AM GMT+9', 'Dec 26, 2023, 12:00 AM GMT+9', 'Dec 26, 2023, 12:00 AM GMT+9'])],
+        ]);
+
+        TIMEZONES.forEach((timestamps, timezone) => {
+            range.timezone = timezone;
+
+            TIMEZONE_TESTS_TIMESTAMPS.forEach((timestamp, index) => {
+                range.now = timestamp;
+                expect(range.from).toBe(timestamps[index]!);
+                expect(range.to).toBe(timestamp);
+            });
+
+            // reset now and tz
+            range.now = initialNow;
+            range.timezone = initialTimezone;
+        });
     });
 });
