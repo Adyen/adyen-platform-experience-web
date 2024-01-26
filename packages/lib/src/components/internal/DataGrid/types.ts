@@ -1,4 +1,5 @@
-import { ComponentChild, ComponentChildren } from 'preact';
+import { ComponentChildren } from 'preact';
+import { CustomCell } from '@src/components/internal/DataGrid/DataGrid';
 
 export enum CellTextPosition {
     CENTER = 'center',
@@ -7,13 +8,18 @@ export enum CellTextPosition {
 
 export interface DataGridColumn<Item> {
     label: string;
-    key: keyof Item;
+    key: Item | string;
     position?: CellTextPosition;
 }
 
-export interface DataGridProps<Item extends Array<any>, ClickedField extends keyof Item[number]> {
+export interface DataGridProps<
+    Item extends Array<any>,
+    Columns extends Array<DataGridColumn<Extract<keyof Item[number], string>>>,
+    ClickedField extends keyof Item[number],
+    CustomCells extends CustomCell<Item, Columns, Columns[number]>
+> {
     children?: ComponentChildren;
-    columns: DataGridColumn<Item[number]>[];
+    columns: Columns;
     condensed: boolean;
     data: Item;
     loading: boolean;
@@ -21,14 +27,17 @@ export interface DataGridProps<Item extends Array<any>, ClickedField extends key
     scrollable: boolean;
     Footer?: any;
     onRowClick?: { retrievedField: ClickedField; callback: (value: Item[0][ClickedField]) => void };
-    customCells?: {
-        [k in keyof Partial<Item[number]>]: ({ key, value, item }: { key: k; value: Item[number][k]; item: Item[number] }) => ComponentChild;
-    };
+    customCells?: CustomCells;
 }
 
-export interface InteractiveBodyProps<Items extends any[], ClickedField extends keyof Items[number]> {
-    onRowClick: DataGridProps<Items, ClickedField>['onRowClick'];
-    data: DataGridProps<Items, ClickedField>['data'];
-    columns: DataGridProps<Items, ClickedField>['columns'];
-    customCells: DataGridProps<Items, ClickedField>['customCells'];
+export interface InteractiveBodyProps<
+    Items extends any[],
+    Columns extends Array<DataGridColumn<Extract<keyof Items[number], string>>>,
+    ClickedField extends keyof Items[number],
+    CustomCells extends CustomCell<Items, Columns, Columns[number]>
+> {
+    onRowClick: DataGridProps<Items, Columns, ClickedField, CustomCells>['onRowClick'];
+    data: DataGridProps<Items, Columns, ClickedField, CustomCells>['data'];
+    columns: DataGridProps<Items, Columns, ClickedField, CustomCells>['columns'];
+    customCells: DataGridProps<Items, Columns, ClickedField, CustomCells>['customCells'];
 }

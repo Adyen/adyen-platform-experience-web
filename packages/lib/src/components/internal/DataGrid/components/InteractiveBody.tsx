@@ -1,14 +1,20 @@
 import { TableCells } from '@src/components/internal/DataGrid/components/TableCells';
 import { useCallback } from 'preact/hooks';
 import { useInteractiveDataGrid } from '@src/components/internal/DataGrid/hooks/useInteractiveDataGrid';
-import { InteractiveBodyProps } from '../types';
+import { DataGridColumn, InteractiveBodyProps } from '../types';
+import { CustomCell } from '../../DataGrid/DataGrid';
 
-export const InteractiveBody = <Items extends any[], ClickedField extends keyof Items[number]>({
+export const InteractiveBody = <
+    Items extends any[],
+    Columns extends Array<DataGridColumn<Extract<keyof Items[number], string>>>,
+    ClickedField extends keyof Items[number],
+    CustomCells extends CustomCell<Items, Columns, Columns[number]>
+>({
     data,
     columns,
     onRowClick,
     customCells,
-}: InteractiveBodyProps<Items, ClickedField>) => {
+}: InteractiveBodyProps<Items, Columns, ClickedField, CustomCells>) => {
     const onClickCallBack = useCallback((item: Items[number]) => () => onRowClick?.callback(item[onRowClick.retrievedField]), [onRowClick]);
 
     const { currentIndex, listeners, ref } = useInteractiveDataGrid({ totalRows: data.length });

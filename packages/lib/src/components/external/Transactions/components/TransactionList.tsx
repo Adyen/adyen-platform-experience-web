@@ -58,7 +58,6 @@ function TransactionList({ loading, transactions, onTransactionSelected, showPag
                 onRowClick={{ retrievedField: 'id', callback: onRowClick }}
                 customCells={{
                     status: ({ value }) => {
-                        //TODO modify variant once we use the real status field from the BE
                         return (
                             <Tag
                                 label={i18n.get(value)}
@@ -79,6 +78,15 @@ function TransactionList({ loading, transactions, onTransactionSelected, showPag
                             : null;
 
                         return <span className={classnames('adyen-fp-transactions__amount')}>{amount}</span>;
+                    },
+                    paymentMethod: ({ value, item }) => {
+                        return (
+                            <div>
+                                <span>{value}</span>
+                                {value === 'Card' && item.lastFourDigits}
+                                {value === 'Klarna' && 'Klarna'}
+                            </div>
+                        );
                     },
                     currency: ({ item }) => {
                         return <Tag label={item.amount.currency} />;

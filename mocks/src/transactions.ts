@@ -23,7 +23,7 @@ const TRANSACTION_DETAILS_3: ITransaction = {
     amount: { currency: 'USD', value: 4000 },
     status: 'Booked',
     type: 'Chargeback',
-    paymentMethod: 'Card',
+    paymentMethod: 'Klarna',
     lastFourDigits: 8091,
     creationDate: '2022-08-29T14:47:03+02:00',
 };
@@ -50,7 +50,7 @@ const TRANSACTION_DETAILS_6: ITransaction = {
     amount: { currency: 'EUR', value: 85050 },
     status: 'Booked',
     type: 'Capital',
-    paymentMethod: 'Card',
+    paymentMethod: 'Klarna',
     lastFourDigits: 6332,
     creationDate: '2022-08-29T14:47:03+02:00',
 };
@@ -68,7 +68,7 @@ const TRANSACTION_DETAILS_8: ITransaction = {
     amount: { currency: 'EUR', value: 820000 },
     status: 'Booked',
     type: 'Correction',
-    paymentMethod: 'Card',
+    paymentMethod: 'Klarna',
     lastFourDigits: 4312,
     creationDate: '2022-08-29T14:47:03+02:00',
 };
