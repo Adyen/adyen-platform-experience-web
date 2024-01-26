@@ -26,7 +26,7 @@ export const InteractiveBody = <
                     ref={ref}
                     aria-selected={index === currentIndex}
                     data-index={index}
-                    className="adyen-fp-data-grid--clickable-row"
+                    className="adyen-fp-data-grid__row adyen-fp-data-grid--clickable-row"
                     key={item}
                     onClick={onClickCallBack(item)}
                     onFocusCapture={listeners.onFocusCapture(index)}
