@@ -8,7 +8,7 @@ export default class __Watchable__<T extends Record<string, any>> {
     readonly #liveState: T;
 
     #lastStateSnapshot?: T;
-    #unwatchCallbacks = new WeakSet<WatchCallable<void>>();
+    #unwatchCallbacks = new WeakMap<WatchCallback<T>, WatchCallable<void>>();
     #watchCallbacks = new Map<WatchCallback<T>, number>();
 
     constructor(watchableAtoms = {} as WatchAtoms<T>) {
@@ -54,26 +54,33 @@ export default class __Watchable__<T extends Record<string, any>> {
     watch(watchCallback?: WatchCallback<T>) {
         if (!watchCallback) return noop;
 
-        const unwatchCallback = () => {
-            let callbackUnwatchCallbacksCount = this.#watchCallbacks.get(watchCallback) || 0;
-
-            if (this.#unwatchCallbacks.delete(unwatchCallback)) {
-                this.#watchCallbacks.set(watchCallback, (callbackUnwatchCallbacksCount = Math.max(0, --callbackUnwatchCallbacksCount)));
-            }
-
-            if (callbackUnwatchCallbacksCount === 0 && this.#watchCallbacks.delete(watchCallback) && this.#watchCallbacks.size === 0) {
-                this.#lastStateSnapshot = undefined;
-                this.#idleCallbacks.idle();
-            }
-        };
-
+        let unwatchCallback = this.#unwatchCallbacks.get(watchCallback);
         const callbackUnwatchCallbacksCount = this.#watchCallbacks.get(watchCallback) || 0;
 
-        this.#unwatchCallbacks.add(unwatchCallback);
+        if (!unwatchCallback) {
+            unwatchCallback = () => {
+                const callbackUnwatchCallbacksCount = this.#watchCallbacks.get(watchCallback) || 0;
+
+                if (callbackUnwatchCallbacksCount === 1) {
+                    this.#unwatchCallbacks.delete(watchCallback);
+                    this.#watchCallbacks.delete(watchCallback);
+
+                    if (this.#watchCallbacks.size === 0) {
+                        this.#lastStateSnapshot = undefined;
+                        this.#idleCallbacks.idle();
+                    }
+                } else if (callbackUnwatchCallbacksCount > 1) {
+                    this.#watchCallbacks.set(watchCallback, callbackUnwatchCallbacksCount - 1);
+                }
+            };
+
+            this.#unwatchCallbacks.set(watchCallback, unwatchCallback);
+        }
+
         this.#watchCallbacks.set(watchCallback, callbackUnwatchCallbacksCount + 1);
 
         if (callbackUnwatchCallbacksCount === 0) {
-            this.#lastStateSnapshot = this.#lastStateSnapshot || { ...this.#liveState };
+            this.#lastStateSnapshot ||= { ...this.#liveState };
             this.#idleCallbacks.resume();
         }
 

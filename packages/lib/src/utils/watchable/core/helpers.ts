@@ -16,7 +16,7 @@ export const createLiveWatchableState = <T extends Record<string, any>>(watchabl
             get:
                 get ||
                 (isFunction(value)
-                    ? () => value() // ensures that the `this` binding of the getter function is preserved
+                    ? value.bind(watchableAtoms) // ensures that the `this` binding of the getter function is preserved
                     : () => value),
         };
     }
