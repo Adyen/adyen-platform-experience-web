@@ -37,7 +37,7 @@ function useSessionAwareRequest(core: Core) {
                 return Promise.resolve(e);
             }
         };
-    }, [token]);
+    }, [core, token]);
 
     return { httpProvider } as const;
 }

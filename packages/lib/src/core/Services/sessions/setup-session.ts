@@ -1,6 +1,6 @@
-import Session from '@src/core/Session';
+import Session from '../../Session/Session';
 import { httpPost } from '../requests/http';
-import { SessionSetupResponse } from '@src/core/Session/types';
+import { SessionSetupResponse } from '../../Session/types';
 import { API_VERSION } from './constants';
 
 function setupSession(session: Session, options?: Record<string, any>): Promise<SessionSetupResponse> {

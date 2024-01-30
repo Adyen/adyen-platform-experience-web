@@ -5,5 +5,6 @@ import Localization from '@src/core/Localization';
 export const CoreContext = createContext<CoreProviderProps & { i18n: Localization['i18n'] }>({
     i18n: new Localization().i18n,
     loadingContext: '',
+    cdnContext: '',
     commonProps: {} as CommonPropsTypes,
 });

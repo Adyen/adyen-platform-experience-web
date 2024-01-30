@@ -7,7 +7,7 @@ import { CustomTranslations, LangFile, SupportedLocale, Translation, Translation
 import { formatCustomTranslations, getTranslation, toTwoLetterCode } from './utils';
 import { noop, struct } from '@src/utils/common';
 import watchable from '@src/utils/watchable';
-import { en_US } from '@src/core';
+import { en_US } from './translations';
 
 export default class Localization {
     #locale: SupportedLocale | string = FALLBACK_LOCALE;

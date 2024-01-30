@@ -90,7 +90,7 @@ export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUI
                     <div>Error occured</div>
                 ) : (
                     <AuthProvider endpoints={this.session?.configuration?.endpoints || {}} token={this.token}>
-                        <CoreProvider i18n={this.i18n} loadingContext={this.loadingContext}>
+                        <CoreProvider i18n={this.i18n} loadingContext={this.loadingContext} cdnContext={this.props.core.cdnContext}>
                             {this.componentToRender && <>{this.componentToRender()}</>}
                         </CoreProvider>
                     </AuthProvider>
