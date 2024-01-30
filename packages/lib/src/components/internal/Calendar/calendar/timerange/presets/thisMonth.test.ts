@@ -1,5 +1,6 @@
 import { describe, expect, test } from 'vitest';
-import { getDateRangeContext } from './shared/test-utils';
+import { getDateRangeContext, TIMEZONE_TESTS_TIMESTAMPS } from './testing/fixtures';
+import { asTimestamp } from './testing/helpers';
 import thisMonth from './thisMonth';
 
 describe('this month', () => {
@@ -29,5 +30,29 @@ describe('this month', () => {
         expect(to).toBe(now);
 
         nowMonth === 0 ? expect(monthBefore).toBe(11) : expect(monthBefore).toBe(nowMonth - 1);
+    });
+
+    test('should have precise timestamps for timezone', () => {
+        const range = getDateRangeContext(thisMonth);
+        const { now: initialNow, timezone: initialTimezone } = range;
+
+        const TIMEZONES = new Map([
+            ['America/Toronto', asTimestamp(['Apr 1, 2022, 12:00 AM GMT-4', 'Dec 1, 2023, 12:00 AM GMT-5', 'Dec 1, 2023, 12:00 AM GMT-5'])],
+            ['Asia/Tokyo', asTimestamp(['Apr 1, 2022, 12:00 AM GMT+9', 'Jan 1, 2024, 12:00 AM GMT+9', 'Jan 1, 2024, 12:00 AM GMT+9'])],
+        ]);
+
+        TIMEZONES.forEach((fromTimestamps, timezone) => {
+            range.timezone = timezone;
+
+            TIMEZONE_TESTS_TIMESTAMPS.forEach((timestamp, index) => {
+                range.now = timestamp;
+                expect(range.from).toBe(fromTimestamps[index]); // start of month for `timezone`
+                expect(range.to).toBe(timestamp); // always the `now` timestamp
+            });
+
+            // reset now and tz
+            range.now = initialNow;
+            range.timezone = initialTimezone;
+        });
     });
 });

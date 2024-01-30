@@ -1,3 +1,3 @@
-import weekAgo from './shared/weekAgo';
-const thisWeek = weekAgo(0);
+import offsetWeek from './shared/offsetWeek';
+const thisWeek = offsetWeek(0);
 export default thisWeek;

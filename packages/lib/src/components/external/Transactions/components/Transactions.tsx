@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'preact/hooks';
+import { useCallback, useMemo, useState } from 'preact/hooks';
 import useSessionAwareRequest from '@src/hooks/useSessionAwareRequest/useSessionAwareRequest';
 import useCoreContext from '@src/core/Context/useCoreContext';
 import FilterBar from '../../../internal/FilterBar';
@@ -6,22 +6,26 @@ import TextFilter from '../../../internal/FilterBar/filters/TextFilter';
 import DateFilter from '../../../internal/FilterBar/filters/DateFilter';
 import TransactionList from './TransactionList';
 import { TransactionFilterParam, TransactionsComponentProps } from '../types';
-import { DateRangeFilterParam } from '../../../internal/FilterBar/filters/DateFilter/types';
+import { DateFilterProps, DateRangeFilterParam } from '../../../internal/FilterBar/filters/DateFilter/types';
 import { useCursorPaginatedRecords } from '../../../internal/Pagination/hooks';
 import { ITransaction } from '@src/types';
 import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '@src/components/internal/Pagination/constants';
 import { PaginatedResponseDataWithLinks } from '@src/components/internal/Pagination/types';
 import { parseSearchParams } from '@src/core/Services/requests/utils';
-import { isFunction } from '@src/utils/common';
+import { EMPTY_OBJECT, isFunction } from '@src/utils/common';
 import Alert from '@src/components/internal/Alert';
 import { ExternalUIComponentProps } from '../../../types';
 import { API_ENDPOINTS } from '@src/core/Services/requests/endpoints';
-import './TransactionList.scss';
+import { TIME_RANGE_PRESET_OPTIONS } from '@src/components/internal/DatePicker/components/TimeRangeSelector';
+import type { TranslationKey } from '@src/core/Localization/types';
 import Typography from '@src/components/internal/Typography/Typography';
 import { TypographyVariant } from '@src/components/internal/Typography/types';
+import './TransactionList.scss';
 
-const DEFAULT_CREATED_SINCE = new Date(new Date().setHours(0, 0, 0, 0)).toISOString();
-const DEFAULT_CREATED_UNTIL = new Date(new Date().setHours(23, 59, 59, 999)).toISOString();
+const { from, to } = Object.values(TIME_RANGE_PRESET_OPTIONS)[0]!;
+const DEFAULT_TIME_RANGE_PRESET = Object.keys(TIME_RANGE_PRESET_OPTIONS)[0]! as TranslationKey;
+const DEFAULT_CREATED_SINCE = new Date(from).toISOString();
+const DEFAULT_CREATED_UNTIL = new Date(to).toISOString();
 
 const transactionsFilterParams = {
     [TransactionFilterParam.ACCOUNT_HOLDER]: undefined,
@@ -48,6 +52,8 @@ function Transactions({
 
     const { i18n, loadingContext } = useCoreContext();
     const { httpProvider } = useSessionAwareRequest(core);
+    const defaultTimeRangePreset = useMemo(() => i18n.get(DEFAULT_TIME_RANGE_PRESET), [i18n]);
+    const [selectedTimeRangePreset, setSelectedTimeRangePreset] = useState(defaultTimeRangePreset);
 
     const getTransactions = useCallback(
         async (pageRequestParams: Record<TransactionFilterParam | 'cursor', string>, signal?: AbortSignal) => {
@@ -95,10 +101,19 @@ function Transactions({
             }
         };
 
-        const _updateDateFilter = (params: { [P in DateRangeFilterParam]?: string } = {}) => {
-            for (const [param, value] of Object.entries(params)) {
-                const filter = param === DateRangeFilterParam.FROM ? TransactionFilterParam.CREATED_SINCE : TransactionFilterParam.CREATED_UNTIL;
-                updateFilters({ [filter]: value || undefined });
+        const _updateDateFilter: DateFilterProps['onChange'] = (params = EMPTY_OBJECT) => {
+            for (const [param, value] of Object.entries(params) as [keyof typeof params, (typeof params)[keyof typeof params]][]) {
+                switch (param) {
+                    case 'selectedPresetOption':
+                        setSelectedTimeRangePreset(value || defaultTimeRangePreset);
+                        break;
+                    case DateRangeFilterParam.FROM:
+                        updateFilters({ [TransactionFilterParam.CREATED_SINCE]: value || DEFAULT_CREATED_SINCE });
+                        break;
+                    case DateRangeFilterParam.TO:
+                        updateFilters({ [TransactionFilterParam.CREATED_UNTIL]: value || DEFAULT_CREATED_UNTIL });
+                        break;
+                }
             }
         };
 
@@ -107,9 +122,11 @@ function Transactions({
             _updateTextFilter(TransactionFilterParam.BALANCE_ACCOUNT),
             _updateDateFilter,
         ];
-    }, [updateFilters]);
+    }, [defaultTimeRangePreset, updateFilters]);
 
     const showAlert = useMemo(() => !fetching && error, [fetching, error]);
+
+    useMemo(() => !canResetFilters && setSelectedTimeRangePreset(defaultTimeRangePreset), [canResetFilters]);
 
     return (
         <div className="adyen-fp-transactions">
@@ -139,8 +156,11 @@ function Transactions({
                         classNameModifiers={['createdSince']}
                         label={i18n.get('dateRange')}
                         name={TransactionFilterParam.CREATED_SINCE}
+                        untilDate={new Date().toString()}
                         from={filters[TransactionFilterParam.CREATED_SINCE]}
                         to={filters[TransactionFilterParam.CREATED_UNTIL]}
+                        selectedPresetOption={selectedTimeRangePreset}
+                        timeRangePresetOptions={TIME_RANGE_PRESET_OPTIONS}
                         onChange={updateCreatedDateFilter}
                     />
                 </FilterBar>

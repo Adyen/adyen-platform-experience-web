@@ -2,7 +2,7 @@
     background-color: var(--adyen-fp-button-secondary-hover-background-color);
 }
 
-.adyen-fp-select-limit {
+@mixin adyen-fp-selector {
     border: 1px solid var(--adyen-fp-color-border);
     border-radius: var(--adyen-fp-border-radius-medium);
     position: relative;
@@ -69,4 +69,8 @@
             @include adyen-fp-background-color;
         }
     }
+}
+
+.adyen-fp-select-limit {
+    @include adyen-fp-selector;
 }

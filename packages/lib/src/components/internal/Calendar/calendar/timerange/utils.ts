@@ -1,14 +1,17 @@
+import { restamp, Restamper, RestamperWithTimezone } from '@src/core/Localization/datetime/restamper';
 import { clamp, EMPTY_OBJECT, enumerable, hasOwnProperty, isBitSafeInteger, isFunction, struct, toString } from '@src/utils/common';
+import type { WeekDay } from '../types';
 import type {
     RangeTimestamp,
-    RangeTimestampOffset,
+    RangeTimestampOffsets,
     RangeTimestamps,
     RangeTimestampsConfig,
     RangeTimestampsConfigContext,
     RangeTimestampsConfigParameter,
     RangeTimestampsConfigParameterValue,
-    RangeTimestampsConfigWithFromOffset,
-    RangeTimestampsConfigWithoutOffset,
+    RangeTimestampsConfigRestampingContext,
+    RangeTimestampsConfigWithFromOffsets,
+    RangeTimestampsConfigWithoutOffsets,
 } from './types';
 
 export const asPlainObject = (value: any) => (toString(value).slice(8, -1) === 'Object' ? value : EMPTY_OBJECT);
@@ -18,6 +21,13 @@ export const getter = <T extends any = any>(get: () => T, enumerable: boolean = 
         enumerable: (enumerable as any) !== false,
         get,
     } as const);
+
+export const createRangeTimestampsConfigRestampingContext = (restamper: RestamperWithTimezone) =>
+    Object.freeze({
+        systemToTimezone: enumerable((time?: Parameters<Restamper>[0]) => restamp(restamper, time, 1)),
+        timezoneToSystem: enumerable((time?: Parameters<Restamper>[0]) => restamp(restamper, time, -1)),
+        timezoneOffset: enumerable((time?: Parameters<Restamper>[0]) => restamper(time).offset),
+    }) as { [P in keyof RangeTimestampsConfigRestampingContext]: TypedPropertyDescriptor<RangeTimestampsConfigRestampingContext[P]> };
 
 export const getRangeTimestampsContextIntegerPropertyFactory = <T extends number = number>(
     minInteger: T,
@@ -60,33 +70,33 @@ export const getRangeTimestampsConfigParameterUnwrapper =
     <T = {}>(value: T): RangeTimestampsConfigParameterValue<T> =>
         isFunction(value) ? value.call(config, context) : value;
 
-export const isRangeTimestampsConfigWithoutOffset = (config: RangeTimestampsConfig): config is RangeTimestampsConfigWithoutOffset =>
-    !hasOwnProperty(config, 'offset');
+export const isRangeTimestampsConfigWithoutOffsets = (config: RangeTimestampsConfig): config is RangeTimestampsConfigWithoutOffsets =>
+    !hasOwnProperty(config, 'offsets');
 
-export const isRangeTimestampsConfigWithFromOffset = (
-    config: Exclude<RangeTimestampsConfig, RangeTimestampsConfigWithoutOffset>
-): config is RangeTimestampsConfigWithFromOffset => hasOwnProperty(config, 'from');
+export const isRangeTimestampsConfigWithFromOffsets = (
+    config: Exclude<RangeTimestampsConfig, RangeTimestampsConfigWithoutOffsets>
+): config is RangeTimestampsConfigWithFromOffsets => hasOwnProperty(config, 'from');
 
 export const nowTimestamp = (({ now }) => now) satisfies RangeTimestampsConfigParameter<RangeTimestamp>;
 
-export const offsetForNDays = (() => {
-    const _cache = new Map<number, RangeTimestampOffset>();
+export const offsetsForNDays = (() => {
+    const _cache = new Map<number, RangeTimestampOffsets>();
 
     return (numberOfDays: number) => {
-        let offset = _cache.get(numberOfDays);
+        let offsets = _cache.get(numberOfDays);
 
-        if (offset === undefined) {
-            offset = Object.freeze([0, 0, numberOfDays, 0, 0, 0, -1] as const);
-            _cache.set(numberOfDays, offset);
+        if (offsets === undefined) {
+            offsets = Object.freeze([0, 0, numberOfDays, 0, 0, 0, -1] as const);
+            _cache.set(numberOfDays, offsets);
         }
 
-        return offset;
+        return offsets;
     };
 })();
 
-export const parseRangeTimestamp = (timestamp: RangeTimestamp): RangeTimestamp | undefined => {
+export const parseRangeTimestamp = (timestamp: Date | RangeTimestamp): RangeTimestamp | undefined => {
     try {
-        const normalizedTimestamp = +timestamp === timestamp ? timestamp : undefined;
+        const normalizedTimestamp = timestamp instanceof Date || +timestamp === timestamp ? timestamp : undefined;
         const parsedTimestamp = new Date(normalizedTimestamp as RangeTimestamp).getTime();
         return isNaN(parsedTimestamp) ? undefined : parsedTimestamp;
     } catch {
@@ -104,4 +114,9 @@ export const startOfMonth = (date: Date) => {
 export const startOfYear = (date: Date) => {
     startOfDay(date);
     return date.setMonth(0, 1);
+};
+
+export const startOfWeekOffset = (firstWeekDay: WeekDay, weekDay: WeekDay = firstWeekDay) => {
+    const offset = (((-weekDay % 7) + (firstWeekDay - 7)) % 7) as 0 | -1 | -2 | -3 | -4 | -5 | -6;
+    return 0 + offset; // {0 + expression} => corrects -0 to 0
 };
