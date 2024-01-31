@@ -1,6 +1,5 @@
-import { describe, expect, expectTypeOf, test } from 'vitest';
+import { describe, expect, test } from 'vitest';
 import { createLiveWatchableState, createWatchableIdleCallbacks } from './helpers';
-import type { Watchable } from '@src/utils/watchable/types';
 import { noop } from '@src/utils/common';
 
 describe('createLiveWatchableState', () => {
@@ -100,8 +99,6 @@ describe('createLiveWatchableState', () => {
 describe('createWatchableIdleCallbacks', () => {
     test('should create struct of callbacks', () => {
         const callbacks = createWatchableIdleCallbacks();
-
-        expectTypeOf<Watchable<any>['callback']>(callbacks);
 
         expect(callbacks).toBeTypeOf('object');
         expect(callbacks).toHaveProperty('idle');

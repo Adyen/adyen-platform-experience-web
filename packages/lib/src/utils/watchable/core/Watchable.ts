@@ -58,10 +58,11 @@ export default class __Watchable__<T extends Record<string, any>> {
         const callbackUnwatchCallbacksCount = this.#watchCallbacks.get(watchCallback) || 0;
 
         if (!unwatchCallback) {
-            unwatchCallback = () => {
+            let unwatch = () => {
                 const callbackUnwatchCallbacksCount = this.#watchCallbacks.get(watchCallback) || 0;
 
                 if (callbackUnwatchCallbacksCount === 1) {
+                    unwatch = undefined as unknown as () => any;
                     this.#unwatchCallbacks.delete(watchCallback);
                     this.#watchCallbacks.delete(watchCallback);
 
@@ -74,7 +75,7 @@ export default class __Watchable__<T extends Record<string, any>> {
                 }
             };
 
-            this.#unwatchCallbacks.set(watchCallback, unwatchCallback);
+            this.#unwatchCallbacks.set(watchCallback, (unwatchCallback = () => unwatch?.()));
         }
 
         this.#watchCallbacks.set(watchCallback, callbackUnwatchCallbacksCount + 1);

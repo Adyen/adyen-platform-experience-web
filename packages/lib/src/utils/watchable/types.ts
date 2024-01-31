@@ -26,5 +26,6 @@ export type Watchable<T extends Record<string, any>> = Readonly<{
 
 export type WatchableFactory = {
     <T extends Record<string, any>>(watchableAtoms?: WatchAtoms<T>): Watchable<T>;
+    readonly UNWATCH: typeof UNWATCH_SIGNAL;
     readonly withSyncEffect: (effect?: WatchCallable<any>) => <T extends WatchCallable<any> = WatchCallable<any>>(fn: T) => T;
 };

@@ -1,6 +1,7 @@
-import { beforeEach, describe, expect, expectTypeOf, Mock, test, vi } from 'vitest';
+import { beforeEach, describe, expect, Mock, test, vi } from 'vitest';
 import { noop } from '@src/utils/common';
 import Watchable from './Watchable';
+import { UNWATCH_SIGNAL } from '../constants';
 
 describe('Watchable', () => {
     type TestWatchable = {
@@ -27,8 +28,6 @@ describe('Watchable', () => {
 
     test<TestWatchable>('should create watchable instance', context => {
         const watchable = context.watchable;
-
-        expectTypeOf<TestWatchable['watchable']>(watchable);
 
         expect(watchable).toHaveProperty('idle');
         expect(watchable).toHaveProperty('idleCallbacks');
@@ -157,5 +156,24 @@ describe('Watchable', () => {
         expect(resumeCallback).toBeCalledTimes(1); // not called
         expect(idleCallback).toBeCalledTimes(1); // was called (entered into idle state)
         expect(watchable.idle).toBe(true); // now idle (there are no watchers)
+    });
+
+    test<TestWatchable>('should trigger callbacks correctly with unwatch signal', context => {
+        const watchable = context.watchable;
+        const anotherWatchFn = vi.fn();
+
+        // register watch functions
+        // each watch function will be called once on registration
+        watchable.watch(context.watchFn);
+        watchable.watch(anotherWatchFn);
+
+        // notify watchers with unwatch signal
+        expect(watchable.notifyWatchers(UNWATCH_SIGNAL)).toBe(true);
+
+        expect(context.watchFn).toBeCalledTimes(2);
+        expect(anotherWatchFn).toBeCalledTimes(2);
+
+        expect(context.watchFn).toHaveBeenLastCalledWith(UNWATCH_SIGNAL);
+        expect(anotherWatchFn).toHaveBeenLastCalledWith(UNWATCH_SIGNAL);
     });
 });
