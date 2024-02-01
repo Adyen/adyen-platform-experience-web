@@ -1,4 +1,3 @@
-import { restamp, Restamper, RestamperWithTimezone } from '@src/core/Localization/datetime/restamper';
 import { clamp, EMPTY_OBJECT, enumerable, hasOwnProperty, isBitSafeInteger, isFunction, struct, toString } from '@src/utils/common';
 import type { WeekDay } from '../types';
 import type {
@@ -13,6 +12,7 @@ import type {
     RangeTimestampsConfigWithFromOffsets,
     RangeTimestampsConfigWithoutOffsets,
 } from './types';
+import { Restamper, RestamperWithTimezone, systemToTimezone, timezoneToSystem } from '@src/core/Localization/datetime/restamper';
 
 export const asPlainObject = (value: any) => (toString(value).slice(8, -1) === 'Object' ? value : EMPTY_OBJECT);
 
@@ -24,8 +24,8 @@ export const getter = <T extends any = any>(get: () => T, enumerable: boolean = 
 
 export const createRangeTimestampsConfigRestampingContext = (restamper: RestamperWithTimezone) =>
     Object.freeze({
-        systemToTimezone: enumerable((time?: Parameters<Restamper>[0]) => restamp(restamper, time, 1)),
-        timezoneToSystem: enumerable((time?: Parameters<Restamper>[0]) => restamp(restamper, time, -1)),
+        systemToTimezone: enumerable((time?: Parameters<Restamper>[0]) => systemToTimezone(restamper, time)),
+        timezoneToSystem: enumerable((time?: Parameters<Restamper>[0]) => timezoneToSystem(restamper, time)),
         timezoneOffset: enumerable((time?: Parameters<Restamper>[0]) => restamper(time).offset),
     }) as { [P in keyof RangeTimestampsConfigRestampingContext]: TypedPropertyDescriptor<RangeTimestampsConfigRestampingContext[P]> };
 

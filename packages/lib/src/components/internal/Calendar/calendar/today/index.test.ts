@@ -1,21 +1,16 @@
 // @vitest-environment jsdom
 import { afterAll, beforeAll, beforeEach, describe, expect, test, vi } from 'vitest';
+import { SYSTEM_TIMEZONE } from '@src/core/Localization/datetime/restamper';
+import { DATES, startOfDay, TIMEZONES } from './testing/fixtures';
 import today from '.';
 
 describe('today', () => {
-    const startOfDay = (date = new Date()) => date.setHours(0, 0, 0, 0);
     const watchFn = vi.fn();
-
-    const DATES = [
-        new Date('Feb 28, 2000, 11:30 PM GMT'),
-        new Date('Apr 15, 2022, 1:30 PM GMT'),
-        new Date('Dec 31, 2023, 5:30 PM GMT'),
-        new Date('Jan 1, 2024, 3:30 AM GMT'),
-    ];
 
     beforeEach(() => {
         watchFn.mockRestore();
         vi.setSystemTime(0);
+        today.timezone = SYSTEM_TIMEZONE;
     });
 
     beforeAll(() => {
@@ -40,14 +35,45 @@ describe('today', () => {
         });
     });
 
+    test('should always recompute timestamp when timezone changes', () => {
+        const testDates = (getStartDate: (index: number) => number) => {
+            DATES.forEach((date, index) => {
+                vi.setSystemTime(date);
+                expect(today.timestamp).toBe(getStartDate(index)); // has latest timestamp
+            });
+        };
+
+        expect(today.timezone).toBe(SYSTEM_TIMEZONE);
+        testDates(() => startOfDay());
+
+        TIMEZONES.forEach((startDates, timezone) => {
+            today.timezone = timezone;
+            expect(today.timezone).toBe(timezone);
+            testDates(index => startDates[index]!.getTime());
+        });
+
+        // revert to system timezone
+        today.timezone = SYSTEM_TIMEZONE;
+
+        // and test again
+        expect(today.timezone).toBe(SYSTEM_TIMEZONE);
+        testDates(() => startOfDay());
+    });
+
     test('should lazily recompute timestamp when internal watchable is not idle', () => {
         // register watch function
         const unwatch = today.watch(watchFn);
+
         let currentTimestamp = today.timestamp;
+        let currentTimezone = today.timezone;
         let watchFnCalls = 0;
 
         expect(watchFn).toBeCalledTimes(++watchFnCalls);
-        expect(watchFn).toHaveBeenLastCalledWith({ timestamp: currentTimestamp });
+
+        expect(watchFn).toHaveBeenLastCalledWith({
+            timestamp: currentTimestamp,
+            timezone: currentTimezone,
+        });
 
         DATES.forEach(date => {
             vi.setSystemTime(date);
@@ -63,7 +89,11 @@ describe('today', () => {
 
             expect(today.timestamp).toBe(currentTimestamp); // timestamp recomputed (next day)
             expect(watchFn).toBeCalledTimes(++watchFnCalls); // will be called (next day)
-            expect(watchFn).toHaveBeenLastCalledWith({ timestamp: currentTimestamp });
+
+            expect(watchFn).toHaveBeenLastCalledWith({
+                timestamp: currentTimestamp,
+                timezone: currentTimezone,
+            });
         });
 
         // unregister watch function

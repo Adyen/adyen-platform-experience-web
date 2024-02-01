@@ -33,6 +33,7 @@ import {
 } from './constants';
 import { Indexed } from './shared/indexed/types';
 import { Watchable, WatchCallable } from '@src/utils/watchable/types';
+import { RestamperWithTimezone } from '@src/core/Localization/datetime/restamper';
 
 export type WithGetSetProperty<T = any> = {
     get _(): T;
@@ -48,10 +49,12 @@ export type WithTimeEdges<T = {}> = {
     to: T;
 };
 
-export type Today = Readonly<{
-    timestamp: number;
-    watch: Watchable<{}>['watch'];
-}>;
+export type Today = {
+    readonly timestamp: number;
+    get timezone(): RestamperWithTimezone['tz']['current'];
+    set timezone(timezone: RestamperWithTimezone['tz']['current'] | null);
+    readonly watch: Watchable<{}>['watch'];
+};
 
 export type DayOfWeekLabelFormat = (typeof DAY_OF_WEEK_FORMATS)[number];
 export type FirstWeekDay = (typeof FIRST_WEEK_DAYS)[number];

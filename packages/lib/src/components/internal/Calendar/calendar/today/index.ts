@@ -1,3 +1,4 @@
+import $restamper, { RestamperWithTimezone, systemToTimezone, timezoneToSystem } from '@src/core/Localization/datetime/restamper';
 import $watchable from '@src/utils/watchable';
 import { struct } from '@src/utils/common';
 import { Today } from '../types';
@@ -7,12 +8,26 @@ const today = (() => {
     let tomorrowOffset: number;
     let controller: AbortController;
 
-    const getTimestamp = () => new Date().setHours(0, 0, 0, 0);
+    const getTimestamp = () => {
+        const date = new Date();
+        const restampedDate = new Date(timezoneToSystem(restamper, date));
+        const dateDiff = (date.getDate() - restampedDate.getDate()) as -1 | 1 | 0;
+
+        if (dateDiff) {
+            // Correction for difference between first (1) and last (28, 29, 30, 31) day of month
+            const dateOffset = dateDiff > 1 ? -1 : dateDiff < -1 ? 1 : dateDiff;
+            date.setDate(date.getDate() - dateOffset);
+        }
+
+        return systemToTimezone(restamper, date.setHours(0, 0, 0, 0));
+    };
+
+    const getTimezone = () => restamper.tz.current;
 
     const refreshTimestamp = () => {
         timestamp = getTimestamp();
-        const date = new Date(timestamp);
-        tomorrowOffset = date.setDate(date.getDate() + 1) - timestamp;
+        const systemDate = new Date(timezoneToSystem(restamper, timestamp));
+        tomorrowOffset = systemToTimezone(restamper, systemDate.setDate(systemDate.getDate() + 1)) - timestamp;
     };
 
     // Adopted from: https://gist.github.com/jakearchibald/cb03f15670817001b1157e62a076fe95
@@ -42,7 +57,12 @@ const today = (() => {
         watchable.notify();
     };
 
-    const watchable = $watchable({ timestamp: getTimestamp });
+    const restamper = $restamper();
+
+    const watchable = $watchable({
+        timestamp: getTimestamp,
+        timezone: getTimezone,
+    });
 
     watchable.callback.resume = () => {
         controller = new AbortController();
@@ -56,6 +76,19 @@ const today = (() => {
 
     return struct({
         timestamp: { get: () => (watchable.idle ? getTimestamp() : timestamp) },
+        timezone: {
+            get: getTimezone,
+            set: (timezone?: RestamperWithTimezone['tz']['current'] | null) => {
+                const tz = restamper.tz;
+                const currentTimezone = tz.current;
+                restamper.tz = timezone;
+
+                if (tz.current !== currentTimezone) {
+                    refreshTimestamp();
+                    watchable.notify();
+                }
+            },
+        },
         watch: { value: watchable.watch },
     }) as Today;
 })();
