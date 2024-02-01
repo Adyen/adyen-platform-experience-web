@@ -13,6 +13,7 @@ import './TransactionList.scss';
 import { Tag } from '@src/components/internal/Tag/Tag';
 import { TagVariant } from '@src/components/internal/Tag/types';
 import { CellTextPosition } from '@src/components/internal/DataGrid/types';
+import { Image } from '@src/components/internal/Image/Image';
 
 const ModalContent = lazy(() => import('./ModalContent'));
 
@@ -79,12 +80,16 @@ function TransactionList({ loading, transactions, onTransactionSelected, showPag
 
                         return <span className={classnames('adyen-fp-transactions__amount')}>{amount}</span>;
                     },
-                    paymentMethod: ({ value, item }) => {
+                    paymentMethod: ({ value }) => {
                         return (
-                            <div>
-                                <span>{value}</span>
-                                {value === 'Card' && item.lastFourDigits}
-                                {value === 'Klarna' && 'Klarna'}
+                            <div className="adyen-fp-transactions__payment-method">
+                                <Image
+                                    name={value.type}
+                                    alt={value.type}
+                                    folder={'logos/'}
+                                    className={'adyen-fp-transactions__payment-method-logo'}
+                                />
+                                {value.type === 'klarna' ? 'Klarna' : value.lastFourDigits}
                             </div>
                         );
                     },

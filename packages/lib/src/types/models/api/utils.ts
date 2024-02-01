@@ -1,6 +1,7 @@
 import type { paths } from '../openapi/schema';
 import type { API_ENDPOINTS } from '../../../core/Services/requests/endpoints';
 import { components } from '../openapi/schema';
+import type { components as SetupResource } from '../openapi/SetupResource';
 type AvailableHttpMethods = 'get' | 'post';
 
 type IsStringOrFunction<T> = T extends (...args: any) => any ? ReturnType<T> : T;
@@ -22,3 +23,8 @@ type NarrowByMethod<M extends AvailableHttpMethods, URL extends AvailablePaths =
 export type SuccessGETResponse<T extends NarrowByMethod<'get'>> = paths[T]['get']['responses'][200]['content']['application/json'];
 
 export type Schema<T extends keyof components['schemas']> = components['schemas'][T];
+
+export type EndpointName = SetupResource['schemas']['EndpointName'];
+export type SetupEndpointResponse = SetupResource['schemas']['SetupEndpointResponse'];
+
+export type Endpoint = Record<EndpointName, SetupEndpointResponse>;

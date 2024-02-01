@@ -17,8 +17,8 @@ const getHttpCaller = (() => {
         return caller;
     };
 })();
-function useSessionAwareRequest(core: Core) {
-    const { token } = useAuthContext();
+function useSessionAwareRequest() {
+    const { token, updateCore } = useAuthContext();
 
     const httpProvider = useMemo(() => {
         const httpCall = getHttpCaller(token);
@@ -28,7 +28,7 @@ function useSessionAwareRequest(core: Core) {
             } catch (e: any) {
                 if (e.type === ErrorTypes.EXPIRED_TOKEN) {
                     try {
-                        await core?.update({}, true);
+                        await updateCore?.({}, true);
                         return await httpCall<T>(request, method, data);
                     } catch (e) {
                         return Promise.resolve(e);
@@ -37,7 +37,7 @@ function useSessionAwareRequest(core: Core) {
                 return Promise.resolve(e);
             }
         };
-    }, [core, token]);
+    }, [token, updateCore]);
 
     return { httpProvider } as const;
 }

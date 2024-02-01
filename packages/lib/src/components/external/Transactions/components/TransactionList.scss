@@ -13,4 +13,15 @@
         font-weight: var(--adyen-fp-font-weight-medium);
         text-align: right;
     }
+
+    &__payment-method {
+        align-items: center;
+        display: flex;
+        gap: 6px;
+    }
+
+    &__payment-method-logo {
+        height: 22px;
+        width: 32px;
+    }
 }

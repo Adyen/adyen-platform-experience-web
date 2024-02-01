@@ -22,11 +22,12 @@ const returnImage = ({
     subFolder = '',
 }: ImageOptions) => `${resourceContext}images/${imageFolder}${subFolder}${parentFolder}${name}${size}.${extension}` as const;
 
-export const useImageUrl = ({ options = {}, name }: { resourceContext: string; options: Partial<ImageOptions>; name: string }) => {
-    const { cdnContext } = useCoreContext();
+export const useImageUrl = ({ options = {}, name }: { options: Partial<ImageOptions>; name: string }) => {
+    const { loadingContext } = useCoreContext();
 
+    // TODO - Get rid of FALLBACK_CDN_CONTEXT once we define our assets URL
     return returnImage({
-        resourceContext: cdnContext || FALLBACK_CDN_CONTEXT,
+        resourceContext: FALLBACK_CDN_CONTEXT || loadingContext,
         name,
         ...options,
     });

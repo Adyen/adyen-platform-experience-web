@@ -9,5 +9,4 @@ export interface CoreProviderProps {
     commonProps?: CommonPropsTypes;
     i18n?: Localization['i18n'];
     loadingContext?: string;
-    cdnContext: string;
 }

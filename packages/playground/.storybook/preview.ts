@@ -24,6 +24,7 @@ const preview: Preview = {
             await enableServerInMockedMode();
             const adyenFP = await createAdyenFP({
                 ...context.coreOptions,
+                environment: 'beta',
                 onSessionCreate: async () => {
                     if (context.args.mockedApi) {
                         await enableServerInMockedMode(true);

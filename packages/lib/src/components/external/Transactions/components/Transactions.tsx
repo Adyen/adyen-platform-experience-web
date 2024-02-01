@@ -44,14 +44,13 @@ function Transactions({
     preferredLimit = DEFAULT_PAGE_LIMIT,
     allowLimitSelection,
     withTitle,
-    core
 }: ExternalUIComponentProps<TransactionsComponentProps>) {
     const _onFiltersChanged = useMemo(() => (isFunction(onFiltersChanged) ? onFiltersChanged : void 0), [onFiltersChanged]);
     const _onLimitChanged = useMemo(() => (isFunction(onLimitChanged) ? onLimitChanged : void 0), [onLimitChanged]);
     const preferredLimitOptions = useMemo(() => (allowLimitSelection ? LIMIT_OPTIONS : undefined), [allowLimitSelection]);
 
     const { i18n, loadingContext } = useCoreContext();
-    const { httpProvider } = useSessionAwareRequest(core);
+    const { httpProvider } = useSessionAwareRequest();
     const defaultTimeRangePreset = useMemo(() => i18n.get(DEFAULT_TIME_RANGE_PRESET), [i18n]);
     const [selectedTimeRangePreset, setSelectedTimeRangePreset] = useState(defaultTimeRangePreset);
 
@@ -71,7 +70,7 @@ function Transactions({
             };
             return await httpProvider<PaginatedResponseDataWithLinks<ITransaction, 'data'>>(request, 'GET');
         },
-        [balancePlatformId, loadingContext]
+        [balancePlatformId, httpProvider, loadingContext]
     );
 
     const { canResetFilters, error, fetching, filters, limit, limitOptions, records, resetFilters, updateFilters, updateLimit, ...paginationProps } =

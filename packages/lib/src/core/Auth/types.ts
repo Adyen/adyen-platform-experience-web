@@ -1,3 +1,5 @@
+import { Core } from '@src/core';
+
 export interface AuthProviderProps {
     children?: any;
     token: string;
@@ -8,4 +10,5 @@ export interface AuthProviderProps {
             url: string;
         }
     >;
+    updateCore?: Core['update'];
 }

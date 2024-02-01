@@ -1,6 +1,6 @@
 import { DevEnvironment, SessionRequest } from './types';
 import type { CoreOptions } from './types';
-import { resolveCDNEnvironment, resolveEnvironment } from './utils';
+import { resolveEnvironment } from './utils';
 import Session from './Session';
 import Localization from './Localization';
 import BaseElement from '../components/external/BaseElement';
@@ -21,7 +21,6 @@ class Core<T extends CoreOptions<T> = any> {
     public localization;
     public loadingContext: string;
     public onSessionCreate?: SessionRequest;
-    public cdnContext: string;
     //TODO: Change the error handling strategy.
     public sessionSetupError?: boolean;
 
@@ -30,7 +29,6 @@ class Core<T extends CoreOptions<T> = any> {
 
         this.localization = new Localization(options.locale, options.availableTranslations);
         this.loadingContext = process.env.VITE_LOADING_CONTEXT || resolveEnvironment(this.options.environment);
-        this.cdnContext = resolveCDNEnvironment(this.options.environment);
 
         this.setOptions(options);
     }

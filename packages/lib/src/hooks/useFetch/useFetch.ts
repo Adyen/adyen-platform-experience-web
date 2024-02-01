@@ -106,7 +106,7 @@ export function useFetch<T = unknown>(
         return () => {
             cancelRequest.current = true;
         };
-    }, [config.url, config.fetchOptions.enabled, config.params]);
+    }, [config.url, config.fetchOptions.enabled, config.params, fetchData]);
 
     return state;
 }
