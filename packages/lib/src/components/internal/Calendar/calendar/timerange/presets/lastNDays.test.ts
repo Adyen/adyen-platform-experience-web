@@ -23,39 +23,31 @@ describe('last {n} days', () => {
     });
 
     const lastNDaysTimestamps = getDateRangeContext(lastNDays);
+    const numberOfDays = [/* default */ undefined, 3, 7, 10, 25, 100];
 
-    const runTestsFor = (_numberOfDays?: number) => {
-        const which = _numberOfDays ?? DEFAULT_NUM_DAYS;
+    test.each(numberOfDays)(`should be {N} days before now day (N => %i)`, numberOfDaysParam => {
+        lastNDaysTimestamps.numberOfDays = numberOfDaysParam as number;
 
-        test(`should be {N} days before now day (N => ${which})`, () => {
-            const { numberOfDays, fromDate, now } = lastNDaysTimestamps;
-            const date = new Date(fromDate);
-            const withinLastNDays = vi.fn();
+        const { numberOfDays, fromDate, now } = lastNDaysTimestamps;
+        const date = new Date(fromDate);
+        const withinLastNDays = vi.fn();
 
-            while (date.getTime() <= now) {
-                withinLastNDays();
-                date.setDate(date.getDate() + 1);
-            }
+        while (date.getTime() <= now) {
+            withinLastNDays();
+            date.setDate(date.getDate() + 1);
+        }
 
-            expect(withinLastNDays).toHaveBeenCalledTimes(numberOfDays);
-        });
+        expect(withinLastNDays).toHaveBeenCalledTimes(numberOfDays);
+    });
 
-        test(`should have precise timestamps (N => ${which})`, () => {
-            const { from, fromDate, now, to } = lastNDaysTimestamps;
-            const dateBefore = new Date(from - 1);
+    test.each(numberOfDays)(`should have precise timestamps (N => %i)`, numberOfDaysParam => {
+        lastNDaysTimestamps.numberOfDays = numberOfDaysParam as number;
 
-            expect(to).toBe(now);
-            expect(dateBefore.getDay()).toBe((fromDate.getDay() + 6) % 7);
-        });
-    };
+        const { from, fromDate, now, to } = lastNDaysTimestamps;
+        const dateBefore = new Date(from - 1);
 
-    // test with initial default `numberOfDays`
-    runTestsFor();
-
-    // test with some valid `numberOfDays` values
-    [3, 7, 10, 25, 100].forEach(numberOfDays => {
-        lastNDaysTimestamps.numberOfDays = numberOfDays;
-        runTestsFor(lastNDaysTimestamps.numberOfDays);
+        expect(to).toBe(now);
+        expect(dateBefore.getDay()).toBe((fromDate.getDay() + 6) % 7);
     });
 
     test('should have precise timestamps for timezone (N => 7)', () => {
