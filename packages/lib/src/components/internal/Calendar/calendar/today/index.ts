@@ -42,7 +42,7 @@ const today = (() => {
         watchable.notify();
     };
 
-    const watchable = $watchable();
+    const watchable = $watchable({ timestamp: getTimestamp });
 
     watchable.callback.resume = () => {
         controller = new AbortController();
