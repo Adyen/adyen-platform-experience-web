@@ -49,12 +49,15 @@ export type WithTimeEdges<T = {}> = {
     to: T;
 };
 
-export type Today = {
-    readonly timestamp: number;
-    get timezone(): RestamperWithTimezone['tz']['current'];
-    set timezone(timezone: RestamperWithTimezone['tz']['current'] | null);
-    readonly watch: Watchable<{}>['watch'];
-};
+export type Clock<T extends Record<any, any> = {}> = Readonly<{
+    timestamp: number;
+    watch: Watchable<{ timestamp: number } & T>['watch'];
+}>;
+
+export type Today = Clock &
+    Readonly<{
+        timezone: RestamperWithTimezone['tz']['current'];
+    }>;
 
 export type DayOfWeekLabelFormat = (typeof DAY_OF_WEEK_FORMATS)[number];
 export type FirstWeekDay = (typeof FIRST_WEEK_DAYS)[number];

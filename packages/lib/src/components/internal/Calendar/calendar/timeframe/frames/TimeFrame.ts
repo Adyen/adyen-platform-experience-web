@@ -27,7 +27,7 @@ import indexed from '../../shared/indexed';
 import { Indexed } from '../../shared/indexed/types';
 import { clamp, enumerable, isBitSafeInteger, isFunction, isInfinite, mid, mod, struct } from '@src/utils/common';
 import { WatchCallable } from '@src/utils/watchable/types';
-import today from '../../today';
+import { today } from '../../clock';
 import {
     CalendarBlock,
     CalendarBlockCellData,
@@ -64,6 +64,7 @@ export default abstract class TimeFrame {
     #selectionEndTimestamp?: number;
     #size: TimeFrameSize = 1;
     #timeslice!: TimeSlice;
+    #today = today();
     #unwatchCurrentDay?: () => void;
 
     #fromTimestamp: number = -Infinity;
@@ -232,7 +233,7 @@ export default abstract class TimeFrame {
     set trackCurrentDay(bool: boolean | null | undefined) {
         if (bool === Boolean(bool)) {
             if (bool && !this.#unwatchCurrentDay) {
-                this.#unwatchCurrentDay = today.watch(this.refreshFrame.bind(this, true));
+                this.#unwatchCurrentDay = this.#today.watch(this.refreshFrame.bind(this, true));
             } else if (!bool && this.#unwatchCurrentDay) {
                 this.#unwatchCurrentDay();
                 this.#unwatchCurrentDay = undefined;
@@ -332,7 +333,7 @@ export default abstract class TimeFrame {
     }
 
     protected initialize() {
-        this.withCurrentDayTimestamp(today.timestamp);
+        this.withCurrentDayTimestamp(this.#today.timestamp);
         this.timeslice = UNBOUNDED_SLICE;
     }
 
@@ -377,7 +378,7 @@ export default abstract class TimeFrame {
             this.#numberOfUnits = lastBlock.outer.to;
         }
 
-        this.withCurrentDayTimestamp(today.timestamp);
+        this.withCurrentDayTimestamp(this.#today.timestamp);
         this.#effect?.();
     }
 
