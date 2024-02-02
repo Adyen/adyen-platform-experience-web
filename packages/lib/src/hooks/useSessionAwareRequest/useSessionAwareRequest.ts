@@ -1,4 +1,3 @@
-import { Core } from '@src/core';
 import useAuthContext from '@src/core/Auth/useAuthContext';
 import { http } from '@src/core/Services/requests/http';
 import { HttpMethod, HttpOptions } from '@src/core/Services/requests/types';

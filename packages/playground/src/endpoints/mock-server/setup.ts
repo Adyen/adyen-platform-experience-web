@@ -27,7 +27,6 @@ export const setupMock = [
                     getTransaction: {
                         method: 'GET',
                         url: 'balanceAccounts/transactions/{transactionId}',
-                        parameter: 'transactionId',
                     },
                 },
             })

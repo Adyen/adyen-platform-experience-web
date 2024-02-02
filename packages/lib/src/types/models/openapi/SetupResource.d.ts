@@ -31,7 +31,7 @@ export interface components {
             endpointTypesExposure?: components['schemas']['EndpointName'];
             /** @description Allowed endpoints for a given session */
             endpoints: {
-                [key: string]: components['schemas']['SetupEndpointResponse'];
+                [key]: components['schemas']['SetupEndpointResponse'];
             };
         };
     };
