@@ -2,7 +2,6 @@ import { useCallback, useMemo, useState } from 'preact/hooks';
 import useSessionAwareRequest from '@src/hooks/useSessionAwareRequest/useSessionAwareRequest';
 import useCoreContext from '@src/core/Context/useCoreContext';
 import FilterBar from '../../../internal/FilterBar';
-import TextFilter from '../../../internal/FilterBar/filters/TextFilter';
 import DateFilter from '../../../internal/FilterBar/filters/DateFilter';
 import TransactionList from './TransactionList';
 import { TransactionFilterParam, TransactionsComponentProps } from '../types';
@@ -44,7 +43,7 @@ function Transactions({
     preferredLimit = DEFAULT_PAGE_LIMIT,
     allowLimitSelection,
     withTitle,
-    core
+    core,
 }: ExternalUIComponentProps<TransactionsComponentProps>) {
     const _onFiltersChanged = useMemo(() => (isFunction(onFiltersChanged) ? onFiltersChanged : void 0), [onFiltersChanged]);
     const _onLimitChanged = useMemo(() => (isFunction(onLimitChanged) ? onLimitChanged : void 0), [onLimitChanged]);
@@ -91,15 +90,16 @@ function Transactions({
             )
         );
 
-    const [updateAccountHolderFilter, updateBalanceAccountFilter, updateCreatedDateFilter] = useMemo(() => {
-        const _updateTextFilter = (param: TransactionFilterParam) => (value?: string) => {
+    const [updateCreatedDateFilter] = useMemo(() => {
+        // TODO - Use on new filters or delete if not necessary
+        /* const _updateTextFilter = (param: TransactionFilterParam) => (value?: string) => {
             switch (param) {
                 case TransactionFilterParam.ACCOUNT_HOLDER:
                 case TransactionFilterParam.BALANCE_ACCOUNT:
                     updateFilters({ [param]: value || undefined });
                     break;
             }
-        };
+        }; */
 
         const _updateDateFilter: DateFilterProps['onChange'] = (params = EMPTY_OBJECT) => {
             for (const [param, value] of Object.entries(params) as [keyof typeof params, (typeof params)[keyof typeof params]][]) {
@@ -117,11 +117,7 @@ function Transactions({
             }
         };
 
-        return [
-            _updateTextFilter(TransactionFilterParam.ACCOUNT_HOLDER),
-            _updateTextFilter(TransactionFilterParam.BALANCE_ACCOUNT),
-            _updateDateFilter,
-        ];
+        return [_updateDateFilter];
     }, [defaultTimeRangePreset, updateFilters]);
 
     const showAlert = useMemo(() => !fetching && error, [fetching, error]);
@@ -138,20 +134,6 @@ function Transactions({
                 )}
 
                 <FilterBar canResetFilters={canResetFilters} resetFilters={resetFilters}>
-                    <TextFilter
-                        classNameModifiers={['balanceAccount']}
-                        label={i18n.get('balanceAccount')}
-                        name={TransactionFilterParam.BALANCE_ACCOUNT}
-                        value={filters[TransactionFilterParam.BALANCE_ACCOUNT]}
-                        onChange={updateBalanceAccountFilter}
-                    />
-                    <TextFilter
-                        classNameModifiers={['account']}
-                        label={i18n.get('account')}
-                        name={TransactionFilterParam.ACCOUNT_HOLDER}
-                        value={filters[TransactionFilterParam.ACCOUNT_HOLDER]}
-                        onChange={updateAccountHolderFilter}
-                    />
                     <DateFilter
                         classNameModifiers={['createdSince']}
                         label={i18n.get('dateRange')}
