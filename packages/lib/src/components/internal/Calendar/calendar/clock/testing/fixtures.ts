@@ -1,3 +1,5 @@
+import { afterAll, beforeAll, beforeEach, vi } from 'vitest';
+
 export const DATES = [
     new Date('Feb 29, 2000, 11:30 PM GMT'),
     new Date('Apr 15, 2022, 1:30 PM GMT'),
@@ -32,4 +34,30 @@ export const startOfDay = (date: Date | number = Date.now()) => new Date(date).s
 export const startOfNextDay = (startDateOfDay: Date | number = startOfDay()) => {
     const startDate = new Date(startDateOfDay);
     return startDate.setDate(startDate.getDate() + 1);
+};
+
+export const initialize = () => {
+    const watchFn = vi.fn();
+
+    beforeEach(() => {
+        watchFn.mockRestore();
+        vi.setSystemTime(0);
+    });
+
+    beforeAll(() => {
+        vi.useFakeTimers();
+        vi.stubGlobal(
+            'document',
+            Object.assign({}, document, {
+                timeline: { currentTime: undefined },
+            })
+        );
+    });
+
+    afterAll(() => {
+        vi.useRealTimers();
+        vi.unstubAllGlobals();
+    });
+
+    return { watchFn } as const;
 };
