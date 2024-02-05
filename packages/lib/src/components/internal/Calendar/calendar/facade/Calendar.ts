@@ -27,7 +27,6 @@ import {
     SHIFT_FRAME,
     SHIFT_PERIOD,
 } from '../constants';
-import indexed from '../shared/indexed';
 import {
     boolify,
     EMPTY_OBJECT,
@@ -40,6 +39,7 @@ import {
     structFrom,
 } from '@src/utils/common';
 import { isString } from '@src/utils/validator-utils';
+import indexed from '@src/utils/indexed';
 import watchable from '@src/utils/watchable';
 import { Watchable, WatchableFactory, WatchCallable, WatchCallback } from '@src/utils/watchable/types';
 import { MonthFrame, TimeFrame, YearFrame } from '../timeframe';
