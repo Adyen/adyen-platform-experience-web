@@ -32,8 +32,7 @@ import {
     CALENDAR_SELECTIONS,
 } from './constants';
 import { Indexed } from './shared/indexed/types';
-import { Watchable, WatchCallable } from '@src/utils/watchable/types';
-import { RestamperWithTimezone } from '@src/core/Localization/datetime/restamper';
+import { WatchCallable } from '@src/utils/watchable/types';
 
 export type WithGetSetProperty<T = any> = {
     get _(): T;
@@ -48,16 +47,6 @@ export type WithTimeEdges<T = {}> = {
     from: T;
     to: T;
 };
-
-export type Clock<T extends Record<any, any> = {}> = Readonly<{
-    timestamp: number;
-    watch: Watchable<{ timestamp: number } & T>['watch'];
-}>;
-
-export type Today = Clock &
-    Readonly<{
-        timezone: RestamperWithTimezone['tz']['current'];
-    }>;
 
 export type DayOfWeekLabelFormat = (typeof DAY_OF_WEEK_FORMATS)[number];
 export type FirstWeekDay = (typeof FIRST_WEEK_DAYS)[number];

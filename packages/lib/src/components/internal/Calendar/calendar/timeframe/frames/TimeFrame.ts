@@ -27,7 +27,7 @@ import indexed from '../../shared/indexed';
 import { Indexed } from '../../shared/indexed/types';
 import { clamp, enumerable, isBitSafeInteger, isFunction, isInfinite, mid, mod, struct } from '@src/utils/common';
 import { WatchCallable } from '@src/utils/watchable/types';
-import { today } from '../../clock';
+import { today } from '../../../clock';
 import {
     CalendarBlock,
     CalendarBlockCellData,

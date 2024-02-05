@@ -1,6 +1,6 @@
 import $watchable from '@src/utils/watchable';
 import { struct } from '@src/utils/common';
-import { Clock } from '../types';
+import { Clock } from './types';
 
 const clock = (() => {
     let timestamp: number | null = null;
