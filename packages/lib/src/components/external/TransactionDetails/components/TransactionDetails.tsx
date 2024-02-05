@@ -8,15 +8,25 @@ import Spinner from '@src/components/internal/Spinner';
 import { TransactionData } from '@src/components/external/TransactionDetails/components/TransactionData';
 import { ExternalUIComponentProps } from '../../../types';
 import { useSetupEndpoint } from '@src/hooks/useSetupEndpoint/useSetupEndpoint';
+import { useCallback } from 'preact/hooks';
 
 export default function TransactionDetails({ transaction, transactionId, title }: ExternalUIComponentProps<TransactionDetailsComponentProps>) {
     const { i18n } = useCoreContext();
 
     const getTransactionDetail = useSetupEndpoint('getTransaction');
 
+    const fetchCallback = useCallback(async () => {
+        return await getTransactionDetail(
+            {},
+            {
+                path: { transactionId },
+            }
+        );
+    }, [getTransactionDetail, transactionId]);
+
     const { data, error, isFetching } = useFetch<ITransaction>({
-        url: `transactions/${transactionId}`,
-        fetchOptions: { enabled: false },
+        fetchOptions: { enabled: !!transactionId },
+        queryFn: fetchCallback,
     });
 
     const transactionData = transaction ?? data;
