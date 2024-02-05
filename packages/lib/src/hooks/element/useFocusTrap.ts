@@ -87,18 +87,20 @@ const useFocusTrap = (rootElementRef: Nullable<Reflexable<Element>>, onEscape: (
 
     return useReflex<Element>(
         useCallback((current, previous) => {
+            console.log('focus trap');
             if (previous instanceof Element) {
+                console.log('use focus trap previous');
                 (previous as HTMLElement).removeEventListener('keydown', onKeyDownCapture, true);
                 (previous as HTMLElement).removeEventListener('focusin', onFocusInCapture, true);
                 (previous as HTMLElement).removeEventListener('focusout', onFocusOutCapture, true);
-                previous.removeEventListener('click', onClickCapture, true);
+                (current as HTMLElement).removeEventListener('click', onClickCapture, true);
             }
 
             if (current instanceof Element) {
                 (current as HTMLElement).addEventListener('keydown', onKeyDownCapture, true);
                 (current as HTMLElement).addEventListener('focusin', onFocusInCapture, true);
                 (current as HTMLElement).addEventListener('focusout', onFocusOutCapture, true);
-                current.addEventListener('click', onClickCapture, true);
+                (current as HTMLElement).addEventListener('click', onClickCapture, true);
                 escapedFocus.current = false;
                 tabbableRoot.root = current;
             } else tabbableRoot.root = null;
