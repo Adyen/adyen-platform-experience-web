@@ -14,12 +14,6 @@ export const TransactionData = ({ transaction }: { transaction: ITransaction }) 
         return Boolean(labels[key as keyof typeof labels]);
     };
 
-    const getLabel = (key: string) => {
-        if (isKeyOfLabel(key)) {
-            return i18n.get(labels[key]);
-        }
-        return key;
-    };
     return (
         <>
             <div className="adyen-fp-details-container">
@@ -58,8 +52,7 @@ export const TransactionData = ({ transaction }: { transaction: ITransaction }) 
                             layout={'3-9'}
                             items={{
                                 paymentId: transaction.id,
-                                type: transaction.type && i18n.get(`txType.${transaction.type!}`),
-                                category: transaction.category && getLabel(transaction.category),
+                                category: transaction.category && i18n.get(`txType.${transaction.category!}`),
                             }}
                             grid={false}
                         />

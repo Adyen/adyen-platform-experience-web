@@ -7,9 +7,7 @@ import TransactionList from './TransactionList';
 import { TransactionFilterParam, TransactionsComponentProps } from '../types';
 import { DateFilterProps, DateRangeFilterParam } from '../../../internal/FilterBar/filters/DateFilter/types';
 import { useCursorPaginatedRecords } from '../../../internal/Pagination/hooks';
-import { ITransaction } from '@src/types';
 import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '@src/components/internal/Pagination/constants';
-import { parseSearchParams } from '@src/core/Services/requests/utils';
 import { EMPTY_OBJECT, isFunction } from '@src/utils/common';
 import Alert from '@src/components/internal/Alert';
 import { ExternalUIComponentProps } from '../../../types';
@@ -18,7 +16,8 @@ import type { TranslationKey } from '@src/core/Localization/types';
 import Typography from '@src/components/internal/Typography/Typography';
 import { TypographyVariant } from '@src/components/internal/Typography/types';
 import './TransactionList.scss';
-import { SetupHttpOptions, SuccessResponse, useSetupEndpoint } from '@src/hooks/useSetupEndpoint/useSetupEndpoint';
+import { SetupHttpOptions, useSetupEndpoint } from '@src/hooks/useSetupEndpoint/useSetupEndpoint';
+import { ITransaction } from '@src/types';
 
 const { from, to } = Object.values(TIME_RANGE_PRESET_OPTIONS)[0]!;
 const DEFAULT_TIME_RANGE_PRESET = Object.keys(TIME_RANGE_PRESET_OPTIONS)[0]! as TranslationKey;
@@ -73,12 +72,13 @@ function Transactions({
         [balancePlatformId, transactionsEndpointCall]
     );
 
+    //TODO - Infer the return type of getTransactions instead of having to specify it
     const { canResetFilters, error, fetching, filters, limit, limitOptions, records, resetFilters, updateFilters, updateLimit, ...paginationProps } =
-        useCursorPaginatedRecords<'data', string, TransactionFilterParam>(
+        useCursorPaginatedRecords<ITransaction, 'transactions', string, TransactionFilterParam>(
             useMemo(
                 () => ({
                     fetchRecords: getTransactions,
-                    dataField: 'data',
+                    dataField: 'transactions',
                     filterParams: transactionsFilterParams,
                     initialFiltersSameAsDefault: false,
                     onLimitChanged: _onLimitChanged,

@@ -149,6 +149,7 @@ const usePaginatedRecords = <T, DataField extends string, FilterValue extends st
 
     useMemo(() => {
         $initialFetchInProgress.current = true;
+        /* eslint-disable-next-line */
     }, [filterParams]);
 
     useEffect(() => goto(1), [goto]);

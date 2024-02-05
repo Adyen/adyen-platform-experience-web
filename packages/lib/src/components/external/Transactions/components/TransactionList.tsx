@@ -17,7 +17,7 @@ import { Image } from '@src/components/internal/Image/Image';
 
 const ModalContent = lazy(() => import('./ModalContent'));
 
-const FIELDS = ['creationDate', 'status', 'paymentMethod', 'type', 'currency', 'amount'] as const;
+const FIELDS = ['creationDate', 'status', 'paymentMethod', 'category', 'currency', 'amount'] as const;
 
 function TransactionList({ loading, transactions, onTransactionSelected, showPagination, showDetails, ...paginationProps }: TransactionListProps) {
     const { i18n } = useCoreContext();
@@ -66,7 +66,7 @@ function TransactionList({ loading, transactions, onTransactionSelected, showPag
                             />
                         );
                     },
-                    type: ({ value }) => {
+                    category: ({ value }) => {
                         return value ? i18n.get(`txType.${value}`) : null;
                     },
                     creationDate: ({ value }) => i18n.fullDate(value),

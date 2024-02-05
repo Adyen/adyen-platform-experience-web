@@ -1,8 +1,9 @@
 export const endpoints = {
-    accountHolder: '/api/accountHolders',
     balanceAccount: '/api/balanceAccounts',
-    transactions: '/api/transactions',
-    legalEntities: '/api/legalEntities',
+    balanceAccountTotals: '/api/balanceAccounts/:id/transactions/totals',
+    balances: '/api/balanceAccounts/:id/balances',
+    transactions: '/api/balanceAccounts/:id/transactions',
+    transaction: '/api/balanceAccounts/transactions/:id',
     sessions: '/authe/api/v1/sessions',
     setup: '/api/platform-components-external/api/v1/setup',
 };

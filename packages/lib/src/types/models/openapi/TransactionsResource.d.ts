@@ -46,6 +46,10 @@ export interface components {
             /** @description ID */
             id: string;
             status: components['schemas']['Status'];
+            paymentMethod: {
+                type: string;
+                lastFourDigits?: number;
+            };
         };
         /** @enum {string} */
         Status: 'Pending' | 'Booked' | 'Rejected';
