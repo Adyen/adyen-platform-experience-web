@@ -1,12 +1,12 @@
 import { TransactionsComponentProps } from '@src/components';
-import AuthProvider from '@src/core/Auth/AuthProvider';
-import CoreProvider from '@src/core/Context/CoreProvider';
+import AuthProvider from '../../core/Auth/AuthProvider';
+import CoreProvider from '../../core/Context/CoreProvider';
 import { JSXInternal } from 'preact/src/jsx';
 import BaseElement from './BaseElement';
 import getImage from '../../utils/get-image';
 import { BaseElementProps, IUIElement, UIElementProps } from '../types';
 import { UIElementStatus } from '../types';
-import { SetupEndpoint } from '@src/types/models/openapi/endpoints';
+import { SetupEndpoint } from '../../types/models/openapi/endpoints';
 import { EMPTY_OBJECT } from '@src/utils/common';
 
 export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUIElement {

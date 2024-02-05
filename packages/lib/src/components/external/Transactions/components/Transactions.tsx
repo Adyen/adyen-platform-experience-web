@@ -17,6 +17,7 @@ import { TypographyVariant } from '@src/components/internal/Typography/types';
 import './TransactionList.scss';
 import { SetupHttpOptions, useSetupEndpoint } from '@src/hooks/useSetupEndpoint/useSetupEndpoint';
 import { ITransaction } from '@src/types';
+import { useFetch } from '@src/hooks/useFetch/useFetch';
 
 const { from, to } = Object.values(TIME_RANGE_PRESET_OPTIONS)[0]!;
 const DEFAULT_TIME_RANGE_PRESET = Object.keys(TIME_RANGE_PRESET_OPTIONS)[0]! as TranslationKey;
@@ -32,7 +33,6 @@ const transactionsFilterParams = {
 };
 
 function Transactions({
-    balancePlatformId,
     onTransactionSelected,
     showDetails,
     onFiltersChanged,
@@ -49,6 +49,17 @@ function Transactions({
     const defaultTimeRangePreset = useMemo(() => i18n.get(DEFAULT_TIME_RANGE_PRESET), [i18n]);
     const [selectedTimeRangePreset, setSelectedTimeRangePreset] = useState(defaultTimeRangePreset);
 
+    // Balance Accounts
+
+    const balanceAccountEndpointCall = useSetupEndpoint('getBalanceAccounts');
+
+    const { data } = useFetch({
+        fetchOptions: {},
+        queryFn: async () => {
+            return await balanceAccountEndpointCall({});
+        },
+    });
+
     const transactionsEndpointCall = useSetupEndpoint('getTransactions');
 
     const getTransactions = useCallback(
@@ -64,11 +75,11 @@ function Transactions({
                     createdSince: pageRequestParams.createdSince ?? DEFAULT_CREATED_SINCE,
                     createdUntil: pageRequestParams.createdUntil ?? DEFAULT_CREATED_UNTIL,
                 },
-                path: { balanceAccountId: pageRequestParams.balancePlatform ?? balancePlatformId },
+                path: { balanceAccountId: data?.balanceAccounts[0]?.id ?? '' },
             };
             return transactionsEndpointCall(requestOptions, parameters);
         },
-        [balancePlatformId, transactionsEndpointCall]
+        [data?.balanceAccounts, transactionsEndpointCall]
     );
 
     //TODO - Infer the return type of getTransactions instead of having to specify it
