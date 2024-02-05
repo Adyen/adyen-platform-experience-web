@@ -17,14 +17,19 @@ type FetchOptions = {
     keepPrevData: boolean;
 };
 
-type UseFetchConfig = {
+type UseFetchConfig<QueryFn> = {
     loadingContext?: string;
     params?: Record<string, string | number | Date>;
     requestOptions?: RequestInit;
     fetchOptions: Partial<FetchOptions>;
-    queryFn: (...args: any) => Promise<any>;
+    queryFn: QueryFn;
 };
-export function useFetch<T = unknown>({ fetchOptions = { keepPrevData: true }, queryFn, params }: UseFetchConfig): State<T> {
+export function useFetch<QueryFn extends (...args: any) => Promise<any>, T extends Awaited<ReturnType<QueryFn>>>({
+    fetchOptions = { keepPrevData: true },
+    queryFn,
+    params,
+}: UseFetchConfig<QueryFn>): State<T> {
+    // TODO cache endpoint calls
     const cache = useRef<Cache<T>>(new Map());
     // Used to prevent state update if the component is unmounted
     const cancelRequest = useRef<boolean>(false);

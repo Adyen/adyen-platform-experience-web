@@ -6,13 +6,6 @@ import StructuredList from '@src/components/internal/StructuredList';
 
 export const TransactionData = ({ transaction }: { transaction: ITransaction }) => {
     const { i18n } = useCoreContext();
-    const labels = {
-        internal: 'category.internal',
-    } as const;
-
-    const isKeyOfLabel = (key: any): key is keyof typeof labels => {
-        return Boolean(labels[key as keyof typeof labels]);
-    };
 
     return (
         <>
