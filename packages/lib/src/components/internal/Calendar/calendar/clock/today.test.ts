@@ -1,36 +1,35 @@
 // @vitest-environment jsdom
-import { afterAll, beforeAll, beforeEach, describe, expect, test, vi } from 'vitest';
+import { describe, expect, test, vi } from 'vitest';
 import { SYSTEM_TIMEZONE } from '@src/core/Localization/datetime/restamper';
-import { DATES, startOfDay, startOfNextDay, TIMEZONES } from './testing/fixtures';
+import { DATES, initialize, startOfDay, startOfNextDay, TIMEZONES } from './testing/fixtures';
 import $today from './today';
 
 describe('today', () => {
-    const watchFn = vi.fn();
+    const { watchFn } = initialize();
 
-    beforeEach(() => {
-        watchFn.mockRestore();
-        vi.setSystemTime(0);
+    test('should use shared instance for same timezone', () => {
+        const testRoutine = (timezone?: string) => {
+            const today1 = $today(timezone);
+            const today2 = $today(timezone);
+
+            expect(today1).toBe(today2);
+            expect(today1.timestamp).toBe(today2.timestamp);
+            expect(today1.timezone).toBe(today2.timezone);
+        };
+
+        testRoutine();
+        testRoutine(SYSTEM_TIMEZONE);
+        testRoutine('Unknown/Invalid_TZ'); // invalid timezone
+
+        TIMEZONES.forEach((_, timezone) => testRoutine(timezone));
     });
 
-    beforeAll(() => {
-        vi.useFakeTimers();
-        vi.stubGlobal(
-            'document',
-            Object.assign({}, document, {
-                timeline: { currentTime: undefined },
-            })
-        );
-    });
+    test('should have latest timestamp when not being watched', () => {
+        const testRoutine = (getStartDate: (index: number) => number, timezone?: string) => {
+            const today = $today(timezone);
 
-    afterAll(() => {
-        vi.useRealTimers();
-        vi.unstubAllGlobals();
-    });
+            expect(today.timezone).toBe(timezone ?? SYSTEM_TIMEZONE);
 
-    test('should always recompute timestamp when internal watchable is idle and/or timezone changes', () => {
-        let today = $today();
-
-        const testDates = (getStartDate: (index: number) => number) => {
             DATES.forEach((date, index) => {
                 vi.setSystemTime(date);
 
@@ -50,20 +49,83 @@ describe('today', () => {
             });
         };
 
-        expect(today.timezone).toBe(SYSTEM_TIMEZONE);
-        testDates(() => startOfDay());
+        testRoutine(() => startOfDay(), SYSTEM_TIMEZONE); // explicit system timezone
 
         TIMEZONES.forEach((startDates, timezone) => {
-            today = $today(timezone);
-            expect(today.timezone).toBe(timezone);
-            testDates(index => startDates[index]!.getTime());
+            testRoutine(index => startDates[index]!.getTime(), timezone);
         });
 
-        // revert to system timezone
-        today = $today();
+        testRoutine(() => startOfDay()); // implicit (defaults to) system timezone
+    });
 
-        // and test again
-        expect(today.timezone).toBe(SYSTEM_TIMEZONE);
-        testDates(() => startOfDay());
+    test('should use latest timestamp for new day when being watched', () => {
+        let watchFnCalls = 0;
+
+        const testRoutine = (getStartDate: (index: number) => number, timezone?: string) => {
+            vi.setSystemTime(0);
+
+            const today = $today(timezone);
+            const unwatch = today.watch(watchFn);
+            let currentDayTimestamp = watchFn.mock.lastCall[0]?.timestamp as number;
+
+            expect(today.timestamp).toBe(currentDayTimestamp);
+            expect(today.timezone).toBe(timezone ?? SYSTEM_TIMEZONE);
+            expect(watchFn).toBeCalledTimes(++watchFnCalls); // will be called
+            expect(watchFn).toHaveBeenLastCalledWith({ timestamp: currentDayTimestamp });
+
+            DATES.forEach((date, index) => {
+                vi.runOnlyPendingTimers(); // trigger pending timers
+                vi.setSystemTime(date);
+
+                const todayTimestamp = getStartDate(index); // start of current day
+                const nextTimestamp = startOfNextDay(todayTimestamp); // start of next day
+
+                expect(today.timestamp).not.toBe(todayTimestamp); // timestamp not recomputed
+                expect(today.timestamp).toBe(currentDayTimestamp); // timestamp not recomputed
+                expect(watchFn).toBeCalledTimes(watchFnCalls); // not called
+
+                vi.advanceTimersToNextTimer(); // trigger clock timer
+                currentDayTimestamp = todayTimestamp;
+
+                expect(today.timestamp).toBe(currentDayTimestamp); // timestamp recomputed
+                expect(watchFn).toBeCalledTimes(++watchFnCalls); // will be called
+                expect(watchFn).toHaveBeenLastCalledWith({ timestamp: currentDayTimestamp });
+
+                vi.setSystemTime(nextTimestamp - 1); // 1ms away from start of next day
+                vi.advanceTimersToNextTimer(); // trigger clock timer
+
+                expect(today.timestamp).toBe(currentDayTimestamp); // same day (same timestamp)
+                expect(watchFn).toBeCalledTimes(watchFnCalls); // not called
+
+                vi.setSystemTime(nextTimestamp); // start of next day
+                vi.advanceTimersToNextTimer(); // trigger clock timer
+
+                expect(today.timestamp).not.toBe(currentDayTimestamp); // next day (different timestamp)
+                expect(today.timestamp).toBe((currentDayTimestamp = nextTimestamp)); // next day (next timestamp)
+                expect(watchFn).toBeCalledTimes(++watchFnCalls); // will be called
+                expect(watchFn).toHaveBeenLastCalledWith({ timestamp: currentDayTimestamp });
+
+                vi.setSystemTime(startOfNextDay(nextTimestamp) - 1); // end of next day
+                vi.advanceTimersToNextTimer(); // trigger clock timer
+
+                expect(today.timestamp).toBe(nextTimestamp); // same day (same timestamp)
+                expect(watchFn).toBeCalledTimes(watchFnCalls); // not called
+
+                vi.setSystemTime((currentDayTimestamp = Date.now()));
+                vi.advanceTimersToNextTimer(); // trigger clock timer
+                expect(watchFn).toBeCalledTimes(++watchFnCalls); // will be called
+                expect(watchFn).toHaveBeenLastCalledWith({ timestamp: currentDayTimestamp });
+            });
+
+            unwatch(); // unregister watch function;
+        };
+
+        testRoutine(() => startOfDay(), SYSTEM_TIMEZONE); // explicit system timezone
+
+        TIMEZONES.forEach((startDates, timezone) => {
+            testRoutine(index => startDates[index]!.getTime(), timezone);
+        });
+
+        testRoutine(() => startOfDay()); // implicit (defaults to) system timezone
     });
 });
