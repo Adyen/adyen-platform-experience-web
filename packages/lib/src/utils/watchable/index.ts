@@ -1,6 +1,7 @@
 import syncEffect from './core/syncEffect';
 import __Watchable__ from './core/Watchable';
-import { WatchableFactory } from './types';
+import { UNWATCH_SIGNAL } from './constants';
+import type { WatchableFactory } from './types';
 import { struct } from '../common';
 
 const watchable = (watchableAtoms => {
@@ -16,5 +17,6 @@ const watchable = (watchableAtoms => {
 }) as WatchableFactory;
 
 export default Object.defineProperties(watchable, {
+    UNWATCH: { value: UNWATCH_SIGNAL },
     withSyncEffect: { value: syncEffect },
 });
