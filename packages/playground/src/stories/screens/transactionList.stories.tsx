@@ -29,7 +29,6 @@ const meta: Meta<ElementProps<typeof TransactionsComponent>> = {
 export const Basic: ElementStory<typeof TransactionsComponent> = {
     name: 'Basic (Mocked)',
     args: {
-        balancePlatformId: 'mocked',
         mockedApi: true,
     },
 };
