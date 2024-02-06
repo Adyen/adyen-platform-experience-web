@@ -12,33 +12,31 @@ export default class __TimeSlice__ {
     constructor(fromTime?: Time, toTime?: Time);
     constructor(time?: Time, timeEdge?: TimeFrameRangeEdge);
     constructor(...args: any[]) {
-        if (args.length >= 2) {
-            let timestamp = new Date(args[0]).getTime();
+        let timestamp = new Date(args[0]).getTime();
 
-            if (typeof args[1] !== 'symbol') {
-                this.#startTimestamp = timestamp || this.#startTimestamp;
-                this.#endTimestamp = new Date(args[1]).getTime() || this.#endTimestamp;
+        if (typeof args[1] !== 'symbol') {
+            this.#startTimestamp = timestamp || this.#startTimestamp;
+            this.#endTimestamp = new Date(args[1]).getTime() || this.#endTimestamp;
 
-                if (this.#endTimestamp < this.#startTimestamp) {
-                    [this.#endTimestamp, this.#startTimestamp] = [this.#startTimestamp, this.#endTimestamp];
-                }
+            if (this.#endTimestamp < this.#startTimestamp) {
+                [this.#endTimestamp, this.#startTimestamp] = [this.#startTimestamp, this.#endTimestamp];
+            }
 
-                this.#startTimestampOffset = computeTimestampOffset(this.#startTimestamp);
-                this.#endTimestampOffset = computeTimestampOffset(this.#endTimestamp);
-                this.#numberOfMonths = getEdgesDistance(this.#startTimestamp, this.#endTimestamp) + 1;
-            } else if (!isNaN(timestamp)) {
-                switch (args[1]) {
-                    case RANGE_TO:
-                        this.#endTimestamp = timestamp;
-                        this.#endTimestampOffset = computeTimestampOffset(this.#endTimestamp);
-                        break;
+            this.#startTimestampOffset = computeTimestampOffset(this.#startTimestamp);
+            this.#endTimestampOffset = computeTimestampOffset(this.#endTimestamp);
+            this.#numberOfMonths = getEdgesDistance(this.#startTimestamp, this.#endTimestamp) + 1;
+        } else if (!isNaN(timestamp)) {
+            switch (args[1]) {
+                case RANGE_TO:
+                    this.#endTimestamp = timestamp;
+                    this.#endTimestampOffset = computeTimestampOffset(this.#endTimestamp);
+                    break;
 
-                    case RANGE_FROM:
-                    default:
-                        this.#startTimestamp = timestamp;
-                        this.#startTimestampOffset = computeTimestampOffset(this.#startTimestamp);
-                        break;
-                }
+                case RANGE_FROM:
+                default:
+                    this.#startTimestamp = timestamp;
+                    this.#startTimestampOffset = computeTimestampOffset(this.#startTimestamp);
+                    break;
             }
         }
     }
