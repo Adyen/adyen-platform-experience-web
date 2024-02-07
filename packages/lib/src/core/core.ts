@@ -1,9 +1,12 @@
-import { SessionRequest } from './types';
+import { DevEnvironment, SessionRequest } from './types';
 import type { CoreOptions } from './types';
 import { resolveEnvironment } from './utils';
 import Session from './Session';
 import Localization from './Localization';
 import BaseElement from '../components/external/BaseElement';
+import { EMPTY_OBJECT } from '../utils/common';
+
+const FALLBACK_ENV = 'test' satisfies DevEnvironment;
 
 class Core<T extends CoreOptions<T> = any> {
     public static readonly version = {
@@ -23,9 +26,11 @@ class Core<T extends CoreOptions<T> = any> {
     public sessionSetupError?: boolean;
 
     constructor(options: CoreOptions<T>) {
-        this.options = options;
+        this.options = { environment: FALLBACK_ENV, ...options };
+
         this.localization = new Localization(options.locale, options.availableTranslations);
         this.loadingContext = process.env.VITE_LOADING_CONTEXT || resolveEnvironment(this.options.environment);
+
         this.setOptions(options);
     }
 
@@ -49,7 +54,7 @@ class Core<T extends CoreOptions<T> = any> {
             if (this.options.onError) this.options.onError(error);
             //TODO: this is heavy change the way to update core
             this.sessionSetupError = true;
-            this.update();
+            await this.update();
             return this;
         }
     };
@@ -60,7 +65,7 @@ class Core<T extends CoreOptions<T> = any> {
      * @param initSession - should session be initiated again
      * @returns this - the element instance
      */
-    public update = (options: CoreOptions<T> = {}, initSession = false): Promise<this> => {
+    public update = (options: Partial<CoreOptions<T>> = EMPTY_OBJECT, initSession = false): Promise<this> => {
         this.setOptions(options);
 
         return this.initialize(initSession).then(() => {
@@ -99,7 +104,7 @@ class Core<T extends CoreOptions<T> = any> {
      * @param options - the config object passed when AdyenFP is initialised
      * @returns this
      */
-    private setOptions = (options: CoreOptions<T>): this => {
+    private setOptions = (options: Partial<CoreOptions<T>>): this => {
         this.options = { ...this.options, ...options };
 
         this.localization.locale = this.options?.locale;

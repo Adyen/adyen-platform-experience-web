@@ -1,17 +1,43 @@
-import { ComponentChild, toChildArray } from 'preact';
+import { ComponentChild, ComponentChildren, toChildArray } from 'preact';
 import classnames from 'classnames';
 import Spinner from '../Spinner';
 import './DataGrid.scss';
 import { TableBody } from '@src/components/internal/DataGrid/components/TableBody';
 import { InteractiveBody } from '@src/components/internal/DataGrid/components/InteractiveBody';
-import { CellTextPosition, DataGridProps } from './types';
+import { CellTextPosition, DataGridColumn, DataGridProps } from './types';
 
 export const INITIAL_STATE = Object.freeze({
     activeIndex: -1,
     index: -1,
 });
 
-function DataGrid<Items extends Array<any>, ClickedField extends keyof Items[number]>(props: DataGridProps<Items, ClickedField>) {
+type CellKey<
+    Item extends Array<any>,
+    Columns extends Array<DataGridColumn<Extract<keyof Item[number], string>>>,
+    Column extends DataGridColumn<Extract<keyof Item[number], string>>,
+    T extends Columns[number]['key']
+> = {
+    [k in Column['key']]: k;
+}[T];
+
+export type CustomCell<
+    Item extends Array<any>,
+    Columns extends Array<DataGridColumn<Extract<keyof Item[number], string>>>,
+    T extends Columns[number]
+> = {
+    [k in T['key']]?: (
+        props: Item[0][k] extends NonNullable<Item[0][k]>
+            ? { key: CellKey<Item, Columns, Columns[number], k>; value: Item[number][k]; item: Item[number] }
+            : { key: CellKey<Item, Columns, Columns[number], k>; item: Item[number] }
+    ) => ComponentChild;
+};
+
+function DataGrid<
+    Items extends Array<any>,
+    Columns extends Array<DataGridColumn<Extract<keyof Items[number], string>>>,
+    ClickedField extends keyof Items[number],
+    CustomCells extends CustomCell<Items, Columns, Columns[number]>
+>(props: DataGridProps<Items, Columns, ClickedField, CustomCells>) {
     const children = toChildArray(props.children);
     const footer = children.find((child: ComponentChild) => (child as any)?.['type'] === DataGridFooter);
 
@@ -47,7 +73,7 @@ function DataGrid<Items extends Array<any>, ClickedField extends keyof Items[num
                                     ))}
                                 </tr>
                             </thead>
-                            <DataGridBody<Items, ClickedField> {...props} />
+                            <DataGridBody<Items, Columns, ClickedField, CustomCells> {...props} />
                         </table>
                     </div>
                     {footer}
@@ -57,18 +83,23 @@ function DataGrid<Items extends Array<any>, ClickedField extends keyof Items[num
     );
 }
 
-function DataGridBody<Items extends Array<any>, ClickedField extends keyof Items[number]>(props: DataGridProps<Items, ClickedField>) {
+function DataGridBody<
+    Items extends Array<any>,
+    Columns extends Array<DataGridColumn<Extract<keyof Items[number], string>>>,
+    ClickedField extends keyof Items[number],
+    CustomCells extends CustomCell<Items, Columns, Columns[number]>
+>(props: DataGridProps<Items, Columns, ClickedField, CustomCells>) {
     return (
         <tbody className="adyen-fp-data-grid__body">
             {props.onRowClick ? (
-                <InteractiveBody<Items, ClickedField>
+                <InteractiveBody<Items, Columns, ClickedField, CustomCells>
                     data={props.data}
                     columns={props.columns}
                     onRowClick={props.onRowClick}
                     customCells={props.customCells}
                 />
             ) : (
-                <TableBody<Items, ClickedField> data={props.data} customCells={props.customCells} columns={props.columns} />
+                <TableBody<Items, Columns, ClickedField, CustomCells> data={props.data} customCells={props.customCells} columns={props.columns} />
             )}
         </tbody>
     );

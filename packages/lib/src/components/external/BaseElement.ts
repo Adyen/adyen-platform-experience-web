@@ -3,9 +3,9 @@ import EventEmitter from './EventEmitter';
 import uuid from '../../utils/uuid';
 import { Core } from '../../core';
 import { BaseElementProps, BaseElementState } from '../types';
-import { isString } from '@src/utils/validator-utils';
-import Localization from '@src/core/Localization';
-import BPSession from '@src/core/Session/Session';
+import { isString } from '../../utils/validator-utils';
+import Localization from '../../core/Localization';
+import BPSession from '../../core/Session/Session';
 
 class BaseElement<P> {
     public static type: string;

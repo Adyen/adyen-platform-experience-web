@@ -1,11 +1,11 @@
-import { SessionResponse } from '@src/core/Session/types';
+import { SessionResponse } from './Session/types';
 import type { CustomTranslations } from './Localization/types';
-import { AmountExtended } from '../types/shared';
 import { AnalyticsOptions } from './Analytics/types';
 import { LangFile } from './Localization/types';
 import { ReplaceUnderscoreOrDash } from '../utils/types';
+import Session from './Session';
 
-export type DevEnvironment = 'test' | 'live';
+export type DevEnvironment = 'test' | 'live' | 'beta';
 
 type ExtractKeys<T> = T extends any ? keyof T : never;
 
@@ -14,7 +14,7 @@ type CreateUnionOfAvailableTranslations<T extends LangFile[] | undefined> = T ex
     : never;
 
 export interface CoreOptions<T extends CoreOptions<T> = any> {
-    session?: any;
+    session?: Session;
     /**
      * Use test. When you're ready to accept live payments, change the value to one of our {@link https://docs.adyen.com/checkout/drop-in-web#testing-your-integration | live environments}.
      */
@@ -37,23 +37,13 @@ export interface CoreOptions<T extends CoreOptions<T> = any> {
     translations?: CustomTranslations;
 
     /**
-     * Amount of the payment
-     */
-    amount?: AmountExtended;
-
-    /**
-     * Secondary amount of the payment - alternative currency & value converted according to rate
-     */
-    secondaryAmount?: AmountExtended;
-
-    /**
      * The shopper's country code. A valid value is an ISO two-character country code (e.g. 'NL').
      */
     countryCode?: string;
 
     availableTranslations?: LangFile[];
 
-    onSessionCreate?: SessionRequest;
+    onSessionCreate: SessionRequest;
 
     onError?: (e: any) => any;
 

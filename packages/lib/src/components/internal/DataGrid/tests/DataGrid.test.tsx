@@ -17,7 +17,7 @@ const columns = [
         label: 'Status',
     },
     {
-        key: 'type',
+        key: 'paymentMethod',
         label: 'Type',
     },
 ] satisfies { key: keyof Partial<(typeof BASIC_TRANSACTIONS_LIST)[number]>; label: string }[];
@@ -40,11 +40,11 @@ describe('DataGrid component with clickable rows', () => {
                     loading={false}
                     onRowClick={{ callback: mockEventHandler, retrievedField: 'id' }}
                     customCells={{
-                        type: ({ value }) => {
+                        paymentMethod: ({ value }) => {
                             return (
                                 // Add this interactive element to test every possible keyboard interaction (left arrow or tab+shift to get focus back on the row)
                                 <span tabIndex={0} role={'button'}>
-                                    {value}
+                                    {value.type}
                                 </span>
                             );
                         },

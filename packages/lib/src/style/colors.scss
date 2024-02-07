@@ -8,6 +8,7 @@
     --adyen-fp-color-gray-light: #d1d5da;
     --adyen-fp-color-gray-lighter: #eeeff1;
     --adyen-fp-color-gray-100: #f7f7f8;
+    --adyen-fp-color-gray-label-secondary: #5c687c;
 
     --adyen-fp-color-white: #fff;
 
@@ -39,6 +40,8 @@
     --adyen-fp-color-warning: var(--adyen-fp-color-gray-light);
 
     --adyen-fp-background-secondary: var(--adyen-fp-color-gray-100);
+
+    --adyen-fp-label-secondary: var(--adyen-fp-color-gray-label-secondary);
 
     // Border colors
     --adyen-fp-color-border-dark: var(--adyen-fp-color-gray-dark);

@@ -13,16 +13,6 @@
         border-color: transparent;
     }
 
-    &--clickable-row {
-        cursor: pointer;
-
-        &:hover,
-        &:focus {
-            background: var(--adyen-fp-color-gray-100);
-            outline-offset: -1px;
-        }
-    }
-
     &__table {
         border-collapse: separate;
         border-spacing: 0;
@@ -49,6 +39,16 @@
         }
         #{$adyen-fp-data-grid}__body {
             border-bottom: 0;
+        }
+
+        &--clickable {
+            cursor: pointer;
+
+            &:hover,
+            &:focus {
+                background: var(--adyen-fp-color-gray-100);
+                outline-offset: -1px;
+            }
         }
     }
 

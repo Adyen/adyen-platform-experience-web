@@ -1,5 +1,4 @@
 import { useCallback, useMemo, useState } from 'preact/hooks';
-import useSessionAwareRequest from '@src/hooks/useSessionAwareRequest/useSessionAwareRequest';
 import useCoreContext from '@src/core/Context/useCoreContext';
 import FilterBar from '../../../internal/FilterBar';
 import DateFilter from '../../../internal/FilterBar/filters/DateFilter';
@@ -7,19 +6,17 @@ import TransactionList from './TransactionList';
 import { TransactionFilterParam, TransactionsComponentProps } from '../types';
 import { DateFilterProps, DateRangeFilterParam } from '../../../internal/FilterBar/filters/DateFilter/types';
 import { useCursorPaginatedRecords } from '../../../internal/Pagination/hooks';
-import { ITransaction } from '@src/types';
 import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '@src/components/internal/Pagination/constants';
-import { PaginatedResponseDataWithLinks } from '@src/components/internal/Pagination/types';
-import { parseSearchParams } from '@src/core/Services/requests/utils';
 import { EMPTY_OBJECT, isFunction } from '@src/utils/common';
 import Alert from '@src/components/internal/Alert';
 import { ExternalUIComponentProps } from '../../../types';
-import { API_ENDPOINTS } from '@src/core/Services/requests/endpoints';
 import { TIME_RANGE_PRESET_OPTIONS } from '@src/components/internal/DatePicker/components/TimeRangeSelector';
 import type { TranslationKey } from '@src/core/Localization/types';
 import Typography from '@src/components/internal/Typography/Typography';
 import { TypographyVariant } from '@src/components/internal/Typography/types';
 import './TransactionList.scss';
+import { SetupHttpOptions, useSetupEndpoint } from '@src/hooks/useSetupEndpoint/useSetupEndpoint';
+import { ITransaction } from '@src/types';
 
 const { from, to } = Object.values(TIME_RANGE_PRESET_OPTIONS)[0]!;
 const DEFAULT_TIME_RANGE_PRESET = Object.keys(TIME_RANGE_PRESET_OPTIONS)[0]! as TranslationKey;
@@ -42,43 +39,45 @@ function Transactions({
     onLimitChanged,
     preferredLimit = DEFAULT_PAGE_LIMIT,
     allowLimitSelection,
-    withTitle,
-    core,
+    withTitle
 }: ExternalUIComponentProps<TransactionsComponentProps>) {
     const _onFiltersChanged = useMemo(() => (isFunction(onFiltersChanged) ? onFiltersChanged : void 0), [onFiltersChanged]);
     const _onLimitChanged = useMemo(() => (isFunction(onLimitChanged) ? onLimitChanged : void 0), [onLimitChanged]);
     const preferredLimitOptions = useMemo(() => (allowLimitSelection ? LIMIT_OPTIONS : undefined), [allowLimitSelection]);
 
-    const { i18n, loadingContext } = useCoreContext();
-    const { httpProvider } = useSessionAwareRequest(core);
+    const { i18n } = useCoreContext();
     const defaultTimeRangePreset = useMemo(() => i18n.get(DEFAULT_TIME_RANGE_PRESET), [i18n]);
     const [selectedTimeRangePreset, setSelectedTimeRangePreset] = useState(defaultTimeRangePreset);
 
+    const transactionsEndpointCall = useSetupEndpoint('getTransactions');
+
     const getTransactions = useCallback(
         async (pageRequestParams: Record<TransactionFilterParam | 'cursor', string>, signal?: AbortSignal) => {
-            const request: Parameters<typeof httpProvider>[0] = {
-                loadingContext: loadingContext,
-                path: API_ENDPOINTS.transactions.getTransactions,
+            const requestOptions: SetupHttpOptions = {
                 errorLevel: 'error',
-                params: parseSearchParams({
+                signal,
+            };
+
+            const parameters = {
+                query: {
                     ...pageRequestParams,
                     createdSince: pageRequestParams.createdSince ?? DEFAULT_CREATED_SINCE,
                     createdUntil: pageRequestParams.createdUntil ?? DEFAULT_CREATED_UNTIL,
-                    balancePlatform: pageRequestParams.balancePlatform ?? balancePlatformId,
-                }),
-                signal,
+                },
+                path: { balanceAccountId: pageRequestParams.balancePlatform ?? balancePlatformId },
             };
-            return await httpProvider<PaginatedResponseDataWithLinks<ITransaction, 'data'>>(request, 'GET');
+            return transactionsEndpointCall(requestOptions, parameters);
         },
-        [balancePlatformId, loadingContext]
+        [balancePlatformId, transactionsEndpointCall]
     );
 
+    //TODO - Infer the return type of getTransactions instead of having to specify it
     const { canResetFilters, error, fetching, filters, limit, limitOptions, records, resetFilters, updateFilters, updateLimit, ...paginationProps } =
-        useCursorPaginatedRecords<ITransaction, 'data', string, TransactionFilterParam>(
+        useCursorPaginatedRecords<ITransaction, 'transactions', string, TransactionFilterParam>(
             useMemo(
                 () => ({
                     fetchRecords: getTransactions,
-                    dataField: 'data',
+                    dataField: 'transactions',
                     filterParams: transactionsFilterParams,
                     initialFiltersSameAsDefault: false,
                     onLimitChanged: _onLimitChanged,

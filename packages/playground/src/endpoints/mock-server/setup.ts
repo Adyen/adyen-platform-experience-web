@@ -8,9 +8,25 @@ export const setupMock = [
         return res(
             ctx.json({
                 endpoints: {
-                    ping: {
+                    getBalance: {
                         method: 'GET',
-                        url: 'ping',
+                        url: 'balanceAccounts/{balanceAccountId}/balances',
+                    },
+                    getTransactions: {
+                        method: 'GET',
+                        url: 'balanceAccounts/{balanceAccountId}/transactions',
+                    },
+                    getTransactionTotals: {
+                        method: 'GET',
+                        url: 'balanceAccounts/{balanceAccountId}/transactions/totals',
+                    },
+                    getBalanceAccounts: {
+                        method: 'GET',
+                        url: 'balanceAccounts',
+                    },
+                    getTransaction: {
+                        method: 'GET',
+                        url: 'balanceAccounts/transactions/{transactionId}',
                     },
                 },
             })

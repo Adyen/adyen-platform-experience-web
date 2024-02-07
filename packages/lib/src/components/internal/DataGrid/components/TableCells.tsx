@@ -1,17 +1,34 @@
 import DataGridCell from '@src/components/internal/DataGrid/DataGridCell';
+import { DataGridColumn } from '@src/components/internal/DataGrid/types';
+import { CustomCell } from '@src/components/internal/DataGrid/DataGrid';
 
-export const TableCells = ({ columns, customCells, item }: { columns: any[]; customCells: any; item: any }) => {
+export const TableCells = <
+    Items extends Array<any>,
+    Columns extends Array<DataGridColumn<Extract<keyof Items[number], string>>>,
+    CustomCells extends CustomCell<Items, Columns, Columns[number]>
+>({
+    columns,
+    customCells,
+    item,
+}: {
+    columns: Columns;
+    customCells?: CustomCells;
+    item: Items[number];
+}) => {
     return (
         <>
             {columns.map(({ key }) => {
                 if (customCells?.[key])
                     return (
                         <DataGridCell aria-labelledby={String(key)} key={key}>
-                            {customCells[key]({
-                                key,
-                                value: item[key],
-                                item,
-                            })}
+                            {
+                                // TODO create safeguard to remove "as any" assertion
+                                customCells[key]!({
+                                    key,
+                                    value: item[key],
+                                    item,
+                                } as any)
+                            }
                         </DataGridCell>
                     );
 

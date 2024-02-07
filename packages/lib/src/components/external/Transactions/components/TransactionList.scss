@@ -9,7 +9,24 @@
     }
 
     &__amount {
+        display: block;
         font-weight: var(--adyen-fp-font-weight-medium);
         text-align: right;
+    }
+
+    &__payment-method {
+        align-items: center;
+        display: flex;
+        gap: 6px;
+    }
+
+    &__payment-method-logo-container {
+        height: 22px;
+        width: 32px;
+    }
+
+    &__payment-method-logo {
+        height: 100%;
+        object-fit: contain;
     }
 }

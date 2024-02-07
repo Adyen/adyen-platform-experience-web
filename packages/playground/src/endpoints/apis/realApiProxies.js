@@ -23,8 +23,7 @@ const makeSessionProxyOptions = ({ url, token }) => ({
 });
 
 export const realApiProxies = (configs, mode) => {
-    const { lemApi, BTLApi, BCLApi, sessionApi, platformComponentsApi } = configs;
-    const lemApiProxyOptions = makeProxyOptions(lemApi);
+    const { BTLApi, BCLApi, sessionApi, platformComponentsApi } = configs;
     const btlApiProxyOptions = makeProxyOptions(BTLApi);
     const bclApiProxyOptions = makeProxyOptions(BCLApi);
     const sessionApiProxyOptions = makeSessionProxyOptions(sessionApi);
@@ -33,8 +32,6 @@ export const realApiProxies = (configs, mode) => {
     return {
         [endpoints.transactions]: btlApiProxyOptions,
         [endpoints.balanceAccount]: bclApiProxyOptions,
-        [endpoints.accountHolder]: bclApiProxyOptions,
-        [endpoints.legalEntities]: lemApiProxyOptions,
         [endpoints.sessions]: sessionApiProxyOptions,
         [endpoints.setup]: platformComponentsApiProxyOptions,
     };

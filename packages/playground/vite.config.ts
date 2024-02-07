@@ -85,12 +85,7 @@ export default defineConfig(async ({ mode }) => {
         define: {
             'process.env.VITE_BALANCE_PLATFORM': JSON.stringify(apiConfigs.BTLApi.balancePlatform || null),
             'process.env.VITE_MODE': JSON.stringify(process.env.VITE_MODE ?? mode),
-            'process.env.VITE_ORG_LEGAL_ENTITY_ID': JSON.stringify(envIds.legalEntities.organization || null),
-            'process.env.VITE_IND_LEGAL_ENTITY_ID': JSON.stringify(envIds.legalEntities.individual || null),
-            'process.env.VITE_SOLE_PROPRIETORSHIP_LEGAL_ENTITY_ID': JSON.stringify(envIds.legalEntities.soleProprietorship || null),
             'process.env.VITE_DEFAULT_TRANSACTION_ID': JSON.stringify(envIds.transaction.defaultId || null),
-            'process.env.VITE_DEFAULT_BALANCE_ACCOUNT_ID': JSON.stringify(envIds.balanceAccount.defaultId || null),
-            'process.env.VITE_DEFAULT_ACCOUNT_HOLDER_ID': JSON.stringify(envIds.accountHolder.defaultId || null),
             'process.env.VITE_API_URL': JSON.stringify(playground.apiUrl || null),
             'process.env.VITE_PLAYGROUND_PORT': JSON.stringify(playground.port || null),
             'process.env.DEPLOYED_URL': JSON.stringify(process.env.DEPLOY_PRIME_URL || null),

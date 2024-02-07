@@ -8,15 +8,16 @@ import { useCallback, useMemo } from 'preact/hooks';
 import DataGrid from '../../../internal/DataGrid';
 import Pagination from '../../../internal/Pagination';
 import { TransactionListProps } from '../types';
-import { getLabel } from './utils';
+import { getLabel, parsePaymentMethodType } from './utils';
 import './TransactionList.scss';
 import { Tag } from '@src/components/internal/Tag/Tag';
 import { TagVariant } from '@src/components/internal/Tag/types';
 import { CellTextPosition } from '@src/components/internal/DataGrid/types';
+import { Image } from '@src/components/internal/Image/Image';
 
 const ModalContent = lazy(() => import('./ModalContent'));
 
-const FIELDS = ['creationDate', 'status', 'type', 'amount'] as const;
+const FIELDS = ['creationDate', 'status', 'paymentMethod', 'category', 'currency', 'amount'] as const;
 
 function TransactionList({ loading, transactions, onTransactionSelected, showPagination, showDetails, ...paginationProps }: TransactionListProps) {
     const { i18n } = useCoreContext();
@@ -58,7 +59,6 @@ function TransactionList({ loading, transactions, onTransactionSelected, showPag
                 onRowClick={{ retrievedField: 'id', callback: onRowClick }}
                 customCells={{
                     status: ({ value }) => {
-                        //TODO modify variant once we use the real status field from the BE
                         return (
                             <Tag
                                 label={i18n.get(value)}
@@ -66,7 +66,7 @@ function TransactionList({ loading, transactions, onTransactionSelected, showPag
                             />
                         );
                     },
-                    type: ({ value }) => {
+                    category: ({ value }) => {
                         return value ? i18n.get(`txType.${value}`) : null;
                     },
                     creationDate: ({ value }) => i18n.fullDate(value),
@@ -79,6 +79,24 @@ function TransactionList({ loading, transactions, onTransactionSelected, showPag
                             : null;
 
                         return <span className={classnames('adyen-fp-transactions__amount')}>{amount}</span>;
+                    },
+                    paymentMethod: ({ value }) => {
+                        return (
+                            <div className="adyen-fp-transactions__payment-method">
+                                <div className="adyen-fp-transactions__payment-method-logo-container">
+                                    <Image
+                                        name={value.type}
+                                        alt={value.type}
+                                        folder={'logos/'}
+                                        className={'adyen-fp-transactions__payment-method-logo'}
+                                    />
+                                </div>
+                                {parsePaymentMethodType(value)}
+                            </div>
+                        );
+                    },
+                    currency: ({ item }) => {
+                        return <Tag label={item.amount.currency} />;
                     },
                 }}
             >

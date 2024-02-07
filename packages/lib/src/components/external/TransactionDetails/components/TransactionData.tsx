@@ -6,20 +6,7 @@ import StructuredList from '@src/components/internal/StructuredList';
 
 export const TransactionData = ({ transaction }: { transaction: ITransaction }) => {
     const { i18n } = useCoreContext();
-    const labels = {
-        internal: 'category.internal',
-    } as const;
 
-    const isKeyOfLabel = (key: any): key is keyof typeof labels => {
-        return Boolean(labels[key as keyof typeof labels]);
-    };
-
-    const getLabel = (key: string) => {
-        if (isKeyOfLabel(key)) {
-            return i18n.get(labels[key]);
-        }
-        return key;
-    };
     return (
         <>
             <div className="adyen-fp-details-container">
@@ -58,8 +45,7 @@ export const TransactionData = ({ transaction }: { transaction: ITransaction }) 
                             layout={'3-9'}
                             items={{
                                 paymentId: transaction.id,
-                                type: transaction.type && i18n.get(`txType.${transaction.type!}`),
-                                category: transaction.category && getLabel(transaction.category),
+                                category: transaction.category && i18n.get(`txType.${transaction.category!}`),
                             }}
                             grid={false}
                         />

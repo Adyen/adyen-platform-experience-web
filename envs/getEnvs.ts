@@ -31,11 +31,6 @@ const parseEnv = (env: Record<string, string | undefined>, environment: ENVIRONM
             balancePlatform: env.VITE_BALANCE_PLATFORM ?? '',
             apiKey: env.VITE_API_KEY ?? '',
         },
-        lemApi: {
-            url: env.LEM_API_URL ?? '',
-            version: env.LEM_API_VERSION ?? '',
-            apiKey: env.LEM_API_KEY,
-        },
         platformComponentsApi: {
             url: getPlatformApiUrl(env, environment),
             version: env.LOOP_API_VERSION ?? '',

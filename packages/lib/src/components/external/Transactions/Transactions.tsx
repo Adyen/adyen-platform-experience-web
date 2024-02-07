@@ -12,7 +12,7 @@ export class TransactionsElement extends UIElement<TransactionsComponentProps> {
         this.componentToRender = this.componentToRender.bind(this);
     }
 
-    componentToRender = () => {
+    public componentToRender = () => {
         return (
             <Transactions
                 {...this.props}
