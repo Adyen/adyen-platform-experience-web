@@ -22,7 +22,7 @@ const FIELDS = ['creationDate', 'status', 'paymentMethod', 'category', 'currency
 function TransactionList({ loading, transactions, onTransactionSelected, showPagination, showDetails, ...paginationProps }: TransactionListProps) {
     const { i18n } = useCoreContext();
     const columns = useMemo(
-        () => FIELDS.map(key => ({ key: key, label: i18n.get(getLabel(key)), position: key === 'amount' ? CellTextPosition.RIGHT : undefined })),
+        () => FIELDS.map(key => ({ key, label: i18n.get(getLabel(key)), position: key === 'amount' ? CellTextPosition.RIGHT : undefined })),
         [i18n]
     );
 
