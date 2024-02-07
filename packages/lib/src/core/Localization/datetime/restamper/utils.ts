@@ -47,8 +47,11 @@ export const getTimezoneOffsetForTimestamp = (timestamp: number, timezoneFormatt
     return timezoneOffset - systemOffset;
 };
 
-export const restamp = <R extends Restamper = Restamper>(restamper: R, time: Parameters<R>[0], direction: -1 | 1 = 1) => {
+const restamp = <R extends Restamper = Restamper>(restamper: R, time: Parameters<R>[0], direction: -1 | 1 = 1) => {
     const { offset, timestamp } = restamper(time);
     const date = new Date(timestamp);
     return date.setMinutes(date.getMinutes() - offset * direction);
 };
+
+export const systemToTimezone = <R extends Restamper = Restamper>(restamper: R, time: Parameters<R>[0]) => restamp(restamper, time, 1);
+export const timezoneToSystem = <R extends Restamper = Restamper>(restamper: R, time: Parameters<R>[0]) => restamp(restamper, time, -1);

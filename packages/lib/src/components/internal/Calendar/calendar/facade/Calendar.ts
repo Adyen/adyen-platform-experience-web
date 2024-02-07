@@ -43,7 +43,7 @@ import { isString } from '@src/utils/validator-utils';
 import watchable from '@src/utils/watchable';
 import { Watchable, WatchableFactory, WatchCallable, WatchCallback } from '@src/utils/watchable/types';
 import { MonthFrame, TimeFrame, YearFrame } from '../timeframe';
-import today from '../today';
+import { today } from '../../clock';
 import {
     CalendarConfig,
     CalendarDayOfWeekData,
@@ -76,6 +76,7 @@ export default class Calendar {
     #watchableEffect?: () => void;
     #unwatch?: () => void;
 
+    #today = today();
     #shiftControlsHandles: CalendarGridControlRecord[1][] = [];
     #shiftControlsList?: CalendarShiftControl[];
 
@@ -101,7 +102,7 @@ export default class Calendar {
         minified: () => boolify(this.#config.minified),
         origin: () => this.#frame?.getTimestampAtIndex(0),
         to: () => this.#frame?.selectionEnd,
-        today: () => today.timestamp,
+        today: () => this.#today.timestamp,
     });
 
     #lastWatchableSnapshot?: CalendarWatchAtoms = this.#watchable?.snapshot;

@@ -3,7 +3,7 @@ import { UNWATCH_SIGNAL } from './constants';
 export type WatchCallable<T, ThisType = any> = (this: ThisType, ...args: any[]) => T;
 
 export type WatchCallback<T extends Record<string, any>> = {
-    (snapshot: T): any;
+    (snapshot: Readonly<T>): any;
     (signal: typeof UNWATCH_SIGNAL): any;
 };
 
@@ -20,11 +20,12 @@ export type Watchable<T extends Record<string, any>> = Readonly<{
     };
     idle: boolean;
     notify: WatchCallable<boolean | undefined>;
-    snapshot: T;
+    snapshot: Readonly<T>;
     watch: (callback?: WatchCallback<T>) => WatchCallable<void>;
 }>;
 
 export type WatchableFactory = {
     <T extends Record<string, any>>(watchableAtoms?: WatchAtoms<T>): Watchable<T>;
+    readonly UNWATCH: typeof UNWATCH_SIGNAL;
     readonly withSyncEffect: (effect?: WatchCallable<any>) => <T extends WatchCallable<any> = WatchCallable<any>>(fn: T) => T;
 };

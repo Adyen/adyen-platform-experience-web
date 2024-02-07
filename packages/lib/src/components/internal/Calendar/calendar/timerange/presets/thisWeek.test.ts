@@ -6,77 +6,66 @@ import thisWeek from './thisWeek';
 
 describe('this week', () => {
     const thisWeekTimestamps = getDateRangeContext(thisWeek);
+    const firstWeekDays = [/* default */ undefined, 0, 1, 2, 3, 4, 5, 6];
 
-    const runTestsFor = (firstWeekDay?: WeekDay) => {
-        const which = firstWeekDay === undefined ? 'default' : `${firstWeekDay}`;
+    test.each(firstWeekDays)(`should be this week (firstWeekDay => %i)`, firstWeekDayParam => {
+        thisWeekTimestamps.firstWeekDay = firstWeekDayParam as WeekDay;
 
-        test(`should be this week (firstWeekDay => ${which})`, () => {
-            const { firstWeekDay, fromDate, nowDate, to, toDate } = thisWeekTimestamps;
-            const fromMonth = fromDate.getMonth();
-            const fromYear = fromDate.getFullYear();
-            const nowMonth = nowDate.getMonth();
-            const nowYear = nowDate.getFullYear();
-            const toMonth = toDate.getMonth();
-            const toYear = toDate.getFullYear();
-            const dateOfToday = nowDate.getDate();
-            const firstDayOfThisWeek = fromDate.getDate();
+        const { firstWeekDay, fromDate, nowDate, to, toDate } = thisWeekTimestamps;
+        const fromMonth = fromDate.getMonth();
+        const fromYear = fromDate.getFullYear();
+        const nowMonth = nowDate.getMonth();
+        const nowYear = nowDate.getFullYear();
+        const toMonth = toDate.getMonth();
+        const toYear = toDate.getFullYear();
+        const dateOfToday = nowDate.getDate();
+        const firstDayOfThisWeek = fromDate.getDate();
 
-            expect(fromDate.getDay()).toBe(firstWeekDay); // first week day
-            expect(toDate.getDay()).toBe(nowDate.getDay()); // today
+        expect(fromDate.getDay()).toBe(firstWeekDay); // first week day
+        expect(toDate.getDay()).toBe(nowDate.getDay()); // today
 
-            if (firstDayOfThisWeek <= dateOfToday) {
-                expect(fromMonth).toBe(toMonth); // same month
-                expect(fromYear).toBe(toYear); // same year
-                expect(fromMonth).toBe(nowMonth); // current month
-                expect(fromYear).toBe(nowYear); // current year
+        if (firstDayOfThisWeek <= dateOfToday) {
+            expect(fromMonth).toBe(toMonth); // same month
+            expect(fromYear).toBe(toYear); // same year
+            expect(fromMonth).toBe(nowMonth); // current month
+            expect(fromYear).toBe(nowYear); // current year
+        } else {
+            if (nowMonth === 0) {
+                expect(fromMonth).toBe(11); // last month of year
+                expect(fromYear).toBe(nowYear - 1); // previous year
             } else {
-                if (nowMonth === 0) {
-                    expect(fromMonth).toBe(11); // last month of year
-                    expect(fromYear).toBe(nowYear - 1); // previous year
-                } else {
-                    expect(fromMonth).toBe(nowMonth - 1); // previous month
-                    expect(fromYear).toBe(nowYear); // this year
-                }
-
-                expect(fromMonth).toBe(toMonth); // same month
-                expect(fromYear).toBe(toYear); // same year
+                expect(fromMonth).toBe(nowMonth - 1); // previous month
+                expect(fromYear).toBe(nowYear); // this year
             }
+        }
 
-            const date = new Date(fromDate);
-            const nowDateStartTimestamp = new Date(nowDate).setHours(0, 0, 0, 0);
-            const daysInWeek = (7 + ((nowDate.getDay() - firstWeekDay) % 7)) % 7;
-            const dayInThisWeek = vi.fn();
-            const daySinceThisWeek = vi.fn();
+        const date = new Date(fromDate);
+        const nowDateStartTimestamp = new Date(nowDate).setHours(0, 0, 0, 0);
+        const daysInWeek = (7 + ((nowDate.getDay() - firstWeekDay) % 7)) % 7;
+        const dayInThisWeek = vi.fn();
+        const daySinceThisWeek = vi.fn();
 
-            let timestamp = date.getTime();
+        let timestamp = date.getTime();
 
-            while (timestamp < nowDateStartTimestamp) {
-                daySinceThisWeek();
-                if (timestamp < to) dayInThisWeek();
-                timestamp = date.setDate(date.getDate() + 1);
-            }
+        while (timestamp < nowDateStartTimestamp) {
+            daySinceThisWeek();
+            if (timestamp < to) dayInThisWeek();
+            timestamp = date.setDate(date.getDate() + 1);
+        }
 
-            expect(dayInThisWeek).toHaveBeenCalledTimes(daysInWeek);
-            expect(daySinceThisWeek.mock.calls.length).toBeGreaterThanOrEqual(daysInWeek);
-        });
+        expect(dayInThisWeek).toHaveBeenCalledTimes(daysInWeek);
+        expect(daySinceThisWeek.mock.calls.length).toBeGreaterThanOrEqual(daysInWeek);
+    });
 
-        test(`should have precise timestamps (firstWeekDay => ${which})`, () => {
-            const { firstWeekDay, from, now, to } = thisWeekTimestamps;
-            const dateBefore = new Date(from - 1);
+    test.each(firstWeekDays)(`should have precise timestamps (firstWeekDay => %i)`, firstWeekDayParam => {
+        thisWeekTimestamps.firstWeekDay = firstWeekDayParam as WeekDay;
 
-            expect(to).toBe(now);
-            expect(dateBefore.getDay()).toBe(((firstWeekDay as number) + 6) % 7);
-        });
-    };
+        const { firstWeekDay, from, now, to } = thisWeekTimestamps;
+        const dateBefore = new Date(from - 1);
 
-    // test with default `firstWeekDay`
-    runTestsFor();
-
-    // test with all possible values for `firstWeekDay`
-    for (let i = 0; i < 7; i++) {
-        thisWeekTimestamps.firstWeekDay = i as WeekDay;
-        runTestsFor(thisWeekTimestamps.firstWeekDay);
-    }
+        expect(to).toBe(now);
+        expect(dateBefore.getDay()).toBe(((firstWeekDay as number) + 6) % 7);
+    });
 
     test('should have precise timestamps for timezone (firstWeekDay => 1)', () => {
         const range = getDateRangeContext(() => thisWeek(1));

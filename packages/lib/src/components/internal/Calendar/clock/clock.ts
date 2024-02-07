@@ -1,19 +1,10 @@
 import $watchable from '@src/utils/watchable';
 import { struct } from '@src/utils/common';
-import { Today } from '../types';
+import { Clock } from './types';
 
-const today = (() => {
-    let timestamp: number;
-    let tomorrowOffset: number;
+const clock = (() => {
+    let timestamp: number | null = null;
     let controller: AbortController;
-
-    const getTimestamp = () => new Date().setHours(0, 0, 0, 0);
-
-    const refreshTimestamp = () => {
-        timestamp = getTimestamp();
-        const date = new Date(timestamp);
-        tomorrowOffset = date.setDate(date.getDate() + 1) - timestamp;
-    };
 
     // Adopted from: https://gist.github.com/jakearchibald/cb03f15670817001b1157e62a076fe95
     const animationInterval = (ms: number, signal: AbortSignal, callback: () => any) => {
@@ -37,27 +28,28 @@ const today = (() => {
     };
 
     const animationIntervalCallback = () => {
-        if (Date.now() - timestamp < tomorrowOffset) return;
-        refreshTimestamp();
+        timestamp = Date.now();
         watchable.notify();
     };
 
-    const watchable = $watchable();
+    const getTimestamp = () => timestamp ?? Date.now();
+    const watchable = $watchable({ timestamp: getTimestamp });
 
     watchable.callback.resume = () => {
         controller = new AbortController();
-        refreshTimestamp();
+        timestamp = Date.now();
         animationInterval(1000, controller.signal, animationIntervalCallback);
     };
 
     watchable.callback.idle = () => {
         controller.abort();
+        timestamp = null;
     };
 
     return struct({
-        timestamp: { get: () => (watchable.idle ? getTimestamp() : timestamp) },
+        timestamp: { get: getTimestamp },
         watch: { value: watchable.watch },
-    }) as Today;
+    }) as Clock;
 })();
 
-export default today;
+export default clock;
