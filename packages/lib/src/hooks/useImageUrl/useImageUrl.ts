@@ -23,7 +23,7 @@ const returnImage = ({
     extension = 'svg',
     size = '',
     subFolder = '',
-}: ImageOptions) => `${resourceContext}/images/${imageFolder}/${subFolder}/${parentFolder}/${name}/${size}.${extension}`.replace(/\/+/g, '/');
+}: ImageOptions) => `${resourceContext}/images/${imageFolder}/${subFolder}/${parentFolder}/${name}${size}.${extension}`.replace(/\/+/g, '/');
 
 export const useImageUrl = ({ options = EMPTY_OBJECT, name }: { options: Partial<ImageOptions>; name: string }) => {
     const { loadingContext } = useCoreContext();
