@@ -1,5 +1,5 @@
 import UIElement from '../UIElement';
-import Transactions from './components/Transactions';
+import Transactions from './components/TransactionsOverview';
 import { TransactionsComponentProps } from './types';
 import { _UIComponentProps } from '../../types';
 
