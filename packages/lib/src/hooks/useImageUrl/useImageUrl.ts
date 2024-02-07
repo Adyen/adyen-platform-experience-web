@@ -1,5 +1,6 @@
 import useCoreContext from '@src/core/Context/useCoreContext';
 import { EMPTY_OBJECT } from '@src/utils/common';
+import { useMemo } from 'preact/hooks';
 
 // TODO - Remove once we define a strategy to handle images
 const FALLBACK_CDN_CONTEXT = 'https://cdf6519016.cdn.adyen.com/checkoutshopper/';
@@ -28,9 +29,15 @@ export const useImageUrl = ({ options = EMPTY_OBJECT, name }: { options: Partial
     const { loadingContext } = useCoreContext();
 
     // TODO - Get rid of FALLBACK_CDN_CONTEXT once we define our assets URL
-    return returnImage({
-        resourceContext: FALLBACK_CDN_CONTEXT || loadingContext,
-        name,
-        ...options,
-    });
+    const image = useMemo(
+        () =>
+            returnImage({
+                resourceContext: FALLBACK_CDN_CONTEXT || loadingContext,
+                name,
+                ...options,
+            }),
+        [loadingContext, name, options]
+    );
+
+    return image;
 };
