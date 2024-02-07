@@ -1,6 +1,7 @@
 import useCoreContext from '@src/core/Context/useCoreContext';
 import { EMPTY_OBJECT } from '@src/utils/common';
 
+// TODO - Remove once we define a strategy to handle images
 const FALLBACK_CDN_CONTEXT = 'https://cdf6519016.cdn.adyen.com/checkoutshopper/';
 
 export interface ImageOptions {
