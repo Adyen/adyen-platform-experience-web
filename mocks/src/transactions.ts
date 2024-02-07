@@ -5,7 +5,7 @@ const TRANSACTION_DETAILS_1: ITransaction = {
     amount: { currency: 'EUR', value: 12000 },
     status: 'Rejected',
     category: 'Payment',
-    paymentMethod: { lastFourDigits: 6655, type: 'paypal' },
+    paymentMethod: { type: 'paypal' },
     creationDate: '2022-08-29T14:47:03+02:00',
 };
 const TRANSACTION_DETAILS_2: ITransaction = {
@@ -21,7 +21,7 @@ const TRANSACTION_DETAILS_3: ITransaction = {
     amount: { currency: 'USD', value: 4000 },
     status: 'Booked',
     category: 'Chargeback',
-    paymentMethod: { lastFourDigits: 8091, type: 'klarna' },
+    paymentMethod: { type: 'klarna' },
     creationDate: '2022-08-29T14:47:03+02:00',
 };
 const TRANSACTION_DETAILS_4: ITransaction = {
@@ -45,7 +45,7 @@ const TRANSACTION_DETAILS_6: ITransaction = {
     amount: { currency: 'EUR', value: 85050 },
     status: 'Booked',
     category: 'Capital',
-    paymentMethod: { lastFourDigits: 6332, type: 'klarna' },
+    paymentMethod: { type: 'klarna' },
     creationDate: '2022-08-29T14:47:03+02:00',
 };
 const TRANSACTION_DETAILS_7: ITransaction = {
@@ -61,7 +61,7 @@ const TRANSACTION_DETAILS_8: ITransaction = {
     amount: { currency: 'EUR', value: 820000 },
     status: 'Booked',
     category: 'Correction',
-    paymentMethod: { lastFourDigits: 4312, type: 'klarna' },
+    paymentMethod: { type: 'klarna' },
     creationDate: '2022-08-29T14:47:03+02:00',
 };
 

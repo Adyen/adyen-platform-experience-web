@@ -8,7 +8,7 @@ import { useCallback, useMemo } from 'preact/hooks';
 import DataGrid from '../../../internal/DataGrid';
 import Pagination from '../../../internal/Pagination';
 import { TransactionListProps } from '../types';
-import { getLabel } from './utils';
+import { getLabel, parsePaymentMethodType } from './utils';
 import './TransactionList.scss';
 import { Tag } from '@src/components/internal/Tag/Tag';
 import { TagVariant } from '@src/components/internal/Tag/types';
@@ -89,7 +89,7 @@ function TransactionList({ loading, transactions, onTransactionSelected, showPag
                                     folder={'logos/'}
                                     className={'adyen-fp-transactions__payment-method-logo'}
                                 />
-                                {value.type === 'klarna' ? 'Klarna' : value.lastFourDigits}
+                                {parsePaymentMethodType(value)}
                             </div>
                         );
                     },

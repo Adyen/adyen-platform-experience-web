@@ -50,3 +50,14 @@ export const getRequestParams = (transactions: PaginatedResponseDataWithLinks<IT
     }
     return null;
 };
+
+const PAYMENT_METHODS = Object.freeze({
+    klarna: 'Klarna',
+    paypal: 'PayPal',
+});
+
+export function parsePaymentMethodType(paymentMethod: ITransaction['paymentMethod']) {
+    if (paymentMethod.lastFourDigits) return paymentMethod.lastFourDigits;
+
+    return PAYMENT_METHODS[paymentMethod.type as keyof typeof PAYMENT_METHODS] || paymentMethod.type;
+}
