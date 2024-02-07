@@ -24,7 +24,7 @@ enableServerInMockedMode()
 
         const transactionsComponent = new TransactionsComponent({
             core: adyenFP,
-            balancePlatformId: process.env.VITE_BALANCE_PLATFORM ?? '',
+            balancePlatformId: process.env.VITE_BALANCE_PLATFORMs ?? 'mocked',
             withTitle: true,
             onTransactionSelected: ({ showModal }) => {
                 showModal();
