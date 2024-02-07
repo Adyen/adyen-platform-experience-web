@@ -7,6 +7,7 @@ import getImage from '../../utils/get-image';
 import { BaseElementProps, IUIElement, UIElementProps } from '../types';
 import { UIElementStatus } from '../types';
 import { SetupEndpoint } from '@src/types/models/openapi/endpoints';
+import { EMPTY_OBJECT } from '@src/utils/common';
 
 export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUIElement {
     protected componentRef: UIElement<P> | null;
@@ -91,9 +92,9 @@ export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUI
                     <div>Error occured</div>
                 ) : (
                     <AuthProvider
-                        endpoints={this.session?.configuration?.endpoints || ({} as SetupEndpoint)}
+                        endpoints={this.session?.configuration?.endpoints || (EMPTY_OBJECT as SetupEndpoint)}
                         token={this.token}
-                        updateCore={this.props.core.update}
+                        updateCore={this.props.core.update.bind(this.props.core)}
                     >
                         <CoreProvider i18n={this.i18n} loadingContext={this.loadingContext}>
                             {this.componentToRender && <>{this.componentToRender()}</>}
