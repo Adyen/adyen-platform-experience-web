@@ -10,16 +10,11 @@ interface ImageProps {
     folder?: string;
 }
 
-export const Image = ({ folder = 'components/', className, alt, name, ...props }: ImageProps) => {
-    const imageUrl = useImageUrl(
-        useMemo(
-            () => ({
-                options: { imageFolder: folder, ...props },
-                name,
-            }),
-            [folder, name, props]
-        )
-    );
+export const Image = ({ folder = 'components/', className, alt, name, extension }: ImageProps) => {
+    const imageUrl = useImageUrl({
+        options: useMemo(() => ({ imageFolder: folder, extension }), [extension, folder]),
+        name,
+    });
 
     return <img className={cx('adyen-fp__image', className)} alt={alt} src={imageUrl} />;
 };
