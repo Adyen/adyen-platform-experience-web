@@ -26,7 +26,7 @@ const MULTIPLE_BALANCE_ACCOUNTS = [
 ];
 
 export const balanceAccountMock = [
-    rest.post(endpoints.balanceAccount, (req, res, ctx) => {
+    rest.get(endpoints.balanceAccount, (req, res, ctx) => {
         return res(
             ctx.json({
                 balanceAccounts: MULTIPLE_BALANCE_ACCOUNTS,
