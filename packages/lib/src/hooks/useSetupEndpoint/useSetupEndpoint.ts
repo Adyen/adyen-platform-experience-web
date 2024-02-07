@@ -5,6 +5,7 @@ import useCoreContext from '@src/core/Context/useCoreContext';
 import { parseSearchParams } from '@src/core/Services/requests/utils';
 import { useCallback } from 'preact/hooks';
 import { HttpMethod, HttpOptions } from '@src/core/Services/requests/types';
+import { EMPTY_OBJECT } from '@src/utils/common';
 
 type Params<T extends Record<any, any>> = T['parameters'];
 
@@ -29,7 +30,7 @@ export const useSetupEndpoint = <Endpoint extends EndpointName, Operation extend
     const httpRequest = useCallback(
         async (...args: FunctionParams<Endpoint, Operation>): Promise<SuccessResponse<Operation>> => {
             const requestOptions = args[0];
-            const params = args[1] || {};
+            const params = args[1] || EMPTY_OBJECT;
 
             const operation = endpoints[endpoint];
 

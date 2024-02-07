@@ -4,6 +4,7 @@ import { resolveEnvironment } from './utils';
 import Session from './Session';
 import Localization from './Localization';
 import BaseElement from '../components/external/BaseElement';
+import { EMPTY_OBJECT } from '../utils/common';
 
 const FALLBACK_ENV = 'test' satisfies DevEnvironment;
 
@@ -64,7 +65,7 @@ class Core<T extends CoreOptions<T> = any> {
      * @param initSession - should session be initiated again
      * @returns this - the element instance
      */
-    public update = (options: Partial<CoreOptions<T>> = {}, initSession = false): Promise<this> => {
+    public update = (options: Partial<CoreOptions<T>> = EMPTY_OBJECT, initSession = false): Promise<this> => {
         this.setOptions(options);
 
         return this.initialize(initSession).then(() => {

@@ -1,4 +1,5 @@
 import useCoreContext from '@src/core/Context/useCoreContext';
+import { EMPTY_OBJECT } from '@src/utils/common';
 
 const FALLBACK_CDN_CONTEXT = 'https://cdf6519016.cdn.adyen.com/checkoutshopper/';
 
@@ -22,7 +23,7 @@ const returnImage = ({
     subFolder = '',
 }: ImageOptions) => `${resourceContext}images/${imageFolder}${subFolder}${parentFolder}${name}${size}.${extension}` as const;
 
-export const useImageUrl = ({ options = {}, name }: { options: Partial<ImageOptions>; name: string }) => {
+export const useImageUrl = ({ options = EMPTY_OBJECT, name }: { options: Partial<ImageOptions>; name: string }) => {
     const { loadingContext } = useCoreContext();
 
     // TODO - Get rid of FALLBACK_CDN_CONTEXT once we define our assets URL

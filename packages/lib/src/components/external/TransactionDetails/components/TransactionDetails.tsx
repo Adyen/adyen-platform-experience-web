@@ -8,6 +8,7 @@ import { TransactionData } from '@src/components/external/TransactionDetails/com
 import { ExternalUIComponentProps } from '../../../types';
 import { useSetupEndpoint } from '@src/hooks/useSetupEndpoint/useSetupEndpoint';
 import { useCallback } from 'preact/hooks';
+import { EMPTY_OBJECT } from '@src/utils/common';
 
 export default function TransactionDetails({ transaction, transactionId, title }: ExternalUIComponentProps<TransactionDetailsComponentProps>) {
     const { i18n } = useCoreContext();
@@ -15,12 +16,9 @@ export default function TransactionDetails({ transaction, transactionId, title }
     const getTransactionDetail = useSetupEndpoint('getTransaction');
 
     const fetchCallback = useCallback(async () => {
-        return await getTransactionDetail(
-            {},
-            {
-                path: { transactionId },
-            }
-        );
+        return await getTransactionDetail(EMPTY_OBJECT, {
+            path: { transactionId },
+        });
     }, [getTransactionDetail, transactionId]);
 
     const { data, error, isFetching } = useFetch({
