@@ -4,7 +4,7 @@ import './TransactionList.scss';
 import { useSetupEndpoint } from '@src/hooks/useSetupEndpoint/useSetupEndpoint';
 import { useFetch } from '@src/hooks/useFetch/useFetch';
 import { TransactionsOverview } from '@src/components/external/Transactions/components/TransactionsOverview';
-import { useMemo } from 'preact/hooks';
+import { useCallback, useMemo } from 'preact/hooks';
 import { EMPTY_OBJECT } from '@src/utils/common';
 
 function TransactionsOverviewComponent(props: ExternalUIComponentProps<TransactionsComponentProps>) {
@@ -13,9 +13,9 @@ function TransactionsOverviewComponent(props: ExternalUIComponentProps<Transacti
 
     const { data } = useFetch({
         fetchOptions: EMPTY_OBJECT,
-        queryFn: async () => {
-            return await balanceAccountEndpointCall(EMPTY_OBJECT);
-        },
+        queryFn: useCallback(async () => {
+            return balanceAccountEndpointCall(EMPTY_OBJECT);
+        }, [balanceAccountEndpointCall]),
     });
 
     const balanceAccounts = useMemo(() => data?.balanceAccounts, [data?.balanceAccounts]);
