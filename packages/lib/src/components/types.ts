@@ -1,7 +1,7 @@
 import UIElement from './external/UIElement';
 import { Core, CoreOptions } from '../core';
 import Analytics from '../core/Analytics';
-import Localization from '@src/core/Localization';
+import Localization from '../core/Localization';
 
 export const enum InteractionKeyCode {
     ARROW_DOWN = 'ArrowDown',

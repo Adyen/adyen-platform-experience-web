@@ -1,9 +1,9 @@
-import { Core } from '@src/core';
+import { Core } from '../../../core';
 import { PaginationProps, WithPaginationLimitSelection } from '../../internal/Pagination/types';
 import UIElement from '../UIElement';
-import { ITransaction } from '@src/types';
-import { TranslationKey } from '@src/core/Localization/types';
-import { ModalSize } from '@src/components/internal/Modal/types';
+import { ITransaction } from '../../../types';
+import { TranslationKey } from '../../../core/Localization/types';
+import { ModalSize } from '../../internal/Modal/types';
 
 export const enum TransactionFilterParam {
     ACCOUNT_HOLDER = 'accountHolderId',
@@ -17,7 +17,6 @@ export type OnSelection = (selection: { id: string; showModal: () => void }) => 
 
 export interface TransactionsComponentProps {
     name?: string;
-    balancePlatformId?: string;
     elementRef?: UIElement<TransactionsComponentProps> | null;
     onTransactionSelected?: OnSelection;
     onFiltersChanged?: (filters: { [P in TransactionFilterParam]?: string }) => any;
@@ -25,7 +24,6 @@ export interface TransactionsComponentProps {
     preferredLimit?: number;
     allowLimitSelection?: boolean;
     showDetails?: DetailsOptions;
-    withTitle?: boolean;
     core: Core;
 }
 export interface TransactionListProps extends WithPaginationLimitSelection<PaginationProps> {

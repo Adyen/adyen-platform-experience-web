@@ -1,4 +1,4 @@
-import type { ITransaction } from '@adyen/adyen-fp-web/src/types/models/api/transactions';
+import { ITransaction } from '../../packages/lib/src/types';
 
 const TRANSACTION_DETAILS_1: ITransaction = {
     id: '1WEPGD5VS767881Q',

@@ -1,6 +1,4 @@
-import type { paths } from '../openapi/schema';
 import type { API_ENDPOINTS } from '../../../core/Services/requests/endpoints';
-import { components } from '../openapi/schema';
 
 type AvailableHttpMethods = 'get' | 'post';
 
@@ -16,10 +14,13 @@ type AvailablePaths = NestedUnion<typeof API_ENDPOINTS>;
 
 type HasMethodAvailable<T, M extends keyof any> = M extends keyof T ? true : false;
 
-type NarrowByMethod<M extends AvailableHttpMethods, URL extends AvailablePaths = AvailablePaths> = {
-    [k in URL]: HasMethodAvailable<paths[k], M> extends true ? k : never;
+type NarrowByMethod<M extends AvailableHttpMethods, Paths extends Record<any, any>, URL extends AvailablePaths = AvailablePaths> = {
+    [k in URL]: HasMethodAvailable<Paths[k], M> extends true ? k : never;
 }[URL] & {};
 
-export type SuccessGETResponse<T extends NarrowByMethod<'get'>> = paths[T]['get']['responses'][200]['content']['application/json'];
+export type SuccessGETResponse<
+    Paths extends Record<any, any>,
+    T extends NarrowByMethod<'get', Paths>
+> = Paths[T]['get']['responses'][200]['content']['application/json'];
 
 export type Schema<T extends Record<any, any>, Name extends keyof T['schemas']> = T['schemas'][Name];

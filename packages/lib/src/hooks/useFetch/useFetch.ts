@@ -21,7 +21,7 @@ type UseFetchConfig<QueryFn> = {
     loadingContext?: string;
     params?: Record<string, string | number | Date>;
     requestOptions?: RequestInit;
-    fetchOptions: Partial<FetchOptions>;
+    fetchOptions?: Partial<FetchOptions>;
     queryFn: QueryFn;
 };
 export function useFetch<QueryFn extends (...args: any) => Promise<any>, T extends Awaited<ReturnType<QueryFn>>>({

@@ -9,7 +9,9 @@ import { EMPTY_OBJECT } from '@src/utils/common';
 
 type Params<T extends Record<any, any>> = T['parameters'];
 
-export type SetupHttpOptions = Omit<HttpOptions, 'loadingContext' | 'path' | 'method'>;
+type ExcludedHttpOptions = 'loadingContext' | 'path' | 'method' | 'params';
+
+export type SetupHttpOptions = Omit<HttpOptions, ExcludedHttpOptions>;
 
 type FunctionParams<Endpoint extends EndpointName, Operation extends EndpointsOperations[Endpoint]> = RequiresParameter<Operation> extends true
     ? [options: SetupHttpOptions, params: RequiresParameter<Operation> extends true ? Params<Operation> : never]
