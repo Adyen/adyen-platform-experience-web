@@ -5,45 +5,48 @@ ol {
 }
 
 .adyen-fp-calendar {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(16rem, 20rem));
-    justify-content: center;
+    max-width: 17.5rem;
 
-    &-month {
-        $adyen-fp-calendar-month: &;
-        $adyen-fp-calendar-month__grid: #{$adyen-fp-calendar-month}__grid;
-        text-align: center;
-
+    &__month {
         &:not(:only-child) {
             margin-inline: 2rem;
         }
 
-        &__name {
-            font-size: 1.25em;
-            font-weight: 600;
-            margin-block-end: 0.875rem;
+        &-name {
+            font-size: var(--adyen-fp-font-size-base);
+            font-weight: var(--adyen-fp-font-weight-medium);
+            letter-spacing: calc(var(--adyen-fp-font-size-base) / 48);
+            margin: 3rem auto 1.625rem;
+            text-align: center;
+        }
+    }
+
+    &__grid {
+        border-spacing: 0;
+        width: 100%;
+    }
+
+    &__row {
+        display: grid;
+        grid-template-columns: repeat(var(--adyen-fp-calendar-rowspan, 7), 1fr);
+    }
+
+    &__cell {
+        padding: 0;
+        position: relative;
+        text-align: center;
+        touch-action: manipulation;
+        user-select: none;
+
+        &--day-of-week {
+            margin-bottom: 0.5rem;
         }
 
-        &__grid {
-            width: 100%;
-        }
-
-        #{$adyen-fp-calendar-month__grid}-row {
-            display: grid;
-            grid-template-columns: repeat(var(--_adyen-fp-calendar-rowspan, 7), 1fr);
-            justify-content: space-around;
-        }
-
-        #{$adyen-fp-calendar-month__grid}-cell {
-            position: relative;
-            touch-action: manipulation;
-            user-select: none;
-
+        &--date {
             &::before {
                 content: '';
                 display: block;
                 padding-top: 100%;
-                z-index: -1;
             }
 
             > :not(:only-child) {
@@ -59,67 +62,56 @@ ol {
             }
 
             &[data-within-selection='1']::before {
-                background: var(--adyen-fp-color-gray-light);
-                margin: 0 -1px;
+                background: var(--adyen-fp-color-gray-lighter);
             }
 
-            &[data-within-selection='1'][data-range-start='1']::before,
-            &[data-within-selection='1'][data-first-month-day='1']::before,
-            &[data-within-selection='1']:first-child::before,
-            &[data-selection-start='1']:nth-child(n)::before {
-                border-bottom-left-radius: 50%;
-                border-top-left-radius: 50%;
-                margin-left: 0;
+            &[data-selection-start='1']::before {
+                background: var(--adyen-fp-color-black);
+                border-radius: 4px 0 0 4px;
             }
 
-            &[data-within-selection='1'][data-range-end='1']::before,
-            &[data-within-selection='1'][data-last-month-day='1']::before,
-            &[data-within-selection='1']:last-child::before,
-            &[data-selection-end='1']:nth-child(n)::before {
-                border-bottom-right-radius: 50%;
-                border-top-right-radius: 50%;
-                margin-right: 0;
+            &[data-selection-end='1']::before {
+                background: var(--adyen-fp-color-black);
+                border-radius: 0 4px 4px 0;
             }
         }
     }
 
     &__day-of-week {
-        font-size: 0.875em;
-        font-weight: 700;
-        text-decoration: none;
+        color: var(--adyen-fp-color-gray-label-secondary);
+        font-size: var(--adyen-fp-font-size-xsmall);
+        font-weight: var(--adyen-fp-font-weight-regular);
+        letter-spacing: calc(var(--adyen-fp-font-size-xsmall) / 32);
     }
 
     &__date {
-        color: var(--adyen-fp-color-gray-darker);
-        font-size: 0.875em;
+        color: var(--adyen-fp-color-black);
+        font-size: var(--adyen-fp-font-size-medium);
+        font-weight: var(--adyen-fp-font-weight-regular);
         z-index: 0;
 
-        [data-weekend='1'] & {
-            color: var(--adyen-fp-color-green);
-        }
-
-        [data-first-week-day='1'] & {
-            color: var(--adyen-fp-color-red);
-        }
-
-        //[aria-selected='true'] &,
-        [data-selection-start='1'] &,
-        [data-selection-end='1'] & {
+        [data-selection-start='1']:not([data-today='1']) &,
+        [data-selection-end='1']:not([data-today='1']) & {
             color: var(--adyen-fp-color-white);
+        }
 
+        [data-today='1'] & {
             &::before {
-                background: var(--adyen-fp-color-black);
+                background: var(--adyen-fp-color-white);
                 border-radius: 50%;
                 content: '';
-                inset: 4px;
-                opacity: 0.45;
+                inset: 12.5%;
                 position: absolute;
                 z-index: -1;
             }
         }
 
+        :not([data-within-month='1']) > & {
+            opacity: 0;
+        }
+
         :not([data-within-range='1']) > & {
-            color: var(--adyen-fp-color-gray);
+            color: var(--adyen-fp-color-gray-disable);
         }
     }
 }

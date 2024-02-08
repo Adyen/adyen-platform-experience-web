@@ -71,8 +71,8 @@ const DatePicker = forwardRef((props: DatePickerProps, ref) => {
                 {...props}
                 ref={calendarRef}
                 firstWeekDay={DEFAULT_FIRST_WEEK_DAY}
-                dynamicBlockRows={false}
-                onlyCellsWithin={false}
+                dynamicBlockRows={true}
+                onlyCellsWithin={true}
                 controls={props.controls ?? calendar.controls.MINIMAL}
                 highlight={props.highlight ?? calendar.highlight.MANY}
                 onHighlight={onHighlight}

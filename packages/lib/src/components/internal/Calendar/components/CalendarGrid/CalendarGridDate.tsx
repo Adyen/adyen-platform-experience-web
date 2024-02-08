@@ -6,7 +6,7 @@ import { EMPTY_OBJECT } from '@src/utils/common/constants';
 import { CalendarGridRenderToken } from '../../types';
 import memoComparator from '@src/utils/memoComparator';
 
-const DEFAULT_DATE_CELL_CLASSNAME = 'adyen-fp-calendar-month__grid-cell';
+const DEFAULT_DATE_CELL_CLASSNAME = 'adyen-fp-calendar__cell adyen-fp-calendar__cell--date';
 const DEFAULT_DATE_TIME_CLASSNAME = 'adyen-fp-calendar__date';
 
 const getGridDateRenderProps = (computedProps = EMPTY_OBJECT as any, prepare?: CalendarGridDateProps['prepare']) => {
