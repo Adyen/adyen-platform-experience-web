@@ -24,7 +24,6 @@ export interface TransactionsComponentProps {
     preferredLimit?: number;
     allowLimitSelection?: boolean;
     showDetails?: DetailsOptions;
-    withTitle?: boolean;
     core: Core;
 }
 export interface TransactionListProps extends WithPaginationLimitSelection<PaginationProps> {

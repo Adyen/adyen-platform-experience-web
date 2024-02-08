@@ -16,7 +16,6 @@ const meta: Meta<ElementProps<typeof TransactionsComponent>> = {
     args: {
         preferredLimit: 10,
         allowLimitSelection: true,
-        withTitle: true,
     },
     render: (args, context) => {
         if (context.loaded.data) {

@@ -24,7 +24,6 @@ enableServerInMockedMode()
 
         const transactionsComponent = new TransactionsComponent({
             core: adyenFP,
-            withTitle: true,
             onTransactionSelected: ({ showModal }) => {
                 showModal();
                 // window.location.assign(`/src/pages/transaction/?id=${id}`);
