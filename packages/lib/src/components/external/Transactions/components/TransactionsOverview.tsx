@@ -7,6 +7,7 @@ import './TransactionList.scss';
 import { useSetupEndpoint } from '@src/hooks/useSetupEndpoint/useSetupEndpoint';
 import { useFetch } from '@src/hooks/useFetch/useFetch';
 import { TransactionListContainer } from '@src/components/external/Transactions/components/TransactionListContainer';
+import { useMemo } from 'preact/hooks';
 
 function TransactionsOverviewComponent(props: ExternalUIComponentProps<TransactionsComponentProps>) {
     const { i18n } = useCoreContext();
@@ -21,6 +22,8 @@ function TransactionsOverviewComponent(props: ExternalUIComponentProps<Transacti
         },
     });
 
+    const balanceAccounts = useMemo(() => data?.balanceAccounts, [data?.balanceAccounts]);
+
     return (
         <div className="adyen-fp-transactions">
             <div className="adyen-fp-transactions__container">
@@ -30,7 +33,7 @@ function TransactionsOverviewComponent(props: ExternalUIComponentProps<Transacti
                     </Typography>
                 )}
 
-                {data?.balanceAccounts[0]?.id && <TransactionListContainer {...props} balanceAccountId={data?.balanceAccounts[0]?.id} />}
+                {balanceAccounts && <TransactionListContainer {...props} balanceAccounts={balanceAccounts} />}
             </div>
         </div>
     );

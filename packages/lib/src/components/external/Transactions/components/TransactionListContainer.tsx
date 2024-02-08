@@ -8,7 +8,7 @@ import useCoreContext from '@src/core/Context/useCoreContext';
 import { SetupHttpOptions, useSetupEndpoint } from '@src/hooks/useSetupEndpoint/useSetupEndpoint';
 import { useCallback, useMemo, useState } from 'preact/hooks';
 import { useCursorPaginatedRecords } from '@src/components/internal/Pagination/hooks';
-import { ITransaction } from '@src/types';
+import { IBalanceAccountBase, ITransaction } from '@src/types';
 import { DateFilterProps, DateRangeFilterParam } from '@src/components/internal/FilterBar/filters/DateFilter/types';
 import { EMPTY_OBJECT, isFunction } from '@src/utils/common';
 import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '@src/components/internal/Pagination/constants';
@@ -22,12 +22,12 @@ const DEFAULT_CREATED_UNTIL = new Date(to).toISOString();
 export const TransactionListContainer = ({
     onFiltersChanged,
     onLimitChanged,
-    balanceAccountId,
+    balanceAccounts,
     allowLimitSelection,
     preferredLimit = DEFAULT_PAGE_LIMIT,
     onTransactionSelected,
     showDetails,
-}: TransactionsComponentProps & { balanceAccountId: undefined | string }) => {
+}: TransactionsComponentProps & { balanceAccounts: IBalanceAccountBase[] }) => {
     const { i18n } = useCoreContext();
 
     const transactionsEndpointCall = useSetupEndpoint('getTransactions');
@@ -45,11 +45,11 @@ export const TransactionListContainer = ({
                     createdSince: pageRequestParams.createdSince ?? DEFAULT_CREATED_SINCE,
                     createdUntil: pageRequestParams.createdUntil ?? DEFAULT_CREATED_UNTIL,
                 },
-                path: { balanceAccountId: balanceAccountId ?? '' },
+                path: { balanceAccountId: balanceAccounts[0]?.id ?? '' },
             };
             return transactionsEndpointCall(requestOptions, parameters);
         },
-        [balanceAccountId, transactionsEndpointCall]
+        [balanceAccounts, transactionsEndpointCall]
     );
 
     const _onFiltersChanged = useMemo(() => (isFunction(onFiltersChanged) ? onFiltersChanged : void 0), [onFiltersChanged]);
