@@ -44,17 +44,29 @@ const TransactionTotals = ({
 
     const totals = data?.totals?.[0];
 
-    return isLoading ? (
-        <Spinner />
-    ) : (
+    return (
         <div className="adyen-fp-transactions-total">
             <div className="adyen-fp-transactions-total__amount">
                 <Typography variant={TypographyVariant.CAPTION}>{i18n.get('incoming')}</Typography>
-                <Typography variant={TypographyVariant.TITLE}>{totals?.incomings ?? ''}</Typography>
+
+                {isLoading ? (
+                    <Spinner />
+                ) : (
+                    <>
+                        <Typography variant={TypographyVariant.TITLE}>{totals?.incomings ?? ''}</Typography>
+                    </>
+                )}
             </div>
             <div className="adyen-fp-transactions-total__amount">
                 <Typography variant={TypographyVariant.CAPTION}>{i18n.get('expense')}</Typography>
-                <Typography variant={TypographyVariant.TITLE}>{totals?.expenses ?? ''}</Typography>
+
+                {isLoading ? (
+                    <Spinner />
+                ) : (
+                    <>
+                        <Typography variant={TypographyVariant.TITLE}>{totals?.expenses ?? ''}</Typography>
+                    </>
+                )}
             </div>
             <span>{totals?.currency}</span>
         </div>
