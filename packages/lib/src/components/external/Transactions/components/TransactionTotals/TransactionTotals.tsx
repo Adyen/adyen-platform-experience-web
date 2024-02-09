@@ -40,9 +40,7 @@ const TransactionTotals = ({
         queryFn: fetchCallback,
     });
 
-    const isLoading = useMemo(() => {
-        return !balanceAccountId || isFetching;
-    }, [balanceAccountId, isFetching]);
+    const isLoading = !balanceAccountId || (balanceAccountId && !data && !error) || isFetching;
 
     const totals = data?.totals?.[0];
 
