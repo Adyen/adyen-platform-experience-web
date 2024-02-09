@@ -14,6 +14,7 @@ import { EMPTY_OBJECT, isFunction } from '@src/utils/common';
 import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '@src/components/internal/Pagination/constants';
 import { TranslationKey } from '@src/core/Localization/types';
 import TransactionTotals from '@src/components/external/Transactions/components/TransactionTotals/TransactionTotals';
+import { BalanceAccountsDisplay } from '@src/components/external/Transactions/components/AccountsBalanceDisplay/BalanceAccountsDisplay';
 
 const { from, to } = Object.values(TIME_RANGE_PRESET_OPTIONS)[0]!;
 const DEFAULT_TIME_RANGE_PRESET = Object.keys(TIME_RANGE_PRESET_OPTIONS)[0]! as TranslationKey;
@@ -145,13 +146,16 @@ export const TransactionsOverview = ({
                     onChange={updateCreatedDateFilter}
                 />
             </FilterBar>
-            <TransactionTotals
-                balanceAccountId={balanceAccountId}
-                statuses={statuses}
-                categories={categories}
-                createdUntil={transactionsFilterParams[TransactionFilterParam.CREATED_UNTIL]}
-                createdSince={transactionsFilterParams[TransactionFilterParam.CREATED_SINCE]}
-            />
+            <div className="adyen-fp-transactions__balance-totals">
+                <TransactionTotals
+                    balanceAccountId={balanceAccountId}
+                    statuses={statuses}
+                    categories={categories}
+                    createdUntil={transactionsFilterParams[TransactionFilterParam.CREATED_UNTIL]}
+                    createdSince={transactionsFilterParams[TransactionFilterParam.CREATED_SINCE]}
+                />
+                <BalanceAccountsDisplay balanceAccountId={balanceAccountId} />
+            </div>
             {showAlert ? (
                 <Alert icon={'cross'}>{error?.message ?? i18n.get('unableToLoadTransactions')}</Alert>
             ) : (

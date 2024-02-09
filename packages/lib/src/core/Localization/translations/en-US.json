@@ -183,5 +183,6 @@
     "paymentMethod": "Payment method",
     "currency": "Currency",
     "incoming": "Incoming",
-    "expense": "Expense"
+    "expense": "Expense",
+    "accountBalance": "Account Balance"
 }

@@ -6,9 +6,10 @@ const PREFIX = endpoints.setup;
 export const setupMock = [
     rest.post(`${PREFIX}`, (req, res, ctx) => {
         return res(
+            ctx.delay(200),
             ctx.json({
                 endpoints: {
-                    getBalance: {
+                    getBalances: {
                         method: 'GET',
                         url: 'balanceAccounts/{balanceAccountId}/balances',
                     },
