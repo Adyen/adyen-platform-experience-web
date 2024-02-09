@@ -23,7 +23,7 @@ function TransactionsOverviewComponent(props: ExternalUIComponentProps<Transacti
     return (
         <div className="adyen-fp-transactions">
             <div className="adyen-fp-transactions__container">
-                {balanceAccounts && <TransactionsOverview {...props} balanceAccounts={balanceAccounts} />}
+                <TransactionsOverview {...props} balanceAccounts={balanceAccounts} />
             </div>
         </div>
     );

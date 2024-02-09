@@ -53,6 +53,7 @@ export type PaginatedRecordsInitOptions<T, DataField extends string, FilterValue
     onLimitChanged?: (limit: number) => any;
     preferredLimit?: number;
     preferredLimitOptions?: readonly number[];
+    enabled: boolean;
 };
 
 export type BasePaginatedRecordsInitOptions<T, DataField extends string, FilterValue, FilterParam extends string> = PaginatedRecordsInitOptions<
@@ -66,6 +67,7 @@ export type BasePaginatedRecordsInitOptions<T, DataField extends string, FilterV
         recordsFilters: UsePaginatedRecordsFilters<FilterValue, FilterParam>
     ) => any;
     pagination: PaginationType;
+    enabled: boolean;
 };
 
 export type UsePaginatedRecordsFilters<FilterValue, FilterParam extends string> = UseFilters<UseReactiveStateRecord<FilterValue, FilterParam>>;

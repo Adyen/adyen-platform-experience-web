@@ -21,7 +21,7 @@ export interface DataGridProps<
     children?: ComponentChildren;
     columns: Columns;
     condensed: boolean;
-    data: Item;
+    data: Item | undefined;
     loading: boolean;
     outline: boolean;
     scrollable: boolean;

@@ -28,8 +28,28 @@ const MULTIPLE_BALANCE_ACCOUNTS = [
 export const balanceAccountMock = [
     rest.get(endpoints.balanceAccount, (req, res, ctx) => {
         return res(
+            ctx.delay(300),
             ctx.json({
                 balanceAccounts: MULTIPLE_BALANCE_ACCOUNTS,
+            })
+        );
+    }),
+    rest.get(endpoints.balanceAccountTotals, (req, res, ctx) => {
+        return res(
+            ctx.delay(300),
+            ctx.json({
+                totals: [
+                    {
+                        currency: 'EUR',
+                        incomings: 2892,
+                        expenses: -23484,
+                    },
+                    {
+                        currency: 'USD',
+                        incomings: 0,
+                        expenses: -20,
+                    },
+                ],
             })
         );
     }),

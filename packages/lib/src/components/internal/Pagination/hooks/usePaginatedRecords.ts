@@ -87,6 +87,7 @@ const usePaginatedRecords = <T, DataField extends string, FilterValue extends st
     pagination,
     preferredLimit,
     preferredLimitOptions,
+    enabled,
 }: BasePaginatedRecordsInitOptions<T, DataField, FilterValue, FilterParam>): UsePaginatedRecords<T, FilterValue, FilterParam> => {
     const [records, setRecords] = useState<T[]>([]);
     const [fetching, updateFetching] = useBooleanState(true);
@@ -152,7 +153,9 @@ const usePaginatedRecords = <T, DataField extends string, FilterValue extends st
         /* eslint-disable-next-line */
     }, [filterParams]);
 
-    useEffect(() => goto(1), [goto]);
+    useEffect(() => {
+        if (enabled) goto(1);
+    }, [goto, enabled]);
 
     useEffect(() => {
         fetching && setError(undefined);

@@ -181,5 +181,7 @@
     "rangePreset.thisWeek": "This week",
     "rangePreset.yearToDate": "Year to date",
     "paymentMethod": "Payment method",
-    "currency": "Currency"
+    "currency": "Currency",
+    "incoming": "Incoming",
+    "expense": "Expense"
 }
