@@ -1,11 +1,9 @@
-ol {
+.adyen-fp-calendar {
+    --adyen-fp-calendar-corner-border-radius: 4px;
+
     list-style: none;
     margin: 0;
     padding: 0;
-}
-
-.adyen-fp-calendar {
-    max-width: 17.5rem;
 
     &__month {
         &:not(:only-child) {
@@ -16,8 +14,10 @@ ol {
             font-size: var(--adyen-fp-font-size-base);
             font-weight: var(--adyen-fp-font-weight-medium);
             letter-spacing: calc(var(--adyen-fp-font-size-base) / 48);
-            margin: 3rem auto 1.625rem;
+            line-height: 2.5rem;
+            margin-bottom: 1rem;
             text-align: center;
+            user-select: none;
         }
     }
 
@@ -37,6 +37,10 @@ ol {
         text-align: center;
         touch-action: manipulation;
         user-select: none;
+
+        &:focus-visible {
+            z-index: 1;
+        }
 
         &--day-of-week {
             margin-bottom: 0.5rem;
@@ -61,18 +65,28 @@ ol {
                 position: absolute;
             }
 
+            &[data-within-month='1'][data-range-end='1'],
+            &[data-within-month='1'][data-range-start='1'],
+            &[data-within-month='1'][data-within-range='1'] {
+                cursor: pointer;
+            }
+
+            &[data-within-month='1']:not([data-range-end='1'], [data-range-start='1'], [data-within-range='1']) {
+                cursor: not-allowed;
+            }
+
             &[data-within-selection='1']::before {
                 background: var(--adyen-fp-color-gray-lighter);
             }
 
             &[data-selection-start='1']::before {
                 background: var(--adyen-fp-color-black);
-                border-radius: 4px 0 0 4px;
+                border-radius: var(--adyen-fp-calendar-corner-border-radius) 0 0 var(--adyen-fp-calendar-corner-border-radius);
             }
 
             &[data-selection-end='1']::before {
                 background: var(--adyen-fp-color-black);
-                border-radius: 0 4px 4px 0;
+                border-radius: 0 var(--adyen-fp-calendar-corner-border-radius) var(--adyen-fp-calendar-corner-border-radius) 0;
             }
         }
     }
@@ -95,15 +109,19 @@ ol {
             color: var(--adyen-fp-color-white);
         }
 
-        [data-today='1'] & {
-            &::before {
-                background: var(--adyen-fp-color-white);
-                border-radius: 50%;
-                content: '';
-                inset: 12.5%;
-                position: absolute;
-                z-index: -1;
-            }
+        [data-selection-start='1'][data-today='1'] &::before,
+        [data-selection-end='1'][data-today='1'] &::before {
+            background: var(--adyen-fp-color-white);
+            inset: 12.5%;
+        }
+
+        [data-today='1'] &::before {
+            background: var(--adyen-fp-color-gray-lighter);
+            border-radius: 50%;
+            content: '';
+            inset: 5%;
+            position: absolute;
+            z-index: -1;
         }
 
         :not([data-within-month='1']) > & {

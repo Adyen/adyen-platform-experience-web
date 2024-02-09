@@ -58,6 +58,7 @@ const CalendarGridDate = forwardRef(({ grid, prepare, datetime, flags, index, la
             props['data-selection-end'] = flags.SELECTION_END;
             props['data-selection-start'] = flags.SELECTION_START;
             props['data-within-selection'] = flags.WITHIN_SELECTION;
+            props['aria-selected'] = `${!!(flags.SELECTION_END || flags.SELECTION_START || flags.WITHIN_SELECTION)}`;
         }
 
         if (index === +grid.cursor) props.ref = cursorElementRef;

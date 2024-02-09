@@ -1,28 +1,64 @@
 .adyen-fp-datepicker {
-    margin: 0 auto;
-    transform: translate(0);
-    width: 300px;
+    --adyen-fp-datepicker-bleed-margin: -0.25rem;
+    --adyen-fp-datepicker-max-width: calc(var(--adyen-fp-datepicker-tap-target-size) * 7);
+    --adyen-fp-datepicker-tap-target-size: 2.5rem;
+    --adyen-fp-datepicker-vertical-offset: 1.125rem;
 
-    //&__dialog {
-    //    margin-top: 1.5rem;
-    //}
+    margin: var(--adyen-fp-datepicker-vertical-offset) auto;
+    position: relative;
+    width: var(--adyen-fp-datepicker-max-width);
+
+    &--with-timezone {
+        padding-bottom: 1.75rem;
+    }
 
     &__controls {
-        inset: auto 1.875rem;
-        margin-top: -0.5rem;
+        inset: auto calc(var(--adyen-fp-datepicker-bleed-margin) * 2.5);
         position: absolute;
 
-        > :first-child {
-            float: left;
+        > :nth-child(n) {
+            &:not(.adyen-fp-button--prev, .adyen-fp-button--next) {
+                display: none;
+            }
         }
 
-        > :last-child {
+        > .adyen-fp-button--prev {
+            float: left;
+            min-width: var(--adyen-fp-datepicker-tap-target-size);
+            transform: rotate(90deg);
+        }
+
+        > .adyen-fp-button--next {
             float: right;
+            min-width: var(--adyen-fp-datepicker-tap-target-size);
+            transform: rotate(-90deg);
         }
     }
 
     &__selector-container {
+        bottom: var(--adyen-fp-datepicker-vertical-offset);
+        margin: 0 var(--adyen-fp-datepicker-bleed-margin);
         position: relative;
         z-index: 1;
+    }
+
+    &__timezone {
+        color: var(--adyen-fp-color-gray-label-secondary);
+        font-size: var(--adyen-fp-font-size-xsmall);
+        font-weight: var(--adyen-fp-font-weight-medium);
+        height: var(--adyen-fp-datepicker-tap-target-size);
+        inset: auto 0 0;
+        line-height: calc(var(--adyen-fp-datepicker-tap-target-size) - 1px);
+        padding: 0 calc(50% - var(--adyen-fp-datepicker-max-width) / 2);
+        position: fixed;
+
+        &::before {
+            background: var(--adyen-fp-color-gray-100);
+            border-top: 1px solid var(--adyen-fp-color-gray-lighter);
+            content: '';
+            inset: 0;
+            position: absolute;
+            z-index: -1;
+        }
     }
 }

@@ -15,9 +15,10 @@ const CalendarGrid = forwardRef(({ cursorRootProps, onlyCellsWithin, prepare, gr
                 </div>
 
                 <table
-                    className={'adyen-fp-calendar__grid'}
                     role="grid"
-                    aria-label={block.label}
+                    aria-multiselectable={true}
+                    aria-label={`${block.label} calendar`}
+                    className={'adyen-fp-calendar__grid'}
                     style={{ '--adyen-fp-calendar-rowspan': grid.rowspan }}
                 >
                     <thead>

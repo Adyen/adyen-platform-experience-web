@@ -1,6 +1,8 @@
-const ChevronDown = ({ title }: { title?: string }) => {
+import { SVGProps } from 'preact/compat';
+
+const ChevronDown = ({ role, title }: SVGProps<any>) => {
     return (
-        <svg role="img" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none">
+        <svg role={role || 'img'} xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none">
             {title && <title>{title}</title>}
             <path
                 fill="#00112C"
