@@ -39,7 +39,6 @@ export const useSetupEndpoint = <Endpoint extends EndpointName, Operation extend
             const pathParam = (params as any).path;
 
             let path = operation.url!;
-            console.log('<<<<<<<<<<<<<path>>>>>>>>>>>>', path);
 
             if (pathParam) {
                 const pathParamKey = Object.keys(pathParam)[0]!;
