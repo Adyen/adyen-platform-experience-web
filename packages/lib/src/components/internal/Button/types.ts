@@ -7,6 +7,7 @@ export interface ButtonProps extends JSXInternal.HTMLAttributes<HTMLButtonElemen
     iconLeft?: VNode<Element>;
     iconRight?: VNode<Element>;
     inline?: boolean;
+    iconButton?: boolean;
 }
 
 export enum ButtonVariant {

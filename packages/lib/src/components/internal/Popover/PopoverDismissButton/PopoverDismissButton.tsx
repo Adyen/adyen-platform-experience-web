@@ -14,7 +14,7 @@ function PopoverDismissButton({ image = true, onClick }: PopoverDismissButtonPro
     };
     return (
         <>
-            <Button className={getConditionalClasses()} variant={ButtonVariant.TERTIARY} onClick={onClick}>
+            <Button className={getConditionalClasses()} variant={ButtonVariant.TERTIARY} onClick={onClick} aria-label={'close-button'}>
                 <svg role="img" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none">
                     <title>{'dismiss'}</title>
                     <path

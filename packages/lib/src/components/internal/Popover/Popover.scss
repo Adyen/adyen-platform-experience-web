@@ -64,19 +64,6 @@
         display: flex;
     }
 
-    &__image {
-        display: flex;
-        overflow: hidden;
-
-        /**
-          * When the image is present, increase
-          * the margin-bottom of the header
-          */
-        + #{$adyen-fp-popover-component-root}__header {
-            padding: var(--adyen-fp-popover-image-header-padding);
-        }
-    }
-
     &__image-dismiss-button {
         position: absolute;
         right: var(--adyen-fp-popover-image-dismiss-icon-right);

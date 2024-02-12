@@ -1,5 +1,5 @@
 import ButtonActions from '@src/components/internal/Button/ButtonActions/ButtonActions';
-import { ButtonActionsLayout, ButtonActionsLayoutBasic, ButtonActionsList } from '@src/components/internal/Button/ButtonActions/types';
+import { ButtonActionsLayoutBasic } from '@src/components/internal/Button/ButtonActions/types';
 import {
     DEFAULT_POPOVER_CLASSNAME,
     POPOVER_CONTAINER_CLASSNAME,
@@ -7,48 +7,22 @@ import {
     POPOVER_FOOTER_CLASSNAME,
     POPOVER_HEADER_CLASSNAME,
     POPOVER_HEADER_TITLE_CLASSNAME,
-    POPOVER_IMAGE_CLASSNAME,
 } from '@src/components/internal/Popover/constants';
 import PopoverDismissButton from '@src/components/internal/Popover/PopoverDismissButton/PopoverDismissButton';
 import PopoverTitle from '@src/components/internal/Popover/PopoverTitle/PopoverTitle';
-import { PopoverContainerAriaRole, PopoverContainerPosition, PopoverContainerSize } from '@src/components/internal/Popover/types';
-import { useClickOutside } from '@src/components/internal/Popover/useClickOutside';
+import { PopoverContainerPosition, PopoverContainerSize, PopoverContainerVariant, PopoverProps } from '@src/components/internal/Popover/types';
+import { useClickOutside } from '@src/hooks/element/useClickOutside';
 import { InteractionKeyCode } from '@src/components/types';
 import useFocusTrap from '@src/hooks/element/useFocusTrap';
 import usePopoverPositioner from '@src/hooks/element/usePopoverPositioner';
+import useUniqueIdentifier from '@src/hooks/element/useUniqueIdentifier';
 import { getModifierClasses } from '@src/utils/class-name-utils';
 import { isFocusable } from '@src/utils/tabbable';
 import classNames from 'classnames';
-import { ComponentChildren } from 'preact';
-import { MutableRef, useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
-import { HTMLAttributes, PropsWithChildren } from 'preact/compat';
+import { PropsWithChildren } from 'preact/compat';
+import { useCallback, useEffect, useMemo } from 'preact/hooks';
 import './Popover.scss';
 import './PopoverContainer.scss';
-
-interface PopoverCoreProps {
-    actions?: ButtonActionsList;
-    actionsLayout?: ButtonActionsLayout;
-    ariaLabel: string;
-    divider?: boolean;
-    dismissible?: boolean;
-    fitContent?: boolean;
-    disableFocusTrap?: boolean;
-    open?: boolean;
-    modifiers?: string[];
-    position?: PopoverContainerPosition;
-    containerSize?: PopoverContainerSize;
-    title?: string;
-    targetElement: MutableRef<Element | null>;
-    withoutSpace?: boolean;
-    image?: Node;
-    headerIcon?: Node;
-    dismiss?: () => any;
-    children: ComponentChildren;
-}
-
-type UncontrolledProps = Pick<HTMLAttributes<any>, 'aria-label' | 'aria-labelledby' | 'aria-describedby' | 'role'>;
-
-type PopoverProps = PopoverCoreProps & UncontrolledProps;
 
 const findFirstFocusableElement = () => {
     const focusable = Array.from(document.getElementsByClassName(`${DEFAULT_POPOVER_CLASSNAME}__content`)?.[0]?.children ?? []);
@@ -56,41 +30,40 @@ const findFirstFocusableElement = () => {
         return isFocusable(item);
     });
 };
-
 function Popover({
     actions,
     disableFocusTrap = false,
     actionsLayout = ButtonActionsLayoutBasic.SPACE_BETWEEN,
+    variant = PopoverContainerVariant.TOOLTIP,
     title,
     open,
     dismissible,
     modifiers,
-    image,
     divider,
     fitContent,
     withoutSpace,
     containerSize,
-    headerIcon,
     position,
     targetElement,
     dismiss,
     children,
     ...uncontrolledProps
 }: PropsWithChildren<PopoverProps>) {
-    const focusTrapElement = useRef(null);
+    const focusTarget = useUniqueIdentifier();
 
-    const onCloseFocusTrap = useCallback((interactionKeyPressed: boolean) => {
-        dismiss && dismiss();
-        if (interactionKeyPressed) {
-            (targetElement?.current as HTMLElement)?.focus();
-        }
-    }, []);
+    const onCloseFocusTrap = useCallback(
+        (interactionKeyPressed: boolean) => {
+            dismiss && dismiss();
+            if (interactionKeyPressed) {
+                (targetElement?.current as HTMLElement)?.focus();
+            }
+        },
+        [dismiss, targetElement]
+    );
 
-    const popoverElement = useClickOutside(usePopoverPositioner([0, 15], targetElement), dismiss);
+    const popoverElement = useClickOutside(usePopoverPositioner([0, 15], targetElement, variant, PopoverContainerPosition.BOTTOM), dismiss);
 
-    if (!disableFocusTrap) {
-        useFocusTrap(focusTrapElement, onCloseFocusTrap);
-    }
+    const focusTrap = useFocusTrap(focusTarget, onCloseFocusTrap, disableFocusTrap);
 
     const conditionalClasses = useMemo(
         () => ({
@@ -123,12 +96,6 @@ function Popover({
         };
     }, [onKeyDown]);
 
-    const onClick = (e: any) => {
-        if (!e.target.isFocusable()) {
-            e.stopImmediatePropagation();
-        }
-    };
-
     return (
         <>
             {open ? (
@@ -138,24 +105,16 @@ function Popover({
                     {...uncontrolledProps}
                     className={classNames(`${DEFAULT_POPOVER_CLASSNAME} ${POPOVER_CONTAINER_CLASSNAME}`, conditionalClasses)}
                     style={{ display: 'none' }}
-                    onClickCapture={onClick}
-                    role={PopoverContainerAriaRole.POPOVER}
+                    role={uncontrolledProps.role ?? 'dialog'}
                 >
-                    <div ref={focusTrapElement}>
-                        <div>
-                            {image && (
-                                <div className={POPOVER_IMAGE_CLASSNAME}>
-                                    {dismissible && dismiss && <PopoverDismissButton onClick={dismiss} />}
-                                    {image}
-                                </div>
-                            )}
+                    <div ref={focusTarget}>
+                        <div ref={focusTrap}>
                             {title && (
                                 <div className={getModifierClasses(POPOVER_HEADER_CLASSNAME, modifiers, [POPOVER_HEADER_CLASSNAME])}>
                                     <div className={POPOVER_HEADER_TITLE_CLASSNAME}>
-                                        {headerIcon ? { headerIcon } : null}
-                                        <PopoverTitle title={title} isImageTitle={Boolean(image)} />
+                                        <PopoverTitle title={title} />
                                     </div>
-                                    {dismissible && dismiss && !image && <PopoverDismissButton onClick={dismiss} />}
+                                    {dismissible && dismiss && <PopoverDismissButton onClick={dismiss} />}
                                 </div>
                             )}
                             {children && <div className={POPOVER_CONTENT_CLASSNAME}>{children}</div>}

@@ -103,7 +103,7 @@
     &--circle {
         align-items: center;
         border-radius: 50%;
-        height: 40px;
+        height: var(--adyen-fp-spacing-xlarge);
         justify-content: center;
         min-width: auto;
         padding: 0;

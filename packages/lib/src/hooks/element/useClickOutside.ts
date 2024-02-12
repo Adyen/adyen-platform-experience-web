@@ -1,5 +1,8 @@
 import useReflex, { Nullable, Reflexable } from '@src/hooks/useReflex';
 import { useCallback, useEffect, useRef } from 'preact/hooks';
+const onFocusoutCapture = (e: Event) => {
+    e.stopImmediatePropagation();
+};
 export const useClickOutside = (rootElementRef: Nullable<Reflexable<Element>>, callback?: (interactionKeyPressed: boolean) => void) => {
     const ref = useRef<Nullable<Element>>(null);
 
@@ -19,7 +22,13 @@ export const useClickOutside = (rootElementRef: Nullable<Reflexable<Element>>, c
     }, [ref, callback]);
 
     return useReflex<Element>(
-        useCallback((current: Nullable<Element>) => {
+        useCallback((current: Nullable<Element>, previous) => {
+            if (previous instanceof Element) {
+                previous.removeEventListener('focusout', onFocusoutCapture, true);
+            }
+            if (current instanceof Element) {
+                current.addEventListener('focusout', onFocusoutCapture, true);
+            }
             ref.current = current;
         }, []),
         rootElementRef
