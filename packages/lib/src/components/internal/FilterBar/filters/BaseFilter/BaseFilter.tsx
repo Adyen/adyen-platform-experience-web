@@ -1,11 +1,12 @@
-import { memo } from 'preact/compat';
 import { ButtonVariant } from '@src/components/internal/Button/types';
 import FilterButton from '@src/components/internal/FilterBar/components/FilterButton/FilterButton';
 import Popover from '@src/components/internal/Popover/Popover';
+import { PopoverContainerSize } from '@src/components/internal/Popover/types';
 import { TypographyElement, TypographyVariant } from '@src/components/internal/Typography/types';
 import Typography from '@src/components/internal/Typography/Typography';
 import useUniqueIdentifier from '@src/hooks/element/useUniqueIdentifier';
 import { isEmpty } from '@src/utils/validator-utils';
+import { memo } from 'preact/compat';
 import { Ref, useCallback, useEffect, useMemo, useState } from 'preact/hooks';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import useBooleanState from '../../../../../hooks/useBooleanState';
@@ -175,7 +176,7 @@ const BaseFilter = <T extends BaseFilterProps = BaseFilterProps>({ render, ...pr
                     ariaLabel={`${props.label}-popover`}
                     dismiss={closeEditModal}
                     dismissible={true}
-                    withContentPadding={props.withContentPadding ?? false}
+                    withContentPadding={props.withContentPadding ?? true}
                     divider={true}
                     actions={actions}
                     targetElement={targetElement}

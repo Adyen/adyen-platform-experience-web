@@ -68,9 +68,9 @@ function Popover({
 
     const conditionalClasses = useMemo(
         () => ({
-            [`${DEFAULT_POPOVER_CLASSNAME}--small`]: containerSize === PopoverContainerSize.SMALL,
+            [`${DEFAULT_POPOVER_CLASSNAME}--medium`]: containerSize === PopoverContainerSize.MEDIUM,
             [`${DEFAULT_POPOVER_CLASSNAME}--with-divider`]: !!divider,
-            [`${DEFAULT_POPOVER_CLASSNAME}--large`]: containerSize === PopoverContainerSize.LARGE,
+            [`${DEFAULT_POPOVER_CLASSNAME}--wide`]: containerSize === PopoverContainerSize.WIDE,
             [`${DEFAULT_POPOVER_CLASSNAME}--fit-content`]: fitContent,
             [`${DEFAULT_POPOVER_CLASSNAME}--without-space`]: withoutSpace,
         }),

@@ -41,6 +41,6 @@ export enum PopoverContainerPosition {
 }
 
 export enum PopoverContainerSize {
-    SMALL = 'small',
-    LARGE = 'large',
+    MEDIUM = 'medium',
+    WIDE = 'wide',
 }
