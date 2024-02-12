@@ -18,6 +18,7 @@ interface PopoverCoreProps {
     fitContent?: boolean;
     disableFocusTrap?: boolean;
     open?: boolean;
+    withContentPadding?: boolean;
     modifiers?: string[];
     position?: PopoverContainerPosition;
     containerSize?: PopoverContainerSize;

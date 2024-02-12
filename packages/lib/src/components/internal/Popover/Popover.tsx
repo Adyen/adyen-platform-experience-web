@@ -47,6 +47,7 @@ function Popover({
     targetElement,
     dismiss,
     children,
+    withContentPadding,
     ...uncontrolledProps
 }: PropsWithChildren<PopoverProps>) {
     const focusTarget = useUniqueIdentifier();
@@ -117,7 +118,17 @@ function Popover({
                                     {dismissible && dismiss && <PopoverDismissButton onClick={dismiss} />}
                                 </div>
                             )}
-                            {children && <div className={POPOVER_CONTENT_CLASSNAME}>{children}</div>}
+                            {children && (
+                                <div
+                                    className={
+                                        withContentPadding
+                                            ? `${POPOVER_CONTENT_CLASSNAME} ${POPOVER_CONTENT_CLASSNAME}--with-padding`
+                                            : POPOVER_CONTENT_CLASSNAME
+                                    }
+                                >
+                                    {children}
+                                </div>
+                            )}
                             {actions && (
                                 <div className={POPOVER_FOOTER_CLASSNAME}>
                                     <ButtonActions actions={actions} layout={actionsLayout} />

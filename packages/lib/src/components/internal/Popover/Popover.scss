@@ -44,7 +44,9 @@
     }
 
     &__content {
-        padding: var(--adyen-fp-popover-content-padding);
+        &--with-padding {
+            padding: var(--adyen-fp-popover-content-padding);
+        }
 
         &--with-title {
             padding: var(--adyen-fp-popover-content-with-title-padding);

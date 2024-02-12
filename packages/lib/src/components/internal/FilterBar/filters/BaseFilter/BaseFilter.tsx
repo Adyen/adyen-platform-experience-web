@@ -175,6 +175,7 @@ const BaseFilter = <T extends BaseFilterProps = BaseFilterProps>({ render, ...pr
                     ariaLabel={`${props.label}-popover`}
                     dismiss={closeEditModal}
                     dismissible={true}
+                    withContentPadding={props.withContentPadding ?? false}
                     divider={true}
                     actions={actions}
                     targetElement={targetElement}
