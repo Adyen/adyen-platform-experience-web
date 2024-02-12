@@ -69,7 +69,7 @@ export const balanceAccountMock = [
     }),
     rest.get(endpoints.balances, (req, res, ctx) => {
         return res(
-            ctx.delay(300),
+            delay(300),
             ctx.json({
                 balances: MULTIPLE_ACCOUNT_BALANCES,
             })

@@ -1,12 +1,13 @@
 import { rest } from 'msw';
 import { endpoints } from '../endpoints';
+import { delay } from '../utils/utils';
 
 const PREFIX = endpoints.setup;
 
 export const setupMock = [
     rest.post(`${PREFIX}`, (req, res, ctx) => {
         return res(
-            ctx.delay(200),
+            delay(200),
             ctx.json({
                 endpoints: {
                     getBalances: {
