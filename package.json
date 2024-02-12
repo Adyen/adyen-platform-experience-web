@@ -27,6 +27,7 @@
         "build:analyse": "npm run build:analyse -w @adyen/adyen-fp-web",
         "demo": "npm run demo -w @adyen/adyen-fp-web-playground",
         "start:mocked": "concurrently --kill-others-on-fail 'npm run types:watch' 'npm run start:mock -w @adyen/adyen-fp-web-playground' --names 'lib-types,playground' -c blue,green,cyan,yellow",
+        "start:mock:e2e": "concurrently --kill-others-on-fail 'npm run types:watch' 'npm run start:mock:e2e -w @adyen/adyen-fp-web-playground' --names 'lib-types,playground' -c blue,green,cyan,yellow",
         "lint": "npm run lint -w @adyen/adyen-fp-web",
         "test": "npm run test -w @adyen/adyen-fp-web",
         "test:coverage": "npm run test:coverage -w @adyen/adyen-fp-web",

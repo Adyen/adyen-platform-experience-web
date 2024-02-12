@@ -71,7 +71,7 @@ const config: PlaywrightTestConfig = {
     ],
     /* Run your local dev server before starting the tests */
     webServer: {
-        command: process.env.CI ? 'npm run demo:serve' : 'npm run start:mocked',
+        command: process.env.CI ? 'npm run demo:serve' : 'npm run start:mock:e2e',
         reuseExistingServer: !process.env.CI,
         url: process.env.CI ? undefined : baseUrl,
         port: process.env.CI ? playground.port : undefined,

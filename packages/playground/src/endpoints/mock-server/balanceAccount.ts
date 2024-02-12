@@ -1,5 +1,6 @@
 import { rest } from 'msw';
 import { endpoints } from '../endpoints';
+import { delay } from '../utils/utils';
 
 const SINGLE_BALANCE_ACCOUNT = [
     {
@@ -28,7 +29,7 @@ const MULTIPLE_BALANCE_ACCOUNTS = [
 export const balanceAccountMock = [
     rest.get(endpoints.balanceAccount, (req, res, ctx) => {
         return res(
-            ctx.delay(300),
+            delay(300),
             ctx.json({
                 balanceAccounts: MULTIPLE_BALANCE_ACCOUNTS,
             })
@@ -36,7 +37,7 @@ export const balanceAccountMock = [
     }),
     rest.get(endpoints.balanceAccountTotals, (req, res, ctx) => {
         return res(
-            ctx.delay(300),
+            delay(300),
             ctx.json({
                 totals: [
                     {

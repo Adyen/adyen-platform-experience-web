@@ -90,6 +90,7 @@ export default defineConfig(async ({ mode }) => {
             'process.env.VITE_PLAYGROUND_PORT': JSON.stringify(playground.port || null),
             'process.env.DEPLOYED_URL': JSON.stringify(process.env.DEPLOY_PRIME_URL || null),
             'process.env.VITE_LOADING_CONTEXT': JSON.stringify(process.env.DEPLOY_PRIME_URL?.replace('main--', '') || playground.apiUrl || null),
+            'process.env.E2E_TEST': JSON.stringify(process.env.E2E_TEST),
         },
     };
 });
