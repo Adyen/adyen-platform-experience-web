@@ -12,7 +12,7 @@ export const transactionsMocks = [
 
         if (categories.length && statuses.length) {
             return res(
-                delay(400),
+                delay(200),
                 ctx.json({ transactions: transactions.filter(tx => categories.includes(tx.category) && statuses.includes(tx.status)) })
             );
         } else {
