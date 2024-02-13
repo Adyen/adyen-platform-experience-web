@@ -17,6 +17,7 @@
             line-height: 2.5rem;
             margin-bottom: 1rem;
             text-align: center;
+            -webkit-user-select: none;
             user-select: none;
         }
     }
@@ -36,17 +37,23 @@
         position: relative;
         text-align: center;
         touch-action: manipulation;
+        -webkit-user-select: none;
         user-select: none;
-
-        &:focus-visible {
-            z-index: 1;
-        }
 
         &--day-of-week {
             margin-bottom: 0.5rem;
         }
 
         &--date {
+            &:focus-visible {
+                outline: none;
+                z-index: 1;
+            }
+
+            &:focus-visible::before {
+                outline: 2px auto -webkit-focus-ring-color;
+            }
+
             &::before {
                 content: '';
                 display: block;

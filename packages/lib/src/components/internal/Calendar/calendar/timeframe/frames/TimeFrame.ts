@@ -276,7 +276,8 @@ export default abstract class TimeFrame {
             const block = this.getFrameBlockAtIndex(index);
             if (!block) return undefined as unknown as IndexedCalendarBlock;
 
-            const [label, datetime] = this.getFormattedDataForFrameBlock(new Date(`${block.year}-${1 + block.month}-1`).setHours(12));
+            const dateString = `${block.year}-${`0${1 + block.month}`.slice(-2)}-01`;
+            const [label, datetime] = this.getFormattedDataForFrameBlock(new Date(dateString).setHours(12));
             const blockStartIndex = block.outer.from;
 
             this.#frameBlocksCached[index] = indexed<Indexed<CalendarBlockCellData>, CalendarBlock>(
