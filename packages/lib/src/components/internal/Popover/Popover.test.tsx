@@ -87,7 +87,7 @@ describe('Popover component', () => {
     });
 
     test<PopoverContext>('should have dismiss icon', async ({ dismiss }) => {
-        const closeButton = screen.getByLabelText(/close-button/i);
+        const closeButton = screen.getByLabelText(/close/i);
         expect(closeButton).toBeInTheDocument();
 
         await userEvent.click(closeButton);
