@@ -67,9 +67,19 @@ export function isAdyenErrorResponse(data: any): data is AdyenErrorResponse {
 }
 
 export function parseSearchParams<T extends Record<string, any>>(parameters: T) {
-    const params: Record<string, string> = {};
-    for (const param in parameters) {
-        if (parameters[param]) params[param] = String(parameters[param]);
+    const params = new URLSearchParams();
+
+    for (const param of Object.keys(parameters)) {
+        const value = parameters[param];
+        if (value) {
+            if (Array.isArray(value)) {
+                value.forEach(item => params.append(param, item));
+            } else {
+                // For non-array values, just set the key and value normally
+                params.set(param, value);
+            }
+        }
     }
-    return new URLSearchParams(params);
+
+    return params;
 }
