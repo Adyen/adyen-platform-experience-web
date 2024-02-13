@@ -27,7 +27,7 @@ export interface TransactionsComponentProps {
     core: Core;
 }
 export interface TransactionListProps extends WithPaginationLimitSelection<PaginationProps> {
-    transactions: ITransaction[];
+    transactions: ITransaction[] | undefined;
     onTransactionSelected?: OnSelection;
     showPagination: boolean;
     loading: boolean;

@@ -5,3 +5,6 @@ export type ReplaceUnderscoreOrDash<
     Character extends '-' | '_',
     Replace extends '-' | '_'
 > = S extends `${infer T}${Character}${infer U}` ? `${T}${Replace}${U}` : S;
+export type MakeFieldValueUndefined<T, Field extends keyof T> = {
+    [P in keyof T]: Field extends P ? T[P] | undefined : T[P];
+};

@@ -14,7 +14,7 @@ export const TableBody = <
 }: Omit<InteractiveBodyProps<Items, Columns, ClickedField, CustomCells>, 'onRowClick'>) => {
     return (
         <>
-            {data.map(item => (
+            {data?.map(item => (
                 <tr className="adyen-fp-data-grid__row" key={item}>
                     <TableCells<Items, Columns, CustomCells> columns={columns} customCells={customCells} item={item} />
                 </tr>

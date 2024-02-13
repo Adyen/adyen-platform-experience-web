@@ -17,11 +17,11 @@ export const InteractiveBody = <
 }: InteractiveBodyProps<Items, Columns, ClickedField, CustomCells>) => {
     const onClickCallBack = useCallback((item: Items[number]) => () => onRowClick?.callback(item[onRowClick.retrievedField]), [onRowClick]);
 
-    const { currentIndex, listeners, ref } = useInteractiveDataGrid({ totalRows: data.length });
+    const { currentIndex, listeners, ref } = useInteractiveDataGrid({ totalRows: data?.length ?? 0 });
 
     return (
         <>
-            {data.map((item, index) => (
+            {data?.map((item, index) => (
                 <tr
                     ref={ref}
                     aria-selected={index === currentIndex}

@@ -13,6 +13,8 @@ import { DateFilterProps, DateRangeFilterParam } from '@src/components/internal/
 import { EMPTY_OBJECT, isFunction } from '@src/utils/common';
 import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '@src/components/internal/Pagination/constants';
 import { TranslationKey } from '@src/core/Localization/types';
+import TransactionTotals from '@src/components/external/Transactions/components/TransactionTotals/TransactionTotals';
+import { BalanceAccountsDisplay } from '@src/components/external/Transactions/components/AccountsBalanceDisplay/BalanceAccountsDisplay';
 
 const { from, to } = Object.values(TIME_RANGE_PRESET_OPTIONS)[0]!;
 const DEFAULT_TIME_RANGE_PRESET = Object.keys(TIME_RANGE_PRESET_OPTIONS)[0]! as TranslationKey;
@@ -27,7 +29,7 @@ export const TransactionsOverview = ({
     preferredLimit = DEFAULT_PAGE_LIMIT,
     onTransactionSelected,
     showDetails,
-}: TransactionsComponentProps & { balanceAccounts: IBalanceAccountBase[] }) => {
+}: TransactionsComponentProps & { balanceAccounts: IBalanceAccountBase[] | undefined }) => {
     const { i18n } = useCoreContext();
 
     const transactionsEndpointCall = useSetupEndpoint('getTransactions');
@@ -45,7 +47,7 @@ export const TransactionsOverview = ({
                     createdSince: pageRequestParams.createdSince ?? DEFAULT_CREATED_SINCE,
                     createdUntil: pageRequestParams.createdUntil ?? DEFAULT_CREATED_UNTIL,
                 },
-                path: { balanceAccountId: balanceAccounts[0]?.id ?? '' },
+                path: { balanceAccountId: balanceAccounts?.[0]?.id ?? '' },
             };
             return transactionsEndpointCall(requestOptions, parameters);
         },
@@ -80,8 +82,9 @@ export const TransactionsOverview = ({
                     onFiltersChanged: _onFiltersChanged,
                     preferredLimit,
                     preferredLimitOptions,
+                    enabled: !!balanceAccounts,
                 }),
-                [_onFiltersChanged, _onLimitChanged, getTransactions, preferredLimit, preferredLimitOptions]
+                [_onFiltersChanged, _onLimitChanged, getTransactions, preferredLimit, preferredLimitOptions, balanceAccounts]
             )
         );
 
@@ -119,8 +122,17 @@ export const TransactionsOverview = ({
 
     const showAlert = useMemo(() => !fetching && error, [fetching, error]);
 
+    //TODO - Replace with the value of the balanceAccount filter
+    const balanceAccountId = useMemo(() => balanceAccounts?.[0]?.id, [balanceAccounts]);
+
+    //TODO - Replace with the value of the statuses filter
+    const statuses: ITransaction['status'][] = ['Pending', 'Booked'];
+
+    //TODO - Replace with the value of the categories filter
+    const categories: ITransaction['category'][] = ['ATM', 'Payment'];
+
     return (
-        <div>
+        <>
             <FilterBar canResetFilters={canResetFilters} resetFilters={resetFilters}>
                 <DateFilter
                     classNameModifiers={['createdSince']}
@@ -134,11 +146,21 @@ export const TransactionsOverview = ({
                     onChange={updateCreatedDateFilter}
                 />
             </FilterBar>
+            <div className="adyen-fp-transactions__balance-totals">
+                <TransactionTotals
+                    balanceAccountId={balanceAccountId}
+                    statuses={statuses}
+                    categories={categories}
+                    createdUntil={transactionsFilterParams[TransactionFilterParam.CREATED_UNTIL]}
+                    createdSince={transactionsFilterParams[TransactionFilterParam.CREATED_SINCE]}
+                />
+                <BalanceAccountsDisplay balanceAccountId={balanceAccountId} />
+            </div>
             {showAlert ? (
                 <Alert icon={'cross'}>{error?.message ?? i18n.get('unableToLoadTransactions')}</Alert>
             ) : (
                 <TransactionList
-                    loading={fetching}
+                    loading={fetching || !records}
                     transactions={records}
                     onTransactionSelected={onTransactionSelected}
                     showPagination={true}
@@ -149,6 +171,6 @@ export const TransactionsOverview = ({
                     {...paginationProps}
                 />
             )}
-        </div>
+        </>
     );
 };
