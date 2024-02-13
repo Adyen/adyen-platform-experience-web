@@ -120,7 +120,7 @@ const usePopoverPositioner = (
                     const style = !isLoading ? popoverStyle + ';visibility:visible' : popoverStyle;
                     current.setAttribute('style', `${style}`);
 
-                    setInitialPosition(false);
+                    if (initialPosition) setInitialPosition(false);
 
                     if (variant && variant === PopoverContainerVariant.TOOLTIP) {
                         current.classList?.add(`popover-content-container--tooltip-${currentPosition}`);
