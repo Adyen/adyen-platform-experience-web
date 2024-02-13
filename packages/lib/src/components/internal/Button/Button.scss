@@ -102,12 +102,24 @@
 
     &--circle {
         align-items: center;
-        border-radius: 50%;
-        height: var(--adyen-fp-spacing-xlarge);
+        border-radius: 10000rem;
         justify-content: center;
         min-width: auto;
         padding: 0;
-        width: var(--adyen-fp-spacing-xlarge);
+    }
+
+    &--icon {
+        position: relative;
+        width: var(--adyen-fp-touch-size-minimum);
+
+        &::before {
+            content: '';
+            padding-top: 100%;
+        }
+
+        &-content {
+            float: left;
+        }
     }
 
     &--link {

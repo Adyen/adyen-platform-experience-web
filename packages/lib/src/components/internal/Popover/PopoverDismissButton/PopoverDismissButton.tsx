@@ -1,6 +1,7 @@
 import Button from '@src/components/internal/Button';
 import { ButtonVariant } from '@src/components/internal/Button/types';
 import './PopoverDismissButton.scss';
+import useCoreContext from '@src/core/Context/useCoreContext';
 import { memo } from 'preact/compat';
 
 interface PopoverDismissButtonProps {
@@ -9,12 +10,19 @@ interface PopoverDismissButtonProps {
 }
 
 function PopoverDismissButton({ image = true, onClick }: PopoverDismissButtonProps) {
+    const { i18n } = useCoreContext();
     const getConditionalClasses = (): string => {
         return image ? 'adyen-fp-popover-dismiss-button--on-image' : '';
     };
     return (
         <>
-            <Button className={getConditionalClasses()} variant={ButtonVariant.TERTIARY} onClick={onClick} aria-label={'close-button'}>
+            <Button
+                className={getConditionalClasses()}
+                iconButton={true}
+                variant={ButtonVariant.TERTIARY}
+                onClick={onClick}
+                aria-label={i18n.get('closeIconLabel')}
+            >
                 <svg role="img" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none">
                     <title>{'dismiss'}</title>
                     <path

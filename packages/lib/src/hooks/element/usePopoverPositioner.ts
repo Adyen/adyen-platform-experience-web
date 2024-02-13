@@ -58,12 +58,17 @@ const calculateOffset = (
 
     const result = [dimensionX, dimensionY, dimensionZ];
 
-    const res = result.reduce(
-        (acc, currentVal, index) => (index === offset.length - 1 ? acc + ` ${currentVal}px)` : acc + ` ${currentVal}px,`),
-        'translate3d('
-    );
+    const res = result.reduce((acc, currentVal, index) => {
+        if (index === 0) {
+            return acc + `${currentVal}px,`;
+        } else if (index === offset.length - 1) {
+            return acc + ` ${currentVal}px)`;
+        } else {
+            return acc + ` ${currentVal}px,`;
+        }
+    }, 'translate3d(');
 
-    return `display: block; position: absolute;inset: 0 auto auto 0; margin: 0; z-index:10; transform: ${res}`;
+    return `position:absolute;inset:0 auto auto 0;margin: 0;z-index:10;transform: ${res}`;
 };
 const usePopoverPositioner = (
     offset: number[],

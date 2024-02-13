@@ -1,7 +1,6 @@
 import { ButtonVariant } from '@src/components/internal/Button/types';
 import FilterButton from '@src/components/internal/FilterBar/components/FilterButton/FilterButton';
 import Popover from '@src/components/internal/Popover/Popover';
-import { PopoverContainerSize } from '@src/components/internal/Popover/types';
 import { TypographyElement, TypographyVariant } from '@src/components/internal/Typography/types';
 import Typography from '@src/components/internal/Typography/Typography';
 import useUniqueIdentifier from '@src/hooks/element/useUniqueIdentifier';

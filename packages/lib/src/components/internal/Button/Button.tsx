@@ -4,6 +4,8 @@ import {
     BUTTON_ICON_LEFT_CLASSNAME,
     BUTTON_ICON_RIGHT_CLASSNAME,
     BUTTON_LABEL_CLASSNAME,
+    ICON_BUTTON_CLASSNAME,
+    ICON_BUTTON_CONTENT_CLASSNAME,
 } from '@src/components/internal/Button/constants';
 import { TypographyElement, TypographyVariant } from '@src/components/internal/Typography/types';
 import Typography from '@src/components/internal/Typography/Typography';
@@ -37,16 +39,25 @@ function Button(
     const { classes, click } = useButton(classNameValue, [...classNameModifiers, variant], DEFAULT_BUTTON_CLASSNAME, disabledValue, onClick);
 
     return (
-        <button className={classes} type={type} disabled={disabled} onClick={click} ref={ref} {...restAttributes}>
-            {iconLeft && <span className={BUTTON_ICON_LEFT_CLASSNAME}>{iconLeft}</span>}
+        <button
+            className={iconButton ? `${ICON_BUTTON_CLASSNAME} ${classes}` : classes}
+            type={type}
+            disabled={disabled}
+            onClick={click}
+            ref={ref}
+            {...restAttributes}
+        >
             {iconButton ? (
-                { children }
+                <div className={`${ICON_BUTTON_CONTENT_CLASSNAME}`}>{children}</div>
             ) : (
-                <Typography className={BUTTON_LABEL_CLASSNAME} el={TypographyElement.SPAN} variant={TypographyVariant.BODY} stronger={true}>
-                    {children}
-                </Typography>
+                <>
+                    {iconLeft && <span className={BUTTON_ICON_LEFT_CLASSNAME}>{iconLeft}</span>}
+                    <Typography className={BUTTON_LABEL_CLASSNAME} el={TypographyElement.SPAN} variant={TypographyVariant.BODY} stronger={true}>
+                        {children}
+                    </Typography>
+                    {iconRight && <span className={BUTTON_ICON_RIGHT_CLASSNAME}>{iconRight}</span>}
+                </>
             )}
-            {iconRight && <span className={BUTTON_ICON_RIGHT_CLASSNAME}>{iconRight}</span>}
         </button>
     );
 }

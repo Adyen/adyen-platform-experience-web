@@ -184,5 +184,6 @@
     "currency": "Currency",
     "incoming": "Incoming",
     "expense": "Expense",
-    "accountBalance": "Account Balance"
+    "accountBalance": "Account Balance",
+    "closeIconLabel": "close"
 }

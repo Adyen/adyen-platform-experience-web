@@ -11,8 +11,8 @@ import {
 import PopoverDismissButton from '@src/components/internal/Popover/PopoverDismissButton/PopoverDismissButton';
 import PopoverTitle from '@src/components/internal/Popover/PopoverTitle/PopoverTitle';
 import { PopoverContainerPosition, PopoverContainerSize, PopoverContainerVariant, PopoverProps } from '@src/components/internal/Popover/types';
-import { useClickOutside } from '@src/hooks/element/useClickOutside';
 import { InteractionKeyCode } from '@src/components/types';
+import { useClickOutside } from '@src/hooks/element/useClickOutside';
 import useFocusTrap from '@src/hooks/element/useFocusTrap';
 import usePopoverPositioner from '@src/hooks/element/usePopoverPositioner';
 import useUniqueIdentifier from '@src/hooks/element/useUniqueIdentifier';

@@ -6,9 +6,9 @@ const onFocusoutCapture = (e: Event) => {
 export const useClickOutside = (rootElementRef: Nullable<Reflexable<Element>>, callback?: (interactionKeyPressed: boolean) => void) => {
     const ref = useRef<Nullable<Element>>(null);
 
-    useEffect(() => {
-        const handleClickOutside = (e: Event) => {
-            const eventPath: EventTarget[] = e.composedPath(); //Check if this only works with
+    const handleClickOutside = useCallback(
+        (e: Event) => {
+            const eventPath: EventTarget[] = e.composedPath();
             if (!(ref && ref.current)) return;
             if (eventPath.length) {
                 const samePath = eventPath.some(path => (path as Element)?.isSameNode && (path as Element).isSameNode(ref.current as Element));
@@ -16,10 +16,18 @@ export const useClickOutside = (rootElementRef: Nullable<Reflexable<Element>>, c
                     callback(true);
                 }
             }
-        };
-        document.addEventListener('click', handleClickOutside, true);
-        return () => document.removeEventListener('click', handleClickOutside, true);
-    }, [ref, callback]);
+        },
+        [callback]
+    );
+
+    const clickOutsideHandlerRef = useRef(handleClickOutside);
+
+    useEffect(() => {
+        document.removeEventListener('click', clickOutsideHandlerRef.current, true);
+        clickOutsideHandlerRef.current = handleClickOutside;
+        document.addEventListener('click', clickOutsideHandlerRef.current, true);
+        return () => document.removeEventListener('click', clickOutsideHandlerRef.current, true);
+    }, [handleClickOutside]);
 
     return useReflex<Element>(
         useCallback((current: Nullable<Element>, previous) => {
