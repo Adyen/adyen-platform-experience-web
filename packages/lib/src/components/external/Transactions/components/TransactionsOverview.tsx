@@ -15,6 +15,7 @@ import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '@src/components/internal/Pagi
 import { TranslationKey } from '@src/core/Localization/types';
 import TransactionTotals from '@src/components/external/Transactions/components/TransactionTotals/TransactionTotals';
 import { BalanceAccountsDisplay } from '@src/components/external/Transactions/components/AccountsBalanceDisplay/BalanceAccountsDisplay';
+import Select from '@src/components/internal/FormFields/Select';
 
 const { from, to } = Object.values(TIME_RANGE_PRESET_OPTIONS)[0]!;
 const DEFAULT_TIME_RANGE_PRESET = Object.keys(TIME_RANGE_PRESET_OPTIONS)[0]! as TranslationKey;
@@ -44,6 +45,8 @@ export const TransactionsOverview = ({
             const parameters = {
                 query: {
                     ...pageRequestParams,
+                    statuses: pageRequestParams.statuses ? [pageRequestParams.statuses as any] : undefined,
+                    categories: pageRequestParams.categories ? [pageRequestParams.categories as ITransaction['category']] : undefined,
                     createdSince: pageRequestParams.createdSince ?? DEFAULT_CREATED_SINCE,
                     createdUntil: pageRequestParams.createdUntil ?? DEFAULT_CREATED_UNTIL,
                 },
@@ -54,14 +57,15 @@ export const TransactionsOverview = ({
         [balanceAccounts, transactionsEndpointCall]
     );
 
+    // FILTERS
+
     const _onFiltersChanged = useMemo(() => (isFunction(onFiltersChanged) ? onFiltersChanged : void 0), [onFiltersChanged]);
     const _onLimitChanged = useMemo(() => (isFunction(onLimitChanged) ? onLimitChanged : void 0), [onLimitChanged]);
     const preferredLimitOptions = useMemo(() => (allowLimitSelection ? LIMIT_OPTIONS : undefined), [allowLimitSelection]);
 
     const transactionsFilterParams = {
-        [TransactionFilterParam.ACCOUNT_HOLDER]: undefined,
-        [TransactionFilterParam.BALANCE_ACCOUNT]: undefined,
-        [TransactionFilterParam.BALANCE_PLATFORM_ID]: undefined,
+        [TransactionFilterParam.CATEGORIES]: undefined,
+        [TransactionFilterParam.STATUSES]: undefined,
         [TransactionFilterParam.CREATED_SINCE]: DEFAULT_CREATED_SINCE,
         [TransactionFilterParam.CREATED_UNTIL]: DEFAULT_CREATED_UNTIL,
     };
@@ -88,7 +92,7 @@ export const TransactionsOverview = ({
             )
         );
 
-    const [updateCreatedDateFilter] = useMemo(() => {
+    const [updateCreatedDateFilter, updateFilterSelect] = useMemo(() => {
         // TODO - Use on new filters or delete if not necessary
         /* const _updateTextFilter = (param: TransactionFilterParam) => (value?: string) => {
             switch (param) {
@@ -98,6 +102,13 @@ export const TransactionsOverview = ({
                     break;
             }
         }; */
+
+        // TODO - Create a proper callback
+        const updateMultiSelectFilter = (filter: TransactionFilterParam.CATEGORIES | TransactionFilterParam.STATUSES, value?: string) => {
+            updateFilters({
+                [filter]: value,
+            });
+        };
 
         const _updateDateFilter: DateFilterProps['onChange'] = (params = EMPTY_OBJECT) => {
             for (const [param, value] of Object.entries(params) as [keyof typeof params, (typeof params)[keyof typeof params]][]) {
@@ -115,7 +126,7 @@ export const TransactionsOverview = ({
             }
         };
 
-        return [_updateDateFilter];
+        return [_updateDateFilter, updateMultiSelectFilter];
     }, [defaultTimeRangePreset, updateFilters]);
 
     useMemo(() => !canResetFilters && setSelectedTimeRangePreset(defaultTimeRangePreset), [canResetFilters]);
@@ -127,9 +138,6 @@ export const TransactionsOverview = ({
 
     //TODO - Replace with the value of the statuses filter
     const statuses: ITransaction['status'][] = ['Pending', 'Booked'];
-
-    //TODO - Replace with the value of the categories filter
-    const categories: ITransaction['category'][] = ['ATM', 'Payment'];
 
     return (
         <>
@@ -145,12 +153,32 @@ export const TransactionsOverview = ({
                     timeRangePresetOptions={TIME_RANGE_PRESET_OPTIONS}
                     onChange={updateCreatedDateFilter}
                 />
+                <Select
+                    onChange={val => updateFilterSelect(TransactionFilterParam.CATEGORIES, val.target.value)}
+                    placeholder={'Select category'}
+                    selected={filters.categories}
+                    items={[
+                        { name: 'Payment', id: 'Payment' },
+                        { name: 'Capital', id: 'Capital' },
+                        { name: 'Refund', id: 'Refund' },
+                    ]}
+                />
+                <Select
+                    onChange={val => updateFilterSelect(TransactionFilterParam.STATUSES, val.target.value)}
+                    placeholder={'Select status'}
+                    selected={filters.statuses}
+                    items={[
+                        { name: 'Pending', id: 'Pending' },
+                        { name: 'Booked', id: 'Booked' },
+                        { name: 'Rejected', id: 'Rejected' },
+                    ]}
+                />
             </FilterBar>
             <div className="adyen-fp-transactions__balance-totals">
                 <TransactionTotals
                     balanceAccountId={balanceAccountId}
                     statuses={statuses}
-                    categories={categories}
+                    categories={transactionsFilterParams[TransactionFilterParam.CATEGORIES] as unknown as ITransaction['category'][]}
                     createdUntil={transactionsFilterParams[TransactionFilterParam.CREATED_UNTIL]}
                     createdSince={transactionsFilterParams[TransactionFilterParam.CREATED_SINCE]}
                 />
