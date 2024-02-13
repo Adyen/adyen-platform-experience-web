@@ -109,16 +109,22 @@
     }
 
     &--icon {
+        //Icons will always take equal width and height
+        //Modify width and height automatically adjust to the same size
+        height: auto !important;
         position: relative;
         width: var(--adyen-fp-touch-size-minimum);
 
         &::before {
             content: '';
+            float: left;
             padding-top: 100%;
         }
 
-        &-content {
-            float: left;
+        &::after {
+            clear: both;
+            content: '';
+            display: table;
         }
     }
 

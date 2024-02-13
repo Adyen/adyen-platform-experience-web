@@ -1,18 +1,7 @@
 import { PopoverContainerPosition, PopoverContainerVariant } from '@src/components/internal/Popover/types';
-import { MutableRef, useCallback, useState } from 'preact/hooks';
+import getIntersectionObserver from '@src/components/internal/Popover/utils/utils';
+import { MutableRef, useCallback, useEffect, useRef, useState } from 'preact/hooks';
 import useReflex, { Nullable, Reflexable } from '../useReflex';
-
-const getObserver = (callbackfn?: (entry: IntersectionObserverEntry) => void) => {
-    const observer = new IntersectionObserver(
-        entries => {
-            entries.forEach(entry => {
-                if (callbackfn) callbackfn(entry);
-            });
-        },
-        { root: null, rootMargin: '', threshold: [1] }
-    );
-    return { observer: observer, disconnect: () => observer.disconnect() };
-};
 
 const calculateOffset = (
     popover: Element | null,
@@ -41,7 +30,7 @@ const calculateOffset = (
             break;
         case PopoverContainerPosition.TOP:
             dimensionX = currentTarget?.offsetLeft + offset[0]!;
-            dimensionY = popover?.clientHeight ? currentTarget?.offsetTop - offset[1]! - popover?.clientHeight : 0;
+            dimensionY = popover?.clientHeight ? currentTarget?.offsetTop - offset[1]! - popover?.clientHeight : currentTarget?.offsetTop;
             dimensionZ = offset[2]!;
             break;
         case PopoverContainerPosition.RIGHT:
@@ -68,7 +57,7 @@ const calculateOffset = (
         }
     }, 'translate3d(');
 
-    return `position:absolute;inset:0 auto auto 0;margin: 0;z-index:10;transform: ${res}`;
+    return `position:absolute;inset:0 auto auto 0;margin: 0;z-index:10;transform: ${res};visibility:hidden`;
 };
 const usePopoverPositioner = (
     offset: number[],
@@ -77,51 +66,68 @@ const usePopoverPositioner = (
     position?: PopoverContainerPosition,
     ref?: Nullable<Reflexable<Element>>
 ) => {
+    const [initialPosition, setInitialPosition] = useState(true);
+    const [isLoading, setIsLoading] = useState(!position);
     const [currentPosition, setCurrentPosition] = useState(position ?? PopoverContainerPosition.TOP);
 
     const observerCallback = useCallback(
         (entry: IntersectionObserverEntry) => {
-            if (entry.intersectionRatio !== 1) {
-                switch (currentPosition) {
-                    case PopoverContainerPosition.TOP:
-                        setCurrentPosition(PopoverContainerPosition.BOTTOM);
-                        break;
-                    case PopoverContainerPosition.BOTTOM:
-                        setCurrentPosition(PopoverContainerPosition.RIGHT);
-                        break;
-                    case PopoverContainerPosition.RIGHT:
-                        setCurrentPosition(PopoverContainerPosition.LEFT);
-                        break;
-                    case PopoverContainerPosition.LEFT:
-                        break;
+            if (!initialPosition) {
+                if (entry.intersectionRatio !== 1) {
+                    switch (currentPosition) {
+                        case PopoverContainerPosition.TOP:
+                            setCurrentPosition(PopoverContainerPosition.BOTTOM);
+                            break;
+                        case PopoverContainerPosition.BOTTOM:
+                            setCurrentPosition(PopoverContainerPosition.RIGHT);
+                            break;
+                        case PopoverContainerPosition.RIGHT:
+                            setCurrentPosition(PopoverContainerPosition.LEFT);
+                            break;
+                        case PopoverContainerPosition.LEFT:
+                            break;
+                    }
+                } else {
+                    setIsLoading(false);
                 }
             }
         },
-        [setCurrentPosition, currentPosition]
+        [setCurrentPosition, currentPosition, initialPosition, setIsLoading]
     );
+    const observerCallbackRef = useRef(observerCallback);
+
+    useEffect(() => {
+        getIntersectionObserver(observerCallbackRef.current).remove();
+        observerCallbackRef.current = observerCallback;
+    }, [observerCallback]);
 
     return useReflex<Element>(
         useCallback(
             (current, previous) => {
                 if (previous && !position) {
-                    getObserver(observerCallback).observer.unobserve(previous);
+                    const observer = getIntersectionObserver(observerCallback).observer;
+                    observer.unobserve(previous);
                 }
 
                 if (current) {
                     if (!position) {
-                        getObserver(observerCallback).observer.observe(current);
+                        const observer = getIntersectionObserver(observerCallback).observer;
+                        observer.observe(current);
                     }
                     if (!(current instanceof Element)) return;
 
                     const popoverStyle = calculateOffset(current, offset, targetElement, currentPosition);
-                    current.setAttribute('style', `${popoverStyle}`);
+                    const style = !isLoading ? popoverStyle + ';visibility:visible' : popoverStyle;
+                    current.setAttribute('style', `${style}`);
+
+                    setInitialPosition(false);
 
                     if (variant && variant === PopoverContainerVariant.TOOLTIP) {
                         current.classList?.add(`popover-content-container--tooltip-${currentPosition}`);
                     }
                 }
             },
-            [ref, offset, targetElement, currentPosition, getObserver, position, variant]
+            [ref, offset, targetElement, currentPosition, position, variant, observerCallback, setInitialPosition, isLoading]
         ),
         ref
     );
