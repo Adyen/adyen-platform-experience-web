@@ -1,3 +1,5 @@
+@use '../../../style/skeleton' as skeleton;
+
 .adyen-fp-data-grid {
     $adyen-fp-data-grid: &;
     $adyen-fp-data-grid__cell: #{$adyen-fp-data-grid}__cell;
@@ -128,5 +130,14 @@
         #{$adyen-fp-data-grid}__footer .adyen-fp-pagination {
             padding: var(--adyen-fp-spacing-medium) var(--adyen-fp-spacing-small);
         }
+    }
+
+    &__skeleton-cell {
+        text-align: center;
+    }
+
+    &__skeleton-cell-content {
+        @include skeleton.adyen-fp-skeleton();
+        height: var(--adyen-fp-spacing-base);
     }
 }

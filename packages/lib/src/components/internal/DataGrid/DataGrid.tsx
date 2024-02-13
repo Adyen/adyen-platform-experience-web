@@ -1,10 +1,10 @@
-import { ComponentChild, ComponentChildren, toChildArray } from 'preact';
+import { ComponentChild, toChildArray } from 'preact';
 import classnames from 'classnames';
-import Spinner from '../Spinner';
 import './DataGrid.scss';
 import { TableBody } from '@src/components/internal/DataGrid/components/TableBody';
 import { InteractiveBody } from '@src/components/internal/DataGrid/components/InteractiveBody';
 import { CellTextPosition, DataGridColumn, DataGridProps } from './types';
+import SkeletonBody from '@src/components/internal/DataGrid/components/SkeletonBody';
 
 export const INITIAL_STATE = Object.freeze({
     activeIndex: -1,
@@ -70,7 +70,8 @@ function DataGrid<
                                 ))}
                             </tr>
                         </thead>
-                        {props.loading ? <Spinner /> : <DataGridBody<Items, Columns, ClickedField, CustomCells> {...props} />}
+
+                        <DataGridBody<Items, Columns, ClickedField, CustomCells> {...props} />
                     </table>
                 </div>
                 {footer}
@@ -87,7 +88,9 @@ function DataGridBody<
 >(props: DataGridProps<Items, Columns, ClickedField, CustomCells>) {
     return (
         <tbody className="adyen-fp-data-grid__body">
-            {props.onRowClick ? (
+            {props.loading ? (
+                <SkeletonBody columnsNumber={props.columns.length} />
+            ) : props.onRowClick ? (
                 <InteractiveBody<Items, Columns, ClickedField, CustomCells>
                     data={props.data}
                     columns={props.columns}
