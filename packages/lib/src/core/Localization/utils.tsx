@@ -166,3 +166,18 @@ export const interpolateElement = (translation: string, renderFunctions: Array<(
         return index % 2 === 0 ? term : renderFunctions[indexInFunctionArray]?.(term);
     });
 };
+
+export const breakTranslationsLines = (translation: string) => {
+    const lines = translation.split('<br>');
+
+    return lines.map((line, i) =>
+        i === 0 ? (
+            line
+        ) : (
+            <>
+                <br />
+                {line}
+            </>
+        )
+    );
+};

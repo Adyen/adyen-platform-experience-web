@@ -5,6 +5,7 @@ import { DataGridProps } from '@src/components/internal/DataGrid/types';
 import Typography from '@src/components/internal/Typography/Typography';
 import { TypographyVariant } from '@src/components/internal/Typography/types';
 import emptyTableIcon from '../../../../images/no-data-female.svg';
+import { breakTranslationsLines } from '@src/core/Localization/utils';
 
 const SkeletonBody = ({
     columnsNumber,
@@ -41,7 +42,7 @@ const SkeletonBody = ({
                         <img srcSet={emptyTableIcon} alt={i18n.get('thereAreNoResults')} />
                     </picture>
                     <Typography variant={TypographyVariant.TITLE}>{i18n.get(emptyTableMessage?.title ?? 'thereAreNoResults')}</Typography>
-                    {emptyTableMessage?.message && <span>{i18n.get(emptyTableMessage.message)}</span>}
+                    {emptyTableMessage?.message && <span>{breakTranslationsLines(i18n.get(emptyTableMessage.message))}</span>}
                 </div>
             )}
         </>

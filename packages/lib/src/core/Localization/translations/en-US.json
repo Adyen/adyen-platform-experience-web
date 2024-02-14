@@ -189,5 +189,5 @@
     "accountBalance": "Account Balance",
     "thereAreNoResults": "There are no results",
     "weDidNotFindAnyTransaction": "We did not find any transaction.",
-    "thereAreNoTransactionsForThisRequirements": "There are no transactions for these particular requirements. Try again, please."
+    "thereAreNoTransactionsForThisRequirements": "There are no transactions for these particular requirements.<br> Try again, please."
 }
