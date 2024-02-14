@@ -6,9 +6,8 @@ import { TranslationKey } from '../../../core/Localization/types';
 import { ModalSize } from '../../internal/Modal/types';
 
 export const enum TransactionFilterParam {
-    ACCOUNT_HOLDER = 'accountHolderId',
-    BALANCE_ACCOUNT = 'balanceAccountId',
-    BALANCE_PLATFORM_ID = 'balancePlatform',
+    CATEGORIES = 'categories',
+    STATUSES = 'statuses',
     CREATED_SINCE = 'createdSince',
     CREATED_UNTIL = 'createdUntil',
 }
@@ -27,7 +26,7 @@ export interface TransactionsComponentProps {
     core: Core;
 }
 export interface TransactionListProps extends WithPaginationLimitSelection<PaginationProps> {
-    transactions: ITransaction[];
+    transactions: ITransaction[] | undefined;
     onTransactionSelected?: OnSelection;
     showPagination: boolean;
     loading: boolean;

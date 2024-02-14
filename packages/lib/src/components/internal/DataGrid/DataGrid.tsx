@@ -50,35 +50,31 @@ function DataGrid<
                 'adyen-fp-data-grid--loading': props.loading,
             })}
         >
-            {props.loading ? (
-                <Spinner />
-            ) : (
-                <>
-                    <div className="adyen-fp-data-grid__table-wrapper">
-                        <table className="adyen-fp-data-grid__table">
-                            <thead className="adyen-fp-data-grid__head">
-                                <tr role="rowheader" className="adyen-fp-data-grid__row">
-                                    {props.columns.map(item => (
-                                        <th
-                                            role="columnheader"
-                                            id={String(item.key)}
-                                            className={classnames('adyen-fp-data-grid__cell adyen-fp-data-grid__cell--heading', {
-                                                'adyen-fp-data-grid__cell--right': item.position === CellTextPosition.RIGHT,
-                                                'adyen-fp-data-grid__cell--center': item.position === CellTextPosition.CENTER,
-                                            })}
-                                            key={item.key}
-                                        >
-                                            {item.label}
-                                        </th>
-                                    ))}
-                                </tr>
-                            </thead>
-                            <DataGridBody<Items, Columns, ClickedField, CustomCells> {...props} />
-                        </table>
-                    </div>
-                    {footer}
-                </>
-            )}
+            <>
+                <div className="adyen-fp-data-grid__table-wrapper">
+                    <table className="adyen-fp-data-grid__table">
+                        <thead className="adyen-fp-data-grid__head">
+                            <tr role="rowheader" className="adyen-fp-data-grid__row">
+                                {props.columns.map(item => (
+                                    <th
+                                        role="columnheader"
+                                        id={String(item.key)}
+                                        className={classnames('adyen-fp-data-grid__cell adyen-fp-data-grid__cell--heading', {
+                                            'adyen-fp-data-grid__cell--right': item.position === CellTextPosition.RIGHT,
+                                            'adyen-fp-data-grid__cell--center': item.position === CellTextPosition.CENTER,
+                                        })}
+                                        key={item.key}
+                                    >
+                                        {item.label}
+                                    </th>
+                                ))}
+                            </tr>
+                        </thead>
+                        {props.loading ? <Spinner /> : <DataGridBody<Items, Columns, ClickedField, CustomCells> {...props} />}
+                    </table>
+                </div>
+                {footer}
+            </>
         </div>
     );
 }

@@ -29,4 +29,9 @@
         height: 100%;
         object-fit: contain;
     }
+
+    &__balance-totals {
+        display: flex;
+        justify-content: space-between;
+    }
 }

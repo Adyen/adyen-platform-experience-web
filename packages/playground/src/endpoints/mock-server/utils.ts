@@ -11,7 +11,14 @@ const MOCK_MODES = ['mocked', 'demo'];
 export async function enableServerInMockedMode(enabled?: boolean) {
     const env = (import.meta as any).env;
     if (enabled || MOCK_MODES.includes(env.VITE_MODE || env.MODE)) {
-        await mockWorker.start({});
+        await mockWorker.start({
+            onUnhandledRequest: (request, print) => {
+                if (request.url.pathname.includes('images/logos/') || request.url.pathname.includes('node_modules')) return;
+
+                // Otherwise, print a warning that an API request is not correctly mocked
+                print.warning();
+            },
+        });
     }
 }
 export function stopMockedServer() {

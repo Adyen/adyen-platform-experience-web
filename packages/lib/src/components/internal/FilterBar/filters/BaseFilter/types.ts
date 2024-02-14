@@ -10,11 +10,13 @@ export interface BaseFilterProps {
     onChange: (value?: any) => void;
     name: string;
     value?: string;
+    title?: string;
     type?: string;
     label: string;
     classNameModifiers?: string[];
     isValueEmpty?: (value?: string) => boolean;
     appliedFilterAmount?: number;
+    withContentPadding?: boolean;
 }
 
 interface FilterCustomRenderProps<T extends BaseFilterProps> {

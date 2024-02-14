@@ -27,7 +27,7 @@ function ButtonActions({ actions, layout = ButtonActionsLayout.BUTTONS_END }: Bu
             <div className={`${BUTTON_ACTION_CONTAINER_CLASSNAME} ${conditionalClasses()}`} role="group">
                 {reversedActions.map((button, index) => (
                     <Button
-                        aria-label={''}
+                        aria-label={button.title}
                         key={index}
                         disabled={button.disabled}
                         variant={button.variant || generateButtonVariantByIndex(index)}

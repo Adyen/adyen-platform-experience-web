@@ -14,7 +14,7 @@ export function http<T>(options: HttpOptions, data?: any): Promise<T> {
     if (options.params) {
         options.params.forEach((value, param) => {
             const decodedValue = decodeURIComponent(value);
-            if (decodedValue) url.searchParams.set(param, decodedValue);
+            if (decodedValue) url.searchParams.append(param, decodedValue);
         });
     }
 

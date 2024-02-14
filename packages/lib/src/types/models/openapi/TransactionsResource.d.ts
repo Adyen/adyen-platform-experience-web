@@ -138,8 +138,8 @@ export interface operations {
                 cursor?: string;
                 createdSince?: string;
                 createdUntil?: string;
-                category?: components['schemas']['Category'][];
-                status?: components['schemas']['Status'][];
+                categories?: components['schemas']['Category'][];
+                statuses?: components['schemas']['Status'][];
                 limit?: number;
             };
             path: {

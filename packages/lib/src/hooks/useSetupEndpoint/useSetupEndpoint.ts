@@ -44,9 +44,8 @@ export const useSetupEndpoint = <Endpoint extends EndpointName, Operation extend
                 const pathParamKey = Object.keys(pathParam)[0]!;
                 path = path.replace(`{${pathParamKey}}`, pathParam[pathParamKey]);
             }
-
             return httpProvider<SuccessResponse<Operation>>(
-                { loadingContext, path, ...requestOptions, ...parseSearchParams(params) },
+                { loadingContext, path, ...requestOptions, params: params.query && parseSearchParams(params.query) },
                 (operation.method as HttpMethod) ?? 'GET'
             );
         },
