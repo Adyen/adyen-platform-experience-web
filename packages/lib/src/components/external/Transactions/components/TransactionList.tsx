@@ -49,6 +49,11 @@ function TransactionList({ loading, transactions, onTransactionSelected, showPag
         [updateDetails]
     );
 
+    const EMPTY_TABLE_MESSAGE = {
+        title: 'weDidNotFindAnyTransaction',
+        message: 'thereAreNoTransactionsForThisRequirements',
+    } as const;
+
     return (
         <>
             <DataGrid
@@ -57,6 +62,7 @@ function TransactionList({ loading, transactions, onTransactionSelected, showPag
                 loading={loading}
                 outline={false}
                 onRowClick={{ retrievedField: 'id', callback: onRowClick }}
+                emptyTableMessage={EMPTY_TABLE_MESSAGE}
                 customCells={{
                     status: ({ value }) => {
                         return (

@@ -86,10 +86,15 @@ function DataGridBody<
     ClickedField extends keyof Items[number],
     CustomCells extends CustomCell<Items, Columns, Columns[number]>
 >(props: DataGridProps<Items, Columns, ClickedField, CustomCells>) {
+    const emptyBody = !props.loading && props.data?.length === 0;
     return (
-        <tbody className="adyen-fp-data-grid__body">
-            {props.loading ? (
-                <SkeletonBody columnsNumber={props.columns.length} />
+        <tbody
+            className={classnames('adyen-fp-data-grid__body', {
+                'adyen-fp-data-grid__body--empty': emptyBody,
+            })}
+        >
+            {props.loading || emptyBody ? (
+                <SkeletonBody columnsNumber={props.columns.length} loading={props.loading} emptyTableMessage={props.emptyTableMessage} />
             ) : props.onRowClick ? (
                 <InteractiveBody<Items, Columns, ClickedField, CustomCells>
                     data={props.data}

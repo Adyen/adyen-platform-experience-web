@@ -1,0 +1,359 @@
+{
+    "info": {
+        "_postman_id": "df57eeca-a54a-4541-a0b4-5c1a53d85fe3",
+        "name": "Platform Components API (v1)",
+        "description": "This collection contains the APIs exposed by `platform-components-external`, plus the `authe`'s session creation API needed to call the former.\n\nFeel free to reach out to PIE Team's Mattermost channel: [https://mattermost.adyen.com/adyen/channels/platform-components-qa](https://mattermost.adyen.com/adyen/channels/platform-components-qa)",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+        "_exporter_id": "30937394"
+    },
+    "item": [
+        {
+            "name": "Authe",
+            "item": [
+                {
+                    "name": "Create Session",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"allowOrigin\": \"http://localhost\",\n    \"reference\": \"asd\",\n    \"product\": \"platform\",\n    \"policy\": {\n        \"resources\": [\n            {\n                \"type\": \"accountHolder\",\n                \"accountHolderId\": \"{{YOUR_ACCOUNT_HOLDER_ID}}\"\n            }\n        ],\n        \"roles\": [\n            \"{{ROLE_TO_ASSIGN_1}}\" // ...list of as many roles as desired\n        ]\n    }\n}"
+                        },
+                        "url": {
+                            "raw": "{{autheBaseUrl}}/sessions",
+                            "host": ["{{autheBaseUrl}}"],
+                            "path": ["sessions"]
+                        }
+                    },
+                    "response": []
+                }
+            ],
+            "event": [
+                {
+                    "listen": "prerequest",
+                    "script": {
+                        "type": "text/javascript",
+                        "exec": [""]
+                    }
+                },
+                {
+                    "listen": "test",
+                    "script": {
+                        "type": "text/javascript",
+                        "exec": [""]
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Platform Components External",
+            "item": [
+                {
+                    "name": "Balance Accounts",
+                    "item": [
+                        {
+                            "name": "/balanceAccounts",
+                            "item": [
+                                {
+                                    "name": "Get all balance accounts of an account holder",
+                                    "request": {
+                                        "method": "GET",
+                                        "header": [],
+                                        "url": {
+                                            "raw": "{{pceBaseUrl}}/balanceAccounts",
+                                            "host": ["{{pceBaseUrl}}"],
+                                            "path": ["balanceAccounts"]
+                                        }
+                                    },
+                                    "response": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "/balanceAccounts/:id",
+                            "item": [
+                                {
+                                    "name": "Get balances of balance account",
+                                    "request": {
+                                        "method": "GET",
+                                        "header": [],
+                                        "url": {
+                                            "raw": "{{pceBaseUrl}}/balanceAccounts/:id/balances",
+                                            "host": ["{{pceBaseUrl}}"],
+                                            "path": ["balanceAccounts", ":id", "balances"],
+                                            "variable": [
+                                                {
+                                                    "key": "id",
+                                                    "value": null,
+                                                    "description": "The unique identifier of the balance account."
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "response": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "/balanceAccounts/:id/transactions/totals",
+                            "item": [
+                                {
+                                    "name": "Get transaction totals",
+                                    "request": {
+                                        "method": "GET",
+                                        "header": [],
+                                        "url": {
+                                            "raw": "{{pceBaseUrl}}/balanceAccounts/:id/transactions/totals",
+                                            "host": ["{{pceBaseUrl}}"],
+                                            "path": ["balanceAccounts", ":id", "transactions", "totals"],
+                                            "query": [
+                                                {
+                                                    "key": "cursor",
+                                                    "value": "",
+                                                    "description": "Cursor used to navigate through pages",
+                                                    "disabled": true
+                                                },
+                                                {
+                                                    "key": "createdSince",
+                                                    "value": "",
+                                                    "description": "Beginning of the desired date interval for transactions, in ISO 8601 format",
+                                                    "disabled": true
+                                                },
+                                                {
+                                                    "key": "createdUntil",
+                                                    "value": "",
+                                                    "description": "End of the desired date interval for transactions, in ISO 8601 format",
+                                                    "disabled": true
+                                                },
+                                                {
+                                                    "key": "statuses",
+                                                    "value": "",
+                                                    "description": "Statuses that the user wants to see",
+                                                    "disabled": true
+                                                },
+                                                {
+                                                    "key": "categories",
+                                                    "value": "",
+                                                    "description": "Categories that the user wants to see",
+                                                    "disabled": true
+                                                },
+                                                {
+                                                    "key": "minAmount",
+                                                    "value": null,
+                                                    "description": "Minimum amount for transaction to be returned",
+                                                    "disabled": true
+                                                },
+                                                {
+                                                    "key": "maxAmount",
+                                                    "value": null,
+                                                    "description": "Maximum amount for transaction to be returned",
+                                                    "disabled": true
+                                                },
+                                                {
+                                                    "key": "currencies",
+                                                    "value": "",
+                                                    "description": "Currencies that the user wants to see",
+                                                    "disabled": true
+                                                },
+                                                {
+                                                    "key": "sortDirection",
+                                                    "value": "",
+                                                    "description": "Results sort direction: newest first or oldest first",
+                                                    "disabled": true
+                                                },
+                                                {
+                                                    "key": "limit",
+                                                    "value": "",
+                                                    "description": "Number of transactions per page",
+                                                    "disabled": true
+                                                }
+                                            ],
+                                            "variable": [
+                                                {
+                                                    "key": "id",
+                                                    "value": null,
+                                                    "description": "The unique identifier of the balance account."
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "response": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "/balanceAccounts/:id/transactions",
+                            "item": [
+                                {
+                                    "name": "Get transactions",
+                                    "request": {
+                                        "method": "GET",
+                                        "header": [],
+                                        "url": {
+                                            "raw": "{{pceBaseUrl}}/balanceAccounts/:id/transactions",
+                                            "host": ["{{pceBaseUrl}}"],
+                                            "path": ["balanceAccounts", ":id", "transactions"],
+                                            "query": [
+                                                {
+                                                    "key": "cursor",
+                                                    "value": "",
+                                                    "description": "Cursor used to navigate through pages",
+                                                    "disabled": true
+                                                },
+                                                {
+                                                    "key": "createdSince",
+                                                    "value": "",
+                                                    "description": "Beginning of the desired date interval for transactions, in ISO 8601 format",
+                                                    "disabled": true
+                                                },
+                                                {
+                                                    "key": "createdUntil",
+                                                    "value": "",
+                                                    "description": "End of the desired date interval for transactions, in ISO 8601 format",
+                                                    "disabled": true
+                                                },
+                                                {
+                                                    "key": "statuses",
+                                                    "value": "",
+                                                    "description": "Statuses that the user wants to see",
+                                                    "disabled": true
+                                                },
+                                                {
+                                                    "key": "categories",
+                                                    "value": "",
+                                                    "description": "Categories that the user wants to see",
+                                                    "disabled": true
+                                                },
+                                                {
+                                                    "key": "minAmount",
+                                                    "value": null,
+                                                    "description": "Minimum amount for transaction to be returned",
+                                                    "disabled": true
+                                                },
+                                                {
+                                                    "key": "maxAmount",
+                                                    "value": null,
+                                                    "description": "Maximum amount for transaction to be returned",
+                                                    "disabled": true
+                                                },
+                                                {
+                                                    "key": "currencies",
+                                                    "value": null,
+                                                    "description": "Currencies that the user wants to see",
+                                                    "disabled": true
+                                                },
+                                                {
+                                                    "key": "sortDirection",
+                                                    "value": "",
+                                                    "description": "Results sort direction: newest first or oldest first",
+                                                    "disabled": true
+                                                },
+                                                {
+                                                    "key": "limit",
+                                                    "value": "",
+                                                    "description": "Number of transactions per page",
+                                                    "disabled": true
+                                                }
+                                            ],
+                                            "variable": [
+                                                {
+                                                    "key": "id",
+                                                    "value": null,
+                                                    "description": "The unique identifier of the balance account."
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "response": []
+                                }
+                            ]
+                        },
+                        {
+                            "name": "/balanceAccounts/:id/transactions/:transactionId",
+                            "item": [
+                                {
+                                    "name": "Get transaction",
+                                    "request": {
+                                        "method": "GET",
+                                        "header": [],
+                                        "url": {
+                                            "raw": "{{pceBaseUrl}}/balanceAccounts/:id/transactions/:transactionId",
+                                            "host": ["{{pceBaseUrl}}"],
+                                            "path": ["balanceAccounts", ":id", "transactions", ":transactionId"],
+                                            "variable": [
+                                                {
+                                                    "key": "id",
+                                                    "value": null,
+                                                    "description": "The unique identifier of the balance account."
+                                                },
+                                                {
+                                                    "key": "transactionId",
+                                                    "value": null,
+                                                    "description": "The unique identifier of the transaction."
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "response": []
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "auth": {
+        "type": "apikey",
+        "apikey": [
+            {
+                "key": "key",
+                "value": "X-API-Key-BP",
+                "type": "string"
+            },
+            {
+                "key": "value",
+                "value": "{{X-API-Key-BP}}",
+                "type": "string"
+            }
+        ]
+    },
+    "event": [
+        {
+            "listen": "prerequest",
+            "script": {
+                "type": "text/javascript",
+                "exec": [""]
+            }
+        },
+        {
+            "listen": "test",
+            "script": {
+                "type": "text/javascript",
+                "exec": [""]
+            }
+        }
+    ],
+    "variable": [
+        {
+            "key": "pceBaseUrl",
+            "value": "https://platform-components-external-test.adyen.com/platform-components-external/api/v1",
+            "type": "string"
+        },
+        {
+            "key": "autheBaseUrl",
+            "value": "https://test.adyen.com/authe/api/v1",
+            "type": "string"
+        },
+        {
+            "key": "X-API-Key-BP",
+            "value": "INSERT_YOUR_BP_API_KEY_HERE",
+            "type": "string"
+        }
+    ]
+}

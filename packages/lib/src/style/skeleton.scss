@@ -9,9 +9,14 @@
 }
 
 @mixin adyen-fp-skeleton {
-    animation: skeleton-loading 0.8s linear infinite alternate;
+    background-color: hsl(220, 10%, 95%);
     border-radius: 100px;
     display: inline-block;
     margin: auto;
     width: 80%;
+}
+
+@mixin adyen-fp-skeleton-animation {
+    animation: skeleton-loading 0.8s linear infinite alternate;
+    background: inherit;
 }

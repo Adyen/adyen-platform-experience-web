@@ -3,7 +3,7 @@ import { ComponentChildren } from 'preact';
 export type ModalSize = 'fluid' | 'small' | 'large' | 'extra-large' | 'full-screen';
 
 export interface ModalProps {
-    title: string;
+    title?: string;
     children: ComponentChildren;
     classNameModifiers?: string[];
     isOpen: boolean;
