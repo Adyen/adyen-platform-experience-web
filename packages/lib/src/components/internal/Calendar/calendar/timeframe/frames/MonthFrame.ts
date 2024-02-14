@@ -147,7 +147,7 @@ export default class MonthFrame extends TimeFrame {
 
     protected getFormattedDataForFrameBlock(time: Time): [string, string] {
         const date = new Date(time);
-        return [date.toLocaleDateString(this.locale, { month: 'short', year: 'numeric' }), date.toISOString().slice(0, 7)];
+        return [date.toLocaleDateString(this.locale, { month: 'long', year: 'numeric' }), date.toISOString().slice(0, 7)];
     }
 
     protected getFrameBlockAtIndex(index: number): TimeFrameBlock {

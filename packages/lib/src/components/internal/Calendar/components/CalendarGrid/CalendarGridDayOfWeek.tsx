@@ -6,7 +6,7 @@ import { EMPTY_OBJECT } from '@src/utils/common/constants';
 import { CalendarGridRenderToken } from '../../types';
 import memoComparator from '@src/utils/memoComparator';
 
-const DEFAULT_CELL_CLASSNAME = 'adyen-fp-calendar-month__grid-cell';
+const DEFAULT_CELL_CLASSNAME = 'adyen-fp-calendar__cell adyen-fp-calendar__cell--day-of-week';
 const DEFAULT_CELL_ABBR_CLASSNAME = 'adyen-fp-calendar__day-of-week';
 
 const getGridDayOfWeekRenderProps = (computedProps = EMPTY_OBJECT as any, prepare?: CalendarGridDayOfWeekProps['prepare']) => {
@@ -31,7 +31,7 @@ const getGridDayOfWeekRenderProps = (computedProps = EMPTY_OBJECT as any, prepar
     return renderProps;
 };
 
-const CalendarGridDayOfWeek = ({ prepare, flags, labels: { long: longLabel, narrow: narrowLabel } }: CalendarGridDayOfWeekProps) => {
+const CalendarGridDayOfWeek = ({ prepare, flags, labels: { long: longLabel, short: shortLabel } }: CalendarGridDayOfWeekProps) => {
     const props = {
         'aria-label': longLabel,
         'data-first-week-day': flags.LINE_START,
@@ -50,7 +50,7 @@ const CalendarGridDayOfWeek = ({ prepare, flags, labels: { long: longLabel, narr
     return (
         <th {...extendedProps} {...props} className={classes}>
             <abbr {...extendedChildProps} className={childClasses}>
-                {narrowLabel}
+                {shortLabel}
             </abbr>
         </th>
     );

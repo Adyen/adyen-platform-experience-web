@@ -10,6 +10,7 @@ export interface BaseFilterProps {
     onChange: (value?: any) => void;
     name: string;
     value?: string;
+    title?: string;
     type?: string;
     label: string;
     classNameModifiers?: string[];
