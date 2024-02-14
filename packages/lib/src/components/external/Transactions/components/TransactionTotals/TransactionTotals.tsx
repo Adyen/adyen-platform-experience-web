@@ -4,7 +4,6 @@ import { EMPTY_OBJECT } from '@src/utils/common';
 import { useFetch } from '@src/hooks/useFetch/useFetch';
 import { OperationParameters } from '@src/types/models/openapi/endpoints';
 import { MakeFieldValueUndefined } from '@src/utils/types';
-import Spinner from '@src/components/internal/Spinner';
 import useCoreContext from '@src/core/Context/useCoreContext';
 import './TransactionTotals.scss';
 import Typography from '@src/components/internal/Typography/Typography';
@@ -50,7 +49,7 @@ const TransactionTotals = ({
                 <Typography variant={TypographyVariant.CAPTION}>{i18n.get('incoming')}</Typography>
 
                 {isLoading ? (
-                    <Spinner />
+                    <span className="adyen-fp-transactions-total__skeleton"></span>
                 ) : (
                     <>
                         <Typography variant={TypographyVariant.TITLE}>{totals?.incomings ?? ''}</Typography>
@@ -61,14 +60,14 @@ const TransactionTotals = ({
                 <Typography variant={TypographyVariant.CAPTION}>{i18n.get('expense')}</Typography>
 
                 {isLoading ? (
-                    <Spinner />
+                    <span className="adyen-fp-transactions-total__skeleton"></span>
                 ) : (
                     <>
                         <Typography variant={TypographyVariant.TITLE}>{totals?.expenses ?? ''}</Typography>
                     </>
                 )}
             </div>
-            <span>{totals?.currency}</span>
+            {totals?.currency ? <span>{totals?.currency}</span> : <span>&nbsp;</span>}
         </div>
     );
 };

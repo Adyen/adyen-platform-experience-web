@@ -42,7 +42,9 @@ const SkeletonBody = ({
                         <img srcSet={emptyTableIcon} alt={i18n.get('thereAreNoResults')} />
                     </picture>
                     <Typography variant={TypographyVariant.TITLE}>{i18n.get(emptyTableMessage?.title ?? 'thereAreNoResults')}</Typography>
-                    {emptyTableMessage?.message && <span>{breakTranslationsLines(i18n.get(emptyTableMessage.message))}</span>}
+                    {emptyTableMessage?.message && (
+                        <Typography variant={TypographyVariant.BODY}>{breakTranslationsLines(i18n.get(emptyTableMessage.message))}</Typography>
+                    )}
                 </div>
             )}
         </>
