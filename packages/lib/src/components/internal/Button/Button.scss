@@ -102,12 +102,30 @@
 
     &--circle {
         align-items: center;
-        border-radius: 50%;
-        height: 40px;
+        border-radius: 10000rem;
         justify-content: center;
         min-width: auto;
         padding: 0;
-        width: var(--adyen-fp-spacing-xlarge);
+    }
+
+    &--icon {
+        //Icons will always take equal width and height
+        //Modify width and height automatically adjust to the same size
+        height: auto !important;
+        position: relative;
+        width: var(--adyen-fp-touch-size-minimum);
+
+        &::before {
+            content: '';
+            float: left;
+            padding-top: 100%;
+        }
+
+        &::after {
+            clear: both;
+            content: '';
+            display: table;
+        }
     }
 
     &--link {

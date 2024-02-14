@@ -44,7 +44,7 @@ const isCheckedRadio = (element: Element): element is HTMLInputElement => {
 const shouldRefresh = (tabbables: Element[], records: MutationRecord[]) => {
     for (const record of records) {
         if (record.type !== 'attributes') {
-            if (some(record.addedNodes, (node: Node) => isTabbable(node as Element))) return true;
+            if (some(record.addedNodes, (node: Node) => node instanceof Element && isTabbable(node as Element))) return true;
             if (some(record.removedNodes, (node: Node) => tabbables.includes(node as Element))) return true;
         } else if (isTabbable(record.target as Element)) return true;
         else if (tabbables.includes(record.target as Element)) return true;

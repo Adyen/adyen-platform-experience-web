@@ -3,8 +3,10 @@
 @use './font';
 @use './spacings';
 @use './bento-mapping';
+@use './accessibility';
 
 :root {
+    @include accessibility.adyen-touch-sizes;
     @include colors.adyen-fp-colors;
     @include border-radius.adyen-fp-border-radius;
     @include font.adyen-fp-font-sizes;

@@ -15,6 +15,7 @@ export interface BaseFilterProps {
     classNameModifiers?: string[];
     isValueEmpty?: (value?: string) => boolean;
     appliedFilterAmount?: number;
+    withContentPadding?: boolean;
 }
 
 interface FilterCustomRenderProps<T extends BaseFilterProps> {
