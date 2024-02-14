@@ -153,7 +153,7 @@
 
     &__empty-message {
         background: #fff;
-        border: 1px solid #dbdee2;
+        border: 1px solid var(--adyen-fp-color-border-lighter);
         border-radius: 12px;
         box-shadow: 0 6px 12px 0 rgba(0, 17, 44, 0.08);
         display: flex;
