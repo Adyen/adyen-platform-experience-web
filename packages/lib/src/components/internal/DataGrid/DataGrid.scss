@@ -1,3 +1,5 @@
+@use '../../../style/skeleton' as skeleton;
+
 .adyen-fp-data-grid {
     $adyen-fp-data-grid: &;
     $adyen-fp-data-grid__cell: #{$adyen-fp-data-grid}__cell;
@@ -27,6 +29,12 @@
         overflow: visible;
         padding: 16px;
         position: relative;
+    }
+
+    &__body {
+        &--empty {
+            position: relative;
+        }
     }
 
     &__row {
@@ -128,5 +136,34 @@
         #{$adyen-fp-data-grid}__footer .adyen-fp-pagination {
             padding: var(--adyen-fp-spacing-medium) var(--adyen-fp-spacing-small);
         }
+    }
+
+    &__skeleton-cell {
+        text-align: center;
+    }
+
+    &__skeleton-cell-content {
+        @include skeleton.adyen-fp-skeleton();
+        height: var(--adyen-fp-spacing-base);
+    }
+
+    &__skeleton-cell-content--loading {
+        @include skeleton.adyen-fp-skeleton-animation();
+    }
+
+    &__empty-message {
+        background: var(--adyen-fp-color-white);
+        border: 1px solid var(--adyen-fp-color-border-lighter);
+        border-radius: 12px;
+        box-shadow: 0 6px 12px 0 rgba(0, 17, 44, 0.08);
+        display: flex;
+        flex-direction: column;
+        gap: var(--adyen-fp-spacing-medium-small);
+        left: 50%;
+        padding: var(--adyen-fp-spacing-xxlarge);
+        position: absolute;
+        text-align: center;
+        top: 20px;
+        transform: translateX(-50%);
     }
 }

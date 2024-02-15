@@ -4,11 +4,11 @@ import { EMPTY_OBJECT } from '@src/utils/common';
 import { useFetch } from '@src/hooks/useFetch/useFetch';
 import { OperationParameters } from '@src/types/models/openapi/endpoints';
 import { MakeFieldValueUndefined } from '@src/utils/types';
-import Spinner from '@src/components/internal/Spinner';
 import useCoreContext from '@src/core/Context/useCoreContext';
 import './TransactionTotals.scss';
 import Typography from '@src/components/internal/Typography/Typography';
 import { TypographyVariant } from '@src/components/internal/Typography/types';
+import AmountSkeleton from '@src/components/external/Transactions/components/TransactionTotals/AmountSkeleton';
 
 type TransactionTotalsProps = Required<OperationParameters<'getTransactionTotals'>['path'] & OperationParameters<'getTransactionTotals'>['query']>;
 
@@ -44,13 +44,16 @@ const TransactionTotals = ({
 
     const totals = data?.totals?.[0];
 
+    const showSkeleton = isLoading || data?.totals?.length === 0;
+
+    // TODO - Refactor to avoid code repetition (this is working as a placeholder component)
     return (
         <div className="adyen-fp-transactions-total">
             <div className="adyen-fp-transactions-total__amount">
                 <Typography variant={TypographyVariant.CAPTION}>{i18n.get('incoming')}</Typography>
 
-                {isLoading ? (
-                    <Spinner />
+                {showSkeleton ? (
+                    <AmountSkeleton isLoading={isLoading} />
                 ) : (
                     <>
                         <Typography variant={TypographyVariant.TITLE}>{totals?.incomings ?? ''}</Typography>
@@ -60,15 +63,15 @@ const TransactionTotals = ({
             <div className="adyen-fp-transactions-total__amount">
                 <Typography variant={TypographyVariant.CAPTION}>{i18n.get('expense')}</Typography>
 
-                {isLoading ? (
-                    <Spinner />
+                {showSkeleton ? (
+                    <AmountSkeleton isLoading={isLoading} />
                 ) : (
                     <>
                         <Typography variant={TypographyVariant.TITLE}>{totals?.expenses ?? ''}</Typography>
                     </>
                 )}
             </div>
-            <span>{totals?.currency}</span>
+            {totals?.currency ? <span>{totals?.currency}</span> : <span>&nbsp;</span>}
         </div>
     );
 };

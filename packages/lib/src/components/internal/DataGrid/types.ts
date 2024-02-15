@@ -1,5 +1,6 @@
 import { ComponentChildren } from 'preact';
 import { CustomCell } from '@src/components/internal/DataGrid/DataGrid';
+import { TranslationKey } from '@src/core/Localization/types';
 
 export enum CellTextPosition {
     CENTER = 'center',
@@ -28,6 +29,10 @@ export interface DataGridProps<
     Footer?: any;
     onRowClick?: { retrievedField: ClickedField; callback: (value: Item[0][ClickedField]) => void };
     customCells?: CustomCells;
+    emptyTableMessage?: {
+        title: TranslationKey;
+        message?: TranslationKey | TranslationKey[];
+    };
 }
 
 export interface InteractiveBodyProps<

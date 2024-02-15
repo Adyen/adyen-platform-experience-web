@@ -1,10 +1,10 @@
-import { ComponentChild, ComponentChildren, toChildArray } from 'preact';
+import { ComponentChild, toChildArray } from 'preact';
 import classnames from 'classnames';
-import Spinner from '../Spinner';
 import './DataGrid.scss';
 import { TableBody } from '@src/components/internal/DataGrid/components/TableBody';
 import { InteractiveBody } from '@src/components/internal/DataGrid/components/InteractiveBody';
 import { CellTextPosition, DataGridColumn, DataGridProps } from './types';
+import SkeletonBody from '@src/components/internal/DataGrid/components/SkeletonBody';
 
 export const INITIAL_STATE = Object.freeze({
     activeIndex: -1,
@@ -70,7 +70,8 @@ function DataGrid<
                                 ))}
                             </tr>
                         </thead>
-                        {props.loading ? <Spinner /> : <DataGridBody<Items, Columns, ClickedField, CustomCells> {...props} />}
+
+                        <DataGridBody<Items, Columns, ClickedField, CustomCells> {...props} />
                     </table>
                 </div>
                 {footer}
@@ -85,9 +86,16 @@ function DataGridBody<
     ClickedField extends keyof Items[number],
     CustomCells extends CustomCell<Items, Columns, Columns[number]>
 >(props: DataGridProps<Items, Columns, ClickedField, CustomCells>) {
+    const emptyBody = !props.loading && props.data?.length === 0;
     return (
-        <tbody className="adyen-fp-data-grid__body">
-            {props.onRowClick ? (
+        <tbody
+            className={classnames('adyen-fp-data-grid__body', {
+                'adyen-fp-data-grid__body--empty': emptyBody,
+            })}
+        >
+            {props.loading || emptyBody ? (
+                <SkeletonBody columnsNumber={props.columns.length} loading={props.loading} emptyTableMessage={props.emptyTableMessage} />
+            ) : props.onRowClick ? (
                 <InteractiveBody<Items, Columns, ClickedField, CustomCells>
                     data={props.data}
                     columns={props.columns}

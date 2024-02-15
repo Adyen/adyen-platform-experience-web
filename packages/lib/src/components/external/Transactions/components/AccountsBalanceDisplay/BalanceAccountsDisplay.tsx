@@ -4,7 +4,6 @@ import { EMPTY_OBJECT } from '@src/utils/common';
 import { useFetch } from '@src/hooks/useFetch/useFetch';
 import { OperationParameters } from '@src/types/models/openapi/endpoints';
 import { MakeFieldValueUndefined } from '@src/utils/types';
-import Spinner from '@src/components/internal/Spinner';
 import useCoreContext from '@src/core/Context/useCoreContext';
 import './BalanceAccountsDisplay.scss';
 import Typography from '@src/components/internal/Typography/Typography';
@@ -38,7 +37,7 @@ export const BalanceAccountsDisplay = ({ balanceAccountId }: MakeFieldValueUndef
                 <Typography variant={TypographyVariant.CAPTION}>{i18n.get('accountBalance')}</Typography>
 
                 {isLoading ? (
-                    <Spinner />
+                    <span className="adyen-fp-account-balance__skeleton"></span>
                 ) : (
                     totals && <Typography variant={TypographyVariant.TITLE}>{i18n.amount(totals.value, totals.currency)}</Typography>
                 )}
