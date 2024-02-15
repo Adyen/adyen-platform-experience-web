@@ -14,6 +14,7 @@ import { Tag } from '@src/components/internal/Tag/Tag';
 import { TagVariant } from '@src/components/internal/Tag/types';
 import { CellTextPosition } from '@src/components/internal/DataGrid/types';
 import { Image } from '@src/components/internal/Image/Image';
+import { TranslationKey } from '@src/core/Localization/types';
 
 const ModalContent = lazy(() => import('./ModalContent'));
 
@@ -51,8 +52,8 @@ function TransactionList({ loading, transactions, onTransactionSelected, showPag
 
     const EMPTY_TABLE_MESSAGE = {
         title: 'weDidNotFindAnyTransaction',
-        message: 'thereAreNoTransactionsForThisRequirements',
-    } as const;
+        message: ['thereAreNoTransactionsForThisRequirements', 'tryAgainPlease'],
+    } satisfies { title: TranslationKey; message: TranslationKey | TranslationKey[] };
 
     return (
         <>

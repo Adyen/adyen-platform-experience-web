@@ -31,7 +31,7 @@ export interface DataGridProps<
     customCells?: CustomCells;
     emptyTableMessage?: {
         title: TranslationKey;
-        message?: TranslationKey;
+        message?: TranslationKey | TranslationKey[];
     };
 }
 
