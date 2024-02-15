@@ -8,6 +8,8 @@ import useCoreContext from '@src/core/Context/useCoreContext';
 import './TransactionTotals.scss';
 import Typography from '@src/components/internal/Typography/Typography';
 import { TypographyVariant } from '@src/components/internal/Typography/types';
+import cx from 'classnames';
+import AmountSkeleton from '@src/components/external/Transactions/components/TransactionTotals/AmountSkeleton';
 
 type TransactionTotalsProps = Required<OperationParameters<'getTransactionTotals'>['path'] & OperationParameters<'getTransactionTotals'>['query']>;
 
@@ -43,13 +45,15 @@ const TransactionTotals = ({
 
     const totals = data?.totals?.[0];
 
+    const showSkeleton = isLoading || data?.totals?.length === 0;
+
     return (
         <div className="adyen-fp-transactions-total">
             <div className="adyen-fp-transactions-total__amount">
                 <Typography variant={TypographyVariant.CAPTION}>{i18n.get('incoming')}</Typography>
 
-                {isLoading ? (
-                    <span className="adyen-fp-transactions-total__skeleton"></span>
+                {showSkeleton ? (
+                    <AmountSkeleton isLoading={isLoading} />
                 ) : (
                     <>
                         <Typography variant={TypographyVariant.TITLE}>{totals?.incomings ?? ''}</Typography>
@@ -59,8 +63,8 @@ const TransactionTotals = ({
             <div className="adyen-fp-transactions-total__amount">
                 <Typography variant={TypographyVariant.CAPTION}>{i18n.get('expense')}</Typography>
 
-                {isLoading ? (
-                    <span className="adyen-fp-transactions-total__skeleton"></span>
+                {showSkeleton ? (
+                    <AmountSkeleton isLoading={isLoading} />
                 ) : (
                     <>
                         <Typography variant={TypographyVariant.TITLE}>{totals?.expenses ?? ''}</Typography>
