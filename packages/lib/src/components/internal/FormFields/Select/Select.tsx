@@ -1,21 +1,23 @@
-import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import cx from 'classnames';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
+import { InteractionKeyCode } from '@src/components/types';
+import { ARIA_ERROR_SUFFIX } from '@src/core/Errors/constants';
+import { EMPTY_ARRAY, noop } from '@src/utils/common';
+import uuid from '@src/utils/uuid';
 import SelectButton from './components/SelectButton';
 import SelectList from './components/SelectList';
-import uuid from '../../../../utils/uuid';
-import { keys } from './constants';
 import { SelectItem, SelectProps } from './types';
-import styles from './Select.module.scss';
 import './Select.scss';
-import { ARIA_ERROR_SUFFIX } from '../../../../core/Errors/constants';
 
-function Select({
-    items = [],
-    className = '',
-    classNameModifiers = [],
-    filterable = true,
+const DROPDOWN_BASE_CLASS = 'adyen-fp-dropdown';
+
+const Select = <T extends SelectItem = SelectItem>({
+    className,
+    classNameModifiers = EMPTY_ARRAY as [],
+    items = EMPTY_ARRAY,
+    filterable = false,
     readonly = false,
-    onChange = () => {},
+    onChange = noop,
     selected,
     name,
     isInvalid,
@@ -24,25 +26,35 @@ function Select({
     uniqueId,
     isCollatingErrors,
     isIconOnLeftSide = false,
-}: SelectProps) {
+}: SelectProps<T>) => {
+    const [showList, setShowList] = useState<boolean>(false);
+    const [textFilter, setTextFilter] = useState<string>('');
     const filterInputRef = useRef<HTMLInputElement>(null);
     const selectContainerRef = useRef<HTMLDivElement>(null);
-    const toggleButtonRef = useRef<HTMLButtonElement>(null);
     const selectListRef = useRef<HTMLUListElement>(null);
-    const [textFilter, setTextFilter] = useState<string>('');
-    const [showList, setShowList] = useState<boolean>(false);
-    const selectListId: string = useMemo(() => `select-${uuid()}`, []);
+    const toggleButtonRef = useRef<HTMLButtonElement>(null);
+    const selectListId = useRef(`select-${uuid()}`);
 
-    const active: SelectItem = items.find(i => i.id === selected) || ({} as SelectItem);
+    const dropdownClassName = useMemo(
+        () => cx([DROPDOWN_BASE_CLASS, ...classNameModifiers.map(mod => `${DROPDOWN_BASE_CLASS}--${mod}`), className]),
+        []
+    );
+
+    const active = useMemo(() => {
+        const _selected = ([] as T['id'][]).concat(selected ?? EMPTY_ARRAY).filter(Boolean);
+        return Object.freeze(items.filter(item => _selected.includes(item.id)));
+    }, [items, selected]);
 
     /**
-     * Closes the selectList, empties the text filter and focuses the button element
+     * Closes the select list:
+     *   - empties the text filter
+     *   - restores focus to the select button element
      */
-    const closeList = () => {
+    const closeList = useCallback(() => {
         setTextFilter('');
         setShowList(false);
         if (toggleButtonRef.current) toggleButtonRef.current.focus();
-    };
+    }, [setShowList, setTextFilter]);
 
     /**
      * Closes the select list and fires an onChange
@@ -67,82 +79,106 @@ function Select({
     /**
      * Handle keyDown events on the selectList button
      * Opens the selectList and focuses the first element if available
-     * @param e - KeyboardEvent
+     * @param evt {KeyboardEvent}
      */
-    const handleButtonKeyDown = (e: KeyboardEvent) => {
-        if (e.key === keys.enter && filterable && showList && textFilter) {
-            handleSelect(e);
-        } else if (e.key === keys.escape) {
-            // When user has focused Select button but not yet moved into Select list - close list and keep focus on the Select Button re. a11y guidelines
-            // https://w3c.github.io/aria-practices/examples/disclosure/disclosure-navigation.html
-            closeList();
-        } else if ([keys.arrowUp, keys.arrowDown, keys.enter].includes(e.key) || (e.key === keys.space && (!filterable || !showList))) {
-            e.preventDefault();
+    const handleButtonKeyDown = useCallback(
+        (evt: KeyboardEvent) => {
+            switch (evt.key) {
+                case InteractionKeyCode.ESCAPE:
+                case InteractionKeyCode.TAB:
+                    /**
+                     * Implementation notes ({@link https://w3c.github.io/aria-practices/examples/disclosure/disclosure-navigation.html article}):
+                     * - When user has focused select button but not yet moved into select list, close list and keep focus on the select button
+                     * - Shift+Tab out of select should close list
+                     */
+                    closeList();
+                    return;
+                case InteractionKeyCode.ENTER:
+                case InteractionKeyCode.SPACE:
+                    if (filterable && showList) {
+                        if (evt.key === InteractionKeyCode.ENTER) {
+                            if (textFilter) handleSelect(evt);
+                            else break;
+                        }
+                        return;
+                    }
+                    break;
+                case InteractionKeyCode.ARROW_DOWN:
+                case InteractionKeyCode.ARROW_UP:
+                    break;
+                default:
+                    return;
+            }
+
+            evt.preventDefault();
             setShowList(true);
+
             if (selectListRef.current?.firstElementChild) {
                 (selectListRef.current.firstElementChild as HTMLLIElement).focus();
             }
-        } else if (e.shiftKey && e.key === keys.tab) {
-            // Shift-Tab out of Select - close list re. a11y guidelines (above)
-            closeList();
-        } else if (e.key === keys.tab) {
-            closeList();
-        }
-    };
+        },
+        [closeList, filterable, handleSelect, showList, setShowList, textFilter]
+    );
 
     /**
      * Close the select list when clicking outside the list
      * @param e - MouseEvent
      */
-    const handleClickOutside = (e: MouseEvent) => {
-        // use composedPath so it can also check when inside a web component
-        // if composedPath is not available fallback to e.target
-        const clickIsOutside =
-            selectContainerRef.current && e.composedPath
-                ? !e.composedPath().includes(selectContainerRef.current)
-                : !selectContainerRef.current?.contains(e.target as HTMLElement);
-        if (clickIsOutside) {
-            setTextFilter('');
-            setShowList(false);
-        }
-    };
+    const handleClickOutside = useCallback(
+        (evt: MouseEvent) => {
+            // use composedPath so it can also check when inside a web component
+            // if composedPath is not available fallback to e.target
+            const clickIsOutside =
+                selectContainerRef.current && evt.composedPath
+                    ? !evt.composedPath().includes(selectContainerRef.current)
+                    : !selectContainerRef.current?.contains(evt.target as HTMLElement);
+            if (clickIsOutside) {
+                setTextFilter('');
+                setShowList(false);
+            }
+        },
+        [setShowList, setTextFilter]
+    );
 
     /**
      * Handle keyDown events on the list elements
      * Navigates through the list, or select an element, or focus the filter input, or close the menu.
      * @param e - KeyDownEvent
      */
-    const handleListKeyDown = (e: KeyboardEvent) => {
-        const target = e.target as HTMLInputElement;
+    const handleListKeyDown = useCallback(
+        (evt: KeyboardEvent) => {
+            const target = evt.target as HTMLInputElement;
 
-        switch (e.key) {
-            case keys.escape:
-                e.preventDefault();
-                // When user is actively navigating through list with arrow keys - close list and keep focus on the Select Button re. a11y guidelines (above)
-                closeList();
-                break;
-            case keys.space:
-            case keys.enter:
-                handleSelect(e);
-                break;
-            case keys.arrowDown:
-                e.preventDefault();
-                if (target.nextElementSibling) (target.nextElementSibling as HTMLElement).focus();
-                break;
-            case keys.arrowUp:
-                e.preventDefault();
-                if (target.previousElementSibling) {
-                    (target.previousElementSibling as HTMLElement).focus();
-                } else if (filterable && filterInputRef.current) {
-                    filterInputRef.current.focus();
-                }
-                break;
-            case keys.tab:
-                closeList();
-                break;
-            default:
-        }
-    };
+            switch (evt.key) {
+                case InteractionKeyCode.ESCAPE:
+                    evt.preventDefault();
+                    // When user is actively navigating through list with arrow keys - close list and keep focus on the Select Button re. a11y guidelines (above)
+                    closeList();
+                    break;
+                case InteractionKeyCode.ENTER:
+                case InteractionKeyCode.SPACE:
+                    handleSelect(evt);
+                    break;
+                case InteractionKeyCode.ARROW_DOWN:
+                    evt.preventDefault();
+                    if (target.nextElementSibling) (target.nextElementSibling as HTMLElement).focus();
+                    break;
+                case InteractionKeyCode.ARROW_UP:
+                    evt.preventDefault();
+                    if (target.previousElementSibling) {
+                        (target.previousElementSibling as HTMLElement).focus();
+                    } else if (filterable && filterInputRef.current) {
+                        filterInputRef.current.focus();
+                    }
+                    break;
+                case InteractionKeyCode.TAB:
+                    closeList();
+                    break;
+                default:
+            }
+        },
+        [closeList, filterable, handleSelect]
+    );
 
     /**
      * Updates the state with the current text filter value
@@ -177,10 +213,7 @@ function Select({
     }, []);
 
     return (
-        <div
-            className={cx(['adyen-fp-dropdown', styles['adyen-fp-dropdown'], className, ...classNameModifiers.map(m => `adyen-fp-dropdown--${m}`)])}
-            ref={selectContainerRef}
-        >
+        <div ref={selectContainerRef} className={dropdownClassName}>
             <SelectButton
                 id={uniqueId ?? undefined}
                 active={active}
@@ -193,7 +226,7 @@ function Select({
                 onInput={handleTextFilter}
                 placeholder={placeholder}
                 readonly={readonly}
-                selectListId={selectListId}
+                selectListId={selectListId.current}
                 showList={showList}
                 toggleButtonRef={toggleButtonRef}
                 toggleList={toggleList}
@@ -205,22 +238,13 @@ function Select({
                 isIconOnLeftSide={isIconOnLeftSide}
                 onKeyDown={handleListKeyDown}
                 onSelect={handleSelect}
-                selectListId={selectListId}
+                selectListId={selectListId.current}
                 ref={selectListRef}
                 showList={showList}
                 textFilter={textFilter}
             />
         </div>
     );
-}
-
-Select.defaultProps = {
-    className: '',
-    classNameModifiers: [],
-    filterable: true,
-    items: [],
-    readonly: false,
-    onChange: () => {},
 };
 
 export default Select;

@@ -1,23 +1,25 @@
 import cx from 'classnames';
-import useCoreContext from '../../../../../core/Context/useCoreContext';
-import { SelectButtonProps } from '../types';
-import styles from '../Select.module.scss';
-import Img from '../../../Img';
-import { HTMLAttributes, PropsWithChildren } from 'preact/compat';
-import { MutableRef } from 'preact/hooks';
 import { Ref } from 'preact';
+import { MutableRef } from 'preact/hooks';
+import { HTMLAttributes, PropsWithChildren } from 'preact/compat';
+import useCoreContext from '@src/core/Context/useCoreContext';
+import Img from '@src/components/internal/Img';
+import { SelectButtonProps, SelectItem } from '../types';
+import styles from '../Select.module.scss';
 
-function SelectButtonElement({
+const SelectButtonElement = <T extends SelectItem>({
     filterable,
     toggleButtonRef,
     ...props
-}: PropsWithChildren<SelectButtonProps & Partial<HTMLAttributes<HTMLButtonElement | HTMLDivElement>>>) {
-    if (filterable) return <div {...props} ref={toggleButtonRef as Ref<HTMLDivElement>} />;
+}: PropsWithChildren<SelectButtonProps<T> & Partial<HTMLAttributes<HTMLButtonElement | HTMLDivElement>>>) => {
+    return filterable ? (
+        <div {...props} ref={toggleButtonRef as Ref<HTMLDivElement>} />
+    ) : (
+        <button {...props} ref={toggleButtonRef as MutableRef<HTMLButtonElement>} />
+    );
+};
 
-    return <button {...props} ref={toggleButtonRef as MutableRef<HTMLButtonElement>} />;
-}
-
-function SelectButton(props: SelectButtonProps) {
+const SelectButton = <T extends SelectItem>(props: SelectButtonProps<T>) => {
     const { i18n } = useCoreContext();
     const { active, readonly, showList, isIconOnLeftSide } = props;
 
@@ -27,10 +29,8 @@ function SelectButton(props: SelectButtonProps) {
             aria-expanded={showList}
             aria-haspopup="listbox"
             className={cx({
-                'adyen-fp-dropdown__button': true,
                 [styles['adyen-fp-dropdown__button'] ?? 'adyen-fp-dropdown__button']: true,
                 'adyen-fp-dropdown__button--readonly': readonly,
-                'adyen-fp-dropdown__button--active': showList,
                 [styles['adyen-fp-dropdown__button--active'] ?? 'adyen-fp-dropdown__button--active']: showList,
                 'adyen-fp-dropdown__button--invalid': props.isInvalid,
                 'adyen-fp-dropdown__button--valid': props.isValid,
@@ -41,7 +41,7 @@ function SelectButton(props: SelectButtonProps) {
             onKeyDown={!readonly ? props.onButtonKeyDown : undefined}
             role={props.filterable ? 'button' : undefined}
             tabIndex={0}
-            title={active?.name || props.placeholder}
+            title={/*active?.name || */ props.placeholder}
             toggleButtonRef={props.toggleButtonRef}
             type={!props.filterable ? 'button' : ''}
             aria-describedby={props.ariaDescribedBy}
@@ -49,8 +49,8 @@ function SelectButton(props: SelectButtonProps) {
         >
             {!showList || !props.filterable ? (
                 <>
-                    <span className="adyen-fp-dropdown__button-text">{active?.selectedOptionName || active?.name || props.placeholder}</span>
-                    {active?.icon && <Img className="adyen-fp-dropdown__button-icon" src={active.icon} alt={active.name} />}
+                    <span className="adyen-fp-dropdown__button-text">{/* active?.selectedOptionName || active?.name || */ props.placeholder}</span>
+                    {/*{active?.icon && <Img className="adyen-fp-dropdown__button-icon" src={active.icon} alt={active.name} />}*/}
                 </>
             ) : (
                 <input
@@ -69,5 +69,6 @@ function SelectButton(props: SelectButtonProps) {
             )}
         </SelectButtonElement>
     );
-}
+};
+
 export default SelectButton;

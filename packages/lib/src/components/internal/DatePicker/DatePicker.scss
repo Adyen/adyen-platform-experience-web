@@ -17,7 +17,7 @@
         --adyen-fp-datepicker-control-vertical-offset: calc(var(--adyen-fp-datepicker-tap-target-size) / 2 - 50%);
 
         inset: auto 0;
-        margin: 0 calc(var(--adyen-fp-datepicker-margin) / 7 * -1);
+        margin: 0 calc(var(--adyen-fp-datepicker-margin) / 8);
         position: absolute;
         transform: translateY(var(--adyen-fp-datepicker-control-vertical-offset));
 

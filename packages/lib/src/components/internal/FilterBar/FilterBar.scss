@@ -1,6 +1,7 @@
 .adyen-fp-filter-bar {
+    align-items: center;
     display: flex;
-    flex-wrap: wrap;
     gap: var(--adyen-fp-spacing-small);
     padding: var(--adyen-fp-spacing-medium-small) 0;
+    white-space: nowrap;
 }
