@@ -1,6 +1,7 @@
 import { ButtonVariant } from '@src/components/internal/Button/types';
 import { useCallback } from 'preact/hooks';
 import { isFunction } from '@src/utils/common';
+import ChevronDown from '@src/components/internal/Pagination/components/chevron-down';
 import { CalendarControlRenderer, CalendarRenderControl } from '../types';
 import useCoreContext from '../../../../core/Context/useCoreContext';
 import useDetachedRender from '../../../../hooks/element/useDetachedRender';
@@ -17,34 +18,33 @@ const useCalendarControlsRendering = (renderControl?: CalendarRenderControl) => 
 
                 let directionModifier: string;
                 let labelModifier: 'next' | 'previous';
-                let label: string;
 
                 switch (control) {
                     case 'PREV':
                         directionModifier = 'prev';
                         labelModifier = 'previous';
-                        label = '◀︎';
                         break;
                     case 'NEXT':
                         directionModifier = labelModifier = 'next';
-                        label = '▶︎';
                         break;
                     default:
                         return null;
                 }
 
-                return (
+                const shouldRenderControl = handle();
+
+                return shouldRenderControl ? (
                     <Button
                         aria-label={i18n.get(`calendar.${labelModifier}Month`)}
                         variant={ButtonVariant.TERTIARY}
-                        disabled={!handle()}
+                        disabled={!shouldRenderControl}
                         classNameModifiers={['circle', directionModifier]}
                         key={control}
                         onClick={handle}
                     >
-                        {label}
+                        <ChevronDown role="presentation" />
                     </Button>
-                );
+                ) : null;
             }) as CalendarControlRenderer,
             [i18n, renderControl]
         )

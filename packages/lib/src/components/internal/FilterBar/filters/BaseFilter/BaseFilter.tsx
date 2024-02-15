@@ -108,23 +108,24 @@ const BaseFilter = <T extends BaseFilterProps = BaseFilterProps>({ render, ...pr
         if (editAction !== EditAction.NONE) setEditAction(EditAction.NONE);
     }, [closeEditModal, editAction]);
 
-    const actions = useMemo(
-        () => [
-            {
-                title: i18n.get('apply'),
-                variant: ButtonVariant.PRIMARY,
-                event: applyFilter,
-                disabled: !valueChanged,
-            },
-            {
-                title: i18n.get('clear'),
-                variant: ButtonVariant.SECONDARY,
-                event: clearFilter,
-                disabled: hasEmptyValue,
-            },
-        ],
-        [applyFilter, valueChanged, hasEmptyValue, clearFilter]
-    );
+    // [TODO]: Revisit these actions — since there isn't a clear way of committing filter changes
+    // const actions = useMemo(
+    //     () => [
+    //         {
+    //             title: i18n.get('apply'),
+    //             variant: ButtonVariant.PRIMARY,
+    //             event: applyFilter,
+    //             disabled: !valueChanged,
+    //         },
+    //         {
+    //             title: i18n.get('clear'),
+    //             variant: ButtonVariant.SECONDARY,
+    //             event: clearFilter,
+    //             disabled: hasEmptyValue,
+    //         },
+    //     ],
+    //     [applyFilter, valueChanged, hasEmptyValue, clearFilter]
+    // );
 
     return (
         <>
@@ -169,15 +170,14 @@ const BaseFilter = <T extends BaseFilterProps = BaseFilterProps>({ render, ...pr
             </div>
             {editMode && (
                 <Popover
-                    title={i18n.get('editFilter')}
+                    title={props.title?.trim()}
                     modifiers={['filter']}
                     open={editMode}
-                    ariaLabel={`${props.label}-popover`}
+                    ariaLabel={`${props.label}`}
                     dismiss={closeEditModal}
                     dismissible={true}
                     withContentPadding={props.withContentPadding ?? true}
                     divider={true}
-                    actions={actions}
                     targetElement={targetElement}
                     disableFocusTrap={false}
                 >

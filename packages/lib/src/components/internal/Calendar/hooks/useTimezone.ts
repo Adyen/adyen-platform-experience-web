@@ -1,34 +1,59 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
+import { useMemo, useRef, useState } from 'preact/hooks';
 import restamper, { RestampContext } from '@src/core/Localization/datetime/restamper';
-import { noop } from '@src/utils/common';
-import watchable from '@src/utils/watchable';
+import { getGMTSuffixForTimezoneOffset, getTimezoneOffsetFromFormattedDateString } from '@src/core/Localization/datetime/restamper/utils';
+import { EMPTY_ARRAY, EMPTY_OBJECT, noop } from '@src/utils/common';
+import clock from '../clock';
 
-const useTimezone = (timezone?: RestampContext['TIMEZONE']) => {
-    const _restamper = useMemo(restamper, []);
-    const _unwatch = useRef(noop);
-    const _cleanup = useCallback(() => _unwatch.current(), []);
-    const _watchable = useMemo(() => watchable({ tz: () => _restamper.tz! }), [_restamper]);
-    const [, setLastUpdatedTimestamp] = useState<DOMHighResTimeStamp>(performance.now());
+export type UseTimezoneConfig = {
+    timezone?: RestampContext['TIMEZONE'];
+    withClock?: boolean;
+};
+
+export const { getTimezoneTime, getUsedTimezone } = (() => {
+    const REGEX_CLOCK_TIME_MATCHER = /(\d{2}):(\d{2})(?=:\d{2}(?:\.\d+)?\s+([AP]M))/i;
+    const REGEX_GMT_OFFSET_UNWANTED_SUBSTRINGS = /^GMT|0(?=\d:00)|:00/g;
+    const $restamper = restamper();
+
+    const getTimezoneTime = (timezone: RestampContext['TIMEZONE'], timestamp = Date.now()) => {
+        $restamper.tz = timezone!; // switch restamper to this timezone
+
+        const { formatted } = $restamper(timestamp);
+        const [time = '', , , meridian = ''] = formatted?.match(REGEX_CLOCK_TIME_MATCHER) ?? EMPTY_ARRAY;
+        const offset = getTimezoneOffsetFromFormattedDateString(formatted);
+        const clockTime = `${time}${meridian && ` ${meridian}`}`;
+        const GMTOffsetString = getGMTSuffixForTimezoneOffset(offset).replace(REGEX_GMT_OFFSET_UNWANTED_SUBSTRINGS, '');
+
+        return [clockTime, GMTOffsetString] as const;
+    };
+
+    const getUsedTimezone = (timezone?: RestampContext['TIMEZONE']) => {
+        $restamper.tz = timezone;
+        return $restamper.tz.current!;
+    };
+
+    return { getTimezoneTime, getUsedTimezone } as const;
+})();
+
+const useTimezone = ({ timezone: tz, withClock = false }: UseTimezoneConfig = EMPTY_OBJECT) => {
+    const shouldWatchClock = useMemo(() => withClock === true, [withClock]);
+    const timezone = useMemo(() => getUsedTimezone(tz), [tz]);
+    const unwatchClock = useRef(noop);
+
+    const [timestamp, setTimestamp] = useState(Date.now());
+    const [clockTime, GMTOffset] = useMemo(() => getTimezoneTime(timezone, timestamp), [timestamp, timezone]);
 
     useMemo(() => {
-        const currentTimezone = _restamper.tz.current;
-        try {
-            _restamper.tz = timezone;
-        } catch (ex) {
-            _restamper.tz = currentTimezone;
-            if (import.meta.env.DEV) console.error(ex);
-        } finally {
-            _watchable.notify();
-        }
-    }, [_restamper, _watchable, timezone]);
+        unwatchClock.current();
 
-    useEffect(() => {
-        _cleanup();
-        _unwatch.current = _watchable.watch(() => setLastUpdatedTimestamp(performance.now()));
-        return _cleanup;
-    }, [_cleanup, _watchable]);
+        unwatchClock.current = shouldWatchClock
+            ? clock.watch(snapshotOrSignal => {
+                  if (typeof snapshotOrSignal === 'symbol') return;
+                  setTimestamp(snapshotOrSignal.timestamp);
+              })
+            : noop;
+    }, [setTimestamp, shouldWatchClock]);
 
-    return { getZonedTimestamp: _restamper } as const;
+    return { clockTime, GMTOffset, timestamp, timezone } as const;
 };
 
 export default useTimezone;

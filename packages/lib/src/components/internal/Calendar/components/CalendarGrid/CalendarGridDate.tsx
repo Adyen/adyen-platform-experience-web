@@ -6,7 +6,7 @@ import { EMPTY_OBJECT } from '@src/utils/common/constants';
 import { CalendarGridRenderToken } from '../../types';
 import memoComparator from '@src/utils/memoComparator';
 
-const DEFAULT_DATE_CELL_CLASSNAME = 'adyen-fp-calendar-month__grid-cell';
+const DEFAULT_DATE_CELL_CLASSNAME = 'adyen-fp-calendar__cell adyen-fp-calendar__cell--date';
 const DEFAULT_DATE_TIME_CLASSNAME = 'adyen-fp-calendar__date';
 
 const getGridDateRenderProps = (computedProps = EMPTY_OBJECT as any, prepare?: CalendarGridDateProps['prepare']) => {
@@ -58,6 +58,7 @@ const CalendarGridDate = forwardRef(({ grid, prepare, datetime, flags, index, la
             props['data-selection-end'] = flags.SELECTION_END;
             props['data-selection-start'] = flags.SELECTION_START;
             props['data-within-selection'] = flags.WITHIN_SELECTION;
+            props['aria-selected'] = `${!!(flags.SELECTION_END || flags.SELECTION_START || flags.WITHIN_SELECTION)}`;
         }
 
         if (index === +grid.cursor) props.ref = cursorElementRef;

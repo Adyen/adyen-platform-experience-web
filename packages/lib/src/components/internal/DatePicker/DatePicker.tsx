@@ -1,7 +1,10 @@
+import cx from 'classnames';
 import { forwardRef } from 'preact/compat';
 import { Ref, useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
-import { noop } from '@src/utils/common';
+import useCoreContext from '@src/core/Context/useCoreContext';
+import { EMPTY_OBJECT, noop } from '@src/utils/common';
 import useReflex from '@src/hooks/useReflex';
+import useTimezone from '@src/components/internal/Calendar/hooks/useTimezone';
 import { DEFAULT_FIRST_WEEK_DAY } from '@src/components/internal/Calendar/calendar/timerange/presets/shared/offsetWeek';
 import { DateFilterProps } from '@src/components/internal/FilterBar/filters/DateFilter/types';
 import TimeRangeSelector, { useTimeRangeSelection } from './components/TimeRangeSelector';
@@ -14,9 +17,11 @@ import './DatePicker.scss';
 export type DatePickerProps = CalendarProps &
     Pick<DateFilterProps, 'selectedPresetOption' | 'timeRangePresetOptions'> & {
         onPresetOptionSelected?: (option: string) => any;
+        showTimezoneInfo?: boolean;
     };
 
 const DatePicker = forwardRef((props: DatePickerProps, ref) => {
+    const { i18n } = useCoreContext();
     const now = useMemo(() => Date.now(), []);
     const [lastUpdatedTimestamp, setLastUpdatedTimestamp] = useState<DOMHighResTimeStamp>(performance.now());
     const [controlsRenderer, controlsContainerRef] = useCalendarControlsRendering(props.renderControl);
@@ -26,6 +31,12 @@ const DatePicker = forwardRef((props: DatePickerProps, ref) => {
         options: props.timeRangePresetOptions,
         selectedOption: props.selectedPresetOption,
     });
+
+    const withTimezone = useMemo(() => props.showTimezoneInfo !== false, [props.showTimezoneInfo]);
+    const { clockTime: time, GMTOffset: offset } = useTimezone({ withClock: withTimezone });
+
+    const datePickerClassName = useMemo(() => cx([{ 'adyen-fp-datepicker--with-timezone': withTimezone }, 'adyen-fp-datepicker']), [withTimezone]);
+    const timezoneI18nOptions = useMemo(() => (withTimezone ? { values: { offset, time } } : EMPTY_OBJECT), [offset, time, withTimezone]);
 
     const calendarRef = useReflex<CalendarHandle>(noop, ref as Ref<CalendarHandle>);
     const lastUpdateTimestamp = useRef(lastUpdatedTimestamp);
@@ -62,23 +73,24 @@ const DatePicker = forwardRef((props: DatePickerProps, ref) => {
     }, [selectedOption]);
 
     return (
-        <>
+        <div className={datePickerClassName}>
             <div className={'adyen-fp-datepicker__selector-container'}>
                 <TimeRangeSelector options={options} selectedOption={selectedOption} onSelection={onSelection} />
             </div>
-            <div ref={controlsContainerRef} className={'adyen-fp-datepicker__controls'} role="group" />
+            <div ref={controlsContainerRef} role="group" className={'adyen-fp-datepicker__controls'} aria-label={i18n.get('calendar.controls')} />
             <Calendar
                 {...props}
                 ref={calendarRef}
                 firstWeekDay={DEFAULT_FIRST_WEEK_DAY}
-                dynamicBlockRows={false}
-                onlyCellsWithin={false}
+                dynamicBlockRows={true}
+                onlyCellsWithin={true}
                 controls={props.controls ?? calendar.controls.MINIMAL}
                 highlight={props.highlight ?? calendar.highlight.MANY}
                 onHighlight={onHighlight}
                 renderControl={controlsRenderer}
             />
-        </>
+            {withTimezone && <div className={'adyen-fp-datepicker__timezone'}>{i18n.get('calendar.timezone', timezoneI18nOptions)}</div>}
+        </div>
     );
 });
 

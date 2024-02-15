@@ -83,15 +83,11 @@ const renderDateFilterModalBody = (() => {
     return (props: FilterEditModalRenderProps<DateFilterProps>) => <DateFilterEditModalBody {...props} />;
 })();
 
-export default function DateFilter<T extends DateFilterProps = DateFilterProps>(props: FilterProps<T>) {
+export default function DateFilter<T extends DateFilterProps = DateFilterProps>({ title, ...props }: FilterProps<T>) {
     const { i18n } = useCoreContext();
     const [selectedPresetOption, setSelectedPresetOption] = useState<string>();
     const [from, setFrom] = useState<string>();
     const [to, setTo] = useState<string>();
-
-    const getAppliedFilterNumber = useMemo((): number => {
-        return computeDateFilterValue(i18n, from, to) ? 1 : 0;
-    }, [i18n, from, to]);
 
     const onChange = useCallback(
         (params => {
@@ -115,7 +111,7 @@ export default function DateFilter<T extends DateFilterProps = DateFilterProps>(
 
     return (
         <BaseFilter<T>
-            {...props}
+            {...(props as FilterProps<T>)}
             from={from}
             to={to}
             type={'date'}
@@ -124,7 +120,7 @@ export default function DateFilter<T extends DateFilterProps = DateFilterProps>(
             render={renderDateFilterModalBody}
             selectedPresetOption={selectedPresetOption}
             value={computeDateFilterValue(i18n, from, to)}
-            appliedFilterAmount={getAppliedFilterNumber}
+            withContentPadding={false}
         />
     );
 }

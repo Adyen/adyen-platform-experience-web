@@ -10,7 +10,7 @@ const Calendar = forwardRef((props: CalendarProps, ref) => {
     const config = calendar.grid.config();
 
     return (
-        <div role="group" aria-label="calendar">
+        <div role="none">
             <CalendarControls config={config} grid={calendar.grid} renderer={props.renderControl} />
             <CalendarGrid
                 ref={calendar.cursorElementRef}
