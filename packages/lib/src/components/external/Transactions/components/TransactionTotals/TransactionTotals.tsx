@@ -8,7 +8,6 @@ import useCoreContext from '@src/core/Context/useCoreContext';
 import './TransactionTotals.scss';
 import Typography from '@src/components/internal/Typography/Typography';
 import { TypographyVariant } from '@src/components/internal/Typography/types';
-import cx from 'classnames';
 import AmountSkeleton from '@src/components/external/Transactions/components/TransactionTotals/AmountSkeleton';
 
 type TransactionTotalsProps = Required<OperationParameters<'getTransactionTotals'>['path'] & OperationParameters<'getTransactionTotals'>['query']>;
@@ -47,6 +46,7 @@ const TransactionTotals = ({
 
     const showSkeleton = isLoading || data?.totals?.length === 0;
 
+    // TODO - Refactor to avoid code repetition (this is working as a placeholder component)
     return (
         <div className="adyen-fp-transactions-total">
             <div className="adyen-fp-transactions-total__amount">
