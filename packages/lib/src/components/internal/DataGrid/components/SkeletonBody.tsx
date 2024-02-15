@@ -2,11 +2,10 @@ import cx from 'classnames';
 import '../DataGrid.scss';
 import useCoreContext from '@src/core/Context/useCoreContext';
 import { DataGridProps } from '@src/components/internal/DataGrid/types';
-import Typography from '@src/components/internal/Typography/Typography';
-import { TypographyVariant } from '@src/components/internal/Typography/types';
 import emptyTableIcon from '../../../../images/no-data-female.svg';
 import { useCallback } from 'preact/hooks';
 import { TranslationKey } from '@src/core/Localization/types';
+import { ErrorMessageDisplay } from '@src/components/internal/ErrorMessageDisplay/ErrorMessageDisplay';
 
 const SkeletonBody = ({
     columnsNumber,
@@ -56,17 +55,11 @@ const SkeletonBody = ({
                 </tr>
             ))}
             {!loading && (
-                <div className="adyen-fp-data-grid__empty-message">
-                    <picture>
-                        <source type="image/svg+xml" srcSet={emptyTableIcon} />
-
-                        <img srcSet={emptyTableIcon} alt={i18n.get('thereAreNoResults')} />
-                    </picture>
-                    <Typography variant={TypographyVariant.TITLE}>{i18n.get(emptyTableMessage?.title ?? 'thereAreNoResults')}</Typography>
-                    {emptyTableMessage?.message && (
-                        <Typography variant={TypographyVariant.BODY}>{renderMessage(emptyTableMessage.message)}</Typography>
-                    )}
-                </div>
+                <ErrorMessageDisplay
+                    title={emptyTableMessage?.title ?? 'thereAreNoResults'}
+                    message={emptyTableMessage?.message}
+                    imageDesktop={emptyTableIcon}
+                />
             )}
         </>
     );

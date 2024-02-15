@@ -1,4 +1,4 @@
-import { Core } from '@src/core';
+import Core from '../core';
 import { SetupEndpoint } from '@src/types/models/openapi/endpoints';
 
 export interface AuthProviderProps {
@@ -6,4 +6,5 @@ export interface AuthProviderProps {
     token: string;
     endpoints: SetupEndpoint;
     updateCore?: Core['update'];
+    sessionSetupError?: Core['sessionSetupError'];
 }

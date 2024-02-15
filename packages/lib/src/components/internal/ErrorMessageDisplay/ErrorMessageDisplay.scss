@@ -1,0 +1,20 @@
+.adyen-fp-error-message-display {
+    background: var(--adyen-fp-color-white);
+    border: 1px solid var(--adyen-fp-color-border-lighter);
+    border-radius: 12px;
+    box-shadow: 0 6px 12px 0 rgba(0, 17, 44, 0.08);
+    display: flex;
+    flex-direction: column;
+    gap: var(--adyen-fp-spacing-medium-small);
+    left: 10px;
+    padding: var(--adyen-fp-spacing-xxlarge);
+    position: absolute;
+    text-align: center;
+    top: 10px;
+
+    &--centered {
+        left: 50%;
+        top: 20px;
+        transform: translateX(-50%);
+    }
+}
