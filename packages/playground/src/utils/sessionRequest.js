@@ -3,17 +3,22 @@ const getMySessionToken = async () => {
     // at the end this method should return a data formed as { id: string, token:string }
     const loadingContext = process.env.VITE_LOADING_CONTEXT;
     const normalizedLoadingContext = loadingContext.endsWith('/') ? loadingContext : `${loadingContext}/`;
-    const url = new URL(`${normalizedLoadingContext}authe/api/v1/sessions`);
+    const url = new URL(`${normalizedLoadingContext}api/authe/api/v1/sessions`);
     const body = {
-        allowOrigin: 'http://localhost',
-        reference: 'platfrom-operations',
+        allowOrigin: process.env.VITE_LOADING_CONTEXT?.endsWith('/') ? process.env.VITE_LOADING_CONTEXT.slice(0, -1) : process.env.undefined,
+        reference: 'platform-operations',
         product: 'platform',
         policy: {
-            resources: [],
-            roles: ['Transfers List Component - Read'],
+            resources: [
+                {
+                    type: 'accountHolder',
+                    accountHolderId: process.env.SESSION_ACCOUNT_HOLDER,
+                },
+            ],
+            roles: [],
+            permissions: process.env.SESSION_PERMISSIONS?.split(','),
         },
     };
-
     const response = await fetch(url, { method: 'POST', body: JSON.stringify(body) });
     return await response.json();
 };

@@ -15,6 +15,7 @@ export interface HttpOptions {
     errorHandler?: (response: any) => any;
     params?: URLSearchParams;
     signal?: AbortSignal;
+    origin?: string;
 }
 
 export type ErrorLevel = 'silent' | 'info' | 'warn' | 'error' | 'fatal';
