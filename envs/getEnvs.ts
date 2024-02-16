@@ -19,18 +19,6 @@ const getPlatformApiUrl = (env: Record<string, string | undefined>, environment:
 
 const parseEnv = (env: Record<string, string | undefined>, environment: ENVIRONMENTS) => ({
     apiConfigs: {
-        BCLApi: {
-            url: env.BCL_API_URL ?? '',
-            version: env.KYC_API_VERSION ?? '',
-            balancePlatform: env.VITE_BALANCE_PLATFORM ?? '',
-            apiKey: env.VITE_API_KEY ?? '',
-        },
-        BTLApi: {
-            url: env.BTL_API_URL ?? '',
-            version: env.LEM_API_VERSION ?? '',
-            balancePlatform: env.VITE_BALANCE_PLATFORM ?? '',
-            apiKey: env.VITE_API_KEY ?? '',
-        },
         platformComponentsApi: {
             url: getPlatformApiUrl(env, environment),
             version: env.LOOP_API_VERSION ?? '',
@@ -39,6 +27,10 @@ const parseEnv = (env: Record<string, string | undefined>, environment: ENVIRONM
         sessionApi: {
             url: env.SESSION_API_URL ?? '',
             token: env.SESSION_AUTH_TOKEN ?? '',
+            username: env.SESSION_USERNAME,
+            password: env.SESSION_PASSWORD,
+            accountHolder: env.SESSION_ACCOUNT_HOLDER,
+            permissions: env.SESSION_PERMISSIONS,
         },
     },
     playground: {
@@ -49,22 +41,6 @@ const parseEnv = (env: Record<string, string | undefined>, environment: ENVIRONM
     },
     mockServer: {
         port: parseInt(env.MOCK_SERVER_PORT ?? ''),
-    },
-    envIds: {
-        legalEntities: {
-            individual: env.VITE_ORG_LEGAL_ENTITY_ID,
-            organization: env.VITE_IND_LEGAL_ENTITY_ID,
-            soleProprietorship: env.VITE_SOLE_PROPRIETORSHIP_LEGAL_ENTITY_ID,
-        },
-        transaction: {
-            defaultId: env.VITE_DEFAULT_TRANSACTION_ID,
-        },
-        balanceAccount: {
-            defaultId: env.VITE_DEFAULT_BALANCE_ACCOUNT_ID,
-        },
-        accountHolder: {
-            defaultId: env.VITE_DEFAULT_ACCOUNT_HOLDER_ID,
-        },
     },
 });
 

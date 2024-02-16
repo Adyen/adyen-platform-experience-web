@@ -26,7 +26,7 @@ async function getPlaygroundEntrypoints() {
 }
 
 export default defineConfig(async ({ mode }) => {
-    const { apiConfigs, playground, envIds } = getEnvironment(mode, process.env.ENV as ENVIRONMENTS);
+    const { apiConfigs, playground } = getEnvironment(mode, process.env.ENV as ENVIRONMENTS);
     return {
         root: mode === 'demo' ? demoPlaygroundDir : undefined,
         base: './',
@@ -83,14 +83,14 @@ export default defineConfig(async ({ mode }) => {
             proxy: undefined,
         },
         define: {
-            'process.env.VITE_BALANCE_PLATFORM': JSON.stringify(apiConfigs.BTLApi.balancePlatform || null),
             'process.env.VITE_MODE': JSON.stringify(process.env.VITE_MODE ?? mode),
-            'process.env.VITE_DEFAULT_TRANSACTION_ID': JSON.stringify(envIds.transaction.defaultId || null),
             'process.env.VITE_API_URL': JSON.stringify(playground.apiUrl || null),
             'process.env.VITE_PLAYGROUND_PORT': JSON.stringify(playground.port || null),
             'process.env.DEPLOYED_URL': JSON.stringify(process.env.DEPLOY_PRIME_URL || null),
             'process.env.VITE_LOADING_CONTEXT': JSON.stringify(process.env.DEPLOY_PRIME_URL?.replace('main--', '') || playground.apiUrl || null),
             'process.env.E2E_TEST': JSON.stringify(process.env.E2E_TEST),
+            'process.env.SESSION_ACCOUNT_HOLDER': JSON.stringify(apiConfigs.sessionApi.accountHolder || null),
+            'process.env.SESSION_PERMISSIONS': JSON.stringify(apiConfigs.sessionApi.permissions || null),
         },
     };
 });

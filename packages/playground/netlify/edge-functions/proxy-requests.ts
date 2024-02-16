@@ -2,23 +2,16 @@ import { realApiProxies } from '../../src/endpoints/apis/realApiProxies.js';
 
 export default async (request: Request, context: any) => {
     // @ts-ignore
-    const { BCL_API_URL, BTL_API_URL, LEM_API_URL, VITE_API_KEY, LEM_API_KEY, PLATFORM_COMPONENTS_URL, SESSION_API_URL, SESSION_AUTH_TOKEN } =
-        Netlify.env.toObject();
-
-    const lemApi = {
-        url: LEM_API_URL,
-        apiKey: LEM_API_KEY,
-    };
-
-    const bclApi = {
-        url: BCL_API_URL,
-        apiKey: VITE_API_KEY,
-    };
-
-    const btlApi = {
-        url: BTL_API_URL,
-        apiKey: VITE_API_KEY,
-    };
+    const {
+        SESSION_API_URL,
+        SESSION_PASSWORD,
+        SESSION_USERNAME,
+        SESSION_AUTH_TOKEN,
+        SESSION_ACCOUNT_HOLDER,
+        SESSION_PERMISSIONS,
+        VITE_API_KEY,
+        PLATFORM_COMPONENTS_URL,
+    } = Netlify.env.toObject();
 
     const platformComponentsApi = {
         url: PLATFORM_COMPONENTS_URL ?? '',
@@ -28,9 +21,13 @@ export default async (request: Request, context: any) => {
     const sessionApi = {
         url: SESSION_API_URL ?? '',
         token: SESSION_AUTH_TOKEN ?? '',
+        username: SESSION_USERNAME,
+        password: SESSION_PASSWORD,
+        accountHolder: SESSION_ACCOUNT_HOLDER,
+        permissions: SESSION_PERMISSIONS,
     };
 
-    const apis = realApiProxies({ lemApi, btlApi, bclApi, platformComponentsApi, sessionApi });
+    const apis = realApiProxies({ platformComponentsApi, sessionApi });
 
     const url = new URL(request.url);
 
