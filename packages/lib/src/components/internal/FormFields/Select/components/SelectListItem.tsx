@@ -12,7 +12,7 @@ import {
     DROPDOWN_ELEMENT_LEFT_ICON_CLASS,
 } from '../constants';
 
-const SelectListItem = memo(<T extends SelectItem>({ isIconOnLeftSide, item, onKeyDown, onSelect, renderListItem, selected }: SelectItemProps<T>) => {
+const SelectListItem = <T extends SelectItem>({ isIconOnLeftSide, item, onKeyDown, onSelect, renderListItem, selected }: SelectItemProps<T>) => {
     const disabled = !!item.disabled;
 
     // A change in Preact v10.11.1 means that all falsy values are assessed and set on data attributes.
@@ -57,6 +57,6 @@ const SelectListItem = memo(<T extends SelectItem>({ isIconOnLeftSide, item, onK
             {renderItem({ isIconOnLeftSide, item, selected, className: DROPDOWN_ELEMENT_ICON_CLASS })}
         </li>
     );
-});
+};
 
-export default SelectListItem;
+export default memo(SelectListItem);

@@ -72,10 +72,7 @@ const BaseFilter = <T extends BaseFilterProps = BaseFilterProps>({ render, ...pr
         [props.value, hasInitialValue, isValueEmpty]
     );
 
-    const applyFilter = useCallback(() => setEditAction(EditAction.APPLY), []);
-    const clearFilter = useCallback(() => setEditAction(EditAction.CLEAR), []);
-
-    const [closeEditModal, handleClick] = useMemo(() => {
+    const [closeEditDialog, openEditDialog] = useMemo(() => {
         const updateEditMode = (mode: boolean) => () => {
             if (mode === editMode) return;
 
@@ -103,10 +100,14 @@ const BaseFilter = <T extends BaseFilterProps = BaseFilterProps>({ render, ...pr
     }, [props.value, editModalMounting, isValueEmpty]);
 
     useEffect(() => {
-        if (editAction === EditAction.APPLY) closeEditModal();
-        if (editAction === EditAction.CLEAR) closeEditModal();
-        if (editAction !== EditAction.NONE) setEditAction(EditAction.NONE);
-    }, [closeEditModal, editAction]);
+        switch (editAction) {
+            case EditAction.APPLY:
+            case EditAction.CLEAR:
+                setEditAction(EditAction.NONE);
+                closeEditDialog();
+                break;
+        }
+    }, [closeEditDialog, editAction, setEditAction]);
 
     // [TODO]: Revisit these actions — since there isn't a clear way of committing filter changes
     // const actions = useMemo(
@@ -114,17 +115,17 @@ const BaseFilter = <T extends BaseFilterProps = BaseFilterProps>({ render, ...pr
     //         {
     //             title: i18n.get('apply'),
     //             variant: ButtonVariant.PRIMARY,
-    //             event: applyFilter,
+    //             event: () => setEditAction(EditAction.APPLY),
     //             disabled: !valueChanged,
     //         },
     //         {
     //             title: i18n.get('clear'),
     //             variant: ButtonVariant.SECONDARY,
-    //             event: clearFilter,
+    //             event: () => setEditAction(EditAction.CLEAR),
     //             disabled: hasEmptyValue,
     //         },
     //     ],
-    //     [applyFilter, valueChanged, hasEmptyValue, clearFilter]
+    //     [setEditAction, valueChanged, hasEmptyValue]
     // );
 
     return (
@@ -138,7 +139,7 @@ const BaseFilter = <T extends BaseFilterProps = BaseFilterProps>({ render, ...pr
                                 ...(props.classNameModifiers ?? []),
                                 ...(editMode ? ['active'] : []),
                             ]}
-                            onClick={handleClick}
+                            onClick={openEditDialog}
                             ref={targetElement as Ref<HTMLButtonElement | null>}
                         >
                             <div className="adyen-fp-filter-button__default-container">
@@ -174,7 +175,7 @@ const BaseFilter = <T extends BaseFilterProps = BaseFilterProps>({ render, ...pr
                     modifiers={['filter']}
                     open={editMode}
                     ariaLabel={`${props.label}`}
-                    dismiss={closeEditModal}
+                    dismiss={closeEditDialog}
                     dismissible={true}
                     withContentPadding={props.withContentPadding ?? true}
                     divider={true}

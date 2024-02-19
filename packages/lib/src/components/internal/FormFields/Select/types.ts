@@ -23,6 +23,7 @@ export interface SelectProps<T extends SelectItem> {
     isInvalid?: boolean;
     isValid?: boolean;
     items: readonly T[];
+    multiSelect?: boolean;
     name?: string;
     onChange: (...args: any[]) => any;
     placeholder?: string;

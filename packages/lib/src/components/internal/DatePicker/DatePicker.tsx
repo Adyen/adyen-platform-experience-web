@@ -7,12 +7,14 @@ import useReflex from '@src/hooks/useReflex';
 import useTimezone from '@src/components/internal/Calendar/hooks/useTimezone';
 import { DEFAULT_FIRST_WEEK_DAY } from '@src/components/internal/Calendar/calendar/timerange/presets/shared/offsetWeek';
 import { DateFilterProps } from '@src/components/internal/FilterBar/filters/DateFilter/types';
-import TimeRangeSelector, { useTimeRangeSelection } from './components/TimeRangeSelector';
+import { useTimeRangeSelection } from './components/TimeRangeSelector';
 import Calendar from '../Calendar';
 import calendar from '../Calendar/calendar';
 import useCalendarControlsRendering from '../Calendar/hooks/useCalendarControlsRendering';
 import { CalendarHandle, CalendarProps } from '../Calendar/types';
 import './DatePicker.scss';
+import Select from '@src/components/internal/FormFields/Select';
+import { SelectItem } from '@src/components/internal/FormFields/Select/types';
 
 export type DatePickerProps = CalendarProps &
     Pick<DateFilterProps, 'selectedPresetOption' | 'timeRangePresetOptions'> & {
@@ -32,6 +34,8 @@ const DatePicker = forwardRef((props: DatePickerProps, ref) => {
         selectedOption: props.selectedPresetOption,
     });
 
+    const onSelectedOptionChanged = useCallback(({ target }: any) => onSelection(target?.value), [onSelection]);
+    const selectOptions = useMemo(() => Object.freeze(options.map(id => ({ id, name: id } as SelectItem))), [options]);
     const withTimezone = useMemo(() => props.showTimezoneInfo !== false, [props.showTimezoneInfo]);
     const { clockTime: time, GMTOffset: offset } = useTimezone({ withClock: withTimezone });
 
@@ -75,7 +79,7 @@ const DatePicker = forwardRef((props: DatePickerProps, ref) => {
     return (
         <div className={datePickerClassName}>
             <div className={'adyen-fp-datepicker__selector-container'}>
-                <TimeRangeSelector options={options} selectedOption={selectedOption} onSelection={onSelection} />
+                <Select items={selectOptions} onChange={onSelectedOptionChanged} placeholder={selectedOption} />
             </div>
             <div ref={controlsContainerRef} role="group" className={'adyen-fp-datepicker__controls'} aria-label={i18n.get('calendar.controls')} />
             <Calendar

@@ -15,6 +15,7 @@ const Select = <T extends SelectItem>({
     classNameModifiers = EMPTY_ARRAY as [],
     items = EMPTY_ARRAY as readonly T[],
     filterable = false,
+    multiSelect = false,
     readonly = false,
     onChange = noop,
     selected,
@@ -40,10 +41,11 @@ const Select = <T extends SelectItem>({
         EMPTY_ARRAY
     );
 
-    const active = useMemo(() => {
+    const [active, setActive] = useState(() => {
         const _selected = (EMPTY_ARRAY as readonly T['id'][]).concat(selected ?? EMPTY_ARRAY).filter(Boolean);
-        return Object.freeze(items.filter(item => _selected.includes(item.id)));
-    }, [items, selected]);
+        const active = items.filter(item => _selected.includes(item.id));
+        return Object.freeze(multiSelect ? active : active.slice(0, 1));
+    });
 
     /**
      * Closes the select list:
@@ -65,14 +67,28 @@ const Select = <T extends SelectItem>({
 
         // If the target is not one of the list items, select the first list item
         const target: HTMLUListElement | undefined | null =
-            e.currentTarget && selectListRef?.current?.contains(e.currentTarget as HTMLUListElement)
-                ? (e.currentTarget as HTMLUListElement)
-                : (selectListRef?.current?.firstElementChild as HTMLUListElement);
+            e.currentTarget && selectListRef?.current?.contains(e.currentTarget as HTMLUListElement) ? (e.currentTarget as HTMLUListElement) : null; // (selectListRef?.current?.firstElementChild as HTMLUListElement);
 
-        if (!target.getAttribute('data-disabled')) {
-            closeList();
+        if (target && !target.getAttribute('data-disabled')) {
+            // closeList();
             const value = target.getAttribute('data-value');
-            onChange({ target: { value, name: name } });
+            // onChange({ target: { value, name: name } });
+            const item = items.find(item => item.id === value)!;
+
+            setActive(active => {
+                if (!multiSelect) {
+                    closeList();
+                    onChange({ target: { value, name: name } });
+                    return Object.freeze([item]);
+                }
+
+                const nextActive = [...active];
+                const index = nextActive.indexOf(item);
+
+                index < 0 ? nextActive.push(item) : nextActive.splice(index, 1);
+
+                return Object.freeze(nextActive);
+            });
         }
     };
 
