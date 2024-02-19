@@ -1,42 +1,45 @@
 import cx from 'classnames';
+import { ForwardedRef, memo } from 'preact/compat';
+import useCoreContext from '@src/core/Context/useCoreContext';
+import fixedForwardRef from '@src/utils/fixedForwardRef';
 import SelectListItem from './SelectListItem';
-import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { SelectItem, SelectListProps } from '../types';
-import styles from '../Select.module.scss';
-import { ForwardedRef, forwardRef } from 'preact/compat';
+import { DROPDOWN_ELEMENT_CLASS, DROPDOWN_ELEMENT_NO_OPTION_CLASS, DROPDOWN_LIST_ACTIVE_CLASS, DROPDOWN_LIST_CLASS } from '../constants';
 
-const SelectList = forwardRef(
-    <T extends SelectItem>({ active, items, showList, textFilter, ...props }: SelectListProps<T>, ref: ForwardedRef<HTMLUListElement>) => {
+const SelectList = fixedForwardRef(
+    <T extends SelectItem>(
+        { active, isIconOnLeftSide, items, onKeyDown, onSelect, renderListItem, selectListId, showList, textFilter }: SelectListProps<T>,
+        ref: ForwardedRef<HTMLUListElement>
+    ) => {
         const { i18n } = useCoreContext();
         const filteredItems = items.filter(item => !textFilter || item.name.toLowerCase().includes(textFilter));
+        const noOptionsClassName = cx([DROPDOWN_ELEMENT_CLASS, DROPDOWN_ELEMENT_NO_OPTION_CLASS]);
+
+        const listClassName = cx({
+            [DROPDOWN_LIST_CLASS]: true,
+            [DROPDOWN_LIST_ACTIVE_CLASS]: showList,
+        });
 
         return (
-            <ul
-                className={cx({
-                    [styles['adyen-fp-dropdown__list'] ?? 'adyen-fp-dropdown__list']: true,
-                    [styles['adyen-fp-dropdown__list--active'] ?? 'adyen-fp-dropdown__list--active']: showList,
-                })}
-                id={props.selectListId}
-                ref={ref}
-                role="listbox"
-            >
+            <ul className={listClassName} id={selectListId} ref={ref} role="listbox">
                 {filteredItems.length ? (
                     filteredItems.map(item => (
                         <SelectListItem
                             item={item}
                             key={item.id}
-                            onKeyDown={props.onKeyDown}
-                            onSelect={props.onSelect}
+                            onKeyDown={onKeyDown}
+                            onSelect={onSelect}
+                            renderListItem={renderListItem}
                             selected={active.includes(item)}
-                            isIconOnLeftSide={props.isIconOnLeftSide}
+                            isIconOnLeftSide={isIconOnLeftSide}
                         />
                     ))
                 ) : (
-                    <div className="adyen-fp-dropdown__element adyen-fp-dropdown__element--no-options">{i18n.get('select.noOptionsFound')}</div>
+                    <div className={noOptionsClassName}>{i18n.get('select.noOptionsFound')}</div>
                 )}
             </ul>
         );
     }
 );
 
-export default SelectList;
+export default memo(SelectList);

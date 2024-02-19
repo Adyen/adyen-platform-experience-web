@@ -6,15 +6,14 @@ import { EMPTY_ARRAY, noop } from '@src/utils/common';
 import uuid from '@src/utils/uuid';
 import SelectButton from './components/SelectButton';
 import SelectList from './components/SelectList';
+import { DROPDOWN_BASE_CLASS } from './constants';
 import { SelectItem, SelectProps } from './types';
 import './Select.scss';
 
-const DROPDOWN_BASE_CLASS = 'adyen-fp-dropdown';
-
-const Select = <T extends SelectItem = SelectItem>({
+const Select = <T extends SelectItem>({
     className,
     classNameModifiers = EMPTY_ARRAY as [],
-    items = EMPTY_ARRAY,
+    items = EMPTY_ARRAY as readonly T[],
     filterable = false,
     readonly = false,
     onChange = noop,
@@ -24,6 +23,7 @@ const Select = <T extends SelectItem = SelectItem>({
     isValid,
     placeholder,
     uniqueId,
+    renderListItem,
     isCollatingErrors,
     isIconOnLeftSide = false,
 }: SelectProps<T>) => {
@@ -37,11 +37,11 @@ const Select = <T extends SelectItem = SelectItem>({
 
     const dropdownClassName = useMemo(
         () => cx([DROPDOWN_BASE_CLASS, ...classNameModifiers.map(mod => `${DROPDOWN_BASE_CLASS}--${mod}`), className]),
-        []
+        EMPTY_ARRAY
     );
 
     const active = useMemo(() => {
-        const _selected = ([] as T['id'][]).concat(selected ?? EMPTY_ARRAY).filter(Boolean);
+        const _selected = (EMPTY_ARRAY as readonly T['id'][]).concat(selected ?? EMPTY_ARRAY).filter(Boolean);
         return Object.freeze(items.filter(item => _selected.includes(item.id)));
     }, [items, selected]);
 
@@ -240,6 +240,7 @@ const Select = <T extends SelectItem = SelectItem>({
                 onSelect={handleSelect}
                 selectListId={selectListId.current}
                 ref={selectListRef}
+                renderListItem={renderListItem}
                 showList={showList}
                 textFilter={textFilter}
             />

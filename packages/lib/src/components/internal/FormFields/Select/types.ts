@@ -1,6 +1,10 @@
-import { Ref } from 'preact';
+import { Ref, VNode } from 'preact';
+import { HTMLAttributes } from 'preact/compat';
 
 type _Selected<T> = T | readonly T[];
+
+type _ListItemRenderData<T extends SelectItem> = Pick<SelectItemProps<T>, 'isIconOnLeftSide' | 'item' | 'selected'> &
+    Pick<HTMLAttributes<any>, 'className'>;
 
 export interface SelectItem {
     disabled?: boolean;
@@ -23,6 +27,7 @@ export interface SelectProps<T extends SelectItem> {
     onChange: (...args: any[]) => any;
     placeholder?: string;
     readonly?: boolean;
+    renderListItem?: (data: _ListItemRenderData<T>) => VNode<any> | null;
     selected?: _Selected<T['id']>;
     uniqueId?: string;
 }
@@ -53,15 +58,17 @@ export interface SelectListProps<T extends SelectItem> {
     items: readonly T[];
     onKeyDown: (evt: KeyboardEvent) => any;
     onSelect: (evt: Event) => any;
+    renderListItem?: (data: _ListItemRenderData<T>) => VNode<any> | null;
     selectListId: string;
     showList: boolean;
     textFilter: string;
 }
 
-export interface SelectItemProps {
-    item: SelectItem;
-    selected: boolean;
+export interface SelectItemProps<T extends SelectItem> {
     isIconOnLeftSide: boolean;
-    onKeyDown: (e: KeyboardEvent) => void;
-    onSelect: (e: Event) => void;
+    item: T;
+    onKeyDown: (evt: KeyboardEvent) => any;
+    onSelect: (evt: Event) => any;
+    renderListItem?: (data: _ListItemRenderData<T>) => VNode<any> | null;
+    selected: boolean;
 }
