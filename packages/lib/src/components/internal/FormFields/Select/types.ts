@@ -3,8 +3,9 @@ import { HTMLAttributes } from 'preact/compat';
 
 type _Selected<T> = T | readonly T[];
 
-type _ListItemRenderData<T extends SelectItem> = Pick<SelectItemProps<T>, 'isIconOnLeftSide' | 'item' | 'selected'> &
-    Pick<HTMLAttributes<any>, 'className'>;
+type _ListItemRenderData<T extends SelectItem> = Pick<SelectItemProps<T>, 'item' | 'selected'> & {
+    iconClassName?: HTMLAttributes<any>['className'];
+};
 
 export interface SelectItem {
     disabled?: boolean;
@@ -19,7 +20,6 @@ export interface SelectProps<T extends SelectItem> {
     classNameModifiers?: string[];
     filterable?: boolean;
     isCollatingErrors?: boolean;
-    isIconOnLeftSide?: boolean;
     isInvalid?: boolean;
     isValid?: boolean;
     items: readonly T[];
@@ -40,7 +40,6 @@ export interface SelectButtonProps<T extends SelectItem> {
     filterable: boolean;
     filterInputRef?: Ref<HTMLInputElement>;
     id?: string;
-    isIconOnLeftSide?: boolean;
     isInvalid?: boolean;
     isValid?: boolean;
     onButtonKeyDown?: (evt: KeyboardEvent) => any;
@@ -55,7 +54,6 @@ export interface SelectButtonProps<T extends SelectItem> {
 
 export interface SelectListProps<T extends SelectItem> {
     active: readonly T[];
-    isIconOnLeftSide: boolean;
     items: readonly T[];
     onKeyDown: (evt: KeyboardEvent) => any;
     onSelect: (evt: Event) => any;
@@ -66,10 +64,9 @@ export interface SelectListProps<T extends SelectItem> {
 }
 
 export interface SelectItemProps<T extends SelectItem> {
-    isIconOnLeftSide: boolean;
     item: T;
     onKeyDown: (evt: KeyboardEvent) => any;
     onSelect: (evt: Event) => any;
-    renderListItem?: (data: _ListItemRenderData<T>) => VNode<any> | null;
+    renderListItem: (data: _ListItemRenderData<T>) => VNode<any> | null;
     selected: boolean;
 }

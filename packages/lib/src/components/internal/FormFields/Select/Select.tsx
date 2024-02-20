@@ -26,7 +26,6 @@ const Select = <T extends SelectItem>({
     uniqueId,
     renderListItem,
     isCollatingErrors,
-    isIconOnLeftSide = false,
 }: SelectProps<T>) => {
     const [showList, setShowList] = useState<boolean>(false);
     const [textFilter, setTextFilter] = useState<string>('');
@@ -92,6 +91,8 @@ const Select = <T extends SelectItem>({
         }
     };
 
+    const pendingKeyboardTriggeredShowList = useRef(false);
+
     /**
      * Handle keyDown events on the selectList button
      * Opens the selectList and focuses the first element if available
@@ -128,13 +129,26 @@ const Select = <T extends SelectItem>({
 
             evt.preventDefault();
             setShowList(true);
-
-            if (selectListRef.current?.firstElementChild) {
-                (selectListRef.current.firstElementChild as HTMLLIElement).focus();
-            }
+            pendingKeyboardTriggeredShowList.current = true;
         },
         [closeList, filterable, handleSelect, showList, setShowList, textFilter]
     );
+
+    useEffect(() => {
+        if (showList && pendingKeyboardTriggeredShowList.current) {
+            pendingKeyboardTriggeredShowList.current = false;
+
+            let item = selectListRef.current?.firstElementChild as HTMLLIElement;
+
+            while (item) {
+                if (!(item.dataset.disabled && item.dataset.disabled === 'true')) {
+                    item.focus();
+                    break;
+                }
+                item = item.nextElementSibling as HTMLLIElement;
+            }
+        }
+    }, [showList]);
 
     /**
      * Close the select list when clicking outside the list
@@ -175,18 +189,35 @@ const Select = <T extends SelectItem>({
                 case InteractionKeyCode.SPACE:
                     handleSelect(evt);
                     break;
-                case InteractionKeyCode.ARROW_DOWN:
+                case InteractionKeyCode.ARROW_DOWN: {
                     evt.preventDefault();
-                    if (target.nextElementSibling) (target.nextElementSibling as HTMLElement).focus();
-                    break;
-                case InteractionKeyCode.ARROW_UP:
-                    evt.preventDefault();
-                    if (target.previousElementSibling) {
-                        (target.previousElementSibling as HTMLElement).focus();
-                    } else if (filterable && filterInputRef.current) {
-                        filterInputRef.current.focus();
+                    let item = target.nextElementSibling as HTMLLIElement;
+                    while (item) {
+                        if (!(item.dataset.disabled && item.dataset.disabled === 'true')) {
+                            item.focus();
+                            break;
+                        }
+                        item = item.nextElementSibling as HTMLLIElement;
                     }
                     break;
+                }
+                case InteractionKeyCode.ARROW_UP: {
+                    evt.preventDefault();
+                    focus: {
+                        let item = target.previousElementSibling as HTMLLIElement;
+                        while (item) {
+                            if (!(item.dataset.disabled && item.dataset.disabled === 'true')) {
+                                item.focus();
+                                break focus;
+                            }
+                            item = item.previousElementSibling as HTMLLIElement;
+                        }
+                        if (filterable && filterInputRef.current) {
+                            filterInputRef.current.focus();
+                        }
+                    }
+                    break;
+                }
                 case InteractionKeyCode.TAB:
                     closeList();
                     break;
@@ -237,7 +268,6 @@ const Select = <T extends SelectItem>({
                 filterable={filterable}
                 isInvalid={isInvalid}
                 isValid={isValid}
-                isIconOnLeftSide={isIconOnLeftSide}
                 onButtonKeyDown={handleButtonKeyDown}
                 onInput={handleTextFilter}
                 placeholder={placeholder}
@@ -251,7 +281,6 @@ const Select = <T extends SelectItem>({
             <SelectList
                 active={active}
                 items={items}
-                isIconOnLeftSide={isIconOnLeftSide}
                 onKeyDown={handleListKeyDown}
                 onSelect={handleSelect}
                 selectListId={selectListId.current}

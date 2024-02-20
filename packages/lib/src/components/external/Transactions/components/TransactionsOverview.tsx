@@ -24,12 +24,7 @@ const DEFAULT_TIME_RANGE_PRESET = Object.keys(TIME_RANGE_PRESET_OPTIONS)[0]! as 
 const DEFAULT_CREATED_SINCE = new Date(from).toISOString();
 const DEFAULT_CREATED_UNTIL = new Date(to).toISOString();
 
-const renderListItem = <T extends SelectItem>({
-    className,
-    isIconOnLeftSide,
-    item,
-    selected,
-}: Parameters<NonNullable<SelectProps<T>['renderListItem']>>[0]) => (
+const renderListItem = <T extends SelectItem>({ iconClassName, item, selected }: Parameters<NonNullable<SelectProps<T>['renderListItem']>>[0]) => (
     <>
         <Checkbox checked={selected} label={item.id} />
     </>

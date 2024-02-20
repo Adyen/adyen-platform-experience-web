@@ -21,7 +21,7 @@ const SelectButtonElement = <T extends SelectItem>({
 
 const SelectButton = <T extends SelectItem>(props: SelectButtonProps<T>) => {
     const { i18n } = useCoreContext();
-    const { active, readonly, showList, isIconOnLeftSide } = props;
+    const { active, readonly, showList } = props;
 
     return (
         <SelectButtonElement
@@ -34,7 +34,6 @@ const SelectButton = <T extends SelectItem>(props: SelectButtonProps<T>) => {
                 [styles['adyen-fp-dropdown__button--active'] ?? 'adyen-fp-dropdown__button--active']: showList,
                 'adyen-fp-dropdown__button--invalid': props.isInvalid,
                 'adyen-fp-dropdown__button--valid': props.isValid,
-                'adyen-fp-dropdown__button-icon--left': isIconOnLeftSide,
             })}
             filterable={props.filterable}
             onClick={!readonly ? props.toggleList : undefined}
