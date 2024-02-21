@@ -16,19 +16,11 @@ import { TranslationKey } from '@src/core/Localization/types';
 import TransactionTotals from '@src/components/external/Transactions/components/TransactionTotals/TransactionTotals';
 import { BalanceAccountsDisplay } from '@src/components/external/Transactions/components/AccountsBalanceDisplay/BalanceAccountsDisplay';
 import Select from '@src/components/internal/FormFields/Select';
-import { SelectItem, SelectProps } from '@src/components/internal/FormFields/Select/types';
-import Checkbox from '@src/components/internal/FormFields/Checkbox';
 
 const { from, to } = Object.values(TIME_RANGE_PRESET_OPTIONS)[0]!;
 const DEFAULT_TIME_RANGE_PRESET = Object.keys(TIME_RANGE_PRESET_OPTIONS)[0]! as TranslationKey;
 const DEFAULT_CREATED_SINCE = new Date(from).toISOString();
 const DEFAULT_CREATED_UNTIL = new Date(to).toISOString();
-
-const renderListItem = <T extends SelectItem>({ iconClassName, item, selected }: Parameters<NonNullable<SelectProps<T>['renderListItem']>>[0]) => (
-    <>
-        <Checkbox checked={selected} label={item.id} />
-    </>
-);
 
 export const TransactionsOverview = ({
     onFiltersChanged,
@@ -163,9 +155,11 @@ export const TransactionsOverview = ({
                 />
                 <Select
                     onChange={val => updateFilterSelect(TransactionFilterParam.STATUSES, val.target.value)}
+                    filterable={false}
+                    multiSelect={true}
                     placeholder={'Status'}
                     selected={filters.statuses}
-                    renderListItem={renderListItem}
+                    withoutCollapseIndicator={true}
                     items={[
                         { name: 'Pending', id: 'Pending' },
                         { name: 'Booked', id: 'Booked' },
@@ -174,9 +168,11 @@ export const TransactionsOverview = ({
                 />
                 <Select
                     onChange={val => updateFilterSelect(TransactionFilterParam.CATEGORIES, val.target.value)}
+                    filterable={false}
+                    multiSelect={true}
                     placeholder={'Type'}
                     selected={filters.categories}
-                    multiSelect={true}
+                    withoutCollapseIndicator={true}
                     items={[
                         { name: 'Payment', id: 'Payment' },
                         { name: 'Capital', id: 'Capital' },

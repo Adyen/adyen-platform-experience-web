@@ -6,7 +6,7 @@ import { EMPTY_ARRAY, noop } from '@src/utils/common';
 import uuid from '@src/utils/uuid';
 import SelectButton from './components/SelectButton';
 import SelectList from './components/SelectList';
-import { DROPDOWN_BASE_CLASS } from './constants';
+import { DROPDOWN_BASE_CLASS, DROPDOWN_MULTI_SELECT_CLASS } from './constants';
 import { SelectItem, SelectProps } from './types';
 import './Select.scss';
 
@@ -26,6 +26,7 @@ const Select = <T extends SelectItem>({
     uniqueId,
     renderListItem,
     isCollatingErrors,
+    withoutCollapseIndicator = false,
 }: SelectProps<T>) => {
     const [showList, setShowList] = useState<boolean>(false);
     const [textFilter, setTextFilter] = useState<string>('');
@@ -36,7 +37,13 @@ const Select = <T extends SelectItem>({
     const selectListId = useRef(`select-${uuid()}`);
 
     const dropdownClassName = useMemo(
-        () => cx([DROPDOWN_BASE_CLASS, ...classNameModifiers.map(mod => `${DROPDOWN_BASE_CLASS}--${mod}`), className]),
+        () =>
+            cx([
+                DROPDOWN_BASE_CLASS,
+                { [DROPDOWN_MULTI_SELECT_CLASS]: multiSelect === true },
+                ...classNameModifiers.map(mod => `${DROPDOWN_BASE_CLASS}--${mod}`),
+                className,
+            ]),
         EMPTY_ARRAY
     );
 
@@ -270,17 +277,20 @@ const Select = <T extends SelectItem>({
                 isValid={isValid}
                 onButtonKeyDown={handleButtonKeyDown}
                 onInput={handleTextFilter}
+                multiSelect={multiSelect}
                 placeholder={placeholder}
                 readonly={readonly}
                 selectListId={selectListId.current}
                 showList={showList}
                 toggleButtonRef={toggleButtonRef}
                 toggleList={toggleList}
+                withoutCollapseIndicator={withoutCollapseIndicator}
                 ariaDescribedBy={!isCollatingErrors && uniqueId ? `${uniqueId}${ARIA_ERROR_SUFFIX}` : ''}
             />
             <SelectList
                 active={active}
                 items={items}
+                multiSelect={multiSelect}
                 onKeyDown={handleListKeyDown}
                 onSelect={handleSelect}
                 selectListId={selectListId.current}

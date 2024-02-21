@@ -1,8 +1,7 @@
 import { memo } from 'preact/compat';
 import { useCallback, useRef } from 'preact/hooks';
-import ChevronUp from './chevron-up';
-import ChevronDown from './chevron-down';
 import { ListBox, ListBoxControl, ListBoxControlProps, ListBoxProps, useListBox, UseListBoxConfig } from '@src/components/internal/ListBox';
+import { ChevronDown, ChevronUp } from '@src/components/internal/FormFields/Select/utils/decorations';
 import './LimitSelect.scss';
 
 interface SelectListProps<T extends any = any> extends UseListBoxConfig<T> {

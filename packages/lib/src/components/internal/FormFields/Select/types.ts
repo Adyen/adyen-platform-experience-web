@@ -3,7 +3,7 @@ import { HTMLAttributes } from 'preact/compat';
 
 type _Selected<T> = T | readonly T[];
 
-type _ListItemRenderData<T extends SelectItem> = Pick<SelectItemProps<T>, 'item' | 'selected'> & {
+type _ListItemRenderData<T extends SelectItem> = Pick<SelectItemProps<T>, 'item' | 'multiSelect' | 'selected'> & {
     iconClassName?: HTMLAttributes<any>['className'];
 };
 
@@ -31,10 +31,11 @@ export interface SelectProps<T extends SelectItem> {
     renderListItem?: (data: _ListItemRenderData<T>) => VNode<any> | null;
     selected?: _Selected<T['id']>;
     uniqueId?: string;
+    withoutCollapseIndicator?: boolean;
 }
 
 export interface SelectButtonProps<T extends SelectItem> {
-    active?: readonly T[];
+    active: readonly T[];
     ariaDescribedBy?: string;
     className?: string;
     filterable: boolean;
@@ -42,6 +43,7 @@ export interface SelectButtonProps<T extends SelectItem> {
     id?: string;
     isInvalid?: boolean;
     isValid?: boolean;
+    multiSelect?: boolean;
     onButtonKeyDown?: (evt: KeyboardEvent) => any;
     onInput?: (evt: Event) => any;
     placeholder?: string;
@@ -50,11 +52,13 @@ export interface SelectButtonProps<T extends SelectItem> {
     showList?: boolean;
     toggleButtonRef: Ref<HTMLButtonElement>;
     toggleList?: (e: Event) => void;
+    withoutCollapseIndicator?: boolean;
 }
 
 export interface SelectListProps<T extends SelectItem> {
     active: readonly T[];
     items: readonly T[];
+    multiSelect?: boolean;
     onKeyDown: (evt: KeyboardEvent) => any;
     onSelect: (evt: Event) => any;
     renderListItem?: (data: _ListItemRenderData<T>) => VNode<any> | null;
@@ -65,6 +69,7 @@ export interface SelectListProps<T extends SelectItem> {
 
 export interface SelectItemProps<T extends SelectItem> {
     item: T;
+    multiSelect: boolean;
     onKeyDown: (evt: KeyboardEvent) => any;
     onSelect: (evt: Event) => any;
     renderListItem: (data: _ListItemRenderData<T>) => VNode<any> | null;

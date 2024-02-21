@@ -15,7 +15,6 @@ import { CalendarHandle, CalendarProps } from '../Calendar/types';
 import './DatePicker.scss';
 import Select from '@src/components/internal/FormFields/Select';
 import { SelectItem } from '@src/components/internal/FormFields/Select/types';
-import { renderSelectOptionWithCheckmarking } from '@src/components/internal/FormFields/Select/utils/rendering';
 
 export type DatePickerProps = CalendarProps &
     Pick<DateFilterProps, 'selectedPresetOption' | 'timeRangePresetOptions'> & {
@@ -80,14 +79,7 @@ const DatePicker = forwardRef((props: DatePickerProps, ref) => {
     return (
         <div className={datePickerClassName}>
             <div className={'adyen-fp-datepicker__selector-container'}>
-                <Select
-                    classNameModifiers={['checkmarked']}
-                    items={selectOptions}
-                    onChange={onSelectedOptionChanged}
-                    renderListItem={renderSelectOptionWithCheckmarking}
-                    placeholder={selectedOption}
-                    selected={selectedOption}
-                />
+                <Select items={selectOptions} filterable={false} multiSelect={false} onChange={onSelectedOptionChanged} selected={selectedOption} />
             </div>
             <div ref={controlsContainerRef} role="group" className={'adyen-fp-datepicker__controls'} aria-label={i18n.get('calendar.controls')} />
             <Calendar

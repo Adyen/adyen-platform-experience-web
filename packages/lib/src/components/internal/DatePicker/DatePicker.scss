@@ -17,7 +17,7 @@
         --adyen-fp-datepicker-control-vertical-offset: calc(var(--adyen-fp-datepicker-tap-target-size) / 2 - 50%);
 
         inset: auto 0;
-        margin: 0 calc(var(--adyen-fp-datepicker-margin) / 8);
+        margin: 0 calc(var(--adyen-fp-datepicker-margin) / 3 * -1);
         position: absolute;
         transform: translateY(var(--adyen-fp-datepicker-control-vertical-offset));
 
@@ -27,14 +27,19 @@
             }
         }
 
+        > .adyen-fp-button--prev,
+        > .adyen-fp-button--next {
+            color: inherit;
+            display: inline-flex;
+            transform: rotate(-90deg);
+        }
+
         > .adyen-fp-button--prev {
             float: left;
-            transform: rotate(90deg);
         }
 
         > .adyen-fp-button--next {
             float: right;
-            transform: rotate(-90deg);
         }
     }
 
@@ -44,6 +49,10 @@
         margin-bottom: 0;
         position: relative;
         z-index: 1;
+
+        .adyen-fp-dropdown__list {
+            width: 100%;
+        }
     }
 
     &__timezone {

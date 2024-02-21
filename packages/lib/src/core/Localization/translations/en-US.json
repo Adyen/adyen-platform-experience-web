@@ -53,7 +53,7 @@
     "dateOfBirth": "Date of birth",
     "dateOfBirth.format": "Format",
     "shopperEmail": "Shopper email",
-    "select.noOptionsFound": "No options found",
+    "select.noOptionsFound": "No options match this search",
     "select.filter.placeholder": "Placeholder",
     "select.provinceOrTerritory": "Province or territory",
     "select.state": "State",

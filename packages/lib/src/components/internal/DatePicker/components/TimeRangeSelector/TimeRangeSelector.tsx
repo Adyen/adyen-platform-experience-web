@@ -1,8 +1,7 @@
 import { HTMLAttributes, memo } from 'preact/compat';
 import { useCallback, useRef } from 'preact/hooks';
 import { ListBox, ListBoxControl, ListBoxControlProps, ListBoxProps, useListBox } from '@src/components/internal/ListBox';
-import ChevronUp from '@src/components/internal/Pagination/components/chevron-up';
-import ChevronDown from '@src/components/internal/Pagination/components/chevron-down';
+import { ChevronDown, ChevronUp } from '@src/components/internal/FormFields/Select/utils/decorations';
 import { UseTimeRangeSelectionData } from './useTimeRangeSelection';
 import './TimeRangeSelector.scss';
 

@@ -1,9 +1,46 @@
 import cx from 'classnames';
 import { memo } from 'preact/compat';
+import Img from '@src/components/internal/Img';
 import type { SelectItem, SelectItemProps } from '../types';
-import { DROPDOWN_ELEMENT_ACTIVE_CLASS, DROPDOWN_ELEMENT_CLASS, DROPDOWN_ELEMENT_DISABLED_CLASS, DROPDOWN_ELEMENT_ICON_CLASS } from '../constants';
+import { CheckedBox, Checkmark, UncheckedBox } from '../utils/decorations';
+import {
+    DROPDOWN_ELEMENT_ACTIVE_CLASS,
+    DROPDOWN_ELEMENT_CHECKBOX_CLASS,
+    DROPDOWN_ELEMENT_CHECKMARK_CLASS,
+    DROPDOWN_ELEMENT_CLASS,
+    DROPDOWN_ELEMENT_CONTENT_CLASS,
+    DROPDOWN_ELEMENT_DISABLED_CLASS,
+    DROPDOWN_ELEMENT_ICON_CLASS,
+} from '../constants';
 
-const SelectListItem = <T extends SelectItem>({ item, onKeyDown, onSelect, renderListItem, selected }: SelectItemProps<T>) => {
+type _RenderSelectOptionResult<T extends SelectItem> = ReturnType<SelectItemProps<T>['renderListItem']>;
+type _RenderSelectOptionData<T extends SelectItem> = Parameters<SelectItemProps<T>['renderListItem']>[0];
+
+export const renderSelectListItemDefault = <T extends SelectItem>({
+    iconClassName,
+    item,
+    multiSelect,
+    selected,
+}: _RenderSelectOptionData<T>): _RenderSelectOptionResult<T> => (
+    <>
+        {multiSelect && (
+            <span className={DROPDOWN_ELEMENT_CHECKBOX_CLASS}>
+                {selected ? <CheckedBox role="presentation" /> : <UncheckedBox role="presentation" />}
+            </span>
+        )}
+        <div className={DROPDOWN_ELEMENT_CONTENT_CLASS}>
+            {item.icon && <Img className={iconClassName as string} alt={item.name} src={item.icon} />}
+            <span>{item.name}</span>
+        </div>
+        {!multiSelect && selected && (
+            <span className={DROPDOWN_ELEMENT_CHECKMARK_CLASS}>
+                <Checkmark role="presentation" />
+            </span>
+        )}
+    </>
+);
+
+const SelectListItem = <T extends SelectItem>({ item, multiSelect, onKeyDown, onSelect, renderListItem, selected }: SelectItemProps<T>) => {
     const disabled = !!item.disabled;
 
     // A change in Preact v10.11.1 means that all falsy values are assessed and set on data attributes.
@@ -11,13 +48,10 @@ const SelectListItem = <T extends SelectItem>({ item, onKeyDown, onSelect, rende
     // of the `data-disabled` attr, regardless of its value, will disable the select list item.
     const dataDisabled = item.disabled === true || null;
 
-    const itemClassName = cx([
-        DROPDOWN_ELEMENT_CLASS,
-        {
-            [DROPDOWN_ELEMENT_ACTIVE_CLASS]: selected,
-            [DROPDOWN_ELEMENT_DISABLED_CLASS]: disabled,
-        },
-    ]);
+    const itemClassName = cx(DROPDOWN_ELEMENT_CLASS, {
+        [DROPDOWN_ELEMENT_ACTIVE_CLASS]: selected,
+        [DROPDOWN_ELEMENT_DISABLED_CLASS]: disabled,
+    });
 
     return (
         <li
@@ -31,7 +65,7 @@ const SelectListItem = <T extends SelectItem>({ item, onKeyDown, onSelect, rende
             role="option"
             tabIndex={-1}
         >
-            {renderListItem({ item, selected, iconClassName: DROPDOWN_ELEMENT_ICON_CLASS })}
+            {renderListItem({ item, multiSelect, selected, iconClassName: DROPDOWN_ELEMENT_ICON_CLASS })}
         </li>
     );
 };
