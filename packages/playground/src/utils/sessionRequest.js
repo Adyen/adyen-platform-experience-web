@@ -15,7 +15,7 @@ const getMySessionToken = async () => {
                     accountHolderId: process.env.SESSION_ACCOUNT_HOLDER,
                 },
             ],
-            roles: [],
+            roles: ['IMPOSSIBLE_ROLE_a65840174b074d0e703'],
             permissions: process.env.SESSION_PERMISSIONS?.split(','),
         },
     };

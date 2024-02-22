@@ -17,9 +17,11 @@ export const BalanceAccountsDisplay = ({ balanceAccountId }: MakeFieldValueUndef
     const getAccountsBalance = useSetupEndpoint('getBalances');
 
     const fetchCallback = useCallback(async () => {
-        return getAccountsBalance(EMPTY_OBJECT, {
-            path: { balanceAccountId: balanceAccountId! },
-        });
+        if (balanceAccountId) {
+            return getAccountsBalance(EMPTY_OBJECT, {
+                path: { balanceAccountId: balanceAccountId },
+            });
+        }
     }, [balanceAccountId, getAccountsBalance]);
 
     const { data, error, isFetching } = useFetch({

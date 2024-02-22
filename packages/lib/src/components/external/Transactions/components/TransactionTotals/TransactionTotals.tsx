@@ -1,5 +1,5 @@
 import { useSetupEndpoint } from '@src/hooks/useSetupEndpoint/useSetupEndpoint';
-import { useCallback, useMemo } from 'preact/hooks';
+import { useCallback, useEffect, useMemo } from 'preact/hooks';
 import { EMPTY_OBJECT } from '@src/utils/common';
 import { useFetch } from '@src/hooks/useFetch/useFetch';
 import { OperationParameters } from '@src/types/models/openapi/endpoints';
@@ -24,15 +24,17 @@ const TransactionTotals = ({
     const getTransactionTotals = useSetupEndpoint('getTransactionTotals');
 
     const fetchCallback = useCallback(async () => {
-        return getTransactionTotals(EMPTY_OBJECT, {
-            path: { balanceAccountId: balanceAccountId! },
-            query: {
-                createdSince,
-                createdUntil,
-                categories,
-                statuses,
-            },
-        });
+        if (balanceAccountId) {
+            return getTransactionTotals(EMPTY_OBJECT, {
+                path: { balanceAccountId: balanceAccountId },
+                query: {
+                    createdSince,
+                    createdUntil,
+                    categories,
+                    statuses,
+                },
+            });
+        }
     }, [balanceAccountId, categories, createdSince, createdUntil, getTransactionTotals, statuses]);
 
     const { data, error, isFetching } = useFetch({

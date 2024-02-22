@@ -89,17 +89,21 @@ function TransactionList({ loading, transactions, onTransactionSelected, showPag
                     },
                     paymentMethod: ({ value }) => {
                         return (
-                            <div className="adyen-fp-transactions__payment-method">
-                                <div className="adyen-fp-transactions__payment-method-logo-container">
-                                    <Image
-                                        name={value.type}
-                                        alt={value.type}
-                                        folder={'logos/'}
-                                        className={'adyen-fp-transactions__payment-method-logo'}
-                                    />
-                                </div>
-                                {parsePaymentMethodType(value)}
-                            </div>
+                            <>
+                                {value && (
+                                    <div className="adyen-fp-transactions__payment-method">
+                                        <div className="adyen-fp-transactions__payment-method-logo-container">
+                                            <Image
+                                                name={value.type}
+                                                alt={value.type}
+                                                folder={'logos/'}
+                                                className={'adyen-fp-transactions__payment-method-logo'}
+                                            />
+                                        </div>
+                                        {parsePaymentMethodType(value)}
+                                    </div>
+                                )}
+                            </>
                         );
                     },
                     currency: ({ item }) => {
