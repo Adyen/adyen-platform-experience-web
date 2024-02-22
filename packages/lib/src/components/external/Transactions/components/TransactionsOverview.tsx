@@ -6,7 +6,7 @@ import Alert from '@src/components/internal/Alert';
 import TransactionList from '@src/components/external/Transactions/components/TransactionList';
 import useCoreContext from '@src/core/Context/useCoreContext';
 import { SetupHttpOptions, useSetupEndpoint } from '@src/hooks/useSetupEndpoint/useSetupEndpoint';
-import { useCallback, useMemo, useState } from 'preact/hooks';
+import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
 import { useCursorPaginatedRecords } from '@src/components/internal/Pagination/hooks';
 import { IBalanceAccountBase, ITransaction } from '@src/types';
 import { DateFilterProps, DateRangeFilterParam } from '@src/components/internal/FilterBar/filters/DateFilter/types';
@@ -16,11 +16,18 @@ import { TranslationKey } from '@src/core/Localization/types';
 import TransactionTotals from '@src/components/external/Transactions/components/TransactionTotals/TransactionTotals';
 import { BalanceAccountsDisplay } from '@src/components/external/Transactions/components/AccountsBalanceDisplay/BalanceAccountsDisplay';
 import Select from '@src/components/internal/FormFields/Select';
+import { SelectItem } from '@src/components/internal/FormFields/Select/types';
 
 const { from, to } = Object.values(TIME_RANGE_PRESET_OPTIONS)[0]!;
 const DEFAULT_TIME_RANGE_PRESET = Object.keys(TIME_RANGE_PRESET_OPTIONS)[0]! as TranslationKey;
 const DEFAULT_CREATED_SINCE = new Date(from).toISOString();
 const DEFAULT_CREATED_UNTIL = new Date(to).toISOString();
+
+const TRANSACTION_STATUSES = ['Booked', 'Pending', 'Rejected'] as const;
+const TRANSACTION_TYPES = ['ATM', 'Capital', 'Chargeback', 'Correction', 'Fee', 'Payment', 'Refund', 'Transfer', 'Other'] as const;
+
+const transactionStatusFilterItems = Object.freeze(TRANSACTION_STATUSES.map(status => ({ id: status, name: status } as SelectItem)));
+const transactionTypeFilterItems = Object.freeze(TRANSACTION_TYPES.map(type => ({ id: type, name: type } as SelectItem)));
 
 export const TransactionsOverview = ({
     onFiltersChanged,
@@ -32,8 +39,9 @@ export const TransactionsOverview = ({
     showDetails,
 }: TransactionsComponentProps & { balanceAccounts: IBalanceAccountBase[] | undefined }) => {
     const { i18n } = useCoreContext();
-
     const transactionsEndpointCall = useSetupEndpoint('getTransactions');
+    const [balanceAccountId, setBalanceAccountId] = useState(balanceAccounts?.[0]?.id);
+    const [availableCurrencies, setAvailableCurrencies] = useState<readonly string[]>();
 
     const getTransactions = useCallback(
         async (pageRequestParams: Record<TransactionFilterParam | 'cursor', string>, signal?: AbortSignal) => {
@@ -50,20 +58,25 @@ export const TransactionsOverview = ({
                     createdSince: pageRequestParams.createdSince ?? DEFAULT_CREATED_SINCE,
                     createdUntil: pageRequestParams.createdUntil ?? DEFAULT_CREATED_UNTIL,
                 },
-                path: { balanceAccountId: balanceAccounts?.[0]?.id ?? '' },
+                path: { balanceAccountId: balanceAccountId ?? '' },
             };
             return transactionsEndpointCall(requestOptions, parameters);
         },
-        [balanceAccounts, transactionsEndpointCall]
+        [balanceAccountId, transactionsEndpointCall]
     );
 
     // FILTERS
+
+    useEffect(() => {
+        setBalanceAccountId(balanceAccounts?.[0]?.id);
+    }, [balanceAccounts]);
 
     const _onFiltersChanged = useMemo(() => (isFunction(onFiltersChanged) ? onFiltersChanged : void 0), [onFiltersChanged]);
     const _onLimitChanged = useMemo(() => (isFunction(onLimitChanged) ? onLimitChanged : void 0), [onLimitChanged]);
     const preferredLimitOptions = useMemo(() => (allowLimitSelection ? LIMIT_OPTIONS : undefined), [allowLimitSelection]);
 
     const transactionsFilterParams = {
+        [TransactionFilterParam.CURRENCIES]: undefined,
         [TransactionFilterParam.CATEGORIES]: undefined,
         [TransactionFilterParam.STATUSES]: undefined,
         [TransactionFilterParam.CREATED_SINCE]: DEFAULT_CREATED_SINCE,
@@ -104,7 +117,10 @@ export const TransactionsOverview = ({
         }; */
 
         // TODO - Create a proper callback
-        const updateMultiSelectFilter = (filter: TransactionFilterParam.CATEGORIES | TransactionFilterParam.STATUSES, value?: string) => {
+        const updateMultiSelectFilter = (
+            filter: TransactionFilterParam.CATEGORIES | TransactionFilterParam.CURRENCIES | TransactionFilterParam.STATUSES,
+            value?: string
+        ) => {
             updateFilters({
                 [filter]: value,
             });
@@ -133,15 +149,19 @@ export const TransactionsOverview = ({
 
     const showAlert = useMemo(() => !fetching && error, [fetching, error]);
 
-    //TODO - Replace with the value of the balanceAccount filter
-    const balanceAccountId = useMemo(() => balanceAccounts?.[0]?.id, [balanceAccounts]);
-
-    //TODO - Replace with the value of the statuses filter
-    const statuses: ITransaction['status'][] = ['Pending', 'Booked'];
-
     return (
         <>
             <FilterBar canResetFilters={canResetFilters} resetFilters={resetFilters}>
+                {balanceAccountId && balanceAccounts?.length! > 1 && (
+                    <Select
+                        onChange={({ target }) => setBalanceAccountId(target?.value)}
+                        filterable={false}
+                        multiSelect={false}
+                        selected={balanceAccountId}
+                        withoutCollapseIndicator={true}
+                        items={Object.freeze(balanceAccounts!.map(({ id, description }) => ({ id, name: description ?? id } as SelectItem)))}
+                    />
+                )}
                 <DateFilter
                     classNameModifiers={['createdSince']}
                     label={i18n.get('dateRange')}
@@ -158,37 +178,40 @@ export const TransactionsOverview = ({
                     filterable={false}
                     multiSelect={true}
                     placeholder={'Status'}
-                    selected={filters.statuses}
+                    selected={filters.statuses?.split(',')}
                     withoutCollapseIndicator={true}
-                    items={[
-                        { name: 'Pending', id: 'Pending' },
-                        { name: 'Booked', id: 'Booked' },
-                        { name: 'Rejected', id: 'Rejected' },
-                    ]}
+                    items={transactionStatusFilterItems}
                 />
                 <Select
                     onChange={val => updateFilterSelect(TransactionFilterParam.CATEGORIES, val.target.value)}
                     filterable={false}
                     multiSelect={true}
                     placeholder={'Type'}
-                    selected={filters.categories}
+                    selected={filters.categories?.split(',')}
                     withoutCollapseIndicator={true}
-                    items={[
-                        { name: 'Payment', id: 'Payment' },
-                        { name: 'Capital', id: 'Capital' },
-                        { name: 'Refund', id: 'Refund' },
-                    ]}
+                    items={transactionTypeFilterItems}
                 />
+                {availableCurrencies?.length! > 1 && (
+                    <Select
+                        onChange={val => updateFilterSelect(TransactionFilterParam.CURRENCIES, val.target.value)}
+                        filterable={false}
+                        multiSelect={true}
+                        placeholder={'Currency'}
+                        selected={filters.currencies?.split(',')}
+                        withoutCollapseIndicator={true}
+                        items={Object.freeze(availableCurrencies!.map(currency => ({ id: currency, name: currency } as SelectItem)))}
+                    />
+                )}
             </FilterBar>
             <div className="adyen-fp-transactions__balance-totals">
                 <TransactionTotals
                     balanceAccountId={balanceAccountId}
-                    statuses={statuses}
+                    statuses={transactionsFilterParams[TransactionFilterParam.STATUSES] as unknown as ITransaction['status'][]}
                     categories={transactionsFilterParams[TransactionFilterParam.CATEGORIES] as unknown as ITransaction['category'][]}
                     createdUntil={transactionsFilterParams[TransactionFilterParam.CREATED_UNTIL]}
                     createdSince={transactionsFilterParams[TransactionFilterParam.CREATED_SINCE]}
                 />
-                <BalanceAccountsDisplay balanceAccountId={balanceAccountId} />
+                <BalanceAccountsDisplay balanceAccountId={balanceAccountId} getAvailableCurrencies={setAvailableCurrencies} />
             </div>
             {showAlert ? (
                 <Alert icon={'cross'}>{error?.message ?? i18n.get('unableToLoadTransactions')}</Alert>

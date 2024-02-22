@@ -36,7 +36,7 @@ describe('Popover component', () => {
                 <Popover
                     targetElement={buttonEl}
                     title={'Test Popover'}
-                    ariaLabel={'popover-test'}
+                    aria-label={'popover-test'}
                     open={true}
                     disableFocusTrap={true}
                     dismiss={context.dismiss}
@@ -124,7 +124,7 @@ describe('Popover component close', () => {
         render(
             <div>
                 <button ref={buttonEl}>{'Popover Controller'}</button>
-                <Popover targetElement={buttonEl} ariaLabel={'popover-test'}>
+                <Popover targetElement={buttonEl} aria-label={'popover-test'}>
                     <input data-testid="mock-textbox" type="text" />
                 </Popover>
             </div>

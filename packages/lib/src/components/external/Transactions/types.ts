@@ -7,6 +7,7 @@ import { ModalSize } from '../../internal/Modal/types';
 
 export const enum TransactionFilterParam {
     CATEGORIES = 'categories',
+    CURRENCIES = 'currencies',
     STATUSES = 'statuses',
     CREATED_SINCE = 'createdSince',
     CREATED_UNTIL = 'createdUntil',

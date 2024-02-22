@@ -1,4 +1,5 @@
 %adyen-fp-dropdown-decoration {
+    --adyen-fp-separation-margin: var(--adyen-fp-spacing-base);
     display: inline-flex;
     flex: none;
 
@@ -9,11 +10,11 @@
 }
 
 %adyen-fp-dropdown-decoration--right {
-    margin-left: var(--adyen-fp-spacing-base);
+    margin-left: var(--adyen-fp-separation-margin, var(--adyen-fp-spacing-base));
 
     [dir='rtl'] & {
         margin-left: 0;
-        margin-right: var(--adyen-fp-spacing-base);
+        margin-right: var(--adyen-fp-separation-margin, var(--adyen-fp-spacing-base));
     }
 }
 
@@ -130,17 +131,12 @@
 
 .adyen-fp-dropdown__list {
     background: var(--adyen-fp-color-white);
-    border-radius: var(--adyen-fp-border-radius-medium);
-    box-shadow: 0 2px 7px rgba(0, 15, 45, 0.3);
     display: none;
     list-style: none;
-    margin-top: var(--adyen-fp-spacing-small);
-    max-height: 375px;
-    min-width: 200px;
-    overflow-y: auto;
+    margin: 0;
+    //max-height: 375px;
+    //overflow-y: auto;
     padding: 0;
-    position: absolute;
-    z-index: 2;
 
     &--active {
         display: block;
@@ -173,7 +169,7 @@
 
     &-checkbox {
         @extend %adyen-fp-dropdown-decoration;
-        margin-right: var(--adyen-fp-spacing-base);
+        margin-right: var(--adyen-fp-separation-margin);
 
         .adyen-fp-dropdown:not(.adyen-fp-dropdown--multiselect) & {
             display: none;
@@ -181,8 +177,10 @@
     }
 
     &-checkmark {
+        --adyen-fp-separation-margin: var(--adyen-fp-spacing-medium);
         @extend %adyen-fp-dropdown-decoration;
         @extend %adyen-fp-dropdown-decoration--right;
+        min-width: 1rem;
 
         .adyen-fp-dropdown.adyen-fp-dropdown--multiselect & {
             display: none;

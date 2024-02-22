@@ -109,24 +109,23 @@ const BaseFilter = <T extends BaseFilterProps = BaseFilterProps>({ render, ...pr
         }
     }, [closeEditDialog, editAction, setEditAction]);
 
-    // [TODO]: Revisit these actions — since there isn't a clear way of committing filter changes
-    // const actions = useMemo(
-    //     () => [
-    //         {
-    //             title: i18n.get('apply'),
-    //             variant: ButtonVariant.PRIMARY,
-    //             event: () => setEditAction(EditAction.APPLY),
-    //             disabled: !valueChanged,
-    //         },
-    //         {
-    //             title: i18n.get('clear'),
-    //             variant: ButtonVariant.SECONDARY,
-    //             event: () => setEditAction(EditAction.CLEAR),
-    //             disabled: hasEmptyValue,
-    //         },
-    //     ],
-    //     [setEditAction, valueChanged, hasEmptyValue]
-    // );
+    const actions = useMemo(
+        () => [
+            {
+                title: i18n.get('apply'),
+                variant: ButtonVariant.PRIMARY,
+                event: () => setEditAction(EditAction.APPLY),
+                disabled: !valueChanged,
+            },
+            {
+                title: i18n.get('clear'),
+                variant: ButtonVariant.SECONDARY,
+                event: () => setEditAction(EditAction.CLEAR),
+                disabled: hasEmptyValue,
+            },
+        ],
+        [setEditAction, valueChanged, hasEmptyValue]
+    );
 
     return (
         <>
@@ -171,10 +170,11 @@ const BaseFilter = <T extends BaseFilterProps = BaseFilterProps>({ render, ...pr
             </div>
             {editMode && (
                 <Popover
+                    actions={actions}
                     title={props.title?.trim()}
                     modifiers={['filter']}
                     open={editMode}
-                    ariaLabel={`${props.label}`}
+                    aria-label={`${props.label}`}
                     dismiss={closeEditDialog}
                     dismissible={true}
                     withContentPadding={props.withContentPadding ?? true}

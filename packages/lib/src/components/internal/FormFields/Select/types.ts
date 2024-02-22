@@ -65,6 +65,7 @@ export interface SelectListProps<T extends SelectItem> {
     selectListId: string;
     showList: boolean;
     textFilter: string;
+    toggleButtonRef: Ref<HTMLButtonElement>;
 }
 
 export interface SelectItemProps<T extends SelectItem> {

@@ -32,11 +32,7 @@ export const renderSelectListItemDefault = <T extends SelectItem>({
             {item.icon && <Img className={iconClassName as string} alt={item.name} src={item.icon} />}
             <span>{item.name}</span>
         </div>
-        {!multiSelect && selected && (
-            <span className={DROPDOWN_ELEMENT_CHECKMARK_CLASS}>
-                <Checkmark role="presentation" />
-            </span>
-        )}
+        {!multiSelect && <span className={DROPDOWN_ELEMENT_CHECKMARK_CLASS}>{selected && <Checkmark role="presentation" />}</span>}
     </>
 );
 

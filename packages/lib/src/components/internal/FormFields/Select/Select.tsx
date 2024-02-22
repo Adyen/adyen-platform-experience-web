@@ -295,6 +295,7 @@ const Select = <T extends SelectItem>({
                 onSelect={handleSelect}
                 selectListId={selectListId.current}
                 ref={selectListRef}
+                toggleButtonRef={toggleButtonRef}
                 renderListItem={renderListItem}
                 showList={showList}
                 textFilter={textFilter}

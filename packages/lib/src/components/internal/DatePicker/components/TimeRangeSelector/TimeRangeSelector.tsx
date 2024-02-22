@@ -1,69 +1,47 @@
-import { HTMLAttributes, memo } from 'preact/compat';
-import { useCallback, useRef } from 'preact/hooks';
-import { ListBox, ListBoxControl, ListBoxControlProps, ListBoxProps, useListBox } from '@src/components/internal/ListBox';
-import { ChevronDown, ChevronUp } from '@src/components/internal/FormFields/Select/utils/decorations';
-import { UseTimeRangeSelectionData } from './useTimeRangeSelection';
-import './TimeRangeSelector.scss';
-
-const SELECT_BASE_CLASS = 'adyen-fp-select';
-const SELECT_BUTTON_CLASS = `${SELECT_BASE_CLASS}__button`;
-const SELECT_OPTION_CLASS = `${SELECT_BASE_CLASS}__option`;
-const SELECT_OPTION_ELEMENT_CLASS = `${SELECT_BASE_CLASS}__element`;
-const SELECT_LIST_CLASS = `${SELECT_OPTION_CLASS}s-box`;
-const SELECT_LIST_CONTAINER_CLASS = `${SELECT_BASE_CLASS}__container`;
+import { useCallback, useEffect, useMemo, useRef } from 'preact/hooks';
+import Select from '@src/components/internal/FormFields/Select';
+import { SelectItem } from '@src/components/internal/FormFields/Select/types';
+import { useTimeRangeSelection, UseTimeRangeSelectionConfig } from './useTimeRangeSelection';
 
 const TimeRangeSelector = ({
-    children,
-    onSelection,
-    options,
-    selectedOption,
-}: Pick<HTMLAttributes<any>, 'children'> & Omit<UseTimeRangeSelectionData, 'customSelection' | 'from' | 'to'>) => {
-    const { expand, ref, ...listBoxProps } = useListBox(options, { onSelection, selectedOption });
-    const buttonControlRef = useRef<HTMLButtonElement | null>(null);
+    calendarRef,
+    onTimeRangeSelected,
+    timestamp,
+    ...useTimeRangeSelectionConfig
+}: UseTimeRangeSelectionConfig & {
+    calendarRef?: any;
+    onTimeRangeSelected?: (option: string) => any;
+    timestamp: DOMHighResTimeStamp;
+}) => {
+    const { customSelection, from, onSelection, options, selectedOption, to } = useTimeRangeSelection(useTimeRangeSelectionConfig);
+    const selectOptions = useMemo(() => Object.freeze(options.map(id => ({ id, name: id } as SelectItem))), [options]);
+    const onSelectedOptionChanged = useCallback(({ target }: any) => onSelection(target?.value), [onSelection]);
+    const rangeSelectionInProgress = useRef(true);
+    const cachedTimestamp = useRef(timestamp);
 
-    const renderControl = useCallback(
-        (({ activeOption, expanded }) => (
-            <>
-                <span>{activeOption}</span>
-                <div className="b-dropdown-default-textbox__chevron">
-                    {expanded ? <ChevronUp svg-title="opened" /> : <ChevronDown svg-title="closed" />}
-                </div>
-            </>
-        )) as ListBoxControlProps<(typeof listBoxProps)['state']['options'][number]>['render'],
-        []
-    );
+    useEffect(() => {
+        if (calendarRef?.current && from && to) {
+            rangeSelectionInProgress.current = true;
+            calendarRef.current.from = new Date(from as string);
+            calendarRef.current.to = new Date(to as string);
+        }
+    }, [from, to]);
 
-    const renderOption = useCallback(
-        (option => <span className={SELECT_OPTION_ELEMENT_CLASS}>{option}</span>) as ListBoxProps<
-            (typeof listBoxProps)['state']['options'][number]
-        >['render'],
-        []
-    );
+    useEffect(() => {
+        if (cachedTimestamp.current !== timestamp) {
+            cachedTimestamp.current = timestamp;
 
-    return options.length > 1 ? (
-        <>
-            <div className={SELECT_BASE_CLASS}>
-                <ListBoxControl
-                    ref={buttonControlRef}
-                    listBox={ref}
-                    className={SELECT_BUTTON_CLASS}
-                    expand={expand}
-                    render={renderControl}
-                    state={listBoxProps.state}
-                />
-            </div>
-            {children}
-            <ListBox
-                ref={ref}
-                className={SELECT_LIST_CONTAINER_CLASS}
-                listClassName={SELECT_LIST_CLASS}
-                optionClassName={SELECT_OPTION_CLASS}
-                aria-labelledby="listbox"
-                render={renderOption}
-                {...listBoxProps}
-            />
-        </>
-    ) : null;
+            if (rangeSelectionInProgress.current) {
+                rangeSelectionInProgress.current = false;
+            } else customSelection();
+        }
+    }, [customSelection, timestamp]);
+
+    useEffect(() => {
+        selectedOption && onTimeRangeSelected?.(selectedOption);
+    }, [selectedOption]);
+
+    return <Select items={selectOptions} filterable={false} multiSelect={false} onChange={onSelectedOptionChanged} selected={selectedOption} />;
 };
 
-export default memo(TimeRangeSelector);
+export default TimeRangeSelector;

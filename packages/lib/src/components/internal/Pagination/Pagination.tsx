@@ -1,5 +1,6 @@
 import { ButtonVariant } from '@src/components/internal/Button/types';
 import useCoreContext from '@src/core/Context/useCoreContext';
+import { EMPTY_ARRAY } from '@src/utils/common';
 import classnames from 'classnames';
 import { useMemo } from 'preact/hooks';
 import Button from '../Button';
@@ -38,18 +39,22 @@ export default function Pagination({ next, hasNext, hasPrev, page, prev, limit, 
                     aria-label={i18n.get('pagination.previousPage')}
                     variant={ButtonVariant.TERTIARY}
                     disabled={!hasPrev}
-                    iconLeft={previousIcon}
-                    classNameModifiers={!hasPrev ? ['disabled'] : undefined}
+                    iconButton={true}
+                    classNameModifiers={['circle'].concat(hasPrev ? EMPTY_ARRAY : 'disabled')}
                     onClick={prev}
-                />
+                >
+                    {previousIcon}
+                </Button>
                 <Button
                     aria-label={i18n.get('pagination.nextPage')}
                     variant={ButtonVariant.TERTIARY}
                     disabled={!hasNext}
-                    iconRight={nextIcon}
-                    classNameModifiers={!hasNext ? ['disabled'] : undefined}
+                    iconButton={true}
+                    classNameModifiers={['circle'].concat(hasNext ? EMPTY_ARRAY : 'disabled')}
                     onClick={next}
-                />
+                >
+                    {nextIcon}
+                </Button>
             </div>
         </div>
     );
