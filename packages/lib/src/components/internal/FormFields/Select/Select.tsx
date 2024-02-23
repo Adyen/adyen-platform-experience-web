@@ -3,6 +3,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks'
 import { InteractionKeyCode } from '@src/components/types';
 import { ARIA_ERROR_SUFFIX } from '@src/core/Errors/constants';
 import { EMPTY_ARRAY, noop } from '@src/utils/common';
+import useCommitAction, { CommitAction } from '@src/hooks/useCommitAction';
 import uuid from '@src/utils/uuid';
 import SelectButton from './components/SelectButton';
 import SelectList from './components/SelectList';
@@ -48,8 +49,13 @@ const Select = <T extends SelectItem>({
         EMPTY_ARRAY
     );
 
-    const { select, selection } = useSelect({ items, multiSelect, selected });
+    const { clearSelection, select, selection } = useSelect({ items, multiSelect, selected });
+    const clearSelectionInProgress = useRef(false);
     const selectedItems = useRef(selection);
+
+    const { commitAction, commitActionButtons, committing, resetCommitAction } = useCommitAction({
+        resetDisabled: !selection.length,
+    });
 
     /**
      * Closes the select list:
@@ -59,14 +65,26 @@ const Select = <T extends SelectItem>({
     const closeList = useCallback(() => {
         setTextFilter('');
         setShowList(false);
+        resetCommitAction();
         if (toggleButtonRef.current) toggleButtonRef.current.focus();
-    }, [setShowList, setTextFilter]);
+    }, [resetCommitAction, setShowList, setTextFilter]);
 
     const commitSelection = useCallback(() => {
         const value = `${selection.map(({ id }) => id)}`;
         onChange({ target: { value, name } });
-        closeList();
-    }, [closeList, name, onChange, selection]);
+    }, [name, onChange, selection]);
+
+    useEffect(() => {
+        switch (commitAction) {
+            case CommitAction.APPLY:
+                commitSelection();
+                break;
+            case CommitAction.CLEAR:
+                clearSelection();
+                clearSelectionInProgress.current = true;
+                break;
+        }
+    }, [commitAction]);
 
     /**
      * Closes the select list and fires an onChange
@@ -94,9 +112,17 @@ const Select = <T extends SelectItem>({
     useEffect(() => {
         if (selectedItems.current !== selection) {
             selectedItems.current = selection;
-            !multiSelect && commitSelection();
+            if (!multiSelect || clearSelectionInProgress.current) {
+                commitSelection();
+                closeList();
+            }
         }
-    }, [commitSelection, multiSelect, selection]);
+        clearSelectionInProgress.current = false;
+    }, [closeList, commitSelection, multiSelect, selection]);
+
+    useEffect(() => {
+        committing && closeList();
+    }, [committing, closeList]);
 
     const pendingKeyboardTriggeredShowList = useRef(false);
 
@@ -289,6 +315,7 @@ const Select = <T extends SelectItem>({
             />
             <SelectList
                 active={selection}
+                commitActions={commitActionButtons}
                 items={items}
                 multiSelect={multiSelect}
                 onKeyDown={handleListKeyDown}

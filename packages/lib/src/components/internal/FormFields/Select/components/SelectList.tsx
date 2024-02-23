@@ -9,11 +9,22 @@ import type { SelectItem, SelectListProps } from '../types';
 import { DROPDOWN_ELEMENT_CLASS, DROPDOWN_ELEMENT_NO_OPTION_CLASS, DROPDOWN_LIST_ACTIVE_CLASS, DROPDOWN_LIST_CLASS } from '../constants';
 import Popover from '@src/components/internal/Popover/Popover';
 import { PopoverContainerSize, PopoverContainerVariant, PopoverProps } from '@src/components/internal/Popover/types';
-import { ButtonVariant } from '@src/components/internal/Button/types';
 
 const SelectList = fixedForwardRef(
     <T extends SelectItem>(
-        { active, items, multiSelect, onKeyDown, onSelect, renderListItem, selectListId, showList, textFilter, toggleButtonRef }: SelectListProps<T>,
+        {
+            active,
+            commitActions,
+            items,
+            multiSelect,
+            onKeyDown,
+            onSelect,
+            renderListItem,
+            selectListId,
+            showList,
+            textFilter,
+            toggleButtonRef,
+        }: SelectListProps<T>,
         ref: ForwardedRef<HTMLUListElement>
     ) => {
         const { i18n } = useCoreContext();
@@ -23,25 +34,9 @@ const SelectList = fixedForwardRef(
         const renderSelectOption = useMemo(() => (isFunction(renderListItem) ? renderListItem : renderSelectListItemDefault), [renderListItem]);
         const multipleSelection = useMemo(() => multiSelect === true, [multiSelect]);
 
-        const popoverActions = useMemo(
-            () => [
-                {
-                    title: i18n.get('apply'),
-                    variant: ButtonVariant.PRIMARY,
-                    event: noop,
-                },
-                {
-                    title: i18n.get('clear'),
-                    variant: ButtonVariant.SECONDARY,
-                    event: noop,
-                },
-            ],
-            [i18n]
-        );
-
         return showList ? (
             <Popover
-                actions={multipleSelection ? popoverActions : undefined}
+                actions={multipleSelection ? commitActions : undefined}
                 disableFocusTrap={true}
                 divider={true}
                 open={showList}

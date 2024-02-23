@@ -1,5 +1,6 @@
 import { Ref, VNode } from 'preact';
 import { HTMLAttributes } from 'preact/compat';
+import { CommitActionProperties } from '@src/hooks/useCommitAction';
 
 type _Selected<T> = T | readonly T[];
 
@@ -57,6 +58,7 @@ export interface SelectButtonProps<T extends SelectItem> {
 
 export interface SelectListProps<T extends SelectItem> {
     active: readonly T[];
+    commitActions: CommitActionProperties['commitActionButtons'];
     items: readonly T[];
     multiSelect?: boolean;
     onKeyDown: (evt: KeyboardEvent) => any;

@@ -10,6 +10,7 @@ const useSelect = <T extends SelectItem>({ items, multiSelect, selected }: Pick<
     }, [items, selected]);
 
     const [selection, setSelection] = useState(getSelectedItems);
+    const clearSelection = useCallback(() => setSelection(EMPTY_ARRAY), [setSelection]);
 
     const select = useCallback(
         (item: T) => {
@@ -28,7 +29,7 @@ const useSelect = <T extends SelectItem>({ items, multiSelect, selected }: Pick<
 
     useEffect(() => setSelection(getSelectedItems), [getSelectedItems, setSelection]);
 
-    return { selection, select } as const;
+    return { clearSelection, select, selection } as const;
 };
 
 export default useSelect;
