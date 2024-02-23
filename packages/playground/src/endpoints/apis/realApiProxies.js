@@ -60,13 +60,15 @@ export const realApiProxies = (configs, mode) => {
     const sessionApiProxyOptions = makeSessionProxyOptions(sessionApi);
     const platformComponentsApiProxyOptions = makeProxyOptions(platformComponentsApi);
 
+    const endpointRegex = mode === 'netlify' ? endpoints('netlify') : endpoints('viteDev');
+
     return {
-        [endpoints.sessions]: sessionApiProxyOptions,
-        [endpoints.setup]: platformComponentsApiProxyOptions,
-        [endpoints.transactions]: platformComponentsApiProxyOptions,
-        [endpoints.transaction]: platformComponentsApiProxyOptions,
-        [endpoints.balanceAccount]: platformComponentsApiProxyOptions,
-        [endpoints.balanceAccountTotals]: platformComponentsApiProxyOptions,
-        [endpoints.balances]: platformComponentsApiProxyOptions,
+        [endpointRegex.sessions]: sessionApiProxyOptions,
+        [endpointRegex.setup]: platformComponentsApiProxyOptions,
+        [endpointRegex.transactions]: platformComponentsApiProxyOptions,
+        [endpointRegex.transaction]: platformComponentsApiProxyOptions,
+        [endpointRegex.balanceAccount]: platformComponentsApiProxyOptions,
+        [endpointRegex.balanceAccountTotals]: platformComponentsApiProxyOptions,
+        [endpointRegex.balances]: platformComponentsApiProxyOptions,
     };
 };
