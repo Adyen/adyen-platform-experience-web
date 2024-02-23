@@ -1,18 +1,17 @@
-import { ButtonVariant } from '@src/components/internal/Button/types';
 import FilterButton from '@src/components/internal/FilterBar/components/FilterButton/FilterButton';
 import Popover from '@src/components/internal/Popover/Popover';
 import { TypographyElement, TypographyVariant } from '@src/components/internal/Typography/types';
 import Typography from '@src/components/internal/Typography/Typography';
+import useCommitAction, { CommitAction } from '@src/hooks/useCommitAction';
 import useUniqueIdentifier from '@src/hooks/element/useUniqueIdentifier';
 import { isEmpty } from '@src/utils/validator-utils';
 import { memo } from 'preact/compat';
 import { Ref, useCallback, useEffect, useMemo, useState } from 'preact/hooks';
-import useCoreContext from '../../../../../core/Context/useCoreContext';
 import useBooleanState from '../../../../../hooks/useBooleanState';
 import '../../../FormFields';
 import InputText from '../../../FormFields/InputText';
 import './BaseFilter.scss';
-import { BaseFilterProps, EditAction, FilterEditModalRenderProps, FilterProps } from './types';
+import { BaseFilterProps, FilterEditModalRenderProps, FilterProps } from './types';
 
 const isValueEmptyFallback = (value?: string) => {
     return !value || isEmpty(value);
@@ -33,14 +32,14 @@ const renderFallback = (() => {
         );
 
         useEffect(() => {
-            if (editAction === EditAction.CLEAR) {
+            if (editAction === CommitAction.CLEAR) {
                 const value = '';
                 setCurrentValue(value);
                 onValueUpdated(value);
                 onChange(value);
             }
 
-            if (editAction === EditAction.APPLY) {
+            if (editAction === CommitAction.APPLY) {
                 onChange(currentValue ?? '');
             }
         }, [currentValue, editAction, onChange, onValueUpdated]);
@@ -52,8 +51,6 @@ const renderFallback = (() => {
 })();
 
 const BaseFilter = <T extends BaseFilterProps = BaseFilterProps>({ render, ...props }: FilterProps<T>) => {
-    const { i18n } = useCoreContext();
-    const [editAction, setEditAction] = useState(EditAction.NONE);
     const [editMode, _updateEditMode] = useBooleanState(false);
     const [editModalMounting, updateEditModalMounting] = useBooleanState(false);
     const [hasEmptyValue, updateHasEmptyValue] = useBooleanState(false);
@@ -72,12 +69,17 @@ const BaseFilter = <T extends BaseFilterProps = BaseFilterProps>({ render, ...pr
         [props.value, hasInitialValue, isValueEmpty]
     );
 
+    const { commitAction, commitActionButtons, committing, resetCommitAction } = useCommitAction({
+        applyDisabled: !valueChanged,
+        resetDisabled: hasEmptyValue,
+    });
+
     const [closeEditDialog, openEditDialog] = useMemo(() => {
         const updateEditMode = (mode: boolean) => () => {
             if (mode === editMode) return;
 
             if (mode) {
-                setEditAction(EditAction.NONE);
+                resetCommitAction();
                 updateValueChanged(false);
                 updateHasEmptyValue(false);
                 updateHasInitialValue(false);
@@ -88,7 +90,7 @@ const BaseFilter = <T extends BaseFilterProps = BaseFilterProps>({ render, ...pr
         };
 
         return [updateEditMode(false), updateEditMode(true)];
-    }, [editMode]);
+    }, [editMode, resetCommitAction]);
 
     useEffect(() => {
         if (editModalMounting) {
@@ -100,32 +102,8 @@ const BaseFilter = <T extends BaseFilterProps = BaseFilterProps>({ render, ...pr
     }, [props.value, editModalMounting, isValueEmpty]);
 
     useEffect(() => {
-        switch (editAction) {
-            case EditAction.APPLY:
-            case EditAction.CLEAR:
-                setEditAction(EditAction.NONE);
-                closeEditDialog();
-                break;
-        }
-    }, [closeEditDialog, editAction, setEditAction]);
-
-    const actions = useMemo(
-        () => [
-            {
-                title: i18n.get('apply'),
-                variant: ButtonVariant.PRIMARY,
-                event: () => setEditAction(EditAction.APPLY),
-                disabled: !valueChanged,
-            },
-            {
-                title: i18n.get('clear'),
-                variant: ButtonVariant.SECONDARY,
-                event: () => setEditAction(EditAction.CLEAR),
-                disabled: hasEmptyValue,
-            },
-        ],
-        [setEditAction, valueChanged, hasEmptyValue]
-    );
+        committing && closeEditDialog();
+    }, [committing, closeEditDialog]);
 
     return (
         <>
@@ -170,7 +148,7 @@ const BaseFilter = <T extends BaseFilterProps = BaseFilterProps>({ render, ...pr
             </div>
             {editMode && (
                 <Popover
-                    actions={actions}
+                    actions={commitActionButtons}
                     title={props.title?.trim()}
                     modifiers={['filter']}
                     open={editMode}
@@ -182,7 +160,7 @@ const BaseFilter = <T extends BaseFilterProps = BaseFilterProps>({ render, ...pr
                     targetElement={targetElement}
                     disableFocusTrap={false}
                 >
-                    {renderModalBody({ ...props, editAction, onValueUpdated })}
+                    {renderModalBody({ ...props, editAction: commitAction, onValueUpdated })}
                 </Popover>
             )}
         </>

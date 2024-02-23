@@ -1,10 +1,5 @@
 import { JSX } from 'preact';
-
-export enum EditAction {
-    NONE = 0,
-    APPLY = 1,
-    CLEAR = 2,
-}
+import { CommitAction } from '@src/hooks/useCommitAction';
 
 export interface BaseFilterProps {
     onChange: (value?: any) => void;
@@ -26,6 +21,6 @@ interface FilterCustomRenderProps<T extends BaseFilterProps> {
 export type FilterProps<T extends BaseFilterProps> = T & FilterCustomRenderProps<T>;
 
 export type FilterEditModalRenderProps<T extends BaseFilterProps> = Omit<FilterProps<T>, keyof FilterCustomRenderProps<T>> & {
-    editAction: EditAction;
+    editAction: CommitAction;
     onValueUpdated: (currentValue?: string) => void;
 };
