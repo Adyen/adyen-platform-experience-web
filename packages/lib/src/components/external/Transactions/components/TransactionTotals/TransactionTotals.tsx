@@ -24,17 +24,15 @@ const TransactionTotals = ({
     const getTransactionTotals = useSetupEndpoint('getTransactionTotals');
 
     const fetchCallback = useCallback(async () => {
-        if (balanceAccountId) {
-            return getTransactionTotals(EMPTY_OBJECT, {
-                path: { balanceAccountId: balanceAccountId },
-                query: {
-                    createdSince,
-                    createdUntil,
-                    categories,
-                    statuses,
-                },
-            });
-        }
+        return getTransactionTotals(EMPTY_OBJECT, {
+            path: { balanceAccountId: balanceAccountId! },
+            query: {
+                createdSince,
+                createdUntil,
+                categories,
+                statuses,
+            },
+        });
     }, [balanceAccountId, categories, createdSince, createdUntil, getTransactionTotals, statuses]);
 
     const { data, error, isFetching } = useFetch({
