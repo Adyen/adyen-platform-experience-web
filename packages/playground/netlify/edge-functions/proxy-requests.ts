@@ -27,12 +27,12 @@ export default async (request: Request, context: any) => {
         permissions: SESSION_PERMISSIONS,
     };
 
-    const apis = realApiProxies({ platformComponentsApi, sessionApi });
+    const apis = realApiProxies({ platformComponentsApi, sessionApi }, 'netlify');
 
     const url = new URL(request.url);
 
     // Find the matching API proxy configuration based on the pathname.
-    const [match, apiConfig] = Object.entries(apis).find(([apiPath]) => url.pathname.startsWith(apiPath)) || [];
+    const [match, apiConfig] = Object.entries(apis).find(([apiPath]) => new RegExp(apiPath).test(url.pathname)) || [];
 
     if (!match || !apiConfig) return;
 

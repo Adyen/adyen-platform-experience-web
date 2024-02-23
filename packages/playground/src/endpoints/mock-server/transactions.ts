@@ -1,8 +1,9 @@
 import { rest } from 'msw';
 import { BASIC_TRANSACTIONS_LIST, TRANSACTION_DETAILS_DEFAULT } from '../../../../../mocks/src/transactions';
-import { mockEndpoints } from '../endpoints';
+import { endpoints } from '../endpoints';
 import { delay } from '../utils/utils';
 
+const mockEndpoints = endpoints('mock');
 export const transactionsMocks = [
     rest.get(mockEndpoints.transactions, (req, res, ctx) => {
         let transactions = BASIC_TRANSACTIONS_LIST;

@@ -1,8 +1,8 @@
 import { rest } from 'msw';
-import { mockEndpoints } from '../endpoints';
+import { endpoints } from '../endpoints';
 import { delay } from '../utils/utils';
 
-const PREFIX = mockEndpoints.setup;
+const PREFIX = endpoints('mock').setup;
 
 export const setupMock = [
     rest.post(`${PREFIX}`, (req, res, ctx) => {
