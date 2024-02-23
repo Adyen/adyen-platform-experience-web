@@ -15,8 +15,7 @@ const getMySessionToken = async () => {
                     accountHolderId: process.env.SESSION_ACCOUNT_HOLDER,
                 },
             ],
-            roles: [],
-            permissions: process.env.SESSION_PERMISSIONS?.split(','),
+            roles: ['Transactions Overview Component – View'],
         },
     };
     const response = await fetch(url, { method: 'POST', body: JSON.stringify(body) });

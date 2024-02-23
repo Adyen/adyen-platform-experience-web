@@ -9,6 +9,20 @@ const makeProxyOptions = ({ url, version, username, password, apiKey }, basicAut
     changeOrigin: true,
     secure: false,
     rewrite: path => path.replace(/^\/api/, ''),
+    configure: (proxy, _options) => {
+        proxy.on('proxyReq', async (proxyReq, req, _res) => {
+            console.log(
+                'Sending Request:',
+                req.method,
+                req.url,
+                ' => TO THE TARGET =>  ',
+                proxyReq.method,
+                proxyReq.protocol,
+                proxyReq.host,
+                proxyReq.path
+            );
+        });
+    },
 });
 
 const makeSessionProxyOptions = ({ url, token, username, password }) => {
@@ -24,6 +38,20 @@ const makeSessionProxyOptions = ({ url, token, username, password }) => {
         changeOrigin: true,
         secure: false,
         rewrite: path => path.replace(/^\/api/, ''),
+        configure: (proxy, _options) => {
+            proxy.on('proxyReq', async (proxyReq, req, _res) => {
+                console.log(
+                    'Sending Request:',
+                    req.method,
+                    req.url,
+                    ' => TO THE TARGET =>  ',
+                    proxyReq.method,
+                    proxyReq.protocol,
+                    proxyReq.host,
+                    proxyReq.path
+                );
+            });
+        },
     };
 };
 
