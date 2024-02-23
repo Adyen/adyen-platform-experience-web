@@ -1,5 +1,5 @@
 export const endpoints = mode => {
-    const matchVariable = mode === 'prod' ? '(.*)' : ':id';
+    const matchVariable = mode === 'netlify' ? '(.*)' : ':id';
     const prefix = mode === 'viteDev' ? '^' : '';
     return {
         balanceAccount: `${prefix}\/api\/v([0-9]+)/balanceAccounts`,

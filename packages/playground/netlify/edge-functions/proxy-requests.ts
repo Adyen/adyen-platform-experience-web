@@ -27,7 +27,7 @@ export default async (request: Request, context: any) => {
         permissions: SESSION_PERMISSIONS,
     };
 
-    const apis = realApiProxies({ platformComponentsApi, sessionApi }, 'prod');
+    const apis = realApiProxies({ platformComponentsApi, sessionApi }, 'netlify');
 
     const url = new URL(request.url);
 
