@@ -60,13 +60,15 @@ export const realApiProxies = (configs, mode) => {
     const sessionApiProxyOptions = makeSessionProxyOptions(sessionApi);
     const platformComponentsApiProxyOptions = makeProxyOptions(platformComponentsApi);
 
+    const prefixedEndpoints = mode === 'prod' ? endpoints('prod') : endpoints('viteDev');
+
     return {
-        [endpoints.sessions]: sessionApiProxyOptions,
-        [endpoints.setup]: platformComponentsApiProxyOptions,
-        [endpoints.transactions]: platformComponentsApiProxyOptions,
-        [endpoints.transaction]: platformComponentsApiProxyOptions,
-        [endpoints.balanceAccount]: platformComponentsApiProxyOptions,
-        [endpoints.balanceAccountTotals]: platformComponentsApiProxyOptions,
-        [endpoints.balances]: platformComponentsApiProxyOptions,
+        [prefixedEndpoints.sessions]: sessionApiProxyOptions,
+        [prefixedEndpoints.setup]: platformComponentsApiProxyOptions,
+        [prefixedEndpoints.transactions]: platformComponentsApiProxyOptions,
+        [prefixedEndpoints.transaction]: platformComponentsApiProxyOptions,
+        [prefixedEndpoints.balanceAccount]: platformComponentsApiProxyOptions,
+        [prefixedEndpoints.balanceAccountTotals]: platformComponentsApiProxyOptions,
+        [prefixedEndpoints.balances]: platformComponentsApiProxyOptions,
     };
 };

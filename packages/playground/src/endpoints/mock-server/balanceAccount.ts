@@ -1,6 +1,8 @@
 import { rest } from 'msw';
-import { mockEndpoints } from '../endpoints';
+import { endpoints } from '../endpoints';
 import { delay } from '../utils/utils';
+
+const mockEndpoints = endpoints('mock');
 
 const SINGLE_BALANCE_ACCOUNT = [
     {

@@ -1,7 +1,7 @@
 import { rest } from 'msw';
-import { mockEndpoints } from '../endpoints';
+import { endpoints } from '../endpoints';
 
-const PREFIX = mockEndpoints.sessions;
+const PREFIX = endpoints('mock').sessions;
 
 export const sessionsMock = [
     rest.post(`${PREFIX}`, (req, res, ctx) => {
