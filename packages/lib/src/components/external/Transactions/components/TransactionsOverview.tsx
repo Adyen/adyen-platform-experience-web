@@ -50,7 +50,7 @@ export const TransactionsOverview = ({
                     createdSince: pageRequestParams.createdSince ?? DEFAULT_CREATED_SINCE,
                     createdUntil: pageRequestParams.createdUntil ?? DEFAULT_CREATED_UNTIL,
                 },
-                path: { balanceAccountId: balanceAccounts?.[0]?.id ?? '' },
+                path: { balanceAccountId: balanceAccounts?.[2]?.id ?? '' },
             };
             return transactionsEndpointCall(requestOptions, parameters);
         },
@@ -134,7 +134,7 @@ export const TransactionsOverview = ({
     const showAlert = useMemo(() => !fetching && error, [fetching, error]);
 
     //TODO - Replace with the value of the balanceAccount filter
-    const balanceAccountId = useMemo(() => balanceAccounts?.[0]?.id, [balanceAccounts]);
+    const balanceAccountId = useMemo(() => balanceAccounts?.[2]?.id, [balanceAccounts]);
 
     //TODO - Replace with the value of the statuses filter
     const statuses: ITransaction['status'][] = ['Pending', 'Booked'];
