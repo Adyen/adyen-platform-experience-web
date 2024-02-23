@@ -24,6 +24,12 @@ const MULTIPLE_BALANCE_ACCOUNTS = [
         timeZone: 'America/Sao_Paulo',
         defaultCurrencyCode: 'BRL',
     },
+    {
+        description: 'S. Hopper - Third Account',
+        id: 'BA32272223222B5CTDQPM6W2G',
+        timeZone: 'America/Sao_Paulo',
+        defaultCurrencyCode: 'BRL',
+    },
 ];
 
 const TRANSACTION_TOTALS = [
