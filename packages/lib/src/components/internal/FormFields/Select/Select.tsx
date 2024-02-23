@@ -6,6 +6,7 @@ import { EMPTY_ARRAY, noop } from '@src/utils/common';
 import uuid from '@src/utils/uuid';
 import SelectButton from './components/SelectButton';
 import SelectList from './components/SelectList';
+import useSelect from './hooks/useSelect';
 import { DROPDOWN_BASE_CLASS, DROPDOWN_MULTI_SELECT_CLASS } from './constants';
 import { SelectItem, SelectProps } from './types';
 import './Select.scss';
@@ -47,11 +48,8 @@ const Select = <T extends SelectItem>({
         EMPTY_ARRAY
     );
 
-    const [active, setActive] = useState(() => {
-        const _selected = (EMPTY_ARRAY as readonly T['id'][]).concat(selected ?? EMPTY_ARRAY).filter(Boolean);
-        const active = items.filter(item => _selected.includes(item.id));
-        return Object.freeze(multiSelect ? active : active.slice(0, 1));
-    });
+    const { select, selection } = useSelect({ items, multiSelect, selected });
+    const selectedItems = useRef(selection);
 
     /**
      * Closes the select list:
@@ -64,39 +62,41 @@ const Select = <T extends SelectItem>({
         if (toggleButtonRef.current) toggleButtonRef.current.focus();
     }, [setShowList, setTextFilter]);
 
+    const commitSelection = useCallback(() => {
+        const value = `${selection.map(({ id }) => id)}`;
+        onChange({ target: { value, name } });
+        closeList();
+    }, [closeList, name, onChange, selection]);
+
     /**
      * Closes the select list and fires an onChange
      * @param e - Event
      */
-    const handleSelect = (e: Event) => {
-        e.preventDefault();
+    const handleSelect = useCallback(
+        (e: Event) => {
+            e.preventDefault();
 
-        // If the target is not one of the list items, select the first list item
-        const target: HTMLUListElement | undefined | null =
-            e.currentTarget && selectListRef?.current?.contains(e.currentTarget as HTMLUListElement) ? (e.currentTarget as HTMLUListElement) : null; // (selectListRef?.current?.firstElementChild as HTMLUListElement);
+            // If the target is not one of the list items, select the first list item
+            const target: HTMLUListElement | undefined | null =
+                e.currentTarget && selectListRef?.current?.contains(e.currentTarget as HTMLUListElement)
+                    ? (e.currentTarget as HTMLUListElement)
+                    : null; // (selectListRef?.current?.firstElementChild as HTMLUListElement);
 
-        if (target && !target.getAttribute('data-disabled')) {
-            // closeList();
-            const value = target.getAttribute('data-value');
-            // onChange({ target: { value, name: name } });
-            const item = items.find(item => item.id === value)!;
+            if (target && !target.getAttribute('data-disabled')) {
+                const value = target.getAttribute('data-value');
+                const item = items.find(item => item.id === value)!;
+                select(item);
+            }
+        },
+        [items, select]
+    );
 
-            setActive(active => {
-                if (!multiSelect) {
-                    closeList();
-                    onChange({ target: { value, name: name } });
-                    return Object.freeze([item]);
-                }
-
-                const nextActive = [...active];
-                const index = nextActive.indexOf(item);
-
-                index < 0 ? nextActive.push(item) : nextActive.splice(index, 1);
-
-                return Object.freeze(nextActive);
-            });
+    useEffect(() => {
+        if (selectedItems.current !== selection) {
+            selectedItems.current = selection;
+            !multiSelect && commitSelection();
         }
-    };
+    }, [commitSelection, multiSelect, selection]);
 
     const pendingKeyboardTriggeredShowList = useRef(false);
 
@@ -270,7 +270,7 @@ const Select = <T extends SelectItem>({
         <div ref={selectContainerRef} className={dropdownClassName}>
             <SelectButton
                 id={uniqueId ?? undefined}
-                active={active}
+                active={selection}
                 filterInputRef={filterInputRef}
                 filterable={filterable}
                 isInvalid={isInvalid}
@@ -288,7 +288,7 @@ const Select = <T extends SelectItem>({
                 ariaDescribedBy={!isCollatingErrors && uniqueId ? `${uniqueId}${ARIA_ERROR_SUFFIX}` : ''}
             />
             <SelectList
-                active={active}
+                active={selection}
                 items={items}
                 multiSelect={multiSelect}
                 onKeyDown={handleListKeyDown}

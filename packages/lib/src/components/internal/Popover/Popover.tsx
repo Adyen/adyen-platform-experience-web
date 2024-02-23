@@ -1,5 +1,6 @@
 import ButtonActions from '@src/components/internal/Button/ButtonActions/ButtonActions';
 import { ButtonActionsLayoutBasic } from '@src/components/internal/Button/ButtonActions/types';
+import { isFunction } from '@src/utils/common';
 import {
     DEFAULT_POPOVER_CLASSNAME,
     POPOVER_CONTAINER_CLASSNAME,
@@ -51,6 +52,7 @@ function Popover({
     ...uncontrolledProps
 }: PropsWithChildren<PopoverProps>) {
     const focusTarget = useUniqueIdentifier();
+    const isDismissible = useMemo(() => isFunction(dismiss) && dismissible !== false, [dismiss, dismissible]);
 
     const onCloseFocusTrap = useCallback(
         (interactionKeyPressed: boolean) => {
@@ -110,12 +112,14 @@ function Popover({
                 >
                     <div ref={focusTarget}>
                         <div ref={focusTrap}>
-                            {title && (
+                            {(title || isDismissible) && (
                                 <div className={getModifierClasses(POPOVER_HEADER_CLASSNAME, modifiers, [POPOVER_HEADER_CLASSNAME])}>
-                                    <div className={POPOVER_HEADER_TITLE_CLASSNAME}>
-                                        <PopoverTitle title={title} />
-                                    </div>
-                                    {dismissible && dismiss && <PopoverDismissButton onClick={dismiss} />}
+                                    {title && (
+                                        <div className={POPOVER_HEADER_TITLE_CLASSNAME}>
+                                            <PopoverTitle title={title} />
+                                        </div>
+                                    )}
+                                    {isDismissible && <PopoverDismissButton onClick={dismiss!} />}
                                 </div>
                             )}
                             {children && (

@@ -176,7 +176,7 @@ const BaseFilter = <T extends BaseFilterProps = BaseFilterProps>({ render, ...pr
                     open={editMode}
                     aria-label={`${props.label}`}
                     dismiss={closeEditDialog}
-                    dismissible={true}
+                    dismissible={false}
                     withContentPadding={props.withContentPadding ?? true}
                     divider={true}
                     targetElement={targetElement}
