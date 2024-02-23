@@ -1,0 +1,63 @@
+// TODO: Move this to an accessibility mixin
+.adyen-fp-sr-only {
+    clip: rect(0 0 0 0);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute !important;
+    width: 1px;
+}
+
+.adyen-fp-expandable-card {
+    $adyen-fp-expandable-card: &;
+
+    position: relative;
+
+    &__container {
+        background-color: var(--adyen-fp-color-background-primary);
+        border: var(--adyen-fp-color-outline-primary) 1px solid;
+        border-radius: var(--adyen-fp-border-radius-m);
+        display: block;
+        overflow: hidden;
+
+        &--overlay {
+            position: absolute;
+            top: 0;
+            width: 100%;
+            z-index: 100;
+        }
+
+        &--hidden {
+            display: none;
+        }
+
+        &:hover {
+            background-color: var(--adyen-fp-color-background-primary-hover);
+
+            #{$adyen-fp-expandable-card}__chevron {
+                background-color: var(--adyen-fp-color-background-tertiary-hover);
+            }
+        }
+
+        &--filled {
+            background-color: var(--adyen-fp-color-background-secondary);
+
+            &:hover {
+                background-color: var(--adyen-fp-color-background-secondary-hover);
+            }
+        }
+    }
+
+    &__content {
+        padding: var(--adyen-fp-spacer-070) var(--adyen-fp-spacer-080);
+    }
+
+    &__chevron {
+        align-items: center;
+        background-color: var(--adyen-fp-color-background-tertiary);
+        display: flex;
+        height: 20px;
+        justify-content: center;
+    }
+}
