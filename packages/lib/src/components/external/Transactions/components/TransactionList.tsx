@@ -90,7 +90,7 @@ function TransactionList({ loading, transactions, onTransactionSelected, showPag
                     paymentMethod: ({ value }) => {
                         return (
                             <>
-                                {value && (
+                                {value ? (
                                     <div className="adyen-fp-transactions__payment-method">
                                         <div className="adyen-fp-transactions__payment-method-logo-container">
                                             <Image
@@ -102,6 +102,8 @@ function TransactionList({ loading, transactions, onTransactionSelected, showPag
                                         </div>
                                         {parsePaymentMethodType(value)}
                                     </div>
+                                ) : (
+                                    <Tag label={i18n.get('noData')} variant={TagVariant.WHITE} />
                                 )}
                             </>
                         );

@@ -30,4 +30,10 @@
         background: var(--adyen-fp-color-yellow);
         color: var(--adyen-fp-color-yellow-dark);
     }
+
+    &--white {
+        background: var(--adyen-fp-color-white);
+        color: var(--adyen-fp-color-black);
+        outline: 1px solid var(--adyen-fp-color-gray-light-2);
+    }
 }
