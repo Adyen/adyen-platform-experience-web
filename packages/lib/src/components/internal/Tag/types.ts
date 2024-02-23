@@ -3,6 +3,7 @@ export enum TagVariant {
     WARNING = 'warning',
     ERROR = 'error',
     SUCCESS = 'success',
+    WHITE = 'white',
 }
 
 export interface TagProps {
