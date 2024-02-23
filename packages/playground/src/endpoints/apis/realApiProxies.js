@@ -1,11 +1,8 @@
-import getHeaders from './utils/getHeaders.js';
-import { getBasicAuthHeaders } from './utils/getBasicAuthHeaders.js';
 import { endpoints } from '../endpoints.js';
 
 const makeProxyOptions = ({ url, version, username, password, apiKey }, basicAuth = false) => ({
     target: `${url}${version ?? ''}`,
     ...(apiKey ? {} : { auth: `${username}:${password}` }),
-    headers: basicAuth ? getBasicAuthHeaders({ user: username, pass: password }) : getHeaders(undefined, apiKey),
     changeOrigin: true,
     secure: false,
     rewrite: path => path.replace(/^\/api/, ''),
@@ -25,15 +22,13 @@ const makeProxyOptions = ({ url, version, username, password, apiKey }, basicAut
     },
 });
 
-const makeSessionProxyOptions = ({ url, token, username, password }) => {
-    const encodedAuthPair = Buffer.from([username, password].join(':')).toString('base64');
-
+const makeSessionProxyOptions = ({ url, apiKey }) => {
     return {
         target: `${url}`,
         headers: {
-            Authorization: `Basic ${encodedAuthPair}`,
             'Content-Type': 'application/json',
             'Access-Control-Allow-Origin': '*',
+            'X-Api-Key': apiKey,
         },
         changeOrigin: true,
         secure: false,
