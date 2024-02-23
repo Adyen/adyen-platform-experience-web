@@ -3,6 +3,10 @@ import { endpoints } from '../endpoints.js';
 const makeProxyOptions = ({ url, version, username, password, apiKey }, basicAuth = false) => ({
     target: `${url}${version ?? ''}`,
     ...(apiKey ? {} : { auth: `${username}:${password}` }),
+    headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Content-Type': 'application/json',
+    },
     changeOrigin: true,
     secure: false,
     rewrite: path => path.replace(/^\/api/, ''),

@@ -18,7 +18,7 @@ const getMySessionToken = async () => {
             roles: ['Transactions Overview Component – View'],
         },
     };
-    const response = await fetch(url, { method: 'POST', body: JSON.stringify(body) });
+    const response = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
     return await response.json();
 };
 
