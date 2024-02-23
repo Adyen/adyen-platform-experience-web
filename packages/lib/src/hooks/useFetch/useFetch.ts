@@ -73,7 +73,7 @@ export function useFetch<QueryFn extends (...args: any) => Promise<any>, T exten
             if (cancelRequest.current) return;
             dispatch({ type: 'error', payload: error as Error });
         }
-    }, [queryFn]);
+    }, [dispatch, queryFn]);
 
     useEffect(() => {
         cancelRequest.current = false;
