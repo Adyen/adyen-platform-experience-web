@@ -25,10 +25,14 @@ export default async (request: Request, context: any) => {
 
     if (!match || !apiConfig) return;
 
+    const newRequest = new Request({
+        ...request,
+        url: `${apiConfig.target}${url.pathname.replace('/api/', '/')}${url.search ?? ''}`,
+        headers: { ...request.headers, ...apiConfig.headers },
+    });
+
     try {
-        const res = await fetch(`${apiConfig.target}${url.pathname.replace('/api/', '/')}${url.search ?? ''}`, {
-            headers: apiConfig.headers,
-        });
+        const res = await fetch(newRequest);
         const data = await res.json();
         // @ts-ignore
         return Response.json(data);
