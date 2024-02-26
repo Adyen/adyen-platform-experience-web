@@ -26,7 +26,7 @@ export default async (request: Request, context: any) => {
     if (!match || !apiConfig) return;
 
     try {
-        const res = await fetch(`${apiConfig.target}${url.pathname.replace('/api/', '/')}${url.search ?? ''}`, {
+        const res = await fetch(`${apiConfig.target}/${url.search ?? ''}`, {
             headers: apiConfig.headers,
             method: request.method,
         });

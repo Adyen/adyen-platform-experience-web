@@ -3,6 +3,7 @@ import { endpoints } from '../endpoints';
 import { delay } from '../utils/utils';
 
 const PREFIX = endpoints('mock').setup;
+console.log(PREFIX);
 
 export const setupMock = [
     rest.post(`${PREFIX}`, (req, res, ctx) => {
