@@ -14,7 +14,6 @@ function setupSession(session: Session, options?: Record<string, any>): Promise<
             path,
             headers: {
                 Authorization: `Bearer ${session.token}`,
-                token: session.token,
             },
             origin: process.env.VITE_LOADING_CONTEXT,
         },
