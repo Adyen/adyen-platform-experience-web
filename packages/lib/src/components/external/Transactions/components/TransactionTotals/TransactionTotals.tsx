@@ -14,7 +14,13 @@ import { memo } from 'preact/compat';
 type TransactionTotalsProps = Required<OperationParameters<'getTransactionTotals'>['path'] & OperationParameters<'getTransactionTotals'>['query']>;
 
 const TransactionTotals = memo(
-    ({ balanceAccountId, createdSince, createdUntil, categories, statuses }: MakeFieldValueUndefined<TransactionTotalsProps, 'balanceAccountId'>) => {
+    ({
+        balanceAccountId,
+        createdSince,
+        createdUntil,
+        categories,
+        /* currencies,*/ statuses,
+    }: MakeFieldValueUndefined<TransactionTotalsProps, 'balanceAccountId'>) => {
         const { i18n } = useCoreContext();
 
         const getTransactionTotals = useSetupEndpoint('getTransactionTotals');
@@ -26,10 +32,11 @@ const TransactionTotals = memo(
                     createdSince,
                     createdUntil,
                     categories,
+                    // currencies,
                     statuses,
                 },
             });
-        }, [balanceAccountId, categories, createdSince, createdUntil, getTransactionTotals, statuses]);
+        }, [balanceAccountId, categories, /* currencies,*/ createdSince, createdUntil, getTransactionTotals, statuses]);
 
         const { data, error, isFetching } = useFetch({
             fetchOptions: useMemo(() => ({ enabled: !!balanceAccountId }), [balanceAccountId]),

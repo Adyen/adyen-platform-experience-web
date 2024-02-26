@@ -15,30 +15,22 @@
         margin-left: auto;
     }
 
-    .adyen-fp-button {
-        display: block;
-        font-weight: var(--adyen-fp-font-weight-bold);
-        width: var(--adyen-fp-spacing-medium);
+    //.adyen-fp-button {
+    //    display: block;
+    //    font-weight: var(--adyen-fp-font-weight-bold);
+    //    width: var(--adyen-fp-spacing-medium);
+    //}
 
-        &--next {
-            .adyen-fp-button__content::before {
-                content: '';
-                transform: rotate(225deg);
-            }
+    &__limit-selector {
+        text-align: left;
+
+        .adyen-fp-button {
+            width: auto;
         }
 
-        &__content::before {
-            border: 2px solid var(--adyen-fp-color-gray-darker);
-            border-right: 0;
-            border-top: 0;
-            content: '';
-            height: 8px;
-            transform: rotate(45deg);
-            width: 8px;
-        }
-
-        &__text {
-            display: none;
+        .adyen-fp-popover {
+            min-width: auto;
+            width: auto;
         }
     }
 }

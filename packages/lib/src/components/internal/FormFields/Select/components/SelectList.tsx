@@ -1,7 +1,7 @@
 import cx from 'classnames';
 import { useMemo } from 'preact/hooks';
 import { ForwardedRef, memo } from 'preact/compat';
-import { isFunction, noop } from '@src/utils/common';
+import { isFunction } from '@src/utils/common';
 import useCoreContext from '@src/core/Context/useCoreContext';
 import fixedForwardRef from '@src/utils/fixedForwardRef';
 import SelectListItem, { renderSelectListItemDefault } from './SelectListItem';
