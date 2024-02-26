@@ -63,7 +63,6 @@ export const realApiProxies = (configs, mode) => {
 
     return {
         [endpointRegex.sessions]: sessionApiProxyOptions,
-        [endpointRegex.setup]: platformComponentsApiProxyOptions,
         [endpointRegex.transactions]: platformComponentsApiProxyOptions,
         [endpointRegex.transaction]: platformComponentsApiProxyOptions,
         [endpointRegex.balanceAccount]: platformComponentsApiProxyOptions,

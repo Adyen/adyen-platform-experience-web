@@ -30,6 +30,7 @@ export const getErrorType = (errorCode: number): ErrorTypes => {
 export const getRequestObject = (options: HttpOptions, data?: any): RequestInit => {
     const { headers = [], method = 'GET' } = options;
 
+    console.log(headers);
     return {
         method,
         mode: 'cors',

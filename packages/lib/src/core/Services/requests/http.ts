@@ -10,7 +10,7 @@ export function http<T>(options: HttpOptions, data?: any): Promise<T> {
     const request = getRequestObject(options, data);
 
     //TODO - Get rid of the "api" prefix once we have defined a loadingContext from our BFF.
-    const url = new URL(`${normalizeLoadingContext(loadingContext)}api/${API_VERSION}${normalizeUrl(path)}`);
+    const url = new URL(`${normalizeLoadingContext(loadingContext)}${API_VERSION}${normalizeUrl(path)}`);
 
     if (options.params) {
         options.params.forEach((value, param) => {
@@ -18,11 +18,11 @@ export function http<T>(options: HttpOptions, data?: any): Promise<T> {
             if (decodedValue) url.searchParams.append(param, decodedValue);
         });
     }
-
     return (
         fetch(url, request)
             .then(async response => {
                 if (response.ok) return await response.json();
+                console.log(request);
 
                 const errorType = getErrorType(response.status);
 

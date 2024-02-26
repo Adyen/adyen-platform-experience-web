@@ -10,13 +10,15 @@ function setupSession(session: Session, options?: Record<string, any>): Promise<
             errorLevel: 'fatal',
             errorMessage: 'ERROR: Invalid ClientKey',
             ...(options ?? {}),
-            loadingContext: session.loadingContext,
+            loadingContext: 'https://platform-components-external-test.adyen.com/platform-components-external/api/',
             path,
             headers: {
                 Authorization: `Bearer ${session.token}`,
                 token: session.token,
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': 'http://localhost:3030',
+                origin: 'http://localhost:3030',
             },
-            origin: process.env.VITE_LOADING_CONTEXT,
         },
         {}
     );
