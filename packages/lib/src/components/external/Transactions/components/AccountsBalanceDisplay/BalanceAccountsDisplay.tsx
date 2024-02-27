@@ -15,8 +15,10 @@ type TransactionTotalsProps = Required<OperationParameters<'getBalances'>['path'
 export const BalanceAccountsDisplay = memo(
     ({
         balanceAccountId,
-        getAvailableCurrencies,
-    }: MakeFieldValueUndefined<TransactionTotalsProps, 'balanceAccountId'> & { getAvailableCurrencies: (currencies?: readonly string[]) => any }) => {
+        updateBalanceAccountCurrencies,
+    }: MakeFieldValueUndefined<TransactionTotalsProps, 'balanceAccountId'> & {
+        updateBalanceAccountCurrencies: (currencies?: readonly string[]) => any;
+    }) => {
         const { i18n } = useCoreContext();
         const getAccountsBalance = useSetupEndpoint('getBalances');
 
@@ -33,9 +35,9 @@ export const BalanceAccountsDisplay = memo(
 
         useEffect(() => {
             if (!error && data?.balances?.length) {
-                getAvailableCurrencies(Object.freeze(data?.balances!.map(({ currency }) => currency).sort()));
+                updateBalanceAccountCurrencies(Object.freeze(data?.balances!.map(({ currency }) => currency).sort()));
             }
-        }, [data, error, getAvailableCurrencies]);
+        }, [data, error, updateBalanceAccountCurrencies]);
 
         const isLoading = !balanceAccountId || (balanceAccountId && !data && !error) || isFetching;
 

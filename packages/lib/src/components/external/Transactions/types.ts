@@ -5,7 +5,7 @@ import { ITransaction } from '../../../types';
 import { TranslationKey } from '../../../core/Localization/types';
 import { ModalSize } from '../../internal/Modal/types';
 
-export enum TransactionFilterParam {
+export const enum TransactionFilterParam {
     CATEGORIES = 'categories',
     CURRENCIES = 'currencies',
     STATUSES = 'statuses',
