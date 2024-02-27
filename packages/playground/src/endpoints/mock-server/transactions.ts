@@ -6,27 +6,31 @@ import { delay } from '../utils/utils';
 const mockEndpoints = endpoints('mock');
 export const transactionsMocks = [
     rest.get(mockEndpoints.transactions, (req, res, ctx) => {
+        const categories = req.url.searchParams.get('categories')?.split(',');
+        const currencies = req.url.searchParams.get('currencies')?.split(',');
+        const statuses = req.url.searchParams.get('statuses')?.split(',');
+
+        const categoriesFilter = !!(categories && categories.length);
+        const currenciesFilter = !!(currencies && currencies.length);
+        const statusesFilter = !!(statuses && statuses.length);
+
         let transactions = BASIC_TRANSACTIONS_LIST;
+        let responseDelay = 200;
 
-        const categories = req.url.searchParams.getAll('categories');
-        const statuses = req.url.searchParams.getAll('statuses');
-
-        if (categories.length && statuses.length) {
-            return res(
-                delay(200),
-                ctx.json({ transactions: transactions.filter(tx => categories.includes(tx.category) && statuses.includes(tx.status)) })
+        if (categoriesFilter || currenciesFilter || statusesFilter) {
+            transactions = transactions.filter(
+                tx =>
+                    (!categoriesFilter || categories!.includes(tx.category)) &&
+                    (!currenciesFilter || currencies!.includes(tx.amount.currency)) &&
+                    (!statusesFilter || statuses!.includes(tx.status))
             );
-        } else {
-            if (categories.length) {
-                transactions = transactions.filter(tx => categories.includes(tx.category));
-            }
-            if (statuses.length) {
-                transactions = transactions.filter(tx => statuses.includes(tx.status));
-            }
+
+            responseDelay = 400;
         }
 
-        return res(delay(400), ctx.json({ transactions }));
+        return res(delay(responseDelay), ctx.json({ transactions }));
     }),
+
     rest.get(mockEndpoints.transaction, (req, res, ctx) => {
         const matchingMock = [...BASIC_TRANSACTIONS_LIST, TRANSACTION_DETAILS_DEFAULT].find(mock => mock.id === req.params.id);
 

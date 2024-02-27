@@ -67,7 +67,7 @@ export const TransactionsOverview = ({
                     ...pageRequestParams,
                     statuses: listFrom<ITransaction['status']>(pageRequestParams[TransactionFilterParam.STATUSES]),
                     categories: listFrom<ITransaction['category']>(pageRequestParams[TransactionFilterParam.CATEGORIES]),
-                    // currencies: listFrom<ITransaction['currency']>(pageRequestParams[TransactionFilterParam.CURRENCIES]),
+                    currencies: listFrom(/*<ITransaction['currency']>*/ pageRequestParams[TransactionFilterParam.CURRENCIES]),
                     createdSince: pageRequestParams.createdSince ?? DEFAULT_CREATED_SINCE,
                     createdUntil: pageRequestParams.createdUntil ?? DEFAULT_CREATED_UNTIL,
                 },
@@ -90,22 +90,17 @@ export const TransactionsOverview = ({
 
     //TODO - Infer the return type of getTransactions instead of having to specify it
     const { canResetFilters, error, fetching, filters, limit, limitOptions, records, resetFilters, updateFilters, updateLimit, ...paginationProps } =
-        useCursorPaginatedRecords<ITransaction, 'transactions', string, TransactionFilterParam>(
-            useMemo(
-                () => ({
-                    fetchRecords: getTransactions,
-                    dataField: 'transactions',
-                    filterParams: transactionsFilterParams,
-                    initialFiltersSameAsDefault: true,
-                    onLimitChanged: _onLimitChanged,
-                    onFiltersChanged: _onFiltersChanged,
-                    preferredLimit,
-                    preferredLimitOptions,
-                    enabled: !!activeBalanceAccount?.id,
-                }),
-                [_onFiltersChanged, _onLimitChanged, getTransactions, preferredLimit, preferredLimitOptions, activeBalanceAccount]
-            )
-        );
+        useCursorPaginatedRecords<ITransaction, 'transactions', string, TransactionFilterParam>({
+            fetchRecords: getTransactions,
+            dataField: 'transactions',
+            filterParams: transactionsFilterParams,
+            initialFiltersSameAsDefault: true,
+            onLimitChanged: _onLimitChanged,
+            onFiltersChanged: _onFiltersChanged,
+            preferredLimit,
+            preferredLimitOptions,
+            enabled: !!activeBalanceAccount?.id,
+        });
 
     const { categoriesFilter, currenciesFilter, statusesFilter, setTransactionsCurrencies } = useTransactionsOverviewMultiSelectionFilters({
         filters,
@@ -164,6 +159,7 @@ export const TransactionsOverview = ({
                 <MultiSelectionFilter {...currenciesFilter} placeholder={i18n.get('filterPlaceholder.currency')} />
             </FilterBar>
             <div className="adyen-fp-transactions__balance-totals">
+                {/* [TODO]: Update Open API spec to include type for currency filter and enable it here */}
                 <TransactionTotals
                     balanceAccountId={activeBalanceAccount?.id}
                     statuses={statusesFilter.selection}
