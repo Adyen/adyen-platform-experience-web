@@ -5,6 +5,9 @@ import { TableBody } from '@src/components/internal/DataGrid/components/TableBod
 import { InteractiveBody } from '@src/components/internal/DataGrid/components/InteractiveBody';
 import { CellTextPosition, DataGridColumn, DataGridProps } from './types';
 import SkeletonBody from '@src/components/internal/DataGrid/components/SkeletonBody';
+import { ErrorMessageDisplay } from '@src/components/internal/ErrorMessageDisplay/ErrorMessageDisplay';
+import { useMemo } from 'preact/hooks';
+import emptyTableIcon from '../../../images/no-data-female.svg';
 
 export const INITIAL_STATE = Object.freeze({
     activeIndex: -1,
@@ -85,16 +88,33 @@ function DataGridBody<
     Columns extends Array<DataGridColumn<Extract<keyof Items[number], string>>>,
     ClickedField extends keyof Items[number],
     CustomCells extends CustomCell<Items, Columns, Columns[number]>
->(props: DataGridProps<Items, Columns, ClickedField, CustomCells>) {
-    const emptyBody = !props.loading && props.data?.length === 0;
+>({ errorDisplay, ...props }: DataGridProps<Items, Columns, ClickedField, CustomCells>) {
+    const emptyBody = !props.loading && props.data?.length === 0 && !props.error;
+
+    const showSkeleton = useMemo(() => props.loading || emptyBody || props.error, [emptyBody, props.error, props.loading]);
     return (
         <tbody
             className={classnames('adyen-fp-data-grid__body', {
-                'adyen-fp-data-grid__body--empty': emptyBody,
+                'adyen-fp-data-grid__body--empty': emptyBody || props.error,
             })}
         >
-            {props.loading || emptyBody ? (
-                <SkeletonBody columnsNumber={props.columns.length} loading={props.loading} emptyTableMessage={props.emptyTableMessage} />
+            {showSkeleton ? (
+                <SkeletonBody
+                    columnsNumber={props.columns.length}
+                    loading={props.loading}
+                    emptyMessageDisplay={
+                        props.error && errorDisplay ? (
+                            errorDisplay()
+                        ) : (
+                            <ErrorMessageDisplay
+                                title={props.emptyTableMessage?.title ?? 'thereAreNoResults'}
+                                message={props.emptyTableMessage?.message}
+                                imageDesktop={emptyTableIcon}
+                                centered
+                            />
+                        )
+                    }
+                />
             ) : props.onRowClick ? (
                 <InteractiveBody<Items, Columns, ClickedField, CustomCells>
                     data={props.data}

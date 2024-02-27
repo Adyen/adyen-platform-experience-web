@@ -15,12 +15,21 @@ import { TagVariant } from '@src/components/internal/Tag/types';
 import { CellTextPosition } from '@src/components/internal/DataGrid/types';
 import { Image } from '@src/components/internal/Image/Image';
 import { TranslationKey } from '@src/core/Localization/types';
+import TransactionListError from '@src/components/external/Transactions/components/TransactionListError/TransactionListError';
 
 const ModalContent = lazy(() => import('./ModalContent'));
 
 const FIELDS = ['creationDate', 'status', 'paymentMethod', 'category', 'currency', 'amount'] as const;
 
-function TransactionList({ loading, transactions, onTransactionSelected, showPagination, showDetails, ...paginationProps }: TransactionListProps) {
+function TransactionList({
+    loading,
+    transactions,
+    onTransactionSelected,
+    showPagination,
+    showDetails,
+    error,
+    ...paginationProps
+}: TransactionListProps) {
     const { i18n } = useCoreContext();
     const columns = useMemo(
         () => FIELDS.map(key => ({ key, label: i18n.get(getLabel(key)), position: key === 'amount' ? CellTextPosition.RIGHT : undefined })),
@@ -55,9 +64,12 @@ function TransactionList({ loading, transactions, onTransactionSelected, showPag
         message: ['thereAreNoTransactionsForThisRequirements', 'tryAgainPlease'],
     } satisfies { title: TranslationKey; message: TranslationKey | TranslationKey[] };
 
+    const errorDisplay = useMemo(() => () => <TransactionListError error={error} />, [error]);
     return (
         <>
             <DataGrid
+                errorDisplay={errorDisplay}
+                error={error}
                 columns={columns}
                 data={transactions}
                 loading={loading}

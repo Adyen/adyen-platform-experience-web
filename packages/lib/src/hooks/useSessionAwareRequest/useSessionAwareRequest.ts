@@ -22,19 +22,21 @@ function useSessionAwareRequest() {
 
     const httpProvider = useMemo(() => {
         const httpCall = getHttpCaller(token);
-        return async <T>(request: Omit<HttpOptions, 'method'>, method: HttpMethod, data?: any) => {
+        return async <T>(request: Omit<HttpOptions, 'method'>, method: HttpMethod, data?: any): Promise<T> => {
             try {
                 return await httpCall<T>(request, method, data);
             } catch (e: any) {
                 if (e.type === ErrorTypes.EXPIRED_TOKEN) {
+                    //TODO - Check if we can get rid of the eslint-disable below once we define how we want to handle errors
+                    // eslint-disable-next-line no-useless-catch
                     try {
                         await updateCore?.(EMPTY_OBJECT, true);
                         return await httpCall<T>(request, method, data);
-                    } catch (e) {
-                        return Promise.resolve(e);
+                    } catch (error) {
+                        throw error;
                     }
                 }
-                return Promise.resolve(e);
+                throw e;
             }
         };
     }, [token, updateCore]);

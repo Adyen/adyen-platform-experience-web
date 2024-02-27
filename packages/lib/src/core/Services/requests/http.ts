@@ -27,11 +27,13 @@ export function http<T>(options: HttpOptions, data?: any): Promise<T> {
 
                 if (isAdyenErrorResponse(response)) {
                     // If an errorHandler has been passed use this rather than the default handleFetchError
-                    return options.errorHandler ? options.errorHandler(response) : handleFetchError(response.detail, errorLevel, errorType);
+                    return options.errorHandler
+                        ? options.errorHandler(response)
+                        : handleFetchError(response.detail, errorLevel, response.errorCode, errorType);
                 }
 
                 const errorMessage = options.errorMessage || `Service at ${url} is not available`;
-                return handleFetchError(errorMessage, errorLevel, errorType);
+                return handleFetchError(errorMessage, errorLevel, String(response.status), errorType);
             })
             /**
              * Catch block handles Network error, CORS error, or exception throw by the `handleFetchError`

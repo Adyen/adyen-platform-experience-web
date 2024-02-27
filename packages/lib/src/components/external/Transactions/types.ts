@@ -4,6 +4,7 @@ import UIElement from '../UIElement';
 import { ITransaction } from '../../../types';
 import { TranslationKey } from '../../../core/Localization/types';
 import { ModalSize } from '../../internal/Modal/types';
+import AdyenFPError from '@src/core/Errors/AdyenFPError';
 
 export const enum TransactionFilterParam {
     CATEGORIES = 'categories',
@@ -31,6 +32,7 @@ export interface TransactionListProps extends WithPaginationLimitSelection<Pagin
     showPagination: boolean;
     loading: boolean;
     showDetails?: DetailsOptions;
+    error: AdyenFPError | undefined;
 }
 
 export type DetailsOptions = {

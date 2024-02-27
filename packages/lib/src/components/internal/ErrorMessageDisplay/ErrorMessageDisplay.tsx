@@ -5,6 +5,7 @@ import useCoreContext from '@src/core/Context/useCoreContext';
 import { TranslationKey } from '@src/core/Localization/types';
 import './ErrorMessageDisplay.scss';
 import noResults from '../../../images/no-results.svg';
+import Button from '@src/components/internal/Button';
 export const IMAGE_BREAKPOINT_SIZES = {
     md: 680,
     lg: 1024,
@@ -16,6 +17,7 @@ export const ErrorMessageDisplay = ({
     imageMobile,
     withImage,
     centered,
+    refreshComponent,
 }: {
     title: TranslationKey;
     message?: TranslationKey | TranslationKey[];
@@ -23,6 +25,7 @@ export const ErrorMessageDisplay = ({
     imageMobile?: string;
     withImage?: boolean;
     centered?: boolean;
+    refreshComponent?: boolean;
 }) => {
     const { i18n } = useCoreContext();
 
@@ -58,6 +61,11 @@ export const ErrorMessageDisplay = ({
             )}
             <Typography variant={TypographyVariant.TITLE}>{i18n.get(title)}</Typography>
             {message && <Typography variant={TypographyVariant.BODY}>{renderMessage(message)}</Typography>}
+            {refreshComponent && (
+                <div className={'adyen-fp-error-message-display__button'}>
+                    <Button>{i18n.get('refreshThePage')}</Button>
+                </div>
+            )}
         </div>
     );
 };

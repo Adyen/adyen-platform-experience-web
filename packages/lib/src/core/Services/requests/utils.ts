@@ -47,7 +47,7 @@ export const getRequestObject = (options: HttpOptions, data?: any): RequestInit 
     };
 };
 
-export function handleFetchError(message: string, level: ErrorLevel, type: ErrorTypes = ErrorTypes.NETWORK_ERROR) {
+export function handleFetchError(message: string, level: ErrorLevel, errorCode?: string, type: ErrorTypes = ErrorTypes.NETWORK_ERROR) {
     switch (level) {
         case 'silent': {
             break;
@@ -58,7 +58,7 @@ export function handleFetchError(message: string, level: ErrorLevel, type: Error
             break;
         case 'error':
         default:
-            throw new AdyenFPError(type, message);
+            throw new AdyenFPError(type, message, errorCode);
     }
 }
 

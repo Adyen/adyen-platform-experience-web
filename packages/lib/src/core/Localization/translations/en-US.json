@@ -196,5 +196,12 @@
     "thereWasAnUnexpectedError": "There was an unexpected error",
     "somethingWentWrong": "Something went wrong.",
     "weCouldNotLoadTheTransactionsOverview": "We could not load the transaction overview.",
-    "tryToRefreshThePageOrComeBackLater": "Try to refresh the page or come back a little later."
+    "tryToRefreshThePageOrComeBackLater": "Try to refresh the page or come back a little later.",
+    "seemsLikeThereIsANetworkError": "Seems like there’s a network error.",
+    "anInternalErrorHappened": "An internal error happened",
+    "pleaseReachOutToSupportForAssistance": "Please, reach out to support for assistance.",
+    "theRequestIsMissingRequiredFieldsOrContainsInvalidData": "The request is missing required fields or contains invalid data.",
+    "noResultsFoundSeekSupport": "No results found, seek support.",
+    "seemsLikeThereIsAndInternalError": "Seems like there's an internal error",
+    "refreshThePage": "Refresh the page"
 }

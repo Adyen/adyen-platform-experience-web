@@ -1,4 +1,4 @@
-import { ComponentChildren } from 'preact';
+import { ComponentChildren, VNode } from 'preact';
 import { CustomCell } from '@src/components/internal/DataGrid/DataGrid';
 import { TranslationKey } from '@src/core/Localization/types';
 
@@ -33,6 +33,8 @@ export interface DataGridProps<
         title: TranslationKey;
         message?: TranslationKey | TranslationKey[];
     };
+    error?: Error | undefined;
+    errorDisplay?: () => VNode<any>;
 }
 
 export interface InteractiveBodyProps<

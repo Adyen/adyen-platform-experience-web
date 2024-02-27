@@ -1,43 +1,10 @@
 import cx from 'classnames';
 import '../DataGrid.scss';
-import useCoreContext from '@src/core/Context/useCoreContext';
-import { DataGridProps } from '@src/components/internal/DataGrid/types';
-import emptyTableIcon from '../../../../images/no-data-female.svg';
-import { useCallback } from 'preact/hooks';
-import { TranslationKey } from '@src/core/Localization/types';
-import { ErrorMessageDisplay } from '@src/components/internal/ErrorMessageDisplay/ErrorMessageDisplay';
+import { VNode } from 'preact';
 
-const SkeletonBody = ({
-    columnsNumber,
-    loading,
-    emptyTableMessage,
-}: {
-    columnsNumber: number;
-    loading: boolean;
-    emptyTableMessage?: DataGridProps<any, any, any, any>['emptyTableMessage'];
-}) => {
+const SkeletonBody = ({ columnsNumber, loading, emptyMessageDisplay }: { columnsNumber: number; loading: boolean; emptyMessageDisplay?: VNode }) => {
     const rows = Array.from({ length: 10 }, (_, index) => index);
     const columns = Array.from({ length: columnsNumber }, (_, index) => index);
-    const { i18n } = useCoreContext();
-
-    const renderMessage = useCallback(
-        (message: TranslationKey | TranslationKey[]) => {
-            if (Array.isArray(message)) {
-                return message.map((m, i) =>
-                    i === 0 ? (
-                        i18n.get(m)
-                    ) : (
-                        <>
-                            <br />
-                            {i18n.get(m)}
-                        </>
-                    )
-                );
-            }
-            return i18n.get(message);
-        },
-        [i18n]
-    );
 
     return (
         <>
@@ -54,13 +21,7 @@ const SkeletonBody = ({
                     ))}
                 </tr>
             ))}
-            {!loading && (
-                <ErrorMessageDisplay
-                    title={emptyTableMessage?.title ?? 'thereAreNoResults'}
-                    message={emptyTableMessage?.message}
-                    imageDesktop={emptyTableIcon}
-                />
-            )}
+            {!loading && emptyMessageDisplay && emptyMessageDisplay}
         </>
     );
 };
