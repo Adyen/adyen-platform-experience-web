@@ -203,5 +203,6 @@
     "theRequestIsMissingRequiredFieldsOrContainsInvalidData": "The request is missing required fields or contains invalid data.",
     "noResultsFoundSeekSupport": "No results found, seek support.",
     "seemsLikeThereIsAndInternalError": "Seems like there's an internal error",
-    "refreshThePage": "Refresh the page"
+    "refreshThePage": "Refresh the page",
+    "reachOutToSupport": "Reach out to support"
 }

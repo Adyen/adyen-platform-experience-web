@@ -6,9 +6,21 @@ import { TranslationKey } from '@src/core/Localization/types';
 import './ErrorMessageDisplay.scss';
 import noResults from '../../../images/no-results.svg';
 import Button from '@src/components/internal/Button';
+import useAuthContext from '@src/core/Auth/useAuthContext';
 export const IMAGE_BREAKPOINT_SIZES = {
     md: 680,
     lg: 1024,
+};
+
+type ErrorMessageDisplayProps = {
+    title: TranslationKey;
+    message?: TranslationKey | TranslationKey[];
+    imageDesktop?: string;
+    imageMobile?: string;
+    withImage?: boolean;
+    centered?: boolean;
+    refreshComponent?: boolean;
+    onContactSupport?: () => void;
 };
 export const ErrorMessageDisplay = ({
     title,
@@ -18,17 +30,10 @@ export const ErrorMessageDisplay = ({
     withImage,
     centered,
     refreshComponent,
-}: {
-    title: TranslationKey;
-    message?: TranslationKey | TranslationKey[];
-    imageDesktop?: string;
-    imageMobile?: string;
-    withImage?: boolean;
-    centered?: boolean;
-    refreshComponent?: boolean;
-}) => {
+    onContactSupport,
+}: ErrorMessageDisplayProps) => {
     const { i18n } = useCoreContext();
-
+    const { updateCore } = useAuthContext();
     const renderMessage = useCallback(
         (errorMessage: TranslationKey | TranslationKey[]) => {
             if (Array.isArray(errorMessage)) {
@@ -61,9 +66,11 @@ export const ErrorMessageDisplay = ({
             )}
             <Typography variant={TypographyVariant.TITLE}>{i18n.get(title)}</Typography>
             {message && <Typography variant={TypographyVariant.BODY}>{renderMessage(message)}</Typography>}
-            {refreshComponent && (
+
+            {(onContactSupport || refreshComponent) && (
                 <div className={'adyen-fp-error-message-display__button'}>
-                    <Button>{i18n.get('refreshThePage')}</Button>
+                    {onContactSupport && <Button onClick={onContactSupport}>{i18n.get('reachOutToSupport')}</Button>}
+                    {!onContactSupport && refreshComponent && <Button onClick={() => updateCore?.()}>{i18n.get('refreshThePage')}</Button>}
                 </div>
             )}
         </div>

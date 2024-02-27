@@ -25,6 +25,7 @@ export interface TransactionsComponentProps {
     allowLimitSelection?: boolean;
     showDetails?: DetailsOptions;
     core: Core;
+    onContactSupport?: () => void;
 }
 export interface TransactionListProps extends WithPaginationLimitSelection<PaginationProps> {
     transactions: ITransaction[] | undefined;
@@ -33,6 +34,7 @@ export interface TransactionListProps extends WithPaginationLimitSelection<Pagin
     loading: boolean;
     showDetails?: DetailsOptions;
     error: AdyenFPError | undefined;
+    onContactSupport?: () => void;
 }
 
 export type DetailsOptions = {

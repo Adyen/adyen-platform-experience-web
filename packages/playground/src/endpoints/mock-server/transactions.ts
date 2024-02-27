@@ -4,7 +4,7 @@ import { endpoints } from '../endpoints';
 import { delay } from '../utils/utils';
 
 const mockEndpoints = endpoints('mock');
-const networkError = false;
+const networkError = true;
 
 export const transactionsMocks = [
     rest.get(mockEndpoints.transactions, (req, res, ctx) => {

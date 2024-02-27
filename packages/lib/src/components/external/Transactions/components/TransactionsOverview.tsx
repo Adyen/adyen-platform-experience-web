@@ -29,6 +29,7 @@ export const TransactionsOverview = ({
     preferredLimit = DEFAULT_PAGE_LIMIT,
     onTransactionSelected,
     showDetails,
+    onContactSupport,
 }: TransactionsComponentProps & { balanceAccounts: IBalanceAccountBase[] | undefined }) => {
     const { i18n } = useCoreContext();
 
@@ -191,6 +192,7 @@ export const TransactionsOverview = ({
                 limitOptions={limitOptions}
                 onLimitSelection={updateLimit}
                 error={error}
+                onContactSupport={onContactSupport}
                 {...paginationProps}
             />
         </>

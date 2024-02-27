@@ -28,6 +28,7 @@ function TransactionList({
     showPagination,
     showDetails,
     error,
+    onContactSupport,
     ...paginationProps
 }: TransactionListProps) {
     const { i18n } = useCoreContext();
@@ -64,7 +65,7 @@ function TransactionList({
         message: ['thereAreNoTransactionsForThisRequirements', 'tryAgainPlease'],
     } satisfies { title: TranslationKey; message: TranslationKey | TranslationKey[] };
 
-    const errorDisplay = useMemo(() => () => <TransactionListError error={error} />, [error]);
+    const errorDisplay = useMemo(() => () => <TransactionListError error={error} onContactSupport={onContactSupport} />, [error]);
     return (
         <>
             <DataGrid
