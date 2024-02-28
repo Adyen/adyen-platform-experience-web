@@ -55,19 +55,12 @@ const makeSessionProxyOptions = ({ url, apiKey }) => {
 };
 
 export const realApiProxies = (configs, mode) => {
-    const { sessionApi, platformComponentsApi } = configs;
+    const { sessionApi } = configs;
     const sessionApiProxyOptions = makeSessionProxyOptions(sessionApi);
-    const platformComponentsApiProxyOptions = makeProxyOptions(platformComponentsApi);
 
     const endpointRegex = mode === 'netlify' ? endpoints('netlify') : endpoints('viteDev');
 
     return {
         [endpointRegex.sessions]: sessionApiProxyOptions,
-        [endpointRegex.setup]: platformComponentsApiProxyOptions,
-        [endpointRegex.transactions]: platformComponentsApiProxyOptions,
-        [endpointRegex.transaction]: platformComponentsApiProxyOptions,
-        [endpointRegex.balanceAccount]: platformComponentsApiProxyOptions,
-        [endpointRegex.balanceAccountTotals]: platformComponentsApiProxyOptions,
-        [endpointRegex.balances]: platformComponentsApiProxyOptions,
     };
 };

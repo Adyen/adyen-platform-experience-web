@@ -29,8 +29,7 @@ class Core<T extends CoreOptions<T> = any> {
         this.options = { environment: FALLBACK_ENV, ...options };
 
         this.localization = new Localization(options.locale, options.availableTranslations);
-        this.loadingContext = process.env.VITE_LOADING_CONTEXT || resolveEnvironment(this.options.environment);
-
+        this.loadingContext = process.env.VITE_LOADING_CONTEXT ? process.env.VITE_LOADING_CONTEXT : resolveEnvironment(this.options.environment);
         this.setOptions(options);
     }
 

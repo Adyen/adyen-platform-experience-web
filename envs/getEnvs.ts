@@ -35,7 +35,8 @@ const parseEnv = (env: Record<string, string | undefined>, environment: ENVIRONM
         host: env.PLAYGROUND_HOST ?? '',
         port: parseInt(env.PLAYGROUND_PORT ?? ''),
         clientKey: env.VITE_API_KEY ?? '',
-        apiUrl: env.VITE_API_URL ?? '',
+        playgroundUrl: env.PLAYGROUND_URL ?? '',
+        loadingContext: env.LOADING_CONTEXT,
     },
     mockServer: {
         port: parseInt(env.MOCK_SERVER_PORT ?? ''),
