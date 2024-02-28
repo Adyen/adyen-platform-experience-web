@@ -2,12 +2,13 @@ import Modal from '@src/components/internal/Modal';
 import Spinner from '@src/components/internal/Spinner';
 import useCoreContext from '@src/core/Context/useCoreContext';
 import useModalDetails from '@src/hooks/useModalDetails/useModalDetails';
+import { ITransaction } from '@src/types';
 import classnames from 'classnames';
 import { lazy, Suspense } from 'preact/compat';
 import { useCallback, useMemo } from 'preact/hooks';
 import DataGrid from '../../../internal/DataGrid';
 import Pagination from '../../../internal/Pagination';
-import { TransactionListProps } from '../types';
+import { BalanceAccountProps, TransactionListProps } from '../types';
 import { getLabel, parsePaymentMethodType } from './utils';
 import './TransactionList.scss';
 import { Tag } from '@src/components/internal/Tag/Tag';
@@ -22,6 +23,7 @@ const ModalContent = lazy(() => import('./ModalContent'));
 const FIELDS = ['creationDate', 'status', 'paymentMethod', 'category', 'currency', 'amount'] as const;
 
 function TransactionList({
+    balanceAccountDescription,
     loading,
     transactions,
     onTransactionSelected,
@@ -30,7 +32,7 @@ function TransactionList({
     error,
     onContactSupport,
     ...paginationProps
-}: TransactionListProps) {
+}: TransactionListProps & BalanceAccountProps) {
     const { i18n } = useCoreContext();
     const columns = useMemo(
         () => FIELDS.map(key => ({ key, label: i18n.get(getLabel(key)), position: key === 'amount' ? CellTextPosition.RIGHT : undefined })),
@@ -50,14 +52,13 @@ function TransactionList({
     const { updateDetails, resetDetails, selectedDetail } = useModalDetails(modalOptions);
 
     const onRowClick = useCallback(
-        (value: string) => {
+        (value: any) => {
             updateDetails({
-                title: 'transactionDetails',
-                selection: { type: 'transaction', detail: value },
-                modalSize: 'extra-large',
+                selection: { type: 'transaction', detail: { item: { ...value, balanceAccountDescription } } },
+                modalSize: 'small',
             }).callback({ id: value });
         },
-        [updateDetails]
+        [updateDetails, balanceAccountDescription]
     );
 
     const EMPTY_TABLE_MESSAGE = {
@@ -75,7 +76,7 @@ function TransactionList({
                 data={transactions}
                 loading={loading}
                 outline={false}
-                onRowClick={{ retrievedField: 'id', callback: onRowClick }}
+                onRowClick={{ callback: onRowClick }}
                 emptyTableMessage={EMPTY_TABLE_MESSAGE}
                 customCells={{
                     status: ({ value }) => {
@@ -135,14 +136,17 @@ function TransactionList({
                 )}
             </DataGrid>
             <Modal
-                title={selectedDetail ? i18n.get(selectedDetail.title) : ''}
+                title={selectedDetail?.title ? i18n.get(selectedDetail.title) : undefined}
                 isOpen={!!selectedDetail}
+                aria-label={i18n.get('transactionDetails')}
                 onClose={resetDetails}
+                isDismissible={true}
+                headerWithBorder={false}
                 size={selectedDetail?.modalSize ?? 'large'}
             >
                 {selectedDetail && (
                     <Suspense fallback={<Spinner />}>
-                        <ModalContent {...selectedDetail} />
+                        <ModalContent<ITransaction & BalanceAccountProps> {...selectedDetail} />
                     </Suspense>
                 )}
             </Modal>

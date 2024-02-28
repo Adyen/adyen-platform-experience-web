@@ -1,6 +1,47 @@
 .adyen-fp-transaction {
-    &__details {
-        margin-top: var(--adyen-fp-spacing-xlarge);
+    &-data {
         padding: 0 var(--adyen-fp-spacing-large);
+
+        &-section:not(:last-child) {
+            margin-bottom: 6px;
+        }
+
+        &--amount {
+            font-size: var(--adyen-fp-font-size-xxlarge);
+            font-weight: var(--adyen-fp-font-weight-semi-bold);
+            line-height: 44px;
+        }
+
+        &--container {
+            padding-bottom: var(--adyen-fp-transaction-data-section);
+        }
+
+        &__payment-method {
+            align-items: center;
+            display: flex;
+            gap: 6px;
+        }
+
+        &__payment-method-logo-container {
+            height: 22px;
+            width: 32px;
+        }
+
+        &--tag-container {
+            display: flex;
+            gap: 4px;
+        }
+
+        &--action-buttons {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        &__label {
+            color: var(--adyen-fp-modal-label-color);
+            font-size: var(--adyen-fp-font-size-medium);
+            font-weight: var(--adyen-fp-font-weight-regular);
+            line-height: 20px;
+        }
     }
 }

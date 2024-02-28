@@ -27,7 +27,7 @@ export interface DataGridProps<
     outline: boolean;
     scrollable: boolean;
     Footer?: any;
-    onRowClick?: { retrievedField: ClickedField; callback: (value: Item[0][ClickedField]) => void };
+    onRowClick?: { callback: (value: Item[0][ClickedField]) => void; retrievedField?: ClickedField };
     customCells?: CustomCells;
     emptyTableMessage?: {
         title: TranslationKey;

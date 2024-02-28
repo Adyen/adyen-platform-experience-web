@@ -11,7 +11,7 @@ export default function FilterBar(props: PropsWithChildren<FilterBarProps>) {
         <div aria-label={i18n.get('filterBar')} className="adyen-fp-filter-bar">
             {props.children}
             {props.canResetFilters && !!props.resetFilters && (
-                <Button variant={ButtonVariant.TERTIARY} onClick={props.resetFilters}>
+                <Button iconButton={true} variant={ButtonVariant.TERTIARY} onClick={props.resetFilters}>
                     {i18n.get('button.clearAll')}
                 </Button>
             )}

@@ -17,7 +17,11 @@ enableServerInMockedMode()
             },
         });
 
-        const transactionsDetailsComponent = new TransactionsDetailsComponent({ core: adyenFP, transactionId: id ?? DEFAULT_TRANSACTION_ID });
+        const transactionsDetailsComponent = new TransactionsDetailsComponent({
+            core: adyenFP,
+            transactionId: id ?? DEFAULT_TRANSACTION_ID,
+            title: 'transactionDetails',
+        });
 
         transactionsDetailsComponent.mount('.transaction-details-component-container');
     })

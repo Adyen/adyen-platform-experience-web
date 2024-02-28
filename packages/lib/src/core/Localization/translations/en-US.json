@@ -38,6 +38,7 @@
     "category": "Category",
     "category.internal": "Internal",
     "reference": "Reference",
+    "referenceID": "Reference ID",
     "transactions": "Transactions",
     "dateRange": "Date range",
     "from": "From",
@@ -209,5 +210,6 @@
     "noResultsFoundSeekSupport": "No results found, seek support.",
     "seemsLikeThereIsAndInternalError": "Seems like there's an internal error",
     "refreshThePage": "Refresh the page",
-    "reachOutToSupport": "Reach out to support"
+    "reachOutToSupport": "Reach out to support",
+    "export": "Export"
 }

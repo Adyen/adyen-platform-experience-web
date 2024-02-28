@@ -88,9 +88,9 @@ $adyen-fp-modal-sizes: (
     //     width: 464px;
     // }
 
-    &__content {
-        padding: var(--adyen-fp-spacing-medium);
-    }
+    //&__content {
+    //    padding: 0 var(--adyen-fp-spacing-medium);
+    //}
 
     &__header {
         align-items: center;
@@ -98,8 +98,13 @@ $adyen-fp-modal-sizes: (
         display: flex;
         font-size: var(--adyen-fp-font-size-base);
         font-weight: var(--adyen-fp-font-weight-semi-bold);
-        justify-content: space-between;
-        padding: 14px 14px 10px 16px;
+        justify-content: flex-end;
+        padding: 14px 14px 0 0;
+
+        &--with-title {
+            justify-content: space-between;
+            padding: 14px 14px 10px 16px;
+        }
 
         &--with-border-bottom {
             border-bottom: 1px solid var(--adyen-fp-color-gray-light);
@@ -107,15 +112,11 @@ $adyen-fp-modal-sizes: (
     }
 
     &__header-icon {
-        background: var(--adyen-fp-color-white);
-        border: 1px solid var(--adyen-fp-color-gray);
         border-radius: 8px;
-
         cursor: pointer;
         height: 38px;
         padding: 10px;
         transition: background 0.1s linear;
-        width: 38px;
 
         &:hover {
             background: var(--adyen-fp-color-gray-lighter);

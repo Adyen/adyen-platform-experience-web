@@ -126,6 +126,7 @@ export const TransactionsOverview = ({
                 onTransactionSelected={onTransactionSelected}
                 showPagination={true}
                 showDetails={showDetails}
+                balanceAccountDescription={activeBalanceAccount?.description || ''}
                 limit={limit}
                 limitOptions={limitOptions}
                 onLimitSelection={updateLimit}

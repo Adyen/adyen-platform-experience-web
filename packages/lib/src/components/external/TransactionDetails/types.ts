@@ -1,8 +1,14 @@
-import { ITransaction } from '../../../types/models/transactions';
 import { TranslationKey } from '@src/core/Localization/types';
+import { ITransaction } from '@src/types';
 
-export interface TransactionDetailsComponentProps {
-    transaction?: ITransaction;
+export interface TransactionDetailsWithoutIdProps {
+    transaction: ITransaction;
+    title?: TranslationKey;
+}
+
+export interface TransactionDetailsWithIdProps {
     transactionId: string;
     title?: TranslationKey;
 }
+
+export type TransactionDetailsComponentProps = TransactionDetailsWithoutIdProps | TransactionDetailsWithIdProps;

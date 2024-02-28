@@ -9,7 +9,7 @@ type DetailsConfig<T> = {
 };
 
 export type SelectedDetail<Options> = {
-    title: TranslationKey;
+    title?: TranslationKey;
     selection: { type: keyof Options; detail: any };
     modalSize?: ModalSize;
 };
