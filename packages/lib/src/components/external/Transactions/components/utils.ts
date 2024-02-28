@@ -56,7 +56,7 @@ const PAYMENT_METHODS = Object.freeze({
     paypal: 'PayPal',
 });
 
-export function parsePaymentMethodType(paymentMethod: ITransaction['paymentMethod']) {
+export function parsePaymentMethodType(paymentMethod: NonNullable<ITransaction['paymentMethod']>) {
     if (paymentMethod.lastFourDigits) return paymentMethod.lastFourDigits;
 
     return PAYMENT_METHODS[paymentMethod.type as keyof typeof PAYMENT_METHODS] || paymentMethod.type;
