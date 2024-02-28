@@ -75,8 +75,6 @@ export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUI
     private setUIElementStatus: ((status: string) => void) | undefined;
 
     public setStatus(status: UIElementStatus, props: P & UIElementProps): this {
-        debugger;
-        console.log(status);
         if (this.componentRef?.setStatus) {
             this.componentRef.setStatus(status, props);
         } else {

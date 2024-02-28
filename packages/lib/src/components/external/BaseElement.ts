@@ -118,8 +118,6 @@ class BaseElement<P> {
      * @returns this - the element instance
      */
     public update(props: P): this {
-        // debugger;
-        console.log('props ', props);
         /*
         // OLD
         this.props = this.formatProps({ ...this.props, ...props });
