@@ -4,31 +4,22 @@ import { resolve } from 'node:path';
 export const envDir = resolve(__dirname);
 
 export const enum ENVIRONMENTS {
-    LOCAL = 'local',
-    TEST = 'test',
+    TEST = 'TEST',
+    LOOP = 'LOOP',
 }
-
-const getPlatformApiUrl = (env: Record<string, string | undefined>, environment: ENVIRONMENTS) => {
-    switch (environment) {
-        case ENVIRONMENTS.LOCAL:
-            return env.VITE_API_URL;
-        case ENVIRONMENTS.TEST:
-            return env.LOOP_API_URL;
-    }
-};
 
 const parseEnv = (env: Record<string, string | undefined>, environment: ENVIRONMENTS) => ({
     apiConfigs: {
         platformComponentsApi: {
-            url: getPlatformApiUrl(env, environment),
-            version: env.LOOP_API_VERSION ?? '',
-            apiKey: env.VITE_API_KEY ?? '',
+            url: env[`${environment}_API_URL`],
+            version: env[`${environment}_API_VERSION`],
+            apiKey: env[`${environment}_API_KEY`],
         },
         sessionApi: {
-            url: env.SESSION_API_URL ?? '',
-            apiKey: env.TEST_API_KEY,
-            accountHolder: env.SESSION_ACCOUNT_HOLDER,
-            permissions: env.SESSION_PERMISSIONS,
+            url: env[`${environment}_SESSION_API_URL`],
+            apiKey: env[`${environment}_API_KEY`],
+            accountHolder: env[`${environment}_SESSION_ACCOUNT_HOLDER`],
+            permissions: env[`${environment}_SESSION_PERMISSIONS`],
         },
     },
     playground: {

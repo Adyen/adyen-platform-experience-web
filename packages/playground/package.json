@@ -19,8 +19,9 @@
     },
     "scripts": {
         "vite": "vite dev",
-        "start:local": "cross-env ENV=local vite dev --config ./vite.config.ts",
-        "start:test": "cross-env ENV=test vite dev --config ./vite.config.ts",
+        "start:loop": "cross-env ENV=LOOP vite dev --config ./vite.config.ts",
+        "start:test": "cross-env ENV=TEST vite dev --config ./vite.config.ts",
+        "start:beta": "cross-env ENV=BETA vite dev --config ./vite.config.ts",
         "build:demo": "vite build --mode demo --config ./vite.config.ts",
         "demo": "npm run build:demo && npm run demo:serve",
         "demo:serve": "vite preview --mode demo --config ./vite.config.ts",
@@ -30,7 +31,9 @@
         "start:mock": "vite dev --mode mocked --config ./vite.config.ts",
         "start:mock:e2e": "cross-env E2E_TEST=true npm run start:mock",
         "format": "prettier --write \"src/**/*.{ts,js,css, scss, html}\"",
-        "storybook": "vite-node .storybook/runStorybook.ts",
+        "storybook:test": "cross-env ENV=TEST vite-node .storybook/runStorybook.ts",
+        "storybook:loop": "cross-env ENV=LOOP vite-node .storybook/runStorybook.ts",
+        "storybook:beta": "cross-env ENV=BETA vite-node .storybook/runStorybook.ts",
         "storybook:mocked": "vite-node .storybook/runStorybook.ts --mode mocked",
         "storybook:build": "vite-node ./.storybook/buildStorybook.ts",
         "storybook:demo": "vite-node ./.storybook/buildStorybook.ts --mode demo && npm run demo:serve"

@@ -1,7 +1,7 @@
 import { StorybookConfig } from '@storybook/preact-vite';
 import { mergeConfig } from 'vite';
 import { realApiProxies } from '../src/endpoints/apis/realApiProxies';
-import { getEnvironment } from '../../../envs/getEnvs';
+import { ENVIRONMENTS, getEnvironment } from '../../../envs/getEnvs';
 import { checker } from 'vite-plugin-checker';
 
 const config: StorybookConfig = {
@@ -12,7 +12,7 @@ const config: StorybookConfig = {
         options: {},
     },
     async viteFinal(config) {
-        const { apiConfigs } = getEnvironment(process.env.VITE_MODE ?? 'development');
+        const { apiConfigs } = getEnvironment(process.env.VITE_MODE ?? 'development', process.env.ENV as ENVIRONMENTS);
 
         return mergeConfig(config, {
             server: {
