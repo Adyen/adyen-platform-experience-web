@@ -7,13 +7,14 @@ import { TransactionsOverview } from '@src/components/external/Transactions/comp
 import { useCallback, useMemo } from 'preact/hooks';
 import { EMPTY_OBJECT } from '@src/utils/common';
 import useAuthContext from '@src/core/Auth/useAuthContext';
-import { ErrorMessageDisplay } from '@src/components/internal/ErrorMessageDisplay/ErrorMessageDisplay';
 import cx from 'classnames';
+import { ErrorMessageDisplay } from '@src/components/internal/ErrorMessageDisplay/ErrorMessageDisplay';
+
 function TransactionsOverviewComponent(props: ExternalUIComponentProps<TransactionsComponentProps>) {
     // Balance Accounts
     const balanceAccountEndpointCall = useSetupEndpoint('getBalanceAccounts');
 
-    const { data } = useFetch({
+    const { data, isFetching } = useFetch({
         fetchOptions: EMPTY_OBJECT,
         queryFn: useCallback(async () => {
             return balanceAccountEndpointCall(EMPTY_OBJECT);
@@ -38,7 +39,7 @@ function TransactionsOverviewComponent(props: ExternalUIComponentProps<Transacti
                 />
             ) : (
                 <div className="adyen-fp-transactions__container">
-                    <TransactionsOverview {...props} balanceAccounts={balanceAccounts} />
+                    <TransactionsOverview {...props} balanceAccounts={balanceAccounts} isLoadingBalanceAccount={isFetching} />
                 </div>
             )}
         </div>

@@ -30,7 +30,8 @@ export const TransactionsOverview = ({
     onTransactionSelected,
     showDetails,
     onContactSupport,
-}: TransactionsComponentProps & { balanceAccounts: IBalanceAccountBase[] | undefined }) => {
+    isLoadingBalanceAccount,
+}: TransactionsComponentProps & { balanceAccounts: IBalanceAccountBase[] | undefined; isLoadingBalanceAccount: boolean }) => {
     const { i18n } = useCoreContext();
 
     const transactionsEndpointCall = useSetupEndpoint('getTransactions');
@@ -183,7 +184,7 @@ export const TransactionsOverview = ({
             </div>
 
             <TransactionList
-                loading={fetching || !balanceAccounts}
+                loading={fetching || isLoadingBalanceAccount || !balanceAccounts}
                 transactions={records}
                 onTransactionSelected={onTransactionSelected}
                 showPagination={true}

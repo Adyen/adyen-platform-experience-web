@@ -15,7 +15,7 @@ import { TagVariant } from '@src/components/internal/Tag/types';
 import { CellTextPosition } from '@src/components/internal/DataGrid/types';
 import { Image } from '@src/components/internal/Image/Image';
 import { TranslationKey } from '@src/core/Localization/types';
-import TransactionListError from '@src/components/external/Transactions/components/TransactionListError/TransactionListError';
+import TransactionListError from './TransactionListError/TransactionListError';
 
 const ModalContent = lazy(() => import('./ModalContent'));
 
@@ -65,7 +65,7 @@ function TransactionList({
         message: ['thereAreNoTransactionsForThisRequirements', 'tryAgainPlease'],
     } satisfies { title: TranslationKey; message: TranslationKey | TranslationKey[] };
 
-    const errorDisplay = useMemo(() => () => <TransactionListError error={error} onContactSupport={onContactSupport} />, [error]);
+    const errorDisplay = useMemo(() => () => <TransactionListError error={error} onContactSupport={onContactSupport} />, [error, onContactSupport]);
     return (
         <>
             <DataGrid

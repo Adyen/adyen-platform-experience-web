@@ -5,7 +5,6 @@ import { VNode } from 'preact';
 const SkeletonBody = ({ columnsNumber, loading, emptyMessageDisplay }: { columnsNumber: number; loading: boolean; emptyMessageDisplay?: VNode }) => {
     const rows = Array.from({ length: 10 }, (_, index) => index);
     const columns = Array.from({ length: columnsNumber }, (_, index) => index);
-
     return (
         <>
             {rows.map((_, i) => (

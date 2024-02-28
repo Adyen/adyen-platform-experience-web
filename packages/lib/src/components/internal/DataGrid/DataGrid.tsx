@@ -40,9 +40,11 @@ function DataGrid<
     Columns extends Array<DataGridColumn<Extract<keyof Items[number], string>>>,
     ClickedField extends keyof Items[number],
     CustomCells extends CustomCell<Items, Columns, Columns[number]>
->(props: DataGridProps<Items, Columns, ClickedField, CustomCells>) {
+>({ errorDisplay, ...props }: DataGridProps<Items, Columns, ClickedField, CustomCells>) {
     const children = toChildArray(props.children);
     const footer = children.find((child: ComponentChild) => (child as any)?.['type'] === DataGridFooter);
+    const emptyBody = !props.loading && props.data?.length === 0 && !props.error;
+    const showMessage = useMemo(() => (!props.loading && emptyBody) || props.error, [emptyBody, props.error, props.loading]);
 
     return (
         <div
@@ -51,6 +53,7 @@ function DataGrid<
                 'adyen-fp-data-grid--outline': props.outline,
                 'adyen-fp-data-grid--scrollable': props.scrollable,
                 'adyen-fp-data-grid--loading': props.loading,
+                'adyen-fp-data-grid--empty': emptyBody || props.error,
             })}
         >
             <>
@@ -74,8 +77,19 @@ function DataGrid<
                             </tr>
                         </thead>
 
-                        <DataGridBody<Items, Columns, ClickedField, CustomCells> {...props} />
+                        <DataGridBody<Items, Columns, ClickedField, CustomCells> {...props} emptyBody={emptyBody} />
                     </table>
+                    {showMessage &&
+                        (props.error && errorDisplay ? (
+                            errorDisplay()
+                        ) : (
+                            <ErrorMessageDisplay
+                                title={props.emptyTableMessage?.title ?? 'thereAreNoResults'}
+                                message={props.emptyTableMessage?.message}
+                                imageDesktop={emptyTableIcon}
+                                centered
+                            />
+                        ))}
                 </div>
                 {footer}
             </>
@@ -88,33 +102,13 @@ function DataGridBody<
     Columns extends Array<DataGridColumn<Extract<keyof Items[number], string>>>,
     ClickedField extends keyof Items[number],
     CustomCells extends CustomCell<Items, Columns, Columns[number]>
->({ errorDisplay, ...props }: DataGridProps<Items, Columns, ClickedField, CustomCells>) {
-    const emptyBody = !props.loading && props.data?.length === 0 && !props.error;
+>(props: DataGridProps<Items, Columns, ClickedField, CustomCells> & { emptyBody: boolean }) {
+    const showSkeleton = useMemo(() => props.loading || props.emptyBody || props.error, [props.emptyBody, props.error, props.loading]);
 
-    const showSkeleton = useMemo(() => props.loading || emptyBody || props.error, [emptyBody, props.error, props.loading]);
     return (
-        <tbody
-            className={classnames('adyen-fp-data-grid__body', {
-                'adyen-fp-data-grid__body--empty': emptyBody || props.error,
-            })}
-        >
+        <tbody className={classnames('adyen-fp-data-grid__body')}>
             {showSkeleton ? (
-                <SkeletonBody
-                    columnsNumber={props.columns.length}
-                    loading={props.loading}
-                    emptyMessageDisplay={
-                        props.error && errorDisplay ? (
-                            errorDisplay()
-                        ) : (
-                            <ErrorMessageDisplay
-                                title={props.emptyTableMessage?.title ?? 'thereAreNoResults'}
-                                message={props.emptyTableMessage?.message}
-                                imageDesktop={emptyTableIcon}
-                                centered
-                            />
-                        )
-                    }
-                />
+                <SkeletonBody columnsNumber={props.columns.length} loading={props.loading} />
             ) : props.onRowClick ? (
                 <InteractiveBody<Items, Columns, ClickedField, CustomCells>
                     data={props.data}

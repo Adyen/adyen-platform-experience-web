@@ -140,9 +140,8 @@ const usePaginatedRecords = <T, DataField extends string, FilterValue extends st
                 } catch (err) {
                     if (signal?.aborted) return;
                     setError(err as AdyenFPError);
-                    console.error(err);
-                } finally {
                     updateFetching(false);
+                    console.error(err);
                 }
             },
             [filters, limit]

@@ -53,7 +53,7 @@ const TransactionTotals = ({
                 <Typography variant={TypographyVariant.CAPTION}>{i18n.get('incoming')}</Typography>
 
                 {showSkeleton ? (
-                    <AmountSkeleton isLoading={isLoading} />
+                    <AmountSkeleton isLoading={isLoading || !balanceAccountId} />
                 ) : (
                     <>
                         <Typography variant={TypographyVariant.TITLE}>{totals?.incomings ?? ''}</Typography>
@@ -64,7 +64,7 @@ const TransactionTotals = ({
                 <Typography variant={TypographyVariant.CAPTION}>{i18n.get('expense')}</Typography>
 
                 {showSkeleton ? (
-                    <AmountSkeleton isLoading={isLoading} />
+                    <AmountSkeleton isLoading={isLoading || !balanceAccountId} />
                 ) : (
                     <>
                         <Typography variant={TypographyVariant.TITLE}>{totals?.expenses ?? ''}</Typography>

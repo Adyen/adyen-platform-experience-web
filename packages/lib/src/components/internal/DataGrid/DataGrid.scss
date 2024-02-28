@@ -15,6 +15,14 @@
         border-color: transparent;
     }
 
+    &--empty {
+        position: relative;
+    }
+
+    .adyen-fp-error-message-display {
+        top: 60px;
+    }
+
     &__table {
         border-collapse: separate;
         border-spacing: 0;
@@ -29,12 +37,6 @@
         overflow: visible;
         padding: 16px;
         position: relative;
-    }
-
-    &__body {
-        &--empty {
-            position: relative;
-        }
     }
 
     &__row {
