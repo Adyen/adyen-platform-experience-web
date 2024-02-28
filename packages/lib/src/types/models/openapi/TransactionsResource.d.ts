@@ -4,17 +4,17 @@
  */
 
 export interface paths {
-    '/v1/balanceAccounts/transactions/{transactionId}': {
+    "/v1/balanceAccounts/transactions/{transactionId}": {
         /** @description Add @Operation annotation to provide a description */
-        get: operations['getTransaction'];
+        get: operations["getTransaction"];
     };
-    '/v1/balanceAccounts/{balanceAccountId}/transactions/totals': {
+    "/v1/balanceAccounts/{balanceAccountId}/transactions/totals": {
         /** @description Add @Operation annotation to provide a description */
-        get: operations['getTransactionTotals'];
+        get: operations["getTransactionTotals"];
     };
-    '/v1/balanceAccounts/{balanceAccountId}/transactions': {
+    "/v1/balanceAccounts/{balanceAccountId}/transactions": {
         /** @description Add @Operation annotation to provide a description */
-        get: operations['getTransactions'];
+        get: operations["getTransactions"];
     };
 }
 
@@ -32,12 +32,25 @@ export interface components {
              */
             value: number;
         };
+        /** @description Information about the bank account */
+        BankAccount: {
+            /** @description Last four digits of the account number or IBAN. */
+            accountNumberLastFourDigits: string;
+        };
         /** @enum {string} */
-        Category: 'ATM' | 'Capital' | 'Correction' | 'Fee' | 'Payment' | 'Refund' | 'Chargeback' | 'Transfer' | 'Other';
+        Category: "ATM" | "Capital" | "Correction" | "Fee" | "Payment" | "Refund" | "Chargeback" | "Transfer" | "Other";
+        /** @description Payment method or payment instrument */
+        PaymentMethod: {
+            /** @description Last four digits of the card */
+            lastFourDigits?: string;
+            /** @description Payment method type code of the transaction f.e. klarna, visa, mc */
+            type: string;
+        };
         /** @description Transactions made within the filters provided for given balanceAccountId */
         SingleTransaction: {
-            amount: components['schemas']['Amount'];
-            category: components['schemas']['Category'];
+            amount: components["schemas"]["Amount"];
+            bankAccount?: components["schemas"]["BankAccount"];
+            category: components["schemas"]["Category"];
             /**
              * Format: date-time
              * @description Date created
@@ -45,14 +58,11 @@ export interface components {
             creationDate: string;
             /** @description ID */
             id: string;
-            status: components['schemas']['Status'];
-            paymentMethod: {
-                type: string;
-                lastFourDigits?: number;
-            };
+            paymentMethod: components["schemas"]["PaymentMethod"];
+            status: components["schemas"]["Status"];
         };
         /** @enum {string} */
-        Status: 'Pending' | 'Booked' | 'Rejected';
+        Status: "Pending" | "Booked" | "Rejected";
         /** @description Collection of transaction totals per currency */
         TransactionTotal: {
             /** @description ISO currency code */
@@ -70,7 +80,7 @@ export interface components {
         };
         TransactionTotalsResponse: {
             /** @description Collection of transaction totals per currency */
-            totals: components['schemas']['TransactionTotal'][];
+            totals: components["schemas"]["TransactionTotal"][];
         };
         TransactionsResponse: {
             /** @description Cursor for next page */
@@ -78,8 +88,10 @@ export interface components {
             /** @description Cursor for previous page */
             prev: string;
             /** @description Transactions made within the filters provided for given balanceAccountId */
-            transactions: components['schemas']['SingleTransaction'][];
+            transactions: components["schemas"]["SingleTransaction"][];
         };
+        /** @enum {string} */
+        SortDirection: "asc" | "desc";
     };
     responses: never;
     parameters: never;
@@ -104,7 +116,7 @@ export interface operations {
             /** @description OK - the request has succeeded. */
             200: {
                 content: {
-                    'application/json': components['schemas']['SingleTransaction'];
+                    "application/json": components["schemas"]["SingleTransaction"];
                 };
             };
         };
@@ -115,8 +127,8 @@ export interface operations {
             query: {
                 createdSince: string;
                 createdUntil: string;
-                categories?: components['schemas']['Category'][];
-                statuses?: components['schemas']['Status'][];
+                categories?: components["schemas"]["Category"][];
+                statuses?: components["schemas"]["Status"][];
             };
             path: {
                 balanceAccountId: string;
@@ -126,7 +138,7 @@ export interface operations {
             /** @description OK - the request has succeeded. */
             200: {
                 content: {
-                    'application/json': components['schemas']['TransactionTotalsResponse'];
+                    "application/json": components["schemas"]["TransactionTotalsResponse"];
                 };
             };
         };
@@ -138,8 +150,10 @@ export interface operations {
                 cursor?: string;
                 createdSince?: string;
                 createdUntil?: string;
-                categories?: components['schemas']['Category'][];
-                statuses?: components['schemas']['Status'][];
+                categories?: components["schemas"]["Category"][];
+                currencies?: string[];
+                statuses?: components["schemas"]["Status"][];
+                sortDirection?: components["schemas"]["SortDirection"];
                 limit?: number;
             };
             path: {
@@ -150,7 +164,7 @@ export interface operations {
             /** @description OK - the request has succeeded. */
             200: {
                 content: {
-                    'application/json': components['schemas']['TransactionsResponse'];
+                    "application/json": components["schemas"]["TransactionsResponse"];
                 };
             };
         };

@@ -1,3 +1,4 @@
+import { ITransaction } from '@src/types';
 import { TransactionFilterParam } from '../types';
 import {
     DEFAULT_TRANSACTIONS_OVERVIEW_MULTI_SELECTION_FILTER_PARAMS as defaultFilters,
@@ -24,7 +25,10 @@ const useTransactionsOverviewMultiSelectionFilters = (
         defaultFilters,
         ...filtersConfig,
     });
-    const { updateFilterValues: setTransactionsCurrencies, ...currenciesFilter } = useMultiSelectionFilterWithoutValues({
+    const { updateFilterValues: setTransactionsCurrencies, ...currenciesFilter } = useMultiSelectionFilterWithoutValues<
+        TransactionFilterParam.CURRENCIES,
+        ITransaction['amount']['currency']
+    >({
         filterParam: TransactionFilterParam.CURRENCIES,
         defaultFilters,
         ...filtersConfig,

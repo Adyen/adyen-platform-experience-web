@@ -13,7 +13,7 @@ const TRANSACTION_DETAILS_2: ITransaction = {
     amount: { currency: 'EUR', value: 55000 },
     status: 'Booked',
     category: 'Capital',
-    paymentMethod: { lastFourDigits: 1011, type: 'visa' },
+    paymentMethod: { lastFourDigits: '1011', type: 'visa' },
     creationDate: '2022-08-29T14:47:03+02:00',
 };
 const TRANSACTION_DETAILS_3: ITransaction = {
@@ -29,7 +29,7 @@ const TRANSACTION_DETAILS_4: ITransaction = {
     amount: { currency: 'EUR', value: 45000 },
     status: 'Rejected',
     category: 'Capital',
-    paymentMethod: { lastFourDigits: 2894, type: 'visa' },
+    paymentMethod: { lastFourDigits: '2894', type: 'visa' },
     creationDate: '2022-08-29T14:47:03+02:00',
 };
 const TRANSACTION_DETAILS_5: ITransaction = {
@@ -37,7 +37,7 @@ const TRANSACTION_DETAILS_5: ITransaction = {
     amount: { currency: 'EUR', value: 690500 },
     status: 'Booked',
     category: 'Transfer',
-    paymentMethod: { lastFourDigits: 1209, type: 'mc' },
+    paymentMethod: { lastFourDigits: '1209', type: 'mc' },
     creationDate: '2022-08-29T14:47:03+02:00',
 };
 const TRANSACTION_DETAILS_6: ITransaction = {
@@ -53,7 +53,7 @@ const TRANSACTION_DETAILS_7: ITransaction = {
     amount: { currency: 'EUR', value: 3000 },
     status: 'Pending',
     category: 'Capital',
-    paymentMethod: { lastFourDigits: 9471, type: 'amex' },
+    paymentMethod: { lastFourDigits: '9471', type: 'amex' },
     creationDate: '2022-08-29T14:47:03+02:00',
 };
 const TRANSACTION_DETAILS_8: ITransaction = {
@@ -70,7 +70,7 @@ export const TRANSACTION_DETAILS_DEFAULT: ITransaction = {
     amount: { currency: 'USD', value: 100000 },
     status: 'Booked',
     category: 'Fee',
-    paymentMethod: { lastFourDigits: 1945, type: 'mc' },
+    paymentMethod: { lastFourDigits: '1945', type: 'mc' },
     creationDate: '2022-08-29T14:47:03+02:00',
 };
 

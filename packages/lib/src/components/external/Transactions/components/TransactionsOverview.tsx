@@ -67,7 +67,7 @@ export const TransactionsOverview = ({
                     ...pageRequestParams,
                     statuses: listFrom<ITransaction['status']>(pageRequestParams[TransactionFilterParam.STATUSES]),
                     categories: listFrom<ITransaction['category']>(pageRequestParams[TransactionFilterParam.CATEGORIES]),
-                    currencies: listFrom(/*<ITransaction['currency']>*/ pageRequestParams[TransactionFilterParam.CURRENCIES]),
+                    currencies: listFrom<ITransaction['amount']['currency']>(pageRequestParams[TransactionFilterParam.CURRENCIES]),
                     createdSince: pageRequestParams.createdSince ?? DEFAULT_CREATED_SINCE,
                     createdUntil: pageRequestParams.createdUntil ?? DEFAULT_CREATED_UNTIL,
                 },
@@ -159,12 +159,10 @@ export const TransactionsOverview = ({
                 <MultiSelectionFilter {...currenciesFilter} placeholder={i18n.get('filterPlaceholder.currency')} />
             </FilterBar>
             <div className="adyen-fp-transactions__balance-totals">
-                {/* [TODO]: Update Open API spec to include type for currency filter and enable it here */}
                 <TransactionTotals
                     balanceAccountId={activeBalanceAccount?.id}
                     statuses={statusesFilter.selection}
                     categories={categoriesFilter.selection}
-                    // currencies={currenciesFilter.selection}
                     createdUntil={filters[TransactionFilterParam.CREATED_UNTIL]!}
                     createdSince={filters[TransactionFilterParam.CREATED_SINCE]!}
                 />
