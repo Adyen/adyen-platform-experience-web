@@ -15,16 +15,14 @@ import { CalendarHandle, CalendarProps } from '../Calendar/types';
 import './DatePicker.scss';
 
 export type DatePickerProps = CalendarProps &
-    Pick<DateFilterProps, 'selectedPresetOption' | 'timeRangePresetOptions'> & {
+    Pick<DateFilterProps, 'now' | 'selectedPresetOption' | 'showTimezoneInfo' | 'timeRangePresetOptions' | 'timezone'> & {
         onPresetOptionSelected?: (option: string) => any;
-        showTimezoneInfo?: boolean;
     };
 
 const DatePicker = forwardRef((props: DatePickerProps, ref) => {
     const { i18n } = useCoreContext();
     const [controlsRenderer, controlsContainerRef] = useCalendarControlsRendering(props.renderControl);
     const [lastUpdatedTimestamp, setLastUpdatedTimestamp] = useState<DOMHighResTimeStamp>(performance.now());
-    const now = useMemo(() => Date.now(), []);
 
     const withTimezone = useMemo(() => props.showTimezoneInfo !== false, [props.showTimezoneInfo]);
     const { clockTime: time, GMTOffset: offset } = useTimezone({ withClock: withTimezone });
@@ -46,12 +44,13 @@ const DatePicker = forwardRef((props: DatePickerProps, ref) => {
         <div className={datePickerClassName}>
             <div className={'adyen-fp-datepicker__selector-container'}>
                 <TimeRangeSelector
-                    now={now}
+                    now={props.now}
                     calendarRef={calendarRef}
                     onTimeRangeSelected={props.onPresetOptionSelected}
                     options={props.timeRangePresetOptions}
                     selectedOption={props.selectedPresetOption}
                     timestamp={lastUpdatedTimestamp}
+                    timezone={props.timezone}
                 />
             </div>
             <div ref={controlsContainerRef} role="group" className={'adyen-fp-datepicker__controls'} aria-label={i18n.get('calendar.controls')} />

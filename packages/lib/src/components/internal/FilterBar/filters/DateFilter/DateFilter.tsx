@@ -32,10 +32,13 @@ const renderDateFilterModalBody = (() => {
         editAction,
         from,
         to,
+        now,
         onChange,
         onValueUpdated,
+        showTimezoneInfo,
         selectedPresetOption,
         timeRangePresetOptions,
+        timezone,
         sinceDate,
         untilDate,
     }: FilterEditModalRenderProps<DateFilterProps>) => {
@@ -70,11 +73,14 @@ const renderDateFilterModalBody = (() => {
         return (
             <DatePicker
                 ref={datePickerRef}
+                now={now}
                 originDate={originDate}
                 onHighlight={onHighlight}
                 onPresetOptionSelected={setPresetOption}
                 selectedPresetOption={selectedPresetOption}
                 timeRangePresetOptions={timeRangePresetOptions}
+                timezone={timezone}
+                showTimezoneInfo={showTimezoneInfo}
                 sinceDate={resolveDate(sinceDate)}
                 untilDate={resolveDate(untilDate)}
             />

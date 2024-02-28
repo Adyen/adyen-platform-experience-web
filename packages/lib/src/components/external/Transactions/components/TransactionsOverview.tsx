@@ -1,18 +1,17 @@
 import FilterBar from '@src/components/internal/FilterBar';
 import DateFilter from '@src/components/internal/FilterBar/filters/DateFilter';
 import { TransactionsComponentProps, TransactionFilterParam } from '../types';
-import { TIME_RANGE_PRESET_OPTIONS } from '@src/components/internal/DatePicker/components/TimeRangeSelector';
+import { getTimeRangeSelectionDefaultPresetOptions } from '@src/components/internal/DatePicker/components/TimeRangeSelector';
 import Alert from '@src/components/internal/Alert';
 import TransactionList from '@src/components/external/Transactions/components/TransactionList';
 import useCoreContext from '@src/core/Context/useCoreContext';
 import { SetupHttpOptions, useSetupEndpoint } from '@src/hooks/useSetupEndpoint/useSetupEndpoint';
-import { useCallback, useMemo, useState } from 'preact/hooks';
+import { useCallback, useMemo, useRef, useState } from 'preact/hooks';
 import { useCursorPaginatedRecords } from '@src/components/internal/Pagination/hooks';
 import { IBalanceAccountBase, ITransaction } from '@src/types';
 import { DateFilterProps, DateRangeFilterParam } from '@src/components/internal/FilterBar/filters/DateFilter/types';
 import { EMPTY_OBJECT, isFunction } from '@src/utils/common';
 import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '@src/components/internal/Pagination/constants';
-import { TranslationKey } from '@src/core/Localization/types';
 import TransactionTotals from '@src/components/external/Transactions/components/TransactionTotals/TransactionTotals';
 import { BalanceAccountsDisplay } from '@src/components/external/Transactions/components/AccountsBalanceDisplay/BalanceAccountsDisplay';
 import Select from '@src/components/internal/FormFields/Select';
@@ -20,30 +19,19 @@ import MultiSelectionFilter, { DEFAULT_TRANSACTIONS_OVERVIEW_MULTI_SELECTION_FIL
 import useBalanceAccountSelection from '../hooks/useBalanceAccountSelection';
 import useTransactionsOverviewMultiSelectionFilters from '../hooks/useTransactionsOverviewMultiSelectionFilters';
 
-const { from, to } = Object.values(TIME_RANGE_PRESET_OPTIONS)[0]!;
-const DEFAULT_TIME_RANGE_PRESET = Object.keys(TIME_RANGE_PRESET_OPTIONS)[0]! as TranslationKey;
-const DEFAULT_CREATED_SINCE = new Date(from).toISOString();
-const DEFAULT_CREATED_UNTIL = new Date(to).toISOString();
+const computeDefaultTransactionsFilterParams = () => {
+    const timeRangePresetOptions = getTimeRangeSelectionDefaultPresetOptions();
+    const defaultTimeRangePresetOption = 'rangePreset.last7Days';
+    const { from, to } = timeRangePresetOptions[defaultTimeRangePresetOption];
 
-const transactionsFilterParams = {
-    ...DEFAULT_TRANSACTIONS_OVERVIEW_MULTI_SELECTION_FILTER_PARAMS,
-    [TransactionFilterParam.CREATED_SINCE]: DEFAULT_CREATED_SINCE,
-    [TransactionFilterParam.CREATED_UNTIL]: DEFAULT_CREATED_UNTIL,
-} as const;
+    const defaultTransactionsFilterParams = {
+        ...DEFAULT_TRANSACTIONS_OVERVIEW_MULTI_SELECTION_FILTER_PARAMS,
+        [TransactionFilterParam.CREATED_SINCE]: new Date(from).toISOString(),
+        [TransactionFilterParam.CREATED_UNTIL]: new Date(to).toISOString(),
+    } as const;
 
-// const useTransactionsOverviewFilters = ({ filters }: Pick<UsePaginatedRecords<any, string, TransactionFilterParam.CATEGORIES | TransactionFilterParam.CURRENCIES | TransactionFilterParam.STATUSES>, 'filters'>) => {
-//     const defaultFilterParams = useRef({
-//         [TransactionFilterParam.CURRENCIES]: '',
-//         [TransactionFilterParam.CATEGORIES]: '',
-//         [TransactionFilterParam.STATUSES]: '',
-//         get [TransactionFilterParam.CREATED_SINCE]() {
-//             return new Date(from).toISOString();
-//         },
-//         get [TransactionFilterParam.CREATED_UNTIL]() {
-//             return new Date(to).toISOString();
-//         },
-//     });
-// };
+    return { defaultTimeRangePresetOption, defaultTransactionsFilterParams, timeRangePresetOptions } as const;
+};
 
 export const TransactionsOverview = ({
     onFiltersChanged,
@@ -57,6 +45,10 @@ export const TransactionsOverview = ({
     const { i18n } = useCoreContext();
     const transactionsEndpointCall = useSetupEndpoint('getTransactions');
     const { activeBalanceAccount, balanceAccountSelectionOptions, onBalanceAccountSelection } = useBalanceAccountSelection(balanceAccounts);
+    const { defaultTimeRangePresetOption, defaultTransactionsFilterParams, timeRangePresetOptions } = useRef(
+        computeDefaultTransactionsFilterParams()
+    ).current;
+    const now = useRef(Date.now());
 
     const getTransactions = useCallback(
         async (pageRequestParams: Record<TransactionFilterParam | 'cursor', string>, signal?: AbortSignal) => {
@@ -68,8 +60,13 @@ export const TransactionsOverview = ({
                     statuses: listFrom<ITransaction['status']>(pageRequestParams[TransactionFilterParam.STATUSES]),
                     categories: listFrom<ITransaction['category']>(pageRequestParams[TransactionFilterParam.CATEGORIES]),
                     currencies: listFrom<ITransaction['amount']['currency']>(pageRequestParams[TransactionFilterParam.CURRENCIES]),
-                    createdSince: pageRequestParams.createdSince ?? DEFAULT_CREATED_SINCE,
-                    createdUntil: pageRequestParams.createdUntil ?? DEFAULT_CREATED_UNTIL,
+                    createdSince:
+                        pageRequestParams[TransactionFilterParam.CREATED_SINCE] ??
+                        defaultTransactionsFilterParams[TransactionFilterParam.CREATED_SINCE],
+                    createdUntil:
+                        pageRequestParams[TransactionFilterParam.CREATED_UNTIL] ??
+                        defaultTransactionsFilterParams[TransactionFilterParam.CREATED_UNTIL],
+                    sortDirection: 'desc' as const,
                 },
                 path: { balanceAccountId: activeBalanceAccount?.id! },
             };
@@ -85,7 +82,7 @@ export const TransactionsOverview = ({
     const _onLimitChanged = useMemo(() => (isFunction(onLimitChanged) ? onLimitChanged : void 0), [onLimitChanged]);
     const preferredLimitOptions = useMemo(() => (allowLimitSelection ? LIMIT_OPTIONS : undefined), [allowLimitSelection]);
 
-    const defaultTimeRangePreset = useMemo(() => i18n.get(DEFAULT_TIME_RANGE_PRESET), [i18n]);
+    const defaultTimeRangePreset = useMemo(() => i18n.get(defaultTimeRangePresetOption), [i18n]);
     const [selectedTimeRangePreset, setSelectedTimeRangePreset] = useState(defaultTimeRangePreset);
 
     //TODO - Infer the return type of getTransactions instead of having to specify it
@@ -93,7 +90,7 @@ export const TransactionsOverview = ({
         useCursorPaginatedRecords<ITransaction, 'transactions', string, TransactionFilterParam>({
             fetchRecords: getTransactions,
             dataField: 'transactions',
-            filterParams: transactionsFilterParams,
+            filterParams: defaultTransactionsFilterParams,
             initialFiltersSameAsDefault: true,
             onLimitChanged: _onLimitChanged,
             onFiltersChanged: _onFiltersChanged,
@@ -115,10 +112,14 @@ export const TransactionsOverview = ({
                         setSelectedTimeRangePreset(value || defaultTimeRangePreset);
                         break;
                     case DateRangeFilterParam.FROM:
-                        updateFilters({ [TransactionFilterParam.CREATED_SINCE]: value || DEFAULT_CREATED_SINCE });
+                        updateFilters({
+                            [TransactionFilterParam.CREATED_SINCE]: value || defaultTransactionsFilterParams[TransactionFilterParam.CREATED_SINCE],
+                        });
                         break;
                     case DateRangeFilterParam.TO:
-                        updateFilters({ [TransactionFilterParam.CREATED_UNTIL]: value || DEFAULT_CREATED_UNTIL });
+                        updateFilters({
+                            [TransactionFilterParam.CREATED_UNTIL]: value || defaultTransactionsFilterParams[TransactionFilterParam.CREATED_UNTIL],
+                        });
                         break;
                 }
             }
@@ -147,12 +148,15 @@ export const TransactionsOverview = ({
                     classNameModifiers={['createdSince']}
                     label={i18n.get('dateRange')}
                     name={TransactionFilterParam.CREATED_SINCE}
-                    untilDate={new Date().toString()}
+                    untilDate={new Date(now.current).toString()}
                     from={filters[TransactionFilterParam.CREATED_SINCE]}
                     to={filters[TransactionFilterParam.CREATED_UNTIL]}
                     selectedPresetOption={selectedTimeRangePreset}
-                    timeRangePresetOptions={TIME_RANGE_PRESET_OPTIONS}
+                    timeRangePresetOptions={timeRangePresetOptions}
+                    timezone={activeBalanceAccount?.timeZone}
                     onChange={updateCreatedDateFilter}
+                    showTimezoneInfo={true}
+                    now={now.current}
                 />
                 <MultiSelectionFilter {...statusesFilter} placeholder={i18n.get('filterPlaceholder.status')} />
                 <MultiSelectionFilter {...categoriesFilter} placeholder={i18n.get('filterPlaceholder.category')} />

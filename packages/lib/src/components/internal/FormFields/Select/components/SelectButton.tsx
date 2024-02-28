@@ -95,6 +95,7 @@ const SelectButton = <T extends SelectItem>(props: SelectButtonProps<T>) => {
                     </span>
                 </>
             )}
+            {multiSelect && active.length > 0 && <span>{active.length}</span>}
             {!withoutCollapseIndicator && (
                 <span className={DROPDOWN_BUTTON_COLLAPSE_INDICATOR_CLASS}>
                     <ChevronDown role="presentation" />
