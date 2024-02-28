@@ -65,6 +65,7 @@ export function useFetch<QueryFn extends (...args: any) => Promise<any>, T exten
         try {
             if (cancelRequest.current) return;
             const data = await queryFn();
+            if (params) console.log('ERROR', data);
 
             // cache.current.set(url.href, data);
 
@@ -84,7 +85,7 @@ export function useFetch<QueryFn extends (...args: any) => Promise<any>, T exten
         return () => {
             cancelRequest.current = true;
         };
-    }, [fetchOptions.enabled, params, fetchData]);
+    }, [fetchOptions.enabled, fetchData]);
 
     return state;
 }

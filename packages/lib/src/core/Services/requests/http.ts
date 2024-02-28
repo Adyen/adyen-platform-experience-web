@@ -5,7 +5,7 @@ import { HttpOptions } from './types';
 import { normalizeLoadingContext, normalizeUrl } from '@src/core/utils';
 
 export function http<T>(options: HttpOptions, data?: any): Promise<T> {
-    const { errorLevel = 'warn', loadingContext = '', path } = options;
+    const { errorLevel, loadingContext = '', path } = options;
 
     const request = getRequestObject(options, data);
 

@@ -47,7 +47,7 @@ export const getRequestObject = (options: HttpOptions, data?: any): RequestInit 
     };
 };
 
-export function handleFetchError(message: string, level: ErrorLevel, errorCode?: string, type: ErrorTypes = ErrorTypes.NETWORK_ERROR) {
+export function handleFetchError(message: string, level: ErrorLevel | undefined, errorCode?: string, type: ErrorTypes = ErrorTypes.NETWORK_ERROR) {
     switch (level) {
         case 'silent': {
             break;
