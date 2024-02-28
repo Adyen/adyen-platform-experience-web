@@ -41,8 +41,9 @@ const ExpandableCard = ({ renderHeader, children, filled }: PropsWithChildren<Ex
         if (isOpen) {
             clickOutsideRef.current?.focus();
         } else {
-            // We want to manually focus the expand button only when the component is being closed
-            if (!isClosedFromOutside.current && isOpenRef.current !== isOpen) {
+            // We want to manually focus the expand button only when the card is collapsed by inside clicks
+            // Therefore we skip the manual focus initially when isOpen is false and when we have outside clicks
+            if (isOpenRef.current !== isOpen && !isClosedFromOutside.current) {
                 expandButtonRef.current?.focus();
             }
             isClosedFromOutside.current = false;
