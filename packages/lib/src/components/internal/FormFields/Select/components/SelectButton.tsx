@@ -6,12 +6,15 @@ import useCoreContext from '@src/core/Context/useCoreContext';
 import Img from '@src/components/internal/Img';
 import Button from '@src/components/internal/Button';
 import { ButtonVariant } from '@src/components/internal/Button/types';
+import Typography from '@src/components/internal/Typography/Typography';
+import { TypographyElement, TypographyVariant } from '@src/components/internal/Typography/types';
 import {
     DROPDOWN_BUTTON_ACTIVE_CLASS,
     DROPDOWN_BUTTON_CLASS,
     DROPDOWN_BUTTON_CLASSNAME,
     DROPDOWN_BUTTON_COLLAPSE_INDICATOR_CLASS,
     DROPDOWN_BUTTON_INVALID_CLASS,
+    DROPDOWN_BUTTON_MULTI_SELECT_COUNTER_CLASS,
     DROPDOWN_BUTTON_READONLY_CLASS,
     DROPDOWN_BUTTON_VALID_CLASS,
 } from '../constants';
@@ -93,9 +96,15 @@ const SelectButton = <T extends SelectItem>(props: SelectButtonProps<T>) => {
                     <span className="adyen-fp-dropdown__button-text">
                         {buttonActiveItem?.selectedOptionName?.trim() || buttonActiveItem?.name.trim() || placeholderText}
                     </span>
+                    {multiSelect && active.length > 0 && (
+                        <div className={DROPDOWN_BUTTON_MULTI_SELECT_COUNTER_CLASS}>
+                            <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY} stronger={true}>
+                                {active.length}
+                            </Typography>
+                        </div>
+                    )}
                 </>
             )}
-            {multiSelect && active.length > 0 && <span>{active.length}</span>}
             {!withoutCollapseIndicator && (
                 <span className={DROPDOWN_BUTTON_COLLAPSE_INDICATOR_CLASS}>
                     <ChevronDown role="presentation" />
