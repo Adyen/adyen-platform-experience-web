@@ -10,8 +10,8 @@ import { DevEnvironment } from './types';
 export function resolveEnvironment(env?: DevEnvironment) {
     //TODO - Use real urls once we have our BFF defined.
     const envs: Partial<Record<DevEnvironment, string>> = {
-        test: '',
-        live: '',
+        test: 'https://platform-components-external-test.adyen.com/platform-components-external/api/',
+        live: 'https://platform-components-external-live.adyen.com/platform-components-external/api/',
     };
     return env ? envs[env] || FALLBACK_CONTEXT : FALLBACK_CONTEXT;
 }

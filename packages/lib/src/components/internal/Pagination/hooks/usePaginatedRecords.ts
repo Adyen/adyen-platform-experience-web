@@ -143,7 +143,7 @@ const usePaginatedRecords = <T, DataField extends string, FilterValue extends st
                     updateFetching(false);
                 }
             },
-            [filters, limit]
+            [fetchRecords, filters, limit]
         ) as RequestPageCallback<PaginationType>,
         limit
     );

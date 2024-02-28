@@ -84,10 +84,12 @@ export default defineConfig(async ({ mode }) => {
         },
         define: {
             'process.env.VITE_MODE': JSON.stringify(process.env.VITE_MODE ?? mode),
-            'process.env.VITE_API_URL': JSON.stringify(playground.apiUrl || null),
             'process.env.VITE_PLAYGROUND_PORT': JSON.stringify(playground.port || null),
             'process.env.DEPLOYED_URL': JSON.stringify(process.env.DEPLOY_PRIME_URL || null),
-            'process.env.VITE_LOADING_CONTEXT': JSON.stringify(process.env.DEPLOY_PRIME_URL?.replace('main--', '') || playground.apiUrl || null),
+            'process.env.VITE_PLAYGROUND_URL': JSON.stringify(
+                process.env.DEPLOY_PRIME_URL?.replace('main--', '') || playground.playgroundUrl || null
+            ),
+            'process.env.VITE_LOADING_CONTEXT': JSON.stringify(playground.loadingContext || null),
             'process.env.E2E_TEST': JSON.stringify(process.env.E2E_TEST),
             'process.env.SESSION_ACCOUNT_HOLDER': JSON.stringify(apiConfigs.sessionApi.accountHolder || null),
             'process.env.SESSION_PERMISSIONS': JSON.stringify(apiConfigs.sessionApi.permissions || null),

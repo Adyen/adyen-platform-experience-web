@@ -27,7 +27,9 @@ export default async (request: Request, context: any) => {
 
     try {
         const res = await fetch(`${apiConfig.target}${url.pathname.replace('/api/', '/')}${url.search ?? ''}`, {
-            headers: apiConfig.headers,
+            method: request.method,
+            headers: { ...request.headers, ...apiConfig.headers },
+            ...(request.method === 'POST' ? { body: request.body } : {}),
         });
         const data = await res.json();
         // @ts-ignore

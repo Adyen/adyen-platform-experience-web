@@ -1,11 +1,11 @@
 const getMySessionToken = async () => {
     // Here the merchant will call its own backend and their backend will call our backend
     // at the end this method should return a data formed as { id: string, token:string }
-    const loadingContext = process.env.VITE_LOADING_CONTEXT;
+    const loadingContext = process.env.VITE_PLAYGROUND_URL;
     const normalizedLoadingContext = loadingContext.endsWith('/') ? loadingContext : `${loadingContext}/`;
     const url = new URL(`${normalizedLoadingContext}api/authe/api/v1/sessions`);
     const body = {
-        allowOrigin: process.env.VITE_LOADING_CONTEXT?.endsWith('/') ? process.env.VITE_LOADING_CONTEXT.slice(0, -1) : process.env.undefined,
+        allowOrigin: process.env.VITE_PLAYGROUND_URL?.endsWith('/') ? process.env.VITE_PLAYGROUND_URL.slice(0, -1) : undefined,
         reference: 'platform-operations',
         product: 'platform',
         policy: {

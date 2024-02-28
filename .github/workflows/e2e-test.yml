@@ -33,7 +33,7 @@ jobs:
       CI: true
       PLAYGROUND_HOST: localhost
       PLAYGROUND_PORT: 4173
-      VITE_API_URL: http://localhost:4173
+      PLAYGROUND_URL: http://localhost:4173
       MOCK_SERVER_PORT: 8083
       VITE_MODE: demo
     steps:
