@@ -1,27 +1,18 @@
+import { BalanceAccountProps, SelectedDetail } from '@src/components';
+import TransactionDetails from '@src/components/external/TransactionDetails/components/TransactionDetails';
+import Spinner from '@src/components/internal/Spinner';
 import { ITransaction } from '@src/types';
 import { hasOwnProperty } from '@src/utils/common';
-import { lazy, Suspense } from 'preact/compat';
-import Spinner from '@src/components/internal/Spinner';
-import { BalanceAccountProps, SelectedDetail } from '@src/components';
+import { Suspense } from 'preact/compat';
 import { useMemo } from 'preact/hooks';
-
-const TransactionDetails = lazy(() => import('../../TransactionDetails/components/TransactionDetails'));
 
 function ModalContent<T>({ selection }: SelectedDetail<T>) {
     const transactionProps = useMemo(() => {
-        console.log(selection.detail);
-        if (selection.type === 'transaction') {
-            return hasOwnProperty(selection.detail, 'id')
-                ? { transaction: selection.detail as ITransaction & BalanceAccountProps }
-                : { transactionId: selection.detail as string };
-        }
-        return null;
+        return hasOwnProperty(selection, 'id')
+            ? { transaction: selection as ITransaction & BalanceAccountProps }
+            : { transactionId: selection as string };
     }, [selection]);
 
-    return (
-        <Suspense fallback={<Spinner size="medium" />}>
-            {selection.type === 'transaction' && transactionProps && <TransactionDetails {...transactionProps} />}
-        </Suspense>
-    );
+    return <Suspense fallback={<Spinner size="medium" />}>{transactionProps && <TransactionDetails {...transactionProps} />}</Suspense>;
 }
 export default ModalContent;

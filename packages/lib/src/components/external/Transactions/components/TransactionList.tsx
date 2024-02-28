@@ -54,7 +54,7 @@ function TransactionList({
     const onRowClick = useCallback(
         (value: any) => {
             updateDetails({
-                selection: { type: 'transaction', detail: { item: { ...value, balanceAccountDescription } } },
+                selection: { ...value, balanceAccountDescription },
                 modalSize: 'small',
             }).callback({ id: value });
         },

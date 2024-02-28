@@ -49,6 +49,6 @@ export type DetailsOptions = {
 };
 export type SelectedDetail<T = string> = {
     title?: TranslationKey;
-    selection: { type: 'accountHolder' | 'transaction' | 'balanceAccount'; detail: T };
+    selection: T;
     modalSize?: ModalSize;
 };
