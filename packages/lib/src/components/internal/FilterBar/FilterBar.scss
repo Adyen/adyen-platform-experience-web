@@ -4,4 +4,8 @@
     gap: var(--adyen-fp-spacing-small);
     padding: var(--adyen-fp-spacing-medium-small) 0;
     white-space: nowrap;
+
+    > .adyen-fp-dropdown {
+        max-width: 20%;
+    }
 }

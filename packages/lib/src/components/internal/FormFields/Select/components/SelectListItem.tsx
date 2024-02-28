@@ -58,6 +58,7 @@ const SelectListItem = <T extends SelectItem>({ item, multiSelect, onKeyDown, on
             data-value={item.id}
             onClick={onSelect}
             onKeyDown={onKeyDown}
+            title={item.name}
             role="option"
             tabIndex={-1}
         >
