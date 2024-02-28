@@ -6,23 +6,19 @@ import { delay } from '../utils/utils';
 const mockEndpoints = endpoints('mock');
 export const transactionsMocks = [
     rest.get(mockEndpoints.transactions, (req, res, ctx) => {
-        const categories = req.url.searchParams.get('categories')?.split(',');
-        const currencies = req.url.searchParams.get('currencies')?.split(',');
-        const statuses = req.url.searchParams.get('statuses')?.split(',');
-
-        const categoriesFilter = !!(categories && categories.length);
-        const currenciesFilter = !!(currencies && currencies.length);
-        const statusesFilter = !!(statuses && statuses.length);
+        const categories = req.url.searchParams.getAll('categories');
+        const currencies = req.url.searchParams.getAll('currencies');
+        const statuses = req.url.searchParams.getAll('statuses');
 
         let transactions = BASIC_TRANSACTIONS_LIST;
         let responseDelay = 200;
 
-        if (categoriesFilter || currenciesFilter || statusesFilter) {
+        if (categories.length || currencies.length || statuses.length) {
             transactions = transactions.filter(
                 tx =>
-                    (!categoriesFilter || categories!.includes(tx.category)) &&
-                    (!currenciesFilter || currencies!.includes(tx.amount.currency)) &&
-                    (!statusesFilter || statuses!.includes(tx.status))
+                    (!categories.length || categories!.includes(tx.category)) &&
+                    (!currencies.length || currencies!.includes(tx.amount.currency)) &&
+                    (!statuses.length || statuses!.includes(tx.status))
             );
 
             responseDelay = 400;

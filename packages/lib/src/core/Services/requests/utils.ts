@@ -71,7 +71,14 @@ export function parseSearchParams<T extends Record<string, any>>(parameters: T) 
 
     for (const param of Object.keys(parameters)) {
         const value = parameters[param];
-        if (value) params.set(param, `${value}`);
+        if (value) {
+            if (Array.isArray(value)) {
+                value.forEach(item => params.append(param, item));
+            } else {
+                // For non-array values, just set the key and value normally
+                params.set(param, value);
+            }
+        }
     }
 
     return params;
