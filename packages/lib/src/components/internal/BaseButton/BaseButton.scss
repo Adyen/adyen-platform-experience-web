@@ -1,0 +1,13 @@
+.adyen-fp-base-button {
+    $adyen-fp-button: &;
+
+    appearance: none;
+    cursor: pointer;
+    padding: 0;
+    text-decoration: none;
+    user-select: none;
+
+    &:disabled {
+        cursor: not-allowed;
+    }
+}

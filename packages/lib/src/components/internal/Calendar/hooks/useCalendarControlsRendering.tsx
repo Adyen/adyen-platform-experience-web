@@ -1,7 +1,7 @@
 import { ButtonVariant } from '@src/components/internal/Button/types';
 import { useCallback } from 'preact/hooks';
 import { isFunction } from '@src/utils/common';
-import ChevronDown from '@src/components/internal/Pagination/components/chevron-down';
+import ChevronDown from '@src/components/internal/SVGIcons/ChevronDown';
 import { CalendarControlRenderer, CalendarRenderControl } from '../types';
 import useCoreContext from '../../../../core/Context/useCoreContext';
 import useDetachedRender from '../../../../hooks/element/useDetachedRender';

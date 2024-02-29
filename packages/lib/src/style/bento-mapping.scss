@@ -1,5 +1,21 @@
 @import '@adyen/bento-design-tokens/dist/scss/bento/variables.scss';
 
+@mixin adyen-fp-bento-mapping {
+    --adyen-fp-color-background-primary: #{$color-background-primary};
+    --adyen-fp-color-background-primary-hover: #{$color-background-primary-hover};
+    --adyen-fp-color-background-primary-active: #{$color-background-primary-active};
+    --adyen-fp-color-background-secondary: #{$color-background-secondary};
+    --adyen-fp-color-background-secondary-hover: #{$color-background-secondary-hover};
+    --adyen-fp-color-background-secondary-active: #{$color-background-secondary-active};
+    --adyen-fp-color-background-tertiary: #{$color-background-tertiary};
+    --adyen-fp-color-background-tertiary-hover: #{$color-background-tertiary-hover};
+    --adyen-fp-color-background-tertiary-active: #{$color-background-tertiary-active};
+    --adyen-fp-color-outline-primary: #{$color-outline-primary};
+    --adyen-fp-border-radius-m: 6px;
+    --adyen-fp-spacer-070: #{$spacer-070};
+    --adyen-fp-spacer-080: #{$spacer-080};
+}
+
 @mixin adyen-fp-bento-filter-mapping {
     --adyen-fp-filter-button-background-color: #{$filter-button-background-color};
     --adyen-fp-filter-button-border-color: #{$filter-button-border-color};
