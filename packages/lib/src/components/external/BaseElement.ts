@@ -129,6 +129,7 @@ class BaseElement<P> {
         // /*
         this.props = this.formatProps({ ...this.props, ...props });
         this.sessionSetupError = this.props.core.sessionSetupError;
+        this.session = this.props.core.session;
         this._component = this.render();
         if (this._node) render(this._component, this._node);
 
