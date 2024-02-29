@@ -100,20 +100,22 @@ function TransactionList({
 
                         return <span className={classnames('adyen-fp-transactions__amount')}>{amount}</span>;
                     },
-                    paymentMethod: ({ value }) => {
+                    paymentMethod: ({ item }) => {
                         return (
                             <>
-                                {value ? (
+                                {item.paymentMethod || item.bankAccount ? (
                                     <div className="adyen-fp-transactions__payment-method">
                                         <div className="adyen-fp-transactions__payment-method-logo-container">
                                             <Image
-                                                name={value.type}
-                                                alt={value.type}
+                                                name={item.paymentMethod ? item.paymentMethod.type : 'bankTransfer'}
+                                                alt={item.paymentMethod ? item.paymentMethod.type : 'bankTransfer'}
                                                 folder={'logos/'}
                                                 className={'adyen-fp-transactions__payment-method-logo'}
                                             />
                                         </div>
-                                        {parsePaymentMethodType(value)}
+                                        {item.paymentMethod
+                                            ? parsePaymentMethodType(item.paymentMethod)
+                                            : item.bankAccount?.accountNumberLastFourDigits}
                                     </div>
                                 ) : (
                                     <Tag label={i18n.get('noData')} variant={TagVariant.WHITE} />
