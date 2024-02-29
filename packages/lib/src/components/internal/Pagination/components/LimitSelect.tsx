@@ -1,7 +1,7 @@
 import { memo } from 'preact/compat';
 import { useCallback, useRef } from 'preact/hooks';
-import ChevronUp from './chevron-up';
-import ChevronDown from './chevron-down';
+import ChevronUp from '@src/components/internal/SVGIcons/ChevronUp';
+import ChevronDown from '@src/components/internal/SVGIcons/ChevronDown';
 import { ListBox, ListBoxControl, ListBoxControlProps, ListBoxProps, useListBox, UseListBoxConfig } from '@src/components/internal/ListBox';
 import './LimitSelect.scss';
 
