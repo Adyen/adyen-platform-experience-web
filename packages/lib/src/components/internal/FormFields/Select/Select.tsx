@@ -49,8 +49,9 @@ const Select = <T extends SelectItem>({
         EMPTY_ARRAY
     );
 
-    const { clearSelection, select, selection } = useSelect({ items, multiSelect, selected });
+    const { resetSelection, select, selection } = useSelect({ items, multiSelect, selected });
     const clearSelectionInProgress = useRef(false);
+    const cachedSelectedItems = useRef(selection);
     const selectedItems = useRef(selection);
 
     const { commitAction, commitActionButtons, committing, resetCommitAction } = useCommitAction({
@@ -70,6 +71,7 @@ const Select = <T extends SelectItem>({
     }, [resetCommitAction, setShowList, setTextFilter]);
 
     const commitSelection = useCallback(() => {
+        cachedSelectedItems.current = selection;
         const value = `${selection.map(({ id }) => id)}`;
         onChange({ target: { value, name } });
     }, [name, onChange, selection]);
@@ -80,11 +82,11 @@ const Select = <T extends SelectItem>({
                 commitSelection();
                 break;
             case CommitAction.CLEAR:
-                clearSelection();
+                resetSelection();
                 clearSelectionInProgress.current = true;
                 break;
         }
-    }, [commitAction]);
+    }, [commitAction, resetSelection]);
 
     /**
      * Closes the select list and fires an onChange
@@ -198,9 +200,10 @@ const Select = <T extends SelectItem>({
             if (clickIsOutside) {
                 setTextFilter('');
                 setShowList(false);
+                resetSelection(cachedSelectedItems.current);
             }
         },
-        [setShowList, setTextFilter]
+        [resetSelection, setShowList, setTextFilter]
     );
 
     /**

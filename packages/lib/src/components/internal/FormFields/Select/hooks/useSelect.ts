@@ -3,33 +3,49 @@ import { EMPTY_ARRAY } from '@src/utils/common';
 import { SelectItem, SelectProps } from '../types';
 
 const useSelect = <T extends SelectItem>({ items, multiSelect, selected }: Pick<SelectProps<T>, 'items' | 'multiSelect' | 'selected'>) => {
-    const getSelectedItems = useCallback(() => {
-        const _selected = (EMPTY_ARRAY as readonly T['id'][]).concat(selected ?? EMPTY_ARRAY).filter(Boolean);
-        const _selectedItems = items.filter(item => _selected.includes(item.id));
-        return Object.freeze(multiSelect ? _selectedItems : _selectedItems.slice(0, 1));
-    }, [items, selected]);
+    const getSelectedItems = useCallback(
+        (selectedItems: typeof selected = EMPTY_ARRAY) => {
+            const _selected = (EMPTY_ARRAY as readonly T['id'][]).concat(selectedItems ?? EMPTY_ARRAY).filter(Boolean);
+            const _selectedItems = items.filter(item => _selected.includes(item.id));
+            const selection = multiSelect ? _selectedItems : _selectedItems.slice(0, 1);
+            return selection.length ? Object.freeze(selection) : EMPTY_ARRAY;
+        },
+        [items, multiSelect]
+    );
 
-    const [selection, setSelection] = useState(getSelectedItems);
-    const clearSelection = useCallback(() => setSelection(EMPTY_ARRAY), [setSelection]);
+    const [selection, setSelection] = useState(getSelectedItems(selected));
+
+    const resetSelection = useCallback(
+        (selection: readonly T[] | T[] = EMPTY_ARRAY) => {
+            const nextSelection = selection.filter(item => items.includes(item));
+            setSelection(nextSelection.length ? Object.freeze(nextSelection) : EMPTY_ARRAY);
+        },
+        [items, setSelection]
+    );
 
     const select = useCallback(
         (item: T) => {
-            setSelection(selection => {
-                if (!multiSelect) return Object.freeze([item]);
+            setSelection(currentSelection => {
+                const index = currentSelection.indexOf(item);
 
-                const nextSelection = [...selection];
-                const index = nextSelection.indexOf(item);
+                // Item not already selected
+                if (index < 0) return Object.freeze(((multiSelect ? currentSelection : EMPTY_ARRAY) as readonly T[]).concat(item));
 
-                index < 0 ? nextSelection.push(item) : nextSelection.splice(index, 1);
-                return Object.freeze(nextSelection);
+                // Item is current selection
+                if (!multiSelect) return currentSelection;
+
+                // Item should be deselected
+                const nextSelection = [...currentSelection];
+                nextSelection.splice(index, 1);
+                return nextSelection.length ? Object.freeze(nextSelection) : EMPTY_ARRAY;
             });
         },
         [multiSelect, setSelection]
     );
 
-    useEffect(() => setSelection(getSelectedItems), [getSelectedItems, setSelection]);
+    useEffect(() => setSelection(getSelectedItems(selected)), [getSelectedItems, selected, setSelection]);
 
-    return { clearSelection, select, selection } as const;
+    return { resetSelection, select, selection } as const;
 };
 
 export default useSelect;
