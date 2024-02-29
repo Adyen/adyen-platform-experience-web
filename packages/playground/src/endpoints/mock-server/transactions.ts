@@ -3,8 +3,9 @@ import { BASIC_TRANSACTIONS_LIST, TRANSACTION_DETAILS_DEFAULT } from '../../../.
 import { endpoints } from '../endpoints';
 import { delay } from '../utils/utils';
 
+const mockEndpoints = endpoints('mock');
 export const transactionsMocks = [
-    rest.get(endpoints.transactions, (req, res, ctx) => {
+    rest.get(mockEndpoints.transactions, (req, res, ctx) => {
         let transactions = BASIC_TRANSACTIONS_LIST;
 
         const categories = req.url.searchParams.getAll('categories');
@@ -26,7 +27,7 @@ export const transactionsMocks = [
 
         return res(delay(400), ctx.json({ transactions }));
     }),
-    rest.get(endpoints.transaction, (req, res, ctx) => {
+    rest.get(mockEndpoints.transaction, (req, res, ctx) => {
         const matchingMock = [...BASIC_TRANSACTIONS_LIST, TRANSACTION_DETAILS_DEFAULT].find(mock => mock.id === req.params.id);
 
         if (!matchingMock) {

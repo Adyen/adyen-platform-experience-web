@@ -26,9 +26,7 @@ const parseEnv = (env: Record<string, string | undefined>, environment: ENVIRONM
         },
         sessionApi: {
             url: env.SESSION_API_URL ?? '',
-            token: env.SESSION_AUTH_TOKEN ?? '',
-            username: env.SESSION_USERNAME,
-            password: env.SESSION_PASSWORD,
+            apiKey: env.TEST_API_KEY,
             accountHolder: env.SESSION_ACCOUNT_HOLDER,
             permissions: env.SESSION_PERMISSIONS,
         },
@@ -37,7 +35,8 @@ const parseEnv = (env: Record<string, string | undefined>, environment: ENVIRONM
         host: env.PLAYGROUND_HOST ?? '',
         port: parseInt(env.PLAYGROUND_PORT ?? ''),
         clientKey: env.VITE_API_KEY ?? '',
-        apiUrl: env.VITE_API_URL ?? '',
+        playgroundUrl: env.PLAYGROUND_URL ?? '',
+        loadingContext: env.LOADING_CONTEXT,
     },
     mockServer: {
         port: parseInt(env.MOCK_SERVER_PORT ?? ''),

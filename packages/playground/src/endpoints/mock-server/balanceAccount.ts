@@ -2,6 +2,8 @@ import { rest } from 'msw';
 import { endpoints } from '../endpoints';
 import { delay } from '../utils/utils';
 
+const mockEndpoints = endpoints('mock');
+
 const SINGLE_BALANCE_ACCOUNT = [
     {
         description: 'S. Hopper - Main Account',
@@ -21,6 +23,12 @@ const MULTIPLE_BALANCE_ACCOUNTS = [
     {
         description: 'S. Hopper - Secondary Account',
         id: 'BA32272223222B5CTDQPM6W2H',
+        timeZone: 'America/Sao_Paulo',
+        defaultCurrencyCode: 'BRL',
+    },
+    {
+        description: 'S. Hopper - Third Account',
+        id: 'BA32272223222B5CTDQPM6W2G',
         timeZone: 'America/Sao_Paulo',
         defaultCurrencyCode: 'BRL',
     },
@@ -51,7 +59,7 @@ const MULTIPLE_ACCOUNT_BALANCES = [
 ];
 
 export const balanceAccountMock = [
-    rest.get(endpoints.balanceAccount, (req, res, ctx) => {
+    rest.get(mockEndpoints.balanceAccount, (req, res, ctx) => {
         return res(
             delay(200),
             ctx.json({
@@ -59,7 +67,7 @@ export const balanceAccountMock = [
             })
         );
     }),
-    rest.get(endpoints.balanceAccountTotals, (req, res, ctx) => {
+    rest.get(mockEndpoints.balanceAccountTotals, (req, res, ctx) => {
         return res(
             delay(300),
             ctx.json({
@@ -67,7 +75,7 @@ export const balanceAccountMock = [
             })
         );
     }),
-    rest.get(endpoints.balances, (req, res, ctx) => {
+    rest.get(mockEndpoints.balances, (req, res, ctx) => {
         return res(
             delay(300),
             ctx.json({

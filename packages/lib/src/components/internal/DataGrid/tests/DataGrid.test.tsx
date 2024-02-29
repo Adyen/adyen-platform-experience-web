@@ -40,11 +40,11 @@ describe('DataGrid component with clickable rows', () => {
                     loading={false}
                     onRowClick={{ callback: mockEventHandler, retrievedField: 'id' }}
                     customCells={{
-                        paymentMethod: ({ value }) => {
+                        paymentMethod: ({ item }) => {
                             return (
                                 // Add this interactive element to test every possible keyboard interaction (left arrow or tab+shift to get focus back on the row)
                                 <span tabIndex={0} role={'button'}>
-                                    {value.type}
+                                    {item.paymentMethod?.type}
                                 </span>
                             );
                         },

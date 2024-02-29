@@ -37,7 +37,7 @@ export const getRequestObject = (options: HttpOptions, data?: any): RequestInit 
         credentials: 'same-origin',
         headers: {
             Accept: 'application/json, text/plain, */*',
-            'Content-Type': method === 'POST' ? 'application/json' : 'text/plain',
+            'Content-Type': 'application/json',
             ...headers,
         },
         redirect: 'follow',
