@@ -48,17 +48,22 @@ export const TransactionData = ({ transaction }: { transaction: TransactionDataP
                           })
                         : null}
                 </div>
-                <div className="adyen-fp-transaction-data-section adyen-fp-transaction-data__payment-method">
-                    <div className="adyen-fp-transaction-data__payment-method-logo-container">
-                        <Image
-                            name={transaction.paymentMethod.type}
-                            alt={transaction.paymentMethod.type}
-                            folder={'logos/'}
-                            className={'adyen-fp-transactions__payment-method-logo'}
-                        />
+                {(transaction?.paymentMethod || transaction?.bankAccount) && (
+                    <div className="adyen-fp-transaction-data-section adyen-fp-transaction-data__payment-method">
+                        <div className="adyen-fp-transaction-data__payment-method-logo-container">
+                            <Image
+                                name={transaction.paymentMethod ? transaction.paymentMethod.type : 'bankTransfer'}
+                                alt={transaction.paymentMethod ? transaction.paymentMethod.type : 'bankTransfer'}
+                                folder={'logos/'}
+                                className={'adyen-fp-transactions__payment-method-logo'}
+                            />
+                        </div>
+
+                        {transaction?.paymentMethod
+                            ? parsePaymentMethodType(transaction?.paymentMethod, 'detail')
+                            : transaction?.bankAccount?.accountNumberLastFourDigits}
                     </div>
-                    {parsePaymentMethodType(transaction.paymentMethod, 'detail')}
-                </div>
+                )}
                 <div className={'adyen-fp-transaction-data-section adyen-fp-transaction-data__label'}>{creationDate}</div>
             </div>
             {transaction?.balanceAccountDescription && (
