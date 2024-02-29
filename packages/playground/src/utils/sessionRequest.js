@@ -5,7 +5,7 @@ const getMySessionToken = async () => {
     const normalizedLoadingContext = loadingContext.endsWith('/') ? loadingContext : `${loadingContext}/`;
     const url = new URL(`${normalizedLoadingContext}api/authe/api/v1/sessions`);
     const body = {
-        allowOrigin: process.env.VITE_PLAYGROUND_URL?.endsWith('/') ? process.env.VITE_PLAYGROUND_URL.slice(0, -1) : undefined,
+        allowOrigin: process.env.VITE_PLAYGROUND_URL?.endsWith('/') ? process.env.VITE_PLAYGROUND_URL.slice(0, -1) : process.env.VITE_PLAYGROUND_URL,
         reference: 'platform-operations',
         product: 'platform',
         policy: {
