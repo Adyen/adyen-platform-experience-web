@@ -6,12 +6,15 @@ import { useFetch } from '@src/hooks/useFetch/useFetch';
 import { TransactionsOverview } from '@src/components/external/Transactions/components/TransactionsOverview';
 import { useCallback, useMemo } from 'preact/hooks';
 import { EMPTY_OBJECT } from '@src/utils/common';
+import useAuthContext from '@src/core/Auth/useAuthContext';
+import cx from 'classnames';
+import { ErrorMessageDisplay } from '@src/components/internal/ErrorMessageDisplay/ErrorMessageDisplay';
 
 function TransactionsOverviewComponent(props: ExternalUIComponentProps<TransactionsComponentProps>) {
     // Balance Accounts
     const balanceAccountEndpointCall = useSetupEndpoint('getBalanceAccounts');
 
-    const { data } = useFetch({
+    const { data, isFetching } = useFetch({
         fetchOptions: EMPTY_OBJECT,
         queryFn: useCallback(async () => {
             return balanceAccountEndpointCall(EMPTY_OBJECT);
@@ -19,12 +22,26 @@ function TransactionsOverviewComponent(props: ExternalUIComponentProps<Transacti
     });
 
     const balanceAccounts = useMemo(() => data?.balanceAccounts, [data?.balanceAccounts]);
+    const { sessionSetupError } = useAuthContext();
 
     return (
-        <div className="adyen-fp-transactions">
-            <div className="adyen-fp-transactions__container">
-                <TransactionsOverview {...props} balanceAccounts={balanceAccounts} />
-            </div>
+        <div
+            className={cx('adyen-fp-transactions', {
+                'adyen-fp-transactions__with-error': sessionSetupError,
+            })}
+        >
+            {sessionSetupError ? (
+                <ErrorMessageDisplay
+                    withImage
+                    centered
+                    title={'somethingWentWrong'}
+                    message={['weCouldNotLoadTheTransactionsOverview', 'tryToRefreshThePageOrComeBackLater']}
+                />
+            ) : (
+                <div className="adyen-fp-transactions__container">
+                    <TransactionsOverview {...props} balanceAccounts={balanceAccounts} isLoadingBalanceAccount={isFetching} />
+                </div>
+            )}
         </div>
     );
 }

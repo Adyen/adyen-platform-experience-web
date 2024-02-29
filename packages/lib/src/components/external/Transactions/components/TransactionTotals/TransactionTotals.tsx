@@ -14,15 +14,8 @@ import { memo } from 'preact/compat';
 type TransactionTotalsProps = Required<OperationParameters<'getTransactionTotals'>['path'] & OperationParameters<'getTransactionTotals'>['query']>;
 
 const TransactionTotals = memo(
-    ({
-        balanceAccountId,
-        createdSince,
-        createdUntil,
-        categories,
-        /* currencies,*/ statuses,
-    }: MakeFieldValueUndefined<TransactionTotalsProps, 'balanceAccountId'>) => {
+    ({ balanceAccountId, createdSince, createdUntil, categories, statuses }: MakeFieldValueUndefined<TransactionTotalsProps, 'balanceAccountId'>) => {
         const { i18n } = useCoreContext();
-
         const getTransactionTotals = useSetupEndpoint('getTransactionTotals');
 
         const fetchCallback = useCallback(async () => {
@@ -32,22 +25,21 @@ const TransactionTotals = memo(
                     createdSince,
                     createdUntil,
                     categories,
-                    // currencies,
                     statuses,
                 },
             });
-        }, [balanceAccountId, categories, /* currencies,*/ createdSince, createdUntil, getTransactionTotals, statuses]);
+        }, [balanceAccountId, categories, createdSince, createdUntil, getTransactionTotals, statuses]);
 
         const { data, error, isFetching } = useFetch({
             fetchOptions: useMemo(() => ({ enabled: !!balanceAccountId }), [balanceAccountId]),
             queryFn: fetchCallback,
         });
 
-        const isLoading = !balanceAccountId || (balanceAccountId && !data && !error) || isFetching;
+        const isLoading = !balanceAccountId || isFetching;
 
         const totals = data?.totals?.[0];
 
-        const showSkeleton = isLoading || data?.totals?.length === 0;
+        const showSkeleton = isLoading || error || data?.totals?.length === 0;
 
         // TODO - Refactor to avoid code repetition (this is working as a placeholder component)
         return (

@@ -4,8 +4,14 @@ import { endpoints } from '../endpoints';
 import { delay } from '../utils/utils';
 
 const mockEndpoints = endpoints('mock');
+const networkError = false;
+
 export const transactionsMocks = [
     rest.get(mockEndpoints.transactions, (req, res, ctx) => {
+        if (networkError) {
+            return res.networkError('Failed to connect');
+        }
+
         const categories = req.url.searchParams.getAll('categories');
         const currencies = req.url.searchParams.getAll('currencies');
         const statuses = req.url.searchParams.getAll('statuses');

@@ -7,6 +7,7 @@ import Img from '@src/components/internal/Img';
 import Button from '@src/components/internal/Button';
 import { ButtonVariant } from '@src/components/internal/Button/types';
 import Typography from '@src/components/internal/Typography/Typography';
+import ChevronDown from '@src/components/internal/SVGIcons/ChevronDown';
 import { TypographyElement, TypographyVariant } from '@src/components/internal/Typography/types';
 import {
     DROPDOWN_BUTTON_ACTIVE_CLASS,
@@ -21,7 +22,6 @@ import {
     DROPDOWN_BUTTON_VALID_CLASS,
 } from '../constants';
 import type { SelectButtonProps, SelectItem } from '../types';
-import { ChevronDown } from '../utils/decorations';
 
 const SelectButtonElement = <T extends SelectItem>({
     active,

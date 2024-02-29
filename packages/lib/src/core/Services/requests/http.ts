@@ -5,7 +5,7 @@ import { HttpOptions } from './types';
 import { normalizeLoadingContext, normalizeUrl } from '@src/core/utils';
 
 export function http<T>(options: HttpOptions, data?: any): Promise<T> {
-    const { errorLevel = 'warn', loadingContext = '', path } = options;
+    const { errorLevel, loadingContext = '', path } = options;
 
     const request = getRequestObject(options, data);
 
@@ -27,11 +27,13 @@ export function http<T>(options: HttpOptions, data?: any): Promise<T> {
 
                 if (isAdyenErrorResponse(response)) {
                     // If an errorHandler has been passed use this rather than the default handleFetchError
-                    return options.errorHandler ? options.errorHandler(response) : handleFetchError(response.detail, errorLevel, errorType);
+                    return options.errorHandler
+                        ? options.errorHandler(response)
+                        : handleFetchError({ message: response.detail, level: errorLevel, errorCode: response.errorCode, type: errorType });
                 }
 
                 const errorMessage = options.errorMessage || `Service at ${url} is not available`;
-                return handleFetchError(errorMessage, errorLevel, errorType);
+                return handleFetchError({ message: errorMessage, level: errorLevel, errorCode: String(response.status), type: errorType });
             })
             /**
              * Catch block handles Network error, CORS error, or exception throw by the `handleFetchError`
@@ -48,7 +50,7 @@ export function http<T>(options: HttpOptions, data?: any): Promise<T> {
                 }
 
                 const errorMessage = options.errorMessage || `Call to ${url} failed. Error= ${error}`;
-                handleFetchError(errorMessage, errorLevel);
+                handleFetchError({ message: errorMessage, level: errorLevel });
             })
     );
 }

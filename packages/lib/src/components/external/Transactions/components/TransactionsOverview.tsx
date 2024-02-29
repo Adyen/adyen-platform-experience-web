@@ -2,7 +2,6 @@ import FilterBar from '@src/components/internal/FilterBar';
 import DateFilter from '@src/components/internal/FilterBar/filters/DateFilter';
 import { TransactionsComponentProps, TransactionFilterParam } from '../types';
 import { getTimeRangeSelectionDefaultPresetOptions } from '@src/components/internal/DatePicker/components/TimeRangeSelector';
-import Alert from '@src/components/internal/Alert';
 import TransactionList from '@src/components/external/Transactions/components/TransactionList';
 import useCoreContext from '@src/core/Context/useCoreContext';
 import { SetupHttpOptions, useSetupEndpoint } from '@src/hooks/useSetupEndpoint/useSetupEndpoint';
@@ -17,6 +16,7 @@ import { BalanceAccountsDisplay } from '@src/components/external/Transactions/co
 import BalanceAccountSelector, { useBalanceAccountSelection } from './BalanceAccountSelector';
 import MultiSelectionFilter, { DEFAULT_TRANSACTIONS_OVERVIEW_MULTI_SELECTION_FILTER_PARAMS, listFrom } from './MultiSelectionFilter';
 import useTransactionsOverviewMultiSelectionFilters from '../hooks/useTransactionsOverviewMultiSelectionFilters';
+import AdyenFPError from '@src/core/Errors/AdyenFPError';
 
 const computeDefaultTransactionsFilterParams = () => {
     const timeRangePresetOptions = getTimeRangeSelectionDefaultPresetOptions();
@@ -40,7 +40,9 @@ export const TransactionsOverview = ({
     preferredLimit = DEFAULT_PAGE_LIMIT,
     onTransactionSelected,
     showDetails,
-}: TransactionsComponentProps & { balanceAccounts: IBalanceAccountBase[] | undefined }) => {
+    onContactSupport,
+    isLoadingBalanceAccount,
+}: TransactionsComponentProps & { balanceAccounts: IBalanceAccountBase[] | undefined; isLoadingBalanceAccount: boolean }) => {
     const { i18n } = useCoreContext();
     const transactionsEndpointCall = useSetupEndpoint('getTransactions');
     const { activeBalanceAccount, balanceAccountSelectionOptions, onBalanceAccountSelection } = useBalanceAccountSelection(balanceAccounts);
@@ -53,7 +55,7 @@ export const TransactionsOverview = ({
         async (pageRequestParams: Record<TransactionFilterParam | 'cursor', string>, signal?: AbortSignal) => {
             const requestOptions: SetupHttpOptions = { signal, errorLevel: 'error' };
 
-            const parameters = {
+            return transactionsEndpointCall(requestOptions, {
                 query: {
                     ...pageRequestParams,
                     statuses: listFrom<ITransaction['status']>(pageRequestParams[TransactionFilterParam.STATUSES]),
@@ -68,9 +70,7 @@ export const TransactionsOverview = ({
                     sortDirection: 'desc' as const,
                 },
                 path: { balanceAccountId: activeBalanceAccount?.id! },
-            };
-
-            return transactionsEndpointCall(requestOptions, parameters);
+            });
         },
         [activeBalanceAccount, transactionsEndpointCall]
     );
@@ -128,8 +128,6 @@ export const TransactionsOverview = ({
 
     useMemo(() => !canResetFilters && setSelectedTimeRangePreset(defaultTimeRangePreset), [canResetFilters]);
 
-    const showAlert = useMemo(() => !fetching && error, [fetching, error]);
-
     return (
         <>
             <FilterBar canResetFilters={canResetFilters} resetFilters={resetFilters}>
@@ -166,21 +164,20 @@ export const TransactionsOverview = ({
                 />
                 <BalanceAccountsDisplay balanceAccountId={activeBalanceAccount?.id} updateBalanceAccountCurrencies={setTransactionsCurrencies} />
             </div>
-            {showAlert ? (
-                <Alert icon={'cross'}>{error?.message ?? i18n.get('unableToLoadTransactions')}</Alert>
-            ) : (
-                <TransactionList
-                    loading={fetching || !records}
-                    transactions={records}
-                    onTransactionSelected={onTransactionSelected}
-                    showPagination={true}
-                    showDetails={showDetails}
-                    limit={limit}
-                    limitOptions={limitOptions}
-                    onLimitSelection={updateLimit}
-                    {...paginationProps}
-                />
-            )}
+
+            <TransactionList
+                loading={fetching || isLoadingBalanceAccount || !balanceAccounts}
+                transactions={records}
+                onTransactionSelected={onTransactionSelected}
+                showPagination={true}
+                showDetails={showDetails}
+                limit={limit}
+                limitOptions={limitOptions}
+                onLimitSelection={updateLimit}
+                error={error as AdyenFPError}
+                onContactSupport={onContactSupport}
+                {...paginationProps}
+            />
         </>
     );
 };

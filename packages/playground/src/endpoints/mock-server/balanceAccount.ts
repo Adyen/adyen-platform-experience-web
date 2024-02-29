@@ -57,9 +57,13 @@ const MULTIPLE_ACCOUNT_BALANCES = [
         currency: 'USD',
     },
 ];
+const networkError = false;
 
 export const balanceAccountMock = [
     rest.get(mockEndpoints.balanceAccount, (req, res, ctx) => {
+        if (networkError) {
+            return res.networkError('Failed to connect');
+        }
         return res(
             delay(200),
             ctx.json({

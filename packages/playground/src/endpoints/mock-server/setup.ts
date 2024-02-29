@@ -2,10 +2,14 @@ import { rest } from 'msw';
 import { endpoints } from '../endpoints';
 import { delay } from '../utils/utils';
 
+const networkError = false;
 const PREFIX = endpoints('mock').setup;
 
 export const setupMock = [
     rest.post(`${PREFIX}`, (req, res, ctx) => {
+        if (networkError) {
+            return res.networkError('Failed to connect');
+        }
         return res(
             delay(200),
             ctx.json({

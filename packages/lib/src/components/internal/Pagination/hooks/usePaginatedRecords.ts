@@ -22,6 +22,7 @@ import {
     PaginationType,
     WithEitherPages,
 } from '../types';
+import AdyenFPError from '@src/core/Errors/AdyenFPError';
 
 const pageNeighbours = [PageNeighbour.NEXT, PageNeighbour.PREV] as const;
 const offsetPaginatedResponseFields = ['hasNext', 'hasPrevious'] as const;
@@ -87,7 +88,7 @@ const usePaginatedRecords = <T, DataField extends string, FilterValue extends st
 }: BasePaginatedRecordsInitOptions<T, DataField, FilterValue, FilterParam>): UsePaginatedRecords<T, FilterValue, FilterParam> => {
     const [records, setRecords] = useState<T[]>([]);
     const [fetching, updateFetching] = useBooleanState(true);
-    const [error, setError] = useState<Error>();
+    const [error, setError] = useState<AdyenFPError>();
     const [preferredPageLimit, setPreferredPageLimit] = useState(preferredLimit);
 
     const $mounted = useMounted();
@@ -114,10 +115,11 @@ const usePaginatedRecords = <T, DataField extends string, FilterValue extends st
                 signal?: AbortSignal
             ): Promise<RequestPageCallbackReturnValue<PaginationType>> => {
                 try {
+                    setError(undefined);
+
                     if (!$mounted.current || <undefined>updateFetching(true)) return;
 
                     const res = await fetchRecords({ ...pageRequestParams, ...filters }, signal);
-
                     const { records, paginationData } = parsePaginatedResponseData<T, DataField>(res, dataField);
 
                     if ($initialFetchInProgress.current) {
@@ -130,13 +132,14 @@ const usePaginatedRecords = <T, DataField extends string, FilterValue extends st
                         updateFetching(false);
                     }
 
-                    return { ...paginationData, size: records.length };
+                    return { ...paginationData, size: records?.length };
                 } catch (err) {
+                    // TODO - Handle signal abortion and updateFetching
                     if (signal?.aborted) return;
-                    setError(err as Error);
-                    console.error(err);
-                } finally {
                     updateFetching(false);
+                    setError(err as AdyenFPError);
+
+                    console.error(err);
                 }
             },
             [fetchRecords, filters, limit]
@@ -152,10 +155,6 @@ const usePaginatedRecords = <T, DataField extends string, FilterValue extends st
     useEffect(() => {
         if (enabled) goto(1);
     }, [goto, enabled]);
-
-    useEffect(() => {
-        fetching && setError(undefined);
-    }, [fetching]);
 
     useEffect(() => {
         onFiltersChanged?.(filters);

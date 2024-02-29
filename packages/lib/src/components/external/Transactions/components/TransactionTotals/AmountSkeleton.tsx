@@ -4,7 +4,7 @@ const AmountSkeleton = ({ isLoading }: { isLoading: boolean }) => {
     return (
         <span
             className={cx('adyen-fp-transactions-total__skeleton', {
-                'adyen-fp--transactions-total-skeleton--loading': isLoading,
+                'adyen-fp-transactions-total__skeleton--loading': isLoading,
             })}
         ></span>
     );

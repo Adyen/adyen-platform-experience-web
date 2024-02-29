@@ -16,9 +16,12 @@
 
     &__skeleton {
         @include skeleton.adyen-fp-skeleton();
-        @include skeleton.adyen-fp-skeleton-animation();
 
         margin: var(--adyen-fp-spacing-small) 0 0;
         width: 100%;
+
+        &--loading {
+            @include skeleton.adyen-fp-skeleton-animation();
+        }
     }
 }

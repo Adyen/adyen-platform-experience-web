@@ -85,21 +85,16 @@ export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUI
 
     render() {
         return (
-            <>
-                {this.sessionSetupError ? (
-                    <div>Error occured</div>
-                ) : (
-                    <AuthProvider
-                        endpoints={this.session?.configuration?.endpoints || (EMPTY_OBJECT as SetupEndpoint)}
-                        token={this.session?.token ?? ''}
-                        updateCore={this.props.core.update.bind(this.props.core)}
-                    >
-                        <CoreProvider i18n={this.i18n} loadingContext={this.loadingContext}>
-                            {this.componentToRender && <>{this.componentToRender()}</>}
-                        </CoreProvider>
-                    </AuthProvider>
-                )}
-            </>
+            <AuthProvider
+                endpoints={this.session?.configuration?.endpoints || (EMPTY_OBJECT as SetupEndpoint)}
+                token={this.session?.token ?? ''}
+                updateCore={this.props.core.update.bind(this.props.core)}
+                sessionSetupError={this.sessionSetupError}
+            >
+                <CoreProvider i18n={this.i18n} loadingContext={this.loadingContext}>
+                    {this.componentToRender && <>{this.componentToRender()}</>}
+                </CoreProvider>
+            </AuthProvider>
         );
     }
 }
