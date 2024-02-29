@@ -9,12 +9,14 @@ const TRANSACTION_DETAILS_1: ITransaction = {
     creationDate: '2022-08-29T14:47:03+02:00',
 };
 const TRANSACTION_DETAILS_2: ITransaction = {
-    id: '1WEPGE5W23KIX9T7',
-    amount: { currency: 'EUR', value: 55000 },
-    status: 'Booked',
-    category: 'Capital',
-    paymentMethod: { lastFourDigits: '1011', type: 'visa' },
-    creationDate: '2022-08-29T14:47:03+02:00',
+    id: '3KVM0J5V771942G',
+    amount: { currency: 'EUR', value: 950200 },
+    status: 'Rejected',
+    category: 'Refund',
+    bankAccount: {
+        accountNumberLastFourDigits: '1100',
+    },
+    creationDate: '2022-09-29T14:47:03+02:00',
 };
 const TRANSACTION_DETAILS_3: ITransaction = {
     id: '1WEPGE5W23KIX9U5',
@@ -37,7 +39,6 @@ const TRANSACTION_DETAILS_5: ITransaction = {
     amount: { currency: 'EUR', value: 690500 },
     status: 'Booked',
     category: 'Transfer',
-    paymentMethod: { lastFourDigits: '1209', type: 'mc' },
     creationDate: '2022-08-29T14:47:03+02:00',
 };
 const TRANSACTION_DETAILS_6: ITransaction = {
@@ -61,7 +62,17 @@ const TRANSACTION_DETAILS_8: ITransaction = {
     amount: { currency: 'EUR', value: 820000 },
     status: 'Booked',
     category: 'Correction',
-    paymentMethod: { type: 'klarna' },
+    bankAccount: {
+        accountNumberLastFourDigits: '2975',
+    },
+    creationDate: '2022-08-29T14:47:03+02:00',
+};
+const TRANSACTION_DETAILS_9: ITransaction = {
+    id: '1WEPGE5W23KIX9T7',
+    amount: { currency: 'EUR', value: 55000 },
+    status: 'Booked',
+    category: 'Capital',
+    paymentMethod: { lastFourDigits: '1011', type: 'visa' },
     creationDate: '2022-08-29T14:47:03+02:00',
 };
 
@@ -83,4 +94,5 @@ export const BASIC_TRANSACTIONS_LIST = [
     TRANSACTION_DETAILS_6,
     TRANSACTION_DETAILS_7,
     TRANSACTION_DETAILS_8,
+    TRANSACTION_DETAILS_9,
 ];
