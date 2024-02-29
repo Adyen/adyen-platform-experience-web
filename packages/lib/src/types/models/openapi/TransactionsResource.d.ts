@@ -32,11 +32,24 @@ export interface components {
              */
             value: number;
         };
+        /** @description Information about the bank account */
+        BankAccount: {
+            /** @description Last four digits of the account number or IBAN. */
+            accountNumberLastFourDigits: string;
+        };
         /** @enum {string} */
         Category: 'ATM' | 'Capital' | 'Correction' | 'Fee' | 'Payment' | 'Refund' | 'Chargeback' | 'Transfer' | 'Other';
+        /** @description Payment method or payment instrument */
+        PaymentMethod: {
+            /** @description Last four digits of the card */
+            lastFourDigits?: string;
+            /** @description Payment method type code of the transaction f.e. klarna, visa, mc */
+            type: string;
+        };
         /** @description Transactions made within the filters provided for given balanceAccountId */
         SingleTransaction: {
             amount: components['schemas']['Amount'];
+            bankAccount?: components['schemas']['BankAccount'];
             category: components['schemas']['Category'];
             /**
              * Format: date-time
@@ -45,11 +58,8 @@ export interface components {
             creationDate: string;
             /** @description ID */
             id: string;
+            paymentMethod?: components['schemas']['PaymentMethod'];
             status: components['schemas']['Status'];
-            paymentMethod: {
-                type: string;
-                lastFourDigits?: number;
-            };
         };
         /** @enum {string} */
         Status: 'Pending' | 'Booked' | 'Rejected';
@@ -80,6 +90,8 @@ export interface components {
             /** @description Transactions made within the filters provided for given balanceAccountId */
             transactions: components['schemas']['SingleTransaction'][];
         };
+        /** @enum {string} */
+        SortDirection: 'asc' | 'desc';
     };
     responses: never;
     parameters: never;
@@ -139,7 +151,9 @@ export interface operations {
                 createdSince?: string;
                 createdUntil?: string;
                 categories?: components['schemas']['Category'][];
+                currencies?: string[];
                 statuses?: components['schemas']['Status'][];
+                sortDirection?: components['schemas']['SortDirection'];
                 limit?: number;
             };
             path: {
