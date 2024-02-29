@@ -13,9 +13,11 @@ import {
     DROPDOWN_BUTTON_CLASS,
     DROPDOWN_BUTTON_CLASSNAME,
     DROPDOWN_BUTTON_COLLAPSE_INDICATOR_CLASS,
+    DROPDOWN_BUTTON_ICON_CLASS,
     DROPDOWN_BUTTON_INVALID_CLASS,
     DROPDOWN_BUTTON_MULTI_SELECT_COUNTER_CLASS,
     DROPDOWN_BUTTON_READONLY_CLASS,
+    DROPDOWN_BUTTON_TEXT_CLASS,
     DROPDOWN_BUTTON_VALID_CLASS,
 } from '../constants';
 import type { SelectButtonProps, SelectItem } from '../types';
@@ -91,9 +93,9 @@ const SelectButton = <T extends SelectItem>(props: SelectButtonProps<T>) => {
             ) : (
                 <>
                     {buttonActiveItem?.icon && (
-                        <Img className="adyen-fp-dropdown__button-icon" src={buttonActiveItem.icon} alt={buttonActiveItem.name.trim()} />
+                        <Img className={DROPDOWN_BUTTON_ICON_CLASS} src={buttonActiveItem.icon} alt={buttonActiveItem.name.trim()} />
                     )}
-                    <span className="adyen-fp-dropdown__button-text">
+                    <span className={DROPDOWN_BUTTON_TEXT_CLASS}>
                         {buttonActiveItem?.selectedOptionName?.trim() || buttonActiveItem?.name.trim() || placeholderText}
                     </span>
                     {multiSelect && active.length > 0 && (

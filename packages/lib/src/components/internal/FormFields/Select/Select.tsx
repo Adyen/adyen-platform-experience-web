@@ -264,19 +264,25 @@ const Select = <T extends SelectItem>({
      * Updates the state with the current text filter value
      * @param e - KeyboardEvent
      */
-    const handleTextFilter = (e: Event) => {
-        const value: string = (e.target as HTMLInputElement).value;
-        setTextFilter(value.toLowerCase());
-    };
+    const handleTextFilter = useCallback(
+        (e: Event) => {
+            const value: string = (e.target as HTMLInputElement).value;
+            setTextFilter(value.toLowerCase());
+        },
+        [setTextFilter]
+    );
 
     /**
      * Toggles the selectList and focuses in either the filter input or in the selectList button
      * @param e - Event
      */
-    const toggleList = (e: Event) => {
-        e.preventDefault();
-        setShowList(!showList);
-    };
+    const toggleList = useCallback(
+        (e: Event) => {
+            e.preventDefault();
+            setShowList(!showList);
+        },
+        [setShowList]
+    );
 
     useEffect(() => {
         if (showList && filterable && filterInputRef.current) {

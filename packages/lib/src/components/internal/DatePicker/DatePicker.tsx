@@ -25,7 +25,7 @@ const DatePicker = forwardRef((props: DatePickerProps, ref) => {
     const [lastUpdatedTimestamp, setLastUpdatedTimestamp] = useState<DOMHighResTimeStamp>(performance.now());
 
     const withTimezone = useMemo(() => props.showTimezoneInfo !== false, [props.showTimezoneInfo]);
-    const { clockTime: time, GMTOffset: offset } = useTimezone({ withClock: withTimezone });
+    const { clockTime: time, GMTOffset: offset } = useTimezone({ timezone: props.timezone, withClock: withTimezone });
 
     const datePickerClassName = useMemo(() => cx([{ 'adyen-fp-datepicker--with-timezone': withTimezone }, 'adyen-fp-datepicker']), [withTimezone]);
     const timezoneI18nOptions = useMemo(() => (withTimezone ? { values: { offset, time } } : EMPTY_OBJECT), [offset, time, withTimezone]);
