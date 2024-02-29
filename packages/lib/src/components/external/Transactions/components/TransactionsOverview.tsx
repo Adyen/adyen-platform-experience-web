@@ -14,9 +14,8 @@ import { EMPTY_OBJECT, isFunction } from '@src/utils/common';
 import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '@src/components/internal/Pagination/constants';
 import TransactionTotals from '@src/components/external/Transactions/components/TransactionTotals/TransactionTotals';
 import { BalanceAccountsDisplay } from '@src/components/external/Transactions/components/AccountsBalanceDisplay/BalanceAccountsDisplay';
-import Select from '@src/components/internal/FormFields/Select';
+import BalanceAccountSelector, { useBalanceAccountSelection } from './BalanceAccountSelector';
 import MultiSelectionFilter, { DEFAULT_TRANSACTIONS_OVERVIEW_MULTI_SELECTION_FILTER_PARAMS, listFrom } from './MultiSelectionFilter';
-import useBalanceAccountSelection from '../hooks/useBalanceAccountSelection';
 import useTransactionsOverviewMultiSelectionFilters from '../hooks/useTransactionsOverviewMultiSelectionFilters';
 
 const computeDefaultTransactionsFilterParams = () => {
@@ -134,16 +133,11 @@ export const TransactionsOverview = ({
     return (
         <>
             <FilterBar canResetFilters={canResetFilters} resetFilters={resetFilters}>
-                {balanceAccountSelectionOptions && balanceAccountSelectionOptions.length > 1 && (
-                    <Select
-                        onChange={onBalanceAccountSelection}
-                        filterable={false}
-                        multiSelect={false}
-                        selected={activeBalanceAccount?.id}
-                        withoutCollapseIndicator={true}
-                        items={balanceAccountSelectionOptions}
-                    />
-                )}
+                <BalanceAccountSelector
+                    activeBalanceAccount={activeBalanceAccount}
+                    balanceAccountSelectionOptions={balanceAccountSelectionOptions}
+                    onBalanceAccountSelection={onBalanceAccountSelection}
+                />
                 <DateFilter
                     classNameModifiers={['createdSince']}
                     label={i18n.get('dateRange')}
