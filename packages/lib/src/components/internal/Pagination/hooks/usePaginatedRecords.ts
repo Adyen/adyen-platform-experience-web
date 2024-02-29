@@ -119,9 +119,9 @@ const usePaginatedRecords = <T, DataField extends string, FilterValue extends st
                 signal?: AbortSignal
             ): Promise<RequestPageCallbackReturnValue<PaginationType>> => {
                 try {
-                    if (!$mounted.current || <undefined>updateFetching(true)) return;
-
                     setError(undefined);
+
+                    if (!$mounted.current || <undefined>updateFetching(true)) return;
 
                     const res = await fetchRecords({ ...pageRequestParams, ...filters }, signal);
                     const { records, paginationData } = parsePaginatedResponseData<T, DataField>(res, dataField);
@@ -138,13 +138,15 @@ const usePaginatedRecords = <T, DataField extends string, FilterValue extends st
 
                     return { ...paginationData, size: records?.length };
                 } catch (err) {
+                    // TODO - Handle signal abortion and updateFetching
                     if (signal?.aborted) return;
-                    setError(err as AdyenFPError);
                     updateFetching(false);
+                    setError(err as AdyenFPError);
+
                     console.error(err);
                 }
             },
-            [filters, limit]
+            [fetchRecords, filters, limit]
         ) as RequestPageCallback<PaginationType>,
         limit
     );

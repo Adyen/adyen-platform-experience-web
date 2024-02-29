@@ -27,14 +27,8 @@ function useSessionAwareRequest() {
                 return await httpCall<T>(request, method, data);
             } catch (e: any) {
                 if (e.type === ErrorTypes.EXPIRED_TOKEN) {
-                    //TODO - Check if we can get rid of the eslint-disable below once we define how we want to handle errors
-                    // eslint-disable-next-line no-useless-catch
-                    try {
-                        await updateCore?.(EMPTY_OBJECT, true);
-                        return await httpCall<T>(request, method, data);
-                    } catch (error) {
-                        throw error;
-                    }
+                    await updateCore?.(EMPTY_OBJECT, true);
+                    return httpCall<T>(request, method, data);
                 }
                 throw e;
             }

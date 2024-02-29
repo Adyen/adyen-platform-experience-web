@@ -12,7 +12,6 @@ import {
     WithPaginationRecordSize,
 } from '../types';
 import { ReactiveStateRecord, UseReactiveStateRecord } from '@src/hooks/useReactiveState/types';
-import AdyenFPError from '@src/core/Errors/AdyenFPError';
 
 type MaybePromise<T = any> = T | Promise<T>;
 
@@ -83,7 +82,7 @@ export interface UsePaginationSetupConfig<Pagination extends PaginationType> {
 export interface UsePaginatedRecords<T, FilterValue, FilterParam extends string>
     extends UsePagination,
         Omit<UsePaginatedRecordsFilters<FilterValue, FilterParam>, 'defaultFilters' | 'filtersVersion'> {
-    error: AdyenFPError | undefined;
+    error: Error | undefined;
     fetching: boolean;
     limitOptions: PaginatedRecordsInitOptions<T, any, FilterValue, FilterParam>['preferredLimitOptions'];
     updateLimit: (limit: number) => void;

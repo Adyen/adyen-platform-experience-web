@@ -15,6 +15,7 @@ import { TranslationKey } from '@src/core/Localization/types';
 import TransactionTotals from '@src/components/external/Transactions/components/TransactionTotals/TransactionTotals';
 import { BalanceAccountsDisplay } from '@src/components/external/Transactions/components/AccountsBalanceDisplay/BalanceAccountsDisplay';
 import Select from '@src/components/internal/FormFields/Select';
+import AdyenFPError from '@src/core/Errors/AdyenFPError';
 
 const { from, to } = Object.values(TIME_RANGE_PRESET_OPTIONS)[0]!;
 const DEFAULT_TIME_RANGE_PRESET = Object.keys(TIME_RANGE_PRESET_OPTIONS)[0]! as TranslationKey;
@@ -192,7 +193,7 @@ export const TransactionsOverview = ({
                 limit={limit}
                 limitOptions={limitOptions}
                 onLimitSelection={updateLimit}
-                error={error}
+                error={error as AdyenFPError}
                 onContactSupport={onContactSupport}
                 {...paginationProps}
             />
