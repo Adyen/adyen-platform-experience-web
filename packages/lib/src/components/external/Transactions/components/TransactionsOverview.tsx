@@ -2,7 +2,6 @@ import FilterBar from '@src/components/internal/FilterBar';
 import DateFilter from '@src/components/internal/FilterBar/filters/DateFilter';
 import { TransactionFilterParam, TransactionsComponentProps } from '@src/components';
 import { TIME_RANGE_PRESET_OPTIONS } from '@src/components/internal/DatePicker/components/TimeRangeSelector';
-import Alert from '@src/components/internal/Alert';
 import TransactionList from '@src/components/external/Transactions/components/TransactionList';
 import useCoreContext from '@src/core/Context/useCoreContext';
 import { SetupHttpOptions, useSetupEndpoint } from '@src/hooks/useSetupEndpoint/useSetupEndpoint';
@@ -16,6 +15,7 @@ import { TranslationKey } from '@src/core/Localization/types';
 import TransactionTotals from '@src/components/external/Transactions/components/TransactionTotals/TransactionTotals';
 import { BalanceAccountsDisplay } from '@src/components/external/Transactions/components/AccountsBalanceDisplay/BalanceAccountsDisplay';
 import Select from '@src/components/internal/FormFields/Select';
+import AdyenFPError from '@src/core/Errors/AdyenFPError';
 
 const { from, to } = Object.values(TIME_RANGE_PRESET_OPTIONS)[0]!;
 const DEFAULT_TIME_RANGE_PRESET = Object.keys(TIME_RANGE_PRESET_OPTIONS)[0]! as TranslationKey;
@@ -30,7 +30,9 @@ export const TransactionsOverview = ({
     preferredLimit = DEFAULT_PAGE_LIMIT,
     onTransactionSelected,
     showDetails,
-}: TransactionsComponentProps & { balanceAccounts: IBalanceAccountBase[] | undefined }) => {
+    onContactSupport,
+    isLoadingBalanceAccount,
+}: TransactionsComponentProps & { balanceAccounts: IBalanceAccountBase[] | undefined; isLoadingBalanceAccount: boolean }) => {
     const { i18n } = useCoreContext();
 
     const transactionsEndpointCall = useSetupEndpoint('getTransactions');
@@ -42,7 +44,7 @@ export const TransactionsOverview = ({
                 signal,
             };
 
-            const parameters = {
+            return transactionsEndpointCall(requestOptions, {
                 query: {
                     ...pageRequestParams,
                     statuses: pageRequestParams.statuses ? [pageRequestParams.statuses as any] : undefined,
@@ -51,8 +53,7 @@ export const TransactionsOverview = ({
                     createdUntil: pageRequestParams.createdUntil ?? DEFAULT_CREATED_UNTIL,
                 },
                 path: { balanceAccountId: balanceAccounts?.[0]?.id ?? '' },
-            };
-            return transactionsEndpointCall(requestOptions, parameters);
+            });
         },
         [balanceAccounts, transactionsEndpointCall]
     );
@@ -131,8 +132,6 @@ export const TransactionsOverview = ({
 
     useMemo(() => !canResetFilters && setSelectedTimeRangePreset(defaultTimeRangePreset), [canResetFilters]);
 
-    const showAlert = useMemo(() => !fetching && error, [fetching, error]);
-
     //TODO - Replace with the value of the balanceAccount filter
     const balanceAccountId = useMemo(() => balanceAccounts?.[0]?.id, [balanceAccounts]);
 
@@ -184,21 +183,20 @@ export const TransactionsOverview = ({
                 />
                 <BalanceAccountsDisplay balanceAccountId={balanceAccountId} />
             </div>
-            {showAlert ? (
-                <Alert icon={'cross'}>{error?.message ?? i18n.get('unableToLoadTransactions')}</Alert>
-            ) : (
-                <TransactionList
-                    loading={fetching || !records}
-                    transactions={records}
-                    onTransactionSelected={onTransactionSelected}
-                    showPagination={true}
-                    showDetails={showDetails}
-                    limit={limit}
-                    limitOptions={limitOptions}
-                    onLimitSelection={updateLimit}
-                    {...paginationProps}
-                />
-            )}
+
+            <TransactionList
+                loading={fetching || isLoadingBalanceAccount || !balanceAccounts}
+                transactions={records}
+                onTransactionSelected={onTransactionSelected}
+                showPagination={true}
+                showDetails={showDetails}
+                limit={limit}
+                limitOptions={limitOptions}
+                onLimitSelection={updateLimit}
+                error={error as AdyenFPError}
+                onContactSupport={onContactSupport}
+                {...paginationProps}
+            />
         </>
     );
 };

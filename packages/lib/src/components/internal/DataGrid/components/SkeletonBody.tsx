@@ -1,45 +1,10 @@
 import cx from 'classnames';
 import '../DataGrid.scss';
-import useCoreContext from '@src/core/Context/useCoreContext';
-import { DataGridProps } from '@src/components/internal/DataGrid/types';
-import Typography from '@src/components/internal/Typography/Typography';
-import { TypographyVariant } from '@src/components/internal/Typography/types';
-import emptyTableIcon from '../../../../images/no-data-female.svg';
-import { useCallback } from 'preact/hooks';
-import { TranslationKey } from '@src/core/Localization/types';
+import { VNode } from 'preact';
 
-const SkeletonBody = ({
-    columnsNumber,
-    loading,
-    emptyTableMessage,
-}: {
-    columnsNumber: number;
-    loading: boolean;
-    emptyTableMessage?: DataGridProps<any, any, any, any>['emptyTableMessage'];
-}) => {
+const SkeletonBody = ({ columnsNumber, loading, emptyMessageDisplay }: { columnsNumber: number; loading: boolean; emptyMessageDisplay?: VNode }) => {
     const rows = Array.from({ length: 10 }, (_, index) => index);
     const columns = Array.from({ length: columnsNumber }, (_, index) => index);
-    const { i18n } = useCoreContext();
-
-    const renderMessage = useCallback(
-        (message: TranslationKey | TranslationKey[]) => {
-            if (Array.isArray(message)) {
-                return message.map((m, i) =>
-                    i === 0 ? (
-                        i18n.get(m)
-                    ) : (
-                        <>
-                            <br />
-                            {i18n.get(m)}
-                        </>
-                    )
-                );
-            }
-            return i18n.get(message);
-        },
-        [i18n]
-    );
-
     return (
         <>
             {rows.map((_, i) => (
@@ -55,19 +20,7 @@ const SkeletonBody = ({
                     ))}
                 </tr>
             ))}
-            {!loading && (
-                <div className="adyen-fp-data-grid__empty-message">
-                    <picture>
-                        <source type="image/svg+xml" srcSet={emptyTableIcon} />
-
-                        <img srcSet={emptyTableIcon} alt={i18n.get('thereAreNoResults')} />
-                    </picture>
-                    <Typography variant={TypographyVariant.TITLE}>{i18n.get(emptyTableMessage?.title ?? 'thereAreNoResults')}</Typography>
-                    {emptyTableMessage?.message && (
-                        <Typography variant={TypographyVariant.BODY}>{renderMessage(emptyTableMessage.message)}</Typography>
-                    )}
-                </div>
-            )}
+            {!loading && emptyMessageDisplay && emptyMessageDisplay}
         </>
     );
 };

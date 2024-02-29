@@ -40,11 +40,11 @@ const TransactionTotals = ({
         queryFn: fetchCallback,
     });
 
-    const isLoading = !balanceAccountId || (balanceAccountId && !data && !error) || isFetching;
+    const isLoading = !balanceAccountId || isFetching;
 
     const totals = data?.totals?.[0];
 
-    const showSkeleton = isLoading || data?.totals?.length === 0;
+    const showSkeleton = isLoading || error || data?.totals?.length === 0;
 
     // TODO - Refactor to avoid code repetition (this is working as a placeholder component)
     return (
