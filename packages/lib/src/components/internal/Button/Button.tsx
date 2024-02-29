@@ -17,6 +17,7 @@ import { useMemo } from 'preact/hooks';
 import { ButtonProps, ButtonVariant } from './types';
 import './Button.scss';
 
+// TODO: Reuse BaseButton component within Button component
 function Button(
     {
         variant = ButtonVariant.PRIMARY,
