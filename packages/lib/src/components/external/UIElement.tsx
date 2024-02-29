@@ -13,7 +13,6 @@ export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUI
     protected componentRef: UIElement<P> | null;
     public elementRef: UIElement<P> | null;
     public componentToRender: (() => JSXInternal.Element) | null;
-    public token: string;
 
     constructor(props: P & UIElementProps & BaseElementProps) {
         super(props);
@@ -21,7 +20,6 @@ export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUI
         this.componentRef = null;
         this.elementRef = (this.props && this.props.elementRef) || this;
         this.componentToRender = null;
-        this.token = this.props?.core?.session?.token || '';
         this.sessionSetupError = this.props.core.sessionSetupError;
     }
 
@@ -89,7 +87,7 @@ export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUI
         return (
             <AuthProvider
                 endpoints={this.session?.configuration?.endpoints || (EMPTY_OBJECT as SetupEndpoint)}
-                token={this.token}
+                token={this.session?.token ?? ''}
                 updateCore={this.props.core.update.bind(this.props.core)}
                 sessionSetupError={this.sessionSetupError}
             >
