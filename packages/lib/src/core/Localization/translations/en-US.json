@@ -24,6 +24,8 @@
     "editFilter": "Edit filter",
     "balanceAccount": "Balance account",
     "balancePlatform": "Balance platform",
+    "expandableCard.collapse": "Collapse",
+    "expandableCard.expand": "Expand",
     "toStart": "Select a balance platform, a balance account or an account",
     "clear": "Clear",
     "apply": "Apply",

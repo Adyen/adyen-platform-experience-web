@@ -3,15 +3,18 @@ import { useCallback, useEffect, useRef } from 'preact/hooks';
 const onFocusoutCapture = (e: Event) => {
     e.stopImmediatePropagation();
 };
-export const useClickOutside = (rootElementRef: Nullable<Reflexable<Element>>, callback?: (interactionKeyPressed: boolean) => void) => {
-    const ref = useRef<Nullable<Element>>(null);
+export const useClickOutside = <T extends Element = Element>(
+    rootElementRef?: Nullable<Reflexable<T>>,
+    callback?: (interactionKeyPressed: boolean) => void
+) => {
+    const ref = useRef<Nullable<T>>(null);
 
     const handleClickOutside = useCallback(
         (e: Event) => {
             const eventPath: EventTarget[] = e.composedPath();
             if (!(ref && ref.current)) return;
             if (eventPath.length) {
-                const samePath = eventPath.some(path => (path as Element)?.isSameNode && (path as Element).isSameNode(ref.current as Element));
+                const samePath = eventPath.some(path => (path as T)?.isSameNode && (path as T).isSameNode(ref.current as T));
                 if (callback && !samePath) {
                     callback(true);
                 }
@@ -29,8 +32,8 @@ export const useClickOutside = (rootElementRef: Nullable<Reflexable<Element>>, c
         return () => document.removeEventListener('click', clickOutsideHandlerRef.current, true);
     }, [handleClickOutside]);
 
-    return useReflex<Element>(
-        useCallback((current: Nullable<Element>, previous) => {
+    return useReflex<T>(
+        useCallback((current: Nullable<T>, previous) => {
             if (previous instanceof Element) {
                 previous.removeEventListener('focusout', onFocusoutCapture, true);
             }
