@@ -1,4 +1,4 @@
 export interface FilterBarProps {
-    canResetFilters: boolean;
-    resetFilters: () => void;
+    canResetFilters?: boolean;
+    resetFilters?: () => void;
 }

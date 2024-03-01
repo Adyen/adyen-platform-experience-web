@@ -112,11 +112,13 @@ const BaseFilter = <T extends BaseFilterProps = BaseFilterProps>({ render, ...pr
                     () => (
                         <FilterButton
                             classNameModifiers={[
-                                ...(props.value ? ['with-counter'] : []),
+                                ...(props.appliedFilterAmount ? ['with-counter'] : []),
                                 ...(props.classNameModifiers ?? []),
                                 ...(editMode ? ['active'] : []),
+                                ...(hasEmptyValue ? [] : ['has-selection']),
                             ]}
-                            onClick={openEditDialog}
+                            onClick={editMode ? closeEditDialog : openEditDialog}
+                            tabIndex={0}
                             ref={targetElement as Ref<HTMLButtonElement | null>}
                         >
                             <div className="adyen-fp-filter-button__default-container">
@@ -143,7 +145,7 @@ const BaseFilter = <T extends BaseFilterProps = BaseFilterProps>({ render, ...pr
                             </div>
                         </FilterButton>
                     ),
-                    [props.label, props.appliedFilterAmount, editMode, props.classNameModifiers, props.value]
+                    [props.label, props.appliedFilterAmount, editMode, closeEditDialog, openEditDialog, hasEmptyValue, props.classNameModifiers]
                 )}
             </div>
             {editMode && (

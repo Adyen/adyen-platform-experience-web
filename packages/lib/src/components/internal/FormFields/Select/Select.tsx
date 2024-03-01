@@ -4,6 +4,7 @@ import { InteractionKeyCode } from '@src/components/types';
 import { ARIA_ERROR_SUFFIX } from '@src/core/Errors/constants';
 import { EMPTY_ARRAY, noop } from '@src/utils/common';
 import useCommitAction, { CommitAction } from '@src/hooks/useCommitAction';
+import { useClickOutside } from '@src/hooks/element/useClickOutside';
 import uuid from '@src/utils/uuid';
 import SelectButton from './components/SelectButton';
 import SelectList from './components/SelectList';
@@ -12,6 +13,7 @@ import { DROPDOWN_BASE_CLASS, DROPDOWN_MULTI_SELECT_CLASS } from './constants';
 import { SelectItem, SelectProps } from './types';
 import './Select.scss';
 
+// [TODO]: Revisit this component logic — for handling user interaction
 const Select = <T extends SelectItem>({
     className,
     classNameModifiers = EMPTY_ARRAY as [],
@@ -30,13 +32,29 @@ const Select = <T extends SelectItem>({
     isCollatingErrors,
     withoutCollapseIndicator = false,
 }: SelectProps<T>) => {
+    const { resetSelection, select, selection } = useSelect({ items, multiSelect, selected });
     const [showList, setShowList] = useState<boolean>(false);
     const [textFilter, setTextFilter] = useState<string>('');
     const filterInputRef = useRef<HTMLInputElement>(null);
-    const selectContainerRef = useRef<HTMLDivElement>(null);
     const selectListRef = useRef<HTMLUListElement>(null);
     const toggleButtonRef = useRef<HTMLButtonElement>(null);
     const selectListId = useRef(`select-${uuid()}`);
+
+    const autoFocusAnimFrame = useRef<ReturnType<typeof requestAnimationFrame>>();
+    const pendingClickOutsideTriggeredHideList = useRef(true);
+    const clearSelectionInProgress = useRef(false);
+    const cachedSelectedItems = useRef(selection);
+    const selectedItems = useRef(selection);
+
+    const selectContainerRef = useClickOutside(
+        useRef<HTMLDivElement>(null),
+        useCallback(() => {
+            setTextFilter('');
+            setShowList(false);
+            resetSelection(cachedSelectedItems.current);
+            pendingClickOutsideTriggeredHideList.current = true;
+        }, [resetSelection, setShowList, setTextFilter])
+    );
 
     const dropdownClassName = useMemo(
         () =>
@@ -49,11 +67,6 @@ const Select = <T extends SelectItem>({
         EMPTY_ARRAY
     );
 
-    const { resetSelection, select, selection } = useSelect({ items, multiSelect, selected });
-    const clearSelectionInProgress = useRef(false);
-    const cachedSelectedItems = useRef(selection);
-    const selectedItems = useRef(selection);
-
     const { commitAction, commitActionButtons, committing, resetCommitAction } = useCommitAction({
         resetDisabled: !selection.length,
     });
@@ -61,13 +74,16 @@ const Select = <T extends SelectItem>({
     /**
      * Closes the select list:
      *   - empties the text filter
-     *   - restores focus to the select button element
+     *   - restores focus to the select button element (?)
      */
     const closeList = useCallback(() => {
         setTextFilter('');
         setShowList(false);
         resetCommitAction();
-        if (toggleButtonRef.current) toggleButtonRef.current.focus();
+
+        if (!pendingClickOutsideTriggeredHideList.current) {
+            toggleButtonRef.current?.focus();
+        } else pendingClickOutsideTriggeredHideList.current = false;
     }, [resetCommitAction, setShowList, setTextFilter]);
 
     const commitSelection = useCallback(() => {
@@ -86,7 +102,7 @@ const Select = <T extends SelectItem>({
                 clearSelectionInProgress.current = true;
                 break;
         }
-    }, [commitAction, resetSelection]);
+    }, [commitAction, commitSelection, resetSelection]);
 
     /**
      * Closes the select list and fires an onChange
@@ -126,8 +142,6 @@ const Select = <T extends SelectItem>({
         committing && closeList();
     }, [committing, closeList]);
 
-    const pendingKeyboardTriggeredShowList = useRef(false);
-
     /**
      * Handle keyDown events on the selectList button
      * Opens the selectList and focuses the first element if available
@@ -135,7 +149,7 @@ const Select = <T extends SelectItem>({
      */
     const handleButtonKeyDown = useCallback(
         (evt: KeyboardEvent) => {
-            switch (evt.key) {
+            switch (evt.code) {
                 case InteractionKeyCode.ESCAPE:
                 case InteractionKeyCode.TAB:
                     /**
@@ -143,7 +157,8 @@ const Select = <T extends SelectItem>({
                      * - When user has focused select button but not yet moved into select list, close list and keep focus on the select button
                      * - Shift+Tab out of select should close list
                      */
-                    closeList();
+                    showList && closeList();
+                    pendingClickOutsideTriggeredHideList.current = evt.key === InteractionKeyCode.TAB;
                     return;
                 case InteractionKeyCode.ENTER:
                 case InteractionKeyCode.SPACE:
@@ -164,47 +179,35 @@ const Select = <T extends SelectItem>({
 
             evt.preventDefault();
             setShowList(true);
-            pendingKeyboardTriggeredShowList.current = true;
         },
         [closeList, filterable, handleSelect, showList, setShowList, textFilter]
     );
 
     useEffect(() => {
-        if (showList && pendingKeyboardTriggeredShowList.current) {
-            pendingKeyboardTriggeredShowList.current = false;
+        if (showList) {
+            cancelAnimationFrame(autoFocusAnimFrame.current!);
 
-            let item = selectListRef.current?.firstElementChild as HTMLLIElement;
+            autoFocusAnimFrame.current = requestAnimationFrame(() => {
+                focus: {
+                    let item = selectListRef.current?.firstElementChild as HTMLLIElement;
+                    let firstAvailableItem: typeof item | undefined;
 
-            while (item) {
-                if (!(item.dataset.disabled && item.dataset.disabled === 'true')) {
-                    item.focus();
-                    break;
+                    while (item) {
+                        if (!(item.dataset.disabled && item.dataset.disabled === 'true')) {
+                            if (item.getAttribute('aria-selected') === 'true') {
+                                item.focus();
+                                break focus;
+                            }
+                            firstAvailableItem = firstAvailableItem || item;
+                        }
+                        item = item.nextElementSibling as HTMLLIElement;
+                    }
+
+                    if (firstAvailableItem) firstAvailableItem.focus();
                 }
-                item = item.nextElementSibling as HTMLLIElement;
-            }
+            });
         }
     }, [showList]);
-
-    /**
-     * Close the select list when clicking outside the list
-     * @param e - MouseEvent
-     */
-    const handleClickOutside = useCallback(
-        (evt: MouseEvent) => {
-            // use composedPath so it can also check when inside a web component
-            // if composedPath is not available fallback to e.target
-            const clickIsOutside =
-                selectContainerRef.current && evt.composedPath
-                    ? !evt.composedPath().includes(selectContainerRef.current)
-                    : !selectContainerRef.current?.contains(evt.target as HTMLElement);
-            if (clickIsOutside) {
-                setTextFilter('');
-                setShowList(false);
-                resetSelection(cachedSelectedItems.current);
-            }
-        },
-        [resetSelection, setShowList, setTextFilter]
-    );
 
     /**
      * Handle keyDown events on the list elements
@@ -215,7 +218,7 @@ const Select = <T extends SelectItem>({
         (evt: KeyboardEvent) => {
             const target = evt.target as HTMLInputElement;
 
-            switch (evt.key) {
+            switch (evt.code) {
                 case InteractionKeyCode.ESCAPE:
                     evt.preventDefault();
                     // When user is actively navigating through list with arrow keys - close list and keep focus on the Select Button re. a11y guidelines (above)
@@ -282,24 +285,17 @@ const Select = <T extends SelectItem>({
     const toggleList = useCallback(
         (e: Event) => {
             e.preventDefault();
-            setShowList(!showList);
+            setShowList(showList => !showList);
+            showList && resetSelection(cachedSelectedItems.current);
         },
-        [setShowList]
+        [setShowList, showList, resetSelection]
     );
 
     useEffect(() => {
-        if (showList && filterable && filterInputRef.current) {
-            filterInputRef.current.focus();
+        if (showList && filterable) {
+            filterInputRef.current?.focus();
         }
     }, [showList]);
-
-    useEffect(() => {
-        document.addEventListener('click', handleClickOutside, false);
-
-        return () => {
-            document.removeEventListener('click', handleClickOutside, false);
-        };
-    }, []);
 
     return (
         <div ref={selectContainerRef} className={dropdownClassName}>

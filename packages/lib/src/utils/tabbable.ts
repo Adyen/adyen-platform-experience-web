@@ -7,7 +7,7 @@ export interface TabbableRoot {
     tabbables: Element[];
 }
 
-const SELECTORS = `
+export const SELECTORS = `
     a[href],
     audio[controls],
     video[controls],

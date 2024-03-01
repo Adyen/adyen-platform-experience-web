@@ -31,11 +31,23 @@
     $adyen-fp-self: &;
     $adyen-fp-self--active: #{$adyen-fp-self}--active;
 
+    isolation: isolate;
+    overflow: hidden;
+    position: relative;
+
+    &--active,
+    &:active {
+        &[role='button'] {
+            min-width: 100px;
+        }
+    }
+
     &.adyen-fp-button--secondary {
         background: var(--adyen-fp-color-white);
+        border: 1px solid var(--adyen-fp-filter-button-border-color);
+        box-shadow: none;
         color: var(--adyen-fp-color-black);
         justify-content: flex-start;
-        outline: 0;
         text-decoration: none;
         user-select: none;
         width: 100%;
@@ -107,18 +119,6 @@
         @extend %adyen-fp-dropdown-overflow-text-container;
         pointer-events: none;
         text-align: left;
-    }
-
-    &:hover {
-        border-color: #99a3ad;
-    }
-
-    &--active,
-    &--active:hover,
-    &:active,
-    &:focus {
-        border-color: var(--adyen-fp-color-primary);
-        box-shadow: 0 0 0 2px var(--adyen-fp-color-blue-light);
     }
 
     //&--readonly {

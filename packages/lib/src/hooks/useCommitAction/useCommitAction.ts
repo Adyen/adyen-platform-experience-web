@@ -30,7 +30,7 @@ const useCommitAction = ({ applyDisabled, applyTitle, resetDisabled, resetTitle 
             ({
                 disabled: (resetDisabled as any) === true,
                 event: resetAction,
-                title: resetTitle?.trim() || i18n.get('clear'),
+                title: resetTitle?.trim() || i18n.get('reset'),
                 variant: ButtonVariant.SECONDARY,
             } as ButtonActionObject),
         [i18n, resetAction, resetDisabled, resetTitle]

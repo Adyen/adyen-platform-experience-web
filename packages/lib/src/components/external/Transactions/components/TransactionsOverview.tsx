@@ -46,9 +46,7 @@ export const TransactionsOverview = ({
     const { i18n } = useCoreContext();
     const transactionsEndpointCall = useSetupEndpoint('getTransactions');
     const { activeBalanceAccount, balanceAccountSelectionOptions, onBalanceAccountSelection } = useBalanceAccountSelection(balanceAccounts);
-    const { defaultTimeRangePresetOption, defaultTransactionsFilterParams, timeRangePresetOptions } = useRef(
-        computeDefaultTransactionsFilterParams()
-    ).current;
+    const transactionsFilterParams = useRef(computeDefaultTransactionsFilterParams());
     const now = useRef(Date.now());
 
     const getTransactions = useCallback(
@@ -63,13 +61,13 @@ export const TransactionsOverview = ({
                     currencies: listFrom<ITransaction['amount']['currency']>(pageRequestParams[TransactionFilterParam.CURRENCIES]),
                     createdSince:
                         pageRequestParams[TransactionFilterParam.CREATED_SINCE] ??
-                        defaultTransactionsFilterParams[TransactionFilterParam.CREATED_SINCE],
+                        transactionsFilterParams.current.defaultTransactionsFilterParams[TransactionFilterParam.CREATED_SINCE],
                     createdUntil:
                         pageRequestParams[TransactionFilterParam.CREATED_UNTIL] ??
-                        defaultTransactionsFilterParams[TransactionFilterParam.CREATED_UNTIL],
+                        transactionsFilterParams.current.defaultTransactionsFilterParams[TransactionFilterParam.CREATED_UNTIL],
                     sortDirection: 'desc' as const,
                 },
-                path: { balanceAccountId: activeBalanceAccount?.id! },
+                path: { balanceAccountId: activeBalanceAccount?.id ?? '' },
             });
         },
         [activeBalanceAccount, transactionsEndpointCall]
@@ -81,7 +79,7 @@ export const TransactionsOverview = ({
     const _onLimitChanged = useMemo(() => (isFunction(onLimitChanged) ? onLimitChanged : void 0), [onLimitChanged]);
     const preferredLimitOptions = useMemo(() => (allowLimitSelection ? LIMIT_OPTIONS : undefined), [allowLimitSelection]);
 
-    const defaultTimeRangePreset = useMemo(() => i18n.get(defaultTimeRangePresetOption), [i18n]);
+    const defaultTimeRangePreset = useMemo(() => i18n.get(transactionsFilterParams.current.defaultTimeRangePresetOption), [i18n]);
     const [selectedTimeRangePreset, setSelectedTimeRangePreset] = useState(defaultTimeRangePreset);
 
     //TODO - Infer the return type of getTransactions instead of having to specify it
@@ -89,7 +87,7 @@ export const TransactionsOverview = ({
         useCursorPaginatedRecords<ITransaction, 'transactions', string, TransactionFilterParam>({
             fetchRecords: getTransactions,
             dataField: 'transactions',
-            filterParams: defaultTransactionsFilterParams,
+            filterParams: transactionsFilterParams.current.defaultTransactionsFilterParams,
             initialFiltersSameAsDefault: true,
             onLimitChanged: _onLimitChanged,
             onFiltersChanged: _onFiltersChanged,
@@ -104,7 +102,7 @@ export const TransactionsOverview = ({
     });
 
     const updateCreatedDateFilter = useCallback(
-        ((params = EMPTY_OBJECT) => {
+        (params: Parameters<DateFilterProps['onChange']>[0] = EMPTY_OBJECT) => {
             for (const [param, value] of Object.entries(params) as [keyof typeof params, (typeof params)[keyof typeof params]][]) {
                 switch (param) {
                     case 'selectedPresetOption':
@@ -112,25 +110,27 @@ export const TransactionsOverview = ({
                         break;
                     case DateRangeFilterParam.FROM:
                         updateFilters({
-                            [TransactionFilterParam.CREATED_SINCE]: value || defaultTransactionsFilterParams[TransactionFilterParam.CREATED_SINCE],
+                            [TransactionFilterParam.CREATED_SINCE]:
+                                value || transactionsFilterParams.current.defaultTransactionsFilterParams[TransactionFilterParam.CREATED_SINCE],
                         });
                         break;
                     case DateRangeFilterParam.TO:
                         updateFilters({
-                            [TransactionFilterParam.CREATED_UNTIL]: value || defaultTransactionsFilterParams[TransactionFilterParam.CREATED_UNTIL],
+                            [TransactionFilterParam.CREATED_UNTIL]:
+                                value || transactionsFilterParams.current.defaultTransactionsFilterParams[TransactionFilterParam.CREATED_UNTIL],
                         });
                         break;
                 }
             }
-        }) as DateFilterProps['onChange'],
+        },
         [defaultTimeRangePreset, updateFilters]
     );
 
-    useMemo(() => !canResetFilters && setSelectedTimeRangePreset(defaultTimeRangePreset), [canResetFilters]);
+    useMemo(() => !canResetFilters && setSelectedTimeRangePreset(defaultTimeRangePreset), [canResetFilters, defaultTimeRangePreset]);
 
     return (
         <>
-            <FilterBar canResetFilters={canResetFilters} resetFilters={resetFilters}>
+            <FilterBar>
                 <BalanceAccountSelector
                     activeBalanceAccount={activeBalanceAccount}
                     balanceAccountSelectionOptions={balanceAccountSelectionOptions}
@@ -144,7 +144,7 @@ export const TransactionsOverview = ({
                     from={filters[TransactionFilterParam.CREATED_SINCE]}
                     to={filters[TransactionFilterParam.CREATED_UNTIL]}
                     selectedPresetOption={selectedTimeRangePreset}
-                    timeRangePresetOptions={timeRangePresetOptions}
+                    timeRangePresetOptions={transactionsFilterParams.current.timeRangePresetOptions}
                     timezone={activeBalanceAccount?.timeZone}
                     onChange={updateCreatedDateFilter}
                     showTimezoneInfo={true}

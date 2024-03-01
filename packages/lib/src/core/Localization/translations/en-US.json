@@ -27,7 +27,7 @@
     "expandableCard.collapse": "Collapse",
     "expandableCard.expand": "Expand",
     "toStart": "Select a balance platform, a balance account or an account",
-    "clear": "Clear",
+    "reset": "Reset",
     "apply": "Apply",
     "referenceForBeneficiary": "Reference for beneficiary",
     "status.booked": "Booked",

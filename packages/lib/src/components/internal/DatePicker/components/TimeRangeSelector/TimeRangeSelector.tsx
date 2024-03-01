@@ -25,7 +25,7 @@ const TimeRangeSelector = ({
             calendarRef.current.from = new Date(from as string);
             calendarRef.current.to = new Date(to as string);
         }
-    }, [from, to]);
+    }, [calendarRef, from, to]);
 
     useEffect(() => {
         if (cachedTimestamp.current !== timestamp) {
@@ -39,7 +39,7 @@ const TimeRangeSelector = ({
 
     useEffect(() => {
         selectedOption && onTimeRangeSelected?.(selectedOption);
-    }, [selectedOption]);
+    }, [selectedOption, onTimeRangeSelected]);
 
     return <Select items={selectOptions} filterable={false} multiSelect={false} onChange={onSelectedOptionChanged} selected={selectedOption} />;
 };

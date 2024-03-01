@@ -14,6 +14,7 @@ import {
     DROPDOWN_BUTTON_CLASS,
     DROPDOWN_BUTTON_CLASSNAME,
     DROPDOWN_BUTTON_COLLAPSE_INDICATOR_CLASS,
+    DROPDOWN_BUTTON_HAS_SELECTION_CLASS,
     DROPDOWN_BUTTON_ICON_CLASS,
     DROPDOWN_BUTTON_INVALID_CLASS,
     DROPDOWN_BUTTON_MULTI_SELECT_COUNTER_CLASS,
@@ -61,6 +62,7 @@ const SelectButton = <T extends SelectItem>(props: SelectButtonProps<T>) => {
             aria-haspopup="listbox"
             className={cx(DROPDOWN_BUTTON_CLASS, {
                 [DROPDOWN_BUTTON_ACTIVE_CLASS]: showList,
+                [DROPDOWN_BUTTON_HAS_SELECTION_CLASS]: !!active.length,
                 [DROPDOWN_BUTTON_READONLY_CLASS]: readonly,
                 [DROPDOWN_BUTTON_INVALID_CLASS]: props.isInvalid,
                 [DROPDOWN_BUTTON_VALID_CLASS]: props.isValid,
