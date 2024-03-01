@@ -11,7 +11,6 @@ export enum PopoverContainerVariant {
 interface PopoverCoreProps {
     actions?: ButtonActionsList;
     actionsLayout?: ButtonActionsLayout;
-    ariaLabel: string;
     variant?: PopoverContainerVariant;
     divider?: boolean;
     dismissible?: boolean;

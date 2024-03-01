@@ -24,7 +24,7 @@ type WithNextPageNeighbour<T = any> = BothPageNeighbours<T> | NextPageNeighbour<
 type WithPrevPageNeighbour<T = any> = BothPageNeighbours<T> | PrevPageNeighbour<T>;
 type WithPageNeighbours<T = any> = WithNextPageNeighbour<T> | WithPrevPageNeighbour<T>;
 
-type WhichPageNeighbour<T extends PaginationType> = ForPaginationType<T, URLSearchParams, boolean>;
+type WhichPageNeighbour<T extends PaginationType> = ForPaginationType<T, string, boolean>;
 
 export type WithEitherPages<T extends PaginationType> = WithPageNeighbours<WhichPageNeighbour<T>>;
 export type WithNextPage<T extends PaginationType> = WithNextPageNeighbour<WhichPageNeighbour<T>>;
@@ -42,14 +42,13 @@ export type WithPaginationLimitSelection<T extends Record<any, any> = {}> = T & 
 
 export type PaginatedResponseDataKeyword = 'hasNext' | 'hasPrevious' | '_links';
 export type PaginatedResponseDataField<DataField extends string> = Exclude<DataField | PaginatedResponseDataKeyword, PaginatedResponseDataKeyword>;
-export type PaginatedResponseDataLink = { href: string };
 
 export type BasePaginatedResponseData<T = any, DataField extends string = 'data'> = {
     [K in PaginatedResponseDataField<DataField>]?: T[];
 };
 
 export type PaginatedResponseDataWithLinks<T = any, DataField extends string = 'data'> = BasePaginatedResponseData<T, DataField> & {
-    _links: { [K in PageNeighbour]?: PaginatedResponseDataLink };
+    [K in PageNeighbour]?: string;
 };
 
 export type PaginatedResponseDataWithoutLinks<T = any, DataField extends string = 'data'> = BasePaginatedResponseData<T, DataField> & {

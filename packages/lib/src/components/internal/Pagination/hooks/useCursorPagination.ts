@@ -1,4 +1,5 @@
 import { useMemo } from 'preact/hooks';
+import { isString } from '@src/utils/validator-utils';
 import { RequestPageCallback, RequestPageCallbackParams } from './types';
 import { PaginationType, UsePagination, WithEitherPages, WithNextPage, WithPrevPage } from '../types';
 import usePagination from './usePagination';
@@ -8,22 +9,19 @@ type HasNextPage = WithNextPage<PaginationType.CURSOR>;
 type HasPrevPage = WithPrevPage<PaginationType.CURSOR>;
 type PageCursorType = RequestPageCallbackParams<PaginationType.CURSOR>['cursor'];
 
-const isParams = (value?: any) => value instanceof URLSearchParams;
-export const hasNextPage = (value: HasEitherPages): value is HasNextPage => isParams((value as HasNextPage).next);
-export const hasPrevPage = (value: HasEitherPages): value is HasPrevPage => isParams((value as HasPrevPage).prev);
+export const hasNextPage = (value: HasEitherPages): value is HasNextPage => isString((value as HasNextPage).next);
+export const hasPrevPage = (value: HasEitherPages): value is HasPrevPage => isString((value as HasPrevPage).prev);
 
-const useCursorPagination = (
-    requestPageCallback?: RequestPageCallback<PaginationType.CURSOR>,
-    pageLimit?: number
-): UsePagination => {
+const useCursorPagination = (requestPageCallback?: RequestPageCallback<PaginationType.CURSOR>, pageLimit?: number): UsePagination => {
     const paginationSetupConfig = useMemo(() => {
         const cursors: PageCursorType[] = [];
         const getPageCount = () => cursors.length;
-        const resetPageCount = () => { cursors.length = 0 };
+        const resetPageCount = () => {
+            cursors.length = 0;
+        };
         const getPageParams = (page: number) => ({ cursor: cursors[page - 1] });
 
-        const updateCursor = (params: URLSearchParams, page: number) => {
-            const cursor = params.get('cursor') as PageCursorType;
+        const updateCursor = (cursor: PageCursorType, page: number) => {
             const currentCursor = cursors[page - 1];
 
             if ((page === 1 || page === (cursors.length || 1) + 1) && currentCursor === undefined) {

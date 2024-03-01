@@ -1,5 +1,6 @@
 import ButtonActions from '@src/components/internal/Button/ButtonActions/ButtonActions';
 import { ButtonActionsLayoutBasic } from '@src/components/internal/Button/ButtonActions/types';
+import { isFunction } from '@src/utils/common';
 import {
     DEFAULT_POPOVER_CLASSNAME,
     POPOVER_CONTAINER_CLASSNAME,
@@ -15,20 +16,22 @@ import { InteractionKeyCode } from '@src/components/types';
 import { useClickOutside } from '@src/hooks/element/useClickOutside';
 import useFocusTrap from '@src/hooks/element/useFocusTrap';
 import usePopoverPositioner from '@src/hooks/element/usePopoverPositioner';
-import useUniqueIdentifier from '@src/hooks/element/useUniqueIdentifier';
 import { getModifierClasses } from '@src/utils/class-name-utils';
-import { isFocusable } from '@src/utils/tabbable';
+import { isFocusable, SELECTORS } from '@src/utils/tabbable';
 import classNames from 'classnames';
 import { PropsWithChildren } from 'preact/compat';
-import { useCallback, useEffect, useMemo } from 'preact/hooks';
+import { useCallback, useEffect, useMemo, useRef } from 'preact/hooks';
 import './Popover.scss';
 import './PopoverContainer.scss';
+import useReflex from '@src/hooks/useReflex';
 
-const findFirstFocusableElement = () => {
-    const focusable = Array.from(document.getElementsByClassName(`${DEFAULT_POPOVER_CLASSNAME}__content`)?.[0]?.children ?? []);
-    return focusable.find(item => {
-        return isFocusable(item);
+const findFirstFocusableElement = (root: Element) => {
+    let focusable: HTMLElement | undefined;
+    const elements = root.querySelector(`.${POPOVER_CONTENT_CLASSNAME}`)?.querySelectorAll(SELECTORS);
+    Array.prototype.some.call(elements, elem => {
+        if (isFocusable(elem)) return (focusable = elem);
     });
+    return focusable;
 };
 function Popover({
     actions,
@@ -50,7 +53,7 @@ function Popover({
     withContentPadding,
     ...uncontrolledProps
 }: PropsWithChildren<PopoverProps>) {
-    const focusTarget = useUniqueIdentifier();
+    const isDismissible = useMemo(() => isFunction(dismiss) && dismissible !== false, [dismiss, dismissible]);
 
     const onCloseFocusTrap = useCallback(
         (interactionKeyPressed: boolean) => {
@@ -60,21 +63,6 @@ function Popover({
             }
         },
         [dismiss, targetElement]
-    );
-
-    const popoverElement = useClickOutside(usePopoverPositioner([0, 15], targetElement, variant, PopoverContainerPosition.BOTTOM), dismiss);
-
-    const focusTrap = useFocusTrap(focusTarget, onCloseFocusTrap, disableFocusTrap);
-
-    const conditionalClasses = useMemo(
-        () => ({
-            [`${DEFAULT_POPOVER_CLASSNAME}--medium`]: containerSize === PopoverContainerSize.MEDIUM,
-            [`${DEFAULT_POPOVER_CLASSNAME}--with-divider`]: !!divider,
-            [`${DEFAULT_POPOVER_CLASSNAME}--wide`]: containerSize === PopoverContainerSize.WIDE,
-            [`${DEFAULT_POPOVER_CLASSNAME}--fit-content`]: fitContent,
-            [`${DEFAULT_POPOVER_CLASSNAME}--without-space`]: withoutSpace,
-        }),
-        [containerSize, divider, withoutSpace, fitContent]
     );
 
     const onKeyDown = useCallback(
@@ -87,14 +75,44 @@ function Popover({
         [dismiss, targetElement]
     );
 
-    useEffect(() => {
-        const focusable = findFirstFocusableElement() as HTMLElement;
-        focusable?.focus();
-        document.addEventListener('keydown', onKeyDown);
+    const cachedOnKeyDown = useRef(onKeyDown);
+    const autoFocusAnimFrame = useRef<ReturnType<typeof requestAnimationFrame>>();
 
-        return () => {
-            document.removeEventListener('keydown', onKeyDown);
-        };
+    const popoverPositionAnchorElement = useClickOutside(
+        usePopoverPositioner([0, 15], targetElement, variant, PopoverContainerPosition.BOTTOM),
+        dismiss
+    );
+    const popoverFocusTrapElement = useFocusTrap(disableFocusTrap ? null : popoverPositionAnchorElement, onCloseFocusTrap);
+
+    const popoverElement = useReflex<Element>(
+        useCallback(current => {
+            if (current instanceof Element) {
+                cancelAnimationFrame(autoFocusAnimFrame.current!);
+
+                autoFocusAnimFrame.current = requestAnimationFrame(() => {
+                    const focusable = findFirstFocusableElement(current) as HTMLElement;
+                    focusable?.focus();
+                });
+            }
+        }, []),
+        disableFocusTrap ? popoverPositionAnchorElement : popoverFocusTrapElement
+    );
+
+    const conditionalClasses = useMemo(
+        () => ({
+            [`${DEFAULT_POPOVER_CLASSNAME}--medium`]: containerSize === PopoverContainerSize.MEDIUM,
+            [`${DEFAULT_POPOVER_CLASSNAME}--with-divider`]: !!divider,
+            [`${DEFAULT_POPOVER_CLASSNAME}--wide`]: containerSize === PopoverContainerSize.WIDE,
+            [`${DEFAULT_POPOVER_CLASSNAME}--fit-content`]: fitContent,
+            [`${DEFAULT_POPOVER_CLASSNAME}--without-space`]: withoutSpace,
+        }),
+        [containerSize, divider, withoutSpace, fitContent]
+    );
+
+    useEffect(() => {
+        document.removeEventListener('keydown', cachedOnKeyDown.current);
+        document.addEventListener('keydown', (cachedOnKeyDown.current = onKeyDown));
+        return () => document.removeEventListener('keydown', cachedOnKeyDown.current);
     }, [onKeyDown]);
 
     return (
@@ -108,34 +126,32 @@ function Popover({
                     style={{ display: 'none' }}
                     role={uncontrolledProps.role ?? 'dialog'}
                 >
-                    <div ref={focusTarget}>
-                        <div ref={focusTrap}>
+                    {(title || isDismissible) && (
+                        <div className={getModifierClasses(POPOVER_HEADER_CLASSNAME, modifiers, [POPOVER_HEADER_CLASSNAME])}>
                             {title && (
-                                <div className={getModifierClasses(POPOVER_HEADER_CLASSNAME, modifiers, [POPOVER_HEADER_CLASSNAME])}>
-                                    <div className={POPOVER_HEADER_TITLE_CLASSNAME}>
-                                        <PopoverTitle title={title} />
-                                    </div>
-                                    {dismissible && dismiss && <PopoverDismissButton onClick={dismiss} />}
+                                <div className={POPOVER_HEADER_TITLE_CLASSNAME}>
+                                    <PopoverTitle title={title} />
                                 </div>
                             )}
-                            {children && (
-                                <div
-                                    className={
-                                        withContentPadding
-                                            ? `${POPOVER_CONTENT_CLASSNAME} ${POPOVER_CONTENT_CLASSNAME}--with-padding`
-                                            : POPOVER_CONTENT_CLASSNAME
-                                    }
-                                >
-                                    {children}
-                                </div>
-                            )}
-                            {actions && (
-                                <div className={POPOVER_FOOTER_CLASSNAME}>
-                                    <ButtonActions actions={actions} layout={actionsLayout} />
-                                </div>
-                            )}
+                            {isDismissible && <PopoverDismissButton onClick={dismiss!} />}
                         </div>
-                    </div>
+                    )}
+                    {children && (
+                        <div
+                            className={
+                                withContentPadding
+                                    ? `${POPOVER_CONTENT_CLASSNAME} ${POPOVER_CONTENT_CLASSNAME}--with-padding`
+                                    : POPOVER_CONTENT_CLASSNAME
+                            }
+                        >
+                            {children}
+                        </div>
+                    )}
+                    {actions && (
+                        <div className={POPOVER_FOOTER_CLASSNAME}>
+                            <ButtonActions actions={actions} layout={actionsLayout} />
+                        </div>
+                    )}
                 </div>
             ) : null}
         </>

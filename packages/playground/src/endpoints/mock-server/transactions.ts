@@ -11,27 +11,28 @@ export const transactionsMocks = [
         if (networkError) {
             return res.networkError('Failed to connect');
         }
-        let transactions = BASIC_TRANSACTIONS_LIST;
 
         const categories = req.url.searchParams.getAll('categories');
+        const currencies = req.url.searchParams.getAll('currencies');
         const statuses = req.url.searchParams.getAll('statuses');
 
-        if (categories.length && statuses.length) {
-            return res(
-                delay(200),
-                ctx.json({ transactions: transactions.filter(tx => categories.includes(tx.category) && statuses.includes(tx.status)) })
+        let transactions = BASIC_TRANSACTIONS_LIST;
+        let responseDelay = 200;
+
+        if (categories.length || currencies.length || statuses.length) {
+            transactions = transactions.filter(
+                tx =>
+                    (!categories.length || categories!.includes(tx.category)) &&
+                    (!currencies.length || currencies!.includes(tx.amount.currency)) &&
+                    (!statuses.length || statuses!.includes(tx.status))
             );
-        } else {
-            if (categories.length) {
-                transactions = transactions.filter(tx => categories.includes(tx.category));
-            }
-            if (statuses.length) {
-                transactions = transactions.filter(tx => statuses.includes(tx.status));
-            }
+
+            responseDelay = 400;
         }
 
-        return res(delay(400), ctx.json({ transactions }));
+        return res(delay(responseDelay), ctx.json({ transactions }));
     }),
+
     rest.get(mockEndpoints.transaction, (req, res, ctx) => {
         const matchingMock = [...BASIC_TRANSACTIONS_LIST, TRANSACTION_DETAILS_DEFAULT].find(mock => mock.id === req.params.id);
 

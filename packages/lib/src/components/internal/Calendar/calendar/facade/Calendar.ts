@@ -42,7 +42,7 @@ import {
 import { isString } from '@src/utils/validator-utils';
 import watchable from '@src/utils/watchable';
 import { Watchable, WatchableFactory, WatchCallable, WatchCallback } from '@src/utils/watchable/types';
-import { MonthFrame, TimeFrame, YearFrame } from '../timeframe';
+import { MonthFrame, TimeFrame /* , YearFrame */ } from '../timeframe';
 import { today } from '../../clock';
 import {
     CalendarConfig,
@@ -290,7 +290,8 @@ export default class Calendar {
     }
 
     get #timeframe() {
-        return (this.#config.minified as boolean) ? new YearFrame() : new MonthFrame();
+        // return (this.#config.minified as boolean) ? new YearFrame() : new MonthFrame();
+        return new MonthFrame();
     }
 
     #canShiftInDirection(shiftDirection: 1 | -1) {

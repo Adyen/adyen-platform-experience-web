@@ -1,6 +1,39 @@
 .adyen-fp-filter-bar {
+    align-items: center;
     display: flex;
-    flex-wrap: wrap;
     gap: var(--adyen-fp-spacing-small);
     padding: var(--adyen-fp-spacing-medium-small) 0;
+    white-space: nowrap;
+
+    > .adyen-fp-dropdown {
+        max-width: 20%;
+    }
+
+    .adyen-fp-button--secondary.adyen-fp-dropdown__button,
+    .adyen-fp-filter-button {
+        &,
+        &:hover {
+            box-shadow: none;
+        }
+
+        &:focus-visible {
+            outline: 0;
+        }
+
+        &--has-selection {
+            &,
+            &:hover {
+                border: 1px solid var(--adyen-fp-filter-button-active-border-color);
+                box-shadow: var(--adyen-fp-button-secondary-box-shadow);
+            }
+        }
+
+        &--active,
+        &:active,
+        &:focus {
+            border: 1px solid var(--adyen-fp-filter-button-active-border-color);
+            box-shadow: none !important;
+            outline: 1px solid var(--adyen-fp-filter-button-active-border-color);
+        }
+    }
 }

@@ -18,7 +18,6 @@ import {
     PageNeighbour,
     PaginatedResponseData,
     PaginatedResponseDataField,
-    PaginatedResponseDataLink,
     PaginatedResponseDataWithLinks,
     PaginationType,
     WithEitherPages,
@@ -31,10 +30,7 @@ const offsetPaginatedResponseFields = ['hasNext', 'hasPrevious'] as const;
 const isCursorPaginatedResponseData = <T, DataField extends string>(
     data: PaginatedResponseData<T, DataField>
 ): data is PaginatedResponseDataWithLinks<T, DataField> => {
-    if ((data as PaginatedResponseDataWithLinks<T, DataField>)._links) return true;
-
     const dataProperties = Object.getOwnPropertyNames(data as PaginatedResponseDataWithLinks<T, DataField>);
-
     return !offsetPaginatedResponseFields.some(prop => dataProperties.includes(prop));
 };
 
@@ -46,9 +42,9 @@ const parseCursorPaginatedResponseData = <T, DataField extends string>(
 
     if (isCursorPaginatedResponseData<T, DataField>(data)) {
         const paginationData = Object.fromEntries(
-            (Object.entries(data._links || {}) as [PageNeighbour, PaginatedResponseDataLink][])
-                .filter(([neighbour, link]) => pageNeighbours.includes(neighbour as PageNeighbour) && link)
-                .map(([neighbour, { href }]) => [neighbour, new URL(href).searchParams])
+            (Object.entries(data || EMPTY_OBJECT) as [PageNeighbour, string][]).filter(
+                ([neighbour, cursor]) => pageNeighbours.includes(neighbour as PageNeighbour) && cursor
+            )
         ) as WithEitherPages<PaginationType.CURSOR>;
 
         return { records, paginationData };

@@ -8,7 +8,7 @@ export interface ButtonActionObject {
     variant?: ButtonVariant;
 }
 
-export type ButtonActionsList = Array<ButtonActionObject>;
+export type ButtonActionsList = ButtonActionObject[] | readonly ButtonActionObject[];
 
 export enum ButtonActionsLayoutBasic {
     BUTTONS_END = 'buttons-end',

@@ -1,13 +1,13 @@
 import cx from 'classnames';
 import { forwardRef } from 'preact/compat';
-import { Ref, useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
+import { Ref, useCallback, useMemo, useState } from 'preact/hooks';
 import useCoreContext from '@src/core/Context/useCoreContext';
 import { EMPTY_OBJECT, noop } from '@src/utils/common';
 import useReflex from '@src/hooks/useReflex';
 import useTimezone from '@src/components/internal/Calendar/hooks/useTimezone';
 import { DEFAULT_FIRST_WEEK_DAY } from '@src/components/internal/Calendar/calendar/timerange/presets/shared/offsetWeek';
 import { DateFilterProps } from '@src/components/internal/FilterBar/filters/DateFilter/types';
-import TimeRangeSelector, { useTimeRangeSelection } from './components/TimeRangeSelector';
+import TimeRangeSelector from './components/TimeRangeSelector';
 import Calendar from '../Calendar';
 import calendar from '../Calendar/calendar';
 import useCalendarControlsRendering from '../Calendar/hooks/useCalendarControlsRendering';
@@ -15,32 +15,22 @@ import { CalendarHandle, CalendarProps } from '../Calendar/types';
 import './DatePicker.scss';
 
 export type DatePickerProps = CalendarProps &
-    Pick<DateFilterProps, 'selectedPresetOption' | 'timeRangePresetOptions'> & {
+    Pick<DateFilterProps, 'now' | 'selectedPresetOption' | 'showTimezoneInfo' | 'timeRangePresetOptions' | 'timezone'> & {
         onPresetOptionSelected?: (option: string) => any;
-        showTimezoneInfo?: boolean;
     };
 
 const DatePicker = forwardRef((props: DatePickerProps, ref) => {
     const { i18n } = useCoreContext();
-    const now = useMemo(() => Date.now(), []);
-    const [lastUpdatedTimestamp, setLastUpdatedTimestamp] = useState<DOMHighResTimeStamp>(performance.now());
     const [controlsRenderer, controlsContainerRef] = useCalendarControlsRendering(props.renderControl);
-
-    const { customSelection, from, onSelection, options, selectedOption, to } = useTimeRangeSelection({
-        now,
-        options: props.timeRangePresetOptions,
-        selectedOption: props.selectedPresetOption,
-    });
+    const [lastUpdatedTimestamp, setLastUpdatedTimestamp] = useState<DOMHighResTimeStamp>(performance.now());
 
     const withTimezone = useMemo(() => props.showTimezoneInfo !== false, [props.showTimezoneInfo]);
-    const { clockTime: time, GMTOffset: offset } = useTimezone({ withClock: withTimezone });
+    const { clockTime: time, GMTOffset: offset } = useTimezone({ timezone: props.timezone, withClock: withTimezone });
 
     const datePickerClassName = useMemo(() => cx([{ 'adyen-fp-datepicker--with-timezone': withTimezone }, 'adyen-fp-datepicker']), [withTimezone]);
     const timezoneI18nOptions = useMemo(() => (withTimezone ? { values: { offset, time } } : EMPTY_OBJECT), [offset, time, withTimezone]);
 
     const calendarRef = useReflex<CalendarHandle>(noop, ref as Ref<CalendarHandle>);
-    const lastUpdateTimestamp = useRef(lastUpdatedTimestamp);
-    const rangeSelectionInProgress = useRef(true);
 
     const onHighlight = useCallback(() => {
         setLastUpdatedTimestamp(performance.now());
@@ -50,32 +40,18 @@ const DatePicker = forwardRef((props: DatePickerProps, ref) => {
         }
     }, [setLastUpdatedTimestamp, props.onHighlight]);
 
-    useEffect(() => {
-        if (calendarRef.current && from && to) {
-            rangeSelectionInProgress.current = true;
-            calendarRef.current.from = new Date(from as string);
-            calendarRef.current.to = new Date(to as string);
-        }
-    }, [from, to]);
-
-    useEffect(() => {
-        if (lastUpdateTimestamp.current !== lastUpdatedTimestamp) {
-            lastUpdateTimestamp.current = lastUpdatedTimestamp;
-
-            if (rangeSelectionInProgress.current) {
-                rangeSelectionInProgress.current = false;
-            } else customSelection();
-        }
-    }, [customSelection, lastUpdatedTimestamp]);
-
-    useEffect(() => {
-        selectedOption && props.onPresetOptionSelected?.(selectedOption);
-    }, [selectedOption]);
-
     return (
         <div className={datePickerClassName}>
             <div className={'adyen-fp-datepicker__selector-container'}>
-                <TimeRangeSelector options={options} selectedOption={selectedOption} onSelection={onSelection} />
+                <TimeRangeSelector
+                    now={props.now}
+                    calendarRef={calendarRef}
+                    onTimeRangeSelected={props.onPresetOptionSelected}
+                    options={props.timeRangePresetOptions}
+                    selectedOption={props.selectedPresetOption}
+                    timestamp={lastUpdatedTimestamp}
+                    timezone={props.timezone}
+                />
             </div>
             <div ref={controlsContainerRef} role="group" className={'adyen-fp-datepicker__controls'} aria-label={i18n.get('calendar.controls')} />
             <Calendar

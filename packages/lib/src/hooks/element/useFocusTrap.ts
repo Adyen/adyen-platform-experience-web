@@ -3,11 +3,7 @@ import { InteractionKeyCode } from '@src/components/types';
 import useReflex, { Nullable, Reflexable } from '../useReflex';
 import withTabbableRoot, { focusIsWithin, isFocusable } from '../../utils/tabbable';
 
-const useFocusTrap = (
-    rootElementRef: Nullable<Reflexable<Element>>,
-    onEscape: (interactionKeyPressed: boolean) => any,
-    disableFocusTrap: boolean
-) => {
+const useFocusTrap = (rootElementRef: Nullable<Reflexable<Element>>, onEscape: (interactionKeyPressed: boolean) => any) => {
     const escapedFocus = useRef(false);
     const focusElement = useRef<Element | null>(null);
     const interactionKeyPressed = useRef(false);
@@ -89,23 +85,21 @@ const useFocusTrap = (
 
     return useReflex<Element>(
         useCallback((current, previous) => {
-            if (!disableFocusTrap) {
-                if (previous instanceof Element) {
-                    (previous as HTMLElement).removeEventListener('keydown', onKeyDownCapture, true);
-                    (previous as HTMLElement).removeEventListener('focusin', onFocusInCapture, true);
-                    (previous as HTMLElement).removeEventListener('focusout', onFocusOutCapture, true);
-                    (current as HTMLElement).removeEventListener('click', onClickCapture, true);
-                }
-
-                if (current instanceof Element) {
-                    (current as HTMLElement).addEventListener('keydown', onKeyDownCapture, true);
-                    (current as HTMLElement).addEventListener('focusin', onFocusInCapture, true);
-                    (current as HTMLElement).addEventListener('focusout', onFocusOutCapture, true);
-                    (current as HTMLElement).addEventListener('click', onClickCapture, true);
-                    escapedFocus.current = false;
-                    tabbableRoot.root = current;
-                } else tabbableRoot.root = null;
+            if (previous instanceof Element) {
+                (previous as HTMLElement).removeEventListener('keydown', onKeyDownCapture, true);
+                (previous as HTMLElement).removeEventListener('focusin', onFocusInCapture, true);
+                (previous as HTMLElement).removeEventListener('focusout', onFocusOutCapture, true);
+                (current as HTMLElement).removeEventListener('click', onClickCapture, true);
             }
+
+            if (current instanceof Element) {
+                (current as HTMLElement).addEventListener('keydown', onKeyDownCapture, true);
+                (current as HTMLElement).addEventListener('focusin', onFocusInCapture, true);
+                (current as HTMLElement).addEventListener('focusout', onFocusOutCapture, true);
+                (current as HTMLElement).addEventListener('click', onClickCapture, true);
+                escapedFocus.current = false;
+                tabbableRoot.root = current;
+            } else tabbableRoot.root = null;
         }, []),
         rootElementRef
     );

@@ -54,17 +54,6 @@ export interface components {
             /** @description Collection of balances per balance account */
             balances: components['schemas']['Balance'][];
         };
-        /** @description Amount */
-        Amount: {
-            /** @description The three-character [ISO currency code](https://docs.adyen.com/development-resources/currency-codes). */
-            currency: string;
-            /**
-             * Format: int64
-             * @description The amount of the transaction, in [minor units](https://docs.adyen.com/development-resources/currency-codes).
-             */
-            value: number;
-        };
-        /** @enum {string} */
     };
     responses: never;
     parameters: never;

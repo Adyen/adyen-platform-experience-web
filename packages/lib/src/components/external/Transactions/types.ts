@@ -8,6 +8,7 @@ import AdyenFPError from '@src/core/Errors/AdyenFPError';
 
 export const enum TransactionFilterParam {
     CATEGORIES = 'categories',
+    CURRENCIES = 'currencies',
     STATUSES = 'statuses',
     CREATED_SINCE = 'createdSince',
     CREATED_UNTIL = 'createdUntil',

@@ -1,4 +1,12 @@
-import { Ref } from 'preact';
+import { Ref, VNode } from 'preact';
+import { HTMLAttributes } from 'preact/compat';
+import { CommitActionProperties } from '@src/hooks/useCommitAction';
+
+type _Selected<T> = T | readonly T[];
+
+type _ListItemRenderData<T extends SelectItem> = Pick<SelectItemProps<T>, 'item' | 'multiSelect' | 'selected'> & {
+    iconClassName?: HTMLAttributes<any>['className'];
+};
 
 export interface SelectItem {
     disabled?: boolean;
@@ -8,58 +16,65 @@ export interface SelectItem {
     selectedOptionName?: string;
 }
 
-export interface SelectProps {
+export interface SelectProps<T extends SelectItem> {
     className?: string;
     classNameModifiers?: string[];
     filterable?: boolean;
+    isCollatingErrors?: boolean;
     isInvalid?: boolean;
     isValid?: boolean;
-    items: SelectItem[];
+    items: readonly T[];
+    multiSelect?: boolean;
     name?: string;
-    onChange: (...args: any) => void;
+    onChange: (...args: any[]) => any;
     placeholder?: string;
     readonly?: boolean;
-    selected?: string;
+    renderListItem?: (data: _ListItemRenderData<T>) => VNode<any> | null;
+    selected?: _Selected<T['id']>;
     uniqueId?: string;
-    isCollatingErrors?: boolean;
-    isIconOnLeftSide?: boolean;
+    withoutCollapseIndicator?: boolean;
 }
 
-export interface SelectButtonProps {
+export interface SelectButtonProps<T extends SelectItem> {
+    active: readonly T[];
+    ariaDescribedBy?: string;
     className?: string;
-    active?: SelectItem;
-    filterInputRef?: Ref<HTMLInputElement>;
     filterable: boolean;
+    filterInputRef?: Ref<HTMLInputElement>;
+    id?: string;
     isInvalid?: boolean;
     isValid?: boolean;
-    onButtonKeyDown?: (e: KeyboardEvent) => void;
-    onInput?: (e: Event) => void;
+    multiSelect?: boolean;
+    onButtonKeyDown?: (evt: KeyboardEvent) => any;
+    onInput?: (evt: Event) => any;
     placeholder?: string;
     readonly?: boolean;
     selectListId?: string;
     showList?: boolean;
     toggleButtonRef: Ref<HTMLButtonElement>;
     toggleList?: (e: Event) => void;
-    id?: string;
-    ariaDescribedBy?: string;
-    isIconOnLeftSide?: boolean;
+    withoutCollapseIndicator?: boolean;
 }
 
-export interface SelectListProps {
-    active: SelectItem;
-    items: SelectItem[];
-    onKeyDown: (e: KeyboardEvent) => void;
-    onSelect: (e: Event) => void;
+export interface SelectListProps<T extends SelectItem> {
+    active: readonly T[];
+    commitActions: CommitActionProperties['commitActionButtons'];
+    items: readonly T[];
+    multiSelect?: boolean;
+    onKeyDown: (evt: KeyboardEvent) => any;
+    onSelect: (evt: Event) => any;
+    renderListItem?: (data: _ListItemRenderData<T>) => VNode<any> | null;
     selectListId: string;
     showList: boolean;
     textFilter: string;
-    isIconOnLeftSide: boolean;
+    toggleButtonRef: Ref<HTMLButtonElement>;
 }
 
-export interface SelectItemProps {
-    item: SelectItem;
+export interface SelectItemProps<T extends SelectItem> {
+    item: T;
+    multiSelect: boolean;
+    onKeyDown: (evt: KeyboardEvent) => any;
+    onSelect: (evt: Event) => any;
+    renderListItem: (data: _ListItemRenderData<T>) => VNode<any> | null;
     selected: boolean;
-    isIconOnLeftSide: boolean;
-    onKeyDown: (e: KeyboardEvent) => void;
-    onSelect: (e: Event) => void;
 }

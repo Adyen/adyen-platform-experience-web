@@ -14,9 +14,10 @@ import type {
 } from './types';
 import { Restamper, RestamperWithTimezone, systemToTimezone, timezoneToSystem } from '@src/core/Localization/datetime/restamper';
 
-export const asPlainObject = (value: any) => (toString(value).slice(8, -1) === 'Object' ? value : EMPTY_OBJECT);
+export const asPlainObject = <T = any>(value: T): T extends Record<any, any> ? T : Readonly<{}> =>
+    toString(value).slice(8, -1) === 'Object' ? value : EMPTY_OBJECT;
 
-export const getter = <T extends any = any>(get: () => T, enumerable: boolean = true): TypedPropertyDescriptor<T> =>
+export const getter = <T = any>(get: () => T, enumerable = true): TypedPropertyDescriptor<T> =>
     ({
         enumerable: (enumerable as any) !== false,
         get,

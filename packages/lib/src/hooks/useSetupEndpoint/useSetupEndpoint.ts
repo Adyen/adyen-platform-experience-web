@@ -26,10 +26,9 @@ export type SuccessResponse<Operation extends Record<any, any>> = Operation['res
 export const useSetupEndpoint = <Endpoint extends EndpointName, Operation extends EndpointsOperations[Endpoint]>(endpoint: Endpoint) => {
     const { endpoints } = useAuthContext();
     const { loadingContext } = useCoreContext();
-
     const { httpProvider } = useSessionAwareRequest();
 
-    const httpRequest = useCallback(
+    return useCallback(
         async (...args: FunctionParams<Endpoint, Operation>): Promise<SuccessResponse<Operation>> => {
             const requestOptions = args[0];
             const params = args[1] || EMPTY_OBJECT;
@@ -51,6 +50,4 @@ export const useSetupEndpoint = <Endpoint extends EndpointName, Operation extend
         },
         [endpoint, endpoints, httpProvider, loadingContext]
     );
-
-    return httpRequest;
 };

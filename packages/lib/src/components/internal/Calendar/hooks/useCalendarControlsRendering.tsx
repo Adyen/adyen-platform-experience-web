@@ -2,6 +2,7 @@ import { ButtonVariant } from '@src/components/internal/Button/types';
 import { useCallback } from 'preact/hooks';
 import { isFunction } from '@src/utils/common';
 import ChevronDown from '@src/components/internal/SVGIcons/ChevronDown';
+import ChevronUp from '@src/components/internal/SVGIcons/ChevronUp';
 import { CalendarControlRenderer, CalendarRenderControl } from '../types';
 import useCoreContext from '../../../../core/Context/useCoreContext';
 import useDetachedRender from '../../../../hooks/element/useDetachedRender';
@@ -18,14 +19,17 @@ const useCalendarControlsRendering = (renderControl?: CalendarRenderControl) => 
 
                 let directionModifier: string;
                 let labelModifier: 'next' | 'previous';
+                let Chevron: typeof ChevronDown | typeof ChevronUp;
 
                 switch (control) {
                     case 'PREV':
                         directionModifier = 'prev';
                         labelModifier = 'previous';
+                        Chevron = ChevronUp;
                         break;
                     case 'NEXT':
                         directionModifier = labelModifier = 'next';
+                        Chevron = ChevronDown;
                         break;
                     default:
                         return null;
@@ -39,10 +43,11 @@ const useCalendarControlsRendering = (renderControl?: CalendarRenderControl) => 
                         variant={ButtonVariant.TERTIARY}
                         disabled={!shouldRenderControl}
                         classNameModifiers={['circle', directionModifier]}
+                        iconButton={true}
                         key={control}
                         onClick={handle}
                     >
-                        <ChevronDown role="presentation" />
+                        <Chevron role="presentation" />
                     </Button>
                 ) : null;
             }) as CalendarControlRenderer,

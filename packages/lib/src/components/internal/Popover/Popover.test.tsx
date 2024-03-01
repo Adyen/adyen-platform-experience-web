@@ -3,7 +3,7 @@
  */
 import { ButtonVariant } from '@src/components/internal/Button/types';
 import { PopoverContainerPosition, PopoverContainerVariant } from '@src/components/internal/Popover/types';
-import { render, screen } from '@testing-library/preact';
+import { render, screen, waitFor } from '@testing-library/preact';
 import userEvent from '@testing-library/user-event';
 import { createRef } from 'preact';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
@@ -36,7 +36,7 @@ describe('Popover component', () => {
                 <Popover
                     targetElement={buttonEl}
                     title={'Test Popover'}
-                    ariaLabel={'popover-test'}
+                    aria-label={'popover-test'}
                     open={true}
                     disableFocusTrap={true}
                     dismiss={context.dismiss}
@@ -58,16 +58,21 @@ describe('Popover component', () => {
         );
     });
 
-    test('should automatically focus', () => {
+    test('should automatically focus', async () => {
         const inputEl = screen.getByTestId('mock-textbox');
-        expect(inputEl).toHaveFocus();
+        await waitFor(() => {
+            expect(inputEl).toHaveFocus();
+        });
     });
 
     test<PopoverContext>('should call dismiss on click outside', async ({ dismiss }) => {
         const titleEl = screen.getByText(/Test Popover/i);
         const buttonEl = screen.getByRole('button', { name: 'Popover Controller' });
         const inputEl = screen.getByTestId('mock-textbox');
-        expect(inputEl).toHaveFocus();
+
+        await waitFor(() => {
+            expect(inputEl).toHaveFocus();
+        });
 
         await userEvent.click(inputEl);
         expect(titleEl).toBeInTheDocument();
@@ -124,7 +129,7 @@ describe('Popover component close', () => {
         render(
             <div>
                 <button ref={buttonEl}>{'Popover Controller'}</button>
-                <Popover targetElement={buttonEl} ariaLabel={'popover-test'}>
+                <Popover targetElement={buttonEl} aria-label={'popover-test'}>
                     <input data-testid="mock-textbox" type="text" />
                 </Popover>
             </div>

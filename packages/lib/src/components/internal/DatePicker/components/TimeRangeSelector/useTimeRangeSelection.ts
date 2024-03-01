@@ -1,36 +1,41 @@
 import { useCallback, useMemo, useRef, useState } from 'preact/hooks';
 import useCoreContext from '@src/core/Context/useCoreContext';
+import type { RestampContext } from '@src/core/Localization/datetime/restamper';
 import type { TranslationKey } from '@src/core/Localization/types';
 import { RangeTimestamp, RangeTimestamps } from '@src/components/internal/Calendar/calendar/timerange';
 import * as RangePreset from '@src/components/internal/Calendar/calendar/timerange/presets';
 
 export type UseTimeRangeSelectionConfig = {
-    options?: Readonly<{ [key: string]: RangeTimestamps }>;
+    now?: RangeTimestamp;
+    options: Readonly<Partial<{ [P in TranslationKey]: RangeTimestamps }>>;
     selectedOption?: string;
-    now: RangeTimestamp;
+    timezone?: RestampContext['TIMEZONE'];
 };
 
 export type UseTimeRangeSelectionData = ReturnType<typeof useTimeRangeSelection>;
 
-export const TIME_RANGE_PRESET_OPTIONS = {
-    'rangePreset.last7Days': RangePreset.lastNDays(7),
-    'rangePreset.thisWeek': RangePreset.thisWeek(),
-    'rangePreset.lastWeek': RangePreset.lastWeek(),
-    'rangePreset.thisMonth': RangePreset.thisMonth(),
-    'rangePreset.lastMonth': RangePreset.lastMonth(),
-    'rangePreset.yearToDate': RangePreset.yearToDate(),
-} as const;
+export const getTimeRangeSelectionDefaultPresetOptions = () =>
+    Object.freeze({
+        'rangePreset.last7Days': RangePreset.lastNDays(7),
+        'rangePreset.thisWeek': RangePreset.thisWeek(),
+        'rangePreset.lastWeek': RangePreset.lastWeek(),
+        'rangePreset.thisMonth': RangePreset.thisMonth(),
+        'rangePreset.lastMonth': RangePreset.lastMonth(),
+        'rangePreset.yearToDate': RangePreset.yearToDate(),
+    } as const);
 
 export const useTimeRangeSelection = ({
-    now,
+    now = Date.now(),
+    options: presetOptions,
     selectedOption: selectedPresetOption,
-    options: presetOptions = TIME_RANGE_PRESET_OPTIONS,
+    timezone,
 }: UseTimeRangeSelectionConfig) => {
     const { i18n } = useCoreContext();
     const [from, setFrom] = useState<string>();
     const [to, setTo] = useState<string>();
     const [selectedOption, setSelectedOption] = useState<string>();
     const NOW = useRef<typeof now>();
+    const TZ = useRef<typeof timezone>();
 
     const [customOption, getRangesForOption, selectionOptions] = useMemo(() => {
         const customOption = i18n.get('rangePreset.custom');
@@ -78,12 +83,20 @@ export const useTimeRangeSelection = ({
     }, []);
 
     useMemo(() => {
-        if (NOW.current !== now) {
+        if (NOW.current !== now || TZ.current !== timezone) {
+            const options = Object.values(presetOptions);
+
+            options.forEach(ranges => {
+                ranges.now = now;
+                ranges.timezone = timezone;
+            });
+
             NOW.current = now;
-            Object.values(presetOptions).forEach(ranges => (ranges.now = now));
+            TZ.current = options[0]?.timezone;
+
             onSelection(selectedOption!);
         }
-    }, [now]);
+    }, [now, timezone, presetOptions]);
 
     return {
         customSelection,

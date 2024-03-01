@@ -1,11 +1,12 @@
 import Localization from '@src/core/Localization';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { EMPTY_OBJECT } from '@src/utils/common';
+import { CommitAction } from '@src/hooks/useCommitAction';
 import useCoreContext from '@src/core/Context/useCoreContext';
 import { CalendarHandle } from '../../../Calendar/types';
 import DatePicker from '../../../DatePicker';
 import BaseFilter from '../BaseFilter';
-import { EditAction, FilterEditModalRenderProps, FilterProps } from '../BaseFilter/types';
+import { FilterEditModalRenderProps, FilterProps } from '../BaseFilter/types';
 import { DateFilterProps, DateRangeFilterParam } from './types';
 import './DateFilter.scss';
 
@@ -31,10 +32,13 @@ const renderDateFilterModalBody = (() => {
         editAction,
         from,
         to,
+        now,
         onChange,
         onValueUpdated,
+        showTimezoneInfo,
         selectedPresetOption,
         timeRangePresetOptions,
+        timezone,
         sinceDate,
         untilDate,
     }: FilterEditModalRenderProps<DateFilterProps>) => {
@@ -52,7 +56,7 @@ const renderDateFilterModalBody = (() => {
 
         useEffect(() => {
             switch (editAction) {
-                case EditAction.APPLY:
+                case CommitAction.APPLY:
                     onChange({
                         selectedPresetOption: presetOption,
                         [DateRangeFilterParam.FROM]: resolveDate(datePickerRef.current?.from),
@@ -60,7 +64,7 @@ const renderDateFilterModalBody = (() => {
                     });
                     break;
 
-                case EditAction.CLEAR:
+                case CommitAction.CLEAR:
                     datePickerRef.current?.clear();
                     onChange();
             }
@@ -69,11 +73,14 @@ const renderDateFilterModalBody = (() => {
         return (
             <DatePicker
                 ref={datePickerRef}
+                now={now}
                 originDate={originDate}
                 onHighlight={onHighlight}
                 onPresetOptionSelected={setPresetOption}
                 selectedPresetOption={selectedPresetOption}
                 timeRangePresetOptions={timeRangePresetOptions}
+                timezone={timezone}
+                showTimezoneInfo={showTimezoneInfo}
                 sinceDate={resolveDate(sinceDate)}
                 untilDate={resolveDate(untilDate)}
             />

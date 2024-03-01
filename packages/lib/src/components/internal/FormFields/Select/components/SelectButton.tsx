@@ -1,73 +1,121 @@
 import cx from 'classnames';
-import useCoreContext from '../../../../../core/Context/useCoreContext';
-import { SelectButtonProps } from '../types';
-import styles from '../Select.module.scss';
-import Img from '../../../Img';
-import { HTMLAttributes, PropsWithChildren } from 'preact/compat';
-import { MutableRef } from 'preact/hooks';
 import { Ref } from 'preact';
+import { MutableRef, useMemo } from 'preact/hooks';
+import { HTMLAttributes, PropsWithChildren } from 'preact/compat';
+import useCoreContext from '@src/core/Context/useCoreContext';
+import Img from '@src/components/internal/Img';
+import Button from '@src/components/internal/Button';
+import { ButtonVariant } from '@src/components/internal/Button/types';
+import Typography from '@src/components/internal/Typography/Typography';
+import ChevronDown from '@src/components/internal/SVGIcons/ChevronDown';
+import { TypographyElement, TypographyVariant } from '@src/components/internal/Typography/types';
+import {
+    DROPDOWN_BUTTON_ACTIVE_CLASS,
+    DROPDOWN_BUTTON_CLASS,
+    DROPDOWN_BUTTON_CLASSNAME,
+    DROPDOWN_BUTTON_COLLAPSE_INDICATOR_CLASS,
+    DROPDOWN_BUTTON_HAS_SELECTION_CLASS,
+    DROPDOWN_BUTTON_ICON_CLASS,
+    DROPDOWN_BUTTON_INVALID_CLASS,
+    DROPDOWN_BUTTON_MULTI_SELECT_COUNTER_CLASS,
+    DROPDOWN_BUTTON_READONLY_CLASS,
+    DROPDOWN_BUTTON_TEXT_CLASS,
+    DROPDOWN_BUTTON_VALID_CLASS,
+} from '../constants';
+import type { SelectButtonProps, SelectItem } from '../types';
 
-function SelectButtonElement({
+const SelectButtonElement = <T extends SelectItem>({
+    active,
+    disabled,
+    className,
     filterable,
     toggleButtonRef,
     ...props
-}: PropsWithChildren<SelectButtonProps & Partial<HTMLAttributes<HTMLButtonElement | HTMLDivElement>>>) {
-    if (filterable) return <div {...props} ref={toggleButtonRef as Ref<HTMLDivElement>} />;
+}: PropsWithChildren<SelectButtonProps<T> & Partial<HTMLAttributes<HTMLButtonElement | HTMLDivElement>>>) => {
+    const baseClassName = useMemo(() => (filterable ? cx(DROPDOWN_BUTTON_CLASSNAME, className) : className), [className, filterable]);
+    return filterable ? (
+        <div {...props} className={baseClassName} ref={toggleButtonRef as Ref<HTMLDivElement>} />
+    ) : (
+        <Button
+            {...props}
+            className={baseClassName}
+            disabled={disabled}
+            variant={ButtonVariant.SECONDARY}
+            ref={toggleButtonRef as MutableRef<HTMLButtonElement>}
+        />
+    );
+};
 
-    return <button {...props} ref={toggleButtonRef as MutableRef<HTMLButtonElement>} />;
-}
-
-function SelectButton(props: SelectButtonProps) {
+const SelectButton = <T extends SelectItem>(props: SelectButtonProps<T>) => {
     const { i18n } = useCoreContext();
-    const { active, readonly, showList, isIconOnLeftSide } = props;
+    const { active, filterable, multiSelect, placeholder, readonly, showList, withoutCollapseIndicator } = props;
+    const placeholderText = useMemo(() => placeholder?.trim() || i18n.get('select.filter.placeholder'), [i18n, placeholder]);
+    const buttonActiveItem = useMemo(() => (multiSelect === true ? undefined : active[0]), [active, multiSelect]);
+    const buttonTitleText = useMemo(() => buttonActiveItem?.name?.trim() || placeholderText, [buttonActiveItem, placeholderText]);
 
     return (
         <SelectButtonElement
+            active={active}
+            disabled={readonly}
             aria-disabled={readonly}
             aria-expanded={showList}
             aria-haspopup="listbox"
-            className={cx({
-                'adyen-fp-dropdown__button': true,
-                [styles['adyen-fp-dropdown__button'] ?? 'adyen-fp-dropdown__button']: true,
-                'adyen-fp-dropdown__button--readonly': readonly,
-                'adyen-fp-dropdown__button--active': showList,
-                [styles['adyen-fp-dropdown__button--active'] ?? 'adyen-fp-dropdown__button--active']: showList,
-                'adyen-fp-dropdown__button--invalid': props.isInvalid,
-                'adyen-fp-dropdown__button--valid': props.isValid,
-                'adyen-fp-dropdown__button-icon--left': isIconOnLeftSide,
+            className={cx(DROPDOWN_BUTTON_CLASS, {
+                [DROPDOWN_BUTTON_ACTIVE_CLASS]: showList,
+                [DROPDOWN_BUTTON_HAS_SELECTION_CLASS]: !!active.length,
+                [DROPDOWN_BUTTON_READONLY_CLASS]: readonly,
+                [DROPDOWN_BUTTON_INVALID_CLASS]: props.isInvalid,
+                [DROPDOWN_BUTTON_VALID_CLASS]: props.isValid,
             })}
-            filterable={props.filterable}
+            filterable={filterable}
             onClick={!readonly ? props.toggleList : undefined}
             onKeyDown={!readonly ? props.onButtonKeyDown : undefined}
-            role={props.filterable ? 'button' : undefined}
+            role={filterable ? 'button' : undefined}
             tabIndex={0}
-            title={active?.name || props.placeholder}
+            title={buttonTitleText}
             toggleButtonRef={props.toggleButtonRef}
-            type={!props.filterable ? 'button' : ''}
+            type={!filterable ? 'button' : ''}
             aria-describedby={props.ariaDescribedBy}
             id={props.id ?? ''}
         >
-            {!showList || !props.filterable ? (
-                <>
-                    <span className="adyen-fp-dropdown__button-text">{active?.selectedOptionName || active?.name || props.placeholder}</span>
-                    {active?.icon && <Img className="adyen-fp-dropdown__button-icon" src={active.icon} alt={active.name} />}
-                </>
-            ) : (
+            {showList && filterable ? (
                 <input
                     aria-autocomplete="list"
                     aria-controls={props.selectListId}
                     aria-expanded={showList}
                     aria-owns={props.selectListId}
                     autoComplete="off"
-                    className={cx('adyen-fp-filter-input', [styles['adyen-fp-filter-input']])}
+                    className="adyen-fp-filter-input"
                     onInput={props.onInput}
-                    placeholder={i18n.get('select.filter.placeholder')}
+                    placeholder={placeholderText}
                     ref={props.filterInputRef}
                     role="combobox"
                     type="text"
                 />
+            ) : (
+                <>
+                    {buttonActiveItem?.icon && (
+                        <Img className={DROPDOWN_BUTTON_ICON_CLASS} src={buttonActiveItem.icon} alt={buttonActiveItem.name.trim()} />
+                    )}
+                    <span className={DROPDOWN_BUTTON_TEXT_CLASS}>
+                        {buttonActiveItem?.selectedOptionName?.trim() || buttonActiveItem?.name.trim() || placeholderText}
+                    </span>
+                    {multiSelect && active.length > 0 && (
+                        <div className={DROPDOWN_BUTTON_MULTI_SELECT_COUNTER_CLASS}>
+                            <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY} stronger={true}>
+                                {active.length}
+                            </Typography>
+                        </div>
+                    )}
+                </>
+            )}
+            {!withoutCollapseIndicator && (
+                <span className={DROPDOWN_BUTTON_COLLAPSE_INDICATOR_CLASS}>
+                    <ChevronDown role="presentation" />
+                </span>
             )}
         </SelectButtonElement>
     );
-}
+};
+
 export default SelectButton;
