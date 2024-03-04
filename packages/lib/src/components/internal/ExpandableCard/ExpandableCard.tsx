@@ -14,6 +14,7 @@ import {
     CONTAINER_OVERLAY_CLASS,
     CONTAINER_OVERLAY_ID,
     CONTENT_CLASS,
+    CONTENT_EXPANDABLE_CLASS,
 } from '@src/components/internal/ExpandableCard/constants';
 import useCoreContext from '@src/core/Context/useCoreContext';
 import { useClickOutside } from '@src/hooks/element/useClickOutside';
@@ -66,7 +67,7 @@ const ExpandableCard = ({ renderHeader, children, filled }: PropsWithChildren<Ex
                         data-testid={'expand-button'}
                     >
                         <span className="adyen-fp-sr-only">{i18n.get('expandableCard.expand')}</span>
-                        <div className={CONTENT_CLASS}>{renderHeader}</div>
+                        <div className={classNames(CONTENT_CLASS, CONTENT_EXPANDABLE_CLASS)}>{renderHeader}</div>
                         <div className={CHEVRON_CLASS}>
                             <ChevronDown role="presentation" />
                         </div>
@@ -86,7 +87,7 @@ const ExpandableCard = ({ renderHeader, children, filled }: PropsWithChildren<Ex
                         data-testid={'collapse-button'}
                     >
                         <span className="adyen-fp-sr-only">{i18n.get('expandableCard.collapse')}</span>
-                        <div className={CONTENT_CLASS}>
+                        <div className={classNames(CONTENT_CLASS, CONTENT_EXPANDABLE_CLASS)}>
                             {renderHeader}
                             <div>{children}</div>
                         </div>

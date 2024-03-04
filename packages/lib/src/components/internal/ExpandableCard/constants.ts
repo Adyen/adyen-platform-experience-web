@@ -5,4 +5,5 @@ export const CONTAINER_HIDDEN_CLASS = CONTAINER_CLASS + '--hidden';
 export const CONTAINER_OVERLAY_CLASS = CONTAINER_CLASS + '--overlay';
 export const CONTAINER_OVERLAY_ID = CONTAINER_OVERLAY_CLASS;
 export const CONTENT_CLASS = BASE_CLASS + '__content';
+export const CONTENT_EXPANDABLE_CLASS = CONTENT_CLASS + '--expandable';
 export const CHEVRON_CLASS = BASE_CLASS + '__chevron';

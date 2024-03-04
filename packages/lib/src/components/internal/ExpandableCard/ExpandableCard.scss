@@ -51,6 +51,10 @@
 
     &__content {
         padding: var(--adyen-fp-spacer-070) var(--adyen-fp-spacer-080);
+
+        &--expandable {
+            padding-bottom: var(--adyen-fp-spacer-040);
+        }
     }
 
     &__chevron {
