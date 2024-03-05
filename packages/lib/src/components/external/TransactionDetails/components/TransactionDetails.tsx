@@ -1,6 +1,6 @@
 import { TransactionData } from '@src/components/external/TransactionDetails/components/TransactionData';
 import { ErrorMessageDisplay } from '@src/components/internal/ErrorMessageDisplay/ErrorMessageDisplay';
-import { getErrorMessage } from '@src/components/utils/errorCodes';
+import { getErrorMessage } from '@src/components/utils/transactionResourceErrorCodes';
 import useCoreContext from '@src/core/Context/useCoreContext';
 import AdyenFPError from '@src/core/Errors/AdyenFPError';
 import { useFetch } from '@src/hooks/useFetch/useFetch';
@@ -18,7 +18,7 @@ export default function TransactionDetails(props: ExternalUIComponentProps<Trans
     const transaction = useMemo(() => (isTransactionWithoutId(props) ? props.transaction : null), [props]);
     const transactionId = useMemo(() => (!isTransactionWithoutId(props) ? props.transactionId : null), [props]);
 
-    const { i18n, onContactSupport } = useCoreContext();
+    const { i18n } = useCoreContext();
 
     const getTransactionDetail = useSetupEndpoint('getTransaction');
 
@@ -37,9 +37,9 @@ export default function TransactionDetails(props: ExternalUIComponentProps<Trans
 
     const errorProps = useMemo(() => {
         if (error) {
-            return getErrorMessage(error as AdyenFPError, onContactSupport);
+            return getErrorMessage(error as AdyenFPError, props.onContactSupport);
         }
-    }, [error, onContactSupport]);
+    }, [error, props.onContactSupport]);
 
     const transactionData = transaction ?? data;
     return (

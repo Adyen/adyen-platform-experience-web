@@ -18,7 +18,6 @@ enableServerInMockedMode()
             async onSessionCreate() {
                 return await sessionRequest();
             },
-            onContactSupport: () => {},
         });
 
         createLanguageButtons({ locales: ['es-ES', 'en-US'], core: adyenFP });
@@ -35,6 +34,7 @@ enableServerInMockedMode()
             onLimitChanged: (/* limit */) => {
                 // do something here with the updated limit
             },
+            onContactSupport: () => {},
             allowLimitSelection: true,
             preferredLimit: 10,
             ...TEST_CONFIG,

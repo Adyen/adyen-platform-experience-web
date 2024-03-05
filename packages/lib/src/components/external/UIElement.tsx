@@ -12,11 +12,13 @@ import { EMPTY_OBJECT } from '@src/utils/common';
 export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUIElement {
     protected componentRef: UIElement<P> | null;
     public elementRef: UIElement<P> | null;
+    public onContactSupport?: () => void;
     public componentToRender: (() => JSXInternal.Element) | null;
 
     constructor(props: P & UIElementProps & BaseElementProps) {
         super(props);
         this.setState = this.setState.bind(this);
+        this.onContactSupport = props.onContactSupport;
         this.componentRef = null;
         this.elementRef = (this.props && this.props.elementRef) || this;
         this.componentToRender = null;
@@ -91,7 +93,7 @@ export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUI
                 updateCore={this.props.core.update.bind(this.props.core)}
                 sessionSetupError={this.sessionSetupError}
             >
-                <CoreProvider i18n={this.i18n} loadingContext={this.loadingContext} onContactSupport={this.onContactSupport}>
+                <CoreProvider i18n={this.i18n} loadingContext={this.loadingContext}>
                     {this.componentToRender && <>{this.componentToRender()}</>}
                 </CoreProvider>
             </AuthProvider>
