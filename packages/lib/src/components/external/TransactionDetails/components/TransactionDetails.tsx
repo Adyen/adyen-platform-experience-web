@@ -35,14 +35,18 @@ export default function TransactionDetails(props: ExternalUIComponentProps<Trans
         queryFn: fetchCallback,
     });
 
-    const errorProps = useMemo(() => getErrorMessage(error as AdyenFPError, onContactSupport), [error, onContactSupport]);
+    const errorProps = useMemo(() => {
+        if (error) {
+            return getErrorMessage(error as AdyenFPError, onContactSupport);
+        }
+    }, [error, onContactSupport]);
 
     const transactionData = transaction ?? data;
     return (
         <div className="adyen-fp-transaction">
             {props.title && <div className="adyen-fp-title">{i18n.get(props.title)}</div>}
 
-            {error && (
+            {error && errorProps && (
                 <div className="adyen-fp-transaction--error-container">
                     <ErrorMessageDisplay centered withImage {...errorProps} />
                 </div>
