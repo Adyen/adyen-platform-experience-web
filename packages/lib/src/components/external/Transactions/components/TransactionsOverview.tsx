@@ -25,7 +25,6 @@ export const TransactionsOverview = ({
     preferredLimit = DEFAULT_PAGE_LIMIT,
     onTransactionSelected,
     showDetails,
-    onContactSupport,
     isLoadingBalanceAccount,
 }: TransactionsComponentProps & { balanceAccounts: IBalanceAccountBase[] | undefined; isLoadingBalanceAccount: boolean }) => {
     const { i18n } = useCoreContext();
@@ -131,7 +130,6 @@ export const TransactionsOverview = ({
                 limitOptions={limitOptions}
                 onLimitSelection={updateLimit}
                 error={error as AdyenFPError}
-                onContactSupport={onContactSupport}
                 {...paginationProps}
             />
         </>

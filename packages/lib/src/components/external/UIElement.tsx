@@ -91,7 +91,7 @@ export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUI
                 updateCore={this.props.core.update.bind(this.props.core)}
                 sessionSetupError={this.sessionSetupError}
             >
-                <CoreProvider i18n={this.i18n} loadingContext={this.loadingContext}>
+                <CoreProvider i18n={this.i18n} loadingContext={this.loadingContext} onContactSupport={this.onContactSupport}>
                     {this.componentToRender && <>{this.componentToRender()}</>}
                 </CoreProvider>
             </AuthProvider>

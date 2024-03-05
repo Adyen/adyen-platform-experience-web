@@ -6,4 +6,5 @@ export const CoreContext = createContext<CoreProviderProps & { i18n: Localizatio
     i18n: new Localization().i18n,
     loadingContext: '',
     commonProps: {} as CommonPropsTypes,
+    onContactSupport: undefined,
 });

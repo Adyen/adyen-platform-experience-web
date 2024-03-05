@@ -18,6 +18,7 @@ enableServerInMockedMode()
             async onSessionCreate() {
                 return await sessionRequest();
             },
+            onContactSupport: () => {},
         });
 
         createLanguageButtons({ locales: ['es-ES', 'en-US'], core: adyenFP });

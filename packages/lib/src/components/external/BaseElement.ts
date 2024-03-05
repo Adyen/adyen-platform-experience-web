@@ -24,6 +24,7 @@ class BaseElement<P> {
     public loadingContext?: string;
     public i18n?: Localization['i18n'];
     public session?: BPSession;
+    public onContactSupport?: () => void;
 
     protected constructor(props: P & BaseElementProps) {
         this.props = this.formatProps({ ...this?.defaultProps, ...props });
@@ -33,6 +34,7 @@ class BaseElement<P> {
         this.loadingContext = this.props.core.loadingContext;
         this.i18n = this.props.core.modules.i18n;
         this.session = this.props.core.session;
+        this.onContactSupport = props.core.onContactSupport;
         this.props.core.registerComponent(this);
     }
 

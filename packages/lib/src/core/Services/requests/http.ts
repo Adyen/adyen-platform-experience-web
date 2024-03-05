@@ -20,10 +20,11 @@ export function http<T>(options: HttpOptions, data?: any): Promise<T> {
 
     return (
         fetch(url, request)
-            .then(async response => {
-                if (response.ok) return await response.json();
+            .then(async res => {
+                const response = await res.json();
+                if (res.ok) return await response;
 
-                const errorType = getErrorType(response.status);
+                const errorType = getErrorType(res.status);
 
                 if (isAdyenErrorResponse(response)) {
                     // If an errorHandler has been passed use this rather than the default handleFetchError

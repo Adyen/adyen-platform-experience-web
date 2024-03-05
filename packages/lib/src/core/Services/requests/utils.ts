@@ -73,7 +73,7 @@ export function handleFetchError({
 }
 
 export function isAdyenErrorResponse(data: any): data is AdyenErrorResponse {
-    return data && data.errorCode && data.type && data.detail && data.status;
+    return data && data.errorCode && data.type && (data.detail || data.invalidFields) && data.status;
 }
 
 export function parseSearchParams<T extends Record<string, any>>(parameters: T) {

@@ -1,4 +1,10 @@
+@use '../../../../style/skeleton' as skeleton;
+
 .adyen-fp-transaction {
+    &--error-container {
+        position: relative;
+    }
+
     &-data {
         padding: 0 var(--adyen-fp-spacing-large);
 
@@ -42,6 +48,18 @@
             font-size: var(--adyen-fp-font-size-medium);
             font-weight: var(--adyen-fp-font-weight-regular);
             line-height: 20px;
+        }
+
+        &__skeleton {
+            @include skeleton.adyen-fp-skeleton();
+            display: block;
+            height: var(--adyen-fp-spacing-base);
+            margin: var(--adyen-fp-spacing-small) 0;
+            width: 50%;
+
+            &-loading-content {
+                @include skeleton.adyen-fp-skeleton-animation();
+            }
         }
     }
 }

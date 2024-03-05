@@ -14,6 +14,7 @@ const CoreProvider = ({
     children,
     commonProps: _commonProps,
     loadingContext: _loadingContext,
+    onContactSupport,
 }: CoreProviderProps) => {
     const [ready, setReady] = useBooleanState(false);
     const commonProps = useMemo(() => _commonProps || {}, [_commonProps]);
@@ -28,7 +29,7 @@ const CoreProvider = ({
 
     if (!ready) return null;
 
-    return <CoreContext.Provider value={{ i18n, commonProps, loadingContext }}>{toChildArray(children)}</CoreContext.Provider>;
+    return <CoreContext.Provider value={{ i18n, commonProps, loadingContext, onContactSupport }}>{toChildArray(children)}</CoreContext.Provider>;
 };
 
 export default CoreProvider;

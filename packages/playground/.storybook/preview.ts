@@ -33,6 +33,7 @@ const preview: Preview = {
                     }
                     return await sessionRequest();
                 },
+                onContactSupport: () => {},
             });
             return { adyenFP };
         },

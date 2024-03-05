@@ -24,6 +24,7 @@ class Core<T extends CoreOptions<T> = any> {
     public onSessionCreate?: SessionRequest;
     //TODO: Change the error handling strategy.
     public sessionSetupError?: boolean;
+    public onContactSupport?: () => void;
 
     constructor(options: CoreOptions<T>) {
         this.options = { environment: FALLBACK_ENV, ...options };
@@ -106,6 +107,7 @@ class Core<T extends CoreOptions<T> = any> {
     private setOptions = (options: Partial<CoreOptions<T>>): this => {
         this.options = { ...this.options, ...options };
 
+        this.onContactSupport = this.options.onContactSupport;
         this.localization.locale = this.options?.locale;
         this.localization.customTranslations = this.options?.translations;
         this.localization.timezone = this.options?.timezone;

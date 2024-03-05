@@ -47,6 +47,8 @@ export interface CoreOptions<T extends CoreOptions<T> = any> {
 
     onError?: (e: any) => any;
 
+    onContactSupport?: () => void;
+
     /**
      * @internal
      * */

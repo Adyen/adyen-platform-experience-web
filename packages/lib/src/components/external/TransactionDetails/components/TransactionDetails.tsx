@@ -1,7 +1,8 @@
 import { TransactionData } from '@src/components/external/TransactionDetails/components/TransactionData';
-import Alert from '@src/components/internal/Alert';
-import Spinner from '@src/components/internal/Spinner';
+import { ErrorMessageDisplay } from '@src/components/internal/ErrorMessageDisplay/ErrorMessageDisplay';
+import { getErrorMessage } from '@src/components/utils/errorCodes';
 import useCoreContext from '@src/core/Context/useCoreContext';
+import AdyenFPError from '@src/core/Errors/AdyenFPError';
 import { useFetch } from '@src/hooks/useFetch/useFetch';
 import { useSetupEndpoint } from '@src/hooks/useSetupEndpoint/useSetupEndpoint';
 import { EMPTY_OBJECT, hasOwnProperty } from '@src/utils/common';
@@ -17,7 +18,7 @@ export default function TransactionDetails(props: ExternalUIComponentProps<Trans
     const transaction = useMemo(() => (isTransactionWithoutId(props) ? props.transaction : null), [props]);
     const transactionId = useMemo(() => (!isTransactionWithoutId(props) ? props.transactionId : null), [props]);
 
-    const { i18n } = useCoreContext();
+    const { i18n, onContactSupport } = useCoreContext();
 
     const getTransactionDetail = useSetupEndpoint('getTransaction');
 
@@ -34,20 +35,20 @@ export default function TransactionDetails(props: ExternalUIComponentProps<Trans
         queryFn: fetchCallback,
     });
 
+    const errorProps = useMemo(() => getErrorMessage(error as AdyenFPError, onContactSupport), [error, onContactSupport]);
+
     const transactionData = transaction ?? data;
     return (
         <div className="adyen-fp-transaction">
             {props.title && <div className="adyen-fp-title">{i18n.get(props.title)}</div>}
 
-            {isFetching && <Spinner />}
-
-            {error && <Alert icon={'cross'}>{error.message ?? i18n.get('unableToLoadTransaction')}</Alert>}
-
-            {transactionData && (
-                <>
-                    <TransactionData transaction={transactionData} />
-                </>
+            {error && (
+                <div className="adyen-fp-transaction--error-container">
+                    <ErrorMessageDisplay centered withImage {...errorProps} />
+                </div>
             )}
+
+            <TransactionData transaction={transactionData} isFetching={isFetching} />
         </div>
     );
 }

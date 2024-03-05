@@ -1,7 +1,7 @@
 import Button from '@src/components/internal/Button';
 import { ButtonVariant } from '@src/components/internal/Button/types';
 import useCoreContext from '@src/core/Context/useCoreContext';
-import { useEffect, useRef } from 'preact/hooks';
+import { useCallback, useEffect, useRef } from 'preact/hooks';
 import cx from 'classnames';
 import { TargetedEvent } from 'preact/compat';
 import './Modal.scss';
@@ -26,17 +26,23 @@ export default function Modal({
 }: ModalProps) {
     const modalContainerRef = useRef<HTMLDivElement>(null);
     const { i18n } = useCoreContext();
-    const handleClickOutside = (e: TargetedEvent<Node, MouseEvent>) => {
-        if (isDismissible && isOpen && targetIsNode(e.target) && !modalContainerRef?.current?.contains(e.target)) {
-            onClose();
-        }
-    };
+    const handleClickOutside = useCallback(
+        (e: TargetedEvent<Node, MouseEvent>) => {
+            if (isDismissible && isOpen && targetIsNode(e.target) && !modalContainerRef?.current?.contains(e.target)) {
+                onClose();
+            }
+        },
+        [isDismissible, isOpen, onClose]
+    );
 
-    const handleEscKey = (e: KeyboardEvent) => {
-        if (e.key === 'Escape' && isOpen && isDismissible) {
-            onClose();
-        }
-    };
+    const handleEscKey = useCallback(
+        (e: KeyboardEvent) => {
+            if (e.key === 'Escape' && isOpen && isDismissible) {
+                onClose();
+            }
+        },
+        [isOpen, isDismissible, onClose]
+    );
 
     useEffect(() => {
         if (isOpen) {
@@ -45,7 +51,7 @@ export default function Modal({
             window.removeEventListener('keydown', handleEscKey);
         }
         return () => window.removeEventListener('keydown', handleEscKey);
-    }, [isOpen]);
+    }, [isOpen, handleEscKey]);
 
     return (
         <div

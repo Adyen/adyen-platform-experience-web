@@ -13,6 +13,6 @@ function ModalContent<T>({ selection }: SelectedDetail<T>) {
             : { transactionId: selection as string };
     }, [selection]);
 
-    return <Suspense fallback={<Spinner size="medium" />}>{transactionProps && <TransactionDetails {...transactionProps} />}</Suspense>;
+    return <>{transactionProps && <TransactionDetails {...transactionProps} />}</>;
 }
 export default ModalContent;

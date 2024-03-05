@@ -15,11 +15,12 @@ enableServerInMockedMode()
             async onSessionCreate() {
                 return await sessionRequest();
             },
+            onContactSupport: () => {},
         });
 
         const transactionsDetailsComponent = new TransactionsDetailsComponent({
             core: adyenFP,
-            transactionId: id ?? DEFAULT_TRANSACTION_ID,
+            transactionId: 'ad' ?? id ?? DEFAULT_TRANSACTION_ID,
             title: 'transactionDetails',
         });
 

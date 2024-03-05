@@ -1,3 +1,4 @@
+import { TransactionDetailData } from '@src/components';
 import { TranslationKey } from '@src/core/Localization/types';
 import { ModalSize } from '@src/components/internal/Modal/types';
 
@@ -10,7 +11,7 @@ type DetailsConfig<T> = {
 
 export type SelectedDetail = {
     title?: TranslationKey;
-    selection: any;
+    selection: TransactionDetailData;
     modalSize?: ModalSize;
 };
 

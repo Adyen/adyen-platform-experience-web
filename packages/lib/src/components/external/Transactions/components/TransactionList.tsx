@@ -1,14 +1,14 @@
+import { BalanceAccountProps, TransactionDetailData } from '@src/components';
 import Modal from '@src/components/internal/Modal';
 import Spinner from '@src/components/internal/Spinner';
 import useCoreContext from '@src/core/Context/useCoreContext';
 import useModalDetails from '@src/hooks/useModalDetails/useModalDetails';
-import { ITransaction } from '@src/types';
 import classnames from 'classnames';
 import { lazy, Suspense } from 'preact/compat';
 import { useCallback, useMemo } from 'preact/hooks';
 import DataGrid from '../../../internal/DataGrid';
 import Pagination from '../../../internal/Pagination';
-import { BalanceAccountProps, TransactionListProps } from '../types';
+import { TransactionListProps } from '../types';
 import { getLabel, parsePaymentMethodType } from './utils';
 import './TransactionList.scss';
 import { Tag } from '@src/components/internal/Tag/Tag';
@@ -30,7 +30,6 @@ function TransactionList({
     showPagination,
     showDetails,
     error,
-    onContactSupport,
     ...paginationProps
 }: TransactionListProps & BalanceAccountProps) {
     const { i18n } = useCoreContext();
@@ -66,7 +65,7 @@ function TransactionList({
         message: ['thereAreNoTransactionsForThisRequirements', 'tryAgainPlease'],
     } satisfies { title: TranslationKey; message: TranslationKey | TranslationKey[] };
 
-    const errorDisplay = useMemo(() => () => <TransactionListError error={error} onContactSupport={onContactSupport} />, [error, onContactSupport]);
+    const errorDisplay = useMemo(() => () => <TransactionListError error={error} />, [error]);
     return (
         <>
             <DataGrid
@@ -146,7 +145,7 @@ function TransactionList({
             >
                 {selectedDetail && (
                     <Suspense fallback={<Spinner />}>
-                        <ModalContent<ITransaction & BalanceAccountProps> {...selectedDetail} />
+                        <ModalContent<TransactionDetailData> {...selectedDetail} />
                     </Suspense>
                 )}
             </Modal>
