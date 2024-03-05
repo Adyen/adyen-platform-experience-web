@@ -23,7 +23,7 @@ const useReactiveState = <Value, Param extends string>(
             () => requestStateUpdate('reset'),
             (stateUpdateRequest: ReactiveStateUpdateRequestWithField<Value, Param>) => requestStateUpdate(stateUpdateRequest),
         ];
-    }, []);
+    }, [$mounted]);
 
     const [state, dispatch] = useReducer((state, stateUpdateRequest: ReactiveStateUpdateRequest<Value, Param>) => {
         if (stateUpdateRequest === 'reset') {
@@ -67,14 +67,14 @@ const useReactiveState = <Value, Param extends string>(
         return STATE;
     }, $defaultState.current);
 
-    const canResetState = useMemo(() => !!$changedParams.current.size, [state]);
+    const canResetState = useMemo(() => !!$changedParams.current.size, []);
 
-    useMemo(() => {
+    /* useMemo(() => {
         $defaultState.current = Object.freeze({ ...params }) as ReactiveStateRecord<Value, Param>;
         $stateParams.current = new Set(Object.keys($defaultState.current) as Param[]);
         $hasDefaultState.current = initialStateSameAsDefault;
         resetState();
-    }, [params, resetState]);
+    }, [initialStateSameAsDefault, resetState]); */
 
     return { canResetState, defaultState: $defaultState.current, resetState, state, updateState };
 };
