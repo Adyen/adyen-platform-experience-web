@@ -130,6 +130,7 @@ export const TransactionsOverview = ({
             </div>
 
             <TransactionList
+                balanceAccounts={balanceAccounts}
                 loading={fetching || isLoadingBalanceAccount || !balanceAccounts}
                 transactions={records}
                 onTransactionSelected={onTransactionSelected}
