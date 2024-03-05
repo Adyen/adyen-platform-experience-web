@@ -14,8 +14,9 @@ import { Tag } from '@src/components/internal/Tag/Tag';
 import { TagVariant } from '@src/components/internal/Tag/types';
 import { CellTextPosition } from '@src/components/internal/DataGrid/types';
 import { Image } from '@src/components/internal/Image/Image';
-import { TranslationKey } from '@src/core/Localization/types';
+import { CurrencyCode, TranslationKey } from '@src/core/Localization/types';
 import TransactionListError from './TransactionListError/TransactionListError';
+import { getCurrencyCode } from '@src/core/Localization/amount/amount-util';
 
 const ModalContent = lazy(() => import('./ModalContent'));
 
@@ -29,12 +30,31 @@ function TransactionList({
     showDetails,
     error,
     onContactSupport,
+    balanceAccounts,
     ...paginationProps
 }: TransactionListProps) {
     const { i18n } = useCoreContext();
+
+    const hasMultipleCurrencies = balanceAccounts && balanceAccounts.length > 1;
+
     const columns = useMemo(
-        () => FIELDS.map(key => ({ key, label: i18n.get(getLabel(key)), position: key === 'amount' ? CellTextPosition.RIGHT : undefined })),
-        [i18n]
+        () =>
+            FIELDS.map(key => {
+                const label = i18n.get(getLabel(key));
+                if (key === 'amount')
+                    return {
+                        key,
+                        label: hasMultipleCurrencies
+                            ? label
+                            : `${label} ${
+                                  balanceAccounts && balanceAccounts[0] ? `(${getCurrencyCode(balanceAccounts[0].defaultCurrencyCode)})` : ''
+                              }`,
+                        position: key === 'amount' ? CellTextPosition.RIGHT : undefined,
+                    };
+
+                return { key, label };
+            }),
+        [balanceAccounts, hasMultipleCurrencies, i18n]
     );
 
     const transactionDetails = useMemo(
@@ -91,14 +111,16 @@ function TransactionList({
                     },
                     creationDate: ({ value }) => i18n.fullDate(value),
                     amount: ({ value }) => {
-                        const amount = value?.currency
-                            ? i18n.amount(value.value, value.currency, {
-                                  currencyDisplay: 'code',
-                                  showSign: true,
-                              })
-                            : null;
+                        const amount = i18n.amount(value.value, value.currency, {
+                            currencyDisplay: hasMultipleCurrencies ? 'symbol' : 'name',
+                            showSign: value.value < 0,
+                        });
 
-                        return <span className={classnames('adyen-fp-transactions__amount')}>{amount}</span>;
+                        return (
+                            <span className={classnames('adyen-fp-transactions__amount')}>
+                                {hasMultipleCurrencies ? amount : amount.split(' ')[0]}
+                            </span>
+                        );
                     },
                     paymentMethod: ({ item }) => {
                         return (
