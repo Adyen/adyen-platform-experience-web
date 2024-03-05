@@ -20,7 +20,7 @@ enableServerInMockedMode()
 
         const transactionsDetailsComponent = new TransactionsDetailsComponent({
             core: adyenFP,
-            transactionId: 'ad' ?? id ?? DEFAULT_TRANSACTION_ID,
+            transactionId: id ?? DEFAULT_TRANSACTION_ID,
             title: 'transactionDetails',
         });
 
