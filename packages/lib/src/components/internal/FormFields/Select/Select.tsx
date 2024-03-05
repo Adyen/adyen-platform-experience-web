@@ -66,7 +66,7 @@ const Select = <T extends SelectItem>({
                 ...classNameModifiers.map(mod => `${DROPDOWN_BASE_CLASS}--${mod}`),
                 className,
             ]),
-        EMPTY_ARRAY
+        [className, classNameModifiers, multiSelect]
     );
 
     const { commitAction, commitActionButtons, committing, resetCommitAction } = useCommitAction({
@@ -297,7 +297,7 @@ const Select = <T extends SelectItem>({
         if (showList && filterable) {
             filterInputRef.current?.focus();
         }
-    }, [showList]);
+    }, [filterable, showList]);
 
     return (
         <div ref={selectContainerRef} className={dropdownClassName}>
