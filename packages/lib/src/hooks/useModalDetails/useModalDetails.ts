@@ -12,20 +12,22 @@ import { CallbackIsPresent, CallbackParams, GetArgsExceptCallback, hasCallback, 
  */
 
 function useModalDetails<Options extends ModalDetailsOptions>(options: Options) {
-    const [selectedDetail, setSelectedDetail] = useState<SelectedDetail | null>(null);
+    const [selectedDetail, setSelectedDetail] = useState<SelectedDetail<Options> | null>(null);
     const updateDetails = useCallback(
-        <T extends SelectedDetail>(state: T): CallbackIsPresent<Options> extends true ? CallbackParams<Options> : {} => {
-            if (state && hasCallback(options['transaction'])) {
+        <T extends SelectedDetail<Options>>(state: T): CallbackIsPresent<Options, T> extends true ? CallbackParams<Options, T> : {} => {
+            if (state && hasCallback(options[state.selection.type])) {
                 return {
                     callback: options?.callback
                         ? (
-                              args: Options['transaction'] extends { callback: any } ? GetArgsExceptCallback<Required<Options['transaction']>> : never
-                          ) => options['transaction']?.callback?.({ showModal: () => setSelectedDetail(state), ...args })
+                              args: Options[T['selection']['type']] extends { callback: any }
+                                  ? GetArgsExceptCallback<Required<Options[T['selection']['type']]>>
+                                  : never
+                          ) => options[state.selection.type]?.callback?.({ showModal: () => setSelectedDetail(state), ...args })
                         : () => setSelectedDetail(state),
                 };
             }
             setSelectedDetail(state);
-            return {} as CallbackIsPresent<Options> extends true ? CallbackParams<Options> : {};
+            return {} as CallbackIsPresent<Options, T> extends true ? CallbackParams<Options, T> : {};
         },
         [options]
     );

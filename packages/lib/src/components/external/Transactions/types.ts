@@ -2,8 +2,6 @@ import { Core } from '../../../core';
 import { PaginationProps, WithPaginationLimitSelection } from '../../internal/Pagination/types';
 import UIElement from '../UIElement';
 import { ITransaction } from '../../../types';
-import { TranslationKey } from '../../../core/Localization/types';
-import { ModalSize } from '../../internal/Modal/types';
 import AdyenFPError from '@src/core/Errors/AdyenFPError';
 
 export const enum TransactionFilterParam {
@@ -45,7 +43,5 @@ export type DetailsOptions = {
     transaction?: boolean;
 };
 export type SelectedDetail<T = string> = {
-    title?: TranslationKey;
-    selection: T;
-    modalSize?: ModalSize;
+    data: T;
 };

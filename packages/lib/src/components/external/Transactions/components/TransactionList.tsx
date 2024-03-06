@@ -1,8 +1,9 @@
-import { BalanceAccountProps, TransactionDetailData } from '@src/components';
+import { BalanceAccountProps } from '@src/components';
 import Modal from '@src/components/internal/Modal';
 import Spinner from '@src/components/internal/Spinner';
 import useCoreContext from '@src/core/Context/useCoreContext';
 import useModalDetails from '@src/hooks/useModalDetails/useModalDetails';
+import { ITransaction } from '@src/types';
 import classnames from 'classnames';
 import { lazy, Suspense } from 'preact/compat';
 import { useCallback, useMemo } from 'preact/hooks';
@@ -52,11 +53,11 @@ function TransactionList({
     const { updateDetails, resetDetails, selectedDetail } = useModalDetails(modalOptions);
 
     const onRowClick = useCallback(
-        (value: any) => {
+        (value: ITransaction) => {
             updateDetails({
-                selection: { ...value, balanceAccountDescription },
+                selection: { type: 'transaction', data: { ...value, balanceAccountDescription } },
                 modalSize: 'small',
-            }).callback({ id: value });
+            }).callback({ id: value.id });
         },
         [updateDetails, balanceAccountDescription]
     );
@@ -66,7 +67,7 @@ function TransactionList({
         message: ['thereAreNoTransactionsForThisRequirements', 'tryAgainPlease'],
     } satisfies { title: TranslationKey; message: TranslationKey | TranslationKey[] };
 
-    const errorDisplay = useMemo(() => () => <TransactionListError error={error} onContactSupport={onContactSupport} />, [error]);
+    const errorDisplay = useMemo(() => () => <TransactionListError error={error} onContactSupport={onContactSupport} />, [error, onContactSupport]);
     return (
         <>
             <DataGrid
@@ -146,7 +147,7 @@ function TransactionList({
             >
                 {selectedDetail && (
                     <Suspense fallback={<Spinner />}>
-                        <ModalContent<TransactionDetailData> {...selectedDetail} />
+                        <ModalContent data={selectedDetail.selection.data} />
                     </Suspense>
                 )}
             </Modal>

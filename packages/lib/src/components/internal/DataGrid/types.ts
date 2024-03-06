@@ -27,7 +27,12 @@ export interface DataGridProps<
     outline: boolean;
     scrollable: boolean;
     Footer?: any;
-    onRowClick?: { callback: (value: Item[0][ClickedField]) => void; retrievedField?: ClickedField };
+    onRowClick?: {
+        callback: (
+            value: Item[number][ClickedField] extends NonNullable<Item[number][ClickedField]> ? Item[number][ClickedField] : Item[number]
+        ) => void;
+        retrievedField?: ClickedField;
+    };
     customCells?: CustomCells;
     emptyTableMessage?: {
         title: TranslationKey;
