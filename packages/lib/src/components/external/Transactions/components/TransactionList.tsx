@@ -35,7 +35,7 @@ function TransactionList({
 }: TransactionListProps) {
     const { i18n } = useCoreContext();
 
-    const hasMultipleCurrencies = balanceAccounts && balanceAccounts.length > 1;
+    const hasMultipleCurrencies = balanceAccounts && new Set(balanceAccounts.map(acc => acc.defaultCurrencyCode)).size > 1;
 
     const columns = useMemo(
         () =>
