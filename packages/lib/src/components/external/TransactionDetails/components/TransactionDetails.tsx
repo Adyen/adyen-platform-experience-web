@@ -5,14 +5,13 @@ import useCoreContext from '@src/core/Context/useCoreContext';
 import AdyenFPError from '@src/core/Errors/AdyenFPError';
 import { useFetch } from '@src/hooks/useFetch/useFetch';
 import { useSetupEndpoint } from '@src/hooks/useSetupEndpoint/useSetupEndpoint';
-import { EMPTY_OBJECT, hasOwnProperty } from '@src/utils/common';
+import { EMPTY_OBJECT } from '@src/utils/common';
 import { useCallback, useMemo } from 'preact/hooks';
 import { ExternalUIComponentProps } from '../../../types';
 import { TransactionDetailsComponentProps, TransactionDetailsWithoutIdProps } from '../types';
 import './TransactionDetails.scss';
 
-export const isTransactionWithoutId = (props: TransactionDetailsComponentProps): props is TransactionDetailsWithoutIdProps =>
-    hasOwnProperty(props, 'transaction');
+const isTransactionWithoutId = (props: TransactionDetailsComponentProps): props is TransactionDetailsWithoutIdProps => 'transaction' in props;
 
 export default function TransactionDetails(props: ExternalUIComponentProps<TransactionDetailsComponentProps>) {
     const transaction = useMemo(() => (isTransactionWithoutId(props) ? props.transaction : null), [props]);
