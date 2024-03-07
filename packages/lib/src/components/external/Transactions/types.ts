@@ -1,3 +1,4 @@
+import { TransactionDetailData } from '@src/components';
 import { Core } from '../../../core';
 import { PaginationProps, WithPaginationLimitSelection } from '../../internal/Pagination/types';
 import UIElement from '../UIElement';
@@ -42,6 +43,6 @@ export interface BalanceAccountProps {
 export type DetailsOptions = {
     transaction?: boolean;
 };
-export type SelectedDetail<T = string> = {
-    data: T;
+export type SelectedDetail = {
+    data: string | TransactionDetailData;
 };

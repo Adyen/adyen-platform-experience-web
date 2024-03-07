@@ -21,7 +21,7 @@ import TransactionListError from './TransactionListError/TransactionListError';
 
 const ModalContent = lazy(() => import('./ModalContent'));
 
-const FIELDS = ['creationDate', 'status', 'paymentMethod', 'category', 'currency', 'amount'] as const;
+const FIELDS = ['creationDate', 'status', 'paymentMethod', 'type', 'currency', 'amount'] as const;
 
 function TransactionList({
     balanceAccountDescription,
@@ -88,8 +88,8 @@ function TransactionList({
                             />
                         );
                     },
-                    category: ({ value }) => {
-                        return value ? i18n.get(`txType.${value}`) : null;
+                    type: ({ item }) => {
+                        return item.category ? i18n.get(`txType.${item.category}`) : null;
                     },
                     creationDate: ({ value }) => i18n.fullDate(value),
                     amount: ({ value }) => {
