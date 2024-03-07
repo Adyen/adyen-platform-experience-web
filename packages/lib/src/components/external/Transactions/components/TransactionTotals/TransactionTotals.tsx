@@ -11,7 +11,7 @@ import { TypographyVariant } from '@src/components/internal/Typography/types';
 import AmountSkeleton from '@src/components/external/Transactions/components/TransactionTotals/AmountSkeleton';
 import { memo } from 'preact/compat';
 
-type TransactionTotalsProps = Required<OperationParameters<'getTransactionTotals'>['path'] & OperationParameters<'getTransactionTotals'>['query']>;
+type TransactionTotalsProps = Required<OperationParameters<'getTransactionTotals'>['query']>;
 
 const TransactionTotals = memo(
     ({ balanceAccountId, createdSince, createdUntil, categories, statuses }: MakeFieldValueUndefined<TransactionTotalsProps, 'balanceAccountId'>) => {
@@ -20,12 +20,12 @@ const TransactionTotals = memo(
 
         const fetchCallback = useCallback(async () => {
             return getTransactionTotals(EMPTY_OBJECT, {
-                path: { balanceAccountId: balanceAccountId! },
                 query: {
                     createdSince,
                     createdUntil,
                     categories,
                     statuses,
+                    balanceAccountId: balanceAccountId!,
                 },
             });
         }, [balanceAccountId, categories, createdSince, createdUntil, getTransactionTotals, statuses]);

@@ -49,8 +49,8 @@ export const TransactionsOverview = ({
                     createdUntil:
                         pageRequestParams[TransactionFilterParam.CREATED_UNTIL] ?? defaultFilterParams[TransactionFilterParam.CREATED_UNTIL],
                     sortDirection: 'desc' as const,
+                    balanceAccountId: activeBalanceAccount?.id ?? '',
                 },
-                path: { balanceAccountId: activeBalanceAccount?.id ?? '' },
             });
         },
         [activeBalanceAccount, defaultFilterParams, transactionsEndpointCall]
@@ -113,6 +113,9 @@ export const TransactionsOverview = ({
                     categories={categoriesFilter.selection}
                     createdUntil={filters[TransactionFilterParam.CREATED_UNTIL]!}
                     createdSince={filters[TransactionFilterParam.CREATED_SINCE]!}
+                    currencies={listFrom(filters[TransactionFilterParam.CURRENCIES])}
+                    minAmount={0} // Will be fixed in next PR with the amount filter
+                    maxAmount={0} // Will be fixed in next PR with the amount filter
                 />
                 <BalanceAccountsDisplay balanceAccountId={activeBalanceAccount?.id} updateBalanceAccountCurrencies={setTransactionsCurrencies} />
             </div>
