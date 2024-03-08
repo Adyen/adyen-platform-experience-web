@@ -78,14 +78,15 @@ export const TransactionsOverview = ({
             enabled: !!activeBalanceAccount?.id,
         });
 
-    const { categoriesFilter, currenciesFilter, statusesFilter, setTransactionsCurrencies } = useTransactionsOverviewMultiSelectionFilters({
-        filters,
-        updateFilters,
-    });
+    const { availableCurrencies, categoriesFilter, currenciesFilter, statusesFilter, setAvailableCurrencies } =
+        useTransactionsOverviewMultiSelectionFilters({
+            filters,
+            updateFilters,
+        });
 
     useEffect(() => {
-        setTransactionsCurrencies(undefined);
-    }, [activeBalanceAccount, setTransactionsCurrencies]);
+        setAvailableCurrencies(undefined);
+    }, [activeBalanceAccount, setAvailableCurrencies]);
 
     useEffect(() => {
         refreshNowTimestamp();
@@ -124,7 +125,7 @@ export const TransactionsOverview = ({
                     minAmount={0} // Will be fixed in next PR with the amount filter
                     maxAmount={0} // Will be fixed in next PR with the amount filter
                 />
-                <Balances balanceAccountId={activeBalanceAccount?.id} updateBalanceAccountCurrencies={setTransactionsCurrencies} />
+                <BalanceAccountsDisplay balanceAccountId={activeBalanceAccount?.id} updateBalanceAccountCurrencies={setAvailableCurrencies} />
             </div>
 
             <TransactionList
