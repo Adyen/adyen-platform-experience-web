@@ -8,11 +8,11 @@
     &-data {
         padding: 0 var(--adyen-fp-spacing-large);
 
-        &-section:not(:last-child) {
+        &__section:not(:last-child) {
             margin-bottom: 6px;
         }
 
-        &--amount {
+        &__amount {
             font-size: var(--adyen-fp-font-size-xxlarge);
             font-weight: var(--adyen-fp-font-weight-semi-bold);
             line-height: 44px;
@@ -26,6 +26,10 @@
             align-items: center;
             display: flex;
             gap: 6px;
+
+            &-detail {
+                font-weight: var(--adyen-fp-font-weight-medium);
+            }
         }
 
         &__payment-method-logo-container {
@@ -33,7 +37,7 @@
             width: 32px;
         }
 
-        &--tag-container {
+        &__tag-container {
             display: flex;
             gap: 4px;
         }

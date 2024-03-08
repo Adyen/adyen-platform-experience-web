@@ -33,7 +33,7 @@ export const TransactionData = ({ transaction, isFetching }: { transaction?: Tra
             ) : (
                 <div className={'adyen-fp-transaction-data'}>
                     <div className={'adyen-fp-transaction-data--container'}>
-                        <div className={'adyen-fp-transaction-data-section adyen-fp-transaction-data--tag-container'}>
+                        <div className={'adyen-fp-transaction-data__section adyen-fp-transaction-data__tag-container'}>
                             <Tag
                                 label={i18n.get(transaction.status)}
                                 variant={
@@ -46,15 +46,15 @@ export const TransactionData = ({ transaction, isFetching }: { transaction?: Tra
                             />
                             <Tag label={i18n.get(`txType.${transaction.category}`)} variant={TagVariant.DEFAULT} />
                         </div>
-                        <div className={'adyen-fp-transaction-data-section adyen-fp-transaction-data--amount'}>
-                            {transaction?.amount
-                                ? i18n.amount(transaction?.amount?.value, transaction?.amount?.currency, {
+                        <div className={'adyen-fp-transaction-data__section adyen-fp-transaction-data__amount'}>
+                            {transaction.amount
+                                ? i18n.amount(transaction.amount.value, transaction.amount.currency, {
                                       currencyDisplay: 'symbol',
                                   })
                                 : null}
                         </div>
                         {(transaction?.paymentMethod || transaction?.bankAccount) && (
-                            <div className="adyen-fp-transaction-data-section adyen-fp-transaction-data__payment-method">
+                            <div className="adyen-fp-transaction-data__section adyen-fp-transaction-data__payment-method">
                                 <div className="adyen-fp-transaction-data__payment-method-logo-container">
                                     <Image
                                         name={transaction.paymentMethod ? transaction.paymentMethod.type : 'bankTransfer'}
@@ -64,12 +64,14 @@ export const TransactionData = ({ transaction, isFetching }: { transaction?: Tra
                                     />
                                 </div>
 
-                                {transaction?.paymentMethod
-                                    ? parsePaymentMethodType(transaction?.paymentMethod, 'detail')
-                                    : transaction?.bankAccount?.accountNumberLastFourDigits}
+                                <div className={'adyen-fp-transaction-data__payment-method-detail'}>
+                                    {transaction?.paymentMethod
+                                        ? parsePaymentMethodType(transaction?.paymentMethod, 'detail')
+                                        : transaction?.bankAccount?.accountNumberLastFourDigits}
+                                </div>
                             </div>
                         )}
-                        <div className={'adyen-fp-transaction-data-section adyen-fp-transaction-data__label'}>{creationDate}</div>
+                        <div className={'adyen-fp-transaction-data__section adyen-fp-transaction-data__label'}>{creationDate}</div>
                     </div>
 
                     {transaction?.balanceAccountDescription && (
@@ -80,7 +82,7 @@ export const TransactionData = ({ transaction, isFetching }: { transaction?: Tra
                     )}
                     <div className={'adyen-fp-transaction-data--container'}>
                         <div className={'adyen-fp-transaction-data__label'}>{i18n.get('referenceID')}</div>
-                        <div>{transaction?.id}</div>
+                        <div aria-label={i18n.get('referenceID')}>{transaction.id}</div>
                     </div>
                 </div>
             )}

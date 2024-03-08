@@ -95,7 +95,7 @@ $adyen-fp-modal-sizes: (
         font-size: var(--adyen-fp-font-size-base);
         font-weight: var(--adyen-fp-font-weight-semi-bold);
         justify-content: flex-end;
-        padding: 14px 14px 0 0;
+        padding: 24px 24px 0;
 
         &--with-title {
             justify-content: space-between;
@@ -110,8 +110,6 @@ $adyen-fp-modal-sizes: (
     &__header-icon {
         border-radius: 8px;
         cursor: pointer;
-        height: 38px;
-        padding: 10px;
         transition: background 0.1s linear;
 
         &:hover {

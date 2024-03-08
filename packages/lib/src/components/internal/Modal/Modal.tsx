@@ -87,7 +87,6 @@ export default function Modal({
                     {isDismissible && (
                         <Button
                             onClick={onClose}
-                            iconButton={true}
                             variant={ButtonVariant.TERTIARY}
                             className={`adyen-fp-modal__header-icon`}
                             aria-label={i18n.get('dismiss')}
