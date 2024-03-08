@@ -18,7 +18,6 @@ export const TotalItem = ({ total, isHeader = false, isSkeleton = false, isLoadi
         if (incomingRef.current?.getBoundingClientRect().width && expenseRef.current?.getBoundingClientRect().width) {
             onWidthsSet([incomingRef.current.getBoundingClientRect().width, expenseRef.current.getBoundingClientRect().width]);
         }
-        console.log('aaaa');
     }, [onWidthsSet]);
 
     const columnConfigs: ColumnConfig[] = [
