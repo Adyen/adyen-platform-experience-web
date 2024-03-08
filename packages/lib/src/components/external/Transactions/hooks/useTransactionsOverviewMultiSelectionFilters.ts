@@ -25,20 +25,22 @@ const useTransactionsOverviewMultiSelectionFilters = (
         defaultFilters,
         ...filtersConfig,
     });
-    const { updateFilterValues: setTransactionsCurrencies, ...currenciesFilter } = useMultiSelectionFilterWithoutValues<
-        TransactionFilterParam.CURRENCIES,
-        ITransaction['amount']['currency']
-    >({
+    const {
+        filterValues: availableCurrencies,
+        updateFilterValues: setAvailableCurrencies,
+        ...currenciesFilter
+    } = useMultiSelectionFilterWithoutValues<TransactionFilterParam.CURRENCIES, ITransaction['amount']['currency']>({
         filterParam: TransactionFilterParam.CURRENCIES,
         defaultFilters,
         ...filtersConfig,
     });
 
     return {
+        availableCurrencies,
         categoriesFilter,
         currenciesFilter,
         statusesFilter,
-        setTransactionsCurrencies,
+        setAvailableCurrencies,
     } as const;
 };
 
