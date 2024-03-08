@@ -8,7 +8,6 @@ import ExpandableCard from '@src/components/internal/ExpandableCard/ExpandableCa
 import { BASE_CLASS } from '@src/components/external/Transactions/components/TransactionTotals/constants';
 import { memo } from 'preact/compat';
 import { TotalItem } from '@src/components/external/Transactions/components/TotalItem/TotalItem';
-import './TransactionTotals.scss';
 import { BaseList } from '@src/components/internal/BaseList/BaseList';
 
 type TransactionTotalsProps = Required<OperationParameters<'getTransactionTotals'>['query']>;

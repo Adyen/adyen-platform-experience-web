@@ -4,7 +4,7 @@ import Typography from '@src/components/internal/Typography/Typography';
 import { TypographyVariant } from '@src/components/internal/Typography/types';
 import { BASE_CLASS, BODY_CLASS } from '@src/components/external/Transactions/components/TotalItem/constants';
 import './TotalItem.scss';
-import AmountSkeleton from '@src/components/external/Transactions/components/TransactionTotals/AmountSkeleton';
+import AmountSkeleton from '@src/components/external/Transactions/components/AmountSkeleton/AmountSkeleton';
 import { useEffect, useRef } from 'preact/hooks';
 import { ColumnConfig, TotalItemProps } from '@src/components/external/Transactions/components/TotalItem/types';
 
@@ -41,7 +41,7 @@ export const TotalItem = ({ total, isHeader = false, isSkeleton = false, isLoadi
                 <div key={config.labelKey}>
                     {isHeader && <Typography variant={TypographyVariant.CAPTION}>{i18n.get(config.labelKey)}</Typography>}
                     {isSkeletonVisible ? (
-                        <AmountSkeleton isLoading={isLoading} />
+                        <AmountSkeleton isLoading={isLoading} width="80px" />
                     ) : (
                         <div ref={config.ref} style={getColumnStyle(index)}>
                             <Typography variant={TypographyVariant.TITLE}>{i18n.amount(total[config.amountKey], total.currency)}</Typography>
@@ -50,7 +50,7 @@ export const TotalItem = ({ total, isHeader = false, isSkeleton = false, isLoadi
                 </div>
             ))}
 
-            {isSkeletonVisible ? <AmountSkeleton isLoading={isLoading} /> : <span>{total.currency}</span>}
+            {isSkeletonVisible ? <AmountSkeleton isLoading={isLoading} width="40px" /> : <span>{total.currency}</span>}
         </div>
     );
 };

@@ -1,0 +1,11 @@
+@use '../../../../../style/skeleton' as skeleton;
+
+.adyen-fp-amount-skeleton {
+    @include skeleton.adyen-fp-skeleton();
+
+    margin-top: var(--adyen-fp-spacing-small);
+
+    &--loading {
+        @include skeleton.adyen-fp-skeleton-animation();
+    }
+}
