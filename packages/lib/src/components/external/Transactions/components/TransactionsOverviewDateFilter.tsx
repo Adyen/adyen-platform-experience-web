@@ -19,16 +19,14 @@ type TransactionsOverviewDateFilterProps = Pick<
 const TransactionsOverviewDateFilter = ({
     balanceAccount,
     canResetFilters,
-    defaultFilterParams,
-    defaultTimeRange,
+    defaultParams,
     filters,
     nowTimestamp,
     refreshNowTimestamp,
-    timeRangeOptions,
     updateFilters,
 }: TransactionsOverviewDateFilterProps) => {
     const { i18n } = useCoreContext();
-    const defaultTimeRangePreset = useMemo(() => i18n.get(defaultTimeRange), [i18n, defaultTimeRange]);
+    const defaultTimeRangePreset = useMemo(() => i18n.get(defaultParams.current.defaultTimeRange), [i18n]);
     const [selectedTimeRangePreset, setSelectedTimeRangePreset] = useState(defaultTimeRangePreset);
 
     const updateCreatedDateFilter = useCallback(
@@ -40,12 +38,14 @@ const TransactionsOverviewDateFilter = ({
                         break;
                     case DateRangeFilterParam.FROM:
                         updateFilters({
-                            [TransactionFilterParam.CREATED_SINCE]: value || defaultFilterParams[TransactionFilterParam.CREATED_SINCE],
+                            [TransactionFilterParam.CREATED_SINCE]:
+                                value || defaultParams.current.defaultFilterParams[TransactionFilterParam.CREATED_SINCE],
                         });
                         break;
                     case DateRangeFilterParam.TO:
                         updateFilters({
-                            [TransactionFilterParam.CREATED_UNTIL]: value || defaultFilterParams[TransactionFilterParam.CREATED_UNTIL],
+                            [TransactionFilterParam.CREATED_UNTIL]:
+                                value || defaultParams.current.defaultFilterParams[TransactionFilterParam.CREATED_UNTIL],
                         });
                         break;
                     default:
@@ -55,7 +55,7 @@ const TransactionsOverviewDateFilter = ({
                 refreshNowTimestamp();
             }
         },
-        [defaultFilterParams, defaultTimeRangePreset, refreshNowTimestamp, updateFilters]
+        [defaultTimeRangePreset, refreshNowTimestamp, updateFilters]
     );
 
     useMemo(() => !canResetFilters && setSelectedTimeRangePreset(defaultTimeRangePreset), [canResetFilters, defaultTimeRangePreset]);
@@ -68,7 +68,7 @@ const TransactionsOverviewDateFilter = ({
             from={filters[TransactionFilterParam.CREATED_SINCE]}
             to={filters[TransactionFilterParam.CREATED_UNTIL]}
             selectedPresetOption={selectedTimeRangePreset}
-            timeRangePresetOptions={timeRangeOptions}
+            timeRangePresetOptions={defaultParams.current.timeRangeOptions}
             timezone={balanceAccount?.timeZone}
             onChange={updateCreatedDateFilter}
             showTimezoneInfo={true}

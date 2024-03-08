@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
+import { useCallback, useEffect, useRef, useState } from 'preact/hooks';
 import { getTimeRangeSelectionDefaultPresetOptions } from '@src/components/internal/DatePicker/components/TimeRangeSelector';
 import { DEFAULT_TRANSACTIONS_OVERVIEW_MULTI_SELECTION_FILTER_PARAMS } from '../components/MultiSelectionFilter';
 import { useBalanceAccountSelection } from '../components/BalanceAccountSelector';
@@ -20,14 +20,14 @@ const getDefaultTransactionsFilterParams = () => {
 
 const useDefaultTransactionsOverviewFilterParams = (balanceAccount?: ReturnType<typeof useBalanceAccountSelection>['activeBalanceAccount']) => {
     const [nowTimestamp, setNowTimestamp] = useState(Date.now());
-    const defaultParams = useMemo(getDefaultTransactionsFilterParams, [balanceAccount]);
+    const defaultParams = useRef(getDefaultTransactionsFilterParams());
     const refreshNowTimestamp = useCallback(() => setNowTimestamp(Date.now()), [setNowTimestamp]);
 
     useEffect(() => {
         refreshNowTimestamp();
     }, [balanceAccount, refreshNowTimestamp]);
 
-    return { ...defaultParams, nowTimestamp, refreshNowTimestamp } as const;
+    return { defaultParams, nowTimestamp, refreshNowTimestamp } as const;
 };
 
 export default useDefaultTransactionsOverviewFilterParams;

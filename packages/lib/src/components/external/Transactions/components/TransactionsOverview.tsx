@@ -31,8 +31,7 @@ export const TransactionsOverview = ({
     const { i18n } = useCoreContext();
     const transactionsEndpointCall = useSetupEndpoint('getTransactions');
     const { activeBalanceAccount, balanceAccountSelectionOptions, onBalanceAccountSelection } = useBalanceAccountSelection(balanceAccounts);
-    const { defaultFilterParams, defaultTimeRange, nowTimestamp, refreshNowTimestamp, timeRangeOptions } =
-        useDefaultTransactionsOverviewFilterParams(activeBalanceAccount);
+    const { defaultParams, nowTimestamp, refreshNowTimestamp } = useDefaultTransactionsOverviewFilterParams(activeBalanceAccount);
 
     const getTransactions = useCallback(
         async (pageRequestParams: Record<TransactionFilterParam | 'cursor', string>, signal?: AbortSignal) => {
@@ -45,15 +44,17 @@ export const TransactionsOverview = ({
                     categories: listFrom<ITransaction['category']>(pageRequestParams[TransactionFilterParam.CATEGORIES]),
                     currencies: listFrom<ITransaction['amount']['currency']>(pageRequestParams[TransactionFilterParam.CURRENCIES]),
                     createdSince:
-                        pageRequestParams[TransactionFilterParam.CREATED_SINCE] ?? defaultFilterParams[TransactionFilterParam.CREATED_SINCE],
+                        pageRequestParams[TransactionFilterParam.CREATED_SINCE] ??
+                        defaultParams.current.defaultFilterParams[TransactionFilterParam.CREATED_SINCE],
                     createdUntil:
-                        pageRequestParams[TransactionFilterParam.CREATED_UNTIL] ?? defaultFilterParams[TransactionFilterParam.CREATED_UNTIL],
+                        pageRequestParams[TransactionFilterParam.CREATED_UNTIL] ??
+                        defaultParams.current.defaultFilterParams[TransactionFilterParam.CREATED_UNTIL],
                     sortDirection: 'desc' as const,
                     balanceAccountId: activeBalanceAccount?.id ?? '',
                 },
             });
         },
-        [activeBalanceAccount, defaultFilterParams, transactionsEndpointCall]
+        [activeBalanceAccount, transactionsEndpointCall]
     );
 
     // FILTERS
@@ -66,7 +67,7 @@ export const TransactionsOverview = ({
         useCursorPaginatedRecords<ITransaction, 'transactions', string, TransactionFilterParam>({
             fetchRecords: getTransactions,
             dataField: 'transactions',
-            filterParams: defaultFilterParams,
+            filterParams: defaultParams.current.defaultFilterParams,
             initialFiltersSameAsDefault: true,
             onLimitChanged: _onLimitChanged,
             onFiltersChanged: _onFiltersChanged,
@@ -82,8 +83,10 @@ export const TransactionsOverview = ({
         });
 
     useEffect(() => {
+        // reset currency filter on balance account change
         setAvailableCurrencies(undefined);
-    }, [activeBalanceAccount, setAvailableCurrencies]);
+        updateFilters({ [TransactionFilterParam.CURRENCIES]: undefined });
+    }, [activeBalanceAccount, setAvailableCurrencies, updateFilters]);
 
     useEffect(() => {
         refreshNowTimestamp();
@@ -98,13 +101,11 @@ export const TransactionsOverview = ({
                     onBalanceAccountSelection={onBalanceAccountSelection}
                 />
                 <TransactionsOverviewDateFilter
-                    defaultFilterParams={defaultFilterParams}
-                    defaultTimeRange={defaultTimeRange}
                     canResetFilters={canResetFilters}
+                    defaultParams={defaultParams}
                     filters={filters}
                     nowTimestamp={nowTimestamp}
                     refreshNowTimestamp={refreshNowTimestamp}
-                    timeRangeOptions={timeRangeOptions}
                     updateFilters={updateFilters}
                 />
                 <MultiSelectionFilter {...statusesFilter} placeholder={i18n.get('filterPlaceholder.status')} />
