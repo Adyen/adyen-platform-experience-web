@@ -1,0 +1,13 @@
+.adyen-fp-total-item {
+    align-items: center;
+    display: flex;
+    gap: 50px;
+    justify-content: space-between;
+    width: 100%;
+
+    &--body {
+        border-top: 1px solid var(--adyen-fp-color-separator-primary);
+        margin-top: var(--adyen-fp-spacer-040);
+        padding-top: var(--adyen-fp-spacer-040);
+    }
+}
