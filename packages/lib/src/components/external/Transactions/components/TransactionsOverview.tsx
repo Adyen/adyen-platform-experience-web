@@ -81,6 +81,10 @@ export const TransactionsOverview = ({
     });
 
     useEffect(() => {
+        setTransactionsCurrencies(undefined);
+    }, [activeBalanceAccount, setTransactionsCurrencies]);
+
+    useEffect(() => {
         refreshNowTimestamp();
     }, [filters, refreshNowTimestamp]);
 
