@@ -1,19 +1,6 @@
 @use '../../../../../style/skeleton' as skeleton;
 
-.adyen-fp-transactions-total {
-    align-items: center;
-    border: 1px solid var(--adyen-fp-color-border);
-    border-radius: 5px;
-    display: flex;
-    gap: 50px;
-    padding: var(--adyen-fp-spacing-medium) var(--adyen-fp-spacing-large);
-    width: fit-content;
-
-    &__amount {
-        display: flex;
-        flex-direction: column;
-    }
-
+.adyen-fp-transactions-totals {
     &__skeleton {
         @include skeleton.adyen-fp-skeleton();
 

@@ -1,21 +1,20 @@
 import { useSetupEndpoint } from '@src/hooks/useSetupEndpoint/useSetupEndpoint';
-import { useCallback, useMemo } from 'preact/hooks';
+import { useCallback, useMemo, useState } from 'preact/hooks';
 import { EMPTY_OBJECT } from '@src/utils/common';
 import { useFetch } from '@src/hooks/useFetch/useFetch';
 import { OperationParameters } from '@src/types/models/openapi/endpoints';
 import { MakeFieldValueUndefined } from '@src/utils/types';
-import useCoreContext from '@src/core/Context/useCoreContext';
-import './TransactionTotals.scss';
-import Typography from '@src/components/internal/Typography/Typography';
-import { TypographyVariant } from '@src/components/internal/Typography/types';
-import AmountSkeleton from '@src/components/external/Transactions/components/TransactionTotals/AmountSkeleton';
+import ExpandableCard from '@src/components/internal/ExpandableCard/ExpandableCard';
+import { BASE_CLASS } from '@src/components/external/Transactions/components/TransactionTotals/constants';
 import { memo } from 'preact/compat';
+import { TotalItem } from '@src/components/external/Transactions/components/TotalItem/TotalItem';
+import './TransactionTotals.scss';
+import { BaseList } from '@src/components/internal/BaseList/BaseList';
 
 type TransactionTotalsProps = Required<OperationParameters<'getTransactionTotals'>['query']>;
 
 const TransactionTotals = memo(
     ({ balanceAccountId, createdSince, createdUntil, categories, statuses }: MakeFieldValueUndefined<TransactionTotalsProps, 'balanceAccountId'>) => {
-        const { i18n } = useCoreContext();
         const getTransactionTotals = useSetupEndpoint('getTransactionTotals');
 
         const fetchCallback = useCallback(async () => {
@@ -34,39 +33,46 @@ const TransactionTotals = memo(
             fetchOptions: useMemo(() => ({ enabled: !!balanceAccountId }), [balanceAccountId]),
             queryFn: fetchCallback,
         });
-
         const isLoading = !balanceAccountId || isFetching;
+        const isSkeletonVisible = isLoading || !!error || !data?.totals.length;
 
-        const totals = data?.totals?.[0];
+        const totals = data?.totals;
+        const [firstTotal, ...restOfTotals] = totals ?? [];
 
-        const showSkeleton = isLoading || error || data?.totals?.length === 0;
+        const [maxWidths, setMaxWidths] = useState<number[]>([]);
+        const setMaxWidthConditionally = useCallback((widths: number[]) => {
+            setMaxWidths(currentMaxWidths =>
+                widths.map((width, index) => {
+                    const currentMaxWidth = currentMaxWidths[index];
+                    return !currentMaxWidth || width > currentMaxWidth ? width : currentMaxWidth;
+                })
+            );
+        }, []);
 
-        // TODO - Refactor to avoid code repetition (this is working as a placeholder component)
         return (
-            <div className="adyen-fp-transactions-total">
-                <div className="adyen-fp-transactions-total__amount">
-                    <Typography variant={TypographyVariant.CAPTION}>{i18n.get('incoming')}</Typography>
-
-                    {showSkeleton ? (
-                        <AmountSkeleton isLoading={isLoading} />
-                    ) : (
-                        <>
-                            <Typography variant={TypographyVariant.TITLE}>{totals?.incomings ?? ''}</Typography>
-                        </>
+            <div className={BASE_CLASS}>
+                <ExpandableCard
+                    renderHeader={
+                        <TotalItem
+                            total={firstTotal}
+                            widths={maxWidths}
+                            isHeader
+                            isSkeleton={isSkeletonVisible}
+                            isLoading={isLoading}
+                            onWidthsSet={setMaxWidthConditionally}
+                        />
+                    }
+                >
+                    {restOfTotals.length && (
+                        <BaseList>
+                            {restOfTotals.map(total => (
+                                <li key={total.currency}>
+                                    <TotalItem total={total} widths={maxWidths} onWidthsSet={setMaxWidthConditionally} />
+                                </li>
+                            ))}
+                        </BaseList>
                     )}
-                </div>
-                <div className="adyen-fp-transactions-total__amount">
-                    <Typography variant={TypographyVariant.CAPTION}>{i18n.get('expense')}</Typography>
-
-                    {showSkeleton ? (
-                        <AmountSkeleton isLoading={isLoading} />
-                    ) : (
-                        <>
-                            <Typography variant={TypographyVariant.TITLE}>{totals?.expenses ?? ''}</Typography>
-                        </>
-                    )}
-                </div>
-                {totals?.currency ? <span>{totals?.currency}</span> : <span>&nbsp;</span>}
+                </ExpandableCard>
             </div>
         );
     }
