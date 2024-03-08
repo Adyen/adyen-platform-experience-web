@@ -51,9 +51,11 @@ const Select = <T extends SelectItem>({
         useCallback(() => {
             setTextFilter('');
             setShowList(false);
-            resetSelection(cachedSelectedItems.current);
-            pendingClickOutsideTriggeredHideList.current = true;
-        }, [resetSelection, setShowList, setTextFilter])
+            if (showList) {
+                resetSelection(cachedSelectedItems.current);
+                pendingClickOutsideTriggeredHideList.current = true;
+            }
+        }, [resetSelection, showList, setShowList, setTextFilter])
     );
 
     const dropdownClassName = useMemo(
