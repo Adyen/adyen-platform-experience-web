@@ -1,9 +1,8 @@
+import { TransactionDetailData } from '@src/components';
 import { Core } from '../../../core';
 import { PaginationProps, WithPaginationLimitSelection } from '../../internal/Pagination/types';
 import UIElement from '../UIElement';
 import { ITransaction } from '../../../types';
-import { TranslationKey } from '../../../core/Localization/types';
-import { ModalSize } from '../../internal/Modal/types';
 import AdyenFPError from '@src/core/Errors/AdyenFPError';
 
 export const enum TransactionFilterParam {
@@ -26,7 +25,6 @@ export interface TransactionsComponentProps {
     allowLimitSelection?: boolean;
     showDetails?: DetailsOptions;
     core: Core;
-    onContactSupport?: () => void;
 }
 export interface TransactionListProps extends WithPaginationLimitSelection<PaginationProps> {
     transactions: ITransaction[] | undefined;
@@ -38,13 +36,13 @@ export interface TransactionListProps extends WithPaginationLimitSelection<Pagin
     onContactSupport?: () => void;
 }
 
+export interface BalanceAccountProps {
+    balanceAccountDescription?: string;
+}
+
 export type DetailsOptions = {
     transaction?: boolean;
-    balanceAccount?: boolean;
-    accountHolder?: boolean;
 };
 export type SelectedDetail = {
-    title: TranslationKey;
-    selection: { type: 'accountHolder' | 'transaction' | 'balanceAccount'; detail: string };
-    modalSize?: ModalSize;
+    data: string | TransactionDetailData;
 };

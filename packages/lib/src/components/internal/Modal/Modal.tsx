@@ -1,9 +1,11 @@
-import { useEffect, useRef } from 'preact/hooks';
+import Button from '@src/components/internal/Button';
+import { ButtonVariant } from '@src/components/internal/Button/types';
+import useCoreContext from '@src/core/Context/useCoreContext';
+import { useCallback, useEffect, useRef } from 'preact/hooks';
 import cx from 'classnames';
+import { TargetedEvent } from 'preact/compat';
 import './Modal.scss';
 import { ModalProps } from './types';
-import { TargetedEvent } from 'preact/compat';
-import useCoreContext from '@src/core/Context/useCoreContext';
 
 function targetIsNode(e: EventTarget | null): e is Node {
     if (!e || !('nodeType' in e)) {
@@ -20,25 +22,36 @@ export default function Modal({
     isDismissible = true,
     headerWithBorder = true,
     size = 'fluid',
+    ...props
 }: ModalProps) {
     const modalContainerRef = useRef<HTMLDivElement>(null);
     const { i18n } = useCoreContext();
-    const handleClickOutside = (e: TargetedEvent<Node, MouseEvent>) => {
-        if (isDismissible && isOpen && targetIsNode(e.target) && !modalContainerRef?.current?.contains(e.target)) {
-            onClose();
-        }
-    };
+    const handleClickOutside = useCallback(
+        (e: TargetedEvent<Node, MouseEvent>) => {
+            if (isDismissible && isOpen && targetIsNode(e.target) && !modalContainerRef?.current?.contains(e.target)) {
+                onClose();
+            }
+        },
+        [isDismissible, isOpen, onClose]
+    );
 
-    const handleEscKey = (e: KeyboardEvent) => {
-        if (e.key === 'Escape' && isOpen && isDismissible) {
-            onClose();
-        }
-    };
+    const handleEscKey = useCallback(
+        (e: KeyboardEvent) => {
+            if (e.key === 'Escape' && isOpen && isDismissible) {
+                onClose();
+            }
+        },
+        [isOpen, isDismissible, onClose]
+    );
 
     useEffect(() => {
-        window.addEventListener('keydown', handleEscKey);
+        if (isOpen) {
+            window.addEventListener('keydown', handleEscKey);
+        } else {
+            window.removeEventListener('keydown', handleEscKey);
+        }
         return () => window.removeEventListener('keydown', handleEscKey);
-    }, [isOpen]);
+    }, [isOpen, handleEscKey]);
 
     return (
         <div
@@ -49,9 +62,9 @@ export default function Modal({
             )}
             role="dialog"
             aria-modal="true"
-            aria-label={title}
             aria-hidden={!open}
             onClick={handleClickOutside}
+            {...props}
         >
             <div
                 className={cx('adyen-fp-modal', {
@@ -65,13 +78,19 @@ export default function Modal({
             >
                 <div
                     className={cx('adyen-fp-modal__header', {
+                        'adyen-fp-modal__header--with-title': title,
                         'adyen-fp-modal__header--with-border-bottom': headerWithBorder,
                     })}
                 >
-                    <div className={`adyen-fp-modal__header__title`}>{title}</div>
+                    {title && <div className={`adyen-fp-modal__header__title`}>{title}</div>}
 
                     {isDismissible && (
-                        <button onClick={onClose} className={`adyen-fp-modal__header-icon`} aria-label={i18n.get('dismiss')}>
+                        <Button
+                            onClick={onClose}
+                            variant={ButtonVariant.TERTIARY}
+                            className={`adyen-fp-modal__header-icon`}
+                            aria-label={i18n.get('dismiss')}
+                        >
                             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path
                                     fillRule="evenodd"
@@ -80,10 +99,9 @@ export default function Modal({
                                     fill="#000"
                                 />
                             </svg>
-                        </button>
+                        </Button>
                     )}
                 </div>
-
                 <div className={'adyen-fp-modal__content'}>{children}</div>
             </div>
         </div>

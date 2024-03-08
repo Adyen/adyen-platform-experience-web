@@ -16,9 +16,11 @@ const test = base.extend<{
 test('cells should show correct value and open correct modal ', async ({ transactionListPage, page }) => {
     const transactionDetails = transactionListPage;
 
+    const loadedPage = transactionDetails.getCell('amount');
+    await loadedPage.waitFor();
     await transactionDetails.firstRow.click();
 
-    await expect(page.getByRole('dialog').getByLabel(`${getTranslatedKey('paymentId')} Value`)).toHaveText('1WEPGD5VS767881Q');
+    await expect(page.getByRole('dialog').getByLabel(`${getTranslatedKey('referenceID')}`)).toHaveText('1WEPGD5VS767881Q');
 });
 
 test.describe('Filters', () => {

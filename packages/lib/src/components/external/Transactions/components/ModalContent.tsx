@@ -1,15 +1,11 @@
-import { lazy, Suspense } from 'preact/compat';
-import Spinner from '@src/components/internal/Spinner';
-import { SelectedDetail } from '@src/components';
+import { SelectedDetail, TransactionDetailData } from '@src/components';
+import TransactionDetails from '@src/components/external/TransactionDetails/components/TransactionDetails';
+import { hasOwnProperty } from '@src/utils/common';
 
-const TransactionDetails = lazy(() => import('../../TransactionDetails/components/TransactionDetails'));
+const isTransactionWithoutId = (data: string | TransactionDetailData): data is TransactionDetailData => hasOwnProperty(data, 'id');
+function ModalContent({ data }: SelectedDetail) {
+    const transactionProps = isTransactionWithoutId(data) ? { transaction: data } : { transactionId: data };
 
-function ModalContent({ selection }: SelectedDetail) {
-    if (!selection) return null;
-    return (
-        <Suspense fallback={<Spinner size="medium" />}>
-            {selection.type === 'transaction' && <TransactionDetails transactionId={selection.detail} />}
-        </Suspense>
-    );
+    return <>{transactionProps && <TransactionDetails {...transactionProps} />}</>;
 }
 export default ModalContent;

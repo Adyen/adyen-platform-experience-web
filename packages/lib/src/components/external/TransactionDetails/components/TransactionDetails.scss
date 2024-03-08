@@ -1,6 +1,69 @@
+@use '../../../../style/skeleton' as skeleton;
+
 .adyen-fp-transaction {
-    &__details {
-        margin-top: var(--adyen-fp-spacing-xlarge);
+    &--error-container {
+        position: relative;
+    }
+
+    &-data {
         padding: 0 var(--adyen-fp-spacing-large);
+
+        &__section:not(:last-child) {
+            margin-bottom: 6px;
+        }
+
+        &__amount {
+            font-size: var(--adyen-fp-font-size-xxlarge);
+            font-weight: var(--adyen-fp-font-weight-semi-bold);
+            line-height: 44px;
+        }
+
+        &__container {
+            padding-bottom: var(--adyen-fp-transaction-data-section);
+        }
+
+        &__payment-method {
+            align-items: center;
+            display: flex;
+            gap: 6px;
+
+            &-detail {
+                font-weight: var(--adyen-fp-font-weight-medium);
+            }
+        }
+
+        &__payment-method-logo-container {
+            height: 22px;
+            width: 32px;
+        }
+
+        &__tag-container {
+            display: flex;
+            gap: 4px;
+        }
+
+        &__action-buttons {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        &__label {
+            color: var(--adyen-fp-modal-label-color);
+            font-size: var(--adyen-fp-font-size-medium);
+            font-weight: var(--adyen-fp-font-weight-regular);
+            line-height: 20px;
+        }
+
+        &__skeleton {
+            @include skeleton.adyen-fp-skeleton();
+            display: block;
+            height: var(--adyen-fp-spacing-base);
+            margin: var(--adyen-fp-spacing-small) 0;
+            width: 50%;
+
+            &-loading-content {
+                @include skeleton.adyen-fp-skeleton-animation();
+            }
+        }
     }
 }

@@ -1,4 +1,5 @@
 import FilterBar from '@src/components/internal/FilterBar';
+import { ExternalUIComponentProps } from '@src/components/types';
 import { TransactionsComponentProps, TransactionFilterParam } from '../types';
 import TransactionList from '@src/components/external/Transactions/components/TransactionList';
 import useCoreContext from '@src/core/Context/useCoreContext';
@@ -25,9 +26,11 @@ export const TransactionsOverview = ({
     preferredLimit = DEFAULT_PAGE_LIMIT,
     onTransactionSelected,
     showDetails,
-    onContactSupport,
     isLoadingBalanceAccount,
-}: TransactionsComponentProps & { balanceAccounts: IBalanceAccountBase[] | undefined; isLoadingBalanceAccount: boolean }) => {
+    onContactSupport,
+}: ExternalUIComponentProps<
+    TransactionsComponentProps & { balanceAccounts: IBalanceAccountBase[] | undefined; isLoadingBalanceAccount: boolean }
+>) => {
     const { i18n } = useCoreContext();
     const transactionsEndpointCall = useSetupEndpoint('getTransactions');
     const { activeBalanceAccount, balanceAccountSelectionOptions, onBalanceAccountSelection } = useBalanceAccountSelection(balanceAccounts);
@@ -126,11 +129,12 @@ export const TransactionsOverview = ({
                 onTransactionSelected={onTransactionSelected}
                 showPagination={true}
                 showDetails={showDetails}
+                balanceAccountDescription={activeBalanceAccount?.description || ''}
                 limit={limit}
                 limitOptions={limitOptions}
+                onContactSupport={onContactSupport}
                 onLimitSelection={updateLimit}
                 error={error as AdyenFPError}
-                onContactSupport={onContactSupport}
                 {...paginationProps}
             />
         </>

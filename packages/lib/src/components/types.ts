@@ -54,6 +54,7 @@ export interface UIElementProps {
     name?: string;
     setUIElementStatus?: (status: string) => void;
     ref?: any;
+    onContactSupport?: () => void;
 
     /** @internal */
     elementRef?: any;

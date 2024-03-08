@@ -17,7 +17,7 @@ function useModalDetails<Options extends ModalDetailsOptions>(options: Options) 
         <T extends SelectedDetail<Options>>(state: T): CallbackIsPresent<Options, T> extends true ? CallbackParams<Options, T> : {} => {
             if (state && hasCallback(options[state.selection.type])) {
                 return {
-                    callback: options[state.selection.type]?.callback
+                    callback: options?.callback
                         ? (
                               args: Options[T['selection']['type']] extends { callback: any }
                                   ? GetArgsExceptCallback<Required<Options[T['selection']['type']]>>

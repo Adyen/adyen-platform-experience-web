@@ -15,7 +15,10 @@ export const InteractiveBody = <
     onRowClick,
     customCells,
 }: InteractiveBodyProps<Items, Columns, ClickedField, CustomCells>) => {
-    const onClickCallBack = useCallback((item: Items[number]) => () => onRowClick?.callback(item[onRowClick.retrievedField]), [onRowClick]);
+    const onClickCallBack = useCallback(
+        (item: Items[number]) => () => onRowClick?.callback(onRowClick?.retrievedField ? item[onRowClick.retrievedField] : item),
+        [onRowClick]
+    );
 
     const { currentIndex, listeners, ref } = useInteractiveDataGrid({ totalRows: data?.length ?? 0 });
 
