@@ -32,7 +32,7 @@ export const TransactionData = ({ transaction, isFetching }: { transaction?: Tra
                 <TransactionDataSkeleton isLoading={isFetching} skeletonRowNumber={6} />
             ) : (
                 <div className={'adyen-fp-transaction-data'}>
-                    <div className={'adyen-fp-transaction-data--container'}>
+                    <div className={'adyen-fp-transaction-data__container'}>
                         <div className={'adyen-fp-transaction-data__section adyen-fp-transaction-data__tag-container'}>
                             <Tag
                                 label={i18n.get(transaction.status)}
@@ -75,18 +75,18 @@ export const TransactionData = ({ transaction, isFetching }: { transaction?: Tra
                     </div>
 
                     {transaction?.balanceAccountDescription && (
-                        <div className={'adyen-fp-transaction-data--container'}>
+                        <div className={'adyen-fp-transaction-data__container'}>
                             <div className={'adyen-fp-transaction-data__label'}>{i18n.get('account')}</div>
                             <div>{transaction.balanceAccountDescription}</div>
                         </div>
                     )}
-                    <div className={'adyen-fp-transaction-data--container'}>
+                    <div className={'adyen-fp-transaction-data__container'}>
                         <div className={'adyen-fp-transaction-data__label'}>{i18n.get('referenceID')}</div>
                         <div aria-label={i18n.get('referenceID')}>{transaction.id}</div>
                     </div>
                 </div>
             )}
-            {/*{transaction && <div className={'adyen-fp-transaction-data--container adyen-fp-transaction-data--action-buttons'}>*/}
+            {/*{transaction && <div className={'adyen-fp-transaction-data__container adyen-fp-transaction-data__action-buttons'}>*/}
             {/*    <Button aria-label={i18n.get('export')} variant={ButtonVariant.SECONDARY} onClick={() => {}}>*/}
             {/*        {i18n.get('export')}*/}
             {/*    </Button>*/}
