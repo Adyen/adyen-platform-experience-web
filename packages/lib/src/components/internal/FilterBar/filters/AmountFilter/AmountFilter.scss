@@ -1,0 +1,11 @@
+.adyen-fp-range-selection-filter {
+    display: flex;
+    font-size: var(--adyen-fp-font-size-medium);
+    gap: var(--adyen-fp-spacing-medium);
+
+    &__input {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+}

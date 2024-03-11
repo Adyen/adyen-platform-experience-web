@@ -67,7 +67,7 @@ export const balanceAccountMock = [
         return res(
             delay(200),
             ctx.json({
-                balanceAccounts: MULTIPLE_BALANCE_ACCOUNTS,
+                balanceAccounts: SINGLE_BALANCE_ACCOUNT,
             })
         );
     }),

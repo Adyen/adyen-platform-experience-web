@@ -13,6 +13,8 @@ export const enum TransactionFilterParam {
     STATUSES = 'statuses',
     CREATED_SINCE = 'createdSince',
     CREATED_UNTIL = 'createdUntil',
+    MIN_AMOUNT = 'minAmount',
+    MAX_AMOUNT = 'maxAmount',
 }
 
 export type OnSelection = (selection: { id: string; showModal: () => void }) => any;
@@ -37,6 +39,7 @@ export interface TransactionListProps extends WithPaginationLimitSelection<Pagin
     error: AdyenFPError | undefined;
     onContactSupport?: () => void;
     balanceAccounts: IBalanceAccountBase[] | undefined;
+    availableCurrencies: readonly string[] | undefined;
 }
 
 export interface BalanceAccountProps {

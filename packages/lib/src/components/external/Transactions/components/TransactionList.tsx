@@ -16,7 +16,7 @@ import { Tag } from '@src/components/internal/Tag/Tag';
 import { TagVariant } from '@src/components/internal/Tag/types';
 import { CellTextPosition } from '@src/components/internal/DataGrid/types';
 import { Image } from '@src/components/internal/Image/Image';
-import { CurrencyCode, TranslationKey } from '@src/core/Localization/types';
+import { TranslationKey } from '@src/core/Localization/types';
 import TransactionListError from './TransactionListError/TransactionListError';
 import { getCurrencyCode } from '@src/core/Localization/amount/amount-util';
 
@@ -33,12 +33,12 @@ function TransactionList({
     showDetails,
     error,
     onContactSupport,
-    balanceAccounts,
+    availableCurrencies,
     ...paginationProps
 }: TransactionListProps & BalanceAccountProps) {
     const { i18n } = useCoreContext();
 
-    const hasMultipleCurrencies = balanceAccounts && new Set(balanceAccounts.map(acc => acc.defaultCurrencyCode)).size > 1;
+    const hasMultipleCurrencies = availableCurrencies && availableCurrencies.length > 1;
 
     const columns = useMemo(
         () =>
@@ -49,15 +49,13 @@ function TransactionList({
                         key,
                         label: hasMultipleCurrencies
                             ? label
-                            : `${label} ${
-                                  balanceAccounts && balanceAccounts[0] ? `(${getCurrencyCode(balanceAccounts[0].defaultCurrencyCode)})` : ''
-                              }`,
+                            : `${label} ${availableCurrencies && availableCurrencies[0] ? `(${getCurrencyCode(availableCurrencies[0])})` : ''}`,
                         position: key === 'amount' ? CellTextPosition.RIGHT : undefined,
                     };
 
                 return { key, label };
             }),
-        [balanceAccounts, hasMultipleCurrencies, i18n]
+        [availableCurrencies, hasMultipleCurrencies, i18n]
     );
 
     const transactionDetails = useMemo(

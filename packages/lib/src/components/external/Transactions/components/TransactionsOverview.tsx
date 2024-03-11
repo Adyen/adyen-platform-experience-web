@@ -17,6 +17,7 @@ import MultiSelectionFilter, { listFrom } from './MultiSelectionFilter';
 import useDefaultTransactionsOverviewFilterParams from '../hooks/useDefaultTransactionsOverviewFilterParams';
 import useTransactionsOverviewMultiSelectionFilters from '../hooks/useTransactionsOverviewMultiSelectionFilters';
 import AdyenFPError from '@src/core/Errors/AdyenFPError';
+import { AmountFilter } from '@src/components/internal/FilterBar/filters/AmountFilter/AmountFilter';
 
 export const TransactionsOverview = ({
     onFiltersChanged,
@@ -54,6 +55,8 @@ export const TransactionsOverview = ({
                         defaultParams.current.defaultFilterParams[TransactionFilterParam.CREATED_UNTIL],
                     sortDirection: 'desc' as const,
                     balanceAccountId: activeBalanceAccount?.id ?? '',
+                    minAmount: pageRequestParams.minAmount ? Number(pageRequestParams.minAmount) : undefined,
+                    maxAmount: pageRequestParams.maxAmount ? Number(pageRequestParams.maxAmount) : undefined,
                 },
             });
         },
@@ -111,6 +114,14 @@ export const TransactionsOverview = ({
                     refreshNowTimestamp={refreshNowTimestamp}
                     updateFilters={updateFilters}
                 />
+                <AmountFilter
+                    name={'range'}
+                    label={i18n.get('amount')}
+                    minAmount={filters[TransactionFilterParam.MIN_AMOUNT]}
+                    maxAmount={filters[TransactionFilterParam.MAX_AMOUNT]}
+                    updateFilters={updateFilters}
+                    onChange={updateFilters}
+                />
                 <MultiSelectionFilter {...statusesFilter} placeholder={i18n.get('filterPlaceholder.status')} />
                 <MultiSelectionFilter {...categoriesFilter} placeholder={i18n.get('filterPlaceholder.category')} />
                 <MultiSelectionFilter {...currenciesFilter} placeholder={i18n.get('filterPlaceholder.currency')} />
@@ -131,6 +142,7 @@ export const TransactionsOverview = ({
 
             <TransactionList
                 balanceAccounts={balanceAccounts}
+                availableCurrencies={availableCurrencies}
                 loading={fetching || isLoadingBalanceAccount || !balanceAccounts}
                 transactions={records}
                 onTransactionSelected={onTransactionSelected}

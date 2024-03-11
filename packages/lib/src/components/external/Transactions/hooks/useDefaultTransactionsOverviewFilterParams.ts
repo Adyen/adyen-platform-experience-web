@@ -13,6 +13,8 @@ const getDefaultTransactionsFilterParams = () => {
         ...DEFAULT_TRANSACTIONS_OVERVIEW_MULTI_SELECTION_FILTER_PARAMS,
         [TransactionFilterParam.CREATED_SINCE]: new Date(from).toISOString(),
         [TransactionFilterParam.CREATED_UNTIL]: new Date(to).toISOString(),
+        [TransactionFilterParam.MIN_AMOUNT]: undefined,
+        [TransactionFilterParam.MAX_AMOUNT]: undefined,
     } as const;
 
     return { defaultFilterParams, defaultTimeRange, timeRangeOptions } as const;

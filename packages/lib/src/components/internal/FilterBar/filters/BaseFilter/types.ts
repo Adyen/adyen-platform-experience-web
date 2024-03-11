@@ -22,5 +22,5 @@ export type FilterProps<T extends BaseFilterProps> = T & FilterCustomRenderProps
 
 export type FilterEditModalRenderProps<T extends BaseFilterProps> = Omit<FilterProps<T>, keyof FilterCustomRenderProps<T>> & {
     editAction: CommitAction;
-    onValueUpdated: (currentValue?: string) => void;
+    onValueUpdated: (currentValue?: string | null) => void;
 };

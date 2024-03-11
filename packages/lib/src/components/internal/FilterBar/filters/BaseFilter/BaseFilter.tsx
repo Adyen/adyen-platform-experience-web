@@ -56,21 +56,23 @@ const BaseFilter = <T extends BaseFilterProps = BaseFilterProps>({ render, ...pr
     const [hasEmptyValue, updateHasEmptyValue] = useBooleanState(false);
     const [hasInitialValue, updateHasInitialValue] = useBooleanState(false);
     const [valueChanged, updateValueChanged] = useBooleanState(false);
+    const [disabledApply, updateDisabledApply] = useBooleanState(false);
     const targetElement = useUniqueIdentifier() as Ref<Element | null>;
 
     const isValueEmpty = useMemo(() => props.isValueEmpty ?? isValueEmptyFallback, [props.isValueEmpty]);
     const renderModalBody = useMemo(() => render ?? renderFallback<T>, [render]);
 
     const onValueUpdated = useCallback(
-        (currentValue?: string) => {
-            const hasEmptyValue = isValueEmpty(currentValue);
+        (currentValue?: string | null) => {
+            const hasEmptyValue = isValueEmpty(currentValue ?? undefined);
+            updateDisabledApply(currentValue === null);
             updateValueChanged(hasInitialValue ? currentValue !== props.value : !hasEmptyValue);
         },
-        [props.value, hasInitialValue, isValueEmpty]
+        [isValueEmpty, updateDisabledApply, updateValueChanged, hasInitialValue, props.value]
     );
 
     const { commitAction, commitActionButtons, committing, resetCommitAction } = useCommitAction({
-        applyDisabled: !valueChanged,
+        applyDisabled: disabledApply || !valueChanged,
         resetDisabled: hasEmptyValue,
     });
 
@@ -90,7 +92,7 @@ const BaseFilter = <T extends BaseFilterProps = BaseFilterProps>({ render, ...pr
         };
 
         return [updateEditMode(false), updateEditMode(true)];
-    }, [editMode, resetCommitAction]);
+    }, [_updateEditMode, editMode, resetCommitAction, updateEditModalMounting, updateHasEmptyValue, updateHasInitialValue, updateValueChanged]);
 
     useEffect(() => {
         if (editModalMounting) {
@@ -99,7 +101,7 @@ const BaseFilter = <T extends BaseFilterProps = BaseFilterProps>({ render, ...pr
             updateHasEmptyValue(hasEmptyValue);
             updateHasInitialValue(!hasEmptyValue);
         }
-    }, [props.value, editModalMounting, isValueEmpty]);
+    }, [props.value, editModalMounting, isValueEmpty, updateEditModalMounting, updateHasEmptyValue, updateHasInitialValue]);
 
     useEffect(() => {
         committing && closeEditDialog();
@@ -145,7 +147,16 @@ const BaseFilter = <T extends BaseFilterProps = BaseFilterProps>({ render, ...pr
                             </div>
                         </FilterButton>
                     ),
-                    [props.label, props.appliedFilterAmount, editMode, closeEditDialog, openEditDialog, hasEmptyValue, props.classNameModifiers]
+                    [
+                        props.appliedFilterAmount,
+                        props.classNameModifiers,
+                        props.label,
+                        editMode,
+                        hasEmptyValue,
+                        closeEditDialog,
+                        openEditDialog,
+                        targetElement,
+                    ]
                 )}
             </div>
             {editMode && (

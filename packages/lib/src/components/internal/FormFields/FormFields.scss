@@ -79,6 +79,12 @@
     position: relative;
     transition: border 0.2s ease-out, box-shadow 0.2s ease-out;
     width: 100%;
+
+    &__invalid-value {
+        color: var(--adyen-fp-color-alert);
+        max-width: 10.5rem;
+        text-wrap: wrap;
+    }
 }
 
 .adyen-fp-input:hover {
