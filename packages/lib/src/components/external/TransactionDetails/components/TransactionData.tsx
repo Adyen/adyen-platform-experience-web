@@ -26,6 +26,8 @@ export const TransactionData = ({ transaction, isFetching }: { transaction?: Tra
         [transaction, i18n]
     );
 
+    const amountStyle = transaction?.status === 'Booked' ? 'default' : transaction?.status === 'Rejected' ? 'error' : 'pending';
+
     return (
         <>
             {!transaction ? (
@@ -46,7 +48,9 @@ export const TransactionData = ({ transaction, isFetching }: { transaction?: Tra
                             />
                             <Tag label={i18n.get(`txType.${transaction.category}`)} variant={TagVariant.DEFAULT} />
                         </div>
-                        <div className={'adyen-fp-transaction-data__section adyen-fp-transaction-data__amount'}>
+                        <div
+                            className={`adyen-fp-transaction-data__section adyen-fp-transaction-data__amount adyen-fp-transaction-data__amount--${amountStyle}`}
+                        >
                             {transaction.amount
                                 ? i18n.amount(transaction.amount.value, transaction.amount.currency, {
                                       currencyDisplay: 'symbol',
