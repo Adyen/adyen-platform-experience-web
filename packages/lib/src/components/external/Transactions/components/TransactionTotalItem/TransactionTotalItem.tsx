@@ -49,7 +49,7 @@ export const TransactionTotalItem = ({
                 <div key={config.labelKey}>
                     {isHeader && <Typography variant={TypographyVariant.CAPTION}>{i18n.get(config.labelKey)}</Typography>}
                     {isSkeletonVisible ? (
-                        <AmountSkeleton isLoading={isLoading} width="80px" />
+                        <AmountSkeleton isLoading={isLoading} hasMargin width="80px" />
                     ) : (
                         <div ref={config.ref} style={getColumnStyle(index)}>
                             <Typography variant={TypographyVariant.TITLE}>{i18n.amount(total[config.amountKey], total.currency)}</Typography>
