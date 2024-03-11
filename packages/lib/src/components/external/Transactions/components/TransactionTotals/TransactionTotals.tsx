@@ -7,7 +7,7 @@ import { MakeFieldValueUndefined } from '@src/utils/types';
 import ExpandableCard from '@src/components/internal/ExpandableCard/ExpandableCard';
 import { BASE_CLASS } from '@src/components/external/Transactions/components/TransactionTotals/constants';
 import { memo } from 'preact/compat';
-import { TotalItem } from '@src/components/external/Transactions/components/TotalItem/TotalItem';
+import { TransactionTotalItem } from '@src/components/external/Transactions/components/TransactionTotalItem/TransactionTotalItem';
 import { BaseList } from '@src/components/internal/BaseList/BaseList';
 
 type TransactionTotalsProps = Required<OperationParameters<'getTransactionTotals'>['query']>;
@@ -52,7 +52,7 @@ const TransactionTotals = memo(
             <div className={BASE_CLASS}>
                 <ExpandableCard
                     renderHeader={
-                        <TotalItem
+                        <TransactionTotalItem
                             total={firstTotal}
                             widths={maxWidths}
                             isHeader
@@ -66,7 +66,7 @@ const TransactionTotals = memo(
                         <BaseList>
                             {restOfTotals.map(total => (
                                 <li key={total.currency}>
-                                    <TotalItem total={total} widths={maxWidths} onWidthsSet={setMaxWidthConditionally} />
+                                    <TransactionTotalItem total={total} widths={maxWidths} onWidthsSet={setMaxWidthConditionally} />
                                 </li>
                             ))}
                         </BaseList>

@@ -2,13 +2,20 @@ import useCoreContext from '@src/core/Context/useCoreContext';
 import classNames from 'classnames';
 import Typography from '@src/components/internal/Typography/Typography';
 import { TypographyVariant } from '@src/components/internal/Typography/types';
-import { BASE_CLASS, BODY_CLASS } from '@src/components/external/Transactions/components/TotalItem/constants';
-import './TotalItem.scss';
+import { BASE_CLASS, BODY_CLASS } from '@src/components/external/Transactions/components/TransactionTotalItem/constants';
+import './TransactionTotalItem.scss';
 import AmountSkeleton from '@src/components/external/Transactions/components/AmountSkeleton/AmountSkeleton';
 import { useEffect, useRef } from 'preact/hooks';
-import { ColumnConfig, TotalItemProps } from '@src/components/external/Transactions/components/TotalItem/types';
+import { ColumnConfig, TransactionTotalItemProps } from '@src/components/external/Transactions/components/TransactionTotalItem/types';
 
-export const TotalItem = ({ total, isHeader = false, isSkeleton = false, isLoading = false, widths, onWidthsSet }: TotalItemProps) => {
+export const TransactionTotalItem = ({
+    total,
+    isHeader = false,
+    isSkeleton = false,
+    isLoading = false,
+    widths,
+    onWidthsSet,
+}: TransactionTotalItemProps) => {
     const { i18n } = useCoreContext();
     const isSkeletonVisible = isSkeleton || !total;
     const incomingRef = useRef<HTMLDivElement>(null);

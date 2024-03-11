@@ -2,7 +2,7 @@ import { TranslationKey } from '@src/core/Localization/types';
 import { Ref } from 'preact';
 import { ITransactionTotal } from '@src/types';
 
-export type TotalItemProps = {
+export type TransactionTotalItemProps = {
     total?: ITransactionTotal;
     isHeader?: boolean;
     isSkeleton?: boolean;
