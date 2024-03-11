@@ -11,7 +11,7 @@ import { isFunction } from '@src/utils/common';
 import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '@src/components/internal/Pagination/constants';
 import TransactionsOverviewDateFilter from '@src/components/external/Transactions/components/TransactionsOverviewDateFilter';
 import TransactionTotals from '@src/components/external/Transactions/components/TransactionTotals/TransactionTotals';
-import { BalanceAccountsDisplay } from '@src/components/external/Transactions/components/AccountsBalanceDisplay/BalanceAccountsDisplay';
+import { Balances } from '@src/components/external/Transactions/components/Balances/Balances';
 import BalanceAccountSelector, { useBalanceAccountSelection } from './BalanceAccountSelector';
 import MultiSelectionFilter, { listFrom } from './MultiSelectionFilter';
 import useDefaultTransactionsOverviewFilterParams from '../hooks/useDefaultTransactionsOverviewFilterParams';
@@ -120,7 +120,7 @@ export const TransactionsOverview = ({
                     minAmount={0} // Will be fixed in next PR with the amount filter
                     maxAmount={0} // Will be fixed in next PR with the amount filter
                 />
-                <BalanceAccountsDisplay balanceAccountId={activeBalanceAccount?.id} updateBalanceAccountCurrencies={setTransactionsCurrencies} />
+                <Balances balanceAccountId={activeBalanceAccount?.id} updateBalanceAccountCurrencies={setTransactionsCurrencies} />
             </div>
 
             <TransactionList
