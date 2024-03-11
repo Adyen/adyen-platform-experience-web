@@ -8,6 +8,7 @@ import ChevronDown from '../SVGIcons/ChevronDown';
 import {
     BASE_CLASS,
     CHEVRON_CLASS,
+    CONTAINER_BUTTON_CLASS,
     CONTAINER_CLASS,
     CONTAINER_FILLED_CLASS,
     CONTAINER_HIDDEN_CLASS,
@@ -57,7 +58,7 @@ const ExpandableCard = ({ renderHeader, children, filled }: PropsWithChildren<Ex
             {children ? (
                 <>
                     <BaseButton
-                        className={classNames(CONTAINER_CLASS, { [CONTAINER_FILLED_CLASS]: filled })}
+                        className={classNames(CONTAINER_CLASS, CONTAINER_BUTTON_CLASS, { [CONTAINER_FILLED_CLASS]: filled })}
                         disabled={isOpen}
                         aria-controls={CONTAINER_OVERLAY_ID}
                         aria-expanded={isOpen}

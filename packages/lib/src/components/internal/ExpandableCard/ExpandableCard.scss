@@ -32,11 +32,13 @@
             visibility: hidden;
         }
 
-        &:hover {
-            background-color: var(--adyen-fp-color-background-primary-hover);
+        &--button {
+            &:hover {
+                background-color: var(--adyen-fp-color-background-primary-hover);
 
-            #{$adyen-fp-expandable-card}__chevron {
-                background-color: var(--adyen-fp-color-background-tertiary-hover);
+                #{$adyen-fp-expandable-card}__chevron {
+                    background-color: var(--adyen-fp-color-background-tertiary-hover);
+                }
             }
         }
 
