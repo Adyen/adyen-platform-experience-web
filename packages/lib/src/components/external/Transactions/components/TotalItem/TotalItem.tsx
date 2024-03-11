@@ -50,7 +50,11 @@ export const TotalItem = ({ total, isHeader = false, isSkeleton = false, isLoadi
                 </div>
             ))}
 
-            {isSkeletonVisible ? <AmountSkeleton isLoading={isLoading} width="40px" /> : <span>{total.currency}</span>}
+            {isSkeletonVisible ? (
+                <AmountSkeleton isLoading={isLoading} width="40px" />
+            ) : (
+                <Typography variant={TypographyVariant.CAPTION}>{total.currency}</Typography>
+            )}
         </div>
     );
 };
