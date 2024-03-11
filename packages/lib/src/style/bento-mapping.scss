@@ -1,5 +1,7 @@
 @import '@adyen/bento-design-tokens/dist/scss/bento/variables.scss';
 
+$adyen-fp-color-grey-3200: $color-grey-3200;
+
 @mixin adyen-fp-bento-mapping {
     --adyen-fp-color-background-primary: #{$color-background-primary};
     --adyen-fp-color-background-primary-hover: #{$color-background-primary-hover};
