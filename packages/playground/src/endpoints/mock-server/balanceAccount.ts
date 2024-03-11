@@ -42,8 +42,8 @@ const TRANSACTION_TOTALS = [
     },
     {
         currency: 'USD',
-        incomings: 0,
-        expenses: -20,
+        incomings: 200000000000,
+        expenses: -100000000000,
     },
 ];
 
