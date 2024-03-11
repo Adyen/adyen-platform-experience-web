@@ -11,4 +11,4 @@ export type TransactionTotalItemProps = {
     onWidthsSet: (widths: number[]) => void;
 };
 
-export type ColumnConfig = { labelKey: TranslationKey; amountKey: 'incomings' | 'expenses'; ref: Ref<HTMLDivElement> };
+export type AmountColumnConfig = { labelKey: TranslationKey; amountKey: 'incomings' | 'expenses'; ref: Ref<HTMLDivElement> };

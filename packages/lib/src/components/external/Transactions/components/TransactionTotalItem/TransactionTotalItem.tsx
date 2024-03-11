@@ -6,7 +6,7 @@ import { BASE_CLASS, BODY_CLASS } from '@src/components/external/Transactions/co
 import './TransactionTotalItem.scss';
 import AmountSkeleton from '@src/components/external/Transactions/components/AmountSkeleton/AmountSkeleton';
 import { useEffect, useRef } from 'preact/hooks';
-import { ColumnConfig, TransactionTotalItemProps } from '@src/components/external/Transactions/components/TransactionTotalItem/types';
+import { AmountColumnConfig, TransactionTotalItemProps } from '@src/components/external/Transactions/components/TransactionTotalItem/types';
 
 export const TransactionTotalItem = ({
     total,
@@ -20,14 +20,15 @@ export const TransactionTotalItem = ({
     const isSkeletonVisible = isSkeleton || !total;
     const incomingRef = useRef<HTMLDivElement>(null);
     const expenseRef = useRef<HTMLDivElement>(null);
+    const currencyRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        if (incomingRef.current?.getBoundingClientRect().width && expenseRef.current?.getBoundingClientRect().width) {
-            onWidthsSet([incomingRef.current.getBoundingClientRect().width, expenseRef.current.getBoundingClientRect().width]);
-        }
+        const refs = [incomingRef, expenseRef, currencyRef];
+        const newWidths = refs.map(ref => ref.current?.getBoundingClientRect().width ?? 0);
+        onWidthsSet(newWidths);
     }, [onWidthsSet]);
 
-    const columnConfigs: ColumnConfig[] = [
+    const amountColumnConfigs: AmountColumnConfig[] = [
         {
             labelKey: 'incoming',
             amountKey: 'incomings',
@@ -44,7 +45,7 @@ export const TransactionTotalItem = ({
 
     return (
         <div className={classNames(BASE_CLASS, { [BODY_CLASS]: !isHeader })}>
-            {columnConfigs.map((config, index) => (
+            {amountColumnConfigs.map((config, index) => (
                 <div key={config.labelKey}>
                     {isHeader && <Typography variant={TypographyVariant.CAPTION}>{i18n.get(config.labelKey)}</Typography>}
                     {isSkeletonVisible ? (
@@ -60,7 +61,9 @@ export const TransactionTotalItem = ({
             {isSkeletonVisible ? (
                 <AmountSkeleton isLoading={isLoading} width="40px" />
             ) : (
-                <Typography variant={TypographyVariant.CAPTION}>{total.currency}</Typography>
+                <div ref={currencyRef} style={getColumnStyle(amountColumnConfigs.length)}>
+                    <Typography variant={TypographyVariant.CAPTION}>{total.currency}</Typography>
+                </div>
             )}
         </div>
     );
