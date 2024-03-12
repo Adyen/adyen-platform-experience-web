@@ -1,5 +1,5 @@
 import { useSetupEndpoint } from '@src/hooks/useSetupEndpoint/useSetupEndpoint';
-import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
+import { useCallback, useEffect, useMemo } from 'preact/hooks';
 import { EMPTY_OBJECT } from '@src/utils/common';
 import { useFetch } from '@src/hooks/useFetch/useFetch';
 import { OperationParameters } from '@src/types/models/openapi/endpoints';
@@ -9,6 +9,7 @@ import { BASE_CLASS } from '@src/components/external/Transactions/components/Bal
 import ExpandableCard from '@src/components/internal/ExpandableCard/ExpandableCard';
 import { BaseList } from '@src/components/internal/BaseList/BaseList';
 import { BalanceItem } from '@src/components/external/Transactions/components/BalanceItem/BalanceItem';
+import { useMaxWidthsState } from '@src/components/external/Transactions/hooks/useMaxWidths';
 
 type TransactionTotalsProps = Required<OperationParameters<'getBalances'>['path']>;
 
@@ -44,15 +45,7 @@ export const Balances = memo(
         const balances = data?.balances;
         const [firstBalance, ...restOfBalances] = balances ?? [];
 
-        const [maxWidths, setMaxWidths] = useState<number[]>([]);
-        const setMaxWidthConditionally = useCallback((widths: number[]) => {
-            setMaxWidths(currentMaxWidths =>
-                widths.map((width, index) => {
-                    const currentMaxWidth = currentMaxWidths[index];
-                    return !currentMaxWidth || width > currentMaxWidth ? width : currentMaxWidth;
-                })
-            );
-        }, []);
+        const [maxWidths, setMaxWidths] = useMaxWidthsState();
 
         return (
             <div className={BASE_CLASS}>
@@ -64,15 +57,16 @@ export const Balances = memo(
                             isHeader
                             isSkeleton={isSkeletonVisible}
                             isLoading={isLoading}
-                            onWidthsSet={setMaxWidthConditionally}
+                            onWidthsSet={setMaxWidths}
                         />
                     }
+                    filled
                 >
                     {restOfBalances.length && (
                         <BaseList>
                             {restOfBalances.map(balance => (
                                 <li key={balance.currency}>
-                                    <BalanceItem balance={balance} widths={maxWidths} onWidthsSet={setMaxWidthConditionally} />
+                                    <BalanceItem balance={balance} widths={maxWidths} onWidthsSet={setMaxWidths} />
                                 </li>
                             ))}
                         </BaseList>

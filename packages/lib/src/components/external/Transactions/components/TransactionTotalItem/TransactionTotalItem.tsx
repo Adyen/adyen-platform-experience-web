@@ -1,12 +1,9 @@
 import useCoreContext from '@src/core/Context/useCoreContext';
-import classNames from 'classnames';
-import Typography from '@src/components/internal/Typography/Typography';
 import { TypographyVariant } from '@src/components/internal/Typography/types';
-import { BASE_CLASS, BODY_CLASS } from '@src/components/external/Transactions/components/TransactionTotalItem/constants';
-import './TransactionTotalItem.scss';
-import AmountSkeleton from '@src/components/external/Transactions/components/AmountSkeleton/AmountSkeleton';
-import { useEffect, useRef } from 'preact/hooks';
-import { AmountColumnConfig, TransactionTotalItemProps } from '@src/components/external/Transactions/components/TransactionTotalItem/types';
+import { SummaryItemColumnConfig } from '@src/components/external/Transactions/components/SummaryItem/types';
+import { TransactionTotalItemProps } from '@src/components/external/Transactions/components/TransactionTotalItem/types';
+import { useRef } from 'preact/hooks';
+import { SummaryItem } from '@src/components/external/Transactions/components/SummaryItem/SummaryItem';
 
 export const TransactionTotalItem = ({
     total,
@@ -21,50 +18,37 @@ export const TransactionTotalItem = ({
     const incomingRef = useRef<HTMLDivElement>(null);
     const expenseRef = useRef<HTMLDivElement>(null);
     const currencyRef = useRef<HTMLDivElement>(null);
-
-    useEffect(() => {
-        const refs = [incomingRef, expenseRef, currencyRef];
-        const newWidths = refs.map(ref => ref.current?.getBoundingClientRect().width ?? 0);
-        onWidthsSet(newWidths);
-    }, [onWidthsSet]);
-
-    const amountColumnConfigs: AmountColumnConfig[] = [
+    const columnConfigs: SummaryItemColumnConfig[] = [
         {
             labelKey: 'incoming',
-            amountKey: 'incomings',
             ref: incomingRef,
+            skeletonWidth: 80,
+            valueTypographyVariant: TypographyVariant.TITLE,
+            getValue: () => total && i18n.amount(total.incomings, total.currency),
         },
         {
             labelKey: 'expense',
-            amountKey: 'expenses',
             ref: expenseRef,
+            skeletonWidth: 80,
+            valueTypographyVariant: TypographyVariant.TITLE,
+            getValue: () => total && i18n.amount(total.expenses, total.currency),
+        },
+        {
+            ref: currencyRef,
+            skeletonWidth: 40,
+            valueTypographyVariant: TypographyVariant.CAPTION,
+            getValue: () => total?.currency,
         },
     ];
 
-    const getColumnStyle = (index: number) => ({ width: widths && widths[index] ? widths[index] : 'auto' });
-
     return (
-        <div className={classNames(BASE_CLASS, { [BODY_CLASS]: !isHeader })}>
-            {amountColumnConfigs.map((config, index) => (
-                <div key={config.labelKey}>
-                    {isHeader && <Typography variant={TypographyVariant.CAPTION}>{i18n.get(config.labelKey)}</Typography>}
-                    {isSkeletonVisible ? (
-                        <AmountSkeleton isLoading={isLoading} hasMargin width="80px" />
-                    ) : (
-                        <div ref={config.ref} style={getColumnStyle(index)}>
-                            <Typography variant={TypographyVariant.TITLE}>{i18n.amount(total[config.amountKey], total.currency)}</Typography>
-                        </div>
-                    )}
-                </div>
-            ))}
-
-            {isSkeletonVisible ? (
-                <AmountSkeleton isLoading={isLoading} width="40px" />
-            ) : (
-                <div ref={currencyRef} style={getColumnStyle(amountColumnConfigs.length)}>
-                    <Typography variant={TypographyVariant.CAPTION}>{total.currency}</Typography>
-                </div>
-            )}
-        </div>
+        <SummaryItem
+            columnConfigs={columnConfigs}
+            isHeader={isHeader}
+            isSkeletonVisible={isSkeletonVisible}
+            isLoading={isLoading}
+            widths={widths}
+            onWidthsSet={onWidthsSet}
+        />
     );
 };
