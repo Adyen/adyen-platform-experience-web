@@ -1,3 +1,5 @@
+@import '../../../style/bento-mapping.scss';
+
 // TODO: Move this to an accessibility mixin
 .adyen-fp-sr-only {
     clip: rect(0 0 0 0);
@@ -22,21 +24,23 @@
         overflow: hidden;
 
         &--overlay {
+            box-shadow: 0 2px 4px 0 rgba($adyen-fp-color-grey-3200, 0.04), 0 6px 12px 0 rgba($adyen-fp-color-grey-3200, 0.08);
             position: absolute;
             top: 0;
-            width: 100%;
             z-index: 100;
         }
 
         &--hidden {
-            display: none;
+            visibility: hidden;
         }
 
-        &:hover {
-            background-color: var(--adyen-fp-color-background-primary-hover);
+        &--button {
+            &:hover {
+                background-color: var(--adyen-fp-color-background-primary-hover);
 
-            #{$adyen-fp-expandable-card}__chevron {
-                background-color: var(--adyen-fp-color-background-tertiary-hover);
+                #{$adyen-fp-expandable-card}__chevron {
+                    background-color: var(--adyen-fp-color-background-tertiary-hover);
+                }
             }
         }
 
@@ -51,6 +55,10 @@
 
     &__content {
         padding: var(--adyen-fp-spacer-070) var(--adyen-fp-spacer-080);
+
+        &--expandable {
+            padding-bottom: var(--adyen-fp-spacer-040);
+        }
     }
 
     &__chevron {
