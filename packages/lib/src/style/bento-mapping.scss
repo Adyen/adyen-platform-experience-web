@@ -155,4 +155,7 @@ $adyen-fp-color-grey-3200: $color-grey-3200;
     --adyen-fp-modal-label-color: #{$color-label-secondary};
     --adyen-fp-transaction-data-section: #{$spacer-080};
     --adyen-fp-transaction-data-container: #{$spacer-090};
+    --adyen-fp-transaction-data-default: #{$color-black};
+    --adyen-fp-transaction-data-pending: #{$color-label-secondary};
+    --adyen-fp-transaction-data-error: #{$color-label-critical};
 }
