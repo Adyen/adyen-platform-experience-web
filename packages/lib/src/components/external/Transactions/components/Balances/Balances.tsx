@@ -34,8 +34,8 @@ export const Balances = memo(
         });
 
         useEffect(() => {
-            if (!error && data?.balances?.length) {
-                updateBalanceAccountCurrencies(Object.freeze(data?.balances!.map(({ currency }) => currency).sort()));
+            if (!error) {
+                updateBalanceAccountCurrencies(Object.freeze(data?.balances.map(({ currency }) => currency).sort()));
             }
         }, [data, error, updateBalanceAccountCurrencies]);
 
