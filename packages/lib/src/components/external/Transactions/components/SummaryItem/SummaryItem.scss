@@ -1,4 +1,4 @@
-.adyen-fp-transaction-total-item {
+.adyen-fp-summary-item {
     align-items: center;
     display: flex;
     gap: 50px;
@@ -9,5 +9,9 @@
         border-top: 1px solid var(--adyen-fp-color-separator-primary);
         margin-top: var(--adyen-fp-spacer-040);
         padding-top: var(--adyen-fp-spacer-040);
+    }
+
+    &__label {
+        color: var(--adyen-fp-color-label-secondary);
     }
 }

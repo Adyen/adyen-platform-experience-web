@@ -53,7 +53,7 @@ const MULTIPLE_ACCOUNT_BALANCES = [
         currency: 'EUR',
     },
     {
-        value: 9876,
+        value: 987600000000,
         currency: 'USD',
     },
 ];
