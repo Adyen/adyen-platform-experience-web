@@ -1,5 +1,4 @@
 import useCoreContext from '@src/core/Context/useCoreContext';
-import { TypographyVariant } from '@src/components/internal/Typography/types';
 import { useRef } from 'preact/hooks';
 import { BalanceItemProps } from '@src/components/external/Transactions/components/BalanceItem/types';
 import { SummaryItemColumnConfig } from '@src/components/external/Transactions/components/SummaryItem/types';
@@ -15,13 +14,12 @@ export const BalanceItem = ({ balance, isHeader = false, isSkeleton = false, isL
             labelKey: 'accountBalance',
             ref: amountRef,
             skeletonWidth: 80,
-            valueTypographyVariant: TypographyVariant.TITLE,
             getValue: () => balance && i18n.amount(balance.value, balance.currency),
         },
         {
             ref: currencyRef,
             skeletonWidth: 40,
-            valueTypographyVariant: TypographyVariant.CAPTION,
+            valueHasLabelStyle: true,
             getValue: () => balance?.currency,
         },
     ];

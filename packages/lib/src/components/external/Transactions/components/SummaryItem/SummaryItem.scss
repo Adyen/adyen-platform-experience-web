@@ -10,4 +10,8 @@
         margin-top: var(--adyen-fp-spacer-040);
         padding-top: var(--adyen-fp-spacer-040);
     }
+
+    &__label {
+        color: var(--adyen-fp-color-label-secondary);
+    }
 }

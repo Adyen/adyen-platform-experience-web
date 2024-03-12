@@ -1,5 +1,4 @@
 import { TranslationKey } from '@src/core/Localization/types';
-import { TypographyVariant } from '@src/components/internal/Typography/types';
 import { RefObject } from 'preact';
 
 export type SummaryItemColumnConfig = {
@@ -7,7 +6,7 @@ export type SummaryItemColumnConfig = {
     ref: RefObject<HTMLDivElement>;
     skeletonWidth: number;
     hasSkeletonMargin?: boolean;
-    valueTypographyVariant: TypographyVariant;
+    valueHasLabelStyle?: boolean;
     getValue: () => string | undefined;
 };
 

@@ -23,20 +23,18 @@ export const TransactionTotalItem = ({
             labelKey: 'incoming',
             ref: incomingRef,
             skeletonWidth: 80,
-            valueTypographyVariant: TypographyVariant.TITLE,
             getValue: () => total && i18n.amount(total.incomings, total.currency),
         },
         {
             labelKey: 'expense',
             ref: expenseRef,
             skeletonWidth: 80,
-            valueTypographyVariant: TypographyVariant.TITLE,
             getValue: () => total && i18n.amount(total.expenses, total.currency),
         },
         {
             ref: currencyRef,
             skeletonWidth: 40,
-            valueTypographyVariant: TypographyVariant.CAPTION,
+            valueHasLabelStyle: true,
             getValue: () => total?.currency,
         },
     ];

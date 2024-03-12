@@ -6,7 +6,7 @@ import './SummaryItem.scss';
 import AmountSkeleton from '@src/components/external/Transactions/components/AmountSkeleton/AmountSkeleton';
 import { useEffect } from 'preact/hooks';
 import { SummaryItemProps } from '@src/components/external/Transactions/components/SummaryItem/types';
-import { BASE_CLASS, BODY_CLASS } from '@src/components/external/Transactions/components/SummaryItem/constants';
+import { BASE_CLASS, BODY_CLASS, LABEL_CLASS } from '@src/components/external/Transactions/components/SummaryItem/constants';
 
 export const SummaryItem = ({
     columnConfigs,
@@ -32,12 +32,21 @@ export const SummaryItem = ({
         <div className={classNames(BASE_CLASS, { [BODY_CLASS]: !isHeader })}>
             {columnConfigs.map((config, index) => (
                 <div key={index}>
-                    {isHeader && config.labelKey && <Typography variant={TypographyVariant.CAPTION}>{i18n.get(config.labelKey)}</Typography>}
+                    {isHeader && config.labelKey && (
+                        <Typography variant={TypographyVariant.CAPTION} className={LABEL_CLASS}>
+                            {i18n.get(config.labelKey)}
+                        </Typography>
+                    )}
                     {isSkeletonVisible ? (
                         <AmountSkeleton isLoading={isLoading} hasMargin={config.hasSkeletonMargin} width={config.skeletonWidth + 'px'} />
                     ) : (
                         <div ref={config.ref} style={getColumnStyle(index)}>
-                            <Typography variant={config.valueTypographyVariant}>{config.getValue()}</Typography>
+                            <Typography
+                                variant={config.valueHasLabelStyle ? TypographyVariant.CAPTION : TypographyVariant.TITLE}
+                                className={classNames({ [LABEL_CLASS]: config.valueHasLabelStyle })}
+                            >
+                                {config.getValue()}
+                            </Typography>
                         </div>
                     )}
                 </div>
