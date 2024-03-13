@@ -1,4 +1,6 @@
 import { TransactionDetailData } from '@src/components';
+import { Schema } from '@src/types/models/api/utils';
+import { components } from '@src/types/models/openapi/TransactionsResource';
 import { Core } from '../../../core';
 import { PaginationProps, WithPaginationLimitSelection } from '../../internal/Pagination/types';
 import UIElement from '../UIElement';
@@ -49,4 +51,8 @@ export type DetailsOptions = {
 };
 export type SelectedDetail = {
     data: string | TransactionDetailData;
+};
+
+export type CategoryProp = {
+    value: Schema<components, 'SingleTransaction'>['category'];
 };

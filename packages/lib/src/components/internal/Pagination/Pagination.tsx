@@ -35,7 +35,14 @@ export default function Pagination({ next, hasNext, hasPrev, page, prev, limit, 
                 </span>
                 {_limitOptions && onLimitSelection && (
                     <div className="adyen-fp-pagination__limit-selector">
-                        <Select filterable={false} multiSelect={false} items={_limitOptions} onChange={_onLimitChanged} selected={`${limit ?? ''}`} />
+                        <Select
+                            setToTargetWidth={true}
+                            filterable={false}
+                            multiSelect={false}
+                            items={_limitOptions}
+                            onChange={_onLimitChanged}
+                            selected={`${limit ?? ''}`}
+                        />
                     </div>
                 )}
             </div>

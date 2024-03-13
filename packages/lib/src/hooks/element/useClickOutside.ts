@@ -5,7 +5,8 @@ const onFocusoutCapture = (e: Event) => {
 };
 export const useClickOutside = <T extends Element = Element>(
     rootElementRef?: Nullable<Reflexable<T>>,
-    callback?: (interactionKeyPressed: boolean) => void
+    callback?: (interactionKeyPressed: boolean) => void,
+    disableClickOutside?: boolean
 ) => {
     const ref = useRef<Nullable<T>>(null);
 
@@ -20,7 +21,7 @@ export const useClickOutside = <T extends Element = Element>(
                 }
             }
         },
-        [callback]
+        [callback, ref]
     );
 
     const clickOutsideHandlerRef = useRef(handleClickOutside);
@@ -32,16 +33,29 @@ export const useClickOutside = <T extends Element = Element>(
         return () => document.removeEventListener('click', clickOutsideHandlerRef.current, true);
     }, [handleClickOutside]);
 
+    useEffect(() => {
+        if (disableClickOutside) {
+            document.removeEventListener('click', clickOutsideHandlerRef.current, true);
+        } else {
+            document.addEventListener('click', clickOutsideHandlerRef.current, true);
+        }
+    }, [disableClickOutside]);
+
     return useReflex<T>(
-        useCallback((current: Nullable<T>, previous) => {
-            if (previous instanceof Element) {
-                previous.removeEventListener('focusout', onFocusoutCapture, true);
-            }
-            if (current instanceof Element) {
-                current.addEventListener('focusout', onFocusoutCapture, true);
-            }
-            ref.current = current;
-        }, []),
+        useCallback(
+            (current: Nullable<T>, previous) => {
+                if (previous instanceof Element) {
+                    previous.removeEventListener('focusout', onFocusoutCapture, true);
+                }
+                if (current instanceof Element) {
+                    if (!disableClickOutside) {
+                        current.addEventListener('focusout', onFocusoutCapture, true);
+                        ref.current = current;
+                    }
+                }
+            },
+            [disableClickOutside]
+        ),
         rootElementRef
     );
 };

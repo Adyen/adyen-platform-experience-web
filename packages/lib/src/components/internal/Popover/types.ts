@@ -25,6 +25,7 @@ interface PopoverCoreProps {
     targetElement: MutableRef<Element | null>;
     withoutSpace?: boolean;
     dismiss?: () => any;
+    setToTargetWidth?: boolean;
     children: ComponentChildren;
 }
 

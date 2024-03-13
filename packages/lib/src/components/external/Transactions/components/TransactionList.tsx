@@ -1,4 +1,5 @@
 import { BalanceAccountProps } from '@src/components';
+import Category from '@src/components/external/Transactions/components/Category/Category';
 import Modal from '@src/components/internal/Modal';
 import Spinner from '@src/components/internal/Spinner';
 import useCoreContext from '@src/core/Context/useCoreContext';
@@ -107,7 +108,7 @@ function TransactionList({
                         );
                     },
                     type: ({ item }) => {
-                        return item.category ? i18n.get(`txType.${item.category}`) : null;
+                        return item.category ? <Category value={item.category} /> : null;
                     },
                     creationDate: ({ value }) => i18n.fullDate(value),
                     amount: ({ value }) => {

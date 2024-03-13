@@ -4,7 +4,6 @@ import { InteractionKeyCode } from '@src/components/types';
 import { ARIA_ERROR_SUFFIX } from '@src/core/Errors/constants';
 import { EMPTY_ARRAY, noop } from '@src/utils/common';
 import useCommitAction, { CommitAction } from '@src/hooks/useCommitAction';
-import { useClickOutside } from '@src/hooks/element/useClickOutside';
 import uuid from '@src/utils/uuid';
 import SelectButton from './components/SelectButton';
 import SelectList from './components/SelectList';
@@ -30,6 +29,7 @@ const Select = <T extends SelectItem>({
     uniqueId,
     renderListItem,
     isCollatingErrors,
+    setToTargetWidth,
     withoutCollapseIndicator = false,
 }: SelectProps<T>) => {
     const { resetSelection, select, selection } = useSelect({ items, multiSelect, selected });
@@ -47,17 +47,26 @@ const Select = <T extends SelectItem>({
     const cachedSelectedItems = useRef(selection);
     const selectedItems = useRef(selection);
 
-    const selectContainerRef = useClickOutside(
-        useRef<HTMLDivElement>(null),
-        useCallback(() => {
-            setTextFilter('');
-            setShowList(false);
-            if (showList) {
-                resetSelection(cachedSelectedItems.current);
-                pendingClickOutsideTriggeredHideList.current = true;
-            }
-        }, [resetSelection, showList, setShowList, setTextFilter])
-    );
+    const dismissPopover = useCallback(() => {
+        setTextFilter('');
+        setShowList(false);
+        if (showList) {
+            resetSelection(cachedSelectedItems.current);
+            pendingClickOutsideTriggeredHideList.current = true;
+        }
+    }, [resetSelection, setShowList, setTextFilter, showList]);
+
+    // const selectContainerRef = useClickOutside(
+    //     useRef<HTMLDivElement>(null),
+    //     useCallback(() => {
+    //         setTextFilter('');
+    //         setShowList(false);
+    //         if (showList) {
+    //             resetSelection(cachedSelectedItems.current);
+    //             pendingClickOutsideTriggeredHideList.current = true;
+    //         }
+    //     }, [resetSelection, showList, setShowList, setTextFilter])
+    // );
 
     const dropdownClassName = useMemo(
         () =>
@@ -304,7 +313,7 @@ const Select = <T extends SelectItem>({
     }, [filterable, showList]);
 
     return (
-        <div ref={selectContainerRef} className={dropdownClassName}>
+        <div className={dropdownClassName}>
             <SelectButton
                 id={uniqueId ?? undefined}
                 appliedFilterNumber={appliedFilterNumber}
@@ -326,6 +335,8 @@ const Select = <T extends SelectItem>({
                 ariaDescribedBy={!isCollatingErrors && uniqueId ? `${uniqueId}${ARIA_ERROR_SUFFIX}` : ''}
             />
             <SelectList
+                setToTargetWidth={setToTargetWidth}
+                dismissPopover={dismissPopover}
                 active={selection}
                 commitActions={commitActionButtons}
                 items={items}
