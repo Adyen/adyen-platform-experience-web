@@ -137,7 +137,7 @@ export const TransactionsOverview = ({
                     minAmount={filters[TransactionFilterParam.MIN_AMOUNT] ? parseFloat(filters[TransactionFilterParam.MIN_AMOUNT]) : undefined}
                     maxAmount={filters[TransactionFilterParam.MAX_AMOUNT] ? parseFloat(filters[TransactionFilterParam.MAX_AMOUNT]) : undefined}
                 />
-                <BalanceAccountsDisplay balanceAccountId={activeBalanceAccount?.id} updateBalanceAccountCurrencies={setAvailableCurrencies} />
+                <Balances balanceAccountId={activeBalanceAccount?.id} updateBalanceAccountCurrencies={setAvailableCurrencies} />
             </div>
 
             <TransactionList

@@ -24,7 +24,6 @@ const TransactionTotals = memo(
         minAmount,
         currencies,
     }: MakeFieldValueUndefined<TransactionTotalsProps, 'balanceAccountId' | 'minAmount' | 'maxAmount'>) => {
-        const { i18n } = useCoreContext();
         const getTransactionTotals = useSetupEndpoint('getTransactionTotals');
 
         const fetchCallback = useCallback(async () => {
