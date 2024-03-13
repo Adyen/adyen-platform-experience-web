@@ -58,7 +58,6 @@ export const RangeSelection = ({ onChange, editAction, onValueUpdated, ...props 
                     type="number"
                     value={minAmount}
                     onInput={e => {
-                        console.log(parseFloat(e.currentTarget.value));
                         e.currentTarget && setMinAmount(e.currentTarget.value !== '' ? parseFloat(e.currentTarget.value) : undefined);
                     }}
                     min={0}
