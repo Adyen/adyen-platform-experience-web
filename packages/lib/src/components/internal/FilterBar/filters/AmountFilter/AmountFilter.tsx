@@ -8,7 +8,7 @@ import { PopoverContainerSize } from '@src/components/internal/Popover/types';
 
 const AMOUNT_CONSTANT = 100000;
 
-export const AmountFilter = ({ updateFilters, ...props }: FilterProps<RangeFilterProps>) => {
+export const AmountFilter = ({ updateFilters, selectedCurrencies, availableCurrencies, ...props }: FilterProps<RangeFilterProps>) => {
     const [value, setValue] = useState<string>();
 
     const onFilterChange = useCallback(
@@ -36,6 +36,8 @@ export const AmountFilter = ({ updateFilters, ...props }: FilterProps<RangeFilte
             label={value ?? props.label}
             type={'text'}
             containerSize={PopoverContainerSize.MEDIUM}
+            selectedCurrencies={selectedCurrencies}
+            availableCurrencies={availableCurrencies}
             render={RangeSelection}
         />
     );

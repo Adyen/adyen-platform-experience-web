@@ -7,6 +7,7 @@ export interface RangeFilterProps extends BaseFilterProps {
     updateFilters: (stateUpdateRequest: Partial<ReactiveStateRecord<string, TransactionFilterParam>>) => void;
     minAmount?: string;
     maxAmount?: string;
+    currencies?: string[];
 }
 
 export interface RangeFilterBody extends RangeFilterProps {

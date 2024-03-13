@@ -17,4 +17,5 @@ export type SummaryItemProps = {
     isLoading?: boolean;
     widths?: number[];
     onWidthsSet: (widths: number[]) => void;
+    isEmpty?: boolean;
 };

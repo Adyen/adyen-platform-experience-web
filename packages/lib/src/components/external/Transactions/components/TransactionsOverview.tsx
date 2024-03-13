@@ -4,7 +4,7 @@ import { TransactionsComponentProps, TransactionFilterParam } from '../types';
 import TransactionList from '@src/components/external/Transactions/components/TransactionList';
 import useCoreContext from '@src/core/Context/useCoreContext';
 import { SetupHttpOptions, useSetupEndpoint } from '@src/hooks/useSetupEndpoint/useSetupEndpoint';
-import { useCallback, useEffect, useMemo } from 'preact/hooks';
+import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
 import { useCursorPaginatedRecords } from '@src/components/internal/Pagination/hooks';
 import { IBalanceAccountBase, ITransaction } from '@src/types';
 import { isFunction } from '@src/utils/common';
@@ -82,17 +82,26 @@ export const TransactionsOverview = ({
             enabled: !!activeBalanceAccount?.id,
         });
 
-    const { availableCurrencies, categoriesFilter, currenciesFilter, statusesFilter, setAvailableCurrencies } =
-        useTransactionsOverviewMultiSelectionFilters({
+    const [availableCurrencies, setAvailableCurrencies] = useState<ITransaction['amount']['currency'][] | undefined>([]);
+
+    const { categoriesFilter, currenciesFilter, statusesFilter } = useTransactionsOverviewMultiSelectionFilters(
+        {
             filters,
             updateFilters,
-        });
+        },
+        availableCurrencies
+    );
 
-    useEffect(() => {
-        // reset currency filter on balance account change
-        setAvailableCurrencies(undefined);
-        updateFilters({ [TransactionFilterParam.CURRENCIES]: undefined });
-    }, [activeBalanceAccount, setAvailableCurrencies, updateFilters]);
+    const handleBalanceAccountSelection = useCallback(
+        (target: any) => {
+            onBalanceAccountSelection(target);
+
+            // reset currency filter on balance account change
+            setAvailableCurrencies(undefined);
+            updateFilters({ [TransactionFilterParam.CURRENCIES]: undefined });
+        },
+        [onBalanceAccountSelection, updateFilters]
+    );
 
     useEffect(() => {
         refreshNowTimestamp();
@@ -104,7 +113,7 @@ export const TransactionsOverview = ({
                 <BalanceAccountSelector
                     activeBalanceAccount={activeBalanceAccount}
                     balanceAccountSelectionOptions={balanceAccountSelectionOptions}
-                    onBalanceAccountSelection={onBalanceAccountSelection}
+                    onBalanceAccountSelection={handleBalanceAccountSelection}
                 />
                 <TransactionsOverviewDateFilter
                     canResetFilters={canResetFilters}
@@ -115,6 +124,8 @@ export const TransactionsOverview = ({
                     updateFilters={updateFilters}
                 />
                 <AmountFilter
+                    availableCurrencies={availableCurrencies}
+                    selectedCurrencies={listFrom(filters[TransactionFilterParam.CURRENCIES])}
                     name={'range'}
                     label={i18n.get('amount')}
                     minAmount={filters[TransactionFilterParam.MIN_AMOUNT]}
@@ -133,7 +144,7 @@ export const TransactionsOverview = ({
                     categories={categoriesFilter.selection}
                     createdUntil={filters[TransactionFilterParam.CREATED_UNTIL]!}
                     createdSince={filters[TransactionFilterParam.CREATED_SINCE]!}
-                    currencies={listFrom(filters[TransactionFilterParam.CURRENCIES])}
+                    currencies={currenciesFilter.selection}
                     minAmount={filters[TransactionFilterParam.MIN_AMOUNT] ? parseFloat(filters[TransactionFilterParam.MIN_AMOUNT]) : undefined}
                     maxAmount={filters[TransactionFilterParam.MAX_AMOUNT] ? parseFloat(filters[TransactionFilterParam.MAX_AMOUNT]) : undefined}
                 />

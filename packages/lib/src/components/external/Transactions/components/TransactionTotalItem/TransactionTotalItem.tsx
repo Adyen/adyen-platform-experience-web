@@ -1,5 +1,4 @@
 import useCoreContext from '@src/core/Context/useCoreContext';
-import { TypographyVariant } from '@src/components/internal/Typography/types';
 import { SummaryItemColumnConfig } from '@src/components/external/Transactions/components/SummaryItem/types';
 import { TransactionTotalItemProps } from '@src/components/external/Transactions/components/TransactionTotalItem/types';
 import { useRef } from 'preact/hooks';
@@ -14,7 +13,7 @@ export const TransactionTotalItem = ({
     onWidthsSet,
 }: TransactionTotalItemProps) => {
     const { i18n } = useCoreContext();
-    const isSkeletonVisible = isSkeleton || !total;
+    const isSkeletonVisible = isSkeleton;
     const incomingRef = useRef<HTMLDivElement>(null);
     const expenseRef = useRef<HTMLDivElement>(null);
     const currencyRef = useRef<HTMLDivElement>(null);
@@ -41,6 +40,7 @@ export const TransactionTotalItem = ({
 
     return (
         <SummaryItem
+            isEmpty={!total}
             columnConfigs={columnConfigs}
             isHeader={isHeader}
             isSkeletonVisible={isSkeletonVisible}

@@ -25,7 +25,6 @@ const TransactionTotals = memo(
         currencies,
     }: MakeFieldValueUndefined<TransactionTotalsProps, 'balanceAccountId' | 'minAmount' | 'maxAmount'>) => {
         const getTransactionTotals = useSetupEndpoint('getTransactionTotals');
-
         const fetchCallback = useCallback(async () => {
             return getTransactionTotals(EMPTY_OBJECT, {
                 query: {
@@ -46,7 +45,7 @@ const TransactionTotals = memo(
             queryFn: fetchCallback,
         });
         const isLoading = !balanceAccountId || isFetching;
-        const isSkeletonVisible = isLoading || !!error || !data?.totals.length;
+        const isSkeletonVisible = isLoading;
 
         const totals = data?.totals;
         const [firstTotal, ...restOfTotals] = totals ?? [];

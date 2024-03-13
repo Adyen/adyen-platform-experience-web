@@ -10,6 +10,7 @@ import ExpandableCard from '@src/components/internal/ExpandableCard/ExpandableCa
 import { BaseList } from '@src/components/internal/BaseList/BaseList';
 import { BalanceItem } from '@src/components/external/Transactions/components/BalanceItem/BalanceItem';
 import { useMaxWidthsState } from '@src/components/external/Transactions/hooks/useMaxWidths';
+import { ITransaction } from '@src/types';
 
 type TransactionTotalsProps = Required<OperationParameters<'getBalances'>['path']>;
 
@@ -18,7 +19,7 @@ export const Balances = memo(
         balanceAccountId,
         updateBalanceAccountCurrencies,
     }: MakeFieldValueUndefined<TransactionTotalsProps, 'balanceAccountId'> & {
-        updateBalanceAccountCurrencies: (currencies?: readonly string[]) => any;
+        updateBalanceAccountCurrencies: (currencies?: ITransaction['amount']['currency'][]) => any;
     }) => {
         const getAccountsBalance = useSetupEndpoint('getBalances');
 
@@ -34,13 +35,14 @@ export const Balances = memo(
         });
 
         useEffect(() => {
-            if (!error) {
-                updateBalanceAccountCurrencies(Object.freeze(data?.balances.map(({ currency }) => currency).sort()));
+            if (data) {
+                updateBalanceAccountCurrencies(data?.balances.map(({ currency }) => currency).sort());
             }
-        }, [data, error, updateBalanceAccountCurrencies]);
+        }, [data, updateBalanceAccountCurrencies]);
 
         const isLoading = !balanceAccountId || isFetching;
-        const isSkeletonVisible = isLoading || !!error || !data?.balances.length;
+        const isSkeletonVisible = isLoading;
+        const isEmpty = !!error || !data?.balances.length;
 
         const balances = data?.balances;
         const [firstBalance, ...restOfBalances] = balances ?? [];
@@ -52,6 +54,7 @@ export const Balances = memo(
                 <ExpandableCard
                     renderHeader={
                         <BalanceItem
+                            isEmpty={isEmpty}
                             balance={firstBalance}
                             widths={maxWidths}
                             isHeader

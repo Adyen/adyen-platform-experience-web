@@ -14,6 +14,8 @@ export interface BaseFilterProps {
     appliedFilterAmount?: number;
     withContentPadding?: boolean;
     containerSize?: PopoverContainerSize;
+    availableCurrencies?: readonly string[];
+    selectedCurrencies?: string[];
 }
 
 interface FilterCustomRenderProps<T extends BaseFilterProps> {

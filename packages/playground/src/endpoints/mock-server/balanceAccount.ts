@@ -57,6 +57,7 @@ const MULTIPLE_ACCOUNT_BALANCES = [
         currency: 'USD',
     },
 ];
+
 const networkError = false;
 
 export const balanceAccountMock = [

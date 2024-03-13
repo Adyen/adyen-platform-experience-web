@@ -6,14 +6,27 @@ import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
 import { CommitAction } from '@src/hooks/useCommitAction';
 import useCoreContext from '@src/core/Context/useCoreContext';
 
-export const RangeSelection = ({ onChange, editAction, onValueUpdated, ...props }: FilterEditModalRenderProps<RangeFilterBody>) => {
+export const RangeSelection = ({
+    onChange,
+    editAction,
+    onValueUpdated,
+    selectedCurrencies,
+    availableCurrencies,
+    ...props
+}: FilterEditModalRenderProps<RangeFilterBody>) => {
     const { i18n } = useCoreContext();
+    const showCurrencySymbol = useMemo(() => {
+        if (selectedCurrencies?.length === 1 || availableCurrencies?.length === 1) return true;
+        if ((availableCurrencies?.length ?? 0) > 1) return false;
+        return false;
+    }, [availableCurrencies?.length, selectedCurrencies?.length]);
+
     const formatAmount = useCallback(
-        (amount: number) => {
+        (amount: number, showSymbol: boolean) => {
             const formatter = new Intl.NumberFormat(i18n.locale);
-            return formatter.format(amount);
+            return showSymbol ? i18n.amount(amount, selectedCurrencies?.[0] || availableCurrencies?.[0] || 'EUR') : formatter.format(amount);
         },
-        [i18n.locale]
+        [availableCurrencies, i18n, selectedCurrencies]
     );
     const [minAmount, setMinAmount] = useState<number | undefined>(props.minAmount !== undefined ? parseFloat(props.minAmount) : undefined);
     const [maxAmount, setMaxAmount] = useState<number | undefined>(props.maxAmount !== undefined ? parseFloat(props.maxAmount) : undefined);
@@ -23,11 +36,11 @@ export const RangeSelection = ({ onChange, editAction, onValueUpdated, ...props 
 
         if (minAmount !== undefined && maxAmount !== undefined) {
             if (maxAmount < minAmount) return null;
-            return `${formatAmount(minAmount)} to ${formatAmount(maxAmount)}`;
+            return `${formatAmount(minAmount, showCurrencySymbol)} to ${formatAmount(maxAmount, showCurrencySymbol)}`;
         }
-        if (minAmount !== undefined) return `${i18n.get('from')} ${formatAmount(minAmount)}`;
-        if (maxAmount !== undefined) return `${i18n.get('to')} ${formatAmount(maxAmount)}`;
-    }, [formatAmount, i18n, maxAmount, minAmount]);
+        if (minAmount !== undefined) return `${i18n.get('from')} ${formatAmount(minAmount, showCurrencySymbol)}`;
+        if (maxAmount !== undefined) return `${i18n.get('to')} ${formatAmount(maxAmount, showCurrencySymbol)}`;
+    }, [formatAmount, i18n, maxAmount, minAmount, showCurrencySymbol]);
 
     const applyFilter = useCallback(
         () => onChange({ minAmount, maxAmount, filterValue: filterValue ?? undefined }),

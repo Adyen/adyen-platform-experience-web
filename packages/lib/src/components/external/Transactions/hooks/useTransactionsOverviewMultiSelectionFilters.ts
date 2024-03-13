@@ -7,11 +7,11 @@ import {
     TransactionsOverviewMultiSelectionFilterParam,
     useMultiSelectionFilter,
     UseMultiSelectionFilterConfig,
-    useMultiSelectionFilterWithoutValues,
 } from '../components/MultiSelectionFilter';
 
 const useTransactionsOverviewMultiSelectionFilters = (
-    filtersConfig: Pick<UseMultiSelectionFilterConfig<TransactionsOverviewMultiSelectionFilterParam>, 'filters' | 'updateFilters'>
+    filtersConfig: Pick<UseMultiSelectionFilterConfig<TransactionsOverviewMultiSelectionFilterParam>, 'filters' | 'updateFilters'>,
+    currencies: ITransaction['amount']['currency'][] | undefined
 ) => {
     const categoriesFilter = useMultiSelectionFilter({
         filterParam: TransactionFilterParam.CATEGORIES,
@@ -25,22 +25,18 @@ const useTransactionsOverviewMultiSelectionFilters = (
         defaultFilters,
         ...filtersConfig,
     });
-    const {
-        filterValues: availableCurrencies,
-        updateFilterValues: setAvailableCurrencies,
-        ...currenciesFilter
-    } = useMultiSelectionFilterWithoutValues<TransactionFilterParam.CURRENCIES, ITransaction['amount']['currency']>({
+
+    const currenciesFilter = useMultiSelectionFilter({
         filterParam: TransactionFilterParam.CURRENCIES,
+        filterValues: currencies,
         defaultFilters,
         ...filtersConfig,
     });
 
     return {
-        availableCurrencies,
         categoriesFilter,
         currenciesFilter,
         statusesFilter,
-        setAvailableCurrencies,
     } as const;
 };
 

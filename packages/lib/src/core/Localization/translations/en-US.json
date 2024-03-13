@@ -214,6 +214,6 @@
     "refreshThePage": "Refresh the page",
     "reachOutToSupport": "Reach out to support",
     "noNegativeNumbersAllowed": "No negative numbers allowed",
-    "secondValueShouldBeGreaterThanTheFirstOne": "Second value should be equal or greater than the first one",
+    "secondValueShouldBeGreaterThanTheFirstOne": "To value should be equal or greater than the From value",
     "export": "Export"
 }
