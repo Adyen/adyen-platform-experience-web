@@ -1,14 +1,14 @@
-import cx from 'classnames';
-import { useMemo } from 'preact/hooks';
-import { ForwardedRef, memo } from 'preact/compat';
-import { isFunction } from '@src/utils/common';
-import useCoreContext from '@src/core/Context/useCoreContext';
-import fixedForwardRef from '@src/utils/fixedForwardRef';
-import SelectListItem, { renderSelectListItemDefault } from './SelectListItem';
-import type { SelectItem, SelectListProps } from '../types';
-import { DROPDOWN_ELEMENT_CLASS, DROPDOWN_ELEMENT_NO_OPTION_CLASS, DROPDOWN_LIST_ACTIVE_CLASS, DROPDOWN_LIST_CLASS } from '../constants';
 import Popover from '@src/components/internal/Popover/Popover';
-import { PopoverContainerSize, PopoverContainerVariant, PopoverProps } from '@src/components/internal/Popover/types';
+import { PopoverContainerPosition, PopoverContainerSize, PopoverContainerVariant, PopoverProps } from '@src/components/internal/Popover/types';
+import useCoreContext from '@src/core/Context/useCoreContext';
+import { isFunction } from '@src/utils/common';
+import fixedForwardRef from '@src/utils/fixedForwardRef';
+import cx from 'classnames';
+import { ForwardedRef, memo } from 'preact/compat';
+import { useMemo } from 'preact/hooks';
+import { DROPDOWN_ELEMENT_CLASS, DROPDOWN_ELEMENT_NO_OPTION_CLASS, DROPDOWN_LIST_ACTIVE_CLASS, DROPDOWN_LIST_CLASS } from '../constants';
+import type { SelectItem, SelectListProps } from '../types';
+import SelectListItem, { renderSelectListItemDefault } from './SelectListItem';
 
 const SelectList = fixedForwardRef(
     <T extends SelectItem>(
@@ -24,6 +24,8 @@ const SelectList = fixedForwardRef(
             showList,
             textFilter,
             toggleButtonRef,
+            dismissPopover,
+            setToTargetWidth,
         }: SelectListProps<T>,
         ref: ForwardedRef<HTMLUListElement>
     ) => {
@@ -39,25 +41,31 @@ const SelectList = fixedForwardRef(
                 actions={multipleSelection ? commitActions : undefined}
                 disableFocusTrap={true}
                 divider={true}
+                dismiss={dismissPopover}
+                dismissible={false}
                 open={showList}
+                setToTargetWidth={setToTargetWidth}
                 containerSize={PopoverContainerSize.MEDIUM}
                 variant={PopoverContainerVariant.POPOVER}
                 targetElement={toggleButtonRef as PopoverProps['targetElement']}
                 withContentPadding={false}
+                position={PopoverContainerPosition.BOTTOM}
             >
                 <ul className={listClassName} id={selectListId} ref={ref} role="listbox" aria-multiselectable={multipleSelection}>
                     {filteredItems.length ? (
-                        filteredItems.map(item => (
-                            <SelectListItem
-                                item={item}
-                                key={item.id}
-                                multiSelect={multipleSelection}
-                                onKeyDown={onKeyDown}
-                                onSelect={onSelect}
-                                renderListItem={renderSelectOption}
-                                selected={active.includes(item)}
-                            />
-                        ))
+                        filteredItems.map(item => {
+                            return (
+                                <SelectListItem
+                                    item={item}
+                                    key={item.id}
+                                    multiSelect={multipleSelection}
+                                    onKeyDown={onKeyDown}
+                                    onSelect={onSelect}
+                                    renderListItem={renderSelectOption}
+                                    selected={active.includes(item)}
+                                />
+                            );
+                        })
                     ) : (
                         <div className={noOptionsClassName}>{i18n.get('select.noOptionsFound')}</div>
                     )}

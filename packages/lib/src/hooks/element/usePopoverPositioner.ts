@@ -1,6 +1,6 @@
 import { PopoverContainerPosition, PopoverContainerVariant } from '@src/components/internal/Popover/types';
 import getIntersectionObserver from '@src/components/internal/Popover/utils/utils';
-import { MutableRef, useCallback, useEffect, useRef, useState } from 'preact/hooks';
+import { MutableRef, Ref, useCallback, useEffect, useRef, useState } from 'preact/hooks';
 import useReflex, { Nullable, Reflexable } from '../useReflex';
 
 const calculateOffset = (
@@ -15,22 +15,22 @@ const calculateOffset = (
         offset.fill(0, oldLength, 3);
     }
 
-    if (!position) {
-        position = PopoverContainerPosition.BOTTOM;
-    }
     let dimensionX = 0;
     let dimensionY = 0;
     let dimensionZ = 0;
     const currentTarget = targetElement?.current as HTMLElement;
+
+    const targetPosition = currentTarget.getBoundingClientRect();
+    const popoverContent = popover?.firstChild as HTMLElement;
     switch (position) {
         case PopoverContainerPosition.BOTTOM:
-            dimensionX = currentTarget?.offsetLeft + offset[0]!;
-            dimensionY = currentTarget?.offsetTop + currentTarget?.offsetHeight + offset[1]!;
+            dimensionX = targetPosition?.left + offset[0]!;
+            dimensionY = targetPosition?.top + targetPosition?.height + offset[1]!;
             dimensionZ = offset[2]!;
             break;
         case PopoverContainerPosition.TOP:
-            dimensionX = currentTarget?.offsetLeft + offset[0]!;
-            dimensionY = popover?.clientHeight ? currentTarget?.offsetTop - offset[1]! - popover?.clientHeight : currentTarget?.offsetTop;
+            dimensionX = targetPosition.left + offset[0]!;
+            dimensionY = targetPosition?.top - offset[1]! - targetPosition.height - 6 - popoverContent?.clientHeight / 2;
             dimensionZ = offset[2]!;
             break;
         case PopoverContainerPosition.RIGHT:
@@ -64,6 +64,8 @@ const usePopoverPositioner = (
     targetElement: MutableRef<Element | null>,
     variant: PopoverContainerVariant,
     position?: PopoverContainerPosition,
+    arrowRef?: Ref<HTMLSpanElement> | undefined,
+    setToTargetWidth?: boolean,
     ref?: Nullable<Reflexable<Element>>
 ) => {
     const [initialPosition, setInitialPosition] = useState(true);
@@ -115,19 +117,22 @@ const usePopoverPositioner = (
                         observer.observe(current);
                     }
                     if (!(current instanceof Element)) return;
-
                     const popoverStyle = calculateOffset(current, offset, targetElement, currentPosition);
                     const style = !isLoading ? popoverStyle + ';visibility:visible' : popoverStyle;
-                    current.setAttribute('style', `${style}`);
+
+                    const styleWithWidth = setToTargetWidth
+                        ? style + ';min-width:fit-content;;width:' + targetElement.current?.clientWidth + 'px'
+                        : style;
+                    current.setAttribute('style', `${styleWithWidth}`);
 
                     if (initialPosition) setInitialPosition(false);
 
-                    if (variant && variant === PopoverContainerVariant.TOOLTIP) {
-                        current.classList?.add(`popover-content-container--tooltip-${currentPosition}`);
+                    if (variant && variant === PopoverContainerVariant.TOOLTIP && arrowRef) {
+                        arrowRef.current?.classList?.add(`adyen-fp-tooltip__arrow--${currentPosition}`);
                     }
                 }
             },
-            [ref, offset, targetElement, currentPosition, position, variant, observerCallback, setInitialPosition, isLoading]
+            [offset, targetElement, currentPosition, position, variant, observerCallback, setInitialPosition, isLoading, initialPosition]
         ),
         ref
     );

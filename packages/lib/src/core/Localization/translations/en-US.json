@@ -215,5 +215,16 @@
     "reachOutToSupport": "Reach out to support",
     "noNegativeNumbersAllowed": "No negative numbers allowed",
     "secondValueShouldBeGreaterThanTheFirstOne": "To value should be equal or greater than the From value",
-    "export": "Export"
+    "export": "Export",
+    "tooltip.payout": "Money sent from your Balance Account to your external bank account",
+    "tooltip.refund": "Payments refunded back to the shopper",
+    "tooltip.fee": "Charges to your account by the Platform",
+    "tooltip.incoming": "Money received in your account",
+    "tooltip.chargeback": "Payment amount that is returned to a debit or credit card after a customer disputes the transaction",
+    "tooltip.other": "Other",
+    "tooltip.atm": "ATM",
+    "tooltip.capital": "Capital",
+    "tooltip.correction": "Correction",
+    "tooltip.payment": "Payment",
+    "tooltip.transfer": "Transfer"
 }

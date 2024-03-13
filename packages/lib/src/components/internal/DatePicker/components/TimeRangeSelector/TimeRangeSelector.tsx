@@ -41,7 +41,16 @@ const TimeRangeSelector = ({
         selectedOption && onTimeRangeSelected?.(selectedOption);
     }, [selectedOption, onTimeRangeSelected]);
 
-    return <Select items={selectOptions} filterable={false} multiSelect={false} onChange={onSelectedOptionChanged} selected={selectedOption} />;
+    return (
+        <Select
+            setToTargetWidth={true}
+            items={selectOptions}
+            filterable={false}
+            multiSelect={false}
+            onChange={onSelectedOptionChanged}
+            selected={selectedOption}
+        />
+    );
 };
 
 export default TimeRangeSelector;

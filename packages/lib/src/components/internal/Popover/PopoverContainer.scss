@@ -1,3 +1,37 @@
+.adyen-fp-tooltip {
+    $adyen-fp-popover__arrow-border: 2px;
+    position: absolute;
+
+    &__content {
+        background-color: var(--adyen-fp-color-black);
+        border-radius: var(--adyen-fp-spacing-xsmall);
+        color: var(--adyen-fp-color-white);
+        font-size: var(--adyen-fp-font-size-small);
+        inset: 0 auto auto 0;
+        max-width: 16rem;
+        padding: var(--adyen-fp-spacing-xsmall) var(--adyen-fp-spacing-small);
+        position: fixed;
+        z-index: 999;
+    }
+
+    &__arrow {
+        background: var(--adyen-fp-color-black);
+        height: var(--adyen-fp-spacing-small);
+        inset: 0 auto auto 0;
+        position: fixed;
+        width: var(--adyen-fp-spacing-small);
+        z-index: 999;
+
+        &--top {
+            transform: translate3d(20px, 20px, 0) rotate(45deg);
+        }
+
+        &--bottom {
+            transform: translate3d(20px, -4px, 0) rotate(45deg);
+        }
+    }
+}
+
 .adyen-fp-popover-container {
     $adyen-fp-popover__arrow-border: 2px;
     position: absolute;
