@@ -4,6 +4,7 @@ import { RangeFilterProps } from './types';
 import { RangeSelection } from './RangeSelection';
 import { useCallback, useState } from 'preact/hooks';
 import { EMPTY_OBJECT } from '@src/utils/common';
+import { PopoverContainerSize } from '@src/components/internal/Popover/types';
 
 const AMOUNT_CONSTANT = 100000;
 
@@ -13,8 +14,9 @@ export const AmountFilter = ({ updateFilters, ...props }: FilterProps<RangeFilte
     const onFilterChange = useCallback(
         (params: { minAmount: number | undefined; maxAmount: number | undefined; filterValue: string | undefined }) => {
             setValue(params.filterValue);
-            setValue(params.filterValue);
+
             const { minAmount, maxAmount } = params ?? EMPTY_OBJECT;
+
             updateFilters({
                 minAmount: minAmount !== undefined ? String(minAmount * AMOUNT_CONSTANT) : undefined,
                 maxAmount: maxAmount !== undefined ? String(maxAmount * AMOUNT_CONSTANT) : undefined,
@@ -33,6 +35,7 @@ export const AmountFilter = ({ updateFilters, ...props }: FilterProps<RangeFilte
             value={value}
             label={value ?? props.label}
             type={'text'}
+            containerSize={PopoverContainerSize.MEDIUM}
             render={RangeSelection}
         />
     );

@@ -172,6 +172,7 @@ const BaseFilter = <T extends BaseFilterProps = BaseFilterProps>({ render, ...pr
                     divider={true}
                     targetElement={targetElement}
                     disableFocusTrap={false}
+                    containerSize={props.containerSize}
                 >
                     {renderModalBody({ ...props, editAction: commitAction, onValueUpdated })}
                 </Popover>

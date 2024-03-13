@@ -1,5 +1,6 @@
 import { JSX } from 'preact';
 import { CommitAction } from '@src/hooks/useCommitAction';
+import { PopoverContainerSize } from '@src/components/internal/Popover/types';
 
 export interface BaseFilterProps {
     onChange: (value?: any) => void;
@@ -12,6 +13,7 @@ export interface BaseFilterProps {
     isValueEmpty?: (value?: string) => boolean;
     appliedFilterAmount?: number;
     withContentPadding?: boolean;
+    containerSize?: PopoverContainerSize;
 }
 
 interface FilterCustomRenderProps<T extends BaseFilterProps> {

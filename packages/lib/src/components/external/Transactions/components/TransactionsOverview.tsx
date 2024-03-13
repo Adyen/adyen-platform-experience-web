@@ -55,12 +55,12 @@ export const TransactionsOverview = ({
                         defaultParams.current.defaultFilterParams[TransactionFilterParam.CREATED_UNTIL],
                     sortDirection: 'desc' as const,
                     balanceAccountId: activeBalanceAccount?.id ?? '',
-                    minAmount: pageRequestParams.minAmount ? Number(pageRequestParams.minAmount) : undefined,
-                    maxAmount: pageRequestParams.maxAmount ? Number(pageRequestParams.maxAmount) : undefined,
+                    minAmount: pageRequestParams.minAmount !== undefined ? parseFloat(pageRequestParams.minAmount) : undefined,
+                    maxAmount: pageRequestParams.maxAmount !== undefined ? parseFloat(pageRequestParams.maxAmount) : undefined,
                 },
             });
         },
-        [activeBalanceAccount, transactionsEndpointCall]
+        [activeBalanceAccount?.id, defaultParams, transactionsEndpointCall]
     );
 
     // FILTERS
@@ -134,8 +134,8 @@ export const TransactionsOverview = ({
                     createdUntil={filters[TransactionFilterParam.CREATED_UNTIL]!}
                     createdSince={filters[TransactionFilterParam.CREATED_SINCE]!}
                     currencies={listFrom(filters[TransactionFilterParam.CURRENCIES])}
-                    minAmount={0} // Will be fixed in next PR with the amount filter
-                    maxAmount={0} // Will be fixed in next PR with the amount filter
+                    minAmount={filters[TransactionFilterParam.MIN_AMOUNT] ? parseFloat(filters[TransactionFilterParam.MIN_AMOUNT]) : undefined}
+                    maxAmount={filters[TransactionFilterParam.MAX_AMOUNT] ? parseFloat(filters[TransactionFilterParam.MAX_AMOUNT]) : undefined}
                 />
                 <BalanceAccountsDisplay balanceAccountId={activeBalanceAccount?.id} updateBalanceAccountCurrencies={setAvailableCurrencies} />
             </div>

@@ -1,4 +1,4 @@
-import { useMemo, useReducer, useRef } from 'preact/hooks';
+import { useEffect, useMemo, useReducer, useRef } from 'preact/hooks';
 import { EMPTY_OBJECT } from '@src/utils/common';
 import useMounted from '@src/hooks/useMounted';
 import { ReactiveStateRecord, ReactiveStateUpdateRequest, ReactiveStateUpdateRequestWithField, UseReactiveStateRecord } from './types';
@@ -69,13 +69,12 @@ const useReactiveState = <Value, Param extends string>(
 
     const canResetState = useMemo(() => !!$changedParams.current.size, []);
 
-    /* useMemo(() => {
+    useEffect(() => {
         $defaultState.current = Object.freeze({ ...params }) as ReactiveStateRecord<Value, Param>;
         $stateParams.current = new Set(Object.keys($defaultState.current) as Param[]);
         $hasDefaultState.current = initialStateSameAsDefault;
         resetState();
-    }, [initialStateSameAsDefault, resetState]); */
-
+    }, [initialStateSameAsDefault, params, resetState]);
     return { canResetState, defaultState: $defaultState.current, resetState, state, updateState };
 };
 

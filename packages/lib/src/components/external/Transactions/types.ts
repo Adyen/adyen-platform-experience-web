@@ -3,8 +3,6 @@ import { Core } from '../../../core';
 import { PaginationProps, WithPaginationLimitSelection } from '../../internal/Pagination/types';
 import UIElement from '../UIElement';
 import { IBalanceAccountBase, ITransaction } from '../../../types';
-import { TranslationKey } from '../../../core/Localization/types';
-import { ModalSize } from '../../internal/Modal/types';
 import AdyenFPError from '@src/core/Errors/AdyenFPError';
 
 export const enum TransactionFilterParam {
