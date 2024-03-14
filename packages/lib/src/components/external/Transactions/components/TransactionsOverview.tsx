@@ -123,6 +123,9 @@ export const TransactionsOverview = ({
                     refreshNowTimestamp={refreshNowTimestamp}
                     updateFilters={updateFilters}
                 />
+
+                <MultiSelectionFilter {...statusesFilter} placeholder={i18n.get('filterPlaceholder.status')} />
+                <MultiSelectionFilter {...categoriesFilter} placeholder={i18n.get('filterPlaceholder.category')} />
                 <AmountFilter
                     availableCurrencies={availableCurrencies}
                     selectedCurrencies={listFrom(filters[TransactionFilterParam.CURRENCIES])}
@@ -133,8 +136,6 @@ export const TransactionsOverview = ({
                     updateFilters={updateFilters}
                     onChange={updateFilters}
                 />
-                <MultiSelectionFilter {...statusesFilter} placeholder={i18n.get('filterPlaceholder.status')} />
-                <MultiSelectionFilter {...categoriesFilter} placeholder={i18n.get('filterPlaceholder.category')} />
                 <MultiSelectionFilter {...currenciesFilter} placeholder={i18n.get('filterPlaceholder.currency')} />
             </FilterBar>
             <div className="adyen-fp-transactions__balance-totals">
