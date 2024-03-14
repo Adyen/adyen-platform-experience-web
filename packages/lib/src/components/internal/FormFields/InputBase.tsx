@@ -5,6 +5,7 @@ import { h } from 'preact';
 import { ForwardedRef, forwardRef, TargetedEvent } from 'preact/compat';
 import { useCallback } from 'preact/hooks';
 import { InputBaseProps } from './types';
+import './FormFields.scss';
 
 function InputBase(
     { onInput, onKeyUp, trimOnBlur, onBlurHandler, onBlur, onFocusHandler, errorMessage, ...props }: InputBaseProps,
