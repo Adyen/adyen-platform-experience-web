@@ -53,13 +53,13 @@ const renderFallback = (() => {
 const BaseFilter = <T extends BaseFilterProps = BaseFilterProps>({ render, ...props }: FilterProps<T>) => {
     const [editMode, _updateEditMode] = useBooleanState(false);
     const [editModalMounting, updateEditModalMounting] = useBooleanState(false);
-    const [hasEmptyValue, updateHasEmptyValue] = useBooleanState(false);
+    const isValueEmpty = useMemo(() => props.isValueEmpty ?? isValueEmptyFallback, [props.isValueEmpty]);
+    const [hasEmptyValue, updateHasEmptyValue] = useBooleanState(isValueEmpty(props.value));
     const [hasInitialValue, updateHasInitialValue] = useBooleanState(false);
     const [valueChanged, updateValueChanged] = useBooleanState(false);
     const [disabledApply, updateDisabledApply] = useBooleanState(false);
     const targetElement = useUniqueIdentifier() as Ref<Element | null>;
 
-    const isValueEmpty = useMemo(() => props.isValueEmpty ?? isValueEmptyFallback, [props.isValueEmpty]);
     const renderModalBody = useMemo(() => render ?? renderFallback<T>, [render]);
 
     const onValueUpdated = useCallback(
@@ -105,8 +105,8 @@ const BaseFilter = <T extends BaseFilterProps = BaseFilterProps>({ render, ...pr
 
     useEffect(() => {
         committing && closeEditDialog();
-    }, [committing, closeEditDialog]);
-
+        updateHasEmptyValue(hasEmptyValue);
+    }, [committing, closeEditDialog, updateHasEmptyValue, hasEmptyValue]);
     return (
         <>
             <div className={`adyen-fp-filter adyen-fp-filter--${props.type}`}>

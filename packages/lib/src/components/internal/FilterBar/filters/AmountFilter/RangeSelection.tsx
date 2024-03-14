@@ -42,10 +42,9 @@ export const RangeSelection = ({
         if (maxAmount !== undefined) return `${i18n.get('to')} ${formatAmount(maxAmount, showCurrencySymbol)}`;
     }, [formatAmount, i18n, maxAmount, minAmount, showCurrencySymbol]);
 
-    const applyFilter = useCallback(
-        () => onChange({ minAmount, maxAmount, filterValue: filterValue ?? undefined }),
-        [filterValue, maxAmount, minAmount, onChange]
-    );
+    const applyFilter = useCallback(() => {
+        onChange({ minAmount, maxAmount, filterValue: filterValue !== undefined ? filterValue : undefined });
+    }, [filterValue, maxAmount, minAmount, onChange]);
     const clearFilter = useCallback(() => {
         onChange({ minAmount: undefined, maxAmount: undefined, filterValue: undefined });
         setMaxAmount(undefined);
