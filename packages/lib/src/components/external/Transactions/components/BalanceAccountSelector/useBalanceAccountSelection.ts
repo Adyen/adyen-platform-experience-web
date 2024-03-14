@@ -1,21 +1,14 @@
-import { useCallback, useMemo, useRef, useState } from 'preact/hooks';
+import { useCallback, useMemo, useState } from 'preact/hooks';
 import type { SelectItem } from '@src/components/internal/FormFields/Select/types';
 import type { IBalanceAccountBase } from '@src/types';
 
 const useBalanceAccountSelection = (balanceAccounts?: IBalanceAccountBase[]) => {
     const [selectedBalanceAccountIndex, setSelectedBalanceAccountIndex] = useState(0);
     const resetBalanceAccountSelection = useCallback(() => setSelectedBalanceAccountIndex(0), [setSelectedBalanceAccountIndex]);
-    const cachedBalanceAccounts = useRef(balanceAccounts);
 
     const activeBalanceAccount = useMemo(() => {
-        if (cachedBalanceAccounts.current === balanceAccounts) {
-            return balanceAccounts?.[selectedBalanceAccountIndex];
-        }
-
-        cachedBalanceAccounts.current = balanceAccounts;
-        resetBalanceAccountSelection();
-        return balanceAccounts?.[0];
-    }, [balanceAccounts, selectedBalanceAccountIndex, resetBalanceAccountSelection]);
+        return balanceAccounts?.[selectedBalanceAccountIndex];
+    }, [balanceAccounts, selectedBalanceAccountIndex]);
 
     const balanceAccountSelectionOptions = useMemo(
         () =>

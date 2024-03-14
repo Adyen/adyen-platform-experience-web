@@ -92,16 +92,10 @@ export const TransactionsOverview = ({
         availableCurrencies
     );
 
-    const handleBalanceAccountSelection = useCallback(
-        (target: any) => {
-            onBalanceAccountSelection(target);
-
-            // reset currency filter on balance account change
-            setAvailableCurrencies(undefined);
-            updateFilters({ [TransactionFilterParam.CURRENCIES]: undefined });
-        },
-        [onBalanceAccountSelection, updateFilters]
-    );
+    useEffect(() => {
+        setAvailableCurrencies(undefined);
+        updateFilters({ [TransactionFilterParam.CURRENCIES]: undefined });
+    }, [updateFilters, activeBalanceAccount?.id]);
 
     useEffect(() => {
         refreshNowTimestamp();
@@ -113,7 +107,7 @@ export const TransactionsOverview = ({
                 <BalanceAccountSelector
                     activeBalanceAccount={activeBalanceAccount}
                     balanceAccountSelectionOptions={balanceAccountSelectionOptions}
-                    onBalanceAccountSelection={handleBalanceAccountSelection}
+                    onBalanceAccountSelection={onBalanceAccountSelection}
                 />
                 <TransactionsOverviewDateFilter
                     canResetFilters={canResetFilters}
