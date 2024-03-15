@@ -14,7 +14,7 @@ import PopoverDismissButton from '@src/components/internal/Popover/PopoverDismis
 import PopoverTitle from '@src/components/internal/Popover/PopoverTitle/PopoverTitle';
 import { PopoverContainerSize, PopoverContainerVariant, PopoverProps } from '@src/components/internal/Popover/types';
 import { InteractionKeyCode } from '@src/components/types';
-import { useClickOutside } from '@src/hooks/element/useClickOutside';
+import { ClickOutsideVaritant, useClickOutside } from '@src/hooks/element/useClickOutside';
 import useFocusTrap from '@src/hooks/element/useFocusTrap';
 import usePopoverPositioner from '@src/hooks/element/usePopoverPositioner';
 import useUniqueIdentifier from '@src/hooks/element/useUniqueIdentifier';
@@ -90,7 +90,8 @@ function Popover({
     const popoverPositionAnchorElement = useClickOutside(
         usePopoverPositioner([0, 15], targetElement, variant, position, arrowRef, setToTargetWidth),
         dismiss,
-        variant === PopoverContainerVariant.TOOLTIP && !open
+        variant === PopoverContainerVariant.TOOLTIP && !open,
+        ClickOutsideVaritant.POPOVER
     );
     const popoverFocusTrapElement = useFocusTrap(disableFocusTrap ? null : popoverPositionAnchorElement, onCloseFocusTrap);
 
@@ -109,6 +110,8 @@ function Popover({
         }, []),
         disableFocusTrap ? popoverPositionAnchorElement : popoverFocusTrapElement
     );
+
+    const popoverElementWithId = useUniqueIdentifier(popoverElement);
 
     const conditionalClasses = useMemo(
         () => ({
@@ -136,7 +139,7 @@ function Popover({
             {open ? (
                 <div
                     id="popover"
-                    ref={popoverElement}
+                    ref={popoverElementWithId}
                     {...uncontrolledProps}
                     className={classNames(classNamesByVariant, conditionalClasses)}
                     style={{ visibility: 'hidden' }}

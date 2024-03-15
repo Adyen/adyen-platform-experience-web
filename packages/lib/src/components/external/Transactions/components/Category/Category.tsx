@@ -1,5 +1,7 @@
 import { CategoryProp } from '@src/components';
 import Popover from '@src/components/internal/Popover/Popover';
+import { TypographyVariant } from '@src/components/internal/Typography/types';
+import Typography from '@src/components/internal/Typography/Typography';
 import useCoreContext from '@src/core/Context/useCoreContext';
 import { TranslationKey } from '@src/core/Localization/types';
 import useUniqueIdentifier from '@src/hooks/element/useUniqueIdentifier';
@@ -27,7 +29,7 @@ function Category({ value }: CategoryProp) {
             </div>
             {showTooltip && (
                 <Popover targetElement={tooltipRef as Ref<HTMLDivElement | null>} open={showTooltip}>
-                    <span>{i18n.get(`tooltip.${value.toLowerCase()}` as TranslationKey)}</span>
+                    <Typography variant={TypographyVariant.CAPTION}>{i18n.get(`tooltip.${value.toLowerCase()}` as TranslationKey)}</Typography>
                 </Popover>
             )}
         </>

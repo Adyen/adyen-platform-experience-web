@@ -226,5 +226,6 @@
     "tooltip.capital": "Capital",
     "tooltip.correction": "Correction",
     "tooltip.payment": "Payment",
-    "tooltip.transfer": "Transfer"
+    "tooltip.transfer": "Transfer",
+    "tooltip.expense": "Expense includes all of the money going out your account on the time range selected."
 }
