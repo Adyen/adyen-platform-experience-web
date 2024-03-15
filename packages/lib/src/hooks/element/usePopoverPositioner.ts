@@ -24,13 +24,13 @@ const calculateOffset = (
     const popoverContent = popover?.firstChild as HTMLElement;
     switch (position) {
         case PopoverContainerPosition.BOTTOM:
-            dimensionX = targetPosition?.left + offset[0]!;
-            dimensionY = targetPosition?.top + targetPosition?.height + offset[1]!;
+            dimensionX = targetPosition?.left + offset[0]! + window.scrollX;
+            dimensionY = targetPosition?.top + targetPosition?.height + offset[1]! + window.scrollY;
             dimensionZ = offset[2]!;
             break;
         case PopoverContainerPosition.TOP:
-            dimensionX = targetPosition.left + offset[0]!;
-            dimensionY = targetPosition?.top - offset[1]! - targetPosition.height - 6 - popoverContent?.clientHeight / 2;
+            dimensionX = targetPosition.left + offset[0]! + window.scrollX;
+            dimensionY = targetPosition?.top - offset[1]! - targetPosition.height - 6 - popoverContent?.clientHeight / 2 + window.scrollY;
             dimensionZ = offset[2]!;
             break;
         case PopoverContainerPosition.RIGHT:
@@ -70,23 +70,33 @@ const usePopoverPositioner = (
 ) => {
     const [initialPosition, setInitialPosition] = useState(true);
     const [isLoading, setIsLoading] = useState(!position);
+    const [hasInitialPosition, setHasInitialPosition] = useState(true);
     const [currentPosition, setCurrentPosition] = useState(position ?? PopoverContainerPosition.TOP);
 
     const observerCallback = useCallback(
         (entry: IntersectionObserverEntry) => {
-            if (!initialPosition) {
+            if (!initialPosition && hasInitialPosition) {
                 if (entry.intersectionRatio !== 1) {
                     switch (currentPosition) {
                         case PopoverContainerPosition.TOP:
+                            setHasInitialPosition(false);
+                            setIsLoading(false);
                             setCurrentPosition(PopoverContainerPosition.BOTTOM);
                             break;
                         case PopoverContainerPosition.BOTTOM:
-                            setCurrentPosition(PopoverContainerPosition.RIGHT);
+                            setHasInitialPosition(false);
+                            setIsLoading(false);
+                            setCurrentPosition(PopoverContainerPosition.TOP);
                             break;
                         case PopoverContainerPosition.RIGHT:
+                            setHasInitialPosition(false);
+                            setIsLoading(false);
                             setCurrentPosition(PopoverContainerPosition.LEFT);
                             break;
                         case PopoverContainerPosition.LEFT:
+                            setHasInitialPosition(false);
+                            setIsLoading(false);
+                            setCurrentPosition(PopoverContainerPosition.RIGHT);
                             break;
                     }
                 } else {
@@ -94,7 +104,7 @@ const usePopoverPositioner = (
                 }
             }
         },
-        [setCurrentPosition, currentPosition, initialPosition, setIsLoading]
+        [setCurrentPosition, currentPosition, initialPosition, setIsLoading, hasInitialPosition]
     );
     const observerCallbackRef = useRef(observerCallback);
 
@@ -132,7 +142,18 @@ const usePopoverPositioner = (
                     }
                 }
             },
-            [offset, targetElement, currentPosition, position, variant, observerCallback, setInitialPosition, isLoading, initialPosition]
+            [
+                offset,
+                targetElement,
+                currentPosition,
+                position,
+                variant,
+                observerCallback,
+                setInitialPosition,
+                isLoading,
+                initialPosition,
+                setToTargetWidth,
+            ]
         ),
         ref
     );

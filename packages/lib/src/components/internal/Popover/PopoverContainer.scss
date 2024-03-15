@@ -7,11 +7,9 @@
         border-radius: var(--adyen-fp-spacing-xsmall);
         color: var(--adyen-fp-color-white);
         font-size: var(--adyen-fp-font-size-small);
-        inset: 0 auto auto 0;
-        max-width: 16rem;
+        max-height: 50px;
+        min-width: fit-content;
         padding: var(--adyen-fp-spacing-xsmall) var(--adyen-fp-spacing-small);
-        position: fixed;
-        z-index: 999;
     }
 
     &__arrow {
@@ -20,7 +18,6 @@
         inset: 0 auto auto 0;
         position: fixed;
         width: var(--adyen-fp-spacing-small);
-        z-index: 999;
 
         &--top {
             transform: translate3d(20px, 20px, 0) rotate(45deg);

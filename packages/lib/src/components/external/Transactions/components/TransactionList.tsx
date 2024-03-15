@@ -1,13 +1,14 @@
 import { BalanceAccountProps } from '@src/components';
 import Category from '@src/components/external/Transactions/components/Category/Category';
 import Modal from '@src/components/internal/Modal';
+import { currentPopoverUtil } from '@src/components/internal/Popover/utils/currentPopoverUtil';
 import Spinner from '@src/components/internal/Spinner';
 import useCoreContext from '@src/core/Context/useCoreContext';
 import useModalDetails from '@src/hooks/useModalDetails/useModalDetails';
 import { ITransaction } from '@src/types';
 import classnames from 'classnames';
 import { lazy, Suspense } from 'preact/compat';
-import { useCallback, useMemo } from 'preact/hooks';
+import { useCallback, useEffect, useMemo } from 'preact/hooks';
 import DataGrid from '../../../internal/DataGrid';
 import Pagination from '../../../internal/Pagination';
 import { TransactionListProps } from '../types';
@@ -80,6 +81,14 @@ function TransactionList({
         },
         [updateDetails, balanceAccountDescription]
     );
+
+    const isModalOpen = !!selectedDetail;
+
+    useEffect(() => {
+        if (isModalOpen) {
+            currentPopoverUtil.closeAll();
+        }
+    }, [isModalOpen]);
 
     const EMPTY_TABLE_MESSAGE = {
         title: 'weDidNotFindAnyTransaction',
