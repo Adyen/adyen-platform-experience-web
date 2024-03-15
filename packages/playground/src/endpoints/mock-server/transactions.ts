@@ -15,16 +15,20 @@ export const transactionsMocks = [
         const categories = req.url.searchParams.getAll('categories');
         const currencies = req.url.searchParams.getAll('currencies');
         const statuses = req.url.searchParams.getAll('statuses');
+        const minAmount = req.url.searchParams.get('minAmount');
+        const maxAmount = req.url.searchParams.get('maxAmount');
 
         let transactions = BASIC_TRANSACTIONS_LIST;
         let responseDelay = 200;
 
-        if (categories.length || currencies.length || statuses.length) {
+        if (categories.length || currencies.length || statuses.length || minAmount || maxAmount) {
             transactions = transactions.filter(
                 tx =>
                     (!categories.length || categories!.includes(tx.category)) &&
                     (!currencies.length || currencies!.includes(tx.amount.currency)) &&
-                    (!statuses.length || statuses!.includes(tx.status))
+                    (!statuses.length || statuses!.includes(tx.status)) &&
+                    tx.amount.value * 1000 >= Number(minAmount) &&
+                    tx.amount.value * 1000 <= Number(maxAmount)
             );
 
             responseDelay = 400;

@@ -1,0 +1,30 @@
+.adyen-fp-range-selection-filter {
+    display: flex;
+    flex-direction: column;
+    font-size: var(--adyen-fp-font-size-medium);
+    gap: var(--adyen-fp-spacing-medium);
+
+    &__input {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    /* stylelint-disable-next-line selector-no-qualifying-type */
+    input[type='number']::-webkit-inner-spin-button,
+    input[type='number']::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        -moz-appearance: textfield;
+        margin: 0;
+    }
+
+    /* stylelint-disable-next-line selector-no-qualifying-type */
+    input[type='number'] {
+        appearance: textfield;
+    }
+
+    label {
+        color: var(--adyen-fp-color-black);
+        font-weight: 500;
+    }
+}

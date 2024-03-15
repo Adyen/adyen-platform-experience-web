@@ -11,18 +11,19 @@ import cx from 'classnames';
 import { ErrorMessageDisplay } from '@src/components/internal/ErrorMessageDisplay/ErrorMessageDisplay';
 
 function TransactionsOverviewComponent(props: ExternalUIComponentProps<TransactionsComponentProps>) {
+    const { sessionSetupError, endpoints } = useAuthContext();
+
     // Balance Accounts
     const balanceAccountEndpointCall = useSetupEndpoint('getBalanceAccounts');
 
     const { data, isFetching } = useFetch({
-        fetchOptions: EMPTY_OBJECT,
+        fetchOptions: { enabled: !!endpoints.getBalanceAccounts, keepPrevData: true },
         queryFn: useCallback(async () => {
             return balanceAccountEndpointCall(EMPTY_OBJECT);
         }, [balanceAccountEndpointCall]),
     });
 
     const balanceAccounts = useMemo(() => data?.balanceAccounts, [data?.balanceAccounts]);
-    const { sessionSetupError } = useAuthContext();
 
     return (
         <div

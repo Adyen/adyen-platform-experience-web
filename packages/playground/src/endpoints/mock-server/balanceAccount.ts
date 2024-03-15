@@ -53,10 +53,11 @@ const MULTIPLE_ACCOUNT_BALANCES = [
         currency: 'EUR',
     },
     {
-        value: 9876,
+        value: 987600000000,
         currency: 'USD',
     },
 ];
+
 const networkError = false;
 
 export const balanceAccountMock = [
@@ -67,7 +68,7 @@ export const balanceAccountMock = [
         return res(
             delay(200),
             ctx.json({
-                balanceAccounts: MULTIPLE_BALANCE_ACCOUNTS,
+                balanceAccounts: SINGLE_BALANCE_ACCOUNT,
             })
         );
     }),

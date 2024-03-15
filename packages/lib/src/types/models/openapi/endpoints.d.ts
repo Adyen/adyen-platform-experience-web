@@ -10,5 +10,4 @@ export type SetupEndpoint = Record<EndpointName, SetupEndpointResponse>;
 
 export type EndpointsOperations = BalanceAccountOps & TransactionsOps;
 
-export type OperationParameters<Operation extends keyof EndpointsOperations> = EndpointsOperations[Operation]['parameters'] &
-    EndpointsOperations[Operation]['parameters'];
+export type OperationParameters<Operation extends keyof EndpointsOperations> = EndpointsOperations[Operation]['parameters'];

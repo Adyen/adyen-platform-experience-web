@@ -1,5 +1,5 @@
 import { useSetupEndpoint } from '@src/hooks/useSetupEndpoint/useSetupEndpoint';
-import { useCallback, useMemo, useState } from 'preact/hooks';
+import { useCallback, useMemo } from 'preact/hooks';
 import { EMPTY_OBJECT } from '@src/utils/common';
 import { useFetch } from '@src/hooks/useFetch/useFetch';
 import { OperationParameters } from '@src/types/models/openapi/endpoints';
@@ -9,13 +9,22 @@ import { BASE_CLASS } from '@src/components/external/Transactions/components/Tra
 import { memo } from 'preact/compat';
 import { TransactionTotalItem } from '@src/components/external/Transactions/components/TransactionTotalItem/TransactionTotalItem';
 import { BaseList } from '@src/components/internal/BaseList/BaseList';
+import { useMaxWidthsState } from '@src/components/external/Transactions/hooks/useMaxWidths';
 
 type TransactionTotalsProps = Required<OperationParameters<'getTransactionTotals'>['query']>;
 
 const TransactionTotals = memo(
-    ({ balanceAccountId, createdSince, createdUntil, categories, statuses }: MakeFieldValueUndefined<TransactionTotalsProps, 'balanceAccountId'>) => {
+    ({
+        balanceAccountId,
+        createdSince,
+        createdUntil,
+        categories,
+        statuses,
+        maxAmount,
+        minAmount,
+        currencies,
+    }: MakeFieldValueUndefined<TransactionTotalsProps, 'balanceAccountId' | 'minAmount' | 'maxAmount'>) => {
         const getTransactionTotals = useSetupEndpoint('getTransactionTotals');
-
         const fetchCallback = useCallback(async () => {
             return getTransactionTotals(EMPTY_OBJECT, {
                 query: {
@@ -23,30 +32,24 @@ const TransactionTotals = memo(
                     createdUntil,
                     categories,
                     statuses,
+                    maxAmount,
+                    minAmount,
+                    currencies,
                     balanceAccountId: balanceAccountId!,
                 },
             });
-        }, [balanceAccountId, categories, createdSince, createdUntil, getTransactionTotals, statuses]);
+        }, [balanceAccountId, categories, createdSince, createdUntil, currencies, getTransactionTotals, maxAmount, minAmount, statuses]);
 
         const { data, error, isFetching } = useFetch({
             fetchOptions: useMemo(() => ({ enabled: !!balanceAccountId }), [balanceAccountId]),
             queryFn: fetchCallback,
         });
         const isLoading = !balanceAccountId || isFetching;
-        const isSkeletonVisible = isLoading || !!error || !data?.totals.length;
 
         const totals = data?.totals;
         const [firstTotal, ...restOfTotals] = totals ?? [];
 
-        const [maxWidths, setMaxWidths] = useState<number[]>([]);
-        const setMaxWidthConditionally = useCallback((widths: number[]) => {
-            setMaxWidths(currentMaxWidths =>
-                widths.map((width, index) => {
-                    const currentMaxWidth = currentMaxWidths[index];
-                    return !currentMaxWidth || width > currentMaxWidth ? width : currentMaxWidth;
-                })
-            );
-        }, []);
+        const [maxWidths, setMaxWidths] = useMaxWidthsState();
 
         return (
             <div className={BASE_CLASS}>
@@ -56,9 +59,9 @@ const TransactionTotals = memo(
                             total={firstTotal}
                             widths={maxWidths}
                             isHeader
-                            isSkeleton={isSkeletonVisible}
+                            isSkeleton={isLoading}
                             isLoading={isLoading}
-                            onWidthsSet={setMaxWidthConditionally}
+                            onWidthsSet={setMaxWidths}
                         />
                     }
                 >
@@ -66,7 +69,7 @@ const TransactionTotals = memo(
                         <BaseList>
                             {restOfTotals.map(total => (
                                 <li key={total.currency}>
-                                    <TransactionTotalItem total={total} widths={maxWidths} onWidthsSet={setMaxWidthConditionally} />
+                                    <TransactionTotalItem total={total} widths={maxWidths} onWidthsSet={setMaxWidths} />
                                 </li>
                             ))}
                         </BaseList>

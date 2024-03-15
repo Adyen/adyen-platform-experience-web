@@ -54,6 +54,7 @@ function Popover({
     ...uncontrolledProps
 }: PropsWithChildren<PopoverProps>) {
     const isDismissible = useMemo(() => isFunction(dismiss) && dismissible !== false, [dismiss, dismissible]);
+    const popoverOpen = useRef<boolean>();
 
     const onCloseFocusTrap = useCallback(
         (interactionKeyPressed: boolean) => {
@@ -90,6 +91,8 @@ function Popover({
                 cancelAnimationFrame(autoFocusAnimFrame.current!);
 
                 autoFocusAnimFrame.current = requestAnimationFrame(() => {
+                    if (popoverOpen.current === open) return;
+                    if (!(popoverOpen.current = open)) return;
                     const focusable = findFirstFocusableElement(current) as HTMLElement;
                     focusable?.focus();
                 });

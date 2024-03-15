@@ -1,10 +1,11 @@
-import { ITransactionTotal } from '@src/types';
+import { IBalance } from '@src/types';
 
-export type TransactionTotalItemProps = {
-    total?: ITransactionTotal;
+export type BalanceItemProps = {
+    balance?: IBalance;
     isHeader?: boolean;
     isSkeleton?: boolean;
     isLoading?: boolean;
     widths?: number[];
     onWidthsSet: (widths: number[]) => void;
+    isEmpty?: boolean;
 };

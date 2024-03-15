@@ -44,7 +44,7 @@ const renderDateFilterModalBody = (() => {
     }: FilterEditModalRenderProps<DateFilterProps>) => {
         const { i18n } = useCoreContext();
         const [presetOption, setPresetOption] = useState(selectedPresetOption);
-        const originDate = useMemo(() => [new Date(from as string), new Date(to as string)], []);
+        const originDate = useMemo(() => [new Date(from as string), new Date(to as string)], [from, to]);
         const datePickerRef = useRef<CalendarHandle & { selection?: string }>();
 
         const onHighlight = useCallback(
@@ -90,29 +90,29 @@ const renderDateFilterModalBody = (() => {
     return (props: FilterEditModalRenderProps<DateFilterProps>) => <DateFilterEditModalBody {...props} />;
 })();
 
-export default function DateFilter<T extends DateFilterProps = DateFilterProps>({ title, ...props }: FilterProps<T>) {
+export default function DateFilter<T extends DateFilterProps = DateFilterProps>({ title, from, to, selectedPresetOption, ...props }: FilterProps<T>) {
     const { i18n } = useCoreContext();
-    const [selectedPresetOption, setSelectedPresetOption] = useState<string>();
-    const [from, setFrom] = useState<string>();
-    const [to, setTo] = useState<string>();
+    const [selectedPresetOptionValue, setSelectedPresetOption] = useState<string>();
+    const [fromValue, setFrom] = useState<string>();
+    const [toValue, setTo] = useState<string>();
 
-    const onChange = useCallback(
-        (params => {
+    const onChange = useCallback<NonNullable<typeof props.onChange>>(
+        params => {
             const { from, to, selectedPresetOption } = params ?? EMPTY_OBJECT;
             try {
-                setSelectedPresetOption(selectedPresetOption ?? props.selectedPresetOption);
-                setFrom(resolveDate(from ?? props.from));
-                setTo(resolveDate(to ?? props.to));
+                setSelectedPresetOption(selectedPresetOptionValue ?? selectedPresetOption);
+                setFrom(resolveDate(fromValue ?? from));
+                setTo(resolveDate(toValue ?? to));
             } finally {
                 props.onChange({ from, to, selectedPresetOption });
             }
-        }) as NonNullable<typeof props.onChange>,
-        [props.from, props.to, props.onChange, props.selectedPresetOption]
+        },
+        [selectedPresetOptionValue, fromValue, toValue, props]
     );
 
-    useMemo(() => setSelectedPresetOption(props.selectedPresetOption), [props.selectedPresetOption]);
-    useMemo(() => setFrom(resolveDate(props.from || Date.now())), [props.from]);
-    useMemo(() => setTo(resolveDate(props.to || Date.now())), [props.to]);
+    useEffect(() => setSelectedPresetOption(selectedPresetOption), [selectedPresetOption]);
+    useEffect(() => setFrom(resolveDate(from || Date.now())), [from]);
+    useEffect(() => setTo(resolveDate(to || Date.now())), [to]);
 
     const label = useMemo(() => selectedPresetOption ?? props.label, [selectedPresetOption, props.label]);
 

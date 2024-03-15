@@ -20,7 +20,7 @@ function FilterButton(
     const { classes, click } = useButton(classNameValue, classNameModifiers, DEFAULT_FILTER_BUTTON_CLASSNAME, disabledValue, onClick);
 
     return (
-        <button className={classes} ref={ref} role={'button'} onClick={click} {...restAttributes}>
+        <button className={classes} ref={ref} onClick={click} {...restAttributes}>
             <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY} stronger={true}>
                 {children}
             </Typography>

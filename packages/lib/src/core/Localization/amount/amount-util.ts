@@ -14,13 +14,12 @@ export const getDivider = (currencyCode: string): number => CURRENCY_DECIMALS[cu
  * @param currencyCode -
  * Returns whether a CURRENCY CODE is valid
  */
-export const isValidCurrencyCode = (currencyCode: CurrencyCode): boolean => !!CURRENCY_CODES[currencyCode];
+export const isValidCurrencyCode = (currencyCode: string): currencyCode is CurrencyCode => !!CURRENCY_CODES[currencyCode as CurrencyCode];
 
 /**
  * @internal
  */
-export const getCurrencyCode = (currencyCode: CurrencyCode): string | null =>
-    isValidCurrencyCode(currencyCode) ? CURRENCY_CODES[currencyCode] : null;
+export const getCurrencyCode = (currencyCode: string): string | null => (isValidCurrencyCode(currencyCode) ? CURRENCY_CODES[currencyCode] : null);
 
 /**
  * @internal
