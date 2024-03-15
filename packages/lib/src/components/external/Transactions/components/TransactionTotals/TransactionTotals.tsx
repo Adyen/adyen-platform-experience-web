@@ -10,8 +10,11 @@ import { memo } from 'preact/compat';
 import { TransactionTotalItem } from '@src/components/external/Transactions/components/TransactionTotalItem/TransactionTotalItem';
 import { BaseList } from '@src/components/internal/BaseList/BaseList';
 import { useMaxWidthsState } from '@src/components/external/Transactions/hooks/useMaxWidths';
+import { ITransaction } from '@src/types';
 
-type TransactionTotalsProps = Required<OperationParameters<'getTransactionTotals'>['query']>;
+type TransactionTotalsProps = Required<OperationParameters<'getTransactionTotals'>['query']> & {
+    availableCurrencies: ITransaction['amount']['currency'][] | undefined;
+};
 
 const TransactionTotals = memo(
     ({
@@ -23,6 +26,7 @@ const TransactionTotals = memo(
         maxAmount,
         minAmount,
         currencies,
+        availableCurrencies,
     }: MakeFieldValueUndefined<TransactionTotalsProps, 'balanceAccountId' | 'minAmount' | 'maxAmount'>) => {
         const getTransactionTotals = useSetupEndpoint('getTransactionTotals');
         const fetchCallback = useCallback(async () => {
@@ -48,6 +52,12 @@ const TransactionTotals = memo(
 
         const totals = data?.totals;
         const [firstTotal, ...restOfTotals] = totals ?? [];
+
+        if (!error && firstTotal && availableCurrencies && availableCurrencies.length > 1 && totals && totals.length) {
+            const totalsCurrencies = totals.map(total => total.currency);
+            const missingCurrencies = availableCurrencies.filter(currency => !totalsCurrencies.includes(currency));
+            missingCurrencies.forEach(curr => restOfTotals.push({ currency: curr, incomings: 0, expenses: 0 }));
+        }
 
         const [maxWidths, setMaxWidths] = useMaxWidthsState();
 
