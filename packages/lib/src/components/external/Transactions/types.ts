@@ -37,7 +37,7 @@ export interface TransactionListProps extends WithPaginationLimitSelection<Pagin
     error: AdyenFPError | undefined;
     onContactSupport?: () => void;
     balanceAccounts: IBalanceAccountBase[] | undefined;
-    availableCurrencies: readonly string[] | undefined;
+    availableCurrencies: ITransaction['amount']['currency'][] | undefined;
 }
 
 export interface BalanceAccountProps {
