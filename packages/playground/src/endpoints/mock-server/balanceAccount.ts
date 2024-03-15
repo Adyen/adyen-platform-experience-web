@@ -56,6 +56,10 @@ const MULTIPLE_ACCOUNT_BALANCES = [
         value: 987600000000,
         currency: 'USD',
     },
+    {
+        value: 987600000000,
+        currency: 'CAD',
+    },
 ];
 
 const networkError = false;
