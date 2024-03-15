@@ -13,7 +13,6 @@ export const TransactionTotalItem = ({
     onWidthsSet,
 }: TransactionTotalItemProps) => {
     const { i18n } = useCoreContext();
-    const isSkeletonVisible = isSkeleton;
     const incomingRef = useRef<HTMLDivElement>(null);
     const expenseRef = useRef<HTMLDivElement>(null);
     const currencyRef = useRef<HTMLDivElement>(null);
@@ -43,7 +42,7 @@ export const TransactionTotalItem = ({
             isEmpty={!total}
             columnConfigs={columnConfigs}
             isHeader={isHeader}
-            isSkeletonVisible={isSkeletonVisible}
+            isSkeletonVisible={isSkeleton}
             isLoading={isLoading}
             widths={widths}
             onWidthsSet={onWidthsSet}

@@ -41,7 +41,6 @@ export const Balances = memo(
         }, [data, updateBalanceAccountCurrencies]);
 
         const isLoading = !balanceAccountId || isFetching;
-        const isSkeletonVisible = isLoading;
         const isEmpty = !!error || !data?.balances.length;
 
         const balances = data?.balances;
@@ -58,7 +57,7 @@ export const Balances = memo(
                             balance={firstBalance}
                             widths={maxWidths}
                             isHeader
-                            isSkeleton={isSkeletonVisible}
+                            isSkeleton={isLoading}
                             isLoading={isLoading}
                             onWidthsSet={setMaxWidths}
                         />

@@ -6,7 +6,6 @@ import { SummaryItem } from '@src/components/external/Transactions/components/Su
 
 export const BalanceItem = ({ balance, isHeader = false, isSkeleton = false, isLoading = false, widths, onWidthsSet, isEmpty }: BalanceItemProps) => {
     const { i18n } = useCoreContext();
-    const isSkeletonVisible = isSkeleton;
     const amountRef = useRef<HTMLDivElement>(null);
     const currencyRef = useRef<HTMLDivElement>(null);
     const columnConfigs: SummaryItemColumnConfig[] = [
@@ -29,7 +28,7 @@ export const BalanceItem = ({ balance, isHeader = false, isSkeleton = false, isL
             isEmpty={isEmpty}
             columnConfigs={columnConfigs}
             isHeader={isHeader}
-            isSkeletonVisible={isSkeletonVisible}
+            isSkeletonVisible={isSkeleton}
             isLoading={isLoading}
             widths={widths}
             onWidthsSet={onWidthsSet}

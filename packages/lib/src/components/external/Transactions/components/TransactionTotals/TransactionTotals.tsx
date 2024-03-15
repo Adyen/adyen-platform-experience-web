@@ -45,7 +45,6 @@ const TransactionTotals = memo(
             queryFn: fetchCallback,
         });
         const isLoading = !balanceAccountId || isFetching;
-        const isSkeletonVisible = isLoading;
 
         const totals = data?.totals;
         const [firstTotal, ...restOfTotals] = totals ?? [];
@@ -60,7 +59,7 @@ const TransactionTotals = memo(
                             total={firstTotal}
                             widths={maxWidths}
                             isHeader
-                            isSkeleton={isSkeletonVisible}
+                            isSkeleton={isLoading}
                             isLoading={isLoading}
                             onWidthsSet={setMaxWidths}
                         />
