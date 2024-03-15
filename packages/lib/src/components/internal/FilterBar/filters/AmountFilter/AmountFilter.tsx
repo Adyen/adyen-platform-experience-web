@@ -9,7 +9,7 @@ import { PopoverContainerSize } from '@src/components/internal/Popover/types';
 const AMOUNT_CONSTANT = 100000;
 
 export const AmountFilter = ({ updateFilters, selectedCurrencies, availableCurrencies, ...props }: FilterProps<RangeFilterProps>) => {
-    const [value, setValue] = useState<string | undefined>('');
+    const [value, setValue] = useState<string | undefined>();
 
     const onFilterChange = useCallback(
         (params: { minAmount: number | undefined; maxAmount: number | undefined; filterValue: string | undefined }) => {

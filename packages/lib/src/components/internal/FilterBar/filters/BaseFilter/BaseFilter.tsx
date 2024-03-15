@@ -57,7 +57,7 @@ const BaseFilter = <T extends BaseFilterProps = BaseFilterProps>({ render, ...pr
     const [hasEmptyValue, updateHasEmptyValue] = useBooleanState(isValueEmpty(props.value));
     const [hasInitialValue, updateHasInitialValue] = useBooleanState(false);
     const [valueChanged, updateValueChanged] = useBooleanState(false);
-    const [disabledApply, updateDisabledApply] = useBooleanState(false);
+    const [disabledApply, updateDisabledApply] = useBooleanState(isValueEmpty(props.value));
     const targetElement = useUniqueIdentifier() as Ref<Element | null>;
 
     const renderModalBody = useMemo(() => render ?? renderFallback<T>, [render]);
@@ -65,10 +65,11 @@ const BaseFilter = <T extends BaseFilterProps = BaseFilterProps>({ render, ...pr
     const onValueUpdated = useCallback(
         (currentValue?: string | null) => {
             const hasEmptyValue = isValueEmpty(currentValue ?? undefined);
+            updateHasEmptyValue(hasEmptyValue);
             updateDisabledApply(currentValue === null);
             updateValueChanged(hasInitialValue ? currentValue !== props.value : !hasEmptyValue);
         },
-        [isValueEmpty, updateDisabledApply, updateValueChanged, hasInitialValue, props.value]
+        [isValueEmpty, updateHasEmptyValue, updateDisabledApply, updateValueChanged, hasInitialValue, props.value]
     );
 
     const { commitAction, commitActionButtons, committing, resetCommitAction } = useCommitAction({
