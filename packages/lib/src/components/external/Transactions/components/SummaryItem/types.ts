@@ -4,6 +4,7 @@ import { RefObject } from 'preact';
 export type SummaryItemColumnConfig = {
     labelKey?: TranslationKey;
     ref: RefObject<HTMLDivElement>;
+    titleRef?: RefObject<HTMLSpanElement>;
     skeletonWidth: number;
     hasSkeletonMargin?: boolean;
     valueHasLabelStyle?: boolean;
