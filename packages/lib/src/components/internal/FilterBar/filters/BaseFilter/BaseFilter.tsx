@@ -84,7 +84,6 @@ const BaseFilter = <T extends BaseFilterProps = BaseFilterProps>({ render, ...pr
             if (mode) {
                 resetCommitAction();
                 updateValueChanged(false);
-                updateHasEmptyValue(false);
                 updateHasInitialValue(false);
             }
 
@@ -93,7 +92,7 @@ const BaseFilter = <T extends BaseFilterProps = BaseFilterProps>({ render, ...pr
         };
 
         return [updateEditMode(false), updateEditMode(true)];
-    }, [_updateEditMode, editMode, resetCommitAction, updateEditModalMounting, updateHasEmptyValue, updateHasInitialValue, updateValueChanged]);
+    }, [_updateEditMode, editMode, resetCommitAction, updateEditModalMounting, updateHasInitialValue, updateValueChanged]);
 
     useEffect(() => {
         if (editModalMounting) {
