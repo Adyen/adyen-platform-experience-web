@@ -8,12 +8,11 @@ import './Pagination.scss';
 import { PaginationProps } from './types';
 import Select from '@src/components/internal/FormFields/Select';
 import { SelectItem } from '@src/components/internal/FormFields/Select/types';
+import ChevronLeft from '@src/components/internal/SVGIcons/ChevronLeft';
+import ChevronRight from '@src/components/internal/SVGIcons/ChevronRight';
 
 export default function Pagination({ next, hasNext, hasPrev, page, prev, limit, limitOptions, onLimitSelection }: PaginationProps) {
     const { i18n } = useCoreContext();
-
-    const previousIcon = useMemo(() => <span>&lt;</span>, []);
-    const nextIcon = useMemo(() => <span>&gt;</span>, []);
 
     const _limitOptions = useMemo(
         () => limitOptions && Object.freeze(limitOptions.map(option => ({ id: `${option}`, name: `${option}` } as SelectItem))),
@@ -50,7 +49,7 @@ export default function Pagination({ next, hasNext, hasPrev, page, prev, limit, 
                     classNameModifiers={['circle'].concat(hasPrev ? EMPTY_ARRAY : 'disabled')}
                     onClick={prev}
                 >
-                    {previousIcon}
+                    <ChevronLeft disabled={!hasPrev} />
                 </Button>
                 <Button
                     aria-label={i18n.get('pagination.nextPage')}
@@ -60,7 +59,7 @@ export default function Pagination({ next, hasNext, hasPrev, page, prev, limit, 
                     classNameModifiers={['circle'].concat(hasNext ? EMPTY_ARRAY : 'disabled')}
                     onClick={next}
                 >
-                    {nextIcon}
+                    <ChevronRight disabled={!hasNext} />
                 </Button>
             </div>
         </div>
