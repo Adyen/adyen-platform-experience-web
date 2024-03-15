@@ -1,5 +1,6 @@
 .adyen-fp-transactions {
     &__container {
+        background: var(--adyen-fp-color-white);
         border: 1px solid var(--adyen-fp-color-gray-dark);
         border-radius: var(--adyen-fp-spacing-small);
         display: flex;

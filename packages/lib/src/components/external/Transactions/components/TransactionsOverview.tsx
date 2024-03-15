@@ -4,7 +4,7 @@ import { TransactionsComponentProps, TransactionFilterParam } from '../types';
 import TransactionList from '@src/components/external/Transactions/components/TransactionList';
 import useCoreContext from '@src/core/Context/useCoreContext';
 import { SetupHttpOptions, useSetupEndpoint } from '@src/hooks/useSetupEndpoint/useSetupEndpoint';
-import { useCallback, useEffect, useMemo } from 'preact/hooks';
+import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
 import { useCursorPaginatedRecords } from '@src/components/internal/Pagination/hooks';
 import { IBalanceAccountBase, ITransaction } from '@src/types';
 import { isFunction } from '@src/utils/common';
@@ -17,6 +17,7 @@ import MultiSelectionFilter, { listFrom } from './MultiSelectionFilter';
 import useDefaultTransactionsOverviewFilterParams from '../hooks/useDefaultTransactionsOverviewFilterParams';
 import useTransactionsOverviewMultiSelectionFilters from '../hooks/useTransactionsOverviewMultiSelectionFilters';
 import AdyenFPError from '@src/core/Errors/AdyenFPError';
+import { AmountFilter } from '@src/components/internal/FilterBar/filters/AmountFilter/AmountFilter';
 
 export const TransactionsOverview = ({
     onFiltersChanged,
@@ -34,8 +35,7 @@ export const TransactionsOverview = ({
     const { i18n } = useCoreContext();
     const transactionsEndpointCall = useSetupEndpoint('getTransactions');
     const { activeBalanceAccount, balanceAccountSelectionOptions, onBalanceAccountSelection } = useBalanceAccountSelection(balanceAccounts);
-    const { defaultFilterParams, defaultTimeRange, nowTimestamp, refreshNowTimestamp, timeRangeOptions } =
-        useDefaultTransactionsOverviewFilterParams(activeBalanceAccount);
+    const { defaultParams, nowTimestamp, refreshNowTimestamp } = useDefaultTransactionsOverviewFilterParams(activeBalanceAccount);
 
     const getTransactions = useCallback(
         async (pageRequestParams: Record<TransactionFilterParam | 'cursor', string>, signal?: AbortSignal) => {
@@ -48,15 +48,19 @@ export const TransactionsOverview = ({
                     categories: listFrom<ITransaction['category']>(pageRequestParams[TransactionFilterParam.CATEGORIES]),
                     currencies: listFrom<ITransaction['amount']['currency']>(pageRequestParams[TransactionFilterParam.CURRENCIES]),
                     createdSince:
-                        pageRequestParams[TransactionFilterParam.CREATED_SINCE] ?? defaultFilterParams[TransactionFilterParam.CREATED_SINCE],
+                        pageRequestParams[TransactionFilterParam.CREATED_SINCE] ??
+                        defaultParams.current.defaultFilterParams[TransactionFilterParam.CREATED_SINCE],
                     createdUntil:
-                        pageRequestParams[TransactionFilterParam.CREATED_UNTIL] ?? defaultFilterParams[TransactionFilterParam.CREATED_UNTIL],
+                        pageRequestParams[TransactionFilterParam.CREATED_UNTIL] ??
+                        defaultParams.current.defaultFilterParams[TransactionFilterParam.CREATED_UNTIL],
                     sortDirection: 'desc' as const,
                     balanceAccountId: activeBalanceAccount?.id ?? '',
+                    minAmount: pageRequestParams.minAmount !== undefined ? parseFloat(pageRequestParams.minAmount) : undefined,
+                    maxAmount: pageRequestParams.maxAmount !== undefined ? parseFloat(pageRequestParams.maxAmount) : undefined,
                 },
             });
         },
-        [activeBalanceAccount, defaultFilterParams, transactionsEndpointCall]
+        [activeBalanceAccount?.id, defaultParams, transactionsEndpointCall]
     );
 
     // FILTERS
@@ -69,7 +73,7 @@ export const TransactionsOverview = ({
         useCursorPaginatedRecords<ITransaction, 'transactions', string, TransactionFilterParam>({
             fetchRecords: getTransactions,
             dataField: 'transactions',
-            filterParams: defaultFilterParams,
+            filterParams: defaultParams.current.defaultFilterParams,
             initialFiltersSameAsDefault: true,
             onLimitChanged: _onLimitChanged,
             onFiltersChanged: _onFiltersChanged,
@@ -78,10 +82,20 @@ export const TransactionsOverview = ({
             enabled: !!activeBalanceAccount?.id,
         });
 
-    const { categoriesFilter, currenciesFilter, statusesFilter, setTransactionsCurrencies } = useTransactionsOverviewMultiSelectionFilters({
-        filters,
-        updateFilters,
-    });
+    const [availableCurrencies, setAvailableCurrencies] = useState<ITransaction['amount']['currency'][] | undefined>([]);
+
+    const { categoriesFilter, currenciesFilter, statusesFilter } = useTransactionsOverviewMultiSelectionFilters(
+        {
+            filters,
+            updateFilters,
+        },
+        availableCurrencies
+    );
+
+    useEffect(() => {
+        setAvailableCurrencies(undefined);
+        updateFilters({ [TransactionFilterParam.CURRENCIES]: undefined });
+    }, [updateFilters, activeBalanceAccount?.id]);
 
     useEffect(() => {
         refreshNowTimestamp();
@@ -96,17 +110,26 @@ export const TransactionsOverview = ({
                     onBalanceAccountSelection={onBalanceAccountSelection}
                 />
                 <TransactionsOverviewDateFilter
-                    defaultFilterParams={defaultFilterParams}
-                    defaultTimeRange={defaultTimeRange}
                     canResetFilters={canResetFilters}
+                    defaultParams={defaultParams}
                     filters={filters}
                     nowTimestamp={nowTimestamp}
                     refreshNowTimestamp={refreshNowTimestamp}
-                    timeRangeOptions={timeRangeOptions}
                     updateFilters={updateFilters}
                 />
+
                 <MultiSelectionFilter {...statusesFilter} placeholder={i18n.get('filterPlaceholder.status')} />
                 <MultiSelectionFilter {...categoriesFilter} placeholder={i18n.get('filterPlaceholder.category')} />
+                <AmountFilter
+                    availableCurrencies={availableCurrencies}
+                    selectedCurrencies={listFrom(filters[TransactionFilterParam.CURRENCIES])}
+                    name={'range'}
+                    label={i18n.get('amount')}
+                    minAmount={filters[TransactionFilterParam.MIN_AMOUNT]}
+                    maxAmount={filters[TransactionFilterParam.MAX_AMOUNT]}
+                    updateFilters={updateFilters}
+                    onChange={updateFilters}
+                />
                 <MultiSelectionFilter {...currenciesFilter} placeholder={i18n.get('filterPlaceholder.currency')} />
             </FilterBar>
             <div className="adyen-fp-transactions__balance-totals">
@@ -116,14 +139,16 @@ export const TransactionsOverview = ({
                     categories={categoriesFilter.selection}
                     createdUntil={filters[TransactionFilterParam.CREATED_UNTIL]!}
                     createdSince={filters[TransactionFilterParam.CREATED_SINCE]!}
-                    currencies={listFrom(filters[TransactionFilterParam.CURRENCIES])}
-                    minAmount={0} // Will be fixed in next PR with the amount filter
-                    maxAmount={0} // Will be fixed in next PR with the amount filter
+                    currencies={currenciesFilter.selection}
+                    minAmount={filters[TransactionFilterParam.MIN_AMOUNT] ? parseFloat(filters[TransactionFilterParam.MIN_AMOUNT]) : undefined}
+                    maxAmount={filters[TransactionFilterParam.MAX_AMOUNT] ? parseFloat(filters[TransactionFilterParam.MAX_AMOUNT]) : undefined}
                 />
-                <Balances balanceAccountId={activeBalanceAccount?.id} updateBalanceAccountCurrencies={setTransactionsCurrencies} />
+                <Balances balanceAccountId={activeBalanceAccount?.id} updateBalanceAccountCurrencies={setAvailableCurrencies} />
             </div>
 
             <TransactionList
+                balanceAccounts={balanceAccounts}
+                availableCurrencies={availableCurrencies}
                 loading={fetching || isLoadingBalanceAccount || !balanceAccounts}
                 transactions={records}
                 onTransactionSelected={onTransactionSelected}

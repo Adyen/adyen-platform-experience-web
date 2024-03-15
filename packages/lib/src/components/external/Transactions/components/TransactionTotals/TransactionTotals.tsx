@@ -14,9 +14,17 @@ import { useMaxWidthsState } from '@src/components/external/Transactions/hooks/u
 type TransactionTotalsProps = Required<OperationParameters<'getTransactionTotals'>['query']>;
 
 const TransactionTotals = memo(
-    ({ balanceAccountId, createdSince, createdUntil, categories, statuses }: MakeFieldValueUndefined<TransactionTotalsProps, 'balanceAccountId'>) => {
+    ({
+        balanceAccountId,
+        createdSince,
+        createdUntil,
+        categories,
+        statuses,
+        maxAmount,
+        minAmount,
+        currencies,
+    }: MakeFieldValueUndefined<TransactionTotalsProps, 'balanceAccountId' | 'minAmount' | 'maxAmount'>) => {
         const getTransactionTotals = useSetupEndpoint('getTransactionTotals');
-
         const fetchCallback = useCallback(async () => {
             return getTransactionTotals(EMPTY_OBJECT, {
                 query: {
@@ -24,17 +32,19 @@ const TransactionTotals = memo(
                     createdUntil,
                     categories,
                     statuses,
+                    maxAmount,
+                    minAmount,
+                    currencies,
                     balanceAccountId: balanceAccountId!,
                 },
             });
-        }, [balanceAccountId, categories, createdSince, createdUntil, getTransactionTotals, statuses]);
+        }, [balanceAccountId, categories, createdSince, createdUntil, currencies, getTransactionTotals, maxAmount, minAmount, statuses]);
 
         const { data, error, isFetching } = useFetch({
             fetchOptions: useMemo(() => ({ enabled: !!balanceAccountId }), [balanceAccountId]),
             queryFn: fetchCallback,
         });
         const isLoading = !balanceAccountId || isFetching;
-        const isSkeletonVisible = isLoading || !!error || !data?.totals.length;
 
         const totals = data?.totals;
         const [firstTotal, ...restOfTotals] = totals ?? [];
@@ -49,7 +59,7 @@ const TransactionTotals = memo(
                             total={firstTotal}
                             widths={maxWidths}
                             isHeader
-                            isSkeleton={isSkeletonVisible}
+                            isSkeleton={isLoading}
                             isLoading={isLoading}
                             onWidthsSet={setMaxWidths}
                         />

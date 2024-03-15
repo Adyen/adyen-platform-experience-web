@@ -29,4 +29,7 @@ export interface InputBaseProps {
     maxLength?: number;
     required?: boolean;
     role?: AriaRole;
+    min?: number;
+    errorMessage?: string;
+    lang?: HTMLInputElement['lang'];
 }

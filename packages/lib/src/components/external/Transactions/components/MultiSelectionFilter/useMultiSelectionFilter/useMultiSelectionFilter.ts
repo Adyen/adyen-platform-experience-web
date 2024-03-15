@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'preact/hooks';
+import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
 import { listFrom, selectionOptionsFor } from './utils';
 import type { SelectionOptionsList, UseMultiSelectionFilterConfig, UseMultiSelectionFilterConfigWithoutValues } from './types';
 
@@ -30,7 +30,7 @@ export const useMultiSelectionFilterWithoutValues = <FilterParam extends string 
 ) => {
     const [filterValues, updateFilterValues] = useState<SelectionOptionsList<FilterValue>>();
     const useMultiSelectionFilterProperties = useMultiSelectionFilter({ ...config, filterValues });
-    return { ...useMultiSelectionFilterProperties, updateFilterValues } as const;
+    return { ...useMultiSelectionFilterProperties, filterValues, updateFilterValues } as const;
 };
 
 export default useMultiSelectionFilter;

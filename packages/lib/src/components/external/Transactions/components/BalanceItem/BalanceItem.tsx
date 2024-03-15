@@ -4,9 +4,8 @@ import { BalanceItemProps } from '@src/components/external/Transactions/componen
 import { SummaryItemColumnConfig } from '@src/components/external/Transactions/components/SummaryItem/types';
 import { SummaryItem } from '@src/components/external/Transactions/components/SummaryItem/SummaryItem';
 
-export const BalanceItem = ({ balance, isHeader = false, isSkeleton = false, isLoading = false, widths, onWidthsSet }: BalanceItemProps) => {
+export const BalanceItem = ({ balance, isHeader = false, isSkeleton = false, isLoading = false, widths, onWidthsSet, isEmpty }: BalanceItemProps) => {
     const { i18n } = useCoreContext();
-    const isSkeletonVisible = isSkeleton || !balance;
     const amountRef = useRef<HTMLDivElement>(null);
     const currencyRef = useRef<HTMLDivElement>(null);
     const columnConfigs: SummaryItemColumnConfig[] = [
@@ -26,9 +25,10 @@ export const BalanceItem = ({ balance, isHeader = false, isSkeleton = false, isL
 
     return (
         <SummaryItem
+            isEmpty={isEmpty}
             columnConfigs={columnConfigs}
             isHeader={isHeader}
-            isSkeletonVisible={isSkeletonVisible}
+            isSkeletonVisible={isSkeleton}
             isLoading={isLoading}
             widths={widths}
             onWidthsSet={onWidthsSet}

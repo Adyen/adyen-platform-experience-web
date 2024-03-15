@@ -51,9 +51,11 @@ const Select = <T extends SelectItem>({
         useCallback(() => {
             setTextFilter('');
             setShowList(false);
-            resetSelection(cachedSelectedItems.current);
-            pendingClickOutsideTriggeredHideList.current = true;
-        }, [resetSelection, setShowList, setTextFilter])
+            if (showList) {
+                resetSelection(cachedSelectedItems.current);
+                pendingClickOutsideTriggeredHideList.current = true;
+            }
+        }, [resetSelection, showList, setShowList, setTextFilter])
     );
 
     const dropdownClassName = useMemo(
@@ -64,7 +66,7 @@ const Select = <T extends SelectItem>({
                 ...classNameModifiers.map(mod => `${DROPDOWN_BASE_CLASS}--${mod}`),
                 className,
             ]),
-        EMPTY_ARRAY
+        [className, classNameModifiers, multiSelect]
     );
 
     const { commitAction, commitActionButtons, committing, resetCommitAction } = useCommitAction({
@@ -295,7 +297,7 @@ const Select = <T extends SelectItem>({
         if (showList && filterable) {
             filterInputRef.current?.focus();
         }
-    }, [showList]);
+    }, [filterable, showList]);
 
     return (
         <div ref={selectContainerRef} className={dropdownClassName}>

@@ -6,7 +6,7 @@ import './SummaryItem.scss';
 import AmountSkeleton from '@src/components/external/Transactions/components/AmountSkeleton/AmountSkeleton';
 import { useEffect } from 'preact/hooks';
 import { SummaryItemProps } from '@src/components/external/Transactions/components/SummaryItem/types';
-import { BASE_CLASS, BODY_CLASS, LABEL_CLASS } from '@src/components/external/Transactions/components/SummaryItem/constants';
+import { BASE_CLASS, BODY_CLASS, LABEL_CLASS, PLACEHOLDER_CLASS } from '@src/components/external/Transactions/components/SummaryItem/constants';
 
 export const SummaryItem = ({
     columnConfigs,
@@ -15,6 +15,7 @@ export const SummaryItem = ({
     isLoading = false,
     widths,
     onWidthsSet,
+    isEmpty,
 }: SummaryItemProps) => {
     const { i18n } = useCoreContext();
     useEffect(() => {
@@ -39,6 +40,8 @@ export const SummaryItem = ({
                     )}
                     {isSkeletonVisible ? (
                         <AmountSkeleton isLoading={isLoading} hasMargin={config.hasSkeletonMargin} width={config.skeletonWidth + 'px'} />
+                    ) : isEmpty ? (
+                        <span className={classNames([BASE_CLASS, PLACEHOLDER_CLASS])}></span>
                     ) : (
                         <div ref={config.ref} style={getColumnStyle(index)}>
                             <Typography

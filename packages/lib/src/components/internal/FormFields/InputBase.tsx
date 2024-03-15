@@ -5,8 +5,12 @@ import { h } from 'preact';
 import { ForwardedRef, forwardRef, TargetedEvent } from 'preact/compat';
 import { useCallback } from 'preact/hooks';
 import { InputBaseProps } from './types';
+import './FormFields.scss';
 
-function InputBase(props: InputBaseProps, ref: ForwardedRef<HTMLInputElement | null>) {
+function InputBase(
+    { onInput, onKeyUp, trimOnBlur, onBlurHandler, onBlur, onFocusHandler, errorMessage, ...props }: InputBaseProps,
+    ref: ForwardedRef<HTMLInputElement | null>
+) {
     const { autoCorrect, classNameModifiers, isInvalid, isValid, readonly = false, spellCheck, type, uniqueId, isCollatingErrors, disabled } = props;
 
     /**
@@ -19,36 +23,36 @@ function InputBase(props: InputBaseProps, ref: ForwardedRef<HTMLInputElement | n
 
     const handleInput = useCallback(
         (event: TargetedEvent<HTMLInputElement, Event>) => {
-            props.onInput?.(event);
+            onInput?.(event);
         },
-        [props.onInput]
+        [onInput]
     );
 
     const handleKeyUp = useCallback(
         (event: h.JSX.TargetedKeyboardEvent<HTMLInputElement>) => {
-            if (props?.onKeyUp) props.onKeyUp(event);
+            if (onKeyUp) onKeyUp(event);
         },
-        [props?.onKeyUp]
+        [onKeyUp]
     );
 
     const handleBlur = useCallback(
         (event: h.JSX.TargetedEvent<HTMLInputElement>) => {
-            props?.onBlurHandler?.(event); // From Field component
+            onBlurHandler?.(event); // From Field component
 
-            if (props.trimOnBlur) {
+            if (trimOnBlur) {
                 (event.target as HTMLInputElement).value = (event.target as HTMLInputElement).value.trim(); // needed to trim trailing spaces in field (leading spaces can be done via formatting)
             }
 
-            props?.onBlur?.(event);
+            onBlur?.(event);
         },
-        [props.onBlur, props.onBlurHandler]
+        [onBlur, onBlurHandler, trimOnBlur]
     );
 
     const handleFocus = useCallback(
         (event: h.JSX.TargetedEvent<HTMLInputElement>) => {
-            props?.onFocusHandler?.(event); // From Field component
+            onFocusHandler?.(event); // From Field component
         },
-        [props.onFocusHandler]
+        [onFocusHandler]
     );
 
     const inputClassNames = classNames(
@@ -66,21 +70,28 @@ function InputBase(props: InputBaseProps, ref: ForwardedRef<HTMLInputElement | n
     const { classNameModifiers: cnm, uniqueId: uid, isInvalid: iiv, isValid: iv, isCollatingErrors: ce, ...newProps } = props;
 
     return (
-        <input
-            id={uniqueId}
-            {...newProps}
-            type={type}
-            className={inputClassNames}
-            readOnly={readonly}
-            aria-describedby={isCollatingErrors ? undefined : `${uniqueId}${ARIA_ERROR_SUFFIX}`}
-            aria-invalid={isInvalid}
-            onInput={handleInput}
-            onBlur={handleBlur}
-            onFocus={handleFocus}
-            onKeyUp={handleKeyUp}
-            disabled={disabled}
-            ref={ref}
-        />
+        <>
+            <input
+                id={uniqueId}
+                {...newProps}
+                type={type}
+                className={inputClassNames}
+                readOnly={readonly}
+                aria-describedby={isCollatingErrors ? undefined : `${uniqueId}${ARIA_ERROR_SUFFIX}`}
+                aria-invalid={isInvalid}
+                onInput={handleInput}
+                onBlur={handleBlur}
+                onFocus={handleFocus}
+                onKeyUp={handleKeyUp}
+                disabled={disabled}
+                ref={ref}
+            />
+            {isInvalid && errorMessage && (
+                <span className="adyen-fp-input__invalid-value" id={`${uniqueId}${ARIA_ERROR_SUFFIX}`}>
+                    {errorMessage}
+                </span>
+            )}
+        </>
     );
 }
 
