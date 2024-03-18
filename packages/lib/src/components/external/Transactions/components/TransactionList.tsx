@@ -116,11 +116,13 @@ function TransactionList({
                             showSign: value.value < 0,
                         });
 
-                        return (
-                            <span className={classnames('adyen-fp-transactions__amount')}>
-                                {hasMultipleCurrencies ? amount : amount.split(' ')[0]}
-                            </span>
-                        );
+                        const displayedAmount = hasMultipleCurrencies
+                            ? amount
+                            : value.value >= 0
+                            ? amount.split(' ')[0]
+                            : `${amount.split(' ')[0]} ${amount.split(' ')[1]}`;
+
+                        return <span className={classnames('adyen-fp-transactions__amount')}>{displayedAmount}</span>;
                     },
                     paymentMethod: ({ item }) => {
                         return (
