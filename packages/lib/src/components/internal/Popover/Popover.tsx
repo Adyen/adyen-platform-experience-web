@@ -26,8 +26,6 @@ import classNames from 'classnames';
 import { createPortal, PropsWithChildren } from 'preact/compat';
 import { Ref, useCallback, useEffect, useMemo, useRef } from 'preact/hooks';
 import './Popover.scss';
-import './PopoverContainer.scss';
-
 const findFirstFocusableElement = (root: Element) => {
     let focusable: HTMLElement | undefined;
     const elements = root.querySelector(`.${TOOLTIP_CONTENT_CLASSNAME}`)?.querySelectorAll(SELECTORS);
@@ -96,18 +94,21 @@ function Popover({
     const popoverFocusTrapElement = useFocusTrap(disableFocusTrap ? null : popoverPositionAnchorElement, onCloseFocusTrap);
 
     const popoverElement = useReflex<Element>(
-        useCallback(current => {
-            if (current instanceof Element) {
-                cancelAnimationFrame(autoFocusAnimFrame.current!);
+        useCallback(
+            current => {
+                if (current instanceof Element) {
+                    cancelAnimationFrame(autoFocusAnimFrame.current!);
 
-                autoFocusAnimFrame.current = requestAnimationFrame(() => {
-                    if (popoverOpen.current === open) return;
-                    if (!(popoverOpen.current = open)) return;
-                    const focusable = findFirstFocusableElement(current) as HTMLElement;
-                    focusable?.focus();
-                });
-            }
-        }, []),
+                    autoFocusAnimFrame.current = requestAnimationFrame(() => {
+                        if (popoverOpen.current === open) return;
+                        if (!(popoverOpen.current = open)) return;
+                        const focusable = findFirstFocusableElement(current) as HTMLElement;
+                        focusable?.focus();
+                    });
+                }
+            },
+            [open]
+        ),
         disableFocusTrap ? popoverPositionAnchorElement : popoverFocusTrapElement
     );
 
@@ -156,22 +157,26 @@ function Popover({
                         </div>
                     )}
                     {children && (
-                        <div
-                            className={
-                                withContentPadding
-                                    ? `${classNamesContentByVariant} ${POPOVER_CONTENT_CLASSNAME}--with-padding`
-                                    : classNamesContentByVariant
-                            }
-                        >
-                            {children}
-                        </div>
+                        <>
+                            <div
+                                className={
+                                    withContentPadding
+                                        ? `${classNamesContentByVariant} ${POPOVER_CONTENT_CLASSNAME}--with-padding`
+                                        : classNamesContentByVariant
+                                }
+                            >
+                                {children}
+                            </div>
+                            {variant === PopoverContainerVariant.TOOLTIP && (
+                                <span data-popover-placement="hidden" ref={arrowRef} className="adyen-fp-tooltip__arrow" />
+                            )}
+                        </>
                     )}
                     {actions && (
                         <div className={POPOVER_FOOTER_CLASSNAME}>
                             <ButtonActions actions={actions} layout={actionsLayout} />
                         </div>
                     )}
-                    {variant === PopoverContainerVariant.TOOLTIP && <span ref={arrowRef} className="adyen-fp-tooltip__arrow"></span>}
                 </div>
             ) : null}
         </>,

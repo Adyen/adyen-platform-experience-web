@@ -77,13 +77,13 @@ export const SummaryItem = ({
                             </Typography>
                         </div>
                     )}
-                    {showTooltip && targetElement && (
-                        <Popover open={!!showTooltip} variant={PopoverContainerVariant.TOOLTIP} targetElement={targetElement as MutableRef<Element>}>
-                            <Typography variant={TypographyVariant.CAPTION}>{i18n.get(showTooltip)}</Typography>
-                        </Popover>
-                    )}
                 </div>
             ))}
+            {showTooltip && targetElement && (
+                <Popover open={!!showTooltip} variant={PopoverContainerVariant.TOOLTIP} targetElement={targetElement as MutableRef<Element>}>
+                    <Typography variant={TypographyVariant.CAPTION}>{i18n.get(showTooltip)}</Typography>
+                </Popover>
+            )}
         </div>
     );
 };

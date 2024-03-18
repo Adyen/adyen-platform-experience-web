@@ -1,4 +1,4 @@
-import { currentPopoverUtil } from '@src/components/internal/Popover/utils/currentPopoverUtil';
+import { popoverUtil } from '@src/components/internal/Popover/utils/popoverUtil';
 import useReflex, { Nullable, Reflexable } from '@src/hooks/useReflex';
 import { useCallback, useEffect, useRef } from 'preact/hooks';
 
@@ -22,7 +22,7 @@ export const useClickOutside = <T extends Element = Element>(
             const eventPath: EventTarget[] = e.composedPath();
             if (!(ref && ref.current)) return;
             if (variant === ClickOutsideVaritant.POPOVER) {
-                currentPopoverUtil.closeNecessaryElements(ref.current, eventPath);
+                popoverUtil.closePopoversOutsideOfClick(eventPath);
             } else {
                 if (eventPath.length) {
                     const samePath = eventPath.some(path => (path as T)?.isSameNode && (path as T).isSameNode(ref.current as T));
@@ -39,6 +39,7 @@ export const useClickOutside = <T extends Element = Element>(
 
     useEffect(() => {
         return () => {
+            if (ref.current) popoverUtil.remove(ref.current);
             document.removeEventListener('click', clickOutsideHandlerRef.current, true);
         };
     }, []);
@@ -48,9 +49,12 @@ export const useClickOutside = <T extends Element = Element>(
         clickOutsideHandlerRef.current = handleClickOutside;
         document.addEventListener('click', clickOutsideHandlerRef.current, true);
         if (variant === ClickOutsideVaritant.POPOVER) {
-            if (ref.current instanceof Element) currentPopoverUtil.add(ref.current, callback);
+            if (ref.current instanceof Element) popoverUtil.add(ref.current, callback);
         }
-        return () => document.removeEventListener('click', clickOutsideHandlerRef.current, true);
+        return () => {
+            if (ref.current) popoverUtil.remove(ref.current);
+            document.removeEventListener('click', clickOutsideHandlerRef.current, true);
+        };
     }, [handleClickOutside, callback, variant]);
 
     useEffect(() => {
@@ -71,13 +75,10 @@ export const useClickOutside = <T extends Element = Element>(
                     if (!disableClickOutside) {
                         current.addEventListener('focusout', onFocusoutCapture, true);
                         ref.current = current;
-                        if (variant === ClickOutsideVaritant.POPOVER) {
-                            currentPopoverUtil.add(ref.current, callback);
-                        }
                     }
                 }
             },
-            [disableClickOutside, variant, callback]
+            [disableClickOutside, variant]
         ),
         rootElementRef
     );

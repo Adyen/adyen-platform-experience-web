@@ -1,7 +1,7 @@
 import { BalanceAccountProps } from '@src/components';
 import Category from '@src/components/external/Transactions/components/Category/Category';
 import Modal from '@src/components/internal/Modal';
-import { currentPopoverUtil } from '@src/components/internal/Popover/utils/currentPopoverUtil';
+import { popoverUtil } from '@src/components/internal/Popover/utils/popoverUtil';
 import Spinner from '@src/components/internal/Spinner';
 import useCoreContext from '@src/core/Context/useCoreContext';
 import useModalDetails from '@src/hooks/useModalDetails/useModalDetails';
@@ -86,7 +86,7 @@ function TransactionList({
 
     useEffect(() => {
         if (isModalOpen) {
-            currentPopoverUtil.closeAll();
+            popoverUtil.closeAll();
         }
     }, [isModalOpen]);
 
