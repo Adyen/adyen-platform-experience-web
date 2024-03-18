@@ -31,9 +31,9 @@
         "start:mock": "vite dev --mode mocked --config ./vite.config.ts",
         "start:mock:e2e": "cross-env E2E_TEST=true npm run start:mock",
         "format": "prettier --write \"src/**/*.{ts,js,css, scss, html}\"",
-        "storybook:test": "cross-env ENV=TEST vite-node .storybook/runStorybook.ts",
-        "storybook:loop": "cross-env ENV=LOOP vite-node .storybook/runStorybook.ts",
-        "storybook:beta": "cross-env ENV=BETA vite-node .storybook/runStorybook.ts",
+        "storybook:test": "vite-node --mode development .storybook/runStorybook.ts",
+        "storybook:loop": "vite-node --mode loop .storybook/runStorybook.ts",
+        "storybook:beta": "vite-node --mode beta .storybook/runStorybook.ts",
         "storybook:mocked": "vite-node .storybook/runStorybook.ts --mode mocked",
         "storybook:build": "vite-node ./.storybook/buildStorybook.ts",
         "storybook:demo": "vite-node ./.storybook/buildStorybook.ts --mode demo && npm run demo:serve"
