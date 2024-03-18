@@ -2,7 +2,7 @@ import { popoverUtil } from '@src/components/internal/Popover/utils/popoverUtil'
 import useReflex, { Nullable, Reflexable } from '@src/hooks/useReflex';
 import { useCallback, useEffect, useRef } from 'preact/hooks';
 
-export const enum ClickOutsideVaritant {
+export const enum ClickOutsideVariant {
     POPOVER = 'POPOVER',
     DEFAULT = 'DEFAULT',
 }
@@ -13,7 +13,7 @@ export const useClickOutside = <T extends Element = Element>(
     rootElementRef?: Nullable<Reflexable<T>>,
     callback?: (interactionKeyPressed: boolean) => void,
     disableClickOutside?: boolean,
-    variant?: ClickOutsideVaritant
+    variant?: ClickOutsideVariant
 ) => {
     const ref = useRef<Nullable<T>>(null);
 
@@ -21,7 +21,7 @@ export const useClickOutside = <T extends Element = Element>(
         (e: Event) => {
             const eventPath: EventTarget[] = e.composedPath();
             if (!(ref && ref.current)) return;
-            if (variant === ClickOutsideVaritant.POPOVER) {
+            if (variant === ClickOutsideVariant.POPOVER) {
                 popoverUtil.closePopoversOutsideOfClick(eventPath);
             } else {
                 if (eventPath.length) {
@@ -48,7 +48,7 @@ export const useClickOutside = <T extends Element = Element>(
         document.removeEventListener('click', clickOutsideHandlerRef.current, true);
         clickOutsideHandlerRef.current = handleClickOutside;
         document.addEventListener('click', clickOutsideHandlerRef.current, true);
-        if (variant === ClickOutsideVaritant.POPOVER) {
+        if (variant === ClickOutsideVariant.POPOVER) {
             if (ref.current instanceof Element) popoverUtil.add(ref.current, callback);
         }
         return () => {

@@ -118,7 +118,7 @@ const usePopoverPositioner = (
                     observer.unobserve(previous);
                 }
 
-                if (current) {
+                if (current && targetElement.current) {
                     if (!position) {
                         const observer = getIntersectionObserver(observerCallback).observer;
                         observer.observe(current);

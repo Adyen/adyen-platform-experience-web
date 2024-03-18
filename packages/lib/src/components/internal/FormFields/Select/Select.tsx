@@ -56,6 +56,7 @@ const Select = <T extends SelectItem>({
         }
     }, [resetSelection, setShowList, setTextFilter, showList]);
 
+    //TODO: Clarify and delete this
     // const selectContainerRef = useClickOutside(
     //     useRef<HTMLDivElement>(null),
     //     useCallback(() => {
