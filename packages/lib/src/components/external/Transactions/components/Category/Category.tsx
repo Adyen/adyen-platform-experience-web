@@ -24,9 +24,9 @@ function Category({ value }: CategoryProp) {
 
     return (
         <>
-            <div ref={tooltipRef as Ref<HTMLDivElement | null>} onMouseEnter={mouseOver} onMouseLeave={mouseOut}>
+            <span ref={tooltipRef as Ref<HTMLDivElement | null>} onMouseEnter={mouseOver} onMouseLeave={mouseOut}>
                 {value}
-            </div>
+            </span>
             {showTooltip && (
                 <Popover targetElement={tooltipRef as Ref<HTMLDivElement | null>} open={showTooltip}>
                     <Typography variant={TypographyVariant.CAPTION}>{i18n.get(`tooltip.${value.toLowerCase()}` as TranslationKey)}</Typography>
