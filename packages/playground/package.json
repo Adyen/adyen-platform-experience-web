@@ -19,9 +19,9 @@
     },
     "scripts": {
         "vite": "vite dev",
-        "start:loop": "cross-env ENV=LOOP vite dev --config ./vite.config.ts",
-        "start:test": "cross-env ENV=TEST vite dev --config ./vite.config.ts",
-        "start:beta": "cross-env ENV=BETA vite dev --config ./vite.config.ts",
+        "start:loop": "vite dev --mode loop --config ./vite.config.ts",
+        "start:test": "vite dev --mode development --config ./vite.config.ts",
+        "start:beta": "vite dev --mode beta --config ./vite.config.ts",
         "build:demo": "vite build --mode demo --config ./vite.config.ts",
         "demo": "npm run build:demo && npm run demo:serve",
         "demo:serve": "vite preview --mode demo --config ./vite.config.ts",
