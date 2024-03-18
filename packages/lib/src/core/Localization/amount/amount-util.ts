@@ -52,6 +52,10 @@ export const getLocalisedAmount = (amount: number, locale: string, currencyCode:
     }
 };
 
+export const showCurrencyWithoutSymbol = (amount: number, localisedAmount: string) => {
+    return amount >= 0 ? localisedAmount.split(' ')[0] ?? '' : `${localisedAmount.split(' ')[0]} ${localisedAmount.split(' ')[1]}`;
+};
+
 /**
  * @internal
  */

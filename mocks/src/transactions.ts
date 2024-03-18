@@ -20,7 +20,7 @@ const TRANSACTION_DETAILS_2: ITransaction = {
 };
 const TRANSACTION_DETAILS_3: ITransaction = {
     id: '1WEPGE5W23KIX9U5',
-    amount: { currency: 'USD', value: 4000 },
+    amount: { currency: 'USD', value: -4000 },
     status: 'Booked',
     category: 'Chargeback',
     paymentMethod: { type: 'klarna' },
