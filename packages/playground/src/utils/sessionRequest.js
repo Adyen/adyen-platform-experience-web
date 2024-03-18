@@ -18,11 +18,8 @@ const getMySessionToken = async session => {
             roles: session?.roles && session?.roles.length ? session?.roles : ['Transactions Overview Component: View'],
         },
     };
-    const response = await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', ...(!!session?.apiKey ? { 'X-Api-Key': session?.apiKey } : {}) },
-        body: JSON.stringify(body),
-    });
+    const response = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+
     return await response.json();
 };
 
