@@ -34,9 +34,17 @@ export const Basic: ElementStory<typeof TransactionsComponent> = {
     },
 };
 
-export const BasicTransactionListApi: ElementStory<typeof TransactionsComponent> = {
+export const BasicTransactionListApi: ElementStory<
+    typeof TransactionsComponent,
+    { session: { roles: string[]; accountHolderId?: string; apiKey?: string } }
+> = {
     name: 'Basic (API)',
-    args: {},
+    argTypes: {
+        session: { control: 'object' },
+    },
+    args: {
+        session: { roles: [], accountHolderId: '', apiKey: '' },
+    },
 };
 
 export default meta;

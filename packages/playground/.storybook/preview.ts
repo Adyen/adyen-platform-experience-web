@@ -31,7 +31,7 @@ const preview: Preview = {
                     } else {
                         stopMockedServer();
                     }
-                    return await sessionRequest();
+                    return await sessionRequest(context.args.session);
                 },
             });
             return { adyenFP };
