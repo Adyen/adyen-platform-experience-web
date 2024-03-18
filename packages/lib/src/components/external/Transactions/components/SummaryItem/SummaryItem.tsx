@@ -15,6 +15,7 @@ import {
     BASE_CLASS,
     BODY_CLASS,
     LABEL_CLASS,
+    LABEL_CONTAINER_CLASS,
     PLACEHOLDER_CLASS,
 } from '@src/components/external/Transactions/components/SummaryItem/constants';
 
@@ -48,6 +49,7 @@ export const SummaryItem = ({
                 <div key={index}>
                     {isHeader && config.labelKey && (
                         <span
+                            className={LABEL_CONTAINER_CLASS}
                             ref={config.titleRef}
                             onMouseOver={() => {
                                 setShowTooltip(`tooltip.${config.labelKey}` as TranslationKey);

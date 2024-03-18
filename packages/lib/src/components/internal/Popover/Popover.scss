@@ -84,6 +84,7 @@
         $adyen-fp-popover-component-root: &;
 
         $adyen-fp-popover__arrow-border: 2px;
+        align-items: center;
         display: flex;
         flex-direction: column;
         position: absolute;
@@ -125,19 +126,19 @@
         }
 
         &__arrow[data-popover-placement='top'] {
-            transform: translate3d(20px, -4px, 0) rotate(45deg);
+            transform: translate3d(0, -4px, 0) rotate(45deg);
         }
 
         &__arrow[data-popover-placement='bottom'] {
-            transform: translate3d(20px, 4px, 0) rotate(45deg);
+            transform: translate3d(0, 4px, 0) rotate(45deg);
         }
 
         &__arrow[data-popover-placement='right'] {
-            transform: translate3d(4px, 10px, 0) rotate(45deg);
+            transform: translate3d(4px, 0, 0) rotate(45deg);
         }
 
         &__arrow[data-popover-placement='left'] {
-            transform: translate3d(-4px, 10px, 0) rotate(45deg);
+            transform: translate3d(-4px, 0, 0) rotate(45deg);
         }
     }
 }

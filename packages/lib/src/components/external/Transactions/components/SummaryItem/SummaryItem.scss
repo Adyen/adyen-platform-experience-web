@@ -11,8 +11,14 @@
         padding-top: var(--adyen-fp-spacer-040);
     }
 
-    &__label {
-        color: var(--adyen-fp-color-label-secondary);
+    &-container {
+        display: inline-block;
+        width: fit-content;
+
+        &__label {
+            color: var(--adyen-fp-color-label-secondary);
+            width: fit-content;
+        }
     }
 
     &__amount {

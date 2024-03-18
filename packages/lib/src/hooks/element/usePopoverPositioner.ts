@@ -7,7 +7,8 @@ const calculateOffset = (
     popover: Element,
     offset: [number, number],
     targetElement: MutableRef<Element | null>,
-    position: PopoverContainerPosition
+    position: PopoverContainerPosition,
+    variant: PopoverContainerVariant
 ) => {
     if (offset.length < 2) {
         const oldLength = offset.length;
@@ -20,22 +21,31 @@ const calculateOffset = (
 
     const targetPosition = currentTarget.getBoundingClientRect();
     const popoverContent = popover?.firstChild as HTMLElement;
+    const toCenterX = targetPosition.left + targetPosition.width / 2 - popoverContent.offsetWidth / 2;
+    const toCenterY = targetPosition.top + targetPosition.height / 2 - popoverContent.offsetHeight / 2;
     switch (position) {
         case PopoverContainerPosition.BOTTOM:
-            dimensionX = targetPosition?.left + offset[0]! + window.scrollX;
+            dimensionX =
+                variant === PopoverContainerVariant.TOOLTIP ? toCenterX + window.scrollX : targetPosition?.left + offset[0]! + window.scrollX;
             dimensionY = targetPosition?.top + targetPosition?.height + offset[1]! + window.scrollY;
             break;
         case PopoverContainerPosition.TOP:
-            dimensionX = targetPosition.left + offset[0]! + window.scrollX;
+            dimensionX = variant === PopoverContainerVariant.TOOLTIP ? toCenterX + window.scrollX : targetPosition.left + offset[0]! + window.scrollX;
             dimensionY = targetPosition?.top - targetPosition.height - popoverContent?.clientHeight + window.scrollY;
             break;
         case PopoverContainerPosition.RIGHT:
             dimensionX = targetPosition.left + targetPosition.width + window.scrollX + offset[0]!;
-            dimensionY = targetPosition?.top - targetPosition?.height / 2 + window.scrollY;
+            dimensionY =
+                variant === PopoverContainerVariant.TOOLTIP
+                    ? toCenterY + window.scrollY
+                    : targetPosition?.top - targetPosition?.height / 2 + window.scrollY;
             break;
         case PopoverContainerPosition.LEFT:
             dimensionX = targetPosition?.left - offset[0]! - popover?.clientWidth + window.scrollX;
-            dimensionY = targetPosition?.top + window.scrollY - targetPosition?.height / 2;
+            dimensionY =
+                variant === PopoverContainerVariant.TOOLTIP
+                    ? toCenterY + window.scrollY
+                    : targetPosition?.top + window.scrollY - targetPosition?.height / 2;
             break;
     }
 
@@ -124,7 +134,7 @@ const usePopoverPositioner = (
                         observer.observe(current);
                     }
                     if (!(current instanceof Element)) return;
-                    const popoverStyle = calculateOffset(current, offset, targetElement, currentPosition);
+                    const popoverStyle = calculateOffset(current, offset, targetElement, currentPosition, variant);
                     const style = showPopover ? popoverStyle + ';visibility:visible' : popoverStyle;
 
                     const styleWithWidth = setToTargetWidth
