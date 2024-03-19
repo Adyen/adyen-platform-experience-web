@@ -26,6 +26,7 @@ import classNames from 'classnames';
 import { createPortal, PropsWithChildren } from 'preact/compat';
 import { Ref, useCallback, useEffect, useMemo, useRef } from 'preact/hooks';
 import './Popover.scss';
+
 const findFirstFocusableElement = (root: Element) => {
     let focusable: HTMLElement | undefined;
     const elements = root.querySelector(`.${TOOLTIP_CONTENT_CLASSNAME}`)?.querySelectorAll(SELECTORS);
@@ -37,6 +38,11 @@ const findFirstFocusableElement = (root: Element) => {
     }
     return null;
 };
+
+const getGapByVariant = (variant: PopoverContainerVariant): number => {
+    return variant === PopoverContainerVariant.TOOLTIP ? 10 : 15;
+};
+
 function Popover({
     actions,
     disableFocusTrap = false,
@@ -86,7 +92,7 @@ function Popover({
     const autoFocusAnimFrame = useRef<ReturnType<typeof requestAnimationFrame>>();
 
     const popoverPositionAnchorElement = useClickOutside(
-        usePopoverPositioner([0, 15], targetElement, variant, position, arrowRef, setToTargetWidth),
+        usePopoverPositioner(getGapByVariant(variant), targetElement, variant, position, arrowRef, setToTargetWidth),
         dismiss,
         variant === PopoverContainerVariant.TOOLTIP && !open,
         ClickOutsideVariant.POPOVER
