@@ -17,7 +17,7 @@ import MultiSelectionFilter, { listFrom } from './MultiSelectionFilter';
 import useDefaultTransactionsOverviewFilterParams from '../hooks/useDefaultTransactionsOverviewFilterParams';
 import useTransactionsOverviewMultiSelectionFilters from '../hooks/useTransactionsOverviewMultiSelectionFilters';
 import AdyenFPError from '@src/core/Errors/AdyenFPError';
-import { AmountFilter } from '@src/components/internal/FilterBar/filters/AmountFilter/AmountFilter';
+import { AmountFilter } from '../../../internal/FilterBar/filters/AmountFilter/AmountFilter';
 
 export const TransactionsOverview = ({
     onFiltersChanged,
@@ -134,6 +134,7 @@ export const TransactionsOverview = ({
             </FilterBar>
             <div className="adyen-fp-transactions__balance-totals">
                 <TransactionTotals
+                    availableCurrencies={availableCurrencies}
                     balanceAccountId={activeBalanceAccount?.id}
                     statuses={statusesFilter.selection}
                     categories={categoriesFilter.selection}
