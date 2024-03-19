@@ -140,6 +140,11 @@
         }
     }
 
+    &__empty-cell {
+        display: inline-block;
+        height: 10px;
+    }
+
     &__skeleton-cell {
         text-align: center;
     }

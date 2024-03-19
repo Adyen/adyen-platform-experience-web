@@ -10,8 +10,11 @@ import { memo } from 'preact/compat';
 import { TransactionTotalItem } from '@src/components/external/Transactions/components/TransactionTotalItem/TransactionTotalItem';
 import { BaseList } from '@src/components/internal/BaseList/BaseList';
 import { useMaxWidthsState } from '@src/components/external/Transactions/hooks/useMaxWidths';
+import { ITransaction } from '@src/types';
 
-type TransactionTotalsProps = Required<OperationParameters<'getTransactionTotals'>['query']>;
+type TransactionTotalsProps = Required<OperationParameters<'getTransactionTotals'>['query']> & {
+    availableCurrencies: ITransaction['amount']['currency'][] | undefined;
+};
 
 const TransactionTotals = memo(
     ({
@@ -23,6 +26,7 @@ const TransactionTotals = memo(
         maxAmount,
         minAmount,
         currencies,
+        availableCurrencies,
     }: MakeFieldValueUndefined<TransactionTotalsProps, 'balanceAccountId' | 'minAmount' | 'maxAmount'>) => {
         const getTransactionTotals = useSetupEndpoint('getTransactionTotals');
         const fetchCallback = useCallback(async () => {
