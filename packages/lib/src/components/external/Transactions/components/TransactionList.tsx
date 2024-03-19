@@ -113,7 +113,7 @@ function TransactionList({
                     amount: ({ value }) => {
                         const amount = i18n.amount(value.value, value.currency, {
                             showSign: value.value < 0,
-                            showSymbol: false,
+                            hideSymbol: !hasMultipleCurrencies,
                         });
 
                         return <span className={classnames('adyen-fp-transactions__amount')}>{amount}</span>;
