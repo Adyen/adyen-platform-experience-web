@@ -102,7 +102,7 @@ function TransactionList({
                         return (
                             <Tag
                                 label={i18n.get(value)}
-                                variant={value === 'Booked' ? TagVariant.SUCCESS : value === 'Rejected' ? TagVariant.ERROR : TagVariant.DEFAULT}
+                                variant={value === 'Booked' ? TagVariant.SUCCESS : value === 'Reversed' ? TagVariant.ERROR : TagVariant.DEFAULT}
                             />
                         );
                     },
