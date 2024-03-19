@@ -17,9 +17,9 @@ type TransactionTotalsProps = Required<OperationParameters<'getBalances'>['path'
 export const Balances = memo(
     ({
         balanceAccountId,
-        updateBalanceAccountCurrencies,
+        onCurrenciesChange,
     }: MakeFieldValueUndefined<TransactionTotalsProps, 'balanceAccountId'> & {
-        updateBalanceAccountCurrencies: (currencies?: ITransaction['amount']['currency'][]) => any;
+        onCurrenciesChange: (currencies: ITransaction['amount']['currency'][] | undefined, isFetching: boolean) => any;
     }) => {
         const getAccountsBalance = useSetupEndpoint('getBalances');
 
@@ -34,19 +34,18 @@ export const Balances = memo(
             queryFn: fetchCallback,
         });
 
-        useEffect(() => {
-            if (data) {
-                updateBalanceAccountCurrencies(data?.balances.map(({ currency }) => currency).sort());
-            }
-        }, [data, updateBalanceAccountCurrencies]);
-
         const isLoading = !balanceAccountId || isFetching;
         const isEmpty = !!error || !data?.balances.length;
 
-        const balances = data?.balances;
+        const balances = data?.balances.sort((a, b) => a.currency.localeCompare(b.currency));
         const [firstBalance, ...restOfBalances] = balances ?? [];
 
         const [maxWidths, setMaxWidths] = useMaxWidthsState();
+
+        useEffect(() => {
+            const currencies = balances?.map(({ currency }) => currency);
+            onCurrenciesChange(currencies, isFetching);
+        }, [balances, isFetching, onCurrenciesChange]);
 
         return (
             <div className={BASE_CLASS}>

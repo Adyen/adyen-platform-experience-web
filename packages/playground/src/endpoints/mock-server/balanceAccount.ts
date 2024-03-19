@@ -45,16 +45,25 @@ const TRANSACTION_TOTALS = [
         incomings: 200000000000,
         expenses: -100000000000,
     },
+    {
+        currency: 'BRL',
+        incomings: 20000,
+        expenses: -1000,
+    },
 ];
 
 const MULTIPLE_ACCOUNT_BALANCES = [
+    {
+        value: 987600000000,
+        currency: 'USD',
+    },
     {
         value: 12345,
         currency: 'EUR',
     },
     {
-        value: 987600000000,
-        currency: 'USD',
+        value: 333,
+        currency: 'CAD',
     },
     {
         value: 987600000000,
