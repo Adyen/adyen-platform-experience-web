@@ -3,7 +3,7 @@ import { ITransaction } from '../../packages/lib/src/types';
 const TRANSACTION_DETAILS_1: ITransaction = {
     id: '1WEPGD5VS767881Q',
     amount: { currency: 'EUR', value: 12000 },
-    status: 'Rejected',
+    status: 'Reversed',
     category: 'Payment',
     paymentMethod: { type: 'paypal' },
     creationDate: '2022-08-29T14:47:03+02:00',
@@ -11,7 +11,7 @@ const TRANSACTION_DETAILS_1: ITransaction = {
 const TRANSACTION_DETAILS_2: ITransaction = {
     id: '3KVM0J5V771942G',
     amount: { currency: 'EUR', value: 950200 },
-    status: 'Rejected',
+    status: 'Reversed',
     category: 'Refund',
     bankAccount: {
         accountNumberLastFourDigits: '1100',
@@ -29,7 +29,7 @@ const TRANSACTION_DETAILS_3: ITransaction = {
 const TRANSACTION_DETAILS_4: ITransaction = {
     id: '1WEPGE5W2I3OPAQ6',
     amount: { currency: 'EUR', value: 45000 },
-    status: 'Rejected',
+    status: 'Reversed',
     category: 'Capital',
     paymentMethod: { lastFourDigits: '2894', type: 'visa' },
     creationDate: '2022-08-29T14:47:03+02:00',

@@ -26,7 +26,7 @@ export const TransactionData = ({ transaction, isFetching }: { transaction?: Tra
         [transaction, i18n]
     );
 
-    const amountStyle = transaction?.status === 'Booked' ? 'default' : transaction?.status === 'Rejected' ? 'error' : 'pending';
+    const amountStyle = transaction?.status === 'Booked' ? 'default' : transaction?.status === 'Reversed' ? 'error' : 'pending';
 
     return (
         <>
@@ -41,7 +41,7 @@ export const TransactionData = ({ transaction, isFetching }: { transaction?: Tra
                                 variant={
                                     transaction.status === 'Booked'
                                         ? TagVariant.SUCCESS
-                                        : transaction.status === 'Rejected'
+                                        : transaction.status === 'Reversed'
                                         ? TagVariant.ERROR
                                         : TagVariant.DEFAULT
                                 }

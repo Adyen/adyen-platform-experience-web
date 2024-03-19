@@ -75,7 +75,7 @@ export interface components {
       status: components["schemas"]["Status"];
     };
     /** @enum {string} */
-    Status: "Pending" | "Booked" | "Rejected";
+    Status: "Pending" | "Booked" | "Reversed";
     /** @description Collection of transaction totals per currency */
     TransactionTotal: {
       /** @description ISO currency code */

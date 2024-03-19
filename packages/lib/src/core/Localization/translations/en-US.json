@@ -179,7 +179,7 @@
     "contactDetails": "Contact details",
     "Booked": "Booked",
     "Pending": "Pending",
-    "Rejected": "Rejected",
+    "Reversed": "Reversed",
     "transactionsOverview": "Transactions overview",
     "rangePreset.custom": "Custom",
     "rangePreset.last7Days": "Last 7 days",

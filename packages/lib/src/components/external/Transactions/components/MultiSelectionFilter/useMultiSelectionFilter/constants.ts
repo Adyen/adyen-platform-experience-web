@@ -24,4 +24,4 @@ export const TRANSACTION_CATEGORIES: readonly ITransaction['category'][] = [
     'Other',
 ] as const;
 
-export const TRANSACTION_STATUSES: readonly ITransaction['status'][] = ['Booked', 'Pending', 'Rejected'] as const;
+export const TRANSACTION_STATUSES: readonly ITransaction['status'][] = ['Booked', 'Pending', 'Reversed'] as const;
