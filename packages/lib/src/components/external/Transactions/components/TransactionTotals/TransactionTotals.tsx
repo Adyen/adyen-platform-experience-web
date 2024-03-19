@@ -53,12 +53,6 @@ const TransactionTotals = memo(
         const totals = data?.totals;
         const [firstTotal, ...restOfTotals] = totals ?? [];
 
-        if (!error && firstTotal && availableCurrencies && availableCurrencies.length > 1 && totals && totals.length) {
-            const totalsCurrencies = totals.map(total => total.currency);
-            const missingCurrencies = availableCurrencies.filter(currency => !totalsCurrencies.includes(currency));
-            missingCurrencies.forEach(curr => restOfTotals.push({ currency: curr, incomings: 0, expenses: 0 }));
-        }
-
         const [maxWidths, setMaxWidths] = useMaxWidthsState();
 
         return (
