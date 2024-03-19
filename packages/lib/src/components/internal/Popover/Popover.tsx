@@ -39,8 +39,8 @@ const findFirstFocusableElement = (root: Element) => {
     return null;
 };
 
-const getGapByVariant = (variant: PopoverContainerVariant): number => {
-    return variant === PopoverContainerVariant.TOOLTIP ? 10 : 15;
+const getGapByVariant = (variant: PopoverContainerVariant): [number, number, number, number] => {
+    return variant === PopoverContainerVariant.TOOLTIP ? [10, 3, 5, 5] : [15, 15, 15, 15];
 };
 
 function Popover({

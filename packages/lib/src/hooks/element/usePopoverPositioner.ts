@@ -5,7 +5,7 @@ import useReflex, { Nullable, Reflexable } from '../useReflex';
 
 const calculateOffset = (
     popover: Element,
-    offset: number,
+    offset: [number, number, number, number],
     targetElement: MutableRef<Element | null>,
     position: PopoverContainerPosition,
     variant: PopoverContainerVariant
@@ -21,21 +21,21 @@ const calculateOffset = (
     switch (position) {
         case PopoverContainerPosition.BOTTOM:
             dimensionX = variant === PopoverContainerVariant.TOOLTIP ? toCenterX + window.scrollX : targetPosition?.left + window.scrollX;
-            dimensionY = targetPosition?.top + targetPosition?.height + window.scrollY + offset;
+            dimensionY = targetPosition?.top + targetPosition?.height + window.scrollY + offset[1];
             break;
         case PopoverContainerPosition.TOP:
             dimensionX = variant === PopoverContainerVariant.TOOLTIP ? toCenterX + window.scrollX : targetPosition.left + window.scrollX;
-            dimensionY = targetPosition?.top - popoverContent?.clientHeight + window.scrollY - offset;
+            dimensionY = targetPosition?.top - popoverContent?.clientHeight + window.scrollY - offset[0];
             break;
         case PopoverContainerPosition.RIGHT:
-            dimensionX = targetPosition.left + targetPosition.width + window.scrollX + offset;
+            dimensionX = targetPosition.left + targetPosition.width + window.scrollX + offset[2];
             dimensionY =
                 variant === PopoverContainerVariant.TOOLTIP
                     ? toCenterY + window.scrollY
                     : targetPosition?.top - targetPosition?.height / 2 + window.scrollY;
             break;
         case PopoverContainerPosition.LEFT:
-            dimensionX = targetPosition?.left - popover?.clientWidth + window.scrollX - offset;
+            dimensionX = targetPosition?.left - popover?.clientWidth + window.scrollX - offset[3];
             dimensionY =
                 variant === PopoverContainerVariant.TOOLTIP
                     ? toCenterY + window.scrollY
@@ -58,7 +58,7 @@ const calculateOffset = (
     return `position:absolute;inset:0 auto auto 0;margin: 0;transform: ${res};visibility:hidden`;
 };
 const usePopoverPositioner = (
-    offset: number,
+    offset: [number, number, number, number],
     targetElement: MutableRef<Element | null>,
     variant: PopoverContainerVariant,
     position?: PopoverContainerPosition,
