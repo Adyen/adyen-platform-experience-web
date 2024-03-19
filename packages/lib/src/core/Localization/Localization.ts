@@ -1,4 +1,4 @@
-import { getLocalisedAmount, showCurrencyWithoutSymbol } from './amount/amount-util';
+import { getLocalisedAmount } from './amount/amount-util';
 import { defaultTranslation, FALLBACK_LOCALE } from './constants/locale';
 import { DEFAULT_DATETIME_FORMAT, DEFAULT_LOCALES, EXCLUDE_PROPS } from './constants/localization';
 import restamper, { RestamperWithTimezone, systemToTimezone } from './datetime/restamper';
@@ -146,19 +146,17 @@ export default class Localization {
      * @param options - Options for String.prototype.toLocaleString
      */
     amount(amount: number, currencyCode: string, options?: Record<string, any>): string {
-        const noSymbol = options?.['showSign'] === false;
-
-        const localisedAmount = getLocalisedAmount(amount, this.#locale, currencyCode, {
+        const localisedAmount = getLocalisedAmount(amount, this.#locale, currencyCode, options?.['hideSymbol'], {
             ...options,
-            currencyDisplay: noSymbol ? 'name' : 'symbol',
+            currencyDisplay: 'symbol',
         });
 
         if (options && options['showSign'] && amount !== 0) {
             const amountWithSign = localisedAmount.includes('-') ? `- ${localisedAmount.replace('-', '')}` : `+ ${localisedAmount}`;
 
-            return options['showSymbol'] ? amountWithSign : showCurrencyWithoutSymbol(amount, amountWithSign);
+            return amountWithSign;
         }
-        return noSymbol ? showCurrencyWithoutSymbol(amount, localisedAmount) : localisedAmount;
+        return localisedAmount;
     }
 
     /**
