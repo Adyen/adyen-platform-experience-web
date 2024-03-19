@@ -13,11 +13,14 @@ import { useMaxWidthsState } from '@src/components/external/Transactions/hooks/u
 import { ITransaction } from '@src/types';
 
 type TransactionTotalsProps = Required<OperationParameters<'getTransactionTotals'>['query']> & {
+    isAvailableCurrenciesFetching: boolean;
     availableCurrencies: ITransaction['amount']['currency'][] | undefined;
 };
 
 const TransactionTotals = memo(
     ({
+        availableCurrencies,
+        isAvailableCurrenciesFetching,
         balanceAccountId,
         createdSince,
         createdUntil,
@@ -26,7 +29,6 @@ const TransactionTotals = memo(
         maxAmount,
         minAmount,
         currencies,
-        availableCurrencies,
     }: MakeFieldValueUndefined<TransactionTotalsProps, 'balanceAccountId' | 'minAmount' | 'maxAmount'>) => {
         const getTransactionTotals = useSetupEndpoint('getTransactionTotals');
         const fetchCallback = useCallback(async () => {
@@ -44,14 +46,26 @@ const TransactionTotals = memo(
             });
         }, [balanceAccountId, categories, createdSince, createdUntil, currencies, getTransactionTotals, maxAmount, minAmount, statuses]);
 
-        const { data, error, isFetching } = useFetch({
+        const { data, isFetching } = useFetch({
             fetchOptions: useMemo(() => ({ enabled: !!balanceAccountId }), [balanceAccountId]),
             queryFn: fetchCallback,
         });
-        const isLoading = !balanceAccountId || isFetching;
+        const isLoading = !balanceAccountId || isFetching || isAvailableCurrenciesFetching;
 
-        const totals = data?.totals;
-        const [firstTotal, ...restOfTotals] = totals ?? [];
+        const getTotals = useCallback(() => {
+            if (!availableCurrencies || !data) {
+                return data?.totals;
+            }
+
+            const partialTotals = availableCurrencies.map(currency => {
+                const totalOfCurrency = data.totals.find(total => total.currency === currency);
+                return totalOfCurrency || { currency, incomings: 0, expenses: 0 };
+            });
+
+            return partialTotals.concat(data.totals.filter(total => !partialTotals.includes(total)));
+        }, [availableCurrencies, data]);
+
+        const [firstTotal, ...restOfTotals] = getTotals() ?? [];
 
         const [maxWidths, setMaxWidths] = useMaxWidthsState();
 
@@ -69,7 +83,7 @@ const TransactionTotals = memo(
                         />
                     }
                 >
-                    {restOfTotals.length && (
+                    {!isLoading && restOfTotals.length && (
                         <BaseList>
                             {restOfTotals.map(total => (
                                 <li key={total.currency}>
