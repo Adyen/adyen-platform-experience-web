@@ -35,19 +35,23 @@ export const TransactionData = ({ transaction, isFetching }: { transaction?: Tra
             ) : (
                 <div className={'adyen-fp-transaction-data'}>
                     <div className={'adyen-fp-transaction-data__container'}>
-                        <div className={'adyen-fp-transaction-data__section adyen-fp-transaction-data__tag-container'}>
-                            <Tag
-                                label={i18n.get(transaction.status)}
-                                variant={
-                                    transaction.status === 'Booked'
-                                        ? TagVariant.SUCCESS
-                                        : transaction.status === 'Reversed'
-                                        ? TagVariant.ERROR
-                                        : TagVariant.DEFAULT
-                                }
-                            />
-                            <Tag label={i18n.get(`txType.${transaction.category}`)} variant={TagVariant.DEFAULT} />
-                        </div>
+                        {(transaction?.status || transaction?.category) && (
+                            <div className={'adyen-fp-transaction-data__section adyen-fp-transaction-data__tag-container'}>
+                                {transaction?.status && (
+                                    <Tag
+                                        label={i18n.get(transaction.status)}
+                                        variant={
+                                            transaction.status === 'Booked'
+                                                ? TagVariant.SUCCESS
+                                                : transaction.status === 'Reversed'
+                                                ? TagVariant.ERROR
+                                                : TagVariant.DEFAULT
+                                        }
+                                    />
+                                )}
+                                {transaction.category && <Tag label={i18n.get(`txType.${transaction.category}`)} variant={TagVariant.DEFAULT} />}
+                            </div>
+                        )}
                         <div
                             className={`adyen-fp-transaction-data__section adyen-fp-transaction-data__amount adyen-fp-transaction-data__amount--${amountStyle}`}
                         >
