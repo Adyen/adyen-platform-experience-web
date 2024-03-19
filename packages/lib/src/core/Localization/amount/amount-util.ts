@@ -32,7 +32,13 @@ export const getDecimalAmount = (amount: number | string, currencyCode: string):
 /**
  * @internal
  */
-export const getLocalisedAmount = (amount: number, locale: string, currencyCode: string, options: Intl.NumberFormatOptions = {}): string => {
+export const getLocalisedAmount = (
+    amount: number,
+    locale: string,
+    currencyCode: string,
+    hideSymbol = false,
+    options: Intl.NumberFormatOptions = {}
+): string => {
     const stringAmount = amount.toString(); // Changing amount to string to avoid 0-value from returning false
 
     const decimalAmount = getDecimalAmount(stringAmount, currencyCode);
@@ -46,10 +52,19 @@ export const getLocalisedAmount = (amount: number, locale: string, currencyCode:
     };
 
     try {
+        if (hideSymbol) return showCurrencyWithoutSymbol({ amount: decimalAmount, currencyCode, locale: formattedLocale });
         return decimalAmount.toLocaleString(formattedLocale, localeOptions);
     } catch (e) {
         return stringAmount;
     }
+};
+
+export const showCurrencyWithoutSymbol = ({ locale, amount, currencyCode }: { locale: string; amount: number; currencyCode: string }) => {
+    return new Intl.NumberFormat(locale, { style: 'currency', currency: currencyCode, currencyDisplay: 'symbol' })
+        .formatToParts(amount)
+        .filter(p => p.type !== 'currency')
+        .reduce((s, p) => s + p.value, '')
+        .trim();
 };
 
 /**

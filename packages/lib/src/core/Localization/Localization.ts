@@ -146,9 +146,16 @@ export default class Localization {
      * @param options - Options for String.prototype.toLocaleString
      */
     amount(amount: number, currencyCode: string, options?: Record<string, any>): string {
-        const localisedAmount = getLocalisedAmount(amount, this.#locale, currencyCode, options);
-        if (options && options['showSign'] && amount !== 0) {
-            return localisedAmount.includes('-') ? `- ${localisedAmount.replace('-', '')}` : `+ ${localisedAmount}`;
+        const { hideSymbol, showSign, ...restOfOptions } = options || {};
+        const localisedAmount = getLocalisedAmount(amount, this.#locale, currencyCode, hideSymbol, {
+            ...restOfOptions,
+            currencyDisplay: 'symbol',
+        });
+
+        if (showSign && amount !== 0) {
+            const amountWithSign = localisedAmount.includes('-') ? `- ${localisedAmount.replace('-', '')}` : `+ ${localisedAmount}`;
+
+            return amountWithSign;
         }
         return localisedAmount;
     }

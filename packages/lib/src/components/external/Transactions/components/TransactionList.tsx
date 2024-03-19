@@ -112,15 +112,11 @@ function TransactionList({
                     creationDate: ({ value }) => i18n.fullDate(value),
                     amount: ({ value }) => {
                         const amount = i18n.amount(value.value, value.currency, {
-                            currencyDisplay: hasMultipleCurrencies ? 'symbol' : 'name',
                             showSign: value.value < 0,
+                            hideSymbol: !hasMultipleCurrencies,
                         });
 
-                        return (
-                            <span className={classnames('adyen-fp-transactions__amount')}>
-                                {hasMultipleCurrencies ? amount : amount.split(' ')[0]}
-                            </span>
-                        );
+                        return <span className={classnames('adyen-fp-transactions__amount')}>{amount}</span>;
                     },
                     paymentMethod: ({ item }) => {
                         return (
