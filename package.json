@@ -23,7 +23,7 @@
         "start:test": "concurrently --kill-others-on-fail 'npm run types:watch' 'npm run start:test -w @adyen/platform-experience-web-playground' --names 'tsc-lib,playground' -c blue,green,cyan,yellow",
         "build": "npm run build -w @adyen/platform-experience-web",
         "build:demo": "npm run build:demo -w @adyen/platform-experience-web-playground",
-        "build:test": "npm run build:test -w @adyen/platform-experience-web",
+        "build:publish": "npm run build:test -w @adyen/platform-experience-web",
         "build:analyse": "npm run build:analyse -w @adyen/platform-experience-web",
         "demo": "npm run demo -w @adyen/platform-experience-web-playground",
         "start:mocked": "concurrently --kill-others-on-fail 'npm run types:watch' 'npm run start:mock -w @adyen/platform-experience-web-playground' --names 'lib-types,playground' -c blue,green,cyan,yellow",

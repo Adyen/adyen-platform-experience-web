@@ -15,8 +15,7 @@ jobs:
 
       - name: Create a build and export an artifact
         run: |
-          npm run build
-          npm pack
+          npm run build:publish
 
       - name: Determine the release version
         run: |
