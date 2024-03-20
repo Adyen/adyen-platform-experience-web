@@ -1,5 +1,5 @@
 {
-    "name": "@adyen/adyen-fp-web-playground",
+    "name": "@adyen/adyen-platform-experience-web-playground",
     "private": true,
     "type": "module",
     "keywords": [
@@ -13,7 +13,7 @@
     ],
     "version": "1.0.0",
     "license": "MIT",
-    "repository": "github:Adyen/adyen-fp-web",
+    "repository": "github:Adyen/adyen-platform-experience-web",
     "bugs": {
         "url": "https://support.adyen.com/"
     },
