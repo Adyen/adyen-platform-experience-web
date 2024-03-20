@@ -26,7 +26,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: adyen-platform-experience-web-${{ env.NEW_VERSION }}
-          path: ./adyen-platform-experience-web-${{ env.NEW_VERSION }}.tgz
+          path: ./packages/lib/adyen-platform-experience-web-${{ env.NEW_VERSION }}.tgz
           retention-days: 1
 
       - name: Push tags and create a release
