@@ -41,18 +41,18 @@ jobs:
         if: inputs.called-from-other-workflow == true
         uses: actions/download-artifact@v3
         with:
-          name: adyen-platform-experience-web-${{ env.PACKAGE_VERSION }}
+          name: adyen-adyen-platform-experience-web-${{ env.PACKAGE_VERSION }}
 
       - name: Download build artifacts (from previous workflow)
         if: steps.download-build-artifacts-same-workflow.conclusion == 'skipped'
         run: |
-          gh run download -n adyen-platform-experience-web-${{ env.PACKAGE_VERSION }}
+          gh run download -n adyen-adyen-platform-experience-web-${{ env.PACKAGE_VERSION }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Expand build artifacts archive to get `./dist`
         run: |
-          tar -xzf adyen-platform-experience-web-${{ env.PACKAGE_VERSION }}.tgz --strip-components=1 package
+          tar -xzf adyen-adyen-platform-experience-web-${{ env.PACKAGE_VERSION }}.tgz --strip-components=1 package
 
       - name: Check that `dist` directory is present and not empty
         run: |
