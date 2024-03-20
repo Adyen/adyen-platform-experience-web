@@ -34,7 +34,7 @@ jobs:
         run: |
           git tag ${{ env.NEW_VERSION }}
           git push --tags
-          gh release create ${{ env.NEW_VERSION }} adyen-platform-experience-web-${{ env.NEW_VERSION }}.tgz --title v${{ env.NEW_VERSION }} --generate-notes
+          gh release create ${{ env.NEW_VERSION }} /packages/lib/adyen-platform-experience-web-${{ env.NEW_VERSION }}.tgz --title v${{ env.NEW_VERSION }} --generate-notes
 
   trigger-npm-publish:
     needs: create-github-release
