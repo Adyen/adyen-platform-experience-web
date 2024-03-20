@@ -1,5 +1,5 @@
 {
-    "name": "@adyen/adyen-fp-web",
+    "name": "@adyen/platform-experience-web",
     "keywords": [
         "adyen",
         "adyen-fp",
@@ -12,7 +12,7 @@
     "version": "1.0.0",
     "apiVersion": "v1",
     "license": "MIT",
-    "repository": "github:Adyen/adyen-fp-web",
+    "repository": "github:Adyen/adyen-platform-experience-web",
     "bugs": {
         "url": "https://support.adyen.com/"
     },
