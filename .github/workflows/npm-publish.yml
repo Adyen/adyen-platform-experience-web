@@ -6,7 +6,7 @@ on:
       dry-run-publish:
         description: 'Dry-run the write steps (do not actually commit or publish to NPM)'
         type: boolean
-        default: false
+        default: true
 
   # we can't use the release:created trigger because it doesn't trigger on releases created by github-actions bot
   # so instead, this has to be directly called by `tag-and-release.yml`

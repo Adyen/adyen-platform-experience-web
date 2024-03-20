@@ -1,19 +1,10 @@
 # Do a git tag and create a release when a release branch is merged (or on demand)
 name: Create a tag and GitHub release
 
-on:
-  workflow_dispatch:
-
-  pull_request:
-    types:
-      - closed
-    branches:
-      - 'releases/**'
-      - 'main'
+on: [pull_request]
 
 jobs:
   create-github-release:
-    if: github.event_name == 'workflow_dispatch' || (github.event.pull_request.merged == true && startsWith(github.head_ref, 'bump/'))
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the repo
