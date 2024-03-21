@@ -39,6 +39,7 @@ const Select = <T extends SelectItem>({
     const selectListRef = useRef<HTMLUListElement>(null);
     const toggleButtonRef = useRef<HTMLButtonElement>(null);
     const selectListId = useRef(`select-${uuid()}`);
+    const [appliedFilterNumber, setAppliedFilterNumber] = useState(0);
 
     const autoFocusAnimFrame = useRef<ReturnType<typeof requestAnimationFrame>>();
     const pendingClickOutsideTriggeredHideList = useRef(true);
@@ -141,8 +142,11 @@ const Select = <T extends SelectItem>({
     }, [closeList, commitSelection, multiSelect, selection]);
 
     useEffect(() => {
-        committing && closeList();
-    }, [committing, closeList]);
+        if (committing) {
+            setAppliedFilterNumber(selection.length);
+            closeList();
+        }
+    }, [committing, closeList, setAppliedFilterNumber, selection.length]);
 
     /**
      * Handle keyDown events on the selectList button
@@ -303,6 +307,7 @@ const Select = <T extends SelectItem>({
         <div ref={selectContainerRef} className={dropdownClassName}>
             <SelectButton
                 id={uniqueId ?? undefined}
+                appliedFilterNumber={appliedFilterNumber}
                 active={selection}
                 filterInputRef={filterInputRef}
                 filterable={filterable}
