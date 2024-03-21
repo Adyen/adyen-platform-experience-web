@@ -75,7 +75,7 @@ export default defineConfig(async ({ mode }) => {
             },
         },
         optimizeDeps: {
-            exclude: ['@adyen/adyen-fp-web'],
+            exclude: ['@adyen/adyen-platform-experience-web'],
         },
         preview: {
             host: playground.host,
