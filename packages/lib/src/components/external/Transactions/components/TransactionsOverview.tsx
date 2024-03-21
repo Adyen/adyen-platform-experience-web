@@ -17,7 +17,7 @@ import MultiSelectionFilter, { listFrom } from './MultiSelectionFilter';
 import useDefaultTransactionsOverviewFilterParams from '../hooks/useDefaultTransactionsOverviewFilterParams';
 import useTransactionsOverviewMultiSelectionFilters from '../hooks/useTransactionsOverviewMultiSelectionFilters';
 import AdyenFPError from '@src/core/Errors/AdyenFPError';
-import { AmountFilter } from '../../../internal/FilterBar/filters/AmountFilter/AmountFilter';
+import { AmountFilter } from '@src/components/internal/FilterBar/filters/AmountFilter/AmountFilter';
 
 export const TransactionsOverview = ({
     onFiltersChanged,
@@ -83,7 +83,11 @@ export const TransactionsOverview = ({
         });
 
     const [availableCurrencies, setAvailableCurrencies] = useState<ITransaction['amount']['currency'][] | undefined>([]);
-
+    const [isAvailableCurrenciesFetching, setIsAvailableCurrenciesFetching] = useState(false);
+    const handleCurrenciesChange = useCallback((currencies: ITransaction['amount']['currency'][] | undefined, isFetching: boolean) => {
+        setAvailableCurrencies(currencies);
+        setIsAvailableCurrenciesFetching(isFetching);
+    }, []);
     const { categoriesFilter, currenciesFilter, statusesFilter } = useTransactionsOverviewMultiSelectionFilters(
         {
             filters,
@@ -135,6 +139,7 @@ export const TransactionsOverview = ({
             <div className="adyen-fp-transactions__balance-totals">
                 <TransactionTotals
                     availableCurrencies={availableCurrencies}
+                    isAvailableCurrenciesFetching={isAvailableCurrenciesFetching}
                     balanceAccountId={activeBalanceAccount?.id}
                     statuses={statusesFilter.selection}
                     categories={categoriesFilter.selection}
@@ -144,7 +149,7 @@ export const TransactionsOverview = ({
                     minAmount={filters[TransactionFilterParam.MIN_AMOUNT] ? parseFloat(filters[TransactionFilterParam.MIN_AMOUNT]) : undefined}
                     maxAmount={filters[TransactionFilterParam.MAX_AMOUNT] ? parseFloat(filters[TransactionFilterParam.MAX_AMOUNT]) : undefined}
                 />
-                <Balances balanceAccountId={activeBalanceAccount?.id} updateBalanceAccountCurrencies={setAvailableCurrencies} />
+                <Balances balanceAccountId={activeBalanceAccount?.id} onCurrenciesChange={handleCurrenciesChange} />
             </div>
 
             <TransactionList
