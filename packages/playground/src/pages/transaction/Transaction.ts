@@ -1,4 +1,4 @@
-import { AdyenFP, TransactionsDetailsComponent } from '@adyen/adyen-fp-web';
+import { AdyenFP, TransactionsDetails } from '@adyen/adyen-fp-web';
 import { getDefaultID, getSearchParameters } from '../../utils/utils';
 import '../../utils/createPages.js';
 import '../../assets/style/style.scss';
@@ -17,7 +17,7 @@ enableServerInMockedMode()
             },
         });
 
-        const transactionsDetailsComponent = new TransactionsDetailsComponent({
+        const transactionsDetailsComponent = new TransactionsDetails({
             core: adyenFP,
             transactionId: id ?? DEFAULT_TRANSACTION_ID,
             title: 'transactionDetails',

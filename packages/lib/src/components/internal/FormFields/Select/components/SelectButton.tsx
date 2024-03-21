@@ -46,7 +46,7 @@ const SelectButtonElement = <T extends SelectItem>({
     );
 };
 
-const SelectButton = <T extends SelectItem>(props: SelectButtonProps<T>) => {
+const SelectButton = <T extends SelectItem>(props: SelectButtonProps<T> & { appliedFilterNumber: number }) => {
     const { i18n } = useCoreContext();
     const { active, filterable, multiSelect, placeholder, readonly, showList, withoutCollapseIndicator } = props;
     const placeholderText = useMemo(() => placeholder?.trim() || i18n.get('select.filter.placeholder'), [i18n, placeholder]);
@@ -100,10 +100,10 @@ const SelectButton = <T extends SelectItem>(props: SelectButtonProps<T>) => {
                     <span className={DROPDOWN_BUTTON_TEXT_CLASS}>
                         {buttonActiveItem?.selectedOptionName?.trim() || buttonActiveItem?.name.trim() || placeholderText}
                     </span>
-                    {multiSelect && active.length > 0 && (
+                    {multiSelect && props.appliedFilterNumber > 0 && (
                         <div className={DROPDOWN_BUTTON_MULTI_SELECT_COUNTER_CLASS}>
                             <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY} stronger={true}>
-                                {active.length}
+                                {props.appliedFilterNumber}
                             </Typography>
                         </div>
                     )}

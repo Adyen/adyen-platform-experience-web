@@ -1,0 +1,51 @@
+# Do a git tag and create a release when a release branch is merged (or on demand)
+name: Create a tag and GitHub release
+
+on:
+  workflow_dispatch:
+
+  pull_request:
+    types:
+      - closed
+    branches:
+      - 'releases/**'
+      - 'main'
+
+jobs:
+  create-github-release:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' || (github.event.pull_request.merged == true && startsWith(github.head_ref, 'bump/'))
+    steps:
+      - name: Checkout the repo
+        uses: actions/checkout@v3
+
+      - name: Run the preliminary setup steps
+        uses: ./.github/actions/setup-env
+
+      - name: Create a build and export an artifact
+        run: |
+          npm run build:publish
+
+      - name: Determine the release version
+        run: |
+          echo "NEW_VERSION=$(jq -r .version package.json)" >> $GITHUB_ENV
+
+      - name: Upload build as artifact for other jobs
+        uses: actions/upload-artifact@v3
+        with:
+          name: adyen-adyen-platform-experience-web-${{ env.NEW_VERSION }}
+          path: ./packages/lib/adyen-adyen-platform-experience-web-${{ env.NEW_VERSION }}.tgz
+          retention-days: 1
+
+      - name: Push tags and create a release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git tag ${{ env.NEW_VERSION }}
+          git push --tags
+          gh release create ${{ env.NEW_VERSION }} ./packages/lib/adyen-adyen-platform-experience-web-${{ env.NEW_VERSION }}.tgz --title v${{ env.NEW_VERSION }} --generate-notes
+
+  trigger-npm-publish:
+    needs: create-github-release
+    uses: adyen/adyen-platform-experience-web/.github/workflows/npm-publish.yml@main
+    secrets: inherit

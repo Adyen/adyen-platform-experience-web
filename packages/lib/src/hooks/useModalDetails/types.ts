@@ -4,7 +4,7 @@ import { ModalSize } from '@src/components/internal/Modal/types';
 type CallbackFunction<T> = (arg: T) => void;
 
 type DetailsConfig<T> = {
-    showDetails: (boolean | undefined)[];
+    showDetails: boolean;
     callback?: CallbackFunction<T>;
 };
 

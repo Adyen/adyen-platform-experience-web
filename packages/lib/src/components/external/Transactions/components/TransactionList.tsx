@@ -60,10 +60,10 @@ function TransactionList({
 
     const transactionDetails = useMemo(
         () => ({
-            showDetails: [showDetails?.transaction],
+            showDetails: showDetails ?? true,
             callback: onTransactionSelected,
         }),
-        [showDetails?.transaction, onTransactionSelected]
+        [showDetails, onTransactionSelected]
     );
 
     const modalOptions = useMemo(() => ({ transaction: transactionDetails }), [transactionDetails]);
@@ -162,7 +162,13 @@ function TransactionList({
                 size={selectedDetail?.modalSize ?? 'large'}
             >
                 {selectedDetail && (
-                    <Suspense fallback={<Spinner />}>
+                    <Suspense
+                        fallback={
+                            <span className={'adyen-fp-transactions__spinner-container'}>
+                                <Spinner size={'medium'} />
+                            </span>
+                        }
+                    >
                         <ModalContent data={selectedDetail.selection.data} />
                     </Suspense>
                 )}

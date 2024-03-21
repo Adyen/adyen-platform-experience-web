@@ -33,10 +33,17 @@
 
     &__balance-totals {
         display: flex;
+        flex-wrap: wrap;
+        gap: var(--adyen-fp-spacing-base);
         justify-content: space-between;
     }
 
     &__with-error {
         position: relative;
+    }
+
+    &__spinner-container {
+        display: block;
+        padding-bottom: 40px;
     }
 }
