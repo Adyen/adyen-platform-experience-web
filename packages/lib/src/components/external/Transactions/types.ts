@@ -25,7 +25,7 @@ export interface TransactionsComponentProps {
     onLimitChanged?: (limit: number) => any;
     preferredLimit?: number;
     allowLimitSelection?: boolean;
-    showDetails?: DetailsOptions;
+    showDetails?: boolean;
     core: Core;
 }
 export interface TransactionListProps extends WithPaginationLimitSelection<PaginationProps> {
@@ -33,7 +33,7 @@ export interface TransactionListProps extends WithPaginationLimitSelection<Pagin
     onTransactionSelected?: OnSelection;
     showPagination: boolean;
     loading: boolean;
-    showDetails?: DetailsOptions;
+    showDetails?: boolean;
     error: AdyenFPError | undefined;
     onContactSupport?: () => void;
     balanceAccounts: IBalanceAccountBase[] | undefined;

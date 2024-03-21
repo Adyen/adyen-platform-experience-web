@@ -17,13 +17,13 @@ function useModalDetails<Options extends ModalDetailsOptions>(options: Options) 
         <T extends SelectedDetail<Options>>(state: T): CallbackIsPresent<Options, T> extends true ? CallbackParams<Options, T> : {} => {
             if (state && hasCallback(options[state.selection.type])) {
                 return {
-                    callback: options?.callback
+                    callback: options?.[state.selection.type]?.callback
                         ? (
                               args: Options[T['selection']['type']] extends { callback: any }
                                   ? GetArgsExceptCallback<Required<Options[T['selection']['type']]>>
                                   : never
                           ) => options[state.selection.type]?.callback?.({ showModal: () => setSelectedDetail(state), ...args })
-                        : () => setSelectedDetail(state),
+                        : () => options[state.selection.type]?.showDetails && setSelectedDetail(state),
                 };
             }
             setSelectedDetail(state);
@@ -38,7 +38,7 @@ function useModalDetails<Options extends ModalDetailsOptions>(options: Options) 
 
         for (const detail in options) {
             const selectedDetail = options[detail];
-            details[detail] = !selectedDetail?.showDetails.some(v => v === false) || !!selectedDetail.callback;
+            details[detail] = !selectedDetail?.showDetails || !!selectedDetail.callback;
         }
 
         return details;
