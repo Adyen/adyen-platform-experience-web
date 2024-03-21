@@ -61,7 +61,7 @@
         "vite-node": "^0.30.1"
     },
     "dependencies": {
-        "@adyen/adyen-fp-web": "1.0.0",
+        "@adyen/adyen-platform-experience-web": "0.1.1",
         "preact": "^10.13.2"
     },
     "msw": {
