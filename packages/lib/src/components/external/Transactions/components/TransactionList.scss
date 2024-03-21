@@ -33,6 +33,8 @@
 
     &__balance-totals {
         display: flex;
+        flex-wrap: wrap;
+        gap: var(--adyen-fp-spacing-base);
         justify-content: space-between;
     }
 
