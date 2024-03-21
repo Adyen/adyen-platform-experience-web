@@ -84,7 +84,10 @@ export const TransactionsOverview = ({
 
     const [availableCurrencies, setAvailableCurrencies] = useState<ITransaction['amount']['currency'][] | undefined>([]);
     const [isAvailableCurrenciesFetching, setIsAvailableCurrenciesFetching] = useState(false);
-
+    const handleCurrenciesChange = useCallback((currencies: ITransaction['amount']['currency'][] | undefined, isFetching: boolean) => {
+        setAvailableCurrencies(currencies);
+        setIsAvailableCurrenciesFetching(isFetching);
+    }, []);
     const { categoriesFilter, currenciesFilter, statusesFilter } = useTransactionsOverviewMultiSelectionFilters(
         {
             filters,
@@ -146,13 +149,7 @@ export const TransactionsOverview = ({
                     minAmount={filters[TransactionFilterParam.MIN_AMOUNT] ? parseFloat(filters[TransactionFilterParam.MIN_AMOUNT]) : undefined}
                     maxAmount={filters[TransactionFilterParam.MAX_AMOUNT] ? parseFloat(filters[TransactionFilterParam.MAX_AMOUNT]) : undefined}
                 />
-                <Balances
-                    balanceAccountId={activeBalanceAccount?.id}
-                    onCurrenciesChange={(currencies, isFetching) => {
-                        setAvailableCurrencies(currencies);
-                        setIsAvailableCurrenciesFetching(isFetching);
-                    }}
-                />
+                <Balances balanceAccountId={activeBalanceAccount?.id} onCurrenciesChange={handleCurrenciesChange} />
             </div>
 
             <TransactionList
