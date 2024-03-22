@@ -8,6 +8,7 @@ import { cloneElement, VNode } from 'preact';
 import { PropsWithChildren } from 'preact/compat';
 import { MutableRef } from 'preact/hooks';
 import { TooltipProps } from './types';
+import './Tooltip.scss';
 
 const isString = (content: string | VNode<any>) => {
     return typeof content === 'string';
@@ -23,6 +24,7 @@ export const Tooltip = ({ content, children, triggerRef, showTooltip, position }
             {children
                 ? cloneElement(children, {
                       ref: controllerRef,
+                      className: 'adyen-fp-web__tooltip-target',
                       ...listeners,
                       'aria-describedby': `tooltip-${controllerRef.current?.id}`,
                   })
