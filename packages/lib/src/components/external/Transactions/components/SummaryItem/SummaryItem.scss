@@ -15,6 +15,10 @@
         color: var(--adyen-fp-color-label-secondary);
     }
 
+    &__amount {
+        white-space: nowrap;
+    }
+
     &__placeholder {
         display: inline-block;
         height: 12px;
