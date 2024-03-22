@@ -1,15 +1,4 @@
-import Popover from '@src/components/internal/Popover/Popover';
-import { PopoverContainerVariant } from '@src/components/internal/Popover/types';
-import useCoreContext from '@src/core/Context/useCoreContext';
-import { TranslationKey } from '@src/core/Localization/types';
-import classNames from 'classnames';
-import Typography from '@src/components/internal/Typography/Typography';
-import { TypographyVariant } from '@src/components/internal/Typography/types';
-import './SummaryItem.scss';
 import AmountSkeleton from '@src/components/external/Transactions/components/AmountSkeleton/AmountSkeleton';
-import { Ref } from 'preact';
-import { MutableRef, useEffect, useState } from 'preact/hooks';
-import { SummaryItemProps } from '@src/components/external/Transactions/components/SummaryItem/types';
 import {
     AMOUNT_CLASS,
     BASE_CLASS,
@@ -18,6 +7,14 @@ import {
     LABEL_CONTAINER_CLASS,
     PLACEHOLDER_CLASS,
 } from '@src/components/external/Transactions/components/SummaryItem/constants';
+import { SummaryItemProps } from '@src/components/external/Transactions/components/SummaryItem/types';
+import { Tooltip } from '@src/components/internal/Tooltip/Tooltip';
+import { TypographyVariant } from '@src/components/internal/Typography/types';
+import Typography from '@src/components/internal/Typography/Typography';
+import useCoreContext from '@src/core/Context/useCoreContext';
+import classNames from 'classnames';
+import { useEffect } from 'preact/hooks';
+import './SummaryItem.scss';
 
 export const SummaryItem = ({
     columnConfigs,
@@ -29,8 +26,6 @@ export const SummaryItem = ({
     isEmpty,
 }: SummaryItemProps) => {
     const { i18n } = useCoreContext();
-    const [showTooltip, setShowTooltip] = useState<TranslationKey | null>(null);
-    const [targetElement, setTargetElement] = useState<null | Ref<HTMLSpanElement>>(null);
 
     useEffect(() => {
         const newWidths = columnConfigs.map(config => config.ref?.current?.getBoundingClientRect().width ?? 0);
@@ -47,24 +42,27 @@ export const SummaryItem = ({
         <div className={classNames(BASE_CLASS, { [BODY_CLASS]: !isHeader })}>
             {columnConfigs.map((config, index) => (
                 <div key={index}>
-                    {isHeader && config.labelKey && (
-                        <span
-                            className={LABEL_CONTAINER_CLASS}
-                            ref={config.titleRef}
-                            onMouseOver={() => {
-                                setShowTooltip(`tooltip.${config.labelKey}` as TranslationKey);
-                                setTargetElement(config?.titleRef ?? null);
-                            }}
-                            onMouseOut={() => {
-                                setShowTooltip(null);
-                                setTargetElement(null);
-                            }}
-                        >
-                            <Typography variant={TypographyVariant.CAPTION} className={LABEL_CLASS}>
-                                {i18n.get(config.labelKey)}
-                            </Typography>
-                        </span>
-                    )}
+                    {isHeader &&
+                        config.tooltipLabel &&
+                        (config.tooltipRef ? (
+                            <Tooltip content={i18n.get(`${config.tooltipLabel}`)}>
+                                <span className={LABEL_CONTAINER_CLASS} ref={config.tooltipRef}>
+                                    {config.labelKey && (
+                                        <Typography variant={TypographyVariant.CAPTION} className={LABEL_CLASS}>
+                                            {i18n.get(config.labelKey)}
+                                        </Typography>
+                                    )}
+                                </span>
+                            </Tooltip>
+                        ) : (
+                            <span className={LABEL_CONTAINER_CLASS}>
+                                {config.labelKey && (
+                                    <Typography variant={TypographyVariant.CAPTION} className={LABEL_CLASS}>
+                                        {i18n.get(config.labelKey)}
+                                    </Typography>
+                                )}
+                            </span>
+                        ))}
                     {isSkeletonVisible ? (
                         <AmountSkeleton isLoading={isLoading} hasMargin={config.hasSkeletonMargin} width={config.skeletonWidth + 'px'} />
                     ) : isEmpty ? (
@@ -81,11 +79,6 @@ export const SummaryItem = ({
                     )}
                 </div>
             ))}
-            {showTooltip && targetElement && (
-                <Popover open={!!showTooltip} variant={PopoverContainerVariant.TOOLTIP} targetElement={targetElement as MutableRef<Element>}>
-                    <Typography variant={TypographyVariant.CAPTION}>{i18n.get(showTooltip)}</Typography>
-                </Popover>
-            )}
         </div>
     );
 };

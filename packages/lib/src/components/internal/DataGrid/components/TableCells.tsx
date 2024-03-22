@@ -10,10 +10,12 @@ export const TableCells = <
     columns,
     customCells,
     item,
+    rowIndex,
 }: {
     columns: Columns;
     customCells?: CustomCells;
     item: Items[number];
+    rowIndex: number;
 }) => {
     return (
         <>
@@ -27,6 +29,7 @@ export const TableCells = <
                                     key,
                                     value: item[key],
                                     item,
+                                    rowIndex,
                                 } as any)
                             }
                         </DataGridCell>

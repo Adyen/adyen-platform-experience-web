@@ -14,6 +14,7 @@ export const InteractiveBody = <
     columns,
     onRowClick,
     customCells,
+    onRowHover,
 }: InteractiveBodyProps<Items, Columns, ClickedField, CustomCells>) => {
     const onClickCallBack = useCallback(
         (item: Items[number]) => () => onRowClick?.callback(onRowClick?.retrievedField ? item[onRowClick.retrievedField] : item),
@@ -26,6 +27,10 @@ export const InteractiveBody = <
         <>
             {data?.map((item, index) => (
                 <tr
+                    onMouseOver={() => onRowHover(index)}
+                    onFocus={() => onRowHover(index)}
+                    onMouseOut={() => onRowHover()}
+                    onBlur={() => onRowHover()}
                     ref={ref}
                     aria-selected={index === currentIndex}
                     data-index={index}
@@ -35,7 +40,7 @@ export const InteractiveBody = <
                     onFocusCapture={listeners.onFocusCapture(index)}
                     onKeyDownCapture={listeners.onKeyDownCapture}
                 >
-                    <TableCells columns={columns} customCells={customCells} item={item} />
+                    <TableCells columns={columns} customCells={customCells} item={item} rowIndex={index} />
                 </tr>
             ))}
         </>

@@ -81,8 +81,6 @@
     }
 
     &-tooltip {
-        $adyen-fp-popover-component-root: &;
-
         $adyen-fp-popover__arrow-border: 2px;
         align-items: center;
         display: flex;
