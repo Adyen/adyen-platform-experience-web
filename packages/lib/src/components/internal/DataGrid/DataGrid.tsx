@@ -30,8 +30,8 @@ export type CustomCell<
 > = {
     [k in T['key']]?: (
         props: Item[0][k] extends NonNullable<Item[0][k]>
-            ? { key: CellKey<Item, Columns, Columns[number], k>; value: Item[number][k]; item: Item[number] }
-            : { key: CellKey<Item, Columns, Columns[number], k>; item: Item[number] }
+            ? { key: CellKey<Item, Columns, Columns[number], k>; value: Item[number][k]; item: Item[number]; rowIndex: number }
+            : { key: CellKey<Item, Columns, Columns[number], k>; item: Item[number]; rowIndex: number }
     ) => ComponentChild;
 };
 
@@ -111,13 +111,19 @@ function DataGridBody<
                 <SkeletonBody columnsNumber={props.columns.length} loading={props.loading} />
             ) : props.onRowClick ? (
                 <InteractiveBody<Items, Columns, ClickedField, CustomCells>
+                    onRowHover={props.onRowHover}
                     data={props.data}
                     columns={props.columns}
                     onRowClick={props.onRowClick}
                     customCells={props.customCells}
                 />
             ) : (
-                <TableBody<Items, Columns, ClickedField, CustomCells> data={props.data} customCells={props.customCells} columns={props.columns} />
+                <TableBody<Items, Columns, ClickedField, CustomCells>
+                    onRowHover={props.onRowHover}
+                    data={props.data}
+                    customCells={props.customCells}
+                    columns={props.columns}
+                />
             )}
         </tbody>
     );

@@ -16,8 +16,8 @@ export const TransactionTotalItem = ({
     const incomingRef = useRef<HTMLDivElement>(null);
     const expenseRef = useRef<HTMLDivElement>(null);
     const currencyRef = useRef<HTMLDivElement>(null);
-    const expenseTitleRef = useRef<HTMLSpanElement>(null);
-    const incomingTitleRef = useRef<HTMLSpanElement>(null);
+    const expenseTooltipRef = useRef<HTMLSpanElement>(null);
+    const incomingTooltipRef = useRef<HTMLSpanElement>(null);
 
     const columnConfigs: SummaryItemColumnConfig[] = [
         {
@@ -25,14 +25,16 @@ export const TransactionTotalItem = ({
             ref: incomingRef,
             skeletonWidth: 80,
             getValue: () => total && i18n.amount(total.incomings, total.currency),
-            titleRef: incomingTitleRef,
+            tooltipRef: expenseTooltipRef,
+            tooltipLabel: 'tooltip.incoming',
         },
         {
             labelKey: 'expense',
             ref: expenseRef,
             skeletonWidth: 80,
             getValue: () => total && i18n.amount(total.expenses, total.currency),
-            titleRef: expenseTitleRef,
+            tooltipRef: incomingTooltipRef,
+            tooltipLabel: 'tooltip.expense',
         },
         {
             ref: currencyRef,

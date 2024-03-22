@@ -11,12 +11,20 @@ export const TableBody = <
     data,
     columns,
     customCells,
+    onRowHover,
 }: Omit<InteractiveBodyProps<Items, Columns, ClickedField, CustomCells>, 'onRowClick'>) => {
     return (
         <>
-            {data?.map(item => (
-                <tr className="adyen-fp-data-grid__row" key={item}>
-                    <TableCells<Items, Columns, CustomCells> columns={columns} customCells={customCells} item={item} />
+            {data?.map((item, index) => (
+                <tr
+                    className="adyen-fp-data-grid__row"
+                    key={item}
+                    onMouseOver={() => onRowHover(index)}
+                    onFocus={() => onRowHover(index)}
+                    onMouseOut={() => onRowHover()}
+                    onBlur={() => onRowHover()}
+                >
+                    <TableCells<Items, Columns, CustomCells> columns={columns} customCells={customCells} item={item} rowIndex={index} />
                 </tr>
             ))}
         </>

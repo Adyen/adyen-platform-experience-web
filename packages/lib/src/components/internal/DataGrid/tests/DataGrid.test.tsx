@@ -31,6 +31,7 @@ interface DataGridTestContext {
 describe('DataGrid component with clickable rows', () => {
     beforeEach<DataGridTestContext>(async context => {
         const mockEventHandler = vi.fn();
+        const mockHover = vi.fn();
 
         const screen = render(
             <div>
@@ -39,6 +40,7 @@ describe('DataGrid component with clickable rows', () => {
                     columns={columns}
                     loading={false}
                     onRowClick={{ callback: mockEventHandler, retrievedField: 'id' }}
+                    onRowHover={mockHover}
                     customCells={{
                         paymentMethod: ({ item }) => {
                             return (
