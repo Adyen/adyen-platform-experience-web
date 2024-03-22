@@ -46,7 +46,7 @@ export const SummaryItem = ({
                         config.tooltipLabel &&
                         (config.tooltipRef ? (
                             <Tooltip content={i18n.get(`${config.tooltipLabel}`)}>
-                                <span className={LABEL_CONTAINER_CLASS} ref={config.tooltipRef}>
+                                <span className={LABEL_CONTAINER_CLASS} ref={config.tooltipRef} style={{ cursor: 'default' }}>
                                     {config.labelKey && (
                                         <Typography variant={TypographyVariant.CAPTION} className={LABEL_CLASS}>
                                             {i18n.get(config.labelKey)}
