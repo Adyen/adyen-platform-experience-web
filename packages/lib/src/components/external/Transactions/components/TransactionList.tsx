@@ -126,10 +126,15 @@ function TransactionList({
                         );
                     },
                     type: ({ item, rowIndex }) => {
+                        const tooltipKey = `tooltip.${item.category}`;
                         return item.category ? (
-                            <span className={classnames({ 'adyen-fp-data-grid__cell--hover': rowIndex === hoveredRow })}>
-                                <Category value={item.category} />
-                            </span>
+                            i18n.has(tooltipKey) ? (
+                                <span className={classnames({ 'adyen-fp-data-grid__cell--hover': rowIndex === hoveredRow })}>
+                                    <Category value={item.category} />
+                                </span>
+                            ) : (
+                                <span>{item.category}</span>
+                            )
                         ) : null;
                     },
                     creationDate: ({ value }) => i18n.fullDate(value),
