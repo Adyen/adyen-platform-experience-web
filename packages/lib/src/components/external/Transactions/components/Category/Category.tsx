@@ -7,11 +7,15 @@ function Category({ value }: CategoryProp) {
     const { i18n } = useCoreContext();
     const tooltipRef = useUniqueIdentifier();
 
+    const tooltipKey = `tooltip.${value}`;
+
     return (
         <>
-            <Tooltip content={i18n.get(`tooltip.${value}`)}>
-                <span ref={tooltipRef}>{value}</span>
-            </Tooltip>
+            {i18n.has(tooltipKey) && (
+                <Tooltip content={i18n.get(tooltipKey)}>
+                    <span ref={tooltipRef}>{value}</span>
+                </Tooltip>
+            )}
         </>
     );
 }

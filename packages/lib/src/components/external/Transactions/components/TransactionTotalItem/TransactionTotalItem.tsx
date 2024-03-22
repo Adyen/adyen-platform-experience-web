@@ -21,20 +21,20 @@ export const TransactionTotalItem = ({
 
     const columnConfigs: SummaryItemColumnConfig[] = [
         {
-            labelKey: 'incoming',
+            labelKey: 'totalIncoming',
             ref: incomingRef,
             skeletonWidth: 80,
             getValue: () => total && i18n.amount(total.incomings, total.currency),
             tooltipRef: expenseTooltipRef,
-            tooltipLabel: 'tooltip.incoming',
+            tooltipLabel: 'tooltip.totalIncoming',
         },
         {
-            labelKey: 'expense',
+            labelKey: 'totalOutgoing',
             ref: expenseRef,
             skeletonWidth: 80,
             getValue: () => total && i18n.amount(total.expenses, total.currency),
             tooltipRef: incomingTooltipRef,
-            tooltipLabel: 'tooltip.expense',
+            tooltipLabel: 'tooltip.totalOutgoing',
         },
         {
             ref: currencyRef,
