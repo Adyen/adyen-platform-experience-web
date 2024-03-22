@@ -40,11 +40,10 @@ export const getLocalisedAmount = (
     options: Intl.NumberFormatOptions = {}
 ): string => {
     const stringAmount = amount.toString(); // Changing amount to string to avoid 0-value from returning false
-
     const decimalAmount = getDecimalAmount(stringAmount, currencyCode);
-    const formattedLocale = locale.replace('_', '-');
 
-    const localeOptions = {
+    const formatterLocale = locale.replace('_', '-');
+    const formatterOptions = {
         style: 'currency',
         currency: currencyCode,
         currencyDisplay: 'symbol',
@@ -52,15 +51,16 @@ export const getLocalisedAmount = (
     };
 
     try {
-        if (hideSymbol) return showCurrencyWithoutSymbol({ amount: decimalAmount, currencyCode, locale: formattedLocale });
-        return decimalAmount.toLocaleString(formattedLocale, localeOptions);
+        return hideSymbol
+            ? formatAmountWithoutCurrency(formatterLocale, formatterOptions, decimalAmount)
+            : decimalAmount.toLocaleString(formatterLocale, formatterOptions);
     } catch (e) {
         return stringAmount;
     }
 };
 
-export const showCurrencyWithoutSymbol = ({ locale, amount, currencyCode }: { locale: string; amount: number; currencyCode: string }) => {
-    return new Intl.NumberFormat(locale, { style: 'currency', currency: currencyCode, currencyDisplay: 'symbol' })
+export const formatAmountWithoutCurrency = (locale: string, options: Intl.NumberFormatOptions, amount: number) => {
+    return Intl.NumberFormat(locale, options)
         .formatToParts(amount)
         .filter(p => p.type !== 'currency')
         .reduce((s, p) => s + p.value, '')
