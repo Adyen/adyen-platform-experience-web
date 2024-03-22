@@ -1,3 +1,5 @@
+import useCoreContext from '@src/core/Context/useCoreContext';
+import { noop } from '@src/utils/common';
 import { TableCells } from './TableCells';
 import { DataGridColumn, InteractiveBodyProps } from '../types';
 import { CustomCell } from '../../DataGrid/DataGrid';
@@ -13,16 +15,17 @@ export const TableBody = <
     customCells,
     onRowHover,
 }: Omit<InteractiveBodyProps<Items, Columns, ClickedField, CustomCells>, 'onRowClick'>) => {
+    const { i18n } = useCoreContext();
     return (
         <>
             {data?.map((item, index) => (
                 <tr
                     className="adyen-fp-data-grid__row"
                     key={item}
-                    onMouseOver={() => onRowHover(index)}
-                    onFocus={() => onRowHover(index)}
-                    onMouseOut={() => onRowHover()}
-                    onBlur={() => onRowHover()}
+                    onMouseOver={i18n.has(`tooltip.${item?.category}`) ? () => onRowHover(index) : noop}
+                    onFocus={i18n.has(`tooltip.${item?.category}`) ? () => onRowHover(index) : noop}
+                    onMouseOut={i18n.has(`tooltip.${item?.category}`) ? () => onRowHover() : noop}
+                    onBlur={i18n.has(`tooltip.${item?.category}`) ? () => onRowHover() : noop}
                 >
                     <TableCells<Items, Columns, CustomCells> columns={columns} customCells={customCells} item={item} rowIndex={index} />
                 </tr>
