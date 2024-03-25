@@ -6,7 +6,6 @@ import Spinner from '@src/components/internal/Spinner';
 import useCoreContext from '@src/core/Context/useCoreContext';
 import useModalDetails from '@src/hooks/useModalDetails/useModalDetails';
 import { ITransaction } from '@src/types';
-import { noop } from '@src/utils/common';
 import classnames from 'classnames';
 import { lazy, Suspense } from 'preact/compat';
 import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';

@@ -7,6 +7,7 @@ import { SummaryItem } from '@src/components/external/Transactions/components/Su
 export const TransactionTotalItem = ({
     total,
     isHeader = false,
+    isHovered = false,
     isSkeleton = false,
     isLoading = false,
     widths,
@@ -45,6 +46,7 @@ export const TransactionTotalItem = ({
 
     return (
         <SummaryItem
+            isHovered={isHovered}
             isEmpty={!total}
             columnConfigs={columnConfigs}
             isHeader={isHeader}

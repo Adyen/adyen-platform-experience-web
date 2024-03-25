@@ -1,5 +1,5 @@
 import { useSetupEndpoint } from '@src/hooks/useSetupEndpoint/useSetupEndpoint';
-import { useCallback, useMemo } from 'preact/hooks';
+import { useCallback, useMemo, useState } from 'preact/hooks';
 import { EMPTY_OBJECT } from '@src/utils/common';
 import { useFetch } from '@src/hooks/useFetch/useFetch';
 import { OperationParameters } from '@src/types/models/openapi/endpoints';
@@ -30,6 +30,8 @@ const TransactionTotals = memo(
         minAmount,
         currencies,
     }: MakeFieldValueUndefined<TransactionTotalsProps, 'balanceAccountId' | 'minAmount' | 'maxAmount'>) => {
+        const [isHovered, setIsHovered] = useState(false);
+
         const getTransactionTotals = useSetupEndpoint('getTransactionTotals');
         const fetchCallback = useCallback(async () => {
             return getTransactionTotals(EMPTY_OBJECT, {
@@ -74,6 +76,7 @@ const TransactionTotals = memo(
                 <ExpandableCard
                     renderHeader={
                         <TransactionTotalItem
+                            isHovered={isHovered}
                             total={firstTotal}
                             widths={maxWidths}
                             isHeader
@@ -82,12 +85,16 @@ const TransactionTotals = memo(
                             onWidthsSet={setMaxWidths}
                         />
                     }
+                    onMouseOver={() => setIsHovered(true)}
+                    onFocus={() => setIsHovered(true)}
+                    onMouseOut={() => setIsHovered(false)}
+                    onBlur={() => setIsHovered(false)}
                 >
                     {!isLoading && restOfTotals.length && (
                         <BaseList>
                             {restOfTotals.map(total => (
                                 <li key={total.currency}>
-                                    <TransactionTotalItem total={total} widths={maxWidths} onWidthsSet={setMaxWidths} />
+                                    <TransactionTotalItem isHovered={isHovered} total={total} widths={maxWidths} onWidthsSet={setMaxWidths} />
                                 </li>
                             ))}
                         </BaseList>
