@@ -1,38 +1,20 @@
 import AmountSkeleton from '@src/components/external/Transactions/components/AmountSkeleton/AmountSkeleton';
+import { SummaryItemLabel } from '@src/components/external/Transactions/components/SummaryItem/SummaryItemLabel';
 import {
     AMOUNT_CLASS,
     BASE_CLASS,
     BODY_CLASS,
     LABEL_CLASS,
-    LABEL_CONTAINER_CLASS,
-    LABEL_CONTAINER_CLASS_LOADING,
     PLACEHOLDER_CLASS,
 } from '@src/components/external/Transactions/components/SummaryItem/constants';
-import { SummaryItemColumnConfig, SummaryItemProps } from '@src/components/external/Transactions/components/SummaryItem/types';
+import { SummaryItemProps } from '@src/components/external/Transactions/components/SummaryItem/types';
 import { Tooltip } from '@src/components/internal/Tooltip/Tooltip';
 import { TypographyVariant } from '@src/components/internal/Typography/types';
 import Typography from '@src/components/internal/Typography/Typography';
 import useCoreContext from '@src/core/Context/useCoreContext';
-import Localization from '@src/core/Localization';
 import classNames from 'classnames';
 import { useEffect } from 'preact/hooks';
 import './SummaryItem.scss';
-
-const getSummaryItemLabel = (config: SummaryItemColumnConfig, i18n: Localization['i18n'], isSkeletonVisible: boolean) => {
-    return (
-        <span
-            className={classNames(LABEL_CONTAINER_CLASS, { [LABEL_CONTAINER_CLASS_LOADING]: isSkeletonVisible })}
-            ref={config.tooltipRef}
-            style={{ cursor: 'default' }}
-        >
-            {config.labelKey && (
-                <Typography variant={TypographyVariant.CAPTION} className={LABEL_CLASS}>
-                    {i18n.get(config.labelKey)}
-                </Typography>
-            )}
-        </span>
-    );
-};
 
 export const SummaryItem = ({
     columnConfigs,
@@ -60,10 +42,12 @@ export const SummaryItem = ({
         <div className={classNames(BASE_CLASS, { [BODY_CLASS]: !isHeader })}>
             {columnConfigs.map((config, index) => (
                 <div key={index}>
-                    {isHeader && config.tooltipLabel && config.tooltipRef ? (
-                        <Tooltip content={i18n.get(`${config.tooltipLabel}`)}>{getSummaryItemLabel(config, i18n, isSkeletonVisible)}</Tooltip>
+                    {isHeader && config.tooltipLabel ? (
+                        <Tooltip content={i18n.get(`${config.tooltipLabel}`)}>
+                            <SummaryItemLabel config={config} i18n={i18n} isSkeletonVisible={isSkeletonVisible} />
+                        </Tooltip>
                     ) : (
-                        getSummaryItemLabel(config, i18n, isSkeletonVisible)
+                        <SummaryItemLabel config={config} i18n={i18n} isSkeletonVisible={isSkeletonVisible} />
                     )}
                     {isSkeletonVisible ? (
                         <AmountSkeleton isLoading={isLoading} hasMargin={config.hasSkeletonMargin} width={config.skeletonWidth + 'px'} />
