@@ -52,7 +52,3 @@ export type DetailsOptions = {
 export type SelectedDetail = {
     data: string | TransactionDetailData;
 };
-
-export type CategoryProp = {
-    value: Schema<components, 'SingleTransaction'>['category'];
-};

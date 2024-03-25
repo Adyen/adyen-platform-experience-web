@@ -14,9 +14,7 @@ export const useTooltipListeners = (): {
     listeners: TooltipListeners;
 } => {
     const [isVisible, setIsVisible] = useBooleanState();
-    const showTooltip = useCallback(() => {
-        setIsVisible(true);
-    }, [setIsVisible]);
+    const showTooltip = useCallback(() => setIsVisible(true), [setIsVisible]);
     const hideTooltip = useCallback(() => setIsVisible(false), [setIsVisible]);
 
     const onKeyDown = useCallback(

@@ -7,14 +7,27 @@ import {
     LABEL_CONTAINER_CLASS,
     PLACEHOLDER_CLASS,
 } from '@src/components/external/Transactions/components/SummaryItem/constants';
-import { SummaryItemProps } from '@src/components/external/Transactions/components/SummaryItem/types';
+import { SummaryItemColumnConfig, SummaryItemProps } from '@src/components/external/Transactions/components/SummaryItem/types';
 import { Tooltip } from '@src/components/internal/Tooltip/Tooltip';
 import { TypographyVariant } from '@src/components/internal/Typography/types';
 import Typography from '@src/components/internal/Typography/Typography';
 import useCoreContext from '@src/core/Context/useCoreContext';
+import Localization from '@src/core/Localization';
 import classNames from 'classnames';
 import { useEffect } from 'preact/hooks';
 import './SummaryItem.scss';
+
+const getSummaryItemLabel = (config: SummaryItemColumnConfig, i18n: Localization['i18n']) => {
+    return (
+        <span className={LABEL_CONTAINER_CLASS} ref={config.tooltipRef} style={{ cursor: 'default' }}>
+            {config.labelKey && (
+                <Typography variant={TypographyVariant.CAPTION} className={LABEL_CLASS}>
+                    {i18n.get(config.labelKey)}
+                </Typography>
+            )}
+        </span>
+    );
+};
 
 export const SummaryItem = ({
     columnConfigs,
@@ -42,27 +55,11 @@ export const SummaryItem = ({
         <div className={classNames(BASE_CLASS, { [BODY_CLASS]: !isHeader })}>
             {columnConfigs.map((config, index) => (
                 <div key={index}>
-                    {isHeader &&
-                        config.tooltipLabel &&
-                        (config.tooltipRef ? (
-                            <Tooltip content={i18n.get(`${config.tooltipLabel}`)}>
-                                <span className={LABEL_CONTAINER_CLASS} ref={config.tooltipRef} style={{ cursor: 'default' }}>
-                                    {config.labelKey && (
-                                        <Typography variant={TypographyVariant.CAPTION} className={LABEL_CLASS}>
-                                            {i18n.get(config.labelKey)}
-                                        </Typography>
-                                    )}
-                                </span>
-                            </Tooltip>
-                        ) : (
-                            <span className={LABEL_CONTAINER_CLASS}>
-                                {config.labelKey && (
-                                    <Typography variant={TypographyVariant.CAPTION} className={LABEL_CLASS}>
-                                        {i18n.get(config.labelKey)}
-                                    </Typography>
-                                )}
-                            </span>
-                        ))}
+                    {isHeader && config.tooltipLabel && config.tooltipRef ? (
+                        <Tooltip content={i18n.get(`${config.tooltipLabel}`)}>{getSummaryItemLabel(config, i18n)}</Tooltip>
+                    ) : (
+                        getSummaryItemLabel(config, i18n)
+                    )}
                     {isSkeletonVisible ? (
                         <AmountSkeleton isLoading={isLoading} hasMargin={config.hasSkeletonMargin} width={config.skeletonWidth + 'px'} />
                     ) : isEmpty ? (
