@@ -24,7 +24,9 @@ export const Tooltip = ({ content, children, triggerRef, showTooltip, position }
             {children
                 ? cloneElement(children, {
                       ref: controllerRef,
-                      className: 'adyen-fp-web__tooltip-target',
+                      className: children?.props?.className
+                          ? `${children?.props?.className} adyen-fp-web__tooltip-target`
+                          : 'adyen-fp-web__tooltip-target',
                       ...listeners,
                       'aria-describedby': `tooltip-${controllerRef.current?.id}`,
                   })
