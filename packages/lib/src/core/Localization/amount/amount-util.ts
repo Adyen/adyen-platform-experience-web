@@ -36,7 +36,7 @@ export const getLocalisedAmount = (
     amount: number,
     locale: string,
     currencyCode: string,
-    hideSymbol = false,
+    hideCurrency = false,
     options: Intl.NumberFormatOptions = {}
 ): string => {
     const stringAmount = amount.toString(); // Changing amount to string to avoid 0-value from returning false
@@ -51,7 +51,7 @@ export const getLocalisedAmount = (
     };
 
     try {
-        return hideSymbol
+        return hideCurrency
             ? formatAmountWithoutCurrency(formatterLocale, formatterOptions, decimalAmount)
             : decimalAmount.toLocaleString(formatterLocale, formatterOptions);
     } catch (e) {

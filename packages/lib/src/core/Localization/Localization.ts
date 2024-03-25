@@ -146,8 +146,8 @@ export default class Localization {
      * @param options - Options for String.prototype.toLocaleString
      */
     amount(amount: number, currencyCode: string, options?: Record<string, any>): string {
-        const { hideSymbol, ...restOfOptions } = options || {};
-        const localisedAmount = getLocalisedAmount(amount, this.#locale, currencyCode, hideSymbol, {
+        const { hideCurrency, ...restOfOptions } = options || {};
+        const localisedAmount = getLocalisedAmount(amount, this.#locale, currencyCode, hideCurrency, {
             ...restOfOptions,
             currencyDisplay: 'symbol',
             signDisplay: 'never',
