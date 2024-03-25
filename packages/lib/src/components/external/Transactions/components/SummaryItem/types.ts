@@ -17,6 +17,7 @@ export type SummaryItemColumnConfig = {
 export type SummaryItemProps = {
     columnConfigs: SummaryItemColumnConfig[];
     isHeader?: boolean;
+    isHovered?: boolean;
     isSkeletonVisible?: boolean;
     isLoading?: boolean;
     widths?: number[];
