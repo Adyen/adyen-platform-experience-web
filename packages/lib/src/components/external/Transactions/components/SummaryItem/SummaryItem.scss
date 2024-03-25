@@ -11,11 +11,11 @@
         padding-top: var(--adyen-fp-spacer-040);
     }
 
-    &-container {
+    &__label-container {
         display: inline-block;
         width: fit-content;
 
-        &__label {
+        &--text {
             color: var(--adyen-fp-color-label-secondary);
             width: fit-content;
         }
