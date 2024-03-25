@@ -5,6 +5,7 @@ import {
     BODY_CLASS,
     LABEL_CLASS,
     LABEL_CONTAINER_CLASS,
+    LABEL_CONTAINER_CLASS_LOADING,
     PLACEHOLDER_CLASS,
 } from '@src/components/external/Transactions/components/SummaryItem/constants';
 import { SummaryItemColumnConfig, SummaryItemProps } from '@src/components/external/Transactions/components/SummaryItem/types';
@@ -17,9 +18,13 @@ import classNames from 'classnames';
 import { useEffect } from 'preact/hooks';
 import './SummaryItem.scss';
 
-const getSummaryItemLabel = (config: SummaryItemColumnConfig, i18n: Localization['i18n']) => {
+const getSummaryItemLabel = (config: SummaryItemColumnConfig, i18n: Localization['i18n'], isSkeletonVisible: boolean) => {
     return (
-        <span className={LABEL_CONTAINER_CLASS} ref={config.tooltipRef} style={{ cursor: 'default' }}>
+        <span
+            className={classNames(LABEL_CONTAINER_CLASS, { [LABEL_CONTAINER_CLASS_LOADING]: isSkeletonVisible })}
+            ref={config.tooltipRef}
+            style={{ cursor: 'default' }}
+        >
             {config.labelKey && (
                 <Typography variant={TypographyVariant.CAPTION} className={LABEL_CLASS}>
                     {i18n.get(config.labelKey)}
@@ -56,9 +61,9 @@ export const SummaryItem = ({
             {columnConfigs.map((config, index) => (
                 <div key={index}>
                     {isHeader && config.tooltipLabel && config.tooltipRef ? (
-                        <Tooltip content={i18n.get(`${config.tooltipLabel}`)}>{getSummaryItemLabel(config, i18n)}</Tooltip>
+                        <Tooltip content={i18n.get(`${config.tooltipLabel}`)}>{getSummaryItemLabel(config, i18n, isSkeletonVisible)}</Tooltip>
                     ) : (
-                        getSummaryItemLabel(config, i18n)
+                        getSummaryItemLabel(config, i18n, isSkeletonVisible)
                     )}
                     {isSkeletonVisible ? (
                         <AmountSkeleton isLoading={isLoading} hasMargin={config.hasSkeletonMargin} width={config.skeletonWidth + 'px'} />
