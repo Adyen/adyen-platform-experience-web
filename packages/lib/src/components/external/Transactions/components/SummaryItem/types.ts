@@ -1,5 +1,7 @@
+import Localization from '@src/core/Localization';
 import { TranslationKey } from '@src/core/Localization/types';
 import { RefObject } from 'preact';
+import { HTMLAttributes } from 'preact/compat';
 
 export type SummaryItemColumnConfig = {
     labelKey?: TranslationKey;
@@ -21,3 +23,15 @@ export type SummaryItemProps = {
     onWidthsSet: (widths: number[]) => void;
     isEmpty?: boolean;
 };
+
+export type SummaryItemLabelProps = {
+    config: SummaryItemColumnConfig;
+    i18n: Localization['i18n'];
+    isSkeletonVisible: boolean;
+    className?: string;
+    onfocusoutCapture?: () => void;
+    onMouseLeave?: () => void;
+    onKeyDown?: () => void;
+    onFocus?: () => void;
+    onMouseEnter?: () => void;
+} & Pick<HTMLAttributes<any>, 'aria-describedby'>;
