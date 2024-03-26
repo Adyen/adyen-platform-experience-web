@@ -3,16 +3,17 @@ import { getErrorMessage } from '@src/components/utils/transactionResourceErrorC
 import AdyenFPError from '@src/core/Errors/AdyenFPError';
 
 const TransactionListError = ({ error, onContactSupport }: { error: AdyenFPError | undefined; onContactSupport?: () => void }) => {
-    const { title, message, refreshComponent } = getErrorMessage(error, onContactSupport);
+    const { title, message, refreshComponent, translationValues, onContactSupport: ContactSupport } = getErrorMessage(error, onContactSupport);
 
     return (
         <ErrorMessageDisplay
             title={title}
             message={message}
+            translationValues={translationValues}
             withImage
             centered
             refreshComponent={refreshComponent}
-            onContactSupport={onContactSupport}
+            onContactSupport={ContactSupport}
         />
     );
 };
