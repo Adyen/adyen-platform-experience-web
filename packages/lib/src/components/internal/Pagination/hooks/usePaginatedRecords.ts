@@ -134,7 +134,6 @@ const usePaginatedRecords = <T, DataField extends string, FilterValue extends st
 
                     return { ...paginationData, size: records?.length };
                 } catch (err) {
-                    console.log(err);
                     // TODO - Handle signal abortion and updateFetching
                     if (signal?.aborted) return;
                     updateFetching(false);
