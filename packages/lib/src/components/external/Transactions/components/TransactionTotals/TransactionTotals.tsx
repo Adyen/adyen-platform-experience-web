@@ -85,9 +85,9 @@ const TransactionTotals = memo(
                             onWidthsSet={setMaxWidths}
                         />
                     }
-                    onMouseOver={() => setIsHovered(true)}
+                    onMouseEnter={() => setIsHovered(true)}
                     onFocus={() => setIsHovered(true)}
-                    onMouseOut={() => setIsHovered(false)}
+                    onMouseLeave={() => setIsHovered(false)}
                     onBlur={() => setIsHovered(false)}
                 >
                     {!isLoading && restOfTotals.length && (

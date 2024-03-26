@@ -150,7 +150,7 @@ function Popover({
                     {...uncontrolledProps}
                     className={classNames(classNamesByVariant, conditionalClasses)}
                     style={{ visibility: 'hidden' }}
-                    role={uncontrolledProps.role ?? 'dialog'}
+                    role={uncontrolledProps.role ?? (variant === PopoverContainerVariant.POPOVER ? 'dialog' : 'tooltip')}
                 >
                     {(title || isDismissible) && (
                         <div className={getModifierClasses(POPOVER_HEADER_CLASSNAME, modifiers, [POPOVER_HEADER_CLASSNAME])}>

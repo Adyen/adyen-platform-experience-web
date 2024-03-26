@@ -31,9 +31,9 @@ export const InteractiveBody = <
         <>
             {data?.map((item, index) => (
                 <tr
-                    onMouseOver={i18n.has(`tooltip.${item?.category}`) ? () => onRowHover(index) : noop}
+                    onMouseEnter={i18n.has(`tooltip.${item?.category}`) ? () => onRowHover(index) : noop}
                     onFocus={i18n.has(`tooltip.${item?.category}`) ? () => onRowHover(index) : noop}
-                    onMouseOut={i18n.has(`tooltip.${item?.category}`) ? () => onRowHover() : noop}
+                    onMouseLeave={i18n.has(`tooltip.${item?.category}`) ? () => onRowHover() : noop}
                     onBlur={i18n.has(`tooltip.${item?.category}`) ? () => onRowHover() : noop}
                     ref={ref}
                     aria-selected={index === currentIndex}
