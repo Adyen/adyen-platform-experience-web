@@ -21,6 +21,7 @@ type ErrorMessageDisplayProps = {
     centered?: boolean;
     refreshComponent?: boolean;
     onContactSupport?: () => void;
+    translationValues?: { [k in TranslationKey]: any };
 };
 export const ErrorMessageDisplay = ({
     title,
@@ -31,6 +32,7 @@ export const ErrorMessageDisplay = ({
     centered,
     refreshComponent,
     onContactSupport,
+    translationValues,
 }: ErrorMessageDisplayProps) => {
     const { i18n } = useCoreContext();
     const { updateCore } = useAuthContext();
@@ -39,18 +41,22 @@ export const ErrorMessageDisplay = ({
             if (Array.isArray(errorMessage)) {
                 return errorMessage.map((message, i) =>
                     i === 0 ? (
-                        i18n.get(message)
+                        <>
+                            {i18n.get(message)}
+                            {translationValues && translationValues[message] && <>{translationValues[message]}</>}
+                        </>
                     ) : (
                         <>
                             <br />
                             {i18n.get(message)}
+                            {translationValues && translationValues[message] && <>{translationValues[message]}</>}
                         </>
                     )
                 );
             }
             return i18n.get(errorMessage);
         },
-        [i18n]
+        [i18n, translationValues]
     );
 
     return (
@@ -70,7 +76,7 @@ export const ErrorMessageDisplay = ({
             {(onContactSupport || refreshComponent) && (
                 <div className={'adyen-fp-error-message-display__button'}>
                     {onContactSupport && <Button onClick={onContactSupport}>{i18n.get('reachOutToSupport')}</Button>}
-                    {!onContactSupport && refreshComponent && <Button onClick={() => updateCore?.()}>{i18n.get('refreshThePage')}</Button>}
+                    {!onContactSupport && refreshComponent && <Button onClick={() => updateCore?.()}>{i18n.get('refresh')}</Button>}
                 </div>
             )}
         </div>

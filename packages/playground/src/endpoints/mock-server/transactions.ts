@@ -5,11 +5,26 @@ import { delay } from '../utils/utils';
 
 const mockEndpoints = endpoints('mock');
 const networkError = false;
+const serverError = true;
 
 export const transactionsMocks = [
     rest.get(mockEndpoints.transactions, (req, res, ctx) => {
         if (networkError) {
             return res.networkError('Failed to connect');
+        }
+
+        if (serverError) {
+            return res(
+                ctx.status(500),
+                ctx.json({
+                    type: 'https://docs.adyen.com/errors/forbidden',
+                    errorCode: '00_500',
+                    title: 'Forbidden',
+                    detail: 'Balance Account does not belong to Account Holder',
+                    requestId: '769ac4ce59f0f159cf662d38d3291e91',
+                    status: 500,
+                })
+            );
         }
 
         const categories = req.url.searchParams.getAll('categories');
