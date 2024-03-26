@@ -22,9 +22,9 @@ export const TableBody = <
                 <tr
                     className="adyen-fp-data-grid__row"
                     key={item}
-                    onMouseOver={i18n.has(`tooltip.${item?.category}`) ? () => onRowHover(index) : noop}
+                    onMouseEnter={i18n.has(`tooltip.${item?.category}`) ? () => onRowHover(index) : noop}
                     onFocus={i18n.has(`tooltip.${item?.category}`) ? () => onRowHover(index) : noop}
-                    onMouseOut={i18n.has(`tooltip.${item?.category}`) ? () => onRowHover() : noop}
+                    onMouseLeave={i18n.has(`tooltip.${item?.category}`) ? () => onRowHover() : noop}
                     onBlur={i18n.has(`tooltip.${item?.category}`) ? () => onRowHover() : noop}
                 >
                     <TableCells<Items, Columns, CustomCells> columns={columns} customCells={customCells} item={item} rowIndex={index} />

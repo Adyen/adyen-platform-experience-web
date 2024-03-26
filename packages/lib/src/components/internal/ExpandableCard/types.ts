@@ -3,8 +3,8 @@ import { ComponentChild } from 'preact';
 export interface ExpandableCardProps {
     renderHeader: ComponentChild;
     filled?: boolean;
-    onMouseOver?: () => void;
+    onMouseEnter?: () => void;
     onFocus?: () => void;
-    onMouseOut?: () => void;
+    onMouseLeave?: () => void;
     onBlur?: () => void;
 }

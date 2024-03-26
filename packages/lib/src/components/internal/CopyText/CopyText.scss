@@ -1,8 +1,10 @@
 .adyen-fp-copy-text {
+    $adyen-fp-root: &;
     align-items: center;
     display: inline-flex;
+    text-decoration: none;
 
-    &__information {
+    span &__information {
         color: #0070f5;
         font-size: var(--adyen-fp-font-size-medium);
         font-weight: var(--adyen-fp-font-weight-regular);
