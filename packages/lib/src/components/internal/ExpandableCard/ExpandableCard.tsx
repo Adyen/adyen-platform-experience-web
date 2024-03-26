@@ -21,7 +21,7 @@ import useCoreContext from '@src/core/Context/useCoreContext';
 import { useClickOutside } from '@src/hooks/element/useClickOutside';
 import BaseButton from '@src/components/internal/BaseButton';
 
-const ExpandableCard = ({ renderHeader, children, filled }: PropsWithChildren<ExpandableCardProps>) => {
+const ExpandableCard = ({ renderHeader, children, filled, ...listeners }: PropsWithChildren<ExpandableCardProps>) => {
     const { i18n } = useCoreContext();
     const [isOpen, setIsOpen] = useState(false);
     const toggleIsOpen = useCallback(() => setIsOpen(isOpen => !isOpen), [setIsOpen]);
@@ -66,6 +66,7 @@ const ExpandableCard = ({ renderHeader, children, filled }: PropsWithChildren<Ex
                         onClick={toggleIsOpen}
                         ref={expandButtonRef}
                         data-testid={'expand-button'}
+                        {...listeners}
                     >
                         <span className="adyen-fp-sr-only">{i18n.get('expandableCard.expand')}</span>
                         <div className={classNames(CONTENT_CLASS, CONTENT_EXPANDABLE_CLASS)}>{renderHeader}</div>
@@ -86,6 +87,7 @@ const ExpandableCard = ({ renderHeader, children, filled }: PropsWithChildren<Ex
                         onClick={toggleIsOpen}
                         ref={clickOutsideRef}
                         data-testid={'collapse-button'}
+                        {...listeners}
                     >
                         <span className="adyen-fp-sr-only">{i18n.get('expandableCard.collapse')}</span>
                         <div className={classNames(CONTENT_CLASS, CONTENT_EXPANDABLE_CLASS)}>
@@ -98,7 +100,7 @@ const ExpandableCard = ({ renderHeader, children, filled }: PropsWithChildren<Ex
                     </BaseButton>
                 </>
             ) : (
-                <div className={classNames(CONTAINER_CLASS, { [CONTAINER_FILLED_CLASS]: filled })}>
+                <div className={classNames(CONTAINER_CLASS, { [CONTAINER_FILLED_CLASS]: filled })} {...listeners}>
                     <div className={CONTENT_CLASS}>{renderHeader}</div>
                 </div>
             )}

@@ -1,98 +1,111 @@
 import { PopoverContainerPosition, PopoverContainerVariant } from '@src/components/internal/Popover/types';
 import getIntersectionObserver from '@src/components/internal/Popover/utils/utils';
-import { MutableRef, useCallback, useEffect, useRef, useState } from 'preact/hooks';
+import { MutableRef, Ref, useCallback, useEffect, useRef, useState } from 'preact/hooks';
 import useReflex, { Nullable, Reflexable } from '../useReflex';
 
 const calculateOffset = (
-    popover: Element | null,
-    offset: number[],
+    popover: Element,
+    offset: [number, number, number, number],
     targetElement: MutableRef<Element | null>,
-    position?: PopoverContainerPosition
+    position: PopoverContainerPosition,
+    variant: PopoverContainerVariant
 ) => {
-    if (offset.length < 3) {
-        const oldLength = offset.length;
-        offset.length = 3;
-        offset.fill(0, oldLength, 3);
-    }
+    const currentTarget = targetElement?.current as HTMLElement;
 
-    if (!position) {
-        position = PopoverContainerPosition.BOTTOM;
-    }
     let dimensionX = 0;
     let dimensionY = 0;
-    let dimensionZ = 0;
-    const currentTarget = targetElement?.current as HTMLElement;
+    const targetPosition = currentTarget.getBoundingClientRect();
+    const popoverContent = popover?.firstChild as HTMLElement;
+    const toCenterX = targetPosition.left + targetPosition.width / 2 - popoverContent.offsetWidth / 2;
+    const toCenterY = targetPosition.top + targetPosition.height / 2 - popoverContent.offsetHeight / 2;
     switch (position) {
         case PopoverContainerPosition.BOTTOM:
-            dimensionX = currentTarget?.offsetLeft + offset[0]!;
-            dimensionY = currentTarget?.offsetTop + currentTarget?.offsetHeight + offset[1]!;
-            dimensionZ = offset[2]!;
+            dimensionX = variant === PopoverContainerVariant.TOOLTIP ? toCenterX + window.scrollX : targetPosition?.left + window.scrollX;
+            dimensionY = targetPosition?.top + targetPosition?.height + window.scrollY + offset[1];
             break;
         case PopoverContainerPosition.TOP:
-            dimensionX = currentTarget?.offsetLeft + offset[0]!;
-            dimensionY = popover?.clientHeight ? currentTarget?.offsetTop - offset[1]! - popover?.clientHeight : currentTarget?.offsetTop;
-            dimensionZ = offset[2]!;
+            dimensionX = variant === PopoverContainerVariant.TOOLTIP ? toCenterX + window.scrollX : targetPosition.left + window.scrollX;
+            dimensionY = targetPosition?.top - popoverContent?.clientHeight + window.scrollY - offset[0];
             break;
         case PopoverContainerPosition.RIGHT:
-            dimensionX = currentTarget?.offsetLeft + currentTarget?.offsetWidth + offset[0]!;
-            dimensionY = currentTarget?.offsetTop + offset[1]!;
-            dimensionZ = offset[2]!;
+            dimensionX = targetPosition.left + targetPosition.width + window.scrollX + offset[2];
+            dimensionY =
+                variant === PopoverContainerVariant.TOOLTIP
+                    ? toCenterY + window.scrollY
+                    : targetPosition?.top - targetPosition?.height / 2 + window.scrollY;
             break;
         case PopoverContainerPosition.LEFT:
-            dimensionX = popover?.clientWidth ? currentTarget?.offsetLeft - popover?.clientWidth - offset[0]! : 0;
-            dimensionY = currentTarget?.offsetTop + offset[1]!;
-            dimensionZ = offset[2]!;
+            dimensionX = targetPosition?.left - popover?.clientWidth + window.scrollX - offset[3];
+            dimensionY =
+                variant === PopoverContainerVariant.TOOLTIP
+                    ? toCenterY + window.scrollY
+                    : targetPosition?.top + window.scrollY - targetPosition?.height / 2;
             break;
     }
 
-    const result = [dimensionX, dimensionY, dimensionZ];
+    const result = [dimensionX, dimensionY, 0];
 
     const res = result.reduce((acc, currentVal, index) => {
         if (index === 0) {
             return acc + `${currentVal}px,`;
-        } else if (index === offset.length - 1) {
+        } else if (index === result.length - 1) {
             return acc + ` ${currentVal}px)`;
         } else {
             return acc + ` ${currentVal}px,`;
         }
     }, 'translate3d(');
 
-    return `position:absolute;inset:0 auto auto 0;margin: 0;z-index:10;transform: ${res};visibility:hidden`;
+    return `position:absolute;inset:0 auto auto 0;margin: 0;transform: ${res};visibility:hidden`;
 };
 const usePopoverPositioner = (
-    offset: number[],
+    offset: [number, number, number, number],
     targetElement: MutableRef<Element | null>,
     variant: PopoverContainerVariant,
     position?: PopoverContainerPosition,
+    arrowRef?: Ref<HTMLSpanElement> | undefined,
+    setToTargetWidth?: boolean,
     ref?: Nullable<Reflexable<Element>>
 ) => {
     const [initialPosition, setInitialPosition] = useState(true);
-    const [isLoading, setIsLoading] = useState(!position);
+    const [showPopover, setShowPopover] = useState(!!position);
     const [currentPosition, setCurrentPosition] = useState(position ?? PopoverContainerPosition.TOP);
+    const [checkedPositions, setCheckedPosition] = useState<Array<[PopoverContainerPosition, number]>>([]);
 
     const observerCallback = useCallback(
         (entry: IntersectionObserverEntry) => {
-            if (!initialPosition) {
-                if (entry.intersectionRatio !== 1) {
-                    switch (currentPosition) {
-                        case PopoverContainerPosition.TOP:
-                            setCurrentPosition(PopoverContainerPosition.BOTTOM);
-                            break;
-                        case PopoverContainerPosition.BOTTOM:
-                            setCurrentPosition(PopoverContainerPosition.RIGHT);
-                            break;
-                        case PopoverContainerPosition.RIGHT:
-                            setCurrentPosition(PopoverContainerPosition.LEFT);
-                            break;
-                        case PopoverContainerPosition.LEFT:
-                            break;
-                    }
-                } else {
-                    setIsLoading(false);
+            if (entry.intersectionRatio === 1) return setShowPopover(true);
+            if (!initialPosition && entry.intersectionRatio !== 1) {
+                if (checkedPositions && checkedPositions.length === 4) {
+                    const bestPos = checkedPositions.reduce((res, pos) => {
+                        if (pos[1] > res[1]) return pos;
+                        return res;
+                    }, checkedPositions[0]!);
+                    setCurrentPosition(bestPos[0]);
+                    setShowPopover(true);
+                    return;
+                }
+                setShowPopover(false);
+                switch (currentPosition) {
+                    case PopoverContainerPosition.TOP:
+                        setCheckedPosition(value => [...value, [PopoverContainerPosition.TOP, entry.intersectionRatio]]);
+                        setCurrentPosition(PopoverContainerPosition.BOTTOM);
+                        break;
+                    case PopoverContainerPosition.BOTTOM:
+                        setCheckedPosition(value => [...value, [PopoverContainerPosition.BOTTOM, entry.intersectionRatio]]);
+                        setCurrentPosition(PopoverContainerPosition.RIGHT);
+                        break;
+                    case PopoverContainerPosition.RIGHT:
+                        setCheckedPosition(value => [...value, [PopoverContainerPosition.RIGHT, entry.intersectionRatio]]);
+                        setCurrentPosition(PopoverContainerPosition.LEFT);
+                        break;
+                    case PopoverContainerPosition.LEFT:
+                        setCheckedPosition(value => [...value, [PopoverContainerPosition.LEFT, entry.intersectionRatio]]);
+                        setCurrentPosition(PopoverContainerPosition.TOP);
+                        break;
                 }
             }
         },
-        [setCurrentPosition, currentPosition, initialPosition, setIsLoading]
+        [setCurrentPosition, currentPosition, setShowPopover, initialPosition, checkedPositions]
     );
     const observerCallbackRef = useRef(observerCallback);
 
@@ -109,25 +122,28 @@ const usePopoverPositioner = (
                     observer.unobserve(previous);
                 }
 
-                if (current) {
+                if (current && targetElement.current) {
                     if (!position) {
                         const observer = getIntersectionObserver(observerCallback).observer;
                         observer.observe(current);
                     }
                     if (!(current instanceof Element)) return;
+                    const popoverStyle = calculateOffset(current, offset, targetElement, currentPosition, variant);
+                    const style = showPopover ? popoverStyle + ';visibility:visible' : popoverStyle;
 
-                    const popoverStyle = calculateOffset(current, offset, targetElement, currentPosition);
-                    const style = !isLoading ? popoverStyle + ';visibility:visible' : popoverStyle;
-                    current.setAttribute('style', `${style}`);
+                    const styleWithWidth = setToTargetWidth
+                        ? style + ';min-width:fit-content;width:' + targetElement.current?.clientWidth + 'px'
+                        : style;
+                    current.setAttribute('style', `${styleWithWidth}`);
 
                     if (initialPosition) setInitialPosition(false);
 
-                    if (variant && variant === PopoverContainerVariant.TOOLTIP) {
-                        current.classList?.add(`popover-content-container--tooltip-${currentPosition}`);
+                    if (variant && variant === PopoverContainerVariant.TOOLTIP && arrowRef) {
+                        arrowRef.current?.setAttribute('data-popover-placement', currentPosition);
                     }
                 }
             },
-            [ref, offset, targetElement, currentPosition, position, variant, observerCallback, setInitialPosition, isLoading]
+            [offset, targetElement, currentPosition, position, variant, observerCallback, showPopover, initialPosition, setToTargetWidth, arrowRef]
         ),
         ref
     );

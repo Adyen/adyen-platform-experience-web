@@ -1,5 +1,6 @@
 import FilterButton from '@src/components/internal/FilterBar/components/FilterButton/FilterButton';
 import Popover from '@src/components/internal/Popover/Popover';
+import { PopoverContainerPosition, PopoverContainerVariant } from '@src/components/internal/Popover/types';
 import { TypographyElement, TypographyVariant } from '@src/components/internal/Typography/types';
 import Typography from '@src/components/internal/Typography/Typography';
 import useCommitAction, { CommitAction } from '@src/hooks/useCommitAction';
@@ -163,6 +164,7 @@ const BaseFilter = <T extends BaseFilterProps = BaseFilterProps>({ render, ...pr
                 <Popover
                     actions={commitActionButtons}
                     title={props.title?.trim()}
+                    variant={PopoverContainerVariant.POPOVER}
                     modifiers={['filter']}
                     open={editMode}
                     aria-label={`${props.label}`}
@@ -172,6 +174,7 @@ const BaseFilter = <T extends BaseFilterProps = BaseFilterProps>({ render, ...pr
                     divider={true}
                     targetElement={targetElement}
                     disableFocusTrap={false}
+                    position={PopoverContainerPosition.BOTTOM}
                     containerSize={props.containerSize}
                 >
                     {renderModalBody({ ...props, editAction: commitAction, onValueUpdated })}

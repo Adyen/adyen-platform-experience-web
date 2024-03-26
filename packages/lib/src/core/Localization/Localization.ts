@@ -140,6 +140,17 @@ export default class Localization {
     }
 
     /**
+     * Returns a boolean that checks if the translation key exists in the current {@link Localization.locale}
+     * @param key - Translation key
+     * @param options - Translation options
+     * @returns boolean
+     */
+    has(key: string, options?: TranslationOptions): key is TranslationKey {
+        const translation = getTranslation(this.#translations, key, options);
+        return !!translation;
+    }
+
+    /**
      * Returns a localized string for an amount
      * @param amount - Amount to be converted
      * @param currencyCode - Currency code of the amount

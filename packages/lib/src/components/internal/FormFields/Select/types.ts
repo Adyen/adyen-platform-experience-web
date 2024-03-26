@@ -33,6 +33,7 @@ export interface SelectProps<T extends SelectItem> {
     selected?: _Selected<T['id']>;
     uniqueId?: string;
     withoutCollapseIndicator?: boolean;
+    setToTargetWidth?: boolean;
 }
 
 export interface SelectButtonProps<T extends SelectItem> {
@@ -68,6 +69,8 @@ export interface SelectListProps<T extends SelectItem> {
     showList: boolean;
     textFilter: string;
     toggleButtonRef: Ref<HTMLButtonElement>;
+    dismissPopover: any;
+    setToTargetWidth?: boolean;
 }
 
 export interface SelectItemProps<T extends SelectItem> {

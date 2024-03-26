@@ -190,8 +190,8 @@
     "rangePreset.yearToDate": "Year to date",
     "paymentMethod": "Payment method",
     "currency": "Currency",
-    "incoming": "Incoming",
-    "expense": "Expense",
+    "totalIncoming": "Total incoming",
+    "totalOutgoing": "Total outgoing",
     "accountBalance": "Account Balance",
     "closeIconLabel": "close",
     "thereAreNoResults": "There are no results",
@@ -215,5 +215,12 @@
     "reachOutToSupport": "Reach out to support",
     "noNegativeNumbersAllowed": "No negative numbers allowed",
     "secondValueShouldBeGreaterThanTheFirstOne": "To value should be equal or greater than the From value",
-    "export": "Export"
+    "export": "Export",
+    "tooltip.totalIncoming": "All money received into your account based on the selected filters",
+    "tooltip.totalOutgoing": "All fees, refunds, payouts, and other charges based on the selected filters",
+    "tooltip.Payout": "Money sent from your account balance to your external bank account",
+    "tooltip.Refund": "Money sent back to a customer from a refunded transaction",
+    "tooltip.Fee": "Transaction costs and payment method fees",
+    "tooltip.Chargeback": "Money returned to a customer after a disputed transaction",
+    "tooltip.Incoming": "Money received to your account from transactions and transfers"
 }

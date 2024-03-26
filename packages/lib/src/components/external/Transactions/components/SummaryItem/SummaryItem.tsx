@@ -1,22 +1,26 @@
-import useCoreContext from '@src/core/Context/useCoreContext';
-import classNames from 'classnames';
-import Typography from '@src/components/internal/Typography/Typography';
-import { TypographyVariant } from '@src/components/internal/Typography/types';
-import './SummaryItem.scss';
 import AmountSkeleton from '@src/components/external/Transactions/components/AmountSkeleton/AmountSkeleton';
-import { useEffect } from 'preact/hooks';
-import { SummaryItemProps } from '@src/components/external/Transactions/components/SummaryItem/types';
 import {
     AMOUNT_CLASS,
     BASE_CLASS,
     BODY_CLASS,
     LABEL_CLASS,
+    LABEL_CONTAINER_HOVER_CLASS,
     PLACEHOLDER_CLASS,
 } from '@src/components/external/Transactions/components/SummaryItem/constants';
+import { SummaryItemLabel } from '@src/components/external/Transactions/components/SummaryItem/SummaryItemLabel';
+import { SummaryItemProps } from '@src/components/external/Transactions/components/SummaryItem/types';
+import { Tooltip } from '@src/components/internal/Tooltip/Tooltip';
+import { TypographyVariant } from '@src/components/internal/Typography/types';
+import Typography from '@src/components/internal/Typography/Typography';
+import useCoreContext from '@src/core/Context/useCoreContext';
+import classNames from 'classnames';
+import { useEffect, useState } from 'preact/hooks';
+import './SummaryItem.scss';
 
 export const SummaryItem = ({
     columnConfigs,
     isHeader = false,
+    isHovered = false,
     isSkeletonVisible = false,
     isLoading = false,
     widths,
@@ -24,6 +28,8 @@ export const SummaryItem = ({
     isEmpty,
 }: SummaryItemProps) => {
     const { i18n } = useCoreContext();
+    const [isSkeletonHovered, setIsSkeletonHovered] = useState(false);
+
     useEffect(() => {
         const newWidths = columnConfigs.map(config => config.ref?.current?.getBoundingClientRect().width ?? 0);
         onWidthsSet(newWidths);
@@ -39,10 +45,17 @@ export const SummaryItem = ({
         <div className={classNames(BASE_CLASS, { [BODY_CLASS]: !isHeader })}>
             {columnConfigs.map((config, index) => (
                 <div key={index}>
-                    {isHeader && config.labelKey && (
-                        <Typography variant={TypographyVariant.CAPTION} className={LABEL_CLASS}>
-                            {i18n.get(config.labelKey)}
-                        </Typography>
+                    {isHeader && config.tooltipLabel ? (
+                        <Tooltip content={i18n.get(`${config.tooltipLabel}`)}>
+                            <SummaryItemLabel
+                                config={config}
+                                i18n={i18n}
+                                isSkeletonVisible={isSkeletonVisible}
+                                className={classNames({ [LABEL_CONTAINER_HOVER_CLASS]: isHovered || isSkeletonHovered })}
+                            />
+                        </Tooltip>
+                    ) : (
+                        <SummaryItemLabel config={config} i18n={i18n} isSkeletonVisible={isSkeletonVisible} />
                     )}
                     {isSkeletonVisible ? (
                         <AmountSkeleton isLoading={isLoading} hasMargin={config.hasSkeletonMargin} width={config.skeletonWidth + 'px'} />

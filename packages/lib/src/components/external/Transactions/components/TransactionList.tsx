@@ -1,12 +1,14 @@
 import { BalanceAccountProps } from '@src/components';
+import Category from '@src/components/external/Transactions/components/Category/Category';
 import Modal from '@src/components/internal/Modal';
+import { popoverUtil } from '@src/components/internal/Popover/utils/popoverUtil';
 import Spinner from '@src/components/internal/Spinner';
 import useCoreContext from '@src/core/Context/useCoreContext';
 import useModalDetails from '@src/hooks/useModalDetails/useModalDetails';
 import { ITransaction } from '@src/types';
 import classnames from 'classnames';
 import { lazy, Suspense } from 'preact/compat';
-import { useCallback, useMemo } from 'preact/hooks';
+import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
 import DataGrid from '../../../internal/DataGrid';
 import Pagination from '../../../internal/Pagination';
 import { TransactionListProps } from '../types';
@@ -39,6 +41,7 @@ function TransactionList({
     const { i18n } = useCoreContext();
 
     const hasMultipleCurrencies = availableCurrencies && availableCurrencies.length > 1;
+    const [hoveredRow, setHoveredRow] = useState<undefined | number>();
 
     const columns = useMemo(
         () =>
@@ -80,10 +83,25 @@ function TransactionList({
         [updateDetails, balanceAccountDescription]
     );
 
+    const isModalOpen = !!selectedDetail;
+
+    useEffect(() => {
+        if (isModalOpen) {
+            popoverUtil.closeAll();
+        }
+    }, [isModalOpen]);
+
     const EMPTY_TABLE_MESSAGE = {
         title: 'weDidNotFindAnyTransaction',
         message: ['thereAreNoTransactionsForThisRequirements', 'tryAgainPlease'],
     } satisfies { title: TranslationKey; message: TranslationKey | TranslationKey[] };
+
+    const onHover = useCallback(
+        (index?: number) => {
+            setHoveredRow(index ?? undefined);
+        },
+        [setHoveredRow]
+    );
 
     const errorDisplay = useMemo(() => () => <TransactionListError error={error} onContactSupport={onContactSupport} />, [error, onContactSupport]);
     return (
@@ -96,6 +114,7 @@ function TransactionList({
                 loading={loading}
                 outline={false}
                 onRowClick={{ callback: onRowClick }}
+                onRowHover={onHover}
                 emptyTableMessage={EMPTY_TABLE_MESSAGE}
                 customCells={{
                     status: ({ value }) => {
@@ -106,8 +125,17 @@ function TransactionList({
                             />
                         );
                     },
-                    type: ({ item }) => {
-                        return item.category ? i18n.get(`txType.${item.category}`) : null;
+                    type: ({ item, rowIndex }) => {
+                        const tooltipKey = `tooltip.${item.category}`;
+                        return item.category ? (
+                            i18n.has(tooltipKey) ? (
+                                <span className={classnames({ 'adyen-fp-data-grid__cell--hover': rowIndex === hoveredRow })}>
+                                    <Category value={item.category} />
+                                </span>
+                            ) : (
+                                <span>{item.category}</span>
+                            )
+                        ) : null;
                     },
                     creationDate: ({ value }) => i18n.fullDate(value),
                     amount: ({ value }) => {

@@ -1,80 +1,142 @@
-.adyen-fp-popover {
-    $adyen-fp-popover-component-root: &;
+.adyen-fp {
+    &-popover {
+        $adyen-fp-popover-component-root: &;
 
-    background: var(--adyen-fp-popover-background-color);
-    border: var(--adyen-fp-popover-border);
-    border-radius: var(--adyen-fp-popover-border-radius);
-    box-shadow: var(--adyen-fp-popover-box-shadow);
-    min-width: 200px;
-    overflow: hidden;
-    z-index: 10;
+        background: var(--adyen-fp-popover-background-color);
+        border: var(--adyen-fp-popover-border);
+        border-radius: var(--adyen-fp-popover-border-radius);
+        box-shadow: var(--adyen-fp-popover-box-shadow);
+        min-width: 200px;
+        overflow: hidden;
+        z-index: 10;
 
-    &--fit-content {
-        width: fit-content;
-    }
+        &--fit-content {
+            width: fit-content;
+        }
 
-    &--medium {
-        width: 320px;
-    }
+        &--medium {
+            width: 320px;
+        }
 
-    &--wide {
-        width: 480px;
-    }
+        &--wide {
+            width: 480px;
+        }
 
-    &--with-divider {
-        #{$adyen-fp-popover-component-root}__footer {
-            background-color: var(--adyen-fp-popover-with-divider-footer-background-color);
-            border-top: var(--adyen-fp-popover-with-divider-footer-border-top);
-            padding-top: var(--adyen-fp-popover-with-divider-footer-padding-top);
+        &--with-divider {
+            #{$adyen-fp-popover-component-root}__footer {
+                background-color: var(--adyen-fp-popover-with-divider-footer-background-color);
+                border-top: var(--adyen-fp-popover-with-divider-footer-border-top);
+                padding-top: var(--adyen-fp-popover-with-divider-footer-padding-top);
+            }
+        }
+
+        &--without-space {
+            #{$adyen-fp-popover-component-root}__header {
+                padding: var(--adyen-fp-popover-without-space-padding);
+            }
+
+            #{$adyen-fp-popover-component-root}__content {
+                padding: var(--adyen-fp-popover-without-space-padding);
+            }
+
+            #{$adyen-fp-popover-component-root}__footer {
+                padding: var(--adyen-fp-popover-without-space-padding);
+            }
+        }
+
+        &__content {
+            transform: scale(1);
+
+            &--with-padding {
+                padding: var(--adyen-fp-popover-content-padding);
+            }
+
+            &--with-title {
+                padding: var(--adyen-fp-popover-content-with-title-padding);
+            }
+        }
+
+        &__header {
+            align-items: center;
+            display: flex;
+            justify-content: space-between;
+            padding: var(--adyen-fp-popover-header-padding);
+        }
+
+        &__header-title {
+            align-items: center;
+            column-gap: var(--adyen-fp-popover-header-title-column-gap);
+            display: flex;
+        }
+
+        &__image-dismiss-button {
+            position: absolute;
+            right: var(--adyen-fp-popover-image-dismiss-icon-right);
+            top: var(--adyen-fp-popover-image-dismiss-icon-top);
+        }
+
+        &__footer {
+            padding: var(--adyen-fp-popover-footer-padding);
         }
     }
 
-    &--without-space {
-        #{$adyen-fp-popover-component-root}__header {
-            padding: var(--adyen-fp-popover-without-space-padding);
-        }
-
-        #{$adyen-fp-popover-component-root}__content {
-            padding: var(--adyen-fp-popover-without-space-padding);
-        }
-
-        #{$adyen-fp-popover-component-root}__footer {
-            padding: var(--adyen-fp-popover-without-space-padding);
-        }
-    }
-
-    &__content {
-        transform: scale(1);
-
-        &--with-padding {
-            padding: var(--adyen-fp-popover-content-padding);
-        }
-
-        &--with-title {
-            padding: var(--adyen-fp-popover-content-with-title-padding);
-        }
-    }
-
-    &__header {
+    &-tooltip {
+        $adyen-fp-popover__arrow-border: 2px;
         align-items: center;
         display: flex;
-        justify-content: space-between;
-        padding: var(--adyen-fp-popover-header-padding);
-    }
-
-    &__header-title {
-        align-items: center;
-        column-gap: var(--adyen-fp-popover-header-title-column-gap);
-        display: flex;
-    }
-
-    &__image-dismiss-button {
+        flex-direction: column;
         position: absolute;
-        right: var(--adyen-fp-popover-image-dismiss-icon-right);
-        top: var(--adyen-fp-popover-image-dismiss-icon-top);
-    }
+        z-index: 1000;
 
-    &__footer {
-        padding: var(--adyen-fp-popover-footer-padding);
+        &:has(&__arrow[data-popover-placement='bottom']) {
+            flex-direction: column-reverse;
+        }
+
+        &:has(&__arrow[data-popover-placement='right']) {
+            flex-direction: row-reverse;
+        }
+
+        &:has(&__arrow[data-popover-placement='left']) {
+            flex-direction: row;
+        }
+
+        &__content {
+            background-color: var(--adyen-fp-color-black);
+            border-radius: var(--adyen-fp-spacing-xsmall);
+            color: var(--adyen-fp-color-white);
+            font-size: var(--adyen-fp-font-size-small);
+            height: auto;
+            max-width: 300px;
+            padding: var(--adyen-fp-spacing-xsmall) var(--adyen-fp-spacing-small);
+        }
+
+        &__arrow {
+            background: var(--adyen-fp-color-black);
+            display: block;
+            height: var(--adyen-fp-spacing-small);
+            inset: 0 auto auto 0;
+            transform: rotate(45deg);
+            width: var(--adyen-fp-spacing-small);
+        }
+
+        &__arrow[data-popover-placement='hidden'] {
+            display: none;
+        }
+
+        &__arrow[data-popover-placement='top'] {
+            transform: translate3d(0, -4px, 0) rotate(45deg);
+        }
+
+        &__arrow[data-popover-placement='bottom'] {
+            transform: translate3d(0, 4px, 0) rotate(45deg);
+        }
+
+        &__arrow[data-popover-placement='right'] {
+            transform: translate3d(4px, 0, 0) rotate(45deg);
+        }
+
+        &__arrow[data-popover-placement='left'] {
+            transform: translate3d(-4px, 0, 0) rotate(45deg);
+        }
     }
 }

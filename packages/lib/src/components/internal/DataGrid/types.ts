@@ -33,6 +33,7 @@ export interface DataGridProps<
         ) => void;
         retrievedField?: ClickedField;
     };
+    onRowHover: (index?: number) => void;
     customCells?: CustomCells;
     emptyTableMessage?: {
         title: TranslationKey;
@@ -52,4 +53,5 @@ export interface InteractiveBodyProps<
     data: DataGridProps<Items, Columns, ClickedField, CustomCells>['data'];
     columns: DataGridProps<Items, Columns, ClickedField, CustomCells>['columns'];
     customCells: DataGridProps<Items, Columns, ClickedField, CustomCells>['customCells'];
+    onRowHover: (index?: number) => void;
 }
