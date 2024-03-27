@@ -24,10 +24,12 @@ class Core<T extends CoreOptions<T> = any> {
     public onSessionCreate?: SessionRequest;
     //TODO: Change the error handling strategy.
     public sessionSetupError?: boolean;
+    public isUpdatingSessionToken?: boolean;
 
     constructor(options: CoreOptions<T>) {
         this.options = { environment: FALLBACK_ENV, ...options };
 
+        this.isUpdatingSessionToken = false;
         this.localization = new Localization(options.locale, options.availableTranslations);
         this.loadingContext = process.env.VITE_LOADING_CONTEXT ? process.env.VITE_LOADING_CONTEXT : resolveEnvironment(this.options.environment);
         this.setOptions(options);
@@ -43,10 +45,12 @@ class Core<T extends CoreOptions<T> = any> {
 
     public updateSession = async () => {
         try {
-            if (this.options.onSessionCreate) {
+            if (this.options.onSessionCreate && !this.isUpdatingSessionToken) {
+                this.isUpdatingSessionToken = true;
                 this.session = new Session(await this.options.onSessionCreate(), this.loadingContext!);
                 await this.session?.setupSession(this.options);
                 await this.update({});
+                this.isUpdatingSessionToken = false;
                 return this;
             }
         } catch (error) {
@@ -54,6 +58,7 @@ class Core<T extends CoreOptions<T> = any> {
             //TODO: this is heavy change the way to update core
             this.sessionSetupError = true;
             await this.update();
+            this.isUpdatingSessionToken = false;
             return this;
         }
     };
