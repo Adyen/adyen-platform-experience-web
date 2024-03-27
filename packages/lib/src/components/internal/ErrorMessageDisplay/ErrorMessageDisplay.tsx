@@ -4,6 +4,7 @@ import { useCallback } from 'preact/hooks';
 import useCoreContext from '@src/core/Context/useCoreContext';
 import { TranslationKey } from '@src/core/Localization/types';
 import './ErrorMessageDisplay.scss';
+import { JSXInternal } from 'preact/src/jsx';
 import noResults from '../../../images/no-results.svg';
 import Button from '@src/components/internal/Button';
 import useAuthContext from '@src/core/Auth/useAuthContext';
@@ -21,7 +22,7 @@ type ErrorMessageDisplayProps = {
     centered?: boolean;
     refreshComponent?: boolean;
     onContactSupport?: () => void;
-    translationValues?: { [k in TranslationKey]: any };
+    translationValues?: { [k in TranslationKey]?: JSXInternal.Element | null };
 };
 export const ErrorMessageDisplay = ({
     title,

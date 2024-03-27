@@ -8,7 +8,7 @@ type ErrorMessage = {
     message?: TranslationKey | TranslationKey[];
     refreshComponent?: boolean;
     onContactSupport?: () => void;
-    translationValues?: { [k in TranslationKey]: JSXInternal.Element | null };
+    translationValues?: { [k in TranslationKey]?: JSXInternal.Element | null };
 };
 
 const UNDEFINED_ERROR = { title: 'thereWasAnUnexpectedError', message: ['pleaseReachOutToSupportForAssistance'] } satisfies ErrorMessage;
@@ -29,12 +29,8 @@ export const getErrorMessage = (error: AdyenFPError | undefined, onContactSuppor
                     : ['weCouldNotLoadYourTransactions', 'contactSupportForHelpAndShareErrorCode'],
                 onContactSupport,
                 translationValues: onContactSupport
-                    ? ({ theErrorCodeIs: error.requestId ? <CopyText text={error.requestId} /> : null } as {
-                          [k in TranslationKey]: JSXInternal.Element;
-                      })
-                    : ({ contactSupportForHelpAndShareErrorCode: error.requestId ? <CopyText text={error.requestId} /> : null } as {
-                          [k in TranslationKey]: JSXInternal.Element;
-                      }),
+                    ? { theErrorCodeIs: error?.requestId ? <CopyText text={error.requestId} /> : null }
+                    : { contactSupportForHelpAndShareErrorCode: error.requestId ? <CopyText text={error.requestId} /> : null },
             };
         case '29_001':
             return {
