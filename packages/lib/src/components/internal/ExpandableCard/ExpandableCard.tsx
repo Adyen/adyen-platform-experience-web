@@ -76,7 +76,7 @@ const ExpandableCard = ({ renderHeader, children, filled, ...listeners }: PropsW
                     </BaseButton>
                     <BaseButton
                         id={CONTAINER_OVERLAY_ID}
-                        className={classNames(CONTAINER_CLASS, CONTAINER_OVERLAY_CLASS, {
+                        className={classNames(CONTAINER_CLASS, CONTAINER_BUTTON_CLASS, CONTAINER_OVERLAY_CLASS, {
                             [CONTAINER_FILLED_CLASS]: filled,
                             [CONTAINER_HIDDEN_CLASS]: !isOpen,
                         })}
