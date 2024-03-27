@@ -51,7 +51,7 @@ export const SummaryItem = ({
                                     config={config}
                                     i18n={i18n}
                                     isSkeletonVisible={isSkeletonVisible}
-                                    className={classNames({ [LABEL_CONTAINER_HOVER_CLASS]: isHovered || isSkeletonHovered })}
+                                    className={classNames({ [LABEL_CONTAINER_HOVER_CLASS]: isHovered })}
                                 />
                             </Tooltip>
                         ) : (
