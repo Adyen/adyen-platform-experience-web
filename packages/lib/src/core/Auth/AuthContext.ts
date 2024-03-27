@@ -1,8 +1,8 @@
-import { AuthProviderProps } from '@src/core/Auth/types';
+import { AuthContextProps } from '@src/core/Auth/types';
 import { createContext } from 'preact';
 import { EMPTY_OBJECT } from '@src/utils/common';
 
-export const AuthContext = createContext<AuthProviderProps>({
+export const AuthContext = createContext<AuthContextProps>({
     token: '',
     endpoints: EMPTY_OBJECT,
 });
