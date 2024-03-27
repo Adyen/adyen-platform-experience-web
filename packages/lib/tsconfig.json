@@ -22,5 +22,5 @@
         "types": ["@testing-library/jest-dom", "node"]
     },
     "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.d.ts", "src/core/Localization/translations/*.json", "tests/**/*.ts"],
-    "exclude": ["node_modules", "dist"]
+    "exclude": ["node_modules", "dist", "config/inject-css.ts"]
 }
