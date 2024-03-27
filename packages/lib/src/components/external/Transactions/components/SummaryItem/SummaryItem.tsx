@@ -45,18 +45,19 @@ export const SummaryItem = ({
         <div className={classNames(BASE_CLASS, { [BODY_CLASS]: !isHeader })}>
             {columnConfigs.map((config, index) => (
                 <div key={index}>
-                    {isHeader && config.tooltipLabel ? (
-                        <Tooltip content={i18n.get(`${config.tooltipLabel}`)}>
-                            <SummaryItemLabel
-                                config={config}
-                                i18n={i18n}
-                                isSkeletonVisible={isSkeletonVisible}
-                                className={classNames({ [LABEL_CONTAINER_HOVER_CLASS]: isHovered || isSkeletonHovered })}
-                            />
-                        </Tooltip>
-                    ) : (
-                        <SummaryItemLabel config={config} i18n={i18n} isSkeletonVisible={isSkeletonVisible} />
-                    )}
+                    {isHeader &&
+                        (config.tooltipLabel ? (
+                            <Tooltip content={i18n.get(`${config.tooltipLabel}`)}>
+                                <SummaryItemLabel
+                                    config={config}
+                                    i18n={i18n}
+                                    isSkeletonVisible={isSkeletonVisible}
+                                    className={classNames({ [LABEL_CONTAINER_HOVER_CLASS]: isHovered || isSkeletonHovered })}
+                                />
+                            </Tooltip>
+                        ) : (
+                            <SummaryItemLabel config={config} i18n={i18n} isSkeletonVisible={isSkeletonVisible} />
+                        ))}
                     {isSkeletonVisible ? (
                         <AmountSkeleton isLoading={isLoading} hasMargin={config.hasSkeletonMargin} width={config.skeletonWidth + 'px'} />
                     ) : isEmpty ? (
