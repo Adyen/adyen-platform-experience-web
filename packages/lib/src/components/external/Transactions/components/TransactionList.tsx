@@ -92,8 +92,8 @@ function TransactionList({
     }, [isModalOpen]);
 
     const EMPTY_TABLE_MESSAGE = {
-        title: 'weDidNotFindAnyTransaction',
-        message: ['thereAreNoTransactionsForThisRequirements', 'tryAgainPlease'],
+        title: 'noTransactionsFound',
+        message: ['tryDifferentSearchOrResetYourFiltersAndWeWillTryAgain'],
     } satisfies { title: TranslationKey; message: TranslationKey | TranslationKey[] };
 
     const onHover = useCallback(
