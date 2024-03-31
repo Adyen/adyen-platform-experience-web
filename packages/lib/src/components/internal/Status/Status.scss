@@ -1,46 +1,46 @@
-.adyen-fp-status {
-    font-size: var(--adyen-fp-font-size-medium);
+.adyen-pe-status {
+    font-size: var(--adyen-pe-font-size-medium);
     text-transform: capitalize;
 
     &::before {
-        background: var(--adyen-fp-color-gray-dark);
+        background: var(--adyen-pe-color-gray-dark);
         border-radius: 50%;
         bottom: 1px;
         content: '';
         display: inline-block;
-        height: var(--adyen-fp-font-size-xxsmall);
+        height: var(--adyen-pe-font-size-xxsmall);
         margin-right: 5px;
         position: relative;
-        width: var(--adyen-fp-font-size-xxsmall);
+        width: var(--adyen-pe-font-size-xxsmall);
     }
 
     &--success::before {
-        background: var(--adyen-fp-color-green);
+        background: var(--adyen-pe-color-green);
     }
 
     &--warning::before {
-        background: var(--adyen-fp-color-orange);
+        background: var(--adyen-pe-color-orange);
     }
 
     &--error::before {
-        background: var(--adyen-fp-color-red);
+        background: var(--adyen-pe-color-red);
     }
 
     &--small {
-        font-size: var(--adyen-fp-font-size-small);
+        font-size: var(--adyen-pe-font-size-small);
 
         &::before {
-            height: var(--adyen-fp-font-size-xxsmall);
-            width: var(--adyen-fp-font-size-xxsmall);
+            height: var(--adyen-pe-font-size-xxsmall);
+            width: var(--adyen-pe-font-size-xxsmall);
         }
     }
 
     &--large {
-        font-size: var(--adyen-fp-font-size-large);
+        font-size: var(--adyen-pe-font-size-large);
 
         &::before {
-            height: var(--adyen-fp-font-size-medium);
-            width: var(--adyen-fp-font-size-medium);
+            height: var(--adyen-pe-font-size-medium);
+            width: var(--adyen-pe-font-size-medium);
         }
     }
 }

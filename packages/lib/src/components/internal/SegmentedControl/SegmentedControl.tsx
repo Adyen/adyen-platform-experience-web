@@ -17,9 +17,9 @@ function SegmentedControl<T>({ classNameModifiers = [], selectedValue, disabled 
     return (
         <div
             className={cx(
-                'adyen-fp-segmented-control',
-                { 'adyen-fp-segmented-control--disabled': disabled },
-                ...classNameModifiers.map(modifier => `adyen-fp-segmented-control--${modifier}`)
+                'adyen-pe-segmented-control',
+                { 'adyen-pe-segmented-control--disabled': disabled },
+                ...classNameModifiers.map(modifier => `adyen-pe-segmented-control--${modifier}`)
             )}
             role="group"
         >
@@ -28,8 +28,8 @@ function SegmentedControl<T>({ classNameModifiers = [], selectedValue, disabled 
                     disabled={disabled}
                     key={value}
                     onClick={(event: MouseEvent) => onChange(value, event)}
-                    className={cx('adyen-fp-segmented-control-segment', {
-                        'adyen-fp-segmented-control-segment--selected': selectedValue === value,
+                    className={cx('adyen-pe-segmented-control-segment', {
+                        'adyen-pe-segmented-control-segment--selected': selectedValue === value,
                     })}
                     type="button"
                     {...htmlProps}

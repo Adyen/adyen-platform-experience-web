@@ -47,12 +47,12 @@ body {
             font-weight: 600;
         }
 
-        &--filter.adyen-fp-button--active {
+        &--filter.adyen-pe-button--active {
             background: #ffc85f;
             border: 2px solid #ffc85f;
         }
 
-        &--filter.adyen-fp-button--active .adyen-fp-button__text:after {
+        &--filter.adyen-pe-button--active .adyen-pe-button__text:after {
             top: 0;
         }
     }
@@ -70,7 +70,7 @@ body {
             border: none;
         }
 
-        &__head .adyen-fp-data-grid__row .adyen-fp-data-grid__cell {
+        &__head .adyen-pe-data-grid__row .adyen-pe-data-grid__cell {
             background: #f5f2ef;
             color: #0f0f0f;
             font-size: 16px;

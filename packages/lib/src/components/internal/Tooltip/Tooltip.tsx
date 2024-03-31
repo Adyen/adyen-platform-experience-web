@@ -27,9 +27,7 @@ export const Tooltip = ({ content, children, triggerRef, showTooltip, position }
                       role: 'button',
                       tabIndex: 0,
                       ref: controllerRef,
-                      className: children?.props?.className
-                          ? `${children?.props?.className} adyen-fp-web__tooltip-target`
-                          : 'adyen-fp-web__tooltip-target',
+                      className: children?.props?.className ? `${children?.props?.className} adyen-pe__tooltip-target` : 'adyen-pe__tooltip-target',
                       ...listeners,
                       'aria-describedby': `tooltip-${controllerRef.current?.id}`,
                   })

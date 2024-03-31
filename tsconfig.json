@@ -18,6 +18,6 @@
     "files": [],
     "references": [{ "path": "packages/lib" }],
     "paths": {
-        "@adyen/adyen-fp-web": ["packages/lib/src"]
+        "@adyen/adyen-platform-experience-web": ["packages/lib/src"]
     }
 }

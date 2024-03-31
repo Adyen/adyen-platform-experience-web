@@ -174,7 +174,7 @@ function Popover({
                                 {children}
                             </div>
                             {variant === PopoverContainerVariant.TOOLTIP && (
-                                <span data-popover-placement="hidden" ref={arrowRef} className="adyen-fp-tooltip__arrow" />
+                                <span data-popover-placement="hidden" ref={arrowRef} className="adyen-pe-tooltip__arrow" />
                             )}
                         </>
                     )}

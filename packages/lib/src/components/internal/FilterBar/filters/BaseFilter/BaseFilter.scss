@@ -1,13 +1,13 @@
-.adyen-fp-filter-button {
+.adyen-pe-filter-button {
     align-items: center;
     appearance: none;
-    background-color: var(--adyen-fp-filter-button-background-color);
-    border: 1px solid var(--adyen-fp-filter-button-border-color);
-    border-radius: var(--adyen-fp-filter-button-border-radius);
-    color: var(--adyen-fp-filter-button-font-color);
+    background-color: var(--adyen-pe-filter-button-background-color);
+    border: 1px solid var(--adyen-pe-filter-button-border-color);
+    border-radius: var(--adyen-pe-filter-button-border-radius);
+    color: var(--adyen-pe-filter-button-font-color);
     cursor: pointer;
     display: inline-flex;
-    height: var(--adyen-fp-filter-button-height);
+    height: var(--adyen-pe-filter-button-height);
     justify-content: center;
     padding: 0;
     text-decoration: none;
@@ -16,8 +16,8 @@
 
     &__label {
         display: inline-flex;
-        line-height: var(--adyen-fp-filter-button-label-line-height);
-        padding: var(--adyen-fp-filter-button-label-padding);
+        line-height: var(--adyen-pe-filter-button-label-line-height);
+        padding: var(--adyen-pe-filter-button-label-padding);
         vertical-align: middle;
     }
 
@@ -27,28 +27,28 @@
     }
 
     &__counter {
-        background-color: var(--adyen-fp-filter-button-counter-background-color);
-        border-radius: var(--adyen-fp-filter-button-counter-border-radius);
-        color: var(--adyen-fp-filter-button-counter-font-color);
-        padding: var(--adyen-fp-filter-button-counter-padding);
+        background-color: var(--adyen-pe-filter-button-counter-background-color);
+        border-radius: var(--adyen-pe-filter-button-counter-border-radius);
+        color: var(--adyen-pe-filter-button-counter-font-color);
+        padding: var(--adyen-pe-filter-button-counter-padding);
     }
 
     &__counter-wrapper {
         align-items: center;
         display: flex;
-        padding: var(--adyen-fp-filter-button-counter-wrapper-padding);
+        padding: var(--adyen-pe-filter-button-counter-wrapper-padding);
     }
 
     &--active,
     &:active,
     &:focus {
-        border: 1px solid var(--adyen-fp-filter-button-active-border-color);
+        border: 1px solid var(--adyen-pe-filter-button-active-border-color);
         box-shadow: none !important;
-        outline: 1px solid var(--adyen-fp-filter-button-active-border-color);
+        outline: 1px solid var(--adyen-pe-filter-button-active-border-color);
     }
 
     &__footer {
-        .adyen-fp-button:first-child {
+        .adyen-pe-button:first-child {
             margin-left: auto;
         }
     }

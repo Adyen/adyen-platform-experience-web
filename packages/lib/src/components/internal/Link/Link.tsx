@@ -15,7 +15,7 @@ export type LinkProps = Omit<_LinkProps, 'children'> & {
     children: NonNullable<ComponentChild> | NonNullable<ComponentChild>[];
 };
 
-const DEFAULT_LINK_CLASSNAME = 'adyen-fp-link';
+const DEFAULT_LINK_CLASSNAME = 'adyen-pe-link';
 
 //TO-DO: Add external and internal
 export default function Link({ children, variant = LinkVariant.DEFAULT, ...props }: LinkProps) {

@@ -8,7 +8,10 @@ const TransactionDataSkeleton = ({ isLoading, skeletonRowNumber = 0 }: { isLoadi
         <>
             {skeletonRows.map(key => (
                 <span
-                    className={cx({ 'adyen-fp-transaction-data__skeleton': true, 'adyen-fp-transaction-data__skeleton-loading-content': isLoading })}
+                    className={cx({
+                        'adyen-pe-transaction-data__skeleton': true,
+                        'adyen-pe-transaction-data__skeleton-loading-content': isLoading,
+                    })}
                     key={`transaction-data-skeleton-${key}`}
                 />
             ))}

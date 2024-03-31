@@ -19,7 +19,7 @@ function StoreDetails({ storeDetails = false, ...props }: { storeDetails: boolea
     }, [value]);
 
     return (
-        <div className="adyen-fp-store-details">
+        <div className="adyen-pe-store-details">
             {renderFormField('boolean', {
                 onChange,
                 label: i18n.get('storeDetails'),

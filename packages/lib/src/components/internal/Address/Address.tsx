@@ -105,7 +105,7 @@ export default function Address(props: AddressProps<AddressData>) {
     };
 
     const getWrapper = (group: AddressFieldsGroup) => (
-        <div className="adyen-fp-field-group">{group.map(([field, size]) => getComponent(field, { classNameModifiers: [`col-${size}`] }))}</div>
+        <div className="adyen-pe-field-group">{group.map(([field, size]) => getComponent(field, { classNameModifiers: [`col-${size}`] }))}</div>
     );
 
     const addressSchema = specifications.getAddressSchemaForCountry(data.country);

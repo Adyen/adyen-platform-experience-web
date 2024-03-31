@@ -1,8 +1,8 @@
 import { Preview } from '@storybook/preact';
 import '../src/assets/style/style.scss';
-import '@adyen/adyen-fp-web/style/index.scss';
-import '@adyen/adyen-fp-web/components/shared.scss';
-import { createAdyenFP } from './utils/create-adyenFP';
+import '@adyen/adyen-platform-experience-web/style/index.scss';
+import '@adyen/adyen-platform-experience-web/components/shared.scss';
+import { createAdyenPlatformExperience } from './utils/create-adyenPE';
 import { enableServerInMockedMode, stopMockedServer } from '../src/endpoints/mock-server/utils';
 import sessionRequest from '../src/utils/sessionRequest';
 
@@ -22,7 +22,7 @@ const preview: Preview = {
     loaders: [
         async context => {
             await enableServerInMockedMode();
-            const adyenFP = await createAdyenFP({
+            const AdyenPlatformExperience = await createAdyenPlatformExperience({
                 ...context.coreOptions,
                 environment: 'beta',
                 onSessionCreate: async () => {
@@ -34,7 +34,7 @@ const preview: Preview = {
                     return await sessionRequest(context.args.session);
                 },
             });
-            return { adyenFP };
+            return { AdyenPlatformExperience };
         },
     ],
 };

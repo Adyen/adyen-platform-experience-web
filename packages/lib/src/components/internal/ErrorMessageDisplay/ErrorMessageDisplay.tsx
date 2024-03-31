@@ -61,9 +61,9 @@ export const ErrorMessageDisplay = ({
     );
 
     return (
-        <div className={`adyen-fp-error-message-display ${centered ? 'adyen-fp-error-message-display--centered' : ''}`}>
+        <div className={`adyen-pe-error-message-display ${centered ? 'adyen-pe-error-message-display--centered' : ''}`}>
             {(imageDesktop || imageMobile || withImage) && (
-                <div className="adyen-fp-error-message-display__illustration">
+                <div className="adyen-pe-error-message-display__illustration">
                     <picture>
                         <source type="image/svg+xml" media={`(min-width: ${IMAGE_BREAKPOINT_SIZES.md}px)`} srcSet={imageDesktop} />
                         <source type="image/svg+xml" media={`(max-width: ${IMAGE_BREAKPOINT_SIZES.md}px)`} srcSet={imageMobile} />
@@ -75,7 +75,7 @@ export const ErrorMessageDisplay = ({
             {message && <Typography variant={TypographyVariant.BODY}>{renderMessage(message)}</Typography>}
 
             {(onContactSupport || refreshComponent) && (
-                <div className={'adyen-fp-error-message-display__button'}>
+                <div className={'adyen-pe-error-message-display__button'}>
                     {onContactSupport && <Button onClick={onContactSupport}>{i18n.get('reachOutToSupport')}</Button>}
                     {!onContactSupport && refreshComponent && <Button onClick={() => updateCore?.()}>{i18n.get('refresh')}</Button>}
                 </div>

@@ -17,20 +17,20 @@ export interface CheckboxProps {
 
 export default function Checkbox({ classNameModifiers = [], label, isInvalid, onChange, ...props }: CheckboxProps) {
     return (
-        <label className="adyen-fp-checkbox">
+        <label className="adyen-pe-checkbox">
             <input
                 {...props}
                 className={cx([
-                    'adyen-fp-checkbox__input',
+                    'adyen-pe-checkbox__input',
                     [props.className],
-                    { 'adyen-fp-checkbox__input--invalid': isInvalid },
-                    classNameModifiers.map(m => `adyen-fp-input--${m}`),
+                    { 'adyen-pe-checkbox__input--invalid': isInvalid },
+                    classNameModifiers.map(m => `adyen-pe-input--${m}`),
                 ])}
                 type="checkbox"
                 onChange={onChange}
                 value={props.value}
             />
-            <span className="adyen-fp-checkbox__label">{label}</span>
+            <span className="adyen-pe-checkbox__label">{label}</span>
         </label>
     );
 }

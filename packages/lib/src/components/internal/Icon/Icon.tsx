@@ -14,7 +14,7 @@ const Icon = ({ type, className = '', alt = '', height, width }: IconProps) => {
     const { loadingContext } = useCoreContext();
     const iconUrl = getImageUrl({ loadingContext, imageFolder: 'components/' })(type);
 
-    return <img className={cx('adyen-fp-icon', className)} alt={alt} src={iconUrl} height={height} width={width} />;
+    return <img className={cx('adyen-pe-icon', className)} alt={alt} src={iconUrl} height={height} width={width} />;
 };
 
 export default Icon;

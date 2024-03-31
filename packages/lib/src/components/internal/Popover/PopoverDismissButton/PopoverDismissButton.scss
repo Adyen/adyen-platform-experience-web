@@ -1,15 +1,15 @@
-.adyen-fp-popover-dismiss-button {
+.adyen-pe-popover-dismiss-button {
     cursor: pointer;
 
     &--on-image {
-        color: var(--adyen-fp-popover-dismiss-button-on-image-icon-color);
+        color: var(--adyen-pe-popover-dismiss-button-on-image-icon-color);
 
         &:hover {
-            color: var(--adyen-fp-popover-dismiss-button-on-image-icon-hovered-color);
+            color: var(--adyen-pe-popover-dismiss-button-on-image-icon-hovered-color);
         }
 
         &:active {
-            color: var(--adyen-fp-popover-dismiss-button-on-image-icon-active-color);
+            color: var(--adyen-pe-popover-dismiss-button-on-image-icon-active-color);
         }
     }
 }

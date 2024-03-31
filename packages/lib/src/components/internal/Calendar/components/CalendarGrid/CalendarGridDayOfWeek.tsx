@@ -6,8 +6,8 @@ import { EMPTY_OBJECT } from '@src/utils/common/constants';
 import { CalendarGridRenderToken } from '../../types';
 import memoComparator from '@src/utils/memoComparator';
 
-const DEFAULT_CELL_CLASSNAME = 'adyen-fp-calendar__cell adyen-fp-calendar__cell--day-of-week';
-const DEFAULT_CELL_ABBR_CLASSNAME = 'adyen-fp-calendar__day-of-week';
+const DEFAULT_CELL_CLASSNAME = 'adyen-pe-calendar__cell adyen-pe-calendar__cell--day-of-week';
+const DEFAULT_CELL_ABBR_CLASSNAME = 'adyen-pe-calendar__day-of-week';
 
 const getGridDayOfWeekRenderProps = (computedProps = EMPTY_OBJECT as any, prepare?: CalendarGridDayOfWeekProps['prepare']) => {
     const renderProps = propsProperty.unwrapped<CalendarGridDayOfWeekRenderProps>(

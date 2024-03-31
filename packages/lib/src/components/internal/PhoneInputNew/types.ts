@@ -1,7 +1,7 @@
 import { DataSet, DataSetItem } from '../../../core/Services/data-set';
 import { SchemaKeys } from '../../../utils/useForm/types';
 import { Ref, StateUpdater } from 'preact/hooks';
-import AdyenFPError from '../../../core/Errors/AdyenFPError';
+import AdyenPlatformExperienceError from '../../../core/Errors/AdyenPlatformExperienceError';
 
 export type PhoneInputSchema = {
     phoneNumber?: string;
@@ -34,5 +34,5 @@ export interface PhonePrefixes {
 export interface PhonePrefixesProps {
     allowedCountries: string[];
     loadingContext?: string;
-    handleError?: (err: AdyenFPError) => void;
+    handleError?: (err: AdyenPlatformExperienceError) => void;
 }
