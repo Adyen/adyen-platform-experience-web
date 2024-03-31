@@ -1,28 +1,28 @@
-.adyen-fp-pagination {
+.adyen-pe-pagination {
     display: flex;
-    padding: var(--adyen-fp-spacing-medium) var(--adyen-fp-spacing-small);
+    padding: var(--adyen-pe-spacing-medium) var(--adyen-pe-spacing-small);
     text-align: right;
 
     &__context {
         align-items: center;
         display: flex;
-        gap: var(--adyen-fp-spacing-medium);
+        gap: var(--adyen-pe-spacing-medium);
     }
 
     &__controls {
         display: flex;
-        gap: var(--adyen-fp-spacing-medium);
+        gap: var(--adyen-pe-spacing-medium);
         margin-left: auto;
     }
 
     &__limit-selector {
         text-align: left;
 
-        .adyen-fp-button {
+        .adyen-pe-button {
             width: auto;
         }
 
-        .adyen-fp-popover {
+        .adyen-pe-popover {
             min-width: auto;
             width: auto;
         }

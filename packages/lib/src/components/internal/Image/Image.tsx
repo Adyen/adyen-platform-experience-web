@@ -16,5 +16,5 @@ export const Image = ({ folder = 'components/', className, alt, name, extension 
         name,
     });
 
-    return <img className={cx('adyen-fp__image', className)} alt={alt} src={imageUrl} />;
+    return <img className={cx('adyen-pe__image', className)} alt={alt} src={imageUrl} />;
 };

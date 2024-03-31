@@ -1,6 +1,6 @@
 import { Meta } from '@storybook/preact';
 import { enabledDisabledCallbackRadioControls } from '../utils/controls';
-import { TransactionsComponent } from '@adyen/adyen-fp-web';
+import { TransactionsComponent } from '@adyen/adyen-platform-experience-web';
 import { ElementProps, ElementStory } from '../utils/types';
 import { Container } from '../utils/Container';
 

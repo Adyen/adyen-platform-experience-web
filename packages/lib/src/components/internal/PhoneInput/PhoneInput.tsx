@@ -31,26 +31,26 @@ export function PhoneInput(props: PhoneInputComponentProps) {
     props.setUIElementStatus?.(setStatus);
 
     return (
-        <div className="adyen-fp-phone-input">
+        <div className="adyen-pe-phone-input">
             <Field
                 errorMessage={!!errors.phoneNumber}
                 label={props.phoneLabel ? i18n.get(props.phoneLabel) : ''}
                 className={classNames({
-                    'adyen-fp-input--phone-number': true,
+                    'adyen-pe-input--phone-number': true,
                 })}
                 inputWrapperModifiers={['phoneInput']}
             >
-                <div className="adyen-fp-input-wrapper">
+                <div className="adyen-pe-input-wrapper">
                     <div
                         className={classNames({
-                            'adyen-fp-input': true,
-                            'adyen-fp-input--invalid': !!errors.phoneNumber,
+                            'adyen-pe-input': true,
+                            'adyen-pe-input--invalid': !!errors.phoneNumber,
                         })}
                     >
                         {!!showPrefix && (
                             <Field inputWrapperModifiers={['phoneInput']}>
                                 {renderFormField('select', {
-                                    className: 'adyen-fp-dropdown--small adyen-fp-countryFlag',
+                                    className: 'adyen-pe-dropdown--small adyen-pe-countryFlag',
                                     filterable: false,
                                     items: props.items,
                                     name: props.prefixName,
@@ -59,7 +59,7 @@ export function PhoneInput(props: PhoneInputComponentProps) {
                                     selected: data.phonePrefix,
                                 })}
 
-                                <div className="adyen-fp-phoneNumber">
+                                <div className="adyen-pe-phoneNumber">
                                     <div>{data.phonePrefix}</div>
 
                                     <input
@@ -69,7 +69,7 @@ export function PhoneInput(props: PhoneInputComponentProps) {
                                         onInput={handleChangeFor('phoneNumber', 'input')}
                                         onBlur={handleChangeFor('phoneNumber', 'blur')}
                                         placeholder="123 456 789"
-                                        className="adyen-fp-input adyen-fp-input--phoneNumber"
+                                        className="adyen-pe-input adyen-pe-input--phoneNumber"
                                         autoCorrect="off"
                                     />
                                 </div>

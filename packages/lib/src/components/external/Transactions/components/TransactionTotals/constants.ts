@@ -1,1 +1,1 @@
-export const BASE_CLASS = 'adyen-fp-transactions-totals';
+export const BASE_CLASS = 'adyen-pe-transactions-totals';

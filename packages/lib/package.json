@@ -2,12 +2,13 @@
     "name": "@adyen/adyen-platform-experience-web",
     "keywords": [
         "adyen",
-        "adyen-fp",
+        "adyen-pe",
         "fp",
         "finance",
         "platforms",
         "adyen-for-platforms",
-        "components"
+        "components",
+        "adyen-platform-experience"
     ],
     "version": "0.1.2",
     "apiVersion": "v1",
@@ -38,7 +39,7 @@
                 "default": "./dist/es/index.js"
             }
         },
-        "./adyen-fp-web.css": "./dist/style.css"
+        "./adyen-platform-experience-web.css": "./dist/style.css"
     },
     "scripts": {
         "start": "vite dev",

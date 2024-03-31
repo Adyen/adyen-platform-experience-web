@@ -1,12 +1,12 @@
 @use '../../../../style/skeleton' as skeleton;
 
-.adyen-fp-transaction {
+.adyen-pe-transaction {
     &--error-container {
         position: relative;
     }
 
     &-data {
-        padding: 0 var(--adyen-fp-spacing-large) var(--adyen-fp-spacing-large);
+        padding: 0 var(--adyen-pe-spacing-large) var(--adyen-pe-spacing-large);
 
         &__section {
             margin-bottom: 6px;
@@ -17,22 +17,22 @@
         //}
 
         &__amount {
-            color: var(--adyen-fp-transaction-data-default);
-            font-size: var(--adyen-fp-font-size-xxlarge);
-            font-weight: var(--adyen-fp-font-weight-semi-bold);
+            color: var(--adyen-pe-transaction-data-default);
+            font-size: var(--adyen-pe-font-size-xxlarge);
+            font-weight: var(--adyen-pe-font-weight-semi-bold);
             line-height: 44px;
 
             &--error {
-                color: var(--adyen-fp-transaction-data-error);
+                color: var(--adyen-pe-transaction-data-error);
             }
 
             &--pending {
-                color: var(--adyen-fp-transaction-data-pending);
+                color: var(--adyen-pe-transaction-data-pending);
             }
         }
 
         &__container {
-            padding-bottom: var(--adyen-fp-transaction-data-section);
+            padding-bottom: var(--adyen-pe-transaction-data-section);
         }
 
         &__payment-method {
@@ -41,7 +41,7 @@
             gap: 6px;
 
             &-detail {
-                font-weight: var(--adyen-fp-font-weight-medium);
+                font-weight: var(--adyen-pe-font-weight-medium);
             }
         }
 
@@ -61,21 +61,21 @@
         }
 
         &__label {
-            color: var(--adyen-fp-modal-label-color);
-            font-size: var(--adyen-fp-font-size-medium);
-            font-weight: var(--adyen-fp-font-weight-regular);
+            color: var(--adyen-pe-modal-label-color);
+            font-size: var(--adyen-pe-font-size-medium);
+            font-weight: var(--adyen-pe-font-weight-regular);
             line-height: 20px;
         }
 
         &__skeleton {
-            @include skeleton.adyen-fp-skeleton();
+            @include skeleton.adyen-pe-skeleton();
             display: block;
-            height: var(--adyen-fp-spacing-base);
-            margin: var(--adyen-fp-spacing-small) 0;
+            height: var(--adyen-pe-spacing-base);
+            margin: var(--adyen-pe-spacing-small) 0;
             width: 50%;
 
             &-loading-content {
-                @include skeleton.adyen-fp-skeleton-animation();
+                @include skeleton.adyen-pe-skeleton-animation();
             }
         }
     }

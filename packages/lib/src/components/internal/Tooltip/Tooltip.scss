@@ -1,7 +1,7 @@
-.adyen-fp-web__tooltip-target {
+.adyen-pe__tooltip-target {
     &:hover {
         text-decoration: underline dashed #016fd0;
         text-decoration-thickness: 1px;
-        text-underline-offset: var(--adyen-fp-spacing-xsmall);
+        text-underline-offset: var(--adyen-pe-spacing-xsmall);
     }
 }

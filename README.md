@@ -1,6 +1,6 @@
 # Adyen FP
 
-[![npm](https://img.shields.io/npm/v/@adyen/adyen-fp-web.svg)](http://npm.im/pablo/adyen-fp)
+[![npm](https://img.shields.io/npm/v/@adyen/adyen-pe-web.svg)](http://npm.im/pablo/adyen-fp)
 
 Adyen FP provides you with the building blocks to create an internal dashboard for your platform customers.
 
@@ -19,21 +19,21 @@ We only provide full support when you use one of these methods of installation.
 1. Install the [Adyen FP Node package](https://www.npmjs.com/package/@adyen/adyen-fp):
 
 ```sh
-npm install @adyen/adyen-fp-web --save
+npm install @adyen/adyen-pe-web --save
 ```
 
 2. Import Adyen FP into your application:
 
 ```js
-import AdyenFp from '@adyen/adyen-fp-web';
-import '@adyen/adyen-fp-web/dist/adyen-fp-web.css';
+import AdyenPlatformExperience from '@adyen/adyen-pe-web';
+import '@adyen/adyen-pe-web/dist/adyen-pe-web.css';
 ```
 
 ## Development
 
 To run the development environment:
 
-1. Clone [this repository](https://github.com/Adyen/adyen-fp-web).
+1. Clone [this repository](https://github.com/Adyen/adyen-pe-web).
 2. Create a `.env` file on your project's root folder following the example in [`env.default`](envs/env.default) and fill in the environment variables.
 3. Install the dependencies by running:
 
@@ -60,7 +60,7 @@ Have a look at our [contributing guidelines](https://github.com/Adyen/.github/bl
 
 ## Support
 
-If you have a feature request, or spotted a bug or a technical problem, [create an issue here](https://github.com/Adyen/adyen-fp-web/issues/new/choose).
+If you have a feature request, or spotted a bug or a technical problem, [create an issue here](https://github.com/Adyen/adyen-pe-web/issues/new/choose).
 
 For other questions, [contact our support team](https://support.adyen.com/hc/en-us/requests/new?ticket_form_id=360000705420).
 

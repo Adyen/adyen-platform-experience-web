@@ -113,7 +113,7 @@ describe('Popover component', () => {
     test.skip('should add tooltip class', async () => {
         await waitFor(
             () => {
-                expect(screen.getByRole('dialog')).toHaveClass('adyen-fp-tooltip');
+                expect(screen.getByRole('dialog')).toHaveClass('adyen-pe-tooltip');
             },
             { timeout: 5000 }
         );

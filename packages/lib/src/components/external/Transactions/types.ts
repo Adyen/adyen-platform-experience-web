@@ -5,7 +5,7 @@ import { Core } from '../../../core';
 import { PaginationProps, WithPaginationLimitSelection } from '../../internal/Pagination/types';
 import UIElement from '../UIElement';
 import { IBalanceAccountBase, ITransaction } from '../../../types';
-import AdyenFPError from '@src/core/Errors/AdyenFPError';
+import AdyenPlatformExperienceError from '@src/core/Errors/AdyenPlatformExperienceError';
 
 export const enum TransactionFilterParam {
     CATEGORIES = 'categories',
@@ -36,7 +36,7 @@ export interface TransactionListProps extends WithPaginationLimitSelection<Pagin
     showPagination: boolean;
     loading: boolean;
     showDetails?: boolean;
-    error: AdyenFPError | undefined;
+    error: AdyenPlatformExperienceError | undefined;
     onContactSupport?: () => void;
     balanceAccounts: IBalanceAccountBase[] | undefined;
     availableCurrencies: ITransaction['amount']['currency'][] | undefined;

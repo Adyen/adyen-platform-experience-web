@@ -53,7 +53,7 @@ main * {
             border: none !important;
         }
 
-        &__head .adyen-fp-data-grid__row .adyen-fp-data-grid__cell {
+        &__head .adyen-pe-data-grid__row .adyen-pe-data-grid__cell {
             background: rgba(255, 85, 112, 0.05);
             color: #ff5570;
             font-size: 16px;
@@ -65,16 +65,16 @@ main * {
     &-button {
         border-radius: 8px;
 
-        &--filter.adyen-fp-button--active {
+        &--filter.adyen-pe-button--active {
             background: #ff5570;
             border: 1px solid #ff5570;
 
-            .adyen-fp-button__text {
+            .adyen-pe-button__text {
                 color: white !important;
             }
         }
 
-        &--filter.adyen-fp-button--active .adyen-fp-button__text:after {
+        &--filter.adyen-pe-button--active .adyen-pe-button__text:after {
             top: 0;
         }
 
@@ -108,7 +108,7 @@ main * {
         }
     }
 
-    &-transaction .adyen-fp-stats-bar {
+    &-transaction .adyen-pe-stats-bar {
         background: rgba(255, 178, 102, 0.1);
 
         &__value {
@@ -116,7 +116,7 @@ main * {
         }
     }
 
-    &-balance-account .adyen-fp-stats-bar {
+    &-balance-account .adyen-pe-stats-bar {
         background: rgba(255, 113, 90, 0.1);
 
         &__value {
@@ -124,7 +124,7 @@ main * {
         }
     }
 
-    &-account-holder .adyen-fp-stats-bar {
+    &-account-holder .adyen-pe-stats-bar {
         background: rgba(255, 85, 112, 0.1);
 
         &__value {

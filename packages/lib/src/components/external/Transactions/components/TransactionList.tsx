@@ -129,7 +129,7 @@ function TransactionList({
                         const tooltipKey = `tooltip.${item.category}`;
                         return item.category ? (
                             i18n.has(tooltipKey) ? (
-                                <span className={classnames({ 'adyen-fp-data-grid__cell--hover': rowIndex === hoveredRow })}>
+                                <span className={classnames({ 'adyen-pe-data-grid__cell--hover': rowIndex === hoveredRow })}>
                                     <Category value={item.category} />
                                 </span>
                             ) : (
@@ -140,19 +140,19 @@ function TransactionList({
                     creationDate: ({ value }) => i18n.fullDate(value),
                     amount: ({ value }) => {
                         const amount = i18n.amount(value.value, value.currency, { hideCurrency: !hasMultipleCurrencies });
-                        return <span className={classnames('adyen-fp-transactions__amount')}>{amount}</span>;
+                        return <span className={classnames('adyen-pe-transactions__amount')}>{amount}</span>;
                     },
                     paymentMethod: ({ item }) => {
                         return (
                             <>
                                 {item.paymentMethod || item.bankAccount ? (
-                                    <div className="adyen-fp-transactions__payment-method">
-                                        <div className="adyen-fp-transactions__payment-method-logo-container">
+                                    <div className="adyen-pe-transactions__payment-method">
+                                        <div className="adyen-pe-transactions__payment-method-logo-container">
                                             <Image
                                                 name={item.paymentMethod ? item.paymentMethod.type : 'bankTransfer'}
                                                 alt={item.paymentMethod ? item.paymentMethod.type : 'bankTransfer'}
                                                 folder={'logos/'}
-                                                className={'adyen-fp-transactions__payment-method-logo'}
+                                                className={'adyen-pe-transactions__payment-method-logo'}
                                             />
                                         </div>
                                         {item.paymentMethod
@@ -188,7 +188,7 @@ function TransactionList({
                 {selectedDetail && (
                     <Suspense
                         fallback={
-                            <span className={'adyen-fp-transactions__spinner-container'}>
+                            <span className={'adyen-pe-transactions__spinner-container'}>
                                 <Spinner size={'medium'} />
                             </span>
                         }

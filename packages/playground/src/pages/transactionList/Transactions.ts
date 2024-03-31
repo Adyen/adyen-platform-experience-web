@@ -1,4 +1,4 @@
-import { AdyenFP, TransactionsComponent, all_locales } from '@adyen/adyen-fp-web';
+import { AdyenPlatformExperience, TransactionsComponent, all_locales } from '@adyen/adyen-platform-experience-web';
 import '../../utils/createPages.js';
 import '../../assets/style/style.scss';
 
@@ -11,7 +11,7 @@ enableServerInMockedMode()
     .then(async () => {
         let locale: 'en-US' | 'es-ES' = 'en-US' as const;
 
-        const adyenFP = await AdyenFP({
+        const AdyenPlatform = await AdyenPlatformExperience({
             locale: locale,
             environment: 'test',
             availableTranslations: [all_locales],
@@ -20,10 +20,10 @@ enableServerInMockedMode()
             },
         });
 
-        createLanguageButtons({ locales: ['es-ES', 'en-US'], core: adyenFP });
+        createLanguageButtons({ locales: ['es-ES', 'en-US'], core: AdyenPlatformExperience });
 
         const transactionsComponent = new TransactionsComponent({
-            core: adyenFP,
+            core: AdyenPlatform,
             onTransactionSelected: ({ showModal }) => {
                 showModal();
                 // window.location.assign(`/src/pages/transaction/?id=${id}`);

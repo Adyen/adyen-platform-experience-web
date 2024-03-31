@@ -19,9 +19,9 @@ export default function Img(props: ImgProps) {
 
     const classNames = cx(
         [className],
-        'adyen-fp-image',
-        { 'adyen-fp-image--loaded': loaded },
-        ...classNameModifiers.map(modifier => `adyen-fp-image--${modifier}`)
+        'adyen-pe-image',
+        { 'adyen-pe-image--loaded': loaded },
+        ...classNameModifiers.map(modifier => `adyen-pe-image--${modifier}`)
     );
 
     useEffect(() => {

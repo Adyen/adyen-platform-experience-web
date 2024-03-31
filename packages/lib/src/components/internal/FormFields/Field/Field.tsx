@@ -39,7 +39,7 @@ const Field: FunctionalComponent<FieldProps> = props => {
         i18n,
     } = props;
 
-    const uniqueId = useRef(getUniqueId(`adyen-fp-${name}`));
+    const uniqueId = useRef(getUniqueId(`adyen-pe-${name}`));
 
     const [focused, setFocused] = useState(false);
     const [filled, setFilled] = useState(false);
@@ -73,8 +73,8 @@ const Field: FunctionalComponent<FieldProps> = props => {
                 {isString(label) && (
                     <span
                         className={classNames({
-                            'adyen-fp-label__text': true,
-                            'adyen-fp-label__text--error': errorMessage,
+                            'adyen-pe-label__text': true,
+                            'adyen-pe-label__text--error': errorMessage,
                         })}
                     >
                         {label}
@@ -83,10 +83,10 @@ const Field: FunctionalComponent<FieldProps> = props => {
 
                 {isFunction(label) && label()}
 
-                {labelEndAdornment && <span className="adyen-fp-label-adornment--end">{labelEndAdornment}</span>}
+                {labelEndAdornment && <span className="adyen-pe-label-adornment--end">{labelEndAdornment}</span>}
 
-                {helper && <span className={'adyen-fp-helper-text'}>{helper}</span>}
-                <div className={classNames(['adyen-fp-input-wrapper', ...inputWrapperModifiers.map(m => `adyen-fp-input-wrapper--${m}`)])} dir={dir}>
+                {helper && <span className={'adyen-pe-helper-text'}>{helper}</span>}
+                <div className={classNames(['adyen-pe-input-wrapper', ...inputWrapperModifiers.map(m => `adyen-pe-input-wrapper--${m}`)])} dir={dir}>
                     {toChildArray(children).map((child: ComponentChild): ComponentChild => {
                         const childProps = {
                             isValid,
@@ -99,26 +99,26 @@ const Field: FunctionalComponent<FieldProps> = props => {
                     })}
 
                     {isLoading && (
-                        <span className="adyen-fp-input__inline-validation adyen-fp-input__inline-validation--loading">
+                        <span className="adyen-pe-input__inline-validation adyen-pe-input__inline-validation--loading">
                             <Spinner size="small" />
                         </span>
                     )}
 
                     {isValid && showValidIcon !== false && (
-                        <span className="adyen-fp-input__inline-validation adyen-fp-input__inline-validation--valid">
+                        <span className="adyen-pe-input__inline-validation adyen-pe-input__inline-validation--valid">
                             <Icon type="checkmark" alt={i18n?.get('field.valid')} />
                         </span>
                     )}
 
                     {errorMessage && (
-                        <span className="adyen-fp-input__inline-validation adyen-fp-input__inline-validation--invalid">
+                        <span className="adyen-pe-input__inline-validation adyen-pe-input__inline-validation--invalid">
                             <Icon type="field_error" alt={i18n?.get('field.invalid')} />
                         </span>
                     )}
                 </div>
                 {errorMessage && isString(errorMessage) && errorMessage.length && (
                     <span
-                        className={'adyen-fp-error-text'}
+                        className={'adyen-pe-error-text'}
                         id={`${uniqueId.current}${ARIA_ERROR_SUFFIX}`}
                         aria-hidden={isCollatingErrors ? 'true' : undefined}
                         aria-live={isCollatingErrors ? undefined : 'polite'}
@@ -135,10 +135,10 @@ const Field: FunctionalComponent<FieldProps> = props => {
             const defaultWrapperProps = {
                 onClick: onFocusField,
                 className: classNames({
-                    'adyen-fp-label': true,
-                    'adyen-fp-label--focused': focused,
-                    'adyen-fp-label--filled': filled,
-                    'adyen-fp-label--disabled': disabled,
+                    'adyen-pe-label': true,
+                    'adyen-pe-label--focused': focused,
+                    'adyen-pe-label--filled': filled,
+                    'adyen-pe-label--disabled': disabled,
                 }),
             };
 
@@ -161,12 +161,12 @@ const Field: FunctionalComponent<FieldProps> = props => {
     return (
         <div
             className={classNames(
-                'adyen-fp-field',
+                'adyen-pe-field',
                 className,
-                classNameModifiers.map(m => `adyen-fp-field--${m}`),
+                classNameModifiers.map(m => `adyen-pe-field--${m}`),
                 {
-                    'adyen-fp-field--error': errorMessage,
-                    'adyen-fp-field--valid': isValid,
+                    'adyen-pe-field--error': errorMessage,
+                    'adyen-pe-field--valid': isValid,
                 }
             )}
         >

@@ -1,11 +1,11 @@
-.adyen-fp-button-actions {
+.adyen-pe-button-actions {
     container-type: inline-size;
     flex-grow: 1;
 
     &__container-wrapper {
         display: flex;
         flex-direction: column;
-        gap: var(--adyen-fp-button-actions-vertical-stack-row-gap);
+        gap: var(--adyen-pe-button-actions-vertical-stack-row-gap);
     }
 
     //@container (min-width: 250px) {
@@ -15,13 +15,13 @@
     }
 
     &--buttons-end {
-        column-gap: var(--adyen-fp-action-button-gap);
+        column-gap: var(--adyen-pe-action-button-gap);
         flex-direction: row;
         justify-content: end;
     }
 
     &--fill-container {
-        column-gap: var(--adyen-fp-action-button-gap);
+        column-gap: var(--adyen-pe-action-button-gap);
         display: grid;
         grid-auto-columns: minmax(0, 1fr);
         grid-auto-flow: column;
