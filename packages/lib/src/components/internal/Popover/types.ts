@@ -27,6 +27,7 @@ interface PopoverCoreProps {
     dismiss?: () => any;
     setToTargetWidth?: boolean;
     children: ComponentChildren;
+    classNameModifiers?: string[];
 }
 
 type UncontrolledProps = Pick<HTMLAttributes<any>, 'aria-label' | 'aria-labelledby' | 'aria-describedby' | 'role'>;

@@ -16,6 +16,7 @@ import './Select.scss';
 const Select = <T extends SelectItem>({
     className,
     classNameModifiers = EMPTY_ARRAY as [],
+    popoverClassNameModifiers,
     items = EMPTY_ARRAY as readonly T[],
     filterable = false,
     multiSelect = false,
@@ -336,6 +337,7 @@ const Select = <T extends SelectItem>({
                 ariaDescribedBy={!isCollatingErrors && uniqueId ? `${uniqueId}${ARIA_ERROR_SUFFIX}` : ''}
             />
             <SelectList
+                popoverClassNameModifiers={popoverClassNameModifiers}
                 setToTargetWidth={setToTargetWidth}
                 dismissPopover={dismissPopover}
                 active={selection}

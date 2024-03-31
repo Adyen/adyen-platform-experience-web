@@ -26,6 +26,7 @@ const SelectList = fixedForwardRef(
             toggleButtonRef,
             dismissPopover,
             setToTargetWidth,
+            popoverClassNameModifiers,
         }: SelectListProps<T>,
         ref: ForwardedRef<HTMLUListElement>
     ) => {
@@ -38,6 +39,7 @@ const SelectList = fixedForwardRef(
 
         return showList ? (
             <Popover
+                classNameModifiers={popoverClassNameModifiers}
                 actions={multipleSelection ? commitActions : undefined}
                 disableFocusTrap={true}
                 divider={true}
