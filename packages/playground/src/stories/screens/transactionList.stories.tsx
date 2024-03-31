@@ -1,10 +1,10 @@
 import { Meta } from '@storybook/preact';
 import { enabledDisabledCallbackRadioControls } from '../utils/controls';
-import { TransactionsComponent } from '@adyen/adyen-platform-experience-web';
+import { TransactionsOverview } from '@adyen/adyen-platform-experience-web';
 import { ElementProps, ElementStory } from '../utils/types';
 import { Container } from '../utils/Container';
 
-const meta: Meta<ElementProps<typeof TransactionsComponent>> = {
+const meta: Meta<ElementProps<typeof TransactionsOverview>> = {
     title: 'screens/Transactions',
     argTypes: {
         onFiltersChanged: enabledDisabledCallbackRadioControls('onFiltersChanged', ['Passed', 'Not Passed']),
@@ -24,10 +24,10 @@ const meta: Meta<ElementProps<typeof TransactionsComponent>> = {
             Object.assign(args, { transactions: context.loaded.data });
         }
 
-        return <Container component={TransactionsComponent} componentConfiguration={args} context={context} mockedApi={args.mockedApi} />;
+        return <Container component={TransactionsOverview} componentConfiguration={args} context={context} mockedApi={args.mockedApi} />;
     },
 };
-export const Basic: ElementStory<typeof TransactionsComponent> = {
+export const Basic: ElementStory<typeof TransactionsOverview> = {
     name: 'Basic (Mocked)',
     args: {
         mockedApi: true,
@@ -35,7 +35,7 @@ export const Basic: ElementStory<typeof TransactionsComponent> = {
 };
 
 export const BasicTransactionListApi: ElementStory<
-    typeof TransactionsComponent,
+    typeof TransactionsOverview,
     { session: { roles: string[]; accountHolderId?: string; apiKey?: string } }
 > = {
     name: 'Basic (API)',
