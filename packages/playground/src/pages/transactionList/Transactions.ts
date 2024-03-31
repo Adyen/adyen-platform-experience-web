@@ -1,4 +1,4 @@
-import { AdyenPlatformExperience, TransactionsComponent, all_locales } from '@adyen/adyen-platform-experience-web';
+import { AdyenPlatformExperience, TransactionsOverview, all_locales } from '@adyen/adyen-platform-experience-web';
 import '../../utils/createPages.js';
 import '../../assets/style/style.scss';
 
@@ -22,7 +22,7 @@ enableServerInMockedMode()
 
         createLanguageButtons({ locales: ['es-ES', 'en-US'], core: AdyenPlatformExperience });
 
-        const transactionsComponent = new TransactionsComponent({
+        const transactionsComponent = new TransactionsOverview({
             core: AdyenPlatform,
             onTransactionSelected: ({ showModal }) => {
                 showModal();
