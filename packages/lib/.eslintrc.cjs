@@ -59,6 +59,7 @@ module.exports = {
                     'playwright/test',
                     'playwright.config.ts',
                     'config/vite.config.ts',
+                    'config/inject-css.ts',
                     '**/*.test.{ts,tsx}',
                     'config/**/*.ts',
                     'envs/**/*.ts',
