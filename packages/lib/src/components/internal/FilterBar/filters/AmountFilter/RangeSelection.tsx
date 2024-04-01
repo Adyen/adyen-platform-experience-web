@@ -5,7 +5,7 @@ import './AmountFilter.scss';
 import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
 import { CommitAction } from '@src/hooks/useCommitAction';
 import useCoreContext from '@src/core/Context/useCoreContext';
-import { AMOUNT_CONSTANT } from './constants';
+import { AMOUNT_MULTIPLIER } from './constants';
 
 export const RangeSelection = ({
     onChange,
@@ -19,10 +19,10 @@ export const RangeSelection = ({
     const { i18n } = useCoreContext();
 
     const [minAmount, setMinAmount] = useState<number | undefined>(
-        props.minAmount !== undefined ? parseFloat(props.minAmount) / AMOUNT_CONSTANT : undefined
+        props.minAmount !== undefined ? parseFloat(props.minAmount) / AMOUNT_MULTIPLIER : undefined
     );
     const [maxAmount, setMaxAmount] = useState<number | undefined>(
-        props.maxAmount !== undefined ? parseFloat(props.maxAmount) / AMOUNT_CONSTANT : undefined
+        props.maxAmount !== undefined ? parseFloat(props.maxAmount) / AMOUNT_MULTIPLIER : undefined
     );
 
     const applyFilter = useCallback(() => {

@@ -1,1 +1,1 @@
-export const AMOUNT_CONSTANT = 100000;
+export const AMOUNT_MULTIPLIER = 100000;
