@@ -4,6 +4,7 @@ import { useTooltipListeners } from '@src/components/internal/Tooltip/useTooltip
 import { TypographyVariant } from '@src/components/internal/Typography/types';
 import Typography from '@src/components/internal/Typography/Typography';
 import useUniqueIdentifier from '@src/hooks/element/useUniqueIdentifier';
+import classNames from 'classnames';
 import { cloneElement, VNode } from 'preact';
 import { PropsWithChildren } from 'preact/compat';
 import { MutableRef } from 'preact/hooks';
@@ -14,7 +15,7 @@ const isString = (content: string | VNode<any>) => {
     return typeof content === 'string';
 };
 
-export const Tooltip = ({ content, children, triggerRef, showTooltip, position }: PropsWithChildren<TooltipProps>) => {
+export const Tooltip = ({ content, children, triggerRef, showTooltip, position, isContainerHovered }: PropsWithChildren<TooltipProps>) => {
     const controllerRef = useUniqueIdentifier();
 
     const { isVisible, listeners } = useTooltipListeners();
@@ -27,7 +28,11 @@ export const Tooltip = ({ content, children, triggerRef, showTooltip, position }
                       role: 'button',
                       tabIndex: 0,
                       ref: controllerRef,
-                      className: children?.props?.className ? `${children?.props?.className} adyen-pe__tooltip-target` : 'adyen-pe__tooltip-target',
+                      className: children?.props?.className
+                          ? classNames(`${children?.props?.className} adyen-pe__tooltip-target`, {
+                                ' adyen-pe__tooltip-target--hovered': isContainerHovered,
+                            })
+                          : classNames('adyen-pe__tooltip-target', { ' adyen-pe__tooltip-target--hovered': isContainerHovered }),
                       ...listeners,
                       'aria-describedby': `tooltip-${controllerRef.current?.id}`,
                   })

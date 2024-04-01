@@ -4,7 +4,6 @@ import {
     BASE_CLASS,
     BODY_CLASS,
     LABEL_CLASS,
-    LABEL_CONTAINER_HOVER_CLASS,
     PLACEHOLDER_CLASS,
 } from '@src/components/external/Transactions/components/SummaryItem/constants';
 import { SummaryItemLabel } from '@src/components/external/Transactions/components/SummaryItem/SummaryItemLabel';
@@ -46,13 +45,8 @@ export const SummaryItem = ({
                 <div key={index}>
                     {isHeader &&
                         (config.tooltipLabel ? (
-                            <Tooltip content={i18n.get(`${config.tooltipLabel}`)}>
-                                <SummaryItemLabel
-                                    config={config}
-                                    i18n={i18n}
-                                    isSkeletonVisible={isSkeletonVisible}
-                                    className={classNames({ [LABEL_CONTAINER_HOVER_CLASS]: isHovered })}
-                                />
+                            <Tooltip content={i18n.get(`${config.tooltipLabel}`)} isContainerHovered={isHovered}>
+                                <SummaryItemLabel config={config} i18n={i18n} isSkeletonVisible={isSkeletonVisible} />
                             </Tooltip>
                         ) : (
                             <SummaryItemLabel config={config} i18n={i18n} isSkeletonVisible={isSkeletonVisible} />
