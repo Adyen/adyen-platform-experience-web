@@ -10,5 +10,5 @@ export interface TooltipProps {
     triggerRef?: Reflex<HTMLElement>;
     showTooltip?: boolean;
     position?: PopoverContainerPosition;
-    isContainerHovered: boolean;
+    isContainerHovered?: boolean;
 }
