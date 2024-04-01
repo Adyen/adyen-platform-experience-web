@@ -28,7 +28,6 @@ function useSessionAwareRequest() {
                 if (!isUpdatingToken) {
                     return await httpCall<T>(request, method, data);
                 } else {
-                    // shouldWait.setWaitForSessionToken(true);
                     throw new Error();
                 }
             } catch (e: any) {
