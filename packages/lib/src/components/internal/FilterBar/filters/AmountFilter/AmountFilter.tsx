@@ -50,19 +50,18 @@ export const AmountFilter = ({ updateFilters, selectedCurrencies, availableCurre
     );
 
     if (value && (value.minAmount || value.maxAmount)) {
-        const { minAmount, maxAmount } = value;
-
-        if (minAmount !== undefined && minAmount < 0) setValueFormattedValue(undefined);
-
-        if (minAmount !== undefined && maxAmount !== undefined) {
-            if (maxAmount < minAmount) setValueFormattedValue(undefined);
-            setValueFormattedValue(`${formatAmount(minAmount, showCurrencySymbol)} to ${formatAmount(maxAmount, showCurrencySymbol)}`);
+        const { minAmount, maxAmount } = value ?? {};
+        if (minAmount !== undefined && maxAmount !== undefined && minAmount <= maxAmount) {
+            setValueFormattedValue(
+                `${formatAmount(minAmount, showCurrencySymbol)} ${i18n.get('to').toLowerCase()} ${formatAmount(maxAmount, showCurrencySymbol)}`
+            );
+        } else if (minAmount !== undefined && maxAmount === undefined && minAmount >= 0) {
+            setValueFormattedValue(`${i18n.get('from')} ${formatAmount(minAmount, showCurrencySymbol)}`);
+        } else if (minAmount === undefined && maxAmount !== undefined) {
+            setValueFormattedValue(`${i18n.get('to')} ${formatAmount(maxAmount, showCurrencySymbol)}`);
         } else {
-            if (minAmount !== undefined) setValueFormattedValue(`${i18n.get('from')} ${formatAmount(minAmount, showCurrencySymbol)}`);
-            if (maxAmount !== undefined) setValueFormattedValue(`${i18n.get('to')} ${formatAmount(maxAmount, showCurrencySymbol)}`);
+            setValueFormattedValue(undefined);
         }
-    } else {
-        setValueFormattedValue(undefined);
     }
 
     return (
