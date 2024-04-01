@@ -43,8 +43,8 @@ export const Balances = memo(
         const [maxWidths, setMaxWidths] = useMaxWidthsState();
 
         useEffect(() => {
-            const currencies = balances?.map(({ currency }) => currency);
-            onCurrenciesChange(currencies, isFetching);
+            const currencies = new Set(balances?.map(({ currency }) => currency) || []);
+            onCurrenciesChange(Array.from(currencies), isFetching);
         }, [balances, isFetching, onCurrenciesChange]);
 
         return (

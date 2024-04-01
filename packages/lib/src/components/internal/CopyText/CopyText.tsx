@@ -27,12 +27,12 @@ const CopyText = ({ text }: { text: string }) => {
         <Tooltip content={tooltipLabel}>
             <Button
                 variant={ButtonVariant.TERTIARY}
-                className={'adyen-fp-copy-text'}
+                className={'adyen-pe-copy-text'}
                 onClick={onClick}
                 onBlur={resetTooltipLabel}
                 onMouseLeaveCapture={resetTooltipLabel}
             >
-                <span className={'adyen-fp-copy-text__information'}>{text}</span>
+                <span className={'adyen-pe-copy-text__information'}>{text}</span>
                 <Copy fill={'#0070f5'} />
             </Button>
         </Tooltip>

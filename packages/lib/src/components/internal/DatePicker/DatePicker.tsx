@@ -27,7 +27,7 @@ const DatePicker = forwardRef((props: DatePickerProps, ref) => {
     const withTimezone = useMemo(() => props.showTimezoneInfo !== false, [props.showTimezoneInfo]);
     const { clockTime: time, GMTOffset: offset } = useTimezone({ timezone: props.timezone, withClock: withTimezone });
 
-    const datePickerClassName = useMemo(() => cx([{ 'adyen-fp-datepicker--with-timezone': withTimezone }, 'adyen-fp-datepicker']), [withTimezone]);
+    const datePickerClassName = useMemo(() => cx([{ 'adyen-pe-datepicker--with-timezone': withTimezone }, 'adyen-pe-datepicker']), [withTimezone]);
     const timezoneI18nOptions = useMemo(() => (withTimezone ? { values: { offset, time } } : EMPTY_OBJECT), [offset, time, withTimezone]);
 
     const calendarRef = useReflex<CalendarHandle>(noop, ref as Ref<CalendarHandle>);
@@ -42,7 +42,7 @@ const DatePicker = forwardRef((props: DatePickerProps, ref) => {
 
     return (
         <div className={datePickerClassName}>
-            <div className={'adyen-fp-datepicker__selector-container'}>
+            <div className={'adyen-pe-datepicker__selector-container'}>
                 <TimeRangeSelector
                     now={props.now}
                     calendarRef={calendarRef}
@@ -53,7 +53,7 @@ const DatePicker = forwardRef((props: DatePickerProps, ref) => {
                     timezone={props.timezone}
                 />
             </div>
-            <div ref={controlsContainerRef} role="group" className={'adyen-fp-datepicker__controls'} aria-label={i18n.get('calendar.controls')} />
+            <div ref={controlsContainerRef} role="group" className={'adyen-pe-datepicker__controls'} aria-label={i18n.get('calendar.controls')} />
             <Calendar
                 {...props}
                 ref={calendarRef}
@@ -65,7 +65,7 @@ const DatePicker = forwardRef((props: DatePickerProps, ref) => {
                 onHighlight={onHighlight}
                 renderControl={controlsRenderer}
             />
-            {withTimezone && <div className={'adyen-fp-datepicker__timezone'}>{i18n.get('calendar.timezone', timezoneI18nOptions)}</div>}
+            {withTimezone && <div className={'adyen-pe-datepicker__timezone'}>{i18n.get('calendar.timezone', timezoneI18nOptions)}</div>}
         </div>
     );
 });

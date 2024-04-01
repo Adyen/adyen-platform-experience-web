@@ -11,7 +11,7 @@ function uuidv4() {
 const currentVersion = () => {
     let COMMIT_HASH = null;
     let COMMIT_BRANCH = null;
-    const ADYEN_BUILD_ID = `@adyen/adyen-fp-web-${uuidv4()}`;
+    const ADYEN_BUILD_ID = `@adyen/adyen-pe-web-${uuidv4()}`;
 
     try {
         COMMIT_HASH = childProcess.execSync('git rev-parse --short HEAD').toString().trim();

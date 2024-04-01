@@ -1,24 +1,24 @@
 @use 'colors';
 
-@mixin adyen-fp-outer-ring-generator {
-    $adyen-fp-color-focus: var(--adyen-fp-color-blue);
-    $adyen-fp-focus-ring-color: var(--adl-color-focus);
-    $adyen-fp-transition-duration: 0.1s;
-    $adyen-fp-timing-function-ease-in-out: cubic-bezier(0.785, 0.135, 0.15, 0.86);
-    $adyen-fp-box-shadow-initial-width: 1px;
-    $adyen-fp-box-shadow-width: 3px;
+@mixin adyen-pe-outer-ring-generator {
+    $adyen-pe-color-focus: var(--adyen-pe-color-blue);
+    $adyen-pe-focus-ring-color: var(--adl-color-focus);
+    $adyen-pe-transition-duration: 0.1s;
+    $adyen-pe-timing-function-ease-in-out: cubic-bezier(0.785, 0.135, 0.15, 0.86);
+    $adyen-pe-box-shadow-initial-width: 1px;
+    $adyen-pe-box-shadow-width: 3px;
 
-    @include colors.adyen-fp-colors;
+    @include colors.adyen-pe-colors;
 
     border-radius: 3px;
-    box-shadow: 0 0 0 $adyen-fp-box-shadow-initial-width var(--adyen-fp-color-white), 0 0 0 $adyen-fp-box-shadow-width $adyen-fp-color-focus;
-    transition: $adyen-fp-transition-duration $adyen-fp-timing-function-ease-in-out;
+    box-shadow: 0 0 0 $adyen-pe-box-shadow-initial-width var(--adyen-pe-color-white), 0 0 0 $adyen-pe-box-shadow-width $adyen-pe-color-focus;
+    transition: $adyen-pe-transition-duration $adyen-pe-timing-function-ease-in-out;
 }
 
-@mixin adyen-fp-focus-ring {
-    @include adyen-fp-outer-ring-generator;
+@mixin adyen-pe-focus-ring {
+    @include adyen-pe-outer-ring-generator;
 }
 
 @mixin adyen-touch-sizes {
-    --adyen-fp-touch-size-minimum: 40px;
+    --adyen-pe-touch-size-minimum: 40px;
 }

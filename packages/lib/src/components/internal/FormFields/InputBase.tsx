@@ -56,14 +56,14 @@ function InputBase(
     );
 
     const inputClassNames = classNames(
-        'adyen-fp-input',
-        [`adyen-fp-input--${type}`],
+        'adyen-pe-input',
+        [`adyen-pe-input--${type}`],
         props.className,
         {
-            'adyen-fp-input--invalid': isInvalid,
-            'adyen-fp-input--valid': isValid,
+            'adyen-pe-input--invalid': isInvalid,
+            'adyen-pe-input--valid': isValid,
         },
-        classNameModifiers?.map(m => `adyen-fp-input--${m}`)
+        classNameModifiers?.map(m => `adyen-pe-input--${m}`)
     );
 
     // Don't spread classNameModifiers etc to input element (it ends up as an attribute on the element itself)
@@ -87,7 +87,7 @@ function InputBase(
                 ref={ref}
             />
             {isInvalid && errorMessage && (
-                <span className="adyen-fp-input__invalid-value" id={`${uniqueId}${ARIA_ERROR_SUFFIX}`}>
+                <span className="adyen-pe-input__invalid-value" id={`${uniqueId}${ARIA_ERROR_SUFFIX}`}>
                     {errorMessage}
                 </span>
             )}

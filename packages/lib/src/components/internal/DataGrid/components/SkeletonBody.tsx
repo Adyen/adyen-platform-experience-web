@@ -8,13 +8,13 @@ const SkeletonBody = ({ columnsNumber, loading, emptyMessageDisplay }: { columns
     return (
         <>
             {rows.map((_, i) => (
-                <tr className="adyen-fp-data-grid__row" key={`adyen-fp-data-grid-skeleton-row-${i}`}>
+                <tr className="adyen-pe-data-grid__row" key={`adyen-pe-data-grid-skeleton-row-${i}`}>
                     {columns.map((_, index) => (
-                        <td key={`adyen-fp-data-grid-skeleton-cell-${index}`} className="adyen-fp-data-grid__cell adyen-fp-data-grid__skeleton-cell">
+                        <td key={`adyen-pe-data-grid-skeleton-cell-${index}`} className="adyen-pe-data-grid__cell adyen-pe-data-grid__skeleton-cell">
                             <span
                                 className={cx({
-                                    'adyen-fp-data-grid__skeleton-cell-content adyen-fp-data-grid__skeleton-cell-content--loading': loading,
-                                    'adyen-fp-data-grid__empty-cell': !loading,
+                                    'adyen-pe-data-grid__skeleton-cell-content adyen-pe-data-grid__skeleton-cell-content--loading': loading,
+                                    'adyen-pe-data-grid__empty-cell': !loading,
                                 })}
                             />
                         </td>

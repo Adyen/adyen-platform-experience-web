@@ -9,13 +9,13 @@ interface AlertProps {
     children: ComponentChildren;
     classNames?: string[];
     icon?: string;
-    type?: typeof ALERT_TYPES[number];
+    type?: (typeof ALERT_TYPES)[number];
 }
 
 export default function Alert({ children, classNames = [], type = 'error', icon }: AlertProps) {
     return (
-        <div className={cx('adyen-fp-alert-message', `adyen-fp-alert-message--${type}`, classNames)}>
-            {icon && <Icon className={'adyen-fp-alert-message__icon'} type={icon} />}
+        <div className={cx('adyen-pe-alert-message', `adyen-pe-alert-message--${type}`, classNames)}>
+            {icon && <Icon className={'adyen-pe-alert-message__icon'} type={icon} />}
             {children}
         </div>
     );

@@ -1,4 +1,4 @@
-.adyen-fp-structured-list {
+.adyen-pe-structured-list {
     // TODO Change this to use the common grid system once is merged
     &__grid {
         display: flex;
@@ -50,28 +50,28 @@
     }
 
     &__item {
-        font-weight: var(--adyen-fp-font-weight-regular);
-        line-height: var(--adyen-fp-spacing-large);
+        font-weight: var(--adyen-pe-font-weight-regular);
+        line-height: var(--adyen-pe-spacing-large);
         margin: 0;
 
         + #{&} {
-            margin-top: var(--adyen-fp-spacing-small);
+            margin-top: var(--adyen-pe-spacing-small);
         }
     }
 
     &__item--has-highlight:hover {
-        background-color: var(--adyen-fp-color-gray-lighter);
-        border-radius: var(--adyen-fp-border-radius-medium);
+        background-color: var(--adyen-pe-color-gray-lighter);
+        border-radius: var(--adyen-pe-border-radius-medium);
         transition: background-color 0.2s cubic-bezier(0.785, 0.135, 0.15, 0.86);
     }
 
     &__label {
-        color: var(--adyen-fp-color-gray-darker);
+        color: var(--adyen-pe-color-gray-darker);
         overflow-wrap: anywhere;
     }
 
     &__content {
-        color: var(--adyen-fp-color-black);
+        color: var(--adyen-pe-color-black);
         margin: 0;
         overflow-wrap: anywhere;
     }

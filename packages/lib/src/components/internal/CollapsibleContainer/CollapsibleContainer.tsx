@@ -12,12 +12,12 @@ function CollapsibleContainer({ isOpen, accessibilityId, children }: PropsWithCh
     return (
         <div
             id={accessibilityId}
-            className={classNames('adyen-fp-collapsible-container', {
-                'adyen-fp-collapsible-container--with-transition': !isOpen || withAnimation,
-                'adyen-fp-collapsible-container--collapsed': !isOpen,
+            className={classNames('adyen-pe-collapsible-container', {
+                'adyen-pe-collapsible-container--with-transition': !isOpen || withAnimation,
+                'adyen-pe-collapsible-container--collapsed': !isOpen,
             })}
         >
-            <div className="adyen-fp-collapsible-container__content">{children}</div>
+            <div className="adyen-pe-collapsible-container__content">{children}</div>
         </div>
     );
 }

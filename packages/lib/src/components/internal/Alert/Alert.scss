@@ -1,26 +1,26 @@
-.adyen-fp-alert-message {
-    border-radius: var(--adyen-fp-border-radius-medium);
+.adyen-pe-alert-message {
+    border-radius: var(--adyen-pe-border-radius-medium);
     display: flex;
-    font-size: var(--adyen-fp-font-size-small);
-    margin: 0 0 var(--adyen-fp-spacing-medium);
-    padding: var(--adyen-fp-spacing-medium-small);
+    font-size: var(--adyen-pe-font-size-small);
+    margin: 0 0 var(--adyen-pe-spacing-medium);
+    padding: var(--adyen-pe-spacing-medium-small);
     text-align: left;
 
     &--error {
-        background: var(--adyen-fp-color-red-light);
+        background: var(--adyen-pe-color-red-light);
     }
 
     &--warning {
-        background: var(--adyen-fp-color-orange-light);
+        background: var(--adyen-pe-color-orange-light);
     }
 
     &--info {
-        background: var(--adyen-fp-color-blue-lighter);
+        background: var(--adyen-pe-color-blue-lighter);
     }
 
     &__icon {
         height: 14px;
-        margin-right: var(--adyen-fp-spacing-small);
+        margin-right: var(--adyen-pe-spacing-small);
         width: 14px;
     }
 }

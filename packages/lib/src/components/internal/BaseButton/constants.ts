@@ -1,1 +1,1 @@
-export const DEFAULT_BASE_BUTTON_CLASSNAME = 'adyen-fp-base-button';
+export const DEFAULT_BASE_BUTTON_CLASSNAME = 'adyen-pe-base-button';

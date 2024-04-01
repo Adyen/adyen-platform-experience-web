@@ -8,7 +8,7 @@ import { useMemo } from 'preact/hooks';
 import { FilterButtonProps } from './types';
 import './FilterButton.scss';
 
-const DEFAULT_FILTER_BUTTON_CLASSNAME = 'adyen-fp-filter-button';
+const DEFAULT_FILTER_BUTTON_CLASSNAME = 'adyen-pe-filter-button';
 
 function FilterButton(
     { className, classNameModifiers = [], children, disabled, onClick, ...restAttributes }: FilterButtonProps,

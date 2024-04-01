@@ -98,9 +98,9 @@ class Core<T extends CoreOptions<T> = any> {
 
     /**
      * @internal
-     * Enhances the config object passed when AdyenFP is initialised (environment, clientKey, etc...)
+     * Enhances the config object passed when AdyenPlatformExperience is initialised (environment, clientKey, etc...)
      * (Re)Initializes core properties & processes (i18n, etc...)
-     * @param options - the config object passed when AdyenFP is initialised
+     * @param options - the config object passed when AdyenPlatformExperience is initialised
      * @returns this
      */
     private setOptions = (options: Partial<CoreOptions<T>>): this => {

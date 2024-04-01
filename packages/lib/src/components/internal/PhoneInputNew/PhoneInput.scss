@@ -1,13 +1,13 @@
-.adyen-fp-phone-input--new {
+.adyen-pe-phone-input--new {
     direction: ltr;
 
     // inherited style (FormFields.scss)
-    .adyen-fp-input-wrapper {
+    .adyen-pe-input-wrapper {
         width: 100%;
     }
 
     // inherited style (FormFields.scss)
-    .adyen-fp-input {
+    .adyen-pe-input {
         height: auto;
         padding: 0;
 
@@ -17,7 +17,7 @@
     }
 
     // inherited style (Select.scss)
-    .adyen-fp-dropdown__button {
+    .adyen-pe-dropdown__button {
         border: 0;
         border-bottom-right-radius: 0;
         border-top-right-radius: 0;
@@ -31,7 +31,7 @@
     }
 
     // inherited style (Select.scss)
-    .adyen-fp-dropdown__button--active {
+    .adyen-pe-dropdown__button--active {
         box-shadow: none;
 
         &:hover {
@@ -39,8 +39,8 @@
         }
     }
 
-    // Example of better BEM naming i.e. 'adyen-fp-input' as the Base
-    .adyen-fp-input--phone-number {
+    // Example of better BEM naming i.e. 'adyen-pe-input' as the Base
+    .adyen-pe-input--phone-number {
         border: 1px solid transparent;
         height: 35px;
         line-height: 35px;
@@ -55,28 +55,28 @@
         }
     }
 
-    .adyen-fp-dropdown--countrycode-selector {
+    .adyen-pe-dropdown--countrycode-selector {
         border-right: 1px solid #dce0e5;
         min-width: 134px;
         width: 134px;
 
-        .adyen-fp-input:focus-within & {
+        .adyen-pe-input:focus-within & {
             border-right: 1px solid #0075ff;
         }
     }
 
-    .adyen-fp-input-holder--phone-input {
+    .adyen-pe-input-holder--phone-input {
         align-items: center;
         display: flex;
     }
 
-    .adyen-fp-phone-number {
+    .adyen-pe-phone-number {
         align-items: center;
         display: flex;
         flex: 3;
     }
 
-    .adyen-fp-phone-input__error-holder {
+    .adyen-pe-phone-input__error-holder {
         margin-top: -10px;
     }
 }

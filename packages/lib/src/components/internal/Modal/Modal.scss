@@ -1,4 +1,4 @@
-$adyen-fp-modal-sizes: (
+$adyen-pe-modal-sizes: (
     'fluid': (
         'width': max-content,
     ),
@@ -14,7 +14,7 @@ $adyen-fp-modal-sizes: (
     ),
 );
 
-.adyen-fp-modal-wrapper {
+.adyen-pe-modal-wrapper {
     align-items: center;
     background: rgba(0, 17, 44, 0.5);
     bottom: 0;
@@ -38,7 +38,7 @@ $adyen-fp-modal-sizes: (
         opacity: 1;
         visibility: visible;
 
-        .adyen-fp-modal {
+        .adyen-pe-modal {
             opacity: 1;
             transform: scale(1);
         }
@@ -49,9 +49,9 @@ $adyen-fp-modal-sizes: (
     }
 }
 
-.adyen-fp-modal {
-    background-color: var(--adyen-fp-color-white);
-    border-radius: var(--adyen-fp-border-radius-large);
+.adyen-pe-modal {
+    background-color: var(--adyen-pe-color-white);
+    border-radius: var(--adyen-pe-border-radius-large);
     cursor: initial;
     opacity: 0;
     overflow-y: auto;
@@ -63,7 +63,7 @@ $adyen-fp-modal-sizes: (
         direction: rtl;
     }
 
-    @each $name, $dimensions in $adyen-fp-modal-sizes {
+    @each $name, $dimensions in $adyen-pe-modal-sizes {
         &--#{$name} {
             // Check if the height key exists in the map, otherwise use 'auto'
             height: if(map-has-key($dimensions, 'height'), map-get($dimensions, 'height'), auto);
@@ -90,10 +90,10 @@ $adyen-fp-modal-sizes: (
 
     &__header {
         align-items: center;
-        color: var(--adyen-fp-color-black);
+        color: var(--adyen-pe-color-black);
         display: flex;
-        font-size: var(--adyen-fp-font-size-base);
-        font-weight: var(--adyen-fp-font-weight-semi-bold);
+        font-size: var(--adyen-pe-font-size-base);
+        font-weight: var(--adyen-pe-font-weight-semi-bold);
         justify-content: flex-end;
         padding: 24px 24px 0;
 
@@ -103,7 +103,7 @@ $adyen-fp-modal-sizes: (
         }
 
         &--with-border-bottom {
-            border-bottom: 1px solid var(--adyen-fp-color-gray-light);
+            border-bottom: 1px solid var(--adyen-pe-color-gray-light);
         }
     }
 
@@ -113,26 +113,26 @@ $adyen-fp-modal-sizes: (
         transition: background 0.1s linear;
 
         &:hover {
-            background: var(--adyen-fp-color-gray-lighter);
+            background: var(--adyen-pe-color-gray-lighter);
         }
 
         &:focus {
-            background: var(--adyen-fp-color-gray-light);
+            background: var(--adyen-pe-color-gray-light);
             outline: 0;
         }
     }
 
-    .adyen-fp-label__text {
-        font-size: var(--adyen-fp-font-size-medium);
-        margin-bottom: var(--adyen-fp-spacing-xsmall);
+    .adyen-pe-label__text {
+        font-size: var(--adyen-pe-font-size-medium);
+        margin-bottom: var(--adyen-pe-spacing-xsmall);
     }
 
     &__footer {
-        // background: var(--adyen-fp-color-gray-lighter);
+        // background: var(--adyen-pe-color-gray-lighter);
         display: flex;
-        gap: var(--adyen-fp-spacing-small);
+        gap: var(--adyen-pe-spacing-small);
 
-        .adyen-fp-button:first-child {
+        .adyen-pe-button:first-child {
             margin-left: auto;
         }
     }

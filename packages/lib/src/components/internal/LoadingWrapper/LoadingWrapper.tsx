@@ -9,7 +9,7 @@ interface LoadingWrapperProps {
 }
 
 const LoadingWrapper = ({ children, status }: LoadingWrapperProps) => {
-    const wrapperClass = classNames('adyen-fp-loading-input__form', styles['loading-input__form'], {
+    const wrapperClass = classNames('adyen-pe-loading-input__form', styles['loading-input__form'], {
         [styles['loading-input__form--loading'] ?? 'loading-input__form--loading']: status === 'loading',
     });
 

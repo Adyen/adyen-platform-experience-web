@@ -1,2 +1,2 @@
-export { default as TransactionsComponent } from './TransactionsOverviewElement';
+export { default as TransactionsOverview } from './TransactionsOverviewElement';
 export * from './types';

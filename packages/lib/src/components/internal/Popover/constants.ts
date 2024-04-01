@@ -1,5 +1,5 @@
-export const DEFAULT_POPOVER_CLASSNAME = 'adyen-fp-popover';
-export const DEFAULT_TOOLTIP_CLASSNAME = 'adyen-fp-tooltip';
+export const DEFAULT_POPOVER_CLASSNAME = 'adyen-pe-popover';
+export const DEFAULT_TOOLTIP_CLASSNAME = 'adyen-pe-tooltip';
 export const POPOVER_CONTAINER_CLASSNAME = `${DEFAULT_POPOVER_CLASSNAME}-container`;
 export const POPOVER_HEADER_CLASSNAME = `${DEFAULT_POPOVER_CLASSNAME}__header`;
 export const POPOVER_HEADER_TITLE_CLASSNAME = `${DEFAULT_POPOVER_CLASSNAME}__header-title`;

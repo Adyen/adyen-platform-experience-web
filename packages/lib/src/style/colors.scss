@@ -1,53 +1,53 @@
-@mixin adyen-fp-colors {
+@mixin adyen-pe-colors {
     // Palette
-    --adyen-fp-color-black: #00112c;
-    --adyen-fp-color-gray-darker: #687282;
-    --adyen-fp-color-gray-dark: #c9cdd3;
-    --adyen-fp-color-gray-dark-2: #4e5152;
-    --adyen-fp-color-gray: #d4d9db;
-    --adyen-fp-color-gray-light: #d1d5da;
-    --adyen-fp-color-gray-light-2: #dbdee2;
-    --adyen-fp-color-gray-lighter: #eeeff1;
-    --adyen-fp-color-gray-100: #f7f7f8;
-    --adyen-fp-color-gray-label-secondary: #5c687c;
+    --adyen-pe-color-black: #00112c;
+    --adyen-pe-color-gray-darker: #687282;
+    --adyen-pe-color-gray-dark: #c9cdd3;
+    --adyen-pe-color-gray-dark-2: #4e5152;
+    --adyen-pe-color-gray: #d4d9db;
+    --adyen-pe-color-gray-light: #d1d5da;
+    --adyen-pe-color-gray-light-2: #dbdee2;
+    --adyen-pe-color-gray-lighter: #eeeff1;
+    --adyen-pe-color-gray-100: #f7f7f8;
+    --adyen-pe-color-gray-label-secondary: #5c687c;
 
-    --adyen-fp-color-white: #fff;
+    --adyen-pe-color-white: #fff;
 
-    --adyen-fp-color-new-gray-darker: #707070;
-    --adyen-fp-color-gray-disable: #8d95a3;
+    --adyen-pe-color-new-gray-darker: #707070;
+    --adyen-pe-color-gray-disable: #8d95a3;
 
-    --adyen-fp-color-blue: #0075ff;
-    --adyen-fp-color-blue-light: #99c2ff;
-    --adyen-fp-color-blue-lighter: #e5efff;
+    --adyen-pe-color-blue: #0075ff;
+    --adyen-pe-color-blue-light: #99c2ff;
+    --adyen-pe-color-blue-lighter: #e5efff;
 
-    --adyen-fp-color-green: #067934;
-    --adyen-fp-color-green-100: #edfaf3;
+    --adyen-pe-color-green: #067934;
+    --adyen-pe-color-green-100: #edfaf3;
 
-    --adyen-fp-color-orange: #ffae42;
-    --adyen-fp-color-orange-light: #ffeacc;
-    --adyen-fp-color-orange-dark: #7f4a00;
+    --adyen-pe-color-orange: #ffae42;
+    --adyen-pe-color-orange-light: #ffeacc;
+    --adyen-pe-color-orange-dark: #7f4a00;
 
-    --adyen-fp-color-red: #c72727;
-    --adyen-fp-color-red-light: #fef4f4;
+    --adyen-pe-color-red: #c72727;
+    --adyen-pe-color-red-light: #fef4f4;
 
-    --adyen-fp-color-yellow: #fff5e9;
-    --adyen-fp-color-yellow-dark: #9b5700;
+    --adyen-pe-color-yellow: #fff5e9;
+    --adyen-pe-color-yellow-dark: #9b5700;
 
     // Application
-    --adyen-fp-color-primary: var(--adyen-fp-color-blue);
-    --adyen-fp-color-success: var(--adyen-fp-color-green);
-    --adyen-fp-color-alert: var(--adyen-fp-color-red);
-    --adyen-fp-color-disabled: var(--adyen-fp-color-gray-light);
-    --adyen-fp-color-warning: var(--adyen-fp-color-gray-light);
+    --adyen-pe-color-primary: var(--adyen-pe-color-blue);
+    --adyen-pe-color-success: var(--adyen-pe-color-green);
+    --adyen-pe-color-alert: var(--adyen-pe-color-red);
+    --adyen-pe-color-disabled: var(--adyen-pe-color-gray-light);
+    --adyen-pe-color-warning: var(--adyen-pe-color-gray-light);
 
-    --adyen-fp-background-secondary: var(--adyen-fp-color-gray-100);
+    --adyen-pe-background-secondary: var(--adyen-pe-color-gray-100);
 
-    --adyen-fp-label-secondary: var(--adyen-fp-color-gray-label-secondary);
+    --adyen-pe-label-secondary: var(--adyen-pe-color-gray-label-secondary);
 
     // Border colors
-    --adyen-fp-color-border-dark: var(--adyen-fp-color-gray-dark);
-    --adyen-fp-color-border-darker: var(--adyen-fp-color-gray-darker);
-    --adyen-fp-color-border: var(--adyen-fp-color-gray);
-    --adyen-fp-color-border-light: var(--adyen-fp-color-gray-light);
-    --adyen-fp-color-border-lighter: var(--adyen-fp-color-gray-light-2);
+    --adyen-pe-color-border-dark: var(--adyen-pe-color-gray-dark);
+    --adyen-pe-color-border-darker: var(--adyen-pe-color-gray-darker);
+    --adyen-pe-color-border: var(--adyen-pe-color-gray);
+    --adyen-pe-color-border-light: var(--adyen-pe-color-gray-light);
+    --adyen-pe-color-border-lighter: var(--adyen-pe-color-gray-light-2);
 }
