@@ -1,4 +1,4 @@
-.adyen-fp-summary-item {
+.adyen-pe-summary-item {
     align-items: center;
     display: flex;
     gap: 50px;
@@ -6,9 +6,9 @@
     width: 100%;
 
     &--body {
-        border-top: 1px solid var(--adyen-fp-color-separator-primary);
-        margin-top: var(--adyen-fp-spacer-040);
-        padding-top: var(--adyen-fp-spacer-040);
+        border-top: 1px solid var(--adyen-pe-color-separator-primary);
+        margin-top: var(--adyen-pe-spacer-040);
+        padding-top: var(--adyen-pe-spacer-040);
     }
 
     &__label-container {
@@ -20,7 +20,7 @@
             text-decoration-color: #016fd0;
             text-decoration-style: dashed;
             text-decoration-thickness: 1px;
-            text-underline-offset: var(--adyen-fp-spacing-xsmall);
+            text-underline-offset: var(--adyen-pe-spacing-xsmall);
         }
 
         &--loading {
@@ -28,7 +28,7 @@
         }
 
         &--text {
-            color: var(--adyen-fp-color-label-secondary);
+            color: var(--adyen-pe-color-label-secondary);
             width: fit-content;
         }
     }

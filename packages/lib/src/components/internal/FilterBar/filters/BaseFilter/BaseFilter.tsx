@@ -110,7 +110,7 @@ const BaseFilter = <T extends BaseFilterProps = BaseFilterProps>({ render, ...pr
     }, [committing, closeEditDialog, updateHasEmptyValue, hasEmptyValue]);
     return (
         <>
-            <div className={`adyen-fp-filter adyen-fp-filter--${props.type}`}>
+            <div className={`adyen-pe-filter adyen-pe-filter--${props.type}`}>
                 {useMemo(
                     () => (
                         <FilterButton
@@ -124,22 +124,22 @@ const BaseFilter = <T extends BaseFilterProps = BaseFilterProps>({ render, ...pr
                             tabIndex={0}
                             ref={targetElement as Ref<HTMLButtonElement | null>}
                         >
-                            <div className="adyen-fp-filter-button__default-container">
+                            <div className="adyen-pe-filter-button__default-container">
                                 <Typography
                                     el={TypographyElement.SPAN}
                                     variant={TypographyVariant.BODY}
                                     stronger={true}
-                                    className="adyen-fp-filter-button__label"
+                                    className="adyen-pe-filter-button__label"
                                 >
                                     {props.label}
                                 </Typography>
                                 {!!props.appliedFilterAmount && (
-                                    <div className="adyen-fp-filter-button__counter-wrapper">
+                                    <div className="adyen-pe-filter-button__counter-wrapper">
                                         <Typography
                                             el={TypographyElement.SPAN}
                                             variant={TypographyVariant.BODY}
                                             stronger={true}
-                                            className="adyen-fp-filter-button__counter"
+                                            className="adyen-pe-filter-button__counter"
                                         >
                                             {props.appliedFilterAmount}
                                         </Typography>

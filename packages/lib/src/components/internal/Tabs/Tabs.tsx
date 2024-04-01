@@ -33,13 +33,13 @@ function Tabs<T extends TabProps[]>(props: TabComponentProps<T>) {
 
     return (
         <section aria-label={i18n.get('tabs')}>
-            <div className="adyen-fp-tabs" role="tablist" aria-orientation="horizontal">
+            <div className="adyen-pe-tabs" role="tablist" aria-orientation="horizontal">
                 {availableTabs.map((tab, index) => (
                     <button
                         id={`tab-id-${tab.id}`}
                         key={`tab-${tab.id}`}
                         name={tab.id}
-                        className="adyen-fp-tabs__tab"
+                        className="adyen-pe-tabs__tab"
                         role="tab"
                         aria-controls={`panel-id-${tab.id}`}
                         aria-selected={selectedIndex === index}
@@ -51,15 +51,15 @@ function Tabs<T extends TabProps[]>(props: TabComponentProps<T>) {
                         tabIndex={selectedIndex === index ? 0 : -1}
                         disabled={tab.disabled}
                     >
-                        <span className="adyen-fp-tabs__tab-content-tab-label">{i18n.get(tab.label)}</span>
+                        <span className="adyen-pe-tabs__tab-content-tab-label">{i18n.get(tab.label)}</span>
                     </button>
                 ))}
             </div>
-            <div className="adyen-fp-tabpanel__wrapper">
+            <div className="adyen-pe-tabpanel__wrapper">
                 {availableTabs.map((tab, index) => (
                     <section
                         name={tab.id}
-                        className="adyen-fp-tabpanel__content"
+                        className="adyen-pe-tabpanel__content"
                         id={`panel-id-${tab.id}`}
                         key={`tabpanel-${tab.id}`}
                         hidden={selectedIndex !== index}

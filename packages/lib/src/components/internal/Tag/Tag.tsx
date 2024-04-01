@@ -5,12 +5,12 @@ import { memo } from 'preact/compat';
 export const Tag = memo(({ variant = TagVariant.DEFAULT, label }: TagProps) => {
     return (
         <div
-            className={cx('adyen-fp-tag', {
-                'adyen-fp-tag--success': variant === TagVariant.SUCCESS,
-                'adyen-fp-tag--default': variant === TagVariant.DEFAULT,
-                'adyen-fp-tag--warning': variant === TagVariant.WARNING,
-                'adyen-fp-tag--error': variant === TagVariant.ERROR,
-                'adyen-fp-tag--white': variant === TagVariant.WHITE,
+            className={cx('adyen-pe-tag', {
+                'adyen-pe-tag--success': variant === TagVariant.SUCCESS,
+                'adyen-pe-tag--default': variant === TagVariant.DEFAULT,
+                'adyen-pe-tag--warning': variant === TagVariant.WARNING,
+                'adyen-pe-tag--error': variant === TagVariant.ERROR,
+                'adyen-pe-tag--white': variant === TagVariant.WHITE,
             })}
         >
             {label}

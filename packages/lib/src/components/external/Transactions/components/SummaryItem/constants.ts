@@ -1,4 +1,4 @@
-export const BASE_CLASS = 'adyen-fp-summary-item';
+export const BASE_CLASS = 'adyen-pe-summary-item';
 export const LABEL_CONTAINER_CLASS = BASE_CLASS + '__label-container';
 export const LABEL_CONTAINER_HOVER_CLASS = LABEL_CONTAINER_CLASS + '--hover';
 export const LABEL_CONTAINER_CLASS_LOADING = LABEL_CONTAINER_CLASS + '--loading';

@@ -1,17 +1,17 @@
-.adyen-fp-transactions {
+.adyen-pe-transactions {
     &__container {
-        background: var(--adyen-fp-color-white);
-        border: 1px solid var(--adyen-fp-color-gray-dark);
-        border-radius: var(--adyen-fp-spacing-small);
+        background: var(--adyen-pe-color-white);
+        border: 1px solid var(--adyen-pe-color-gray-dark);
+        border-radius: var(--adyen-pe-spacing-small);
         display: flex;
         flex-direction: column;
-        gap: var(--adyen-fp-spacing-medium);
-        padding: 12px var(--adyen-fp-spacing-medium);
+        gap: var(--adyen-pe-spacing-medium);
+        padding: 12px var(--adyen-pe-spacing-medium);
     }
 
     &__amount {
         display: block;
-        font-weight: var(--adyen-fp-font-weight-medium);
+        font-weight: var(--adyen-pe-font-weight-medium);
         text-align: right;
     }
 
@@ -34,7 +34,7 @@
     &__balance-totals {
         display: flex;
         flex-wrap: wrap;
-        gap: var(--adyen-fp-spacing-base);
+        gap: var(--adyen-pe-spacing-base);
         justify-content: space-between;
     }
 

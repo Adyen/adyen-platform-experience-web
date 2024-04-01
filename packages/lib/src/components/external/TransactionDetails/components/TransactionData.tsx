@@ -33,10 +33,10 @@ export const TransactionData = ({ transaction, isFetching }: { transaction?: Tra
             {!transaction ? (
                 <TransactionDataSkeleton isLoading={isFetching} skeletonRowNumber={6} />
             ) : (
-                <div className={'adyen-fp-transaction-data'}>
-                    <div className={'adyen-fp-transaction-data__container'}>
+                <div className={'adyen-pe-transaction-data'}>
+                    <div className={'adyen-pe-transaction-data__container'}>
                         {(transaction?.status || transaction?.category) && (
-                            <div className={'adyen-fp-transaction-data__section adyen-fp-transaction-data__tag-container'}>
+                            <div className={'adyen-pe-transaction-data__section adyen-pe-transaction-data__tag-container'}>
                                 {transaction?.status && (
                                     <Tag
                                         label={i18n.get(transaction.status)}
@@ -53,7 +53,7 @@ export const TransactionData = ({ transaction, isFetching }: { transaction?: Tra
                             </div>
                         )}
                         <div
-                            className={`adyen-fp-transaction-data__section adyen-fp-transaction-data__amount adyen-fp-transaction-data__amount--${amountStyle}`}
+                            className={`adyen-pe-transaction-data__section adyen-pe-transaction-data__amount adyen-pe-transaction-data__amount--${amountStyle}`}
                         >
                             {transaction.amount
                                 ? i18n.amount(transaction.amount.value, transaction.amount.currency, {
@@ -62,39 +62,39 @@ export const TransactionData = ({ transaction, isFetching }: { transaction?: Tra
                                 : null}
                         </div>
                         {(transaction?.paymentMethod || transaction?.bankAccount) && (
-                            <div className="adyen-fp-transaction-data__section adyen-fp-transaction-data__payment-method">
-                                <div className="adyen-fp-transaction-data__payment-method-logo-container">
+                            <div className="adyen-pe-transaction-data__section adyen-pe-transaction-data__payment-method">
+                                <div className="adyen-pe-transaction-data__payment-method-logo-container">
                                     <Image
                                         name={transaction.paymentMethod ? transaction.paymentMethod.type : 'bankTransfer'}
                                         alt={transaction.paymentMethod ? transaction.paymentMethod.type : 'bankTransfer'}
                                         folder={'logos/'}
-                                        className={'adyen-fp-transactions__payment-method-logo'}
+                                        className={'adyen-pe-transactions__payment-method-logo'}
                                     />
                                 </div>
 
-                                <div className={'adyen-fp-transaction-data__payment-method-detail'}>
+                                <div className={'adyen-pe-transaction-data__payment-method-detail'}>
                                     {transaction?.paymentMethod
                                         ? parsePaymentMethodType(transaction?.paymentMethod, 'detail')
                                         : transaction?.bankAccount?.accountNumberLastFourDigits}
                                 </div>
                             </div>
                         )}
-                        <div className={'adyen-fp-transaction-data__section adyen-fp-transaction-data__label'}>{creationDate}</div>
+                        <div className={'adyen-pe-transaction-data__section adyen-pe-transaction-data__label'}>{creationDate}</div>
                     </div>
 
                     {transaction?.balanceAccountDescription && (
-                        <div className={'adyen-fp-transaction-data__container'}>
-                            <div className={'adyen-fp-transaction-data__label'}>{i18n.get('account')}</div>
+                        <div className={'adyen-pe-transaction-data__container'}>
+                            <div className={'adyen-pe-transaction-data__label'}>{i18n.get('account')}</div>
                             <div>{transaction.balanceAccountDescription}</div>
                         </div>
                     )}
-                    <div className={'adyen-fp-transaction-data__container'}>
-                        <div className={'adyen-fp-transaction-data__label'}>{i18n.get('referenceID')}</div>
+                    <div className={'adyen-pe-transaction-data__container'}>
+                        <div className={'adyen-pe-transaction-data__label'}>{i18n.get('referenceID')}</div>
                         <div aria-label={i18n.get('referenceID')}>{transaction.id}</div>
                     </div>
                 </div>
             )}
-            {/*{transaction && <div className={'adyen-fp-transaction-data__container adyen-fp-transaction-data__action-buttons'}>*/}
+            {/*{transaction && <div className={'adyen-pe-transaction-data__container adyen-pe-transaction-data__action-buttons'}>*/}
             {/*    <Button aria-label={i18n.get('export')} variant={ButtonVariant.SECONDARY} onClick={() => {}}>*/}
             {/*        {i18n.get('export')}*/}
             {/*    </Button>*/}

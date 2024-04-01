@@ -1,11 +1,11 @@
-.adyen-fp-spinner__wrapper {
+.adyen-pe-spinner__wrapper {
     align-items: center;
     display: flex;
     height: 100%;
     justify-content: center;
 }
 
-.adyen-fp-spinner__wrapper--inline {
+.adyen-pe-spinner__wrapper--inline {
     display: inline-block;
     height: auto;
     margin-right: 8px;
@@ -16,27 +16,27 @@
     }
 }
 
-.adyen-fp-spinner {
+.adyen-pe-spinner {
     animation: rotateSpinner 1.5s infinite linear;
-    border: 3px solid var(--adyen-fp-color-primary);
+    border: 3px solid var(--adyen-pe-color-primary);
     border-radius: 50%;
     border-top-color: transparent;
     height: 43px;
     width: 43px;
 }
 
-.adyen-fp-spinner--large {
+.adyen-pe-spinner--large {
     height: 43px;
     width: 43px;
 }
 
-.adyen-fp-spinner--small {
+.adyen-pe-spinner--small {
     border-width: 2px;
     height: 16px;
     width: 16px;
 }
 
-.adyen-fp-spinner--medium {
+.adyen-pe-spinner--medium {
     height: 28px;
     width: 28px;
 }

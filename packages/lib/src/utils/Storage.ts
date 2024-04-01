@@ -1,5 +1,5 @@
 class Storage<T> {
-    private readonly prefix = 'adyen-fp-';
+    private readonly prefix = 'adyen-pe-';
     private readonly key: string;
     private storage: globalThis.Storage;
 

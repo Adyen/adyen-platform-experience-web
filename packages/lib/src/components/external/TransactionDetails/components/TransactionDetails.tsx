@@ -2,7 +2,7 @@ import { TransactionData } from '@src/components/external/TransactionDetails/com
 import { ErrorMessageDisplay } from '@src/components/internal/ErrorMessageDisplay/ErrorMessageDisplay';
 import { getErrorMessage } from '@src/components/utils/transactionResourceErrorCodes';
 import useCoreContext from '@src/core/Context/useCoreContext';
-import AdyenFPError from '@src/core/Errors/AdyenFPError';
+import AdyenPlatformExperienceError from '@src/core/Errors/AdyenPlatformExperienceError';
 import { useFetch } from '@src/hooks/useFetch/useFetch';
 import { useSetupEndpoint } from '@src/hooks/useSetupEndpoint/useSetupEndpoint';
 import { EMPTY_OBJECT } from '@src/utils/common';
@@ -36,17 +36,17 @@ export default function TransactionDetails(props: ExternalUIComponentProps<Trans
 
     const errorProps = useMemo(() => {
         if (error) {
-            return getErrorMessage(error as AdyenFPError, props.onContactSupport);
+            return getErrorMessage(error as AdyenPlatformExperienceError, props.onContactSupport);
         }
     }, [error, props.onContactSupport]);
 
     const transactionData = transaction ?? data;
     return (
-        <div className="adyen-fp-transaction">
-            {props.title && <div className="adyen-fp-title">{i18n.get(props.title)}</div>}
+        <div className="adyen-pe-transaction">
+            {props.title && <div className="adyen-pe-title">{i18n.get(props.title)}</div>}
 
             {error && errorProps && (
-                <div className="adyen-fp-transaction--error-container">
+                <div className="adyen-pe-transaction--error-container">
                     <ErrorMessageDisplay centered withImage {...errorProps} />
                 </div>
             )}

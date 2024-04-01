@@ -68,7 +68,7 @@ const ExpandableCard = ({ renderHeader, children, filled, ...listeners }: PropsW
                         data-testid={'expand-button'}
                         {...listeners}
                     >
-                        <span className="adyen-fp-sr-only">{i18n.get('expandableCard.expand')}</span>
+                        <span className="adyen-pe-sr-only">{i18n.get('expandableCard.expand')}</span>
                         <div className={classNames(CONTENT_CLASS, CONTENT_EXPANDABLE_CLASS)}>{renderHeader}</div>
                         <div className={CHEVRON_CLASS}>
                             <ChevronDown role="presentation" />
@@ -89,7 +89,7 @@ const ExpandableCard = ({ renderHeader, children, filled, ...listeners }: PropsW
                         data-testid={'collapse-button'}
                         {...listeners}
                     >
-                        <span className="adyen-fp-sr-only">{i18n.get('expandableCard.collapse')}</span>
+                        <span className="adyen-pe-sr-only">{i18n.get('expandableCard.collapse')}</span>
                         <div className={classNames(CONTENT_CLASS, CONTENT_EXPANDABLE_CLASS)}>
                             {renderHeader}
                             <div>{children}</div>

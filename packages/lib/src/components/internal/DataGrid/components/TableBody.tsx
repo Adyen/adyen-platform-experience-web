@@ -20,7 +20,7 @@ export const TableBody = <
         <>
             {data?.map((item, index) => (
                 <tr
-                    className="adyen-fp-data-grid__row"
+                    className="adyen-pe-data-grid__row"
                     key={item}
                     onMouseEnter={i18n.has(`tooltip.${item?.category}`) ? () => onRowHover(index) : noop}
                     onFocus={i18n.has(`tooltip.${item?.category}`) ? () => onRowHover(index) : noop}

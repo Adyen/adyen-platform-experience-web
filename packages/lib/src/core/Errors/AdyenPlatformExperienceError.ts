@@ -1,6 +1,6 @@
 import { ErrorTypes } from '@src/core/Services/requests/utils';
 
-class AdyenFPError extends Error {
+class AdyenPlatformExperienceError extends Error {
     public type: string;
     public errorCode?: string;
     public requestId?: string;
@@ -13,4 +13,4 @@ class AdyenFPError extends Error {
     }
 }
 
-export default AdyenFPError;
+export default AdyenPlatformExperienceError;

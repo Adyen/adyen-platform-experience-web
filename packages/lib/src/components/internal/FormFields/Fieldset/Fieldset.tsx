@@ -17,14 +17,14 @@ export default function Fieldset({ children, classNameModifiers = [], label, rea
     return (
         <div
             className={cx([
-                'adyen-fp-fieldset',
-                ...classNameModifiers.map(m => `adyen-fp-fieldset--${m}`),
-                { 'adyen-fp-fieldset--readonly': readonly },
+                'adyen-pe-fieldset',
+                ...classNameModifiers.map(m => `adyen-pe-fieldset--${m}`),
+                { 'adyen-pe-fieldset--readonly': readonly },
             ])}
         >
-            {label && <div className="adyen-fp-fieldset__title">{i18n.get(label)}</div>}
+            {label && <div className="adyen-pe-fieldset__title">{i18n.get(label)}</div>}
 
-            <div className="adyen-fp-fieldset__fields">{children}</div>
+            <div className="adyen-pe-fieldset__fields">{children}</div>
         </div>
     );
 }

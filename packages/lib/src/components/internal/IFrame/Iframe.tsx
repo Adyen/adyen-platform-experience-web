@@ -62,7 +62,7 @@ class Iframe extends Component<IframeProps> {
                     this.iframeEl = ref;
                 }}
                 allow={allow}
-                className={`adyen-fp-iframe adyen-fp-iframe--${name}`}
+                className={`adyen-pe-iframe adyen-pe-iframe--${name}`}
                 name={name}
                 src={src}
                 width={width}

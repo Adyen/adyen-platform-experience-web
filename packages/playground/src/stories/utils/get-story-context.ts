@@ -1,8 +1,8 @@
 import { StoryContext } from '@storybook/types';
-import { Core, CoreOptions } from '@adyen/adyen-fp-web';
+import { Core, CoreOptions } from '@adyen/adyen-platform-experience-web';
 import { PreactRenderer } from '@storybook/preact';
 
-export const getStoryContextAdyenFP = (context: StoryContext<PreactRenderer, CoreOptions>): Core | undefined => {
-    const { adyenFP } = context.loaded;
-    return adyenFP;
+export const getStoryContextAdyenPlatformExperience = (context: StoryContext<PreactRenderer, CoreOptions>): Core | undefined => {
+    const { AdyenPlatformExperience } = context.loaded;
+    return AdyenPlatformExperience;
 };
