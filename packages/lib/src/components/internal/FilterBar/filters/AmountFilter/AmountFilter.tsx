@@ -15,7 +15,6 @@ export const AmountFilter = ({ updateFilters, selectedCurrencies, availableCurre
 
     const showCurrencySymbol = useMemo(() => {
         if (selectedCurrencies?.length === 1 || availableCurrencies?.length === 1) return true;
-        if ((availableCurrencies?.length ?? 0) > 1) return false;
         return false;
     }, [availableCurrencies?.length, selectedCurrencies?.length]);
 
