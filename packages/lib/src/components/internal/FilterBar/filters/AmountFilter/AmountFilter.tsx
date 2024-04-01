@@ -21,17 +21,15 @@ export const AmountFilter = ({ updateFilters, selectedCurrencies, availableCurre
     const formatAmount = useCallback(
         (amount: number, showSymbol: boolean) => {
             const currencyCode = selectedCurrencies?.[0] || availableCurrencies?.[0];
-            const formatter = new Intl.NumberFormat(i18n.locale);
-
-            if (!currencyCode) return formatter.format(amount);
-
-            return showSymbol
-                ? amount.toLocaleString(currencyCode, {
-                      style: 'currency',
-                      currency: currencyCode,
-                      currencyDisplay: 'symbol',
-                  })
-                : formatter.format(amount);
+            const options =
+                showSymbol && currencyCode
+                    ? {
+                          style: 'currency',
+                          currency: currencyCode,
+                          currencyDisplay: 'symbol',
+                      }
+                    : undefined;
+            return amount.toLocaleString(i18n.locale, options);
         },
         [availableCurrencies, i18n, selectedCurrencies]
     );
