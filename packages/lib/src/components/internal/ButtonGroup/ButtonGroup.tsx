@@ -3,25 +3,25 @@ import './ButtonGroup.scss';
 import { ButtonGroupProps } from './types';
 
 const ButtonGroup = ({ options = [], name, onChange }: ButtonGroupProps) => (
-    <div className="adyen-fp-button-group">
+    <div className="adyen-pe-button-group">
         {options.map(({ label, selected, value, disabled }, index) => (
             <label
                 key={`${name}${index}`}
                 className={cx({
-                    'adyen-fp-button': true,
-                    'adyen-fp-button--selected': selected,
-                    'adyen-fp-button--disabled': disabled,
+                    'adyen-pe-button': true,
+                    'adyen-pe-button--selected': selected,
+                    'adyen-pe-button--disabled': disabled,
                 })}
             >
                 <input
                     type="radio"
-                    className="adyen-fp-button-group__input"
+                    className="adyen-pe-button-group__input"
                     value={value}
                     checked={selected}
                     onChange={onChange}
                     disabled={disabled}
                 />
-                <span className="adyen-fp-button-text">{label}</span>
+                <span className="adyen-pe-button-text">{label}</span>
             </label>
         ))}
     </div>

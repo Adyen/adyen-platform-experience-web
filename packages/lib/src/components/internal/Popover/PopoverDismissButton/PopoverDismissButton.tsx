@@ -12,7 +12,7 @@ interface PopoverDismissButtonProps {
 function PopoverDismissButton({ image = true, onClick }: PopoverDismissButtonProps) {
     const { i18n } = useCoreContext();
     const getConditionalClasses = (): string => {
-        return image ? 'adyen-fp-popover-dismiss-button--on-image' : '';
+        return image ? 'adyen-pe-popover-dismiss-button--on-image' : '';
     };
     return (
         <>

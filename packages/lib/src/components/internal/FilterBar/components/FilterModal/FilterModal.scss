@@ -1,9 +1,9 @@
-.adyen-fp-modal-wrapper--filter {
+.adyen-pe-modal-wrapper--filter {
     // @include phone-only {
     //     padding: 0;
     // }
 
-    .adyen-fp-modal {
+    .adyen-pe-modal {
         width: 496px;
 
         // @include phone-only {
@@ -16,8 +16,8 @@
         // }
     }
 
-    .adyen-fp-modal__footer {
-        .adyen-fp-button:first-child {
+    .adyen-pe-modal__footer {
+        .adyen-pe-button:first-child {
             margin-left: auto;
         }
     }

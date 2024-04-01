@@ -16,7 +16,7 @@ import BalanceAccountSelector, { useBalanceAccountSelection } from './BalanceAcc
 import MultiSelectionFilter, { listFrom } from './MultiSelectionFilter';
 import useDefaultTransactionsOverviewFilterParams from '../hooks/useDefaultTransactionsOverviewFilterParams';
 import useTransactionsOverviewMultiSelectionFilters from '../hooks/useTransactionsOverviewMultiSelectionFilters';
-import AdyenFPError from '@src/core/Errors/AdyenFPError';
+import AdyenPlatformExperienceError from '@src/core/Errors/AdyenPlatformExperienceError';
 import { AmountFilter } from '@src/components/internal/FilterBar/filters/AmountFilter/AmountFilter';
 
 export const TransactionsOverview = ({
@@ -136,7 +136,7 @@ export const TransactionsOverview = ({
                 />
                 <MultiSelectionFilter {...currenciesFilter} placeholder={i18n.get('filterPlaceholder.currency')} />
             </FilterBar>
-            <div className="adyen-fp-transactions__balance-totals">
+            <div className="adyen-pe-transactions__balance-totals">
                 <TransactionTotals
                     availableCurrencies={availableCurrencies}
                     isAvailableCurrenciesFetching={isAvailableCurrenciesFetching}
@@ -165,7 +165,7 @@ export const TransactionsOverview = ({
                 limitOptions={limitOptions}
                 onContactSupport={onContactSupport}
                 onLimitSelection={updateLimit}
-                error={error as AdyenFPError}
+                error={error as AdyenPlatformExperienceError}
                 {...paginationProps}
             />
         </>

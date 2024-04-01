@@ -1,18 +1,18 @@
-.adyen-fp-stats-bar {
-    background: var(--adyen-fp-color-gray-lighter);
+.adyen-pe-stats-bar {
+    background: var(--adyen-pe-color-gray-lighter);
     border: 1px solid transparent;
-    border-radius: var(--adyen-fp-border-radius-xlarge);
+    border-radius: var(--adyen-pe-border-radius-xlarge);
     display: flex;
     justify-content: space-between;
     list-style-type: none;
     margin: 0;
-    padding: var(--adyen-fp-spacing-large);
+    padding: var(--adyen-pe-spacing-large);
 
     &__label {
-        color: var(--adyen-fp-color-gray-darker);
-        font-size: var(--adyen-fp-font-size-small);
+        color: var(--adyen-pe-color-gray-darker);
+        font-size: var(--adyen-pe-font-size-small);
         letter-spacing: 0.25px;
-        margin-bottom: var(--adyen-fp-spacing-xsmall);
+        margin-bottom: var(--adyen-pe-spacing-xsmall);
     }
 
     &__value {

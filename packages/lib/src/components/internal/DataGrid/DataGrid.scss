@@ -1,13 +1,13 @@
 @use '../../../style/skeleton' as skeleton;
 
-.adyen-fp-data-grid {
-    $adyen-fp-data-grid: &;
-    $adyen-fp-data-grid__cell: #{$adyen-fp-data-grid}__cell;
-    font-size: var(--adyen-fp-font-size-medium);
+.adyen-pe-data-grid {
+    $adyen-pe-data-grid: &;
+    $adyen-pe-data-grid__cell: #{$adyen-pe-data-grid}__cell;
+    font-size: var(--adyen-pe-font-size-medium);
     overflow: hidden;
     text-align: left;
 
-    &--scrollable #{$adyen-fp-data-grid}__table-wrapper {
+    &--scrollable #{$adyen-pe-data-grid}__table-wrapper {
         overflow: auto;
     }
 
@@ -19,7 +19,7 @@
         position: relative;
     }
 
-    .adyen-fp-error-message-display {
+    .adyen-pe-error-message-display {
         top: 60px;
     }
 
@@ -40,14 +40,14 @@
     }
 
     &__row {
-        background: var(--adyen-fp-color-white);
+        background: var(--adyen-pe-color-white);
         overflow: hidden;
         vertical-align: top;
 
-        #{$adyen-fp-data-grid__cell} {
-            border-bottom: 1px solid var(--adyen-fp-color-gray-lighter);
+        #{$adyen-pe-data-grid__cell} {
+            border-bottom: 1px solid var(--adyen-pe-color-gray-lighter);
         }
-        #{$adyen-fp-data-grid}__body {
+        #{$adyen-pe-data-grid}__body {
             border-bottom: 0;
         }
 
@@ -56,23 +56,23 @@
 
             &:hover,
             &:focus {
-                background: var(--adyen-fp-color-gray-100);
+                background: var(--adyen-pe-color-gray-100);
                 outline-offset: -1px;
             }
         }
     }
 
-    #{$adyen-fp-data-grid__cell} {
+    #{$adyen-pe-data-grid__cell} {
         box-sizing: border-box;
         height: 100%;
         overflow: hidden;
-        padding: var(--adyen-fp-spacing-medium);
+        padding: var(--adyen-pe-spacing-medium);
         text-overflow: ellipsis;
         vertical-align: middle;
         white-space: nowrap;
         width: auto;
 
-        .adyen-fp-button--link {
+        .adyen-pe-button--link {
             display: block;
             height: initial;
             margin: -2px -4px;
@@ -91,18 +91,18 @@
             text-decoration-color: #016fd0;
             text-decoration-style: dashed;
             text-decoration-thickness: 1px;
-            text-underline-offset: var(--adyen-fp-spacing-small);
+            text-underline-offset: var(--adyen-pe-spacing-small);
         }
 
-        &#{$adyen-fp-data-grid__cell}--heading {
-            border-bottom-color: var(--adyen-fp-color-gray-dark);
-            color: var(--adyen-fp-color-black);
-            font-weight: var(--adyen-fp-font-weight-semi-bold);
-            padding: var(--adyen-fp-spacing-medium);
+        &#{$adyen-pe-data-grid__cell}--heading {
+            border-bottom-color: var(--adyen-pe-color-gray-dark);
+            color: var(--adyen-pe-color-black);
+            font-weight: var(--adyen-pe-font-weight-semi-bold);
+            padding: var(--adyen-pe-spacing-medium);
             position: relative;
 
             &:not(:last-child)::after {
-                background: var(--adyen-fp-color-gray-light);
+                background: var(--adyen-pe-color-gray-light);
                 bottom: 25%;
                 content: '';
                 position: absolute;
@@ -113,38 +113,38 @@
         }
     }
 
-    #{$adyen-fp-data-grid}__table-wrapper {
-        margin-bottom: var(--adyen-fp-spacing-medium);
+    #{$adyen-pe-data-grid}__table-wrapper {
+        margin-bottom: var(--adyen-pe-spacing-medium);
     }
 
     &__footer {
-        background: var(--adyen-fp-color-white);
+        background: var(--adyen-pe-color-white);
 
-        .adyen-fp-pagination {
+        .adyen-pe-pagination {
             padding: 0;
         }
     }
 
-    .adyen-fp-spinner__wrapper {
-        padding: var(--adyen-fp-spacing-xxxlarge);
+    .adyen-pe-spinner__wrapper {
+        padding: var(--adyen-pe-spacing-xxxlarge);
     }
 
     &--outline {
-        border: 1px solid var(--adyen-fp-color-gray-light);
-        border-radius: var(--adyen-fp-border-radius-medium);
+        border: 1px solid var(--adyen-pe-color-gray-light);
+        border-radius: var(--adyen-pe-border-radius-medium);
 
-        #{$adyen-fp-data-grid}__table-wrapper {
+        #{$adyen-pe-data-grid}__table-wrapper {
             margin-bottom: 0;
         }
 
-        #{$adyen-fp-data-grid}__body #{$adyen-fp-data-grid}__row {
-            &:last-child #{$adyen-fp-data-grid__cell} {
-                border-bottom: 1px solid var(--adyen-fp-color-gray-dark);
+        #{$adyen-pe-data-grid}__body #{$adyen-pe-data-grid}__row {
+            &:last-child #{$adyen-pe-data-grid__cell} {
+                border-bottom: 1px solid var(--adyen-pe-color-gray-dark);
             }
         }
 
-        #{$adyen-fp-data-grid}__footer .adyen-fp-pagination {
-            padding: var(--adyen-fp-spacing-medium) var(--adyen-fp-spacing-small);
+        #{$adyen-pe-data-grid}__footer .adyen-pe-pagination {
+            padding: var(--adyen-pe-spacing-medium) var(--adyen-pe-spacing-small);
         }
     }
 
@@ -158,24 +158,24 @@
     }
 
     &__skeleton-cell-content {
-        @include skeleton.adyen-fp-skeleton();
-        height: var(--adyen-fp-spacing-base);
+        @include skeleton.adyen-pe-skeleton();
+        height: var(--adyen-pe-spacing-base);
     }
 
     &__skeleton-cell-content--loading {
-        @include skeleton.adyen-fp-skeleton-animation();
+        @include skeleton.adyen-pe-skeleton-animation();
     }
 
     &__empty-message {
-        background: var(--adyen-fp-color-white);
-        border: 1px solid var(--adyen-fp-color-border-lighter);
+        background: var(--adyen-pe-color-white);
+        border: 1px solid var(--adyen-pe-color-border-lighter);
         border-radius: 12px;
         box-shadow: 0 6px 12px 0 rgba(0, 17, 44, 0.08);
         display: flex;
         flex-direction: column;
-        gap: var(--adyen-fp-spacing-medium-small);
+        gap: var(--adyen-pe-spacing-medium-small);
         left: 50%;
-        padding: var(--adyen-fp-spacing-xxlarge);
+        padding: var(--adyen-pe-spacing-xxlarge);
         position: absolute;
         text-align: center;
         top: 20px;

@@ -48,8 +48,8 @@ export const RangeSelection = ({
     }, [filterValue, onValueUpdated]);
 
     return (
-        <div className="adyen-fp-range-selection-filter">
-            <div className="adyen-fp-range-selection-filter__input">
+        <div className="adyen-pe-range-selection-filter">
+            <div className="adyen-pe-range-selection-filter__input">
                 <label htmlFor="minValue">{`${i18n.get('from')}:`}</label>
                 <InputBase
                     lang={i18n.locale}
@@ -64,7 +64,7 @@ export const RangeSelection = ({
                     errorMessage={i18n.get('noNegativeNumbersAllowed')}
                 />
             </div>
-            <div className="adyen-fp-range-selection-filter__input">
+            <div className="adyen-pe-range-selection-filter__input">
                 <label htmlFor="maxValue">{`${i18n.get('to')}:`}</label>
                 <InputBase
                     lang={i18n.locale}

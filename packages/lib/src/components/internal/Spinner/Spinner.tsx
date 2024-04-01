@@ -17,8 +17,8 @@ interface SpinnerProps {
  * @param props -
  */
 const Spinner = ({ inline = false, size = 'large' }: SpinnerProps) => (
-    <div className={`adyen-fp-spinner__wrapper ${inline ? 'adyen-fp-spinner__wrapper--inline' : ''}`}>
-        <div className={`adyen-fp-spinner adyen-fp-spinner--${size}`} />
+    <div className={`adyen-pe-spinner__wrapper ${inline ? 'adyen-pe-spinner__wrapper--inline' : ''}`}>
+        <div className={`adyen-pe-spinner adyen-pe-spinner--${size}`} />
     </div>
 );
 

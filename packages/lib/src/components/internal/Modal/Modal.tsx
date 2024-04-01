@@ -58,9 +58,9 @@ export default function Modal({
             {isOpen && (
                 <div
                     className={cx(
-                        'adyen-fp-modal-wrapper',
-                        classNameModifiers.map(m => `adyen-fp-modal-wrapper--${m}`),
-                        { 'adyen-fp-modal-wrapper--open': isOpen, 'adyen-fp-modal-wrapper--dismissible': isDismissible }
+                        'adyen-pe-modal-wrapper',
+                        classNameModifiers.map(m => `adyen-pe-modal-wrapper--${m}`),
+                        { 'adyen-pe-modal-wrapper--open': isOpen, 'adyen-pe-modal-wrapper--dismissible': isDismissible }
                     )}
                     role="dialog"
                     aria-modal="true"
@@ -69,28 +69,28 @@ export default function Modal({
                     {...props}
                 >
                     <div
-                        className={cx('adyen-fp-modal', {
-                            'adyen-fp-modal--fluid': size === 'fluid',
-                            'adyen-fp-modal--small': size === 'small',
-                            'adyen-fp-modal--large': size === 'large',
-                            'adyen-fp-modal--extra-large': size === 'extra-large',
-                            'adyen-fp-modal--full-screen': size === 'full-screen',
+                        className={cx('adyen-pe-modal', {
+                            'adyen-pe-modal--fluid': size === 'fluid',
+                            'adyen-pe-modal--small': size === 'small',
+                            'adyen-pe-modal--large': size === 'large',
+                            'adyen-pe-modal--extra-large': size === 'extra-large',
+                            'adyen-pe-modal--full-screen': size === 'full-screen',
                         })}
                         ref={modalContainerRef}
                     >
                         <div
-                            className={cx('adyen-fp-modal__header', {
-                                'adyen-fp-modal__header--with-title': title,
-                                'adyen-fp-modal__header--with-border-bottom': headerWithBorder,
+                            className={cx('adyen-pe-modal__header', {
+                                'adyen-pe-modal__header--with-title': title,
+                                'adyen-pe-modal__header--with-border-bottom': headerWithBorder,
                             })}
                         >
-                            {title && <div className={`adyen-fp-modal__header__title`}>{title}</div>}
+                            {title && <div className={`adyen-pe-modal__header__title`}>{title}</div>}
 
                             {isDismissible && (
                                 <Button
                                     onClick={onClose}
                                     variant={ButtonVariant.TERTIARY}
-                                    className={`adyen-fp-modal__header-icon`}
+                                    className={`adyen-pe-modal__header-icon`}
                                     aria-label={i18n.get('dismiss')}
                                 >
                                     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -104,7 +104,7 @@ export default function Modal({
                                 </Button>
                             )}
                         </div>
-                        <div className={'adyen-fp-modal__content'}>{children}</div>
+                        <div className={'adyen-pe-modal__content'}>{children}</div>
                     </div>
                 </div>
             )}

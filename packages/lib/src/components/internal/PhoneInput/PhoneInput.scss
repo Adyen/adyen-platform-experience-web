@@ -1,10 +1,10 @@
-.adyen-fp-phone-input {
+.adyen-pe-phone-input {
     direction: ltr;
 
-    .adyen-fp-input-wrapper {
+    .adyen-pe-input-wrapper {
         width: 100%;
 
-        .adyen-fp-input {
+        .adyen-pe-input {
             height: auto;
             padding: 0;
 
@@ -14,7 +14,7 @@
             }
         }
 
-        .adyen-fp-dropdown__button {
+        .adyen-pe-dropdown__button {
             border: 0;
             border-bottom-right-radius: 0;
             border-top-right-radius: 0;
@@ -28,14 +28,14 @@
             }
         }
 
-        .adyen-fp-input--phoneNumber {
+        .adyen-pe-input--phoneNumber {
             border: 1px solid transparent;
             height: 35px;
             margin-left: 8px;
             padding-left: 15px;
         }
 
-        .adyen-fp-input-wrapper--phoneInput {
+        .adyen-pe-input-wrapper--phoneInput {
             align-items: center;
             display: flex;
 
@@ -45,18 +45,18 @@
             }
         }
 
-        .adyen-fp-phoneNumber {
+        .adyen-pe-phoneNumber {
             align-items: center;
             display: flex;
             margin-left: 65px;
             width: 100%;
         }
 
-        .adyen-fp-countryFlag {
+        .adyen-pe-countryFlag {
             position: absolute;
         }
 
-        .adyen-fp-dropdown__button--active {
+        .adyen-pe-dropdown__button--active {
             box-shadow: none;
 
             &:hover {

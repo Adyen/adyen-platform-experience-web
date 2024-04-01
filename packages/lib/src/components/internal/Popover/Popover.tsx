@@ -62,6 +62,7 @@ function Popover({
     dismiss,
     children,
     withContentPadding,
+    classNameModifiers,
     ...uncontrolledProps
 }: PropsWithChildren<PopoverProps>) {
     const isDismissible = useMemo(() => isFunction(dismiss) && dismissible !== false, [dismiss, dismissible]);
@@ -148,7 +149,7 @@ function Popover({
                     id="popover"
                     ref={popoverElementWithId}
                     {...uncontrolledProps}
-                    className={classNames(classNamesByVariant, conditionalClasses)}
+                    className={classNames(classNamesByVariant, conditionalClasses, classNameModifiers)}
                     style={{ visibility: 'hidden' }}
                     role={uncontrolledProps.role ?? (variant === PopoverContainerVariant.POPOVER ? 'dialog' : 'tooltip')}
                 >
@@ -174,7 +175,7 @@ function Popover({
                                 {children}
                             </div>
                             {variant === PopoverContainerVariant.TOOLTIP && (
-                                <span data-popover-placement="hidden" ref={arrowRef} className="adyen-fp-tooltip__arrow" />
+                                <span data-popover-placement="hidden" ref={arrowRef} className="adyen-pe-tooltip__arrow" />
                             )}
                         </>
                     )}

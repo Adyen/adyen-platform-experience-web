@@ -48,26 +48,26 @@ function DataGrid<
 
     return (
         <div
-            className={classnames('adyen-fp-data-grid', {
-                'adyen-fp-data-grid--condensed': props.condensed,
-                'adyen-fp-data-grid--outline': props.outline,
-                'adyen-fp-data-grid--scrollable': props.scrollable,
-                'adyen-fp-data-grid--loading': props.loading,
-                'adyen-fp-data-grid--empty': emptyBody || props.error,
+            className={classnames('adyen-pe-data-grid', {
+                'adyen-pe-data-grid--condensed': props.condensed,
+                'adyen-pe-data-grid--outline': props.outline,
+                'adyen-pe-data-grid--scrollable': props.scrollable,
+                'adyen-pe-data-grid--loading': props.loading,
+                'adyen-pe-data-grid--empty': emptyBody || props.error,
             })}
         >
             <>
-                <div className="adyen-fp-data-grid__table-wrapper">
-                    <table className="adyen-fp-data-grid__table">
-                        <thead className="adyen-fp-data-grid__head">
-                            <tr role="rowheader" className="adyen-fp-data-grid__row">
+                <div className="adyen-pe-data-grid__table-wrapper">
+                    <table className="adyen-pe-data-grid__table">
+                        <thead className="adyen-pe-data-grid__head">
+                            <tr role="rowheader" className="adyen-pe-data-grid__row">
                                 {props.columns.map(item => (
                                     <th
                                         role="columnheader"
                                         id={String(item.key)}
-                                        className={classnames('adyen-fp-data-grid__cell adyen-fp-data-grid__cell--heading', {
-                                            'adyen-fp-data-grid__cell--right': item.position === CellTextPosition.RIGHT,
-                                            'adyen-fp-data-grid__cell--center': item.position === CellTextPosition.CENTER,
+                                        className={classnames('adyen-pe-data-grid__cell adyen-pe-data-grid__cell--heading', {
+                                            'adyen-pe-data-grid__cell--right': item.position === CellTextPosition.RIGHT,
+                                            'adyen-pe-data-grid__cell--center': item.position === CellTextPosition.CENTER,
                                         })}
                                         key={item.key}
                                     >
@@ -106,7 +106,7 @@ function DataGridBody<
     const showSkeleton = useMemo(() => props.loading || props.emptyBody || props.error, [props.emptyBody, props.error, props.loading]);
 
     return (
-        <tbody className={classnames('adyen-fp-data-grid__body')}>
+        <tbody className={classnames('adyen-pe-data-grid__body')}>
             {showSkeleton ? (
                 <SkeletonBody columnsNumber={props.columns.length} loading={props.loading} />
             ) : props.onRowClick ? (
@@ -132,7 +132,7 @@ function DataGridBody<
 DataGrid.Footer = DataGridFooter;
 
 function DataGridFooter({ children }: { children: ComponentChild }) {
-    return <div className="adyen-fp-data-grid__footer">{children}</div>;
+    return <div className="adyen-pe-data-grid__footer">{children}</div>;
 }
 
 DataGrid.defaultProps = {

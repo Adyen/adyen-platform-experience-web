@@ -5,10 +5,10 @@ import CalendarGridDayOfWeek from './CalendarGridDayOfWeek';
 import '../../Calendar.scss';
 
 const CalendarGrid = forwardRef(({ cursorRootProps, onlyCellsWithin, prepare, grid }: CalendarGridProps, cursorElementRef) => (
-    <ol className={'adyen-fp-calendar'} role="none" {...cursorRootProps}>
+    <ol className={'adyen-pe-calendar'} role="none" {...cursorRootProps}>
         {grid.map(block => (
-            <li key={block.datetime} className={'adyen-fp-calendar__month'} role="none">
-                <div className={'adyen-fp-calendar__month-name'} role="none">
+            <li key={block.datetime} className={'adyen-pe-calendar__month'} role="none">
+                <div className={'adyen-pe-calendar__month-name'} role="none">
                     <time dateTime={block.datetime} aria-hidden="true">
                         {block.label}
                     </time>
@@ -18,11 +18,11 @@ const CalendarGrid = forwardRef(({ cursorRootProps, onlyCellsWithin, prepare, gr
                     role="grid"
                     aria-multiselectable={true}
                     aria-label={`${block.label} calendar`}
-                    className={'adyen-fp-calendar__grid'}
-                    style={{ '--adyen-fp-calendar-rowspan': grid.rowspan }}
+                    className={'adyen-pe-calendar__grid'}
+                    style={{ '--adyen-pe-calendar-rowspan': grid.rowspan }}
                 >
                     <thead>
-                        <tr className={'adyen-fp-calendar__row'}>
+                        <tr className={'adyen-pe-calendar__row'}>
                             {grid.weekdays.map((data, index) => (
                                 <CalendarGridDayOfWeek key={data.labels['long']} grid={grid} block={block} prepare={prepare} cell={index} {...data} />
                             ))}
@@ -30,7 +30,7 @@ const CalendarGrid = forwardRef(({ cursorRootProps, onlyCellsWithin, prepare, gr
                     </thead>
                     <tbody>
                         {block.map((row, rowindex) => (
-                            <tr key={`${block.month}:${rowindex}`} className={'adyen-fp-calendar__row'}>
+                            <tr key={`${block.month}:${rowindex}`} className={'adyen-pe-calendar__row'}>
                                 {row.map((data, index) => (
                                     <CalendarGridDate
                                         key={`${block.month}:${data.timestamp}`}

@@ -1,5 +1,5 @@
 import { _UIComponentProps, BaseElementProps, FormProps, IFormElement, UIElementProps } from '../types';
-import AdyenFPError from '../../core/Errors/AdyenFPError';
+import AdyenPlatformExperienceError from '../../core/Errors/AdyenPlatformExperienceError';
 import UIElement from '@src/components/external/UIElement';
 
 export class FormElement<P extends UIElementProps> extends UIElement<P & FormProps<P>> implements IFormElement<P> {
@@ -65,7 +65,7 @@ export class FormElement<P extends UIElementProps> extends UIElement<P & FormPro
         this.triggerValidation = callBack;
     };
 
-    protected handleError = (error: AdyenFPError): void => {
+    protected handleError = (error: AdyenPlatformExperienceError): void => {
         if (this.props.onError) {
             this.props.onError(error, this.elementRef);
         }

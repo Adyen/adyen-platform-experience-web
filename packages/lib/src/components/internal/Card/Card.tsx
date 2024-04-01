@@ -28,14 +28,14 @@ const Card = ({
     const labelText = buttonAriaLabel || (isOpen ? i18n.get('hideContent') : i18n.get('expandContent'));
     return (
         <section
-            className={classNames('adyen-fp-card', { 'adyen-fp-card--filled': filled, 'adyen-fp-card--no-outline': noOutline }, classNameModifiers)}
+            className={classNames('adyen-pe-card', { 'adyen-pe-card--filled': filled, 'adyen-pe-card--no-outline': noOutline }, classNameModifiers)}
         >
             {(title || renderHeader) && (
-                <header className={classNames('adyen-fp-card__header', { 'adyen-fp-card__header-collapsible': collapsible })}>
+                <header className={classNames('adyen-pe-card__header', { 'adyen-pe-card__header-collapsible': collapsible })}>
                     {collapsible && (
                         <div role="presentation">
                             <button
-                                className="adyen-fp-card__collapse-button"
+                                className="adyen-pe-card__collapse-button"
                                 aria-expanded={`${!!isOpen}`}
                                 aria-controls={ariaControllerId}
                                 aria-label={labelText}
@@ -43,32 +43,32 @@ const Card = ({
                             >
                                 <span
                                     className={classNames({
-                                        'adyen-fp-card__collapsible-icon': collapsible,
-                                        'adyen-fp-card__collapsible-icon--collapsed': !isOpen,
-                                        'adyen-fp-card__collapsible-icon--opened': isOpen,
+                                        'adyen-pe-card__collapsible-icon': collapsible,
+                                        'adyen-pe-card__collapsible-icon--collapsed': !isOpen,
+                                        'adyen-pe-card__collapsible-icon--opened': isOpen,
                                     })}
                                 ></span>
                             </button>
                         </div>
                     )}
                     {(title || renderHeader) && (
-                        <div className="adyen-fp-card__header-collapsible-content">
-                            {renderHeader ? renderHeader : <span className="adyen-fp-card__title">{title}</span>}
-                            {subTitle && <div className="adyen-fp-card__subtitle">{subTitle}</div>}
+                        <div className="adyen-pe-card__header-collapsible-content">
+                            {renderHeader ? renderHeader : <span className="adyen-pe-card__title">{title}</span>}
+                            {subTitle && <div className="adyen-pe-card__subtitle">{subTitle}</div>}
                         </div>
                     )}
                 </header>
             )}
             <CollapsibleContainer isOpen={isOpen} accessibilityId={ariaControllerId}>
                 <div
-                    className={classNames('adyen-fp-card__body', {
-                        'adyen-fp-card__body--with-title': title || renderHeader,
-                        'adyen-fp-card__body--hidden': !isOpen,
+                    className={classNames('adyen-pe-card__body', {
+                        'adyen-pe-card__body--with-title': title || renderHeader,
+                        'adyen-pe-card__body--hidden': !isOpen,
                     })}
                 >
                     {children}
                 </div>
-                {(footer || renderFooter) && <footer className="adyen-fp-card__footer">{renderFooter ? renderFooter : footer}</footer>}
+                {(footer || renderFooter) && <footer className="adyen-pe-card__footer">{renderFooter ? renderFooter : footer}</footer>}
             </CollapsibleContainer>
         </section>
     );

@@ -1,5 +1,5 @@
-.adyen-fp-calendar {
-    --adyen-fp-calendar-corner-border-radius: 4px;
+.adyen-pe-calendar {
+    --adyen-pe-calendar-corner-border-radius: 4px;
 
     list-style: none;
     margin: 0;
@@ -11,9 +11,9 @@
         }
 
         &-name {
-            font-size: var(--adyen-fp-font-size-base);
-            font-weight: var(--adyen-fp-font-weight-medium);
-            letter-spacing: calc(var(--adyen-fp-font-size-base) / 48);
+            font-size: var(--adyen-pe-font-size-base);
+            font-weight: var(--adyen-pe-font-weight-medium);
+            letter-spacing: calc(var(--adyen-pe-font-size-base) / 48);
             line-height: 2.5rem;
             margin-bottom: 1rem;
             text-align: center;
@@ -29,7 +29,7 @@
 
     &__row {
         display: grid;
-        grid-template-columns: repeat(var(--adyen-fp-calendar-rowspan, 7), 1fr);
+        grid-template-columns: repeat(var(--adyen-pe-calendar-rowspan, 7), 1fr);
     }
 
     &__cell {
@@ -83,47 +83,47 @@
             }
 
             &[data-within-selection='1']::before {
-                background: var(--adyen-fp-color-gray-lighter);
+                background: var(--adyen-pe-color-gray-lighter);
             }
 
             &[data-selection-start='1']::before {
-                background: var(--adyen-fp-color-black);
-                border-radius: var(--adyen-fp-calendar-corner-border-radius) 0 0 var(--adyen-fp-calendar-corner-border-radius);
+                background: var(--adyen-pe-color-black);
+                border-radius: var(--adyen-pe-calendar-corner-border-radius) 0 0 var(--adyen-pe-calendar-corner-border-radius);
             }
 
             &[data-selection-end='1']::before {
-                background: var(--adyen-fp-color-black);
-                border-radius: 0 var(--adyen-fp-calendar-corner-border-radius) var(--adyen-fp-calendar-corner-border-radius) 0;
+                background: var(--adyen-pe-color-black);
+                border-radius: 0 var(--adyen-pe-calendar-corner-border-radius) var(--adyen-pe-calendar-corner-border-radius) 0;
             }
         }
     }
 
     &__day-of-week {
-        color: var(--adyen-fp-color-gray-label-secondary);
-        font-size: var(--adyen-fp-font-size-xsmall);
-        font-weight: var(--adyen-fp-font-weight-regular);
-        letter-spacing: calc(var(--adyen-fp-font-size-xsmall) / 32);
+        color: var(--adyen-pe-color-gray-label-secondary);
+        font-size: var(--adyen-pe-font-size-xsmall);
+        font-weight: var(--adyen-pe-font-weight-regular);
+        letter-spacing: calc(var(--adyen-pe-font-size-xsmall) / 32);
     }
 
     &__date {
-        color: var(--adyen-fp-color-black);
-        font-size: var(--adyen-fp-font-size-medium);
-        font-weight: var(--adyen-fp-font-weight-regular);
+        color: var(--adyen-pe-color-black);
+        font-size: var(--adyen-pe-font-size-medium);
+        font-weight: var(--adyen-pe-font-weight-regular);
         z-index: 0;
 
         [data-selection-start='1']:not([data-today='1']) &,
         [data-selection-end='1']:not([data-today='1']) & {
-            color: var(--adyen-fp-color-white);
+            color: var(--adyen-pe-color-white);
         }
 
         [data-selection-start='1'][data-today='1'] &::before,
         [data-selection-end='1'][data-today='1'] &::before {
-            background: var(--adyen-fp-color-white);
+            background: var(--adyen-pe-color-white);
             inset: 12.5%;
         }
 
         [data-today='1'] &::before {
-            background: var(--adyen-fp-color-gray-lighter);
+            background: var(--adyen-pe-color-gray-lighter);
             border-radius: 50%;
             content: '';
             inset: 5%;
@@ -136,7 +136,7 @@
         }
 
         :not([data-within-range='1']) > & {
-            color: var(--adyen-fp-color-gray-disable);
+            color: var(--adyen-pe-color-gray-disable);
         }
     }
 }

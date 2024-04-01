@@ -5,7 +5,7 @@ export interface ImgProps {
     className?: string;
 
     /**
-     * Class name modifiers will be used as: `adyen-fp-image--${modifier}`
+     * Class name modifiers will be used as: `adyen-pe-image--${modifier}`
      */
     classNameModifiers?: string[];
 

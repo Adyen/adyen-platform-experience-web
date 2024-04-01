@@ -1,7 +1,7 @@
 @import '../../../style/bento-mapping.scss';
 
 // TODO: Move this to an accessibility mixin
-.adyen-fp-sr-only {
+.adyen-pe-sr-only {
     clip: rect(0 0 0 0);
     height: 1px;
     margin: -1px;
@@ -11,20 +11,20 @@
     width: 1px;
 }
 
-.adyen-fp-expandable-card {
-    $adyen-fp-expandable-card: &;
+.adyen-pe-expandable-card {
+    $adyen-pe-expandable-card: &;
 
     position: relative;
 
     &__container {
-        background-color: var(--adyen-fp-color-background-primary);
-        border: var(--adyen-fp-color-outline-primary) 1px solid;
-        border-radius: var(--adyen-fp-border-radius-m);
+        background-color: var(--adyen-pe-color-background-primary);
+        border: var(--adyen-pe-color-outline-primary) 1px solid;
+        border-radius: var(--adyen-pe-border-radius-m);
         display: block;
         overflow: hidden;
 
         &--overlay {
-            box-shadow: 0 2px 4px 0 rgba($adyen-fp-color-grey-3200, 0.04), 0 6px 12px 0 rgba($adyen-fp-color-grey-3200, 0.08);
+            box-shadow: 0 2px 4px 0 rgba($adyen-pe-color-grey-3200, 0.04), 0 6px 12px 0 rgba($adyen-pe-color-grey-3200, 0.08);
             position: absolute;
             top: 0;
             z-index: 100;
@@ -36,34 +36,34 @@
 
         &--button {
             &:hover {
-                background-color: var(--adyen-fp-color-background-primary-hover);
+                background-color: var(--adyen-pe-color-background-primary-hover);
 
-                #{$adyen-fp-expandable-card}__chevron {
-                    background-color: var(--adyen-fp-color-background-tertiary-hover);
+                #{$adyen-pe-expandable-card}__chevron {
+                    background-color: var(--adyen-pe-color-background-tertiary-hover);
                 }
             }
         }
 
         &--filled {
-            background-color: var(--adyen-fp-color-background-secondary);
+            background-color: var(--adyen-pe-color-background-secondary);
 
             &:hover {
-                background-color: var(--adyen-fp-color-background-secondary-hover);
+                background-color: var(--adyen-pe-color-background-secondary-hover);
             }
         }
     }
 
     &__content {
-        padding: var(--adyen-fp-spacer-070) var(--adyen-fp-spacer-080);
+        padding: var(--adyen-pe-spacer-070) var(--adyen-pe-spacer-080);
 
         &--expandable {
-            padding-bottom: var(--adyen-fp-spacer-040);
+            padding-bottom: var(--adyen-pe-spacer-040);
         }
     }
 
     &__chevron {
         align-items: center;
-        background-color: var(--adyen-fp-color-background-tertiary);
+        background-color: var(--adyen-pe-color-background-tertiary);
         display: flex;
         height: 20px;
         justify-content: center;

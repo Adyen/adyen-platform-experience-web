@@ -1,4 +1,4 @@
-export const DEFAULT_BUTTON_CLASSNAME = 'adyen-fp-button';
+export const DEFAULT_BUTTON_CLASSNAME = 'adyen-pe-button';
 export const BUTTON_ACTION_CLASSNAME = `${DEFAULT_BUTTON_CLASSNAME}-actions`;
 export const ICON_BUTTON_CLASSNAME = `${DEFAULT_BUTTON_CLASSNAME}--icon`;
 export const ICON_BUTTON_CONTENT_CLASSNAME = `${DEFAULT_BUTTON_CLASSNAME}--icon-content`;

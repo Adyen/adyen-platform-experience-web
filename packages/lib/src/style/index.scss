@@ -7,17 +7,17 @@
 
 :root {
     @include accessibility.adyen-touch-sizes;
-    @include colors.adyen-fp-colors;
-    @include border-radius.adyen-fp-border-radius;
-    @include font.adyen-fp-font-sizes;
-    @include font.adyen-fp-font-weight;
-    @include spacings.adyen-fp-spacings;
-    @include bento-mapping.adyen-fp-bento-mapping;
-    @include bento-mapping.adyen-fp-bento-filter-mapping;
-    @include bento-mapping.adyen-fp-bento-action-button-mapping;
-    @include bento-mapping.adyen-fp-bento-button-mapping;
-    @include bento-mapping.adyen-fp-bento-popover-mapping;
-    @include bento-mapping.adyen-fp-bento-link-mapping;
-    @include bento-mapping.adyen-fp-bento-typography-mapping;
-    @include bento-mapping.adyen-fp-bento-modal-mapping;
+    @include colors.adyen-pe-colors;
+    @include border-radius.adyen-pe-border-radius;
+    @include font.adyen-pe-font-sizes;
+    @include font.adyen-pe-font-weight;
+    @include spacings.adyen-pe-spacings;
+    @include bento-mapping.adyen-pe-bento-mapping;
+    @include bento-mapping.adyen-pe-bento-filter-mapping;
+    @include bento-mapping.adyen-pe-bento-action-button-mapping;
+    @include bento-mapping.adyen-pe-bento-button-mapping;
+    @include bento-mapping.adyen-pe-bento-popover-mapping;
+    @include bento-mapping.adyen-pe-bento-link-mapping;
+    @include bento-mapping.adyen-pe-bento-typography-mapping;
+    @include bento-mapping.adyen-pe-bento-modal-mapping;
 }

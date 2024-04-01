@@ -22,7 +22,7 @@ import {
     PaginationType,
     WithEitherPages,
 } from '../types';
-import AdyenFPError from '@src/core/Errors/AdyenFPError';
+import AdyenPlatformExperienceError from '@src/core/Errors/AdyenPlatformExperienceError';
 
 const pageNeighbours = [PageNeighbour.NEXT, PageNeighbour.PREV] as const;
 const offsetPaginatedResponseFields = ['hasNext', 'hasPrevious'] as const;
@@ -88,7 +88,7 @@ const usePaginatedRecords = <T, DataField extends string, FilterValue extends st
 }: BasePaginatedRecordsInitOptions<T, DataField, FilterValue, FilterParam>): UsePaginatedRecords<T, FilterValue, FilterParam> => {
     const [records, setRecords] = useState<T[]>([]);
     const [fetching, updateFetching] = useBooleanState(true);
-    const [error, setError] = useState<AdyenFPError>();
+    const [error, setError] = useState<AdyenPlatformExperienceError>();
     const [preferredPageLimit, setPreferredPageLimit] = useState(preferredLimit);
 
     const $mounted = useMounted();
@@ -137,7 +137,7 @@ const usePaginatedRecords = <T, DataField extends string, FilterValue extends st
                     // TODO - Handle signal abortion and updateFetching
                     if (signal?.aborted) return;
                     updateFetching(false);
-                    setError(err as AdyenFPError);
+                    setError(err as AdyenPlatformExperienceError);
 
                     console.error(err);
                 }

@@ -1,5 +1,5 @@
+import AdyenPlatformExperienceError from '@src/core/Errors/AdyenPlatformExperienceError';
 import CopyText from '@src/components/internal/CopyText/CopyText';
-import AdyenFPError from '@src/core/Errors/AdyenFPError';
 import { TranslationKey } from '@src/core/Localization/types';
 import { JSXInternal } from 'preact/src/jsx';
 
@@ -12,7 +12,7 @@ type ErrorMessage = {
 };
 
 const UNDEFINED_ERROR = { title: 'thereWasAnUnexpectedError', message: ['pleaseReachOutToSupportForAssistance'] } satisfies ErrorMessage;
-export const getErrorMessage = (error: AdyenFPError | undefined, onContactSupport?: () => void): ErrorMessage => {
+export const getErrorMessage = (error: AdyenPlatformExperienceError | undefined, onContactSupport?: () => void): ErrorMessage => {
     if (!error) return UNDEFINED_ERROR;
     switch (error.errorCode) {
         case undefined:

@@ -1,16 +1,16 @@
-.adyen-fp-button {
-    $adyen-fp-button: &;
+.adyen-pe-button {
+    $adyen-pe-button: &;
 
     align-items: center;
     appearance: none;
     border: 0;
-    border-radius: var(--adyen-fp-filter-button-button-border-radius);
-    box-shadow: var(--adyen-fp-filter-button-box-shadow);
+    border-radius: var(--adyen-pe-filter-button-button-border-radius);
+    box-shadow: var(--adyen-pe-filter-button-box-shadow);
     cursor: pointer;
     display: inline-flex;
     height: fit-content;
     justify-content: center;
-    padding: var(--adyen-fp-filter-button-padding);
+    padding: var(--adyen-pe-filter-button-padding);
     text-decoration: none;
     transition: 125ms cubic-bezier(0.785, 0.135, 0.15, 0.86);
     transition-property: color, background-color, box-shadow;
@@ -19,7 +19,7 @@
     &__label {
         align-items: center;
         display: inline-flex;
-        line-height: var(--adyen-fp-filter-button-line-height);
+        line-height: var(--adyen-pe-filter-button-line-height);
         vertical-align: middle;
         white-space: nowrap;
         width: 100%;
@@ -30,75 +30,75 @@
     }
 
     &--primary {
-        background-color: var(--adyen-fp-button-primary-background-color);
-        color: var(--adyen-fp-button-primary-color);
+        background-color: var(--adyen-pe-button-primary-background-color);
+        color: var(--adyen-pe-button-primary-color);
 
         &:hover {
-            background-color: var(--adyen-fp-button-primary-hover-background-color);
+            background-color: var(--adyen-pe-button-primary-hover-background-color);
         }
 
         &:active {
-            background-color: var(--adyen-fp-button-primary-active-background-color);
+            background-color: var(--adyen-pe-button-primary-active-background-color);
         }
 
         &:disabled {
-            background-color: var(--adyen-fp-button-primary-disabled-background-color);
-            color: var(--adyen-fp-button-primary-disabled-color);
+            background-color: var(--adyen-pe-button-primary-disabled-background-color);
+            color: var(--adyen-pe-button-primary-disabled-color);
         }
     }
 
     &--secondary {
-        background-color: var(--adyen-fp-button-secondary-background-color);
-        box-shadow: var(--adyen-fp-button-secondary-box-shadow);
-        color: var(--adyen-fp-button-secondary-color);
+        background-color: var(--adyen-pe-button-secondary-background-color);
+        box-shadow: var(--adyen-pe-button-secondary-box-shadow);
+        color: var(--adyen-pe-button-secondary-color);
 
         &:hover {
-            background-color: var(--adyen-fp-button-secondary-hover-background-color);
-            box-shadow: var(--adyen-fp-button-secondary-hover-box-shadow);
-            color: var(--adyen-fp-button-secondary-hover-color);
+            background-color: var(--adyen-pe-button-secondary-hover-background-color);
+            box-shadow: var(--adyen-pe-button-secondary-hover-box-shadow);
+            color: var(--adyen-pe-button-secondary-hover-color);
         }
 
         &:hover:not(:focus) {
-            box-shadow: var(--adyen-fp-button-secondary-hover-box-shadow);
+            box-shadow: var(--adyen-pe-button-secondary-hover-box-shadow);
         }
 
         &:active {
-            background-color: var(--adyen-fp-button-secondary-active-background-color);
-            box-shadow: var(--adyen-fp-button-secondary-active-box-shadow);
-            color: var(--adyen-fp-button-secondary-active-color);
+            background-color: var(--adyen-pe-button-secondary-active-background-color);
+            box-shadow: var(--adyen-pe-button-secondary-active-box-shadow);
+            color: var(--adyen-pe-button-secondary-active-color);
         }
 
         &:disabled,
         &:disabled:not(:focus) {
-            background-color: var(--adyen-fp-button-secondary-disabled-background-color);
-            box-shadow: var(--adyen-fp-button-secondary-disabled-box-shadow);
-            color: var(--adyen-fp-button-secondary-disabled-color);
+            background-color: var(--adyen-pe-button-secondary-disabled-background-color);
+            box-shadow: var(--adyen-pe-button-secondary-disabled-box-shadow);
+            color: var(--adyen-pe-button-secondary-disabled-color);
         }
     }
 
     &--tertiary {
         background-color: transparent;
-        box-shadow: var(--adyen-fp-button-tertiary-box-shadow);
-        color: var(--adyen-fp-button-tertiary-color);
-        height: var(--adyen-fp-button-tertiary-height);
-        padding: var(--adyen-fp-button-tertiary-padding);
-        text-decoration: var(--adyen-fp-button-tertiary-text-decoration);
+        box-shadow: var(--adyen-pe-button-tertiary-box-shadow);
+        color: var(--adyen-pe-button-tertiary-color);
+        height: var(--adyen-pe-button-tertiary-height);
+        padding: var(--adyen-pe-button-tertiary-padding);
+        text-decoration: var(--adyen-pe-button-tertiary-text-decoration);
 
         &:hover {
-            background-color: var(--adyen-fp-button-tertiary-hover-background-color);
-            color: var(--adyen-fp-button-tertiary-hover-color);
-            text-decoration: var(--adyen-fp-button-tertiary-hover-text-decoration);
+            background-color: var(--adyen-pe-button-tertiary-hover-background-color);
+            color: var(--adyen-pe-button-tertiary-hover-color);
+            text-decoration: var(--adyen-pe-button-tertiary-hover-text-decoration);
         }
 
         &:active {
-            background-color: var(--adyen-fp-button-tertiary-active-background-color);
-            color: var(--adyen-fp-button-tertiary-active-color);
-            text-decoration: var(--adyen-fp-button-tertiary-active-text-decoration);
+            background-color: var(--adyen-pe-button-tertiary-active-background-color);
+            color: var(--adyen-pe-button-tertiary-active-color);
+            text-decoration: var(--adyen-pe-button-tertiary-active-text-decoration);
         }
 
         &:disabled {
-            background-color: var(--adyen-fp-button-tertiary-disabled-background-color);
-            color: var(--adyen-fp-button-tertiary-disabled-color);
+            background-color: var(--adyen-pe-button-tertiary-disabled-background-color);
+            color: var(--adyen-pe-button-tertiary-disabled-color);
         }
     }
 
@@ -115,7 +115,7 @@
         //Modify width and height automatically adjust to the same size
         height: auto !important;
         position: relative;
-        width: var(--adyen-fp-touch-size-minimum);
+        width: var(--adyen-pe-touch-size-minimum);
 
         &::before {
             content: '';
@@ -131,31 +131,31 @@
     }
 
     &--link {
-        @extend #{$adyen-fp-button}--tertiary;
-        color: var(--adyen-fp-color-blue);
+        @extend #{$adyen-pe-button}--tertiary;
+        color: var(--adyen-pe-color-blue);
         cursor: pointer;
         -webkit-user-select: text;
         -moz-user-select: text;
         -ms-user-select: text;
         user-select: text;
 
-        #{$adyen-fp-button}__label {
-            text-decoration: var(--adyen-fp-link-text-decoration);
+        #{$adyen-pe-button}__label {
+            text-decoration: var(--adyen-pe-link-text-decoration);
         }
 
         &:hover {
-            //color: var(--adyen-fp-link-hover-color);
-            color: var(--adyen-fp-color-blue-light);
-            text-decoration: var(--adyen-fp-link-hover-text-decoration);
+            //color: var(--adyen-pe-link-hover-color);
+            color: var(--adyen-pe-color-blue-light);
+            text-decoration: var(--adyen-pe-link-hover-text-decoration);
         }
 
         &:active {
-            //color: var(--adyen-fp-link-active-color);
-            color: var(--adyen-fp-color-blue-light);
+            //color: var(--adyen-pe-link-active-color);
+            color: var(--adyen-pe-color-blue-light);
         }
 
         &:focus-visible {
-            border-radius: var(--adyen-fp-link-border-radius);
+            border-radius: var(--adyen-pe-link-border-radius);
         }
     }
 
