@@ -6,7 +6,7 @@ import { useCallback, useMemo, useState } from 'preact/hooks';
 import { EMPTY_OBJECT } from '@src/utils/common';
 import { PopoverContainerSize } from '@src/components/internal/Popover/types';
 import useCoreContext from '@src/core/Context/useCoreContext';
-import { AMOUNT_CONSTANT } from './constants';
+import { AMOUNT_MULTIPLIER } from './constants';
 
 export const AmountFilter = ({ updateFilters, selectedCurrencies, availableCurrencies, ...props }: FilterProps<RangeFilterProps>) => {
     const { i18n } = useCoreContext();
@@ -43,8 +43,8 @@ export const AmountFilter = ({ updateFilters, selectedCurrencies, availableCurre
             setValue({ minAmount, maxAmount });
 
             updateFilters({
-                minAmount: minAmount !== undefined ? String(minAmount * AMOUNT_CONSTANT) : undefined,
-                maxAmount: maxAmount !== undefined ? String(maxAmount * AMOUNT_CONSTANT) : undefined,
+                minAmount: minAmount !== undefined ? String(minAmount * AMOUNT_MULTIPLIER) : undefined,
+                maxAmount: maxAmount !== undefined ? String(maxAmount * AMOUNT_MULTIPLIER) : undefined,
             });
         },
         [updateFilters]
