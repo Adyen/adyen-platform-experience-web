@@ -8,7 +8,7 @@
     }
 }
 
-@mixin adyen-fp-skeleton {
+@mixin adyen-pe-skeleton {
     background-color: hsl(220, 10%, 95%);
     border-radius: 100px;
     display: inline-block;
@@ -17,7 +17,7 @@
     width: 80%;
 }
 
-@mixin adyen-fp-skeleton-animation {
+@mixin adyen-pe-skeleton-animation {
     animation: skeleton-loading 0.8s linear infinite alternate;
     background: inherit;
 }

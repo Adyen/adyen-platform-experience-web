@@ -1,74 +1,74 @@
-.adyen-fp-typography {
+.adyen-pe-typography {
     // Reset preset browser margin on all elements
     margin: 0;
 
     // Caption
     &--caption {
-        font-size: var(--adyen-fp-text-caption-font-size);
-        font-weight: var(--adyen-fp-text-caption-font-weight);
-        letter-spacing: var(--adyen-fp-text-caption-letter-spacing);
-        line-height: var(--adyen-fp-text-caption-line-height);
+        font-size: var(--adyen-pe-text-caption-font-size);
+        font-weight: var(--adyen-pe-text-caption-font-weight);
+        letter-spacing: var(--adyen-pe-text-caption-letter-spacing);
+        line-height: var(--adyen-pe-text-caption-line-height);
     }
 
     &--caption-wide {
-        line-height: var(--adyen-fp-text-caption-wide-line-height);
+        line-height: var(--adyen-pe-text-caption-wide-line-height);
     }
 
     &--caption-stronger {
-        font-weight: var(--adyen-fp-text-caption-stronger-font-weight);
+        font-weight: var(--adyen-pe-text-caption-stronger-font-weight);
     }
 
     // Body
     &--body {
-        font-size: var(--adyen-fp-text-body-font-size);
-        font-weight: var(--adyen-fp-text-body-font-weight);
-        letter-spacing: var(--adyen-fp-text-body-letter-spacing);
-        line-height: var(--adyen-fp-text-body-line-height);
+        font-size: var(--adyen-pe-text-body-font-size);
+        font-weight: var(--adyen-pe-text-body-font-weight);
+        letter-spacing: var(--adyen-pe-text-body-letter-spacing);
+        line-height: var(--adyen-pe-text-body-line-height);
     }
 
     &--body-wide {
-        line-height: var(--adyen-fp-text-body-wide-line-height);
+        line-height: var(--adyen-pe-text-body-wide-line-height);
     }
 
     &--body-stronger {
-        font-weight: var(--adyen-fp-text-body-stronger-font-weight);
+        font-weight: var(--adyen-pe-text-body-stronger-font-weight);
     }
 
     &--body-strongest {
-        font-weight: var(--adyen-fp-text-body-strongest-font-weight);
+        font-weight: var(--adyen-pe-text-body-strongest-font-weight);
     }
 
     // Subtitle
     &--subtitle {
-        font-size: var(--adyen-fp-text-subtitle-font-size);
-        font-weight: var(--adyen-fp-text-subtitle-font-weight);
-        letter-spacing: var(--adyen-fp-text-subtitle-letter-spacing);
-        line-height: var(--adyen-fp-text-subtitle-line-height);
+        font-size: var(--adyen-pe-text-subtitle-font-size);
+        font-weight: var(--adyen-pe-text-subtitle-font-weight);
+        letter-spacing: var(--adyen-pe-text-subtitle-letter-spacing);
+        line-height: var(--adyen-pe-text-subtitle-line-height);
     }
 
     &--subtitle-stronger {
-        font-weight: var(--adyen-fp-text-subtitle-stronger-font-weight);
+        font-weight: var(--adyen-pe-text-subtitle-stronger-font-weight);
     }
 
     // Title
     &--title {
-        font-size: var(--adyen-fp-text-title-font-size);
-        font-weight: var(--adyen-fp-text-title-font-weight);
-        letter-spacing: var(--adyen-fp-text-title-letter-spacing);
-        line-height: var(--adyen-fp-text-title-mobile-line-height);
+        font-size: var(--adyen-pe-text-title-font-size);
+        font-weight: var(--adyen-pe-text-title-font-weight);
+        letter-spacing: var(--adyen-pe-text-title-letter-spacing);
+        line-height: var(--adyen-pe-text-title-mobile-line-height);
     }
 
     &--title-m {
-        font-size: var(--adyen-fp-text-title-m-mobile-font-size);
-        font-weight: var(--adyen-fp-text-title-m-font-weight);
-        letter-spacing: var(--adyen-fp-text-title-m-letter-spacing);
-        line-height: var(--adyen-fp-text-title-m-mobile-line-height);
+        font-size: var(--adyen-pe-text-title-m-mobile-font-size);
+        font-weight: var(--adyen-pe-text-title-m-font-weight);
+        letter-spacing: var(--adyen-pe-text-title-m-letter-spacing);
+        line-height: var(--adyen-pe-text-title-m-mobile-line-height);
     }
 
     &--title-l {
-        font-size: var(--adyen-fp-text-title-l-mobile-font-size);
-        font-weight: var(--adyen-fp-text-title-l-font-weight);
-        letter-spacing: var(--adyen-fp-text-title-l-letter-spacing);
-        line-height: var(--adyen-fp-text-title-l-mobile-line-height);
+        font-size: var(--adyen-pe-text-title-l-mobile-font-size);
+        font-weight: var(--adyen-pe-text-title-l-font-weight);
+        letter-spacing: var(--adyen-pe-text-title-l-letter-spacing);
+        line-height: var(--adyen-pe-text-title-l-mobile-line-height);
     }
 }

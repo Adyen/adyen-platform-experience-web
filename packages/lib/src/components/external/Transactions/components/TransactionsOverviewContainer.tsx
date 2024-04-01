@@ -27,8 +27,8 @@ function TransactionsOverviewComponent(props: ExternalUIComponentProps<Transacti
 
     return (
         <div
-            className={cx('adyen-fp-transactions', {
-                'adyen-fp-transactions__with-error': sessionSetupError,
+            className={cx('adyen-pe-transactions', {
+                'adyen-pe-transactions__with-error': sessionSetupError,
             })}
         >
             {sessionSetupError ? (
@@ -40,7 +40,7 @@ function TransactionsOverviewComponent(props: ExternalUIComponentProps<Transacti
                     refreshComponent={true}
                 />
             ) : (
-                <div className="adyen-fp-transactions__container">
+                <div className="adyen-pe-transactions__container">
                     <TransactionsOverview {...props} balanceAccounts={balanceAccounts} isLoadingBalanceAccount={isFetching} />
                 </div>
             )}

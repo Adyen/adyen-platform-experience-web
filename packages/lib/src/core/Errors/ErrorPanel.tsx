@@ -25,13 +25,13 @@ export function ErrorPanel({ id = 'ariaConsolidatedErrorField', heading = 'Error
     }, [errors]);
 
     return (
-        <div className={showPanel ? 'adyen-fp-error-panel' : 'adyen-fp-error-panel--sr-only'} id={id} aria-live="polite">
-            <div className="adyen-fp-error-panel__wrapper">
-                <div className="adyen-fp-error-panel__header">
-                    <span className="adyen-fp-error-panel__title">{heading}</span>
+        <div className={showPanel ? 'adyen-pe-error-panel' : 'adyen-pe-error-panel--sr-only'} id={id} aria-live="polite">
+            <div className="adyen-pe-error-panel__wrapper">
+                <div className="adyen-pe-error-panel__header">
+                    <span className="adyen-pe-error-panel__title">{heading}</span>
                 </div>
                 {errorMessages.map(error => (
-                    <div key={error} className="adyen-fp-error-panel__error">
+                    <div key={error} className="adyen-pe-error-panel__error">
                         {error}
                     </div>
                 ))}

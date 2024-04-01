@@ -32,7 +32,7 @@ export default function Status(props: StatusProps) {
     };
 
     return (
-        <div className={cx('adyen-fp-status', `adyen-fp-status--${getType(props.label)}`, `adyen-fp-status--${props.size}`)}>
+        <div className={cx('adyen-pe-status', `adyen-pe-status--${getType(props.label)}`, `adyen-pe-status--${props.size}`)}>
             {getLabel(props.label)}
         </div>
     );

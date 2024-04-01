@@ -28,13 +28,13 @@ export default function Pagination({ next, hasNext, hasPrev, page, prev, limit, 
     );
 
     return (
-        <div aria-label={i18n.get('paginatedNavigation')} className={`adyen-fp-pagination ${classnames({})}`}>
-            <div className="adyen-fp-pagination__context">
+        <div aria-label={i18n.get('paginatedNavigation')} className={`adyen-pe-pagination ${classnames({})}`}>
+            <div className="adyen-pe-pagination__context">
                 <span>
                     {i18n.get('pagination.page')} {page}
                 </span>
                 {_limitOptions && onLimitSelection && (
-                    <div className="adyen-fp-pagination__limit-selector">
+                    <div className="adyen-pe-pagination__limit-selector">
                         <Select
                             setToTargetWidth={true}
                             filterable={false}
@@ -47,7 +47,7 @@ export default function Pagination({ next, hasNext, hasPrev, page, prev, limit, 
                 )}
             </div>
 
-            <div className="adyen-fp-pagination__controls">
+            <div className="adyen-pe-pagination__controls">
                 <Button
                     aria-label={i18n.get('pagination.previousPage')}
                     variant={ButtonVariant.TERTIARY}

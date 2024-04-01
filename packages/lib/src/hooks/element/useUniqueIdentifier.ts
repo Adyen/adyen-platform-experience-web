@@ -10,7 +10,7 @@ const useUniqueIdentifier = (ref?: Nullable<Reflexable<Element>>) => {
             (current, previous) => {
                 if (previous instanceof Element && previous.id === id.current) previous.id = '';
                 if (!(current instanceof Element)) return;
-                current.id = id.current || (id.current = getUniqueId('adyen-fp'));
+                current.id = id.current || (id.current = getUniqueId('adyen-pe'));
             },
             [ref]
         ),

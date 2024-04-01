@@ -20,7 +20,7 @@ class BaseElement<P> {
     protected readonly _parentInstance?: Core;
     public sessionSetupError?: boolean;
 
-    // provided by AdyenFPCore
+    // provided by AdyenPlatformExperienceCore
     public loadingContext?: string;
     public i18n?: Localization['i18n'];
     public session?: BPSession;

@@ -1,15 +1,15 @@
-.adyen-fp-dropdown {
+.adyen-pe-dropdown {
     position: relative;
 }
 
-.adyen-fp-dropdown__button {
+.adyen-pe-dropdown__button {
     align-items: center;
     cursor: pointer;
     display: flex;
     justify-content: space-between;
 }
 
-.adyen-fp-dropdown__button::after {
+.adyen-pe-dropdown__button::after {
     background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4IiBoZWlnaHQ9IjciIGZpbGw9Im5vbmUiIHZpZXdCb3g9IjAgMCA4IDciPjxwYXRoIGZpbGw9IiM2ODcyODIiIGQ9Ik0zLjIgNi42YTEgMSAwIDAgMCAxLjYgMGwzLTRBMSAxIDAgMCAwIDcgMUgxYTEgMSAwIDAgMC0uOCAxLjZsMyA0WiIvPjwvc3ZnPg');
     background-position: center;
     background-repeat: no-repeat;
@@ -25,23 +25,23 @@
     }
 }
 
-.adyen-fp-dropdown__button--active::after {
+.adyen-pe-dropdown__button--active::after {
     transform: rotate(180deg);
 }
 
-.adyen-fp-filter-input {
-    background: var(--adyen-fp-color-white);
+.adyen-pe-filter-input {
+    background: var(--adyen-pe-color-white);
     border: 0;
-    caret-color: var(--adyen-fp-color-blue);
-    color: var(--adyen-fp-color-black);
+    caret-color: var(--adyen-pe-color-blue);
+    color: var(--adyen-pe-color-black);
     font-family: inherit;
-    font-size: var(--adyen-fp-font-size-medium);
+    font-size: var(--adyen-pe-font-size-medium);
     height: 100%;
     padding: 0;
     width: 100%;
 
     &::placeholder {
-        color: var(--adyen-fp-color-gray-dark);
+        color: var(--adyen-pe-color-gray-dark);
         font-weight: 200;
     }
 
@@ -51,8 +51,8 @@
     }
 }
 
-.adyen-fp-dropdown__list {
-    background: var(--adyen-fp-color-white);
+.adyen-pe-dropdown__list {
+    background: var(--adyen-pe-color-white);
     display: none;
     list-style: none;
     margin: 0 0 50px;
@@ -63,11 +63,11 @@
     z-index: 1;
 }
 
-.adyen-fp-dropdown__list.adyen-fp-dropdown__list--active {
+.adyen-pe-dropdown__list.adyen-pe-dropdown__list--active {
     display: block;
 }
 
-.adyen-fp-dropdown__element {
+.adyen-pe-dropdown__element {
     align-items: center;
     display: flex;
     justify-content: space-between;

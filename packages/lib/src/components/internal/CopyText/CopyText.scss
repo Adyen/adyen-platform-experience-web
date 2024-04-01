@@ -1,13 +1,13 @@
-.adyen-fp-copy-text {
-    $adyen-fp-root: &;
+.adyen-pe-copy-text {
+    $adyen-pe-root: &;
     align-items: center;
     display: inline-flex;
     text-decoration: none;
 
     span &__information {
         color: #0070f5;
-        font-size: var(--adyen-fp-font-size-medium);
-        font-weight: var(--adyen-fp-font-weight-regular);
+        font-size: var(--adyen-pe-font-size-medium);
+        font-weight: var(--adyen-pe-font-weight-regular);
         line-height: 1.25rem;
         overflow: hidden;
         text-overflow: ellipsis;

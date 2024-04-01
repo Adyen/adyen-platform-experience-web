@@ -1,39 +1,39 @@
-.adyen-fp-tag {
+.adyen-pe-tag {
     align-items: center;
     border-radius: 4px;
     cursor: default;
     display: inline-flex;
     flex-direction: row;
-    font-size: var(--adyen-fp-font-size-xsmall);
-    font-weight: var(--adyen-fp-font-weight-medium);
+    font-size: var(--adyen-pe-font-size-xsmall);
+    font-weight: var(--adyen-pe-font-weight-medium);
     justify-content: center;
     min-width: 2.5rem;
-    padding: var(--adyen-fp-spacing-xsmall) var(--adyen-fp-spacing-small);
+    padding: var(--adyen-pe-spacing-xsmall) var(--adyen-pe-spacing-small);
     width: fit-content;
 
     &--success {
-        background: var(--adyen-fp-color-green-100);
-        color: var(--adyen-fp-color-green);
+        background: var(--adyen-pe-color-green-100);
+        color: var(--adyen-pe-color-green);
     }
 
     &--error {
-        background: var(--adyen-fp-color-red-light);
-        color: var(--adyen-fp-color-red);
+        background: var(--adyen-pe-color-red-light);
+        color: var(--adyen-pe-color-red);
     }
 
     &--default {
-        background: var(--adyen-fp-background-secondary);
-        color: var(--adyen-fp-label-secondary);
+        background: var(--adyen-pe-background-secondary);
+        color: var(--adyen-pe-label-secondary);
     }
 
     &--warning {
-        background: var(--adyen-fp-color-yellow);
-        color: var(--adyen-fp-color-yellow-dark);
+        background: var(--adyen-pe-color-yellow);
+        color: var(--adyen-pe-color-yellow-dark);
     }
 
     &--white {
-        background: var(--adyen-fp-color-white);
-        color: var(--adyen-fp-color-black);
-        outline: 1px solid var(--adyen-fp-color-gray-light-2);
+        background: var(--adyen-pe-color-white);
+        color: var(--adyen-pe-color-black);
+        outline: 1px solid var(--adyen-pe-color-gray-light-2);
     }
 }

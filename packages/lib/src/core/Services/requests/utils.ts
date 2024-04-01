@@ -1,5 +1,5 @@
 import { AdyenErrorResponse, ErrorLevel, HttpOptions } from './types';
-import AdyenFPError from '@src/core/Errors/AdyenFPError';
+import AdyenPlatformExperienceError from '@src/core/Errors/AdyenPlatformExperienceError';
 
 export const enum ErrorTypes {
     /** Network error. */
@@ -70,7 +70,7 @@ export function handleFetchError({
             break;
         case 'error':
         default:
-            throw new AdyenFPError(type, requestId, message, errorCode);
+            throw new AdyenPlatformExperienceError(type, requestId, message, errorCode);
     }
 }
 

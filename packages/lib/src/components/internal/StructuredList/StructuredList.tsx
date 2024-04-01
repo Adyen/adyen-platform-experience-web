@@ -23,21 +23,21 @@ export default function StructuredList({
     const { i18n } = useCoreContext();
 
     return (
-        <div aria-label={i18n.get('structuredList')} className="adyen-fp-structured-list">
+        <div aria-label={i18n.get('structuredList')} className="adyen-pe-structured-list">
             {formattedItems.map(item => (
                 <dl
                     key={item.id}
-                    className={classNames('adyen-fp-structured-list__item adyen-fp-structured-list__item', {
-                        'adyen-fp-structured-list__item--has-highlight': highlightable,
-                        'adyen-fp-structured-list__grid': grid,
+                    className={classNames('adyen-pe-structured-list__item adyen-pe-structured-list__item', {
+                        'adyen-pe-structured-list__item--has-highlight': highlightable,
+                        'adyen-pe-structured-list__grid': grid,
                     })}
                 >
-                    <dt className={classNames('adyen-fp-structured-list__label', `adyen-fp-structured-list__grid--width-${labelWidth}-of-12`)}>
+                    <dt className={classNames('adyen-pe-structured-list__label', `adyen-pe-structured-list__grid--width-${labelWidth}-of-12`)}>
                         {renderLabel ? renderLabel(item.label) : <div name="label">{item.label}</div>}
                     </dt>
                     <dd
                         aria-label={`${i18n.get(item.key as TranslationKey)} ${i18n.get('value')}`}
-                        className={classNames('adyen-fp-structured-list__content', `adyen-fp-structured-list__grid--width-${valueWidth}-of-12`)}
+                        className={classNames('adyen-pe-structured-list__content', `adyen-pe-structured-list__grid--width-${valueWidth}-of-12`)}
                     >
                         {renderValue ? renderValue(item.value) : <div>{item.value}</div>}
                     </dd>

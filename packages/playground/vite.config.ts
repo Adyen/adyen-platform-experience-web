@@ -54,7 +54,7 @@ export default defineConfig(async ({ mode }) => {
                 : undefined,
         resolve: {
             alias: {
-                '@adyen/adyen-fp-web': resolve(__dirname, '../lib/src'),
+                '@adyen/adyen-platform-experience-web': resolve(__dirname, '../lib/src'),
                 '@src': resolve(__dirname, '../lib/src'),
                 '@styles': resolve(__dirname, '../lib/src/style'),
             },
@@ -71,7 +71,7 @@ export default defineConfig(async ({ mode }) => {
             https: false,
             proxy: mode === 'mocked' ? undefined : realApiProxies(apiConfigs),
             watch: {
-                ignored: ['!**/node_modules/@adyen/adyen-fp-web/**'],
+                ignored: ['!**/node_modules/@adyen/adyen-platform-experience-web/**'],
             },
         },
         optimizeDeps: {

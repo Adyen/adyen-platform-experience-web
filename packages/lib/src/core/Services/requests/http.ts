@@ -1,5 +1,5 @@
 import { API_VERSION } from '@src/core/Services/sessions/constants';
-import AdyenFPError from '../../Errors/AdyenFPError';
+import AdyenPlatformExperienceError from '../../Errors/AdyenPlatformExperienceError';
 import { getErrorType, getRequestObject, handleFetchError, isAdyenErrorResponse } from './utils';
 import { HttpOptions } from './types';
 import { normalizeLoadingContext, normalizeUrl } from '@src/core/utils';
@@ -54,11 +54,11 @@ export function http<T>(options: HttpOptions, data?: any): Promise<T> {
              */
             .catch(error => {
                 /**
-                 * If error is instance of AdyenFPError, which means that it was already
+                 * If error is instance of AdyenPlatformExperienceError, which means that it was already
                  * handled by the `handleFetchError` on the `then` block, then we just throw it.
                  * There is no need to create it again
                  */
-                if (error instanceof AdyenFPError) {
+                if (error instanceof AdyenPlatformExperienceError) {
                     throw error;
                 }
 

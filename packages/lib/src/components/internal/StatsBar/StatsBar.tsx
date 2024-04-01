@@ -3,13 +3,13 @@ import { StatsBarProps } from './types';
 
 export default function StatsBar(props: StatsBarProps) {
     return (
-        <ul className="adyen-fp-stats-bar">
+        <ul className="adyen-pe-stats-bar">
             {props.items.map(item => (
-                <li className="adyen-fp-stats-bar__item" key={item.label} aria-label={item.label}>
-                    <div className="adyen-fp-stats-bar__label" aria-label="label">
+                <li className="adyen-pe-stats-bar__item" key={item.label} aria-label={item.label}>
+                    <div className="adyen-pe-stats-bar__label" aria-label="label">
                         {item.label}
                     </div>
-                    <div className="adyen-fp-stats-bar__value" aria-label="value">
+                    <div className="adyen-pe-stats-bar__value" aria-label="value">
                         {item.value}
                     </div>
                 </li>

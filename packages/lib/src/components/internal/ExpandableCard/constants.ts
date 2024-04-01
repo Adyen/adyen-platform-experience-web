@@ -1,4 +1,4 @@
-export const BASE_CLASS = 'adyen-fp-expandable-card';
+export const BASE_CLASS = 'adyen-pe-expandable-card';
 export const CONTAINER_CLASS = BASE_CLASS + '__container';
 export const CONTAINER_BUTTON_CLASS = CONTAINER_CLASS + '--button';
 export const CONTAINER_FILLED_CLASS = CONTAINER_CLASS + '--filled';

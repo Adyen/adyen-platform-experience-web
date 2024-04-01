@@ -54,12 +54,12 @@ function PhoneInput(props: PhoneInputProps<PhoneInputSchema>) {
      * The <Field> element assigns a uniqueId which it uses for the \<label for=\> attribute.
      * This uniqueId is then passed as a prop to the first child of the field
      *  (which is usually an element created by renderFormField) where it is assigned to the id attribute of that element.
-     * However here we have a different use case and the uniqueId is written to the <div class="adyen-fp-input"> which in this case
+     * However here we have a different use case and the uniqueId is written to the <div class="adyen-pe-input"> which in this case
      *  is the first child of the <Field>.
      * In order to retrieve this uniqueId and assign it to the phoneNumber input (to thus link <label> and <input> - we need this function.
      */
     const getRelatedUniqueId = () => {
-        const holder = document.querySelector('.adyen-fp-phone-input--new [uniqueid]');
+        const holder = document.querySelector('.adyen-pe-phone-input--new [uniqueid]');
         return holder?.getAttribute('uniqueid') ?? '';
     };
 
@@ -77,16 +77,16 @@ function PhoneInput(props: PhoneInputProps<PhoneInputSchema>) {
     );
 
     const uniqueIDPhonePrefix = useMemo(() => {
-        return getUniqueId('adyen-fp-phonePrefix');
+        return getUniqueId('adyen-pe-phonePrefix');
     }, []);
 
     return (
-        <div className="adyen-fp-phone-input--new">
+        <div className="adyen-pe-phone-input--new">
             <Field
                 name={'phoneNumber'}
                 label={props.phoneNumberKey ? props.phoneNumberKey : i18n.get('telephoneNumber')}
                 className={classNames({
-                    'adyen-fp-field--phone-input': true,
+                    'adyen-pe-field--phone-input': true,
                 })}
                 inputWrapperModifiers={['phone-input']}
                 isValid={valid.phoneNumber}
@@ -99,23 +99,23 @@ function PhoneInput(props: PhoneInputProps<PhoneInputSchema>) {
             >
                 {/**
                  A special situation exists here - normally the first element inside a Field comp is an <input> element which receives
-                 'adyen-fp-input' type styling (to set width, borders, valid and invalid styling etc).
+                 'adyen-pe-input' type styling (to set width, borders, valid and invalid styling etc).
                  Here it is a <div> - however we still need the "input-type" styling on this div for the same reasons (width, borders, showing validity etc)
-                 TODO - should probably have some specific 'adyen-fp-input-holder' styling selectors
+                 TODO - should probably have some specific 'adyen-pe-input-holder' styling selectors
                  */}
                 <div
                     className={classNames({
                         // Styles from FormFields.scss
-                        'adyen-fp-input': true,
-                        'adyen-fp-input--invalid': !!errors.phoneNumber || !!errors.phonePrefix,
-                        'adyen-fp-input--valid': (showPrefix ? valid.phonePrefix : true) && valid.phoneNumber,
+                        'adyen-pe-input': true,
+                        'adyen-pe-input--invalid': !!errors.phoneNumber || !!errors.phonePrefix,
+                        'adyen-pe-input--valid': (showPrefix ? valid.phonePrefix : true) && valid.phoneNumber,
                         // Style from local PhoneInput.scss
-                        'adyen-fp-input-holder--phone-input': true,
+                        'adyen-pe-input-holder--phone-input': true,
                     })}
                 >
                     {showPrefix &&
                         renderFormField('select', {
-                            className: 'adyen-fp-dropdown adyen-fp-dropdown--countrycode-selector',
+                            className: 'adyen-pe-dropdown adyen-pe-dropdown--countrycode-selector',
                             items: props.items,
                             onChange: handleChangeFor('phonePrefix'),
                             // readonly: props.phonePrefixIsReadonly,
@@ -126,7 +126,7 @@ function PhoneInput(props: PhoneInputProps<PhoneInputSchema>) {
                         })}
 
                     {showNumber && (
-                        <div className="adyen-fp-phone-number">
+                        <div className="adyen-pe-phone-number">
                             <input
                                 id={getRelatedUniqueId()}
                                 type="tel"
@@ -135,7 +135,7 @@ function PhoneInput(props: PhoneInputProps<PhoneInputSchema>) {
                                 onBlur={handleChangeFor('phoneNumber', 'blur')}
                                 // readOnly={props.phoneNumberIsReadonly}
                                 placeholder={props.placeholders?.phoneNumber || '123456789'}
-                                className="adyen-fp-input adyen-fp-input adyen-fp-input--phone-number"
+                                className="adyen-pe-input adyen-pe-input adyen-pe-input--phone-number"
                                 autoCorrect="off"
                                 aria-required={true}
                                 aria-label={props.phoneNumberKey ? props.phoneNumberKey : i18n.get('telephoneNumber')}
@@ -147,14 +147,14 @@ function PhoneInput(props: PhoneInputProps<PhoneInputSchema>) {
                 </div>
             </Field>
             {!commonProps?.isCollatingErrors && (
-                <div className="adyen-fp-phone-input__error-holder">
+                <div className="adyen-pe-phone-input__error-holder">
                     {showPrefix && getPhoneFieldError('phonePrefix') && (
-                        <span className={'adyen-fp-error-text'} aria-live="polite" id={`${uniqueIDPhonePrefix}${ARIA_ERROR_SUFFIX}`}>
+                        <span className={'adyen-pe-error-text'} aria-live="polite" id={`${uniqueIDPhonePrefix}${ARIA_ERROR_SUFFIX}`}>
                             {getPhoneFieldError('phonePrefix')}
                         </span>
                     )}
                     {showNumber && getPhoneFieldError('phoneNumber') && (
-                        <span className={'adyen-fp-error-text'} aria-live="polite" id={`${getRelatedUniqueId()}${ARIA_ERROR_SUFFIX}`}>
+                        <span className={'adyen-pe-error-text'} aria-live="polite" id={`${getRelatedUniqueId()}${ARIA_ERROR_SUFFIX}`}>
                             {getPhoneFieldError('phoneNumber')}
                         </span>
                     )}

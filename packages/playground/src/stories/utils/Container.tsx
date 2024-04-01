@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'preact/compat';
 import { StoryContext } from '@storybook/types';
 import { PreactRenderer } from '@storybook/preact';
-import { getStoryContextAdyenFP } from './get-story-context';
+import { getStoryContextAdyenPlatformExperience } from './get-story-context';
 import { stopMockedServer } from '../../endpoints/mock-server/utils';
 
 interface IContainer<T extends new (...args: any) => any> {
@@ -13,11 +13,11 @@ interface IContainer<T extends new (...args: any) => any> {
 
 export const Container = <T extends new (args: any) => any>({ component, componentConfiguration, context, mockedApi }: IContainer<T>) => {
     const container = useRef(null);
-    const adyenFP = getStoryContextAdyenFP(context);
-    const Component = new component({ ...componentConfiguration, core: adyenFP });
+    const AdyenPlatformExperience = getStoryContextAdyenPlatformExperience(context);
+    const Component = new component({ ...componentConfiguration, core: AdyenPlatformExperience });
 
     useEffect(() => {
-        if (!adyenFP) {
+        if (!AdyenPlatformExperience) {
             return;
         }
 
