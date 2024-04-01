@@ -86,13 +86,6 @@
             text-align: center;
         }
 
-        &--hover {
-            text-decoration: underline;
-            text-decoration-color: #016fd0;
-            text-decoration-style: dashed;
-            text-decoration-thickness: 1px;
-            text-underline-offset: var(--adyen-pe-spacing-small);
-        }
 
         &#{$adyen-pe-data-grid__cell}--heading {
             border-bottom-color: var(--adyen-pe-color-gray-dark);
