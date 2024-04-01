@@ -21,6 +21,7 @@ import { Image } from '@src/components/internal/Image/Image';
 import { TranslationKey } from '@src/core/Localization/types';
 import TransactionListError from './TransactionListError/TransactionListError';
 import { getCurrencyCode } from '@src/core/Localization/amount/amount-util';
+import { useDeviceSizeCheck } from '@src/components/external/Transactions/hooks/useDeviceSizeCheck';
 
 const ModalContent = lazy(() => import('./ModalContent'));
 
@@ -42,12 +43,13 @@ function TransactionList({
 
     const hasMultipleCurrencies = availableCurrencies && availableCurrencies.length > 1;
     const [hoveredRow, setHoveredRow] = useState<undefined | number>();
+    const isMediumDevice = useDeviceSizeCheck('medium');
 
     const columns = useMemo(
         () =>
             FIELDS.map(key => {
                 const label = i18n.get(getLabel(key));
-                if (key === 'amount')
+                if (key === 'amount') {
                     return {
                         key,
                         label: hasMultipleCurrencies
@@ -55,10 +57,11 @@ function TransactionList({
                             : `${label} ${availableCurrencies && availableCurrencies[0] ? `(${getCurrencyCode(availableCurrencies[0])})` : ''}`,
                         position: key === 'amount' ? CellTextPosition.RIGHT : undefined,
                     };
+                }
 
                 return { key, label };
-            }),
-        [availableCurrencies, hasMultipleCurrencies, i18n]
+            }).filter(column => !(isMediumDevice && ['status', 'type'].includes(column.key))),
+        [availableCurrencies, hasMultipleCurrencies, i18n, isMediumDevice]
     );
 
     const transactionDetails = useMemo(
