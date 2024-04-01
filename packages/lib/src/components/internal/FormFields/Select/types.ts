@@ -34,6 +34,7 @@ export interface SelectProps<T extends SelectItem> {
     uniqueId?: string;
     withoutCollapseIndicator?: boolean;
     setToTargetWidth?: boolean;
+    popoverClassNameModifiers?: string[];
 }
 
 export interface SelectButtonProps<T extends SelectItem> {
@@ -71,6 +72,7 @@ export interface SelectListProps<T extends SelectItem> {
     toggleButtonRef: Ref<HTMLButtonElement>;
     dismissPopover: any;
     setToTargetWidth?: boolean;
+    popoverClassNameModifiers?: string[];
 }
 
 export interface SelectItemProps<T extends SelectItem> {
