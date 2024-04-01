@@ -4,7 +4,6 @@
 
     // Caption
     &--caption {
-        font-family: var(--adyen-fp-caption-font-family);
         font-size: var(--adyen-fp-text-caption-font-size);
         font-weight: var(--adyen-fp-text-caption-font-weight);
         letter-spacing: var(--adyen-fp-text-caption-letter-spacing);
@@ -21,7 +20,6 @@
 
     // Body
     &--body {
-        font-family: var(--adyen-fp-text-body-font-family);
         font-size: var(--adyen-fp-text-body-font-size);
         font-weight: var(--adyen-fp-text-body-font-weight);
         letter-spacing: var(--adyen-fp-text-body-letter-spacing);
@@ -42,7 +40,6 @@
 
     // Subtitle
     &--subtitle {
-        font-family: var(--adyen-fp-text-subtitle-font-family);
         font-size: var(--adyen-fp-text-subtitle-font-size);
         font-weight: var(--adyen-fp-text-subtitle-font-weight);
         letter-spacing: var(--adyen-fp-text-subtitle-letter-spacing);
@@ -55,7 +52,6 @@
 
     // Title
     &--title {
-        font-family: var(--adyen-fp-text-title-font-family);
         font-size: var(--adyen-fp-text-title-font-size);
         font-weight: var(--adyen-fp-text-title-font-weight);
         letter-spacing: var(--adyen-fp-text-title-letter-spacing);
@@ -63,7 +59,6 @@
     }
 
     &--title-m {
-        font-family: var(--adyen-fp-text-title-m-font-family);
         font-size: var(--adyen-fp-text-title-m-mobile-font-size);
         font-weight: var(--adyen-fp-text-title-m-font-weight);
         letter-spacing: var(--adyen-fp-text-title-m-letter-spacing);
@@ -71,7 +66,6 @@
     }
 
     &--title-l {
-        font-family: var(--adyen-fp-text-title-l-font-family);
         font-size: var(--adyen-fp-text-title-l-mobile-font-size);
         font-weight: var(--adyen-fp-text-title-l-font-weight);
         letter-spacing: var(--adyen-fp-text-title-l-letter-spacing);

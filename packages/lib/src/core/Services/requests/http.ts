@@ -30,11 +30,23 @@ export function http<T>(options: HttpOptions, data?: any): Promise<T> {
                     // If an errorHandler has been passed use this rather than the default handleFetchError
                     return options.errorHandler
                         ? options.errorHandler(response)
-                        : handleFetchError({ message: response.detail, level: errorLevel, errorCode: response.errorCode, type: errorType });
+                        : handleFetchError({
+                              message: response.detail,
+                              level: errorLevel,
+                              errorCode: response.errorCode,
+                              type: errorType,
+                              requestId: response?.requestId,
+                          });
                 }
 
                 const errorMessage = options.errorMessage || `Service at ${url} is not available`;
-                return handleFetchError({ message: errorMessage, level: errorLevel, errorCode: String(response.status), type: errorType });
+                return handleFetchError({
+                    message: errorMessage,
+                    level: errorLevel,
+                    errorCode: String(response.status),
+                    type: errorType,
+                    requestId: response?.requestId,
+                });
             })
             /**
              * Catch block handles Network error, CORS error, or exception throw by the `handleFetchError`

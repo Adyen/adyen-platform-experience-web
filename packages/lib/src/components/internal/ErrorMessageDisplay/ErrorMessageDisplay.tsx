@@ -4,6 +4,7 @@ import { useCallback } from 'preact/hooks';
 import useCoreContext from '@src/core/Context/useCoreContext';
 import { TranslationKey } from '@src/core/Localization/types';
 import './ErrorMessageDisplay.scss';
+import { JSXInternal } from 'preact/src/jsx';
 import noResults from '../../../images/no-results.svg';
 import Button from '@src/components/internal/Button';
 import useAuthContext from '@src/core/Auth/useAuthContext';
@@ -21,6 +22,7 @@ type ErrorMessageDisplayProps = {
     centered?: boolean;
     refreshComponent?: boolean;
     onContactSupport?: () => void;
+    translationValues?: { [k in TranslationKey]?: JSXInternal.Element | null };
 };
 export const ErrorMessageDisplay = ({
     title,
@@ -31,6 +33,7 @@ export const ErrorMessageDisplay = ({
     centered,
     refreshComponent,
     onContactSupport,
+    translationValues,
 }: ErrorMessageDisplayProps) => {
     const { i18n } = useCoreContext();
     const { updateCore } = useAuthContext();
@@ -39,18 +42,22 @@ export const ErrorMessageDisplay = ({
             if (Array.isArray(errorMessage)) {
                 return errorMessage.map((message, i) =>
                     i === 0 ? (
-                        i18n.get(message)
+                        <>
+                            {i18n.get(message)}
+                            {translationValues && translationValues[message] && <>{translationValues[message]}</>}
+                        </>
                     ) : (
                         <>
                             <br />
                             {i18n.get(message)}
+                            {translationValues && translationValues[message] && <>{translationValues[message]}</>}
                         </>
                     )
                 );
             }
             return i18n.get(errorMessage);
         },
-        [i18n]
+        [i18n, translationValues]
     );
 
     return (
@@ -70,7 +77,7 @@ export const ErrorMessageDisplay = ({
             {(onContactSupport || refreshComponent) && (
                 <div className={'adyen-fp-error-message-display__button'}>
                     {onContactSupport && <Button onClick={onContactSupport}>{i18n.get('reachOutToSupport')}</Button>}
-                    {!onContactSupport && refreshComponent && <Button onClick={() => updateCore?.()}>{i18n.get('refreshThePage')}</Button>}
+                    {!onContactSupport && refreshComponent && <Button onClick={() => updateCore?.()}>{i18n.get('refresh')}</Button>}
                 </div>
             )}
         </div>

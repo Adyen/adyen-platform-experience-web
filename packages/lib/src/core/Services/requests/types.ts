@@ -24,7 +24,9 @@ export type AdyenErrorResponse = {
     errorCode: string;
     detail: string;
     type: string;
+    invalidFields?: any[];
     status: number;
+    requestId: string;
 };
 
 export type FunctionOrStringLiteral = `/${string}` | ((...params: any) => `/${string}`);

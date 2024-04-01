@@ -1,0 +1,21 @@
+.adyen-fp-copy-text {
+    $adyen-fp-root: &;
+    align-items: center;
+    display: inline-flex;
+    text-decoration: none;
+
+    span &__information {
+        color: #0070f5;
+        font-size: var(--adyen-fp-font-size-medium);
+        font-weight: var(--adyen-fp-font-weight-regular);
+        line-height: 1.25rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        width: 80px;
+    }
+
+    &:hover {
+        cursor: default;
+    }
+}

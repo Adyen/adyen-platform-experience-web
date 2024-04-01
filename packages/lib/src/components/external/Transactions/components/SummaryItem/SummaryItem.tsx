@@ -14,7 +14,7 @@ import { TypographyVariant } from '@src/components/internal/Typography/types';
 import Typography from '@src/components/internal/Typography/Typography';
 import useCoreContext from '@src/core/Context/useCoreContext';
 import classNames from 'classnames';
-import { useEffect, useState } from 'preact/hooks';
+import { useEffect } from 'preact/hooks';
 import './SummaryItem.scss';
 
 export const SummaryItem = ({
@@ -28,7 +28,6 @@ export const SummaryItem = ({
     isEmpty,
 }: SummaryItemProps) => {
     const { i18n } = useCoreContext();
-    const [isSkeletonHovered, setIsSkeletonHovered] = useState(false);
 
     useEffect(() => {
         const newWidths = columnConfigs.map(config => config.ref?.current?.getBoundingClientRect().width ?? 0);
@@ -52,7 +51,7 @@ export const SummaryItem = ({
                                     config={config}
                                     i18n={i18n}
                                     isSkeletonVisible={isSkeletonVisible}
-                                    className={classNames({ [LABEL_CONTAINER_HOVER_CLASS]: isHovered || isSkeletonHovered })}
+                                    className={classNames({ [LABEL_CONTAINER_HOVER_CLASS]: isHovered })}
                                 />
                             </Tooltip>
                         ) : (

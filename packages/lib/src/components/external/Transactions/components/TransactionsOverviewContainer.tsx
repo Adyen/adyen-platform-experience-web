@@ -36,7 +36,8 @@ function TransactionsOverviewComponent(props: ExternalUIComponentProps<Transacti
                     withImage
                     centered
                     title={'somethingWentWrong'}
-                    message={['weCouldNotLoadTheTransactionsOverview', 'tryToRefreshThePageOrComeBackLater']}
+                    message={['weCouldNotLoadTheTransactionsOverview', 'tryRefreshingThePageOrComeBackLater']}
+                    refreshComponent={true}
                 />
             ) : (
                 <div className="adyen-fp-transactions__container">

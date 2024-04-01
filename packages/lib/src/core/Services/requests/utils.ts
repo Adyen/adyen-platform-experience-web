@@ -52,11 +52,13 @@ export function handleFetchError({
     level,
     errorCode,
     type = ErrorTypes.NETWORK_ERROR,
+    requestId,
 }: {
     message: string;
     level: ErrorLevel | undefined;
     errorCode?: string;
     type?: ErrorTypes;
+    requestId?: string;
 }) {
     switch (level) {
         case 'silent': {
@@ -68,7 +70,7 @@ export function handleFetchError({
             break;
         case 'error':
         default:
-            throw new AdyenFPError(type, message, errorCode);
+            throw new AdyenFPError(type, requestId, message, errorCode);
     }
 }
 
