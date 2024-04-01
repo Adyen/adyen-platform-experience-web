@@ -1,9 +1,9 @@
 .adyen-pe__tooltip-target {
     &--hovered {
         text-decoration: underline;
-        text-decoration-color: var(--adyen-fp-color-blue);
-        text-decoration-style: dotted;
-        text-decoration-thickness: 2px;
-        text-underline-offset: var(--adyen-fp-spacing-xsmall);
+        text-decoration-color: #016fd0;
+        text-decoration-style: dashed;
+        text-decoration-thickness: 1px;
+        text-underline-offset: var(--adyen-pe-spacing-xsmall);
     }
 }

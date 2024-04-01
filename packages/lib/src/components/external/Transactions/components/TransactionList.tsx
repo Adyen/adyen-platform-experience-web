@@ -129,9 +129,7 @@ function TransactionList({
                         const tooltipKey = `tooltip.${item.category}`;
                         return item.category ? (
                             i18n.has(tooltipKey) ? (
-                                <span>
-                                    <Category value={item.category} isContainerHovered={rowIndex === hoveredRow} />
-                                </span>
+                                <Category value={item.category} isContainerHovered={rowIndex === hoveredRow} />
                             ) : (
                                 <span>{item.category}</span>
                             )
