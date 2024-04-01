@@ -129,9 +129,7 @@ function TransactionList({
                         const tooltipKey = `tooltip.${item.category}`;
                         return item.category ? (
                             i18n.has(tooltipKey) ? (
-                                <span className={classnames({ 'adyen-pe-data-grid__cell--hover': rowIndex === hoveredRow })}>
-                                    <Category value={item.category} />
-                                </span>
+                                <Category value={item.category} isContainerHovered={rowIndex === hoveredRow} />
                             ) : (
                                 <span>{item.category}</span>
                             )
