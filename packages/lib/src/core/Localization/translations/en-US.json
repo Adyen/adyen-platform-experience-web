@@ -224,5 +224,6 @@
     "tooltip.Refund": "Money sent back to a customer from a refunded transaction",
     "tooltip.Fee": "Transaction costs and payment method fees",
     "tooltip.Chargeback": "Money returned to a customer after a disputed transaction",
-    "tooltip.Incoming": "Money received to your account from transactions and transfers"
+    "tooltip.Incoming": "Money received to your account from transactions and transfers",
+    "theSelectedBalanceAccountIsIncorrect": "The selected balance account is incorrect"
 }

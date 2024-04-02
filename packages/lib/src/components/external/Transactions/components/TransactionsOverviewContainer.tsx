@@ -23,7 +23,15 @@ function TransactionsOverviewComponent(props: ExternalUIComponentProps<Transacti
         }, [balanceAccountEndpointCall]),
     });
 
-    const balanceAccounts = useMemo(() => data?.balanceAccounts, [data?.balanceAccounts]);
+    const balanceAccounts = useMemo(
+        () => data?.balanceAccounts.filter(account => (props.balanceAccountId ? account.id === props.balanceAccountId : true)),
+        [data?.balanceAccounts, props.balanceAccountId]
+    );
+
+    const wrongBalanceAccountId = useMemo(
+        () => !!props.balanceAccountId && !!data?.balanceAccounts.length && balanceAccounts?.length === 0,
+        [balanceAccounts?.length, data?.balanceAccounts.length, props.balanceAccountId]
+    );
 
     return (
         <div
@@ -38,6 +46,13 @@ function TransactionsOverviewComponent(props: ExternalUIComponentProps<Transacti
                     title={'somethingWentWrong'}
                     message={['weCouldNotLoadTheTransactionsOverview', 'tryRefreshingThePageOrComeBackLater']}
                     refreshComponent={true}
+                />
+            ) : wrongBalanceAccountId ? (
+                <ErrorMessageDisplay
+                    withImage
+                    centered
+                    title={'somethingWentWrong'}
+                    message={['weCouldNotLoadTheTransactionsOverview', 'theSelectedBalanceAccountIsIncorrect']}
                 />
             ) : (
                 <div className="adyen-pe-transactions__container">
