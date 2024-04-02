@@ -16,6 +16,7 @@ export class TransactionsElement extends UIElement<TransactionsComponentProps> {
         return (
             <Transactions
                 {...this.props}
+                balanceAccountId={this.props.core.options.balanceAccountId}
                 ref={(ref: UIElement<TransactionsComponentProps>) => {
                     this.componentRef = ref;
                 }}
