@@ -21,7 +21,7 @@ import { Image } from '@src/components/internal/Image/Image';
 import { TranslationKey } from '@src/core/Localization/types';
 import TransactionListError from './TransactionListError/TransactionListError';
 import { getCurrencyCode } from '@src/core/Localization/amount/amount-util';
-import { useDeviceSizeCheck } from '@src/components/external/Transactions/hooks/useDeviceSizeCheck';
+import { mediaQueries, useMediaQuery } from '@src/components/external/Transactions/hooks/useMediaQuery';
 
 const ModalContent = lazy(() => import('./ModalContent'));
 
@@ -43,7 +43,7 @@ function TransactionList({
 
     const hasMultipleCurrencies = availableCurrencies && availableCurrencies.length > 1;
     const [hoveredRow, setHoveredRow] = useState<undefined | number>();
-    const isMediumDevice = useDeviceSizeCheck('medium');
+    const isSmViewport = useMediaQuery(mediaQueries.down.sm);
 
     const columns = useMemo(
         () =>
@@ -60,8 +60,8 @@ function TransactionList({
                 }
 
                 return { key, label };
-            }).filter(column => !(isMediumDevice && ['status', 'type'].includes(column.key))),
-        [availableCurrencies, hasMultipleCurrencies, i18n, isMediumDevice]
+            }).filter(column => !(isSmViewport && ['status', 'type'].includes(column.key))),
+        [availableCurrencies, hasMultipleCurrencies, i18n, isSmViewport]
     );
 
     const transactionDetails = useMemo(
