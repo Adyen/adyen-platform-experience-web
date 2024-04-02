@@ -6,6 +6,7 @@ import { SummaryItem } from '@src/components/external/TransactionsOverview/compo
 
 export const TransactionTotalItem = ({
     total,
+    hiddenField,
     isHeader = false,
     isHovered = false,
     isSkeleton = false,
@@ -18,31 +19,34 @@ export const TransactionTotalItem = ({
     const expenseRef = useRef<HTMLDivElement>(null);
     const currencyRef = useRef<HTMLDivElement>(null);
 
-    const columnConfigs: SummaryItemColumnConfig[] = useMemo(
-        () => [
-            {
-                labelKey: 'totalIncoming',
-                ref: incomingRef,
-                skeletonWidth: 80,
-                getValue: () => total && i18n.amount(total.incomings, total.currency),
-                tooltipLabel: 'tooltip.totalIncoming',
-            },
-            {
-                labelKey: 'totalOutgoing',
-                ref: expenseRef,
-                skeletonWidth: 80,
-                getValue: () => total && i18n.amount(total.expenses, total.currency),
-                tooltipLabel: 'tooltip.totalOutgoing',
-            },
+    const columnConfigs: SummaryItemColumnConfig[] = useMemo(() => {
+        const incomingsConfig: SummaryItemColumnConfig = {
+            labelKey: 'totalIncoming',
+            ref: incomingRef,
+            skeletonWidth: 80,
+            getValue: () => total && i18n.amount(total.incomings, total.currency),
+            tooltipLabel: 'tooltip.totalIncoming',
+        };
+
+        const expensesConfig: SummaryItemColumnConfig = {
+            labelKey: 'totalOutgoing',
+            ref: expenseRef,
+            skeletonWidth: 80,
+            getValue: () => total && i18n.amount(total.expenses, total.currency),
+            tooltipLabel: 'tooltip.totalOutgoing',
+        };
+
+        return [
+            ...(hiddenField !== 'incomings' ? [incomingsConfig] : []),
+            ...(hiddenField !== 'expenses' ? [expensesConfig] : []),
             {
                 ref: currencyRef,
                 skeletonWidth: 40,
                 valueHasLabelStyle: true,
                 getValue: () => total?.currency,
             },
-        ],
-        [total, i18n]
-    );
+        ];
+    }, [total, hiddenField, i18n]);
 
     return (
         <SummaryItem

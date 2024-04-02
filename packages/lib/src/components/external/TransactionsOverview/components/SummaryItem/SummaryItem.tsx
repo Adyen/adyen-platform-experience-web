@@ -7,14 +7,15 @@ import {
     PLACEHOLDER_CLASS,
 } from '@src/components/external/TransactionsOverview/components/SummaryItem/constants';
 import { SummaryItemLabel } from '@src/components/external/TransactionsOverview/components/SummaryItem/SummaryItemLabel';
-import { SummaryItemProps } from '@src/components/external/TransactionsOverview/components/SummaryItem/types';
+import { SummaryItemColumnConfig, SummaryItemProps } from '@src/components/external/TransactionsOverview/components/SummaryItem/types';
 import { Tooltip } from '@src/components/internal/Tooltip/Tooltip';
 import { TypographyVariant } from '@src/components/internal/Typography/types';
 import Typography from '@src/components/internal/Typography/Typography';
 import useCoreContext from '@src/core/Context/useCoreContext';
 import classNames from 'classnames';
-import { useEffect } from 'preact/hooks';
+import { useCallback, useEffect } from 'preact/hooks';
 import './SummaryItem.scss';
+import { mediaQueries, useMediaQuery } from '@src/components/external/TransactionsOverview/hooks/useMediaQuery';
 
 export const SummaryItem = ({
     columnConfigs,
@@ -39,34 +40,50 @@ export const SummaryItem = ({
 
     const getColumnStyle = (index: number) => ({ width: widths && widths[index] ? widths[index] : 'auto' });
 
+    const isXsScreen = useMediaQuery(mediaQueries.only.xs);
+
+    const typographyVariant = useCallback(
+        (config: SummaryItemColumnConfig, isLongValue: boolean) => {
+            if (config.valueHasLabelStyle) {
+                return TypographyVariant.CAPTION;
+            }
+            return isLongValue && !isXsScreen ? TypographyVariant.BODY : TypographyVariant.TITLE;
+        },
+        [isXsScreen]
+    );
+
     return (
         <div className={classNames(BASE_CLASS, { [BODY_CLASS]: !isHeader })}>
-            {columnConfigs.map((config, index) => (
-                <div key={index}>
-                    {isHeader &&
-                        (config.tooltipLabel ? (
-                            <Tooltip content={i18n.get(`${config.tooltipLabel}`)} isContainerHovered={isHovered}>
+            {columnConfigs.map((config, index) => {
+                const value = config.getValue();
+                const isLongValue = !!value && value.length > 12;
+                return (
+                    <div key={index}>
+                        {isHeader &&
+                            (config.tooltipLabel ? (
+                                <Tooltip content={i18n.get(`${config.tooltipLabel}`)} isContainerHovered={isHovered}>
+                                    <SummaryItemLabel config={config} i18n={i18n} isSkeletonVisible={isSkeletonVisible} />
+                                </Tooltip>
+                            ) : (
                                 <SummaryItemLabel config={config} i18n={i18n} isSkeletonVisible={isSkeletonVisible} />
-                            </Tooltip>
+                            ))}
+                        {isSkeletonVisible ? (
+                            <AmountSkeleton isLoading={isLoading} hasMargin={config.hasSkeletonMargin} width={config.skeletonWidth + 'px'} />
+                        ) : isEmpty ? (
+                            <span className={classNames([BASE_CLASS, PLACEHOLDER_CLASS])}></span>
                         ) : (
-                            <SummaryItemLabel config={config} i18n={i18n} isSkeletonVisible={isSkeletonVisible} />
-                        ))}
-                    {isSkeletonVisible ? (
-                        <AmountSkeleton isLoading={isLoading} hasMargin={config.hasSkeletonMargin} width={config.skeletonWidth + 'px'} />
-                    ) : isEmpty ? (
-                        <span className={classNames([BASE_CLASS, PLACEHOLDER_CLASS])}></span>
-                    ) : (
-                        <div ref={config.ref} style={getColumnStyle(index)}>
-                            <Typography
-                                variant={config.valueHasLabelStyle ? TypographyVariant.CAPTION : TypographyVariant.TITLE}
-                                className={classNames(AMOUNT_CLASS, { [LABEL_CLASS]: config.valueHasLabelStyle })}
-                            >
-                                {config.getValue()}
-                            </Typography>
-                        </div>
-                    )}
-                </div>
-            ))}
+                            <div ref={config.ref} style={getColumnStyle(index)}>
+                                <Typography
+                                    variant={typographyVariant(config, isLongValue)}
+                                    className={classNames({ [LABEL_CLASS]: config.valueHasLabelStyle, [AMOUNT_CLASS]: !config.valueHasLabelStyle })}
+                                >
+                                    {value}
+                                </Typography>
+                            </div>
+                        )}
+                    </div>
+                );
+            })}
         </div>
     );
 };

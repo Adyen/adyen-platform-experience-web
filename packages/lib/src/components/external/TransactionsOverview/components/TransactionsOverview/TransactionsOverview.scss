@@ -1,16 +1,31 @@
+@import '@styles/breakpoints';
+
 .adyen-pe-transactions-overview {
     background: var(--adyen-pe-color-white);
-    border: 1px solid var(--adyen-pe-color-gray-dark);
-    border-radius: var(--adyen-pe-spacing-small);
     display: flex;
     flex-direction: column;
     gap: var(--adyen-pe-spacing-medium);
-    padding: 12px var(--adyen-pe-spacing-medium);
+    padding: 12px var(--adyen-pe-spacing-small);
 
-    &__balance-totals {
+    @include adyen-pe-screen-sm-and-up {
+        border: 1px solid var(--adyen-pe-color-gray-dark);
+        border-radius: var(--adyen-pe-spacing-small);
+        padding-left: var(--adyen-pe-spacing-medium);
+        padding-right: var(--adyen-pe-spacing-medium);
+    }
+
+    &__summary {
         display: flex;
-        flex-wrap: wrap;
+        flex-wrap: wrap-reverse;
         gap: var(--adyen-pe-spacing-base);
         justify-content: space-between;
+    }
+
+    &__summary-item {
+        flex-grow: 1;
+
+        @include adyen-pe-screen-md-and-up {
+            flex-grow: unset;
+        }
     }
 }
