@@ -11,5 +11,5 @@ export interface RangeFilterProps extends BaseFilterProps {
 }
 
 export interface RangeFilterBody extends RangeFilterProps {
-    onChange: (params: { [K in RangeOptions]: number | undefined } & { filterValue: string | undefined | null }) => void;
+    onChange: (params: { [K in RangeOptions]: number | undefined }) => void;
 }

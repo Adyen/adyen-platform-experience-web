@@ -1,10 +1,18 @@
 import Core from '../core';
 import { SetupEndpoint } from '@src/types/models/openapi/endpoints';
 
-export interface AuthProviderProps {
+interface AuthProviderBaseProps {
     children?: any;
     token: string;
     endpoints: SetupEndpoint;
-    updateCore?: Core['update'];
     sessionSetupError?: Core['sessionSetupError'];
+}
+
+export interface AuthProviderProps extends AuthProviderBaseProps {
+    updateCore?: Core['update'];
+}
+
+export interface AuthContextProps extends AuthProviderBaseProps {
+    updateCore?: (...args: any) => any;
+    isUpdatingToken?: boolean;
 }
