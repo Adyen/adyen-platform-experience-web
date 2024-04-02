@@ -90,6 +90,34 @@ const renderDateFilterModalBody = (() => {
     return (props: FilterEditModalRenderProps<DateFilterProps>) => <DateFilterEditModalBody {...props} />;
 })();
 
+const customDateRangeFormat = (() => {
+    const formattingOptions = {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+    } as const;
+
+    const formatter = new Intl.DateTimeFormat('en-US', formattingOptions);
+    const formattedDateParserRegex = /([a-z]+)\s+(\d+)[,\s+]+(\d{4})/i;
+
+    return (fromDate: Date, toDate: Date) => {
+        const [, fromMonth, fromDay, fromYear] = formatter.format(fromDate).match(formattedDateParserRegex)!;
+        const [, toMonth, toDay, toYear] = formatter.format(toDate).match(formattedDateParserRegex)!;
+        const currentYear = `${new Date().getFullYear()}`;
+
+        if (fromYear === toYear) {
+            const formattedRange =
+                fromMonth === toMonth
+                    ? `${fromDay! === toDay! ? fromDay! : `${fromDay!} - ${toDay!}`} ${toMonth!}`
+                    : `${fromDay!} ${fromMonth!} - ${toDay!} ${toMonth!}`;
+
+            return fromYear! === currentYear ? formattedRange : `${formattedRange} ${fromYear!}`;
+        }
+
+        return `${fromDay!} ${fromMonth!} ${fromYear!} - ${toDay!} ${toMonth!} ${toYear!}`;
+    };
+})();
+
 export default function DateFilter<T extends DateFilterProps = DateFilterProps>({ title, from, to, selectedPresetOption, ...props }: FilterProps<T>) {
     const { i18n } = useCoreContext();
     const [selectedPresetOptionValue, setSelectedPresetOption] = useState<string>();
@@ -110,11 +138,21 @@ export default function DateFilter<T extends DateFilterProps = DateFilterProps>(
         [selectedPresetOptionValue, fromValue, toValue, props]
     );
 
+    const customSelection = useMemo(() => i18n.get('rangePreset.custom'), [i18n]);
+
     useEffect(() => setSelectedPresetOption(selectedPresetOption), [selectedPresetOption]);
     useEffect(() => setFrom(resolveDate(from || Date.now())), [from]);
     useEffect(() => setTo(resolveDate(to || Date.now())), [to]);
 
-    const label = useMemo(() => selectedPresetOption ?? props.label, [selectedPresetOption, props.label]);
+    const label = useMemo(() => {
+        if (selectedPresetOption == undefined) return props.label;
+
+        if (selectedPresetOption === customSelection && fromValue && toValue) {
+            return customDateRangeFormat(new Date(fromValue), new Date(toValue));
+        }
+
+        return selectedPresetOption;
+    }, [customSelection, fromValue, toValue, selectedPresetOption, props.label]);
 
     return (
         <BaseFilter<T>
