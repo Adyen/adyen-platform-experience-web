@@ -1,20 +1,20 @@
 import { useSetupEndpoint } from '@src/hooks/useSetupEndpoint/useSetupEndpoint';
-import { useCallback, useMemo, useState } from 'preact/hooks';
+import { useCallback, useMemo } from 'preact/hooks';
 import { EMPTY_OBJECT } from '@src/utils/common';
 import { useFetch } from '@src/hooks/useFetch/useFetch';
 import { OperationParameters } from '@src/types/models/openapi/endpoints';
 import { MakeFieldValueUndefined } from '@src/utils/types';
-import ExpandableCard from '@src/components/internal/ExpandableCard/ExpandableCard';
-import { BASE_CLASS } from '@src/components/external/TransactionsOverview/components/TransactionTotals/constants';
+import { BASE_CLASS, ITEM_CLASS } from '@src/components/external/TransactionsOverview/components/TransactionTotals/constants';
 import { memo } from 'preact/compat';
-import { TransactionTotalItem } from '@src/components/external/TransactionsOverview/components/TransactionTotalItem/TransactionTotalItem';
-import { BaseList } from '@src/components/internal/BaseList/BaseList';
-import { useMaxWidthsState } from '@src/components/external/TransactionsOverview/hooks/useMaxWidths';
 import { ITransaction } from '@src/types';
+import { mediaQueries, useMediaQuery } from '@src/components/external/TransactionsOverview/hooks/useMediaQuery';
+import './TransactionTotals.scss';
+import { TotalsCard } from '@src/components/external/TransactionsOverview/components/TransactionTotals/TotalsCard';
 
 type TransactionTotalsProps = Required<OperationParameters<'getTransactionTotals'>['query']> & {
     isAvailableCurrenciesFetching: boolean;
     availableCurrencies: ITransaction['amount']['currency'][] | undefined;
+    fullWidth?: boolean;
 };
 
 const TransactionTotals = memo(
@@ -29,9 +29,8 @@ const TransactionTotals = memo(
         maxAmount,
         minAmount,
         currencies,
+        fullWidth,
     }: MakeFieldValueUndefined<TransactionTotalsProps, 'balanceAccountId' | 'minAmount' | 'maxAmount'>) => {
-        const [isHovered, setIsHovered] = useState(false);
-
         const getTransactionTotals = useSetupEndpoint('getTransactionTotals');
         const fetchCallback = useCallback(async () => {
             return getTransactionTotals(EMPTY_OBJECT, {
@@ -67,39 +66,23 @@ const TransactionTotals = memo(
             return partialTotals.concat(data.totals.filter(total => !partialTotals.includes(total)));
         }, [availableCurrencies, data]);
 
-        const [firstTotal, ...restOfTotals] = getTotals() ?? [];
-
-        const [maxWidths, setMaxWidths] = useMaxWidthsState();
+        const totals = getTotals() ?? [];
+        const isXsScreen = useMediaQuery(mediaQueries.only.xs);
 
         return (
             <div className={BASE_CLASS}>
-                <ExpandableCard
-                    renderHeader={
-                        <TransactionTotalItem
-                            isHovered={isHovered}
-                            total={firstTotal}
-                            widths={maxWidths}
-                            isHeader
-                            isSkeleton={isLoading}
-                            isLoading={isLoading}
-                            onWidthsSet={setMaxWidths}
-                        />
-                    }
-                    onMouseEnter={() => setIsHovered(true)}
-                    onFocus={() => setIsHovered(true)}
-                    onMouseLeave={() => setIsHovered(false)}
-                    onBlur={() => setIsHovered(false)}
-                >
-                    {!isLoading && restOfTotals.length && (
-                        <BaseList>
-                            {restOfTotals.map(total => (
-                                <li key={total.currency}>
-                                    <TransactionTotalItem isHovered={isHovered} total={total} widths={maxWidths} onWidthsSet={setMaxWidths} />
-                                </li>
-                            ))}
-                        </BaseList>
-                    )}
-                </ExpandableCard>
+                {isXsScreen ? (
+                    <>
+                        <div className={ITEM_CLASS}>
+                            <TotalsCard totals={totals} isLoading={isLoading} hiddenField="expenses" fullWidth={fullWidth} />
+                        </div>
+                        <div className={ITEM_CLASS}>
+                            <TotalsCard totals={totals} isLoading={isLoading} hiddenField="incomings" fullWidth={fullWidth} />
+                        </div>
+                    </>
+                ) : (
+                    <TotalsCard totals={totals} isLoading={isLoading} fullWidth={fullWidth} />
+                )}
             </div>
         );
     }

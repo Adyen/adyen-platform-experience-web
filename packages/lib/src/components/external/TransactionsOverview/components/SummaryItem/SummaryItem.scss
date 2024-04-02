@@ -1,9 +1,15 @@
+@import '@styles/breakpoints';
+
 .adyen-pe-summary-item {
     align-items: center;
     display: flex;
-    gap: 50px;
+    gap: var(--adyen-pe-spacer-080);
     justify-content: space-between;
     width: 100%;
+
+    @include adyen-pe-screen-sm-and-up {
+        gap: 50px;
+    }
 
     &--body {
         border-top: 1px solid var(--adyen-pe-color-separator-primary);
@@ -18,14 +24,15 @@
         &--loading {
             display: block;
         }
+    }
 
-        &--text {
-            color: var(--adyen-pe-color-label-secondary);
-            width: fit-content;
-        }
+    &__label {
+        color: var(--adyen-pe-color-label-secondary);
+        width: fit-content;
     }
 
     &__amount {
+        font-weight: var(--adyen-pe-font-weight-semi-bold);
         white-space: nowrap;
     }
 

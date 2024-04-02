@@ -1,0 +1,16 @@
+@import '@styles/breakpoints.scss';
+
+.adyen-pe-transaction-totals {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--adyen-pe-spacing-base);
+    justify-content: space-between;
+
+    @include adyen-pe-screen-sm-and-up {
+        display: block;
+    }
+
+    &__item {
+        width: 100%;
+    }
+}

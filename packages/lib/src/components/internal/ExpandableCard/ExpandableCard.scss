@@ -1,4 +1,5 @@
 @import '../../../style/bento-mapping.scss';
+@import '../../../style/breakpoints.scss';
 
 // TODO: Move this to an accessibility mixin
 .adyen-pe-sr-only {
@@ -54,7 +55,12 @@
     }
 
     &__content {
-        padding: var(--adyen-pe-spacer-070) var(--adyen-pe-spacer-080);
+        padding: var(--adyen-pe-spacer-060);
+
+        @include adyen-pe-screen-sm-and-up {
+            padding-left: var(--adyen-pe-spacer-080);
+            padding-right: var(--adyen-pe-spacer-080);
+        }
 
         &--expandable {
             padding-bottom: var(--adyen-pe-spacer-040);
