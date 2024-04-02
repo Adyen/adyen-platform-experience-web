@@ -1,4 +1,4 @@
-export type ValueOf<T> = T[keyof T];
+export type ValueOf<T extends Record<any, any>> = T[keyof T];
 export type Nullable<T> = { [K in keyof Partial<T>]: T[K] | null };
 export type ReplaceUnderscoreOrDash<
     S extends string,
