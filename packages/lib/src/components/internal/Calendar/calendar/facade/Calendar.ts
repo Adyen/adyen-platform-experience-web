@@ -513,9 +513,25 @@ export default class Calendar {
 
             if (!isFauxHighlighting) this.#highlightInProgress = false;
 
-            fromTimestamp <= (this.#frame.selectionStart as number)
-                ? this.#frame.updateSelection(fromTimestamp, SELECTION_FROM)
-                : this.#frame.updateSelection(toTimestamp, SELECTION_TO);
+            if (fromTimestamp <= this.#frame.selectionStart!) {
+                const selectionStartDay = new Date(this.#frame.selectionStart!);
+                const selectionStartDayEndTimestamp = selectionStartDay.setDate(selectionStartDay.getDate() + 1) - 1;
+
+                if (fromTimestamp === this.#frame.selectionStart! && toTimestamp <= selectionStartDayEndTimestamp) {
+                    this.#frame.updateSelection(toTimestamp, SELECTION_TO);
+                }
+
+                this.#frame.updateSelection(fromTimestamp, SELECTION_FROM);
+            } else {
+                const selectionEndDay = new Date(this.#frame.selectionEnd!);
+                const selectionEndDayStartTimestamp = selectionEndDay.setHours(0, 0, 0, 0);
+
+                if (fromTimestamp <= this.#frame.selectionEnd! && fromTimestamp >= selectionEndDayStartTimestamp) {
+                    this.#frame.updateSelection(fromTimestamp, SELECTION_FROM);
+                }
+
+                this.#frame.updateSelection(toTimestamp, SELECTION_TO);
+            }
 
             if (isFauxHighlighting) return;
         }
