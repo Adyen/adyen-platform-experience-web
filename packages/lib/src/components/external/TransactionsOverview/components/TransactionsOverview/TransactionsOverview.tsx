@@ -1,7 +1,7 @@
 import FilterBar from '@src/components/internal/FilterBar';
 import { ExternalUIComponentProps } from '@src/components/types';
 import { TransactionsComponentProps, TransactionFilterParam } from '../../types';
-import TransactionList from '@src/components/external/TransactionsOverview/components/TransactionList/TransactionList';
+import TransactionsDisplay from '@src/components/external/TransactionsOverview/components/TransactionsDisplay/TransactionsDisplay';
 import useCoreContext from '@src/core/Context/useCoreContext';
 import { SetupHttpOptions, useSetupEndpoint } from '@src/hooks/useSetupEndpoint/useSetupEndpoint';
 import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
@@ -154,7 +154,7 @@ export const TransactionsOverview = ({
                 <Balances balanceAccountId={activeBalanceAccount?.id} onCurrenciesChange={handleCurrenciesChange} />
             </div>
 
-            <TransactionList
+            <TransactionsDisplay
                 balanceAccounts={balanceAccounts}
                 availableCurrencies={availableCurrencies}
                 loading={fetching || isLoadingBalanceAccount || !balanceAccounts}
