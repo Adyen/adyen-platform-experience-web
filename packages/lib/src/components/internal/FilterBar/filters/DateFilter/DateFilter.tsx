@@ -138,13 +138,11 @@ export default function DateFilter<T extends DateFilterProps = DateFilterProps>(
     useEffect(() => setTo(resolveDate(to || Date.now())), [to]);
 
     const label = useMemo(() => {
-        if (selectedPresetOption == undefined) return props.label;
-
         if (selectedPresetOption === customSelection && fromValue && toValue) {
             return customDateRangeFormat(dateTimeFormatter, new Date(fromValue), new Date(toValue));
         }
 
-        return selectedPresetOption;
+        return selectedPresetOption ?? props.label;
     }, [customSelection, dateTimeFormatter, fromValue, toValue, selectedPresetOption, props.label]);
 
     return (
