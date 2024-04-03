@@ -18,7 +18,7 @@ const insertHeader = pages => {
             <span aria-hidden></span>
         </button>
 
-        <p>Adyen PE <span>Dev</span></p>
+        <p><span>MS</span>My<strong>Store</strong></p>
 
         <nav class="playground-nav">
             <ul class="playground-nav__list">${links.join('')}</ul>
