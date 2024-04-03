@@ -2,8 +2,8 @@ import useAuthContext from '@src/core/Auth/useAuthContext';
 import { http } from '@src/core/Services/requests/http';
 import { HttpMethod, HttpOptions } from '@src/core/Services/requests/types';
 import { ErrorTypes } from '@src/core/Services/requests/utils';
-import { EMPTY_OBJECT } from '@src/utils/common';
-import { useMemo } from 'preact/hooks';
+import { EMPTY_OBJECT, noop } from '@src/utils/common';
+import { useMemo, useRef } from 'preact/hooks';
 
 const getHttpCaller = (() => {
     let token: string;
@@ -20,19 +20,27 @@ const getHttpCaller = (() => {
 
 function useSessionAwareRequest() {
     const { token, updateCore, isUpdatingToken } = useAuthContext();
+    const cachedResolve = useRef<(value: unknown) => void>(noop);
 
     const httpProvider = useMemo(() => {
+        let resolve: (value: unknown) => void = noop;
+        const promise = new Promise(_resolve => {
+            resolve = _resolve;
+        });
+
+        cachedResolve.current(promise);
+
+        cachedResolve.current = resolve;
+
         const httpCall = getHttpCaller(token);
+
         return async <T>(request: Omit<HttpOptions, 'method'>, method: HttpMethod, data?: any): Promise<T> => {
             try {
-                if (!isUpdatingToken) {
-                    return await httpCall<T>(request, method, data);
-                } else {
-                    throw new Error();
-                }
+                return await (isUpdatingToken ? promise : Promise.resolve()).then(() => httpCall<T>({ ...request }, method, data));
             } catch (e: any) {
                 if (e.type === ErrorTypes.EXPIRED_TOKEN && !isUpdatingToken) {
                     await updateCore?.(EMPTY_OBJECT, true);
+                    resolve(token);
                 }
                 throw e;
             }
