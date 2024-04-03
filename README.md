@@ -1,3 +1,5 @@
+![image](https://github.com/Adyen/adyen-platform-experience-web/assets/7926613/cac1df52-15ee-4b3f-b23a-b9f5467a0ca3)
+
 # Adyen Platform Experience
 
 [![npm](https://img.shields.io/npm/v/@adyen/adyen-platform-experience-web.svg)](http://npm.im/@adyen/adyen-platform-experience-web)
