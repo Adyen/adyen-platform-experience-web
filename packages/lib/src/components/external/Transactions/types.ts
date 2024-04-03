@@ -29,6 +29,7 @@ export interface TransactionsComponentProps {
     allowLimitSelection?: boolean;
     showDetails?: boolean;
     core: Core;
+    balanceAccountId?: string;
 }
 export interface TransactionListProps extends WithPaginationLimitSelection<PaginationProps> {
     transactions: ITransaction[] | undefined;

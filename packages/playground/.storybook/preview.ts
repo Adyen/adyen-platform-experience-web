@@ -18,12 +18,14 @@ const preview: Preview = {
                 disable: true,
             },
         },
+        balanceAccountId: { type: 'string' },
     },
     loaders: [
         async context => {
             await enableServerInMockedMode();
             const AdyenPlatformExperience = await createAdyenPlatformExperience({
                 ...context.coreOptions,
+                balanceAccountId: context.args.balanceAccountId,
                 environment: 'beta',
                 onSessionCreate: async () => {
                     if (context.args.mockedApi) {
