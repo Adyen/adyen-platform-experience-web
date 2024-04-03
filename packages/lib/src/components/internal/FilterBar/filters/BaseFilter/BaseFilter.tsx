@@ -11,7 +11,6 @@ import { Ref, useCallback, useEffect, useMemo, useState } from 'preact/hooks';
 import useBooleanState from '../../../../../hooks/useBooleanState';
 import '../../../FormFields';
 import InputText from '../../../FormFields/InputText';
-import './BaseFilter.scss';
 import { BaseFilterProps, FilterEditModalRenderProps, FilterProps } from './types';
 
 const isValueEmptyFallback = (value?: string) => {
