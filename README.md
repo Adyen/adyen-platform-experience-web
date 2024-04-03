@@ -1,14 +1,13 @@
-# Adyen FP
+# Adyen Platform Experience
 
-[![npm](https://img.shields.io/npm/v/@adyen/adyen-pe-web.svg)](http://npm.im/pablo/adyen-fp)
+[![npm](https://img.shields.io/npm/v/@adyen/adyen-platform-experience-web.svg)](http://npm.im/@adyen/adyen-platform-experience-web)
 
-Adyen FP provides you with the building blocks to create an internal dashboard for your platform customers.
+Adyen Platform Experience provides you with the building blocks to create an internal dashboard for your platform customers.
 
 ## Prerequisites
 
 -   [Adyen test account](https://www.adyen.com/signup)
 -   [API key](https://docs.adyen.com/development-resources/how-to-get-the-api-key)
--   [Client key](https://docs.adyen.com/development-resources/client-side-authentication#get-your-client-key)
 
 ## Installation
 
@@ -16,24 +15,23 @@ We only provide full support when you use one of these methods of installation.
 
 ### Node package manager
 
-1. Install the [Adyen FP Node package](https://www.npmjs.com/package/@adyen/adyen-fp):
+1. Install the [Adyen Platform Experience Node package](https://www.npmjs.com/package/@adyen/adyen-platform-experience-web):
 
 ```sh
-npm install @adyen/adyen-pe-web --save
+npm install @adyen/adyen-platform-experience-web --save
 ```
 
-2. Import Adyen FP into your application:
+2. Import Adyen Platform Experience into your application:
 
 ```js
-import AdyenPlatformExperience from '@adyen/adyen-pe-web';
-import '@adyen/adyen-pe-web/dist/adyen-pe-web.css';
+import AdyenPlatformExperience from '@adyen/adyen-platform-experience-web';
 ```
 
 ## Development
 
 To run the development environment:
 
-1. Clone [this repository](https://github.com/Adyen/adyen-pe-web).
+1. Clone [this repository](https://github.com/Adyen/adyen-platform-experience-web).
 2. Create a `.env` file on your project's root folder following the example in [`env.default`](envs/env.default) and fill in the environment variables.
 3. Install the dependencies by running:
 
@@ -41,7 +39,7 @@ To run the development environment:
 npm install
 ```
 
-4. Run the development environment, which starts a server listening on [http://localhost:3020](http://localhost:3030):
+4. Run the development environment, which starts a server listening on [http://localhost:3030](http://localhost:3030):
 
 ```sh
 npm start
@@ -60,9 +58,9 @@ Have a look at our [contributing guidelines](https://github.com/Adyen/.github/bl
 
 ## Support
 
-If you have a feature request, or spotted a bug or a technical problem, [create an issue here](https://github.com/Adyen/adyen-pe-web/issues/new/choose).
+If you have a feature request, or spotted a bug or a technical problem, [create an issue here](https://github.com/Adyen/adyen-platform-experience-web/issues/new/choose).
 
-For other questions, [contact our support team](https://support.adyen.com/hc/en-us/requests/new?ticket_form_id=360000705420).
+For other questions, [contact our support team](https://www.adyen.help/hc/en-us/requests/new).
 
 ## License
 
