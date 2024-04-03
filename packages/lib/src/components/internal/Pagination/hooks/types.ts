@@ -16,7 +16,10 @@ import { ReactiveStateRecord, UseReactiveStateRecord } from '@src/hooks/useReact
 type MaybePromise<T = any> = T | Promise<T>;
 
 export type PaginatedRecordsFetcherParams<FilterValue, FilterParam extends string> = Partial<Record<FilterParam, FilterValue>> &
-    Required<WithPaginationLimit> & { signal: AbortSignal };
+    Required<WithPaginationLimit> & {
+        page: number;
+        signal: AbortSignal;
+    };
 
 export type PaginatedRecordsFetcherReturnValue<Pagination extends PaginationType, T> = [T[], WithEitherPages<Pagination>];
 
@@ -24,7 +27,7 @@ export type PaginatedRecordsFetcher<Pagination extends PaginationType, T, Filter
     params: PaginatedRecordsFetcherParams<FilterValue, FilterParam>
 ) => MaybePromise<PaginatedRecordsFetcherReturnValue<Pagination, T>>;
 
-export type RequestPageCallbackRequiredParam = 'limit' | 'signal';
+export type RequestPageCallbackRequiredParam = 'limit' | 'page' | 'signal';
 export type RequestPageCallbackRequiredParams = Pick<PaginatedRecordsFetcherParams<any, any>, RequestPageCallbackRequiredParam>;
 
 export type RequestPageCallbackParams<Pagination extends PaginationType> = ForPaginationType<Pagination, WithPaginationCursor, WithPaginationOffset> &
@@ -67,7 +70,6 @@ export type BasePaginatedRecordsInitOptions<T, DataField extends string, FilterV
         recordsFilters: UsePaginatedRecordsFilters<FilterValue, FilterParam>
     ) => any;
     pagination: PaginationType;
-    enabled: boolean;
 };
 
 export type UsePaginatedRecordsFilters<FilterValue, FilterParam extends string> = UseFilters<UseReactiveStateRecord<FilterValue, FilterParam>>;
@@ -80,7 +82,7 @@ export interface UsePaginationSetupConfig<Pagination extends PaginationType> {
 }
 
 export interface UsePaginatedRecords<T, FilterValue, FilterParam extends string>
-    extends UsePagination,
+    extends Omit<UsePagination, 'resetPagination'>,
         Omit<UsePaginatedRecordsFilters<FilterValue, FilterParam>, 'defaultFilters' | 'filtersVersion'> {
     error: Error | undefined;
     fetching: boolean;
