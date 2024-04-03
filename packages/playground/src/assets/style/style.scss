@@ -31,7 +31,7 @@ body {
 }
 
 .page-header {
-    background: $color-white;
+    background: #17002e;
     border-bottom: 1px solid $color-gray-light;
     display: flex;
     align-items: center;
@@ -44,7 +44,6 @@ body {
     padding: 0 16px;
 
     @media screen and (min-width: 1240px) {
-        background: #f3f6f9;
         border-bottom: 0;
         border-right: 1px solid #d2dae1;
         flex-direction: column;
@@ -90,6 +89,7 @@ main {
 
 h1,
 header p {
+    color: $color-white;
     font-size: 1.4em;
     font-weight: 200;
     margin: 0;
@@ -107,13 +107,18 @@ header p {
         padding: 0px;
     }
 
+    strong {
+        font-weight: 500;
+    }
+
     span {
-        background: $color-primary;
-        border-radius: 3px;
-        color: $color-white;
+        background: $color-white;
+        border-radius: 6px;
+        color: #17002e;
         font-size: 0.45em;
-        font-weight: 300;
-        padding: 5px;
+        font-weight: bold;
+        margin-right: 6px;
+        padding: 5px 3px;
         position: relative;
         text-transform: uppercase;
         top: -5px;
@@ -197,7 +202,6 @@ h2 {
 }
 
 .playground-nav {
-    background: #f3f6f9;
     border-right: 1px solid #d2dae1;
     height: 100vh;
     left: -240px;
@@ -221,24 +225,24 @@ h2 {
     }
 
     &__item {
-        margin: 20px 0;
+        margin: 8px 0;
 
         &:hover .playground-nav__link {
-            color: $color-primary;
+            color: $color-gray;
         }
 
         &--active .playground-nav__link {
-            border-right-color: $color-primary;
-            color: $color-primary;
+            background: #350069;
+            border-radius: 25px;
+            color: $color-white;
         }
     }
 
     &__link {
-        border-right: 4px solid transparent;
         color: $color-gray-darker;
         display: inline-block;
         font-size: 15px;
-        padding: 2px;
+        padding: 8px 16px;
         text-decoration: none;
         transition: all 0.2s ease-out;
         width: 100%;
@@ -287,7 +291,7 @@ h2 {
     flex-direction: column;
     align-items: start;
     width: 100%;
-    padding-left: 30px;
+    padding: 0 16px 0 36px;
     gap: 30px;
 
     ul {
