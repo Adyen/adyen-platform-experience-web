@@ -26,14 +26,14 @@ import {
     PAYMENT_METHOD_LOGO_CLASS,
     PAYMENT_METHOD_LOGO_CONTAINER_CLASS,
     SPINNER_CONTAINER_CLASS,
-} from '@src/components/external/TransactionsOverview/components/TransactionList/constants';
-import './TransactionList.scss';
+} from '@src/components/external/TransactionsOverview/components/TransactionsDisplay/constants';
+import './TransactionsDisplay.scss';
 
 const ModalContent = lazy(() => import('../ModalContent'));
 
 const FIELDS = ['creationDate', 'status', 'paymentMethod', 'type', 'currency', 'amount'] as const;
 
-function TransactionList({
+function TransactionsDisplay({
     balanceAccountDescription,
     loading,
     transactions,
@@ -208,4 +208,4 @@ function TransactionList({
     );
 }
 
-export default TransactionList;
+export default TransactionsDisplay;
