@@ -1,4 +1,4 @@
-![image](https://github.com/Adyen/adyen-platform-experience-web/assets/7926613/cac1df52-15ee-4b3f-b23a-b9f5467a0ca3)
+![Platform Experience header](https://github.com/Adyen/adyen-platform-experience-web/assets/7926613/18094965-9e01-450e-8dc9-ea84e6b22c2b)
 
 # Adyen Platform Experience
 
