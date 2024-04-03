@@ -30,10 +30,6 @@ const usePagination = <Pagination extends PaginationType>(
     const { getPageCount, getPageParams, resetPageCount, updatePagination } = paginationSetupConfig;
 
     const goto = useMemo(() => {
-        resetPageCount();
-        $maxVisitedPage.current = $maxVisitedPageSize.current = $page.current = undefined;
-        $mounted.current && setCurrentPage($page.current);
-
         return requestPageCallback
             ? (page: number) => {
                   if (!(limit && Number.isInteger(page))) return;
@@ -55,7 +51,7 @@ const usePagination = <Pagination extends PaginationType>(
 
                   (async () => {
                       const { signal } = $controller.current as AbortController;
-                      const params = { ...getPageParams(requestedPage, limit), limit } as RequestPageCallbackParams<Pagination>;
+                      const params = { ...getPageParams(requestedPage, limit), limit, page: requestedPage } as RequestPageCallbackParams<Pagination>;
 
                       try {
                           const data = await requestPageCallback(params, signal);
@@ -99,13 +95,19 @@ const usePagination = <Pagination extends PaginationType>(
 
     const pageSize = useMemo(() => limit && Math.min(limit, size || Infinity) % limit, [limit, size]);
 
+    const resetPagination = useCallback(() => {
+        resetPageCount();
+        $maxVisitedPage.current = $maxVisitedPageSize.current = $page.current = undefined;
+        $mounted.current && setCurrentPage($page.current);
+    }, [resetPageCount]);
+
     useEffect(() => {
         if ($mounted.current && paginationChanged) {
             updatePaginationChanged(false);
         }
     }, [paginationChanged]);
 
-    return { goto, hasNext, hasPrev, limit, next, page, pages, pageSize, prev, size };
+    return { goto, hasNext, hasPrev, limit, next, page, pages, pageSize, prev, resetPagination, size };
 };
 
 export default usePagination;
