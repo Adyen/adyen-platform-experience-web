@@ -1,8 +1,8 @@
-import { TransactionTotalItemProps } from '@src/components/external/Transactions/components/TransactionTotalItem/types';
+import { TransactionTotalItemProps } from '@src/components/external/TransactionsOverview/components/TransactionTotalItem/types';
 import useCoreContext from '@src/core/Context/useCoreContext';
 import { useMemo, useRef } from 'preact/hooks';
-import { SummaryItemColumnConfig } from '@src/components/external/Transactions/components/SummaryItem/types';
-import { SummaryItem } from '@src/components/external/Transactions/components/SummaryItem/SummaryItem';
+import { SummaryItemColumnConfig } from '@src/components/external/TransactionsOverview/components/SummaryItem/types';
+import { SummaryItem } from '@src/components/external/TransactionsOverview/components/SummaryItem/SummaryItem';
 
 export const TransactionTotalItem = ({
     total,

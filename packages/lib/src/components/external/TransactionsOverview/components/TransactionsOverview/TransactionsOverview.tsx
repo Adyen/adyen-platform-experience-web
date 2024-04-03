@@ -1,7 +1,7 @@
 import FilterBar from '@src/components/internal/FilterBar';
 import { ExternalUIComponentProps } from '@src/components/types';
-import { TransactionsComponentProps, TransactionFilterParam } from '../types';
-import TransactionList from '@src/components/external/Transactions/components/TransactionList';
+import { TransactionsComponentProps, TransactionFilterParam } from '../../types';
+import { TransactionsDisplay } from '@src/components/external/TransactionsOverview/components/TransactionsDisplay/TransactionsDisplay';
 import useCoreContext from '@src/core/Context/useCoreContext';
 import { SetupHttpOptions, useSetupEndpoint } from '@src/hooks/useSetupEndpoint/useSetupEndpoint';
 import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
@@ -9,15 +9,17 @@ import { useCursorPaginatedRecords } from '@src/components/internal/Pagination/h
 import { IBalanceAccountBase, ITransaction } from '@src/types';
 import { isFunction } from '@src/utils/common';
 import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '@src/components/internal/Pagination/constants';
-import TransactionsOverviewDateFilter from '@src/components/external/Transactions/components/TransactionsOverviewDateFilter';
-import TransactionTotals from '@src/components/external/Transactions/components/TransactionTotals/TransactionTotals';
-import { Balances } from '@src/components/external/Transactions/components/Balances/Balances';
-import BalanceAccountSelector, { useBalanceAccountSelection } from './BalanceAccountSelector';
-import MultiSelectionFilter, { listFrom } from './MultiSelectionFilter';
-import useDefaultTransactionsOverviewFilterParams from '../hooks/useDefaultTransactionsOverviewFilterParams';
-import useTransactionsOverviewMultiSelectionFilters from '../hooks/useTransactionsOverviewMultiSelectionFilters';
+import TransactionsOverviewDateFilter from '@src/components/external/TransactionsOverview/components/TransactionsOverviewDateFilter';
+import TransactionTotals from '@src/components/external/TransactionsOverview/components/TransactionTotals/TransactionTotals';
+import { Balances } from '@src/components/external/TransactionsOverview/components/Balances/Balances';
+import BalanceAccountSelector, { useBalanceAccountSelection } from '../BalanceAccountSelector';
+import MultiSelectionFilter, { listFrom } from '../MultiSelectionFilter';
+import useDefaultTransactionsOverviewFilterParams from '../../hooks/useDefaultTransactionsOverviewFilterParams';
+import useTransactionsOverviewMultiSelectionFilters from '../../hooks/useTransactionsOverviewMultiSelectionFilters';
 import AdyenPlatformExperienceError from '@src/core/Errors/AdyenPlatformExperienceError';
 import { AmountFilter } from '@src/components/internal/FilterBar/filters/AmountFilter/AmountFilter';
+import { BASE_CLASS, BALANCE_TOTALS_CLASS } from '@src/components/external/TransactionsOverview/components/TransactionsOverview/constants';
+import './TransactionsOverview.scss';
 
 export const TransactionsOverview = ({
     onFiltersChanged,
@@ -106,7 +108,7 @@ export const TransactionsOverview = ({
     }, [filters, refreshNowTimestamp]);
 
     return (
-        <>
+        <div className={BASE_CLASS}>
             <FilterBar>
                 <BalanceAccountSelector
                     activeBalanceAccount={activeBalanceAccount}
@@ -136,7 +138,7 @@ export const TransactionsOverview = ({
                 />
                 <MultiSelectionFilter {...currenciesFilter} placeholder={i18n.get('filterPlaceholder.currency')} />
             </FilterBar>
-            <div className="adyen-pe-transactions__balance-totals">
+            <div className={BALANCE_TOTALS_CLASS}>
                 <TransactionTotals
                     availableCurrencies={availableCurrencies}
                     isAvailableCurrenciesFetching={isAvailableCurrenciesFetching}
@@ -152,7 +154,7 @@ export const TransactionsOverview = ({
                 <Balances balanceAccountId={activeBalanceAccount?.id} onCurrenciesChange={handleCurrenciesChange} />
             </div>
 
-            <TransactionList
+            <TransactionsDisplay
                 balanceAccounts={balanceAccounts}
                 availableCurrencies={availableCurrencies}
                 loading={fetching || isLoadingBalanceAccount || !balanceAccounts}
@@ -168,6 +170,6 @@ export const TransactionsOverview = ({
                 error={error as AdyenPlatformExperienceError}
                 {...paginationProps}
             />
-        </>
+        </div>
     );
 };

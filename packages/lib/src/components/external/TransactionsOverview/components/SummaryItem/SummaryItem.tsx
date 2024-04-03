@@ -1,13 +1,13 @@
-import AmountSkeleton from '@src/components/external/Transactions/components/AmountSkeleton/AmountSkeleton';
+import AmountSkeleton from '@src/components/external/TransactionsOverview/components/AmountSkeleton/AmountSkeleton';
 import {
     AMOUNT_CLASS,
     BASE_CLASS,
     BODY_CLASS,
     LABEL_CLASS,
     PLACEHOLDER_CLASS,
-} from '@src/components/external/Transactions/components/SummaryItem/constants';
-import { SummaryItemLabel } from '@src/components/external/Transactions/components/SummaryItem/SummaryItemLabel';
-import { SummaryItemProps } from '@src/components/external/Transactions/components/SummaryItem/types';
+} from '@src/components/external/TransactionsOverview/components/SummaryItem/constants';
+import { SummaryItemLabel } from '@src/components/external/TransactionsOverview/components/SummaryItem/SummaryItemLabel';
+import { SummaryItemProps } from '@src/components/external/TransactionsOverview/components/SummaryItem/types';
 import { Tooltip } from '@src/components/internal/Tooltip/Tooltip';
 import { TypographyVariant } from '@src/components/internal/Typography/types';
 import Typography from '@src/components/internal/Typography/Typography';

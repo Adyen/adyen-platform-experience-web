@@ -1,16 +1,17 @@
-import { TransactionsComponentProps } from '../types';
-import { ExternalUIComponentProps } from '../../../types';
-import './TransactionList.scss';
+import { TransactionsComponentProps } from '../../types';
+import { ExternalUIComponentProps } from '../../../../types';
 import { useSetupEndpoint } from '@src/hooks/useSetupEndpoint/useSetupEndpoint';
 import { useFetch } from '@src/hooks/useFetch/useFetch';
-import { TransactionsOverview } from '@src/components/external/Transactions/components/TransactionsOverview';
+import { TransactionsOverview } from '@src/components/external/TransactionsOverview/components/TransactionsOverview/TransactionsOverview';
 import { useCallback, useMemo } from 'preact/hooks';
 import { EMPTY_OBJECT } from '@src/utils/common';
 import useAuthContext from '@src/core/Auth/useAuthContext';
 import cx from 'classnames';
 import { ErrorMessageDisplay } from '@src/components/internal/ErrorMessageDisplay/ErrorMessageDisplay';
+import { BASE_CLASS, WITH_ERROR_CLASS } from '@src/components/external/TransactionsOverview/components/TransactionsOverviewContainer/constants';
+import './TransactionsOverviewContainer.scss';
 
-function TransactionsOverviewComponent(props: ExternalUIComponentProps<TransactionsComponentProps>) {
+function TransactionsOverviewContainer(props: ExternalUIComponentProps<TransactionsComponentProps>) {
     const { sessionSetupError, endpoints } = useAuthContext();
 
     // Balance Accounts
@@ -34,11 +35,7 @@ function TransactionsOverviewComponent(props: ExternalUIComponentProps<Transacti
     );
 
     return (
-        <div
-            className={cx('adyen-pe-transactions', {
-                'adyen-pe-transactions__with-error': sessionSetupError,
-            })}
-        >
+        <div className={cx(BASE_CLASS, { [WITH_ERROR_CLASS]: sessionSetupError })}>
             {sessionSetupError ? (
                 <ErrorMessageDisplay
                     withImage
@@ -55,12 +52,10 @@ function TransactionsOverviewComponent(props: ExternalUIComponentProps<Transacti
                     message={['weCouldNotLoadTheTransactionsOverview', 'theSelectedBalanceAccountIsIncorrect']}
                 />
             ) : (
-                <div className="adyen-pe-transactions__container">
-                    <TransactionsOverview {...props} balanceAccounts={balanceAccounts} isLoadingBalanceAccount={isFetching} />
-                </div>
+                <TransactionsOverview {...props} balanceAccounts={balanceAccounts} isLoadingBalanceAccount={isFetching} />
             )}
         </div>
     );
 }
 
-export default TransactionsOverviewComponent;
+export default TransactionsOverviewContainer;

@@ -1,4 +1,4 @@
-import { CategoryProps } from '@src/components/external/Transactions/components/Category/types';
+import { CategoryProps } from '@src/components/external/TransactionsOverview/components/Category/types';
 import { Tooltip } from '@src/components/internal/Tooltip/Tooltip';
 import useCoreContext from '@src/core/Context/useCoreContext';
 

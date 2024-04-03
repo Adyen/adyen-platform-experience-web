@@ -1,47 +1,44 @@
-import { BalanceAccountProps } from '@src/components';
-import Category from '@src/components/external/Transactions/components/Category/Category';
-import Modal from '@src/components/internal/Modal';
-import { popoverUtil } from '@src/components/internal/Popover/utils/popoverUtil';
-import Spinner from '@src/components/internal/Spinner';
+import Category from '@src/components/external/TransactionsOverview/components/Category/Category';
 import useCoreContext from '@src/core/Context/useCoreContext';
-import useModalDetails from '@src/hooks/useModalDetails/useModalDetails';
-import { ITransaction } from '@src/types';
-import classnames from 'classnames';
-import { lazy, Suspense } from 'preact/compat';
-import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
-import DataGrid from '../../../internal/DataGrid';
-import Pagination from '../../../internal/Pagination';
-import { TransactionListProps } from '../types';
-import { getLabel, parsePaymentMethodType } from './utils';
-import './TransactionList.scss';
+import { useCallback, useMemo, useState } from 'preact/hooks';
+import DataGrid from '../../../../internal/DataGrid';
+import Pagination from '../../../../internal/Pagination';
+import { getLabel, parsePaymentMethodType } from '../utils';
 import { Tag } from '@src/components/internal/Tag/Tag';
 import { TagVariant } from '@src/components/internal/Tag/types';
 import { CellTextPosition } from '@src/components/internal/DataGrid/types';
 import { Image } from '@src/components/internal/Image/Image';
 import { TranslationKey } from '@src/core/Localization/types';
-import TransactionListError from './TransactionListError/TransactionListError';
+import TransactionListError from '../TransactionListError/TransactionListError';
 import { getCurrencyCode } from '@src/core/Localization/amount/amount-util';
-import { mediaQueries, useMediaQuery } from '@src/components/external/Transactions/hooks/useMediaQuery';
-
-const ModalContent = lazy(() => import('./ModalContent'));
+import {
+    AMOUNT_CLASS,
+    BASE_CLASS,
+    PAYMENT_METHOD_CLASS,
+    PAYMENT_METHOD_LOGO_CLASS,
+    PAYMENT_METHOD_LOGO_CONTAINER_CLASS,
+} from '@src/components/external/TransactionsOverview/components/TransactionsTable/constants';
+import './TransactionTable.scss';
+import { mediaQueries, useMediaQuery } from '@src/components/external/TransactionsOverview/hooks/useMediaQuery';
+import { FC } from 'preact/compat';
+import { TransactionTableProps } from '@src/components/external/TransactionsOverview/components/TransactionsTable/types';
 
 const FIELDS = ['creationDate', 'status', 'paymentMethod', 'type', 'currency', 'amount'] as const;
 
-function TransactionList({
-    balanceAccountDescription,
-    loading,
-    transactions,
-    onTransactionSelected,
-    showPagination,
-    showDetails,
-    error,
-    onContactSupport,
+export const TransactionsTable: FC<TransactionTableProps> = ({
     availableCurrencies,
+    error,
+    hasMultipleCurrencies,
+    loading,
+    onContactSupport,
+    onRowClick,
+    onTransactionSelected,
+    showDetails,
+    showPagination,
+    transactions,
     ...paginationProps
-}: TransactionListProps & BalanceAccountProps) {
+}) => {
     const { i18n } = useCoreContext();
-
-    const hasMultipleCurrencies = availableCurrencies && availableCurrencies.length > 1;
     const [hoveredRow, setHoveredRow] = useState<undefined | number>();
     const isSmViewport = useMediaQuery(mediaQueries.down.sm);
 
@@ -64,36 +61,6 @@ function TransactionList({
         [availableCurrencies, hasMultipleCurrencies, i18n, isSmViewport]
     );
 
-    const transactionDetails = useMemo(
-        () => ({
-            showDetails: showDetails ?? true,
-            callback: onTransactionSelected,
-        }),
-        [showDetails, onTransactionSelected]
-    );
-
-    const modalOptions = useMemo(() => ({ transaction: transactionDetails }), [transactionDetails]);
-
-    const { updateDetails, resetDetails, selectedDetail } = useModalDetails(modalOptions);
-
-    const onRowClick = useCallback(
-        (value: ITransaction) => {
-            updateDetails({
-                selection: { type: 'transaction', data: { ...value, balanceAccountDescription } },
-                modalSize: 'small',
-            }).callback({ id: value.id });
-        },
-        [updateDetails, balanceAccountDescription]
-    );
-
-    const isModalOpen = !!selectedDetail;
-
-    useEffect(() => {
-        if (isModalOpen) {
-            popoverUtil.closeAll();
-        }
-    }, [isModalOpen]);
-
     const EMPTY_TABLE_MESSAGE = {
         title: 'noTransactionsFound',
         message: ['tryDifferentSearchOrResetYourFiltersAndWeWillTryAgain'],
@@ -108,7 +75,7 @@ function TransactionList({
 
     const errorDisplay = useMemo(() => () => <TransactionListError error={error} onContactSupport={onContactSupport} />, [error, onContactSupport]);
     return (
-        <>
+        <div className={BASE_CLASS}>
             <DataGrid
                 errorDisplay={errorDisplay}
                 error={error}
@@ -141,19 +108,19 @@ function TransactionList({
                     creationDate: ({ value }) => i18n.fullDate(value),
                     amount: ({ value }) => {
                         const amount = i18n.amount(value.value, value.currency, { hideCurrency: !hasMultipleCurrencies });
-                        return <span className={classnames('adyen-pe-transactions__amount')}>{amount}</span>;
+                        return <span className={AMOUNT_CLASS}>{amount}</span>;
                     },
                     paymentMethod: ({ item }) => {
                         return (
                             <>
                                 {item.paymentMethod || item.bankAccount ? (
-                                    <div className="adyen-pe-transactions__payment-method">
-                                        <div className="adyen-pe-transactions__payment-method-logo-container">
+                                    <div className={PAYMENT_METHOD_CLASS}>
+                                        <div className={PAYMENT_METHOD_LOGO_CONTAINER_CLASS}>
                                             <Image
                                                 name={item.paymentMethod ? item.paymentMethod.type : 'bankTransfer'}
                                                 alt={item.paymentMethod ? item.paymentMethod.type : 'bankTransfer'}
                                                 folder={'logos/'}
-                                                className={'adyen-pe-transactions__payment-method-logo'}
+                                                className={PAYMENT_METHOD_LOGO_CLASS}
                                             />
                                         </div>
                                         {item.paymentMethod
@@ -177,29 +144,6 @@ function TransactionList({
                     </DataGrid.Footer>
                 )}
             </DataGrid>
-            <Modal
-                title={selectedDetail?.title ? i18n.get(selectedDetail.title) : undefined}
-                isOpen={!!selectedDetail}
-                aria-label={i18n.get('transactionDetails')}
-                onClose={resetDetails}
-                isDismissible={true}
-                headerWithBorder={false}
-                size={selectedDetail?.modalSize ?? 'large'}
-            >
-                {selectedDetail && (
-                    <Suspense
-                        fallback={
-                            <span className={'adyen-pe-transactions__spinner-container'}>
-                                <Spinner size={'medium'} />
-                            </span>
-                        }
-                    >
-                        <ModalContent data={selectedDetail.selection.data} />
-                    </Suspense>
-                )}
-            </Modal>
-        </>
+        </div>
     );
-}
-
-export default TransactionList;
+};
