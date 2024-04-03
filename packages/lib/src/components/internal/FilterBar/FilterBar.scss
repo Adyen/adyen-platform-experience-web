@@ -1,13 +1,10 @@
 .adyen-pe-filter-bar {
     align-items: center;
     display: flex;
+    flex-wrap: wrap;
     gap: var(--adyen-pe-spacing-small);
     padding: var(--adyen-pe-spacing-medium-small) 0;
     white-space: nowrap;
-
-    > .adyen-pe-dropdown {
-        max-width: 20%;
-    }
 
     .adyen-pe-button--secondary.adyen-pe-dropdown__button,
     .adyen-pe-filter-button {
@@ -34,6 +31,17 @@
             border: 1px solid var(--adyen-pe-filter-button-active-border-color);
             box-shadow: none !important;
             outline: 1px solid var(--adyen-pe-filter-button-active-border-color);
+        }
+    }
+
+    &__header {
+        align-items: center;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+
+        &-icon {
+            align-self: flex-end;
         }
     }
 }
