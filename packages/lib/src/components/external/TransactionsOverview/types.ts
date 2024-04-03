@@ -1,11 +1,6 @@
 import { TransactionDetailData } from '@src/components';
-import { Schema } from '@src/types/models/api/utils';
-import { components } from '@src/types/models/openapi/TransactionsResource';
 import { Core } from '../../../core';
-import { PaginationProps, WithPaginationLimitSelection } from '../../internal/Pagination/types';
 import UIElement from '../UIElement';
-import { IBalanceAccountBase, ITransaction } from '../../../types';
-import AdyenPlatformExperienceError from '@src/core/Errors/AdyenPlatformExperienceError';
 
 export const enum TransactionFilterParam {
     CATEGORIES = 'categories',
@@ -31,18 +26,6 @@ export interface TransactionsComponentProps {
     core: Core;
     balanceAccountId?: string;
 }
-export interface TransactionListProps extends WithPaginationLimitSelection<PaginationProps> {
-    transactions: ITransaction[] | undefined;
-    onTransactionSelected?: OnSelection;
-    showPagination: boolean;
-    loading: boolean;
-    showDetails?: boolean;
-    error: AdyenPlatformExperienceError | undefined;
-    onContactSupport?: () => void;
-    balanceAccounts: IBalanceAccountBase[] | undefined;
-    availableCurrencies: ITransaction['amount']['currency'][] | undefined;
-}
-
 export interface BalanceAccountProps {
     balanceAccountDescription?: string;
 }
