@@ -1,4 +1,4 @@
-import { mediaQueries, useMediaQuery } from '@src/components/external/Transactions/hooks/useMediaQuery';
+import { mediaQueries, useMediaQuery } from '@src/components/external/TransactionsOverview/hooks/useMediaQuery';
 import { ButtonVariant } from '@src/components/internal/Button/types';
 import Close from '@src/components/internal/SVGIcons/Close';
 import Filter from '@src/components/internal/SVGIcons/Filter';
