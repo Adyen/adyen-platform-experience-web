@@ -5,11 +5,11 @@ import { useFetch } from '@src/hooks/useFetch/useFetch';
 import { OperationParameters } from '@src/types/models/openapi/endpoints';
 import { MakeFieldValueUndefined } from '@src/utils/types';
 import { memo } from 'preact/compat';
-import { BASE_CLASS } from '@src/components/external/Transactions/components/Balances/constants';
+import { BASE_CLASS } from '@src/components/external/TransactionsOverview/components/Balances/constants';
 import ExpandableCard from '@src/components/internal/ExpandableCard/ExpandableCard';
 import { BaseList } from '@src/components/internal/BaseList/BaseList';
-import { BalanceItem } from '@src/components/external/Transactions/components/BalanceItem/BalanceItem';
-import { useMaxWidthsState } from '@src/components/external/Transactions/hooks/useMaxWidths';
+import { BalanceItem } from '@src/components/external/TransactionsOverview/components/BalanceItem/BalanceItem';
+import { useMaxWidthsState } from '@src/components/external/TransactionsOverview/hooks/useMaxWidths';
 import { ITransaction } from '@src/types';
 
 type TransactionTotalsProps = Required<OperationParameters<'getBalances'>['path']>;

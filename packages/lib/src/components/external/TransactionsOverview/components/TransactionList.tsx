@@ -1,5 +1,5 @@
 import { BalanceAccountProps } from '@src/components';
-import Category from '@src/components/external/Transactions/components/Category/Category';
+import Category from '@src/components/external/TransactionsOverview/components/Category/Category';
 import Modal from '@src/components/internal/Modal';
 import { popoverUtil } from '@src/components/internal/Popover/utils/popoverUtil';
 import Spinner from '@src/components/internal/Spinner';
@@ -21,7 +21,7 @@ import { Image } from '@src/components/internal/Image/Image';
 import { TranslationKey } from '@src/core/Localization/types';
 import TransactionListError from './TransactionListError/TransactionListError';
 import { getCurrencyCode } from '@src/core/Localization/amount/amount-util';
-import { mediaQueries, useMediaQuery } from '@src/components/external/Transactions/hooks/useMediaQuery';
+import { mediaQueries, useMediaQuery } from '@src/components/external/TransactionsOverview/hooks/useMediaQuery';
 
 const ModalContent = lazy(() => import('./ModalContent'));
 

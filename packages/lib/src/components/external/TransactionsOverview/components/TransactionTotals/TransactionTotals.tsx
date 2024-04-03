@@ -5,11 +5,11 @@ import { useFetch } from '@src/hooks/useFetch/useFetch';
 import { OperationParameters } from '@src/types/models/openapi/endpoints';
 import { MakeFieldValueUndefined } from '@src/utils/types';
 import ExpandableCard from '@src/components/internal/ExpandableCard/ExpandableCard';
-import { BASE_CLASS } from '@src/components/external/Transactions/components/TransactionTotals/constants';
+import { BASE_CLASS } from '@src/components/external/TransactionsOverview/components/TransactionTotals/constants';
 import { memo } from 'preact/compat';
-import { TransactionTotalItem } from '@src/components/external/Transactions/components/TransactionTotalItem/TransactionTotalItem';
+import { TransactionTotalItem } from '@src/components/external/TransactionsOverview/components/TransactionTotalItem/TransactionTotalItem';
 import { BaseList } from '@src/components/internal/BaseList/BaseList';
-import { useMaxWidthsState } from '@src/components/external/Transactions/hooks/useMaxWidths';
+import { useMaxWidthsState } from '@src/components/external/TransactionsOverview/hooks/useMaxWidths';
 import { ITransaction } from '@src/types';
 
 type TransactionTotalsProps = Required<OperationParameters<'getTransactionTotals'>['query']> & {

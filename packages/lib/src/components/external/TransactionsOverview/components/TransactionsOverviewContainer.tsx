@@ -3,7 +3,7 @@ import { ExternalUIComponentProps } from '../../../types';
 import './TransactionList.scss';
 import { useSetupEndpoint } from '@src/hooks/useSetupEndpoint/useSetupEndpoint';
 import { useFetch } from '@src/hooks/useFetch/useFetch';
-import { TransactionsOverview } from '@src/components/external/Transactions/components/TransactionsOverview';
+import { TransactionsOverview } from '@src/components/external/TransactionsOverview/components/TransactionsOverview';
 import { useCallback, useMemo } from 'preact/hooks';
 import { EMPTY_OBJECT } from '@src/utils/common';
 import useAuthContext from '@src/core/Auth/useAuthContext';

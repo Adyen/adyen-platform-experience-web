@@ -1,7 +1,7 @@
 import { TransactionDetailData } from '@src/components';
 import TransactionDataSkeleton from '@src/components/external/TransactionDetails/components/TransactionDataSkeleton';
 import { Image } from '@src/components/internal/Image/Image';
-import { parsePaymentMethodType } from '@src/components/external/Transactions/components/utils';
+import { parsePaymentMethodType } from '@src/components/external/TransactionsOverview/components/utils';
 import { Tag } from '@src/components/internal/Tag/Tag';
 import { TagVariant } from '@src/components/internal/Tag/types';
 import useCoreContext from '@src/core/Context/useCoreContext';
