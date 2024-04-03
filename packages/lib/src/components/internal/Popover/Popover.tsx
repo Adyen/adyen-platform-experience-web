@@ -145,46 +145,49 @@ function Popover({
     return createPortal(
         <>
             {open ? (
-                <div
-                    id="popover"
-                    ref={popoverElementWithId}
-                    {...uncontrolledProps}
-                    className={classNames(classNamesByVariant, conditionalClasses, classNameModifiers)}
-                    style={{ visibility: 'hidden' }}
-                    role={uncontrolledProps.role ?? (variant === PopoverContainerVariant.POPOVER ? 'dialog' : 'tooltip')}
-                >
-                    {(title || isDismissible) && (
-                        <div className={getModifierClasses(POPOVER_HEADER_CLASSNAME, modifiers, [POPOVER_HEADER_CLASSNAME])}>
-                            {title && (
-                                <div className={POPOVER_HEADER_TITLE_CLASSNAME}>
-                                    <PopoverTitle title={title} />
-                                </div>
-                            )}
-                            {isDismissible && <PopoverDismissButton onClick={dismiss!} />}
-                        </div>
-                    )}
-                    {children && (
-                        <>
-                            <div
-                                className={
-                                    withContentPadding
-                                        ? `${classNamesContentByVariant} ${POPOVER_CONTENT_CLASSNAME}--with-padding`
-                                        : classNamesContentByVariant
-                                }
-                            >
-                                {children}
+                <>
+                    <div className="adyen-pe-popover-mobile-wrapper"></div>
+                    <div
+                        id="popover"
+                        ref={popoverElementWithId}
+                        {...uncontrolledProps}
+                        className={classNames(classNamesByVariant, conditionalClasses, classNameModifiers)}
+                        style={{ visibility: 'hidden' }}
+                        role={uncontrolledProps.role ?? (variant === PopoverContainerVariant.POPOVER ? 'dialog' : 'tooltip')}
+                    >
+                        {(title || isDismissible) && (
+                            <div className={getModifierClasses(POPOVER_HEADER_CLASSNAME, modifiers, [POPOVER_HEADER_CLASSNAME])}>
+                                {title && (
+                                    <div className={POPOVER_HEADER_TITLE_CLASSNAME}>
+                                        <PopoverTitle title={title} />
+                                    </div>
+                                )}
+                                {isDismissible && <PopoverDismissButton onClick={dismiss!} />}
                             </div>
-                            {variant === PopoverContainerVariant.TOOLTIP && (
-                                <span data-popover-placement="hidden" ref={arrowRef} className="adyen-pe-tooltip__arrow" />
-                            )}
-                        </>
-                    )}
-                    {actions && (
-                        <div className={POPOVER_FOOTER_CLASSNAME}>
-                            <ButtonActions actions={actions} layout={actionsLayout} />
-                        </div>
-                    )}
-                </div>
+                        )}
+                        {children && (
+                            <>
+                                <div
+                                    className={
+                                        withContentPadding
+                                            ? `${classNamesContentByVariant} ${POPOVER_CONTENT_CLASSNAME}--with-padding`
+                                            : classNamesContentByVariant
+                                    }
+                                >
+                                    {children}
+                                </div>
+                                {variant === PopoverContainerVariant.TOOLTIP && (
+                                    <span data-popover-placement="hidden" ref={arrowRef} className="adyen-pe-tooltip__arrow" />
+                                )}
+                            </>
+                        )}
+                        {actions && (
+                            <div className={POPOVER_FOOTER_CLASSNAME}>
+                                <ButtonActions actions={actions} layout={actionsLayout} />
+                            </div>
+                        )}
+                    </div>
+                </>
             ) : null}
         </>,
         document.getElementsByTagName('body')[0]!

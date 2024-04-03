@@ -2,25 +2,41 @@ import { PopoverContainerPosition, PopoverContainerVariant } from '@src/componen
 import getIntersectionObserver from '@src/components/internal/Popover/utils/utils';
 import { MutableRef, Ref, useCallback, useEffect, useRef, useState } from 'preact/hooks';
 import useReflex, { Nullable, Reflexable } from '../useReflex';
+import { mediaQueries, useMediaQuery } from '@src/components/external/Transactions/hooks/useMediaQuery';
 
-const calculateOffset = (
-    popover: Element,
-    offset: [number, number, number, number],
-    targetElement: MutableRef<Element | null>,
-    position: PopoverContainerPosition,
-    variant: PopoverContainerVariant
-) => {
+const calculateOffset = ({
+    popover,
+    offset,
+    targetElement,
+    position,
+    variant,
+    fullWidth,
+}: {
+    popover: Element;
+    offset: [number, number, number, number];
+    targetElement: MutableRef<Element | null>;
+    position: PopoverContainerPosition;
+    variant: PopoverContainerVariant;
+    fullWidth: boolean;
+}) => {
     const currentTarget = targetElement?.current as HTMLElement;
 
     let dimensionX = 0;
     let dimensionY = 0;
     const targetPosition = currentTarget.getBoundingClientRect();
+    const bodyPosition = document.body.getBoundingClientRect();
+
     const popoverContent = popover?.firstChild as HTMLElement;
+    const toCenterFullWidth = bodyPosition.left + bodyPosition.width / 2 - popoverContent.offsetWidth / 2;
     const toCenterX = targetPosition.left + targetPosition.width / 2 - popoverContent.offsetWidth / 2;
     const toCenterY = targetPosition.top + targetPosition.height / 2 - popoverContent.offsetHeight / 2;
     switch (position) {
         case PopoverContainerPosition.BOTTOM:
-            dimensionX = variant === PopoverContainerVariant.TOOLTIP ? toCenterX + window.scrollX : targetPosition?.left + window.scrollX;
+            dimensionX = fullWidth
+                ? toCenterFullWidth
+                : variant === PopoverContainerVariant.TOOLTIP
+                ? toCenterX + window.scrollX
+                : targetPosition?.left + window.scrollX;
             dimensionY = targetPosition?.top + targetPosition?.height + window.scrollY + offset[1];
             break;
         case PopoverContainerPosition.TOP:
@@ -66,9 +82,13 @@ const usePopoverPositioner = (
     setToTargetWidth?: boolean,
     ref?: Nullable<Reflexable<Element>>
 ) => {
+    const isMdViewport = useMediaQuery(mediaQueries.down.sm);
+
     const [initialPosition, setInitialPosition] = useState(true);
     const [showPopover, setShowPopover] = useState(!!position);
-    const [currentPosition, setCurrentPosition] = useState(position ?? PopoverContainerPosition.TOP);
+    const [currentPosition, setCurrentPosition] = useState(
+        (isMdViewport && PopoverContainerPosition.BOTTOM) || position || PopoverContainerPosition.TOP
+    );
     const [checkedPositions, setCheckedPosition] = useState<Array<[PopoverContainerPosition, number]>>([]);
 
     const observerCallback = useCallback(
@@ -128,7 +148,14 @@ const usePopoverPositioner = (
                         observer.observe(current);
                     }
                     if (!(current instanceof Element)) return;
-                    const popoverStyle = calculateOffset(current, offset, targetElement, currentPosition, variant);
+                    const popoverStyle = calculateOffset({
+                        popover: current,
+                        offset,
+                        targetElement,
+                        position: currentPosition,
+                        variant,
+                        fullWidth: isMdViewport,
+                    });
                     const style = showPopover ? popoverStyle + ';visibility:visible' : popoverStyle;
 
                     const styleWithWidth = setToTargetWidth
