@@ -23,7 +23,9 @@ import { mediaQueries, useMediaQuery } from '@src/components/external/Transactio
 import { FC } from 'preact/compat';
 import { TransactionTableProps } from '@src/components/external/TransactionsOverview/components/TransactionsTable/types';
 
-const FIELDS = ['creationDate', 'status', 'paymentMethod', 'type', 'currency', 'amount'] as const;
+// Remove status column temporarily
+// const FIELDS = ['creationDate', 'status', 'paymentMethod', 'type', 'currency', 'amount'] as const;
+const FIELDS = ['creationDate', 'paymentMethod', 'type', 'currency', 'amount'] as const;
 
 export const TransactionsTable: FC<TransactionTableProps> = ({
     availableCurrencies,
@@ -87,14 +89,15 @@ export const TransactionsTable: FC<TransactionTableProps> = ({
                 onRowHover={onHover}
                 emptyTableMessage={EMPTY_TABLE_MESSAGE}
                 customCells={{
-                    status: ({ value }) => {
+                    // Remove status column temporarily
+                    /* status: ({ value }) => {
                         return (
                             <Tag
                                 label={i18n.get(value)}
                                 variant={value === 'Booked' ? TagVariant.SUCCESS : value === 'Reversed' ? TagVariant.ERROR : TagVariant.DEFAULT}
                             />
                         );
-                    },
+                    },*/
                     type: ({ item, rowIndex }) => {
                         const tooltipKey = `tooltip.${item.category}`;
                         return item.category ? (
