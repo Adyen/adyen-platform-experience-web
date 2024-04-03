@@ -6,24 +6,30 @@ import Spinner from '@src/components/internal/Spinner';
 import useCoreContext from '@src/core/Context/useCoreContext';
 import useModalDetails from '@src/hooks/useModalDetails/useModalDetails';
 import { ITransaction } from '@src/types';
-import classnames from 'classnames';
 import { lazy, Suspense } from 'preact/compat';
 import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
-import DataGrid from '../../../internal/DataGrid';
-import Pagination from '../../../internal/Pagination';
-import { TransactionListProps } from '../types';
-import { getLabel, parsePaymentMethodType } from './utils';
-import './TransactionList.scss';
+import DataGrid from '../../../../internal/DataGrid';
+import Pagination from '../../../../internal/Pagination';
+import { TransactionListProps } from '../../types';
+import { getLabel, parsePaymentMethodType } from '../utils';
 import { Tag } from '@src/components/internal/Tag/Tag';
 import { TagVariant } from '@src/components/internal/Tag/types';
 import { CellTextPosition } from '@src/components/internal/DataGrid/types';
 import { Image } from '@src/components/internal/Image/Image';
 import { TranslationKey } from '@src/core/Localization/types';
-import TransactionListError from './TransactionListError/TransactionListError';
+import TransactionListError from '../TransactionListError/TransactionListError';
 import { getCurrencyCode } from '@src/core/Localization/amount/amount-util';
 import { mediaQueries, useMediaQuery } from '@src/components/external/TransactionsOverview/hooks/useMediaQuery';
+import {
+    AMOUNT_CLASS,
+    PAYMENT_METHOD_CLASS,
+    PAYMENT_METHOD_LOGO_CLASS,
+    PAYMENT_METHOD_LOGO_CONTAINER_CLASS,
+    SPINNER_CONTAINER_CLASS,
+} from '@src/components/external/TransactionsOverview/components/TransactionList/constants';
+import './TransactionList.scss';
 
-const ModalContent = lazy(() => import('./ModalContent'));
+const ModalContent = lazy(() => import('../ModalContent'));
 
 const FIELDS = ['creationDate', 'status', 'paymentMethod', 'type', 'currency', 'amount'] as const;
 
@@ -141,19 +147,19 @@ function TransactionList({
                     creationDate: ({ value }) => i18n.fullDate(value),
                     amount: ({ value }) => {
                         const amount = i18n.amount(value.value, value.currency, { hideCurrency: !hasMultipleCurrencies });
-                        return <span className={classnames('adyen-pe-transactions__amount')}>{amount}</span>;
+                        return <span className={AMOUNT_CLASS}>{amount}</span>;
                     },
                     paymentMethod: ({ item }) => {
                         return (
                             <>
                                 {item.paymentMethod || item.bankAccount ? (
-                                    <div className="adyen-pe-transactions__payment-method">
-                                        <div className="adyen-pe-transactions__payment-method-logo-container">
+                                    <div className={PAYMENT_METHOD_CLASS}>
+                                        <div className={PAYMENT_METHOD_LOGO_CONTAINER_CLASS}>
                                             <Image
                                                 name={item.paymentMethod ? item.paymentMethod.type : 'bankTransfer'}
                                                 alt={item.paymentMethod ? item.paymentMethod.type : 'bankTransfer'}
                                                 folder={'logos/'}
-                                                className={'adyen-pe-transactions__payment-method-logo'}
+                                                className={PAYMENT_METHOD_LOGO_CLASS}
                                             />
                                         </div>
                                         {item.paymentMethod
@@ -189,7 +195,7 @@ function TransactionList({
                 {selectedDetail && (
                     <Suspense
                         fallback={
-                            <span className={'adyen-pe-transactions__spinner-container'}>
+                            <span className={SPINNER_CONTAINER_CLASS}>
                                 <Spinner size={'medium'} />
                             </span>
                         }
