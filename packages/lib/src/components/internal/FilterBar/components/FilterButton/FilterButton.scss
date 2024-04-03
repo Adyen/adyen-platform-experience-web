@@ -39,8 +39,12 @@
         padding: var(--adyen-pe-filter-button-counter-wrapper-padding);
     }
 
-    &--active {
+    &--active,
+    &:active,
+    &:focus {
         border: 1px solid var(--adyen-pe-filter-button-active-border-color);
+        box-shadow: none !important;
+        outline: 1px solid var(--adyen-pe-filter-button-active-border-color);
     }
 
     &__footer {
