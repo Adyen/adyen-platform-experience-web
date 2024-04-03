@@ -15,7 +15,6 @@ $adyen-pe-color-grey-3200: $color-grey-3200;
     --adyen-pe-color-label-secondary: #{$color-label-secondary};
     --adyen-pe-color-separator-primary: #{$color-separator-primary};
     --adyen-pe-color-outline-primary: #{$color-outline-primary};
-    --adyen-pe-border-radius-m: 6px;
     --adyen-pe-spacer-040: #{$spacer-040};
     --adyen-pe-spacer-070: #{$spacer-070};
     --adyen-pe-spacer-080: #{$spacer-080};
@@ -42,7 +41,7 @@ $adyen-pe-color-grey-3200: $color-grey-3200;
 }
 
 @mixin adyen-pe-bento-button-mapping {
-    --adyen-pe-filter-button-button-border-radius: #{$button-border-radius};
+    --adyen-pe-filter-button-border-radius: #{$button-border-radius};
     --adyen-pe-filter-button-box-shadow: #{$button-box-shadow};
     --adyen-pe-filter-button-padding: #{$button-padding};
     --adyen-pe-filter-button-line-height: #{$button-line-height};
