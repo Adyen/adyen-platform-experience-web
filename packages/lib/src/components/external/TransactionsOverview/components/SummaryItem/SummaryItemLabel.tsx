@@ -2,8 +2,8 @@ import {
     LABEL_CLASS,
     LABEL_CONTAINER_CLASS,
     LABEL_CONTAINER_CLASS_LOADING,
-} from '@src/components/external/Transactions/components/SummaryItem/constants';
-import { SummaryItemLabelProps } from '@src/components/external/Transactions/components/SummaryItem/types';
+} from '@src/components/external/TransactionsOverview/components/SummaryItem/constants';
+import { SummaryItemLabelProps } from '@src/components/external/TransactionsOverview/components/SummaryItem/types';
 import { TypographyVariant } from '@src/components/internal/Typography/types';
 import Typography from '@src/components/internal/Typography/Typography';
 import fixedForwardRef from '@src/utils/fixedForwardRef';

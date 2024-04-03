@@ -1,7 +1,7 @@
 import FilterBar from '@src/components/internal/FilterBar';
 import { ExternalUIComponentProps } from '@src/components/types';
 import { TransactionsComponentProps, TransactionFilterParam } from '../types';
-import TransactionList from '@src/components/external/Transactions/components/TransactionList';
+import TransactionList from '@src/components/external/TransactionsOverview/components/TransactionList';
 import useCoreContext from '@src/core/Context/useCoreContext';
 import { SetupHttpOptions, useSetupEndpoint } from '@src/hooks/useSetupEndpoint/useSetupEndpoint';
 import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
@@ -9,9 +9,9 @@ import { useCursorPaginatedRecords } from '@src/components/internal/Pagination/h
 import { IBalanceAccountBase, ITransaction } from '@src/types';
 import { isFunction } from '@src/utils/common';
 import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '@src/components/internal/Pagination/constants';
-import TransactionsOverviewDateFilter from '@src/components/external/Transactions/components/TransactionsOverviewDateFilter';
-import TransactionTotals from '@src/components/external/Transactions/components/TransactionTotals/TransactionTotals';
-import { Balances } from '@src/components/external/Transactions/components/Balances/Balances';
+import TransactionsOverviewDateFilter from '@src/components/external/TransactionsOverview/components/TransactionsOverviewDateFilter';
+import TransactionTotals from '@src/components/external/TransactionsOverview/components/TransactionTotals/TransactionTotals';
+import { Balances } from '@src/components/external/TransactionsOverview/components/Balances/Balances';
 import BalanceAccountSelector, { useBalanceAccountSelection } from './BalanceAccountSelector';
 import MultiSelectionFilter, { listFrom } from './MultiSelectionFilter';
 import useDefaultTransactionsOverviewFilterParams from '../hooks/useDefaultTransactionsOverviewFilterParams';

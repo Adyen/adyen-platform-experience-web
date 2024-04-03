@@ -1,8 +1,8 @@
 import useCoreContext from '@src/core/Context/useCoreContext';
 import { useMemo, useRef } from 'preact/hooks';
-import { BalanceItemProps } from '@src/components/external/Transactions/components/BalanceItem/types';
-import { SummaryItemColumnConfig } from '@src/components/external/Transactions/components/SummaryItem/types';
-import { SummaryItem } from '@src/components/external/Transactions/components/SummaryItem/SummaryItem';
+import { BalanceItemProps } from '@src/components/external/TransactionsOverview/components/BalanceItem/types';
+import { SummaryItemColumnConfig } from '@src/components/external/TransactionsOverview/components/SummaryItem/types';
+import { SummaryItem } from '@src/components/external/TransactionsOverview/components/SummaryItem/SummaryItem';
 
 export const BalanceItem = ({ balance, isHeader = false, isSkeleton = false, isLoading = false, widths, onWidthsSet, isEmpty }: BalanceItemProps) => {
     const { i18n } = useCoreContext();
