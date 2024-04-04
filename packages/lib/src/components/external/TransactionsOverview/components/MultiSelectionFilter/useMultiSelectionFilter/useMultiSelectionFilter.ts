@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
+import { useCallback, useMemo, useState } from 'preact/hooks';
 import { listFrom, selectionOptionsFor } from './utils';
 import type { SelectionOptionsList, UseMultiSelectionFilterConfig, UseMultiSelectionFilterConfigWithoutValues } from './types';
 

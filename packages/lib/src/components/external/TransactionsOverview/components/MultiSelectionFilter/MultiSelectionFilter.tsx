@@ -23,6 +23,7 @@ const MultiSelectionFilter = memo(
                 withoutCollapseIndicator={true}
                 items={selectionOptions}
                 showOverlay={isSmViewport}
+                fitPosition
             />
         ) : null;
     }

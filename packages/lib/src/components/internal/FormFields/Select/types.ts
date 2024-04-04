@@ -36,6 +36,7 @@ export interface SelectProps<T extends SelectItem> {
     setToTargetWidth?: boolean;
     showOverlay?: boolean;
     popoverClassNameModifiers?: string[];
+    fitPosition?: boolean;
 }
 
 export interface SelectButtonProps<T extends SelectItem> {
@@ -75,6 +76,7 @@ export interface SelectListProps<T extends SelectItem> {
     setToTargetWidth?: boolean;
     popoverClassNameModifiers?: string[];
     showOverlay?: boolean;
+    fitPosition?: boolean;
 }
 
 export interface SelectItemProps<T extends SelectItem> {

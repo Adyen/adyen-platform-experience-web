@@ -84,6 +84,7 @@ const usePopoverPositioner = (
     arrowRef?: Ref<HTMLSpanElement> | undefined,
     setToTargetWidth?: boolean,
     showOverlay?: boolean,
+    fitPosition?: boolean,
     ref?: Nullable<Reflexable<Element>>
 ) => {
     const [initialPosition, setInitialPosition] = useState(true);
@@ -112,7 +113,7 @@ const usePopoverPositioner = (
                         break;
                     case PopoverContainerPosition.BOTTOM:
                         setCheckedPosition(value => [...value, [PopoverContainerPosition.BOTTOM, entry.intersectionRatio]]);
-                        setCurrentPosition(PopoverContainerPosition.RIGHT);
+                        setCurrentPosition(fitPosition ? PopoverContainerPosition.BOTTOM_LEFT : PopoverContainerPosition.RIGHT);
                         break;
                     case PopoverContainerPosition.RIGHT:
                         setCheckedPosition(value => [...value, [PopoverContainerPosition.RIGHT, entry.intersectionRatio]]);
@@ -125,7 +126,7 @@ const usePopoverPositioner = (
                 }
             }
         },
-        [setCurrentPosition, currentPosition, setShowPopover, initialPosition, checkedPositions]
+        [initialPosition, checkedPositions, currentPosition, fitPosition]
     );
     const observerCallbackRef = useRef(observerCallback);
 

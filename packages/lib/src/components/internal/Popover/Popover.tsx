@@ -64,6 +64,7 @@ function Popover({
     withContentPadding,
     classNameModifiers,
     showOverlay = false,
+    fitPosition,
     ...uncontrolledProps
 }: PropsWithChildren<PopoverProps>) {
     const isDismissible = useMemo(() => isFunction(dismiss) && dismissible !== false, [dismiss, dismissible]);
@@ -94,7 +95,7 @@ function Popover({
     const autoFocusAnimFrame = useRef<ReturnType<typeof requestAnimationFrame>>();
 
     const popoverPositionAnchorElement = useClickOutside(
-        usePopoverPositioner(getGapByVariant(variant), targetElement, variant, position, arrowRef, setToTargetWidth, showOverlay),
+        usePopoverPositioner(getGapByVariant(variant), targetElement, variant, position, arrowRef, setToTargetWidth, showOverlay, fitPosition),
         dismiss,
         variant === PopoverContainerVariant.TOOLTIP && !open,
         ClickOutsideVariant.POPOVER

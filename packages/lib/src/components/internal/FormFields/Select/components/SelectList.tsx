@@ -29,6 +29,7 @@ const SelectList = fixedForwardRef(
             setToTargetWidth,
             popoverClassNameModifiers,
             showOverlay,
+            fitPosition,
         }: SelectListProps<T>,
         ref: ForwardedRef<HTMLUListElement>
     ) => {
@@ -54,8 +55,9 @@ const SelectList = fixedForwardRef(
                 variant={PopoverContainerVariant.POPOVER}
                 targetElement={toggleButtonRef as PopoverProps['targetElement']}
                 withContentPadding={false}
-                position={PopoverContainerPosition.BOTTOM}
+                position={fitPosition ? undefined : PopoverContainerPosition.BOTTOM}
                 showOverlay={showOverlay && isSmViewport}
+                fitPosition={fitPosition}
             >
                 <ul className={listClassName} id={selectListId} ref={ref} role="listbox" aria-multiselectable={multipleSelection}>
                     {filteredItems.length ? (
