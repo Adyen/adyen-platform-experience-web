@@ -28,6 +28,7 @@ interface PopoverCoreProps {
     setToTargetWidth?: boolean;
     children: ComponentChildren;
     classNameModifiers?: string[];
+    showOverlay?: boolean;
 }
 
 type UncontrolledProps = Pick<HTMLAttributes<any>, 'aria-label' | 'aria-labelledby' | 'aria-describedby' | 'role'>;

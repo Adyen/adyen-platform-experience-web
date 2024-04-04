@@ -2,7 +2,6 @@ import { PopoverContainerPosition, PopoverContainerVariant } from '@src/componen
 import getIntersectionObserver from '@src/components/internal/Popover/utils/utils';
 import { MutableRef, Ref, useCallback, useEffect, useRef, useState } from 'preact/hooks';
 import useReflex, { Nullable, Reflexable } from '../useReflex';
-import { mediaQueries, useMediaQuery } from '@src/components/external/Transactions/hooks/useMediaQuery';
 
 const calculateOffset = ({
     popover,
@@ -80,15 +79,12 @@ const usePopoverPositioner = (
     position?: PopoverContainerPosition,
     arrowRef?: Ref<HTMLSpanElement> | undefined,
     setToTargetWidth?: boolean,
+    showOverlay?: boolean,
     ref?: Nullable<Reflexable<Element>>
 ) => {
-    const isMdViewport = useMediaQuery(mediaQueries.down.sm);
-
     const [initialPosition, setInitialPosition] = useState(true);
     const [showPopover, setShowPopover] = useState(!!position);
-    const [currentPosition, setCurrentPosition] = useState(
-        (isMdViewport && PopoverContainerPosition.BOTTOM) || position || PopoverContainerPosition.TOP
-    );
+    const [currentPosition, setCurrentPosition] = useState(position || PopoverContainerPosition.TOP);
     const [checkedPositions, setCheckedPosition] = useState<Array<[PopoverContainerPosition, number]>>([]);
 
     const observerCallback = useCallback(
@@ -154,7 +150,7 @@ const usePopoverPositioner = (
                         targetElement,
                         position: currentPosition,
                         variant,
-                        fullWidth: isMdViewport,
+                        fullWidth: showOverlay ?? false,
                     });
                     const style = showPopover ? popoverStyle + ';visibility:visible' : popoverStyle;
 
@@ -170,7 +166,19 @@ const usePopoverPositioner = (
                     }
                 }
             },
-            [offset, targetElement, currentPosition, position, variant, observerCallback, showPopover, initialPosition, setToTargetWidth, arrowRef]
+            [
+                offset,
+                targetElement,
+                currentPosition,
+                position,
+                variant,
+                observerCallback,
+                showPopover,
+                initialPosition,
+                setToTargetWidth,
+                arrowRef,
+                showOverlay,
+            ]
         ),
         ref
     );

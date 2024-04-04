@@ -63,6 +63,7 @@ function Popover({
     children,
     withContentPadding,
     classNameModifiers,
+    showOverlay = false,
     ...uncontrolledProps
 }: PropsWithChildren<PopoverProps>) {
     const isDismissible = useMemo(() => isFunction(dismiss) && dismissible !== false, [dismiss, dismissible]);
@@ -93,7 +94,7 @@ function Popover({
     const autoFocusAnimFrame = useRef<ReturnType<typeof requestAnimationFrame>>();
 
     const popoverPositionAnchorElement = useClickOutside(
-        usePopoverPositioner(getGapByVariant(variant), targetElement, variant, position, arrowRef, setToTargetWidth),
+        usePopoverPositioner(getGapByVariant(variant), targetElement, variant, position, arrowRef, setToTargetWidth, showOverlay),
         dismiss,
         variant === PopoverContainerVariant.TOOLTIP && !open,
         ClickOutsideVariant.POPOVER
@@ -128,8 +129,9 @@ function Popover({
             [`${DEFAULT_POPOVER_CLASSNAME}--wide`]: containerSize === PopoverContainerSize.WIDE,
             [`${DEFAULT_POPOVER_CLASSNAME}--fit-content`]: fitContent,
             [`${DEFAULT_POPOVER_CLASSNAME}--without-space`]: withoutSpace,
+            [`${DEFAULT_POPOVER_CLASSNAME}--auto-width`]: showOverlay,
         }),
-        [containerSize, divider, withoutSpace, fitContent]
+        [containerSize, divider, withoutSpace, fitContent, showOverlay]
     );
 
     useEffect(() => {
@@ -146,7 +148,7 @@ function Popover({
         <>
             {open ? (
                 <>
-                    <div className="adyen-pe-popover-mobile-wrapper"></div>
+                    {showOverlay && <div className="adyen-pe-popover__overlay"></div>}
                     <div
                         id="popover"
                         ref={popoverElementWithId}
@@ -168,11 +170,10 @@ function Popover({
                         {children && (
                             <>
                                 <div
-                                    className={
-                                        withContentPadding
-                                            ? `${classNamesContentByVariant} ${POPOVER_CONTENT_CLASSNAME}--with-padding`
-                                            : classNamesContentByVariant
-                                    }
+                                    className={classNames(classNamesContentByVariant, {
+                                        [`${POPOVER_CONTENT_CLASSNAME}--with-padding`]: withContentPadding,
+                                        [`${POPOVER_CONTENT_CLASSNAME}--overlay`]: showOverlay,
+                                    })}
                                 >
                                     {children}
                                 </div>

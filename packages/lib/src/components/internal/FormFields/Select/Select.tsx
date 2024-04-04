@@ -32,6 +32,7 @@ const Select = <T extends SelectItem>({
     isCollatingErrors,
     setToTargetWidth,
     withoutCollapseIndicator = false,
+    showOverlay = false,
 }: SelectProps<T>) => {
     const { resetSelection, select, selection } = useSelect({ items, multiSelect, selected });
     const [showList, setShowList] = useState<boolean>(false);
@@ -351,6 +352,7 @@ const Select = <T extends SelectItem>({
                 toggleButtonRef={toggleButtonRef}
                 renderListItem={renderListItem}
                 showList={showList}
+                showOverlay={showOverlay}
                 textFilter={textFilter}
             />
         </div>
