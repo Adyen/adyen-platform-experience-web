@@ -26,7 +26,7 @@ export const Tooltip = ({ content, children, triggerRef, showTooltip, position, 
                 ? cloneElement(children, {
                       ...children?.props,
                       role: 'button',
-                      tabIndex: 0,
+                      tabIndex: -1,
                       ref: controllerRef,
                       className: children?.props?.className
                           ? classNames(`${children?.props?.className} adyen-pe__tooltip-target`, {
