@@ -33,6 +33,7 @@ const Select = <T extends SelectItem>({
     setToTargetWidth,
     withoutCollapseIndicator = false,
     showOverlay = false,
+    fitPosition,
 }: SelectProps<T>) => {
     const { resetSelection, select, selection } = useSelect({ items, multiSelect, selected });
     const [showList, setShowList] = useState<boolean>(false);
@@ -354,6 +355,7 @@ const Select = <T extends SelectItem>({
                 showList={showList}
                 showOverlay={showOverlay}
                 textFilter={textFilter}
+                fitPosition={fitPosition}
             />
         </div>
     );
