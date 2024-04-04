@@ -60,10 +60,17 @@ const TransactionsOverviewDateFilter = ({
 
     useMemo(() => !canResetFilters && setSelectedTimeRangePreset(defaultTimeRangePreset), [canResetFilters, defaultTimeRangePreset]);
 
+    const sinceDate = useMemo(() => {
+        const date = new Date(nowTimestamp);
+        date.setMonth(date.getMonth() - 24);
+        return date.toString();
+    }, [nowTimestamp]);
+
     return (
         <DateFilter
             label={i18n.get('dateRange')}
             name={TransactionFilterParam.CREATED_SINCE}
+            sinceDate={sinceDate}
             untilDate={new Date(nowTimestamp).toString()}
             from={filters[TransactionFilterParam.CREATED_SINCE]}
             to={filters[TransactionFilterParam.CREATED_UNTIL]}
