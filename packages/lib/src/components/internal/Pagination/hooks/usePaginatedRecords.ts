@@ -93,6 +93,7 @@ const usePaginatedRecords = <T, DataField extends string, FilterValue extends st
 
     const $mounted = useMounted();
     const $initialFetchInProgress = useRef(true);
+    const $lastRequestedPage = useRef(1);
     const $recordsFilters = usePaginatedRecordsFilters<FilterValue, FilterParam>(filterParams, initialFiltersSameAsDefault);
 
     const { limit, limitOptions } = usePageLimit({ preferredLimit: preferredPageLimit, preferredLimitOptions });
@@ -108,14 +109,15 @@ const usePaginatedRecords = <T, DataField extends string, FilterValue extends st
 
     const updateLimit = useCallback((limit: number) => setPreferredPageLimit(limit), []);
 
-    const { goto, page, pages, ...paginationProps } = usePagination(
+    const { goto, page, pages, resetPagination, ...paginationProps } = usePagination(
         useCallback(
             async (
-                pageRequestParams: RequestPageCallbackParams<PaginationType>,
+                { page, ...pageRequestParams }: RequestPageCallbackParams<PaginationType>,
                 signal?: AbortSignal
             ): Promise<RequestPageCallbackReturnValue<PaginationType>> => {
                 try {
                     setError(undefined);
+                    $lastRequestedPage.current = page;
 
                     if (!$mounted.current || <undefined>updateFetching(true)) return;
 
@@ -152,8 +154,14 @@ const usePaginatedRecords = <T, DataField extends string, FilterValue extends st
         /* eslint-disable-next-line */
     }, [filterParams]);
 
+    useMemo(() => {
+        resetPagination();
+        $lastRequestedPage.current = 1;
+        /* eslint-disable-next-line */
+    }, [filters, limit, resetPagination]);
+
     useEffect(() => {
-        if (enabled) goto(1);
+        if (enabled) goto($lastRequestedPage.current);
     }, [goto, enabled]);
 
     useEffect(() => {
