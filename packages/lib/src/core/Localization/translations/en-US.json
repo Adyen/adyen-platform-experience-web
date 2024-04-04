@@ -225,5 +225,6 @@
     "tooltip.Fee": "Transaction costs and payment method fees",
     "tooltip.Chargeback": "Money returned to a customer after a disputed transaction",
     "tooltip.Incoming": "Money received to your account from transactions and transfers",
-    "theSelectedBalanceAccountIsIncorrect": "The selected balance account is incorrect"
+    "theSelectedBalanceAccountIsIncorrect": "The selected balance account is incorrect",
+    "transactionType": "Transaction type"
 }

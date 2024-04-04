@@ -37,7 +37,6 @@ export const transactionsMocks = [
         let responseDelay = 200;
 
         if (categories.length || currencies.length || statuses.length || minAmount || maxAmount) {
-            console.log(transactions.filter(tx => !statuses.length || statuses!.includes(tx.status)));
             transactions = transactions.filter(
                 tx =>
                     (!categories.length || categories!.includes(tx.category)) &&
