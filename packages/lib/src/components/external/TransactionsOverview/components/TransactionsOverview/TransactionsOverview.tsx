@@ -107,6 +107,11 @@ export const TransactionsOverview = ({
         refreshNowTimestamp();
     }, [filters, refreshNowTimestamp]);
 
+    // Set status filter's value fixed as "Booked" temporarily
+    useEffect(() => {
+        statusesFilter.updateSelection({ target: { value: 'Booked', name: 'status' } });
+    }, [statusesFilter]);
+
     return (
         <div className={BASE_CLASS}>
             <FilterBar>
@@ -123,8 +128,8 @@ export const TransactionsOverview = ({
                     refreshNowTimestamp={refreshNowTimestamp}
                     updateFilters={updateFilters}
                 />
-
-                <MultiSelectionFilter {...statusesFilter} placeholder={i18n.get('filterPlaceholder.status')} />
+                {/* Remove status filter temporarily */}
+                {/* <MultiSelectionFilter {...statusesFilter} placeholder={i18n.get('filterPlaceholder.status')} /> */}
                 <MultiSelectionFilter {...categoriesFilter} placeholder={i18n.get('filterPlaceholder.category')} />
                 <AmountFilter
                     availableCurrencies={availableCurrencies}

@@ -37,13 +37,14 @@ export const transactionsMocks = [
         let responseDelay = 200;
 
         if (categories.length || currencies.length || statuses.length || minAmount || maxAmount) {
+            console.log(transactions.filter(tx => !statuses.length || statuses!.includes(tx.status)));
             transactions = transactions.filter(
                 tx =>
                     (!categories.length || categories!.includes(tx.category)) &&
                     (!currencies.length || currencies!.includes(tx.amount.currency)) &&
                     (!statuses.length || statuses!.includes(tx.status)) &&
-                    tx.amount.value * 1000 >= Number(minAmount) &&
-                    tx.amount.value * 1000 <= Number(maxAmount)
+                    (!!tx.amount.value || tx.amount.value * 1000 >= Number(minAmount)) &&
+                    (!!tx.amount.value || tx.amount.value * 1000 <= Number(maxAmount))
             );
 
             responseDelay = 400;
