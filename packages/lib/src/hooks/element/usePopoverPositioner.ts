@@ -38,6 +38,10 @@ const calculateOffset = ({
                 : targetPosition?.left + window.scrollX;
             dimensionY = targetPosition?.top + targetPosition?.height + window.scrollY + offset[1];
             break;
+        case PopoverContainerPosition.BOTTOM_LEFT:
+            dimensionX = targetPosition?.right + window.scrollX - popover.clientWidth;
+            dimensionY = targetPosition?.top + targetPosition?.height + window.scrollY + offset[1];
+            break;
         case PopoverContainerPosition.TOP:
             dimensionX = variant === PopoverContainerVariant.TOOLTIP ? toCenterX + window.scrollX : targetPosition.left + window.scrollX;
             dimensionY = targetPosition?.top - popoverContent?.clientHeight + window.scrollY - offset[0];
