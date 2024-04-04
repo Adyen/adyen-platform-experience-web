@@ -1,3 +1,4 @@
+import { mediaQueries, useMediaQuery } from '@src/components/external/TransactionsOverview/hooks/useMediaQuery';
 import Popover from '@src/components/internal/Popover/Popover';
 import { PopoverContainerVariant } from '@src/components/internal/Popover/types';
 import { useTooltipListeners } from '@src/components/internal/Tooltip/useTooltipListeners';
@@ -17,8 +18,10 @@ const isString = (content: string | VNode<any>) => {
 
 export const Tooltip = ({ content, children, triggerRef, showTooltip, position, isContainerHovered = false }: PropsWithChildren<TooltipProps>) => {
     const controllerRef = useUniqueIdentifier();
-
+    const isMdViewport = useMediaQuery(mediaQueries.down.sm);
     const { isVisible, listeners } = useTooltipListeners();
+
+    if (isMdViewport) return <>{children}</>;
 
     return (
         <>
@@ -32,7 +35,7 @@ export const Tooltip = ({ content, children, triggerRef, showTooltip, position, 
                           ? classNames(`${children?.props?.className} adyen-pe__tooltip-target`, {
                                 ' adyen-pe__tooltip-target--hovered': isContainerHovered,
                             })
-                          : classNames('adyen-pe__tooltip-target', { ' adyen-pe__tooltip-target--hovered': isContainerHovered }),
+                          : classNames('adyen-pe__tooltip-target', { 'adyen-pe__tooltip-target--hovered': isContainerHovered }),
                       ...listeners,
                       'aria-describedby': `tooltip-${controllerRef.current?.id}`,
                   })

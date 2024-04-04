@@ -1,5 +1,6 @@
 import { memo } from 'preact/compat';
 import Select from '@src/components/internal/FormFields/Select';
+import { mediaQueries, useMediaQuery } from '@src/components/external/TransactionsOverview/hooks/useMediaQuery';
 import type { SelectProps } from '@src/components/internal/FormFields/Select/types';
 import useMultiSelectionFilter from './useMultiSelectionFilter';
 
@@ -9,8 +10,10 @@ const MultiSelectionFilter = memo(
         selection,
         selectionOptions,
         updateSelection,
-    }: ReturnType<typeof useMultiSelectionFilter<FilterParam, FilterValue>> & Pick<SelectProps<any>, 'placeholder'>) =>
-        selectionOptions && selectionOptions.length > 1 ? (
+    }: ReturnType<typeof useMultiSelectionFilter<FilterParam, FilterValue>> & Pick<SelectProps<any>, 'placeholder'>) => {
+        const isSmViewport = useMediaQuery(mediaQueries.down.xs);
+
+        return selectionOptions && selectionOptions.length > 1 ? (
             <Select
                 onChange={updateSelection}
                 filterable={false}
@@ -19,8 +22,10 @@ const MultiSelectionFilter = memo(
                 selected={selection}
                 withoutCollapseIndicator={true}
                 items={selectionOptions}
+                showOverlay={isSmViewport}
             />
-        ) : null
+        ) : null;
+    }
 );
 
 export default MultiSelectionFilter;

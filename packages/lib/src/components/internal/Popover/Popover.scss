@@ -1,3 +1,5 @@
+@import '../../../style/breakpoints.scss';
+
 .adyen-pe {
     &-popover {
         $adyen-pe-popover-component-root: &;
@@ -10,6 +12,15 @@
         overflow: hidden;
         z-index: 10;
 
+        &__overlay {
+            background: rgba(0, 17, 44, 0.5);
+            height: 100%;
+            left: 0;
+            position: fixed;
+            top: 0;
+            width: 100%;
+        }
+
         &--fit-content {
             width: fit-content;
         }
@@ -20,6 +31,10 @@
 
         &--wide {
             width: 480px;
+        }
+
+        &--auto-width {
+            width: 95%;
         }
 
         &--with-divider {
@@ -53,6 +68,17 @@
 
             &--with-title {
                 padding: var(--adyen-pe-popover-content-with-title-padding);
+            }
+
+            &--overlay {
+                display: flex;
+                justify-content: center;
+                transform: scale(1);
+                width: 100%;
+            }
+
+            &--overlay > * {
+                width: 100%;
             }
         }
 
@@ -139,13 +165,4 @@
             transform: translate3d(-4px, 0, 0) rotate(45deg);
         }
     }
-}
-
-.adyen-pe-popover-mobile-wrapper {
-    background: rgba(0, 17, 44, 0.5);
-    height: 100%;
-    left: 0;
-    position: fixed;
-    top: 0;
-    width: 100%;
 }

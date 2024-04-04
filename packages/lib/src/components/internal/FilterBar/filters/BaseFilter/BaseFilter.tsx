@@ -1,3 +1,4 @@
+import { mediaQueries, useMediaQuery } from '@src/components/external/TransactionsOverview/hooks/useMediaQuery';
 import FilterButton from '@src/components/internal/FilterBar/components/FilterButton/FilterButton';
 import Popover from '@src/components/internal/Popover/Popover';
 import { PopoverContainerPosition, PopoverContainerVariant } from '@src/components/internal/Popover/types';
@@ -51,6 +52,7 @@ const renderFallback = (() => {
 })();
 
 const BaseFilter = <T extends BaseFilterProps = BaseFilterProps>({ render, ...props }: FilterProps<T>) => {
+    const isSmViewport = useMediaQuery(mediaQueries.down.xs);
     const [editMode, _updateEditMode] = useBooleanState(false);
     const [editModalMounting, updateEditModalMounting] = useBooleanState(false);
     const isValueEmpty = useMemo(() => props.isValueEmpty ?? isValueEmptyFallback, [props.isValueEmpty]);
@@ -175,6 +177,7 @@ const BaseFilter = <T extends BaseFilterProps = BaseFilterProps>({ render, ...pr
                     disableFocusTrap={false}
                     position={PopoverContainerPosition.BOTTOM}
                     containerSize={props.containerSize}
+                    showOverlay={isSmViewport}
                 >
                     {renderModalBody({ ...props, editAction: commitAction, onValueUpdated })}
                 </Popover>
