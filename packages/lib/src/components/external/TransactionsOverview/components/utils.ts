@@ -2,7 +2,7 @@ import { ITransaction } from '../../../../types';
 
 const labels = {
     id: 'paymentId',
-    type: 'type',
+    transactionType: 'transactionType',
     creationDate: 'date',
     balanceAccountId: 'balanceAccount',
     accountHolderId: 'account',
