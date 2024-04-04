@@ -33,8 +33,6 @@ export const transactionsMocks = [
         const minAmount = req.url.searchParams.get('minAmount');
         const maxAmount = req.url.searchParams.get('maxAmount');
 
-        console.log(statuses);
-
         let transactions = BASIC_TRANSACTIONS_LIST;
         let responseDelay = 200;
 
