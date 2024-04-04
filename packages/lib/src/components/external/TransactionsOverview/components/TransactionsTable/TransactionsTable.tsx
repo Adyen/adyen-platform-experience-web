@@ -24,8 +24,8 @@ import { FC } from 'preact/compat';
 import { TransactionTableProps } from '@src/components/external/TransactionsOverview/components/TransactionsTable/types';
 
 // Remove status column temporarily
-// const FIELDS = ['creationDate', 'status', 'paymentMethod', 'type', 'currency', 'amount'] as const;
-const FIELDS = ['creationDate', 'paymentMethod', 'type', 'currency', 'amount'] as const;
+// const FIELDS = ['creationDate', 'status', 'paymentMethod', 'transactionType', 'amount'] as const;
+const FIELDS = ['creationDate', 'paymentMethod', 'transactionType', 'amount'] as const;
 
 export const TransactionsTable: FC<TransactionTableProps> = ({
     availableCurrencies,
@@ -98,7 +98,7 @@ export const TransactionsTable: FC<TransactionTableProps> = ({
                             />
                         );
                     },*/
-                    type: ({ item, rowIndex }) => {
+                    transactionType: ({ item, rowIndex }) => {
                         const tooltipKey = `tooltip.${item.category}`;
                         return item.category ? (
                             i18n.has(tooltipKey) ? (
@@ -135,9 +135,6 @@ export const TransactionsTable: FC<TransactionTableProps> = ({
                                 )}
                             </>
                         );
-                    },
-                    currency: ({ item }) => {
-                        return <Tag label={item.amount.currency} />;
                     },
                 }}
             >
