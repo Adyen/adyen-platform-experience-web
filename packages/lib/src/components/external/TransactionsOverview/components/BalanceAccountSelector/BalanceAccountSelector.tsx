@@ -2,14 +2,17 @@ import { memo } from 'preact/compat';
 import Select from '@src/components/internal/FormFields/Select';
 import useBalanceAccountSelection from './useBalanceAccountSelection';
 import './BalanceAccountSelector.scss';
+import { mediaQueries, useMediaQuery } from '@src/components/external/TransactionsOverview/hooks/useMediaQuery';
 
 const BalanceAccountSelector = memo(
     ({
         activeBalanceAccount,
         balanceAccountSelectionOptions,
         onBalanceAccountSelection,
-    }: Omit<ReturnType<typeof useBalanceAccountSelection>, 'resetBalanceAccountSelection'>) =>
-        balanceAccountSelectionOptions && balanceAccountSelectionOptions.length > 1 ? (
+    }: Omit<ReturnType<typeof useBalanceAccountSelection>, 'resetBalanceAccountSelection'>) => {
+        const isSmViewport = useMediaQuery(mediaQueries.down.xs);
+
+        return balanceAccountSelectionOptions && balanceAccountSelectionOptions.length > 1 ? (
             <Select
                 popoverClassNameModifiers={['adyen-pe-balance-account-selector']}
                 onChange={onBalanceAccountSelection}
@@ -18,8 +21,10 @@ const BalanceAccountSelector = memo(
                 selected={activeBalanceAccount?.id}
                 withoutCollapseIndicator={true}
                 items={balanceAccountSelectionOptions}
+                showOverlay={isSmViewport}
             />
-        ) : null
+        ) : null;
+    }
 );
 
 export default BalanceAccountSelector;

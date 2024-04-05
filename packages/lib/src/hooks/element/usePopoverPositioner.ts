@@ -3,24 +3,43 @@ import getIntersectionObserver from '@src/components/internal/Popover/utils/util
 import { MutableRef, Ref, useCallback, useEffect, useRef, useState } from 'preact/hooks';
 import useReflex, { Nullable, Reflexable } from '../useReflex';
 
-const calculateOffset = (
-    popover: Element,
-    offset: [number, number, number, number],
-    targetElement: MutableRef<Element | null>,
-    position: PopoverContainerPosition,
-    variant: PopoverContainerVariant
-) => {
+const calculateOffset = ({
+    popover,
+    offset,
+    targetElement,
+    position,
+    variant,
+    fullWidth,
+}: {
+    popover: Element;
+    offset: [number, number, number, number];
+    targetElement: MutableRef<Element | null>;
+    position: PopoverContainerPosition;
+    variant: PopoverContainerVariant;
+    fullWidth: boolean;
+}) => {
     const currentTarget = targetElement?.current as HTMLElement;
 
     let dimensionX = 0;
     let dimensionY = 0;
     const targetPosition = currentTarget.getBoundingClientRect();
+    const bodyPosition = document.body.getBoundingClientRect();
+
     const popoverContent = popover?.firstChild as HTMLElement;
+    const toCenterFullWidth = bodyPosition.left + bodyPosition.width / 2 - popoverContent.offsetWidth / 2;
     const toCenterX = targetPosition.left + targetPosition.width / 2 - popoverContent.offsetWidth / 2;
     const toCenterY = targetPosition.top + targetPosition.height / 2 - popoverContent.offsetHeight / 2;
     switch (position) {
         case PopoverContainerPosition.BOTTOM:
-            dimensionX = variant === PopoverContainerVariant.TOOLTIP ? toCenterX + window.scrollX : targetPosition?.left + window.scrollX;
+            dimensionX = fullWidth
+                ? toCenterFullWidth
+                : variant === PopoverContainerVariant.TOOLTIP
+                ? toCenterX + window.scrollX
+                : targetPosition?.left + window.scrollX;
+            dimensionY = targetPosition?.top + targetPosition?.height + window.scrollY + offset[1];
+            break;
+        case PopoverContainerPosition.BOTTOM_LEFT:
+            dimensionX = targetPosition?.right + window.scrollX - popover.clientWidth;
             dimensionY = targetPosition?.top + targetPosition?.height + window.scrollY + offset[1];
             break;
         case PopoverContainerPosition.TOP:
@@ -64,18 +83,20 @@ const usePopoverPositioner = (
     position?: PopoverContainerPosition,
     arrowRef?: Ref<HTMLSpanElement> | undefined,
     setToTargetWidth?: boolean,
+    showOverlay?: boolean,
+    fitPosition?: boolean,
     ref?: Nullable<Reflexable<Element>>
 ) => {
     const [initialPosition, setInitialPosition] = useState(true);
-    const [showPopover, setShowPopover] = useState(!!position);
-    const [currentPosition, setCurrentPosition] = useState(position ?? PopoverContainerPosition.TOP);
+    const [showPopover, setShowPopover] = useState(fitPosition ? !fitPosition : !!position);
+    const [currentPosition, setCurrentPosition] = useState(position || PopoverContainerPosition.TOP);
     const [checkedPositions, setCheckedPosition] = useState<Array<[PopoverContainerPosition, number]>>([]);
 
     const observerCallback = useCallback(
         (entry: IntersectionObserverEntry) => {
             if (entry.intersectionRatio === 1) return setShowPopover(true);
             if (!initialPosition && entry.intersectionRatio !== 1) {
-                if (checkedPositions && checkedPositions.length === 4) {
+                if (checkedPositions && checkedPositions.length === (fitPosition ? 5 : 4)) {
                     const bestPos = checkedPositions.reduce((res, pos) => {
                         if (pos[1] > res[1]) return pos;
                         return res;
@@ -92,6 +113,10 @@ const usePopoverPositioner = (
                         break;
                     case PopoverContainerPosition.BOTTOM:
                         setCheckedPosition(value => [...value, [PopoverContainerPosition.BOTTOM, entry.intersectionRatio]]);
+                        setCurrentPosition(fitPosition ? PopoverContainerPosition.BOTTOM_LEFT : PopoverContainerPosition.RIGHT);
+                        break;
+                    case PopoverContainerPosition.BOTTOM_LEFT:
+                        setCheckedPosition(value => [...value, [PopoverContainerPosition.BOTTOM, entry.intersectionRatio]]);
                         setCurrentPosition(PopoverContainerPosition.RIGHT);
                         break;
                     case PopoverContainerPosition.RIGHT:
@@ -105,7 +130,7 @@ const usePopoverPositioner = (
                 }
             }
         },
-        [setCurrentPosition, currentPosition, setShowPopover, initialPosition, checkedPositions]
+        [initialPosition, checkedPositions, currentPosition, fitPosition]
     );
     const observerCallbackRef = useRef(observerCallback);
 
@@ -117,18 +142,25 @@ const usePopoverPositioner = (
     return useReflex<Element>(
         useCallback(
             (current, previous) => {
-                if (previous && !position) {
+                if (previous && (!position || fitPosition)) {
                     const observer = getIntersectionObserver(observerCallback).observer;
                     observer.unobserve(previous);
                 }
 
                 if (current && targetElement.current) {
-                    if (!position) {
+                    if (!position || fitPosition) {
                         const observer = getIntersectionObserver(observerCallback).observer;
                         observer.observe(current);
                     }
                     if (!(current instanceof Element)) return;
-                    const popoverStyle = calculateOffset(current, offset, targetElement, currentPosition, variant);
+                    const popoverStyle = calculateOffset({
+                        popover: current,
+                        offset,
+                        targetElement,
+                        position: currentPosition,
+                        variant,
+                        fullWidth: showOverlay ?? false,
+                    });
                     const style = showPopover ? popoverStyle + ';visibility:visible' : popoverStyle;
 
                     const styleWithWidth = setToTargetWidth
@@ -143,7 +175,20 @@ const usePopoverPositioner = (
                     }
                 }
             },
-            [offset, targetElement, currentPosition, position, variant, observerCallback, showPopover, initialPosition, setToTargetWidth, arrowRef]
+            [
+                offset,
+                targetElement,
+                currentPosition,
+                position,
+                variant,
+                observerCallback,
+                showPopover,
+                initialPosition,
+                setToTargetWidth,
+                arrowRef,
+                showOverlay,
+                fitPosition,
+            ]
         ),
         ref
     );
