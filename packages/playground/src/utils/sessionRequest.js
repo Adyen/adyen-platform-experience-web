@@ -15,7 +15,7 @@ const getMySessionToken = async session => {
                     accountHolderId: !!session?.accountHolderId ? session?.accountHolderId : process.env.SESSION_ACCOUNT_HOLDER,
                 },
             ],
-            roles: session?.roles && session?.roles.length ? session?.roles : ['Transactions Overview Component – View'],
+            roles: session?.roles && session?.roles.length ? session?.roles : ['Transactions Overview Component: View'],
         },
     };
     const response = await fetch(url, {
