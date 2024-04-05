@@ -1,0 +1,41 @@
+@import '@adyen/bento-design-tokens/dist/scss/bento/variables.scss';
+
+@mixin adyen-sdk-variables {
+    // Definitions
+    --adyen-sdk-color-primary: #{$color-grey-3200};
+    --adyen-sdk-color-primary-active: #{$color-grey-1300};
+    --adyen-sdk-color-primary-: #{$color-grey-1300};
+
+    --adyen-sdk-color-secondary: #{$color-grey-100};
+    --adyen-sdk-color-secondary-active: #{$color-grey-300};
+
+    --adyen-sdk-color-tertiary: #{$color-grey-200};
+    --adyen-sdk-color-tertiary-active: #{$color-grey-400};
+
+    --adyen-sdk-border-radius-xs: #{$border-radius-xs};
+    --adyen-sdk-border-radius-s: #{$border-radius-s};
+    --adyen-sdk-border-radius-m: #{$border-radius-m};
+    --adyen-sdk-border-radius-l: #{$border-radius-l};
+    --adyen-sdk-border-radius-xl: #{$border-radius-xl};
+
+    //Aliases
+
+    // ------ Background
+    --adyen-sdk-color-background-primary: var(--adyen-sdk-color-primary);
+    --adyen-sdk-color-background-secondary: var(--adyen-sdk-color-secondary);
+    --adyen-sdk-color-background-tertiary: var(--adyen-sdk-color-tertiary);
+    --adyen-sdk-color-background-disabled: var(--adyen-sdk-color-tertiary);
+    --adyen-sdk-color-background-inverse: var(--adyen-sdk-color-primary);
+
+    // ------ Label
+    --adyen-sdk-color-label-primary: var(--adyen-sdk-color-primary);
+    --adyen-sdk-color-label-secondary: #{$color-grey-1900};
+
+    // ------ Link
+    --adyen-sdk-color-link-primary: var(--adyen-sdk-color-primary);
+    --adyen-sdk-color-link-active: var(--adyen-sdk-color-primary-active);
+    --adyen-sdk-color-link-disabled: var(--adyen-sdk-color-primary-active);
+
+    // ------ Outline
+    --adyen-sdk-color-outline-primary: var(--adyen-sdk-color-tertiary-active);
+}

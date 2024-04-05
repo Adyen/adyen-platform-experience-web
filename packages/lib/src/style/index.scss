@@ -4,6 +4,7 @@
 @use './spacings';
 @use './bento-mapping';
 @use './accessibility';
+@use './variables';
 
 :root {
     @include accessibility.adyen-touch-sizes;
@@ -20,4 +21,5 @@
     @include bento-mapping.adyen-pe-bento-link-mapping;
     @include bento-mapping.adyen-pe-bento-typography-mapping;
     @include bento-mapping.adyen-pe-bento-modal-mapping;
+    @include variables.adyen-sdk-variables;
 }
