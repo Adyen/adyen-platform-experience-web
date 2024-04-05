@@ -88,7 +88,7 @@ const usePopoverPositioner = (
     ref?: Nullable<Reflexable<Element>>
 ) => {
     const [initialPosition, setInitialPosition] = useState(true);
-    const [showPopover, setShowPopover] = useState(!!position);
+    const [showPopover, setShowPopover] = useState(fitPosition ? !fitPosition : !!position);
     const [currentPosition, setCurrentPosition] = useState(position || PopoverContainerPosition.TOP);
     const [checkedPositions, setCheckedPosition] = useState<Array<[PopoverContainerPosition, number]>>([]);
 
@@ -187,6 +187,7 @@ const usePopoverPositioner = (
                 setToTargetWidth,
                 arrowRef,
                 showOverlay,
+                fitPosition,
             ]
         ),
         ref

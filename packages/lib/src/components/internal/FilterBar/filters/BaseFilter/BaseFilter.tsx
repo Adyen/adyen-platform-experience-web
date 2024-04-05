@@ -109,7 +109,9 @@ const BaseFilter = <T extends BaseFilterProps = BaseFilterProps>({ render, ...pr
         committing && closeEditDialog();
         updateHasEmptyValue(hasEmptyValue);
     }, [committing, closeEditDialog, updateHasEmptyValue, hasEmptyValue]);
-    const isMdDevice = useMediaQuery(mediaQueries.down.md);
+    const isOnlySmDevice = useMediaQuery(mediaQueries.only.sm);
+    const isOnlyMdDevice = useMediaQuery(mediaQueries.only.md);
+
     return (
         <>
             <div className={`adyen-pe-filter adyen-pe-filter--${props.type}`}>
@@ -179,7 +181,7 @@ const BaseFilter = <T extends BaseFilterProps = BaseFilterProps>({ render, ...pr
                     position={PopoverContainerPosition.BOTTOM}
                     containerSize={props.containerSize}
                     showOverlay={isSmViewport}
-                    fitPosition={isMdDevice}
+                    fitPosition={isOnlySmDevice || isOnlyMdDevice}
                 >
                     {renderModalBody({ ...props, editAction: commitAction, onValueUpdated })}
                 </Popover>
