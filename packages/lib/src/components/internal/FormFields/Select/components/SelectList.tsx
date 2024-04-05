@@ -1,3 +1,4 @@
+import { mediaQueries, useMediaQuery } from '@src/components/external/TransactionsOverview/hooks/useMediaQuery';
 import Popover from '@src/components/internal/Popover/Popover';
 import { PopoverContainerPosition, PopoverContainerSize, PopoverContainerVariant, PopoverProps } from '@src/components/internal/Popover/types';
 import useCoreContext from '@src/core/Context/useCoreContext';
@@ -27,10 +28,13 @@ const SelectList = fixedForwardRef(
             dismissPopover,
             setToTargetWidth,
             popoverClassNameModifiers,
+            showOverlay,
+            fitPosition,
         }: SelectListProps<T>,
         ref: ForwardedRef<HTMLUListElement>
     ) => {
         const { i18n } = useCoreContext();
+        const isSmViewport = useMediaQuery(mediaQueries.down.xs);
         const filteredItems = items.filter(item => !textFilter || item.name.toLowerCase().includes(textFilter));
         const listClassName = cx(DROPDOWN_LIST_CLASS, { [DROPDOWN_LIST_ACTIVE_CLASS]: showList });
         const noOptionsClassName = cx(DROPDOWN_ELEMENT_CLASS, DROPDOWN_ELEMENT_NO_OPTION_CLASS);
@@ -52,6 +56,8 @@ const SelectList = fixedForwardRef(
                 targetElement={toggleButtonRef as PopoverProps['targetElement']}
                 withContentPadding={false}
                 position={PopoverContainerPosition.BOTTOM}
+                showOverlay={showOverlay && isSmViewport}
+                fitPosition={fitPosition}
             >
                 <ul className={listClassName} id={selectListId} ref={ref} role="listbox" aria-multiselectable={multipleSelection}>
                     {filteredItems.length ? (

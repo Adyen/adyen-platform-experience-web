@@ -63,6 +63,8 @@ function Popover({
     children,
     withContentPadding,
     classNameModifiers,
+    showOverlay = false,
+    fitPosition,
     ...uncontrolledProps
 }: PropsWithChildren<PopoverProps>) {
     const isDismissible = useMemo(() => isFunction(dismiss) && dismissible !== false, [dismiss, dismissible]);
@@ -93,7 +95,7 @@ function Popover({
     const autoFocusAnimFrame = useRef<ReturnType<typeof requestAnimationFrame>>();
 
     const popoverPositionAnchorElement = useClickOutside(
-        usePopoverPositioner(getGapByVariant(variant), targetElement, variant, position, arrowRef, setToTargetWidth),
+        usePopoverPositioner(getGapByVariant(variant), targetElement, variant, position, arrowRef, setToTargetWidth, showOverlay, fitPosition),
         dismiss,
         variant === PopoverContainerVariant.TOOLTIP && !open,
         ClickOutsideVariant.POPOVER
@@ -128,8 +130,9 @@ function Popover({
             [`${DEFAULT_POPOVER_CLASSNAME}--wide`]: containerSize === PopoverContainerSize.WIDE,
             [`${DEFAULT_POPOVER_CLASSNAME}--fit-content`]: fitContent,
             [`${DEFAULT_POPOVER_CLASSNAME}--without-space`]: withoutSpace,
+            [`${DEFAULT_POPOVER_CLASSNAME}--auto-width`]: showOverlay,
         }),
-        [containerSize, divider, withoutSpace, fitContent]
+        [containerSize, divider, withoutSpace, fitContent, showOverlay]
     );
 
     useEffect(() => {
@@ -145,46 +148,48 @@ function Popover({
     return createPortal(
         <>
             {open ? (
-                <div
-                    id="popover"
-                    ref={popoverElementWithId}
-                    {...uncontrolledProps}
-                    className={classNames(classNamesByVariant, conditionalClasses, classNameModifiers)}
-                    style={{ visibility: 'hidden' }}
-                    role={uncontrolledProps.role ?? (variant === PopoverContainerVariant.POPOVER ? 'dialog' : 'tooltip')}
-                >
-                    {(title || isDismissible) && (
-                        <div className={getModifierClasses(POPOVER_HEADER_CLASSNAME, modifiers, [POPOVER_HEADER_CLASSNAME])}>
-                            {title && (
-                                <div className={POPOVER_HEADER_TITLE_CLASSNAME}>
-                                    <PopoverTitle title={title} />
-                                </div>
-                            )}
-                            {isDismissible && <PopoverDismissButton onClick={dismiss!} />}
-                        </div>
-                    )}
-                    {children && (
-                        <>
-                            <div
-                                className={
-                                    withContentPadding
-                                        ? `${classNamesContentByVariant} ${POPOVER_CONTENT_CLASSNAME}--with-padding`
-                                        : classNamesContentByVariant
-                                }
-                            >
-                                {children}
+                <>
+                    {showOverlay && <div className="adyen-pe-popover__overlay"></div>}
+                    <div
+                        id="popover"
+                        ref={popoverElementWithId}
+                        {...uncontrolledProps}
+                        className={classNames(classNamesByVariant, conditionalClasses, classNameModifiers)}
+                        style={{ visibility: 'hidden' }}
+                        role={uncontrolledProps.role ?? (variant === PopoverContainerVariant.POPOVER ? 'dialog' : 'tooltip')}
+                    >
+                        {(title || isDismissible) && (
+                            <div className={getModifierClasses(POPOVER_HEADER_CLASSNAME, modifiers, [POPOVER_HEADER_CLASSNAME])}>
+                                {title && (
+                                    <div className={POPOVER_HEADER_TITLE_CLASSNAME}>
+                                        <PopoverTitle title={title} />
+                                    </div>
+                                )}
+                                {isDismissible && <PopoverDismissButton onClick={dismiss!} />}
                             </div>
-                            {variant === PopoverContainerVariant.TOOLTIP && (
-                                <span data-popover-placement="hidden" ref={arrowRef} className="adyen-pe-tooltip__arrow" />
-                            )}
-                        </>
-                    )}
-                    {actions && (
-                        <div className={POPOVER_FOOTER_CLASSNAME}>
-                            <ButtonActions actions={actions} layout={actionsLayout} />
-                        </div>
-                    )}
-                </div>
+                        )}
+                        {children && (
+                            <>
+                                <div
+                                    className={classNames(classNamesContentByVariant, {
+                                        [`${POPOVER_CONTENT_CLASSNAME}--with-padding`]: withContentPadding,
+                                        [`${POPOVER_CONTENT_CLASSNAME}--overlay`]: showOverlay,
+                                    })}
+                                >
+                                    {children}
+                                </div>
+                                {variant === PopoverContainerVariant.TOOLTIP && (
+                                    <span data-popover-placement="hidden" ref={arrowRef} className="adyen-pe-tooltip__arrow" />
+                                )}
+                            </>
+                        )}
+                        {actions && (
+                            <div className={POPOVER_FOOTER_CLASSNAME}>
+                                <ButtonActions actions={actions} layout={actionsLayout} />
+                            </div>
+                        )}
+                    </div>
+                </>
             ) : null}
         </>,
         document.getElementsByTagName('body')[0]!

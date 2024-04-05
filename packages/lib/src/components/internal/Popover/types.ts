@@ -28,6 +28,8 @@ interface PopoverCoreProps {
     setToTargetWidth?: boolean;
     children: ComponentChildren;
     classNameModifiers?: string[];
+    showOverlay?: boolean;
+    fitPosition?: boolean;
 }
 
 type UncontrolledProps = Pick<HTMLAttributes<any>, 'aria-label' | 'aria-labelledby' | 'aria-describedby' | 'role'>;
@@ -36,8 +38,10 @@ export type PopoverProps = PopoverCoreProps & UncontrolledProps;
 
 export enum PopoverContainerPosition {
     TOP = 'top',
+    TOP_LEFT = 'top-left',
     RIGHT = 'right',
     BOTTOM = 'bottom',
+    BOTTOM_LEFT = 'bottom-left',
     LEFT = 'left',
 }
 
