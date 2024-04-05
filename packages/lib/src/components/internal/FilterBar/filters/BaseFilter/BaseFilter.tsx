@@ -176,7 +176,7 @@ const BaseFilter = <T extends BaseFilterProps = BaseFilterProps>({ render, ...pr
                     divider={true}
                     targetElement={targetElement}
                     disableFocusTrap={false}
-                    position={isMdDevice ? undefined : PopoverContainerPosition.BOTTOM}
+                    position={PopoverContainerPosition.BOTTOM}
                     containerSize={props.containerSize}
                     showOverlay={isSmViewport}
                     fitPosition={isMdDevice}
