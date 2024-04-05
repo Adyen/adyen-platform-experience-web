@@ -12,6 +12,8 @@ const MultiSelectionFilter = memo(
         updateSelection,
     }: ReturnType<typeof useMultiSelectionFilter<FilterParam, FilterValue>> & Pick<SelectProps<any>, 'placeholder'>) => {
         const isSmViewport = useMediaQuery(mediaQueries.down.xs);
+        const isOnlySmDevice = useMediaQuery(mediaQueries.only.sm);
+        const isOnlyMdDevice = useMediaQuery(mediaQueries.only.md);
 
         return selectionOptions && selectionOptions.length > 1 ? (
             <Select
@@ -23,7 +25,7 @@ const MultiSelectionFilter = memo(
                 withoutCollapseIndicator={true}
                 items={selectionOptions}
                 showOverlay={isSmViewport}
-                fitPosition
+                fitPosition={isOnlyMdDevice || isOnlySmDevice}
             />
         ) : null;
     }
