@@ -18,8 +18,13 @@ import useDefaultTransactionsOverviewFilterParams from '../../hooks/useDefaultTr
 import useTransactionsOverviewMultiSelectionFilters from '../../hooks/useTransactionsOverviewMultiSelectionFilters';
 import AdyenPlatformExperienceError from '@src/core/Errors/AdyenPlatformExperienceError';
 import { AmountFilter } from '@src/components/internal/FilterBar/filters/AmountFilter/AmountFilter';
-import { BASE_CLASS, BALANCE_TOTALS_CLASS } from '@src/components/external/TransactionsOverview/components/TransactionsOverview/constants';
+import {
+    BASE_CLASS,
+    SUMMARY_CLASS,
+    SUMMARY_ITEM_CLASS,
+} from '@src/components/external/TransactionsOverview/components/TransactionsOverview/constants';
 import './TransactionsOverview.scss';
+import { mediaQueries, useMediaQuery } from '@src/components/external/TransactionsOverview/hooks/useMediaQuery';
 
 export const TransactionsOverview = ({
     onFiltersChanged,
@@ -112,6 +117,8 @@ export const TransactionsOverview = ({
         statusesFilter.updateSelection({ target: { value: 'Booked', name: 'status' } });
     }, [statusesFilter]);
 
+    const isNarrowViewport = useMediaQuery(mediaQueries.down.sm);
+
     return (
         <div className={BASE_CLASS}>
             <FilterBar>
@@ -143,20 +150,25 @@ export const TransactionsOverview = ({
                 />
                 <MultiSelectionFilter {...currenciesFilter} placeholder={i18n.get('filterPlaceholder.currency')} />
             </FilterBar>
-            <div className={BALANCE_TOTALS_CLASS}>
-                <TransactionTotals
-                    availableCurrencies={availableCurrencies}
-                    isAvailableCurrenciesFetching={isAvailableCurrenciesFetching}
-                    balanceAccountId={activeBalanceAccount?.id}
-                    statuses={statusesFilter.selection}
-                    categories={categoriesFilter.selection}
-                    createdUntil={filters[TransactionFilterParam.CREATED_UNTIL]!}
-                    createdSince={filters[TransactionFilterParam.CREATED_SINCE]!}
-                    currencies={currenciesFilter.selection}
-                    minAmount={filters[TransactionFilterParam.MIN_AMOUNT] ? parseFloat(filters[TransactionFilterParam.MIN_AMOUNT]) : undefined}
-                    maxAmount={filters[TransactionFilterParam.MAX_AMOUNT] ? parseFloat(filters[TransactionFilterParam.MAX_AMOUNT]) : undefined}
-                />
-                <Balances balanceAccountId={activeBalanceAccount?.id} onCurrenciesChange={handleCurrenciesChange} />
+            <div className={SUMMARY_CLASS}>
+                <div className={SUMMARY_ITEM_CLASS}>
+                    <TransactionTotals
+                        availableCurrencies={availableCurrencies}
+                        isAvailableCurrenciesFetching={isAvailableCurrenciesFetching}
+                        balanceAccountId={activeBalanceAccount?.id}
+                        statuses={statusesFilter.selection}
+                        categories={categoriesFilter.selection}
+                        createdUntil={filters[TransactionFilterParam.CREATED_UNTIL]!}
+                        createdSince={filters[TransactionFilterParam.CREATED_SINCE]!}
+                        currencies={currenciesFilter.selection}
+                        minAmount={filters[TransactionFilterParam.MIN_AMOUNT] ? parseFloat(filters[TransactionFilterParam.MIN_AMOUNT]) : undefined}
+                        maxAmount={filters[TransactionFilterParam.MAX_AMOUNT] ? parseFloat(filters[TransactionFilterParam.MAX_AMOUNT]) : undefined}
+                        fullWidth={isNarrowViewport}
+                    />
+                </div>
+                <div className={SUMMARY_ITEM_CLASS}>
+                    <Balances balanceAccountId={activeBalanceAccount?.id} onCurrenciesChange={handleCurrenciesChange} fullWidth={isNarrowViewport} />
+                </div>
             </div>
 
             <TransactionsDisplay

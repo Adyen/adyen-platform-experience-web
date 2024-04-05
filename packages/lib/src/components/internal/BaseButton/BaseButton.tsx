@@ -9,13 +9,19 @@ import { ButtonProps } from './types';
 import './BaseButton.scss';
 
 function BaseButton(
-    { disabled = false, onClick, classNameModifiers = [], type = 'button', children, className, ...restAttributes }: ButtonProps,
+    { disabled = false, onClick, classNameModifiers = [], type = 'button', children, className, fullWidth, ...restAttributes }: ButtonProps,
     ref: Ref<HTMLButtonElement>
 ) {
     const classNameValue = useMemo(() => parseClassName('', className) || '', [className]);
     const disabledValue = useMemo(() => parseBoolean(disabled), [disabled]);
 
-    const { classes, click } = useButton(classNameValue, [...classNameModifiers], DEFAULT_BASE_BUTTON_CLASSNAME, disabledValue, onClick);
+    const { classes, click } = useButton(
+        classNameValue,
+        [...classNameModifiers, ...(fullWidth ? ['full-width'] : [])],
+        DEFAULT_BASE_BUTTON_CLASSNAME,
+        disabledValue,
+        onClick
+    );
 
     return (
         <button className={classes} type={type} disabled={disabled} onClick={click} ref={ref} {...restAttributes}>

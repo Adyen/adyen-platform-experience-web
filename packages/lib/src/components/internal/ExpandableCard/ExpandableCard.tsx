@@ -21,7 +21,7 @@ import useCoreContext from '@src/core/Context/useCoreContext';
 import { useClickOutside } from '@src/hooks/element/useClickOutside';
 import BaseButton from '@src/components/internal/BaseButton';
 
-const ExpandableCard = ({ renderHeader, children, filled, ...listeners }: PropsWithChildren<ExpandableCardProps>) => {
+const ExpandableCard = ({ renderHeader, children, filled, fullWidth, ...listeners }: PropsWithChildren<ExpandableCardProps>) => {
     const { i18n } = useCoreContext();
     const [isOpen, setIsOpen] = useState(false);
     const toggleIsOpen = useCallback(() => setIsOpen(isOpen => !isOpen), [setIsOpen]);
@@ -60,6 +60,7 @@ const ExpandableCard = ({ renderHeader, children, filled, ...listeners }: PropsW
                     <BaseButton
                         className={classNames(CONTAINER_CLASS, CONTAINER_BUTTON_CLASS, { [CONTAINER_FILLED_CLASS]: filled })}
                         disabled={isOpen}
+                        fullWidth={fullWidth}
                         aria-controls={CONTAINER_OVERLAY_ID}
                         aria-expanded={isOpen}
                         aria-hidden={isOpen}
@@ -81,6 +82,7 @@ const ExpandableCard = ({ renderHeader, children, filled, ...listeners }: PropsW
                             [CONTAINER_HIDDEN_CLASS]: !isOpen,
                         })}
                         disabled={!isOpen}
+                        fullWidth={fullWidth}
                         aria-controls={CONTAINER_OVERLAY_ID}
                         aria-expanded={isOpen}
                         aria-hidden={!isOpen}
