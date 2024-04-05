@@ -55,7 +55,7 @@ const SelectList = fixedForwardRef(
                 variant={PopoverContainerVariant.POPOVER}
                 targetElement={toggleButtonRef as PopoverProps['targetElement']}
                 withContentPadding={false}
-                position={fitPosition ? undefined : PopoverContainerPosition.BOTTOM}
+                position={PopoverContainerPosition.BOTTOM}
                 showOverlay={showOverlay && isSmViewport}
                 fitPosition={fitPosition}
             >

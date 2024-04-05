@@ -96,7 +96,7 @@ const usePopoverPositioner = (
         (entry: IntersectionObserverEntry) => {
             if (entry.intersectionRatio === 1) return setShowPopover(true);
             if (!initialPosition && entry.intersectionRatio !== 1) {
-                if (checkedPositions && checkedPositions.length === 4) {
+                if (checkedPositions && checkedPositions.length === (fitPosition ? 5 : 4)) {
                     const bestPos = checkedPositions.reduce((res, pos) => {
                         if (pos[1] > res[1]) return pos;
                         return res;
@@ -114,6 +114,10 @@ const usePopoverPositioner = (
                     case PopoverContainerPosition.BOTTOM:
                         setCheckedPosition(value => [...value, [PopoverContainerPosition.BOTTOM, entry.intersectionRatio]]);
                         setCurrentPosition(fitPosition ? PopoverContainerPosition.BOTTOM_LEFT : PopoverContainerPosition.RIGHT);
+                        break;
+                    case PopoverContainerPosition.BOTTOM_LEFT:
+                        setCheckedPosition(value => [...value, [PopoverContainerPosition.BOTTOM, entry.intersectionRatio]]);
+                        setCurrentPosition(PopoverContainerPosition.RIGHT);
                         break;
                     case PopoverContainerPosition.RIGHT:
                         setCheckedPosition(value => [...value, [PopoverContainerPosition.RIGHT, entry.intersectionRatio]]);
@@ -138,13 +142,13 @@ const usePopoverPositioner = (
     return useReflex<Element>(
         useCallback(
             (current, previous) => {
-                if (previous && !position) {
+                if (previous && (!position || fitPosition)) {
                     const observer = getIntersectionObserver(observerCallback).observer;
                     observer.unobserve(previous);
                 }
 
                 if (current && targetElement.current) {
-                    if (!position) {
+                    if (!position || fitPosition) {
                         const observer = getIntersectionObserver(observerCallback).observer;
                         observer.observe(current);
                     }
