@@ -1,13 +1,33 @@
+@import '@adyen/bento-design-tokens/dist/scss/bento/variables.scss';
+
 @mixin adyen-pe-spacings {
     --adyen-pe-spacing-xs: 2px;
     --adyen-pe-spacing-xsmall: 4px;
     --adyen-pe-spacing-small: 8px;
     --adyen-pe-spacing-medium-small: 10px;
-    --adyen-pe-spacing-base: 12px;
+    --adyen-pe-spacer-base: 12px;
     --adyen-pe-spacing-medium: 16px;
     --adyen-pe-spacing-medium-large: 20px;
     --adyen-pe-spacing-large: 24px;
     --adyen-pe-spacing-xlarge: 32px;
     --adyen-pe-spacing-xxlarge: 48px;
     --adyen-pe-spacing-xxxlarge: 56px;
+}
+
+@mixin adyen-pe-spacers {
+    --adyen-pe-spacer-000: #{$spacer-000}; // 0px
+    --adyen-pe-spacer-010: #{$spacer-010}; // 2px
+    --adyen-pe-spacer-020: #{$spacer-020}; // 4px
+    --adyen-pe-spacer-030: #{$spacer-030}; // 6px
+    --adyen-pe-spacer-040: #{$spacer-040}; // 8px
+    --adyen-pe-spacer-050: #{$spacer-050}; // 10px
+    --adyen-pe-spacer-060: #{$spacer-060}; // 12px
+    --adyen-pe-spacer-070: #{$spacer-070}; // 16px
+    --adyen-pe-spacer-080: #{$spacer-080}; // 20px
+    --adyen-pe-spacer-090: #{$spacer-090}; // 24px
+    --adyen-pe-spacer-100: #{$spacer-100}; // 32px
+    --adyen-pe-spacer-110: #{$spacer-110}; // 40px
+    --adyen-pe-spacer-120: #{$spacer-120}; // 48px
+    --adyen-pe-spacer-130: #{$spacer-130}; // 56px
+    --adyen-pe-spacer-140: #{$spacer-140}; // 64px
 }
