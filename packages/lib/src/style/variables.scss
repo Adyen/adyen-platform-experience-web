@@ -4,7 +4,7 @@
     // Definitions
     --adyen-sdk-color-primary: #{$color-grey-3200};
     --adyen-sdk-color-primary-active: #{$color-grey-1300};
-    --adyen-sdk-color-primary-: #{$color-grey-1300};
+    --adyen-sdk-color-primary-hover: #{$color-grey-1900};
 
     --adyen-sdk-color-secondary: #{$color-grey-100};
     --adyen-sdk-color-secondary-active: #{$color-grey-300};
@@ -17,6 +17,15 @@
     --adyen-sdk-border-radius-m: #{$border-radius-m};
     --adyen-sdk-border-radius-l: #{$border-radius-l};
     --adyen-sdk-border-radius-xl: #{$border-radius-xl};
+
+    // Should we include font-size definitions or only aliases (?)
+    --adyen-sdk-font-size-xsmall: #{$font-size-100};
+    --adyen-sdk-font-size-small: #{$font-size-200};
+    --adyen-sdk-font-size-base: #{$font-size-300};
+    --adyen-sdk-font-size-medium: #{$font-size-400};
+    --adyen-sdk-font-size-large: #{$font-size-500};
+    --adyen-sdk-font-size-xlarge: #{$font-size-600};
+    --adyen-sdk-font-size-xxlarge: #{$font-size-700};
 
     //Aliases
 
@@ -35,7 +44,20 @@
     --adyen-sdk-color-link-primary: var(--adyen-sdk-color-primary);
     --adyen-sdk-color-link-active: var(--adyen-sdk-color-primary-active);
     --adyen-sdk-color-link-disabled: var(--adyen-sdk-color-primary-active);
+    --adyen-sdk-link-hover-color: var(--adyen-sdk-color-primary-hover);
 
     // ------ Outline
     --adyen-sdk-color-outline-primary: var(--adyen-sdk-color-tertiary-active);
+
+    // Typography
+    --adyen-sdk-text-body-font-size: #{$text-body-font-size};
+    --adyen-sdk-text-caption-font-size: #{$text-caption-font-size};
+    --adyen-sdk-text-subtitle-font-size: #{$text-subtitle-font-size};
+    --adyen-sdk-text-title-font-size: #{$text-title-font-size};
+    --adyen-sdk-text-title-m-mobile-font-size: #{$text-title-m-mobile-font-size};
+    --adyen-sdk-text-title-l-mobile-font-size: #{$text-title-l-mobile-font-size};
+
+    // Font weight (?)
+    // Letter spacing (?)
+    // Line height (?)
 }
