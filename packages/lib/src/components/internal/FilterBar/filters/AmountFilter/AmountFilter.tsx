@@ -38,7 +38,7 @@ export const AmountFilter = ({ updateFilters, selectedCurrencies, availableCurre
         (params: { minAmount: number | undefined; maxAmount: number | undefined; filterValue: string | undefined }) => {
             const { minAmount, maxAmount } = params ?? EMPTY_OBJECT;
             setValue({ minAmount, maxAmount });
-
+            if (minAmount === undefined && maxAmount === undefined) setValueFormattedValue(undefined);
             updateFilters({
                 minAmount: minAmount !== undefined ? String(minAmount * AMOUNT_MULTIPLIER) : undefined,
                 maxAmount: maxAmount !== undefined ? String(maxAmount * AMOUNT_MULTIPLIER) : undefined,
