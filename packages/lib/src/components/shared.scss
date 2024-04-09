@@ -3,7 +3,7 @@
         color: var(--adyen-pe-color-black);
         font-size: var(--adyen-pe-font-size-xlarge);
         font-weight: var(--adyen-sdk-font-size-600);
-        line-height: 24px;
+        line-height: var(--adyen-sdk-line-height-300);
         margin: 16px 0;
     }
 
