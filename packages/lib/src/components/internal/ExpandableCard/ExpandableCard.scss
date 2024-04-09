@@ -18,8 +18,8 @@
     position: relative;
 
     &__container {
-        background-color: var(--adyen-pe-color-background-primary);
-        border: var(--adyen-pe-color-outline-primary) 1px solid;
+        background-color: var(--adyen-sdk-color-background-primary);
+        border: var(--adyen-sdk-color-outline-primary) 1px solid;
         border-radius: var(--adyen-pe-border-radius-medium);
         display: block;
         overflow: hidden;
@@ -37,19 +37,19 @@
 
         &--button {
             &:hover {
-                background-color: var(--adyen-pe-color-background-primary-hover);
+                background-color: var(--adyen-sdk-color-background-primary-hover);
 
                 #{$adyen-pe-expandable-card}__chevron {
-                    background-color: var(--adyen-pe-color-background-tertiary-hover);
+                    background-color: var(--adyen-sdk-color-background-tertiary-hover);
                 }
             }
         }
 
         &--filled {
-            background-color: var(--adyen-pe-color-background-secondary);
+            background-color: var(--adyen-sdk-color-background-secondary);
 
             &:hover {
-                background-color: var(--adyen-pe-color-background-secondary-hover);
+                background-color: var(--adyen-sdk-color-background-secondary-hover);
             }
         }
     }
@@ -69,7 +69,7 @@
 
     &__chevron {
         align-items: center;
-        background-color: var(--adyen-pe-color-background-tertiary);
+        background-color: var(--adyen-sdk-color-background-tertiary);
         display: flex;
         height: 20px;
         justify-content: center;
