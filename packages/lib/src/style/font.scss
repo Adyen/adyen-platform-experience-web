@@ -8,11 +8,3 @@
     --adyen-pe-font-size-xsmall: 0.75rem;
     --adyen-pe-font-size-xxsmall: 0.68rem;
 }
-
-@mixin adyen-pe-font-weight {
-    --adyen-pe-font-weight-thin: 100;
-    --adyen-pe-font-weight-regular: 400;
-    --adyen-pe-font-weight-medium: 500;
-    --adyen-pe-font-weight-semi-bold: 600;
-    --adyen-pe-font-weight-bold: 700;
-}

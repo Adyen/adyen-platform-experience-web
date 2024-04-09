@@ -68,10 +68,11 @@
     --adyen-sdk-text-title-l-mobile-font-size: #{$text-title-l-mobile-font-size};
 
     // ------ Font weight
-    --adyen-sdk-text-body-font-weight: #{$text-body-font-weight};
-    --adyen-sdk-text-caption-font-weight: #{$text-caption-font-weight};
-    --adyen-sdk-text-subtitle-font-weight: #{$text-subtitle-font-weight};
-    --adyen-sdk-text-title-font-weight: #{$text-title-font-weight};
+    --adyen-sdk-font-weight-200: #{$font-weight-200};
+    --adyen-sdk-font-weight-400: #{$font-weight-400};
+    --adyen-sdk-font-weight-500: #{$font-weight-500};
+    --adyen-sdk-font-weight-600: #{$font-weight-600};
+    --adyen-sdk-font-weight-700: #{$font-weight-700};
 
     // ------ Line height
     --adyen-sdk-text-body-line-height: #{$text-body-line-height};

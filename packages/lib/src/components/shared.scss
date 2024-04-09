@@ -2,7 +2,7 @@
     &-title {
         color: var(--adyen-pe-color-black);
         font-size: var(--adyen-pe-font-size-xlarge);
-        font-weight: 600;
+        font-weight: var(--adyen-sdk-font-size-600);
         line-height: 24px;
         margin: 16px 0;
     }
@@ -11,7 +11,7 @@
         color: var(--adyen-pe-color-black);
         display: block;
         font-size: var(--adyen-pe-font-size-small);
-        font-weight: 700;
+        font-weight: var(--adyen-sdk-font-weight-700);
         letter-spacing: 1.2px;
         padding: 0 0 var(--adyen-pe-spacing-medium);
         text-transform: uppercase;
@@ -21,7 +21,7 @@
         color: var(--adyen-pe-color-gray-darker);
         display: block;
         font-size: var(--adyen-pe-font-size-small);
-        font-weight: 600;
+        font-weight: var(--adyen-sdk-font-weight-600);
         letter-spacing: 0.5px;
         padding: 0 0 var(--adyen-pe-spacing-xsmall);
     }

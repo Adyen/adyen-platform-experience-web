@@ -42,7 +42,7 @@
 
     &::placeholder {
         color: var(--adyen-pe-color-gray-dark);
-        font-weight: 200;
+        font-weight: var(--adyen-sdk-font-weight-200);
     }
 
     &:focus,
