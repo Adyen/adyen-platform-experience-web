@@ -43,7 +43,7 @@
 
         &:disabled {
             background-color: var(--adyen-pe-button-primary-disabled-background-color);
-            color: var(--adyen-sdk-color-label-primary-active);
+            color: var(--adyen-sdk-color-label-disabled);
         }
     }
 
@@ -72,7 +72,7 @@
         &:disabled:not(:focus) {
             background-color: var(--adyen-pe-button-secondary-disabled-background-color);
             box-shadow: var(--adyen-pe-button-secondary-disabled-box-shadow);
-            color: var(--adyen-sdk-color-label-primary-active);
+            color: var(--adyen-sdk-color-label-disabled);
         }
     }
 
@@ -98,7 +98,7 @@
 
         &:disabled {
             background-color: var(--adyen-pe-button-tertiary-disabled-background-color);
-            color: var(--adyen-sdk-color-label-primary-active);
+            color: var(--adyen-sdk-color-label-disabled);
         }
     }
 
