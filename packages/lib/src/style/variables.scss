@@ -75,8 +75,12 @@
     --adyen-sdk-font-weight-700: #{$font-weight-700};
 
     // ------ Line height
-    --adyen-sdk-text-body-line-height: #{$text-body-line-height};
-    --adyen-sdk-text-caption-line-height: #{$text-caption-line-height};
-    --adyen-sdk-text-subtitle-line-height: #{$text-subtitle-line-height};
-    --adyen-sdk-text-title-line-height: #{$text-title-line-height};
+    --adyen-sdk-line-height-100: #{$line-height-100};
+    --adyen-sdk-line-height-200: #{$line-height-200};
+    --adyen-sdk-line-height-300: #{$line-height-300};
+    --adyen-sdk-line-height-400: #{$line-height-400};
+    --adyen-sdk-line-height-500: #{$line-height-500};
+    --adyen-sdk-line-height-600: #{$line-height-600};
+    --adyen-sdk-line-height-700: #{$line-height-700};
+    --adyen-sdk-line-height-800: #{$line-height-800};
 }

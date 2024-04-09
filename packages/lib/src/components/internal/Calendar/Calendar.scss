@@ -14,7 +14,7 @@
             font-size: var(--adyen-pe-font-size-base);
             font-weight: var(--adyen-sdk-font-weight-500);
             letter-spacing: calc(var(--adyen-pe-font-size-base) / 48);
-            line-height: 2.5rem;
+            line-height: var(--adyen-sdk-line-height-800);
             margin-bottom: 1rem;
             text-align: center;
             -webkit-user-select: none;
