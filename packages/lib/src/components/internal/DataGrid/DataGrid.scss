@@ -40,12 +40,12 @@
     }
 
     &__row {
-        background: var(--adyen-pe-color-white);
+        background: var(--adyen-sdk-color-background-primary);
         overflow: hidden;
         vertical-align: top;
 
         #{$adyen-pe-data-grid__cell} {
-            border-bottom: 1px solid var(--adyen-pe-color-gray-lighter);
+            border-bottom: 1px solid var(--adyen-sdk-color-outline-primary);
         }
         #{$adyen-pe-data-grid}__body {
             border-bottom: 0;
@@ -56,7 +56,7 @@
 
             &:hover,
             &:focus {
-                background: var(--adyen-pe-color-gray-100);
+                background: var(--adyen-sdk-color-background-secondary);
                 outline-offset: -1px;
             }
         }
@@ -87,14 +87,14 @@
         }
 
         &#{$adyen-pe-data-grid__cell}--heading {
-            border-bottom-color: var(--adyen-pe-color-gray-dark);
-          color: var(--adyen-sdk-color-label-primary);
+            border-bottom-color: var(--adyen-sdk-color-outline-secondary);
+            color: var(--adyen-sdk-color-label-primary);
             font-weight: var(--adyen-sdk-font-weight-600);
             padding: var(--adyen-pe-spacing-medium);
             position: relative;
 
             &:not(:last-child)::after {
-                background: var(--adyen-pe-color-gray-light);
+                background: #d1d5da;
                 bottom: 25%;
                 content: '';
                 position: absolute;
@@ -110,7 +110,7 @@
     }
 
     &__footer {
-        background: var(--adyen-pe-color-white);
+        background: var(--adyen-sdk-color-background-primary);
 
         .adyen-pe-pagination {
             padding: 0;
@@ -122,7 +122,7 @@
     }
 
     &--outline {
-        border: 1px solid var(--adyen-pe-color-gray-light);
+        border: 1px solid var(--adyen-sdk-color-outline-secondary);
         border-radius: var(--adyen-pe-border-radius-medium);
 
         #{$adyen-pe-data-grid}__table-wrapper {
@@ -131,7 +131,7 @@
 
         #{$adyen-pe-data-grid}__body #{$adyen-pe-data-grid}__row {
             &:last-child #{$adyen-pe-data-grid__cell} {
-                border-bottom: 1px solid var(--adyen-pe-color-gray-dark);
+                border-bottom: 1px solid var(--adyen-sdk-color-outline-secondary);
             }
         }
 
@@ -159,8 +159,8 @@
     }
 
     &__empty-message {
-        background: var(--adyen-pe-color-white);
-        border: 1px solid var(--adyen-pe-color-border-lighter);
+        background: var(--adyen-sdk-color-background-primary);
+        border: 1px solid var(--adyen-sdk-color-outline-primary);
         border-radius: 12px;
         box-shadow: 0 6px 12px 0 rgba(0, 17, 44, 0.08);
         display: flex;

@@ -30,9 +30,9 @@
 }
 
 .adyen-pe-filter-input {
-    background: var(--adyen-pe-color-white);
+    background: #fff;
     border: 0;
-    caret-color: var(--adyen-pe-color-blue);
+    caret-color: #0075ff;
     color: var(--adyen-sdk-color-label-primary);
     font-family: inherit;
     font-size: var(--adyen-sdk-font-size-200);
@@ -52,7 +52,7 @@
 }
 
 .adyen-pe-dropdown__list {
-    background: var(--adyen-pe-color-white);
+    background: #fff;
     display: none;
     list-style: none;
     margin: 0 0 50px;

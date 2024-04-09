@@ -66,8 +66,8 @@
 }
 
 .adyen-pe-input {
-    background: var(--adyen-pe-color-white);
-    border: 1px solid var(--adyen-pe-color-gray-dark);
+    background: var(--adyen-sdk-color-background-primary);
+    border: 1px solid var(--adyen-sdk-color-outline-secondary);
     border-radius: var(--adyen-pe-border-radius-medium);
     color: var(--adyen-sdk-color-label-primary);
     display: block;
@@ -97,12 +97,12 @@
 
 .adyen-pe-input[readonly],
 .adyen-pe-input--disabled {
-    background: var(--adyen-pe-color-disabled);
-    border-color: var(--adyen-pe-color-disabled);
+    background: #d1d5da;
+    border-color: #d1d5da;
 }
 
 .adyen-pe-input--disabled:hover {
-    border-color: var(--adyen-pe-color-disabled);
+    border-color: #d1d5da;
 }
 
 .adyen-pe-input-wrapper {
@@ -142,14 +142,14 @@
 }
 
 .adyen-pe-input--valid {
-    border-bottom-color: var(--adyen-pe-color-success);
+    border-bottom-color: #067934;
 }
 
 .adyen-pe-input--error,
 .adyen-pe-input--invalid,
 .adyen-pe-input--error:hover,
 .adyen-pe-input--invalid:hover {
-    border-color: var(--adyen-pe-color-alert);
+    border-color: #c72727;
 }
 
 .adyen-pe-input::placeholder {
@@ -173,7 +173,7 @@
 
 .adyen-pe-input[readonly],
 .adyen-pe-input[readonly]:hover {
-    background-color: var(--adyen-pe-color-gray-light);
+    background-color: #d1d5da;
     border-color: transparent;
     color: var(--adyen-sdk-color-label-primary-hover);
     cursor: default;
