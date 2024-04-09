@@ -50,7 +50,7 @@ $adyen-pe-modal-sizes: (
 }
 
 .adyen-pe-modal {
-    background-color: var(--adyen-pe-color-white);
+    background-color: var(--adyen-sdk-color-background-primary);
     border-radius: var(--adyen-pe-border-radius-large);
     cursor: initial;
     opacity: 0;
@@ -103,7 +103,7 @@ $adyen-pe-modal-sizes: (
         }
 
         &--with-border-bottom {
-            border-bottom: 1px solid var(--adyen-pe-color-gray-light);
+            border-bottom: 1px solid var(--adyen-sdk-color-outline-secondary);
         }
     }
 
@@ -113,11 +113,11 @@ $adyen-pe-modal-sizes: (
         transition: background 0.1s linear;
 
         &:hover {
-            background: var(--adyen-pe-color-gray-lighter);
+            background: var(--adyen-sdk-color-background-tertiary);
         }
 
         &:focus {
-            background: var(--adyen-pe-color-gray-light);
+            background: #d1d5da;
             outline: 0;
         }
     }
@@ -128,7 +128,6 @@ $adyen-pe-modal-sizes: (
     }
 
     &__footer {
-        // background: var(--adyen-pe-color-gray-lighter);
         display: flex;
         gap: var(--adyen-pe-spacing-small);
 

@@ -43,7 +43,7 @@
     }
 
     &.adyen-pe-button--secondary {
-        background: var(--adyen-pe-color-white);
+        background: #fff;
         border: 1px solid var(--adyen-pe-filter-button-border-color);
         box-shadow: none;
         color: var(--adyen-sdk-color-label-primary);
@@ -137,7 +137,7 @@
         background: transparent;
         border: 0;
         border-radius: inherit;
-        caret-color: var(--adyen-pe-color-blue);
+        caret-color: #0075ff;
         color: inherit;
         font: inherit;
         inset: 0;
@@ -157,7 +157,7 @@
 }
 
 .adyen-pe-dropdown__list {
-    background: var(--adyen-pe-color-white);
+    background: #fff;
     display: none;
     list-style: none;
     margin: 0;
@@ -231,12 +231,12 @@
 
     &:not(#{$adyen-pe-self--disabled}, #{$adyen-pe-self--no-option}) {
         &:hover {
-            background: var(--adyen-pe-color-gray-100);
+            background: var(--adyen-sdk-color-background-secondary);
         }
 
         &:focus,
         &:active {
-            background: var(--adyen-pe-color-gray-lighter);
+            background: var(--adyen-sdk-color-background-tertiary);
         }
     }
 

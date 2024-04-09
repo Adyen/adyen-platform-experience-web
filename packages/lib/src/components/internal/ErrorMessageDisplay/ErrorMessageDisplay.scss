@@ -1,6 +1,6 @@
 .adyen-pe-error-message-display {
-    background: var(--adyen-pe-color-white);
-    border: 1px solid var(--adyen-pe-color-border-lighter);
+    background: var(--adyen-sdk-color-background-primary);
+    border: 1px solid var(--adyen-sdk-color-outline-primary);
     border-radius: var(--adyen-pe-border-radius-medium);
     box-shadow: 0 6px 12px 0 rgba(0, 17, 44, 0.08);
     display: flex;

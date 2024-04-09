@@ -1,14 +1,14 @@
 @import '@styles/breakpoints';
 
 .adyen-pe-transactions-overview {
-    background: var(--adyen-pe-color-white);
+    background: var(--adyen-sdk-color-background-primary);
     display: flex;
     flex-direction: column;
     gap: var(--adyen-pe-spacing-medium);
     padding: 12px var(--adyen-pe-spacing-small);
 
     @include adyen-pe-screen-sm-and-up {
-        border: 1px solid var(--adyen-pe-color-gray-dark);
+        border: 1px solid var(--adyen-sdk-color-outline-secondary);
         border-radius: var(--adyen-pe-spacing-small);
         padding-left: var(--adyen-pe-spacing-medium);
         padding-right: var(--adyen-pe-spacing-medium);

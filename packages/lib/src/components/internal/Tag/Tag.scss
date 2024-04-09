@@ -12,12 +12,12 @@
     width: fit-content;
 
     &--success {
-        background: var(--adyen-pe-color-green-100);
+        background: #edfaf3;
         color: #067934;
     }
 
     &--error {
-        background: var(--adyen-pe-color-red-light);
+        background: #fef4f4;
         color: #c72727;
     }
 
@@ -27,13 +27,13 @@
     }
 
     &--warning {
-        background: var(--adyen-pe-color-yellow);
+        background: #fff5e9;
         color: #9b5700;
     }
 
     &--white {
-        background: var(--adyen-pe-color-white);
+        background: #fff;
         color: #00112c;
-        outline: 1px solid var(--adyen-pe-color-gray-light-2);
+        outline: 1px solid #dbdee2;
     }
 }

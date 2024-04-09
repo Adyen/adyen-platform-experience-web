@@ -67,8 +67,8 @@
         position: absolute;
 
         &::before {
-            background: var(--adyen-pe-color-gray-100);
-            border-top: 1px solid var(--adyen-pe-color-gray-lighter);
+            background: var(--adyen-sdk-color-background-secondary);
+            border-top: 1px solid var(--adyen-sdk-color-outline-primary);
             content: '';
             inset: 0;
             position: absolute;
