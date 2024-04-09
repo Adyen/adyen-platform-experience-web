@@ -58,14 +58,13 @@
     --adyen-sdk-color-outline-tertiary: var($color-outline-tertiary);
 
     // ------ Font size
-    --adyen-sdk-text-body-font-size: #{$text-body-font-size};
-    --adyen-sdk-text-caption-font-size: #{$text-caption-font-size};
-    --adyen-sdk-text-subtitle-font-size: #{$text-subtitle-font-size};
-    --adyen-sdk-text-title-font-size: #{$text-title-font-size};
-    //        Mobile
-    --adyen-sdk-text-title-mobile-font-size: #{$text-title-mobile-font-size};
-    --adyen-sdk-text-title-m-mobile-font-size: #{$text-title-m-mobile-font-size};
-    --adyen-sdk-text-title-l-mobile-font-size: #{$text-title-l-mobile-font-size};
+    --adyen-sdk-font-size-100: #{$font-size-100};
+    --adyen-sdk-font-size-200: #{$font-size-200};
+    --adyen-sdk-font-size-300: #{$font-size-300};
+    --adyen-sdk-font-size-400: #{$font-size-400};
+    --adyen-sdk-font-size-500: #{$font-size-500};
+    --adyen-sdk-font-size-600: #{$font-size-600};
+    --adyen-sdk-font-size-700: #{$font-size-700};
 
     // ------ Font weight
     --adyen-sdk-font-weight-200: #{$font-weight-200};

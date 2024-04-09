@@ -7,16 +7,6 @@
         margin: 16px 0;
     }
 
-    &-subtitle {
-        color: var(--adyen-pe-color-black);
-        display: block;
-        font-size: var(--adyen-pe-font-size-small);
-        font-weight: var(--adyen-sdk-font-weight-700);
-        letter-spacing: 1.2px;
-        padding: 0 0 var(--adyen-pe-spacing-medium);
-        text-transform: uppercase;
-    }
-
     &-label {
         color: var(--adyen-pe-color-gray-darker);
         display: block;
