@@ -31,7 +31,7 @@
 
     &--primary {
         background-color: var(--adyen-pe-button-primary-background-color);
-        color: var(--adyen-pe-button-primary-color);
+        color: var(--adyen-sdk-color-label-inverse);
 
         &:hover {
             background-color: var(--adyen-pe-button-primary-hover-background-color);
@@ -43,19 +43,19 @@
 
         &:disabled {
             background-color: var(--adyen-pe-button-primary-disabled-background-color);
-            color: var(--adyen-pe-button-primary-disabled-color);
+            color: var(--adyen-sdk-color-label-primary-active);
         }
     }
 
     &--secondary {
         background-color: var(--adyen-pe-button-secondary-background-color);
         box-shadow: var(--adyen-pe-button-secondary-box-shadow);
-        color: var(--adyen-pe-button-secondary-color);
+        color: var(--adyen-sdk-color-label-primary);
 
         &:hover {
             background-color: var(--adyen-pe-button-secondary-hover-background-color);
             box-shadow: var(--adyen-pe-button-secondary-hover-box-shadow);
-            color: var(--adyen-pe-button-secondary-hover-color);
+            color: var(--adyen-sdk-color-label-secondary);
         }
 
         &:hover:not(:focus) {
@@ -65,40 +65,40 @@
         &:active {
             background-color: var(--adyen-pe-button-secondary-active-background-color);
             box-shadow: var(--adyen-pe-button-secondary-active-box-shadow);
-            color: var(--adyen-pe-button-secondary-active-color);
+            color: var(--adyen-sdk-color-label-primary-active);
         }
 
         &:disabled,
         &:disabled:not(:focus) {
             background-color: var(--adyen-pe-button-secondary-disabled-background-color);
             box-shadow: var(--adyen-pe-button-secondary-disabled-box-shadow);
-            color: var(--adyen-pe-button-secondary-disabled-color);
+            color: var(--adyen-sdk-color-label-primary-active);
         }
     }
 
     &--tertiary {
         background-color: transparent;
         box-shadow: var(--adyen-pe-button-tertiary-box-shadow);
-        color: var(--adyen-pe-button-tertiary-color);
+        color: var(--adyen-sdk-color-label-primary);
         height: var(--adyen-pe-button-tertiary-height);
         padding: var(--adyen-pe-button-tertiary-padding);
         text-decoration: var(--adyen-pe-button-tertiary-text-decoration);
 
         &:hover {
             background-color: var(--adyen-pe-button-tertiary-hover-background-color);
-            color: var(--adyen-pe-button-tertiary-hover-color);
+            color: var(--adyen-sdk-color-label-primary-hover);
             text-decoration: var(--adyen-pe-button-tertiary-hover-text-decoration);
         }
 
         &:active {
             background-color: var(--adyen-pe-button-tertiary-active-background-color);
-            color: var(--adyen-pe-button-tertiary-active-color);
+            color: var(--adyen-sdk-color-label-primary-active);
             text-decoration: var(--adyen-pe-button-tertiary-active-text-decoration);
         }
 
         &:disabled {
             background-color: var(--adyen-pe-button-tertiary-disabled-background-color);
-            color: var(--adyen-pe-button-tertiary-disabled-color);
+            color: var(--adyen-sdk-color-label-primary-active);
         }
     }
 
@@ -127,35 +127,6 @@
             clear: both;
             content: '';
             display: table;
-        }
-    }
-
-    &--link {
-        @extend #{$adyen-pe-button}--tertiary;
-        color: var(--adyen-pe-color-blue);
-        cursor: pointer;
-        -webkit-user-select: text;
-        -moz-user-select: text;
-        -ms-user-select: text;
-        user-select: text;
-
-        #{$adyen-pe-button}__label {
-            text-decoration: var(--adyen-pe-link-text-decoration);
-        }
-
-        &:hover {
-            //color: var(--adyen-pe-link-hover-color);
-            color: var(--adyen-pe-color-blue-light);
-            text-decoration: var(--adyen-pe-link-hover-text-decoration);
-        }
-
-        &:active {
-            //color: var(--adyen-pe-link-active-color);
-            color: var(--adyen-pe-color-blue-light);
-        }
-
-        &:focus-visible {
-            border-radius: var(--adyen-pe-link-border-radius);
         }
     }
 

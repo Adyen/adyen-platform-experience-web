@@ -129,7 +129,7 @@
         &__content {
             background-color: var(--adyen-sdk-color-primary);
             border-radius: var(--adyen-pe-spacing-xsmall);
-            color: var(--adyen-pe-color-white);
+          color: var(--adyen-sdk-color-label-inverse);
             height: auto;
             max-width: 300px;
             padding: var(--adyen-pe-spacing-xsmall) var(--adyen-pe-spacing-small);
