@@ -1,5 +1,5 @@
-@import '../../../style/bento-mapping.scss';
-@import '../../../style/breakpoints.scss';
+@import '@styles/bento-mapping';
+@import '@styles/breakpoints.scss';
 
 // TODO: Move this to an accessibility mixin
 .adyen-pe-sr-only {
