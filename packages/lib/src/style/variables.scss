@@ -14,6 +14,14 @@
     --adyen-sdk-color-tertiary: #{$color-grey-200};
     --adyen-sdk-color-tertiary-active: #{$color-grey-400};
 
+    //          Decorative
+    --adyen-sdk-color-decorative-green: #{$color-green-1300};
+    --adyen-sdk-color-decorative-blue: #{$color-blue-1700};
+    --adyen-sdk-color-decorative-yellow: #{$color-yellow-700};
+    --adyen-sdk-color-decorative-orange: #{$color-orange-1300};
+    --adyen-sdk-color-decorative-red: #{$color-red-1700};
+    --adyen-sdk-color-decorative-grey: #{$color-grey-700};
+
     // ------ Border radius
     --adyen-sdk-border-radius-xs: #{$border-radius-xs};
     --adyen-sdk-border-radius-s: #{$border-radius-s};
@@ -22,10 +30,16 @@
     --adyen-sdk-border-radius-xl: #{$border-radius-xl};
 
     // ------ Borders
-
     --adyen-sdk-width-s: #{$border-width-s};
     --adyen-sdk-width-m: #{$border-width-m};
     --adyen-sdk-width-l: #{$border-width-l};
+
+    // ------ Label
+    --adyen-sdk-color-label-primary: #{$color-label-primary};
+    --adyen-sdk-color-label-primary-hover: #{$color-label-primary-hover};
+    --adyen-sdk-color-label-secondary: #{$color-label-secondary};
+    --adyen-sdk-color-label-tertiary: #{$color-label-tertiary};
+    --adyen-sdk-color-label-disabled: #{$color-label-disabled};
 
     // Aliases
 
@@ -41,11 +55,6 @@
 
     --adyen-sdk-color-background-disabled: var(--adyen-sdk-color-tertiary);
     --adyen-sdk-color-background-inverse: var(--adyen-sdk-color-primary);
-
-    // ------ Label
-    --adyen-sdk-color-label-primary: var(--adyen-sdk-color-primary);
-    --adyen-sdk-color-label-primary-hover: var(--adyen-sdk-color-primary-hover);
-    --adyen-sdk-color-label-secondary: #{$color-grey-1900};
 
     // ------ Link
     --adyen-sdk-color-link-primary: var(--adyen-sdk-color-primary);
@@ -79,4 +88,12 @@
     --adyen-sdk-text-caption-line-height: #{$text-caption-line-height};
     --adyen-sdk-text-subtitle-line-height: #{$text-subtitle-line-height};
     --adyen-sdk-text-title-line-height: #{$text-title-line-height};
+
+    // Separator
+
+    --adyen-sdk-separator-primary: #{--adyen-sdk-color-tertiary-active};
+    --adyen-sdk-separator-secondary: #{$color-separator-secondary};
+    --adyen-sdk-separator-inverse-primary: #{$color-separator-inverse-primary};
+    --adyen-sdk-separator-inverse-secondary: #{$color-separator-inverse-secondary};
+    --adyen-sdk-separator-tertiary: #{$color-label-tertiary};
 }
