@@ -23,7 +23,7 @@
 
     &--default {
         background: var(--adyen-pe-background-secondary);
-        color: var(--adyen-pe-label-secondary);
+        color: var(--adyen-sdk-color-label-secondary);
     }
 
     &--warning {
@@ -33,7 +33,7 @@
 
     &--white {
         background: var(--adyen-pe-color-white);
-        color: var(--adyen-pe-color-black);
+        color: var(--adyen-sdk-color-label-primary);
         outline: 1px solid var(--adyen-pe-color-gray-light-2);
     }
 }

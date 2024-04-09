@@ -90,7 +90,7 @@ $adyen-pe-modal-sizes: (
 
     &__header {
         align-items: center;
-        color: var(--adyen-pe-color-black);
+        color: var(--adyen-sdk-color-label-primary);
         display: flex;
         font-size: var(--adyen-sdk-font-size-300);
         font-weight: var(--adyen-sdk-font-weight-600);
