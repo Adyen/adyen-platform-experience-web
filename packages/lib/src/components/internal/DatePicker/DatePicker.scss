@@ -58,7 +58,7 @@
     &__timezone {
         color: var(--adyen-pe-color-gray-label-secondary);
         font-size: var(--adyen-pe-font-size-xsmall);
-        font-weight: var(--adyen-pe-font-weight-medium);
+        font-weight: var(--adyen-sdk-font-weight-500);
         height: var(--adyen-pe-datepicker-tap-target-size);
         inset: auto 0 0;
         line-height: calc(var(--adyen-pe-datepicker-tap-target-size) - 1px);

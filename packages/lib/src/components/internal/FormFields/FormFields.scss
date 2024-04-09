@@ -154,7 +154,7 @@
 
 .adyen-pe-input::placeholder {
     color: var(--adyen-pe-color-new-gray-darker);
-    font-weight: 200;
+    font-weight: var(--adyen-sdk-font-weight-200);
 }
 
 .adyen-pe-input--date {

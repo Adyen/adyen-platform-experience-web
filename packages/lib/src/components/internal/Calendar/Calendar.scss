@@ -12,7 +12,7 @@
 
         &-name {
             font-size: var(--adyen-pe-font-size-base);
-            font-weight: var(--adyen-pe-font-weight-medium);
+            font-weight: var(--adyen-sdk-font-weight-500);
             letter-spacing: calc(var(--adyen-pe-font-size-base) / 48);
             line-height: 2.5rem;
             margin-bottom: 1rem;
@@ -104,14 +104,14 @@
     &__day-of-week {
         color: var(--adyen-pe-color-gray-label-secondary);
         font-size: var(--adyen-pe-font-size-xsmall);
-        font-weight: var(--adyen-pe-font-weight-regular);
+        font-weight: var(--adyen-sdk-font-weight-400);
         letter-spacing: calc(var(--adyen-pe-font-size-xsmall) / 32);
     }
 
     &__date {
         color: var(--adyen-pe-color-black);
         font-size: var(--adyen-pe-font-size-medium);
-        font-weight: var(--adyen-pe-font-weight-regular);
+        font-weight: var(--adyen-sdk-font-weight-400);
         z-index: 0;
 
         [data-selection-start='1']:not([data-today='1']) &,

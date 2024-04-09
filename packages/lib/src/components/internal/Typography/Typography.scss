@@ -5,7 +5,7 @@
     // Caption
     &--caption {
         font-size: var(--adyen-pe-text-caption-font-size);
-        font-weight: var(--adyen-pe-text-caption-font-weight);
+        font-weight: var(--adyen-sdk-font-weight-400);
         letter-spacing: var(--adyen-pe-text-caption-letter-spacing);
         line-height: var(--adyen-pe-text-caption-line-height);
     }
@@ -15,13 +15,13 @@
     }
 
     &--caption-stronger {
-        font-weight: var(--adyen-pe-text-caption-stronger-font-weight);
+        font-weight: var(--adyen-sdk-font-weight-500);
     }
 
     // Body
     &--body {
         font-size: var(--adyen-pe-text-body-font-size);
-        font-weight: var(--adyen-pe-text-body-font-weight);
+        font-weight: var(--adyen-sdk-font-weight-400);
         letter-spacing: var(--adyen-pe-text-body-letter-spacing);
         line-height: var(--adyen-pe-text-body-line-height);
     }
@@ -31,43 +31,43 @@
     }
 
     &--body-stronger {
-        font-weight: var(--adyen-pe-text-body-stronger-font-weight);
+        font-weight: var(--adyen-sdk-font-weight-500);
     }
 
     &--body-strongest {
-        font-weight: var(--adyen-pe-text-body-strongest-font-weight);
+        font-weight: var(--adyen-sdk-font-weight-600);
     }
 
     // Subtitle
     &--subtitle {
         font-size: var(--adyen-pe-text-subtitle-font-size);
-        font-weight: var(--adyen-pe-text-subtitle-font-weight);
+        font-weight: var(--adyen-sdk-font-weight-500);
         letter-spacing: var(--adyen-pe-text-subtitle-letter-spacing);
         line-height: var(--adyen-pe-text-subtitle-line-height);
     }
 
     &--subtitle-stronger {
-        font-weight: var(--adyen-pe-text-subtitle-stronger-font-weight);
+        font-weight: var(--adyen-sdk-font-weight-600);
     }
 
     // Title
     &--title {
         font-size: var(--adyen-pe-text-title-font-size);
-        font-weight: var(--adyen-pe-text-title-font-weight);
+        font-weight: var(--adyen-sdk-font-weight-600);
         letter-spacing: var(--adyen-pe-text-title-letter-spacing);
         line-height: var(--adyen-pe-text-title-mobile-line-height);
     }
 
     &--title-m {
         font-size: var(--adyen-pe-text-title-m-mobile-font-size);
-        font-weight: var(--adyen-pe-text-title-m-font-weight);
+        font-weight: var(--adyen-sdk-font-weight-600);
         letter-spacing: var(--adyen-pe-text-title-m-letter-spacing);
         line-height: var(--adyen-pe-text-title-m-mobile-line-height);
     }
 
     &--title-l {
         font-size: var(--adyen-pe-text-title-l-mobile-font-size);
-        font-weight: var(--adyen-pe-text-title-l-font-weight);
+        font-weight: var(--adyen-sdk-font-weight-600);
         letter-spacing: var(--adyen-pe-text-title-l-letter-spacing);
         line-height: var(--adyen-pe-text-title-l-mobile-line-height);
     }
