@@ -14,14 +14,6 @@
     --adyen-sdk-color-tertiary: #{$color-grey-200};
     --adyen-sdk-color-tertiary-active: #{$color-grey-400};
 
-    //          Decorative
-    --adyen-sdk-color-decorative-green: #{$color-green-1300};
-    --adyen-sdk-color-decorative-blue: #{$color-blue-1700};
-    --adyen-sdk-color-decorative-yellow: #{$color-yellow-700};
-    --adyen-sdk-color-decorative-orange: #{$color-orange-1300};
-    --adyen-sdk-color-decorative-red: #{$color-red-1700};
-    --adyen-sdk-color-decorative-grey: #{$color-grey-700};
-
     // ------ Border radius
     --adyen-sdk-border-radius-xs: #{$border-radius-xs};
     --adyen-sdk-border-radius-s: #{$border-radius-s};
@@ -36,10 +28,14 @@
 
     // ------ Label
     --adyen-sdk-color-label-primary: #{$color-label-primary};
+    --adyen-sdk-color-label-primary-active: #{$color-label-primary-active};
     --adyen-sdk-color-label-primary-hover: #{$color-label-primary-hover};
+
     --adyen-sdk-color-label-secondary: #{$color-label-secondary};
     --adyen-sdk-color-label-tertiary: #{$color-label-tertiary};
     --adyen-sdk-color-label-disabled: #{$color-label-disabled};
+    --adyen-sdk-color-label-inverse: #{$color-label-inverse};
+    --adyen-sdk-color-label-critical: #{$color-label-critical};
 
     // Aliases
 
@@ -58,9 +54,13 @@
 
     // ------ Link
     --adyen-sdk-color-link-primary: var(--adyen-sdk-color-primary);
+    --adyen-sdk-color-link-primary-hover: var(--adyen-sdk-color-link-primary-hover);
+
     --adyen-sdk-color-link-active: var(--adyen-sdk-color-primary-active);
     --adyen-sdk-color-link-disabled: var(--adyen-sdk-color-primary-active);
     --adyen-sdk-link-hover-color: var(--adyen-sdk-color-primary-hover);
+    --adyen-sdk-link-quiet-color: var(--adyen-sdk-color-link-quiet-color);
+    --adyen-sdk-link-quiet-hover-color: var(--adyen-sdk-color-link-quiet-hover-color);
 
     // ------ Outline
     --adyen-sdk-color-outline-primary: var(--adyen-sdk-color-tertiary-active);
