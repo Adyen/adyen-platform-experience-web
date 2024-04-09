@@ -1,43 +1,9 @@
 .adyen-pe {
     &-title {
         color: var(--adyen-pe-color-black);
-        font-size: var(--adyen-pe-font-size-xlarge);
+        font-size: var(--adyen-sdk-font-size-700);
         font-weight: var(--adyen-sdk-font-size-600);
         line-height: var(--adyen-sdk-line-height-300);
         margin: 16px 0;
     }
-
-    &-label {
-        color: var(--adyen-pe-color-gray-darker);
-        display: block;
-        font-size: var(--adyen-pe-font-size-small);
-        font-weight: var(--adyen-sdk-font-weight-600);
-        letter-spacing: 0.5px;
-        padding: 0 0 var(--adyen-pe-spacing-xsmall);
-    }
-
-    &-amount {
-        &--positive {
-            color: var(--adyen-pe-color-green);
-        }
-
-        &--negative {
-            color: var(--adyen-pe-color-red);
-        }
-    }
-
-    &-details-section {
-        background: var(--adyen-pe-color-white);
-        border: 1px solid var(--adyen-pe-color-gray);
-        border-radius: var(--adyen-pe-border-radius-xlarge);
-        display: flex;
-        justify-content: space-between;
-        margin-top: var(--adyen-pe-spacing-medium);
-        padding: var(--adyen-pe-spacing-large);
-    }
-}
-
-pre {
-    display: none;
-    margin-top: 60px;
 }
