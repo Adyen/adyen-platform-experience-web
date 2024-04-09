@@ -2,4 +2,16 @@
 
 :root {
     --my-primary-color: #5500a9;
+    --adyen-pe-filter-button-active-border-color: var(--my-primary-color);
+    --adyen-pe-button-primary-background-color: var(--my-primary-color);
+    --adyen-pe-button-primary-hover-background-color: var(--my-primary-color);
+    --adyen-pe-button-primary-active-background-color: var(--my-primary-color);
+    --adyen-pe-filter-button-border-radius: 30px;
+}
+
+.adyen-pe-modal {
+    height: 100%;
+    border-radius: 0;
+    border-left: 5px solid var(--my-primary-color);
+    right: 0;
 }
