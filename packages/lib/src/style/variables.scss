@@ -52,20 +52,10 @@
     --adyen-sdk-color-background-disabled: var(--adyen-sdk-color-tertiary);
     --adyen-sdk-color-background-inverse: var(--adyen-sdk-color-primary);
 
-    // ------ Link
-    --adyen-sdk-color-link-primary: var(--adyen-sdk-color-primary);
-    --adyen-sdk-color-link-primary-hover: var(--adyen-sdk-color-link-primary-hover);
-
-    --adyen-sdk-color-link-active: var(--adyen-sdk-color-primary-active);
-    --adyen-sdk-color-link-disabled: var(--adyen-sdk-color-primary-active);
-    --adyen-sdk-link-hover-color: var(--adyen-sdk-color-primary-hover);
-    --adyen-sdk-link-quiet-color: var(--adyen-sdk-color-link-quiet-color);
-    --adyen-sdk-link-quiet-hover-color: var(--adyen-sdk-color-link-quiet-hover-color);
-
     // ------ Outline
     --adyen-sdk-color-outline-primary: var(--adyen-sdk-color-tertiary-active);
-    --adyen-sdk-color-outline-secondary: var(--adyen-sdk-color-tertiary-active);
-    --adyen-sdk-color-outline-tertiary: var(--adyen-sdk-color-tertiary-active);
+    --adyen-sdk-color-outline-secondary: #{$color-outline-secondary};
+    --adyen-sdk-color-outline-tertiary: var($color-outline-tertiary);
 
     // ------ Font size
     --adyen-sdk-text-body-font-size: #{$text-body-font-size};
@@ -88,12 +78,4 @@
     --adyen-sdk-text-caption-line-height: #{$text-caption-line-height};
     --adyen-sdk-text-subtitle-line-height: #{$text-subtitle-line-height};
     --adyen-sdk-text-title-line-height: #{$text-title-line-height};
-
-    // Separator
-
-    --adyen-sdk-separator-primary: #{--adyen-sdk-color-tertiary-active};
-    --adyen-sdk-separator-secondary: #{$color-separator-secondary};
-    --adyen-sdk-separator-inverse-primary: #{$color-separator-inverse-primary};
-    --adyen-sdk-separator-inverse-secondary: #{$color-separator-inverse-secondary};
-    --adyen-sdk-separator-tertiary: #{$color-label-tertiary};
 }
