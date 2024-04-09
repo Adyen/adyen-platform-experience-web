@@ -13,27 +13,27 @@
 
     &--success {
         background: var(--adyen-pe-color-green-100);
-        color: var(--adyen-pe-color-green);
+        color: #067934;
     }
 
     &--error {
         background: var(--adyen-pe-color-red-light);
-        color: var(--adyen-pe-color-red);
+        color: #c72727;
     }
 
     &--default {
         background: var(--adyen-pe-background-secondary);
-        color: var(--adyen-sdk-color-label-secondary);
+        color: #5c687c;
     }
 
     &--warning {
         background: var(--adyen-pe-color-yellow);
-        color: var(--adyen-pe-color-yellow-dark);
+        color: #9b5700;
     }
 
     &--white {
         background: var(--adyen-pe-color-white);
-        color: var(--adyen-sdk-color-label-primary);
+        color: #00112c;
         outline: 1px solid var(--adyen-pe-color-gray-light-2);
     }
 }
