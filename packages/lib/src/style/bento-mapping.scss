@@ -8,25 +8,6 @@ $adyen-pe-text-title-letter-spacing: $text-title-letter-spacing;
 $adyen-pe-text-title-m-letter-spacing: $text-title-m-letter-spacing;
 $adyen-pe-text-title-l-letter-spacing: $text-title-l-letter-spacing;
 
-@mixin adyen-pe-bento-mapping {
-    --adyen-pe-color-background-primary: #{$color-background-primary};
-    --adyen-pe-color-background-primary-hover: #{$color-background-primary-hover};
-    --adyen-pe-color-background-primary-active: #{$color-background-primary-active};
-    --adyen-pe-color-background-secondary: #{$color-background-secondary};
-    --adyen-pe-color-background-secondary-hover: #{$color-background-secondary-hover};
-    --adyen-pe-color-background-secondary-active: #{$color-background-secondary-active};
-    --adyen-pe-color-background-tertiary: #{$color-background-tertiary};
-    --adyen-pe-color-background-tertiary-hover: #{$color-background-tertiary-hover};
-    --adyen-pe-color-background-tertiary-active: #{$color-background-tertiary-active};
-    --adyen-pe-color-label-secondary: #{$color-label-secondary};
-    --adyen-pe-color-separator-primary: #{$color-separator-primary};
-    --adyen-pe-color-outline-primary: #{$color-outline-primary};
-    --adyen-pe-spacer-040: #{$spacer-040};
-    --adyen-pe-spacer-060: #{$spacer-060};
-    --adyen-pe-spacer-070: #{$spacer-070};
-    --adyen-pe-spacer-080: #{$spacer-080};
-}
-
 @mixin adyen-pe-bento-filter-mapping {
     --adyen-pe-filter-button-background-color: #{$filter-button-background-color};
     --adyen-pe-filter-button-border-color: #{$filter-button-border-color};
