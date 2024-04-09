@@ -1,10 +1,5 @@
 @mixin adyen-pe-font-sizes {
-    --adyen-pe-font-size-xxlarge: 2rem;
-    --adyen-pe-font-size-xlarge: 1.75rem;
-    --adyen-pe-font-size-large: 1.5rem;
-    --adyen-pe-font-size-base: 1rem;
-    --adyen-pe-font-size-medium: 0.875rem;
-    --adyen-pe-font-size-small: 0.81rem;
-    --adyen-pe-font-size-xsmall: 0.75rem;
-    --adyen-pe-font-size-xxsmall: 0.68rem;
+    --adyen-pe-font-size-xlarge: 1.75rem; // 28
+    --adyen-pe-font-size-small: 0.81rem; // 13
+    --adyen-pe-font-size-xxsmall: 0.68rem; // 11
 }
