@@ -127,7 +127,7 @@
         }
 
         &__content {
-            background-color: var(--adyen-pe-color-black);
+            background-color: var(--adyen-sdk-color-primary);
             border-radius: var(--adyen-pe-spacing-xsmall);
             color: var(--adyen-pe-color-white);
             height: auto;
@@ -136,7 +136,7 @@
         }
 
         &__arrow {
-            background: var(--adyen-pe-color-black);
+            background: var(--adyen-sdk-color-primary);
             display: block;
             height: var(--adyen-pe-spacing-small);
             inset: 0 auto auto 0;

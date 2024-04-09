@@ -88,13 +88,13 @@
             }
 
             &[data-selection-start='1']::before {
-                background: var(--adyen-pe-color-black);
+                background: var(--adyen-sdk-color-primary);
                 border-bottom-left-radius: var(--adyen-pe-calendar-corner-border-radius);
                 border-top-left-radius: var(--adyen-pe-calendar-corner-border-radius);
             }
 
             &[data-selection-end='1']::before {
-                background: var(--adyen-pe-color-black);
+                background: var(--adyen-sdk-color-primary);
                 border-bottom-right-radius: var(--adyen-pe-calendar-corner-border-radius);
                 border-top-right-radius: var(--adyen-pe-calendar-corner-border-radius);
             }
@@ -109,7 +109,7 @@
     }
 
     &__date {
-        color: var(--adyen-pe-color-black);
+        color: var(--adyen-sdk-color-label-primary);
         font-size: var(--adyen-sdk-font-size-200);
         font-weight: var(--adyen-sdk-font-weight-400);
         z-index: 0;

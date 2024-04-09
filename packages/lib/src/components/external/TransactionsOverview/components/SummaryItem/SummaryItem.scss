@@ -27,12 +27,13 @@
     }
 
     &__label {
-        color: var(--adyen-pe-color-label-secondary);
+        color: var(--adyen-sdk-color-label-secondary);
         width: fit-content;
     }
 
     &__amount {
         font-weight: var(--adyen-sdk-font-weight-600);
+        color: var(--adyen-sdk-color-label-primary);
         white-space: nowrap;
     }
 

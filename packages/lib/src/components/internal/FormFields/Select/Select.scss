@@ -46,7 +46,7 @@
         background: var(--adyen-pe-color-white);
         border: 1px solid var(--adyen-pe-filter-button-border-color);
         box-shadow: none;
-        color: var(--adyen-pe-color-black);
+        color: var(--adyen-sdk-color-label-primary);
         justify-content: flex-start;
         text-decoration: none;
         user-select: none;
@@ -74,7 +74,7 @@
         .adyen-pe-dropdown--multiselect & {
             @extend %adyen-pe-dropdown-decoration--right;
             align-items: center;
-            color: var(--adyen-pe-label-secondary);
+            color: var(--adyen-sdk-color-label-secondary);
             display: flex;
             isolation: isolate;
             padding: 0 2px;
