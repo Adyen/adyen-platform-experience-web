@@ -81,7 +81,7 @@
     width: 100%;
 
     &__invalid-value {
-        color: var(--adyen-pe-color-alert);
+        color: var(--adyen-sdk-color-label-critical);
         max-width: 20rem;
         text-wrap: wrap;
     }
@@ -134,11 +134,11 @@
 }
 
 .adyen-pe-input__inline-validation--valid {
-    color: var(--adyen-pe-color-success);
+    color: #067934;
 }
 
 .adyen-pe-input__inline-validation--invalid {
-    color: var(--adyen-pe-color-alert);
+    color: var(--adyen-sdk-color-label-critical);
 }
 
 .adyen-pe-input--valid {
@@ -153,7 +153,7 @@
 }
 
 .adyen-pe-input::placeholder {
-    color: var(--adyen-pe-color-new-gray-darker);
+  color: var(--adyen-sdk-color-label-secondary);
     font-weight: var(--adyen-sdk-font-weight-200);
 }
 
@@ -175,6 +175,6 @@
 .adyen-pe-input[readonly]:hover {
     background-color: var(--adyen-pe-color-gray-light);
     border-color: transparent;
-    color: var(--adyen-pe-color-gray-darker);
+    color: var(--adyen-sdk-color-label-primary-hover);
     cursor: default;
 }

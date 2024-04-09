@@ -56,7 +56,7 @@
     }
 
     &__timezone {
-        color: var(--adyen-pe-color-gray-label-secondary);
+      color: var(--adyen-sdk-color-label-primary-hover);
         font-size: var(--adyen-sdk-font-size-100);
         font-weight: var(--adyen-sdk-font-weight-500);
         height: var(--adyen-pe-datepicker-tap-target-size);

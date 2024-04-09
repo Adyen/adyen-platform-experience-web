@@ -146,7 +146,7 @@
         position: absolute;
 
         &::placeholder {
-            color: var(--adyen-pe-color-gray-dark);
+            color: var(--adyen-sdk-color-label-tertiary);
         }
 
         &:focus,
@@ -241,12 +241,12 @@
     }
 
     &#{$adyen-pe-self--disabled} {
-        color: var(--adyen-pe-color-gray-disable);
+        color: var(--adyen-sdk-color-label-disabled);
         cursor: not-allowed;
     }
 
     &#{$adyen-pe-self--no-option} {
-        color: var(--adyen-pe-color-gray-label-secondary);
+        color: var(--adyen-sdk-color-label-secondary);
         cursor: initial;
         justify-content: center;
     }
