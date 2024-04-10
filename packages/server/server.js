@@ -1,7 +1,6 @@
-const path = require('path');
+require('dotenv').config({ path: `${__dirname}/.env` });
 const express = require('express');
 const { getUserAccountHolderId, getUserRoles, httpPost } = require('./utils');
-require('dotenv').config();
 
 const { API_KEY } = process.env;
 const myOrigin = 'http://localhost:3030';
@@ -34,8 +33,6 @@ app.get('/getMySession', (_, res) => {
             roles: getUserRoles(),
         },
     };
-
-    console.log({ AH: getUserAccountHolderId() });
 
     httpPost({ apiKey, url, request, res });
 });
