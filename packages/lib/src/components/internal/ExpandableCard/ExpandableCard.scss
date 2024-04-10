@@ -18,14 +18,14 @@
     position: relative;
 
     &__container {
-        background-color: var(--adyen-pe-color-background-primary);
-        border: var(--adyen-pe-color-outline-primary) 1px solid;
-        border-radius: var(--adyen-pe-border-radius-medium);
+        background-color: var(--adyen-sdk-color-background-primary);
+        border: var(--adyen-sdk-color-outline-primary) 1px solid;
+        border-radius: var(--adyen-sdk-border-radius-m);
         display: block;
         overflow: hidden;
 
         &--overlay {
-            box-shadow: 0 2px 4px 0 rgba($adyen-pe-color-grey-3200, 0.04), 0 6px 12px 0 rgba($adyen-pe-color-grey-3200, 0.08);
+            box-shadow: 0 2px 4px 0 rgba(#00112c, 0.04), 0 6px 12px 0 rgba(#00112c, 0.08);
             position: absolute;
             top: 0;
             z-index: 100;
@@ -37,19 +37,19 @@
 
         &--button {
             &:hover {
-                background-color: var(--adyen-pe-color-background-primary-hover);
+                background-color: var(--adyen-sdk-color-background-primary-hover);
 
                 #{$adyen-pe-expandable-card}__chevron {
-                    background-color: var(--adyen-pe-color-background-tertiary-hover);
+                    background-color: var(--adyen-sdk-color-background-tertiary-hover);
                 }
             }
         }
 
         &--filled {
-            background-color: var(--adyen-pe-color-background-secondary);
+            background-color: var(--adyen-sdk-color-background-secondary);
 
             &:hover {
-                background-color: var(--adyen-pe-color-background-secondary-hover);
+                background-color: var(--adyen-sdk-color-background-secondary-hover);
             }
         }
     }
@@ -69,7 +69,7 @@
 
     &__chevron {
         align-items: center;
-        background-color: var(--adyen-pe-color-background-tertiary);
+        background-color: var(--adyen-sdk-color-background-tertiary);
         display: flex;
         height: 20px;
         justify-content: center;

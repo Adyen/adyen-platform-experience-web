@@ -2,14 +2,14 @@
     cursor: pointer;
 
     &--on-image {
-        color: var(--adyen-pe-popover-dismiss-button-on-image-icon-color);
+        color: #fff;
 
         &:hover {
-            color: var(--adyen-pe-popover-dismiss-button-on-image-icon-hovered-color);
+            color: #fff;
         }
 
         &:active {
-            color: var(--adyen-pe-popover-dismiss-button-on-image-icon-active-color);
+            color: #fff;
         }
     }
 }

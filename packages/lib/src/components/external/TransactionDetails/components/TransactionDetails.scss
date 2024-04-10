@@ -17,22 +17,22 @@
         //}
 
         &__amount {
-            color: var(--adyen-pe-transaction-data-default);
+            color: var(--adyen-sdk-color-label-primary);
             font-size: var(--adyen-sdk-font-size-700);
             font-weight: var(--adyen-sdk-font-weight-600);
             line-height: var(--adyen-sdk-line-height-800);
 
             &--error {
-                color: var(--adyen-pe-transaction-data-error);
+                color: var(--adyen-sdk-color-label-critical);
             }
 
             &--pending {
-                color: var(--adyen-pe-transaction-data-pending);
+                color: var(--adyen-sdk-color-label-secondary);
             }
         }
 
         &__container {
-            padding-bottom: var(--adyen-pe-transaction-data-section);
+            padding-bottom: var(--adyen-pe-spacer-080);
         }
 
         &__payment-method {
@@ -61,7 +61,7 @@
         }
 
         &__label {
-            color: var(--adyen-pe-modal-label-color);
+            color: var(--adyen-sdk-color-label-secondary);
             font-size: var(--adyen-sdk-font-size-200);
             font-weight: var(--adyen-sdk-font-weight-400);
             line-height: var(--adyen-sdk-line-height-200);

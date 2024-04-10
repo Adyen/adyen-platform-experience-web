@@ -66,10 +66,10 @@
 }
 
 .adyen-pe-input {
-    background: var(--adyen-pe-color-white);
-    border: 1px solid var(--adyen-pe-color-gray-dark);
-    border-radius: var(--adyen-pe-border-radius-medium);
-    color: var(--adyen-pe-color-black);
+    background: #fff;
+    border: 1px solid var(--adyen-sdk-color-outline-secondary);
+    border-radius: var(--adyen-sdk-border-radius-m);
+    color: var(--adyen-sdk-color-label-primary);
     display: block;
     font-family: inherit;
     font-size: var(--adyen-sdk-font-size-200);
@@ -81,7 +81,7 @@
     width: 100%;
 
     &__invalid-value {
-        color: var(--adyen-pe-color-alert);
+        color: var(--adyen-sdk-color-label-critical);
         max-width: 20rem;
         text-wrap: wrap;
     }
@@ -97,12 +97,12 @@
 
 .adyen-pe-input[readonly],
 .adyen-pe-input--disabled {
-    background: var(--adyen-pe-color-disabled);
-    border-color: var(--adyen-pe-color-disabled);
+    background: #d1d5da;
+    border-color: #d1d5da;
 }
 
 .adyen-pe-input--disabled:hover {
-    border-color: var(--adyen-pe-color-disabled);
+    border-color: #d1d5da;
 }
 
 .adyen-pe-input-wrapper {
@@ -134,26 +134,26 @@
 }
 
 .adyen-pe-input__inline-validation--valid {
-    color: var(--adyen-pe-color-success);
+    color: #067934;
 }
 
 .adyen-pe-input__inline-validation--invalid {
-    color: var(--adyen-pe-color-alert);
+    color: var(--adyen-sdk-color-label-critical);
 }
 
 .adyen-pe-input--valid {
-    border-bottom-color: var(--adyen-pe-color-success);
+    border-bottom-color: #067934;
 }
 
 .adyen-pe-input--error,
 .adyen-pe-input--invalid,
 .adyen-pe-input--error:hover,
 .adyen-pe-input--invalid:hover {
-    border-color: var(--adyen-pe-color-alert);
+    border-color: #c72727;
 }
 
 .adyen-pe-input::placeholder {
-    color: var(--adyen-pe-color-new-gray-darker);
+    color: var(--adyen-sdk-color-label-secondary);
     font-weight: var(--adyen-sdk-font-weight-200);
 }
 
@@ -173,8 +173,8 @@
 
 .adyen-pe-input[readonly],
 .adyen-pe-input[readonly]:hover {
-    background-color: var(--adyen-pe-color-gray-light);
+    background-color: #d1d5da;
     border-color: transparent;
-    color: var(--adyen-pe-color-gray-darker);
+    color: var(--adyen-sdk-color-label-primary-hover);
     cursor: default;
 }

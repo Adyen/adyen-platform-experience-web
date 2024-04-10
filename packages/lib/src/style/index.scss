@@ -1,5 +1,3 @@
-@use './colors';
-@use './border-radius';
 @use './spacings';
 @use './bento-mapping';
 @use './accessibility';
@@ -7,15 +5,7 @@
 
 :root {
     @include accessibility.adyen-touch-sizes;
-    @include colors.adyen-pe-colors;
-    @include border-radius.adyen-pe-border-radius;
     @include spacings.adyen-pe-spacings;
-    @include bento-mapping.adyen-pe-bento-mapping;
-    @include bento-mapping.adyen-pe-bento-filter-mapping;
-    @include bento-mapping.adyen-pe-bento-action-button-mapping;
-    @include bento-mapping.adyen-pe-bento-button-mapping;
-    @include bento-mapping.adyen-pe-bento-popover-mapping;
-    @include bento-mapping.adyen-pe-bento-link-mapping;
-    @include bento-mapping.adyen-pe-bento-modal-mapping;
+    @include spacings.adyen-pe-spacers;
     @include variables.adyen-sdk-variables;
 }

@@ -3,17 +3,6 @@
 @mixin adyen-sdk-variables {
     // Definitions
 
-    // ------ Colors
-    --adyen-sdk-color-primary: #{$color-grey-3200};
-    --adyen-sdk-color-primary-active: #{$color-grey-1300};
-    --adyen-sdk-color-primary-hover: #{$color-grey-1900};
-
-    --adyen-sdk-color-secondary: #{$color-grey-100};
-    --adyen-sdk-color-secondary-active: #{$color-grey-300};
-
-    --adyen-sdk-color-tertiary: #{$color-grey-200};
-    --adyen-sdk-color-tertiary-active: #{$color-grey-400};
-
     // ------ Border radius
     --adyen-sdk-border-radius-xs: #{$border-radius-xs};
     --adyen-sdk-border-radius-s: #{$border-radius-s};
@@ -41,21 +30,27 @@
 
     // ------ Background
     --adyen-sdk-color-background-primary: #{$color-background-primary};
-    --adyen-sdk-color-background-primary-hover: var(--adyen-sdk-color-secondary);
+    --adyen-sdk-color-background-primary-hover: #{$color-background-primary-hover};
+    --adyen-sdk-color-background-primary-active: #{$color-background-primary-active};
 
-    --adyen-sdk-color-background-secondary: var(--adyen-sdk-color-secondary);
-    --adyen-sdk-color-background-secondary-hover: var(--adyen-sdk-color-tertiary);
+    --adyen-sdk-color-background-secondary: #{$color-background-secondary};
+    --adyen-sdk-color-background-secondary-hover: #{$color-background-secondary-hover};
 
-    --adyen-sdk-color-background-tertiary: var(--adyen-sdk-color-tertiary);
-    --adyen-sdk-color-background-tertiary-hover: var(--adyen-sdk-color-secondary-active);
-
-    --adyen-sdk-color-background-disabled: var(--adyen-sdk-color-tertiary);
-    --adyen-sdk-color-background-inverse: var(--adyen-sdk-color-primary);
+    --adyen-sdk-color-background-tertiary: #{$color-background-tertiary};
+    --adyen-sdk-color-background-tertiary-hover: #{$color-background-tertiary-hover};
+    --adyen-sdk-color-background-disabled: #{$color-background-disabled};
+    --adyen-sdk-color-background-inverse-primary: #{$color-background-inverse-primary};
+    --adyen-sdk-color-background-inverse-primary-hover: #{$color-background-inverse-primary-hover};
+    --adyen-sdk-color-background-inverse-primary-active: #{$color-background-inverse-primary-active};
 
     // ------ Outline
-    --adyen-sdk-color-outline-primary: var(--adyen-sdk-color-tertiary-active);
+    --adyen-sdk-color-outline-primary: #{$color-outline-primary};
+    --adyen-sdk-color-outline-primary-hover: #{$color-outline-primary-hover};
+    --adyen-sdk-color-outline-primary-active: #{$color-outline-primary-active};
+
     --adyen-sdk-color-outline-secondary: #{$color-outline-secondary};
-    --adyen-sdk-color-outline-tertiary: var($color-outline-tertiary);
+    --adyen-sdk-color-outline-tertiary: #{$color-outline-tertiary};
+    --adyen-sdk-color-outline-disabled: #{$color-outline-disabled};
 
     // ------ Font size
     --adyen-sdk-font-size-100: #{$font-size-100};

@@ -12,28 +12,28 @@
     width: fit-content;
 
     &--success {
-        background: var(--adyen-pe-color-green-100);
-        color: var(--adyen-pe-color-green);
+        background: #edfaf3;
+        color: #067934;
     }
 
     &--error {
-        background: var(--adyen-pe-color-red-light);
-        color: var(--adyen-pe-color-red);
+        background: #fef4f4;
+        color: #c72727;
     }
 
     &--default {
         background: var(--adyen-pe-background-secondary);
-        color: var(--adyen-pe-label-secondary);
+        color: #5c687c;
     }
 
     &--warning {
-        background: var(--adyen-pe-color-yellow);
-        color: var(--adyen-pe-color-yellow-dark);
+        background: #fff5e9;
+        color: #9b5700;
     }
 
     &--white {
-        background: var(--adyen-pe-color-white);
-        color: var(--adyen-pe-color-black);
-        outline: 1px solid var(--adyen-pe-color-gray-light-2);
+        background: #fff;
+        color: #00112c;
+        outline: 1px solid #dbdee2;
     }
 }

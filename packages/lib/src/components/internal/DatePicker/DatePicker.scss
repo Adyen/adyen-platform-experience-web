@@ -56,7 +56,7 @@
     }
 
     &__timezone {
-        color: var(--adyen-pe-color-gray-label-secondary);
+        color: var(--adyen-sdk-color-label-primary-hover);
         font-size: var(--adyen-sdk-font-size-100);
         font-weight: var(--adyen-sdk-font-weight-500);
         height: var(--adyen-pe-datepicker-tap-target-size);
@@ -67,8 +67,8 @@
         position: absolute;
 
         &::before {
-            background: var(--adyen-pe-color-gray-100);
-            border-top: 1px solid var(--adyen-pe-color-gray-lighter);
+            background: var(--adyen-sdk-color-background-secondary);
+            border-top: 1px solid var(--adyen-sdk-color-outline-primary);
             content: '';
             inset: 0;
             position: absolute;

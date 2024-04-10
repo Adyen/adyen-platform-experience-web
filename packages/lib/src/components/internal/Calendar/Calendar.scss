@@ -83,18 +83,18 @@
             }
 
             &[data-within-selection='1']::before {
-                background: var(--adyen-pe-color-gray-lighter);
+                background: var(--adyen-sdk-color-background-tertiary);
                 border-radius: 0;
             }
 
             &[data-selection-start='1']::before {
-                background: var(--adyen-pe-color-black);
+                background: var(--adyen-sdk-color-background-inverse-primary);
                 border-bottom-left-radius: var(--adyen-pe-calendar-corner-border-radius);
                 border-top-left-radius: var(--adyen-pe-calendar-corner-border-radius);
             }
 
             &[data-selection-end='1']::before {
-                background: var(--adyen-pe-color-black);
+                background: var(--adyen-sdk-color-background-inverse-primary);
                 border-bottom-right-radius: var(--adyen-pe-calendar-corner-border-radius);
                 border-top-right-radius: var(--adyen-pe-calendar-corner-border-radius);
             }
@@ -102,31 +102,31 @@
     }
 
     &__day-of-week {
-        color: var(--adyen-pe-color-gray-label-secondary);
+        color: var(--adyen-sdk-color-label-secondary);
         font-size: var(--adyen-sdk-font-size-100);
         font-weight: var(--adyen-sdk-font-weight-400);
         letter-spacing: calc(var(--adyen-sdk-font-size-100) / 32);
     }
 
     &__date {
-        color: var(--adyen-pe-color-black);
+        color: var(--adyen-sdk-color-label-primary);
         font-size: var(--adyen-sdk-font-size-200);
         font-weight: var(--adyen-sdk-font-weight-400);
         z-index: 0;
 
         [data-selection-start='1']:not([data-today='1']) &,
         [data-selection-end='1']:not([data-today='1']) & {
-            color: var(--adyen-pe-color-white);
+            color: var(--adyen-sdk-color-label-inverse);
         }
 
         [data-selection-start='1'][data-today='1'] &::before,
         [data-selection-end='1'][data-today='1'] &::before {
-            background: var(--adyen-pe-color-white);
+            background: var(--adyen-sdk-color-background-primary);
             inset: 12.5%;
         }
 
         [data-today='1'] &::before {
-            background: var(--adyen-pe-color-gray-lighter);
+            background: var(--adyen-sdk-color-background-tertiary);
             border-radius: 50%;
             content: '';
             inset: 5%;
@@ -139,7 +139,7 @@
         }
 
         :not([data-within-range='1']) > & {
-            color: var(--adyen-pe-color-gray-disable);
+            color: var(--adyen-sdk-color-label-disabled);
         }
     }
 }

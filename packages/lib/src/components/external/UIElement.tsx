@@ -94,7 +94,7 @@ export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUI
                 sessionSetupError={this.sessionSetupError}
             >
                 <CoreProvider i18n={this.i18n} loadingContext={this.loadingContext}>
-                    {this.componentToRender && <>{this.componentToRender()}</>}
+                    {this.componentToRender && <div className="adyen-pe-component">{this.componentToRender()}</div>}
                 </CoreProvider>
             </AuthProvider>
         );
