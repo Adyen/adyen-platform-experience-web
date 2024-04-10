@@ -1,3 +1,5 @@
+@import '@styles/bento-mapping';
+
 .adyen-pe-error-message-display {
     background: var(--adyen-sdk-color-background-primary);
     border: 1px solid var(--adyen-sdk-color-outline-primary);
@@ -5,10 +7,10 @@
     box-shadow: 0 6px 12px 0 rgba(0, 17, 44, 0.08);
     display: flex;
     flex-direction: column;
-    gap: var(--adyen-pe-spacing-base);
+    gap: $adyen-pe-spacer-060;
     left: 10px;
     min-width: 400px;
-    padding: var(--adyen-pe-spacing-xxlarge);
+    padding: $adyen-pe-spacer-120;
     position: absolute;
     text-align: center;
     top: 10px;

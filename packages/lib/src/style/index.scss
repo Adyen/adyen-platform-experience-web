@@ -1,9 +1,6 @@
-@use './spacings';
 @use './bento-mapping';
 @use './variables';
 
 :root {
-    @include spacings.adyen-pe-spacings;
-    @include spacings.adyen-pe-spacers;
     @include variables.adyen-sdk-variables;
 }

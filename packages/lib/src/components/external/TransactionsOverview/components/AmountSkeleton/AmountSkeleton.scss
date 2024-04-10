@@ -1,10 +1,11 @@
 @use '../../../../../style/skeleton' as skeleton;
+@import '@styles/bento-mapping';
 
 .adyen-pe-amount-skeleton {
     @include skeleton.adyen-pe-skeleton();
 
     &--has-margin {
-        margin-top: var(--adyen-pe-spacing-small);
+        margin-top: $adyen-pe-spacer-040;
     }
 
     &--loading {

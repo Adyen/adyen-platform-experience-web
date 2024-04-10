@@ -1,9 +1,11 @@
+@import '@styles/bento-mapping';
+
 .adyen-pe__tooltip-target {
     &--hovered {
         text-decoration: underline;
         text-decoration-color: #0075ff;
         text-decoration-style: dashed;
         text-decoration-thickness: 1px;
-        text-underline-offset: var(--adyen-pe-spacing-xsmall);
+        text-underline-offset: $adyen-pe-spacer-020;
     }
 }

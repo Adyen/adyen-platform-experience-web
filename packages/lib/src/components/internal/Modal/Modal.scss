@@ -1,3 +1,5 @@
+@import '@styles/bento-mapping';
+
 $adyen-pe-modal-sizes: (
     'fluid': (
         'width': max-content,
@@ -124,12 +126,12 @@ $adyen-pe-modal-sizes: (
 
     .adyen-pe-label__text {
         font-size: var(--adyen-sdk-font-size-200);
-        margin-bottom: var(--adyen-pe-spacing-xsmall);
+        margin-bottom: $adyen-pe-spacer-020;
     }
 
     &__footer {
         display: flex;
-        gap: var(--adyen-pe-spacing-small);
+        gap: $adyen-pe-spacer-040;
 
         .adyen-pe-button:first-child {
             margin-left: auto;
