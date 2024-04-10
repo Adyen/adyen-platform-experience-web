@@ -206,7 +206,7 @@
     }
 
     &-checkmark {
-        --adyen-pe-separation-margin: $adyen-pe-spacer-070;
+        --adyen-pe-separation-margin: #{$adyen-pe-spacer-070};
         @extend %adyen-pe-dropdown-decoration;
         @extend %adyen-pe-dropdown-decoration--right;
         min-width: 1rem;
