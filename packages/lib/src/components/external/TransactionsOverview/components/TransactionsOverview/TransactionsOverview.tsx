@@ -45,7 +45,7 @@ export const TransactionsOverview = ({
     const { defaultParams, nowTimestamp, refreshNowTimestamp } = useDefaultTransactionsOverviewFilterParams(activeBalanceAccount);
 
     const getTransactions = useCallback(
-        async (pageRequestParams: Record<TransactionFilterParam | 'cursor', string>, signal?: AbortSignal) => {
+        async ({ balanceAccount, ...pageRequestParams }: Record<TransactionFilterParam | 'cursor', string>, signal?: AbortSignal) => {
             const requestOptions: SetupHttpOptions = { signal, errorLevel: 'error' };
 
             return transactionsEndpointCall(requestOptions, {
@@ -105,7 +105,10 @@ export const TransactionsOverview = ({
 
     useEffect(() => {
         setAvailableCurrencies(undefined);
-        updateFilters({ [TransactionFilterParam.CURRENCIES]: undefined });
+        updateFilters({
+            [TransactionFilterParam.BALANCE_ACCOUNT]: activeBalanceAccount?.id,
+            [TransactionFilterParam.CURRENCIES]: undefined,
+        });
     }, [updateFilters, activeBalanceAccount?.id]);
 
     useEffect(() => {

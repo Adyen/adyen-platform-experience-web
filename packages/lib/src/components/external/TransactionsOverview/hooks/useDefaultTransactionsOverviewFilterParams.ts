@@ -4,13 +4,14 @@ import { DEFAULT_TRANSACTIONS_OVERVIEW_MULTI_SELECTION_FILTER_PARAMS } from '../
 import { useBalanceAccountSelection } from '../components/BalanceAccountSelector';
 import { TransactionFilterParam } from '../types';
 
-const getDefaultTransactionsFilterParams = () => {
+const getDefaultTransactionsFilterParams = (balanceAccount?: ReturnType<typeof useBalanceAccountSelection>['activeBalanceAccount']) => {
     const timeRangeOptions = getTimeRangeSelectionDefaultPresetOptions();
     const defaultTimeRange = 'rangePreset.last7Days';
     const { from, to } = timeRangeOptions[defaultTimeRange];
 
     const defaultFilterParams = {
         ...DEFAULT_TRANSACTIONS_OVERVIEW_MULTI_SELECTION_FILTER_PARAMS,
+        [TransactionFilterParam.BALANCE_ACCOUNT]: balanceAccount?.id,
         [TransactionFilterParam.CREATED_SINCE]: new Date(from).toISOString(),
         [TransactionFilterParam.CREATED_UNTIL]: new Date(to).toISOString(),
         [TransactionFilterParam.MIN_AMOUNT]: undefined,
@@ -22,7 +23,7 @@ const getDefaultTransactionsFilterParams = () => {
 
 const useDefaultTransactionsOverviewFilterParams = (balanceAccount?: ReturnType<typeof useBalanceAccountSelection>['activeBalanceAccount']) => {
     const [nowTimestamp, setNowTimestamp] = useState(Date.now());
-    const defaultParams = useRef(getDefaultTransactionsFilterParams());
+    const defaultParams = useRef(getDefaultTransactionsFilterParams(balanceAccount));
     const refreshNowTimestamp = useCallback(() => setNowTimestamp(Date.now()), [setNowTimestamp]);
 
     useEffect(() => {
