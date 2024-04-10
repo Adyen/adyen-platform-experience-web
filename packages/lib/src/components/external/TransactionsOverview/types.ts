@@ -3,6 +3,7 @@ import { Core } from '../../../core';
 import UIElement from '../UIElement';
 
 export const enum TransactionFilterParam {
+    BALANCE_ACCOUNT = 'balanceAccount',
     CATEGORIES = 'categories',
     CURRENCIES = 'currencies',
     STATUSES = 'statuses',
