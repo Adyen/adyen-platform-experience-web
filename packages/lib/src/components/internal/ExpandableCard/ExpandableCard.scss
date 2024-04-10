@@ -20,12 +20,12 @@
     &__container {
         background-color: var(--adyen-sdk-color-background-primary);
         border: var(--adyen-sdk-color-outline-primary) 1px solid;
-        border-radius: var(--adyen-pe-border-radius-medium);
+        border-radius: var(--adyen-sdk-border-radius-m);
         display: block;
         overflow: hidden;
 
         &--overlay {
-            box-shadow: 0 2px 4px 0 rgba($adyen-pe-color-grey-3200, 0.04), 0 6px 12px 0 rgba($adyen-pe-color-grey-3200, 0.08);
+            box-shadow: 0 2px 4px 0 rgba(var(--adyen-sdk-color-primary), 0.04), 0 6px 12px 0 rgba(var(--adyen-sdk-color-primary), 0.08);
             position: absolute;
             top: 0;
             z-index: 100;

@@ -66,9 +66,9 @@
 }
 
 .adyen-pe-input {
-    background: var(--adyen-sdk-color-background-primary);
+    background: #fff;
     border: 1px solid var(--adyen-sdk-color-outline-secondary);
-    border-radius: var(--adyen-pe-border-radius-medium);
+    border-radius: var(--adyen-sdk-border-radius-m);
     color: var(--adyen-sdk-color-label-primary);
     display: block;
     font-family: inherit;
