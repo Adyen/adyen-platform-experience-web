@@ -88,13 +88,13 @@
             }
 
             &[data-selection-start='1']::before {
-                background: var(--adyen-sdk-color-primary);
+                background: var(--adyen-sdk-color-background-inverse-primary);
                 border-bottom-left-radius: var(--adyen-pe-calendar-corner-border-radius);
                 border-top-left-radius: var(--adyen-pe-calendar-corner-border-radius);
             }
 
             &[data-selection-end='1']::before {
-                background: var(--adyen-sdk-color-primary);
+                background: var(--adyen-sdk-color-background-inverse-primary);
                 border-bottom-right-radius: var(--adyen-pe-calendar-corner-border-radius);
                 border-top-right-radius: var(--adyen-pe-calendar-corner-border-radius);
             }
