@@ -115,7 +115,7 @@
         //Modify width and height automatically adjust to the same size
         height: auto !important;
         position: relative;
-        width: var(--adyen-pe-touch-size-minimum);
+        width: 40px;
 
         &::before {
             content: '';

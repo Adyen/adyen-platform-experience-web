@@ -1,10 +1,8 @@
 @use './spacings';
 @use './bento-mapping';
-@use './accessibility';
 @use './variables';
 
 :root {
-    @include accessibility.adyen-touch-sizes;
     @include spacings.adyen-pe-spacings;
     @include spacings.adyen-pe-spacers;
     @include variables.adyen-sdk-variables;
