@@ -1,5 +1,6 @@
 import { AuthContext } from '@src/core/Auth/AuthContext';
 import { AuthProviderProps } from '@src/core/Auth/types';
+import { EMPTY_OBJECT } from '@src/utils/common';
 import { toChildArray } from 'preact';
 import { useEffect, useRef, useState } from 'preact/hooks';
 
@@ -14,10 +15,10 @@ const AuthProvider = ({ token, endpoints, children, updateCore, sessionSetupErro
         }
     }, [token]);
 
-    const update = async (...args: any) => {
+    const update = async () => {
         setIsUpdatingToken(true);
         if (updateCore) {
-            await updateCore(...args);
+            await updateCore(EMPTY_OBJECT, true);
         }
     };
 

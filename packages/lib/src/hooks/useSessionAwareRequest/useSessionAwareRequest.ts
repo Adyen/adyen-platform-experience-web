@@ -39,7 +39,7 @@ function useSessionAwareRequest() {
                 return await (isUpdatingToken ? promise : Promise.resolve()).then(() => httpCall<T>({ ...request }, method, data));
             } catch (e: any) {
                 if (e.type === ErrorTypes.EXPIRED_TOKEN && !isUpdatingToken) {
-                    await updateCore?.(EMPTY_OBJECT, true);
+                    await updateCore();
                     resolve(token);
                 }
                 throw e;

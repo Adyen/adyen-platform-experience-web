@@ -77,7 +77,7 @@ export const ErrorMessageDisplay = ({
             {(onContactSupport || refreshComponent) && (
                 <div className={'adyen-pe-error-message-display__button'}>
                     {onContactSupport && <Button onClick={onContactSupport}>{i18n.get('reachOutToSupport')}</Button>}
-                    {!onContactSupport && refreshComponent && <Button onClick={() => updateCore?.()}>{i18n.get('refresh')}</Button>}
+                    {!onContactSupport && refreshComponent && <Button onClick={updateCore}>{i18n.get('refresh')}</Button>}
                 </div>
             )}
         </div>
