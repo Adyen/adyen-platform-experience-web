@@ -1,3 +1,5 @@
+@import '@styles/bento-mapping';
+
 .adyen-pe-filter-button {
     align-items: center;
     appearance: none;
@@ -21,7 +23,7 @@
     &__label {
         display: inline-flex;
         line-height: var(--adyen-sdk-line-height-200);
-        padding: var(--adyen-pe-spacer-040) var(--adyen-pe-spacer-060);
+        padding: $adyen-pe-spacer-040 $adyen-pe-spacer-060;
         vertical-align: middle;
     }
 
@@ -40,7 +42,7 @@
     &__counter-wrapper {
         align-items: center;
         display: flex;
-        padding: var(--adyen-pe-spacer-020) var(--adyen-pe-spacer-020) var(--adyen-pe-spacer-020) var(--adyen-pe-spacer-000);
+        padding: $adyen-pe-spacer-020 $adyen-pe-spacer-020 $adyen-pe-spacer-020 $adyen-pe-spacer-000;
     }
 
     &--active,

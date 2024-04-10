@@ -1,9 +1,11 @@
+@import '@styles/bento-mapping';
+
 .adyen-pe-filter-bar {
     align-items: center;
     display: flex;
     flex-wrap: wrap;
-    gap: var(--adyen-pe-spacing-small);
-    padding: var(--adyen-pe-spacing-medium-small) 0;
+    gap: $adyen-pe-spacer-040;
+    padding: $adyen-pe-spacer-050 $adyen-pe-spacer-000;
     white-space: nowrap;
 
     .adyen-pe-button--secondary.adyen-pe-dropdown__button,

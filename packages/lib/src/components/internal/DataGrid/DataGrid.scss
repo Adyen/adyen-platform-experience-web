@@ -1,4 +1,5 @@
 @use '../../../style/skeleton' as skeleton;
+@import '@styles/bento-mapping';
 
 .adyen-pe-data-grid {
     $adyen-pe-data-grid: &;
@@ -66,7 +67,7 @@
         box-sizing: border-box;
         height: 100%;
         overflow: hidden;
-        padding: var(--adyen-pe-spacing-medium);
+        padding: $adyen-pe-spacer-070;
         text-overflow: ellipsis;
         vertical-align: middle;
         white-space: nowrap;
@@ -90,7 +91,7 @@
             border-bottom-color: var(--adyen-sdk-color-outline-secondary);
             color: var(--adyen-sdk-color-label-primary);
             font-weight: var(--adyen-sdk-font-weight-600);
-            padding: var(--adyen-pe-spacing-medium);
+            padding: $adyen-pe-spacer-070;
             position: relative;
 
             &:not(:last-child)::after {
@@ -106,7 +107,7 @@
     }
 
     #{$adyen-pe-data-grid}__table-wrapper {
-        margin-bottom: var(--adyen-pe-spacing-medium);
+        margin-bottom: $adyen-pe-spacer-070;
     }
 
     &__footer {
@@ -118,7 +119,7 @@
     }
 
     .adyen-pe-spinner__wrapper {
-        padding: var(--adyen-pe-spacing-xxxlarge);
+        padding: $adyen-pe-spacer-130;
     }
 
     &--outline {
@@ -136,7 +137,7 @@
         }
 
         #{$adyen-pe-data-grid}__footer .adyen-pe-pagination {
-            padding: var(--adyen-pe-spacing-medium) var(--adyen-pe-spacing-small);
+            padding: $adyen-pe-spacer-070 $adyen-pe-spacer-040;
         }
     }
 
@@ -151,7 +152,7 @@
 
     &__skeleton-cell-content {
         @include skeleton.adyen-pe-skeleton();
-        height: var(--adyen-pe-spacing-base);
+        height: $adyen-pe-spacer-060;
     }
 
     &__skeleton-cell-content--loading {
@@ -165,9 +166,9 @@
         box-shadow: 0 6px 12px 0 rgba(0, 17, 44, 0.08);
         display: flex;
         flex-direction: column;
-        gap: var(--adyen-pe-spacing-medium-small);
+        gap: $adyen-pe-spacer-050;
         left: 50%;
-        padding: var(--adyen-pe-spacing-xxlarge);
+        padding: $adyen-pe-spacer-120;
         position: absolute;
         text-align: center;
         top: 20px;
