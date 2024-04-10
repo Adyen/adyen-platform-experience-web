@@ -42,6 +42,7 @@
     // ------ Background
     --adyen-sdk-color-background-primary: #{$color-background-primary};
     --adyen-sdk-color-background-primary-hover: var(--adyen-sdk-color-secondary);
+    --adyen-sdk-color-background-primary-active: #{$color-background-primary-active};
 
     --adyen-sdk-color-background-secondary: var(--adyen-sdk-color-secondary);
     --adyen-sdk-color-background-secondary-hover: var(--adyen-sdk-color-tertiary);
@@ -50,10 +51,16 @@
     --adyen-sdk-color-background-tertiary-hover: var(--adyen-sdk-color-secondary-active);
 
     --adyen-sdk-color-background-disabled: var(--adyen-sdk-color-tertiary);
+
     --adyen-sdk-color-background-inverse: var(--adyen-sdk-color-primary);
+    --adyen-sdk-color-background-inverse-primary-hover: var(--adyen-sdk-color-primary-hover);
+    --adyen-sdk-color-background-inverse-primary-active: var(--adyen-sdk-color-primary-active);
 
     // ------ Outline
     --adyen-sdk-color-outline-primary: var(--adyen-sdk-color-tertiary-active);
+    --adyen-sdk-color-outline-primary-hover: #{$color-outline-primary-hover};
+    --adyen-sdk-color-outline-primary-active: #{$color-outline-primary-active};
+
     --adyen-sdk-color-outline-secondary: #{$color-outline-secondary};
     --adyen-sdk-color-outline-tertiary: var($color-outline-tertiary);
 
