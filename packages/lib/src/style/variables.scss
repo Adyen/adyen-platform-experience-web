@@ -1,0 +1,81 @@
+@import '@adyen/bento-design-tokens/dist/scss/bento/variables.scss';
+
+@mixin adyen-sdk-variables {
+    // Definitions
+
+    // ------ Colors
+    --adyen-sdk-color-primary: #{$color-grey-3200};
+    --adyen-sdk-color-primary-active: #{$color-grey-1300};
+    --adyen-sdk-color-primary-hover: #{$color-grey-1900};
+
+    --adyen-sdk-color-secondary: #{$color-grey-100};
+    --adyen-sdk-color-secondary-active: #{$color-grey-300};
+
+    --adyen-sdk-color-tertiary: #{$color-grey-200};
+    --adyen-sdk-color-tertiary-active: #{$color-grey-400};
+
+    // ------ Border radius
+    --adyen-sdk-border-radius-xs: #{$border-radius-xs};
+    --adyen-sdk-border-radius-s: #{$border-radius-s};
+    --adyen-sdk-border-radius-m: #{$border-radius-m};
+    --adyen-sdk-border-radius-l: #{$border-radius-l};
+    --adyen-sdk-border-radius-xl: #{$border-radius-xl};
+
+    // ------ Borders
+    --adyen-sdk-width-s: #{$border-width-s};
+    --adyen-sdk-width-m: #{$border-width-m};
+    --adyen-sdk-width-l: #{$border-width-l};
+
+    // ------ Label
+    --adyen-sdk-color-label-primary: #{$color-label-primary};
+    --adyen-sdk-color-label-primary-active: #{$color-label-primary-active};
+    --adyen-sdk-color-label-primary-hover: #{$color-label-primary-hover};
+
+    --adyen-sdk-color-label-secondary: #{$color-label-secondary};
+    --adyen-sdk-color-label-tertiary: #{$color-label-tertiary};
+    --adyen-sdk-color-label-disabled: #{$color-label-disabled};
+    --adyen-sdk-color-label-inverse: #{$color-label-inverse};
+    --adyen-sdk-color-label-critical: #{$color-label-critical};
+
+    // Aliases
+
+    // ------ Background
+    --adyen-sdk-color-background-primary: #{$color-background-primary};
+    --adyen-sdk-color-background-primary-hover: var(--adyen-sdk-color-secondary);
+
+    --adyen-sdk-color-background-secondary: var(--adyen-sdk-color-secondary);
+    --adyen-sdk-color-background-secondary-hover: var(--adyen-sdk-color-tertiary);
+
+    --adyen-sdk-color-background-tertiary: var(--adyen-sdk-color-tertiary);
+    --adyen-sdk-color-background-tertiary-hover: var(--adyen-sdk-color-secondary-active);
+
+    --adyen-sdk-color-background-disabled: var(--adyen-sdk-color-tertiary);
+    --adyen-sdk-color-background-inverse: var(--adyen-sdk-color-primary);
+
+    // ------ Outline
+    --adyen-sdk-color-outline-primary: var(--adyen-sdk-color-tertiary-active);
+    --adyen-sdk-color-outline-secondary: #{$color-outline-secondary};
+    --adyen-sdk-color-outline-tertiary: var($color-outline-tertiary);
+
+    // ------ Font size
+    --adyen-sdk-text-body-font-size: #{$text-body-font-size};
+    --adyen-sdk-text-caption-font-size: #{$text-caption-font-size};
+    --adyen-sdk-text-subtitle-font-size: #{$text-subtitle-font-size};
+    --adyen-sdk-text-title-font-size: #{$text-title-font-size};
+    //        Mobile
+    --adyen-sdk-text-title-mobile-font-size: #{$text-title-mobile-font-size};
+    --adyen-sdk-text-title-m-mobile-font-size: #{$text-title-m-mobile-font-size};
+    --adyen-sdk-text-title-l-mobile-font-size: #{$text-title-l-mobile-font-size};
+
+    // ------ Font weight
+    --adyen-sdk-text-body-font-weight: #{$text-body-font-weight};
+    --adyen-sdk-text-caption-font-weight: #{$text-caption-font-weight};
+    --adyen-sdk-text-subtitle-font-weight: #{$text-subtitle-font-weight};
+    --adyen-sdk-text-title-font-weight: #{$text-title-font-weight};
+
+    // ------ Line height
+    --adyen-sdk-text-body-line-height: #{$text-body-line-height};
+    --adyen-sdk-text-caption-line-height: #{$text-caption-line-height};
+    --adyen-sdk-text-subtitle-line-height: #{$text-subtitle-line-height};
+    --adyen-sdk-text-title-line-height: #{$text-title-line-height};
+}
