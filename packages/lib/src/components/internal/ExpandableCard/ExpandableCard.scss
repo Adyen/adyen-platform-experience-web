@@ -55,15 +55,15 @@
     }
 
     &__content {
-        padding: var(--adyen-pe-spacer-060);
+        padding: $adyen-pe-spacer-060;
 
         @include adyen-pe-screen-sm-and-up {
-            padding-left: var(--adyen-pe-spacer-080);
-            padding-right: var(--adyen-pe-spacer-080);
+            padding-left: $adyen-pe-spacer-080;
+            padding-right: $adyen-pe-spacer-080;
         }
 
         &--expandable {
-            padding-bottom: var(--adyen-pe-spacer-040);
+            padding-bottom: $adyen-pe-spacer-040;
         }
     }
 

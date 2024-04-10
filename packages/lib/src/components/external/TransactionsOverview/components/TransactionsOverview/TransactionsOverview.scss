@@ -1,23 +1,24 @@
+@import '@styles/bento-mapping';
 @import '@styles/breakpoints';
 
 .adyen-pe-transactions-overview {
     background: var(--adyen-sdk-color-background-primary);
     display: flex;
     flex-direction: column;
-    gap: var(--adyen-pe-spacing-medium);
-    padding: 12px var(--adyen-pe-spacing-small);
+    gap: $adyen-pe-spacer-070;
+    padding: 12px $adyen-pe-spacer-040;
 
     @include adyen-pe-screen-sm-and-up {
         border: 1px solid var(--adyen-sdk-color-outline-secondary);
-        border-radius: var(--adyen-pe-spacing-small);
-        padding-left: var(--adyen-pe-spacing-medium);
-        padding-right: var(--adyen-pe-spacing-medium);
+        border-radius: $adyen-pe-spacer-040;
+        padding-left: $adyen-pe-spacer-070;
+        padding-right: $adyen-pe-spacer-070;
     }
 
     &__summary {
         display: flex;
         flex-wrap: wrap-reverse;
-        gap: var(--adyen-pe-spacing-base);
+        gap: $adyen-pe-spacer-060;
         justify-content: space-between;
     }
 

@@ -1,3 +1,5 @@
+@import '@styles/bento-mapping';
+
 .adyen-pe-tag {
     align-items: center;
     border-radius: 4px;
@@ -8,7 +10,7 @@
     font-weight: var(--adyen-sdk-font-weight-500);
     justify-content: center;
     min-width: 2.5rem;
-    padding: var(--adyen-pe-spacing-xsmall) var(--adyen-pe-spacing-small);
+    padding: $adyen-pe-spacer-020 $adyen-pe-spacer-040;
     width: fit-content;
 
     &--success {
