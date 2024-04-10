@@ -20,7 +20,7 @@ enableServerInMockedMode()
             },
         });
 
-        createLanguageButtons({ locales: ['es-ES', 'en-US'], core: AdyenPlatformExperience });
+        createLanguageButtons({ locales: ['es-ES', 'en-US'], core: AdyenPlatform });
 
         const transactionsComponent = new TransactionsOverview({
             core: AdyenPlatform,
