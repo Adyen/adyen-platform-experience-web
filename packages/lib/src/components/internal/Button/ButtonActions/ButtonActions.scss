@@ -1,3 +1,5 @@
+@import '@styles/bento-mapping';
+
 .adyen-pe-button-actions {
     container-type: inline-size;
     flex-grow: 1;
@@ -5,7 +7,7 @@
     &__container-wrapper {
         display: flex;
         flex-direction: column;
-        gap: var(--adyen-pe-spacer-040);
+        gap: $adyen-pe-spacer-040;
     }
 
     //@container (min-width: 250px) {
@@ -15,13 +17,13 @@
     }
 
     &--buttons-end {
-        column-gap: var(--adyen-pe-spacer-040);
+        column-gap: $adyen-pe-spacer-040;
         flex-direction: row;
         justify-content: end;
     }
 
     &--fill-container {
-        column-gap: var(--adyen-pe-spacer-040);
+        column-gap: $adyen-pe-spacer-040;
         display: grid;
         grid-auto-columns: minmax(0, 1fr);
         grid-auto-flow: column;
