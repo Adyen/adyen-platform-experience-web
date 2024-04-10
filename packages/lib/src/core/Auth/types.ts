@@ -13,6 +13,6 @@ export interface AuthProviderProps extends AuthProviderBaseProps {
 }
 
 export interface AuthContextProps extends AuthProviderBaseProps {
-    updateCore?: (...args: any) => any;
+    updateCore: () => any;
     isUpdatingToken?: boolean;
 }
