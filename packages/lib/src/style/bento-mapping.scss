@@ -1,6 +1,12 @@
 @import '@adyen/bento-design-tokens/dist/scss/bento/variables.scss';
 
 $adyen-pe-color-grey-3200: $color-grey-3200;
+$adyen-pe-text-caption-letter-spacing: $text-caption-letter-spacing;
+$adyen-pe-text-body-letter-spacing: $text-body-letter-spacing;
+$adyen-pe-text-subtitle-letter-spacing: $text-subtitle-letter-spacing;
+$adyen-pe-text-title-letter-spacing: $text-title-letter-spacing;
+$adyen-pe-text-title-m-letter-spacing: $text-title-m-letter-spacing;
+$adyen-pe-text-title-l-letter-spacing: $text-title-l-letter-spacing;
 
 @mixin adyen-pe-bento-mapping {
     --adyen-pe-color-background-primary: #{$color-background-primary};
@@ -27,7 +33,6 @@ $adyen-pe-color-grey-3200: $color-grey-3200;
     --adyen-pe-filter-button-border-radius: #{$filter-button-border-radius};
     --adyen-pe-filter-button-font-color: #{$filter-button-font-color};
     --adyen-pe-filter-button-height: #{$filter-button-height};
-    --adyen-pe-filter-button-label-line-height: #{$filter-button-label-line-height};
     --adyen-pe-filter-button-label-padding: #{$filter-button-label-padding};
     --adyen-pe-filter-button-counter-background-color: #{$filter-button-counter-background-color};
     --adyen-pe-filter-button-counter-border-radius: #{$filter-button-counter-border-radius};
@@ -45,7 +50,6 @@ $adyen-pe-color-grey-3200: $color-grey-3200;
     --adyen-pe-filter-button-border-radius: #{$button-border-radius};
     --adyen-pe-filter-button-box-shadow: #{$button-box-shadow};
     --adyen-pe-filter-button-padding: #{$button-padding};
-    --adyen-pe-filter-button-line-height: #{$button-line-height};
     --adyen-pe-filter-button-active-border-color: #{$filter-button-active-border-color};
     --adyen-pe-button-primary-background-color: #{$button-primary-background-color};
     --adyen-pe-button-primary-color: #{$button-primary-color};
@@ -109,40 +113,6 @@ $adyen-pe-color-grey-3200: $color-grey-3200;
     --adyen-pe-link-quiet-color: #{$link-quiet-color};
     --adyen-pe-link-quiet-hover-color: #{$link-quiet-hover-color};
     --adyen-pe-link-quiet-active-color: #{$link-quiet-active-color};
-}
-
-@mixin adyen-pe-bento-typography-mapping {
-    --adyen-pe-text-caption-font-size: #{$text-caption-font-size};
-    --adyen-pe-text-caption-font-weight: #{$text-caption-font-weight};
-    --adyen-pe-text-caption-letter-spacing: #{$text-caption-letter-spacing};
-    --adyen-pe-text-caption-line-height: #{$text-caption-line-height};
-    --adyen-pe-text-caption-wide-line-height: #{$text-caption-wide-line-height};
-    --adyen-pe-text-caption-stronger-font-weight: #{$text-caption-stronger-font-weight};
-    --adyen-pe-text-body-font-size: #{$text-body-font-size};
-    --adyen-pe-text-body-font-weight: #{$text-body-font-weight};
-    --adyen-pe-text-body-letter-spacing: #{$text-body-letter-spacing};
-    --adyen-pe-text-body-line-height: #{$text-body-line-height};
-    --adyen-pe-text-body-wide-line-height: #{$text-body-wide-line-height};
-    --adyen-pe-text-body-stronger-font-weight: #{$text-body-stronger-font-weight};
-    --adyen-pe-text-body-strongest-font-weight: #{$text-body-strongest-font-weight};
-    --adyen-pe-text-subtitle-font-size: #{$text-subtitle-font-size};
-    --adyen-pe-text-subtitle-font-weight: #{$text-subtitle-font-weight};
-    --adyen-pe-text-subtitle-letter-spacing: #{$text-subtitle-letter-spacing};
-    --adyen-pe-text-subtitle-line-height: #{$text-subtitle-line-height};
-    --adyen-pe-text-subtitle-stronger-font-weight: #{$text-subtitle-stronger-font-weight};
-    --adyen-pe-text-title-font-size: #{$text-title-font-size};
-    --adyen-pe-text-title-mobile-font-size: #{$text-title-mobile-font-size};
-    --adyen-pe-text-title-font-weight: #{$text-title-font-weight};
-    --adyen-pe-text-title-letter-spacing: #{$text-title-letter-spacing};
-    --adyen-pe-text-title-mobile-line-height: #{$text-title-mobile-line-height};
-    --adyen-pe-text-title-m-mobile-font-size: #{$text-title-m-mobile-font-size};
-    --adyen-pe-text-title-m-font-weight: #{$text-title-m-font-weight};
-    --adyen-pe-text-title-m-letter-spacing: #{$text-title-m-letter-spacing};
-    --adyen-pe-text-title-m-mobile-line-height: #{$text-title-m-mobile-line-height};
-    --adyen-pe-text-title-l-mobile-font-size: #{$text-title-l-mobile-font-size};
-    --adyen-pe-text-title-l-font-weight: #{$text-title-l-font-weight};
-    --adyen-pe-text-title-l-letter-spacing: #{$text-title-l-letter-spacing};
-    --adyen-pe-text-title-l-mobile-line-height: #{$text-title-l-mobile-line-height};
 }
 
 @mixin adyen-pe-bento-modal-mapping {

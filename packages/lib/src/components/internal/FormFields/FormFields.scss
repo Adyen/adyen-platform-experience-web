@@ -72,7 +72,7 @@
     color: var(--adyen-pe-color-black);
     display: block;
     font-family: inherit;
-    font-size: var(--adyen-pe-font-size-medium);
+    font-size: var(--adyen-sdk-font-size-200);
     height: 40px;
     outline: none;
     padding: 5px 8px;
@@ -154,7 +154,7 @@
 
 .adyen-pe-input::placeholder {
     color: var(--adyen-pe-color-new-gray-darker);
-    font-weight: 200;
+    font-weight: var(--adyen-sdk-font-weight-200);
 }
 
 .adyen-pe-input--date {

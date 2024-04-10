@@ -1,7 +1,7 @@
 .adyen-pe-range-selection-filter {
     display: flex;
     flex-direction: column;
-    font-size: var(--adyen-pe-font-size-medium);
+    font-size: var(--adyen-sdk-font-size-200);
     gap: var(--adyen-pe-spacing-medium);
 
     &__input {
@@ -25,6 +25,6 @@
 
     label {
         color: var(--adyen-pe-color-black);
-        font-weight: 500;
+        font-weight: var(--adyen-sdk-font-weight-500);
     }
 }

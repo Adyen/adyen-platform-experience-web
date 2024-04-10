@@ -58,24 +58,28 @@
     --adyen-sdk-color-outline-tertiary: var($color-outline-tertiary);
 
     // ------ Font size
-    --adyen-sdk-text-body-font-size: #{$text-body-font-size};
-    --adyen-sdk-text-caption-font-size: #{$text-caption-font-size};
-    --adyen-sdk-text-subtitle-font-size: #{$text-subtitle-font-size};
-    --adyen-sdk-text-title-font-size: #{$text-title-font-size};
-    //        Mobile
-    --adyen-sdk-text-title-mobile-font-size: #{$text-title-mobile-font-size};
-    --adyen-sdk-text-title-m-mobile-font-size: #{$text-title-m-mobile-font-size};
-    --adyen-sdk-text-title-l-mobile-font-size: #{$text-title-l-mobile-font-size};
+    --adyen-sdk-font-size-100: #{$font-size-100};
+    --adyen-sdk-font-size-200: #{$font-size-200};
+    --adyen-sdk-font-size-300: #{$font-size-300};
+    --adyen-sdk-font-size-400: #{$font-size-400};
+    --adyen-sdk-font-size-500: #{$font-size-500};
+    --adyen-sdk-font-size-600: #{$font-size-600};
+    --adyen-sdk-font-size-700: #{$font-size-700};
 
     // ------ Font weight
-    --adyen-sdk-text-body-font-weight: #{$text-body-font-weight};
-    --adyen-sdk-text-caption-font-weight: #{$text-caption-font-weight};
-    --adyen-sdk-text-subtitle-font-weight: #{$text-subtitle-font-weight};
-    --adyen-sdk-text-title-font-weight: #{$text-title-font-weight};
+    --adyen-sdk-font-weight-200: #{$font-weight-200};
+    --adyen-sdk-font-weight-400: #{$font-weight-400};
+    --adyen-sdk-font-weight-500: #{$font-weight-500};
+    --adyen-sdk-font-weight-600: #{$font-weight-600};
+    --adyen-sdk-font-weight-700: #{$font-weight-700};
 
     // ------ Line height
-    --adyen-sdk-text-body-line-height: #{$text-body-line-height};
-    --adyen-sdk-text-caption-line-height: #{$text-caption-line-height};
-    --adyen-sdk-text-subtitle-line-height: #{$text-subtitle-line-height};
-    --adyen-sdk-text-title-line-height: #{$text-title-line-height};
+    --adyen-sdk-line-height-100: #{$line-height-100};
+    --adyen-sdk-line-height-200: #{$line-height-200};
+    --adyen-sdk-line-height-300: #{$line-height-300};
+    --adyen-sdk-line-height-400: #{$line-height-400};
+    --adyen-sdk-line-height-500: #{$line-height-500};
+    --adyen-sdk-line-height-600: #{$line-height-600};
+    --adyen-sdk-line-height-700: #{$line-height-700};
+    --adyen-sdk-line-height-800: #{$line-height-800};
 }

@@ -18,9 +18,9 @@
 
         &__amount {
             color: var(--adyen-pe-transaction-data-default);
-            font-size: var(--adyen-pe-font-size-xxlarge);
-            font-weight: var(--adyen-pe-font-weight-semi-bold);
-            line-height: 44px;
+            font-size: var(--adyen-sdk-font-size-700);
+            font-weight: var(--adyen-sdk-font-weight-600);
+            line-height: var(--adyen-sdk-line-height-800);
 
             &--error {
                 color: var(--adyen-pe-transaction-data-error);
@@ -41,7 +41,7 @@
             gap: 6px;
 
             &-detail {
-                font-weight: var(--adyen-pe-font-weight-medium);
+                font-weight: var(--adyen-sdk-font-weight-500);
             }
         }
 
@@ -62,9 +62,9 @@
 
         &__label {
             color: var(--adyen-pe-modal-label-color);
-            font-size: var(--adyen-pe-font-size-medium);
-            font-weight: var(--adyen-pe-font-weight-regular);
-            line-height: 20px;
+            font-size: var(--adyen-sdk-font-size-200);
+            font-weight: var(--adyen-sdk-font-weight-400);
+            line-height: var(--adyen-sdk-line-height-200);
         }
 
         &__skeleton {

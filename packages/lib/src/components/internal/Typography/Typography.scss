@@ -1,74 +1,76 @@
+@import '@styles/bento-mapping';
+
 .adyen-pe-typography {
     // Reset preset browser margin on all elements
     margin: 0;
 
     // Caption
     &--caption {
-        font-size: var(--adyen-pe-text-caption-font-size);
-        font-weight: var(--adyen-pe-text-caption-font-weight);
-        letter-spacing: var(--adyen-pe-text-caption-letter-spacing);
-        line-height: var(--adyen-pe-text-caption-line-height);
+        font-size: var(--adyen-sdk-font-size-100);
+        font-weight: var(--adyen-sdk-font-weight-400);
+        letter-spacing: #{$adyen-pe-text-caption-letter-spacing};
+        line-height: var(--adyen-sdk-line-height-100);
     }
 
     &--caption-wide {
-        line-height: var(--adyen-pe-text-caption-wide-line-height);
+        line-height: var(--adyen-sdk-line-height-200);
     }
 
     &--caption-stronger {
-        font-weight: var(--adyen-pe-text-caption-stronger-font-weight);
+        font-weight: var(--adyen-sdk-font-weight-500);
     }
 
     // Body
     &--body {
-        font-size: var(--adyen-pe-text-body-font-size);
-        font-weight: var(--adyen-pe-text-body-font-weight);
-        letter-spacing: var(--adyen-pe-text-body-letter-spacing);
-        line-height: var(--adyen-pe-text-body-line-height);
+        font-size: var(--adyen-sdk-font-size-200);
+        font-weight: var(--adyen-sdk-font-weight-400);
+        letter-spacing: #{$adyen-pe-text-body-letter-spacing};
+        line-height: var(--adyen-sdk-line-height-200);
     }
 
     &--body-wide {
-        line-height: var(--adyen-pe-text-body-wide-line-height);
+        line-height: var(--adyen-sdk-line-height-300);
     }
 
     &--body-stronger {
-        font-weight: var(--adyen-pe-text-body-stronger-font-weight);
+        font-weight: var(--adyen-sdk-font-weight-500);
     }
 
     &--body-strongest {
-        font-weight: var(--adyen-pe-text-body-strongest-font-weight);
+        font-weight: var(--adyen-sdk-font-weight-600);
     }
 
     // Subtitle
     &--subtitle {
-        font-size: var(--adyen-pe-text-subtitle-font-size);
-        font-weight: var(--adyen-pe-text-subtitle-font-weight);
-        letter-spacing: var(--adyen-pe-text-subtitle-letter-spacing);
-        line-height: var(--adyen-pe-text-subtitle-line-height);
+        font-size: var(--adyen-sdk-font-size-300);
+        font-weight: var(--adyen-sdk-font-weight-500);
+        letter-spacing: #{$adyen-pe-text-subtitle-letter-spacing};
+        line-height: var(--adyen-sdk-line-height-400);
     }
 
     &--subtitle-stronger {
-        font-weight: var(--adyen-pe-text-subtitle-stronger-font-weight);
+        font-weight: var(--adyen-sdk-font-weight-600);
     }
 
     // Title
     &--title {
-        font-size: var(--adyen-pe-text-title-font-size);
-        font-weight: var(--adyen-pe-text-title-font-weight);
-        letter-spacing: var(--adyen-pe-text-title-letter-spacing);
-        line-height: var(--adyen-pe-text-title-mobile-line-height);
+        font-size: var(--adyen-sdk-font-size-500);
+        font-weight: var(--adyen-sdk-font-weight-600);
+        letter-spacing: #{$adyen-pe-text-title-letter-spacing};
+        line-height: var(--adyen-sdk-line-height-500);
     }
 
     &--title-m {
-        font-size: var(--adyen-pe-text-title-m-mobile-font-size);
-        font-weight: var(--adyen-pe-text-title-m-font-weight);
-        letter-spacing: var(--adyen-pe-text-title-m-letter-spacing);
-        line-height: var(--adyen-pe-text-title-m-mobile-line-height);
+        font-size: var(--adyen-sdk-font-size-500);
+        font-weight: var(--adyen-sdk-font-weight-600);
+        letter-spacing: #{$adyen-pe-text-title-m-letter-spacing};
+        line-height: var(--adyen-sdk-line-height-600);
     }
 
     &--title-l {
-        font-size: var(--adyen-pe-text-title-l-mobile-font-size);
-        font-weight: var(--adyen-pe-text-title-l-font-weight);
-        letter-spacing: var(--adyen-pe-text-title-l-letter-spacing);
-        line-height: var(--adyen-pe-text-title-l-mobile-line-height);
+        font-size: var(--adyen-sdk-font-size-600);
+        font-weight: var(--adyen-sdk-font-weight-600);
+        letter-spacing: #{$adyen-pe-text-title-l-letter-spacing};
+        line-height: var(--adyen-sdk-line-height-700);
     }
 }
