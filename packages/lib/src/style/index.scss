@@ -1,8 +1,6 @@
 @use './bento-mapping';
-@use './accessibility';
 @use './variables';
 
 :root {
-    @include accessibility.adyen-touch-sizes;
     @include variables.adyen-sdk-variables;
 }
