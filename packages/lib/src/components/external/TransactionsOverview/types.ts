@@ -20,7 +20,7 @@ export interface TransactionsComponentProps {
     onTransactionSelected?: OnSelection;
     onFiltersChanged?: (filters: { [P in TransactionFilterParam]?: string }) => any;
     onLimitChanged?: (limit: number) => any;
-    preferredLimit?: number;
+    preferredLimit?: 10 | 20;
     allowLimitSelection?: boolean;
     showDetails?: boolean;
     core: Core;
