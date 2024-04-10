@@ -40,7 +40,7 @@
         &--with-divider {
             #{$adyen-pe-popover-component-root}__footer {
                 background-color: var(--adyen-sdk-color-background-primary);
-                border-top: 1px solid var(--adyen-sdk-color-tertiary-active);
+                border-top: 1px solid var(--adyen-sdk-color-outline-disabled);
                 padding-top: var(--adyen-pe-spacer-060);
             }
         }
@@ -127,7 +127,7 @@
         }
 
         &__content {
-            background-color: var(--adyen-sdk-color-primary);
+            background-color: var(--adyen-sdk-color-background-inverse-primary);
             border-radius: var(--adyen-pe-spacing-xsmall);
             color: var(--adyen-sdk-color-label-inverse);
             height: auto;
@@ -136,7 +136,7 @@
         }
 
         &__arrow {
-            background: var(--adyen-sdk-color-primary);
+            background: var(--adyen-sdk-color-background-inverse-primary);
             display: block;
             height: var(--adyen-pe-spacing-small);
             inset: 0 auto auto 0;

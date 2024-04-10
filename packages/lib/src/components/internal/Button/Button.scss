@@ -30,7 +30,7 @@
     }
 
     &--primary {
-        background-color: var(--adyen-sdk-color-background-inverse);
+        background-color: var(--adyen-sdk-color-background-inverse-primary);
         color: var(--adyen-sdk-color-label-inverse);
 
         &:hover {
@@ -71,7 +71,7 @@
         &:disabled,
         &:disabled:not(:focus) {
             background-color: var(--adyen-sdk-color-background-primary);
-            box-shadow: inset 0 0 0 1px var(--adyen-sdk-color-tertiary);
+            box-shadow: inset 0 0 0 1px #eeeff1;
             color: var(--adyen-sdk-color-label-disabled);
         }
     }
