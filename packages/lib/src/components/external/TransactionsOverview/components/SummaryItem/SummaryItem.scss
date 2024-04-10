@@ -32,8 +32,8 @@
     }
 
     &__amount {
-        font-weight: var(--adyen-sdk-font-weight-600);
         color: var(--adyen-sdk-color-label-primary);
+        font-weight: var(--adyen-sdk-font-weight-600);
         white-space: nowrap;
     }
 
