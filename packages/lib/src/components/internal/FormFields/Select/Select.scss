@@ -1,7 +1,7 @@
 @import '@styles/bento-mapping';
 
 %adyen-pe-dropdown-decoration {
-    --adyen-pe-separation-margin: $adyen-pe-spacer-060;
+    --adyen-pe-separation-margin: #{$adyen-pe-spacer-060};
     display: inline-flex;
     flex: none;
 
