@@ -56,7 +56,7 @@
 
             &:hover,
             &:focus {
-                background: var(--adyen-sdk-color-background-secondary);
+                background: var(--adyen-sdk-color-background-primary-hover);
                 outline-offset: -1px;
             }
         }
