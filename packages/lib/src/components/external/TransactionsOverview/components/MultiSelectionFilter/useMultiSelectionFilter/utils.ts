@@ -3,7 +3,7 @@ import { SelectItem } from '@src/components/internal/FormFields/Select/types';
 import { SelectionOptionsList } from './types';
 
 export const listFrom = <T extends string = string>(value?: string | any[]) => {
-    const stringedValue = `${value ?? ''}`.trim();
+    const stringedValue = `${value || ''}`.trim();
     return (stringedValue ? stringedValue.split(/(?:\s*,\s*)+/).filter(Boolean) : EMPTY_ARRAY) as T[];
 };
 
