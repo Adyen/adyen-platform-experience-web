@@ -1,6 +1,6 @@
 import FilterBar from '@src/components/internal/FilterBar';
 import { ExternalUIComponentProps } from '@src/components/types';
-import { TransactionsComponentProps, TransactionFilterParam } from '../../types';
+import { DataOverviewComponentProps, TransactionFilterParam } from '../../types';
 import { TransactionsDisplay } from '@src/components/external/TransactionsOverview/components/TransactionsDisplay/TransactionsDisplay';
 import useCoreContext from '@src/core/Context/useCoreContext';
 import { SetupHttpOptions, useSetupEndpoint } from '@src/hooks/useSetupEndpoint/useSetupEndpoint';
@@ -9,12 +9,12 @@ import { useCursorPaginatedRecords } from '@src/components/internal/Pagination/h
 import { IBalanceAccountBase, ITransaction } from '@src/types';
 import { isFunction } from '@src/utils/common';
 import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '@src/components/internal/Pagination/constants';
-import TransactionsOverviewDateFilter from '@src/components/external/TransactionsOverview/components/TransactionsOverviewDateFilter';
+import DataOverviewDateFilter from '@src/components/external/TransactionsOverview/components/DataOverviewDateFilter';
 import TransactionTotals from '@src/components/external/TransactionsOverview/components/TransactionTotals/TransactionTotals';
 import { Balances } from '@src/components/external/TransactionsOverview/components/Balances/Balances';
 import BalanceAccountSelector, { useBalanceAccountSelection } from '../BalanceAccountSelector';
 import MultiSelectionFilter, { listFrom } from '../MultiSelectionFilter';
-import useDefaultTransactionsOverviewFilterParams from '../../hooks/useDefaultTransactionsOverviewFilterParams';
+import useDefaultOverviewFilterParams from '../../hooks/useDefaultOverviewFilterParams';
 import useTransactionsOverviewMultiSelectionFilters from '../../hooks/useTransactionsOverviewMultiSelectionFilters';
 import AdyenPlatformExperienceError from '@src/core/Errors/AdyenPlatformExperienceError';
 import { AmountFilter } from '@src/components/internal/FilterBar/filters/AmountFilter/AmountFilter';
@@ -32,17 +32,17 @@ export const TransactionsOverview = ({
     balanceAccounts,
     allowLimitSelection,
     preferredLimit = DEFAULT_PAGE_LIMIT,
-    onTransactionSelected,
+    onDataSelection,
     showDetails,
     isLoadingBalanceAccount,
     onContactSupport,
 }: ExternalUIComponentProps<
-    TransactionsComponentProps & { balanceAccounts: IBalanceAccountBase[] | undefined; isLoadingBalanceAccount: boolean }
+    DataOverviewComponentProps & { balanceAccounts: IBalanceAccountBase[] | undefined; isLoadingBalanceAccount: boolean }
 >) => {
     const { i18n } = useCoreContext();
     const transactionsEndpointCall = useSetupEndpoint('getTransactions');
     const { activeBalanceAccount, balanceAccountSelectionOptions, onBalanceAccountSelection } = useBalanceAccountSelection(balanceAccounts);
-    const { defaultParams, nowTimestamp, refreshNowTimestamp } = useDefaultTransactionsOverviewFilterParams(activeBalanceAccount);
+    const { defaultParams, nowTimestamp, refreshNowTimestamp } = useDefaultOverviewFilterParams(activeBalanceAccount, 'transactions');
 
     const getTransactions = useCallback(
         async ({ balanceAccount, ...pageRequestParams }: Record<TransactionFilterParam | 'cursor', string>, signal?: AbortSignal) => {
@@ -130,7 +130,7 @@ export const TransactionsOverview = ({
                     balanceAccountSelectionOptions={balanceAccountSelectionOptions}
                     onBalanceAccountSelection={onBalanceAccountSelection}
                 />
-                <TransactionsOverviewDateFilter
+                <DataOverviewDateFilter
                     canResetFilters={canResetFilters}
                     defaultParams={defaultParams}
                     filters={filters}
@@ -179,7 +179,7 @@ export const TransactionsOverview = ({
                 availableCurrencies={availableCurrencies}
                 loading={fetching || isLoadingBalanceAccount || !balanceAccounts}
                 transactions={records}
-                onTransactionSelected={onTransactionSelected}
+                onTransactionSelected={onDataSelection}
                 showPagination={true}
                 showDetails={showDetails}
                 balanceAccountDescription={activeBalanceAccount?.description || ''}

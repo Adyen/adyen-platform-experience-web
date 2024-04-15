@@ -4,19 +4,16 @@ import DateFilter from '@src/components/internal/FilterBar/filters/DateFilter';
 import { DateFilterProps, DateRangeFilterParam } from '@src/components/internal/FilterBar/filters/DateFilter/types';
 import { UsePaginatedRecords } from '@src/components/internal/Pagination/hooks/types';
 import { useBalanceAccountSelection } from './BalanceAccountSelector';
-import useDefaultTransactionsOverviewFilterParams from '../hooks/useDefaultTransactionsOverviewFilterParams';
-import { TransactionFilterParam } from '../types';
+import useDefaultOverviewFilterParams from '../hooks/useDefaultOverviewFilterParams';
+import { DateFilterParam, TransactionFilterParam } from '../types';
 import { EMPTY_OBJECT } from '@src/utils/common';
 
-type TransactionsOverviewDateFilterProps = Pick<
-    UsePaginatedRecords<any, string, TransactionFilterParam>,
-    'canResetFilters' | 'filters' | 'updateFilters'
-> &
-    ReturnType<typeof useDefaultTransactionsOverviewFilterParams> & {
+type DataOverviewDateFilterProps = Pick<UsePaginatedRecords<any, string, DateFilterParam>, 'canResetFilters' | 'filters' | 'updateFilters'> &
+    ReturnType<typeof useDefaultOverviewFilterParams> & {
         balanceAccount?: ReturnType<typeof useBalanceAccountSelection>['activeBalanceAccount'];
     };
 
-const TransactionsOverviewDateFilter = ({
+const DataOverviewDateFilter = ({
     balanceAccount,
     canResetFilters,
     defaultParams,
@@ -24,7 +21,7 @@ const TransactionsOverviewDateFilter = ({
     nowTimestamp,
     refreshNowTimestamp,
     updateFilters,
-}: TransactionsOverviewDateFilterProps) => {
+}: DataOverviewDateFilterProps) => {
     const { i18n } = useCoreContext();
     const defaultTimeRangePreset = useMemo(() => i18n.get(defaultParams.current.defaultTimeRange), [i18n]);
     const [selectedTimeRangePreset, setSelectedTimeRangePreset] = useState(defaultTimeRangePreset);
@@ -84,4 +81,4 @@ const TransactionsOverviewDateFilter = ({
     );
 };
 
-export default TransactionsOverviewDateFilter;
+export default DataOverviewDateFilter;

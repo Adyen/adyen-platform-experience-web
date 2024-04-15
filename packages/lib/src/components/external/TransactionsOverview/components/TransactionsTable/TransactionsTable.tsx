@@ -9,7 +9,7 @@ import { TagVariant } from '@src/components/internal/Tag/types';
 import { CellTextPosition } from '@src/components/internal/DataGrid/types';
 import { Image } from '@src/components/internal/Image/Image';
 import { TranslationKey } from '@src/core/Localization/types';
-import TransactionListError from '../TransactionListError/TransactionListError';
+import DataOverviewListError from '../TransactionListError/DataOverviewListError';
 import { getCurrencyCode } from '@src/core/Localization/amount/amount-util';
 import {
     AMOUNT_CLASS,
@@ -75,7 +75,7 @@ export const TransactionsTable: FC<TransactionTableProps> = ({
         [setHoveredRow]
     );
 
-    const errorDisplay = useMemo(() => () => <TransactionListError error={error} onContactSupport={onContactSupport} />, [error, onContactSupport]);
+    const errorDisplay = useMemo(() => () => <DataOverviewListError error={error} onContactSupport={onContactSupport} />, [error, onContactSupport]);
     return (
         <div className={BASE_CLASS}>
             <DataGrid
