@@ -1,11 +1,12 @@
-import { AdyenPlatformExperience, TransactionsOverview, all_locales } from '@adyen/adyen-platform-experience-web';
+import { AdyenPlatformExperience, all_locales, PayoutsOverview } from '@adyen/adyen-platform-experience-web';
+import { createLanguageButtons } from '../../utils/createLanguageButtons';
+import { TEST_CONFIG } from '../../utils/utils';
 import '../../utils/createPages.js';
 import '../../assets/style/style.scss';
-
 import { enableServerInMockedMode } from '../../endpoints/mock-server/utils';
-import { TEST_CONFIG } from '../../utils/utils';
 import sessionRequest from '../../utils/sessionRequest';
-import { createLanguageButtons } from '../../utils/createLanguageButtons';
+
+// const DEFAULT_TRANSACTION_ID = getDefaultID('1VVF0D5V3709DX6D');
 
 enableServerInMockedMode()
     .then(async () => {
@@ -19,10 +20,9 @@ enableServerInMockedMode()
                 return await sessionRequest();
             },
         });
-
         createLanguageButtons({ locales: ['es-ES', 'en-US'], core: AdyenPlatform });
 
-        const transactionsComponent = new TransactionsOverview({
+        const payoutsComponent = new PayoutsOverview({
             core: AdyenPlatform,
             onDataSelection: ({ showModal }) => {
                 showModal();
@@ -34,12 +34,11 @@ enableServerInMockedMode()
             onLimitChanged: (/* limit */) => {
                 // do something here with the updated limit
             },
-            onContactSupport: () => {},
             allowLimitSelection: true,
             preferredLimit: 10,
             ...TEST_CONFIG,
         });
 
-        transactionsComponent.mount('.transactions-component-container');
+        payoutsComponent.mount('.payouts-overview-container');
     })
     .catch(console.error);

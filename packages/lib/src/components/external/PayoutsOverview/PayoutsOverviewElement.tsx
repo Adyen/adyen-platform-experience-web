@@ -1,10 +1,10 @@
-import { DataOverviewComponentProps } from '@src/components';
+import { DataOverviewComponentProps, OverviewComponentProps } from '@src/components';
+import OverviewContainer from '@src/components/external/TransactionsOverview/components/TransactionsOverviewContainer/OverviewContainer';
 import UIElement from '../UIElement';
-import Transactions from './components/TransactionsOverviewContainer/OverviewContainer';
 import { _UIComponentProps } from '../../types';
 
-export class TransactionsElement extends UIElement<DataOverviewComponentProps> {
-    public static type = 'transactions';
+export class PayoutsElement extends UIElement<DataOverviewComponentProps> {
+    public static type = 'payouts';
 
     constructor(props: _UIComponentProps<DataOverviewComponentProps>) {
         super(props);
@@ -14,17 +14,17 @@ export class TransactionsElement extends UIElement<DataOverviewComponentProps> {
 
     public componentToRender = () => {
         return (
-            <Transactions
+            <OverviewContainer
                 {...this.props}
                 balanceAccountId={this.props.core.options.balanceAccountId}
                 ref={(ref: UIElement<DataOverviewComponentProps>) => {
                     this.componentRef = ref;
                 }}
-                type={'transactions'}
+                type={'payouts'}
                 elementRef={this.elementRef}
             />
         );
     };
 }
 
-export default TransactionsElement;
+export default PayoutsElement;

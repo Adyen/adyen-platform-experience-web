@@ -226,5 +226,9 @@
     "tooltip.Chargeback": "Money returned to a customer after a disputed transaction",
     "tooltip.Incoming": "Money received to your account from transactions and transfers",
     "theSelectedBalanceAccountIsIncorrect": "The selected balance account is incorrect",
-    "transactionType": "Transaction type"
+    "grossPayout": "Gross Amount",
+    "netPayout": "Net Amount",
+    "adjustments": "Adjustments",
+    "payoutDetails": "Payout Details",
+    "noPayoutsFound": "No payouts found"
 }

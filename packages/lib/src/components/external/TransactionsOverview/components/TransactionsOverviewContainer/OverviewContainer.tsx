@@ -1,4 +1,5 @@
-import { TransactionsComponentProps } from '../../types';
+import { PayoutsOverview } from '@src/components/external/PayoutsOverview/components/PayoutsOverview/PayoutsOverview';
+import { OverviewComponentProps } from '../../types';
 import { ExternalUIComponentProps } from '../../../../types';
 import { useSetupEndpoint } from '@src/hooks/useSetupEndpoint/useSetupEndpoint';
 import { useFetch } from '@src/hooks/useFetch/useFetch';
@@ -11,7 +12,7 @@ import { ErrorMessageDisplay } from '@src/components/internal/ErrorMessageDispla
 import { BASE_CLASS, WITH_ERROR_CLASS } from '@src/components/external/TransactionsOverview/components/TransactionsOverviewContainer/constants';
 import './TransactionsOverviewContainer.scss';
 
-function TransactionsOverviewContainer(props: ExternalUIComponentProps<TransactionsComponentProps>) {
+function OverviewContainer({ type, ...props }: ExternalUIComponentProps<OverviewComponentProps>) {
     const { sessionSetupError, endpoints } = useAuthContext();
 
     // Balance Accounts
@@ -52,10 +53,15 @@ function TransactionsOverviewContainer(props: ExternalUIComponentProps<Transacti
                     message={['weCouldNotLoadTheTransactionsOverview', 'theSelectedBalanceAccountIsIncorrect']}
                 />
             ) : (
-                <TransactionsOverview {...props} balanceAccounts={balanceAccounts} isLoadingBalanceAccount={isFetching} />
+                <>
+                    {type === 'transactions' && (
+                        <TransactionsOverview {...props} balanceAccounts={balanceAccounts} isLoadingBalanceAccount={isFetching} />
+                    )}
+                    {type === 'payouts' && <PayoutsOverview {...props} balanceAccounts={balanceAccounts} isLoadingBalanceAccount={isFetching} />}
+                </>
             )}
         </div>
     );
 }
 
-export default TransactionsOverviewContainer;
+export default OverviewContainer;

@@ -22,10 +22,10 @@ export const TableBody = <
                 <tr
                     className="adyen-pe-data-grid__row"
                     key={item}
-                    onMouseEnter={i18n.has(`tooltip.${item?.category}`) ? () => onRowHover(index) : noop}
-                    onFocus={i18n.has(`tooltip.${item?.category}`) ? () => onRowHover(index) : noop}
-                    onMouseLeave={i18n.has(`tooltip.${item?.category}`) ? () => onRowHover() : noop}
-                    onBlur={i18n.has(`tooltip.${item?.category}`) ? () => onRowHover() : noop}
+                    onMouseEnter={i18n.has(`tooltip.${item?.category}`) && onRowHover ? () => onRowHover(index) : noop}
+                    onFocus={i18n.has(`tooltip.${item?.category}`) && onRowHover ? () => onRowHover(index) : noop}
+                    onMouseLeave={i18n.has(`tooltip.${item?.category}`) && onRowHover ? () => onRowHover() : noop}
+                    onBlur={i18n.has(`tooltip.${item?.category}`) && onRowHover ? () => onRowHover() : noop}
                 >
                     <TableCells<Items, Columns, CustomCells> columns={columns} customCells={customCells} item={item} rowIndex={index} />
                 </tr>

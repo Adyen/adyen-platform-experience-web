@@ -1,4 +1,4 @@
-import { TransactionsComponentProps } from '@src/components';
+import { DataOverviewComponentProps } from '@src/components';
 import AuthProvider from '../../core/Auth/AuthProvider';
 import CoreProvider from '../../core/Context/CoreProvider';
 import { JSXInternal } from 'preact/src/jsx';
@@ -57,7 +57,7 @@ export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUI
         return this.type;
     }
 
-    formatProps(props: TransactionsComponentProps) {
+    formatProps(props: DataOverviewComponentProps) {
         return props;
     }
 

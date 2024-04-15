@@ -6,19 +6,24 @@ export const enum TransactionFilterParam {
     BALANCE_ACCOUNT = 'balanceAccount',
     CATEGORIES = 'categories',
     CURRENCIES = 'currencies',
-    STATUSES = 'statuses',
     CREATED_SINCE = 'createdSince',
     CREATED_UNTIL = 'createdUntil',
+    STATUSES = 'statuses',
     MIN_AMOUNT = 'minAmount',
     MAX_AMOUNT = 'maxAmount',
 }
 
+export const enum DateFilterParam {
+    CREATED_SINCE = 'createdSince',
+    CREATED_UNTIL = 'createdUntil',
+}
+
 export type OnSelection = (selection: { id: string; showModal: () => void }) => any;
 
-export interface TransactionsComponentProps {
+export interface DataOverviewComponentProps {
     name?: string;
-    elementRef?: UIElement<TransactionsComponentProps> | null;
-    onTransactionSelected?: OnSelection;
+    elementRef?: UIElement<DataOverviewComponentProps> | null;
+    onDataSelection?: OnSelection;
     onFiltersChanged?: (filters: { [P in TransactionFilterParam]?: string }) => any;
     onLimitChanged?: (limit: number) => any;
     preferredLimit?: 10 | 20;
@@ -26,6 +31,10 @@ export interface TransactionsComponentProps {
     showDetails?: boolean;
     core: Core;
     balanceAccountId?: string;
+}
+
+export interface OverviewComponentProps extends DataOverviewComponentProps {
+    type: 'payouts' | 'transactions';
 }
 export interface BalanceAccountProps {
     balanceAccountDescription?: string;
