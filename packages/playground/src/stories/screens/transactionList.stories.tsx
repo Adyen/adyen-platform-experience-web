@@ -8,15 +8,17 @@ const meta: Meta<ElementProps<typeof TransactionsOverview>> = {
     title: 'screens/Transactions',
     argTypes: {
         onFiltersChanged: enabledDisabledCallbackRadioControls('onFiltersChanged', ['Passed', 'Not Passed']),
-        onTransactionSelected: enabledDisabledCallbackRadioControls('onDataSelection'),
+        onDataSelection: enabledDisabledCallbackRadioControls('onDataSelection'),
         onLimitChanged: enabledDisabledCallbackRadioControls('onLimitChanged', ['Passed', 'Not Passed']),
         onContactSupport: enabledDisabledCallbackRadioControls('onTransactionSelected'),
+        hideTitle: { type: 'boolean' },
         preferredLimit: { type: 'number', min: 1, max: 100 },
         allowLimitSelection: { type: 'boolean' },
     },
     args: {
         preferredLimit: 10,
         allowLimitSelection: true,
+        hideTitle: true,
         onContactSupport: () => {},
     },
     render: (args, context) => {

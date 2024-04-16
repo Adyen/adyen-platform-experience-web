@@ -20,7 +20,6 @@ export const TableCells = <
     return (
         <>
             {columns.map(({ key }) => {
-                console.log(key);
                 if (customCells?.[key])
                     return (
                         <DataGridCell aria-labelledby={String(key)} key={key}>
