@@ -235,5 +235,6 @@
     "payoutDetails": "Payout Details",
     "noPayoutsFound": "No payouts found",
     "payoutsTitle": "Payouts",
-    "transactionsOverviewTitle": "Transactions overview"
+    "transactionsOverviewTitle": "Transactions overview",
+    "nextPayouts": "Next Payouts"
 }
