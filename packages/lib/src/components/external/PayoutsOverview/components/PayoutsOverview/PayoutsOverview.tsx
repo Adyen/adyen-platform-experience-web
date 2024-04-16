@@ -1,6 +1,6 @@
 import { PayoutsFilterParam } from '@src/components';
 import { PayoutsDisplay } from '@src/components/external/PayoutsOverview/components/PayoutsDisplay/PayoutsDisplay';
-import { BASE_CLASS } from '@src/components/external/PayoutsOverview/components/PayoutsOverview/constants';
+import { BASE_CLASS, TITLE_CLASS, TITLE_LEFT_CLASS } from '@src/components/external/PayoutsOverview/components/PayoutsOverview/constants';
 import FilterBar from '@src/components/internal/FilterBar';
 import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '@src/components/internal/Pagination/constants';
 import { useCursorPaginatedRecords } from '@src/components/internal/Pagination/hooks';
@@ -12,6 +12,7 @@ import DataOverviewDateFilter from '@src/components/shared/components/DateOvervi
 import { DataOverviewComponentProps } from '@src/components/shared/components/types';
 import useDefaultOverviewFilterParams from '@src/components/shared/hooks/useDefaultOverviewFilterParams';
 import { ExternalUIComponentProps } from '@src/components/types';
+import useAuthContext from '@src/core/Auth/useAuthContext';
 import useCoreContext from '@src/core/Context/useCoreContext';
 import AdyenPlatformExperienceError from '@src/core/Errors/AdyenPlatformExperienceError';
 import { SuccessResponse, useSetupEndpoint } from '@src/hooks/useSetupEndpoint/useSetupEndpoint';
@@ -37,6 +38,7 @@ export const PayoutsOverview = ({
     DataOverviewComponentProps & { balanceAccounts: IBalanceAccountBase[] | undefined; isLoadingBalanceAccount: boolean }
 >) => {
     const { i18n } = useCoreContext();
+    // const { endpoints} = useAuthContext();
     const payoutsEnpointCall = useSetupEndpoint('getPayouts');
     const { activeBalanceAccount, balanceAccountSelectionOptions, onBalanceAccountSelection } = useBalanceAccountSelection(balanceAccounts);
     const { defaultParams, nowTimestamp, refreshNowTimestamp } = useDefaultOverviewFilterParams('payouts', activeBalanceAccount);
@@ -91,30 +93,44 @@ export const PayoutsOverview = ({
 
     return (
         <div className={BASE_CLASS}>
-            {!hideTitle && (
-                <Typography variant={TypographyVariant.TITLE} medium>
-                    {i18n.get('payoutsTitle')}
-                </Typography>
-            )}
-            <FilterBar>
-                <BalanceAccountSelector
-                    activeBalanceAccount={activeBalanceAccount}
-                    balanceAccountSelectionOptions={balanceAccountSelectionOptions}
-                    onBalanceAccountSelection={onBalanceAccountSelection}
-                />
-                <DataOverviewDateFilter
-                    canResetFilters={canResetFilters}
-                    defaultParams={defaultParams}
-                    filters={filters}
-                    nowTimestamp={nowTimestamp}
-                    refreshNowTimestamp={refreshNowTimestamp}
-                    updateFilters={updateFilters}
-                />
-            </FilterBar>
+            <div className={TITLE_CLASS}>
+                <div className={TITLE_LEFT_CLASS}>
+                    {!hideTitle && (
+                        <Typography variant={TypographyVariant.TITLE} medium>
+                            {i18n.get('payoutsTitle')}
+                        </Typography>
+                    )}
+                    <FilterBar>
+                        <BalanceAccountSelector
+                            activeBalanceAccount={activeBalanceAccount}
+                            balanceAccountSelectionOptions={balanceAccountSelectionOptions}
+                            onBalanceAccountSelection={onBalanceAccountSelection}
+                        />
+                        <DataOverviewDateFilter
+                            canResetFilters={canResetFilters}
+                            defaultParams={defaultParams}
+                            filters={filters}
+                            nowTimestamp={nowTimestamp}
+                            refreshNowTimestamp={refreshNowTimestamp}
+                            updateFilters={updateFilters}
+                        />
+                    </FilterBar>
+                </div>
+                {/*{endpoints?.getNextPayout && (<div className={NEXT_PAYOUTS_CLASS}>*/}
+                {/*    <div className={NEXT_PAYOUTS_SECTION_CLASS}>*/}
+                {/*        <Typography variant={TypographyVariant.BODY}>{i18n.get('nextPayouts')}</Typography>*/}
+                {/*        <Tag variant={TagVariant.SUCCESS} label={'Mar 15, 2024'} />*/}
+                {/*    </div>*/}
+                {/*    <div className={NEXT_PAYOUTS_SECTION_CLASS}>*/}
+                {/*        <Typography variant={TypographyVariant.SUBTITLE}>{'14,200'}</Typography>*/}
+                {/*        <Typography variant={TypographyVariant.CAPTION}>{'USD'}</Typography>*/}
+                {/*    </div>*/}
+                {/*</div>)}*/}
+            </div>
             <PayoutsDisplay
                 balanceAccounts={balanceAccounts}
                 loading={fetching || isLoadingBalanceAccount || !balanceAccounts}
-                data={records ?? BASIC_PAYOUTS_LIST} //TODO: Delete mock data after BE integration
+                data={records ?? BASIC_PAYOUTS_LIST} //TODO: Delete mock data after BE/mock server integration
                 onDataSelection={onDataSelection}
                 showPagination={true}
                 showDetails={showDetails}
