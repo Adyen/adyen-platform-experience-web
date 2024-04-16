@@ -18,7 +18,7 @@ const meta: Meta<ElementProps<typeof TransactionsOverview>> = {
     args: {
         preferredLimit: 10,
         allowLimitSelection: true,
-        hideTitle: true,
+        hideTitle: false,
         onContactSupport: () => {},
     },
     render: (args, context) => {
