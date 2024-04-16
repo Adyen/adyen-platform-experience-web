@@ -8,15 +8,17 @@ const meta: Meta<ElementProps<typeof PayoutsOverview>> = {
     title: 'screens/Payouts',
     argTypes: {
         onFiltersChanged: enabledDisabledCallbackRadioControls('onFiltersChanged', ['Passed', 'Not Passed']),
-        onTransactionSelected: enabledDisabledCallbackRadioControls('onDataSelection'),
+        onDataSelection: enabledDisabledCallbackRadioControls('onDataSelection'),
         onLimitChanged: enabledDisabledCallbackRadioControls('onLimitChanged', ['Passed', 'Not Passed']),
         onContactSupport: enabledDisabledCallbackRadioControls('onTransactionSelected'),
         preferredLimit: { type: 'number', min: 1, max: 100 },
+        hideTitle: { type: 'boolean' },
         allowLimitSelection: { type: 'boolean' },
     },
     args: {
         preferredLimit: 10,
         allowLimitSelection: true,
+        hideTitle: false,
         onContactSupport: () => {},
     },
     render: (args, context) => {

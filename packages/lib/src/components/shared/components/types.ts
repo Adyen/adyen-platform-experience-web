@@ -12,6 +12,7 @@ export interface DataOverviewComponentProps {
     preferredLimit?: 10 | 20;
     allowLimitSelection?: boolean;
     showDetails?: boolean;
+    hideTitle?: boolean;
     core: Core;
     balanceAccountId?: string;
 }

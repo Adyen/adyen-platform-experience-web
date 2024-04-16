@@ -83,7 +83,6 @@ export const PayoutsTable: FC<PayoutsTableProps> = ({
                         return value && <span>{value?.value}</span>;
                     },
                     adjustments: ({ value }) => {
-                        console.log(value);
                         return value && <span>{value.value}</span>;
                     },
                     netPayout: ({ value }) => {

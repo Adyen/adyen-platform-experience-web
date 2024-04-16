@@ -30,6 +30,7 @@ export const withBalanceAccounts = (WrappedComponent: any) => {
 
         return (
             <WrappedComponent
+                {...props}
                 balanceAccounts={balanceAccounts}
                 isFetchingBalanceAccounts={isFetching}
                 wrongBalanceAccountId={wrongBalanceAccountId}
