@@ -1,5 +1,6 @@
 import { OnSelection } from '@src/components';
-import DataOverviewListError from '@src/components/external/TransactionsOverview/components/TransactionListError/DataOverviewListError';
+import PayoutListError from '@src/components/external/PayoutsOverview/components/PayoutsListError/PayoutListError';
+import { BASE_CLASS } from '@src/components/external/PayoutsOverview/components/PayoutsTable/constants';
 import { getLabel } from '@src/components/external/TransactionsOverview/components/utils';
 import { PaginationProps, WithPaginationLimitSelection } from '@src/components/internal/Pagination/types';
 import useCoreContext from '@src/core/Context/useCoreContext';
@@ -10,7 +11,6 @@ import { BASIC_PAYOUTS_LIST } from '../../../../../../../../mocks/src/payouts';
 import DataGrid from '../../../../internal/DataGrid';
 import Pagination from '../../../../internal/Pagination';
 import { TranslationKey } from '@src/core/Localization/types';
-import { BASE_CLASS } from '@src/components/external/TransactionsOverview/components/TransactionsTable/constants';
 import { FC } from 'preact/compat';
 
 // Remove status column temporarily
@@ -64,7 +64,7 @@ export const PayoutsTable: FC<PayoutsTableProps> = ({
         message: ['tryDifferentSearchOrResetYourFiltersAndWeWillTryAgain'],
     } satisfies { title: TranslationKey; message: TranslationKey | TranslationKey[] };
 
-    const errorDisplay = useMemo(() => () => <DataOverviewListError error={error} onContactSupport={onContactSupport} />, [error, onContactSupport]);
+    const errorDisplay = useMemo(() => () => <PayoutListError error={error} onContactSupport={onContactSupport} />, [error, onContactSupport]);
     return (
         <div className={BASE_CLASS}>
             <DataGrid

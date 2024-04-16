@@ -1,5 +1,5 @@
-import { DataOverviewComponentProps, OverviewComponentProps } from '@src/components';
-import OverviewContainer from '@src/components/external/TransactionsOverview/components/TransactionsOverviewContainer/OverviewContainer';
+import { DataOverviewComponentProps } from '@src/components/shared/components/types';
+import Payouts from '@src/components/external/PayoutsOverview/components/PayoutsOverviewContainer/PayoutsOverviewContainer';
 import UIElement from '../UIElement';
 import { _UIComponentProps } from '../../types';
 
@@ -14,13 +14,12 @@ export class PayoutsElement extends UIElement<DataOverviewComponentProps> {
 
     public componentToRender = () => {
         return (
-            <OverviewContainer
+            <Payouts
                 {...this.props}
                 balanceAccountId={this.props.core.options.balanceAccountId}
                 ref={(ref: UIElement<DataOverviewComponentProps>) => {
                     this.componentRef = ref;
                 }}
-                type={'payouts'}
                 elementRef={this.elementRef}
             />
         );

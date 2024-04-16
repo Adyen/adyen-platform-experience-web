@@ -1,6 +1,11 @@
+import { TypographyVariant } from '@src/components/internal/Typography/types';
+import Typography from '@src/components/internal/Typography/Typography';
+import BalanceAccountSelector, { useBalanceAccountSelection } from '@src/components/shared/components/BalanceAccountSelector';
+import { DataOverviewComponentProps } from '@src/components/shared/components/types';
+import DataOverviewDateFilter from '@src/components/shared/components/DateOverviewDateFilter/DataOverviewDateFilter';
 import FilterBar from '@src/components/internal/FilterBar';
 import { ExternalUIComponentProps } from '@src/components/types';
-import { DataOverviewComponentProps, TransactionFilterParam } from '../../types';
+import { TransactionFilterParam } from '../../types';
 import { TransactionsDisplay } from '@src/components/external/TransactionsOverview/components/TransactionsDisplay/TransactionsDisplay';
 import useCoreContext from '@src/core/Context/useCoreContext';
 import { SetupHttpOptions, useSetupEndpoint } from '@src/hooks/useSetupEndpoint/useSetupEndpoint';
@@ -9,12 +14,10 @@ import { useCursorPaginatedRecords } from '@src/components/internal/Pagination/h
 import { IBalanceAccountBase, ITransaction } from '@src/types';
 import { isFunction } from '@src/utils/common';
 import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '@src/components/internal/Pagination/constants';
-import DataOverviewDateFilter from '@src/components/external/TransactionsOverview/components/DataOverviewDateFilter';
 import TransactionTotals from '@src/components/external/TransactionsOverview/components/TransactionTotals/TransactionTotals';
 import { Balances } from '@src/components/external/TransactionsOverview/components/Balances/Balances';
-import BalanceAccountSelector, { useBalanceAccountSelection } from '../BalanceAccountSelector';
 import MultiSelectionFilter, { listFrom } from '../MultiSelectionFilter';
-import useDefaultOverviewFilterParams from '../../hooks/useDefaultOverviewFilterParams';
+import useDefaultOverviewFilterParams from '@src/components/shared/hooks/useDefaultOverviewFilterParams';
 import useTransactionsOverviewMultiSelectionFilters from '../../hooks/useTransactionsOverviewMultiSelectionFilters';
 import AdyenPlatformExperienceError from '@src/core/Errors/AdyenPlatformExperienceError';
 import { AmountFilter } from '@src/components/internal/FilterBar/filters/AmountFilter/AmountFilter';
@@ -36,13 +39,14 @@ export const TransactionsOverview = ({
     showDetails,
     isLoadingBalanceAccount,
     onContactSupport,
+    hideTitle,
 }: ExternalUIComponentProps<
     DataOverviewComponentProps & { balanceAccounts: IBalanceAccountBase[] | undefined; isLoadingBalanceAccount: boolean }
 >) => {
     const { i18n } = useCoreContext();
     const transactionsEndpointCall = useSetupEndpoint('getTransactions');
     const { activeBalanceAccount, balanceAccountSelectionOptions, onBalanceAccountSelection } = useBalanceAccountSelection(balanceAccounts);
-    const { defaultParams, nowTimestamp, refreshNowTimestamp } = useDefaultOverviewFilterParams(activeBalanceAccount, 'transactions');
+    const { defaultParams, nowTimestamp, refreshNowTimestamp } = useDefaultOverviewFilterParams('transactions', activeBalanceAccount);
 
     const getTransactions = useCallback(
         async ({ balanceAccount, ...pageRequestParams }: Record<TransactionFilterParam | 'cursor', string>, signal?: AbortSignal) => {
@@ -124,6 +128,11 @@ export const TransactionsOverview = ({
 
     return (
         <div className={BASE_CLASS}>
+            {!hideTitle && (
+                <Typography variant={TypographyVariant.TITLE} medium>
+                    {i18n.get('transactionsOverviewTitle')}
+                </Typography>
+            )}
             <FilterBar>
                 <BalanceAccountSelector
                     activeBalanceAccount={activeBalanceAccount}

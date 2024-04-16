@@ -1,19 +1,11 @@
+import { ErrorMessage, getCommonErrorMessages, UNDEFINED_ERROR } from '@src/components/shared/utils/commonErrorCodes';
 import AdyenPlatformExperienceError from '@src/core/Errors/AdyenPlatformExperienceError';
 import CopyText from '@src/components/internal/CopyText/CopyText';
-import { TranslationKey } from '@src/core/Localization/types';
-import { JSXInternal } from 'preact/src/jsx';
 
-type ErrorMessage = {
-    title: TranslationKey;
-    message?: TranslationKey | TranslationKey[];
-    refreshComponent?: boolean;
-    onContactSupport?: () => void;
-    translationValues?: { [k in TranslationKey]?: JSXInternal.Element | null };
-};
-
-const UNDEFINED_ERROR = { title: 'thereWasAnUnexpectedError', message: ['pleaseReachOutToSupportForAssistance'] } satisfies ErrorMessage;
 export const getErrorMessage = (error: AdyenPlatformExperienceError | undefined, onContactSupport?: () => void): ErrorMessage => {
     if (!error) return UNDEFINED_ERROR;
+    const commonErrors = getCommonErrorMessages(error, onContactSupport);
+    if (commonErrors) return commonErrors;
     switch (error.errorCode) {
         case undefined:
             return {
@@ -32,19 +24,6 @@ export const getErrorMessage = (error: AdyenPlatformExperienceError | undefined,
                     ? { theErrorCodeIs: error?.requestId ? <CopyText text={error.requestId} /> : null }
                     : { contactSupportForHelpAndShareErrorCode: error.requestId ? <CopyText text={error.requestId} /> : null },
             };
-        case '29_001':
-            return {
-                title: 'theRequestIsMissingRequiredFieldsOrContainsInvalidData',
-                message: ['pleaseReachOutToSupportForAssistance'],
-                onContactSupport,
-            };
-        case '30_112':
-            return {
-                title: 'entityWasNotFound',
-                message: ['entityWasNotFoundDetail'],
-                onContactSupport,
-            };
-        case '00_403':
         default:
             return UNDEFINED_ERROR;
     }
