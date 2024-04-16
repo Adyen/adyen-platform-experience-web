@@ -1,4 +1,4 @@
-import { DataOverviewComponentProps } from '@src/components';
+import { DataOverviewComponentProps } from '@src/components/shared/components/types';
 import AuthProvider from '../../core/Auth/AuthProvider';
 import CoreProvider from '../../core/Context/CoreProvider';
 import { JSXInternal } from 'preact/src/jsx';

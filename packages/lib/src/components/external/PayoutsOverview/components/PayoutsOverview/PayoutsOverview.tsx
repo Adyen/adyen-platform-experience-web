@@ -1,22 +1,27 @@
-import { DataOverviewComponentProps, PayoutsFilterParam } from '@src/components';
+import { PayoutsFilterParam } from '@src/components';
 import { PayoutsDisplay } from '@src/components/external/PayoutsOverview/components/PayoutsDisplay/PayoutsDisplay';
 import { BASE_CLASS } from '@src/components/external/PayoutsOverview/components/PayoutsOverview/constants';
-import BalanceAccountSelector from '@src/components/external/TransactionsOverview/components/BalanceAccountSelector';
-import useBalanceAccountSelection from '@src/components/external/TransactionsOverview/components/BalanceAccountSelector/useBalanceAccountSelection';
-import useDefaultOverviewFilterParams from '@src/components/external/TransactionsOverview/hooks/useDefaultOverviewFilterParams';
 import FilterBar from '@src/components/internal/FilterBar';
-import { ExternalUIComponentProps } from '@src/components/types';
-import { SuccessResponse, useSetupEndpoint } from '@src/hooks/useSetupEndpoint/useSetupEndpoint';
-import { EndpointsOperations } from '@src/types/models/openapi/endpoints';
-import { useCallback, useEffect, useMemo } from 'preact/hooks';
-import { useCursorPaginatedRecords } from '@src/components/internal/Pagination/hooks';
-import { IBalanceAccountBase } from '@src/types';
-import { isFunction } from '@src/utils/common';
 import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '@src/components/internal/Pagination/constants';
-import DataOverviewDateFilter from '@src/components/external/TransactionsOverview/components/DataOverviewDateFilter';
+import { useCursorPaginatedRecords } from '@src/components/internal/Pagination/hooks';
+import { TypographyVariant } from '@src/components/internal/Typography/types';
+import Typography from '@src/components/internal/Typography/Typography';
+import BalanceAccountSelector from '@src/components/shared/components/BalanceAccountSelector';
+import useBalanceAccountSelection from '@src/components/shared/components/BalanceAccountSelector/useBalanceAccountSelection';
+import DataOverviewDateFilter from '@src/components/shared/components/DateOverviewDateFilter/DataOverviewDateFilter';
+import { DataOverviewComponentProps } from '@src/components/shared/components/types';
+import useDefaultOverviewFilterParams from '@src/components/shared/hooks/useDefaultOverviewFilterParams';
+import { ExternalUIComponentProps } from '@src/components/types';
+import useCoreContext from '@src/core/Context/useCoreContext';
 import AdyenPlatformExperienceError from '@src/core/Errors/AdyenPlatformExperienceError';
+import { SuccessResponse, useSetupEndpoint } from '@src/hooks/useSetupEndpoint/useSetupEndpoint';
+import { IBalanceAccountBase } from '@src/types';
+import { EndpointsOperations } from '@src/types/models/openapi/endpoints';
+import { isFunction } from '@src/utils/common';
+import { useCallback, useEffect, useMemo } from 'preact/hooks';
 import { BASIC_PAYOUTS_LIST } from '../../../../../../../../mocks/src/payouts';
 import './PayoutsOverview.scss';
+
 export const PayoutsOverview = ({
     onFiltersChanged,
     onLimitChanged,
@@ -27,12 +32,14 @@ export const PayoutsOverview = ({
     showDetails,
     isLoadingBalanceAccount,
     onContactSupport,
+    hideTitle,
 }: ExternalUIComponentProps<
     DataOverviewComponentProps & { balanceAccounts: IBalanceAccountBase[] | undefined; isLoadingBalanceAccount: boolean }
 >) => {
+    const { i18n } = useCoreContext();
     const payoutsEnpointCall = useSetupEndpoint('getPayouts');
     const { activeBalanceAccount, balanceAccountSelectionOptions, onBalanceAccountSelection } = useBalanceAccountSelection(balanceAccounts);
-    const { defaultParams, nowTimestamp, refreshNowTimestamp } = useDefaultOverviewFilterParams(activeBalanceAccount, 'payouts');
+    const { defaultParams, nowTimestamp, refreshNowTimestamp } = useDefaultOverviewFilterParams('payouts', activeBalanceAccount);
 
     const getPayouts = useCallback(
         async (
@@ -47,11 +54,11 @@ export const PayoutsOverview = ({
             //     query: {
             //         ...pageRequestParams,
             //       createdSince:
-            //             pageRequestParams[TransactionFilterParam.CREATED_SINCE] ??
-            //             defaultParams.current.defaultFilterParams[TransactionFilterParam.CREATED_SINCE],
+            //             pageRequestParams[PayoutFilterParam.CREATED_SINCE] ??
+            //             defaultParams.current.defaultFilterParams[PayoutFilterParam.CREATED_SINCE],
             //         createdUntil:
-            //             pageRequestParams[TransactionFilterParam.CREATED_UNTIL] ??
-            //             defaultParams.current.defaultFilterParams[TransactionFilterParam.CREATED_UNTIL],
+            //             pageRequestParams[PayoutFilterParam.CREATED_UNTIL] ??
+            //             defaultParams.current.defaultFilterParams[PayoutFilterParam.CREATED_UNTIL],
             //         sortDirection: 'desc' as const,
             //         balanceAccountId: activeBalanceAccount?.id ?? '',
             //     },
@@ -84,6 +91,11 @@ export const PayoutsOverview = ({
 
     return (
         <div className={BASE_CLASS}>
+            {!hideTitle && (
+                <Typography variant={TypographyVariant.TITLE} medium>
+                    {i18n.get('payoutsTitle')}
+                </Typography>
+            )}
             <FilterBar>
                 <BalanceAccountSelector
                     activeBalanceAccount={activeBalanceAccount}

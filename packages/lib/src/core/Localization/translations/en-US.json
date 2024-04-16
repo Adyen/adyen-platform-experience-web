@@ -187,6 +187,7 @@
     "rangePreset.lastWeek": "Last week",
     "rangePreset.thisMonth": "This month",
     "rangePreset.thisWeek": "This week",
+    "rangePreset.last30Days": "Last 30 days",
     "rangePreset.yearToDate": "Year to date",
     "paymentMethod": "Payment method",
     "currency": "Currency",
@@ -202,8 +203,10 @@
     "thereWasAnUnexpectedError": "There was an unexpected error",
     "somethingWentWrong": "Something went wrong.",
     "weCouldNotLoadTheTransactionsOverview": "We could not load the transaction overview.",
+    "weCouldNotLoadThePayoutsOverview": "We could not load the payouts overview.",
     "tryRefreshingThePageOrComeBackLater": "Try refreshing the page or come back later.",
     "weCouldNotLoadYourTransactions": "We couldn’t load your transactions.",
+    "weCouldNotLoadYourPayouts": "We couldn’t load your payouts.",
     "anInternalErrorHappened": "An internal error happened",
     "contactSupportForHelpAndShareErrorCode": "Contact support for help and share error code %{requestId}",
     "theErrorCodeIs": "The error code is %{requestId}",
@@ -230,5 +233,7 @@
     "netPayout": "Net Amount",
     "adjustments": "Adjustments",
     "payoutDetails": "Payout Details",
-    "noPayoutsFound": "No payouts found"
+    "noPayoutsFound": "No payouts found",
+    "payoutsTitle": "Payouts",
+    "transactionsOverviewTitle": "Transactions overview"
 }

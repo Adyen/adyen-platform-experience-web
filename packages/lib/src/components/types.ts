@@ -55,6 +55,7 @@ export interface UIElementProps {
     setUIElementStatus?: (status: string) => void;
     ref?: any;
     onContactSupport?: () => void;
+    hideTitle?: boolean;
 
     /** @internal */
     elementRef?: any;

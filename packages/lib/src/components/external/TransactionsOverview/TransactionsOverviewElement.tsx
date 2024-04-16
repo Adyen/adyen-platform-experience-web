@@ -1,6 +1,6 @@
-import { DataOverviewComponentProps } from '@src/components';
+import { DataOverviewComponentProps } from '@src/components/shared/components/types';
+import Transactions from '@src/components/external/TransactionsOverview/components/TransactionsOverviewContainer/TransactionsOverviewContainer';
 import UIElement from '../UIElement';
-import Transactions from './components/TransactionsOverviewContainer/OverviewContainer';
 import { _UIComponentProps } from '../../types';
 
 export class TransactionsElement extends UIElement<DataOverviewComponentProps> {
@@ -20,9 +20,8 @@ export class TransactionsElement extends UIElement<DataOverviewComponentProps> {
                 ref={(ref: UIElement<DataOverviewComponentProps>) => {
                     this.componentRef = ref;
                 }}
-                type={'transactions'}
                 elementRef={this.elementRef}
-            />
+            ></Transactions>
         );
     };
 }

@@ -1,11 +1,12 @@
+import { TransactionFilterParam } from '@src/components';
+import { useBalanceAccountSelection } from '@src/components/shared/components/BalanceAccountSelector';
+import useDefaultOverviewFilterParams from '@src/components/shared/hooks/useDefaultOverviewFilterParams';
+import { DateFilterParam } from '@src/components/shared/components/types';
 import { useCallback, useMemo, useState } from 'preact/hooks';
 import useCoreContext from '@src/core/Context/useCoreContext';
 import DateFilter from '@src/components/internal/FilterBar/filters/DateFilter';
 import { DateFilterProps, DateRangeFilterParam } from '@src/components/internal/FilterBar/filters/DateFilter/types';
 import { UsePaginatedRecords } from '@src/components/internal/Pagination/hooks/types';
-import { useBalanceAccountSelection } from './BalanceAccountSelector';
-import useDefaultOverviewFilterParams from '../hooks/useDefaultOverviewFilterParams';
-import { DateFilterParam, TransactionFilterParam } from '../types';
 import { EMPTY_OBJECT } from '@src/utils/common';
 
 type DataOverviewDateFilterProps = Pick<UsePaginatedRecords<any, string, DateFilterParam>, 'canResetFilters' | 'filters' | 'updateFilters'> &
@@ -35,14 +36,12 @@ const DataOverviewDateFilter = ({
                         break;
                     case DateRangeFilterParam.FROM:
                         updateFilters({
-                            [TransactionFilterParam.CREATED_SINCE]:
-                                value || defaultParams.current.defaultFilterParams[TransactionFilterParam.CREATED_SINCE],
+                            [DateFilterParam.CREATED_SINCE]: value || defaultParams.current.defaultFilterParams[TransactionFilterParam.CREATED_SINCE],
                         });
                         break;
                     case DateRangeFilterParam.TO:
                         updateFilters({
-                            [TransactionFilterParam.CREATED_UNTIL]:
-                                value || defaultParams.current.defaultFilterParams[TransactionFilterParam.CREATED_UNTIL],
+                            [DateFilterParam.CREATED_UNTIL]: value || defaultParams.current.defaultFilterParams[DateFilterParam.CREATED_UNTIL],
                         });
                         break;
                     default:

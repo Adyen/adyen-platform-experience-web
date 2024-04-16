@@ -1,11 +1,11 @@
 import { Meta } from '@storybook/preact';
 import { enabledDisabledCallbackRadioControls } from '../utils/controls';
-import { TransactionsOverview } from '@adyen/adyen-platform-experience-web';
+import { PayoutsOverview } from '@adyen/adyen-platform-experience-web';
 import { ElementProps, ElementStory } from '../utils/types';
 import { Container } from '../utils/Container';
 
-const meta: Meta<ElementProps<typeof TransactionsOverview>> = {
-    title: 'screens/Transactions',
+const meta: Meta<ElementProps<typeof PayoutsOverview>> = {
+    title: 'screens/Payouts',
     argTypes: {
         onFiltersChanged: enabledDisabledCallbackRadioControls('onFiltersChanged', ['Passed', 'Not Passed']),
         onTransactionSelected: enabledDisabledCallbackRadioControls('onDataSelection'),
@@ -21,30 +21,22 @@ const meta: Meta<ElementProps<typeof TransactionsOverview>> = {
     },
     render: (args, context) => {
         if (context.loaded.data) {
-            Object.assign(args, { transactions: context.loaded.data });
+            Object.assign(args, { payouts: context.loaded.data });
         }
 
-        return <Container component={TransactionsOverview} componentConfiguration={args} context={context} mockedApi={args.mockedApi} />;
+        return <Container component={PayoutsOverview} componentConfiguration={args} context={context} mockedApi={args.mockedApi} />;
     },
 };
-export const Basic: ElementStory<typeof TransactionsOverview> = {
+export const Basic: ElementStory<typeof PayoutsOverview> = {
     name: 'Basic (Mocked)',
     args: {
         mockedApi: true,
     },
 };
 
-export const BasicTransactionListApi: ElementStory<
-    typeof TransactionsOverview,
-    { session: { roles: string[]; accountHolderId?: string; apiKey?: string } }
-> = {
+export const BasicTransactionListApi: ElementStory<typeof PayoutsOverview> = {
     name: 'Basic (API)',
-    argTypes: {
-        session: { control: 'object' },
-    },
-    args: {
-        session: { roles: [], accountHolderId: '', apiKey: '' },
-    },
+    args: {},
 };
 
 export default meta;
