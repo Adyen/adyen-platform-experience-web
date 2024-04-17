@@ -45,7 +45,7 @@
     }
 
     &.adyen-pe-button--secondary {
-        background: #fff;
+        background: var(--adyen-sdk-color-background-primary);
         border: 1px solid var(--adyen-sdk-color-outline-secondary);
         box-shadow: none;
         color: var(--adyen-sdk-color-label-primary);
@@ -53,6 +53,10 @@
         text-decoration: none;
         user-select: none;
         width: 100%;
+
+        &:hover {
+            background-color: var(--adyen-sdk-color-background-primary-hover);
+        }
 
         &::before {
             align-self: stretch;
