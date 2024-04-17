@@ -1,0 +1,108 @@
+/* stylelint-disable scss/dollar-variable-pattern */
+
+@function hex-to-hsl($hex) {
+    $color: if(type-of($hex) == 'string', color($hex), $hex);
+
+    // Convert hex to HSL using built-in SCSS functions
+    $h: hue($color);
+    $s: saturation($color);
+    $l: lightness($color);
+
+    // Return the HSL color
+    @return $h, $s, $l;
+}
+@function convert-colors-to-hsl($color-list) {
+    $hsl-list: ();
+
+    @each $color in $color-list {
+        // Convert each color to HSL and append to the new list
+        $hsl-color: hsl(hue($color), saturation($color), lightness($color));
+        $hsl-list: append($hsl-list, $hsl-color, comma);
+    }
+
+    @return $hsl-list;
+}
+
+// Define your standard scale with hex values
+$standard-scale-hex: #f7f7f8, #eeeff1, #e3e5e9, #dbdee2, #d1d5da, #c9cdd3, #c0c5cc, #b8bdc6, #afb5bf, #a7adb8, #9ea6b1, #9ea6b1, #8d95a3, #848e9c,
+    #7d8696, #747f8f, #6d7789, #647082, #5c687c, #556276, #4c5a6e, #455368, #3d4c62, #37455d, #2f3e56, #283750, #22314a, #1a2a44, #14243e, #0d1e38,
+    #071732, #00112c, #000b26, #000814;
+
+// Convert the standard scale from HEX to HSL
+$standard-scale-hsl: convert-colors-to-hsl($standard-scale-hex);
+
+@function generate-grey-scale($base-color, $base-index: 3) {
+    $base-hsl: hsl(hue($base-color), saturation($base_color), lightness($base_color));
+    $standard-base-hsl: nth($standard-scale-hsl, $base-index + 1);
+
+    $s-diff: saturation($base-hsl) - saturation($standard-base-hsl);
+    $l-diff: lightness($base-hsl) - lightness($standard-base-hsl);
+
+    $new-scale: ();
+    @each $color in $standard-scale-hsl {
+        $adjusted-h: hue($base-hsl);
+        $adjusted-s: saturation($color) + $s-diff;
+        $adjusted-l: lightness($color) + $l-diff;
+
+        $adjusted-s: if($adjusted-s > 100%, 100%, if($adjusted-s < 0%, 0%, $adjusted-s));
+        $adjusted-l: if($adjusted-l > 100%, 100%, if($adjusted-l < 0%, 0%, $adjusted-l));
+
+        $new-color: hsl($adjusted-h, $adjusted-s, $adjusted-l);
+        $new-scale: append($new-scale, $new-color, comma);
+    }
+
+    @return $new-scale;
+}
+
+@function generate-color-scale($base-color, $total: 34, $base-index: 32, $saturation-factor: 1) {
+    $base-hsl: hsl(hue($base-color), saturation($base_color), lightness($base_color));
+
+    $new-scale: ();
+    @for $i from 1 through $total {
+        // Directly use the base color for the base index
+        $new-color: $base-hsl;
+        @if ($i == $base-index) {
+            $new-color: $base-hsl;
+        } @else {
+            $current-standard-hsl: nth($standard-scale-hsl, $i);
+
+            // Adjust saturation and lightness proportionally
+            $s-adjust: saturation($base-hsl) + saturation($current-standard-hsl) - (saturation($base-hsl) * 0.3);
+            $l-adjust: lightness($current-standard-hsl); // Use original lightness from the standard for simplicity
+
+            // Ensure values are within valid ranges
+            $s-adjust: if($s-adjust > 100%, 100%, if($s-adjust < 0%, 0%, $s-adjust));
+            $l-adjust: if($l-adjust > 100%, 100%, if($l-adjust < 0%, 0%, $l-adjust));
+
+            // Apply adjustment
+            $new-color: hsl(hue($base-hsl), $s_adjust, $l_adjust);
+        }
+
+        $new-scale: append($new-scale, $new-color, comma);
+    }
+
+    @return $new-scale;
+}
+
+@function invert-color-lightness($color, $fallback-color) {
+    // Convert the input color to HSL
+    $hue: hue($color);
+    $saturation: saturation($color);
+    $lightness: lightness($color);
+
+    $fallback-hue: hue($fallback-color);
+    $fallback-saturation: saturation($fallback-color);
+    $fallback-lightness: lightness($fallback-color);
+
+    // Calculate the inverted lightness
+    $inverted-lightness: if($lightness > 70, 100% - $lightness, if($lightness <= 70, 100%, null));
+
+    @if ($lightness > 70) {
+        $color: hsl($fallback-hue, $fallback-saturation, $fallback-lightness - 10);
+        @return $color;
+    } @else {
+        // Create the new color with inverted lightness
+        $inverted-color: hsl($hue, $saturation, $inverted-lightness);
+        @return $inverted-color;
+    }
+}

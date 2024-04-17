@@ -66,7 +66,7 @@
 }
 
 .adyen-pe-input {
-    background: #fff;
+    background: var(--adyen-sdk-color-background-primary);
     border: 1px solid var(--adyen-sdk-color-outline-secondary);
     border-radius: var(--adyen-sdk-border-radius-m);
     color: var(--adyen-sdk-color-label-primary);
@@ -88,7 +88,7 @@
 }
 
 .adyen-pe-input:hover {
-    border-color: #99a3ad;
+    border-color: var(--adyen-sdk-color-outline-primary-hover);
 }
 
 .adyen-pe-input:required {
@@ -167,7 +167,7 @@
 .adyen-pe-input:active:hover,
 .adyen-pe-input:focus:hover,
 .adyen-pe-input--focus:hover {
-    background: linear-gradient(0deg, #fff, #fff);
+    background: var(--adyen-sdk-color-background-primary);
     outline: 1px solid #00112c;
 }
 

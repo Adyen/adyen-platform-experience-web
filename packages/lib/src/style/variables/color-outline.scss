@@ -1,0 +1,40 @@
+@import '@adyen/bento-design-tokens/dist/scss/bento/variables.scss';
+
+// $color-grey-400
+// $color-grey-600
+// $color-grey-3200
+// $color-grey-800
+// $color-grey-1300
+// $color-grey-1700
+
+//stylelint-disable
+
+$color-outline-primary: var(--adyen-sdk-color-outline-primary, #945);
+
+$color-outline-primary: var(--adyen-sdk-grey-400, $color-grey-400);
+$color-outline-primary-hover: $color-grey-600;
+$color-outline-primary-active: $color-grey-3200;
+
+$color-outline-secondary: $color-grey-600;
+$color-outline-secondary-hover: $color-grey-800;
+$color-outline-secondary-active: $color-grey-3200;
+
+$color-outline-tertiary: $color-grey-1300;
+$color-outline-tertiary-hover: $color-grey-1700;
+$color-outline-tertiary-active: $color-grey-3200;
+
+$color-outline-disabled: $color-grey-400;
+$color-outline-selected: $color-grey-3200;
+
+$color-outline-critical: $color-red-200;
+$color-outline-critical-hover: $color-red-1900;
+$color-outline-critical-active: $color-red-2500;
+
+$color-outline-success: $color-green-1700;
+$color-outline-success-hover: $color-green-1900;
+$color-outline-success-active: $color-green-2500;
+
+// $color-outline-primary: $color-grey-400;
+// $color-outline-secondary: $color-grey-600;
+// $color-outline-tertiary: $color-grey-1300;
+// $color-outline-disabled: $color-grey-400;

@@ -19,13 +19,13 @@
     }
 
     &--error {
-        background: #fef4f4;
-        color: #c72727;
+        background: var(--adyen-sdk-color-background-critical-weak);
+        color: var(--adyen-sdk-color-label-critical);
     }
 
     &--default {
-        background: var(--adyen-pe-background-secondary);
-        color: #5c687c;
+        background: var(--adyen-sdk-color-background-secondary);
+        color: var(--adyen-sdk-color-label-secondary);
     }
 
     &--warning {
@@ -33,9 +33,9 @@
         color: #9b5700;
     }
 
-    &--white {
-        background: #fff;
-        color: #00112c;
-        outline: 1px solid #dbdee2;
+    &--primary {
+        background: var(--adyen-sdk-color-background-primary);
+        color: var(--adyen-sdk-color-label-primary);
+        outline: 1px solid var(--adyen-sdk-color-outline-primary);
     }
 }
