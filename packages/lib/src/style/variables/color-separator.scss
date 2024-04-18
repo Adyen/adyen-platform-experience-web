@@ -7,7 +7,7 @@
 
 //stylelint-disable
 
-$color-separator-primary: $color-grey-400;
-$color-separator-secondary: $color-grey-600;
-$color-separator-inverse-primary: $color-grey-2500;
-$color-separator-inverse-secondary: $color-grey-1900;
+$color-separator-primary: var(--adyen-sdk-color-separator-primary, $color-grey-400);
+$color-separator-secondary: var(--adyen-sdk-color-separator-secondary, $color-grey-600);
+$color-separator-inverse-primary: var(--adyen-sdk-color-separator-inverse-primary, $color-grey-2500);
+$color-separator-inverse-secondary: var(--adyen-sdk-color-separator-inverse-secondary, $color-grey-1900);
