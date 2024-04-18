@@ -80,13 +80,13 @@ export const PayoutsTable: FC<PayoutsTableProps> = ({
                     // Remove status column temporarily
                     creationDate: ({ value }) => value && i18n.fullDate(value),
                     grossPayout: ({ value }) => {
-                        return value && <span>{value?.value}</span>;
+                        return value && <span>{i18n.amount(value.value, value.currency, { hideCurrency: true })}</span>;
                     },
                     adjustments: ({ value }) => {
-                        return value && <span>{value.value}</span>;
+                        return value && <span>{i18n.amount(value.value, value.currency, { hideCurrency: true })}</span>;
                     },
                     netPayout: ({ value }) => {
-                        return value && <span>{value?.value}</span>;
+                        return value && <span>{i18n.amount(value.value, value.currency, { hideCurrency: true })}</span>;
                     },
                 }}
             >
