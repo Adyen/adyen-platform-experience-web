@@ -20,11 +20,11 @@ export const setupMock = [
                     },
                     getTransactions: {
                         method: 'GET',
-                        url: 'balanceAccounts/{balanceAccountId}/transactions',
+                        url: 'transactions',
                     },
                     getTransactionTotals: {
                         method: 'GET',
-                        url: 'balanceAccounts/{balanceAccountId}/transactions/totals',
+                        url: 'transactions/totals',
                     },
                     getBalanceAccounts: {
                         method: 'GET',
@@ -32,7 +32,7 @@ export const setupMock = [
                     },
                     getTransaction: {
                         method: 'GET',
-                        url: 'balanceAccounts/transactions/{transactionId}',
+                        url: 'transactions/{transactionId}',
                     },
                 },
             })
