@@ -74,7 +74,7 @@ const MULTIPLE_ACCOUNT_BALANCES = [
 const networkError = false;
 
 export const balanceAccountMock = [
-    rest.get(mockEndpoints.balanceAccount, (req, res, ctx) => {
+    rest.get(mockEndpoints.balanceAccounts, (req, res, ctx) => {
         if (networkError) {
             return res.networkError('Failed to connect');
         }
