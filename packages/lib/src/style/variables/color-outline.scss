@@ -9,32 +9,26 @@
 
 //stylelint-disable
 
-$color-outline-primary: var(--adyen-sdk-color-outline-primary, #945);
+$color-outline-primary: var(--adyen-sdk-color-outline-primary, $color-grey-400);
 
-$color-outline-primary: var(--adyen-sdk-grey-400, $color-grey-400);
-$color-outline-primary-hover: $color-grey-600;
-$color-outline-primary-active: $color-grey-3200;
+$color-outline-primary-hover: var(--adyen-sdk-color-outline-primary-hover, $color-grey-600);
+$color-outline-primary-active: var(--adyen-sdk-color-outline-primary-active, $color-grey-3200);
 
-$color-outline-secondary: $color-grey-600;
-$color-outline-secondary-hover: $color-grey-800;
-$color-outline-secondary-active: $color-grey-3200;
+$color-outline-secondary: var(--adyen-sdk-color-outline-secondary, $color-grey-600);
+$color-outline-secondary-hover: var(--adyen-sdk-color-outline-secondary-hover, $color-grey-800);
+$color-outline-secondary-active: var(--adyen-sdk-color-outline-secondary-active, $color-grey-3200);
 
-$color-outline-tertiary: $color-grey-1300;
-$color-outline-tertiary-hover: $color-grey-1700;
-$color-outline-tertiary-active: $color-grey-3200;
+$color-outline-tertiary: var(--adyen-sdk-color-outline-tertiary, $color-grey-1300);
+$color-outline-tertiary-hover: var(--adyen-sdk-color-outline-tertiary-hover, $color-grey-1700);
+$color-outline-tertiary-active: var(--adyen-sdk-color-outline-tertiary-active, $color-grey-3200);
 
-$color-outline-disabled: $color-grey-400;
-$color-outline-selected: $color-grey-3200;
+$color-outline-disabled: var(--adyen-sdk-color-outline-disabled, $color-grey-400);
+$color-outline-selected: var(--adyen-sdk-color-outline-selected, $color-grey-3200);
 
-$color-outline-critical: $color-red-200;
-$color-outline-critical-hover: $color-red-1900;
-$color-outline-critical-active: $color-red-2500;
+$color-outline-critical: var(--adyen-sdk-color-outline-critical, $color-red-200);
+$color-outline-critical-hover: var(--adyen-sdk-color-outline-critical-hover, $color-red-1900);
+$color-outline-critical-active: var(--adyen-sdk-color-outline-critical-active, $color-red-2500);
 
-$color-outline-success: $color-green-1700;
-$color-outline-success-hover: $color-green-1900;
-$color-outline-success-active: $color-green-2500;
-
-// $color-outline-primary: $color-grey-400;
-// $color-outline-secondary: $color-grey-600;
-// $color-outline-tertiary: $color-grey-1300;
-// $color-outline-disabled: $color-grey-400;
+$color-outline-success: var(--adyen-sdk-color-outline-success, $color-green-1700);
+$color-outline-success-hover: var(--adyen-sdk-color-outline-success-hover, $color-green-1900);
+$color-outline-success-active: var(--adyen-sdk-color-outline-success-active, $color-green-2500);
