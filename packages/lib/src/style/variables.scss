@@ -11,27 +11,31 @@
     // label: #00112c;
     // neutral: #dbdee2;
     // danger: #dbdee2;
-
     // success: #dbdee2;
     // warning: #dbdee2;
 
-    //$my-neutral-scale: generate-grey-scale(#262a40, 0);
-    //$my-primary-scale: generate-color-scale(#026489, 32);
-    //$my-critical-scale: generate-color-scale(#f00, 19);
-    //$my-label-scale: generate-color-scale(#e9f8ff, 32);
-    //$my-primary-background: #11131f;
+    /*    $my-neutral-scale: generate-grey-scale(#262a40, 0);
+    $my-primary-scale: generate-color-scale(#026489, 32);
+    $my-critical-scale: generate-color-scale(#f00, 19);
+    $my-label-scale: generate-color-scale(#e9f8ff, 32);
+    $my-primary-background: #11131f;*/
 
     $my-neutral-scale: generate-grey-scale(#ffe6c9, 0);
     $my-primary-scale: generate-color-scale(#8b2f00, 32);
-    $my-critical-scale: generate-color-scale(#f00, 19);
     $my-label-scale: generate-color-scale(#1d1d1d, 32);
     $my-primary-background: #fffaf8;
+
+    $my-critical-scale: generate-color-scale(#f00, 19);
+    $my-success-scale: generate-color-scale(#25c000, 17);
+    $my-warning-scale: generate-color-scale(#25c000, 17);
 
     // stylelint-disable-next-line
     $adyen-colors-grey: ();
     $adyen-colors-primary: ();
     $adyen-colors-critical: ();
     $adyen-colors-label: ();
+    $adyen-colors-success: ();
+    $adyen-colors-warning: ();
 
     @for $i from 1 through length($my-neutral-scale) {
         $adyen-colors-grey: map-merge(
@@ -68,8 +72,24 @@
             )
         );
     }
+    @for $i from 1 through length($my-success-scale) {
+        $adyen-colors-success: map-merge(
+            $adyen-colors-success,
+            (
+                '#{$i}00': nth($my-success-scale, $i),
+            )
+        );
+    }
+    @for $i from 1 through length($my-warning-scale) {
+        $adyen-colors-warning: map-merge(
+            $adyen-colors-warning,
+            (
+                '#{$i}00': nth($my-warning-scale, $i),
+            )
+        );
+    }
 
-    // stylelint-disable
+    // ------ Label
 
     --adyen-sdk-color-label-primary: #{map-get($adyen-colors-label, '3200')};
     --adyen-sdk-color-label-primary-hover: #{map-get($adyen-colors-label, '1900')};
@@ -85,59 +105,29 @@
     --adyen-sdk-color-label-critical-hover: #{map-get($adyen-colors-critical, '1900')};
     --adyen-sdk-color-label-critical-active: #{map-get($adyen-colors-critical, '2500')};
 
-    --adyen-sdk-color-label-warning: #{$color-orange-1700};
+    --adyen-sdk-color-label-warning: #{map-get($adyen-colors-critical, '1700')};
+    --adyen-sdk-color-label-success: #{map-get($adyen-colors-success, '1900')};
 
     --adyen-sdk-color-label-highlight: #{$color-blue-1700};
 
-    --adyen-sdk-color-label-success: #{$color-green-1700};
-
     --adyen-sdk-color-label-on-color: #{$color-white};
 
+    // stylelint-disable-next-line
     $color: map-get($adyen-colors-primary, '3200');
+    // stylelint-disable-next-line
     $fallback-color: map-get($adyen-colors-label, '3200');
     --adyen-sdk-color-label-inverse: #{invert-color-lightness($color, $fallback-color)};
 
     --adyen-sdk-color-label-on-background-critical-weak: #{map-get($adyen-colors-critical, '1900')};
 
-    --adyen-sdk-color-label-on-background-warning-weak: #{$color-orange-1900};
-    --adyen-sdk-color-label-on-background-success-weak: #{$color-green-1900};
+    --adyen-sdk-color-label-on-background-warning-weak: #{map-get($adyen-colors-critical, '1900')};
+    --adyen-sdk-color-label-on-background-success-weak: #{map-get($adyen-colors-success, '1900')};
 
     --adyen-sdk-color-label-on-background-highlight-weak: #{$color-blue-1900};
 
     --adyen-sdk-color-label-always-light: #{$color-white};
     --adyen-sdk-color-label-always-dark: #{$color-grey-3200};
 
-    // ------ Label
-
-    /*
-\
-|
-\
-|
-\
-|
-\
-\
-|
-\
-|
-\
-|
-\
-|
-\
-|
-\
-|
-\
-\
-|
-\
-|
-\
-|
-\
- */
     // ------ Outline
 
     --adyen-sdk-color-outline-primary: #{map-get($adyen-colors-grey, '400')};
@@ -159,9 +149,9 @@
     --adyen-sdk-color-outline-critical-hover: #{map-get($adyen-colors-critical, '1900')};
     --adyen-sdk-color-outline-critical-active: #{map-get($adyen-colors-critical, '2500')};
 
-    --adyen-sdk-color-outline-success: #{$color-green-1700};
-    --adyen-sdk-color-outline-success-hover: #{$color-green-1900};
-    --adyen-sdk-color-outline-success-active: #{$color-green-2500};
+    --adyen-sdk-color-outline-success: #{map-get($adyen-colors-success, '1700')};
+    --adyen-sdk-color-outline-success-hover: #{map-get($adyen-colors-success, '1900')};
+    --adyen-sdk-color-outline-success-active: #{map-get($adyen-colors-success, '2500')};
 
     // Background
 
@@ -208,16 +198,23 @@
     --adyen-sdk-color-background-critical-strong: #{map-get($adyen-colors-critical, '1700')};
     --adyen-sdk-color-background-critical-strong-hover: #{map-get($adyen-colors-critical, '1900')};
 
-    --adyen-sdk-color-background-warning-weak: #{$color-orange-100};
-    --adyen-sdk-color-background-warning-strong: #{$color-orange-1300};
+    --adyen-sdk-color-background-warning-weak: #{map-get($adyen-colors-critical, '100')};
+    --adyen-sdk-color-background-warning-strong: #{map-get($adyen-colors-critical, '1300')};
 
-    --adyen-sdk-color-background-success-weak: #{$color-green-100};
-    --adyen-sdk-color-background-success-strong: #{$color-green-1700};
+    --adyen-sdk-color-background-success-weak: #{map-get($adyen-colors-success, '100')};
+    --adyen-sdk-color-background-success-strong: #{map-get($adyen-colors-success, '1700')};
 
     --adyen-sdk-color-background-highlight-weak: #{$color-blue-100};
     --adyen-sdk-color-background-highlight-strong: #{$color-blue-1700};
 
     --adyen-sdk-color-background-selected: #{$color-blue-200};
+
+    // ------ Separators
+
+    --adyen-sdk-color-separator-primary: #{map-get($adyen-colors-grey, '400')};
+    --adyen-sdk-color-separator-secondary: #{map-get($adyen-colors-grey, '600')};
+    --adyen-sdk-color-separator-inverse-primary: #{map-get($adyen-colors-grey, '2500')};
+    --adyen-sdk-color-separator-inverse-secondary: #{map-get($adyen-colors-grey, '1900')};
 
     // ------ Border radius
     --adyen-sdk-border-radius-xs: #{$border-radius-xs};

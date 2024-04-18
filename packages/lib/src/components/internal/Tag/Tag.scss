@@ -14,7 +14,7 @@
     width: fit-content;
 
     &--success {
-        background: #edfaf3;
+        background: var(--adyen-sdk-color-background-success-weak);
         color: #067934;
     }
 
