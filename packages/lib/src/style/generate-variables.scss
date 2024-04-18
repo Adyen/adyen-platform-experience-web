@@ -54,7 +54,7 @@ $standard-scale-hsl: convert-colors-to-hsl($standard-scale-hex);
     @return $new-scale;
 }
 
-@function generate-color-scale($base-color, $total: 34, $base-index: 32, $saturation-factor: 1) {
+@function generate-color-scale($base-color, $base-index: 32, $total: 34, $saturation-factor: 1) {
     $base-hsl: hsl(hue($base-color), saturation($base_color), lightness($base_color));
 
     $new-scale: ();
