@@ -96,7 +96,7 @@
             position: relative;
 
             &:not(:last-child)::after {
-                background: #d1d5da;
+                background: var(--adyen-sdk-color-separator-primary);
                 bottom: 25%;
                 content: '';
                 position: absolute;
