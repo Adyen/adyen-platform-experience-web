@@ -1,4 +1,4 @@
-import { BalanceAccountsProps, DataOverviewComponentProps } from '@src/components/shared/components/types';
+import { BalanceAccountsProps, DataOverviewComponentProps } from '@src/types';
 import { BASE_CLASS, WITH_ERROR_CLASS } from '@src/components/external/PayoutsOverview/components/PayoutsOverviewContainer/constants';
 import { PayoutsOverview } from '@src/components/external/PayoutsOverview/components/PayoutsOverview/PayoutsOverview';
 import { ExternalUIComponentProps } from '@src/components/types';

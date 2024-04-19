@@ -16,8 +16,8 @@ export type UseTimeRangeSelectionData = ReturnType<typeof useTimeRangeSelection>
 
 export const getTimeRangeSelectionDefaultPresetOptions = () =>
     Object.freeze({
-        'rangePreset.last30Days': RangePreset.lastNDays(30),
         'rangePreset.last7Days': RangePreset.lastNDays(7),
+        'rangePreset.last30Days': RangePreset.lastNDays(30),
         'rangePreset.thisWeek': RangePreset.thisWeek(),
         'rangePreset.lastWeek': RangePreset.lastWeek(),
         'rangePreset.thisMonth': RangePreset.thisMonth(),

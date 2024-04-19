@@ -1,6 +1,6 @@
 import { TransactionData } from '@src/components/external/TransactionDetails/components/TransactionData';
 import { ErrorMessageDisplay } from '@src/components/internal/ErrorMessageDisplay/ErrorMessageDisplay';
-import { getErrorMessage } from '@src/components/shared/utils/transactionResourceErrorCodes';
+import { getErrorMessage } from '@src/components/utils/transactionResourceErrorCodes';
 import useCoreContext from '@src/core/Context/useCoreContext';
 import AdyenPlatformExperienceError from '@src/core/Errors/AdyenPlatformExperienceError';
 import { useFetch } from '@src/hooks/useFetch/useFetch';

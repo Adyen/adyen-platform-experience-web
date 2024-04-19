@@ -1,6 +1,4 @@
-import { TypographyVariant } from '@src/components/internal/Typography/types';
-import Typography from '@src/components/internal/Typography/Typography';
-import { BalanceAccountsProps, DataOverviewComponentProps } from '@src/components/shared/components/types';
+import { BalanceAccountsProps, DataOverviewComponentProps } from '@src/types';
 import { BASE_CLASS, WITH_ERROR_CLASS } from '@src/components/external/TransactionsOverview/components/TransactionsOverviewContainer/constants';
 import { ExternalUIComponentProps } from '@src/components/types';
 import withBalanceAccounts from '@src/hoc/withBalanceAccounts';

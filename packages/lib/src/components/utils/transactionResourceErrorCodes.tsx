@@ -1,4 +1,4 @@
-import { ErrorMessage, getCommonErrorMessages, UNDEFINED_ERROR } from '@src/components/shared/utils/commonErrorCodes';
+import { ErrorMessage, getCommonErrorMessages, UNDEFINED_ERROR } from '@src/components/utils/commonErrorCodes';
 import AdyenPlatformExperienceError from '@src/core/Errors/AdyenPlatformExperienceError';
 import CopyText from '@src/components/internal/CopyText/CopyText';
 

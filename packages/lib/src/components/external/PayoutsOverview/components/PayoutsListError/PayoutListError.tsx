@@ -1,5 +1,5 @@
 import { ErrorMessageDisplay } from '@src/components/internal/ErrorMessageDisplay/ErrorMessageDisplay';
-import { getErrorMessage } from '@src/components/shared/utils/payoutResourceErrorCodes';
+import { getErrorMessage } from '@src/components/utils/payoutResourceErrorCodes';
 import AdyenPlatformExperienceError from '@src/core/Errors/AdyenPlatformExperienceError';
 
 const PayoutListError = ({ error, onContactSupport }: { error: AdyenPlatformExperienceError | undefined; onContactSupport?: () => void }) => {
