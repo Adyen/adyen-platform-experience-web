@@ -204,27 +204,6 @@ const PAYOUT_DETAILS_11: Payout = {
     downloadUrl: 'https://.../download?balanceAccountId={balanceAccountId}&createdAt={createdAt}',
 };
 
-const MULTIPLE_BALANCE_ACCOUNTS = [
-    {
-        description: 'S. Hopper - Main Account',
-        id: 'BA32272223222B5CTDNB66W2Z',
-        timeZone: 'Europe/Amsterdam',
-        defaultCurrencyCode: 'EUR',
-    },
-    {
-        description: 'S. Hopper - Secondary Account',
-        id: 'BA32272223222B5CTDQPM6W2H',
-        timeZone: 'America/Sao_Paulo',
-        defaultCurrencyCode: 'BRL',
-    },
-    {
-        description: 'S. Hopper - Third Account',
-        id: 'BA32272223222B5CTDQPM6W2G',
-        timeZone: 'America/Sao_Paulo',
-        defaultCurrencyCode: 'BRL',
-    },
-];
-
 export const BASIC_PAYOUTS_LIST = [
     PAYOUT_DETAILS_1,
     PAYOUT_DETAILS_2,
