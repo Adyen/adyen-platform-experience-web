@@ -5,7 +5,7 @@ import { getPagePath, getTranslatedKey } from '../../utils/utils';
 import DataGridPage from '../internal-components/dataGrid';
 import FilterBarPage from '../internal-components/filterBar';
 import { ITransaction } from '@src/types';
-import { BASIC_TRANSACTIONS_LIST } from '../../../../../mocks';
+import { TRANSACTIONS } from '../../../../../mocks';
 export class TransactionListPage extends BasePage {
     private dataGrid: DataGridPage;
     public dataGridBody: Locator;
@@ -19,7 +19,7 @@ export class TransactionListPage extends BasePage {
     public firstRow: Locator;
     public gridCount: number;
 
-    constructor(page: Page, mockedList: ITransaction[] = BASIC_TRANSACTIONS_LIST, rootElementSelector = '.transactions-component-container') {
+    constructor(page: Page, mockedList: ITransaction[] = TRANSACTIONS, rootElementSelector = '.transactions-component-container') {
         super(page, rootElementSelector, getPagePath('transactionList'));
         const dataGrid = new DataGridPage(this.rootElement);
         this.dataGrid = dataGrid;
