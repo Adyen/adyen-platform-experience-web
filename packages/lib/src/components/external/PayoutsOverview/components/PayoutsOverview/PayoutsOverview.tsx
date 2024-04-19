@@ -2,17 +2,16 @@ import { PayoutsFilterParam } from '@src/components';
 import { PayoutsDisplay } from '@src/components/external/PayoutsOverview/components/PayoutsDisplay/PayoutsDisplay';
 import { BASE_CLASS, TITLE_CLASS, TITLE_LEFT_CLASS } from '@src/components/external/PayoutsOverview/components/PayoutsOverview/constants';
 import FilterBar from '@src/components/internal/FilterBar';
+import BalanceAccountSelector from '@src/components/internal/FormFields/Select/BalanceAccountSelector';
 import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '@src/components/internal/Pagination/constants';
 import { useCursorPaginatedRecords } from '@src/components/internal/Pagination/hooks';
 import { TypographyVariant } from '@src/components/internal/Typography/types';
 import Typography from '@src/components/internal/Typography/Typography';
-import BalanceAccountSelector from '@src/components/shared/components/BalanceAccountSelector';
-import useBalanceAccountSelection from '@src/components/shared/components/BalanceAccountSelector/useBalanceAccountSelection';
-import DataOverviewDateFilter from '@src/components/shared/components/DateOverviewDateFilter/DataOverviewDateFilter';
-import { DataOverviewComponentProps } from '@src/components/shared/components/types';
-import useDefaultOverviewFilterParams from '@src/components/shared/hooks/useDefaultOverviewFilterParams';
+import useBalanceAccountSelection from '@src/components/hooks/useBalanceAccountSelection';
+import DateFilter from '@src/components/internal/FilterBar/filters/DateFilter/DateFilter';
+import { DataOverviewComponentProps } from '@src/types';
+import useDefaultOverviewFilterParams from '@src/components/hooks/useDefaultOverviewFilterParams';
 import { ExternalUIComponentProps } from '@src/components/types';
-import useAuthContext from '@src/core/Auth/useAuthContext';
 import useCoreContext from '@src/core/Context/useCoreContext';
 import AdyenPlatformExperienceError from '@src/core/Errors/AdyenPlatformExperienceError';
 import { SuccessResponse, useSetupEndpoint } from '@src/hooks/useSetupEndpoint/useSetupEndpoint';
@@ -106,7 +105,7 @@ export const PayoutsOverview = ({
                             balanceAccountSelectionOptions={balanceAccountSelectionOptions}
                             onBalanceAccountSelection={onBalanceAccountSelection}
                         />
-                        <DataOverviewDateFilter
+                        <DateFilter
                             canResetFilters={canResetFilters}
                             defaultParams={defaultParams}
                             filters={filters}

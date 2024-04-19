@@ -1,4 +1,4 @@
-import { DataOverviewComponentProps } from '@src/components/shared/components/types';
+import { DataOverviewComponentProps } from '@src/types';
 import Payouts from '@src/components/external/PayoutsOverview/components/PayoutsOverviewContainer/PayoutsOverviewContainer';
 import UIElement from '../UIElement';
 import { _UIComponentProps } from '../../types';

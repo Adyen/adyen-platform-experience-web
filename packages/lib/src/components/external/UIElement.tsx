@@ -1,4 +1,5 @@
 import { DataOverviewComponentProps } from '@src/components/shared/components/types';
+import { SetupEndpoint } from '@src/types/models/openapi/endpoints';
 import AuthProvider from '../../core/Auth/AuthProvider';
 import CoreProvider from '../../core/Context/CoreProvider';
 import { JSXInternal } from 'preact/src/jsx';

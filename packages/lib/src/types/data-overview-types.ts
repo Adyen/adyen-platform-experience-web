@@ -1,7 +1,7 @@
 import { OnSelection, TransactionFilterParam } from '@src/components';
 import UIElement from '@src/components/external/UIElement';
 import { Core } from '@src/core';
-import { IBalanceAccountBase } from '@src/types';
+import { IBalanceAccountBase } from '@src/types/index';
 
 export interface DataOverviewComponentProps {
     name?: string;
