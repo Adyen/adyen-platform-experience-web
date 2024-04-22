@@ -20,14 +20,6 @@ export const balanceAccountMock = [
             })
         );
     }),
-    rest.get(mockEndpoints.balanceAccountTotals, (req, res, ctx) => {
-        return res(
-            delay(300),
-            ctx.json({
-                totals: TRANSACTION_TOTALS,
-            })
-        );
-    }),
     rest.get(mockEndpoints.balances, (req, res, ctx) => {
         return res(
             delay(300),

@@ -2,6 +2,7 @@ import { rest } from 'msw';
 import { TRANSACTIONS, DEFAULT_TRANSACTION } from '../../../../../mocks/src/transactions';
 import { endpoints } from '../endpoints';
 import { delay } from '../utils/utils';
+import { TRANSACTION_TOTALS } from '../../../../../mocks/src/transactionTotals';
 
 const mockEndpoints = endpoints('mock');
 const networkError = false;
@@ -60,5 +61,9 @@ export const transactionsMocks = [
             return;
         }
         return res(ctx.json(matchingMock));
+    }),
+
+    rest.get(mockEndpoints.transactionsTotals, (req, res, ctx) => {
+        return res(ctx.json({ totals: TRANSACTION_TOTALS }));
     }),
 ];
