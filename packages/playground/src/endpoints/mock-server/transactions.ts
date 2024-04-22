@@ -1,8 +1,7 @@
 import { rest } from 'msw';
-import { TRANSACTIONS, DEFAULT_TRANSACTION } from '../../../../../mocks/src/transactions';
+import { DEFAULT_TRANSACTION, TRANSACTIONS, TRANSACTION_TOTALS } from '@adyen/adyen-platform-experience-web-mocks';
 import { endpoints } from '../endpoints';
 import { delay } from '../utils/utils';
-import { TRANSACTION_TOTALS } from '../../../../../mocks/src/transactionTotals';
 
 const mockEndpoints = endpoints('mock');
 const networkError = false;

@@ -36,6 +36,7 @@
         "storybook:demo": "vite-node ./.storybook/buildStorybook.ts --mode demo && npm run demo:serve"
     },
     "devDependencies": {
+        "@adyen/adyen-platform-experience-web-mocks": "^1.0.0",
         "@preact/preset-vite": "^2.5.0",
         "@storybook/addon-a11y": "^7.0.4",
         "@storybook/addon-essentials": "^7.0.4",

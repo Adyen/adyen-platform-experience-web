@@ -1,9 +1,8 @@
 import { rest } from 'msw';
 import { endpoints } from '../endpoints';
 import { delay } from '../utils/utils';
-import { BALANCE_ACCOUNTS_SINGLE } from '../../../../../mocks/src/balanceAccounts';
-import { TRANSACTION_TOTALS } from '../../../../../mocks/src/transactionTotals';
-import { BALANCES } from '../../../../../mocks/src/balances';
+import { BALANCE_ACCOUNTS_SINGLE } from '@adyen/adyen-platform-experience-web-mocks';
+import { BALANCES } from '../../../../mocks/src/balances';
 
 const mockEndpoints = endpoints('mock');
 const networkError = false;
