@@ -1,13 +1,11 @@
 import { API_VERSION } from '@src/core/Services/sessions/constants';
+import { normalizeLoadingContext, normalizeUrl } from '@src/core/utils';
 import { getErrorType, getRequestObject, handleFetchError, isAdyenErrorResponse } from './utils';
 import { HttpOptions } from './types';
-import { normalizeLoadingContext, normalizeUrl } from '@src/core/utils';
 
 export async function http<T>(options: HttpOptions, data?: any): Promise<T> {
     const { errorLevel, loadingContext = '', path } = options;
-
     const request = getRequestObject(options, data);
-
     const url = new URL(`${normalizeLoadingContext(loadingContext)}${API_VERSION}${normalizeUrl(path)}`);
 
     if (options.params) {
@@ -18,67 +16,78 @@ export async function http<T>(options: HttpOptions, data?: any): Promise<T> {
     }
 
     return (async () => {
-        const error = { level: errorLevel } as Parameters<typeof handleFetchError>[0];
+        // Boolean flag:
+        // Indicates whether a resulting exception will be propagated to the caller (unhandled).
+        // If set to `true`, the resulting exception will be propagated (unhandled).
         let errorPassThrough = false;
 
-        handle: {
-            try {
-                /**
-                 * There can be network error, abort, cors errors etc.
-                 */
-                const res = await fetch(url, request); // (1)
+        const error = { level: errorLevel } as Parameters<typeof handleFetchError>[0];
 
-                if (res.ok) {
-                    /**
-                     *  Response has no content body or body is not valid json this will fail
-                     *  We don't want to interfere the error so this will be propagated to the user
-                     *  We might need relabel the error like malformed content so that, user can distinguish from other errors
-                     */
+        try {
+            // The `fetch()` could fail and thus throw an exception due to several causes,
+            // including but not limited to: fetch signal aborted, CORS errors, network errors
+            // (e.g device is offline or poor connection), etc.
+            const res = await fetch(url, request); // (!)
+
+            if (res.ok) {
+                try {
+                    // This could throw an exception in one of these two cases:
+                    //   (1) if response has no body content
+                    //   (2) if response body content is not valid JSON
+                    return await res.json(); // (!!)
+                } catch (ex) {
+                    // If it does throw an exception, the exception will be propagated to the caller (unhandled).
                     errorPassThrough = true;
-                    return await res.json(); // (!)
-                }
 
-                error.type = getErrorType(res.status);
-                /**
-                 *  Response has no content body or body is not valid json this will fail
-                 *  We will handle this error since we have the errorCode
-                 */
-                const response = await res.json(); // (2)
-
-                error.message = options.errorMessage || `Service at ${url} is not available`;
-                error.errorCode = String(response.status);
-                error.requestId = response?.requestId;
-
-                if (isAdyenErrorResponse(response)) {
-                    if (options.errorHandler) {
-                        /**
-                         *  This will throw if the logic of consumer for the errorHanler results an error
-                         *  We don't want to interfere the error so this will be propagated to the user
-                         */
-                        errorPassThrough = true;
-                        options.errorHandler(response); // (!)
-                        break handle;
-                    }
-
-                    error.message = response.detail;
-                    error.errorCode = response.errorCode;
-                }
-            } catch (ex) {
-                if (errorPassThrough) {
-                    /**
-                     * This is the point that we are throwing an error for the places that we labeled as errorPassThrough
-                     */
+                    // Consider transforming the exception before propagating it to the caller,
+                    // thus making it easier for the caller to differentiate it from other errors.
                     throw ex;
                 }
-                error.message = options.errorMessage || `Call to ${url} failed. Error= ${ex}`;
             }
 
-            /**
-             * This will throw an error if the level is error
-             * @see {handleFetchError}
-             */
-            handleFetchError(error);
+            error.type = getErrorType(res.status);
+
+            // This could throw an exception in one of these two cases:
+            //   (1) if response has no body content
+            //   (2) if response body content is not valid JSON
+            //
+            // If it does throw an exception, the exception will be handled,
+            // since we have the `errorCode` (HTTP status code).
+            const response = await res.json(); // (!)
+
+            error.message = options.errorMessage || `Service at ${url} not available`;
+            error.errorCode = String(response.status);
+            error.requestId = response?.requestId;
+
+            if (isAdyenErrorResponse(response)) {
+                if (options.errorHandler) {
+                    try {
+                        // The errorHandler() function provided by the caller could throw an exception
+                        options.errorHandler(response); // (!!)
+                        return;
+                    } catch (ex) {
+                        // If it does throw an exception, the exception will be propagated to the caller (unhandled).
+                        errorPassThrough = true;
+                        throw ex;
+                    }
+                }
+
+                error.message = response.detail;
+                error.errorCode = response.errorCode;
+            }
+        } catch (ex) {
+            if (errorPassThrough) {
+                // Since the `errorPassThrough` flag is set to `true`,
+                // The exception will be propagated to the caller (unhandled)
+                throw ex;
+            }
+            error.message = options.errorMessage || `Call to ${url} failed. Error: ${ex}`;
         }
+
+        // Handle the resulting error
+        // This could throw an exception, depending on the `errorLevel`
+        // If it does throw an exception, the exception will be propagated to the caller (unhandled).
+        handleFetchError(error); // (!!)
     })();
 }
 
