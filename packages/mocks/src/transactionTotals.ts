@@ -1,4 +1,4 @@
-import { ITransactionTotal } from '@adyen/adyen-platform-experience-web';
+import type { ITransactionTotal } from '@adyen/adyen-platform-experience-web/src';
 
 export const TRANSACTION_TOTALS: ITransactionTotal[] = [
     {

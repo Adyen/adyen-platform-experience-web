@@ -1,4 +1,4 @@
-import { IBalanceAccountBase } from '@adyen/adyen-platform-experience-web';
+import type { IBalanceAccountBase } from '@adyen/adyen-platform-experience-web/src';
 
 export const BALANCE_ACCOUNTS: IBalanceAccountBase[] = [
     {

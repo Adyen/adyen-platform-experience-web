@@ -1,4 +1,4 @@
-import { IBalance } from '@adyen/adyen-platform-experience-web';
+import type { IBalance } from '@adyen/adyen-platform-experience-web/src';
 
 export const BALANCES: IBalance[] = [
     {

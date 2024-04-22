@@ -62,6 +62,8 @@ export interface components {
     /** @description Transactions made within the filters provided for given balanceAccountId */
     SingleTransaction: {
       amount: components["schemas"]["Amount"];
+      /** @description BalanceAccount ID */
+      balanceAccountId: string;
       bankAccount?: components["schemas"]["BankAccount"];
       category: components["schemas"]["Category"];
       /**
