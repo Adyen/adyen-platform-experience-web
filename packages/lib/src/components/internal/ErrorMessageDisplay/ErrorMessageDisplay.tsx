@@ -7,7 +7,8 @@ import './ErrorMessageDisplay.scss';
 import { JSXInternal } from 'preact/src/jsx';
 import noResults from '../../../images/no-results.svg';
 import Button from '@src/components/internal/Button';
-import useAuthContext from '@src/core/Auth/useAuthContext';
+import { useAuthContext } from '@src/core/Auth';
+
 export const IMAGE_BREAKPOINT_SIZES = {
     md: 680,
     lg: 1024,

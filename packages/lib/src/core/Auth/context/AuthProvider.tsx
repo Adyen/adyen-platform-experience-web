@@ -1,8 +1,8 @@
-import { AuthContext } from '@src/core/Auth/AuthContext';
-import { AuthProviderProps } from '@src/core/Auth/types';
-import { EMPTY_OBJECT } from '@src/utils/common';
 import { toChildArray } from 'preact';
 import { useEffect, useRef, useState } from 'preact/hooks';
+import { EMPTY_OBJECT } from '@src/utils/common';
+import { AuthContext } from './AuthContext';
+import { AuthProviderProps } from './types';
 
 const AuthProvider = ({ token, endpoints, children, updateCore, sessionSetupError }: AuthProviderProps) => {
     const [isUpdatingToken, setIsUpdatingToken] = useState<boolean>();

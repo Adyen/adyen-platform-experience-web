@@ -1,4 +1,4 @@
-import useAuthContext from '@src/core/Auth/useAuthContext';
+import { useAuthContext } from '@src/core/Auth';
 import useSessionAwareRequest from '@src/hooks/useSessionAwareRequest/useSessionAwareRequest';
 import { EndpointName, EndpointsOperations } from '@src/types/api/endpoints';
 import useCoreContext from '@src/core/Context/useCoreContext';

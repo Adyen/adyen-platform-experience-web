@@ -1,4 +1,4 @@
-import Core from '../core';
+import Core from '@src/core/core';
 import { SetupEndpoint } from '@src/types/api/endpoints';
 
 interface AuthProviderBaseProps {

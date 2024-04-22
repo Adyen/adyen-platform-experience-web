@@ -1,6 +1,6 @@
 import { TransactionsComponentProps } from '@src/components';
-import AuthProvider from '../../core/Auth/AuthProvider';
-import CoreProvider from '../../core/Context/CoreProvider';
+import { AuthProvider } from '@src/core/Auth';
+import CoreProvider from '@src/core/Context/CoreProvider';
 import { JSXInternal } from 'preact/src/jsx';
 import BaseElement from './BaseElement';
 import getImage from '../../utils/get-image';

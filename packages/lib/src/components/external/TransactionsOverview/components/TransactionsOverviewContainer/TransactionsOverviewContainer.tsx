@@ -5,7 +5,7 @@ import { useFetch } from '@src/hooks/useFetch/useFetch';
 import { TransactionsOverview } from '@src/components/external/TransactionsOverview/components/TransactionsOverview/TransactionsOverview';
 import { useCallback, useMemo } from 'preact/hooks';
 import { EMPTY_OBJECT } from '@src/utils/common';
-import useAuthContext from '@src/core/Auth/useAuthContext';
+import { useAuthContext } from '@src/core/Auth';
 import cx from 'classnames';
 import { ErrorMessageDisplay } from '@src/components/internal/ErrorMessageDisplay/ErrorMessageDisplay';
 import { BASE_CLASS, WITH_ERROR_CLASS } from '@src/components/external/TransactionsOverview/components/TransactionsOverviewContainer/constants';
