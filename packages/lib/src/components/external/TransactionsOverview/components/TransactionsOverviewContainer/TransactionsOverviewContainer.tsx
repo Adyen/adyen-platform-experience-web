@@ -10,6 +10,7 @@ import cx from 'classnames';
 import { ErrorMessageDisplay } from '@src/components/internal/ErrorMessageDisplay/ErrorMessageDisplay';
 import { BASE_CLASS, WITH_ERROR_CLASS } from '@src/components/external/TransactionsOverview/components/TransactionsOverviewContainer/constants';
 import './TransactionsOverviewContainer.scss';
+import Theme from '../../../../../theme/Theme';
 
 function TransactionsOverviewContainer(props: ExternalUIComponentProps<TransactionsComponentProps>) {
     const { sessionSetupError, endpoints } = useAuthContext();
@@ -33,6 +34,17 @@ function TransactionsOverviewContainer(props: ExternalUIComponentProps<Transacti
         () => !!props.balanceAccountId && !!data?.balanceAccounts.length && balanceAccounts?.length === 0,
         [balanceAccounts?.length, data?.balanceAccounts.length, props.balanceAccountId]
     );
+
+    /*    $my-neutral-scale: generate-grey-scale(#ffe6c9, 0);
+    $my-primary-scale: generate-color-scale(#8b2f00, 32);
+    $my-label-scale: generate-color-scale(#1d1d1d, 32);
+    $my-primary-background: #fffaf8;
+
+    $my-critical-scale: generate-color-scale(#f00, 19);
+    $my-success-scale: generate-color-scale(#25c000, 17);
+    $my-warning-scale: generate-color-scale(#25c000, 17);*/
+
+    new Theme({ primary: '#8b2f00', neutral: '#ffe6c9' }).apply();
 
     return (
         <div className={cx(BASE_CLASS, { [WITH_ERROR_CLASS]: sessionSetupError })}>
