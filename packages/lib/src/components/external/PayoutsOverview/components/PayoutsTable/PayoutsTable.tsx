@@ -1,8 +1,8 @@
 import { OnSelection } from '@src/components';
-import PayoutListError from '@src/components/external/PayoutsOverview/components/PayoutsListError/PayoutListError';
+import DataOverviewError from '@src/components/internal/DataOverviewError/DataOverviewError';
 import { BASE_CLASS } from '@src/components/external/PayoutsOverview/components/PayoutsTable/constants';
-import { getLabel } from '@src/components/external/TransactionsOverview/components/utils';
 import { PaginationProps, WithPaginationLimitSelection } from '@src/components/internal/Pagination/types';
+import { getLabel } from '@src/components/utils/getLabels';
 import useCoreContext from '@src/core/Context/useCoreContext';
 import AdyenPlatformExperienceError from '@src/core/Errors/AdyenPlatformExperienceError';
 import { IBalanceAccountBase } from '@src/types';
@@ -19,7 +19,7 @@ const FIELDS = ['creationDate', 'grossPayout', 'adjustments', 'netPayout'] as co
 export interface PayoutsTableProps extends WithPaginationLimitSelection<PaginationProps> {
     balanceAccounts: IBalanceAccountBase[] | undefined;
     loading: boolean;
-    error: AdyenPlatformExperienceError | undefined;
+    error?: AdyenPlatformExperienceError;
     onContactSupport?: () => void;
     onRowClick: (value: any) => void;
     onDataSelection?: OnSelection;
@@ -64,7 +64,10 @@ export const PayoutsTable: FC<PayoutsTableProps> = ({
         message: ['tryDifferentSearchOrResetYourFiltersAndWeWillTryAgain'],
     } satisfies { title: TranslationKey; message: TranslationKey | TranslationKey[] };
 
-    const errorDisplay = useMemo(() => () => <PayoutListError error={error} onContactSupport={onContactSupport} />, [error, onContactSupport]);
+    const errorDisplay = useMemo(
+        () => () => <DataOverviewError error={error} errorMessage={'weCouldNotLoadYourPayouts'} onContactSupport={onContactSupport} />,
+        [error, onContactSupport]
+    );
     return (
         <div className={BASE_CLASS}>
             <DataGrid

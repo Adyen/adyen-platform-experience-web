@@ -14,29 +14,4 @@
         padding-left: $adyen-pe-spacer-070;
         padding-right: $adyen-pe-spacer-070;
     }
-
-    &__title {
-        align-items: center;
-        display: flex;
-        flex-wrap: wrap-reverse;
-        gap: 12px;
-        justify-content: space-between;
-    }
-
-    &__next-payouts {
-        align-self: stretch;
-        background-color: var(--adyen-sdk-color-background-primary);
-        border: var(--adyen-sdk-color-outline-primary) 1px solid;
-        border-radius: var(--adyen-sdk-border-radius-m);
-        display: flex;
-        flex-direction: column;
-        justify-content: space-evenly;
-
-        &--section {
-            align-items: center;
-            display: flex;
-            padding-left: 20px;
-            padding-right: 20px;
-        }
-    }
 }
