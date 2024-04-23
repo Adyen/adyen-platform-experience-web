@@ -174,10 +174,12 @@ class Theme {
             if (max === r) h = (g - b) / d + (g < b ? 6 : 0);
             else if (max === g) h = (b - r) / d + 2;
             else if (max === b) h = (r - g) / d + 4;
-            h /= 6;
-            h *= 360;
+            if (h !== undefined) {
+                h /= 6;
+                h *= 360;
+            }
         }
-        return [h, s * 100, l * 100];
+        return [h || 0, s * 100, l * 100];
     }
 
     generateColorScale(baseColor: string, baseIndex: number, total = 34): ColorScale {

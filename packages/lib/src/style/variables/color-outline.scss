@@ -9,7 +9,7 @@
 
 //stylelint-disable
 
-$color-outline-primary: var(--adyen-sdk-color-outline-primary, --adyen-sdk-color-grey-400, $color-grey-400);
+$color-outline-primary: var(--adyen-sdk-color-outline-primary, $color-grey-400);
 
 $color-outline-primary-hover: var(--adyen-sdk-color-outline-primary-hover, $color-grey-600);
 $color-outline-primary-active: var(--adyen-sdk-color-outline-primary-active, $color-grey-3200);
