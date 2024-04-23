@@ -34,7 +34,7 @@
 
     &--primary {
         background-color: var(--adyen-sdk-color-background-inverse-primary);
-        color: var(--adyen-sdk-color-label-inverse);
+        color: $color-label-inverse;
 
         &:hover {
             background-color: var(--adyen-sdk-color-background-inverse-primary-hover);

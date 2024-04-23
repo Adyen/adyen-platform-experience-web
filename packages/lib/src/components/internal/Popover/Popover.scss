@@ -131,7 +131,7 @@
         &__content {
             background-color: var(--adyen-sdk-color-background-inverse-primary);
             border-radius: $adyen-pe-spacer-020;
-            color: var(--adyen-sdk-color-label-inverse);
+            color: $color-label-inverse;
             height: auto;
             max-width: 300px;
             padding: $adyen-pe-spacer-020 $adyen-pe-spacer-040;

@@ -36,7 +36,7 @@
     &__counter {
         background-color: var(--adyen-sdk-color-background-inverse-primary);
         border-radius: var(--adyen-sdk-border-radius-s);
-        color: var(--adyen-sdk-color-label-inverse);
+        color: $color-label-inverse;
         padding: var(--adyen-sdk-border-radius-s) var(--adyen-sdk-border-radius-m);
     }
 
