@@ -32,7 +32,7 @@ export const PayoutsOverview = ({
     balanceAccounts,
     allowLimitSelection,
     preferredLimit = DEFAULT_PAGE_LIMIT,
-    onDataSelection,
+    onRecordSelection,
     showDetails,
     isLoadingBalanceAccount,
     onContactSupport,
@@ -97,9 +97,9 @@ export const PayoutsOverview = ({
     const payoutDetails = useMemo(
         () => ({
             showDetails: showDetails ?? true,
-            callback: onDataSelection,
+            callback: onRecordSelection,
         }),
-        [showDetails, onDataSelection]
+        [showDetails, onRecordSelection]
     );
 
     const modalOptions = useMemo(() => ({ payout: payoutDetails }), [payoutDetails]);
@@ -149,7 +149,6 @@ export const PayoutsOverview = ({
                     balanceAccounts={balanceAccounts}
                     loading={fetching || isLoadingBalanceAccount || !balanceAccounts}
                     data={records ?? BASIC_PAYOUTS_LIST} //TODO: Delete mock data after BE/mock server integration
-                    onDataSelection={onDataSelection}
                     showPagination={true}
                     onRowClick={onRowClick}
                     showDetails={showDetails}
