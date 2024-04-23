@@ -7,7 +7,7 @@ import useCoreContext from '@src/core/Context/useCoreContext';
 import AdyenPlatformExperienceError from '@src/core/Errors/AdyenPlatformExperienceError';
 import { IBalanceAccountBase } from '@src/types';
 import { useMemo } from 'preact/hooks';
-import { BASIC_PAYOUTS_LIST } from '../../../../../../../../mocks/src/payouts';
+import { BASIC_PAYOUTS_LIST } from '@adyen/adyen-platform-experience-web-mocks';
 import DataGrid from '../../../../internal/DataGrid';
 import Pagination from '../../../../internal/Pagination';
 import { TranslationKey } from '@src/core/Localization/types';

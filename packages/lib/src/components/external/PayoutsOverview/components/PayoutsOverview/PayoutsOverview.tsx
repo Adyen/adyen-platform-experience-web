@@ -21,7 +21,7 @@ import { EndpointsOperations } from '@src/types/models/openapi/endpoints';
 import { isFunction } from '@src/utils/common';
 import { lazy } from 'preact/compat';
 import { useCallback, useEffect, useMemo } from 'preact/hooks';
-import { BASIC_PAYOUTS_LIST } from '../../../../../../../../mocks/src/payouts';
+import { BASIC_PAYOUTS_LIST } from '@adyen/adyen-platform-experience-web-mocks';
 import './PayoutsOverview.scss';
 
 const ModalContent = lazy(() => import('@src/components/external/TransactionsOverview/components/ModalContent'));
