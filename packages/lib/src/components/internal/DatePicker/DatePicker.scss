@@ -1,3 +1,5 @@
+@import '@styles/variables/colors';
+
 .adyen-pe-datepicker {
     --adyen-pe-datepicker-margin: 1.25rem;
     --adyen-pe-datepicker-max-width: calc(var(--adyen-pe-datepicker-tap-target-size) * 7);
@@ -56,7 +58,7 @@
     }
 
     &__timezone {
-        color: var(--adyen-sdk-color-label-primary-hover);
+        color: $color-label-primary-hover;
         font-size: var(--adyen-sdk-font-size-100);
         font-weight: var(--adyen-sdk-font-weight-500);
         height: var(--adyen-pe-datepicker-tap-target-size);

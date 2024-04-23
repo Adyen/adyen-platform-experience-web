@@ -93,7 +93,7 @@
 
         &#{$adyen-pe-data-grid__cell}--heading {
             border-bottom-color: var(--adyen-sdk-color-outline-secondary);
-            color: var(--adyen-sdk-color-label-primary);
+            color: $color-label-primary;
             font-weight: var(--adyen-sdk-font-weight-600);
             padding: $adyen-pe-spacer-070;
             position: relative;

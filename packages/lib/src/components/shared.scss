@@ -1,8 +1,10 @@
+@import '@styles/variables/colors';
+
 .adyen-pe {
     &-component,
     &-popover,
     &-title {
-        color: var(--adyen-sdk-color-label-primary);
+        color: $color-label-primary;
     }
 
     &-title {

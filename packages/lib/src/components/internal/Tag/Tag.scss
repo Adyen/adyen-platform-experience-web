@@ -21,12 +21,12 @@
 
     &--error {
         background: var(--adyen-sdk-color-background-critical-weak);
-        color: var(--adyen-sdk-color-label-critical);
+        color: $color-label-critical;
     }
 
     &--default {
         background: var(--adyen-sdk-color-background-secondary);
-        color: var(--adyen-sdk-color-label-secondary);
+        color: $color-label-secondary;
     }
 
     &--warning {
@@ -36,7 +36,7 @@
 
     &--primary {
         background: $color-background-primary;
-        color: var(--adyen-sdk-color-label-primary);
+        color: $color-label-primary;
         outline: 1px solid var(--adyen-sdk-color-outline-primary);
     }
 }

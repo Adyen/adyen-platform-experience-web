@@ -7,7 +7,7 @@
     background-color: $color-background-primary;
     border: 1px solid var(--adyen-sdk-color-outline-secondary);
     border-radius: var(--adyen-sdk-border-radius-m);
-    color: var(--adyen-sdk-color-label-primary);
+    color: $color-label-primary;
     cursor: pointer;
     display: inline-flex;
     height: 36px;
