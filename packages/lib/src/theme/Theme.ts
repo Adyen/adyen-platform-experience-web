@@ -1,5 +1,3 @@
-import { b } from 'vite-node/types-c39b64bb';
-
 type ColorScale = { [index: string]: string };
 
 type Colors = {
@@ -221,6 +219,21 @@ class Theme {
             const value = variables[key]!;
             const primaryScale = greyScale ? this.generateGreyScale(color, baseIndex) : this.generateColorScale(color, baseIndex);
             this.setCssVariables(primaryScale, key, value);
+        }
+    }
+    invertColorLightness(color: string, fallbackColor: string) {
+        const [hue, saturation, lightness] = this.hexToHsl(color);
+        const [fallbackHue, fallbackSaturation, fallbackLightness] = this.hexToHsl(fallbackColor);
+
+        // If the color is light (lightness > 70%), return the fallback color with adjusted lightness
+        if (lightness > 70) {
+            // Reduce lightness by 10% for the fallback color, ensuring it doesn't go below 0
+            const adjustedLightness = Math.max(fallbackLightness - 10, 0);
+            return `hsl(${fallbackHue}, ${fallbackSaturation}%, ${adjustedLightness}%)`;
+        } else {
+            // If the color is not light, create a color with inverted lightness
+            const invertedLightness = 100 - lightness;
+            return `hsl(${hue}, ${saturation}%, ${invertedLightness}%)`;
         }
     }
 
