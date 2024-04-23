@@ -1,8 +1,7 @@
-import { OnSelection } from '@src/components';
 import DataOverviewError from '@src/components/internal/DataOverviewError/DataOverviewError';
 import { BASE_CLASS } from '@src/components/external/PayoutsOverview/components/PayoutsTable/constants';
 import { PaginationProps, WithPaginationLimitSelection } from '@src/components/internal/Pagination/types';
-import { getLabel } from '@src/components/utils/getLabels';
+import { getLabel } from '@src/components/utils/getLabel';
 import useCoreContext from '@src/core/Context/useCoreContext';
 import AdyenPlatformExperienceError from '@src/core/Errors/AdyenPlatformExperienceError';
 import { IBalanceAccountBase } from '@src/types';
