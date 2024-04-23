@@ -1,3 +1,5 @@
+@import '@styles/variables/colors';
+
 .adyen-pe-field-wrapper {
     display: flex;
     width: 100%;
@@ -66,7 +68,7 @@
 }
 
 .adyen-pe-input {
-    background: var(--adyen-sdk-color-background-primary);
+    background: $color-background-primary;
     border: 1px solid var(--adyen-sdk-color-outline-secondary);
     border-radius: var(--adyen-sdk-border-radius-m);
     color: var(--adyen-sdk-color-label-primary);
@@ -167,7 +169,7 @@
 .adyen-pe-input:active:hover,
 .adyen-pe-input:focus:hover,
 .adyen-pe-input--focus:hover {
-    background: var(--adyen-sdk-color-background-primary);
+    background: $color-background-primary;
     outline: 1px solid #00112c;
 }
 

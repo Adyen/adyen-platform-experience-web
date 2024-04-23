@@ -1,9 +1,10 @@
 @import '../../../../../style/bento-mapping';
+@import '../../../../../style/variables/colors';
 
 .adyen-pe-filter-button {
     align-items: center;
     appearance: none;
-    background-color: var(--adyen-sdk-color-background-primary);
+    background-color: $color-background-primary;
     border: 1px solid var(--adyen-sdk-color-outline-secondary);
     border-radius: var(--adyen-sdk-border-radius-m);
     color: var(--adyen-sdk-color-label-primary);
@@ -17,7 +18,7 @@
     width: initial;
 
     &:hover {
-        background-color: var(--adyen-sdk-color-background-primary-hover);
+        background-color: $color-background-primary-hover;
     }
 
     &__label {

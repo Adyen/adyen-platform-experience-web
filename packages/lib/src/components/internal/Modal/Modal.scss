@@ -1,4 +1,5 @@
 @import '../../../style/bento-mapping';
+@import '../../../style/variables/colors';
 
 $adyen-pe-modal-sizes: (
     'fluid': (
@@ -52,7 +53,7 @@ $adyen-pe-modal-sizes: (
 }
 
 .adyen-pe-modal {
-    background-color: var(--adyen-sdk-color-background-primary);
+    background-color: $color-background-primary;
     border-radius: var(--adyen-sdk-border-radius-l);
     cursor: initial;
     opacity: 0;

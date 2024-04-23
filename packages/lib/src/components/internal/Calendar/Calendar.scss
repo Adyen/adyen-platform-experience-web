@@ -1,3 +1,5 @@
+@import '@styles/variables/colors';
+
 .adyen-pe-calendar {
     --adyen-pe-calendar-corner-border-radius: 4px;
 
@@ -121,7 +123,7 @@
 
         [data-selection-start='1'][data-today='1'] &::before,
         [data-selection-end='1'][data-today='1'] &::before {
-            background: var(--adyen-sdk-color-background-primary);
+            background: $color-background-primary;
             inset: 12.5%;
         }
 

@@ -1,7 +1,8 @@
 @import '../../../style/bento-mapping';
+@import '../../../style/variables/colors';
 
 .adyen-pe-error-message-display {
-    background: var(--adyen-sdk-color-background-primary);
+    background: $color-background-primary;
     border: 1px solid var(--adyen-sdk-color-outline-primary);
     border-radius: var(--adyen-sdk-border-radius-m);
     box-shadow: 0 6px 12px 0 rgba(0, 17, 44, 0.08);

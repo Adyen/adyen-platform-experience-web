@@ -1,5 +1,6 @@
 @import '../../../style/bento-mapping';
 @import '../../../style/breakpoints.scss';
+@import '../../../style/variables/colors';
 
 // TODO: Move this to an accessibility mixin
 .adyen-pe-sr-only {
@@ -18,7 +19,7 @@
     position: relative;
 
     &__container {
-        background-color: var(--adyen-sdk-color-background-primary);
+        background-color: $color-background-primary;
         border: var(--adyen-sdk-color-outline-primary) 1px solid;
         border-radius: var(--adyen-sdk-border-radius-m);
         display: block;
@@ -37,7 +38,7 @@
 
         &--button {
             &:hover {
-                background-color: var(--adyen-sdk-color-background-primary-hover);
+                background-color: $color-background-primary-hover;
 
                 #{$adyen-pe-expandable-card}__chevron {
                     background-color: var(--adyen-sdk-color-background-tertiary-hover);

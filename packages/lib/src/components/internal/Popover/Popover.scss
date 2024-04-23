@@ -1,11 +1,12 @@
 @import '../../../style/bento-mapping';
 @import '../../../style/breakpoints.scss';
+@import '../../../style/variables/colors';
 
 .adyen-pe {
     &-popover {
         $adyen-pe-popover-component-root: &;
 
-        background: var(--adyen-sdk-color-background-primary);
+        background: $color-background-primary;
         border: unset;
         border-radius: $adyen-pe-spacer-040;
         box-shadow: 0 6px 12px rgba(0, 17, 44, 0.08), 0 2px 4px rgba(0, 17, 44, 0.04), 0 0 0 1px rgba(0, 17, 44, 0.06);
@@ -40,7 +41,7 @@
 
         &--with-divider {
             #{$adyen-pe-popover-component-root}__footer {
-                background-color: var(--adyen-sdk-color-background-primary);
+                background-color: $color-background-primary;
                 border-top: 1px solid var(--adyen-sdk-color-outline-disabled);
                 padding-top: $adyen-pe-spacer-060;
             }

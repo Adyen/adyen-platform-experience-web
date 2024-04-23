@@ -1,4 +1,5 @@
 @import '../../../../style/bento-mapping';
+@import '../../../../style/variables/colors';
 
 %adyen-pe-dropdown-decoration {
     --adyen-pe-separation-margin: #{$adyen-pe-spacer-060};
@@ -45,7 +46,7 @@
     }
 
     &.adyen-pe-button--secondary {
-        background: var(--adyen-sdk-color-background-primary);
+        background: $color-background-primary;
         border: 1px solid var(--adyen-sdk-color-outline-secondary);
         box-shadow: none;
         color: var(--adyen-sdk-color-label-primary);
@@ -55,7 +56,7 @@
         width: 100%;
 
         &:hover {
-            background-color: var(--adyen-sdk-color-background-primary-hover);
+            background-color: $color-background-primary-hover;
         }
 
         &::before {
@@ -163,7 +164,7 @@
 }
 
 .adyen-pe-dropdown__list {
-    background: var(--adyen-sdk-color-background-primary);
+    background: $color-background-primary;
     display: none;
     list-style: none;
     margin: 0;
@@ -202,6 +203,7 @@
 
     &-checkbox {
         @extend %adyen-pe-dropdown-decoration;
+        color: $color-background-inverse-primary;
         margin-right: var(--adyen-pe-separation-margin);
 
         .adyen-pe-dropdown:not(.adyen-pe-dropdown--multiselect) & {
@@ -235,7 +237,7 @@
 
         &:focus,
         &:active {
-            background: var(--adyen-sdk-color-background-primary-active);
+            background: $color-background-primary-active;
         }
     }
 

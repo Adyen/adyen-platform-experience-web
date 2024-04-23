@@ -1,6 +1,9 @@
 @use '../../../style/skeleton' as skeleton;
+
 // stylelint-disable-next-line no-invalid-position-at-import-rule
 @import '../../../style/bento-mapping';
+// stylelint-disable-next-line no-invalid-position-at-import-rule
+@import '../../../style/variables/colors';
 
 .adyen-pe-data-grid {
     $adyen-pe-data-grid: &;
@@ -42,7 +45,7 @@
     }
 
     &__row {
-        background: var(--adyen-sdk-color-background-primary);
+        background: $color-background-primary;
         overflow: hidden;
         vertical-align: top;
 
@@ -58,7 +61,7 @@
 
             &:hover,
             &:focus {
-                background: var(--adyen-sdk-color-background-primary-hover);
+                background: $color-background-primary-hover;
                 outline-offset: -1px;
             }
         }
@@ -112,7 +115,7 @@
     }
 
     &__footer {
-        background: var(--adyen-sdk-color-background-primary);
+        background: $color-background-primary;
 
         .adyen-pe-pagination {
             padding: 0;
@@ -161,7 +164,7 @@
     }
 
     &__empty-message {
-        background: var(--adyen-sdk-color-background-primary);
+        background: $color-background-primary;
         border: 1px solid var(--adyen-sdk-color-outline-primary);
         border-radius: 12px;
         box-shadow: 0 6px 12px 0 rgba(0, 17, 44, 0.08);

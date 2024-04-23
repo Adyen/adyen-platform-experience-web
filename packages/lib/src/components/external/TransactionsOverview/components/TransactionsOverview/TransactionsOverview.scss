@@ -1,8 +1,9 @@
 @import '../../../../../style/bento-mapping';
 @import '../../../../../style/breakpoints';
+@import '../../../../../style/variables/colors';
 
 .adyen-pe-transactions-overview {
-    background: var(--adyen-sdk-color-background-primary);
+    background: $color-background-primary;
     display: flex;
     flex-direction: column;
     gap: $adyen-pe-spacer-070;
