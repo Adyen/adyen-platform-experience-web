@@ -11,7 +11,6 @@ const config: StorybookConfig = {
         name: '@storybook/preact-vite',
         options: {},
     },
-    staticDirs: [{ from: '../../../mocks', to: '/static' }],
     async viteFinal(config) {
         const { apiConfigs } = getEnvironment(process.env.VITE_MODE ?? 'development');
 
