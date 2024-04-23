@@ -1,5 +1,5 @@
 import { rest } from 'msw';
-import { BASIC_TRANSACTIONS_LIST, TRANSACTION_DETAILS_DEFAULT } from '../../../../../mocks/src/transactions';
+import { DEFAULT_TRANSACTION, TRANSACTIONS, TRANSACTION_TOTALS } from '@adyen/adyen-platform-experience-web-mocks';
 import { endpoints } from '../endpoints';
 import { delay } from '../utils/utils';
 
@@ -33,7 +33,7 @@ export const transactionsMocks = [
         const minAmount = req.url.searchParams.get('minAmount');
         const maxAmount = req.url.searchParams.get('maxAmount');
 
-        let transactions = BASIC_TRANSACTIONS_LIST;
+        let transactions = TRANSACTIONS;
         let responseDelay = 200;
 
         if (categories.length || currencies.length || statuses.length || minAmount || maxAmount) {
@@ -53,12 +53,16 @@ export const transactionsMocks = [
     }),
 
     rest.get(mockEndpoints.transaction, (req, res, ctx) => {
-        const matchingMock = [...BASIC_TRANSACTIONS_LIST, TRANSACTION_DETAILS_DEFAULT].find(mock => mock.id === req.params.id);
+        const matchingMock = [...TRANSACTIONS, DEFAULT_TRANSACTION].find(mock => mock.id === req.params.id);
 
         if (!matchingMock) {
             res(ctx.status(404), ctx.text('Cannot find matching Transaction mock'));
             return;
         }
         return res(ctx.json(matchingMock));
+    }),
+
+    rest.get(mockEndpoints.transactionsTotals, (req, res, ctx) => {
+        return res(ctx.json({ totals: TRANSACTION_TOTALS }));
     }),
 ];
