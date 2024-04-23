@@ -5,7 +5,7 @@
     align-items: center;
     appearance: none;
     background-color: $color-background-primary;
-    border: 1px solid var(--adyen-sdk-color-outline-secondary);
+    border: 1px solid $color-outline-secondary;
     border-radius: var(--adyen-sdk-border-radius-m);
     color: $color-label-primary;
     cursor: pointer;
@@ -49,9 +49,9 @@
     &--active,
     &:active,
     &:focus {
-        border: 1px solid var(--adyen-sdk-color-outline-primary-active);
+        border: 1px solid $color-outline-primary-active;
         box-shadow: none !important;
-        outline: 1px solid var(--adyen-sdk-color-outline-primary-active);
+        outline: 1px solid $color-outline-primary-active;
     }
 
     &__footer {

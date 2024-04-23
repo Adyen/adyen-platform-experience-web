@@ -69,7 +69,7 @@
 
 .adyen-pe-input {
     background: $color-background-primary;
-    border: 1px solid var(--adyen-sdk-color-outline-secondary);
+    border: 1px solid $color-outline-secondary;
     border-radius: var(--adyen-sdk-border-radius-m);
     color: $color-label-primary;
     display: block;
@@ -90,7 +90,7 @@
 }
 
 .adyen-pe-input:hover {
-    border-color: var(--adyen-sdk-color-outline-primary-hover);
+    border-color: $color-outline-primary-hover;
 }
 
 .adyen-pe-input:required {

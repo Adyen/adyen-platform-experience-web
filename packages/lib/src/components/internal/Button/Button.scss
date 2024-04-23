@@ -57,12 +57,12 @@
 
         &:hover {
             background-color: $color-background-primary-hover;
-            box-shadow: inset 0 0 0 1px var(--adyen-sdk-color-outline-primary-hover);
+            box-shadow: inset 0 0 0 1px $color-outline-primary-hover;
             color: $color-label-secondary;
         }
 
         &:hover:not(:focus) {
-            box-shadow: inset 0 0 0 1px var(--adyen-sdk-color-outline-primary-hover);
+            box-shadow: inset 0 0 0 1px $color-outline-primary-hover;
         }
 
         &:active {
@@ -74,7 +74,7 @@
         &:disabled,
         &:disabled:not(:focus) {
             background-color: $color-background-primary;
-            box-shadow: inset 0 0 0 1px var(--adyen-sdk-color-outline-primary);
+            box-shadow: inset 0 0 0 1px $color-outline-primary;
             color: $color-label-disabled;
         }
     }

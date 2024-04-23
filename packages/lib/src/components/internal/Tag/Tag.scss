@@ -37,6 +37,6 @@
     &--primary {
         background: $color-background-primary;
         color: $color-label-primary;
-        outline: 1px solid var(--adyen-sdk-color-outline-primary);
+        outline: 1px solid $color-outline-primary;
     }
 }

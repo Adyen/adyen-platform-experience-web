@@ -47,7 +47,7 @@
 
     &.adyen-pe-button--secondary {
         background: $color-background-primary;
-        border: 1px solid var(--adyen-sdk-color-outline-secondary);
+        border: 1px solid $color-outline-secondary;
         box-shadow: none;
         color: $color-label-primary;
         justify-content: flex-start;
