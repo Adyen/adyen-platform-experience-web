@@ -22,7 +22,6 @@ export interface PayoutsTableProps extends WithPaginationLimitSelection<Paginati
     error?: AdyenPlatformExperienceError;
     onContactSupport?: () => void;
     onRowClick: (value: any) => void;
-    onDataSelection?: OnSelection;
     showDetails?: boolean;
     showPagination: boolean;
     data: typeof BASIC_PAYOUTS_LIST | undefined;
@@ -32,7 +31,6 @@ export const PayoutsTable: FC<PayoutsTableProps> = ({
     loading,
     onContactSupport,
     onRowClick,
-    onDataSelection,
     showDetails,
     showPagination,
     data,

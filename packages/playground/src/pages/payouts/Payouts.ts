@@ -24,7 +24,7 @@ enableServerInMockedMode()
 
         const payoutsComponent = new PayoutsOverview({
             core: AdyenPlatform,
-            onDataSelection: ({ showModal }) => {
+            onRecordSelection: ({ showModal }) => {
                 showModal();
                 // window.location.assign(`/src/pages/transaction/?id=${id}`);
             },

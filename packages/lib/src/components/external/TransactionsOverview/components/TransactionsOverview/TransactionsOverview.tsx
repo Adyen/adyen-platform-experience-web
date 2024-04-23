@@ -39,7 +39,7 @@ export const TransactionsOverview = ({
     balanceAccounts,
     allowLimitSelection,
     preferredLimit = DEFAULT_PAGE_LIMIT,
-    onDataSelection,
+    onRecordSelection,
     showDetails,
     isLoadingBalanceAccount,
     onContactSupport,
@@ -133,9 +133,9 @@ export const TransactionsOverview = ({
     const transactionDetails = useMemo(
         () => ({
             showDetails: showDetails ?? true,
-            callback: onDataSelection,
+            callback: onRecordSelection,
         }),
-        [showDetails, onDataSelection]
+        [showDetails, onRecordSelection]
     );
 
     const modalOptions = useMemo(() => ({ transaction: transactionDetails }), [transactionDetails]);
@@ -223,7 +223,7 @@ export const TransactionsOverview = ({
                     loading={fetching || isLoadingBalanceAccount || !balanceAccounts}
                     onContactSupport={onContactSupport}
                     onRowClick={onRowClick}
-                    onTransactionSelected={onDataSelection}
+                    onTransactionSelected={onRecordSelection}
                     showPagination={true}
                     transactions={records}
                     limit={limit}

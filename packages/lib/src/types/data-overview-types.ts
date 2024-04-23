@@ -5,7 +5,7 @@ import { Core } from '@src/core';
 export interface DataOverviewComponentProps {
     name?: string;
     elementRef?: UIElement<DataOverviewComponentProps> | null;
-    onDataSelection?: OnSelection;
+    onRecordSelection?: OnSelection;
     onFiltersChanged?: (filters: { [P in FilterParam]?: string }) => any;
     onLimitChanged?: (limit: number) => any;
     preferredLimit?: 10 | 20;
