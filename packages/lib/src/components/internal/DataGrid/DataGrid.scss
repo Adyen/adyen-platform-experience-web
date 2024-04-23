@@ -99,7 +99,7 @@
             position: relative;
 
             &:not(:last-child)::after {
-                background: var(--adyen-sdk-color-separator-primary);
+                background: $color-separator-primary;
                 bottom: 25%;
                 content: '';
                 position: absolute;
