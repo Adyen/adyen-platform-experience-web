@@ -1,7 +1,7 @@
 const labels = {
     id: 'paymentId',
     transactionType: 'transactionType',
-    creationDate: 'date',
+    creationDate: 'date', //TODO: when backend changes this field, rename it as createdAt
     balanceAccountId: 'balanceAccount',
     accountHolderId: 'account',
     fee: 'txType.Fee',
