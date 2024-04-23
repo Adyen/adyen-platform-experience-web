@@ -1,10 +1,11 @@
 import Category from '@src/components/external/TransactionsOverview/components/Category/Category';
-import TransactionListError from '@src/components/external/TransactionsOverview/components/TransactionListError/TransactionListError';
+import DataOverviewError from '@src/components/internal/DataOverviewError/DataOverviewError';
+import { getLabel } from '@src/components/utils/getLabels';
 import useCoreContext from '@src/core/Context/useCoreContext';
 import { useCallback, useMemo, useState } from 'preact/hooks';
 import DataGrid from '../../../../internal/DataGrid';
 import Pagination from '../../../../internal/Pagination';
-import { getLabel, parsePaymentMethodType } from '../utils';
+import { parsePaymentMethodType } from '../utils';
 import { Tag } from '@src/components/internal/Tag/Tag';
 import { TagVariant } from '@src/components/internal/Tag/types';
 import { CellTextPosition } from '@src/components/internal/DataGrid/types';
@@ -75,7 +76,10 @@ export const TransactionsTable: FC<TransactionTableProps> = ({
         [setHoveredRow]
     );
 
-    const errorDisplay = useMemo(() => () => <TransactionListError error={error} onContactSupport={onContactSupport} />, [error, onContactSupport]);
+    const errorDisplay = useMemo(
+        () => () => <DataOverviewError error={error} onContactSupport={onContactSupport} errorMessage={'weCouldNotLoadYourTransactions'} />,
+        [error, onContactSupport]
+    );
     return (
         <div className={BASE_CLASS}>
             <DataGrid

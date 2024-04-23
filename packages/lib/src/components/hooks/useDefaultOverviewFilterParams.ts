@@ -1,5 +1,5 @@
-import { TransactionFilterParam } from '@src/components';
 import useBalanceAccountSelection from '@src/components/hooks/useBalanceAccountSelection';
+import { FilterParam } from '@src/types';
 import { MutableRef, useCallback, useEffect, useRef, useState } from 'preact/hooks';
 import { getTimeRangeSelectionDefaultPresetOptions } from '@src/components/internal/DatePicker/components/TimeRangeSelector';
 import { DEFAULT_TRANSACTIONS_OVERVIEW_MULTI_SELECTION_FILTER_PARAMS } from '../external/TransactionsOverview/components/MultiSelectionFilter';
@@ -12,11 +12,11 @@ const getDefaultFilterParams = (type: 'transactions' | 'payouts') => {
     const defaultFilterParams = {
         ...(type === 'transactions' && {
             ...DEFAULT_TRANSACTIONS_OVERVIEW_MULTI_SELECTION_FILTER_PARAMS,
-            [TransactionFilterParam.MIN_AMOUNT]: undefined,
-            [TransactionFilterParam.MAX_AMOUNT]: undefined,
+            [FilterParam.MIN_AMOUNT]: undefined,
+            [FilterParam.MAX_AMOUNT]: undefined,
         }),
-        [TransactionFilterParam.CREATED_SINCE]: new Date(from).toISOString(),
-        [TransactionFilterParam.CREATED_UNTIL]: new Date(to).toISOString(),
+        [FilterParam.CREATED_SINCE]: new Date(from).toISOString(),
+        [FilterParam.CREATED_UNTIL]: new Date(to).toISOString(),
     } as const;
 
     return { defaultFilterParams, defaultTimeRange, timeRangeOptions } as const;

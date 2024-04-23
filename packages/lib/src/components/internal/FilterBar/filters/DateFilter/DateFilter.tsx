@@ -1,15 +1,14 @@
-import { TransactionFilterParam } from '@src/components';
 import { UseTimeRangeSelectionConfig } from '@src/components/internal/DatePicker/components/TimeRangeSelector';
 import DateFilterCore from '@src/components/internal/FilterBar/filters/DateFilter/DateFilterCore';
 import useDefaultOverviewFilterParams from '@src/components/hooks/useDefaultOverviewFilterParams';
-import { DateFilterParam } from '@src/types';
+import { FilterParam } from '@src/types';
 import { useCallback, useMemo, useState } from 'preact/hooks';
 import useCoreContext from '@src/core/Context/useCoreContext';
 import { DateFilterProps, DateRangeFilterParam } from '@src/components/internal/FilterBar/filters/DateFilter/types';
 import { UsePaginatedRecords } from '@src/components/internal/Pagination/hooks/types';
 import { EMPTY_OBJECT } from '@src/utils/common';
 
-type DataOverviewDateFilterProps = Pick<UsePaginatedRecords<any, string, DateFilterParam>, 'canResetFilters' | 'filters' | 'updateFilters'> &
+type DataOverviewDateFilterProps = Pick<UsePaginatedRecords<any, string, FilterParam>, 'canResetFilters' | 'filters' | 'updateFilters'> &
     ReturnType<typeof useDefaultOverviewFilterParams> & {
         timezone?: UseTimeRangeSelectionConfig['timezone'];
     };
@@ -36,12 +35,12 @@ const DateFilter = ({
                         break;
                     case DateRangeFilterParam.FROM:
                         updateFilters({
-                            [DateFilterParam.CREATED_SINCE]: value || defaultParams.current.defaultFilterParams[TransactionFilterParam.CREATED_SINCE],
+                            [FilterParam.CREATED_SINCE]: value || defaultParams.current.defaultFilterParams[FilterParam.CREATED_SINCE],
                         });
                         break;
                     case DateRangeFilterParam.TO:
                         updateFilters({
-                            [DateFilterParam.CREATED_UNTIL]: value || defaultParams.current.defaultFilterParams[DateFilterParam.CREATED_UNTIL],
+                            [FilterParam.CREATED_UNTIL]: value || defaultParams.current.defaultFilterParams[FilterParam.CREATED_UNTIL],
                         });
                         break;
                     default:
@@ -65,11 +64,11 @@ const DateFilter = ({
     return (
         <DateFilterCore
             label={i18n.get('dateRange')}
-            name={TransactionFilterParam.CREATED_SINCE}
+            name={FilterParam.CREATED_SINCE}
             sinceDate={sinceDate}
             untilDate={new Date(nowTimestamp).toString()}
-            from={filters[TransactionFilterParam.CREATED_SINCE]}
-            to={filters[TransactionFilterParam.CREATED_UNTIL]}
+            from={filters[FilterParam.CREATED_SINCE]}
+            to={filters[FilterParam.CREATED_UNTIL]}
             selectedPresetOption={selectedTimeRangePreset}
             timeRangePresetOptions={defaultParams.current.timeRangeOptions}
             timezone={timezone}

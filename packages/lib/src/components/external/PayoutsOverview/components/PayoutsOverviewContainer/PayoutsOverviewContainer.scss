@@ -1,5 +1,14 @@
-.adyen-pe-payouts-overview-container {
-    &--with-error {
-        position: relative;
+.adyen-pe-payouts {
+    &-display {
+        &__spinner-container {
+            display: block;
+            padding-bottom: 40px;
+        }
+    }
+
+    &-overview-container {
+        &--with-error {
+            position: relative;
+        }
     }
 }
