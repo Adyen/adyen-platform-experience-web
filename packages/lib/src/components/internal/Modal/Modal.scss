@@ -106,7 +106,7 @@ $adyen-pe-modal-sizes: (
         }
 
         &--with-border-bottom {
-            border-bottom: 1px solid var(--adyen-sdk-color-outline-secondary);
+            border-bottom: 1px solid $color-outline-secondary;
         }
     }
 

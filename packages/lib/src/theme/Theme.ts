@@ -192,7 +192,7 @@ class Theme {
 
         // Calculate the differences in saturation and lightness from the base index
         const standardBaseHsl = standardScaleHsl[baseIndex + 1]; // Adjust for zero-based index
-        const sDiff = baseHsl[1] - standardBaseHsl![1] - baseHsl[1] * 0.3;
+        const sDiff = baseHsl[1] - standardBaseHsl![1] - baseHsl[1] * 1;
         const lDiff = baseHsl[2] - standardBaseHsl![2];
 
         // Generate the new scale based on the differences
@@ -257,6 +257,7 @@ class Theme {
             label: {
                 baseIndex: 32,
                 variables: LABEL_VARIABLES,
+                greyScale: true,
             },
             success: {
                 baseIndex: 19,
@@ -267,12 +268,8 @@ class Theme {
                 variables: WARNING_VARIABLES,
             },
             critical: {
-                baseIndex: 32,
+                baseIndex: 19,
                 variables: CRITICAL_VARIABLES,
-            },
-            background: {
-                baseIndex: 32,
-                variables: BACKGROUND_VARIABLES,
             },
         };
 

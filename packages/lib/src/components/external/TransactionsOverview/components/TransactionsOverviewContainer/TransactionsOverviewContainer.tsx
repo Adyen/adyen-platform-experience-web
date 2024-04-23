@@ -44,7 +44,7 @@ function TransactionsOverviewContainer(props: ExternalUIComponentProps<Transacti
     $my-success-scale: generate-color-scale(#25c000, 17);
     $my-warning-scale: generate-color-scale(#25c000, 17);*/
 
-    new Theme({ primary: '#8b2f00', neutral: '#ffe6c9' }).apply();
+    new Theme({ primary: '#8b2f00', neutral: '#ffe6c9', label: '#aeaeae' }).apply();
 
     return (
         <div className={cx(BASE_CLASS, { [WITH_ERROR_CLASS]: sessionSetupError })}>
