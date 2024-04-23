@@ -1,4 +1,4 @@
-import $watchable from '@src/utils/watchable';
+import { createWatchlist } from '@src/primitives/common/watchlist';
 import { struct } from '@src/utils/common';
 import { Clock } from './types';
 
@@ -29,26 +29,26 @@ const clock = (() => {
 
     const animationIntervalCallback = () => {
         timestamp = Date.now();
-        watchable.notify();
+        watchlist.requestNotification();
     };
 
     const getTimestamp = () => timestamp ?? Date.now();
-    const watchable = $watchable({ timestamp: getTimestamp });
+    const watchlist = createWatchlist({ timestamp: getTimestamp });
 
-    watchable.callback.resume = () => {
+    watchlist.on.resume = () => {
         controller = new AbortController();
         timestamp = Date.now();
         animationInterval(1000, controller.signal, animationIntervalCallback);
     };
 
-    watchable.callback.idle = () => {
+    watchlist.on.idle = () => {
         controller.abort();
         timestamp = null;
     };
 
     return struct({
         timestamp: { get: getTimestamp },
-        watch: { value: watchable.watch },
+        watch: { value: watchlist.subscribe },
     }) as Clock;
 })();
 

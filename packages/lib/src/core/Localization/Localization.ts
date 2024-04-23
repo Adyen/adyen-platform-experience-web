@@ -5,8 +5,8 @@ import restamper, { RestamperWithTimezone, systemToTimezone } from './datetime/r
 import { createTranslationsLoader, getLocalizationProxyDescriptors } from './localization-utils';
 import { CustomTranslations, LangFile, SupportedLocale, Translation, TranslationKey, TranslationOptions } from './types';
 import { formatCustomTranslations, getTranslation, toTwoLetterCode } from './utils';
+import { createWatchlist } from '@src/primitives/common/watchlist';
 import { noop, struct } from '@src/utils/common';
-import watchable from '@src/utils/watchable';
 import { en_US } from './translations';
 
 export default class Localization {
@@ -21,10 +21,10 @@ export default class Localization {
     #ready: Promise<void> = Promise.resolve();
     #currentRefresh?: Promise<void>;
     #markRefreshAsDone?: () => void;
-    #refreshWatchable = watchable({ timestamp: () => performance.now() });
+    #refreshWatchlist = createWatchlist({ timestamp: () => performance.now() });
     #restamp: RestamperWithTimezone = restamper();
 
-    private watch = this.#refreshWatchable.watch.bind(undefined);
+    private watch = this.#refreshWatchlist.subscribe.bind(undefined);
     public i18n: Omit<Localization, (typeof EXCLUDE_PROPS)[number]> = struct(getLocalizationProxyDescriptors.call(this));
     public preferredTranslations?: { [k in SupportedLocale]?: Translation } | { [k: string]: Translation };
 
@@ -66,7 +66,7 @@ export default class Localization {
     }
 
     get lastRefreshTimestamp() {
-        return this.#refreshWatchable.snapshot.timestamp;
+        return this.#refreshWatchlist.snapshot.timestamp;
     }
 
     get locale(): SupportedLocale | string {
@@ -117,7 +117,7 @@ export default class Localization {
             this.#supportedLocales = this.#translationsLoader.supportedLocales;
             this.#customTranslations = customTranslations;
             this.#languageCode = toTwoLetterCode(this.#locale);
-            this.#refreshWatchable.notify();
+            this.#refreshWatchlist.requestNotification();
         })());
 
         currentRefresh.then(currentRefreshDone).catch(reason => {

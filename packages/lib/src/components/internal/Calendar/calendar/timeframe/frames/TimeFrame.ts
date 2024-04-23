@@ -23,10 +23,9 @@ import {
     SHIFT_PERIOD,
 } from '../../constants';
 import createFlagsRecord from '../common/flags';
-import indexed from '../../shared/indexed';
-import { Indexed } from '../../shared/indexed/types';
+import { createIndexed } from '@src/primitives/common/indexed';
+import type { WatchListCallable } from '@src/primitives/common/watchlist/types';
 import { clamp, enumerable, isBitSafeInteger, isFunction, isInfinite, mid, mod, struct } from '@src/utils/common';
-import { WatchCallable } from '@src/utils/watchable/types';
 import { today } from '../../../clock';
 import {
     CalendarBlock,
@@ -55,7 +54,7 @@ export default abstract class TimeFrame {
     #cursorOffset!: number;
     #cursorTimestamp!: number;
     #dynamicBlockHeight: boolean = false;
-    #effect?: WatchCallable<any>;
+    #effect?: WatchListCallable;
     #firstWeekDay: FirstWeekDay = 0;
     #frameBlocksCached: IndexedCalendarBlock[] = [];
     #locale: string = TimeFrame.#DEFAULT_LOCALE;
@@ -96,8 +95,8 @@ export default abstract class TimeFrame {
     abstract get currentDayTimestamp(): number;
     abstract get rowspan(): number;
 
-    #daysOfWeek = indexed(() => this.daysInWeek, this.getDayOfWeekAtIndex.bind(this));
-    #frameBlocks = indexed(() => this.#size, this.#getFrameBlockAtIndex.bind(this));
+    #daysOfWeek = createIndexed(() => this.daysInWeek, this.getDayOfWeekAtIndex.bind(this));
+    #frameBlocks = createIndexed(() => this.#size, this.#getFrameBlockAtIndex.bind(this));
 
     protected get fromTimestamp() {
         return this.#fromTimestamp;
@@ -132,7 +131,7 @@ export default abstract class TimeFrame {
         else if (bool === Boolean(bool)) this.#dynamicBlockHeight = bool;
     }
 
-    set effect(effect: WatchCallable<any> | null | undefined) {
+    set effect(effect: WatchListCallable | null | undefined) {
         if (effect == undefined) this.#effect = undefined;
         else if (isFunction(effect)) this.#effect = effect;
     }
@@ -280,7 +279,7 @@ export default abstract class TimeFrame {
             const [label, datetime] = this.getFormattedDataForFrameBlock(new Date(dateString).setHours(12));
             const blockStartIndex = block.outer.from;
 
-            this.#frameBlocksCached[index] = indexed<Indexed<CalendarBlockCellData>, CalendarBlock>(
+            this.#frameBlocksCached[index] = createIndexed<CalendarBlock>(
                 {
                     datetime: enumerable(datetime),
                     label: enumerable(label),
@@ -291,7 +290,7 @@ export default abstract class TimeFrame {
                 index => {
                     const indexOffset = index * this.rowspan;
 
-                    return indexed<CalendarBlockCellData>(this.rowspan, index => {
+                    return createIndexed(this.rowspan, index => {
                         const [timestamp, flags] = block[index + indexOffset] as (typeof block)[number];
                         const [label, datetime] = this.getFormattedDataForBlockCell(new Date(timestamp).setHours(12));
 

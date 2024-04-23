@@ -27,21 +27,21 @@ import {
     SHIFT_FRAME,
     SHIFT_PERIOD,
 } from '../constants';
-import indexed from '../shared/indexed';
+import { createIndexed } from '@src/primitives/common/indexed';
+import { createEffectStack, EffectStack } from '@src/primitives/common/effectStack';
+import { createWatchlist, UNSUBSCRIBE_TOKEN, WatchList, WatchListCallable, WatchListSubscriptionCallback } from '@src/primitives/common/watchlist';
 import {
     boolify,
     EMPTY_OBJECT,
     immutableProxyHandlers,
     isBitSafeInteger,
     isFunction,
+    isString,
     noop,
     pickFromCollection,
     struct,
     structFrom,
 } from '@src/utils/common';
-import { isString } from '@src/utils/validator-utils';
-import watchable from '@src/utils/watchable';
-import { Watchable, WatchableFactory, WatchCallable, WatchCallback } from '@src/utils/watchable/types';
 import { MonthFrame, TimeFrame /* , YearFrame */ } from '../timeframe';
 import { today } from '../../clock';
 import {
@@ -81,7 +81,7 @@ export default class Calendar {
     #shiftControlsList?: CalendarShiftControl[];
 
     #shiftControls = new Proxy(
-        indexed(() => this.#shiftControlsList?.length ?? 0, this.#getShiftControlRecordAtIndex.bind(this)),
+        createIndexed(() => this.#shiftControlsList?.length ?? 0, this.#getShiftControlRecordAtIndex.bind(this)),
         {
             ...immutableProxyHandlers,
             get: (target: {}, property: string | symbol, receiver: {}): any => {
@@ -91,7 +91,7 @@ export default class Calendar {
         }
     ) as CalendarGrid['controls'];
 
-    #watchable?: Watchable<CalendarWatchAtoms> = watchable({
+    #watchlist?: WatchList<CalendarWatchAtoms> = createWatchlist({
         blocks: () => this.#frame?.size,
         cells: () => this.#frame?.units,
         controls: () => pickFromCollection(CALENDAR_CONTROLS, this.#config.controls),
@@ -105,18 +105,14 @@ export default class Calendar {
         today: () => this.#today.timestamp,
     });
 
-    #lastWatchableSnapshot?: CalendarWatchAtoms = this.#watchable?.snapshot;
+    #lastWatchableSnapshot?: CalendarWatchAtoms = this.#watchlist?.snapshot;
 
-    #chainedNotifyCallback?: ReturnType<WatchableFactory['withSyncEffect']> = watchable.withSyncEffect(
-        () => this.#watchCallback && this.#watchable?.notify()
-    );
+    #chainedNotifyEffectStack?: EffectStack = createEffectStack(() => this.#watchCallback && this.#watchlist?.requestNotification());
 
-    #chainedWatchCallback?: ReturnType<WatchableFactory['withSyncEffect']> = watchable.withSyncEffect(() =>
-        this.#watchCallback?.call(this.#currentConfig)
-    );
+    #chainedWatchEffectStack?: EffectStack = createEffectStack(() => this.#watchCallback?.call(this.#currentConfig));
 
     #grid = structFrom(
-        indexed(
+        createIndexed(
             () => this.#frame?.size ?? 0,
             index => this.#frame?.frameBlocks[index]
         ),
@@ -152,11 +148,11 @@ export default class Calendar {
                                     this.#watchCallback = fn;
 
                                     if (!this.#watchableEffect) {
-                                        const watchCallback = this.#chainedNotifyCallback?.(Calendar.#watchableEffectCallback.bind(this));
+                                        const watchCallback = this.#chainedNotifyEffectStack?.bind(Calendar.#watchableEffectCallback.bind(this));
 
                                         if (watchCallback) {
-                                            this.#watchableEffect = this.#chainedNotifyCallback?.(noop);
-                                            this.#unwatch = this.#watchable?.watch(this.#chainedWatchCallback?.(watchCallback));
+                                            this.#watchableEffect = this.#chainedNotifyEffectStack?.bind(noop);
+                                            this.#unwatch = this.#watchlist?.subscribe(this.#chainedWatchEffectStack?.bind(watchCallback));
                                             this.#frame && (this.#frame.effect = this.#watchableEffect);
                                         }
                                     }
@@ -221,7 +217,7 @@ export default class Calendar {
 
     static #RANGE_OFFSETS_FORMAT_REGEX = /^(?:0|[1-9]\d*)(\s+(?:0|[1-9]\d*)?){0,5}?$/;
     static #CURSOR_POINTER_INTERACTION_EVENTS = ['click', 'mouseover', 'pointerover'];
-    static #DAYS_OF_WEEK_FALLBACK = indexed<CalendarDayOfWeekData, {}>(0, noop as any);
+    static #DAYS_OF_WEEK_FALLBACK = createIndexed(0, noop as () => CalendarDayOfWeekData);
     static #SHIFT_ACTIVATION_KEYS = [InteractionKeyCode.ENTER, InteractionKeyCode.SPACE];
     static #SHIFT_ALL_CONTROLS = Object.keys(CalendarShiftControlsFlag).filter(control => isNaN(+control)) as CalendarShiftControl[];
     static #SHIFT_MINIMAL_CONTROLS = ['PREV', 'NEXT'] as CalendarShiftControl[];
@@ -249,8 +245,8 @@ export default class Calendar {
         return flags & CalendarShiftControlFlag.PREV ? -1 : 1;
     }
 
-    static #watchableEffectCallback: WatchCallback<CalendarWatchAtoms> = function (this: Calendar, signalOrSnapshot) {
-        if (typeof signalOrSnapshot === 'symbol') return;
+    static #watchableEffectCallback: WatchListSubscriptionCallback<CalendarWatchAtoms> = function (this: Calendar, signalOrSnapshot) {
+        if (signalOrSnapshot === UNSUBSCRIBE_TOKEN) return;
 
         let controlsChanged = false;
         let highlightChanged = false;
@@ -276,8 +272,8 @@ export default class Calendar {
         if (highlightChanged) this.#refreshHighlighting();
     };
 
-    static #withNotifyEffect<T extends WatchCallable<any> = WatchCallable<any>>(this: Calendar, fn: T) {
-        return this.#chainedNotifyCallback?.(fn) ?? fn;
+    static #withNotifyEffect<T extends WatchListCallable = WatchListCallable>(this: Calendar, fn: T) {
+        return this.#chainedNotifyEffectStack?.bind(fn) ?? fn;
     }
 
     constructor() {
@@ -407,8 +403,8 @@ export default class Calendar {
 
         this.#unwatch?.();
 
-        this.#chainedNotifyCallback =
-            this.#chainedWatchCallback =
+        this.#chainedNotifyEffectStack =
+            this.#chainedWatchEffectStack =
             this.#cursorIndexFromEvent =
             this.#frame =
             this.#highlightSelection =
@@ -417,7 +413,7 @@ export default class Calendar {
             this.#rangeOffsets =
             this.#shiftFactorFromEvent =
             this.#unwatch =
-            this.#watchable =
+            this.#watchlist =
             this.#watchableEffect =
             this.#watchCallback =
                 undefined;
@@ -602,7 +598,7 @@ export default class Calendar {
     }
 
     #refreshShiftControls() {
-        switch (this.#watchable?.snapshot.controls) {
+        switch (this.#watchlist?.snapshot.controls) {
             case CONTROLS_ALL:
                 this.#shiftControlsList = Calendar.#SHIFT_ALL_CONTROLS;
                 break;

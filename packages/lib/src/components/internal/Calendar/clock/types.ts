@@ -1,9 +1,9 @@
-import { Watchable } from '@src/utils/watchable/types';
+import { WatchList } from '@src/primitives/common/watchlist/types';
 import { RestamperWithTimezone } from '@src/core/Localization/datetime/restamper';
 
 export type Clock<T extends Record<any, any> = {}> = Readonly<{
     timestamp: number;
-    watch: Watchable<{ timestamp: number } & T>['watch'];
+    watch: WatchList<{ timestamp: number } & T>['subscribe'];
 }>;
 
 export type Today = Clock &

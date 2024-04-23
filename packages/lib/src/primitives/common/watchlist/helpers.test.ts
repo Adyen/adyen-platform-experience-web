@@ -1,12 +1,12 @@
 import { describe, expect, test } from 'vitest';
-import { createLiveWatchableState, createWatchableIdleCallbacks } from './helpers';
+import { createWatchListCurrentStateRecord, createWatchListSubscriptionEventCallbacks } from './helpers';
 import { noop } from '@src/utils/common';
 
-describe('createLiveWatchableState', () => {
-    test('should have constant state getters for static atoms', () => {
+describe('createWatchListCurrentStateRecord', () => {
+    test('should have constant state getters for static entries', () => {
         let NUMBER = 30;
         let STRING = 'Hello World';
-        const state = createLiveWatchableState({ prop1: STRING, prop2: NUMBER });
+        const state = createWatchListCurrentStateRecord({ prop1: STRING, prop2: NUMBER });
 
         expect(state).toHaveProperty('prop1');
         expect(state).toHaveProperty('prop2');
@@ -25,11 +25,11 @@ describe('createLiveWatchableState', () => {
         expect(state.prop2).toBe(PREV_NUMBER);
     });
 
-    test('should have live state getters for getter atoms', () => {
+    test('should have computed state getters for getter entries', () => {
         let NUMBER = 30;
         let STRING = 'Hello World';
 
-        const state = createLiveWatchableState({
+        const state = createWatchListCurrentStateRecord({
             get prop1() {
                 return STRING;
             },
@@ -62,17 +62,17 @@ describe('createLiveWatchableState', () => {
         expect(state.prop3).toBe(NUMBER / 2);
     });
 
-    test('should have live state getters for callable atoms', () => {
+    test('should have computed state getters for callable entries', () => {
         let NUMBER = 30;
         let STRING = 'Hello World';
 
-        const state = createLiveWatchableState({
+        const state = createWatchListCurrentStateRecord({
             prop1: () => STRING,
             prop2: () => NUMBER,
             prop3() {
                 return this.prop2() / 2;
             },
-        });
+        } as const);
 
         expect(state).toHaveProperty('prop1');
         expect(state).toHaveProperty('prop2');
@@ -96,9 +96,9 @@ describe('createLiveWatchableState', () => {
     });
 });
 
-describe('createWatchableIdleCallbacks', () => {
+describe('createWatchListSubscriptionEventCallbacks', () => {
     test('should create struct of callbacks', () => {
-        const callbacks = createWatchableIdleCallbacks();
+        const callbacks = createWatchListSubscriptionEventCallbacks();
 
         expect(callbacks).toBeTypeOf('object');
         expect(callbacks).toHaveProperty('idle');

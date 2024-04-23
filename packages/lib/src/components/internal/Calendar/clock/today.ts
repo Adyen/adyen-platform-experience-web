@@ -1,5 +1,5 @@
 import $restamper, { RestamperWithTimezone, systemToTimezone, timezoneToSystem } from '@src/core/Localization/datetime/restamper';
-import $watchable from '@src/utils/watchable';
+import { createWatchlist, UNSUBSCRIBE_TOKEN } from '@src/primitives/common/watchlist';
 import { struct } from '@src/utils/common';
 import { Today } from './types';
 import clock from './clock';
@@ -46,20 +46,20 @@ const today = (() => {
                     [timestamp, tomorrowOffset] = getTimestampWithTomorrowOffset(withTimestamp);
                 };
 
-                const watchable = $watchable({ timestamp: getTimestamp });
+                const watchlist = createWatchlist({ timestamp: getTimestamp });
 
-                watchable.callback.resume = () => {
+                watchlist.on.resume = () => {
                     unwatch = clock.watch(snapshotOrSignal => {
-                        if (snapshotOrSignal === $watchable.UNWATCH) return;
+                        if (snapshotOrSignal === UNSUBSCRIBE_TOKEN) return;
                         if (timestamp === null || tomorrowOffset === null) return refreshTimestamps();
                         if (clock.timestamp - timestamp < tomorrowOffset) return;
 
                         refreshTimestamps();
-                        watchable.notify();
+                        watchlist.requestNotification();
                     });
                 };
 
-                watchable.callback.idle = () => {
+                watchlist.on.idle = () => {
                     unwatch?.();
                     timestamp = tomorrowOffset = unwatch = null;
                 };
@@ -67,7 +67,7 @@ const today = (() => {
                 const instance = struct({
                     timestamp: { get: getTimestamp },
                     timezone: { value: tz },
-                    watch: { value: watchable.watch },
+                    watch: { value: watchlist.subscribe },
                 }) as Today;
 
                 timezones.set(tz, instance);

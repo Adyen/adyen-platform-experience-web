@@ -1,7 +1,7 @@
 export * from './constants';
 import { JSXInternal } from 'preact/src/jsx';
 import { $createObject, EMPTY_OBJECT, immutableProxyHandlers } from './constants';
-import type { GetterPropertyDescriptor } from './types';
+import type { GetterPropertyDescriptor, MapGetter } from './types';
 
 export const call = Function.prototype.bind.bind(Function.prototype.call);
 export const struct = call($createObject, void 0, null);
@@ -31,12 +31,13 @@ export const boolify = (value?: any, fallbackBoolean?: boolean) => (typeof value
 export const clamp = <T extends number = number>(min: T, value: T, max: T) => Math.max(min as number, Math.min(value as number, max as number));
 export const mid = (low: number, high: number) => low + Math.floor((high - low) / 2);
 export const mod = (value: number, modulo: number) => ((value % modulo) + modulo) % modulo;
-// export const isFunction = (value: any): value is (...args: any[]) => any => typeof value === 'function';
 export const isFunction = <T extends (...args: any[]) => any>(value?: unknown): value is T => typeof value === 'function';
-export const isString = (value?: unknown): value is string => typeof value === 'string';
+export const isString = (value?: any): value is string => typeof value === 'string';
 export const isNumber = (value: any): value is number => typeof value === 'number';
 export const isInfinite = (value: any): value is number => isNumber(value) && 1 / value === 0;
 export const isBitSafeInteger = (value: any): value is number => isNumber(value) && value === ~~value;
+export const isNullable = (value?: any): value is undefined | null => value == undefined;
+export const isUndefined = (value?: any): value is undefined => value === undefined;
 export const isPlainObject = <T extends Record<any, any>>(value?: unknown): value is T => toString(value).slice(8, -1) === 'Object';
 export const asPlainObject = <T extends Record<any, any>>(value?: unknown) => (isPlainObject<T>(value) ? value : (EMPTY_OBJECT as T));
 
@@ -47,6 +48,18 @@ export const capitalize = (str?: string) => (str && str.length > 0 ? `${str[0]!.
  * The comparison is very similar to strict equality comparison but also returns `true` if both values are `NaN`.
  */
 export const sameValue = (a: any, b: any) => a === b || !(a === a || b === b);
+
+export const getMappedValue: MapGetter = (key, map, factory) => {
+    let value = map.get(key);
+
+    if (isUndefined(value) && isFunction(factory)) {
+        if (!isUndefined((value = factory(key, map)))) {
+            map.set(key, value);
+        }
+    }
+
+    return value;
+};
 
 export const pickFromCollection = <C extends readonly any[]>(collection: C, option?: C[number], defaultOption?: C[number]) => {
     if (collection.includes(option)) return option;

@@ -31,8 +31,8 @@ import {
     CALENDAR_CONTROLS,
     CALENDAR_SELECTIONS,
 } from './constants';
-import { Indexed } from './shared/indexed/types';
-import { WatchCallable } from '@src/utils/watchable/types';
+import { Indexed } from '@src/primitives/common/indexed/types';
+import { WatchListCallable } from '@src/primitives/common/watchlist/types';
 
 export type WithGetSetProperty<T = any> = {
     get _(): T;
@@ -190,7 +190,7 @@ export type CalendarGrid = Indexed<IndexedCalendarBlock> &
             (config?: CalendarConfig): CalendarConfig;
             cursorIndex: WithGetSetProperty<(this: CalendarConfig, evt: Event) => number | undefined>['_'];
             shiftFactor: WithGetSetProperty<(this: CalendarConfig, evt: Event, target: CalendarShiftControl) => number | undefined>['_'];
-            watch: WithGetSetProperty<WatchCallable<any, CalendarConfig>>['_'];
+            watch: WithGetSetProperty<WatchListCallable<any, CalendarConfig>>['_'];
         };
         controls: Indexed<CalendarGridControlRecord> & CalendarGridControls;
         cursor: (evt?: Event) => boolean;
@@ -200,7 +200,7 @@ export type CalendarGrid = Indexed<IndexedCalendarBlock> &
     }>;
 
 export type CalendarFacade = {
-    (init?: CalendarConfig | TimeFrameSize | WatchCallable<any, CalendarConfig>): Readonly<{
+    (init?: CalendarConfig | TimeFrameSize | WatchListCallable<any, CalendarConfig>): Readonly<{
         readonly grid: CalendarGrid;
         readonly kill: () => void;
     }>;
