@@ -1,4 +1,5 @@
 @import '@styles/bento-mapping';
+@import '@styles/variables/colors';
 
 .adyen-pe-tag {
     align-items: center;
@@ -34,7 +35,7 @@
     }
 
     &--primary {
-        background: var(--adyen-sdk-color-background-primary);
+        background: $color-background-primary;
         color: var(--adyen-sdk-color-label-primary);
         outline: 1px solid var(--adyen-sdk-color-outline-primary);
     }
