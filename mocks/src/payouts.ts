@@ -13,7 +13,6 @@ type Payout = {
         currency: string;
     };
     creationDate: string;
-    downloadUrl: string;
 };
 
 const PAYOUT_DETAILS_1: Payout = {
@@ -31,7 +30,6 @@ const PAYOUT_DETAILS_1: Payout = {
         currency: 'USD',
     },
     creationDate: '2024-03-13T10:00:00Z',
-    downloadUrl: 'https://.../download?balanceAccountId={balanceAccountId}&createdAt={createdAt}',
 };
 const PAYOUT_DETAILS_2: Payout = {
     id: '1WEPGD5VS767881E',
@@ -48,7 +46,6 @@ const PAYOUT_DETAILS_2: Payout = {
         currency: 'USD',
     },
     creationDate: '2024-03-13T10:00:00Z',
-    downloadUrl: 'https://.../download?balanceAccountId={balanceAccountId}&createdAt={createdAt}',
 };
 const PAYOUT_DETAILS_3: Payout = {
     id: '1WEPGD5VS767882E',
@@ -65,7 +62,6 @@ const PAYOUT_DETAILS_3: Payout = {
         currency: 'USD',
     },
     creationDate: '2024-03-13T10:00:00Z',
-    downloadUrl: 'https://.../download?balanceAccountId={balanceAccountId}&createdAt={createdAt}',
 };
 const PAYOUT_DETAILS_4: Payout = {
     id: '1WEPGD5VS767883E',
@@ -82,7 +78,6 @@ const PAYOUT_DETAILS_4: Payout = {
         currency: 'USD',
     },
     creationDate: '2024-03-13T10:00:00Z',
-    downloadUrl: 'https://.../download?balanceAccountId={balanceAccountId}&createdAt={createdAt}',
 };
 const PAYOUT_DETAILS_5: Payout = {
     id: '1WEPGD5VS767885E',
@@ -99,7 +94,6 @@ const PAYOUT_DETAILS_5: Payout = {
         currency: 'USD',
     },
     creationDate: '2024-03-13T10:00:00Z',
-    downloadUrl: 'https://.../download?balanceAccountId={balanceAccountId}&createdAt={createdAt}',
 };
 const PAYOUT_DETAILS_6: Payout = {
     id: '1WEPGD5VS767886E',
@@ -116,7 +110,6 @@ const PAYOUT_DETAILS_6: Payout = {
         currency: 'USD',
     },
     creationDate: '2024-03-13T10:00:00Z',
-    downloadUrl: 'https://.../download?balanceAccountId={balanceAccountId}&createdAt={createdAt}',
 };
 const PAYOUT_DETAILS_7: Payout = {
     id: '1WEPGD5VS767887E',
@@ -133,7 +126,6 @@ const PAYOUT_DETAILS_7: Payout = {
         currency: 'USD',
     },
     creationDate: '2024-03-13T10:00:00Z',
-    downloadUrl: 'https://.../download?balanceAccountId={balanceAccountId}&createdAt={createdAt}',
 };
 const PAYOUT_DETAILS_8: Payout = {
     id: '1WEPGD5VS767888E',
@@ -150,7 +142,6 @@ const PAYOUT_DETAILS_8: Payout = {
         currency: 'USD',
     },
     creationDate: '2024-03-13T10:00:00Z',
-    downloadUrl: 'https://.../download?balanceAccountId={balanceAccountId}&createdAt={createdAt}',
 };
 const PAYOUT_DETAILS_9: Payout = {
     id: '1WEPGD5VS767889E',
@@ -167,7 +158,6 @@ const PAYOUT_DETAILS_9: Payout = {
         currency: 'USD',
     },
     creationDate: '2024-03-13T10:00:00Z',
-    downloadUrl: 'https://.../download?balanceAccountId={balanceAccountId}&createdAt={createdAt}',
 };
 const PAYOUT_DETAILS_10: Payout = {
     id: '1WEPGD5VS767889Q',
@@ -184,7 +174,6 @@ const PAYOUT_DETAILS_10: Payout = {
         currency: 'USD',
     },
     creationDate: '2024-03-13T10:00:00Z',
-    downloadUrl: 'https://.../download?balanceAccountId={balanceAccountId}&createdAt={createdAt}',
 };
 const PAYOUT_DETAILS_11: Payout = {
     id: '1WEPGD5VS767899Q',
@@ -201,7 +190,6 @@ const PAYOUT_DETAILS_11: Payout = {
         currency: 'USD',
     },
     creationDate: '2024-03-13T10:00:00Z',
-    downloadUrl: 'https://.../download?balanceAccountId={balanceAccountId}&createdAt={createdAt}',
 };
 
 export const BASIC_PAYOUTS_LIST = [
