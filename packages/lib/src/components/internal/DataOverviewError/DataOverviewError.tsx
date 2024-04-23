@@ -1,5 +1,5 @@
 import { ErrorMessageDisplay } from '@src/components/internal/ErrorMessageDisplay/ErrorMessageDisplay';
-import { getErrorMessage } from '@src/components/utils/dataOverviewResourceErrorCodes';
+import { getErrorMessage } from '@src/components/utils/getDataOverviewResourceErrorCode';
 import AdyenPlatformExperienceError from '@src/core/Errors/AdyenPlatformExperienceError';
 import { TranslationKey } from '@src/core/Localization/types';
 

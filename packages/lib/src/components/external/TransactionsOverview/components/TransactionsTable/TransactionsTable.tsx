@@ -1,6 +1,6 @@
 import Category from '@src/components/external/TransactionsOverview/components/Category/Category';
 import DataOverviewError from '@src/components/internal/DataOverviewError/DataOverviewError';
-import { getLabel } from '@src/components/utils/getLabels';
+import { getLabel } from '@src/components/utils/getLabel';
 import useCoreContext from '@src/core/Context/useCoreContext';
 import { useCallback, useMemo, useState } from 'preact/hooks';
 import DataGrid from '../../../../internal/DataGrid';

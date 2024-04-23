@@ -1,4 +1,4 @@
-import { ErrorMessage, getCommonErrorMessages, UNDEFINED_ERROR } from '@src/components/utils/commonErrorCodes';
+import { ErrorMessage, getCommonErrorMessage, UNDEFINED_ERROR } from '@src/components/utils/getCommonErrorCode';
 import AdyenPlatformExperienceError from '@src/core/Errors/AdyenPlatformExperienceError';
 import CopyText from '@src/components/internal/CopyText/CopyText';
 import { TranslationKey } from '@src/core/Localization/types';
@@ -9,8 +9,8 @@ export const getErrorMessage = (
     onContactSupport?: () => void
 ): ErrorMessage => {
     if (!error) return UNDEFINED_ERROR;
-    const commonErrors = getCommonErrorMessages(error, onContactSupport);
-    if (commonErrors) return commonErrors;
+    const commonError = getCommonErrorMessage(error, onContactSupport);
+    if (commonError) return commonError;
     switch (error.errorCode) {
         case undefined:
             return {
