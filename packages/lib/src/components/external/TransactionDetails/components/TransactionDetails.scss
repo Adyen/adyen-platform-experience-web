@@ -1,6 +1,8 @@
 @use '../../../../style/skeleton' as skeleton;
 // stylelint-disable-next-line no-invalid-position-at-import-rule
 @import '@styles/bento-mapping';
+// stylelint-disable-next-line no-invalid-position-at-import-rule
+@import '@styles/variables/colors';
 
 .adyen-pe-transaction {
     &--error-container {
@@ -19,17 +21,17 @@
         //}
 
         &__amount {
-            color: var(--adyen-sdk-color-label-primary);
+            color: $color-label-primary;
             font-size: var(--adyen-sdk-font-size-700);
             font-weight: var(--adyen-sdk-font-weight-600);
             line-height: var(--adyen-sdk-line-height-800);
 
             &--error {
-                color: var(--adyen-sdk-color-label-critical);
+                color: $color-label-critical;
             }
 
             &--pending {
-                color: var(--adyen-sdk-color-label-secondary);
+                color: $color-label-secondary;
             }
         }
 
@@ -63,7 +65,7 @@
         }
 
         &__label {
-            color: var(--adyen-sdk-color-label-secondary);
+            color: $color-label-secondary;
             font-size: var(--adyen-sdk-font-size-200);
             font-weight: var(--adyen-sdk-font-weight-400);
             line-height: var(--adyen-sdk-line-height-200);

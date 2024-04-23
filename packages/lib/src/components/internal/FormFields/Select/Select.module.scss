@@ -35,7 +35,7 @@
     background: $color-background-primary;
     border: 0;
     caret-color: #0075ff;
-    color: var(--adyen-sdk-color-label-primary);
+    color: $color-label-primary;
     font-family: inherit;
     font-size: var(--adyen-sdk-font-size-200);
     height: 100%;

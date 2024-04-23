@@ -1,5 +1,6 @@
 @import '@styles/bento-mapping';
 @import '@styles/breakpoints';
+@import '@styles/variables/colors';
 
 .adyen-pe-summary-item {
     align-items: center;
@@ -28,12 +29,12 @@
     }
 
     &__label {
-        color: var(--adyen-sdk-color-label-secondary);
+        color: $color-label-secondary;
         width: fit-content;
     }
 
     &__amount {
-        color: var(--adyen-sdk-color-label-primary);
+        color: $color-label-primary;
         font-weight: var(--adyen-sdk-font-weight-600);
         white-space: nowrap;
     }
