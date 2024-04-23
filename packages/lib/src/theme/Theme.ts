@@ -8,6 +8,7 @@ type Colors = {
     success?: string;
     warning?: string;
     background?: string;
+    outline?: string;
 };
 function clamp(value: number, min: number, max: number) {
     return Math.min(Math.max(value, min), max);
@@ -134,6 +135,17 @@ const WARNING_VARIABLES: ColorScale = {
     'color-background-warning-weak': '100',
     'color-background-warning-strong': '1300',
 };
+
+const OUTLINE_VARIABLES: ColorScale = {
+    'color-outline-primary': '400',
+    'color-outline-primary-hover': '600',
+    'color-outline-secondary': '600',
+    'color-outline-secondary-hover': '800',
+    'color-outline-tertiary': '1300',
+    'color-outline-tertiary-hover': '1700',
+    'color-outline-disabled': '400',
+};
+
 const BACKGROUND_VARIABLES = {
     'color-background-primary': '$my-primary-background',
     'color-background-modal': '$my-primary-background',
@@ -271,6 +283,10 @@ class Theme {
                 baseIndex: 19,
                 variables: CRITICAL_VARIABLES,
             },
+            outline: {
+                baseIndex: 32,
+                variables: OUTLINE_VARIABLES,
+            },
         };
 
         for (const key in variablesConfig) {
@@ -293,3 +309,27 @@ class Theme {
 }
 
 export default Theme;
+
+/*
+--adyen-sdk-color-outline-primary: #{map-get($adyen-colors-grey, '400')};
+--adyen-sdk-color-outline-primary-hover: #{map-get($adyen-colors-grey, '600')};
+--adyen-sdk-color-outline-primary-active: #{map-get($adyen-colors-primary, '3200')};
+
+--adyen-sdk-color-outline-secondary: #{map-get($adyen-colors-grey, '600')};
+--adyen-sdk-color-outline-secondary-hover: #{map-get($adyen-colors-grey, '800')};
+--adyen-sdk-color-outline-secondary-active: #{map-get($adyen-colors-primary, '3200')};
+
+--adyen-sdk-color-outline-tertiary: #{map-get($adyen-colors-grey, '1300')};
+--adyen-sdk-color-outline-tertiary-hover: #{map-get($adyen-colors-grey, '1700')};
+--adyen-sdk-color-outline-tertiary-active: #{map-get($adyen-colors-primary, '3200')};
+
+--adyen-sdk-color-outline-disabled: #{map-get($adyen-colors-grey, '400')};
+--adyen-sdk-color-outline-selected: #{map-get($adyen-colors-primary, '3200')};
+
+--adyen-sdk-color-outline-critical: #{map-get($adyen-colors-critical, '1700')};
+--adyen-sdk-color-outline-critical-hover: #{map-get($adyen-colors-critical, '1900')};
+--adyen-sdk-color-outline-critical-active: #{map-get($adyen-colors-critical, '2500')};
+
+--adyen-sdk-color-outline-success: #{map-get($adyen-colors-success, '1700')};
+--adyen-sdk-color-outline-success-hover: #{map-get($adyen-colors-success, '1900')};
+--adyen-sdk-color-outline-success-active: #{map-get($adyen-colors-success, '2500')};*/

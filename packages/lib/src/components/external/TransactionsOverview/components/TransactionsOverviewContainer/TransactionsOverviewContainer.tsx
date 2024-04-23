@@ -17,7 +17,7 @@ function TransactionsOverviewContainer({ ...props }: ExternalUIComponentProps<Da
     $my-success-scale: generate-color-scale(#25c000, 17);
     $my-warning-scale: generate-color-scale(#25c000, 17);*/
 
-    new Theme({ primary: '#8b2f00', neutral: '#ffe6c9', label: '#aeaeae' }).apply();
+    new Theme({ primary: '#8b2f00', neutral: '#ffe6c9', label: '#1d1d1d' /*outline: '#ff0000'*/ }).apply();
 
     return (
         <DataOverviewContainer
