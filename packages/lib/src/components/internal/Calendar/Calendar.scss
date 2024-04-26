@@ -85,7 +85,7 @@
             }
 
             &[data-within-selection='1']::before {
-                background: var(--adyen-sdk-color-background-tertiary);
+                background: $color-background-tertiary;
                 border-radius: 0;
             }
 
@@ -128,7 +128,7 @@
         }
 
         [data-today='1'] &::before {
-            background: var(--adyen-sdk-color-background-tertiary);
+            background: $color-background-tertiary;
             border-radius: 50%;
             content: '';
             inset: 5%;
