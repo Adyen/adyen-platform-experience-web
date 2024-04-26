@@ -47,10 +47,10 @@
         }
 
         &--filled {
-            background-color: var(--adyen-sdk-color-background-secondary);
+            background-color: $color-background-secondary;
 
             &:hover {
-                background-color: var(--adyen-sdk-color-background-secondary-hover);
+                background-color: $color-background-secondary-hover;
             }
         }
     }

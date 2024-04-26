@@ -69,7 +69,7 @@
         position: absolute;
 
         &::before {
-            background: var(--adyen-sdk-color-background-secondary);
+            background: $color-background-secondary;
             border-top: 1px solid $color-outline-primary;
             content: '';
             inset: 0;

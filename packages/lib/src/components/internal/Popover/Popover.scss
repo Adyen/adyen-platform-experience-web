@@ -129,7 +129,7 @@
         }
 
         &__content {
-            background-color: var(--adyen-sdk-color-background-inverse-primary);
+            background-color: $color-background-inverse-primary;
             border-radius: $adyen-pe-spacer-020;
             color: $color-label-inverse;
             height: auto;
@@ -138,7 +138,7 @@
         }
 
         &__arrow {
-            background: var(--adyen-sdk-color-background-inverse-primary);
+            background: $color-background-inverse-primary;
             display: block;
             height: $adyen-pe-spacer-040;
             inset: 0 auto auto 0;

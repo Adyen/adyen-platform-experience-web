@@ -232,7 +232,7 @@
 
     &:not(#{$adyen-pe-self--disabled}, #{$adyen-pe-self--no-option}) {
         &:hover {
-            background: var(--adyen-sdk-color-background-secondary);
+            background: $color-background-secondary;
         }
 
         &:focus,
