@@ -8,9 +8,11 @@ import { SelectItem, SelectProps } from '@src/components/internal/FormFields/Sel
 import { DROPDOWN_ELEMENT_CONTENT_CLASS } from '@src/components/internal/FormFields/Select/constants';
 import { renderSelectListItemDefaultSingleSelected } from '@src/components/internal/FormFields/Select/components/SelectListItem';
 
-type _GetRenderListItemType<T extends Readonly<SelectItem[]> | undefined> = T extends Readonly<SelectItem[]>
-    ? NonNullable<SelectProps<{ -readonly [K in keyof T[number]]: T[number][K] }>['renderListItem']>
-    : never;
+type _GetRenderListItemType<T> = T extends Readonly<SelectItem[]> ? NonNullable<SelectProps<T[number]>['renderListItem']> : never;
+
+const BA_SELECTOR_CLASS = 'adyen-pe-balance-account-selector';
+const BA_SELECTOR_ACCOUNT_ID_CLASS = `${BA_SELECTOR_CLASS}__account-id` as const;
+const BA_SELECTOR_ACCOUNT_LABEL_CLASS = `${BA_SELECTOR_CLASS}__account-label` as const;
 
 const BalanceAccountSelector = memo(
     ({
@@ -24,8 +26,8 @@ const BalanceAccountSelector = memo(
             data => (
                 <>
                     <div className={DROPDOWN_ELEMENT_CONTENT_CLASS}>
-                        {data.item.name && <span className={'adyen-pe-balance-account-selector__account-label'}>{data.item.name}</span>}
-                        <span className={'adyen-pe-balance-account-selector__account-id'}>{data.item.id}</span>
+                        {data.item.name && <span className={BA_SELECTOR_ACCOUNT_LABEL_CLASS}>{data.item.name}</span>}
+                        <span className={BA_SELECTOR_ACCOUNT_ID_CLASS}>{data.item.id}</span>
                     </div>
                     {renderSelectListItemDefaultSingleSelected(data)}
                 </>
@@ -35,7 +37,7 @@ const BalanceAccountSelector = memo(
 
         return balanceAccountSelectionOptions && balanceAccountSelectionOptions.length > 1 ? (
             <Select
-                popoverClassNameModifiers={['adyen-pe-balance-account-selector']}
+                popoverClassNameModifiers={[BA_SELECTOR_CLASS]}
                 onChange={onBalanceAccountSelection}
                 filterable={false}
                 multiSelect={false}
