@@ -1,0 +1,70 @@
+[
+    {
+        "id": "AUK",
+        "name": "Auckland"
+    },
+    {
+        "id": "BOP",
+        "name": "Bay of Plenty"
+    },
+    {
+        "id": "CAN",
+        "name": "Canterbury"
+    },
+    {
+        "id": "GIS",
+        "name": "Gisborne"
+    },
+    {
+        "id": "HKB",
+        "name": "Hawkes Bay"
+    },
+    {
+        "id": "MBH",
+        "name": "Marlborough"
+    },
+    {
+        "id": "MWT",
+        "name": "Manawatu-Wanganui"
+    },
+    {
+        "id": "NSN",
+        "name": "Nelson"
+    },
+    {
+        "id": "NTL",
+        "name": "Northland"
+    },
+    {
+        "id": "OTA",
+        "name": "Otago"
+    },
+    {
+        "id": "STL",
+        "name": "Southland"
+    },
+    {
+        "id": "TAS",
+        "name": "Tasman"
+    },
+    {
+        "id": "TKI",
+        "name": "Taranaki"
+    },
+    {
+        "id": "WKO",
+        "name": "Waikato"
+    },
+    {
+        "id": "WGN",
+        "name": "Wellington"
+    },
+    {
+        "id": "WTC",
+        "name": "West Coast"
+    },
+    {
+        "id": "CIT",
+        "name": "Chatham Islands Territory"
+    }
+]

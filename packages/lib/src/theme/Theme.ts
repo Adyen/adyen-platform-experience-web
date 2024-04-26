@@ -10,45 +10,6 @@ type Colors = {
     background?: string;
     outline?: string;
 };
-function clamp(value: number, min: number, max: number) {
-    return Math.min(Math.max(value, min), max);
-}
-const standardScaleHex = [
-    '#f7f7f8',
-    '#eeeff1',
-    '#e3e5e9',
-    '#dbdee2',
-    '#d1d5da',
-    '#c9cdd3',
-    '#c0c5cc',
-    '#b8bdc6',
-    '#afb5bf',
-    '#a7adb8',
-    '#9ea6b1',
-    '#9ea6b1',
-    '#8d95a3',
-    '#848e9c',
-    '#7d8696',
-    '#747f8f',
-    '#6d7789',
-    '#647082',
-    '#5c687c',
-    '#556276',
-    '#4c5a6e',
-    '#455368',
-    '#3d4c62',
-    '#37455d',
-    '#2f3e56',
-    '#283750',
-    '#22314a',
-    '#1a2a44',
-    '#14243e',
-    '#0d1e38',
-    '#071732',
-    '#00112c',
-    '#000b26',
-    '#000814',
-];
 
 const NEUTRAL_VARIABLES: ColorScale = {
     'color-outline-primary': '400',
@@ -150,76 +111,102 @@ const BACKGROUND_VARIABLES = {
     'color-background-primary': '$my-primary-background',
     'color-background-modal': '$my-primary-background',
 };
-class Theme {
+export class Theme {
     private readonly colors: Colors;
     constructor(colors: Colors) {
         this.colors = colors;
     }
 
     hexToHsl(hex: string): [number, number, number] {
+        // Convert hex to RGB
         let r = parseInt(hex.slice(1, 3), 16);
         let g = parseInt(hex.slice(3, 5), 16);
         let b = parseInt(hex.slice(5, 7), 16);
-        (r /= 255), (g /= 255), (b /= 255);
-        const max = Math.max(r, g, b),
-            min = Math.min(r, g, b);
-        let h, s;
-        const l = (max + min) / 2;
+
+        // Convert RGB to HSL
+        r /= 255;
+        g /= 255;
+        b /= 255;
+        const max = Math.max(r, g, b);
+        const min = Math.min(r, g, b);
+        let h,
+            s,
+            l = (max + min) / 2;
 
         if (max === min) {
-            h = s = 0; // achromatic
+            h = s = 0; // Achromatic
         } else {
             const d = max - min;
             s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-            if (max === r) h = (g - b) / d + (g < b ? 6 : 0);
-            else if (max === g) h = (b - r) / d + 2;
-            else if (max === b) h = (r - g) / d + 4;
-            if (h !== undefined) {
-                h /= 6;
-                h *= 360;
-            }
+            h = max === r ? (g - b) / d + (g < b ? 6 : 0) : max === g ? (b - r) / d + 2 : (r - g) / d + 4;
+            h /= 6;
+            h *= 360;
+            s *= 100;
         }
-        return [h || 0, s * 100, l * 100];
+
+        l *= 100;
+        return [h, s, l];
     }
 
-    generateColorScale(baseColor: string, baseIndex: number, total = 34): ColorScale {
-        const baseHsl = this.hexToHsl(baseColor);
-        const colorScale: ColorScale = {};
+    generateColorScale(baseColor: string, baseIndex: number, count = 34): ColorScale {
+        // Convert the main HEX color to HSL
+        const [hue, saturation, mainLightness] = this.hexToHsl(baseColor);
 
-        for (let i = 0; i < total; i++) {
-            const [, s, l] = this.hexToHsl(standardScaleHex[i]!);
-            if (i + 1 === baseIndex) {
-                colorScale[`${i + 1}00`] = `hsl(${baseHsl[0]}, ${baseHsl[1]}%, ${baseHsl[2]}%)`;
+        // Initialize the scale with the main color
+        const scale = { [`${baseIndex}00`]: `hsl(${hue}, ${saturation}%, ${mainLightness}%)` };
+
+        // Determine the step for lightness before and after the main color
+        const lightnessStepBefore = mainLightness / (baseIndex - 1);
+        const lightnessStepAfter = (100 - mainLightness) / (count - baseIndex);
+
+        // Generate the colors before the main color
+        for (let i = 0; i < baseIndex - 1; i++) {
+            const lightness = mainLightness - lightnessStepBefore * (baseIndex - 1 - i);
+            scale[`${i}00`] = `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+        }
+
+        // Generate the colors after the main color
+        for (let i = baseIndex + 1; i < count; i++) {
+            const lightness = mainLightness + lightnessStepAfter * (i - baseIndex + 1);
+            scale[`${i}00`] = `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+        }
+
+        return scale;
+    }
+
+    generateGreyScale(baseColor: string, baseIndex = 1, count = 34): ColorScale {
+        const [hue, mainSaturation, mainLightness] = this.hexToHsl(baseColor);
+        const scale: ColorScale = {};
+        const lightnessStep = (mainLightness - 0) / (count - baseIndex);
+        const saturationStep = (mainSaturation - 0) / (count - baseIndex);
+
+        // Create the color scale
+        for (let i = 0; i <= count; i++) {
+            if (i === baseIndex) {
+                scale[`${baseIndex}00`] = `hsl(${hue}, ${mainSaturation}%, ${mainLightness}%)`;
             } else {
-                const sClamped = baseHsl[1] + 1 * (s - baseHsl[1] * 0.3);
-                const lClamped = Math.min(Math.max(l, 0), 100);
-                colorScale[`${i + 1}00`] = `hsl(${baseHsl[0]}, ${sClamped}%, ${lClamped}%)`;
+                let currentSaturation;
+                let currentLightness;
+
+                if (i < baseIndex) {
+                    // Before the main color - higher lightness and saturation
+                    currentSaturation = mainSaturation + saturationStep * (baseIndex - i - 1);
+                    currentLightness = mainLightness + lightnessStep * (baseIndex - i - 1);
+                } else {
+                    // From the main color to the darkest color - decreasing lightness and saturation
+                    currentSaturation = mainSaturation - saturationStep * (i - baseIndex + 1);
+                    currentLightness = mainLightness - lightnessStep * (i - baseIndex + 1);
+                }
+
+                // Clamp values to ensure they are within the valid range
+                currentSaturation = Math.max(0, Math.min(100, currentSaturation));
+                currentLightness = Math.max(0, Math.min(100, currentLightness));
+
+                scale[`${i}00`] = `hsl(${hue}, ${currentSaturation}%, ${currentLightness}%)`;
             }
         }
 
-        return colorScale;
-    }
-
-    generateGreyScale(baseColor: string, baseIndex = 3): ColorScale {
-        const standardScaleHsl = standardScaleHex.map(hex => this.hexToHsl(hex));
-        const baseHsl = this.hexToHsl(baseColor);
-
-        // Calculate the differences in saturation and lightness from the base index
-        const standardBaseHsl = standardScaleHsl[baseIndex + 1]; // Adjust for zero-based index
-        const sDiff = baseHsl[1] - standardBaseHsl![1] - baseHsl[1] * 1;
-        const lDiff = baseHsl[2] - standardBaseHsl![2];
-
-        // Generate the new scale based on the differences
-        const newScale: { [key: string]: string } = {};
-
-        standardScaleHsl.forEach((color, i) => {
-            const adjustedH = baseHsl[0];
-            const adjustedS = clamp(color[1] + sDiff, 0, 100);
-            const adjustedL = clamp(color[2] + lDiff, 0, 100);
-            newScale[`${i}00`] = `hsl(${adjustedH}, ${adjustedS}%, ${adjustedL}%)`;
-        });
-
-        return newScale;
+        return scale;
     }
 
     setCssVariables(colorMap: ColorScale, variableName: string, value: string): void {
@@ -264,14 +251,13 @@ class Theme {
                 variables: PRIMARY_VARIABLES,
             },
             neutral: {
-                baseIndex: 32,
+                baseIndex: 1,
                 variables: NEUTRAL_VARIABLES,
                 greyScale: true,
             },
             label: {
                 baseIndex: 32,
                 variables: LABEL_VARIABLES,
-                greyScale: true,
             },
             success: {
                 baseIndex: 19,
@@ -286,8 +272,9 @@ class Theme {
                 variables: CRITICAL_VARIABLES,
             },
             outline: {
-                baseIndex: 32,
+                baseIndex: 4,
                 variables: OUTLINE_VARIABLES,
+                greyScale: true,
             },
         };
 
@@ -298,6 +285,7 @@ class Theme {
                     color: this.colors[variablesKey]!,
                     baseIndex: variablesConfig[variablesKey]!.baseIndex,
                     variables: variablesConfig[variablesKey]!.variables,
+                    greyScale: variablesConfig[variablesKey]?.greyScale,
                 });
             }
         }
@@ -309,29 +297,3 @@ class Theme {
         }
     }
 }
-
-export default Theme;
-
-/*
---adyen-sdk-color-outline-primary: #{map-get($adyen-colors-grey, '400')};
---adyen-sdk-color-outline-primary-hover: #{map-get($adyen-colors-grey, '600')};
---adyen-sdk-color-outline-primary-active: #{map-get($adyen-colors-primary, '3200')};
-
---adyen-sdk-color-outline-secondary: #{map-get($adyen-colors-grey, '600')};
---adyen-sdk-color-outline-secondary-hover: #{map-get($adyen-colors-grey, '800')};
---adyen-sdk-color-outline-secondary-active: #{map-get($adyen-colors-primary, '3200')};
-
---adyen-sdk-color-outline-tertiary: #{map-get($adyen-colors-grey, '1300')};
---adyen-sdk-color-outline-tertiary-hover: #{map-get($adyen-colors-grey, '1700')};
---adyen-sdk-color-outline-tertiary-active: #{map-get($adyen-colors-primary, '3200')};
-
---adyen-sdk-color-outline-disabled: #{map-get($adyen-colors-grey, '400')};
---adyen-sdk-color-outline-selected: #{map-get($adyen-colors-primary, '3200')};
-
---adyen-sdk-color-outline-critical: #{map-get($adyen-colors-critical, '1700')};
---adyen-sdk-color-outline-critical-hover: #{map-get($adyen-colors-critical, '1900')};
---adyen-sdk-color-outline-critical-active: #{map-get($adyen-colors-critical, '2500')};
-
---adyen-sdk-color-outline-success: #{map-get($adyen-colors-success, '1700')};
---adyen-sdk-color-outline-success-hover: #{map-get($adyen-colors-success, '1900')};
---adyen-sdk-color-outline-success-active: #{map-get($adyen-colors-success, '2500')};*/

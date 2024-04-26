@@ -62,7 +62,8 @@
     },
     "dependencies": {
         "@adyen/adyen-platform-experience-web": "1.0.0-beta.1",
-        "preact": "^10.13.2"
+        "preact": "^10.13.2",
+        "@adyen/adyen-kyc-components": "adyen-kyc-components.tgz"
     },
     "msw": {
         "workerDirectory": "public"

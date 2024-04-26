@@ -1,0 +1,34 @@
+[
+    {
+        "id": "ACT",
+        "name": "Australian Capital Territory"
+    },
+    {
+        "id": "NSW",
+        "name": "New South Wales"
+    },
+    {
+        "id": "NT",
+        "name": "Northern Territory"
+    },
+    {
+        "id": "QLD",
+        "name": "Queensland"
+    },
+    {
+        "id": "SA",
+        "name": "South Australia"
+    },
+    {
+        "id": "TAS",
+        "name": "Tasmania"
+    },
+    {
+        "id": "VIC",
+        "name": "Victoria"
+    },
+    {
+        "id": "WA",
+        "name": "Western Australia"
+    }
+]

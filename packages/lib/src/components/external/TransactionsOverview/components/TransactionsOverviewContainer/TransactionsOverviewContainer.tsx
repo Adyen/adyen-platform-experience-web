@@ -10,7 +10,7 @@ import cx from 'classnames';
 import { ErrorMessageDisplay } from '@src/components/internal/ErrorMessageDisplay/ErrorMessageDisplay';
 import { BASE_CLASS, WITH_ERROR_CLASS } from '@src/components/external/TransactionsOverview/components/TransactionsOverviewContainer/constants';
 import './TransactionsOverviewContainer.scss';
-import Theme from '../../../../../theme/Theme';
+// import { Theme } from '../../../../../theme/Theme';
 
 function TransactionsOverviewContainer(props: ExternalUIComponentProps<TransactionsComponentProps>) {
     const { sessionSetupError, endpoints } = useAuthContext();
@@ -44,7 +44,7 @@ function TransactionsOverviewContainer(props: ExternalUIComponentProps<Transacti
     $my-success-scale: generate-color-scale(#25c000, 17);
     $my-warning-scale: generate-color-scale(#25c000, 17);*/
 
-    new Theme({ primary: '#8b2f00', neutral: '#ffe6c9', label: '#1d1d1d' /*outline: '#ff0000'*/ }).apply();
+    // new Theme({ primary: '#8b2f00', neutral: '#ffe6c9', label: '#1d1d1d' /*outline: '#ff0000'*/ }).apply();
 
     return (
         <div className={cx(BASE_CLASS, { [WITH_ERROR_CLASS]: sessionSetupError })}>
