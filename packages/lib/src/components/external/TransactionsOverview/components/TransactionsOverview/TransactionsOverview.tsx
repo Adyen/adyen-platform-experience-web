@@ -31,7 +31,7 @@ import {
 } from '@src/components/external/TransactionsOverview/components/TransactionsOverview/constants';
 import './TransactionsOverview.scss';
 import { mediaQueries, useMediaQuery } from '@src/components/external/TransactionsOverview/hooks/useMediaQuery';
-const ModalContent = lazy(() => import('../ModalContent'));
+const ModalContent = lazy(() => import('@src/components/internal/Modal/ModalContent/ModalContent'));
 
 export const TransactionsOverview = ({
     onFiltersChanged,

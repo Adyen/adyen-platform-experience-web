@@ -24,7 +24,7 @@ import { useCallback, useEffect, useMemo } from 'preact/hooks';
 import { BASIC_PAYOUTS_LIST } from '@adyen/adyen-platform-experience-web-mocks';
 import './PayoutsOverview.scss';
 
-const ModalContent = lazy(() => import('@src/components/external/TransactionsOverview/components/ModalContent'));
+const ModalContent = lazy(() => import('@src/components/internal/Modal/ModalContent/ModalContent'));
 
 export const PayoutsOverview = ({
     onFiltersChanged,
