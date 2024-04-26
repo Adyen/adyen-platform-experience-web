@@ -2,7 +2,7 @@ import { useSetupEndpoint } from '@src/hooks/useSetupEndpoint/useSetupEndpoint';
 import { useCallback, useEffect, useMemo } from 'preact/hooks';
 import { EMPTY_OBJECT } from '@src/utils/common';
 import { useFetch } from '@src/hooks/useFetch/useFetch';
-import { OperationParameters } from '@src/types/models/openapi/endpoints';
+import { OperationParameters } from '@src/types/api/endpoints';
 import { MakeFieldValueUndefined } from '@src/utils/types';
 import { memo } from 'preact/compat';
 import { BASE_CLASS } from '@src/components/external/TransactionsOverview/components/Balances/constants';

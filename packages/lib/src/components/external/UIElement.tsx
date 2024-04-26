@@ -6,7 +6,7 @@ import BaseElement from './BaseElement';
 import getImage from '../../utils/get-image';
 import { BaseElementProps, IUIElement, UIElementProps } from '../types';
 import { UIElementStatus } from '../types';
-import { SetupEndpoint } from '../../types/models/openapi/endpoints';
+import { SetupEndpoint } from '../../types/api/endpoints';
 import { EMPTY_OBJECT } from '@src/utils/common';
 
 export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUIElement {
