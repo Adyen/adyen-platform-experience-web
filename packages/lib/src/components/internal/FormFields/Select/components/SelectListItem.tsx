@@ -18,23 +18,24 @@ import {
 type _RenderSelectOptionResult<T extends SelectItem> = ReturnType<SelectItemProps<T>['renderListItem']>;
 type _RenderSelectOptionData<T extends SelectItem> = Parameters<SelectItemProps<T>['renderListItem']>[0];
 
-export const renderSelectListItemDefault = <T extends SelectItem>({
-    iconClassName,
-    item,
-    multiSelect,
-    selected,
-}: _RenderSelectOptionData<T>): _RenderSelectOptionResult<T> => (
+export const renderSelectListItemDefaultMultiSelected = <T extends SelectItem>(data: _RenderSelectOptionData<T>): _RenderSelectOptionResult<T> =>
+    data.multiSelect ? (
+        <span className={DROPDOWN_ELEMENT_CHECKBOX_CLASS}>
+            {data.selected ? <CheckedBox role="presentation" /> : <UncheckedBox role="presentation" />}
+        </span>
+    ) : null;
+
+export const renderSelectListItemDefaultSingleSelected = <T extends SelectItem>(data: _RenderSelectOptionData<T>): _RenderSelectOptionResult<T> =>
+    data.multiSelect ? null : <span className={DROPDOWN_ELEMENT_CHECKMARK_CLASS}>{data.selected && <Checkmark role="presentation" />}</span>;
+
+export const renderSelectListItemDefault = <T extends SelectItem>(data: _RenderSelectOptionData<T>): _RenderSelectOptionResult<T> => (
     <>
-        {multiSelect && (
-            <span className={DROPDOWN_ELEMENT_CHECKBOX_CLASS}>
-                {selected ? <CheckedBox role="presentation" /> : <UncheckedBox role="presentation" />}
-            </span>
-        )}
+        {renderSelectListItemDefaultMultiSelected(data)}
         <div className={DROPDOWN_ELEMENT_CONTENT_CLASS}>
-            {item.icon && <Img className={iconClassName as string} alt={item.name} src={item.icon} />}
-            <span>{item.name}</span>
+            {data.item.icon && <Img className={data.iconClassName as string} alt={data.item.name} src={data.item.icon} />}
+            <span>{data.item.name}</span>
         </div>
-        {!multiSelect && <span className={DROPDOWN_ELEMENT_CHECKMARK_CLASS}>{selected && <Checkmark role="presentation" />}</span>}
+        {renderSelectListItemDefaultSingleSelected(data)}
     </>
 );
 

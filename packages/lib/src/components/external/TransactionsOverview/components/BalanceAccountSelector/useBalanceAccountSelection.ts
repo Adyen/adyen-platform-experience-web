@@ -2,6 +2,8 @@ import { useCallback, useMemo, useState } from 'preact/hooks';
 import type { SelectItem } from '@src/components/internal/FormFields/Select/types';
 import type { IBalanceAccountBase } from '@src/types';
 
+const capitalize = (str?: string) => (str && str.length > 0 ? `${str[0]!.toUpperCase()}${str.slice(1)}` : str);
+
 const useBalanceAccountSelection = (balanceAccounts?: IBalanceAccountBase[]) => {
     const [selectedBalanceAccountIndex, setSelectedBalanceAccountIndex] = useState(0);
     const resetBalanceAccountSelection = useCallback(() => setSelectedBalanceAccountIndex(0), [setSelectedBalanceAccountIndex]);
@@ -13,7 +15,7 @@ const useBalanceAccountSelection = (balanceAccounts?: IBalanceAccountBase[]) => 
     const balanceAccountSelectionOptions = useMemo(
         () =>
             balanceAccounts && balanceAccounts.length > 1
-                ? Object.freeze(balanceAccounts.map(({ id }) => ({ id, name: id } as SelectItem)))
+                ? Object.freeze(balanceAccounts.map(({ description, id }) => ({ id, name: capitalize(description) } as SelectItem)))
                 : undefined,
         [balanceAccounts]
     );
