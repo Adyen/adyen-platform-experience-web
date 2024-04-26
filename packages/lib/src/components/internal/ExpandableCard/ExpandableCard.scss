@@ -41,7 +41,7 @@
                 background-color: $color-background-primary-hover;
 
                 #{$adyen-pe-expandable-card}__chevron {
-                    background-color: var(--adyen-sdk-color-background-tertiary-hover);
+                    background-color: $color-background-tertiary-hover;
                 }
             }
         }
@@ -70,7 +70,7 @@
 
     &__chevron {
         align-items: center;
-        background-color: var(--adyen-sdk-color-background-tertiary);
+        background-color: $color-background-tertiary;
         display: flex;
         height: 20px;
         justify-content: center;
