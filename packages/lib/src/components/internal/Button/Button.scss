@@ -33,19 +33,19 @@
     }
 
     &--primary {
-        background-color: var(--adyen-sdk-color-background-inverse-primary);
+        background-color: $color-background-inverse-primary;
         color: $color-label-inverse;
 
         &:hover {
-            background-color: var(--adyen-sdk-color-background-inverse-primary-hover);
+            background-color: $color-background-inverse-primary-hover;
         }
 
         &:active {
-            background-color: var(--adyen-sdk-color-background-inverse-primary-active);
+            background-color: $color-background-inverse-primary-active;
         }
 
         &:disabled {
-            background-color: var(--adyen-sdk-color-background-disabled);
+            background-color: $color-background-disabled;
             color: $color-label-disabled;
         }
     }

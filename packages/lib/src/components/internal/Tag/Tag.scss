@@ -15,17 +15,17 @@
     width: fit-content;
 
     &--success {
-        background: var(--adyen-sdk-color-background-success-weak);
+        background: $color-background-success-weak;
         color: #067934;
     }
 
     &--error {
-        background: var(--adyen-sdk-color-background-critical-weak);
+        background: $color-background-critical-weak;
         color: $color-label-critical;
     }
 
     &--default {
-        background: var(--adyen-sdk-color-background-secondary);
+        background: $color-background-secondary;
         color: $color-label-secondary;
     }
 
