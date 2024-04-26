@@ -1,4 +1,4 @@
-import { SetupEndpoint } from '@src/types/models/openapi/endpoints';
+import { SetupEndpoint } from '@src/types/api/endpoints';
 
 export type SessionResponse = {
     id: string;

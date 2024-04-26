@@ -1,5 +1,5 @@
-import { Schema } from './api/utils';
-import { components } from './openapi/TransactionsResource';
+import { Schema } from '../utils';
+import { components } from '../resources/TransactionsResource';
 
 export type ITransaction = Schema<components, 'SingleTransaction'>;
 

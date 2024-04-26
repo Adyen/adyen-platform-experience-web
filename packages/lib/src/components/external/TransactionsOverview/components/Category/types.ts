@@ -1,4 +1,4 @@
-import { ICategory } from '@src/types/models/transactions';
+import { ICategory } from '@src/types';
 
 export type CategoryProps = {
     value: ICategory;
