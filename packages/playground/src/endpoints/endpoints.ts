@@ -1,14 +1,17 @@
 export const endpoints = (mode: string) => {
     const matchVariable = mode === 'netlify' ? '(.*)' : ':id';
     const prefix = mode === 'viteDev' ? '^' : 'https://platform-components-external-test.adyen.com/platform-components-external/api';
+    const baseUrl = prefix + '/v([0-9]+)';
 
     return {
-        balanceAccounts: `${prefix}/v([0-9]+)/balanceAccounts`,
-        balances: `${prefix}/v([0-9]+)/balanceAccounts/${matchVariable}/balances`,
-        transactions: `${prefix}/v([0-9]+)/transactions`,
-        transaction: `${prefix}/v([0-9]+)/transactions/${matchVariable}`,
-        transactionsTotals: `${prefix}/v([0-9]+)/transactions/totals`,
+        balanceAccounts: `${baseUrl}/balanceAccounts`,
+        balances: `${baseUrl}/balanceAccounts/${matchVariable}/balances`,
+        payouts: `${baseUrl}/payouts`,
+        payout: `${baseUrl}/payouts/${matchVariable}`,
+        transactions: `${baseUrl}/transactions`,
+        transaction: `${baseUrl}/transactions/${matchVariable}`,
+        transactionsTotals: `${baseUrl}/transactions/totals`,
         sessions: `\/api/authe/api/v1/sessions`,
-        setup: `${prefix}/v([0-9]+)/setup`,
+        setup: `${baseUrl}/setup`,
     };
 };
