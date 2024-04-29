@@ -28,6 +28,8 @@ export const isNumber = (value: any): value is number => typeof value === 'numbe
 export const isInfinite = (value: any): value is number => isNumber(value) && 1 / value === 0;
 export const isBitSafeInteger = (value: any): value is number => isNumber(value) && value === ~~value;
 
+export const capitalize = (str?: string) => (str && str.length > 0 ? `${str[0]!.toUpperCase()}${str.slice(1)}` : str);
+
 /**
  * Compares two values using [`SameValueZero`](https://tc39.es/ecma262/multipage/abstract-operations.html#sec-samevaluezero) comparison and returns `true` if they are the same, or `false` otherwise.
  * The comparison is very similar to strict equality comparison but also returns `true` if both values are `NaN`.

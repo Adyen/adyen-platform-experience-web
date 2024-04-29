@@ -9,7 +9,7 @@ import { ForwardedRef, memo } from 'preact/compat';
 import { useMemo } from 'preact/hooks';
 import { DROPDOWN_ELEMENT_CLASS, DROPDOWN_ELEMENT_NO_OPTION_CLASS, DROPDOWN_LIST_ACTIVE_CLASS, DROPDOWN_LIST_CLASS } from '../constants';
 import type { SelectItem, SelectListProps } from '../types';
-import SelectListItem, { renderSelectListItemDefault } from './SelectListItem';
+import SelectListItem, { renderListItemDefault } from './SelectListItem';
 
 const SelectList = fixedForwardRef(
     <T extends SelectItem>(
@@ -38,7 +38,7 @@ const SelectList = fixedForwardRef(
         const filteredItems = items.filter(item => !textFilter || item.name.toLowerCase().includes(textFilter));
         const listClassName = cx(DROPDOWN_LIST_CLASS, { [DROPDOWN_LIST_ACTIVE_CLASS]: showList });
         const noOptionsClassName = cx(DROPDOWN_ELEMENT_CLASS, DROPDOWN_ELEMENT_NO_OPTION_CLASS);
-        const renderSelectOption = useMemo(() => (isFunction(renderListItem) ? renderListItem : renderSelectListItemDefault), [renderListItem]);
+        const renderSelectOption = useMemo(() => (isFunction(renderListItem) ? renderListItem : renderListItemDefault), [renderListItem]);
         const multipleSelection = useMemo(() => multiSelect === true, [multiSelect]);
 
         return showList ? (

@@ -18,24 +18,24 @@ import {
 type _RenderSelectOptionResult<T extends SelectItem> = ReturnType<SelectItemProps<T>['renderListItem']>;
 type _RenderSelectOptionData<T extends SelectItem> = Parameters<SelectItemProps<T>['renderListItem']>[0];
 
-export const renderSelectListItemDefaultMultiSelected = <T extends SelectItem>(data: _RenderSelectOptionData<T>): _RenderSelectOptionResult<T> =>
+export const renderDefaultMultiSelectionCheckedness = <T extends SelectItem>(data: _RenderSelectOptionData<T>): _RenderSelectOptionResult<T> =>
     data.multiSelect ? (
         <span className={DROPDOWN_ELEMENT_CHECKBOX_CLASS}>
             {data.selected ? <CheckedBox role="presentation" /> : <UncheckedBox role="presentation" />}
         </span>
     ) : null;
 
-export const renderSelectListItemDefaultSingleSelected = <T extends SelectItem>(data: _RenderSelectOptionData<T>): _RenderSelectOptionResult<T> =>
+export const renderDefaultSingleSelectionCheckedness = <T extends SelectItem>(data: _RenderSelectOptionData<T>): _RenderSelectOptionResult<T> =>
     data.multiSelect ? null : <span className={DROPDOWN_ELEMENT_CHECKMARK_CLASS}>{data.selected && <Checkmark role="presentation" />}</span>;
 
-export const renderSelectListItemDefault = <T extends SelectItem>(data: _RenderSelectOptionData<T>): _RenderSelectOptionResult<T> => (
+export const renderListItemDefault = <T extends SelectItem>(data: _RenderSelectOptionData<T>): _RenderSelectOptionResult<T> => (
     <>
-        {renderSelectListItemDefaultMultiSelected(data)}
-        <div className={DROPDOWN_ELEMENT_CONTENT_CLASS}>
+        {renderDefaultMultiSelectionCheckedness(data)}
+        <div className={data.contentClassName as string}>
             {data.item.icon && <Img className={data.iconClassName as string} alt={data.item.name} src={data.item.icon} />}
             <span>{data.item.name}</span>
         </div>
-        {renderSelectListItemDefaultSingleSelected(data)}
+        {renderDefaultSingleSelectionCheckedness(data)}
     </>
 );
 
@@ -65,7 +65,13 @@ const SelectListItem = <T extends SelectItem>({ item, multiSelect, onKeyDown, on
             role="option"
             tabIndex={-1}
         >
-            {renderListItem({ item, multiSelect, selected, iconClassName: DROPDOWN_ELEMENT_ICON_CLASS })}
+            {renderListItem({
+                item,
+                multiSelect,
+                selected,
+                contentClassName: DROPDOWN_ELEMENT_CONTENT_CLASS,
+                iconClassName: DROPDOWN_ELEMENT_ICON_CLASS,
+            })}
         </li>
     );
 };

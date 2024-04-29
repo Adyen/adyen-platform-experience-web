@@ -1,8 +1,7 @@
+import { capitalize } from '@src/utils/common';
 import { useCallback, useMemo, useState } from 'preact/hooks';
 import type { SelectItem } from '@src/components/internal/FormFields/Select/types';
 import type { IBalanceAccountBase } from '@src/types';
-
-const capitalize = (str?: string) => (str && str.length > 0 ? `${str[0]!.toUpperCase()}${str.slice(1)}` : str);
 
 const useBalanceAccountSelection = (balanceAccounts?: IBalanceAccountBase[]) => {
     const [selectedBalanceAccountIndex, setSelectedBalanceAccountIndex] = useState(0);
