@@ -3,10 +3,10 @@ import { endpoints } from '../endpoints';
 import { delay } from '../utils/utils';
 
 const networkError = false;
-const PREFIX = endpoints('mock').setup;
+const path = endpoints('mock').setup;
 
 export const setupMock = [
-    rest.post(`${PREFIX}`, (req, res, ctx) => {
+    rest.post(path, (req, res, ctx) => {
         if (networkError) {
             return res.networkError('Failed to connect');
         }
@@ -14,6 +14,10 @@ export const setupMock = [
             delay(200),
             ctx.json({
                 endpoints: {
+                    getBalanceAccounts: {
+                        method: 'GET',
+                        url: 'balanceAccounts',
+                    },
                     getBalances: {
                         method: 'GET',
                         url: 'balanceAccounts/{balanceAccountId}/balances',
@@ -22,17 +26,21 @@ export const setupMock = [
                         method: 'GET',
                         url: 'transactions',
                     },
+                    getTransaction: {
+                        method: 'GET',
+                        url: 'transactions/{transactionId}',
+                    },
                     getTransactionTotals: {
                         method: 'GET',
                         url: 'transactions/totals',
                     },
-                    getBalanceAccounts: {
+                    getPayout: {
                         method: 'GET',
-                        url: 'balanceAccounts',
+                        url: 'payouts/{payoutId}',
                     },
-                    getTransaction: {
+                    getPayouts: {
                         method: 'GET',
-                        url: 'transactions/{transactionId}',
+                        url: 'payouts',
                     },
                 },
             })
