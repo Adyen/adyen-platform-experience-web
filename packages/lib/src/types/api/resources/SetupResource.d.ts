@@ -22,7 +22,7 @@ export interface components {
      * @description Always null. This field is only used to expose endpoint names in OpenApi schema. Front-end components generate types from it.
      * @enum {string}
      */
-    EndpointName: "getTransactions" | "getTransaction" | "getTransactionTotals" | "getBalances" | "getBalanceAccounts";
+    EndpointName: "getTransactions" | "getTransaction" | "getTransactionTotals" | "getBalances" | "getBalanceAccounts" | "getPayouts" | "getPayout";
     /** @description Allowed endpoints for a given session */
     SetupEndpointResponse: {
       method?: string;
