@@ -1,6 +1,6 @@
 import useAuthContext from '@src/core/Auth/useAuthContext';
 import useSessionAwareRequest from '@src/hooks/useSessionAwareRequest/useSessionAwareRequest';
-import { EndpointName, EndpointsOperations } from '@src/types/models/openapi/endpoints';
+import { EndpointName, EndpointsOperations } from '@src/types/api/endpoints';
 import useCoreContext from '@src/core/Context/useCoreContext';
 import { parseSearchParams } from '@src/core/Services/requests/utils';
 import { useCallback } from 'preact/hooks';
