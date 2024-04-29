@@ -89,7 +89,7 @@ export const TRANSACTIONS: ITransaction[] = [
 
 export const DEFAULT_TRANSACTION: ITransaction = {
     id: '1VVF0D5V3709DX6D',
-    amount: { currency: 'USD', value: 100000 },
+    amount: { currency: 'EUR', value: 100000 },
     balanceAccountId: '',
     status: 'Booked',
     category: 'Fee',
