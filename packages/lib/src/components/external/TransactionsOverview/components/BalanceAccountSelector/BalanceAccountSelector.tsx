@@ -2,11 +2,10 @@ import { memo } from 'preact/compat';
 import { useCallback } from 'preact/hooks';
 import Select from '@src/components/internal/FormFields/Select';
 import useBalanceAccountSelection from './useBalanceAccountSelection';
-import './BalanceAccountSelector.scss';
 import { mediaQueries, useMediaQuery } from '@src/components/external/TransactionsOverview/hooks/useMediaQuery';
+import { renderDefaultSingleSelectionCheckedness } from '@src/components/internal/FormFields/Select/components/SelectListItem';
 import { SelectItem, SelectProps } from '@src/components/internal/FormFields/Select/types';
-import { DROPDOWN_ELEMENT_CONTENT_CLASS } from '@src/components/internal/FormFields/Select/constants';
-import { renderSelectListItemDefaultSingleSelected } from '@src/components/internal/FormFields/Select/components/SelectListItem';
+import './BalanceAccountSelector.scss';
 
 type _GetRenderListItemType<T> = T extends Readonly<SelectItem[]> ? NonNullable<SelectProps<T[number]>['renderListItem']> : never;
 
@@ -25,11 +24,11 @@ const BalanceAccountSelector = memo(
         const renderListItem = useCallback<_GetRenderListItemType<typeof balanceAccountSelectionOptions>>(
             data => (
                 <>
-                    <div className={DROPDOWN_ELEMENT_CONTENT_CLASS}>
+                    <div className={data.contentClassName}>
                         {data.item.name && <span className={BA_SELECTOR_ACCOUNT_LABEL_CLASS}>{data.item.name}</span>}
                         <span className={BA_SELECTOR_ACCOUNT_ID_CLASS}>{data.item.id}</span>
                     </div>
-                    {renderSelectListItemDefaultSingleSelected(data)}
+                    {renderDefaultSingleSelectionCheckedness(data)}
                 </>
             ),
             []
