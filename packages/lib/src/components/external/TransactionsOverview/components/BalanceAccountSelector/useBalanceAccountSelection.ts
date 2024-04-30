@@ -1,3 +1,4 @@
+import { capitalize } from '@src/utils/common';
 import { useCallback, useMemo, useState } from 'preact/hooks';
 import type { SelectItem } from '@src/components/internal/FormFields/Select/types';
 import type { IBalanceAccountBase } from '@src/types';
@@ -13,7 +14,7 @@ const useBalanceAccountSelection = (balanceAccounts?: IBalanceAccountBase[]) => 
     const balanceAccountSelectionOptions = useMemo(
         () =>
             balanceAccounts && balanceAccounts.length > 1
-                ? Object.freeze(balanceAccounts.map(({ id }) => ({ id, name: id } as SelectItem)))
+                ? Object.freeze(balanceAccounts.map(({ description, id }) => ({ id, name: capitalize(description) } as SelectItem)))
                 : undefined,
         [balanceAccounts]
     );
