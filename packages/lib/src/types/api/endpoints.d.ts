@@ -1,6 +1,6 @@
-import { operations as BalanceAccountOps } from './BalanceAccountsResource';
-import { operations as TransactionsOps } from './TransactionsResource';
-import { components as SetupResource } from './SetupResource';
+import { operations as BalanceAccountOps } from './resources/BalanceAccountsResource';
+import { operations as TransactionsOps } from './resources/TransactionsResource';
+import { components as SetupResource } from './resources/SetupResource';
 
 export type EndpointName = SetupResource['schemas']['EndpointName'];
 

@@ -1,5 +1,5 @@
 import Core from '../core';
-import { SetupEndpoint } from '@src/types/models/openapi/endpoints';
+import { SetupEndpoint } from '@src/types/api/endpoints';
 
 interface AuthProviderBaseProps {
     children?: any;
