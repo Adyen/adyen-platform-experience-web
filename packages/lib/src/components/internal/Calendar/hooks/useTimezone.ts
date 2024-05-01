@@ -2,7 +2,7 @@ import { useMemo, useRef, useState } from 'preact/hooks';
 import restamper, { RestampContext } from '@src/core/Localization/datetime/restamper';
 import { getGMTSuffixForTimezoneOffset, getTimezoneOffsetFromFormattedDateString } from '@src/core/Localization/datetime/restamper/utils';
 import { EMPTY_ARRAY, EMPTY_OBJECT, noop } from '@src/utils/common';
-import clock from '../clock';
+import clock from '@src/primitives/common/clock';
 
 export type UseTimezoneConfig = {
     timezone?: RestampContext['TIMEZONE'];
@@ -46,9 +46,9 @@ const useTimezone = ({ timezone: tz, withClock = false }: UseTimezoneConfig = EM
         unwatchClock.current();
 
         unwatchClock.current = shouldWatchClock
-            ? clock.watch(snapshotOrSignal => {
+            ? clock.subscribe(snapshotOrSignal => {
                   if (typeof snapshotOrSignal === 'symbol') return;
-                  setTimestamp(snapshotOrSignal.timestamp);
+                  setTimestamp(snapshotOrSignal.now);
               })
             : noop;
     }, [setTimestamp, shouldWatchClock]);

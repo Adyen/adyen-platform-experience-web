@@ -43,7 +43,7 @@ import {
     structFrom,
 } from '@src/utils/common';
 import { MonthFrame, TimeFrame /* , YearFrame */ } from '../timeframe';
-import { today } from '../../clock';
+import today from '../../today';
 import {
     CalendarConfig,
     CalendarDayOfWeekData,

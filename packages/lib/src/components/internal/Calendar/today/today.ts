@@ -1,14 +1,14 @@
 import $restamper, { RestamperWithTimezone, systemToTimezone, timezoneToSystem } from '@src/core/Localization/datetime/restamper';
 import { createWatchlist, UNSUBSCRIBE_TOKEN } from '@src/primitives/common/watchlist';
+import { clock } from '@src/primitives/common/clock';
 import { struct } from '@src/utils/common';
 import { Today } from './types';
-import clock from './clock';
 
 const today = (() => {
     const timezones = new Map<NonNullable<RestamperWithTimezone['tz']['current']>, Today>();
     const restamper = $restamper();
 
-    const getTimestampWithTomorrowOffset = (withTimestamp = clock.timestamp) => {
+    const getTimestampWithTomorrowOffset = (withTimestamp = Date.now()) => {
         const date = new Date(withTimestamp);
         const restampedDate = new Date(timezoneToSystem(restamper, withTimestamp));
         const dateDiff = (date.getDate() - restampedDate.getDate()) as -1 | 1 | 0;
@@ -34,14 +34,14 @@ const today = (() => {
             (() => {
                 let timestamp: number | null = null;
                 let tomorrowOffset: number | null = null;
-                let unwatch: ReturnType<Today['watch']> | null = null;
+                let unsubscribeClock: ReturnType<Today['subscribe']> | null = null;
 
                 const getTimestamp = () => {
                     restamper.tz = tz; // switch restamper to this timezone
                     return timestamp ?? getTimestampWithTomorrowOffset()[0];
                 };
 
-                const refreshTimestamps = (withTimestamp = clock.timestamp) => {
+                const refreshTimestamps = (withTimestamp = Date.now()) => {
                     restamper.tz = tz; // switch restamper to this timezone
                     [timestamp, tomorrowOffset] = getTimestampWithTomorrowOffset(withTimestamp);
                 };
@@ -49,25 +49,29 @@ const today = (() => {
                 const watchlist = createWatchlist({ timestamp: getTimestamp });
 
                 watchlist.on.resume = () => {
-                    unwatch = clock.watch(snapshotOrSignal => {
+                    unsubscribeClock = clock.subscribe(snapshotOrSignal => {
                         if (snapshotOrSignal === UNSUBSCRIBE_TOKEN) return;
-                        if (timestamp === null || tomorrowOffset === null) return refreshTimestamps();
-                        if (clock.timestamp - timestamp < tomorrowOffset) return;
 
-                        refreshTimestamps();
+                        const { now } = snapshotOrSignal;
+
+                        if (timestamp === null || tomorrowOffset === null) return refreshTimestamps(now);
+                        if (now - timestamp < tomorrowOffset) return;
+
+                        refreshTimestamps(now);
                         watchlist.requestNotification();
                     });
                 };
 
                 watchlist.on.idle = () => {
-                    unwatch?.();
-                    timestamp = tomorrowOffset = unwatch = null;
+                    unsubscribeClock?.();
+                    timestamp = tomorrowOffset = unsubscribeClock = null;
                 };
 
                 const instance = struct({
+                    cancelSubscriptions: { value: watchlist.cancelSubscriptions },
                     timestamp: { get: getTimestamp },
                     timezone: { value: tz },
-                    watch: { value: watchlist.subscribe },
+                    subscribe: { value: watchlist.subscribe },
                 }) as Today;
 
                 timezones.set(tz, instance);

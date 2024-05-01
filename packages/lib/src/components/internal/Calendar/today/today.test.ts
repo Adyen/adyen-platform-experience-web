@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import { describe, expect, test, vi } from 'vitest';
 import { SYSTEM_TIMEZONE } from '@src/core/Localization/datetime/restamper';
-import { DATES, initialize, startOfDay, startOfNextDay, TIMEZONES } from './testing/fixtures';
+import { DATES, initialize, startOfDay, startOfNextDay, TIMEZONES } from './today.test.fixtures';
 import $today from './today';
 
 describe('today', () => {
@@ -62,10 +62,11 @@ describe('today', () => {
         let watchFnCalls = 0;
 
         const testRoutine = (getStartDate: (index: number) => number, timezone?: string) => {
+            vi.runOnlyPendingTimers();
             vi.setSystemTime(0);
 
             const today = $today(timezone);
-            const unwatch = today.watch(watchFn);
+            const unsubscribe = today.subscribe(watchFn);
             let currentDayTimestamp = watchFn.mock.lastCall[0]?.timestamp as number;
 
             expect(today.timestamp).toBe(currentDayTimestamp);
@@ -74,7 +75,7 @@ describe('today', () => {
             expect(watchFn).toHaveBeenLastCalledWith({ timestamp: currentDayTimestamp });
 
             DATES.forEach((date, index) => {
-                vi.runOnlyPendingTimers(); // trigger pending timers
+                vi.runOnlyPendingTimers();
                 vi.setSystemTime(date);
 
                 const todayTimestamp = getStartDate(index); // start of current day
@@ -84,40 +85,39 @@ describe('today', () => {
                 expect(today.timestamp).toBe(currentDayTimestamp); // timestamp not recomputed
                 expect(watchFn).toBeCalledTimes(watchFnCalls); // not called
 
-                vi.advanceTimersToNextTimer(); // trigger clock timer
+                vi.advanceTimersByTime(1000);
                 currentDayTimestamp = todayTimestamp;
 
                 expect(today.timestamp).toBe(currentDayTimestamp); // timestamp recomputed
                 expect(watchFn).toBeCalledTimes(++watchFnCalls); // will be called
                 expect(watchFn).toHaveBeenLastCalledWith({ timestamp: currentDayTimestamp });
 
+                vi.runOnlyPendingTimers();
                 vi.setSystemTime(nextTimestamp - 1); // 1ms away from start of next day
-                vi.advanceTimersToNextTimer(); // trigger clock timer
 
                 expect(today.timestamp).toBe(currentDayTimestamp); // same day (same timestamp)
                 expect(watchFn).toBeCalledTimes(watchFnCalls); // not called
 
-                vi.setSystemTime(nextTimestamp); // start of next day
-                vi.advanceTimersToNextTimer(); // trigger clock timer
+                vi.advanceTimersByTime(1000);
 
                 expect(today.timestamp).not.toBe(currentDayTimestamp); // next day (different timestamp)
                 expect(today.timestamp).toBe((currentDayTimestamp = nextTimestamp)); // next day (next timestamp)
                 expect(watchFn).toBeCalledTimes(++watchFnCalls); // will be called
                 expect(watchFn).toHaveBeenLastCalledWith({ timestamp: currentDayTimestamp });
 
-                vi.setSystemTime(startOfNextDay(nextTimestamp) - 1); // end of next day
-                vi.advanceTimersToNextTimer(); // trigger clock timer
+                vi.runOnlyPendingTimers();
+                vi.setSystemTime((currentDayTimestamp = startOfNextDay(nextTimestamp)) - 1); // end of next day
 
                 expect(today.timestamp).toBe(nextTimestamp); // same day (same timestamp)
                 expect(watchFn).toBeCalledTimes(watchFnCalls); // not called
 
-                vi.setSystemTime((currentDayTimestamp = Date.now()));
-                vi.advanceTimersToNextTimer(); // trigger clock timer
+                vi.advanceTimersByTime(1000);
+
                 expect(watchFn).toBeCalledTimes(++watchFnCalls); // will be called
                 expect(watchFn).toHaveBeenLastCalledWith({ timestamp: currentDayTimestamp });
             });
 
-            unwatch(); // unregister watch function;
+            unsubscribe(); // unregister watch function;
         };
 
         testRoutine(() => startOfDay(), SYSTEM_TIMEZONE); // explicit system timezone

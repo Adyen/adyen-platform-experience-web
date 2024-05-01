@@ -26,7 +26,7 @@ import createFlagsRecord from '../common/flags';
 import { createIndexed } from '@src/primitives/common/indexed';
 import type { WatchListCallable } from '@src/primitives/common/watchlist/types';
 import { clamp, enumerable, isBitSafeInteger, isFunction, isInfinite, mid, mod, struct } from '@src/utils/common';
-import { today } from '../../../clock';
+import today from '../../../today';
 import {
     CalendarBlock,
     CalendarBlockCellData,
@@ -232,7 +232,7 @@ export default abstract class TimeFrame {
     set trackCurrentDay(bool: boolean | null | undefined) {
         if (bool === Boolean(bool)) {
             if (bool && !this.#unwatchCurrentDay) {
-                this.#unwatchCurrentDay = this.#today.watch(this.refreshFrame.bind(this, true));
+                this.#unwatchCurrentDay = this.#today.subscribe(this.refreshFrame.bind(this, true));
             } else if (!bool && this.#unwatchCurrentDay) {
                 this.#unwatchCurrentDay();
                 this.#unwatchCurrentDay = undefined;
