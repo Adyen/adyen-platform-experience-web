@@ -5,7 +5,7 @@ import '../../assets/style/style.scss';
 import { enableServerInMockedMode } from '../../endpoints/mock-server/utils';
 import { TEST_CONFIG } from '../../utils/utils';
 import sessionRequest from '../../utils/sessionRequest';
-import { createLanguageButtons } from '../../utils/createLanguageButtons';
+import { createDarkTheme, createLanguageButtons } from '../../utils/createLanguageButtons';
 
 enableServerInMockedMode()
     .then(async () => {
@@ -20,7 +20,7 @@ enableServerInMockedMode()
             },
         });
 
-        createLanguageButtons({ locales: ['es-ES', 'en-US'], core: AdyenPlatform });
+        createDarkTheme();
 
         const transactionsComponent = new TransactionsOverview({
             core: AdyenPlatform,

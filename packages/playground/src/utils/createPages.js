@@ -1,11 +1,13 @@
 import { pages } from '../../pages';
 import { Theme } from '@adyen/adyen-platform-experience-web';
 
-const insertHeader = pages => {
+export const insertHeader = pages => {
+    const queryParams = new URLSearchParams(window.location.search);
+    const specificParam = queryParams.get('theme');
     const container = document.querySelector('header');
     const links = pages.map(page => {
-        const url = `/src/pages/${page.id}/`;
-        const isActivePage = window.location.pathname === url;
+        const url = `/src/pages/${page.id}/${specificParam ? `?theme=${specificParam}` : ''}`;
+        const isActivePage = url.includes(window.location.pathname);
         return `
             <li class="playground-nav__item ${isActivePage ? 'playground-nav__item--active' : ''}">
                 <a href="${url}" class="playground-nav__link">${page.name}</a>
@@ -27,13 +29,24 @@ const insertHeader = pages => {
       </div>
     `;
 
-    new Theme({ neutral: '#fcf0e2', background: '#fffbf9', primary: '#8b2f00', label: '#797979' }).apply();
-    // new Theme({ primary: '#2292bc', outline: '#1e506a', neutral: '#2d3251', background: '#151726', label: '#ebebeb' }).apply();
-    //new Theme({ neutral: '#e8f4e5', label: '007923', primary: '#014314' }).apply();
-
     if (container) container.innerHTML = header;
 };
 
+export const updateHeaders = () => {
+    const queryParams = new URLSearchParams(window.location.search);
+    const specificParam = queryParams.get('theme');
+    const container = document.querySelector('.playground-nav');
+    const links = pages.map(page => {
+        const url = `/src/pages/${page.id}/${specificParam ? `?theme=${specificParam}` : ''}`;
+        const isActivePage = url.includes(window.location.pathname);
+        return `
+            <li class="playground-nav__item ${isActivePage ? 'playground-nav__item--active' : ''}">
+                <a href="${url}" class="playground-nav__link">${page.name}</a>
+            </li>
+        `;
+    });
+    container.innerHTML = `<ul class="playground-nav__list">${links.join('')}</ul>`;
+};
 const addEventListeners = () => {
     document.querySelectorAll('.playground-nav__link').forEach(link => {
         link.addEventListener('click', e => {
@@ -48,6 +61,18 @@ const addEventListeners = () => {
         document.body.classList.toggle('nav-open');
     });
 };
+
+const queryParams = new URLSearchParams(window.location.search);
+const specificParam = queryParams.get('theme');
+if (queryParams.has('theme')) {
+    if (specificParam === 'dark') {
+        document.body.style.setProperty('background', '#151726');
+        new Theme({ primary: '#2292bc', outline: '#1e506a', neutral: '#2d3251', background: '#151726', label: '#ebebeb' }).apply();
+    } else {
+        document.body.style.setProperty('background', '#fff');
+        new Theme({ neutral: '#fcf0e2', background: '#fffbf9', primary: '#8b2f00', label: '#797979' }).apply();
+    }
+}
 
 insertHeader(pages);
 // addEventListeners();

@@ -114,6 +114,7 @@ const BACKGROUND_VARIABLES = {
 export class Theme {
     private readonly colors: Colors;
     constructor(colors: Colors) {
+        document.documentElement.style.cssText = '';
         this.colors = colors;
     }
 

@@ -5,7 +5,9 @@ import '@adyen/adyen-kyc-components/styles.css';
 
 import { enableServerInMockedMode } from '../../endpoints/mock-server/utils';
 import { ExistingLegalEntity } from '@adyen/adyen-kyc-components/dist/types/core/models/api/legal-entity';
+import { createDarkTheme } from '../../utils/createLanguageButtons';
 
+createDarkTheme();
 export const getLegalEntityResponse_Company_Private_noProblems = {
     name: 'Company (Private, no problems)',
     value: {

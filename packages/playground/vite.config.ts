@@ -72,6 +72,8 @@ export default defineConfig(async ({ mode }) => {
             proxy: realApiProxies(apiConfigs),
             watch: {
                 ignored: ['!**/node_modules/@adyen/adyen-platform-experience-web/**'],
+                usePolling: true,
+                interval: 100,
             },
         },
         optimizeDeps: {

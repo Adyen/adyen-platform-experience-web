@@ -325,6 +325,30 @@ h2 {
     }
 }
 
+.theme-selection-container {
+    margin-left: auto;
+    display: flex;
+    gap: 20px;
+    min-width: max-content;
+
+    @media screen and (min-width: 1240px) {
+        margin-left: 0;
+        min-width: auto;
+        flex-wrap: wrap;
+    }
+
+    button {
+        appearance: none;
+        background-color: $color-primary;
+        font-weight: bold;
+        color: #ffffff;
+        cursor: pointer;
+        padding: 10px 15px;
+        border: 2px;
+        border-radius: 5px;
+    }
+}
+
 /* :root {
     --adyen-sdk-color-background-primary: #004159;
     --adyen-sdk-color-background-primary-hover: #026489;
