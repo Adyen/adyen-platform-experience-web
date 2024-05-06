@@ -9,18 +9,17 @@ import Typography from '@src/components/internal/Typography/Typography';
 import useBalanceAccountSelection from '@src/components/hooks/useBalanceAccountSelection';
 import DateFilter from '@src/components/internal/FilterBar/filters/DateFilter/DateFilter';
 import useModalDetails from '@src/hooks/useModalDetails/useModalDetails';
-import { DataOverviewComponentProps, FilterParam } from '@src/types';
+import { DataOverviewComponentProps, FilterParam, IPayout, IPayoutDetails } from '@src/types';
 import useDefaultOverviewFilterParams from '@src/components/hooks/useDefaultOverviewFilterParams';
 import { ExternalUIComponentProps } from '@src/components/types';
 import useCoreContext from '@src/core/Context/useCoreContext';
 import AdyenPlatformExperienceError from '@src/core/Errors/AdyenPlatformExperienceError';
-import { SuccessResponse, useSetupEndpoint } from '@src/hooks/useSetupEndpoint/useSetupEndpoint';
+import { SetupHttpOptions, SuccessResponse, useSetupEndpoint } from '@src/hooks/useSetupEndpoint/useSetupEndpoint';
 import { IBalanceAccountBase } from '@src/types';
 import { EndpointsOperations } from '@src/types/api/endpoints';
 import { isFunction } from '@src/utils/common';
 import { lazy } from 'preact/compat';
 import { useCallback, useEffect, useMemo } from 'preact/hooks';
-import { BASIC_PAYOUTS_LIST } from '@adyen/adyen-platform-experience-web-mocks';
 import './PayoutsOverview.scss';
 import { DataOverviewDisplay } from '@src/components/internal/DataOverviewDisplay/DataOverviewDisplay';
 
@@ -51,23 +50,18 @@ export const PayoutsOverview = ({
             pageRequestParams: Record<FilterParam | 'cursor', string>,
             signal?: AbortSignal
         ): Promise<SuccessResponse<EndpointsOperations['getPayouts']>> => {
-            // const requestOptions: SetupHttpOptions = { signal, errorLevel: 'error' };
+            const requestOptions: SetupHttpOptions = { signal, errorLevel: 'error' };
 
-            return new Promise(resolve => resolve({ next: '', prev: '', payouts: BASIC_PAYOUTS_LIST as typeof BASIC_PAYOUTS_LIST }));
-
-            // return payoutsEnpointCall(requestOptions, {
-            //     query: {
-            //         ...pageRequestParams,
-            //       createdSince:
-            //             pageRequestParams[PayoutFilterParam.CREATED_SINCE] ??
-            //             defaultParams.current.defaultFilterParams[PayoutFilterParam.CREATED_SINCE],
-            //         createdUntil:
-            //             pageRequestParams[PayoutFilterParam.CREATED_UNTIL] ??
-            //             defaultParams.current.defaultFilterParams[PayoutFilterParam.CREATED_UNTIL],
-            //         sortDirection: 'desc' as const,
-            //         balanceAccountId: activeBalanceAccount?.id ?? '',
-            //     },
-            // });
+            return payoutsEnpointCall(requestOptions, {
+                query: {
+                    ...pageRequestParams,
+                    createdSince:
+                        pageRequestParams[FilterParam.CREATED_SINCE] ?? defaultParams.current.defaultFilterParams[FilterParam.CREATED_SINCE],
+                    createdUntil:
+                        pageRequestParams[FilterParam.CREATED_UNTIL] ?? defaultParams.current.defaultFilterParams[FilterParam.CREATED_UNTIL],
+                    balanceAccountId: activeBalanceAccount?.id ?? '',
+                },
+            });
         },
         [activeBalanceAccount?.id, defaultParams, payoutsEnpointCall]
     );
@@ -78,9 +72,9 @@ export const PayoutsOverview = ({
     const preferredLimitOptions = useMemo(() => (allowLimitSelection ? LIMIT_OPTIONS : undefined), [allowLimitSelection]);
 
     const { canResetFilters, error, fetching, filters, limit, limitOptions, records, resetFilters, updateFilters, updateLimit, ...paginationProps } =
-        useCursorPaginatedRecords<(typeof BASIC_PAYOUTS_LIST)[0], 'payouts', string, FilterParam>({
+        useCursorPaginatedRecords<IPayout, 'data', string, FilterParam>({
             fetchRecords: getPayouts,
-            dataField: 'payouts',
+            dataField: 'data',
             filterParams: defaultParams.current.defaultFilterParams,
             initialFiltersSameAsDefault: true,
             onLimitChanged: _onLimitChanged,
@@ -107,11 +101,11 @@ export const PayoutsOverview = ({
     const { updateDetails, resetDetails, selectedDetail } = useModalDetails(modalOptions);
 
     const onRowClick = useCallback(
-        (value: (typeof BASIC_PAYOUTS_LIST)[0]) => {
+        (value: IPayoutDetails) => {
             updateDetails({
                 selection: { type: 'payout', data: { ...value } },
                 modalSize: 'small',
-            }).callback({ id: value.id });
+            }).callback({ id: value.payout!.id });
         },
         [updateDetails]
     );
@@ -148,7 +142,7 @@ export const PayoutsOverview = ({
                 <PayoutsTable
                     balanceAccounts={balanceAccounts}
                     loading={fetching || isLoadingBalanceAccount || !balanceAccounts}
-                    data={records ?? BASIC_PAYOUTS_LIST} //TODO: Delete mock data after BE/mock server integration
+                    data={records}
                     showPagination={true}
                     onRowClick={onRowClick}
                     showDetails={showDetails}
