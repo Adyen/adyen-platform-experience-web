@@ -1,6 +1,5 @@
 import { TransactionsTable } from '@src/components/external/TransactionsOverview/components/TransactionsTable/TransactionsTable';
 import useBalanceAccountSelection from '@src/components/hooks/useBalanceAccountSelection';
-import { DataOverviewDisplay } from '@src/components/internal/DataOerviewDisplay/DataOverwiewDisplay';
 import BalanceAccountSelector from '@src/components/internal/FormFields/Select/BalanceAccountSelector';
 import { TypographyVariant } from '@src/components/internal/Typography/types';
 import Typography from '@src/components/internal/Typography/Typography';
@@ -31,6 +30,7 @@ import {
 } from '@src/components/external/TransactionsOverview/components/TransactionsOverview/constants';
 import './TransactionsOverview.scss';
 import { mediaQueries, useMediaQuery } from '@src/components/external/TransactionsOverview/hooks/useMediaQuery';
+import { DataOverviewDisplay } from '@src/components/internal/DataOverviewDisplay/DataOverviewDisplay';
 const ModalContent = lazy(() => import('@src/components/internal/Modal/ModalContent/ModalContent'));
 
 export const TransactionsOverview = ({

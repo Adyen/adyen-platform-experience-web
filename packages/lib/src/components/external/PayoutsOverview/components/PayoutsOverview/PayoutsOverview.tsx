@@ -1,4 +1,3 @@
-import { DataOverviewDisplay } from '@src/components/internal/DataOerviewDisplay/DataOverwiewDisplay';
 import { BASE_CLASS, BASE_CLASS_DISPLAY } from '@src/components/external/PayoutsOverview/components/PayoutsOverview/constants';
 import { PayoutsTable } from '@src/components/external/PayoutsOverview/components/PayoutsTable/PayoutsTable';
 import FilterBar from '@src/components/internal/FilterBar';
@@ -23,6 +22,7 @@ import { lazy } from 'preact/compat';
 import { useCallback, useEffect, useMemo } from 'preact/hooks';
 import { BASIC_PAYOUTS_LIST } from '@adyen/adyen-platform-experience-web-mocks';
 import './PayoutsOverview.scss';
+import { DataOverviewDisplay } from '@src/components/internal/DataOverviewDisplay/DataOverviewDisplay';
 
 const ModalContent = lazy(() => import('@src/components/internal/Modal/ModalContent/ModalContent'));
 

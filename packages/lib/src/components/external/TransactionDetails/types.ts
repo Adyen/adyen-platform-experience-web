@@ -1,4 +1,3 @@
-import { BalanceAccountProps } from '@src/components';
 import { TranslationKey } from '@src/core/Localization/types';
 import { ITransaction } from '@src/types';
 
@@ -15,3 +14,11 @@ export interface TransactionDetailsWithIdProps {
 export type TransactionDetailsComponentProps = TransactionDetailsWithoutIdProps | TransactionDetailsWithIdProps;
 
 export type TransactionDetailData = ITransaction & BalanceAccountProps;
+
+export interface BalanceAccountProps {
+    balanceAccountDescription?: string;
+}
+
+export type SelectedDetail = {
+    data: string | TransactionDetailData;
+};

@@ -1,6 +1,7 @@
-import { OnSelection } from '@src/components';
 import UIElement from '@src/components/external/UIElement';
 import { Core } from '@src/core';
+
+export type OnSelection = (selection: { id: string; showModal: () => void }) => any;
 
 export interface DataOverviewComponentProps {
     name?: string;
