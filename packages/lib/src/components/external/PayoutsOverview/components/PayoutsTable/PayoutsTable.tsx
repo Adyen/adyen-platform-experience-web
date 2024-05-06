@@ -4,16 +4,15 @@ import { PaginationProps, WithPaginationLimitSelection } from '@src/components/i
 import { getLabel } from '@src/components/utils/getLabel';
 import useCoreContext from '@src/core/Context/useCoreContext';
 import AdyenPlatformExperienceError from '@src/core/Errors/AdyenPlatformExperienceError';
-import { IBalanceAccountBase } from '@src/types';
+import { IBalanceAccountBase, IPayout } from '@src/types';
 import { useMemo } from 'preact/hooks';
-import { BASIC_PAYOUTS_LIST } from '@adyen/adyen-platform-experience-web-mocks';
 import DataGrid from '../../../../internal/DataGrid';
 import Pagination from '../../../../internal/Pagination';
 import { TranslationKey } from '@src/core/Localization/types';
 import { FC } from 'preact/compat';
 
 // Remove status column temporarily
-const FIELDS = ['creationDate', 'grossPayout', 'adjustments', 'netPayout'] as const;
+const FIELDS = ['createdAt', 'grossAmount', 'chargesAmount', 'netAmount'] as const;
 
 export interface PayoutsTableProps extends WithPaginationLimitSelection<PaginationProps> {
     balanceAccounts: IBalanceAccountBase[] | undefined;
@@ -23,7 +22,7 @@ export interface PayoutsTableProps extends WithPaginationLimitSelection<Paginati
     onRowClick: (value: any) => void;
     showDetails?: boolean;
     showPagination: boolean;
-    data: typeof BASIC_PAYOUTS_LIST | undefined;
+    data: IPayout[] | undefined;
 }
 export const PayoutsTable: FC<PayoutsTableProps> = ({
     error,
@@ -78,14 +77,14 @@ export const PayoutsTable: FC<PayoutsTableProps> = ({
                 emptyTableMessage={EMPTY_TABLE_MESSAGE}
                 customCells={{
                     // Remove status column temporarily
-                    creationDate: ({ value }) => value && i18n.fullDate(value),
-                    grossPayout: ({ value }) => {
+                    createdAt: ({ value }) => value && i18n.fullDate(value),
+                    grossAmount: ({ value }) => {
                         return value && <span>{i18n.amount(value.value, value.currency, { hideCurrency: true })}</span>;
                     },
-                    adjustments: ({ value }) => {
+                    chargesAmount: ({ value }) => {
                         return value && <span>{i18n.amount(value.value, value.currency, { hideCurrency: true })}</span>;
                     },
-                    netPayout: ({ value }) => {
+                    netAmount: ({ value }) => {
                         return value && <span>{i18n.amount(value.value, value.currency, { hideCurrency: true })}</span>;
                     },
                 }}
