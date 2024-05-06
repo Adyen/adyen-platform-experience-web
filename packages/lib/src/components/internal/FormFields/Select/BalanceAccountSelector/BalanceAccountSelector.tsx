@@ -1,7 +1,7 @@
+import useBalanceAccountSelection from '@src/components/hooks/useBalanceAccountSelection';
 import { memo } from 'preact/compat';
 import { useCallback } from 'preact/hooks';
 import Select from '@src/components/internal/FormFields/Select';
-import useBalanceAccountSelection from './useBalanceAccountSelection';
 import { mediaQueries, useMediaQuery } from '@src/components/external/TransactionsOverview/hooks/useMediaQuery';
 import { renderDefaultSingleSelectionCheckedness } from '@src/components/internal/FormFields/Select/components/SelectListItem';
 import { SelectItem, SelectProps } from '@src/components/internal/FormFields/Select/types';

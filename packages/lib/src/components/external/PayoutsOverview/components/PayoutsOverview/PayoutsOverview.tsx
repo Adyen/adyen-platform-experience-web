@@ -16,7 +16,7 @@ import useCoreContext from '@src/core/Context/useCoreContext';
 import AdyenPlatformExperienceError from '@src/core/Errors/AdyenPlatformExperienceError';
 import { SuccessResponse, useSetupEndpoint } from '@src/hooks/useSetupEndpoint/useSetupEndpoint';
 import { IBalanceAccountBase } from '@src/types';
-import { EndpointsOperations } from '@src/types/models/openapi/endpoints';
+import { EndpointsOperations } from '@src/types/api/endpoints';
 import { isFunction } from '@src/utils/common';
 import { lazy } from 'preact/compat';
 import { useCallback, useEffect, useMemo } from 'preact/hooks';
