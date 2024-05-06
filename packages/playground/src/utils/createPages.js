@@ -27,9 +27,9 @@ const insertHeader = pages => {
       </div>
     `;
 
-    //new Theme({ neutral: '#fcf0e2', background: '#fffbf9', primary: '#8b2f00', label: '#797979' }).apply();
+    new Theme({ neutral: '#fcf0e2', background: '#fffbf9', primary: '#8b2f00', label: '#797979' }).apply();
     // new Theme({ primary: '#2292bc', outline: '#1e506a', neutral: '#2d3251', background: '#151726', label: '#ebebeb' }).apply();
-    new Theme({ neutral: '#e8f4e5', label: '007923', primary: '#014314' }).apply();
+    //new Theme({ neutral: '#e8f4e5', label: '007923', primary: '#014314' }).apply();
 
     if (container) container.innerHTML = header;
 };

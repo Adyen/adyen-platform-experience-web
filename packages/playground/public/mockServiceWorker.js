@@ -2,11 +2,7 @@
 /* tslint:disable */
 
 /**
- * - THIS FILE IS GENERATED AUTOMATICALLY BY RUNNING <npx msw init>, not created by us
- */
-
-/**
- * Mock Service Worker (0.49.3).
+ * Mock Service Worker (1.3.3).
  * @see https://github.com/mswjs/msw
  * - Please do NOT modify this file.
  * - Please do NOT serve this file on production.
@@ -87,23 +83,27 @@ self.addEventListener('message', async function (event) {
         }
     }
 });
+
 self.addEventListener('fetch', function (event) {
     const { request } = event;
-
     const accept = request.headers.get('accept') || '';
+
     // Bypass server-sent events.
     if (accept.includes('text/event-stream')) {
         return;
     }
+
     // Bypass navigation requests.
     if (request.mode === 'navigate') {
         return;
     }
+
     // Opening the DevTools triggers the "only-if-cached" request
     // that cannot be handled by the worker. Bypass such requests.
     if (request.cache === 'only-if-cached' && request.mode !== 'same-origin') {
         return;
     }
+
     // Bypass all requests when there are no active clients.
     // Prevents the self-unregistered worked from handling requests
     // after it's been deleted (still remains active until the next reload).
@@ -143,7 +143,6 @@ async function handleRequest(event, requestId) {
     if (client && activeClientIds.has(client.id)) {
         (async function () {
             const clonedResponse = response.clone();
-
             sendToClient(client, {
                 type: 'RESPONSE',
                 payload: {

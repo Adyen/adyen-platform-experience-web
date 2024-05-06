@@ -3,7 +3,7 @@ const getMySessionToken = async () => {
     // at the end this method should return a data formed as { id: string, token:string }
     const loadingContext = process.env.VITE_PLAYGROUND_URL;
     const normalizedLoadingContext = loadingContext.endsWith('/') ? loadingContext : `${loadingContext}/`;
-    const url = new URL(`${normalizedLoadingContext}api/authe/api/v1/sessions`);
+    const url = new URL(`http://localhost:3030/api/authe/api/v1/sessions`);
     const body = {
         allowOrigin: process.env.VITE_PLAYGROUND_URL?.endsWith('/') ? process.env.VITE_PLAYGROUND_URL.slice(0, -1) : process.env.VITE_PLAYGROUND_URL,
         reference: 'platform-operations',

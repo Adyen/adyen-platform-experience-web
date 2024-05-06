@@ -1,5 +1,6 @@
 import { loadEnv } from 'vite';
 import { resolve } from 'node:path';
+const { CHECKOUT_API_KEY, MERCHANT_ACCOUNT } = process.env;
 
 export const envDir = resolve(__dirname);
 
@@ -29,6 +30,10 @@ const parseEnv = (env: Record<string, string | undefined>, environment: ENVIRONM
             apiKey: env.TEST_API_KEY,
             accountHolder: env.SESSION_ACCOUNT_HOLDER,
             permissions: env.SESSION_PERMISSIONS,
+        },
+        checkoutApi: {
+            apiKey: env.CHECKOUT_API_KEY,
+            merchantAccount: env.MERCHANT_ACCOUNT,
         },
     },
     playground: {

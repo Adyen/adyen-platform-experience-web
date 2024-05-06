@@ -69,7 +69,7 @@ export default defineConfig(async ({ mode }) => {
             host: playground.host,
             port: playground.port,
             https: false,
-            proxy: mode === 'mocked' ? undefined : realApiProxies(apiConfigs),
+            proxy: realApiProxies(apiConfigs),
             watch: {
                 ignored: ['!**/node_modules/@adyen/adyen-platform-experience-web/**'],
             },
