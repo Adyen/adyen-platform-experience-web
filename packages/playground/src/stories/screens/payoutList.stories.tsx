@@ -36,7 +36,7 @@ export const Basic: ElementStory<typeof PayoutsOverview> = {
     },
 };
 
-export const BasicTransactionListApi: ElementStory<typeof PayoutsOverview> = {
+export const BasicPayoutListListApi: ElementStory<typeof PayoutsOverview> = {
     name: 'Basic (API)',
     args: {},
 };

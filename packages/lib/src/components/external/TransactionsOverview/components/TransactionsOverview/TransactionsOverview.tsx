@@ -30,7 +30,7 @@ import {
 } from '@src/components/external/TransactionsOverview/components/TransactionsOverview/constants';
 import './TransactionsOverview.scss';
 import { mediaQueries, useMediaQuery } from '@src/components/external/TransactionsOverview/hooks/useMediaQuery';
-import { DataOverviewDisplay } from '@src/components/internal/DataOverviewDisplay/DataOverviewDisplay';
+import { DataDetailsModal } from '@src/components/internal/DataOverviewDisplay/DataDetailsModal';
 const ModalContent = lazy(() => import('@src/components/internal/Modal/ModalContent/ModalContent'));
 
 export const TransactionsOverview = ({
@@ -209,7 +209,7 @@ export const TransactionsOverview = ({
                 </div>
             </div>
 
-            <DataOverviewDisplay
+            <DataDetailsModal
                 selectedDetail={selectedDetail as ReturnType<typeof useModalDetails>['selectedDetail']}
                 resetDetails={resetDetails}
                 renderModalContent={() => <ModalContent data={selectedDetail?.selection.data} />}
@@ -229,7 +229,7 @@ export const TransactionsOverview = ({
                     limit={limit}
                     {...paginationProps}
                 />
-            </DataOverviewDisplay>
+            </DataDetailsModal>
         </div>
     );
 };

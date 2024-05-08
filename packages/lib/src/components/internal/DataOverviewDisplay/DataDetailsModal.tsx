@@ -15,7 +15,7 @@ export interface DataOverviewDisplayProps {
     resetDetails: ReturnType<typeof useModalDetails>['resetDetails'];
     className: string;
 }
-export const DataOverviewDisplay: FC<DataOverviewDisplayProps> = ({
+export const DataDetailsModal: FC<DataOverviewDisplayProps> = ({
     children,
     className,
     selectedDetail,

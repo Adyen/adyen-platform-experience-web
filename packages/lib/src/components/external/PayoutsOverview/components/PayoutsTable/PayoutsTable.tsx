@@ -4,6 +4,7 @@ import { PaginationProps, WithPaginationLimitSelection } from '@src/components/i
 import { getLabel } from '@src/components/utils/getLabel';
 import useCoreContext from '@src/core/Context/useCoreContext';
 import AdyenPlatformExperienceError from '@src/core/Errors/AdyenPlatformExperienceError';
+import { getCurrencyCode } from '@src/core/Localization/amount/amount-util';
 import { IBalanceAccountBase, IPayout } from '@src/types';
 import { useMemo } from 'preact/hooks';
 import DataGrid from '../../../../internal/DataGrid';
@@ -11,7 +12,6 @@ import Pagination from '../../../../internal/Pagination';
 import { TranslationKey } from '@src/core/Localization/types';
 import { FC } from 'preact/compat';
 
-// Remove status column temporarily
 const FIELDS = ['createdAt', 'grossAmount', 'chargesAmount', 'netAmount'] as const;
 
 export interface PayoutsTableProps extends WithPaginationLimitSelection<PaginationProps> {
@@ -40,19 +40,16 @@ export const PayoutsTable: FC<PayoutsTableProps> = ({
         () =>
             FIELDS.map(key => {
                 const label = i18n.get(getLabel(key));
-                // if (key === 'amount') {
-                //     return {
-                //         key,
-                //         label: hasMultipleCurrencies
-                //             ? label
-                //             : `${label} ${availableCurrencies && availableCurrencies[0] ? `(${getCurrencyCode(availableCurrencies[0])})` : ''}`,
-                //         position: key === 'amount' ? CellTextPosition.RIGHT : undefined,
-                //     };
-                // }
+                if (key === 'grossAmount' || key === 'netAmount' || key === 'chargesAmount') {
+                    return {
+                        key,
+                        label: data?.[0]?.[key]?.currency ? `${label} (${getCurrencyCode(data?.[0]?.[key]?.currency)})` : label,
+                    };
+                }
 
                 return { key, label };
             }),
-        [i18n]
+        [i18n, data]
     );
 
     const EMPTY_TABLE_MESSAGE = {
@@ -76,7 +73,6 @@ export const PayoutsTable: FC<PayoutsTableProps> = ({
                 onRowClick={{ callback: onRowClick }}
                 emptyTableMessage={EMPTY_TABLE_MESSAGE}
                 customCells={{
-                    // Remove status column temporarily
                     createdAt: ({ value }) => value && i18n.fullDate(value),
                     grossAmount: ({ value }) => {
                         return value && <span>{i18n.amount(value.value, value.currency, { hideCurrency: true })}</span>;
