@@ -1,6 +1,6 @@
 import { TransactionData } from '@src/components/external/TransactionDetails/components/TransactionData';
 import { ErrorMessageDisplay } from '@src/components/internal/ErrorMessageDisplay/ErrorMessageDisplay';
-import { getErrorMessage } from '@src/components/utils/transactionResourceErrorCodes';
+import { getErrorMessage } from '@src/components/utils/getDataOverviewResourceErrorCode';
 import useCoreContext from '@src/core/Context/useCoreContext';
 import AdyenPlatformExperienceError from '@src/core/Errors/AdyenPlatformExperienceError';
 import { useFetch } from '@src/hooks/useFetch/useFetch';
@@ -36,7 +36,7 @@ export default function TransactionDetails(props: ExternalUIComponentProps<Trans
 
     const errorProps = useMemo(() => {
         if (error) {
-            return getErrorMessage(error as AdyenPlatformExperienceError, props.onContactSupport);
+            return getErrorMessage(error as AdyenPlatformExperienceError, 'weCouldNotLoadYourTransactions', props.onContactSupport);
         }
     }, [error, props.onContactSupport]);
 

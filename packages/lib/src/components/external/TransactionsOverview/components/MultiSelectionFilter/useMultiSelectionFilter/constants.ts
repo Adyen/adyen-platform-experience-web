@@ -1,12 +1,7 @@
-import { ITransaction } from '@src/types';
+import { FilterParam, ITransaction } from '@src/types';
 import { TransactionsOverviewMultiSelectionFilterParam } from './types';
-import { TransactionFilterParam } from '../../../types';
 
-export const TRANSACTIONS_OVERVIEW_MULTI_SELECTION_FILTERS = [
-    TransactionFilterParam.CURRENCIES,
-    TransactionFilterParam.CATEGORIES,
-    TransactionFilterParam.STATUSES,
-] as const;
+export const TRANSACTIONS_OVERVIEW_MULTI_SELECTION_FILTERS = [FilterParam.CURRENCIES, FilterParam.CATEGORIES, FilterParam.STATUSES] as const;
 
 export const DEFAULT_TRANSACTIONS_OVERVIEW_MULTI_SELECTION_FILTER_PARAMS = Object.freeze(
     Object.fromEntries(TRANSACTIONS_OVERVIEW_MULTI_SELECTION_FILTERS.map(param => [param, '']))
