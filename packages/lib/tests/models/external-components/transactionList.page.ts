@@ -31,7 +31,7 @@ export class TransactionListPage extends BasePage {
         this.filterBar = filterBar.rootElement;
         this.balanceAccountFilter = filterBar.getFilter(getTranslatedKey('balanceAccount'));
         this.accountHolderFilter = filterBar.getFilter(getTranslatedKey('account'));
-        this.dateFilter = filterBar.getFilter(getTranslatedKey('rangePreset.last7Days'));
+        this.dateFilter = filterBar.getFilter(getTranslatedKey('rangePreset.last30Days'));
         this.clearFilterButton = filterBar.getFilterButton(getTranslatedKey('reset'));
         this.applyFilterButton = filterBar.getFilterButton(getTranslatedKey('apply'));
         this.filterSingleInput = this.filterBar.locator('input');
