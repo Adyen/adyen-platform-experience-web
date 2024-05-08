@@ -1,4 +1,4 @@
-import { WITH_ERROR_CLASS } from '@src/components/external/TransactionsOverview/components/TransactionsOverviewContainer/constants';
+import { WITH_ERROR_CLASS } from '@src/components/internal/DataOverviewContainer/constants';
 import { ErrorMessageDisplay } from '@src/components/internal/ErrorMessageDisplay/ErrorMessageDisplay';
 import useAuthContext from '@src/core/Auth/useAuthContext';
 import { TranslationKey } from '@src/core/Localization/types';

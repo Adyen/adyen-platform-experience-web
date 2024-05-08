@@ -4,7 +4,6 @@ import { DataOverviewComponentProps } from '@src/types';
 import { BASE_CLASS } from '@src/components/external/TransactionsOverview/components/TransactionsOverviewContainer/constants';
 import { ExternalUIComponentProps } from '@src/components/types';
 import { TransactionsOverview } from '@src/components/external/TransactionsOverview/components/TransactionsOverview/TransactionsOverview';
-import './TransactionsOverviewContainer.scss';
 
 function TransactionsOverviewContainer({ ...props }: ExternalUIComponentProps<DataOverviewComponentProps>) {
     const { balanceAccounts, wrongBalanceAccountId, isFetching } = useBalanceAccounts(props.balanceAccountId);
