@@ -21,7 +21,7 @@ import { isFunction } from '@src/utils/common';
 import { lazy } from 'preact/compat';
 import { useCallback, useEffect, useMemo } from 'preact/hooks';
 import './PayoutsOverview.scss';
-import { DataOverviewDisplay } from '@src/components/internal/DataOverviewDisplay/DataOverviewDisplay';
+import { DataDetailsModal } from '@src/components/internal/DataOverviewDisplay/DataDetailsModal';
 
 const ModalContent = lazy(() => import('@src/components/internal/Modal/ModalContent/ModalContent'));
 
@@ -40,8 +40,7 @@ export const PayoutsOverview = ({
     DataOverviewComponentProps & { balanceAccounts: IBalanceAccountBase[] | undefined; isLoadingBalanceAccount: boolean }
 >) => {
     const { i18n } = useCoreContext();
-    // const { endpoints} = useAuthContext();
-    const payoutsEnpointCall = useSetupEndpoint('getPayouts');
+    const payoutsEndpointCall = useSetupEndpoint('getPayouts');
     const { activeBalanceAccount, balanceAccountSelectionOptions, onBalanceAccountSelection } = useBalanceAccountSelection(balanceAccounts);
     const { defaultParams, nowTimestamp, refreshNowTimestamp } = useDefaultOverviewFilterParams('payouts', activeBalanceAccount);
 
@@ -52,7 +51,7 @@ export const PayoutsOverview = ({
         ): Promise<SuccessResponse<EndpointsOperations['getPayouts']>> => {
             const requestOptions: SetupHttpOptions = { signal, errorLevel: 'error' };
 
-            return payoutsEnpointCall(requestOptions, {
+            return payoutsEndpointCall(requestOptions, {
                 query: {
                     ...pageRequestParams,
                     createdSince:
@@ -63,7 +62,7 @@ export const PayoutsOverview = ({
                 },
             });
         },
-        [activeBalanceAccount?.id, defaultParams, payoutsEnpointCall]
+        [activeBalanceAccount?.id, defaultParams, payoutsEndpointCall]
     );
 
     // FILTERS
@@ -132,7 +131,7 @@ export const PayoutsOverview = ({
                     updateFilters={updateFilters}
                 />
             </FilterBar>
-            <DataOverviewDisplay
+            <DataDetailsModal
                 className={BASE_CLASS_DISPLAY}
                 onContactSupport={onContactSupport}
                 selectedDetail={selectedDetail as ReturnType<typeof useModalDetails>['selectedDetail']}
@@ -153,7 +152,7 @@ export const PayoutsOverview = ({
                     error={error as AdyenPlatformExperienceError}
                     {...paginationProps}
                 />
-            </DataOverviewDisplay>
+            </DataDetailsModal>
         </div>
     );
 };
