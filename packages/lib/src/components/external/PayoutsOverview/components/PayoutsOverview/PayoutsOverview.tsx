@@ -1,4 +1,4 @@
-import { BASE_CLASS, BASE_CLASS_DISPLAY } from '@src/components/external/PayoutsOverview/components/PayoutsOverview/constants';
+import { BASE_CLASS, BASE_CLASS_DETAILS } from '@src/components/external/PayoutsOverview/components/PayoutsOverview/constants';
 import { PayoutsTable } from '@src/components/external/PayoutsOverview/components/PayoutsTable/PayoutsTable';
 import FilterBar from '@src/components/internal/FilterBar';
 import BalanceAccountSelector from '@src/components/internal/FormFields/Select/BalanceAccountSelector';
@@ -132,7 +132,7 @@ export const PayoutsOverview = ({
                 />
             </FilterBar>
             <DataDetailsModal
-                className={BASE_CLASS_DISPLAY}
+                className={BASE_CLASS_DETAILS}
                 onContactSupport={onContactSupport}
                 selectedDetail={selectedDetail as ReturnType<typeof useModalDetails>['selectedDetail']}
                 resetDetails={resetDetails}

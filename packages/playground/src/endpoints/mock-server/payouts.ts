@@ -5,7 +5,7 @@ import { delay } from '../utils/utils';
 import { getPaginationLinks } from './utils';
 
 const mockEndpoints = endpoints('mock');
-const networkError = false;
+const networkError = true;
 const defaultPaginationLimit = 20;
 
 export const payoutsMocks = [

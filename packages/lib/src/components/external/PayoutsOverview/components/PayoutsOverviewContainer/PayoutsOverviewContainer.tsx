@@ -4,7 +4,6 @@ import { DataOverviewComponentProps } from '@src/types';
 import { BASE_CLASS } from '@src/components/external/PayoutsOverview/components/PayoutsOverviewContainer/constants';
 import { PayoutsOverview } from '@src/components/external/PayoutsOverview/components/PayoutsOverview/PayoutsOverview';
 import { ExternalUIComponentProps } from '@src/components/types';
-import './PayoutsOverviewContainer.scss';
 
 function PayoutsOverviewContainer({ ...props }: ExternalUIComponentProps<DataOverviewComponentProps>) {
     const { balanceAccounts, wrongBalanceAccountId, isFetching } = useBalanceAccounts(props.balanceAccountId);

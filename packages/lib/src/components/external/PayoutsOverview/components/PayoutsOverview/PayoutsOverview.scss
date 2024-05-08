@@ -14,4 +14,11 @@
         padding-left: $adyen-pe-spacer-070;
         padding-right: $adyen-pe-spacer-070;
     }
+
+    &-display {
+        &__spinner-container {
+            display: block;
+            padding-bottom: 40px;
+        }
+    }
 }

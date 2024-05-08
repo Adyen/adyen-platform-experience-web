@@ -24,7 +24,7 @@ import AdyenPlatformExperienceError from '@src/core/Errors/AdyenPlatformExperien
 import { AmountFilter } from '@src/components/internal/FilterBar/filters/AmountFilter/AmountFilter';
 import {
     BASE_CLASS,
-    BASE_CLASS_DISPLAY,
+    BASE_CLASS_DETAILS,
     SUMMARY_CLASS,
     SUMMARY_ITEM_CLASS,
 } from '@src/components/external/TransactionsOverview/components/TransactionsOverview/constants';
@@ -213,7 +213,7 @@ export const TransactionsOverview = ({
                 selectedDetail={selectedDetail as ReturnType<typeof useModalDetails>['selectedDetail']}
                 resetDetails={resetDetails}
                 renderModalContent={() => <ModalContent data={selectedDetail?.selection.data} />}
-                className={BASE_CLASS_DISPLAY}
+                className={BASE_CLASS_DETAILS}
             >
                 <TransactionsTable
                     balanceAccounts={balanceAccounts}
