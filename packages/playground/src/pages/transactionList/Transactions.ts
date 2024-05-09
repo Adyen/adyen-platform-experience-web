@@ -18,6 +18,7 @@ enableServerInMockedMode()
             async onSessionCreate() {
                 return await sessionRequest();
             },
+            // theme: { primary: '#2292bc', outline: '#1e506a', neutral: '#2d3251', background: '#151726', label: '#ebebeb' },
         });
 
         createDarkTheme();

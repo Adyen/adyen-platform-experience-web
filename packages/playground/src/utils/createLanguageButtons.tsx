@@ -40,7 +40,22 @@ export const createDarkTheme = () => {
         const currentUrl = new URL(window.location as any);
         currentUrl.searchParams.set('theme', 'dark');
         window.history.pushState({}, '', currentUrl);
+
+        //
+        //
+        //
+        //
+        //
+        //
+
         new Theme({ primary: '#2292bc', outline: '#1e506a', neutral: '#2d3251', background: '#151726', label: '#ebebeb' }).apply();
+
+        //
+        //
+        //
+        //
+        //
+        //
         updateHeaders();
     };
     buttonElement.innerHTML = 'Dark theme';

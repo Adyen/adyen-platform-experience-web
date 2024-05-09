@@ -5,6 +5,7 @@ import Session from './Session';
 import Localization from './Localization';
 import BaseElement from '../components/external/BaseElement';
 import { EMPTY_OBJECT } from '../utils/common';
+import { Theme } from '@src/theme/Theme';
 
 const FALLBACK_ENV = 'test' satisfies DevEnvironment;
 
@@ -33,6 +34,9 @@ class Core<T extends CoreOptions<T> = any> {
         this.localization = new Localization(options.locale, options.availableTranslations);
         this.loadingContext = process.env.VITE_LOADING_CONTEXT ? process.env.VITE_LOADING_CONTEXT : resolveEnvironment(this.options.environment);
         this.setOptions(options);
+        if (options.theme) {
+            new Theme(options.theme as any).apply();
+        }
     }
 
     async initialize(initSession = false): Promise<this> {
