@@ -1,6 +1,6 @@
 module.exports = {
     'packages/lib/src/**/translations/*.json': filenames => [
-        `scripts/translations/sort-translations-json.sh ${filenames.join(' ')}`,
+        `npm run translations:sort ${filenames.join(' ')}`,
     ],
     // Fix Prettier formatting
     // Don't include TS schemas
