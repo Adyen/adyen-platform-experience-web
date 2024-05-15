@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest';
 import { createLiveWatchableState, createWatchableIdleCallbacks } from './helpers';
-import { noop } from '@src/utils/common';
+import { noop } from '../../common';
 
 describe('createLiveWatchableState', () => {
     test('should have constant state getters for static atoms', () => {

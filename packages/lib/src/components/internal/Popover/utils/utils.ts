@@ -1,4 +1,4 @@
-import { enumerable, struct, structFrom } from '@src/utils/common';
+import { enumerable, struct, structFrom } from '../../../../utils/common';
 
 type ObserverCallback = (entry: IntersectionObserverEntry) => void;
 

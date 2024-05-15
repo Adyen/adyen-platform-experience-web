@@ -1,12 +1,8 @@
-import {
-    LABEL_CLASS,
-    LABEL_CONTAINER_CLASS,
-    LABEL_CONTAINER_CLASS_LOADING,
-} from '@src/components/external/TransactionsOverview/components/SummaryItem/constants';
-import { SummaryItemLabelProps } from '@src/components/external/TransactionsOverview/components/SummaryItem/types';
-import { TypographyVariant } from '@src/components/internal/Typography/types';
-import Typography from '@src/components/internal/Typography/Typography';
-import fixedForwardRef from '@src/utils/fixedForwardRef';
+import { LABEL_CLASS, LABEL_CONTAINER_CLASS, LABEL_CONTAINER_CLASS_LOADING } from './constants';
+import { SummaryItemLabelProps } from './types';
+import { TypographyVariant } from '../../../../internal/Typography/types';
+import Typography from '../../../../internal/Typography/Typography';
+import fixedForwardRef from '../../../../../utils/fixedForwardRef';
 import classNames from 'classnames';
 import { ForwardedRef } from 'preact/compat';
 

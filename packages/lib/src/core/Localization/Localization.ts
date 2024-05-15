@@ -5,8 +5,8 @@ import restamper, { RestamperWithTimezone, systemToTimezone } from './datetime/r
 import { createTranslationsLoader, getLocalizationProxyDescriptors } from './localization-utils';
 import { CustomTranslations, LangFile, SupportedLocale, Translation, TranslationKey, TranslationOptions } from './types';
 import { formatCustomTranslations, getTranslation, toTwoLetterCode } from './utils';
-import { noop, struct } from '@src/utils/common';
-import watchable from '@src/utils/watchable';
+import { noop, struct } from '../../utils/common';
+import watchable from '../../utils/watchable';
 import { en_US } from './translations';
 
 export default class Localization {

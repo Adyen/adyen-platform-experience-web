@@ -1,6 +1,6 @@
-import { FilterParam } from '@src/types';
+import { FilterParam } from '../../../../../types';
 import { BaseFilterProps } from '../BaseFilter/types';
-import { ReactiveStateRecord } from '@src/hooks/useReactiveState/types';
+import { ReactiveStateRecord } from '../../../../../hooks/useReactiveState/types';
 
 type RangeOptions = 'minAmount' | 'maxAmount';
 export interface RangeFilterProps extends BaseFilterProps {

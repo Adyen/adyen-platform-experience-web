@@ -1,4 +1,4 @@
-import Localization from '@src/core/Localization';
+import Localization from '../Localization';
 
 export interface CommonPropsTypes {
     isCollatingErrors?: boolean;

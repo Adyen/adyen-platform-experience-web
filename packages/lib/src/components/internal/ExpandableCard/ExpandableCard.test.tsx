@@ -4,7 +4,7 @@
 import { render, screen, waitFor } from '@testing-library/preact';
 import { beforeEach, describe, expect, test } from 'vitest';
 import ExpandableCard from './ExpandableCard';
-import { CONTAINER_HIDDEN_CLASS } from '@src/components/internal/ExpandableCard/constants';
+import { CONTAINER_HIDDEN_CLASS } from './constants';
 
 describe('ExpandableCard component', () => {
     const testExpandBehaviour = async () => {

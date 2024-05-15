@@ -1,7 +1,7 @@
 import { useMemo, useRef, useState } from 'preact/hooks';
-import restamper, { RestampContext } from '@src/core/Localization/datetime/restamper';
-import { getGMTSuffixForTimezoneOffset, getTimezoneOffsetFromFormattedDateString } from '@src/core/Localization/datetime/restamper/utils';
-import { EMPTY_ARRAY, EMPTY_OBJECT, noop } from '@src/utils/common';
+import restamper, { RestampContext } from '../../../../core/Localization/datetime/restamper';
+import { getGMTSuffixForTimezoneOffset, getTimezoneOffsetFromFormattedDateString } from '../../../../core/Localization/datetime/restamper/utils';
+import { EMPTY_ARRAY, EMPTY_OBJECT, noop } from '../../../../utils/common';
 import clock from '../clock';
 
 export type UseTimezoneConfig = {

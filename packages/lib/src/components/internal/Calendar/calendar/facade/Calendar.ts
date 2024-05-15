@@ -1,4 +1,4 @@
-import { InteractionKeyCode } from '@src/components/types';
+import { InteractionKeyCode } from '../../../../types';
 import {
     CALENDAR_CONTROLS,
     CALENDAR_SELECTIONS,
@@ -38,10 +38,10 @@ import {
     pickFromCollection,
     struct,
     structFrom,
-} from '@src/utils/common';
-import { isString } from '@src/utils/validator-utils';
-import watchable from '@src/utils/watchable';
-import { Watchable, WatchableFactory, WatchCallable, WatchCallback } from '@src/utils/watchable/types';
+} from '../../../../../utils/common';
+import { isString } from '../../../../../utils/validator-utils';
+import watchable from '../../../../../utils/watchable';
+import { Watchable, WatchableFactory, WatchCallable, WatchCallback } from '../../../../../utils/watchable/types';
 import { MonthFrame, TimeFrame /* , YearFrame */ } from '../timeframe';
 import { today } from '../../clock';
 import {

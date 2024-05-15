@@ -1,7 +1,7 @@
-import { ErrorMessageDisplay } from '@src/components/internal/ErrorMessageDisplay/ErrorMessageDisplay';
-import { getErrorMessage } from '@src/components/utils/getDataOverviewResourceErrorCode';
-import AdyenPlatformExperienceError from '@src/core/Errors/AdyenPlatformExperienceError';
-import { TranslationKey } from '@src/core/Localization/types';
+import { ErrorMessageDisplay } from '../ErrorMessageDisplay/ErrorMessageDisplay';
+import { getErrorMessage } from '../../utils/getDataOverviewResourceErrorCode';
+import AdyenPlatformExperienceError from '../../../core/Errors/AdyenPlatformExperienceError';
+import { TranslationKey } from '../../../core/Localization/types';
 
 const DataOverviewError = ({
     error,

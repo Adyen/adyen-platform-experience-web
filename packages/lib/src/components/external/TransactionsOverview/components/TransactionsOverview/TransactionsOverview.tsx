@@ -1,37 +1,32 @@
-import { TransactionsTable } from '@src/components/external/TransactionsOverview/components/TransactionsTable/TransactionsTable';
-import useBalanceAccountSelection from '@src/components/hooks/useBalanceAccountSelection';
-import BalanceAccountSelector from '@src/components/internal/FormFields/Select/BalanceAccountSelector';
-import { TypographyVariant } from '@src/components/internal/Typography/types';
-import Typography from '@src/components/internal/Typography/Typography';
-import DateFilter from '@src/components/internal/FilterBar/filters/DateFilter/DateFilter';
-import FilterBar from '@src/components/internal/FilterBar';
-import { ExternalUIComponentProps } from '@src/components/types';
-import useModalDetails from '@src/hooks/useModalDetails/useModalDetails';
+import { TransactionsTable } from '../TransactionsTable/TransactionsTable';
+import useBalanceAccountSelection from '../../../../hooks/useBalanceAccountSelection';
+import BalanceAccountSelector from '../../../../internal/FormFields/Select/BalanceAccountSelector';
+import { TypographyVariant } from '../../../../internal/Typography/types';
+import Typography from '../../../../internal/Typography/Typography';
+import DateFilter from '../../../../internal/FilterBar/filters/DateFilter/DateFilter';
+import FilterBar from '../../../../internal/FilterBar';
+import { ExternalUIComponentProps } from '../../../../types';
+import useModalDetails from '../../../../../hooks/useModalDetails/useModalDetails';
 import { lazy } from 'preact/compat';
-import useCoreContext from '@src/core/Context/useCoreContext';
-import { SetupHttpOptions, useSetupEndpoint } from '@src/hooks/useSetupEndpoint/useSetupEndpoint';
+import useCoreContext from '../../../../../core/Context/useCoreContext';
+import { SetupHttpOptions, useSetupEndpoint } from '../../../../../hooks/useSetupEndpoint/useSetupEndpoint';
 import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
-import { useCursorPaginatedRecords } from '@src/components/internal/Pagination/hooks';
-import { IBalanceAccountBase, ITransaction, DataOverviewComponentProps, FilterParam } from '@src/types';
-import { isFunction } from '@src/utils/common';
-import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '@src/components/internal/Pagination/constants';
-import TransactionTotals from '@src/components/external/TransactionsOverview/components/TransactionTotals/TransactionTotals';
-import { Balances } from '@src/components/external/TransactionsOverview/components/Balances/Balances';
+import { useCursorPaginatedRecords } from '../../../../internal/Pagination/hooks';
+import { IBalanceAccountBase, ITransaction, DataOverviewComponentProps, FilterParam } from '../../../../../types';
+import { isFunction } from '../../../../../utils/common';
+import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '../../../../internal/Pagination/constants';
+import TransactionTotals from '../TransactionTotals/TransactionTotals';
+import { Balances } from '../Balances/Balances';
 import MultiSelectionFilter, { listFrom } from '../MultiSelectionFilter';
-import useDefaultOverviewFilterParams from '@src/components/hooks/useDefaultOverviewFilterParams';
+import useDefaultOverviewFilterParams from '../../../../hooks/useDefaultOverviewFilterParams';
 import useTransactionsOverviewMultiSelectionFilters from '../../hooks/useTransactionsOverviewMultiSelectionFilters';
-import AdyenPlatformExperienceError from '@src/core/Errors/AdyenPlatformExperienceError';
-import { AmountFilter } from '@src/components/internal/FilterBar/filters/AmountFilter/AmountFilter';
-import {
-    BASE_CLASS,
-    BASE_CLASS_DETAILS,
-    SUMMARY_CLASS,
-    SUMMARY_ITEM_CLASS,
-} from '@src/components/external/TransactionsOverview/components/TransactionsOverview/constants';
+import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatformExperienceError';
+import { AmountFilter } from '../../../../internal/FilterBar/filters/AmountFilter/AmountFilter';
+import { BASE_CLASS, BASE_CLASS_DETAILS, SUMMARY_CLASS, SUMMARY_ITEM_CLASS } from './constants';
 import './TransactionsOverview.scss';
-import { mediaQueries, useMediaQuery } from '@src/components/external/TransactionsOverview/hooks/useMediaQuery';
-import { DataDetailsModal } from '@src/components/internal/DataOverviewDisplay/DataDetailsModal';
-const ModalContent = lazy(() => import('@src/components/internal/Modal/ModalContent/ModalContent'));
+import { mediaQueries, useMediaQuery } from '../../hooks/useMediaQuery';
+import { DataDetailsModal } from '../../../../internal/DataOverviewDisplay/DataDetailsModal';
+const ModalContent = lazy(() => import('../../../../internal/Modal/ModalContent/ModalContent'));
 
 export const TransactionsOverview = ({
     onFiltersChanged,

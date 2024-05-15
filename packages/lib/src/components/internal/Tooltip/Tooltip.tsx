@@ -1,10 +1,10 @@
-import { mediaQueries, useMediaQuery } from '@src/components/external/TransactionsOverview/hooks/useMediaQuery';
-import Popover from '@src/components/internal/Popover/Popover';
-import { PopoverContainerVariant } from '@src/components/internal/Popover/types';
-import { useTooltipListeners } from '@src/components/internal/Tooltip/useTooltipListeners';
-import { TypographyVariant } from '@src/components/internal/Typography/types';
-import Typography from '@src/components/internal/Typography/Typography';
-import useUniqueIdentifier from '@src/hooks/element/useUniqueIdentifier';
+import { mediaQueries, useMediaQuery } from '../../external/TransactionsOverview/hooks/useMediaQuery';
+import Popover from '../Popover/Popover';
+import { PopoverContainerVariant } from '../Popover/types';
+import { useTooltipListeners } from './useTooltipListeners';
+import { TypographyVariant } from '../Typography/types';
+import Typography from '../Typography/Typography';
+import useUniqueIdentifier from '../../../hooks/element/useUniqueIdentifier';
 import classNames from 'classnames';
 import { cloneElement, VNode } from 'preact';
 import { PropsWithChildren } from 'preact/compat';

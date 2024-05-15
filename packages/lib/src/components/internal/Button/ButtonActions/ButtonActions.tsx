@@ -1,7 +1,7 @@
-import Button from '@src/components/internal/Button';
-import { ButtonActionsLayout, ButtonActionsList } from '@src/components/internal/Button/ButtonActions/types';
-import { BUTTON_ACTION_CLASSNAME, BUTTON_ACTION_CONTAINER_CLASSNAME } from '@src/components/internal/Button/constants';
-import { ButtonVariant } from '@src/components/internal/Button/types';
+import Button from '../../Button';
+import { ButtonActionsLayout, ButtonActionsList } from './types';
+import { BUTTON_ACTION_CLASSNAME, BUTTON_ACTION_CONTAINER_CLASSNAME } from '../constants';
+import { ButtonVariant } from '../types';
 import './ButtonActions.scss';
 import { memo } from 'preact/compat';
 import { useMemo } from 'preact/hooks';

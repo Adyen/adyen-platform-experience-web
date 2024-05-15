@@ -1,15 +1,15 @@
-import DataOverviewError from '@src/components/internal/DataOverviewError/DataOverviewError';
-import { BASE_CLASS } from '@src/components/external/PayoutsOverview/components/PayoutsTable/constants';
-import { PaginationProps, WithPaginationLimitSelection } from '@src/components/internal/Pagination/types';
-import { getLabel } from '@src/components/utils/getLabel';
-import useCoreContext from '@src/core/Context/useCoreContext';
-import AdyenPlatformExperienceError from '@src/core/Errors/AdyenPlatformExperienceError';
-import { getCurrencyCode } from '@src/core/Localization/amount/amount-util';
-import { IBalanceAccountBase, IPayout } from '@src/types';
+import DataOverviewError from '../../../../internal/DataOverviewError/DataOverviewError';
+import { BASE_CLASS } from './constants';
+import { PaginationProps, WithPaginationLimitSelection } from '../../../../internal/Pagination/types';
+import { getLabel } from '../../../../utils/getLabel';
+import useCoreContext from '../../../../../core/Context/useCoreContext';
+import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatformExperienceError';
+import { getCurrencyCode } from '../../../../../core/Localization/amount/amount-util';
+import { IBalanceAccountBase, IPayout } from '../../../../../types';
 import { useMemo } from 'preact/hooks';
 import DataGrid from '../../../../internal/DataGrid';
 import Pagination from '../../../../internal/Pagination';
-import { TranslationKey } from '@src/core/Localization/types';
+import { TranslationKey } from '../../../../../core/Localization/types';
 import { FC } from 'preact/compat';
 
 const FIELDS = ['createdAt', 'grossAmount', 'chargesAmount', 'netAmount'] as const;

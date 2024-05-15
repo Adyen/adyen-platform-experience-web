@@ -1,10 +1,10 @@
-import { mediaQueries, useMediaQuery } from '@src/components/external/TransactionsOverview/hooks/useMediaQuery';
-import { ButtonVariant } from '@src/components/internal/Button/types';
-import Close from '@src/components/internal/SVGIcons/Close';
-import Filter from '@src/components/internal/SVGIcons/Filter';
-import { TypographyVariant } from '@src/components/internal/Typography/types';
-import Typography from '@src/components/internal/Typography/Typography';
-import useCoreContext from '@src/core/Context/useCoreContext';
+import { mediaQueries, useMediaQuery } from '../../external/TransactionsOverview/hooks/useMediaQuery';
+import { ButtonVariant } from '../Button/types';
+import Close from '../SVGIcons/Close';
+import Filter from '../SVGIcons/Filter';
+import { TypographyVariant } from '../Typography/types';
+import Typography from '../Typography/Typography';
+import useCoreContext from '../../../core/Context/useCoreContext';
 import cx from 'classnames';
 import { PropsWithChildren } from 'preact/compat';
 import { useEffect, useState } from 'preact/hooks';

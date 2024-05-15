@@ -1,8 +1,8 @@
 /**
  * @vitest-environment jsdom
  */
-import { ButtonVariant } from '@src/components/internal/Button/types';
-import { PopoverContainerPosition, PopoverContainerVariant } from '@src/components/internal/Popover/types';
+import { ButtonVariant } from '../Button/types';
+import { PopoverContainerPosition, PopoverContainerVariant } from './types';
 import { render, screen, waitFor } from '@testing-library/preact';
 import userEvent from '@testing-library/user-event';
 import { createRef } from 'preact';

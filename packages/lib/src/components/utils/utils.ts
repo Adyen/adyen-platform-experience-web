@@ -1,5 +1,5 @@
 import { UIElementStatus } from '../types';
-import { Core } from '@src/core';
+import { Core } from '../../core';
 
 const ALLOWED_PROPERTIES = ['action', 'resultCode', 'sessionData', 'order'];
 

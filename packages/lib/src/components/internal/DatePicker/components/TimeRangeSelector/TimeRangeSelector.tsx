@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef } from 'preact/hooks';
-import Select from '@src/components/internal/FormFields/Select';
-import { SelectItem } from '@src/components/internal/FormFields/Select/types';
+import Select from '../../../FormFields/Select';
+import { SelectItem } from '../../../FormFields/Select/types';
 import { useTimeRangeSelection, UseTimeRangeSelectionConfig } from './useTimeRangeSelection';
 
 const TimeRangeSelector = ({

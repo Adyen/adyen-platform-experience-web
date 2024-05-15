@@ -35,7 +35,6 @@ export default defineConfig(async ({ mode }) => {
     return {
         resolve: {
             alias: {
-                '@src': resolve(__dirname, './src'),
                 '@styles': resolve(__dirname, './src/style'),
             },
         },

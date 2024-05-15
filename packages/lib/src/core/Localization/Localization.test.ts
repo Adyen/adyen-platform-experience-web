@@ -1,6 +1,6 @@
 import Localization from './Localization';
 import { describe, expect, test } from 'vitest';
-import { es_ES } from '@src/core';
+import { es_ES } from '../../core';
 
 describe('Localization', () => {
     describe('constructor', () => {
