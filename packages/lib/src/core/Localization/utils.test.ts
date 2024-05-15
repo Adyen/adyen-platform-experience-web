@@ -1,7 +1,7 @@
 import { formatCustomTranslations, formatLocale, getTranslation, interpolateElement, matchLocale, parseLocale, loadTranslations } from './utils';
 import { createElement } from 'preact';
 import { describe, expect, test } from 'vitest';
-import { SUPPORTED_LOCALES } from '@src/core/Localization/constants/localization';
+import { SUPPORTED_LOCALES } from './constants/localization';
 
 const defaultSupportedLocales = SUPPORTED_LOCALES;
 

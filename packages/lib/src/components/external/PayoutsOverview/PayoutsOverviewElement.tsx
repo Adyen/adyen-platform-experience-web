@@ -1,5 +1,5 @@
-import { DataOverviewComponentProps } from '@src/types';
-import Payouts from '@src/components/external/PayoutsOverview/components/PayoutsOverviewContainer/PayoutsOverviewContainer';
+import { DataOverviewComponentProps } from '../../../types';
+import Payouts from './components/PayoutsOverviewContainer/PayoutsOverviewContainer';
 import UIElement from '../UIElement';
 import { _UIComponentProps } from '../../types';
 

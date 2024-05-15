@@ -1,4 +1,4 @@
-import { SetupEndpoint } from '@src/types/api/endpoints';
+import { SetupEndpoint } from '../../types/api/endpoints';
 
 export type SessionResponse = {
     id: string;

@@ -1,7 +1,7 @@
-import { ErrorMessage, getCommonErrorMessage, UNDEFINED_ERROR } from '@src/components/utils/getCommonErrorCode';
-import AdyenPlatformExperienceError from '@src/core/Errors/AdyenPlatformExperienceError';
-import CopyText from '@src/components/internal/CopyText/CopyText';
-import { TranslationKey } from '@src/core/Localization/types';
+import { ErrorMessage, getCommonErrorMessage, UNDEFINED_ERROR } from './getCommonErrorCode';
+import AdyenPlatformExperienceError from '../../core/Errors/AdyenPlatformExperienceError';
+import CopyText from '../internal/CopyText/CopyText';
+import { TranslationKey } from '../../core/Localization/types';
 
 export const getErrorMessage = (
     error: AdyenPlatformExperienceError | undefined,

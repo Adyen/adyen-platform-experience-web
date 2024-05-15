@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useReducer, useRef } from 'preact/hooks';
-import { EMPTY_OBJECT } from '@src/utils/common';
-import useMounted from '@src/hooks/useMounted';
+import { EMPTY_OBJECT } from '../../utils/common';
+import useMounted from '../useMounted';
 import { ReactiveStateRecord, ReactiveStateUpdateRequest, ReactiveStateUpdateRequestWithField, UseReactiveStateRecord } from './types';
 
 const useReactiveState = <Value, Param extends string>(

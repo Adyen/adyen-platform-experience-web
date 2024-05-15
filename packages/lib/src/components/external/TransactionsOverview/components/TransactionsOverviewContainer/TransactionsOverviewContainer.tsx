@@ -1,9 +1,9 @@
-import useBalanceAccounts from '@src/components/hooks/useBalanceAccounts';
-import DataOverviewContainer from '@src/components/internal/DataOverviewContainer/DataOverviewContainer';
-import { DataOverviewComponentProps } from '@src/types';
-import { BASE_CLASS } from '@src/components/external/TransactionsOverview/components/TransactionsOverviewContainer/constants';
-import { ExternalUIComponentProps } from '@src/components/types';
-import { TransactionsOverview } from '@src/components/external/TransactionsOverview/components/TransactionsOverview/TransactionsOverview';
+import useBalanceAccounts from '../../../../hooks/useBalanceAccounts';
+import DataOverviewContainer from '../../../../internal/DataOverviewContainer/DataOverviewContainer';
+import { DataOverviewComponentProps } from '../../../../../types';
+import { BASE_CLASS } from './constants';
+import { ExternalUIComponentProps } from '../../../../types';
+import { TransactionsOverview } from '../TransactionsOverview/TransactionsOverview';
 
 function TransactionsOverviewContainer({ ...props }: ExternalUIComponentProps<DataOverviewComponentProps>) {
     const { balanceAccounts, wrongBalanceAccountId, isFetching } = useBalanceAccounts(props.balanceAccountId);

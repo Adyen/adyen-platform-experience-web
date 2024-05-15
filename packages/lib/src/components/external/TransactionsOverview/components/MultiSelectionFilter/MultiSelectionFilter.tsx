@@ -1,7 +1,7 @@
 import { memo } from 'preact/compat';
-import Select from '@src/components/internal/FormFields/Select';
-import { mediaQueries, useMediaQuery } from '@src/components/external/TransactionsOverview/hooks/useMediaQuery';
-import type { SelectProps } from '@src/components/internal/FormFields/Select/types';
+import Select from '../../../../internal/FormFields/Select';
+import { mediaQueries, useMediaQuery } from '../../hooks/useMediaQuery';
+import type { SelectProps } from '../../../../internal/FormFields/Select/types';
 import useMultiSelectionFilter from './useMultiSelectionFilter';
 
 const MultiSelectionFilter = memo(

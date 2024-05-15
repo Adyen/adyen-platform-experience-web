@@ -3,7 +3,7 @@ import { BasePage } from '../basePage';
 import { getPagePath, getTranslatedKey } from '../../utils/utils';
 import DataGridPage from '../internal-components/dataGrid';
 import FilterBarPage from '../internal-components/filterBar';
-import { ITransaction } from '@src/types';
+import { ITransaction } from '../../../src/types';
 import { TRANSACTIONS } from '@adyen/adyen-platform-experience-web-mocks';
 
 export class TransactionListPage extends BasePage {

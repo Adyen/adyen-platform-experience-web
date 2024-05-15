@@ -1,11 +1,11 @@
 import { ComponentChild, toChildArray } from 'preact';
 import classnames from 'classnames';
 import './DataGrid.scss';
-import { TableBody } from '@src/components/internal/DataGrid/components/TableBody';
-import { InteractiveBody } from '@src/components/internal/DataGrid/components/InteractiveBody';
+import { TableBody } from './components/TableBody';
+import { InteractiveBody } from './components/InteractiveBody';
 import { CellTextPosition, DataGridColumn, DataGridProps } from './types';
-import SkeletonBody from '@src/components/internal/DataGrid/components/SkeletonBody';
-import { ErrorMessageDisplay } from '@src/components/internal/ErrorMessageDisplay/ErrorMessageDisplay';
+import SkeletonBody from './components/SkeletonBody';
+import { ErrorMessageDisplay } from '../ErrorMessageDisplay/ErrorMessageDisplay';
 import { useMemo } from 'preact/hooks';
 import emptyTableIcon from '../../../images/no-data-female.svg';
 

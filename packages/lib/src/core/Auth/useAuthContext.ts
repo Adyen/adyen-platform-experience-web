@@ -1,4 +1,4 @@
-import { AuthContext } from '@src/core/Auth/AuthContext';
+import { AuthContext } from './AuthContext';
 import { useContext } from 'preact/hooks';
 
 const useAuthContext = () => useContext(AuthContext);

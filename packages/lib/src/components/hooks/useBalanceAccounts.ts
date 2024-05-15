@@ -1,7 +1,7 @@
-import useAuthContext from '@src/core/Auth/useAuthContext';
-import { useFetch } from '@src/hooks/useFetch/useFetch';
-import { useSetupEndpoint } from '@src/hooks/useSetupEndpoint/useSetupEndpoint';
-import { EMPTY_OBJECT } from '@src/utils/common';
+import useAuthContext from '../../core/Auth/useAuthContext';
+import { useFetch } from '../../hooks/useFetch/useFetch';
+import { useSetupEndpoint } from '../../hooks/useSetupEndpoint/useSetupEndpoint';
+import { EMPTY_OBJECT } from '../../utils/common';
 import { useCallback, useMemo } from 'preact/hooks';
 
 const useBalanceAccounts = (balanceAccountId?: string) => {

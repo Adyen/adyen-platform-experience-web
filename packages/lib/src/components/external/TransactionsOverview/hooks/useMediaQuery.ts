@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'preact/hooks';
-import { BREAKPOINTS } from '@src/constants';
-import { ValueOf } from '@src/utils/types';
+import { BREAKPOINTS } from '../../../../constants';
+import { ValueOf } from '../../../../utils/types';
 
 export const mediaQueries = {
     up: {

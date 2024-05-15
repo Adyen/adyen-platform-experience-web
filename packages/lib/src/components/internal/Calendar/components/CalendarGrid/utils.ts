@@ -1,7 +1,7 @@
-import { parseClassName } from '@src/utils/class-name-utils';
+import { parseClassName } from '../../../../../utils/class-name-utils';
 import classnames from 'classnames';
 import { JSX } from 'preact';
-import { EMPTY_OBJECT, toString } from '@src/utils/common';
+import { EMPTY_OBJECT, toString } from '../../../../../utils/common';
 
 type PropertyDescriptor<T = any> = {
     configurable?: boolean;

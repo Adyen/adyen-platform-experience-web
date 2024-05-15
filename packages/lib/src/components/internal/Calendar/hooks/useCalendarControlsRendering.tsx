@@ -1,8 +1,8 @@
-import { ButtonVariant } from '@src/components/internal/Button/types';
+import { ButtonVariant } from '../../Button/types';
 import { useCallback } from 'preact/hooks';
-import { isFunction } from '@src/utils/common';
-import ChevronDown from '@src/components/internal/SVGIcons/ChevronDown';
-import ChevronUp from '@src/components/internal/SVGIcons/ChevronUp';
+import { isFunction } from '../../../../utils/common';
+import ChevronDown from '../../SVGIcons/ChevronDown';
+import ChevronUp from '../../SVGIcons/ChevronUp';
 import { CalendarControlRenderer, CalendarRenderControl } from '../types';
 import useCoreContext from '../../../../core/Context/useCoreContext';
 import useDetachedRender from '../../../../hooks/element/useDetachedRender';

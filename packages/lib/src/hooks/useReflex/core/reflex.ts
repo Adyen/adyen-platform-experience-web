@@ -2,7 +2,7 @@ import { REF } from '../constants';
 import $registry from './registry';
 import type { DefinedNullable, Nullable, Reflex, Reflexable, ReflexAction, ReflexContainer } from '../types';
 import { assertReflexAction, unwrap } from './utils';
-import { sameValue, struct } from '@src/utils/common';
+import { sameValue, struct } from '../../../utils/common';
 
 export const createIsolatedFauxReflex = <T = any>(action: ReflexAction<T>): Reflex<T> => {
     assertReflexAction<T>(action);

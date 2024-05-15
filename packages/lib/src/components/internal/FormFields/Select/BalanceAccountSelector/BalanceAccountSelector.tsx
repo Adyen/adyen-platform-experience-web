@@ -1,10 +1,10 @@
-import useBalanceAccountSelection from '@src/components/hooks/useBalanceAccountSelection';
+import useBalanceAccountSelection from '../../../../hooks/useBalanceAccountSelection';
 import { memo } from 'preact/compat';
 import { useCallback } from 'preact/hooks';
-import Select from '@src/components/internal/FormFields/Select';
-import { mediaQueries, useMediaQuery } from '@src/components/external/TransactionsOverview/hooks/useMediaQuery';
-import { renderDefaultSingleSelectionCheckedness } from '@src/components/internal/FormFields/Select/components/SelectListItem';
-import { SelectItem, SelectProps } from '@src/components/internal/FormFields/Select/types';
+import Select from '../../Select';
+import { mediaQueries, useMediaQuery } from '../../../../external/TransactionsOverview/hooks/useMediaQuery';
+import { renderDefaultSingleSelectionCheckedness } from '../components/SelectListItem';
+import { SelectItem, SelectProps } from '../types';
 import './BalanceAccountSelector.scss';
 
 type _GetRenderListItemType<T> = T extends Readonly<SelectItem[]> ? NonNullable<SelectProps<T[number]>['renderListItem']> : never;
