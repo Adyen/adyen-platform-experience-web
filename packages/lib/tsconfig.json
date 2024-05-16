@@ -15,7 +15,6 @@
         "jsxImportSource": "preact",
         "jsx": "react-jsx",
         "paths": {
-            "@src/*": ["./src/*"],
             "@styles/*": ["./src/style/*"]
         },
 

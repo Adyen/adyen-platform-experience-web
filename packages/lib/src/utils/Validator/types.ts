@@ -1,7 +1,7 @@
 import { ValidationRuleResult } from './ValidationRuleResult';
 import { ValueOf } from '../types';
 import { SchemaKeys } from '../useForm/types';
-import { TranslationKey } from '@src/core/Localization/types';
+import { TranslationKey } from '../../core/Localization/types';
 
 export type ValidatorMode = 'blur' | 'input';
 

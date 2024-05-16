@@ -1,5 +1,5 @@
-import { EMPTY_OBJECT, struct } from '@src/utils/common';
-import restamper, { RestamperWithTimezone } from '@src/core/Localization/datetime/restamper';
+import { EMPTY_OBJECT, struct } from '../../../../../utils/common';
+import restamper, { RestamperWithTimezone } from '../../../../../core/Localization/datetime/restamper';
 import type { RangeTimestamp, RangeTimestamps, RangeTimestampsConfig, RangeTimestampsConfigContext } from './types';
 import {
     asPlainObject,

@@ -1,4 +1,4 @@
-import type { UsePaginatedRecords } from '@src/components/internal/Pagination/hooks/types';
+import type { UsePaginatedRecords } from '../../../../../internal/Pagination/hooks/types';
 import { TRANSACTIONS_OVERVIEW_MULTI_SELECTION_FILTERS } from './constants';
 
 export type SelectionOptionsList<T extends string = string> = readonly T[] | T[];

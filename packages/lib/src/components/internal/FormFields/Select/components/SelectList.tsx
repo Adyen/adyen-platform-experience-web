@@ -1,9 +1,9 @@
-import { mediaQueries, useMediaQuery } from '@src/components/external/TransactionsOverview/hooks/useMediaQuery';
-import Popover from '@src/components/internal/Popover/Popover';
-import { PopoverContainerPosition, PopoverContainerSize, PopoverContainerVariant, PopoverProps } from '@src/components/internal/Popover/types';
-import useCoreContext from '@src/core/Context/useCoreContext';
-import { isFunction } from '@src/utils/common';
-import fixedForwardRef from '@src/utils/fixedForwardRef';
+import { mediaQueries, useMediaQuery } from '../../../../external/TransactionsOverview/hooks/useMediaQuery';
+import Popover from '../../../Popover/Popover';
+import { PopoverContainerPosition, PopoverContainerSize, PopoverContainerVariant, PopoverProps } from '../../../Popover/types';
+import useCoreContext from '../../../../../core/Context/useCoreContext';
+import { isFunction } from '../../../../../utils/common';
+import fixedForwardRef from '../../../../../utils/fixedForwardRef';
 import cx from 'classnames';
 import { ForwardedRef, memo } from 'preact/compat';
 import { useMemo } from 'preact/hooks';

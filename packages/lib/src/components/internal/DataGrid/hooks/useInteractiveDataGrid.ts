@@ -1,7 +1,7 @@
 import { useCallback, useReducer } from 'preact/hooks';
-import useReflex from '@src/hooks/useReflex';
-import { InteractionKeyCode } from '@src/components/types';
-import { INITIAL_STATE } from '@src/components/internal/DataGrid/DataGrid';
+import useReflex from '../../../../hooks/useReflex';
+import { InteractionKeyCode } from '../../../types';
+import { INITIAL_STATE } from '../DataGrid';
 
 export const useInteractiveDataGrid = ({ totalRows }: { totalRows: number }) => {
     const [state, dispatch] = useReducer<Readonly<{ activeIndex: number; index: number }>, { type: 'ACTIVE' | 'CURRENT'; index: number }>(

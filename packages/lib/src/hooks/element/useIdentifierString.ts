@@ -1,7 +1,7 @@
 import { Ref, useCallback, useLayoutEffect, useMemo, useRef, useState } from 'preact/hooks';
-import { Nullable, Reflex } from '@src/hooks/useReflex';
-import { isReflex } from '@src/hooks/useReflex/core/utils';
-import createReflexContainer from '@src/hooks/useReflex/core/reflex';
+import { Nullable, Reflex } from '../useReflex';
+import { isReflex } from '../useReflex/core/utils';
+import createReflexContainer from '../useReflex/core/reflex';
 
 // [TODO]: This should belong to a shared type module
 type List<T = any> = (List<T> | T)[];

@@ -1,4 +1,4 @@
-import { ButtonActionsLayout, ButtonActionsList } from '@src/components/internal/Button/ButtonActions/types';
+import { ButtonActionsLayout, ButtonActionsList } from '../Button/ButtonActions/types';
 import { ComponentChildren } from 'preact';
 import { HTMLAttributes } from 'preact/compat';
 import { MutableRef } from 'preact/hooks';

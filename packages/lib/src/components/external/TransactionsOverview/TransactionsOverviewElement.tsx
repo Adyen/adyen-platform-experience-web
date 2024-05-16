@@ -1,5 +1,5 @@
-import { DataOverviewComponentProps } from '@src/types';
-import Transactions from '@src/components/external/TransactionsOverview/components/TransactionsOverviewContainer/TransactionsOverviewContainer';
+import { DataOverviewComponentProps } from '../../../types';
+import Transactions from './components/TransactionsOverviewContainer/TransactionsOverviewContainer';
 import UIElement from '../UIElement';
 import { _UIComponentProps } from '../../types';
 

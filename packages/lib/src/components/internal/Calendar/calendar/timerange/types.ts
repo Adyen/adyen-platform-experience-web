@@ -1,4 +1,4 @@
-import type { Restamper, RestamperWithTimezone } from '@src/core/Localization/datetime/restamper';
+import type { Restamper, RestamperWithTimezone } from '../../../../../core/Localization/datetime/restamper';
 
 export type RangeTimestamp = number;
 export type RangeTimestampOffsets = readonly [number?, number?, number?, number?, number?, number?, number?];

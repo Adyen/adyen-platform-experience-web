@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
-import { EMPTY_OBJECT } from '@src/utils/common';
+import { EMPTY_OBJECT } from '../../../../utils/common';
 import {
     BasePaginatedRecordsInitOptions,
     PaginatedRecordsFetcherReturnValue,
@@ -12,8 +12,8 @@ import usePageLimit from './usePageLimit';
 import useCursorPagination from './useCursorPagination';
 import useOffsetPagination from './useOffsetPagination';
 import usePaginatedRecordsFilters from './usePaginatedRecordsFilters';
-import useBooleanState from '@src/hooks/useBooleanState';
-import useMounted from '@src/hooks/useMounted';
+import useBooleanState from '../../../../hooks/useBooleanState';
+import useMounted from '../../../../hooks/useMounted';
 import {
     PageNeighbour,
     PaginatedResponseData,
@@ -22,7 +22,7 @@ import {
     PaginationType,
     WithEitherPages,
 } from '../types';
-import AdyenPlatformExperienceError from '@src/core/Errors/AdyenPlatformExperienceError';
+import AdyenPlatformExperienceError from '../../../../core/Errors/AdyenPlatformExperienceError';
 
 const pageNeighbours = [PageNeighbour.NEXT, PageNeighbour.PREV] as const;
 const offsetPaginatedResponseFields = ['hasNext', 'hasPrevious'] as const;

@@ -1,4 +1,4 @@
-import { isNumber, mod } from '@src/utils/common';
+import { isNumber, mod } from './common';
 
 export interface TabbableRoot {
     get current(): Element | null;
