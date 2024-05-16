@@ -1,5 +1,5 @@
-import { EMPTY_ARRAY } from '@src/utils/common';
-import { SelectItem } from '@src/components/internal/FormFields/Select/types';
+import { EMPTY_ARRAY } from '../../../../../../utils/common';
+import { SelectItem } from '../../../../../internal/FormFields/Select/types';
 import { SelectionOptionsList } from './types';
 
 export const listFrom = <T extends string = string>(value?: string | any[]) => {

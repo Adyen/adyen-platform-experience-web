@@ -1,10 +1,10 @@
 import cx from 'classnames';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
-import { InteractionKeyCode } from '@src/components/types';
-import { ARIA_ERROR_SUFFIX } from '@src/core/Errors/constants';
-import { EMPTY_ARRAY, noop } from '@src/utils/common';
-import useCommitAction, { CommitAction } from '@src/hooks/useCommitAction';
-import uuid from '@src/utils/uuid';
+import { InteractionKeyCode } from '../../../types';
+import { ARIA_ERROR_SUFFIX } from '../../../../core/Errors/constants';
+import { EMPTY_ARRAY, noop } from '../../../../utils/common';
+import useCommitAction, { CommitAction } from '../../../../hooks/useCommitAction';
+import uuid from '../../../../utils/uuid';
 import SelectButton from './components/SelectButton';
 import SelectList from './components/SelectList';
 import useSelect from './hooks/useSelect';

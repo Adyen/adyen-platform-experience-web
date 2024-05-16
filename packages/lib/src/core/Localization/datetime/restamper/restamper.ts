@@ -1,4 +1,4 @@
-import { struct } from '@src/utils/common';
+import { struct } from '../../../../utils/common';
 import { BASE_FORMAT_OPTIONS, BASE_LOCALE, SYSTEM_TIMEZONE, SYSTEM_TIMEZONE_FORMATTER } from './constants';
 import type { RestampContext, RestamperWithTimezone, RestampResult } from './types';
 import { getTimezoneOffsetForTimestamp } from './utils';

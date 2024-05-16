@@ -3,9 +3,9 @@ import { FilterProps } from '../BaseFilter/types';
 import { RangeFilterProps } from './types';
 import { RangeSelection } from './RangeSelection';
 import { useCallback, useMemo, useState } from 'preact/hooks';
-import { EMPTY_OBJECT } from '@src/utils/common';
-import { PopoverContainerSize } from '@src/components/internal/Popover/types';
-import useCoreContext from '@src/core/Context/useCoreContext';
+import { EMPTY_OBJECT } from '../../../../../utils/common';
+import { PopoverContainerSize } from '../../../Popover/types';
+import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { AMOUNT_MULTIPLIER } from './constants';
 
 export const AmountFilter = ({ updateFilters, selectedCurrencies, availableCurrencies, ...props }: FilterProps<RangeFilterProps>) => {

@@ -1,4 +1,4 @@
-import { DataOverviewComponentProps } from '@src/types';
+import { DataOverviewComponentProps } from '../../types';
 import AuthProvider from '../../core/Auth/AuthProvider';
 import CoreProvider from '../../core/Context/CoreProvider';
 import { JSXInternal } from 'preact/src/jsx';
@@ -7,7 +7,7 @@ import getImage from '../../utils/get-image';
 import { BaseElementProps, IUIElement, UIElementProps } from '../types';
 import { UIElementStatus } from '../types';
 import { SetupEndpoint } from '../../types/api/endpoints';
-import { EMPTY_OBJECT } from '@src/utils/common';
+import { EMPTY_OBJECT } from '../../utils/common';
 
 export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUIElement {
     protected componentRef: UIElement<P> | null;

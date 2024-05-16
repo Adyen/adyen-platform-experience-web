@@ -16,10 +16,10 @@ import {
     CONTAINER_OVERLAY_ID,
     CONTENT_CLASS,
     CONTENT_EXPANDABLE_CLASS,
-} from '@src/components/internal/ExpandableCard/constants';
-import useCoreContext from '@src/core/Context/useCoreContext';
-import { useClickOutside } from '@src/hooks/element/useClickOutside';
-import BaseButton from '@src/components/internal/BaseButton';
+} from './constants';
+import useCoreContext from '../../../core/Context/useCoreContext';
+import { useClickOutside } from '../../../hooks/element/useClickOutside';
+import BaseButton from '../BaseButton';
 
 const ExpandableCard = ({ renderHeader, children, filled, fullWidth, ...listeners }: PropsWithChildren<ExpandableCardProps>) => {
     const { i18n } = useCoreContext();

@@ -1,8 +1,8 @@
-import useButton from '@src/components/internal/Button/hooks/useButton';
-import { TypographyElement, TypographyVariant } from '@src/components/internal/Typography/types';
-import Typography from '@src/components/internal/Typography/Typography';
-import { parseClassName } from '@src/utils/class-name-utils';
-import { parseBoolean } from '@src/utils/common';
+import useButton from '../../../Button/hooks/useButton';
+import { TypographyElement, TypographyVariant } from '../../../Typography/types';
+import Typography from '../../../Typography/Typography';
+import { parseClassName } from '../../../../../utils/class-name-utils';
+import { parseBoolean } from '../../../../../utils/common';
 import { ForwardedRef, forwardRef } from 'preact/compat';
 import { useMemo } from 'preact/hooks';
 import { FilterButtonProps } from './types';

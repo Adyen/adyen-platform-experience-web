@@ -1,7 +1,7 @@
-import Button from '@src/components/internal/Button';
-import { ButtonVariant } from '@src/components/internal/Button/types';
+import Button from '../../Button';
+import { ButtonVariant } from '../../Button/types';
 import './PopoverDismissButton.scss';
-import useCoreContext from '@src/core/Context/useCoreContext';
+import useCoreContext from '../../../../core/Context/useCoreContext';
 import { memo } from 'preact/compat';
 
 interface PopoverDismissButtonProps {

@@ -1,6 +1,6 @@
-import $restamper, { RestamperWithTimezone, systemToTimezone, timezoneToSystem } from '@src/core/Localization/datetime/restamper';
-import $watchable from '@src/utils/watchable';
-import { struct } from '@src/utils/common';
+import $restamper, { RestamperWithTimezone, systemToTimezone, timezoneToSystem } from '../../../../core/Localization/datetime/restamper';
+import $watchable from '../../../../utils/watchable';
+import { struct } from '../../../../utils/common';
 import { Today } from './types';
 import clock from './clock';
 

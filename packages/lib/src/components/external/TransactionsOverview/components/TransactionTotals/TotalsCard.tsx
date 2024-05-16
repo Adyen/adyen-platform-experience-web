@@ -1,10 +1,10 @@
 import { useState } from 'preact/hooks';
-import ExpandableCard from '@src/components/internal/ExpandableCard/ExpandableCard';
+import ExpandableCard from '../../../../internal/ExpandableCard/ExpandableCard';
 import { memo } from 'preact/compat';
-import { TransactionTotalItem } from '@src/components/external/TransactionsOverview/components/TransactionTotalItem/TransactionTotalItem';
-import { BaseList } from '@src/components/internal/BaseList/BaseList';
-import { useMaxWidthsState } from '@src/components/external/TransactionsOverview/hooks/useMaxWidths';
-import { ITransactionTotal } from '@src/types';
+import { TransactionTotalItem } from '../TransactionTotalItem/TransactionTotalItem';
+import { BaseList } from '../../../../internal/BaseList/BaseList';
+import { useMaxWidthsState } from '../../hooks/useMaxWidths';
+import { ITransactionTotal } from '../../../../../types';
 import './TransactionTotals.scss';
 
 type TotalsCardProps = {

@@ -1,4 +1,4 @@
-import { clamp, EMPTY_OBJECT, enumerable, hasOwnProperty, isBitSafeInteger, isFunction, struct, toString } from '@src/utils/common';
+import { clamp, EMPTY_OBJECT, enumerable, hasOwnProperty, isBitSafeInteger, isFunction, struct, toString } from '../../../../../utils/common';
 import type { WeekDay } from '../types';
 import type {
     RangeTimestamp,
@@ -12,7 +12,7 @@ import type {
     RangeTimestampsConfigWithFromOffsets,
     RangeTimestampsConfigWithoutOffsets,
 } from './types';
-import { Restamper, RestamperWithTimezone, systemToTimezone, timezoneToSystem } from '@src/core/Localization/datetime/restamper';
+import { Restamper, RestamperWithTimezone, systemToTimezone, timezoneToSystem } from '../../../../../core/Localization/datetime/restamper';
 
 export const asPlainObject = <T = any>(value: T): T extends Record<any, any> ? T : Readonly<{}> =>
     toString(value).slice(8, -1) === 'Object' ? value : EMPTY_OBJECT;
