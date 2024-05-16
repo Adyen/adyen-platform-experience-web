@@ -9,27 +9,6 @@ const externalDependencies = Object.keys(packageJson.dependencies);
 export default defineConfig(async ({ mode }) => {
     const isAnalyseMode = mode === 'analyse';
 
-    /*    const isESM = mode === 'esm';
-
-    const esmInput = Object.fromEntries(
-        glob
-            .sync('src/!**!/!*.{ts,tsx}', {
-                ignore: ['**!/!*.d.ts', '**!/node_modules/!**', '**!/types/!**!/!*'],
-            })
-            .filter(filePath => !filePath.includes('types'))
-            .map(file => {
-                return [
-                    // 1. The name of the entry point
-                    // lib/nested/foo.js becomes nested/foo
-                    relative('src', file.slice(0, file.length - extname(file).length)),
-
-                    // 2. The absolute path to the entry file
-                    // lib/nested/foo.ts becomes /project/lib/nested/foo.ts
-                    fileURLToPath(new URL(file, import.meta.url)),
-                ];
-            })
-    );*/
-
     return {
         build: {
             minify: true,
@@ -82,7 +61,6 @@ export default defineConfig(async ({ mode }) => {
                     gzipSize: true,
                     open: true,
                 }) as PluginOption),
-            // libInjectCss(),
         ],
     };
 });
