@@ -1,6 +1,5 @@
 import { Indexed, IndexedMapIteratorCallback, IndexedMapIteratorFactory } from './types';
-import { isFunction, isNumber, struct, structFrom } from '../../../../../../utils/common';
-import { $true } from '../../../../../../utils/common/constants';
+import { isFunction, isNumber, struct, structFrom, $true } from '../../../../../../utils/common';
 import { isString } from '../../../../../../utils/validator-utils';
 
 const indexed = (() => {

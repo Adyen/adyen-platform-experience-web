@@ -1,6 +1,3 @@
-import { parseClassName } from '../../../../../utils/class-name-utils';
-import classnames from 'classnames';
-import { JSX } from 'preact';
 import { EMPTY_OBJECT, toString } from '../../../../../utils/common';
 
 type PropertyDescriptor<T = any> = {

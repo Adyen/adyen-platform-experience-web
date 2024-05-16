@@ -3,8 +3,7 @@ import { useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState 
 import useCoreContext from '../../../../core/Context/useCoreContext';
 import type { ReflexAction } from '../../../../hooks/useReflex';
 import { getDateObjectFromTimestamp } from '../calendar/utils';
-import { isFunction } from '../../../../utils/common';
-import { EMPTY_OBJECT } from '../../../../utils/common/constants';
+import { EMPTY_OBJECT, isFunction } from '../../../../utils/common';
 import { CalendarGridCursorRootProps, CalendarHandle, CalendarProps } from '../types';
 import useFocusCursor from '../../../../hooks/element/useFocusCursor';
 import calendar from '../calendar';
