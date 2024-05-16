@@ -1,6 +1,6 @@
 import { TableCells } from './TableCells';
 import useCoreContext from '../../../../core/Context/useCoreContext';
-import { noop } from '../../../../utils/common';
+import { noop } from '../../../../primitives/utils';
 import { useCallback } from 'preact/hooks';
 import { useInteractiveDataGrid } from '../hooks/useInteractiveDataGrid';
 import { DataGridColumn, InteractiveBodyProps } from '../types';

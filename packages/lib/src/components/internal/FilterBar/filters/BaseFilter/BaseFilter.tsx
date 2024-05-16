@@ -7,6 +7,7 @@ import Typography from '../../../Typography/Typography';
 import useCommitAction, { CommitAction } from '../../../../../hooks/useCommitAction';
 import useUniqueIdentifier from '../../../../../hooks/element/useUniqueIdentifier';
 import { isEmpty } from '../../../../../utils/validator-utils';
+import { isNull } from '../../../../../primitives/utils';
 import { memo } from 'preact/compat';
 import { Ref, useCallback, useEffect, useMemo, useState } from 'preact/hooks';
 import useBooleanState from '../../../../../hooks/useBooleanState';
@@ -68,7 +69,7 @@ const BaseFilter = <T extends BaseFilterProps = BaseFilterProps>({ render, ...pr
         (currentValue?: string | null) => {
             const hasEmptyValue = isValueEmpty(currentValue ?? undefined);
             updateHasEmptyValue(hasEmptyValue);
-            updateDisabledApply(currentValue === null);
+            updateDisabledApply(isNull(currentValue));
             updateValueChanged(hasInitialValue ? currentValue !== props.value : !hasEmptyValue);
         },
         [isValueEmpty, updateHasEmptyValue, updateDisabledApply, updateValueChanged, hasInitialValue, props.value]

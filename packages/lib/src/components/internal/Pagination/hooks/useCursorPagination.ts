@@ -1,5 +1,5 @@
 import { useMemo } from 'preact/hooks';
-import { isString } from '../../../../utils/validator-utils';
+import { isString, isUndefined } from '../../../../primitives/utils';
 import { RequestPageCallback, RequestPageCallbackParams } from './types';
 import { PaginationType, UsePagination, WithEitherPages, WithNextPage, WithPrevPage } from '../types';
 import usePagination from './usePagination';
@@ -24,7 +24,7 @@ const useCursorPagination = (requestPageCallback?: RequestPageCallback<Paginatio
         const updateCursor = (cursor: PageCursorType, page: number) => {
             const currentCursor = cursors[page - 1];
 
-            if ((page === 1 || page === (cursors.length || 1) + 1) && currentCursor === undefined) {
+            if ((page === 1 || page === (cursors.length || 1) + 1) && isUndefined(currentCursor)) {
                 cursors[page - 1] = cursor ? decodeURIComponent(cursor) : undefined;
             }
         };

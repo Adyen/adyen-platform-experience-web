@@ -1,5 +1,5 @@
 import { CalendarFlagsRecord, TimeFlag, TimeFlagProp } from '../../types';
-import { immutableProxyHandlers, struct } from '../../../../../../utils/common';
+import { struct, withFreezeProxyHandlers } from '../../../../../../primitives/utils';
 import { isString } from '../../../../../../utils/validator-utils';
 
 const createFlagsRecord = (() => {
@@ -17,8 +17,7 @@ const createFlagsRecord = (() => {
                 struct({
                     valueOf: { value: () => flagsTruncated },
                 }),
-                {
-                    ...immutableProxyHandlers,
+                withFreezeProxyHandlers({
                     get: (target: {}, property: string | symbol) => {
                         switch (property) {
                             case 'valueOf':
@@ -31,7 +30,7 @@ const createFlagsRecord = (() => {
 
                         return flagsTruncated & (TimeFlag[property] as number) ? 1 : undefined;
                     },
-                }
+                })
             ) as CalendarFlagsRecord;
         }
 

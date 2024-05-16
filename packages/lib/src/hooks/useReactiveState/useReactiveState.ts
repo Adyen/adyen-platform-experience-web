@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useReducer, useRef } from 'preact/hooks';
-import { EMPTY_OBJECT } from '../../utils/common';
+import { EMPTY_OBJECT } from '../../primitives/utils';
 import useMounted from '../useMounted';
 import { ReactiveStateRecord, ReactiveStateUpdateRequest, ReactiveStateUpdateRequestWithField, UseReactiveStateRecord } from './types';
 

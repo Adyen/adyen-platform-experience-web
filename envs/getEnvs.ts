@@ -29,6 +29,7 @@ const parseEnv = (env: Record<string, string | undefined>, environment: ENVIRONM
             apiKey: env.TEST_API_KEY,
             accountHolder: env.SESSION_ACCOUNT_HOLDER,
             permissions: env.SESSION_PERMISSIONS,
+            maxAgeMs: env.SESSION_MAX_AGE_MS,
         },
     },
     playground: {

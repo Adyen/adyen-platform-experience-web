@@ -1,21 +1,20 @@
-import useAuthContext from '../../core/Auth/useAuthContext';
+import { useAuthContext } from '../../core/Auth';
 import { useFetch } from '../../hooks/useFetch/useFetch';
-import { useSetupEndpoint } from '../../hooks/useSetupEndpoint/useSetupEndpoint';
-import { EMPTY_OBJECT } from '../../utils/common';
-import { useCallback, useMemo } from 'preact/hooks';
+import { EMPTY_OBJECT } from '../../primitives/utils';
+import { useMemo } from 'preact/hooks';
 
 const useBalanceAccounts = (balanceAccountId?: string) => {
-    const { endpoints } = useAuthContext();
+    const { getBalanceAccounts: balanceAccountEndpointCall } = useAuthContext().endpoints;
 
-    // Balance Accounts
-    const balanceAccountEndpointCall = useSetupEndpoint('getBalanceAccounts');
-
-    const { data, isFetching } = useFetch({
-        fetchOptions: { enabled: !!endpoints.getBalanceAccounts, keepPrevData: true },
-        queryFn: useCallback(async () => {
-            return balanceAccountEndpointCall(EMPTY_OBJECT);
-        }, [balanceAccountEndpointCall]),
-    });
+    const { data, isFetching } = useFetch(
+        useMemo(
+            () => ({
+                fetchOptions: { enabled: !!balanceAccountEndpointCall, keepPrevData: true },
+                queryFn: async () => balanceAccountEndpointCall?.(EMPTY_OBJECT),
+            }),
+            [balanceAccountEndpointCall]
+        )
+    );
 
     const balanceAccounts = useMemo(
         () => data?.balanceAccounts.filter(account => (balanceAccountId ? account.id === balanceAccountId : true)),

@@ -3,7 +3,7 @@ import { ButtonVariant } from '../../components/internal/Button/types';
 import { ButtonActionObject } from '../../components/internal/Button/ButtonActions/types';
 import { CommitAction, CommitActionProperties, UseCommitActionConfig } from './types';
 import useCoreContext from '../../core/Context/useCoreContext';
-import { EMPTY_OBJECT } from '../../utils/common';
+import { boolOrFalse, EMPTY_OBJECT } from '../../primitives/utils';
 
 const useCommitAction = ({ applyDisabled, applyTitle, resetDisabled, resetTitle }: UseCommitActionConfig = EMPTY_OBJECT): CommitActionProperties => {
     const { i18n } = useCoreContext();
@@ -17,7 +17,7 @@ const useCommitAction = ({ applyDisabled, applyTitle, resetDisabled, resetTitle 
     const applyButtonAction = useMemo(
         () =>
             ({
-                disabled: (applyDisabled as any) === true,
+                disabled: boolOrFalse(applyDisabled),
                 event: applyAction,
                 title: applyTitle?.trim() || i18n.get('apply'),
                 variant: ButtonVariant.PRIMARY,
@@ -28,7 +28,7 @@ const useCommitAction = ({ applyDisabled, applyTitle, resetDisabled, resetTitle 
     const resetButtonAction = useMemo(
         () =>
             ({
-                disabled: (resetDisabled as any) === true,
+                disabled: boolOrFalse(resetDisabled),
                 event: resetAction,
                 title: resetTitle?.trim() || i18n.get('reset'),
                 variant: ButtonVariant.SECONDARY,

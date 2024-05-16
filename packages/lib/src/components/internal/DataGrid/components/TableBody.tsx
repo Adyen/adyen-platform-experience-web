@@ -1,5 +1,5 @@
 import useCoreContext from '../../../../core/Context/useCoreContext';
-import { noop } from '../../../../utils/common';
+import { noop } from '../../../../primitives/utils';
 import { TableCells } from './TableCells';
 import { DataGridColumn, InteractiveBodyProps } from '../types';
 import { CustomCell } from '../DataGrid';

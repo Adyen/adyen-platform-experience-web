@@ -1,4 +1,4 @@
-import { capitalize } from '../../utils/common';
+import { capitalize } from '../../primitives/utils';
 import { useCallback, useMemo, useState } from 'preact/hooks';
 import type { SelectItem } from '../internal/FormFields/Select/types';
 import type { IBalanceAccountBase } from '../../types';

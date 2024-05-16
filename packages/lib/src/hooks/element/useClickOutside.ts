@@ -1,6 +1,8 @@
-import { popoverUtil } from '../../components/internal/Popover/utils/popoverUtil';
-import useReflex, { Nullable, Reflexable } from '../useReflex';
 import { useCallback, useEffect, useRef } from 'preact/hooks';
+import { popoverUtil } from '../../components/internal/Popover/utils/popoverUtil';
+import type { Reflexable } from '../../primitives/reactive/reflex';
+import type { Nullable } from '../../primitives/utils';
+import useReflex from '../useReflex';
 
 export const enum ClickOutsideVariant {
     POPOVER = 'POPOVER',

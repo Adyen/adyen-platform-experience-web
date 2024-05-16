@@ -1,7 +1,10 @@
 import { useCallback, useMemo, useRef } from 'preact/hooks';
 import { InteractionKeyCode } from '../../components/types';
-import useReflex, { Nullable, Reflexable } from '../useReflex';
-import withTabbableRoot, { focusIsWithin, isFocusable } from '../../utils/tabbable';
+import { isUndefined } from '../../primitives/utils';
+import withTabbableRoot, { focusIsWithin, isFocusable } from '../../primitives/dom/tabbableRoot/tabbable';
+import type { Reflexable } from '../../primitives/reactive/reflex';
+import type { Nullable } from '../../primitives/utils';
+import useReflex from '../useReflex';
 
 const useFocusTrap = (rootElementRef: Nullable<Reflexable<Element>>, onEscape: (interactionKeyPressed: boolean) => any) => {
     const escapedFocus = useRef(false);
@@ -14,7 +17,7 @@ const useFocusTrap = (rootElementRef: Nullable<Reflexable<Element>>, onEscape: (
         let raf: number | undefined;
 
         return (evt: Event) => {
-            if (raf !== undefined) cancelAnimationFrame(raf);
+            if (!isUndefined(raf)) cancelAnimationFrame(raf);
             let element = evt.target as Element | null;
             while (element && element !== evt.currentTarget) {
                 if (isFocusable(element)) {

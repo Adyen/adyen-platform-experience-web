@@ -1,3 +1,4 @@
+import { isNullish } from '../../../primitives/utils';
 import { AdyenErrorResponse, ErrorLevel, HttpOptions } from './types';
 import AdyenPlatformExperienceError from '../../Errors/AdyenPlatformExperienceError';
 
@@ -83,7 +84,7 @@ export function parseSearchParams<T extends Record<string, any>>(parameters: T) 
 
     for (const param of Object.keys(parameters)) {
         const value = parameters[param];
-        if (value !== undefined && value !== null) {
+        if (!isNullish(value)) {
             if (Array.isArray(value)) {
                 value.forEach(item => params.append(param, item));
             } else {

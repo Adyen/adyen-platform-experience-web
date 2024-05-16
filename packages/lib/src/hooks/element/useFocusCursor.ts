@@ -1,5 +1,7 @@
 import { useCallback } from 'preact/hooks';
-import useReflex, { ReflexAction } from '../useReflex';
+import { ALREADY_RESOLVED_PROMISE } from '../../primitives/utils';
+import type { ReflexAction } from '../../primitives/reactive/reflex';
+import useReflex from '../useReflex';
 
 const useFocusCursor = (callback?: ReflexAction<Element>) => {
     const finallyCallback = useCallback(
@@ -8,7 +10,7 @@ const useFocusCursor = (callback?: ReflexAction<Element>) => {
             if (current instanceof Element) {
                 current.setAttribute('tabindex', '0');
                 // schedule a microtask to focus the current element
-                Promise.resolve().then(() => (current as HTMLElement)?.focus());
+                ALREADY_RESOLVED_PROMISE.then(() => (current as HTMLElement)?.focus());
             }
         }) as ReflexAction<Element>,
         []

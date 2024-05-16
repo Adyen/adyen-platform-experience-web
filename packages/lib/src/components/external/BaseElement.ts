@@ -1,11 +1,10 @@
 import { ComponentChild, render } from 'preact';
 import EventEmitter from './EventEmitter';
-import uuid from '../../utils/uuid';
+import uuid from '../../primitives/utils/random/uuid';
 import { Core } from '../../core';
 import { BaseElementProps, BaseElementState } from '../types';
 import { isString } from '../../utils/validator-utils';
 import Localization from '../../core/Localization';
-import BPSession from '../../core/Session/Session';
 
 class BaseElement<P> {
     public static type: string;
@@ -18,12 +17,10 @@ class BaseElement<P> {
     public _component: ComponentChild | Error;
     public eventEmitter = new EventEmitter();
     protected readonly _parentInstance?: Core;
-    public sessionSetupError?: boolean;
 
     // provided by AdyenPlatformExperienceCore
     public loadingContext?: string;
     public i18n?: Localization['i18n'];
-    public session?: BPSession;
 
     protected constructor(props: P & BaseElementProps) {
         this.props = this.formatProps({ ...this?.defaultProps, ...props });
@@ -32,7 +29,6 @@ class BaseElement<P> {
         this.state = {} as BaseElementState;
         this.loadingContext = this.props.core.loadingContext;
         this.i18n = this.props.core.modules.i18n;
-        this.session = this.props.core.session;
         this.props.core.registerComponent(this);
     }
 
@@ -128,8 +124,6 @@ class BaseElement<P> {
 
         // /*
         this.props = this.formatProps({ ...this.props, ...props });
-        this.sessionSetupError = this.props.core.sessionSetupError;
-        this.session = this.props.core.session;
         this._component = this.render();
         if (this._node) render(this._component, this._node);
 

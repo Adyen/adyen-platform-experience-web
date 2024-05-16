@@ -1,6 +1,6 @@
+import { getter } from '../../../../../../../primitives/utils';
 import { asTimestamp } from './helpers';
 import type { RangeTimestamps } from '../../types';
-import { getter } from '../../utils';
 
 type _DateRangeContext = {
     fromDate: Date;

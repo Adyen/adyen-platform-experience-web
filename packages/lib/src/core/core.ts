@@ -1,10 +1,9 @@
 import { DevEnvironment, SessionRequest } from './types';
 import type { CoreOptions } from './types';
 import { resolveEnvironment } from './utils';
-import Session from './Session';
 import Localization from './Localization';
 import BaseElement from '../components/external/BaseElement';
-import { EMPTY_OBJECT } from '../utils/common';
+import { EMPTY_OBJECT } from '../primitives/utils';
 
 const FALLBACK_ENV = 'test' satisfies DevEnvironment;
 
@@ -15,7 +14,6 @@ class Core<T extends CoreOptions<T> = any> {
         branch: process.env.VITE_COMMIT_BRANCH,
         buildId: process.env.VITE_ADYEN_BUILD_ID,
     };
-    public session?: Session;
     public modules: any;
     public options: CoreOptions<T>;
     public components: BaseElement<any>[] = [];
@@ -23,61 +21,32 @@ class Core<T extends CoreOptions<T> = any> {
     public loadingContext: string;
     public onSessionCreate?: SessionRequest;
     //TODO: Change the error handling strategy.
-    public sessionSetupError?: boolean;
-    public isUpdatingSessionToken?: boolean;
 
     constructor(options: CoreOptions<T>) {
         this.options = { environment: FALLBACK_ENV, ...options };
 
-        this.isUpdatingSessionToken = false;
         this.localization = new Localization(options.locale, options.availableTranslations);
         this.loadingContext = process.env.VITE_LOADING_CONTEXT ? process.env.VITE_LOADING_CONTEXT : resolveEnvironment(this.options.environment);
         this.setOptions(options);
     }
 
-    async initialize(initSession = false): Promise<this> {
-        if (!this.sessionSetupError && (initSession || (!this.session && this.onSessionCreate))) {
-            await this.updateSession();
-        }
-
+    async initialize(): Promise<this> {
         return Promise.all([this.localization.ready]).then(() => this);
     }
-
-    public updateSession = async () => {
-        try {
-            if (this.options.onSessionCreate && !this.isUpdatingSessionToken) {
-                this.isUpdatingSessionToken = true;
-                this.session = new Session(await this.options.onSessionCreate(), this.loadingContext!);
-                await this.session?.setupSession(this.options);
-                await this.update({});
-                this.isUpdatingSessionToken = false;
-                return this;
-            }
-        } catch (error) {
-            if (this.options.onError) this.options.onError(error);
-            //TODO: this is heavy change the way to update core
-            this.sessionSetupError = true;
-            await this.update();
-            this.isUpdatingSessionToken = false;
-            return this;
-        }
-    };
 
     /**
      * Updates global configurations, resets the internal state and remounts each element.
      * @param options - props to update
-     * @param initSession - should session be initiated again
      * @returns this - the element instance
      */
-    public update = (options: Partial<CoreOptions<T>> = EMPTY_OBJECT, initSession = false): Promise<this> => {
+    public update = async (options: Partial<CoreOptions<T>> = EMPTY_OBJECT): Promise<this> => {
         this.setOptions(options);
 
-        return this.initialize(initSession).then(() => {
-            // Update each component under this instance
-            this.components.forEach(c => c.update(this.getPropsForComponent(this.options)));
+        await this.initialize();
+        // Update each component under this instance
+        this.components.forEach(c => c.update(this.getPropsForComponent(this.options)));
 
-            return this;
-        });
+        return this;
     };
 
     /**
@@ -139,7 +108,6 @@ class Core<T extends CoreOptions<T> = any> {
             ...options,
             i18n: this.modules.i18n,
             modules: this.modules,
-            session: this.session,
             loadingContext: this.loadingContext,
             _parentInstance: this,
         };

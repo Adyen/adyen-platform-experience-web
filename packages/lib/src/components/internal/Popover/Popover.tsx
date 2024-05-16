@@ -19,9 +19,9 @@ import useFocusTrap from '../../../hooks/element/useFocusTrap';
 import usePopoverPositioner from '../../../hooks/element/usePopoverPositioner';
 import useUniqueIdentifier from '../../../hooks/element/useUniqueIdentifier';
 import useReflex from '../../../hooks/useReflex';
-import { getModifierClasses } from '../../../utils/class-name-utils';
-import { isFunction } from '../../../utils/common';
-import { isFocusable, SELECTORS } from '../../../utils/tabbable';
+import { getModifierClasses } from '../../../primitives/utils/preact';
+import { boolOrTrue, isFunction } from '../../../primitives/utils';
+import { isFocusable, SELECTORS } from '../../../primitives/dom/tabbableRoot/tabbable';
 import classNames from 'classnames';
 import { createPortal, PropsWithChildren } from 'preact/compat';
 import { Ref, useCallback, useEffect, useMemo, useRef } from 'preact/hooks';
@@ -67,7 +67,7 @@ function Popover({
     fitPosition,
     ...uncontrolledProps
 }: PropsWithChildren<PopoverProps>) {
-    const isDismissible = useMemo(() => isFunction(dismiss) && dismissible !== false, [dismiss, dismissible]);
+    const isDismissible = useMemo(() => isFunction(dismiss) && boolOrTrue(dismissible), [dismiss, dismissible]);
     const arrowRef = useUniqueIdentifier() as Ref<HTMLSpanElement> | undefined;
     const popoverOpen = useRef<boolean>();
 

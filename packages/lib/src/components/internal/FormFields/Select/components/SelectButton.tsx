@@ -9,6 +9,7 @@ import { ButtonVariant } from '../../../Button/types';
 import Typography from '../../../Typography/Typography';
 import ChevronDown from '../../../SVGIcons/ChevronDown';
 import { TypographyElement, TypographyVariant } from '../../../Typography/types';
+import { boolOrFalse } from '../../../../../primitives/utils';
 import {
     DROPDOWN_BUTTON_ACTIVE_CLASS,
     DROPDOWN_BUTTON_CLASS,
@@ -50,7 +51,7 @@ const SelectButton = <T extends SelectItem>(props: SelectButtonProps<T> & { appl
     const { i18n } = useCoreContext();
     const { active, filterable, multiSelect, placeholder, readonly, showList, withoutCollapseIndicator } = props;
     const placeholderText = useMemo(() => placeholder?.trim() || i18n.get('select.filter.placeholder'), [i18n, placeholder]);
-    const buttonActiveItem = useMemo(() => (multiSelect === true ? undefined : active[0]), [active, multiSelect]);
+    const buttonActiveItem = useMemo(() => (boolOrFalse(multiSelect) ? undefined : active[0]), [active, multiSelect]);
     const buttonTitleText = useMemo(() => buttonActiveItem?.name?.trim() || placeholderText, [buttonActiveItem, placeholderText]);
 
     return (

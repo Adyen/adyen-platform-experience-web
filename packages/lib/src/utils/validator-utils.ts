@@ -1,4 +1,5 @@
 import { CountryFormatRules } from './Validator/types';
+import { isNullish } from '../primitives/utils';
 
 const MAX_LENGTH = 30;
 
@@ -17,7 +18,7 @@ export const getMaxLengthByFieldAndCountry = (
 };
 
 // Not null or undefined or only spaces
-export const isEmpty = (input?: string) => !!(input == null || /^[\s]*$/.test(input));
+export const isEmpty = (input?: string) => isNullish(input) || /^\s*$/.test(input);
 
 export const isString = (input?: any): input is string => typeof input === 'string' || input instanceof String;
 export const hasText = (input: string) => isString(input) && !isEmpty(input);

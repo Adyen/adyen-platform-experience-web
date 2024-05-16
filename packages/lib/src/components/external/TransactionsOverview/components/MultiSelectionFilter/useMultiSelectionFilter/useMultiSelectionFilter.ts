@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useState } from 'preact/hooks';
-import { listFrom, selectionOptionsFor } from './utils';
+import { listFrom } from '../../../../../../primitives/utils';
+import { selectionOptionsFor } from './utils';
 import type { SelectionOptionsList, UseMultiSelectionFilterConfig, UseMultiSelectionFilterConfigWithoutValues } from './types';
 
 export const useMultiSelectionFilter = <FilterParam extends string = string, FilterValue extends string = string>({

@@ -8,16 +8,16 @@ import FilterBar from '../../../../internal/FilterBar';
 import { ExternalUIComponentProps } from '../../../../types';
 import useModalDetails from '../../../../../hooks/useModalDetails/useModalDetails';
 import { lazy } from 'preact/compat';
+import { useAuthContext } from '../../../../../core/Auth';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
-import { SetupHttpOptions, useSetupEndpoint } from '../../../../../hooks/useSetupEndpoint/useSetupEndpoint';
 import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
 import { useCursorPaginatedRecords } from '../../../../internal/Pagination/hooks';
 import { IBalanceAccountBase, ITransaction, DataOverviewComponentProps, FilterParam } from '../../../../../types';
-import { isFunction } from '../../../../../utils/common';
+import { isFunction, isUndefined, listFrom } from '../../../../../primitives/utils';
 import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '../../../../internal/Pagination/constants';
 import TransactionTotals from '../TransactionTotals/TransactionTotals';
 import { Balances } from '../Balances/Balances';
-import MultiSelectionFilter, { listFrom } from '../MultiSelectionFilter';
+import MultiSelectionFilter from '../MultiSelectionFilter';
 import useDefaultOverviewFilterParams from '../../../../hooks/useDefaultOverviewFilterParams';
 import useTransactionsOverviewMultiSelectionFilters from '../../hooks/useTransactionsOverviewMultiSelectionFilters';
 import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatformExperienceError';
@@ -26,6 +26,7 @@ import { BASE_CLASS, BASE_CLASS_DETAILS, SUMMARY_CLASS, SUMMARY_ITEM_CLASS } fro
 import './TransactionsOverview.scss';
 import { mediaQueries, useMediaQuery } from '../../hooks/useMediaQuery';
 import { DataDetailsModal } from '../../../../internal/DataOverviewDisplay/DataDetailsModal';
+
 const ModalContent = lazy(() => import('../../../../internal/Modal/ModalContent/ModalContent'));
 
 export const TransactionsOverview = ({
@@ -43,15 +44,15 @@ export const TransactionsOverview = ({
     DataOverviewComponentProps & { balanceAccounts: IBalanceAccountBase[] | undefined; isLoadingBalanceAccount: boolean }
 >) => {
     const { i18n } = useCoreContext();
-    const transactionsEndpointCall = useSetupEndpoint('getTransactions');
+    const { getTransactions: transactionsEndpointCall } = useAuthContext().endpoints;
     const { activeBalanceAccount, balanceAccountSelectionOptions, onBalanceAccountSelection } = useBalanceAccountSelection(balanceAccounts);
     const { defaultParams, nowTimestamp, refreshNowTimestamp } = useDefaultOverviewFilterParams('transactions', activeBalanceAccount);
 
     const getTransactions = useCallback(
         async ({ balanceAccount, ...pageRequestParams }: Record<FilterParam | 'cursor', string>, signal?: AbortSignal) => {
-            const requestOptions: SetupHttpOptions = { signal, errorLevel: 'error' };
+            const requestOptions = { signal, errorLevel: 'error' } as const;
 
-            return transactionsEndpointCall(requestOptions, {
+            return transactionsEndpointCall!(requestOptions, {
                 query: {
                     ...pageRequestParams,
                     statuses: listFrom<ITransaction['status']>(pageRequestParams[FilterParam.STATUSES]),
@@ -63,8 +64,8 @@ export const TransactionsOverview = ({
                         pageRequestParams[FilterParam.CREATED_UNTIL] ?? defaultParams.current.defaultFilterParams[FilterParam.CREATED_UNTIL],
                     sortDirection: 'desc' as const,
                     balanceAccountId: activeBalanceAccount?.id ?? '',
-                    minAmount: pageRequestParams.minAmount !== undefined ? parseFloat(pageRequestParams.minAmount) : undefined,
-                    maxAmount: pageRequestParams.maxAmount !== undefined ? parseFloat(pageRequestParams.maxAmount) : undefined,
+                    minAmount: !isUndefined(pageRequestParams.minAmount) ? parseFloat(pageRequestParams.minAmount) : undefined,
+                    maxAmount: !isUndefined(pageRequestParams.maxAmount) ? parseFloat(pageRequestParams.maxAmount) : undefined,
                 },
             });
         },

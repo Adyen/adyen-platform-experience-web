@@ -9,10 +9,8 @@ import {
 } from './constants';
 import { TypographyElement, TypographyVariant } from '../Typography/types';
 import Typography from '../Typography/Typography';
-import { parseClassName } from '../../../utils/class-name-utils';
-import { parseBoolean } from '../../../utils/common';
+import { fixedForwardRef, parseBooleanProp, parseClassName } from '../../../primitives/utils/preact';
 import { Ref } from 'preact';
-import { forwardRef } from 'preact/compat';
 import { useMemo } from 'preact/hooks';
 import { ButtonProps, ButtonVariant } from './types';
 import './Button.scss';
@@ -35,7 +33,7 @@ function Button(
     ref: Ref<HTMLButtonElement>
 ) {
     const classNameValue = useMemo(() => parseClassName('', className) || '', [className]);
-    const disabledValue = useMemo(() => parseBoolean(disabled), [disabled]);
+    const disabledValue = useMemo(() => parseBooleanProp(disabled), [disabled]);
 
     const { classes, click } = useButton(classNameValue, [...classNameModifiers, variant], DEFAULT_BUTTON_CLASSNAME, disabledValue, onClick);
 
@@ -63,4 +61,4 @@ function Button(
     );
 }
 
-export default forwardRef(Button);
+export default fixedForwardRef(Button);

@@ -1,6 +1,7 @@
 import Category from '../Category/Category';
 import DataOverviewError from '../../../../internal/DataOverviewError/DataOverviewError';
 import { getLabel } from '../../../../utils/getLabel';
+import { useAuthContext } from '../../../../../core/Auth';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { useCallback, useMemo, useState } from 'preact/hooks';
 import DataGrid from '../../../../internal/DataGrid';
@@ -36,7 +37,9 @@ export const TransactionsTable: FC<TransactionTableProps> = ({
     ...paginationProps
 }) => {
     const { i18n } = useCoreContext();
+    const { initializing } = useAuthContext();
     const [hoveredRow, setHoveredRow] = useState<undefined | number>();
+    const isLoading = useMemo(() => loading || initializing, [loading, initializing]);
     const isSmViewport = useMediaQuery(mediaQueries.down.sm);
 
     const columns = useMemo(
@@ -74,6 +77,7 @@ export const TransactionsTable: FC<TransactionTableProps> = ({
         () => () => <DataOverviewError error={error} onContactSupport={onContactSupport} errorMessage={'weCouldNotLoadYourTransactions'} />,
         [error, onContactSupport]
     );
+
     return (
         <div className={BASE_CLASS}>
             <DataGrid
@@ -81,7 +85,7 @@ export const TransactionsTable: FC<TransactionTableProps> = ({
                 error={error}
                 columns={columns}
                 data={transactions}
-                loading={loading}
+                loading={isLoading}
                 outline={false}
                 onRowClick={{ callback: onRowClick }}
                 onRowHover={onHover}

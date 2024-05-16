@@ -1,6 +1,6 @@
 import { DEFAULT_BUTTON_CLASSNAME } from '../../Button/constants';
 import { ButtonVariant } from '../../Button/types';
-import { getModifierClasses } from '../../../../utils/class-name-utils';
+import { getModifierClasses } from '../../../../primitives/utils/preact';
 
 export const DROPDOWN_BASE_CLASS = 'adyen-pe-dropdown';
 export const DROPDOWN_BUTTON_CLASSNAME = getModifierClasses(DEFAULT_BUTTON_CLASSNAME, [ButtonVariant.SECONDARY], [DEFAULT_BUTTON_CLASSNAME]);

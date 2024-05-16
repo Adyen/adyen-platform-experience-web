@@ -1,13 +1,11 @@
 import { DataOverviewComponentProps } from '../../types';
-import AuthProvider from '../../core/Auth/AuthProvider';
+import { AuthProvider } from '../../core/Auth';
 import CoreProvider from '../../core/Context/CoreProvider';
 import { JSXInternal } from 'preact/src/jsx';
 import BaseElement from './BaseElement';
 import getImage from '../../utils/get-image';
 import { BaseElementProps, IUIElement, UIElementProps } from '../types';
 import { UIElementStatus } from '../types';
-import { SetupEndpoint } from '../../types/api/endpoints';
-import { EMPTY_OBJECT } from '../../utils/common';
 
 export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUIElement {
     protected componentRef: UIElement<P> | null;
@@ -22,7 +20,6 @@ export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUI
         this.componentRef = null;
         this.elementRef = (this.props && this.props.elementRef) || this;
         this.componentToRender = null;
-        this.sessionSetupError = this.props.core.sessionSetupError;
     }
 
     get isValid() {
@@ -54,7 +51,7 @@ export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUI
      * Return the type of an element
      */
     get type(): string {
-        return this.type;
+        return (this.constructor as typeof BaseElement)?.type;
     }
 
     formatProps(props: DataOverviewComponentProps) {
@@ -87,13 +84,8 @@ export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUI
 
     render() {
         return (
-            <AuthProvider
-                endpoints={this.session?.configuration?.endpoints || (EMPTY_OBJECT as SetupEndpoint)}
-                token={this.session?.token ?? ''}
-                updateCore={this.props.core.update.bind(this.props.core)}
-                sessionSetupError={this.sessionSetupError}
-            >
-                <CoreProvider i18n={this.i18n} loadingContext={this.loadingContext}>
+            <AuthProvider loadingContext={this.loadingContext} onSessionCreate={this.props.core.onSessionCreate}>
+                <CoreProvider i18n={this.i18n} loadingContext={this.loadingContext} updateCore={this.props.core.update}>
                     {this.componentToRender && <div className="adyen-pe-component">{this.componentToRender()}</div>}
                 </CoreProvider>
             </AuthProvider>

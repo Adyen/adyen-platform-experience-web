@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useReducer, useRef } from 'preact/hooks';
 import { ErrorLevel } from '../../core/Services/requests/types';
+import { boolOrTrue } from '../../primitives/utils';
 
 interface State<T> {
     data?: T;
@@ -36,7 +37,7 @@ export function useFetch<QueryFn extends (...args: any) => Promise<any>, T exten
     const initialState: State<T> = {
         error: undefined,
         data: undefined,
-        isFetching: fetchOptions.enabled !== false,
+        isFetching: boolOrTrue(fetchOptions.enabled),
     };
     const fetchReducer = (state: State<T>, action: Action<T>): State<T> => {
         switch (action.type) {
@@ -78,7 +79,7 @@ export function useFetch<QueryFn extends (...args: any) => Promise<any>, T exten
     useEffect(() => {
         cancelRequest.current = false;
 
-        if (fetchOptions.enabled !== false) void fetchData();
+        if (boolOrTrue(fetchOptions.enabled)) void fetchData();
 
         // Avoid a possible state update after the component was unmounted
         return () => {

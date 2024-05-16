@@ -2,9 +2,9 @@ import cx from 'classnames';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { InteractionKeyCode } from '../../../types';
 import { ARIA_ERROR_SUFFIX } from '../../../../core/Errors/constants';
-import { EMPTY_ARRAY, noop } from '../../../../utils/common';
+import { boolOrFalse, EMPTY_ARRAY, noop } from '../../../../primitives/utils';
 import useCommitAction, { CommitAction } from '../../../../hooks/useCommitAction';
-import uuid from '../../../../utils/uuid';
+import uuid from '../../../../primitives/utils/random/uuid';
 import SelectButton from './components/SelectButton';
 import SelectList from './components/SelectList';
 import useSelect from './hooks/useSelect';
@@ -76,7 +76,7 @@ const Select = <T extends SelectItem>({
         () =>
             cx([
                 DROPDOWN_BASE_CLASS,
-                { [DROPDOWN_MULTI_SELECT_CLASS]: multiSelect === true },
+                { [DROPDOWN_MULTI_SELECT_CLASS]: boolOrFalse(multiSelect) },
                 ...classNameModifiers.map(mod => `${DROPDOWN_BASE_CLASS}--${mod}`),
                 className,
             ]),

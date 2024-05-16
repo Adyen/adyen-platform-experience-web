@@ -1,6 +1,6 @@
 import { ButtonVariant } from '../Button/types';
 import useCoreContext from '../../../core/Context/useCoreContext';
-import { EMPTY_ARRAY } from '../../../utils/common';
+import { EMPTY_ARRAY, isNullish } from '../../../primitives/utils';
 import classnames from 'classnames';
 import { useCallback, useMemo } from 'preact/hooks';
 import Button from '../Button';
@@ -21,7 +21,7 @@ export default function Pagination({ next, hasNext, hasPrev, page, prev, limit, 
 
     const _onLimitChanged = useCallback(
         ({ target }: any) => {
-            if (target?.value == undefined) return;
+            if (isNullish(target?.value)) return;
             onLimitSelection?.(+target.value);
         },
         [onLimitSelection]

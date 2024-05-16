@@ -6,7 +6,7 @@ import { useCallback, useMemo, useState } from 'preact/hooks';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { DateFilterProps, DateRangeFilterParam } from './types';
 import { UsePaginatedRecords } from '../../../Pagination/hooks/types';
-import { EMPTY_OBJECT } from '../../../../../utils/common';
+import { EMPTY_OBJECT } from '../../../../../primitives/utils';
 
 type DataOverviewDateFilterProps = Pick<UsePaginatedRecords<any, string, FilterParam>, 'canResetFilters' | 'filters' | 'updateFilters'> &
     ReturnType<typeof useDefaultOverviewFilterParams> & {

@@ -3,7 +3,15 @@ import { getWeekendDays } from '../common/utils';
 import { computeTimestampOffset, getEdgesDistance, getMonthDays } from '../../utils';
 import { DAY_MS, DAY_OF_WEEK_FORMATS, MAXIMUM_MONTH_UNITS } from '../../constants';
 import createFlagsRecord from '../common/flags';
-import { enumerable, immutableProxyHandlers, isBitSafeInteger, isInfinite, struct, structFrom } from '../../../../../../utils/common';
+import {
+    enumerable,
+    isBitSafeInteger,
+    isInfinity,
+    isUndefined,
+    struct,
+    structFrom,
+    withFreezeProxyHandlers,
+} from '../../../../../../primitives/utils';
 import { isString } from '../../../../../../utils/validator-utils';
 import {
     CalendarDayOfWeekData,
@@ -93,7 +101,7 @@ export default class MonthFrame extends TimeFrame {
     }
 
     #getStartForTimestamp(timestamp?: number) {
-        return timestamp === undefined || isInfinite(timestamp) ? timestamp : timestamp - computeTimestampOffset(timestamp);
+        return isUndefined(timestamp) || isInfinity(timestamp) ? timestamp : timestamp - computeTimestampOffset(timestamp);
     }
 
     #updateSelectionTimestamps() {
@@ -158,50 +166,52 @@ export default class MonthFrame extends TimeFrame {
         const outerEndAfterIndex = this.dynamicBlockHeight ? Math.ceil((innerEndIndex + 1) / 7) * 7 : outerStartIndex + MAXIMUM_MONTH_UNITS;
         const numberOfUnits = this.dynamicBlockHeight ? outerEndAfterIndex - outerStartIndex : MAXIMUM_MONTH_UNITS;
 
-        const proxyForIndexPropertyAccess = new Proxy(struct(), {
-            ...immutableProxyHandlers,
-            get: (target: {}, property: string | symbol, receiver: {}) => {
-                if (isString(property)) {
-                    const offset = +property;
+        const proxyForIndexPropertyAccess = new Proxy(
+            struct(),
+            withFreezeProxyHandlers({
+                get: (target: {}, property: string | symbol, receiver: {}) => {
+                    if (isString(property)) {
+                        const offset = +property;
 
-                    if (isBitSafeInteger(offset) && offset >= 0 && offset < numberOfUnits) {
-                        const index = outerStartIndex + offset;
-                        const timestamp = this.getTimestampAtIndex(index);
-                        const weekDay = (index % this.#daysInWeek) as WeekDay;
+                        if (isBitSafeInteger(offset) && offset >= 0 && offset < numberOfUnits) {
+                            const index = outerStartIndex + offset;
+                            const timestamp = this.getTimestampAtIndex(index);
+                            const weekDay = (index % this.#daysInWeek) as WeekDay;
 
-                        let flags = timestamp === this.currentDayTimestamp ? TimeFlag.CURRENT : 0;
+                            let flags = timestamp === this.currentDayTimestamp ? TimeFlag.CURRENT : 0;
 
-                        if (index === this.cursor) flags |= TimeFlag.CURSOR;
-                        if (this.#daysOfWeekend.includes(weekDay)) flags |= TimeFlag.WEEKEND;
+                            if (index === this.cursor) flags |= TimeFlag.CURSOR;
+                            if (this.#daysOfWeekend.includes(weekDay)) flags |= TimeFlag.WEEKEND;
 
-                        if (weekDay === 0) flags |= TimeFlag.LINE_START;
-                        else if (weekDay === this.#daysInWeek - 1) flags |= TimeFlag.LINE_END;
+                            if (weekDay === 0) flags |= TimeFlag.LINE_START;
+                            else if (weekDay === this.#daysInWeek - 1) flags |= TimeFlag.LINE_END;
 
-                        if (index >= innerStartIndex && index <= innerEndIndex) {
-                            if (index === innerStartIndex) flags |= TimeFlag.BLOCK_START;
-                            else if (index === innerEndIndex) flags |= TimeFlag.BLOCK_END;
-                            flags |= TimeFlag.WITHIN_BLOCK;
+                            if (index >= innerStartIndex && index <= innerEndIndex) {
+                                if (index === innerStartIndex) flags |= TimeFlag.BLOCK_START;
+                                else if (index === innerEndIndex) flags |= TimeFlag.BLOCK_END;
+                                flags |= TimeFlag.WITHIN_BLOCK;
+                            }
+
+                            if (timestamp >= this.fromTimestamp && timestamp <= this.toTimestamp) {
+                                if (timestamp === this.fromTimestamp) flags |= TimeFlag.RANGE_START;
+                                if (timestamp === this.toTimestamp) flags |= TimeFlag.RANGE_END;
+                                flags |= TimeFlag.WITHIN_RANGE;
+                            }
+
+                            if (timestamp >= (this.#selectionFromTimestamp as number) && timestamp <= (this.#selectionToTimestamp as number)) {
+                                if (timestamp === (this.#selectionFromTimestamp as number)) flags |= TimeFlag.SELECTION_START;
+                                if (timestamp === (this.#selectionToTimestamp as number)) flags |= TimeFlag.SELECTION_END;
+                                flags |= TimeFlag.WITHIN_SELECTION;
+                            }
+
+                            return [timestamp, flags] as const;
                         }
-
-                        if (timestamp >= this.fromTimestamp && timestamp <= this.toTimestamp) {
-                            if (timestamp === this.fromTimestamp) flags |= TimeFlag.RANGE_START;
-                            if (timestamp === this.toTimestamp) flags |= TimeFlag.RANGE_END;
-                            flags |= TimeFlag.WITHIN_RANGE;
-                        }
-
-                        if (timestamp >= (this.#selectionFromTimestamp as number) && timestamp <= (this.#selectionToTimestamp as number)) {
-                            if (timestamp === (this.#selectionFromTimestamp as number)) flags |= TimeFlag.SELECTION_START;
-                            if (timestamp === (this.#selectionToTimestamp as number)) flags |= TimeFlag.SELECTION_END;
-                            flags |= TimeFlag.WITHIN_SELECTION;
-                        }
-
-                        return [timestamp, flags] as const;
                     }
-                }
 
-                return Reflect.get(target, property, receiver);
-            },
-        });
+                    return Reflect.get(target, property, receiver);
+                },
+            })
+        );
 
         return structFrom(proxyForIndexPropertyAccess, {
             inner: {

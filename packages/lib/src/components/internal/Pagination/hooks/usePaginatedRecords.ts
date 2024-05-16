@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
-import { EMPTY_OBJECT } from '../../../../utils/common';
+import { boolOrFalse, EMPTY_OBJECT } from '../../../../primitives/utils';
 import {
     BasePaginatedRecordsInitOptions,
     PaginatedRecordsFetcherReturnValue,
@@ -63,8 +63,8 @@ const parseOffsetPaginatedResponseData = <T, DataField extends string>(
         const { hasNext, hasPrevious } = data;
 
         const paginationData = {
-            [PageNeighbour.NEXT]: hasNext === true,
-            [PageNeighbour.PREV]: hasPrevious === true,
+            [PageNeighbour.NEXT]: boolOrFalse(hasNext),
+            [PageNeighbour.PREV]: boolOrFalse(hasPrevious),
         } as WithEitherPages<PaginationType.OFFSET>;
 
         return { records, paginationData };

@@ -1,9 +1,8 @@
 import useButton from '../../../Button/hooks/useButton';
 import { TypographyElement, TypographyVariant } from '../../../Typography/types';
 import Typography from '../../../Typography/Typography';
-import { parseClassName } from '../../../../../utils/class-name-utils';
-import { parseBoolean } from '../../../../../utils/common';
-import { ForwardedRef, forwardRef } from 'preact/compat';
+import { fixedForwardRef, parseBooleanProp, parseClassName } from '../../../../../primitives/utils/preact';
+import { ForwardedRef } from 'preact/compat';
 import { useMemo } from 'preact/hooks';
 import { FilterButtonProps } from './types';
 import './FilterButton.scss';
@@ -15,7 +14,7 @@ function FilterButton(
     ref: ForwardedRef<HTMLButtonElement>
 ) {
     const classNameValue = useMemo(() => parseClassName('', className) || '', [className]);
-    const disabledValue = useMemo(() => parseBoolean(disabled), [disabled]);
+    const disabledValue = useMemo(() => parseBooleanProp(disabled), [disabled]);
 
     const { classes, click } = useButton(classNameValue, classNameModifiers, DEFAULT_FILTER_BUTTON_CLASSNAME, disabledValue, onClick);
 
@@ -27,4 +26,4 @@ function FilterButton(
         </button>
     );
 }
-export default forwardRef(FilterButton);
+export default fixedForwardRef(FilterButton);

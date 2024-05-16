@@ -1,4 +1,4 @@
-import { getModifierClasses } from '../../../../utils/class-name-utils';
+import { getModifierClasses } from '../../../../primitives/utils/preact';
 import { useCallback, useMemo } from 'preact/hooks';
 import { JSXInternal } from 'preact/src/jsx';
 

@@ -1,7 +1,9 @@
 import { VNode } from 'preact';
 import { createPortal } from 'preact/compat';
 import { useMemo, useState } from 'preact/hooks';
-import useReflex, { Nullable, Reflexable } from '../useReflex';
+import type { Reflexable } from '../../primitives/reactive/reflex';
+import type { Nullable } from '../../primitives/utils';
+import useReflex from '../useReflex';
 
 const useDetachedRender = (callback: (targetElement: Element, ...args: any[]) => VNode | null, targetRef?: Nullable<Reflexable<Element>>) => {
     const [render, setRender] = useState<(...args: any[]) => VNode | null>();

@@ -1,4 +1,5 @@
 import { ErrorMessageObject, ValidationContext, ValidatorMode, ValidatorRule } from './types';
+import { isNullish } from '../../primitives/utils';
 import { ValueOf } from '../types';
 
 /**
@@ -22,6 +23,6 @@ export class ValidationRuleResult<FormSchema extends Record<string, any>> {
      * unless the whole form is being validated
      */
     hasError(isValidatingForm = false): boolean {
-        return isValidatingForm ? !this.isValid && this.shouldValidate : this.isValid != null && !this.isValid && this.shouldValidate;
+        return isValidatingForm ? !this.isValid && this.shouldValidate : !isNullish(this.isValid) && !this.isValid && this.shouldValidate;
     }
 }

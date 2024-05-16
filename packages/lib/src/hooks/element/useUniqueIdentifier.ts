@@ -1,6 +1,8 @@
 import { useCallback, useRef } from 'preact/hooks';
-import useReflex, { Nullable, Reflexable } from '../useReflex';
-import { getUniqueId } from '../../utils/idGenerator';
+import { getUniqueId } from '../../primitives/utils/random/idGenerator';
+import type { Reflexable } from '../../primitives/reactive/reflex';
+import type { Nullable } from '../../primitives/utils';
+import useReflex from '../useReflex';
 
 const useUniqueIdentifier = (ref?: Nullable<Reflexable<Element>>) => {
     const id = useRef<string>();

@@ -2,7 +2,7 @@ import cx from 'classnames';
 import { forwardRef } from 'preact/compat';
 import { Ref, useCallback, useMemo, useState } from 'preact/hooks';
 import useCoreContext from '../../../core/Context/useCoreContext';
-import { EMPTY_OBJECT, noop } from '../../../utils/common';
+import { boolOrTrue, EMPTY_OBJECT, noop } from '../../../primitives/utils';
 import useReflex from '../../../hooks/useReflex';
 import useTimezone from '../Calendar/hooks/useTimezone';
 import { DEFAULT_FIRST_WEEK_DAY } from '../Calendar/calendar/timerange/presets/shared/offsetWeek';
@@ -24,7 +24,7 @@ const DatePicker = forwardRef((props: DatePickerProps, ref) => {
     const [controlsRenderer, controlsContainerRef] = useCalendarControlsRendering(props.renderControl);
     const [lastUpdatedTimestamp, setLastUpdatedTimestamp] = useState<DOMHighResTimeStamp>(performance.now());
 
-    const withTimezone = useMemo(() => props.showTimezoneInfo !== false, [props.showTimezoneInfo]);
+    const withTimezone = useMemo(() => boolOrTrue(props.showTimezoneInfo), [props.showTimezoneInfo]);
     const { clockTime: time, GMTOffset: offset } = useTimezone({ timezone: props.timezone, withClock: withTimezone });
 
     const datePickerClassName = useMemo(() => cx([{ 'adyen-pe-datepicker--with-timezone': withTimezone }, 'adyen-pe-datepicker']), [withTimezone]);

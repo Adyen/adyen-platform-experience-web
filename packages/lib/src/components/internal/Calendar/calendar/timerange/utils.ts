@@ -1,4 +1,14 @@
-import { clamp, EMPTY_OBJECT, enumerable, hasOwnProperty, isBitSafeInteger, isFunction, struct, toString } from '../../../../../utils/common';
+import {
+    clamp,
+    enumerable,
+    getter,
+    hasOwnProperty,
+    isBitSafeInteger,
+    isFunction,
+    isNullish,
+    isUndefined,
+    struct,
+} from '../../../../../primitives/utils';
 import type { WeekDay } from '../types';
 import type {
     RangeTimestamp,
@@ -13,15 +23,6 @@ import type {
     RangeTimestampsConfigWithoutOffsets,
 } from './types';
 import { Restamper, RestamperWithTimezone, systemToTimezone, timezoneToSystem } from '../../../../../core/Localization/datetime/restamper';
-
-export const asPlainObject = <T = any>(value: T): T extends Record<any, any> ? T : Readonly<{}> =>
-    toString(value).slice(8, -1) === 'Object' ? value : EMPTY_OBJECT;
-
-export const getter = <T = any>(get: () => T, enumerable = true): TypedPropertyDescriptor<T> =>
-    ({
-        enumerable: (enumerable as any) !== false,
-        get,
-    } as const);
 
 export const createRangeTimestampsConfigRestampingContext = (restamper: RestamperWithTimezone) =>
     Object.freeze({
@@ -38,7 +39,7 @@ export const getRangeTimestampsContextIntegerPropertyFactory = <T extends number
     const _getNormalizedValue = (value?: T | null, fallbackValue?: T) => {
         let normalizedValue = value as T;
 
-        if (value == undefined) normalizedValue = defaultInteger;
+        if (isNullish(value)) normalizedValue = defaultInteger;
         else if (!isBitSafeInteger(value)) normalizedValue = fallbackValue ?? defaultInteger;
 
         const clampedValue = clamp(minInteger, normalizedValue, maxInteger) as T;
@@ -86,7 +87,7 @@ export const offsetsForNDays = (() => {
     return (numberOfDays: number) => {
         let offsets = _cache.get(numberOfDays);
 
-        if (offsets === undefined) {
+        if (isUndefined(offsets)) {
             offsets = Object.freeze([0, 0, numberOfDays, 0, 0, 0, -1] as const);
             _cache.set(numberOfDays, offsets);
         }
