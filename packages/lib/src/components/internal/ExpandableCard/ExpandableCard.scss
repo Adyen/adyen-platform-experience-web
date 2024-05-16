@@ -1,6 +1,6 @@
 @import '@styles/bento-mapping';
 @import '@styles/breakpoints.scss';
-@import '@styles/variables/colors';
+@import '@styles/variable-generator';
 
 // TODO: Move this to an accessibility mixin
 .adyen-pe-sr-only {
@@ -19,8 +19,8 @@
     position: relative;
 
     &__container {
-        background-color: $color-background-primary;
-        border: 1px solid $color-outline-primary;
+        background-color: token(color-background-primary);
+        border: 1px solid token(color-outline-primary);
         border-radius: var(--adyen-sdk-border-radius-m);
         display: block;
         overflow: hidden;
@@ -38,19 +38,19 @@
 
         &--button {
             &:hover {
-                background-color: $color-background-primary-hover;
+                background-color: token(color-background-primary-hover);
 
                 #{$adyen-pe-expandable-card}__chevron {
-                    background-color: $color-background-tertiary-hover;
+                    background-color: token(color-background-tertiary-hover);
                 }
             }
         }
 
         &--filled {
-            background-color: $color-background-secondary;
+            background-color: token(color-background-secondary);
 
             &:hover {
-                background-color: $color-background-secondary-hover;
+                background-color: token(color-background-secondary-hover);
             }
         }
     }
@@ -70,7 +70,7 @@
 
     &__chevron {
         align-items: center;
-        background-color: $color-background-tertiary;
+        background-color: token(color-background-tertiary);
         display: flex;
         height: 20px;
         justify-content: center;

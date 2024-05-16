@@ -1,5 +1,5 @@
 @import '@styles/bento-mapping';
-@import '@styles/variables/colors';
+@import '@styles/variable-generator';
 
 .adyen-pe-range-selection-filter {
     display: flex;
@@ -27,7 +27,7 @@
     }
 
     label {
-        color: $color-label-primary;
+        color: token(color-label-primary);
         font-weight: var(--adyen-sdk-font-weight-500);
     }
 }

@@ -1,13 +1,13 @@
 @import '@styles/bento-mapping';
-@import '@styles/variables/colors';
+@import '@styles/variable-generator';
 
 .adyen-pe-filter-button {
     align-items: center;
     appearance: none;
-    background-color: $color-background-primary;
-    border: 1px solid $color-outline-secondary;
+    background-color: token(color-background-primary);
+    border: 1px solid token(color-outline-secondary);
     border-radius: var(--adyen-sdk-border-radius-m);
-    color: $color-label-primary;
+    color: token(color-label-primary);
     cursor: pointer;
     display: inline-flex;
     height: 36px;
@@ -18,7 +18,7 @@
     width: initial;
 
     &:hover {
-        background-color: $color-background-primary-hover;
+        background-color: token(color-background-primary-hover);
     }
 
     &__label {
@@ -34,9 +34,9 @@
     }
 
     &__counter {
-        background-color: $color-background-inverse-primary;
+        background-color: token(color-background-inverse-primary);
         border-radius: var(--adyen-sdk-border-radius-s);
-        color: $color-label-inverse;
+        color: token(color-label-inverse);
         padding: var(--adyen-sdk-border-radius-s) var(--adyen-sdk-border-radius-m);
     }
 
@@ -49,9 +49,9 @@
     &--active,
     &:active,
     &:focus {
-        border: 1px solid $color-outline-primary-active;
+        border: 1px solid token(color-outline-primary-active);
         box-shadow: none !important;
-        outline: 1px solid $color-outline-primary-active;
+        outline: 1px solid token(color-outline-primary-active);
     }
 
     &__footer {

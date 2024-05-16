@@ -1,5 +1,5 @@
 @import '@styles/bento-mapping';
-@import '@styles/variables/colors';
+@import '@styles/variable-generator';
 
 .adyen-pe-tag {
     align-items: center;
@@ -15,18 +15,18 @@
     width: fit-content;
 
     &--success {
-        background: $color-background-success-weak;
+        background: token(color-background-success-weak);
         color: #067934;
     }
 
     &--error {
-        background: $color-background-critical-weak;
-        color: $color-label-critical;
+        background: token(color-background-critical-weak);
+        color: token(color-label-critical);
     }
 
     &--default {
-        background: $color-background-secondary;
-        color: $color-label-secondary;
+        background: token(color-background-secondary);
+        color: token(color-label-secondary);
     }
 
     &--warning {
@@ -35,8 +35,8 @@
     }
 
     &--primary {
-        background: $color-background-primary;
-        color: $color-label-primary;
-        outline: 1px solid $color-outline-primary;
+        background: token(color-background-primary);
+        color: token(color-label-primary);
+        outline: 1px solid token(color-outline-primary);
     }
 }

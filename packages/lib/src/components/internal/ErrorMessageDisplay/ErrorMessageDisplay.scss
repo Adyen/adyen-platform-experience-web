@@ -1,9 +1,9 @@
 @import '@styles/bento-mapping';
-@import '@styles/variables/colors';
+@import '@styles/variable-generator';
 
 .adyen-pe-error-message-display {
-    background: $color-background-primary;
-    border: 1px solid $color-outline-primary;
+    background: token(color-background-primary);
+    border: 1px solid token(color-outline-primary);
     border-radius: var(--adyen-sdk-border-radius-m);
     box-shadow: 0 6px 12px 0 rgba(0, 17, 44, 0.08);
     display: flex;

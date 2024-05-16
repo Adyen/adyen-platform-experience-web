@@ -1,4 +1,4 @@
-@import '@styles/variables/colors';
+@import '@styles/variable-generator';
 
 .adyen-pe-dropdown {
     position: relative;
@@ -32,10 +32,10 @@
 }
 
 .adyen-pe-filter-input {
-    background: $color-background-primary;
+    background: token(color-background-primary);
     border: 0;
     caret-color: #0075ff;
-    color: $color-label-primary;
+    color: token(color-label-primary);
     font-family: inherit;
     font-size: var(--adyen-sdk-font-size-200);
     height: 100%;
@@ -54,7 +54,7 @@
 }
 
 .adyen-pe-dropdown__list {
-    background: $color-background-primary;
+    background: token(color-background-primary);
     display: none;
     list-style: none;
     margin: 0 0 50px;
