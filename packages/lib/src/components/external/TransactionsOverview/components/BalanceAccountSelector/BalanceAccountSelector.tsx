@@ -1,8 +1,8 @@
 import { memo } from 'preact/compat';
-import Select from '@src/components/internal/FormFields/Select';
+import Select from '../../../../internal/FormFields/Select';
 import useBalanceAccountSelection from './useBalanceAccountSelection';
 import './BalanceAccountSelector.scss';
-import { mediaQueries, useMediaQuery } from '@src/components/external/TransactionsOverview/hooks/useMediaQuery';
+import { mediaQueries, useMediaQuery } from '../../hooks/useMediaQuery';
 
 const BalanceAccountSelector = memo(
     ({

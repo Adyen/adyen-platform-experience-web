@@ -3,7 +3,7 @@ import Validator from '../Validator';
 import { DefaultState, FieldProcessor, getReducer, init } from './reducer';
 import { Form, FormState, FormProps, FieldErrors, ReducerPayloadParams, SchemaKeys, FieldProblems } from './types';
 import { ValidatorMode } from '../Validator/types';
-import { isFunction } from '@src/utils/common';
+import { isFunction } from '../common';
 
 function useForm<FormSchema extends Record<string, any>, Props>(props: FormProps<FormSchema, Props>): Form<FormSchema> {
     const { rules = {}, formatters = {}, defaultData = {}, fieldProblems = {}, schema = [] } = props;

@@ -1,4 +1,4 @@
-import { UseReactiveStateRecord } from '@src/hooks/useReactiveState/types';
+import { UseReactiveStateRecord } from '../../../hooks/useReactiveState/types';
 
 export const enum PageNeighbour {
     NEXT = 'next',

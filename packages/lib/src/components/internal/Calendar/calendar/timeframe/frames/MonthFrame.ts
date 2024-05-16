@@ -3,8 +3,8 @@ import { getWeekendDays } from '../common/utils';
 import { computeTimestampOffset, getEdgesDistance, getMonthDays } from '../../utils';
 import { DAY_MS, DAY_OF_WEEK_FORMATS, MAXIMUM_MONTH_UNITS } from '../../constants';
 import createFlagsRecord from '../common/flags';
-import { enumerable, immutableProxyHandlers, isBitSafeInteger, isInfinite, struct, structFrom } from '@src/utils/common';
-import { isString } from '@src/utils/validator-utils';
+import { enumerable, immutableProxyHandlers, isBitSafeInteger, isInfinite, struct, structFrom } from '../../../../../../utils/common';
+import { isString } from '../../../../../../utils/validator-utils';
 import {
     CalendarDayOfWeekData,
     DayOfWeekLabelFormat,

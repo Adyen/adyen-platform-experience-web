@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'preact/hooks';
-import { getTimeRangeSelectionDefaultPresetOptions } from '@src/components/internal/DatePicker/components/TimeRangeSelector';
+import { getTimeRangeSelectionDefaultPresetOptions } from '../../../internal/DatePicker/components/TimeRangeSelector';
 import { DEFAULT_TRANSACTIONS_OVERVIEW_MULTI_SELECTION_FILTER_PARAMS } from '../components/MultiSelectionFilter';
 import { useBalanceAccountSelection } from '../components/BalanceAccountSelector';
 import { TransactionFilterParam } from '../types';

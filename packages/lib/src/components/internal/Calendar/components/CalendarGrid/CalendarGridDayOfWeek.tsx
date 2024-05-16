@@ -1,10 +1,10 @@
-import { getClassName } from '@src/utils/class-name-utils';
+import { getClassName } from '../../../../../utils/class-name-utils';
 import { memo } from 'preact/compat';
 import { CalendarGridDayOfWeekProps, CalendarGridDayOfWeekRenderProps } from './types';
 import { property, propsProperty } from './utils';
-import { EMPTY_OBJECT } from '@src/utils/common/constants';
+import { EMPTY_OBJECT } from '../../../../../utils/common/constants';
 import { CalendarGridRenderToken } from '../../types';
-import memoComparator from '@src/utils/memoComparator';
+import memoComparator from '../../../../../utils/memoComparator';
 
 const DEFAULT_CELL_CLASSNAME = 'adyen-pe-calendar__cell adyen-pe-calendar__cell--day-of-week';
 const DEFAULT_CELL_ABBR_CLASSNAME = 'adyen-pe-calendar__day-of-week';

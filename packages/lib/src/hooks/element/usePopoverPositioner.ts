@@ -1,5 +1,5 @@
-import { PopoverContainerPosition, PopoverContainerVariant } from '@src/components/internal/Popover/types';
-import getIntersectionObserver from '@src/components/internal/Popover/utils/utils';
+import { PopoverContainerPosition, PopoverContainerVariant } from '../../components/internal/Popover/types';
+import getIntersectionObserver from '../../components/internal/Popover/utils/utils';
 import { MutableRef, Ref, useCallback, useEffect, useRef, useState } from 'preact/hooks';
 import useReflex, { Nullable, Reflexable } from '../useReflex';
 

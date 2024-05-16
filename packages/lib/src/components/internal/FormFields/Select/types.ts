@@ -1,6 +1,6 @@
 import { Ref, VNode } from 'preact';
 import { HTMLAttributes } from 'preact/compat';
-import { CommitActionProperties } from '@src/hooks/useCommitAction';
+import { CommitActionProperties } from '../../../../hooks/useCommitAction';
 
 type _Selected<T> = T | readonly T[];
 

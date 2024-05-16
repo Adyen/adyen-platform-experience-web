@@ -1,6 +1,6 @@
-import AdyenPlatformExperienceError from '@src/core/Errors/AdyenPlatformExperienceError';
-import CopyText from '@src/components/internal/CopyText/CopyText';
-import { TranslationKey } from '@src/core/Localization/types';
+import AdyenPlatformExperienceError from '../../core/Errors/AdyenPlatformExperienceError';
+import CopyText from '../internal/CopyText/CopyText';
+import { TranslationKey } from '../../core/Localization/types';
 import { JSXInternal } from 'preact/src/jsx';
 
 type ErrorMessage = {

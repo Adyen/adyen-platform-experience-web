@@ -1,5 +1,5 @@
-import ButtonActions from '@src/components/internal/Button/ButtonActions/ButtonActions';
-import { ButtonActionsLayoutBasic } from '@src/components/internal/Button/ButtonActions/types';
+import ButtonActions from '../Button/ButtonActions/ButtonActions';
+import { ButtonActionsLayoutBasic } from '../Button/ButtonActions/types';
 import {
     DEFAULT_POPOVER_CLASSNAME,
     DEFAULT_TOOLTIP_CLASSNAME,
@@ -9,19 +9,19 @@ import {
     POPOVER_HEADER_CLASSNAME,
     POPOVER_HEADER_TITLE_CLASSNAME,
     TOOLTIP_CONTENT_CLASSNAME,
-} from '@src/components/internal/Popover/constants';
-import PopoverDismissButton from '@src/components/internal/Popover/PopoverDismissButton/PopoverDismissButton';
-import PopoverTitle from '@src/components/internal/Popover/PopoverTitle/PopoverTitle';
-import { PopoverContainerSize, PopoverContainerVariant, PopoverProps } from '@src/components/internal/Popover/types';
-import { InteractionKeyCode } from '@src/components/types';
-import { ClickOutsideVariant, useClickOutside } from '@src/hooks/element/useClickOutside';
-import useFocusTrap from '@src/hooks/element/useFocusTrap';
-import usePopoverPositioner from '@src/hooks/element/usePopoverPositioner';
-import useUniqueIdentifier from '@src/hooks/element/useUniqueIdentifier';
-import useReflex from '@src/hooks/useReflex';
-import { getModifierClasses } from '@src/utils/class-name-utils';
-import { isFunction } from '@src/utils/common';
-import { isFocusable, SELECTORS } from '@src/utils/tabbable';
+} from './constants';
+import PopoverDismissButton from './PopoverDismissButton/PopoverDismissButton';
+import PopoverTitle from './PopoverTitle/PopoverTitle';
+import { PopoverContainerSize, PopoverContainerVariant, PopoverProps } from './types';
+import { InteractionKeyCode } from '../../types';
+import { ClickOutsideVariant, useClickOutside } from '../../../hooks/element/useClickOutside';
+import useFocusTrap from '../../../hooks/element/useFocusTrap';
+import usePopoverPositioner from '../../../hooks/element/usePopoverPositioner';
+import useUniqueIdentifier from '../../../hooks/element/useUniqueIdentifier';
+import useReflex from '../../../hooks/useReflex';
+import { getModifierClasses } from '../../../utils/class-name-utils';
+import { isFunction } from '../../../utils/common';
+import { isFocusable, SELECTORS } from '../../../utils/tabbable';
 import classNames from 'classnames';
 import { createPortal, PropsWithChildren } from 'preact/compat';
 import { Ref, useCallback, useEffect, useMemo, useRef } from 'preact/hooks';

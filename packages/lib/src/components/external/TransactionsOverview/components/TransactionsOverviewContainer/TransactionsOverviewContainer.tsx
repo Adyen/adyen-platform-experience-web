@@ -1,14 +1,14 @@
 import { TransactionsComponentProps } from '../../types';
 import { ExternalUIComponentProps } from '../../../../types';
-import { useSetupEndpoint } from '@src/hooks/useSetupEndpoint/useSetupEndpoint';
-import { useFetch } from '@src/hooks/useFetch/useFetch';
-import { TransactionsOverview } from '@src/components/external/TransactionsOverview/components/TransactionsOverview/TransactionsOverview';
+import { useSetupEndpoint } from '../../../../../hooks/useSetupEndpoint/useSetupEndpoint';
+import { useFetch } from '../../../../../hooks/useFetch/useFetch';
+import { TransactionsOverview } from '../TransactionsOverview/TransactionsOverview';
 import { useCallback, useMemo } from 'preact/hooks';
-import { EMPTY_OBJECT } from '@src/utils/common';
-import useAuthContext from '@src/core/Auth/useAuthContext';
+import { EMPTY_OBJECT } from '../../../../../utils/common';
+import useAuthContext from '../../../../../core/Auth/useAuthContext';
 import cx from 'classnames';
-import { ErrorMessageDisplay } from '@src/components/internal/ErrorMessageDisplay/ErrorMessageDisplay';
-import { BASE_CLASS, WITH_ERROR_CLASS } from '@src/components/external/TransactionsOverview/components/TransactionsOverviewContainer/constants';
+import { ErrorMessageDisplay } from '../../../../internal/ErrorMessageDisplay/ErrorMessageDisplay';
+import { BASE_CLASS, WITH_ERROR_CLASS } from './constants';
 import './TransactionsOverviewContainer.scss';
 
 function TransactionsOverviewContainer(props: ExternalUIComponentProps<TransactionsComponentProps>) {

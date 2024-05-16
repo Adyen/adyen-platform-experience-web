@@ -1,6 +1,6 @@
 import { CalendarFlagsRecord, TimeFlag, TimeFlagProp } from '../../types';
-import { immutableProxyHandlers, struct } from '@src/utils/common';
-import { isString } from '@src/utils/validator-utils';
+import { immutableProxyHandlers, struct } from '../../../../../../utils/common';
+import { isString } from '../../../../../../utils/validator-utils';
 
 const createFlagsRecord = (() => {
     const CACHE = {} as { [K: number]: CalendarFlagsRecord };

@@ -1,4 +1,4 @@
-import { clamp } from '@src/utils/common';
+import { clamp } from '../../../../../../../utils/common';
 import createRangeTimestampsFactory from '../../factory';
 import type { RangeTimestampOffsets } from '../../types';
 import { nowTimestamp, startOfMonth } from '../../utils';

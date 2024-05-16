@@ -4,7 +4,7 @@ import { getPagePath, getTranslatedKey } from '../../utils/utils';
 
 import DataGridPage from '../internal-components/dataGrid';
 import FilterBarPage from '../internal-components/filterBar';
-import { ITransaction } from '@src/types';
+import { ITransaction } from '../../../src/types';
 import { BASIC_TRANSACTIONS_LIST } from '../../../../../mocks';
 export class TransactionListPage extends BasePage {
     private dataGrid: DataGridPage;

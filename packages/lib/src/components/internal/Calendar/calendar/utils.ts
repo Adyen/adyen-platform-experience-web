@@ -1,5 +1,5 @@
 import { Month, MonthDays, Time } from './types';
-import { isInfinite, mod } from '@src/utils/common';
+import { isInfinite, mod } from '../../../../utils/common';
 
 export const computeTimestampOffset = (timestamp: number) => (isInfinite(timestamp) ? 0 : timestamp - new Date(timestamp).setHours(0, 0, 0, 0));
 export const getDateObjectFromTimestamp = (timestamp?: number) => (timestamp === undefined ? timestamp : new Date(timestamp));

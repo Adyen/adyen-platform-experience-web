@@ -1,10 +1,10 @@
-import { TransactionDetailData } from '@src/components';
-import TransactionDataSkeleton from '@src/components/external/TransactionDetails/components/TransactionDataSkeleton';
-import { Image } from '@src/components/internal/Image/Image';
-import { parsePaymentMethodType } from '@src/components/external/TransactionsOverview/components/utils';
-import { Tag } from '@src/components/internal/Tag/Tag';
-import { TagVariant } from '@src/components/internal/Tag/types';
-import useCoreContext from '@src/core/Context/useCoreContext';
+import { TransactionDetailData } from '../../../../components';
+import TransactionDataSkeleton from './TransactionDataSkeleton';
+import { Image } from '../../../internal/Image/Image';
+import { parsePaymentMethodType } from '../../TransactionsOverview/components/utils';
+import { Tag } from '../../../internal/Tag/Tag';
+import { TagVariant } from '../../../internal/Tag/types';
+import useCoreContext from '../../../../core/Context/useCoreContext';
 import { useMemo } from 'preact/hooks';
 
 export const TransactionData = ({ transaction, isFetching }: { transaction?: TransactionDetailData; isFetching?: boolean }) => {

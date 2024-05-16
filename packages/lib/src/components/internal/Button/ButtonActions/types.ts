@@ -1,4 +1,4 @@
-import { ButtonVariant } from '@src/components/internal/Button/types';
+import { ButtonVariant } from '../types';
 
 export interface ButtonActionObject {
     title: string;

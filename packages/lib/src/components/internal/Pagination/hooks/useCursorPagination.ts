@@ -1,5 +1,5 @@
 import { useMemo } from 'preact/hooks';
-import { isString } from '@src/utils/validator-utils';
+import { isString } from '../../../../utils/validator-utils';
 import { RequestPageCallback, RequestPageCallbackParams } from './types';
 import { PaginationType, UsePagination, WithEitherPages, WithNextPage, WithPrevPage } from '../types';
 import usePagination from './usePagination';
