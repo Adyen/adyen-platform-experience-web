@@ -86,7 +86,7 @@ describe('restamper', () => {
 
             for (const [date, systemTimezoneResult] of pastDatesMap) {
                 const result = restamper(date);
-                const timezoneOffsetForCurrentTime = timezoneOffsets[index++] as number;
+                const timezoneOffsetForCurrentTime = timezoneOffsets[index++]!;
                 runTimezoneTestRoutine(timezoneOffsetForCurrentTime, systemTimezoneResult, result);
             }
         });

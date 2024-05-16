@@ -1,13 +1,13 @@
 import { useSetupEndpoint } from '../../../../../hooks/useSetupEndpoint/useSetupEndpoint';
 import { useCallback, useMemo } from 'preact/hooks';
-import { EMPTY_OBJECT } from '../../../../../utils/common';
+import { EMPTY_OBJECT } from '../../../../../utils';
 import { useFetch } from '../../../../../hooks/useFetch/useFetch';
 import { OperationParameters } from '../../../../../types/api/endpoints';
-import { MakeFieldValueUndefined } from '../../../../../utils/types';
+import { WithPartialField } from '../../../../../utils/types';
 import { BASE_CLASS, ITEM_CLASS } from './constants';
 import { memo } from 'preact/compat';
 import { ITransaction } from '../../../../../types';
-import { mediaQueries, useMediaQuery } from '../../hooks/useMediaQuery';
+import { mediaQueries, useResponsiveViewport } from '../../hooks/useResponsiveViewport';
 import './TransactionTotals.scss';
 import { TotalsCard } from './TotalsCard';
 
@@ -30,8 +30,9 @@ const TransactionTotals = memo(
         minAmount,
         currencies,
         fullWidth,
-    }: MakeFieldValueUndefined<TransactionTotalsProps, 'balanceAccountId' | 'minAmount' | 'maxAmount'>) => {
+    }: WithPartialField<TransactionTotalsProps, 'balanceAccountId' | 'minAmount' | 'maxAmount'>) => {
         const getTransactionTotals = useSetupEndpoint('getTransactionTotals');
+
         const fetchCallback = useCallback(async () => {
             return getTransactionTotals(EMPTY_OBJECT, {
                 query: {
@@ -67,7 +68,7 @@ const TransactionTotals = memo(
         }, [availableCurrencies, data]);
 
         const totals = getTotals() ?? [];
-        const isXsScreen = useMediaQuery(mediaQueries.only.xs);
+        const isXsScreen = useResponsiveViewport(mediaQueries.only.xs);
 
         return (
             <div className={BASE_CLASS}>

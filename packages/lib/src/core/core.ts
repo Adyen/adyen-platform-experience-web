@@ -4,7 +4,7 @@ import { resolveEnvironment } from './utils';
 import Session from './Session';
 import Localization from './Localization';
 import BaseElement from '../components/external/BaseElement';
-import { EMPTY_OBJECT } from '../utils/common';
+import { EMPTY_OBJECT } from '../utils';
 
 const FALLBACK_ENV = 'test' satisfies DevEnvironment;
 

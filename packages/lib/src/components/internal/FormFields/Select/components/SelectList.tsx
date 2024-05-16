@@ -1,9 +1,9 @@
-import { mediaQueries, useMediaQuery } from '../../../../external/TransactionsOverview/hooks/useMediaQuery';
+import { mediaQueries, useResponsiveViewport } from '../../../../external/TransactionsOverview/hooks/useResponsiveViewport';
 import Popover from '../../../Popover/Popover';
 import { PopoverContainerPosition, PopoverContainerSize, PopoverContainerVariant, PopoverProps } from '../../../Popover/types';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
-import { isFunction } from '../../../../../utils/common';
-import fixedForwardRef from '../../../../../utils/fixedForwardRef';
+import { boolOrFalse, isFunction } from '../../../../../utils';
+import { fixedForwardRef } from '../../../../../utils/preact';
 import cx from 'classnames';
 import { ForwardedRef, memo } from 'preact/compat';
 import { useMemo } from 'preact/hooks';
@@ -34,12 +34,12 @@ const SelectList = fixedForwardRef(
         ref: ForwardedRef<HTMLUListElement>
     ) => {
         const { i18n } = useCoreContext();
-        const isSmViewport = useMediaQuery(mediaQueries.down.xs);
+        const isSmViewport = useResponsiveViewport(mediaQueries.down.xs);
         const filteredItems = items.filter(item => !textFilter || item.name.toLowerCase().includes(textFilter));
         const listClassName = cx(DROPDOWN_LIST_CLASS, { [DROPDOWN_LIST_ACTIVE_CLASS]: showList });
         const noOptionsClassName = cx(DROPDOWN_ELEMENT_CLASS, DROPDOWN_ELEMENT_NO_OPTION_CLASS);
         const renderSelectOption = useMemo(() => (isFunction(renderListItem) ? renderListItem : renderListItemDefault), [renderListItem]);
-        const multipleSelection = useMemo(() => multiSelect === true, [multiSelect]);
+        const multipleSelection = useMemo(() => boolOrFalse(multiSelect), [multiSelect]);
 
         return showList ? (
             <Popover

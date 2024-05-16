@@ -1,6 +1,6 @@
 import { AuthContext } from './AuthContext';
 import { AuthProviderProps } from './types';
-import { EMPTY_OBJECT } from '../../utils/common';
+import { EMPTY_OBJECT } from '../../utils';
 import { toChildArray } from 'preact';
 import { useEffect, useRef, useState } from 'preact/hooks';
 

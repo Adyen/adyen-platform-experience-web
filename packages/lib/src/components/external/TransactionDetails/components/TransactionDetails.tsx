@@ -5,7 +5,7 @@ import useCoreContext from '../../../../core/Context/useCoreContext';
 import AdyenPlatformExperienceError from '../../../../core/Errors/AdyenPlatformExperienceError';
 import { useFetch } from '../../../../hooks/useFetch/useFetch';
 import { useSetupEndpoint } from '../../../../hooks/useSetupEndpoint/useSetupEndpoint';
-import { EMPTY_OBJECT } from '../../../../utils/common';
+import { EMPTY_OBJECT } from '../../../../utils';
 import { useCallback, useMemo } from 'preact/hooks';
 import { ExternalUIComponentProps } from '../../../types';
 import { TransactionDetailsComponentProps, TransactionDetailsWithoutIdProps } from '../types';
@@ -18,7 +18,6 @@ export default function TransactionDetails(props: ExternalUIComponentProps<Trans
     const transactionId = useMemo(() => (!isTransactionWithoutId(props) ? props.transactionId : null), [props]);
 
     const { i18n } = useCoreContext();
-
     const getTransactionDetail = useSetupEndpoint('getTransaction');
 
     const fetchCallback = useCallback(async () => {

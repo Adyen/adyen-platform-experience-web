@@ -12,7 +12,12 @@ import Pagination from '../../../../internal/Pagination';
 import { TranslationKey } from '../../../../../core/Localization/types';
 import { FC } from 'preact/compat';
 
-const FIELDS = ['createdAt', 'grossAmount', 'chargesAmount', 'netAmount'] as const;
+const AMOUNT_FIELDS = ['grossAmount', 'chargesAmount', 'netAmount'] as const;
+const FIELDS = ['createdAt', ...AMOUNT_FIELDS] as const;
+
+const _isAmountFieldKey = (key: (typeof FIELDS)[number]): key is (typeof AMOUNT_FIELDS)[number] => {
+    return AMOUNT_FIELDS.includes(key as (typeof AMOUNT_FIELDS)[number]);
+};
 
 export interface PayoutsTableProps extends WithPaginationLimitSelection<PaginationProps> {
     balanceAccounts: IBalanceAccountBase[] | undefined;
@@ -24,6 +29,7 @@ export interface PayoutsTableProps extends WithPaginationLimitSelection<Paginati
     showPagination: boolean;
     data: IPayout[] | undefined;
 }
+
 export const PayoutsTable: FC<PayoutsTableProps> = ({
     error,
     loading,
@@ -40,7 +46,7 @@ export const PayoutsTable: FC<PayoutsTableProps> = ({
         () =>
             FIELDS.map(key => {
                 const label = i18n.get(getLabel(key));
-                if (key === 'grossAmount' || key === 'netAmount' || key === 'chargesAmount') {
+                if (_isAmountFieldKey(key)) {
                     return {
                         key,
                         label: data?.[0]?.[key]?.currency ? `${label} (${getCurrencyCode(data?.[0]?.[key]?.currency)})` : label,
@@ -61,6 +67,7 @@ export const PayoutsTable: FC<PayoutsTableProps> = ({
         () => () => <DataOverviewError error={error} errorMessage={'weCouldNotLoadYourPayouts'} onContactSupport={onContactSupport} />,
         [error, onContactSupport]
     );
+
     return (
         <div className={BASE_CLASS}>
             <DataGrid

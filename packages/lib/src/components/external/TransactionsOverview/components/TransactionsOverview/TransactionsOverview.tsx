@@ -5,27 +5,28 @@ import { TypographyVariant } from '../../../../internal/Typography/types';
 import Typography from '../../../../internal/Typography/Typography';
 import DateFilter from '../../../../internal/FilterBar/filters/DateFilter/DateFilter';
 import FilterBar from '../../../../internal/FilterBar';
-import { ExternalUIComponentProps } from '../../../../types';
+import { DataOverviewComponentProps, ExternalUIComponentProps, FilterParam } from '../../../../types';
 import useModalDetails from '../../../../../hooks/useModalDetails/useModalDetails';
 import { lazy } from 'preact/compat';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
-import { SetupHttpOptions, useSetupEndpoint } from '../../../../../hooks/useSetupEndpoint/useSetupEndpoint';
+import { useSetupEndpoint } from '../../../../../hooks/useSetupEndpoint/useSetupEndpoint';
 import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
 import { useCursorPaginatedRecords } from '../../../../internal/Pagination/hooks';
-import { IBalanceAccountBase, ITransaction, DataOverviewComponentProps, FilterParam } from '../../../../../types';
-import { isFunction } from '../../../../../utils/common';
+import { IBalanceAccountBase, ITransaction } from '../../../../../types';
+import { isFunction, isUndefined, listFrom } from '../../../../../utils';
 import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '../../../../internal/Pagination/constants';
 import TransactionTotals from '../TransactionTotals/TransactionTotals';
 import { Balances } from '../Balances/Balances';
-import MultiSelectionFilter, { listFrom } from '../MultiSelectionFilter';
+import MultiSelectionFilter from '../MultiSelectionFilter';
 import useDefaultOverviewFilterParams from '../../../../hooks/useDefaultOverviewFilterParams';
 import useTransactionsOverviewMultiSelectionFilters from '../../hooks/useTransactionsOverviewMultiSelectionFilters';
 import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatformExperienceError';
 import { AmountFilter } from '../../../../internal/FilterBar/filters/AmountFilter/AmountFilter';
 import { BASE_CLASS, BASE_CLASS_DETAILS, SUMMARY_CLASS, SUMMARY_ITEM_CLASS } from './constants';
 import './TransactionsOverview.scss';
-import { mediaQueries, useMediaQuery } from '../../hooks/useMediaQuery';
+import { mediaQueries, useResponsiveViewport } from '../../hooks/useResponsiveViewport';
 import { DataDetailsModal } from '../../../../internal/DataOverviewDisplay/DataDetailsModal';
+
 const ModalContent = lazy(() => import('../../../../internal/Modal/ModalContent/ModalContent'));
 
 export const TransactionsOverview = ({
@@ -49,7 +50,7 @@ export const TransactionsOverview = ({
 
     const getTransactions = useCallback(
         async ({ balanceAccount, ...pageRequestParams }: Record<FilterParam | 'cursor', string>, signal?: AbortSignal) => {
-            const requestOptions: SetupHttpOptions = { signal, errorLevel: 'error' };
+            const requestOptions = { signal, errorLevel: 'error' } as const;
 
             return transactionsEndpointCall(requestOptions, {
                 query: {
@@ -63,8 +64,8 @@ export const TransactionsOverview = ({
                         pageRequestParams[FilterParam.CREATED_UNTIL] ?? defaultParams.current.defaultFilterParams[FilterParam.CREATED_UNTIL],
                     sortDirection: 'desc' as const,
                     balanceAccountId: activeBalanceAccount?.id ?? '',
-                    minAmount: pageRequestParams.minAmount !== undefined ? parseFloat(pageRequestParams.minAmount) : undefined,
-                    maxAmount: pageRequestParams.maxAmount !== undefined ? parseFloat(pageRequestParams.maxAmount) : undefined,
+                    minAmount: !isUndefined(pageRequestParams.minAmount) ? parseFloat(pageRequestParams.minAmount) : undefined,
+                    maxAmount: !isUndefined(pageRequestParams.maxAmount) ? parseFloat(pageRequestParams.maxAmount) : undefined,
                 },
             });
         },
@@ -121,7 +122,7 @@ export const TransactionsOverview = ({
         statusesFilter.updateSelection({ target: { value: 'Booked', name: 'status' } });
     }, [statusesFilter]);
 
-    const isNarrowViewport = useMediaQuery(mediaQueries.down.sm);
+    const isNarrowViewport = useResponsiveViewport(mediaQueries.down.sm);
 
     const hasMultipleCurrencies = !!availableCurrencies && availableCurrencies.length > 1;
 

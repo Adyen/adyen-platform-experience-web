@@ -2,8 +2,8 @@ import { WITH_ERROR_CLASS } from './constants';
 import { ErrorMessageDisplay } from '../ErrorMessageDisplay/ErrorMessageDisplay';
 import useAuthContext from '../../../core/Auth/useAuthContext';
 import { TranslationKey } from '../../../core/Localization/types';
-import cx from 'classnames';
 import { PropsWithChildren } from 'preact/compat';
+import cx from 'classnames';
 
 function DataOverviewContainer({
     wrongBalanceAccountId,

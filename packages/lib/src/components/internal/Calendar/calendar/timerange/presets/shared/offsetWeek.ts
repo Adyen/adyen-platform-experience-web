@@ -1,4 +1,4 @@
-import { clamp } from '../../../../../../../utils/common';
+import { clamp } from '../../../../../../../utils';
 import createRangeTimestampsFactory from '../../factory';
 import { getRangeTimestampsContextIntegerPropertyFactory, nowTimestamp, offsetsForNDays, startOfDay, startOfWeekOffset } from '../../utils';
 import type { WeekDay } from '../../../types';

@@ -1,4 +1,4 @@
-import { struct } from '../../../../utils/common';
+import { isNullish, isUndefined, struct } from '../../../../utils';
 import { BASE_FORMAT_OPTIONS, BASE_LOCALE, SYSTEM_TIMEZONE, SYSTEM_TIMEZONE_FORMATTER } from './constants';
 import type { RestampContext, RestamperWithTimezone, RestampResult } from './types';
 import { getTimezoneOffsetForTimestamp } from './utils';
@@ -7,13 +7,13 @@ const restamper = (() => {
     let getTimeZone: (this: RestampContext) => RestampContext['TIMEZONE'];
     let setTimeZone: (this: RestampContext, timezone?: RestampContext['TIMEZONE'] | null) => void;
 
-    if (SYSTEM_TIMEZONE !== undefined) {
+    if (!isUndefined(SYSTEM_TIMEZONE)) {
         getTimeZone = function () {
             return this.TIMEZONE;
         };
 
         setTimeZone = function (timeZone) {
-            if (timeZone != undefined) {
+            if (!isNullish(timeZone)) {
                 try {
                     const nextFormatter = new Intl.DateTimeFormat(BASE_LOCALE, { ...BASE_FORMAT_OPTIONS, timeZone });
                     const nextTimeZone = nextFormatter.resolvedOptions().timeZone;

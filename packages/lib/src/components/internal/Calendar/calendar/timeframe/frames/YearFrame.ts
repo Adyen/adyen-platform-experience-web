@@ -1,9 +1,8 @@
 import TimeFrame from './TimeFrame';
 import { computeTimestampOffset, getEdgesDistance } from '../../utils';
 import { YEAR_MONTHS } from '../../constants';
-import { immutableProxyHandlers, isBitSafeInteger, isInfinite, struct, structFrom } from '../../../../../../utils/common';
+import { isBitSafeInteger, isInfinity, isString, isUndefined, struct, structFrom, withFreezeProxyHandlers } from '../../../../../../utils';
 import { CalendarDayOfWeekData, Time, TimeFlag, TimeFrameBlock, TimeFrameSelection } from '../../types';
-import { isString } from '../../../../../../utils/validator-utils';
 
 export default class YearFrame extends TimeFrame {
     #currentDayTimestamp!: number;
@@ -40,11 +39,11 @@ export default class YearFrame extends TimeFrame {
     }
 
     #getBlockTimestampOffsetFromOrigin(timestamp: number) {
-        return isInfinite(timestamp) ? timestamp : new Date(timestamp).getFullYear() - this.origin;
+        return isInfinity(timestamp) ? timestamp : new Date(timestamp).getFullYear() - this.origin;
     }
 
     #getStartForTimestamp(timestamp?: number) {
-        return timestamp === undefined || isInfinite(timestamp) ? timestamp : new Date(timestamp - computeTimestampOffset(timestamp)).setDate(1);
+        return isUndefined(timestamp) || isInfinity(timestamp) ? timestamp : new Date(timestamp - computeTimestampOffset(timestamp)).setDate(1);
     }
 
     #updateSelectionTimestamps() {
@@ -85,47 +84,49 @@ export default class YearFrame extends TimeFrame {
             units: { value: numberOfUnits },
         });
 
-        const proxyForIndexPropertyAccess = new Proxy(struct(), {
-            ...immutableProxyHandlers,
-            get: (target: {}, property: string | symbol, receiver: {}) => {
-                if (isString(property)) {
-                    const offset = +property;
+        const proxyForIndexPropertyAccess = new Proxy(
+            struct(),
+            withFreezeProxyHandlers({
+                get: (target: {}, property: string | symbol, receiver: {}) => {
+                    if (isString(property)) {
+                        const offset = +property;
 
-                    if (isBitSafeInteger(offset) && offset >= 0 && offset < numberOfUnits) {
-                        const index = startIndex + offset;
-                        const timestamp = this.getTimestampAtIndex(index);
-                        const lineIndex = index % this.#lineWidth;
+                        if (isBitSafeInteger(offset) && offset >= 0 && offset < numberOfUnits) {
+                            const index = startIndex + offset;
+                            const timestamp = this.getTimestampAtIndex(index);
+                            const lineIndex = index % this.#lineWidth;
 
-                        let flags = TimeFlag.WITHIN_BLOCK;
+                            let flags = TimeFlag.WITHIN_BLOCK;
 
-                        if (index === startIndex) flags |= TimeFlag.BLOCK_START;
-                        else if (index === endIndex) flags |= TimeFlag.BLOCK_END;
+                            if (index === startIndex) flags |= TimeFlag.BLOCK_START;
+                            else if (index === endIndex) flags |= TimeFlag.BLOCK_END;
 
-                        if (lineIndex === 0) flags |= TimeFlag.LINE_START;
-                        else if (lineIndex === this.#lineWidth - 1) flags |= TimeFlag.LINE_END;
+                            if (lineIndex === 0) flags |= TimeFlag.LINE_START;
+                            else if (lineIndex === this.#lineWidth - 1) flags |= TimeFlag.LINE_END;
 
-                        if (index === this.cursor) flags |= TimeFlag.CURSOR;
-                        if (timestamp === this.currentDayTimestamp) flags |= TimeFlag.CURRENT;
+                            if (index === this.cursor) flags |= TimeFlag.CURSOR;
+                            if (timestamp === this.currentDayTimestamp) flags |= TimeFlag.CURRENT;
 
-                        if (timestamp >= this.fromTimestamp && timestamp <= this.toTimestamp) {
-                            if (timestamp === this.fromTimestamp) flags |= TimeFlag.RANGE_START;
-                            if (timestamp === this.toTimestamp) flags |= TimeFlag.RANGE_END;
-                            flags |= TimeFlag.WITHIN_RANGE;
+                            if (timestamp >= this.fromTimestamp && timestamp <= this.toTimestamp) {
+                                if (timestamp === this.fromTimestamp) flags |= TimeFlag.RANGE_START;
+                                if (timestamp === this.toTimestamp) flags |= TimeFlag.RANGE_END;
+                                flags |= TimeFlag.WITHIN_RANGE;
+                            }
+
+                            if (timestamp >= (this.#selectionFromTimestamp as number) && timestamp <= (this.#selectionToTimestamp as number)) {
+                                if (timestamp === (this.#selectionFromTimestamp as number)) flags |= TimeFlag.SELECTION_START;
+                                if (timestamp === (this.#selectionToTimestamp as number)) flags |= TimeFlag.SELECTION_END;
+                                flags |= TimeFlag.WITHIN_SELECTION;
+                            }
+
+                            return [timestamp, flags] as const;
                         }
-
-                        if (timestamp >= (this.#selectionFromTimestamp as number) && timestamp <= (this.#selectionToTimestamp as number)) {
-                            if (timestamp === (this.#selectionFromTimestamp as number)) flags |= TimeFlag.SELECTION_START;
-                            if (timestamp === (this.#selectionToTimestamp as number)) flags |= TimeFlag.SELECTION_END;
-                            flags |= TimeFlag.WITHIN_SELECTION;
-                        }
-
-                        return [timestamp, flags] as const;
                     }
-                }
 
-                return Reflect.get(target, property, receiver);
-            },
-        });
+                    return Reflect.get(target, property, receiver);
+                },
+            })
+        );
 
         return structFrom(proxyForIndexPropertyAccess, {
             inner: { value: sharedStruct },
@@ -154,7 +155,7 @@ export default class YearFrame extends TimeFrame {
         this.#updateSelectionTimestamps();
         this.#fromTimestamp = this.#getStartForTimestamp(super.fromTimestamp) as number;
         this.#toTimestamp = this.#getStartForTimestamp(super.toTimestamp) as number;
-        this.#numberOfBlocks = isInfinite(super.numberOfBlocks)
+        this.#numberOfBlocks = isInfinity(super.numberOfBlocks)
             ? super.numberOfBlocks
             : Math.ceil((new Date(super.fromTimestamp).getMonth() + super.numberOfBlocks) / YEAR_MONTHS);
     }

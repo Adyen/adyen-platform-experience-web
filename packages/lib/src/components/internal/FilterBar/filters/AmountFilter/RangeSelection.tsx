@@ -6,6 +6,7 @@ import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
 import { CommitAction } from '../../../../../hooks/useCommitAction';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { AMOUNT_MULTIPLIER } from './constants';
+import { isUndefined } from '../../../../../utils';
 
 export const RangeSelection = ({
     onChange,
@@ -19,10 +20,10 @@ export const RangeSelection = ({
     const { i18n } = useCoreContext();
 
     const [minAmount, setMinAmount] = useState<number | undefined>(
-        props.minAmount !== undefined ? parseFloat(props.minAmount) / AMOUNT_MULTIPLIER : undefined
+        !isUndefined(props.minAmount) ? parseFloat(props.minAmount) / AMOUNT_MULTIPLIER : undefined
     );
     const [maxAmount, setMaxAmount] = useState<number | undefined>(
-        props.maxAmount !== undefined ? parseFloat(props.maxAmount) / AMOUNT_MULTIPLIER : undefined
+        !isUndefined(props.maxAmount) ? parseFloat(props.maxAmount) / AMOUNT_MULTIPLIER : undefined
     );
 
     const applyFilter = useCallback(() => {
@@ -75,7 +76,7 @@ export const RangeSelection = ({
                         e.currentTarget && setMaxAmount(e.currentTarget.value !== '' ? parseFloat(e.currentTarget.value) : undefined);
                     }}
                     min={minAmount}
-                    isInvalid={maxAmount !== undefined && minAmount !== undefined ? maxAmount < minAmount : false}
+                    isInvalid={!isUndefined(maxAmount) && !isUndefined(minAmount) && maxAmount < minAmount}
                     errorMessage={i18n.get('secondValueShouldBeGreaterThanTheFirstOne')}
                 />
             </div>

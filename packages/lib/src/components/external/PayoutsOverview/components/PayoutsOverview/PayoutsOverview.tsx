@@ -9,15 +9,15 @@ import Typography from '../../../../internal/Typography/Typography';
 import useBalanceAccountSelection from '../../../../hooks/useBalanceAccountSelection';
 import DateFilter from '../../../../internal/FilterBar/filters/DateFilter/DateFilter';
 import useModalDetails from '../../../../../hooks/useModalDetails/useModalDetails';
-import { DataOverviewComponentProps, FilterParam, IPayout, IPayoutDetails } from '../../../../../types';
+import { IPayout, IPayoutDetails } from '../../../../../types';
 import useDefaultOverviewFilterParams from '../../../../hooks/useDefaultOverviewFilterParams';
-import { ExternalUIComponentProps } from '../../../../types';
+import { DataOverviewComponentProps, ExternalUIComponentProps, FilterParam } from '../../../../types';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatformExperienceError';
-import { SetupHttpOptions, SuccessResponse, useSetupEndpoint } from '../../../../../hooks/useSetupEndpoint/useSetupEndpoint';
+import { SuccessResponse, useSetupEndpoint } from '../../../../../hooks/useSetupEndpoint/useSetupEndpoint';
 import { IBalanceAccountBase } from '../../../../../types';
 import { EndpointsOperations } from '../../../../../types/api/endpoints';
-import { isFunction } from '../../../../../utils/common';
+import { isFunction } from '../../../../../utils';
 import { lazy } from 'preact/compat';
 import { useCallback, useEffect, useMemo } from 'preact/hooks';
 import './PayoutsOverview.scss';
@@ -49,7 +49,7 @@ export const PayoutsOverview = ({
             pageRequestParams: Record<FilterParam | 'cursor', string>,
             signal?: AbortSignal
         ): Promise<SuccessResponse<EndpointsOperations['getPayouts']>> => {
-            const requestOptions: SetupHttpOptions = { signal, errorLevel: 'error' };
+            const requestOptions = { signal, errorLevel: 'error' } as const;
 
             return payoutsEndpointCall(requestOptions, {
                 query: {

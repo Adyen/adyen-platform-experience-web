@@ -23,11 +23,22 @@ import {
     SHIFT_PERIOD,
 } from '../../constants';
 import createFlagsRecord from '../common/flags';
-import indexed from '../../shared/indexed';
-import { Indexed } from '../../shared/indexed/types';
-import { clamp, enumerable, isBitSafeInteger, isFunction, isInfinite, mid, mod, struct } from '../../../../../../utils/common';
-import { WatchCallable } from '../../../../../../utils/watchable/types';
-import { today } from '../../../clock';
+import { createIndexed } from '../../../../../../primitives/struct/indexed';
+import type { WatchListCallable } from '../../../../../../primitives/reactive/watchlist';
+import {
+    clamp,
+    enumerable,
+    isBitSafeInteger,
+    isBoolean,
+    isFunction,
+    isInfinity,
+    isNullish,
+    isUndefined,
+    mid,
+    mod,
+    struct,
+} from '../../../../../../utils';
+import today from '../../../../../../primitives/timing/today';
 import {
     CalendarBlock,
     CalendarBlockCellData,
@@ -55,7 +66,7 @@ export default abstract class TimeFrame {
     #cursorOffset!: number;
     #cursorTimestamp!: number;
     #dynamicBlockHeight: boolean = false;
-    #effect?: WatchCallable<any>;
+    #effect?: WatchListCallable;
     #firstWeekDay: FirstWeekDay = 0;
     #frameBlocksCached: IndexedCalendarBlock[] = [];
     #locale: string = TimeFrame.#DEFAULT_LOCALE;
@@ -96,8 +107,8 @@ export default abstract class TimeFrame {
     abstract get currentDayTimestamp(): number;
     abstract get rowspan(): number;
 
-    #daysOfWeek = indexed(() => this.daysInWeek, this.getDayOfWeekAtIndex.bind(this));
-    #frameBlocks = indexed(() => this.#size, this.#getFrameBlockAtIndex.bind(this));
+    #daysOfWeek = createIndexed(() => this.daysInWeek, this.getDayOfWeekAtIndex.bind(this));
+    #frameBlocks = createIndexed(() => this.#size, this.#getFrameBlockAtIndex.bind(this));
 
     protected get fromTimestamp() {
         return this.#fromTimestamp;
@@ -112,7 +123,7 @@ export default abstract class TimeFrame {
     }
 
     get blankSelection() {
-        return this.#selectionStartTimestamp === this.#selectionEndTimestamp && this.#selectionEndTimestamp === undefined;
+        return this.#selectionStartTimestamp === this.#selectionEndTimestamp && isUndefined(this.#selectionEndTimestamp);
     }
 
     get cursor() {
@@ -128,12 +139,12 @@ export default abstract class TimeFrame {
     }
 
     set dynamicBlockHeight(bool: boolean | null | undefined) {
-        if (bool == undefined) this.#dynamicBlockHeight = !!bool;
-        else if (bool === Boolean(bool)) this.#dynamicBlockHeight = bool;
+        if (isNullish(bool)) this.#dynamicBlockHeight = !!bool;
+        else if (isBoolean(bool)) this.#dynamicBlockHeight = bool;
     }
 
-    set effect(effect: WatchCallable<any> | null | undefined) {
-        if (effect == undefined) this.#effect = undefined;
+    set effect(effect: WatchListCallable | null | undefined) {
+        if (isNullish(effect)) this.#effect = undefined;
         else if (isFunction(effect)) this.#effect = effect;
     }
 
@@ -142,7 +153,7 @@ export default abstract class TimeFrame {
     }
 
     set firstWeekDay(day: FirstWeekDay | null | undefined) {
-        if (day != undefined) {
+        if (!isNullish(day)) {
             if (!FIRST_WEEK_DAYS.includes(day)) return;
             if (this.#firstWeekDay === (this.#firstWeekDay = day)) return;
         } else this.firstWeekDay = 0;
@@ -153,11 +164,11 @@ export default abstract class TimeFrame {
     }
 
     get isAtEnd() {
-        return !isInfinite(this.#toBlockOffsetFromOrigin) && this.#toBlockOffsetFromOrigin === this.#size - 1;
+        return !isInfinity(this.#toBlockOffsetFromOrigin) && this.#toBlockOffsetFromOrigin === this.#size - 1;
     }
 
     get isAtStart() {
-        return !isInfinite(this.#fromBlockOffsetFromOrigin) && this.#fromBlockOffsetFromOrigin === 0;
+        return !isInfinity(this.#fromBlockOffsetFromOrigin) && this.#fromBlockOffsetFromOrigin === 0;
     }
 
     get locale(): string {
@@ -167,7 +178,7 @@ export default abstract class TimeFrame {
     set locale(locale: string | Intl.Locale | null | undefined) {
         const currentLocale = this.#locale;
 
-        if (locale == undefined) {
+        if (isNullish(locale)) {
             this.#locale = TimeFrame.#DEFAULT_LOCALE;
         } else if (typeof Intl !== 'undefined') {
             try {
@@ -193,7 +204,7 @@ export default abstract class TimeFrame {
     }
 
     set size(size: TimeFrameSize | null | undefined) {
-        const nextFrameSize = Math.min((size != undefined && resolveTimeFrameBlockSize(size)) || 1, this.#maxFrameSize) as TimeFrameSize;
+        const nextFrameSize = Math.min((!isNullish(size) && resolveTimeFrameBlockSize(size)) || 1, this.#maxFrameSize) as TimeFrameSize;
         if (this.#size === (this.#size = nextFrameSize)) return;
         this.#shiftOriginIfNecessary();
         this.refreshFrame();
@@ -204,7 +215,7 @@ export default abstract class TimeFrame {
     }
 
     set timeslice(timeslice: TimeSlice | null | undefined) {
-        if (timeslice === this.#timeslice || (timeslice == undefined && this.#timeslice === UNBOUNDED_SLICE)) return;
+        if (timeslice === this.#timeslice || (isNullish(timeslice) && this.#timeslice === UNBOUNDED_SLICE)) return;
 
         const { from, to, span, offsets } = timeslice as TimeSlice;
 
@@ -213,10 +224,12 @@ export default abstract class TimeFrame {
         this.#toTimestamp = to - offsets.to;
         this.#numberOfBlocks = span;
 
-        const selectionStartTimestamp =
-            this.#selectionStartTimestamp === undefined ? this.#selectionStartTimestamp : Math.max(this.#selectionStartTimestamp, from);
-        const selectionEndTimestamp =
-            this.#selectionEndTimestamp === undefined ? this.#selectionEndTimestamp : Math.min(this.#selectionEndTimestamp, to);
+        const selectionStartTimestamp = isUndefined(this.#selectionStartTimestamp)
+            ? this.#selectionStartTimestamp
+            : Math.max(this.#selectionStartTimestamp, from);
+        const selectionEndTimestamp = isUndefined(this.#selectionEndTimestamp)
+            ? this.#selectionEndTimestamp
+            : Math.min(this.#selectionEndTimestamp, to);
 
         if (selectionStartTimestamp === this.#selectionStartTimestamp || selectionEndTimestamp === this.#selectionEndTimestamp) {
             this.#selectionStartTimestamp = selectionStartTimestamp;
@@ -231,14 +244,14 @@ export default abstract class TimeFrame {
     }
 
     set trackCurrentDay(bool: boolean | null | undefined) {
-        if (bool === Boolean(bool)) {
+        if (isBoolean(bool)) {
             if (bool && !this.#unwatchCurrentDay) {
-                this.#unwatchCurrentDay = this.#today.watch(this.refreshFrame.bind(this, true));
+                this.#unwatchCurrentDay = this.#today.subscribe(this.refreshFrame.bind(this, true));
             } else if (!bool && this.#unwatchCurrentDay) {
                 this.#unwatchCurrentDay();
                 this.#unwatchCurrentDay = undefined;
             }
-        } else if (bool == undefined) this.trackCurrentDay = false;
+        } else if (isNullish(bool)) this.trackCurrentDay = false;
     }
 
     get units() {
@@ -259,7 +272,7 @@ export default abstract class TimeFrame {
 
         if (clampedTimestamp !== timestamp && withMidRangeFallback) {
             timestamp = mid(from, to);
-            if (isNaN(timestamp) || isInfinite(timestamp)) {
+            if (isNaN(timestamp) || isInfinity(timestamp)) {
                 timestamp = clampedTimestamp;
             }
         } else timestamp = clampedTimestamp;
@@ -280,7 +293,7 @@ export default abstract class TimeFrame {
             const [label, datetime] = this.getFormattedDataForFrameBlock(new Date(dateString).setHours(12));
             const blockStartIndex = block.outer.from;
 
-            this.#frameBlocksCached[index] = indexed<Indexed<CalendarBlockCellData>, CalendarBlock>(
+            this.#frameBlocksCached[index] = createIndexed<CalendarBlock>(
                 {
                     datetime: enumerable(datetime),
                     label: enumerable(label),
@@ -291,7 +304,7 @@ export default abstract class TimeFrame {
                 index => {
                     const indexOffset = index * this.rowspan;
 
-                    return indexed<CalendarBlockCellData>(this.rowspan, index => {
+                    return createIndexed(this.rowspan, index => {
                         const [timestamp, flags] = block[index + indexOffset] as (typeof block)[number];
                         const [label, datetime] = this.getFormattedDataForBlockCell(new Date(timestamp).setHours(12));
 
@@ -341,7 +354,7 @@ export default abstract class TimeFrame {
     protected refreshFrame(skipCursorRefresh = false): void {
         this.#frameBlocksCached.length = 0;
 
-        if (!(this.#cursorOffset === undefined || skipCursorRefresh)) {
+        if (!(isUndefined(this.#cursorOffset) || skipCursorRefresh)) {
             const cursorBlock = this.getFrameBlockAtIndex(this.#cursorBlockIndex) as TimeFrameBlock;
             const { from: startIndex, to: endIndex } = cursorBlock.inner;
             const [nextCursorTimestamp] = this.#getContainedTimestamp(this.getTimestampAtIndex(startIndex + this.#cursorOffset), false);
@@ -460,7 +473,7 @@ export default abstract class TimeFrame {
                 break;
         }
 
-        if (selectionEdgeTimestamp === undefined) return 0;
+        if (isUndefined(selectionEdgeTimestamp)) return 0;
 
         const timestamp = this.#getContainedTimestamp(time, false).reduce((a, b) => a + b, 0);
         const timestampOffset = this.getUnitsOffsetForTimestamp(selectionEdgeTimestamp, timestamp) * (invertedComparison ? -1 : 1);

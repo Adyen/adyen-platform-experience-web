@@ -1,4 +1,4 @@
-import { EMPTY_OBJECT } from '../../../../utils/common';
+import { EMPTY_OBJECT } from '../../../../utils';
 import { UsePaginatedRecordsFilters } from './types';
 import useReactiveState from '../../../../hooks/useReactiveState';
 import { ReactiveStateRecord } from '../../../../hooks/useReactiveState/types';

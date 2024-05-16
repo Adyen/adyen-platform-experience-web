@@ -1,6 +1,6 @@
-import { PopoverContainerPosition } from '../Popover/types';
 import { VNode } from 'preact';
-import { Reflex } from '../../../hooks/useReflex';
+import { PopoverContainerPosition } from '../Popover/types';
+import type { Reflex } from '../../../primitives/reactive/reflex';
 
 export type TooltipPosition = 'top' | 'bottom' | 'right' | 'left';
 

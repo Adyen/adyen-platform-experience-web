@@ -1,5 +1,5 @@
 import { JSX } from 'preact';
-import { hasOwnProperty } from '../../utils/common';
+import { hasOwnProperty } from '../../utils';
 import { defaultTranslation, FALLBACK_LOCALE, LOCALE_FORMAT_REGEX } from './constants/locale';
 import { CustomTranslations, SupportedLocale, Translation, TranslationOptions } from './types';
 import { en_US } from './translations';
@@ -130,6 +130,7 @@ export const getTranslation = (
 /**
  * Returns an array with all the locales
  * @param locale - The locale the user wants to use
+ * @param translations -
  * @param customTranslations -
  */
 export const loadTranslations = async (

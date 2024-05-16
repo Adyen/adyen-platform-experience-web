@@ -1,4 +1,4 @@
-import { EMPTY_ARRAY, mod } from '../../../../utils/common';
+import { EMPTY_ARRAY, mod } from '../../../../utils';
 import { REGEX_TZ_OFFSET, SYSTEM_TIMEZONE_FORMATTER } from './constants';
 import type { RestampContext, Restamper, RestampResult } from './types';
 
