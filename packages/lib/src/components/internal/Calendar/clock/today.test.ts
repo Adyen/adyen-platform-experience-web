@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { describe, expect, test, vi } from 'vitest';
-import { SYSTEM_TIMEZONE } from '@src/core/Localization/datetime/restamper';
+import { SYSTEM_TIMEZONE } from '../../../../core/Localization/datetime/restamper';
 import { DATES, initialize, startOfDay, startOfNextDay, TIMEZONES } from './testing/fixtures';
 import $today from './today';
 

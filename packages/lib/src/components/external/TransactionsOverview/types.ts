@@ -1,4 +1,4 @@
-import { TransactionDetailData } from '@src/components';
+import { TransactionDetailData } from '../../../components';
 import { Core } from '../../../core';
 import UIElement from '../UIElement';
 

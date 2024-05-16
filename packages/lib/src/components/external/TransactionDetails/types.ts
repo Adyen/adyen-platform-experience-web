@@ -1,6 +1,6 @@
-import { BalanceAccountProps } from '@src/components';
-import { TranslationKey } from '@src/core/Localization/types';
-import { ITransaction } from '@src/types';
+import { BalanceAccountProps } from '../../../components';
+import { TranslationKey } from '../../../core/Localization/types';
+import { ITransaction } from '../../../types';
 
 export interface TransactionDetailsWithoutIdProps {
     transaction: TransactionDetailData;

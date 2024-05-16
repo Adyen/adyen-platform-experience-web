@@ -1,7 +1,7 @@
-import useButton from '@src/components/internal/Button/hooks/useButton';
-import { DEFAULT_BASE_BUTTON_CLASSNAME } from '@src/components/internal/BaseButton/constants';
-import { parseClassName } from '@src/utils/class-name-utils';
-import { parseBoolean } from '@src/utils/common';
+import useButton from '../Button/hooks/useButton';
+import { DEFAULT_BASE_BUTTON_CLASSNAME } from './constants';
+import { parseClassName } from '../../../utils/class-name-utils';
+import { parseBoolean } from '../../../utils/common';
 import { Ref } from 'preact';
 import { forwardRef } from 'preact/compat';
 import { useMemo } from 'preact/hooks';

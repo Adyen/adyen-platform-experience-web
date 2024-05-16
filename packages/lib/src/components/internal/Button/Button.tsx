@@ -1,4 +1,4 @@
-import useButton from '@src/components/internal/Button/hooks/useButton';
+import useButton from './hooks/useButton';
 import {
     DEFAULT_BUTTON_CLASSNAME,
     BUTTON_ICON_LEFT_CLASSNAME,
@@ -6,11 +6,11 @@ import {
     BUTTON_LABEL_CLASSNAME,
     ICON_BUTTON_CLASSNAME,
     ICON_BUTTON_CONTENT_CLASSNAME,
-} from '@src/components/internal/Button/constants';
-import { TypographyElement, TypographyVariant } from '@src/components/internal/Typography/types';
-import Typography from '@src/components/internal/Typography/Typography';
-import { parseClassName } from '@src/utils/class-name-utils';
-import { parseBoolean } from '@src/utils/common';
+} from './constants';
+import { TypographyElement, TypographyVariant } from '../Typography/types';
+import Typography from '../Typography/Typography';
+import { parseClassName } from '../../../utils/class-name-utils';
+import { parseBoolean } from '../../../utils/common';
 import { Ref } from 'preact';
 import { forwardRef } from 'preact/compat';
 import { useMemo } from 'preact/hooks';

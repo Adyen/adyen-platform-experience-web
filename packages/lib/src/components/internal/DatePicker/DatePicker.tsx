@@ -1,12 +1,12 @@
 import cx from 'classnames';
 import { forwardRef } from 'preact/compat';
 import { Ref, useCallback, useMemo, useState } from 'preact/hooks';
-import useCoreContext from '@src/core/Context/useCoreContext';
-import { EMPTY_OBJECT, noop } from '@src/utils/common';
-import useReflex from '@src/hooks/useReflex';
-import useTimezone from '@src/components/internal/Calendar/hooks/useTimezone';
-import { DEFAULT_FIRST_WEEK_DAY } from '@src/components/internal/Calendar/calendar/timerange/presets/shared/offsetWeek';
-import { DateFilterProps } from '@src/components/internal/FilterBar/filters/DateFilter/types';
+import useCoreContext from '../../../core/Context/useCoreContext';
+import { EMPTY_OBJECT, noop } from '../../../utils/common';
+import useReflex from '../../../hooks/useReflex';
+import useTimezone from '../Calendar/hooks/useTimezone';
+import { DEFAULT_FIRST_WEEK_DAY } from '../Calendar/calendar/timerange/presets/shared/offsetWeek';
+import { DateFilterProps } from '../FilterBar/filters/DateFilter/types';
 import TimeRangeSelector from './components/TimeRangeSelector';
 import Calendar from '../Calendar';
 import calendar from '../Calendar/calendar';

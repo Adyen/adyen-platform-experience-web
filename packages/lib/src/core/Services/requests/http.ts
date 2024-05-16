@@ -1,7 +1,7 @@
-import { API_VERSION } from '@src/core/Services/sessions/constants';
+import { API_VERSION } from '../sessions/constants';
 import { getErrorType, getRequestObject, handleFetchError, isAdyenErrorResponse } from './utils';
 import { HttpOptions } from './types';
-import { normalizeLoadingContext, normalizeUrl } from '@src/core/utils';
+import { normalizeLoadingContext, normalizeUrl } from '../../utils';
 
 export async function http<T>(options: HttpOptions, data?: any): Promise<T> {
     const { errorLevel, loadingContext = '', path } = options;

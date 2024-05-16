@@ -1,6 +1,6 @@
-import { SelectedDetail, TransactionDetailData } from '@src/components';
-import TransactionDetails from '@src/components/external/TransactionDetails/components/TransactionDetails';
-import { hasOwnProperty } from '@src/utils/common';
+import { SelectedDetail, TransactionDetailData } from '../../../../components';
+import TransactionDetails from '../../TransactionDetails/components/TransactionDetails';
+import { hasOwnProperty } from '../../../../utils/common';
 
 const isTransactionWithoutId = (data: string | TransactionDetailData): data is TransactionDetailData => hasOwnProperty(data, 'id');
 function ModalContent({ data }: SelectedDetail) {

@@ -1,7 +1,7 @@
-import Button from '@src/components/internal/Button';
-import { ButtonVariant } from '@src/components/internal/Button/types';
-import Close from '@src/components/internal/SVGIcons/Close';
-import useCoreContext from '@src/core/Context/useCoreContext';
+import Button from '../Button';
+import { ButtonVariant } from '../Button/types';
+import Close from '../SVGIcons/Close';
+import useCoreContext from '../../../core/Context/useCoreContext';
 import { useCallback, useEffect, useRef } from 'preact/hooks';
 import cx from 'classnames';
 import { TargetedEvent } from 'preact/compat';

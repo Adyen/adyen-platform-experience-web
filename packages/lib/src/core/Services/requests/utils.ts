@@ -1,5 +1,5 @@
 import { AdyenErrorResponse, ErrorLevel, HttpOptions } from './types';
-import AdyenPlatformExperienceError from '@src/core/Errors/AdyenPlatformExperienceError';
+import AdyenPlatformExperienceError from '../../Errors/AdyenPlatformExperienceError';
 
 export const enum ErrorTypes {
     /** Network error. */

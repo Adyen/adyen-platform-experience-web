@@ -5,7 +5,7 @@ import { render, within } from '@testing-library/preact';
 import { describe, test, expect, beforeEach, vi, Mock } from 'vitest';
 import { BASIC_TRANSACTIONS_LIST } from '../../../../../../../mocks';
 import userEvent from '@testing-library/user-event';
-import DataGrid from '@src/components/internal/DataGrid';
+import DataGrid from '../../DataGrid';
 
 const columns = [
     {

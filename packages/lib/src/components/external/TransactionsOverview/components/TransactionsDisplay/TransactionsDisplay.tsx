@@ -1,15 +1,15 @@
-import Modal from '@src/components/internal/Modal';
-import { popoverUtil } from '@src/components/internal/Popover/utils/popoverUtil';
-import Spinner from '@src/components/internal/Spinner';
-import useCoreContext from '@src/core/Context/useCoreContext';
-import useModalDetails from '@src/hooks/useModalDetails/useModalDetails';
-import { ITransaction } from '@src/types';
+import Modal from '../../../../internal/Modal';
+import { popoverUtil } from '../../../../internal/Popover/utils/popoverUtil';
+import Spinner from '../../../../internal/Spinner';
+import useCoreContext from '../../../../../core/Context/useCoreContext';
+import useModalDetails from '../../../../../hooks/useModalDetails/useModalDetails';
+import { ITransaction } from '../../../../../types';
 import { FC, lazy, Suspense } from 'preact/compat';
 import { useCallback, useEffect, useMemo } from 'preact/hooks';
-import { BASE_CLASS, SPINNER_CONTAINER_CLASS } from '@src/components/external/TransactionsOverview/components/TransactionsDisplay/constants';
+import { BASE_CLASS, SPINNER_CONTAINER_CLASS } from './constants';
 import './TransactionsDisplay.scss';
-import { TransactionDisplayProps } from '@src/components/external/TransactionsOverview/components/TransactionsDisplay/types';
-import { TransactionsTable } from '@src/components/external/TransactionsOverview/components/TransactionsTable/TransactionsTable';
+import { TransactionDisplayProps } from './types';
+import { TransactionsTable } from '../TransactionsTable/TransactionsTable';
 
 const ModalContent = lazy(() => import('../ModalContent'));
 

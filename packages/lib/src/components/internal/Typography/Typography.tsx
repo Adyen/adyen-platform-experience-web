@@ -1,4 +1,4 @@
-import { DEFAULT_TYPOGRAPHY_CLASSNAME } from '@src/components/internal/Typography/constants';
+import { DEFAULT_TYPOGRAPHY_CLASSNAME } from './constants';
 import cx from 'classnames';
 import { useMemo } from 'preact/hooks';
 import { TypographyElement, TypographyModifier, TypographyVariant } from './types';

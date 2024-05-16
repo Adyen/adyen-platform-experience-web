@@ -1,9 +1,9 @@
 import { useCallback, useMemo, useRef, useState } from 'preact/hooks';
-import useCoreContext from '@src/core/Context/useCoreContext';
-import type { RestampContext } from '@src/core/Localization/datetime/restamper';
-import type { TranslationKey } from '@src/core/Localization/types';
-import { RangeTimestamp, RangeTimestamps } from '@src/components/internal/Calendar/calendar/timerange';
-import * as RangePreset from '@src/components/internal/Calendar/calendar/timerange/presets';
+import useCoreContext from '../../../../../core/Context/useCoreContext';
+import type { RestampContext } from '../../../../../core/Localization/datetime/restamper';
+import type { TranslationKey } from '../../../../../core/Localization/types';
+import { RangeTimestamp, RangeTimestamps } from '../../../Calendar/calendar/timerange';
+import * as RangePreset from '../../../Calendar/calendar/timerange/presets';
 
 export type UseTimeRangeSelectionConfig = {
     now?: RangeTimestamp;

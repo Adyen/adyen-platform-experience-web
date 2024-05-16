@@ -1,15 +1,15 @@
-import { useSetupEndpoint } from '@src/hooks/useSetupEndpoint/useSetupEndpoint';
+import { useSetupEndpoint } from '../../../../../hooks/useSetupEndpoint/useSetupEndpoint';
 import { useCallback, useMemo } from 'preact/hooks';
-import { EMPTY_OBJECT } from '@src/utils/common';
-import { useFetch } from '@src/hooks/useFetch/useFetch';
-import { OperationParameters } from '@src/types/models/openapi/endpoints';
-import { MakeFieldValueUndefined } from '@src/utils/types';
-import { BASE_CLASS, ITEM_CLASS } from '@src/components/external/TransactionsOverview/components/TransactionTotals/constants';
+import { EMPTY_OBJECT } from '../../../../../utils/common';
+import { useFetch } from '../../../../../hooks/useFetch/useFetch';
+import { OperationParameters } from '../../../../../types/models/openapi/endpoints';
+import { MakeFieldValueUndefined } from '../../../../../utils/types';
+import { BASE_CLASS, ITEM_CLASS } from './constants';
 import { memo } from 'preact/compat';
-import { ITransaction } from '@src/types';
-import { mediaQueries, useMediaQuery } from '@src/components/external/TransactionsOverview/hooks/useMediaQuery';
+import { ITransaction } from '../../../../../types';
+import { mediaQueries, useMediaQuery } from '../../hooks/useMediaQuery';
 import './TransactionTotals.scss';
-import { TotalsCard } from '@src/components/external/TransactionsOverview/components/TransactionTotals/TotalsCard';
+import { TotalsCard } from './TotalsCard';
 
 type TransactionTotalsProps = Required<OperationParameters<'getTransactionTotals'>['query']> & {
     isAvailableCurrenciesFetching: boolean;

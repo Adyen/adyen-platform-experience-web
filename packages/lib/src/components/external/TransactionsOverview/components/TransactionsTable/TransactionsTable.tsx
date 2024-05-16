@@ -1,27 +1,21 @@
-import Category from '@src/components/external/TransactionsOverview/components/Category/Category';
-import useCoreContext from '@src/core/Context/useCoreContext';
+import Category from '../Category/Category';
+import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { useCallback, useMemo, useState } from 'preact/hooks';
 import DataGrid from '../../../../internal/DataGrid';
 import Pagination from '../../../../internal/Pagination';
 import { getLabel, parsePaymentMethodType } from '../utils';
-import { Tag } from '@src/components/internal/Tag/Tag';
-import { TagVariant } from '@src/components/internal/Tag/types';
-import { CellTextPosition } from '@src/components/internal/DataGrid/types';
-import { Image } from '@src/components/internal/Image/Image';
-import { TranslationKey } from '@src/core/Localization/types';
+import { Tag } from '../../../../internal/Tag/Tag';
+import { TagVariant } from '../../../../internal/Tag/types';
+import { CellTextPosition } from '../../../../internal/DataGrid/types';
+import { Image } from '../../../../internal/Image/Image';
+import { TranslationKey } from '../../../../../core/Localization/types';
 import TransactionListError from '../TransactionListError/TransactionListError';
-import { getCurrencyCode } from '@src/core/Localization/amount/amount-util';
-import {
-    AMOUNT_CLASS,
-    BASE_CLASS,
-    PAYMENT_METHOD_CLASS,
-    PAYMENT_METHOD_LOGO_CLASS,
-    PAYMENT_METHOD_LOGO_CONTAINER_CLASS,
-} from '@src/components/external/TransactionsOverview/components/TransactionsTable/constants';
+import { getCurrencyCode } from '../../../../../core/Localization/amount/amount-util';
+import { AMOUNT_CLASS, BASE_CLASS, PAYMENT_METHOD_CLASS, PAYMENT_METHOD_LOGO_CLASS, PAYMENT_METHOD_LOGO_CONTAINER_CLASS } from './constants';
 import './TransactionTable.scss';
-import { mediaQueries, useMediaQuery } from '@src/components/external/TransactionsOverview/hooks/useMediaQuery';
+import { mediaQueries, useMediaQuery } from '../../hooks/useMediaQuery';
 import { FC } from 'preact/compat';
-import { TransactionTableProps } from '@src/components/external/TransactionsOverview/components/TransactionsTable/types';
+import { TransactionTableProps } from './types';
 
 // Remove status column temporarily
 // const FIELDS = ['creationDate', 'status', 'paymentMethod', 'transactionType', 'amount'] as const;
