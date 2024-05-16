@@ -1,6 +1,6 @@
 import { BaseFilterProps } from '../BaseFilter/types';
 import { ReactiveStateRecord } from '../../../../../hooks/useReactiveState/types';
-import { TransactionFilterParam } from '../../../../../components';
+import { TransactionFilterParam } from '../../../../external';
 
 type RangeOptions = 'minAmount' | 'maxAmount';
 export interface RangeFilterProps extends BaseFilterProps {

@@ -2,7 +2,7 @@ import useAuthContext from '../../core/Auth/useAuthContext';
 import { http } from '../../core/Services/requests/http';
 import { HttpMethod, HttpOptions } from '../../core/Services/requests/types';
 import { ErrorTypes } from '../../core/Services/requests/utils';
-import { EMPTY_OBJECT, noop } from '../../utils/common';
+import { noop } from '../../utils/common';
 import { useMemo, useRef } from 'preact/hooks';
 
 const getHttpCaller = (() => {

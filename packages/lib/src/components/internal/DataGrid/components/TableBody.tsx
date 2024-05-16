@@ -2,7 +2,7 @@ import useCoreContext from '../../../../core/Context/useCoreContext';
 import { noop } from '../../../../utils/common';
 import { TableCells } from './TableCells';
 import { DataGridColumn, InteractiveBodyProps } from '../types';
-import { CustomCell } from '../../DataGrid/DataGrid';
+import { CustomCell } from '../DataGrid';
 
 export const TableBody = <
     Items extends Array<any>,

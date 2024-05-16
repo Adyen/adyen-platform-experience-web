@@ -1,4 +1,4 @@
-import { CustomTranslations, SupportedLocale, Translation } from './types';
+import { CustomTranslations, SupportedLocale } from './types';
 import { formatLocale, loadTranslations, parseLocale } from './utils';
 import { FALLBACK_LOCALE } from './constants/locale';
 import { EXCLUDE_PROPS } from './constants/localization';
