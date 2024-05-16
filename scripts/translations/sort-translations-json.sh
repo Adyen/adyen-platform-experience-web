@@ -20,7 +20,7 @@ sort_translations_json() {
     local json_path=$(realpath "$PROJECT_ROOT/$relative_path")
 
     if [[ ! -r $json_path ]]; then
-        echo "${LIGHT_RED}(error) Missing translations JSON file${NO_COLOR}"
+        printf "${LIGHT_RED}(error) Missing translations JSON file${NO_COLOR}\n"
         return 1
     fi
 
@@ -28,11 +28,13 @@ sort_translations_json() {
 
     if [[ $sorted_json ]]; then
         if [[ $sorted_json == $ERROR_TOKEN ]]; then
-            printf "${LIGHT_RED}(error) Malformed translations JSON file:${NO_COLOR}\n\t$json_path\n"
+            printf "${LIGHT_RED}(error) Malformed translations JSON file:${NO_COLOR}\n"
+            printf "\t\t$json_path\n"
             return 1
         fi
 
-        printf "${LIGHT_BLUE}(write) Updating translations JSON file:${NO_COLOR}\n\t$json_path\n"
+        printf "${LIGHT_BLUE}(write) Updating translations JSON file:${NO_COLOR}\n"
+        printf "\t\t$json_path\n"
 
         # overwrite the source translations JSON file with the correctly sorted JSON
         echo "$sorted_json" > $json_path
