@@ -211,17 +211,19 @@ export const TransactionsOverview = ({
                 className={BASE_CLASS_DETAILS}
             >
                 <TransactionsTable
-                    balanceAccounts={balanceAccounts}
                     availableCurrencies={availableCurrencies}
+                    balanceAccounts={balanceAccounts}
                     error={error as AdyenPlatformExperienceError}
                     hasMultipleCurrencies={hasMultipleCurrencies}
+                    limit={limit}
+                    limitOptions={limitOptions}
                     loading={fetching || isLoadingBalanceAccount || !balanceAccounts}
                     onContactSupport={onContactSupport}
+                    onLimitSelection={updateLimit}
                     onRowClick={onRowClick}
                     onTransactionSelected={onRecordSelection}
                     showPagination={true}
                     transactions={records}
-                    limit={limit}
                     {...paginationProps}
                 />
             </DataDetailsModal>
