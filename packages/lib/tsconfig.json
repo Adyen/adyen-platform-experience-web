@@ -14,9 +14,6 @@
 
         "jsxImportSource": "preact",
         "jsx": "react-jsx",
-        "paths": {
-            "@styles/*": ["./src/style/*"]
-        },
 
         "types": ["@testing-library/jest-dom", "node"]
     },
