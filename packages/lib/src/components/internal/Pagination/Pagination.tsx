@@ -1,15 +1,15 @@
-import { ButtonVariant } from '@src/components/internal/Button/types';
-import useCoreContext from '@src/core/Context/useCoreContext';
-import { EMPTY_ARRAY } from '@src/utils/common';
+import { ButtonVariant } from '../Button/types';
+import useCoreContext from '../../../core/Context/useCoreContext';
+import { EMPTY_ARRAY } from '../../../utils/common';
 import classnames from 'classnames';
 import { useCallback, useMemo } from 'preact/hooks';
 import Button from '../Button';
 import './Pagination.scss';
 import { PaginationProps } from './types';
-import Select from '@src/components/internal/FormFields/Select';
-import { SelectItem } from '@src/components/internal/FormFields/Select/types';
-import ChevronLeft from '@src/components/internal/SVGIcons/ChevronLeft';
-import ChevronRight from '@src/components/internal/SVGIcons/ChevronRight';
+import Select from '../FormFields/Select';
+import { SelectItem } from '../FormFields/Select/types';
+import ChevronLeft from '../SVGIcons/ChevronLeft';
+import ChevronRight from '../SVGIcons/ChevronRight';
 
 export default function Pagination({ next, hasNext, hasPrev, page, prev, limit, limitOptions, onLimitSelection }: PaginationProps) {
     const { i18n } = useCoreContext();

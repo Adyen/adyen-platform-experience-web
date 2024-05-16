@@ -1,29 +1,29 @@
-import { BASE_CLASS, BASE_CLASS_DETAILS } from '@src/components/external/PayoutsOverview/components/PayoutsOverview/constants';
-import { PayoutsTable } from '@src/components/external/PayoutsOverview/components/PayoutsTable/PayoutsTable';
-import FilterBar from '@src/components/internal/FilterBar';
-import BalanceAccountSelector from '@src/components/internal/FormFields/Select/BalanceAccountSelector';
-import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '@src/components/internal/Pagination/constants';
-import { useCursorPaginatedRecords } from '@src/components/internal/Pagination/hooks';
-import { TypographyVariant } from '@src/components/internal/Typography/types';
-import Typography from '@src/components/internal/Typography/Typography';
-import useBalanceAccountSelection from '@src/components/hooks/useBalanceAccountSelection';
-import DateFilter from '@src/components/internal/FilterBar/filters/DateFilter/DateFilter';
-import useModalDetails from '@src/hooks/useModalDetails/useModalDetails';
-import { DataOverviewComponentProps, FilterParam, IPayout, IPayoutDetails } from '@src/types';
-import useDefaultOverviewFilterParams from '@src/components/hooks/useDefaultOverviewFilterParams';
-import { ExternalUIComponentProps } from '@src/components/types';
-import useCoreContext from '@src/core/Context/useCoreContext';
-import AdyenPlatformExperienceError from '@src/core/Errors/AdyenPlatformExperienceError';
-import { SetupHttpOptions, SuccessResponse, useSetupEndpoint } from '@src/hooks/useSetupEndpoint/useSetupEndpoint';
-import { IBalanceAccountBase } from '@src/types';
-import { EndpointsOperations } from '@src/types/api/endpoints';
-import { isFunction } from '@src/utils/common';
+import { BASE_CLASS, BASE_CLASS_DETAILS } from './constants';
+import { PayoutsTable } from '../PayoutsTable/PayoutsTable';
+import FilterBar from '../../../../internal/FilterBar';
+import BalanceAccountSelector from '../../../../internal/FormFields/Select/BalanceAccountSelector';
+import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '../../../../internal/Pagination/constants';
+import { useCursorPaginatedRecords } from '../../../../internal/Pagination/hooks';
+import { TypographyVariant } from '../../../../internal/Typography/types';
+import Typography from '../../../../internal/Typography/Typography';
+import useBalanceAccountSelection from '../../../../hooks/useBalanceAccountSelection';
+import DateFilter from '../../../../internal/FilterBar/filters/DateFilter/DateFilter';
+import useModalDetails from '../../../../../hooks/useModalDetails/useModalDetails';
+import { DataOverviewComponentProps, FilterParam, IPayout, IPayoutDetails } from '../../../../../types';
+import useDefaultOverviewFilterParams from '../../../../hooks/useDefaultOverviewFilterParams';
+import { ExternalUIComponentProps } from '../../../../types';
+import useCoreContext from '../../../../../core/Context/useCoreContext';
+import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatformExperienceError';
+import { SetupHttpOptions, SuccessResponse, useSetupEndpoint } from '../../../../../hooks/useSetupEndpoint/useSetupEndpoint';
+import { IBalanceAccountBase } from '../../../../../types';
+import { EndpointsOperations } from '../../../../../types/api/endpoints';
+import { isFunction } from '../../../../../utils/common';
 import { lazy } from 'preact/compat';
 import { useCallback, useEffect, useMemo } from 'preact/hooks';
 import './PayoutsOverview.scss';
-import { DataDetailsModal } from '@src/components/internal/DataOverviewDisplay/DataDetailsModal';
+import { DataDetailsModal } from '../../../../internal/DataOverviewDisplay/DataDetailsModal';
 
-const ModalContent = lazy(() => import('@src/components/internal/Modal/ModalContent/ModalContent'));
+const ModalContent = lazy(() => import('../../../../internal/Modal/ModalContent/ModalContent'));
 
 export const PayoutsOverview = ({
     onFiltersChanged,

@@ -1,6 +1,6 @@
-import DataGridCell from '@src/components/internal/DataGrid/DataGridCell';
-import { DataGridColumn } from '@src/components/internal/DataGrid/types';
-import { CustomCell } from '@src/components/internal/DataGrid/DataGrid';
+import DataGridCell from '../DataGridCell';
+import { DataGridColumn } from '../types';
+import { CustomCell } from '../DataGrid';
 
 export const TableCells = <
     Items extends Array<any>,

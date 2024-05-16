@@ -1,10 +1,10 @@
-import { getClassName } from '@src/utils/class-name-utils';
+import { getClassName } from '../../../../../utils/class-name-utils';
 import { forwardRef, memo } from 'preact/compat';
 import { CalendarGridDateProps, CalendarGridDateRenderProps } from './types';
 import { property, propsProperty } from './utils';
-import { EMPTY_OBJECT } from '@src/utils/common/constants';
+import { EMPTY_OBJECT } from '../../../../../utils/common';
 import { CalendarGridRenderToken } from '../../types';
-import memoComparator from '@src/utils/memoComparator';
+import memoComparator from '../../../../../utils/memoComparator';
 
 const DEFAULT_DATE_CELL_CLASSNAME = 'adyen-pe-calendar__cell adyen-pe-calendar__cell--date';
 const DEFAULT_DATE_TIME_CLASSNAME = 'adyen-pe-calendar__date';

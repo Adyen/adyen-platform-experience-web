@@ -1,4 +1,4 @@
-import { _UIComponentProps } from '@src/components/types';
+import { _UIComponentProps } from '../../types';
 import UIElement from '../UIElement';
 import TransactionDetails from './components/TransactionDetails';
 import { TransactionDetailsComponentProps } from './types';

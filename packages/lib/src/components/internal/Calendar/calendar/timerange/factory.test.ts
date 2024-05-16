@@ -1,5 +1,5 @@
 import { assertType, describe, expect, test } from 'vitest';
-import { SYSTEM_TIMEZONE } from '@src/core/Localization/datetime/restamper';
+import { SYSTEM_TIMEZONE } from '../../../../../core/Localization/datetime/restamper';
 import createRangeTimestampsFactory from './factory';
 import type { RangeTimestamps } from './types';
 

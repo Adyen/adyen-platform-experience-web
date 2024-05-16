@@ -1,10 +1,10 @@
 import cx from 'classnames';
 import { memo } from 'preact/compat';
-import Img from '@src/components/internal/Img';
+import Img from '../../../Img';
 import type { SelectItem, SelectItemProps } from '../types';
-import CheckedBox from '@src/components/internal/SVGIcons/CheckedBox';
-import UncheckedBox from '@src/components/internal/SVGIcons/UncheckedBox';
-import Checkmark from '@src/components/internal/SVGIcons/Checkmark';
+import CheckedBox from '../../../SVGIcons/CheckedBox';
+import UncheckedBox from '../../../SVGIcons/UncheckedBox';
+import Checkmark from '../../../SVGIcons/Checkmark';
 import {
     DROPDOWN_ELEMENT_ACTIVE_CLASS,
     DROPDOWN_ELEMENT_CHECKBOX_CLASS,

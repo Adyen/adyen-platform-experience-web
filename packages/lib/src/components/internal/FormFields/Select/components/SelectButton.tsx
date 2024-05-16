@@ -2,13 +2,13 @@ import cx from 'classnames';
 import { Ref } from 'preact';
 import { MutableRef, useMemo } from 'preact/hooks';
 import { HTMLAttributes, PropsWithChildren } from 'preact/compat';
-import useCoreContext from '@src/core/Context/useCoreContext';
-import Img from '@src/components/internal/Img';
-import Button from '@src/components/internal/Button';
-import { ButtonVariant } from '@src/components/internal/Button/types';
-import Typography from '@src/components/internal/Typography/Typography';
-import ChevronDown from '@src/components/internal/SVGIcons/ChevronDown';
-import { TypographyElement, TypographyVariant } from '@src/components/internal/Typography/types';
+import useCoreContext from '../../../../../core/Context/useCoreContext';
+import Img from '../../../Img';
+import Button from '../../../Button';
+import { ButtonVariant } from '../../../Button/types';
+import Typography from '../../../Typography/Typography';
+import ChevronDown from '../../../SVGIcons/ChevronDown';
+import { TypographyElement, TypographyVariant } from '../../../Typography/types';
 import {
     DROPDOWN_BUTTON_ACTIVE_CLASS,
     DROPDOWN_BUTTON_CLASS,

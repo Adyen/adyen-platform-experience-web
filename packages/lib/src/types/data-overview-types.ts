@@ -1,5 +1,5 @@
-import UIElement from '@src/components/external/UIElement';
-import { Core } from '@src/core';
+import UIElement from '../components/external/UIElement';
+import { Core } from '../core';
 
 export type OnSelection = (selection: { id: string; showModal: () => void }) => any;
 
