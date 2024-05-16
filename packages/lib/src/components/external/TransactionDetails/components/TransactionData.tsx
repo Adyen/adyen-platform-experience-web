@@ -1,4 +1,4 @@
-import { TransactionDetailData } from '../../../../components';
+import { TransactionDetailData } from '../types';
 import TransactionDataSkeleton from './TransactionDataSkeleton';
 import { Image } from '../../../internal/Image/Image';
 import { parsePaymentMethodType } from '../../TransactionsOverview/components/utils';

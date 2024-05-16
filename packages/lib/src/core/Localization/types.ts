@@ -1,6 +1,6 @@
 import CURRENCY_CODES from './constants/currency-codes';
 import CURRENCY_DECIMALS from './constants/currency-decimals';
-import { SUPPORTED_LOCALES } from '../Localization/constants/localization';
+import { SUPPORTED_LOCALES } from './constants/localization';
 import type { ReplaceUnderscoreOrDash } from '../../utils/types';
 import { en_US } from '../../core';
 

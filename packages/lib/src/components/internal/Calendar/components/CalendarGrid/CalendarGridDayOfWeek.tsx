@@ -2,7 +2,7 @@ import { getClassName } from '../../../../../utils/class-name-utils';
 import { memo } from 'preact/compat';
 import { CalendarGridDayOfWeekProps, CalendarGridDayOfWeekRenderProps } from './types';
 import { property, propsProperty } from './utils';
-import { EMPTY_OBJECT } from '../../../../../utils/common/constants';
+import { EMPTY_OBJECT } from '../../../../../utils/common';
 import { CalendarGridRenderToken } from '../../types';
 import memoComparator from '../../../../../utils/memoComparator';
 

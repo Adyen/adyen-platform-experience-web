@@ -1,4 +1,4 @@
-import { SelectedDetail, TransactionDetailData } from '../../../../components';
+import { SelectedDetail, TransactionDetailData } from '../../../external';
 import TransactionDetails from '../../../external/TransactionDetails/components/TransactionDetails';
 import { hasOwnProperty } from '../../../../utils/common';
 
