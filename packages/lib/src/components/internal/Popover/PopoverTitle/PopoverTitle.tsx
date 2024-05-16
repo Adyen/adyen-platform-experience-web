@@ -1,5 +1,5 @@
-import Typography from '@src/components/internal/Typography/Typography';
-import { TypographyVariant } from '@src/components/internal/Typography/types';
+import Typography from '../../Typography/Typography';
+import { TypographyVariant } from '../../Typography/types';
 import { memo } from 'preact/compat';
 
 export interface PopoverTitleProps {

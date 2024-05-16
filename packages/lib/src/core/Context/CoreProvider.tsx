@@ -2,8 +2,8 @@ import { toChildArray } from 'preact';
 import { useEffect, useMemo } from 'preact/hooks';
 import { CoreContext } from './CoreContext';
 import { CoreProviderProps } from './types';
-import useBooleanState from '@src/hooks/useBooleanState';
-import Localization from '@src/core/Localization';
+import useBooleanState from '../../hooks/useBooleanState';
+import Localization from '../Localization';
 
 /**
  * CoreProvider Component

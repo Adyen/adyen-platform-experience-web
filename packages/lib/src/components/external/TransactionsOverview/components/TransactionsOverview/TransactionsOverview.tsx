@@ -1,30 +1,26 @@
-import FilterBar from '@src/components/internal/FilterBar';
-import { ExternalUIComponentProps } from '@src/components/types';
+import FilterBar from '../../../../internal/FilterBar';
+import { ExternalUIComponentProps } from '../../../../types';
 import { TransactionsComponentProps, TransactionFilterParam } from '../../types';
-import { TransactionsDisplay } from '@src/components/external/TransactionsOverview/components/TransactionsDisplay/TransactionsDisplay';
-import useCoreContext from '@src/core/Context/useCoreContext';
-import { SetupHttpOptions, useSetupEndpoint } from '@src/hooks/useSetupEndpoint/useSetupEndpoint';
+import { TransactionsDisplay } from '../TransactionsDisplay/TransactionsDisplay';
+import useCoreContext from '../../../../../core/Context/useCoreContext';
+import { SetupHttpOptions, useSetupEndpoint } from '../../../../../hooks/useSetupEndpoint/useSetupEndpoint';
 import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
-import { useCursorPaginatedRecords } from '@src/components/internal/Pagination/hooks';
-import { IBalanceAccountBase, ITransaction } from '@src/types';
-import { isFunction } from '@src/utils/common';
-import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '@src/components/internal/Pagination/constants';
-import TransactionsOverviewDateFilter from '@src/components/external/TransactionsOverview/components/TransactionsOverviewDateFilter';
-import TransactionTotals from '@src/components/external/TransactionsOverview/components/TransactionTotals/TransactionTotals';
-import { Balances } from '@src/components/external/TransactionsOverview/components/Balances/Balances';
+import { useCursorPaginatedRecords } from '../../../../internal/Pagination/hooks';
+import { IBalanceAccountBase, ITransaction } from '../../../../../types';
+import { isFunction } from '../../../../../utils/common';
+import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '../../../../internal/Pagination/constants';
+import TransactionsOverviewDateFilter from '../TransactionsOverviewDateFilter';
+import TransactionTotals from '../TransactionTotals/TransactionTotals';
+import { Balances } from '../Balances/Balances';
 import BalanceAccountSelector, { useBalanceAccountSelection } from '../BalanceAccountSelector';
 import MultiSelectionFilter, { listFrom } from '../MultiSelectionFilter';
 import useDefaultTransactionsOverviewFilterParams from '../../hooks/useDefaultTransactionsOverviewFilterParams';
 import useTransactionsOverviewMultiSelectionFilters from '../../hooks/useTransactionsOverviewMultiSelectionFilters';
-import AdyenPlatformExperienceError from '@src/core/Errors/AdyenPlatformExperienceError';
-import { AmountFilter } from '@src/components/internal/FilterBar/filters/AmountFilter/AmountFilter';
-import {
-    BASE_CLASS,
-    SUMMARY_CLASS,
-    SUMMARY_ITEM_CLASS,
-} from '@src/components/external/TransactionsOverview/components/TransactionsOverview/constants';
+import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatformExperienceError';
+import { AmountFilter } from '../../../../internal/FilterBar/filters/AmountFilter/AmountFilter';
+import { BASE_CLASS, SUMMARY_CLASS, SUMMARY_ITEM_CLASS } from './constants';
 import './TransactionsOverview.scss';
-import { mediaQueries, useMediaQuery } from '@src/components/external/TransactionsOverview/hooks/useMediaQuery';
+import { mediaQueries, useMediaQuery } from '../../hooks/useMediaQuery';
 
 export const TransactionsOverview = ({
     onFiltersChanged,

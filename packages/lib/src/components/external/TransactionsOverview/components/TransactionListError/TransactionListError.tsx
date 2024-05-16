@@ -1,6 +1,6 @@
-import { ErrorMessageDisplay } from '@src/components/internal/ErrorMessageDisplay/ErrorMessageDisplay';
-import { getErrorMessage } from '@src/components/utils/transactionResourceErrorCodes';
-import AdyenPlatformExperienceError from '@src/core/Errors/AdyenPlatformExperienceError';
+import { ErrorMessageDisplay } from '../../../../internal/ErrorMessageDisplay/ErrorMessageDisplay';
+import { getErrorMessage } from '../../../../utils/transactionResourceErrorCodes';
+import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatformExperienceError';
 
 const TransactionListError = ({ error, onContactSupport }: { error: AdyenPlatformExperienceError | undefined; onContactSupport?: () => void }) => {
     const { title, message, refreshComponent, translationValues, onContactSupport: ContactSupport } = getErrorMessage(error, onContactSupport);

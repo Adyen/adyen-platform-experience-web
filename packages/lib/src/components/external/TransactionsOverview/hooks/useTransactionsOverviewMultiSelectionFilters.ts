@@ -1,4 +1,4 @@
-import { ITransaction } from '@src/types';
+import { ITransaction } from '../../../../types';
 import { TransactionFilterParam } from '../types';
 import {
     DEFAULT_TRANSACTIONS_OVERVIEW_MULTI_SELECTION_FILTER_PARAMS as defaultFilters,

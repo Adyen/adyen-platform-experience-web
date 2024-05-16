@@ -1,5 +1,5 @@
-import useCoreContext from '@src/core/Context/useCoreContext';
-import { EMPTY_OBJECT } from '@src/utils/common';
+import useCoreContext from '../../core/Context/useCoreContext';
+import { EMPTY_OBJECT } from '../../utils/common';
 import { useMemo } from 'preact/hooks';
 
 // TODO - Remove once we define a strategy to handle images

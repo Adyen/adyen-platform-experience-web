@@ -1,7 +1,7 @@
-import { EMPTY_OBJECT } from '@src/utils/common';
+import { EMPTY_OBJECT } from '../../../../utils/common';
 import { UsePaginatedRecordsFilters } from './types';
-import useReactiveState from '@src/hooks/useReactiveState';
-import { ReactiveStateRecord } from '@src/hooks/useReactiveState/types';
+import useReactiveState from '../../../../hooks/useReactiveState';
+import { ReactiveStateRecord } from '../../../../hooks/useReactiveState/types';
 
 const usePaginatedRecordsFilters = <FilterValue, FilterParam extends string>(
     filterParams: ReactiveStateRecord<FilterValue, FilterParam> = EMPTY_OBJECT,

@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, Mock, test, vi } from 'vitest';
-import { noop } from '@src/utils/common';
+import { noop } from '../../common';
 import Watchable from './Watchable';
 import { UNWATCH_SIGNAL } from '../constants';
 

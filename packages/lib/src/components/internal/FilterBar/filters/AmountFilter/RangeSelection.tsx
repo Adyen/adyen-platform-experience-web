@@ -1,10 +1,10 @@
 import { FilterEditModalRenderProps } from '../BaseFilter/types';
 import { RangeFilterBody } from './types';
-import InputBase from '@src/components/internal/FormFields/InputBase';
+import InputBase from '../../../FormFields/InputBase';
 import './AmountFilter.scss';
 import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
-import { CommitAction } from '@src/hooks/useCommitAction';
-import useCoreContext from '@src/core/Context/useCoreContext';
+import { CommitAction } from '../../../../../hooks/useCommitAction';
+import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { AMOUNT_MULTIPLIER } from './constants';
 
 export const RangeSelection = ({

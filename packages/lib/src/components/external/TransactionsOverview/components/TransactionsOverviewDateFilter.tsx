@@ -1,12 +1,12 @@
 import { useCallback, useMemo, useState } from 'preact/hooks';
-import useCoreContext from '@src/core/Context/useCoreContext';
-import DateFilter from '@src/components/internal/FilterBar/filters/DateFilter';
-import { DateFilterProps, DateRangeFilterParam } from '@src/components/internal/FilterBar/filters/DateFilter/types';
-import { UsePaginatedRecords } from '@src/components/internal/Pagination/hooks/types';
+import useCoreContext from '../../../../core/Context/useCoreContext';
+import DateFilter from '../../../internal/FilterBar/filters/DateFilter';
+import { DateFilterProps, DateRangeFilterParam } from '../../../internal/FilterBar/filters/DateFilter/types';
+import { UsePaginatedRecords } from '../../../internal/Pagination/hooks/types';
 import { useBalanceAccountSelection } from './BalanceAccountSelector';
 import useDefaultTransactionsOverviewFilterParams from '../hooks/useDefaultTransactionsOverviewFilterParams';
 import { TransactionFilterParam } from '../types';
-import { EMPTY_OBJECT } from '@src/utils/common';
+import { EMPTY_OBJECT } from '../../../../utils/common';
 
 type TransactionsOverviewDateFilterProps = Pick<
     UsePaginatedRecords<any, string, TransactionFilterParam>,

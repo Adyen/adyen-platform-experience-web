@@ -1,5 +1,5 @@
 import { WatchCallable } from '../types';
-import { struct } from '@src/utils/common';
+import { struct } from '../../common';
 
 const createSyncEffectChain = (() => {
     const noop = <T extends WatchCallable<any> = WatchCallable<any>>(fn: T): T => fn;

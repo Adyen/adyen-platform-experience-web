@@ -1,4 +1,4 @@
-import { ITransactionTotal } from '@src/types';
+import { ITransactionTotal } from '../../../../../types';
 
 export type TransactionTotalItemProps = {
     total?: ITransactionTotal;

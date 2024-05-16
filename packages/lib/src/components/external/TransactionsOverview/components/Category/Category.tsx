@@ -1,6 +1,6 @@
-import { CategoryProps } from '@src/components/external/TransactionsOverview/components/Category/types';
-import { Tooltip } from '@src/components/internal/Tooltip/Tooltip';
-import useCoreContext from '@src/core/Context/useCoreContext';
+import { CategoryProps } from './types';
+import { Tooltip } from '../../../../internal/Tooltip/Tooltip';
+import useCoreContext from '../../../../../core/Context/useCoreContext';
 
 function Category({ value, isContainerHovered }: CategoryProps) {
     const { i18n } = useCoreContext();

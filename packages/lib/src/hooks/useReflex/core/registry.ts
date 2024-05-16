@@ -2,7 +2,7 @@ import { REF } from '../constants';
 import { UnknownRefError } from '../errors';
 import type { Defined, Nullable, Ref, RefAsCallback, Reflex, Reflexable, ReflexAction, ReflexRecord, ReflexRegister } from '../types';
 import { assertReflexAction, unwrap } from './utils';
-import { enumerable, isFunction, sameValue, struct } from '@src/utils/common';
+import { enumerable, isFunction, sameValue, struct } from '../../../utils/common';
 
 export const createReflexRegister = (() => {
     const _getRecordForRef = <T = any>(register: WeakMap<Ref, ReflexRecord>, ref: Ref<T>): ReflexRecord<T> => {

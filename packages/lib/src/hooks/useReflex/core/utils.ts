@@ -1,7 +1,7 @@
 import { REF } from '../constants';
 import { MissingReflexActionError } from '../errors';
 import type { Ref, Reflex, Reflexable, ReflexAction } from '../types';
-import { EMPTY_OBJECT, hasOwnProperty, isFunction, sameValue } from '@src/utils/common';
+import { EMPTY_OBJECT, hasOwnProperty, isFunction, sameValue } from '../../../utils/common';
 
 export function assertReflexAction<T = any>(value?: any): asserts value is ReflexAction<T> {
     if (!isFunction(value)) throw new MissingReflexActionError();

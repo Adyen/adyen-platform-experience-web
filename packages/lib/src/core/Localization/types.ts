@@ -1,8 +1,8 @@
 import CURRENCY_CODES from './constants/currency-codes';
 import CURRENCY_DECIMALS from './constants/currency-decimals';
-import { SUPPORTED_LOCALES } from '../Localization/constants/localization';
-import type { ReplaceUnderscoreOrDash } from '@src/utils/types';
-import { en_US } from '@src/core';
+import { SUPPORTED_LOCALES } from './constants/localization';
+import type { ReplaceUnderscoreOrDash } from '../../utils/types';
+import { en_US } from '../../core';
 
 export type CurrencyCode = keyof typeof CURRENCY_CODES;
 export type CurrencyDecimalCode = keyof typeof CURRENCY_DECIMALS;

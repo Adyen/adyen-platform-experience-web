@@ -1,16 +1,16 @@
-import { useSetupEndpoint } from '@src/hooks/useSetupEndpoint/useSetupEndpoint';
+import { useSetupEndpoint } from '../../../../../hooks/useSetupEndpoint/useSetupEndpoint';
 import { useCallback, useEffect, useMemo } from 'preact/hooks';
-import { EMPTY_OBJECT } from '@src/utils/common';
-import { useFetch } from '@src/hooks/useFetch/useFetch';
-import { OperationParameters } from '@src/types/models/openapi/endpoints';
-import { MakeFieldValueUndefined } from '@src/utils/types';
+import { EMPTY_OBJECT } from '../../../../../utils/common';
+import { useFetch } from '../../../../../hooks/useFetch/useFetch';
+import { OperationParameters } from '../../../../../types/models/openapi/endpoints';
+import { MakeFieldValueUndefined } from '../../../../../utils/types';
 import { memo } from 'preact/compat';
-import { BASE_CLASS } from '@src/components/external/TransactionsOverview/components/Balances/constants';
-import ExpandableCard from '@src/components/internal/ExpandableCard/ExpandableCard';
-import { BaseList } from '@src/components/internal/BaseList/BaseList';
-import { BalanceItem } from '@src/components/external/TransactionsOverview/components/BalanceItem/BalanceItem';
-import { useMaxWidthsState } from '@src/components/external/TransactionsOverview/hooks/useMaxWidths';
-import { ITransaction } from '@src/types';
+import { BASE_CLASS } from './constants';
+import ExpandableCard from '../../../../internal/ExpandableCard/ExpandableCard';
+import { BaseList } from '../../../../internal/BaseList/BaseList';
+import { BalanceItem } from '../BalanceItem/BalanceItem';
+import { useMaxWidthsState } from '../../hooks/useMaxWidths';
+import { ITransaction } from '../../../../../types';
 
 type TransactionTotalsProps = Required<OperationParameters<'getBalances'>['path']>;
 

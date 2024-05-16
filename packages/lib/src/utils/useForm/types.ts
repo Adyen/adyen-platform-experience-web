@@ -1,6 +1,6 @@
 import { ValidatorMode, ValidatorRules } from '../Validator/types';
 import { ValueOf } from '../types';
-import Localization from '@src/core/Localization';
+import Localization from '../../core/Localization';
 
 export interface FieldErrors {
     [key: string]: any;
