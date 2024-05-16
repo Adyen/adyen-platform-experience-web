@@ -1,22 +1,20 @@
 import { defineConfig, type PluginOption } from 'vite';
-import { resolve, relative, extname } from 'node:path';
+import { resolve } from 'node:path';
 import version from './config/version';
 import packageJson from './package.json';
-import { libInjectCss } from './config/inject-css';
-import { glob } from 'glob';
-import { fileURLToPath } from 'url';
 
 const currentVersion = version();
 const externalDependencies = Object.keys(packageJson.dependencies);
 
 export default defineConfig(async ({ mode }) => {
     const isAnalyseMode = mode === 'analyse';
-    const isESM = mode === 'esm';
+
+    /*    const isESM = mode === 'esm';
 
     const esmInput = Object.fromEntries(
         glob
-            .sync('src/**/*.{ts,tsx}', {
-                ignore: ['**/*.d.ts', '**/node_modules/**', '**/types/**/*'],
+            .sync('src/!**!/!*.{ts,tsx}', {
+                ignore: ['**!/!*.d.ts', '**!/node_modules/!**', '**!/types/!**!/!*'],
             })
             .filter(filePath => !filePath.includes('types'))
             .map(file => {
@@ -30,7 +28,7 @@ export default defineConfig(async ({ mode }) => {
                     fileURLToPath(new URL(file, import.meta.url)),
                 ];
             })
-    );
+    );*/
 
     return {
         resolve: {
@@ -39,7 +37,7 @@ export default defineConfig(async ({ mode }) => {
             },
         },
         build: {
-            minify: false,
+            minify: true,
             lib: {
                 name: 'AdyenPlatformExperienceWeb',
                 entry: resolve(__dirname, './src/index.ts'),
@@ -47,23 +45,23 @@ export default defineConfig(async ({ mode }) => {
                     if (entryName.includes('node_modules')) {
                         return `${format}/${entryName.replace('node_modules', 'external')}.js`;
                     }
-                    return isESM ? `${format}/${entryName}.js` : `${entryName}.js`;
+                    return `${format}/${entryName}.js`;
                 },
             },
             rollupOptions: {
                 external: externalDependencies,
-                input: isESM ? esmInput : undefined,
                 output: [
-                    isESM
-                        ? {
-                              format: 'es',
-                              sourcemap: false,
-                              indent: false,
-                          }
-                        : { format: 'cjs', sourcemap: true, indent: false },
+                    {
+                        format: 'es',
+                        preserveModules: true,
+                        preserveModulesRoot: 'src',
+                        sourcemap: false,
+                        indent: false,
+                    },
+                    { format: 'cjs', sourcemap: true, indent: false },
                 ],
             },
-            outDir: isESM ? resolve(__dirname, '.', 'dist') : resolve(__dirname, '.', 'dist', 'cjs'),
+            outDir: resolve(__dirname, '.', 'dist'),
             emptyOutDir: true,
         },
         define: {
@@ -89,7 +87,7 @@ export default defineConfig(async ({ mode }) => {
                     gzipSize: true,
                     open: true,
                 }) as PluginOption),
-            libInjectCss(),
+            // libInjectCss(),
         ],
     };
 });
