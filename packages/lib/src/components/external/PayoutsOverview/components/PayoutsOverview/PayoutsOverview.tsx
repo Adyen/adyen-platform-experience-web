@@ -140,16 +140,16 @@ export const PayoutsOverview = ({
             >
                 <PayoutsTable
                     balanceAccounts={balanceAccounts}
-                    loading={fetching || isLoadingBalanceAccount || !balanceAccounts}
                     data={records}
-                    showPagination={true}
-                    onRowClick={onRowClick}
-                    showDetails={showDetails}
+                    error={error as AdyenPlatformExperienceError}
                     limit={limit}
                     limitOptions={limitOptions}
+                    loading={fetching || isLoadingBalanceAccount || !balanceAccounts}
                     onContactSupport={onContactSupport}
                     onLimitSelection={updateLimit}
-                    error={error as AdyenPlatformExperienceError}
+                    onRowClick={onRowClick}
+                    showDetails={showDetails}
+                    showPagination={true}
                     {...paginationProps}
                 />
             </DataDetailsModal>
