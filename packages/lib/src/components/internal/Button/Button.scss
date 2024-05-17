@@ -34,7 +34,7 @@
 
     &--primary {
         background-color: token(color-background-inverse-primary);
-        color: token(color-label-inverse);
+        color: token(color-label-inverse-primary);
 
         &:hover {
             background-color: token(color-background-inverse-primary-hover);

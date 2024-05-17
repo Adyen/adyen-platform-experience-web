@@ -127,7 +127,6 @@ export const realApiProxies = (configs, mode) => {
             configure: (proxy, _options) => {
                 proxy.on('proxyReq', async (proxyReq, req, _res) => {
                     req.headers = { ...req.headers, path: req._parsedUrl.path };
-                    console.log('>>>>>>>>>>>>>req.path', req.headers);
                 });
             },
         },

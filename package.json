@@ -48,7 +48,7 @@
         "prepare": "node ./prepare.js"
     },
     "dependencies": {
-        "@adyen/bento-design-tokens": "^0.5.2",
+        "@adyen/bento-design-tokens": "adyen-bento-design-tokens.tgz",
         "concurrently": "^7.0.0"
     },
     "devDependencies": {
