@@ -21,6 +21,7 @@ import { TransactionTableProps } from './types';
 // Remove status column temporarily
 // const FIELDS = ['creationDate', 'status', 'paymentMethod', 'transactionType', 'amount'] as const;
 const FIELDS = ['creationDate', 'paymentMethod', 'transactionType', 'amount'] as const;
+type FieldsType = (typeof FIELDS)[number];
 
 export const TransactionsTable: FC<TransactionTableProps> = ({
     availableCurrencies,
@@ -54,7 +55,12 @@ export const TransactionsTable: FC<TransactionTableProps> = ({
                 }
 
                 return { key, label };
-            }).filter(column => !(isSmViewport && ['status', 'type'].includes(column.key))),
+            }).filter(column => {
+                // Remove status column temporarily
+                // const fieldsHiddenInSmViewport: FieldsType[] = ['status', 'transactionType'];
+                const fieldsHiddenInSmViewport: FieldsType[] = ['transactionType'];
+                return !(isSmViewport && fieldsHiddenInSmViewport.includes(column.key));
+            }),
         [availableCurrencies, hasMultipleCurrencies, i18n, isSmViewport]
     );
 
