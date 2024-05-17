@@ -1,10 +1,10 @@
-import { TableCells } from '@src/components/internal/DataGrid/components/TableCells';
-import useCoreContext from '@src/core/Context/useCoreContext';
-import { noop } from '@src/utils/common';
+import { TableCells } from './TableCells';
+import useCoreContext from '../../../../core/Context/useCoreContext';
+import { noop } from '../../../../utils/common';
 import { useCallback } from 'preact/hooks';
-import { useInteractiveDataGrid } from '@src/components/internal/DataGrid/hooks/useInteractiveDataGrid';
+import { useInteractiveDataGrid } from '../hooks/useInteractiveDataGrid';
 import { DataGridColumn, InteractiveBodyProps } from '../types';
-import { CustomCell } from '../../DataGrid/DataGrid';
+import { CustomCell } from '../DataGrid';
 
 export const InteractiveBody = <
     Items extends any[],

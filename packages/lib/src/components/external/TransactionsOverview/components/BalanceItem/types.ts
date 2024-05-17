@@ -1,4 +1,4 @@
-import { IBalance } from '@src/types';
+import { IBalance } from '../../../../../types';
 
 export type BalanceItemProps = {
     balance?: IBalance;

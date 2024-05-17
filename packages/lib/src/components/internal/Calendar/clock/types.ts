@@ -1,5 +1,5 @@
-import { Watchable } from '@src/utils/watchable/types';
-import { RestamperWithTimezone } from '@src/core/Localization/datetime/restamper';
+import { Watchable } from '../../../../utils/watchable/types';
+import { RestamperWithTimezone } from '../../../../core/Localization/datetime/restamper';
 
 export type Clock<T extends Record<any, any> = {}> = Readonly<{
     timestamp: number;

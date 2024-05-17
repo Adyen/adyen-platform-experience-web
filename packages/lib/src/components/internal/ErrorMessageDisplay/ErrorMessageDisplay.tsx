@@ -1,13 +1,13 @@
-import Typography from '@src/components/internal/Typography/Typography';
-import { TypographyVariant } from '@src/components/internal/Typography/types';
+import Typography from '../Typography/Typography';
+import { TypographyVariant } from '../Typography/types';
 import { useCallback } from 'preact/hooks';
-import useCoreContext from '@src/core/Context/useCoreContext';
-import { TranslationKey } from '@src/core/Localization/types';
+import useCoreContext from '../../../core/Context/useCoreContext';
+import { TranslationKey } from '../../../core/Localization/types';
 import './ErrorMessageDisplay.scss';
 import { JSXInternal } from 'preact/src/jsx';
 import noResults from '../../../images/no-results.svg';
-import Button from '@src/components/internal/Button';
-import useAuthContext from '@src/core/Auth/useAuthContext';
+import Button from '../Button';
+import useAuthContext from '../../../core/Auth/useAuthContext';
 export const IMAGE_BREAKPOINT_SIZES = {
     md: 680,
     lg: 1024,

@@ -1,9 +1,9 @@
 import TimeFrame from './TimeFrame';
 import { computeTimestampOffset, getEdgesDistance } from '../../utils';
 import { YEAR_MONTHS } from '../../constants';
-import { immutableProxyHandlers, isBitSafeInteger, isInfinite, struct, structFrom } from '@src/utils/common';
+import { immutableProxyHandlers, isBitSafeInteger, isInfinite, struct, structFrom } from '../../../../../../utils/common';
 import { CalendarDayOfWeekData, Time, TimeFlag, TimeFrameBlock, TimeFrameSelection } from '../../types';
-import { isString } from '@src/utils/validator-utils';
+import { isString } from '../../../../../../utils/validator-utils';
 
 export default class YearFrame extends TimeFrame {
     #currentDayTimestamp!: number;

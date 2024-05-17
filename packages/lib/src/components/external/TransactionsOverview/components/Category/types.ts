@@ -1,4 +1,4 @@
-import { ICategory } from '@src/types';
+import { ICategory } from '../../../../../types';
 
 export type CategoryProps = {
     value: ICategory;

@@ -1,6 +1,6 @@
 import { JSX } from 'preact';
-import { CommitAction } from '@src/hooks/useCommitAction';
-import { PopoverContainerSize } from '@src/components/internal/Popover/types';
+import { CommitAction } from '../../../../../hooks/useCommitAction';
+import { PopoverContainerSize } from '../../../Popover/types';
 
 export interface BaseFilterProps {
     onChange: (value?: any) => void;

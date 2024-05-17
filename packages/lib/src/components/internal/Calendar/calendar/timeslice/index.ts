@@ -1,7 +1,7 @@
 import __TimeSlice__ from './TimeSlice';
 import { RANGE_FROM, RANGE_TO } from '../constants';
 import { TimeSlice, TimeSliceFactory } from '../types';
-import { struct } from '@src/utils/common';
+import { struct } from '../../../../../utils/common';
 
 const factory = ((...args: any[]) => {
     const slice = new __TimeSlice__(...args);

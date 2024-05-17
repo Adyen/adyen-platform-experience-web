@@ -1,8 +1,8 @@
-import Button from '@src/components/internal/Button';
-import { ButtonVariant } from '@src/components/internal/Button/types';
+import Button from '../Button';
+import { ButtonVariant } from '../Button/types';
 import { useCallback, useState } from 'preact/hooks';
-import { Tooltip } from '@src/components/internal/Tooltip/Tooltip';
-import Copy from '@src/components/internal/SVGIcons/Copy';
+import { Tooltip } from '../Tooltip/Tooltip';
+import Copy from '../SVGIcons/Copy';
 import './CopyText.scss';
 
 const CopyText = ({ text }: { text: string }) => {

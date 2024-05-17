@@ -1,4 +1,4 @@
-import { UseTimeRangeSelectionConfig } from '@src/components/internal/DatePicker/components/TimeRangeSelector';
+import { UseTimeRangeSelectionConfig } from '../../../DatePicker/components/TimeRangeSelector';
 import { BaseFilterProps } from '../BaseFilter/types';
 
 export const enum DateRangeFilterParam {

@@ -1,8 +1,8 @@
-import Modal from '@src/components/internal/Modal';
-import { popoverUtil } from '@src/components/internal/Popover/utils/popoverUtil';
-import Spinner from '@src/components/internal/Spinner';
-import useCoreContext from '@src/core/Context/useCoreContext';
-import useModalDetails from '@src/hooks/useModalDetails/useModalDetails';
+import Modal from '../Modal';
+import { popoverUtil } from '../Popover/utils/popoverUtil';
+import Spinner from '../Spinner';
+import useCoreContext from '../../../core/Context/useCoreContext';
+import useModalDetails from '../../../hooks/useModalDetails/useModalDetails';
 import { FC, PropsWithChildren, Suspense } from 'preact/compat';
 import { useEffect } from 'preact/hooks';
 import { JSXInternal } from 'preact/src/jsx';
