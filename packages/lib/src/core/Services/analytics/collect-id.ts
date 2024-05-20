@@ -1,5 +1,5 @@
 import { httpPost } from '../requests/http';
-import Storage from '../../../utils/Storage';
+import Storage from '../../../utils/SessionStorage';
 import { CheckoutAttemptIdSession, CollectIdProps } from './types';
 
 /**
