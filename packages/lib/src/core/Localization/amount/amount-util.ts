@@ -3,35 +3,24 @@ import CURRENCY_DECIMALS from '../constants/currency-decimals';
 import { CurrencyCode, CurrencyDecimalCode } from '../types';
 
 /**
- * @internal
  * @param currencyCode -
  * Get divider amount
  */
 export const getDivider = (currencyCode: string): number => CURRENCY_DECIMALS[currencyCode as CurrencyDecimalCode] || 100;
 
 /**
- * @internal
  * @param currencyCode -
  * Returns whether a CURRENCY CODE is valid
  */
 export const isValidCurrencyCode = (currencyCode: string): currencyCode is CurrencyCode => !!CURRENCY_CODES[currencyCode as CurrencyCode];
 
-/**
- * @internal
- */
 export const getCurrencyCode = (currencyCode: string): string | null => (isValidCurrencyCode(currencyCode) ? CURRENCY_CODES[currencyCode] : null);
 
-/**
- * @internal
- */
 export const getDecimalAmount = (amount: number | string, currencyCode: string): number => {
     const divider = getDivider(currencyCode);
     return parseInt(String(amount), 10) / divider;
 };
 
-/**
- * @internal
- */
 export const getLocalisedAmount = (
     amount: number,
     locale: string,
@@ -67,9 +56,6 @@ export const formatAmountWithoutCurrency = (locale: string, options: Intl.Number
         .trim();
 };
 
-/**
- * @internal
- */
 export const getLocalisedPercentage = (percent = 0, locale: string): string | null => {
     const decimalPercent = percent / 100 / 100;
     const localeOptions = {

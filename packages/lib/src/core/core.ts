@@ -93,7 +93,6 @@ class Core<T extends CoreOptions<T> = any> {
     };
 
     /**
-     * @internal
      * Register components in core to be able to update them all at once
      */
 
@@ -102,7 +101,6 @@ class Core<T extends CoreOptions<T> = any> {
     };
 
     /**
-     * @internal
      * Enhances the config object passed when AdyenPlatformExperience is initialised (environment, clientKey, etc...)
      * (Re)Initializes core properties & processes (i18n, etc...)
      * @param options - the config object passed when AdyenPlatformExperience is initialised
@@ -130,7 +128,6 @@ class Core<T extends CoreOptions<T> = any> {
     };
 
     /**
-     * @internal
      * @param options - options that will be merged to the global Checkout props
      * @returns props for a new UIElement
      */

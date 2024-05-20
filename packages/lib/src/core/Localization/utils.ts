@@ -97,7 +97,6 @@ const replaceTranslationValues = (translation: string, values?: Record<string, a
  * @param key -
  * @param options -
  *
- * @internal
  */
 export const getTranslation = (
     translations: Record<string, string>,

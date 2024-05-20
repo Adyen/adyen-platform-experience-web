@@ -49,10 +49,6 @@ export interface CoreOptions<T extends CoreOptions<T> = any> {
 
     balanceAccountId?: string;
 
-    /**
-     * @internal
-     * */
-
     analytics?: AnalyticsOptions;
 
     timezone?: Intl.DateTimeFormatOptions['timeZone'];
