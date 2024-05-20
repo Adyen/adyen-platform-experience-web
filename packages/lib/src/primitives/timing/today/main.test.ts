@@ -1,12 +1,18 @@
 // @vitest-environment jsdom
 import { describe, expect, test, vi } from 'vitest';
 import { SYSTEM_TIMEZONE } from '../../../core/Localization/datetime/restamper';
-import { startOfDay, startOfNextDay } from '../../../utils';
 import { DATES, setupTimers, TIMEZONES } from '../__testing__/fixtures';
 import { today } from './main';
 
 describe('today', () => {
     setupTimers();
+
+    const startOfDay = (date: Date | number = Date.now()) => new Date(date).setHours(0, 0, 0, 0);
+
+    const startOfNextDay = (startDateOfDay: Date | number = startOfDay()) => {
+        const startDate = new Date(startDateOfDay);
+        return startDate.setDate(startDate.getDate() + 1);
+    };
 
     test('should use shared instance for same timezone', () => {
         const testRoutine = (timezone?: string) => {
@@ -35,7 +41,7 @@ describe('today', () => {
                 vi.setSystemTime(date);
 
                 const currentTimestamp = getStartDate(index); // start of current day
-                const nextTimestamp = startOfNextDay(currentTimestamp); // start of next day
+                const nextTimestamp = startOfNextDay(currentTimestamp)!; // start of next day
                 expect($today.timestamp).toBe(currentTimestamp); // same day (same timestamp)
 
                 vi.setSystemTime(nextTimestamp - 1); // 1ms away from start of next day
@@ -45,18 +51,18 @@ describe('today', () => {
                 expect($today.timestamp).not.toBe(currentTimestamp); // next day (different timestamp)
                 expect($today.timestamp).toBe(nextTimestamp); // next day (next timestamp)
 
-                vi.setSystemTime(startOfNextDay(nextTimestamp) - 1); // end of next day
+                vi.setSystemTime(startOfNextDay(nextTimestamp)! - 1); // end of next day
                 expect($today.timestamp).toBe(nextTimestamp); // same day (same timestamp)
             });
         };
 
-        testRoutine(() => startOfDay(), SYSTEM_TIMEZONE); // explicit system timezone
+        testRoutine(() => startOfDay()!, SYSTEM_TIMEZONE); // explicit system timezone
 
         TIMEZONES.forEach((startDates, timezone) => {
             testRoutine(index => startDates[index]!.getTime(), timezone);
         });
 
-        testRoutine(() => startOfDay()); // implicit (defaults to) system timezone
+        testRoutine(() => startOfDay()!); // implicit (defaults to) system timezone
     });
 
     test('should use latest timestamp for new day when being watched', () => {
@@ -81,7 +87,7 @@ describe('today', () => {
                 vi.setSystemTime(date);
 
                 const todayTimestamp = getStartDate(index); // start of current day
-                const nextTimestamp = startOfNextDay(todayTimestamp); // start of next day
+                const nextTimestamp = startOfNextDay(todayTimestamp)!; // start of next day
 
                 expect($today.timestamp).not.toBe(todayTimestamp); // timestamp not recomputed
                 expect($today.timestamp).toBe(currentDayTimestamp); // timestamp not recomputed
@@ -108,7 +114,7 @@ describe('today', () => {
                 expect(watchFn).toHaveBeenLastCalledWith({ timestamp: currentDayTimestamp });
 
                 vi.runOnlyPendingTimers();
-                vi.setSystemTime((currentDayTimestamp = startOfNextDay(nextTimestamp)) - 1); // end of next day
+                vi.setSystemTime((currentDayTimestamp = startOfNextDay(nextTimestamp)!) - 1); // end of next day
 
                 expect($today.timestamp).toBe(nextTimestamp); // same day (same timestamp)
                 expect(watchFn).toBeCalledTimes(watchFnCalls); // not called
@@ -122,12 +128,12 @@ describe('today', () => {
             unsubscribe(); // unregister watch function;
         };
 
-        testRoutine(() => startOfDay(), SYSTEM_TIMEZONE); // explicit system timezone
+        testRoutine(() => startOfDay()!, SYSTEM_TIMEZONE); // explicit system timezone
 
         TIMEZONES.forEach((startDates, timezone) => {
             testRoutine(index => startDates[index]!.getTime(), timezone);
         });
 
-        testRoutine(() => startOfDay()); // implicit (defaults to) system timezone
+        testRoutine(() => startOfDay()!); // implicit (defaults to) system timezone
     });
 });
