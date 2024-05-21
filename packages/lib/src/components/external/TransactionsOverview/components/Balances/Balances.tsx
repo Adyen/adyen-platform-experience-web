@@ -34,9 +34,9 @@ export const Balances = memo(({ balanceAccountId, onCurrenciesChange, fullWidth 
     });
 
     const isLoading = !balanceAccountId || isFetching;
-    const isEmpty = !!error || !data?.balances.length;
+    const isEmpty = !!error || !data?.data.length;
 
-    const balances = data?.balances.sort((a, b) => a.currency.localeCompare(b.currency));
+    const balances = data?.data.sort((a, b) => a.currency.localeCompare(b.currency));
     const [firstBalance, ...restOfBalances] = balances ?? [];
 
     const [maxWidths, setMaxWidths] = useMaxWidthsState();
