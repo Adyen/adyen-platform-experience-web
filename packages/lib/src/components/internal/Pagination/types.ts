@@ -48,7 +48,9 @@ export type BasePaginatedResponseData<T = any, DataField extends string = 'data'
 };
 
 export type PaginatedResponseDataWithLinks<T = any, DataField extends string = 'data'> = BasePaginatedResponseData<T, DataField> & {
-    [K in PageNeighbour]?: string;
+    _links: {
+        [K in PageNeighbour]?: { cursor: string };
+    };
 };
 
 export type PaginatedResponseDataWithoutLinks<T = any, DataField extends string = 'data'> = BasePaginatedResponseData<T, DataField> & {

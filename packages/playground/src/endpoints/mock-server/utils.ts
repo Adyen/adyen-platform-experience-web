@@ -24,3 +24,16 @@ export async function enableServerInMockedMode(enabled?: boolean) {
 export function stopMockedServer() {
     mockWorker.stop();
 }
+
+export const getPaginationLinks = (cursor: number, limit: number, totalLength: number) => {
+    const potentialNextCursor = cursor + limit;
+    const nextCursor = potentialNextCursor < totalLength ? potentialNextCursor : undefined;
+
+    const potentialPrevCursor = cursor - limit;
+    const prevCursor = potentialPrevCursor >= 0 ? potentialPrevCursor : undefined;
+
+    return {
+        ...(nextCursor === undefined ? {} : { next: { cursor: nextCursor.toString() } }),
+        ...(prevCursor === undefined ? {} : { prev: { cursor: prevCursor.toString() } }),
+    };
+};

@@ -81,7 +81,7 @@ export const balanceAccountMock = [
         return res(
             delay(200),
             ctx.json({
-                balanceAccounts: SINGLE_BALANCE_ACCOUNT,
+                data: SINGLE_BALANCE_ACCOUNT,
             })
         );
     }),
@@ -89,7 +89,7 @@ export const balanceAccountMock = [
         return res(
             delay(300),
             ctx.json({
-                totals: TRANSACTION_TOTALS,
+                data: TRANSACTION_TOTALS,
             })
         );
     }),
@@ -97,7 +97,7 @@ export const balanceAccountMock = [
         return res(
             delay(300),
             ctx.json({
-                balances: MULTIPLE_ACCOUNT_BALANCES,
+                data: MULTIPLE_ACCOUNT_BALANCES,
             })
         );
     }),
