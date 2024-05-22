@@ -15,7 +15,7 @@
         "importHelpers": true,
         "declarationMap": true,
         "paths": {
-            "@adyen/adyen-platform-experience-web": ["packages/lib/src"]
+            "@adyen/adyen-platform-experience-web": ["./packages/lib/src"]
         }
     },
     "files": [],
