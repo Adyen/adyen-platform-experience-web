@@ -48,14 +48,14 @@
         "prepare": "node ./prepare.js && bash ./scripts/process-package-lock.sh"
     },
     "dependencies": {
-        "@adyen/bento-design-tokens": "^0.5.2",
+        "@adyen/bento-design-tokens": "^1.6.1",
         "concurrently": "^7.0.0"
     },
     "devDependencies": {
         "husky": "^7.0.4",
-        "lint-staged": "^13.0.1",
-        "vite": "^4.3.2",
-        "vite-plugin-checker": "^0.5.6"
+        "lint-staged": "^15.2.2",
+        "vite": "^5.2.10",
+        "vite-plugin-checker": "^0.6.4"
     },
     "msw": {
         "workerDirectory": "packages/playground/public"
