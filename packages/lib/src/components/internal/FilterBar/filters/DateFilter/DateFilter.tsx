@@ -13,15 +13,17 @@ type DataOverviewDateFilterProps = Pick<UsePaginatedRecords<any, string, FilterP
         timezone?: UseTimeRangeSelectionConfig['timezone'];
     };
 
-const DateFilter = ({
+const DateFilter = <T extends DateFilterProps = DateFilterProps>({
     timezone,
     canResetFilters,
     defaultParams,
     filters,
     nowTimestamp,
     refreshNowTimestamp,
+    sinceDate,
+    untilDate,
     updateFilters,
-}: DataOverviewDateFilterProps) => {
+}: Pick<T, 'sinceDate' | 'untilDate'> & DataOverviewDateFilterProps) => {
     const { i18n } = useCoreContext();
     const defaultTimeRangePreset = useMemo(() => i18n.get(defaultParams.current.defaultTimeRange), [i18n]);
     const [selectedTimeRangePreset, setSelectedTimeRangePreset] = useState(defaultTimeRangePreset);
@@ -55,18 +57,12 @@ const DateFilter = ({
 
     useMemo(() => !canResetFilters && setSelectedTimeRangePreset(defaultTimeRangePreset), [canResetFilters, defaultTimeRangePreset]);
 
-    const sinceDate = useMemo(() => {
-        const date = new Date(nowTimestamp);
-        date.setMonth(date.getMonth() - 24);
-        return date.toString();
-    }, [nowTimestamp]);
-
     return (
         <DateFilterCore
             label={i18n.get('dateRange')}
             name={FilterParam.CREATED_SINCE}
             sinceDate={sinceDate}
-            untilDate={new Date(nowTimestamp).toString()}
+            untilDate={untilDate ?? new Date(nowTimestamp).toString()}
             from={filters[FilterParam.CREATED_SINCE]}
             to={filters[FilterParam.CREATED_UNTIL]}
             selectedPresetOption={selectedTimeRangePreset}

@@ -109,6 +109,8 @@ export const PayoutsOverview = ({
         [updateDetails]
     );
 
+    const sinceDate = useMemo(() => new Date('2024-04-16T00:00:00.000Z').toString(), []);
+
     return (
         <div className={BASE_CLASS}>
             {!hideTitle && (
@@ -128,6 +130,7 @@ export const PayoutsOverview = ({
                     filters={filters}
                     nowTimestamp={nowTimestamp}
                     refreshNowTimestamp={refreshNowTimestamp}
+                    sinceDate={sinceDate}
                     updateFilters={updateFilters}
                 />
             </FilterBar>

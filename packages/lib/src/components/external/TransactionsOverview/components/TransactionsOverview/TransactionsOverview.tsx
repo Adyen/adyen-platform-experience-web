@@ -147,6 +147,12 @@ export const TransactionsOverview = ({
         [updateDetails, activeBalanceAccount]
     );
 
+    const sinceDate = useMemo(() => {
+        const date = new Date(nowTimestamp);
+        date.setMonth(date.getMonth() - 24);
+        return date.toString();
+    }, [nowTimestamp]);
+
     return (
         <div className={BASE_CLASS}>
             {!hideTitle && (
@@ -166,6 +172,7 @@ export const TransactionsOverview = ({
                     filters={filters}
                     nowTimestamp={nowTimestamp}
                     refreshNowTimestamp={refreshNowTimestamp}
+                    sinceDate={sinceDate}
                     updateFilters={updateFilters}
                 />
                 {/* Remove status filter temporarily */}
