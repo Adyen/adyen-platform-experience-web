@@ -45,7 +45,7 @@ export interface components {
     };
     BalanceAccountsResponse: {
       /** @description List of balance accounts */
-      balanceAccounts: components["schemas"]["BalanceAccountBase"][];
+      data: components["schemas"]["BalanceAccountBase"][];
     };
     /** @description Collection of balances per balance account */
     Balance: {
@@ -59,7 +59,7 @@ export interface components {
     };
     BalancesResponse: {
       /** @description Collection of balances per balance account */
-      balances: components["schemas"]["Balance"][];
+      data: components["schemas"]["Balance"][];
     };
   };
   responses: never;

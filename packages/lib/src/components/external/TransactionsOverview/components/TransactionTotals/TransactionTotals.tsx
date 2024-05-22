@@ -55,15 +55,15 @@ const TransactionTotals = memo(
 
         const getTotals = useCallback(() => {
             if (!availableCurrencies || !data) {
-                return data?.totals;
+                return data?.data;
             }
 
             const partialTotals = availableCurrencies.map(currency => {
-                const totalOfCurrency = data.totals.find(total => total.currency === currency);
+                const totalOfCurrency = data.data.find(total => total.currency === currency);
                 return totalOfCurrency || { currency, incomings: 0, expenses: 0 };
             });
 
-            return partialTotals.concat(data.totals.filter(total => !partialTotals.includes(total)));
+            return partialTotals.concat(data.data.filter(total => !partialTotals.includes(total)));
         }, [availableCurrencies, data]);
 
         const totals = getTotals() ?? [];

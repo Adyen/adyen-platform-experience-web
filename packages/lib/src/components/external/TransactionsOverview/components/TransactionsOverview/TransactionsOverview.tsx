@@ -73,9 +73,9 @@ export const TransactionsOverview = ({
 
     //TODO - Infer the return type of getTransactions instead of having to specify it
     const { canResetFilters, error, fetching, filters, limit, limitOptions, records, resetFilters, updateFilters, updateLimit, ...paginationProps } =
-        useCursorPaginatedRecords<ITransaction, 'transactions', string, TransactionFilterParam>({
+        useCursorPaginatedRecords<ITransaction, 'data', string, TransactionFilterParam>({
             fetchRecords: getTransactions,
-            dataField: 'transactions',
+            dataField: 'data',
             filterParams: defaultParams.current.defaultFilterParams,
             initialFiltersSameAsDefault: true,
             onLimitChanged: _onLimitChanged,

@@ -25,13 +25,13 @@ function TransactionsOverviewContainer(props: ExternalUIComponentProps<Transacti
     });
 
     const balanceAccounts = useMemo(
-        () => data?.balanceAccounts.filter(account => (props.balanceAccountId ? account.id === props.balanceAccountId : true)),
-        [data?.balanceAccounts, props.balanceAccountId]
+        () => data?.data.filter(account => (props.balanceAccountId ? account.id === props.balanceAccountId : true)),
+        [data?.data, props.balanceAccountId]
     );
 
     const wrongBalanceAccountId = useMemo(
-        () => !!props.balanceAccountId && !!data?.balanceAccounts.length && balanceAccounts?.length === 0,
-        [balanceAccounts?.length, data?.balanceAccounts.length, props.balanceAccountId]
+        () => !!props.balanceAccountId && !!data?.data.length && balanceAccounts?.length === 0,
+        [balanceAccounts?.length, data?.data.length, props.balanceAccountId]
     );
 
     return (
