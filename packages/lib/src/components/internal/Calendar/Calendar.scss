@@ -116,7 +116,7 @@
 
         [data-selection-start='1']:not([data-today='1']) &,
         [data-selection-end='1']:not([data-today='1']) & {
-            color: var(--adyen-sdk-color-label-inverse);
+            color: var(--adyen-sdk-color-label-inverse-primary);
         }
 
         [data-selection-start='1'][data-today='1'] &::before,

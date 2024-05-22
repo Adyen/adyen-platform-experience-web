@@ -8,7 +8,10 @@
         background: var(--adyen-sdk-color-background-primary);
         border: unset;
         border-radius: $adyen-pe-spacer-040;
-        box-shadow: 0 6px 12px rgba(0, 17, 44, 0.08), 0 2px 4px rgba(0, 17, 44, 0.04), 0 0 0 1px rgba(0, 17, 44, 0.06);
+        box-shadow:
+            0 6px 12px rgba(0, 17, 44, 0.08),
+            0 2px 4px rgba(0, 17, 44, 0.04),
+            0 0 0 1px rgba(0, 17, 44, 0.06);
         min-width: 200px;
         overflow: hidden;
         z-index: 10;
@@ -130,7 +133,7 @@
         &__content {
             background-color: var(--adyen-sdk-color-background-inverse-primary);
             border-radius: $adyen-pe-spacer-020;
-            color: var(--adyen-sdk-color-label-inverse);
+            color: var(--adyen-sdk-color-label-inverse-primary);
             height: auto;
             max-width: 300px;
             padding: $adyen-pe-spacer-020 $adyen-pe-spacer-040;

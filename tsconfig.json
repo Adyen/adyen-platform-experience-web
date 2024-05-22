@@ -13,11 +13,11 @@
         "lib": ["ESNext", "DOM", "DOM.Iterable"],
         "stripInternal": true,
         "importHelpers": true,
-        "declarationMap": true
+        "declarationMap": true,
+        "paths": {
+            "@adyen/adyen-platform-experience-web": ["packages/lib/src"]
+        }
     },
     "files": [],
     "references": [{ "path": "packages/lib" }],
-    "paths": {
-        "@adyen/adyen-platform-experience-web": ["packages/lib/src"]
-    }
 }
