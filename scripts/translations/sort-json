@@ -7,11 +7,7 @@ try {
     const sortedJSON = JSON.stringify(
         Object.fromEntries(
             Object.entries(SOURCE_OBJ)
-                .sort(([A], [B]) => {
-                    const a = A.toLowerCase();
-                    const b = B.toLowerCase();
-                    return a < b ? -1 : +(a > b);
-                })
+                .sort(([a], [b]) => a.localeCompare(b))
         )
     );
 
