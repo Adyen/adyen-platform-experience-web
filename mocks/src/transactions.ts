@@ -1,7 +1,7 @@
 import { ITransaction } from '../../packages/lib/src/types';
 
 const TRANSACTION_DETAILS_1: ITransaction = {
-    balanceAccountId: '',
+    balanceAccountId: 'BA32272223222B5CTDNB66W2Z',
     id: '1WEPGD5VS767881Q',
     amount: { currency: 'EUR', value: 12000 },
     status: 'Reversed',
@@ -10,7 +10,7 @@ const TRANSACTION_DETAILS_1: ITransaction = {
     createdAt: '2022-08-29T14:47:03+02:00',
 };
 const TRANSACTION_DETAILS_2: ITransaction = {
-    balanceAccountId: '',
+    balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
     id: '3KVM0J5V771942G',
     amount: { currency: 'EUR', value: 950200 },
     status: 'Reversed',
@@ -21,7 +21,7 @@ const TRANSACTION_DETAILS_2: ITransaction = {
     createdAt: '2022-09-29T14:47:03+02:00',
 };
 const TRANSACTION_DETAILS_3: ITransaction = {
-    balanceAccountId: '',
+    balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
     id: '1WEPGE5W23KIX9U5',
     amount: { currency: 'USD', value: -4000 },
     status: 'Booked',
@@ -30,7 +30,7 @@ const TRANSACTION_DETAILS_3: ITransaction = {
     createdAt: '2022-08-29T14:47:03+02:00',
 };
 const TRANSACTION_DETAILS_4: ITransaction = {
-    balanceAccountId: '',
+    balanceAccountId: 'BA32272223222B5CTDQPM6W2G',
     id: '1WEPGE5W2I3OPAQ6',
     amount: { currency: 'EUR', value: 45000 },
     status: 'Reversed',
@@ -39,7 +39,7 @@ const TRANSACTION_DETAILS_4: ITransaction = {
     createdAt: '2022-08-29T14:47:03+02:00',
 };
 const TRANSACTION_DETAILS_5: ITransaction = {
-    balanceAccountId: '',
+    balanceAccountId: 'BA32272223222B5CTDNB66W2Z',
     id: '1VVF0E5W838BKHRK',
     amount: { currency: 'EUR', value: 690500 },
     status: 'Booked',
@@ -47,7 +47,7 @@ const TRANSACTION_DETAILS_5: ITransaction = {
     createdAt: '2022-08-29T14:47:03+02:00',
 };
 const TRANSACTION_DETAILS_6: ITransaction = {
-    balanceAccountId: '',
+    balanceAccountId: 'BA32272223222B5CTDQPM6W2G',
     id: '1WEPGE5W838BO42V',
     amount: { currency: 'EUR', value: 85050 },
     status: 'Booked',
@@ -56,7 +56,7 @@ const TRANSACTION_DETAILS_6: ITransaction = {
     createdAt: '2022-08-29T14:47:03+02:00',
 };
 const TRANSACTION_DETAILS_7: ITransaction = {
-    balanceAccountId: '',
+    balanceAccountId: 'BA32272223222B5CTDNB66W2Z',
     id: '1WEPGE5W838BO47L',
     amount: { currency: 'EUR', value: 3000 },
     status: 'Pending',
@@ -65,7 +65,7 @@ const TRANSACTION_DETAILS_7: ITransaction = {
     createdAt: '2022-08-29T14:47:03+02:00',
 };
 const TRANSACTION_DETAILS_8: ITransaction = {
-    balanceAccountId: '',
+    balanceAccountId: 'BA32272223222B5CTDNB66W2Z',
     id: '1VVF0D5V370945D',
     amount: { currency: 'EUR', value: 820000 },
     status: 'Booked',
@@ -76,7 +76,7 @@ const TRANSACTION_DETAILS_8: ITransaction = {
     createdAt: '2022-08-29T14:47:03+02:00',
 };
 const TRANSACTION_DETAILS_9: ITransaction = {
-    balanceAccountId: '',
+    balanceAccountId: 'BA32272223222B5CTDNB66W2Z',
     id: '1WEPGE5W23KIX9T7',
     amount: { currency: 'EUR', value: 55000 },
     status: 'Booked',
@@ -86,7 +86,7 @@ const TRANSACTION_DETAILS_9: ITransaction = {
 };
 
 export const TRANSACTION_DETAILS_DEFAULT: ITransaction = {
-    balanceAccountId: '',
+    balanceAccountId: 'BA32272223222B5CTDNB66W2Z',
     id: '1VVF0D5V3709DX6D',
     amount: { currency: 'USD', value: 100000 },
     status: 'Booked',
