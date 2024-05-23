@@ -78,6 +78,6 @@ for ((i=0; i<${#file_folders[@]}; i++)); do
     export NODE_EXTRA_CA_CERTS="$CA_CERTS"
 
     #Generate schemas
-    npx openapi-typescript "$FILE_URL" -o "${SCHEMAS_DIR}/${file_names[i]}.d.ts" --header "PRIVATE-TOKEN: $API_TOKEN"
+    npx openapi-typescript "$FILE_URL" -o "${SCHEMAS_DIR}/${file_names[i]}.ts" --header "PRIVATE-TOKEN: $API_TOKEN"
 
 done

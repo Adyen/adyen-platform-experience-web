@@ -18,13 +18,13 @@ const useBalanceAccounts = (balanceAccountId?: string) => {
     });
 
     const balanceAccounts = useMemo(
-        () => data?.balanceAccounts.filter(account => (balanceAccountId ? account.id === balanceAccountId : true)),
-        [data?.balanceAccounts, balanceAccountId]
+        () => data?.data.filter(account => (balanceAccountId ? account.id === balanceAccountId : true)),
+        [data?.data, balanceAccountId]
     );
 
     const wrongBalanceAccountId = useMemo(
-        () => !!balanceAccountId && !!data?.balanceAccounts.length && balanceAccounts?.length === 0,
-        [balanceAccounts?.length, data?.balanceAccounts.length, balanceAccountId]
+        () => !!balanceAccountId && !!data?.data.length && balanceAccounts?.length === 0,
+        [balanceAccounts?.length, data?.data.length, balanceAccountId]
     );
 
     return { balanceAccounts, wrongBalanceAccountId, isFetching } as const;

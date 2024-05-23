@@ -8,6 +8,6 @@
         "url": "https://support.adyen.com/"
     },
     "dependencies": {
-        "@adyen/adyen-platform-experience-web": "^1.0.0-beta.1"
+        "@adyen/adyen-platform-experience-web": "^1.0.0-beta.3"
     }
 }
