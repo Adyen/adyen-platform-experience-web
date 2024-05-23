@@ -8,7 +8,7 @@ const clock = (() => {
 
     // Adopted from: https://gist.github.com/jakearchibald/cb03f15670817001b1157e62a076fe95
     const animationInterval = (ms: number, signal: AbortSignal, callback: () => any) => {
-        const start = document.timeline.currentTime ?? performance.now();
+        const start = (document.timeline.currentTime as number) ?? performance.now();
 
         const scheduleFrame = (time: number) => {
             const elapsed = time - start;
