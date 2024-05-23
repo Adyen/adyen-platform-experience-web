@@ -6,8 +6,8 @@ import { Tag } from '../../../internal/Tag/Tag';
 import { TagVariant } from '../../../internal/Tag/types';
 import useCoreContext from '../../../../core/Context/useCoreContext';
 import { useMemo } from 'preact/hooks';
-
-export const TransactionData = ({ transaction, isFetching }: { transaction?: TransactionDetailData; isFetching?: boolean }) => {
+import './TransactionData.scss';
+export const TransactionData = ({ transaction, isFetching }: { transaction: TransactionDetailData; isFetching?: boolean }) => {
     const { i18n } = useCoreContext();
     const createdAt = useMemo(
         () =>

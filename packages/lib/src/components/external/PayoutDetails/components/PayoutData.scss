@@ -1,0 +1,9 @@
+.adyen-pe-payout-data {
+    &__content {
+        background-color: var(--adyen-sdk-color-background-secondary);
+
+        &--section {
+            background-color: #f7f7f8;
+        }
+    }
+}

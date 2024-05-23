@@ -1,3 +1,4 @@
+import Card from '../../../../internal/Card/Card';
 import { BASE_CLASS, BASE_CLASS_DETAILS } from './constants';
 import { PayoutsTable } from '../PayoutsTable/PayoutsTable';
 import FilterBar from '../../../../internal/FilterBar';
@@ -9,7 +10,7 @@ import Typography from '../../../../internal/Typography/Typography';
 import useBalanceAccountSelection from '../../../../hooks/useBalanceAccountSelection';
 import DateFilter from '../../../../internal/FilterBar/filters/DateFilter/DateFilter';
 import useModalDetails from '../../../../../hooks/useModalDetails/useModalDetails';
-import { DataOverviewComponentProps, FilterParam, IPayout, IPayoutDetails } from '../../../../../types';
+import { DataOverviewComponentProps, FilterParam, IPayout } from '../../../../../types';
 import useDefaultOverviewFilterParams from '../../../../hooks/useDefaultOverviewFilterParams';
 import { ExternalUIComponentProps } from '../../../../types';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
@@ -41,6 +42,7 @@ export const PayoutsOverview = ({
 >) => {
     const { i18n } = useCoreContext();
     const payoutsEndpointCall = useSetupEndpoint('getPayouts');
+    const payoutEndpointCall = useSetupEndpoint('getPayout');
     const { activeBalanceAccount, balanceAccountSelectionOptions, onBalanceAccountSelection } = useBalanceAccountSelection(balanceAccounts);
     const { defaultParams, nowTimestamp, refreshNowTimestamp } = useDefaultOverviewFilterParams('payouts', activeBalanceAccount);
 
@@ -99,12 +101,14 @@ export const PayoutsOverview = ({
 
     const { updateDetails, resetDetails, selectedDetail } = useModalDetails(modalOptions);
 
+    console.log(selectedDetail);
+
     const onRowClick = useCallback(
-        (value: IPayoutDetails) => {
+        (value: IPayout) => {
             updateDetails({
-                selection: { type: 'payout', data: { ...value } },
+                selection: { type: 'payout', data: value.id },
                 modalSize: 'small',
-            }).callback({ id: value.payout!.id });
+            }).callback({ id: value.id });
         },
         [updateDetails]
     );
@@ -139,22 +143,25 @@ export const PayoutsOverview = ({
                 onContactSupport={onContactSupport}
                 selectedDetail={selectedDetail as ReturnType<typeof useModalDetails>['selectedDetail']}
                 resetDetails={resetDetails}
-                renderModalContent={() => <ModalContent data={selectedDetail?.selection.data} />}
+                // renderModalContent={() => <ModalContent data={selectedDetail?.selection.data} />}
             >
                 <PayoutsTable
                     balanceAccounts={balanceAccounts}
-                    data={records}
-                    error={error as AdyenPlatformExperienceError}
-                    limit={limit}
-                    limitOptions={limitOptions}
                     loading={fetching || isLoadingBalanceAccount || !balanceAccounts}
-                    onContactSupport={onContactSupport}
-                    onLimitSelection={updateLimit}
+                    data={records}
+                    showPagination={true}
                     onRowClick={onRowClick}
                     showDetails={showDetails}
-                    showPagination={true}
+                    limit={limit}
+                    limitOptions={limitOptions}
+                    onContactSupport={onContactSupport}
+                    onLimitSelection={updateLimit}
+                    error={error as AdyenPlatformExperienceError}
                     {...paginationProps}
                 />
+                <Card title={'Title'} subTitle={'sub title'}>
+                    {'Content'}
+                </Card>
             </DataDetailsModal>
         </div>
     );

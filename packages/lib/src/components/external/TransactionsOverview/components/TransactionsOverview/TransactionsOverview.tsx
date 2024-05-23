@@ -1,3 +1,4 @@
+import { DataDetailsModal } from '../../../../internal/DataOverviewDisplay/DataDetailsModal';
 import { TransactionsTable } from '../TransactionsTable/TransactionsTable';
 import useBalanceAccountSelection from '../../../../hooks/useBalanceAccountSelection';
 import BalanceAccountSelector from '../../../../internal/FormFields/Select/BalanceAccountSelector';
@@ -25,7 +26,6 @@ import { AmountFilter } from '../../../../internal/FilterBar/filters/AmountFilte
 import { BASE_CLASS, BASE_CLASS_DETAILS, SUMMARY_CLASS, SUMMARY_ITEM_CLASS } from './constants';
 import './TransactionsOverview.scss';
 import { mediaQueries, useMediaQuery } from '../../hooks/useMediaQuery';
-import { DataDetailsModal } from '../../../../internal/DataOverviewDisplay/DataDetailsModal';
 const ModalContent = lazy(() => import('../../../../internal/Modal/ModalContent/ModalContent'));
 
 export const TransactionsOverview = ({
@@ -214,12 +214,12 @@ export const TransactionsOverview = ({
             <DataDetailsModal
                 selectedDetail={selectedDetail as ReturnType<typeof useModalDetails>['selectedDetail']}
                 resetDetails={resetDetails}
-                renderModalContent={() => <ModalContent data={selectedDetail?.selection.data} />}
+                // renderModalContent={() => <ModalContent data={selectedDetail?.selection.data} />}
                 className={BASE_CLASS_DETAILS}
             >
                 <TransactionsTable
-                    availableCurrencies={availableCurrencies}
                     balanceAccounts={balanceAccounts}
+                    availableCurrencies={availableCurrencies}
                     error={error as AdyenPlatformExperienceError}
                     hasMultipleCurrencies={hasMultipleCurrencies}
                     limit={limit}

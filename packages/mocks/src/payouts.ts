@@ -3,6 +3,55 @@ import type { IPayout, IPayoutDetails } from '@adyen/adyen-platform-experience-w
 export const PAYOUTS_WITH_DETAILS: IPayoutDetails[] = [
     {
         payout: {
+            id: '1234567890123456',
+            balanceAccountId: 'BA32272223222B5CTDNB66W2Z',
+            grossAmount: {
+                value: 100000,
+                currency: 'EUR',
+            },
+            chargesAmount: {
+                value: -10000,
+                currency: 'EUR',
+            },
+            netAmount: {
+                value: 90000,
+                currency: 'EUR',
+            },
+            createdAt: '2024-04-12T10:00:00.000Z',
+        },
+        amountBreakdown: [
+            {
+                amount: {
+                    value: -1000,
+                    currency: 'EUR',
+                },
+                category: 'fee',
+            },
+            {
+                amount: {
+                    value: -8000,
+                    currency: 'EUR',
+                },
+                category: 'refund',
+            },
+            {
+                amount: {
+                    value: -500,
+                    currency: 'EUR',
+                },
+                category: 'chargeback',
+            },
+            {
+                amount: {
+                    value: -500,
+                    currency: 'EUR',
+                },
+                category: 'reserveRelease',
+            },
+        ],
+    },
+    {
+        payout: {
             id: '1WEPGD5VS767881Q',
             balanceAccountId: 'BA32272223222B5CTDNB66W2Z',
             grossAmount: {

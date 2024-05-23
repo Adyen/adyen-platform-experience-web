@@ -3,15 +3,14 @@ import { popoverUtil } from '../Popover/utils/popoverUtil';
 import Spinner from '../Spinner';
 import useCoreContext from '../../../core/Context/useCoreContext';
 import useModalDetails from '../../../hooks/useModalDetails/useModalDetails';
-import { FC, PropsWithChildren, Suspense } from 'preact/compat';
+import { FC, lazy, PropsWithChildren, Suspense } from 'preact/compat';
 import { useEffect } from 'preact/hooks';
-import { JSXInternal } from 'preact/src/jsx';
+const ModalContent = lazy(() => import('../Modal/ModalContent/ModalContent'));
 
 export interface DataOverviewDisplayProps {
     onContactSupport?: () => void;
     balanceAccountDescription?: string;
-    selectedDetail: ReturnType<typeof useModalDetails>['selectedDetail'] | null;
-    renderModalContent: () => JSXInternal.Element;
+    selectedDetail: ReturnType<typeof useModalDetails>['selectedDetail'];
     resetDetails: ReturnType<typeof useModalDetails>['resetDetails'];
     className: string;
 }
@@ -20,18 +19,14 @@ export const DataDetailsModal: FC<DataOverviewDisplayProps> = ({
     className,
     selectedDetail,
     resetDetails,
-    renderModalContent,
 }: PropsWithChildren<DataOverviewDisplayProps>) => {
     const { i18n } = useCoreContext();
-
     const isModalOpen = !!selectedDetail;
-
     useEffect(() => {
         if (isModalOpen) {
             popoverUtil.closeAll();
         }
     }, [isModalOpen]);
-
     return (
         <div className={className}>
             {children}
@@ -53,7 +48,7 @@ export const DataDetailsModal: FC<DataOverviewDisplayProps> = ({
                                 </span>
                             }
                         >
-                            {renderModalContent()}
+                            <ModalContent {...selectedDetail?.selection} type={selectedDetail.selection.type as 'payout' | 'transaction'} />
                         </Suspense>
                     )}
                 </Modal>
