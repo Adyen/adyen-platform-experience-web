@@ -1,5 +1,5 @@
 import { rest } from 'msw';
-import { PAYOUTS, PAYOUTS_WITH_DETAILS, TRANSACTIONS } from '@adyen/adyen-platform-experience-web-mocks';
+import { PAYOUTS, PAYOUTS_WITH_DETAILS } from '@adyen/adyen-platform-experience-web-mocks';
 import { endpoints } from '../endpoints';
 import { delay } from '../utils/utils';
 import { getPaginationLinks } from './utils';
@@ -43,7 +43,7 @@ export const payoutsMocks = [
             return res.networkError('Failed to connect');
         }
 
-        const matchingMock = PAYOUTS_WITH_DETAILS.find(mock => mock.payout.id === req.params.id);
+        const matchingMock = PAYOUTS_WITH_DETAILS.find(mock => mock.payout?.id === req.params.id);
 
         if (!matchingMock) {
             res(ctx.status(404), ctx.text('Cannot find matching Payout'));

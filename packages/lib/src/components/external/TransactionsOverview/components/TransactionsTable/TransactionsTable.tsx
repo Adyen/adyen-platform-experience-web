@@ -20,7 +20,7 @@ import { TransactionTableProps } from './types';
 
 // Remove status column temporarily
 // const FIELDS = ['creationDate', 'status', 'paymentMethod', 'transactionType', 'amount'] as const;
-const FIELDS = ['creationDate', 'paymentMethod', 'transactionType', 'amount'] as const;
+const FIELDS = ['createdAt', 'paymentMethod', 'transactionType', 'amount'] as const;
 type FieldsType = (typeof FIELDS)[number];
 
 export const TransactionsTable: FC<TransactionTableProps> = ({
@@ -112,7 +112,7 @@ export const TransactionsTable: FC<TransactionTableProps> = ({
                             )
                         ) : null;
                     },
-                    creationDate: ({ value }) => i18n.fullDate(value),
+                    createdAt: ({ value }) => i18n.fullDate(value),
                     amount: ({ value }) => {
                         const amount = i18n.amount(value.value, value.currency, { hideCurrency: !hasMultipleCurrencies });
                         return <span className={AMOUNT_CLASS}>{amount}</span>;

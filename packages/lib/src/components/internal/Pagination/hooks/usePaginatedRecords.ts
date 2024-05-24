@@ -24,7 +24,6 @@ import {
 } from '../types';
 import AdyenPlatformExperienceError from '../../../../core/Errors/AdyenPlatformExperienceError';
 
-const pageNeighbours = [PageNeighbour.NEXT, PageNeighbour.PREV] as const;
 const offsetPaginatedResponseFields = ['hasNext', 'hasPrevious'] as const;
 
 const isCursorPaginatedResponseData = <T, DataField extends string>(
@@ -42,9 +41,7 @@ const parseCursorPaginatedResponseData = <T, DataField extends string>(
 
     if (isCursorPaginatedResponseData<T, DataField>(data)) {
         const paginationData = Object.fromEntries(
-            (Object.entries(data || EMPTY_OBJECT) as [PageNeighbour, string][]).filter(
-                ([neighbour, cursor]) => pageNeighbours.includes(neighbour as PageNeighbour) && cursor
-            )
+            Object.entries(data._links).map(([key, value]) => [key, value.cursor])
         ) as WithEitherPages<PaginationType.CURSOR>;
 
         return { records, paginationData };

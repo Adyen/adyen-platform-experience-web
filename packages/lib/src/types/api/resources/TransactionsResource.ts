@@ -70,7 +70,7 @@ export interface components {
        * Format: date-time
        * @description Date created
        */
-      creationDate: string;
+      createdAt: string;
       /** @description ID */
       id: string;
       paymentMethod?: components["schemas"]["PaymentMethod"];
@@ -95,15 +95,22 @@ export interface components {
     };
     TransactionTotalsResponse: {
       /** @description Collection of transaction totals per currency */
-      totals: components["schemas"]["TransactionTotal"][];
+      data: components["schemas"]["TransactionTotal"][];
+    };
+    /** @description Link to a different page */
+    Link: {
+      /** @description Cursor for a different page */
+      cursor: string;
+    };
+    /** @description Links */
+    Links: {
+      next: components["schemas"]["Link"];
+      prev: components["schemas"]["Link"];
     };
     TransactionsResponse: {
-      /** @description Cursor for next page */
-      next: string;
-      /** @description Cursor for previous page */
-      prev: string;
+      _links: components["schemas"]["Links"];
       /** @description Transactions made within the filters provided for given balanceAccountId */
-      transactions: components["schemas"]["SingleTransaction"][];
+      data: components["schemas"]["SingleTransaction"][];
     };
     /** @enum {string} */
     SortDirection: "asc" | "desc";

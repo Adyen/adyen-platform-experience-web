@@ -26,14 +26,14 @@ export function stopMockedServer() {
 }
 
 export const getPaginationLinks = (cursor: number, limit: number, totalLength: number) => {
-    const potentialNext = cursor + limit;
-    const next = potentialNext < totalLength ? potentialNext : undefined;
+    const potentialNextCursor = cursor + limit;
+    const nextCursor = potentialNextCursor < totalLength ? potentialNextCursor : undefined;
 
-    const potentialPrev = cursor - limit;
-    const prev = potentialPrev >= 0 ? potentialPrev : undefined;
+    const potentialPrevCursor = cursor - limit;
+    const prevCursor = potentialPrevCursor >= 0 ? potentialPrevCursor : undefined;
 
     return {
-        ...(next === undefined ? {} : { next }),
-        ...(prev === undefined ? {} : { prev }),
+        ...(nextCursor === undefined ? {} : { next: { cursor: nextCursor.toString() } }),
+        ...(prevCursor === undefined ? {} : { prev: { cursor: prevCursor.toString() } }),
     };
 };

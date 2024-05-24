@@ -9,11 +9,11 @@ import { useMemo } from 'preact/hooks';
 
 export const TransactionData = ({ transaction, isFetching }: { transaction?: TransactionDetailData; isFetching?: boolean }) => {
     const { i18n } = useCoreContext();
-    const creationDate = useMemo(
+    const createdAt = useMemo(
         () =>
             transaction
                 ? i18n
-                      .date(new Date(transaction.creationDate), {
+                      .date(new Date(transaction.createdAt), {
                           weekday: 'long',
                           month: 'long',
                           year: 'numeric',
@@ -79,7 +79,7 @@ export const TransactionData = ({ transaction, isFetching }: { transaction?: Tra
                                 </div>
                             </div>
                         )}
-                        <div className={'adyen-pe-transaction-data__section adyen-pe-transaction-data__label'}>{creationDate}</div>
+                        <div className={'adyen-pe-transaction-data__section adyen-pe-transaction-data__label'}>{createdAt}</div>
                     </div>
 
                     {transaction?.balanceAccountDescription && (

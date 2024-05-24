@@ -2,10 +2,12 @@ import { rest } from 'msw';
 import { DEFAULT_TRANSACTION, TRANSACTIONS, TRANSACTION_TOTALS } from '@adyen/adyen-platform-experience-web-mocks';
 import { endpoints } from '../endpoints';
 import { delay } from '../utils/utils';
+import { getPaginationLinks } from './utils';
 
 const mockEndpoints = endpoints('mock');
 const networkError = false;
 const serverError = false;
+const defaultPaginationLimit = 20;
 
 export const transactionsMocks = [
     rest.get(mockEndpoints.transactions, (req, res, ctx) => {
@@ -32,6 +34,8 @@ export const transactionsMocks = [
         const statuses = req.url.searchParams.getAll('statuses');
         const minAmount = req.url.searchParams.get('minAmount');
         const maxAmount = req.url.searchParams.get('maxAmount');
+        const limit = +(req.url.searchParams.get('limit') ?? defaultPaginationLimit);
+        const cursor = +(req.url.searchParams.get('cursor') ?? 0);
 
         let transactions = TRANSACTIONS;
         let responseDelay = 200;
@@ -49,7 +53,9 @@ export const transactionsMocks = [
             responseDelay = 400;
         }
 
-        return res(delay(responseDelay), ctx.json({ transactions }));
+        const data = transactions.slice(cursor, cursor + limit);
+
+        return res(delay(responseDelay), ctx.json({ data, _links: getPaginationLinks(cursor, limit, transactions.length) }));
     }),
 
     rest.get(mockEndpoints.transaction, (req, res, ctx) => {
@@ -63,6 +69,6 @@ export const transactionsMocks = [
     }),
 
     rest.get(mockEndpoints.transactionsTotals, (req, res, ctx) => {
-        return res(ctx.json({ totals: TRANSACTION_TOTALS }));
+        return res(ctx.json({ data: TRANSACTION_TOTALS }));
     }),
 ];

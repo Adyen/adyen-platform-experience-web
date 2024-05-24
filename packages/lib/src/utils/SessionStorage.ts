@@ -1,7 +1,7 @@
-class Storage<T> {
+class SessionStorage<T> {
     private readonly prefix = 'adyen-pe-';
     private readonly key: string;
-    private storage: globalThis.Storage;
+    private storage: Storage;
 
     constructor(key: string, storage = window.localStorage) {
         this.storage = storage;
@@ -29,4 +29,4 @@ class Storage<T> {
     }
 }
 
-export default Storage;
+export default SessionStorage;
