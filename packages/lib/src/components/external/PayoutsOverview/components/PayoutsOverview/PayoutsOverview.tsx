@@ -159,9 +159,6 @@ export const PayoutsOverview = ({
                     error={error as AdyenPlatformExperienceError}
                     {...paginationProps}
                 />
-                <Card title={'Title'} subTitle={'sub title'}>
-                    {'Content'}
-                </Card>
             </DataDetailsModal>
         </div>
     );

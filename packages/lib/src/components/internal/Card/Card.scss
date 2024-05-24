@@ -1,9 +1,7 @@
 .adyen-pe-card {
-    background-color: var(--adyen-sdk-color-white);
-    border: var(--adyen-sdk-color-outline-primary) 1px solid;
     border-radius: var(--adyen-sdk-border-radius-m);
+    outline: var(--adyen-sdk-color-outline-primary) 1px solid;
     overflow: hidden;
-    padding: 20px 24px;
 
     &--filled {
         background-color: var(--adyen-sdk-color-outline-secondary);
@@ -22,13 +20,11 @@
     }
 
     &__body {
+        background-color: #eeeff1;
         color: var(--adyen-sdk-color-label-primary);
         font-weight: var(--adyen-sdk-font-weight-600);
         line-height: var(--adyen-sdk-line-height-100);
-
-        &--with-title {
-            margin-top: 20px;
-        }
+        padding: 20px 24px;
     }
 
     &__footer {
@@ -39,6 +35,7 @@
 
     &__header {
         display: block;
+        padding: 8px 16px 4px;
         width: 100%;
     }
 

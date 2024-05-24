@@ -1,9 +1,20 @@
 .adyen-pe-payout-data {
+    &__title {
+        padding: 0 24px 24px;
+    }
+
     &__content {
         background-color: var(--adyen-sdk-color-background-secondary);
+        padding: 12px 24px;
 
         &--section {
             background-color: #f7f7f8;
+
+            &-amount {
+                display: flex;
+                justify-content: space-between;
+                padding: 8px 0;
+            }
         }
     }
 }

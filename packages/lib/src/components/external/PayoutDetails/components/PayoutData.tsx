@@ -7,7 +7,6 @@ import { TranslationKey } from '../../../../core/Localization/types';
 //TODO: Add Card component
 //TODO: Check if the conditional data exists
 import { IPayoutDetails } from '../../../../types';
-import { components } from '../../../../types/api/resources/PayoutsResource';
 import Card from '../../../internal/Card/Card';
 import StructuredList from '../../../internal/StructuredList';
 import { TypographyVariant } from '../../../internal/Typography/types';
@@ -22,15 +21,22 @@ export const PayoutData = ({ payout: payoutData, isFetching }: { payout?: IPayou
         payoutData?.amountBreakdown?.reduce(
             (accumulator, currentValue) => {
                 const payoutValue = currentValue?.amount?.value;
-                if (payoutValue && payoutValue < 0) {
-                    accumulator.subtractions.push(currentValue);
+                if (payoutValue && payoutValue < 0 && currentValue?.category) {
+                    accumulator.subtractions = currentValue?.category
+                        ? { ...accumulator.subtractions, [currentValue?.category]: currentValue?.amount?.value }
+                        : { ...accumulator.subtractions };
                 } else {
-                    accumulator.additions.push(currentValue);
+                    accumulator.additions = currentValue?.category
+                        ? { ...accumulator.additions, [currentValue?.category]: currentValue?.amount?.value }
+                        : { ...accumulator.additions };
                 }
                 return accumulator;
             },
-            { subtractions: [] as components['schemas']['AmountGroupedDTO'][], additions: [] as components['schemas']['AmountGroupedDTO'][] }
+            { subtractions: {}, additions: {} }
         ) ?? {};
+
+    console.log(subtractions);
+    console.log(additions);
 
     //TODO: make this a helper method to share it
     const creationDate = useMemo(
@@ -70,33 +76,29 @@ export const PayoutData = ({ payout: payoutData, isFetching }: { payout?: IPayou
                     </div>
                     <div className={'adyen-pe-payout-data__content'}>
                         <div className={'adyen-pe-payout-data__content--section'}>
-                            <Typography variant={TypographyVariant.BODY}>{i18n.get('grossPayout')}</Typography>
-                            <Typography variant={TypographyVariant.BODY}>
-                                {i18n.amount(payout.grossAmount.value, payout.grossAmount.currency)}
-                            </Typography>
-                            {subtractions && subtractions.length > 0 && (
+                            <div className={'adyen-pe-payout-data__content--section-amount'}>
+                                <Typography variant={TypographyVariant.BODY}>{i18n.get('grossPayout')}</Typography>
+                                <Typography variant={TypographyVariant.BODY}>
+                                    {i18n.amount(payout.grossAmount.value, payout.grossAmount.currency)}
+                                </Typography>
+                            </div>
+                            {subtractions && Boolean(Object.keys(subtractions).length) && (
                                 <div className={'adyen-pe-payout-data__content--card'}>
-                                    <Typography variant={TypographyVariant.CAPTION} stronger>
-                                        {i18n.get('subtractions')}
-                                    </Typography>
-                                    <Card>
-                                        <StructuredList items={{ Booked: 'Hey' }} />
-                                        {subtractions.map((subtraction, index) => (
-                                            <div className={'adyen-pe-payout-data__content--card-row'} key={`subtraction-${index}`}>
-                                                {subtraction?.category && i18n.get(subtraction.category as TranslationKey)}
-                                                {subtraction?.amount?.value && subtraction.amount.value}
-                                            </div>
-                                        ))}
+                                    <Card title={i18n.get('subtractions')}>
+                                        <StructuredList items={subtractions} />
+                                        {/*{subtractions.map((subtraction, index) => (*/}
+                                        {/*    <div className={'adyen-pe-payout-data__content--card-row'} key={`subtraction-${index}`}>*/}
+                                        {/*        {subtraction?.category && i18n.get(subtraction.category as TranslationKey)}*/}
+                                        {/*        {subtraction?.amount?.value && subtraction.amount.value}*/}
+                                        {/*    </div>*/}
+                                        {/*))}*/}
                                     </Card>
                                 </div>
                             )}
-                            {additions && additions?.length > 0 && (
+                            {additions && Boolean(Object.keys(additions).length) && (
                                 <div className={'adyen-pe-payout-data__content--card'}>
-                                    <Typography variant={TypographyVariant.CAPTION} stronger>
-                                        {i18n.get('additions')}
-                                    </Typography>
-                                    <Card>
-                                        <StructuredList items={{ Booked: 'Hey' }} />
+                                    <Card title={i18n.get('additions')}>
+                                        <StructuredList items={additions} layout={'3-9'} />
                                         {/*<>*/}
                                         {/*    {additions.map((addition, index) => (*/}
                                         {/*        <div className={'adyen-pe-payout-data__content--card-row'} key={`addition-${index}`}>*/}
@@ -108,6 +110,14 @@ export const PayoutData = ({ payout: payoutData, isFetching }: { payout?: IPayou
                                     </Card>
                                 </div>
                             )}
+                            <div className={'adyen-pe-payout-data__content--section-amount'}>
+                                <Typography variant={TypographyVariant.BODY} stronger>
+                                    {i18n.get('netPayout')}
+                                </Typography>
+                                <Typography variant={TypographyVariant.BODY} stronger>
+                                    {i18n.amount(payout.netAmount.value, payout.netAmount.currency)}
+                                </Typography>
+                            </div>
                         </div>
                     </div>
                 </div>
