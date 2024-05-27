@@ -1,0 +1,64 @@
+$error-ring: (
+    'error-ring-color': rgba(0, 0, 0, 0),
+) !default;
+
+$accordion: (
+    'accordion-border-color': #dce0e5,
+    'accordion-item-header-title-font-size': 15px,
+    'accordion-item-content-font-size': 15px,
+    'accordion-item-content-color': #818890,
+) !default;
+
+$popover: (
+    'popover-arrow-display': block,
+    'popover-border-color': #dce0e5,
+    'popover-box-shadow': '0px 8px 8px rgba(0, 17, 44, 0.04), 0px 2px 4px rgba(0, 17, 44, 0.08)',
+    'popover-content-padding': 16px,
+    'popover-font-size': 15px,
+    'popover-font-weight': 100,
+) !default;
+
+$segmented: (
+    'segmented-control-background-color': #ffffff,
+    'segmented-control-border': 1px solid #dce0e5,
+    'segmented-option-color': #20304c,
+    'segmented-option-font-size': 15px,
+    'segmented-option-padding': 8px 16px,
+    'segmented-option-height': 100%,
+    'segmented-option-selected-background-color': #394962,
+    'segmented-option-selected-box-shadow': 'none',
+    'segmented-option-selected-color': #fff,
+    'segmented-option-disabled-color': #8390a3,
+    'segmented-option-disabled-selected-background-color': #a5afbd,
+    'segmented-option-disabled-selected-color': #ffffff,
+    'segmented-option-before-border-left': 1px solid #dce0e5,
+    'segmented-option-hover-background-color': #f3f6f9,
+) !default;
+
+$tabs: (
+    'tabs-handle-font-size': 15px,
+    'tabs-handle-margin-right': 24px,
+    'tabs-handle-padding': 0 0 24px,
+    'tabs-handle-hover-background-color': transparent,
+    'tabs-handle-hover-box-shadow-height': '3px',
+    'tabs-handle-hover-box-shadow-color': '#a5afbd',
+    'tabs-handle-active-box-shadow-height': '3px',
+    'tabs-handle-title-padding': 0,
+    'tabs-handle-title-height': auto,
+) !default;
+
+$textarea: (
+    'textarea-description-background-color': #f3f6f9,
+    'textarea-description-color': #00112c,
+    'textarea-description-display': none,
+    'textarea-description-padding': 12px,
+    'textarea-label-font-size': 15px,
+    'textarea-label-font-weight': 600,
+    'textarea-label-line-height': 21px,
+    'textarea-label-margin-bottom': 0,
+    'textarea-input-color': #00112c,
+    'textarea-input-border-color': #dce0e5,
+    'textarea-input-border-radius': 6px,
+    'textarea-input-font-size': 15px,
+    'textarea-input-padding': 8px 16px,
+) !default;

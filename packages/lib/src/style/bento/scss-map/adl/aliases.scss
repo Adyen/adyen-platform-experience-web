@@ -1,0 +1,117 @@
+$background: (
+    'background-interactive': #dee1e6,
+) !default;
+
+$box-sizing: (
+    'box-sizing-include-children': border-box,
+) !default;
+
+$color: (
+    'color-primary-30': #334156,
+    'color-primary-40': #1a2941,
+    'color-primary-50': #00112c,
+    'color-attention-10': #e5efff,
+    'color-warning-10': #fff4e5,
+    'color-error-10': #fce5e5,
+    'color-error-50': #e50000,
+    'color-error-60': #a10000,
+    'color-error-70': #720000,
+    'color-destructive-10': #fce5e5,
+    'color-destructive-50': #e50000,
+    'color-destructive-60': #a10000,
+    'color-destructive-70': #720000,
+    'color-neutral-0': #ffffff,
+    'color-neutral-10': #f7f8f9,
+    'color-neutral-20': #eef0f3,
+    'color-neutral-30': #dee1e6,
+    'color-neutral-40': #bfc4ca,
+    'color-neutral-50': #9fa6b0,
+    'color-neutral-60': #818890,
+    'color-neutral-65': #6f7988,
+    'color-neutral-70': #707070,
+    'color-neutral-80': #404d61,
+    'color-neutral-90': #202f46,
+    'color-neutral-110': #00112c,
+    'color-focus': rgba(0, 102, 255, 0.4),
+    'color-success-10': #e6f8ed,
+    'color-success-40': #0abf53,
+    'color-success-50': #08a648,
+    'color-success-60': #055f29,
+    'color-success-70': #03431d,
+) !default;
+
+$component: (
+    'component-base-font-family': 'Fakt',
+    'component-base-font-size': 14px,
+    'component-base-font-weight': 500,
+    'component-base-border-box-include-children': border-box,
+    'component-base-text-color': #000000,
+    'component-base-text-line-height': 24px,
+) !default;
+
+$error-ring: (
+    'error-ring-color': #e50000,
+) !default;
+
+$focus-ring: (
+    'focus-ring-color': rgba(0, 102, 255, 0.4),
+) !default;
+
+$text-style: (
+    'text-style-form-fields-body-medium-font-size': 14px,
+    'text-style-form-fields-body-medium-font-weight': 500,
+    'text-style-form-fields-body-medium-line-height': 22px,
+    'text-style-form-fields-body-small-font-size': 13px,
+    'text-style-form-fields-body-small-font-weight': 500,
+    'text-style-form-fields-body-small-line-height': 22px,
+    'text-style-form-fields-caption-medium-font-size': 12px,
+    'text-style-form-fields-caption-medium-font-weight': 500,
+    'text-style-form-fields-caption-medium-line-height': 16px,
+    'text-style-form-fields-caption-small-font-size': 10px,
+    'text-style-form-fields-caption-small-font-weight': 500,
+    'text-style-form-fields-caption-small-line-height': 16px,
+    'text-style-heading-medium-font-size': 16px,
+    'text-style-heading-medium-font-weight': 500,
+    'text-style-heading-medium-line-height': 24px,
+    'text-style-paragraph-medium-font-size': 14px,
+    'text-style-paragraph-medium-font-weight': 400,
+    'text-style-paragraph-medium-line-height': 22px,
+    'text-style-paragraph-small-font-size': 13px,
+    'text-style-paragraph-small-font-weight': 400,
+    'text-style-paragraph-small-line-height': 22px,
+) !default;
+
+$sub-heading: (
+    'sub-heading-medium-font-size': 12px,
+    'sub-heading-medium-font-weight': 500,
+    'sub-heading-medium-line-height': 22px,
+) !default;
+
+$text: (
+    'text-color': #000000,
+    'text-line-height': 24px,
+) !default;
+
+$font: (
+    'font-size-micro': 10px,
+    'font-size-xxsmall': 12px,
+    'font-size-xsmall': 13px,
+    'font-size-small': 14px,
+    'font-size-regular': 16px,
+    'font-size-medium': 18px,
+    'font-size-large': 20px,
+    'font-size-xlarge': 24px,
+    'font-weight-thin': 100,
+    'font-weight-regular': 400,
+    'font-weight-medium': 500,
+    'font-weight-semi-bold': 600,
+) !default;
+
+$line-height: (
+    'line-height-xsmall': 16px,
+    'line-height-small': 20px,
+    'line-height-regular': 22px,
+    'line-height-medium': 24px,
+    'line-height-large': 28px,
+    'line-height-xlarge': 32px,
+) !default;
