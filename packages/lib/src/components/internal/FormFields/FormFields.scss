@@ -1,4 +1,4 @@
-@import '@styles/variables/colors';
+@import '../../../style';
 
 .adyen-pe-field-wrapper {
     display: flex;
@@ -68,10 +68,10 @@
 }
 
 .adyen-pe-input {
-    background: $color-background-primary;
-    border: 1px solid $color-outline-secondary;
+    background: token(color-background-primary);
+    border: 1px solid token(color-outline-secondary);
     border-radius: var(--adyen-sdk-border-radius-m);
-    color: $color-label-primary;
+    color: token(color-label-primary);
     display: block;
     font-family: inherit;
     font-size: var(--adyen-sdk-font-size-200);
@@ -79,18 +79,20 @@
     outline: none;
     padding: 5px 8px;
     position: relative;
-    transition: border 0.2s ease-out, box-shadow 0.2s ease-out;
+    transition:
+        border 0.2s ease-out,
+        box-shadow 0.2s ease-out;
     width: 100%;
 
     &__invalid-value {
-        color: $color-label-critical;
+        color: token(color-label-critical);
         max-width: 20rem;
         text-wrap: wrap;
     }
 }
 
 .adyen-pe-input:hover {
-    border-color: $color-outline-primary-hover;
+    border-color: token(color-outline-primary-hover);
 }
 
 .adyen-pe-input:required {
@@ -140,7 +142,7 @@
 }
 
 .adyen-pe-input__inline-validation--invalid {
-    color: $color-label-critical;
+    color: token(color-label-critical);
 }
 
 .adyen-pe-input--valid {
@@ -155,7 +157,7 @@
 }
 
 .adyen-pe-input::placeholder {
-    color: $color-label-secondary;
+    color: token(color-label-secondary);
     font-weight: var(--adyen-sdk-font-weight-200);
 }
 
@@ -169,7 +171,7 @@
 .adyen-pe-input:active:hover,
 .adyen-pe-input:focus:hover,
 .adyen-pe-input--focus:hover {
-    background: $color-background-primary;
+    background: token(color-background-primary);
     outline: 1px solid #00112c;
 }
 
@@ -177,6 +179,6 @@
 .adyen-pe-input[readonly]:hover {
     background-color: #d1d5da;
     border-color: transparent;
-    color: $color-label-primary-hover;
+    color: token(color-label-primary-hover);
     cursor: default;
 }

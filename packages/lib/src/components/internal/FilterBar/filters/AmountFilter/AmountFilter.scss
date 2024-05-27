@@ -27,7 +27,7 @@
     }
 
     label {
-        color: $color-label-primary;
+        color: token(color-label-primary);
         font-weight: var(--adyen-sdk-font-weight-500);
     }
 }

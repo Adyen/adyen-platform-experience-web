@@ -3,7 +3,7 @@
 // stylelint-disable-next-line no-invalid-position-at-import-rule
 @import '../../../style/bento-mapping';
 // stylelint-disable-next-line no-invalid-position-at-import-rule
-@import '../../../style/variables/colors';
+@import '../../../style';
 
 .adyen-pe-data-grid {
     $adyen-pe-data-grid: &;
@@ -45,12 +45,12 @@
     }
 
     &__row {
-        background: $color-background-primary;
+        background: token(color-background-primary);
         overflow: hidden;
         vertical-align: top;
 
         #{$adyen-pe-data-grid__cell} {
-            border-bottom: 1px solid $color-outline-primary;
+            border-bottom: 1px solid token(color-outline-primary);
         }
         #{$adyen-pe-data-grid}__body {
             border-bottom: 0;
@@ -61,7 +61,7 @@
 
             &:hover,
             &:focus {
-                background: $color-background-primary-hover;
+                background: token(color-background-primary-hover);
                 outline-offset: -1px;
             }
         }
@@ -92,14 +92,14 @@
         }
 
         &#{$adyen-pe-data-grid__cell}--heading {
-            border-bottom-color: $color-outline-secondary;
-            color: $color-label-primary;
+            border-bottom-color: token(color-outline-secondary);
+            color: token(color-label-primary);
             font-weight: var(--adyen-sdk-font-weight-600);
             padding: $adyen-pe-spacer-070;
             position: relative;
 
             &:not(:last-child)::after {
-                background: $color-separator-primary;
+                background: token(color-separator-primary);
                 bottom: 25%;
                 content: '';
                 position: absolute;
@@ -115,7 +115,7 @@
     }
 
     &__footer {
-        background: $color-background-primary;
+        background: token(color-background-primary);
 
         .adyen-pe-pagination {
             padding: 0;
@@ -127,7 +127,7 @@
     }
 
     &--outline {
-        border: 1px solid $color-outline-secondary;
+        border: 1px solid token(color-outline-secondary);
         border-radius: var(--adyen-sdk-border-radius-m);
 
         #{$adyen-pe-data-grid}__table-wrapper {
@@ -136,7 +136,7 @@
 
         #{$adyen-pe-data-grid}__body #{$adyen-pe-data-grid}__row {
             &:last-child #{$adyen-pe-data-grid__cell} {
-                border-bottom: 1px solid $color-outline-secondary;
+                border-bottom: 1px solid token(color-outline-secondary);
             }
         }
 
@@ -164,8 +164,8 @@
     }
 
     &__empty-message {
-        background: $color-background-primary;
-        border: 1px solid $color-outline-primary;
+        background: token(color-background-primary);
+        border: 1px solid token(color-outline-primary);
         border-radius: 12px;
         box-shadow: 0 6px 12px 0 rgba(0, 17, 44, 0.08);
         display: flex;

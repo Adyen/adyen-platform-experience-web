@@ -1,6 +1,6 @@
 @import '../../../style/bento-mapping';
 @import '../../../style/breakpoints.scss';
-@import '../../../style/variables/colors';
+@import '../../../style';
 
 // TODO: Move this to an accessibility mixin
 .adyen-pe-sr-only {
@@ -19,14 +19,16 @@
     position: relative;
 
     &__container {
-        background-color: $color-background-primary;
-        border: 1px solid $color-outline-primary;
+        background-color: token(color-background-primary);
+        border: 1px solid token(color-outline-primary);
         border-radius: var(--adyen-sdk-border-radius-m);
         display: block;
         overflow: hidden;
 
         &--overlay {
-            box-shadow: 0 2px 4px 0 rgba(#00112c, 0.04), 0 6px 12px 0 rgba(#00112c, 0.08);
+            box-shadow:
+                0 2px 4px 0 rgba(#00112c, 0.04),
+                0 6px 12px 0 rgba(#00112c, 0.08);
             position: absolute;
             top: 0;
             z-index: 100;
@@ -38,19 +40,19 @@
 
         &--button {
             &:hover {
-                background-color: $color-background-primary-hover;
+                background-color: token(color-background-primary-hover);
 
                 #{$adyen-pe-expandable-card}__chevron {
-                    background-color: $color-background-tertiary-hover;
+                    background-color: token(color-background-tertiary-hover);
                 }
             }
         }
 
         &--filled {
-            background-color: $color-background-secondary;
+            background-color: token(color-background-secondary);
 
             &:hover {
-                background-color: $color-background-secondary-hover;
+                background-color: token(color-background-secondary-hover);
             }
         }
     }
@@ -70,7 +72,7 @@
 
     &__chevron {
         align-items: center;
-        background-color: $color-background-tertiary;
+        background-color: token(color-background-tertiary);
         display: flex;
         height: 20px;
         justify-content: center;

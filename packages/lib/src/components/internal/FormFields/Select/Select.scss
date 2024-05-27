@@ -1,5 +1,5 @@
 @import '../../../../style/bento-mapping';
-@import '../../../../style/variables/colors';
+@import '../../../../style';
 
 %adyen-pe-dropdown-decoration {
     --adyen-pe-separation-margin: #{$adyen-pe-spacer-060};
@@ -46,17 +46,17 @@
     }
 
     &.adyen-pe-button--secondary {
-        background: $color-background-primary;
-        border: 1px solid $color-outline-secondary;
+        background: token(color-background-primary);
+        border: 1px solid token(color-outline-secondary);
         box-shadow: none;
-        color: $color-label-primary;
+        color: token(color-label-primary);
         justify-content: flex-start;
         text-decoration: none;
         user-select: none;
         width: 100%;
 
         &:hover {
-            background-color: $color-background-primary-hover;
+            background-color: token(color-background-primary-hover);
         }
 
         &::before {
@@ -81,7 +81,7 @@
         .adyen-pe-dropdown--multiselect & {
             @extend %adyen-pe-dropdown-decoration--right;
             align-items: center;
-            color: $color-label-secondary;
+            color: token(color-label-secondary);
             display: flex;
             isolation: isolate;
             padding: 0 2px;
@@ -153,7 +153,7 @@
         position: absolute;
 
         &::placeholder {
-            color: $color-label-tertiary;
+            color: token(color-label-tertiary);
         }
 
         &:focus,
@@ -164,7 +164,7 @@
 }
 
 .adyen-pe-dropdown__list {
-    background: $color-background-primary;
+    background: token(color-background-primary);
     display: none;
     list-style: none;
     margin: 0;
@@ -203,7 +203,7 @@
 
     &-checkbox {
         @extend %adyen-pe-dropdown-decoration;
-        color: $color-background-inverse-primary;
+        color: token(color-background-inverse-primary);
         margin-right: var(--adyen-pe-separation-margin);
 
         .adyen-pe-dropdown:not(.adyen-pe-dropdown--multiselect) & {
@@ -232,22 +232,22 @@
 
     &:not(#{$adyen-pe-self--disabled}, #{$adyen-pe-self--no-option}) {
         &:hover {
-            background: $color-background-secondary;
+            background: token(color-background-secondary);
         }
 
         &:focus,
         &:active {
-            background: $color-background-primary-active;
+            background: token(color-background-primary-active);
         }
     }
 
     &#{$adyen-pe-self--disabled} {
-        color: $color-label-disabled;
+        color: token(color-label-disabled);
         cursor: not-allowed;
     }
 
     &#{$adyen-pe-self--no-option} {
-        color: $color-label-secondary;
+        color: token(color-label-secondary);
         cursor: initial;
         justify-content: center;
     }
