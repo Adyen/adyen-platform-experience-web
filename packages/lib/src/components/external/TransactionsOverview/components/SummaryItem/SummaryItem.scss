@@ -1,11 +1,10 @@
-@import '../../../../../style/bento-mapping';
 @import '../../../../../style/breakpoints';
 @import '../../../../../style';
 
 .adyen-pe-summary-item {
     align-items: center;
     display: flex;
-    gap: $adyen-pe-spacer-080;
+    gap: token(spacer-080);
     justify-content: space-between;
     width: 100%;
 
@@ -15,8 +14,8 @@
 
     &--body {
         border-top: 1px solid #dbdee2;
-        margin-top: $adyen-pe-spacer-040;
-        padding-top: $adyen-pe-spacer-040;
+        margin-top: token(spacer-040);
+        padding-top: token(spacer-040);
     }
 
     &__label-container {

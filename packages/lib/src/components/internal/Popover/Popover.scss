@@ -1,4 +1,3 @@
-@import '../../../style/bento-mapping';
 @import '../../../style/breakpoints.scss';
 @import '../../../style';
 
@@ -8,11 +7,8 @@
 
         background: token(color-background-primary);
         border: unset;
-        border-radius: $adyen-pe-spacer-040;
-        box-shadow:
-            0 6px 12px rgba(0, 17, 44, 0.08),
-            0 2px 4px rgba(0, 17, 44, 0.04),
-            0 0 0 1px rgba(0, 17, 44, 0.06);
+        border-radius: token(spacer-040);
+        box-shadow: 0 6px 12px rgba(0, 17, 44, 0.08), 0 2px 4px rgba(0, 17, 44, 0.04), 0 0 0 1px rgba(0, 17, 44, 0.06);
         min-width: 200px;
         overflow: hidden;
         z-index: 10;
@@ -46,21 +42,21 @@
             #{$adyen-pe-popover-component-root}__footer {
                 background-color: token(color-background-primary);
                 border-top: 1px solid token(color-outline-disabled);
-                padding-top: $adyen-pe-spacer-060;
+                padding-top: token(spacer-060);
             }
         }
 
         &--without-space {
             #{$adyen-pe-popover-component-root}__header {
-                padding: $adyen-pe-spacer-000;
+                padding: token(spacer-000);
             }
 
             #{$adyen-pe-popover-component-root}__content {
-                padding: $adyen-pe-spacer-000;
+                padding: token(spacer-000);
             }
 
             #{$adyen-pe-popover-component-root}__footer {
-                padding: $adyen-pe-spacer-000;
+                padding: token(spacer-000);
             }
         }
 
@@ -68,11 +64,11 @@
             transform: scale(1);
 
             &--with-padding {
-                padding: $adyen-pe-spacer-070;
+                padding: token(spacer-070);
             }
 
             &--with-title {
-                padding: $adyen-pe-spacer-060 $adyen-pe-spacer-070;
+                padding: token(spacer-060) token(spacer-070);
             }
 
             &--overlay {
@@ -91,12 +87,12 @@
             align-items: center;
             display: flex;
             justify-content: space-between;
-            padding: $adyen-pe-spacer-060 $adyen-pe-spacer-070 $adyen-pe-spacer-000 $adyen-pe-spacer-070;
+            padding: token(spacer-060) token(spacer-070) token(spacer-000) token(spacer-070);
         }
 
         &__header-title {
             align-items: center;
-            column-gap: $adyen-pe-spacer-040;
+            column-gap: token(spacer-040);
             display: flex;
         }
 
@@ -107,7 +103,7 @@
         }
 
         &__footer {
-            padding: $adyen-pe-spacer-000 $adyen-pe-spacer-070 $adyen-pe-spacer-060 $adyen-pe-spacer-070;
+            padding: token(spacer-000) token(spacer-070) token(spacer-060) token(spacer-070);
         }
     }
 
@@ -133,20 +129,20 @@
 
         &__content {
             background-color: token(color-background-inverse-primary);
-            border-radius: $adyen-pe-spacer-020;
+            border-radius: token(spacer-020);
             color: token(color-label-inverse);
             height: auto;
             max-width: 300px;
-            padding: $adyen-pe-spacer-020 $adyen-pe-spacer-040;
+            padding: token(spacer-020) token(spacer-040);
         }
 
         &__arrow {
             background: token(color-background-inverse-primary);
             display: block;
-            height: $adyen-pe-spacer-040;
+            height: token(spacer-040);
             inset: 0 auto auto 0;
             transform: rotate(45deg);
-            width: $adyen-pe-spacer-040;
+            width: token(spacer-040);
         }
 
         &__arrow[data-popover-placement='hidden'] {

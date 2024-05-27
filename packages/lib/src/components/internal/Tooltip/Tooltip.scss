@@ -1,4 +1,4 @@
-@import '../../../style/bento-mapping';
+@import '../../../style';
 
 .adyen-pe__tooltip-target {
     &--hovered {
@@ -6,6 +6,6 @@
         text-decoration-color: #0075ff;
         text-decoration-style: dashed;
         text-decoration-thickness: 1px;
-        text-underline-offset: $adyen-pe-spacer-020;
+        text-underline-offset: token(spacer-020);
     }
 }

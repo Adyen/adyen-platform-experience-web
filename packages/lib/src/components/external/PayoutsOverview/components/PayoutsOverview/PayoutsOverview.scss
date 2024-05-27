@@ -1,18 +1,18 @@
-@import '../../../../../style/bento-mapping';
+@import '../../../../../style';
 @import '../../../../../style/breakpoints';
 
 .adyen-pe-payouts-overview {
     background: var(--adyen-sdk-color-background-primary);
     display: flex;
     flex-direction: column;
-    gap: $adyen-pe-spacer-070;
-    padding: 12px $adyen-pe-spacer-040;
+    gap: token(spacer-070);
+    padding: 12px token(spacer-040);
 
     @include adyen-pe-screen-sm-and-up {
         border: 1px solid var(--adyen-sdk-color-outline-secondary);
-        border-radius: $adyen-pe-spacer-040;
-        padding-left: $adyen-pe-spacer-070;
-        padding-right: $adyen-pe-spacer-070;
+        border-radius: token(spacer-040);
+        padding-left: token(spacer-070);
+        padding-right: token(spacer-070);
     }
 
     &-display {

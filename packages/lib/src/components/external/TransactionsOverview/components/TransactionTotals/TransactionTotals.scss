@@ -1,10 +1,10 @@
-@import '../../../../../style/bento-mapping';
+@import '../../../../../style';
 @import '../../../../../style/breakpoints.scss';
 
 .adyen-pe-transaction-totals {
     display: flex;
     flex-wrap: wrap;
-    gap: $adyen-pe-spacer-060;
+    gap: token(spacer-060);
     justify-content: space-between;
 
     @include adyen-pe-screen-sm-and-up {

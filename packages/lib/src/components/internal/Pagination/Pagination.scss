@@ -1,19 +1,17 @@
-@import '../../../style/bento-mapping';
-
 .adyen-pe-pagination {
     display: flex;
-    padding: $adyen-pe-spacer-070 $adyen-pe-spacer-040;
+    padding: token(spacer-070) token(spacer-040);
     text-align: right;
 
     &__context {
         align-items: center;
         display: flex;
-        gap: $adyen-pe-spacer-070;
+        gap: token(spacer-070);
     }
 
     &__controls {
         display: flex;
-        gap: $adyen-pe-spacer-070;
+        gap: token(spacer-070);
         margin-left: auto;
     }
 

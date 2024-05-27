@@ -1,4 +1,3 @@
-@import '../../../style/bento-mapping';
 @import '../../../style/breakpoints.scss';
 @import '../../../style';
 
@@ -26,9 +25,7 @@
         overflow: hidden;
 
         &--overlay {
-            box-shadow:
-                0 2px 4px 0 rgba(#00112c, 0.04),
-                0 6px 12px 0 rgba(#00112c, 0.08);
+            box-shadow: 0 2px 4px 0 rgba(#00112c, 0.04), 0 6px 12px 0 rgba(#00112c, 0.08);
             position: absolute;
             top: 0;
             z-index: 100;
@@ -58,15 +55,15 @@
     }
 
     &__content {
-        padding: $adyen-pe-spacer-060;
+        padding: token(spacer-060);
 
         @include adyen-pe-screen-sm-and-up {
-            padding-left: $adyen-pe-spacer-080;
-            padding-right: $adyen-pe-spacer-080;
+            padding-left: token(spacer-080);
+            padding-right: token(spacer-080);
         }
 
         &--expandable {
-            padding-bottom: $adyen-pe-spacer-040;
+            padding-bottom: token(spacer-040);
         }
     }
 

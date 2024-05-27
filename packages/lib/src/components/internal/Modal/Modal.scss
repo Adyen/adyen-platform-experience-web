@@ -1,4 +1,3 @@
-@import '../../../style/bento-mapping';
 @import '../../../style';
 
 $adyen-pe-modal-sizes: (
@@ -59,9 +58,7 @@ $adyen-pe-modal-sizes: (
     opacity: 0;
     overflow-y: auto;
     position: fixed;
-    transition:
-        opacity 0.2s ease,
-        visibility 0.2s ease;
+    transition: opacity 0.2s ease, visibility 0.2s ease;
     z-index: 20;
 
     [dir='rtl'] & {
@@ -131,12 +128,12 @@ $adyen-pe-modal-sizes: (
 
     .adyen-pe-label__text {
         font-size: var(--adyen-sdk-font-size-200);
-        margin-bottom: $adyen-pe-spacer-020;
+        margin-bottom: token(spacer-020);
     }
 
     &__footer {
         display: flex;
-        gap: $adyen-pe-spacer-040;
+        gap: token(spacer-040);
 
         .adyen-pe-button:first-child {
             margin-left: auto;

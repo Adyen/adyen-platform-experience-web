@@ -1,8 +1,7 @@
-@import '../../../../style/bento-mapping';
 @import '../../../../style';
 
 %adyen-pe-dropdown-decoration {
-    --adyen-pe-separation-margin: #{$adyen-pe-spacer-060};
+    --adyen-pe-separation-margin: #{token(spacer-060)};
     display: inline-flex;
     flex: none;
 
@@ -13,11 +12,11 @@
 }
 
 %adyen-pe-dropdown-decoration--right {
-    margin-left: var(--adyen-pe-separation-margin, $adyen-pe-spacer-060);
+    margin-left: var(--adyen-pe-separation-margin, token(spacer-060));
 
     [dir='rtl'] & {
         margin-left: 0;
-        margin-right: var(--adyen-pe-separation-margin, $adyen-pe-spacer-060);
+        margin-right: var(--adyen-pe-separation-margin, token(spacer-060));
     }
 }
 
@@ -192,7 +191,7 @@
     hyphens: auto;
     line-height: var(--adyen-sdk-line-height-200);
     outline: 0;
-    padding: $adyen-pe-spacer-040 $adyen-pe-spacer-070;
+    padding: token(spacer-040) token(spacer-070);
     transition: background 0.2s ease-out;
     user-select: none;
     word-break: break-word;
@@ -212,7 +211,7 @@
     }
 
     &-checkmark {
-        --adyen-pe-separation-margin: #{$adyen-pe-spacer-070};
+        --adyen-pe-separation-margin: #{token(spacer-070)};
         @extend %adyen-pe-dropdown-decoration;
         @extend %adyen-pe-dropdown-decoration--right;
         min-width: 1rem;
@@ -223,11 +222,11 @@
     }
 
     &:first-child {
-        margin-top: $adyen-pe-spacer-040;
+        margin-top: token(spacer-040);
     }
 
     &:last-child {
-        margin-bottom: $adyen-pe-spacer-040;
+        margin-bottom: token(spacer-040);
     }
 
     &:not(#{$adyen-pe-self--disabled}, #{$adyen-pe-self--no-option}) {

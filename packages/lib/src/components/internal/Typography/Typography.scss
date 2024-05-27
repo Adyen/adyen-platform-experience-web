@@ -1,4 +1,4 @@
-@import '../../../style/bento-mapping';
+@import '../../../style';
 
 .adyen-pe-typography {
     // Reset preset browser margin on all elements
@@ -8,7 +8,7 @@
     &--caption {
         font-size: var(--adyen-sdk-font-size-100);
         font-weight: var(--adyen-sdk-font-weight-400);
-        letter-spacing: #{$adyen-pe-text-caption-letter-spacing};
+        letter-spacing: #{token(text-caption-letter-spacing)};
         line-height: var(--adyen-sdk-line-height-100);
     }
 
@@ -24,7 +24,7 @@
     &--body {
         font-size: var(--adyen-sdk-font-size-200);
         font-weight: var(--adyen-sdk-font-weight-400);
-        letter-spacing: #{$adyen-pe-text-body-letter-spacing};
+        letter-spacing: #{token(text-body-letter-spacing)};
         line-height: var(--adyen-sdk-line-height-200);
     }
 
@@ -44,7 +44,7 @@
     &--subtitle {
         font-size: var(--adyen-sdk-font-size-300);
         font-weight: var(--adyen-sdk-font-weight-500);
-        letter-spacing: #{$adyen-pe-text-subtitle-letter-spacing};
+        letter-spacing: #{token(text-subtitle-letter-spacing)};
         line-height: var(--adyen-sdk-line-height-400);
     }
 
@@ -56,21 +56,21 @@
     &--title {
         font-size: var(--adyen-sdk-font-size-500);
         font-weight: var(--adyen-sdk-font-weight-600);
-        letter-spacing: #{$adyen-pe-text-title-letter-spacing};
+        letter-spacing: #{token(text-title-letter-spacing)};
         line-height: var(--adyen-sdk-line-height-500);
     }
 
     &--title-m {
         font-size: var(--adyen-sdk-font-size-500);
         font-weight: var(--adyen-sdk-font-weight-600);
-        letter-spacing: #{$adyen-pe-text-title-m-letter-spacing};
+        letter-spacing: #{token(text-title-m-letter-spacing)};
         line-height: var(--adyen-sdk-line-height-600);
     }
 
     &--title-l {
         font-size: var(--adyen-sdk-font-size-600);
         font-weight: var(--adyen-sdk-font-weight-600);
-        letter-spacing: #{$adyen-pe-text-title-l-letter-spacing};
+        letter-spacing: #{token(text-title-l-letter-spacing)};
         line-height: var(--adyen-sdk-line-height-700);
     }
 }

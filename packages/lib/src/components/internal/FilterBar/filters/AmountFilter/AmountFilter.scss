@@ -1,11 +1,10 @@
-@import '../../../../../style/bento-mapping';
 @import '../../../../../style';
 
 .adyen-pe-range-selection-filter {
     display: flex;
     flex-direction: column;
     font-size: var(--adyen-sdk-font-size-200);
-    gap: $adyen-pe-spacer-070;
+    gap: token(spacer-070);
 
     &__input {
         display: flex;
