@@ -1,7 +1,6 @@
 const labels = {
     id: 'paymentId',
     transactionType: 'transactionType',
-    creationDate: 'date', //TODO: remove this when be key changed as createdAt for transactions component
     createdAt: 'date',
     balanceAccountId: 'balanceAccount',
     accountHolderId: 'account',

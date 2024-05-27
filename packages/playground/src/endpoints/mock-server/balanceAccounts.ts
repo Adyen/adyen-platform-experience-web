@@ -1,8 +1,8 @@
 import { rest } from 'msw';
 import { endpoints } from '../endpoints';
 import { delay } from '../utils/utils';
-import { BALANCE_ACCOUNTS_SINGLE } from '@adyen/adyen-platform-experience-web-mocks';
 import { BALANCES } from '../../../../mocks/src/balances';
+import { BALANCE_ACCOUNTS } from '../../../../mocks';
 
 const mockEndpoints = endpoints('mock');
 const networkError = false;
@@ -15,7 +15,7 @@ export const balanceAccountMock = [
         return res(
             delay(200),
             ctx.json({
-                data: BALANCE_ACCOUNTS_SINGLE,
+                data: BALANCE_ACCOUNTS,
             })
         );
     }),

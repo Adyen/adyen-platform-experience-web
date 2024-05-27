@@ -19,7 +19,7 @@ import { FC } from 'preact/compat';
 import { TransactionTableProps } from './types';
 
 // Remove status column temporarily
-// const FIELDS = ['creationDate', 'status', 'paymentMethod', 'transactionType', 'amount'] as const;
+// const FIELDS = ['createdAt', 'status', 'paymentMethod', 'transactionType', 'amount'] as const;
 const FIELDS = ['createdAt', 'paymentMethod', 'transactionType', 'amount'] as const;
 type FieldsType = (typeof FIELDS)[number];
 
