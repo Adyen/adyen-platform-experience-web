@@ -2,14 +2,14 @@
 @import '../../../../../style/breakpoints';
 
 .adyen-pe-payouts-overview {
-    background: var(--adyen-sdk-color-background-primary);
+    background: token(color-background-primary);
     display: flex;
     flex-direction: column;
     gap: token(spacer-070);
     padding: 12px token(spacer-040);
 
     @include adyen-pe-screen-sm-and-up {
-        border: 1px solid var(--adyen-sdk-color-outline-secondary);
+        border: 1px solid token(color-outline-secondary);
         border-radius: token(spacer-040);
         padding-left: token(spacer-070);
         padding-right: token(spacer-070);

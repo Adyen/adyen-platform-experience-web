@@ -1,5 +1,7 @@
 @import '../../../../../style';
 
+$adyen-pe-body-line-height: token(text-body-line-height);
+
 .adyen-pe-balance-account-selector {
     max-height: 24rem;
     overflow-y: auto;
@@ -13,8 +15,6 @@
         flex-wrap: wrap;
     }
 
-    $body-line-height: token(text-body-line-height);
-
     .adyen-pe-dropdown__element-checkmark {
         /**
          * Since the flex container (.adyen-pe-dropdown__element) is no longer center aligned
@@ -25,11 +25,11 @@
          *   = (line_height - checkmark_size) / 2
          * ----------------------------------------------------
          */
-        margin-top: calc(($body-line-height - 1rem) / 2);
+        margin-top: calc(($adyen-pe-body-line-height - 1rem) / 2);
     }
 
     &__account-id {
-        color: var(--adyen-sdk-color-label-secondary);
+        color: token(color-label-secondary);
     }
 
     &__account-label {
