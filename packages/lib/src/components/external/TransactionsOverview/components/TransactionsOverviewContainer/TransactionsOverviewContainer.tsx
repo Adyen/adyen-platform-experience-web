@@ -3,7 +3,6 @@ import DataOverviewContainer from '../../../../internal/DataOverviewContainer/Da
 import type { DataOverviewComponentProps, ExternalUIComponentProps } from '../../../../types';
 import { TransactionsOverview } from '../TransactionsOverview/TransactionsOverview';
 import { BASE_CLASS } from './constants';
-import Theme from '../../../../../theme/Theme';
 
 function TransactionsOverviewContainer({ ...props }: ExternalUIComponentProps<DataOverviewComponentProps>) {
     const { balanceAccounts, isBalanceAccountIdWrong, isFetching, error } = useBalanceAccounts(props.balanceAccountId);
