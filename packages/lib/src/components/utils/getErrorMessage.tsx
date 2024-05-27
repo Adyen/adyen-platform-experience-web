@@ -21,9 +21,7 @@ export const getErrorMessage = (
         case '00_500':
             return {
                 title: 'somethingWentWrong',
-                message: onContactSupport
-                    ? [errorMessage, 'theErrorCodeIs']
-                    : ['weCouldNotLoadYourPayouts', 'contactSupportForHelpAndShareErrorCode'],
+                message: onContactSupport ? [errorMessage, 'theErrorCodeIs'] : [errorMessage, 'contactSupportForHelpAndShareErrorCode'],
                 onContactSupport,
                 translationValues: onContactSupport
                     ? { theErrorCodeIs: error?.requestId ? <CopyText text={error.requestId} /> : null }
