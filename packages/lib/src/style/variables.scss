@@ -22,18 +22,6 @@
     $my-success-scale: generate-color-scale(#25c000, 17);
     $my-warning-scale: generate-color-scale(#25c000, 17);*/
 
-    // ------ Border radius
-    --adyen-sdk-border-radius-xs: #{$border-radius-xs};
-    --adyen-sdk-border-radius-s: #{$border-radius-s};
-    --adyen-sdk-border-radius-m: #{$border-radius-m};
-    --adyen-sdk-border-radius-l: #{$border-radius-l};
-    --adyen-sdk-border-radius-xl: #{$border-radius-xl};
-
-    // ------ Borders
-    --adyen-sdk-width-s: #{$border-width-s};
-    --adyen-sdk-width-m: #{$border-width-m};
-    --adyen-sdk-width-l: #{$border-width-l};
-
     // Aliases
 
     // ------ Font size
