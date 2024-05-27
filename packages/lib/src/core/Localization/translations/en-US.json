@@ -234,6 +234,7 @@
     "value": "Value",
     "weCouldNotLoadThePayoutsOverview": "We could not load the payouts overview.",
     "weCouldNotLoadTheTransactionsOverview": "We could not load the transaction overview.",
+    "weCouldNotLoadYourBalanceAccounts": "We couldn’t load your balance accounts.",
     "weCouldNotLoadYourPayouts": "We couldn’t load your payouts.",
     "weCouldNotLoadYourTransactions": "We couldn’t load your transactions.",
     "zipCode": "Zip code"
