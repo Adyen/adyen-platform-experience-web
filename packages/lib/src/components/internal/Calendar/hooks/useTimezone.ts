@@ -3,7 +3,7 @@ import restamper, { RestampContext } from '../../../../core/Localization/datetim
 import { getGMTSuffixForTimezoneOffset, getTimezoneOffsetFromFormattedDateString } from '../../../../core/Localization/datetime/restamper/utils';
 import { isWatchlistUnsubscribeToken } from '../../../../primitives/reactive/watchlist';
 import { boolOrFalse, EMPTY_ARRAY, EMPTY_OBJECT, noop } from '../../../../utils';
-import clock from '../../../../primitives/timing/clock';
+import clock from '../../../../primitives/time/clock';
 
 export type UseTimezoneConfig = {
     timezone?: RestampContext['TIMEZONE'];

@@ -23,7 +23,7 @@ import {
     SHIFT_PERIOD,
 } from '../../constants';
 import createFlagsRecord from '../common/flags';
-import { createIndexed } from '../../../../../../primitives/struct/indexed';
+import { createIndexed } from '../../../../../../primitives/common/indexed';
 import type { WatchListCallable } from '../../../../../../primitives/reactive/watchlist';
 import {
     clamp,
@@ -38,7 +38,7 @@ import {
     mod,
     struct,
 } from '../../../../../../utils';
-import today from '../../../../../../primitives/timing/today';
+import today from '../../../../../../primitives/time/today';
 import {
     CalendarBlock,
     CalendarBlockCellData,

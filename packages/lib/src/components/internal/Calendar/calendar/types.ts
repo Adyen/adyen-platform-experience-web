@@ -31,7 +31,7 @@ import {
     CALENDAR_CONTROLS,
     CALENDAR_SELECTIONS,
 } from './constants';
-import { Indexed } from '../../../../primitives/struct/indexed';
+import { Indexed } from '../../../../primitives/common/indexed';
 import { WatchListCallable } from '../../../../primitives/reactive/watchlist';
 
 export type WithGetSetProperty<T = any> = {

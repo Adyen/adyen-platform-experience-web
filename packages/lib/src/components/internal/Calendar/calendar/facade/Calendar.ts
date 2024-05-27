@@ -27,7 +27,7 @@ import {
     SHIFT_FRAME,
     SHIFT_PERIOD,
 } from '../constants';
-import { createIndexed } from '../../../../../primitives/struct/indexed';
+import { createIndexed } from '../../../../../primitives/common/indexed';
 import { createEffectStack, EffectStack } from '../../../../../primitives/reactive/effectStack';
 import {
     createWatchlist,
@@ -36,7 +36,7 @@ import {
     WatchListCallable,
     WatchListSubscriptionCallback,
 } from '../../../../../primitives/reactive/watchlist';
-import today from '../../../../../primitives/timing/today';
+import today from '../../../../../primitives/time/today';
 import {
     boolify,
     boolOrTrue,
