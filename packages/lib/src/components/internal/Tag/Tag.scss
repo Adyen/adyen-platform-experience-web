@@ -6,8 +6,8 @@
     cursor: default;
     display: inline-flex;
     flex-direction: row;
-    font-size: var(--adyen-sdk-font-size-100);
-    font-weight: var(--adyen-sdk-font-weight-500);
+    font-size: token(text-caption-font-size);
+    font-weight: token(text-body-stronger-font-weight);
     justify-content: center;
     min-width: 2.5rem;
     padding: token(spacer-020) token(spacer-040);

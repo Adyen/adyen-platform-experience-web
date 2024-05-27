@@ -37,14 +37,14 @@
     caret-color: #0075ff;
     color: token(color-label-primary);
     font-family: inherit;
-    font-size: var(--adyen-sdk-font-size-200);
+    font-size: token(text-body-font-size);
     height: 100%;
     padding: 0;
     width: 100%;
 
     &::placeholder {
         color: #c9cdd3;
-        font-weight: var(--adyen-sdk-font-weight-200);
+        font-weight: token(text-body-font-weight);
     }
 
     &:focus,

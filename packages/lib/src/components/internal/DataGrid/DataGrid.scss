@@ -5,7 +5,7 @@
 .adyen-pe-data-grid {
     $adyen-pe-data-grid: &;
     $adyen-pe-data-grid__cell: #{$adyen-pe-data-grid}__cell;
-    font-size: var(--adyen-sdk-font-size-200);
+    font-size: token(text-body-font-size);
     overflow: hidden;
     text-align: left;
 
@@ -91,7 +91,7 @@
         &#{$adyen-pe-data-grid__cell}--heading {
             border-bottom-color: token(color-outline-secondary);
             color: token(color-label-primary);
-            font-weight: var(--adyen-sdk-font-weight-600);
+            font-weight: token(text-body-strongest-font-weight);
             padding: token(spacer-070);
             position: relative;
 

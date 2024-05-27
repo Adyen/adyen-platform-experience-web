@@ -6,71 +6,71 @@
 
     // Caption
     &--caption {
-        font-size: var(--adyen-sdk-font-size-100);
-        font-weight: var(--adyen-sdk-font-weight-400);
+        font-size: token(text-caption-font-size);
+        font-weight: token(text-body-font-weight);
         letter-spacing: #{token(text-caption-letter-spacing)};
-        line-height: var(--adyen-sdk-line-height-100);
+        line-height: token(text-caption-line-height);
     }
 
     &--caption-wide {
-        line-height: var(--adyen-sdk-line-height-200);
+        line-height: token(text-body-line-height);
     }
 
     &--caption-stronger {
-        font-weight: var(--adyen-sdk-font-weight-500);
+        font-weight: token(text-body-stronger-font-weight);
     }
 
     // Body
     &--body {
-        font-size: var(--adyen-sdk-font-size-200);
-        font-weight: var(--adyen-sdk-font-weight-400);
+        font-size: token(text-body-font-size);
+        font-weight: token(text-body-font-weight);
         letter-spacing: #{token(text-body-letter-spacing)};
-        line-height: var(--adyen-sdk-line-height-200);
+        line-height: token(text-body-line-height);
     }
 
     &--body-wide {
-        line-height: var(--adyen-sdk-line-height-300);
+        line-height: token(text-body-wide-line-height);
     }
 
     &--body-stronger {
-        font-weight: var(--adyen-sdk-font-weight-500);
+        font-weight: token(text-body-stronger-font-weight);
     }
 
     &--body-strongest {
-        font-weight: var(--adyen-sdk-font-weight-600);
+        font-weight: token(text-body-strongest-font-weight);
     }
 
     // Subtitle
     &--subtitle {
-        font-size: var(--adyen-sdk-font-size-300);
-        font-weight: var(--adyen-sdk-font-weight-500);
-        letter-spacing: #{token(text-subtitle-letter-spacing)};
-        line-height: var(--adyen-sdk-line-height-400);
+        font-size: token(text-subtitle-font-size);
+        font-weight: token(text-body-stronger-font-weight);
+        letter-spacing: token(text-subtitle-letter-spacing);
+        line-height: token(text-subtitle-line-height);
     }
 
     &--subtitle-stronger {
-        font-weight: var(--adyen-sdk-font-weight-600);
+        font-weight: token(text-body-strongest-font-weight);
     }
 
     // Title
     &--title {
-        font-size: var(--adyen-sdk-font-size-500);
-        font-weight: var(--adyen-sdk-font-weight-600);
+        font-size: token(text-title-m-font-size);
+        font-weight: token(text-body-strongest-font-weight);
         letter-spacing: #{token(text-title-letter-spacing)};
-        line-height: var(--adyen-sdk-line-height-500);
+        line-height: token(text-title-m-mobile-line-height);
     }
 
     &--title-m {
-        font-size: var(--adyen-sdk-font-size-500);
-        font-weight: var(--adyen-sdk-font-weight-600);
+        font-size: token(text-title-m-font-size);
+        font-weight: token(text-body-strongest-font-weight);
         letter-spacing: #{token(text-title-m-letter-spacing)};
-        line-height: var(--adyen-sdk-line-height-600);
+        line-height: token(text-title-m-line-height);
     }
 
     &--title-l {
-        font-size: var(--adyen-sdk-font-size-600);
-        font-weight: var(--adyen-sdk-font-weight-600);
+        font-size: token(text-title-l-font-size);
+        font-weight: token(text-body-strongest-font-weight);
         letter-spacing: #{token(text-title-l-letter-spacing)};
-        line-height: var(--adyen-sdk-line-height-700);
+        line-height: token(text-title-l-line-height);
     }
 }

@@ -74,7 +74,7 @@
     color: token(color-label-primary);
     display: block;
     font-family: inherit;
-    font-size: var(--adyen-sdk-font-size-200);
+    font-size: token(text-body-font-size);
     height: 40px;
     outline: none;
     padding: 5px 8px;
@@ -156,7 +156,7 @@
 
 .adyen-pe-input::placeholder {
     color: token(color-label-secondary);
-    font-weight: var(--adyen-sdk-font-weight-200);
+    font-weight: token(text-body-font-weight);
 }
 
 .adyen-pe-input--date {

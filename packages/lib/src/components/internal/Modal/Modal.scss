@@ -94,8 +94,8 @@ $adyen-pe-modal-sizes: (
         align-items: center;
         color: token(color-label-primary);
         display: flex;
-        font-size: var(--adyen-sdk-font-size-300);
-        font-weight: var(--adyen-sdk-font-weight-600);
+        font-size: token(text-subtitle-font-size);
+        font-weight: token(text-body-strongest-font-weight);
         justify-content: flex-end;
         padding: 24px 24px 0;
 
@@ -127,7 +127,7 @@ $adyen-pe-modal-sizes: (
     }
 
     .adyen-pe-label__text {
-        font-size: var(--adyen-sdk-font-size-200);
+        font-size: token(text-body-font-size);
         margin-bottom: token(spacer-020);
     }
 

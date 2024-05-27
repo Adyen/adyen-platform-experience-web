@@ -1,3 +1,5 @@
+@import '../../../../../style';
+
 .adyen-pe-balance-account-selector {
     max-height: 24rem;
     overflow-y: auto;
@@ -11,6 +13,8 @@
         flex-wrap: wrap;
     }
 
+    $body-line-height: token(text-body-line-height);
+
     .adyen-pe-dropdown__element-checkmark {
         /**
          * Since the flex container (.adyen-pe-dropdown__element) is no longer center aligned
@@ -21,7 +25,7 @@
          *   = (line_height - checkmark_size) / 2
          * ----------------------------------------------------
          */
-        margin-top: calc((var(--adyen-sdk-line-height-200) - 1rem) / 2);
+        margin-top: calc(($body-line-height - 1rem) / 2);
     }
 
     &__account-id {
@@ -30,7 +34,7 @@
 
     &__account-label {
         flex: auto;
-        font-weight: var(--adyen-sdk-font-weight-500);
+        font-weight: token(text-body-stronger-font-weight);
         overflow-x: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;

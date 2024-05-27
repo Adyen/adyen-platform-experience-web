@@ -186,10 +186,10 @@
     border: 0;
     cursor: pointer;
     display: flex;
-    font-size: var(--adyen-sdk-font-size-200);
-    font-weight: var(--adyen-sdk-font-weight-400);
+    font-size: token(text-body-font-size);
+    font-weight: token(text-body-font-weight);
     hyphens: auto;
-    line-height: var(--adyen-sdk-line-height-200);
+    line-height: token(text-body-line-height);
     outline: 0;
     padding: token(spacer-040) token(spacer-070);
     transition: background 0.2s ease-out;

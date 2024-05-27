@@ -1,7 +1,9 @@
+@import '../../../../../style';
+
 .adyen-pe-transactions-table {
     &__amount {
         display: block;
-        font-weight: var(--adyen-sdk-font-weight-500);
+        font-weight: token(text-body-stronger-font-weight);
         text-align: right;
     }
 

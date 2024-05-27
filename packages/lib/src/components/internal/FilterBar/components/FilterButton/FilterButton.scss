@@ -22,7 +22,7 @@
 
     &__label {
         display: inline-flex;
-        line-height: var(--adyen-sdk-line-height-200);
+        line-height: token(text-body-line-height);
         padding: token(spacer-040) token(spacer-060);
         vertical-align: middle;
     }

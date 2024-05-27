@@ -21,7 +21,7 @@
     &__label {
         align-items: center;
         display: inline-flex;
-        line-height: var(--adyen-sdk-line-height-200);
+        line-height: token(text-body-line-height);
         vertical-align: middle;
         white-space: nowrap;
         width: 100%;

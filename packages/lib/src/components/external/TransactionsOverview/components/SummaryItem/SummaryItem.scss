@@ -34,7 +34,7 @@
 
     &__amount {
         color: token(color-label-primary);
-        font-weight: var(--adyen-sdk-font-weight-600);
+        font-weight: token(text-body-strongest-font-weight);
         white-space: nowrap;
     }
 

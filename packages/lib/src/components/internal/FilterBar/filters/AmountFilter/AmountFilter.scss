@@ -3,7 +3,7 @@
 .adyen-pe-range-selection-filter {
     display: flex;
     flex-direction: column;
-    font-size: var(--adyen-sdk-font-size-200);
+    font-size: token(text-body-font-size);
     gap: token(spacer-070);
 
     &__input {
@@ -27,6 +27,6 @@
 
     label {
         color: token(color-label-primary);
-        font-weight: var(--adyen-sdk-font-weight-500);
+        font-weight: token(text-body-stronger-font-weight);
     }
 }
