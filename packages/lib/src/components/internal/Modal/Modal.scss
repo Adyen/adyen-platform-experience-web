@@ -53,7 +53,7 @@ $adyen-pe-modal-sizes: (
 
 .adyen-pe-modal {
     background-color: token(color-background-primary);
-    border-radius: var(--adyen-sdk-border-radius-l);
+    border-radius: token(border-radius-l);
     cursor: initial;
     opacity: 0;
     overflow-y: auto;

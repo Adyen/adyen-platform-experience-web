@@ -89,7 +89,7 @@
 
         .adyen-pe-dropdown--multiselect &::before {
             background-color: var(--adyen-pe-background-secondary);
-            border-radius: var(--adyen-sdk-border-radius-s);
+            border-radius: token(border-radius-s);
             content: '';
             inset: -4px;
             position: absolute;

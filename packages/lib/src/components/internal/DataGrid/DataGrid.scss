@@ -125,7 +125,7 @@
 
     &--outline {
         border: 1px solid token(color-outline-secondary);
-        border-radius: var(--adyen-sdk-border-radius-m);
+        border-radius: token(border-radius-m);
 
         #{$adyen-pe-data-grid}__table-wrapper {
             margin-bottom: 0;

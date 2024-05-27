@@ -5,7 +5,7 @@
     appearance: none;
     background-color: token(color-background-primary);
     border: 1px solid token(color-outline-secondary);
-    border-radius: var(--adyen-sdk-border-radius-m);
+    border-radius: token(border-radius-m);
     color: token(color-label-primary);
     cursor: pointer;
     display: inline-flex;
@@ -34,9 +34,9 @@
 
     &__counter {
         background-color: token(color-background-inverse-primary);
-        border-radius: var(--adyen-sdk-border-radius-s);
+        border-radius: token(border-radius-s);
         color: token(color-label-inverse);
-        padding: var(--adyen-sdk-border-radius-s) var(--adyen-sdk-border-radius-m);
+        padding: token(border-radius-s) token(border-radius-m);
     }
 
     &__counter-wrapper {

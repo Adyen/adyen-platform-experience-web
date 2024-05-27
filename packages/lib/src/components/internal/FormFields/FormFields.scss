@@ -70,7 +70,7 @@
 .adyen-pe-input {
     background: token(color-background-primary);
     border: 1px solid token(color-outline-secondary);
-    border-radius: var(--adyen-sdk-border-radius-m);
+    border-radius: token(border-radius-m);
     color: token(color-label-primary);
     display: block;
     font-family: inherit;
@@ -79,9 +79,7 @@
     outline: none;
     padding: 5px 8px;
     position: relative;
-    transition:
-        border 0.2s ease-out,
-        box-shadow 0.2s ease-out;
+    transition: border 0.2s ease-out, box-shadow 0.2s ease-out;
     width: 100%;
 
     &__invalid-value {

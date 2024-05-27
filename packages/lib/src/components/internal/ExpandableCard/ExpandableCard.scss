@@ -20,7 +20,7 @@
     &__container {
         background-color: token(color-background-primary);
         border: 1px solid token(color-outline-primary);
-        border-radius: var(--adyen-sdk-border-radius-m);
+        border-radius: token(border-radius-m);
         display: block;
         overflow: hidden;
 
