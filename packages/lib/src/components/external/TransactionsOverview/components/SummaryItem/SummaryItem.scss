@@ -13,7 +13,7 @@
     }
 
     &--body {
-        border-top: 1px solid #dbdee2;
+        border-top: 1px solid token(color-outline-disabled);
         margin-top: token(spacer-040);
         padding-top: token(spacer-040);
     }

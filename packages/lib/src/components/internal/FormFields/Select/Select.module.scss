@@ -43,7 +43,7 @@
     width: 100%;
 
     &::placeholder {
-        color: #c9cdd3;
+        color: token(color-outline-secondary);
         font-weight: token(text-body-font-weight);
     }
 

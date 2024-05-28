@@ -1,15 +1,17 @@
+@import '../../../../style';
+
 .adyen-pe-popover-dismiss-button {
     cursor: pointer;
 
     &--on-image {
-        color: #fff;
+        color: token(color-label-always-light);
 
         &:hover {
-            color: #fff;
+            color: token(color-label-always-light);
         }
 
         &:active {
-            color: #fff;
+            color: token(color-label-always-light);
         }
     }
 }

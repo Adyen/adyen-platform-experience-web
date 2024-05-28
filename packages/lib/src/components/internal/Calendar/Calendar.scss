@@ -4,7 +4,7 @@ $adyen-pe-text-subtitle: token(text-subtitle-font-size);
 $adyen-pe-text-caption: token(text-caption-font-size);
 
 .adyen-pe-calendar {
-    --adyen-pe-calendar-corner-border-radius: 4px;
+    --adyen-pe-calendar-corner-border-radius: token(border-radius-s);
 
     list-style: none;
     margin: 0;

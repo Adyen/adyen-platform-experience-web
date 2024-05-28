@@ -99,12 +99,12 @@
 
 .adyen-pe-input[readonly],
 .adyen-pe-input--disabled {
-    background: #d1d5da;
-    border-color: #d1d5da;
+    background: token(color-background-tertiary-active);
+    border-color: token(color-outline-primary);
 }
 
 .adyen-pe-input--disabled:hover {
-    border-color: #d1d5da;
+    border-color: token(color-outline-primary);
 }
 
 .adyen-pe-input-wrapper {
@@ -136,7 +136,7 @@
 }
 
 .adyen-pe-input__inline-validation--valid {
-    color: #067934;
+    color: token(color-label-on-background-success-weak);
 }
 
 .adyen-pe-input__inline-validation--invalid {
@@ -144,14 +144,14 @@
 }
 
 .adyen-pe-input--valid {
-    border-bottom-color: #067934;
+    border-bottom-color: token(color-outline-success-hover);
 }
 
 .adyen-pe-input--error,
 .adyen-pe-input--invalid,
 .adyen-pe-input--error:hover,
 .adyen-pe-input--invalid:hover {
-    border-color: #c72727;
+    border-color: token(color-outline-critical-hover);
 }
 
 .adyen-pe-input::placeholder {
@@ -170,12 +170,12 @@
 .adyen-pe-input:focus:hover,
 .adyen-pe-input--focus:hover {
     background: token(color-background-primary);
-    outline: 1px solid #00112c;
+    outline: 1px solid token(color-outline-selected);
 }
 
 .adyen-pe-input[readonly],
 .adyen-pe-input[readonly]:hover {
-    background-color: #d1d5da;
+    background-color: token(color-background-tertiary-active);
     border-color: transparent;
     color: token(color-label-primary-hover);
     cursor: default;

@@ -98,8 +98,8 @@
 
         &__image-dismiss-button {
             position: absolute;
-            right: var(--adyen-pe-popover-image-dismiss-icon-right);
-            top: var(--adyen-pe-popover-image-dismiss-icon-top);
+            right: token(spacer-070);
+            top: token(spacer-070);
         }
 
         &__footer {

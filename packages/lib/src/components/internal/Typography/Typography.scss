@@ -44,7 +44,7 @@
     &--subtitle {
         font-size: token(text-subtitle-font-size);
         font-weight: token(text-body-stronger-font-weight);
-        letter-spacing: token(text-subtitle-letter-spacing);
+        letter-spacing: #{token(text-subtitle-letter-spacing)};
         line-height: token(text-subtitle-line-height);
     }
 

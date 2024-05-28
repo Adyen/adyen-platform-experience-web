@@ -15,7 +15,7 @@
 
     &--success {
         background: token(color-background-success-weak);
-        color: #067934;
+        color: token(color-label-on-background-success-weak);
     }
 
     &--error {
@@ -29,8 +29,8 @@
     }
 
     &--warning {
-        background: #fff5e9;
-        color: #9b5700;
+        background: token(color-background-warning-weak);
+        color: token(color-label-on-background-warning-weak);
     }
 
     &--primary {

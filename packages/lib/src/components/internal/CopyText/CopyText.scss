@@ -7,7 +7,7 @@
     text-decoration: none;
 
     span &__information {
-        color: #0070f5;
+        color: token(color-label-highlight);
         font-size: token(text-body-font-size);
         font-weight: token(text-body-font-weight);
         line-height: token(text-body-line-height);

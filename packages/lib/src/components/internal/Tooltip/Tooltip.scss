@@ -3,7 +3,7 @@
 .adyen-pe__tooltip-target {
     &--hovered {
         text-decoration: underline;
-        text-decoration-color: #0075ff;
+        text-decoration-color: token(color-decorative-blue);
         text-decoration-style: dashed;
         text-decoration-thickness: 1px;
         text-underline-offset: token(spacer-020);
