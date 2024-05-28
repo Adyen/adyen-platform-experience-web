@@ -1,3 +1,4 @@
+import { DATE_FORMAT } from '../../../internal/DataOverviewDisplay/constants';
 import { TransactionDetailData } from '../types';
 import TransactionDataSkeleton from './TransactionDataSkeleton';
 import { Image } from '../../../internal/Image/Image';
@@ -9,22 +10,7 @@ import { useMemo } from 'preact/hooks';
 import './TransactionData.scss';
 export const TransactionData = ({ transaction, isFetching }: { transaction: TransactionDetailData; isFetching?: boolean }) => {
     const { i18n } = useCoreContext();
-    const createdAt = useMemo(
-        () =>
-            transaction
-                ? i18n
-                      .date(new Date(transaction.createdAt), {
-                          weekday: 'long',
-                          month: 'long',
-                          year: 'numeric',
-                          hour: '2-digit',
-                          minute: '2-digit',
-                          timeZoneName: 'shortOffset',
-                      })
-                      .toString()
-                : '',
-        [transaction, i18n]
-    );
+    const createdAt = useMemo(() => (transaction ? i18n.date(new Date(transaction.createdAt), DATE_FORMAT).toString() : ''), [transaction, i18n]);
 
     const amountStyle = transaction?.status === 'Booked' ? 'default' : transaction?.status === 'Reversed' ? 'error' : 'pending';
 
@@ -94,11 +80,6 @@ export const TransactionData = ({ transaction, isFetching }: { transaction: Tran
                     </div>
                 </div>
             )}
-            {/*{transaction && <div className={'adyen-pe-transaction-data__container adyen-pe-transaction-data__action-buttons'}>*/}
-            {/*    <Button aria-label={i18n.get('export')} variant={ButtonVariant.SECONDARY} onClick={() => {}}>*/}
-            {/*        {i18n.get('export')}*/}
-            {/*    </Button>*/}
-            {/*</div>}*/}
         </>
     );
 };

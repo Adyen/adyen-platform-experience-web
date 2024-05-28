@@ -1,13 +1,9 @@
 import { useMemo } from 'preact/hooks';
 import useCoreContext from '../../../../core/Context/useCoreContext';
 import { TranslationKey } from '../../../../core/Localization/types';
-
-//TODO: Put all of the class names to constant folder
-//TODO: Add styles
-//TODO: Add Card component
-//TODO: Check if the conditional data exists
 import { IPayoutDetails } from '../../../../types';
 import Card from '../../../internal/Card/Card';
+import { DATE_FORMAT } from '../../../internal/DataOverviewDisplay/constants';
 import StructuredList from '../../../internal/StructuredList';
 import { TypographyVariant } from '../../../internal/Typography/types';
 import Typography from '../../../internal/Typography/Typography';
@@ -37,22 +33,7 @@ export const PayoutData = ({ payout: payoutData, isFetching }: { payout?: IPayou
             { subtractions: {}, additions: {} }
         ) ?? {};
 
-    const creationDate = useMemo(
-        () =>
-            payout?.createdAt
-                ? i18n
-                      .date(new Date(payout?.createdAt), {
-                          weekday: 'long',
-                          month: 'long',
-                          year: 'numeric',
-                          hour: '2-digit',
-                          minute: '2-digit',
-                          timeZoneName: 'shortOffset',
-                      })
-                      .toString()
-                : '',
-        [payout, i18n]
-    );
+    const creationDate = useMemo(() => (payout?.createdAt ? i18n.date(new Date(payout?.createdAt), DATE_FORMAT).toString() : ''), [payout, i18n]);
 
     return (
         <>

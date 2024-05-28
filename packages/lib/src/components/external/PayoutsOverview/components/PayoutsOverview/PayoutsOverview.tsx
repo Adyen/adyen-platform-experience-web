@@ -1,4 +1,3 @@
-import Card from '../../../../internal/Card/Card';
 import { BASE_CLASS, BASE_CLASS_DETAILS } from './constants';
 import { PayoutsTable } from '../PayoutsTable/PayoutsTable';
 import FilterBar from '../../../../internal/FilterBar';
@@ -19,12 +18,9 @@ import { SetupHttpOptions, SuccessResponse, useSetupEndpoint } from '../../../..
 import { IBalanceAccountBase } from '../../../../../types';
 import { EndpointsOperations } from '../../../../../types/api/endpoints';
 import { isFunction } from '../../../../../utils/common';
-import { lazy } from 'preact/compat';
 import { useCallback, useEffect, useMemo } from 'preact/hooks';
 import './PayoutsOverview.scss';
 import { DataDetailsModal } from '../../../../internal/DataOverviewDisplay/DataDetailsModal';
-
-const ModalContent = lazy(() => import('../../../../internal/Modal/ModalContent/ModalContent'));
 
 export const PayoutsOverview = ({
     onFiltersChanged,
@@ -42,7 +38,6 @@ export const PayoutsOverview = ({
 >) => {
     const { i18n } = useCoreContext();
     const payoutsEndpointCall = useSetupEndpoint('getPayouts');
-    const payoutEndpointCall = useSetupEndpoint('getPayout');
     const { activeBalanceAccount, balanceAccountSelectionOptions, onBalanceAccountSelection } = useBalanceAccountSelection(balanceAccounts);
     const { defaultParams, nowTimestamp, refreshNowTimestamp } = useDefaultOverviewFilterParams('payouts', activeBalanceAccount);
 
@@ -101,8 +96,6 @@ export const PayoutsOverview = ({
 
     const { updateDetails, resetDetails, selectedDetail } = useModalDetails(modalOptions);
 
-    console.log(selectedDetail);
-
     const onRowClick = useCallback(
         (value: IPayout) => {
             updateDetails({
@@ -143,7 +136,6 @@ export const PayoutsOverview = ({
                 onContactSupport={onContactSupport}
                 selectedDetail={selectedDetail as ReturnType<typeof useModalDetails>['selectedDetail']}
                 resetDetails={resetDetails}
-                // renderModalContent={() => <ModalContent data={selectedDetail?.selection.data} />}
             >
                 <PayoutsTable
                     balanceAccounts={balanceAccounts}
