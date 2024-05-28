@@ -87,19 +87,19 @@
         text-decoration: underline;
 
         &:hover {
-            background-color: var(--adyen-sdk-color-background-primary);
+            background-color: transparent;
             color: var(--adyen-sdk-color-label-primary-hover);
             text-decoration: none;
         }
 
         &:active {
-            background-color: var(--adyen-sdk-color-background-primary);
+            background-color: transparent;
             color: var(--adyen-sdk-color-label-primary-active);
             text-decoration: none;
         }
 
         &:disabled {
-            background-color: var(--adyen-sdk-color-background-primary);
+            background-color: transparent;
             color: var(--adyen-sdk-color-label-disabled);
         }
     }

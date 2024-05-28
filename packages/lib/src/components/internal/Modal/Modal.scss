@@ -114,10 +114,6 @@ $adyen-pe-modal-sizes: (
         cursor: pointer;
         transition: background 0.1s linear;
 
-        &:hover {
-            background: var(--adyen-sdk-color-background-tertiary);
-        }
-
         &:focus {
             background: #d1d5da;
             outline: 0;
