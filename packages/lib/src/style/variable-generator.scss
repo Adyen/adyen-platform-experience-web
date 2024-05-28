@@ -11,7 +11,7 @@
     @return $adyen-output-map;
 }
 
+$adyen-tokens-map: adyen-sdk-generate-css-variables($color, $text, $focus-ring, $spacer, $border);
 @function token($token) {
-    $adyen-tokens-map: adyen-sdk-generate-css-variables($color, $text, $focus-ring, $spacer, $border);
     @return map-get($adyen-tokens-map, '#{$token}');
 }
