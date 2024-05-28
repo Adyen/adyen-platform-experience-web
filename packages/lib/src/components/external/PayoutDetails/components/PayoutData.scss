@@ -18,11 +18,11 @@
         padding: 12px 16px;
 
         &--card-title {
-            color: #5c687c;
+            color: var(--adyen-sdk-color-label-secondary);
         }
 
         &--section {
-            background-color: #f7f7f8;
+            background-color: var(--adyen-sdk-color-background-secondary);
 
             &-amount {
                 display: flex;
