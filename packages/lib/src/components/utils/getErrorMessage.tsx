@@ -18,15 +18,17 @@ export const getErrorMessage = (
                 message: [errorMessage, 'tryRefreshingThePageOrComeBackLater'],
                 refreshComponent: true,
             };
-        case '00_500':
+        case '00_500': {
+            const secondaryErrorMessage = onContactSupport ? 'theErrorCodeIs' : 'contactSupportForHelpAndShareErrorCode';
             return {
                 title: 'somethingWentWrong',
-                message: onContactSupport ? [errorMessage, 'theErrorCodeIs'] : [errorMessage, 'contactSupportForHelpAndShareErrorCode'],
+                message: [errorMessage, secondaryErrorMessage],
+                translationValues: {
+                    [secondaryErrorMessage]: error.requestId ? <CopyText text={error.requestId} /> : null,
+                },
                 onContactSupport,
-                translationValues: onContactSupport
-                    ? { theErrorCodeIs: error?.requestId ? <CopyText text={error.requestId} /> : null }
-                    : { contactSupportForHelpAndShareErrorCode: error.requestId ? <CopyText text={error.requestId} /> : null },
             };
+        }
         default:
             return UNDEFINED_ERROR;
     }
