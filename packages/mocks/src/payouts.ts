@@ -1,3 +1,4 @@
+import { nowTimestamp } from '@adyen/adyen-platform-experience-web/dist/types/components/internal/Calendar/calendar/timerange/utils';
 import type { IPayout, IPayoutDetails } from '@adyen/adyen-platform-experience-web/src';
 
 export const PAYOUTS_WITH_DETAILS: IPayoutDetails[] = [
@@ -17,7 +18,7 @@ export const PAYOUTS_WITH_DETAILS: IPayoutDetails[] = [
                 value: 90000,
                 currency: 'EUR',
             },
-            createdAt: '2024-04-12T10:00:00.000Z',
+            createdAt: new Date().toDateString(),
         },
         amountBreakdown: [
             {
@@ -25,28 +26,238 @@ export const PAYOUTS_WITH_DETAILS: IPayoutDetails[] = [
                     value: -1000,
                     currency: 'EUR',
                 },
-                category: 'fee',
+                category: 'Fee',
             },
             {
                 amount: {
                     value: -8000,
                     currency: 'EUR',
                 },
-                category: 'refund',
+                category: 'Refund',
             },
             {
                 amount: {
                     value: -500,
                     currency: 'EUR',
                 },
-                category: 'chargeback',
+                category: 'Chargeback',
             },
             {
                 amount: {
                     value: -500,
                     currency: 'EUR',
                 },
-                category: 'reserveRelease',
+                category: 'ReserveRelease',
+            },
+        ],
+    },
+    {
+        payout: {
+            id: '1234567890123451',
+            balanceAccountId: 'BA32272223222B5CTDNB66W2Z',
+            grossAmount: {
+                value: 500,
+                currency: 'EUR',
+            },
+            chargesAmount: {
+                value: -8500,
+                currency: 'EUR',
+            },
+            netAmount: {
+                value: 91500,
+                currency: 'EUR',
+            },
+            createdAt: new Date().toDateString(),
+        },
+        amountBreakdown: [
+            {
+                amount: {
+                    value: 1000,
+                    currency: 'EUR',
+                },
+                category: 'Fee',
+            },
+            {
+                amount: {
+                    value: 1000,
+                    currency: 'EUR',
+                },
+                category: 'GrantIssued',
+            },
+            {
+                amount: {
+                    value: 500,
+                    currency: 'EUR',
+                },
+                category: 'InternalTransfers',
+            },
+            {
+                amount: {
+                    value: -8000,
+                    currency: 'EUR',
+                },
+                category: 'Refund',
+            },
+            {
+                amount: {
+                    value: -500,
+                    currency: 'EUR',
+                },
+                category: 'Chargeback',
+            },
+            {
+                amount: {
+                    value: -500,
+                    currency: 'EUR',
+                },
+                category: 'ReserveRelease',
+            },
+        ],
+    },
+    {
+        payout: {
+            id: '1234567890123452',
+            balanceAccountId: 'BA32272223222B5CTDNB66W2Z',
+            grossAmount: {
+                value: 100000,
+                currency: 'EUR',
+            },
+            chargesAmount: {
+                value: -10000,
+                currency: 'EUR',
+            },
+            netAmount: {
+                value: 90000,
+                currency: 'EUR',
+            },
+            createdAt: new Date().toDateString(),
+        },
+        amountBreakdown: [
+            {
+                amount: {
+                    value: -1000,
+                    currency: 'EUR',
+                },
+                category: 'Fee',
+            },
+            {
+                amount: {
+                    value: -8000,
+                    currency: 'EUR',
+                },
+                category: 'Refund',
+            },
+            {
+                amount: {
+                    value: -500,
+                    currency: 'EUR',
+                },
+                category: 'Chargeback',
+            },
+            {
+                amount: {
+                    value: -500,
+                    currency: 'EUR',
+                },
+                category: 'ReserveRelease',
+            },
+        ],
+    },
+    {
+        payout: {
+            id: '1234567890123453',
+            balanceAccountId: 'BA32272223222B5CTDNB66W2Z',
+            grossAmount: {
+                value: 100000,
+                currency: 'EUR',
+            },
+            chargesAmount: {
+                value: -10000,
+                currency: 'EUR',
+            },
+            netAmount: {
+                value: 90000,
+                currency: 'EUR',
+            },
+            createdAt: new Date().toDateString(),
+        },
+        amountBreakdown: [
+            {
+                amount: {
+                    value: -1000,
+                    currency: 'EUR',
+                },
+                category: 'Fee',
+            },
+            {
+                amount: {
+                    value: -8000,
+                    currency: 'EUR',
+                },
+                category: 'Refund',
+            },
+            {
+                amount: {
+                    value: -500,
+                    currency: 'EUR',
+                },
+                category: 'Chargeback',
+            },
+            {
+                amount: {
+                    value: -500,
+                    currency: 'EUR',
+                },
+                category: 'ReserveRelease',
+            },
+        ],
+    },
+    {
+        payout: {
+            id: '1234567890123454',
+            balanceAccountId: 'BA32272223222B5CTDNB66W2Z',
+            grossAmount: {
+                value: 100000,
+                currency: 'EUR',
+            },
+            chargesAmount: {
+                value: -10000,
+                currency: 'EUR',
+            },
+            netAmount: {
+                value: 90000,
+                currency: 'EUR',
+            },
+            createdAt: new Date().toDateString(),
+        },
+        amountBreakdown: [
+            {
+                amount: {
+                    value: -1000,
+                    currency: 'EUR',
+                },
+                category: 'Fee',
+            },
+            {
+                amount: {
+                    value: -8000,
+                    currency: 'EUR',
+                },
+                category: 'Refund',
+            },
+            {
+                amount: {
+                    value: -500,
+                    currency: 'EUR',
+                },
+                category: 'Chargeback',
+            },
+            {
+                amount: {
+                    value: -500,
+                    currency: 'EUR',
+                },
+                category: 'ReserveRelease',
             },
         ],
     },
@@ -74,28 +285,28 @@ export const PAYOUTS_WITH_DETAILS: IPayoutDetails[] = [
                     value: -1000,
                     currency: 'EUR',
                 },
-                category: 'fee',
+                category: 'Fee',
             },
             {
                 amount: {
                     value: -8000,
                     currency: 'EUR',
                 },
-                category: 'refund',
+                category: 'Refund',
             },
             {
                 amount: {
                     value: -500,
                     currency: 'EUR',
                 },
-                category: 'chargeback',
+                category: 'Chargeback',
             },
             {
                 amount: {
                     value: -500,
                     currency: 'EUR',
                 },
-                category: 'reserveRelease',
+                category: 'ReserveRelease',
             },
         ],
     },
@@ -130,14 +341,14 @@ export const PAYOUTS_WITH_DETAILS: IPayoutDetails[] = [
                     value: -1500,
                     currency: 'EUR',
                 },
-                category: 'chargeback',
+                category: 'Chargeback',
             },
             {
                 amount: {
                     value: -2500,
                     currency: 'EUR',
                 },
-                category: 'reserveRelease',
+                category: 'ReserveRelease',
             },
         ],
     },
@@ -165,28 +376,28 @@ export const PAYOUTS_WITH_DETAILS: IPayoutDetails[] = [
                     value: -1000,
                     currency: 'EUR',
                 },
-                category: 'fee',
+                category: 'Fee',
             },
             {
                 amount: {
                     value: -2000,
                     currency: 'EUR',
                 },
-                category: 'refund',
+                category: 'Refund',
             },
             {
                 amount: {
                     value: -1000,
                     currency: 'EUR',
                 },
-                category: 'chargeback',
+                category: 'Chargeback',
             },
             {
                 amount: {
                     value: -1000,
                     currency: 'EUR',
                 },
-                category: 'reserveRelease',
+                category: 'ReserveRelease',
             },
         ],
     },
@@ -214,7 +425,7 @@ export const PAYOUTS_WITH_DETAILS: IPayoutDetails[] = [
                     value: -1000,
                     currency: 'EUR',
                 },
-                category: 'fee',
+                category: 'Fee',
             },
         ],
     },
@@ -242,14 +453,14 @@ export const PAYOUTS_WITH_DETAILS: IPayoutDetails[] = [
                     value: -100000,
                     currency: 'EUR',
                 },
-                category: 'fee',
+                category: 'Fee',
             },
             {
                 amount: {
                     value: -100000,
                     currency: 'EUR',
                 },
-                category: 'refund',
+                category: 'Refund',
             },
         ],
     },
@@ -277,21 +488,21 @@ export const PAYOUTS_WITH_DETAILS: IPayoutDetails[] = [
                     value: -1000,
                     currency: 'EUR',
                 },
-                category: 'fee',
+                category: 'Fee',
             },
             {
                 amount: {
                     value: -7000,
                     currency: 'EUR',
                 },
-                category: 'chargeback',
+                category: 'Chargeback',
             },
             {
                 amount: {
                     value: 3000,
                     currency: 'EUR',
                 },
-                category: 'other',
+                category: 'Other',
             },
         ],
     },

@@ -25,9 +25,6 @@ const endpointsByType = {
     },
 };
 const isTransactionWithoutId = (props: DetailsComponentProps): props is DetailsWithoutIdProps => 'data' in props;
-const getTransactionType = (type: string, dataId: string) => (type === 'transaction' && dataId ? { transactionId: dataId } : { payoutId: dataId });
-
-const checkType = (pathProp: { transactionId: string } | { payoutId: string }): pathProp is { transactionId: string } => 'transactionId' in pathProp;
 
 export default function DataOverviewDetails(props: ExternalUIComponentProps<DetailsComponentProps>) {
     const transaction = useMemo(() => (isTransactionWithoutId(props) ? props.data : null), [props]);
@@ -41,7 +38,6 @@ export default function DataOverviewDetails(props: ExternalUIComponentProps<Deta
 
     const fetchCallback = useCallback(async () => {
         if (dataId) {
-            // const pathProp = props.type === 'transaction' ? getTransactionType(props.type, dataId) as {payoutId: string} : getTransactionType(props.type, dataId) as {payoutId: string}
             const pathProp =
                 props.type === 'transaction'
                     ? {

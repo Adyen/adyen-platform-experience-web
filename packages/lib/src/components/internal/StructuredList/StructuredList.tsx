@@ -1,6 +1,8 @@
 import classNames from 'classnames';
 import useCoreContext from '../../../core/Context/useCoreContext';
 import { TranslationKey } from '../../../core/Localization/types';
+import { TypographyVariant } from '../Typography/types';
+import Typography from '../Typography/Typography';
 import { StructuredListProps } from './types';
 import './StructuredList.scss';
 import { useStructuredListItems } from './useStructuredListItem';
@@ -34,13 +36,13 @@ export default function StructuredList({
                     })}
                 >
                     <dt className={classNames('adyen-pe-structured-list__label', `adyen-pe-structured-list__grid--width-${labelWidth}-of-12`)}>
-                        {renderLabel ? renderLabel(item.label) : <div name="label">{item.label}</div>}
+                        {renderLabel ? renderLabel(item.label) : <Typography variant={TypographyVariant.BODY}>{item.label}</Typography>}
                     </dt>
                     <dd
                         aria-label={`${i18n.get(item.key as TranslationKey)} ${i18n.get('value')}`}
                         className={classNames('adyen-pe-structured-list__content', `adyen-pe-structured-list__grid--width-${valueWidth}-of-12`)}
                     >
-                        {renderValue ? renderValue(item.value) : <div>{item.value}</div>}
+                        {renderValue ? renderValue(item.value) : <Typography variant={TypographyVariant.BODY}>{item.value}</Typography>}
                     </dd>
                 </dl>
             ))}

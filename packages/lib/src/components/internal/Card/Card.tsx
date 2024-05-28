@@ -15,7 +15,7 @@ const Card = ({
     renderFooter,
     filled,
     noOutline,
-    collapsible,
+    collapsible = false,
     openByDefault = true,
     buttonAriaLabel,
     classNameModifiers,

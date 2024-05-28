@@ -36,8 +36,8 @@ export interface components {
       value: number;
     };
     AmountGroupedDTO: {
-      amount?: components["schemas"]["Amount"];
-      category?: string;
+      amount: components["schemas"]["Amount"];
+      category: string;
     };
     /** @description Payouts made within the filters provided for given balanceAccountId */
     PayoutDTO: {
