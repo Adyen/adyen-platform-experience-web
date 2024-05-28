@@ -22,11 +22,11 @@ const endpointsByType = {
         url: 'getPayout' as EndpointName,
     },
 };
-const isTransactionWithoutId = (props: DetailsComponentProps): props is DetailsWithoutIdProps => 'data' in props;
+const isDetailsWithoutId = (props: DetailsComponentProps): props is DetailsWithoutIdProps => 'data' in props;
 
 export default function DataOverviewDetails(props: ExternalUIComponentProps<DetailsComponentProps>) {
-    const details = useMemo(() => (isTransactionWithoutId(props) ? props.data : null), [props]);
-    const dataId = useMemo(() => (!isTransactionWithoutId(props) ? props.id : null), [props]);
+    const details = useMemo(() => (isDetailsWithoutId(props) ? props.data : null), [props]);
+    const dataId = useMemo(() => (!isDetailsWithoutId(props) ? props.id : null), [props]);
 
     const { i18n } = useCoreContext();
 
