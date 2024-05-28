@@ -25,7 +25,7 @@ const endpointsByType = {
 const isTransactionWithoutId = (props: DetailsComponentProps): props is DetailsWithoutIdProps => 'data' in props;
 
 export default function DataOverviewDetails(props: ExternalUIComponentProps<DetailsComponentProps>) {
-    const transaction = useMemo(() => (isTransactionWithoutId(props) ? props.data : null), [props]);
+    const details = useMemo(() => (isTransactionWithoutId(props) ? props.data : null), [props]);
     const dataId = useMemo(() => (!isTransactionWithoutId(props) ? props.id : null), [props]);
 
     const { i18n } = useCoreContext();
@@ -59,7 +59,7 @@ export default function DataOverviewDetails(props: ExternalUIComponentProps<Deta
         }
     }, [error, props.onContactSupport]);
 
-    const transactionData = transaction ?? data;
+    const detailsData = details ?? data;
     return (
         <div className="adyen-pe-overview-details">
             {props.title && <div className="adyen-pe-overview-details--title">{i18n.get(props.title)}</div>}
@@ -70,10 +70,10 @@ export default function DataOverviewDetails(props: ExternalUIComponentProps<Deta
                 </div>
             )}
 
-            {props.type === 'transaction' && transactionData && (
-                <TransactionData transaction={transactionData as TransactionDetailData} isFetching={isFetching} />
+            {props.type === 'transaction' && detailsData && (
+                <TransactionData transaction={detailsData as TransactionDetailData} isFetching={isFetching} />
             )}
-            {props.type === 'payout' && transactionData && <PayoutData payout={transactionData as IPayoutDetails} isFetching={isFetching} />}
+            {props.type === 'payout' && detailsData && <PayoutData payout={detailsData as IPayoutDetails} isFetching={isFetching} />}
         </div>
     );
 }

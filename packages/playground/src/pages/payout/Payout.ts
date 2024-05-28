@@ -5,7 +5,7 @@ import '../../assets/style/style.scss';
 import { enableServerInMockedMode } from '../../endpoints/mock-server/utils';
 import sessionRequest from '../../utils/sessionRequest';
 
-const DEFAULT_TRANSACTION_ID = getDefaultID('1234567890123456');
+const DEFAULT_PAYOUT_ID = getDefaultID('1234567890123456');
 
 enableServerInMockedMode()
     .then(async () => {
@@ -17,13 +17,13 @@ enableServerInMockedMode()
             },
         });
 
-        const transactionsDetailsComponent = new PayoutDetails({
+        const payoutDetailsComponent = new PayoutDetails({
             core: AdyenPlatform,
-            id: id ?? DEFAULT_TRANSACTION_ID,
+            id: id ?? DEFAULT_PAYOUT_ID,
             title: 'payoutDetails',
             onContactSupport: () => {},
         });
 
-        transactionsDetailsComponent.mount('.payout-details-component-container');
+        payoutDetailsComponent.mount('.payout-details-component-container');
     })
     .catch(console.error);

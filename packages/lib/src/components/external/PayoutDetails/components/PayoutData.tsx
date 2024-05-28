@@ -74,7 +74,7 @@ export const PayoutData = ({ payout: payoutData, isFetching }: { payout?: IPayou
                                             </Typography>
                                         }
                                     >
-                                        <StructuredList items={subtractions} layout={'8-4'} />
+                                        <StructuredList items={subtractions} />
                                     </Card>
                                 </div>
                             )}
@@ -91,7 +91,7 @@ export const PayoutData = ({ payout: payoutData, isFetching }: { payout?: IPayou
                                             </Typography>
                                         }
                                     >
-                                        <StructuredList items={additions} layout={'8-4'} highlightable={true} />
+                                        <StructuredList items={additions} />
                                     </Card>
                                 </div>
                             )}
