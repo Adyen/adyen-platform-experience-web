@@ -1,4 +1,3 @@
-import { nowTimestamp } from '@adyen/adyen-platform-experience-web/dist/types/components/internal/Calendar/calendar/timerange/utils';
 import type { IPayout, IPayoutDetails } from '@adyen/adyen-platform-experience-web/src';
 
 export const PAYOUTS_WITH_DETAILS: IPayoutDetails[] = [

@@ -8,6 +8,7 @@ import { TagVariant } from '../../../internal/Tag/types';
 import useCoreContext from '../../../../core/Context/useCoreContext';
 import { useMemo } from 'preact/hooks';
 import './TransactionData.scss';
+
 export const TransactionData = ({ transaction, isFetching }: { transaction: TransactionDetailData; isFetching?: boolean }) => {
     const { i18n } = useCoreContext();
     const createdAt = useMemo(() => (transaction ? i18n.date(new Date(transaction.createdAt), DATE_FORMAT).toString() : ''), [transaction, i18n]);
