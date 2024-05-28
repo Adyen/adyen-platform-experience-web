@@ -17,11 +17,9 @@ import { DetailsComponentProps, DetailsWithoutIdProps, TransactionDetailData } f
 const endpointsByType = {
     transaction: {
         url: 'getTransaction' as EndpointName,
-        path: 'transactionId',
     },
     payout: {
         url: 'getPayout' as EndpointName,
-        path: 'payoutId',
     },
 };
 const isTransactionWithoutId = (props: DetailsComponentProps): props is DetailsWithoutIdProps => 'data' in props;
