@@ -3,15 +3,17 @@
 @import '../../../../style/bento-mapping';
 
 .adyen-pe-transaction-data {
+    $adyen-pe-transaction-data: &;
+
     padding: 0 $adyen-pe-spacer-090 $adyen-pe-spacer-090;
 
     &__section {
         margin-bottom: 6px;
     }
 
-    //&__section:not(:last-child) {
-    //    margin-bottom: 6px;
-    //}
+    &__section:not(:last-child) {
+        margin-bottom: 6px;
+    }
 
     &__amount {
         color: var(--adyen-sdk-color-label-primary);
@@ -44,7 +46,11 @@
 
     &__payment-method-logo-container {
         height: 22px;
-        width: 32px;
+        width: fit-content;
+
+        #{$adyen-pe-transaction-data}__payment-method-logo-bank {
+            width: 32px;
+        }
     }
 
     &__tag-container {
