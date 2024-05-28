@@ -121,7 +121,7 @@ $adyen-pe-text-caption: token(text-caption-font-size);
 
         [data-selection-start='1']:not([data-today='1']) &,
         [data-selection-end='1']:not([data-today='1']) & {
-            color: token(color-label-inverse);
+            color: token(color-label-inverse-primary);
         }
 
         [data-selection-start='1'][data-today='1'] &::before,
