@@ -1,5 +1,4 @@
 import { AdyenPlatformExperience, TransactionsDetails } from '@adyen/adyen-platform-experience-web';
-
 import { getDefaultID, getSearchParameters } from '../../utils/utils';
 import '../../utils/createPages.js';
 import '../../assets/style/style.scss';
