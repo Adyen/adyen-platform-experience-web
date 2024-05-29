@@ -16,7 +16,7 @@ PROJECT_ROOT=$(realpath "$SCRIPT_DIR/../..")
 sort_json=$(realpath "$SCRIPT_DIR/sort-json")
 
 sort_translations_json() {
-    local relative_path=$(realpath -m --relative-to=$PROJECT_ROOT $1)
+    local relative_path=$(node -e "console.log(require('node:path').relative('$(realpath "$PROJECT_ROOT")', '$(realpath "$1")'))")
     local json_path=$(realpath "$PROJECT_ROOT/$relative_path")
 
     if [[ ! -r $json_path ]]; then
