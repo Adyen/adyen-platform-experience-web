@@ -48,7 +48,7 @@ export const DataDetailsModal: FC<DataOverviewDisplayProps> = ({
                                 </span>
                             }
                         >
-                            <ModalContent {...selectedDetail?.selection} type={selectedDetail.selection.type as 'payout' | 'transaction'} />
+                            <ModalContent {...selectedDetail?.selection} />
                         </Suspense>
                     )}
                 </Modal>

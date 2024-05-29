@@ -16,17 +16,25 @@ export type SelectedDetail<Options> = {
 
 export type GetArgsExceptCallback<T extends Required<DetailsConfig<any>>> = Omit<Parameters<T['callback']>[0], 'showModal'>;
 
-export type ModalDetailsOptions = {
-    [k: string]: DetailsConfig<any>;
+export type ModalDetailsOptions<Options extends string> = {
+    [k in Options]: DetailsConfig<any>;
 };
 
-export type CallbackIsPresent<Options extends ModalDetailsOptions, T extends SelectedDetail<Options>> = Options[T['selection']['type']] extends {
+export type CallbackIsPresent<
+    Opt extends ModalDetailsOptions<any>,
+    Options extends ModalDetailsOptions<Extract<keyof Opt, string>>,
+    T extends SelectedDetail<Options>
+> = Options[T['selection']['type']] extends {
     callback: any;
 }
     ? true
     : false;
 
-export type CallbackParams<Options extends ModalDetailsOptions, T extends SelectedDetail<Options>> = {
+export type CallbackParams<
+    Opt extends ModalDetailsOptions<any>,
+    Options extends ModalDetailsOptions<Extract<keyof Opt, string>>,
+    T extends SelectedDetail<Options>
+> = {
     callback: (
         args: Options[T['selection']['type']] extends { callback: any } ? GetArgsExceptCallback<Required<Options[T['selection']['type']]>> : never
     ) => void;
