@@ -10,7 +10,7 @@ import { EMPTY_OBJECT } from '../../../utils/common';
 import { PayoutData } from '../../external/PayoutDetails/components/PayoutData';
 import { TransactionData } from '../../external/TransactionDetails/components/TransactionData';
 import { ExternalUIComponentProps } from '../../types';
-import { getErrorMessage } from '../../utils/getDataOverviewResourceErrorCode';
+import { getErrorMessage } from '../../utils/getErrorMessage';
 import { ErrorMessageDisplay } from '../ErrorMessageDisplay/ErrorMessageDisplay';
 import { DetailsComponentProps, DetailsWithoutIdProps, TransactionDetailData } from './types';
 

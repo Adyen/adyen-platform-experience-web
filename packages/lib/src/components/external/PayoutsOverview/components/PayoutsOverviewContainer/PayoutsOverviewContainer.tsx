@@ -6,10 +6,16 @@ import { PayoutsOverview } from '../PayoutsOverview/PayoutsOverview';
 import { ExternalUIComponentProps } from '../../../../types';
 
 function PayoutsOverviewContainer({ ...props }: ExternalUIComponentProps<DataOverviewComponentProps>) {
-    const { balanceAccounts, wrongBalanceAccountId, isFetching } = useBalanceAccounts(props.balanceAccountId);
+    const { balanceAccounts, isBalanceAccountIdWrong, isFetching, error } = useBalanceAccounts(props.balanceAccountId);
 
     return (
-        <DataOverviewContainer className={BASE_CLASS} errorMessage={'weCouldNotLoadThePayoutsOverview'} wrongBalanceAccountId={wrongBalanceAccountId}>
+        <DataOverviewContainer
+            balanceAccountsError={error}
+            className={BASE_CLASS}
+            errorMessage={'weCouldNotLoadThePayoutsOverview'}
+            isBalanceAccountIdWrong={isBalanceAccountIdWrong}
+            onContactSupport={props.onContactSupport}
+        >
             <PayoutsOverview {...props} balanceAccounts={balanceAccounts} isLoadingBalanceAccount={isFetching} />
         </DataOverviewContainer>
     );

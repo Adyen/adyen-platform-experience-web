@@ -10,7 +10,7 @@ const useBalanceAccounts = (balanceAccountId?: string) => {
     // Balance Accounts
     const balanceAccountEndpointCall = useSetupEndpoint('getBalanceAccounts');
 
-    const { data, isFetching } = useFetch({
+    const { data, isFetching, error } = useFetch({
         fetchOptions: { enabled: !!endpoints.getBalanceAccounts, keepPrevData: true },
         queryFn: useCallback(async () => {
             return balanceAccountEndpointCall(EMPTY_OBJECT);
@@ -22,12 +22,13 @@ const useBalanceAccounts = (balanceAccountId?: string) => {
         [data?.data, balanceAccountId]
     );
 
-    const wrongBalanceAccountId = useMemo(
+    const isBalanceAccountIdWrong = useMemo(
         () => !!balanceAccountId && !!data?.data.length && balanceAccounts?.length === 0,
         [balanceAccounts?.length, data?.data.length, balanceAccountId]
     );
 
-    return { balanceAccounts, wrongBalanceAccountId, isFetching } as const;
+    // TODO: Consider unifying error with isBalanceAccountIdWrong
+    return { balanceAccounts, isBalanceAccountIdWrong, isFetching, error } as const;
 };
 
 export default useBalanceAccounts;
