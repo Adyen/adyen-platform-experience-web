@@ -1,6 +1,6 @@
 import { TransactionData } from './TransactionData';
 import { ErrorMessageDisplay } from '../../../internal/ErrorMessageDisplay/ErrorMessageDisplay';
-import { getErrorMessage } from '../../../utils/getDataOverviewResourceErrorCode';
+import { getErrorMessage } from '../../../utils/getErrorMessage';
 import useCoreContext from '../../../../core/Context/useCoreContext';
 import AdyenPlatformExperienceError from '../../../../core/Errors/AdyenPlatformExperienceError';
 import { useFetch } from '../../../../hooks/useFetch/useFetch';
