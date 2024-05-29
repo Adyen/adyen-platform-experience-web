@@ -1,7 +1,7 @@
 import { Meta } from '@storybook/preact';
 import { enabledDisabledCallbackRadioControls } from '../utils/controls';
 import { TransactionsOverview } from '@adyen/adyen-platform-experience-web';
-import { ElementProps, ElementStory } from '../utils/types';
+import { ElementProps, ElementStory, SessionControls } from '../utils/types';
 import { Container } from '../utils/Container';
 
 const meta: Meta<ElementProps<typeof TransactionsOverview>> = {
@@ -21,6 +21,11 @@ const meta: Meta<ElementProps<typeof TransactionsOverview>> = {
         hideTitle: false,
         onContactSupport: () => {},
     },
+    parameters: {
+        controls: {
+            sort: 'alpha',
+        },
+    },
     render: (args, context) => {
         if (context.loaded.data) {
             Object.assign(args, { transactions: context.loaded.data });
@@ -36,16 +41,13 @@ export const Basic: ElementStory<typeof TransactionsOverview> = {
     },
 };
 
-export const BasicTransactionListApi: ElementStory<
-    typeof TransactionsOverview,
-    { session: { roles: string[]; accountHolderId?: string; apiKey?: string } }
-> = {
+export const BasicTransactionListApi: ElementStory<typeof TransactionsOverview, SessionControls> = {
     name: 'Basic (API)',
     argTypes: {
         session: { control: 'object' },
     },
     args: {
-        session: { roles: [], accountHolderId: '', apiKey: '' },
+        session: { roles: [], accountHolderId: '' },
     },
 };
 
