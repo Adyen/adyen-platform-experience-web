@@ -58,23 +58,18 @@ export interface components {
       amountBreakdown?: components["schemas"]["AmountGroupedDTO"][];
       payout?: components["schemas"]["PayoutDTO"];
     };
+    /** @description Link to a different page */
+    Link: {
+      /** @description Cursor for a different page */
+      cursor: string;
+    };
     /** @description Links */
-    PayoutsLinks: {
-      next: components["schemas"]["PayoutsNextLink"];
-      prev: components["schemas"]["PayoutsPrevLink"];
-    };
-    /** @description Link to next page */
-    PayoutsNextLink: {
-      /** @description Cursor for next page */
-      cursor: string;
-    };
-    /** @description Link to previous page */
-    PayoutsPrevLink: {
-      /** @description Cursor for previous page */
-      cursor: string;
+    Links: {
+      next: components["schemas"]["Link"];
+      prev: components["schemas"]["Link"];
     };
     PayoutsResponseDTO: {
-      _links: components["schemas"]["PayoutsLinks"];
+      _links: components["schemas"]["Links"];
       /** @description Payouts made within the filters provided for given balanceAccountId */
       data: components["schemas"]["PayoutDTO"][];
     };
