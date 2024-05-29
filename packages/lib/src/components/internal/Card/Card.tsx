@@ -13,6 +13,7 @@ import {
 import { CardProps } from './types';
 import { PropsWithChildren } from 'preact/compat';
 import classNames from 'classnames';
+
 import './Card.scss';
 
 const Card = ({
