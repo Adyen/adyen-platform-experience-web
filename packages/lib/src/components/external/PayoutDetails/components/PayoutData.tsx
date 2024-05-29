@@ -1,7 +1,9 @@
+import classnames from 'classnames';
 import { useMemo } from 'preact/hooks';
 import useCoreContext from '../../../../core/Context/useCoreContext';
 import { TranslationKey } from '../../../../core/Localization/types';
 import { IPayoutDetails } from '../../../../types';
+import { EMPTY_OBJECT } from '../../../../utils/common';
 import Card from '../../../internal/Card/Card';
 import { DATE_FORMAT } from '../../../internal/DataOverviewDisplay/constants';
 import StructuredList from '../../../internal/StructuredList';
@@ -9,29 +11,38 @@ import { TypographyVariant } from '../../../internal/Typography/types';
 import Typography from '../../../internal/Typography/Typography';
 import TransactionDataSkeleton from '../../TransactionDetails/components/TransactionDataSkeleton';
 import './PayoutData.scss';
+import {
+    PD_BASE_CLASS,
+    PD_CARD_CLASS,
+    PD_CARD_TITLE_CLASS,
+    PD_CONTENT_CLASS,
+    PD_SECTION_AMOUNT_CLASS,
+    PD_SECTION_CLASS,
+    PD_SECTION_GROSS_AMOUNT_CLASS,
+    PD_SECTION_NET_AMOUNT_CLASS,
+    PD_TITLE_CLASS,
+} from './constants';
 
 export const PayoutData = ({ payout: payoutData, isFetching }: { payout?: IPayoutDetails; isFetching?: boolean }) => {
-    const { payout } = payoutData ?? {};
+    const { payout } = payoutData ?? EMPTY_OBJECT;
     const { i18n } = useCoreContext();
-    const { subtractions, additions } =
-        payoutData?.amountBreakdown?.reduce(
+    const adjustments = useMemo(() => {
+        return payoutData?.amountBreakdown?.reduce(
             (accumulator, currentValue) => {
                 const payoutValue = currentValue?.amount?.value;
                 const category = currentValue?.category === 'unknown' ? 'Other' : currentValue?.category;
-                const categoryLabel = category && i18n.has(`txType.${category}`) ? i18n.get(`txType.${category}` as TranslationKey) : category;
-                if (payoutValue && payoutValue < 0) {
-                    accumulator.subtractions = currentValue?.category
-                        ? { ...accumulator.subtractions, [categoryLabel]: payoutValue }
-                        : { ...accumulator.subtractions };
-                } else {
-                    accumulator.additions = currentValue?.category
-                        ? { ...accumulator.additions, [categoryLabel]: payoutValue }
-                        : { ...accumulator.additions };
+                const translationKey = `txType.${category}`;
+                const translatedCategory = i18n.get(translationKey as TranslationKey);
+                const categoryLabel = category && translatedCategory !== translationKey ? translatedCategory : category;
+                if (currentValue?.category && payoutValue) {
+                    const targetObj = accumulator[payoutValue < 0 ? 'subtractions' : 'additions'];
+                    targetObj[categoryLabel] = payoutValue;
                 }
                 return accumulator;
             },
-            { subtractions: {}, additions: {} }
-        ) ?? {};
+            { subtractions: {} as Record<string, number>, additions: {} as Record<string, number> }
+        );
+    }, [i18n, payoutData]);
 
     const creationDate = useMemo(() => (payout?.createdAt ? i18n.date(new Date(payout?.createdAt), DATE_FORMAT).toString() : ''), [payout, i18n]);
 
@@ -40,8 +51,8 @@ export const PayoutData = ({ payout: payoutData, isFetching }: { payout?: IPayou
             {!payout ? (
                 <TransactionDataSkeleton isLoading={isFetching} skeletonRowNumber={6} />
             ) : (
-                <div className={'adyen-pe-payout-data'}>
-                    <div className={'adyen-pe-payout-data__title'}>
+                <div className={PD_BASE_CLASS}>
+                    <div className={PD_TITLE_CLASS}>
                         <Typography variant={TypographyVariant.SUBTITLE} stronger>
                             {i18n.get('netPayout')}
                         </Typography>
@@ -53,49 +64,41 @@ export const PayoutData = ({ payout: payoutData, isFetching }: { payout?: IPayou
                             {`${i18n.get('referenceID')}: ${payout.id}`}
                         </Typography>
                     </div>
-                    <div className={'adyen-pe-payout-data__content'}>
-                        <div className={'adyen-pe-payout-data__content--section'}>
-                            <div className={'adyen-pe-payout-data__content--section-amount adyen-pe-payout-data__content--section-amount-gross'}>
+                    <div className={PD_CONTENT_CLASS}>
+                        <div className={PD_SECTION_CLASS}>
+                            <div className={classnames(PD_SECTION_AMOUNT_CLASS, PD_SECTION_GROSS_AMOUNT_CLASS)}>
                                 <Typography variant={TypographyVariant.BODY}>{i18n.get('grossPayout')}</Typography>
                                 <Typography variant={TypographyVariant.BODY}>
                                     {i18n.amount(payout.grossAmount.value, payout.grossAmount.currency)}
                                 </Typography>
                             </div>
-                            {subtractions && Boolean(Object.keys(subtractions).length) && (
-                                <div className={'adyen-pe-payout-data__content--card'}>
+                            {adjustments?.subtractions && Boolean(Object.keys(adjustments?.subtractions).length) && (
+                                <div className={PD_CARD_CLASS}>
                                     <Card
                                         renderHeader={
-                                            <Typography
-                                                className={'adyen-pe-payout-data__content--card-title'}
-                                                variant={TypographyVariant.CAPTION}
-                                                stronger
-                                            >
+                                            <Typography className={PD_CARD_TITLE_CLASS} variant={TypographyVariant.CAPTION} stronger>
                                                 {i18n.get('subtractions')}
                                             </Typography>
                                         }
                                     >
-                                        <StructuredList items={subtractions} />
+                                        <StructuredList items={adjustments?.subtractions} />
                                     </Card>
                                 </div>
                             )}
-                            {additions && Boolean(Object.keys(additions).length) && (
-                                <div className={'adyen-pe-payout-data__content--card'}>
+                            {adjustments?.additions && Boolean(Object.keys(adjustments?.additions).length) && (
+                                <div className={PD_CARD_CLASS}>
                                     <Card
                                         renderHeader={
-                                            <Typography
-                                                className={'adyen-pe-payout-data__content--card-title'}
-                                                variant={TypographyVariant.CAPTION}
-                                                stronger
-                                            >
+                                            <Typography className={PD_CARD_TITLE_CLASS} variant={TypographyVariant.CAPTION} stronger>
                                                 {i18n.get('additions')}
                                             </Typography>
                                         }
                                     >
-                                        <StructuredList items={additions} />
+                                        <StructuredList items={adjustments?.additions} />
                                     </Card>
                                 </div>
                             )}
-                            <div className={'adyen-pe-payout-data__content--section-amount adyen-pe-payout-data__content--section-amount-net'}>
+                            <div className={classnames(PD_SECTION_AMOUNT_CLASS, PD_SECTION_NET_AMOUNT_CLASS)}>
                                 <Typography variant={TypographyVariant.BODY} stronger>
                                     {i18n.get('netPayout')}
                                 </Typography>

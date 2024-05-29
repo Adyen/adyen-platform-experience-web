@@ -1,9 +1,18 @@
-import useCoreContext from '../../../core/Context/useCoreContext';
+import {
+    CARD_BASE_CLASS,
+    CARD_BODY,
+    CARD_BODY_WITH_TITLE,
+    CARD_FILLED,
+    CARD_FOOTER,
+    CARD_HEADER,
+    CARD_HEADER_CONTENT,
+    CARD_NO_OUTLINE,
+    CARD_SUBTITLE,
+    CARD_TITLE,
+} from './constants';
 import { CardProps } from './types';
 import { PropsWithChildren } from 'preact/compat';
 import classNames from 'classnames';
-import { useCallback, useState } from 'preact/hooks';
-import { getUniqueId } from '../../../utils/idGenerator';
 import './Card.scss';
 
 const Card = ({
@@ -18,27 +27,25 @@ const Card = ({
     classNameModifiers,
 }: PropsWithChildren<CardProps>) => {
     return (
-        <section
-            className={classNames('adyen-pe-card', { 'adyen-pe-card--filled': filled, 'adyen-pe-card--no-outline': noOutline }, classNameModifiers)}
-        >
+        <section className={classNames(CARD_BASE_CLASS, { [CARD_FILLED]: filled, [CARD_NO_OUTLINE]: noOutline }, classNameModifiers)}>
             {(title || renderHeader) && (
-                <header className={'adyen-pe-card__header'}>
+                <header className={CARD_HEADER}>
                     {(title || renderHeader) && (
-                        <div className="adyen-pe-card__header-content">
-                            {renderHeader ? renderHeader : <span className="adyen-pe-card__title">{title}</span>}
-                            {subTitle && <div className="adyen-pe-card__subtitle">{subTitle}</div>}
+                        <div className={CARD_HEADER_CONTENT}>
+                            {renderHeader ? renderHeader : <span className={CARD_TITLE}>{title}</span>}
+                            {subTitle && <div className={CARD_SUBTITLE}>{subTitle}</div>}
                         </div>
                     )}
                 </header>
             )}
             <div
-                className={classNames('adyen-pe-card__body', {
-                    'adyen-pe-card__body--with-title': title || renderHeader,
+                className={classNames(CARD_BODY, {
+                    [CARD_BODY_WITH_TITLE]: title || renderHeader,
                 })}
             >
                 {children}
             </div>
-            {(footer || renderFooter) && <footer className="adyen-pe-card__footer">{renderFooter ? renderFooter : footer}</footer>}
+            {(footer || renderFooter) && <footer className={CARD_FOOTER}>{renderFooter ? renderFooter : footer}</footer>}
         </section>
     );
 };
