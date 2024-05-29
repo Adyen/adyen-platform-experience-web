@@ -1,0 +1,34 @@
+.adyen-pe-structured-list {
+    &__grid {
+        display: flex;
+
+        @for $i from 3 through 9 {
+            &--width-#{$i}-of-12 {
+                flex: 0 0 calc($i / 12 * 100%);
+            }
+        }
+    }
+
+    &__item {
+        font-size: var(--adyen-sdk-font-size-200);
+        font-weight: var(--adyen-sdk-font-weight-400);
+        line-height: var(--adyen-sdk-line-height-200);
+        margin: 0;
+    }
+
+    &__item--has-highlight:hover {
+        background-color: var(--adyen-sdk-color-background-primary-hover);
+        transition: background-color 0.2s cubic-bezier(0.785, 0.135, 0.15, 0.86);
+    }
+
+    &__label {
+        color: var(--adyen-sdk-color-label-primary);
+        overflow-wrap: anywhere;
+    }
+
+    &__content {
+        color: var(--adyen-sdk-color-label-primary);
+        margin: 0;
+        overflow-wrap: anywhere;
+    }
+}

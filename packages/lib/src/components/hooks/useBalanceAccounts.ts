@@ -6,7 +6,7 @@ import { useMemo } from 'preact/hooks';
 const useBalanceAccounts = (balanceAccountId?: string) => {
     const balanceAccountEndpointCall = useSetupEndpoint('getBalanceAccounts');
 
-    const { data, isFetching } = useFetch(
+    const { data, isFetching, error } = useFetch(
         useMemo(
             () => ({
                 fetchOptions: { enabled: !!balanceAccountEndpointCall, keepPrevData: true },
@@ -21,12 +21,13 @@ const useBalanceAccounts = (balanceAccountId?: string) => {
         [data?.data, balanceAccountId]
     );
 
-    const wrongBalanceAccountId = useMemo(
+    const isBalanceAccountIdWrong = useMemo(
         () => !!balanceAccountId && !!data?.data.length && balanceAccounts?.length === 0,
         [balanceAccounts?.length, data?.data.length, balanceAccountId]
     );
 
-    return { balanceAccounts, wrongBalanceAccountId, isFetching } as const;
+    // TODO: Consider unifying error with isBalanceAccountIdWrong
+    return { balanceAccounts, isBalanceAccountIdWrong, isFetching, error } as const;
 };
 
 export default useBalanceAccounts;

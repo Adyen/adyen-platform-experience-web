@@ -1,0 +1,49 @@
+.adyen-pe-payout-data {
+    padding-bottom: 32px;
+
+    &__title {
+        display: grid;
+        gap: 4px;
+        padding: 0 24px 24px;
+
+        .adyen-pe-typography {
+            &:last-child {
+                padding-top: 8px;
+            }
+        }
+    }
+
+    &__content {
+        background-color: var(--adyen-sdk-color-background-secondary);
+        padding: 12px 16px;
+
+        &--card-title {
+            color: var(--adyen-sdk-color-label-secondary);
+        }
+
+        &--section {
+            background-color: var(--adyen-sdk-color-background-secondary);
+
+            &-amount {
+                display: flex;
+                justify-content: space-between;
+                padding: 8px 0;
+            }
+
+            div:not(:last-child) {
+                margin-bottom: 12px;
+            }
+        }
+    }
+
+    .adyen-pe-structured-list {
+        &__content {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        &__item {
+            padding: 8px 16px;
+        }
+    }
+}

@@ -11,10 +11,12 @@ import { CallbackIsPresent, CallbackParams, GetArgsExceptCallback, hasCallback, 
  *                               which allows the merchant to control when the modal appears.
  */
 
-function useModalDetails<Options extends ModalDetailsOptions>(options: Options) {
+function useModalDetails<Options extends ModalDetailsOptions<any>>(options: Options) {
     const [selectedDetail, setSelectedDetail] = useState<SelectedDetail<Options> | null>(null);
     const updateDetails = useCallback(
-        <T extends SelectedDetail<Options>>(state: T): CallbackIsPresent<Options, T> extends true ? CallbackParams<Options, T> : {} => {
+        <T extends SelectedDetail<Options>>(
+            state: T
+        ): CallbackIsPresent<Options, Options, T> extends true ? CallbackParams<Options, Options, T> : {} => {
             if (state && hasCallback(options[state.selection.type])) {
                 return {
                     callback: options?.[state.selection.type]?.callback
@@ -27,7 +29,7 @@ function useModalDetails<Options extends ModalDetailsOptions>(options: Options) 
                 };
             }
             setSelectedDetail(state);
-            return {} as CallbackIsPresent<Options, T> extends true ? CallbackParams<Options, T> : {};
+            return {} as CallbackIsPresent<Options, Options, T> extends true ? CallbackParams<Options, Options, T> : {};
         },
         [options]
     );

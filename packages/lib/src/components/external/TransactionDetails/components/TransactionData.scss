@@ -1,0 +1,84 @@
+@use '../../../../style/skeleton' as skeleton;
+// stylelint-disable-next-line no-invalid-position-at-import-rule
+@import '../../../../style/bento-mapping';
+
+.adyen-pe-transaction-data {
+    $adyen-pe-transaction-data: &;
+
+    padding: 0 $adyen-pe-spacer-090 $adyen-pe-spacer-090;
+
+    &__section {
+        margin-bottom: 6px;
+    }
+
+    &__section:not(:last-child) {
+        margin-bottom: 6px;
+    }
+
+    &__amount {
+        color: var(--adyen-sdk-color-label-primary);
+        font-size: var(--adyen-sdk-font-size-700);
+        font-weight: var(--adyen-sdk-font-weight-600);
+        line-height: var(--adyen-sdk-line-height-800);
+    }
+
+    &__amount--error {
+        color: var(--adyen-sdk-color-label-critical);
+    }
+
+    &__amount--pending {
+        color: var(--adyen-sdk-color-label-secondary);
+    }
+
+    &__container {
+        padding-bottom: $adyen-pe-spacer-080;
+    }
+
+    &__payment-method {
+        align-items: center;
+        display: flex;
+        gap: 6px;
+
+        &-detail {
+            font-weight: var(--adyen-sdk-font-weight-500);
+        }
+    }
+
+    &__payment-method-logo-container {
+        height: 22px;
+        width: fit-content;
+
+        #{$adyen-pe-transaction-data}__payment-method-logo-bank {
+            width: 32px;
+        }
+    }
+
+    &__tag-container {
+        display: flex;
+        gap: 4px;
+    }
+
+    &__action-buttons {
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    &__label {
+        color: var(--adyen-sdk-color-label-secondary);
+        font-size: var(--adyen-sdk-font-size-200);
+        font-weight: var(--adyen-sdk-font-weight-400);
+        line-height: var(--adyen-sdk-line-height-200);
+    }
+
+    &__skeleton {
+        @include skeleton.adyen-pe-skeleton();
+        display: block;
+        height: $adyen-pe-spacer-060;
+        margin: $adyen-pe-spacer-040 0;
+        width: 50%;
+
+        &-loading-content {
+            @include skeleton.adyen-pe-skeleton-animation();
+        }
+    }
+}

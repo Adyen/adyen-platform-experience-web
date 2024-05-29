@@ -9,7 +9,7 @@ import Typography from '../../../../internal/Typography/Typography';
 import useBalanceAccountSelection from '../../../../hooks/useBalanceAccountSelection';
 import DateFilter from '../../../../internal/FilterBar/filters/DateFilter/DateFilter';
 import useModalDetails from '../../../../../hooks/useModalDetails/useModalDetails';
-import { IPayout, IPayoutDetails } from '../../../../../types';
+import { IPayout } from '../../../../../types';
 import useDefaultOverviewFilterParams from '../../../../hooks/useDefaultOverviewFilterParams';
 import { DataOverviewComponentProps, ExternalUIComponentProps, FilterParam } from '../../../../types';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
@@ -18,12 +18,9 @@ import { SuccessResponse, useSetupEndpoint } from '../../../../../hooks/useSetup
 import { IBalanceAccountBase } from '../../../../../types';
 import { EndpointsOperations } from '../../../../../types/api/endpoints';
 import { isFunction } from '../../../../../utils';
-import { lazy } from 'preact/compat';
 import { useCallback, useEffect, useMemo } from 'preact/hooks';
-import './PayoutsOverview.scss';
 import { DataDetailsModal } from '../../../../internal/DataOverviewDisplay/DataDetailsModal';
-
-const ModalContent = lazy(() => import('../../../../internal/Modal/ModalContent/ModalContent'));
+import './PayoutsOverview.scss';
 
 export const PayoutsOverview = ({
     onFiltersChanged,
@@ -100,11 +97,11 @@ export const PayoutsOverview = ({
     const { updateDetails, resetDetails, selectedDetail } = useModalDetails(modalOptions);
 
     const onRowClick = useCallback(
-        (value: IPayoutDetails) => {
+        (value: IPayout) => {
             updateDetails({
-                selection: { type: 'payout', data: { ...value } },
+                selection: { type: 'payout', data: value.id },
                 modalSize: 'small',
-            }).callback({ id: value.payout!.id });
+            }).callback({ id: value.id });
         },
         [updateDetails]
     );
@@ -139,20 +136,19 @@ export const PayoutsOverview = ({
                 onContactSupport={onContactSupport}
                 selectedDetail={selectedDetail as ReturnType<typeof useModalDetails>['selectedDetail']}
                 resetDetails={resetDetails}
-                renderModalContent={() => <ModalContent data={selectedDetail?.selection.data} />}
             >
                 <PayoutsTable
                     balanceAccounts={balanceAccounts}
-                    data={records}
-                    error={error as AdyenPlatformExperienceError}
-                    limit={limit}
-                    limitOptions={limitOptions}
                     loading={fetching || isLoadingBalanceAccount || !balanceAccounts}
-                    onContactSupport={onContactSupport}
-                    onLimitSelection={updateLimit}
+                    data={records}
+                    showPagination={true}
                     onRowClick={onRowClick}
                     showDetails={showDetails}
-                    showPagination={true}
+                    limit={limit}
+                    limitOptions={limitOptions}
+                    onContactSupport={onContactSupport}
+                    onLimitSelection={updateLimit}
+                    error={error as AdyenPlatformExperienceError}
                     {...paginationProps}
                 />
             </DataDetailsModal>
