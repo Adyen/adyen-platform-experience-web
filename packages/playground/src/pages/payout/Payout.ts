@@ -1,11 +1,11 @@
-import { AdyenPlatformExperience, TransactionsDetails } from '@adyen/adyen-platform-experience-web';
+import { AdyenPlatformExperience, PayoutDetails } from '@adyen/adyen-platform-experience-web';
 import { getDefaultID, getSearchParameters } from '../../utils/utils';
 import '../../utils/createPages.js';
 import '../../assets/style/style.scss';
 import { enableServerInMockedMode } from '../../endpoints/mock-server/utils';
 import sessionRequest from '../../utils/sessionRequest';
 
-const DEFAULT_TRANSACTION_ID = getDefaultID('1VVF0D5V3709DX6D');
+const DEFAULT_PAYOUT_ID = getDefaultID('1234567890123456');
 
 enableServerInMockedMode()
     .then(async () => {
@@ -17,13 +17,13 @@ enableServerInMockedMode()
             },
         });
 
-        const transactionsDetailsComponent = new TransactionsDetails({
+        const payoutDetailsComponent = new PayoutDetails({
             core: AdyenPlatform,
-            id: id ?? DEFAULT_TRANSACTION_ID,
-            title: 'transactionDetails',
+            id: id ?? DEFAULT_PAYOUT_ID,
+            title: 'payoutDetails',
             onContactSupport: () => {},
         });
 
-        transactionsDetailsComponent.mount('.transaction-details-component-container');
+        payoutDetailsComponent.mount('.payout-details-component-container');
     })
     .catch(console.error);

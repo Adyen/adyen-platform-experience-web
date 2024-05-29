@@ -1,0 +1,66 @@
+.adyen-pe-card {
+    border-radius: var(--adyen-sdk-border-radius-m);
+    outline: var(--adyen-sdk-color-outline-primary) 1px solid;
+    overflow: hidden;
+
+    &--filled {
+        background-color: var(--adyen-sdk-color-outline-secondary);
+    }
+
+    &--no-outline {
+        outline: 0;
+    }
+
+    &--clickable {
+        cursor: pointer;
+    }
+
+    &--with-footer {
+        padding-bottom: 16px;
+    }
+
+    &__body {
+        background-color: #eeeff1;
+        color: var(--adyen-sdk-color-label-primary);
+        font-weight: var(--adyen-sdk-font-weight-600);
+        line-height: var(--adyen-sdk-line-height-100);
+    }
+
+    &__footer {
+        display: flex;
+        justify-content: flex-end;
+        padding-top: 16px;
+    }
+
+    &__header {
+        display: block;
+        padding: 8px 16px 4px;
+        width: 100%;
+    }
+
+    &__header-content {
+        flex: 1;
+    }
+
+    &__title {
+        font-size: var(--adyen-sdk-font-size-medium);
+        font-weight: var(--adyen-sdk-font-size-300);
+        line-height: var(--adyen-sdk-line-height-300);
+    }
+
+    &__title-container {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    &__subtitle {
+        align-items: center;
+        color: var(--adyen-sdk-color-gray-darker);
+        display: flex;
+        flex: none;
+        flex-grow: 0;
+        font-size: var(--adyen-sdk-font-size-small);
+        font-weight: var(--adyen-sdk-font-weight-regular);
+        line-height: var(--adyen-sdk-spacing-large);
+    }
+}
