@@ -16,10 +16,11 @@ type TransactionTotalsProps = Required<OperationParameters<'getBalances'>['path'
 
 type BalancesProps = WithPartialField<TransactionTotalsProps, 'balanceAccountId'> & {
     onCurrenciesChange: (currencies: ITransaction['amount']['currency'][] | undefined, isFetching: boolean) => any;
+    defaultCurrencyCode: ITransaction['amount']['currency'] | undefined;
     fullWidth?: boolean;
 };
 
-export const Balances = memo(({ balanceAccountId, onCurrenciesChange, fullWidth }: BalancesProps) => {
+export const Balances = memo(({ balanceAccountId, defaultCurrencyCode, onCurrenciesChange, fullWidth }: BalancesProps) => {
     const getAccountsBalance = useSetupEndpoint('getBalances');
 
     const fetchCallback = useCallback(async () => {
@@ -36,7 +37,14 @@ export const Balances = memo(({ balanceAccountId, onCurrenciesChange, fullWidth 
     const isLoading = !balanceAccountId || isFetching;
     const isEmpty = !!error || !data?.data.length;
 
-    const balances = data?.data.sort((a, b) => a.currency.localeCompare(b.currency));
+    const balances = useMemo(() => {
+        return data?.data.sort((a, b) => {
+            if (a.currency === defaultCurrencyCode) return -1;
+            if (b.currency === defaultCurrencyCode) return 1;
+            return a.currency.localeCompare(b.currency);
+        });
+    }, [data?.data, defaultCurrencyCode]);
+
     const [firstBalance, ...restOfBalances] = balances ?? [];
 
     const [maxWidths, setMaxWidths] = useMaxWidthsState();
