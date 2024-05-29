@@ -58,8 +58,6 @@ const compareDates = (dateString1: string, dateString2: string, operator: 'ge' |
     let date1 = new Date(dateString1);
     let date2 = new Date(dateString2);
 
-    console.log(date1, date2);
-
     switch (operator) {
         case 'ge':
             return date1 >= date2;
