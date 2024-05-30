@@ -3,6 +3,7 @@ import { enabledDisabledCallbackRadioControls } from '../utils/controls';
 import { TransactionsOverview } from '@adyen/adyen-platform-experience-web';
 import { ElementProps, ElementStory, SessionControls } from '../utils/types';
 import { Container } from '../utils/Container';
+import { EMPTY_SESSION_OBJECT } from '../utils/constants';
 
 const meta: Meta<ElementProps<typeof TransactionsOverview>> = {
     title: 'screens/Transactions',
@@ -47,7 +48,7 @@ export const BasicTransactionListApi: ElementStory<typeof TransactionsOverview, 
         session: { control: 'object' },
     },
     args: {
-        session: { roles: [], accountHolderId: '' },
+        session: EMPTY_SESSION_OBJECT,
     },
 };
 

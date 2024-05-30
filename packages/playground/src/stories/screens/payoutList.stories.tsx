@@ -1,8 +1,9 @@
 import { Meta } from '@storybook/preact';
 import { enabledDisabledCallbackRadioControls } from '../utils/controls';
 import { PayoutsOverview } from '@adyen/adyen-platform-experience-web';
-import { ElementProps, ElementStory } from '../utils/types';
+import { ElementProps, ElementStory, SessionControls as SessionControl } from '../utils/types';
 import { Container } from '../utils/Container';
+import { EMPTY_SESSION_OBJECT } from '../utils/constants';
 
 const meta: Meta<ElementProps<typeof PayoutsOverview>> = {
     title: 'screens/Payouts',
@@ -21,6 +22,11 @@ const meta: Meta<ElementProps<typeof PayoutsOverview>> = {
         hideTitle: false,
         onContactSupport: () => {},
     },
+    parameters: {
+        controls: {
+            sort: 'alpha',
+        },
+    },
     render: (args, context) => {
         if (context.loaded.data) {
             Object.assign(args, { payouts: context.loaded.data });
@@ -36,9 +42,14 @@ export const Basic: ElementStory<typeof PayoutsOverview> = {
     },
 };
 
-export const BasicPayoutListApi: ElementStory<typeof PayoutsOverview> = {
+export const BasicPayoutListApi: ElementStory<typeof PayoutsOverview, SessionControl> = {
     name: 'Basic (API)',
-    args: {},
+    argTypes: {
+        session: { control: 'object' },
+    },
+    args: {
+        session: EMPTY_SESSION_OBJECT,
+    },
 };
 
 export default meta;

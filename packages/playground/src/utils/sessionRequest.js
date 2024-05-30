@@ -12,10 +12,10 @@ const getMySessionToken = async session => {
             resources: [
                 {
                     type: 'accountHolder',
-                    accountHolderId: !!session?.accountHolderId ? session?.accountHolderId : process.env.SESSION_ACCOUNT_HOLDER,
+                    accountHolderId: session?.accountHolderId || process.env.SESSION_ACCOUNT_HOLDER,
                 },
             ],
-            roles: session?.roles && session?.roles.length ? session?.roles : ['Transactions Overview Component: View'],
+            roles: session?.roles?.length ? session?.roles : ['Transactions Overview Component: View'],
         },
     };
     const response = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
