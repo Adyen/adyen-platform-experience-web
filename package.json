@@ -18,7 +18,8 @@
         "./packages/*"
     ],
     "scripts": {
-        "start": "npm run playground:test",
+        "start": "npm run start:test",
+        "start:local": "concurrently --kill-others-on-fail 'npm run types:watch' 'npm run start:local -w @adyen/adyen-platform-experience-web-playground' --names 'tsc-lib,playground' -c blue,green,cyan,yellow",
         "start:loop": "concurrently --kill-others-on-fail 'npm run types:watch' 'npm run start:loop -w @adyen/adyen-platform-experience-web-playground' --names 'tsc-lib,playground' -c blue,green,cyan,yellow",
         "start:test": "concurrently --kill-others-on-fail 'npm run types:watch' 'npm run start:test -w @adyen/adyen-platform-experience-web-playground' --names 'tsc-lib,playground' -c blue,green,cyan,yellow",
         "start:beta": "concurrently --kill-others-on-fail 'npm run types:watch' 'npm run start:beta -w @adyen/adyen-platform-experience-web-playground' --names 'tsc-lib,playground' -c blue,green,cyan,yellow",
@@ -38,6 +39,7 @@
         "types:watch": "npm run types:watch -w @adyen/adyen-platform-experience-web && npm run types:watch -w @adyen/adyen-platform-experience-web-playground",
         "format:all": "npm run format -w @adyen/adyen-platform-experience-web-playground && npm run format -w @adyen/adyen-platform-experience-web",
         "storybook": "concurrently --kill-others-on-fail 'npm run types:watch' 'npm run storybook:loop -w @adyen/adyen-platform-experience-web-playground' ",
+        "storybook:local": "concurrently --kill-others-on-fail 'npm run types:watch' 'npm run storybook:local -w @adyen/adyen-platform-experience-web-playground' ",
         "storybook:test": "concurrently --kill-others-on-fail 'npm run types:watch' 'npm run storybook:test -w @adyen/adyen-platform-experience-web-playground' ",
         "storybook:beta": "concurrently --kill-others-on-fail 'npm run types:watch' 'npm run storybook:beta -w @adyen/adyen-platform-experience-web-playground' ",
         "storybook:mocked": "npm run storybook:mocked -w @adyen/adyen-platform-experience-web-playground",

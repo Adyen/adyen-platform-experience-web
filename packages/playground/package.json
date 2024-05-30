@@ -19,6 +19,7 @@
     },
     "scripts": {
         "vite": "vite dev",
+        "start:local": "vite dev --mode local-env --config ./vite.config.ts",
         "start:loop": "vite dev --mode loop --config ./vite.config.ts",
         "start:test": "vite dev --mode development --config ./vite.config.ts",
         "start:beta": "vite dev --mode beta --config ./vite.config.ts",
@@ -31,6 +32,7 @@
         "start:mock": "vite dev --mode mocked --config ./vite.config.ts",
         "start:mock:e2e": "cross-env E2E_TEST=true npm run start:mock",
         "format": "prettier --write \"src/**/*.{ts,js,css, scss, html}\"",
+        "storybook:local": "vite-node --mode local-env .storybook/runStorybook.ts",
         "storybook:test": "vite-node --mode development .storybook/runStorybook.ts",
         "storybook:loop": "vite-node --mode loop .storybook/runStorybook.ts",
         "storybook:beta": "vite-node --mode beta .storybook/runStorybook.ts",
