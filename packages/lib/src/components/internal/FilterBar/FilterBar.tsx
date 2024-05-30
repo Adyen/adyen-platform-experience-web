@@ -1,4 +1,4 @@
-import { mediaQueries, useMediaQuery } from '../../external/TransactionsOverview/hooks/useMediaQuery';
+import { mediaQueries, useResponsiveViewport } from '../../external/TransactionsOverview/hooks/useResponsiveViewport';
 import { ButtonVariant } from '../Button/types';
 import Close from '../SVGIcons/Close';
 import Filter from '../SVGIcons/Filter';
@@ -14,7 +14,7 @@ import { FilterBarProps } from './types';
 
 export default function FilterBar(props: PropsWithChildren<FilterBarProps>) {
     const { i18n } = useCoreContext();
-    const isSmViewport = useMediaQuery(mediaQueries.down.xs);
+    const isSmViewport = useResponsiveViewport(mediaQueries.down.xs);
     const [showFilters, setShowFilters] = useState(!isSmViewport);
 
     useEffect(() => {

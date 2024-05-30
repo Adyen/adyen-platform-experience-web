@@ -1,6 +1,6 @@
 import { ButtonVariant } from '../../Button/types';
 import { useCallback } from 'preact/hooks';
-import { isFunction } from '../../../../utils/common';
+import { isFunction } from '../../../../utils';
 import ChevronDown from '../../SVGIcons/ChevronDown';
 import ChevronUp from '../../SVGIcons/ChevronUp';
 import { CalendarControlRenderer, CalendarRenderControl } from '../types';

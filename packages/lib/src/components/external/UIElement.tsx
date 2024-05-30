@@ -1,13 +1,10 @@
-import { DataOverviewComponentProps } from '../../types';
 import AuthProvider from '../../core/Auth/AuthProvider';
 import CoreProvider from '../../core/Context/CoreProvider';
 import { JSXInternal } from 'preact/src/jsx';
 import BaseElement from './BaseElement';
-import getImage from '../../utils/get-image';
-import { BaseElementProps, IUIElement, UIElementProps } from '../types';
-import { UIElementStatus } from '../types';
+import { BaseElementProps, DataOverviewComponentProps, IUIElement, UIElementProps, UIElementStatus } from '../types';
 import { SetupEndpoint } from '../../types/api/endpoints';
-import { EMPTY_OBJECT } from '../../utils/common';
+import { EMPTY_OBJECT } from '../../utils';
 
 export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUIElement {
     protected componentRef: UIElement<P> | null;
@@ -30,17 +27,10 @@ export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUI
     }
 
     /**
-     * Get the element icon URL for the current environment
-     */
-    get icon(): string {
-        return getImage({ loadingContext: this.loadingContext })((this.constructor as typeof UIElement)?.type);
-    }
-
-    /**
      * Get the element's displayable name
      */
     get displayName(): string {
-        return this.props.name || (this.constructor as typeof UIElement)?.type;
+        return this.props.name || this.type;
     }
 
     /**
@@ -54,7 +44,7 @@ export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUI
      * Return the type of an element
      */
     get type(): string {
-        return this.type;
+        return (this.constructor as typeof UIElement)?.type;
     }
 
     formatProps(props: DataOverviewComponentProps) {

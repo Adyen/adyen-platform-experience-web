@@ -1,7 +1,9 @@
 import { PopoverContainerPosition, PopoverContainerVariant } from '../../components/internal/Popover/types';
 import getIntersectionObserver from '../../components/internal/Popover/utils/utils';
 import { MutableRef, Ref, useCallback, useEffect, useRef, useState } from 'preact/hooks';
-import useReflex, { Nullable, Reflexable } from '../useReflex';
+import type { Reflexable } from '../../primitives/reactive/reflex';
+import type { Nullable } from '../../utils/types';
+import useReflex from '../useReflex';
 
 const calculateOffset = ({
     popover,

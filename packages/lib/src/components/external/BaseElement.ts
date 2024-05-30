@@ -1,9 +1,8 @@
 import { ComponentChild, render } from 'preact';
 import EventEmitter from './EventEmitter';
-import uuid from '../../utils/uuid';
 import { Core } from '../../core';
 import { BaseElementProps, BaseElementState } from '../types';
-import { isString } from '../../utils/validator-utils';
+import { isString, uuid } from '../../utils';
 import Localization from '../../core/Localization';
 import BPSession from '../../core/Session/Session';
 

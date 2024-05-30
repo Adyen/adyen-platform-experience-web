@@ -1,4 +1,4 @@
-import { enumerable, struct, structFrom } from '../../../../utils/common';
+import { enumerable, isUndefined, struct, structFrom } from '../../../../utils';
 
 type ObserverCallback = (entry: IntersectionObserverEntry) => void;
 
@@ -23,7 +23,7 @@ const getIntersectionObserver = (() => {
     const findObserver = (callbackFn: ObserverCallback) => {
         let observerInstance = observerCallbackMap.get(callbackFn);
 
-        if (observerInstance === undefined) {
+        if (isUndefined(observerInstance)) {
             const observer = new IntersectionObserver(
                 entries => {
                     entries.forEach(entry => {

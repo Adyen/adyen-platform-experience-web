@@ -1,11 +1,11 @@
 import { Month, MonthDays, Time } from './types';
-import { isInfinite, mod } from '../../../../utils/common';
+import { isInfinity, isUndefined, mod } from '../../../../utils';
 
-export const computeTimestampOffset = (timestamp: number) => (isInfinite(timestamp) ? 0 : timestamp - new Date(timestamp).setHours(0, 0, 0, 0));
-export const getDateObjectFromTimestamp = (timestamp?: number) => (timestamp === undefined ? timestamp : new Date(timestamp));
+export const computeTimestampOffset = (timestamp: number) => (isInfinity(timestamp) ? 0 : timestamp - new Date(timestamp).setHours(0, 0, 0, 0));
+export const getDateObjectFromTimestamp = (timestamp?: number) => (isUndefined(timestamp) ? timestamp : new Date(timestamp));
 
 export const getEdgesDistance = (fromTime: Time, toTime: Time) => {
-    if (isInfinite(fromTime) || isInfinite(toTime)) return Infinity;
+    if (isInfinity(fromTime) || isInfinity(toTime)) return Infinity;
     const from = new Date(fromTime);
     const to = new Date(toTime);
     return Math.abs(to.getMonth() - from.getMonth() + (to.getFullYear() - from.getFullYear()) * 12);

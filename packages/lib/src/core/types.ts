@@ -2,15 +2,13 @@ import { SessionResponse } from './Session/types';
 import type { CustomTranslations } from './Localization/types';
 import { AnalyticsOptions } from './Analytics/types';
 import { LangFile } from './Localization/types';
-import { ReplaceUnderscoreOrDash } from '../utils/types';
+import { KeyOfRecord, WithReplacedUnderscoreOrDash } from '../utils/types';
 import Session from './Session';
 
 export type DevEnvironment = 'test' | 'live' | 'beta';
 
-type ExtractKeys<T> = T extends any ? keyof T : never;
-
 type CreateUnionOfAvailableTranslations<T extends LangFile[] | undefined> = T extends NonNullable<T>
-    ? Extract<ReplaceUnderscoreOrDash<ExtractKeys<T[number]>, '_', '-'>, string>
+    ? Extract<WithReplacedUnderscoreOrDash<KeyOfRecord<T[number]>, '_', '-'>, string>
     : never;
 
 export interface CoreOptions<T extends CoreOptions<T> = any> {

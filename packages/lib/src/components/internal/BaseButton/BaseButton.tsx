@@ -1,9 +1,7 @@
 import useButton from '../Button/hooks/useButton';
 import { DEFAULT_BASE_BUTTON_CLASSNAME } from './constants';
-import { parseClassName } from '../../../utils/class-name-utils';
-import { parseBoolean } from '../../../utils/common';
+import { fixedForwardRef, parseBooleanProp, parseClassName } from '../../../utils/preact';
 import { Ref } from 'preact';
-import { forwardRef } from 'preact/compat';
 import { useMemo } from 'preact/hooks';
 import { ButtonProps } from './types';
 import './BaseButton.scss';
@@ -13,7 +11,7 @@ function BaseButton(
     ref: Ref<HTMLButtonElement>
 ) {
     const classNameValue = useMemo(() => parseClassName('', className) || '', [className]);
-    const disabledValue = useMemo(() => parseBoolean(disabled), [disabled]);
+    const disabledValue = useMemo(() => parseBooleanProp(disabled), [disabled]);
 
     const { classes, click } = useButton(
         classNameValue,
@@ -30,4 +28,4 @@ function BaseButton(
     );
 }
 
-export default forwardRef(BaseButton);
+export default fixedForwardRef(BaseButton);

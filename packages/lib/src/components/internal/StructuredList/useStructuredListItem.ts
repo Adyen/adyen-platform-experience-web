@@ -1,7 +1,7 @@
 import { useMemo } from 'preact/hooks';
 import useCoreContext from '../../../core/Context/useCoreContext';
 import { TranslationKey } from '../../../core/Localization/types';
-import uuidv4 from '../../../utils/uuid';
+import { uuid } from '../../../utils';
 import { StructuredListItem, ListValue } from './types';
 
 export const useStructuredListItems = (items: { [key in TranslationKey]?: ListValue | undefined }) => {
@@ -13,7 +13,7 @@ export const useStructuredListItems = (items: { [key in TranslationKey]?: ListVa
                 list.push({
                     key,
                     value,
-                    id: uuidv4(),
+                    id: uuid(),
                     label: i18n.get(key),
                 });
             return list;

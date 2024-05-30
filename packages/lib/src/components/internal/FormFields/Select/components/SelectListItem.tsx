@@ -5,6 +5,7 @@ import type { SelectItem, SelectItemProps } from '../types';
 import CheckedBox from '../../../SVGIcons/CheckedBox';
 import UncheckedBox from '../../../SVGIcons/UncheckedBox';
 import Checkmark from '../../../SVGIcons/Checkmark';
+import { boolOrFalse } from '../../../../../utils';
 import {
     DROPDOWN_ELEMENT_ACTIVE_CLASS,
     DROPDOWN_ELEMENT_CHECKBOX_CLASS,
@@ -45,7 +46,7 @@ const SelectListItem = <T extends SelectItem>({ item, multiSelect, onKeyDown, on
     // A change in Preact v10.11.1 means that all falsy values are assessed and set on data attributes.
     // In the case of `data-disabled` we only ever want it set if item.disabled is actually true, since the presence
     // of the `data-disabled` attr, regardless of its value, will disable the select list item.
-    const dataDisabled = item.disabled === true || null;
+    const dataDisabled = boolOrFalse(item.disabled) || null;
 
     const itemClassName = cx(DROPDOWN_ELEMENT_CLASS, {
         [DROPDOWN_ELEMENT_ACTIVE_CLASS]: selected,

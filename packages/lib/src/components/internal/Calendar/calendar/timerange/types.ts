@@ -1,4 +1,5 @@
 import type { Restamper, RestamperWithTimezone } from '../../../../../core/Localization/datetime/restamper';
+import type { Struct } from '../../../../../utils/types';
 
 export type RangeTimestamp = number;
 export type RangeTimestampOffsets = readonly [number?, number?, number?, number?, number?, number?, number?];
@@ -36,7 +37,3 @@ export type RangeTimestampsConfigWithoutOffsets = Struct<{
     from: RangeTimestampsConfigParameter<Date | RangeTimestamps['from']>;
     to: RangeTimestampsConfigParameter<Date | RangeTimestamps['to']>;
 }>;
-
-type Struct<T extends Record<any, any> = {}> = T & {
-    [key: string | number | symbol]: any;
-};

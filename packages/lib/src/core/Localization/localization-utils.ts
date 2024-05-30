@@ -2,7 +2,7 @@ import { CustomTranslations, SupportedLocale } from './types';
 import { formatLocale, loadTranslations, parseLocale } from './utils';
 import { FALLBACK_LOCALE } from './constants/locale';
 import { EXCLUDE_PROPS } from './constants/localization';
-import { isFunction, struct } from '../../utils/common';
+import { isFunction, struct } from '../../utils';
 import Localization from './Localization';
 
 export function createTranslationsLoader(this: Localization) {
@@ -14,9 +14,9 @@ export function createTranslationsLoader(this: Localization) {
 
     let _locale = this.locale;
     let _preferredLocale = _locale;
-    let _supportedLocales = this.supportedLocales;
+    let _supportedLocales: TranslationsLoader['supportedLocales'] = [...this.supportedLocales];
 
-    return struct({
+    return struct<TranslationsLoader>({
         load: { value: (customTranslations?: CustomTranslations) => loadTranslations(_locale, this.preferredTranslations, customTranslations) },
         locale: {
             get: () => _locale,
@@ -26,13 +26,13 @@ export function createTranslationsLoader(this: Localization) {
             },
         },
         supportedLocales: {
-            get: () => _locale,
+            get: () => _supportedLocales,
             set(this: TranslationsLoader, supportedLocales: (SupportedLocale | string)[]) {
                 _supportedLocales = supportedLocales;
                 this.locale = _preferredLocale;
             },
         },
-    }) as TranslationsLoader;
+    });
 }
 
 export function getLocalizationProxyDescriptors(this: Localization) {

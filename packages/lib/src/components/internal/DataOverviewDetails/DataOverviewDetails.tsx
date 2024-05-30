@@ -6,7 +6,7 @@ import { useFetch } from '../../../hooks/useFetch/useFetch';
 import { useSetupEndpoint } from '../../../hooks/useSetupEndpoint/useSetupEndpoint';
 import { IPayoutDetails } from '../../../types';
 import { EndpointName } from '../../../types/api/endpoints';
-import { EMPTY_OBJECT } from '../../../utils/common';
+import { EMPTY_OBJECT } from '../../../utils';
 import { PayoutData } from '../../external/PayoutDetails/components/PayoutData';
 import { TransactionData } from '../../external/TransactionDetails/components/TransactionData';
 import { ExternalUIComponentProps } from '../../types';
@@ -22,6 +22,7 @@ const endpointsByType = {
         url: 'getPayout' as EndpointName,
     },
 };
+
 const isDetailsWithoutId = (props: DetailsComponentProps): props is DetailsWithoutIdProps => 'data' in props;
 
 export default function DataOverviewDetails(props: ExternalUIComponentProps<DetailsComponentProps>) {

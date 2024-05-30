@@ -1,22 +1,9 @@
 import { Ref, useCallback, useLayoutEffect, useMemo, useRef, useState } from 'preact/hooks';
-import { Nullable, Reflex } from '../useReflex';
-import { isReflex } from '../useReflex/core/utils';
-import createReflexContainer from '../useReflex/core/reflex';
-
-// [TODO]: This should belong to a shared type module
-type List<T = any> = (List<T> | T)[];
+import { createReflexContainer, isReflex, Reflex } from '../../primitives/reactive/reflex';
+import { uniqueFlattenReversed } from '../../utils';
+import type { List, Nullable } from '../../utils/types';
 
 const EXCESS_SPACE_REGEX = /^\s+|\s+(?=\s|$)/g;
-
-const uniqueFlatten = <T>(items: List<T>, uniqueItems: Set<T> = new Set<T>()) => {
-    for (const item of items) {
-        if (!Array.isArray(item)) {
-            uniqueItems.delete(item);
-            uniqueItems.add(item);
-        } else uniqueFlatten(item, uniqueItems);
-    }
-    return uniqueItems;
-};
 
 const useIdentifierString = (...refs: List<Nullable<Ref<Element> | Reflex<Element>>>) => {
     const $id = useRef<string>('');
@@ -35,7 +22,7 @@ const useIdentifierString = (...refs: List<Nullable<Ref<Element> | Reflex<Elemen
 
         const $refs: (Ref<Element> | Reflex<Element>)[] = [];
 
-        for (const ref of uniqueFlatten(refs)) {
+        for (const ref of uniqueFlattenReversed(refs)) {
             if (!ref) continue;
 
             if (isReflex(ref)) {

@@ -1,9 +1,9 @@
 import { useSetupEndpoint } from '../../../../../hooks/useSetupEndpoint/useSetupEndpoint';
 import { useCallback, useEffect, useMemo } from 'preact/hooks';
-import { EMPTY_OBJECT } from '../../../../../utils/common';
+import { EMPTY_OBJECT } from '../../../../../utils';
 import { useFetch } from '../../../../../hooks/useFetch/useFetch';
 import { OperationParameters } from '../../../../../types/api/endpoints';
-import { MakeFieldValueUndefined } from '../../../../../utils/types';
+import { WithPartialField } from '../../../../../utils/types';
 import { memo } from 'preact/compat';
 import { BASE_CLASS } from './constants';
 import ExpandableCard from '../../../../internal/ExpandableCard/ExpandableCard';
@@ -14,7 +14,7 @@ import { ITransaction } from '../../../../../types';
 
 type TransactionTotalsProps = Required<OperationParameters<'getBalances'>['path']>;
 
-type BalancesProps = MakeFieldValueUndefined<TransactionTotalsProps, 'balanceAccountId'> & {
+type BalancesProps = WithPartialField<TransactionTotalsProps, 'balanceAccountId'> & {
     onCurrenciesChange: (currencies: ITransaction['amount']['currency'][] | undefined, isFetching: boolean) => any;
     fullWidth?: boolean;
 };

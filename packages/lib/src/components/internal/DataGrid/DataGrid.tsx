@@ -41,10 +41,10 @@ function DataGrid<
     ClickedField extends keyof Items[number],
     CustomCells extends CustomCell<Items, Columns, Columns[number]>
 >({ errorDisplay, ...props }: DataGridProps<Items, Columns, ClickedField, CustomCells>) {
-    const children = toChildArray(props.children);
-    const footer = children.find((child: ComponentChild) => (child as any)?.['type'] === DataGridFooter);
-    const emptyBody = !props.loading && props.data?.length === 0 && !props.error;
-    const showMessage = useMemo(() => (!props.loading && emptyBody) || props.error, [emptyBody, props.error, props.loading]);
+    const children = useMemo(() => toChildArray(props.children), [props.children]);
+    const footer = useMemo(() => children.find((child: ComponentChild) => (child as any)?.['type'] === DataGridFooter), [children]);
+    const emptyBody = useMemo(() => props.data?.length === 0, [props.data]);
+    const showMessage = useMemo(() => !props.loading && (emptyBody || props.error), [emptyBody, props.error, props.loading]);
 
     return (
         <div
@@ -80,16 +80,16 @@ function DataGrid<
                         <DataGridBody<Items, Columns, ClickedField, CustomCells> {...props} emptyBody={emptyBody} />
                     </table>
                     {showMessage &&
-                        (props.error && errorDisplay ? (
-                            errorDisplay()
-                        ) : (
+                        (emptyBody ? (
                             <ErrorMessageDisplay
                                 title={props.emptyTableMessage?.title ?? 'thereAreNoResults'}
                                 message={props.emptyTableMessage?.message}
                                 imageDesktop={emptyTableIcon}
                                 centered
                             />
-                        ))}
+                        ) : props.error && errorDisplay ? (
+                            errorDisplay()
+                        ) : null)}
                 </div>
                 {footer}
             </>

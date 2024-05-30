@@ -1,6 +1,7 @@
 import logEvent from '../Services/analytics/log-event';
 import postTelemetry from '../Services/analytics/post-telemetry';
 import collectId from '../Services/analytics/collect-id';
+import { boolOrFalse } from '../../utils';
 import EventsQueue from './EventsQueue';
 import { CoreOptions } from '../types';
 
@@ -26,7 +27,7 @@ class Analytics {
         this.collectId = collectId({ loadingContext: loadingContext ?? '', experiments: this.props.experiments });
 
         const { telemetry, enabled } = this.props;
-        if (telemetry === true && enabled === true) {
+        if (boolOrFalse(telemetry) && boolOrFalse(enabled)) {
             if (this.props.checkoutAttemptId) {
                 // handle prefilled checkoutAttemptId
                 this.checkoutAttemptId = this.props.checkoutAttemptId;
@@ -38,8 +39,8 @@ class Analytics {
     send(event: Record<string, any>) {
         const { enabled, payload, telemetry } = this.props;
 
-        if (enabled === true) {
-            if (telemetry === true && !this.checkoutAttemptId) {
+        if (boolOrFalse(enabled)) {
+            if (boolOrFalse(telemetry) && !this.checkoutAttemptId) {
                 // fetch a new checkoutAttemptId if none is already available
                 this.collectId().then(checkoutAttemptId => {
                     this.checkoutAttemptId = checkoutAttemptId;
@@ -47,7 +48,7 @@ class Analytics {
                 });
             }
 
-            if (telemetry === true) {
+            if (boolOrFalse(telemetry)) {
                 const telemetryTask = (checkoutAttemptId: string) =>
                     this.logTelemetry({ ...event, ...(payload && { ...payload }), checkoutAttemptId }).catch(() => {});
 

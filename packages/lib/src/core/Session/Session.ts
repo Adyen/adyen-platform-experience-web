@@ -1,5 +1,5 @@
 import setupSession from '../Services/sessions/setup-session';
-import Storage from '../../utils/SessionStorage';
+import Storage from '../../primitives/storage/Storage';
 import { sanitizeSession } from './utils';
 import { SessionResponse, SessionSetupResponse } from './types';
 

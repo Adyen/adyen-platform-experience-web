@@ -1,6 +1,7 @@
-import { PaginationProps, WithPaginationLimitSelection } from '../../../../internal/Pagination/types';
-import { IBalanceAccountBase, ITransaction, OnSelection } from '../../../../../types';
 import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatformExperienceError';
+import type { PaginationProps, WithPaginationLimitSelection } from '../../../../internal/Pagination/types';
+import type { IBalanceAccountBase, ITransaction } from '../../../../../types';
+import type { OnSelection } from '../../../../types';
 
 export interface TransactionTableProps extends WithPaginationLimitSelection<PaginationProps> {
     availableCurrencies: ITransaction['amount']['currency'][] | undefined;

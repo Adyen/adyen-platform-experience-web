@@ -3,7 +3,7 @@ import { useMemo } from 'preact/hooks';
 import useCoreContext from '../../../../core/Context/useCoreContext';
 import { TranslationKey } from '../../../../core/Localization/types';
 import { IPayoutDetails } from '../../../../types';
-import { EMPTY_OBJECT } from '../../../../utils/common';
+import { EMPTY_OBJECT } from '../../../../utils';
 import Card from '../../../internal/Card/Card';
 import { DATE_FORMAT } from '../../../internal/DataOverviewDisplay/constants';
 import StructuredList from '../../../internal/StructuredList';
@@ -31,13 +31,15 @@ export const PayoutData = ({ payout: payoutData, isFetching }: { payout?: IPayou
             (accumulator, currentValue) => {
                 const payoutValue = currentValue?.amount?.value;
                 const category = currentValue?.category === 'unknown' ? 'Other' : currentValue?.category;
-                const translationKey = `txType.${category}`;
-                const translatedCategory = i18n.get(translationKey as TranslationKey);
-                const categoryLabel = category && translatedCategory !== translationKey ? translatedCategory : category;
+                const translationKey = `txType.${category}` as TranslationKey;
+                const categoryTranslation = i18n.get(translationKey);
+                const categoryLabel = category && categoryTranslation !== translationKey ? categoryTranslation : category;
+
                 if (currentValue?.category && payoutValue) {
                     const targetObj = accumulator[payoutValue < 0 ? 'subtractions' : 'additions'];
                     targetObj[categoryLabel] = payoutValue;
                 }
+
                 return accumulator;
             },
             { subtractions: {} as Record<string, number>, additions: {} as Record<string, number> }

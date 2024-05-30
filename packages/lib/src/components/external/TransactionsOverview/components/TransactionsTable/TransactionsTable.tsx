@@ -14,7 +14,7 @@ import { TranslationKey } from '../../../../../core/Localization/types';
 import { getCurrencyCode } from '../../../../../core/Localization/amount/amount-util';
 import { AMOUNT_CLASS, BASE_CLASS, PAYMENT_METHOD_CLASS, PAYMENT_METHOD_LOGO_CLASS, PAYMENT_METHOD_LOGO_CONTAINER_CLASS } from './constants';
 import './TransactionTable.scss';
-import { mediaQueries, useMediaQuery } from '../../hooks/useMediaQuery';
+import { mediaQueries, useResponsiveViewport } from '../../hooks/useResponsiveViewport';
 import { FC } from 'preact/compat';
 import { TransactionTableProps } from './types';
 
@@ -38,7 +38,7 @@ export const TransactionsTable: FC<TransactionTableProps> = ({
 }) => {
     const { i18n } = useCoreContext();
     const [hoveredRow, setHoveredRow] = useState<undefined | number>();
-    const isSmViewport = useMediaQuery(mediaQueries.down.sm);
+    const isSmViewport = useResponsiveViewport(mediaQueries.down.sm);
 
     const columns = useMemo(
         () =>
@@ -80,6 +80,7 @@ export const TransactionsTable: FC<TransactionTableProps> = ({
         () => () => <DataOverviewError error={error} onContactSupport={onContactSupport} errorMessage={'weCouldNotLoadYourTransactions'} />,
         [error, onContactSupport]
     );
+
     return (
         <div className={BASE_CLASS}>
             <DataGrid
