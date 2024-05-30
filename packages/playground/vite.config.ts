@@ -59,12 +59,6 @@ export default defineConfig(async ({ mode }) => {
                 '@styles': resolve(__dirname, '../lib/src/style'),
             },
         },
-        css: {
-            modules: {
-                scopeBehaviour: mode === 'production' ? 'local' : undefined,
-                generateScopedName: name => name,
-            },
-        },
         server: {
             host: playground.host,
             port: playground.port,
