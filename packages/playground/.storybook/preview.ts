@@ -36,7 +36,7 @@ const preview: Preview = {
                     } else {
                         stopMockedServer();
                     }
-                    return sessionRequest(context.args.session);
+                    return await sessionRequest(context.args.session);
                 },
             });
             return { AdyenPlatformExperience };
