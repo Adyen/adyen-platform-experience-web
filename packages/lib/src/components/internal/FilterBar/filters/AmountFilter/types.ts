@@ -1,4 +1,4 @@
-import { FilterParam } from '../../../../../types';
+import { FilterParam } from '../../../../types';
 import { BaseFilterProps } from '../BaseFilter/types';
 import { ReactiveStateRecord } from '../../../../../hooks/useReactiveState/types';
 

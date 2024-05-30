@@ -1,4 +1,4 @@
-import { mediaQueries, useMediaQuery } from '../../../../external/TransactionsOverview/hooks/useMediaQuery';
+import { mediaQueries, useResponsiveViewport } from '../../../../external/TransactionsOverview/hooks/useResponsiveViewport';
 import FilterButton from '../../components/FilterButton/FilterButton';
 import Popover from '../../../Popover/Popover';
 import { PopoverContainerPosition, PopoverContainerVariant } from '../../../Popover/types';
@@ -6,7 +6,7 @@ import { TypographyElement, TypographyVariant } from '../../../Typography/types'
 import Typography from '../../../Typography/Typography';
 import useCommitAction, { CommitAction } from '../../../../../hooks/useCommitAction';
 import useUniqueIdentifier from '../../../../../hooks/element/useUniqueIdentifier';
-import { isEmpty } from '../../../../../utils/validator-utils';
+import { isEmptyString, isNull } from '../../../../../utils';
 import { memo } from 'preact/compat';
 import { Ref, useCallback, useEffect, useMemo, useState } from 'preact/hooks';
 import useBooleanState from '../../../../../hooks/useBooleanState';
@@ -15,7 +15,7 @@ import InputText from '../../../FormFields/InputText';
 import { BaseFilterProps, FilterEditModalRenderProps, FilterProps } from './types';
 
 const isValueEmptyFallback = (value?: string) => {
-    return !value || isEmpty(value);
+    return !value || isEmptyString(value);
 };
 
 const renderFallback = (() => {
@@ -52,7 +52,7 @@ const renderFallback = (() => {
 })();
 
 const BaseFilter = <T extends BaseFilterProps = BaseFilterProps>({ render, ...props }: FilterProps<T>) => {
-    const isSmViewport = useMediaQuery(mediaQueries.down.xs);
+    const isSmViewport = useResponsiveViewport(mediaQueries.down.xs);
     const [editMode, _updateEditMode] = useBooleanState(false);
     const [editModalMounting, updateEditModalMounting] = useBooleanState(false);
     const isValueEmpty = useMemo(() => props.isValueEmpty ?? isValueEmptyFallback, [props.isValueEmpty]);
@@ -68,7 +68,7 @@ const BaseFilter = <T extends BaseFilterProps = BaseFilterProps>({ render, ...pr
         (currentValue?: string | null) => {
             const hasEmptyValue = isValueEmpty(currentValue ?? undefined);
             updateHasEmptyValue(hasEmptyValue);
-            updateDisabledApply(currentValue === null);
+            updateDisabledApply(isNull(currentValue));
             updateValueChanged(hasInitialValue ? currentValue !== props.value : !hasEmptyValue);
         },
         [isValueEmpty, updateHasEmptyValue, updateDisabledApply, updateValueChanged, hasInitialValue, props.value]
@@ -109,8 +109,8 @@ const BaseFilter = <T extends BaseFilterProps = BaseFilterProps>({ render, ...pr
         committing && closeEditDialog();
         updateHasEmptyValue(hasEmptyValue);
     }, [committing, closeEditDialog, updateHasEmptyValue, hasEmptyValue]);
-    const isOnlySmDevice = useMediaQuery(mediaQueries.only.sm);
-    const isOnlyMdDevice = useMediaQuery(mediaQueries.only.md);
+    const isOnlySmDevice = useResponsiveViewport(mediaQueries.only.sm);
+    const isOnlyMdDevice = useResponsiveViewport(mediaQueries.only.md);
 
     return (
         <>

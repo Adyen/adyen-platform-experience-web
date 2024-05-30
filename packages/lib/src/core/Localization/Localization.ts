@@ -5,8 +5,8 @@ import restamper, { RestamperWithTimezone, systemToTimezone } from './datetime/r
 import { createTranslationsLoader, getLocalizationProxyDescriptors } from './localization-utils';
 import { CustomTranslations, LangFile, SupportedLocale, Translation, TranslationKey, TranslationOptions } from './types';
 import { formatCustomTranslations, getTranslation, toTwoLetterCode } from './utils';
-import { noop, struct } from '../../utils/common';
-import watchable from '../../utils/watchable';
+import { createWatchlist } from '../../primitives/reactive/watchlist';
+import { ALREADY_RESOLVED_PROMISE, isNull, isNullish, isUndefined, noop, struct } from '../../utils';
 import { en_US } from './translations';
 
 export default class Localization {
@@ -18,13 +18,13 @@ export default class Localization {
     #translations: Record<string, string> = defaultTranslation;
     #translationsLoader = createTranslationsLoader.call(this);
 
-    #ready: Promise<void> = Promise.resolve();
+    #ready: Promise<void> = ALREADY_RESOLVED_PROMISE;
     #currentRefresh?: Promise<void>;
     #markRefreshAsDone?: () => void;
-    #refreshWatchable = watchable({ timestamp: () => performance.now() });
+    #refreshWatchlist = createWatchlist({ timestamp: () => performance.now() });
     #restamp: RestamperWithTimezone = restamper();
 
-    private watch = this.#refreshWatchable.watch.bind(undefined);
+    private watch = this.#refreshWatchlist.subscribe.bind(undefined);
     public i18n: Omit<Localization, (typeof EXCLUDE_PROPS)[number]> = struct(getLocalizationProxyDescriptors.call(this));
     public preferredTranslations?: { [k in SupportedLocale]?: Translation } | { [k: string]: Translation };
 
@@ -47,7 +47,7 @@ export default class Localization {
         let translations: CustomTranslations | undefined = undefined;
         let supportedLocales: (SupportedLocale | string)[] = [...DEFAULT_LOCALES];
 
-        if (customTranslations != undefined) {
+        if (!isNullish(customTranslations)) {
             translations = formatCustomTranslations(customTranslations, DEFAULT_LOCALES);
             const localesFromCustomTranslations = Object.keys(translations) as string[];
 
@@ -66,7 +66,7 @@ export default class Localization {
     }
 
     get lastRefreshTimestamp() {
-        return this.#refreshWatchable.snapshot.timestamp;
+        return this.#refreshWatchlist.snapshot.timestamp;
     }
 
     get locale(): SupportedLocale | string {
@@ -74,7 +74,7 @@ export default class Localization {
     }
 
     set locale(locale: SupportedLocale | string | undefined | null) {
-        if (locale != undefined) {
+        if (!isNullish(locale)) {
             this.#translationsLoader.locale = locale;
             if (this.#locale === this.#translationsLoader.locale) return;
             this.#refreshTranslations(this.#customTranslations);
@@ -98,7 +98,7 @@ export default class Localization {
     }
 
     #refreshTranslations(customTranslations?: CustomTranslations) {
-        if (this.#markRefreshAsDone === undefined) {
+        if (isUndefined(this.#markRefreshAsDone)) {
             this.#ready = new Promise<void>(resolve => {
                 this.#markRefreshAsDone = () => {
                     resolve(this.#currentRefresh);
@@ -117,7 +117,7 @@ export default class Localization {
             this.#supportedLocales = this.#translationsLoader.supportedLocales;
             this.#customTranslations = customTranslations;
             this.#languageCode = toTwoLetterCode(this.#locale);
-            this.#refreshWatchable.notify();
+            this.#refreshWatchlist.requestNotification();
         })());
 
         currentRefresh.then(currentRefreshDone).catch(reason => {
@@ -136,7 +136,7 @@ export default class Localization {
      */
     get(key: TranslationKey, options?: TranslationOptions): string {
         const translation = getTranslation(this.#translations, key, options);
-        return translation !== null ? translation : key;
+        return isNull(translation) ? key : translation;
     }
 
     /**

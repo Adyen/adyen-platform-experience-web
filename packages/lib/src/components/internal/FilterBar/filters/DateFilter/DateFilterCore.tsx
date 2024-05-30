@@ -1,6 +1,6 @@
 import Localization from '../../../../../core/Localization';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
-import { EMPTY_OBJECT } from '../../../../../utils/common';
+import { EMPTY_OBJECT } from '../../../../../utils';
 import { CommitAction } from '../../../../../hooks/useCommitAction';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { CalendarHandle } from '../../../Calendar/types';

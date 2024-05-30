@@ -2,7 +2,7 @@ import useBalanceAccountSelection from '../../../../hooks/useBalanceAccountSelec
 import { memo } from 'preact/compat';
 import { useCallback } from 'preact/hooks';
 import Select from '../../Select';
-import { mediaQueries, useMediaQuery } from '../../../../external/TransactionsOverview/hooks/useMediaQuery';
+import { mediaQueries, useResponsiveViewport } from '../../../../external/TransactionsOverview/hooks/useResponsiveViewport';
 import { renderDefaultSingleSelectionCheckedness } from '../components/SelectListItem';
 import { SelectItem, SelectProps } from '../types';
 import './BalanceAccountSelector.scss';
@@ -19,7 +19,7 @@ const BalanceAccountSelector = memo(
         balanceAccountSelectionOptions,
         onBalanceAccountSelection,
     }: Omit<ReturnType<typeof useBalanceAccountSelection>, 'resetBalanceAccountSelection'>) => {
-        const isSmViewport = useMediaQuery(mediaQueries.down.xs);
+        const isSmViewport = useResponsiveViewport(mediaQueries.down.xs);
 
         const renderListItem = useCallback<_GetRenderListItemType<typeof balanceAccountSelectionOptions>>(
             data => (

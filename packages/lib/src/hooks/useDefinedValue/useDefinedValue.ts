@@ -1,5 +1,5 @@
 import { useMemo, useRef } from 'preact/hooks';
-import { isFunction } from '../../utils/common';
+import { isFunction } from '../../utils';
 
 const useDefinedValue = <T = any>(fallback: T | (() => T), value?: T | null) => {
     const rawValueRef = useRef(value ?? null);

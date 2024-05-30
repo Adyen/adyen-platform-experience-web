@@ -1,6 +1,6 @@
 import { Ref } from 'preact';
 import { SVGProps } from 'preact/compat';
-import fixedForwardRef from '../../../utils/fixedForwardRef';
+import { fixedForwardRef } from '../../../utils/preact';
 
 const Checkmark = fixedForwardRef(({ title, ...props }: Omit<SVGProps<SVGElement>, 'ref'>, ref: Ref<SVGSVGElement>) => (
     <svg {...props} ref={ref} xmlns="http://www.w3.org/2000/svg" fill="none" width="16" viewBox="0 0 16 16" height="16">

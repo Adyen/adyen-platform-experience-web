@@ -1,8 +1,9 @@
 import { useMemo, useRef, useState } from 'preact/hooks';
 import restamper, { RestampContext } from '../../../../core/Localization/datetime/restamper';
 import { getGMTSuffixForTimezoneOffset, getTimezoneOffsetFromFormattedDateString } from '../../../../core/Localization/datetime/restamper/utils';
-import { EMPTY_ARRAY, EMPTY_OBJECT, noop } from '../../../../utils/common';
-import clock from '../clock';
+import { isWatchlistUnsubscribeToken } from '../../../../primitives/reactive/watchlist';
+import { boolOrFalse, EMPTY_ARRAY, EMPTY_OBJECT, noop } from '../../../../utils';
+import clock from '../../../../primitives/time/clock';
 
 export type UseTimezoneConfig = {
     timezone?: RestampContext['TIMEZONE'];
@@ -35,7 +36,7 @@ export const { getTimezoneTime, getUsedTimezone } = (() => {
 })();
 
 const useTimezone = ({ timezone: tz, withClock = false }: UseTimezoneConfig = EMPTY_OBJECT) => {
-    const shouldWatchClock = useMemo(() => withClock === true, [withClock]);
+    const shouldWatchClock = useMemo(() => boolOrFalse(withClock), [withClock]);
     const timezone = useMemo(() => getUsedTimezone(tz), [tz]);
     const unwatchClock = useRef(noop);
 
@@ -46,9 +47,8 @@ const useTimezone = ({ timezone: tz, withClock = false }: UseTimezoneConfig = EM
         unwatchClock.current();
 
         unwatchClock.current = shouldWatchClock
-            ? clock.watch(snapshotOrSignal => {
-                  if (typeof snapshotOrSignal === 'symbol') return;
-                  setTimestamp(snapshotOrSignal.timestamp);
+            ? clock.subscribe(snapshot => {
+                  if (!isWatchlistUnsubscribeToken(snapshot)) setTimestamp(snapshot.now);
               })
             : noop;
     }, [setTimestamp, shouldWatchClock]);

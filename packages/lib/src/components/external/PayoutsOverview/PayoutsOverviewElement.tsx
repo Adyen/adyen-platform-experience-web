@@ -1,7 +1,6 @@
-import { DataOverviewComponentProps } from '../../../types';
+import type { _UIComponentProps, DataOverviewComponentProps } from '../../types';
 import Payouts from './components/PayoutsOverviewContainer/PayoutsOverviewContainer';
 import UIElement from '../UIElement';
-import { _UIComponentProps } from '../../types';
 
 export class PayoutsElement extends UIElement<DataOverviewComponentProps> {
     public static type = 'payouts';

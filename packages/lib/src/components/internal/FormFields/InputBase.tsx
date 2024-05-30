@@ -1,5 +1,5 @@
 import { ARIA_ERROR_SUFFIX } from '../../../core/Errors/constants';
-import { hasOwnProperty } from '../../../utils/common';
+import { hasOwnProperty } from '../../../utils';
 import classNames from 'classnames';
 import { h } from 'preact';
 import { ForwardedRef, forwardRef, TargetedEvent } from 'preact/compat';

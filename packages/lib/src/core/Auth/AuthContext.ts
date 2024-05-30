@@ -1,6 +1,6 @@
 import { AuthContextProps } from './types';
 import { createContext } from 'preact';
-import { EMPTY_OBJECT, noop } from '../../utils/common';
+import { EMPTY_OBJECT, noop } from '../../utils';
 
 export const AuthContext = createContext<AuthContextProps>({
     token: '',

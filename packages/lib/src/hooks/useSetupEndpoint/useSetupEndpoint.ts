@@ -5,7 +5,7 @@ import useCoreContext from '../../core/Context/useCoreContext';
 import { parseSearchParams } from '../../core/Services/requests/utils';
 import { useCallback } from 'preact/hooks';
 import { HttpMethod, HttpOptions } from '../../core/Services/requests/types';
-import { EMPTY_OBJECT } from '../../utils/common';
+import { EMPTY_OBJECT } from '../../utils';
 
 type Params<T extends Record<any, any>> = T['parameters'];
 

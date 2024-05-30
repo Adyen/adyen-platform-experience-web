@@ -3,7 +3,7 @@ import { FilterProps } from '../BaseFilter/types';
 import { RangeFilterProps } from './types';
 import { RangeSelection } from './RangeSelection';
 import { useCallback, useMemo, useState } from 'preact/hooks';
-import { EMPTY_OBJECT } from '../../../../../utils/common';
+import { EMPTY_OBJECT, isUndefined } from '../../../../../utils';
 import { PopoverContainerSize } from '../../../Popover/types';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { AMOUNT_MULTIPLIER } from './constants';
@@ -14,8 +14,7 @@ export const AmountFilter = ({ updateFilters, selectedCurrencies, availableCurre
     const [formattedValue, setValueFormattedValue] = useState<string | undefined>();
 
     const showCurrencySymbol = useMemo(() => {
-        if (selectedCurrencies?.length === 1 || availableCurrencies?.length === 1) return true;
-        return false;
+        return selectedCurrencies?.length === 1 || availableCurrencies?.length === 1;
     }, [availableCurrencies?.length, selectedCurrencies?.length]);
 
     const formatAmount = useCallback(
@@ -38,10 +37,10 @@ export const AmountFilter = ({ updateFilters, selectedCurrencies, availableCurre
         (params: { minAmount: number | undefined; maxAmount: number | undefined; filterValue: string | undefined }) => {
             const { minAmount, maxAmount } = params ?? EMPTY_OBJECT;
             setValue({ minAmount, maxAmount });
-            if (minAmount === undefined && maxAmount === undefined) setValueFormattedValue(undefined);
+            if (isUndefined(minAmount) && isUndefined(maxAmount)) setValueFormattedValue(undefined);
             updateFilters({
-                minAmount: minAmount !== undefined ? String(minAmount * AMOUNT_MULTIPLIER) : undefined,
-                maxAmount: maxAmount !== undefined ? String(maxAmount * AMOUNT_MULTIPLIER) : undefined,
+                minAmount: !isUndefined(minAmount) ? String(minAmount * AMOUNT_MULTIPLIER) : undefined,
+                maxAmount: !isUndefined(maxAmount) ? String(maxAmount * AMOUNT_MULTIPLIER) : undefined,
             });
         },
         [updateFilters]
@@ -49,13 +48,13 @@ export const AmountFilter = ({ updateFilters, selectedCurrencies, availableCurre
 
     if (value && (value.minAmount || value.maxAmount)) {
         const { minAmount, maxAmount } = value ?? {};
-        if (minAmount !== undefined && maxAmount !== undefined && minAmount <= maxAmount) {
+        if (!isUndefined(minAmount) && !isUndefined(maxAmount) && minAmount <= maxAmount) {
             setValueFormattedValue(
                 `${formatAmount(minAmount, showCurrencySymbol)} ${i18n.get('to').toLowerCase()} ${formatAmount(maxAmount, showCurrencySymbol)}`
             );
-        } else if (minAmount !== undefined && maxAmount === undefined && minAmount >= 0) {
+        } else if (!isUndefined(minAmount) && isUndefined(maxAmount) && minAmount >= 0) {
             setValueFormattedValue(`${i18n.get('from')} ${formatAmount(minAmount, showCurrencySymbol)}`);
-        } else if (minAmount === undefined && maxAmount !== undefined) {
+        } else if (isUndefined(minAmount) && !isUndefined(maxAmount)) {
             setValueFormattedValue(`${i18n.get('to')} ${formatAmount(maxAmount, showCurrencySymbol)}`);
         } else {
             setValueFormattedValue(undefined);
