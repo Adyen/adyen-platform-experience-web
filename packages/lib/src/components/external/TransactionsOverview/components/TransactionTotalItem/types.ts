@@ -1,7 +1,7 @@
-import { ITransactionTotal } from '../../../../../types';
+import { ITransactionTotalWithKey } from '../../../../../types';
 
 export type TransactionTotalItemProps = {
-    total?: ITransactionTotal;
+    total?: ITransactionTotalWithKey;
     hiddenField?: 'incomings' | 'expenses';
     isHeader?: boolean;
     isHovered?: boolean;

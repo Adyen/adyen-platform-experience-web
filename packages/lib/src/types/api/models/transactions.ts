@@ -6,3 +6,5 @@ export type ITransaction = Schema<components, 'SingleTransaction'>;
 export type ICategory = ITransaction['category'];
 
 export type ITransactionTotal = Schema<components, 'TransactionTotal'>;
+
+export type ITransactionTotalWithKey = Schema<components, 'TransactionTotal'> & { key: string };

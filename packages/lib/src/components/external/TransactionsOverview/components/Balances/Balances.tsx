@@ -10,7 +10,7 @@ import ExpandableCard from '../../../../internal/ExpandableCard/ExpandableCard';
 import { BaseList } from '../../../../internal/BaseList/BaseList';
 import { BalanceItem } from '../BalanceItem/BalanceItem';
 import { useMaxWidthsState } from '../../hooks/useMaxWidths';
-import { ITransaction } from '../../../../../types';
+import { IBalanceWithKey, ITransaction } from '../../../../../types';
 
 type TransactionTotalsProps = Required<OperationParameters<'getBalances'>['path']>;
 
@@ -45,7 +45,14 @@ export const Balances = memo(({ balanceAccountId, defaultCurrencyCode, onCurrenc
         });
     }, [data?.data, defaultCurrencyCode]);
 
-    const [firstBalance, ...restOfBalances] = balances ?? [];
+    const [firstBalance, ...restOfBalances] = useMemo(() => {
+        return (
+            balances?.map((t: Partial<IBalanceWithKey>) => {
+                t['key'] = `${t.currency}-${Math.random()}`;
+                return t as IBalanceWithKey;
+            }) ?? []
+        );
+    }, [balances]);
 
     const [maxWidths, setMaxWidths] = useMaxWidthsState();
 
@@ -74,7 +81,7 @@ export const Balances = memo(({ balanceAccountId, defaultCurrencyCode, onCurrenc
                 {restOfBalances.length && (
                     <BaseList>
                         {restOfBalances.map(balance => (
-                            <li key={balance.currency}>
+                            <li key={balance.key}>
                                 <BalanceItem balance={balance} widths={maxWidths} onWidthsSet={setMaxWidths} />
                             </li>
                         ))}

@@ -1,10 +1,10 @@
-import { useState } from 'preact/hooks';
+import { useMemo, useState } from 'preact/hooks';
 import ExpandableCard from '../../../../internal/ExpandableCard/ExpandableCard';
 import { memo } from 'preact/compat';
 import { TransactionTotalItem } from '../TransactionTotalItem/TransactionTotalItem';
 import { BaseList } from '../../../../internal/BaseList/BaseList';
 import { useMaxWidthsState } from '../../hooks/useMaxWidths';
-import { ITransactionTotal } from '../../../../../types';
+import { ITransactionTotal, ITransactionTotalWithKey } from '../../../../../types';
 import './TransactionTotals.scss';
 
 type TotalsCardProps = {
@@ -15,9 +15,15 @@ type TotalsCardProps = {
 };
 
 export const TotalsCard = memo(({ totals, isLoading, hiddenField, fullWidth }: TotalsCardProps) => {
-    const [firstTotal, ...restOfTotals] = totals;
     const [maxWidths, setMaxWidths] = useMaxWidthsState();
     const [isHovered, setIsHovered] = useState(false);
+
+    const [firstTotal, ...restOfTotals] = useMemo(() => {
+        return totals.map((t: Partial<ITransactionTotalWithKey>) => {
+            t['key'] = `${t.currency}-${Math.random()}`;
+            return t as ITransactionTotalWithKey;
+        });
+    }, [totals]);
 
     return (
         <ExpandableCard
@@ -42,7 +48,7 @@ export const TotalsCard = memo(({ totals, isLoading, hiddenField, fullWidth }: T
             {!isLoading && restOfTotals.length && (
                 <BaseList>
                     {restOfTotals.map(total => (
-                        <li key={total.currency}>
+                        <li key={total.key}>
                             <TransactionTotalItem
                                 isHovered={isHovered}
                                 total={total}
