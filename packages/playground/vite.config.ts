@@ -2,7 +2,7 @@ import { defineConfig } from 'vite';
 import { preact } from '@preact/preset-vite';
 import { resolve } from 'node:path';
 import { lstat, readdir } from 'node:fs/promises';
-import { ENVIRONMENTS, getEnvironment } from '../../envs/getEnvs';
+import { getEnvironment } from '../../envs/getEnvs';
 import { realApiProxies } from './src/endpoints/apis/realApiProxies';
 import { checker } from 'vite-plugin-checker';
 
@@ -26,7 +26,7 @@ async function getPlaygroundEntrypoints() {
 }
 
 export default defineConfig(async ({ mode }) => {
-    const { apiConfigs, playground } = getEnvironment(mode, process.env.ENV as ENVIRONMENTS);
+    const { apiConfigs, playground } = getEnvironment(mode);
     return {
         root: mode === 'demo' ? demoPlaygroundDir : undefined,
         base: './',
