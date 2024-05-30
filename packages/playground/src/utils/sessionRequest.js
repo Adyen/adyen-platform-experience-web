@@ -1,4 +1,4 @@
-const getMySessionToken = async () => {
+const getMySessionToken = async session => {
     // Here the merchant will call its own backend and their backend will call our backend
     // at the end this method should return a data formed as { id: string, token:string }
     const loadingContext = process.env.VITE_PLAYGROUND_URL;
@@ -12,13 +12,14 @@ const getMySessionToken = async () => {
             resources: [
                 {
                     type: 'accountHolder',
-                    accountHolderId: process.env.SESSION_ACCOUNT_HOLDER,
+                    accountHolderId: session?.accountHolderId || process.env.SESSION_ACCOUNT_HOLDER,
                 },
             ],
-            roles: ['Transactions Overview Component: View', 'Payouts Overview Component: View'],
+            roles: ['Transactions Overview Component: View', 'Payouts Overview Component: View', ...(session?.roles?.length ? session.roles : [])],
         },
     };
     const response = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+
     return await response.json();
 };
 

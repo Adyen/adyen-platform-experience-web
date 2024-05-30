@@ -39,6 +39,14 @@ const makeSessionProxyOptions = ({ url, apiKey }) => {
         rewrite: path => path.replace(/^\/api/, ''),
         configure: (proxy, _options) => {
             proxy.on('proxyReq', async (proxyReq, req, _res) => {
+                Object.entries(req.headers).forEach(([key, value]) => {
+                    if (value) {
+                        if (key.toLowerCase() === 'x-api-key') {
+                            proxyReq.setHeader(key, value);
+                        }
+                    }
+                });
+
                 console.log(
                     'Sending Request:',
                     req.method,
