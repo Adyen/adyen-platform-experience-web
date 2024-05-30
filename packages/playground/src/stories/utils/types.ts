@@ -10,4 +10,6 @@ type GlobalStoriesProps = { mockedApi?: boolean; balanceAccountId?: string };
 
 export type ElementProps<T extends new (...args: any) => any> = Omit<ConstructorParameters<T>[0] & GlobalStoriesProps, 'core'>;
 
-export type ElementStory<T extends new (...args: any) => any> = StoryObj<ElementProps<T> & GlobalStoriesProps>;
+export type ElementStory<T extends new (...args: any) => any, ExtraProps = {}> = StoryObj<ExtraProps & ElementProps<T> & GlobalStoriesProps>;
+
+export type SessionControls = { session: { roles: string[]; accountHolderId?: string } };
