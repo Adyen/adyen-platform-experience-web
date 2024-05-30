@@ -38,6 +38,9 @@ sort_translations_json() {
 
         # overwrite the source translations JSON file with the correctly sorted JSON
         echo "$sorted_json" > $json_path
+
+        # prettify the sorted source translations JSON file
+        npx prettier --write "$json_path" 2> /dev/null
     fi
 }
 
