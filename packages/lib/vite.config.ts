@@ -2,11 +2,12 @@ import { defineConfig, type PluginOption } from 'vite';
 import { resolve } from 'node:path';
 import version from './config/version';
 import packageJson from './package.json';
+import { visualizer } from 'rollup-plugin-visualizer';
 
 const currentVersion = version();
 const externalDependencies = Object.keys(packageJson.dependencies);
 
-export default defineConfig(async ({ mode }) => {
+export default defineConfig(({ mode }) => {
     const isAnalyseMode = mode === 'analyse';
 
     return {
@@ -56,7 +57,7 @@ export default defineConfig(async ({ mode }) => {
         },
         plugins: [
             isAnalyseMode &&
-                ((await import('rollup-plugin-visualizer')).visualizer({
+                (visualizer({
                     title: 'Adyen Platform bundle visualizer',
                     gzipSize: true,
                     open: true,
