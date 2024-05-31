@@ -128,6 +128,7 @@ export const PayoutsOverview = ({
                     nowTimestamp={nowTimestamp}
                     refreshNowTimestamp={refreshNowTimestamp}
                     sinceDate={sinceDate}
+                    timezone={'UTC'}
                     updateFilters={updateFilters}
                 />
             </FilterBar>
