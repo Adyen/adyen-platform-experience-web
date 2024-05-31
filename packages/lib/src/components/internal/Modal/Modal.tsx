@@ -92,6 +92,7 @@ export default function Modal({
                                     onClick={onClose}
                                     variant={ButtonVariant.TERTIARY}
                                     iconButton
+                                    classNameModifiers={['circle']}
                                     className={`adyen-pe-modal__header-icon`}
                                     aria-label={i18n.get('dismiss')}
                                 >
