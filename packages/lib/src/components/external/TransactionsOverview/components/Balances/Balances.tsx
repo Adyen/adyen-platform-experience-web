@@ -38,11 +38,16 @@ export const Balances = memo(({ balanceAccountId, defaultCurrencyCode, onCurrenc
     const isEmpty = !!error || !data?.data.length;
 
     const balances = useMemo(() => {
-        return data?.data.sort(({ currency: firstCurrency }, { currency: secondCurrency }) => {
-            if (firstCurrency === defaultCurrencyCode) return -1;
-            if (secondCurrency === defaultCurrencyCode) return 1;
-            return firstCurrency.localeCompare(secondCurrency);
-        });
+        return (
+            data?.data &&
+            [...data.data].sort(({ currency: firstCurrency }, { currency: secondCurrency }) => {
+                if (defaultCurrencyCode) {
+                    if (firstCurrency === defaultCurrencyCode) return -1;
+                    if (secondCurrency === defaultCurrencyCode) return 1;
+                }
+                return firstCurrency.localeCompare(secondCurrency);
+            })
+        );
     }, [data?.data, defaultCurrencyCode]);
 
     const [firstBalance, ...restOfBalances] = useMemo(() => {
