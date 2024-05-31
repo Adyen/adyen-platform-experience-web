@@ -119,6 +119,10 @@
         position: relative;
         width: 40px;
 
+        &-content svg {
+            display: block;
+        }
+
         &::before {
             content: '';
             float: left;
