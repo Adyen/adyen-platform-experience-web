@@ -1,4 +1,4 @@
-import { ITransactionTotalWithKey } from '../../../../../types';
+import { ITransactionTotalWithKey } from '../TransactionTotals/types';
 
 export type TransactionTotalItemProps = {
     total?: ITransactionTotalWithKey;

@@ -4,15 +4,8 @@ import { memo } from 'preact/compat';
 import { TransactionTotalItem } from '../TransactionTotalItem/TransactionTotalItem';
 import { BaseList } from '../../../../internal/BaseList/BaseList';
 import { useMaxWidthsState } from '../../hooks/useMaxWidths';
-import { ITransactionTotal, ITransactionTotalWithKey } from '../../../../../types';
 import './TransactionTotals.scss';
-
-type TotalsCardProps = {
-    totals: ITransactionTotal[];
-    hiddenField?: 'incomings' | 'expenses';
-    isLoading: boolean;
-    fullWidth?: boolean;
-};
+import { ITransactionTotalWithKey, TotalsCardProps } from './types';
 
 export const TotalsCard = memo(({ totals, isLoading, hiddenField, fullWidth }: TotalsCardProps) => {
     const [maxWidths, setMaxWidths] = useMaxWidthsState();

@@ -2,23 +2,13 @@ import { useSetupEndpoint } from '../../../../../hooks/useSetupEndpoint/useSetup
 import { useCallback, useEffect, useMemo } from 'preact/hooks';
 import { EMPTY_OBJECT } from '../../../../../utils';
 import { useFetch } from '../../../../../hooks/useFetch/useFetch';
-import { OperationParameters } from '../../../../../types/api/endpoints';
-import { WithPartialField } from '../../../../../utils/types';
 import { memo } from 'preact/compat';
 import { BASE_CLASS } from './constants';
 import ExpandableCard from '../../../../internal/ExpandableCard/ExpandableCard';
 import { BaseList } from '../../../../internal/BaseList/BaseList';
 import { BalanceItem } from '../BalanceItem/BalanceItem';
 import { useMaxWidthsState } from '../../hooks/useMaxWidths';
-import { IBalanceWithKey, ITransaction } from '../../../../../types';
-
-type TransactionTotalsProps = Required<OperationParameters<'getBalances'>['path']>;
-
-type BalancesProps = WithPartialField<TransactionTotalsProps, 'balanceAccountId'> & {
-    onCurrenciesChange: (currencies: ITransaction['amount']['currency'][] | undefined, isFetching: boolean) => any;
-    defaultCurrencyCode: ITransaction['amount']['currency'] | undefined;
-    fullWidth?: boolean;
-};
+import { BalancesProps, IBalanceWithKey } from './types';
 
 export const Balances = memo(({ balanceAccountId, defaultCurrencyCode, onCurrenciesChange, fullWidth }: BalancesProps) => {
     const getAccountsBalance = useSetupEndpoint('getBalances');

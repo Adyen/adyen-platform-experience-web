@@ -1,4 +1,4 @@
-import { IBalanceWithKey } from '../../../../../types';
+import { IBalanceWithKey } from '../Balances/types';
 
 export type BalanceItemProps = {
     balance?: IBalanceWithKey;
