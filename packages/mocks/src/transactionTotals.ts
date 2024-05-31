@@ -16,4 +16,9 @@ export const TRANSACTION_TOTALS: ITransactionTotal[] = [
         incomings: 20000,
         expenses: -1000,
     },
+    {
+        currency: 'USD',
+        incomings: 200,
+        expenses: -134000000000,
+    },
 ];
