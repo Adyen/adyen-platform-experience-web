@@ -97,7 +97,7 @@ $adyen-pe-modal-sizes: (
         font-size: var(--adyen-sdk-font-size-300);
         font-weight: var(--adyen-sdk-font-weight-600);
         justify-content: flex-end;
-        padding: 24px 24px 0;
+        padding: 12px 12px 0 24px;
 
         &--with-title {
             justify-content: space-between;
@@ -114,8 +114,8 @@ $adyen-pe-modal-sizes: (
         cursor: pointer;
         transition: background 0.1s linear;
 
-        &:focus {
-            background: #d1d5da;
+        &:focus,
+        &:active {
             outline: 0;
         }
     }
