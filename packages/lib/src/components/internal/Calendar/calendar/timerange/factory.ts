@@ -13,8 +13,8 @@ const createRangeTimestampsFactory = <T extends Record<any, any> = {}>(
     config: RangeTimestampsConfig = EMPTY_OBJECT,
     additionalContext: { [P in keyof T]: TypedPropertyDescriptor<T[P]> } = EMPTY_OBJECT
 ) => {
-    const _config = asPlainObject<typeof config>(config);
-    const _additionalContext = asPlainObject<typeof additionalContext>(additionalContext);
+    const _config = asPlainObject(config);
+    const _additionalContext = asPlainObject(additionalContext);
 
     return () => {
         const _restamper = restamper();
@@ -83,13 +83,13 @@ const createRangeTimestampsFactory = <T extends Record<any, any> = {}>(
 
         nowSetter();
 
-        return struct({
+        return struct<RangeTimestamps<T>>({
             ..._additionalContext,
             from: getter(() => from),
             now: { ...nowDescriptor, set: nowSetter },
             timezone: { ...tzDescriptor, set: tzSetter },
             to: getter(() => to),
-        }) as RangeTimestamps<Omit<T, keyof RangeTimestamps>>;
+        });
     };
 };
 
