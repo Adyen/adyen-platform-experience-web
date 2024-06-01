@@ -2,6 +2,7 @@ import DataOverviewError from '../../../../internal/DataOverviewError/DataOvervi
 import { BASE_CLASS } from './constants';
 import { PaginationProps, WithPaginationLimitSelection } from '../../../../internal/Pagination/types';
 import { getLabel } from '../../../../utils/getLabel';
+import { useAuthContext } from '../../../../../core/Auth';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatformExperienceError';
 import { getCurrencyCode } from '../../../../../core/Localization/amount/amount-util';
@@ -41,6 +42,8 @@ export const PayoutsTable: FC<PayoutsTableProps> = ({
     ...paginationProps
 }) => {
     const { i18n } = useCoreContext();
+    const { initializing } = useAuthContext();
+    const isLoading = useMemo(() => loading || initializing, [loading, initializing]);
 
     const columns = useMemo(
         () =>
@@ -75,7 +78,7 @@ export const PayoutsTable: FC<PayoutsTableProps> = ({
                 error={error}
                 columns={columns}
                 data={data}
-                loading={loading}
+                loading={isLoading}
                 outline={false}
                 onRowClick={{ callback: onRowClick }}
                 emptyTableMessage={EMPTY_TABLE_MESSAGE}

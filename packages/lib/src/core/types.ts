@@ -1,4 +1,4 @@
-import { SessionResponse } from './Session/types';
+import type { SessionRequest } from './Auth';
 import type { CustomTranslations } from './Localization/types';
 import { AnalyticsOptions } from './Analytics/types';
 import { LangFile } from './Localization/types';
@@ -31,7 +31,7 @@ export interface CoreOptions<AvailableTranslations extends LangFile[]> {
     locale?: AvailableTranslations extends AvailableTranslations ? CreateUnionOfAvailableTranslations<AvailableTranslations> : never;
 
     onError?: (err: any) => any;
-    onSessionCreate: () => Promise<SessionResponse>;
+    onSessionCreate: SessionRequest;
 
     /**
      * Custom translations and localizations

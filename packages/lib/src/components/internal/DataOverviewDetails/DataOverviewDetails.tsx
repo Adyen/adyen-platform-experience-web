@@ -1,11 +1,10 @@
 import './DataOverviewDetails.scss';
-import { useCallback, useMemo } from 'preact/hooks';
+import { useMemo } from 'preact/hooks';
+import { useAuthContext } from '../../../core/Auth';
 import useCoreContext from '../../../core/Context/useCoreContext';
 import AdyenPlatformExperienceError from '../../../core/Errors/AdyenPlatformExperienceError';
 import { useFetch } from '../../../hooks/useFetch/useFetch';
-import { useSetupEndpoint } from '../../../hooks/useSetupEndpoint/useSetupEndpoint';
 import { IPayoutDetails } from '../../../types';
-import { EndpointName } from '../../../types/api/endpoints';
 import { EMPTY_OBJECT } from '../../../utils';
 import { PayoutData } from '../../external/PayoutDetails/components/PayoutData';
 import { TransactionData } from '../../external/TransactionDetails/components/TransactionData';
@@ -14,14 +13,10 @@ import { getErrorMessage } from '../../utils/getErrorMessage';
 import { ErrorMessageDisplay } from '../ErrorMessageDisplay/ErrorMessageDisplay';
 import { DetailsComponentProps, DetailsWithoutIdProps, TransactionDetailData } from './types';
 
-const endpointsByType = {
-    transaction: {
-        url: 'getTransaction' as EndpointName,
-    },
-    payout: {
-        url: 'getPayout' as EndpointName,
-    },
-};
+const ENDPOINTS_BY_TYPE = {
+    transaction: 'getTransaction',
+    payout: 'getPayout',
+} as const;
 
 const isDetailsWithoutId = (props: DetailsComponentProps): props is DetailsWithoutIdProps => 'data' in props;
 
@@ -30,29 +25,25 @@ export default function DataOverviewDetails(props: ExternalUIComponentProps<Deta
     const dataId = useMemo(() => (!isDetailsWithoutId(props) ? props.id : null), [props]);
 
     const { i18n } = useCoreContext();
+    const getDetail = useAuthContext().endpoints[ENDPOINTS_BY_TYPE[props.type]] as any; // [TODO]: Fix type and remove 'as any'
 
-    const url = endpointsByType[props.type].url as 'getPayout' | 'getTransaction';
+    const { data, error, isFetching } = useFetch(
+        useMemo(
+            () => ({
+                fetchOptions: { enabled: !!dataId && !!getDetail },
+                queryFn: async () => {
+                    const pathParam = props.type === 'transaction' ? 'transactionId' : 'payoutId';
 
-    const getDetail = useSetupEndpoint(url);
+                    const params = {
+                        path: { [pathParam]: dataId! },
+                    } as Parameters<NonNullable<typeof getDetail>>[1];
 
-    const fetchCallback = useCallback(async () => {
-        if (dataId) {
-            const pathProp =
-                props.type === 'transaction'
-                    ? {
-                          path: { transactionId: dataId },
-                      }
-                    : {
-                          path: { payoutId: dataId },
-                      };
-            return getDetail(EMPTY_OBJECT, { ...pathProp });
-        }
-    }, [getDetail, dataId, props.type]);
-
-    const { data, error, isFetching } = useFetch({
-        fetchOptions: useMemo(() => ({ enabled: !!dataId }), [dataId]),
-        queryFn: fetchCallback,
-    });
+                    return getDetail!(EMPTY_OBJECT, params);
+                },
+            }),
+            [dataId, getDetail, props.type]
+        )
+    );
 
     const errorProps = useMemo(() => {
         if (error) {
@@ -61,6 +52,7 @@ export default function DataOverviewDetails(props: ExternalUIComponentProps<Deta
     }, [error, props.onContactSupport]);
 
     const detailsData = details ?? data;
+
     return (
         <div className="adyen-pe-overview-details">
             {props.title && <div className="adyen-pe-overview-details--title">{i18n.get(props.title)}</div>}

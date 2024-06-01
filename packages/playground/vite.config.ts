@@ -87,6 +87,7 @@ export default defineConfig(async ({ mode }) => {
             'process.env.E2E_TEST': JSON.stringify(process.env.E2E_TEST),
             'process.env.SESSION_ACCOUNT_HOLDER': JSON.stringify(apiConfigs.sessionApi.accountHolder || null),
             'process.env.SESSION_PERMISSIONS': JSON.stringify(apiConfigs.sessionApi.permissions || null),
+            'process.env.SESSION_MAX_AGE_MS': JSON.stringify(apiConfigs.sessionApi.maxAgeMs || null),
         },
     };
 });

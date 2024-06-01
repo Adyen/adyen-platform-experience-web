@@ -1,6 +1,6 @@
-import { useSetupEndpoint } from '../../../../../hooks/useSetupEndpoint/useSetupEndpoint';
 import { useCallback, useEffect, useMemo } from 'preact/hooks';
 import { EMPTY_OBJECT } from '../../../../../utils';
+import { useAuthContext } from '../../../../../core/Auth';
 import { useFetch } from '../../../../../hooks/useFetch/useFetch';
 import { memo } from 'preact/compat';
 import { BASE_CLASS } from './constants';
@@ -11,16 +11,16 @@ import { useMaxWidthsState } from '../../hooks/useMaxWidths';
 import { BalancesProps, IBalanceWithKey } from './types';
 
 export const Balances = memo(({ balanceAccountId, defaultCurrencyCode, onCurrenciesChange, fullWidth }: BalancesProps) => {
-    const getAccountsBalance = useSetupEndpoint('getBalances');
+    const { getBalances: getAccountsBalance } = useAuthContext().endpoints;
 
     const fetchCallback = useCallback(async () => {
-        return getAccountsBalance(EMPTY_OBJECT, {
+        return getAccountsBalance?.(EMPTY_OBJECT, {
             path: { balanceAccountId: balanceAccountId! },
         });
     }, [balanceAccountId, getAccountsBalance]);
 
     const { data, error, isFetching } = useFetch({
-        fetchOptions: useMemo(() => ({ enabled: !!balanceAccountId }), [balanceAccountId]),
+        fetchOptions: useMemo(() => ({ enabled: !!balanceAccountId && !!getAccountsBalance }), [balanceAccountId, getAccountsBalance]),
         queryFn: fetchCallback,
     });
 

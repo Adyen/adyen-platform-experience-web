@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { asyncNoop, identity, noop, panic, toStringTag } from './common';
+import { asyncNoop, constant, identity, noop, panic, toStringTag } from './common';
 
 const VALUES = [0, 1, NaN, 'false', 'true', '', false, true, null, undefined, Symbol(), [], {}, /\\/, () => {}] as const;
 
@@ -12,6 +12,21 @@ describe('asyncNoop', () => {
         for (const value of VALUES) {
             expect(await (asyncNoop as _NoopFunction)(value)).toBeUndefined();
         }
+    });
+});
+
+describe('constant', () => {
+    test('should return function that always returns the same value', () => {
+        const fn = constant(); // no argument
+
+        expect(fn).toBeTypeOf('function');
+        expect(fn()).toBeUndefined();
+
+        VALUES.forEach(value => {
+            const fn = constant(value);
+            expect(fn).toBeTypeOf('function');
+            expect(fn()).toBe(value);
+        });
     });
 });
 
