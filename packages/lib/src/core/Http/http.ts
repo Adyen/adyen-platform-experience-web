@@ -1,5 +1,5 @@
-import { API_VERSION } from '../sessions/constants';
-import { normalizeLoadingContext, normalizeUrl } from '../../utils';
+import { API_VERSION } from './constants';
+import { normalizeLoadingContext, normalizeUrl } from '../utils';
 import { getErrorType, getRequestObject, handleFetchError, isAdyenErrorResponse } from './utils';
 import { HttpOptions } from './types';
 

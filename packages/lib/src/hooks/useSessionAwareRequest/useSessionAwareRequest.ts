@@ -1,7 +1,7 @@
 import useAuthContext from '../../core/Auth/useAuthContext';
-import { http } from '../../core/Services/requests/http';
-import { HttpMethod, HttpOptions } from '../../core/Services/requests/types';
-import { ErrorTypes } from '../../core/Services/requests/utils';
+import { http } from '../../core/Http/http';
+import { HttpMethod, HttpOptions } from '../../core/Http/types';
+import { ErrorTypes } from '../../core/Http/utils';
 import { noop } from '../../utils';
 import { useMemo, useRef } from 'preact/hooks';
 

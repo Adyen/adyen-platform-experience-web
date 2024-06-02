@@ -1,4 +1,4 @@
-import { Experiment } from '../../Analytics/types';
+import { Experiment } from '../types';
 
 type CheckoutAttemptIdSession = {
     id: string;

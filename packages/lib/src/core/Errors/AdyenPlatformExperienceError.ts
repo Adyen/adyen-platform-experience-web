@@ -1,4 +1,4 @@
-import { ErrorTypes } from '../Services/requests/utils';
+import { ErrorTypes } from '../Http/utils';
 
 class AdyenPlatformExperienceError extends Error {
     public type: string;
