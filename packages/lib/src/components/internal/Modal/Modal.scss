@@ -97,10 +97,9 @@ $adyen-pe-modal-sizes: (
         font-size: var(--adyen-sdk-font-size-300);
         font-weight: var(--adyen-sdk-font-weight-600);
         justify-content: flex-end;
-        padding: 12px 12px 0 24px;
+        padding: 24px 24px 0;
 
         &--with-title {
-            justify-content: space-between;
             padding: 14px 14px 10px 16px;
         }
 
@@ -110,7 +109,15 @@ $adyen-pe-modal-sizes: (
     }
 
     &__header-icon {
+        --offset-margin: calc(1rem - 40px);
+        --offset-position: calc(var(--offset-margin) * -1 / 2);
+
         cursor: pointer;
+        margin-right: var(--offset-margin);
+        margin-top: var(--offset-margin);
+        position: relative;
+        right: var(--offset-position);
+        top: var(--offset-position);
         transition: background 0.1s linear;
 
         &:focus,
