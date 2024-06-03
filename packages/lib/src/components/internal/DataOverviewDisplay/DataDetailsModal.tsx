@@ -1,11 +1,10 @@
 import Modal from '../Modal';
+import { useEffect } from 'preact/hooks';
+import { FC, PropsWithChildren } from 'preact/compat';
 import { popoverUtil } from '../Popover/utils/popoverUtil';
-import Spinner from '../Spinner';
 import useCoreContext from '../../../core/Context/useCoreContext';
 import useModalDetails from '../../../hooks/useModalDetails/useModalDetails';
-import { FC, lazy, PropsWithChildren, Suspense } from 'preact/compat';
-import { useEffect } from 'preact/hooks';
-const ModalContent = lazy(() => import('../Modal/ModalContent/ModalContent'));
+import ModalContent from '../Modal/ModalContent/ModalContent';
 
 export interface DataOverviewDisplayProps {
     onContactSupport?: () => void;
@@ -14,6 +13,7 @@ export interface DataOverviewDisplayProps {
     resetDetails: ReturnType<typeof useModalDetails>['resetDetails'];
     className: string;
 }
+
 export const DataDetailsModal: FC<DataOverviewDisplayProps> = ({
     children,
     className,
@@ -22,11 +22,13 @@ export const DataDetailsModal: FC<DataOverviewDisplayProps> = ({
 }: PropsWithChildren<DataOverviewDisplayProps>) => {
     const { i18n } = useCoreContext();
     const isModalOpen = !!selectedDetail;
+
     useEffect(() => {
         if (isModalOpen) {
             popoverUtil.closeAll();
         }
     }, [isModalOpen]);
+
     return (
         <div className={className}>
             {children}
@@ -40,17 +42,7 @@ export const DataDetailsModal: FC<DataOverviewDisplayProps> = ({
                     headerWithBorder={false}
                     size={selectedDetail?.modalSize ?? 'large'}
                 >
-                    {selectedDetail && (
-                        <Suspense
-                            fallback={
-                                <span className={className + '__spinner-container'}>
-                                    <Spinner size={'medium'} />
-                                </span>
-                            }
-                        >
-                            <ModalContent {...selectedDetail?.selection} />
-                        </Suspense>
-                    )}
+                    {selectedDetail && <ModalContent {...selectedDetail?.selection} />}
                 </Modal>
             )}
         </div>
