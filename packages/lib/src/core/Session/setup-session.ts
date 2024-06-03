@@ -1,6 +1,6 @@
-import Session from '../../Session/Session';
-import { httpPost } from '../requests/http';
-import { SessionSetupResponse } from '../../Session/types';
+import Session from './Session';
+import { httpPost } from '../Http/http';
+import { SessionSetupResponse } from './types';
 
 function setupSession(session: Session, options?: Record<string, any>): Promise<SessionSetupResponse> {
     const path = `/setup`;

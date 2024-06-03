@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useReducer, useRef } from 'preact/hooks';
-import { ErrorLevel } from '../../core/Services/requests/types';
+import { ErrorLevel } from '../../core/Http/types';
 import { boolOrTrue } from '../../utils';
 
 interface State<T> {

@@ -1,4 +1,4 @@
-import { httpPost } from '../requests/http';
+import { httpPost } from '../../Http/http';
 import Storage from '../../../primitives/storage/Storage';
 import { CheckoutAttemptIdSession, CollectIdProps } from './types';
 

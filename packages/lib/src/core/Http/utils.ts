@@ -1,6 +1,6 @@
-import { isNullish } from '../../../utils';
+import { isNullish } from '../../utils';
 import { AdyenErrorResponse, ErrorLevel, HttpOptions } from './types';
-import AdyenPlatformExperienceError from '../../Errors/AdyenPlatformExperienceError';
+import AdyenPlatformExperienceError from '../Errors/AdyenPlatformExperienceError';
 
 export const enum ErrorTypes {
     /** Network error. */
