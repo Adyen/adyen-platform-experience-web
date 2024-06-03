@@ -3,11 +3,11 @@ import { defaultTranslation, FALLBACK_LOCALE } from './constants/locale';
 import { DEFAULT_DATETIME_FORMAT, DEFAULT_LOCALES, EXCLUDE_PROPS } from './constants/localization';
 import restamper, { RestamperWithTimezone, systemToTimezone } from './datetime/restamper';
 import { createTranslationsLoader, getLocalizationProxyDescriptors } from './localization-utils';
-import { CustomTranslations, LangFile, SupportedLocale, Translation, TranslationKey, TranslationOptions } from './types';
+import { CustomTranslations, LangFile, SupportedLocale, Translations, TranslationKey, TranslationOptions } from './types';
 import { formatCustomTranslations, getTranslation, toTwoLetterCode } from './utils';
 import { createWatchlist } from '../../primitives/reactive/watchlist';
 import { ALREADY_RESOLVED_PROMISE, isNull, isNullish, isUndefined, noop, struct } from '../../utils';
-import { en_US } from './translations';
+import { en_US } from '../../translations';
 
 export default class Localization {
     #locale: SupportedLocale | string = FALLBACK_LOCALE;
@@ -26,7 +26,7 @@ export default class Localization {
 
     private watch = this.#refreshWatchlist.subscribe.bind(undefined);
     public i18n: Omit<Localization, (typeof EXCLUDE_PROPS)[number]> = struct(getLocalizationProxyDescriptors.call(this));
-    public preferredTranslations?: { [k in SupportedLocale]?: Translation } | { [k: string]: Translation };
+    public preferredTranslations?: { [k in SupportedLocale]?: Translations } | { [k: string]: Translations };
 
     constructor(locale: SupportedLocale | string = FALLBACK_LOCALE, translationsFiles?: LangFile[]) {
         this.watch(noop);

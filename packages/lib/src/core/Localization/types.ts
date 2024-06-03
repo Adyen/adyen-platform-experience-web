@@ -12,7 +12,7 @@ export type SupportedLocaleFiles = WithReplacedUnderscoreOrDash<SupportedLocale,
 
 export type LangFile = {
     [K in SupportedLocaleFiles]: {
-        [P in K]: Translation;
+        [P in K]: Translations;
     };
 }[SupportedLocaleFiles];
 
@@ -23,12 +23,10 @@ export type TranslationOptions = {
     count?: number;
 };
 
-export type Translation = {
-    [message: string]: string;
+export type Translations = {
+    [key in TranslationKey]?: string;
 };
 
 export type CustomTranslations = {
-    [key: string]: {
-        [message in TranslationKey]?: string;
-    };
+    [locale: string]: Translations;
 };

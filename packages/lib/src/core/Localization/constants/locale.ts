@@ -1,4 +1,4 @@
-import defaultLocaleTranslation from '../translations/en-US.json';
+import defaultLocaleTranslation from '../../../translations/en-US.json';
 
 /**
  * FALLBACK_LOCALE - **MUST** match the locale string in the above import

@@ -1,8 +1,11 @@
 import { JSX } from 'preact';
-import { hasOwnProperty } from '../../utils';
+import { asPlainObject, EMPTY_OBJECT, hasOwnProperty } from '../../utils';
 import { defaultTranslation, FALLBACK_LOCALE, LOCALE_FORMAT_REGEX } from './constants/locale';
-import { CustomTranslations, SupportedLocale, Translation, TranslationOptions } from './types';
-import { en_US } from './translations';
+import { CustomTranslations, SupportedLocale, Translations, TranslationOptions } from './types';
+import { en_US } from '../../translations';
+
+const DEFAULT_TRANSLATION_OPTIONS: TranslationOptions = { values: EMPTY_OBJECT, count: 0 } as const;
+const FALLBACK_TRANSLATIONS_FILES = { 'en-US': en_US['en_US'] } as const;
 
 /**
  * Convert to ISO 639-1
@@ -75,9 +78,11 @@ export function parseLocale(locale: string, supportedLocales: Readonly<Supported
  * @param supportedLocales -
  */
 export function formatCustomTranslations(
-    customTranslations: CustomTranslations = {},
+    customTranslations: CustomTranslations = EMPTY_OBJECT,
     supportedLocales: Readonly<SupportedLocale[]> | string[]
-): Record<string, any> {
+): CustomTranslations {
+    if (customTranslations === EMPTY_OBJECT) return customTranslations;
+
     return (Object.keys(customTranslations) as Extract<keyof CustomTranslations, string>[]).reduce((translations, locale) => {
         const formattedLocale = formatLocale(locale) || parseLocale(locale, supportedLocales);
         if (formattedLocale && customTranslations[locale]) {
@@ -99,11 +104,7 @@ const replaceTranslationValues = (translation: string, values?: Record<string, a
  *
  * @internal
  */
-export const getTranslation = (
-    translations: Record<string, string>,
-    key: string,
-    options: TranslationOptions = { values: {}, count: 0 }
-): string | null => {
+export const getTranslation = (translations: Record<string, string>, key: string, options = DEFAULT_TRANSLATION_OPTIONS): string | null => {
     const count = options.count ?? 0;
     const countKey = `${key}__${count}`;
 
@@ -135,10 +136,10 @@ export const getTranslation = (
  */
 export const loadTranslations = async (
     locale: string,
-    translations?: { [k in SupportedLocale]?: Translation } | { [k: string]: Translation },
-    customTranslations: CustomTranslations = {}
+    translations?: { [locale: string]: Translations },
+    customTranslations: CustomTranslations = EMPTY_OBJECT
 ) => {
-    const translationFiles = translations ?? { 'en-US': en_US['en_US'] };
+    const translationFiles = translations ?? FALLBACK_TRANSLATIONS_FILES;
     // Match locale to one of our available locales (e.g. es-AR => es-ES)
     const localeToLoad = parseLocale(locale, Object.keys(translationFiles) as SupportedLocale[]) || FALLBACK_LOCALE;
     const loadedLocale = translationFiles[localeToLoad as keyof typeof translationFiles] || translationFiles[FALLBACK_LOCALE];
@@ -146,7 +147,7 @@ export const loadTranslations = async (
     return {
         ...defaultTranslation, // Default en-US translations (in case any other translation file is missing any key)
         ...loadedLocale, // Merge with our locale file of the locale they are loading
-        ...(!!customTranslations[locale] && customTranslations[locale]), // Merge with their custom locales if available
+        ...asPlainObject(customTranslations?.[locale]), // Merge with their custom locales if available
     };
 };
 
