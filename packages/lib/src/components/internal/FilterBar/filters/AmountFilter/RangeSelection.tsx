@@ -77,7 +77,7 @@ export const RangeSelection = ({
                     }}
                     min={minAmount}
                     isInvalid={!isUndefined(maxAmount) && !isUndefined(minAmount) && maxAmount < minAmount}
-                    errorMessage={i18n.get('secondValueShouldBeGreaterThanTheFirstOne')}
+                    errorMessage={i18n.get('toValueShouldBeGreaterThanTheFirstOne')}
                 />
             </div>
         </div>
