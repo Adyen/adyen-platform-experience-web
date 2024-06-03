@@ -5,7 +5,6 @@ export const normalizeLoadingContext = (loadingContext: string) => loadingContex
 export const normalizeUrl = (url: string) => url?.replace(/^([^\/])/, '/$1')!;
 
 export const resolveEnvironment = (() => {
-    // [TODO]: Use real urls once we have our BFF defined.
     const envs: Partial<Record<DevEnvironment, string>> = {
         test: 'https://platform-components-external-test.adyen.com/platform-components-external/api/',
         live: 'https://platform-components-external-live.adyen.com/platform-components-external/api/',
