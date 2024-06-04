@@ -1,7 +1,7 @@
-import { EVT_SESSION_ACTIVE, EVT_SESSION_INIT } from './constants';
+import { EVT_SESSION_EXPIRED_STATE_CHANGE, EVT_SESSION_REFRESHING_STATE_CHANGE } from './constants';
 import type { Promised } from '../../../utils/types';
 
-export type SessionEventType = typeof EVT_SESSION_ACTIVE | typeof EVT_SESSION_INIT;
+export type SessionEventType = typeof EVT_SESSION_EXPIRED_STATE_CHANGE | typeof EVT_SESSION_REFRESHING_STATE_CHANGE;
 
 export interface SessionSpecification<T, HttpParams extends any[] = any[]> {
     assert?: (maybeSession: any) => asserts maybeSession is T;

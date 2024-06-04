@@ -9,17 +9,17 @@ import {
     ERR_SESSION_EXPIRED,
     ERR_SESSION_FACTORY_UNAVAILABLE,
     ERR_SESSION_HTTP_UNAVAILABLE,
-    ERR_SESSION_INIT_ABORTED,
+    ERR_SESSION_REFRESH_ABORTED,
     ERR_SESSION_INVALID,
-    EVT_SESSION_ACTIVE,
-    EVT_SESSION_INIT,
+    EVT_SESSION_EXPIRED_STATE_CHANGE,
+    EVT_SESSION_REFRESHING_STATE_CHANGE,
 } from './constants';
 
 export class SessionContext<T, HttpParams extends any[] = any[]> {
     private _expired = false;
-    private _initEventPending = false;
-    private _initializing = false;
+    private _refreshing = false;
     private _refreshCount = 0;
+    private _refreshEventPending = false;
     private _refreshPending = false;
 
     private _session: T | undefined;
@@ -28,11 +28,11 @@ export class SessionContext<T, HttpParams extends any[] = any[]> {
     private _stopSessionClock: (() => void) | undefined;
 
     private readonly _eventEmitter = createEventEmitter<SessionEventType>();
-    private readonly _refreshAbortable = createAbortable(ERR_SESSION_INIT_ABORTED);
+    private readonly _refreshAbortable = createAbortable(ERR_SESSION_REFRESH_ABORTED);
 
     private readonly _sessionPromisor = createPromisor<T>(session => {
         this._expired = this._refreshPending = false;
-        this._eventEmitter.emit(EVT_SESSION_ACTIVE);
+        this._eventEmitter.emit(EVT_SESSION_EXPIRED_STATE_CHANGE);
         return session;
     });
 
@@ -47,18 +47,14 @@ export class SessionContext<T, HttpParams extends any[] = any[]> {
     }
 
     get isExpired() {
-        const isExpired = this._sessionIsExpired();
-        this._fulfillPendingSessionRefresh();
-        return isExpired;
+        return this._sessionIsExpired();
     }
 
     get refreshing() {
-        this._fulfillPendingSessionRefresh();
-        return this._initializing;
+        return this._refreshing;
     }
 
     get timestamp() {
-        this._fulfillPendingSessionRefresh();
         return this._sessionActivationTimestamp;
     }
 
@@ -100,7 +96,7 @@ export class SessionContext<T, HttpParams extends any[] = any[]> {
 
         this._stopSessionClock?.();
         this._expired = this._refreshPending = true;
-        this._eventEmitter.emit(EVT_SESSION_ACTIVE);
+        this._eventEmitter.emit(EVT_SESSION_EXPIRED_STATE_CHANGE);
 
         // attempt immediate refresh (if necessary)
         if (boolOrFalse(refreshImmediately)) {
@@ -121,14 +117,14 @@ export class SessionContext<T, HttpParams extends any[] = any[]> {
         // Capture the current abort signal for this session refresh request
         const signal = this._refreshAbortable.signal;
 
-        if (!this._initializing) {
-            this._initializing = true;
+        if (!this._refreshing) {
+            this._refreshing = true;
 
-            // Await an already resolved promise to defer the dispatch of a new `initStateChange` event
-            // Should be sufficient to ensure that any pending `initStateChange` event gets dispatched first
-            if (this._initEventPending) await ALREADY_RESOLVED_PROMISE;
+            // Await an already resolved promise to defer the dispatch of a new `refreshChange` event
+            // Should be sufficient to ensure that any pending `refreshChange` event gets dispatched first
+            if (this._refreshEventPending) await ALREADY_RESOLVED_PROMISE;
 
-            this._eventEmitter.emit(EVT_SESSION_INIT);
+            this._eventEmitter.emit(EVT_SESSION_REFRESHING_STATE_CHANGE);
         }
 
         try {
@@ -150,19 +146,19 @@ export class SessionContext<T, HttpParams extends any[] = any[]> {
             /* Finally block to ensure that control flow always reaches here. */
 
             // An important case is when an error (that is not an abort error) occurred during
-            // the latest session refresh request, hence the session initialization completion
-            // steps need to be run (should run only once).
-            if (!signal.aborted && this._initializing) {
-                this._initEventPending = true;
-                this._initializing = false;
+            // the latest session refresh request, hence the session refresh completion steps
+            // need to be run (should run only once).
+            if (!signal.aborted && this._refreshing) {
+                this._refreshEventPending = true;
+                this._refreshing = false;
                 this._refreshCount = 0;
 
-                // Await an already resolved promise to defer the dispatch of a new `initStateChange` event
-                // Should be sufficient to ensure that the `activeStateChange` event gets dispatched first
+                // Await an already resolved promise to defer the dispatch of a new `refreshChange` event
+                // Should be sufficient to ensure that the `expireChange` event gets dispatched first
                 await ALREADY_RESOLVED_PROMISE;
 
-                this._initEventPending = false;
-                this._eventEmitter.emit(EVT_SESSION_INIT);
+                this._refreshEventPending = false;
+                this._eventEmitter.emit(EVT_SESSION_REFRESHING_STATE_CHANGE);
             }
         }
     }
@@ -198,7 +194,7 @@ export class SessionContext<T, HttpParams extends any[] = any[]> {
 
             let unsubscribeClock = clock.subscribe(snapshotOrSignal => {
                 if (isWatchlistUnsubscribeToken(snapshotOrSignal)) return this._stopSessionClock?.();
-                this._verifyPassedSessionDeadline(snapshotOrSignal.now);
+                if (this._verifyPassedSessionDeadline(snapshotOrSignal.now)) this._fulfillPendingSessionRefresh();
             });
 
             this._stopSessionClock = () => {

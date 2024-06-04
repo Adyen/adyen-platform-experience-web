@@ -42,8 +42,8 @@ export const PayoutsTable: FC<PayoutsTableProps> = ({
     ...paginationProps
 }) => {
     const { i18n } = useCoreContext();
-    const { initializing } = useAuthContext();
-    const isLoading = useMemo(() => loading || initializing, [loading, initializing]);
+    const { refreshing } = useAuthContext();
+    const isLoading = useMemo(() => loading || refreshing, [loading, refreshing]);
 
     const columns = useMemo(
         () =>

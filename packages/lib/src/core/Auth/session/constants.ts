@@ -1,6 +1,6 @@
-export const ERR_SETUP_ABORTED: unique symbol = Symbol('Error<AUTH_SETUP_ABORTED>');
-export const ERR_SETUP_FAILED: unique symbol = Symbol('Error<AUTH_SETUP_FAILED>');
-export const EVT_SETUP_INIT = 'auth:setupInit';
+export const ERR_AUTH_REFRESH_ABORTED: unique symbol = Symbol('Error<AUTH_REFRESH_ABORTED>');
+export const ERR_AUTH_REFRESH_FAILED: unique symbol = Symbol('Error<AUTH_REFRESH_FAILED>');
+export const EVT_AUTH_STATE_CHANGE = '_authStateChange';
 export const SETUP_ENDPOINT_PATH = '/setup';
 
 export const MAX_AGE_MS = (() => {

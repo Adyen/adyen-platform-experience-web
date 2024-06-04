@@ -38,9 +38,9 @@ export const TransactionsTable: FC<TransactionTableProps> = ({
     ...paginationProps
 }) => {
     const { i18n } = useCoreContext();
-    const { initializing } = useAuthContext();
+    const { refreshing } = useAuthContext();
     const [hoveredRow, setHoveredRow] = useState<undefined | number>();
-    const isLoading = useMemo(() => loading || initializing, [loading, initializing]);
+    const isLoading = useMemo(() => loading || refreshing, [loading, refreshing]);
     const isSmViewport = useResponsiveViewport(mediaQueries.down.sm);
 
     const columns = useMemo(

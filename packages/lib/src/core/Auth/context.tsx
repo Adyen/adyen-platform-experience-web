@@ -9,9 +9,9 @@ const AuthContext = createContext<AuthSession['context']>({
     endpoints: EMPTY_OBJECT,
     hasError: false,
     http: asyncNoop,
-    initializing: false,
     isExpired: undefined,
     refresh: noop,
+    refreshing: false,
 });
 
 export const AuthProvider = ({ children, session }: AuthProviderProps) => {

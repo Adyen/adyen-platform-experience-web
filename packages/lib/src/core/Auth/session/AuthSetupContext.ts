@@ -1,89 +1,42 @@
 import Core from '../../core';
+import { SETUP_ENDPOINT_PATH } from './constants';
 import { parseSearchParams } from '../../Http/utils';
-import { createAbortable } from '../../../primitives/async/abortable';
-import { createPromisor } from '../../../primitives/async/promisor';
-import { createErrorContainer } from '../../../primitives/common/errorContainer';
-import { createEventEmitter } from '../../../primitives/reactive/eventEmitter';
-import { EVT_SESSION_INIT, SessionContext } from '../../../primitives/context/session';
+import { SessionContext } from '../../../primitives/context/session';
 import { asPlainObject, EMPTY_OBJECT, isPlainObject, isUndefined, noop, struct, withFreezeProxyHandlers } from '../../../utils';
-import { ERR_SETUP_ABORTED, ERR_SETUP_FAILED, EVT_SETUP_INIT, SETUP_ENDPOINT_PATH } from './constants';
-import type { HttpMethod } from '../../Http/types';
-import type { EndpointName, SetupEndpoint } from '../../../types/api/endpoints';
 import type { EndpointHttpCallables, EndpointSuccessResponse, SessionObject, SetupContext, SetupResponse } from '../types';
+import type { EndpointName, SetupEndpoint } from '../../../types/api/endpoints';
+import type { HttpMethod } from '../../Http/types';
+import type { Promised } from '../../../utils/types';
 
 export class AuthSetupContext {
     private _endpoints: SetupContext['endpoints'] = EMPTY_OBJECT;
-    private _lastSessionTimestamp: number | undefined;
-    private _refreshInProgress = false;
-    private _refreshResuming = false;
     private _revokeEndpointsProxy = noop;
 
-    private readonly _errorContainer = createErrorContainer();
-    private readonly _eventEmitter = createEventEmitter<typeof EVT_SETUP_INIT>();
-    private readonly _refreshAbortable = createAbortable(ERR_SETUP_ABORTED);
-    private readonly _sessionInitPromisor = createPromisor<void>();
-
     declare loadingContext?: Core<any>['loadingContext'];
-    declare on: (typeof this._eventEmitter)['on'];
-    declare refresh: () => void;
 
     constructor(private readonly _session: SessionContext<SessionObject, any[]>) {
-        this.on = this._eventEmitter.on;
-        this.refresh = this._refresh.bind(this);
-
-        this._session.on(EVT_SESSION_INIT, () => {
-            this._session.refreshing ? this._waitForSessionRefresh() : this._onSessionRefresh();
-        });
+        this._fetchSetupEndpoint = this._fetchSetupEndpoint.bind(this);
+        this.refresh = this.refresh.bind(this);
     }
 
     get endpoints() {
         return this._endpoints;
     }
 
-    get hasError() {
-        return this._errorContainer.hasError;
+    async refresh(refreshAbortablePromise: <T>(getPromise: Promised<T> | ((signal: AbortSignal) => Promised<T>)) => Promise<T>) {
+        this._resetEndpoints();
+        const { endpoints } = await refreshAbortablePromise(this._fetchSetupEndpoint);
+        ({ proxy: this._endpoints, revoke: this._revokeEndpointsProxy } = this._getEndpointsProxy(endpoints));
     }
 
-    get refreshing() {
-        return this._refreshInProgress;
-    }
-
-    private async _doRefresh() {
-        if (this._refreshResuming) {
-            this._refreshResuming = false;
-        } else {
-            this._errorContainer.reset();
-            this._resetEndpoints();
-            this._eventEmitter.emit(EVT_SETUP_INIT);
-        }
-
-        await this._sessionInitPromisor.promise;
-
-        // Capture the current abort signal for this refresh
-        const signal = this._refreshAbortable.signal;
-
-        const setupEndpointCall = this._session.http({
+    private _fetchSetupEndpoint(signal: AbortSignal) {
+        return this._session.http({
             method: 'POST',
             path: SETUP_ENDPOINT_PATH,
             errorLevel: 'fatal',
             loadingContext: this.loadingContext,
             signal,
         }) as Promise<SetupResponse>;
-
-        this._refreshInProgress = true;
-
-        try {
-            const { endpoints } = await Promise.race([setupEndpointCall, this._refreshAbortable.promise]);
-            if (signal.aborted) throw void 0;
-            ({ proxy: this._endpoints, revoke: this._revokeEndpointsProxy } = this._getEndpointsProxy(endpoints));
-        } catch (ex) {
-            if (signal.aborted) throw ERR_SETUP_ABORTED;
-            this._errorContainer.set(ex);
-            throw ERR_SETUP_FAILED;
-        } finally {
-            this._refreshInProgress = false;
-            this._eventEmitter.emit(EVT_SETUP_INIT);
-        }
     }
 
     private _getEndpointsProxy(endpoints: SetupEndpoint) {
@@ -129,37 +82,10 @@ export class AuthSetupContext {
         return { loadingContext, ...request, method, params, path } as const;
     }
 
-    private _onSessionRefresh() {
-        if (this._lastSessionTimestamp === this._session.timestamp) return;
-
-        this._sessionInitPromisor.resolve();
-
-        if (this._refreshInProgress) {
-            this._refreshInProgress = false;
-            this._refreshResuming = true;
-            this._refresh();
-        }
-    }
-
-    private _refresh() {
-        if (this._refreshInProgress) return;
-        this._doRefresh().catch(noop);
-    }
-
     private _resetEndpoints() {
         this._revokeEndpointsProxy();
         this._revokeEndpointsProxy = noop;
         this._endpoints = EMPTY_OBJECT;
-    }
-
-    private _waitForSessionRefresh() {
-        this._sessionInitPromisor.refresh();
-        this._lastSessionTimestamp = this._session.timestamp;
-
-        if (this._refreshInProgress) {
-            this._refreshAbortable.abort();
-            this._refreshAbortable.refresh();
-        }
     }
 }
 
