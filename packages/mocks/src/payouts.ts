@@ -5,15 +5,19 @@ export const PAYOUTS_WITH_DETAILS: IPayoutDetails[] = [
         payout: {
             id: '1234567890123456',
             balanceAccountId: 'BA32272223222B5CTDNB66W2Z',
-            grossAmount: {
+            fundsCapturedAmount: {
                 value: 100000,
                 currency: 'EUR',
             },
-            chargesAmount: {
+            adjustmentAmount: {
                 value: -10000,
                 currency: 'EUR',
             },
-            netAmount: {
+            payoutAmount: {
+                value: 90000,
+                currency: 'EUR',
+            },
+            unpaidAmount: {
                 value: 90000,
                 currency: 'EUR',
             },
@@ -54,16 +58,20 @@ export const PAYOUTS_WITH_DETAILS: IPayoutDetails[] = [
         payout: {
             id: '1234567890123451',
             balanceAccountId: 'BA32272223222B5CTDNB66W2Z',
-            grossAmount: {
+            fundsCapturedAmount: {
                 value: 500,
                 currency: 'EUR',
             },
-            chargesAmount: {
+            adjustmentAmount: {
                 value: -8500,
                 currency: 'EUR',
             },
-            netAmount: {
+            payoutAmount: {
                 value: 91500,
+                currency: 'EUR',
+            },
+            unpaidAmount: {
+                value: 90000,
                 currency: 'EUR',
             },
             createdAt: new Date().toDateString(),
@@ -117,15 +125,19 @@ export const PAYOUTS_WITH_DETAILS: IPayoutDetails[] = [
         payout: {
             id: '1234567890123452',
             balanceAccountId: 'BA32272223222B5CTDNB66W2Z',
-            grossAmount: {
+            fundsCapturedAmount: {
                 value: 100000,
                 currency: 'EUR',
             },
-            chargesAmount: {
+            adjustmentAmount: {
                 value: -10000,
                 currency: 'EUR',
             },
-            netAmount: {
+            payoutAmount: {
+                value: 90000,
+                currency: 'EUR',
+            },
+            unpaidAmount: {
                 value: 90000,
                 currency: 'EUR',
             },
@@ -166,15 +178,19 @@ export const PAYOUTS_WITH_DETAILS: IPayoutDetails[] = [
         payout: {
             id: '1234567890123453',
             balanceAccountId: 'BA32272223222B5CTDNB66W2Z',
-            grossAmount: {
+            fundsCapturedAmount: {
                 value: 100000,
                 currency: 'EUR',
             },
-            chargesAmount: {
+            adjustmentAmount: {
                 value: -10000,
                 currency: 'EUR',
             },
-            netAmount: {
+            payoutAmount: {
+                value: 90000,
+                currency: 'EUR',
+            },
+            unpaidAmount: {
                 value: 90000,
                 currency: 'EUR',
             },
@@ -215,15 +231,19 @@ export const PAYOUTS_WITH_DETAILS: IPayoutDetails[] = [
         payout: {
             id: '1234567890123454',
             balanceAccountId: 'BA32272223222B5CTDNB66W2Z',
-            grossAmount: {
+            fundsCapturedAmount: {
                 value: 100000,
                 currency: 'EUR',
             },
-            chargesAmount: {
+            adjustmentAmount: {
                 value: -10000,
                 currency: 'EUR',
             },
-            netAmount: {
+            payoutAmount: {
+                value: 90000,
+                currency: 'EUR',
+            },
+            unpaidAmount: {
                 value: 90000,
                 currency: 'EUR',
             },
@@ -264,15 +284,19 @@ export const PAYOUTS_WITH_DETAILS: IPayoutDetails[] = [
         payout: {
             id: '1WEPGD5VS767881Q',
             balanceAccountId: 'BA32272223222B5CTDNB66W2Z',
-            grossAmount: {
+            fundsCapturedAmount: {
                 value: 100000,
                 currency: 'EUR',
             },
-            chargesAmount: {
+            adjustmentAmount: {
                 value: -10000,
                 currency: 'EUR',
             },
-            netAmount: {
+            payoutAmount: {
+                value: 90000,
+                currency: 'EUR',
+            },
+            unpaidAmount: {
                 value: 90000,
                 currency: 'EUR',
             },
@@ -313,16 +337,20 @@ export const PAYOUTS_WITH_DETAILS: IPayoutDetails[] = [
         payout: {
             id: '1WEPGD5VS767881E',
             balanceAccountId: 'BA32272223222B5CTDNB66W2Z',
-            grossAmount: {
+            fundsCapturedAmount: {
                 value: 90000,
                 currency: 'EUR',
             },
-            chargesAmount: {
+            adjustmentAmount: {
                 value: -5000,
                 currency: 'EUR',
             },
-            netAmount: {
+            payoutAmount: {
                 value: 85000,
+                currency: 'EUR',
+            },
+            unpaidAmount: {
+                value: 90000,
                 currency: 'EUR',
             },
             createdAt: '2024-04-13T10:00:00.000Z',
@@ -355,16 +383,20 @@ export const PAYOUTS_WITH_DETAILS: IPayoutDetails[] = [
         payout: {
             id: '1WEPGD5VS767882E',
             balanceAccountId: 'BA32272223222B5CTDNB66W2Z',
-            grossAmount: {
+            fundsCapturedAmount: {
                 value: 50000,
                 currency: 'EUR',
             },
-            chargesAmount: {
+            adjustmentAmount: {
                 value: -5000,
                 currency: 'EUR',
             },
-            netAmount: {
+            payoutAmount: {
                 value: 45000,
+                currency: 'EUR',
+            },
+            unpaidAmount: {
+                value: 90000,
                 currency: 'EUR',
             },
             createdAt: '2024-04-18T10:00:00.000Z',
@@ -404,16 +436,20 @@ export const PAYOUTS_WITH_DETAILS: IPayoutDetails[] = [
         payout: {
             id: '1WEPGD5VS767883E',
             balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
-            grossAmount: {
+            fundsCapturedAmount: {
                 value: 20000,
                 currency: 'EUR',
             },
-            chargesAmount: {
+            adjustmentAmount: {
                 value: -1000,
                 currency: 'EUR',
             },
-            netAmount: {
+            payoutAmount: {
                 value: 19000,
+                currency: 'EUR',
+            },
+            unpaidAmount: {
+                value: 90000,
                 currency: 'EUR',
             },
             createdAt: '2024-04-20T10:00:00.000Z',
@@ -432,16 +468,20 @@ export const PAYOUTS_WITH_DETAILS: IPayoutDetails[] = [
         payout: {
             id: '1WEPGD5VS767885E',
             balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
-            grossAmount: {
+            fundsCapturedAmount: {
                 value: 1000000,
                 currency: 'EUR',
             },
-            chargesAmount: {
+            adjustmentAmount: {
                 value: -200000,
                 currency: 'EUR',
             },
-            netAmount: {
+            payoutAmount: {
                 value: 800000,
+                currency: 'EUR',
+            },
+            unpaidAmount: {
+                value: 90000,
                 currency: 'EUR',
             },
             createdAt: '2024-04-21T10:00:00.000Z',
@@ -467,16 +507,20 @@ export const PAYOUTS_WITH_DETAILS: IPayoutDetails[] = [
         payout: {
             id: '1WEPGD5VS767886E',
             balanceAccountId: 'BA32272223222B5CTDQPM6W2K',
-            grossAmount: {
+            fundsCapturedAmount: {
                 value: 30000,
                 currency: 'EUR',
             },
-            chargesAmount: {
+            adjustmentAmount: {
                 value: -5000,
                 currency: 'EUR',
             },
-            netAmount: {
+            payoutAmount: {
                 value: 25000,
+                currency: 'EUR',
+            },
+            unpaidAmount: {
+                value: 90000,
                 currency: 'EUR',
             },
             createdAt: '2024-04-29T10:00:00.000Z',

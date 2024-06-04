@@ -25,7 +25,7 @@ export type webhooks = Record<string, never>;
 
 export interface components {
   schemas: {
-    /** @description Net amount */
+    /** @description Unpaid amount */
     Amount: {
       /** @description The three-character [ISO currency code](https://docs.adyen.com/development-resources/currency-codes). */
       currency: string;
@@ -41,18 +41,19 @@ export interface components {
     };
     /** @description Payouts made within the filters provided for given balanceAccountId */
     PayoutDTO: {
+      adjustmentAmount: components["schemas"]["Amount"];
       /** @description BalanceAccount ID */
       balanceAccountId: string;
-      chargesAmount: components["schemas"]["Amount"];
       /**
        * Format: date-time
        * @description Date created
        */
       createdAt: string;
-      grossAmount: components["schemas"]["Amount"];
+      fundsCapturedAmount: components["schemas"]["Amount"];
       /** @description ID */
       id: string;
-      netAmount: components["schemas"]["Amount"];
+      payoutAmount: components["schemas"]["Amount"];
+      unpaidAmount: components["schemas"]["Amount"];
     };
     PayoutResponseDTO: {
       amountBreakdown?: components["schemas"]["AmountGroupedDTO"][];

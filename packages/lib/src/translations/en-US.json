@@ -35,7 +35,7 @@
     "filterPlaceholder.currency": "Currency",
     "filterPlaceholder.status": "Status",
     "from": "From",
-    "grossPayout": "Gross payout",
+    "fundsCaptured": "Funds captured",
     "hideContent": "Hide content",
     "id": "ID",
     "incompleteField": "Incomplete field",

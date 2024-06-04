@@ -10,9 +10,9 @@ const labels = {
     category: 'category',
     paymentMethod: 'paymentMethod',
     currency: 'currency',
-    grossAmount: 'grossPayout',
-    netAmount: 'netPayout',
-    chargesAmount: 'adjustments',
+    fundsCapturedAmount: 'fundsCaptured',
+    payoutAmount: 'netPayout',
+    adjustmentAmount: 'adjustments',
 } as const;
 
 export const getLabel = (key: keyof typeof labels) => {

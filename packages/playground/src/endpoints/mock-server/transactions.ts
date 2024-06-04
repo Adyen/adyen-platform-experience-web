@@ -11,6 +11,7 @@ const defaultPaginationLimit = 20;
 
 export const transactionsMocks = [
     rest.get(mockEndpoints.transactions, (req, res, ctx) => {
+        console.log(networkError);
         if (networkError) {
             return res.networkError('Failed to connect');
         }

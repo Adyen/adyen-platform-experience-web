@@ -3,6 +3,7 @@ import { useMemo } from 'preact/hooks';
 import useCoreContext from '../../../../core/Context/useCoreContext';
 import { TranslationKey } from '../../../../core/Localization/types';
 import { IPayoutDetails } from '../../../../types';
+import { components } from '../../../../types/api/resources/PayoutsResource';
 import { EMPTY_OBJECT } from '../../../../utils';
 import Card from '../../../internal/Card/Card';
 import { DATE_FORMAT } from '../../../internal/DataOverviewDisplay/constants';
@@ -23,8 +24,10 @@ import {
     PD_TITLE_CLASS,
 } from './constants';
 
+type Payout = components['schemas']['PayoutDTO'];
+
 export const PayoutData = ({ payout: payoutData, isFetching }: { payout?: IPayoutDetails; isFetching?: boolean }) => {
-    const { payout } = payoutData ?? EMPTY_OBJECT;
+    const { payout }: { payout: Payout } = payoutData ?? EMPTY_OBJECT;
     const { i18n } = useCoreContext();
     const adjustments = useMemo(() => {
         return payoutData?.amountBreakdown?.reduce(
@@ -59,7 +62,7 @@ export const PayoutData = ({ payout: payoutData, isFetching }: { payout?: IPayou
                             {i18n.get('netPayout')}
                         </Typography>
                         <Typography variant={TypographyVariant.TITLE} large>
-                            {i18n.amount(payout.netAmount.value, payout.netAmount.currency)}
+                            {i18n.amount(payout.payoutAmount.value, payout.payoutAmount.currency)}
                         </Typography>
                         <Typography variant={TypographyVariant.BODY}>{creationDate}</Typography>
                         <Typography variant={TypographyVariant.BODY} stronger>
@@ -69,9 +72,9 @@ export const PayoutData = ({ payout: payoutData, isFetching }: { payout?: IPayou
                     <div className={PD_CONTENT_CLASS}>
                         <div className={PD_SECTION_CLASS}>
                             <div className={classnames(PD_SECTION_AMOUNT_CLASS, PD_SECTION_GROSS_AMOUNT_CLASS)}>
-                                <Typography variant={TypographyVariant.BODY}>{i18n.get('grossPayout')}</Typography>
+                                <Typography variant={TypographyVariant.BODY}>{i18n.get('fundsCaptured')}</Typography>
                                 <Typography variant={TypographyVariant.BODY}>
-                                    {i18n.amount(payout.grossAmount.value, payout.grossAmount.currency)}
+                                    {i18n.amount(payout.fundsCapturedAmount.value, payout.fundsCapturedAmount.currency)}
                                 </Typography>
                             </div>
                             {adjustments?.subtractions && Boolean(Object.keys(adjustments?.subtractions).length) && (
@@ -105,7 +108,7 @@ export const PayoutData = ({ payout: payoutData, isFetching }: { payout?: IPayou
                                     {i18n.get('netPayout')}
                                 </Typography>
                                 <Typography variant={TypographyVariant.BODY} stronger>
-                                    {i18n.amount(payout.netAmount.value, payout.netAmount.currency)}
+                                    {i18n.amount(payout.payoutAmount.value, payout.payoutAmount.currency)}
                                 </Typography>
                             </div>
                         </div>
