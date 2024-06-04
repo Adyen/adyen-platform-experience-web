@@ -4,17 +4,17 @@ import { AnalyticsOptions } from './Analytics/types';
 import { LangFile } from './Localization/types';
 import { KeyOfRecord, WithReplacedUnderscoreOrDash } from '../utils/types';
 
-type CreateUnionOfAvailableTranslations<T extends LangFile[] | undefined> = T extends NonNullable<T>
-    ? Extract<WithReplacedUnderscoreOrDash<KeyOfRecord<T[number]>, '_', '-'>, string>
+type CreateUnionOfAvailableTranslations<T extends LangFile[]> = T extends T
+    ? Extract<WithReplacedUnderscoreOrDash<KeyOfRecord<T[number]>, '_', '-'>, string> | 'en-US'
     : never;
 
-export interface CoreOptions<T extends CoreOptions<T> = any> {
+export interface CoreOptions<AvailableTranslations extends LangFile[]> {
     /**
      * @internal
      */
     analytics?: AnalyticsOptions;
 
-    availableTranslations?: LangFile[];
+    availableTranslations?: AvailableTranslations;
     balanceAccountId?: string;
 
     /**
@@ -28,9 +28,7 @@ export interface CoreOptions<T extends CoreOptions<T> = any> {
      * For adding a custom locale, see {@link https://docs.adyen.com/checkout/components-web/localization-components#create-localization | Create localization}.
      * @defaultValue 'en-US'
      */
-    locale?: T['availableTranslations'] extends NonNullable<T['availableTranslations']>
-        ? CreateUnionOfAvailableTranslations<T['availableTranslations']> | 'en-US'
-        : 'en-US' | undefined;
+    locale?: AvailableTranslations extends AvailableTranslations ? CreateUnionOfAvailableTranslations<AvailableTranslations> : never;
 
     onError?: (err: any) => any;
     onSessionCreate: () => Promise<SessionResponse>;

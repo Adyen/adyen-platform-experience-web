@@ -18,7 +18,7 @@ export const enum InteractionKeyCode {
 }
 
 export interface BaseElementProps {
-    core: Core;
+    core: Core<any>;
 }
 
 export interface IUIElement {
@@ -88,7 +88,7 @@ export interface DataOverviewComponentProps {
     allowLimitSelection?: boolean;
     showDetails?: boolean;
     hideTitle?: boolean;
-    core: Core;
+    core: Core<any>;
     balanceAccountId?: string;
 }
 
