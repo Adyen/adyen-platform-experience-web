@@ -20,6 +20,7 @@ export class SessionContext<T, HttpParams extends any[] = any[]> {
     private _refreshing = false;
     private _refreshCount = 0;
     private _refreshEventPending = false;
+    private _refreshingPromise: Promise<void> | undefined;
     private _refreshPending = false;
 
     private _session: T | undefined;
@@ -58,6 +59,14 @@ export class SessionContext<T, HttpParams extends any[] = any[]> {
         return this._sessionActivationTimestamp;
     }
 
+    private _assertRefreshNotInterruptedByAbort(signal: AbortSignal, err: any = Symbol()) {
+        // Passing a unique symbol as default value for omitted `err` argument ensures that this check
+        // will always return the `aborted` status of the signal
+        if (this._refreshInterruptedByAbort(signal, err)) {
+            throw this._refreshAbortable.reason!;
+        }
+    }
+
     private _assertSession(value: any): asserts value is T {
         try {
             this._specification.assert?.(value);
@@ -86,8 +95,8 @@ export class SessionContext<T, HttpParams extends any[] = any[]> {
         this._assertSessionFactory(this._specification.next);
         const nextSession = await this._specification.next(this._session, signal);
 
+        this._assertRefreshNotInterruptedByAbort(signal);
         this._assertSession(nextSession);
-        await this._setupSessionClock(nextSession);
         return nextSession;
     }
 
@@ -117,39 +126,35 @@ export class SessionContext<T, HttpParams extends any[] = any[]> {
         // Capture the current abort signal for this session refresh request
         const signal = this._refreshAbortable.signal;
 
-        if (!this._refreshing) {
-            this._refreshing = true;
+        await (this._refreshingPromise ??= (async () => {
+            if (!this._refreshing) {
+                this._refreshing = true;
 
-            // Await an already resolved promise to defer the dispatch of a new `refreshChange` event
-            // Should be sufficient to ensure that any pending `refreshChange` event gets dispatched first
-            if (this._refreshEventPending) await ALREADY_RESOLVED_PROMISE;
+                // Await an already resolved promise to defer the dispatch of a new `refreshChange` event
+                // Should be sufficient to ensure that any pending `refreshChange` event gets dispatched first
+                if (this._refreshEventPending) await ALREADY_RESOLVED_PROMISE;
 
-            this._eventEmitter.emit(EVT_SESSION_REFRESHING_STATE_CHANGE);
-        }
+                this._eventEmitter.emit(EVT_SESSION_REFRESHING_STATE_CHANGE);
+            }
+        })());
 
         try {
-            let sessionOrErr: T | typeof this._refreshAbortable.reason | undefined;
+            const nextSession = await Promise.race([this._getNextSession(signal), this._refreshAbortable.promise]).catch(reason => {
+                this._assertRefreshNotInterruptedByAbort(signal, reason);
+                throw reason;
+            });
 
-            await Promise.race([this._getNextSession(signal), this._refreshAbortable.promise])
-                .then(nextSession => (sessionOrErr = nextSession))
-                .catch(reason => {
-                    if (this._refreshInterruptedByAbort(signal, reason)) {
-                        sessionOrErr = this._refreshAbortable.reason!;
-                    } else throw reason;
-                });
-
-            if (!this._refreshInterruptedByAbort(signal, sessionOrErr)) {
-                this._session = sessionOrErr;
-                this._sessionPromisor.resolve(this._session);
-            }
+            this._assertRefreshNotInterruptedByAbort(signal);
+            await this._setupSessionClock(nextSession);
+            this._sessionPromisor.resolve((this._session = nextSession));
         } finally {
             /* Finally block to ensure that control flow always reaches here. */
 
-            // An important case is when an error (that is not an abort error) occurred during
-            // the latest session refresh request, hence the session refresh completion steps
-            // need to be run (should run only once).
+            // The session refresh completion steps should run only once
+            // Only for the last session refresh request
             if (!signal.aborted && this._refreshing) {
                 this._refreshEventPending = true;
+                this._refreshingPromise = undefined;
                 this._refreshing = false;
                 this._refreshCount = 0;
 
@@ -170,7 +175,7 @@ export class SessionContext<T, HttpParams extends any[] = any[]> {
             try {
                 const session = await this._sessionPromisor.promise;
                 this._assertSessionHttp(this._specification.http);
-                return await this._specification.http(session, ...args);
+                return await this._specification.http(session, this._refreshAbortable.signal, ...args);
             } catch (ex) {
                 if (ex !== ERR_SESSION_EXPIRED) throw ex;
                 this._onSessionExpired(true);

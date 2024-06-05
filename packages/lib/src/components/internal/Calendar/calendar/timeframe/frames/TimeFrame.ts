@@ -23,7 +23,7 @@ import {
     SHIFT_PERIOD,
 } from '../../constants';
 import createFlagsRecord from '../common/flags';
-import { createIndexed } from '../../../../../../primitives/common/indexed';
+import { createIndexed } from '../../../../../../primitives/auxiliary/indexed';
 import type { WatchListCallable } from '../../../../../../primitives/reactive/watchlist';
 import {
     clamp,

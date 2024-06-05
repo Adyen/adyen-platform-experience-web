@@ -27,7 +27,7 @@ import {
     SHIFT_FRAME,
     SHIFT_PERIOD,
 } from '../constants';
-import { createIndexed } from '../../../../../primitives/common/indexed';
+import { createIndexed } from '../../../../../primitives/auxiliary/indexed';
 import { createEffectStack, EffectStack } from '../../../../../primitives/reactive/effectStack';
 import {
     createWatchlist,

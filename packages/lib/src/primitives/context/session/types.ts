@@ -6,6 +6,6 @@ export type SessionEventType = typeof EVT_SESSION_EXPIRED_STATE_CHANGE | typeof 
 export interface SessionSpecification<T, HttpParams extends any[] = any[]> {
     assert?: (maybeSession: any) => asserts maybeSession is T;
     deadline?: (session: T) => Promised<Date | number | string | undefined>;
-    http?: (currentSession: T | undefined, ...args: HttpParams) => Promised<any>;
+    http?: (currentSession: T | undefined, signal: AbortSignal, ...args: HttpParams) => Promised<any>;
     next: (currentSession: T | undefined, signal: AbortSignal) => Promised<T>;
 }
