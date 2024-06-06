@@ -1,37 +1,39 @@
+@import '../../../../style';
+
 .adyen-pe-payout-data {
-    padding-bottom: 32px;
+    padding-bottom: token(spacer-100);
 
     &__title {
         display: grid;
-        gap: 4px;
-        padding: 0 24px 24px;
+        gap: token(spacer-020);
+        padding: 0 token(spacer-090) token(spacer-090);
 
         .adyen-pe-typography {
             &:last-child {
-                padding-top: 8px;
+                padding-top: token(spacer-040);
             }
         }
     }
 
     &__content {
-        background-color: var(--adyen-sdk-color-background-secondary);
-        padding: 12px 16px;
+        background-color: token(color-background-secondary);
+        padding: token(spacer-060) token(spacer-070);
 
         &--card-title {
-            color: var(--adyen-sdk-color-label-secondary);
+            color: token(color-label-secondary);
         }
 
         &--section {
-            background-color: var(--adyen-sdk-color-background-secondary);
+            background-color: token(color-background-secondary);
 
             &-amount {
                 display: flex;
                 justify-content: space-between;
-                padding: 8px 0;
+                padding: token(spacer-040) 0;
             }
 
             div:not(:last-child) {
-                margin-bottom: 12px;
+                margin-bottom: token(spacer-060);
             }
         }
     }
@@ -43,7 +45,7 @@
         }
 
         &__item {
-            padding: 8px 16px;
+            padding: token(spacer-040) token(spacer-070);
         }
     }
 }

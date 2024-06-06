@@ -98,6 +98,7 @@
     },
     "dependencies": {
         "@adyen/adyen-platform-experience-web-mocks": "^1.0.0",
+        "@adyen/bento-design-tokens": "^1.7.1",
         "classnames": "^2.5.1",
         "core-js": "^3.36.0"
     },
