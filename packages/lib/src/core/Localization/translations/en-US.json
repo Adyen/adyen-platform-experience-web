@@ -92,7 +92,7 @@
     "tooltip.totalOutgoing": "All fees, refunds, payouts, and other charges based on the selected filters",
     "totalIncoming": "Total incoming",
     "totalOutgoing": "Total outgoing",
-    "toValueShouldBeGreaterThanTheFirstOne": "To value should be equal or greater than the From value",
+    "toValueShouldBeGreaterThanTheFromValue": "To value should be equal or greater than the From value",
     "transactionDetails": "Transaction details",
     "transactions": "Transactions",
     "transactionsOverviewTitle": "Transactions overview",

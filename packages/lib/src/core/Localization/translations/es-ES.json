@@ -92,7 +92,7 @@
     "tooltip.totalOutgoing": "Todas las tarifas, reembolsos, pagos y otros cargos basados en los filtros seleccionados",
     "totalIncoming": "Total recibido",
     "totalOutgoing": "Total enviado",
-    "toValueShouldBeGreaterThanTheFirstOne": "El valor de hasta debe ser igual o mayor que el valor de desde",
+    "toValueShouldBeGreaterThanTheFromValue": "El valor de hasta debe ser igual o mayor que el valor de desde",
     "transactionDetails": "Detalles de la transacción",
     "transactions": "Transacciones",
     "transactionsOverviewTitle": "Resumen de transacciones",
