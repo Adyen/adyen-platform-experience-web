@@ -40,7 +40,7 @@ export class AuthSessionSpecification implements _AuthSessionSpecification {
 
         if (!isUndefined(MAX_AGE_MS)) {
             const issuedAtDate = new Date(issuedAt);
-            return issuedAtDate.setMilliseconds(issuedAtDate.getMilliseconds() + MAX_AGE_MS);
+            return Math.min(expiresAt! ?? Infinity, issuedAtDate.setMilliseconds(issuedAtDate.getMilliseconds() + MAX_AGE_MS));
         }
 
         return expiresAt!;
