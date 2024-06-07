@@ -1,6 +1,6 @@
 import { Core } from '@adyen/adyen-platform-experience-web';
 
-export const createLanguageButtons = ({ locales, core }: { locales: string[]; core: Core }) => {
+export const createLanguageButtons = ({ locales, core }: { locales: string[]; core: Core<any, any> }) => {
     const pageContainer = document.querySelector('.playground-header');
 
     const container = `<div class="locale-selection-container"></div>`;

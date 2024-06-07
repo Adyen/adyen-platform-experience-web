@@ -7,7 +7,9 @@ export * from './core';
 export * from './components';
 export * from './types';
 
-export async function AdyenPlatformExperience<AvailableTranslations extends LangFile[] = []>(props: CoreOptions<AvailableTranslations>) {
+export async function AdyenPlatformExperience<AvailableTranslations extends LangFile[] = [], CustomTranslations extends {} = {}>(
+    props: CoreOptions<AvailableTranslations, CustomTranslations>
+) {
     const core = new Core(props);
     return await core.initialize();
 }
