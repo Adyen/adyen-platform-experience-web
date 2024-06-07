@@ -27,6 +27,4 @@ export type Translations = {
     [key in TranslationKey]?: string;
 };
 
-export type CustomTranslations = {
-    [locale: string]: Translations;
-};
+export type CustomTranslations = Record<string, Translations>;
