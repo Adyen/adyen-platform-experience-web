@@ -57,4 +57,13 @@
             padding: style.token(spacer-040) style.token(spacer-070);
         }
     }
+
+    &--unpaid-amount {
+        border-radius: var(--adyen-sdk-border-radius-xl);
+        display: flex;
+        justify-content: space-between;
+        margin: 20px 20px 24px;
+        outline: var(--adyen-sdk-color-outline-tertiary) 1px dashed;
+        padding: 8px 16px;
+    }
 }

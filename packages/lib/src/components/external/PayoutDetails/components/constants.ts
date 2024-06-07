@@ -7,3 +7,4 @@ export const PD_CARD_TITLE_CLASS = `${PD_CARD_CLASS}-title`;
 export const PD_SECTION_AMOUNT_CLASS = `${PD_SECTION_CLASS}-amount`;
 export const PD_SECTION_GROSS_AMOUNT_CLASS = `${PD_SECTION_AMOUNT_CLASS}-gross`;
 export const PD_SECTION_NET_AMOUNT_CLASS = `${PD_SECTION_AMOUNT_CLASS}-net`;
+export const PD_UNPAID_AMOUNT = `${PD_BASE_CLASS}--unpaid-amount`;

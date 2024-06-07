@@ -23,6 +23,7 @@ import {
     PD_SECTION_GROSS_AMOUNT_CLASS,
     PD_SECTION_NET_AMOUNT_CLASS,
     PD_TITLE_CLASS,
+    PD_UNPAID_AMOUNT,
 } from './constants';
 
 type Payout = components['schemas']['PayoutDTO'];
@@ -142,6 +143,14 @@ export const PayoutData = ({ payout: payoutData, isFetching }: { payout?: IPayou
                             </div>
                         </div>
                     </div>
+                    {payoutData?.payout?.unpaidAmount && (
+                        <div className={PD_UNPAID_AMOUNT}>
+                            <Typography variant={TypographyVariant.BODY}>{i18n.get('remainingAmount')}</Typography>
+                            <Typography variant={TypographyVariant.BODY}>
+                                {i18n.amount(payoutData.payout.unpaidAmount.value, payoutData.payout.unpaidAmount.currency)}
+                            </Typography>
+                        </div>
+                    )}
                 </div>
             )}
         </>
