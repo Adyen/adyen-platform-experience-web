@@ -23,43 +23,33 @@ export const PAYOUTS_WITH_DETAILS: IPayoutDetails[] = [
             },
             createdAt: new Date().toDateString(),
         },
-        amountBreakdown: [
-            {
-                amount: {
-                    value: -1000,
-                    currency: 'EUR',
+        amountBreakdowns: {
+            fundsCapturedBreakdown: [
+                {
+                    amount: {
+                        value: -1000,
+                        currency: 'EUR',
+                    },
+                    category: 'Fee',
                 },
-                category: 'Fee',
-            },
-            {
-                amount: {
-                    value: -8000,
-                    currency: 'EUR',
+            ],
+            adjustmentBreakdown: [
+                {
+                    amount: {
+                        value: -1000,
+                        currency: 'EUR',
+                    },
+                    category: 'Fee',
                 },
-                category: 'Refund',
-            },
-            {
-                amount: {
-                    value: -500,
-                    currency: 'EUR',
-                },
-                category: 'Chargeback',
-            },
-            {
-                amount: {
-                    value: -500,
-                    currency: 'EUR',
-                },
-                category: 'ReserveRelease',
-            },
-        ],
+            ],
+        },
     },
     {
         payout: {
             id: '1234567890123451',
             balanceAccountId: 'BA32272223222B5CTDNB66W2Z',
             fundsCapturedAmount: {
-                value: 500,
+                value: 300,
                 currency: 'EUR',
             },
             adjustmentAmount: {
@@ -76,50 +66,40 @@ export const PAYOUTS_WITH_DETAILS: IPayoutDetails[] = [
             },
             createdAt: new Date().toDateString(),
         },
-        amountBreakdown: [
-            {
-                amount: {
-                    value: 1000,
-                    currency: 'EUR',
+        amountBreakdowns: {
+            fundsCapturedBreakdown: [
+                {
+                    amount: {
+                        value: -1000,
+                        currency: 'EUR',
+                    },
+                    category: 'Fee',
                 },
-                category: 'Fee',
-            },
-            {
-                amount: {
-                    value: 1000,
-                    currency: 'EUR',
+                {
+                    amount: {
+                        value: 1000,
+                        currency: 'EUR',
+                    },
+                    category: 'Correction',
                 },
-                category: 'GrantIssued',
-            },
-            {
-                amount: {
-                    value: 500,
-                    currency: 'EUR',
+            ],
+            adjustmentBreakdown: [
+                {
+                    amount: {
+                        value: -1000,
+                        currency: 'EUR',
+                    },
+                    category: 'Fee',
                 },
-                category: 'InternalTransfers',
-            },
-            {
-                amount: {
-                    value: -8000,
-                    currency: 'EUR',
+                {
+                    amount: {
+                        value: 1000,
+                        currency: 'EUR',
+                    },
+                    category: 'Correction',
                 },
-                category: 'Refund',
-            },
-            {
-                amount: {
-                    value: -500,
-                    currency: 'EUR',
-                },
-                category: 'Chargeback',
-            },
-            {
-                amount: {
-                    value: -500,
-                    currency: 'EUR',
-                },
-                category: 'ReserveRelease',
-            },
-        ],
+            ],
+        },
     },
     {
         payout: {
@@ -143,36 +123,26 @@ export const PAYOUTS_WITH_DETAILS: IPayoutDetails[] = [
             },
             createdAt: new Date().toDateString(),
         },
-        amountBreakdown: [
-            {
-                amount: {
-                    value: -1000,
-                    currency: 'EUR',
+        amountBreakdowns: {
+            fundsCapturedBreakdown: [
+                {
+                    amount: {
+                        value: -1000,
+                        currency: 'EUR',
+                    },
+                    category: 'Fee',
                 },
-                category: 'Fee',
-            },
-            {
-                amount: {
-                    value: -8000,
-                    currency: 'EUR',
+            ],
+            adjustmentBreakdown: [
+                {
+                    amount: {
+                        value: -1000,
+                        currency: 'EUR',
+                    },
+                    category: 'Fee',
                 },
-                category: 'Refund',
-            },
-            {
-                amount: {
-                    value: -500,
-                    currency: 'EUR',
-                },
-                category: 'Chargeback',
-            },
-            {
-                amount: {
-                    value: -500,
-                    currency: 'EUR',
-                },
-                category: 'ReserveRelease',
-            },
-        ],
+            ],
+        },
     },
     {
         payout: {
@@ -196,36 +166,26 @@ export const PAYOUTS_WITH_DETAILS: IPayoutDetails[] = [
             },
             createdAt: new Date().toDateString(),
         },
-        amountBreakdown: [
-            {
-                amount: {
-                    value: -1000,
-                    currency: 'EUR',
+        amountBreakdowns: {
+            fundsCapturedBreakdown: [
+                {
+                    amount: {
+                        value: -1000,
+                        currency: 'EUR',
+                    },
+                    category: 'Fee',
                 },
-                category: 'Fee',
-            },
-            {
-                amount: {
-                    value: -8000,
-                    currency: 'EUR',
+            ],
+            adjustmentBreakdown: [
+                {
+                    amount: {
+                        value: -1000,
+                        currency: 'EUR',
+                    },
+                    category: 'Fee',
                 },
-                category: 'Refund',
-            },
-            {
-                amount: {
-                    value: -500,
-                    currency: 'EUR',
-                },
-                category: 'Chargeback',
-            },
-            {
-                amount: {
-                    value: -500,
-                    currency: 'EUR',
-                },
-                category: 'ReserveRelease',
-            },
-        ],
+            ],
+        },
     },
     {
         payout: {
@@ -249,36 +209,26 @@ export const PAYOUTS_WITH_DETAILS: IPayoutDetails[] = [
             },
             createdAt: new Date().toDateString(),
         },
-        amountBreakdown: [
-            {
-                amount: {
-                    value: -1000,
-                    currency: 'EUR',
+        amountBreakdowns: {
+            fundsCapturedBreakdown: [
+                {
+                    amount: {
+                        value: -1000,
+                        currency: 'EUR',
+                    },
+                    category: 'Fee',
                 },
-                category: 'Fee',
-            },
-            {
-                amount: {
-                    value: -8000,
-                    currency: 'EUR',
+            ],
+            adjustmentBreakdown: [
+                {
+                    amount: {
+                        value: -1000,
+                        currency: 'EUR',
+                    },
+                    category: 'Fee',
                 },
-                category: 'Refund',
-            },
-            {
-                amount: {
-                    value: -500,
-                    currency: 'EUR',
-                },
-                category: 'Chargeback',
-            },
-            {
-                amount: {
-                    value: -500,
-                    currency: 'EUR',
-                },
-                category: 'ReserveRelease',
-            },
-        ],
+            ],
+        },
     },
     {
         payout: {
@@ -302,36 +252,26 @@ export const PAYOUTS_WITH_DETAILS: IPayoutDetails[] = [
             },
             createdAt: '2024-04-12T10:00:00.000Z',
         },
-        amountBreakdown: [
-            {
-                amount: {
-                    value: -1000,
-                    currency: 'EUR',
+        amountBreakdowns: {
+            fundsCapturedBreakdown: [
+                {
+                    amount: {
+                        value: -1000,
+                        currency: 'EUR',
+                    },
+                    category: 'Fee',
                 },
-                category: 'Fee',
-            },
-            {
-                amount: {
-                    value: -8000,
-                    currency: 'EUR',
+            ],
+            adjustmentBreakdown: [
+                {
+                    amount: {
+                        value: -1000,
+                        currency: 'EUR',
+                    },
+                    category: 'Fee',
                 },
-                category: 'Refund',
-            },
-            {
-                amount: {
-                    value: -500,
-                    currency: 'EUR',
-                },
-                category: 'Chargeback',
-            },
-            {
-                amount: {
-                    value: -500,
-                    currency: 'EUR',
-                },
-                category: 'ReserveRelease',
-            },
-        ],
+            ],
+        },
     },
     {
         payout: {
@@ -355,29 +295,26 @@ export const PAYOUTS_WITH_DETAILS: IPayoutDetails[] = [
             },
             createdAt: '2024-04-13T10:00:00.000Z',
         },
-        amountBreakdown: [
-            {
-                amount: {
-                    value: -1000,
-                    currency: 'EUR',
+        amountBreakdowns: {
+            fundsCapturedBreakdown: [
+                {
+                    amount: {
+                        value: -1000,
+                        currency: 'EUR',
+                    },
+                    category: 'Fee',
                 },
-                category: 'fee',
-            },
-            {
-                amount: {
-                    value: -1500,
-                    currency: 'EUR',
+            ],
+            adjustmentBreakdown: [
+                {
+                    amount: {
+                        value: -1000,
+                        currency: 'EUR',
+                    },
+                    category: 'Fee',
                 },
-                category: 'Chargeback',
-            },
-            {
-                amount: {
-                    value: -2500,
-                    currency: 'EUR',
-                },
-                category: 'ReserveRelease',
-            },
-        ],
+            ],
+        },
     },
     {
         payout: {
@@ -401,36 +338,26 @@ export const PAYOUTS_WITH_DETAILS: IPayoutDetails[] = [
             },
             createdAt: '2024-04-18T10:00:00.000Z',
         },
-        amountBreakdown: [
-            {
-                amount: {
-                    value: -1000,
-                    currency: 'EUR',
+        amountBreakdowns: {
+            fundsCapturedBreakdown: [
+                {
+                    amount: {
+                        value: -1000,
+                        currency: 'EUR',
+                    },
+                    category: 'Fee',
                 },
-                category: 'Fee',
-            },
-            {
-                amount: {
-                    value: -2000,
-                    currency: 'EUR',
+            ],
+            adjustmentBreakdown: [
+                {
+                    amount: {
+                        value: -1000,
+                        currency: 'EUR',
+                    },
+                    category: 'Fee',
                 },
-                category: 'Refund',
-            },
-            {
-                amount: {
-                    value: -1000,
-                    currency: 'EUR',
-                },
-                category: 'Chargeback',
-            },
-            {
-                amount: {
-                    value: -1000,
-                    currency: 'EUR',
-                },
-                category: 'ReserveRelease',
-            },
-        ],
+            ],
+        },
     },
     {
         payout: {
@@ -454,15 +381,26 @@ export const PAYOUTS_WITH_DETAILS: IPayoutDetails[] = [
             },
             createdAt: '2024-04-20T10:00:00.000Z',
         },
-        amountBreakdown: [
-            {
-                amount: {
-                    value: -1000,
-                    currency: 'EUR',
+        amountBreakdowns: {
+            fundsCapturedBreakdown: [
+                {
+                    amount: {
+                        value: -1000,
+                        currency: 'EUR',
+                    },
+                    category: 'Fee',
                 },
-                category: 'Fee',
-            },
-        ],
+            ],
+            adjustmentBreakdown: [
+                {
+                    amount: {
+                        value: -1000,
+                        currency: 'EUR',
+                    },
+                    category: 'Fee',
+                },
+            ],
+        },
     },
     {
         payout: {
@@ -486,22 +424,26 @@ export const PAYOUTS_WITH_DETAILS: IPayoutDetails[] = [
             },
             createdAt: '2024-04-21T10:00:00.000Z',
         },
-        amountBreakdown: [
-            {
-                amount: {
-                    value: -100000,
-                    currency: 'EUR',
+        amountBreakdowns: {
+            fundsCapturedBreakdown: [
+                {
+                    amount: {
+                        value: -1000,
+                        currency: 'EUR',
+                    },
+                    category: 'Fee',
                 },
-                category: 'Fee',
-            },
-            {
-                amount: {
-                    value: -100000,
-                    currency: 'EUR',
+            ],
+            adjustmentBreakdown: [
+                {
+                    amount: {
+                        value: -1000,
+                        currency: 'EUR',
+                    },
+                    category: 'Fee',
                 },
-                category: 'Refund',
-            },
-        ],
+            ],
+        },
     },
     {
         payout: {
@@ -525,29 +467,26 @@ export const PAYOUTS_WITH_DETAILS: IPayoutDetails[] = [
             },
             createdAt: '2024-04-29T10:00:00.000Z',
         },
-        amountBreakdown: [
-            {
-                amount: {
-                    value: -1000,
-                    currency: 'EUR',
+        amountBreakdowns: {
+            fundsCapturedBreakdown: [
+                {
+                    amount: {
+                        value: -1000,
+                        currency: 'EUR',
+                    },
+                    category: 'Fee',
                 },
-                category: 'Fee',
-            },
-            {
-                amount: {
-                    value: -7000,
-                    currency: 'EUR',
+            ],
+            adjustmentBreakdown: [
+                {
+                    amount: {
+                        value: -1000,
+                        currency: 'EUR',
+                    },
+                    category: 'Fee',
                 },
-                category: 'Chargeback',
-            },
-            {
-                amount: {
-                    value: 3000,
-                    currency: 'EUR',
-                },
-                category: 'Other',
-            },
-        ],
+            ],
+        },
     },
 ];
 

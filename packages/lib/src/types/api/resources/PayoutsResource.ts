@@ -36,8 +36,14 @@ export interface components {
       value: number;
     };
     AmountGroupedDTO: {
-      amount: components["schemas"]["Amount"];
-      category: string;
+      fundsCapturedBreakdown: {
+        amount: components['schemas']['Amount'];
+        category: string;
+      }[]
+      adjustmentBreakdown: {
+        amount: components['schemas']['Amount'];
+        category: string;
+      }[]
     };
     /** @description Payouts made within the filters provided for given balanceAccountId */
     PayoutDTO: {
@@ -56,7 +62,7 @@ export interface components {
       unpaidAmount: components["schemas"]["Amount"];
     };
     PayoutResponseDTO: {
-      amountBreakdown?: components["schemas"]["AmountGroupedDTO"][];
+      amountBreakdowns?: components['schemas']['AmountGroupedDTO'];
       payout?: components["schemas"]["PayoutDTO"];
     };
     /** @description Link to a different page */

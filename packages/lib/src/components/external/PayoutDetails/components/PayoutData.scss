@@ -27,6 +27,10 @@
         &--section {
             background-color: style.token(color-background-secondary);
 
+            &:not(:last-child) {
+                margin-bottom: 12px;
+            }
+
             &-amount {
                 display: flex;
                 justify-content: space-between;
@@ -36,6 +40,10 @@
             div:not(:last-child) {
                 margin-bottom: style.token(spacer-060);
             }
+        }
+
+        &--card:not(:first-child) {
+            margin-top: 12px;
         }
     }
 

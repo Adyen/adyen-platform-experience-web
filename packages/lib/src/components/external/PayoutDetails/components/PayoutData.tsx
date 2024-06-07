@@ -8,6 +8,7 @@ import { EMPTY_OBJECT } from '../../../../utils';
 import Card from '../../../internal/Card/Card';
 import { DATE_FORMAT } from '../../../internal/DataOverviewDisplay/constants';
 import StructuredList from '../../../internal/StructuredList';
+import { ListValue } from '../../../internal/StructuredList/types';
 import { TypographyVariant } from '../../../internal/Typography/types';
 import Typography from '../../../internal/Typography/Typography';
 import TransactionDataSkeleton from '../../TransactionDetails/components/TransactionDataSkeleton';
@@ -30,7 +31,7 @@ export const PayoutData = ({ payout: payoutData, isFetching }: { payout?: IPayou
     const { payout }: { payout: Payout } = payoutData ?? EMPTY_OBJECT;
     const { i18n } = useCoreContext();
     const adjustments = useMemo(() => {
-        return payoutData?.amountBreakdown?.reduce(
+        return payoutData?.amountBreakdowns?.adjustmentBreakdown?.reduce(
             (accumulator, currentValue) => {
                 const payoutValue = currentValue?.amount?.value;
                 const category = currentValue?.category === 'unknown' ? 'Other' : currentValue?.category;
@@ -48,6 +49,13 @@ export const PayoutData = ({ payout: payoutData, isFetching }: { payout?: IPayou
             { subtractions: {} as Record<string, number>, additions: {} as Record<string, number> }
         );
     }, [i18n, payoutData]);
+
+    const fundsCaptured = useMemo(() => {
+        return payoutData?.amountBreakdowns?.fundsCapturedBreakdown?.reduce((items, breakdown) => {
+            items[breakdown.category as TranslationKey] = breakdown.amount.value;
+            return items;
+        }, {} as { [key in TranslationKey]?: ListValue | undefined });
+    }, [payoutData]);
 
     const creationDate = useMemo(() => (payout?.createdAt ? i18n.date(new Date(payout?.createdAt), DATE_FORMAT).toString() : ''), [payout, i18n]);
 
@@ -77,6 +85,25 @@ export const PayoutData = ({ payout: payoutData, isFetching }: { payout?: IPayou
                                     {i18n.amount(payout.fundsCapturedAmount.value, payout.fundsCapturedAmount.currency)}
                                 </Typography>
                             </div>
+                            <div className={PD_SECTION_CLASS}>
+                                {fundsCaptured && Boolean(Object.keys(fundsCaptured).length) && (
+                                    <div className={PD_CARD_CLASS}>
+                                        <Card>
+                                            <StructuredList items={fundsCaptured} />
+                                        </Card>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                        <div className={PD_SECTION_CLASS}>
+                            <div className={classnames(PD_SECTION_AMOUNT_CLASS, PD_SECTION_GROSS_AMOUNT_CLASS)}>
+                                <Typography variant={TypographyVariant.BODY}>{i18n.get('adjustments')}</Typography>
+                                <Typography variant={TypographyVariant.BODY}>
+                                    {i18n.amount(payout.fundsCapturedAmount.value, payout.fundsCapturedAmount.currency)}
+                                </Typography>
+                            </div>
+                        </div>
+                        <div className={PD_SECTION_CLASS}>
                             {adjustments?.subtractions && Boolean(Object.keys(adjustments?.subtractions).length) && (
                                 <div className={PD_CARD_CLASS}>
                                     <Card
@@ -103,6 +130,8 @@ export const PayoutData = ({ payout: payoutData, isFetching }: { payout?: IPayou
                                     </Card>
                                 </div>
                             )}
+                        </div>
+                        <div className={classnames(PD_SECTION_CLASS)}>
                             <div className={classnames(PD_SECTION_AMOUNT_CLASS, PD_SECTION_NET_AMOUNT_CLASS)}>
                                 <Typography variant={TypographyVariant.BODY} stronger>
                                     {i18n.get('netPayout')}
