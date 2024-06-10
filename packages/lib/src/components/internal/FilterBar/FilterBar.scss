@@ -22,7 +22,7 @@
         &--has-selection {
             &,
             &:hover {
-                border: 1px solid token(color-outline-primary-active);
+                border: token(border-width-s) solid token(color-outline-primary-active);
                 box-shadow: inset 0 0 0 1px #c9cdd3;
             }
         }
@@ -30,9 +30,9 @@
         &--active,
         &:active,
         &:focus {
-            border: 1px solid token(color-outline-primary-active);
+            border: token(border-width-s) solid token(color-outline-primary-active);
             box-shadow: none !important;
-            outline: 1px solid token(color-outline-primary-active);
+            outline: token(border-width-s) solid token(color-outline-primary-active);
         }
     }
 

@@ -115,9 +115,9 @@
     &--icon {
         //Icons will always take equal width and height
         //Modify width and height automatically adjust to the same size
-        height: auto !important;
+        height: auto;
         position: relative;
-        width: 40px;
+        width: token(spacer-110);
 
         &-content svg {
             display: block;

@@ -8,11 +8,11 @@
     padding: 0 token(spacer-090) token(spacer-090);
 
     &__section {
-        margin-bottom: 6px;
+        margin-bottom: token(spacer-030);
     }
 
     &__section:not(:last-child) {
-        margin-bottom: 6px;
+        margin-bottom: token(spacer-030);
     }
 
     &__amount {
@@ -37,7 +37,7 @@
     &__payment-method {
         align-items: center;
         display: flex;
-        gap: 6px;
+        gap: token(spacer-030);
 
         &-detail {
             font-weight: token(text-caption-stronger-font-weight);
@@ -45,17 +45,17 @@
     }
 
     &__payment-method-logo-container {
-        height: 22px;
+        height: token(spacer-090);
         width: fit-content;
 
         #{$adyen-pe-transaction-data}__payment-method-logo-bank {
-            width: 32px;
+            width: token(spacer-100);
         }
     }
 
     &__tag-container {
         display: flex;
-        gap: 4px;
+        gap: token(spacer-020);
     }
 
     &__action-buttons {

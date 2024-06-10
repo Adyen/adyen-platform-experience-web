@@ -1,10 +1,12 @@
+@import '../../../style';
+
 .adyen-pe-card {
-    border-radius: var(--adyen-sdk-border-radius-m);
-    outline: var(--adyen-sdk-color-outline-primary) 1px solid;
+    border-radius: token(border-radius-m);
+    outline: token(color-outline-primary) token(border-width-s) solid;
     overflow: hidden;
 
     &--filled {
-        background-color: var(--adyen-sdk-color-outline-secondary);
+        background-color: token(color-outline-secondary);
     }
 
     &--no-outline {
@@ -16,36 +18,30 @@
     }
 
     &--with-footer {
-        padding-bottom: 16px;
+        padding-bottom: token(spacer-070);
     }
 
     &__body {
-        background-color: #eeeff1;
-        color: var(--adyen-sdk-color-label-primary);
-        font-weight: var(--adyen-sdk-font-weight-600);
-        line-height: var(--adyen-sdk-line-height-100);
+        background-color: token(color-background-tertiary);
+        color: token(color-label-primary);
+        font-weight: token(text-body-strongest-font-weight);
+        line-height: token(text-caption-line-height);
     }
 
     &__footer {
         display: flex;
         justify-content: flex-end;
-        padding-top: 16px;
+        padding-top: token(spacer-070);
     }
 
     &__header {
         display: block;
-        padding: 8px 16px 4px;
+        padding: token(spacer-040) token(spacer-070) token(spacer-040) token(spacer-070);
         width: 100%;
     }
 
     &__header-content {
         flex: 1;
-    }
-
-    &__title {
-        font-size: var(--adyen-sdk-font-size-medium);
-        font-weight: var(--adyen-sdk-font-size-300);
-        line-height: var(--adyen-sdk-line-height-300);
     }
 
     &__title-container {
@@ -55,12 +51,12 @@
 
     &__subtitle {
         align-items: center;
-        color: var(--adyen-sdk-color-gray-darker);
+        color: token(color-label-secondary);
         display: flex;
         flex: none;
         flex-grow: 0;
-        font-size: var(--adyen-sdk-font-size-small);
-        font-weight: var(--adyen-sdk-font-weight-regular);
-        line-height: var(--adyen-sdk-spacing-large);
+        font-size: token(text-body-font-size);
+        font-weight: token(text-body-font-weight);
+        line-height: token(text-body-line-height);
     }
 }

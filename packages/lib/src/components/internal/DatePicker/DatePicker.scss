@@ -70,7 +70,7 @@
 
         &::before {
             background: token(color-background-secondary);
-            border-top: 1px solid token(color-outline-primary);
+            border-top: token(border-width-s) solid token(color-outline-primary);
             content: '';
             inset: 0;
             position: absolute;

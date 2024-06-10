@@ -32,12 +32,12 @@
     }
 
     &__head {
-        border-left: 1px solid transparent;
-        border-right: 1px solid transparent;
+        border-left: token(border-width-s) solid transparent;
+        border-right: token(border-width-s) solid transparent;
         box-sizing: border-box;
         height: 100%;
         overflow: visible;
-        padding: 16px;
+        padding: token(spacer-060);
         position: relative;
     }
 
@@ -47,7 +47,7 @@
         vertical-align: top;
 
         #{$adyen-pe-data-grid__cell} {
-            border-bottom: 1px solid token(color-outline-primary);
+            border-bottom: token(border-width-s) solid token(color-outline-primary);
         }
         #{$adyen-pe-data-grid}__body {
             border-bottom: 0;
@@ -102,7 +102,7 @@
                 position: absolute;
                 right: 0;
                 top: 25%;
-                width: 1px;
+                width: token(spacer-010);
             }
         }
     }
@@ -124,7 +124,7 @@
     }
 
     &--outline {
-        border: 1px solid token(color-outline-secondary);
+        border: token(border-width-s) solid token(color-outline-secondary);
         border-radius: token(border-radius-m);
 
         #{$adyen-pe-data-grid}__table-wrapper {
@@ -133,7 +133,7 @@
 
         #{$adyen-pe-data-grid}__body #{$adyen-pe-data-grid}__row {
             &:last-child #{$adyen-pe-data-grid__cell} {
-                border-bottom: 1px solid token(color-outline-secondary);
+                border-bottom: token(border-width-s) solid token(color-outline-secondary);
             }
         }
 
@@ -144,7 +144,7 @@
 
     &__empty-cell {
         display: inline-block;
-        height: 10px;
+        height: token(spacer-050);
     }
 
     &__skeleton-cell {
@@ -162,8 +162,8 @@
 
     &__empty-message {
         background: token(color-background-primary);
-        border: 1px solid token(color-outline-primary);
-        border-radius: 12px;
+        border: token(border-width-s) solid token(color-outline-primary);
+        border-radius: token(spacer-060);
         box-shadow: 0 6px 12px 0 rgba(0, 17, 44, 0.08);
         display: flex;
         flex-direction: column;
@@ -172,7 +172,7 @@
         padding: token(spacer-120);
         position: absolute;
         text-align: center;
-        top: 20px;
+        top: token(spacer-080);
         transform: translateX(-50%);
     }
 }

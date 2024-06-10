@@ -2,7 +2,7 @@
 
 .adyen-pe-tag {
     align-items: center;
-    border-radius: 4px;
+    border-radius: token(border-radius-s);
     cursor: default;
     display: inline-flex;
     flex-direction: row;
@@ -36,6 +36,6 @@
     &--primary {
         background: token(color-background-primary);
         color: token(color-label-primary);
-        outline: 1px solid token(color-outline-primary);
+        outline: token(border-width-s) solid token(color-outline-primary);
     }
 }

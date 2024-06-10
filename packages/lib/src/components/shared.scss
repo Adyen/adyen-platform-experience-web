@@ -11,6 +11,6 @@
         font-size: token(text-title-l-font-size);
         font-weight: token(text-title-l-font-size);
         line-height: token(text-body-wide-line-height);
-        margin: 16px 0;
+        margin: token(spacer-070) 0;
     }
 }

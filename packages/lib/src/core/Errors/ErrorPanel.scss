@@ -1,5 +1,7 @@
+@import '../../style';
+
 .adyen-pe-error-panel {
-    margin-bottom: 20px;
+    margin-bottom: token(spacer-80);
 
     .adyen-pe-error-panel__wrapper {
         font-size: 0.75em;
@@ -7,10 +9,10 @@
 }
 
 .adyen-pe-error-panel--sr-only {
-    height: 1px;
+    height: token(spacer-010);
     left: -10000px;
     overflow: hidden;
     position: absolute;
     top: auto;
-    width: 1px;
+    width: token(spacer-010);
 }

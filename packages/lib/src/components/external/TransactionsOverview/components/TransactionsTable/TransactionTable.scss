@@ -10,12 +10,12 @@
     &__payment-method {
         align-items: center;
         display: flex;
-        gap: 6px;
+        gap: token(spacer-030);
     }
 
     &__payment-method-logo-container {
-        height: 22px;
-        width: 32px;
+        height: token(spacer-090);
+        width: token(spacer-100);
     }
 
     &__payment-method-logo {

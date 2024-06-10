@@ -9,11 +9,11 @@
     width: 100%;
 
     @include adyen-pe-screen-sm-and-up {
-        gap: 50px;
+        gap: token(spacer-120);
     }
 
     &--body {
-        border-top: 1px solid token(color-outline-disabled);
+        border-top: token(border-width-s) solid token(color-outline-disabled);
         margin-top: token(spacer-040);
         padding-top: token(spacer-040);
     }
@@ -40,6 +40,6 @@
 
     &__placeholder {
         display: inline-block;
-        height: 12px;
+        height: token(spacer-060);
     }
 }

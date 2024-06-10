@@ -16,10 +16,10 @@
     background-position: center;
     background-repeat: no-repeat;
     content: '';
-    height: 6px;
+    height: token(spacer-030);
     position: absolute;
-    right: 16px;
-    width: 8px;
+    right: token(spacer-030);
+    width: token(spacer-040);
 
     [dir='rtl'] & {
         left: 16px;

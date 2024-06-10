@@ -4,7 +4,7 @@
     align-items: center;
     appearance: none;
     background-color: token(color-background-primary);
-    border: 1px solid token(color-outline-secondary);
+    border: token(border-width-s) solid token(color-outline-secondary);
     border-radius: token(border-radius-m);
     color: token(color-label-primary);
     cursor: pointer;
@@ -48,9 +48,9 @@
     &--active,
     &:active,
     &:focus {
-        border: 1px solid token(color-outline-primary-active);
+        border: token(border-width-s) solid token(color-outline-primary-active);
         box-shadow: none !important;
-        outline: 1px solid token(color-outline-primary-active);
+        outline: token(border-width-s) solid token(color-outline-primary-active);
     }
 
     &__footer {

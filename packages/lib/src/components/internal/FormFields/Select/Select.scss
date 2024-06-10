@@ -46,7 +46,7 @@
 
     &.adyen-pe-button--secondary {
         background: token(color-background-primary);
-        border: 1px solid token(color-outline-secondary);
+        border: token(border-width-s) solid token(color-outline-secondary);
         box-shadow: none;
         color: token(color-label-primary);
         justify-content: flex-start;
@@ -83,7 +83,7 @@
             color: token(color-label-secondary);
             display: flex;
             isolation: isolate;
-            padding: 0 2px;
+            padding: 0 token(spacer-010);
             position: relative;
         }
 

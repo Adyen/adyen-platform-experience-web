@@ -97,28 +97,31 @@ $adyen-pe-modal-sizes: (
         font-size: token(text-subtitle-font-size);
         font-weight: token(text-body-strongest-font-weight);
         justify-content: flex-end;
-        padding: 24px 24px 0;
+        padding: token(spacer-090) token(spacer-090) 0;
 
         &--with-title {
-            padding: 14px 14px 10px 16px;
+            padding: token(spacer-070) token(spacer-070) token(spacer-050) token(spacer-080);
         }
 
         &--with-border-bottom {
-            border-bottom: 1px solid token(color-outline-secondary);
+            border-bottom: token(border-width-s) solid token(color-outline-secondary);
         }
     }
 
     &__header-icon {
-        --offset-margin: calc(1rem - 40px);
+        $margin: token(spacer-110);
+        --offset-margin: calc(1rem - $margin);
         --offset-position: calc(var(--offset-margin) * -1 / 2);
 
         cursor: pointer;
+        height: token(spacer-070);
         margin-right: var(--offset-margin);
         margin-top: var(--offset-margin);
         position: relative;
         right: var(--offset-position);
         top: var(--offset-position);
         transition: background 0.1s linear;
+        width: var(--offset-position);
 
         &:focus,
         &:active {

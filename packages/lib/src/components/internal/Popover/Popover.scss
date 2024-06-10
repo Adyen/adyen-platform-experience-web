@@ -41,7 +41,7 @@
         &--with-divider {
             #{$adyen-pe-popover-component-root}__footer {
                 background-color: token(color-background-primary);
-                border-top: 1px solid token(color-outline-disabled);
+                border-top: token(border-width-s) solid token(color-outline-disabled);
                 padding-top: token(spacer-060);
             }
         }

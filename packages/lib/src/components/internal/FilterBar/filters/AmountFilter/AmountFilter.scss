@@ -9,7 +9,7 @@
     &__input {
         display: flex;
         flex-direction: column;
-        gap: 8px;
+        gap: token(spacer-040);
     }
 
     /* stylelint-disable-next-line selector-no-qualifying-type */

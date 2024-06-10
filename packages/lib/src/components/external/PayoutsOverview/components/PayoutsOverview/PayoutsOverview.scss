@@ -6,10 +6,10 @@
     display: flex;
     flex-direction: column;
     gap: token(spacer-070);
-    padding: 12px token(spacer-040);
+    padding: token(spacer-060) token(spacer-040);
 
     @include adyen-pe-screen-sm-and-up {
-        border: 1px solid token(color-outline-secondary);
+        border: token(border-width-s) solid token(color-outline-secondary);
         border-radius: token(spacer-040);
         padding-left: token(spacer-070);
         padding-right: token(spacer-070);
@@ -18,7 +18,7 @@
     &-display {
         &__spinner-container {
             display: block;
-            padding-bottom: 40px;
+            padding-bottom: token(spacer-110);
         }
     }
 }

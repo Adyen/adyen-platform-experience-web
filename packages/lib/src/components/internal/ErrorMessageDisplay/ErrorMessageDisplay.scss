@@ -2,22 +2,22 @@
 
 .adyen-pe-error-message-display {
     background: token(color-background-primary);
-    border: 1px solid token(color-outline-primary);
+    border: token(border-width-s) solid token(color-outline-primary);
     border-radius: token(border-radius-m);
     box-shadow: 0 6px 12px 0 rgba(0, 17, 44, 0.08);
     display: flex;
     flex-direction: column;
     gap: token(spacer-060);
-    left: 10px;
+    left: token(spacer-050);
     min-width: 400px;
     padding: token(spacer-120);
     position: absolute;
     text-align: center;
-    top: 10px;
+    top: token(spacer-050);
 
     &--centered {
         left: 50%;
-        top: 20px;
+        top: token(spacer-080);
         transform: translateX(-50%);
     }
 }
