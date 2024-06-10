@@ -1,6 +1,6 @@
-@import '../../../../../style';
+@use '../../../../../style';
 
-$adyen-pe-body-line-height: token(text-body-line-height);
+$adyen-pe-body-line-height: style.token(text-body-line-height);
 
 .adyen-pe-balance-account-selector {
     max-height: 24rem;
@@ -29,12 +29,12 @@ $adyen-pe-body-line-height: token(text-body-line-height);
     }
 
     &__account-id {
-        color: token(color-label-secondary);
+        color: style.token(color-label-secondary);
     }
 
     &__account-label {
         flex: auto;
-        font-weight: token(text-body-stronger-font-weight);
+        font-weight: style.token(text-body-stronger-font-weight);
         overflow-x: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;

@@ -1,4 +1,4 @@
-@import '../../../style';
+@use '../../../style';
 
 .adyen-pe-datepicker {
     --adyen-pe-datepicker-margin: 1.25rem;
@@ -58,9 +58,9 @@
     }
 
     &__timezone {
-        color: token(color-label-primary-hover);
-        font-size: token(text-caption-font-size);
-        font-weight: token(text-body-stronger-font-weight);
+        color: style.token(color-label-primary-hover);
+        font-size: style.token(text-caption-font-size);
+        font-weight: style.token(text-body-stronger-font-weight);
         height: var(--adyen-pe-datepicker-tap-target-size);
         inset: auto 0 0;
         line-height: calc(var(--adyen-pe-datepicker-tap-target-size) - 1px);
@@ -69,8 +69,8 @@
         position: absolute;
 
         &::before {
-            background: token(color-background-secondary);
-            border-top: token(border-width-s) solid token(color-outline-primary);
+            background: style.token(color-background-secondary);
+            border-top: style.token(border-width-s) solid style.token(color-outline-primary);
             content: '';
             inset: 0;
             position: absolute;

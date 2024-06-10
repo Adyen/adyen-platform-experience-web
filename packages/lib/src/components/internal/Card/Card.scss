@@ -1,12 +1,12 @@
-@import '../../../style';
+@use '../../../style';
 
 .adyen-pe-card {
-    border-radius: token(border-radius-m);
-    outline: token(color-outline-primary) token(border-width-s) solid;
+    border-radius: style.token(border-radius-m);
+    outline: style.token(color-outline-primary) style.token(border-width-s) solid;
     overflow: hidden;
 
     &--filled {
-        background-color: token(color-outline-secondary);
+        background-color: style.token(color-outline-secondary);
     }
 
     &--no-outline {
@@ -18,25 +18,25 @@
     }
 
     &--with-footer {
-        padding-bottom: token(spacer-070);
+        padding-bottom: style.token(spacer-070);
     }
 
     &__body {
-        background-color: token(color-background-tertiary);
-        color: token(color-label-primary);
-        font-weight: token(text-body-strongest-font-weight);
-        line-height: token(text-caption-line-height);
+        background-color: style.token(color-background-tertiary);
+        color: style.token(color-label-primary);
+        font-weight: style.token(text-body-strongest-font-weight);
+        line-height: style.token(text-caption-line-height);
     }
 
     &__footer {
         display: flex;
         justify-content: flex-end;
-        padding-top: token(spacer-070);
+        padding-top: style.token(spacer-070);
     }
 
     &__header {
         display: block;
-        padding: token(spacer-040) token(spacer-070) token(spacer-040) token(spacer-070);
+        padding: style.token(spacer-040) style.token(spacer-070) style.token(spacer-040) style.token(spacer-070);
         width: 100%;
     }
 
@@ -51,12 +51,12 @@
 
     &__subtitle {
         align-items: center;
-        color: token(color-label-secondary);
+        color: style.token(color-label-secondary);
         display: flex;
         flex: none;
         flex-grow: 0;
-        font-size: token(text-body-font-size);
-        font-weight: token(text-body-font-weight);
-        line-height: token(text-body-line-height);
+        font-size: style.token(text-body-font-size);
+        font-weight: style.token(text-body-font-weight);
+        line-height: style.token(text-body-line-height);
     }
 }

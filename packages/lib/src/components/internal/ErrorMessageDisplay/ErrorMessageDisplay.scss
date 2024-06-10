@@ -1,23 +1,23 @@
-@import '../../../style';
+@use '../../../style';
 
 .adyen-pe-error-message-display {
-    background: token(color-background-primary);
-    border: token(border-width-s) solid token(color-outline-primary);
-    border-radius: token(border-radius-m);
+    background: style.token(color-background-primary);
+    border: style.token(border-width-s) solid style.token(color-outline-primary);
+    border-radius: style.token(border-radius-m);
     box-shadow: 0 6px 12px 0 rgba(0, 17, 44, 0.08);
     display: flex;
     flex-direction: column;
-    gap: token(spacer-060);
-    left: token(spacer-050);
+    gap: style.token(spacer-060);
+    left: style.token(spacer-050);
     min-width: 400px;
-    padding: token(spacer-120);
+    padding: style.token(spacer-120);
     position: absolute;
     text-align: center;
-    top: token(spacer-050);
+    top: style.token(spacer-050);
 
     &--centered {
         left: 50%;
-        top: token(spacer-080);
+        top: style.token(spacer-080);
         transform: translateX(-50%);
     }
 }

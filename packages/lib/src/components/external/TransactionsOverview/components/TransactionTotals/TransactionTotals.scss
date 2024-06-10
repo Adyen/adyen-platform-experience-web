@@ -1,10 +1,11 @@
-@import '../../../../../style';
+@use '../../../../../style';
+
 @import '../../../../../style/breakpoints.scss';
 
 .adyen-pe-transaction-totals {
     display: flex;
     flex-wrap: wrap;
-    gap: token(spacer-060);
+    gap: style.token(spacer-060);
     justify-content: space-between;
 
     @include adyen-pe-screen-sm-and-up {

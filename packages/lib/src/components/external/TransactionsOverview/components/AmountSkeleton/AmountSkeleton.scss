@@ -1,12 +1,11 @@
 @use '../../../../../style/skeleton' as skeleton;
-// stylelint-disable-next-line no-invalid-position-at-import-rule
-@import '../../../../../style';
+@use '../../../../../style';
 
 .adyen-pe-amount-skeleton {
     @include skeleton.adyen-pe-skeleton();
 
     &--has-margin {
-        margin-top: token(spacer-040);
+        margin-top: style.token(spacer-040);
     }
 
     &--loading {

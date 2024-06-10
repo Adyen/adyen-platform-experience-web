@@ -1,19 +1,19 @@
-@import '../../../style';
+@use '../../../style';
 
 .adyen-pe-pagination {
     display: flex;
-    padding: token(spacer-070) token(spacer-040);
+    padding: style.token(spacer-070) style.token(spacer-040);
     text-align: right;
 
     &__context {
         align-items: center;
         display: flex;
-        gap: token(spacer-070);
+        gap: style.token(spacer-070);
     }
 
     &__controls {
         display: flex;
-        gap: token(spacer-070);
+        gap: style.token(spacer-070);
         margin-left: auto;
     }
 

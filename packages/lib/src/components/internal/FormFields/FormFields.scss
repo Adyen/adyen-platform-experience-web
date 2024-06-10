@@ -1,4 +1,4 @@
-@import '../../../style';
+@use '../../../style';
 
 .adyen-pe-field-wrapper {
     display: flex;
@@ -68,13 +68,13 @@
 }
 
 .adyen-pe-input {
-    background: token(color-background-primary);
-    border: 1px solid token(color-outline-secondary);
-    border-radius: token(border-radius-m);
-    color: token(color-label-primary);
+    background: style.token(color-background-primary);
+    border: 1px solid style.token(color-outline-secondary);
+    border-radius: style.token(border-radius-m);
+    color: style.token(color-label-primary);
     display: block;
     font-family: inherit;
-    font-size: token(text-body-font-size);
+    font-size: style.token(text-body-font-size);
     height: 40px;
     outline: none;
     padding: 5px 8px;
@@ -83,14 +83,14 @@
     width: 100%;
 
     &__invalid-value {
-        color: token(color-label-critical);
+        color: style.token(color-label-critical);
         max-width: 20rem;
         text-wrap: wrap;
     }
 }
 
 .adyen-pe-input:hover {
-    border-color: token(color-outline-primary-hover);
+    border-color: style.token(color-outline-primary-hover);
 }
 
 .adyen-pe-input:required {
@@ -99,12 +99,12 @@
 
 .adyen-pe-input[readonly],
 .adyen-pe-input--disabled {
-    background: token(color-background-tertiary-active);
-    border-color: token(color-outline-primary);
+    background: style.token(color-background-tertiary-active);
+    border-color: style.token(color-outline-primary);
 }
 
 .adyen-pe-input--disabled:hover {
-    border-color: token(color-outline-primary);
+    border-color: style.token(color-outline-primary);
 }
 
 .adyen-pe-input-wrapper {
@@ -136,27 +136,27 @@
 }
 
 .adyen-pe-input__inline-validation--valid {
-    color: token(color-label-on-background-success-weak);
+    color: style.token(color-label-on-background-success-weak);
 }
 
 .adyen-pe-input__inline-validation--invalid {
-    color: token(color-label-critical);
+    color: style.token(color-label-critical);
 }
 
 .adyen-pe-input--valid {
-    border-bottom-color: token(color-outline-success-hover);
+    border-bottom-color: style.token(color-outline-success-hover);
 }
 
 .adyen-pe-input--error,
 .adyen-pe-input--invalid,
 .adyen-pe-input--error:hover,
 .adyen-pe-input--invalid:hover {
-    border-color: token(color-outline-critical-hover);
+    border-color: style.token(color-outline-critical-hover);
 }
 
 .adyen-pe-input::placeholder {
-    color: token(color-label-secondary);
-    font-weight: token(text-body-font-weight);
+    color: style.token(color-label-secondary);
+    font-weight: style.token(text-body-font-weight);
 }
 
 .adyen-pe-input--date {
@@ -169,14 +169,14 @@
 .adyen-pe-input:active:hover,
 .adyen-pe-input:focus:hover,
 .adyen-pe-input--focus:hover {
-    background: token(color-background-primary);
-    outline: 1px solid token(color-outline-selected);
+    background: style.token(color-background-primary);
+    outline: 1px solid style.token(color-outline-selected);
 }
 
 .adyen-pe-input[readonly],
 .adyen-pe-input[readonly]:hover {
-    background-color: token(color-background-tertiary-active);
+    background-color: style.token(color-background-tertiary-active);
     border-color: transparent;
-    color: token(color-label-primary-hover);
+    color: style.token(color-label-primary-hover);
     cursor: default;
 }

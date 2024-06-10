@@ -1,4 +1,4 @@
-@import '../../../style';
+@use '../../../style';
 
 .adyen-pe-copy-text {
     $adyen-pe-root: &;
@@ -7,10 +7,10 @@
     text-decoration: none;
 
     span &__information {
-        color: token(color-label-highlight);
-        font-size: token(text-body-font-size);
-        font-weight: token(text-body-font-weight);
-        line-height: token(text-body-line-height);
+        color: style.token(color-label-highlight);
+        font-size: style.token(text-body-font-size);
+        font-weight: style.token(text-body-font-weight);
+        line-height: style.token(text-body-line-height);
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;

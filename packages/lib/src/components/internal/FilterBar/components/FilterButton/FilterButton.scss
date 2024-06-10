@@ -1,12 +1,12 @@
-@import '../../../../../style';
+@use '../../../../../style';
 
 .adyen-pe-filter-button {
     align-items: center;
     appearance: none;
-    background-color: token(color-background-primary);
-    border: token(border-width-s) solid token(color-outline-secondary);
-    border-radius: token(border-radius-m);
-    color: token(color-label-primary);
+    background-color: style.token(color-background-primary);
+    border: style.token(border-width-s) solid style.token(color-outline-secondary);
+    border-radius: style.token(border-radius-m);
+    color: style.token(color-label-primary);
     cursor: pointer;
     display: inline-flex;
     height: 36px;
@@ -17,13 +17,13 @@
     width: initial;
 
     &:hover {
-        background-color: token(color-background-primary-hover);
+        background-color: style.token(color-background-primary-hover);
     }
 
     &__label {
         display: inline-flex;
-        line-height: token(text-body-line-height);
-        padding: token(spacer-040) token(spacer-060);
+        line-height: style.token(text-body-line-height);
+        padding: style.token(spacer-040) style.token(spacer-060);
         vertical-align: middle;
     }
 
@@ -33,24 +33,24 @@
     }
 
     &__counter {
-        background-color: token(color-background-inverse-primary);
-        border-radius: token(border-radius-s);
-        color: token(color-label-inverse-primary);
-        padding: token(border-radius-s) token(border-radius-m);
+        background-color: style.token(color-background-inverse-primary);
+        border-radius: style.token(border-radius-s);
+        color: style.token(color-label-inverse-primary);
+        padding: style.token(border-radius-s) style.token(border-radius-m);
     }
 
     &__counter-wrapper {
         align-items: center;
         display: flex;
-        padding: token(spacer-020) token(spacer-020) token(spacer-020) token(spacer-000);
+        padding: style.token(spacer-020) style.token(spacer-020) style.token(spacer-020) style.token(spacer-000);
     }
 
     &--active,
     &:active,
     &:focus {
-        border: token(border-width-s) solid token(color-outline-primary-active);
+        border: style.token(border-width-s) solid style.token(color-outline-primary-active);
         box-shadow: none !important;
-        outline: token(border-width-s) solid token(color-outline-primary-active);
+        outline: style.token(border-width-s) solid style.token(color-outline-primary-active);
     }
 
     &__footer {

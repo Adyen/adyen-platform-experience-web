@@ -1,10 +1,10 @@
-@import '../../../style';
+@use '../../../style';
 
-$adyen-pe-text-subtitle: token(text-subtitle-font-size);
-$adyen-pe-text-caption: token(text-caption-font-size);
+$adyen-pe-text-subtitle: style.token(text-subtitle-font-size);
+$adyen-pe-text-caption: style.token(text-caption-font-size);
 
 .adyen-pe-calendar {
-    --adyen-pe-calendar-corner-border-radius: token(border-radius-s);
+    --adyen-pe-calendar-corner-border-radius: style.token(border-radius-s);
 
     list-style: none;
     margin: 0;
@@ -16,10 +16,10 @@ $adyen-pe-text-caption: token(text-caption-font-size);
         }
 
         &-name {
-            font-size: token(text-subtitle-font-size);
-            font-weight: token(text-body-stronger-font-weight);
+            font-size: style.token(text-subtitle-font-size);
+            font-weight: style.token(text-body-stronger-font-weight);
             letter-spacing: calc($adyen-pe-text-subtitle / 48);
-            line-height: token(text-title-l-line-height);
+            line-height: style.token(text-title-l-line-height);
             margin-bottom: 1rem;
             text-align: center;
             -webkit-user-select: none;
@@ -88,18 +88,18 @@ $adyen-pe-text-caption: token(text-caption-font-size);
             }
 
             &[data-within-selection='1']::before {
-                background: token(color-background-tertiary);
+                background: style.token(color-background-tertiary);
                 border-radius: 0;
             }
 
             &[data-selection-start='1']::before {
-                background: token(color-background-inverse-primary);
+                background: style.token(color-background-inverse-primary);
                 border-bottom-left-radius: var(--adyen-pe-calendar-corner-border-radius);
                 border-top-left-radius: var(--adyen-pe-calendar-corner-border-radius);
             }
 
             &[data-selection-end='1']::before {
-                background: token(color-background-inverse-primary);
+                background: style.token(color-background-inverse-primary);
                 border-bottom-right-radius: var(--adyen-pe-calendar-corner-border-radius);
                 border-top-right-radius: var(--adyen-pe-calendar-corner-border-radius);
             }
@@ -107,31 +107,31 @@ $adyen-pe-text-caption: token(text-caption-font-size);
     }
 
     &__day-of-week {
-        color: token(color-label-secondary);
-        font-size: token(text-caption-font-size);
-        font-weight: token(text-caption-font-weight);
+        color: style.token(color-label-secondary);
+        font-size: style.token(text-caption-font-size);
+        font-weight: style.token(text-caption-font-weight);
         letter-spacing: calc($adyen-pe-text-caption / 32);
     }
 
     &__date {
-        color: token(color-label-primary);
-        font-size: token(text-body-font-size);
-        font-weight: token(text-body-font-weight);
+        color: style.token(color-label-primary);
+        font-size: style.token(text-body-font-size);
+        font-weight: style.token(text-body-font-weight);
         z-index: 0;
 
         [data-selection-start='1']:not([data-today='1']) &,
         [data-selection-end='1']:not([data-today='1']) & {
-            color: token(color-label-inverse-primary);
+            color: style.token(color-label-inverse-primary);
         }
 
         [data-selection-start='1'][data-today='1'] &::before,
         [data-selection-end='1'][data-today='1'] &::before {
-            background: token(color-background-primary);
+            background: style.token(color-background-primary);
             inset: 12.5%;
         }
 
         [data-today='1'] &::before {
-            background: token(color-background-tertiary);
+            background: style.token(color-background-tertiary);
             border-radius: 50%;
             content: '';
             inset: 5%;
@@ -144,7 +144,7 @@ $adyen-pe-text-caption: token(text-caption-font-size);
         }
 
         :not([data-within-range='1']) > & {
-            color: token(color-label-disabled);
+            color: style.token(color-label-disabled);
         }
     }
 }

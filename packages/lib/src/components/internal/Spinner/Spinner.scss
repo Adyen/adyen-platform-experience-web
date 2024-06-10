@@ -1,4 +1,4 @@
-@import '../../../style';
+@use '../../../style';
 
 .adyen-pe-spinner__wrapper {
     align-items: center;
@@ -20,7 +20,7 @@
 
 .adyen-pe-spinner {
     animation: rotateSpinner 1.5s infinite linear;
-    border: 3px solid token(color-outline-primary-active);
+    border: 3px solid style.token(color-outline-primary-active);
     border-radius: 50%;
     border-top-color: transparent;
     height: 43px;

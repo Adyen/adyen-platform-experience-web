@@ -1,11 +1,10 @@
 @use '../../../style/skeleton' as skeleton;
-// stylelint-disable-next-line no-invalid-position-at-import-rule
-@import '../../../style';
+@use '../../../style';
 
 .adyen-pe-data-grid {
     $adyen-pe-data-grid: &;
     $adyen-pe-data-grid__cell: #{$adyen-pe-data-grid}__cell;
-    font-size: token(text-body-font-size);
+    font-size: style.token(text-body-font-size);
     overflow: hidden;
     text-align: left;
 
@@ -32,22 +31,22 @@
     }
 
     &__head {
-        border-left: token(border-width-s) solid transparent;
-        border-right: token(border-width-s) solid transparent;
+        border-left: style.token(border-width-s) solid transparent;
+        border-right: style.token(border-width-s) solid transparent;
         box-sizing: border-box;
         height: 100%;
         overflow: visible;
-        padding: token(spacer-060);
+        padding: style.token(spacer-060);
         position: relative;
     }
 
     &__row {
-        background: token(color-background-primary);
+        background: style.token(color-background-primary);
         overflow: hidden;
         vertical-align: top;
 
         #{$adyen-pe-data-grid__cell} {
-            border-bottom: token(border-width-s) solid token(color-outline-primary);
+            border-bottom: style.token(border-width-s) solid style.token(color-outline-primary);
         }
         #{$adyen-pe-data-grid}__body {
             border-bottom: 0;
@@ -58,7 +57,7 @@
 
             &:hover,
             &:focus {
-                background: token(color-background-primary-hover);
+                background: style.token(color-background-primary-hover);
                 outline-offset: -1px;
             }
         }
@@ -68,7 +67,7 @@
         box-sizing: border-box;
         height: 100%;
         overflow: hidden;
-        padding: token(spacer-070);
+        padding: style.token(spacer-070);
         text-overflow: ellipsis;
         vertical-align: middle;
         white-space: nowrap;
@@ -89,30 +88,30 @@
         }
 
         &#{$adyen-pe-data-grid__cell}--heading {
-            border-bottom-color: token(color-outline-secondary);
-            color: token(color-label-primary);
-            font-weight: token(text-body-strongest-font-weight);
-            padding: token(spacer-070);
+            border-bottom-color: style.token(color-outline-secondary);
+            color: style.token(color-label-primary);
+            font-weight: style.token(text-body-strongest-font-weight);
+            padding: style.token(spacer-070);
             position: relative;
 
             &:not(:last-child)::after {
-                background: token(color-separator-primary);
+                background: style.token(color-separator-primary);
                 bottom: 25%;
                 content: '';
                 position: absolute;
                 right: 0;
                 top: 25%;
-                width: token(spacer-010);
+                width: style.token(spacer-010);
             }
         }
     }
 
     #{$adyen-pe-data-grid}__table-wrapper {
-        margin-bottom: token(spacer-070);
+        margin-bottom: style.token(spacer-070);
     }
 
     &__footer {
-        background: token(color-background-primary);
+        background: style.token(color-background-primary);
 
         .adyen-pe-pagination {
             padding: 0;
@@ -120,12 +119,12 @@
     }
 
     .adyen-pe-spinner__wrapper {
-        padding: token(spacer-130);
+        padding: style.token(spacer-130);
     }
 
     &--outline {
-        border: token(border-width-s) solid token(color-outline-secondary);
-        border-radius: token(border-radius-m);
+        border: style.token(border-width-s) solid style.token(color-outline-secondary);
+        border-radius: style.token(border-radius-m);
 
         #{$adyen-pe-data-grid}__table-wrapper {
             margin-bottom: 0;
@@ -133,18 +132,18 @@
 
         #{$adyen-pe-data-grid}__body #{$adyen-pe-data-grid}__row {
             &:last-child #{$adyen-pe-data-grid__cell} {
-                border-bottom: token(border-width-s) solid token(color-outline-secondary);
+                border-bottom: style.token(border-width-s) solid style.token(color-outline-secondary);
             }
         }
 
         #{$adyen-pe-data-grid}__footer .adyen-pe-pagination {
-            padding: token(spacer-070) token(spacer-040);
+            padding: style.token(spacer-070) style.token(spacer-040);
         }
     }
 
     &__empty-cell {
         display: inline-block;
-        height: token(spacer-050);
+        height: style.token(spacer-050);
     }
 
     &__skeleton-cell {
@@ -153,7 +152,7 @@
 
     &__skeleton-cell-content {
         @include skeleton.adyen-pe-skeleton();
-        height: token(spacer-060);
+        height: style.token(spacer-060);
     }
 
     &__skeleton-cell-content--loading {
@@ -161,18 +160,18 @@
     }
 
     &__empty-message {
-        background: token(color-background-primary);
-        border: token(border-width-s) solid token(color-outline-primary);
-        border-radius: token(spacer-060);
+        background: style.token(color-background-primary);
+        border: style.token(border-width-s) solid style.token(color-outline-primary);
+        border-radius: style.token(spacer-060);
         box-shadow: 0 6px 12px 0 rgba(0, 17, 44, 0.08);
         display: flex;
         flex-direction: column;
-        gap: token(spacer-050);
+        gap: style.token(spacer-050);
         left: 50%;
-        padding: token(spacer-120);
+        padding: style.token(spacer-120);
         position: absolute;
         text-align: center;
-        top: token(spacer-080);
+        top: style.token(spacer-080);
         transform: translateX(-50%);
     }
 }
