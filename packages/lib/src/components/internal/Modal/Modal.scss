@@ -16,6 +16,8 @@ $adyen-pe-modal-sizes: (
     ),
 );
 
+$adyen-pe-modal-margin: style.token(spacer-110);
+
 .adyen-pe-modal-wrapper {
     align-items: center;
     background: rgba(0, 17, 44, 0.5);
@@ -109,8 +111,7 @@ $adyen-pe-modal-sizes: (
     }
 
     &__header-icon {
-        $margin: style.token(spacer-110);
-        --offset-margin: calc(1rem - $margin);
+        --offset-margin: calc(1rem - $adyen-pe-modal-margin);
         --offset-position: calc(var(--offset-margin) * -1 / 2);
 
         cursor: pointer;
