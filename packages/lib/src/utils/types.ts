@@ -7,7 +7,7 @@ export type ExtractWithFallback<T, U> = _ExtractWithFallback<T, U> extends never
 export type GetPredicateType<Predicate, Type = unknown> = Extract<Type, ExtractWithFallback<Type, Predicate>>;
 
 export type List<T = any> = (List<T> | T)[];
-export type ListWithoutFirst<T> = T extends [any, ...infer Rest] ? Rest : never;
+export type ListWithoutFirst<T> = T extends [any, ...infer Rest] ? Rest : [];
 
 export type PredicateType<T> = T extends (value: any) => value is infer P ? P : T extends (value: any) => asserts value is infer P ? P : never;
 

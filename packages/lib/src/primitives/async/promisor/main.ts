@@ -8,31 +8,31 @@ export const createPromisor: PromisorFactory = factory => {
     const _abortable = createAbortable(Symbol());
     const _deferred = createDeferred<typeof _promise>();
 
-    const promisor = ((...args) => {
+    const promisor = function (this: any, ...args) {
         _abortable.abort();
         _abortable.refresh();
 
-        const currentPromise = (_promise = tryResolve(factory, _abortable.signal, ...args));
+        let _currentPromise: typeof _promise;
+        let _resolveDeferredPromise: () => void;
 
         (async () => {
-            let resolve: () => void;
-
             try {
-                const value = await currentPromise;
-                resolve = () => _deferred.resolve(value);
+                _currentPromise = _promise = tryResolve.apply(this, [factory, _abortable.signal, ...args]);
+                const value = await _currentPromise;
+                _resolveDeferredPromise = () => _deferred.resolve(value);
             } catch (ex) {
-                resolve = () => _deferred.reject(ex);
+                _resolveDeferredPromise = () => _deferred.reject(ex);
             }
 
-            if (_promise === currentPromise) {
+            if (_promise === _currentPromise!) {
                 _promise = undefined!;
+                _resolveDeferredPromise?.();
                 _deferred.refresh();
-                resolve();
             }
         })();
 
-        return currentPromise;
-    }) as Promisor<typeof factory>;
+        return _currentPromise!;
+    } as Promisor<typeof factory>;
 
     return Object.defineProperties(promisor, {
         abort: enumerable(() => _abortable.abort()),
