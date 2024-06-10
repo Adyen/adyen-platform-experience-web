@@ -32,7 +32,7 @@ export const createEventEmitter = <Events extends EmitterEvents>() => {
     };
 
     const _onEvent: Emitter<Events>['on'] = (type, listener) => {
-        if (!isFunction<typeof listener>(listener)) return noop;
+        if (!isFunction(listener)) return noop;
 
         const _listener = (evt: Event) =>
             listener.call(

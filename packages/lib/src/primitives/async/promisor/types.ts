@@ -1,11 +1,11 @@
-import type { Promised } from '../../../utils/types';
+import type { ListWithoutFirst, Promised } from '../../../utils/types';
 
-export interface Promisor<T, K = T> {
-    get promise(): Promise<T>;
-    readonly refresh: () => Promisor<T, K>;
-    readonly reject: (reason?: any) => void;
-    readonly resolve: (value: K) => void;
+export interface Promisor<Fn extends (signal: AbortSignal, ...args: any[]) => Promised<any>> {
+    (...args: ListWithoutFirst<Parameters<Fn>>): ReturnType<Fn>;
+    readonly abort: () => void;
+    get promise(): Promise<Awaited<ReturnType<Fn>>>;
 }
 
-export type PromisorThenCallback<T, K = any> = (value: K) => Promised<T>;
-export type PromisorCatchCallback<T> = (reason?: any) => Promised<T>;
+export interface PromisorFactory {
+    <Fn extends (signal: AbortSignal, ...args: any[]) => Promised<any>>(fn: Fn): Promisor<Fn>;
+}

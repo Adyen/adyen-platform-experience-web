@@ -1,46 +1,43 @@
-import { enumerable, getter, identity, isFunction, noop, panic, struct } from '../../../utils';
-import type { Promisor, PromisorCatchCallback, PromisorThenCallback } from './types';
+import { createAbortable } from '../abortable';
+import { createDeferred } from '../deferred';
+import { enumerable, getter, tryResolve } from '../../../utils';
+import type { Promisor, PromisorFactory } from './types';
 
-export const createPromisor = <T, K = T>(thenCallback?: PromisorThenCallback<T, K>, catchCallback?: PromisorCatchCallback<T>) => {
-    let _promise: Promisor<T, K>['promise'];
-    let _reject: Promisor<T, K>['reject'];
-    let _resolve: Promisor<T, K>['resolve'];
+export const createPromisor: PromisorFactory = factory => {
+    let _promise: Promisor<typeof factory>['promise'];
+    const _abortable = createAbortable(Symbol());
+    const _deferred = createDeferred<typeof _promise>();
 
-    const _catchCallback = isFunction<PromisorCatchCallback<T>>(catchCallback) ? catchCallback : panic;
-    const _thenCallback = isFunction<PromisorThenCallback<T, K>>(thenCallback) ? thenCallback : (identity as PromisorThenCallback<T, K>);
+    const promisor = ((...args) => {
+        _abortable.abort();
+        _abortable.refresh();
 
-    const _refreshPromise = () => {
-        const previousResolve = _resolve ?? noop;
+        const currentPromise = (_promise = tryResolve(factory, _abortable.signal, ...args));
 
-        const currentPromise = new Promise<K>((resolve, reject) => {
-            _resolve = resolve;
-            _reject = reject;
-        })
-            .then(value => {
-                if (currentPromise === _promise) return _thenCallback(value);
-                return value as unknown as T;
-            })
-            .catch(reason => {
-                if (currentPromise === _promise) return _catchCallback(reason);
-                throw reason;
-            });
+        (async () => {
+            let resolve: () => void;
 
-        previousResolve((_promise = currentPromise) as K);
-    };
+            try {
+                const value = await currentPromise;
+                resolve = () => _deferred.resolve(value);
+            } catch (ex) {
+                resolve = () => _deferred.reject(ex);
+            }
 
-    const _refresh = () => {
-        _refreshPromise();
-        return promisor;
-    };
+            if (_promise === currentPromise) {
+                _promise = undefined!;
+                _deferred.refresh();
+                resolve();
+            }
+        })();
 
-    const promisor = struct({
-        promise: getter(() => _promise),
-        refresh: enumerable(_refresh),
-        reject: enumerable((reason => _reject(reason)) as Promisor<T, K>['reject']),
-        resolve: enumerable((value => _resolve(value)) as Promisor<T, K>['resolve']),
-    }) as Promisor<T, K>;
+        return currentPromise;
+    }) as Promisor<typeof factory>;
 
-    return _refresh();
+    return Object.defineProperties(promisor, {
+        abort: enumerable(() => _abortable.abort()),
+        promise: getter(() => _deferred.promise),
+    });
 };
 
 export default createPromisor;

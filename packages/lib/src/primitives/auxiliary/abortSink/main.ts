@@ -1,4 +1,4 @@
-import { enumerable, struct } from '../../../utils';
+import { enumerable, noop, struct } from '../../../utils';
 import type { AbortSink } from './types';
 
 const ABORT_EVENT = 'abort';
@@ -21,7 +21,7 @@ export const createAbortSink = (...sourceSignals: (AbortSignal | undefined)[]) =
     };
 
     let disconnect = () => {
-        _cleanupSignals();
+        _cleanupSignals?.();
         _cleanupSignals = unlink = undefined!;
         if (signal.aborted) abort = _abortController = disconnect = undefined!;
     };
@@ -32,20 +32,34 @@ export const createAbortSink = (...sourceSignals: (AbortSignal | undefined)[]) =
                 maybeSignal.removeEventListener(ABORT_EVENT, abort);
             }
         }
-        if (_sourceSignals.size === 0) disconnect?.();
+        if (_sourceSignals.size === 0) disconnect();
     };
 
-    for (const maybeSignal of sourceSignals) {
-        if (isAbortSignal(maybeSignal)) _sourceSignals.add(maybeSignal);
+    setup: {
+        filter: {
+            for (const maybeSignal of sourceSignals) {
+                if (!isAbortSignal(maybeSignal)) continue;
+                if (maybeSignal.aborted) break filter;
+                _sourceSignals.add(maybeSignal);
+            }
+
+            // If control flow reaches here, it means none of the source signals is already aborted
+            _sourceSignals.size > 0 ? _sourceSignals.forEach(signal => signal.addEventListener(ABORT_EVENT, abort)) : disconnect();
+
+            // Mark setup as complete
+            break setup;
+        }
+
+        // If control flow reaches here, it means at least one of the source signals is already aborted
+        // Hence, the need to abort the sink `signal` and destroy everything
+        abort();
     }
 
-    _sourceSignals.forEach(signal => signal.addEventListener(ABORT_EVENT, abort));
-
     return struct<AbortSink>({
-        abort: enumerable(abort),
-        disconnect: enumerable(disconnect),
+        abort: enumerable(abort ? () => abort?.() : noop),
+        disconnect: enumerable(disconnect ? () => disconnect?.() : noop),
         signal: enumerable(signal),
-        unlink: enumerable(unlink),
+        unlink: enumerable(unlink ? (...args) => unlink?.(...args) : noop),
     });
 };
 

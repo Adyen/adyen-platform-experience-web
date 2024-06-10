@@ -2,11 +2,12 @@ import { fn } from '../common';
 import { EMPTY_OBJECT } from '../value/constants';
 import { truthify } from '../value/bool';
 import { isPlainObject } from '../value/is';
+import type { PredicateType } from '../types';
 
-export const asPlainObject = <T>(
-    value?: T,
-    fallback: T extends Record<any, any> ? T : Record<any, any> = EMPTY_OBJECT
-): NonNullable<typeof fallback> => (isPlainObject<NonNullable<typeof fallback>>(value) ? value : asPlainObject(fallback, EMPTY_OBJECT));
+type _PlainObject<T> = PredicateType<typeof isPlainObject<T>>;
+
+export const asPlainObject = <T>(value?: T, fallback: _PlainObject<T> = EMPTY_OBJECT): _PlainObject<T> =>
+    isPlainObject(value) ? value : asPlainObject(fallback, EMPTY_OBJECT);
 
 interface _StructFrom {
     <T extends Record<any, any>, P extends object | null>(o: P, properties: { [K in keyof T]: TypedPropertyDescriptor<T[K]> }): P extends object

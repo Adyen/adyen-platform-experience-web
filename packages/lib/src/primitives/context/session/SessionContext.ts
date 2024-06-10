@@ -1,9 +1,9 @@
 import clock from '../../time/clock';
 import { createAbortable } from '../../async/abortable';
-import { createPromisor } from '../../async/promisor';
+import { createDeferred } from '../../async/deferred';
 import { createEventEmitter } from '../../reactive/eventEmitter';
 import { isWatchlistUnsubscribeToken } from '../../reactive/watchlist';
-import { ALREADY_RESOLVED_PROMISE, boolOrFalse, isFunction, isUndefined, noop, parseDate } from '../../../utils';
+import { ALREADY_RESOLVED_PROMISE, boolOrFalse, falsify, isFunction, isUndefined, noop, parseDate, tryResolve } from '../../../utils';
 import type { SessionEventType, SessionSpecification } from './types';
 import {
     ERR_SESSION_EXPIRED,
@@ -31,7 +31,7 @@ export class SessionContext<T, HttpParams extends any[] = any[]> {
     private readonly _eventEmitter = createEventEmitter<SessionEventType>();
     private readonly _refreshAbortable = createAbortable(ERR_SESSION_REFRESH_ABORTED);
 
-    private readonly _sessionPromisor = createPromisor<T>(session => {
+    private readonly _sessionDeferred = createDeferred<T>(session => {
         this._expired = this._refreshPending = false;
         this._eventEmitter.emit(EVT_SESSION_EXPIRED_STATE_CHANGE);
         return session;
@@ -75,25 +75,33 @@ export class SessionContext<T, HttpParams extends any[] = any[]> {
         }
     }
 
-    private _assertSessionFactory(value: any): asserts value is NonNullable<SessionSpecification<T>['next']> {
-        if (isFunction<NonNullable<SessionSpecification<T>['next']>>(value)) return;
-        throw ERR_SESSION_FACTORY_UNAVAILABLE;
+    private _assertSessionFactory(value: any): asserts value is NonNullable<SessionSpecification<T>['onRefresh']> {
+        if (!isFunction(value)) throw ERR_SESSION_FACTORY_UNAVAILABLE;
     }
 
     private _assertSessionHttp(value: any): asserts value is NonNullable<SessionSpecification<T, HttpParams>['http']> {
-        if (isFunction<NonNullable<SessionSpecification<T, HttpParams>['http']>>(value)) return;
-        throw ERR_SESSION_HTTP_UNAVAILABLE;
+        if (!isFunction(value)) throw ERR_SESSION_HTTP_UNAVAILABLE;
     }
 
-    private _fulfillPendingSessionRefresh() {
+    private async _canFulfillPendingSessionRefresh() {
+        const canRefresh = await tryResolve(async () => {
+            const _autoRefresh = this._specification.autoRefresh;
+            return isFunction(_autoRefresh) ? _autoRefresh.call(this._specification, this._session) : _autoRefresh;
+        }).catch(falsify);
+
+        return boolOrFalse(canRefresh);
+    }
+
+    private async _fulfillPendingSessionRefresh(skipCanRefreshCheck = false) {
+        if (!boolOrFalse(skipCanRefreshCheck) && !(await this._canFulfillPendingSessionRefresh())) return;
         if (!this._refreshPending || this._refreshCount > 0) return;
         // no-op catch callback ensures that unnecessary unhandled rejection warnings are silenced.
         this._refreshSession().catch(noop);
     }
 
     private async _getNextSession(signal: AbortSignal) {
-        this._assertSessionFactory(this._specification.next);
-        const nextSession = await this._specification.next(this._session, signal);
+        this._assertSessionFactory(this._specification.onRefresh);
+        const nextSession = await this._specification.onRefresh(this._session, signal);
 
         this._assertRefreshNotInterruptedByAbort(signal);
         this._assertSession(nextSession);
@@ -107,9 +115,9 @@ export class SessionContext<T, HttpParams extends any[] = any[]> {
         this._expired = this._refreshPending = true;
         this._eventEmitter.emit(EVT_SESSION_EXPIRED_STATE_CHANGE);
 
-        // attempt immediate refresh (if necessary)
         if (boolOrFalse(refreshImmediately)) {
-            this._fulfillPendingSessionRefresh();
+            // attempt immediate refresh (if necessary)
+            this._fulfillPendingSessionRefresh().catch(noop);
         }
     }
 
@@ -118,7 +126,7 @@ export class SessionContext<T, HttpParams extends any[] = any[]> {
     }
 
     private async _refreshSession() {
-        this._sessionPromisor.refresh();
+        this._sessionDeferred.refresh();
         this._refreshAbortable.abort();
         this._refreshAbortable.refresh();
         this._refreshCount++;
@@ -146,7 +154,7 @@ export class SessionContext<T, HttpParams extends any[] = any[]> {
 
             this._assertRefreshNotInterruptedByAbort(signal);
             await this._setupSessionClock(nextSession);
-            this._sessionPromisor.resolve((this._session = nextSession));
+            this._sessionDeferred.resolve((this._session = nextSession));
         } finally {
             /* Finally block to ensure that control flow always reaches here. */
 
@@ -169,11 +177,11 @@ export class SessionContext<T, HttpParams extends any[] = any[]> {
     }
 
     private async _sessionHttp(...args: HttpParams) {
-        this._fulfillPendingSessionRefresh();
+        await this._fulfillPendingSessionRefresh(true);
 
         while (true) {
             try {
-                const session = await this._sessionPromisor.promise;
+                const session = await this._sessionDeferred.promise;
                 this._assertSessionHttp(this._specification.http);
                 return await this._specification.http(session, this._refreshAbortable.signal, ...args);
             } catch (ex) {

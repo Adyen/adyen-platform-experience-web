@@ -1,25 +1,27 @@
 import { ERR_SESSION_EXPIRED, SessionSpecification } from '../../../primitives/context/session';
 import { createAbortSink, isAbortSignal } from '../../../primitives/auxiliary/abortSink';
-import { getter, isPlainObject, isString, isUndefined, noop } from '../../../utils';
+import { enumerable, getter, isPlainObject, isString, isUndefined, noop } from '../../../utils';
 import { http as _http } from '../../Http/http';
 import { ErrorTypes } from '../../Http/utils';
 import type { HttpOptions } from '../../Http/types';
 import type { SessionObject, SessionRequest } from '../types';
-import { MAX_AGE_MS } from './constants';
+import { AUTO_REFRESH, MAX_AGE_MS } from './constants';
 
 type _AuthSessionSpecification = SessionSpecification<SessionObject, Parameters<typeof _http>>;
 
 export class AuthSessionSpecification implements _AuthSessionSpecification {
-    declare next: _AuthSessionSpecification['next'];
+    declare autoRefresh: _AuthSessionSpecification['autoRefresh'];
+    declare onRefresh: _AuthSessionSpecification['onRefresh'];
 
     constructor(public onSessionCreate?: SessionRequest) {
         Object.defineProperties(this, {
-            next: getter(() => this.onSessionCreate!, true),
+            autoRefresh: enumerable(AUTO_REFRESH),
+            onRefresh: getter(() => this.onSessionCreate!, true),
         });
     }
 
     assert: _AuthSessionSpecification['assert'] = maybeSession => {
-        if (isPlainObject<SessionObject>(maybeSession)) {
+        if (isPlainObject(maybeSession)) {
             const id = isString(maybeSession.id) ? maybeSession.id.trim() : undefined;
             const token = isString(maybeSession.token) ? maybeSession.token.trim() : undefined;
             if (id && token) return;

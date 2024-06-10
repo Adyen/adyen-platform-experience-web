@@ -1,5 +1,5 @@
 import { ALREADY_RESOLVED_PROMISE } from './constants';
-import { PromiseState } from '../types';
+import { Promised, PromiseState } from '../types';
 
 const _pending = () => _PENDING;
 const _PENDING: unique symbol = Symbol('<<PENDING>>');
@@ -13,6 +13,5 @@ export const getPromiseState = async (promise: Promise<any>): Promise<PromiseSta
     }
 };
 
-export const tryResolve = <T extends any[]>(fn: (...args: T) => any, ...args: T) => {
-    return new Promise(resolve => resolve(fn(...args)));
-};
+export const tryResolve = <Params extends any[], Fn extends (...args: Params) => Promised<any>>(fn: Fn, ...args: Params) =>
+    new Promise<Awaited<ReturnType<Fn>>>(resolve => resolve(fn(...args)));

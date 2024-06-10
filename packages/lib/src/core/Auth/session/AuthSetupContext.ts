@@ -70,7 +70,7 @@ export class AuthSetupContext {
     private _getHttpOptions(method: HttpMethod, path: string, ...args: Parameters<EndpointHttpCallables>) {
         const { loadingContext } = this;
         const [request, requestParams] = args;
-        const { path: pathParams, query: searchParams } = asPlainObject<Record<any, any>>(requestParams);
+        const { path: pathParams, query: searchParams } = asPlainObject(requestParams as any);
         const params = searchParams && parseSearchParams(searchParams);
 
         if (isPlainObject(pathParams)) {

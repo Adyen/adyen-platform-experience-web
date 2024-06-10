@@ -36,13 +36,13 @@ export const createAbortable = <T>(abortReason?: T) => {
         return abortable;
     };
 
-    const abortable = struct({
+    const abortable = struct<Abortable<T>>({
         abort: enumerable(_abort),
         promise: getter(() => _abortPromise),
         reason: enumerable(abortReason),
         refresh: enumerable(_refreshIfNecessary),
         signal: getter(() => _abortSignal),
-    }) as Abortable<T>;
+    });
 
     return _refreshIfNecessary();
 };

@@ -97,9 +97,9 @@ export class AuthSession {
             // Since `this._canSkipSessionRefresh` is `true`, session context is active (not expired)
             this._lastSessionContextRefreshTimestamp = timestamp;
             this._errorContainer.reset();
+            this._overrideRefresh();
         }
 
-        this._overrideRefresh();
         this._onAuthStateChanged();
     }
 

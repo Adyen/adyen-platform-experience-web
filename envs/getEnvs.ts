@@ -14,6 +14,7 @@ const parseEnv = (env: Record<string, string | undefined>) => ({
             apiKey: env.API_KEY,
             accountHolder: env.SESSION_ACCOUNT_HOLDER,
             permissions: env.SESSION_PERMISSIONS,
+            autoRefresh: env.SESSION_AUTO_REFRESH,
             maxAgeMs: env.SESSION_MAX_AGE_MS,
         },
     },
