@@ -1,17 +1,11 @@
 import childProcess from 'child_process';
 import packageJson from '../../../package.json';
-function uuidv4() {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
-        let r = (Math.random() * 16) | 0,
-            v = c == 'x' ? r : (r & 0x3) | 0x8;
-        return v.toString(16);
-    });
-}
+import { uuid } from '../src/utils';
 
 const currentVersion = () => {
     let COMMIT_HASH = null;
     let COMMIT_BRANCH = null;
-    const ADYEN_BUILD_ID = `@adyen/adyen-pe-web-${uuidv4()}`;
+    const ADYEN_BUILD_ID = `@adyen/adyen-pe-web-${uuid()}`;
 
     try {
         COMMIT_HASH = childProcess.execSync('git rev-parse --short HEAD').toString().trim();

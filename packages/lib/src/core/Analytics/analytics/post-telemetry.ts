@@ -1,4 +1,4 @@
-import { httpPost } from '../requests/http';
+import { httpPost } from '../../Http/http';
 import { LogConfig } from './types';
 
 /**

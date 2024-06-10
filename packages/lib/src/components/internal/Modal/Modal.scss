@@ -100,7 +100,6 @@ $adyen-pe-modal-sizes: (
         padding: 24px 24px 0;
 
         &--with-title {
-            justify-content: space-between;
             padding: 14px 14px 10px 16px;
         }
 
@@ -110,12 +109,19 @@ $adyen-pe-modal-sizes: (
     }
 
     &__header-icon {
-        border-radius: 8px;
+        --offset-margin: calc(1rem - 40px);
+        --offset-position: calc(var(--offset-margin) * -1 / 2);
+
         cursor: pointer;
+        margin-right: var(--offset-margin);
+        margin-top: var(--offset-margin);
+        position: relative;
+        right: var(--offset-position);
+        top: var(--offset-position);
         transition: background 0.1s linear;
 
-        &:focus {
-            background: #d1d5da;
+        &:focus,
+        &:active {
             outline: 0;
         }
     }

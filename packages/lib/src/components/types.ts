@@ -1,7 +1,5 @@
 import UIElement from './external/UIElement';
-import { Core, CoreOptions } from '../core';
-import Analytics from '../core/Analytics';
-import Localization from '../core/Localization';
+import { Core } from '../core';
 
 export const enum InteractionKeyCode {
     ARROW_DOWN = 'ArrowDown',
@@ -19,24 +17,15 @@ export const enum InteractionKeyCode {
     TAB = 'Tab',
 }
 
-export interface ICore {
-    options: CoreOptions;
-    i18n: Localization['i18n'];
-}
-
 export interface BaseElementProps {
-    core: Core;
-    _parentInstance?: Core;
-    modules?: {
-        analytics: Analytics;
-    };
+    core: Core<any>;
 }
 
 export interface IUIElement {
-    displayName: string;
     accessibleName: string;
-    type: string;
+    displayName: string;
     elementRef: any;
+    type: string;
 }
 
 export interface IFormElement<P> {
@@ -52,9 +41,9 @@ export type SetTriggerValidation = (callback: (schema?: Record<string, any>) => 
 export interface UIElementProps {
     id?: string;
     name?: string;
-    setUIElementStatus?: (status: string) => void;
     ref?: any;
     onContactSupport?: () => void;
+    setUIElementStatus?: (status: string) => void;
 
     /** @internal */
     elementRef?: any;
@@ -99,7 +88,7 @@ export interface DataOverviewComponentProps {
     allowLimitSelection?: boolean;
     showDetails?: boolean;
     hideTitle?: boolean;
-    core: Core;
+    core: Core<any>;
     balanceAccountId?: string;
 }
 

@@ -1,32 +1,28 @@
-import { DevEnvironment, SessionRequest } from './types';
 import type { CoreOptions } from './types';
-import { resolveEnvironment } from './utils';
+import type { LangFile } from './Localization/types';
+import { FALLBACK_ENV, resolveEnvironment } from './utils';
 import Session from './Session';
 import Localization from './Localization';
 import BaseElement from '../components/external/BaseElement';
 import { EMPTY_OBJECT } from '../utils';
 
-const FALLBACK_ENV = 'test' satisfies DevEnvironment;
+class Core<AvailableTranslations extends LangFile[]> {
+    public static readonly version = process.env.VITE_VERSION!;
 
-class Core<T extends CoreOptions<T> = any> {
-    public static readonly version = {
-        version: process.env.VITE_VERSION,
-        revision: process.env.VITE_COMMIT_HASH,
-        branch: process.env.VITE_COMMIT_BRANCH,
-        buildId: process.env.VITE_ADYEN_BUILD_ID,
-    };
-    public session?: Session;
-    public modules: any;
-    public options: CoreOptions<T>;
     public components: BaseElement<any>[] = [];
-    public localization;
-    public loadingContext: string;
-    public onSessionCreate?: SessionRequest;
-    //TODO: Change the error handling strategy.
-    public sessionSetupError?: boolean;
-    public isUpdatingSessionToken?: boolean;
+    public options: CoreOptions<AvailableTranslations>;
 
-    constructor(options: CoreOptions<T>) {
+    public localization: Localization;
+    public loadingContext: string;
+
+    public isUpdatingSessionToken?: boolean;
+    public onSessionCreate?: (typeof this.options)['onSessionCreate'];
+    public sessionSetupError?: boolean;
+    public session?: Session;
+
+    // [TODO]: Change the error handling strategy.
+
+    constructor(options: CoreOptions<AvailableTranslations>) {
         this.options = { environment: FALLBACK_ENV, ...options };
 
         this.isUpdatingSessionToken = false;
@@ -69,12 +65,16 @@ class Core<T extends CoreOptions<T> = any> {
      * @param initSession - should session be initiated again
      * @returns this - the element instance
      */
-    public update = (options: Partial<CoreOptions<T>> = EMPTY_OBJECT, initSession = false): Promise<this> => {
+    public update = (options: Partial<typeof this.options> = EMPTY_OBJECT, initSession = false): Promise<this> => {
         this.setOptions(options);
 
         return this.initialize(initSession).then(() => {
-            // Update each component under this instance
-            this.components.forEach(c => c.update(this.getPropsForComponent(this.options)));
+            this.components.forEach(component => {
+                if (component.props.core === this) {
+                    // Update each component under this instance
+                    component.update(this.getPropsForComponent(this.options));
+                }
+            });
 
             return this;
         });
@@ -88,7 +88,6 @@ class Core<T extends CoreOptions<T> = any> {
     public remove = (component: BaseElement<any>): this => {
         this.components = this.components.filter(c => c._id !== component._id);
         component.unmount();
-
         return this;
     };
 
@@ -96,9 +95,10 @@ class Core<T extends CoreOptions<T> = any> {
      * @internal
      * Register components in core to be able to update them all at once
      */
-
     public registerComponent = (component: BaseElement<any>) => {
-        this.components.push(component);
+        if (component.props.core === this) {
+            this.components.push(component);
+        }
     };
 
     /**
@@ -108,23 +108,12 @@ class Core<T extends CoreOptions<T> = any> {
      * @param options - the config object passed when AdyenPlatformExperience is initialised
      * @returns this
      */
-    private setOptions = (options: Partial<CoreOptions<T>>): this => {
+    private setOptions = (options: Partial<typeof this.options>): this => {
         this.options = { ...this.options, ...options };
 
         this.localization.locale = this.options?.locale;
         this.localization.customTranslations = this.options?.translations;
-        this.localization.timezone = this.options?.timezone;
         this.onSessionCreate = this.options.onSessionCreate;
-        this.modules = {
-            // analytics: new Analytics(this.options),
-            i18n: this.localization.i18n,
-        };
-
-        // Check for clientKey/environment mismatch
-        // const clientKeyType = this.options?.clientKey?.substring(0, 3) ?? '';
-        // if (['test', 'live'].includes(clientKeyType) && !this.loadingContext?.includes(clientKeyType)) {
-        //     throw new Error(`Error: you are using a ${clientKeyType} clientKey against the ${this.options?.environment} environment`);
-        // }
 
         return this;
     };
@@ -135,14 +124,7 @@ class Core<T extends CoreOptions<T> = any> {
      * @returns props for a new UIElement
      */
     private getPropsForComponent(options: any) {
-        return {
-            ...options,
-            i18n: this.modules.i18n,
-            modules: this.modules,
-            session: this.session,
-            loadingContext: this.loadingContext,
-            _parentInstance: this,
-        };
+        return { ...options };
     }
 }
 

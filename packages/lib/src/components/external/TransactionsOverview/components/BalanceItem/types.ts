@@ -1,7 +1,7 @@
-import { IBalance } from '../../../../../types';
+import { IBalanceWithKey } from '../Balances/types';
 
 export type BalanceItemProps = {
-    balance?: IBalance;
+    balance?: IBalanceWithKey;
     isHeader?: boolean;
     isSkeleton?: boolean;
     isLoading?: boolean;

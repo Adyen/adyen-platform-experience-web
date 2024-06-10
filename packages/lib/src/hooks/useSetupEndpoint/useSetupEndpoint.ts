@@ -2,9 +2,9 @@ import useAuthContext from '../../core/Auth/useAuthContext';
 import useSessionAwareRequest from '../useSessionAwareRequest/useSessionAwareRequest';
 import { EndpointName, EndpointsOperations } from '../../types/api/endpoints';
 import useCoreContext from '../../core/Context/useCoreContext';
-import { parseSearchParams } from '../../core/Services/requests/utils';
+import { parseSearchParams } from '../../core/Http/utils';
 import { useCallback } from 'preact/hooks';
-import { HttpMethod, HttpOptions } from '../../core/Services/requests/types';
+import { HttpMethod, HttpOptions } from '../../core/Http/types';
 import { EMPTY_OBJECT } from '../../utils';
 
 type Params<T extends Record<any, any>> = T['parameters'];

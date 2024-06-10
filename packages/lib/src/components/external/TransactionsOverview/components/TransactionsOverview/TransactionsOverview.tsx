@@ -205,7 +205,12 @@ export const TransactionsOverview = ({
                     />
                 </div>
                 <div className={SUMMARY_ITEM_CLASS}>
-                    <Balances balanceAccountId={activeBalanceAccount?.id} onCurrenciesChange={handleCurrenciesChange} fullWidth={isNarrowViewport} />
+                    <Balances
+                        balanceAccountId={activeBalanceAccount?.id}
+                        onCurrenciesChange={handleCurrenciesChange}
+                        defaultCurrencyCode={activeBalanceAccount?.defaultCurrencyCode}
+                        fullWidth={isNarrowViewport}
+                    />
                 </div>
             </div>
 

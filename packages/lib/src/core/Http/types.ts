@@ -1,5 +1,4 @@
-export type FetchErrorLevel = 'silent' | 'info' | 'warn' | 'error' | 'fatal';
-
+export type ErrorLevel = 'silent' | 'info' | 'warn' | 'error' | 'fatal';
 export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'OPTIONS' | 'PATCH';
 
 export interface HttpOptions {
@@ -11,14 +10,12 @@ export interface HttpOptions {
     loadingContext?: string;
     clientKey?: string;
     method: HttpMethod;
-    errorLevel?: FetchErrorLevel;
+    errorLevel?: ErrorLevel;
     errorHandler?: (response: any) => any;
     params?: URLSearchParams;
     signal?: AbortSignal;
     origin?: string;
 }
-
-export type ErrorLevel = 'silent' | 'info' | 'warn' | 'error' | 'fatal';
 
 export type AdyenErrorResponse = {
     errorCode: string;
@@ -28,5 +25,3 @@ export type AdyenErrorResponse = {
     status: number;
     requestId: string;
 };
-
-export type FunctionOrStringLiteral = `/${string}` | ((...params: any) => `/${string}`);

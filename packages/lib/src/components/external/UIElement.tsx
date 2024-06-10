@@ -7,19 +7,17 @@ import { SetupEndpoint } from '../../types/api/endpoints';
 import { EMPTY_OBJECT } from '../../utils';
 
 export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUIElement {
-    protected componentRef: UIElement<P> | null;
+    protected componentRef: UIElement<P> | null = null;
+
+    public componentToRender: (() => JSXInternal.Element) | null = null;
     public elementRef: UIElement<P> | null;
     public onContactSupport?: () => void;
-    public componentToRender: (() => JSXInternal.Element) | null;
 
     constructor(props: P & UIElementProps & BaseElementProps) {
         super(props);
         this.setState = this.setState.bind(this);
         this.onContactSupport = props.onContactSupport;
-        this.componentRef = null;
         this.elementRef = (this.props && this.props.elementRef) || this;
-        this.componentToRender = null;
-        this.sessionSetupError = this.props.core.sessionSetupError;
     }
 
     get isValid() {
@@ -76,14 +74,16 @@ export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUI
     }
 
     render() {
+        const core = this.props.core;
+
         return (
             <AuthProvider
-                endpoints={this.session?.configuration?.endpoints || (EMPTY_OBJECT as SetupEndpoint)}
-                token={this.session?.token ?? ''}
-                updateCore={this.props.core.update.bind(this.props.core)}
-                sessionSetupError={this.sessionSetupError}
+                endpoints={core.session?.configuration?.endpoints || (EMPTY_OBJECT as SetupEndpoint)}
+                token={core.session?.token ?? ''}
+                updateCore={core.update.bind(core)}
+                sessionSetupError={core.sessionSetupError}
             >
-                <CoreProvider i18n={this.i18n} loadingContext={this.loadingContext}>
+                <CoreProvider i18n={core.localization.i18n} loadingContext={core.loadingContext}>
                     {this.componentToRender && <div className="adyen-pe-component">{this.componentToRender()}</div>}
                 </CoreProvider>
             </AuthProvider>

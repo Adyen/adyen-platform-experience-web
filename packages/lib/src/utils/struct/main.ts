@@ -3,7 +3,10 @@ import { EMPTY_OBJECT } from '../value/constants';
 import { truthify } from '../value/bool';
 import { isPlainObject } from '../value/is';
 
-export const asPlainObject = <T extends Record<any, any>>(value?: any, fallback = EMPTY_OBJECT as T) => (isPlainObject<T>(value) ? value : fallback);
+export const asPlainObject = <T>(
+    value?: T,
+    fallback: T extends Record<any, any> ? T : Record<any, any> = EMPTY_OBJECT
+): NonNullable<typeof fallback> => (isPlainObject<NonNullable<typeof fallback>>(value) ? value : asPlainObject(fallback, EMPTY_OBJECT));
 
 interface _StructFrom {
     <T extends Record<any, any>, P extends object | null>(o: P, properties: { [K in keyof T]: TypedPropertyDescriptor<T[K]> }): P extends object

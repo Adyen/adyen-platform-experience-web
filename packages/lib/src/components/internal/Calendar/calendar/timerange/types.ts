@@ -4,15 +4,16 @@ import type { Struct } from '../../../../../utils/types';
 export type RangeTimestamp = number;
 export type RangeTimestampOffsets = readonly [number?, number?, number?, number?, number?, number?, number?];
 
-export type RangeTimestamps<T extends Record<any, any> = {}> = {
+type _RangeTimestamps = {
     readonly from: RangeTimestamp;
     readonly to: RangeTimestamp;
     get now(): RangeTimestamp;
     set now(timestamp: Date | RangeTimestamp | null);
     get timezone(): RestamperWithTimezone['tz']['current'];
     set timezone(timezone: RestamperWithTimezone['tz']['current'] | null);
-} & T;
+};
 
+export type RangeTimestamps<T extends Record<any, any> = {}> = _RangeTimestamps & Omit<T, keyof _RangeTimestamps>;
 export type RangeTimestampsConfig = RangeTimestampsConfigWithFromOffsets | RangeTimestampsConfigWithToOffsets | RangeTimestampsConfigWithoutOffsets;
 
 export type RangeTimestampsConfigContext = Readonly<Pick<RangeTimestamps, 'now' | 'timezone'>> & RangeTimestampsConfigRestampingContext;
