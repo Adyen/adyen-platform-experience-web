@@ -1,4 +1,4 @@
-@import '../../../style/bento-mapping';
+@use '../../../style';
 
 .adyen-pe-typography {
     // Reset preset browser margin on all elements
@@ -6,71 +6,71 @@
 
     // Caption
     &--caption {
-        font-size: var(--adyen-sdk-font-size-100);
-        font-weight: var(--adyen-sdk-font-weight-400);
-        letter-spacing: #{$adyen-pe-text-caption-letter-spacing};
-        line-height: var(--adyen-sdk-line-height-100);
+        font-size: style.token(text-caption-font-size);
+        font-weight: style.token(text-body-font-weight);
+        letter-spacing: #{style.token(text-caption-letter-spacing)};
+        line-height: style.token(text-caption-line-height);
     }
 
     &--caption-wide {
-        line-height: var(--adyen-sdk-line-height-200);
+        line-height: style.token(text-body-line-height);
     }
 
     &--caption-stronger {
-        font-weight: var(--adyen-sdk-font-weight-500);
+        font-weight: style.token(text-body-stronger-font-weight);
     }
 
     // Body
     &--body {
-        font-size: var(--adyen-sdk-font-size-200);
-        font-weight: var(--adyen-sdk-font-weight-400);
-        letter-spacing: #{$adyen-pe-text-body-letter-spacing};
-        line-height: var(--adyen-sdk-line-height-200);
+        font-size: style.token(text-body-font-size);
+        font-weight: style.token(text-body-font-weight);
+        letter-spacing: #{style.token(text-body-letter-spacing)};
+        line-height: style.token(text-body-line-height);
     }
 
     &--body-wide {
-        line-height: var(--adyen-sdk-line-height-300);
+        line-height: style.token(text-body-wide-line-height);
     }
 
     &--body-stronger {
-        font-weight: var(--adyen-sdk-font-weight-500);
+        font-weight: style.token(text-body-stronger-font-weight);
     }
 
     &--body-strongest {
-        font-weight: var(--adyen-sdk-font-weight-600);
+        font-weight: style.token(text-body-strongest-font-weight);
     }
 
     // Subtitle
     &--subtitle {
-        font-size: var(--adyen-sdk-font-size-300);
-        font-weight: var(--adyen-sdk-font-weight-500);
-        letter-spacing: #{$adyen-pe-text-subtitle-letter-spacing};
-        line-height: var(--adyen-sdk-line-height-400);
+        font-size: style.token(text-subtitle-font-size);
+        font-weight: style.token(text-body-stronger-font-weight);
+        letter-spacing: #{style.token(text-subtitle-letter-spacing)};
+        line-height: style.token(text-subtitle-line-height);
     }
 
     &--subtitle-stronger {
-        font-weight: var(--adyen-sdk-font-weight-600);
+        font-weight: style.token(text-body-strongest-font-weight);
     }
 
     // Title
     &--title {
-        font-size: var(--adyen-sdk-font-size-500);
-        font-weight: var(--adyen-sdk-font-weight-600);
-        letter-spacing: #{$adyen-pe-text-title-letter-spacing};
-        line-height: var(--adyen-sdk-line-height-500);
+        font-size: style.token(text-title-m-font-size);
+        font-weight: style.token(text-body-strongest-font-weight);
+        letter-spacing: #{style.token(text-title-letter-spacing)};
+        line-height: style.token(text-title-m-mobile-line-height);
     }
 
     &--title-m {
-        font-size: var(--adyen-sdk-font-size-500);
-        font-weight: var(--adyen-sdk-font-weight-600);
-        letter-spacing: #{$adyen-pe-text-title-m-letter-spacing};
-        line-height: var(--adyen-sdk-line-height-600);
+        font-size: style.token(text-title-m-font-size);
+        font-weight: style.token(text-body-strongest-font-weight);
+        letter-spacing: #{style.token(text-title-m-letter-spacing)};
+        line-height: style.token(text-title-m-line-height);
     }
 
     &--title-l {
-        font-size: var(--adyen-sdk-font-size-600);
-        font-weight: var(--adyen-sdk-font-weight-600);
-        letter-spacing: #{$adyen-pe-text-title-l-letter-spacing};
-        line-height: var(--adyen-sdk-line-height-700);
+        font-size: style.token(text-title-l-font-size);
+        font-weight: style.token(text-body-strongest-font-weight);
+        letter-spacing: #{style.token(text-title-l-letter-spacing)};
+        line-height: style.token(text-title-l-line-height);
     }
 }

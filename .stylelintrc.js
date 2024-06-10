@@ -4,7 +4,11 @@ module.exports = {
     syntax: 'scss',
     extends: ['stylelint-config-recommended', 'stylelint-config-sass-guidelines'],
     plugins: ['stylelint-scss'],
-    ignoreFiles: ['packages/playground/src/**/*.scss', 'packages/playground/netlify/edge-functions/proxy-requests.ts'],
+    ignoreFiles: [
+        'packages/playground/src/**/*.scss',
+        'packages/playground/netlify/edge-functions/proxy-requests.ts',
+        'packages/lib/src/style/bento/**/*.scss',
+    ],
     rules: {
         indentation: [4, { indentClosingBrace: false }],
         'max-empty-lines': 3,
