@@ -6,11 +6,11 @@ import Localization from './Localization';
 import BaseElement from '../components/external/BaseElement';
 import { EMPTY_OBJECT } from '../utils';
 
-class Core<AvailableTranslations extends LangFile[]> {
+class Core<AvailableTranslations extends LangFile[] = [], CustomTranslations extends {} = {}> {
     public static readonly version = process.env.VITE_VERSION!;
 
     public components: BaseElement<any>[] = [];
-    public options: CoreOptions<AvailableTranslations>;
+    public options: CoreOptions<AvailableTranslations, CustomTranslations>;
 
     public localization: Localization;
     public loadingContext: string;
@@ -22,7 +22,7 @@ class Core<AvailableTranslations extends LangFile[]> {
 
     // [TODO]: Change the error handling strategy.
 
-    constructor(options: CoreOptions<AvailableTranslations>) {
+    constructor(options: CoreOptions<AvailableTranslations, CustomTranslations>) {
         this.options = { environment: FALLBACK_ENV, ...options };
 
         this.isUpdatingSessionToken = false;
