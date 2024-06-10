@@ -5,11 +5,11 @@ interface AuthProviderBaseProps {
     children?: any;
     token: string;
     endpoints: SetupEndpoint;
-    sessionSetupError?: Core<any>['sessionSetupError'];
+    sessionSetupError?: Core['sessionSetupError'];
 }
 
 export interface AuthProviderProps extends AuthProviderBaseProps {
-    updateCore?: Core<any>['update'];
+    updateCore?: Core['update'];
 }
 
 export interface AuthContextProps extends AuthProviderBaseProps {
