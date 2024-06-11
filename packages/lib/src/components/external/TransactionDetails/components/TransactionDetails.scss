@@ -3,6 +3,10 @@
 @import '../../../../style/bento-mapping';
 
 .adyen-pe-transaction {
+    &--title {
+        margin-bottom: $adyen-pe-spacer-070;
+    }
+
     &--error-container {
         position: relative;
     }
