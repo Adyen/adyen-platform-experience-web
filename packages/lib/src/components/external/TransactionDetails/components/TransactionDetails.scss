@@ -42,16 +42,21 @@
         &__payment-method {
             align-items: center;
             display: flex;
-            gap: 6px;
+            gap: $adyen-pe-spacer-030;
+        }
 
-            &-detail {
-                font-weight: var(--adyen-sdk-font-weight-500);
-            }
+        &__payment-method-detail {
+            font-weight: var(--adyen-sdk-font-weight-500);
         }
 
         &__payment-method-logo-container {
             height: 22px;
             width: 32px;
+        }
+
+        &__payment-method-logo {
+            height: 100%;
+            object-fit: contain;
         }
 
         &__tag-container {
