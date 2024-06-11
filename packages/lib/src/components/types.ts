@@ -1,4 +1,4 @@
-import UIElement from './external/UIElement';
+import UIElement from './external/UIElement/UIElement';
 import { Core, CoreOptions } from '../core';
 import Analytics from '../core/Analytics';
 import Localization from '../core/Localization';

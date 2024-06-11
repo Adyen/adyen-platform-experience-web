@@ -2,18 +2,9 @@
 @import '../../../../../style/breakpoints';
 
 .adyen-pe-transactions-overview {
-    background: var(--adyen-sdk-color-background-primary);
     display: flex;
     flex-direction: column;
     gap: $adyen-pe-spacer-070;
-    padding: 12px $adyen-pe-spacer-040;
-
-    @include adyen-pe-screen-sm-and-up {
-        border: 1px solid var(--adyen-sdk-color-outline-secondary);
-        border-radius: $adyen-pe-spacer-040;
-        padding-left: $adyen-pe-spacer-070;
-        padding-right: $adyen-pe-spacer-070;
-    }
 
     &__summary {
         display: flex;

@@ -1,6 +1,6 @@
 import { TransactionDetailData } from '../../../components';
 import { Core } from '../../../core';
-import UIElement from '../UIElement';
+import UIElement from '../UIElement/UIElement';
 
 export const enum TransactionFilterParam {
     BALANCE_ACCOUNT = 'balanceAccount',
