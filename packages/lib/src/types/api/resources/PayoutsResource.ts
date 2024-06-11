@@ -5,7 +5,7 @@
 
 
 export interface paths {
-  "/v1/payouts/{payoutId}": {
+  "/v1/payouts/breakdown": {
     /**
      * Get payout details
      * @description Given a payout ID, it retrieves its details
@@ -35,34 +35,28 @@ export interface components {
        */
       value: number;
     };
+    AmountBreakdowns: {
+      adjustmentBreakdown?: components["schemas"]["AmountGroupedDTO"][];
+      fundsCapturedBreakdown?: components["schemas"]["AmountGroupedDTO"][];
+    };
     AmountGroupedDTO: {
-      fundsCapturedBreakdown: {
-        amount: components['schemas']['Amount'];
-        category: string;
-      }[]
-      adjustmentBreakdown: {
-        amount: components['schemas']['Amount'];
-        category: string;
-      }[]
+      amount?: components["schemas"]["Amount"];
+      category?: string;
     };
     /** @description Payouts made within the filters provided for given balanceAccountId */
     PayoutDTO: {
       adjustmentAmount: components["schemas"]["Amount"];
-      /** @description BalanceAccount ID */
-      balanceAccountId: string;
       /**
        * Format: date-time
        * @description Date created
        */
       createdAt: string;
       fundsCapturedAmount: components["schemas"]["Amount"];
-      /** @description ID */
-      id: string;
       payoutAmount: components["schemas"]["Amount"];
       unpaidAmount: components["schemas"]["Amount"];
     };
     PayoutResponseDTO: {
-      amountBreakdowns?: components['schemas']['AmountGroupedDTO'];
+      amountBreakdowns?: components["schemas"]["AmountBreakdowns"];
       payout?: components["schemas"]["PayoutDTO"];
     };
     /** @description Link to a different page */
@@ -100,8 +94,9 @@ export interface operations {
    */
   getPayout: {
     parameters: {
-      path: {
-        payoutId: string;
+      query: {
+        balanceAccountId: string;
+        createdAt?: string;
       };
     };
     responses: {
