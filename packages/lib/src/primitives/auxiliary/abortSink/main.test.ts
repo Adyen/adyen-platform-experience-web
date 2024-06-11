@@ -1,5 +1,13 @@
 import { describe, expect, test } from 'vitest';
-import { createAbortSink } from './main';
+import { createAbortSink, isAbortSignal } from './main';
+
+describe('isAbortSignal', () => {
+    test('should return true for only for instances of `AbortSignal`', () => {
+        expect(isAbortSignal(new AbortController().signal)).toBe(true);
+        expect(isAbortSignal({ aborted: true })).toBe(false);
+        expect(isAbortSignal()).toBe(false);
+    });
+});
 
 describe('createAbortSink', () => {
     test('should create abort sink with non-aborted signal when called without source signals', () => {

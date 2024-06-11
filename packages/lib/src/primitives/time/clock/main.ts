@@ -21,10 +21,10 @@ export const clock = (() => {
         interval = undefined;
     };
 
-    return struct({
+    return struct<Clock>({
         cancelSubscriptions: enumerable(cancelSubscriptions),
         subscribe: enumerable(subscribe),
-    }) as Clock;
+    });
 })();
 
 export default clock;

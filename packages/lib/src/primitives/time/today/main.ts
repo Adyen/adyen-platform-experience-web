@@ -69,12 +69,12 @@ export const today = (() => {
                     timestamp = tomorrowOffset = unsubscribeClock = null;
                 };
 
-                const instance = struct({
+                const instance = struct<Today>({
                     cancelSubscriptions: enumerable(cancelSubscriptions),
                     timestamp: getter(getTimestamp),
                     timezone: enumerable(tz),
                     subscribe: enumerable(subscribe),
-                }) as Today;
+                });
 
                 timezones.set(tz, instance);
                 return instance;

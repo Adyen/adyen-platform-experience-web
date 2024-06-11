@@ -90,14 +90,14 @@ export const createWatchlist = <T extends Record<string, any>>(entries: WatchLis
         return unsubscribeCallback;
     };
 
-    return struct({
+    return struct<WatchList<T>>({
         idle: getter(_isWithoutSubscriptionCallbacks),
         on: enumerable(subscriptionEventCallbacks),
-        cancelSubscriptions: enumerable(() => _notifySubscriptions(UNSUBSCRIBE_TOKEN)),
+        cancelSubscriptions: enumerable(() => _notifySubscriptions(UNSUBSCRIBE_TOKEN) as true),
         requestNotification: enumerable(() => _notifySubscriptions()),
         snapshot: getter(() => lastStateSnapshot ?? _getCurrentStateSnapshot()),
         subscribe: enumerable(subscribe),
-    }) as WatchList<T>;
+    });
 };
 
 export default createWatchlist;

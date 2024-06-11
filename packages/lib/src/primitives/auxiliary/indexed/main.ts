@@ -3,7 +3,12 @@ import { indexedProxyGetTrap, mapIteratorFactory } from './helpers';
 import type { Indexed, IndexedMapIteratorCallback } from './types';
 
 const __INDEXED_PROTO__ = Object.freeze(
-    struct({
+    struct<
+        Readonly<{
+            [Symbol.iterator]: (this: Indexed) => Generator<any>;
+            map: Indexed['map'];
+        }>
+    >({
         [Symbol.iterator]: {
             value(this: Indexed) {
                 return mapIteratorFactory.call(this);
@@ -14,10 +19,7 @@ const __INDEXED_PROTO__ = Object.freeze(
                 return [...mapIteratorFactory.call(this, callback, thisArg)];
             },
         },
-    }) as Readonly<{
-        [Symbol.iterator]: (this: Indexed) => Generator<any>;
-        map: Indexed['map'];
-    }>
+    })
 );
 
 export const createIndexed = <T extends Record<any, any> = {}, V = any>(

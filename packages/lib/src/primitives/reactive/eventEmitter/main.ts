@@ -49,10 +49,10 @@ export const createEventEmitter = <Events extends EmitterEvents>() => {
         return () => _eventTarget.removeEventListener(type, _listener);
     };
 
-    return struct({
+    return struct<Emitter<Events>>({
         emit: enumerable(_emitEvent),
         on: enumerable(_onEvent),
-    }) as Emitter<Events>;
+    });
 };
 
 export default createEventEmitter;

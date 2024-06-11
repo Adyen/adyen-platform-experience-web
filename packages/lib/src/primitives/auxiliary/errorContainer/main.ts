@@ -25,12 +25,12 @@ export const createErrorContainer = <T = unknown>() => {
         _error = error;
     };
 
-    return struct({
+    return struct<ErrorContainer<T>>({
         error: getter(() => (_error === _NO_ERR ? undefined : _error)),
         hasError: getter(() => _error !== _NO_ERR),
         reset: enumerable(_resetError),
         set: enumerable(_setError),
-    }) as ErrorContainer<T>;
+    });
 };
 
 export default createErrorContainer;

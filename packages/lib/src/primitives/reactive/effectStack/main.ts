@@ -20,10 +20,10 @@ export const createEffectStack = <Effect extends (...args: any[]) => any>(effect
             }
         } as typeof fn;
 
-    return struct({
+    return struct<EffectStack<Effect>>({
         bind: enumerable(_bindFn),
         effect: enumerable(effect),
-    }) as EffectStack<Effect>;
+    });
 };
 
 export default createEffectStack;
