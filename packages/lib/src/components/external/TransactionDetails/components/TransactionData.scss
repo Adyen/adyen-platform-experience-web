@@ -1,61 +1,60 @@
 @use '../../../../style/skeleton' as skeleton;
-// stylelint-disable-next-line no-invalid-position-at-import-rule
-@import '../../../../style/bento-mapping';
+@use '../../../../style';
 
 .adyen-pe-transaction-data {
     $adyen-pe-transaction-data: &;
 
-    padding: 0 $adyen-pe-spacer-090 $adyen-pe-spacer-090;
+    padding: 0 style.token(spacer-090) style.token(spacer-090);
 
     &__section {
-        margin-bottom: 6px;
+        margin-bottom: style.token(spacer-030);
     }
 
     &__section:not(:last-child) {
-        margin-bottom: 6px;
+        margin-bottom: style.token(spacer-030);
     }
 
     &__amount {
-        color: var(--adyen-sdk-color-label-primary);
-        font-size: var(--adyen-sdk-font-size-700);
-        font-weight: var(--adyen-sdk-font-weight-600);
-        line-height: var(--adyen-sdk-line-height-800);
+        color: style.token(color-label-primary);
+        font-size: style.token(text-title-l-font-size);
+        font-weight: style.token(text-title-l-font-weight);
+        line-height: style.token(text-title-l-line-height);
     }
 
     &__amount--error {
-        color: var(--adyen-sdk-color-label-critical);
+        color: style.token(color-label-critical);
     }
 
     &__amount--pending {
-        color: var(--adyen-sdk-color-label-secondary);
+        color: style.token(color-label-secondary);
     }
 
     &__container {
-        padding-bottom: $adyen-pe-spacer-080;
+        padding-bottom: style.token(spacer-080);
     }
 
     &__payment-method {
         align-items: center;
         display: flex;
-        gap: 6px;
+        gap: style.token(spacer-030);
 
         &-detail {
-            font-weight: var(--adyen-sdk-font-weight-500);
+            font-weight: style.token(text-caption-stronger-font-weight);
         }
     }
 
     &__payment-method-logo-container {
-        height: 22px;
+        height: style.token(spacer-090);
         width: fit-content;
 
         #{$adyen-pe-transaction-data}__payment-method-logo-bank {
-            width: 32px;
+            width: style.token(spacer-100);
         }
     }
 
     &__tag-container {
         display: flex;
-        gap: 4px;
+        gap: style.token(spacer-020);
     }
 
     &__action-buttons {
@@ -64,17 +63,17 @@
     }
 
     &__label {
-        color: var(--adyen-sdk-color-label-secondary);
-        font-size: var(--adyen-sdk-font-size-200);
-        font-weight: var(--adyen-sdk-font-weight-400);
-        line-height: var(--adyen-sdk-line-height-200);
+        color: style.token(color-label-secondary);
+        font-size: style.token(text-body-font-size);
+        font-weight: style.token(text-body-font-weight);
+        line-height: style.token(text-body-line-height);
     }
 
     &__skeleton {
         @include skeleton.adyen-pe-skeleton();
         display: block;
-        height: $adyen-pe-spacer-060;
-        margin: $adyen-pe-spacer-040 0;
+        height: style.token(spacer-060);
+        margin: style.token(spacer-040) 0;
         width: 50%;
 
         &-loading-content {

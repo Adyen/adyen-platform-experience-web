@@ -1,6 +1,1 @@
-@use './bento-mapping';
-@use './variables';
-
-:root {
-    @include variables.adyen-sdk-variables;
-}
+@import './variable-generator';

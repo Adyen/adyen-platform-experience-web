@@ -1,4 +1,4 @@
-@import '../../../style/bento-mapping';
+@use '../../../style';
 
 $adyen-pe-modal-sizes: (
     'fluid': (
@@ -52,8 +52,8 @@ $adyen-pe-modal-sizes: (
 }
 
 .adyen-pe-modal {
-    background-color: var(--adyen-sdk-color-background-primary);
-    border-radius: var(--adyen-sdk-border-radius-l);
+    background-color: style.token(color-background-primary);
+    border-radius: style.token(border-radius-l);
     cursor: initial;
     opacity: 0;
     overflow-y: auto;
@@ -92,33 +92,36 @@ $adyen-pe-modal-sizes: (
 
     &__header {
         align-items: center;
-        color: var(--adyen-sdk-color-label-primary);
+        color: style.token(color-label-primary);
         display: flex;
-        font-size: var(--adyen-sdk-font-size-300);
-        font-weight: var(--adyen-sdk-font-weight-600);
+        font-size: style.token(text-subtitle-font-size);
+        font-weight: style.token(text-body-strongest-font-weight);
         justify-content: flex-end;
-        padding: 24px 24px 0;
+        padding: style.token(spacer-090) style.token(spacer-090) 0;
 
         &--with-title {
-            padding: 14px 14px 10px 16px;
+            padding: style.token(spacer-070) style.token(spacer-070) style.token(spacer-050) style.token(spacer-080);
         }
 
         &--with-border-bottom {
-            border-bottom: 1px solid var(--adyen-sdk-color-outline-secondary);
+            border-bottom: style.token(border-width-s) solid style.token(color-outline-secondary);
         }
     }
 
     &__header-icon {
-        --offset-margin: calc(1rem - 40px);
+        $margin: style.token(spacer-110);
+        --offset-margin: calc(1rem - $margin);
         --offset-position: calc(var(--offset-margin) * -1 / 2);
 
         cursor: pointer;
+        height: style.token(spacer-070);
         margin-right: var(--offset-margin);
         margin-top: var(--offset-margin);
         position: relative;
         right: var(--offset-position);
         top: var(--offset-position);
         transition: background 0.1s linear;
+        width: var(--offset-position);
 
         &:focus,
         &:active {
@@ -127,13 +130,13 @@ $adyen-pe-modal-sizes: (
     }
 
     .adyen-pe-label__text {
-        font-size: var(--adyen-sdk-font-size-200);
-        margin-bottom: $adyen-pe-spacer-020;
+        font-size: style.token(text-body-font-size);
+        margin-bottom: style.token(spacer-020);
     }
 
     &__footer {
         display: flex;
-        gap: $adyen-pe-spacer-040;
+        gap: style.token(spacer-040);
 
         .adyen-pe-button:first-child {
             margin-left: auto;

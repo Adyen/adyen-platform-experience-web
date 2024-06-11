@@ -1,7 +1,7 @@
-@import '../../../../style/bento-mapping';
+@use '../../../../style';
 
 %adyen-pe-dropdown-decoration {
-    --adyen-pe-separation-margin: #{$adyen-pe-spacer-060};
+    --adyen-pe-separation-margin: #{style.token(spacer-060)};
     display: inline-flex;
     flex: none;
 
@@ -12,11 +12,11 @@
 }
 
 %adyen-pe-dropdown-decoration--right {
-    margin-left: var(--adyen-pe-separation-margin, $adyen-pe-spacer-060);
+    margin-left: var(--adyen-pe-separation-margin, style.token(spacer-060));
 
     [dir='rtl'] & {
         margin-left: 0;
-        margin-right: var(--adyen-pe-separation-margin, $adyen-pe-spacer-060);
+        margin-right: var(--adyen-pe-separation-margin, style.token(spacer-060));
     }
 }
 
@@ -45,14 +45,18 @@
     }
 
     &.adyen-pe-button--secondary {
-        background: #fff;
-        border: 1px solid var(--adyen-sdk-color-outline-secondary);
+        background: style.token(color-background-primary);
+        border: style.token(border-width-s) solid style.token(color-outline-secondary);
         box-shadow: none;
-        color: var(--adyen-sdk-color-label-primary);
+        color: style.token(color-label-primary);
         justify-content: flex-start;
         text-decoration: none;
         user-select: none;
         width: 100%;
+
+        &:hover {
+            background-color: style.token(color-background-primary-hover);
+        }
 
         &::before {
             align-self: stretch;
@@ -76,16 +80,16 @@
         .adyen-pe-dropdown--multiselect & {
             @extend %adyen-pe-dropdown-decoration--right;
             align-items: center;
-            color: var(--adyen-sdk-color-label-secondary);
+            color: style.token(color-label-secondary);
             display: flex;
             isolation: isolate;
-            padding: 0 2px;
+            padding: 0 style.token(spacer-010);
             position: relative;
         }
 
         .adyen-pe-dropdown--multiselect &::before {
             background-color: var(--adyen-pe-background-secondary);
-            border-radius: var(--adyen-sdk-border-radius-s);
+            border-radius: style.token(border-radius-s);
             content: '';
             inset: -4px;
             position: absolute;
@@ -148,7 +152,7 @@
         position: absolute;
 
         &::placeholder {
-            color: var(--adyen-sdk-color-label-tertiary);
+            color: style.token(color-label-tertiary);
         }
 
         &:focus,
@@ -159,7 +163,7 @@
 }
 
 .adyen-pe-dropdown__list {
-    background: var(--adyen-sdk-color-background-primary);
+    background: style.token(color-background-primary);
     display: none;
     list-style: none;
     margin: 0;
@@ -182,12 +186,12 @@
     border: 0;
     cursor: pointer;
     display: flex;
-    font-size: var(--adyen-sdk-font-size-200);
-    font-weight: var(--adyen-sdk-font-weight-400);
+    font-size: style.token(text-body-font-size);
+    font-weight: style.token(text-body-font-weight);
     hyphens: auto;
-    line-height: var(--adyen-sdk-line-height-200);
+    line-height: style.token(text-body-line-height);
     outline: 0;
-    padding: $adyen-pe-spacer-040 $adyen-pe-spacer-070;
+    padding: style.token(spacer-040) style.token(spacer-070);
     transition: background 0.2s ease-out;
     user-select: none;
     word-break: break-word;
@@ -198,6 +202,7 @@
 
     &-checkbox {
         @extend %adyen-pe-dropdown-decoration;
+        color: style.token(color-background-inverse-primary);
         margin-right: var(--adyen-pe-separation-margin);
 
         .adyen-pe-dropdown:not(.adyen-pe-dropdown--multiselect) & {
@@ -206,7 +211,7 @@
     }
 
     &-checkmark {
-        --adyen-pe-separation-margin: #{$adyen-pe-spacer-070};
+        --adyen-pe-separation-margin: #{style.token(spacer-070)};
         @extend %adyen-pe-dropdown-decoration;
         @extend %adyen-pe-dropdown-decoration--right;
         min-width: 1rem;
@@ -217,31 +222,31 @@
     }
 
     &:first-child {
-        margin-top: $adyen-pe-spacer-040;
+        margin-top: style.token(spacer-040);
     }
 
     &:last-child {
-        margin-bottom: $adyen-pe-spacer-040;
+        margin-bottom: style.token(spacer-040);
     }
 
     &:not(#{$adyen-pe-self--disabled}, #{$adyen-pe-self--no-option}) {
         &:hover {
-            background: var(--adyen-sdk-color-background-secondary);
+            background: style.token(color-background-secondary);
         }
 
         &:focus,
         &:active {
-            background: var(--adyen-sdk-color-background-primary-active);
+            background: style.token(color-background-primary-active);
         }
     }
 
     &#{$adyen-pe-self--disabled} {
-        color: var(--adyen-sdk-color-label-disabled);
+        color: style.token(color-label-disabled);
         cursor: not-allowed;
     }
 
     &#{$adyen-pe-self--no-option} {
-        color: var(--adyen-sdk-color-label-secondary);
+        color: style.token(color-label-secondary);
         cursor: initial;
         justify-content: center;
     }

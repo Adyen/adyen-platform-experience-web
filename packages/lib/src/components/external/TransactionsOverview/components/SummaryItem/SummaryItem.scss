@@ -1,21 +1,22 @@
-@import '../../../../../style/bento-mapping';
+@use '../../../../../style';
+
 @import '../../../../../style/breakpoints';
 
 .adyen-pe-summary-item {
     align-items: center;
     display: flex;
-    gap: $adyen-pe-spacer-080;
+    gap: style.token(spacer-080);
     justify-content: space-between;
     width: 100%;
 
     @include adyen-pe-screen-sm-and-up {
-        gap: 50px;
+        gap: style.token(spacer-120);
     }
 
     &--body {
-        border-top: 1px solid #dbdee2;
-        margin-top: $adyen-pe-spacer-040;
-        padding-top: $adyen-pe-spacer-040;
+        border-top: style.token(border-width-s) solid style.token(color-outline-disabled);
+        margin-top: style.token(spacer-040);
+        padding-top: style.token(spacer-040);
     }
 
     &__label-container {
@@ -28,18 +29,18 @@
     }
 
     &__label {
-        color: var(--adyen-sdk-color-label-secondary);
+        color: style.token(color-label-secondary);
         width: fit-content;
     }
 
     &__amount {
-        color: var(--adyen-sdk-color-label-primary);
-        font-weight: var(--adyen-sdk-font-weight-600);
+        color: style.token(color-label-primary);
+        font-weight: style.token(text-body-strongest-font-weight);
         white-space: nowrap;
     }
 
     &__placeholder {
         display: inline-block;
-        height: 12px;
+        height: style.token(spacer-060);
     }
 }

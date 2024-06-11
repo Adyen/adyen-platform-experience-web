@@ -1,19 +1,21 @@
+@use '../../../../../style';
+
 .adyen-pe-transactions-table {
     &__amount {
         display: block;
-        font-weight: var(--adyen-sdk-font-weight-500);
+        font-weight: style.token(text-body-stronger-font-weight);
         text-align: right;
     }
 
     &__payment-method {
         align-items: center;
         display: flex;
-        gap: 6px;
+        gap: style.token(spacer-030);
     }
 
     &__payment-method-logo-container {
-        height: 22px;
-        width: 32px;
+        height: style.token(spacer-090);
+        width: style.token(spacer-100);
     }
 
     &__payment-method-logo {

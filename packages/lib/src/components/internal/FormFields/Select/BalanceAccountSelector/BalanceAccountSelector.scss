@@ -1,3 +1,7 @@
+@use '../../../../../style';
+
+$adyen-pe-body-line-height: style.token(text-body-line-height);
+
 .adyen-pe-balance-account-selector {
     max-height: 24rem;
     overflow-y: auto;
@@ -21,16 +25,16 @@
          *   = (line_height - checkmark_size) / 2
          * ----------------------------------------------------
          */
-        margin-top: calc((var(--adyen-sdk-line-height-200) - 1rem) / 2);
+        margin-top: calc(($adyen-pe-body-line-height - 1rem) / 2);
     }
 
     &__account-id {
-        color: var(--adyen-sdk-color-label-secondary);
+        color: style.token(color-label-secondary);
     }
 
     &__account-label {
         flex: auto;
-        font-weight: var(--adyen-sdk-font-weight-500);
+        font-weight: style.token(text-body-stronger-font-weight);
         overflow-x: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;

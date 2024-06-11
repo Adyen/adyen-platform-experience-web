@@ -1,14 +1,16 @@
+@use '../style';
+
 .adyen-pe {
     &-component,
     &-popover,
     &-title {
-        color: var(--adyen-sdk-color-label-primary);
+        color: style.token(color-label-primary);
     }
 
     &-title {
-        font-size: var(--adyen-sdk-font-size-700);
-        font-weight: var(--adyen-sdk-font-size-600);
-        line-height: var(--adyen-sdk-line-height-300);
-        margin: 16px 0;
+        font-size: style.token(text-title-l-font-size);
+        font-weight: style.token(text-title-l-font-size);
+        line-height: style.token(text-body-wide-line-height);
+        margin: style.token(spacer-070) 0;
     }
 }
