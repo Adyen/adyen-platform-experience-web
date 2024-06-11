@@ -7,12 +7,8 @@ describe('createDeferred', () => {
     const UNCAUGHT_EXCEPTION = 'uncaught_exception';
     const UNKNOWN_ERROR = 'unknown_error';
 
-    const throw_unknown_error = () => {
-        throw UNKNOWN_ERROR;
-    };
-
-    test('should use passthrough promise callbacks by default', async () => {
-        const deferred = createDeferred(); // will use passthrough promise callbacks
+    test('should create deferred promise handle', async () => {
+        const deferred = createDeferred();
         let currentPromise = deferred.promise;
 
         expect(await getPromiseState(currentPromise)).toBe(PromiseState.PENDING);
@@ -54,9 +50,12 @@ describe('createDeferred', () => {
         expect(await getPromiseState(currentPromise)).toBe(PromiseState.REJECTED);
     });
 
-    test('should resolve promise only once until refresh', async () => {
-        const thenCallback = vi.fn(<T>(value: T) => typeof value);
-        const deferred = createDeferred(thenCallback);
+    test('should fulfill promise only once until refresh', async () => {
+        const thenCallback = vi.fn();
+        const deferred = createDeferred();
+
+        // register then callback
+        deferred.promise.then(thenCallback);
 
         // deferred promise not yet resolved
         expect(thenCallback).toBeCalledTimes(0);
@@ -71,7 +70,7 @@ describe('createDeferred', () => {
         // deferred promise already fulfilled
         expect(thenCallback).toBeCalledTimes(1);
         expect(thenCallback).toHaveBeenLastCalledWith(5);
-        expect(await deferred.promise).toBe('number'); // typeof 5 => 'number'
+        expect(await deferred.promise).toBe(5);
         expect(await getPromiseState(deferred.promise)).toBe(PromiseState.FULFILLED);
 
         // ignored resolves
@@ -79,9 +78,10 @@ describe('createDeferred', () => {
         deferred.resolve([20]);
         deferred.resolve('100');
 
+        // then callback not called again
         expect(thenCallback).toBeCalledTimes(1);
         expect(thenCallback).toHaveBeenLastCalledWith(5);
-        expect(await deferred.promise).toBe('number'); // typeof 5 => 'number'
+        expect(await deferred.promise).toBe(5);
 
         // refresh promise
         const currentPromise = deferred.promise;
@@ -93,8 +93,11 @@ describe('createDeferred', () => {
     });
 
     test('should reject promise only once until refresh', async () => {
-        const catchCallback = vi.fn(throw_unknown_error);
-        const deferred = createDeferred(void 0, catchCallback);
+        const catchCallback = vi.fn();
+        const deferred = createDeferred();
+
+        // register catch callback
+        deferred.promise.catch(catchCallback);
 
         // deferred promise not yet resolved
         expect(catchCallback).toBeCalledTimes(0);
@@ -103,8 +106,7 @@ describe('createDeferred', () => {
         // reject current promise
         deferred.reject(UNCAUGHT_EXCEPTION);
 
-        // catchCallback => throws <UNKNOWN_ERROR>
-        await expect(async () => deferred.promise).rejects.toThrowError(UNKNOWN_ERROR);
+        await expect(async () => deferred.promise).rejects.toThrowError(UNCAUGHT_EXCEPTION);
 
         // deferred promise already rejected
         expect(catchCallback).toBeCalledTimes(1);
@@ -116,6 +118,7 @@ describe('createDeferred', () => {
         deferred.reject(new Error(UNKNOWN_ERROR));
         deferred.reject('another_exception');
 
+        // catch callback not called again
         expect(catchCallback).toBeCalledTimes(1);
         expect(catchCallback).toHaveBeenLastCalledWith(UNCAUGHT_EXCEPTION);
 
@@ -128,15 +131,15 @@ describe('createDeferred', () => {
         expect(await getPromiseState(deferred.promise)).toBe(PromiseState.PENDING);
     });
 
-    test('should chain pending promises on refresh', async () => {
+    test('should chain its pending promises on refresh', async () => {
         let catchCallbackCalls = 0;
         let thenCallbackCalls = 0;
 
         const PROMISES = Array(3).fill(ALREADY_RESOLVED_PROMISE) as [Promise<number>, Promise<number>, Promise<number>];
 
-        const catchCallback = vi.fn(throw_unknown_error);
-        const thenCallback = vi.fn((value: number) => value * value);
-        const deferred = createDeferred(thenCallback, catchCallback);
+        const catchCallback = vi.fn();
+        const thenCallback = vi.fn();
+        const deferred = createDeferred();
 
         const refreshPromises = async () => {
             PROMISES.forEach((_, index) => {
@@ -148,6 +151,9 @@ describe('createDeferred', () => {
             expect(latestPromise).toBe(deferred.promise);
             expect(latestPromise).not.toBe(secondPromise);
             expect(secondPromise).not.toBe(firstPromise);
+
+            // register callbacks
+            latestPromise.then(thenCallback, catchCallback);
 
             // deferred promise not yet resolved
             expect(catchCallback).toBeCalledTimes(catchCallbackCalls);
@@ -165,7 +171,7 @@ describe('createDeferred', () => {
         deferred.resolve(5);
 
         for (const promise of PROMISES) {
-            expect(await promise).toBe(25); // (thenCallback => 5 * 5)
+            expect(await promise).toBe(5);
             expect(await getPromiseState(promise)).toBe(PromiseState.FULFILLED);
         }
 
@@ -180,8 +186,7 @@ describe('createDeferred', () => {
         deferred.reject(UNCAUGHT_EXCEPTION);
 
         for (const promise of PROMISES) {
-            // catchCallback => throws <UNKNOWN_ERROR>
-            await expect(async () => promise).rejects.toThrowError(UNKNOWN_ERROR);
+            await expect(async () => promise).rejects.toThrowError(UNCAUGHT_EXCEPTION);
             expect(await getPromiseState(promise)).toBe(PromiseState.REJECTED);
         }
 

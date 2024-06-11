@@ -1,11 +1,8 @@
 import type { Promised } from '../../../utils/types';
 
-export interface Deferred<T extends Promised<any>, K extends Promised<any> = T> {
+export interface Deferred<T = any> {
     get promise(): Promise<T>;
-    readonly refresh: () => Deferred<T, K>;
+    readonly refresh: () => Deferred<T>;
     readonly reject: (reason?: any) => void;
-    readonly resolve: (value: K) => void;
+    readonly resolve: (value: Promised<T>) => void;
 }
-
-export type DeferredThenCallback<T extends Promised<any>, K extends Promised<any> = any> = (value: K) => T;
-export type DeferredCatchCallback<T extends Promised<any>> = (reason?: any) => T;

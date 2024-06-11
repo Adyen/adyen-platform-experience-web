@@ -1,6 +1,6 @@
 import clock from '../../time/clock';
 import { createAbortable } from '../../async/abortable';
-import { createDeferred } from '../../async/deferred';
+import { createPromisor } from '../../async/promisor';
 import { createEventEmitter } from '../../reactive/eventEmitter';
 import { isWatchlistUnsubscribeToken } from '../../reactive/watchlist';
 import { ALREADY_RESOLVED_PROMISE, boolOrFalse, falsify, isFunction, isUndefined, noop, parseDate, tryResolve } from '../../../utils';
@@ -31,7 +31,7 @@ export class SessionContext<T, HttpParams extends any[] = any[]> {
     private readonly _eventEmitter = createEventEmitter<SessionEventType>();
     private readonly _refreshAbortable = createAbortable(ERR_SESSION_REFRESH_ABORTED);
 
-    private readonly _sessionDeferred = createDeferred<T>(session => {
+    private readonly _sessionPromisor = createPromisor(function (this: SessionContext<T, HttpParams>, _, session: T) {
         this._expired = this._refreshPending = false;
         this._eventEmitter.emit(EVT_SESSION_EXPIRED_STATE_CHANGE);
         return session;
@@ -126,7 +126,7 @@ export class SessionContext<T, HttpParams extends any[] = any[]> {
     }
 
     private async _refreshSession() {
-        this._sessionDeferred.refresh();
+        this._sessionPromisor.refresh();
         this._refreshAbortable.abort();
         this._refreshAbortable.refresh();
         this._refreshCount++;
@@ -154,7 +154,7 @@ export class SessionContext<T, HttpParams extends any[] = any[]> {
 
             this._assertRefreshNotInterruptedByAbort(signal);
             await this._setupSessionClock(nextSession);
-            this._sessionDeferred.resolve((this._session = nextSession));
+            await this._sessionPromisor((this._session = nextSession));
         } finally {
             /* Finally block to ensure that control flow always reaches here. */
 
@@ -181,7 +181,7 @@ export class SessionContext<T, HttpParams extends any[] = any[]> {
 
         while (true) {
             try {
-                const session = await this._sessionDeferred.promise;
+                const session = await this._sessionPromisor.promise;
                 this._assertSessionHttp(this._specification.http);
                 return await this._specification.http(session, this._refreshAbortable.signal, ...args);
             } catch (ex) {
