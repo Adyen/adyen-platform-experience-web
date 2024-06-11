@@ -7,7 +7,7 @@ export const endpoints = (mode: string) => {
         balanceAccounts: `${baseUrl}/balanceAccounts`,
         balances: `${baseUrl}/balanceAccounts/${matchVariable}/balances`,
         payouts: `${baseUrl}/payouts`,
-        payout: `${baseUrl}/payouts/${matchVariable}`,
+        payout: `${baseUrl}/payouts/breakdown`,
         transactions: `${baseUrl}/transactions`,
         transaction: `${baseUrl}/transactions/${matchVariable}`,
         transactionsTotals: `${baseUrl}/transactions/totals`,

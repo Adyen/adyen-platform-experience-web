@@ -26,7 +26,7 @@ export const payoutsMocks = [
         if (balanceAccountId || createdSince || createdUntil) {
             payouts = payouts.filter(
                 payout =>
-                    (!balanceAccountId || payout.balanceAccountId === balanceAccountId) &&
+                    (!balanceAccountId || balanceAccountId === balanceAccountId) &&
                     (!createdSince || compareDates(payout.createdAt, createdSince, 'ge')) &&
                     (!createdUntil || compareDates(payout.createdAt, createdUntil, 'le'))
             );
@@ -43,7 +43,11 @@ export const payoutsMocks = [
             return res.networkError('Failed to connect');
         }
 
-        const matchingMock = PAYOUTS_WITH_DETAILS.find(mock => mock.payout?.id === req.params.id);
+        const matchingMock = PAYOUTS_WITH_DETAILS.find(
+            mock =>
+                mock.balanceAccountId === req.url.searchParams.get('balanceAccountId') &&
+                mock.payout?.createdAt === req.url.searchParams.get('createdAt')
+        );
 
         if (!matchingMock) {
             res(ctx.status(404), ctx.text('Cannot find matching Payout'));

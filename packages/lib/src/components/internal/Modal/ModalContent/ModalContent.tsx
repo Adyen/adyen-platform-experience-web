@@ -1,13 +1,23 @@
+import { useMemo } from 'preact/hooks';
 import { hasOwnProperty } from '../../../../utils';
 import { TransactionDetailData } from '../../../external';
 import DataOverviewDetails from '../../DataOverviewDetails/DataOverviewDetails';
-import { SelectedDetail } from '../../DataOverviewDetails/types';
+import { DetailsComponentProps, DetailsWithId, PayoutDetailsWithIdProps, SelectedDetail } from '../../DataOverviewDetails/types';
 
 const isDetailsWithoutId = (data: string | TransactionDetailData): data is TransactionDetailData => hasOwnProperty(data, 'id');
 
 function ModalContent({ type, data }: SelectedDetail) {
-    const detailProps = isDetailsWithoutId(data) ? { data: data } : { id: data };
-    return <>{detailProps && <DataOverviewDetails {...detailProps} type={type} />}</>;
+    const detailProps: DetailsComponentProps = useMemo(() => {
+        if (type === 'payout') {
+            return { ...(data as PayoutDetailsWithIdProps), type: 'payout' };
+        } else {
+            return isDetailsWithoutId(data as string | TransactionDetailData)
+                ? { data: data as TransactionDetailData, type: type }
+                : ({ id: data, type: type } as DetailsWithId);
+        }
+    }, [data, type]);
+
+    return <>{detailProps && <DataOverviewDetails {...(detailProps as DetailsComponentProps)} />}</>;
 }
 
 export default ModalContent;

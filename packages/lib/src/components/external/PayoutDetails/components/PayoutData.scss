@@ -27,18 +27,10 @@
         &--section {
             background-color: style.token(color-background-secondary);
 
-            &:not(:last-child) {
-                margin-bottom: 12px;
-            }
-
             &-amount {
                 display: flex;
                 justify-content: space-between;
-                padding: style.token(spacer-040) 0;
-            }
-
-            div:not(:last-child) {
-                margin-bottom: style.token(spacer-060);
+                padding: style.token(spacer-060) 0;
             }
         }
 
@@ -59,11 +51,11 @@
     }
 
     &--unpaid-amount {
-        border-radius: var(--adyen-sdk-border-radius-xl);
+        border-radius: style.token(border-radius-xl);
         display: flex;
         justify-content: space-between;
         margin: 20px 20px 24px;
-        outline: var(--adyen-sdk-color-outline-tertiary) 1px dashed;
+        outline: style.token(color-outline-tertiary) 1px dashed;
         padding: 8px 16px;
     }
 }

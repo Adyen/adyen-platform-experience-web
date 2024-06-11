@@ -28,7 +28,15 @@ import {
 
 type Payout = components['schemas']['PayoutDTO'];
 
-export const PayoutData = ({ payout: payoutData, isFetching }: { payout?: IPayoutDetails; isFetching?: boolean }) => {
+export const PayoutData = ({
+    balanceAccountId,
+    payout: payoutData,
+    isFetching,
+}: {
+    payout?: IPayoutDetails;
+    isFetching?: boolean;
+    balanceAccountId: string;
+}) => {
     const { payout }: { payout: Payout } = payoutData ?? EMPTY_OBJECT;
     const { i18n } = useCoreContext();
     const adjustments = useMemo(() => {
@@ -40,7 +48,7 @@ export const PayoutData = ({ payout: payoutData, isFetching }: { payout?: IPayou
                 const categoryTranslation = i18n.get(translationKey);
                 const categoryLabel = category && categoryTranslation !== translationKey ? categoryTranslation : category;
 
-                if (currentValue?.category && payoutValue) {
+                if (currentValue?.category && payoutValue && categoryLabel) {
                     const targetObj = accumulator[payoutValue < 0 ? 'subtractions' : 'additions'];
                     targetObj[categoryLabel] = payoutValue;
                 }
@@ -53,7 +61,8 @@ export const PayoutData = ({ payout: payoutData, isFetching }: { payout?: IPayou
 
     const fundsCaptured = useMemo(() => {
         return payoutData?.amountBreakdowns?.fundsCapturedBreakdown?.reduce((items, breakdown) => {
-            items[breakdown.category as TranslationKey] = breakdown.amount.value;
+            if (breakdown?.amount?.value === 0) return items;
+            items[breakdown.category as TranslationKey] = breakdown?.amount?.value;
             return items;
         }, {} as { [key in TranslationKey]?: ListValue | undefined });
     }, [payoutData]);
@@ -75,7 +84,7 @@ export const PayoutData = ({ payout: payoutData, isFetching }: { payout?: IPayou
                         </Typography>
                         <Typography variant={TypographyVariant.BODY}>{creationDate}</Typography>
                         <Typography variant={TypographyVariant.BODY} stronger>
-                            {`${i18n.get('referenceID')}: ${payout.id}`}
+                            {`${i18n.get('referenceID')}: ${balanceAccountId}`}
                         </Typography>
                     </div>
                     <div className={PD_CONTENT_CLASS}>

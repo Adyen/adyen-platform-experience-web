@@ -5,7 +5,7 @@ import '../../assets/style/style.scss';
 import { enableServerInMockedMode } from '../../endpoints/mock-server/utils';
 import sessionRequest from '../../utils/sessionRequest';
 
-const DEFAULT_PAYOUT_ID = getDefaultID('1234567890123456');
+const DEFAULT_PAYOUT_ID = getDefaultID('BA32272223222B5CTDNB66W2Z');
 
 enableServerInMockedMode()
     .then(async () => {
@@ -20,6 +20,7 @@ enableServerInMockedMode()
         const payoutDetailsComponent = new PayoutDetails({
             core: AdyenPlatform,
             id: id ?? DEFAULT_PAYOUT_ID,
+            date: '2024-06-09T00:00:00.000Z',
             title: 'payoutDetails',
             onContactSupport: () => {},
         });
