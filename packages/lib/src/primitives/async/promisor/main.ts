@@ -16,26 +16,26 @@ export const createPromisor = <T extends any, Params extends any[] = []>(
 
         _abortable.abort();
         _abortable.refresh();
+        _promise = tryResolve.call(this, factory, _abortable.signal, ...args) as Promise<T>;
 
-        let currentPromise: typeof _promise;
         let resolveDeferred: () => void;
+        const currentPromise = _promise;
 
         (async () => {
             try {
-                _promise = tryResolve.call(this, factory, _abortable.signal, ...args) as Promise<T>;
-                const value = await (currentPromise = _promise);
+                const value = await currentPromise;
                 resolveDeferred = () => _deferred.resolve(value);
             } catch (ex) {
                 resolveDeferred = () => _deferred.reject(ex);
             }
 
-            if (_promise === currentPromise!) {
+            if (_promise === currentPromise) {
                 _promise = undefined!;
                 resolveDeferred();
             }
         })();
 
-        return currentPromise!;
+        return currentPromise;
     } as Promisor<T, Params>;
 
     return Object.defineProperties(promisor, {

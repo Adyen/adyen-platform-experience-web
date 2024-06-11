@@ -34,10 +34,8 @@ describe('createPromisor', () => {
 
     test('should pass a unique abort signal for every promisor call and abort previous signals', async () => {
         const SIGNALS: AbortSignal[] = [];
-        const promisor = createPromisor(signal => {
-            /* prettier-ignore */ SIGNALS.push(signal)
-        });
 
+        const promisor = createPromisor(signal => SIGNALS.push(signal));
         const promise1 = promisor();
         const promise2 = promisor();
         const promise3 = promisor();
@@ -103,9 +101,10 @@ describe('createPromisor', () => {
     test('should reject its promise with the same reason as the last promise returned by promisor', async () => {
         let factoryCalls = 0;
 
-        const factory = vi.fn((_, value: any) => {
-            /* prettier-ignore */ throw value
+        const factory = vi.fn().mockImplementation((_, value: any) => {
+            throw value;
         });
+
         const promisor = createPromisor(factory);
         const currentPromise = promisor.promise;
 
@@ -173,7 +172,7 @@ describe('createPromisor', () => {
             .mockImplementationOnce(() => {})
             .mockResolvedValueOnce(5)
             .mockImplementation(() => {
-                /* prettier-ignore */ throw UNCAUGHT_EXCEPTION
+                throw UNCAUGHT_EXCEPTION;
             });
 
         const promisor = createPromisor(factory);

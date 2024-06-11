@@ -44,7 +44,9 @@ export const createAbortSink = (...sourceSignals: (AbortSignal | undefined)[]) =
             }
 
             // If control flow reaches here, it means none of the source signals is already aborted
-            _sourceSignals.size > 0 ? _sourceSignals.forEach(signal => signal.addEventListener(ABORT_EVENT, abort)) : disconnect();
+            if (_sourceSignals.size > 0) {
+                _sourceSignals.forEach(signal => signal.addEventListener(ABORT_EVENT, abort));
+            } else disconnect();
 
             // Mark setup as complete
             break setup;
