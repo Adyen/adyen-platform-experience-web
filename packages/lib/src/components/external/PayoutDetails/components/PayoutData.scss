@@ -35,7 +35,7 @@
         }
 
         &--card:not(:first-child) {
-            margin-top: 12px;
+            margin-bottom: style.token(spacer-060);
         }
     }
 
@@ -54,8 +54,8 @@
         border-radius: style.token(border-radius-xl);
         display: flex;
         justify-content: space-between;
-        margin: 20px 20px 24px;
+        margin: style.token(spacer-080) style.token(spacer-080) style.token(spacer-090);
         outline: style.token(color-outline-tertiary) 1px dashed;
-        padding: 8px 16px;
+        padding: style.token(spacer-040) style.token(spacer-070);
     }
 }

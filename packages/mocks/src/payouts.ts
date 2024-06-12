@@ -2,7 +2,7 @@ import type { IPayout, IPayoutDetails } from '@adyen/adyen-platform-experience-w
 
 export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string })[] = [
     {
-        balanceAccountId: 'BA32272223222B5CTDNB66W2Z',
+        balanceAccountId: '1234567890123456',
         payout: {
             fundsCapturedAmount: {
                 value: 100000,
@@ -44,7 +44,7 @@ export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string 
         },
     },
     {
-        balanceAccountId: 'BA32272223222B5CTDNB66W2Z',
+        balanceAccountId: '1234567890123456',
         payout: {
             fundsCapturedAmount: {
                 value: 300,
@@ -100,7 +100,7 @@ export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string 
         },
     },
     {
-        balanceAccountId: 'BA32272223222B5CTDNB66W2Z',
+        balanceAccountId: '1234567890123456',
         payout: {
             fundsCapturedAmount: {
                 value: 100000,
@@ -142,7 +142,7 @@ export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string 
         },
     },
     {
-        balanceAccountId: 'BA32272223222B5CTDNB66W2Z',
+        balanceAccountId: '1234567890123456',
         payout: {
             fundsCapturedAmount: {
                 value: 100000,
@@ -160,7 +160,7 @@ export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string 
                 value: 90000,
                 currency: 'EUR',
             },
-            createdAt: '2022-07-10T00:00:00.000Z',
+            createdAt: '2024-01-10T00:00:00.000Z',
         },
         amountBreakdowns: {
             fundsCapturedBreakdown: [
@@ -488,4 +488,5 @@ export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string 
 
 // TODO: Remove ts-ignore when OpenAPI contract changes payout field to non-optional
 // @ts-ignore
-export const PAYOUTS: IPayout[] = PAYOUTS_WITH_DETAILS.map(payout => payout.payout);
+export const getPayouts = balanceAccountId =>
+    PAYOUTS_WITH_DETAILS.filter(payout => balanceAccountId === payout.balanceAccountId).map(payout => payout.payout as IPayout);

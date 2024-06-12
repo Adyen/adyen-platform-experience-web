@@ -5,7 +5,7 @@ import '../../assets/style/style.scss';
 import { enableServerInMockedMode } from '../../endpoints/mock-server/utils';
 import sessionRequest from '../../utils/sessionRequest';
 
-const DEFAULT_PAYOUT_ID = getDefaultID('BA32272223222B5CTDNB66W2Z');
+const DEFAULT_PAYOUT_ID = getDefaultID('1234567890123456');
 
 enableServerInMockedMode()
     .then(async () => {

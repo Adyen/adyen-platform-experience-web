@@ -37,7 +37,7 @@
     &__header {
         border-bottom: style.token(color-outline-secondary) 1px solid;
         display: block;
-        padding: 8px 16px 4px;
+        padding: style.token(spacer-040) style.token(spacer-070) style.token(spacer-020);
         width: 100%;
     }
 

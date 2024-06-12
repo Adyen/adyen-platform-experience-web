@@ -3,7 +3,7 @@ import type { IBalanceAccountBase } from '@adyen/adyen-platform-experience-web/s
 export const BALANCE_ACCOUNTS: IBalanceAccountBase[] = [
     {
         description: 'S. Hopper - Main Account',
-        id: 'BA32272223222B5CTDNB66W2Z',
+        id: '1234567890123456',
         timeZone: 'Europe/Amsterdam',
         defaultCurrencyCode: 'EUR',
     },
