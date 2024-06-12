@@ -70,11 +70,11 @@ export const createInterval = (callback: (time: DOMHighResTimeStamp) => any, ms 
     // A frame must have already been scheduled for immediate run
     _shouldRunCallbackAsap = false;
 
-    return struct({
+    return struct<Interval>({
         cancel: enumerable(_cancel),
         delay: enumerable(ms),
         signal: enumerable(_abortController.signal),
-    }) as Interval;
+    });
 };
 
 export default createInterval;

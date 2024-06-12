@@ -45,6 +45,8 @@ export default defineConfig(({ mode }) => {
             'process.env.VITE_COMMIT_BRANCH': JSON.stringify(currentVersion.COMMIT_BRANCH),
             'process.env.VITE_ADYEN_BUILD_ID': JSON.stringify(currentVersion.ADYEN_BUILD_ID),
             'process.env.VITE_LOADING_CONTEXT': JSON.stringify(null),
+            'process.env.SESSION_AUTO_REFRESH': JSON.stringify(undefined),
+            'process.env.SESSION_MAX_AGE_MS': JSON.stringify(undefined),
         },
         test: {
             root: resolve(__dirname, './src'),

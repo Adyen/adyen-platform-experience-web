@@ -1,16 +1,16 @@
+import { useAuthContext } from '../../core/Auth';
 import { useFetch } from '../../hooks/useFetch/useFetch';
-import { useSetupEndpoint } from '../../hooks/useSetupEndpoint/useSetupEndpoint';
 import { EMPTY_OBJECT } from '../../utils';
 import { useMemo } from 'preact/hooks';
 
 const useBalanceAccounts = (balanceAccountId?: string) => {
-    const balanceAccountEndpointCall = useSetupEndpoint('getBalanceAccounts');
+    const { getBalanceAccounts: balanceAccountEndpointCall } = useAuthContext().endpoints;
 
     const { data, isFetching, error } = useFetch(
         useMemo(
             () => ({
                 fetchOptions: { enabled: !!balanceAccountEndpointCall, keepPrevData: true },
-                queryFn: async () => balanceAccountEndpointCall(EMPTY_OBJECT),
+                queryFn: async () => balanceAccountEndpointCall?.(EMPTY_OBJECT),
             }),
             [balanceAccountEndpointCall]
         )

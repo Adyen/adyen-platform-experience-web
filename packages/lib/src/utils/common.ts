@@ -10,6 +10,9 @@ type _BoundFn<T, Args extends any[]> = Args extends []
 
 export const fn: <T, Args extends any[]>(func: T, ...args: Args) => _BoundFn<T, Args> = Function.prototype.bind.bind(Function.prototype.call);
 
+// prettier-ignore
+export const constant = <T>(value?: T) => () => value;
+
 export const asyncNoop = async () => {};
 export const identity = <T>(value?: T) => value;
 export const noop = () => {};

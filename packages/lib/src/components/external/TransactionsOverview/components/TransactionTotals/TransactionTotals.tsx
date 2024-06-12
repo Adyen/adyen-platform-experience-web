@@ -1,6 +1,6 @@
-import { useSetupEndpoint } from '../../../../../hooks/useSetupEndpoint/useSetupEndpoint';
 import { useCallback, useMemo } from 'preact/hooks';
 import { EMPTY_OBJECT } from '../../../../../utils';
+import { useAuthContext } from '../../../../../core/Auth';
 import { useFetch } from '../../../../../hooks/useFetch/useFetch';
 import { OperationParameters } from '../../../../../types/api/endpoints';
 import { WithPartialField } from '../../../../../utils/types';
@@ -31,10 +31,10 @@ const TransactionTotals = memo(
         currencies,
         fullWidth,
     }: WithPartialField<TransactionTotalsProps, 'balanceAccountId' | 'minAmount' | 'maxAmount'>) => {
-        const getTransactionTotals = useSetupEndpoint('getTransactionTotals');
+        const { getTransactionTotals } = useAuthContext().endpoints;
 
         const fetchCallback = useCallback(async () => {
-            return getTransactionTotals(EMPTY_OBJECT, {
+            return getTransactionTotals?.(EMPTY_OBJECT, {
                 query: {
                     createdSince,
                     createdUntil,
@@ -49,7 +49,7 @@ const TransactionTotals = memo(
         }, [balanceAccountId, categories, createdSince, createdUntil, currencies, getTransactionTotals, maxAmount, minAmount, statuses]);
 
         const { data, isFetching } = useFetch({
-            fetchOptions: useMemo(() => ({ enabled: !!balanceAccountId }), [balanceAccountId]),
+            fetchOptions: useMemo(() => ({ enabled: !!balanceAccountId && !!getTransactionTotals }), [balanceAccountId, getTransactionTotals]),
             queryFn: fetchCallback,
         });
         const isLoading = !balanceAccountId || isFetching || isAvailableCurrenciesFetching;

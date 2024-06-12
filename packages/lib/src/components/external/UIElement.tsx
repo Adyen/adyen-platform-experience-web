@@ -1,10 +1,8 @@
-import AuthProvider from '../../core/Auth/AuthProvider';
+import { AuthProvider } from '../../core/Auth';
 import CoreProvider from '../../core/Context/CoreProvider';
 import { JSXInternal } from 'preact/src/jsx';
 import BaseElement from './BaseElement';
 import { BaseElementProps, DataOverviewComponentProps, IUIElement, UIElementProps, UIElementStatus } from '../types';
-import { SetupEndpoint } from '../../types/api/endpoints';
-import { EMPTY_OBJECT } from '../../utils';
 
 export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUIElement {
     protected componentRef: UIElement<P> | null = null;
@@ -75,15 +73,11 @@ export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUI
 
     render() {
         const core = this.props.core;
+        const updateCore = core.update.bind(core);
 
         return (
-            <AuthProvider
-                endpoints={core.session?.configuration?.endpoints || (EMPTY_OBJECT as SetupEndpoint)}
-                token={core.session?.token ?? ''}
-                updateCore={core.update.bind(core)}
-                sessionSetupError={core.sessionSetupError}
-            >
-                <CoreProvider i18n={core.localization.i18n} loadingContext={core.loadingContext}>
+            <AuthProvider session={core.session} key={performance.now()}>
+                <CoreProvider i18n={core.localization.i18n} loadingContext={core.loadingContext} updateCore={updateCore}>
                     {this.componentToRender && <div className="adyen-pe-component">{this.componentToRender()}</div>}
                 </CoreProvider>
             </AuthProvider>

@@ -7,7 +7,6 @@ import './ErrorMessageDisplay.scss';
 import { JSXInternal } from 'preact/src/jsx';
 import noResults from '../../../images/no-results.svg';
 import Button from '../Button';
-import useAuthContext from '../../../core/Auth/useAuthContext';
 
 export const IMAGE_BREAKPOINT_SIZES = {
     md: 680,
@@ -37,8 +36,7 @@ export const ErrorMessageDisplay = ({
     onContactSupport,
     translationValues,
 }: ErrorMessageDisplayProps) => {
-    const { i18n } = useCoreContext();
-    const { updateCore } = useAuthContext();
+    const { i18n, updateCore } = useCoreContext();
 
     const renderMessage = useCallback(
         (errorMessage: TranslationKey | TranslationKey[]) => {

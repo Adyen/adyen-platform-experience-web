@@ -2,8 +2,14 @@ export type Nullable<T = any> = T | null | undefined;
 export type Defined<T = any> = Exclude<T, undefined>;
 export type DefinedNullable<T = any> = Defined<Nullable<T>>;
 
+type _ExtractWithFallback<T, U> = T extends T ? Extract<T, U> : never;
+export type ExtractWithFallback<T, U> = _ExtractWithFallback<T, U> extends never ? U : _ExtractWithFallback<T, U>;
+export type GetPredicateType<Predicate, Type = unknown> = Extract<Type, ExtractWithFallback<Type, Predicate>>;
+
 export type List<T = any> = (List<T> | T)[];
-export type ListWithoutFirst<T extends any[]> = T extends [any, ...infer Rest] ? Rest : never;
+export type ListWithoutFirst<T> = T extends [any, ...infer Rest] ? Rest : [];
+
+export type PredicateType<T> = T extends (value: any) => value is infer P ? P : T extends (value: any) => asserts value is infer P ? P : never;
 
 export type Promised<T> = T | PromiseLike<T>;
 

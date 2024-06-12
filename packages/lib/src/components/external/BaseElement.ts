@@ -110,7 +110,7 @@ class BaseElement<P> {
         if (!this._node) throw new Error('Component is not mounted.');
 
         const newComponent = component || this.render();
-        render(newComponent, this._node, undefined);
+        render(newComponent, this._node);
         return this;
     }
 

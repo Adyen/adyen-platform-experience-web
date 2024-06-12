@@ -1,4 +1,4 @@
-import type { SessionResponse } from './Session/types';
+import type { SessionRequest } from './Auth';
 import type { AnalyticsOptions } from './Analytics/types';
 import type { CustomTranslations as Translations, LangFile } from './Localization/types';
 import type { KeyOfRecord, WithReplacedUnderscoreOrDash } from '../utils/types';
@@ -34,7 +34,7 @@ interface _CoreOptions<AvailableTranslations extends LangFile[] = [], CustomTran
         | (CustomTranslations extends CustomTranslations ? CreateLocalesUnionFromCustomTranslations<CustomTranslations> : never);
 
     onError?: (err: any) => any;
-    onSessionCreate: () => Promise<SessionResponse>;
+    onSessionCreate: SessionRequest;
 
     /**
      * Custom translations and localizations

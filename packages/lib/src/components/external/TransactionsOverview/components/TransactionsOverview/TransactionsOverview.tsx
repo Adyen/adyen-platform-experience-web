@@ -8,8 +8,8 @@ import DateFilter from '../../../../internal/FilterBar/filters/DateFilter/DateFi
 import FilterBar from '../../../../internal/FilterBar';
 import { DataOverviewComponentProps, ExternalUIComponentProps, FilterParam } from '../../../../types';
 import useModalDetails from '../../../../../hooks/useModalDetails/useModalDetails';
+import { useAuthContext } from '../../../../../core/Auth';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
-import { useSetupEndpoint } from '../../../../../hooks/useSetupEndpoint/useSetupEndpoint';
 import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
 import { useCursorPaginatedRecords } from '../../../../internal/Pagination/hooks';
 import { IBalanceAccountBase, ITransaction } from '../../../../../types';
@@ -22,7 +22,7 @@ import useDefaultOverviewFilterParams from '../../../../hooks/useDefaultOverview
 import useTransactionsOverviewMultiSelectionFilters from '../../hooks/useTransactionsOverviewMultiSelectionFilters';
 import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatformExperienceError';
 import { AmountFilter } from '../../../../internal/FilterBar/filters/AmountFilter/AmountFilter';
-import { BASE_CLASS, BASE_CLASS_DETAILS, SUMMARY_CLASS, SUMMARY_ITEM_CLASS } from './constants';
+import { BASE_CLASS, BASE_CLASS_DETAILS, MAX_TRANSACTIONS_DATE_RANGE_MONTHS, SUMMARY_CLASS, SUMMARY_ITEM_CLASS } from './constants';
 import { mediaQueries, useResponsiveViewport } from '../../hooks/useResponsiveViewport';
 import './TransactionsOverview.scss';
 
@@ -41,7 +41,7 @@ export const TransactionsOverview = ({
     DataOverviewComponentProps & { balanceAccounts: IBalanceAccountBase[] | undefined; isLoadingBalanceAccount: boolean }
 >) => {
     const { i18n } = useCoreContext();
-    const transactionsEndpointCall = useSetupEndpoint('getTransactions');
+    const { getTransactions: transactionsEndpointCall } = useAuthContext().endpoints;
     const { activeBalanceAccount, balanceAccountSelectionOptions, onBalanceAccountSelection } = useBalanceAccountSelection(balanceAccounts);
     const { defaultParams, nowTimestamp, refreshNowTimestamp } = useDefaultOverviewFilterParams('transactions', activeBalanceAccount);
 
@@ -49,7 +49,7 @@ export const TransactionsOverview = ({
         async ({ balanceAccount, ...pageRequestParams }: Record<FilterParam | 'cursor', string>, signal?: AbortSignal) => {
             const requestOptions = { signal, errorLevel: 'error' } as const;
 
-            return transactionsEndpointCall(requestOptions, {
+            return transactionsEndpointCall!(requestOptions, {
                 query: {
                     ...pageRequestParams,
                     statuses: listFrom<ITransaction['status']>(pageRequestParams[FilterParam.STATUSES]),
@@ -85,7 +85,7 @@ export const TransactionsOverview = ({
             onFiltersChanged: _onFiltersChanged,
             preferredLimit,
             preferredLimitOptions,
-            enabled: !!activeBalanceAccount?.id,
+            enabled: !!activeBalanceAccount?.id && !!transactionsEndpointCall,
         });
 
     const [availableCurrencies, setAvailableCurrencies] = useState<ITransaction['amount']['currency'][] | undefined>([]);
@@ -147,7 +147,7 @@ export const TransactionsOverview = ({
 
     const sinceDate = useMemo(() => {
         const date = new Date(nowTimestamp);
-        date.setMonth(date.getMonth() - 24);
+        date.setMonth(date.getMonth() - MAX_TRANSACTIONS_DATE_RANGE_MONTHS);
         return date.toString();
     }, [nowTimestamp]);
 

@@ -1,9 +1,9 @@
 import type { CoreOptions } from './types';
 import type { LangFile } from './Localization/types';
 import { FALLBACK_ENV, resolveEnvironment } from './utils';
-import Session from './Session';
-import Localization from './Localization';
+import { AuthSession } from './Auth/session/AuthSession';
 import BaseElement from '../components/external/BaseElement';
+import Localization from './Localization';
 import { EMPTY_OBJECT } from '../utils';
 
 class Core<AvailableTranslations extends LangFile[] = [], CustomTranslations extends {} = {}> {
@@ -14,70 +14,39 @@ class Core<AvailableTranslations extends LangFile[] = [], CustomTranslations ext
 
     public localization: Localization;
     public loadingContext: string;
-
-    public isUpdatingSessionToken?: boolean;
-    public onSessionCreate?: (typeof this.options)['onSessionCreate'];
-    public sessionSetupError?: boolean;
-    public session?: Session;
+    public session = new AuthSession();
 
     // [TODO]: Change the error handling strategy.
 
     constructor(options: CoreOptions<AvailableTranslations, CustomTranslations>) {
         this.options = { environment: FALLBACK_ENV, ...options };
 
-        this.isUpdatingSessionToken = false;
         this.localization = new Localization(options.locale, options.availableTranslations);
         this.loadingContext = process.env.VITE_LOADING_CONTEXT ? process.env.VITE_LOADING_CONTEXT : resolveEnvironment(this.options.environment);
         this.setOptions(options);
     }
 
-    async initialize(initSession = false): Promise<this> {
-        if (!this.sessionSetupError && (initSession || (!this.session && this.onSessionCreate))) {
-            await this.updateSession();
-        }
-
+    async initialize(): Promise<this> {
         return Promise.all([this.localization.ready]).then(() => this);
     }
-
-    public updateSession = async () => {
-        try {
-            if (this.options.onSessionCreate && !this.isUpdatingSessionToken) {
-                this.isUpdatingSessionToken = true;
-                this.session = new Session(await this.options.onSessionCreate(), this.loadingContext!);
-                await this.session?.setupSession(this.options);
-                await this.update({});
-                this.isUpdatingSessionToken = false;
-                return this;
-            }
-        } catch (error) {
-            if (this.options.onError) this.options.onError(error);
-            //TODO: this is heavy change the way to update core
-            this.sessionSetupError = true;
-            await this.update();
-            this.isUpdatingSessionToken = false;
-            return this;
-        }
-    };
 
     /**
      * Updates global configurations, resets the internal state and remounts each element.
      * @param options - props to update
-     * @param initSession - should session be initiated again
      * @returns this - the element instance
      */
-    public update = (options: Partial<typeof this.options> = EMPTY_OBJECT, initSession = false): Promise<this> => {
+    public update = async (options: Partial<typeof this.options> = EMPTY_OBJECT): Promise<this> => {
         this.setOptions(options);
+        await this.initialize();
 
-        return this.initialize(initSession).then(() => {
-            this.components.forEach(component => {
-                if (component.props.core === this) {
-                    // Update each component under this instance
-                    component.update(this.getPropsForComponent(this.options));
-                }
-            });
-
-            return this;
+        this.components.forEach(component => {
+            if (component.props.core === this) {
+                // Update each component under this instance
+                component.update(this.getPropsForComponent(this.options));
+            }
         });
+
+        return this;
     };
 
     /**
@@ -113,7 +82,9 @@ class Core<AvailableTranslations extends LangFile[] = [], CustomTranslations ext
 
         this.localization.locale = this.options?.locale;
         this.localization.customTranslations = this.options?.translations;
-        this.onSessionCreate = this.options.onSessionCreate;
+
+        this.session.loadingContext = this.loadingContext;
+        this.session.onSessionCreate = this.options.onSessionCreate;
 
         return this;
     };

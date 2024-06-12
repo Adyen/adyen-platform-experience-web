@@ -87,12 +87,12 @@ export const createReflexContainer = <T = any>(register: ReflexRegister = $globa
         _reflex = (_reflexable = currentReflexable) ? register.bind(_reflexable, _reflexAction) : createIsolatedFauxReflex(_reflexAction);
     };
 
-    return struct({
+    return struct<ReflexContainer<T>>({
         action: { get: () => _reflexAction },
         reflex: { get: () => _reflex },
         release: { value: _releaseContainer },
         update: { value: _updateContainer },
-    }) as ReflexContainer<T>;
+    });
 };
 
 export default createReflexContainer;

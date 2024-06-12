@@ -1,4 +1,4 @@
-import { BASE_CLASS, BASE_CLASS_DETAILS } from './constants';
+import { BASE_CLASS, BASE_CLASS_DETAILS, EARLIEST_PAYOUT_SINCE_DATE } from './constants';
 import { PayoutsTable } from '../PayoutsTable/PayoutsTable';
 import FilterBar from '../../../../internal/FilterBar';
 import BalanceAccountSelector from '../../../../internal/FormFields/Select/BalanceAccountSelector';
@@ -12,11 +12,10 @@ import useModalDetails from '../../../../../hooks/useModalDetails/useModalDetail
 import { IPayout } from '../../../../../types';
 import useDefaultOverviewFilterParams from '../../../../hooks/useDefaultOverviewFilterParams';
 import { DataOverviewComponentProps, ExternalUIComponentProps, FilterParam } from '../../../../types';
+import { useAuthContext } from '../../../../../core/Auth';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatformExperienceError';
-import { SuccessResponse, useSetupEndpoint } from '../../../../../hooks/useSetupEndpoint/useSetupEndpoint';
 import { IBalanceAccountBase } from '../../../../../types';
-import { EndpointsOperations } from '../../../../../types/api/endpoints';
 import { isFunction } from '../../../../../utils';
 import { useCallback, useEffect, useMemo } from 'preact/hooks';
 import { DataDetailsModal } from '../../../../internal/DataOverviewDisplay/DataDetailsModal';
@@ -37,18 +36,15 @@ export const PayoutsOverview = ({
     DataOverviewComponentProps & { balanceAccounts: IBalanceAccountBase[] | undefined; isLoadingBalanceAccount: boolean }
 >) => {
     const { i18n } = useCoreContext();
-    const payoutsEndpointCall = useSetupEndpoint('getPayouts');
+    const { getPayouts: payoutsEndpointCall } = useAuthContext().endpoints;
     const { activeBalanceAccount, balanceAccountSelectionOptions, onBalanceAccountSelection } = useBalanceAccountSelection(balanceAccounts);
     const { defaultParams, nowTimestamp, refreshNowTimestamp } = useDefaultOverviewFilterParams('payouts', activeBalanceAccount);
 
     const getPayouts = useCallback(
-        async (
-            pageRequestParams: Record<FilterParam | 'cursor', string>,
-            signal?: AbortSignal
-        ): Promise<SuccessResponse<EndpointsOperations['getPayouts']>> => {
+        async (pageRequestParams: Record<FilterParam | 'cursor', string>, signal?: AbortSignal) => {
             const requestOptions = { signal, errorLevel: 'error' } as const;
 
-            return payoutsEndpointCall(requestOptions, {
+            return payoutsEndpointCall!(requestOptions, {
                 query: {
                     ...pageRequestParams,
                     createdSince:
@@ -77,7 +73,7 @@ export const PayoutsOverview = ({
             onFiltersChanged: _onFiltersChanged,
             preferredLimit,
             preferredLimitOptions,
-            enabled: !!activeBalanceAccount?.id,
+            enabled: !!activeBalanceAccount?.id && !!payoutsEndpointCall,
         });
 
     useEffect(() => {
@@ -106,8 +102,6 @@ export const PayoutsOverview = ({
         [updateDetails]
     );
 
-    const sinceDate = useMemo(() => new Date('2024-04-16T00:00:00.000Z').toString(), []);
-
     return (
         <div className={BASE_CLASS}>
             {!hideTitle && (
@@ -127,7 +121,7 @@ export const PayoutsOverview = ({
                     filters={filters}
                     nowTimestamp={nowTimestamp}
                     refreshNowTimestamp={refreshNowTimestamp}
-                    sinceDate={sinceDate}
+                    sinceDate={EARLIEST_PAYOUT_SINCE_DATE}
                     timezone={'UTC'}
                     updateFilters={updateFilters}
                 />
