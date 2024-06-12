@@ -236,10 +236,10 @@ describe('loadTranslations()', () => {
     test('should return the passed locale if formatted properly', () => {
         loadTranslations('ca-CA', {
             'ca-CA': {
-                'status.active': 'status.active ca-CA',
+                paymentId: 'paymentId ca-CA',
             },
         }).then(translations => {
-            expect(translations['status.active']).toBe('status.active ca-CA');
+            expect(translations['paymentId']).toBe('paymentId ca-CA');
         });
     });
 });
