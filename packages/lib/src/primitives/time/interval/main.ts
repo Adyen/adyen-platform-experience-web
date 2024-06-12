@@ -17,9 +17,15 @@ import type { Interval } from './types';
  * // Don't forget to clean up:
  * interval = null;
  *
- * @param callback Callback to be executed at interval
- * @param ms Interval (in milliseconds)
- * @param runCallbackAsap Whether to execute callback as soon as possible
+ * @param callback - Callback to be executed at every of the specified fixed time interval. This callback will be
+ *     called with a {@link DOMHighResTimeStamp `DOMHighResTimeStamp`}.
+ *
+ * @param ms - The desired fixed time interval (in milliseconds). The specified value will be clamped. This parameter
+ *     is optional, and defaults to {@link DEFAULT_INTERVAL_MS `DEFAULT_INTERVAL_MS`} if omitted.
+ *
+ * @param runCallbackAsap - Whether to execute callback as soon as possible. This parameter is optional, and takes a
+ *     `boolean` value, where `true` means the `callback` will be triggered immediately when the interval is created.
+ *     This parameter defaults to `false` if omitted.
  *
  * @see [Gist by Jake Archibald](https://gist.github.com/jakearchibald/cb03f15670817001b1157e62a076fe95)
  */
