@@ -1,11 +1,11 @@
-@import '../../../style/bento-mapping';
+@use '../../../style';
 
 .adyen-pe-filter-bar {
     align-items: center;
     display: flex;
     flex-wrap: wrap;
-    gap: $adyen-pe-spacer-040;
-    padding: $adyen-pe-spacer-050 $adyen-pe-spacer-000;
+    gap: style.token(spacer-040);
+    padding: style.token(spacer-050) style.token(spacer-000);
     white-space: nowrap;
 
     .adyen-pe-button--secondary.adyen-pe-dropdown__button,
@@ -22,7 +22,7 @@
         &--has-selection {
             &,
             &:hover {
-                border: 1px solid var(--adyen-sdk-color-outline-primary-active);
+                border: style.token(border-width-s) solid style.token(color-outline-primary-active);
                 box-shadow: inset 0 0 0 1px #c9cdd3;
             }
         }
@@ -30,9 +30,9 @@
         &--active,
         &:active,
         &:focus {
-            border: 1px solid var(--adyen-sdk-color-outline-primary-active);
+            border: style.token(border-width-s) solid style.token(color-outline-primary-active);
             box-shadow: none !important;
-            outline: 1px solid var(--adyen-sdk-color-outline-primary-active);
+            outline: style.token(border-width-s) solid style.token(color-outline-primary-active);
         }
     }
 

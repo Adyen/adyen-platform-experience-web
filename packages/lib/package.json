@@ -58,6 +58,7 @@
         "format": "prettier --write 'src/**/*.{ts,js,css, scss, html}'"
     },
     "devDependencies": {
+        "@adyen/bento-design-tokens": "^1.7.1",
         "@playwright/test": "^1.38.0",
         "@preact/preset-vite": "^2.5.0",
         "@testing-library/jest-dom": "^5.16.5",

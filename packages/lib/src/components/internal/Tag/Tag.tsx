@@ -10,7 +10,7 @@ export const Tag = memo(({ variant = TagVariant.DEFAULT, label }: TagProps) => {
                 'adyen-pe-tag--default': variant === TagVariant.DEFAULT,
                 'adyen-pe-tag--warning': variant === TagVariant.WARNING,
                 'adyen-pe-tag--error': variant === TagVariant.ERROR,
-                'adyen-pe-tag--white': variant === TagVariant.WHITE,
+                'adyen-pe-tag--primary': variant === TagVariant.WHITE,
             })}
         >
             {label}

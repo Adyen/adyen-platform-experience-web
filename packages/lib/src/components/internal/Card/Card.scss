@@ -1,10 +1,12 @@
+@use '../../../style';
+
 .adyen-pe-card {
-    border-radius: var(--adyen-sdk-border-radius-m);
-    outline: var(--adyen-sdk-color-outline-primary) 1px solid;
+    border-radius: style.token(border-radius-m);
+    outline: style.token(color-outline-primary) style.token(border-width-s) solid;
     overflow: hidden;
 
     &--filled {
-        background-color: var(--adyen-sdk-color-outline-secondary);
+        background-color: style.token(color-outline-secondary);
     }
 
     &--no-outline {
@@ -16,36 +18,30 @@
     }
 
     &--with-footer {
-        padding-bottom: 16px;
+        padding-bottom: style.token(spacer-070);
     }
 
     &__body {
-        background-color: #eeeff1;
-        color: var(--adyen-sdk-color-label-primary);
-        font-weight: var(--adyen-sdk-font-weight-600);
-        line-height: var(--adyen-sdk-line-height-100);
+        background-color: style.token(color-background-tertiary);
+        color: style.token(color-label-primary);
+        font-weight: style.token(text-body-strongest-font-weight);
+        line-height: style.token(text-caption-line-height);
     }
 
     &__footer {
         display: flex;
         justify-content: flex-end;
-        padding-top: 16px;
+        padding-top: style.token(spacer-070);
     }
 
     &__header {
         display: block;
-        padding: 8px 16px 4px;
+        padding: style.token(spacer-040) style.token(spacer-070) style.token(spacer-040) style.token(spacer-070);
         width: 100%;
     }
 
     &__header-content {
         flex: 1;
-    }
-
-    &__title {
-        font-size: var(--adyen-sdk-font-size-medium);
-        font-weight: var(--adyen-sdk-font-size-300);
-        line-height: var(--adyen-sdk-line-height-300);
     }
 
     &__title-container {
@@ -55,12 +51,12 @@
 
     &__subtitle {
         align-items: center;
-        color: var(--adyen-sdk-color-gray-darker);
+        color: style.token(color-label-secondary);
         display: flex;
         flex: none;
         flex-grow: 0;
-        font-size: var(--adyen-sdk-font-size-small);
-        font-weight: var(--adyen-sdk-font-weight-regular);
-        line-height: var(--adyen-sdk-spacing-large);
+        font-size: style.token(text-body-font-size);
+        font-weight: style.token(text-body-font-weight);
+        line-height: style.token(text-body-line-height);
     }
 }

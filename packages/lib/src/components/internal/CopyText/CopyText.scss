@@ -1,3 +1,5 @@
+@use '../../../style';
+
 .adyen-pe-copy-text {
     $adyen-pe-root: &;
     align-items: center;
@@ -5,10 +7,10 @@
     text-decoration: none;
 
     span &__information {
-        color: #0070f5;
-        font-size: var(--adyen-sdk-font-size-200);
-        font-weight: var(--adyen-sdk-font-weight-400);
-        line-height: var(--adyen-sdk-line-height-200);
+        color: style.token(color-label-highlight);
+        font-size: style.token(text-body-font-size);
+        font-weight: style.token(text-body-font-weight);
+        line-height: style.token(text-body-line-height);
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
