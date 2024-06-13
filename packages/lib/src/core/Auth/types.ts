@@ -31,7 +31,7 @@ export interface SessionObject {
     readonly token: string;
 }
 
-export type SessionRequest = () => Promised<SessionObject>;
+export type SessionRequest = (signal: AbortSignal) => Promised<SessionObject>;
 
 export interface SetupResponse {
     readonly endpoints: SetupEndpoint;

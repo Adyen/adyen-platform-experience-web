@@ -1,6 +1,6 @@
 import { ERR_SESSION_EXPIRED, SessionSpecification } from '../../../primitives/context/session';
 import { createAbortSink, isAbortSignal } from '../../../primitives/auxiliary/abortSink';
-import { enumerable, getter, isPlainObject, isString, isUndefined, noop } from '../../../utils';
+import { enumerable, isPlainObject, isString, isUndefined, noop } from '../../../utils';
 import { http as _http } from '../../Http/http';
 import { ErrorTypes } from '../../Http/utils';
 import type { HttpOptions } from '../../Http/types';
@@ -15,8 +15,8 @@ export class AuthSessionSpecification implements _AuthSessionSpecification {
 
     constructor(public onSessionCreate?: SessionRequest) {
         Object.defineProperties(this, {
-            autoRefresh: enumerable(AUTO_REFRESH),
-            onRefresh: getter(() => this.onSessionCreate!, true),
+            autoRefresh: enumerable<typeof this.autoRefresh>(AUTO_REFRESH),
+            onRefresh: enumerable<typeof this.onRefresh>((_, signal) => this.onSessionCreate!(signal)),
         });
     }
 
