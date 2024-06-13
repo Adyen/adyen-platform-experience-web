@@ -1,6 +1,7 @@
 import { TranslationKey } from '../../../core/Localization/types';
 import { ITransaction } from '../../../types';
 
+//TODO: Revisit those types to find the most appropriate file
 export interface TransactionDetailsWithoutIdProps {
     type: 'transaction';
     data: TransactionDetailData;
