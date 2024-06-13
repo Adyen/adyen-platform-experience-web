@@ -11,6 +11,7 @@ export interface DataGridColumn<Item> {
     label: string;
     key: Item | string;
     position?: CellTextPosition;
+    visible?: boolean;
 }
 
 export interface DataGridProps<

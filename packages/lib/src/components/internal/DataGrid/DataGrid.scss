@@ -2,11 +2,21 @@
 @use '../../../style';
 
 .adyen-pe-data-grid {
+    --adyen-pr-data-grid-cols: #{auto-fit};
+
     $adyen-pe-data-grid: &;
     $adyen-pe-data-grid__cell: #{$adyen-pe-data-grid}__cell;
+    display: grid;
     font-size: style.token(text-body-font-size);
+    grid-template-rows: auto 1fr;
     overflow: hidden;
     text-align: left;
+
+    &__header {
+        border-bottom: style.token(border-width-s) solid style.token(color-outline-primary);
+        display: grid;
+        grid-template-columns: repeat(var(--adyen-pr-data-grid-cols), minmax(100px, 1fr));
+    }
 
     &--scrollable #{$adyen-pe-data-grid}__table-wrapper {
         overflow: auto;
@@ -36,18 +46,22 @@
         box-sizing: border-box;
         height: 100%;
         overflow: visible;
-        padding: style.token(spacer-060);
         position: relative;
+    }
+
+    &__body {
+        display: grid;
+        grid-template-columns: 1fr;
     }
 
     &__row {
         background: style.token(color-background-primary);
+        border-bottom: style.token(border-width-s) solid style.token(color-outline-primary);
+        display: grid;
+        grid-template-columns: repeat(var(--adyen-pr-data-grid-cols), minmax(100px, 1fr));
         overflow: hidden;
         vertical-align: top;
 
-        #{$adyen-pe-data-grid__cell} {
-            border-bottom: style.token(border-width-s) solid style.token(color-outline-primary);
-        }
         #{$adyen-pe-data-grid}__body {
             border-bottom: 0;
         }
@@ -72,6 +86,7 @@
         vertical-align: middle;
         white-space: nowrap;
         width: auto;
+        word-break: break-word;
 
         .adyen-pe-button--link {
             display: block;

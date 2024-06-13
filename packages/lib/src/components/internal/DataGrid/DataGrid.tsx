@@ -45,7 +45,8 @@ function DataGrid<
     const footer = useMemo(() => children.find((child: ComponentChild) => (child as any)?.['type'] === DataGridFooter), [children]);
     const emptyBody = useMemo(() => props.data?.length === 0, [props.data]);
     const showMessage = useMemo(() => !props.loading && (emptyBody || props.error), [emptyBody, props.error, props.loading]);
-
+    const visibleCols = props.columns.filter(column => column.visible !== false);
+    console.log(props.columns);
     return (
         <div
             className={classnames('adyen-pe-data-grid', {
@@ -55,14 +56,15 @@ function DataGrid<
                 'adyen-pe-data-grid--loading': props.loading,
                 'adyen-pe-data-grid--empty': emptyBody || props.error,
             })}
+            style={`--adyen-pr-data-grid-cols: ${visibleCols.length}`}
         >
             <>
                 <div className="adyen-pe-data-grid__table-wrapper">
-                    <table className="adyen-pe-data-grid__table">
-                        <thead className="adyen-pe-data-grid__head">
-                            <tr role="rowheader" className="adyen-pe-data-grid__row">
-                                {props.columns.map(item => (
-                                    <th
+                    <div role="table" className="adyen-pe-data-grid__table">
+                        <div className="adyen-pe-data-grid__head" role="rowgroup">
+                            <div role="rowheader" className="adyen-pe-data-grid__header">
+                                {visibleCols.map(item => (
+                                    <div
                                         role="columnheader"
                                         id={String(item.key)}
                                         className={classnames('adyen-pe-data-grid__cell adyen-pe-data-grid__cell--heading', {
@@ -72,13 +74,13 @@ function DataGrid<
                                         key={item.key}
                                     >
                                         {item.label}
-                                    </th>
+                                    </div>
                                 ))}
-                            </tr>
-                        </thead>
+                            </div>
+                        </div>
 
-                        <DataGridBody<Items, Columns, ClickedField, CustomCells> {...props} emptyBody={emptyBody} />
-                    </table>
+                        <DataGridBody<Items, Columns, ClickedField, CustomCells> {...props} columns={visibleCols as Columns} emptyBody={emptyBody} />
+                    </div>
                     {showMessage &&
                         (emptyBody ? (
                             <ErrorMessageDisplay

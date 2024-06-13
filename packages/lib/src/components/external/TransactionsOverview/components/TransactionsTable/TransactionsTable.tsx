@@ -41,6 +41,7 @@ export const TransactionsTable: FC<TransactionTableProps> = ({
     const [hoveredRow, setHoveredRow] = useState<undefined | number>();
     const isLoading = useMemo(() => loading || refreshing, [loading, refreshing]);
     const isSmViewport = useResponsiveViewport(mediaQueries.down.sm);
+    const fieldsHiddenInSmViewport: FieldsType[] = useMemo(() => ['transactionType'], []);
 
     const columns = useMemo(
         () =>
@@ -56,14 +57,9 @@ export const TransactionsTable: FC<TransactionTableProps> = ({
                     };
                 }
 
-                return { key, label };
-            }).filter(column => {
-                // Remove status column temporarily
-                // const fieldsHiddenInSmViewport: FieldsType[] = ['status', 'transactionType'];
-                const fieldsHiddenInSmViewport: FieldsType[] = ['transactionType'];
-                return !(isSmViewport && fieldsHiddenInSmViewport.includes(column.key));
+                return { key, label, visible: !(isSmViewport && fieldsHiddenInSmViewport.includes(key)) };
             }),
-        [availableCurrencies, hasMultipleCurrencies, i18n, isSmViewport]
+        [availableCurrencies, fieldsHiddenInSmViewport, hasMultipleCurrencies, i18n, isSmViewport]
     );
 
     const EMPTY_TABLE_MESSAGE = {
@@ -115,7 +111,11 @@ export const TransactionsTable: FC<TransactionTableProps> = ({
                             )
                         ) : null;
                     },
-                    createdAt: ({ value }) => i18n.fullDate(value),
+                    createdAt: ({ value, item }) => (
+                        <span>
+                            {i18n.fullDate(value)} {item.category === 'Fee' && i18n.fullDate(value)} {item.category === 'Fee' && i18n.fullDate(value)}
+                        </span>
+                    ),
                     amount: ({ value }) => {
                         const amount = i18n.amount(value.value, value.currency, { hideCurrency: !hasMultipleCurrencies });
                         return <span className={AMOUNT_CLASS}>{amount}</span>;
