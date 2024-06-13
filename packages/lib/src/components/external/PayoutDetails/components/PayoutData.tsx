@@ -86,7 +86,7 @@ export const PayoutData = ({
                         </Typography>
                         <Typography variant={TypographyVariant.BODY}>{creationDate}</Typography>
                         <Typography variant={TypographyVariant.BODY} stronger>
-                            {`${i18n.get('referenceID')}: ${balanceAccountId}`}
+                            {`${i18n.get('balanceAccountId')}: ${balanceAccountId}`}
                         </Typography>
                     </div>
                     <div className={PD_CONTENT_CLASS}>
@@ -111,7 +111,7 @@ export const PayoutData = ({
                             <div className={classnames(PD_SECTION_AMOUNT_CLASS, PD_SECTION_GROSS_AMOUNT_CLASS)}>
                                 <Typography variant={TypographyVariant.BODY}>{i18n.get('adjustments')}</Typography>
                                 <Typography variant={TypographyVariant.BODY}>
-                                    {i18n.amount(payout.fundsCapturedAmount.value, payout.fundsCapturedAmount.currency)}
+                                    {i18n.amount(payout.adjustmentAmount.value, payout.adjustmentAmount.currency)}
                                 </Typography>
                             </div>
                         </div>
