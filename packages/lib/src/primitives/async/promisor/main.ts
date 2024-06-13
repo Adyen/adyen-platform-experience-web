@@ -12,9 +12,8 @@ export const createPromisor = <T extends any, Params extends any[] = []>(
     const _deferred = createDeferred<T>();
 
     const promisor = function (this: any, ...args) {
-        if (isUndefined(_promise)) _deferred.refresh();
+        isUndefined(_promise) ? _deferred.refresh() : _abortable.abort();
 
-        _abortable.abort();
         _abortable.refresh();
         _promise = tryResolve.call(this, factory, _abortable.signal, ...args) as Promise<T>;
 
