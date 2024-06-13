@@ -42,20 +42,22 @@ export const PayoutData = ({
     const adjustments = useMemo(() => {
         return payoutData?.amountBreakdowns?.adjustmentBreakdown?.reduce(
             (accumulator, currentValue) => {
-                const payoutValue = currentValue?.amount?.value;
-                const category = currentValue?.category === 'unknown' ? 'Other' : currentValue?.category;
-                const translationKey = `txType.${category}` as TranslationKey;
+                const payoutValue =
+                    currentValue?.amount?.value && currentValue?.amount?.currency
+                        ? i18n.amount(currentValue?.amount?.value, currentValue?.amount?.currency)
+                        : (currentValue?.amount?.value ?? '').toString();
+                const translationKey = `${currentValue?.category}` as TranslationKey;
                 const categoryTranslation = i18n.get(translationKey);
-                const categoryLabel = category && categoryTranslation !== translationKey ? categoryTranslation : category;
+                const categoryLabel = currentValue?.category && categoryTranslation !== translationKey ? categoryTranslation : currentValue?.category;
 
                 if (currentValue?.category && payoutValue && categoryLabel) {
-                    const targetObj = accumulator[payoutValue < 0 ? 'subtractions' : 'additions'];
+                    const targetObj = accumulator[currentValue?.amount?.value && currentValue?.amount?.value < 0 ? 'subtractions' : 'additions'];
                     targetObj[categoryLabel] = payoutValue;
                 }
 
                 return accumulator;
             },
-            { subtractions: {} as Record<string, number>, additions: {} as Record<string, number> }
+            { subtractions: {} as Record<string, string>, additions: {} as Record<string, string> }
         );
     }, [i18n, payoutData]);
 
