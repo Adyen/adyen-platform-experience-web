@@ -68,7 +68,7 @@ export const TransactionData = ({ transaction, isFetching }: { transaction?: Tra
                                         name={transaction.paymentMethod ? transaction.paymentMethod.type : 'bankTransfer'}
                                         alt={transaction.paymentMethod ? transaction.paymentMethod.type : 'bankTransfer'}
                                         folder={'logos/'}
-                                        className={'adyen-pe-transactions__payment-method-logo'}
+                                        className={'adyen-pe-transaction-data__payment-method-logo'}
                                     />
                                 </div>
 

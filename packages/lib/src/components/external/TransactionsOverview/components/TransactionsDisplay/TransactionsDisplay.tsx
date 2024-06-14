@@ -11,7 +11,7 @@ import './TransactionsDisplay.scss';
 import { TransactionDisplayProps } from './types';
 import { TransactionsTable } from '../TransactionsTable/TransactionsTable';
 
-const ModalContent = lazy(() => import('../ModalContent'));
+const ModalContent = lazy(() => import('../TransactionDetailsModal/TransactionDetailsModal'));
 
 export const TransactionsDisplay: FC<TransactionDisplayProps> = ({
     availableCurrencies,

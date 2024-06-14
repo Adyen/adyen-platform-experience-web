@@ -1,14 +1,6 @@
 .adyen-pe {
     &-component,
-    &-popover,
-    &-title {
+    &-popover {
         color: var(--adyen-sdk-color-label-primary);
-    }
-
-    &-title {
-        font-size: var(--adyen-sdk-font-size-700);
-        font-weight: var(--adyen-sdk-font-size-600);
-        line-height: var(--adyen-sdk-line-height-300);
-        margin: 16px 0;
     }
 }

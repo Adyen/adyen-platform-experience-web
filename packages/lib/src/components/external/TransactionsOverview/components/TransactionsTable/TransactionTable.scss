@@ -1,3 +1,5 @@
+@import '../../../../../style/bento-mapping';
+
 .adyen-pe-transactions-table {
     &__amount {
         display: block;
@@ -8,7 +10,7 @@
     &__payment-method {
         align-items: center;
         display: flex;
-        gap: 6px;
+        gap: $adyen-pe-spacer-030;
     }
 
     &__payment-method-logo-container {

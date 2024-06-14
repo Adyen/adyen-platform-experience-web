@@ -10,6 +10,8 @@ import { useCallback, useMemo } from 'preact/hooks';
 import { ExternalUIComponentProps } from '../../../types';
 import { TransactionDetailsComponentProps, TransactionDetailsWithoutIdProps } from '../types';
 import './TransactionDetails.scss';
+import Typography from '../../../internal/Typography/Typography';
+import { TypographyVariant } from '../../../internal/Typography/types';
 
 const isTransactionWithoutId = (props: TransactionDetailsComponentProps): props is TransactionDetailsWithoutIdProps => 'transaction' in props;
 
@@ -43,7 +45,13 @@ export default function TransactionDetails(props: ExternalUIComponentProps<Trans
     const transactionData = transaction ?? data;
     return (
         <div className="adyen-pe-transaction">
-            {props.title && <div className="adyen-pe-title">{i18n.get(props.title)}</div>}
+            {props.title && (
+                <div className="adyen-pe-transaction--title">
+                    <Typography variant={TypographyVariant.TITLE} medium>
+                        {i18n.get(props.title)}
+                    </Typography>
+                </div>
+            )}
 
             {error && errorProps && (
                 <div className="adyen-pe-transaction--error-container">
