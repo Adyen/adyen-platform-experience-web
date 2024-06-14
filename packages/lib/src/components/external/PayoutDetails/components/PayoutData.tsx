@@ -5,6 +5,7 @@ import { TranslationKey } from '../../../../core/Localization/types';
 import { IPayoutDetails } from '../../../../types';
 import { components } from '../../../../types/api/resources/PayoutsResource';
 import { EMPTY_OBJECT } from '../../../../utils';
+import Accordion from '../../../internal/Accordion/Accordion';
 import Card from '../../../internal/Card/Card';
 import { DATE_FORMAT } from '../../../internal/DataOverviewDisplay/constants';
 import StructuredList from '../../../internal/StructuredList';
@@ -93,55 +94,85 @@ export const PayoutData = ({
                     </div>
                     <div className={PD_CONTENT_CLASS}>
                         <div className={PD_SECTION_CLASS}>
-                            <div className={classnames(PD_SECTION_AMOUNT_CLASS, PD_SECTION_GROSS_AMOUNT_CLASS)}>
-                                <Typography variant={TypographyVariant.BODY}>{i18n.get('fundsCaptured')}</Typography>
-                                <Typography variant={TypographyVariant.BODY}>
-                                    {i18n.amount(payout.fundsCapturedAmount.value, payout.fundsCapturedAmount.currency)}
-                                </Typography>
-                            </div>
-                            <div className={PD_SECTION_CLASS}>
-                                {fundsCaptured && Boolean(Object.keys(fundsCaptured).length) && (
-                                    <div className={PD_CARD_CLASS}>
-                                        <Card>
-                                            <StructuredList items={fundsCaptured} />
-                                        </Card>
+                            {payout?.fundsCapturedAmount?.value &&
+                                (fundsCaptured && Object.keys(fundsCaptured).length > 0 ? (
+                                    <Accordion
+                                        className={classnames(PD_SECTION_AMOUNT_CLASS, PD_SECTION_GROSS_AMOUNT_CLASS)}
+                                        headerLeft={<Typography variant={TypographyVariant.BODY}>{i18n.get('fundsCaptured')}</Typography>}
+                                        headerRight={
+                                            <Typography variant={TypographyVariant.BODY}>
+                                                {i18n.amount(payout.fundsCapturedAmount.value, payout.fundsCapturedAmount.currency)}
+                                            </Typography>
+                                        }
+                                    >
+                                        <div className={PD_SECTION_CLASS}>
+                                            {
+                                                <div className={PD_CARD_CLASS}>
+                                                    <Card>
+                                                        <StructuredList items={fundsCaptured} />
+                                                    </Card>
+                                                </div>
+                                            }
+                                        </div>
+                                    </Accordion>
+                                ) : (
+                                    <div className={PD_SECTION_CLASS}>
+                                        {
+                                            <div className={classnames(PD_SECTION_AMOUNT_CLASS, PD_SECTION_GROSS_AMOUNT_CLASS)}>
+                                                <Typography variant={TypographyVariant.BODY}>{i18n.get('fundsCaptured')}</Typography>
+                                                <Typography variant={TypographyVariant.BODY}>
+                                                    {i18n.amount(payout.fundsCapturedAmount.value, payout.fundsCapturedAmount.currency)}
+                                                </Typography>
+                                            </div>
+                                        }
                                     </div>
-                                )}
-                            </div>
+                                ))}
                         </div>
                         <div className={PD_SECTION_CLASS}>
-                            <div className={classnames(PD_SECTION_AMOUNT_CLASS, PD_SECTION_GROSS_AMOUNT_CLASS)}>
-                                <Typography variant={TypographyVariant.BODY}>{i18n.get('adjustments')}</Typography>
-                                <Typography variant={TypographyVariant.BODY}>
-                                    {i18n.amount(payout.adjustmentAmount.value, payout.adjustmentAmount.currency)}
-                                </Typography>
-                            </div>
-                        </div>
-                        <div className={PD_SECTION_CLASS}>
-                            {adjustments?.subtractions && Boolean(Object.keys(adjustments?.subtractions).length) && (
-                                <div className={PD_CARD_CLASS}>
-                                    <Card
-                                        renderHeader={
-                                            <Typography className={PD_CARD_TITLE_CLASS} variant={TypographyVariant.CAPTION} stronger>
-                                                {i18n.get('subtractions')}
-                                            </Typography>
-                                        }
-                                    >
-                                        <StructuredList items={adjustments?.subtractions} />
-                                    </Card>
-                                </div>
-                            )}
-                            {adjustments?.additions && Boolean(Object.keys(adjustments?.additions).length) && (
-                                <div className={PD_CARD_CLASS}>
-                                    <Card
-                                        renderHeader={
-                                            <Typography className={PD_CARD_TITLE_CLASS} variant={TypographyVariant.CAPTION} stronger>
-                                                {i18n.get('additions')}
-                                            </Typography>
-                                        }
-                                    >
-                                        <StructuredList items={adjustments?.additions} />
-                                    </Card>
+                            {(adjustments?.subtractions && Boolean(Object.keys(adjustments?.subtractions).length)) ||
+                            (adjustments?.additions && Boolean(Object.keys(adjustments?.additions).length)) ? (
+                                <Accordion
+                                    className={classnames(PD_SECTION_AMOUNT_CLASS, PD_SECTION_GROSS_AMOUNT_CLASS)}
+                                    headerLeft={<Typography variant={TypographyVariant.BODY}>{i18n.get('adjustments')}</Typography>}
+                                    headerRight={
+                                        <Typography variant={TypographyVariant.BODY}>
+                                            {i18n.amount(payout.adjustmentAmount.value, payout.adjustmentAmount.currency)}
+                                        </Typography>
+                                    }
+                                >
+                                    {adjustments?.subtractions && Boolean(Object.keys(adjustments?.subtractions).length) && (
+                                        <div className={PD_CARD_CLASS}>
+                                            <Card
+                                                renderHeader={
+                                                    <Typography className={PD_CARD_TITLE_CLASS} variant={TypographyVariant.CAPTION} stronger>
+                                                        {i18n.get('subtractions')}
+                                                    </Typography>
+                                                }
+                                            >
+                                                <StructuredList items={adjustments?.subtractions} />
+                                            </Card>
+                                        </div>
+                                    )}
+                                    {adjustments?.additions && Boolean(Object.keys(adjustments?.additions).length) && (
+                                        <div className={PD_CARD_CLASS}>
+                                            <Card
+                                                renderHeader={
+                                                    <Typography className={PD_CARD_TITLE_CLASS} variant={TypographyVariant.CAPTION} stronger>
+                                                        {i18n.get('additions')}
+                                                    </Typography>
+                                                }
+                                            >
+                                                <StructuredList items={adjustments?.additions} />
+                                            </Card>
+                                        </div>
+                                    )}
+                                </Accordion>
+                            ) : (
+                                <div className={classnames(PD_SECTION_AMOUNT_CLASS, PD_SECTION_GROSS_AMOUNT_CLASS)}>
+                                    <Typography variant={TypographyVariant.BODY}>{i18n.get('adjustments')}</Typography>
+                                    <Typography variant={TypographyVariant.BODY}>
+                                        {i18n.amount(payout.adjustmentAmount.value, payout.adjustmentAmount.currency)}
+                                    </Typography>
                                 </div>
                             )}
                         </div>

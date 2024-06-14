@@ -1,0 +1,27 @@
+.adyen-pe-accordion {
+    &__header {
+        align-items: center;
+        display: flex;
+        justify-content: space-between;
+        margin: 12px 0;
+        padding: 8px 0;
+        width: 100%;
+
+        button {
+            padding: 0;
+        }
+
+        &-container {
+            background-color: transparent;
+            border: 0;
+            cursor: pointer;
+            display: flex;
+        }
+
+        &-controller {
+            align-items: center;
+            display: flex;
+            gap: 2px;
+        }
+    }
+}

@@ -1,19 +1,20 @@
+import { TargetedEvent } from 'preact/compat';
+import { useClickOutside } from '../../../hooks/element/useClickOutside';
 import Button from '../Button';
 import { ButtonVariant } from '../Button/types';
 import Close from '../SVGIcons/Close';
 import useCoreContext from '../../../core/Context/useCoreContext';
-import { useCallback, useEffect, useRef } from 'preact/hooks';
+import { Ref, useCallback, useEffect, useRef } from 'preact/hooks';
 import cx from 'classnames';
-import { TargetedEvent } from 'preact/compat';
 import './Modal.scss';
 import { ModalProps } from './types';
 
-function targetIsNode(e: EventTarget | null): e is Node {
-    if (!e || !('nodeType' in e)) {
-        return false;
-    }
-    return true;
-}
+// function targetIsNode(e: EventTarget | null): e is Node {
+//     if (!e || !('nodeType' in e)) {
+//         return false;
+//     }
+//     return true;
+// }
 export default function Modal({
     title,
     children,
@@ -25,34 +26,36 @@ export default function Modal({
     size = 'fluid',
     ...props
 }: ModalProps) {
-    const modalContainerRef = useRef<HTMLDivElement>(null);
+    // const modalContainerRef = useRef<HTMLDivElement>(null);
     const { i18n } = useCoreContext();
-    const handleClickOutside = useCallback(
-        (e: TargetedEvent<Node, MouseEvent>) => {
-            if (isDismissible && isOpen && targetIsNode(e.target) && !modalContainerRef?.current?.contains(e.target)) {
-                onClose();
-            }
-        },
-        [isDismissible, isOpen, onClose]
-    );
+    const targetElement = useClickOutside(null, onClose) as Ref<HTMLDivElement | null>;
 
-    const handleEscKey = useCallback(
-        (e: KeyboardEvent) => {
-            if (e.key === 'Escape' && isOpen && isDismissible) {
-                onClose();
-            }
-        },
-        [isOpen, isDismissible, onClose]
-    );
+    // const handleClickOutside = useCallback(
+    //     (e: TargetedEvent<Node, MouseEvent>) => {
+    //         if (isDismissible && isOpen && targetIsNode(e.target) && !modalContainerRef?.current?.contains(e.target)) {
+    //             onClose();
+    //         }
+    //     },
+    //     [isDismissible, isOpen, onClose]
+    // );
 
-    useEffect(() => {
-        if (isOpen) {
-            window.addEventListener('keydown', handleEscKey);
-        } else {
-            window.removeEventListener('keydown', handleEscKey);
-        }
-        return () => window.removeEventListener('keydown', handleEscKey);
-    }, [isOpen, handleEscKey]);
+    // const handleEscKey = useCallback(
+    //     (e: KeyboardEvent) => {
+    //         if (e.key === 'Escape' && isOpen && isDismissible) {
+    //             onClose();
+    //         }
+    //     },
+    //     [isOpen, isDismissible, onClose]
+    // );
+
+    // useEffect(() => {
+    //     if (isOpen) {
+    //         window.addEventListener('keydown', handleEscKey);
+    //     } else {
+    //         window.removeEventListener('keydown', handleEscKey);
+    //     }
+    //     return () => window.removeEventListener('keydown', handleEscKey);
+    // }, [isOpen, handleEscKey]);
 
     return (
         <>
@@ -66,7 +69,6 @@ export default function Modal({
                     role="dialog"
                     aria-modal="true"
                     aria-hidden={!open}
-                    onClick={handleClickOutside}
                     {...props}
                 >
                     <div
@@ -77,7 +79,7 @@ export default function Modal({
                             'adyen-pe-modal--extra-large': size === 'extra-large',
                             'adyen-pe-modal--full-screen': size === 'full-screen',
                         })}
-                        ref={modalContainerRef}
+                        ref={targetElement}
                     >
                         <div
                             className={cx('adyen-pe-modal__header', {
