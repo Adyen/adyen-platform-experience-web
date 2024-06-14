@@ -94,7 +94,7 @@ export const PayoutData = ({
                     </div>
                     <div className={PD_CONTENT_CLASS}>
                         <div className={PD_SECTION_CLASS}>
-                            {payout?.fundsCapturedAmount?.value &&
+                            {payout?.fundsCapturedAmount &&
                                 (fundsCaptured && Object.keys(fundsCaptured).length > 0 ? (
                                     <Accordion
                                         className={classnames(PD_SECTION_AMOUNT_CLASS, PD_SECTION_GROSS_AMOUNT_CLASS)}
