@@ -1,3 +1,4 @@
+import { TransactionDetailsWithIdProps } from '../../internal/DataOverviewDetails/types';
 import { _UIComponentProps } from '../../types';
 import UIElement from '../UIElement';
 import DataOverviewDetails from '../../internal/DataOverviewDetails/DataOverviewDetails';
@@ -13,7 +14,7 @@ export class TransactionsElement extends UIElement<DetailsComponentProps> {
     }
 
     public componentToRender = () => {
-        return <DataOverviewDetails {...this.props} type={'transaction'} />;
+        return <DataOverviewDetails {...(this.props as DetailsComponentProps)} type={'transaction'} />;
     };
 }
 

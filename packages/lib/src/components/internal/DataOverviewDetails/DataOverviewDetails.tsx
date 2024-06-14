@@ -11,18 +11,18 @@ import { TransactionData } from '../../external/TransactionDetails/components/Tr
 import { ExternalUIComponentProps } from '../../types';
 import { getErrorMessage } from '../../utils/getErrorMessage';
 import { ErrorMessageDisplay } from '../ErrorMessageDisplay/ErrorMessageDisplay';
-import { DetailsComponentProps, DetailsWithoutIdProps, TransactionDetailData } from './types';
+import { DetailsComponentProps, DetailsWithId, TransactionDetailData } from './types';
 
 const ENDPOINTS_BY_TYPE = {
     transaction: 'getTransaction',
     payout: 'getPayout',
 } as const;
 
-const isDetailsWithoutId = (props: DetailsComponentProps): props is DetailsWithoutIdProps => 'data' in props;
+const isDetailsWithId = (props: DetailsComponentProps): props is DetailsWithId => !('data' in props);
 
 export default function DataOverviewDetails(props: ExternalUIComponentProps<DetailsComponentProps>) {
-    const details = useMemo(() => (isDetailsWithoutId(props) ? props.data : null), [props]);
-    const dataId = useMemo(() => (!isDetailsWithoutId(props) ? props.id : null), [props]);
+    const details = useMemo(() => (isDetailsWithId(props) ? null : props.data), [props]);
+    const dataId = useMemo(() => (isDetailsWithId(props) ? props.id : null), [props]);
 
     const { i18n } = useCoreContext();
     const getDetail = useAuthContext().endpoints[ENDPOINTS_BY_TYPE[props.type]] as any; // [TODO]: Fix type and remove 'as any'
@@ -32,16 +32,19 @@ export default function DataOverviewDetails(props: ExternalUIComponentProps<Deta
             () => ({
                 fetchOptions: { enabled: !!dataId && !!getDetail },
                 queryFn: async () => {
-                    const pathParam = props.type === 'transaction' ? 'transactionId' : 'payoutId';
+                    const queryParam =
+                        props.type === 'transaction'
+                            ? {
+                                path: { transactionId: dataId },
+                            }
+                            : {
+                                query: { balanceAccountId: dataId, createdAt: props.date },
+                            };
 
-                    const params = {
-                        path: { [pathParam]: dataId! },
-                    } as Parameters<NonNullable<typeof getDetail>>[1];
-
-                    return getDetail!(EMPTY_OBJECT, params);
+                    return getDetail!(EMPTY_OBJECT, { ...queryParam });
                 },
             }),
-            [dataId, getDetail, props.type]
+            [dataId, getDetail, props]
         )
     );
 
@@ -66,7 +69,9 @@ export default function DataOverviewDetails(props: ExternalUIComponentProps<Deta
             {props.type === 'transaction' && detailsData && (
                 <TransactionData transaction={detailsData as TransactionDetailData} isFetching={isFetching} />
             )}
-            {props.type === 'payout' && detailsData && <PayoutData payout={detailsData as IPayoutDetails} isFetching={isFetching} />}
+            {props.type === 'payout' && detailsData && (
+                <PayoutData balanceAccountId={dataId!} payout={detailsData as IPayoutDetails} isFetching={isFetching} />
+            )}
         </div>
     );
 }

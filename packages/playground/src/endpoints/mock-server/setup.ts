@@ -36,7 +36,7 @@ export const setupMock = [
                     },
                     getPayout: {
                         method: 'GET',
-                        url: 'payouts/{payoutId}',
+                        url: 'payouts/breakdown',
                     },
                     getPayouts: {
                         method: 'GET',

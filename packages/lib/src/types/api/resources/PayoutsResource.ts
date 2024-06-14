@@ -5,7 +5,7 @@
 
 
 export interface paths {
-  "/v1/payouts/{payoutId}": {
+  "/v1/payouts/breakdown": {
     /**
      * Get payout details
      * @description Given a payout ID, it retrieves its details
@@ -25,7 +25,7 @@ export type webhooks = Record<string, never>;
 
 export interface components {
   schemas: {
-    /** @description Net amount */
+    /** @description Unpaid amount */
     Amount: {
       /** @description The three-character [ISO currency code](https://docs.adyen.com/development-resources/currency-codes). */
       currency: string;
@@ -35,27 +35,28 @@ export interface components {
        */
       value: number;
     };
+    AmountBreakdowns: {
+      adjustmentBreakdown?: components["schemas"]["AmountGroupedDTO"][];
+      fundsCapturedBreakdown?: components["schemas"]["AmountGroupedDTO"][];
+    };
     AmountGroupedDTO: {
-      amount: components["schemas"]["Amount"];
-      category: string;
+      amount?: components["schemas"]["Amount"];
+      category?: string;
     };
     /** @description Payouts made within the filters provided for given balanceAccountId */
     PayoutDTO: {
-      /** @description BalanceAccount ID */
-      balanceAccountId: string;
-      chargesAmount: components["schemas"]["Amount"];
+      adjustmentAmount: components["schemas"]["Amount"];
       /**
        * Format: date-time
        * @description Date created
        */
       createdAt: string;
-      grossAmount: components["schemas"]["Amount"];
-      /** @description ID */
-      id: string;
-      netAmount: components["schemas"]["Amount"];
+      fundsCapturedAmount: components["schemas"]["Amount"];
+      payoutAmount: components["schemas"]["Amount"];
+      unpaidAmount: components["schemas"]["Amount"];
     };
     PayoutResponseDTO: {
-      amountBreakdown?: components["schemas"]["AmountGroupedDTO"][];
+      amountBreakdowns?: components["schemas"]["AmountBreakdowns"];
       payout?: components["schemas"]["PayoutDTO"];
     };
     /** @description Link to a different page */
@@ -93,8 +94,9 @@ export interface operations {
    */
   getPayout: {
     parameters: {
-      path: {
-        payoutId: string;
+      query: {
+        balanceAccountId: string;
+        createdAt?: string;
       };
     };
     responses: {

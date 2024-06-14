@@ -13,7 +13,6 @@ import {
 import { CardProps } from './types';
 import { PropsWithChildren } from 'preact/compat';
 import classNames from 'classnames';
-
 import './Card.scss';
 
 const Card = ({
@@ -21,23 +20,25 @@ const Card = ({
     subTitle,
     children,
     footer,
+    el,
     renderHeader,
     renderFooter,
     filled,
     noOutline,
     classNameModifiers,
 }: PropsWithChildren<CardProps>) => {
+    const Tag = el || 'header';
     return (
         <section className={classNames(CARD_BASE_CLASS, { [CARD_FILLED]: filled, [CARD_NO_OUTLINE]: noOutline }, classNameModifiers)}>
             {(title || renderHeader) && (
-                <header className={CARD_HEADER}>
+                <Tag className={CARD_HEADER}>
                     {(title || renderHeader) && (
                         <div className={CARD_HEADER_CONTENT}>
                             {renderHeader ? renderHeader : <span className={CARD_TITLE}>{title}</span>}
                             {subTitle && <div className={CARD_SUBTITLE}>{subTitle}</div>}
                         </div>
                     )}
-                </header>
+                </Tag>
             )}
             <div
                 className={classNames(CARD_BODY, {

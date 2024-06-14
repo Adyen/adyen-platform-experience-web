@@ -13,7 +13,7 @@ import Pagination from '../../../../internal/Pagination';
 import { TranslationKey } from '../../../../../core/Localization/types';
 import { FC } from 'preact/compat';
 
-const AMOUNT_FIELDS = ['grossAmount', 'chargesAmount', 'netAmount'] as const;
+const AMOUNT_FIELDS = ['fundsCapturedAmount', 'adjustmentAmount', 'payoutAmount'] as const;
 const FIELDS = ['createdAt', ...AMOUNT_FIELDS] as const;
 
 const _isAmountFieldKey = (key: (typeof FIELDS)[number]): key is (typeof AMOUNT_FIELDS)[number] => {
@@ -84,13 +84,13 @@ export const PayoutsTable: FC<PayoutsTableProps> = ({
                 emptyTableMessage={EMPTY_TABLE_MESSAGE}
                 customCells={{
                     createdAt: ({ value }) => value && i18n.fullDate(value),
-                    grossAmount: ({ value }) => {
+                    fundsCapturedAmount: ({ value }) => {
                         return value && <span>{i18n.amount(value.value, value.currency, { hideCurrency: true })}</span>;
                     },
-                    chargesAmount: ({ value }) => {
+                    adjustmentAmount: ({ value }) => {
                         return value && <span>{i18n.amount(value.value, value.currency, { hideCurrency: true })}</span>;
                     },
-                    netAmount: ({ value }) => {
+                    payoutAmount: ({ value }) => {
                         return value && <span>{i18n.amount(value.value, value.currency, { hideCurrency: true })}</span>;
                     },
                 }}

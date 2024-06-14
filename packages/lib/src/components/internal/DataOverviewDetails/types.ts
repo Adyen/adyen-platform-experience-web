@@ -1,19 +1,29 @@
 import { TranslationKey } from '../../../core/Localization/types';
-import { IPayoutDetails, ITransaction } from '../../../types';
+import { ITransaction } from '../../../types';
 
-export interface DetailsWithoutIdProps {
-    type: 'payout' | 'transaction';
-    data: TransactionDetailData | IPayoutDetails;
+//TODO: Revisit those types to find the most appropriate file
+export interface TransactionDetailsWithoutIdProps {
+    type: 'transaction';
+    data: TransactionDetailData;
     title?: TranslationKey;
 }
 
-export interface DetailsWithIdProps {
-    type: 'payout' | 'transaction';
+export interface PayoutDetailsWithIdProps {
+    type: 'payout';
+    id: string;
+    date: string;
+    title?: TranslationKey;
+}
+
+export interface TransactionDetailsWithIdProps {
+    type: 'transaction';
     id: string;
     title?: TranslationKey;
 }
 
-export type DetailsComponentProps = DetailsWithoutIdProps | DetailsWithIdProps;
+export type DetailsWithId = TransactionDetailsWithIdProps | PayoutDetailsWithIdProps;
+
+export type DetailsComponentProps = TransactionDetailsWithoutIdProps | DetailsWithId;
 
 export type TransactionDetailData = ITransaction & BalanceAccountProps;
 
@@ -23,5 +33,5 @@ export interface BalanceAccountProps {
 
 export type SelectedDetail = {
     type: 'payout' | 'transaction';
-    data: string | TransactionDetailData;
+    data: string | TransactionDetailData | PayoutDetailsWithIdProps;
 };
