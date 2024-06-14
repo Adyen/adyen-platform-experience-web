@@ -34,7 +34,7 @@ export class AuthSessionSpecification implements _AuthSessionSpecification {
         let expiresAt: number;
 
         try {
-            ({ iat: issuedAt, exp: expiresAt } = JSON.parse(atob(session.token.split('.')[1]!)));
+            ({ iat: issuedAt, exp: expiresAt } = JSON.parse(atob(session?.token.split('.')[1]!)));
         } catch {
             /* ignore malformed token errors */
             issuedAt = Date.now();

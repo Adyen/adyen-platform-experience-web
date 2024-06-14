@@ -30,9 +30,11 @@ export const createSessionRefreshManager = <T extends any>(emitter: Emitter<Sess
 
         if (isUndefined(_refreshingPromise)) {
             _refreshingPromise = (async () => {
-                // Await an already resolved promise to defer dispatching `EVT_SESSION_REFRESHING_STATE_CHANGE` event
-                // To ensure that pending `EVT_SESSION_EXPIRED_STATE_CHANGE` events get dispatched first
-                if (_refreshingEventPending) await ALREADY_RESOLVED_PROMISE;
+                if (_refreshingEventPending) {
+                    // Defer dispatching `EVT_SESSION_REFRESHING_STATE_CHANGE` event
+                    // Ensuring that pending `EVT_SESSION_EXPIRED_STATE_CHANGE` events get dispatched first
+                    await ALREADY_RESOLVED_PROMISE;
+                }
 
                 emitter.emit(EVT_SESSION_REFRESHING_STATE_CHANGE);
             })();
@@ -58,8 +60,8 @@ export const createSessionRefreshManager = <T extends any>(emitter: Emitter<Sess
                 _refreshingEventPending = true;
                 _refreshingPromise = undefined;
 
-                // Await an already resolved promise to defer dispatching `EVT_SESSION_REFRESHING_STATE_CHANGE` event
-                // To ensure that pending `EVT_SESSION_EXPIRED_STATE_CHANGE` events get dispatched first
+                // Defer dispatching `EVT_SESSION_REFRESHING_STATE_CHANGE` event
+                // Ensuring that pending `EVT_SESSION_EXPIRED_STATE_CHANGE` events get dispatched first
                 await ALREADY_RESOLVED_PROMISE;
 
                 _refreshingEventPending = false;
