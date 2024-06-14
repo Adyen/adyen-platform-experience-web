@@ -12,6 +12,7 @@ export interface DataGridColumn<Item> {
     key: Item | string;
     position?: CellTextPosition;
     visible?: boolean;
+    minWidth?: number;
 }
 
 export interface DataGridProps<
@@ -55,4 +56,9 @@ export interface InteractiveBodyProps<
     columns: DataGridProps<Items, Columns, ClickedField, CustomCells>['columns'];
     customCells: DataGridProps<Items, Columns, ClickedField, CustomCells>['customCells'];
     onRowHover?: (index?: number) => void;
+}
+
+export interface DataGridContextProps {
+    registerCells: (props: { column: string; width: number }) => void;
+    getMinWidthByColum: (column: string) => number | undefined;
 }

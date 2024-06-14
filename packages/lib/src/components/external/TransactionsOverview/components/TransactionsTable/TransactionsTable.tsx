@@ -107,22 +107,18 @@ export const TransactionsTable: FC<TransactionTableProps> = ({
                             i18n.has(tooltipKey) ? (
                                 <Category value={item.category} isContainerHovered={rowIndex === hoveredRow} />
                             ) : (
-                                <span>{item.category}</span>
+                                item.category
                             )
                         ) : null;
                     },
-                    createdAt: ({ value, item }) => (
-                        <span>
-                            {i18n.fullDate(value)} {item.category === 'Fee' && i18n.fullDate(value)} {item.category === 'Fee' && i18n.fullDate(value)}
-                        </span>
-                    ),
+                    createdAt: ({ value }) => <span>{i18n.fullDate(value)}</span>,
                     amount: ({ value }) => {
                         const amount = i18n.amount(value.value, value.currency, { hideCurrency: !hasMultipleCurrencies });
                         return <span className={AMOUNT_CLASS}>{amount}</span>;
                     },
                     paymentMethod: ({ item }) => {
                         return (
-                            <>
+                            <div>
                                 {item.paymentMethod || item.bankAccount ? (
                                     <div className={PAYMENT_METHOD_CLASS}>
                                         <div className={PAYMENT_METHOD_LOGO_CONTAINER_CLASS}>
@@ -140,7 +136,7 @@ export const TransactionsTable: FC<TransactionTableProps> = ({
                                 ) : (
                                     <Tag label={i18n.get('noData')} variant={TagVariant.WHITE} />
                                 )}
-                            </>
+                            </div>
                         );
                     },
                 }}

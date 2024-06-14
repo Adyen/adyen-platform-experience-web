@@ -1,4 +1,4 @@
-import { ComponentChild, toChildArray } from 'preact';
+import { ComponentChild, h, toChildArray } from 'preact';
 import classnames from 'classnames';
 import './DataGrid.scss';
 import { TableBody } from './components/TableBody';
@@ -8,6 +8,9 @@ import SkeletonBody from './components/SkeletonBody';
 import { ErrorMessageDisplay } from '../ErrorMessageDisplay/ErrorMessageDisplay';
 import { useMemo } from 'preact/hooks';
 import emptyTableIcon from '../../../images/no-data-female.svg';
+import { DataGridProvider } from './utils/DataGridProvider';
+import { useDataGridContext } from './hooks/useDataGridContext';
+import { TableHeaderCell } from './components/TableHeaderCell';
 
 export const INITIAL_STATE = Object.freeze({
     activeIndex: -1,
@@ -41,12 +44,32 @@ function DataGrid<
     ClickedField extends keyof Items[number],
     CustomCells extends CustomCell<Items, Columns, Columns[number]>
 >({ errorDisplay, ...props }: DataGridProps<Items, Columns, ClickedField, CustomCells>) {
+    return (
+        <div style={{ width: '100%' }}>
+            <DataGridProvider>
+                <DataGridTable {...props} />
+            </DataGridProvider>
+        </div>
+    );
+}
+
+function DataGridTable<
+    Items extends Array<any>,
+    Columns extends Array<DataGridColumn<Extract<keyof Items[number], string>>>,
+    ClickedField extends keyof Items[number],
+    CustomCells extends CustomCell<Items, Columns, Columns[number]>
+>({ errorDisplay, ...props }: DataGridProps<Items, Columns, ClickedField, CustomCells>) {
     const children = useMemo(() => toChildArray(props.children), [props.children]);
     const footer = useMemo(() => children.find((child: ComponentChild) => (child as any)?.['type'] === DataGridFooter), [children]);
     const emptyBody = useMemo(() => props.data?.length === 0, [props.data]);
     const showMessage = useMemo(() => !props.loading && (emptyBody || props.error), [emptyBody, props.error, props.loading]);
-    const visibleCols = props.columns.filter(column => column.visible !== false);
-    console.log(props.columns);
+    const { getMinWidthByColum } = useDataGridContext();
+
+    const visibleCols = props.columns
+        .filter(column => column.visible !== false)
+        .map(column => ({ ...column, minWidth: getMinWidthByColum(column.key) }));
+
+    const cellWidths = visibleCols.map(col => `minmax(${(col.minWidth || 100) + 40}px, 1fr)`).join(' ');
     return (
         <div
             className={classnames('adyen-pe-data-grid', {
@@ -56,25 +79,15 @@ function DataGrid<
                 'adyen-pe-data-grid--loading': props.loading,
                 'adyen-pe-data-grid--empty': emptyBody || props.error,
             })}
-            style={`--adyen-pr-data-grid-cols: ${visibleCols.length}`}
+            style={`--adyen-pe-data-grid-cols: ${visibleCols.length}; --adyen-pe-data-grid-cells: ${cellWidths};`}
         >
             <>
                 <div className="adyen-pe-data-grid__table-wrapper">
                     <div role="table" className="adyen-pe-data-grid__table">
                         <div className="adyen-pe-data-grid__head" role="rowgroup">
-                            <div role="rowheader" className="adyen-pe-data-grid__header">
+                            <div role="rowheader" className="adyen-pe-data-grid__header" style={props.loading ? { width: '100%' } : {}}>
                                 {visibleCols.map(item => (
-                                    <div
-                                        role="columnheader"
-                                        id={String(item.key)}
-                                        className={classnames('adyen-pe-data-grid__cell adyen-pe-data-grid__cell--heading', {
-                                            'adyen-pe-data-grid__cell--right': item.position === CellTextPosition.RIGHT,
-                                            'adyen-pe-data-grid__cell--center': item.position === CellTextPosition.CENTER,
-                                        })}
-                                        key={item.key}
-                                    >
-                                        {item.label}
-                                    </div>
+                                    <TableHeaderCell key={item.key} label={item.label} position={item.position} cellKey={item.key} />
                                 ))}
                             </div>
                         </div>
@@ -108,7 +121,11 @@ function DataGridBody<
     const showSkeleton = useMemo(() => props.loading || props.emptyBody || props.error, [props.emptyBody, props.error, props.loading]);
 
     return (
-        <tbody className={classnames('adyen-pe-data-grid__body')}>
+        <div
+            role="rowgroup"
+            className={classnames('adyen-pe-data-grid__body')}
+            style={showSkeleton && { display: 'grid', gridTemplateColumns: '1fr' }}
+        >
             {showSkeleton ? (
                 <SkeletonBody columnsNumber={props.columns.length} loading={props.loading} />
             ) : props.onRowClick ? (
@@ -127,7 +144,7 @@ function DataGridBody<
                     columns={props.columns}
                 />
             )}
-        </tbody>
+        </div>
     );
 }
 
