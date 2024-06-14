@@ -32,7 +32,7 @@ describe('createPromisor', () => {
         vi.useRealTimers();
     });
 
-    test('should pass a unique abort signal for every promisor call and abort previous signals', async () => {
+    test('should pass a unique abort signal for every promisor call and abort previous signals', () => {
         const SIGNALS: AbortSignal[] = [];
 
         const promisor = createPromisor(signal => SIGNALS.push(signal));
@@ -53,6 +53,32 @@ describe('createPromisor', () => {
         promisor.abort();
 
         expect(SIGNALS[SIGNALS.length - 1]?.aborted).toBe(true);
+    });
+
+    test('should not abort signal unnecessarily when there is only one running promisor call', async () => {
+        const SIGNALS: AbortSignal[] = [];
+        const promisor = createPromisor(signal => SIGNALS.push(signal));
+
+        for (let i = 0; i < 3; i++) {
+            // only one running promisor call
+            // wait for its promise to be settled
+            await promisor();
+
+            if (i > 1) {
+                // always same signal as previous
+                expect(SIGNALS[i]).toBe(SIGNALS[i - 1]);
+            }
+
+            // same signal as before (not aborted)
+            expect(SIGNALS[i]?.aborted).toBe(false);
+        }
+
+        // abort the signal
+        promisor.abort();
+
+        // each element of SIGNALS is a reference to the same signal
+        // and that signal is now aborted
+        SIGNALS.forEach(signal => expect(signal.aborted).toBe(true));
     });
 
     test('should fulfill its promise with the same value as the last promise returned by promisor', async () => {

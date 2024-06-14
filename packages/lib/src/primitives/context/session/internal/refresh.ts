@@ -49,8 +49,8 @@ export const createSessionRefreshManager = <T extends any>(emitter: Emitter<Sess
             });
 
             _assertSession(session);
-            _sessionEmitter.emit('session', session!);
-            return (_session = session);
+            _sessionEmitter.emit('session', (_session = session!));
+            return _session;
         } finally {
             /* Control flow will always enter this block */
 
