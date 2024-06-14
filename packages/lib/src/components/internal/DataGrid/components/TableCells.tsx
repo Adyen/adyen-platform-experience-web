@@ -19,10 +19,10 @@ export const TableCells = <
 }) => {
     return (
         <>
-            {columns.map(({ key, minWidth }) => {
+            {columns.map(({ key, position }) => {
                 if (customCells?.[key])
                     return (
-                        <DataGridCell aria-labelledby={String(key)} key={key} column={key}>
+                        <DataGridCell aria-labelledby={String(key)} key={key} column={key} position={position}>
                             <div style={{ width: 'min-content' }}>
                                 {
                                     // TODO create safeguard to remove "as any" assertion
@@ -38,7 +38,7 @@ export const TableCells = <
                     );
 
                 return (
-                    <DataGridCell aria-labelledby={String(key)} key={key} column={key}>
+                    <DataGridCell aria-labelledby={String(key)} key={key} column={key} position={position}>
                         <div>{item[key]}</div>
                     </DataGridCell>
                 );

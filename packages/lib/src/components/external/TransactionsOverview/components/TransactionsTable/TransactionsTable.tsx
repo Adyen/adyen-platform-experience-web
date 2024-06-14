@@ -54,6 +54,7 @@ export const TransactionsTable: FC<TransactionTableProps> = ({
                             ? label
                             : `${label} ${availableCurrencies && availableCurrencies[0] ? `(${getCurrencyCode(availableCurrencies[0])})` : ''}`,
                         position: key === 'amount' ? CellTextPosition.RIGHT : undefined,
+                        flex: 1.5,
                     };
                 }
 

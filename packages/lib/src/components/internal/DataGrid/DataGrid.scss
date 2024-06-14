@@ -80,7 +80,9 @@
     }
 
     & #{$adyen-pe-data-grid__cell} {
+        align-items: center;
         box-sizing: border-box;
+        display: flex;
         height: 100%;
         overflow: hidden;
         padding: style.token(spacer-070);
@@ -97,16 +99,17 @@
         }
 
         &--right {
-            text-align: right;
+            justify-content: end;
         }
 
         &--center {
-            text-align: center;
+            justify-content: center;
         }
 
         &#{$adyen-pe-data-grid__cell}--heading {
             border-bottom-color: style.token(color-outline-secondary);
             color: style.token(color-label-primary);
+            display: flex;
             font-weight: style.token(text-body-strongest-font-weight);
             padding: style.token(spacer-070);
             position: relative;

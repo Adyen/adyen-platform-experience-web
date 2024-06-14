@@ -13,6 +13,7 @@ export interface DataGridColumn<Item> {
     position?: CellTextPosition;
     visible?: boolean;
     minWidth?: number;
+    flex?: number;
 }
 
 export interface DataGridProps<

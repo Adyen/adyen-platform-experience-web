@@ -69,7 +69,7 @@ function DataGridTable<
         .filter(column => column.visible !== false)
         .map(column => ({ ...column, minWidth: getMinWidthByColum(column.key) }));
 
-    const cellWidths = visibleCols.map(col => `minmax(${(col.minWidth || 100) + 40}px, 1fr)`).join(' ');
+    const cellWidths = visibleCols.map(col => `minmax(${(col.minWidth || 100) + 40}px, ${col.flex || 1}fr)`).join(' ');
     return (
         <div
             className={classnames('adyen-pe-data-grid', {

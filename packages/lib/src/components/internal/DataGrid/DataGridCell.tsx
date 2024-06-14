@@ -2,8 +2,15 @@ import { HTMLAttributes, PropsWithChildren } from 'preact/compat';
 import { useDataGridContext } from './hooks/useDataGridContext';
 import { useEffect, useRef } from 'preact/hooks';
 import { cloneElement, isValidElement } from 'preact';
+import cx from 'classnames';
+import { CellTextPosition } from './types';
 
-export default function DataGridCell({ children, column, ...props }: PropsWithChildren<HTMLAttributes<HTMLDivElement>> & { column: string }) {
+export default function DataGridCell({
+    children,
+    column,
+    position,
+    ...props
+}: PropsWithChildren<HTMLAttributes<HTMLDivElement>> & { column: string; position?: string }) {
     const { registerCells } = useDataGridContext();
     const ref = useRef<HTMLDivElement>(null);
 
@@ -17,7 +24,14 @@ export default function DataGridCell({ children, column, ...props }: PropsWithCh
     }, [column, registerCells]);
 
     return (
-        <div role="cell" className="adyen-pe-data-grid__cell" {...props}>
+        <div
+            role="cell"
+            className={cx('adyen-pe-data-grid__cell', {
+                'adyen-pe-data-grid__cell--right': position === CellTextPosition.RIGHT,
+                'adyen-pe-data-grid__cell--center': position === CellTextPosition.CENTER,
+            })}
+            {...props}
+        >
             {children && isValidElement(children)
                 ? cloneElement(children, {
                       ...children?.props,
