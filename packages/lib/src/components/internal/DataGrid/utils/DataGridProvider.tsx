@@ -1,7 +1,5 @@
 import { DataGridContext } from '../hooks/useDataGridContext';
-import { ComponentChildren, createContext, toChildArray } from 'preact';
-import { AuthContextProps } from '../../../../core/Auth/types';
-import { EMPTY_OBJECT, noop } from '../../../../utils';
+import { ComponentChildren, toChildArray } from 'preact';
 import { useCallback, useMemo } from 'preact/hooks';
 
 type ColumnWidth = { column: string; width: number };
@@ -28,9 +26,3 @@ export const DataGridProvider = ({ children }: { children: ComponentChildren }) 
 
     return <DataGridContext.Provider value={{ registerCells, getMinWidthByColum }}>{toChildArray(children)}</DataGridContext.Provider>;
 };
-
-export const AuthContext = createContext<AuthContextProps>({
-    token: '',
-    endpoints: EMPTY_OBJECT,
-    updateCore: noop,
-});

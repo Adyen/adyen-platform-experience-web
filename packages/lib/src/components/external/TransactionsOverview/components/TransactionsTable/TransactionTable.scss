@@ -22,4 +22,14 @@
         height: 100%;
         object-fit: contain;
     }
+
+    &__date-and-payment-method {
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-040);
+
+        span {
+            color: style.token(color-label-secondary);
+        }
+    }
 }

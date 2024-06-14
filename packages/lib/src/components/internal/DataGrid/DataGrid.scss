@@ -1,12 +1,14 @@
 @use '../../../style/skeleton' as skeleton;
 @use '../../../style';
+// stylelint-disable no-invalid-position-at-import-rule
+@import '../../../style/breakpoints';
 
 .adyen-pe-data-grid {
     --adyen-pe-data-grid-cols: #{auto-fit};
     --adyen-pe-data-grid-cells: #{repeat(var(--adyen-pe-data-grid-cols), minmax(100px, 1fr))};
-
     $adyen-pe-data-grid: &;
     $adyen-pe-data-grid__cell: #{$adyen-pe-data-grid}__cell;
+
     display: grid;
     font-size: style.token(text-body-font-size);
     grid-template-rows: auto 1fr;
@@ -44,15 +46,7 @@
     }
 
     &__head {
-        border-left: style.token(border-width-s) solid transparent;
-        border-right: style.token(border-width-s) solid transparent;
-        box-sizing: border-box;
-        height: 100%;
-        overflow: visible;
-        position: relative;
-    }
-
-    &__body {
+        display: none;
     }
 
     &__row {
@@ -79,7 +73,7 @@
         }
     }
 
-    & #{$adyen-pe-data-grid__cell} {
+    #{$adyen-pe-data-grid__cell} {
         align-items: center;
         box-sizing: border-box;
         display: flex;
@@ -197,5 +191,18 @@
         text-align: center;
         top: style.token(spacer-080);
         transform: translateX(-50%);
+    }
+
+    // stylelint-disable order/order
+    @include adyen-pe-screen-sm-and-up {
+        &__head {
+            border-left: style.token(border-width-s) solid transparent;
+            border-right: style.token(border-width-s) solid transparent;
+            box-sizing: border-box;
+            display: block;
+            height: 100%;
+            overflow: visible;
+            position: relative;
+        }
     }
 }

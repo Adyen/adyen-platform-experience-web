@@ -1,27 +1,23 @@
 import Category from '../Category/Category';
 import DataOverviewError from '../../../../internal/DataOverviewError/DataOverviewError';
 import { getLabel } from '../../../../utils/getLabel';
-import { useAuthContext } from '../../../../../core/Auth';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { useCallback, useMemo, useState } from 'preact/hooks';
 import DataGrid from '../../../../internal/DataGrid';
 import Pagination from '../../../../internal/Pagination';
-import { parsePaymentMethodType } from '../utils';
-import { Tag } from '../../../../internal/Tag/Tag';
-import { TagVariant } from '../../../../internal/Tag/types';
 import { CellTextPosition } from '../../../../internal/DataGrid/types';
-import { Image } from '../../../../internal/Image/Image';
 import { TranslationKey } from '../../../../../core/Localization/types';
 import { getCurrencyCode } from '../../../../../core/Localization/amount/amount-util';
-import { AMOUNT_CLASS, BASE_CLASS, PAYMENT_METHOD_CLASS, PAYMENT_METHOD_LOGO_CLASS, PAYMENT_METHOD_LOGO_CONTAINER_CLASS } from './constants';
+import { AMOUNT_CLASS, BASE_CLASS, DATE_AND_PAYMENT_METHOD_CLASS } from './constants';
 import './TransactionTable.scss';
 import { mediaQueries, useResponsiveViewport } from '../../hooks/useResponsiveViewport';
 import { FC } from 'preact/compat';
 import { TransactionTableProps } from './types';
+import PaymentMethodCell from './PaymentMethodCell';
 
 // Remove status column temporarily
 // const FIELDS = ['createdAt', 'status', 'paymentMethod', 'transactionType', 'amount'] as const;
-const FIELDS = ['createdAt', 'paymentMethod', 'transactionType', 'amount'] as const;
+const FIELDS = ['dateAndPaymentMethod', 'createdAt', 'paymentMethod', 'transactionType', 'amount'] as const;
 type FieldsType = (typeof FIELDS)[number];
 
 export const TransactionsTable: FC<TransactionTableProps> = ({
@@ -37,11 +33,20 @@ export const TransactionsTable: FC<TransactionTableProps> = ({
     ...paginationProps
 }) => {
     const { i18n } = useCoreContext();
-    const { refreshing } = useAuthContext();
     const [hoveredRow, setHoveredRow] = useState<undefined | number>();
-    const isLoading = useMemo(() => loading || refreshing, [loading, refreshing]);
-    const isSmViewport = useResponsiveViewport(mediaQueries.down.sm);
-    const fieldsHiddenInSmViewport: FieldsType[] = useMemo(() => ['transactionType'], []);
+    const isSmViewport = useResponsiveViewport(mediaQueries.up.sm);
+    const isSmUpViewport = useResponsiveViewport(mediaQueries.up.md);
+    const isXsViewport = useResponsiveViewport(mediaQueries.down.xs);
+
+    const fieldsVisibility: Partial<Record<FieldsType, boolean>> = useMemo(
+        () => ({
+            dateAndPaymentMethod: isXsViewport,
+            createdAt: isSmViewport,
+            transactionType: isSmUpViewport,
+            paymentMethod: isSmViewport,
+        }),
+        [isSmUpViewport, isSmViewport, isXsViewport]
+    );
 
     const columns = useMemo(
         () =>
@@ -54,13 +59,13 @@ export const TransactionsTable: FC<TransactionTableProps> = ({
                             ? label
                             : `${label} ${availableCurrencies && availableCurrencies[0] ? `(${getCurrencyCode(availableCurrencies[0])})` : ''}`,
                         position: key === 'amount' ? CellTextPosition.RIGHT : undefined,
-                        flex: 1.5,
+                        flex: isSmViewport ? 1.5 : undefined,
                     };
                 }
 
-                return { key, label, visible: !(isSmViewport && fieldsHiddenInSmViewport.includes(key)) };
+                return { key, label, visible: fieldsVisibility[key] };
             }),
-        [availableCurrencies, fieldsHiddenInSmViewport, hasMultipleCurrencies, i18n, isSmViewport]
+        [availableCurrencies, fieldsVisibility, hasMultipleCurrencies, i18n, isSmViewport]
     );
 
     const EMPTY_TABLE_MESSAGE = {
@@ -87,7 +92,7 @@ export const TransactionsTable: FC<TransactionTableProps> = ({
                 error={error}
                 columns={columns}
                 data={transactions}
-                loading={isLoading}
+                loading={loading}
                 outline={false}
                 onRowClick={{ callback: onRowClick }}
                 onRowHover={onHover}
@@ -102,6 +107,23 @@ export const TransactionsTable: FC<TransactionTableProps> = ({
                             />
                         );
                     },*/
+                    dateAndPaymentMethod: ({ item }) => {
+                        return (
+                            <div className={DATE_AND_PAYMENT_METHOD_CLASS}>
+                                <PaymentMethodCell paymentMethod={item.paymentMethod} bankAccount={item.bankAccount} />
+                                <span className={DATE_AND_PAYMENT_METHOD_CLASS}>
+                                    {i18n.date(item.createdAt, {
+                                        month: 'short',
+                                        day: 'numeric',
+                                        year: undefined,
+                                        hour: '2-digit',
+                                        minute: '2-digit',
+                                        hour12: false,
+                                    })}
+                                </span>
+                            </div>
+                        );
+                    },
                     transactionType: ({ item, rowIndex }) => {
                         const tooltipKey = `tooltip.${item.category}`;
                         return item.category ? (
@@ -117,29 +139,7 @@ export const TransactionsTable: FC<TransactionTableProps> = ({
                         const amount = i18n.amount(value.value, value.currency, { hideCurrency: !hasMultipleCurrencies });
                         return <span className={AMOUNT_CLASS}>{amount}</span>;
                     },
-                    paymentMethod: ({ item }) => {
-                        return (
-                            <div>
-                                {item.paymentMethod || item.bankAccount ? (
-                                    <div className={PAYMENT_METHOD_CLASS}>
-                                        <div className={PAYMENT_METHOD_LOGO_CONTAINER_CLASS}>
-                                            <Image
-                                                name={item.paymentMethod ? item.paymentMethod.type : 'bankTransfer'}
-                                                alt={item.paymentMethod ? item.paymentMethod.type : 'bankTransfer'}
-                                                folder={'logos/'}
-                                                className={PAYMENT_METHOD_LOGO_CLASS}
-                                            />
-                                        </div>
-                                        {item.paymentMethod
-                                            ? parsePaymentMethodType(item.paymentMethod)
-                                            : item.bankAccount?.accountNumberLastFourDigits}
-                                    </div>
-                                ) : (
-                                    <Tag label={i18n.get('noData')} variant={TagVariant.WHITE} />
-                                )}
-                            </div>
-                        );
-                    },
+                    paymentMethod: ({ item }) => <PaymentMethodCell paymentMethod={item.paymentMethod} bankAccount={item.bankAccount} />,
                 }}
             >
                 {showPagination && (

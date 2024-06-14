@@ -3,7 +3,7 @@ import classnames from 'classnames';
 import './DataGrid.scss';
 import { TableBody } from './components/TableBody';
 import { InteractiveBody } from './components/InteractiveBody';
-import { CellTextPosition, DataGridColumn, DataGridProps } from './types';
+import { DataGridColumn, DataGridProps } from './types';
 import SkeletonBody from './components/SkeletonBody';
 import { ErrorMessageDisplay } from '../ErrorMessageDisplay/ErrorMessageDisplay';
 import { useMemo } from 'preact/hooks';
