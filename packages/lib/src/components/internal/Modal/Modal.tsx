@@ -1,20 +1,13 @@
-import { TargetedEvent } from 'preact/compat';
 import { useClickOutside } from '../../../hooks/element/useClickOutside';
 import Button from '../Button';
 import { ButtonVariant } from '../Button/types';
 import Close from '../SVGIcons/Close';
 import useCoreContext from '../../../core/Context/useCoreContext';
-import { Ref, useCallback, useEffect, useRef } from 'preact/hooks';
+import { Ref } from 'preact/hooks';
 import cx from 'classnames';
 import './Modal.scss';
 import { ModalProps } from './types';
 
-// function targetIsNode(e: EventTarget | null): e is Node {
-//     if (!e || !('nodeType' in e)) {
-//         return false;
-//     }
-//     return true;
-// }
 export default function Modal({
     title,
     children,
@@ -26,36 +19,8 @@ export default function Modal({
     size = 'fluid',
     ...props
 }: ModalProps) {
-    // const modalContainerRef = useRef<HTMLDivElement>(null);
     const { i18n } = useCoreContext();
     const targetElement = useClickOutside(null, onClose) as Ref<HTMLDivElement | null>;
-
-    // const handleClickOutside = useCallback(
-    //     (e: TargetedEvent<Node, MouseEvent>) => {
-    //         if (isDismissible && isOpen && targetIsNode(e.target) && !modalContainerRef?.current?.contains(e.target)) {
-    //             onClose();
-    //         }
-    //     },
-    //     [isDismissible, isOpen, onClose]
-    // );
-
-    // const handleEscKey = useCallback(
-    //     (e: KeyboardEvent) => {
-    //         if (e.key === 'Escape' && isOpen && isDismissible) {
-    //             onClose();
-    //         }
-    //     },
-    //     [isOpen, isDismissible, onClose]
-    // );
-
-    // useEffect(() => {
-    //     if (isOpen) {
-    //         window.addEventListener('keydown', handleEscKey);
-    //     } else {
-    //         window.removeEventListener('keydown', handleEscKey);
-    //     }
-    //     return () => window.removeEventListener('keydown', handleEscKey);
-    // }, [isOpen, handleEscKey]);
 
     return (
         <>
