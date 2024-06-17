@@ -84,7 +84,7 @@ export class SessionContext<T, HttpParams extends any[] = any[]> {
             try {
                 const session = await this._refreshManager.promise;
                 this._assertSessionHttp(this._specification.http);
-                return await this._specification.http(session, this._refreshManager.signal, ...args);
+                return await this._specification.http(session, this._refreshManager.signal!, ...args);
             } catch (ex) {
                 if (ex !== ERR_SESSION_EXPIRED) throw ex;
                 // this._onSessionExpired(true);

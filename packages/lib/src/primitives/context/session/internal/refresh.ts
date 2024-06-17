@@ -1,6 +1,6 @@
 import { createPromisor } from '../../../async/promisor';
 import { createEventEmitter, Emitter } from '../../../reactive/eventEmitter';
-import { ALREADY_RESOLVED_PROMISE, enumerable, getter, isFunction, isUndefined, noop, struct, tryResolve } from '../../../../utils';
+import { ALREADY_RESOLVED_PROMISE, enumerable, getter, isFunction, isUndefined, struct, tryResolve } from '../../../../utils';
 import { ERR_SESSION_FACTORY_UNAVAILABLE, ERR_SESSION_INVALID, ERR_SESSION_REFRESH_ABORTED, EVT_SESSION_REFRESHING_STATE_CHANGE } from '../constants';
 import type { SessionEventType, SessionSpecification } from '../types';
 import type { SessionEventEmitter, SessionRefreshManager } from './types';
@@ -8,7 +8,7 @@ import type { SessionEventEmitter, SessionRefreshManager } from './types';
 export const createSessionRefreshManager = <T extends any>(emitter: Emitter<SessionEventType>, specification: SessionSpecification<T>) => {
     let _refreshingEventPending = false;
     let _refreshingPromise: Promise<void> | undefined;
-    let _refreshingSignal: AbortSignal;
+    let _refreshingSignal: AbortSignal | undefined;
     let _session: T | undefined;
 
     const _sessionEmitter: SessionEventEmitter<T> = createEventEmitter();
@@ -73,7 +73,7 @@ export const createSessionRefreshManager = <T extends any>(emitter: Emitter<Sess
     return struct<SessionRefreshManager<T>>({
         on: enumerable(_sessionEmitter.on),
         promise: getter(() => _refreshPromisor.promise),
-        refresh: enumerable(() => void _refreshPromisor().catch(noop)),
+        refresh: enumerable(() => _refreshPromisor()),
         refreshing: getter(() => !!_refreshingPromise),
         session: getter(() => _session),
         signal: getter(() => _refreshingSignal),

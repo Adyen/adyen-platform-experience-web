@@ -11,32 +11,33 @@ import type { SessionRefreshManager } from './types';
 const afterRefresh = (refreshManager: SessionRefreshManager<any>, session?: any) => {
     expect(refreshManager.refreshing).toBe(false);
     expect(refreshManager.session).toBe(session);
-    expect(refreshManager.signal.aborted).toBe(false);
+    expect(refreshManager.signal!.aborted).toBe(false);
 };
 
 const beforeRefresh = (refreshManager: SessionRefreshManager<any>) => {
-    expect(refreshManager.refreshing).toBe(false);
-    expect(refreshManager.session).toBeUndefined();
-    expect(refreshManager.signal).toBeUndefined();
-};
-
-const doRefresh = async (refreshManager: SessionRefreshManager<any>) => {
     const actual: any[] = [];
     const expected: any[] = [];
 
     refreshManager.on('session', ({ detail, timeStamp }) => {
-        actual.push(refreshManager.refreshing, refreshManager.signal.aborted, refreshManager.session, timeStamp);
+        actual.push(refreshManager.refreshing, refreshManager.signal!.aborted, refreshManager.session, timeStamp);
         expected.push(true, false, detail, Date.now());
     });
 
     refreshManager.promise.catch(() => {});
 
-    // initiate refresh once
-    refreshManager.refresh();
+    expect(refreshManager.refreshing).toBe(false);
+    expect(refreshManager.session).toBeUndefined();
+    expect(refreshManager.signal).toBeUndefined();
+
+    return [actual, expected] as const;
+};
+
+const duringRefresh = async (refreshManager: SessionRefreshManager<any>, sessionEventCapture: readonly [any[], any[]]) => {
+    const [actual, expected] = sessionEventCapture;
 
     expect(refreshManager.refreshing).toBe(true);
     expect(refreshManager.signal).not.toBeUndefined();
-    expect(refreshManager.signal.aborted).toBe(false);
+    expect(refreshManager.signal!.aborted).toBe(false);
     expect(await getPromiseState(refreshManager.promise)).toBe(PromiseState.PENDING);
 
     // wait for 'session' event to be dispatched
@@ -73,9 +74,12 @@ describe('createSessionRefreshManager', () => {
     };
 
     const _refreshErrorAssertions = async (refreshManager: SessionRefreshManager<any>, error: any) => {
-        beforeRefresh(refreshManager);
+        const sessionEventCapture = beforeRefresh(refreshManager);
 
-        await doRefresh(refreshManager);
+        // initiate refresh once
+        refreshManager.refresh().catch(() => {});
+
+        await duringRefresh(refreshManager, sessionEventCapture);
         await expect(async () => refreshManager.promise).rejects.toThrowError(error);
         expect(await getPromiseState(refreshManager.promise)).toBe(PromiseState.REJECTED);
 
@@ -85,10 +89,12 @@ describe('createSessionRefreshManager', () => {
     test('should create session refresh manager', async () => {
         const refreshManager = createSessionRefreshManager(_emitter, _specification);
         const unpatchRefresh = _patchSpecification('onRefresh', () => 'first_session');
+        const sessionEventCapture = beforeRefresh(refreshManager);
 
-        beforeRefresh(refreshManager);
+        // initiate refresh once
+        refreshManager.refresh();
 
-        await doRefresh(refreshManager);
+        await duringRefresh(refreshManager, sessionEventCapture);
         expect(await refreshManager.promise).toBe('first_session');
         expect(await getPromiseState(refreshManager.promise)).toBe(PromiseState.FULFILLED);
 
@@ -108,5 +114,34 @@ describe('createSessionRefreshManager', () => {
         const unpatchAssert = _patchSpecification('assert', undefinedSession => (undefinedSession as any)());
         await _refreshErrorAssertions(refreshManager, ERR_SESSION_INVALID);
         unpatchAssert();
+    });
+
+    test('should throw refresh aborted error for pending refreshes on new refresh request', async () => {
+        const refreshManager = createSessionRefreshManager(_emitter, _specification);
+        const unpatchRefresh = _patchSpecification('onRefresh', () => 'first_session');
+        const sessionEventCapture = beforeRefresh(refreshManager);
+
+        // call refresh() a few times
+        const REFRESH_PROMISES = Array.from({ length: 3 }, () => refreshManager.refresh()) as [Promise<any>, Promise<any>, Promise<any>];
+
+        await duringRefresh(refreshManager, sessionEventCapture);
+
+        for (let i = 0; i < REFRESH_PROMISES.length; i++) {
+            const promise = REFRESH_PROMISES[i]!;
+
+            if (i === REFRESH_PROMISES.length - 1) {
+                expect(await promise).toBe('first_session');
+                expect(await getPromiseState(promise)).toBe(PromiseState.FULFILLED);
+            } else {
+                await expect(async () => promise).rejects.toThrowError(ERR_SESSION_REFRESH_ABORTED as any);
+                expect(await getPromiseState(promise)).toBe(PromiseState.REJECTED);
+            }
+        }
+
+        expect(await refreshManager.promise).toBe('first_session');
+        expect(await getPromiseState(refreshManager.promise)).toBe(PromiseState.FULFILLED);
+
+        afterRefresh(refreshManager, 'first_session');
+        unpatchRefresh();
     });
 });

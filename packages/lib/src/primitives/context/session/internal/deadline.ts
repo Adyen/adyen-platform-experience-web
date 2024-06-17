@@ -6,6 +6,7 @@ import { isWatchlistUnsubscribeToken } from '../../../reactive/watchlist';
 import { EVT_SESSION_EXPIRED_STATE_CHANGE } from '../constants';
 import type { Emitter } from '../../../reactive/eventEmitter';
 import type { SessionEventType, SessionSpecification } from '../types';
+import type { SessionDeadline } from './types';
 
 export const createSessionDeadlineManager = <T extends any>(emitter: Emitter<SessionEventType>, specification: SessionSpecification<T>) => {
     let _abort = noop;
@@ -78,10 +79,10 @@ export const createSessionDeadlineManager = <T extends any>(emitter: Emitter<Ses
         };
     };
 
-    return struct({
+    return struct<SessionDeadline<T>>({
         abort: enumerable(() => _abort()),
         elapsed: getter(() => _deadlineSignal && _deadlineSignal.aborted),
-        refresh: enumerable((session: T | undefined) => void _refreshPromisor(session)),
+        refresh: enumerable(session => void _refreshPromisor(session)),
         signal: getter(() => _deadlineSignal),
         timestamp: getter(() => _deadlineTimestamp),
     });
