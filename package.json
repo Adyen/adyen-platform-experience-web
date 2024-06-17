@@ -23,7 +23,7 @@
         "start:loop": "concurrently --kill-others-on-fail 'npm run types:watch' 'npm run start:loop -w @adyen/adyen-platform-experience-web-playground' --names 'tsc-lib,playground' -c blue,green,cyan,yellow",
         "start:test": "concurrently --kill-others-on-fail 'npm run types:watch' 'npm run start:test -w @adyen/adyen-platform-experience-web-playground' --names 'tsc-lib,playground' -c blue,green,cyan,yellow",
         "start:beta": "concurrently --kill-others-on-fail 'npm run types:watch' 'npm run start:beta -w @adyen/adyen-platform-experience-web-playground' --names 'tsc-lib,playground' -c blue,green,cyan,yellow",
-        "start:demo": "concurrently --kill-others-on-fail 'npm run types:watch' 'npm run start:test -w @adyen/adyen-platform-experience-web-playground' 'node packages/server/server.js' --names 'tsc-lib,playground' -c blue,green,cyan,yellow",
+        "start:demo": "concurrently --kill-others-on-fail 'npm run types:watch' 'npm run start:mock -w @adyen/adyen-platform-experience-web-playground' 'node packages/server/server.js' --names 'tsc-lib,playground' -c blue,green,cyan,yellow",
         "build": "npm run build -w @adyen/adyen-platform-experience-web",
         "build:demo": "npm run build:demo -w @adyen/adyen-platform-experience-web-playground",
         "build:test": "npm run build:test -w @adyen/adyen-platform-experience-web",
