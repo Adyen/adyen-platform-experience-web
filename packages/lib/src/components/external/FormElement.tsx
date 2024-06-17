@@ -1,6 +1,6 @@
 import { _UIComponentProps, BaseElementProps, FormProps, IFormElement, UIElementProps } from '../types';
 import AdyenPlatformExperienceError from '../../core/Errors/AdyenPlatformExperienceError';
-import UIElement from './UIElement';
+import UIElement from './UIElement/UIElement';
 
 export class FormElement<P extends UIElementProps> extends UIElement<P & FormProps<P>> implements IFormElement<P> {
     protected componentRef: FormElement<P> | null;

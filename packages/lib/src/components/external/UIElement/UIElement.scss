@@ -1,0 +1,15 @@
+@use '../../../style';
+//stylelint-disable no-invalid-position-at-import-rule
+@import '../../../style/breakpoints';
+
+.adyen-pe-component {
+    background: style.token(color-background-primary);
+    padding: 12px style.token(spacer-040);
+
+    @include adyen-pe-screen-sm-and-up {
+        border: style.token(border-width-s) solid style.token(color-outline-secondary);
+        border-radius: style.token(spacer-040);
+        padding-left: style.token(spacer-070);
+        padding-right: style.token(spacer-070);
+    }
+}

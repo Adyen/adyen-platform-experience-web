@@ -2,10 +2,6 @@
 @use '../../../../style';
 
 .adyen-pe-transaction-data {
-    $adyen-pe-transaction-data: &;
-
-    padding: 0 style.token(spacer-090) style.token(spacer-090);
-
     &__section {
         margin-bottom: style.token(spacer-030);
     }
@@ -37,19 +33,20 @@
         align-items: center;
         display: flex;
         gap: style.token(spacer-030);
+    }
 
-        &-detail {
-            font-weight: style.token(text-caption-stronger-font-weight);
-        }
+    &__payment-method-detail {
+        font-weight: style.token(text-caption-stronger-font-weight);
     }
 
     &__payment-method-logo-container {
-        height: style.token(spacer-090);
-        width: fit-content;
+        height: 22px;
+        width: 32px;
+    }
 
-        #{$adyen-pe-transaction-data}__payment-method-logo-bank {
-            width: style.token(spacer-100);
-        }
+    &__payment-method-logo {
+        height: 100%;
+        object-fit: contain;
     }
 
     &__tag-container {

@@ -1,6 +1,6 @@
 import type { _UIComponentProps, DataOverviewComponentProps } from '../../types';
 import Transactions from './components/TransactionsOverviewContainer/TransactionsOverviewContainer';
-import UIElement from '../UIElement';
+import UIElement from '../UIElement/UIElement';
 
 export class TransactionsElement extends UIElement<DataOverviewComponentProps> {
     public static type = 'transactions';

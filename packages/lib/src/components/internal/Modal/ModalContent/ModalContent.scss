@@ -1,0 +1,5 @@
+@use '../../../../style';
+
+.adyen-pe-transaction-details-modal {
+    padding: 0 style.token(spacer-090) style.token(spacer-090);
+}
