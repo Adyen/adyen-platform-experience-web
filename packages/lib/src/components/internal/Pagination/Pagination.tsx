@@ -31,7 +31,7 @@ export default function Pagination({ next, hasNext, hasPrev, page, prev, limit, 
         <div aria-label={i18n.get('paginatedNavigation')} className={`adyen-pe-pagination ${classnames({})}`}>
             <div className="adyen-pe-pagination__context">
                 <span>
-                    {i18n.get('pagination.page')} {page}
+                    {i18n.get('pagination.showing')} {page}
                 </span>
                 {_limitOptions && onLimitSelection && (
                     <div className="adyen-pe-pagination__limit-selector">
