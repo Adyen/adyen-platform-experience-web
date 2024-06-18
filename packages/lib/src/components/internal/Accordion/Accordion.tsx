@@ -1,37 +1,28 @@
+import classnames from 'classnames';
+import { PropsWithChildren } from 'preact/compat';
 import { useCallback, useState } from 'preact/hooks';
 import ChevronDown from '../SVGIcons/ChevronDown';
 import ChevronUp from '../SVGIcons/ChevronUp';
 import { AccordionProps } from './types';
 import './Accordion.scss';
 
-function Accordion({
-    type = 'button',
-    children,
-    chevronPosition,
-    className,
-    expanded,
-    onChange,
-    headerLeft,
-    headerRight,
-    ...restAttributes
-}: AccordionProps) {
-    const [isExpanded, setIsExpanded] = useState(expanded ?? false);
+function Accordion({ children, classNames, header, headerInformation }: PropsWithChildren<AccordionProps>) {
+    const [isExpanded, setIsExpanded] = useState(false);
 
     const toggle = useCallback(() => {
-        if (onChange && typeof expanded === 'boolean') return onChange();
         setIsExpanded(!isExpanded);
-    }, [expanded, isExpanded, onChange]);
+    }, [isExpanded]);
 
     return (
-        <div className={'adyen-pe-accordion'}>
+        <div className={classnames('adyen-pe-accordion', classNames)}>
             <div className={'adyen-pe-accordion__header'}>
-                <button className={'adyen-pe-accordion__header-container'} type={type} onClick={toggle} {...restAttributes}>
+                <button className={'adyen-pe-accordion__header-container'} onClick={toggle}>
                     <div className={'adyen-pe-accordion__header-controller'}>
-                        {headerLeft}
+                        {header}
                         {isExpanded ? <ChevronUp /> : <ChevronDown />}
                     </div>
                 </button>
-                <div>{headerRight}</div>
+                {headerInformation && <div>{headerInformation}</div>}
             </div>
             {isExpanded && <div className={'adyen-pe-accordion--content'}>{children}</div>}
         </div>

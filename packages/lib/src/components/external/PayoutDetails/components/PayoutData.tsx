@@ -97,9 +97,8 @@ export const PayoutData = ({
                             {payout?.fundsCapturedAmount &&
                                 (fundsCaptured && Object.keys(fundsCaptured).length > 0 ? (
                                     <Accordion
-                                        className={classnames(PD_SECTION_AMOUNT_CLASS, PD_SECTION_GROSS_AMOUNT_CLASS)}
-                                        headerLeft={<Typography variant={TypographyVariant.BODY}>{i18n.get('fundsCaptured')}</Typography>}
-                                        headerRight={
+                                        header={<Typography variant={TypographyVariant.BODY}>{i18n.get('fundsCaptured')}</Typography>}
+                                        headerInformation={
                                             <Typography variant={TypographyVariant.BODY}>
                                                 {i18n.amount(payout.fundsCapturedAmount.value, payout.fundsCapturedAmount.currency)}
                                             </Typography>
@@ -116,31 +115,26 @@ export const PayoutData = ({
                                         </div>
                                     </Accordion>
                                 ) : (
-                                    <div className={PD_SECTION_CLASS}>
-                                        {
-                                            <div className={classnames(PD_SECTION_AMOUNT_CLASS, PD_SECTION_GROSS_AMOUNT_CLASS)}>
-                                                <Typography variant={TypographyVariant.BODY}>{i18n.get('fundsCaptured')}</Typography>
-                                                <Typography variant={TypographyVariant.BODY}>
-                                                    {i18n.amount(payout.fundsCapturedAmount.value, payout.fundsCapturedAmount.currency)}
-                                                </Typography>
-                                            </div>
-                                        }
+                                    <div className={classnames(PD_SECTION_AMOUNT_CLASS, PD_SECTION_GROSS_AMOUNT_CLASS)}>
+                                        <Typography variant={TypographyVariant.BODY}>{i18n.get('fundsCaptured')}</Typography>
+                                        <Typography variant={TypographyVariant.BODY}>
+                                            {i18n.amount(payout.fundsCapturedAmount.value, payout.fundsCapturedAmount.currency)}
+                                        </Typography>
                                     </div>
                                 ))}
                         </div>
                         <div className={PD_SECTION_CLASS}>
-                            {(adjustments?.subtractions && Boolean(Object.keys(adjustments?.subtractions).length)) ||
-                            (adjustments?.additions && Boolean(Object.keys(adjustments?.additions).length)) ? (
+                            {(adjustments?.subtractions && Object.keys(adjustments?.subtractions).length > 0) ||
+                            (adjustments?.additions && Object.keys(adjustments?.additions).length > 0) ? (
                                 <Accordion
-                                    className={classnames(PD_SECTION_AMOUNT_CLASS, PD_SECTION_GROSS_AMOUNT_CLASS)}
-                                    headerLeft={<Typography variant={TypographyVariant.BODY}>{i18n.get('adjustments')}</Typography>}
-                                    headerRight={
+                                    header={<Typography variant={TypographyVariant.BODY}>{i18n.get('adjustments')}</Typography>}
+                                    headerInformation={
                                         <Typography variant={TypographyVariant.BODY}>
                                             {i18n.amount(payout.adjustmentAmount.value, payout.adjustmentAmount.currency)}
                                         </Typography>
                                     }
                                 >
-                                    {adjustments?.subtractions && Boolean(Object.keys(adjustments?.subtractions).length) && (
+                                    {adjustments?.subtractions && Object.keys(adjustments?.subtractions).length > 0 && (
                                         <div className={PD_CARD_CLASS}>
                                             <Card
                                                 renderHeader={
@@ -153,7 +147,7 @@ export const PayoutData = ({
                                             </Card>
                                         </div>
                                     )}
-                                    {adjustments?.additions && Boolean(Object.keys(adjustments?.additions).length) && (
+                                    {adjustments?.additions && Object.keys(adjustments?.additions).length > 0 && (
                                         <div className={PD_CARD_CLASS}>
                                             <Card
                                                 renderHeader={
