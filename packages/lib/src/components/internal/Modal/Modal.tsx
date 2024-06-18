@@ -3,7 +3,7 @@ import Button from '../Button';
 import { ButtonVariant } from '../Button/types';
 import Close from '../SVGIcons/Close';
 import useCoreContext from '../../../core/Context/useCoreContext';
-import { Ref } from 'preact/hooks';
+import { Ref, useCallback, useEffect } from 'preact/hooks';
 import cx from 'classnames';
 import './Modal.scss';
 import { ModalProps } from './types';
@@ -21,6 +21,24 @@ export default function Modal({
 }: ModalProps) {
     const { i18n } = useCoreContext();
     const targetElement = useClickOutside(null, onClose) as Ref<HTMLDivElement | null>;
+
+    const handleEscKey = useCallback(
+        (e: KeyboardEvent) => {
+            if (e.key === 'Escape' && isOpen && isDismissible) {
+                onClose();
+            }
+        },
+        [isOpen, isDismissible, onClose]
+    );
+
+    useEffect(() => {
+        if (isOpen) {
+            window.addEventListener('keydown', handleEscKey);
+        } else {
+            window.removeEventListener('keydown', handleEscKey);
+        }
+        return () => window.removeEventListener('keydown', handleEscKey);
+    }, [isOpen, handleEscKey]);
 
     return (
         <>

@@ -3,6 +3,13 @@ import { PropsWithChildren } from 'preact/compat';
 import { useCallback, useState } from 'preact/hooks';
 import ChevronDown from '../SVGIcons/ChevronDown';
 import ChevronUp from '../SVGIcons/ChevronUp';
+import {
+    ACCORDION_BASE_CLASS,
+    ACCORDION_CONTENT_CLASS,
+    ACCORDION_HEADER_CLASS,
+    ACCORDION_HEADER_CONTAINER_CLASS,
+    ACCORDION_HEADER_CONTROLLER_CLASS,
+} from './constants';
 import { AccordionProps } from './types';
 import './Accordion.scss';
 
@@ -14,17 +21,17 @@ function Accordion({ children, classNames, header, headerInformation }: PropsWit
     }, [isExpanded]);
 
     return (
-        <div className={classnames('adyen-pe-accordion', classNames)}>
-            <div className={'adyen-pe-accordion__header'}>
-                <button className={'adyen-pe-accordion__header-container'} onClick={toggle}>
-                    <div className={'adyen-pe-accordion__header-controller'}>
+        <div className={classnames(ACCORDION_BASE_CLASS, classNames)}>
+            <div className={ACCORDION_HEADER_CLASS}>
+                <button className={ACCORDION_HEADER_CONTAINER_CLASS} onClick={toggle}>
+                    <div className={ACCORDION_HEADER_CONTROLLER_CLASS}>
                         {header}
                         {isExpanded ? <ChevronUp /> : <ChevronDown />}
                     </div>
                 </button>
                 {headerInformation && <div>{headerInformation}</div>}
             </div>
-            {isExpanded && <div className={'adyen-pe-accordion--content'}>{children}</div>}
+            {isExpanded && <div className={ACCORDION_CONTENT_CLASS}>{children}</div>}
         </div>
     );
 }
