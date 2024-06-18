@@ -230,7 +230,6 @@ export const TransactionsOverview = ({
                     onContactSupport={onContactSupport}
                     onLimitSelection={updateLimit}
                     onRowClick={onRowClick}
-                    onTransactionSelected={onRecordSelection as OnTransactionSelection}
                     showPagination={true}
                     transactions={records}
                     {...paginationProps}
