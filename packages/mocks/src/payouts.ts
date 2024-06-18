@@ -81,22 +81,22 @@ export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string 
                     category: 'Correction',
                 },
             ],
-            // adjustmentBreakdown: [
-            //     {
-            //         amount: {
-            //             value: -1000,
-            //             currency: 'EUR',
-            //         },
-            //         category: 'Fee',
-            //     },
-            //     {
-            //         amount: {
-            //             value: 1000,
-            //             currency: 'EUR',
-            //         },
-            //         category: 'Correction',
-            //     },
-            // ],
+            adjustmentBreakdown: [
+                {
+                    amount: {
+                        value: -1000,
+                        currency: 'EUR',
+                    },
+                    category: 'Fee',
+                },
+                {
+                    amount: {
+                        value: 1000,
+                        currency: 'EUR',
+                    },
+                    category: 'Correction',
+                },
+            ],
         },
     },
     {
