@@ -22,16 +22,26 @@ function Accordion({ children, classNames, header, headerInformation }: PropsWit
 
     return (
         <div className={classnames(ACCORDION_BASE_CLASS, classNames)}>
-            <div className={ACCORDION_HEADER_CLASS}>
-                <button className={ACCORDION_HEADER_CONTAINER_CLASS} onClick={toggle}>
+            <h3 className={ACCORDION_HEADER_CLASS}>
+                <button
+                    id={'accordion-controller'}
+                    aria-controls="accordion-content"
+                    className={ACCORDION_HEADER_CONTAINER_CLASS}
+                    onClick={toggle}
+                    aria-expanded={isExpanded}
+                >
                     <div className={ACCORDION_HEADER_CONTROLLER_CLASS}>
                         {header}
                         {isExpanded ? <ChevronUp /> : <ChevronDown />}
                     </div>
                 </button>
                 {headerInformation && <div>{headerInformation}</div>}
-            </div>
-            {isExpanded && <div className={ACCORDION_CONTENT_CLASS}>{children}</div>}
+            </h3>
+            {isExpanded && (
+                <div role="region" id={'accordion-content'} aria-labelledby="accordion-controller" className={ACCORDION_CONTENT_CLASS}>
+                    {children}
+                </div>
+            )}
         </div>
     );
 }
