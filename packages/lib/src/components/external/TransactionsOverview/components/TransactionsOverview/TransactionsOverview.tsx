@@ -6,7 +6,7 @@ import { TypographyVariant } from '../../../../internal/Typography/types';
 import Typography from '../../../../internal/Typography/Typography';
 import DateFilter from '../../../../internal/FilterBar/filters/DateFilter/DateFilter';
 import FilterBar from '../../../../internal/FilterBar';
-import { DataOverviewComponentProps, ExternalUIComponentProps, FilterParam } from '../../../../types';
+import { DataOverviewComponentProps, ExternalUIComponentProps, FilterParam, OnTransactionSelection } from '../../../../types';
 import useModalDetails from '../../../../../hooks/useModalDetails/useModalDetails';
 import { useAuthContext } from '../../../../../core/Auth';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
@@ -230,7 +230,7 @@ export const TransactionsOverview = ({
                     onContactSupport={onContactSupport}
                     onLimitSelection={updateLimit}
                     onRowClick={onRowClick}
-                    onTransactionSelected={onRecordSelection}
+                    onTransactionSelected={onRecordSelection as OnTransactionSelection}
                     showPagination={true}
                     transactions={records}
                     {...paginationProps}

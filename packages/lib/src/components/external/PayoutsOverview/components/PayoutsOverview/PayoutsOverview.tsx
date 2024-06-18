@@ -97,7 +97,7 @@ export const PayoutsOverview = ({
             updateDetails({
                 selection: { type: 'payout', data: { id: activeBalanceAccount?.id, date: value.createdAt } },
                 modalSize: 'small',
-            }).callback({ id: activeBalanceAccount?.id || '' });
+            }).callback({ balanceAccountId: activeBalanceAccount?.id || '', date: value.createdAt });
         },
         [updateDetails, activeBalanceAccount]
     );

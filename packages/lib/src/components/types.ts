@@ -76,12 +76,14 @@ export type _UIComponentProps<T> = BaseElementProps & UIElementProps & T & {};
 
 export type ExternalUIComponentProps<T> = UIElementProps & T & {};
 
-export type OnSelection = (selection: { id: string; showModal: () => void }) => any;
+export type OnTransactionSelection = (selection: { id: string; showModal: () => void }) => any;
+
+export type OnPayoutSelection = (selection: { balanceAccountId: string; date: string; showModal: () => void }) => any;
 
 export interface DataOverviewComponentProps {
     name?: string;
     elementRef?: UIElement<DataOverviewComponentProps> | null;
-    onRecordSelection?: OnSelection;
+    onRecordSelection?: OnTransactionSelection | OnPayoutSelection;
     onFiltersChanged?: (filters: { [P in FilterParam]?: string }) => any;
     onLimitChanged?: (limit: number) => any;
     preferredLimit?: 10 | 20;
