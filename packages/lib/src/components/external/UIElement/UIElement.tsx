@@ -75,10 +75,15 @@ export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUI
     render() {
         const core = this.props.core;
         const updateCore = core.update.bind(core);
-
+        const externalErrorHandler = this.props.onError || core.onError || null;
         return (
             <AuthProvider session={core.session} key={performance.now()}>
-                <CoreProvider i18n={core.localization.i18n} loadingContext={core.loadingContext} updateCore={updateCore}>
+                <CoreProvider
+                    i18n={core.localization.i18n}
+                    loadingContext={core.loadingContext}
+                    updateCore={updateCore}
+                    externalErrorHandler={externalErrorHandler}
+                >
                     {this.componentToRender && <div className="adyen-pe-component">{this.componentToRender()}</div>}
                 </CoreProvider>
             </AuthProvider>
