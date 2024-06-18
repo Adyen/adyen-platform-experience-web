@@ -6,13 +6,14 @@ import { ErrorTypes } from '../../Http/utils';
 import type { HttpOptions } from '../../Http/types';
 import type { SessionObject, SessionRequest } from '../types';
 import { AUTO_REFRESH, MAX_AGE_MS } from './constants';
+import { onErrorHandler } from '../../types';
 
 type _AuthSessionSpecification = SessionSpecification<SessionObject, Parameters<typeof _http>>;
 
 export class AuthSessionSpecification implements _AuthSessionSpecification {
-    declare autoRefresh: _AuthSessionSpecification['autoRefresh'];
-    declare onRefresh: _AuthSessionSpecification['onRefresh'];
-
+    public declare autoRefresh: _AuthSessionSpecification['autoRefresh'];
+    public declare onRefresh: _AuthSessionSpecification['onRefresh'];
+    public declare errorHandler: onErrorHandler | null;
     constructor(public onSessionCreate?: SessionRequest) {
         Object.defineProperties(this, {
             autoRefresh: enumerable(AUTO_REFRESH),
@@ -20,7 +21,7 @@ export class AuthSessionSpecification implements _AuthSessionSpecification {
         });
     }
 
-    assert: _AuthSessionSpecification['assert'] = maybeSession => {
+    public assert: _AuthSessionSpecification['assert'] = maybeSession => {
         if (isPlainObject(maybeSession)) {
             const id = isString(maybeSession.id) ? maybeSession.id.trim() : undefined;
             const token = isString(maybeSession.token) ? maybeSession.token.trim() : undefined;
@@ -29,7 +30,7 @@ export class AuthSessionSpecification implements _AuthSessionSpecification {
         throw undefined;
     };
 
-    deadline: _AuthSessionSpecification['deadline'] = session => {
+    public deadline: _AuthSessionSpecification['deadline'] = session => {
         let issuedAt: number;
         let expiresAt: number;
 
@@ -48,10 +49,15 @@ export class AuthSessionSpecification implements _AuthSessionSpecification {
         return expiresAt!;
     };
 
-    http: _AuthSessionSpecification['http'] = async (session, sessionSignal, options: HttpOptions, data?: any) => {
-        let { abort: destroyAbortSink = noop, signal } = isAbortSignal(options.signal)
+    public http: _AuthSessionSpecification['http'] = async (session, sessionSignal, options: HttpOptions, data?: any) => {
+        const { abort: destroyAbortSink = noop, signal } = isAbortSignal(options.signal)
             ? createAbortSink(sessionSignal, options.signal)
             : { signal: sessionSignal };
+
+        const errorHandler = (error: any) => {
+            if (this.errorHandler) this.errorHandler(error);
+            throw error;
+        };
 
         try {
             const sessionHttpOptions = {
@@ -61,6 +67,7 @@ export class AuthSessionSpecification implements _AuthSessionSpecification {
                     ...options.headers,
                     ...(session && { Authorization: `Bearer ${session.token}` }),
                 },
+                ...(this.errorHandler ? { errorHandler } : {}),
             };
             return await _http(sessionHttpOptions, data);
         } catch (ex: any) {
