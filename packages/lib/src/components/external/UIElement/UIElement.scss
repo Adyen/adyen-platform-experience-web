@@ -6,7 +6,7 @@
     --adyen-pe-content-padding: #{style.token(spacer-040)};
     --adyen-pe-data-details-padding: var(--adyen-pe-content-padding);
     background: style.token(color-background-primary);
-    padding: 12px var(--adyen-pe-content-padding);
+    padding: style.token(spacer-060) var(--adyen-pe-content-padding);
 
     @include adyen-pe-screen-sm-and-up {
         --adyen-pe-content-padding: #{style.token(spacer-070)};
