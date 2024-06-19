@@ -31,7 +31,6 @@ export const TransactionsTable: FC<TransactionTableProps> = ({
     loading,
     onContactSupport,
     onRowClick,
-    onTransactionSelected,
     showDetails,
     showPagination,
     transactions,
