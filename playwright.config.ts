@@ -42,6 +42,7 @@ const config: PlaywrightTestConfig = {
     projects: [
         {
             name: 'local-chrome',
+            testDir: 'packages/lib/tests/specs',
             use: {
                 // Use the pre-installed browser already on the machine
                 channel: 'chrome',
@@ -52,6 +53,7 @@ const config: PlaywrightTestConfig = {
         },
         {
             name: 'chromium',
+            testDir: 'packages/lib/tests/specs',
             use: {
                 ...devices['Desktop Chrome'],
                 launchOptions: {
@@ -61,12 +63,17 @@ const config: PlaywrightTestConfig = {
         },
         {
             name: 'firefox',
+            testDir: 'packages/lib/tests/specs',
             use: {
                 ...devices['Desktop Firefox'],
                 launchOptions: {
                     args: process.env.PWDEBUG ? ['--devtools'] : [],
                 },
             },
+        },
+        {
+            name: 'api',
+            testDir: 'packages/lib/tests/api',
         },
     ],
     /* Run your local dev server before starting the tests */
