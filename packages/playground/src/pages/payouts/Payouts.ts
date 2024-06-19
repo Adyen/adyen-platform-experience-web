@@ -24,12 +24,10 @@ enableServerInMockedMode()
 
         const payoutsComponent = new PayoutsOverview({
             core: AdyenPlatform,
-            // onRecordSelection: ({ showModal, balanceAccountId, date }) => {
-            //     // showModal();
-            //     console.log(balanceAccountId);
-            //     console.log(date);
-            //     // window.location.assign(`/src/pages/transaction/?id=${id}`);
-            // },
+            onRecordSelection: ({ showModal, balanceAccountId, date }) => {
+                showModal();
+                // window.location.assign(`/src/pages/transaction/?id=${id}`);
+            },
             onFiltersChanged: (/* filters */) => {
                 // do something here with the updated filters
             },

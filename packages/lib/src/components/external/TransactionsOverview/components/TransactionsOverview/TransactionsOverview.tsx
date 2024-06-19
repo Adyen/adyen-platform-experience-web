@@ -6,7 +6,7 @@ import { TypographyVariant } from '../../../../internal/Typography/types';
 import Typography from '../../../../internal/Typography/Typography';
 import DateFilter from '../../../../internal/FilterBar/filters/DateFilter/DateFilter';
 import FilterBar from '../../../../internal/FilterBar';
-import { DataOverviewComponentProps, ExternalUIComponentProps, FilterParam, OnTransactionSelection } from '../../../../types';
+import { TransactionOverviewComponentProps, ExternalUIComponentProps, FilterParam } from '../../../../types';
 import useModalDetails from '../../../../../hooks/useModalDetails/useModalDetails';
 import { useAuthContext } from '../../../../../core/Auth';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
@@ -38,7 +38,7 @@ export const TransactionsOverview = ({
     onContactSupport,
     hideTitle,
 }: ExternalUIComponentProps<
-    DataOverviewComponentProps & { balanceAccounts: IBalanceAccountBase[] | undefined; isLoadingBalanceAccount: boolean }
+    TransactionOverviewComponentProps & { balanceAccounts: IBalanceAccountBase[] | undefined; isLoadingBalanceAccount: boolean }
 >) => {
     const { i18n } = useCoreContext();
     const { getTransactions: transactionsEndpointCall } = useAuthContext().endpoints;

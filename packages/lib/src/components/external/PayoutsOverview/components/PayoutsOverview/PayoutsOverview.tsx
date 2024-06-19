@@ -11,7 +11,7 @@ import DateFilter from '../../../../internal/FilterBar/filters/DateFilter/DateFi
 import useModalDetails from '../../../../../hooks/useModalDetails/useModalDetails';
 import { IPayout } from '../../../../../types';
 import useDefaultOverviewFilterParams from '../../../../hooks/useDefaultOverviewFilterParams';
-import { DataOverviewComponentProps, ExternalUIComponentProps, FilterParam } from '../../../../types';
+import { PayoutsOverviewComponentProps, ExternalUIComponentProps, FilterParam } from '../../../../types';
 import { useAuthContext } from '../../../../../core/Auth';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatformExperienceError';
@@ -33,7 +33,7 @@ export const PayoutsOverview = ({
     onContactSupport,
     hideTitle,
 }: ExternalUIComponentProps<
-    DataOverviewComponentProps & { balanceAccounts: IBalanceAccountBase[] | undefined; isLoadingBalanceAccount: boolean }
+    PayoutsOverviewComponentProps & { balanceAccounts: IBalanceAccountBase[] | undefined; isLoadingBalanceAccount: boolean }
 >) => {
     const { i18n } = useCoreContext();
     const { getPayouts: payoutsEndpointCall } = useAuthContext().endpoints;

@@ -24,11 +24,10 @@ enableServerInMockedMode()
 
         const transactionsComponent = new TransactionsOverview({
             core: AdyenPlatform,
-            // onRecordSelection: ({ showModal, id }) => {
-            //     // showModal();
-            //     console.log(id);
-            //     // window.location.assign(`/src/pages/transaction/?id=${id}`);
-            // },
+            onRecordSelection: ({ showModal, id }) => {
+                showModal();
+                // window.location.assign(`/src/pages/transaction/?id=${id}`);
+            },
             onFiltersChanged: (/* filters */) => {
                 // do something here with the updated filters
             },
