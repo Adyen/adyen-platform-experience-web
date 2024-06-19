@@ -26,6 +26,7 @@ enableServerInMockedMode()
             core: AdyenPlatform,
             onRecordSelection: ({ showModal, id }) => {
                 showModal();
+                console.log(id);
                 // window.location.assign(`/src/pages/transaction/?id=${id}`);
             },
             onFiltersChanged: (/* filters */) => {
