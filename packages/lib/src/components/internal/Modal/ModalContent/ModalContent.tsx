@@ -6,7 +6,7 @@ import { DetailsComponentProps, DetailsWithId, PayoutDetailsWithIdProps, Selecte
 import './ModalContent.scss';
 
 const CLASSNAMES = {
-    transactionDetailsModal: 'adyen-pe-transaction-details-modal',
+    base: 'adyen-pe-modal-content',
 };
 
 const isDetailsWithoutId = (data: string | TransactionDetailData): data is TransactionDetailData => hasOwnProperty(data, 'id');
@@ -25,7 +25,7 @@ function ModalContent({ type, data }: SelectedDetail) {
     return (
         <>
             {detailProps && (
-                <div className={CLASSNAMES.transactionDetailsModal}>
+                <div className={CLASSNAMES.base}>
                     <DataOverviewDetails {...(detailProps as DetailsComponentProps)} />
                 </div>
             )}
