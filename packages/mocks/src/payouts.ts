@@ -5,103 +5,40 @@ export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string 
         balanceAccountId: '1234567890123456',
         payout: {
             fundsCapturedAmount: {
-                value: 800000,
-                currency: 'USD',
+                value: 100000,
+                currency: 'EUR',
             },
             adjustmentAmount: {
-                value: -100000,
-                currency: 'USD',
+                value: -10000,
+                currency: 'EUR',
             },
             payoutAmount: {
-                value: 600000,
-                currency: 'USD',
+                value: 90000,
+                currency: 'EUR',
             },
             unpaidAmount: {
-                value: 100000,
-                currency: 'USD',
+                value: 90000,
+                currency: 'EUR',
             },
-            createdAt: '2024-03-13T10:00:00Z',
+            createdAt: '2024-01-10T00:00:00.000Z',
         },
         amountBreakdowns: {
             fundsCapturedBreakdown: [
                 {
                     amount: {
-                        value: -1,
-                        currency: 'JPY',
+                        value: -1000,
+                        currency: 'EUR',
                     },
-                    category: 'capture',
-                },
-                {
-                    amount: {
-                        value: -80000,
-                        currency: 'USD',
-                    },
-                    category: 'refund',
-                },
-                {
-                    amount: {
-                        value: 20000,
-                        currency: 'USD',
-                    },
-                    category: 'chargeback',
-                },
-                {
-                    amount: {
-                        value: 30000,
-                        currency: 'USD',
-                    },
-                    category: 'correction',
+                    category: 'Fee',
                 },
             ],
             adjustmentBreakdown: [
                 {
                     amount: {
-                        value: -500,
-                        currency: 'USD',
-                    },
-                    category: 'correction',
-                },
-                {
-                    amount: {
-                        value: -500,
-                        currency: 'USD',
-                    },
-                    category: 'fee',
-                },
-                {
-                    amount: {
-                        value: -300,
-                        currency: 'USD',
-                    },
-                    category: 'grantIssued',
-                },
-                {
-                    amount: {
-                        value: -200,
-                        currency: 'USD',
-                    },
-                    category: 'grantRepayment',
-                },
-                {
-                    amount: {
-                        value: -500,
-                        currency: 'USD',
-                    },
-                    category: 'other',
-                },
-                {
-                    amount: {
-                        value: 100,
+                        value: -1000,
                         currency: 'EUR',
                     },
-                    category: 'refund',
-                },
-                {
-                    amount: {
-                        value: 1000,
-                        currency: 'IQD',
-                    },
-                    category: 'transfer',
+                    category: 'Fee',
                 },
             ],
         },
