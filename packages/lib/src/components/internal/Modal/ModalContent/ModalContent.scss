@@ -1,0 +1,6 @@
+@use '../../../../style';
+
+.adyen-pe-modal-content {
+    --adyen-pe-data-details-padding: #{style.token(spacer-090)};
+    padding: 0 var(--adyen-pe-data-details-padding) var(--adyen-pe-data-details-padding);
+}

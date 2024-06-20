@@ -12,6 +12,8 @@ import { ExternalUIComponentProps } from '../../types';
 import { getErrorMessage } from '../../utils/getErrorMessage';
 import { ErrorMessageDisplay } from '../ErrorMessageDisplay/ErrorMessageDisplay';
 import { DetailsComponentProps, DetailsWithId, TransactionDetailData } from './types';
+import Typography from '../Typography/Typography';
+import { TypographyVariant } from '../Typography/types';
 
 const ENDPOINTS_BY_TYPE = {
     transaction: 'getTransaction',
@@ -35,11 +37,11 @@ export default function DataOverviewDetails(props: ExternalUIComponentProps<Deta
                     const queryParam =
                         props.type === 'transaction'
                             ? {
-                                path: { transactionId: dataId },
-                            }
+                                  path: { transactionId: dataId },
+                              }
                             : {
-                                query: { balanceAccountId: dataId, createdAt: props.date },
-                            };
+                                  query: { balanceAccountId: dataId, createdAt: props.date },
+                              };
 
                     return getDetail!(EMPTY_OBJECT, { ...queryParam });
                 },
@@ -58,7 +60,13 @@ export default function DataOverviewDetails(props: ExternalUIComponentProps<Deta
 
     return (
         <div className="adyen-pe-overview-details">
-            {props.title && <div className="adyen-pe-overview-details--title">{i18n.get(props.title)}</div>}
+            {props.title && (
+                <div className="adyen-pe-overview-details--title">
+                    <Typography variant={TypographyVariant.TITLE} medium>
+                        {i18n.get(props.title)}
+                    </Typography>
+                </div>
+            )}
 
             {error && errorProps && (
                 <div className="adyen-pe-overview-details--error-container">

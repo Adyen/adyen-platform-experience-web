@@ -3,18 +3,9 @@
 @import '../../../../../style/breakpoints';
 
 .adyen-pe-transactions-overview {
-    background: style.token(color-background-primary);
     display: flex;
     flex-direction: column;
     gap: style.token(spacer-070);
-    padding: style.token(spacer-060) style.token(spacer-040);
-
-    @include adyen-pe-screen-sm-and-up {
-        border: style.token(border-width-s) solid style.token(color-outline-secondary);
-        border-radius: style.token(spacer-040);
-        padding-left: style.token(spacer-070);
-        padding-right: style.token(spacer-070);
-    }
 
     &__summary {
         display: flex;

@@ -3,6 +3,11 @@ import { hasOwnProperty } from '../../../../utils';
 import { TransactionDetailData } from '../../../external';
 import DataOverviewDetails from '../../DataOverviewDetails/DataOverviewDetails';
 import { DetailsComponentProps, DetailsWithId, PayoutDetailsWithIdProps, SelectedDetail } from '../../DataOverviewDetails/types';
+import './ModalContent.scss';
+
+const CLASSNAMES = {
+    base: 'adyen-pe-modal-content',
+};
 
 const isDetailsWithoutId = (data: string | TransactionDetailData): data is TransactionDetailData => hasOwnProperty(data, 'id');
 
@@ -17,7 +22,15 @@ function ModalContent({ type, data }: SelectedDetail) {
         }
     }, [data, type]);
 
-    return <>{detailProps && <DataOverviewDetails {...(detailProps as DetailsComponentProps)} />}</>;
+    return (
+        <>
+            {detailProps && (
+                <div className={CLASSNAMES.base}>
+                    <DataOverviewDetails {...(detailProps as DetailsComponentProps)} />
+                </div>
+            )}
+        </>
+    );
 }
 
 export default ModalContent;
