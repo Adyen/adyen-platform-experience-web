@@ -35,17 +35,17 @@ export const TransactionsTable: FC<TransactionTableProps> = ({
     const { i18n } = useCoreContext();
     const [hoveredRow, setHoveredRow] = useState<undefined | number>();
     const isSmAndUpViewport = useResponsiveViewport(mediaQueries.up.sm);
-    const isMdViewport = useResponsiveViewport(mediaQueries.up.md);
-    const isXsViewport = useResponsiveViewport(mediaQueries.down.xs);
+    const isMdAndUpViewport = useResponsiveViewport(mediaQueries.up.md);
+    const isXsAndDownViewport = useResponsiveViewport(mediaQueries.down.xs);
 
     const fieldsVisibility: Partial<Record<FieldsType, boolean>> = useMemo(
         () => ({
-            dateAndPaymentMethod: isXsViewport,
+            dateAndPaymentMethod: isXsAndDownViewport,
             createdAt: isSmAndUpViewport,
-            transactionType: isMdViewport,
+            transactionType: isMdAndUpViewport,
             paymentMethod: isSmAndUpViewport,
         }),
-        [isXsViewport, isSmAndUpViewport, isMdViewport]
+        [isXsAndDownViewport, isSmAndUpViewport, isMdAndUpViewport]
     );
 
     const columns = useMemo(
