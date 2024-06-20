@@ -61,5 +61,5 @@ export interface InteractiveBodyProps<
 
 export interface DataGridContextProps {
     registerCells: (props: { column: string; width: number }) => void;
-    getMinWidthByColum: (column: string) => number | undefined;
+    getMinWidthByColumn: (column: string) => number | undefined;
 }

@@ -5,24 +5,24 @@ import { useCallback, useMemo } from 'preact/hooks';
 type ColumnWidth = { column: string; width: number };
 
 export const DataGridProvider = ({ children }: { children: ComponentChildren }) => {
-    const minWidthByColum = useMemo(() => new Map<string, number>(), []);
+    const minWidthByColumn = useMemo(() => new Map<string, number>(), []);
     const registerCells: (props: ColumnWidth) => void = ({ column, width }) => {
-        if (minWidthByColum.has(column)) {
-            const existingWidth = minWidthByColum.get(column)!;
+        if (minWidthByColumn.has(column)) {
+            const existingWidth = minWidthByColumn.get(column)!;
             if (width > existingWidth) {
-                minWidthByColum.set(column, width);
+                minWidthByColumn.set(column, width);
             }
         } else {
-            minWidthByColum.set(column, width);
+            minWidthByColumn.set(column, width);
         }
     };
 
-    const getMinWidthByColum = useCallback(
+    const getMinWidthByColumn = useCallback(
         (column: string) => {
-            return minWidthByColum.get(column);
+            return minWidthByColumn.get(column);
         },
-        [minWidthByColum]
+        [minWidthByColumn]
     );
 
-    return <DataGridContext.Provider value={{ registerCells, getMinWidthByColum }}>{toChildArray(children)}</DataGridContext.Provider>;
+    return <DataGridContext.Provider value={{ registerCells, getMinWidthByColumn }}>{toChildArray(children)}</DataGridContext.Provider>;
 };

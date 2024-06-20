@@ -1,4 +1,4 @@
-import { ComponentChild, h, toChildArray } from 'preact';
+import { ComponentChild, toChildArray } from 'preact';
 import classnames from 'classnames';
 import './DataGrid.scss';
 import { TableBody } from './components/TableBody';
@@ -63,11 +63,11 @@ function DataGridTable<
     const footer = useMemo(() => children.find((child: ComponentChild) => (child as any)?.['type'] === DataGridFooter), [children]);
     const emptyBody = useMemo(() => props.data?.length === 0, [props.data]);
     const showMessage = useMemo(() => !props.loading && (emptyBody || props.error), [emptyBody, props.error, props.loading]);
-    const { getMinWidthByColum } = useDataGridContext();
+    const { getMinWidthByColumn } = useDataGridContext();
 
     const visibleCols = props.columns
         .filter(column => column.visible !== false)
-        .map(column => ({ ...column, minWidth: getMinWidthByColum(column.key) }));
+        .map(column => ({ ...column, minWidth: getMinWidthByColumn(column.key) }));
 
     const cellWidths = visibleCols.map(col => `minmax(${(col.minWidth || 100) + 40}px, ${col.flex || 1}fr)`).join(' ');
     return (
