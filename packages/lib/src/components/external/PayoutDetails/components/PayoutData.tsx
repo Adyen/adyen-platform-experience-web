@@ -41,7 +41,7 @@ export const PayoutData = ({
     const { payout }: { payout: Payout } = payoutData ?? EMPTY_OBJECT;
     const { i18n } = useCoreContext();
     const adjustments = useMemo(() => {
-        return payoutData?.amountBreakdowns?.adjustmentBreakdown?.reduce(
+        const data = payoutData?.amountBreakdowns?.adjustmentBreakdown?.reduce(
             (accumulator, currentValue) => {
                 const payoutValue =
                     currentValue?.amount?.value && currentValue?.amount?.currency
@@ -53,23 +53,31 @@ export const PayoutData = ({
 
                 if (currentValue?.category && payoutValue && categoryLabel) {
                     const targetObj = accumulator[currentValue?.amount?.value && currentValue?.amount?.value < 0 ? 'subtractions' : 'additions'];
-                    targetObj[categoryLabel] = payoutValue;
+                    targetObj.push({ key: categoryLabel as TranslationKey, value: payoutValue });
                 }
-
                 return accumulator;
             },
-            { subtractions: {} as Record<string, string>, additions: {} as Record<string, string> }
+            { subtractions: [] as { key: TranslationKey; value: ListValue }[], additions: [] as { key: TranslationKey; value: ListValue }[] }
         );
+        data?.subtractions.sort((a, b) => a.key.localeCompare(b.key));
+        data?.additions.sort((a, b) => a.key.localeCompare(b.key));
+        return data;
     }, [i18n, payoutData]);
 
     const fundsCaptured = useMemo(() => {
-        return payoutData?.amountBreakdowns?.fundsCapturedBreakdown?.reduce((items, breakdown) => {
+        const data = payoutData?.amountBreakdowns?.fundsCapturedBreakdown?.reduce((items, breakdown) => {
             if (breakdown?.amount?.value === 0) return items;
-            if (breakdown?.amount?.value) {
-                items[breakdown.category as TranslationKey] = i18n.amount(breakdown?.amount?.value, breakdown?.amount?.currency);
+            if (breakdown?.amount?.value && breakdown.category) {
+                items.push({ key: breakdown.category as TranslationKey, value: i18n.amount(breakdown?.amount?.value, breakdown?.amount?.currency) });
             }
             return items;
-        }, {} as { [key in TranslationKey]?: ListValue | undefined });
+        }, [] as { key: TranslationKey; value: ListValue }[]);
+        data?.sort((a, b) => {
+            if (a.key === 'capture') return -1;
+            if (b.key === 'capture') return 1;
+            return a.key.localeCompare(b.key);
+        });
+        return data;
     }, [payoutData, i18n]);
 
     const creationDate = useMemo(() => (payout?.createdAt ? i18n.date(new Date(payout?.createdAt), DATE_FORMAT).toString() : ''), [payout, i18n]);
