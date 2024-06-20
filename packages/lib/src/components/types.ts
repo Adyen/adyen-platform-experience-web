@@ -1,4 +1,4 @@
-import UIElement from './external/UIElement';
+import UIElement from './external/UIElement/UIElement';
 import { Core } from '../core';
 
 export const enum InteractionKeyCode {

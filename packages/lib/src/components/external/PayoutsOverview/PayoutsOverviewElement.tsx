@@ -1,6 +1,6 @@
 import { _UIComponentProps, PayoutsOverviewComponentProps } from '../../types';
 import Payouts from './components/PayoutsOverviewContainer/PayoutsOverviewContainer';
-import UIElement from '../UIElement';
+import UIElement from '../UIElement/UIElement';
 
 export class PayoutsElement extends UIElement<PayoutsOverviewComponentProps> {
     public static type = 'payouts';

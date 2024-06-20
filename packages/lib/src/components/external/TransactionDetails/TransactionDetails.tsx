@@ -1,6 +1,5 @@
-import { TransactionDetailsWithIdProps } from '../../internal/DataOverviewDetails/types';
 import { _UIComponentProps } from '../../types';
-import UIElement from '../UIElement';
+import UIElement from '../UIElement/UIElement';
 import DataOverviewDetails from '../../internal/DataOverviewDetails/DataOverviewDetails';
 import { DetailsComponentProps } from './types';
 
