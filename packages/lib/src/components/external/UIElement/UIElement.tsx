@@ -2,7 +2,7 @@ import { AuthProvider } from '../../../core/Auth';
 import CoreProvider from '../../../core/Context/CoreProvider';
 import { JSXInternal } from 'preact/src/jsx';
 import BaseElement from '../BaseElement';
-import { BaseElementProps, DataOverviewComponentProps, IUIElement, UIElementProps, UIElementStatus } from '../../types';
+import { BaseElementProps, IUIElement, UIElementProps, UIElementStatus } from '../../types';
 import './UIElement.scss';
 
 export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUIElement {
@@ -44,7 +44,7 @@ export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUI
         return (this.constructor as typeof UIElement)?.type;
     }
 
-    formatProps(props: DataOverviewComponentProps) {
+    formatProps(props: P) {
         return props;
     }
 
