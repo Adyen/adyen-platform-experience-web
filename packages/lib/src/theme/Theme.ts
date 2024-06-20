@@ -1,6 +1,6 @@
 type ColorScale = { [index: string]: string };
 
-type Colors = {
+export type ThemeColors = {
     primary?: string;
     neutral?: string;
     label?: string;
@@ -112,8 +112,8 @@ const BACKGROUND_VARIABLES = {
     'color-background-modal': '$my-primary-background',
 };
 export class Theme {
-    private readonly colors: Colors;
-    constructor(colors: Colors) {
+    private readonly colors: ThemeColors;
+    constructor(colors: ThemeColors) {
         document.documentElement.style.cssText = '';
         this.colors = colors;
     }
@@ -241,7 +241,7 @@ export class Theme {
 
     apply() {
         const variablesConfig: {
-            [k in keyof Colors]: {
+            [k in keyof ThemeColors]: {
                 baseIndex: number;
                 variables: ColorScale;
                 greyScale?: boolean;

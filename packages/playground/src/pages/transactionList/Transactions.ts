@@ -18,6 +18,7 @@ enableServerInMockedMode()
             async onSessionCreate() {
                 return await sessionRequest();
             },
+            // themeColors: { primary: '#2292bc', outline: '#1e506a', neutral: '#2d3251', background: '#151726', label: '#ebebeb' },
         });
 
         createLanguageButtons({ locales: ['es-ES', 'en-US'], core: AdyenPlatform });

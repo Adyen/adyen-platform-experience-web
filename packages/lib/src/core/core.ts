@@ -5,6 +5,7 @@ import { AuthSession } from './Auth/session/AuthSession';
 import BaseElement from '../components/external/BaseElement';
 import Localization from './Localization';
 import { EMPTY_OBJECT } from '../utils';
+import { Theme } from '../theme/Theme';
 
 class Core<AvailableTranslations extends LangFile[] = [], CustomTranslations extends {} = {}> {
     public static readonly version = process.env.VITE_VERSION!;
@@ -24,6 +25,8 @@ class Core<AvailableTranslations extends LangFile[] = [], CustomTranslations ext
         this.localization = new Localization(options.locale, options.availableTranslations);
         this.loadingContext = process.env.VITE_LOADING_CONTEXT ? process.env.VITE_LOADING_CONTEXT : resolveEnvironment(this.options.environment);
         this.setOptions(options);
+
+        options.themeColors && new Theme(options.themeColors).apply();
     }
 
     async initialize(): Promise<this> {

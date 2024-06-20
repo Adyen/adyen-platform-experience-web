@@ -2,6 +2,7 @@ import type { SessionRequest } from './Auth';
 import type { AnalyticsOptions } from './Analytics/types';
 import type { CustomTranslations as Translations, LangFile } from './Localization/types';
 import type { KeyOfRecord, WithReplacedUnderscoreOrDash } from '../utils/types';
+import { ThemeColors } from '../theme/Theme';
 
 type CreateLocalesUnionFromAvailableTranslations<T extends LangFile[]> = T extends T
     ? Extract<WithReplacedUnderscoreOrDash<KeyOfRecord<T[number]>, '_', '-'>, string> | 'en-US'
@@ -35,6 +36,7 @@ interface _CoreOptions<AvailableTranslations extends LangFile[] = [], CustomTran
 
     onError?: (err: any) => any;
     onSessionCreate: SessionRequest;
+    themeColors?: ThemeColors;
 
     /**
      * Custom translations and localizations

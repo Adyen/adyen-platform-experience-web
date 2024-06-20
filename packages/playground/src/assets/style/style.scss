@@ -60,7 +60,7 @@ body {
 }
 
 main {
-    background: #151726;
+    background: var(background-primary, #ffffff);
     flex: 1;
     position: relative;
     padding: 15px 0;
