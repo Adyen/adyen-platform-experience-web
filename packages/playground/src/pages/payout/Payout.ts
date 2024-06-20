@@ -25,6 +25,6 @@ enableServerInMockedMode()
             onContactSupport: () => {},
         });
 
-        payoutDetailsComponent.mount('.payout-details-component-container');
+        payoutDetailsComponent.mount('.component-element');
     })
     .catch(console.error);

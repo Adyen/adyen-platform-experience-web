@@ -39,6 +39,6 @@ enableServerInMockedMode()
             ...TEST_CONFIG,
         });
 
-        payoutsComponent.mount('.payouts-overview-container');
+        payoutsComponent.mount('.component-element');
     })
     .catch(console.error);

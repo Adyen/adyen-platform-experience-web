@@ -41,6 +41,6 @@ enableServerInMockedMode()
             ...TEST_CONFIG,
         });
 
-        transactionsComponent.mount('.transactions-component-container');
+        transactionsComponent.mount('.component-element');
     })
     .catch(console.error);

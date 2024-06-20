@@ -24,6 +24,6 @@ enableServerInMockedMode()
             onContactSupport: () => {},
         });
 
-        transactionsDetailsComponent.mount('.transaction-details-component-container');
+        transactionsDetailsComponent.mount('.component-element');
     })
     .catch(console.error);
