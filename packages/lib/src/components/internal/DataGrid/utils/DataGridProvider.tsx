@@ -6,16 +6,19 @@ type ColumnWidth = { column: string; width: number };
 
 export const DataGridProvider = ({ children }: { children: ComponentChildren }) => {
     const minWidthByColumn = useMemo(() => new Map<string, number>(), []);
-    const registerCells: (props: ColumnWidth) => void = ({ column, width }) => {
-        if (minWidthByColumn.has(column)) {
-            const existingWidth = minWidthByColumn.get(column)!;
-            if (width > existingWidth) {
+    const registerCells: (props: ColumnWidth) => void = useCallback(
+        ({ column, width }) => {
+            if (minWidthByColumn.has(column)) {
+                const existingWidth = minWidthByColumn.get(column)!;
+                if (width > existingWidth) {
+                    minWidthByColumn.set(column, width);
+                }
+            } else {
                 minWidthByColumn.set(column, width);
             }
-        } else {
-            minWidthByColumn.set(column, width);
-        }
-    };
+        },
+        [minWidthByColumn]
+    );
 
     const getMinWidthByColumn = useCallback(
         (column: string) => {
