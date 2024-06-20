@@ -17,7 +17,7 @@ export const createSessionDeadlineManager = <T extends any>(emitter: Emitter<Ses
 
     const _clearDeadline = () => {
         _deadlineSignal?.removeEventListener('abort', _clearDeadline);
-        _deadlineSignal = _deadlineTimestamp = undefined;
+        _deadlineTimestamp = Math.min(Date.now(), _deadlineTimestamp ?? Infinity);
         _stopDeadlineClock?.();
         emitter.emit(EVT_SESSION_EXPIRED_STATE_CHANGE);
     };
@@ -52,17 +52,19 @@ export const createSessionDeadlineManager = <T extends any>(emitter: Emitter<Ses
             }
         }
 
+        _deadlineSignal = _deadlineTimestamp = undefined;
+
         if (!deadlineElapsed && (SIGNALS.size > 0 || Number.isFinite(earliestTime))) {
             ({ abort: _abort, signal: _deadlineSignal } = createAbortSink(...SIGNALS));
             _deadlineSignal.addEventListener('abort', _clearDeadline);
-
             if (Number.isFinite(earliestTime)) _startDeadlineClock(earliestTime);
-            emitter.emit(EVT_SESSION_EXPIRED_STATE_CHANGE);
         }
 
         // clear collections
         DEADLINES.length = 0;
         SIGNALS.clear();
+
+        emitter.emit(EVT_SESSION_EXPIRED_STATE_CHANGE);
     });
 
     const _startDeadlineClock = (deadlineTimestamp: number) => {

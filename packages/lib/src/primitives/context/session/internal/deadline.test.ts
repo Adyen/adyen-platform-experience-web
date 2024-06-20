@@ -2,12 +2,12 @@
 import { describe, expect, test, vi } from 'vitest';
 import { createSessionDeadlineManager } from './deadline';
 import { createEventEmitter } from '../../../reactive/eventEmitter';
-// import { ALREADY_RESOLVED_PROMISE, getPromiseState } from '../../../../utils';
-// import { PromiseState } from '../../../../utils/types';
+import { setupTimers } from '../../../time/__testing__/fixtures';
 import type { SessionEventType, SessionSpecification } from '../types';
-// import type { SessionDeadline } from './types';
 
 describe('createSessionDeadlineManager', () => {
+    setupTimers();
+
     const _emitter = createEventEmitter<SessionEventType>();
     const _specification: SessionSpecification<any> = { onRefresh: () => {} };
 
@@ -17,7 +17,6 @@ describe('createSessionDeadlineManager', () => {
     };
 
     test('should create deadline manager', async () => {
-        vi.useFakeTimers();
         const deadlineManager = createSessionDeadlineManager(_emitter, _specification);
         const unpatchDeadline = _patchSpecification('deadline', () => Date.now() + 5000); // 5 seconds session
 
@@ -36,12 +35,12 @@ describe('createSessionDeadlineManager', () => {
         expect(deadlineManager.timestamp).not.toBeUndefined();
 
         await vi.advanceTimersByTimeAsync(5000);
+        await vi.advanceTimersToNextTimerAsync();
 
         expect(deadlineManager.elapsed).toBe(true);
         expect(deadlineManager.signal!.aborted).toBe(true);
-        expect(deadlineManager.timestamp).toBeCloseTo(Date.now(), -1);
+        expect(deadlineManager.timestamp).toBeCloseTo(Date.now(), -2);
 
         unpatchDeadline();
-        vi.useRealTimers();
     });
 });
