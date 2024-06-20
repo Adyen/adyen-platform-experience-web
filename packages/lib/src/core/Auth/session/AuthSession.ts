@@ -1,10 +1,16 @@
+import {
+    EVT_SESSION_EXPIRED,
+    EVT_SESSION_REFRESHED,
+    EVT_SESSION_REFRESHING_END,
+    EVT_SESSION_REFRESHING_START,
+    SessionContext,
+} from '../../../primitives/context/session';
 import AuthSetupContext from './AuthSetupContext';
 import AuthSessionSpecification from './AuthSessionSpecification';
 import { createAbortable } from '../../../primitives/async/abortable';
 import { createErrorContainer } from '../../../primitives/auxiliary/errorContainer';
 import { createEventEmitter } from '../../../primitives/reactive/eventEmitter';
 import { createWatchlist } from '../../../primitives/reactive/watchlist';
-import { EVT_SESSION_EXPIRED_STATE_CHANGE, EVT_SESSION_REFRESHING_STATE_CHANGE, SessionContext } from '../../../primitives/context/session';
 import { ERR_AUTH_REFRESH_ABORTED, ERR_AUTH_REFRESH_FAILED, EVT_AUTH_STATE_CHANGE } from './constants';
 import { boolOrFalse, constant, isFunction, noop } from '../../../utils';
 import type { Promised } from '../../../utils/types';
@@ -50,8 +56,10 @@ export class AuthSession {
         this._watchlist.on.resume = () => {
             let listeners = [
                 this._eventEmitter.on(EVT_AUTH_STATE_CHANGE, this._watchlist.requestNotification),
-                this._sessionContext.on(EVT_SESSION_REFRESHING_STATE_CHANGE, _onAuthStateChanged),
-                this._sessionContext.on(EVT_SESSION_EXPIRED_STATE_CHANGE, _onSessionExpiredStateChange),
+                this._sessionContext.on(EVT_SESSION_EXPIRED, _onSessionExpiredStateChange),
+                this._sessionContext.on(EVT_SESSION_REFRESHED, _onSessionExpiredStateChange),
+                this._sessionContext.on(EVT_SESSION_REFRESHING_END, _onAuthStateChanged),
+                this._sessionContext.on(EVT_SESSION_REFRESHING_START, _onAuthStateChanged),
             ];
 
             this._watchlist.on.idle = () => {

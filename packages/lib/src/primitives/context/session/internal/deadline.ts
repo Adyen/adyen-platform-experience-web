@@ -3,23 +3,29 @@ import { enumerable, getter, isFunction, noop, parseDate, struct, tryResolve } f
 import { createAbortSink, isAbortSignal } from '../../../auxiliary/abortSink';
 import { createPromisor } from '../../../async/promisor';
 import { isWatchlistUnsubscribeToken } from '../../../reactive/watchlist';
-import { EVT_SESSION_EXPIRED_STATE_CHANGE } from '../constants';
+import { EVT_SESSION_EXPIRED, EVT_SESSION_REFRESHED } from '../constants';
 import type { Emitter } from '../../../reactive/eventEmitter';
 import type { SessionEventType, SessionSpecification } from '../types';
 import type { SessionDeadline } from './types';
 
 export const createSessionDeadlineManager = <T extends any>(emitter: Emitter<SessionEventType>, specification: SessionSpecification<T>) => {
     let _abort = noop;
+    let _active = false;
     let _deadlineSignal: AbortSignal | undefined;
     let _deadlineTimestamp: number | undefined;
-    let _refreshPromisorSignal: AbortSignal;
+    let _refreshPromisorSignal: AbortSignal | undefined;
     let _stopDeadlineClock: (() => void) | undefined;
 
     const _clearDeadline = () => {
         _deadlineSignal?.removeEventListener('abort', _clearDeadline);
         _deadlineTimestamp = Math.min(Date.now(), _deadlineTimestamp ?? Infinity);
         _stopDeadlineClock?.();
-        emitter.emit(EVT_SESSION_EXPIRED_STATE_CHANGE);
+        _refreshPromisor.abort();
+
+        if (_active) {
+            _active = false;
+            emitter.emit(EVT_SESSION_EXPIRED);
+        }
     };
 
     const _getSessionDeadline = (session: T | undefined, signal: AbortSignal) =>
@@ -29,7 +35,7 @@ export const createSessionDeadlineManager = <T extends any>(emitter: Emitter<Ses
         }).catch(noop);
 
     const _refreshPromisor = createPromisor(async (signal, session: T | undefined) => {
-        _clearDeadline();
+        _abort();
         _refreshPromisorSignal = signal;
 
         const sessionDeadline = await _getSessionDeadline(session, signal);
@@ -52,9 +58,10 @@ export const createSessionDeadlineManager = <T extends any>(emitter: Emitter<Ses
             }
         }
 
+        _active = !deadlineElapsed && (SIGNALS.size > 0 || Number.isFinite(earliestTime));
         _deadlineSignal = _deadlineTimestamp = undefined;
 
-        if (!deadlineElapsed && (SIGNALS.size > 0 || Number.isFinite(earliestTime))) {
+        if (_active) {
             ({ abort: _abort, signal: _deadlineSignal } = createAbortSink(...SIGNALS));
             _deadlineSignal.addEventListener('abort', _clearDeadline);
             if (Number.isFinite(earliestTime)) _startDeadlineClock(earliestTime);
@@ -64,7 +71,7 @@ export const createSessionDeadlineManager = <T extends any>(emitter: Emitter<Ses
         DEADLINES.length = 0;
         SIGNALS.clear();
 
-        emitter.emit(EVT_SESSION_EXPIRED_STATE_CHANGE);
+        emitter.emit(EVT_SESSION_REFRESHED);
     });
 
     const _startDeadlineClock = (deadlineTimestamp: number) => {

@@ -1,12 +1,20 @@
+import {
+    ERR_SESSION_FACTORY_UNAVAILABLE,
+    ERR_SESSION_INVALID,
+    ERR_SESSION_REFRESH_ABORTED,
+    EVT_SESSION_EXPIRED,
+    EVT_SESSION_REFRESHED,
+    EVT_SESSION_REFRESHING_END,
+    EVT_SESSION_REFRESHING_START,
+} from '../constants';
 import { createPromisor } from '../../../async/promisor';
 import { createEventEmitter, Emitter } from '../../../reactive/eventEmitter';
-import { ALREADY_RESOLVED_PROMISE, enumerable, getter, isFunction, isUndefined, struct, tryResolve } from '../../../../utils';
-import { ERR_SESSION_FACTORY_UNAVAILABLE, ERR_SESSION_INVALID, ERR_SESSION_REFRESH_ABORTED, EVT_SESSION_REFRESHING_STATE_CHANGE } from '../constants';
+import { ALREADY_RESOLVED_PROMISE, enumerable, getter, isFunction, struct, tryResolve } from '../../../../utils';
 import type { SessionEventType, SessionSpecification } from '../types';
 import type { SessionEventEmitter, SessionRefreshManager } from './types';
 
 export const createSessionRefreshManager = <T extends any>(emitter: Emitter<SessionEventType>, specification: SessionSpecification<T>) => {
-    let _refreshingEventPending = false;
+    let _readyPromise: Promise<void> | undefined;
     let _refreshingPromise: Promise<void> | undefined;
     let _refreshingSignal: AbortSignal | undefined;
     let _session: T | undefined;
@@ -25,23 +33,32 @@ export const createSessionRefreshManager = <T extends any>(emitter: Emitter<Sess
         if (!isFunction(value)) throw ERR_SESSION_FACTORY_UNAVAILABLE;
     }
 
+    const _getReadyPromise = () =>
+        (_readyPromise ??= new Promise(resolve => {
+            const _refreshingCompleted = () => {
+                _offSessionExpired();
+                _offSessionRefreshed();
+                _offSessionExpired = _offSessionRefreshed = undefined!;
+                resolve();
+            };
+
+            let _offSessionExpired = emitter.on(EVT_SESSION_EXPIRED, _refreshingCompleted);
+            let _offSessionRefreshed = emitter.on(EVT_SESSION_REFRESHED, _refreshingCompleted);
+
+            _sessionEmitter.emit('session', _session!);
+        }));
+
     const _refreshPromisor = createPromisor(async (signal: AbortSignal) => {
-        _refreshingSignal = signal;
-
-        if (isUndefined(_refreshingPromise)) {
-            _refreshingPromise = (async () => {
-                if (_refreshingEventPending) {
-                    // Defer dispatching `EVT_SESSION_REFRESHING_STATE_CHANGE` event
-                    // Ensuring that pending `EVT_SESSION_EXPIRED_STATE_CHANGE` events get dispatched first
-                    await ALREADY_RESOLVED_PROMISE;
-                }
-
-                emitter.emit(EVT_SESSION_REFRESHING_STATE_CHANGE);
-            })();
-        }
-
         try {
-            await _refreshingPromise;
+            _refreshingSignal = signal;
+
+            await (_refreshingPromise ??= (async () => {
+                // Defer dispatching `EVT_SESSION_REFRESHING_START` event to the next tick
+                // For a more consistent async behavior on calling `refreshPromisor()`
+                await (_readyPromise ??= ALREADY_RESOLVED_PROMISE);
+                emitter.emit(EVT_SESSION_REFRESHING_START);
+            })());
+
             _assertSessionFactory(specification.onRefresh);
 
             const session = await tryResolve(() => specification.onRefresh(_session, signal)).finally(() => {
@@ -49,23 +66,19 @@ export const createSessionRefreshManager = <T extends any>(emitter: Emitter<Sess
             });
 
             _assertSession(session);
-            _sessionEmitter.emit('session', (_session = session!));
+            _readyPromise = undefined;
+            _session = session;
+
             return _session;
         } finally {
-            /* Control flow will always enter this block */
-
             // The session refresh completion steps should run only once
             // Only for the last session refresh request
             if (_refreshingSignal === signal) {
-                _refreshingEventPending = true;
-                _refreshingPromise = undefined;
-
-                // Defer dispatching `EVT_SESSION_REFRESHING_STATE_CHANGE` event
-                // Ensuring that pending `EVT_SESSION_EXPIRED_STATE_CHANGE` events get dispatched first
-                await ALREADY_RESOLVED_PROMISE;
-
-                _refreshingEventPending = false;
-                emitter.emit(EVT_SESSION_REFRESHING_STATE_CHANGE);
+                _getReadyPromise().finally(() => {
+                    // Wait for ready signal before marking refresh as completed
+                    _readyPromise = _refreshingPromise = undefined;
+                    emitter.emit(EVT_SESSION_REFRESHING_END);
+                });
             }
         }
     });

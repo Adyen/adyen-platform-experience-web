@@ -1,8 +1,14 @@
+import {
+    ERR_SESSION_EXPIRED,
+    ERR_SESSION_HTTP_UNAVAILABLE,
+    EVT_SESSION_EXPIRED,
+    EVT_SESSION_REFRESHING_END,
+    EVT_SESSION_REFRESHING_START,
+} from './constants';
 import { createSessionDeadlineManager } from './internal/deadline';
 import { createSessionRefreshManager } from './internal/refresh';
 import { createEventEmitter } from '../../reactive/eventEmitter';
 import { boolOrFalse, falsify, isFunction, noop, tryResolve } from '../../../utils';
-import { ERR_SESSION_EXPIRED, ERR_SESSION_HTTP_UNAVAILABLE, EVT_SESSION_EXPIRED_STATE_CHANGE } from './constants';
 import type { SessionEventType, SessionSpecification } from './types';
 
 export class SessionContext<T, HttpParams extends any[] = any[]> {
@@ -27,6 +33,10 @@ export class SessionContext<T, HttpParams extends any[] = any[]> {
             this._sessionActivationTimestamp = timeStamp;
             this._deadlineManager.refresh(this._session);
         });
+
+        this._eventEmitter.on(EVT_SESSION_EXPIRED, () => void (this._refreshPending = true));
+        this._eventEmitter.on(EVT_SESSION_REFRESHING_END, () => void (this._refreshPending = false));
+        this._eventEmitter.on(EVT_SESSION_REFRESHING_START, this._deadlineManager.abort);
 
         this.http = this._sessionHttp.bind(this);
         this.on = this._eventEmitter.on;
@@ -64,19 +74,6 @@ export class SessionContext<T, HttpParams extends any[] = any[]> {
         this.refresh();
     }
 
-    // private _onSessionExpired(refreshImmediately = false) {
-    //     if (this._refreshPending) return;
-    //
-    //     this._stopSessionClock?.();
-    //     this._expired = this._refreshPending = true;
-    //     this._eventEmitter.emit(EVT_SESSION_EXPIRED_STATE_CHANGE);
-    //
-    //     if (boolOrFalse(refreshImmediately)) {
-    //         // attempt immediate refresh (if necessary)
-    //         this._fulfillPendingSessionRefresh().catch(noop);
-    //     }
-    // }
-
     private async _sessionHttp(...args: HttpParams) {
         await this._fulfillPendingSessionRefresh(true);
 
@@ -87,7 +84,10 @@ export class SessionContext<T, HttpParams extends any[] = any[]> {
                 return await this._specification.http(session, this._refreshManager.signal!, ...args);
             } catch (ex) {
                 if (ex !== ERR_SESSION_EXPIRED) throw ex;
-                // this._onSessionExpired(true);
+                if (this._refreshPending) continue;
+                // no-op catch callback to silence unnecessary unhandled rejection warnings
+                this._fulfillPendingSessionRefresh().catch(noop);
+                this._eventEmitter.emit(EVT_SESSION_EXPIRED);
             }
         }
     }
