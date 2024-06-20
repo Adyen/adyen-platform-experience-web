@@ -134,19 +134,6 @@ export const PayoutData = ({
                                         </Typography>
                                     }
                                 >
-                                    {adjustments?.subtractions && Object.keys(adjustments?.subtractions).length > 0 && (
-                                        <div className={PD_CARD_CLASS}>
-                                            <Card
-                                                renderHeader={
-                                                    <Typography className={PD_CARD_TITLE_CLASS} variant={TypographyVariant.CAPTION} stronger>
-                                                        {i18n.get('subtractions')}
-                                                    </Typography>
-                                                }
-                                            >
-                                                <StructuredList items={adjustments?.subtractions} />
-                                            </Card>
-                                        </div>
-                                    )}
                                     {adjustments?.additions && Object.keys(adjustments?.additions).length > 0 && (
                                         <div className={PD_CARD_CLASS}>
                                             <Card
@@ -157,6 +144,19 @@ export const PayoutData = ({
                                                 }
                                             >
                                                 <StructuredList items={adjustments?.additions} />
+                                            </Card>
+                                        </div>
+                                    )}
+                                    {adjustments?.subtractions && Object.keys(adjustments?.subtractions).length > 0 && (
+                                        <div className={PD_CARD_CLASS}>
+                                            <Card
+                                                renderHeader={
+                                                    <Typography className={PD_CARD_TITLE_CLASS} variant={TypographyVariant.CAPTION} stronger>
+                                                        {i18n.get('subtractions')}
+                                                    </Typography>
+                                                }
+                                            >
+                                                <StructuredList items={adjustments?.subtractions} />
                                             </Card>
                                         </div>
                                     )}
