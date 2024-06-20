@@ -79,7 +79,7 @@
         display: flex;
         height: 100%;
         overflow: hidden;
-        padding: style.token(spacer-070);
+        padding: style.token(spacer-070) style.token(spacer-000);
         text-overflow: ellipsis;
         vertical-align: middle;
         white-space: nowrap;
@@ -203,6 +203,10 @@
             height: 100%;
             overflow: visible;
             position: relative;
+        }
+
+        #{$adyen-pe-data-grid__cell} {
+            padding: style.token(spacer-070);
         }
     }
 }

@@ -34,18 +34,18 @@ export const TransactionsTable: FC<TransactionTableProps> = ({
 }) => {
     const { i18n } = useCoreContext();
     const [hoveredRow, setHoveredRow] = useState<undefined | number>();
-    const isSmViewport = useResponsiveViewport(mediaQueries.up.sm);
+    const isSmAndUpViewport = useResponsiveViewport(mediaQueries.up.sm);
     const isMdViewport = useResponsiveViewport(mediaQueries.up.md);
     const isXsViewport = useResponsiveViewport(mediaQueries.down.xs);
 
     const fieldsVisibility: Partial<Record<FieldsType, boolean>> = useMemo(
         () => ({
             dateAndPaymentMethod: isXsViewport,
-            createdAt: isSmViewport,
+            createdAt: isSmAndUpViewport,
             transactionType: isMdViewport,
-            paymentMethod: isSmViewport,
+            paymentMethod: isSmAndUpViewport,
         }),
-        [isXsViewport, isSmViewport, isMdViewport]
+        [isXsViewport, isSmAndUpViewport, isMdViewport]
     );
 
     const columns = useMemo(
@@ -59,13 +59,13 @@ export const TransactionsTable: FC<TransactionTableProps> = ({
                             ? label
                             : `${label} ${availableCurrencies && availableCurrencies[0] ? `(${getCurrencyCode(availableCurrencies[0])})` : ''}`,
                         position: key === 'amount' ? CellTextPosition.RIGHT : undefined,
-                        flex: isSmViewport ? 1.5 : undefined,
+                        flex: isSmAndUpViewport ? 1.5 : undefined,
                     };
                 }
 
                 return { key, label, visible: fieldsVisibility[key] };
             }),
-        [availableCurrencies, fieldsVisibility, hasMultipleCurrencies, i18n, isSmViewport]
+        [availableCurrencies, fieldsVisibility, hasMultipleCurrencies, i18n, isSmAndUpViewport]
     );
 
     const EMPTY_TABLE_MESSAGE = {
