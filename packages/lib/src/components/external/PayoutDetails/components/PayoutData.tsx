@@ -64,10 +64,12 @@ export const PayoutData = ({
     const fundsCaptured = useMemo(() => {
         return payoutData?.amountBreakdowns?.fundsCapturedBreakdown?.reduce((items, breakdown) => {
             if (breakdown?.amount?.value === 0) return items;
-            items[breakdown.category as TranslationKey] = breakdown?.amount?.value;
+            if (breakdown?.amount?.value) {
+                items[breakdown.category as TranslationKey] = i18n.amount(breakdown?.amount?.value, breakdown?.amount?.currency);
+            }
             return items;
         }, {} as { [key in TranslationKey]?: ListValue | undefined });
-    }, [payoutData]);
+    }, [payoutData, i18n]);
 
     const creationDate = useMemo(() => (payout?.createdAt ? i18n.date(new Date(payout?.createdAt), DATE_FORMAT).toString() : ''), [payout, i18n]);
 
