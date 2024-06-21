@@ -3,10 +3,12 @@ import { useMemo } from 'preact/hooks';
 import useCoreContext from '../../../../core/Context/useCoreContext';
 import { TranslationKey } from '../../../../core/Localization/types';
 import { IPayoutDetails } from '../../../../types';
+import { components } from '../../../../types/api/resources/PayoutsResource';
 import { EMPTY_OBJECT } from '../../../../utils';
 import Card from '../../../internal/Card/Card';
 import { DATE_FORMAT } from '../../../internal/DataOverviewDisplay/constants';
 import StructuredList from '../../../internal/StructuredList';
+import { ListValue } from '../../../internal/StructuredList/types';
 import { TypographyVariant } from '../../../internal/Typography/types';
 import Typography from '../../../internal/Typography/Typography';
 import TransactionDataSkeleton from '../../TransactionDetails/components/TransactionDataSkeleton';
@@ -21,30 +23,53 @@ import {
     PD_SECTION_GROSS_AMOUNT_CLASS,
     PD_SECTION_NET_AMOUNT_CLASS,
     PD_TITLE_CLASS,
+    PD_UNPAID_AMOUNT,
 } from './constants';
 
-export const PayoutData = ({ payout: payoutData, isFetching }: { payout?: IPayoutDetails; isFetching?: boolean }) => {
-    const { payout } = payoutData ?? EMPTY_OBJECT;
+type Payout = components['schemas']['PayoutDTO'];
+
+export const PayoutData = ({
+    balanceAccountId,
+    payout: payoutData,
+    isFetching,
+}: {
+    payout?: IPayoutDetails;
+    isFetching?: boolean;
+    balanceAccountId: string;
+}) => {
+    const { payout }: { payout: Payout } = payoutData ?? EMPTY_OBJECT;
     const { i18n } = useCoreContext();
     const adjustments = useMemo(() => {
-        return payoutData?.amountBreakdown?.reduce(
+        return payoutData?.amountBreakdowns?.adjustmentBreakdown?.reduce(
             (accumulator, currentValue) => {
-                const payoutValue = currentValue?.amount?.value;
-                const category = currentValue?.category === 'unknown' ? 'Other' : currentValue?.category;
-                const translationKey = `txType.${category}` as TranslationKey;
+                const payoutValue =
+                    currentValue?.amount?.value && currentValue?.amount?.currency
+                        ? i18n.amount(currentValue?.amount?.value, currentValue?.amount?.currency)
+                        : (currentValue?.amount?.value ?? '').toString();
+                const translationKey = `${currentValue?.category}` as TranslationKey;
                 const categoryTranslation = i18n.get(translationKey);
-                const categoryLabel = category && categoryTranslation !== translationKey ? categoryTranslation : category;
+                const categoryLabel = currentValue?.category && categoryTranslation !== translationKey ? categoryTranslation : currentValue?.category;
 
-                if (currentValue?.category && payoutValue) {
-                    const targetObj = accumulator[payoutValue < 0 ? 'subtractions' : 'additions'];
+                if (currentValue?.category && payoutValue && categoryLabel) {
+                    const targetObj = accumulator[currentValue?.amount?.value && currentValue?.amount?.value < 0 ? 'subtractions' : 'additions'];
                     targetObj[categoryLabel] = payoutValue;
                 }
 
                 return accumulator;
             },
-            { subtractions: {} as Record<string, number>, additions: {} as Record<string, number> }
+            { subtractions: {} as Record<string, string>, additions: {} as Record<string, string> }
         );
     }, [i18n, payoutData]);
+
+    const fundsCaptured = useMemo(() => {
+        return payoutData?.amountBreakdowns?.fundsCapturedBreakdown?.reduce((items, breakdown) => {
+            if (breakdown?.amount?.value === 0) return items;
+            if (breakdown?.amount?.value) {
+                items[breakdown.category as TranslationKey] = i18n.amount(breakdown?.amount?.value, breakdown?.amount?.currency);
+            }
+            return items;
+        }, {} as { [key in TranslationKey]?: ListValue | undefined });
+    }, [payoutData, i18n]);
 
     const creationDate = useMemo(() => (payout?.createdAt ? i18n.date(new Date(payout?.createdAt), DATE_FORMAT).toString() : ''), [payout, i18n]);
 
@@ -59,21 +84,40 @@ export const PayoutData = ({ payout: payoutData, isFetching }: { payout?: IPayou
                             {i18n.get('netPayout')}
                         </Typography>
                         <Typography variant={TypographyVariant.TITLE} large>
-                            {i18n.amount(payout.netAmount.value, payout.netAmount.currency)}
+                            {i18n.amount(payout.payoutAmount.value, payout.payoutAmount.currency)}
                         </Typography>
                         <Typography variant={TypographyVariant.BODY}>{creationDate}</Typography>
                         <Typography variant={TypographyVariant.BODY} stronger>
-                            {`${i18n.get('referenceID')}: ${payout.id}`}
+                            {`${i18n.get('balanceAccountId')}: ${balanceAccountId}`}
                         </Typography>
                     </div>
                     <div className={PD_CONTENT_CLASS}>
                         <div className={PD_SECTION_CLASS}>
                             <div className={classnames(PD_SECTION_AMOUNT_CLASS, PD_SECTION_GROSS_AMOUNT_CLASS)}>
-                                <Typography variant={TypographyVariant.BODY}>{i18n.get('grossPayout')}</Typography>
+                                <Typography variant={TypographyVariant.BODY}>{i18n.get('fundsCaptured')}</Typography>
                                 <Typography variant={TypographyVariant.BODY}>
-                                    {i18n.amount(payout.grossAmount.value, payout.grossAmount.currency)}
+                                    {i18n.amount(payout.fundsCapturedAmount.value, payout.fundsCapturedAmount.currency)}
                                 </Typography>
                             </div>
+                            <div className={PD_SECTION_CLASS}>
+                                {fundsCaptured && Boolean(Object.keys(fundsCaptured).length) && (
+                                    <div className={PD_CARD_CLASS}>
+                                        <Card>
+                                            <StructuredList items={fundsCaptured} />
+                                        </Card>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                        <div className={PD_SECTION_CLASS}>
+                            <div className={classnames(PD_SECTION_AMOUNT_CLASS, PD_SECTION_GROSS_AMOUNT_CLASS)}>
+                                <Typography variant={TypographyVariant.BODY}>{i18n.get('adjustments')}</Typography>
+                                <Typography variant={TypographyVariant.BODY}>
+                                    {i18n.amount(payout.adjustmentAmount.value, payout.adjustmentAmount.currency)}
+                                </Typography>
+                            </div>
+                        </div>
+                        <div className={PD_SECTION_CLASS}>
                             {adjustments?.subtractions && Boolean(Object.keys(adjustments?.subtractions).length) && (
                                 <div className={PD_CARD_CLASS}>
                                     <Card
@@ -100,16 +144,26 @@ export const PayoutData = ({ payout: payoutData, isFetching }: { payout?: IPayou
                                     </Card>
                                 </div>
                             )}
+                        </div>
+                        <div className={classnames(PD_SECTION_CLASS)}>
                             <div className={classnames(PD_SECTION_AMOUNT_CLASS, PD_SECTION_NET_AMOUNT_CLASS)}>
                                 <Typography variant={TypographyVariant.BODY} stronger>
                                     {i18n.get('netPayout')}
                                 </Typography>
                                 <Typography variant={TypographyVariant.BODY} stronger>
-                                    {i18n.amount(payout.netAmount.value, payout.netAmount.currency)}
+                                    {i18n.amount(payout.payoutAmount.value, payout.payoutAmount.currency)}
                                 </Typography>
                             </div>
                         </div>
                     </div>
+                    {payoutData?.payout?.unpaidAmount && (
+                        <div className={PD_UNPAID_AMOUNT}>
+                            <Typography variant={TypographyVariant.BODY}>{i18n.get('remainingAmount')}</Typography>
+                            <Typography variant={TypographyVariant.BODY}>
+                                {i18n.amount(payoutData.payout.unpaidAmount.value, payoutData.payout.unpaidAmount.currency)}
+                            </Typography>
+                        </div>
+                    )}
                 </div>
             )}
         </>

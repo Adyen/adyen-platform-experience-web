@@ -6,7 +6,7 @@
     overflow: hidden;
 
     &--filled {
-        background-color: style.token(color-outline-secondary);
+        background-color: style.token(color-outline-tertiary);
     }
 
     &--no-outline {
@@ -22,7 +22,7 @@
     }
 
     &__body {
-        background-color: style.token(color-background-tertiary);
+        background-color: style.token(color-background-primary);
         color: style.token(color-label-primary);
         font-weight: style.token(text-body-strongest-font-weight);
         line-height: style.token(text-caption-line-height);
@@ -35,13 +35,20 @@
     }
 
     &__header {
+        border-bottom: style.token(color-outline-secondary) 1px solid;
         display: block;
-        padding: style.token(spacer-040) style.token(spacer-070) style.token(spacer-040) style.token(spacer-070);
+        padding: style.token(spacer-040) style.token(spacer-070) style.token(spacer-020);
         width: 100%;
     }
 
     &__header-content {
         flex: 1;
+    }
+
+    &__title {
+        font-size: style.token(font-size-medium);
+        font-weight: style.token(font-size-300);
+        line-height: style.token(line-height-300);
     }
 
     &__title-container {

@@ -1,4 +1,10 @@
+@use '../../../style';
+
 .adyen-pe-overview-details {
+    &--title {
+        margin-bottom: style.token(spacer-070);
+    }
+
     &--error-container {
         position: relative;
     }

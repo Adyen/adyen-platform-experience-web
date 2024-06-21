@@ -11,7 +11,7 @@ const meta: Meta<ElementProps<typeof PayoutsOverview>> = {
         onFiltersChanged: enabledDisabledCallbackRadioControls('onFiltersChanged', ['Passed', 'Not Passed']),
         onRecordSelection: enabledDisabledCallbackRadioControls('onRecordSelection'),
         onLimitChanged: enabledDisabledCallbackRadioControls('onLimitChanged', ['Passed', 'Not Passed']),
-        onContactSupport: enabledDisabledCallbackRadioControls('onTransactionSelected'),
+        onContactSupport: enabledDisabledCallbackRadioControls('onContactSupport'),
         preferredLimit: { type: 'number', min: 1, max: 100 },
         hideTitle: { type: 'boolean' },
         allowLimitSelection: { type: 'boolean' },

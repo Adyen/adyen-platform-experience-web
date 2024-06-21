@@ -111,7 +111,7 @@ $adyen-icon-touch-size: style.token(spacer-110);
     }
 
     &__header-icon {
-        --offset-margin: calc(1rem - $adyen-icon-touch-size);
+        --offset-margin: calc(1rem - #{$adyen-icon-touch-size});
         --offset-position: calc(var(--offset-margin) * -1 / 2);
 
         cursor: pointer;
@@ -121,7 +121,6 @@ $adyen-icon-touch-size: style.token(spacer-110);
         right: var(--offset-position);
         top: var(--offset-position);
         transition: background 0.1s linear;
-        width: var(--offset-position);
 
         &:focus,
         &:active {

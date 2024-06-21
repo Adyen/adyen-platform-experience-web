@@ -1,5 +1,5 @@
 import { rest } from 'msw';
-import { PAYOUTS, PAYOUTS_WITH_DETAILS } from '@adyen/adyen-platform-experience-web-mocks';
+import { getPayouts, PAYOUTS_WITH_DETAILS } from '@adyen/adyen-platform-experience-web-mocks';
 import { endpoints } from '../endpoints';
 import { delay } from '../utils/utils';
 import { getPaginationLinks } from './utils';
@@ -20,13 +20,12 @@ export const payoutsMocks = [
         const limit = +(req.url.searchParams.get('limit') ?? defaultPaginationLimit);
         const cursor = +(req.url.searchParams.get('cursor') ?? 0);
 
-        let payouts = PAYOUTS;
+        let payouts = balanceAccountId ? getPayouts(balanceAccountId) : [];
         let responseDelay = 200;
 
         if (balanceAccountId || createdSince || createdUntil) {
             payouts = payouts.filter(
                 payout =>
-                    (!balanceAccountId || payout.balanceAccountId === balanceAccountId) &&
                     (!createdSince || compareDates(payout.createdAt, createdSince, 'ge')) &&
                     (!createdUntil || compareDates(payout.createdAt, createdUntil, 'le'))
             );
@@ -43,7 +42,11 @@ export const payoutsMocks = [
             return res.networkError('Failed to connect');
         }
 
-        const matchingMock = PAYOUTS_WITH_DETAILS.find(mock => mock.payout?.id === req.params.id);
+        const matchingMock = PAYOUTS_WITH_DETAILS.find(
+            mock =>
+                mock.balanceAccountId === req.url.searchParams.get('balanceAccountId') &&
+                mock.payout?.createdAt === req.url.searchParams.get('createdAt')
+        );
 
         if (!matchingMock) {
             res(ctx.status(404), ctx.text('Cannot find matching Payout'));

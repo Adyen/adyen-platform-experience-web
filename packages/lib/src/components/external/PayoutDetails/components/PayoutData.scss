@@ -1,12 +1,10 @@
 @use '../../../../style';
 
 .adyen-pe-payout-data {
-    padding-bottom: style.token(spacer-100);
-
     &__title {
         display: grid;
         gap: style.token(spacer-020);
-        padding: 0 style.token(spacer-090) style.token(spacer-090);
+        padding-bottom: style.token(spacer-090);
 
         .adyen-pe-typography {
             &:last-child {
@@ -17,7 +15,8 @@
 
     &__content {
         background-color: style.token(color-background-secondary);
-        padding: style.token(spacer-060) style.token(spacer-070);
+        margin: 0 calc(var(--adyen-pe-data-details-padding) * -1);
+        padding: style.token(spacer-040) var(--adyen-pe-data-details-padding);
 
         &--card-title {
             color: style.token(color-label-secondary);
@@ -25,17 +24,15 @@
         }
 
         &--section {
-            background-color: style.token(color-background-secondary);
-
             &-amount {
                 display: flex;
                 justify-content: space-between;
-                padding: style.token(spacer-040) 0;
+                padding: style.token(spacer-070) 0;
             }
+        }
 
-            div:not(:last-child) {
-                margin-bottom: style.token(spacer-060);
-            }
+        &--card:not(:first-child) {
+            margin-top: style.token(spacer-060);
         }
     }
 
@@ -48,5 +45,15 @@
         &__item {
             padding: style.token(spacer-040) style.token(spacer-070);
         }
+    }
+
+    &--unpaid-amount {
+        border-radius: style.token(border-radius-xl);
+        display: flex;
+        justify-content: space-between;
+        margin-top: style.token(spacer-080);
+        margin-bottom: style.token(spacer-020);
+        outline: style.token(color-outline-tertiary) 1px dashed;
+        padding: style.token(spacer-040) style.token(spacer-070);
     }
 }

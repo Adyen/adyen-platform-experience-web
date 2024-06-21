@@ -1,4 +1,4 @@
-import UIElement from './external/UIElement';
+import UIElement from './external/UIElement/UIElement';
 import { Core } from '../core';
 
 export const enum InteractionKeyCode {
@@ -18,7 +18,7 @@ export const enum InteractionKeyCode {
 }
 
 export interface BaseElementProps {
-    core: Core<any>;
+    core: Core<any, any>;
 }
 
 export interface IUIElement {
@@ -76,12 +76,15 @@ export type _UIComponentProps<T> = BaseElementProps & UIElementProps & T & {};
 
 export type ExternalUIComponentProps<T> = UIElementProps & T & {};
 
-export type OnSelection = (selection: { id: string; showModal: () => void }) => any;
+type onRecordSelection<T extends { showModal: () => void }> = (selection: T) => any;
 
-export interface DataOverviewComponentProps {
+interface _DataOverviewSelectionProps<T extends { showModal: () => void } = { showModal: () => void }> {
+    onRecordSelection?: onRecordSelection<T>;
+}
+
+interface _DataOverviewComponentProps {
     name?: string;
-    elementRef?: UIElement<DataOverviewComponentProps> | null;
-    onRecordSelection?: OnSelection;
+    elementRef?: UIElement<_DataOverviewComponentProps> | null;
     onFiltersChanged?: (filters: { [P in FilterParam]?: string }) => any;
     onLimitChanged?: (limit: number) => any;
     preferredLimit?: 10 | 20;
@@ -91,6 +94,14 @@ export interface DataOverviewComponentProps {
     core: Core<any>;
     balanceAccountId?: string;
 }
+
+export interface TransactionOverviewComponentProps
+    extends _DataOverviewComponentProps,
+        _DataOverviewSelectionProps<{ id: string; showModal: () => void }> {}
+
+export interface PayoutsOverviewComponentProps
+    extends _DataOverviewComponentProps,
+        _DataOverviewSelectionProps<{ balanceAccountId: string; date: string; showModal: () => void }> {}
 
 export const enum FilterParam {
     BALANCE_ACCOUNT = 'balanceAccount',
