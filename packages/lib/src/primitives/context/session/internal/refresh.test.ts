@@ -4,6 +4,7 @@ import { createSessionRefreshController } from './refresh';
 import { createEventEmitter } from '../../../reactive/eventEmitter';
 import { getPromiseState } from '../../../../utils';
 import { PromiseState } from '../../../../utils/types';
+import { INTERNAL_EVT_SESSION_READY } from './constants';
 import { ERR_SESSION_FACTORY_UNAVAILABLE, ERR_SESSION_INVALID, ERR_SESSION_REFRESH_ABORTED, EVT_SESSION_REFRESHED } from '../constants';
 import type { SessionEventType, SessionSpecification } from '../types';
 import type { SessionRefreshController } from './types';
@@ -32,7 +33,7 @@ describe('createSessionRefreshController', () => {
         const actual: any[] = [];
         const expected: any[] = [];
 
-        refreshController.on('session', async ({ detail, timeStamp }) => {
+        refreshController.on(INTERNAL_EVT_SESSION_READY, async ({ detail, timeStamp }) => {
             actual.push(refreshController.refreshing, refreshController.signal!.aborted, refreshController.session, timeStamp);
             expected.push(true, false, detail, Date.now());
             _emitter.emit(EVT_SESSION_REFRESHED);
@@ -75,7 +76,7 @@ describe('createSessionRefreshController', () => {
         const sessionEventCapture = beforeRefresh(refreshController);
 
         // initiate refresh once
-        refreshController.refresh().catch(() => {});
+        void refreshController.refresh();
 
         await duringRefresh(refreshController, sessionEventCapture);
         await expect(async () => refreshController.promise).rejects.toThrowError(error);
@@ -90,7 +91,7 @@ describe('createSessionRefreshController', () => {
         const sessionEventCapture = beforeRefresh(refreshController);
 
         // initiate refresh once
-        refreshController.refresh();
+        void refreshController.refresh();
 
         await duringRefresh(refreshController, sessionEventCapture);
         expect(await refreshController.promise).toBe('first_session');
