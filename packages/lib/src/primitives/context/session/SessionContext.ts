@@ -5,8 +5,8 @@ import {
     EVT_SESSION_REFRESHING_END,
     EVT_SESSION_REFRESHING_START,
 } from './constants';
-import { createSessionDeadlineManager } from './internal/deadline';
-import { createSessionRefreshManager } from './internal/refresh';
+import { createSessionDeadlineController } from './internal/deadline';
+import { createSessionRefreshController } from './internal/refresh';
 import { createEventEmitter } from '../../reactive/eventEmitter';
 import { boolOrFalse, falsify, isFunction, noop, tryResolve } from '../../../utils';
 import type { SessionEventType, SessionSpecification } from './types';
@@ -16,39 +16,39 @@ export class SessionContext<T, HttpParams extends any[] = any[]> {
     private _session: T | undefined;
     private _sessionActivationTimestamp: number | undefined;
 
-    private readonly _deadlineManager;
-    private readonly _refreshManager;
+    private readonly _deadlineController;
+    private readonly _refreshController;
     private readonly _eventEmitter = createEventEmitter<SessionEventType>();
 
     declare http: typeof this._sessionHttp;
     declare on: (typeof this._eventEmitter)['on'];
-    declare refresh: (typeof this._refreshManager)['refresh'];
+    declare refresh: (typeof this._refreshController)['refresh'];
 
     constructor(private readonly _specification: SessionSpecification<T, HttpParams>) {
-        this._deadlineManager = createSessionDeadlineManager(this._eventEmitter, this._specification);
-        this._refreshManager = createSessionRefreshManager(this._eventEmitter, this._specification);
+        this._deadlineController = createSessionDeadlineController(this._eventEmitter, this._specification);
+        this._refreshController = createSessionRefreshController(this._eventEmitter, this._specification);
 
-        this._refreshManager.on('session', async ({ detail: session, timeStamp }) => {
+        this._refreshController.on('session', async ({ detail: session, timeStamp }) => {
             this._session = session ?? undefined;
             this._sessionActivationTimestamp = timeStamp;
-            this._deadlineManager.refresh(this._session);
+            this._deadlineController.refresh(this._session);
         });
 
         this._eventEmitter.on(EVT_SESSION_EXPIRED, () => void (this._refreshPending = true));
         this._eventEmitter.on(EVT_SESSION_REFRESHING_END, () => void (this._refreshPending = false));
-        this._eventEmitter.on(EVT_SESSION_REFRESHING_START, this._deadlineManager.abort);
+        this._eventEmitter.on(EVT_SESSION_REFRESHING_START, this._deadlineController.abort);
 
         this.http = this._sessionHttp.bind(this);
         this.on = this._eventEmitter.on;
-        this.refresh = this._refreshManager.refresh;
+        this.refresh = this._refreshController.refresh;
     }
 
     get isExpired() {
-        return this._deadlineManager.elapsed;
+        return this._deadlineController.elapsed;
     }
 
     get refreshing() {
-        return this._refreshManager.refreshing;
+        return this._refreshController.refreshing;
     }
 
     get timestamp() {
@@ -79,9 +79,9 @@ export class SessionContext<T, HttpParams extends any[] = any[]> {
 
         while (true) {
             try {
-                const session = await this._refreshManager.promise;
+                const session = await this._refreshController.promise;
                 this._assertSessionHttp(this._specification.http);
-                return await this._specification.http(session, this._refreshManager.signal!, ...args);
+                return await this._specification.http(session, this._refreshController.signal!, ...args);
             } catch (ex) {
                 if (ex !== ERR_SESSION_EXPIRED) throw ex;
                 if (this._refreshPending) continue;

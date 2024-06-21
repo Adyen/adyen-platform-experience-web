@@ -11,9 +11,9 @@ import { createPromisor } from '../../../async/promisor';
 import { createEventEmitter, Emitter } from '../../../reactive/eventEmitter';
 import { ALREADY_RESOLVED_PROMISE, enumerable, getter, isFunction, struct, tryResolve } from '../../../../utils';
 import type { SessionEventType, SessionSpecification } from '../types';
-import type { SessionEventEmitter, SessionRefreshManager } from './types';
+import type { SessionEventEmitter, SessionRefreshController } from './types';
 
-export const createSessionRefreshManager = <T extends any>(emitter: Emitter<SessionEventType>, specification: SessionSpecification<T>) => {
+export const createSessionRefreshController = <T extends any>(emitter: Emitter<SessionEventType>, specification: SessionSpecification<T>) => {
     let _readyPromise: Promise<void> | undefined;
     let _refreshingPromise: Promise<void> | undefined;
     let _refreshingSignal: AbortSignal | undefined;
@@ -83,7 +83,7 @@ export const createSessionRefreshManager = <T extends any>(emitter: Emitter<Sess
         }
     });
 
-    return struct<SessionRefreshManager<T>>({
+    return struct<SessionRefreshController<T>>({
         on: enumerable(_sessionEmitter.on),
         promise: getter(() => _refreshPromisor.promise),
         refresh: enumerable(() => _refreshPromisor()),
@@ -93,4 +93,4 @@ export const createSessionRefreshManager = <T extends any>(emitter: Emitter<Sess
     });
 };
 
-export default createSessionRefreshManager;
+export default createSessionRefreshController;

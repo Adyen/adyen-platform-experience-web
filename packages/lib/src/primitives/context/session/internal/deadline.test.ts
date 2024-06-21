@@ -1,11 +1,11 @@
 // @vitest-environment jsdom
 import { describe, expect, test, vi } from 'vitest';
-import { createSessionDeadlineManager } from './deadline';
+import { createSessionDeadlineController } from './deadline';
 import { createEventEmitter } from '../../../reactive/eventEmitter';
 import { setupTimers } from '../../../time/__testing__/fixtures';
 import type { SessionEventType, SessionSpecification } from '../types';
 
-describe('createSessionDeadlineManager', () => {
+describe('createSessionDeadlineController', () => {
     setupTimers();
 
     const _emitter = createEventEmitter<SessionEventType>();
@@ -17,29 +17,29 @@ describe('createSessionDeadlineManager', () => {
     };
 
     test('should create deadline manager', async () => {
-        const deadlineManager = createSessionDeadlineManager(_emitter, _specification);
+        const deadlineController = createSessionDeadlineController(_emitter, _specification);
         const unpatchDeadline = _patchSpecification('deadline', () => Date.now() + 5000); // 5 seconds session
 
-        expect(deadlineManager.elapsed).toBeUndefined();
-        expect(deadlineManager.signal).toBeUndefined();
-        expect(deadlineManager.timestamp).toBeUndefined();
+        expect(deadlineController.elapsed).toBeUndefined();
+        expect(deadlineController.signal).toBeUndefined();
+        expect(deadlineController.timestamp).toBeUndefined();
 
         // refresh deadline once
-        deadlineManager.refresh('');
+        deadlineController.refresh('');
 
         await vi.advanceTimersByTimeAsync(0);
 
-        expect(deadlineManager.elapsed).toBe(false);
-        expect(deadlineManager.signal).not.toBeUndefined();
-        expect(deadlineManager.signal!.aborted).toBe(false);
-        expect(deadlineManager.timestamp).not.toBeUndefined();
+        expect(deadlineController.elapsed).toBe(false);
+        expect(deadlineController.signal).not.toBeUndefined();
+        expect(deadlineController.signal!.aborted).toBe(false);
+        expect(deadlineController.timestamp).not.toBeUndefined();
 
         await vi.advanceTimersByTimeAsync(5000);
         await vi.advanceTimersToNextTimerAsync();
 
-        expect(deadlineManager.elapsed).toBe(true);
-        expect(deadlineManager.signal!.aborted).toBe(true);
-        expect(deadlineManager.timestamp).toBeCloseTo(Date.now(), -2);
+        expect(deadlineController.elapsed).toBe(true);
+        expect(deadlineController.signal!.aborted).toBe(true);
+        expect(deadlineController.timestamp).toBeCloseTo(Date.now(), -2);
 
         unpatchDeadline();
     });
