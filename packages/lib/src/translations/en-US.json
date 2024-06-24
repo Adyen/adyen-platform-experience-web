@@ -95,7 +95,7 @@
     "tooltip.ATM": "Money withdrawn at an ATM",
     "tooltip.Capital": "Money from an incoming loan grant or outgoing loan repayment",
     "tooltip.Chargeback": "Money returned to a customer after a disputed transaction",
-    "tooltip.Correction": "Adjustments to your funds, including transaction reversals and despoit corrections",
+    "tooltip.Correction": "Adjustments to your funds, including transaction reversals and deposit corrections",
     "tooltip.Fee": "Transaction costs and payment method fees",
     "tooltip.Other": "Transactions not in another category, usually an adjustment",
     "tooltip.Payment": "Money received to your account from a sales transaction",
