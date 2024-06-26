@@ -94,8 +94,6 @@
     "to": "Até",
     "tooltip.Chargeback": "Dinheiro devolvido a um cliente após uma transação contestada",
     "tooltip.Fee": "Custos de transação e taxas de métodos de pagamentos",
-    "tooltip.Incoming": "Dinheiro recebido em sua conta por meio de transações e transferências",
-    "tooltip.Payout": "Dinheiro enviado de sua conta para sua conta bancária externa",
     "tooltip.Refund": "Dinheiro devolvido a um cliente após o reembolso de uma transação",
     "tooltip.totalIncoming": "Todo o dinheiro recebido em sua conta com base nos filtros selecionados",
     "tooltip.totalOutgoing": "Todas as taxas, os reembolsos, os repasses de pagamentos e outras cobranças com base nos filtros selecionados",

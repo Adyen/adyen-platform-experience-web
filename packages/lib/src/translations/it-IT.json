@@ -94,8 +94,6 @@
     "to": "A",
     "tooltip.Chargeback": "Denaro restituito a un cliente dopo una transazione contestata",
     "tooltip.Fee": "Costi di transazione e commissioni sui metodi di pagamento",
-    "tooltip.Incoming": "Denaro ricevuto sul conto da transazioni e trasferimenti",
-    "tooltip.Payout": "Denaro inviato dal saldo del conto al proprio conto bancario esterno",
     "tooltip.Refund": "Denaro restituito a un cliente da una transazione rimborsata",
     "tooltip.totalIncoming": "Tutto il denaro ricevuto sul conto in base ai filtri selezionati",
     "tooltip.totalOutgoing": "Tutte le commissioni, i rimborsi, i pagamenti e le altre spese in base ai filtri selezionati",
