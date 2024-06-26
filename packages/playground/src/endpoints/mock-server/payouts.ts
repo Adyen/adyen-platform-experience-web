@@ -57,7 +57,7 @@ export const payoutsMocks = [
     }),
 ];
 
-const compareDates = (dateString1: string, dateString2: string, operator: 'ge' | 'le') => {
+export const compareDates = (dateString1: string, dateString2: string, operator: 'ge' | 'le') => {
     let date1 = new Date(dateString1);
     let date2 = new Date(dateString2);
 

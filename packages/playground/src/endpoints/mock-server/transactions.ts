@@ -2,6 +2,7 @@ import { rest } from 'msw';
 import { DEFAULT_TRANSACTION, TRANSACTIONS, TRANSACTION_TOTALS } from '@adyen/adyen-platform-experience-web-mocks';
 import { endpoints } from '../endpoints';
 import { delay } from '../utils/utils';
+import { compareDates } from './payouts';
 import { getPaginationLinks } from './utils';
 
 const mockEndpoints = endpoints('mock');
@@ -29,11 +30,14 @@ export const transactionsMocks = [
             );
         }
 
+        const balanceAccount = req.url.searchParams.get('balanceAccountId');
         const categories = req.url.searchParams.getAll('categories');
         const currencies = req.url.searchParams.getAll('currencies');
         const statuses = req.url.searchParams.getAll('statuses');
         const minAmount = req.url.searchParams.get('minAmount');
         const maxAmount = req.url.searchParams.get('maxAmount');
+        const createdSince = req.url.searchParams.get('createdSince');
+        const createdUntil = req.url.searchParams.get('createdUntil');
         const limit = +(req.url.searchParams.get('limit') ?? defaultPaginationLimit);
         const cursor = +(req.url.searchParams.get('cursor') ?? 0);
 
@@ -43,9 +47,13 @@ export const transactionsMocks = [
         if (categories.length || currencies.length || statuses.length || minAmount || maxAmount) {
             transactions = transactions.filter(
                 tx =>
+                    balanceAccount &&
+                    tx.balanceAccountId === balanceAccount &&
                     (!categories.length || categories!.includes(tx.category)) &&
                     (!currencies.length || currencies!.includes(tx.amount.currency)) &&
                     (!statuses.length || statuses!.includes(tx.status)) &&
+                    (!createdSince || compareDates(tx.createdAt, createdSince, 'ge')) &&
+                    (!createdUntil || compareDates(tx.createdAt, createdUntil, 'le')) &&
                     (!!tx.amount.value || tx.amount.value * 1000 >= Number(minAmount)) &&
                     (!!tx.amount.value || tx.amount.value * 1000 <= Number(maxAmount))
             );
