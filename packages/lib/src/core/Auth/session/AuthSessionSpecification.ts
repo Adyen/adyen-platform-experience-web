@@ -14,7 +14,18 @@ export class AuthSessionSpecification implements _AuthSessionSpecification {
     public declare autoRefresh: _AuthSessionSpecification['autoRefresh'];
     public declare onRefresh: _AuthSessionSpecification['onRefresh'];
     public declare errorHandler: onErrorHandler | null;
+    private _errorHandler(error: any) {
+        try {
+            if (this.errorHandler) this.errorHandler(error);
+        } catch {
+            throw error;
+        }
+        throw error;
+    }
+
     constructor(public onSessionCreate?: SessionRequest) {
+        this._errorHandler = this._errorHandler.bind(this);
+
         Object.defineProperties(this, {
             autoRefresh: enumerable(AUTO_REFRESH),
             onRefresh: getter(() => this.onSessionCreate!, true),
@@ -54,11 +65,6 @@ export class AuthSessionSpecification implements _AuthSessionSpecification {
             ? createAbortSink(sessionSignal, options.signal)
             : { signal: sessionSignal };
 
-        const errorHandler = (error: any) => {
-            if (this.errorHandler) this.errorHandler(error);
-            throw error;
-        };
-
         try {
             const sessionHttpOptions = {
                 ...options,
@@ -67,7 +73,7 @@ export class AuthSessionSpecification implements _AuthSessionSpecification {
                     ...options.headers,
                     ...(session && { Authorization: `Bearer ${session.token}` }),
                 },
-                ...(this.errorHandler ? { errorHandler } : {}),
+                errorHandler: this._errorHandler,
             };
             return await _http(sessionHttpOptions, data);
         } catch (ex: any) {
