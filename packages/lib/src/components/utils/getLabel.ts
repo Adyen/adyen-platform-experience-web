@@ -13,6 +13,7 @@ const labels = {
     fundsCapturedAmount: 'fundsCaptured',
     payoutAmount: 'netPayout',
     adjustmentAmount: 'adjustments',
+    dateAndPaymentMethod: 'date',
 } as const;
 
 export const getLabel = (key: keyof typeof labels) => {
