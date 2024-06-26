@@ -1,15 +1,16 @@
-@import '../../../../../style/bento-mapping';
+@use '../../../../../style';
+//stylelint-disable no-invalid-position-at-import-rule
 @import '../../../../../style/breakpoints';
 
 .adyen-pe-transactions-overview {
     display: flex;
     flex-direction: column;
-    gap: $adyen-pe-spacer-070;
+    gap: style.token(spacer-070);
 
     &__summary {
         display: flex;
         flex-wrap: wrap-reverse;
-        gap: $adyen-pe-spacer-060;
+        gap: style.token(spacer-060);
         justify-content: space-between;
     }
 

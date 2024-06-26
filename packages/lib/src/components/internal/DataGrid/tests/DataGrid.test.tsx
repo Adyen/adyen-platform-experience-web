@@ -3,7 +3,7 @@
  */
 import { render, within } from '@testing-library/preact';
 import { describe, test, expect, beforeEach, vi, Mock } from 'vitest';
-import { BASIC_TRANSACTIONS_LIST } from '../../../../../../../mocks';
+import { TRANSACTIONS } from '@adyen/adyen-platform-experience-web-mocks';
 import userEvent from '@testing-library/user-event';
 import DataGrid from '../../DataGrid';
 
@@ -20,7 +20,7 @@ const columns = [
         key: 'paymentMethod',
         label: 'Type',
     },
-] satisfies { key: keyof Partial<(typeof BASIC_TRANSACTIONS_LIST)[number]>; label: string }[];
+] satisfies { key: keyof Partial<(typeof TRANSACTIONS)[number]>; label: string }[];
 
 interface DataGridTestContext {
     screen: any;
@@ -36,7 +36,7 @@ describe('DataGrid component with clickable rows', () => {
         const screen = render(
             <div>
                 <DataGrid
-                    data={BASIC_TRANSACTIONS_LIST}
+                    data={TRANSACTIONS}
                     columns={columns}
                     loading={false}
                     onRowClick={{ callback: mockEventHandler, retrievedField: 'id' }}

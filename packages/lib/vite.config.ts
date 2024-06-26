@@ -2,11 +2,12 @@ import { defineConfig, type PluginOption } from 'vite';
 import { resolve } from 'node:path';
 import version from './config/version';
 import packageJson from './package.json';
+import { visualizer } from 'rollup-plugin-visualizer';
 
 const currentVersion = version();
 const externalDependencies = Object.keys(packageJson.dependencies);
 
-export default defineConfig(async ({ mode }) => {
+export default defineConfig(({ mode }) => {
     const isAnalyseMode = mode === 'analyse';
 
     return {
@@ -44,6 +45,8 @@ export default defineConfig(async ({ mode }) => {
             'process.env.VITE_COMMIT_BRANCH': JSON.stringify(currentVersion.COMMIT_BRANCH),
             'process.env.VITE_ADYEN_BUILD_ID': JSON.stringify(currentVersion.ADYEN_BUILD_ID),
             'process.env.VITE_LOADING_CONTEXT': JSON.stringify(null),
+            'process.env.SESSION_AUTO_REFRESH': JSON.stringify(undefined),
+            'process.env.SESSION_MAX_AGE_MS': JSON.stringify(undefined),
         },
         test: {
             root: resolve(__dirname, './src'),
@@ -56,7 +59,7 @@ export default defineConfig(async ({ mode }) => {
         },
         plugins: [
             isAnalyseMode &&
-                ((await import('rollup-plugin-visualizer')).visualizer({
+                (visualizer({
                     title: 'Adyen Platform bundle visualizer',
                     gzipSize: true,
                     open: true,

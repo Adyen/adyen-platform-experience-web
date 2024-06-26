@@ -19,7 +19,7 @@ enableServerInMockedMode()
 
         const transactionsDetailsComponent = new TransactionsDetails({
             core: AdyenPlatform,
-            transactionId: id ?? DEFAULT_TRANSACTION_ID,
+            id: id ?? DEFAULT_TRANSACTION_ID,
             title: 'transactionDetails',
             onContactSupport: () => {},
         });

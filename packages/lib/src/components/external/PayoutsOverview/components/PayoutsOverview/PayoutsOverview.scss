@@ -1,0 +1,16 @@
+@use '../../../../../style';
+//stylelint-disable no-invalid-position-at-import-rule
+@import '../../../../../style/breakpoints';
+
+.adyen-pe-payouts-overview {
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-070);
+
+    &-display {
+        &__spinner-container {
+            display: block;
+            padding-bottom: style.token(spacer-110);
+        }
+    }
+}

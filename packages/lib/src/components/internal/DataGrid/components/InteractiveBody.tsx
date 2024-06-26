@@ -1,6 +1,6 @@
 import { TableCells } from './TableCells';
 import useCoreContext from '../../../../core/Context/useCoreContext';
-import { noop } from '../../../../utils/common';
+import { noop } from '../../../../utils';
 import { useCallback } from 'preact/hooks';
 import { useInteractiveDataGrid } from '../hooks/useInteractiveDataGrid';
 import { DataGridColumn, InteractiveBodyProps } from '../types';
@@ -30,11 +30,13 @@ export const InteractiveBody = <
     return (
         <>
             {data?.map((item, index) => (
-                <tr
-                    onMouseEnter={i18n.has(`tooltip.${item?.category}`) ? () => onRowHover(index) : noop}
-                    onFocus={i18n.has(`tooltip.${item?.category}`) ? () => onRowHover(index) : noop}
-                    onMouseLeave={i18n.has(`tooltip.${item?.category}`) ? () => onRowHover() : noop}
-                    onBlur={i18n.has(`tooltip.${item?.category}`) ? () => onRowHover() : noop}
+                <div
+                    role="row"
+                    tabIndex={0}
+                    onMouseEnter={i18n.has(`tooltip.${item?.category}`) && onRowHover ? () => onRowHover(index) : noop}
+                    onFocus={i18n.has(`tooltip.${item?.category}`) && onRowHover ? () => onRowHover(index) : noop}
+                    onMouseLeave={i18n.has(`tooltip.${item?.category}`) && onRowHover ? () => onRowHover() : noop}
+                    onBlur={i18n.has(`tooltip.${item?.category}`) && onRowHover ? () => onRowHover() : noop}
                     ref={ref}
                     aria-selected={index === currentIndex}
                     data-index={index}
@@ -45,7 +47,7 @@ export const InteractiveBody = <
                     onKeyDownCapture={listeners.onKeyDownCapture}
                 >
                     <TableCells columns={columns} customCells={customCells} item={item} rowIndex={index} />
-                </tr>
+                </div>
             ))}
         </>
     );

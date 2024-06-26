@@ -1,11 +1,11 @@
 import { Locator, Page } from '@playwright/test';
 import { BasePage } from '../basePage';
 import { getPagePath, getTranslatedKey } from '../../utils/utils';
-
 import DataGridPage from '../internal-components/dataGrid';
 import FilterBarPage from '../internal-components/filterBar';
 import { ITransaction } from '../../../src';
-import { BASIC_TRANSACTIONS_LIST } from '../../../../../mocks';
+import { TRANSACTIONS } from '@adyen/adyen-platform-experience-web-mocks';
+
 export class TransactionListPage extends BasePage {
     private dataGrid: DataGridPage;
     public dataGridBody: Locator;
@@ -19,7 +19,7 @@ export class TransactionListPage extends BasePage {
     public firstRow: Locator;
     public gridCount: number;
 
-    constructor(page: Page, mockedList: ITransaction[] = BASIC_TRANSACTIONS_LIST, rootElementSelector = '.transactions-component-container') {
+    constructor(page: Page, mockedList: ITransaction[] = TRANSACTIONS, rootElementSelector = '.transactions-component-container') {
         super(page, rootElementSelector, getPagePath('transactionList'));
         const dataGrid = new DataGridPage(this.rootElement);
         this.dataGrid = dataGrid;
@@ -31,7 +31,7 @@ export class TransactionListPage extends BasePage {
         this.filterBar = filterBar.rootElement;
         this.balanceAccountFilter = filterBar.getFilter(getTranslatedKey('balanceAccount'));
         this.accountHolderFilter = filterBar.getFilter(getTranslatedKey('account'));
-        this.dateFilter = filterBar.getFilter(getTranslatedKey('rangePreset.last7Days'));
+        this.dateFilter = filterBar.getFilter(getTranslatedKey('rangePreset.last30Days'));
         this.clearFilterButton = filterBar.getFilterButton(getTranslatedKey('reset'));
         this.applyFilterButton = filterBar.getFilterButton(getTranslatedKey('apply'));
         this.filterSingleInput = this.filterBar.locator('input');

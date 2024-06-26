@@ -1,162 +1,78 @@
-import Localization from '../../../../../core/Localization';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
-import { EMPTY_OBJECT } from '../../../../../utils/common';
-import { CommitAction } from '../../../../../hooks/useCommitAction';
+import { UseTimeRangeSelectionConfig } from '../../../DatePicker/components/TimeRangeSelector';
+import DateFilterCore from './DateFilterCore';
+import useDefaultOverviewFilterParams from '../../../../hooks/useDefaultOverviewFilterParams';
+import { FilterParam } from '../../../../types';
+import { useCallback, useMemo, useState } from 'preact/hooks';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
-import { CalendarHandle } from '../../../Calendar/types';
-import DatePicker from '../../../DatePicker';
-import BaseFilter from '../BaseFilter';
-import { FilterEditModalRenderProps, FilterProps } from '../BaseFilter/types';
 import { DateFilterProps, DateRangeFilterParam } from './types';
-import './DateFilter.scss';
+import { UsePaginatedRecords } from '../../../Pagination/hooks/types';
+import { EMPTY_OBJECT } from '../../../../../utils';
 
-const formattingOptions = {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-} as const;
-
-const baseDateTimeFormatter = new Intl.DateTimeFormat('en-US', formattingOptions);
-
-const computeDateFilterValue = (i18n: Localization['i18n'], fromDate?: string, toDate?: string) => {
-    const from = fromDate && i18n.fullDate(fromDate);
-    const to = toDate && i18n.fullDate(toDate);
-
-    if (from && to) return `${from} - ${to}`;
-    if (from) return i18n.get('filter.date.since', { values: { date: from } });
-    if (to) return i18n.get('filter.date.until', { values: { date: to } });
-};
-
-const resolveDate = (date?: any) => {
-    try {
-        return new Date(date || '').toISOString();
-    } catch {
-        return '';
-    }
-};
-
-const renderDateFilterModalBody = (() => {
-    const DateFilterEditModalBody = ({
-        editAction,
-        from,
-        to,
-        now,
-        onChange,
-        onValueUpdated,
-        showTimezoneInfo,
-        selectedPresetOption,
-        timeRangePresetOptions,
-        timezone,
-        sinceDate,
-        untilDate,
-    }: FilterEditModalRenderProps<DateFilterProps>) => {
-        const { i18n } = useCoreContext();
-        const [presetOption, setPresetOption] = useState(selectedPresetOption);
-        const originDate = useMemo(() => [new Date(from as string), new Date(to as string)], [from, to]);
-        const datePickerRef = useRef<CalendarHandle & { selection?: string }>();
-
-        const onHighlight = useCallback(
-            (from?: number, to?: number) => {
-                onValueUpdated(computeDateFilterValue(i18n, resolveDate(from), resolveDate(to)));
-            },
-            [i18n, onValueUpdated]
-        );
-
-        useEffect(() => {
-            switch (editAction) {
-                case CommitAction.APPLY:
-                    onChange({
-                        selectedPresetOption: presetOption,
-                        [DateRangeFilterParam.FROM]: resolveDate(datePickerRef.current?.from),
-                        [DateRangeFilterParam.TO]: resolveDate(datePickerRef.current?.to),
-                    });
-                    break;
-
-                case CommitAction.CLEAR:
-                    datePickerRef.current?.clear();
-                    onChange();
-            }
-        }, [editAction, onChange, presetOption]);
-
-        return (
-            <DatePicker
-                ref={datePickerRef}
-                now={now}
-                originDate={originDate}
-                onHighlight={onHighlight}
-                onPresetOptionSelected={setPresetOption}
-                selectedPresetOption={selectedPresetOption}
-                timeRangePresetOptions={timeRangePresetOptions}
-                timezone={timezone}
-                showTimezoneInfo={showTimezoneInfo}
-                sinceDate={resolveDate(sinceDate)}
-                untilDate={resolveDate(untilDate)}
-            />
-        );
+type DataOverviewDateFilterProps = Pick<UsePaginatedRecords<any, string, FilterParam>, 'canResetFilters' | 'filters' | 'updateFilters'> &
+    ReturnType<typeof useDefaultOverviewFilterParams> & {
+        timezone?: UseTimeRangeSelectionConfig['timezone'];
     };
 
-    return (props: FilterEditModalRenderProps<DateFilterProps>) => <DateFilterEditModalBody {...props} />;
-})();
-
-const customDateRangeFormat = (formatter: Intl.DateTimeFormat, fromDate: Date, toDate: Date) => {
-    return formatter.formatRange(fromDate, toDate);
-};
-
-export default function DateFilter<T extends DateFilterProps = DateFilterProps>({ title, from, to, selectedPresetOption, ...props }: FilterProps<T>) {
+const DateFilter = <T extends DateFilterProps = DateFilterProps>({
+    timezone,
+    canResetFilters,
+    defaultParams,
+    filters,
+    nowTimestamp,
+    refreshNowTimestamp,
+    sinceDate,
+    untilDate,
+    updateFilters,
+}: Pick<T, 'sinceDate' | 'untilDate'> & DataOverviewDateFilterProps) => {
     const { i18n } = useCoreContext();
-    const [selectedPresetOptionValue, setSelectedPresetOption] = useState<string>();
-    const [fromValue, setFrom] = useState<string>();
-    const [toValue, setTo] = useState<string>();
+    const defaultTimeRangePreset = useMemo(() => i18n.get(defaultParams.current.defaultTimeRange), [i18n]);
+    const [selectedTimeRangePreset, setSelectedTimeRangePreset] = useState(defaultTimeRangePreset);
 
-    const onChange = useCallback<NonNullable<typeof props.onChange>>(
-        params => {
-            const { from, to, selectedPresetOption } = params ?? EMPTY_OBJECT;
-            try {
-                setSelectedPresetOption(selectedPresetOptionValue ?? selectedPresetOption);
-                setFrom(resolveDate(fromValue ?? from));
-                setTo(resolveDate(toValue ?? to));
-            } finally {
-                props.onChange({ from, to, selectedPresetOption });
+    const updateCreatedDateFilter = useCallback(
+        (params: Parameters<DateFilterProps['onChange']>[0] = EMPTY_OBJECT) => {
+            for (const [param, value] of Object.entries(params) as [keyof typeof params, (typeof params)[keyof typeof params]][]) {
+                switch (param) {
+                    case 'selectedPresetOption':
+                        setSelectedTimeRangePreset(value || defaultTimeRangePreset);
+                        break;
+                    case DateRangeFilterParam.FROM:
+                        updateFilters({
+                            [FilterParam.CREATED_SINCE]: value || defaultParams.current.defaultFilterParams[FilterParam.CREATED_SINCE],
+                        });
+                        break;
+                    case DateRangeFilterParam.TO:
+                        updateFilters({
+                            [FilterParam.CREATED_UNTIL]: value || defaultParams.current.defaultFilterParams[FilterParam.CREATED_UNTIL],
+                        });
+                        break;
+                    default:
+                        return;
+                }
+
+                refreshNowTimestamp();
             }
         },
-        [selectedPresetOptionValue, fromValue, toValue, props]
+        [defaultTimeRangePreset, refreshNowTimestamp, updateFilters]
     );
 
-    const [customSelection, dateTimeFormatter] = useMemo(() => {
-        let formatter = baseDateTimeFormatter;
-        try {
-            formatter = new Intl.DateTimeFormat(i18n.locale, formattingOptions);
-        } catch {
-            /* invalid locale: continue with base `en-US` formatter */
-        }
-
-        return [i18n.get('rangePreset.custom'), formatter] as const;
-    }, [i18n]);
-
-    useEffect(() => setSelectedPresetOption(selectedPresetOption), [selectedPresetOption]);
-    useEffect(() => setFrom(resolveDate(from || Date.now())), [from]);
-    useEffect(() => setTo(resolveDate(to || Date.now())), [to]);
-
-    const label = useMemo(() => {
-        if (selectedPresetOption === customSelection && fromValue && toValue) {
-            return customDateRangeFormat(dateTimeFormatter, new Date(fromValue), new Date(toValue));
-        }
-
-        return selectedPresetOption ?? props.label;
-    }, [customSelection, dateTimeFormatter, fromValue, toValue, selectedPresetOption, props.label]);
+    useMemo(() => !canResetFilters && setSelectedTimeRangePreset(defaultTimeRangePreset), [canResetFilters, defaultTimeRangePreset]);
 
     return (
-        <BaseFilter<T>
-            {...(props as FilterProps<T>)}
-            from={from}
-            to={to}
-            type={'date'}
-            label={label}
-            onChange={onChange}
-            render={renderDateFilterModalBody}
-            selectedPresetOption={selectedPresetOption}
-            value={computeDateFilterValue(i18n, from, to)}
-            withContentPadding={false}
+        <DateFilterCore
+            label={i18n.get('dateRange')}
+            name={FilterParam.CREATED_SINCE}
+            sinceDate={sinceDate}
+            untilDate={untilDate ?? new Date(nowTimestamp).toString()}
+            from={filters[FilterParam.CREATED_SINCE]}
+            to={filters[FilterParam.CREATED_UNTIL]}
+            selectedPresetOption={selectedTimeRangePreset}
+            timeRangePresetOptions={defaultParams.current.timeRangeOptions}
+            timezone={timezone}
+            onChange={updateCreatedDateFilter}
+            showTimezoneInfo={true}
+            now={nowTimestamp}
         />
     );
-}
+};
+
+export default DateFilter;

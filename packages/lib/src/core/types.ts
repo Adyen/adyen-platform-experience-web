@@ -1,63 +1,49 @@
-import { SessionResponse } from './Session/types';
-import type { CustomTranslations } from './Localization/types';
-import { AnalyticsOptions } from './Analytics/types';
-import { LangFile } from './Localization/types';
-import { ReplaceUnderscoreOrDash } from '../utils/types';
-import Session from './Session';
+import type { SessionRequest } from './Auth';
+import type { AnalyticsOptions } from './Analytics/types';
+import type { CustomTranslations as Translations, LangFile } from './Localization/types';
+import type { KeyOfRecord, WithReplacedUnderscoreOrDash } from '../utils/types';
 
-export type DevEnvironment = 'test' | 'live' | 'beta';
-
-type ExtractKeys<T> = T extends any ? keyof T : never;
-
-type CreateUnionOfAvailableTranslations<T extends LangFile[] | undefined> = T extends NonNullable<T>
-    ? Extract<ReplaceUnderscoreOrDash<ExtractKeys<T[number]>, '_', '-'>, string>
+type CreateLocalesUnionFromAvailableTranslations<T extends LangFile[]> = T extends T
+    ? Extract<WithReplacedUnderscoreOrDash<KeyOfRecord<T[number]>, '_', '-'>, string> | 'en-US'
     : never;
 
-export interface CoreOptions<T extends CoreOptions<T> = any> {
-    session?: Session;
+type CreateLocalesUnionFromCustomTranslations<T extends Translations> = Extract<KeyOfRecord<T extends Translations ? T : {}>, string>;
+
+interface _CoreOptions<AvailableTranslations extends LangFile[] = [], CustomTranslations extends Translations = {}> {
+    /**
+     * @internal
+     */
+    analytics?: AnalyticsOptions;
+
+    availableTranslations?: AvailableTranslations;
+    balanceAccountId?: string;
+
     /**
      * Use test. When you're ready to accept live payments, change the value to one of our {@link https://docs.adyen.com/checkout/drop-in-web#testing-your-integration | live environments}.
      */
     environment?: DevEnvironment;
 
     /**
-     * The shopper's locale. This is used to set the language rendered in the UI.
+     * This is used to set the language rendered in the UI.
      * For a list of supported locales, see {@link https://docs.adyen.com/checkout/components-web/localization-components | Localization}.
      * For adding a custom locale, see {@link https://docs.adyen.com/checkout/components-web/localization-components#create-localization | Create localization}.
      * @defaultValue 'en-US'
      */
-    locale?: T['availableTranslations'] extends NonNullable<T['availableTranslations']>
-        ? CreateUnionOfAvailableTranslations<T['availableTranslations']> | 'en-US'
-        : 'en-US' | undefined;
+    locale?:
+        | (AvailableTranslations extends AvailableTranslations ? CreateLocalesUnionFromAvailableTranslations<AvailableTranslations> : never)
+        | (CustomTranslations extends CustomTranslations ? CreateLocalesUnionFromCustomTranslations<CustomTranslations> : never);
+
+    onError?: (err: any) => any;
+    onSessionCreate: SessionRequest;
 
     /**
      * Custom translations and localizations
      * See {@link https://docs.adyen.com/checkout/components-web/localization-components | Localizing Components}
      */
-    translations?: CustomTranslations;
-
-    /**
-     * The shopper's country code. A valid value is an ISO two-character country code (e.g. 'NL').
-     */
-    countryCode?: string;
-
-    availableTranslations?: LangFile[];
-
-    onSessionCreate: SessionRequest;
-
-    onError?: (e: any) => any;
-
-    balanceAccountId?: string;
-
-    /**
-     * @internal
-     * */
-
-    analytics?: AnalyticsOptions;
-
-    timezone?: Intl.DateTimeFormatOptions['timeZone'];
-
-    sessionSetupError?: boolean;
+    translations?: CustomTranslations extends Translations ? CustomTranslations : Translations;
 }
 
-export type SessionRequest = () => Promise<SessionResponse>;
+export interface CoreOptions<AvailableTranslations extends LangFile[] = [], CustomTranslations extends {} = {}>
+    extends _CoreOptions<AvailableTranslations, CustomTranslations extends Translations ? CustomTranslations : unknown> {}
+
+export type DevEnvironment = 'test' | 'live' | 'beta';

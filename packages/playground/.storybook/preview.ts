@@ -11,6 +11,9 @@ const preview: Preview = {
         controls: {
             hideNoControlsWarning: true,
         },
+        options: {
+            storySort: { order: ['screens', ['Transactions', 'Payouts']] },
+        },
     },
     argTypes: {
         mockedApi: {
@@ -33,7 +36,7 @@ const preview: Preview = {
                     } else {
                         stopMockedServer();
                     }
-                    return await sessionRequest();
+                    return await sessionRequest(context.args.session);
                 },
             });
             return { AdyenPlatformExperience };

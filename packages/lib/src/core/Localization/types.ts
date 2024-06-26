@@ -1,18 +1,18 @@
 import CURRENCY_CODES from './constants/currency-codes';
 import CURRENCY_DECIMALS from './constants/currency-decimals';
 import { SUPPORTED_LOCALES } from './constants/localization';
-import type { ReplaceUnderscoreOrDash } from '../../utils/types';
+import type { WithReplacedUnderscoreOrDash } from '../../utils/types';
 import { en_US } from '../../core';
 
 export type CurrencyCode = keyof typeof CURRENCY_CODES;
 export type CurrencyDecimalCode = keyof typeof CURRENCY_DECIMALS;
 export type SupportedLocale = (typeof SUPPORTED_LOCALES)[number];
 
-export type SupportedLocaleFiles = ReplaceUnderscoreOrDash<SupportedLocale, '-', '_'>;
+export type SupportedLocaleFiles = WithReplacedUnderscoreOrDash<SupportedLocale, '-', '_'>;
 
 export type LangFile = {
     [K in SupportedLocaleFiles]: {
-        [P in K]: Translation;
+        [P in K]: Translations;
     };
 }[SupportedLocaleFiles];
 
@@ -23,12 +23,8 @@ export type TranslationOptions = {
     count?: number;
 };
 
-export type Translation = {
-    [message: string]: string;
+export type Translations = {
+    [key in TranslationKey]?: string;
 };
 
-export type CustomTranslations = {
-    [key: string]: {
-        [message in TranslationKey]?: string;
-    };
-};
+export type CustomTranslations = Record<string, Translations>;

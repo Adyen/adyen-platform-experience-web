@@ -2,7 +2,7 @@ import { defineConfig } from 'vite';
 import { preact } from '@preact/preset-vite';
 import { resolve } from 'node:path';
 import { lstat, readdir } from 'node:fs/promises';
-import { ENVIRONMENTS, getEnvironment } from '../../envs/getEnvs';
+import { getEnvironment } from '../../envs/getEnvs';
 import { realApiProxies } from './src/endpoints/apis/realApiProxies';
 import { checker } from 'vite-plugin-checker';
 
@@ -26,7 +26,7 @@ async function getPlaygroundEntrypoints() {
 }
 
 export default defineConfig(async ({ mode }) => {
-    const { apiConfigs, playground } = getEnvironment(mode, process.env.ENV as ENVIRONMENTS);
+    const { apiConfigs, playground } = getEnvironment(mode);
     return {
         root: mode === 'demo' ? demoPlaygroundDir : undefined,
         base: './',
@@ -59,12 +59,6 @@ export default defineConfig(async ({ mode }) => {
                 '@styles': resolve(__dirname, '../lib/src/style'),
             },
         },
-        css: {
-            modules: {
-                scopeBehaviour: mode === 'production' ? 'local' : undefined,
-                generateScopedName: name => name,
-            },
-        },
         server: {
             host: playground.host,
             port: playground.port,
@@ -93,6 +87,8 @@ export default defineConfig(async ({ mode }) => {
             'process.env.E2E_TEST': JSON.stringify(process.env.E2E_TEST),
             'process.env.SESSION_ACCOUNT_HOLDER': JSON.stringify(apiConfigs.sessionApi.accountHolder || null),
             'process.env.SESSION_PERMISSIONS': JSON.stringify(apiConfigs.sessionApi.permissions || null),
+            'process.env.SESSION_AUTO_REFRESH': apiConfigs.sessionApi.autoRefresh || JSON.stringify(null),
+            'process.env.SESSION_MAX_AGE_MS': apiConfigs.sessionApi.maxAgeMs || JSON.stringify(null),
         },
     };
 });

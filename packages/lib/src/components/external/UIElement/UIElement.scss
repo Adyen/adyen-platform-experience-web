@@ -1,14 +1,16 @@
-@import '../../../style/bento-mapping';
+@use '../../../style';
+//stylelint-disable no-invalid-position-at-import-rule
 @import '../../../style/breakpoints';
 
 .adyen-pe-component {
-    background: var(--adyen-sdk-color-background-primary);
-    padding: 12px $adyen-pe-spacer-040;
+    --adyen-pe-content-padding: #{style.token(spacer-040)};
+    --adyen-pe-data-details-padding: var(--adyen-pe-content-padding);
+    background: style.token(color-background-primary);
+    padding: style.token(spacer-060) var(--adyen-pe-content-padding);
 
     @include adyen-pe-screen-sm-and-up {
-        border: 1px solid var(--adyen-sdk-color-outline-secondary);
-        border-radius: $adyen-pe-spacer-040;
-        padding-left: $adyen-pe-spacer-070;
-        padding-right: $adyen-pe-spacer-070;
+        --adyen-pe-content-padding: #{style.token(spacer-070)};
+        border: style.token(border-width-s) solid style.token(color-outline-secondary);
+        border-radius: style.token(spacer-040);
     }
 }

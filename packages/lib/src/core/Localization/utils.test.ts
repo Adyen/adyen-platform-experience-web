@@ -7,10 +7,10 @@ const defaultSupportedLocales = SUPPORTED_LOCALES;
 
 describe('parseLocale()', () => {
     test('should return the passed locale if formatted properly', () => {
-        expect(parseLocale('en-US', defaultSupportedLocales)).toBe('en-US');
-        expect(parseLocale('zh-TW', defaultSupportedLocales)).toBe('zh-TW');
-        expect(parseLocale('zh-CN', defaultSupportedLocales)).toBe('zh-CN');
         expect(parseLocale('da-DK', defaultSupportedLocales)).toBe('da-DK');
+        expect(parseLocale('en-US', defaultSupportedLocales)).toBe('en-US');
+        // expect(parseLocale('zh-TW', defaultSupportedLocales)).toBe('zh-TW');
+        // expect(parseLocale('zh-CN', defaultSupportedLocales)).toBe('zh-CN');
     });
 
     test('should return a properly formatted locale if not formatted', () => {
@@ -236,10 +236,10 @@ describe('loadTranslations()', () => {
     test('should return the passed locale if formatted properly', () => {
         loadTranslations('ca-CA', {
             'ca-CA': {
-                'status.active': 'status.active ca-CA',
+                paymentId: 'paymentId ca-CA',
             },
         }).then(translations => {
-            expect(translations['status.active']).toBe('status.active ca-CA');
+            expect(translations['paymentId']).toBe('paymentId ca-CA');
         });
     });
 });

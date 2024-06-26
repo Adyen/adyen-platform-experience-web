@@ -5,6 +5,7 @@ import { CommitActionProperties } from '../../../../hooks/useCommitAction';
 type _Selected<T> = T | readonly T[];
 
 type _ListItemRenderData<T extends SelectItem> = Pick<SelectItemProps<T>, 'item' | 'multiSelect' | 'selected'> & {
+    contentClassName?: HTMLAttributes<any>['className'];
     iconClassName?: HTMLAttributes<any>['className'];
 };
 

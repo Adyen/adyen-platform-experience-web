@@ -1,7 +1,6 @@
-import { Schema } from '../../../../../types/models/api/utils';
-import { components } from '../../../../../types/models/openapi/TransactionsResource';
+import { ICategory } from '../../../../../types';
 
 export type CategoryProps = {
-    value: Schema<components, 'SingleTransaction'>['category'];
+    value: ICategory;
     isContainerHovered: boolean;
 };

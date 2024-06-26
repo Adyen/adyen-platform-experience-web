@@ -1,11 +1,9 @@
-import { EMPTY_OBJECT, struct } from '../../../../../utils/common';
+import { asPlainObject, EMPTY_OBJECT, getter, struct } from '../../../../../utils';
 import restamper, { RestamperWithTimezone } from '../../../../../core/Localization/datetime/restamper';
 import type { RangeTimestamp, RangeTimestamps, RangeTimestampsConfig, RangeTimestampsConfigContext } from './types';
 import {
-    asPlainObject,
     createRangeTimestampsConfigRestampingContext,
     getRangeTimestampsConfigParameterUnwrapper,
-    getter,
     isRangeTimestampsConfigWithFromOffsets,
     isRangeTimestampsConfigWithoutOffsets,
     parseRangeTimestamp,
@@ -85,13 +83,13 @@ const createRangeTimestampsFactory = <T extends Record<any, any> = {}>(
 
         nowSetter();
 
-        return struct({
+        return struct<RangeTimestamps<T>>({
             ..._additionalContext,
             from: getter(() => from),
             now: { ...nowDescriptor, set: nowSetter },
             timezone: { ...tzDescriptor, set: tzSetter },
             to: getter(() => to),
-        }) as RangeTimestamps<Omit<T, keyof RangeTimestamps>>;
+        });
     };
 };
 

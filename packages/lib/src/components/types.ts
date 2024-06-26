@@ -1,7 +1,5 @@
 import UIElement from './external/UIElement/UIElement';
-import { Core, CoreOptions } from '../core';
-import Analytics from '../core/Analytics';
-import Localization from '../core/Localization';
+import { Core } from '../core';
 
 export const enum InteractionKeyCode {
     ARROW_DOWN = 'ArrowDown',
@@ -19,24 +17,15 @@ export const enum InteractionKeyCode {
     TAB = 'Tab',
 }
 
-export interface ICore {
-    options: CoreOptions;
-    i18n: Localization['i18n'];
-}
-
 export interface BaseElementProps {
-    core: Core;
-    _parentInstance?: Core;
-    modules?: {
-        analytics: Analytics;
-    };
+    core: Core<any, any>;
 }
 
 export interface IUIElement {
-    displayName: string;
     accessibleName: string;
-    type: string;
+    displayName: string;
     elementRef: any;
+    type: string;
 }
 
 export interface IFormElement<P> {
@@ -52,9 +41,9 @@ export type SetTriggerValidation = (callback: (schema?: Record<string, any>) => 
 export interface UIElementProps {
     id?: string;
     name?: string;
-    setUIElementStatus?: (status: string) => void;
     ref?: any;
     onContactSupport?: () => void;
+    setUIElementStatus?: (status: string) => void;
 
     /** @internal */
     elementRef?: any;
@@ -86,3 +75,41 @@ export type BaseElementState = {
 export type _UIComponentProps<T> = BaseElementProps & UIElementProps & T & {};
 
 export type ExternalUIComponentProps<T> = UIElementProps & T & {};
+
+type onRecordSelection<T extends { showModal: () => void }> = (selection: T) => any;
+
+interface _DataOverviewSelectionProps<T extends { showModal: () => void } = { showModal: () => void }> {
+    onRecordSelection?: onRecordSelection<T>;
+}
+
+interface _DataOverviewComponentProps {
+    name?: string;
+    elementRef?: UIElement<_DataOverviewComponentProps> | null;
+    onFiltersChanged?: (filters: { [P in FilterParam]?: string }) => any;
+    onLimitChanged?: (limit: number) => any;
+    preferredLimit?: 10 | 20;
+    allowLimitSelection?: boolean;
+    showDetails?: boolean;
+    hideTitle?: boolean;
+    core: Core<any>;
+    balanceAccountId?: string;
+}
+
+export interface TransactionOverviewComponentProps
+    extends _DataOverviewComponentProps,
+        _DataOverviewSelectionProps<{ id: string; showModal: () => void }> {}
+
+export interface PayoutsOverviewComponentProps
+    extends _DataOverviewComponentProps,
+        _DataOverviewSelectionProps<{ balanceAccountId: string; date: string; showModal: () => void }> {}
+
+export const enum FilterParam {
+    BALANCE_ACCOUNT = 'balanceAccount',
+    CATEGORIES = 'categories',
+    CURRENCIES = 'currencies',
+    CREATED_SINCE = 'createdSince',
+    CREATED_UNTIL = 'createdUntil',
+    STATUSES = 'statuses',
+    MIN_AMOUNT = 'minAmount',
+    MAX_AMOUNT = 'maxAmount',
+}

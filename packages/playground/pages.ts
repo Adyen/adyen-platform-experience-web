@@ -2,4 +2,6 @@
 export const pages = [
     { id: 'transactionList', name: 'Transactions List' },
     { id: 'transaction', name: 'Transaction Details' },
+    { id: 'payouts', name: 'Payouts Overview' },
+    { id: 'payout', name: 'Payout Details' },
 ] as const;

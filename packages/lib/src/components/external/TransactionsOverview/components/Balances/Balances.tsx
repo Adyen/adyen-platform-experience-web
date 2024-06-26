@@ -1,43 +1,53 @@
-import { useSetupEndpoint } from '../../../../../hooks/useSetupEndpoint/useSetupEndpoint';
 import { useCallback, useEffect, useMemo } from 'preact/hooks';
-import { EMPTY_OBJECT } from '../../../../../utils/common';
+import { EMPTY_OBJECT } from '../../../../../utils';
+import { useAuthContext } from '../../../../../core/Auth';
 import { useFetch } from '../../../../../hooks/useFetch/useFetch';
-import { OperationParameters } from '../../../../../types/models/openapi/endpoints';
-import { MakeFieldValueUndefined } from '../../../../../utils/types';
 import { memo } from 'preact/compat';
 import { BASE_CLASS } from './constants';
 import ExpandableCard from '../../../../internal/ExpandableCard/ExpandableCard';
 import { BaseList } from '../../../../internal/BaseList/BaseList';
 import { BalanceItem } from '../BalanceItem/BalanceItem';
 import { useMaxWidthsState } from '../../hooks/useMaxWidths';
-import { ITransaction } from '../../../../../types';
+import { BalancesProps, IBalanceWithKey } from './types';
 
-type TransactionTotalsProps = Required<OperationParameters<'getBalances'>['path']>;
-
-type BalancesProps = MakeFieldValueUndefined<TransactionTotalsProps, 'balanceAccountId'> & {
-    onCurrenciesChange: (currencies: ITransaction['amount']['currency'][] | undefined, isFetching: boolean) => any;
-    fullWidth?: boolean;
-};
-
-export const Balances = memo(({ balanceAccountId, onCurrenciesChange, fullWidth }: BalancesProps) => {
-    const getAccountsBalance = useSetupEndpoint('getBalances');
+export const Balances = memo(({ balanceAccountId, defaultCurrencyCode, onCurrenciesChange, fullWidth }: BalancesProps) => {
+    const { getBalances: getAccountsBalance } = useAuthContext().endpoints;
 
     const fetchCallback = useCallback(async () => {
-        return getAccountsBalance(EMPTY_OBJECT, {
+        return getAccountsBalance?.(EMPTY_OBJECT, {
             path: { balanceAccountId: balanceAccountId! },
         });
     }, [balanceAccountId, getAccountsBalance]);
 
     const { data, error, isFetching } = useFetch({
-        fetchOptions: useMemo(() => ({ enabled: !!balanceAccountId }), [balanceAccountId]),
+        fetchOptions: useMemo(() => ({ enabled: !!balanceAccountId && !!getAccountsBalance }), [balanceAccountId, getAccountsBalance]),
         queryFn: fetchCallback,
     });
 
     const isLoading = !balanceAccountId || isFetching;
     const isEmpty = !!error || !data?.data.length;
 
-    const balances = data?.data.sort((a, b) => a.currency.localeCompare(b.currency));
-    const [firstBalance, ...restOfBalances] = balances ?? [];
+    const balances = useMemo(() => {
+        return (
+            data?.data &&
+            [...data.data].sort(({ currency: firstCurrency }, { currency: secondCurrency }) => {
+                if (defaultCurrencyCode) {
+                    if (firstCurrency === defaultCurrencyCode) return -1;
+                    if (secondCurrency === defaultCurrencyCode) return 1;
+                }
+                return firstCurrency.localeCompare(secondCurrency);
+            })
+        );
+    }, [data?.data, defaultCurrencyCode]);
+
+    const [firstBalance, ...restOfBalances] = useMemo(() => {
+        return (
+            balances?.map((t: Partial<IBalanceWithKey>) => {
+                t['key'] = `${t.currency}-${Math.random()}`;
+                return t as IBalanceWithKey;
+            }) ?? []
+        );
+    }, [balances]);
 
     const [maxWidths, setMaxWidths] = useMaxWidthsState();
 
@@ -66,7 +76,7 @@ export const Balances = memo(({ balanceAccountId, onCurrenciesChange, fullWidth 
                 {restOfBalances.length && (
                     <BaseList>
                         {restOfBalances.map(balance => (
-                            <li key={balance.currency}>
+                            <li key={balance.key}>
                                 <BalanceItem balance={balance} widths={maxWidths} onWidthsSet={setMaxWidths} />
                             </li>
                         ))}

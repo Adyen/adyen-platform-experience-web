@@ -3,10 +3,10 @@ import { endpoints } from '../endpoints';
 import { delay } from '../utils/utils';
 
 const networkError = false;
-const PREFIX = endpoints('mock').setup;
+const path = endpoints('mock').setup;
 
 export const setupMock = [
-    rest.post(`${PREFIX}`, (req, res, ctx) => {
+    rest.post(path, (req, res, ctx) => {
         if (networkError) {
             return res.networkError('Failed to connect');
         }
@@ -14,25 +14,33 @@ export const setupMock = [
             delay(200),
             ctx.json({
                 endpoints: {
+                    getBalanceAccounts: {
+                        method: 'GET',
+                        url: 'balanceAccounts',
+                    },
                     getBalances: {
                         method: 'GET',
                         url: 'balanceAccounts/{balanceAccountId}/balances',
                     },
                     getTransactions: {
                         method: 'GET',
-                        url: 'balanceAccounts/{balanceAccountId}/transactions',
-                    },
-                    getTransactionTotals: {
-                        method: 'GET',
-                        url: 'balanceAccounts/{balanceAccountId}/transactions/totals',
-                    },
-                    getBalanceAccounts: {
-                        method: 'GET',
-                        url: 'balanceAccounts',
+                        url: 'transactions',
                     },
                     getTransaction: {
                         method: 'GET',
-                        url: 'balanceAccounts/transactions/{transactionId}',
+                        url: 'transactions/{transactionId}',
+                    },
+                    getTransactionTotals: {
+                        method: 'GET',
+                        url: 'transactions/totals',
+                    },
+                    getPayout: {
+                        method: 'GET',
+                        url: 'payouts/breakdown',
+                    },
+                    getPayouts: {
+                        method: 'GET',
+                        url: 'payouts',
                     },
                 },
             })

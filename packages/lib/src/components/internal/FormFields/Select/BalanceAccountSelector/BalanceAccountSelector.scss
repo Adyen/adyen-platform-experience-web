@@ -1,0 +1,42 @@
+@use '../../../../../style';
+
+$adyen-pe-body-line-height: style.token(text-body-line-height);
+
+.adyen-pe-balance-account-selector {
+    max-height: 24rem;
+    overflow-y: auto;
+
+    .adyen-pe-dropdown__element {
+        align-items: flex-start;
+    }
+
+    .adyen-pe-dropdown__element-content {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .adyen-pe-dropdown__element-checkmark {
+        /**
+         * Since the flex container (.adyen-pe-dropdown__element) is no longer center aligned
+         * along the cross axis, vertical re-alignment is required for the selection checkmark
+         * to account for the line-height. The intrinsic size of the checkmark icon is 1rem
+         * along both axis. Hence, the vertical offset will be:
+         * ----------------------------------------------------
+         *   = (line_height - checkmark_size) / 2
+         * ----------------------------------------------------
+         */
+        margin-top: calc(($adyen-pe-body-line-height - 1rem) / 2);
+    }
+
+    &__account-id {
+        color: style.token(color-label-secondary);
+    }
+
+    &__account-label {
+        flex: auto;
+        font-weight: style.token(text-body-stronger-font-weight);
+        overflow-x: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+}

@@ -11,6 +11,9 @@ export interface DataGridColumn<Item> {
     label: string;
     key: Item | string;
     position?: CellTextPosition;
+    visible?: boolean;
+    minWidth?: number;
+    flex?: number;
 }
 
 export interface DataGridProps<
@@ -33,7 +36,7 @@ export interface DataGridProps<
         ) => void;
         retrievedField?: ClickedField;
     };
-    onRowHover: (index?: number) => void;
+    onRowHover?: (index?: number) => void;
     customCells?: CustomCells;
     emptyTableMessage?: {
         title: TranslationKey;
@@ -49,9 +52,14 @@ export interface InteractiveBodyProps<
     ClickedField extends keyof Items[number],
     CustomCells extends CustomCell<Items, Columns, Columns[number]>
 > {
-    onRowClick: DataGridProps<Items, Columns, ClickedField, CustomCells>['onRowClick'];
+    onRowClick?: DataGridProps<Items, Columns, ClickedField, CustomCells>['onRowClick'];
     data: DataGridProps<Items, Columns, ClickedField, CustomCells>['data'];
     columns: DataGridProps<Items, Columns, ClickedField, CustomCells>['columns'];
     customCells: DataGridProps<Items, Columns, ClickedField, CustomCells>['customCells'];
-    onRowHover: (index?: number) => void;
+    onRowHover?: (index?: number) => void;
+}
+
+export interface DataGridContextProps {
+    registerCells: (props: { column: string; width: number }) => void;
+    getMinWidthByColumn: (column: string) => number | undefined;
 }

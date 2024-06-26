@@ -1,4 +1,5 @@
-@import '../../../style/bento-mapping';
+@use '../../../style';
+//stylelint-disable no-invalid-position-at-import-rule
 @import '../../../style/breakpoints.scss';
 
 // TODO: Move this to an accessibility mixin
@@ -18,9 +19,9 @@
     position: relative;
 
     &__container {
-        background-color: var(--adyen-sdk-color-background-primary);
-        border: var(--adyen-sdk-color-outline-primary) 1px solid;
-        border-radius: var(--adyen-sdk-border-radius-m);
+        background-color: style.token(color-background-primary);
+        border: style.token(border-width-s) solid style.token(color-outline-primary);
+        border-radius: style.token(border-radius-m);
         display: block;
         overflow: hidden;
 
@@ -37,39 +38,39 @@
 
         &--button {
             &:hover {
-                background-color: var(--adyen-sdk-color-background-primary-hover);
+                background-color: style.token(color-background-primary-hover);
 
                 #{$adyen-pe-expandable-card}__chevron {
-                    background-color: var(--adyen-sdk-color-background-tertiary-hover);
+                    background-color: style.token(color-background-tertiary-hover);
                 }
             }
         }
 
         &--filled {
-            background-color: var(--adyen-sdk-color-background-secondary);
+            background-color: style.token(color-background-secondary);
 
             &:hover {
-                background-color: var(--adyen-sdk-color-background-secondary-hover);
+                background-color: style.token(color-background-secondary-hover);
             }
         }
     }
 
     &__content {
-        padding: $adyen-pe-spacer-060;
+        padding: style.token(spacer-060);
 
         @include adyen-pe-screen-sm-and-up {
-            padding-left: $adyen-pe-spacer-080;
-            padding-right: $adyen-pe-spacer-080;
+            padding-left: style.token(spacer-080);
+            padding-right: style.token(spacer-080);
         }
 
         &--expandable {
-            padding-bottom: $adyen-pe-spacer-040;
+            padding-bottom: style.token(spacer-040);
         }
     }
 
     &__chevron {
         align-items: center;
-        background-color: var(--adyen-sdk-color-background-tertiary);
+        background-color: style.token(color-background-tertiary);
         display: flex;
         height: 20px;
         justify-content: center;

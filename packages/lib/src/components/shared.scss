@@ -1,6 +1,8 @@
+@use '../style';
+
 .adyen-pe {
     &-component,
     &-popover {
-        color: var(--adyen-sdk-color-label-primary);
+        color: style.token(color-label-primary);
     }
 }

@@ -19,25 +19,27 @@ export const TableCells = <
 }) => {
     return (
         <>
-            {columns.map(({ key }) => {
+            {columns.map(({ key, position }) => {
                 if (customCells?.[key])
                     return (
-                        <DataGridCell aria-labelledby={String(key)} key={key}>
-                            {
-                                // TODO create safeguard to remove "as any" assertion
-                                customCells[key]!({
-                                    key,
-                                    value: item[key],
-                                    item,
-                                    rowIndex,
-                                } as any)
-                            }
+                        <DataGridCell aria-labelledby={String(key)} key={key} column={key} position={position}>
+                            <div style={{ width: 'min-content' }}>
+                                {
+                                    // TODO create safeguard to remove "as any" assertion
+                                    customCells[key]!({
+                                        key,
+                                        value: item[key],
+                                        item,
+                                        rowIndex,
+                                    } as any)
+                                }
+                            </div>
                         </DataGridCell>
                     );
 
                 return (
-                    <DataGridCell aria-labelledby={String(key)} key={key}>
-                        {item[key]}
+                    <DataGridCell aria-labelledby={String(key)} key={key} column={key} position={position}>
+                        <div>{item[key]}</div>
                     </DataGridCell>
                 );
             })}

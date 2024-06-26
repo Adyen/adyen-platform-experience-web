@@ -12,8 +12,7 @@ import {
     WithPaginationRecordSize,
 } from '../types';
 import { ReactiveStateRecord, UseReactiveStateRecord } from '../../../../hooks/useReactiveState/types';
-
-type MaybePromise<T = any> = T | Promise<T>;
+import type { Promised } from '../../../../utils/types';
 
 export type PaginatedRecordsFetcherParams<FilterValue, FilterParam extends string> = Partial<Record<FilterParam, FilterValue>> &
     Required<WithPaginationLimit> & {
@@ -25,7 +24,7 @@ export type PaginatedRecordsFetcherReturnValue<Pagination extends PaginationType
 
 export type PaginatedRecordsFetcher<Pagination extends PaginationType, T, FilterValue, FilterParam extends string> = (
     params: PaginatedRecordsFetcherParams<FilterValue, FilterParam>
-) => MaybePromise<PaginatedRecordsFetcherReturnValue<Pagination, T>>;
+) => Promised<PaginatedRecordsFetcherReturnValue<Pagination, T>>;
 
 export type RequestPageCallbackRequiredParam = 'limit' | 'page' | 'signal';
 export type RequestPageCallbackRequiredParams = Pick<PaginatedRecordsFetcherParams<any, any>, RequestPageCallbackRequiredParam>;
@@ -45,7 +44,7 @@ export type RequestPageCallbackReturnValue<Pagination extends PaginationType> =
 export type RequestPageCallback<Pagination extends PaginationType> = (
     params: RequestPageCallbackParams<Pagination>,
     signal?: AbortSignal
-) => MaybePromise<RequestPageCallbackReturnValue<Pagination>>;
+) => Promised<RequestPageCallbackReturnValue<Pagination>>;
 
 export type PaginatedRecordsInitOptions<T, DataField extends string, FilterValue, FilterParam extends string> = {
     dataField: PaginatedResponseDataField<DataField>;

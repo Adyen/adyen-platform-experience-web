@@ -1,2 +1,2 @@
 export { default } from './Localization';
-export * from './translations';
+export * from '../../translations';

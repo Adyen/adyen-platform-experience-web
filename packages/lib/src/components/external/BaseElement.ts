@@ -1,38 +1,20 @@
 import { ComponentChild, render } from 'preact';
-import EventEmitter from './EventEmitter';
-import uuid from '../../utils/uuid';
-import { Core } from '../../core';
 import { BaseElementProps, BaseElementState } from '../types';
-import { isString } from '../../utils/validator-utils';
-import Localization from '../../core/Localization';
-import BPSession from '../../core/Session/Session';
+import { isString, uuid } from '../../utils';
 
 class BaseElement<P> {
     public static type: string;
-    public static analyticsType: string;
-    public readonly _id = `${(this.constructor as typeof BaseElement)?.type}-${uuid()}`;
-    public props: P & BaseElementProps;
-    public state: BaseElementState;
-    public defaultProps = {};
-    public _node: Document | ShadowRoot | DocumentFragment | Element | null;
-    public _component: ComponentChild | Error;
-    public eventEmitter = new EventEmitter();
-    protected readonly _parentInstance?: Core;
-    public sessionSetupError?: boolean;
 
-    // provided by AdyenPlatformExperienceCore
-    public loadingContext?: string;
-    public i18n?: Localization['i18n'];
-    public session?: BPSession;
+    public _component: ComponentChild | Error;
+    public _node: Document | ShadowRoot | DocumentFragment | Element | null = null;
+    public readonly _id = `${(this.constructor as typeof BaseElement)?.type}-${uuid()}`;
+
+    public defaultProps = {};
+    public props: P & BaseElementProps;
+    public state: BaseElementState = {};
 
     protected constructor(props: P & BaseElementProps) {
         this.props = this.formatProps({ ...this?.defaultProps, ...props });
-        this._parentInstance = this.props._parentInstance;
-        this._node = null;
-        this.state = {} as BaseElementState;
-        this.loadingContext = this.props.core.loadingContext;
-        this.i18n = this.props.core.modules.i18n;
-        this.session = this.props.core.session;
         this.props.core.registerComponent(this);
     }
 
@@ -80,35 +62,17 @@ class BaseElement<P> {
     public mount(domNode: string): this;
     public mount(domNode: HTMLElement): this;
     public mount(domNode: any): any {
-        let node;
-        if (isString(domNode)) {
-            node = document.querySelector(domNode);
-        } else {
-            node = domNode;
-        }
+        const node = isString(domNode) ? document.querySelector(domNode) : domNode;
 
-        if (!node) {
-            throw new Error('Component could not mount. Root node was not found.');
-        }
+        if (!node) throw new Error('Component could not mount. Root node was not found.');
 
-        if (this._node) {
-            this.unmount(); // new, if this._node exists then we are "remounting" so we first need to unmount if it's not already been done
-        } else {
-            // Set up analytics, once
-            if (this.props.modules && this.props.modules.analytics) {
-                this.props.modules.analytics.send({
-                    containerWidth: node && node.offsetWidth,
-                    component: (this.constructor as typeof BaseElement)?.analyticsType ?? (this.constructor as typeof BaseElement)?.type,
-                    flavor: 'components',
-                });
-            }
-        }
+        // new, if this._node exists then we are "remounting" so we first need to unmount if it's not already been done
+        if (this._node) this.unmount();
 
         this._node = node;
         this._component = this.render();
 
         render(this._component, node);
-
         return this;
     }
 
@@ -128,11 +92,9 @@ class BaseElement<P> {
 
         // /*
         this.props = this.formatProps({ ...this.props, ...props });
-        this.sessionSetupError = this.props.core.sessionSetupError;
-        this.session = this.props.core.session;
         this._component = this.render();
-        if (this._node) render(this._component, this._node);
 
+        if (this._node) render(this._component, this._node);
         return this;
 
         // return this.remount(this._component);
@@ -145,14 +107,10 @@ class BaseElement<P> {
      * Left in for legacy reasons
      */
     public remount(component: BaseElement<any>): this {
-        if (!this._node) {
-            throw new Error('Component is not mounted.');
-        }
+        if (!this._node) throw new Error('Component is not mounted.');
 
         const newComponent = component || this.render();
-
-        render(newComponent, this._node, undefined);
-
+        render(newComponent, this._node);
         return this;
     }
 
@@ -160,10 +118,7 @@ class BaseElement<P> {
      * Unmounts an element from the DOM
      */
     public unmount(): this {
-        if (this._node) {
-            render(null, this._node);
-        }
-
+        if (this._node) render(null, this._node);
         return this;
     }
 
@@ -173,10 +128,7 @@ class BaseElement<P> {
      */
     public remove() {
         this.unmount();
-
-        if (this._parentInstance) {
-            this._parentInstance.remove(this);
-        }
+        this.props.core.remove(this);
     }
 }
 

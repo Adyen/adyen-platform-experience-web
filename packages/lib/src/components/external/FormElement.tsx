@@ -24,9 +24,7 @@ export class FormElement<P extends UIElementProps> extends UIElement<P & FormPro
         return state;
     }
 
-    private onSubmit(): void {
-        //
-    }
+    private onSubmit(): void {}
 
     private triggerValidation: (() => void) | undefined;
 

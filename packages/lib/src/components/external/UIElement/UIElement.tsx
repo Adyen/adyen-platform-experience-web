@@ -1,29 +1,22 @@
-import { TransactionsComponentProps } from '../../index';
-import AuthProvider from '../../../core/Auth/AuthProvider';
+import { AuthProvider } from '../../../core/Auth';
 import CoreProvider from '../../../core/Context/CoreProvider';
 import { JSXInternal } from 'preact/src/jsx';
 import BaseElement from '../BaseElement';
-import getImage from '../../../utils/get-image';
-import { BaseElementProps, IUIElement, UIElementProps } from '../../types';
-import { UIElementStatus } from '../../types';
-import { SetupEndpoint } from '../../../types/models/openapi/endpoints';
-import { EMPTY_OBJECT } from '../../../utils/common';
+import { BaseElementProps, IUIElement, UIElementProps, UIElementStatus } from '../../types';
 import './UIElement.scss';
 
 export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUIElement {
-    protected componentRef: UIElement<P> | null;
+    protected componentRef: UIElement<P> | null = null;
+
+    public componentToRender: (() => JSXInternal.Element) | null = null;
     public elementRef: UIElement<P> | null;
     public onContactSupport?: () => void;
-    public componentToRender: (() => JSXInternal.Element) | null;
 
     constructor(props: P & UIElementProps & BaseElementProps) {
         super(props);
         this.setState = this.setState.bind(this);
         this.onContactSupport = props.onContactSupport;
-        this.componentRef = null;
         this.elementRef = (this.props && this.props.elementRef) || this;
-        this.componentToRender = null;
-        this.sessionSetupError = this.props.core.sessionSetupError;
     }
 
     get isValid() {
@@ -31,17 +24,10 @@ export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUI
     }
 
     /**
-     * Get the element icon URL for the current environment
-     */
-    get icon(): string {
-        return getImage({ loadingContext: this.loadingContext })((this.constructor as typeof UIElement)?.type);
-    }
-
-    /**
      * Get the element's displayable name
      */
     get displayName(): string {
-        return this.props.name || (this.constructor as typeof UIElement)?.type;
+        return this.props.name || this.type;
     }
 
     /**
@@ -55,10 +41,10 @@ export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUI
      * Return the type of an element
      */
     get type(): string {
-        return this.type;
+        return (this.constructor as typeof UIElement)?.type;
     }
 
-    formatProps(props: TransactionsComponentProps) {
+    formatProps(props: P) {
         return props;
     }
 
@@ -87,14 +73,12 @@ export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUI
     }
 
     render() {
+        const core = this.props.core;
+        const updateCore = core.update.bind(core);
+
         return (
-            <AuthProvider
-                endpoints={this.session?.configuration?.endpoints || (EMPTY_OBJECT as SetupEndpoint)}
-                token={this.session?.token ?? ''}
-                updateCore={this.props.core.update.bind(this.props.core)}
-                sessionSetupError={this.sessionSetupError}
-            >
-                <CoreProvider i18n={this.i18n} loadingContext={this.loadingContext}>
+            <AuthProvider session={core.session} key={performance.now()}>
+                <CoreProvider i18n={core.localization.i18n} loadingContext={core.loadingContext} updateCore={updateCore}>
                     {this.componentToRender && <div className="adyen-pe-component">{this.componentToRender()}</div>}
                 </CoreProvider>
             </AuthProvider>

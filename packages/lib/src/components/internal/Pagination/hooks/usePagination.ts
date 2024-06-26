@@ -4,7 +4,7 @@ import useBooleanState from '../../../../hooks/useBooleanState';
 import useMounted from '../../../../hooks/useMounted';
 import { PaginationType, UsePagination } from '../types';
 import { getClampedPageLimit } from '../utils';
-import { noop } from '../../../../utils/common';
+import { noop } from '../../../../utils';
 
 const usePagination = <Pagination extends PaginationType>(
     paginationSetupConfig: UsePaginationSetupConfig<Pagination>,

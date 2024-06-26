@@ -1,12 +1,11 @@
-import UIElement from '../UIElement/UIElement';
+import { _UIComponentProps, TransactionOverviewComponentProps } from '../../types';
 import Transactions from './components/TransactionsOverviewContainer/TransactionsOverviewContainer';
-import { TransactionsComponentProps } from './types';
-import { _UIComponentProps } from '../../types';
+import UIElement from '../UIElement/UIElement';
 
-export class TransactionsElement extends UIElement<TransactionsComponentProps> {
+export class TransactionsElement extends UIElement<TransactionOverviewComponentProps> {
     public static type = 'transactions';
 
-    constructor(props: _UIComponentProps<TransactionsComponentProps>) {
+    constructor(props: _UIComponentProps<TransactionOverviewComponentProps>) {
         super(props);
         this.elementRef = (props && props.elementRef) || this;
         this.componentToRender = this.componentToRender.bind(this);
@@ -17,11 +16,11 @@ export class TransactionsElement extends UIElement<TransactionsComponentProps> {
             <Transactions
                 {...this.props}
                 balanceAccountId={this.props.core.options.balanceAccountId}
-                ref={(ref: UIElement<TransactionsComponentProps>) => {
+                ref={(ref: UIElement<TransactionOverviewComponentProps>) => {
                     this.componentRef = ref;
                 }}
                 elementRef={this.elementRef}
-            />
+            ></Transactions>
         );
     };
 }

@@ -2,6 +2,7 @@ import { expect } from 'vitest';
 import { TIMEZONE_PAST_DATES_TEST_ORIGIN_DATE } from './fixtures';
 import type { RestamperWithTimezone, RestampResult } from '../types';
 import { getGMTSuffixForTimezoneOffset, getSystemTimezoneGMTSuffixFromTimezoneOffsets } from '../utils';
+import { isUndefined } from '../../../../../utils';
 
 export const getPastDatesMapForEachMonthInYear = (restamper: RestamperWithTimezone) => {
     const pastDate = new Date(TIMEZONE_PAST_DATES_TEST_ORIGIN_DATE);
@@ -15,12 +16,12 @@ export const getPastDatesMapForEachMonthInYear = (restamper: RestamperWithTimezo
 };
 
 export const runTimezoneTestRoutine = (timezoneOffset: RestampResult['offset'], systemTimezoneResult: RestampResult, result: RestampResult) => {
-    if (result.formatted !== undefined) {
+    if (!isUndefined(result.formatted)) {
         const TimezoneGMTSuffix = getGMTSuffixForTimezoneOffset(timezoneOffset);
         expect(result.formatted).toMatch(TimezoneGMTSuffix);
     }
 
-    if (systemTimezoneResult.formatted !== undefined) {
+    if (!isUndefined(systemTimezoneResult.formatted)) {
         const SystemTimezoneGMTSuffix = getSystemTimezoneGMTSuffixFromTimezoneOffsets(timezoneOffset, result.offset);
         expect(systemTimezoneResult.formatted).toMatch(SystemTimezoneGMTSuffix);
     }
