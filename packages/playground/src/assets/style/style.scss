@@ -2,11 +2,11 @@
 
 :root {
     --my-primary-color: #5500a9;
-    --adyen-pe-filter-button-active-border-color: var(--my-primary-color);
-    --adyen-pe-button-primary-background-color: var(--my-primary-color);
-    --adyen-pe-button-primary-hover-background-color: var(--my-primary-color);
-    --adyen-pe-button-primary-active-background-color: var(--my-primary-color);
-    --adyen-pe-filter-button-border-radius: 30px;
+    --adyen-sdk-color-outline-primary-active: var(--my-primary-color);
+    --adyen-sdk-color-background-inverse-primary: var(--my-primary-color);
+    --adyen-sdk-color-background-inverse-primary-hover: var(--my-primary-color);
+    --adyen-sdk-color-background-disabled: var(--my-primary-color);
+    --adyen-sdk-border-radius-m: 20px;
 }
 
 .adyen-pe-modal {
