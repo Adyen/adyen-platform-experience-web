@@ -1,12 +1,27 @@
 @use '../../../style/skeleton' as skeleton;
 @use '../../../style';
+// stylelint-disable no-invalid-position-at-import-rule
+@import '../../../style/breakpoints';
 
 .adyen-pe-data-grid {
+    --adyen-pe-data-grid-cols: #{auto-fit};
+    --adyen-pe-data-grid-cells: #{repeat(var(--adyen-pe-data-grid-cols), minmax(100px, 1fr))};
     $adyen-pe-data-grid: &;
     $adyen-pe-data-grid__cell: #{$adyen-pe-data-grid}__cell;
+
+    display: grid;
     font-size: style.token(text-body-font-size);
+    grid-template-rows: auto 1fr;
     overflow: hidden;
     text-align: left;
+
+    &__header {
+        border-bottom: style.token(border-width-s) solid style.token(color-outline-primary);
+        display: grid;
+        grid-template-columns: var(--adyen-pe-data-grid-cells);
+        min-width: fit-content;
+        width: 100%;
+    }
 
     &--scrollable #{$adyen-pe-data-grid}__table-wrapper {
         overflow: auto;
@@ -31,23 +46,18 @@
     }
 
     &__head {
-        border-left: style.token(border-width-s) solid transparent;
-        border-right: style.token(border-width-s) solid transparent;
-        box-sizing: border-box;
-        height: 100%;
-        overflow: visible;
-        padding: style.token(spacer-060);
-        position: relative;
+        display: none;
     }
 
     &__row {
         background: style.token(color-background-primary);
+        border-bottom: style.token(border-width-s) solid style.token(color-outline-primary);
+        display: grid;
+        grid-template-columns: var(--adyen-pe-data-grid-cells);
+        min-width: fit-content;
         overflow: hidden;
         vertical-align: top;
 
-        #{$adyen-pe-data-grid__cell} {
-            border-bottom: style.token(border-width-s) solid style.token(color-outline-primary);
-        }
         #{$adyen-pe-data-grid}__body {
             border-bottom: 0;
         }
@@ -64,14 +74,17 @@
     }
 
     #{$adyen-pe-data-grid__cell} {
+        align-items: center;
         box-sizing: border-box;
+        display: flex;
         height: 100%;
         overflow: hidden;
-        padding: style.token(spacer-070);
+        padding: style.token(spacer-070) style.token(spacer-020);
         text-overflow: ellipsis;
         vertical-align: middle;
         white-space: nowrap;
         width: auto;
+        word-break: break-word;
 
         .adyen-pe-button--link {
             display: block;
@@ -80,16 +93,17 @@
         }
 
         &--right {
-            text-align: right;
+            justify-content: end;
         }
 
         &--center {
-            text-align: center;
+            justify-content: center;
         }
 
         &#{$adyen-pe-data-grid__cell}--heading {
             border-bottom-color: style.token(color-outline-secondary);
             color: style.token(color-label-primary);
+            display: flex;
             font-weight: style.token(text-body-strongest-font-weight);
             padding: style.token(spacer-070);
             position: relative;
@@ -103,6 +117,10 @@
                 top: 25%;
                 width: style.token(spacer-010);
             }
+        }
+
+        &--heading-content {
+            width: fit-content;
         }
     }
 
@@ -173,5 +191,22 @@
         text-align: center;
         top: style.token(spacer-080);
         transform: translateX(-50%);
+    }
+
+    // stylelint-disable order/order
+    @include adyen-pe-screen-sm-and-up {
+        &__head {
+            border-left: style.token(border-width-s) solid transparent;
+            border-right: style.token(border-width-s) solid transparent;
+            box-sizing: border-box;
+            display: block;
+            height: 100%;
+            overflow: visible;
+            position: relative;
+        }
+
+        #{$adyen-pe-data-grid__cell} {
+            padding: style.token(spacer-070);
+        }
     }
 }

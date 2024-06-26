@@ -30,7 +30,9 @@ export const InteractiveBody = <
     return (
         <>
             {data?.map((item, index) => (
-                <tr
+                <div
+                    role="row"
+                    tabIndex={0}
                     onMouseEnter={i18n.has(`tooltip.${item?.category}`) && onRowHover ? () => onRowHover(index) : noop}
                     onFocus={i18n.has(`tooltip.${item?.category}`) && onRowHover ? () => onRowHover(index) : noop}
                     onMouseLeave={i18n.has(`tooltip.${item?.category}`) && onRowHover ? () => onRowHover() : noop}
@@ -45,7 +47,7 @@ export const InteractiveBody = <
                     onKeyDownCapture={listeners.onKeyDownCapture}
                 >
                     <TableCells columns={columns} customCells={customCells} item={item} rowIndex={index} />
-                </tr>
+                </div>
             ))}
         </>
     );
