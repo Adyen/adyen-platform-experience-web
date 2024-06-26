@@ -94,8 +94,6 @@
     "to": "Bis",
     "tooltip.Chargeback": "Geld wurde einem Kunden nach einer angefochtenen Transaktion zurückerstattet",
     "tooltip.Fee": "Transaktionskosten und Gebühren für Zahlungsmethoden",
-    "tooltip.Incoming": "Geld, das aus Transaktionen und Überweisungen auf Ihr Konto eingegangen ist",
-    "tooltip.Payout": "Geld, das von Ihrem Kontostand auf Ihr externes Bankkonto überwiesen wird",
     "tooltip.Refund": "Geld, das von einer erstatteten Transaktion an einen Kunden zurückgeschickt wurde",
     "tooltip.totalIncoming": "Alle auf Ihrem Konto eingegangenen Gelder basierend auf den ausgewählten Filtern",
     "tooltip.totalOutgoing": "Alle Gebühren, Erstattungen, Auszahlungen und andere Abbuchungen basierend auf den ausgewählten Filtern",

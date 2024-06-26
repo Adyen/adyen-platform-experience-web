@@ -94,8 +94,6 @@
     "to": "À",
     "tooltip.Chargeback": "Argent remboursé à un client suite à une transaction contestée",
     "tooltip.Fee": "Frais de transaction et frais liés au moyen de paiement",
-    "tooltip.Incoming": "Argent versé sur votre compte suite à des transactions et des transferts",
-    "tooltip.Payout": "Argent envoyé de votre solde de compte vers votre compte bancaire externe",
     "tooltip.Refund": "Argent renvoyé à un client suite à une transaction remboursée",
     "tooltip.totalIncoming": "Tout l'argent versé sur votre compte en fonction des filtres sélectionnés",
     "tooltip.totalOutgoing": "Tous les frais, remboursements, reversements et autres dépenses basés sur les filtres sélectionnés",

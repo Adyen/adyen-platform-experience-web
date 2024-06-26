@@ -94,8 +94,6 @@
     "to": "Till",
     "tooltip.Chargeback": "Pengar returnerades till en kund efter en omtvistad transaktion",
     "tooltip.Fee": "Transaktionskostnader och avgifter för betalningssätt",
-    "tooltip.Incoming": "Pengar som tagits emot till ditt konto från transaktioner och överföringar",
-    "tooltip.Payout": "Pengar som skickats från ditt kontosaldo till ditt externa bankkonto",
     "tooltip.Refund": "Pengar som skickats tillbaka till en kund från en återbetald transaktion",
     "tooltip.totalIncoming": "Alla pengar som tagits emot på ditt konto baserat på de valda filtren",
     "tooltip.totalOutgoing": "Alla avgifter, återbetalningar, utbetalningar och andra avgifter baserade på de valda filtren",
