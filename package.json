@@ -1,6 +1,6 @@
 {
     "name": "@adyen/adyen-platform-experience-web-main",
-    "version": "1.0.0-beta.3",
+    "version": "1.0.0",
     "keywords": [
         "adyen",
         "adyen-fp",
@@ -25,6 +25,7 @@
         "start:beta": "concurrently --kill-others-on-fail 'npm run types:watch' 'npm run start:beta -w @adyen/adyen-platform-experience-web-playground' --names 'tsc-lib,playground' -c blue,green,cyan,yellow",
         "build": "npm run build -w @adyen/adyen-platform-experience-web",
         "build:demo": "npm run build:demo -w @adyen/adyen-platform-experience-web-playground",
+        "build:publish": "npm run build:test -w @adyen/adyen-platform-experience-web",
         "build:test": "npm run build:test -w @adyen/adyen-platform-experience-web",
         "build:analyse": "npm run build:analyse -w @adyen/adyen-platform-experience-web",
         "demo": "npm run demo -w @adyen/adyen-platform-experience-web-playground",
