@@ -38,13 +38,14 @@ export const transactionsMocks = [
         const maxAmount = req.url.searchParams.get('maxAmount');
         const createdSince = req.url.searchParams.get('createdSince');
         const createdUntil = req.url.searchParams.get('createdUntil');
+        const sortDirection = req.url.searchParams.get('sortDirection');
         const limit = +(req.url.searchParams.get('limit') ?? defaultPaginationLimit);
         const cursor = +(req.url.searchParams.get('cursor') ?? 0);
 
-        let transactions = TRANSACTIONS;
+        let transactions = [...TRANSACTIONS];
         let responseDelay = 200;
 
-        if (categories.length || currencies.length || statuses.length || minAmount || maxAmount) {
+        if (categories.length || currencies.length || statuses.length || minAmount || maxAmount || sortDirection) {
             transactions = transactions.filter(
                 tx =>
                     balanceAccount &&
@@ -57,6 +58,10 @@ export const transactionsMocks = [
                     (!!tx.amount.value || tx.amount.value * 1000 >= Number(minAmount)) &&
                     (!!tx.amount.value || tx.amount.value * 1000 <= Number(maxAmount))
             );
+
+            const direction = sortDirection === 'desc' ? -1 : 1;
+
+            transactions.sort(({ createdAt: a }, { createdAt: b }) => (+new Date(a) - +new Date(b)) * direction);
 
             responseDelay = 400;
         }
