@@ -11,6 +11,7 @@
         align-items: center;
         display: flex;
         gap: style.token(spacer-030);
+        line-height: 0;
     }
 
     &__payment-method-logo-container {
@@ -20,7 +21,9 @@
 
     &__payment-method-logo {
         height: 100%;
+        max-width: 100%;
         object-fit: contain;
+        object-position: center;
     }
 
     &__date-and-payment-method {
