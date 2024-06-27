@@ -3,9 +3,26 @@ name: Compressed Size
 on: [pull_request]
 
 jobs:
-  build:
+  is-pr-approved:
     runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
 
+      - id: check-approval
+        run: gh pr status --json reviews -q '.currentBranch.reviews' | jq '.[]' | jq '.state' | grep APPROVED
+        env:
+          GH_TOKEN: ${{ github.token }}
+        continue-on-error: true
+
+      - run: echo ${{ steps.check-approval.outcome == 'success' }}
+    outputs:
+      approved: ${{ steps.check-approval.outcome == 'success' }}
+  build:
+    needs: is-pr-approved
+    if: needs.is-pr-approved.outputs.approved == 'true'
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - uses: preactjs/compressed-size-action@v2
