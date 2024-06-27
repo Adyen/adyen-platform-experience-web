@@ -2,10 +2,13 @@
 
 :root {
     --my-primary-color: #5500a9;
+    --my-primary-color-on-hover: #7401e6;
+    --my-primary-color-disabled: #8f65bf;
+
     --adyen-sdk-color-outline-primary-active: var(--my-primary-color);
     --adyen-sdk-color-background-inverse-primary: var(--my-primary-color);
-    --adyen-sdk-color-background-inverse-primary-hover: var(--my-primary-color);
-    --adyen-sdk-color-background-disabled: var(--my-primary-color);
+    --adyen-sdk-color-background-inverse-primary-hover: var(--my-primary-color-on-hover);
+    --adyen-sdk-color-background-disabled: var(--my-primary-color-disabled);
     --adyen-sdk-border-radius-m: 20px;
 }
 

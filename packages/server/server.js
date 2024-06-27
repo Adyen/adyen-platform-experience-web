@@ -3,7 +3,7 @@ const express = require('express');
 const { getUserAccountHolderId, getUserRoles, httpPost } = require('./utils');
 
 const { API_KEY } = process.env;
-const myOrigin = 'http://localhost:3030';
+const myOrigin = 'http://localhost:3031';
 
 const app = express();
 app.use(express.json());
