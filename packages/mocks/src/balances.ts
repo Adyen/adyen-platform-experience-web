@@ -2,19 +2,11 @@ import type { IBalance } from '@adyen/adyen-platform-experience-web/src';
 
 export const BALANCES: IBalance[] = [
     {
-        value: 987600000000,
+        value: 21000,
         currency: 'USD',
     },
     {
-        value: 12345,
+        value: 350000,
         currency: 'EUR',
-    },
-    {
-        value: 333,
-        currency: 'CAD',
-    },
-    {
-        value: 987600000000,
-        currency: 'CAD',
     },
 ];
