@@ -1,5 +1,5 @@
 import DataOverviewError from '../../../../internal/DataOverviewError/DataOverviewError';
-import { BASE_CLASS } from './constants';
+import { BASE_CLASS, NET_PAYOUT_CLASS } from './constants';
 import { PaginationProps, WithPaginationLimitSelection } from '../../../../internal/Pagination/types';
 import { getLabel } from '../../../../utils/getLabel';
 import { useAuthContext } from '../../../../../core/Auth';
@@ -12,6 +12,10 @@ import DataGrid from '../../../../internal/DataGrid';
 import Pagination from '../../../../internal/Pagination';
 import { TranslationKey } from '../../../../../core/Localization/types';
 import { FC } from 'preact/compat';
+import { mediaQueries, useResponsiveViewport } from '../../../TransactionsOverview/hooks/useResponsiveViewport';
+import { CellTextPosition } from '../../../../internal/DataGrid/types';
+import cx from 'classnames';
+import './PayoutsTable.scss';
 
 const AMOUNT_FIELDS = ['fundsCapturedAmount', 'adjustmentAmount', 'payoutAmount'] as const;
 const FIELDS = ['createdAt', ...AMOUNT_FIELDS] as const;
@@ -44,6 +48,14 @@ export const PayoutsTable: FC<PayoutsTableProps> = ({
     const { i18n } = useCoreContext();
     const { refreshing } = useAuthContext();
     const isLoading = useMemo(() => loading || refreshing, [loading, refreshing]);
+    const isSmAndUpViewport = useResponsiveViewport(mediaQueries.up.sm);
+    const fieldsVisibility: Partial<Record<(typeof FIELDS)[number], boolean>> = useMemo(
+        () => ({
+            fundsCapturedAmount: isSmAndUpViewport,
+            adjustmentAmount: isSmAndUpViewport,
+        }),
+        [isSmAndUpViewport]
+    );
 
     const columns = useMemo(
         () =>
@@ -53,12 +65,14 @@ export const PayoutsTable: FC<PayoutsTableProps> = ({
                     return {
                         key,
                         label: data?.[0]?.[key]?.currency ? `${label} (${getCurrencyCode(data?.[0]?.[key]?.currency)})` : label,
+                        visible: fieldsVisibility[key],
+                        position: CellTextPosition.RIGHT,
                     };
                 }
 
-                return { key, label };
+                return { key, label, visible: fieldsVisibility[key] };
             }),
-        [i18n, data]
+        [i18n, fieldsVisibility, data]
     );
 
     const EMPTY_TABLE_MESSAGE = {
@@ -83,7 +97,19 @@ export const PayoutsTable: FC<PayoutsTableProps> = ({
                 onRowClick={{ callback: onRowClick }}
                 emptyTableMessage={EMPTY_TABLE_MESSAGE}
                 customCells={{
-                    createdAt: ({ value }) => value && i18n.fullDate(value),
+                    createdAt: ({ value }) => {
+                        if (!value) return null;
+                        if (!isSmAndUpViewport)
+                            return i18n.date(value, {
+                                month: 'short',
+                                day: 'numeric',
+                                year: undefined,
+                                hour: '2-digit',
+                                minute: '2-digit',
+                                hour12: false,
+                            });
+                        return value && i18n.fullDate(value);
+                    },
                     fundsCapturedAmount: ({ value }) => {
                         return value && <span>{i18n.amount(value.value, value.currency, { hideCurrency: true })}</span>;
                     },
@@ -91,7 +117,13 @@ export const PayoutsTable: FC<PayoutsTableProps> = ({
                         return value && <span>{i18n.amount(value.value, value.currency, { hideCurrency: true })}</span>;
                     },
                     payoutAmount: ({ value }) => {
-                        return value && <span>{i18n.amount(value.value, value.currency, { hideCurrency: true })}</span>;
+                        return (
+                            value && (
+                                <span className={cx({ [`${NET_PAYOUT_CLASS}--strong`]: !isSmAndUpViewport })}>
+                                    {i18n.amount(value.value, value.currency, { hideCurrency: isSmAndUpViewport })}
+                                </span>
+                            )
+                        );
                     },
                 }}
             >
