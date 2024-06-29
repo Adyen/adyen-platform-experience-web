@@ -26,6 +26,10 @@ $adyen-pe-body-line-height: style.token(text-body-line-height);
          * ----------------------------------------------------
          */
         margin-top: calc(($adyen-pe-body-line-height - 1rem) / 2);
+
+        svg {
+            color: style.token(color-background-inverse-primary);
+        }
     }
 
     &__account-id {
