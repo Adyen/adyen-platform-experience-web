@@ -33,8 +33,13 @@ function httpPost({ apiKey, url, request, res }) {
     });
 }
 
+const isMyUserLoggedIn = () => true;
+const redirectToLogInPage = () => {};
+
 module.exports = {
     getUserAccountHolderId,
     httpPost,
     getUserRoles,
+    isMyUserLoggedIn,
+    redirectToLogInPage,
 };
