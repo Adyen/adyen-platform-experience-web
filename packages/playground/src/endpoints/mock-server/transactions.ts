@@ -132,21 +132,20 @@ export const transactionsMocks = [
                     (!!tx.amount.value || tx.amount.value * 1000 <= Number(maxAmount))
             );
         }
-
         const totals = transactions.reduce((acc: Map<string, { incomings?: number; expenses?: number }>, transaction: ITransaction) => {
             const { amount } = transaction;
-            const currentCur = acc.get(amount.currency);
+            const currentCur = acc.get(amount.currency) ?? {};
             let val = {};
-            if (currentCur) {
-                if (amount.value > 0) {
-                    val = currentCur.incomings
+            if (amount.value > 0) {
+                val =
+                    currentCur && currentCur.incomings
                         ? { ...currentCur, incomings: currentCur.incomings + amount.value }
                         : { ...currentCur, incomings: amount.value };
-                } else {
-                    val = currentCur.expenses
+            } else {
+                val =
+                    currentCur && currentCur.expenses
                         ? { ...currentCur, expenses: currentCur.expenses + amount.value }
                         : { ...currentCur, expenses: amount.value };
-                }
             }
             acc.set(amount.currency, val);
             return acc;
