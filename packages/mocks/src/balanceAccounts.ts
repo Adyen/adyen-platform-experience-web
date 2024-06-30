@@ -2,16 +2,16 @@ import type { IBalanceAccountBase } from '@adyen/adyen-platform-experience-web/s
 
 export const BALANCE_ACCOUNTS: IBalanceAccountBase[] = [
     {
-        description: 'S. Hopper - Secondary Account',
+        description: 'S. Hopper - Main Account',
         id: 'BA32272223222B5CTDQPM6W2H',
         timeZone: 'America/Sao_Paulo',
-        defaultCurrencyCode: 'BRL',
+        defaultCurrencyCode: 'USD',
     },
     {
-        description: 'S. Hopper - Third Account',
+        description: 'S. Hopper - Secondary Account',
         id: 'BA32272223222B5CTDQPM6W2G',
         timeZone: 'America/Sao_Paulo',
-        defaultCurrencyCode: 'BRL',
+        defaultCurrencyCode: 'USD',
     },
 ];
 
