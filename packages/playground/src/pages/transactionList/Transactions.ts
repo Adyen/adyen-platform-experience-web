@@ -1,13 +1,11 @@
 import { AdyenPlatformExperience, TransactionsOverview } from '@adyen/adyen-platform-experience-web';
-import { initServer } from '../../endpoints/mock-server/utils';
+import '@adyen/adyen-platform-experience-web/adyen-platform-experience-web.css';
+
 import getMySession from '../../utils/getMySession';
-import '../../utils/createPages.js';
 import '../../assets/style/style.scss';
 
 const core = await AdyenPlatformExperience({
-    onSessionCreate: async () => await getMySession(),
+    onSessionCreate: getMySession,
 });
-
-await initServer();
 
 new TransactionsOverview({ core }).mount('.container');
