@@ -1,0 +1,80 @@
+body {
+    background: #ece1f9;
+}
+
+.adyen-pe-expandable-card {
+    .adyen-pe-expandable-card__container--filled {
+        background: #fff;
+    }
+
+    .adyen-pe-expandable-card__chevron {
+        background: #faf7ff;
+    }
+}
+
+.adyen-pe-transactions-overview .adyen-pe-filter-bar .adyen-pe-button--secondary.adyen-pe-dropdown__button--has-selection {
+    color: #fff;
+    box-shadow: none;
+    background: var(--my-primary-color);
+}
+
+body,
+.adyen-pe-typography {
+    font-family: monospace;
+}
+
+.adyen-pe-component {
+    background: 0 !important;
+    border: 0 !important;
+}
+
+.adyen-pe-filter-button,
+.adyen-pe-button {
+    // text-transform: uppercase;
+}
+
+.adyen-pe-data-grid__cell--heading-content,
+.adyen-pe-summary-item__label {
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-family: monospace;
+    font-size: 12px;
+}
+
+.adyen-pe-data-grid__cell--heading-content {
+    color: white;
+}
+
+.adyen-pe-data-grid__table .adyen-pe-data-grid__row {
+    border: 0;
+
+    &:nth-child(even) {
+        background: #faf7ff;
+    }
+}
+
+.adyen-pe-data-grid__head {
+    background: var(--my-primary-color);
+}
+
+.adyen-pe-transactions-table {
+    border: 1px solid var(--my-primary-color);
+    border-radius: 30px;
+    overflow: hidden;
+    margin-top: 20px;
+}
+
+.adyen-pe-data-grid__table {
+    .adyen-pe-data-grid__header,
+    .adyen-pe-data-grid__row {
+        padding: 0 16px;
+    }
+}
+
+.adyen-pe-data-grid__footer {
+    padding: 0 16px;
+}
+
+.adyen-pe-data-grid .adyen-pe-data-grid__table-wrapper {
+    margin: 0;
+}
