@@ -54,6 +54,7 @@ export default defineConfig(async ({ mode }) => {
                 : undefined,
         resolve: {
             alias: {
+                '@adyen/adyen-platform-experience-web/adyen-platform-experience-web.css': resolve(__dirname, '../lib/dist/style.css'),
                 '@adyen/adyen-platform-experience-web': resolve(__dirname, '../lib/src'),
                 '@src': resolve(__dirname, '../lib/src'),
                 '@styles': resolve(__dirname, '../lib/src/style'),
