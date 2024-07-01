@@ -203,6 +203,7 @@ h2 {
     position: fixed;
     top: 0;
     width: 240px;
+    flex-grow: 1;
 
     @media screen and (min-width: 1240px) {
         display: block;
@@ -288,6 +289,7 @@ h2 {
     width: 100%;
     padding: 0 16px 0 36px;
     gap: 30px;
+    height: 100%;
 
     ul {
         padding: 0;
@@ -297,6 +299,43 @@ h2 {
         align-items: center;
         height: 100%;
         padding: 10px;
+    }
+}
+
+.playground-footer {
+    width: 100%;
+    padding-bottom: 30px;
+}
+
+.playground-footer__profile {
+    width: 100%;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.playground-footer__avatar {
+    width: 40px;
+    height: 40px;
+    background-image: url('../cody.png');
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
+    border-radius: 50%;
+}
+
+.playground-footer__name {
+    color: #fff;
+}
+
+.playground-footer__more {
+    flex-grow: 1;
+    text-align: right;
+
+    &:after {
+        content: '\2807';
+        font-size: 25px;
+        color: #fff;
     }
 }
 

@@ -18,11 +18,19 @@ const insertHeader = pages => {
             <span aria-hidden></span>
         </button>
 
-        <p><span>MS</span>My<strong>Store</strong></p>
+        <p><span>PE</span><strong>Pie</strong>Eats</p>
 
         <nav class="playground-nav">
             <ul class="playground-nav__list">${links.join('')}</ul>
         </nav>
+        
+        <div class='playground-footer'>
+            <div class='playground-footer__profile'>
+                <div class='playground-footer__avatar'></div>
+                <div class='playground-footer__name'>Cody</div>
+                <div class="playground-footer__more"></div>
+            </div>
+        </div>
       </div>
     `;
 

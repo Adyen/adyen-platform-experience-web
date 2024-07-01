@@ -18,7 +18,8 @@ const AdyenPlatform = await AdyenPlatformExperience({
         return await sessionRequest();
     },
 });
-createLanguageButtons({ locales: ['es-ES', 'en-US'], core: AdyenPlatform });
+
+// createLanguageButtons({ locales: ['es-ES', 'en-US'], core: AdyenPlatform });
 
 await initServer();
 
