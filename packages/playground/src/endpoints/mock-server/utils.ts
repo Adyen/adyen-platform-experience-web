@@ -47,7 +47,7 @@ export const getPaginationLinks = (cursor: number, limit: number, totalLength: n
     const prevCursor = potentialPrevCursor >= 0 ? potentialPrevCursor : undefined;
 
     return {
-        ...(nextCursor === undefined ? {} : { next: { cursor: nextCursor.toString() } }),
-        ...(prevCursor === undefined ? {} : { prev: { cursor: prevCursor.toString() } }),
+        ...(nextCursor === undefined ? { next: {} } : { next: { cursor: nextCursor.toString() } }),
+        ...(prevCursor === undefined ? { prev: {} } : { prev: { cursor: prevCursor.toString() } }),
     };
 };

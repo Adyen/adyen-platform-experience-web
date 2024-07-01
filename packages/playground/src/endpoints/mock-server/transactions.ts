@@ -105,20 +105,18 @@ export const transactionsMocks = [
         const createdSince = req.url.searchParams.get('createdSince');
         const createdUntil = req.url.searchParams.get('createdUntil');
         const sortDirection = req.url.searchParams.get('sortDirection');
-        const limit = +(req.url.searchParams.get('limit') ?? defaultPaginationLimit);
-        const cursor = +(req.url.searchParams.get('cursor') ?? 0);
 
-        const balanceKey = balanceAccount ?? 'na';
-        const categoryKey = categories.toString() ?? 'na';
-        const createdSinceKey = !!createdSince ? new Date(createdSince).getDate().toString() : 'na';
-        const createdUntilKey = !!createdUntil ? new Date(createdUntil).getDate().toString() : 'na';
-        const currenciesKey = currencies.toString() ?? 'na';
-        const maxAmountKey = maxAmount ?? 'na';
-        const minAmountKey = minAmount ?? 'na';
+        // const balanceKey = balanceAccount ?? 'na';
+        // const categoryKey = categories.toString() ?? 'na';
+        // const createdSinceKey = !!createdSince ? new Date(createdSince).getDate().toString() : 'na';
+        // const createdUntilKey = !!createdUntil ? new Date(createdUntil).getDate().toString() : 'na';
+        // const currenciesKey = currencies.toString() ?? 'na';
+        // const maxAmountKey = maxAmount ?? 'na';
+        // const minAmountKey = minAmount ?? 'na';
 
-        const hashedKey = hash(balanceKey, categoryKey, createdSinceKey, createdUntilKey, currenciesKey, maxAmountKey, minAmountKey);
+        // const hashedKey = hash(balanceKey, categoryKey, createdSinceKey, createdUntilKey, currenciesKey, maxAmountKey, minAmountKey);
 
-        if (categories.length || currencies.length || statuses.length || minAmount || maxAmount || sortDirection) {
+        if (balanceAccount || categories.length || currencies.length || statuses.length || minAmount || maxAmount || sortDirection) {
             transactions = transactions.filter(
                 tx =>
                     !!balanceAccount &&
@@ -132,21 +130,20 @@ export const transactionsMocks = [
                     (!!tx.amount.value || tx.amount.value * 1000 <= Number(maxAmount))
             );
         }
-
         const totals = transactions.reduce((acc: Map<string, { incomings?: number; expenses?: number }>, transaction: ITransaction) => {
             const { amount } = transaction;
-            const currentCur = acc.get(amount.currency);
+            const currentCur = acc.get(amount.currency) ?? {};
             let val = {};
-            if (currentCur) {
-                if (amount.value > 0) {
-                    val = currentCur.incomings
+            if (amount.value > 0) {
+                val =
+                    currentCur && currentCur.incomings
                         ? { ...currentCur, incomings: currentCur.incomings + amount.value }
                         : { ...currentCur, incomings: amount.value };
-                } else {
-                    val = currentCur.expenses
+            } else {
+                val =
+                    currentCur && currentCur.expenses
                         ? { ...currentCur, expenses: currentCur.expenses + amount.value }
                         : { ...currentCur, expenses: amount.value };
-                }
             }
             acc.set(amount.currency, val);
             return acc;
