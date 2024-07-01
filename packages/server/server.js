@@ -1,6 +1,6 @@
 require('dotenv').config({ path: `${__dirname}/.env` });
 const express = require('express');
-const { getUserAccountHolderId, getUserRoles, httpPost } = require('./utils');
+const { getUserAccountHolderId, getUserRoles, httpPost, isMyUserLoggedIn, redirectToLogInPage } = require('./utils');
 
 const { API_KEY } = process.env;
 const myOrigin = 'http://localhost:3031';
@@ -16,12 +16,14 @@ app.use((_, res, next) => {
 });
 
 app.get('/getMySession', (_, res) => {
+    if (!isMyUserLoggedIn()) redirectToLogInPage();
+
     const apiKey = API_KEY;
     const url = 'https://test.adyen.com/authe/api/v1/sessions';
 
     const request = {
         allowOrigin: myOrigin,
-        reference: 'YOUR_INTERNAL_IDENTIFIER',
+        reference: 'live-coding-baby',
         product: 'platform',
         policy: {
             resources: [
