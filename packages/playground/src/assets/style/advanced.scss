@@ -1,15 +1,5 @@
 body {
-    background: #ece1f9;
-}
-
-.adyen-pe-expandable-card {
-    .adyen-pe-expandable-card__container--filled {
-        background: #fff;
-    }
-
-    .adyen-pe-expandable-card__chevron {
-        background: #faf7ff;
-    }
+    background: var(--my-primary-color-disabled);
 }
 
 .adyen-pe-transactions-overview .adyen-pe-filter-bar .adyen-pe-button--secondary.adyen-pe-dropdown__button--has-selection {
@@ -28,11 +18,6 @@ body,
     border: 0 !important;
 }
 
-.adyen-pe-filter-button,
-.adyen-pe-button {
-    // text-transform: uppercase;
-}
-
 .adyen-pe-data-grid__cell--heading-content,
 .adyen-pe-summary-item__label {
     text-transform: uppercase;
@@ -42,7 +27,17 @@ body,
 }
 
 .adyen-pe-data-grid__cell--heading-content {
-    color: white;
+    color: #fff;
+}
+
+.adyen-pe-expandable-card {
+    .adyen-pe-expandable-card__container--filled {
+        background: #fff;
+    }
+
+    .adyen-pe-expandable-card__chevron {
+        background: #faf7ff;
+    }
 }
 
 .adyen-pe-data-grid__table .adyen-pe-data-grid__row {
