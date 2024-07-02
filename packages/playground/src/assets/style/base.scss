@@ -109,12 +109,15 @@ header p {
     span {
         background: $color-white;
         border-radius: 6px;
+        display: inline-block;
         color: #17002e;
         font-size: 0.45em;
         font-weight: bold;
         margin-right: 6px;
+        min-width: 22px;
         padding: 5px 3px;
         position: relative;
+        text-align: center;
         text-transform: uppercase;
         top: -5px;
     }
@@ -294,6 +297,7 @@ h2 {
     ul {
         padding: 0;
     }
+
     @media screen and (max-width: 1239px) {
         flex-direction: row;
         align-items: center;
