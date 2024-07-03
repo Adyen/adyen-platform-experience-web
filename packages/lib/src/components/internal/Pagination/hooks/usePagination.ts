@@ -33,6 +33,7 @@ const usePagination = <Pagination extends PaginationType>(
         return requestPageCallback
             ? (page: number) => {
                   if (!(limit && Number.isInteger(page))) return;
+
                   const PAGES = getPageCount();
                   const requestedPage = page < 0 ? page + PAGES + 1 : page;
                   const isValidPageRequest = requestedPage > 0 && (PAGES ? requestedPage <= PAGES : requestedPage === 1);
@@ -58,7 +59,6 @@ const usePagination = <Pagination extends PaginationType>(
 
                           const { size, ...paginationData } = data;
 
-                          resetPageCount();
                           updatePagination(requestedPage, limit, paginationData);
                           $maxVisitedPage.current = $page.current && Math.max($page.current, $maxVisitedPage.current || -Infinity);
 

@@ -1,20 +1,29 @@
 import { ITransaction } from '@adyen/adyen-platform-experience-web';
 import { rest } from 'msw';
-import { DEFAULT_TRANSACTION, TRANSACTIONS, TRANSACTION_TOTALS } from '@adyen/adyen-platform-experience-web-mocks';
+import { DEFAULT_TRANSACTION, TRANSACTIONS } from '@adyen/adyen-platform-experience-web-mocks';
 import { endpoints } from '../endpoints';
 import { delay } from '../utils/utils';
 import { compareDates } from './payouts';
 import { getPaginationLinks } from './utils';
 
+interface _ITransactionTotals {
+    expenses: number;
+    incomings: number;
+}
+
 const mockEndpoints = endpoints('mock');
 const networkError = false;
 const serverError = false;
-const defaultPaginationLimit = 20;
+
+const DEFAULT_PAGINATION_LIMIT = 10;
+const DEFAULT_SORT_DIRECTION = 'desc';
+const TRANSACTIONS_CACHE = new Map<string, ITransaction[]>();
+const TRANSACTIONS_TOTALS_CACHE = new Map<string, Map<string, _ITransactionTotals>>();
 
 /**
  * Hash function based on {@link https://theartincode.stanis.me/008-djb2/ djb2} algorithm
  */
-const hash = (...strings: string[]) => {
+const computeHash = (...strings: string[]) => {
     const hash = strings.reduce((hash, string) => {
         let i = string.length;
         while (i) hash = (hash * 33) ^ string.charCodeAt(--i);
@@ -23,11 +32,54 @@ const hash = (...strings: string[]) => {
     return (hash >>> 0).toString(16).padStart(8, '0');
 };
 
+const fetchTransactionsForRequest = (req: Parameters<Parameters<(typeof rest)['get']>[1]>[0]) => {
+    const searchParams = req.url.searchParams;
+
+    const balanceAccount = searchParams.get('balanceAccountId');
+    const categories = searchParams.getAll('categories');
+    const createdSince = searchParams.get('createdSince');
+    const createdUntil = searchParams.get('createdUntil');
+    const currencies = searchParams.getAll('currencies');
+    const maxAmount = searchParams.get('maxAmount');
+    const minAmount = searchParams.get('minAmount');
+    const sortDirection = searchParams.get('sortDirection') ?? DEFAULT_SORT_DIRECTION;
+    const statuses = searchParams.getAll('statuses');
+
+    const hash = computeHash(
+        [balanceAccount, String(categories), createdSince, createdUntil, String(currencies), maxAmount, minAmount, sortDirection, String(statuses)]
+            .filter(Boolean)
+            .join(':')
+    );
+
+    let transactions = TRANSACTIONS_CACHE.get(hash);
+
+    if (transactions === undefined) {
+        const direction = sortDirection === DEFAULT_SORT_DIRECTION ? -1 : 1;
+
+        transactions = [...TRANSACTIONS]
+            .filter(
+                ({ amount, balanceAccountId, category, createdAt, status }) =>
+                    balanceAccount &&
+                    balanceAccount === balanceAccountId &&
+                    (!categories.length || categories.includes(category)) &&
+                    (!createdSince || compareDates(createdAt, createdSince, 'ge')) &&
+                    (!createdUntil || compareDates(createdAt, createdUntil, 'le')) &&
+                    (!currencies.length || currencies.includes(amount.currency)) &&
+                    (maxAmount === null || amount.value * 1000 <= Number(maxAmount)) &&
+                    (minAmount === null || amount.value * 1000 >= Number(minAmount)) &&
+                    (!statuses.length || statuses!.includes(status))
+            )
+            .sort(({ createdAt: a }, { createdAt: b }) => (+new Date(a) - +new Date(b)) * direction);
+
+        TRANSACTIONS_CACHE.set(hash, transactions);
+    }
+
+    return { hash, transactions } as const;
+};
+
 export const transactionsMocks = [
     rest.get(mockEndpoints.transactions, (req, res, ctx) => {
-        if (networkError) {
-            return res.networkError('Failed to connect');
-        }
+        if (networkError) return res.networkError('Failed to connect');
 
         if (serverError) {
             return res(
@@ -43,45 +95,19 @@ export const transactionsMocks = [
             );
         }
 
-        const balanceAccount = req.url.searchParams.get('balanceAccountId');
-        const categories = req.url.searchParams.getAll('categories');
-        const currencies = req.url.searchParams.getAll('currencies');
-        const statuses = req.url.searchParams.getAll('statuses');
-        const minAmount = req.url.searchParams.get('minAmount');
-        const maxAmount = req.url.searchParams.get('maxAmount');
-        const createdSince = req.url.searchParams.get('createdSince');
-        const createdUntil = req.url.searchParams.get('createdUntil');
-        const sortDirection = req.url.searchParams.get('sortDirection');
-        const limit = +(req.url.searchParams.get('limit') ?? defaultPaginationLimit);
         const cursor = +(req.url.searchParams.get('cursor') ?? 0);
+        const limit = +(req.url.searchParams.get('limit') ?? DEFAULT_PAGINATION_LIMIT);
+        const responseDelay = 200 + Math.round(Math.floor(Math.random() * 201) / 50) * 50;
 
-        let transactions = [...TRANSACTIONS];
-        let responseDelay = 200;
+        const { transactions } = fetchTransactionsForRequest(req);
 
-        if (categories.length || currencies.length || statuses.length || minAmount || maxAmount || sortDirection) {
-            transactions = transactions.filter(
-                tx =>
-                    !!balanceAccount &&
-                    tx.balanceAccountId === balanceAccount &&
-                    (!categories.length || categories!.includes(tx.category)) &&
-                    (!currencies.length || currencies!.includes(tx.amount.currency)) &&
-                    (!statuses.length || statuses!.includes(tx.status)) &&
-                    (!createdSince || compareDates(tx.createdAt, createdSince, 'ge')) &&
-                    (!createdUntil || compareDates(tx.createdAt, createdUntil, 'le')) &&
-                    (!!tx.amount.value || tx.amount.value * 1000 >= Number(minAmount)) &&
-                    (!!tx.amount.value || tx.amount.value * 1000 <= Number(maxAmount))
-            );
-
-            const direction = sortDirection === 'desc' ? -1 : 1;
-
-            transactions.sort(({ createdAt: a }, { createdAt: b }) => (+new Date(a) - +new Date(b)) * direction);
-
-            responseDelay = 400;
-        }
-
-        const data = transactions.slice(cursor, cursor + limit);
-
-        return res(delay(responseDelay), ctx.json({ data, _links: getPaginationLinks(cursor, limit, transactions.length) }));
+        return res(
+            delay(responseDelay),
+            ctx.json({
+                data: transactions.slice(cursor, cursor + limit),
+                _links: getPaginationLinks(cursor, limit, transactions.length),
+            })
+        );
     }),
 
     rest.get(mockEndpoints.transaction, (req, res, ctx) => {
@@ -91,69 +117,39 @@ export const transactionsMocks = [
             res(ctx.status(404), ctx.text('Cannot find matching Transaction mock'));
             return;
         }
+
         return res(ctx.json(matchingMock));
     }),
 
     rest.get(mockEndpoints.transactionsTotals, (req, res, ctx) => {
-        let transactions = [...TRANSACTIONS];
-        const balanceAccount = req.url.searchParams.get('balanceAccountId');
-        const categories = req.url.searchParams.getAll('categories');
-        const currencies = req.url.searchParams.getAll('currencies');
-        const statuses = req.url.searchParams.getAll('statuses');
-        const minAmount = req.url.searchParams.get('minAmount');
-        const maxAmount = req.url.searchParams.get('maxAmount');
-        const createdSince = req.url.searchParams.get('createdSince');
-        const createdUntil = req.url.searchParams.get('createdUntil');
-        const sortDirection = req.url.searchParams.get('sortDirection');
+        // Don't filter transactions by available currencies
+        req.url.searchParams.delete('currencies');
 
-        // const balanceKey = balanceAccount ?? 'na';
-        // const categoryKey = categories.toString() ?? 'na';
-        // const createdSinceKey = !!createdSince ? new Date(createdSince).getDate().toString() : 'na';
-        // const createdUntilKey = !!createdUntil ? new Date(createdUntil).getDate().toString() : 'na';
-        // const currenciesKey = currencies.toString() ?? 'na';
-        // const maxAmountKey = maxAmount ?? 'na';
-        // const minAmountKey = minAmount ?? 'na';
+        const { hash, transactions } = fetchTransactionsForRequest(req);
+        let totals = TRANSACTIONS_TOTALS_CACHE.get(hash);
 
-        // const hashedKey = hash(balanceKey, categoryKey, createdSinceKey, createdUntilKey, currenciesKey, maxAmountKey, minAmountKey);
+        if (totals === undefined) {
+            totals = transactions.reduce((currencyTotalsMap, transaction) => {
+                const { value: amount, currency } = transaction.amount;
+                let currencyTotals = currencyTotalsMap.get(currency);
 
-        if (balanceAccount || categories.length || currencies.length || statuses.length || minAmount || maxAmount || sortDirection) {
-            transactions = transactions.filter(
-                tx =>
-                    !!balanceAccount &&
-                    tx.balanceAccountId === balanceAccount &&
-                    (!categories.length || categories!.includes(tx.category)) &&
-                    (!currencies.length || currencies!.includes(tx.amount.currency)) &&
-                    (!statuses.length || statuses!.includes(tx.status)) &&
-                    (!createdSince || compareDates(tx.createdAt, createdSince, 'ge')) &&
-                    (!createdUntil || compareDates(tx.createdAt, createdUntil, 'le')) &&
-                    (!!tx.amount.value || tx.amount.value * 1000 >= Number(minAmount)) &&
-                    (!!tx.amount.value || tx.amount.value * 1000 <= Number(maxAmount))
-            );
+                if (currencyTotals === undefined) {
+                    currencyTotalsMap.set(currency, (currencyTotals = { expenses: 0, incomings: 0 }));
+                }
+
+                currencyTotals[amount >= 0 ? 'incomings' : 'expenses'] += amount;
+                return currencyTotalsMap;
+            }, new Map<string, _ITransactionTotals>());
+
+            TRANSACTIONS_TOTALS_CACHE.set(hash, totals);
         }
-        const totals = transactions.reduce((acc: Map<string, { incomings?: number; expenses?: number }>, transaction: ITransaction) => {
-            const { amount } = transaction;
-            const currentCur = acc.get(amount.currency) ?? {};
-            let val = {};
-            if (amount.value > 0) {
-                val =
-                    currentCur && currentCur.incomings
-                        ? { ...currentCur, incomings: currentCur.incomings + amount.value }
-                        : { ...currentCur, incomings: amount.value };
-            } else {
-                val =
-                    currentCur && currentCur.expenses
-                        ? { ...currentCur, expenses: currentCur.expenses + amount.value }
-                        : { ...currentCur, expenses: amount.value };
-            }
-            acc.set(amount.currency, val);
-            return acc;
-        }, new Map());
-        const keys = totals.keys();
-        let totalsResp = [];
-        for (const key of keys) {
-            const totalVals = totals.get(key);
-            totalsResp.push({ expenses: 0, incomings: 0, currency: key, ...totalVals });
+
+        const data: (_ITransactionTotals & { currency: string })[] = [];
+
+        for (const [currency, currencyTotals] of totals) {
+            data.push({ currency, ...currencyTotals });
         }
-        return res(ctx.json({ data: totalsResp }));
+
+        return res(ctx.json({ data }));
     }),
 ];
