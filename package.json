@@ -25,6 +25,7 @@
         "start:beta": "concurrently --kill-others-on-fail 'npm run types:watch' 'npm run start:beta -w @adyen/adyen-platform-experience-web-playground' --names 'tsc-lib,playground' -c blue,green,cyan,yellow",
         "build": "npm run build -w @adyen/adyen-platform-experience-web",
         "build:demo": "npm run build:demo -w @adyen/adyen-platform-experience-web-playground",
+        "build:publish": "npm run build:test -w @adyen/adyen-platform-experience-web",
         "build:test": "npm run build:test -w @adyen/adyen-platform-experience-web",
         "build:analyse": "npm run build:analyse -w @adyen/adyen-platform-experience-web",
         "demo": "npm run demo -w @adyen/adyen-platform-experience-web-playground",
@@ -51,7 +52,8 @@
         "schemas:generate": "bash scripts/generate-ts-schemas/generate-schemas.sh",
         "schemas:variables": "bash scripts/generate-ts-schemas/setup-openapi-ts.sh",
         "translations:sort": "bash scripts/process-translations/sort-translations-json.sh",
-        "prepare": "node ./prepare.js && bash ./scripts/process-package-lock.sh"
+        "prepare": "node ./prepare.js && bash ./scripts/process-package-lock.sh",
+        "release": "sh scripts/create-new-release.sh"
     },
     "dependencies": {
         "concurrently": "^7.0.0"
