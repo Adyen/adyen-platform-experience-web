@@ -1,36 +1,22 @@
-import { ITransaction } from '@adyen/adyen-platform-experience-web';
 import { rest } from 'msw';
+import { ITransaction } from '@adyen/adyen-platform-experience-web';
 import { DEFAULT_TRANSACTION, TRANSACTIONS } from '@adyen/adyen-platform-experience-web-mocks';
+import { compareDates, computeHash, delay, getPaginationLinks } from './utils';
 import { endpoints } from '../endpoints';
-import { delay } from '../utils/utils';
-import { compareDates } from './payouts';
-import { getPaginationLinks } from './utils';
 
 interface _ITransactionTotals {
     expenses: number;
     incomings: number;
 }
 
-const mockEndpoints = endpoints('mock');
-const networkError = false;
-const serverError = false;
-
 const DEFAULT_PAGINATION_LIMIT = 10;
 const DEFAULT_SORT_DIRECTION = 'desc';
 const TRANSACTIONS_CACHE = new Map<string, ITransaction[]>();
 const TRANSACTIONS_TOTALS_CACHE = new Map<string, Map<string, _ITransactionTotals>>();
 
-/**
- * Hash function based on {@link https://theartincode.stanis.me/008-djb2/ djb2} algorithm
- */
-const computeHash = (...strings: string[]) => {
-    const hash = strings.reduce((hash, string) => {
-        let i = string.length;
-        while (i) hash = (hash * 33) ^ string.charCodeAt(--i);
-        return hash;
-    }, 5381);
-    return (hash >>> 0).toString(16).padStart(8, '0');
-};
+const mockEndpoints = endpoints('mock');
+const networkError = false;
+const serverError = false;
 
 const fetchTransactionsForRequest = (req: Parameters<Parameters<(typeof rest)['get']>[1]>[0]) => {
     const searchParams = req.url.searchParams;
