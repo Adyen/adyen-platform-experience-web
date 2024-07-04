@@ -18,7 +18,8 @@ export class AuthSessionSpecification implements _AuthSessionSpecification {
         try {
             if (this.errorHandler) this.errorHandler(error);
         } catch {
-            throw error;
+            /* The catch block here is just to indicate that we are not
+            concerned about any error resulting from the consumer's errorHandler() */
         }
         throw error;
     }
