@@ -93,7 +93,9 @@ export const PayoutData = ({
                             {i18n.get('netPayout')}
                         </Typography>
                         <Typography variant={TypographyVariant.TITLE} large>
-                            {`${i18n.amount(payout.payoutAmount.value, payout.payoutAmount.currency)} ${payout.payoutAmount.currency}`}
+                            {`${i18n.amount(payout.payoutAmount.value, payout.payoutAmount.currency, {
+                                hideCurrency: true,
+                            })} ${payout.payoutAmount.currency}`}
                         </Typography>
                         <Typography variant={TypographyVariant.BODY}>{creationDate}</Typography>
                         <Typography variant={TypographyVariant.BODY} stronger>
