@@ -33,7 +33,7 @@
         align-items: center;
         display: flex;
         gap: style.token(spacer-030);
-        line-height: 0;
+        line-height: 1;
     }
 
     &__payment-method-detail {
