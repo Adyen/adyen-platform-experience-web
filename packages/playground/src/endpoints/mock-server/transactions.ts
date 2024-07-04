@@ -108,8 +108,15 @@ export const transactionsMocks = [
     }),
 
     rest.get(mockEndpoints.transactionsTotals, (req, res, ctx) => {
-        // Don't filter transactions by available currencies
-        req.url.searchParams.delete('currencies');
+        const searchParams = req.url.searchParams;
+
+        // Don't filter transactions within the same time window
+        searchParams.delete('categories');
+        searchParams.delete('currencies');
+        searchParams.delete('maxAmount');
+        searchParams.delete('minAmount');
+        searchParams.delete('sortDirection');
+        searchParams.delete('statuses');
 
         const { hash, transactions } = fetchTransactionsForRequest(req);
         let totals = TRANSACTIONS_TOTALS_CACHE.get(hash);
