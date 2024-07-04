@@ -2,6 +2,16 @@ import { API_VERSION } from './constants';
 import { normalizeLoadingContext, normalizeUrl } from '../utils';
 import { getErrorType, getRequestObject, handleFetchError, isAdyenErrorResponse } from './utils';
 import { HttpOptions } from './types';
+import { onErrorHandler } from '../types';
+
+const errorHandlerHelper = (errorHandler?: onErrorHandler, error?: any) => {
+    // Always throws
+    try {
+        errorHandler?.(error);
+    } catch {
+        throw error;
+    }
+};
 
 export async function http<T>(options: HttpOptions, data?: any): Promise<T> {
     const { errorLevel, loadingContext = '', path } = options;
@@ -60,27 +70,20 @@ export async function http<T>(options: HttpOptions, data?: any): Promise<T> {
             error.requestId = response?.requestId;
 
             if (isAdyenErrorResponse(response)) {
-                if (options.errorHandler) {
-                    try {
-                        // The errorHandler() function provided by the caller could throw an exception
-                        options.errorHandler(response); // (!!)
-                        return;
-                    } catch (ex) {
-                        // If it does throw an exception, the exception will be propagated to the caller (unhandled).
-                        errorPassThrough = true;
-                        throw ex;
-                    }
-                }
-
                 error.message = response.detail;
                 error.errorCode = response.errorCode;
             }
+            errorHandlerHelper(options.errorHandler, error);
         } catch (ex) {
             if (errorPassThrough) {
                 // Since the `errorPassThrough` flag is set to `true`,
                 // The exception will be propagated to the caller (unhandled)
+                errorHandlerHelper(options.errorHandler, ex);
                 throw ex;
             }
+
+            errorHandlerHelper(options.errorHandler, ex);
+
             error.message = options.errorMessage || `Call to ${url} failed. Error: ${ex}`;
         }
 
