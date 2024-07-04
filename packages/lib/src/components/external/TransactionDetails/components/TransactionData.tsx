@@ -44,7 +44,7 @@ export const TransactionData = ({ transaction, isFetching }: { transaction: Tran
                         >
                             {transaction.amount
                                 ? `${i18n.amount(transaction.amount.value, transaction.amount.currency, {
-                                      currencyDisplay: 'symbol',
+                                      hideCurrency: true,
                                   })} ${transaction.amount.currency}`
                                 : null}
                         </div>
