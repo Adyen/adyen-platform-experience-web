@@ -43,9 +43,9 @@ export const TransactionData = ({ transaction, isFetching }: { transaction: Tran
                             className={`adyen-pe-transaction-data__section adyen-pe-transaction-data__amount adyen-pe-transaction-data__amount--${amountStyle}`}
                         >
                             {transaction.amount
-                                ? i18n.amount(transaction.amount.value, transaction.amount.currency, {
+                                ? `${i18n.amount(transaction.amount.value, transaction.amount.currency, {
                                       currencyDisplay: 'symbol',
-                                  })
+                                  })} ${transaction.amount.currency}`
                                 : null}
                         </div>
                         {(transaction?.paymentMethod || transaction?.bankAccount) && (
