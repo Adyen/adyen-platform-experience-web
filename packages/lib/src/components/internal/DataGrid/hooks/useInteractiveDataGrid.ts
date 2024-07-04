@@ -46,7 +46,7 @@ export const useInteractiveDataGrid = ({ totalRows }: { totalRows: number }) => 
 
     const onKeyDownCapture = useCallback(
         (evt: KeyboardEvent) => {
-            const isRow = (evt.target as HTMLElement)?.localName === 'tr';
+            const isRow = (evt.target as HTMLElement)?.getAttribute('role') === 'row';
             if (!isRow) {
                 if (evt.code === InteractionKeyCode.ARROW_LEFT) {
                     dispatch({
