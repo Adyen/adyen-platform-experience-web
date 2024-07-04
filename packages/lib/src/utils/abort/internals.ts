@@ -1,7 +1,7 @@
 import { enumerable, getter, hasOwnProperty } from '../struct/property';
 import { DEFAULT_ABORT_ERROR_MESSAGE, DEFAULT_TIMEOUT_ERROR_MESSAGE } from './constants';
 
-/* Begin `AbortSignal.prototype` polyfill */
+/* Polyfill `AbortSignal.prototype.reason` */
 if (!hasOwnProperty(AbortSignal.prototype, 'reason')) {
     try {
         Object.defineProperty(AbortSignal.prototype, 'reason', {
@@ -16,12 +16,12 @@ if (!hasOwnProperty(AbortSignal.prototype, 'reason')) {
     }
 }
 
+/* Polyfill `AbortSignal.prototype.throwIfAborted` */
 if (!hasOwnProperty(AbortSignal.prototype, 'throwIfAborted')) {
     AbortSignal.prototype.throwIfAborted = function _throwIfAborted(this: AbortSignal) {
         if (this.aborted) throw this.reason ?? abortError();
     };
 }
-/* End `AbortSignal.prototype` polyfill */
 
 export const augmentSignalReason = (signal: AbortSignal, reason: any) => {
     if (signal.reason !== reason) {
