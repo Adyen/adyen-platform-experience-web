@@ -37,9 +37,9 @@ export class SessionContext<T, HttpParams extends any[] = any[]> {
         return session;
     });
 
-    declare http: typeof this._sessionHttp;
-    declare on: (typeof this._eventEmitter)['on'];
-    declare refresh: typeof this._refreshSession;
+    public declare http: typeof this._sessionHttp;
+    public declare on: (typeof this._eventEmitter)['on'];
+    public declare refresh: typeof this._refreshSession;
 
     constructor(private readonly _specification: SessionSpecification<T, HttpParams>) {
         this.http = this._sessionHttp.bind(this);

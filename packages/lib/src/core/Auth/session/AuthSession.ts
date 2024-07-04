@@ -8,6 +8,7 @@ import { EVT_SESSION_EXPIRED_STATE_CHANGE, EVT_SESSION_REFRESHING_STATE_CHANGE, 
 import { ERR_AUTH_REFRESH_ABORTED, ERR_AUTH_REFRESH_FAILED, EVT_AUTH_STATE_CHANGE } from './constants';
 import { boolOrFalse, constant, isFunction, noop } from '../../../utils';
 import type { Promised } from '../../../utils/types';
+import { onErrorHandler } from '../../types';
 
 export class AuthSession {
     private _canSkipSessionRefresh = false;
@@ -32,8 +33,8 @@ export class AuthSession {
         refreshing: () => this._sessionContext.refreshing,
     });
 
-    declare destroy: () => void;
-    declare subscribe: (typeof this._watchlist)['subscribe'];
+    public declare destroy: () => void;
+    public declare subscribe: (typeof this._watchlist)['subscribe'];
 
     constructor() {
         this.destroy = () => {
@@ -71,6 +72,10 @@ export class AuthSession {
 
     set loadingContext(loadingContext: typeof this._setupContext.loadingContext) {
         this._setupContext.loadingContext = loadingContext;
+    }
+
+    set errorHandler(errorHandler: onErrorHandler | null) {
+        this._specification.errorHandler = errorHandler;
     }
 
     set onSessionCreate(onSessionCreate: typeof this._specification.onSessionCreate) {
