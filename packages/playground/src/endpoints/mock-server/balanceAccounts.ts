@@ -19,10 +19,11 @@ export const balanceAccountMock = [
         );
     }),
     rest.get(mockEndpoints.balances, (req, res, ctx) => {
+        const balanceAccountId = req.params.id as string;
         return res(
             delay(300),
             ctx.json({
-                data: BALANCES,
+                data: BALANCES[balanceAccountId],
             })
         );
     }),
