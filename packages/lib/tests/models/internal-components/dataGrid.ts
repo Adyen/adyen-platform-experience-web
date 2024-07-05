@@ -10,7 +10,7 @@ class DataGridPage {
     }
 
     getCell(label: string, row = 0) {
-        return this.gridBody.getByRole('row').nth(row).locator(`div[aria-labelledby=${label}]`);
+        return this.getRow(row).locator(`div[aria-labelledby=${label}]`);
     }
     getRow(row = 0) {
         return this.gridBody.getByRole('row').nth(row);

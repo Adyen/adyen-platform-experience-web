@@ -20,7 +20,7 @@ test('cells should show correct value and open correct modal ', async ({ transac
     await loadedPage.waitFor();
     await transactionDetails.firstRow.click();
 
-    await expect(page.getByRole('dialog').getByLabel(`${getTranslatedKey('referenceID')}`)).toHaveText('1WEPGE5W23KIX9U5');
+    await expect(page.getByRole('dialog').getByLabel(`${getTranslatedKey('referenceID')}`)).toHaveText('254X7TAUWB140HW0');
 });
 
 test.describe('Filters', () => {
