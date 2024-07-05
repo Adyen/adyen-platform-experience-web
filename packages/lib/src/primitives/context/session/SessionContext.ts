@@ -1,46 +1,47 @@
-import { isFunction } from '../../../utils';
+import { isFunction, noop } from '../../../utils';
 import { INTERNAL_EVT_SESSION_READY } from './internal/constants';
-import { createSessionDeadlineController } from './internal/deadline';
-import { createSessionRefreshController } from './internal/refresh';
+import { createSessionAutofresher } from './internal/autofresher';
+import { createSessionDeadline } from './internal/deadline';
+import { createSessionRefresher } from './internal/refresher';
 import { createEventEmitter } from '../../reactive/eventEmitter';
-import { ERR_SESSION_HTTP_UNAVAILABLE, EVT_SESSION_REFRESHING_START } from './constants';
+import { ERR_SESSION_HTTP_UNAVAILABLE } from './constants';
 import type { SessionEventType, SessionSpecification } from './types';
 
 export class SessionContext<T, HttpParams extends any[] = any[]> {
     private _session: T | undefined;
     private _sessionActivationTimestamp: number | undefined;
 
-    private readonly _deadlineController;
-    private readonly _refreshController;
+    private readonly _deadline;
+    private readonly _refresher;
+    private readonly _autofresher;
     private readonly _eventEmitter = createEventEmitter<SessionEventType>();
 
     declare http: typeof this._sessionHttp;
     declare on: (typeof this._eventEmitter)['on'];
-    declare refresh: (typeof this._refreshController)['refresh'];
+    declare refresh: (typeof this._refresher)['refresh'];
 
     constructor(private readonly _specification: SessionSpecification<T, HttpParams>) {
-        this._deadlineController = createSessionDeadlineController(this._eventEmitter, this._specification);
-        this._refreshController = createSessionRefreshController(this._eventEmitter, this._specification);
+        this._deadline = createSessionDeadline(this._eventEmitter, this._specification);
+        this._refresher = createSessionRefresher(this._eventEmitter, this._specification);
+        this._autofresher = createSessionAutofresher(this._eventEmitter, this._specification, this._refresher);
 
-        this._refreshController.on(INTERNAL_EVT_SESSION_READY, async ({ detail: session, timeStamp }) => {
-            this._session = session ?? undefined;
+        this._refresher.on(INTERNAL_EVT_SESSION_READY, ({ timeStamp }) => {
+            this._session = this._refresher.session;
             this._sessionActivationTimestamp = timeStamp;
-            this._deadlineController.refresh(this._session);
+            this._deadline.refresh(this._session);
         });
-
-        this._eventEmitter.on(EVT_SESSION_REFRESHING_START, this._deadlineController.abort);
 
         this.http = this._sessionHttp.bind(this);
         this.on = this._eventEmitter.on;
-        this.refresh = this._refreshController.refresh;
+        this.refresh = this._refresher.refresh;
     }
 
     get isExpired() {
-        return this._deadlineController.elapsed;
+        return this._deadline.elapsed;
     }
 
     get refreshing() {
-        return this._refreshController.refreshing;
+        return this._refresher.refreshing;
     }
 
     get timestamp() {
@@ -52,15 +53,20 @@ export class SessionContext<T, HttpParams extends any[] = any[]> {
     }
 
     private async _sessionHttp(...args: HttpParams) {
-        void this._refreshController.autoRefresh(true);
+        this._assertSessionHttp(this._specification.http);
+        this._autofresher.refresh();
 
         while (true) {
             try {
-                const session = await this._refreshController.promise;
+                // a no-op catch callback is used here (`noop`),
+                // to silence unnecessary unhandled promise rejection warnings
+                await this._refresher.promise.catch(noop);
+
                 this._assertSessionHttp(this._specification.http);
-                return await this._specification.http(session, this._refreshController.signal!, ...args);
+                return await this._specification.http(this._session, this._refresher.signal!, ...args);
             } catch (ex) {
-                this._refreshController.errorRefresh(ex);
+                // attempt to recover from exception
+                this._autofresher.recover(ex);
             }
         }
     }

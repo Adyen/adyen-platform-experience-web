@@ -1,22 +1,25 @@
-import type { Emitter } from '../../../reactive/eventEmitter';
 import { INTERNAL_EVT_SESSION_READY } from './constants';
+import type { Emitter } from '../../../reactive/eventEmitter';
 
-export type SessionEventEmitter<T extends any> = Emitter<{ [INTERNAL_EVT_SESSION_READY]: T }>;
+export type SessionEventEmitter = Emitter<typeof INTERNAL_EVT_SESSION_READY>;
 
-export interface SessionDeadlineController<T extends any> {
-    readonly abort: () => void;
+export interface SessionAutofresher {
+    readonly recover: (error: any) => void;
+    readonly refresh: (skipCanAutofreshCheck?: boolean) => void;
+}
+
+export interface SessionDeadline<T extends any> {
     get elapsed(): boolean | undefined;
     readonly refresh: (session: T | undefined) => void;
     get signal(): AbortSignal | undefined;
-    get timestamp(): number | undefined;
 }
 
-export interface SessionRefreshController<T extends any> {
-    readonly autoRefresh: (skipAutoRefreshCheck?: boolean) => Promise<void>;
-    readonly errorRefresh: (error: any) => void;
-    readonly on: SessionEventEmitter<T>['on'];
-    get promise(): Promise<T>;
-    readonly refresh: () => Promise<T>;
+export interface SessionRefresher<T extends any> {
+    readonly expire: (expireCallback?: (...args: any[]) => any) => void;
+    readonly on: SessionEventEmitter['on'];
+    get pending(): boolean;
+    get promise(): Promise<void>;
+    readonly refresh: () => Promise<void>;
     get refreshing(): boolean;
     get session(): T | undefined;
     get signal(): AbortSignal | undefined;

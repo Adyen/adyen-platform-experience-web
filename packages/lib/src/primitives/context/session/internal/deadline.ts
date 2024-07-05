@@ -3,12 +3,12 @@ import { enumerable, getter, isFunction, noop, parseDate, struct, tryResolve } f
 import { createAbortSink, isAbortSignal } from '../../../auxiliary/abortSink';
 import { createPromisor } from '../../../async/promisor';
 import { isWatchlistUnsubscribeToken } from '../../../reactive/watchlist';
-import { EVT_SESSION_EXPIRED, EVT_SESSION_REFRESHED } from '../constants';
+import { EVT_SESSION_EXPIRED, EVT_SESSION_REFRESHED, EVT_SESSION_REFRESHING_START } from '../constants';
 import type { Emitter } from '../../../reactive/eventEmitter';
 import type { SessionEventType, SessionSpecification } from '../types';
-import type { SessionDeadlineController } from './types';
+import type { SessionDeadline } from './types';
 
-export const createSessionDeadlineController = <T extends any>(emitter: Emitter<SessionEventType>, specification: SessionSpecification<T>) => {
+export const createSessionDeadline = <T extends any>(emitter: Emitter<SessionEventType>, specification: SessionSpecification<T>) => {
     let _abort = noop;
     let _active = false;
     let _deadlineSignal: AbortSignal | undefined;
@@ -88,13 +88,14 @@ export const createSessionDeadlineController = <T extends any>(emitter: Emitter<
         };
     };
 
-    return struct<SessionDeadlineController<T>>({
-        abort: enumerable(() => _abort()),
+    const deadline = struct<SessionDeadline<T>>({
         elapsed: getter(() => _deadlineSignal && _deadlineSignal.aborted),
         refresh: enumerable(session => void _refreshPromisor(session)),
         signal: getter(() => _deadlineSignal),
-        timestamp: getter(() => _deadlineTimestamp),
     });
+
+    emitter.on(EVT_SESSION_REFRESHING_START, () => _abort());
+    return deadline;
 };
 
-export default createSessionDeadlineController;
+export default createSessionDeadline;
