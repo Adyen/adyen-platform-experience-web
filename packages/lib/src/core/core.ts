@@ -1,4 +1,4 @@
-import type { CoreOptions } from './types';
+import type { CoreOptions, onErrorHandler } from './types';
 import type { LangFile } from './Localization/types';
 import { FALLBACK_ENV, resolveEnvironment } from './utils';
 import { AuthSession } from './Auth/session/AuthSession';
@@ -15,6 +15,7 @@ class Core<AvailableTranslations extends LangFile[] = [], CustomTranslations ext
     public localization: Localization;
     public loadingContext: string;
     public session = new AuthSession();
+    public onError?: onErrorHandler;
 
     // [TODO]: Change the error handling strategy.
 
