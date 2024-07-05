@@ -1,9 +1,9 @@
 import { enumerable, getter, hasOwnProperty } from '../struct/property';
 import { DEFAULT_ABORT_ERROR_MESSAGE, DEFAULT_TIMEOUT_ERROR_MESSAGE } from './constants';
 
-/* Polyfill `AbortSignal.prototype.reason` */
 if (!hasOwnProperty(AbortSignal.prototype, 'reason')) {
     try {
+        // Polyfill `AbortSignal.prototype.reason`
         Object.defineProperty(AbortSignal.prototype, 'reason', {
             ...getter(function _getReason(this: AbortSignal) {
                 return this.aborted ? abortError() : void 0;
@@ -16,12 +16,15 @@ if (!hasOwnProperty(AbortSignal.prototype, 'reason')) {
     }
 }
 
-/* Polyfill `AbortSignal.prototype.throwIfAborted` */
 if (!hasOwnProperty(AbortSignal.prototype, 'throwIfAborted')) {
+    // Polyfill `AbortSignal.prototype.throwIfAborted`
     AbortSignal.prototype.throwIfAborted = function _throwIfAborted(this: AbortSignal) {
         if (this.aborted) throw this.reason ?? abortError();
     };
 }
+
+export const abortError = (message = DEFAULT_ABORT_ERROR_MESSAGE) => new DOMException(message, 'AbortError');
+export const timeoutError = (message = DEFAULT_TIMEOUT_ERROR_MESSAGE) => new DOMException(message, 'TimeoutError');
 
 export const augmentSignalReason = (signal: AbortSignal, reason: any) => {
     if (signal.reason !== reason) {
@@ -34,6 +37,3 @@ export const augmentSignalReason = (signal: AbortSignal, reason: any) => {
     }
     return signal;
 };
-
-export const abortError = (message = DEFAULT_ABORT_ERROR_MESSAGE) => new DOMException(message, 'AbortError');
-export const timeoutError = (message = DEFAULT_TIMEOUT_ERROR_MESSAGE) => new DOMException(message, 'TimeoutError');

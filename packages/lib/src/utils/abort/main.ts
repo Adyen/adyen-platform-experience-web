@@ -7,6 +7,10 @@ declare var AbortSignal: {
 } & typeof window.AbortSignal;
 
 export const abortedSignal = (reason: {} = abortError()) => {
+    if ('abort' in AbortSignal) {
+        return AbortSignal.abort(reason);
+    }
+
     const _controller = new AbortController();
     const _reason = reason ?? abortError();
     const { signal } = _controller;

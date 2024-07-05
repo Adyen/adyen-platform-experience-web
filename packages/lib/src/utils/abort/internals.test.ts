@@ -31,6 +31,41 @@ const _runTestsForDOMException = (name: string, factory: (message?: string) => D
 describe('abortError', () => _runTestsForDOMException('AbortError', abortError));
 describe('timeoutError', () => _runTestsForDOMException('TimeoutError', timeoutError));
 
+describe('AbortSignal.prototype.throwIfAborted', () => {
+    test('should throw an error if signal is aborted', () => {
+        const controller = new AbortController();
+        const { signal } = controller;
+
+        expect(signal).toHaveProperty('throwIfAborted');
+        expect(signal.aborted).toBe(false);
+        expect(signal.throwIfAborted()).toBeUndefined();
+
+        // abort signal
+        controller.abort();
+
+        expect(signal.aborted).toBe(true);
+        expect(() => signal.throwIfAborted()).toThrowError();
+    });
+});
+
+describe('AbortSignal.prototype.reason', () => {
+    test('should have a reason property', () => {
+        const controller = new AbortController();
+        const { signal } = controller;
+
+        expect(signal).toHaveProperty('reason');
+        expect(signal.aborted).toBe(false);
+        expect(signal.reason).toBeUndefined();
+
+        // abort signal
+        controller.abort();
+
+        expect(signal.aborted).toBe(true);
+        expect(signal.reason).toBeInstanceOf(DOMException);
+        expect(signal.reason.name).toBe('AbortError');
+    });
+});
+
 describe('augmentSignalReason', () => {
     test('should return same signal (augmented)', () => {
         for (let i = 0; i < 5; i++) {
