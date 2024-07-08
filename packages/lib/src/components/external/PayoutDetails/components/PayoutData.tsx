@@ -23,6 +23,7 @@ import {
     PD_SECTION_CLASS,
     PD_SECTION_GROSS_AMOUNT_CLASS,
     PD_SECTION_NET_AMOUNT_CLASS,
+    PD_TITLE_BA_CLASS,
     PD_TITLE_CLASS,
     PD_UNPAID_AMOUNT,
 } from './constants';
@@ -105,11 +106,11 @@ export const PayoutData = ({
                         <Typography variant={TypographyVariant.BODY}>{creationDate}</Typography>
                         <div className={PD_SECTION_CLASS}>
                             {balanceAccountDescription && (
-                                <Typography variant={TypographyVariant.CAPTION} stronger>
+                                <Typography variant={TypographyVariant.CAPTION} stronger wide>
                                     {`${balanceAccountDescription}`}
                                 </Typography>
                             )}
-                            <Typography variant={TypographyVariant.CAPTION}>{`${balanceAccountId}`}</Typography>
+                            <Typography variant={TypographyVariant.CAPTION} className={PD_TITLE_BA_CLASS}>{`${balanceAccountId}`}</Typography>
                         </div>
                     </div>
                     <div className={PD_CONTENT_CLASS}>

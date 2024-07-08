@@ -6,6 +6,10 @@
         gap: style.token(spacer-020);
         padding-bottom: style.token(spacer-090);
 
+        &--ba-id {
+            color: style.token(color-label-secondary);
+        }
+
         .adyen-pe-payout-data__content--section {
             display: flex;
             flex-direction: column;
