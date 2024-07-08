@@ -1,8 +1,7 @@
 import { rest } from 'msw';
+import { BALANCE_ACCOUNTS, BALANCES } from '@adyen/adyen-platform-experience-web-mocks';
 import { endpoints } from '../endpoints';
-import { delay } from '../utils/utils';
-import { BALANCES } from '../../../../mocks/src/balances';
-import { BALANCE_ACCOUNTS } from '../../../../mocks';
+import { delay } from './utils';
 
 const mockEndpoints = endpoints('mock');
 const networkError = false;
@@ -20,10 +19,11 @@ export const balanceAccountMock = [
         );
     }),
     rest.get(mockEndpoints.balances, (req, res, ctx) => {
+        const balanceAccountId = req.params.id as string;
         return res(
             delay(300),
             ctx.json({
-                data: BALANCES,
+                data: BALANCES[balanceAccountId],
             })
         );
     }),
