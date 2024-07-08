@@ -24,16 +24,14 @@ describe('createSessionDeadline', () => {
         expect(deadline.signal).toBeUndefined();
 
         // refresh deadline once
-        deadline.refresh('');
-
-        await vi.advanceTimersByTimeAsync(0);
+        await deadline.refresh('');
 
         expect(deadline.elapsed).toBe(false);
         expect(deadline.signal).not.toBeUndefined();
         expect(deadline.signal!.aborted).toBe(false);
 
-        await vi.advanceTimersByTimeAsync(5000);
-        await vi.advanceTimersToNextTimerAsync();
+        vi.advanceTimersByTime(5000);
+        vi.advanceTimersToNextTimer();
 
         expect(deadline.elapsed).toBe(true);
         expect(deadline.signal!.aborted).toBe(true);

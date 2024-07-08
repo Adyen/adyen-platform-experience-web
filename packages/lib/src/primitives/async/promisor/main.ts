@@ -8,29 +8,36 @@ export const createPromisor = <T extends any, Params extends any[] = []>(
     factory: (this: any, signal: AbortSignal, ...args: Params) => Promised<T>
 ) => {
     let _promise: Promisor<T, Params>['promise'];
+    let _signal: AbortSignal | undefined;
     const _abortable = createAbortable(Symbol());
     const _deferred = createDeferred<T>();
+
+    const _getSignal = () => {
+        if (_signal && _signal.aborted) return _signal;
+        _abortable.refresh();
+        return _abortable.signal;
+    };
+
+    const _setSignal = (signal: AbortSignal | null | undefined) => {
+        if (_signal === signal) return;
+
+        // _signal?.removeEventListener('abort', promisor.abort);
+        _signal = signal instanceof AbortSignal ? signal : undefined;
+        // _signal?.aborted ? promisor.abort() : _signal?.addEventListener('abort', promisor.abort);
+    };
 
     const promisor = function (this: any, ...args) {
         isUndefined(_promise) ? _deferred.refresh() : _abortable.abort();
 
-        _abortable.refresh();
-        _promise = tryResolve.call(this, factory, _abortable.signal, ...args) as Promise<T>;
-
-        let resolveDeferred: () => void;
-        const currentPromise = _promise;
+        const currentPromise = (_promise = tryResolve.call(this, factory, _getSignal(), ...args) as Promise<T>);
+        let _isLatest = false;
 
         (async () => {
             try {
-                const value = await currentPromise;
-                resolveDeferred = () => _deferred.resolve(value);
+                const value = await currentPromise.finally(() => (_isLatest = _promise === currentPromise) && (_promise = undefined!));
+                _isLatest && _deferred.resolve(value);
             } catch (ex) {
-                resolveDeferred = () => _deferred.reject(ex);
-            }
-
-            if (_promise === currentPromise) {
-                _promise = undefined!;
-                resolveDeferred();
+                _isLatest && _deferred.reject(ex);
             }
         })();
 
@@ -41,6 +48,7 @@ export const createPromisor = <T extends any, Params extends any[] = []>(
         abort: enumerable(() => _abortable.abort()),
         promise: getter(() => _deferred.promise),
         refresh: enumerable(() => void _deferred.refresh()),
+        signal: { ...getter(() => _signal, false), set: _setSignal },
     });
 };
 

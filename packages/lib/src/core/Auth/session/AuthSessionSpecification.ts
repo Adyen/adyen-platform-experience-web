@@ -30,11 +30,13 @@ export class AuthSessionSpecification implements _AuthSessionSpecification {
     };
 
     deadline: _AuthSessionSpecification['deadline'] = session => {
+        const deadlines = [];
         let issuedAt: number;
         let expiresAt: number;
 
         try {
             ({ iat: issuedAt, exp: expiresAt } = JSON.parse(atob(session?.token.split('.')[1]!)));
+            deadlines.push(expiresAt);
         } catch {
             /* ignore malformed token errors */
             issuedAt = Date.now();
@@ -42,10 +44,10 @@ export class AuthSessionSpecification implements _AuthSessionSpecification {
 
         if (!isUndefined(MAX_AGE_MS)) {
             const issuedAtDate = new Date(issuedAt);
-            return Math.min(expiresAt! ?? Infinity, issuedAtDate.setMilliseconds(issuedAtDate.getMilliseconds() + MAX_AGE_MS));
+            deadlines.push(issuedAtDate.setMilliseconds(issuedAtDate.getMilliseconds() + MAX_AGE_MS));
         }
 
-        return expiresAt!;
+        return deadlines;
     };
 
     http: _AuthSessionSpecification['http'] = async (session, sessionSignal, options: HttpOptions, data?: any) => {

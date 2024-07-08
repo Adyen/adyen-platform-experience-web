@@ -1,17 +1,10 @@
-import {
-    ERR_SESSION_FACTORY_UNAVAILABLE,
-    ERR_SESSION_INVALID,
-    ERR_SESSION_REFRESH_ABORTED,
-    EVT_SESSION_EXPIRED,
-    EVT_SESSION_REFRESHING_END,
-    EVT_SESSION_REFRESHING_START,
-} from '../constants';
-import { INTERNAL_EVT_SESSION_READY } from './constants';
 import { createPromisor } from '../../../async/promisor';
 import { createEventEmitter, Emitter } from '../../../reactive/eventEmitter';
 import { ALREADY_RESOLVED_PROMISE, enumerable, getter, isFunction, struct, tryResolve } from '../../../../utils';
+import { INTERNAL_EVT_SESSION_READY, INTERNAL_EVT_SESSION_REFRESHING_END, INTERNAL_EVT_SESSION_REFRESHING_START } from './constants';
+import { ERR_SESSION_FACTORY_UNAVAILABLE, ERR_SESSION_INVALID, ERR_SESSION_REFRESH_ABORTED, EVT_SESSION_EXPIRED } from '../constants';
+import type { SessionRefresher, SessionRefresherContext, SessionRefresherEmitter } from './types';
 import type { SessionEventType, SessionSpecification } from '../types';
-import type { SessionEventEmitter, SessionRefresher } from './types';
 
 const _sessionPlaceholder = Symbol('<next_session>');
 
@@ -22,7 +15,7 @@ export const createSessionRefresher = <T extends any>(emitter: Emitter<SessionEv
     let _waitForRefreshingPromise = true;
     let _session: T | undefined;
 
-    const _sessionEmitter: SessionEventEmitter = createEventEmitter();
+    const _refresherEmitter: SessionRefresherEmitter = createEventEmitter();
 
     function _assertSession(value: any): asserts value is T {
         try {
@@ -36,17 +29,12 @@ export const createSessionRefresher = <T extends any>(emitter: Emitter<SessionEv
         if (!isFunction(value)) throw ERR_SESSION_FACTORY_UNAVAILABLE;
     }
 
-    const _expire: SessionRefresher<T>['expire'] = expireCallback => {
-        if (_refreshPending) return;
-        try {
-            _refreshPending = true;
-            void expireCallback?.();
-        } finally {
-            emitter.emit(EVT_SESSION_EXPIRED);
-        }
+    const _refresh: SessionRefresher<T>['refresh'] = signal => {
+        _refreshPromisor.signal = signal;
+        return _refreshPromisor();
     };
 
-    const _refreshPromisor = createPromisor(async (signal: AbortSignal) => {
+    const _refreshPromisor = createPromisor(async signal => {
         let _nextSession: any = _sessionPlaceholder;
         try {
             _refreshPending = false;
@@ -67,7 +55,7 @@ export const createSessionRefresher = <T extends any>(emitter: Emitter<SessionEv
                     // Subsequent refresh attempts need not await `_refreshingPromise` anymore
                     _waitForRefreshingPromise = false;
 
-                    emitter.emit(EVT_SESSION_REFRESHING_START);
+                    _refresherEmitter.emit(INTERNAL_EVT_SESSION_REFRESHING_START);
                 })());
             }
 
@@ -88,24 +76,31 @@ export const createSessionRefresher = <T extends any>(emitter: Emitter<SessionEv
                     if (_nextSession !== _sessionPlaceholder) {
                         _assertSession(_nextSession);
                         _session = _nextSession;
-                        _sessionEmitter.emit(INTERNAL_EVT_SESSION_READY);
+                        _refresherEmitter.emit(INTERNAL_EVT_SESSION_READY);
                     }
                 } finally {
                     // Mark current batch of refresh attempts as completed
                     _refreshingPromise = undefined;
                     _waitForRefreshingPromise = true;
-                    emitter.emit(EVT_SESSION_REFRESHING_END);
+                    _refresherEmitter.emit(INTERNAL_EVT_SESSION_REFRESHING_END);
                 }
             }
         }
     });
 
+    emitter.on(EVT_SESSION_EXPIRED, () => (_refreshPending = true));
+
     return struct<SessionRefresher<T>>({
-        expire: enumerable(_expire),
-        on: enumerable(_sessionEmitter.on),
-        pending: getter(() => _refreshPending && !_refreshingPromise),
+        context: enumerable(
+            struct<SessionRefresherContext<T>>({
+                emitter: enumerable(emitter),
+                specification: enumerable(specification),
+            })
+        ),
+        on: enumerable(_refresherEmitter.on),
+        pending: getter(() => _refreshPending),
         promise: getter(() => _refreshPromisor.promise),
-        refresh: enumerable(() => _refreshPromisor()),
+        refresh: enumerable(_refresh),
         refreshing: getter(() => !!_refreshingPromise),
         session: getter(() => _session),
         signal: getter(() => _refreshingSignal),

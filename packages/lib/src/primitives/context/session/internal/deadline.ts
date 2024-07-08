@@ -1,85 +1,86 @@
 import clock from '../../../time/clock';
-import { enumerable, getter, isFunction, noop, parseDate, struct, tryResolve } from '../../../../utils';
-import { createAbortSink, isAbortSignal } from '../../../auxiliary/abortSink';
 import { createPromisor } from '../../../async/promisor';
+import { createAbortSink, isAbortSignal } from '../../../auxiliary/abortSink';
 import { isWatchlistUnsubscribeToken } from '../../../reactive/watchlist';
-import { EVT_SESSION_EXPIRED, EVT_SESSION_REFRESHED, EVT_SESSION_REFRESHING_START } from '../constants';
-import type { Emitter } from '../../../reactive/eventEmitter';
+import { enumerable, getter, isFunction, noop, parseDate, struct, tryResolve } from '../../../../utils';
+import { EVT_SESSION_REFRESHING_START } from '../constants';
+import { INTERNAL_EVT_SESSION_DEADLINE } from './constants';
+import { createEventEmitter, Emitter } from '../../../reactive/eventEmitter';
 import type { SessionEventType, SessionSpecification } from '../types';
-import type { SessionDeadline } from './types';
+import type { SessionDeadline, SessionDeadlineEmitter } from './types';
+
+const _aborted = (signal: AbortSignal | undefined) => signal && signal.aborted;
 
 export const createSessionDeadline = <T extends any>(emitter: Emitter<SessionEventType>, specification: SessionSpecification<T>) => {
-    let _abort = noop;
-    let _active = false;
+    let _deadlineEventPending = false;
+    let _deadlineElapseSignal: AbortSignal | undefined;
     let _deadlineSignal: AbortSignal | undefined;
-    let _deadlineTimestamp: number | undefined;
+    let _deadlineTimestamp: number = Infinity;
     let _refreshPromisorSignal: AbortSignal | undefined;
     let _stopDeadlineClock: (() => void) | undefined;
 
+    const _deadlineEmitter: SessionDeadlineEmitter = createEventEmitter();
+
     const _clearDeadline = () => {
         _deadlineSignal?.removeEventListener('abort', _clearDeadline);
-        _deadlineTimestamp = Math.min(Date.now(), _deadlineTimestamp ?? Infinity);
+        _deadlineTimestamp = Infinity;
         _stopDeadlineClock?.();
-        _refreshPromisor.abort();
 
-        if (_active) {
-            _active = false;
-            emitter.emit(EVT_SESSION_EXPIRED);
+        if (_deadlineEventPending || (_aborted(_deadlineSignal) && _aborted(_deadlineElapseSignal))) {
+            _deadlineEventPending = false;
+            _deadlineEmitter.emit(INTERNAL_EVT_SESSION_DEADLINE);
         }
     };
 
-    const _getSessionDeadline = (session: T | undefined, signal: AbortSignal) =>
-        tryResolve(() => {
-            const _deadline = specification.deadline;
-            return isFunction(_deadline) ? _deadline.call(specification, session, signal) : _deadline;
-        }).catch(noop);
+    const _refresh: SessionDeadline<T>['refresh'] = session => {
+        _deadlineSignal && _refreshPromisor.abort();
+        return _refreshPromisor(session);
+    };
 
     const _refreshPromisor = createPromisor(async (signal, session: T | undefined) => {
-        _abort();
         _refreshPromisorSignal = signal;
 
-        const sessionDeadline = await _getSessionDeadline(session, signal);
+        const deadline = await tryResolve(() => {
+            const _deadline = specification.deadline;
+            return isFunction(_deadline) ? _deadline.call(specification, session, signal) : _deadline;
+        }).catch(noop as () => undefined);
 
         if (_refreshPromisorSignal !== signal) return;
 
-        const DEADLINES = Array.isArray(sessionDeadline) ? sessionDeadline : [sessionDeadline];
-        const SIGNALS = new Set<AbortSignal>();
+        let _deadlineElapsed = false;
+        let _deadlines = Array.isArray(deadline) ? deadline : [deadline];
+        let _signals = new Set<AbortSignal>();
 
-        let deadlineElapsed = false;
-        let earliestTime = Infinity;
-
-        for (const deadline of DEADLINES) {
+        for (const deadline of _deadlines) {
             if (isAbortSignal(deadline)) {
-                if ((deadlineElapsed = deadline.aborted)) break;
-                SIGNALS.add(deadline);
+                if ((_deadlineElapsed = deadline.aborted)) break;
+                _signals.add(deadline);
             } else {
-                earliestTime = Math.min(earliestTime, parseDate(deadline!) ?? Infinity);
-                if (Number.isFinite(earliestTime) && (deadlineElapsed = earliestTime <= Date.now())) break;
+                _deadlineTimestamp = Math.min(_deadlineTimestamp, parseDate(deadline) ?? Infinity);
+                if ((_deadlineElapsed = _deadlineTimestamp <= Date.now())) break;
             }
         }
 
-        _active = !deadlineElapsed && (SIGNALS.size > 0 || Number.isFinite(earliestTime));
-        _deadlineSignal = _deadlineTimestamp = undefined;
+        _deadlineElapsed ||= _signals.size < 1 && !Number.isFinite(_deadlineTimestamp);
+        _deadlineElapseSignal = _deadlineSignal = undefined;
 
-        if (_active) {
-            ({ abort: _abort, signal: _deadlineSignal } = createAbortSink(...SIGNALS));
+        if (!_deadlineElapsed) {
+            ({ signal: _deadlineSignal } = createAbortSink(..._signals, (_deadlineElapseSignal = signal)));
             _deadlineSignal.addEventListener('abort', _clearDeadline);
-            if (Number.isFinite(earliestTime)) _startDeadlineClock(earliestTime);
+            _startDeadlineClock();
         }
 
         // clear collections
-        DEADLINES.length = 0;
-        SIGNALS.clear();
-
-        emitter.emit(EVT_SESSION_REFRESHED);
+        _deadlines.length = 0;
+        _signals.clear();
     });
 
-    const _startDeadlineClock = (deadlineTimestamp: number) => {
-        _deadlineTimestamp = deadlineTimestamp;
+    const _startDeadlineClock = () => {
+        if (!Number.isFinite(_deadlineTimestamp)) return;
 
         let unsubscribeClock = clock.subscribe(snapshotOrSignal => {
-            if (isWatchlistUnsubscribeToken(snapshotOrSignal)) return _stopDeadlineClock?.();
-            if (snapshotOrSignal.now >= deadlineTimestamp) _abort();
+            if (isWatchlistUnsubscribeToken(snapshotOrSignal)) return _clearDeadline();
+            if (snapshotOrSignal.now >= _deadlineTimestamp && (_deadlineEventPending = true)) _refreshPromisor.abort();
         });
 
         _stopDeadlineClock = () => {
@@ -88,14 +89,14 @@ export const createSessionDeadline = <T extends any>(emitter: Emitter<SessionEve
         };
     };
 
-    const deadline = struct<SessionDeadline<T>>({
-        elapsed: getter(() => _deadlineSignal && _deadlineSignal.aborted),
-        refresh: enumerable(session => void _refreshPromisor(session)),
+    emitter.on(EVT_SESSION_REFRESHING_START, _clearDeadline);
+
+    return struct<SessionDeadline<T>>({
+        elapsed: getter(() => _aborted(_deadlineSignal)),
+        on: enumerable(_deadlineEmitter.on),
+        refresh: enumerable(_refresh),
         signal: getter(() => _deadlineSignal),
     });
-
-    emitter.on(EVT_SESSION_REFRESHING_START, () => _abort());
-    return deadline;
 };
 
 export default createSessionDeadline;
