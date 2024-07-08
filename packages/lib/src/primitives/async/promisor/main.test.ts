@@ -14,8 +14,8 @@ describe('createPromisor', () => {
         expect(await getPromiseState(currentPromise)).toBe(PromiseState.PENDING);
 
         const promise1 = promisor();
-        const promise2 = promisor(200);
-        const promise3 = promisor(100);
+        const promise2 = promisor(null, 200);
+        const promise3 = promisor(null, 100);
 
         expect(promise1).not.toBe(promise2);
         expect(promise1).not.toBe(promise3);
@@ -91,7 +91,7 @@ describe('createPromisor', () => {
         const promisesMap = new Map(
             [1, 2, 3, 4, 5].map(n => {
                 const callback = vi.fn();
-                const promise = promisor(n);
+                const promise = promisor(null, n);
 
                 expect(factory).toHaveBeenCalledTimes(++factoryCalls);
                 expect(factory.mock.lastCall?.[1]).toBe(n);
@@ -137,7 +137,7 @@ describe('createPromisor', () => {
         const promisesMap = new Map(
             ['1', '2', '3', '4', '5'].map(n => {
                 const callback = vi.fn();
-                const promise = promisor(n);
+                const promise = promisor(null, n);
 
                 expect(factory).toHaveBeenCalledTimes(++factoryCalls);
                 expect(factory.mock.lastCall?.[1]).toBe(n);

@@ -34,7 +34,7 @@ export const createSessionDeadline = <T extends any>(emitter: Emitter<SessionEve
 
     const _refresh: SessionDeadline<T>['refresh'] = session => {
         _deadlineSignal && _refreshPromisor.abort();
-        return _refreshPromisor(session);
+        return _refreshPromisor(null, session);
     };
 
     const _refreshPromisor = createPromisor(async (signal, session: T | undefined) => {

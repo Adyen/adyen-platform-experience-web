@@ -33,6 +33,7 @@
         align-items: center;
         display: flex;
         gap: style.token(spacer-030);
+        line-height: 1;
     }
 
     &__payment-method-detail {
@@ -40,13 +41,15 @@
     }
 
     &__payment-method-logo-container {
-        height: 22px;
-        width: 32px;
+        height: style.token(spacer-090);
+        width: style.token(spacer-100);
     }
 
     &__payment-method-logo {
+        height: 100%;
+        max-width: 100%;
         object-fit: contain;
-        width: 100%;
+        object-position: center;
     }
 
     &__tag-container {

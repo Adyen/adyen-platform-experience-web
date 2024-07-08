@@ -19,7 +19,9 @@ export const TableBody = <
     return (
         <>
             {data?.map((item, index) => (
-                <tr
+                <div
+                    role="row"
+                    tabIndex={0}
                     className="adyen-pe-data-grid__row"
                     key={item}
                     onMouseEnter={i18n.has(`tooltip.${item?.category}`) && onRowHover ? () => onRowHover(index) : noop}
@@ -28,7 +30,7 @@ export const TableBody = <
                     onBlur={i18n.has(`tooltip.${item?.category}`) && onRowHover ? () => onRowHover() : noop}
                 >
                     <TableCells<Items, Columns, CustomCells> columns={columns} customCells={customCells} item={item} rowIndex={index} />
-                </tr>
+                </div>
             ))}
         </>
     );

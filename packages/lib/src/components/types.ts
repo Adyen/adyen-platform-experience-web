@@ -1,5 +1,5 @@
 import UIElement from './external/UIElement/UIElement';
-import { Core } from '../core';
+import { Core, onErrorHandler } from '../core';
 
 export const enum InteractionKeyCode {
     ARROW_DOWN = 'ArrowDown',
@@ -44,7 +44,7 @@ export interface UIElementProps {
     ref?: any;
     onContactSupport?: () => void;
     setUIElementStatus?: (status: string) => void;
-
+    onError?: onErrorHandler;
     /** @internal */
     elementRef?: any;
 }

@@ -41,10 +41,10 @@ export const createSessionAutofresher = <T extends any>(refresher: SessionRefres
             // because there would probably be another autofresh attempt (shortly).
             _autofreshPromisor.abort();
         }
-        void _autofreshPromisor(false);
+        void _autofreshPromisor(null, false);
     });
 
-    return (skipCanAutofreshCheck = false) => void _autofreshPromisor(skipCanAutofreshCheck);
+    return (skipCanAutofreshCheck = false) => void _autofreshPromisor(null, skipCanAutofreshCheck);
 };
 
 export default createSessionAutofresher;

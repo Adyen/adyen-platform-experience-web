@@ -22,16 +22,15 @@ import type { SessionEventType, SessionSpecification } from './types';
 
 export class SessionContext<T, HttpParams extends any[] = any[]> {
     private _session: T | undefined;
-    private _sessionActivationTimestamp: number | undefined;
 
     private readonly _autofresh;
     private readonly _deadline;
     private readonly _refresher;
     private readonly _eventEmitter = createEventEmitter<SessionEventType>();
 
-    declare http: typeof this._sessionHttp;
-    declare on: (typeof this._eventEmitter)['on'];
-    declare refresh: (typeof this._refresher)['refresh'];
+    public declare readonly http: typeof this._sessionHttp;
+    public declare readonly on: (typeof this._eventEmitter)['on'];
+    public declare readonly refresh: (typeof this._refresher)['refresh'];
 
     constructor(private readonly _specification: SessionSpecification<T, HttpParams>) {
         this._deadline = createSessionDeadline(this._eventEmitter, this._specification);
@@ -42,9 +41,8 @@ export class SessionContext<T, HttpParams extends any[] = any[]> {
         this._refresher.on(INTERNAL_EVT_SESSION_REFRESHING_START, () => this._eventEmitter.emit(EVT_SESSION_REFRESHING_START));
         this._refresher.on(INTERNAL_EVT_SESSION_REFRESHING_END, () => this._eventEmitter.emit(EVT_SESSION_REFRESHING_END));
 
-        this._refresher.on(INTERNAL_EVT_SESSION_READY, ({ timeStamp }) => {
+        this._refresher.on(INTERNAL_EVT_SESSION_READY, () => {
             this._session = this._refresher.session;
-            this._sessionActivationTimestamp = timeStamp;
             this._deadline.refresh(this._session).finally(() => this._eventEmitter.emit(EVT_SESSION_REFRESHED));
             this._eventEmitter.emit(EVT_SESSION_READY);
         });
@@ -60,10 +58,6 @@ export class SessionContext<T, HttpParams extends any[] = any[]> {
 
     get refreshing() {
         return this._refresher.refreshing;
-    }
-
-    get timestamp() {
-        return this._sessionActivationTimestamp;
     }
 
     private _assertSessionHttp(value: any): asserts value is NonNullable<SessionSpecification<T, HttpParams>['http']> {

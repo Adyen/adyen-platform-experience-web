@@ -6,11 +6,11 @@ class DataGridPage {
 
     constructor(rootElement: Locator) {
         this.rootElement = rootElement.getByRole('table');
-        this.gridBody = this.rootElement.locator('tbody');
+        this.gridBody = this.rootElement.getByRole('rowgroup').nth(1);
     }
 
     getCell(label: string, row = 0) {
-        return this.gridBody.getByRole('row').nth(row).locator(`td[aria-labelledby="${label}"]`);
+        return this.getRow(row).locator(`div[aria-labelledby=${label}]`);
     }
     getRow(row = 0) {
         return this.gridBody.getByRole('row').nth(row);

@@ -15,6 +15,7 @@ const getDefaultFilterParams = (type: 'transactions' | 'payouts') => {
             [FilterParam.MIN_AMOUNT]: undefined,
             [FilterParam.MAX_AMOUNT]: undefined,
         }),
+        [FilterParam.BALANCE_ACCOUNT]: undefined,
         [FilterParam.CREATED_SINCE]: new Date(from).toISOString(),
         [FilterParam.CREATED_UNTIL]: new Date(to).toISOString(),
     } as const;

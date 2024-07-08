@@ -29,11 +29,6 @@ export const createSessionRefresher = <T extends any>(emitter: Emitter<SessionEv
         if (!isFunction(value)) throw ERR_SESSION_FACTORY_UNAVAILABLE;
     }
 
-    const _refresh: SessionRefresher<T>['refresh'] = signal => {
-        _refreshPromisor.signal = signal;
-        return _refreshPromisor();
-    };
-
     const _refreshPromisor = createPromisor(async signal => {
         let _nextSession: any = _sessionPlaceholder;
         try {
@@ -100,7 +95,7 @@ export const createSessionRefresher = <T extends any>(emitter: Emitter<SessionEv
         on: enumerable(_refresherEmitter.on),
         pending: getter(() => _refreshPending),
         promise: getter(() => _refreshPromisor.promise),
-        refresh: enumerable(_refresh),
+        refresh: enumerable(_refreshPromisor.bind(null)),
         refreshing: getter(() => !!_refreshingPromise),
         session: getter(() => _session),
         signal: getter(() => _refreshingSignal),

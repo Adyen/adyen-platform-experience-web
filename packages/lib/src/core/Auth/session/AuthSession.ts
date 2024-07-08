@@ -5,6 +5,7 @@ import { createErrorContainer } from '../../../primitives/auxiliary/errorContain
 import { createPromisor } from '../../../primitives/async/promisor';
 import { createWatchlist } from '../../../primitives/reactive/watchlist';
 import { boolOrFalse, constant, isFunction } from '../../../utils';
+import type { onErrorHandler } from '../../types';
 
 export class AuthSession {
     private _canSkipSessionRefresh = false;
@@ -51,8 +52,8 @@ export class AuthSession {
         refreshing: () => !!this._refreshPromisorSignal,
     });
 
-    declare destroy: () => void;
-    declare subscribe: (typeof this._watchlist)['subscribe'];
+    public declare readonly destroy: () => void;
+    public declare readonly subscribe: (typeof this._watchlist)['subscribe'];
 
     constructor() {
         this.destroy = () => {
@@ -92,6 +93,10 @@ export class AuthSession {
         this._setupContext.loadingContext = loadingContext;
     }
 
+    set errorHandler(errorHandler: onErrorHandler | null) {
+        this._specification.errorHandler = errorHandler;
+    }
+
     set onSessionCreate(onSessionCreate: typeof this._specification.onSessionCreate) {
         if (this._specification.onSessionCreate === onSessionCreate) return;
 
@@ -109,7 +114,7 @@ export class AuthSession {
     }
 
     private _refresh(skipSessionRefreshIfPossible = false) {
-        void this._refreshPromisor(skipSessionRefreshIfPossible);
+        void this._refreshPromisor(null, skipSessionRefreshIfPossible);
     }
 }
 

@@ -15,8 +15,8 @@ export class AuthSetupContext {
     private readonly _beforeHttp;
     private readonly _refreshPromisor = createPromisor(this._fetchSetupEndpoint.bind(this));
 
-    declare loadingContext?: Core<any>['loadingContext'];
-    declare refresh: (signal: AbortSignal) => Promise<void>;
+    public declare loadingContext?: Core<any>['loadingContext'];
+    public declare readonly refresh: (signal: AbortSignal) => Promise<void>;
 
     constructor(private readonly _session: SessionContext<SessionObject, any[]>) {
         let _refreshPromise: Promise<void> | undefined;
@@ -28,8 +28,7 @@ export class AuthSetupContext {
         };
 
         this.refresh = signal => {
-            this._refreshPromisor.signal = signal;
-            this._refreshPromisor().catch(noop);
+            this._refreshPromisor(signal).catch(noop);
 
             return (_refreshPromise ??= this._refreshPromisor.promise
                 .finally(() => (_refreshPromise = undefined))
