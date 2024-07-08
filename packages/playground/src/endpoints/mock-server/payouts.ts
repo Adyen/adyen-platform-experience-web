@@ -1,8 +1,7 @@
 import { rest } from 'msw';
 import { getPayouts, PAYOUTS_WITH_DETAILS } from '@adyen/adyen-platform-experience-web-mocks';
+import { compareDates, delay, getPaginationLinks } from './utils';
 import { endpoints } from '../endpoints';
-import { delay } from '../utils/utils';
-import { getPaginationLinks } from './utils';
 
 const mockEndpoints = endpoints('mock');
 const networkError = false;
@@ -56,15 +55,3 @@ export const payoutsMocks = [
         return res(ctx.json(matchingMock));
     }),
 ];
-
-const compareDates = (dateString1: string, dateString2: string, operator: 'ge' | 'le') => {
-    let date1 = new Date(dateString1);
-    let date2 = new Date(dateString2);
-
-    switch (operator) {
-        case 'ge':
-            return date1 >= date2;
-        case 'le':
-            return date1 <= date2;
-    }
-};
