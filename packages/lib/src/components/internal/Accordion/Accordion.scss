@@ -1,0 +1,26 @@
+@use '../../../style';
+
+.adyen-pe-accordion {
+    &__header {
+        align-items: center;
+        display: flex;
+        justify-content: space-between;
+        margin: style.token(spacer-060) style.token(spacer-000);
+        padding: style.token(spacer-040) style.token(spacer-000);
+        width: 100%;
+
+        &-container {
+            background-color: transparent;
+            border: style.token(spacer-000);
+            cursor: pointer;
+            display: flex;
+            padding: style.token(spacer-000);
+        }
+
+        &-controller {
+            align-items: center;
+            display: flex;
+            gap: style.token(spacer-010);
+        }
+    }
+}
