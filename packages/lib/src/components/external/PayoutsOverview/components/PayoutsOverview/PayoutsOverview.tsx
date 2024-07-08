@@ -95,7 +95,10 @@ export const PayoutsOverview = ({
     const onRowClick = useCallback(
         (value: IPayout) => {
             updateDetails({
-                selection: { type: 'payout', data: { id: activeBalanceAccount?.id, date: value.createdAt } },
+                selection: {
+                    type: 'payout',
+                    data: { id: activeBalanceAccount?.id, balanceAccountDescription: activeBalanceAccount?.description || '', date: value.createdAt },
+                },
                 modalSize: 'small',
             }).callback({ balanceAccountId: activeBalanceAccount?.id || '', date: value.createdAt });
         },
