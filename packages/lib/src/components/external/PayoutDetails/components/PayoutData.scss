@@ -6,7 +6,11 @@
         gap: style.token(spacer-020);
         padding-bottom: style.token(spacer-090);
 
-        .adyen-pe-typography {
+        .adyen-pe-payout-data__content--section {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+
             &:last-child {
                 padding-top: style.token(spacer-040);
             }

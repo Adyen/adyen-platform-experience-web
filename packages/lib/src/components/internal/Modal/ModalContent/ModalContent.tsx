@@ -14,7 +14,7 @@ const isDetailsWithoutId = (data: string | TransactionDetailData): data is Trans
 function ModalContent({ type, data }: SelectedDetail) {
     const detailProps: DetailsComponentProps = useMemo(() => {
         if (type === 'payout') {
-            return { ...(data as PayoutDetailsWithIdProps), type: 'payout' };
+            return { ...(data as PayoutDetailsWithIdProps & { balanceAccountDescription?: string }), type: 'payout' };
         } else {
             return isDetailsWithoutId(data as string | TransactionDetailData)
                 ? { data: data as TransactionDetailData, type: type }

@@ -31,12 +31,14 @@ type Payout = components['schemas']['PayoutDTO'];
 
 export const PayoutData = ({
     balanceAccountId,
+    balanceAccountDescription,
     payout: payoutData,
     isFetching,
 }: {
     payout?: IPayoutDetails;
     isFetching?: boolean;
     balanceAccountId: string;
+    balanceAccountDescription?: string;
 }) => {
     const { payout }: { payout: Payout } = payoutData ?? EMPTY_OBJECT;
     const { i18n } = useCoreContext();
@@ -45,7 +47,7 @@ export const PayoutData = ({
             (accumulator, currentValue) => {
                 const payoutValue =
                     currentValue?.amount?.value && currentValue?.amount?.currency
-                        ? i18n.amount(currentValue?.amount?.value, currentValue?.amount?.currency)
+                        ? i18n.amount(currentValue?.amount?.value, currentValue?.amount?.currency, { hideCurrency: true })
                         : (currentValue?.amount?.value ?? '').toString();
                 const translationKey = `${currentValue?.category}` as TranslationKey;
                 const categoryTranslation = i18n.get(translationKey);
@@ -68,7 +70,10 @@ export const PayoutData = ({
         const data = payoutData?.amountBreakdowns?.fundsCapturedBreakdown?.reduce((items, breakdown) => {
             if (breakdown?.amount?.value === 0) return items;
             if (breakdown?.amount?.value && breakdown.category) {
-                items.push({ key: breakdown.category as TranslationKey, value: i18n.amount(breakdown?.amount?.value, breakdown?.amount?.currency) });
+                items.push({
+                    key: breakdown.category as TranslationKey,
+                    value: i18n.amount(breakdown?.amount?.value, breakdown?.amount?.currency, { hideCurrency: true }),
+                });
             }
             return items;
         }, [] as { key: TranslationKey; value: ListValue }[]);
@@ -98,9 +103,14 @@ export const PayoutData = ({
                             })} ${payout.payoutAmount.currency}`}
                         </Typography>
                         <Typography variant={TypographyVariant.BODY}>{creationDate}</Typography>
-                        <Typography variant={TypographyVariant.BODY} stronger>
-                            {`${i18n.get('balanceAccountId')}: ${balanceAccountId}`}
-                        </Typography>
+                        <div className={PD_SECTION_CLASS}>
+                            {balanceAccountDescription && (
+                                <Typography variant={TypographyVariant.CAPTION} stronger>
+                                    {`${balanceAccountDescription}`}
+                                </Typography>
+                            )}
+                            <Typography variant={TypographyVariant.CAPTION}>{`${balanceAccountId}`}</Typography>
+                        </div>
                     </div>
                     <div className={PD_CONTENT_CLASS}>
                         <div className={PD_SECTION_CLASS}>
