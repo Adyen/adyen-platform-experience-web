@@ -51,7 +51,7 @@ export default function DataOverviewDetails(props: ExternalUIComponentProps<Deta
         )
     );
 
-    const balanceAccountId = props.type === 'payout' ? props.id : data?.balanceAccountId;
+    const balanceAccountId = props.type === 'payout' ? props.balanceAccountDescription : data?.balanceAccountId;
     const hasBalanceAccountDetail = props.type === 'payout' ? props?.balanceAccountDescription : details?.balanceAccountDescription;
 
     const {
