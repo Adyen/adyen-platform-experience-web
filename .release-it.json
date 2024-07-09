@@ -5,7 +5,7 @@
         "pushArgs": ["--follow-tags", "--set-upstream origin bump/${version}"],
         "tag": false,
         "requireUpstream": false,
-        "push": false
+        "push": true
     },
     "npm": {
         "publish": false
