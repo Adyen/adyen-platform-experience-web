@@ -53,7 +53,8 @@
         "schemas:variables": "bash scripts/generate-ts-schemas/setup-openapi-ts.sh",
         "translations:sort": "bash scripts/process-translations/sort-translations-json.sh",
         "prepare": "node ./prepare.js && bash ./scripts/process-package-lock.sh",
-        "release": "sh scripts/create-new-release.sh"
+        "release": "sh scripts/create-new-release.sh",
+        "release-dry-run": "release-it --dry-run"
     },
     "dependencies": {
         "concurrently": "^7.0.0"
