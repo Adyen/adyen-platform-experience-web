@@ -57,7 +57,7 @@ dry_run_output=$(npx release-it --ci --increment $release_type --dry-run 2>&1)
 new_version=$(echo "$dry_run_output" | sed -n 's/.*→ \(.*\)/\1/p')
 
 echo "Type $release_type"
-echo "Version $new_version"
+echo "Version $dry_run_output"
 
 # Create new branch with the new version
 # git checkout -b "bump/$new_version"

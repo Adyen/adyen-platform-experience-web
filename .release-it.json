@@ -10,7 +10,7 @@
         "@release-it/conventional-changelog": {
             "preset": "angular",
             "infile": "CHANGELOG.md",
-            "config": "./changelog.config.js"
+            "config": "changelog.config.js"
         }
     },
     "hooks": {
