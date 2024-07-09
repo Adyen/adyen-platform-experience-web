@@ -35,16 +35,12 @@ export const createSessionAutofresher = <T extends any>(refresher: SessionRefres
         }
     });
 
-    emitter.on(EVT_SESSION_EXPIRED, () => {
-        if (_autofreshSignal && !_autofreshSignal.aborted) {
-            // Signal for cancellation of the latest ongoing autofresh attempt (if any),
-            // because there would probably be another autofresh attempt (shortly).
-            _autofreshPromisor.abort();
-        }
-        void _autofreshPromisor(null, false);
-    });
+    const autofresh = (skipCanAutofreshCheck = false) => {
+        if (!refresher.refreshing) void _autofreshPromisor(skipCanAutofreshCheck);
+    };
 
-    return (skipCanAutofreshCheck = false) => void _autofreshPromisor(null, skipCanAutofreshCheck);
+    emitter.on(EVT_SESSION_EXPIRED, autofresh.bind(null, false));
+    return autofresh;
 };
 
 export default createSessionAutofresher;

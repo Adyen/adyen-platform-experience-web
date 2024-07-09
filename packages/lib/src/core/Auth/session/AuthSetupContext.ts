@@ -3,7 +3,17 @@ import { SETUP_ENDPOINT_PATH } from './constants';
 import { parseSearchParams } from '../../Http/utils';
 import { SessionContext } from '../../../primitives/context/session';
 import { createPromisor } from '../../../primitives/async/promisor';
-import { asPlainObject, EMPTY_OBJECT, isPlainObject, isUndefined, noop, struct, withFreezeProxyHandlers } from '../../../utils';
+import {
+    abortSignalForAny,
+    asPlainObject,
+    EMPTY_OBJECT,
+    isAbortSignal,
+    isPlainObject,
+    isUndefined,
+    noop,
+    struct,
+    withFreezeProxyHandlers,
+} from '../../../utils';
 import type { EndpointHttpCallables, EndpointSuccessResponse, SessionObject, SetupContext, SetupResponse } from '../types';
 import type { EndpointName, SetupEndpoint } from '../../../types/api/endpoints';
 import type { HttpMethod } from '../../Http/types';
@@ -12,20 +22,22 @@ export class AuthSetupContext {
     private _endpoints: SetupContext['endpoints'] = EMPTY_OBJECT;
     private _revokeEndpointsProxy = noop;
 
-    private readonly _beforeHttp;
-    private readonly _refreshPromisor = createPromisor(this._fetchSetupEndpoint.bind(this));
+    private readonly _beforeHttp = async () => {
+        // a no-op catch callback is used here (`noop`),
+        // to silence unnecessary unhandled promise rejection warnings
+        await this._refreshPromisor.promise.catch(noop);
+    };
+
+    private readonly _refreshPromisor = createPromisor((promisorSignal, signal?: AbortSignal | null | undefined) => {
+        const abortSignal = isAbortSignal(signal) ? abortSignalForAny([signal, promisorSignal]) : promisorSignal;
+        return this._fetchSetupEndpoint(abortSignal);
+    });
 
     public declare loadingContext?: Core<any>['loadingContext'];
     public declare readonly refresh: (signal: AbortSignal) => Promise<void>;
 
     constructor(private readonly _session: SessionContext<SessionObject, any[]>) {
         let _refreshPromise: Promise<void> | undefined;
-
-        this._beforeHttp = async () => {
-            // a no-op catch callback is used here (`noop`),
-            // to silence unnecessary unhandled promise rejection warnings
-            await this._refreshPromisor.promise.catch(noop);
-        };
 
         this.refresh = signal => {
             this._refreshPromisor(signal).catch(noop);

@@ -1,10 +1,10 @@
-import { abortSignalForAny, enumerable, getter, isAbortSignal, isFunction, noop, parseDate, struct, tryResolve } from '../../../../utils';
 import clock from '../../../time/clock';
 import { createPromisor } from '../../../async/promisor';
 import { isWatchlistUnsubscribeToken } from '../../../reactive/watchlist';
+import { createEventEmitter, Emitter } from '../../../reactive/eventEmitter';
+import { abortSignalForAny, enumerable, getter, isAbortSignal, isFunction, noop, parseDate, struct, tryResolve } from '../../../../utils';
 import { EVT_SESSION_REFRESHING_START } from '../constants';
 import { INTERNAL_EVT_SESSION_DEADLINE } from './constants';
-import { createEventEmitter, Emitter } from '../../../reactive/eventEmitter';
 import type { SessionEventType, SessionSpecification } from '../types';
 import type { SessionDeadline, SessionDeadlineEmitter } from './types';
 
@@ -33,7 +33,7 @@ export const createSessionDeadline = <T extends any>(emitter: Emitter<SessionEve
 
     const _refresh: SessionDeadline<T>['refresh'] = session => {
         _deadlineSignal && _refreshPromisor.abort();
-        return _refreshPromisor(null, session);
+        return _refreshPromisor(session);
     };
 
     const _refreshPromisor = createPromisor(async (signal, session: T | undefined) => {

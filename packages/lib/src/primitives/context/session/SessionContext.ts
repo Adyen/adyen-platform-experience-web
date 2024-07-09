@@ -17,6 +17,7 @@ import { createSessionAutofresher } from './internal/autofresher';
 import { createSessionDeadline } from './internal/deadline';
 import { createSessionRefresher } from './internal/refresher';
 import { createEventEmitter } from '../../reactive/eventEmitter';
+import { createAbortable } from '../../async/abortable';
 import { isFunction, noop } from '../../../utils';
 import type { SessionEventType, SessionSpecification } from './types';
 
@@ -26,7 +27,9 @@ export class SessionContext<T, HttpParams extends any[] = any[]> {
     private readonly _autofresh;
     private readonly _deadline;
     private readonly _refresher;
+
     private readonly _eventEmitter = createEventEmitter<SessionEventType>();
+    private readonly _httpAbortable = createAbortable();
 
     public declare readonly http: typeof this._sessionHttp;
     public declare readonly on: (typeof this._eventEmitter)['on'];
@@ -65,6 +68,8 @@ export class SessionContext<T, HttpParams extends any[] = any[]> {
     }
 
     private _expireSession() {
+        this._httpAbortable.abort();
+        this._httpAbortable.refresh();
         this._eventEmitter.emit(EVT_SESSION_EXPIRED);
     }
 
@@ -72,18 +77,23 @@ export class SessionContext<T, HttpParams extends any[] = any[]> {
         beforeHttp?: ((currentSession: T | undefined, signal: AbortSignal, ...args: HttpParams) => any) | null,
         ...args: HttpParams
     ) {
+        let _signal: AbortSignal | undefined;
         this._autofresh(true);
+
         while (true) {
             try {
                 // a no-op catch callback is used here (`noop`),
                 // to silence unnecessary unhandled promise rejection warnings
                 await this._refresher.promise.catch(noop);
-                await beforeHttp?.(this._session, this._refresher.signal!, ...args);
 
+                _signal = this._httpAbortable.signal;
+
+                await beforeHttp?.(this._session, _signal, ...args);
                 this._assertSessionHttp(this._specification.http);
-                return await this._specification.http(this._session, this._refresher.signal!, ...args);
+
+                return await this._specification.http(this._session, _signal, ...args);
             } catch (ex) {
-                if (ex !== ERR_SESSION_EXPIRED) throw ex;
+                if (ex !== ERR_SESSION_EXPIRED && !(_signal && _signal.aborted)) throw ex;
                 if (this._refresher.pending) continue;
                 this._expireSession();
             }

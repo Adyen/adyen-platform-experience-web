@@ -114,7 +114,7 @@ export class AuthSession {
     }
 
     private _refresh(skipSessionRefreshIfPossible = false) {
-        void this._refreshPromisor(null, skipSessionRefreshIfPossible);
+        void this._refreshPromisor(skipSessionRefreshIfPossible);
     }
 }
 
