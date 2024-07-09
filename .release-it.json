@@ -2,10 +2,8 @@
     "git": {
         "commitMessage": "chore: release v${version}",
         "tagName": "v${version}",
-        "pushArgs": ["--set-upstream", "origin"],
         "tag": false,
-        "push": true,
-        "pushRepo": "HEAD:bump/${version}"
+        "push": false
     },
     "npm": {
         "publish": false
@@ -18,6 +16,7 @@
         }
     },
     "hooks": {
-        "after:bump": "./scripts/update-version.sh ${version}"
+        "after:bump": "./scripts/update-version.sh ${version}",
+        "after:release": "./scripts/push-release-to-branch.sh ${version}"
     }
 }
