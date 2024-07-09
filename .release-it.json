@@ -16,7 +16,7 @@
     },
     "hooks": {
         "before:git:release": "git checkout -b bump/${version}",
-        "after:bump": "node ./scripts/update-versions.js ${version} && npx auto-changelog -p",
+        "after:bump": "node ./scripts/create-new-release.sh ${version} && npx auto-changelog -p",
         "after:release": "git push origin HEAD"
     }
 }
