@@ -1,0 +1,20 @@
+{
+    "git": {
+        "commitMessage": "chore: release v${version}",
+        "tagName": "v${version}"
+    },
+    "npm": {
+        "publish": false
+    },
+    "plugins": {
+        "@release-it/conventional-changelog": {
+            "preset": "angular",
+            "infile": "CHANGELOG.md",
+            "config": "./configchangelog.config.js"
+        }
+    },
+    "hooks": {
+        "before:bump": "node update-versions.js ${version}",
+        "after:bump": "npx auto-changelog -p"
+    }
+}
