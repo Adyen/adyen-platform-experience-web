@@ -8,7 +8,7 @@ if (!newVersion) {
     process.exit(1);
 }
 
-const files = ['../package.json', '../packages/lib/package.json'];
+const files = ['package.json', 'packages/lib/package.json'];
 
 files.forEach(file => {
     const filePath = path.join(process.cwd(), file);
