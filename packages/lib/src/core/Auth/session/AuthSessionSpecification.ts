@@ -1,6 +1,5 @@
 import { ERR_SESSION_EXPIRED, SessionSpecification } from '../../../primitives/context/session';
-import { createAbortSink, isAbortSignal } from '../../../primitives/auxiliary/abortSink';
-import { enumerable, isPlainObject, isString, isUndefined, noop } from '../../../utils';
+import { abortSignalForAny, enumerable, isAbortSignal, isPlainObject, isString, isUndefined } from '../../../utils';
 import { http as _http } from '../../Http/http';
 import { ErrorTypes } from '../../Http/utils';
 import { AUTO_REFRESH, MAX_AGE_MS } from './constants';
@@ -55,27 +54,21 @@ export class AuthSessionSpecification implements _AuthSessionSpecification {
         return deadlines;
     };
 
-    public readonly http: _AuthSessionSpecification['http'] = async (session, sessionSignal, options: HttpOptions, data?: any) => {
-        const { abort: destroyAbortSink = noop, signal } = isAbortSignal(options.signal)
-            ? createAbortSink(sessionSignal, options.signal)
-            : { signal: sessionSignal };
-
+    public http: _AuthSessionSpecification['http'] = async (session, sessionSignal, options: HttpOptions, data?: any) => {
         try {
             const sessionHttpOptions = {
                 ...options,
-                signal,
                 headers: {
                     ...options.headers,
                     ...(session && { Authorization: `Bearer ${session.token}` }),
                 },
                 errorHandler: this._errorHandler,
+                signal: isAbortSignal(options.signal) ? abortSignalForAny([sessionSignal, options.signal]) : sessionSignal,
             };
             return await _http(sessionHttpOptions, data);
         } catch (ex: any) {
             if (ex?.type === ErrorTypes.EXPIRED_TOKEN) throw ERR_SESSION_EXPIRED;
             throw ex;
-        } finally {
-            destroyAbortSink();
         }
     };
 
@@ -83,8 +76,7 @@ export class AuthSessionSpecification implements _AuthSessionSpecification {
         try {
             if (this.errorHandler) this.errorHandler(error);
         } catch {
-            /* The catch block here is just to indicate that we are not
-            concerned about any error resulting from the consumer's errorHandler() */
+            /* Not interested in errors resulting from this instance's `errorHandler()` method */
         }
         throw error;
     }

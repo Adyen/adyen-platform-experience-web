@@ -1,8 +1,7 @@
+import { abortSignalForAny, enumerable, getter, isAbortSignal, isFunction, noop, parseDate, struct, tryResolve } from '../../../../utils';
 import clock from '../../../time/clock';
 import { createPromisor } from '../../../async/promisor';
-import { createAbortSink, isAbortSignal } from '../../../auxiliary/abortSink';
 import { isWatchlistUnsubscribeToken } from '../../../reactive/watchlist';
-import { enumerable, getter, isFunction, noop, parseDate, struct, tryResolve } from '../../../../utils';
 import { EVT_SESSION_REFRESHING_START } from '../constants';
 import { INTERNAL_EVT_SESSION_DEADLINE } from './constants';
 import { createEventEmitter, Emitter } from '../../../reactive/eventEmitter';
@@ -65,7 +64,7 @@ export const createSessionDeadline = <T extends any>(emitter: Emitter<SessionEve
         _deadlineElapseSignal = _deadlineSignal = undefined;
 
         if (!_deadlineElapsed) {
-            ({ signal: _deadlineSignal } = createAbortSink(..._signals, (_deadlineElapseSignal = signal)));
+            _deadlineSignal = abortSignalForAny([..._signals, (_deadlineElapseSignal = signal)]);
             _deadlineSignal.addEventListener('abort', _clearDeadline);
             _startDeadlineClock();
         }
