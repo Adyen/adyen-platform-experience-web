@@ -2,7 +2,7 @@
     "git": {
         "commitMessage": "chore: release v${version}",
         "tagName": "v${version}",
-        "pushArgs": ["--follow-tags", "--set-upstream origin bump/${version}"],
+        "pushArgs": ["--follow-tags", "origin bump/${version}:bump/${version}"],
         "tag": false
     },
     "npm": {
