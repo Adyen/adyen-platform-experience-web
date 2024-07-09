@@ -18,7 +18,9 @@ export interface TransactionDetailsWithIdProps {
     title?: TranslationKey;
 }
 
-export type DetailsWithId = (TransactionDetailsWithIdProps & { type: 'transaction' }) | (PayoutDetailsWithIdProps & { type: 'payout' });
+export type DetailsWithId =
+    | (TransactionDetailsWithIdProps & { type: 'transaction' })
+    | (PayoutDetailsWithIdProps & { type: 'payout'; balanceAccountDescription?: string });
 
 export type DetailsComponentProps = (TransactionDetailsWithoutIdProps & { type: 'transaction' }) | DetailsWithId;
 

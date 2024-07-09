@@ -8,6 +8,7 @@ import { IPayoutDetails } from '../../../types';
 import { EMPTY_OBJECT } from '../../../utils';
 import { PayoutData } from '../../external/PayoutDetails/components/PayoutData';
 import { TransactionData } from '../../external/TransactionDetails/components/TransactionData';
+import useBalanceAccounts from '../../hooks/useBalanceAccounts';
 import { ExternalUIComponentProps } from '../../types';
 import { getErrorMessage } from '../../utils/getErrorMessage';
 import { ErrorMessageDisplay } from '../ErrorMessageDisplay/ErrorMessageDisplay';
@@ -50,6 +51,16 @@ export default function DataOverviewDetails(props: ExternalUIComponentProps<Deta
         )
     );
 
+    const balanceAccountId = props.type === 'payout' ? props.balanceAccountDescription : data?.balanceAccountId;
+    const hasBalanceAccountDetail = props.type === 'payout' ? props?.balanceAccountDescription : details?.balanceAccountDescription;
+
+    const {
+        balanceAccounts,
+        isBalanceAccountIdWrong,
+        isFetching: fetchingBalanceAccounts,
+        error: balanceAccountError,
+    } = useBalanceAccounts(balanceAccountId, !hasBalanceAccountDetail);
+
     const errorProps = useMemo(() => {
         if (error) {
             return getErrorMessage(error as AdyenPlatformExperienceError, 'weCouldNotLoadYourTransactions', props.onContactSupport);
@@ -75,10 +86,23 @@ export default function DataOverviewDetails(props: ExternalUIComponentProps<Deta
             )}
 
             {props.type === 'transaction' && detailsData && (
-                <TransactionData transaction={detailsData as TransactionDetailData} isFetching={isFetching} />
+                <TransactionData
+                    transaction={
+                        {
+                            ...detailsData,
+                            balanceAccountDescription: details?.balanceAccountDescription || balanceAccounts?.[0]?.description,
+                        } as TransactionDetailData
+                    }
+                    isFetching={isFetching}
+                />
             )}
             {props.type === 'payout' && detailsData && (
-                <PayoutData balanceAccountId={dataId!} payout={detailsData as IPayoutDetails} isFetching={isFetching} />
+                <PayoutData
+                    balanceAccountId={dataId!}
+                    payout={detailsData as IPayoutDetails}
+                    balanceAccountDescription={props?.balanceAccountDescription || balanceAccounts?.[0]?.description}
+                    isFetching={isFetching}
+                />
             )}
         </div>
     );

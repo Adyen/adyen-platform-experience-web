@@ -3,13 +3,13 @@ import { useFetch } from '../../hooks/useFetch/useFetch';
 import { EMPTY_OBJECT } from '../../utils';
 import { useMemo } from 'preact/hooks';
 
-const useBalanceAccounts = (balanceAccountId?: string) => {
+const useBalanceAccounts = (balanceAccountId?: string, enabled?: boolean) => {
     const { getBalanceAccounts: balanceAccountEndpointCall } = useAuthContext().endpoints;
 
     const { data, isFetching, error } = useFetch(
         useMemo(
             () => ({
-                fetchOptions: { enabled: !!balanceAccountEndpointCall, keepPrevData: true },
+                fetchOptions: { enabled: !!balanceAccountEndpointCall && (enabled ?? true), keepPrevData: true },
                 queryFn: async () => balanceAccountEndpointCall?.(EMPTY_OBJECT),
             }),
             [balanceAccountEndpointCall]

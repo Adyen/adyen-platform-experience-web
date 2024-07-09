@@ -1,6 +1,6 @@
 import { rest } from 'msw';
 import { endpoints } from '../endpoints';
-import { delay } from '../utils/utils';
+import { delay } from './utils';
 
 const networkError = false;
 const path = endpoints('mock').setup;
