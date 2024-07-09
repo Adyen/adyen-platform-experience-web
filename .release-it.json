@@ -2,7 +2,7 @@
     "git": {
         "commitMessage": "chore: release v${version}",
         "tagName": "v${version}",
-        "pushArgs": ["--follow-tags", "origin bump/${version}:bump/${version}"],
+        "pushArgs": ["--follow-tags"],
         "tag": false
     },
     "npm": {
@@ -18,6 +18,6 @@
     "hooks": {
         "before:git:release": "git checkout -b bump/${version}",
         "after:bump": "./scripts/update-version.sh ${version}",
-        "after:release": "git push origin HEAD"
+        "after:release": "git push origin bump/${version}"
     }
 }
