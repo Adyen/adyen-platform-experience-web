@@ -1,4 +1,5 @@
 import { useClickOutside } from '../../../hooks/element/useClickOutside';
+import { mediaQueries, useResponsiveViewport } from '../../external/TransactionsOverview/hooks/useResponsiveViewport';
 import Button from '../Button';
 import { ButtonVariant } from '../Button/types';
 import Close from '../SVGIcons/Close';
@@ -19,6 +20,7 @@ export default function Modal({
     size = 'fluid',
     ...props
 }: ModalProps) {
+    const isSmViewport = useResponsiveViewport(mediaQueries.down.xs);
     const { i18n } = useCoreContext();
     const targetElement = useClickOutside(null, onClose) as Ref<HTMLDivElement | null>;
 
@@ -60,7 +62,7 @@ export default function Modal({
                             'adyen-pe-modal--small': size === 'small',
                             'adyen-pe-modal--large': size === 'large',
                             'adyen-pe-modal--extra-large': size === 'extra-large',
-                            'adyen-pe-modal--full-screen': size === 'full-screen',
+                            'adyen-pe-modal--full-screen': size === 'full-screen' || isSmViewport,
                         })}
                         ref={targetElement}
                     >
