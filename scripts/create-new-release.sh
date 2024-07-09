@@ -49,7 +49,7 @@ done
 release_type="${options[$current_index]}"
 
 # Run release-it
-npx release-it --ci --increment $release_type
+npx release-it --increment $release_type
 
 echo "Version update completed successfully."
 
