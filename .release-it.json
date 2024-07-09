@@ -3,7 +3,8 @@
         "commitMessage": "chore: release v${version}",
         "tagName": "v${version}",
         "pushArgs": ["--follow-tags"],
-        "tag": false
+        "tag": false,
+        "push": false
     },
     "npm": {
         "publish": false
