@@ -41,8 +41,8 @@ read_key() {
 }
 
 # Checkout to main and pull latest
-git checkout main
-git pull origin main
+# git checkout main
+# git pull origin main
 
 # Prompt for release type
 echo "Select release type:"
@@ -55,7 +55,7 @@ release_type="${options[$current_index]}"
 
 # Create new branch
 current_version=$(grep '"version":' package.json | sed 's/.*: "\(.*\)".*/\1/')
-git checkout -b "bump/$current_version"
+# git checkout -b "bump/$current_version"
 
 # Run release-it
 npx release-it --ci --increment $release_type
@@ -68,9 +68,9 @@ sed -i '' "s/\"@adyen\/adyen-platform-experience-web\": \"[^\"]*\"/\"@adyen\/ady
 
 npm install
 
-git add .
-git commit -m "chore: update dependencies to version $new_version"
-git push origin "bump/$new_version"
+# git add .
+# git commit -m "chore: update dependencies to version $new_version"
+# git push origin "bump/$new_version"
 
 echo "Version bumped to $new_version"
 echo "Changes committed and pushed to remote branch bump/$new_version"
