@@ -59,13 +59,6 @@ new_version=$(echo "$dry_run_output" | sed -n 's/.*→ \(.*\)/\1/p')
 echo "Type $release_type"
 echo "Version $new_version"
 
-if [ -z "$new_version" ]; then
-    echo "Failed to determine new version. Exiting."
-    exit 1
-fi
-
-echo "New version will be: $new_version"
-
 # Create new branch with the new version
 # git checkout -b "bump/$new_version"
 
