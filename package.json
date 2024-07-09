@@ -59,8 +59,10 @@
         "concurrently": "^7.0.0"
     },
     "devDependencies": {
+        "@release-it/conventional-changelog": "^8.0.1",
         "husky": "^7.0.4",
         "lint-staged": "^13.0.1",
+        "release-it": "^17.0.1",
         "vite": "^4.3.2",
         "vite-plugin-checker": "^0.5.6"
     },
