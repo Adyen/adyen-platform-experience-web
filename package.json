@@ -54,7 +54,7 @@
         "translations:sort": "bash scripts/process-translations/sort-translations-json.sh",
         "prepare": "node ./prepare.js && bash ./scripts/process-package-lock.sh",
         "release": "sh scripts/create-new-release.sh",
-        "release-dry-run": "release-it"
+        "release-dry-run": "sh scripts/create-new-release.sh"
     },
     "dependencies": {
         "concurrently": "^7.0.0"
