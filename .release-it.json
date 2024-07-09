@@ -6,7 +6,7 @@
         "tag": false,
         "requireUpstream": false,
         "push": false,
-        "pushRepo": "bump/${version}"
+        "pushRepo": "--set-upstream origin bump/${version}"
     },
     "npm": {
         "publish": false
