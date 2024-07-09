@@ -4,9 +4,7 @@
         "tagName": "v${version}",
         "pushArgs": ["--follow-tags"],
         "tag": false,
-        "push": {
-            "autoSetupRemote": true
-        }
+        "requireUpstream": true
     },
     "npm": {
         "publish": false
@@ -19,7 +17,7 @@
         }
     },
     "hooks": {
-        "before:git:release": "git checkout -b bump/${version} && git branch --set-upstream-to origin bump/${version}",
+        "before:git:release": "git checkout -b bump/${version} && git branch --set-upstream-to=origin/bump/${version}",
         "after:bump": "./scripts/update-version.sh ${version}",
         "after:release": "git push origin bump/${version}"
     }
