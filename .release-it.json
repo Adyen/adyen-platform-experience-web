@@ -4,7 +4,9 @@
         "tagName": "v${version}",
         "pushArgs": ["--follow-tags"],
         "tag": false,
-        "push": false
+        "push": {
+            "autoSetupRemote": true
+        }
     },
     "npm": {
         "publish": false
