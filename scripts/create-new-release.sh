@@ -53,20 +53,20 @@ done
 
 release_type="${options[$current_index]}"
 
-# Create new branch
-current_version=$(grep '"version":' package.json | sed 's/.*: "\(.*\)".*/\1/')
-# git checkout -b "bump/$current_version"
+new_version=$(npx release-it --ci --increment $release_type --dry-run | grep 'to:' | awk '{print $2}')
+
+echo "$new_version"
+
+# Create new branch with the new version
+# git checkout -b "bump/$new_version"
 
 # Run release-it
-npx release-it --ci --increment $release_type
-
-# Get new version after release-it has updated it
-new_version=$(grep '"version":' package.json | sed 's/.*: "\(.*\)".*/\1/')
+# npx release-it --ci --increment $release_type
 
 # Update @adyen/adyen-platform-experience-web in packages/playground/package.json and packages/mocks/package.json
-sed -i '' "s/\"@adyen\/adyen-platform-experience-web\": \"[^\"]*\"/\"@adyen\/adyen-platform-experience-web\": \"$new_version\"/" packages/playground/package.json packages/mocks/package.json
+# sed -i '' "s/\"@adyen\/adyen-platform-experience-web\": \"[^\"]*\"/\"@adyen\/adyen-platform-experience-web\": \"$new_version\"/" packages/playground/package.json packages/mocks/package.json
 
-npm install
+# npm install
 
 # git add .
 # git commit -m "chore: update dependencies to version $new_version"
