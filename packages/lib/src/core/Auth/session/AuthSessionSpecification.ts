@@ -1,12 +1,11 @@
 import { ERR_SESSION_EXPIRED, SessionSpecification } from '../../../primitives/context/session';
-import { createAbortSink, isAbortSignal } from '../../../primitives/auxiliary/abortSink';
-import { enumerable, getter, isPlainObject, isString, isUndefined, noop } from '../../../utils';
+import { abortSignalForAny, enumerable, getter, isAbortSignal, isPlainObject, isString, isUndefined } from '../../../utils';
 import { http as _http } from '../../Http/http';
 import { ErrorTypes } from '../../Http/utils';
 import type { HttpOptions } from '../../Http/types';
+import type { onErrorHandler } from '../../types';
 import type { SessionObject, SessionRequest } from '../types';
 import { AUTO_REFRESH, MAX_AGE_MS } from './constants';
-import { onErrorHandler } from '../../types';
 
 type _AuthSessionSpecification = SessionSpecification<SessionObject, Parameters<typeof _http>>;
 
@@ -14,15 +13,6 @@ export class AuthSessionSpecification implements _AuthSessionSpecification {
     public declare autoRefresh: _AuthSessionSpecification['autoRefresh'];
     public declare onRefresh: _AuthSessionSpecification['onRefresh'];
     public declare errorHandler: onErrorHandler | null;
-    private _errorHandler(error: any) {
-        try {
-            if (this.errorHandler) this.errorHandler(error);
-        } catch {
-            /* The catch block here is just to indicate that we are not
-            concerned about any error resulting from the consumer's errorHandler() */
-        }
-        throw error;
-    }
 
     constructor(public onSessionCreate?: SessionRequest) {
         this._errorHandler = this._errorHandler.bind(this);
@@ -62,28 +52,31 @@ export class AuthSessionSpecification implements _AuthSessionSpecification {
     };
 
     public http: _AuthSessionSpecification['http'] = async (session, sessionSignal, options: HttpOptions, data?: any) => {
-        const { abort: destroyAbortSink = noop, signal } = isAbortSignal(options.signal)
-            ? createAbortSink(sessionSignal, options.signal)
-            : { signal: sessionSignal };
-
         try {
             const sessionHttpOptions = {
                 ...options,
-                signal,
                 headers: {
                     ...options.headers,
                     ...(session && { Authorization: `Bearer ${session.token}` }),
                 },
                 errorHandler: this._errorHandler,
+                signal: isAbortSignal(options.signal) ? abortSignalForAny([sessionSignal, options.signal]) : sessionSignal,
             };
             return await _http(sessionHttpOptions, data);
         } catch (ex: any) {
             if (ex?.type === ErrorTypes.EXPIRED_TOKEN) throw ERR_SESSION_EXPIRED;
             throw ex;
-        } finally {
-            destroyAbortSink();
         }
     };
+
+    private _errorHandler(error: any) {
+        try {
+            if (this.errorHandler) this.errorHandler(error);
+        } catch {
+            /* Not interested in errors resulting from this instance's `errorHandler()` method */
+        }
+        throw error;
+    }
 }
 
 export default AuthSessionSpecification;
