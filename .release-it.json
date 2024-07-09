@@ -20,6 +20,6 @@
     },
     "hooks": {
         "before:git:release": "git checkout -b bump/${version}",
-        "after:bump": "./scripts/update-version.sh ${version}",
+        "after:bump": "./scripts/update-version.sh ${version}"
     }
 }
