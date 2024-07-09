@@ -19,8 +19,8 @@
         }
     },
     "hooks": {
-        "before:git:release": "git checkout -b bump/${version}",
-        "after:bump": "./scripts/update-version.sh ${version} && git branch --set-upstream-to bump/${version}",
+        "before:git:release": "git checkout -b bump/${version} && git branch --set-upstream-to origin bump/${version}",
+        "after:bump": "./scripts/update-version.sh ${version}",
         "after:release": "git push origin bump/${version}"
     }
 }
