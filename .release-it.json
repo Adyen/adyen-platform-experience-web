@@ -17,6 +17,6 @@
     },
     "hooks": {
         "after:bump": "./scripts/update-version.sh ${version}",
-        "after:release": "git push origin -u HEAD::bump/${version}"
+        "after:release": "git push origin -u HEAD:bump/${version}"
     }
 }
