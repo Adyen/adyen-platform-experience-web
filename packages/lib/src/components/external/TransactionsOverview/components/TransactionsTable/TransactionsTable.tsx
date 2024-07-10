@@ -1,3 +1,4 @@
+import { DATE_FORMAT_TRANSACTIONS } from '../../../../internal/DataOverviewDisplay/constants';
 import Category from '../Category/Category';
 import DataOverviewError from '../../../../internal/DataOverviewError/DataOverviewError';
 import { getLabel } from '../../../../utils/getLabel';
@@ -111,16 +112,7 @@ export const TransactionsTable: FC<TransactionTableProps> = ({
                         return (
                             <div className={DATE_AND_PAYMENT_METHOD_CLASS}>
                                 <PaymentMethodCell paymentMethod={item.paymentMethod} bankAccount={item.bankAccount} />
-                                <span className={DATE_AND_PAYMENT_METHOD_CLASS}>
-                                    {i18n.date(item.createdAt, {
-                                        month: 'short',
-                                        day: 'numeric',
-                                        year: undefined,
-                                        hour: '2-digit',
-                                        minute: '2-digit',
-                                        hour12: false,
-                                    })}
-                                </span>
+                                <span className={DATE_AND_PAYMENT_METHOD_CLASS}>{i18n.date(item.createdAt, DATE_FORMAT_TRANSACTIONS)}</span>
                             </div>
                         );
                     },
