@@ -57,6 +57,8 @@
         "concurrently": "^7.0.0"
     },
     "devDependencies": {
+        "@changesets/cli": "^2.27.5",
+        "@changesets/get-github-info": "^0.6.0",
         "husky": "^7.0.4",
         "lint-staged": "^13.0.1",
         "vite": "^4.3.2",
