@@ -62,13 +62,13 @@ jobs:
         if: github.event.inputs.dry-run-publish == 'true'
         run: |
           npm config set //registry.npmjs.org/:_authToken ${{ secrets.NPM_PLATFORM_EXPERIENCE_TOKEN }}
-          npm publish --access restricted --dry-run
+          npm publish --dry-run
 
       - name: Publish to the NPM registry
         if: github.event.inputs.dry-run-publish != 'true'
         run: |
           npm config set //registry.npmjs.org/:_authToken ${{ secrets.NPM_PLATFORM_EXPERIENCE_TOKEN }}
-          npm publish --access restricted
+          npm publish
 
       - name: Archive npm failure logs
         uses: ./.github/actions/publish-npm-logs
