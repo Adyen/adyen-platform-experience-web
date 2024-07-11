@@ -27,10 +27,6 @@
     &__content {
         overflow: hidden;
         position: relative;
-        -webkit-transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.6s linear;
-        -moz-transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.6s linear;
-        -o-transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.6s linear;
-        -ms-transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.6s linear;
         transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.6s linear;
     }
 }
