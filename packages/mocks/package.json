@@ -1,4 +1,5 @@
 {
+    "private": true,
     "name": "@adyen/adyen-platform-experience-web-mocks",
     "version": "1.0.0",
     "main": "./src/index.ts",
