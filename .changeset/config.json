@@ -3,14 +3,14 @@
     "changelog": [
         "@changesets/cli/changelog",
         {
-            "repo": "your-organization/your-private-repo-name",
+            "repo": "Adyen/adyen-platform-experience-web",
             "getReleaseLine": "@changesets/get-github-info"
         }
     ],
     "commit": false,
     "fixed": [],
     "linked": [],
-    "access": "restricted",
+    "access": "public",
     "baseBranch": "main",
     "updateInternalDependencies": "patch",
     "ignore": []
