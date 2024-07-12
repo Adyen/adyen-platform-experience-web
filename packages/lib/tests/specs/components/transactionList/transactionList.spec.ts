@@ -13,21 +13,23 @@ const test = base.extend<{
         await use(transactionListPage);
     },
 });
-test('cells should show correct value and open correct modal ', async ({ transactionListPage, page }) => {
-    const transactionDetails = transactionListPage;
 
-    const loadedPage = transactionDetails.getCell('amount');
-    await loadedPage.waitFor();
-    await transactionDetails.firstRow.click();
+test('cells should show correct value and open correct modal ', async ({ transactionListPage }) => {
+    const transactionList = transactionListPage;
 
-    await expect(page.getByRole('dialog').getByLabel(`${getTranslatedKey('referenceID')}`)).toHaveText('254X7TAUWB140HW0');
+    await transactionList.applyDateFilter('2024-01-01');
+    await transactionList.getCell('amount').waitFor();
+    await transactionList.firstRow.click();
+
+    const referenceID = transactionList.page.getByRole('dialog').getByLabel(`${getTranslatedKey('referenceID')}`);
+    await expect(referenceID).toHaveText('8W54BM75W7DYCIVK');
 });
 
 test.describe('Filters', () => {
     test('all filters should be attached', async ({ transactionListPage }) => {
-        const transactionDetails = transactionListPage;
-        await expect(transactionDetails.filterBar).toBeAttached();
-        await expect(transactionDetails.dateFilter).toBeAttached();
+        const transactionList = transactionListPage;
+        await expect(transactionList.filterBar).toBeAttached();
+        await expect(transactionList.dateFilter).toBeAttached();
     });
 
     //TODO test('filtering by date range should work')
