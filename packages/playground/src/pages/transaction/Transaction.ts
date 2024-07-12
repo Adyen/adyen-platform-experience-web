@@ -1,4 +1,4 @@
-import { AdyenPlatformExperience, TransactionsDetails } from '@adyen/adyen-platform-experience-web';
+import { AdyenPlatformExperience, TransactionDetails } from '@adyen/adyen-platform-experience-web';
 import { getDefaultID, getSearchParameters } from '../../utils/utils';
 import '../../utils/createPages.js';
 import '../../assets/style/style.scss';
@@ -17,13 +17,13 @@ enableServerInMockedMode()
             },
         });
 
-        const transactionsDetailsComponent = new TransactionsDetails({
+        const transactionDetailsComponent = new TransactionDetails({
             core: AdyenPlatform,
             id: id ?? DEFAULT_TRANSACTION_ID,
             title: 'transactionDetails',
             onContactSupport: () => {},
         });
 
-        transactionsDetailsComponent.mount('.transaction-details-component-container');
+        transactionDetailsComponent.mount('.transaction-details-component-container');
     })
     .catch(console.error);

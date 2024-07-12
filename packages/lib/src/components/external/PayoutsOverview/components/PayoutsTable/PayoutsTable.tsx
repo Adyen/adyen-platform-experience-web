@@ -1,3 +1,4 @@
+import { DATE_FORMAT_PAYOUTS } from '../../../../internal/DataOverviewDisplay/constants';
 import DataOverviewError from '../../../../internal/DataOverviewError/DataOverviewError';
 import { BASE_CLASS, NET_PAYOUT_CLASS } from './constants';
 import { PaginationProps, WithPaginationLimitSelection } from '../../../../internal/Pagination/types';
@@ -108,7 +109,7 @@ export const PayoutsTable: FC<PayoutsTableProps> = ({
                                 minute: '2-digit',
                                 hour12: false,
                             });
-                        return value && i18n.fullDate(value);
+                        return value && i18n.date(value, DATE_FORMAT_PAYOUTS);
                     },
                     fundsCapturedAmount: ({ value }) => {
                         return value && <span>{i18n.amount(value.value, value.currency, { hideCurrency: true })}</span>;

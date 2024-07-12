@@ -3,8 +3,8 @@ import UIElement from '../UIElement/UIElement';
 import DataOverviewDetails from '../../internal/DataOverviewDetails/DataOverviewDetails';
 import { DetailsComponentProps } from './types';
 
-export class TransactionsElement extends UIElement<DetailsComponentProps> {
-    public static type = 'transactionsDetails';
+export class TransactionElement extends UIElement<DetailsComponentProps> {
+    public static type = 'transactionDetails';
 
     constructor(props: _UIComponentProps<DetailsComponentProps>) {
         super(props);
@@ -17,4 +17,4 @@ export class TransactionsElement extends UIElement<DetailsComponentProps> {
     };
 }
 
-export default TransactionsElement;
+export default TransactionElement;
