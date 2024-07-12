@@ -1,6 +1,6 @@
 {
     "name": "@adyen/adyen-platform-experience-web-main",
-    "version": "1.0.0-beta.3",
+    "version": "1.0.0",
     "keywords": [
         "adyen",
         "adyen-fp",
@@ -26,6 +26,7 @@
         "build": "npm run build -w @adyen/adyen-platform-experience-web",
         "build:demo": "npm run build:demo -w @adyen/adyen-platform-experience-web-playground",
         "build:test": "npm run build:test -w @adyen/adyen-platform-experience-web",
+        "build:publish": "npm run build:test -w @adyen/adyen-platform-experience-web",
         "build:analyse": "npm run build:analyse -w @adyen/adyen-platform-experience-web",
         "demo": "npm run demo -w @adyen/adyen-platform-experience-web-playground",
         "start:mocked": "concurrently --kill-others-on-fail 'npm run types:watch' 'npm run start:mock -w @adyen/adyen-platform-experience-web-playground' --names 'lib-types,playground' -c blue,green,cyan,yellow",
@@ -52,7 +53,8 @@
         "schemas:variables": "bash scripts/generate-ts-schemas/setup-openapi-ts.sh",
         "translations:sort": "bash scripts/process-translations/sort-translations-json.sh",
         "prepare": "node ./prepare.js && bash ./scripts/process-package-lock.sh",
-        "bump-version": "changeset version",
+        "bump-version": "./scripts/bump-version.sh",
+        "version": "changeset version",
         "changeset": "changeset"
     },
     "dependencies": {
@@ -61,6 +63,7 @@
     "devDependencies": {
         "@changesets/cli": "^2.27.5",
         "@changesets/get-github-info": "^0.6.0",
+        "dotenv": "^16.4.5",
         "husky": "^7.0.4",
         "lint-staged": "^13.0.1",
         "vite": "^4.3.2",

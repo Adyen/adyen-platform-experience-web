@@ -1,4 +1,3 @@
-// @ts-check
 const { config } = require('dotenv');
 const { getInfo, getInfoFromPullRequest } = require('@changesets/get-github-info');
 
