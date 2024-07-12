@@ -1,4 +1,4 @@
-import { AdyenPlatformExperience, all_locales, TransactionsDetails } from '@adyen/adyen-platform-experience-web';
+import { AdyenPlatformExperience, all_locales, TransactionDetails } from '@adyen/adyen-platform-experience-web';
 import sessionRequest from '../../utils/sessionRequest';
 import '../../utils/createPages.js';
 import '../../assets/style/style.scss';
@@ -23,13 +23,13 @@ enableServerInMockedMode()
 
         createLanguageButtons({ core });
 
-        const transactionsDetailsComponent = new TransactionsDetails({
+        const transactionDetailsComponent = new TransactionDetails({
             core,
             id: id ?? DEFAULT_TRANSACTION_ID,
             title: 'transactionDetails',
             onContactSupport: () => {},
         });
 
-        transactionsDetailsComponent.mount('.transaction-details-component-container');
+        transactionDetailsComponent.mount('.transaction-details-component-container');
     })
     .catch(console.error);
