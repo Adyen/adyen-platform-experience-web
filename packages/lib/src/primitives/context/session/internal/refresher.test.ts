@@ -1,13 +1,12 @@
 // @vitest-environment jsdom
-import { describe, expect, test, vi } from 'vitest';
+import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { createSessionRefresher } from './refresher';
 import { createEventEmitter } from '../../../reactive/eventEmitter';
-import { getPromiseState } from '../../../../utils';
+import { ALREADY_RESOLVED_PROMISE, getPromiseState } from '../../../../utils';
 import { PromiseState } from '../../../../utils/types';
 import { INTERNAL_EVT_SESSION_READY } from './constants';
-import { ERR_SESSION_FACTORY_UNAVAILABLE, ERR_SESSION_INVALID, ERR_SESSION_REFRESH_ABORTED } from '../constants';
+import { ERR_SESSION_FACTORY_UNAVAILABLE, ERR_SESSION_INVALID, ERR_SESSION_REFRESH_ABORTED, EVT_SESSION_EXPIRED } from '../constants';
 import type { SessionEventType, SessionSpecification } from '../types';
-import type { SessionRefresher } from './types';
 
 vi.mock('../constants', async importOriginal => {
     const mod = await importOriginal<typeof import('../constants')>();
@@ -20,112 +19,144 @@ vi.mock('../constants', async importOriginal => {
 });
 
 describe('createSessionRefresher', () => {
-    const _emitter = createEventEmitter<SessionEventType>();
-    const _specification: SessionSpecification<any> = { onRefresh: () => {} };
-
-    const afterRefresh = (refresher: SessionRefresher<any>, sessionEventCapture: readonly [any[], any[]], session?: any) => {
-        const [actual, expected] = sessionEventCapture;
-
-        expect(refresher.refreshing).toBe(false);
-        expect(refresher.session).toBe(session);
-        expect(refresher.signal!.aborted).toBe(false);
-
-        if (actual.length > 0 && actual.length === expected.length) {
-            // session event was dispatched and arrays have been populated
-            // match all items except the last (timestamps)
-            expect(actual.slice(0, -1)).toMatchObject(expected.slice(0, -1));
-
-            // match the last items (timestamps)
-            expect(actual[actual.length - 1]).toBeCloseTo(expected[expected.length - 1], -1);
-        }
+    type RefresherContext = {
+        _emitter: ReturnType<typeof createEventEmitter<SessionEventType>>;
+        _specification: SessionSpecification<any>;
+        afterRefresh: (data: { session?: unknown; signal?: AbortSignal }) => void;
+        beforeRefresh: (session?: unknown) => void;
+        duringRefresh: () => Promise<void>;
+        expireSession: () => void;
+        refresher: ReturnType<typeof createSessionRefresher>;
+        patchSpecification: <T extends keyof SessionSpecification<any>>(field: T, value: SessionSpecification<any>[T]) => void;
+        resetSpecification: () => void;
     };
 
-    const beforeRefresh = (refresher: SessionRefresher<any>, session?: any) => {
-        const actual: any[] = [];
-        const expected: any[] = [];
+    beforeEach<RefresherContext>(ctx => {
+        const _sessionEventCapture = [[], []] as readonly [any[], any[]];
+        const _patches: (() => void)[] = [];
 
-        refresher.on(INTERNAL_EVT_SESSION_READY, ({ timeStamp }) => {
-            actual.push(refresher.refreshing, refresher.signal!.aborted, refresher.session, timeStamp);
-            expected.push(true, false, session, Date.now());
-        });
+        ctx._emitter = createEventEmitter();
+        ctx._specification = { onRefresh: () => {} };
+        ctx.refresher = createSessionRefresher(ctx._emitter, ctx._specification);
+        ctx.expireSession = () => ctx._emitter.emit(EVT_SESSION_EXPIRED);
 
-        refresher.promise.catch(() => {});
+        ctx.patchSpecification = <T extends keyof typeof ctx._specification>(field: T, value: (typeof ctx._specification)[T]) => {
+            [ctx._specification[field], value] = [value, ctx._specification[field]];
+            _patches.push(() => void (ctx._specification[field] = value));
+        };
 
-        expect(refresher.refreshing).toBe(false);
-        expect(refresher.session).toBeUndefined();
-        expect(refresher.signal).toBeUndefined();
+        ctx.resetSpecification = () => {
+            while (_patches.length) {
+                const unpatch = _patches.pop();
+                unpatch && unpatch();
+            }
+        };
 
-        return [actual, expected] as const;
-    };
+        ctx.afterRefresh = (data: { session?: unknown; signal?: AbortSignal }) => {
+            const { refresher } = ctx;
+            const [actual, expected] = _sessionEventCapture;
 
-    const duringRefresh = async (refresher: SessionRefresher<any>) => {
-        expect(refresher.refreshing).toBe(true);
-        expect(refresher.signal).not.toBeUndefined();
-        expect(refresher.signal!.aborted).toBe(false);
-        expect(await getPromiseState(refresher.promise)).toBe(PromiseState.PENDING);
-    };
+            expect(refresher.refreshing).toBe(false);
+            expect(refresher.session).toBe(data.session);
+            expect(refresher.signal!.aborted).toBe(data.signal ? data.signal.aborted : false);
 
-    const _patchSpecification = <T extends keyof typeof _specification>(field: T, value: (typeof _specification)[T]) => {
-        [_specification[field], value] = [value, _specification[field]];
-        return () => void (_specification[field] = value);
-    };
+            if (actual.length > 0 && actual.length === expected.length) {
+                // session event was dispatched and arrays have been populated
+                // match all items except the last (timestamps)
+                expect(actual.slice(0, -1)).toMatchObject(expected.slice(0, -1));
 
-    const _refreshErrorAssertions = async (refresher: SessionRefresher<any>, error: any) => {
-        const sessionEventCapture = beforeRefresh(refresher);
+                // match the last items (timestamps)
+                expect(actual[actual.length - 1]).toBeCloseTo(expected[expected.length - 1], -1);
+            }
+        };
+
+        ctx.beforeRefresh = (session?: unknown) => {
+            const { refresher } = ctx;
+            const [actual, expected] = _sessionEventCapture;
+
+            actual.length = expected.length = 0;
+
+            refresher.on(INTERNAL_EVT_SESSION_READY, ({ timeStamp }) => {
+                actual.push(refresher.refreshing, refresher.signal!.aborted, refresher.session, timeStamp);
+                expected.push(true, false, session, Date.now());
+            });
+
+            refresher.promise.catch(() => {});
+
+            expect(refresher.refreshing).toBe(false);
+            expect(refresher.session).toBeUndefined();
+            expect(refresher.signal).toBeUndefined();
+        };
+
+        ctx.duringRefresh = async () => {
+            const { refresher } = ctx;
+            expect(refresher.refreshing).toBe(true);
+            expect(refresher.signal).not.toBeUndefined();
+            expect(refresher.signal!.aborted).toBe(false);
+            expect(await getPromiseState(refresher.promise)).toBe(PromiseState.PENDING);
+        };
+    });
+
+    const _refreshErrorAssertions = async (
+        { afterRefresh, beforeRefresh, duringRefresh, refresher }: RefresherContext,
+        error: any,
+        signal?: AbortSignal
+    ) => {
+        beforeRefresh();
 
         // initiate refresh once
-        void refresher.refresh();
+        void refresher.refresh(signal);
 
-        await duringRefresh(refresher);
+        await duringRefresh();
         await expect(async () => refresher.promise).rejects.toThrowError(error);
         expect(await getPromiseState(refresher.promise)).toBe(PromiseState.REJECTED);
 
-        afterRefresh(refresher, sessionEventCapture);
+        afterRefresh({ signal });
     };
 
-    test('should create session refresh manager', async () => {
+    test<RefresherContext>('should create session refresh manager', async ctx => {
+        const { afterRefresh, beforeRefresh, duringRefresh, refresher, patchSpecification } = ctx;
         const SESSION = 'first_session';
-        const refresher = createSessionRefresher(_emitter, _specification);
-        const unpatchRefresh = _patchSpecification('onRefresh', () => SESSION);
-        const sessionEventCapture = beforeRefresh(refresher, SESSION);
+
+        patchSpecification('onRefresh', () => SESSION);
+        beforeRefresh(SESSION);
+
+        expect(refresher.context.emitter).toBe(ctx._emitter);
+        expect(refresher.context.specification).toBe(ctx._specification);
 
         // initiate refresh once
         void refresher.refresh();
 
-        await duringRefresh(refresher);
+        await duringRefresh();
         await refresher.promise;
 
         expect(refresher.session).toBe(SESSION);
         expect(await getPromiseState(refresher.promise)).toBe(PromiseState.FULFILLED);
 
-        afterRefresh(refresher, sessionEventCapture, SESSION);
-        unpatchRefresh();
+        afterRefresh({ session: SESSION });
     });
 
-    test('should throw unavailable session factory error if `onRefresh` is not callable', async () => {
-        const refresher = createSessionRefresher(_emitter, _specification);
-        const unpatchRefresh = _patchSpecification('onRefresh', 'non-callable' as any);
-        await _refreshErrorAssertions(refresher, ERR_SESSION_FACTORY_UNAVAILABLE);
-        unpatchRefresh();
+    test<RefresherContext>('should throw unavailable session factory error if `onRefresh` is not callable', async ctx => {
+        ctx.patchSpecification('onRefresh', 'non-callable' as any);
+        await _refreshErrorAssertions(ctx, ERR_SESSION_FACTORY_UNAVAILABLE);
     });
 
-    test('should throw invalid session error if session assertion fails', async () => {
-        const refresher = createSessionRefresher(_emitter, _specification);
-        const unpatchAssert = _patchSpecification('assert', undefinedSession => (undefinedSession as any)());
-        await _refreshErrorAssertions(refresher, ERR_SESSION_INVALID);
-        unpatchAssert();
+    test<RefresherContext>('should throw invalid session error if session assertion fails', async ctx => {
+        ctx.patchSpecification('assert', undefinedSession => (undefinedSession as any)());
+        await _refreshErrorAssertions(ctx, ERR_SESSION_INVALID);
     });
 
-    test('should throw refresh aborted error for pending refreshes on new refresh request', async () => {
+    test<RefresherContext>('should throw refresh aborted error for pending refreshes on new refresh request', async ctx => {
+        const { afterRefresh, beforeRefresh, duringRefresh, refresher, patchSpecification } = ctx;
         const SESSION = 'first_session';
-        const refresher = createSessionRefresher(_emitter, _specification);
-        const unpatchRefresh = _patchSpecification('onRefresh', () => SESSION);
-        const sessionEventCapture = beforeRefresh(refresher, SESSION);
+
+        patchSpecification('onRefresh', () => SESSION);
+        beforeRefresh(SESSION);
 
         // call refresh() a few times
         const REFRESH_PROMISES = Array.from({ length: 3 }, () => refresher.refresh()) as [Promise<any>, Promise<any>, Promise<any>];
 
-        await duringRefresh(refresher);
+        await duringRefresh();
 
         for (let i = 0; i < REFRESH_PROMISES.length; i++) {
             const promise = REFRESH_PROMISES[i]!;
@@ -145,7 +176,43 @@ describe('createSessionRefresher', () => {
         expect(refresher.session).toBe(SESSION);
         expect(await getPromiseState(refresher.promise)).toBe(PromiseState.FULFILLED);
 
-        afterRefresh(refresher, sessionEventCapture, SESSION);
-        unpatchRefresh();
+        afterRefresh({ session: SESSION });
+    });
+
+    test<RefresherContext>('should throw refresh aborted error for latest refresh when associated external signal aborts', async ctx => {
+        const controller = new AbortController();
+        const assertions = _refreshErrorAssertions(ctx, ERR_SESSION_REFRESH_ABORTED, controller.signal);
+
+        // wait for next tick and abort the signal
+        await ALREADY_RESOLVED_PROMISE;
+        controller.abort();
+
+        await assertions;
+    });
+
+    test<RefresherContext>('should be pending only when session expires while no refresh is in progress', async ctx => {
+        const { expireSession, refresher, patchSpecification } = ctx;
+
+        expect(refresher.refreshing).toBe(false);
+        expect(refresher.pending).toBe(false);
+
+        // initiate refresh once
+        void refresher.refresh();
+        expect(refresher.refreshing).toBe(true);
+        expect(refresher.pending).toBe(false);
+
+        // expire session
+        expireSession();
+        expect(refresher.refreshing).toBe(true);
+        expect(refresher.pending).toBe(false);
+
+        await refresher.promise;
+        expect(refresher.refreshing).toBe(false);
+        expect(refresher.pending).toBe(false);
+
+        // expire session
+        expireSession();
+        expect(refresher.refreshing).toBe(false);
+        expect(refresher.pending).toBe(true);
     });
 });

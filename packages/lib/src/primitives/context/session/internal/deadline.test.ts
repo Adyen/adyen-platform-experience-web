@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { describe, expect, test, vi } from 'vitest';
+import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { createSessionDeadline } from './deadline';
 import { createEventEmitter } from '../../../reactive/eventEmitter';
 import { setupTimers } from '../../../time/__testing__/fixtures';
@@ -8,17 +8,39 @@ import type { SessionEventType, SessionSpecification } from '../types';
 describe('createSessionDeadline', () => {
     setupTimers();
 
-    const _emitter = createEventEmitter<SessionEventType>();
-    const _specification: SessionSpecification<any> = { onRefresh: () => {} };
-
-    const _patchSpecification = <T extends keyof typeof _specification>(field: T, value: (typeof _specification)[T]) => {
-        [_specification[field], value] = [value, _specification[field]];
-        return () => void (_specification[field] = value);
+    type DeadlineContext = {
+        _emitter: ReturnType<typeof createEventEmitter<SessionEventType>>;
+        _specification: SessionSpecification<any>;
+        deadline: ReturnType<typeof createSessionDeadline<any>>;
+        patchSpecification: <T extends keyof SessionSpecification<any>>(field: T, value: SessionSpecification<any>[T]) => void;
+        resetSpecification: () => void;
     };
 
-    test('should create deadline manager', async () => {
-        const deadline = createSessionDeadline(_emitter, _specification);
-        const unpatchDeadline = _patchSpecification('deadline', () => Date.now() + 5000); // 5 seconds session
+    beforeEach<DeadlineContext>(ctx => {
+        const _patches: (() => void)[] = [];
+
+        ctx._emitter = createEventEmitter();
+        ctx._specification = { onRefresh: () => {} };
+        ctx.deadline = createSessionDeadline(ctx._emitter, ctx._specification);
+
+        ctx.patchSpecification = <T extends keyof typeof ctx._specification>(field: T, value: (typeof ctx._specification)[T]) => {
+            [ctx._specification[field], value] = [value, ctx._specification[field]];
+            _patches.push(() => void (ctx._specification[field] = value));
+        };
+
+        ctx.resetSpecification = () => {
+            while (_patches.length) {
+                const unpatch = _patches.pop();
+                unpatch && unpatch();
+            }
+        };
+    });
+
+    test<DeadlineContext>('should create deadline manager', async ctx => {
+        const { deadline, patchSpecification } = ctx;
+
+        // 5 seconds sessions
+        patchSpecification('deadline', () => Date.now() + 5000);
 
         expect(deadline.elapsed).toBeUndefined();
         expect(deadline.signal).toBeUndefined();
@@ -35,7 +57,5 @@ describe('createSessionDeadline', () => {
 
         expect(deadline.elapsed).toBe(true);
         expect(deadline.signal!.aborted).toBe(true);
-
-        unpatchDeadline();
     });
 });
