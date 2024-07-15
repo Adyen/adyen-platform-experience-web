@@ -1,12 +1,10 @@
 // @vitest-environment jsdom
 import { beforeEach, describe, expect, test, vi } from 'vitest';
-import { createSessionRefresher } from './refresher';
-import { createEventEmitter } from '../../../reactive/eventEmitter';
 import { ALREADY_RESOLVED_PROMISE, getPromiseState } from '../../../../utils';
 import { PromiseState } from '../../../../utils/types';
 import { INTERNAL_EVT_SESSION_READY } from './constants';
-import { ERR_SESSION_FACTORY_UNAVAILABLE, ERR_SESSION_INVALID, ERR_SESSION_REFRESH_ABORTED, EVT_SESSION_EXPIRED } from '../constants';
-import type { SessionEventType, SessionSpecification } from '../types';
+import { ERR_SESSION_FACTORY_UNAVAILABLE, ERR_SESSION_INVALID, ERR_SESSION_REFRESH_ABORTED } from '../constants';
+import { augmentSessionRefreshContext, SessionRefreshContext } from '../__testing__/fixtures';
 
 vi.mock('../constants', async importOriginal => {
     const mod = await importOriginal<typeof import('../constants')>();
@@ -19,38 +17,17 @@ vi.mock('../constants', async importOriginal => {
 });
 
 describe('createSessionRefresher', () => {
-    type RefresherContext = {
-        _emitter: ReturnType<typeof createEventEmitter<SessionEventType>>;
-        _specification: SessionSpecification<any>;
+    type RefresherContext = SessionRefreshContext & {
         afterRefresh: (data: { session?: unknown; signal?: AbortSignal }) => void;
         beforeRefresh: (session?: unknown) => void;
         duringRefresh: () => Promise<void>;
-        expireSession: () => void;
-        refresher: ReturnType<typeof createSessionRefresher>;
-        patchSpecification: <T extends keyof SessionSpecification<any>>(field: T, value: SessionSpecification<any>[T]) => void;
-        resetSpecification: () => void;
+        refreshErrorAssertions: (error: any, signal?: AbortSignal) => Promise<void>;
     };
 
     beforeEach<RefresherContext>(ctx => {
         const _sessionEventCapture = [[], []] as readonly [any[], any[]];
-        const _patches: (() => void)[] = [];
 
-        ctx._emitter = createEventEmitter();
-        ctx._specification = { onRefresh: () => {} };
-        ctx.refresher = createSessionRefresher(ctx._emitter, ctx._specification);
-        ctx.expireSession = () => ctx._emitter.emit(EVT_SESSION_EXPIRED);
-
-        ctx.patchSpecification = <T extends keyof typeof ctx._specification>(field: T, value: (typeof ctx._specification)[T]) => {
-            [ctx._specification[field], value] = [value, ctx._specification[field]];
-            _patches.push(() => void (ctx._specification[field] = value));
-        };
-
-        ctx.resetSpecification = () => {
-            while (_patches.length) {
-                const unpatch = _patches.pop();
-                unpatch && unpatch();
-            }
-        };
+        augmentSessionRefreshContext(ctx);
 
         ctx.afterRefresh = (data: { session?: unknown; signal?: AbortSignal }) => {
             const { refresher } = ctx;
@@ -95,24 +72,21 @@ describe('createSessionRefresher', () => {
             expect(refresher.signal!.aborted).toBe(false);
             expect(await getPromiseState(refresher.promise)).toBe(PromiseState.PENDING);
         };
+
+        ctx.refreshErrorAssertions = async (error: any, signal?: AbortSignal) => {
+            const { afterRefresh, beforeRefresh, duringRefresh, refresher } = ctx;
+            beforeRefresh();
+
+            // initiate refresh once
+            void refresher.refresh(signal);
+
+            await duringRefresh();
+            await expect(async () => refresher.promise).rejects.toThrowError(error);
+            expect(await getPromiseState(refresher.promise)).toBe(PromiseState.REJECTED);
+
+            afterRefresh({ signal });
+        };
     });
-
-    const _refreshErrorAssertions = async (
-        { afterRefresh, beforeRefresh, duringRefresh, refresher }: RefresherContext,
-        error: any,
-        signal?: AbortSignal
-    ) => {
-        beforeRefresh();
-
-        // initiate refresh once
-        void refresher.refresh(signal);
-
-        await duringRefresh();
-        await expect(async () => refresher.promise).rejects.toThrowError(error);
-        expect(await getPromiseState(refresher.promise)).toBe(PromiseState.REJECTED);
-
-        afterRefresh({ signal });
-    };
 
     test<RefresherContext>('should create session refresh manager', async ctx => {
         const { afterRefresh, beforeRefresh, duringRefresh, refresher, patchSpecification } = ctx;
@@ -138,12 +112,12 @@ describe('createSessionRefresher', () => {
 
     test<RefresherContext>('should throw unavailable session factory error if `onRefresh` is not callable', async ctx => {
         ctx.patchSpecification('onRefresh', 'non-callable' as any);
-        await _refreshErrorAssertions(ctx, ERR_SESSION_FACTORY_UNAVAILABLE);
+        await ctx.refreshErrorAssertions(ERR_SESSION_FACTORY_UNAVAILABLE);
     });
 
     test<RefresherContext>('should throw invalid session error if session assertion fails', async ctx => {
         ctx.patchSpecification('assert', undefinedSession => (undefinedSession as any)());
-        await _refreshErrorAssertions(ctx, ERR_SESSION_INVALID);
+        await ctx.refreshErrorAssertions(ERR_SESSION_INVALID);
     });
 
     test<RefresherContext>('should throw refresh aborted error for pending refreshes on new refresh request', async ctx => {
@@ -181,7 +155,7 @@ describe('createSessionRefresher', () => {
 
     test<RefresherContext>('should throw refresh aborted error for latest refresh when associated external signal aborts', async ctx => {
         const controller = new AbortController();
-        const assertions = _refreshErrorAssertions(ctx, ERR_SESSION_REFRESH_ABORTED, controller.signal);
+        const assertions = ctx.refreshErrorAssertions(ERR_SESSION_REFRESH_ABORTED, controller.signal);
 
         // wait for next tick and abort the signal
         await ALREADY_RESOLVED_PROMISE;

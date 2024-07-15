@@ -1,11 +1,9 @@
 // @vitest-environment jsdom
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { _canAutofresh, createSessionAutofresher } from './autofresher';
-import { createSessionRefresher } from './refresher';
-import { createEventEmitter } from '../../../reactive/eventEmitter';
 import { ALREADY_RESOLVED_PROMISE, noop } from '../../../../utils';
-import { ERR_SESSION_REFRESH_ABORTED, EVT_SESSION_EXPIRED } from '../constants';
-import type { SessionEventType, SessionSpecification } from '../types';
+import { ERR_SESSION_REFRESH_ABORTED } from '../constants';
+import { augmentSessionRefreshContext, SessionRefreshContext } from '../__testing__/fixtures';
 
 vi.mock('../constants', async importOriginal => {
     const mod = await importOriginal<typeof import('../constants')>();
@@ -16,15 +14,9 @@ vi.mock('../constants', async importOriginal => {
 });
 
 describe('createSessionAutofresher', () => {
-    type AutofreshContext = {
-        _emitter: ReturnType<typeof createEventEmitter<SessionEventType>>;
-        _specification: SessionSpecification<any>;
+    type AutofreshContext = SessionRefreshContext & {
         autofresh: ReturnType<typeof createSessionAutofresher>;
         canAutofresh: () => ReturnType<typeof _canAutofresh>;
-        expireSession: () => void;
-        refresher: ReturnType<typeof createSessionRefresher>;
-        patchSpecification: <T extends keyof SessionSpecification<any>>(field: T, value: SessionSpecification<any>[T]) => void;
-        resetSpecification: () => void;
     };
 
     const TICKS_UNTIL_REFRESHED = 10;
@@ -34,26 +26,9 @@ describe('createSessionAutofresher', () => {
     };
 
     beforeEach<AutofreshContext>(ctx => {
-        const _patches: (() => void)[] = [];
-
-        ctx._emitter = createEventEmitter();
-        ctx._specification = { onRefresh: () => {} };
-        ctx.refresher = createSessionRefresher(ctx._emitter, ctx._specification);
+        augmentSessionRefreshContext(ctx);
         ctx.autofresh = createSessionAutofresher(ctx.refresher);
         ctx.canAutofresh = _canAutofresh.bind(null, ctx.refresher);
-        ctx.expireSession = () => ctx._emitter.emit(EVT_SESSION_EXPIRED);
-
-        ctx.patchSpecification = <T extends keyof typeof ctx._specification>(field: T, value: (typeof ctx._specification)[T]) => {
-            [ctx._specification[field], value] = [value, ctx._specification[field]];
-            _patches.push(() => void (ctx._specification[field] = value));
-        };
-
-        ctx.resetSpecification = () => {
-            while (_patches.length) {
-                const unpatch = _patches.pop();
-                unpatch && unpatch();
-            }
-        };
     });
 
     test<AutofreshContext>('should do nothing if there is no pending refresh', async ctx => {
