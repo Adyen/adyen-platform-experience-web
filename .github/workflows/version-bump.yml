@@ -1,0 +1,21 @@
+name: Version bump
+
+on:
+  workflow_dispatch:
+
+jobs:
+  create-version-bump-pr:
+    if: startsWith(github.ref_name, 'main') && github.repository == 'adyen/adyen-platform-experience-web'
+    name: Create version bump PR
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+
+      - name: Run the preliminary setup steps
+        uses: ./.github/actions/setup-env
+
+      - name: Create Release Pull Request
+        uses: changesets/action@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
