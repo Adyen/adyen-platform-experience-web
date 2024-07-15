@@ -8,13 +8,14 @@ on:
     types:
       - closed
     branches:
+      - 'changeset-release/**'
       - 'releases/**'
       - 'main'
 
 jobs:
   create-github-release:
     runs-on: ubuntu-latest
-    if: github.event_name == 'workflow_dispatch' || (github.event.pull_request.merged == true && startsWith(github.head_ref, 'bump/'))
+    if: github.event_name == 'workflow_dispatch' || (github.event.pull_request.merged == true && (startsWith(github.head_ref, 'bump/') || startsWith(github.head_ref, 'changeset-release/')))
     steps:
       - name: Checkout the repo
         uses: actions/checkout@v3
