@@ -1,12 +1,12 @@
+import { MAX_TRANSACTIONS_DATE_RANGE_MONTHS } from '../../../src/components/external/TransactionsOverview/components/TransactionsOverview/constants';
 import { Locator, Page } from '@playwright/test';
 import { BasePage } from '../basePage';
-import { getPagePath, getTranslatedKey } from '../../utils/utils';
+import { applyDateFilter, getPagePath, getTranslatedKey } from '../../utils/utils';
 import DataGridPage from '../internal-components/dataGrid';
 import FilterBarPage from '../internal-components/filterBar';
 
-const MONTHS_WITH_30_DAYS = [3, 5, 8, 10] as const;
-
 export class TransactionListPage extends BasePage {
+    private readonly _applyDateFilter;
     private dataGrid: DataGridPage;
     public dataGridBody: Locator;
     public filterBar: Locator;
@@ -24,6 +24,15 @@ export class TransactionListPage extends BasePage {
         this.filterBar = filterBar.rootElement;
         this.balanceAccountFilter = filterBar.getFilter(getTranslatedKey('balanceAccount'));
         this.dateFilter = filterBar.getFilter(getTranslatedKey('rangePreset.last30Days'));
+
+        this._applyDateFilter = applyDateFilter(this.page, {
+            earliestDate: now => {
+                const earliest = new Date(now);
+                earliest.setMonth(earliest.getMonth() - MAX_TRANSACTIONS_DATE_RANGE_MONTHS);
+                return earliest;
+            },
+            latestDate: now => new Date(now),
+        });
     }
 
     getCell(id: string, row = 0) {
@@ -32,49 +41,6 @@ export class TransactionListPage extends BasePage {
 
     async applyDateFilter(from: Date | number | string = Date(), to: Date | number | string = from) {
         await this.dateFilter.click();
-        const applyButton = this.page.getByLabel(getTranslatedKey('apply'));
-        const previousMonthButton = this.page.getByLabel(getTranslatedKey('calendar.previousMonth'));
-
-        const now = new Date();
-        const twoYearsAgo = new Date(now).setMonth(now.getMonth() - 24);
-
-        let fromDate = new Date(Math.max(Math.min(new Date(from).getTime(), now.getTime()), twoYearsAgo));
-        let toDate = new Date(Math.min(new Date(to).getTime(), now.getTime()));
-        if (fromDate > toDate) [fromDate, toDate] = [toDate, fromDate];
-
-        const rangeDates = [fromDate, toDate, now];
-
-        for (let i = 1; i >= 0; i--) {
-            const date = rangeDates[i]!;
-            const origin = rangeDates[i + 1]!;
-            const originDate = origin.getDate();
-            const originMonth = origin.getMonth();
-
-            const diff = (origin.getFullYear() - date.getFullYear()) * 12 + (originMonth - date.getMonth());
-            const years = Math.floor(diff / 12);
-            let months = diff % 12;
-
-            if (months) {
-                const nearestShorterMonth = originDate === 31 ? MONTHS_WITH_30_DAYS.findLast(month => month < originMonth) ?? 1 : 1;
-                switch (originDate) {
-                    case 30:
-                    case 31:
-                        if (originMonth - months <= nearestShorterMonth) months++;
-                        break;
-                }
-            } else if (years && originMonth === 1 && originDate === 29) months++;
-
-            for (let i = 0; i < years; i++) await previousMonthButton.click({ modifiers: ['Shift'] });
-            for (let i = 0; i < months; i++) await previousMonthButton.click();
-
-            const firstDayCursorPosition = Number(await this.page.locator(`[data-first-month-day='1']`).getAttribute('data-cursor-position'));
-            const dayOfMonth = this.page.locator(`[data-cursor-position='${firstDayCursorPosition + date.getDate() - 1}']`);
-
-            await dayOfMonth.click();
-
-            if (i > 0) await dayOfMonth.click();
-        }
-
-        await applyButton.click();
+        await this._applyDateFilter(from, to);
     }
 }
