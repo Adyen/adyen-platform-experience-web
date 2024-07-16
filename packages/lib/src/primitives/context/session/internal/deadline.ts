@@ -3,7 +3,6 @@ import { createPromisor } from '../../../async/promisor';
 import { isWatchlistUnsubscribeToken } from '../../../reactive/watchlist';
 import { createEventEmitter, Emitter } from '../../../reactive/eventEmitter';
 import { abortSignalForAny, enumerable, getter, isAbortSignal, isFunction, noop, parseDate, struct, tryResolve } from '../../../../utils';
-import { EVT_SESSION_REFRESHING_START } from '../constants';
 import { INTERNAL_EVT_SESSION_DEADLINE } from './constants';
 import type { SessionEventType, SessionSpecification } from '../types';
 import type { SessionDeadline, SessionDeadlineEmitter } from './types';
@@ -87,8 +86,6 @@ export const createSessionDeadline = <T extends any>(emitter: Emitter<SessionEve
             unsubscribeClock = _stopDeadlineClock = undefined!;
         };
     };
-
-    emitter.on(EVT_SESSION_REFRESHING_START, _clearDeadline);
 
     return struct<SessionDeadline<T>>({
         elapsed: getter(() => _aborted(_deadlineSignal)),

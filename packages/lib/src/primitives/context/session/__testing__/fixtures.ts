@@ -11,7 +11,10 @@ export type SessionRefreshContext = SpecificationContext & {
 
 export type SpecificationContext = {
     _specification: SessionSpecification<any>;
-    patchSpecification: <T extends keyof SessionSpecification<any>>(field: T, value: SessionSpecification<any>[T]) => void;
+    patchSpecification: <T extends keyof SessionSpecification<any>>(
+        field: T,
+        getNextValue: (currentValue: SessionSpecification<any>[T]) => SessionSpecification<any>[T]
+    ) => void;
     resetSpecification: () => void;
 };
 
@@ -27,9 +30,10 @@ export const augmentSpecificationContext = <T extends SpecificationContext>(ctx:
 
     ctx._specification = { onRefresh: () => {} };
 
-    ctx.patchSpecification = <T extends keyof typeof ctx._specification>(field: T, value: (typeof ctx._specification)[T]) => {
-        [ctx._specification[field], value] = [value, ctx._specification[field]];
-        _patches.push(() => void (ctx._specification[field] = value));
+    ctx.patchSpecification = (field, getNextValue) => {
+        let nextValue = getNextValue(ctx._specification[field]);
+        [ctx._specification[field], nextValue] = [nextValue, ctx._specification[field]];
+        _patches.push(() => void (ctx._specification[field] = nextValue));
     };
 
     ctx.resetSpecification = () => {

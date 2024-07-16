@@ -92,7 +92,7 @@ describe('createSessionRefresher', () => {
         const { afterRefresh, beforeRefresh, duringRefresh, refresher, patchSpecification } = ctx;
         const SESSION = 'first_session';
 
-        patchSpecification('onRefresh', () => SESSION);
+        patchSpecification('onRefresh', () => () => SESSION);
         beforeRefresh(SESSION);
 
         expect(refresher.context.emitter).toBe(ctx._emitter);
@@ -111,12 +111,12 @@ describe('createSessionRefresher', () => {
     });
 
     test<RefresherContext>('should throw unavailable session factory error if `onRefresh` is not callable', async ctx => {
-        ctx.patchSpecification('onRefresh', 'non-callable' as any);
+        ctx.patchSpecification('onRefresh', () => 'non-callable' as any);
         await ctx.refreshErrorAssertions(ERR_SESSION_FACTORY_UNAVAILABLE);
     });
 
     test<RefresherContext>('should throw invalid session error if session assertion fails', async ctx => {
-        ctx.patchSpecification('assert', undefinedSession => (undefinedSession as any)());
+        ctx.patchSpecification('assert', () => undefinedSession => (undefinedSession as any)());
         await ctx.refreshErrorAssertions(ERR_SESSION_INVALID);
     });
 
@@ -124,7 +124,7 @@ describe('createSessionRefresher', () => {
         const { afterRefresh, beforeRefresh, duringRefresh, refresher, patchSpecification } = ctx;
         const SESSION = 'first_session';
 
-        patchSpecification('onRefresh', () => SESSION);
+        patchSpecification('onRefresh', () => () => SESSION);
         beforeRefresh(SESSION);
 
         // call refresh() a few times
@@ -165,7 +165,7 @@ describe('createSessionRefresher', () => {
     });
 
     test<RefresherContext>('should be pending only when session expires while no refresh is in progress', async ctx => {
-        const { expireSession, refresher, patchSpecification } = ctx;
+        const { expireSession, refresher } = ctx;
 
         expect(refresher.refreshing).toBe(false);
         expect(refresher.pending).toBe(false);
