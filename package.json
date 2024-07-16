@@ -13,10 +13,7 @@
     "publishConfig": {
         "registry": "https://registry.npmjs.org/"
     },
-    "private": true,
-    "workspaces": [
-        "./packages/*"
-    ],
+    "private": false,
     "scripts": {
         "start": "vite dev --mode development --config ./vite.config.ts",
         "start:local": "concurrently --kill-others-on-fail 'npm run types:watch' 'vite dev --mode local-env --config ./vite.config.ts' --names 'tsc-lib,playground' -c blue,green,cyan,yellow",
@@ -58,16 +55,65 @@
         "changeset": "changeset"
     },
     "dependencies": {
-        "concurrently": "^7.0.0"
+        "classnames": "^2.5.1",
+        "core-js": "^3.36.0",
+        "preact": "^10.13.2"
     },
     "devDependencies": {
+        "concurrently": "^7.0.0",
+        "@adyen/adyen-platform-experience-web-mocks": "1.0.0",
+        "@adyen/bento-design-tokens": "^1.7.1",
         "@changesets/cli": "^2.27.5",
         "@changesets/get-github-info": "^0.6.0",
+        "@playwright/test": "^1.38.0",
+        "@preact/preset-vite": "^2.5.0",
+        "@storybook/addon-a11y": "^7.0.4",
+        "@storybook/addon-essentials": "^7.0.4",
+        "@storybook/core-server": "^7.0.4",
+        "@storybook/manager-api": "^7.0.4",
+        "@storybook/preact": "^7.0.4",
+        "@storybook/preact-vite": "^7.0.4",
+        "@storybook/types": "^7.0.4",
+        "@testing-library/jest-dom": "^5.16.5",
+        "@testing-library/preact": "^3.2.3",
+        "@testing-library/user-event": "^14.4.3",
+        "@types/node": "^20.4.7",
+        "@typescript-eslint/eslint-plugin": "^5.4.0",
+        "@typescript-eslint/parser": "^5.8.1",
+        "@vitest/coverage-c8": "^0.30.1",
+        "autoprefixer": "^9.8.8",
+        "cross-env": "^7.0.3",
+        "css-loader": "^4.3.0",
         "dotenv": "^16.4.5",
+        "eslint": "^8.12.0",
+        "eslint-import-resolver-typescript": "^3.5.2",
+        "eslint-plugin-import": "^2.25.4",
+        "eslint-plugin-jsx-a11y": "^6.5.1",
+        "eslint-plugin-react": "^7.26.1",
+        "eslint-plugin-react-hooks": "^4.6.0",
+        "file-loader": "^6.2.0",
         "husky": "^7.0.4",
+        "jsdom": "^20.0.3",
         "lint-staged": "^13.0.1",
+        "mini-css-extract-plugin": "^2.4.5",
+        "msw": "^1.3.2",
+        "openapi-typescript": "^6.7.0",
+        "postcss": "^8.3.11",
+        "prettier": "^2.4.1",
+        "rollup-plugin-visualizer": "^5.9.0",
+        "sass": "^1.43.4",
+        "sass-loader": "^12.3.0",
+        "style-loader": "^3.3.1",
+        "stylelint": "^14.1.0",
+        "stylelint-config-recommended": "^6.0.0",
+        "stylelint-config-sass-guidelines": "^9.0.1",
+        "stylelint-scss": "^4.2.0",
+        "ts-loader": "^9.2.6",
+        "typescript": "5.2.2",
         "vite": "^4.3.2",
-        "vite-plugin-checker": "^0.5.6"
+        "vite-node": "^0.30.1",
+        "vite-plugin-checker": "^0.5.6",
+        "vitest": "^0.30.1"
     },
     "msw": {
         "workerDirectory": "packages/playground/public"
