@@ -18,7 +18,7 @@ jobs:
     if: github.event_name == 'workflow_dispatch' || (github.event.pull_request.merged == true && (startsWith(github.head_ref, 'bump/') || startsWith(github.head_ref, 'changeset-release/')))
     steps:
       - name: Checkout the repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Run the preliminary setup steps
         uses: ./.github/actions/setup-env
@@ -39,12 +39,11 @@ jobs:
           retention-days: 1
 
       - name: Push tags and create a release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          git tag ${{ env.NEW_VERSION }}
-          git push --tags
-          gh release create ${{ env.NEW_VERSION }} ./packages/lib/adyen-adyen-platform-experience-web-${{ env.NEW_VERSION }}.tgz --title v${{ env.NEW_VERSION }} --generate-notes
+        id: changesets
+        uses: changesets/action@v1
+        with:
+        # Include this to create GitHub releases and Git tags
+        publish: npm changeset tag
 
   trigger-npm-publish:
     needs: create-github-release
