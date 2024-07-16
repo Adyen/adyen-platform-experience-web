@@ -54,7 +54,7 @@
         "translations:sort": "bash scripts/process-translations/sort-translations-json.sh",
         "prepare": "node ./prepare.js && bash ./scripts/process-package-lock.sh",
         "bump-version": "./scripts/bump-version.sh",
-        "version": "changeset version",
+        "version": "changeset version --snapshot",
         "changeset": "changeset"
     },
     "dependencies": {
