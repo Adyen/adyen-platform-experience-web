@@ -3,7 +3,7 @@ import { createLanguageButtons } from '../../utils/createLanguageButtons';
 import { TEST_CONFIG } from '../../utils/utils';
 import '../../utils/createPages';
 import '../../assets/style/style.scss';
-import { enableServerInMockedMode } from '../../endpoints/mock-server/utils';
+import { enableServerInMockedMode } from '../../../mocks/mock-server/utils';
 import sessionRequest from '../../utils/sessionRequest';
 
 // const DEFAULT_TRANSACTION_ID = getDefaultID('1VVF0D5V3709DX6D');

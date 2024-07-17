@@ -2,7 +2,7 @@ import { AdyenPlatformExperience, PayoutDetails } from '../../../src';
 import { getDefaultID, getSearchParameters } from '../../utils/utils';
 import '../../utils/createPages';
 import '../../assets/style/style.scss';
-import { enableServerInMockedMode } from '../../endpoints/mock-server/utils';
+import { enableServerInMockedMode } from '../../../mocks/mock-server/utils';
 import sessionRequest from '../../utils/sessionRequest';
 
 const DEFAULT_PAYOUT_ID = getDefaultID('1234567890123456');

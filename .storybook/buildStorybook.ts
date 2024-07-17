@@ -1,6 +1,6 @@
 import { buildStaticStandalone } from '@storybook/core-server';
 import { resolve } from 'node:path';
-import packageJson from '../playground/package.json';
+import packageJson from '../package.json';
 import { PackageJson } from '@storybook/types';
 
 const STORYBOOK_DIR = __dirname;
