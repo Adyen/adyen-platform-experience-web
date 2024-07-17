@@ -5,7 +5,7 @@ module.exports = {
     extends: ['stylelint-config-recommended', 'stylelint-config-sass-guidelines'],
     plugins: ['stylelint-scss'],
     ignoreFiles: [
-        'playground/src/**/*.scss',
+        'playground/**/*.scss',
         'netlify/edge-functions/proxy-requests.ts',
         'src/style/bento/**/*.scss',
     ],
