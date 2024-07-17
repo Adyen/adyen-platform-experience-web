@@ -15,7 +15,7 @@ export type SpecificationContext = {
         field: T,
         getNextValue: (currentValue: SessionSpecification<any>[T]) => SessionSpecification<any>[T]
     ) => void;
-    resetSpecification: () => void;
+    resetSpecification: <T extends keyof SessionSpecification<any>>(...fields: T[]) => void;
 };
 
 export const augmentSessionRefreshContext = <T extends SessionRefreshContext>(ctx: T) => {
@@ -26,20 +26,28 @@ export const augmentSessionRefreshContext = <T extends SessionRefreshContext>(ct
 };
 
 export const augmentSpecificationContext = <T extends SpecificationContext>(ctx: T) => {
-    const _patches: (() => void)[] = [];
+    const _patchMap = new Map<T, (() => void)[]>();
 
     ctx._specification = { onRefresh: () => {} };
 
     ctx.patchSpecification = (field, getNextValue) => {
         let nextValue = getNextValue(ctx._specification[field]);
+        let patches = _patchMap.get(field as unknown as T);
+        if (patches === undefined) _patchMap.set(field as unknown as T, (patches = []));
+
         [ctx._specification[field], nextValue] = [nextValue, ctx._specification[field]];
-        _patches.push(() => void (ctx._specification[field] = nextValue));
+        patches.push(() => void (ctx._specification[field] = nextValue));
     };
 
-    ctx.resetSpecification = () => {
-        while (_patches.length) {
-            const unpatch = _patches.pop();
-            unpatch && unpatch();
+    ctx.resetSpecification = (...fields) => {
+        for (const field of fields.length === 0 ? _patchMap.keys() : fields) {
+            const patches = _patchMap.get(field as unknown as T);
+            if (patches === undefined) continue;
+            while (patches.length) {
+                const unpatch = patches.pop();
+                unpatch && unpatch();
+            }
+            _patchMap.delete(field as unknown as T);
         }
     };
 };

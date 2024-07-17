@@ -7,7 +7,7 @@ import type { Promisor } from './types';
 export const createPromisor = <T extends any, Params extends any[] = []>(
     factory: (this: any, signal: AbortSignal, ...args: Params) => Promised<T>
 ) => {
-    const _abortable = createAbortable(Symbol());
+    const _abortable = createAbortable();
     const _deferred = createDeferred<T>();
     let _promise: Promisor<T, Params>['promise'] | undefined;
 
@@ -33,7 +33,7 @@ export const createPromisor = <T extends any, Params extends any[] = []>(
     } as Promisor<T, Params>;
 
     return Object.defineProperties(promisor, {
-        abort: enumerable(() => _abortable.abort()),
+        abort: enumerable(_abortable.abort),
         promise: getter(() => _deferred.promise),
         refresh: enumerable(() => void _deferred.refresh()),
     });

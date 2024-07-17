@@ -17,7 +17,6 @@ import { createSessionAutofresher } from './internal/autofresher';
 import { createSessionDeadline } from './internal/deadline';
 import { createSessionRefresher } from './internal/refresher';
 import { createEventEmitter } from '../../reactive/eventEmitter';
-import { createAbortable } from '../../async/abortable';
 import { isFunction, noop } from '../../../utils';
 import type { SessionEventType, SessionSpecification } from './types';
 
@@ -29,7 +28,6 @@ export class SessionContext<T, HttpParams extends any[] = any[]> {
     private readonly _refresher;
 
     private readonly _eventEmitter = createEventEmitter<SessionEventType>();
-    private readonly _httpAbortable = createAbortable();
 
     public declare readonly http: typeof this._sessionHttp;
     public declare readonly on: (typeof this._eventEmitter)['on'];
@@ -40,7 +38,7 @@ export class SessionContext<T, HttpParams extends any[] = any[]> {
         this._refresher = createSessionRefresher(this._eventEmitter, this._specification);
         this._autofresh = createSessionAutofresher(this._refresher);
 
-        this._deadline.on(INTERNAL_EVT_SESSION_DEADLINE, this._expireSession.bind(this));
+        this._deadline.on(INTERNAL_EVT_SESSION_DEADLINE, () => this._eventEmitter.emit(EVT_SESSION_EXPIRED));
         this._refresher.on(INTERNAL_EVT_SESSION_REFRESHING_START, () => this._eventEmitter.emit(EVT_SESSION_REFRESHING_START));
         this._refresher.on(INTERNAL_EVT_SESSION_REFRESHING_END, () => this._eventEmitter.emit(EVT_SESSION_REFRESHING_END));
 
@@ -67,12 +65,6 @@ export class SessionContext<T, HttpParams extends any[] = any[]> {
         if (!isFunction(value)) throw ERR_SESSION_HTTP_UNAVAILABLE;
     }
 
-    private _expireSession() {
-        this._httpAbortable.abort();
-        this._httpAbortable.refresh();
-        this._eventEmitter.emit(EVT_SESSION_EXPIRED);
-    }
-
     private async _sessionHttp(
         beforeHttp?: ((currentSession: T | undefined, signal: AbortSignal, ...args: HttpParams) => any) | null,
         ...args: HttpParams
@@ -86,7 +78,7 @@ export class SessionContext<T, HttpParams extends any[] = any[]> {
                 // to silence unnecessary unhandled promise rejection warnings
                 await this._refresher.promise.catch(noop);
 
-                _signal = this._httpAbortable.signal;
+                _signal = this._deadline.signal;
 
                 await beforeHttp?.(this._session, _signal, ...args);
                 this._assertSessionHttp(this._specification.http);
@@ -95,7 +87,7 @@ export class SessionContext<T, HttpParams extends any[] = any[]> {
             } catch (ex) {
                 if (ex !== ERR_SESSION_EXPIRED && !(_signal && _signal.aborted)) throw ex;
                 if (this._refresher.pending) continue;
-                this._expireSession();
+                this._deadline.elapse();
             }
         }
     }

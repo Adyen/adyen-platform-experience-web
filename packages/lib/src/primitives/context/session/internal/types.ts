@@ -14,10 +14,11 @@ export type SessionRefresherEmitter = Emitter<
 >;
 
 export interface SessionDeadline<T extends any> {
+    readonly elapse: () => void;
     get elapsed(): boolean | undefined;
     readonly on: SessionDeadlineEmitter['on'];
     readonly refresh: (session: T | undefined) => Promise<void>;
-    get signal(): AbortSignal | undefined;
+    get signal(): AbortSignal;
 }
 
 export interface SessionRefresher<T extends any> {
