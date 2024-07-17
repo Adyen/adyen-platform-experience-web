@@ -10,20 +10,18 @@ import sessionRequest from '../../utils/sessionRequest';
 
 enableServerInMockedMode()
     .then(async () => {
-        const locale: 'en-US' | 'es-ES' = 'en-US' as const;
-
-        const AdyenPlatform = await AdyenPlatformExperience({
-            locale: locale,
+        const core = await AdyenPlatformExperience({
             environment: 'test',
             availableTranslations: [all_locales],
             async onSessionCreate() {
                 return await sessionRequest();
             },
         });
-        createLanguageButtons({ locales: ['es-ES', 'en-US'], core: AdyenPlatform });
+
+        createLanguageButtons({ core });
 
         const payoutsComponent = new PayoutsOverview({
-            core: AdyenPlatform,
+            core,
             onRecordSelection: ({ showModal }) => {
                 showModal();
                 // window.location.assign(`/src/pages/transaction/?id=${id}`);
@@ -34,6 +32,7 @@ enableServerInMockedMode()
             onLimitChanged: (/* limit */) => {
                 // do something here with the updated limit
             },
+            onContactSupport: () => {},
             allowLimitSelection: true,
             preferredLimit: 10,
             ...TEST_CONFIG,

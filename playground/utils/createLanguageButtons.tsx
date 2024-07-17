@@ -1,24 +1,32 @@
 import { Core } from '../../src';
 
-export const createLanguageButtons = ({ locales, core }: { locales: string[]; core: Core<any, any> }) => {
+export const createLanguageButtons = ({ core }: { core: Core<any, any> }) => {
     const pageContainer = document.querySelector('.playground-header');
 
-    const container = `<div class="locale-selection-container"></div>`;
+    if (pageContainer) {
+        const { localization } = core;
+        const container = document.createElement('div');
+        const selector = document.createElement('select');
 
-    const langSelector = document.createElement('div');
-    langSelector.className = 'locale-selection-container';
-    langSelector.innerHTML = container;
+        container.classList.add('locale-selection-container');
 
-    locales.forEach(locale => {
-        const selector = langSelector?.querySelector('.locale-selection-container');
-        const buttonElement = document.createElement('button');
-        buttonElement.onclick = async () => {
-            await core.update({ locale: locale });
-        };
-        buttonElement.innerHTML = locale.toUpperCase();
+        selector.addEventListener('change', async function () {
+            await core.update({ locale: this.value });
+        });
 
-        selector?.append(buttonElement);
-    });
+        const locales = [...localization.supportedLocales].sort((a, b) => a.localeCompare(b));
 
-    if (pageContainer) pageContainer.append(langSelector);
+        locales.forEach(locale => {
+            const optionElement = document.createElement('option');
+
+            optionElement.selected = localization.locale === locale;
+            optionElement.textContent = locale.toUpperCase();
+            optionElement.value = locale;
+
+            selector.appendChild(optionElement);
+        });
+
+        container.appendChild(selector);
+        pageContainer.appendChild(container);
+    }
 };

@@ -148,7 +148,6 @@ h2 {
     }
 
     span {
-        position: relative;
         top: -3px;
 
         &,
@@ -313,9 +312,10 @@ h2 {
         flex-wrap: wrap;
     }
 
-    button {
+    select {
         appearance: none;
         background-color: $color-primary;
+        font-family: monospace;
         font-weight: bold;
         color: #ffffff;
         cursor: pointer;
