@@ -84,7 +84,7 @@
     "bump-version": "./scripts/bump-version.sh",
     "version": "changeset version --snapshot",
     "changeset": "changeset",
-    "create-tag": "changeset tag",
+    "create-tag": "npm run build:publish && npm run create-tag",
     "postbuild": "rm dist/mockServiceWorker.js"
   },
   "dependencies": {
