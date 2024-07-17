@@ -49,7 +49,7 @@ jobs:
             const { data: release } = await github.rest.repos.getReleaseByTag({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              tag: context.ref.replace('refs/tags/', '')
+              tag: "v${{ env.NEW_VERSION }}"
             });
             core.setOutput('upload_url', release.upload_url);
 
