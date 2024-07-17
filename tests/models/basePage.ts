@@ -11,7 +11,7 @@ export abstract class BasePage {
         this.rootElement = page.locator(rootElementSelector);
         this.path = path;
         this.goto = async () => {
-            await this.page.goto(`/src/pages/${this.path}/`);
+            await this.page.goto(`/pages/${this.path}/`);
         };
     }
 }

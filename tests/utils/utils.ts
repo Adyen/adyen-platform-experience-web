@@ -1,5 +1,5 @@
 import { pages } from '../../playground/pages';
-import keys from '../../src/translations/en-US.json';
+import keys from '../../src/translations/en-US.json' assert { type: 'json' };
 import { BrowserContext, Page } from '@playwright/test';
 
 type PageId = (typeof pages)[number]['id'];

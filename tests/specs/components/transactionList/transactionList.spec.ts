@@ -2,13 +2,19 @@ import { test as base, expect } from '@playwright/test';
 import { TransactionListPage } from '../../../models/external-components/transactionList.page';
 import { getTranslatedKey, scriptToAddInitialConfig } from '../../../utils/utils';
 import { resolve } from 'node:path';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+const filename = fileURLToPath(import.meta.url);
+
+export const envDir = dirname(filename);
 
 const test = base.extend<{
     transactionListPage: TransactionListPage;
 }>({
     transactionListPage: async ({ page, context }, use) => {
         const transactionListPage = new TransactionListPage(page);
-        await scriptToAddInitialConfig(context, resolve(__dirname, 'init-config.js'));
+        await scriptToAddInitialConfig(context, resolve(envDir, 'init-config.js'));
         await transactionListPage.goto();
         await use(transactionListPage);
     },
