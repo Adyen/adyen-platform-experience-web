@@ -1,4 +1,4 @@
-import type { ITransactionTotal } from '../src';
+import type { ITransactionTotal } from '../../src';
 
 export const TRANSACTION_TOTALS: ITransactionTotal[] = [
     {

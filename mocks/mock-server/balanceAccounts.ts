@@ -1,5 +1,5 @@
 import { rest } from 'msw';
-import { BALANCE_ACCOUNTS, BALANCES } from '../index';
+import { BALANCE_ACCOUNTS, BALANCES } from '../mock-data';
 import { endpoints } from '../../playground/endpoints/endpoints';
 import { delay } from './utils';
 

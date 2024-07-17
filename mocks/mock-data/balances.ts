@@ -1,4 +1,4 @@
-import type { IBalance } from '../src';
+import type { IBalance } from '../../src';
 
 export const BALANCES: Record<string, IBalance[]> = {
     BA32272223222B5CTDQPM6W2H: [

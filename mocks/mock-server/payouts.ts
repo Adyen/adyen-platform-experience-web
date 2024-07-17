@@ -1,5 +1,5 @@
 import { rest } from 'msw';
-import { getPayouts, PAYOUTS_WITH_DETAILS } from '../index';
+import { getPayouts, PAYOUTS_WITH_DETAILS } from '../mock-data';
 import { compareDates, delay, getPaginationLinks } from './utils';
 import { endpoints } from '../../playground/endpoints/endpoints';
 

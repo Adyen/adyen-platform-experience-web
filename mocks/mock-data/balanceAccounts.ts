@@ -1,4 +1,4 @@
-import type { IBalanceAccountBase } from '../src';
+import type { IBalanceAccountBase } from '../../src';
 
 export const BALANCE_ACCOUNTS: IBalanceAccountBase[] = [
     {

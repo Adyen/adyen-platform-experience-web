@@ -1,4 +1,4 @@
-import type { IPayout, IPayoutDetails } from '../src';
+import type { IPayout, IPayoutDetails } from '../../src';
 
 export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string })[] = [
     {

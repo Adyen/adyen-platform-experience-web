@@ -1,4 +1,4 @@
-import type { ITransaction } from '../src';
+import type { ITransaction } from '../../src';
 
 export const TRANSACTIONS: ITransaction[] = [
     {

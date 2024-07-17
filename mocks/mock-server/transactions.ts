@@ -1,6 +1,6 @@
 import { rest } from 'msw';
 import { ITransaction } from '../../src';
-import { DEFAULT_TRANSACTION, TRANSACTIONS } from '../index';
+import { DEFAULT_TRANSACTION, TRANSACTIONS } from '../mock-data';
 import { compareDates, computeHash, delay, getPaginationLinks } from './utils';
 import { endpoints } from '../../playground/endpoints/endpoints';
 
