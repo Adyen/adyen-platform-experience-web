@@ -46,10 +46,11 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: |
+            const tag = `v${{ env.NEW_VERSION }}`;
             const { data: release } = await github.rest.repos.getReleaseByTag({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              tag: "v${{ env.NEW_VERSION }}"
+              tag: tag
             });
             core.setOutput('upload_url', release.upload_url);
 
