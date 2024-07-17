@@ -1,5 +1,5 @@
 import { buildDevStandalone } from '@storybook/core-server';
-import packageJson from '../playground/package.json';
+import packageJson from '../package.json';
 import { PackageJson } from '@storybook/types';
 
 const STORYBOOK_DIR = __dirname;

@@ -4,5 +4,4 @@ addons.setConfig({
     isFullscreen: false,
     showPanel: true,
     panelPosition: 'bottom',
-    theme: { base: 'light' },
 });

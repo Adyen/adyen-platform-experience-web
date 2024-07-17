@@ -1,11 +1,11 @@
 import { StorybookConfig } from '@storybook/preact-vite';
 import { mergeConfig } from 'vite';
-import { realApiProxies } from '../src/endpoints/apis/realApiProxies';
-import { getEnvironment } from '../../../envs/getEnvs';
 import { checker } from 'vite-plugin-checker';
+import { getEnvironment } from '../envs/getEnvs';
+import { realApiProxies } from '../playground/endpoints/apis/realApiProxies';
 
 const config: StorybookConfig = {
-    stories: ['../src/stories/**/*.stories.*'],
+    stories: ['../stories/**/*.stories.*'],
     addons: ['@storybook/addon-essentials', '@storybook/addon-a11y'],
     framework: {
         name: '@storybook/preact-vite',

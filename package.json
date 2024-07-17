@@ -92,7 +92,6 @@
   },
   "devDependencies": {
     "concurrently": "^7.0.0",
-    "@adyen/adyen-platform-experience-web-mocks": "1.0.0",
     "@adyen/bento-design-tokens": "^1.7.1",
     "@changesets/cli": "^2.27.5",
     "@changesets/get-github-info": "^0.6.0",

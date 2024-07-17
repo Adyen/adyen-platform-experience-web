@@ -1,10 +1,9 @@
 import { Preview } from '@storybook/preact';
-import '../playground/src/assets/style/style.scss';
-import '@adyen/adyen-platform-experience-web/style/index.scss';
-import '@adyen/adyen-platform-experience-web/components/shared.scss';
+import '../playground/assets/style/style.scss';
+import '../src/components/shared.scss';
 import { createAdyenPlatformExperience } from './utils/create-adyenPE';
-import { enableServerInMockedMode, stopMockedServer } from '../playground/src/endpoints/mock-server/utils';
-import sessionRequest from '../src/utils/sessionRequest';
+import { enableServerInMockedMode, stopMockedServer } from '../mocks/mock-server/utils';
+import sessionRequest from '../playground/utils/sessionRequest';
 
 const preview: Preview = {
     parameters: {

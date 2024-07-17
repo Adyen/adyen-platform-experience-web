@@ -1,6 +1,6 @@
 import { Meta } from '@storybook/preact';
 import { enabledDisabledCallbackRadioControls } from '../utils/controls';
-import { PayoutsOverview } from '../../../src';
+import { PayoutsOverview } from '../../src';
 import { ElementProps, ElementStory, SessionControls as SessionControl } from '../utils/types';
 import { Container } from '../utils/Container';
 import { EMPTY_SESSION_OBJECT } from '../utils/constants';
