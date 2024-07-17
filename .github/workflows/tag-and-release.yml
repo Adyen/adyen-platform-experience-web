@@ -41,20 +41,18 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Get the release upload URL
-        id: get_release
-        uses: octokit/request-action@v2
-        with:
-          route: GET /repos/${{ github.repository_owner }}/${{ github.event.repository.name }}/releases/tags/v${{ env.NEW_VERSION }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Get Release Tag
+        id: get_tag
+        if: steps.changesets.outputs.published == 'true'
+        run: echo "::set-output name=tag::$(git describe --tags --abbrev=0)"
 
       - name: Upload Release Asset
         uses: actions/upload-release-asset@v1
+        if: steps.changesets.outputs.published == 'true'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.get_release.outputs.data.upload_url }}
+          upload_url: ${{ steps.changesets.outputs.publishedPackages[0].releaseUrl }}
           asset_path: ./adyen-adyen-platform-experience-web-${{ env.NEW_VERSION }}.tgz
           asset_name: adyen-adyen-platform-experience-web-${{ env.NEW_VERSION }}.tgz
           asset_content_type: application/gzip
