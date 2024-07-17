@@ -1,7 +1,7 @@
 import { rest } from 'msw';
-import { getPayouts, PAYOUTS_WITH_DETAILS } from '../mock-data';
+import { getPayouts, PAYOUTS_WITH_DETAILS } from '../../mocks/mock-data';
 import { compareDates, delay, getPaginationLinks } from './utils';
-import { endpoints } from '../../playground/endpoints/endpoints';
+import { endpoints } from '../endpoints/endpoints';
 
 const mockEndpoints = endpoints('mock');
 const networkError = false;

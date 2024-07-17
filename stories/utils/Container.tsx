@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'preact/compat';
 import { StoryContext } from '@storybook/types';
 import { PreactRenderer } from '@storybook/preact';
 import { getStoryContextAdyenPlatformExperience } from './get-story-context';
-import { stopMockedServer } from '../../mocks/mock-server/utils';
+import { stopMockedServer } from '../../playground/mock-server/utils';
 
 interface IContainer<T extends new (...args: any) => any> {
     component: T;
