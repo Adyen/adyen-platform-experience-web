@@ -1,36 +1,66 @@
 {
-    "name": "@adyen/adyen-platform-experience-web-main",
-    "version": "1.0.0",
+    "name": "@adyen/adyen-platform-experience-web",
+    "version": "1.0.1",
     "keywords": [
         "adyen",
-        "adyen-fp",
+        "adyen-pe",
         "fp",
         "finance",
         "platforms",
         "adyen-for-platforms",
-        "components"
+        "components",
+        "adyen-platform-experience"
     ],
+    "repository": "github:Adyen/adyen-platform-experience-web",
+    "apiVersion": "v1",
     "publishConfig": {
         "registry": "https://registry.npmjs.org/"
     },
     "private": false,
+    "bugs": {
+        "url": "https://support.adyen.com/"
+    },
+    "files": [
+        "dist/**"
+    ],
+    "sideEffects": [
+        "**/*.css"
+    ],
+    "main": "./dist/cjs/index.js",
+    "module": "./dist/es/index.js",
+    "types": "./dist/types/index.d.ts",
+    "style": "dist/style.css",
+    "exports": {
+        ".": {
+            "types": "./dist/types/index.d.ts",
+            "require": {
+                "types": "./dist/types/index.d.ts",
+                "default": "./dist/cjs/index.js"
+            },
+            "import": {
+                "types": "./dist/types/index.d.ts",
+                "default": "./dist/es/index.js"
+            }
+        },
+        "./adyen-platform-experience-web.css": "./dist/style.css"
+    },
     "scripts": {
-        "start": "vite dev --mode development --config ./vite.config.ts",
-        "start:local": "concurrently --kill-others-on-fail 'npm run types:watch' 'vite dev --mode local-env --config ./vite.config.ts' --names 'tsc-lib,playground' -c blue,green,cyan,yellow",
-        "start:loop": "concurrently --kill-others-on-fail 'npm run types:watch' 'vite dev --mode loop --config ./vite.config.ts' --names 'tsc-lib,playground' -c blue,green,cyan,yellow",
-        "start:test": "concurrently --kill-others-on-fail 'npm run types:watch' 'vite dev --mode development --config ./vite.config.ts' --names 'tsc-lib,playground' -c blue,green,cyan,yellow",
-        "start:beta": "concurrently --kill-others-on-fail 'npm run types:watch' 'vite dev --mode beta --config ./vite.config.ts' --names 'tsc-lib,playground' -c blue,green,cyan,yellow",
-        "build": "rm -rf ./dist && vite build --mode esm --config vite.config.ts && vite build --mode cjs --config vite.config.ts && tsc --project tsconfig-build.json",
-        "build:demo": "vite build --mode demo --config ./vite.config.ts",
+        "start": "vite dev --mode development --config playground/vite.config.ts",
+        "start:local": "concurrently --kill-others-on-fail 'npm run types:watch' 'vite dev --mode local-env --config playground/vite.config.ts' --names 'tsc-lib,playground' -c blue,green,cyan,yellow",
+        "start:loop": "concurrently --kill-others-on-fail 'npm run types:watch' 'vite dev --mode loop --config playground/vite.config.ts' --names 'tsc-lib,playground' -c blue,green,cyan,yellow",
+        "start:test": "concurrently --kill-others-on-fail 'npm run types:watch' 'vite dev --mode development --config playground/vite.config.ts' --names 'tsc-lib,playground' -c blue,green,cyan,yellow",
+        "start:beta": "concurrently --kill-others-on-fail 'npm run types:watch' 'vite dev --mode beta --config playground/vite.config.ts' --names 'tsc-lib,playground' -c blue,green,cyan,yellow",
+        "build": "rm -rf ./dist && vite build --mode esm --config playground/vite.config.ts && vite build --mode cjs --config vite.config.ts && tsc --project tsconfig-build.json",
+        "build:demo": "vite build --mode demo --config playground/vite.config.ts",
         "build:test": "npm run build && npm pack",
         "build:publish": "npm run build && npm pack",
-        "build:analyse": "vite build --mode analyse --config vite.config.ts",
-        "demo": "npm run build:demo && vite preview --mode demo --config ./vite.config.ts",
-        "start:mocked": "concurrently --kill-others-on-fail 'npm run types:watch' 'vite dev --mode mocked --config ./vite.config.ts' --names 'lib-types,playground' -c blue,green,cyan,yellow",
-        "start:mock:e2e": "concurrently --kill-others-on-fail 'npm run types:watch' 'cross-env E2E_TEST=true vite dev --mode mocked --config ./vite.config.ts' --names 'lib-types,playground' -c blue,green,cyan,yellow",
+        "build:analyse": "vite build --mode analyse --config playground/vite.config.ts",
+        "demo": "npm run build:demo && vite preview --mode demo --config playground/vite.config.ts",
+        "start:mocked": "concurrently --kill-others-on-fail 'npm run types:watch' 'vite dev --mode mocked --config playground/vite.config.ts' --names 'lib-types,playground' -c blue,green,cyan,yellow",
+        "start:mock:e2e": "concurrently --kill-others-on-fail 'npm run types:watch' 'cross-env E2E_TEST=true vite dev --mode mocked --config playground/vite.config.ts' --names 'lib-types,playground' -c blue,green,cyan,yellow",
         "lint": "eslint 'src/**/*.{js,ts,tsx}' --quiet && stylelint 'src/**/*.scss' --fix",
-        "test": "vitest --config vite.config.ts",
-        "test:coverage": "vitest --config vite.config.ts --coverage",
+        "test": "vitest --config playground/vite.config.ts",
+        "test:coverage": "vitest --config playground/vite.config.ts --coverage",
         "test:e2e": "playwright test --project local-chrome",
         "test:e2e:debug": "cross-env PWDEBUG=console playwright test --debug --project local-chrome",
         "type-check": "tsc --preserveWatchOutput",
@@ -42,9 +72,9 @@
         "storybook:beta": "concurrently --kill-others-on-fail 'npm run types:watch' 'vite-node --mode beta .storybook/runStorybook.ts' ",
         "storybook:mocked": "vite-node .storybook/runStorybook.ts --mode mocked",
         "storybook:build": "vite-node ./.storybook/buildStorybook.ts",
-        "storybook:demo": "vite-node ./.storybook/buildStorybook.ts --mode demo && vite preview --mode demo --config ./vite.config.ts",
-        "demo:serve": "vite preview --mode demo --config ./vite.config.ts",
-        "demo:serve:e2e": "cross-env E2E_TEST=true vite preview --mode demo --config ./vite.config.ts",
+        "storybook:demo": "vite-node ./.storybook/buildStorybook.ts --mode demo && vite preview --mode demo --config playground/vite.config.ts",
+        "demo:serve": "vite preview --mode demo --config playground/vite.config.ts",
+        "demo:serve:e2e": "cross-env E2E_TEST=true vite preview --mode demo --config playground/vite.config.ts",
         "watchTS": "tsc -b ./tsconfig.json --watch",
         "schemas:generate": "bash scripts/generate-ts-schemas/generate-schemas.sh",
         "schemas:variables": "bash scripts/generate-ts-schemas/setup-openapi-ts.sh",

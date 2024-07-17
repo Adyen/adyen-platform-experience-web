@@ -11,13 +11,22 @@
         "strict": true,
         "noUncheckedIndexedAccess": true,
         "lib": ["ESNext", "DOM", "DOM.Iterable"],
-        "stripInternal": true,
         "importHelpers": true,
-        "declarationMap": true
+        "baseUrl": "./",
+        "declarationMap": true,
+        "skipLibCheck": true,
+        "noEmit": true,
+        "sourceMap": true,
+        "declaration": true,
+        "outDir": "./dist",
+        "declarationDir": "./dist/types",
+        "jsxImportSource": "preact",
+        "jsx": "react-jsx",
+        "types": ["@testing-library/jest-dom", "node"],
+        "stripInternal": false
     },
+    "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.d.ts", "src/translations/*.json", "tests/**/*.ts"],
+    "exclude": ["node_modules", "dist", "config/inject-css.ts"],
     "files": [],
-    "references": [{ "path": "packages/lib" }],
-    "paths": {
-        "@adyen/adyen-platform-experience-web": ["packages/lib/src"]
-    }
+    "references": [{ "path": "packages/lib" }]
 }
