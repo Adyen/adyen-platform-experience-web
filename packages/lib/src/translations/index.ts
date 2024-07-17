@@ -8,19 +8,22 @@ import _nl_NL from './nl-NL.json';
 import _no_NO from './no-NO.json';
 import _pt_BR from './pt-BR.json';
 import _sv_SE from './sv-SE.json';
+import { SupportedLocaleFiles, Translations } from '../core/Localization/types';
 
-export const da_DK = { da_DK: _da_DK };
-export const de_DE = { de_DE: _de_DE };
+export const da_DK: { da_DK: Translations } = { da_DK: _da_DK };
+export const de_DE: { de_DE: Translations } = { de_DE: _de_DE };
 export const en_US = { en_US: _en_US };
-export const es_ES = { es_ES: _es_ES };
-export const fr_FR = { fr_FR: _fr_FR };
-export const it_IT = { it_IT: _it_IT };
-export const nl_NL = { nl_NL: _nl_NL };
-export const no_NO = { no_NO: _no_NO };
-export const pt_BR = { pt_BR: _pt_BR };
-export const sv_SE = { sv_SE: _sv_SE };
+export const es_ES: { es_ES: Translations } = { es_ES: _es_ES };
+export const fr_FR: { fr_FR: Translations } = { fr_FR: _fr_FR };
+export const it_IT: { it_IT: Translations } = { it_IT: _it_IT };
+export const nl_NL: { nl_NL: Translations } = { nl_NL: _nl_NL };
+export const no_NO: { no_NO: Translations } = { no_NO: _no_NO };
+export const pt_BR: { pt_BR: Translations } = { pt_BR: _pt_BR };
+export const sv_SE: { sv_SE: Translations } = { sv_SE: _sv_SE };
 
-export const all_locales = {
+export const all_locales: {
+    [K in Exclude<SupportedLocaleFiles, 'en_US'>]: Translations;
+} = {
     ...da_DK,
     ...de_DE,
     ...es_ES,
