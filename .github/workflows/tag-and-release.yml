@@ -26,7 +26,7 @@ jobs:
           echo "NEW_VERSION=$(jq -r .version package.json)" >> $GITHUB_ENV
 
       - name: Upload build as artifact for other jobs
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: adyen-adyen-platform-experience-web-${{ env.NEW_VERSION }}
           path: ./adyen-adyen-platform-experience-web-${{ env.NEW_VERSION }}.tgz
@@ -55,7 +55,7 @@ jobs:
             core.setOutput('upload_url', release.upload_url);
 
       - name: Upload Release Asset
-        uses: actions/upload-release-asset@v4
+        uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
