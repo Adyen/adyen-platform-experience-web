@@ -42,9 +42,12 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Get Release Tag
-        id: get_tag
+        id: get_release
         if: steps.changesets.outputs.published == 'true'
-        run: echo "::set-output name=tag::$(git describe --tags --abbrev=0)"
+        run: |
+          echo "release_info=$(git describe --tags --abbrev=0)" >> $GITHUB_ENV
+          echo "tag_name=$(echo $release_info | jq -r .tag_name)" >> $GITHUB_ENV
+          echo "upload_url=$(echo $release_info | jq -r .upload_url)" >> $GITHUB_ENV
 
       - name: Upload Release Asset
         uses: actions/upload-release-asset@v1
@@ -52,7 +55,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.changesets.outputs.publishedPackages[0].releaseUrl }}
+          upload_url: ${{ steps.get_release.outputs.upload_url }}
           asset_path: ./adyen-adyen-platform-experience-web-${{ env.NEW_VERSION }}.tgz
           asset_name: adyen-adyen-platform-experience-web-${{ env.NEW_VERSION }}.tgz
           asset_content_type: application/gzip
