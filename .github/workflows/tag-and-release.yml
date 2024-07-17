@@ -54,6 +54,11 @@ jobs:
             });
             core.setOutput('upload_url', release.upload_url);
 
+      - name: Debug upload URL
+        run: |
+          echo ${{ steps.get_release.outputs.upload_url }}
+          echo "adyen-adyen-platform-experience-web-${{ env.NEW_VERSION }}.tgz"
+
       - name: Upload Release Asset
         uses: actions/upload-release-asset@v1
         env:
