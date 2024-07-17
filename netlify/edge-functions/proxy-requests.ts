@@ -1,4 +1,4 @@
-import { realApiProxies } from '../../playground/src/endpoints/apis/realApiProxies.js';
+import { realApiProxies } from '../../playground/endpoints/apis/realApiProxies';
 
 export default async (request: Request, context: any) => {
     // @ts-ignore

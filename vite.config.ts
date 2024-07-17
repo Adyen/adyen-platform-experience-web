@@ -11,11 +11,11 @@ import { getEnvironment } from './envs/getEnvs';
 import { preact } from '@preact/preset-vite';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { checker } from 'vite-plugin-checker';
-import { realApiProxies } from './playground/src/endpoints/apis/realApiProxies';
+import { realApiProxies } from './playground/endpoints/apis/realApiProxies';
 const currentVersion = version();
 const externalDependencies = Object.keys(packageJson.dependencies);
 
-const playgroundDir = resolve(__dirname, 'src/pages');
+const playgroundDir = resolve(__dirname, 'playground/pages');
 const demoPlaygroundDir = resolve(__dirname, './');
 async function getPlaygroundEntrypoints() {
     const playgroundPages = await readdir(playgroundDir);
@@ -38,8 +38,8 @@ export default defineConfig(async ({ mode }) => {
     const isAnalyseMode = mode === 'analyse';
     const { apiConfigs, playground } = getEnvironment(mode);
     return {
-        root: mode === 'demo' ? demoPlaygroundDir : undefined,
-        base: './',
+        root: mode === 'demo' ? demoPlaygroundDir : './playground',
+        base: '',
         build:
             mode === 'demo'
                 ? {
@@ -115,9 +115,6 @@ export default defineConfig(async ({ mode }) => {
             port: playground.port,
             https: false,
             proxy: mode === 'mocked' ? undefined : realApiProxies(apiConfigs),
-            watch: {
-                ignored: ['!**/node_modules/@adyen/adyen-platform-experience-web/**'],
-            },
         },
         preview: {
             host: playground.host,
@@ -129,7 +126,7 @@ export default defineConfig(async ({ mode }) => {
             ['mocked', 'development'].includes(mode)
                 ? checker({
                       stylelint: {
-                          lintCommand: 'stylelint ../lib/src/**/*.scss',
+                          lintCommand: 'stylelint ../src/**/*.scss',
                       },
                   })
                 : undefined,

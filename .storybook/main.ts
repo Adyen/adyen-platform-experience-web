@@ -23,7 +23,7 @@ const config: StorybookConfig = {
                     ['mocked', 'development'].includes(process.env.VITE_MODE) &&
                     checker({
                         stylelint: {
-                            lintCommand: 'stylelint ../lib/src/**/*.scss',
+                            lintCommand: 'stylelint ../src/**/*.scss',
                         },
                     }),
             ],

@@ -23,13 +23,13 @@ jobs:
 
       - name: Determine the release version
         run: |
-          echo "NEW_VERSION=$(jq -r .version packages/lib/package.json)" >> $GITHUB_ENV
+          echo "NEW_VERSION=$(jq -r .version package.json)" >> $GITHUB_ENV
 
       - name: Upload build as artifact for other jobs
         uses: actions/upload-artifact@v3
         with:
           name: adyen-adyen-platform-experience-web-${{ env.NEW_VERSION }}
-          path: ./packages/lib/adyen-adyen-platform-experience-web-${{ env.NEW_VERSION }}.tgz
+          path: ./adyen-adyen-platform-experience-web-${{ env.NEW_VERSION }}.tgz
           retention-days: 1
 
       - name: Push tags and create a release

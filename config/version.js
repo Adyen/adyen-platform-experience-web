@@ -1,6 +1,6 @@
 import childProcess from 'child_process';
-import packageJson from '../../../package.json';
-import { uuid } from '../lib/src/utils';
+import packageJson from '../package.json';
+import { uuid } from '../src/utils';
 
 const currentVersion = () => {
     let COMMIT_HASH = null;
