@@ -41,19 +41,24 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Get Release Tag
+      - name: Get the release upload URL
         id: get_release
-        run: |
-          echo "release_info=$(git describe --tags --abbrev=0)" >> $GITHUB_ENV
-          echo "tag_name=$(echo $release_info | jq -r .tag_name)" >> $GITHUB_ENV
-          echo "upload_url=$(echo $release_info | jq -r .upload_url)" >> $GITHUB_ENV
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const response = await github.repos.getReleaseByTag({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              tag: context.ref
+            });
+            return response.data.upload_url;
 
       - name: Upload Release Asset
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.get_release.outputs.upload_url }}
+          upload_url: ${{ steps.get_release.outputs.result }}
           asset_path: ./adyen-adyen-platform-experience-web-${{ env.NEW_VERSION }}.tgz
           asset_name: adyen-adyen-platform-experience-web-${{ env.NEW_VERSION }}.tgz
           asset_content_type: application/gzip
