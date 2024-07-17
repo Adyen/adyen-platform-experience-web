@@ -85,7 +85,7 @@
     "version": "changeset version --snapshot",
     "changeset": "changeset",
     "changeset-tag": "changeset tag",
-    "create-tag": "npm run build:publish && npm run changeset-tag",
+    "create-tag": "npm run changeset-tag",
     "postbuild": "rm dist/mockServiceWorker.js"
   },
   "dependencies": {

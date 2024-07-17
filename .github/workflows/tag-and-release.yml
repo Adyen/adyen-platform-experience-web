@@ -40,3 +40,21 @@ jobs:
           publish: npm run create-tag
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Get the release upload URL
+        id: get_release
+        uses: octokit/request-action@v2
+        with:
+          route: GET /repos/${{ github.repository_owner }}/${{ github.event.repository.name }}/releases/tags/v${{ env.NEW_VERSION }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.get_release.outputs.data.upload_url }}
+          asset_path: ./adyen-adyen-platform-experience-web-${{ env.NEW_VERSION }}.tgz
+          asset_name: adyen-adyen-platform-experience-web-${{ env.NEW_VERSION }}.tgz
+          asset_content_type: application/gzip
