@@ -13,5 +13,6 @@ export const endpoints = (mode: string) => {
         transactionsTotals: `${baseUrl}/transactions/totals`,
         sessions: `\/api/authe/api/v1/sessions`,
         setup: `${baseUrl}/setup`,
+        reports: `${baseUrl}/reports`,
     };
 };

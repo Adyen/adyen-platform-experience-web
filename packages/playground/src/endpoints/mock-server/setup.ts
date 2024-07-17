@@ -42,6 +42,10 @@ export const setupMock = [
                         method: 'GET',
                         url: 'payouts',
                     },
+                    getReports: {
+                        method: 'GET',
+                        url: 'reports',
+                    },
                 },
             })
         );

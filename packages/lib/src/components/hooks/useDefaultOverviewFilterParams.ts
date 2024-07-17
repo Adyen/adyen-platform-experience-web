@@ -4,7 +4,7 @@ import { getTimeRangeSelectionDefaultPresetOptions } from '../internal/DatePicke
 import { DEFAULT_TRANSACTIONS_OVERVIEW_MULTI_SELECTION_FILTER_PARAMS } from '../external/TransactionsOverview/components/MultiSelectionFilter';
 import { FilterParam } from '../types';
 
-const getDefaultFilterParams = (type: 'transactions' | 'payouts') => {
+const getDefaultFilterParams = (type: 'transactions' | 'payouts' | 'reports') => {
     const timeRangeOptions = getTimeRangeSelectionDefaultPresetOptions();
     const defaultTimeRange = 'rangePreset.last30Days';
     const { from, to } = timeRangeOptions[defaultTimeRange];
