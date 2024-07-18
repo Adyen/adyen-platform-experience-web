@@ -1,8 +1,8 @@
 @use '../../../style';
 
 .adyen-pe-card {
+    border: style.token(border-width-s) solid style.token(color-outline-primary);
     border-radius: style.token(border-radius-m);
-    outline: style.token(color-outline-primary) style.token(border-width-s) solid;
     overflow: hidden;
 
     &--filled {
@@ -10,7 +10,7 @@
     }
 
     &--no-outline {
-        outline: 0;
+        border: 0;
     }
 
     &--clickable {

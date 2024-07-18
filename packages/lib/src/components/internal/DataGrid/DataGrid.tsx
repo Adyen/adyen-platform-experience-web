@@ -47,7 +47,7 @@ function DataGrid<
     return (
         <div style={{ width: '100%' }}>
             <DataGridProvider>
-                <DataGridTable {...props} />
+                <DataGridTable {...props} errorDisplay={errorDisplay} />
             </DataGridProvider>
         </div>
     );
@@ -95,7 +95,7 @@ function DataGridTable<
                         <DataGridBody<Items, Columns, ClickedField, CustomCells> {...props} columns={visibleCols as Columns} emptyBody={emptyBody} />
                     </div>
                     {showMessage &&
-                        (emptyBody ? (
+                        (emptyBody && !props.error ? (
                             <ErrorMessageDisplay
                                 title={props.emptyTableMessage?.title ?? 'thereAreNoResults'}
                                 message={props.emptyTableMessage?.message}

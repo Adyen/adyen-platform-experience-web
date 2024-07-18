@@ -1,48 +1,46 @@
+import { MAX_TRANSACTIONS_DATE_RANGE_MONTHS } from '../../../src/components/external/TransactionsOverview/components/TransactionsOverview/constants';
 import { Locator, Page } from '@playwright/test';
 import { BasePage } from '../basePage';
-import { getPagePath, getTranslatedKey } from '../../utils/utils';
+import { applyDateFilter, getPagePath, getTranslatedKey } from '../../utils/utils';
 import DataGridPage from '../internal-components/dataGrid';
 import FilterBarPage from '../internal-components/filterBar';
-import { ITransaction } from '../../../src';
-import { TRANSACTIONS } from '@adyen/adyen-platform-experience-web-mocks';
 
 export class TransactionListPage extends BasePage {
+    private readonly _applyDateFilter;
     private dataGrid: DataGridPage;
     public dataGridBody: Locator;
     public filterBar: Locator;
     public balanceAccountFilter: Locator;
-    public accountHolderFilter: Locator;
     public dateFilter: Locator;
-    public clearFilterButton: Locator;
-    public applyFilterButton: Locator;
-    public filterSingleInput: Locator;
     public firstRow: Locator;
-    public gridCount: number;
 
-    constructor(page: Page, mockedList: ITransaction[] = TRANSACTIONS, rootElementSelector = '.transactions-component-container') {
+    constructor(page: Page, rootElementSelector = '.transactions-component-container') {
         super(page, rootElementSelector, getPagePath('transactionList'));
-        const dataGrid = new DataGridPage(this.rootElement);
-        this.dataGrid = dataGrid;
-        this.dataGridBody = dataGrid.gridBody;
-        this.gridCount = mockedList.length;
-        this.firstRow = dataGrid.getRow();
+        this.dataGrid = new DataGridPage(this.rootElement);
+        this.dataGridBody = this.dataGrid.gridBody;
+        this.firstRow = this.dataGrid.getRow();
 
         const filterBar = new FilterBarPage(this.rootElement);
         this.filterBar = filterBar.rootElement;
         this.balanceAccountFilter = filterBar.getFilter(getTranslatedKey('balanceAccount'));
-        this.accountHolderFilter = filterBar.getFilter(getTranslatedKey('account'));
         this.dateFilter = filterBar.getFilter(getTranslatedKey('rangePreset.last30Days'));
-        this.clearFilterButton = filterBar.getFilterButton(getTranslatedKey('reset'));
-        this.applyFilterButton = filterBar.getFilterButton(getTranslatedKey('apply'));
-        this.filterSingleInput = this.filterBar.locator('input');
+
+        this._applyDateFilter = applyDateFilter(this.page, {
+            earliestDate: now => {
+                const earliest = new Date(now);
+                earliest.setMonth(earliest.getMonth() - MAX_TRANSACTIONS_DATE_RANGE_MONTHS);
+                return earliest;
+            },
+            latestDate: now => new Date(now),
+        });
     }
 
     getCell(id: string, row = 0) {
         return this.dataGrid.getCell(id, row);
     }
 
-    async clearSingleInput(filter: 'accountHolderFilter' | 'balanceAccountFilter') {
-        await this[filter].click();
-        await this.clearFilterButton.click();
+    async applyDateFilter(from: Date | number | string = Date(), to: Date | number | string = from) {
+        await this.dateFilter.click();
+        await this._applyDateFilter(from, to);
     }
 }
