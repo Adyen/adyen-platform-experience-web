@@ -55,7 +55,9 @@
         "prepare": "node ./prepare.js && bash ./scripts/process-package-lock.sh",
         "bump-version": "./scripts/bump-version.sh",
         "version": "changeset version",
-        "changeset": "changeset"
+        "changeset": "changeset",
+        "changeset-tag": "changeset tag",
+        "create-tag": "npm run changeset-tag"
     },
     "dependencies": {
         "concurrently": "^7.0.0"
