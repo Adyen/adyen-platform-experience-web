@@ -12,6 +12,7 @@ import useBalanceAccounts from '../../hooks/useBalanceAccounts';
 import { ExternalUIComponentProps } from '../../types';
 import { getErrorMessage } from '../../utils/getErrorMessage';
 import { ErrorMessageDisplay } from '../ErrorMessageDisplay/ErrorMessageDisplay';
+import Spinner from '../Spinner';
 import { DetailsComponentProps, DetailsWithId, TransactionDetailData } from './types';
 import Typography from '../Typography/Typography';
 import { TypographyVariant } from '../Typography/types';
@@ -68,6 +69,10 @@ export default function DataOverviewDetails(props: ExternalUIComponentProps<Deta
     }, [error, props.onContactSupport]);
 
     const detailsData = details ?? data;
+
+    if (isFetching) {
+        return <Spinner />;
+    }
 
     return (
         <div className="adyen-pe-overview-details">
