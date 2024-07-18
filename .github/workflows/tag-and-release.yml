@@ -5,11 +5,17 @@ on:
   workflow_dispatch:
 
   pull_request:
-    types: [opened, synchronize]
+    types:
+      - closed
+    branches:
+      - 'changeset-release/**'
+      - 'releases/**'
+      - 'main'
 
 jobs:
   create-github-release:
     runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' || (github.event.pull_request.merged == true && (startsWith(github.head_ref, 'bump/') || startsWith(github.head_ref, 'changeset-release/')))
     steps:
       - name: Checkout the repo
         uses: actions/checkout@v4
@@ -36,7 +42,6 @@ jobs:
         id: changesets
         uses: changesets/action@v1
         with:
-          # Include this to create GitHub releases and Git tags
           publish: npm run create-tag
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -63,3 +68,8 @@ jobs:
           asset_path: ./adyen-adyen-platform-experience-web-${{ env.NEW_VERSION }}.tgz
           asset_name: adyen-adyen-platform-experience-web-${{ env.NEW_VERSION }}.tgz
           asset_content_type: application/gzip
+
+  trigger-npm-publish:
+    needs: create-github-release
+    uses: adyen/adyen-platform-experience-web/.github/workflows/npm-publish.yml@main
+    secrets: inherit
