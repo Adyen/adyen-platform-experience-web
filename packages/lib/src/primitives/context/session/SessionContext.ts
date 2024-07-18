@@ -69,23 +69,21 @@ export class SessionContext<T, HttpParams extends any[] = any[]> {
         beforeHttp?: ((currentSession: T | undefined, signal: AbortSignal, ...args: HttpParams) => any) | null,
         ...args: HttpParams
     ) {
-        let _signal: AbortSignal | undefined;
         this._autofresh(true);
-
         while (true) {
             try {
                 // a no-op catch callback is used here (`noop`),
                 // to silence unnecessary unhandled promise rejection warnings
                 await this._refresher.promise.catch(noop);
 
-                _signal = this._deadline.signal;
+                const { signal } = this._deadline;
 
-                await beforeHttp?.(this._session, _signal, ...args);
+                await beforeHttp?.(this._session, signal, ...args);
                 this._assertSessionHttp(this._specification.http);
 
-                return await this._specification.http(this._session, _signal, ...args);
+                return await this._specification.http(this._session, signal, ...args);
             } catch (ex) {
-                if (ex !== ERR_SESSION_EXPIRED && !(_signal && _signal.aborted)) throw ex;
+                if (ex !== ERR_SESSION_EXPIRED) throw ex;
                 if (this._refresher.pending) continue;
                 this._deadline.elapse();
             }

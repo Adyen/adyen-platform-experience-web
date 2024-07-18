@@ -54,16 +54,17 @@ export class AuthSessionSpecification implements _AuthSessionSpecification {
         return deadlines;
     };
 
-    public http: _AuthSessionSpecification['http'] = async (session, sessionSignal, options: HttpOptions, data?: any) => {
+    public http: _AuthSessionSpecification['http'] = async (session, sessionSignal, httpOptions: HttpOptions, data?: any) => {
+        const { headers, signal, ...restOptions } = httpOptions;
         try {
             const sessionHttpOptions = {
-                ...options,
+                ...restOptions,
                 headers: {
-                    ...options.headers,
+                    ...headers,
                     ...(session && { Authorization: `Bearer ${session.token}` }),
                 },
                 errorHandler: this._errorHandler,
-                signal: isAbortSignal(options.signal) ? abortSignalForAny([sessionSignal, options.signal]) : sessionSignal,
+                signal: isAbortSignal(signal) ? abortSignalForAny([sessionSignal, signal]) : sessionSignal,
             };
             return await _http(sessionHttpOptions, data);
         } catch (ex: any) {
