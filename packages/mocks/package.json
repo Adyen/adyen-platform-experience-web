@@ -9,6 +9,6 @@
         "url": "https://support.adyen.com/"
     },
     "dependencies": {
-        "@adyen/adyen-platform-experience-web": "^1.1.0"
+        "@adyen/adyen-platform-experience-web": "^1.0.1"
     }
 }
