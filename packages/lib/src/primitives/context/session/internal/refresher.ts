@@ -6,15 +6,14 @@ import { ERR_SESSION_FACTORY_UNAVAILABLE, ERR_SESSION_INVALID, ERR_SESSION_REFRE
 import type { SessionRefresher, SessionRefresherContext, SessionRefresherEmitter } from './types';
 import type { SessionEventType, SessionSpecification } from '../types';
 
-const _sessionPlaceholder = Symbol('<next_session>');
-
 export const createSessionRefresher = <T extends any>(emitter: Emitter<SessionEventType>, specification: SessionSpecification<T>) => {
     let _refreshPending = false;
     let _refreshingPromise: Promise<void> | undefined;
-    let _refreshingSignal: AbortSignal | undefined;
+    let _refreshingSignal: AbortSignal;
     let _waitForRefreshingPromise = true;
     let _session: T | undefined;
 
+    const _sessionPlaceholder = Symbol('<next_session>');
     const _refresherEmitter: SessionRefresherEmitter = createEventEmitter();
 
     function _assertSession(value: any): asserts value is T {
@@ -29,12 +28,16 @@ export const createSessionRefresher = <T extends any>(emitter: Emitter<SessionEv
         if (!isFunction(value)) throw ERR_SESSION_FACTORY_UNAVAILABLE;
     }
 
-    const _refreshPromisor = createPromisor(async (promisorSignal, signal?: AbortSignal | null | undefined) => {
-        const abortSignal = isAbortSignal(signal) ? abortSignalForAny([signal, promisorSignal]) : promisorSignal;
+    const _refreshPromisor = createPromisor((promisorSignal, signal?: AbortSignal | null | undefined) => {
+        if (!_refreshingSignal) _refreshingSignal = promisorSignal;
+        else return _refreshSession(isAbortSignal(signal) ? abortSignalForAny([signal, promisorSignal]) : promisorSignal);
+    });
+
+    const _refreshSession = async (signal: AbortSignal) => {
         let nextSession: any = _sessionPlaceholder;
         try {
             _refreshPending = false;
-            _refreshingSignal = abortSignal;
+            _refreshingSignal = signal;
 
             if (_waitForRefreshingPromise) {
                 await (_refreshingPromise ??= (async () => {
@@ -57,11 +60,11 @@ export const createSessionRefresher = <T extends any>(emitter: Emitter<SessionEv
 
             _assertSessionFactory(specification.onRefresh);
 
-            nextSession = await tryResolve(() => specification.onRefresh(_session, abortSignal)).finally(() => {
-                if (abortSignal.aborted) throw ERR_SESSION_REFRESH_ABORTED;
+            nextSession = await tryResolve(() => specification.onRefresh(_session, signal)).finally(() => {
+                if (signal.aborted) throw ERR_SESSION_REFRESH_ABORTED;
             });
         } finally {
-            if (_refreshingSignal === abortSignal) {
+            if (_refreshingSignal === signal) {
                 //////////////////////////////////////////////////////////////////
                 // These session refresh completion steps should run only once, //
                 // at the end of each batch of session refresh attempts (only   //
@@ -82,9 +85,12 @@ export const createSessionRefresher = <T extends any>(emitter: Emitter<SessionEv
                 }
             }
         }
-    });
+    };
 
     emitter.on(EVT_SESSION_EXPIRED, () => (_refreshPending = !_refreshingPromise));
+
+    // Initial refresh promisor call to capture the refreshing signal
+    void _refreshPromisor();
 
     return struct<SessionRefresher<T>>({
         context: enumerable(
@@ -96,7 +102,7 @@ export const createSessionRefresher = <T extends any>(emitter: Emitter<SessionEv
         on: enumerable(_refresherEmitter.on),
         pending: getter(() => _refreshPending),
         promise: getter(() => _refreshPromisor.promise),
-        refresh: enumerable(_refreshPromisor.bind(null)),
+        refresh: enumerable(_refreshPromisor.bind(undefined)),
         refreshing: getter(() => !!_refreshingPromise),
         session: getter(() => _session),
         signal: getter(() => _refreshingSignal),

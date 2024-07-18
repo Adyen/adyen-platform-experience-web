@@ -29,7 +29,7 @@ export interface SessionRefresher<T extends any> {
     readonly refresh: (signal?: AbortSignal | undefined) => Promise<void>;
     get refreshing(): boolean;
     get session(): T | undefined;
-    get signal(): AbortSignal | undefined;
+    get signal(): AbortSignal;
 }
 
 export interface SessionRefresherContext<T extends any> {

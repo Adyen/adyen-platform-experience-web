@@ -1,10 +1,11 @@
 // @vitest-environment jsdom
 import { beforeEach, describe, expect, test, vi } from 'vitest';
-import { ALREADY_RESOLVED_PROMISE, getPromiseState } from '../../../../utils';
+import { getPromiseState } from '../../../../utils';
 import { PromiseState } from '../../../../utils/types';
 import { INTERNAL_EVT_SESSION_READY } from './constants';
 import { ERR_SESSION_FACTORY_UNAVAILABLE, ERR_SESSION_INVALID, ERR_SESSION_REFRESH_ABORTED } from '../constants';
 import { augmentSessionRefreshContext, SessionRefreshContext } from '../__testing__/fixtures';
+import { waitForTicks } from '../__testing__/utils';
 
 vi.mock('../constants', async importOriginal => {
     const mod = await importOriginal<typeof import('../constants')>();
@@ -35,7 +36,7 @@ describe('createSessionRefresher', () => {
 
             expect(refresher.refreshing).toBe(false);
             expect(refresher.session).toBe(data.session);
-            expect(refresher.signal!.aborted).toBe(data.signal ? data.signal.aborted : false);
+            expect(refresher.signal.aborted).toBe(data.signal ? data.signal.aborted : false);
 
             if (actual.length > 0 && actual.length === expected.length) {
                 // session event was dispatched and arrays have been populated
@@ -54,7 +55,7 @@ describe('createSessionRefresher', () => {
             actual.length = expected.length = 0;
 
             refresher.on(INTERNAL_EVT_SESSION_READY, ({ timeStamp }) => {
-                actual.push(refresher.refreshing, refresher.signal!.aborted, refresher.session, timeStamp);
+                actual.push(refresher.refreshing, refresher.signal.aborted, refresher.session, timeStamp);
                 expected.push(true, false, session, Date.now());
             });
 
@@ -62,14 +63,13 @@ describe('createSessionRefresher', () => {
 
             expect(refresher.refreshing).toBe(false);
             expect(refresher.session).toBeUndefined();
-            expect(refresher.signal).toBeUndefined();
+            expect(refresher.signal.aborted).toBe(false);
         };
 
         ctx.duringRefresh = async () => {
             const { refresher } = ctx;
             expect(refresher.refreshing).toBe(true);
-            expect(refresher.signal).not.toBeUndefined();
-            expect(refresher.signal!.aborted).toBe(false);
+            expect(refresher.signal.aborted).toBe(false);
             expect(await getPromiseState(refresher.promise)).toBe(PromiseState.PENDING);
         };
 
@@ -158,7 +158,7 @@ describe('createSessionRefresher', () => {
         const assertions = ctx.refreshErrorAssertions(ERR_SESSION_REFRESH_ABORTED, controller.signal);
 
         // wait for next tick and abort the signal
-        await ALREADY_RESOLVED_PROMISE;
+        await waitForTicks();
         controller.abort();
 
         await assertions;
