@@ -26,7 +26,7 @@ jobs:
           echo "NEW_VERSION=$(jq -r .version package.json)" >> $GITHUB_ENV
 
       - name: Upload build as artifact for other jobs
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: adyen-adyen-platform-experience-web-${{ env.NEW_VERSION }}
           path: ./adyen-adyen-platform-experience-web-${{ env.NEW_VERSION }}.tgz
@@ -37,6 +37,29 @@ jobs:
         uses: changesets/action@v1
         with:
           # Include this to create GitHub releases and Git tags
-          publish: npm run build:publish && npm run create-tag
+          publish: npm run create-tag
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Get the release upload URL
+        id: get_release
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const tag = `v${{ env.NEW_VERSION }}`;
+            const { data: release } = await github.rest.repos.getReleaseByTag({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              tag: tag
+            });
+            core.setOutput('upload_url', release.upload_url);
+
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.get_release.outputs.upload_url }}
+          asset_path: ./adyen-adyen-platform-experience-web-${{ env.NEW_VERSION }}.tgz
+          asset_name: adyen-adyen-platform-experience-web-${{ env.NEW_VERSION }}.tgz
+          asset_content_type: application/gzip
