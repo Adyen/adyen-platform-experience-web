@@ -46,6 +46,10 @@ export const setupMock = [
                         method: 'GET',
                         url: 'reports',
                     },
+                    downloadReport: {
+                        method: 'GET',
+                        url: 'reports/download',
+                    },
                 },
             })
         );

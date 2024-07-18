@@ -9,7 +9,12 @@ export async function enableServerInMockedMode(enabled?: boolean) {
     if (enabled || MOCK_MODES.includes(env.VITE_MODE || env.MODE)) {
         await mockWorker.start({
             onUnhandledRequest: (request, print) => {
-                if (request.url.pathname.includes('images/logos/') || request.url.pathname.includes('node_modules')) return;
+                if (
+                    request.url.pathname.includes('images/logos/') ||
+                    request.url.pathname.includes('resources/report.csv') ||
+                    request.url.pathname.includes('node_modules')
+                )
+                    return;
 
                 // Otherwise, print a warning that an API request is not correctly mocked
                 print.warning();

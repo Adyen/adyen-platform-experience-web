@@ -43,3 +43,4 @@ playwright-report
 test-results
 
 scripts/generate-ts-schemas/variables
+/packages/playground/public/mockFiles/*

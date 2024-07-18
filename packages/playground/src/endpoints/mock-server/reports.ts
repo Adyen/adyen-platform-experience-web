@@ -2,13 +2,15 @@ import { rest } from 'msw';
 import { endpoints } from '../endpoints';
 import { compareDates, delay, getPaginationLinks } from './utils';
 import { getReports } from '@adyen/adyen-platform-experience-web-mocks';
+import { context } from 'msw';
 
-const PREFIX = endpoints('mock').reports;
+const REPORTS = endpoints('mock').reports;
+const DOWNLOAD = endpoints('mock').download;
 const networkError = false;
 const defaultPaginationLimit = 20;
 
 export const reportsMock = [
-    rest.get(`${PREFIX}`, (req, res, ctx) => {
+    rest.get(`${REPORTS}`, (req, res, ctx) => {
         if (networkError) {
             return res.networkError('Failed to connect');
         }
@@ -41,5 +43,20 @@ export const reportsMock = [
         const data = reports.slice(cursor, cursor + limit);
 
         return res(delay(400), ctx.json({ data, _links: getPaginationLinks(cursor, limit, reports.length) }));
+    }),
+
+    rest.get(`${DOWNLOAD}`, async (req, res, ctx) => {
+        const balanceAccountId = req.url.searchParams.get('balanceAccountId');
+        const createdAt = req.url.searchParams.get('createdAt');
+
+        const buffer = await fetch(`/mockFiles/report.csv`).then(response => response.arrayBuffer());
+
+        return res(
+            context.set({
+                'Content-Disposition': 'attachment; filename=report.csv',
+                'Content-Type': ['text/csv'],
+            }),
+            ctx.body(buffer)
+        );
     }),
 ];

@@ -41,6 +41,10 @@ export async function http<T>(options: HttpOptions, data?: any): Promise<T> {
 
             if (res.ok) {
                 try {
+                    //TODO: when backend is ready double check this logic
+                    if (res.headers.get('Content-Type') === 'text/csv') {
+                        return await res.blob();
+                    }
                     // This could throw an exception in one of these two cases:
                     //   (1) if response has no body content
                     //   (2) if response body content is not valid JSON
