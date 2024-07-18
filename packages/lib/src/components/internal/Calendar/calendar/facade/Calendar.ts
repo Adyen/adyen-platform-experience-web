@@ -489,8 +489,8 @@ export default class Calendar {
         }
 
         const cursor = this.#frame.cursor;
-        const fromTimestamp = this.#frame.getTimestampAtIndex(cursor);
-        const toTimestamp = this.#frame.getTimestampAtIndex(cursor + 1) - 1;
+        const fromTimestamp = Math.max(this.#frame.getTimestampAtIndex(cursor), this.#frame.timeslice.from);
+        const toTimestamp = Math.min(this.#frame.getTimestampAtIndex(cursor + 1) - 1, this.#frame.timeslice.to);
         const range = this.#rangeOffsets;
 
         if (this.#highlightSelection === SELECT_ONE || this.#frame.blankSelection || range) {
@@ -519,7 +519,10 @@ export default class Calendar {
 
             if (fromTimestamp <= this.#frame.selectionStart!) {
                 const selectionStartDay = new Date(this.#frame.selectionStart!);
-                const selectionStartDayEndTimestamp = selectionStartDay.setDate(selectionStartDay.getDate() + 1) - 1;
+                const selectionStartDayEndTimestamp = Math.min(
+                    selectionStartDay.setDate(selectionStartDay.getDate() + 1) - 1,
+                    this.#frame.timeslice.to
+                );
 
                 if (fromTimestamp === this.#frame.selectionStart! && toTimestamp <= selectionStartDayEndTimestamp) {
                     this.#frame.updateSelection(toTimestamp, SELECTION_TO);
@@ -528,7 +531,7 @@ export default class Calendar {
                 this.#frame.updateSelection(fromTimestamp, SELECTION_FROM);
             } else {
                 const selectionEndDay = new Date(this.#frame.selectionEnd!);
-                const selectionEndDayStartTimestamp = selectionEndDay.setHours(0, 0, 0, 0);
+                const selectionEndDayStartTimestamp = Math.max(selectionEndDay.setHours(0, 0, 0, 0), this.#frame.timeslice.from);
 
                 if (fromTimestamp <= this.#frame.selectionEnd! && fromTimestamp >= selectionEndDayStartTimestamp) {
                     this.#frame.updateSelection(fromTimestamp, SELECTION_FROM);

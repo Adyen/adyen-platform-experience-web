@@ -1,4 +1,4 @@
-import { DATE_FORMAT } from '../../../internal/DataOverviewDisplay/constants';
+import { DATE_FORMAT_TRANSACTION_DETAILS } from '../../../internal/DataOverviewDisplay/constants';
 import { TransactionDetailData } from '../types';
 import TransactionDataSkeleton from './TransactionDataSkeleton';
 import { Image } from '../../../internal/Image/Image';
@@ -11,7 +11,10 @@ import './TransactionData.scss';
 
 export const TransactionData = ({ transaction, isFetching }: { transaction: TransactionDetailData; isFetching?: boolean }) => {
     const { i18n } = useCoreContext();
-    const createdAt = useMemo(() => (transaction ? i18n.date(new Date(transaction.createdAt), DATE_FORMAT).toString() : ''), [transaction, i18n]);
+    const createdAt = useMemo(
+        () => (transaction ? i18n.date(new Date(transaction.createdAt), DATE_FORMAT_TRANSACTION_DETAILS).toString() : ''),
+        [transaction, i18n]
+    );
 
     const amountStyle = transaction?.status === 'Booked' ? 'default' : transaction?.status === 'Reversed' ? 'error' : 'pending';
 

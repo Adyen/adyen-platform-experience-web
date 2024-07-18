@@ -57,6 +57,7 @@ $adyen-icon-touch-size: style.token(spacer-110);
     background-color: style.token(color-background-primary);
     border-radius: style.token(border-radius-l);
     cursor: initial;
+    max-height: 80vh;
     opacity: 0;
     overflow-y: auto;
     position: fixed;
