@@ -2,7 +2,7 @@ import { AdyenPlatformExperience, TransactionDetails, all_locales } from '../../
 import { getDefaultID, getSearchParameters } from '../../utils/utils';
 import '../../utils/createPages';
 import '../../assets/style/style.scss';
-import { enableServerInMockedMode } from '../../mock-server/utils';
+import { enableServerInMockedMode } from '../../../mocks/mock-server/utils';
 import sessionRequest from '../../utils/sessionRequest';
 import { createLanguageButtons } from '../../utils/createLanguageButtons';
 

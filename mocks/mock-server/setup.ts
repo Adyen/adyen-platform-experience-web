@@ -1,5 +1,5 @@
 import { rest } from 'msw';
-import { endpoints } from '../endpoints/endpoints';
+import { endpoints } from '../../playground/endpoints/endpoints';
 import { delay } from './utils';
 
 const networkError = false;
@@ -41,6 +41,14 @@ export const setupMock = [
                     getPayouts: {
                         method: 'GET',
                         url: 'payouts',
+                    },
+                    getReports: {
+                        method: 'GET',
+                        url: 'reports',
+                    },
+                    downloadReport: {
+                        method: 'GET',
+                        url: 'reports/download',
                     },
                 },
             })

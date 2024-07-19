@@ -1,6 +1,6 @@
 import { AuthSession } from './session/AuthSession';
 import type { HttpOptions } from '../Http/types';
-import type { EndpointName, EndpointsOperations, SetupEndpoint } from '../../types/api/endpoints';
+import { EndpointData, EndpointName, EndpointsOperations, SetupEndpoint } from '../../types/api/endpoints';
 import type { Promised } from '../../utils/types';
 
 type _Params<T extends Record<string, any>> = T['parameters'];
@@ -17,9 +17,7 @@ type _EndpointHttpCallable<Endpoint extends EndpointName> = _RequiresParameter<E
 export type EndpointHttpCallable<Endpoint extends EndpointName> = Endpoint extends Endpoint ? _EndpointHttpCallable<Endpoint> : never;
 export type EndpointHttpCallables<Endpoint extends EndpointName = EndpointName> = NonNullable<SetupContext['endpoints'][Endpoint]>;
 
-export type EndpointSuccessResponse<Endpoint extends EndpointName> = Endpoint extends Endpoint
-    ? EndpointsOperations[Endpoint]['responses'][200]['content']['application/json']
-    : never;
+export type EndpointSuccessResponse<Endpoint extends EndpointName> = Endpoint extends Endpoint ? EndpointData<Endpoint> : never;
 
 export interface AuthProviderProps {
     children?: any;

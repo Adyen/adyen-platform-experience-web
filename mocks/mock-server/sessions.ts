@@ -1,5 +1,5 @@
 import { rest } from 'msw';
-import { endpoints } from '../endpoints/endpoints';
+import { endpoints } from '../../playground/endpoints/endpoints';
 
 const PREFIX = endpoints('mock').sessions;
 
