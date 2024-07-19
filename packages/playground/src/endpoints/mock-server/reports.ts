@@ -1,11 +1,10 @@
-import { rest } from 'msw';
+import { rest, context } from 'msw';
 import { endpoints } from '../endpoints';
 import { compareDates, delay, getPaginationLinks } from './utils';
 import { getReports } from '@adyen/adyen-platform-experience-web-mocks';
-import { context } from 'msw';
 
 const REPORTS = endpoints('mock').reports;
-const DOWNLOAD = endpoints('mock').download;
+const DOWNLOAD = endpoints('mock').downloadReport;
 const networkError = false;
 const defaultPaginationLimit = 20;
 
@@ -22,21 +21,12 @@ export const reportsMock = [
         const cursor = +(req.url.searchParams.get('cursor') ?? 0);
 
         let reports = balanceAccountId ? getReports(balanceAccountId) : [];
-        console.log('balanceAccountId ', balanceAccountId);
-        console.log('reports ', reports);
-        if (balanceAccountId || createdSince || createdUntil) {
+
+        if (createdSince || createdUntil) {
             reports = reports.filter(
                 report =>
                     (!createdSince || compareDates(report.createdAt, createdSince, 'ge')) &&
                     (!createdUntil || compareDates(report.createdAt, createdUntil, 'le'))
-            );
-        }
-
-        if (createdSince || createdUntil) {
-            reports = reports.filter(
-                payout =>
-                    (!createdSince || compareDates(payout.createdAt, createdSince, 'ge')) &&
-                    (!createdUntil || compareDates(payout.createdAt, createdUntil, 'le'))
             );
         }
 

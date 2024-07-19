@@ -14,6 +14,6 @@ export const endpoints = (mode: string) => {
         sessions: `\/api/authe/api/v1/sessions`,
         setup: `${baseUrl}/setup`,
         reports: `${baseUrl}/reports`,
-        download: `${baseUrl}/reports/download`,
+        downloadReport: `${baseUrl}/reports/download`,
     };
 };

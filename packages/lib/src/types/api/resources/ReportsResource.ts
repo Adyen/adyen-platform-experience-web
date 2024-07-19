@@ -91,7 +91,7 @@ export interface operations {
             /** @description OK - the request has succeeded. */
             200: {
                 content: {
-                    "text/csv": components["schemas"]["ReportsResponseDTO"];
+                    "text/csv": components["schemas"]["DownloadReportResponseDTO"];
                 };
             };
         };
