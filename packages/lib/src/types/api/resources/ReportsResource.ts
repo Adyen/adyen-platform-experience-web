@@ -19,7 +19,7 @@ export type webhooks = Record<string, never>;
 
 export interface components {
     schemas: {
-        /** @description Payouts made within the filters provided for given balanceAccountId */
+        /** @description Reports made within the filters provided for given balanceAccountId */
         ReportsDTO: {
             /**
              * Format: date-time
@@ -44,7 +44,7 @@ export interface components {
         };
         ReportsResponseDTO: {
             _links: components["schemas"]["Links"];
-            /** @description Payouts made within the filters provided for given balanceAccountId */
+            /** @description Reports made within the filters provided for given balanceAccountId */
             data: components["schemas"]["ReportsDTO"][];
         };
         DownloadReportResponseDTO: {
@@ -65,8 +65,8 @@ export type external = Record<string, never>;
 export interface operations {
 
     /**
-     * Get payouts
-     * @description Given filters, provides list of payouts for a balance account
+     * Get reports
+     * @description Given filters, provides list of reports for a balance account
      */
     getReports: {
         parameters: {
