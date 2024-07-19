@@ -40,9 +40,7 @@ export interface components {
             /** @description Reports made within the filters provided for given balanceAccountId */
             data: components["schemas"]["ReportsDTO"][];
         };
-        DownloadReportResponseDTO: {
-            data: Uint8Array;
-        };
+        DownloadReportResponseDTO: Uint8Array;
     };
     responses: never;
     parameters: never;

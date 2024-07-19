@@ -41,14 +41,18 @@ export async function http<T>(options: HttpOptions, data?: any): Promise<T> {
 
             if (res.ok) {
                 try {
+                    const contentType = res.headers.get('Content-Type');
+
                     //TODO: when backend is ready double check this logic
-                    if (res.headers.get('Content-Type') === 'text/csv') {
-                        return await res.blob();
+                    switch (contentType) {
+                        case 'application/json':
+                            // This could throw an exception in one of these two cases:
+                            //   (1) if response has no body content
+                            //   (2) if response body content is not valid JSON
+                            return await res.json(); // (!!)
+                        default:
+                            return await res.blob();
                     }
-                    // This could throw an exception in one of these two cases:
-                    //   (1) if response has no body content
-                    //   (2) if response body content is not valid JSON
-                    return await res.json(); // (!!)
                 } catch (ex) {
                     // If it does throw an exception, the exception will be propagated to the caller (unhandled).
                     errorPassThrough = true;
