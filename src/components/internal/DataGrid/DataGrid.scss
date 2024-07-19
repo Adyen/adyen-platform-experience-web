@@ -136,10 +136,6 @@
         }
     }
 
-    .adyen-pe-spinner__wrapper {
-        padding: style.token(spacer-130);
-    }
-
     &--outline {
         border: style.token(border-width-s) solid style.token(color-outline-secondary);
         border-radius: style.token(border-radius-m);

@@ -87,6 +87,8 @@ interface _DataOverviewComponentProps {
     showDetails?: boolean;
 }
 
+export interface ReportsOverviewComponentProps extends _DataOverviewComponentProps {}
+
 export interface TransactionOverviewComponentProps
     extends _DataOverviewComponentProps,
         _DataOverviewSelectionProps<{ id: string; showModal: () => void }> {}

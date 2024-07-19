@@ -13,6 +13,7 @@ export const DATE_FORMAT_TRANSACTION_DETAILS: Intl.DateTimeFormatOptions = {
     year: 'numeric',
     hour: '2-digit',
     minute: '2-digit',
+    second: undefined,
     timeZoneName: 'shortOffset',
 };
 
@@ -27,4 +28,10 @@ export const DATE_FORMAT_PAYOUTS_DETAILS: Intl.DateTimeFormatOptions = {
     month: 'long',
     day: 'numeric',
     year: 'numeric',
+};
+
+export const DATE_FORMAT_REPORT_FILE_NAME: Intl.DateTimeFormatOptions = {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
 };

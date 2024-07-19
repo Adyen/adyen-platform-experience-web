@@ -31,7 +31,7 @@ export function useFetch<QueryFn extends (...args: any) => Promise<any>, T exten
     params,
 }: UseFetchConfig<QueryFn>): State<T> {
     // TODO cache endpoint calls
-    const cache = useRef<Cache<T>>(new Map());
+    // const cache = useRef<Cache<T>>(new Map());
     // Used to prevent state update if the component is unmounted
     const cancelRequest = useRef<boolean>(false);
     const initialState: State<T> = {
