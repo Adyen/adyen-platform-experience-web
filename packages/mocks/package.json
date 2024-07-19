@@ -1,4 +1,5 @@
 {
+    "private": true,
     "name": "@adyen/adyen-platform-experience-web-mocks",
     "version": "1.0.0",
     "main": "./src/index.ts",
@@ -8,6 +9,6 @@
         "url": "https://support.adyen.com/"
     },
     "dependencies": {
-        "@adyen/adyen-platform-experience-web": "^1.0.0-beta.3"
+        "@adyen/adyen-platform-experience-web": "^1.0.1"
     }
 }
