@@ -20,8 +20,6 @@ function downloadBlob(blob: any, filename: any) {
     a.href = url;
     a.download = filename || 'download';
 
-    console.log('filename ', filename);
-
     const clickHandler = () => {
         setTimeout(() => {
             URL.revokeObjectURL(url);
