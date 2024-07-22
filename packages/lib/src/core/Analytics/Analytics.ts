@@ -3,7 +3,8 @@ import postTelemetry from './analytics/post-telemetry';
 import collectId from './analytics/collect-id';
 import { boolOrFalse } from '../../utils';
 import EventsQueue from './EventsQueue';
-import { CoreOptions } from '../types';
+import type { CoreOptions } from '../types';
+import type { AnalyticsOptions } from './types';
 
 class Analytics {
     private static defaultProps = {
@@ -20,7 +21,7 @@ class Analytics {
     private readonly queue = new EventsQueue();
     public readonly collectId;
 
-    constructor({ loadingContext, locale, analytics }: CoreOptions<any> & { loadingContext: string }) {
+    constructor({ analytics, loadingContext, locale }: CoreOptions<any> & { analytics?: AnalyticsOptions; loadingContext: string }) {
         this.props = { ...Analytics.defaultProps, ...analytics };
         this.logEvent = logEvent({ loadingContext, locale });
         this.logTelemetry = postTelemetry({ loadingContext, locale });

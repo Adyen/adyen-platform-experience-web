@@ -1,5 +1,4 @@
 import type { SessionRequest } from './Auth';
-import type { AnalyticsOptions } from './Analytics/types';
 import type { CustomTranslations as Translations, LangFile } from './Localization/types';
 import type { KeyOfRecord, WithReplacedUnderscoreOrDash } from '../utils/types';
 import AdyenPlatformExperienceError from './Errors/AdyenPlatformExperienceError';
@@ -11,11 +10,6 @@ type CreateLocalesUnionFromAvailableTranslations<T extends LangFile[]> = T exten
 type CreateLocalesUnionFromCustomTranslations<T extends Translations> = Extract<KeyOfRecord<T extends Translations ? T : {}>, string>;
 
 interface _CoreOptions<AvailableTranslations extends LangFile[] = [], CustomTranslations extends Translations = {}> {
-    /**
-     * @internal
-     */
-    analytics?: AnalyticsOptions;
-
     availableTranslations?: AvailableTranslations;
     balanceAccountId?: string;
 
