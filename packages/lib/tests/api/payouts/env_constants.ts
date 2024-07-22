@@ -3,15 +3,6 @@ import dotenv from 'dotenv';
 
 dotenv.config({ path: './envs/.env' });
 
-const SESSION_ROLES = ['Transactions Overview Component: View', 'Payouts Overview Component: View'];
-
-export const SESSION = {
-    accountHolder: process.env.SESSION_ACCOUNT_HOLDER,
-    roles: SESSION_ROLES,
-    url: process.env.SESSION_API_URL,
-    api_key: process.env.API_KEY,
-};
-
 const LIVE = {
     balanceAccountId: process.env.BALANCE_ACCOUNT,
     createdSince: '2024-05-14T00:00:00.000Z',
