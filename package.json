@@ -57,7 +57,8 @@
         "version": "changeset version",
         "changeset": "changeset",
         "changeset-tag": "changeset tag",
-        "create-tag": "npm run changeset-tag"
+        "create-tag": "npm run changeset-tag",
+        "test:api-e2e": "playwright test --project api"
     },
     "dependencies": {
         "concurrently": "^7.0.0"
