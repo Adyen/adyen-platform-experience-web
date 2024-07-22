@@ -27,7 +27,6 @@ enableServerInMockedMode()
             core,
             id: id ?? DEFAULT_PAYOUT_ID,
             date: '2024-06-09T00:00:00.000Z',
-            title: 'payoutDetails',
             onContactSupport: () => {},
         });
 

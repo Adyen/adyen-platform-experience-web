@@ -26,7 +26,6 @@ enableServerInMockedMode()
         const transactionDetailsComponent = new TransactionDetails({
             core,
             id: id ?? DEFAULT_TRANSACTION_ID,
-            title: 'transactionDetails',
             onContactSupport: () => {},
         });
 
