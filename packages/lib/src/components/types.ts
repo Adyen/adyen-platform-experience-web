@@ -38,15 +38,12 @@ export interface IFormElement<P> {
 export type UIElementStatus = 'ready' | 'loading' | 'error' | 'success';
 
 export type SetTriggerValidation = (callback: (schema?: Record<string, any>) => void) => void;
+
 export interface UIElementProps {
-    id?: string;
-    name?: string;
-    ref?: any;
+    hideTitle?: boolean;
     onContactSupport?: () => void;
-    setUIElementStatus?: (status: string) => void;
     onError?: onErrorHandler;
-    /** @internal */
-    elementRef?: any;
+    ref?: any;
 }
 
 export interface FormProps<P> {
@@ -72,7 +69,7 @@ export type BaseElementState = {
     isValid?: boolean;
 };
 
-export type _UIComponentProps<T> = BaseElementProps & UIElementProps & T & {};
+export type _UIComponentProps<T> = BaseElementProps & Omit<UIElementProps, 'ref'> & T & {};
 
 export type ExternalUIComponentProps<T> = UIElementProps & T & {};
 
@@ -83,16 +80,11 @@ interface _DataOverviewSelectionProps<T extends { showModal: () => void } = { sh
 }
 
 interface _DataOverviewComponentProps {
-    name?: string;
-    elementRef?: UIElement<_DataOverviewComponentProps> | null;
-    onFiltersChanged?: (filters: { [P in FilterParam]?: string }) => any;
-    onLimitChanged?: (limit: number) => any;
-    preferredLimit?: 10 | 20;
     allowLimitSelection?: boolean;
-    showDetails?: boolean;
-    hideTitle?: boolean;
-    core: Core<any>;
     balanceAccountId?: string;
+    onFiltersChanged?: (filters: { [P in FilterParam]?: string }) => any;
+    preferredLimit?: 10 | 20;
+    showDetails?: boolean;
 }
 
 export interface TransactionOverviewComponentProps

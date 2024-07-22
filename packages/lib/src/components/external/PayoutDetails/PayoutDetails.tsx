@@ -8,7 +8,6 @@ export class PayoutElement extends UIElement<PayoutDetailsWithIdProps> {
 
     constructor(props: _UIComponentProps<PayoutDetailsWithIdProps>) {
         super(props);
-        this.elementRef = (props && props.elementRef) || this;
         this.componentToRender = this.componentToRender.bind(this);
     }
 

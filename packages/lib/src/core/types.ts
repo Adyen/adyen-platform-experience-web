@@ -11,7 +11,12 @@ type CreateLocalesUnionFromCustomTranslations<T extends Translations> = Extract<
 
 interface _CoreOptions<AvailableTranslations extends LangFile[] = [], CustomTranslations extends Translations = {}> {
     availableTranslations?: AvailableTranslations;
-    balanceAccountId?: string;
+
+    /**
+     * Core-level balance account config
+     */
+    // [TODO]: Expose when expected behavior has been decided
+    // balanceAccountId?: string;
 
     /**
      * Use test. When you're ready to accept live payments, change the value to one of our {@link https://docs.adyen.com/checkout/drop-in-web#testing-your-integration | live environments}.
@@ -28,7 +33,7 @@ interface _CoreOptions<AvailableTranslations extends LangFile[] = [], CustomTran
         | (AvailableTranslations extends AvailableTranslations ? CreateLocalesUnionFromAvailableTranslations<AvailableTranslations> : never)
         | (CustomTranslations extends CustomTranslations ? CreateLocalesUnionFromCustomTranslations<CustomTranslations> : never);
 
-    onError?: (err: any) => any;
+    onError?: onErrorHandler;
     onSessionCreate: SessionRequest;
 
     /**
@@ -43,6 +48,4 @@ export interface CoreOptions<AvailableTranslations extends LangFile[] = [], Cust
 
 export type DevEnvironment = 'test' | 'live' | 'beta';
 
-type ComponentsError = AdyenPlatformExperienceError | Error;
-
-export type onErrorHandler = (error: ComponentsError) => void;
+export type onErrorHandler = (error: Error) => any;

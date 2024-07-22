@@ -8,7 +8,6 @@ export class TransactionElement extends UIElement<DetailsComponentProps> {
 
     constructor(props: _UIComponentProps<DetailsComponentProps>) {
         super(props);
-        this.elementRef = (props && props.elementRef) || this;
         this.componentToRender = this.componentToRender.bind(this);
     }
 
