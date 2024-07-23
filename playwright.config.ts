@@ -72,8 +72,8 @@ const config: PlaywrightTestConfig = {
             },
         },
         {
-            name: 'api',
-            testDir: 'packages/lib/tests/api',
+            name: 'contract',
+            testDir: 'packages/lib/tests/contract',
         },
     ],
     /* Run your local dev server before starting the tests */

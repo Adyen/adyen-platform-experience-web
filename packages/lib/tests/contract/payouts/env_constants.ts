@@ -1,5 +1,6 @@
 import process from 'node:process';
 import dotenv from 'dotenv';
+import { IPayout, IPayoutDetails } from '../../../src';
 
 dotenv.config({ path: './envs/.env' });
 
@@ -52,7 +53,7 @@ const LIVE = {
             adjustmentBreakdown: [],
         },
     },
-};
+} satisfies Record<string, any> & { payouts_list_response: IPayout; payout_details_response: IPayoutDetails };
 
 const TEST = {
     balanceAccountId: process.env.BALANCE_ACCOUNT,
@@ -111,7 +112,7 @@ const TEST = {
             ],
         },
     },
-};
+} satisfies Record<string, any> & { payout_details_response: IPayoutDetails };
 
 export const ENVS = {
     live: LIVE,

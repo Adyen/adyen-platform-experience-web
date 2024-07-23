@@ -4,6 +4,7 @@ import process from 'node:process'; // Adjust the import path as needed
 type TestFixtures = {
     apiContext: APIRequestContext;
     token: string;
+    accountHolder: any;
 };
 
 const SESSION_ROLES = ['Transactions Overview Component: View', 'Payouts Overview Component: View'];
@@ -24,8 +25,9 @@ export const sessionAwareTest = base.extend<TestFixtures>({
             await apiContext.dispose();
         }
     },
+    accountHolder: [SESSION.accountHolder, { option: true }],
 
-    token: async ({ apiContext }, use) => {
+    token: async ({ apiContext, accountHolder }, use) => {
         const sessionEndpoint = SESSION.url;
         const normalizedEndpoint = sessionEndpoint?.endsWith('/') ? sessionEndpoint : `${sessionEndpoint}/`;
         const url = `${normalizedEndpoint}authe/api/v1/sessions`;
@@ -37,7 +39,7 @@ export const sessionAwareTest = base.extend<TestFixtures>({
                 resources: [
                     {
                         type: 'accountHolder',
-                        accountHolderId: SESSION.accountHolder,
+                        accountHolderId: accountHolder,
                     },
                 ],
                 roles: SESSION.roles,

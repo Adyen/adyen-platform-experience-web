@@ -1,4 +1,4 @@
-import { expect, request } from '@playwright/test';
+import { expect } from '@playwright/test';
 import { resolveEnvironment } from '../../../src/core/utils';
 import { ENVS } from './env_constants';
 import process from 'node:process';
