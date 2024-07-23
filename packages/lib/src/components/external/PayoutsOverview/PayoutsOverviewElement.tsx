@@ -7,7 +7,6 @@ export class PayoutsElement extends UIElement<PayoutsOverviewComponentProps> {
 
     constructor(props: _UIComponentProps<PayoutsOverviewComponentProps>) {
         super(props);
-        this.elementRef = (props && props.elementRef) || this;
         this.componentToRender = this.componentToRender.bind(this);
     }
 
@@ -15,11 +14,8 @@ export class PayoutsElement extends UIElement<PayoutsOverviewComponentProps> {
         return (
             <Payouts
                 {...this.props}
-                balanceAccountId={this.props.core.options.balanceAccountId}
-                ref={(ref: UIElement<PayoutsOverviewComponentProps>) => {
-                    this.componentRef = ref;
-                }}
-                elementRef={this.elementRef}
+                balanceAccountId={this.props.balanceAccountId}
+                ref={(ref: UIElement<PayoutsOverviewComponentProps>) => void (this.componentRef = ref)}
             />
         );
     };

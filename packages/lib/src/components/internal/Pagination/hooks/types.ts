@@ -52,7 +52,6 @@ export type PaginatedRecordsInitOptions<T, DataField extends string, FilterValue
     filterParams?: ReactiveStateRecord<FilterValue, FilterParam>;
     initialFiltersSameAsDefault?: boolean;
     onFiltersChanged?: (filters: ReactiveStateRecord<FilterValue, FilterParam>) => any;
-    onLimitChanged?: (limit: number) => any;
     preferredLimit?: number;
     preferredLimitOptions?: readonly number[];
     enabled: boolean;

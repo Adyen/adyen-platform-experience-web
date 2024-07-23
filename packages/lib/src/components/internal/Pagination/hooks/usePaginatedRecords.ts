@@ -77,7 +77,6 @@ const usePaginatedRecords = <T, DataField extends string, FilterValue extends st
     initialFiltersSameAsDefault = true,
     initialize,
     onFiltersChanged,
-    onLimitChanged,
     pagination,
     preferredLimit,
     preferredLimitOptions,
@@ -164,10 +163,6 @@ const usePaginatedRecords = <T, DataField extends string, FilterValue extends st
     useEffect(() => {
         onFiltersChanged?.(filters);
     }, [filters]);
-
-    useEffect(() => {
-        onLimitChanged?.(limit);
-    }, [limit]);
 
     return { error, fetching, filters, goto, limitOptions, page, pages, records, updateFilters, updateLimit, ...filtersProps, ...paginationProps };
 };

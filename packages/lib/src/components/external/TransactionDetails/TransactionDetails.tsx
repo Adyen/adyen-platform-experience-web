@@ -8,12 +8,17 @@ export class TransactionElement extends UIElement<DetailsComponentProps> {
 
     constructor(props: _UIComponentProps<DetailsComponentProps>) {
         super(props);
-        this.elementRef = (props && props.elementRef) || this;
         this.componentToRender = this.componentToRender.bind(this);
     }
 
     public componentToRender = () => {
-        return <DataOverviewDetails {...(this.props as DetailsComponentProps)} type={'transaction'} />;
+        return (
+            <DataOverviewDetails
+                {...this.props}
+                type={'transaction'}
+                ref={(ref: UIElement<DetailsComponentProps>) => void (this.componentRef = ref)}
+            />
+        );
     };
 }
 

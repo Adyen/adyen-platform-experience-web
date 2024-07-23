@@ -1,8 +1,6 @@
 import type { SessionRequest } from './Auth';
-import type { AnalyticsOptions } from './Analytics/types';
 import type { CustomTranslations as Translations, LangFile } from './Localization/types';
 import type { KeyOfRecord, WithReplacedUnderscoreOrDash } from '../utils/types';
-import AdyenPlatformExperienceError from './Errors/AdyenPlatformExperienceError';
 
 type CreateLocalesUnionFromAvailableTranslations<T extends LangFile[]> = T extends T
     ? Extract<WithReplacedUnderscoreOrDash<KeyOfRecord<T[number]>, '_', '-'>, string> | 'en-US'
@@ -11,13 +9,13 @@ type CreateLocalesUnionFromAvailableTranslations<T extends LangFile[]> = T exten
 type CreateLocalesUnionFromCustomTranslations<T extends Translations> = Extract<KeyOfRecord<T extends Translations ? T : {}>, string>;
 
 interface _CoreOptions<AvailableTranslations extends LangFile[] = [], CustomTranslations extends Translations = {}> {
-    /**
-     * @internal
-     */
-    analytics?: AnalyticsOptions;
-
     availableTranslations?: AvailableTranslations;
-    balanceAccountId?: string;
+
+    /**
+     * Core-level balance account config
+     */
+    // [TODO]: Expose when expected behavior has been decided
+    // balanceAccountId?: string;
 
     /**
      * Use test. When you're ready to accept live payments, change the value to one of our {@link https://docs.adyen.com/checkout/drop-in-web#testing-your-integration | live environments}.
@@ -34,7 +32,7 @@ interface _CoreOptions<AvailableTranslations extends LangFile[] = [], CustomTran
         | (AvailableTranslations extends AvailableTranslations ? CreateLocalesUnionFromAvailableTranslations<AvailableTranslations> : never)
         | (CustomTranslations extends CustomTranslations ? CreateLocalesUnionFromCustomTranslations<CustomTranslations> : never);
 
-    onError?: (err: any) => any;
+    onError?: onErrorHandler;
     onSessionCreate: SessionRequest;
 
     /**
@@ -49,6 +47,4 @@ export interface CoreOptions<AvailableTranslations extends LangFile[] = [], Cust
 
 export type DevEnvironment = 'test' | 'live' | 'beta';
 
-type ComponentsError = AdyenPlatformExperienceError | Error;
-
-export type onErrorHandler = (error: ComponentsError) => void;
+export type onErrorHandler = (error: Error) => any;
