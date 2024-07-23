@@ -10,8 +10,8 @@ import { TEST_CONFIG } from '../../utils/utils';
 enableServerInMockedMode()
     .then(async () => {
         const core = await AdyenPlatformExperience({
-            environment: 'test',
             availableTranslations: [all_locales],
+            environment: 'test',
             async onSessionCreate() {
                 return await sessionRequest();
             },
@@ -21,15 +21,15 @@ enableServerInMockedMode()
 
         const transactionsComponent = new TransactionsOverview({
             core,
+            allowLimitSelection: true,
+            onContactSupport: () => {},
+            onFiltersChanged: (/* filters */) => {
+                // do something here with the updated filters
+            },
             onRecordSelection: ({ showModal }) => {
                 showModal();
                 // window.location.assign(`/src/pages/transaction/?id=${id}`);
             },
-            onFiltersChanged: (/* filters */) => {
-                // do something here with the updated filters
-            },
-            onContactSupport: () => {},
-            allowLimitSelection: true,
             preferredLimit: 10,
             ...TEST_CONFIG,
         });
