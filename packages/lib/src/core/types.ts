@@ -1,7 +1,6 @@
 import type { SessionRequest } from './Auth';
 import type { CustomTranslations as Translations, LangFile } from './Localization/types';
 import type { KeyOfRecord, WithReplacedUnderscoreOrDash } from '../utils/types';
-import AdyenPlatformExperienceError from './Errors/AdyenPlatformExperienceError';
 
 type CreateLocalesUnionFromAvailableTranslations<T extends LangFile[]> = T extends T
     ? Extract<WithReplacedUnderscoreOrDash<KeyOfRecord<T[number]>, '_', '-'>, string> | 'en-US'

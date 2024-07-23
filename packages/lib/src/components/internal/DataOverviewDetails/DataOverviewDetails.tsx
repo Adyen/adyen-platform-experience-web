@@ -60,13 +60,7 @@ export default function DataOverviewDetails(props: ExternalUIComponentProps<Deta
 
     const balanceAccountId = props.type === 'payout' ? props.balanceAccountDescription : data?.balanceAccountId;
     const hasBalanceAccountDetail = props.type === 'payout' ? props?.balanceAccountDescription : details?.balanceAccountDescription;
-
-    const {
-        balanceAccounts,
-        isBalanceAccountIdWrong,
-        isFetching: fetchingBalanceAccounts,
-        error: balanceAccountError,
-    } = useBalanceAccounts(balanceAccountId, !hasBalanceAccountDetail);
+    const { balanceAccounts } = useBalanceAccounts(balanceAccountId, !hasBalanceAccountDetail);
 
     const errorProps = useMemo(() => {
         if (error) {
