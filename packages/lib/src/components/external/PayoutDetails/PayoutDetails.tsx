@@ -12,7 +12,9 @@ export class PayoutElement extends UIElement<PayoutDetailsWithIdProps> {
     }
 
     public componentToRender = () => {
-        return <DataOverviewDetails {...this.props} type={'payout'} />;
+        return (
+            <DataOverviewDetails {...this.props} type={'payout'} ref={(ref: UIElement<PayoutDetailsWithIdProps>) => void (this.componentRef = ref)} />
+        );
     };
 }
 
