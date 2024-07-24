@@ -56,6 +56,7 @@ module.exports = {
             'error',
             {
                 devDependencies: [
+                    'stories/**/*',
                     'playground/**/*',
                     'playwright/test',
                     'playwright.config.ts',
