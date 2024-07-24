@@ -10,7 +10,7 @@ const baseUrl = `http://${playground.host}:${playground.port}`;
  * See https://playwright.dev/docs/test-configuration.
  */
 const config: PlaywrightTestConfig = {
-    testDir: './packages/lib/tests',
+    testDir: './tests',
     timeout: 30 * 1000,
     globalTimeout: 10 * 60 * 1000, // 10 minutes
     expect: {
