@@ -5,7 +5,6 @@ import { abortedSignal, abortSignalForAny, abortSignalWithTimeout, isAbortSignal
 describe('abortedSignal', () => {
     test('should return already aborted signal', () => {
         const signal = abortedSignal();
-        console.log('>>>>>>>>>signal', signal);
         expect(signal.aborted).toBe(true);
         expect(signal.reason.name).toBe('AbortError');
     });

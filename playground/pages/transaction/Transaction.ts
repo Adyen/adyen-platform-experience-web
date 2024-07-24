@@ -1,5 +1,4 @@
 import { AdyenPlatformExperience, TransactionDetails, all_locales } from '../../../src';
-import { getDefaultID, getSearchParameters } from '../../utils/utils';
 import '../../utils/createPages';
 import '../../assets/style/style.scss';
 import { enableServerInMockedMode } from '../../../mocks/mock-server/utils';
