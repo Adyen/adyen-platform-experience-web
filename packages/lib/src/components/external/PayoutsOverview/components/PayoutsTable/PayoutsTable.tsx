@@ -16,6 +16,7 @@ import { FC } from 'preact/compat';
 import { mediaQueries, useResponsiveViewport } from '../../../TransactionsOverview/hooks/useResponsiveViewport';
 import { CellTextPosition } from '../../../../internal/DataGrid/types';
 import cx from 'classnames';
+import { useTranslation } from 'react-i18next';
 import './PayoutsTable.scss';
 
 const AMOUNT_FIELDS = ['fundsCapturedAmount', 'adjustmentAmount', 'payoutAmount'] as const;
@@ -46,6 +47,7 @@ export const PayoutsTable: FC<PayoutsTableProps> = ({
     data,
     ...paginationProps
 }) => {
+    const { t } = useTranslation();
     const { i18n } = useCoreContext();
     const { refreshing } = useAuthContext();
     const isLoading = useMemo(() => loading || refreshing, [loading, refreshing]);
@@ -61,7 +63,7 @@ export const PayoutsTable: FC<PayoutsTableProps> = ({
     const columns = useMemo(
         () =>
             FIELDS.map(key => {
-                const label = i18n.get(getLabel(key));
+                const label = t(getLabel(key));
                 if (_isAmountFieldKey(key)) {
                     return {
                         key,

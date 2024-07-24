@@ -100,7 +100,9 @@
     },
     "dependencies": {
         "classnames": "^2.5.1",
-        "core-js": "^3.36.0"
+        "core-js": "^3.36.0",
+        "i18next": "^23.11.5",
+        "react-i18next": "^14.1.2"
     },
     "peerDependencies": {
         "preact": "^10.20.2"

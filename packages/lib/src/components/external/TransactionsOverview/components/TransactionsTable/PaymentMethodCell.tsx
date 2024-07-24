@@ -4,7 +4,7 @@ import { parsePaymentMethodType } from '../utils';
 import { ITransaction } from '../../../../../types';
 import { Tag } from '../../../../internal/Tag/Tag';
 import { TagVariant } from '../../../../internal/Tag/types';
-import useCoreContext from '../../../../../core/Context/useCoreContext';
+import { useTranslation } from 'react-i18next';
 
 const PaymentMethodCell = ({
     paymentMethod,
@@ -13,7 +13,7 @@ const PaymentMethodCell = ({
     paymentMethod?: ITransaction['paymentMethod'];
     bankAccount?: ITransaction['bankAccount'];
 }) => {
-    const { i18n } = useCoreContext();
+    const { t } = useTranslation();
     return (
         <div className={PAYMENT_METHOD_CLASS}>
             {paymentMethod || bankAccount ? (
@@ -29,7 +29,7 @@ const PaymentMethodCell = ({
                     {paymentMethod ? parsePaymentMethodType(paymentMethod) : bankAccount?.accountNumberLastFourDigits}
                 </>
             ) : (
-                <Tag label={i18n.get('noData')} variant={TagVariant.WHITE} />
+                <Tag label={t('noData')} variant={TagVariant.WHITE} />
             )}
         </div>
     );

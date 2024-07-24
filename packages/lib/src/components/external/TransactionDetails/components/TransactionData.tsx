@@ -8,8 +8,10 @@ import { TagVariant } from '../../../internal/Tag/types';
 import useCoreContext from '../../../../core/Context/useCoreContext';
 import { useMemo } from 'preact/hooks';
 import './TransactionData.scss';
+import { useTranslation } from 'react-i18next';
 
 export const TransactionData = ({ transaction, isFetching }: { transaction: TransactionDetailData; isFetching?: boolean }) => {
+    const { t } = useTranslation();
     const { i18n } = useCoreContext();
     const createdAt = useMemo(
         () => (transaction ? i18n.date(new Date(transaction.createdAt), DATE_FORMAT_TRANSACTION_DETAILS).toString() : ''),
@@ -29,7 +31,7 @@ export const TransactionData = ({ transaction, isFetching }: { transaction: Tran
                             <div className={'adyen-pe-transaction-data__section adyen-pe-transaction-data__tag-container'}>
                                 {transaction?.status && (
                                     <Tag
-                                        label={i18n.get(transaction.status)}
+                                        label={t(transaction.status)}
                                         variant={
                                             transaction.status === 'Booked'
                                                 ? TagVariant.SUCCESS
@@ -39,7 +41,7 @@ export const TransactionData = ({ transaction, isFetching }: { transaction: Tran
                                         }
                                     />
                                 )}
-                                {transaction.category && <Tag label={i18n.get(`txType.${transaction.category}`)} variant={TagVariant.DEFAULT} />}
+                                {transaction.category && <Tag label={t(`txType.${transaction.category}`)} variant={TagVariant.DEFAULT} />}
                             </div>
                         )}
                         <div
@@ -74,13 +76,13 @@ export const TransactionData = ({ transaction, isFetching }: { transaction: Tran
 
                     {transaction?.balanceAccountDescription && (
                         <div className={'adyen-pe-transaction-data__container'}>
-                            <div className={'adyen-pe-transaction-data__label'}>{i18n.get('account')}</div>
+                            <div className={'adyen-pe-transaction-data__label'}>{t('account')}</div>
                             <div>{transaction.balanceAccountDescription}</div>
                         </div>
                     )}
                     <div className={'adyen-pe-transaction-data__container'}>
-                        <div className={'adyen-pe-transaction-data__label'}>{i18n.get('referenceID')}</div>
-                        <div aria-label={i18n.get('referenceID')}>{transaction.id}</div>
+                        <div className={'adyen-pe-transaction-data__label'}>{t('referenceID')}</div>
+                        <div aria-label={t('referenceID')}>{transaction.id}</div>
                     </div>
                 </div>
             )}

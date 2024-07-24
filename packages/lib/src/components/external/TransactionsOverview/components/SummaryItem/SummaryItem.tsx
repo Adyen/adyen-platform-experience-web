@@ -10,6 +10,7 @@ import classNames from 'classnames';
 import { useCallback, useEffect } from 'preact/hooks';
 import './SummaryItem.scss';
 import { mediaQueries, useResponsiveViewport } from '../../hooks/useResponsiveViewport';
+import { useTranslation } from 'react-i18next';
 
 export const SummaryItem = ({
     columnConfigs,
@@ -22,7 +23,7 @@ export const SummaryItem = ({
     isEmpty,
 }: SummaryItemProps) => {
     const { i18n } = useCoreContext();
-
+    const { t } = useTranslation();
     useEffect(() => {
         const newWidths = columnConfigs.map(config => config.ref?.current?.getBoundingClientRect().width ?? 0);
         onWidthsSet(newWidths);
@@ -55,7 +56,7 @@ export const SummaryItem = ({
                     <div key={index}>
                         {isHeader &&
                             (config.tooltipLabel ? (
-                                <Tooltip content={i18n.get(`${config.tooltipLabel}`)} isContainerHovered={isHovered}>
+                                <Tooltip content={t(`${config.tooltipLabel}`)} isContainerHovered={isHovered}>
                                     <SummaryItemLabel config={config} i18n={i18n} isSkeletonVisible={isSkeletonVisible} />
                                 </Tooltip>
                             ) : (

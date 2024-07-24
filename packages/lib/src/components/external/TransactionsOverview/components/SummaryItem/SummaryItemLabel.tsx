@@ -5,6 +5,7 @@ import Typography from '../../../../internal/Typography/Typography';
 import { fixedForwardRef } from '../../../../../utils/preact';
 import classNames from 'classnames';
 import { ForwardedRef } from 'preact/compat';
+import { Translation } from 'react-i18next';
 
 export const SummaryItemLabel = fixedForwardRef(
     ({ config, i18n, isSkeletonVisible, className, ...restArgs }: SummaryItemLabelProps, ref: ForwardedRef<HTMLSpanElement>) => {
@@ -17,7 +18,7 @@ export const SummaryItemLabel = fixedForwardRef(
             >
                 {config.labelKey && (
                     <Typography variant={TypographyVariant.CAPTION} className={LABEL_CLASS}>
-                        {i18n.get(config.labelKey)}
+                        <Translation>{t => t(config.labelKey as string)}</Translation>
                     </Typography>
                 )}
             </span>

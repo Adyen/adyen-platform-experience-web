@@ -4,6 +4,8 @@ import { JSXInternal } from 'preact/src/jsx';
 import BaseElement from '../BaseElement';
 import { BaseElementProps, IUIElement, UIElementProps, UIElementStatus } from '../../types';
 import './UIElement.scss';
+import { I18nextProvider } from 'react-i18next';
+import i18next from '../../../i18n';
 
 export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUIElement {
     protected componentRef: UIElement<P> | null = null;
@@ -11,12 +13,15 @@ export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUI
     public componentToRender: (() => JSXInternal.Element) | null = null;
     public elementRef: UIElement<P> | null;
     public onContactSupport?: () => void;
+    private i18next;
+
 
     constructor(props: P & UIElementProps & BaseElementProps) {
         super(props);
         this.setState = this.setState.bind(this);
         this.onContactSupport = props.onContactSupport;
         this.elementRef = this;
+        this.i18next = i18next;
     }
 
     get isValid() {
@@ -80,6 +85,7 @@ export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUI
 
         core.session.errorHandler = externalErrorHandler;
 
+        this.i18next.changeLanguage(core.localization.i18n.locale.replace('-', '_'))
         return (
             <AuthProvider session={core.session} key={performance.now()}>
                 <CoreProvider
@@ -88,7 +94,10 @@ export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUI
                     updateCore={updateCore}
                     externalErrorHandler={externalErrorHandler}
                 >
-                    {this.componentToRender && <div className="adyen-pe-component">{this.componentToRender()}</div>}
+                    <I18nextProvider i18n={this.i18next}>
+                        {this.componentToRender && <div className="adyen-pe-component">{this.componentToRender()}</div>}
+                    </I18nextProvider>
+
                 </CoreProvider>
             </AuthProvider>
         );

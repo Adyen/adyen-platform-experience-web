@@ -15,6 +15,7 @@ import { mediaQueries, useResponsiveViewport } from '../../hooks/useResponsiveVi
 import { FC } from 'preact/compat';
 import { TransactionTableProps } from './types';
 import PaymentMethodCell from './PaymentMethodCell';
+import { useTranslation } from 'react-i18next';
 
 // Remove status column temporarily
 // const FIELDS = ['createdAt', 'status', 'paymentMethod', 'transactionType', 'amount'] as const;
@@ -33,6 +34,7 @@ export const TransactionsTable: FC<TransactionTableProps> = ({
     transactions,
     ...paginationProps
 }) => {
+    const { t } = useTranslation();
     const { i18n } = useCoreContext();
     const [hoveredRow, setHoveredRow] = useState<undefined | number>();
     const isSmAndUpViewport = useResponsiveViewport(mediaQueries.up.sm);
@@ -52,7 +54,7 @@ export const TransactionsTable: FC<TransactionTableProps> = ({
     const columns = useMemo(
         () =>
             FIELDS.map(key => {
-                const label = i18n.get(getLabel(key));
+                const label = t(getLabel(key));
                 if (key === 'amount') {
                     return {
                         key,
@@ -103,7 +105,7 @@ export const TransactionsTable: FC<TransactionTableProps> = ({
                     /* status: ({ value }) => {
                         return (
                             <Tag
-                                label={i18n.get(value)}
+                                label={t(value)}
                                 variant={value === 'Booked' ? TagVariant.SUCCESS : value === 'Reversed' ? TagVariant.ERROR : TagVariant.DEFAULT}
                             />
                         );

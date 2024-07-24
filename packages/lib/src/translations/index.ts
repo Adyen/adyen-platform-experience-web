@@ -21,6 +21,7 @@ export const pt_BR = { pt_BR: _pt_BR };
 export const sv_SE = { sv_SE: _sv_SE };
 
 export const all_locales = {
+    ...en_US,
     ...da_DK,
     ...de_DE,
     ...es_ES,

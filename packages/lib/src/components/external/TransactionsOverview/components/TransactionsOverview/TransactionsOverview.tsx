@@ -25,6 +25,7 @@ import { AmountFilter } from '../../../../internal/FilterBar/filters/AmountFilte
 import { BASE_CLASS, BASE_CLASS_DETAILS, MAX_TRANSACTIONS_DATE_RANGE_MONTHS, SUMMARY_CLASS, SUMMARY_ITEM_CLASS } from './constants';
 import { mediaQueries, useResponsiveViewport } from '../../hooks/useResponsiveViewport';
 import './TransactionsOverview.scss';
+import { useTranslation } from 'react-i18next';
 
 export const TransactionsOverview = ({
     onFiltersChanged,
@@ -39,7 +40,7 @@ export const TransactionsOverview = ({
 }: ExternalUIComponentProps<
     TransactionOverviewComponentProps & { balanceAccounts: IBalanceAccountBase[] | undefined; isLoadingBalanceAccount: boolean }
 >) => {
-    const { i18n } = useCoreContext();
+    const { t } = useTranslation();
     const { getTransactions: transactionsEndpointCall } = useAuthContext().endpoints;
     const { activeBalanceAccount, balanceAccountSelectionOptions, onBalanceAccountSelection } = useBalanceAccountSelection(balanceAccounts);
     const { defaultParams, nowTimestamp, refreshNowTimestamp } = useDefaultOverviewFilterParams('transactions', activeBalanceAccount);
@@ -152,7 +153,7 @@ export const TransactionsOverview = ({
         <div className={BASE_CLASS}>
             {!hideTitle && (
                 <Typography variant={TypographyVariant.TITLE} medium>
-                    {i18n.get('transactionsOverviewTitle')}
+                    {t('transactionsOverviewTitle')}
                 </Typography>
             )}
             <FilterBar>
@@ -171,19 +172,19 @@ export const TransactionsOverview = ({
                     updateFilters={updateFilters}
                 />
                 {/* Remove status filter temporarily */}
-                {/* <MultiSelectionFilter {...statusesFilter} placeholder={i18n.get('filterPlaceholder.status')} /> */}
-                <MultiSelectionFilter {...categoriesFilter} placeholder={i18n.get('filterPlaceholder.category')} />
+                {/* <MultiSelectionFilter {...statusesFilter} placeholder={t('filterPlaceholder.status')} /> */}
+                <MultiSelectionFilter {...categoriesFilter} placeholder={t('filterPlaceholder.category')} />
                 <AmountFilter
                     availableCurrencies={availableCurrencies}
                     selectedCurrencies={listFrom(filters[FilterParam.CURRENCIES])}
                     name={'range'}
-                    label={i18n.get('amount')}
+                    label={t('amount')}
                     minAmount={filters[FilterParam.MIN_AMOUNT]}
                     maxAmount={filters[FilterParam.MAX_AMOUNT]}
                     updateFilters={updateFilters}
                     onChange={updateFilters}
                 />
-                <MultiSelectionFilter {...currenciesFilter} placeholder={i18n.get('filterPlaceholder.currency')} />
+                <MultiSelectionFilter {...currenciesFilter} placeholder={t('filterPlaceholder.currency')} />
             </FilterBar>
             <div className={SUMMARY_CLASS}>
                 <div className={SUMMARY_ITEM_CLASS}>
