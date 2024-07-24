@@ -7,10 +7,10 @@ SCRIPT_DIR=$(dirname "$0")
 PROJECT_ROOT_DIR=$(realpath "$SCRIPT_DIR/../..")
 
 # Read version from package.json
-PACKAGE_VERSION=$(jq -r '.apiVersion' "$PROJECT_ROOT_DIR/packages/lib/package.json")
+PACKAGE_VERSION=$(jq -r '.apiVersion' "$PROJECT_ROOT_DIR/package.json")
 
 # Schemas directory
-SCHEMAS_DIR=$(realpath "$PROJECT_ROOT_DIR/packages/lib/src/types/api/resources")
+SCHEMAS_DIR=$(realpath "$PROJECT_ROOT_DIR/src/types/api/resources")
 
 
 # Check if ./variables file exists, otherwise exit
