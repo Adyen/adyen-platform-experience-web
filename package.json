@@ -86,7 +86,7 @@
     "changeset": "changeset",
     "changeset-tag": "changeset tag",
     "create-tag": "npm run changeset-tag",
-    "postbuild": "rm dist/mockServiceWorker.js"
+    "postbuild": "rm dist/mockServiceWorker.js && rm dist/mockFiles"
   },
   "dependencies": {
     "classnames": "^2.5.1",

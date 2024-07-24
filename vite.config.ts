@@ -16,21 +16,21 @@ const currentVersion = version();
 const externalDependencies = Object.keys(packageJson.dependencies);
 
 const playgroundDir = resolve(__dirname, 'playground/pages');
-const demoPlaygroundDir = resolve(__dirname, './');
+const demoPlaygroundDir = resolve(__dirname, 'playground');
+
 async function getPlaygroundEntrypoints() {
     const playgroundPages = await readdir(playgroundDir);
 
     const entries = await Promise.all(
         playgroundPages.map(async page => {
             if (!(await lstat(resolve(playgroundDir, page))).isDirectory()) return;
-
             return [page, resolve(playgroundDir, page, 'index.html')];
         })
     );
     const availableEntries: string[][] = entries.filter((entry): entry is string[] => Boolean(entry));
     return {
         ...Object.fromEntries(availableEntries),
-        index: resolve(playgroundDir, '..', '..', 'index.html'),
+        index: resolve(playgroundDir, '..', 'index.html'),
     };
 }
 
