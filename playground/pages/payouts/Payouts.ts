@@ -11,8 +11,8 @@ import sessionRequest from '../../utils/sessionRequest';
 enableServerInMockedMode()
     .then(async () => {
         const core = await AdyenPlatformExperience({
-            environment: 'test',
             availableTranslations: [all_locales],
+            environment: 'test',
             async onSessionCreate() {
                 return await sessionRequest();
             },
@@ -22,18 +22,15 @@ enableServerInMockedMode()
 
         const payoutsComponent = new PayoutsOverview({
             core,
+            allowLimitSelection: true,
+            onContactSupport: () => {},
+            onFiltersChanged: (/* filters */) => {
+                // do something here with the updated filters
+            },
             onRecordSelection: ({ showModal }) => {
                 showModal();
                 // window.location.assign(`/src/pages/transaction/?id=${id}`);
             },
-            onFiltersChanged: (/* filters */) => {
-                // do something here with the updated filters
-            },
-            onLimitChanged: (/* limit */) => {
-                // do something here with the updated limit
-            },
-            onContactSupport: () => {},
-            allowLimitSelection: true,
             preferredLimit: 10,
             ...TEST_CONFIG,
         });

@@ -7,7 +7,6 @@ export class TransactionsElement extends UIElement<TransactionOverviewComponentP
 
     constructor(props: _UIComponentProps<TransactionOverviewComponentProps>) {
         super(props);
-        this.elementRef = (props && props.elementRef) || this;
         this.componentToRender = this.componentToRender.bind(this);
     }
 
@@ -15,11 +14,8 @@ export class TransactionsElement extends UIElement<TransactionOverviewComponentP
         return (
             <Transactions
                 {...this.props}
-                balanceAccountId={this.props.core.options.balanceAccountId}
-                ref={(ref: UIElement<TransactionOverviewComponentProps>) => {
-                    this.componentRef = ref;
-                }}
-                elementRef={this.elementRef}
+                balanceAccountId={this.props.balanceAccountId}
+                ref={(ref: UIElement<TransactionOverviewComponentProps>) => void (this.componentRef = ref)}
             ></Transactions>
         );
     };

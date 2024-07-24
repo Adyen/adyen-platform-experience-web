@@ -22,6 +22,11 @@ const ENDPOINTS_BY_TYPE = {
     payout: 'getPayout',
 } as const;
 
+const TITLES_BY_TYPE = {
+    transaction: 'transactionDetails',
+    payout: 'payoutDetails',
+} as const;
+
 const isDetailsWithId = (props: DetailsComponentProps): props is DetailsWithId => !('data' in props);
 
 export default function DataOverviewDetails(props: ExternalUIComponentProps<DetailsComponentProps>) {
@@ -30,6 +35,7 @@ export default function DataOverviewDetails(props: ExternalUIComponentProps<Deta
 
     const { i18n } = useCoreContext();
     const getDetail = useAuthContext().endpoints[ENDPOINTS_BY_TYPE[props.type]] as any; // [TODO]: Fix type and remove 'as any'
+    const titleKey = useMemo(() => TITLES_BY_TYPE[props.type], [props.type]);
 
     const { data, error, isFetching } = useFetch(
         useMemo(
@@ -54,13 +60,7 @@ export default function DataOverviewDetails(props: ExternalUIComponentProps<Deta
 
     const balanceAccountId = props.type === 'payout' ? props.balanceAccountDescription : data?.balanceAccountId;
     const hasBalanceAccountDetail = props.type === 'payout' ? props?.balanceAccountDescription : details?.balanceAccountDescription;
-
-    const {
-        balanceAccounts,
-        isBalanceAccountIdWrong,
-        isFetching: fetchingBalanceAccounts,
-        error: balanceAccountError,
-    } = useBalanceAccounts(balanceAccountId, !hasBalanceAccountDetail);
+    const { balanceAccounts } = useBalanceAccounts(balanceAccountId, !hasBalanceAccountDetail);
 
     const errorProps = useMemo(() => {
         if (error) {
@@ -76,10 +76,10 @@ export default function DataOverviewDetails(props: ExternalUIComponentProps<Deta
 
     return (
         <div className="adyen-pe-overview-details">
-            {props.title && (
+            {!props.hideTitle && (
                 <div className="adyen-pe-overview-details--title">
                     <Typography variant={TypographyVariant.TITLE} medium>
-                        {i18n.get(props.title)}
+                        {i18n.get(titleKey)}
                     </Typography>
                 </div>
             )}

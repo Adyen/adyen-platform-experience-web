@@ -16,7 +16,7 @@ export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUI
         super(props);
         this.setState = this.setState.bind(this);
         this.onContactSupport = props.onContactSupport;
-        this.elementRef = (this.props && this.props.elementRef) || this;
+        this.elementRef = this;
     }
 
     get isValid() {
@@ -27,7 +27,7 @@ export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUI
      * Get the element's displayable name
      */
     get displayName(): string {
-        return this.props.name || this.type;
+        return this.type;
     }
 
     /**

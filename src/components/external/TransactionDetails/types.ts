@@ -1,14 +1,11 @@
-import { TranslationKey } from '../../../core/Localization/types';
 import { ITransaction } from '../../../types';
 
 export interface DetailsWithoutIdProps {
     data: TransactionDetailData;
-    title?: TranslationKey;
 }
 
 export interface DetailsWithIdProps {
     id: string;
-    title?: TranslationKey;
 }
 
 export type DetailsComponentProps = DetailsWithoutIdProps | DetailsWithIdProps;
