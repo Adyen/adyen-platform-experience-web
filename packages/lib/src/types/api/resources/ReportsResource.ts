@@ -1,10 +1,10 @@
 export interface paths {
-    "/v1/reports": {
+    '/v1/reports': {
         /**
          * Get reports
          * @description Given filters, provides list of reports for a balance account
          */
-        get: operations["getReports"];
+        get: operations['getReports'];
     };
 }
 
@@ -32,13 +32,13 @@ export interface components {
         };
         /** @description Links */
         Links: {
-            next: components["schemas"]["Link"];
-            prev: components["schemas"]["Link"];
+            next: components['schemas']['Link'];
+            prev: components['schemas']['Link'];
         };
         ReportsResponseDTO: {
-            _links: components["schemas"]["Links"];
+            _links: components['schemas']['Links'];
             /** @description Reports made within the filters provided for given balanceAccountId */
-            data: components["schemas"]["ReportsDTO"][];
+            data: components['schemas']['ReportsDTO'][];
         };
         DownloadReportResponseDTO: Uint8Array;
     };
@@ -54,7 +54,6 @@ export type $defs = Record<string, never>;
 export type external = Record<string, never>;
 
 export interface operations {
-
     /**
      * Get reports
      * @description Given filters, provides list of reports for a balance account
@@ -73,7 +72,7 @@ export interface operations {
             /** @description OK - the request has succeeded. */
             200: {
                 content: {
-                    "application/json": components["schemas"]["ReportsResponseDTO"];
+                    'application/json': components['schemas']['ReportsResponseDTO'];
                 };
             };
         };
@@ -89,9 +88,9 @@ export interface operations {
             /** @description OK - the request has succeeded. */
             200: {
                 content: {
-                    "text/csv": components["schemas"]["DownloadReportResponseDTO"];
+                    'text/csv': components['schemas']['DownloadReportResponseDTO'];
                 };
             };
         };
-    }
+    };
 }

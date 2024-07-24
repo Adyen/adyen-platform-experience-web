@@ -11,47 +11,45 @@ const environment = process.env.NODE_ENV as 'live' | 'test';
 
 const ENV = ENVS[environment] || ENVS.test;
 
-sessionAwareTest.describe('Payouts resource', async () => {
-    const basePayoutsUrl = `${resolveEnvironment(environment)}v1/payouts`;
+const basePayoutsUrl = `${resolveEnvironment(environment)}v1/payouts`;
 
-    sessionAwareTest('/payouts endpoint should return consistent data', async ({ apiContext, token }) => {
-        const payoutsList = await apiContext.get(
-            `${basePayoutsUrl}?balanceAccountId=${ENV.balanceAccountId}&createdSince=${ENV.createdSince}&createdUntil=${ENV.createdUntil}`,
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    'Content-Type': 'application/json',
-                    Origin: 'https://localhost',
-                },
-            }
-        );
+sessionAwareTest('/payouts endpoint should return consistent data', async ({ apiContext, token }) => {
+    const payoutsList = await apiContext.get(
+        `${basePayoutsUrl}?balanceAccountId=${ENV.balanceAccountId}&createdSince=${ENV.createdSince}&createdUntil=${ENV.createdUntil}`,
+        {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json',
+                Origin: 'https://localhost',
+            },
+        }
+    );
 
-        expect(payoutsList.status()).toBe(200);
+    expect(payoutsList.status()).toBe(200);
 
-        const responseData = await payoutsList.json();
+    const responseData = await payoutsList.json();
 
-        expect(responseData).toHaveProperty('data');
-        expect(responseData.data[0]).toStrictEqual(ENV.payouts_list_response);
-    });
+    expect(responseData).toHaveProperty('data');
+    expect(responseData.data[0]).toStrictEqual(ENV.payouts_list_response[0]);
+});
 
-    sessionAwareTest('/payouts/breakdown endpoint should return consistent data', async ({ apiContext, token }) => {
-        const payoutsDetails = await apiContext.get(
-            `${basePayoutsUrl}/breakdown?balanceAccountId=${ENV.balanceAccountId}&createdAt=${ENV.payoutCreationDate}`,
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    'Content-Type': 'application/json',
-                    Origin: 'https://localhost',
-                },
-            }
-        );
+sessionAwareTest('/payouts/breakdown endpoint should return consistent data', async ({ apiContext, token }) => {
+    const payoutsDetails = await apiContext.get(
+        `${basePayoutsUrl}/breakdown?balanceAccountId=${ENV.balanceAccountId}&createdAt=${ENV.payoutCreationDate}`,
+        {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json',
+                Origin: 'https://localhost',
+            },
+        }
+    );
 
-        expect(payoutsDetails.status()).toBe(200);
+    expect(payoutsDetails.status()).toBe(200);
 
-        const responseData = await payoutsDetails.json();
+    const responseData = await payoutsDetails.json();
 
-        expect(responseData).toHaveProperty('payout');
-        expect(responseData).toHaveProperty('amountBreakdowns');
-        expect(responseData).toStrictEqual(ENV.payout_details_response);
-    });
+    expect(responseData).toHaveProperty('payout');
+    expect(responseData).toHaveProperty('amountBreakdowns');
+    expect(responseData).toStrictEqual(ENV.payout_details_response);
 });
