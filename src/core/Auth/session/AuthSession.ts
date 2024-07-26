@@ -1,40 +1,59 @@
 import AuthSetupContext from './AuthSetupContext';
 import AuthSessionSpecification from './AuthSessionSpecification';
-import { createAbortable } from '../../../primitives/async/abortable';
+import { ERR_SESSION_REFRESH_ABORTED, EVT_SESSION_EXPIRED, EVT_SESSION_READY, SessionContext } from '../../../primitives/context/session';
 import { createErrorContainer } from '../../../primitives/auxiliary/errorContainer';
-import { createEventEmitter } from '../../../primitives/reactive/eventEmitter';
+import { createPromisor } from '../../../primitives/async/promisor';
 import { createWatchlist } from '../../../primitives/reactive/watchlist';
-import { EVT_SESSION_EXPIRED_STATE_CHANGE, EVT_SESSION_REFRESHING_STATE_CHANGE, SessionContext } from '../../../primitives/context/session';
-import { ERR_AUTH_REFRESH_ABORTED, ERR_AUTH_REFRESH_FAILED, EVT_AUTH_STATE_CHANGE } from './constants';
-import { boolOrFalse, constant, isFunction, noop } from '../../../utils';
-import type { Promised } from '../../../utils/types';
-import { onErrorHandler } from '../../types';
+import { boolOrFalse, constant, isFunction } from '../../../utils';
+import type { onErrorHandler } from '../../types';
 
 export class AuthSession {
     private _canSkipSessionRefresh = false;
-    private _lastSessionContextRefreshTimestamp: (typeof this._sessionContext)['timestamp'];
-    private _overrideRefreshInProgress = false;
-    private _refreshInProgress = false;
+    private _refreshPromisorSignal: AbortSignal | undefined;
 
     private readonly _errorContainer = createErrorContainer();
-    private readonly _eventEmitter = createEventEmitter<typeof EVT_AUTH_STATE_CHANGE>();
-    private readonly _refreshAbortable = createAbortable(ERR_AUTH_REFRESH_ABORTED);
-
     private readonly _specification = new AuthSessionSpecification();
     private readonly _sessionContext = new SessionContext(this._specification);
     private readonly _setupContext = new AuthSetupContext(this._sessionContext);
 
+    private readonly _refreshPromisor = createPromisor(async (signal, skipSessionRefreshIfPossible = false) => {
+        let authStateChanged = !this._refreshPromisorSignal;
+        let isLatestRefresh = this._refreshPromisorSignal === (this._refreshPromisorSignal = signal);
+        const onlySetupRefresh = boolOrFalse(skipSessionRefreshIfPossible) && this._canSkipSessionRefresh;
+
+        if (authStateChanged) {
+            authStateChanged = false;
+            this._errorContainer.reset();
+            this._onAuthStateChanged();
+        }
+
+        try {
+            await (onlySetupRefresh ? this._setupContext : this._sessionContext)
+                .refresh(signal)
+                .finally(() => (isLatestRefresh = this._refreshPromisorSignal === signal));
+        } catch (ex) {
+            if (!isLatestRefresh) return;
+            if (!signal.aborted && (onlySetupRefresh || ex !== ERR_SESSION_REFRESH_ABORTED)) this._errorContainer.set(ex);
+            authStateChanged = !onlySetupRefresh;
+        } finally {
+            if (authStateChanged || (onlySetupRefresh && isLatestRefresh)) {
+                this._refreshPromisorSignal = undefined;
+                this._onAuthStateChanged();
+            }
+        }
+    });
+
     private readonly _watchlist = createWatchlist({
         endpoints: () => this._setupContext.endpoints,
         hasError: () => this._errorContainer.hasError,
-        http: constant(this._sessionContext.http.bind(this._sessionContext)),
+        http: constant(this._sessionContext.http.bind(this._sessionContext, null)),
         isExpired: () => this._sessionContext.isExpired,
-        refresh: constant(this._overrideRefresh.bind(this)),
-        refreshing: () => this._sessionContext.refreshing,
+        refresh: constant(this._refresh.bind(this)),
+        refreshing: () => !!this._refreshPromisorSignal,
     });
 
-    public declare destroy: () => void;
-    public declare subscribe: (typeof this._watchlist)['subscribe'];
+    public declare readonly destroy: () => void;
+    public declare readonly subscribe: (typeof this._watchlist)['subscribe'];
 
     constructor() {
         this.destroy = () => {
@@ -42,24 +61,24 @@ export class AuthSession {
             this._watchlist.cancelSubscriptions();
         };
 
-        const _onAuthStateChanged = this._onAuthStateChanged.bind(this);
-        const _onSessionExpiredStateChange = this._onSessionExpiredStateChange.bind(this);
-
-        this._refreshAbortablePromise = this._refreshAbortablePromise.bind(this);
         this.subscribe = this._watchlist.subscribe;
 
         this._watchlist.on.resume = () => {
-            let listeners = [
-                this._eventEmitter.on(EVT_AUTH_STATE_CHANGE, this._watchlist.requestNotification),
-                this._sessionContext.on(EVT_SESSION_REFRESHING_STATE_CHANGE, _onAuthStateChanged),
-                this._sessionContext.on(EVT_SESSION_EXPIRED_STATE_CHANGE, _onSessionExpiredStateChange),
+            const unlisteners = [
+                this._sessionContext.on(EVT_SESSION_EXPIRED, () => {
+                    this._canSkipSessionRefresh = false;
+                    this._onAuthStateChanged();
+                }),
+
+                this._sessionContext.on(EVT_SESSION_READY, () => {
+                    void this._refresh((this._canSkipSessionRefresh = true));
+                }),
             ];
 
             this._watchlist.on.idle = () => {
                 this._watchlist.on.idle = undefined;
-                listeners.forEach(cancel => cancel());
-                listeners.length = 0;
-                listeners = undefined!;
+                unlisteners.forEach(unlisten => unlisten());
+                unlisteners.length = 0;
             };
 
             this._refresh();
@@ -82,88 +101,20 @@ export class AuthSession {
         if (this._specification.onSessionCreate === onSessionCreate) return;
 
         this._specification.onSessionCreate = onSessionCreate;
-        if (!this._refreshInProgress) return;
+        if (!this._refreshPromisorSignal) return;
 
         if (isFunction(this._specification.onSessionCreate)) {
             this._canSkipSessionRefresh = false;
-            this._overrideRefresh();
+            this._refresh();
         }
     }
 
     private _onAuthStateChanged() {
-        this._eventEmitter.emit(EVT_AUTH_STATE_CHANGE);
+        this._watchlist.requestNotification();
     }
 
-    private _onSessionExpiredStateChange() {
-        const { timestamp } = this._sessionContext;
-
-        /* Update `this._canSkipSessionRefresh` flag based on session timestamp comparison */
-        if ((this._canSkipSessionRefresh = this._lastSessionContextRefreshTimestamp !== timestamp)) {
-            // Since `this._canSkipSessionRefresh` is `true`, session context is active (not expired)
-            this._lastSessionContextRefreshTimestamp = timestamp;
-            this._errorContainer.reset();
-            this._overrideRefresh();
-        }
-
-        this._onAuthStateChanged();
-    }
-
-    private _overrideRefresh(skipSessionRefresh = this._canSkipSessionRefresh) {
-        this._overrideRefreshInProgress = true;
-        this._refresh(skipSessionRefresh);
-    }
-
-    private _refresh(skipSessionRefresh = false) {
-        if (this._refreshInProgress && !this._overrideRefreshInProgress) return;
-
-        if (this._overrideRefreshInProgress) {
-            this._overrideRefreshInProgress = false;
-            this._refreshAbortable.abort();
-            this._refreshAbortable.refresh();
-        }
-
-        this._refreshInProgress = true;
-
-        const refreshPromise =
-            boolOrFalse(skipSessionRefresh) && this._canSkipSessionRefresh
-                ? this._refreshSetupContext()
-                : this._refreshAbortablePromise(this._sessionContext.refresh);
-
-        refreshPromise.catch(noop);
-    }
-
-    private async _refreshSetupContext() {
-        let _setupRefreshAborted = false;
-
-        await this._setupContext
-            .refresh(this._refreshAbortablePromise)
-            .then(
-                () => this._errorContainer.reset(),
-                err => (_setupRefreshAborted = err !== ERR_AUTH_REFRESH_FAILED)
-            )
-            .then(() => {
-                this._refreshInProgress = _setupRefreshAborted;
-                this._onAuthStateChanged();
-            });
-    }
-
-    private async _refreshAbortablePromise<T>(getPromise: Promised<T> | ((signal: AbortSignal) => Promised<T>)) {
-        const signal = this._refreshAbortable.signal;
-
-        return (async () => {
-            const awaitablePromise = isFunction(getPromise) ? getPromise(signal) : getPromise;
-            const awaited = await Promise.race([awaitablePromise, this._refreshAbortable.promise]);
-
-            // if aborted — ignore the awaited value
-            // throw an exception to redirect the control flow
-            if (signal.aborted) throw void 0;
-
-            return awaited;
-        })().catch(ex => {
-            if (signal.aborted) throw ERR_AUTH_REFRESH_ABORTED;
-            this._errorContainer.set(ex);
-            throw ERR_AUTH_REFRESH_FAILED;
-        });
+    private _refresh(skipSessionRefreshIfPossible = false) {
+        void this._refreshPromisor(skipSessionRefreshIfPossible);
     }
 }
 

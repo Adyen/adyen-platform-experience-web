@@ -17,6 +17,7 @@ const externalDependencies = Object.keys(packageJson.dependencies);
 
 const playgroundDir = resolve(__dirname, 'playground/pages');
 const demoPlaygroundDir = resolve(__dirname, 'playground');
+const isDevMode = (mode: any) => ['mocked', 'development'].includes(mode);
 
 async function getPlaygroundEntrypoints() {
     const playgroundPages = await readdir(playgroundDir);
@@ -86,10 +87,10 @@ export default defineConfig(async ({ mode }) => {
             'process.env.VITE_ADYEN_BUILD_ID': JSON.stringify(currentVersion.ADYEN_BUILD_ID),
             'process.env.VITE_LOADING_CONTEXT': JSON.stringify(mode === 'development' ? playground.loadingContext || null : null),
             'process.env.SESSION_AUTO_REFRESH': JSON.stringify(
-                mode === 'development' ? apiConfigs.sessionApi.autoRefresh || JSON.stringify(null) : undefined
+                isDevMode(mode) ? apiConfigs.sessionApi.autoRefresh || JSON.stringify(null) : undefined
             ),
             'process.env.SESSION_MAX_AGE_MS': JSON.stringify(
-                mode === 'development' ? apiConfigs.sessionApi.maxAgeMs || JSON.stringify(null) : undefined
+                isDevMode(mode) ? apiConfigs.sessionApi.maxAgeMs || JSON.stringify(null) : undefined
             ),
             'process.env.VITE_MODE': JSON.stringify(process.env.VITE_MODE ?? mode),
             'process.env.VITE_PLAYGROUND_PORT': JSON.stringify(playground.port || null),
@@ -123,7 +124,7 @@ export default defineConfig(async ({ mode }) => {
         },
         plugins: [
             preact(),
-            ['mocked', 'development'].includes(mode)
+            isDevMode(mode)
                 ? checker({
                       stylelint: {
                           lintCommand: 'stylelint ../src/**/*.scss',
