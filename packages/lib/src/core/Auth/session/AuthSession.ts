@@ -64,7 +64,7 @@ export class AuthSession {
         this.subscribe = this._watchlist.subscribe;
 
         this._watchlist.on.resume = () => {
-            let unlisteners = [
+            const unlisteners = [
                 this._sessionContext.on(EVT_SESSION_EXPIRED, () => {
                     this._canSkipSessionRefresh = false;
                     this._onAuthStateChanged();

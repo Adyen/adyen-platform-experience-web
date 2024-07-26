@@ -21,7 +21,7 @@ import type { SessionDeadline, SessionDeadlineEmitter } from './types';
 
 export const createSessionDeadline = <T extends any>(emitter: Emitter<SessionEventType>, specification: SessionSpecification<T>) => {
     let _deadlineSignal: AbortSignal | undefined;
-    let _deadlineTimestamp: number = Infinity;
+    let _deadlineTimestamp = Infinity;
     let _refreshPromisorSignal: AbortSignal | undefined;
     let _stopDeadlineClock: (() => void) | undefined;
 
