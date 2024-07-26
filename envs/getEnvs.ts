@@ -1,7 +1,10 @@
+import { dirname } from 'path';
 import { loadEnv } from 'vite';
-import { resolve } from 'node:path';
+import { fileURLToPath } from 'url';
 
-export const envDir = resolve(__dirname);
+const filename = fileURLToPath(import.meta.url);
+
+export const envDir = dirname(filename);
 
 const parseEnv = (env: Record<string, string | undefined>) => ({
     apiConfigs: {

@@ -1,68 +1,156 @@
 {
-    "name": "@adyen/adyen-platform-experience-web-main",
-    "version": "1.0.0-beta.3",
-    "keywords": [
-        "adyen",
-        "adyen-fp",
-        "fp",
-        "finance",
-        "platforms",
-        "adyen-for-platforms",
-        "components"
-    ],
-    "publishConfig": {
-        "registry": "https://registry.npmjs.org/"
+  "name": "@adyen/adyen-platform-experience-web",
+  "version": "1.0.1",
+  "keywords": [
+    "adyen",
+    "adyen-pe",
+    "fp",
+    "finance",
+    "platforms",
+    "adyen-for-platforms",
+    "components",
+    "adyen-platform-experience"
+  ],
+  "type": "module",
+  "repository": "github:Adyen/adyen-platform-experience-web",
+  "apiVersion": "v1",
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  },
+  "private": false,
+  "bugs": {
+    "url": "https://support.adyen.com/"
+  },
+  "files": [
+    "dist/**"
+  ],
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/es/index.js",
+  "types": "./dist/types/index.d.ts",
+  "style": "dist/style.css",
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "require": {
+        "types": "./dist/types/index.d.ts",
+        "default": "./dist/cjs/index.js"
+      },
+      "import": {
+        "types": "./dist/types/index.d.ts",
+        "default": "./dist/es/index.js"
+      }
     },
-    "private": true,
-    "workspaces": [
-        "./packages/*"
-    ],
-    "scripts": {
-        "start": "npm run start:test",
-        "start:local": "concurrently --kill-others-on-fail 'npm run types:watch' 'npm run start:local -w @adyen/adyen-platform-experience-web-playground' --names 'tsc-lib,playground' -c blue,green,cyan,yellow",
-        "start:loop": "concurrently --kill-others-on-fail 'npm run types:watch' 'npm run start:loop -w @adyen/adyen-platform-experience-web-playground' --names 'tsc-lib,playground' -c blue,green,cyan,yellow",
-        "start:test": "concurrently --kill-others-on-fail 'npm run types:watch' 'npm run start:test -w @adyen/adyen-platform-experience-web-playground' --names 'tsc-lib,playground' -c blue,green,cyan,yellow",
-        "start:beta": "concurrently --kill-others-on-fail 'npm run types:watch' 'npm run start:beta -w @adyen/adyen-platform-experience-web-playground' --names 'tsc-lib,playground' -c blue,green,cyan,yellow",
-        "build": "npm run build -w @adyen/adyen-platform-experience-web",
-        "build:demo": "npm run build:demo -w @adyen/adyen-platform-experience-web-playground",
-        "build:test": "npm run build:test -w @adyen/adyen-platform-experience-web",
-        "build:analyse": "npm run build:analyse -w @adyen/adyen-platform-experience-web",
-        "demo": "npm run demo -w @adyen/adyen-platform-experience-web-playground",
-        "start:mocked": "concurrently --kill-others-on-fail 'npm run types:watch' 'npm run start:mock -w @adyen/adyen-platform-experience-web-playground' --names 'lib-types,playground' -c blue,green,cyan,yellow",
-        "start:mock:e2e": "concurrently --kill-others-on-fail 'npm run types:watch' 'npm run start:mock:e2e -w @adyen/adyen-platform-experience-web-playground' --names 'lib-types,playground' -c blue,green,cyan,yellow",
-        "lint": "npm run lint -w @adyen/adyen-platform-experience-web",
-        "test": "npm run test -w @adyen/adyen-platform-experience-web",
-        "test:coverage": "npm run test:coverage -w @adyen/adyen-platform-experience-web",
-        "test:e2e": "playwright test --project local-chrome",
-        "test:e2e:debug": "cross-env PWDEBUG=console playwright test --debug --project local-chrome",
-        "type-check": "npm run type-check -w @adyen/adyen-platform-experience-web",
-        "types:watch": "npm run types:watch -w @adyen/adyen-platform-experience-web && npm run types:watch -w @adyen/adyen-platform-experience-web-playground",
-        "format:all": "npm run format -w @adyen/adyen-platform-experience-web-playground && npm run format -w @adyen/adyen-platform-experience-web",
-        "storybook": "concurrently --kill-others-on-fail 'npm run types:watch' 'npm run storybook:loop -w @adyen/adyen-platform-experience-web-playground' ",
-        "storybook:local": "concurrently --kill-others-on-fail 'npm run types:watch' 'npm run storybook:local -w @adyen/adyen-platform-experience-web-playground' ",
-        "storybook:test": "concurrently --kill-others-on-fail 'npm run types:watch' 'npm run storybook:test -w @adyen/adyen-platform-experience-web-playground' ",
-        "storybook:beta": "concurrently --kill-others-on-fail 'npm run types:watch' 'npm run storybook:beta -w @adyen/adyen-platform-experience-web-playground' ",
-        "storybook:mocked": "npm run storybook:mocked -w @adyen/adyen-platform-experience-web-playground",
-        "storybook:build": "npm run storybook:build -w @adyen/adyen-platform-experience-web-playground",
-        "storybook:demo": "npm run storybook:demo -w @adyen/adyen-platform-experience-web-playground",
-        "demo:serve": "npm run demo:serve -w @adyen/adyen-platform-experience-web-playground",
-        "demo:serve:e2e": "npm run demo:serve:e2e -w @adyen/adyen-platform-experience-web-playground",
-        "watchTS": "tsc -b ./tsconfig.json --watch",
-        "schemas:generate": "bash scripts/generate-ts-schemas/generate-schemas.sh",
-        "schemas:variables": "bash scripts/generate-ts-schemas/setup-openapi-ts.sh",
-        "translations:sort": "bash scripts/process-translations/sort-translations-json.sh",
-        "prepare": "node ./prepare.js && bash ./scripts/process-package-lock.sh"
-    },
-    "dependencies": {
-        "concurrently": "^7.0.0"
-    },
-    "devDependencies": {
-        "husky": "^7.0.4",
-        "lint-staged": "^13.0.1",
-        "vite": "^4.3.2",
-        "vite-plugin-checker": "^0.5.6"
-    },
-    "msw": {
-        "workerDirectory": "packages/playground/public"
-    }
+    "./adyen-platform-experience-web.css": "./dist/style.css"
+  },
+  "scripts": {
+    "start": "vite dev --mode development --config ./vite.config.ts",
+    "start:local": "concurrently --kill-others-on-fail 'npm run types:watch' 'vite dev --mode local-env --config vite.config.ts' --names 'tsc-lib,playground' -c blue,green,cyan,yellow",
+    "start:loop": "concurrently --kill-others-on-fail 'npm run types:watch' 'vite dev --mode loop --config vite.config.ts' --names 'tsc-lib,playground' -c blue,green,cyan,yellow",
+    "start:test": "concurrently --kill-others-on-fail 'npm run types:watch' 'vite dev --mode development --config vite.config.ts' --names 'tsc-lib,playground' -c blue,green,cyan,yellow",
+    "start:beta": "concurrently --kill-others-on-fail 'npm run types:watch' 'vite dev --mode beta --config vite.config.ts' --names 'tsc-lib,playground' -c blue,green,cyan,yellow",
+    "build": "rm -rf ./dist && vite build --config vite.config.ts && tsc --project tsconfig-build.json",
+    "build:demo": "vite build --mode demo --config vite.config.ts",
+    "build:test": "npm run build && npm pack",
+    "build:publish": "npm run build && npm pack",
+    "build:analyse": "vite build --mode analyse --config vite.config.ts",
+    "demo": "npm run build:demo && vite preview --mode demo --config vite.config.ts",
+    "start:mocked": "concurrently --kill-others-on-fail 'npm run types:watch' 'vite dev --mode mocked --config vite.config.ts' --names 'lib-types,playground' -c blue,green,cyan,yellow",
+    "start:mock:e2e": "concurrently --kill-others-on-fail 'npm run types:watch' 'cross-env E2E_TEST=true vite dev --mode mocked --config vite.config.ts' --names 'lib-types,playground' -c blue,green,cyan,yellow",
+    "lint": "eslint 'src/**/*.{js,ts,tsx}' --quiet && stylelint 'src/**/*.scss' --fix",
+    "test": "vitest --config vite.config.ts",
+    "test:coverage": "vitest --config vite.config.ts --coverage",
+    "test:e2e": "playwright test --project local-chrome",
+    "test:e2e:debug": "cross-env PWDEBUG=console playwright test --debug --project local-chrome",
+    "type-check": "tsc --preserveWatchOutput",
+    "types:watch": "tsc --preserveWatchOutput --watch && tsc --project tsconfig-build.json --watch",
+    "format:all": "prettier --write 'src/**/*.{ts,js,css, scss, html}' && prettier --write 'src/**/*.{ts,js,css, scss, html}'",
+    "storybook": "concurrently --kill-others-on-fail 'npm run types:watch' 'vite-node --mode loop .storybook/runStorybook.ts' ",
+    "storybook:local": "concurrently --kill-others-on-fail 'npm run types:watch' 'vite-node --mode local-env .storybook/runStorybook.ts' ",
+    "storybook:test": "concurrently --kill-others-on-fail 'npm run types:watch' 'vite-node --mode development .storybook/runStorybook.ts' ",
+    "storybook:beta": "concurrently --kill-others-on-fail 'npm run types:watch' 'vite-node --mode beta .storybook/runStorybook.ts' ",
+    "storybook:mocked": "vite-node .storybook/runStorybook.ts --mode mocked",
+    "storybook:build": "vite-node ./.storybook/buildStorybook.ts",
+    "storybook:demo": "vite-node ./.storybook/buildStorybook.ts --mode demo && vite preview --mode demo --config vite.config.ts",
+    "demo:serve": "vite preview --mode demo --config vite.config.ts",
+    "demo:serve:e2e": "cross-env E2E_TEST=true vite preview --mode demo --config vite.config.ts",
+    "watchTS": "tsc -b ./tsconfig.json --watch",
+    "schemas:generate": "bash scripts/generate-ts-schemas/generate-schemas.sh",
+    "schemas:variables": "bash scripts/generate-ts-schemas/setup-openapi-ts.sh",
+    "translations:sort": "bash scripts/process-translations/sort-translations-json.sh",
+    "prepare": "node prepare.cjs && bash ./scripts/process-package-lock.sh",
+    "bump-version": "./scripts/bump-version.sh",
+    "version": "changeset version --snapshot",
+    "changeset": "changeset",
+    "changeset-tag": "changeset tag",
+    "create-tag": "npm run changeset-tag",
+    "postbuild": "rm dist/mockServiceWorker.js && rimraf dist/mockFiles"
+  },
+  "dependencies": {
+    "classnames": "^2.5.1",
+    "core-js": "^3.36.0"
+  },
+  "peerDependencies": {
+    "preact": "^10.13.2"
+  },
+  "devDependencies": {
+    "concurrently": "^7.0.0",
+    "@adyen/bento-design-tokens": "^1.7.1",
+    "@changesets/cli": "^2.27.5",
+    "@changesets/get-github-info": "^0.6.0",
+    "@playwright/test": "^1.38.0",
+    "@preact/preset-vite": "^2.5.0",
+    "@storybook/addon-a11y": "^7.0.4",
+    "@storybook/addon-essentials": "^7.0.4",
+    "@storybook/core-server": "^7.0.4",
+    "@storybook/manager-api": "^7.0.4",
+    "@storybook/preact": "^7.0.4",
+    "@storybook/preact-vite": "^7.0.4",
+    "@storybook/types": "^7.0.4",
+    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/preact": "^3.2.3",
+    "@testing-library/user-event": "^14.4.3",
+    "@types/node": "^20.4.7",
+    "@typescript-eslint/eslint-plugin": "^5.4.0",
+    "@typescript-eslint/parser": "^5.8.1",
+    "@vitest/coverage-c8": "^0.30.1",
+    "autoprefixer": "^9.8.8",
+    "cross-env": "^7.0.3",
+    "css-loader": "^4.3.0",
+    "dotenv": "^16.4.5",
+    "eslint": "^8.12.0",
+    "eslint-import-resolver-typescript": "^3.5.2",
+    "eslint-plugin-import": "^2.25.4",
+    "eslint-plugin-jsx-a11y": "^6.5.1",
+    "eslint-plugin-react": "^7.26.1",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "file-loader": "^6.2.0",
+    "husky": "^7.0.4",
+    "jsdom": "^20.0.3",
+    "lint-staged": "^13.0.1",
+    "mini-css-extract-plugin": "^2.4.5",
+    "msw": "^1.3.2",
+    "openapi-typescript": "^6.7.0",
+    "postcss": "^8.3.11",
+    "prettier": "^2.4.1",
+    "rollup-plugin-visualizer": "^5.9.0",
+    "sass": "^1.43.4",
+    "sass-loader": "^12.3.0",
+    "style-loader": "^3.3.1",
+    "stylelint": "^14.1.0",
+    "stylelint-config-recommended": "^6.0.0",
+    "stylelint-config-sass-guidelines": "^9.0.1",
+    "stylelint-scss": "^4.2.0",
+    "ts-loader": "^9.2.6",
+    "typescript": "5.2.2",
+    "vite": "^4.3.2",
+    "vite-node": "^0.30.1",
+    "vite-plugin-checker": "^0.5.6",
+    "vitest": "^0.30.1"
+  },
+  "msw": {
+    "workerDirectory": "playground/public"
+  }
 }

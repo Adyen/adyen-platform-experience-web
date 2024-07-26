@@ -37,7 +37,7 @@ Vagrantfile
 .demo/
 demo
 
-packages/playground/storybook-static/
+storybook-static/
 
 playwright-report
 test-results
