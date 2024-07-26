@@ -20,7 +20,6 @@ import { useCallback, useEffect, useMemo } from 'preact/hooks';
 
 export const ReportsOverview = ({
     onFiltersChanged,
-    onLimitChanged,
     balanceAccounts,
     allowLimitSelection,
     preferredLimit = DEFAULT_PAGE_LIMIT,
@@ -55,7 +54,6 @@ export const ReportsOverview = ({
 
     // FILTERS
     const _onFiltersChanged = useMemo(() => (isFunction(onFiltersChanged) ? onFiltersChanged : void 0), [onFiltersChanged]);
-    const _onLimitChanged = useMemo(() => (isFunction(onLimitChanged) ? onLimitChanged : void 0), [onLimitChanged]);
     const preferredLimitOptions = useMemo(() => (allowLimitSelection ? LIMIT_OPTIONS : undefined), [allowLimitSelection]);
 
     const { canResetFilters, error, fetching, filters, limit, limitOptions, records, resetFilters, updateFilters, updateLimit, ...paginationProps } =
@@ -64,7 +62,6 @@ export const ReportsOverview = ({
             dataField: 'data',
             filterParams: defaultParams.current.defaultFilterParams,
             initialFiltersSameAsDefault: true,
-            onLimitChanged: _onLimitChanged,
             onFiltersChanged: _onFiltersChanged,
             preferredLimit,
             preferredLimitOptions,

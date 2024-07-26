@@ -7,7 +7,6 @@ export class ReportsElement extends UIElement<ReportsOverviewComponentProps> {
 
     constructor(props: _UIComponentProps<ReportsOverviewComponentProps>) {
         super(props);
-        this.elementRef = (props && props.elementRef) || this;
         this.componentToRender = this.componentToRender.bind(this);
     }
 
@@ -15,11 +14,10 @@ export class ReportsElement extends UIElement<ReportsOverviewComponentProps> {
         return (
             <Reports
                 {...this.props}
-                balanceAccountId={this.props.core.options.balanceAccountId}
+                balanceAccountId={this.props.balanceAccountId}
                 ref={(ref: UIElement<TransactionOverviewComponentProps>) => {
                     this.componentRef = ref;
                 }}
-                elementRef={this.elementRef}
             ></Reports>
         );
     };

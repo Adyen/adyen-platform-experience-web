@@ -1,9 +1,9 @@
-import { AdyenPlatformExperience, all_locales, ReportsOverview } from '@adyen/adyen-platform-experience-web';
+import { AdyenPlatformExperience, all_locales, ReportsOverview } from '../../../src';
 import sessionRequest from '../../utils/sessionRequest';
-import '../../utils/createPages.js';
+import '../../utils/createPages';
 import '../../assets/style/style.scss';
 
-import { enableServerInMockedMode } from '../../endpoints/mock-server/utils';
+import { enableServerInMockedMode } from '../../../mocks/mock-server/utils';
 import { createLanguageButtons } from '../../utils/createLanguageButtons';
 import { TEST_CONFIG } from '../../utils/utils';
 
