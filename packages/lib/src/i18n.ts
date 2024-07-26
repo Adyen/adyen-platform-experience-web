@@ -6,7 +6,7 @@ i18n.use(initReactI18next) // passes i18n down to react-i18next
     .use(
         resourcesToBackend(async (language: string) => {
             const lang = language.replace('_', '-');
-            return import(`./translations/${lang}.json`);
+            return import(`./translations/${lang}.ts`);
         })
     )
     .init({
