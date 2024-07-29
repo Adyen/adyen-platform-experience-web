@@ -1,5 +1,6 @@
 import { enumerable, getter, hasOwnProperty } from '../struct/property';
 import { DEFAULT_ABORT_ERROR_MESSAGE, DEFAULT_TIMEOUT_ERROR_MESSAGE } from './constants';
+import { sameValue } from '../value/compare';
 
 if (!hasOwnProperty(AbortSignal.prototype, 'reason')) {
     try {
@@ -27,7 +28,7 @@ export const abortError = (message = DEFAULT_ABORT_ERROR_MESSAGE) => new DOMExce
 export const timeoutError = (message = DEFAULT_TIMEOUT_ERROR_MESSAGE) => new DOMException(message, 'TimeoutError');
 
 export const augmentSignalReason = (signal: AbortSignal, reason: any) => {
-    if (signal.reason !== reason) {
+    if (!sameValue(signal.reason, reason)) {
         try {
             Object.defineProperty(signal, 'reason', enumerable(reason));
         } catch {
