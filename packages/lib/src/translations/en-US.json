@@ -85,7 +85,7 @@
     "structuredList": "Structured list",
     "subtractions": "Subtractions",
     "tabs": "Tabs",
-    "theErrorCodeIs": "The error code is {{requestId}}",
+    "theErrorCodeIs": "The error code is <1>{{requestId}}</1>",
     "thereAreNoResults": "There are no results",
     "theRequestIsMissingRequiredFieldsOrContainsInvalidData": "The request is missing required fields or contains invalid data.",
     "thereWasAnUnexpectedError": "There was an unexpected error",

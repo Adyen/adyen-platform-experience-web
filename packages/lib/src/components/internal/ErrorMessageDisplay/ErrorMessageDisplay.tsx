@@ -7,7 +7,7 @@ import './ErrorMessageDisplay.scss';
 import { JSXInternal } from 'preact/src/jsx';
 import noResults from '../../../images/no-results.svg';
 import Button from '../Button';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 
 export const IMAGE_BREAKPOINT_SIZES = {
     md: 680,
@@ -43,20 +43,19 @@ export const ErrorMessageDisplay = ({
     const renderMessage = useCallback(
         (errorMessage: TranslationKey | TranslationKey[]) => {
             if (Array.isArray(errorMessage)) {
-                return errorMessage.map((message, i) =>
-                    i === 0 ? (
+                return errorMessage.map((message, i) => {
+                    return i === 0 ? (
                         <>
                             {t(message)}
                             {translationValues && translationValues[message] && <>{translationValues[message]}</>}
                         </>
                     ) : (
                         <>
-                            <br />
-                            {t(message)}
-                            {translationValues && translationValues[message] && <>{translationValues[message]}</>}
+                            {/* eslint-disable-next-line react/jsx-no-literals */}
+                            <Trans i18nKey={message}> The error code is {translationValues[message]}</Trans>
                         </>
-                    )
-                );
+                    );
+                });
             }
             return t(errorMessage);
         },

@@ -85,7 +85,7 @@
     "structuredList": "Lista estruturada",
     "subtractions": "Subtrações",
     "tabs": "Abas",
-    "theErrorCodeIs": "O código de erro é {{requestId}}",
+    "theErrorCodeIs": "O código de erro é  <1>{{requestId}}</1>",
     "thereAreNoResults": "Não há resultados",
     "theRequestIsMissingRequiredFieldsOrContainsInvalidData": "A solicitação não apresenta alguns campos obrigatórios, ou contém dados inválidos.",
     "thereWasAnUnexpectedError": "Ocorreu um erro inesperado",

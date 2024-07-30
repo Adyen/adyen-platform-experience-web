@@ -85,7 +85,7 @@
     "structuredList": "Struktureret liste",
     "subtractions": "Subtraktioner",
     "tabs": "Faner",
-    "theErrorCodeIs": "Fejlkoden er {{requestId}}",
+    "theErrorCodeIs": "Fejlkoden er  <1>{{requestId}}</1>",
     "thereAreNoResults": "Der er ingen resultater",
     "theRequestIsMissingRequiredFieldsOrContainsInvalidData": "Anmodningen mangler påkrævede felter eller indeholder ugyldige data.",
     "thereWasAnUnexpectedError": "Der opstod en uventet fejl",

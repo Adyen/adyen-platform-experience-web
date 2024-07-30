@@ -85,7 +85,7 @@
     "structuredList": "Strukturierte Liste",
     "subtractions": "Abzüge",
     "tabs": "Registerkarten",
-    "theErrorCodeIs": "Der Fehlercode lautet {{requestId}}",
+    "theErrorCodeIs": "Der Fehlercode lautet  <1>{{requestId}}</1>",
     "thereAreNoResults": "Es sind keine Ergebnisse vorhanden.",
     "theRequestIsMissingRequiredFieldsOrContainsInvalidData": "In der Anfrage fehlen Pflichtfelder oder sie enthält ungültige Daten.",
     "thereWasAnUnexpectedError": "Es ist ein unerwarteter Fehler aufgetreten.",

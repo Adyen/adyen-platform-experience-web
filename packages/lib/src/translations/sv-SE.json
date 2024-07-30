@@ -85,7 +85,7 @@
     "structuredList": "Strukturerad lista",
     "subtractions": "Subtraktioner",
     "tabs": "Flikar",
-    "theErrorCodeIs": "Felkoden är {{requestId}}",
+    "theErrorCodeIs": "Felkoden är  <1>{{requestId}}</1>",
     "thereAreNoResults": "Det finns inga resultat",
     "theRequestIsMissingRequiredFieldsOrContainsInvalidData": "Begäran saknar obligatoriska fält eller innehåller ogiltiga data.",
     "thereWasAnUnexpectedError": "Det uppstod ett oväntat fel",
