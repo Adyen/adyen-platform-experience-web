@@ -51,7 +51,7 @@
     "start:loop": "concurrently --kill-others-on-fail 'npm run types:watch' 'vite dev --mode loop --config vite.config.ts' --names 'tsc-lib,playground' -c blue,green,cyan,yellow",
     "start:test": "concurrently --kill-others-on-fail 'npm run types:watch' 'vite dev --mode development --config vite.config.ts' --names 'tsc-lib,playground' -c blue,green,cyan,yellow",
     "start:beta": "concurrently --kill-others-on-fail 'npm run types:watch' 'vite dev --mode beta --config vite.config.ts' --names 'tsc-lib,playground' -c blue,green,cyan,yellow",
-    "build": "rm -rf ./dist && vite build --mode esm --config vite.config.ts && vite build --mode cjs --config vite.config.ts && tsc --project tsconfig-build.json",
+    "build": "rm -rf ./dist && vite build --config vite.config.ts && tsc --project tsconfig-build.json",
     "build:demo": "vite build --mode demo --config vite.config.ts",
     "build:test": "npm run build && npm pack",
     "build:publish": "npm run build && npm pack",

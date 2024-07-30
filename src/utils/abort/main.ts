@@ -1,4 +1,5 @@
 import { clamp } from '../value/number';
+import { isUndefined } from '../value/is';
 import { ABORT_EVENT, MAX_ABORT_TIMEOUT } from './constants';
 import { abortError, augmentSignalReason, timeoutError } from './internals';
 
@@ -6,13 +7,13 @@ declare var AbortSignal: {
     any: (signals: AbortSignal[]) => AbortSignal;
 } & typeof window.AbortSignal;
 
-export const abortedSignal = (reason: {} = abortError()) => {
+export const abortedSignal = (reason: unknown = abortError()) => {
     if ('abort' in AbortSignal) {
         return AbortSignal.abort(reason);
     }
 
     const _controller = new AbortController();
-    const _reason = reason ?? abortError();
+    const _reason = isUndefined(reason) ? abortError() : reason;
     const { signal } = _controller;
 
     _controller.abort(_reason);

@@ -1,29 +1,30 @@
 import { ERR_SESSION_EXPIRED, SessionSpecification } from '../../../primitives/context/session';
-import { abortSignalForAny, enumerable, getter, isAbortSignal, isPlainObject, isString, isUndefined } from '../../../utils';
+import { abortSignalForAny, enumerable, isAbortSignal, isPlainObject, isString, isUndefined } from '../../../utils';
 import { http as _http } from '../../Http/http';
 import { ErrorTypes } from '../../Http/utils';
+import { AUTO_REFRESH, MAX_AGE_MS } from './constants';
+import type { SessionObject, SessionRequest } from '../types';
 import type { HttpOptions } from '../../Http/types';
 import type { onErrorHandler } from '../../types';
-import type { SessionObject, SessionRequest } from '../types';
-import { AUTO_REFRESH, MAX_AGE_MS } from './constants';
 
 type _AuthSessionSpecification = SessionSpecification<SessionObject, Parameters<typeof _http>>;
 
 export class AuthSessionSpecification implements _AuthSessionSpecification {
-    public declare autoRefresh: _AuthSessionSpecification['autoRefresh'];
-    public declare onRefresh: _AuthSessionSpecification['onRefresh'];
     public declare errorHandler: onErrorHandler | null;
+
+    public declare readonly autoRefresh: _AuthSessionSpecification['autoRefresh'];
+    public declare readonly onRefresh: _AuthSessionSpecification['onRefresh'];
 
     constructor(public onSessionCreate?: SessionRequest) {
         this._errorHandler = this._errorHandler.bind(this);
 
         Object.defineProperties(this, {
-            autoRefresh: enumerable(AUTO_REFRESH),
-            onRefresh: getter(() => this.onSessionCreate!, true),
+            autoRefresh: enumerable<typeof this.autoRefresh>(AUTO_REFRESH),
+            onRefresh: enumerable<typeof this.onRefresh>((_, signal) => this.onSessionCreate!(signal)),
         });
     }
 
-    public assert: _AuthSessionSpecification['assert'] = maybeSession => {
+    public readonly assert: _AuthSessionSpecification['assert'] = maybeSession => {
         if (isPlainObject(maybeSession)) {
             const id = isString(maybeSession.id) ? maybeSession.id.trim() : undefined;
             const token = isString(maybeSession.token) ? maybeSession.token.trim() : undefined;
@@ -32,12 +33,14 @@ export class AuthSessionSpecification implements _AuthSessionSpecification {
         throw undefined;
     };
 
-    public deadline: _AuthSessionSpecification['deadline'] = session => {
+    public readonly deadline: _AuthSessionSpecification['deadline'] = session => {
+        const deadlines = [];
         let issuedAt: number;
         let expiresAt: number;
 
         try {
-            ({ iat: issuedAt, exp: expiresAt } = JSON.parse(atob(session.token.split('.')[1]!)));
+            ({ iat: issuedAt, exp: expiresAt } = JSON.parse(atob(session?.token.split('.')[1]!)));
+            deadlines.push(expiresAt);
         } catch {
             /* ignore malformed token errors */
             issuedAt = Date.now();
@@ -45,22 +48,23 @@ export class AuthSessionSpecification implements _AuthSessionSpecification {
 
         if (!isUndefined(MAX_AGE_MS)) {
             const issuedAtDate = new Date(issuedAt);
-            return Math.min(expiresAt! ?? Infinity, issuedAtDate.setMilliseconds(issuedAtDate.getMilliseconds() + MAX_AGE_MS));
+            deadlines.push(issuedAtDate.setMilliseconds(issuedAtDate.getMilliseconds() + MAX_AGE_MS));
         }
 
-        return expiresAt!;
+        return deadlines;
     };
 
-    public http: _AuthSessionSpecification['http'] = async (session, sessionSignal, options: HttpOptions, data?: any) => {
+    public http: _AuthSessionSpecification['http'] = async (session, sessionSignal, httpOptions: HttpOptions, data?: any) => {
+        const { headers, signal, ...restOptions } = httpOptions;
         try {
             const sessionHttpOptions = {
-                ...options,
+                ...restOptions,
                 headers: {
-                    ...options.headers,
+                    ...headers,
                     ...(session && { Authorization: `Bearer ${session.token}` }),
                 },
                 errorHandler: this._errorHandler,
-                signal: isAbortSignal(options.signal) ? abortSignalForAny([sessionSignal, options.signal]) : sessionSignal,
+                signal: isAbortSignal(signal) ? abortSignalForAny([sessionSignal, signal]) : sessionSignal,
             };
             return await _http(sessionHttpOptions, data);
         } catch (ex: any) {

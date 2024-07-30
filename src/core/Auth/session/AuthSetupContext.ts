@@ -2,35 +2,61 @@ import Core from '../../core';
 import { SETUP_ENDPOINT_PATH } from './constants';
 import { parseSearchParams } from '../../Http/utils';
 import { SessionContext } from '../../../primitives/context/session';
-import { asPlainObject, EMPTY_OBJECT, isPlainObject, isUndefined, noop, struct, withFreezeProxyHandlers } from '../../../utils';
+import { createPromisor } from '../../../primitives/async/promisor';
+import {
+    abortSignalForAny,
+    asPlainObject,
+    EMPTY_OBJECT,
+    isAbortSignal,
+    isPlainObject,
+    isUndefined,
+    noop,
+    struct,
+    withFreezeProxyHandlers,
+} from '../../../utils';
 import type { EndpointHttpCallables, EndpointSuccessResponse, SessionObject, SetupContext, SetupResponse } from '../types';
 import type { EndpointName, SetupEndpoint } from '../../../types/api/endpoints';
 import type { HttpMethod } from '../../Http/types';
-import type { Promised } from '../../../utils/types';
 
 export class AuthSetupContext {
     private _endpoints: SetupContext['endpoints'] = EMPTY_OBJECT;
     private _revokeEndpointsProxy = noop;
 
-    declare loadingContext?: Core<any>['loadingContext'];
+    private readonly _beforeHttp = async () => {
+        // a no-op catch callback is used here (`noop`),
+        // to silence unnecessary unhandled promise rejection warnings
+        await this._refreshPromisor.promise.catch(noop);
+    };
+
+    private readonly _refreshPromisor = createPromisor((promisorSignal, signal?: AbortSignal | null | undefined) => {
+        const abortSignal = isAbortSignal(signal) ? abortSignalForAny([signal, promisorSignal]) : promisorSignal;
+        return this._fetchSetupEndpoint(abortSignal);
+    });
+
+    public declare loadingContext?: Core<any>['loadingContext'];
+    public declare readonly refresh: (signal: AbortSignal) => Promise<void>;
 
     constructor(private readonly _session: SessionContext<SessionObject, any[]>) {
-        this._fetchSetupEndpoint = this._fetchSetupEndpoint.bind(this);
-        this.refresh = this.refresh.bind(this);
+        let _refreshPromise: Promise<void> | undefined;
+
+        this.refresh = signal => {
+            this._refreshPromisor(signal).catch(noop);
+
+            return (_refreshPromise ??= this._refreshPromisor.promise
+                .finally(() => (_refreshPromise = undefined))
+                .then(({ endpoints }) => {
+                    this._resetEndpoints();
+                    ({ proxy: this._endpoints, revoke: this._revokeEndpointsProxy } = this._getEndpointsProxy(endpoints));
+                }));
+        };
     }
 
     get endpoints() {
         return this._endpoints;
     }
 
-    async refresh(refreshAbortablePromise: <T>(getPromise: Promised<T> | ((signal: AbortSignal) => Promised<T>)) => Promise<T>) {
-        this._resetEndpoints();
-        const { endpoints } = await refreshAbortablePromise(this._fetchSetupEndpoint);
-        ({ proxy: this._endpoints, revoke: this._revokeEndpointsProxy } = this._getEndpointsProxy(endpoints));
-    }
-
     private _fetchSetupEndpoint(signal: AbortSignal) {
-        return this._session.http({
+        return this._session.http(null, {
             method: 'POST',
             path: SETUP_ENDPOINT_PATH,
             errorLevel: 'fatal',
@@ -57,7 +83,7 @@ export class AuthSetupContext {
 
                         return ((...args: Parameters<EndpointHttpCallables>) => {
                             const httpOptions = this._getHttpOptions(method as HttpMethod, url!, ...args);
-                            return this._session.http(httpOptions) as Promise<EndpointSuccessResponse<Endpoint>>;
+                            return this._session.http(this._beforeHttp, httpOptions) as Promise<EndpointSuccessResponse<Endpoint>>;
                         }) as EndpointHttpCallables<Endpoint>;
                     })()!;
 

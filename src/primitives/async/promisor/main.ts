@@ -7,31 +7,25 @@ import type { Promisor } from './types';
 export const createPromisor = <T extends any, Params extends any[] = []>(
     factory: (this: any, signal: AbortSignal, ...args: Params) => Promised<T>
 ) => {
-    let _promise: Promisor<T, Params>['promise'];
-    const _abortable = createAbortable(Symbol());
+    const _abortable = createAbortable();
     const _deferred = createDeferred<T>();
+    let _promise: Promisor<T, Params>['promise'] | undefined;
 
     const promisor = function (this: any, ...args) {
-        if (isUndefined(_promise)) _deferred.refresh();
+        isUndefined(_promise) ? _deferred.refresh() : _abortable.abort();
 
-        _abortable.abort();
-        _abortable.refresh();
-        _promise = tryResolve.call(this, factory, _abortable.signal, ...args) as Promise<T>;
-
-        let resolveDeferred: () => void;
-        const currentPromise = _promise;
+        const currentPromise = tryResolve.call(this, factory, _abortable.refresh().signal, ...args) as Promise<T>;
 
         (async () => {
+            let isLatestPromise = _promise === (_promise = currentPromise);
             try {
-                const value = await currentPromise;
-                resolveDeferred = () => _deferred.resolve(value);
+                const value = await currentPromise.finally(() => {
+                    isLatestPromise = _promise === currentPromise;
+                    isLatestPromise && (_promise = undefined);
+                });
+                isLatestPromise && _deferred.resolve(value);
             } catch (ex) {
-                resolveDeferred = () => _deferred.reject(ex);
-            }
-
-            if (_promise === currentPromise) {
-                _promise = undefined!;
-                resolveDeferred();
+                isLatestPromise && _deferred.reject(ex);
             }
         })();
 
@@ -39,7 +33,7 @@ export const createPromisor = <T extends any, Params extends any[] = []>(
     } as Promisor<T, Params>;
 
     return Object.defineProperties(promisor, {
-        abort: enumerable(() => _abortable.abort()),
+        abort: enumerable(_abortable.abort),
         promise: getter(() => _deferred.promise),
         refresh: enumerable(() => void _deferred.refresh()),
     });

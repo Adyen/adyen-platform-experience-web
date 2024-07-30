@@ -9,16 +9,14 @@ describe('abortedSignal', () => {
         expect(signal.reason.name).toBe('AbortError');
     });
 
-    test('should return already aborted signal with AbortError for nullish reasons', () => {
-        [null, undefined].forEach(reason => {
-            const signal = abortedSignal(reason!);
-            expect(signal.aborted).toBe(true);
-            expect(signal.reason.name).toBe('AbortError');
-        });
+    test('should return already aborted signal with AbortError if reason is undefined', () => {
+        const signal = abortedSignal(undefined);
+        expect(signal.aborted).toBe(true);
+        expect(signal.reason.name).toBe('AbortError');
     });
 
     test('should return already aborted signal with specified reason', () => {
-        ['hello', new DOMException('aborted'), new Error('unknown_error')].forEach(reason => {
+        [null, 'hello', new DOMException('aborted'), new Error('unknown_error')].forEach(reason => {
             const signal = abortedSignal(reason);
             expect(signal.aborted).toBe(true);
             expect(signal.reason).toBe(reason);
