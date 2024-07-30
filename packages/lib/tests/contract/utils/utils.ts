@@ -1,0 +1,49 @@
+import { asPlainObject, isPlainObject } from '../../../src/utils';
+import { AvailableVersions, EndpointsUrl, RequestArgs } from './types';
+import { resolveEnvironment } from '../../../src/core/utils';
+import process from 'node:process';
+import dotenv from 'dotenv';
+dotenv.config({ path: './envs/.env' });
+
+const environment = process.env.NODE_ENV as 'live' | 'test';
+
+export const getHeaders = ({ token, contentType }: { token: string; contentType?: string }) => {
+    return {
+        headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': contentType || 'application/json',
+            Origin: 'https://localhost',
+        },
+    };
+};
+
+const requestHasParams = (request: any): request is Record<'params', any> => {
+    return !!request.params;
+};
+
+const buildUrl = (baseUrl: string, queryParams: Record<any, any>) => {
+    const queryString = Object.keys(queryParams)
+        .filter(key => queryParams[key] !== undefined)
+        .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(queryParams[key])}`)
+        .join('&');
+
+    return queryString ? `${baseUrl}?${queryString}` : baseUrl;
+};
+
+export const getRequestURL = <Endpoint extends EndpointsUrl, Version extends AvailableVersions = 'v1'>(request: RequestArgs<Endpoint, Version>) => {
+    let path = request.endpoint as string;
+
+    if (requestHasParams(request)) {
+        const { path: pathParams, query: searchParams } = asPlainObject(request.params as any);
+        if (isPlainObject(pathParams)) {
+            for (const pathParamKey of Object.keys(pathParams)) {
+                path = path.replace(`{${pathParamKey}}`, pathParams[pathParamKey]);
+            }
+        }
+
+        if (searchParams) {
+            path = buildUrl(path, searchParams);
+        }
+    }
+    return `${resolveEnvironment(environment)}${request.version || 'v1'}${path}`;
+};

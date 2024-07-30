@@ -1,9 +1,9 @@
 import { expect } from '@playwright/test';
-import { resolveEnvironment } from '../../../src/core/utils';
 import { ENVS } from './env_constants';
 import process from 'node:process';
 import dotenv from 'dotenv';
 import { sessionAwareTest } from '../utils/session-request-function';
+import { getRequestURL } from '../utils/utils';
 
 dotenv.config({ path: './envs/.env' });
 
@@ -11,18 +11,15 @@ const environment = process.env.NODE_ENV as 'live' | 'test';
 
 const ENV = ENVS[environment] || ENVS.test;
 
-const basePayoutsUrl = `${resolveEnvironment(environment)}v1/payouts`;
-
-sessionAwareTest('/payouts endpoint should return consistent data', async ({ apiContext, token }) => {
+sessionAwareTest('/payouts endpoint should return consistent data', async ({ apiContext, headers }) => {
     const payoutsList = await apiContext.get(
-        `${basePayoutsUrl}?balanceAccountId=${ENV.balanceAccountId}&createdSince=${ENV.createdSince}&createdUntil=${ENV.createdUntil}`,
-        {
-            headers: {
-                Authorization: `Bearer ${token}`,
-                'Content-Type': 'application/json',
-                Origin: 'https://localhost',
+        getRequestURL({
+            endpoint: '/payouts',
+            params: {
+                query: { balanceAccountId: ENV.balanceAccountId, createdSince: ENV.createdSince, createdUntil: ENV.createdUntil },
             },
-        }
+        }),
+        { headers }
     );
 
     expect(payoutsList.status()).toBe(200);
@@ -33,16 +30,15 @@ sessionAwareTest('/payouts endpoint should return consistent data', async ({ api
     expect(responseData.data[0]).toStrictEqual(ENV.payouts_list_response[0]);
 });
 
-sessionAwareTest('/payouts/breakdown endpoint should return consistent data', async ({ apiContext, token }) => {
+sessionAwareTest('/payouts/breakdown endpoint should return consistent data', async ({ apiContext, headers }) => {
     const payoutsDetails = await apiContext.get(
-        `${basePayoutsUrl}/breakdown?balanceAccountId=${ENV.balanceAccountId}&createdAt=${ENV.payoutCreationDate}`,
-        {
-            headers: {
-                Authorization: `Bearer ${token}`,
-                'Content-Type': 'application/json',
-                Origin: 'https://localhost',
+        getRequestURL({
+            endpoint: '/payouts/breakdown',
+            params: {
+                query: { balanceAccountId: ENV.balanceAccountId, createdAt: ENV.payoutCreationDate },
             },
-        }
+        }),
+        { headers }
     );
 
     expect(payoutsDetails.status()).toBe(200);
