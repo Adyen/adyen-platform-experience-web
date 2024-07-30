@@ -46,11 +46,11 @@ export const ErrorMessageDisplay = ({
                 return errorMessage.map((message, i) => {
                     return i === 0 ? (
                         <>
-                            {t(message)}
-                            {translationValues && translationValues[message] && <>{translationValues[message]}</>}
+                            <Trans i18nKey={message}> The error code is {translationValues[message]}</Trans>
                         </>
                     ) : (
                         <>
+                            <br />
                             {/* eslint-disable-next-line react/jsx-no-literals */}
                             <Trans i18nKey={message}> The error code is {translationValues[message]}</Trans>
                         </>
