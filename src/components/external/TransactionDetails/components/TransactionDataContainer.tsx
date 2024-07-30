@@ -1,8 +1,11 @@
+import useTransactionDataContext from '../context';
+import TransactionDataSkeleton from './TransactionDataSkeleton';
 import TransactionDataView from './TransactionDataView';
-import type { TransactionDetailData } from '../types';
+import TransactionRefundView from './TransactionRefundView';
 
-export const TransactionDataContainer = ({ transaction }: { transaction: TransactionDetailData }) => {
-    return <TransactionDataView transaction={transaction} />;
+const TransactionDataContainer = () => {
+    const { dataViewActive, isLoading } = useTransactionDataContext();
+    return isLoading ? <TransactionDataSkeleton skeletonRowNumber={6} /> : dataViewActive ? <TransactionDataView /> : <TransactionRefundView />;
 };
 
 export default TransactionDataContainer;

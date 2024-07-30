@@ -94,7 +94,7 @@ export const PayoutData = ({
     return (
         <>
             {!payout ? (
-                <TransactionDataSkeleton isLoading={isFetching} skeletonRowNumber={6} />
+                <TransactionDataSkeleton skeletonRowNumber={6} />
             ) : (
                 <div className={PD_BASE_CLASS}>
                     <div className={PD_TITLE_CLASS}>

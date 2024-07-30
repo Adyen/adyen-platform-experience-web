@@ -1,0 +1,13 @@
+export const TX_DATA_CLASS = 'adyen-pe-transaction-data';
+export const TX_DATA_AMOUNT = `${TX_DATA_CLASS}__amount`;
+export const TX_DATA_CONTAINER = `${TX_DATA_CLASS}__container`;
+export const TX_DATA_CONTAINER_NO_PADDING = `${TX_DATA_CONTAINER}--without-padding`;
+export const TX_DATA_LABEL = `${TX_DATA_CLASS}__label`;
+export const TX_DATA_PAY_METHOD = `${TX_DATA_CLASS}__payment-method`;
+export const TX_DATA_PAY_METHOD_DETAIL = `${TX_DATA_PAY_METHOD}-detail`;
+export const TX_DATA_PAY_METHOD_LOGO = `${TX_DATA_PAY_METHOD}-logo`;
+export const TX_DATA_PAY_METHOD_LOGO_CONTAINER = `${TX_DATA_PAY_METHOD_LOGO}-container`;
+export const TX_DATA_SECTION = `${TX_DATA_CLASS}__section`;
+export const TX_DATA_SKELETON = `${TX_DATA_CLASS}__skeleton`;
+export const TX_DATA_SKELETON_LOADING = `${TX_DATA_SKELETON}--loading-content`;
+export const TX_DATA_TAG_CONTAINER = `${TX_DATA_CLASS}__tag-container`;

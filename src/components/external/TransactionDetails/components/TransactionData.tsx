@@ -1,6 +1,9 @@
 import TransactionDataContainer from './TransactionDataContainer';
-import TransactionDataSkeleton from './TransactionDataSkeleton';
-import type { TransactionDetailData } from '../types';
+import TransactionDataProvider, { TransactionDataProviderProps } from './TransactionDataProvider';
+import './TransactionData.scss';
 
-export const TransactionData = ({ transaction, isFetching }: { transaction: TransactionDetailData; isFetching?: boolean }) =>
-    transaction ? <TransactionDataContainer transaction={transaction} /> : <TransactionDataSkeleton isLoading={isFetching} skeletonRowNumber={6} />;
+export const TransactionData = (props: Omit<TransactionDataProviderProps, 'children'>) => (
+    <TransactionDataProvider {...props}>
+        <TransactionDataContainer />
+    </TransactionDataProvider>
+);

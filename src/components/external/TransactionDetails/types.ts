@@ -1,4 +1,4 @@
-import { ITransaction } from '../../../types';
+import type { ITransaction } from '../../../types';
 
 export interface DetailsWithoutIdProps {
     data: TransactionDetailData;

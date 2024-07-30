@@ -25,7 +25,7 @@
         color: style.token(color-label-secondary);
     }
 
-    &__container {
+    &__container:not(&__container--without-padding) {
         padding-bottom: style.token(spacer-080);
     }
 
@@ -76,7 +76,7 @@
         margin: style.token(spacer-040) 0;
         width: 50%;
 
-        &-loading-content {
+        &--loading-content {
             @include skeleton.adyen-pe-skeleton-animation();
         }
     }
