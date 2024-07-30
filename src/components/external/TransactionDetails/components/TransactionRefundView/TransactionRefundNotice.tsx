@@ -1,5 +1,5 @@
 import { useMemo } from 'preact/hooks';
-import { TX_DATA_CONTAINER } from '../../constants';
+import { TX_DATA_CONTAINER, TX_DATA_HEAD_CONTAINER } from '../../constants';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import Typography from '../../../../internal/Typography/Typography';
 import { TypographyElement, TypographyVariant } from '../../../../internal/Typography/types';
@@ -9,7 +9,7 @@ const TransactionRefundNotice = () => {
 
     return useMemo(
         () => (
-            <div className={TX_DATA_CONTAINER}>
+            <div className={`${TX_DATA_CONTAINER} ${TX_DATA_HEAD_CONTAINER}`}>
                 <Typography el={TypographyElement.DIV} variant={TypographyVariant.SUBTITLE} stronger>
                     {i18n.get('refundAction')}
                 </Typography>

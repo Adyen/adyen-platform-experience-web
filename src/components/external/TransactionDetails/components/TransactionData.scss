@@ -58,6 +58,78 @@
         justify-content: flex-end;
     }
 
+    &__input-container {
+        font-size: style.token(text-body-font-size);
+        font-weight: style.token(text-body-font-weight);
+        line-height: style.token(text-body-line-height);
+        height: auto;
+        position: relative;
+        width: 100%;
+
+        &--short {
+            width: 62.5%;
+        }
+
+        > :only-child {
+            display: flex;
+            width: 100%;
+        }
+
+        .adyen-pe-tag,
+        .adyen-pe-input,
+        .adyen-pe-dropdown__button {
+            font-size: inherit;
+            font-weight: inherit;
+            line-height: inherit;
+        }
+
+        .adyen-pe-tag {
+            margin: style.token(spacer-020);
+            padding: style.token(spacer-020) style.token(spacer-030);
+        }
+    }
+
+    &__input-container--text-input {
+        background: style.token(color-background-primary);
+        border: style.token(border-width-s) solid style.token(color-outline-secondary);
+        border-radius: style.token(border-radius-m);
+        outline: none;
+        transition: border 0.2s ease-out, box-shadow 0.2s ease-out;
+
+        &:focus-within,
+        &:focus-within:hover {
+            border-color: style.token(color-outline-primary-active);
+            box-shadow: none !important;
+            outline: style.token(border-width-s) solid style.token(color-outline-primary-active);
+        }
+
+        //&__invalid-value {
+        //    color: style.token(color-label-critical);
+        //    max-width: 20rem;
+        //    text-wrap: wrap;
+        //}
+
+        .adyen-pe-input {
+            &,
+            &:active,
+            &:focus,
+            &:hover,
+            &:active:hover,
+            &:focus:hover {
+                background: transparent;
+                border: none;
+                flex: 1;
+                height: auto;
+                outline: none;
+            }
+        }
+    }
+
+    &__input-head {
+        display: flex;
+        margin-bottom: style.token(spacer-030);
+    }
+
     &__label {
         color: style.token(color-label-secondary);
         font-size: style.token(text-body-font-size);

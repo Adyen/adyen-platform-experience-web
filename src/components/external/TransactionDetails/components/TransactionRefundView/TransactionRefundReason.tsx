@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from 'preact/hooks';
-import { TX_DATA_CONTAINER } from '../../constants';
+import { TX_DATA_CONTAINER, TX_DATA_INPUT_CONTAINER, TX_DATA_INPUT_CONTAINER_SHORT, TX_DATA_INPUT_HEAD } from '../../constants';
 import useTransactionDataContext, { REFUND_REASONS, RefundReason } from '../../context';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import Select from '../../../../internal/FormFields/Select';
@@ -15,20 +15,14 @@ const TransactionRefundReason = () => {
 
     return (
         <div className={TX_DATA_CONTAINER}>
-            <div>
-                <label htmlFor="refundReason">
-                    <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY} stronger>
-                        {`${i18n.get('refundReason')}`}
-                    </Typography>
-                </label>
-                <Select
-                    items={refundReasons}
-                    filterable={false}
-                    multiSelect={false}
-                    onChange={onReasonChanged}
-                    selected={refundReason}
-                    setToTargetWidth={true}
-                />
+            <div className={TX_DATA_INPUT_HEAD}>
+                <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY} stronger>
+                    {`${i18n.get('refundReason')}`}
+                </Typography>
+            </div>
+
+            <div className={`${TX_DATA_INPUT_CONTAINER} ${TX_DATA_INPUT_CONTAINER_SHORT}`}>
+                <Select items={refundReasons} filterable={false} multiSelect={false} onChange={onReasonChanged} selected={refundReason} />
             </div>
         </div>
     );
