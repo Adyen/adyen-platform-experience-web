@@ -3,7 +3,7 @@ const { getInfo, getInfoFromPullRequest } = require('@changesets/get-github-info
 
 config();
 
-const repo = 'adyen/adyen-plaform-experience-web';
+const repo = 'adyen/adyen-platform-experience-web';
 
 const changelogFunctions = {
     getDependencyReleaseLine: async (changesets, dependenciesUpdated) => {
@@ -25,9 +25,9 @@ const changelogFunctions = {
             .filter(_ => _)
             .join(', ')}]:`;
 
-        const updatedDepenenciesList = dependenciesUpdated.map(dependency => `  - ${dependency.name}@${dependency.newVersion}`);
+        const updatedDependenciesList = dependenciesUpdated.map(dependency => `  - ${dependency.name}@${dependency.newVersion}`);
 
-        return [changesetLink, ...updatedDepenenciesList].join('\n');
+        return [changesetLink, ...updatedDependenciesList].join('\n');
     },
     getReleaseLine: async changeset => {
         let prFromSummary;

@@ -15,7 +15,7 @@ fi
 
 npm run version
 
-new_version=$(grep '"version":' packages/lib/package.json | sed 's/.*: "\(.*\)".*/\1/')
+new_version=$(grep '"version":' package.json | sed 's/.*: "\(.*\)".*/\1/')
 
 npm install
 git add .
