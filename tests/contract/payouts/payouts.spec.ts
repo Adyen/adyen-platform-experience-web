@@ -11,8 +11,8 @@ const environment = process.env.NODE_ENV as 'live' | 'test';
 
 const ENV = ENVS[environment] || ENVS.test;
 
-sessionAwareTest('/payouts endpoint should return consistent data', async ({ apiContext, headers }) => {
-    const payoutsList = await apiContext.get(
+sessionAwareTest('/payouts endpoint should return consistent data', async ({ requestContext, headers }) => {
+    const payoutsList = await requestContext.get(
         getRequestURL({
             endpoint: '/payouts',
             params: {
@@ -30,8 +30,8 @@ sessionAwareTest('/payouts endpoint should return consistent data', async ({ api
     expect(responseData.data[0]).toStrictEqual(ENV.payouts_list_response[0]);
 });
 
-sessionAwareTest('/payouts/breakdown endpoint should return consistent data', async ({ apiContext, headers }) => {
-    const payoutsDetails = await apiContext.get(
+sessionAwareTest('/payouts/breakdown endpoint should return consistent data', async ({ requestContext, headers }) => {
+    const payoutsDetails = await requestContext.get(
         getRequestURL({
             endpoint: '/payouts/breakdown',
             params: {

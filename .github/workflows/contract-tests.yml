@@ -4,8 +4,6 @@ on:
   schedule:
     - cron: '0 14 * * *'
   workflow_dispatch:  # This allows manual triggering of the workflow
-  pull_request:
-    types: [opened, synchronize, reopened]
 
 jobs:
   e2e-tests:
@@ -33,10 +31,4 @@ jobs:
           API_KEY: ${{ secrets.API_KEY }}
           BALANCE_ACCOUNT: ${{ secrets.BALANCE_ACCOUNT }}
           NODE_ENV: ${{ matrix.environment == 'contract-live' && 'live' || 'test' }}
-
-      - name: Upload test results
-        if: always()
-        uses: actions/upload-artifact@v2
-        with:
-          name: playwright-report
-          path: playwright-report/
+          CI: true

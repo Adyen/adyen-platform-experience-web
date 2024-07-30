@@ -74,6 +74,9 @@ const config: PlaywrightTestConfig = {
         {
             name: 'contract',
             testDir: 'tests/contract',
+            use: {
+                ignoreHTTPSErrors: true,
+            },
         },
     ],
     /* Run your local dev server before starting the tests */

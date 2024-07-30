@@ -1,6 +1,11 @@
 import { test as base, APIRequestContext, request } from '@playwright/test';
 import process from 'node:process';
 import { getHeaders } from './utils';
+import dotenv from 'dotenv';
+import { resolveEnvironment } from '../../../src/core/utils';
+dotenv.config({ path: './envs/.env' });
+
+const environment = process.env.NODE_ENV as 'live' | 'test';
 
 const SESSION_ROLES = ['Transactions Overview Component: View', 'Payouts Overview Component: View'];
 
@@ -12,15 +17,19 @@ export const SESSION = {
 };
 
 type TestFixtures = {
-    apiContext: APIRequestContext;
+    requestContext: APIRequestContext;
     token: string;
     accountHolder: any;
     headers: { [key: string]: string } | undefined;
 };
 
 export const sessionAwareTest = base.extend<TestFixtures>({
-    apiContext: async ({}, use) => {
-        const apiContext = await request.newContext({ timeout: 60000, ignoreHTTPSErrors: true });
+    requestContext: async ({}, use) => {
+        const apiContext = await request.newContext({
+            timeout: 60000,
+            ignoreHTTPSErrors: true,
+            baseURL: `${resolveEnvironment(environment)}`,
+        });
         try {
             await use(apiContext);
         } finally {
@@ -28,10 +37,11 @@ export const sessionAwareTest = base.extend<TestFixtures>({
         }
     },
     accountHolder: [SESSION.accountHolder, { option: true }],
-    token: async ({ apiContext, accountHolder }, use) => {
+    token: async ({ accountHolder }, use) => {
         const sessionEndpoint = SESSION.url;
         const normalizedEndpoint = sessionEndpoint?.endsWith('/') ? sessionEndpoint : `${sessionEndpoint}/`;
-        const url = `${normalizedEndpoint}authe/api/v1/sessions`;
+        const apiContext = await request.newContext({ timeout: 60000, ignoreHTTPSErrors: true, baseURL: normalizedEndpoint });
+
         const body = {
             allowOrigin: 'https://localhost',
             reference: 'platform-operations',
@@ -46,12 +56,13 @@ export const sessionAwareTest = base.extend<TestFixtures>({
                 roles: SESSION.roles,
             },
         };
-        const tokenResponse = await apiContext.post(url, {
+        const tokenResponse = await apiContext.post('/authe/api/v1/sessions', {
             headers: {
                 'Content-Type': 'application/json',
                 'X-API-Key': SESSION.api_key || '',
             },
             data: body,
+            ignoreHTTPSErrors: true,
         });
 
         if (tokenResponse.status() !== 200) {
