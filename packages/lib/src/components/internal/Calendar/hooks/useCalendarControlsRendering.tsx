@@ -4,12 +4,12 @@ import { isFunction } from '../../../../utils';
 import ChevronDown from '../../SVGIcons/ChevronDown';
 import ChevronUp from '../../SVGIcons/ChevronUp';
 import { CalendarControlRenderer, CalendarRenderControl } from '../types';
-import useCoreContext from '../../../../core/Context/useCoreContext';
 import useDetachedRender from '../../../../hooks/element/useDetachedRender';
 import Button from '../../Button';
+import { useTranslation } from 'react-i18next';
 
 const useCalendarControlsRendering = (renderControl?: CalendarRenderControl) => {
-    const { i18n } = useCoreContext();
+    const { t } = useTranslation();
 
     return useDetachedRender(
         useCallback(
@@ -39,7 +39,7 @@ const useCalendarControlsRendering = (renderControl?: CalendarRenderControl) => 
 
                 return shouldRenderControl ? (
                     <Button
-                        aria-label={i18n.get(`calendar.${labelModifier}Month`)}
+                        aria-label={t(`calendar.${labelModifier}Month`)}
                         variant={ButtonVariant.TERTIARY}
                         disabled={!shouldRenderControl}
                         classNameModifiers={['circle', directionModifier]}
@@ -51,7 +51,7 @@ const useCalendarControlsRendering = (renderControl?: CalendarRenderControl) => 
                     </Button>
                 ) : null;
             }) as CalendarControlRenderer,
-            [i18n, renderControl]
+            [renderControl]
         )
     );
 };

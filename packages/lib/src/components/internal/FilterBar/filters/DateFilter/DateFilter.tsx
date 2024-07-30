@@ -7,6 +7,7 @@ import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { DateFilterProps, DateRangeFilterParam } from './types';
 import { UsePaginatedRecords } from '../../../Pagination/hooks/types';
 import { EMPTY_OBJECT } from '../../../../../utils';
+import { useTranslation } from 'react-i18next';
 
 type DataOverviewDateFilterProps = Pick<UsePaginatedRecords<any, string, FilterParam>, 'canResetFilters' | 'filters' | 'updateFilters'> &
     ReturnType<typeof useDefaultOverviewFilterParams> & {
@@ -24,8 +25,9 @@ const DateFilter = <T extends DateFilterProps = DateFilterProps>({
     untilDate,
     updateFilters,
 }: Pick<T, 'sinceDate' | 'untilDate'> & DataOverviewDateFilterProps) => {
-    const { i18n } = useCoreContext();
-    const defaultTimeRangePreset = useMemo(() => i18n.get(defaultParams.current.defaultTimeRange), [i18n]);
+    const { t } = useTranslation();
+
+    const defaultTimeRangePreset = useMemo(() => t(defaultParams.current.defaultTimeRange), [t, defaultParams]);
     const [selectedTimeRangePreset, setSelectedTimeRangePreset] = useState(defaultTimeRangePreset);
 
     const updateCreatedDateFilter = useCallback(
@@ -59,7 +61,7 @@ const DateFilter = <T extends DateFilterProps = DateFilterProps>({
 
     return (
         <DateFilterCore
-            label={i18n.get('dateRange')}
+            label={t('dateRange')}
             name={FilterParam.CREATED_SINCE}
             sinceDate={sinceDate}
             untilDate={untilDate ?? new Date(nowTimestamp).toString()}

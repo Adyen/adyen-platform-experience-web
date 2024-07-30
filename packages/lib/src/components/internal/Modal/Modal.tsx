@@ -8,6 +8,7 @@ import { Ref, useCallback, useEffect } from 'preact/hooks';
 import cx from 'classnames';
 import './Modal.scss';
 import { ModalProps } from './types';
+import { useTranslation } from 'react-i18next';
 
 export default function Modal({
     title,
@@ -21,7 +22,7 @@ export default function Modal({
     ...props
 }: ModalProps) {
     const isSmViewport = useResponsiveViewport(mediaQueries.down.xs);
-    const { i18n } = useCoreContext();
+    const { t } = useTranslation();
     const targetElement = useClickOutside(null, onClose) as Ref<HTMLDivElement | null>;
 
     const handleEscKey = useCallback(
@@ -81,7 +82,7 @@ export default function Modal({
                                     iconButton
                                     classNameModifiers={['circle']}
                                     className={`adyen-pe-modal__header-icon`}
-                                    aria-label={i18n.get('dismiss')}
+                                    aria-label={t('dismiss')}
                                 >
                                     <Close />
                                 </Button>

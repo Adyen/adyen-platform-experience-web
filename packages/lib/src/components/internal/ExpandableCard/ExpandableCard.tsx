@@ -17,12 +17,12 @@ import {
     CONTENT_CLASS,
     CONTENT_EXPANDABLE_CLASS,
 } from './constants';
-import useCoreContext from '../../../core/Context/useCoreContext';
 import { useClickOutside } from '../../../hooks/element/useClickOutside';
 import BaseButton from '../BaseButton';
+import { useTranslation } from 'react-i18next';
 
 const ExpandableCard = ({ renderHeader, children, filled, fullWidth, ...listeners }: PropsWithChildren<ExpandableCardProps>) => {
-    const { i18n } = useCoreContext();
+    const { t } = useTranslation();
     const [isOpen, setIsOpen] = useState(false);
     const toggleIsOpen = useCallback(() => setIsOpen(isOpen => !isOpen), [setIsOpen]);
     const expandButtonRef = useRef<HTMLButtonElement>(null);
@@ -69,7 +69,7 @@ const ExpandableCard = ({ renderHeader, children, filled, fullWidth, ...listener
                         data-testid={'expand-button'}
                         {...listeners}
                     >
-                        <span className="adyen-pe-sr-only">{i18n.get('expandableCard.expand')}</span>
+                        <span className="adyen-pe-sr-only">{t('expandableCard.expand')}</span>
                         <div className={classNames(CONTENT_CLASS, CONTENT_EXPANDABLE_CLASS)}>{renderHeader}</div>
                         <div className={CHEVRON_CLASS}>
                             <ChevronDown role="presentation" />
@@ -91,7 +91,7 @@ const ExpandableCard = ({ renderHeader, children, filled, fullWidth, ...listener
                         data-testid={'collapse-button'}
                         {...listeners}
                     >
-                        <span className="adyen-pe-sr-only">{i18n.get('expandableCard.collapse')}</span>
+                        <span className="adyen-pe-sr-only">{t('expandableCard.collapse')}</span>
                         <div className={classNames(CONTENT_CLASS, CONTENT_EXPANDABLE_CLASS)}>
                             {renderHeader}
                             <div>{children}</div>

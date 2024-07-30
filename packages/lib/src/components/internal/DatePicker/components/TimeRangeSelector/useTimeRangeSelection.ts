@@ -4,6 +4,7 @@ import type { RestampContext } from '../../../../../core/Localization/datetime/r
 import type { TranslationKey } from '../../../../../core/Localization/types';
 import { RangeTimestamp, RangeTimestamps } from '../../../Calendar/calendar/timerange';
 import * as RangePreset from '../../../Calendar/calendar/timerange/presets';
+import { useTranslation } from 'react-i18next';
 
 export type UseTimeRangeSelectionConfig = {
     now?: RangeTimestamp;
@@ -31,6 +32,7 @@ export const useTimeRangeSelection = ({
     selectedOption: selectedPresetOption,
     timezone,
 }: UseTimeRangeSelectionConfig) => {
+    const { t } = useTranslation();
     const { i18n } = useCoreContext();
     const [from, setFrom] = useState<string>();
     const [to, setTo] = useState<string>();
@@ -39,9 +41,9 @@ export const useTimeRangeSelection = ({
     const TZ = useRef<typeof timezone>();
 
     const [customOption, getRangesForOption, selectionOptions] = useMemo(() => {
-        const customOption = i18n.get('rangePreset.custom');
+        const customOption = t('rangePreset.custom');
         const optionKeys = Object.keys(presetOptions);
-        const selectionOptions = Object.freeze(optionKeys.map(key => i18n.get(key as TranslationKey)));
+        const selectionOptions = Object.freeze(optionKeys.map(key => t(key as TranslationKey)));
 
         const getRangesForOption = (option: string, options: readonly string[] = selectionOptions) => {
             const optionIndex = options.findIndex(currentOption => currentOption === option);
@@ -49,7 +51,7 @@ export const useTimeRangeSelection = ({
         };
 
         return [customOption, getRangesForOption, selectionOptions] as const;
-    }, [i18n, presetOptions]);
+    }, [t, presetOptions]);
 
     const [isCustomSelection, setIsCustomSelection] = useState(selectedPresetOption === customOption);
     const selectionOptionsWithCustomOption = useMemo(() => Object.freeze([...selectionOptions, customOption]), [customOption, selectionOptions]);

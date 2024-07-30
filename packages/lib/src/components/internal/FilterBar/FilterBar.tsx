@@ -4,16 +4,16 @@ import Close from '../SVGIcons/Close';
 import Filter from '../SVGIcons/Filter';
 import { TypographyVariant } from '../Typography/types';
 import Typography from '../Typography/Typography';
-import useCoreContext from '../../../core/Context/useCoreContext';
 import cx from 'classnames';
 import { PropsWithChildren } from 'preact/compat';
 import { useEffect, useState } from 'preact/hooks';
 import Button from '../Button';
 import './FilterBar.scss';
 import { FilterBarProps } from './types';
+import { useTranslation } from 'react-i18next';
 
 export default function FilterBar(props: PropsWithChildren<FilterBarProps>) {
-    const { i18n } = useCoreContext();
+    const { t } = useTranslation();
     const isSmViewport = useResponsiveViewport(mediaQueries.down.xs);
     const [showFilters, setShowFilters] = useState(!isSmViewport);
 
@@ -25,7 +25,7 @@ export default function FilterBar(props: PropsWithChildren<FilterBarProps>) {
         <>
             {isSmViewport && (
                 <div className="adyen-pe-filter-bar__header">
-                    <Typography variant={TypographyVariant.SUBTITLE}>{i18n.get('transactions')}</Typography>
+                    <Typography variant={TypographyVariant.SUBTITLE}>{t('transactions')}</Typography>
                     <Button
                         className={'adyen-pe-filter-bar__header-icon'}
                         variant={ButtonVariant.SECONDARY}
@@ -37,14 +37,11 @@ export default function FilterBar(props: PropsWithChildren<FilterBarProps>) {
                 </div>
             )}
             {showFilters && (
-                <div
-                    aria-label={i18n.get('filterBar')}
-                    className={cx('adyen-pe-filter-bar', { 'adyen-pe-filter-bar__content--mobile': isSmViewport })}
-                >
+                <div aria-label={t('filterBar')} className={cx('adyen-pe-filter-bar', { 'adyen-pe-filter-bar__content--mobile': isSmViewport })}>
                     {props.children}
                     {props.canResetFilters && !!props.resetFilters && (
                         <Button variant={ButtonVariant.TERTIARY} onClick={props.resetFilters}>
-                            {i18n.get('button.clearAll')}
+                            {t('button.clearAll')}
                         </Button>
                     )}
                 </div>

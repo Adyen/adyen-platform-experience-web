@@ -7,6 +7,7 @@ import { CommitAction } from '../../../../../hooks/useCommitAction';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { AMOUNT_MULTIPLIER } from './constants';
 import { isUndefined } from '../../../../../utils';
+import { useTranslation } from 'react-i18next';
 
 export const RangeSelection = ({
     onChange,
@@ -18,6 +19,7 @@ export const RangeSelection = ({
     ...props
 }: FilterEditModalRenderProps<RangeFilterBody>) => {
     const { i18n } = useCoreContext();
+    const { t } = useTranslation();
 
     const [minAmount, setMinAmount] = useState<number | undefined>(
         !isUndefined(props.minAmount) ? parseFloat(props.minAmount) / AMOUNT_MULTIPLIER : undefined
@@ -51,7 +53,7 @@ export const RangeSelection = ({
     return (
         <div className="adyen-pe-range-selection-filter">
             <div className="adyen-pe-range-selection-filter__input">
-                <label htmlFor="minValue">{`${i18n.get('from')}:`}</label>
+                <label htmlFor="minValue">{`${t('from')}:`}</label>
                 <InputBase
                     lang={i18n.locale}
                     name={'minValue'}
@@ -62,11 +64,11 @@ export const RangeSelection = ({
                     }}
                     min={0}
                     isInvalid={minAmount ? minAmount < 0 : false}
-                    errorMessage={i18n.get('noNegativeNumbersAllowed')}
+                    errorMessage={t('noNegativeNumbersAllowed')}
                 />
             </div>
             <div className="adyen-pe-range-selection-filter__input">
-                <label htmlFor="maxValue">{`${i18n.get('to')}:`}</label>
+                <label htmlFor="maxValue">{`${t('to')}:`}</label>
                 <InputBase
                     lang={i18n.locale}
                     name={'maxValue'}
@@ -77,7 +79,7 @@ export const RangeSelection = ({
                     }}
                     min={minAmount}
                     isInvalid={!isUndefined(maxAmount) && !isUndefined(minAmount) && maxAmount < minAmount}
-                    errorMessage={i18n.get('toValueShouldBeGreaterThanTheFromValue')}
+                    errorMessage={t('toValueShouldBeGreaterThanTheFromValue')}
                 />
             </div>
         </div>

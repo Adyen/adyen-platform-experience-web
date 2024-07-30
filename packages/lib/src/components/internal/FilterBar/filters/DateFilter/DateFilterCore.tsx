@@ -9,6 +9,8 @@ import BaseFilter from '../BaseFilter';
 import { FilterEditModalRenderProps, FilterProps } from '../BaseFilter/types';
 import { DateFilterProps, DateRangeFilterParam } from './types';
 import './DateFilterCore.scss';
+import { TFunction } from 'i18next';
+import { useTranslation } from 'react-i18next';
 
 const formattingOptions = {
     month: 'short',
@@ -18,13 +20,13 @@ const formattingOptions = {
 
 const baseDateTimeFormatter = new Intl.DateTimeFormat('en-US', formattingOptions);
 
-const computeDateFilterValue = (i18n: Localization['i18n'], fromDate?: string, toDate?: string) => {
+const computeDateFilterValue = (i18n: Localization['i18n'], t: TFunction, fromDate?: string, toDate?: string) => {
     const from = fromDate && i18n.fullDate(fromDate);
     const to = toDate && i18n.fullDate(toDate);
 
     if (from && to) return `${from} - ${to}`;
-    if (from) return i18n.get('filter.date.since', { values: { date: from } });
-    if (to) return i18n.get('filter.date.until', { values: { date: to } });
+    if (from) return t('filter.date.since', { values: { date: from } });
+    if (to) return t('filter.date.until', { values: { date: to } });
 };
 
 const resolveDate = (date?: any) => {
@@ -51,15 +53,16 @@ const renderDateFilterModalBody = (() => {
         untilDate,
     }: FilterEditModalRenderProps<DateFilterProps>) => {
         const { i18n } = useCoreContext();
+        const { t } = useTranslation();
         const [presetOption, setPresetOption] = useState(selectedPresetOption);
         const originDate = useMemo(() => [new Date(from as string), new Date(to as string)], [from, to]);
         const datePickerRef = useRef<CalendarHandle & { selection?: string }>();
 
         const onHighlight = useCallback(
             (from?: number, to?: number) => {
-                onValueUpdated(computeDateFilterValue(i18n, resolveDate(from), resolveDate(to)));
+                onValueUpdated(computeDateFilterValue(i18n, t, resolveDate(from), resolveDate(to)));
             },
-            [i18n, onValueUpdated]
+            [t, i18n, onValueUpdated]
         );
 
         useEffect(() => {
@@ -109,6 +112,7 @@ export default function DateFilterCore<T extends DateFilterProps = DateFilterPro
     selectedPresetOption,
     ...props
 }: FilterProps<T>) {
+    const { t } = useTranslation();
     const { i18n } = useCoreContext();
     const [selectedPresetOptionValue, setSelectedPresetOption] = useState<string>();
     const [fromValue, setFrom] = useState<string>();
@@ -136,8 +140,8 @@ export default function DateFilterCore<T extends DateFilterProps = DateFilterPro
             /* invalid locale: continue with base `en-US` formatter */
         }
 
-        return [i18n.get('rangePreset.custom'), formatter] as const;
-    }, [i18n]);
+        return [t('rangePreset.custom'), formatter] as const;
+    }, [t, i18n]);
 
     useEffect(() => setSelectedPresetOption(selectedPresetOption), [selectedPresetOption]);
     useEffect(() => setFrom(resolveDate(from || Date.now())), [from]);
@@ -161,7 +165,7 @@ export default function DateFilterCore<T extends DateFilterProps = DateFilterPro
             onChange={onChange}
             render={renderDateFilterModalBody}
             selectedPresetOption={selectedPresetOption}
-            value={computeDateFilterValue(i18n, from, to)}
+            value={computeDateFilterValue(i18n, t, from, to)}
             withContentPadding={false}
         />
     );

@@ -5,6 +5,7 @@ import { popoverUtil } from '../Popover/utils/popoverUtil';
 import useCoreContext from '../../../core/Context/useCoreContext';
 import useModalDetails from '../../../hooks/useModalDetails/useModalDetails';
 import ModalContent from '../Modal/ModalContent/ModalContent';
+import { useTranslation } from 'react-i18next';
 
 export interface DataOverviewDisplayProps {
     onContactSupport?: () => void;
@@ -20,7 +21,7 @@ export const DataDetailsModal: FC<DataOverviewDisplayProps> = ({
     selectedDetail,
     resetDetails,
 }: PropsWithChildren<DataOverviewDisplayProps>) => {
-    const { i18n } = useCoreContext();
+    const { t } = useTranslation();
     const isModalOpen = !!selectedDetail;
 
     useEffect(() => {
@@ -34,9 +35,9 @@ export const DataDetailsModal: FC<DataOverviewDisplayProps> = ({
             {children}
             {selectedDetail && (
                 <Modal
-                    title={selectedDetail?.title ? i18n.get(selectedDetail.title) : undefined}
+                    title={selectedDetail?.title ? t(selectedDetail.title) : undefined}
                     isOpen={!!selectedDetail}
-                    aria-label={i18n.get('payoutDetails')}
+                    aria-label={t('payoutDetails')}
                     onClose={resetDetails}
                     isDismissible={true}
                     headerWithBorder={false}

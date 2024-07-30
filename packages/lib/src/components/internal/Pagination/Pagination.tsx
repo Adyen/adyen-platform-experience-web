@@ -10,9 +10,10 @@ import Select from '../FormFields/Select';
 import { SelectItem } from '../FormFields/Select/types';
 import ChevronLeft from '../SVGIcons/ChevronLeft';
 import ChevronRight from '../SVGIcons/ChevronRight';
+import { useTranslation } from 'react-i18next';
 
 export default function Pagination({ next, hasNext, hasPrev, page, prev, limit, limitOptions, onLimitSelection }: PaginationProps) {
-    const { i18n } = useCoreContext();
+    const { t } = useTranslation();
 
     const _limitOptions = useMemo(
         () => limitOptions && Object.freeze(limitOptions.map(option => ({ id: `${option}`, name: `${option}` } as SelectItem))),
@@ -28,10 +29,10 @@ export default function Pagination({ next, hasNext, hasPrev, page, prev, limit, 
     );
 
     return (
-        <div aria-label={i18n.get('paginatedNavigation')} className={`adyen-pe-pagination ${classnames({})}`}>
+        <div aria-label={t('paginatedNavigation')} className={`adyen-pe-pagination ${classnames({})}`}>
             <div className="adyen-pe-pagination__context">
                 <span>
-                    {i18n.get('pagination.showing')} {page}
+                    {t('pagination.showing')} {page}
                 </span>
                 {_limitOptions && onLimitSelection && (
                     <div className="adyen-pe-pagination__limit-selector">
@@ -49,7 +50,7 @@ export default function Pagination({ next, hasNext, hasPrev, page, prev, limit, 
 
             <div className="adyen-pe-pagination__controls">
                 <Button
-                    aria-label={i18n.get('pagination.previousPage')}
+                    aria-label={t('pagination.previousPage')}
                     variant={ButtonVariant.TERTIARY}
                     disabled={!hasPrev}
                     iconButton={true}
@@ -59,7 +60,7 @@ export default function Pagination({ next, hasNext, hasPrev, page, prev, limit, 
                     <ChevronLeft disabled={!hasPrev} />
                 </Button>
                 <Button
-                    aria-label={i18n.get('pagination.nextPage')}
+                    aria-label={t('pagination.nextPage')}
                     variant={ButtonVariant.TERTIARY}
                     disabled={!hasNext}
                     iconButton={true}

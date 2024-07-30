@@ -3,6 +3,7 @@ import { ButtonVariant } from '../../Button/types';
 import './PopoverDismissButton.scss';
 import useCoreContext from '../../../../core/Context/useCoreContext';
 import { memo } from 'preact/compat';
+import { useTranslation } from 'react-i18next';
 
 interface PopoverDismissButtonProps {
     image?: boolean;
@@ -10,7 +11,7 @@ interface PopoverDismissButtonProps {
 }
 
 function PopoverDismissButton({ image = true, onClick }: PopoverDismissButtonProps) {
-    const { i18n } = useCoreContext();
+    const { t } = useTranslation();
     const getConditionalClasses = (): string => {
         return image ? 'adyen-pe-popover-dismiss-button--on-image' : '';
     };
@@ -21,7 +22,7 @@ function PopoverDismissButton({ image = true, onClick }: PopoverDismissButtonPro
                 iconButton={true}
                 variant={ButtonVariant.TERTIARY}
                 onClick={onClick}
-                aria-label={i18n.get('closeIconLabel')}
+                aria-label={t('closeIconLabel')}
             >
                 <svg role="img" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none">
                     <title>{'dismiss'}</title>

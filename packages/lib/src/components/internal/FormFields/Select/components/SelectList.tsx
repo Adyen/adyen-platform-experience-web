@@ -10,6 +10,7 @@ import { useMemo } from 'preact/hooks';
 import { DROPDOWN_ELEMENT_CLASS, DROPDOWN_ELEMENT_NO_OPTION_CLASS, DROPDOWN_LIST_ACTIVE_CLASS, DROPDOWN_LIST_CLASS } from '../constants';
 import type { SelectItem, SelectListProps } from '../types';
 import SelectListItem, { renderListItemDefault } from './SelectListItem';
+import { useTranslation } from 'react-i18next';
 
 const SelectList = fixedForwardRef(
     <T extends SelectItem>(
@@ -33,7 +34,7 @@ const SelectList = fixedForwardRef(
         }: SelectListProps<T>,
         ref: ForwardedRef<HTMLUListElement>
     ) => {
-        const { i18n } = useCoreContext();
+        const { t } = useTranslation();
         const isSmViewport = useResponsiveViewport(mediaQueries.down.xs);
         const filteredItems = items.filter(item => !textFilter || item.name.toLowerCase().includes(textFilter));
         const listClassName = cx(DROPDOWN_LIST_CLASS, { [DROPDOWN_LIST_ACTIVE_CLASS]: showList });
@@ -75,7 +76,7 @@ const SelectList = fixedForwardRef(
                             );
                         })
                     ) : (
-                        <div className={noOptionsClassName}>{i18n.get('select.noOptionsFound')}</div>
+                        <div className={noOptionsClassName}>{t('select.noOptionsFound')}</div>
                     )}
                 </ul>
             </Popover>

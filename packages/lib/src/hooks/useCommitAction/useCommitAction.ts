@@ -2,11 +2,11 @@ import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
 import { ButtonVariant } from '../../components/internal/Button/types';
 import { ButtonActionObject } from '../../components/internal/Button/ButtonActions/types';
 import { CommitAction, CommitActionProperties, UseCommitActionConfig } from './types';
-import useCoreContext from '../../core/Context/useCoreContext';
 import { boolOrFalse, EMPTY_OBJECT } from '../../utils';
+import { useTranslation } from 'react-i18next';
 
 const useCommitAction = ({ applyDisabled, applyTitle, resetDisabled, resetTitle }: UseCommitActionConfig = EMPTY_OBJECT): CommitActionProperties => {
-    const { i18n } = useCoreContext();
+    const { t } = useTranslation();
     const [commitAction, setCommitAction] = useState(CommitAction.NONE);
     const [committing, setCommitting] = useState(commitAction !== CommitAction.NONE);
 
@@ -19,10 +19,10 @@ const useCommitAction = ({ applyDisabled, applyTitle, resetDisabled, resetTitle 
             ({
                 disabled: boolOrFalse(applyDisabled),
                 event: applyAction,
-                title: applyTitle?.trim() || i18n.get('apply'),
+                title: applyTitle?.trim() || t('apply'),
                 variant: ButtonVariant.PRIMARY,
             } as ButtonActionObject),
-        [i18n, applyAction, applyDisabled, applyTitle]
+        [t, applyAction, applyDisabled, applyTitle]
     );
 
     const resetButtonAction = useMemo(
@@ -30,10 +30,10 @@ const useCommitAction = ({ applyDisabled, applyTitle, resetDisabled, resetTitle 
             ({
                 disabled: boolOrFalse(resetDisabled),
                 event: resetAction,
-                title: resetTitle?.trim() || i18n.get('reset'),
+                title: resetTitle?.trim() || t('reset'),
                 variant: ButtonVariant.SECONDARY,
             } as ButtonActionObject),
-        [i18n, resetAction, resetDisabled, resetTitle]
+        [t, resetAction, resetDisabled, resetTitle]
     );
 
     const commitActionButtons = useMemo(() => [applyButtonAction, resetButtonAction] as const, [applyButtonAction, resetButtonAction]);

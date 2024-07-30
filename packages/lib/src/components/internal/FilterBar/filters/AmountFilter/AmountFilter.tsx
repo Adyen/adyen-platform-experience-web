@@ -7,8 +7,10 @@ import { EMPTY_OBJECT, isUndefined } from '../../../../../utils';
 import { PopoverContainerSize } from '../../../Popover/types';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { AMOUNT_MULTIPLIER } from './constants';
+import { useTranslation } from 'react-i18next';
 
 export const AmountFilter = ({ updateFilters, selectedCurrencies, availableCurrencies, ...props }: FilterProps<RangeFilterProps>) => {
+    const { t } = useTranslation();
     const { i18n } = useCoreContext();
     const [value, setValue] = useState<{ minAmount: number | undefined; maxAmount: number | undefined } | undefined>();
     const [formattedValue, setValueFormattedValue] = useState<string | undefined>();
@@ -50,12 +52,12 @@ export const AmountFilter = ({ updateFilters, selectedCurrencies, availableCurre
         const { minAmount, maxAmount } = value ?? {};
         if (!isUndefined(minAmount) && !isUndefined(maxAmount) && minAmount <= maxAmount) {
             setValueFormattedValue(
-                `${formatAmount(minAmount, showCurrencySymbol)} ${i18n.get('to').toLowerCase()} ${formatAmount(maxAmount, showCurrencySymbol)}`
+                `${formatAmount(minAmount, showCurrencySymbol)} ${t('to').toLowerCase()} ${formatAmount(maxAmount, showCurrencySymbol)}`
             );
         } else if (!isUndefined(minAmount) && isUndefined(maxAmount) && minAmount >= 0) {
-            setValueFormattedValue(`${i18n.get('from')} ${formatAmount(minAmount, showCurrencySymbol)}`);
+            setValueFormattedValue(`${t('from')} ${formatAmount(minAmount, showCurrencySymbol)}`);
         } else if (isUndefined(minAmount) && !isUndefined(maxAmount)) {
-            setValueFormattedValue(`${i18n.get('to')} ${formatAmount(maxAmount, showCurrencySymbol)}`);
+            setValueFormattedValue(`${t('to')} ${formatAmount(maxAmount, showCurrencySymbol)}`);
         } else {
             setValueFormattedValue(undefined);
         }

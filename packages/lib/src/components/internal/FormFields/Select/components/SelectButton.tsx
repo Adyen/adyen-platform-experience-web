@@ -24,6 +24,7 @@ import {
     DROPDOWN_BUTTON_VALID_CLASS,
 } from '../constants';
 import type { SelectButtonProps, SelectItem } from '../types';
+import { useTranslation } from 'react-i18next';
 
 const SelectButtonElement = <T extends SelectItem>({
     active,
@@ -48,9 +49,9 @@ const SelectButtonElement = <T extends SelectItem>({
 };
 
 const SelectButton = <T extends SelectItem>(props: SelectButtonProps<T> & { appliedFilterNumber: number }) => {
-    const { i18n } = useCoreContext();
+    const { t } = useTranslation();
     const { active, filterable, multiSelect, placeholder, readonly, showList, withoutCollapseIndicator } = props;
-    const placeholderText = useMemo(() => placeholder?.trim() || i18n.get('select.filter.placeholder'), [i18n, placeholder]);
+    const placeholderText = useMemo(() => placeholder?.trim() || t('select.filter.placeholder'), [t, placeholder]);
     const buttonActiveItem = useMemo(() => (boolOrFalse(multiSelect) ? undefined : active[0]), [active, multiSelect]);
     const buttonTitleText = useMemo(() => buttonActiveItem?.name?.trim() || placeholderText, [buttonActiveItem, placeholderText]);
 

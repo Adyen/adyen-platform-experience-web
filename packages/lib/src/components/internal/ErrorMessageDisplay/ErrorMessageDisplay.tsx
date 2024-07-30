@@ -7,6 +7,7 @@ import './ErrorMessageDisplay.scss';
 import { JSXInternal } from 'preact/src/jsx';
 import noResults from '../../../images/no-results.svg';
 import Button from '../Button';
+import { useTranslation } from 'react-i18next';
 
 export const IMAGE_BREAKPOINT_SIZES = {
     md: 680,
@@ -36,7 +37,8 @@ export const ErrorMessageDisplay = ({
     onContactSupport,
     translationValues,
 }: ErrorMessageDisplayProps) => {
-    const { i18n, updateCore } = useCoreContext();
+    const { updateCore } = useCoreContext();
+    const { t } = useTranslation();
 
     const renderMessage = useCallback(
         (errorMessage: TranslationKey | TranslationKey[]) => {
@@ -44,21 +46,21 @@ export const ErrorMessageDisplay = ({
                 return errorMessage.map((message, i) =>
                     i === 0 ? (
                         <>
-                            {i18n.get(message)}
+                            {t(message)}
                             {translationValues && translationValues[message] && <>{translationValues[message]}</>}
                         </>
                     ) : (
                         <>
                             <br />
-                            {i18n.get(message)}
+                            {t(message)}
                             {translationValues && translationValues[message] && <>{translationValues[message]}</>}
                         </>
                     )
                 );
             }
-            return i18n.get(errorMessage);
+            return t(errorMessage);
         },
-        [i18n, translationValues]
+        [t, translationValues]
     );
 
     return (
@@ -68,17 +70,17 @@ export const ErrorMessageDisplay = ({
                     <picture>
                         <source type="image/svg+xml" media={`(min-width: ${IMAGE_BREAKPOINT_SIZES.md}px)`} srcSet={imageDesktop} />
                         <source type="image/svg+xml" media={`(max-width: ${IMAGE_BREAKPOINT_SIZES.md}px)`} srcSet={imageMobile} />
-                        <img srcSet={imageDesktop ?? noResults} alt={i18n.get('thereWasAnUnexpectedError')} />
+                        <img srcSet={imageDesktop ?? noResults} alt={t('thereWasAnUnexpectedError')} />
                     </picture>
                 </div>
             )}
-            <Typography variant={TypographyVariant.TITLE}>{i18n.get(title)}</Typography>
+            <Typography variant={TypographyVariant.TITLE}>{t(title)}</Typography>
             {message && <Typography variant={TypographyVariant.BODY}>{renderMessage(message)}</Typography>}
 
             {(onContactSupport || refreshComponent) && (
                 <div className={'adyen-pe-error-message-display__button'}>
-                    {onContactSupport && <Button onClick={onContactSupport}>{i18n.get('reachOutToSupport')}</Button>}
-                    {!onContactSupport && refreshComponent && <Button onClick={updateCore}>{i18n.get('refresh')}</Button>}
+                    {onContactSupport && <Button onClick={onContactSupport}>{t('reachOutToSupport')}</Button>}
+                    {!onContactSupport && refreshComponent && <Button onClick={updateCore}>{t('refresh')}</Button>}
                 </div>
             )}
         </div>

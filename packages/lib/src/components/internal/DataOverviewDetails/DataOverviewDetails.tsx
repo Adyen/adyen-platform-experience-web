@@ -16,6 +16,7 @@ import Spinner from '../Spinner';
 import { DetailsComponentProps, DetailsWithId, TransactionDetailData } from './types';
 import Typography from '../Typography/Typography';
 import { TypographyVariant } from '../Typography/types';
+import { useTranslation } from 'react-i18next';
 
 const ENDPOINTS_BY_TYPE = {
     transaction: 'getTransaction',
@@ -33,7 +34,7 @@ export default function DataOverviewDetails(props: ExternalUIComponentProps<Deta
     const details = useMemo(() => (isDetailsWithId(props) ? null : props.data), [props]);
     const dataId = useMemo(() => (isDetailsWithId(props) ? props.id : null), [props]);
 
-    const { i18n } = useCoreContext();
+    const { t } = useTranslation();
     const getDetail = useAuthContext().endpoints[ENDPOINTS_BY_TYPE[props.type]] as any; // [TODO]: Fix type and remove 'as any'
     const titleKey = useMemo(() => TITLES_BY_TYPE[props.type], [props.type]);
 
@@ -79,7 +80,7 @@ export default function DataOverviewDetails(props: ExternalUIComponentProps<Deta
             {!props.hideTitle && (
                 <div className="adyen-pe-overview-details--title">
                     <Typography variant={TypographyVariant.TITLE} medium>
-                        {i18n.get(titleKey)}
+                        {t(titleKey)}
                     </Typography>
                 </div>
             )}

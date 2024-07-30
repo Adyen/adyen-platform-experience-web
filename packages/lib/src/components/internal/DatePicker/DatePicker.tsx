@@ -13,6 +13,7 @@ import calendar from '../Calendar/calendar';
 import useCalendarControlsRendering from '../Calendar/hooks/useCalendarControlsRendering';
 import { CalendarHandle, CalendarProps } from '../Calendar/types';
 import './DatePicker.scss';
+import { useTranslation } from 'react-i18next';
 
 export type DatePickerProps = CalendarProps &
     Pick<DateFilterProps, 'now' | 'selectedPresetOption' | 'showTimezoneInfo' | 'timeRangePresetOptions' | 'timezone'> & {
@@ -20,7 +21,7 @@ export type DatePickerProps = CalendarProps &
     };
 
 const DatePicker = forwardRef((props: DatePickerProps, ref) => {
-    const { i18n } = useCoreContext();
+    const { t } = useTranslation();
     const [controlsRenderer, controlsContainerRef] = useCalendarControlsRendering(props.renderControl);
     const [lastUpdatedTimestamp, setLastUpdatedTimestamp] = useState<DOMHighResTimeStamp>(performance.now());
 
@@ -53,7 +54,7 @@ const DatePicker = forwardRef((props: DatePickerProps, ref) => {
                     timezone={props.timezone}
                 />
             </div>
-            <div ref={controlsContainerRef} role="group" className={'adyen-pe-datepicker__controls'} aria-label={i18n.get('calendar.controls')} />
+            <div ref={controlsContainerRef} role="group" className={'adyen-pe-datepicker__controls'} aria-label={t('calendar.controls')} />
             <Calendar
                 {...props}
                 ref={calendarRef}
@@ -65,7 +66,7 @@ const DatePicker = forwardRef((props: DatePickerProps, ref) => {
                 onHighlight={onHighlight}
                 renderControl={controlsRenderer}
             />
-            {withTimezone && <div className={'adyen-pe-datepicker__timezone'}>{i18n.get('calendar.timezone', timezoneI18nOptions)}</div>}
+            {withTimezone && <div className={'adyen-pe-datepicker__timezone'}>{t('calendar.timezone', timezoneI18nOptions)}</div>}
         </div>
     );
 });
