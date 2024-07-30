@@ -4,6 +4,8 @@ on:
   schedule:
     - cron: '0 14 * * *'
   workflow_dispatch:  # This allows manual triggering of the workflow
+  pull_request:
+    types: [opened, synchronize, reopened]
 
 jobs:
   e2e-tests:
