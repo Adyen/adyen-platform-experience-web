@@ -16,7 +16,7 @@ const TRANSACTIONS_TOTALS_CACHE = new Map<string, Map<string, _ITransactionTotal
 
 const mockEndpoints = endpoints('mock');
 const networkError = false;
-const serverError = false;
+const serverError = true;
 
 const fetchTransactionsForRequest = (req: Parameters<Parameters<(typeof rest)['get']>[1]>[0]) => {
     const searchParams = req.url.searchParams;

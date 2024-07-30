@@ -92,7 +92,7 @@ export const PayoutsTable: FC<PayoutsTableProps> = ({
         <div className={BASE_CLASS}>
             <DataGrid
                 errorDisplay={errorDisplay}
-                error={error}
+                error={new Error('HELO')}
                 columns={columns}
                 data={data}
                 loading={isLoading}

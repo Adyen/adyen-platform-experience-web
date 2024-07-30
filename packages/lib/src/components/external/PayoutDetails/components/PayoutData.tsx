@@ -27,7 +27,7 @@ import {
     PD_TITLE_CLASS,
     PD_UNPAID_AMOUNT,
 } from './constants';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 
 type Payout = components['schemas']['PayoutDTO'];
 
@@ -102,6 +102,8 @@ export const PayoutData = ({
                     <div className={PD_TITLE_CLASS}>
                         <Typography variant={TypographyVariant.SUBTITLE} stronger>
                             {t('netPayout')}
+                            <br />
+                            {t('calendar.timezone', { offset: 'A', time: '12:22' })}
                         </Typography>
                         <Typography variant={TypographyVariant.TITLE} large>
                             {`${i18n.amount(payout.payoutAmount.value, payout.payoutAmount.currency, {
