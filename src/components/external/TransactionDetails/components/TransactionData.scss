@@ -2,8 +2,8 @@
 @use '../../../../style';
 
 .adyen-pe-transaction-data {
-    &__section {
-        margin-bottom: style.token(spacer-030);
+    &__container:not(&__container--without-padding) {
+        padding-bottom: style.token(spacer-080);
     }
 
     &__section:not(:last-child) {
@@ -23,10 +23,6 @@
 
     &__amount--pending {
         color: style.token(color-label-secondary);
-    }
-
-    &__container:not(&__container--without-padding) {
-        padding-bottom: style.token(spacer-080);
     }
 
     &__payment-method {

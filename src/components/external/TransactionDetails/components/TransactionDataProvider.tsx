@@ -1,6 +1,6 @@
 import { toChildArray } from 'preact';
 import { useCallback, useMemo, useState } from 'preact/hooks';
-import { TransactionDataContext } from '../context';
+import { REFUND_REASONS, RefundReason, TransactionDataContext } from '../context';
 import { boolOrFalse, EMPTY_ARRAY, noop } from '../../../../utils';
 import { ButtonVariant } from '../../../internal/Button/types';
 import useCoreContext from '../../../../core/Context/useCoreContext';
@@ -16,7 +16,7 @@ export interface TransactionDataProviderProps {
 export const TransactionDataProvider = ({ children, isFetching, transaction }: TransactionDataProviderProps) => {
     const [dataViewActive, setDataViewActive] = useState(true);
     const [refundReference, setRefundReference] = useState<string>();
-    const [refundReason, setRefundReason] = useState(0);
+    const [refundReason, setRefundReason] = useState<RefundReason>(REFUND_REASONS[0]);
     const [refundValueMax, setRefundValueMax] = useState(0);
     const [refundValue, setRefundValue] = useState(refundValueMax);
 
@@ -61,7 +61,7 @@ export const TransactionDataProvider = ({ children, isFetching, transaction }: T
     const isLoading = boolOrFalse(isFetching);
 
     // [TODO]: Add proper validation
-    const updateRefundReason = useCallback((reason: number) => void (!dataViewActive && setRefundReason(reason)), [dataViewActive]);
+    const updateRefundReason = useCallback((reason: RefundReason) => void (!dataViewActive && setRefundReason(reason)), [dataViewActive]);
     const updateRefundReference = useCallback(
         (reference: string) => void (!dataViewActive && setRefundReference(reference || undefined)),
         [dataViewActive]
