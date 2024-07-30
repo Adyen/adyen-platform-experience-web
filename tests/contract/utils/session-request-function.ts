@@ -20,7 +20,7 @@ type TestFixtures = {
 
 export const sessionAwareTest = base.extend<TestFixtures>({
     apiContext: async ({}, use) => {
-        const apiContext = await request.newContext({ timeout: 60000 });
+        const apiContext = await request.newContext({ timeout: 60000, ignoreHTTPSErrors: true });
         try {
             await use(apiContext);
         } finally {
