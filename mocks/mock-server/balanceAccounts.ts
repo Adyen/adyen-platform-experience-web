@@ -1,30 +1,25 @@
-import { rest } from 'msw';
 import { BALANCE_ACCOUNTS, BALANCES } from '../mock-data';
 import { endpoints } from '../../playground/endpoints/endpoints';
 import { delay } from './utils';
+import { http, HttpResponse } from 'msw';
 
 const mockEndpoints = endpoints('mock');
 const networkError = false;
 
 export const balanceAccountMock = [
-    rest.get(mockEndpoints.balanceAccounts, (req, res, ctx) => {
+    http.get(mockEndpoints.balanceAccounts, async () => {
         if (networkError) {
-            return res.networkError('Failed to connect');
+            return HttpResponse.error();
         }
-        return res(
-            delay(200),
-            ctx.json({
-                data: BALANCE_ACCOUNTS,
-            })
-        );
+        await delay(200);
+        return HttpResponse.json({
+            data: BALANCE_ACCOUNTS,
+        });
     }),
-    rest.get(mockEndpoints.balances, (req, res, ctx) => {
-        const balanceAccountId = req.params.id as string;
-        return res(
-            delay(300),
-            ctx.json({
-                data: BALANCES[balanceAccountId],
-            })
-        );
+    http.get(mockEndpoints.balances, async ({ params }) => {
+        const balanceAccountId = params.id as string;
+        return HttpResponse.json({
+            data: BALANCES[balanceAccountId],
+        });
     }),
 ];
