@@ -5,13 +5,20 @@ import useCoreContext from '../../../../../core/Context/useCoreContext';
 import Select from '../../../../internal/FormFields/Select';
 import Typography from '../../../../internal/Typography/Typography';
 import { TypographyElement, TypographyVariant } from '../../../../internal/Typography/types';
+import { SelectProps } from '../../../../internal/FormFields/Select/types';
 
 const TransactionRefundReason = () => {
     const { i18n } = useCoreContext();
     const { refundReason, updateRefundReason } = useTransactionDataContext();
-    const onReasonChanged = useCallback(({ id: reason }: { id: RefundReason }) => reason && updateRefundReason(reason), [updateRefundReason]);
-
     const refundReasons = useMemo(() => Object.freeze(REFUND_REASONS.map(reason => ({ id: reason, name: i18n.get(reason) }))), [i18n]);
+
+    const onReasonChanged = useCallback<SelectProps<{ id: RefundReason; name: string }>['onChange']>(
+        evt => {
+            const reason = evt.target?.value;
+            reason && updateRefundReason(reason);
+        },
+        [updateRefundReason]
+    );
 
     return (
         <div className={TX_DATA_CONTAINER}>
