@@ -1,4 +1,4 @@
-import { compose, context, DefaultBodyType, DelayMode, MockedRequest, RestHandler } from 'msw';
+import { delay as mswDelay, DelayMode, HttpHandler } from 'msw';
 import { mockWorker } from './index';
 
 const IS_TEST = Boolean(process.env.E2E_TEST === 'true') || process.env.VITE_MODE === 'demo';
@@ -8,10 +8,10 @@ export async function enableServerInMockedMode(enabled?: boolean) {
     const env = (import.meta as any).env;
     if (enabled || MOCK_MODES.includes(env.VITE_MODE || env.MODE)) {
         await mockWorker.start({
-            onUnhandledRequest: (request, print) => {
-                if (request.url.pathname.includes('images/logos/') || request.url.pathname.includes('node_modules')) return;
+            onUnhandledRequest: ({ url }, print) => {
+                const { pathname } = new URL(url);
+                if (pathname.includes('images/logos/') || pathname.includes('node_modules') || pathname.includes('.svg')) return;
 
-                // Otherwise, print a warning that an API request is not correctly mocked
                 print.warning();
             },
         });
@@ -46,13 +46,13 @@ export function computeHash(...strings: string[]) {
     return (hash >>> 0).toString(16).padStart(8, '0');
 }
 
-export function delay(duration?: DelayMode | number): any {
+export async function delay(duration?: DelayMode | number): Promise<void> {
     // Ensure there is no response delay in tests.
-    return IS_TEST ? compose() : compose(context.delay(duration));
+    return IS_TEST ? mswDelay(0) : mswDelay(duration);
 }
 
-export function getMockHandlers(mocks: RestHandler<MockedRequest<DefaultBodyType>>[][]): RestHandler<MockedRequest<DefaultBodyType>>[] {
-    const handlers = [] as RestHandler<MockedRequest<DefaultBodyType>>[];
+export function getMockHandlers(mocks: HttpHandler[][]): HttpHandler[] {
+    const handlers = [] as HttpHandler[];
     mocks.forEach(mocks => handlers.push(...mocks));
     return handlers;
 }
