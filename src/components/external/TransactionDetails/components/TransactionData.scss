@@ -61,8 +61,8 @@
     &__input-container {
         font-size: style.token(text-body-font-size);
         font-weight: style.token(text-body-font-weight);
-        line-height: style.token(text-body-line-height);
         height: auto;
+        line-height: style.token(text-body-line-height);
         position: relative;
         width: 100%;
 
@@ -117,7 +117,7 @@
             &:active:hover,
             &:focus:hover {
                 background: transparent;
-                border: none;
+                border-style: none;
                 flex: 1;
                 height: auto;
                 outline: none;
@@ -126,10 +126,11 @@
     }
 
     &__input {
-        $self: &;
-        $textarea: #{$self}--textarea;
+        $adyen-pe-self: &;
+        $adyen-pe-textarea: #{$adyen-pe-self}--textarea;
 
-        &#{$textarea} {
+        &#{$adyen-pe-textarea} {
+            overflow: hidden;
             padding: style.token(spacer-040) style.token(spacer-060);
             resize: none;
         }

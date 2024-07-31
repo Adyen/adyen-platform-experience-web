@@ -8,7 +8,7 @@ import {
     TX_DATA_INPUT_TEXTAREA,
 } from '../../constants';
 import { h } from 'preact';
-import { useCallback, useState } from 'preact/hooks';
+import { useLayoutEffect, useRef, useState } from 'preact/hooks';
 import { useInputNormalizer } from '../../context/useInputNormalizer';
 import { REFUND_REFERENCE_CHAR_LIMIT, useTransactionDataContext } from '../../context';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
@@ -22,22 +22,32 @@ const TransactionRefundReference = () => {
     const [characters, setCharactersCount] = useState(reference.length);
 
     const inputNormalizer = useInputNormalizer(REFUND_REFERENCE_CHAR_LIMIT);
+    const inputOriginHeight = useRef(0);
+    const inputRef = useRef<HTMLTextAreaElement>(null);
 
-    const onInput = useCallback(
-        (evt: h.JSX.TargetedInputEvent<HTMLTextAreaElement>) => {
-            const textarea = evt.currentTarget;
-            const selectionEnd = textarea.selectionEnd;
-            const value = inputNormalizer(textarea.value);
+    const onInput = (evt: h.JSX.TargetedInputEvent<HTMLTextAreaElement>) => {
+        const textarea = evt.currentTarget;
+        const selectionEnd = textarea.selectionEnd;
+        const value = inputNormalizer(textarea.value);
 
-            textarea.value = value;
-            textarea.setSelectionRange(selectionEnd, selectionEnd);
+        textarea.value = value;
+        textarea.setSelectionRange(selectionEnd, selectionEnd);
 
+        if (value !== reference) {
             setReference(value);
             setCharactersCount(value.length);
             updateRefundReference(value);
-        },
-        [updateRefundReference]
-    );
+            textarea.rows = 1;
+        }
+    };
+
+    useLayoutEffect(() => {
+        if (inputRef.current) {
+            const input = inputRef.current;
+            const currentHeight = input.scrollHeight;
+            input.rows = Math.ceil(currentHeight / (inputOriginHeight.current ||= currentHeight));
+        }
+    }, [reference]);
 
     return (
         <div className={TX_DATA_CONTAINER}>
@@ -53,6 +63,7 @@ const TransactionRefundReference = () => {
             <div className={`${TX_DATA_INPUT_CONTAINER} ${TX_DATA_INPUT_CONTAINER_TEXT}`}>
                 <label htmlFor="refundReference">
                     <textarea
+                        ref={inputRef}
                         className={`adyen-pe-input ${TX_DATA_INPUT} ${TX_DATA_INPUT_TEXTAREA}`}
                         id="refundReference"
                         placeholder={i18n.get('refundReference.placeholder')}
