@@ -1,19 +1,14 @@
 import { toChildArray } from 'preact';
 import { useCallback, useMemo, useState } from 'preact/hooks';
-import { REFUND_REASONS, RefundReason, TransactionDataContext } from '../context';
 import { boolOrFalse, EMPTY_ARRAY, noop } from '../../../../utils';
 import { ButtonVariant } from '../../../internal/Button/types';
 import useCoreContext from '../../../../core/Context/useCoreContext';
+import { TransactionDataContext } from './TransactionDataContext';
+import { REFUND_REASONS } from './constants';
 import type { ButtonActionObject, ButtonActionsList } from '../../../internal/Button/ButtonActions/types';
-import type { TransactionDetailData } from '../types';
+import type { RefundReason, TransactionDataContextProviderProps } from './types';
 
-export interface TransactionDataProviderProps {
-    children?: any;
-    isFetching?: boolean;
-    transaction: TransactionDetailData;
-}
-
-export const TransactionDataProvider = ({ children, isFetching, transaction }: TransactionDataProviderProps) => {
+export const TransactionDataContextProvider = ({ children, isFetching, transaction }: TransactionDataContextProviderProps) => {
     const [dataViewActive, setDataViewActive] = useState(true);
     const [refundReference, setRefundReference] = useState<string>();
     const [refundReason, setRefundReason] = useState<RefundReason>(REFUND_REASONS[0]);
@@ -89,4 +84,4 @@ export const TransactionDataProvider = ({ children, isFetching, transaction }: T
     );
 };
 
-export default TransactionDataProvider;
+export default TransactionDataContextProvider;

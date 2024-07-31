@@ -85,6 +85,7 @@
     "refundReason.other": "Other",
     "refundReason.requested": "Requested by customer",
     "refundReference": "Reference",
+    "refundReference.placeholder": "Enter the reference here",
     "remainingAmount": "Remaining amount",
     "reset": "Reset",
     "Reversed": "Reversed",

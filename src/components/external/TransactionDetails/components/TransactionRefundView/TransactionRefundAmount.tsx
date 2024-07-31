@@ -1,11 +1,13 @@
-import { useEffect, useState } from 'preact/hooks';
 import {
     TX_DATA_CONTAINER,
+    TX_DATA_INPUT,
     TX_DATA_INPUT_CONTAINER,
     TX_DATA_INPUT_CONTAINER_SHORT,
     TX_DATA_INPUT_CONTAINER_TEXT,
     TX_DATA_INPUT_HEAD,
 } from '../../constants';
+import { h } from 'preact';
+import { useCallback, useState } from 'preact/hooks';
 import useTransactionDataContext from '../../context';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import InputBase from '../../../../internal/FormFields/InputBase';
@@ -21,9 +23,16 @@ const TransactionRefundAmount = () => {
 
     const withinRange = refundAmount > 0 || refundAmount <= refundValueMax;
 
-    useEffect(() => {
-        setRefundAmount(refundValue);
-    }, [refundValue]);
+    const onInput = useCallback(
+        (evt: h.JSX.TargetedEvent<HTMLInputElement>) => {
+            const amount = parseFloat(evt.currentTarget.value);
+            if (amount > 0) {
+                setRefundAmount(amount);
+                if (amount <= refundValueMax) updateRefundValue(amount);
+            }
+        },
+        [setRefundAmount, updateRefundValue]
+    );
 
     return (
         <div className={TX_DATA_CONTAINER}>
@@ -37,14 +46,11 @@ const TransactionRefundAmount = () => {
                 <label htmlFor="refundAmount">
                     <Tag label={transaction.amount.currency} variant={TagVariant.DEFAULT} />
                     <InputBase
+                        className={TX_DATA_INPUT}
                         lang={i18n.locale}
                         type="number"
                         value={refundAmount}
-                        // onKeyUp={() => withinRange && updateRefundValue(refundAmount)}
-                        onInput={evt => {
-                            const amount = parseFloat(evt.currentTarget.value);
-                            amount > 0 && setRefundAmount(amount);
-                        }}
+                        onInput={onInput}
                         min={0}
                         isInvalid={!withinRange}
                         errorMessage={i18n.get('noNegativeNumbersAllowed')}

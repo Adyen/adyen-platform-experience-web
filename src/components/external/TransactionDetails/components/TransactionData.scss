@@ -125,9 +125,24 @@
         }
     }
 
+    &__input {
+        $self: &;
+        $textarea: #{$self}--textarea;
+
+        &#{$textarea} {
+            padding: style.token(spacer-040) style.token(spacer-060);
+            resize: none;
+        }
+    }
+
     &__input-head {
         display: flex;
+        justify-content: space-between;
         margin-bottom: style.token(spacer-030);
+    }
+
+    &__input-chars-counter {
+        color: style.token(color-label-secondary);
     }
 
     &__label {

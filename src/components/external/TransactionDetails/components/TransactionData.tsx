@@ -1,9 +1,9 @@
 import TransactionDataContainer from './TransactionDataContainer';
-import TransactionDataProvider, { TransactionDataProviderProps } from './TransactionDataProvider';
+import { TransactionDataContextProvider, TransactionDataContextProviderProps } from '../context';
 import './TransactionData.scss';
 
-export const TransactionData = (props: Omit<TransactionDataProviderProps, 'children'>) => (
-    <TransactionDataProvider {...props}>
+export const TransactionData = (props: Omit<TransactionDataContextProviderProps, 'children'>) => (
+    <TransactionDataContextProvider {...props}>
         <TransactionDataContainer />
-    </TransactionDataProvider>
+    </TransactionDataContextProvider>
 );
