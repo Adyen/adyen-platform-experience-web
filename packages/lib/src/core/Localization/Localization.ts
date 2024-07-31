@@ -1,12 +1,12 @@
 import { getLocalisedAmount } from './amount/amount-util';
-import { defaultTranslation, FALLBACK_LOCALE } from './constants/locale';
+import { FALLBACK_LOCALE } from './constants/locale';
 import { DEFAULT_DATETIME_FORMAT, DEFAULT_LOCALES, EXCLUDE_PROPS } from './constants/localization';
 import restamper, { RestamperWithTimezone, systemToTimezone } from './datetime/restamper';
 import { createTranslationsLoader, getLocalizationProxyDescriptors } from './localization-utils';
-import { CustomTranslations, LangFile, SupportedLocale, Translations, TranslationKey, TranslationOptions } from './types';
-import { formatCustomTranslations, getTranslation, toTwoLetterCode } from './utils';
+import { CustomTranslations, LangFile, SupportedLocale, Translations } from './types';
+import { formatCustomTranslations, toTwoLetterCode } from './utils';
 import { createWatchlist } from '../../primitives/reactive/watchlist';
-import { ALREADY_RESOLVED_PROMISE, isNull, isNullish, isUndefined, noop, struct } from '../../utils';
+import { ALREADY_RESOLVED_PROMISE, isNullish, isUndefined, noop, struct } from '../../utils';
 import { en_US } from '../../translations';
 
 export default class Localization {
@@ -15,7 +15,6 @@ export default class Localization {
     #supportedLocales: Readonly<SupportedLocale[]> | string[] = DEFAULT_LOCALES;
 
     #customTranslations?: CustomTranslations;
-    #translations: Record<string, string> = defaultTranslation;
     #translationsLoader = createTranslationsLoader.call(this);
 
     #ready: Promise<void> = ALREADY_RESOLVED_PROMISE;
@@ -112,7 +111,6 @@ export default class Localization {
         };
 
         const currentRefresh = (this.#currentRefresh = (async () => {
-            this.#translations = await this.#translationsLoader.load(customTranslations);
             this.#locale = this.#translationsLoader.locale;
             this.#supportedLocales = this.#translationsLoader.supportedLocales;
             this.#customTranslations = customTranslations;
@@ -126,28 +124,6 @@ export default class Localization {
             // throw reason;
             console.error(reason);
         });
-    }
-
-    /**
-     * Returns a translated string from a key in the current {@link Localization.locale}
-     * @param key - Translation key
-     * @param options - Translation options
-     * @returns Translated string
-     */
-    get(key: TranslationKey, options?: TranslationOptions): string {
-        const translation = getTranslation(this.#translations, key, options);
-        return isNull(translation) ? key : translation;
-    }
-
-    /**
-     * Returns a boolean that checks if the translation key exists in the current {@link Localization.locale}
-     * @param key - Translation key
-     * @param options - Translation options
-     * @returns boolean
-     */
-    has(key: string, options?: TranslationOptions): key is TranslationKey {
-        const translation = getTranslation(this.#translations, key, options);
-        return !!translation;
     }
 
     /**
