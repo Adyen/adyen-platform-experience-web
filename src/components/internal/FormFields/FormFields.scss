@@ -116,6 +116,15 @@
     display: block;
 }
 
+.adyen-pe-input-wrapper--autoresizable-textarea {
+    overflow: hidden;
+
+    > textarea {
+        overflow-y: scroll;
+        resize: none;
+    }
+}
+
 .adyen-pe-input__inline-validation {
     height: 16px;
     position: absolute;

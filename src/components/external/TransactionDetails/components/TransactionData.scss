@@ -94,6 +94,7 @@
         border: style.token(border-width-s) solid style.token(color-outline-secondary);
         border-radius: style.token(border-radius-m);
         outline: none;
+        overflow: hidden;
         transition: border 0.2s ease-out, box-shadow 0.2s ease-out;
 
         &:focus-within,
@@ -122,6 +123,10 @@
                 height: auto;
                 outline: none;
             }
+
+            &-wrapper {
+                flex: 1;
+            }
         }
     }
 
@@ -130,9 +135,7 @@
         $adyen-pe-textarea: #{$adyen-pe-self}--textarea;
 
         &#{$adyen-pe-textarea} {
-            overflow: hidden;
             padding: style.token(spacer-040) style.token(spacer-060);
-            resize: none;
         }
     }
 
