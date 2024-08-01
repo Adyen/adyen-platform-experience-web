@@ -2,7 +2,7 @@ import { compose, context, DefaultBodyType, DelayMode, MockedRequest, RestHandle
 import { mockWorker } from './index';
 
 const IS_TEST = Boolean(process.env.E2E_TEST === 'true') || process.env.VITE_MODE === 'demo';
-const MOCK_MODES = ['mocked', 'demo'];
+const MOCK_MODES = ['mocked'];
 
 export async function enableServerInMockedMode(enabled?: boolean) {
     const env = (import.meta as any).env;
