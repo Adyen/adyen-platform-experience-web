@@ -6,7 +6,7 @@ import { realApiProxies } from '../endpoints/realApiProxies';
 
 const config: StorybookConfig = {
     stories: ['../stories/**/*.stories.*'],
-    addons: ['@storybook/addon-essentials', '@storybook/addon-a11y'],
+    addons: ['@storybook/addon-essentials'],
     framework: {
         name: '@storybook/preact-vite',
         options: {},

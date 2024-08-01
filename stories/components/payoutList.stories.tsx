@@ -2,7 +2,6 @@ import { Meta } from '@storybook/preact';
 import { enabledDisabledCallbackRadioControls } from '../utils/controls';
 import { PayoutsOverview } from '../../src';
 import { ElementProps, ElementStory, SessionControls as SessionControl } from '../utils/types';
-import { Container } from '../utils/Container';
 import { EMPTY_SESSION_OBJECT } from '../utils/constants';
 
 const meta: Meta<ElementProps<typeof PayoutsOverview>> = {
@@ -20,18 +19,12 @@ const meta: Meta<ElementProps<typeof PayoutsOverview>> = {
         allowLimitSelection: true,
         hideTitle: false,
         onContactSupport: () => {},
+        component: PayoutsOverview,
     },
     parameters: {
         controls: {
             sort: 'alpha',
         },
-    },
-    render: (args, context) => {
-        if (context.loaded.data) {
-            Object.assign(args, { payouts: context.loaded.data });
-        }
-
-        return <Container component={PayoutsOverview} componentConfiguration={args} context={context} mockedApi={args.mockedApi} />;
     },
 };
 export const Basic: ElementStory<typeof PayoutsOverview> = {

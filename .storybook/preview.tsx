@@ -4,10 +4,9 @@ import '../src/components/shared.scss';
 import { createAdyenPlatformExperience } from './utils/create-adyenPE';
 import { getMockHandlers } from '../mocks/mock-server/utils';
 import sessionRequest from '../playground/utils/sessionRequest';
-import { mswLoader, initialize } from 'msw-storybook-addon';
+import { mswLoader, initialize, getWorker } from 'msw-storybook-addon';
 import { mocks } from '../mocks/mock-server';
-
-initialize({}, [...getMockHandlers(mocks)]);
+import { Container } from '../stories/utils/Container';
 
 const preview: Preview = {
     parameters: {
@@ -20,6 +19,11 @@ const preview: Preview = {
     },
     argTypes: {
         mockedApi: {
+            table: {
+                disable: true,
+            },
+        },
+        component: {
             table: {
                 disable: true,
             },
@@ -39,6 +43,26 @@ const preview: Preview = {
             return { AdyenPlatformExperience };
         },
         mswLoader,
+    ],
+    decorators: [
+        (Story, context) => {
+            let worker;
+
+            if (context.args.mockedApi) {
+                initialize({}, [...getMockHandlers(mocks)]);
+                worker = getWorker();
+            }
+
+            return (
+                <Container
+                    component={context.args.component}
+                    componentConfiguration={context.args}
+                    context={context}
+                    mockedApi={context.args.mockedApi}
+                    worker={worker}
+                />
+            );
+        },
     ],
 };
 

@@ -2,9 +2,7 @@ import { Meta } from '@storybook/preact';
 import { enabledDisabledCallbackRadioControls } from '../utils/controls';
 import { TransactionsOverview } from '../../src';
 import { ElementProps, ElementStory, SessionControls } from '../utils/types';
-import { Container } from '../utils/Container';
 import { EMPTY_SESSION_OBJECT } from '../utils/constants';
-import { http, HttpResponse } from 'msw';
 
 const meta: Meta<ElementProps<typeof TransactionsOverview>> = {
     title: 'components/Transactions',
@@ -21,18 +19,12 @@ const meta: Meta<ElementProps<typeof TransactionsOverview>> = {
         allowLimitSelection: true,
         hideTitle: false,
         onContactSupport: () => {},
+        component: TransactionsOverview,
     },
     parameters: {
         controls: {
             sort: 'alpha',
         },
-    },
-    render: (args, context) => {
-        if (context.loaded.data) {
-            Object.assign(args, { transactions: context.loaded.data });
-        }
-
-        return <Container component={TransactionsOverview} componentConfiguration={args} context={context} mockedApi={args.mockedApi} />;
     },
 };
 export const Basic: ElementStory<typeof TransactionsOverview> = {
@@ -52,7 +44,7 @@ export const BasicTransactionListApi: ElementStory<typeof TransactionsOverview, 
     },
 };
 
-Basic.parameters = {
+/*Basic.parameters = {
     msw: {
         handlers: [
             http.get('https://platform-components-external-test.adyen.com/platform-components-external/api/v1/transactions', r => {
@@ -73,6 +65,6 @@ Basic.parameters = {
             }),
         ],
     },
-};
+};*/
 
 export default meta;
