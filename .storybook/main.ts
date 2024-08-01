@@ -2,7 +2,7 @@ import { StorybookConfig } from '@storybook/preact-vite';
 import { mergeConfig } from 'vite';
 import { checker } from 'vite-plugin-checker';
 import { getEnvironment } from '../envs/getEnvs';
-import { realApiProxies } from '../playground/endpoints/apis/realApiProxies';
+import { realApiProxies } from '../endpoints/realApiProxies';
 
 const config: StorybookConfig = {
     stories: ['../stories/**/*.stories.*'],

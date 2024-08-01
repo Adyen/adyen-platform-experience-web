@@ -11,7 +11,7 @@ import { getEnvironment } from './envs/getEnvs';
 import { preact } from '@preact/preset-vite';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { checker } from 'vite-plugin-checker';
-import { realApiProxies } from './playground/endpoints/apis/realApiProxies';
+import { realApiProxies } from './endpoints/realApiProxies';
 const currentVersion = version();
 const externalDependencies = Object.keys(packageJson.dependencies);
 
@@ -89,9 +89,7 @@ export default defineConfig(async ({ mode }) => {
             'process.env.SESSION_AUTO_REFRESH': JSON.stringify(
                 isDevMode(mode) ? apiConfigs.sessionApi.autoRefresh || JSON.stringify(null) : undefined
             ),
-            'process.env.SESSION_MAX_AGE_MS': JSON.stringify(
-                isDevMode(mode) ? apiConfigs.sessionApi.maxAgeMs || JSON.stringify(null) : undefined
-            ),
+            'process.env.SESSION_MAX_AGE_MS': JSON.stringify(isDevMode(mode) ? apiConfigs.sessionApi.maxAgeMs || JSON.stringify(null) : undefined),
             'process.env.VITE_MODE': JSON.stringify(process.env.VITE_MODE ?? mode),
             'process.env.VITE_PLAYGROUND_PORT': JSON.stringify(playground.port || null),
             'process.env.DEPLOYED_URL': JSON.stringify(process.env.DEPLOY_PRIME_URL || null),
