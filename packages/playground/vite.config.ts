@@ -6,7 +6,6 @@ import { getEnvironment } from '../../envs/getEnvs';
 import { realApiProxies } from './src/endpoints/apis/realApiProxies';
 import { checker } from 'vite-plugin-checker';
 import { visualizer } from 'rollup-plugin-visualizer';
-import { visualizer } from 'rollup-plugin-visualizer';
 
 const playgroundDir = resolve(__dirname, 'src/pages');
 const demoPlaygroundDir = resolve(__dirname, './');
