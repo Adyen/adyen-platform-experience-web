@@ -1,5 +1,5 @@
 import { rest, context } from 'msw';
-import { endpoints } from '../../playground/endpoints/endpoints';
+import { endpoints } from '../../endpoints/endpoints';
 import { compareDates, delay, getPaginationLinks } from './utils';
 import { getReports } from '../mock-data/reports';
 

@@ -2,7 +2,7 @@ import { rest } from 'msw';
 import { ITransaction } from '../../src';
 import { DEFAULT_TRANSACTION, TRANSACTIONS } from '../mock-data';
 import { compareDates, computeHash, delay, getPaginationLinks } from './utils';
-import { endpoints } from '../../playground/endpoints/endpoints';
+import { endpoints } from '../../endpoints/endpoints';
 
 interface _ITransactionTotals {
     expenses: number;
