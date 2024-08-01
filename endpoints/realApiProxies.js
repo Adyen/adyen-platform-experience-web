@@ -1,4 +1,4 @@
-import { endpoints } from '../endpoints';
+import { endpoints } from './endpoints.js';
 
 const makeProxyOptions = ({ url, version, username, password, apiKey }, basicAuth = false) => ({
     target: `${url}${version ?? ''}`,

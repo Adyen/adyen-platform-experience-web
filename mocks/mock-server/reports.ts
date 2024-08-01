@@ -1,5 +1,5 @@
+import { endpoints } from '../../endpoints/endpoints';
 import { http, HttpResponse } from 'msw';
-import { endpoints } from '../../playground/endpoints/endpoints';
 import { compareDates, delay, getPaginationLinks } from './utils';
 import { getReports } from '../mock-data/reports';
 

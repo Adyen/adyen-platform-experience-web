@@ -1,5 +1,5 @@
 import { http, HttpResponse } from 'msw';
-import { endpoints } from '../../playground/endpoints/endpoints';
+import { endpoints } from '../../endpoints/endpoints';
 import { delay } from './utils';
 
 const networkError = false;
