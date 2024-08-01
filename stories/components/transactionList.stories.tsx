@@ -3,6 +3,7 @@ import { enabledDisabledCallbackRadioControls } from '../utils/controls';
 import { TransactionsOverview } from '../../src';
 import { ElementProps, ElementStory, SessionControls } from '../utils/types';
 import { EMPTY_SESSION_OBJECT } from '../utils/constants';
+import { http, HttpResponse } from 'msw';
 
 const meta: Meta<ElementProps<typeof TransactionsOverview>> = {
     title: 'components/Transactions',
@@ -44,10 +45,10 @@ export const BasicTransactionListApi: ElementStory<typeof TransactionsOverview, 
     },
 };
 
-/*Basic.parameters = {
+Basic.parameters = {
     msw: {
         handlers: [
-            http.get('https://platform-components-external-test.adyen.com/platform-components-external/api/v1/transactions', r => {
+            http.get('https://platform-components-external-test.adyen.com/platform-components-external/api/v1/transactions', () => {
                 return HttpResponse.json({
                     data: [
                         {
@@ -65,6 +66,6 @@ export const BasicTransactionListApi: ElementStory<typeof TransactionsOverview, 
             }),
         ],
     },
-};*/
+};
 
 export default meta;

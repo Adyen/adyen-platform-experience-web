@@ -32,6 +32,13 @@ const preview: Preview = {
     },
     loaders: [
         async context => {
+            let worker;
+
+            if (context.args.mockedApi) {
+                initialize({}, [...getMockHandlers(mocks)]);
+                worker = getWorker();
+            }
+
             const AdyenPlatformExperience = await createAdyenPlatformExperience({
                 ...context.coreOptions,
                 balanceAccountId: context.args.balanceAccountId,
@@ -40,26 +47,18 @@ const preview: Preview = {
                     return await sessionRequest(context.args.session);
                 },
             });
-            return { AdyenPlatformExperience };
+            return { AdyenPlatformExperience, worker };
         },
         mswLoader,
     ],
     decorators: [
         (Story, context) => {
-            let worker;
-
-            if (context.args.mockedApi) {
-                initialize({}, [...getMockHandlers(mocks)]);
-                worker = getWorker();
-            }
-
             return (
                 <Container
                     component={context.args.component}
                     componentConfiguration={context.args}
                     context={context}
                     mockedApi={context.args.mockedApi}
-                    worker={worker}
                 />
             );
         },
