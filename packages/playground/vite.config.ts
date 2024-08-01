@@ -1,10 +1,11 @@
-import { defineConfig } from 'vite';
+import { defineConfig, type PluginOption } from 'vite';
 import { preact } from '@preact/preset-vite';
 import { resolve } from 'node:path';
 import { lstat, readdir } from 'node:fs/promises';
 import { getEnvironment } from '../../envs/getEnvs';
 import { realApiProxies } from './src/endpoints/apis/realApiProxies';
 import { checker } from 'vite-plugin-checker';
+import { visualizer } from 'rollup-plugin-visualizer';
 
 const playgroundDir = resolve(__dirname, 'src/pages');
 const demoPlaygroundDir = resolve(__dirname, './');
@@ -27,6 +28,7 @@ async function getPlaygroundEntrypoints() {
 
 export default defineConfig(async ({ mode }) => {
     const { apiConfigs, playground } = getEnvironment(mode);
+    const isAnalyseMode = true;
     return {
         root: mode === 'demo' ? demoPlaygroundDir : undefined,
         base: './',
@@ -39,6 +41,13 @@ export default defineConfig(async ({ mode }) => {
                       },
                   })
                 : undefined,
+            isAnalyseMode
+                ? (visualizer({
+                      title: 'Adyen Platform bundle visualizer',
+                      gzipSize: true,
+                      open: true,
+                  }) as PluginOption)
+                : undefined,
         ],
         build:
             mode === 'demo'
@@ -49,7 +58,7 @@ export default defineConfig(async ({ mode }) => {
                       rollupOptions: {
                           input: await getPlaygroundEntrypoints(),
                       },
-                      minify: false,
+                      minify: true,
                   }
                 : undefined,
         resolve: {
