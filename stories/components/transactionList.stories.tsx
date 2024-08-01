@@ -4,9 +4,10 @@ import { TransactionsOverview } from '../../src';
 import { ElementProps, ElementStory, SessionControls } from '../utils/types';
 import { Container } from '../utils/Container';
 import { EMPTY_SESSION_OBJECT } from '../utils/constants';
+import { http, HttpResponse } from 'msw';
 
 const meta: Meta<ElementProps<typeof TransactionsOverview>> = {
-    title: 'screens/Transactions',
+    title: 'components/Transactions',
     argTypes: {
         onFiltersChanged: enabledDisabledCallbackRadioControls('onFiltersChanged', ['Passed', 'Not Passed']),
         onRecordSelection: enabledDisabledCallbackRadioControls('onRecordSelection'),
@@ -48,6 +49,29 @@ export const BasicTransactionListApi: ElementStory<typeof TransactionsOverview, 
     },
     args: {
         session: EMPTY_SESSION_OBJECT,
+    },
+};
+
+Basic.parameters = {
+    msw: {
+        handlers: [
+            http.get('https://platform-components-external-test.adyen.com/platform-components-external/api/v1/transactions', r => {
+                return HttpResponse.json({
+                    data: [
+                        {
+                            id: '1VVF0D5V3709DX6D',
+                            amount: { currency: 'EUR', value: 200000 },
+                            balanceAccountId: '',
+                            status: 'Booked',
+                            category: 'Fee',
+                            paymentMethod: { lastFourDigits: '1945', type: 'mc' },
+                            createdAt: '2024-07-29T14:47:03+02:00',
+                        },
+                    ],
+                    _links: {},
+                });
+            }),
+        ],
     },
 };
 
