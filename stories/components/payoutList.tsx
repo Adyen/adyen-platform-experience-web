@@ -1,11 +1,9 @@
 import { Meta } from '@storybook/preact';
 import { enabledDisabledCallbackRadioControls } from '../utils/controls';
 import { PayoutsOverview } from '../../src';
-import { ElementProps, ElementStory, SessionControls as SessionControl } from '../utils/types';
-import { EMPTY_SESSION_OBJECT } from '../utils/constants';
+import { ElementProps } from '../utils/types';
 
-const meta: Meta<ElementProps<typeof PayoutsOverview>> = {
-    title: 'components/Payouts',
+export const PayoutsMeta: Meta<ElementProps<typeof PayoutsOverview>> = {
     argTypes: {
         onFiltersChanged: enabledDisabledCallbackRadioControls('onFiltersChanged', ['Passed', 'Not Passed']),
         onRecordSelection: enabledDisabledCallbackRadioControls('onRecordSelection'),
@@ -27,21 +25,3 @@ const meta: Meta<ElementProps<typeof PayoutsOverview>> = {
         },
     },
 };
-export const Basic: ElementStory<typeof PayoutsOverview> = {
-    name: 'Basic (Mocked)',
-    args: {
-        mockedApi: true,
-    },
-};
-
-export const BasicPayoutListApi: ElementStory<typeof PayoutsOverview, SessionControl> = {
-    name: 'Basic (API)',
-    argTypes: {
-        session: { control: 'object' },
-    },
-    args: {
-        session: EMPTY_SESSION_OBJECT,
-    },
-};
-
-export default meta;
