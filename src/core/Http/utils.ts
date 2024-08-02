@@ -30,6 +30,7 @@ export const getErrorType = (errorCode: number): ErrorTypes => {
 
 export const getRequestObject = (options: HttpOptions, data?: any): RequestInit => {
     const { headers = [], method = 'GET' } = options;
+    const SDKVersion = process.env.VITE_VERSION;
 
     return {
         method,
@@ -40,6 +41,7 @@ export const getRequestObject = (options: HttpOptions, data?: any): RequestInit 
             Accept: 'application/json, text/plain, */*',
             'Content-Type': 'application/json',
             ...headers,
+            ...(SDKVersion && { 'SDK-Version': SDKVersion }),
         },
         redirect: 'follow',
         signal: options.signal,
