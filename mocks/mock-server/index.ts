@@ -1,4 +1,4 @@
-import { setupWorker } from 'msw';
+import { setupWorker } from 'msw/browser';
 import { getMockHandlers } from './utils';
 import { balanceAccountMock } from './balanceAccounts';
 import { payoutsMocks } from './payouts';
