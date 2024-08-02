@@ -16,6 +16,7 @@ export class AuthSessionSpecification implements _AuthSessionSpecification {
     public declare readonly onRefresh: _AuthSessionSpecification['onRefresh'];
 
     constructor(public onSessionCreate?: SessionRequest) {
+        console.log('session');
         this._errorHandler = this._errorHandler.bind(this);
 
         Object.defineProperties(this, {

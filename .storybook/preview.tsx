@@ -1,12 +1,12 @@
 import { Preview } from '@storybook/preact';
 import '../playground/assets/style/style.scss';
 import '../src/components/shared.scss';
-import { createAdyenPlatformExperience } from './utils/create-adyenPE';
 import { getMockHandlers } from '../mocks/mock-server/utils';
-import sessionRequest from '../playground/utils/sessionRequest';
 import { mswLoader, initialize, getWorker } from 'msw-storybook-addon';
 import { mocks } from '../mocks/mock-server';
 import { Container } from '../stories/utils/Container';
+
+initialize({}, [...getMockHandlers(mocks)]);
 
 const preview: Preview = {
     parameters: {
@@ -32,37 +32,20 @@ const preview: Preview = {
     },
     loaders: [
         async context => {
-            let worker;
-
+            const worker = getWorker();
             if (context.args.mockedApi) {
-                initialize({}, [...getMockHandlers(mocks)]);
-                worker = getWorker();
+                await worker.start();
+            } else {
+                worker.stop();
             }
 
-            const AdyenPlatformExperience = await createAdyenPlatformExperience({
-                ...context.coreOptions,
-                balanceAccountId: context.args.balanceAccountId,
-                environment: 'beta',
-                onSessionCreate: async () => {
-                    return await sessionRequest(context.args.session);
-                },
-            });
-            return { AdyenPlatformExperience, worker };
+            return { worker };
         },
         mswLoader,
     ],
-    decorators: [
-        (Story, context) => {
-            return (
-                <Container
-                    component={context.args.component}
-                    componentConfiguration={context.args}
-                    context={context}
-                    mockedApi={context.args.mockedApi}
-                />
-            );
-        },
-    ],
+    render: (args, context) => {
+        return <Container component={args.component} componentConfiguration={args} context={context} mockedApi={args.mockedApi} />;
+    },
 };
 
 export default preview;
