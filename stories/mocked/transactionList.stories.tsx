@@ -12,23 +12,19 @@ export const Basic: ElementStory<typeof TransactionsOverview> = {
         mockedApi: true,
     },
 };
+export const Empty: ElementStory<typeof TransactionsOverview> = {
+    name: 'Empty list',
+    args: {
+        mockedApi: true,
+    },
+};
 
-Basic.parameters = {
+Empty.parameters = {
     msw: {
         handlers: [
             http.get(endpoints('mock').transactions, () => {
                 return HttpResponse.json({
-                    data: [
-                        {
-                            id: '1VVF0D5V3709DX6D',
-                            amount: { currency: 'EUR', value: 200000 },
-                            balanceAccountId: '',
-                            status: 'Booked',
-                            category: 'Fee',
-                            paymentMethod: { lastFourDigits: '1945', type: 'mc' },
-                            createdAt: '2024-07-29T14:47:03+02:00',
-                        },
-                    ],
+                    data: [],
                     _links: {},
                 });
             }),
