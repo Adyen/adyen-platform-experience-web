@@ -1,8 +1,8 @@
-import { rest } from 'msw';
+import { http, HttpResponse } from 'msw';
 import { ITransaction } from '../../src';
 import { DEFAULT_TRANSACTION, TRANSACTIONS } from '../mock-data';
 import { compareDates, computeHash, delay, getPaginationLinks } from './utils';
-import { endpoints } from '../../playground/endpoints/endpoints';
+import { endpoints } from '../../endpoints/endpoints';
 
 interface _ITransactionTotals {
     expenses: number;
@@ -18,8 +18,9 @@ const mockEndpoints = endpoints('mock');
 const networkError = false;
 const serverError = false;
 
-const fetchTransactionsForRequest = (req: Parameters<Parameters<(typeof rest)['get']>[1]>[0]) => {
-    const searchParams = req.url.searchParams;
+const fetchTransactionsForRequest = (req: Request) => {
+    const url = new URL(req.url);
+    const searchParams = url.searchParams;
 
     const balanceAccount = searchParams.get('balanceAccountId');
     const categories = searchParams.getAll('categories');
@@ -64,51 +65,56 @@ const fetchTransactionsForRequest = (req: Parameters<Parameters<(typeof rest)['g
 };
 
 export const transactionsMocks = [
-    rest.get(mockEndpoints.transactions, (req, res, ctx) => {
-        if (networkError) return res.networkError('Failed to connect');
+    http.get(mockEndpoints.transactions, async ({ request }) => {
+        if (networkError) return HttpResponse.error();
 
         if (serverError) {
-            return res(
-                ctx.status(500),
-                ctx.json({
+            return new HttpResponse(
+                JSON.stringify({
                     type: 'https://docs.adyen.com/errors/forbidden',
                     errorCode: '00_500',
                     title: 'Forbidden',
                     detail: 'Balance Account does not belong to Account Holder',
                     requestId: '769ac4ce59f0f159ad672d38d3291e91',
                     status: 500,
-                })
+                }),
+                {
+                    status: 500,
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                }
             );
         }
 
-        const cursor = +(req.url.searchParams.get('cursor') ?? 0);
-        const limit = +(req.url.searchParams.get('limit') ?? DEFAULT_PAGINATION_LIMIT);
+        const url = new URL(request.url);
+        const cursor = +(url.searchParams.get('cursor') ?? 0);
+        const limit = +(url.searchParams.get('limit') ?? DEFAULT_PAGINATION_LIMIT);
         const responseDelay = 200 + Math.round(Math.floor(Math.random() * 201) / 50) * 50;
 
-        const { transactions } = fetchTransactionsForRequest(req);
+        const { transactions } = fetchTransactionsForRequest(request);
 
-        return res(
-            delay(responseDelay),
-            ctx.json({
-                data: transactions.slice(cursor, cursor + limit),
-                _links: getPaginationLinks(cursor, limit, transactions.length),
-            })
-        );
+        await delay(responseDelay);
+        return HttpResponse.json({
+            data: transactions.slice(cursor, cursor + limit),
+            _links: getPaginationLinks(cursor, limit, transactions.length),
+        });
     }),
 
-    rest.get(mockEndpoints.transaction, (req, res, ctx) => {
-        const matchingMock = [...TRANSACTIONS, DEFAULT_TRANSACTION].find(mock => mock.id === req.params.id);
+    http.get(mockEndpoints.transaction, ({ params }) => {
+        const matchingMock = [...TRANSACTIONS, DEFAULT_TRANSACTION].find(mock => mock.id === params.id);
 
         if (!matchingMock) {
-            res(ctx.status(404), ctx.text('Cannot find matching Transaction mock'));
+            HttpResponse.text('Cannot find matching Transaction mock', { status: 404 });
             return;
         }
 
-        return res(ctx.json(matchingMock));
+        return HttpResponse.json(matchingMock);
     }),
 
-    rest.get(mockEndpoints.transactionsTotals, (req, res, ctx) => {
-        const searchParams = req.url.searchParams;
+    http.get(mockEndpoints.transactionsTotals, ({ request }) => {
+        const url = new URL(request.url);
+        const searchParams = url.searchParams;
 
         // Don't filter transactions within the same time window
         searchParams.delete('categories');
@@ -118,7 +124,7 @@ export const transactionsMocks = [
         searchParams.delete('sortDirection');
         searchParams.delete('statuses');
 
-        const { hash, transactions } = fetchTransactionsForRequest(req);
+        const { hash, transactions } = fetchTransactionsForRequest(request);
         let totals = TRANSACTIONS_TOTALS_CACHE.get(hash);
 
         if (totals === undefined) {
@@ -143,6 +149,6 @@ export const transactionsMocks = [
             data.push({ currency, ...currencyTotals });
         }
 
-        return res(ctx.json({ data }));
+        return HttpResponse.json({ data });
     }),
 ];

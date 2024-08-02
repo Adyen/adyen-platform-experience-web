@@ -1,4 +1,5 @@
-import { realApiProxies } from '../../playground/endpoints/apis/realApiProxies';
+// eslint-disable-next-line import/extensions
+import { realApiProxies } from '../../endpoints/realApiProxies.js';
 
 export default async (request: Request, context: any) => {
     // @ts-ignore

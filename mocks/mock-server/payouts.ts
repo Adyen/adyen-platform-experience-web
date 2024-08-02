@@ -1,23 +1,24 @@
-import { rest } from 'msw';
+import { http, HttpResponse } from 'msw';
 import { getPayouts, PAYOUTS_WITH_DETAILS } from '../mock-data';
 import { compareDates, delay, getPaginationLinks } from './utils';
-import { endpoints } from '../../playground/endpoints/endpoints';
+import { endpoints } from '../../endpoints/endpoints';
 
 const mockEndpoints = endpoints('mock');
 const networkError = false;
 const defaultPaginationLimit = 20;
 
 export const payoutsMocks = [
-    rest.get(mockEndpoints.payouts, (req, res, ctx) => {
+    http.get(mockEndpoints.payouts, async ({ request }) => {
         if (networkError) {
-            return res.networkError('Failed to connect');
+            return HttpResponse.error();
         }
+        const url = new URL(request.url);
 
-        const balanceAccountId = req.url.searchParams.get('balanceAccountId');
-        const createdSince = req.url.searchParams.get('createdSince');
-        const createdUntil = req.url.searchParams.get('createdUntil');
-        const limit = +(req.url.searchParams.get('limit') ?? defaultPaginationLimit);
-        const cursor = +(req.url.searchParams.get('cursor') ?? 0);
+        const balanceAccountId = url.searchParams.get('balanceAccountId');
+        const createdSince = url.searchParams.get('createdSince');
+        const createdUntil = url.searchParams.get('createdUntil');
+        const limit = +(url.searchParams.get('limit') ?? defaultPaginationLimit);
+        const cursor = +(url.searchParams.get('cursor') ?? 0);
 
         let payouts = balanceAccountId ? getPayouts(balanceAccountId) : [];
         let responseDelay = 200;
@@ -33,25 +34,24 @@ export const payoutsMocks = [
 
         const data = payouts.slice(cursor, cursor + limit);
 
-        return res(delay(responseDelay), ctx.json({ data, _links: getPaginationLinks(cursor, limit, payouts.length) }));
+        await delay(responseDelay);
+        return HttpResponse.json({ data, _links: getPaginationLinks(cursor, limit, payouts.length) });
     }),
 
-    rest.get(mockEndpoints.payout, (req, res, ctx) => {
+    http.get(mockEndpoints.payout, ({ request }) => {
         if (networkError) {
-            return res.networkError('Failed to connect');
+            return HttpResponse.error();
         }
-
+        const url = new URL(request.url);
         const matchingMock = PAYOUTS_WITH_DETAILS.find(
-            mock =>
-                mock.balanceAccountId === req.url.searchParams.get('balanceAccountId') &&
-                mock.payout?.createdAt === req.url.searchParams.get('createdAt')
+            mock => mock.balanceAccountId === url.searchParams.get('balanceAccountId') && mock.payout?.createdAt === url.searchParams.get('createdAt')
         );
 
         if (!matchingMock) {
-            res(ctx.status(404), ctx.text('Cannot find matching Payout'));
+            HttpResponse.text('Cannot find matching Payout', { status: 404 });
             return;
         }
 
-        return res(ctx.json(matchingMock));
+        return HttpResponse.json(matchingMock);
     }),
 ];
