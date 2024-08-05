@@ -117,6 +117,7 @@
 }
 
 .adyen-pe-input-wrapper--autoresizable-textarea {
+    display: flex;
     overflow: hidden;
 
     > textarea {
