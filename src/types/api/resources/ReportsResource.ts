@@ -54,7 +54,6 @@ export type $defs = Record<string, never>;
 export type external = Record<string, never>;
 
 export interface operations {
-
     /**
      * Get reports
      * @description Given filters, provides list of reports for a balance account

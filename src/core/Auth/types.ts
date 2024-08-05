@@ -3,12 +3,12 @@ import type { HttpOptions } from '../Http/types';
 import { EndpointData, EndpointName, EndpointsOperations, SetupEndpoint } from '../../types/api/endpoints';
 import type { Promised } from '../../utils/types';
 
-type _Params<T extends Record<string, any>> = T['parameters'];
+export type _Params<T extends Record<string, any>> = T['parameters'];
 type _ExcludedHttpOptions = 'loadingContext' | 'path' | 'method' | 'params';
 type _SetupHttpOptions = Omit<HttpOptions, _ExcludedHttpOptions>;
 
-type _HasParameter<Parameter extends keyof any, T> = Parameter extends keyof T ? true : false;
-type _RequiresParameter<T> = _HasParameter<'parameters', T>;
+export type _HasParameter<Parameter extends keyof any, T> = Parameter extends keyof T ? true : false;
+export type _RequiresParameter<T> = _HasParameter<'parameters', T>;
 
 type _EndpointHttpCallable<Endpoint extends EndpointName> = _RequiresParameter<EndpointsOperations[Endpoint]> extends true
     ? (options: _SetupHttpOptions, params: _Params<EndpointsOperations[Endpoint]>) => Promise<EndpointSuccessResponse<Endpoint>>
