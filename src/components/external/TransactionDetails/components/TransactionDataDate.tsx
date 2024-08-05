@@ -1,8 +1,8 @@
 import { useMemo } from 'preact/hooks';
-import { TX_DATA_LABEL, TX_DATA_SECTION } from '../../constants';
-import { DATE_FORMAT_TRANSACTION_DETAILS } from '../../../../internal/DataOverviewDisplay/constants';
-import useCoreContext from '../../../../../core/Context/useCoreContext';
-import useTransactionDataContext from '../../context';
+import { TX_DATA_LABEL, TX_DATA_SECTION } from '../constants';
+import { DATE_FORMAT_TRANSACTION_DETAILS } from '../../../internal/DataOverviewDisplay/constants';
+import useCoreContext from '../../../../core/Context/useCoreContext';
+import useTransactionDataContext from '../context';
 
 const TransactionDataDate = () => {
     const { i18n } = useCoreContext();

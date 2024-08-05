@@ -1,6 +1,6 @@
-import { TagVariant } from '../../../../internal/Tag/types';
-import { parsePaymentMethodType } from '../../../TransactionsOverview/components/utils';
-import type { TransactionDetailData } from '../../types';
+import { TagVariant } from '../../internal/Tag/types';
+import { parsePaymentMethodType } from '../TransactionsOverview/components/utils';
+import type { TransactionDetailData } from './types';
 
 export const getAmountStyleForTransaction = (transaction: TransactionDetailData) => {
     switch (transaction?.status) {

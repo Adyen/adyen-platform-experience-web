@@ -6,15 +6,15 @@ import {
     TX_DATA_INPUT_CONTAINER_TEXT,
     TX_DATA_INPUT_HEAD,
     TX_DATA_INPUT_TEXTAREA,
-} from '../../constants';
+} from '../constants';
 import { h } from 'preact';
 import { useCallback, useLayoutEffect, useRef, useState } from 'preact/hooks';
-import { useInputNormalizer } from '../../context/useInputNormalizer';
-import { REFUND_REFERENCE_CHAR_LIMIT, useTransactionDataContext } from '../../context';
-import useCoreContext from '../../../../../core/Context/useCoreContext';
-import Typography from '../../../../internal/Typography/Typography';
-import { TypographyElement, TypographyVariant } from '../../../../internal/Typography/types';
-import { EMPTY_OBJECT, isUndefined } from '../../../../../utils';
+import { useInputNormalizer } from '../context/useInputNormalizer';
+import { REFUND_REFERENCE_CHAR_LIMIT, useTransactionDataContext } from '../context';
+import useCoreContext from '../../../../core/Context/useCoreContext';
+import Typography from '../../../internal/Typography/Typography';
+import { TypographyElement, TypographyVariant } from '../../../internal/Typography/types';
+import { EMPTY_OBJECT, isUndefined } from '../../../../utils';
 import cx from 'classnames';
 
 const TextArea = (props: h.JSX.HTMLAttributes<HTMLTextAreaElement> & { maxRows?: number }) => {

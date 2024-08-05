@@ -5,16 +5,16 @@ import {
     TX_DATA_INPUT_CONTAINER_SHORT,
     TX_DATA_INPUT_CONTAINER_TEXT,
     TX_DATA_INPUT_HEAD,
-} from '../../constants';
+} from '../constants';
 import { h } from 'preact';
 import { useCallback, useState } from 'preact/hooks';
-import useTransactionDataContext from '../../context';
-import useCoreContext from '../../../../../core/Context/useCoreContext';
-import InputBase from '../../../../internal/FormFields/InputBase';
-import Typography from '../../../../internal/Typography/Typography';
-import { TypographyElement, TypographyVariant } from '../../../../internal/Typography/types';
-import { TagVariant } from '../../../../internal/Tag/types';
-import { Tag } from '../../../../internal/Tag/Tag';
+import useTransactionDataContext from '../context';
+import useCoreContext from '../../../../core/Context/useCoreContext';
+import InputBase from '../../../internal/FormFields/InputBase';
+import Typography from '../../../internal/Typography/Typography';
+import { TypographyElement, TypographyVariant } from '../../../internal/Typography/types';
+import { TagVariant } from '../../../internal/Tag/types';
+import { Tag } from '../../../internal/Tag/Tag';
 
 const TransactionRefundAmount = () => {
     const { i18n } = useCoreContext();

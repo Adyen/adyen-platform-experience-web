@@ -1,7 +1,7 @@
 import { useMemo } from 'preact/hooks';
-import { TX_DATA_CONTAINER, TX_DATA_LABEL } from '../../constants';
-import useCoreContext from '../../../../../core/Context/useCoreContext';
-import useTransactionDataContext from '../../context';
+import { TX_DATA_CONTAINER, TX_DATA_LABEL } from '../constants';
+import useCoreContext from '../../../../core/Context/useCoreContext';
+import useTransactionDataContext from '../context';
 
 const TransactionDataProperties = () => {
     const { i18n } = useCoreContext();

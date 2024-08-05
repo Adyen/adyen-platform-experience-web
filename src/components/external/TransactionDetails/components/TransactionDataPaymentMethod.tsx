@@ -4,11 +4,11 @@ import {
     TX_DATA_PAY_METHOD_LOGO,
     TX_DATA_PAY_METHOD_LOGO_CONTAINER,
     TX_DATA_SECTION,
-} from '../../constants';
+} from '../constants';
 import { useMemo } from 'preact/hooks';
-import { Image } from '../../../../internal/Image/Image';
-import { getDisplayablePaymentMethodForTransaction, getPaymentMethodTypeForTransaction } from './utils';
-import useTransactionDataContext from '../../context';
+import { Image } from '../../../internal/Image/Image';
+import { getDisplayablePaymentMethodForTransaction, getPaymentMethodTypeForTransaction } from '../utils';
+import useTransactionDataContext from '../context';
 
 const TransactionDataPaymentMethod = () => {
     const { transaction } = useTransactionDataContext();
