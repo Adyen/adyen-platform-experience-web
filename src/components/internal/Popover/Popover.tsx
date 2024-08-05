@@ -14,7 +14,7 @@ import PopoverDismissButton from './PopoverDismissButton/PopoverDismissButton';
 import PopoverTitle from './PopoverTitle/PopoverTitle';
 import { PopoverContainerSize, PopoverContainerVariant, PopoverProps } from './types';
 import { InteractionKeyCode } from '../../types';
-import { ClickOutsideVariant, useClickOutside } from '../../../hooks/element/useClickOutside';
+import { ClickOutsideVariant, CONTROL_ELEMENT_PROPERTY, useClickOutside } from '../../../hooks/element/useClickOutside';
 import useFocusTrap from '../../../hooks/element/useFocusTrap';
 import usePopoverPositioner from '../../../hooks/element/usePopoverPositioner';
 import useUniqueIdentifier from '../../../hooks/element/useUniqueIdentifier';
@@ -102,10 +102,15 @@ function Popover({
     );
     const popoverFocusTrapElement = useFocusTrap(disableFocusTrap ? null : popoverPositionAnchorElement, onCloseFocusTrap);
 
-    const popoverElement = useReflex<Element>(
+    const popoverElement = useReflex<Element & { [CONTROL_ELEMENT_PROPERTY]?: (typeof targetElement)['current'] }>(
         useCallback(
-            current => {
+            (current, previous) => {
+                if (previous instanceof Element) {
+                    previous[CONTROL_ELEMENT_PROPERTY] = undefined;
+                    delete previous[CONTROL_ELEMENT_PROPERTY];
+                }
                 if (current instanceof Element) {
+                    current[CONTROL_ELEMENT_PROPERTY] = targetElement.current;
                     cancelAnimationFrame(autoFocusAnimFrame.current!);
 
                     autoFocusAnimFrame.current = requestAnimationFrame(() => {
@@ -116,7 +121,7 @@ function Popover({
                     });
                 }
             },
-            [open]
+            [open, targetElement]
         ),
         disableFocusTrap ? popoverPositionAnchorElement : popoverFocusTrapElement
     );
@@ -134,6 +139,10 @@ function Popover({
         }),
         [containerSize, divider, withoutSpace, fitContent, showOverlay]
     );
+
+    useEffect(() => {
+        if (popoverElement.current) popoverElement.current[CONTROL_ELEMENT_PROPERTY] = targetElement.current;
+    }, [targetElement]);
 
     useEffect(() => {
         document.removeEventListener('keydown', cachedOnKeyDown.current);

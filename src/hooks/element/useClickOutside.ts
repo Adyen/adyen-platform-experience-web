@@ -4,6 +4,8 @@ import type { Reflexable } from '../../primitives/reactive/reflex';
 import type { Nullable } from '../../utils/types';
 import useReflex from '../useReflex';
 
+export const CONTROL_ELEMENT_PROPERTY: unique symbol = Symbol('__control.Elem.');
+
 export const enum ClickOutsideVariant {
     POPOVER = 'POPOVER',
     DEFAULT = 'DEFAULT',
@@ -26,12 +28,21 @@ export const useClickOutside = <T extends Element = Element>(
             if (variant === ClickOutsideVariant.POPOVER) {
                 popoverUtil.closePopoversOutsideOfClick(eventPath);
             } else {
-                if (eventPath.length) {
-                    const samePath = eventPath.some(path => (path as T)?.isSameNode && (path as T).isSameNode(ref.current as T));
-                    if (callback && !samePath) {
-                        callback(true);
+                let eventPathIndex = 0;
+                let samePath = false;
+                let currentElement: Element | null = eventPath[eventPathIndex] as Element;
+
+                while (currentElement instanceof Element) {
+                    if ((samePath ||= currentElement?.isSameNode(ref.current))) break;
+                    currentElement = (eventPath[++eventPathIndex] as Element) ?? currentElement.parentElement;
+
+                    if ((currentElement as any)?.[CONTROL_ELEMENT_PROPERTY] instanceof Element) {
+                        currentElement = (currentElement as any)[CONTROL_ELEMENT_PROPERTY];
+                        eventPath.length = 0;
                     }
                 }
+
+                if (callback && !samePath) callback(true);
             }
         },
         [ref, callback, variant]
