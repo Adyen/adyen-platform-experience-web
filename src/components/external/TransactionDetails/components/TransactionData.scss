@@ -10,6 +10,10 @@
         margin-bottom: style.token(spacer-030);
     }
 
+    &__action-bar--refund-view {
+        padding-top: style.token(spacer-080);
+    }
+
     &__amount {
         color: style.token(color-label-primary);
         font-size: style.token(text-title-l-font-size);

@@ -1,5 +1,5 @@
 import { toChildArray } from 'preact';
-import { useCallback, useMemo, useState } from 'preact/hooks';
+import { useCallback, useLayoutEffect, useMemo, useState } from 'preact/hooks';
 import { boolOrFalse, EMPTY_ARRAY, noop } from '../../../../utils';
 import { ButtonVariant } from '../../../internal/Button/types';
 import useCoreContext from '../../../../core/Context/useCoreContext';
@@ -8,7 +8,7 @@ import { REFUND_REASONS } from './constants';
 import type { ButtonActionObject, ButtonActionsList } from '../../../internal/Button/ButtonActions/types';
 import type { RefundReason, TransactionDataContextProviderProps } from './types';
 
-export const TransactionDataContextProvider = ({ children, isFetching, transaction }: TransactionDataContextProviderProps) => {
+export const TransactionDataContextProvider = ({ children, forceHideTitle, isFetching, transaction }: TransactionDataContextProviderProps) => {
     const [dataViewActive, setDataViewActive] = useState(true);
     const [refundReference, setRefundReference] = useState<string>();
     const [refundReason, setRefundReason] = useState<RefundReason>(REFUND_REASONS[0]);
@@ -62,6 +62,10 @@ export const TransactionDataContextProvider = ({ children, isFetching, transacti
         [dataViewActive]
     );
     const updateRefundValue = useCallback((value: number) => void (!dataViewActive && setRefundValue(value)), [dataViewActive]);
+
+    useLayoutEffect(() => {
+        forceHideTitle?.(!dataViewActive);
+    }, [dataViewActive, forceHideTitle]);
 
     return (
         <TransactionDataContext.Provider

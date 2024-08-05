@@ -1,4 +1,5 @@
 import { REFUND_REASONS } from './constants';
+import type { Dispatch, StateUpdater } from 'preact/hooks';
 import type { TransactionDetailData } from '../types';
 import type { ButtonActionsList } from '../../../internal/Button/ButtonActions/types';
 
@@ -18,6 +19,7 @@ export interface ITransactionDataContext {
 
 export interface TransactionDataContextProviderProps {
     children?: any;
+    forceHideTitle?: Dispatch<StateUpdater<boolean>>;
     isFetching?: boolean;
     transaction: TransactionDetailData;
 }

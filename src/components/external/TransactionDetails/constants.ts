@@ -1,5 +1,7 @@
 export const TX_DATA_CLASS = 'adyen-pe-transaction-data';
 export const TX_DATA_AMOUNT = `${TX_DATA_CLASS}__amount`;
+export const TX_DATA_ACTION_BAR = `${TX_DATA_CLASS}__action-bar`;
+export const TX_DATA_ACTION_BAR_REFUND = `${TX_DATA_ACTION_BAR}--refund-view`;
 export const TX_DATA_CONTAINER = `${TX_DATA_CLASS}__container`;
 export const TX_DATA_CONTAINER_NO_PADDING = `${TX_DATA_CONTAINER}--without-padding`;
 export const TX_DATA_HEAD_CONTAINER = `${TX_DATA_CLASS}__head-container`;
