@@ -11,7 +11,7 @@ import { getEnvironment } from './envs/getEnvs';
 import { preact } from '@preact/preset-vite';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { checker } from 'vite-plugin-checker';
-import { realApiProxies } from './playground/endpoints/apis/realApiProxies';
+import { realApiProxies } from './endpoints/realApiProxies';
 const currentVersion = version();
 const externalDependencies = Object.keys(packageJson.dependencies);
 
@@ -85,13 +85,11 @@ export default defineConfig(async ({ mode }) => {
             'process.env.VITE_COMMIT_HASH': JSON.stringify(currentVersion.COMMIT_HASH),
             'process.env.VITE_COMMIT_BRANCH': JSON.stringify(currentVersion.COMMIT_BRANCH),
             'process.env.VITE_ADYEN_BUILD_ID': JSON.stringify(currentVersion.ADYEN_BUILD_ID),
-            'process.env.VITE_LOADING_CONTEXT': JSON.stringify(mode === 'development' ? playground.loadingContext || null : null),
+            'process.env.VITE_LOADING_CONTEXT': JSON.stringify(mode === 'development' || mode === 'local-env' ? playground.loadingContext || null : null),
             'process.env.SESSION_AUTO_REFRESH': JSON.stringify(
                 isDevMode(mode) ? apiConfigs.sessionApi.autoRefresh || JSON.stringify(null) : undefined
             ),
-            'process.env.SESSION_MAX_AGE_MS': JSON.stringify(
-                isDevMode(mode) ? apiConfigs.sessionApi.maxAgeMs || JSON.stringify(null) : undefined
-            ),
+            'process.env.SESSION_MAX_AGE_MS': JSON.stringify(isDevMode(mode) ? apiConfigs.sessionApi.maxAgeMs || JSON.stringify(null) : undefined),
             'process.env.VITE_MODE': JSON.stringify(process.env.VITE_MODE ?? mode),
             'process.env.VITE_PLAYGROUND_PORT': JSON.stringify(playground.port || null),
             'process.env.DEPLOYED_URL': JSON.stringify(process.env.DEPLOY_PRIME_URL || null),
@@ -115,7 +113,7 @@ export default defineConfig(async ({ mode }) => {
             host: playground.host,
             port: playground.port,
             https: false,
-            proxy: mode === 'mocked' ? undefined : realApiProxies(apiConfigs),
+            proxy: mode === 'mocked' ? undefined : realApiProxies(apiConfigs, mode),
         },
         preview: {
             host: playground.host,

@@ -1,4 +1,4 @@
-import { endpoints } from '../endpoints';
+import { endpoints } from './endpoints.js';
 
 const makeProxyOptions = ({ url, version, username, password, apiKey }, basicAuth = false) => ({
     target: `${url}${version ?? ''}`,
@@ -26,13 +26,13 @@ const makeProxyOptions = ({ url, version, username, password, apiKey }, basicAut
     },
 });
 
-const makeSessionProxyOptions = ({ url, apiKey }) => {
+const makeSessionProxyOptions = ({ url, apiKey }, mode) => {
     return {
         target: `${url}`,
         headers: {
             'Content-Type': 'application/json',
             'Access-Control-Allow-Origin': '*',
-            'X-Api-Key': apiKey,
+            ...(mode === 'local-env' ? { Authorization: apiKey } : { 'X-Api-Key': apiKey }),
         },
         changeOrigin: true,
         secure: false,
@@ -56,7 +56,7 @@ const makeSessionProxyOptions = ({ url, apiKey }) => {
 
 export const realApiProxies = (configs, mode) => {
     const { sessionApi } = configs;
-    const sessionApiProxyOptions = makeSessionProxyOptions(sessionApi);
+    const sessionApiProxyOptions = makeSessionProxyOptions(sessionApi, mode);
 
     const endpointRegex = mode === 'netlify' ? endpoints('netlify') : endpoints('viteDev');
 

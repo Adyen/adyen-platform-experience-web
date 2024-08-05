@@ -1,4 +1,4 @@
-export const endpoints = (mode: string) => {
+export const endpoints = mode => {
     const matchVariable = mode === 'netlify' ? '(.*)' : ':id';
     const prefix = mode === 'viteDev' ? '^' : 'https://platform-components-external-test.adyen.com/platform-components-external/api';
     const baseUrl = prefix + '/v([0-9]+)';
