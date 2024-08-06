@@ -8,7 +8,8 @@ import {
     TX_DATA_INPUT_TEXTAREA,
 } from '../constants';
 import { h } from 'preact';
-import { useState } from 'preact/hooks';
+import { useRef, useState } from 'preact/hooks';
+import { uniqueId } from '../../../../utils';
 import { useInputNormalizer } from '../context/useInputNormalizer';
 import { REFUND_REFERENCE_CHAR_LIMIT, useTransactionDataContext } from '../context';
 import useCoreContext from '../../../../core/Context/useCoreContext';
@@ -23,6 +24,8 @@ const TransactionRefundReference = () => {
     const [characters, setCharactersCount] = useState(reference.length);
 
     const inputNormalizer = useInputNormalizer(REFUND_REFERENCE_CHAR_LIMIT);
+    const inputIdentifier = useRef(uniqueId());
+    const labelIdentifier = useRef(uniqueId());
 
     const onInput = (evt: h.JSX.TargetedInputEvent<HTMLTextAreaElement>) => {
         const textarea = evt.currentTarget;
@@ -42,18 +45,20 @@ const TransactionRefundReference = () => {
     return (
         <div className={TX_DATA_CONTAINER}>
             <div className={TX_DATA_INPUT_HEAD}>
-                <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY} stronger>
-                    {`${i18n.get('refundReference')}`}
-                </Typography>
-                <Typography className={TX_DATA_INPUT_CHARS} el={TypographyElement.SPAN} variant={TypographyVariant.BODY}>
+                <div id={labelIdentifier.current}>
+                    <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY} stronger>
+                        {i18n.get('refundReference')}
+                    </Typography>
+                </div>
+                <Typography className={TX_DATA_INPUT_CHARS} el={TypographyElement.DIV} variant={TypographyVariant.BODY}>
                     {characters} / {REFUND_REFERENCE_CHAR_LIMIT}
                 </Typography>
             </div>
 
             <div className={`${TX_DATA_INPUT_CONTAINER} ${TX_DATA_INPUT_CONTAINER_TEXT}`}>
-                <label htmlFor="refundReference">
+                <label htmlFor={inputIdentifier.current} aria-labelledby={labelIdentifier.current}>
                     <TextArea
-                        id="refundReference"
+                        id={inputIdentifier.current}
                         className={`${TX_DATA_INPUT} ${TX_DATA_INPUT_TEXTAREA}`}
                         placeholder={i18n.get('refundReference.placeholder')}
                         value={reference}

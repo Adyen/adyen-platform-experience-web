@@ -10,6 +10,7 @@ export const TX_DATA_INPUT_CHARS = `${TX_DATA_INPUT}-chars-counter`;
 export const TX_DATA_INPUT_CONTAINER = `${TX_DATA_INPUT}-container`;
 export const TX_DATA_INPUT_CONTAINER_SHORT = `${TX_DATA_INPUT_CONTAINER}--short`;
 export const TX_DATA_INPUT_CONTAINER_TEXT = `${TX_DATA_INPUT_CONTAINER}--text-input`;
+export const TX_DATA_INPUT_CONTAINER_WITH_ERROR = `${TX_DATA_INPUT_CONTAINER}--with-error`;
 export const TX_DATA_INPUT_HEAD = `${TX_DATA_INPUT}-head`;
 export const TX_DATA_INPUT_TEXTAREA = `${TX_DATA_INPUT}--textarea`;
 export const TX_DATA_LABEL = `${TX_DATA_CLASS}__label`;

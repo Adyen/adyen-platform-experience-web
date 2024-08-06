@@ -77,6 +77,7 @@
     "refund": "Refunds",
     "refundAction": "Refund payment",
     "refundAmount": "Amount to refund",
+    "refundAmount.excess": "You cannot exceed the maximum amount",
     "refundNotice": "Refunds can take up to 40 days depending on the payment method. Fees are included.",
     "refundReason": "Reason for refund",
     "refundReason.duplicate": "Duplicate",

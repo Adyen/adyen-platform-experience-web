@@ -24,7 +24,7 @@ const TransactionRefundReason = () => {
         <div className={TX_DATA_CONTAINER}>
             <div className={TX_DATA_INPUT_HEAD}>
                 <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY} stronger>
-                    {`${i18n.get('refundReason')}`}
+                    {i18n.get('refundReason')}
                 </Typography>
             </div>
 

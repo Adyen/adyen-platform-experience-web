@@ -65,18 +65,20 @@
     &__input-container {
         font-size: style.token(text-body-font-size);
         font-weight: style.token(text-body-font-weight);
-        height: auto;
         line-height: style.token(text-body-line-height);
         position: relative;
-        width: 100%;
 
-        &--short {
-            width: 62.5%;
-        }
-
-        > :only-child {
+        > label,
+        > .adyen-pe-dropdown {
             display: flex;
             width: 100%;
+        }
+
+        &--short {
+            > label,
+            > .adyen-pe-dropdown {
+                width: 62.5%;
+            }
         }
 
         .adyen-pe-tag,
@@ -94,25 +96,20 @@
     }
 
     &__input-container--text-input {
-        background: style.token(color-background-primary);
-        border: style.token(border-width-s) solid style.token(color-outline-secondary);
-        border-radius: style.token(border-radius-m);
-        outline: none;
-        overflow: hidden;
-        transition: border 0.2s ease-out, box-shadow 0.2s ease-out;
+        > label {
+            background: style.token(color-background-primary);
+            border: style.token(border-width-s) solid style.token(color-outline-secondary);
+            border-radius: style.token(border-radius-m);
+            outline: none;
+            overflow: hidden;
 
-        &:focus-within,
-        &:focus-within:hover {
-            border-color: style.token(color-outline-primary-active);
-            box-shadow: none !important;
-            outline: style.token(border-width-s) solid style.token(color-outline-primary-active);
+            &:focus-within,
+            &:focus-within:hover {
+                border-color: style.token(color-outline-primary-active);
+                box-shadow: none !important;
+                outline: style.token(border-width-s) solid style.token(color-outline-primary-active);
+            }
         }
-
-        //&__invalid-value {
-        //    color: style.token(color-label-critical);
-        //    max-width: 20rem;
-        //    text-wrap: wrap;
-        //}
 
         .adyen-pe-input {
             &,
@@ -132,6 +129,25 @@
             &-wrapper {
                 flex: 1;
             }
+        }
+    }
+
+    &__input-container--with-error {
+        > label {
+            &,
+            &:focus-within,
+            &:focus-within:hover {
+                border-color: style.token(color-outline-critical);
+                outline-color: style.token(color-outline-critical);
+            }
+        }
+
+        .adyen-pe-input__invalid-value {
+            align-items: center;
+            color: style.token(color-label-critical);
+            display: flex;
+            gap: style.token(spacer-040);
+            margin-top: style.token(spacer-040);
         }
     }
 
