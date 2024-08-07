@@ -1,6 +1,7 @@
 import { DATE_FORMAT_TRANSACTION_DETAILS } from '../../../internal/DataOverviewDisplay/constants';
 import { TransactionDetailData } from '../types';
 import TransactionDataSkeleton from './TransactionDataSkeleton';
+import useTimezoneAwareDateFormatting from '../../../hooks/useTimezoneAwareDateFormatting';
 import { Image } from '../../../internal/Image/Image';
 import { parsePaymentMethodType } from '../../TransactionsOverview/components/utils';
 import { Tag } from '../../../internal/Tag/Tag';
@@ -11,9 +12,11 @@ import './TransactionData.scss';
 
 export const TransactionData = ({ transaction, isFetching }: { transaction: TransactionDetailData; isFetching?: boolean }) => {
     const { i18n } = useCoreContext();
+    const { dateFormat } = useTimezoneAwareDateFormatting(transaction.balanceAccount?.timeZone);
+
     const createdAt = useMemo(
-        () => (transaction ? i18n.date(new Date(transaction.createdAt), DATE_FORMAT_TRANSACTION_DETAILS).toString() : ''),
-        [transaction, i18n]
+        () => (transaction ? dateFormat(new Date(transaction.createdAt), DATE_FORMAT_TRANSACTION_DETAILS) : ''),
+        [transaction, dateFormat]
     );
 
     const amountStyle = transaction?.status === 'Booked' ? 'default' : transaction?.status === 'Reversed' ? 'error' : 'pending';
@@ -72,10 +75,10 @@ export const TransactionData = ({ transaction, isFetching }: { transaction: Tran
                         <div className={'adyen-pe-transaction-data__section adyen-pe-transaction-data__label'}>{createdAt}</div>
                     </div>
 
-                    {transaction?.balanceAccountDescription && (
+                    {transaction.balanceAccount?.description && (
                         <div className={'adyen-pe-transaction-data__container'}>
                             <div className={'adyen-pe-transaction-data__label'}>{i18n.get('account')}</div>
-                            <div>{transaction.balanceAccountDescription}</div>
+                            <div>{transaction.balanceAccount.description}</div>
                         </div>
                     )}
                     <div className={'adyen-pe-transaction-data__container'}>

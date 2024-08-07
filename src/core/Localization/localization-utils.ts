@@ -42,7 +42,10 @@ export function getLocalizationProxyDescriptors(this: Localization) {
         if (EXCLUDE_PROPS.includes(prop as (typeof EXCLUDE_PROPS)[number])) continue;
 
         if (isFunction(descriptor.get)) {
-            descriptors[prop] = { get: descriptor.get.bind(this) };
+            descriptors[prop] = {
+                get: descriptor.get.bind(this),
+                ...(prop === 'timezone' && { set: descriptor.set?.bind(this) }),
+            };
         } else if (isFunction(descriptor.value)) {
             descriptors[prop] = { value: descriptor.value.bind(this) };
         } else {

@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useRef, useState } from 'preact/hooks';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
+import useTimezoneAwareDateFormatting from '../../../../hooks/useTimezoneAwareDateFormatting';
 import type { RestampContext } from '../../../../../core/Localization/datetime/restamper';
 import type { TranslationKey } from '../../../../../core/Localization/types';
 import { RangeTimestamp, RangeTimestamps } from '../../../Calendar/calendar/timerange';
@@ -32,6 +33,7 @@ export const useTimeRangeSelection = ({
     timezone,
 }: UseTimeRangeSelectionConfig) => {
     const { i18n } = useCoreContext();
+    const { fullDateFormat } = useTimezoneAwareDateFormatting(timezone);
     const [from, setFrom] = useState<string>();
     const [to, setTo] = useState<string>();
     const [selectedOption, setSelectedOption] = useState<string>();
@@ -64,12 +66,12 @@ export const useTimeRangeSelection = ({
             const ranges = getRangesForOption(option, selectionOptions);
             if (!ranges) return;
 
-            setFrom(i18n.fullDate(ranges.from));
-            setTo(i18n.fullDate(ranges.to));
+            setFrom(fullDateFormat(ranges.from));
+            setTo(fullDateFormat(ranges.to));
             setIsCustomSelection(false);
             setSelectedOption(option);
         },
-        [i18n, customOption, getRangesForOption, selectedOption, selectionOptions]
+        [customOption, fullDateFormat, getRangesForOption, selectedOption, selectionOptions]
     );
 
     const customSelection = useCallback(() => {

@@ -1,4 +1,4 @@
-import { ITransaction } from '../../../types';
+import { IBalanceAccountBase, ITransaction } from '../../../types';
 
 //TODO: Revisit those types to find the most appropriate file
 export interface TransactionDetailsWithoutIdProps {
@@ -23,7 +23,7 @@ export type DetailsComponentProps = (TransactionDetailsWithoutIdProps & { type: 
 export type TransactionDetailData = ITransaction & BalanceAccountProps;
 
 export interface BalanceAccountProps {
-    balanceAccountDescription?: string;
+    balanceAccount?: IBalanceAccountBase;
 }
 
 export type SelectedDetail = {

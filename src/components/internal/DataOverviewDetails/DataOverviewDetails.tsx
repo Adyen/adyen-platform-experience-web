@@ -59,7 +59,7 @@ export default function DataOverviewDetails(props: ExternalUIComponentProps<Deta
     );
 
     const balanceAccountId = props.type === 'payout' ? props.balanceAccountDescription : data?.balanceAccountId;
-    const hasBalanceAccountDetail = props.type === 'payout' ? props?.balanceAccountDescription : details?.balanceAccountDescription;
+    const hasBalanceAccountDetail = props.type === 'payout' ? props?.balanceAccountDescription : details?.balanceAccount?.description;
     const { balanceAccounts } = useBalanceAccounts(balanceAccountId, !hasBalanceAccountDetail);
 
     const errorProps = useMemo(() => {
@@ -95,7 +95,7 @@ export default function DataOverviewDetails(props: ExternalUIComponentProps<Deta
                     transaction={
                         {
                             ...detailsData,
-                            balanceAccountDescription: details?.balanceAccountDescription || balanceAccounts?.[0]?.description,
+                            balanceAccount: details?.balanceAccount || balanceAccounts?.[0],
                         } as TransactionDetailData
                     }
                     isFetching={isFetching}
