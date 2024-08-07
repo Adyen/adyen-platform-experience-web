@@ -17,12 +17,12 @@ export const reportsMock = [
         }
         const url = new URL(request.url);
 
-        const balanceAccountId = request.url.searchParams.get('balanceAccountId');
-        const createdSince = request.url.searchParams.get('createdSince');
-        const createdUntil = request.url.searchParams.get('createdUntil');
-        const limit = +(request.url.searchParams.get('limit') ?? defaultPaginationLimit);
-        const cursor = +(request.url.searchParams.get('cursor') ?? 0);
-        const sortDirection = request.url.searchParams.get('sortDirection') ?? DEFAULT_SORT_DIRECTION;
+        const balanceAccountId = url.searchParams.get('balanceAccountId');
+        const createdSince = url.searchParams.get('createdSince');
+        const createdUntil = url.searchParams.get('createdUntil');
+        const limit = +(url.searchParams.get('limit') ?? defaultPaginationLimit);
+        const cursor = +(url.searchParams.get('cursor') ?? 0);
+        const sortDirection = url.searchParams.get('sortDirection') ?? DEFAULT_SORT_DIRECTION;
 
         let reports = balanceAccountId ? getReports(balanceAccountId) : [];
 
