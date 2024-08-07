@@ -133,7 +133,6 @@ export const PayoutsOverview = ({
                 resetDetails={resetDetails}
             >
                 <PayoutsTable
-                    balanceAccounts={balanceAccounts}
                     loading={fetching || isLoadingBalanceAccount || !balanceAccounts}
                     data={records}
                     showPagination={true}
