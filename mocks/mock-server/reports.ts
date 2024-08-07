@@ -49,7 +49,7 @@ export const reportsMock = [
         const balanceAccountId = url.searchParams.get('balanceAccountId');
         const createdAt = url.searchParams.get('createdAt');
         const reportDate = new Date(createdAt || Date.now()).toISOString().split('T', 1)[0]?.split('-');
-        const filename = `${[balanceAccountId, 'payout', 'report'].concat(reportDate!).filter(Boolean).join('_')}.csv`;
+        const filename = `${['balanceaccount', 'payout', 'report'].concat(reportDate!).filter(Boolean).join('_')}.csv`;
 
         const buffer = await fetch(`/mockFiles/report.csv`).then(response => response.arrayBuffer());
 

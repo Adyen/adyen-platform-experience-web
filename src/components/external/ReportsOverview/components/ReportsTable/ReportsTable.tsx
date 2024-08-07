@@ -94,12 +94,7 @@ export const ReportsTable: FC<ReportsTableProps> = ({
                             query: { balanceAccountId: balanceAccountId, createdAt: item.createdAt },
                         };
 
-                        const reportName = `balanceaccount_${item.name?.toLowerCase()}_report_${i18n.date(
-                            item.createdAt,
-                            DATE_FORMAT_REPORT_FILE_NAME
-                        )}`;
-
-                        return <DownloadButton endpointName={'downloadReport'} params={queryParam} fileName={reportName} />;
+                        return <DownloadButton endpointName={'downloadReport'} params={queryParam} />;
                     },
                 }}
             >

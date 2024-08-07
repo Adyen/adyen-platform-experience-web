@@ -7,12 +7,11 @@ import { ButtonVariant } from '../types';
 import useDownload from './useDownload';
 
 interface DownloadButtonProps {
-    fileName: string;
     params: any;
     endpointName: EndpointName;
 }
 
-function downloadBlob(blob: any, filename: any) {
+async function downloadBlob({ blob, filename }: { blob: Blob; filename: string }) {
     const url = URL.createObjectURL(blob);
 
     const a = document.createElement('a');
@@ -33,7 +32,7 @@ function downloadBlob(blob: any, filename: any) {
     return a;
 }
 
-function DownloadButton<T extends Function>({ fileName, endpointName, params, ...props }: DownloadButtonProps) {
+function DownloadButton({ endpointName, params, ...props }: DownloadButtonProps) {
     const [fetchData, setFetchData] = useState(false);
     const { data, isFetching } = useDownload(endpointName, params, fetchData);
 
@@ -45,7 +44,7 @@ function DownloadButton<T extends Function>({ fileName, endpointName, params, ..
 
     useEffect(() => {
         if (data) {
-            downloadBlob(data, fileName);
+            downloadBlob(data);
         }
     }, [data]);
 

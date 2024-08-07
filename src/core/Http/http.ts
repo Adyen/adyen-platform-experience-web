@@ -51,7 +51,14 @@ export async function http<T>(options: HttpOptions, data?: any): Promise<T> {
                             //   (2) if response body content is not valid JSON
                             return await res.json(); // (!!)
                         default:
-                            return await res.blob();
+                            const blob = await res.blob();
+                            const filename = res.headers
+                                .get('content-disposition')
+                                ?.split(';')
+                                ?.find((n: string) => n.includes('filename='))
+                                ?.replace('filename=', '')
+                                ?.trim();
+                            return { blob, filename };
                     }
                 } catch (ex) {
                     // If it does throw an exception, the exception will be propagated to the caller (unhandled).
