@@ -1,4 +1,3 @@
-import { useMemo } from 'preact/hooks';
 import { useAuthContext } from '../../../../core/Auth';
 import { useFetch } from '../../../../hooks/useFetch/useFetch';
 import { EndpointName } from '../../../../types/api/endpoints';

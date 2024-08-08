@@ -11,10 +11,9 @@ interface DownloadButtonProps {
     endpointName: EndpointName;
 }
 
-async function downloadBlob({ blob, filename }: { blob: Blob; filename: string }) {
-    const url = URL.createObjectURL(blob);
-
+function downloadBlob({ blob, filename }: { blob: Blob; filename: string }) {
     const a = document.createElement('a');
+    const url = URL.createObjectURL(blob);
 
     a.href = url;
     a.download = filename || 'download';
@@ -22,14 +21,11 @@ async function downloadBlob({ blob, filename }: { blob: Blob; filename: string }
     const clickHandler = () => {
         setTimeout(() => {
             URL.revokeObjectURL(url);
-            removeEventListener('click', clickHandler);
         }, 150);
     };
 
-    a.addEventListener('click', clickHandler, false);
+    a.addEventListener('click', clickHandler, { once: true });
     a.click();
-
-    return a;
 }
 
 function DownloadButton({ endpointName, params, ...props }: DownloadButtonProps) {
