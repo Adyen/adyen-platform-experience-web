@@ -14,8 +14,8 @@ const labels = {
     payoutAmount: 'netPayout',
     adjustmentAmount: 'adjustments',
     dateAndPaymentMethod: 'date',
-    name: 'report',
-    file: 'file',
+    reportName: 'report',
+    reportFile: 'file',
 } as const;
 
 export const getLabel = (key: keyof typeof labels) => {

@@ -16,7 +16,7 @@ import { TranslationKey } from '../../../../../core/Localization/types';
 import { FC } from 'preact/compat';
 import { mediaQueries, useResponsiveViewport } from '../../../TransactionsOverview/hooks/useResponsiveViewport';
 
-const FIELDS = ['createdAt', 'name', 'file'] as const;
+const FIELDS = ['createdAt', 'reportName', 'reportFile'] as const;
 
 export interface ReportsTableProps extends WithPaginationLimitSelection<PaginationProps> {
     balanceAccountId: string;
@@ -80,10 +80,10 @@ export const ReportsTable: FC<ReportsTableProps> = ({
                         if (!isSmAndUpViewport) return dateFormat(value, DATE_FORMAT_REPORTS_MOBILE);
                         return value && fullDateFormat(value);
                     },
-                    name: ({ item }) => {
+                    reportName: ({ item }) => {
                         return item?.['name'] && <span>{item?.['name']}</span>;
                     },
-                    file: ({ item }) => {
+                    reportFile: ({ item }) => {
                         const queryParam = {
                             query: { balanceAccountId: balanceAccountId, createdAt: item.createdAt },
                         };
