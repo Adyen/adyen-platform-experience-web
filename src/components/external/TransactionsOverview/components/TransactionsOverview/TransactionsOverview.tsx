@@ -168,6 +168,7 @@ export const TransactionsOverview = ({
                     nowTimestamp={nowTimestamp}
                     refreshNowTimestamp={refreshNowTimestamp}
                     sinceDate={sinceDate}
+                    timezone={activeBalanceAccount?.timeZone}
                     updateFilters={updateFilters}
                 />
                 {/* Remove status filter temporarily */}

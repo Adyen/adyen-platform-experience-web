@@ -22,8 +22,8 @@ const TimeRangeSelector = ({
     useEffect(() => {
         if (calendarRef?.current && from && to) {
             rangeSelectionInProgress.current = true;
-            calendarRef.current.from = new Date(from as string);
-            calendarRef.current.to = new Date(to as string);
+            calendarRef.current.from = new Date(from);
+            calendarRef.current.to = new Date(to);
         }
     }, [calendarRef, from, to]);
 
