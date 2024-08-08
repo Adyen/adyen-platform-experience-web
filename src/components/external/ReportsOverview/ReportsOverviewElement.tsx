@@ -1,4 +1,4 @@
-import { _UIComponentProps, ReportsOverviewComponentProps, TransactionOverviewComponentProps } from '../../types';
+import { _UIComponentProps, ReportsOverviewComponentProps } from '../../types';
 import Reports from './components/ReportsOverviewContainer/ReportsOverviewContainer';
 import UIElement from '../UIElement/UIElement';
 
@@ -15,7 +15,7 @@ export class ReportsElement extends UIElement<ReportsOverviewComponentProps> {
             <Reports
                 {...this.props}
                 balanceAccountId={this.props.balanceAccountId}
-                ref={(ref: UIElement<TransactionOverviewComponentProps>) => {
+                ref={(ref: UIElement<ReportsOverviewComponentProps>) => {
                     this.componentRef = ref;
                 }}
             ></Reports>

@@ -24,9 +24,6 @@ enableServerInMockedMode()
             onFiltersChanged: (/* filters */) => {
                 // do something here with the updated filters
             },
-            onLimitChanged: (/* limit */) => {
-                // do something here with the updated limit
-            },
             onContactSupport: () => {},
             allowLimitSelection: true,
             preferredLimit: 10,

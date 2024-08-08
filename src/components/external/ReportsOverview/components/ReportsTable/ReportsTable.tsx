@@ -1,5 +1,6 @@
+import useTimezoneAwareDateFormatting from '../../../../hooks/useTimezoneAwareDateFormatting';
 import DownloadButton from '../../../../internal/Button/DownloadButton/DownloadButton';
-import { DATE_FORMAT_REPORT_FILE_NAME } from '../../../../internal/DataOverviewDisplay/constants';
+import { DATE_FORMAT_REPORT_FILE_NAME, DATE_FORMAT_REPORTS_MOBILE } from '../../../../internal/DataOverviewDisplay/constants';
 import DataOverviewError from '../../../../internal/DataOverviewError/DataOverviewError';
 import { BASE_CLASS } from './constants';
 import { PaginationProps, WithPaginationLimitSelection } from '../../../../internal/Pagination/types';
@@ -36,6 +37,7 @@ export const ReportsTable: FC<ReportsTableProps> = ({
     ...paginationProps
 }) => {
     const { i18n } = useCoreContext();
+    const { fullDateFormat, dateFormat } = useTimezoneAwareDateFormatting('UTC');
     const { refreshing } = useAuthContext();
     const isLoading = useMemo(() => loading || refreshing, [loading, refreshing]);
     const isSmAndUpViewport = useResponsiveViewport(mediaQueries.up.sm);
@@ -75,16 +77,8 @@ export const ReportsTable: FC<ReportsTableProps> = ({
                 customCells={{
                     createdAt: ({ value }) => {
                         if (!value) return null;
-                        if (!isSmAndUpViewport)
-                            return i18n.date(value, {
-                                month: 'short',
-                                day: 'numeric',
-                                year: undefined,
-                                hour: '2-digit',
-                                minute: '2-digit',
-                                hour12: false,
-                            });
-                        return value && i18n.fullDate(value);
+                        if (!isSmAndUpViewport) return dateFormat(value, DATE_FORMAT_REPORTS_MOBILE);
+                        return value && fullDateFormat(value);
                     },
                     name: ({ item }) => {
                         return item?.['name'] && <span>{item?.['name']}</span>;
