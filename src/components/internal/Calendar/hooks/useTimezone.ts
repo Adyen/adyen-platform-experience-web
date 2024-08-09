@@ -11,7 +11,7 @@ export type UseTimezoneConfig = {
 };
 
 export const { getTimezoneTime, getUsedTimezone } = (() => {
-    const REGEX_CLOCK_TIME_MATCHER = /(\d{2}):(\d{2})(?=:\d{2}(?:\.\d+)?\s+([AP]M))/i;
+    const REGEX_CLOCK_TIME_MATCHER = /\d{2}:\d{2}(?=:\d{2}(?:\.\d+)?\s+([AP]M))/i;
     const REGEX_GMT_OFFSET_UNWANTED_SUBSTRINGS = /^GMT|0(?=\d:00)|:00/g;
     const $restamper = restamper();
 
@@ -19,7 +19,7 @@ export const { getTimezoneTime, getUsedTimezone } = (() => {
         $restamper.tz = timezone!; // switch restamper to this timezone
 
         const { formatted } = $restamper(timestamp);
-        const [time = '', , , meridian = ''] = formatted?.match(REGEX_CLOCK_TIME_MATCHER) ?? EMPTY_ARRAY;
+        const [time = '', meridian = ''] = formatted?.match(REGEX_CLOCK_TIME_MATCHER) ?? EMPTY_ARRAY;
         const offset = getTimezoneOffsetFromFormattedDateString(formatted);
         const clockTime = `${time}${meridian && ` ${meridian}`}`;
         const GMTOffsetString = getGMTSuffixForTimezoneOffset(offset).replace(REGEX_GMT_OFFSET_UNWANTED_SUBSTRINGS, '');
