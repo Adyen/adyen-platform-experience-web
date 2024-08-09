@@ -2,7 +2,7 @@ import { isNullish } from '../../utils';
 import { AdyenErrorResponse, ErrorLevel, HttpOptions } from './types';
 import AdyenPlatformExperienceError from '../Errors/AdyenPlatformExperienceError';
 
-const FILENAME_EXTRACTION_REGEX = /^.*?filename[^;\n]*=\s*(?:UTF-\d['"]*)?(?:(['"])(?<filename>.*?)\1|(?<filename>[^;\n]*))?.*?$/;
+const FILENAME_EXTRACTION_REGEX = /^[^]*?filename[^;\n]*=\s*(?:UTF-\d['"]*)?(?:(['"])([^]*?)\1|([^;\n]*))?[^]*?$/;
 
 export const enum ErrorTypes {
     /** Network error. */
@@ -34,7 +34,7 @@ export const getResponseContentType = (response: Response): string | undefined =
 
 export const getResponseDownloadFilename = (response: Response): string | undefined => {
     const disposition = response.headers.get('Content-Disposition') ?? '';
-    const filename = disposition.replace(FILENAME_EXTRACTION_REGEX, '$<filename>');
+    const filename = disposition.replace(FILENAME_EXTRACTION_REGEX, '$2$3');
     return decodeURIComponent(filename);
 };
 
