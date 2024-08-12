@@ -10,7 +10,7 @@ const baseUrl = `http://${playground.host}:${playground.port}`;
  * See https://playwright.dev/docs/test-configuration.
  */
 const config: PlaywrightTestConfig = {
-    testDir: './packages/lib/tests',
+    testDir: './tests',
     timeout: 30 * 1000,
     globalTimeout: 10 * 60 * 1000, // 10 minutes
     expect: {
@@ -42,6 +42,7 @@ const config: PlaywrightTestConfig = {
     projects: [
         {
             name: 'local-chrome',
+            testDir: 'tests/specs',
             use: {
                 // Use the pre-installed browser already on the machine
                 channel: 'chrome',
@@ -52,6 +53,7 @@ const config: PlaywrightTestConfig = {
         },
         {
             name: 'chromium',
+            testDir: 'tests/specs',
             use: {
                 ...devices['Desktop Chrome'],
                 launchOptions: {
@@ -61,11 +63,19 @@ const config: PlaywrightTestConfig = {
         },
         {
             name: 'firefox',
+            testDir: 'tests/specs',
             use: {
                 ...devices['Desktop Firefox'],
                 launchOptions: {
                     args: process.env.PWDEBUG ? ['--devtools'] : [],
                 },
+            },
+        },
+        {
+            name: 'contract',
+            testDir: 'tests/contract',
+            use: {
+                ignoreHTTPSErrors: true,
             },
         },
     ],

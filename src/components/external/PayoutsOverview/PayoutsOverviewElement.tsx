@@ -1,0 +1,24 @@
+import { _UIComponentProps, PayoutsOverviewComponentProps } from '../../types';
+import Payouts from './components/PayoutsOverviewContainer/PayoutsOverviewContainer';
+import UIElement from '../UIElement/UIElement';
+
+export class PayoutsElement extends UIElement<PayoutsOverviewComponentProps> {
+    public static type = 'payouts';
+
+    constructor(props: _UIComponentProps<PayoutsOverviewComponentProps>) {
+        super(props);
+        this.componentToRender = this.componentToRender.bind(this);
+    }
+
+    public componentToRender = () => {
+        return (
+            <Payouts
+                {...this.props}
+                balanceAccountId={this.props.balanceAccountId}
+                ref={(ref: UIElement<PayoutsOverviewComponentProps>) => void (this.componentRef = ref)}
+            />
+        );
+    };
+}
+
+export default PayoutsElement;
