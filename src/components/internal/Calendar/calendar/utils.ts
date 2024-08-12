@@ -6,15 +6,6 @@ import type { Month, MonthDays, Time, WeekDay } from './types';
 
 const DATE_PARTS_REGEX = /^(\d{2})\/(\d{2})\/(-?\d+)$/;
 
-const _withTimezone = (() => {
-    const _restamper = restamper();
-    return (timezone?: string) => {
-        _restamper.tz = undefined; // first reset to system timezone
-        _restamper.tz = timezone;
-        return _restamper;
-    };
-})();
-
 const _startTimestamp = (() => {
     type DayStartParams = ['getDate', 'setDate'];
     type MonthStartParams = ['getMonth', 'setMonth', (date: Date) => number];
@@ -25,7 +16,7 @@ const _startTimestamp = (() => {
 
         return (timestamp: Date | number, timezone?: string) => {
             const date = new Date(timestamp);
-            const restamper = _withTimezone(timezone);
+            const restamper = withTimezone(timezone);
             const restampedDate = new Date(timezoneToSystem(restamper, timestamp));
 
             let diff = (date[dateGetter]() - restampedDate[dateGetter]()) as -1 | 1 | 0;
@@ -49,7 +40,7 @@ const _startTimestamp = (() => {
 
 export const startOfWeek = (timestamp: Date | number, timezone?: string, firstWeekDay?: WeekDay) => {
     const date = new Date(timestamp);
-    const restamper = _withTimezone(timezone);
+    const restamper = withTimezone(timezone);
     const restampedDate = new Date(timezoneToSystem(restamper, timestamp));
     const dayDiff = (date.getDay() - restampedDate.getDay()) as -1 | 1 | 0;
 
@@ -96,19 +87,20 @@ export const getMonthDays = (month: Month, year: number, offset = 0) => {
     return [days, monthIndex, nextYear] as const;
 };
 
-export const computeTimestampOffset = (timestamp: number) => (isInfinity(timestamp) ? 0 : timestamp - startOfDay(timestamp));
+export const computeTimestampOffset = (timestamp: number, timezone?: string) =>
+    isInfinity(timestamp) ? 0 : timestamp - startOfDay(timestamp, timezone);
 
 export const getDateObjectFromTimestamp = (timestamp?: number) => (isUndefined(timestamp) ? timestamp : new Date(timestamp));
 
 export const getTimezoneDateString = (date: number | string | Date, options: Intl.DateTimeFormatOptions = EMPTY_OBJECT) => {
-    const restamper = _withTimezone(options.timeZone);
+    const restamper = withTimezone(options.timeZone);
     const dateOptions = { ...DEFAULT_DATETIME_FORMAT, ...options, timeZone: restamper.tz.current };
     return new Date(date).toLocaleDateString(BASE_LOCALE, dateOptions);
 };
 
 export const getTimezoneDateParts = (date: number | string | Date, timeZone?: string) => {
     const [, month = '', day = '', year = ''] = getTimezoneDateString(date, { timeZone }).match(DATE_PARTS_REGEX) ?? EMPTY_ARRAY;
-    return [+year, +month, +day] as const;
+    return [+year, +month - 1, +day] as const;
 };
 
 export const getEdgesDistance = (fromTime: Time, toTime: Time, timezone?: string) => {
@@ -117,3 +109,12 @@ export const getEdgesDistance = (fromTime: Time, toTime: Time, timezone?: string
     const [toYear, toMonth] = getTimezoneDateParts(toTime, timezone);
     return Math.abs(toMonth - fromMonth + (toYear - fromYear) * 12);
 };
+
+export const withTimezone = (() => {
+    const _restamper = restamper();
+    return (timezone?: string) => {
+        _restamper.tz = undefined; // first reset to system timezone
+        _restamper.tz = timezone;
+        return _restamper;
+    };
+})();

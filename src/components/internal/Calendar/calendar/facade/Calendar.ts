@@ -109,6 +109,7 @@ export default class Calendar {
         locale: () => this.#frame?.locale,
         minified: () => boolify(this.#config.minified),
         origin: () => this.#frame?.getTimestampAtIndex(0),
+        timezone: () => this.#frame?.timezone,
         to: () => this.#frame?.selectionEnd,
         today: () => this.#today.timestamp,
     });
@@ -584,6 +585,7 @@ export default class Calendar {
         this.#frame.firstWeekDay = this.#config.firstWeekDay;
         this.#frame.locale = this.#config.locale;
         this.#frame.size = this.#config.blocks;
+        this.#frame.timezone = this.#config.timezone;
         this.#frame.trackCurrentDay = this.#config.trackCurrentDay;
 
         this.#restoreHighlight();
