@@ -8,16 +8,17 @@ on:
     types:
       - closed
     branches:
+      - 'changeset-release/**'
       - 'releases/**'
       - 'main'
 
 jobs:
   create-github-release:
     runs-on: ubuntu-latest
-    if: github.event_name == 'workflow_dispatch' || (github.event.pull_request.merged == true && startsWith(github.head_ref, 'bump/'))
+    if: github.event_name == 'workflow_dispatch' || (github.event.pull_request.merged == true && (startsWith(github.head_ref, 'bump/') || startsWith(github.head_ref, 'changeset-release/')))
     steps:
       - name: Checkout the repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Run the preliminary setup steps
         uses: ./.github/actions/setup-env
@@ -31,19 +32,42 @@ jobs:
           echo "NEW_VERSION=$(jq -r .version package.json)" >> $GITHUB_ENV
 
       - name: Upload build as artifact for other jobs
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: adyen-adyen-platform-experience-web-${{ env.NEW_VERSION }}
-          path: ./packages/lib/adyen-adyen-platform-experience-web-${{ env.NEW_VERSION }}.tgz
+          path: ./adyen-adyen-platform-experience-web-${{ env.NEW_VERSION }}.tgz
           retention-days: 1
 
       - name: Push tags and create a release
+        id: changesets
+        uses: changesets/action@v1
+        with:
+          publish: npm run create-tag
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          git tag ${{ env.NEW_VERSION }}
-          git push --tags
-          gh release create ${{ env.NEW_VERSION }} ./packages/lib/adyen-adyen-platform-experience-web-${{ env.NEW_VERSION }}.tgz --title v${{ env.NEW_VERSION }} --generate-notes
+
+      - name: Get the release upload URL
+        id: get_release
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const tag = `v${{ env.NEW_VERSION }}`;
+            const { data: release } = await github.rest.repos.getReleaseByTag({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              tag: tag
+            });
+            core.setOutput('upload_url', release.upload_url);
+
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.get_release.outputs.upload_url }}
+          asset_path: ./adyen-adyen-platform-experience-web-${{ env.NEW_VERSION }}.tgz
+          asset_name: adyen-adyen-platform-experience-web-${{ env.NEW_VERSION }}.tgz
+          asset_content_type: application/gzip
 
   trigger-npm-publish:
     needs: create-github-release
