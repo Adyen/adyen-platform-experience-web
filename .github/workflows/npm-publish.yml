@@ -36,15 +36,7 @@ jobs:
         run: |
           echo "PACKAGE_VERSION=$(jq -r .version package.json)" >> $GITHUB_ENV
 
-      - name: Download build artifacts (for same workflow)
-        id: download-build-artifacts-same-workflow
-        if: inputs.called-from-other-workflow == true
-        uses: actions/download-artifact@v4
-        with:
-          name: adyen-adyen-platform-experience-web-${{ env.PACKAGE_VERSION }}
-
       - name: Download build artifacts (from previous workflow)
-        if: steps.download-build-artifacts-same-workflow.conclusion == 'skipped'
         run: |
           gh run download -n adyen-adyen-platform-experience-web-${{ env.PACKAGE_VERSION }}
         env:
