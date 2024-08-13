@@ -39,7 +39,7 @@ jobs:
       - name: Download build artifacts (for same workflow)
         id: download-build-artifacts-same-workflow
         if: inputs.called-from-other-workflow == true
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: adyen-adyen-platform-experience-web-${{ env.PACKAGE_VERSION }}
 
