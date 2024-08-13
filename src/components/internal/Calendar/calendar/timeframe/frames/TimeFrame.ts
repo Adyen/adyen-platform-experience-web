@@ -407,7 +407,7 @@ export default abstract class TimeFrame {
 
             this.#cursorStartIndex = firstBlock.inner.from;
             this.#cursorEndIndex = lastBlock.inner.to;
-            this.#numberOfUnits = lastBlock.outer.to;
+            this.#numberOfUnits = lastBlock.outer.to + 1;
         }
 
         this.withCurrentDayTimestamp(this.#today.timestamp);

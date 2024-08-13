@@ -53,9 +53,9 @@ export const startOfWeek = (timestamp: Date | number, timezone?: string, firstWe
     }
 
     const weekDay = date.getDay() as WeekDay;
-    const dateOffset = (((-weekDay % 7) + ((firstWeekDay ?? 0) - 7)) % 7) as 0 | -1 | -2 | -3 | -4 | -5 | -6;
+    const dateOffset = getWeekDayIndex(weekDay, firstWeekDay ?? 0);
 
-    date.setDate(date.getDate() + dateOffset);
+    date.setDate(date.getDate() - dateOffset);
     return systemToTimezone(restamper, date);
 };
 
@@ -86,6 +86,8 @@ export const getMonthDays = (month: Month, year: number, offset = 0) => {
 
     return [days, monthIndex, nextYear] as const;
 };
+
+export const getWeekDayIndex = (weekDay: WeekDay, firstWeekDay: WeekDay = 0) => ((7 - firstWeekDay + weekDay) % 7) as WeekDay;
 
 export const computeTimestampOffset = (timestamp: number, timezone?: string) =>
     isInfinity(timestamp) ? 0 : timestamp - startOfDay(timestamp, timezone);
