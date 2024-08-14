@@ -1,67 +1,42 @@
 import restamper, { systemToTimezone, timezoneToSystem } from '../../../../core/Localization/datetime/restamper';
 import { BASE_LOCALE } from '../../../../core/Localization/datetime/restamper/constants';
 import { DEFAULT_DATETIME_FORMAT } from '../../../../core/Localization/constants/localization';
-import { EMPTY_ARRAY, EMPTY_OBJECT, isInfinity, isUndefined, mod } from '../../../../utils';
+import { EMPTY_ARRAY, EMPTY_OBJECT, identity, isInfinity, isUndefined, mod } from '../../../../utils';
 import type { Month, MonthDays, Time, WeekDay } from './types';
 
 const DATE_PARTS_REGEX = /^(\d{2})\/(\d{2})\/(-?\d+)$/;
 
-const _startTimestamp = (() => {
-    type DayStartParams = ['getDate', 'setDate'];
-    type MonthStartParams = ['getMonth', 'setMonth', (date: Date) => number];
-    type YearStartParams = ['getFullYear', 'setFullYear', (date: Date) => number];
+const _startTimestamp =
+    <RestArgs extends any[], DateAdjustmentFn extends (date: Date, ...args: RestArgs) => Date | number>(
+        adjustDate = identity as unknown as DateAdjustmentFn
+    ) =>
+    (timestamp: Date | number, timezone?: string, ...args: RestArgs) => {
+        const date = new Date(timestamp);
+        const restamper = withTimezone(timezone);
+        const restampedDate = new Date(timezoneToSystem(restamper, timestamp));
 
-    return (...args: DayStartParams | MonthStartParams | YearStartParams) => {
-        const [dateGetter, dateSetter, startTimestamp] = args;
+        let diff = (date.getDate() - restampedDate.getDate()) as -1 | 1 | 0;
 
-        return (timestamp: Date | number, timezone?: string) => {
-            const date = new Date(timestamp);
-            const restamper = withTimezone(timezone);
-            const restampedDate = new Date(timezoneToSystem(restamper, timestamp));
+        if (diff) {
+            // Diff correction for either of these cases:
+            // - between first (1) and last (28, 29, 30, 31) days of neighbouring months
+            // - between first (0) and last (11) months of neighbouring years
+            diff = diff > 1 ? -1 : diff < -1 ? 1 : diff;
+        }
 
-            let diff = (date[dateGetter]() - restampedDate[dateGetter]()) as -1 | 1 | 0;
-
-            if (diff) {
-                // Diff correction for either of these cases:
-                // - between first (1) and last (28, 29, 30, 31) days of neighbouring months
-                // - between first (0) and last (11) months of neighbouring years
-                diff = diff > 1 ? -1 : diff < -1 ? 1 : diff;
-            }
-
-            // first get to start of timestamp day
-            date.setHours(0, 0, 0, 0);
-
-            startTimestamp?.(date);
-            date[dateSetter](date[dateGetter]() - diff);
-            return systemToTimezone(restamper, date);
-        };
+        date.setDate(date.getDate() - diff);
+        date.setHours(0, 0, 0, 0);
+        return systemToTimezone(restamper, adjustDate(date, ...args));
     };
-})();
 
-export const startOfWeek = (timestamp: Date | number, timezone?: string, firstWeekDay?: WeekDay) => {
-    const date = new Date(timestamp);
-    const restamper = withTimezone(timezone);
-    const restampedDate = new Date(timezoneToSystem(restamper, timestamp));
-    const dayDiff = (date.getDay() - restampedDate.getDay()) as -1 | 1 | 0;
+export const startOfDay = _startTimestamp();
+export const startOfMonth = _startTimestamp(date => date.setDate(1));
+export const startOfYear = _startTimestamp(date => date.setMonth(0, 1));
 
-    date.setHours(0, 0, 0, 0);
-
-    if (dayDiff) {
-        // Correction for difference between first (0) and last (6) days of neighbouring weeks
-        const dateDiff = dayDiff > 1 ? -1 : dayDiff < -1 ? 1 : dayDiff;
-        date.setDate(date.getDate() - dateDiff);
-    }
-
-    const weekDay = date.getDay() as WeekDay;
-    const dateOffset = getWeekDayIndex(weekDay, firstWeekDay ?? 0);
-
-    date.setDate(date.getDate() - dateOffset);
-    return systemToTimezone(restamper, date);
-};
-
-export const startOfDay = _startTimestamp('getDate', 'setDate');
-export const startOfMonth = _startTimestamp('getMonth', 'setMonth', date => date.setDate(1));
-export const startOfYear = _startTimestamp('getFullYear', 'setFullYear', date => date.setMonth(0, 1));
+export const startOfWeek = _startTimestamp((date, firstWeekDay?: WeekDay) => {
+    const dateOffset = getWeekDayIndex(date.getDay() as WeekDay, firstWeekDay ?? 0);
+    return date.setDate(date.getDate() - dateOffset);
+});
 
 export const isLeapYear = (year: number) => (year % 100 ? year % 4 : year % 400) === 0;
 
