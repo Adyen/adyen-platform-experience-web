@@ -45,6 +45,6 @@ jobs:
           if [[ "${{ needs.contract-tests.result }}" == "success" ]]; then
             STATUS="✅ Contract tests succeeded"
           else
-            STATUS="❌ Contract tests failed"
+            STATUS="@here Contract tests failed❌❌"
           fi
-          curl -X POST -H 'Content-Type: application/json' --data "{\"text\":\"$STATUS for all environments!\n\nWorkflow: ${{ github.workflow }}\n\nSee details: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\"}" $MATTERMOST_WEBHOOK_URL
+          curl -X POST -H 'Content-Type: application/json' --data "{\"text\":\"$STATUS\n\nWorkflow: ${{ github.workflow }}\n\nSee details: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\"}" $MATTERMOST_WEBHOOK_URL
