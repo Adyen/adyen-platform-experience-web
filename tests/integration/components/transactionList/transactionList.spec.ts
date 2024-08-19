@@ -4,7 +4,9 @@ import { getTranslatedKey, scriptToAddInitialConfig } from '../../../utils/utils
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
+import dotenv from 'dotenv';
 
+dotenv.config({ path: './envs/.env' });
 const filename = fileURLToPath(import.meta.url);
 
 export const envDir = dirname(filename);
@@ -39,4 +41,9 @@ test.describe('Filters', () => {
     });
 
     //TODO test('filtering by date range should work')
+});
+
+base('TESTTESTTEST', async ({ page }) => {
+    await page.goto(`http://localhost:${process.env.PLAYGROUND_PORT}/iframe.html?id=mocked-transactions-list--basic`);
+    await expect(page.locator('.adyen-pe-component')).toBeAttached();
 });
