@@ -106,7 +106,7 @@ export default abstract class TimeFrame {
     protected abstract shiftOrigin(offset: number): void;
 
     abstract getTimestampAtIndex(indexOffset: number): number;
-    abstract withCurrentDayTimestamp(timestamp: number): void;
+    abstract withCurrentDayTimestamp(): void;
 
     abstract get currentDayTimestamp(): number;
     abstract get rowspan(): number;
@@ -232,6 +232,7 @@ export default abstract class TimeFrame {
     set timezone(timezone: string | null | undefined) {
         this.#timeslice.timezone = timezone;
         this.#timezone = this.#timeslice.timezone;
+        this.withCurrentDayTimestamp();
         this.#applyTimeSliceUpdate();
     }
 
@@ -365,7 +366,6 @@ export default abstract class TimeFrame {
     }
 
     protected initialize() {
-        this.withCurrentDayTimestamp(this.#today.timestamp);
         this.timeslice = UNBOUNDED_SLICE;
     }
 
@@ -410,7 +410,7 @@ export default abstract class TimeFrame {
             this.#numberOfUnits = lastBlock.outer.to + 1;
         }
 
-        this.withCurrentDayTimestamp(this.#today.timestamp);
+        this.withCurrentDayTimestamp();
         this.#effect?.();
     }
 

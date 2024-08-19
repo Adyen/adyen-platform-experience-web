@@ -289,7 +289,7 @@ export default class MonthFrame extends TimeFrame {
         this.refreshFrame(true);
     }
 
-    withCurrentDayTimestamp(timestamp: number) {
-        this.#currentDayTimestamp = this.#getStartForTimestamp(timestamp) as number;
+    withCurrentDayTimestamp() {
+        this.#currentDayTimestamp = this.#getStartForTimestamp(Date.now()) as number;
     }
 }

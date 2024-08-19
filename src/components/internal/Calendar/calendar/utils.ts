@@ -11,22 +11,10 @@ const _startTimestamp =
         adjustDate = identity as unknown as DateAdjustmentFn
     ) =>
     (timestamp: Date | number, timezone?: string, ...args: RestArgs) => {
-        const date = new Date(timestamp);
         const restamper = withTimezone(timezone);
         const restampedDate = new Date(timezoneToSystem(restamper, timestamp));
-
-        let diff = (date.getDate() - restampedDate.getDate()) as -1 | 1 | 0;
-
-        if (diff) {
-            // Diff correction for either of these cases:
-            // - between first (1) and last (28, 29, 30, 31) days of neighbouring months
-            // - between first (0) and last (11) months of neighbouring years
-            diff = diff > 1 ? -1 : diff < -1 ? 1 : diff;
-        }
-
-        date.setDate(date.getDate() - diff);
-        date.setHours(0, 0, 0, 0);
-        return systemToTimezone(restamper, adjustDate(date, ...args));
+        restampedDate.setHours(0, 0, 0, 0);
+        return systemToTimezone(restamper, adjustDate(restampedDate, ...args));
     };
 
 export const startOfDay = _startTimestamp();
