@@ -1,0 +1,54 @@
+name: Update TypeScript Specs
+
+on:
+  push:
+    branches:
+      - develop
+  workflow_dispatch:
+
+jobs:
+  generate-types:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run OpenAPI TypeScript Generation Script
+        run: npm run schemas:generate
+
+      - name: Check for Changes
+        run: git diff --quiet || echo "Changes detected"
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Create and Push Branch if Changes Exist
+        run: |
+          if ! git diff --quiet; then
+            git checkout -b update-typescript-schemas-$(date +%s)
+            git add .
+            git commit -m "Update TypeScript schemas"
+            git push --set-upstream origin $(git branch --show-current)
+          fi
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          branch: $(git branch --show-current)
+          title: "Update TypeScript specs"
+          body: "Automated PR to update TypeScript specs."
+          labels: |
+            automation
+          base: develop
+        if: ${{ steps.create_and_push_branch.outcome == 'success' }}
