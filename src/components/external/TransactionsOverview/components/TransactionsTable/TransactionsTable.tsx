@@ -3,6 +3,7 @@ import Category from '../Category/Category';
 import DataOverviewError from '../../../../internal/DataOverviewError/DataOverviewError';
 import { getLabel } from '../../../../utils/getLabel';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
+import useTimezoneAwareDateFormatting from '../../../../hooks/useTimezoneAwareDateFormatting';
 import { useCallback, useMemo, useState } from 'preact/hooks';
 import DataGrid from '../../../../internal/DataGrid';
 import Pagination from '../../../../internal/Pagination';
@@ -22,6 +23,7 @@ const FIELDS = ['dateAndPaymentMethod', 'createdAt', 'paymentMethod', 'transacti
 type FieldsType = (typeof FIELDS)[number];
 
 export const TransactionsTable: FC<TransactionTableProps> = ({
+    activeBalanceAccount,
     availableCurrencies,
     error,
     hasMultipleCurrencies,
@@ -34,6 +36,7 @@ export const TransactionsTable: FC<TransactionTableProps> = ({
     ...paginationProps
 }) => {
     const { i18n } = useCoreContext();
+    const { dateFormat, fullDateFormat } = useTimezoneAwareDateFormatting(activeBalanceAccount?.timeZone);
     const [hoveredRow, setHoveredRow] = useState<undefined | number>();
     const isSmAndUpViewport = useResponsiveViewport(mediaQueries.up.sm);
     const isMdAndUpViewport = useResponsiveViewport(mediaQueries.up.md);
@@ -112,7 +115,7 @@ export const TransactionsTable: FC<TransactionTableProps> = ({
                         return (
                             <div className={DATE_AND_PAYMENT_METHOD_CLASS}>
                                 <PaymentMethodCell paymentMethod={item.paymentMethod} bankAccount={item.bankAccount} />
-                                <span className={DATE_AND_PAYMENT_METHOD_CLASS}>{i18n.date(item.createdAt, DATE_FORMAT_TRANSACTIONS)}</span>
+                                <span className={DATE_AND_PAYMENT_METHOD_CLASS}>{dateFormat(item.createdAt, DATE_FORMAT_TRANSACTIONS)}</span>
                             </div>
                         );
                     },
@@ -126,7 +129,7 @@ export const TransactionsTable: FC<TransactionTableProps> = ({
                             )
                         ) : null;
                     },
-                    createdAt: ({ value }) => <span>{i18n.fullDate(value)}</span>,
+                    createdAt: ({ value }) => <span>{fullDateFormat(value)}</span>,
                     amount: ({ value }) => {
                         const amount = i18n.amount(value.value, value.currency, { hideCurrency: !hasMultipleCurrencies });
                         return <span className={AMOUNT_CLASS}>{amount}</span>;

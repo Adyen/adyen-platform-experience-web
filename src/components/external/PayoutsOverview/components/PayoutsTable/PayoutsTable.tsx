@@ -5,9 +5,10 @@ import { PaginationProps, WithPaginationLimitSelection } from '../../../../inter
 import { getLabel } from '../../../../utils/getLabel';
 import { useAuthContext } from '../../../../../core/Auth';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
+import useTimezoneAwareDateFormatting from '../../../../hooks/useTimezoneAwareDateFormatting';
 import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatformExperienceError';
 import { getCurrencyCode } from '../../../../../core/Localization/amount/amount-util';
-import { IBalanceAccountBase, IPayout } from '../../../../../types';
+import { IPayout } from '../../../../../types';
 import { useMemo } from 'preact/hooks';
 import DataGrid from '../../../../internal/DataGrid';
 import Pagination from '../../../../internal/Pagination';
@@ -26,7 +27,6 @@ const _isAmountFieldKey = (key: (typeof FIELDS)[number]): key is (typeof AMOUNT_
 };
 
 export interface PayoutsTableProps extends WithPaginationLimitSelection<PaginationProps> {
-    balanceAccounts: IBalanceAccountBase[] | undefined;
     loading: boolean;
     error?: AdyenPlatformExperienceError;
     onContactSupport?: () => void;
@@ -47,6 +47,7 @@ export const PayoutsTable: FC<PayoutsTableProps> = ({
     ...paginationProps
 }) => {
     const { i18n } = useCoreContext();
+    const { dateFormat } = useTimezoneAwareDateFormatting('UTC');
     const { refreshing } = useAuthContext();
     const isLoading = useMemo(() => loading || refreshing, [loading, refreshing]);
     const isSmAndUpViewport = useResponsiveViewport(mediaQueries.up.sm);
@@ -101,7 +102,7 @@ export const PayoutsTable: FC<PayoutsTableProps> = ({
                     createdAt: ({ value }) => {
                         if (!value) return null;
                         if (!isSmAndUpViewport)
-                            return i18n.date(value, {
+                            return dateFormat(value, {
                                 month: 'short',
                                 day: 'numeric',
                                 year: undefined,
@@ -109,7 +110,7 @@ export const PayoutsTable: FC<PayoutsTableProps> = ({
                                 minute: '2-digit',
                                 hour12: false,
                             });
-                        return value && i18n.date(value, DATE_FORMAT_PAYOUTS);
+                        return value && dateFormat(value, DATE_FORMAT_PAYOUTS);
                     },
                     fundsCapturedAmount: ({ value }) => {
                         return value && <span>{i18n.amount(value.value, value.currency, { hideCurrency: true })}</span>;

@@ -32,8 +32,8 @@ export const useTimeRangeSelection = ({
     timezone,
 }: UseTimeRangeSelectionConfig) => {
     const { i18n } = useCoreContext();
-    const [from, setFrom] = useState<string>();
-    const [to, setTo] = useState<string>();
+    const [from, setFrom] = useState<number>();
+    const [to, setTo] = useState<number>();
     const [selectedOption, setSelectedOption] = useState<string>();
     const NOW = useRef<typeof now>();
     const TZ = useRef<typeof timezone>();
@@ -64,12 +64,12 @@ export const useTimeRangeSelection = ({
             const ranges = getRangesForOption(option, selectionOptions);
             if (!ranges) return;
 
-            setFrom(i18n.fullDate(ranges.from));
-            setTo(i18n.fullDate(ranges.to));
+            setFrom(ranges.from);
+            setTo(ranges.to);
             setIsCustomSelection(false);
             setSelectedOption(option);
         },
-        [i18n, customOption, getRangesForOption, selectedOption, selectionOptions]
+        [customOption, getRangesForOption, selectedOption, selectionOptions]
     );
 
     const customSelection = useCallback(() => {

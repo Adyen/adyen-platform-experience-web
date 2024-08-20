@@ -3,8 +3,8 @@ import type { PaginationProps, WithPaginationLimitSelection } from '../../../../
 import type { IBalanceAccountBase, ITransaction } from '../../../../../types';
 
 export interface TransactionTableProps extends WithPaginationLimitSelection<PaginationProps> {
+    activeBalanceAccount?: IBalanceAccountBase;
     availableCurrencies: ITransaction['amount']['currency'][] | undefined;
-    balanceAccounts: IBalanceAccountBase[] | undefined;
     loading: boolean;
     error: AdyenPlatformExperienceError | undefined;
     hasMultipleCurrencies: boolean;

@@ -86,7 +86,8 @@
     "changeset": "changeset",
     "changeset-tag": "changeset tag",
     "create-tag": "npm run changeset-tag",
-    "postbuild": "rm dist/mockServiceWorker.js && rimraf dist/mockFiles"
+    "postbuild": "rm dist/mockServiceWorker.js && rimraf dist/mockFiles",
+    "test:contract": "playwright test --project contract"
   },
   "dependencies": {
     "classnames": "^2.5.1",

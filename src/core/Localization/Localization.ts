@@ -1,7 +1,7 @@
 import { getLocalisedAmount } from './amount/amount-util';
 import { defaultTranslation, FALLBACK_LOCALE } from './constants/locale';
 import { DEFAULT_DATETIME_FORMAT, DEFAULT_LOCALES, EXCLUDE_PROPS } from './constants/localization';
-import restamper, { RestamperWithTimezone, systemToTimezone } from './datetime/restamper';
+import restamper, { RestamperWithTimezone } from './datetime/restamper';
 import { createTranslationsLoader, getLocalizationProxyDescriptors } from './localization-utils';
 import { CustomTranslations, LangFile, SupportedLocale, Translations, TranslationKey, TranslationOptions } from './types';
 import { formatCustomTranslations, getTranslation, toTwoLetterCode } from './utils';
@@ -182,8 +182,14 @@ export default class Localization {
      * @param date - Date to be localized
      */
     fullDate(date: number | string | Date) {
-        const timestamp = systemToTimezone(this.#restamp, date);
-        const [, month, day, year, time] = new Date(timestamp).toString().split(/\s+/g);
-        return `${month} ${day}, ${year}, ${time}`;
+        return this.date(date, {
+            day: '2-digit',
+            month: 'short',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: false,
+        });
     }
 }

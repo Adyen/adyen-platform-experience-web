@@ -135,7 +135,7 @@ export const TransactionsOverview = ({
     const onRowClick = useCallback(
         (value: ITransaction) => {
             updateDetails({
-                selection: { type: 'transaction', data: { ...value, balanceAccountDescription: activeBalanceAccount?.description } },
+                selection: { type: 'transaction', data: { ...value, balanceAccount: activeBalanceAccount } },
                 modalSize: 'small',
             }).callback({ id: value.id });
         },
@@ -168,6 +168,7 @@ export const TransactionsOverview = ({
                     nowTimestamp={nowTimestamp}
                     refreshNowTimestamp={refreshNowTimestamp}
                     sinceDate={sinceDate}
+                    timezone={activeBalanceAccount?.timeZone}
                     updateFilters={updateFilters}
                 />
                 {/* Remove status filter temporarily */}
@@ -217,7 +218,7 @@ export const TransactionsOverview = ({
                 className={BASE_CLASS_DETAILS}
             >
                 <TransactionsTable
-                    balanceAccounts={balanceAccounts}
+                    activeBalanceAccount={activeBalanceAccount}
                     availableCurrencies={availableCurrencies}
                     error={error as AdyenPlatformExperienceError}
                     hasMultipleCurrencies={hasMultipleCurrencies}
