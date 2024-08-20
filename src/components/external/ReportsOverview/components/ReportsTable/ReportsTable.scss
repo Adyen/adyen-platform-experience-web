@@ -1,0 +1,12 @@
+@use '../../../../../style';
+
+.adyen-pe-report-download {
+    --offset-margin: calc(1rem - var(--adyen-sdk-spacer-110, 40px));
+    --offset-position: calc(var(--offset-margin) * -1 / 2);
+    cursor: pointer;
+    margin-right: var(--offset-margin);
+    margin-top: var(--offset-margin);
+    position: relative;
+    right: var(--offset-position);
+    top: var(--offset-position);
+}

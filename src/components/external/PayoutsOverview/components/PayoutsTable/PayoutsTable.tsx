@@ -1,22 +1,24 @@
-import { DATE_FORMAT_PAYOUTS } from '../../../../internal/DataOverviewDisplay/constants';
-import DataOverviewError from '../../../../internal/DataOverviewError/DataOverviewError';
-import { BASE_CLASS, NET_PAYOUT_CLASS } from './constants';
-import { PaginationProps, WithPaginationLimitSelection } from '../../../../internal/Pagination/types';
-import { getLabel } from '../../../../utils/getLabel';
+import cx from 'classnames';
+import { FC } from 'preact/compat';
+import { useMemo } from 'preact/hooks';
 import { useAuthContext } from '../../../../../core/Auth';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
-import useTimezoneAwareDateFormatting from '../../../../hooks/useTimezoneAwareDateFormatting';
 import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatformExperienceError';
 import { getCurrencyCode } from '../../../../../core/Localization/amount/amount-util';
-import { IPayout } from '../../../../../types';
-import { useMemo } from 'preact/hooks';
-import DataGrid from '../../../../internal/DataGrid';
-import Pagination from '../../../../internal/Pagination';
 import { TranslationKey } from '../../../../../core/Localization/types';
-import { FC } from 'preact/compat';
-import { mediaQueries, useResponsiveViewport } from '../../../TransactionsOverview/hooks/useResponsiveViewport';
+import { IPayout } from '../../../../../types';
+import useTimezoneAwareDateFormatting from '../../../../hooks/useTimezoneAwareDateFormatting';
+import DataGrid from '../../../../internal/DataGrid';
 import { CellTextPosition } from '../../../../internal/DataGrid/types';
-import cx from 'classnames';
+import { DATE_FORMAT_PAYOUTS } from '../../../../internal/DataOverviewDisplay/constants';
+import DataOverviewError from '../../../../internal/DataOverviewError/DataOverviewError';
+import Pagination from '../../../../internal/Pagination';
+import { PaginationProps, WithPaginationLimitSelection } from '../../../../internal/Pagination/types';
+import { TypographyVariant } from '../../../../internal/Typography/types';
+import Typography from '../../../../internal/Typography/Typography';
+import { getLabel } from '../../../../utils/getLabel';
+import { mediaQueries, useResponsiveViewport } from '../../../TransactionsOverview/hooks/useResponsiveViewport';
+import { BASE_CLASS, NET_PAYOUT_CLASS } from './constants';
 import './PayoutsTable.scss';
 
 const AMOUNT_FIELDS = ['fundsCapturedAmount', 'adjustmentAmount', 'payoutAmount'] as const;
@@ -110,20 +112,32 @@ export const PayoutsTable: FC<PayoutsTableProps> = ({
                                 minute: '2-digit',
                                 hour12: false,
                             });
-                        return value && dateFormat(value, DATE_FORMAT_PAYOUTS);
+                        return value && <Typography variant={TypographyVariant.BODY}>{dateFormat(value, DATE_FORMAT_PAYOUTS)}</Typography>;
                     },
                     fundsCapturedAmount: ({ value }) => {
-                        return value && <span>{i18n.amount(value.value, value.currency, { hideCurrency: true })}</span>;
+                        return (
+                            value && (
+                                <Typography variant={TypographyVariant.BODY}>
+                                    {i18n.amount(value.value, value.currency, { hideCurrency: true })}
+                                </Typography>
+                            )
+                        );
                     },
                     adjustmentAmount: ({ value }) => {
-                        return value && <span>{i18n.amount(value.value, value.currency, { hideCurrency: true })}</span>;
+                        return (
+                            value && (
+                                <Typography variant={TypographyVariant.BODY}>
+                                    {i18n.amount(value.value, value.currency, { hideCurrency: true })}
+                                </Typography>
+                            )
+                        );
                     },
                     payoutAmount: ({ value }) => {
                         return (
                             value && (
-                                <span className={cx({ [`${NET_PAYOUT_CLASS}--strong`]: !isSmAndUpViewport })}>
+                                <Typography variant={TypographyVariant.BODY} className={cx({ [`${NET_PAYOUT_CLASS}--strong`]: !isSmAndUpViewport })}>
                                     {i18n.amount(value.value, value.currency, { hideCurrency: isSmAndUpViewport })}
-                                </span>
+                                </Typography>
                             )
                         );
                     },

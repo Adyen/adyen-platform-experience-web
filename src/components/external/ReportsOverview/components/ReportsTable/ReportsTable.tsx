@@ -1,20 +1,23 @@
-import useTimezoneAwareDateFormatting from '../../../../hooks/useTimezoneAwareDateFormatting';
-import DownloadButton from '../../../../internal/Button/DownloadButton/DownloadButton';
-import { DATE_FORMAT_REPORT_FILE_NAME, DATE_FORMAT_REPORTS_MOBILE } from '../../../../internal/DataOverviewDisplay/constants';
-import DataOverviewError from '../../../../internal/DataOverviewError/DataOverviewError';
-import { BASE_CLASS } from './constants';
-import { PaginationProps, WithPaginationLimitSelection } from '../../../../internal/Pagination/types';
-import { getLabel } from '../../../../utils/getLabel';
+import { FC } from 'preact/compat';
+import { useMemo } from 'preact/hooks';
 import { useAuthContext } from '../../../../../core/Auth';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatformExperienceError';
-import { IReport } from '../../../../../types';
-import { useMemo } from 'preact/hooks';
-import DataGrid from '../../../../internal/DataGrid';
-import Pagination from '../../../../internal/Pagination';
 import { TranslationKey } from '../../../../../core/Localization/types';
-import { FC } from 'preact/compat';
+import { IReport } from '../../../../../types';
+import useTimezoneAwareDateFormatting from '../../../../hooks/useTimezoneAwareDateFormatting';
+import DownloadButton from '../../../../internal/Button/DownloadButton/DownloadButton';
+import DataGrid from '../../../../internal/DataGrid';
+import { DATE_FORMAT_REPORTS_MOBILE } from '../../../../internal/DataOverviewDisplay/constants';
+import DataOverviewError from '../../../../internal/DataOverviewError/DataOverviewError';
+import Pagination from '../../../../internal/Pagination';
+import { PaginationProps, WithPaginationLimitSelection } from '../../../../internal/Pagination/types';
+import { TypographyVariant } from '../../../../internal/Typography/types';
+import Typography from '../../../../internal/Typography/Typography';
+import { getLabel } from '../../../../utils/getLabel';
 import { mediaQueries, useResponsiveViewport } from '../../../TransactionsOverview/hooks/useResponsiveViewport';
+import { BASE_CLASS } from './constants';
+import './ReportsTable.scss';
 
 const FIELDS = ['createdAt', 'reportName', 'reportFile'] as const;
 
@@ -78,17 +81,16 @@ export const ReportsTable: FC<ReportsTableProps> = ({
                     createdAt: ({ value }) => {
                         if (!value) return null;
                         if (!isSmAndUpViewport) return dateFormat(value, DATE_FORMAT_REPORTS_MOBILE);
-                        return value && fullDateFormat(value);
+                        return value && <Typography variant={TypographyVariant.BODY}>{fullDateFormat(value)}</Typography>;
                     },
                     reportName: ({ item }) => {
-                        return item?.['name'] && <span>{item?.['name']}</span>;
+                        return item?.['name'] && <Typography variant={TypographyVariant.BODY}>{item?.['name']}</Typography>;
                     },
                     reportFile: ({ item }) => {
                         const queryParam = {
                             query: { balanceAccountId: balanceAccountId, createdAt: item.createdAt },
                         };
-
-                        return <DownloadButton endpointName={'downloadReport'} params={queryParam} />;
+                        return <DownloadButton className={'adyen-pe-report-download'} endpointName={'downloadReport'} params={queryParam} />;
                     },
                 }}
             >

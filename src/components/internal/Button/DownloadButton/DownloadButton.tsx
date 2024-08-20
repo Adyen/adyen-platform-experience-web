@@ -9,6 +9,7 @@ import useDownload from './useDownload';
 interface DownloadButtonProps {
     params: any;
     endpointName: EndpointName;
+    className?: string;
 }
 
 function downloadBlob({ blob, filename }: { blob: Blob; filename: string }) {
@@ -51,7 +52,7 @@ function DownloadButton({ endpointName, params, ...props }: DownloadButtonProps)
     }
 
     return (
-        <Button variant={ButtonVariant.TERTIARY} onClick={onClick} {...props}>
+        <Button iconButton={true} variant={ButtonVariant.TERTIARY} onClick={onClick} {...props}>
             <Download />
         </Button>
     );
