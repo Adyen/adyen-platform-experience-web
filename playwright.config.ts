@@ -30,7 +30,7 @@ const config: PlaywrightTestConfig = {
     reporter: 'html',
     use: {
         /* Maximum time each action such as `click()` can take. Defaults to 0 (no limit). */
-        actionTimeout: 1000,
+        actionTimeout: 5000,
         /* Base URL to use in actions like `await page.goto('/')`. */
         baseURL: baseUrl,
 
@@ -71,7 +71,7 @@ const config: PlaywrightTestConfig = {
     ],
     /* Run your local dev server before starting the tests */
     webServer: {
-        command: process.env.CI ? 'npm run demo:serve:e2e' : 'npm run storybook:serve',
+        command: process.env.CI ? 'npm run demo:serve:e2e' : 'npm run storybook:demo',
         reuseExistingServer: !process.env.CI,
         url: process.env.CI ? undefined : baseUrl,
         port: process.env.CI ? playground.port : undefined,

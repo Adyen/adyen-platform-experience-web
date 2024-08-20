@@ -64,7 +64,7 @@ jobs:
         run: npm run build:demo
 
       - name: Run tests
-        run: npm run test:e2e -- --project local-chrome
+        run: npm run test:integration -- --project local-chrome
 
       - name: Upload Playwright report (on failure)
         if: failure()

@@ -1,30 +1,24 @@
 import { test as base, expect } from '@playwright/test';
 import { TransactionListPage } from '../../../models/external-components/transactionList.page';
-import { getTranslatedKey, scriptToAddInitialConfig } from '../../../utils/utils';
-import { resolve } from 'node:path';
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
+import { getTranslatedKey, goToPage } from '../../../utils/utils';
 import dotenv from 'dotenv';
 
 dotenv.config({ path: './envs/.env' });
-const filename = fileURLToPath(import.meta.url);
 
-export const envDir = dirname(filename);
+const COMPONENT_PREFIX = 'mocked-transactions-list';
 
 const test = base.extend<{
     transactionListPage: TransactionListPage;
 }>({
-    transactionListPage: async ({ page, context }, use) => {
+    transactionListPage: async ({ page }, use) => {
         const transactionListPage = new TransactionListPage(page);
-        await scriptToAddInitialConfig(context, resolve(envDir, 'init-config.js'));
-        await transactionListPage.goto();
         await use(transactionListPage);
     },
 });
 
-test('cells should show correct value and open correct modal ', async ({ transactionListPage }) => {
+test('cells should show correct value and open correct modal ', async ({ transactionListPage, page }) => {
     const transactionList = transactionListPage;
-
+    await goToPage({ page, id: `${COMPONENT_PREFIX}--basic` });
     await transactionList.applyDateFilter('2024-01-01');
     await transactionList.getCell('amount').waitFor();
     await transactionList.firstRow.click();
@@ -34,16 +28,12 @@ test('cells should show correct value and open correct modal ', async ({ transac
 });
 
 test.describe('Filters', () => {
-    test('all filters should be attached', async ({ transactionListPage }) => {
+    test('all filters should be attached', async ({ transactionListPage, page }) => {
+        await goToPage({ page, id: `${COMPONENT_PREFIX}--basic` });
         const transactionList = transactionListPage;
         await expect(transactionList.filterBar).toBeAttached();
         await expect(transactionList.dateFilter).toBeAttached();
     });
 
     //TODO test('filtering by date range should work')
-});
-
-base('TESTTESTTEST', async ({ page }) => {
-    await page.goto(`http://localhost:${process.env.PLAYGROUND_PORT}/iframe.html?id=mocked-transactions-list--basic`);
-    await expect(page.locator('.adyen-pe-component')).toBeAttached();
 });
