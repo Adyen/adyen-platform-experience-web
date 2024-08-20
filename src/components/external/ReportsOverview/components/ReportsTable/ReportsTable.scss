@@ -4,6 +4,7 @@
     --offset-margin: calc(1rem - var(--adyen-sdk-spacer-110, 40px));
     --offset-position: calc(var(--offset-margin) * -1 / 2);
     cursor: pointer;
+    display: flex;
     margin-right: var(--offset-margin);
     margin-top: var(--offset-margin);
     position: relative;
