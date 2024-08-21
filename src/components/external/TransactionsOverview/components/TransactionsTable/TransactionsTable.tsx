@@ -129,7 +129,7 @@ export const TransactionsTable: FC<TransactionTableProps> = ({
                             i18n.has(tooltipKey) ? (
                                 <Category isContainerHovered={rowIndex === hoveredRow} value={item.category} />
                             ) : (
-                                <Typography variant={TypographyVariant.BODY}>item.category</Typography>
+                                <Typography variant={TypographyVariant.BODY}>{item.category}</Typography>
                             )
                         ) : null;
                     },
