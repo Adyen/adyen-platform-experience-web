@@ -1,10 +1,10 @@
 import restamper, { systemToTimezone, timezoneToSystem } from '../../../../core/Localization/datetime/restamper';
-import { BASE_LOCALE } from '../../../../core/Localization/datetime/restamper/constants';
+import { BASE_LOCALE, BASE_FORMAT_OPTIONS } from '../../../../core/Localization/datetime/restamper/constants';
 import { DEFAULT_DATETIME_FORMAT } from '../../../../core/Localization/constants/localization';
 import { EMPTY_ARRAY, EMPTY_OBJECT, identity, isInfinity, isUndefined, mod } from '../../../../utils';
 import type { Month, MonthDays, Time, WeekDay } from './types';
 
-const DATE_PARTS_REGEX = /^(\d{2})\/(\d{2})\/(-?\d+)$/;
+const DATE_PARTS_REGEX = /^(\d{2})\/(\d{2})\/(-?\d+),\s+(\d{2}):(\d{2}):(\d{2}).(\d{3})/;
 
 const _startTimestamp =
     <RestArgs extends any[], DateAdjustmentFn extends (date: Date, ...args: RestArgs) => Date | number>(
@@ -64,8 +64,9 @@ export const getTimezoneDateString = (date: number | string | Date, options: Int
 };
 
 export const getTimezoneDateParts = (date: number | string | Date, timeZone?: string) => {
-    const [, month = '', day = '', year = ''] = getTimezoneDateString(date, { timeZone }).match(DATE_PARTS_REGEX) ?? EMPTY_ARRAY;
-    return [+year, +month - 1, +day] as const;
+    const dateString = getTimezoneDateString(date, { ...BASE_FORMAT_OPTIONS, ...DEFAULT_DATETIME_FORMAT, timeZone, hour12: false });
+    const [, month = '', day = '', year = '', hours = '', minutes = '', seconds = '', ms = ''] = dateString.match(DATE_PARTS_REGEX) ?? EMPTY_ARRAY;
+    return [+year, +month - 1, +day, +hours, +minutes, +seconds, +ms] as const;
 };
 
 export const getEdgesDistance = (fromTime: Time, toTime: Time, timezone?: string) => {

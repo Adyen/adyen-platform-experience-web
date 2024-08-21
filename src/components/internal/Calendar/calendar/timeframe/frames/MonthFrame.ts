@@ -246,13 +246,15 @@ export default class MonthFrame extends TimeFrame {
 
     protected reoriginate() {
         this.originTimestamp = startOfMonth(this.originTimestamp, this.timezone);
-        const [year, month] = getTimezoneDateParts(this.originTimestamp, this.timezone);
+        const [originYear, originMonth] = getTimezoneDateParts(this.originTimestamp, this.timezone);
         const weekStartTimestamp = startOfWeek(this.originTimestamp, this.timezone, this.firstWeekDay);
 
-        this.origin = month as Month;
-        this.#originYear = year;
-        this.#originMonthStartOffset = ((this.originTimestamp - weekStartTimestamp) / DAY_MS) as WeekDay;
-        this.#originMonthStartTimestamp = weekStartTimestamp;
+        this.origin = originMonth as Month;
+        this.#originYear = originYear;
+        this.#originMonthStartOffset = this.getUnitsOffsetForTimestamp(weekStartTimestamp, this.originTimestamp) as WeekDay;
+
+        const [year, month, date, ...timeParts] = getTimezoneDateParts(this.originTimestamp, 'UTC');
+        this.#originMonthStartTimestamp = Date.UTC(year, month, date - this.#originMonthStartOffset, ...timeParts);
     }
 
     protected reslice() {
@@ -263,7 +265,7 @@ export default class MonthFrame extends TimeFrame {
     }
 
     protected shiftOrigin(offset: number) {
-        const [year, month] = getTimezoneDateParts(this.originTimestamp, this.timezone);
+        const [year, month, ...restParts] = getTimezoneDateParts(this.originTimestamp, this.timezone);
         const [, offsetMonth, offsetYear] = getMonthDays(month as Month, year, offset);
 
         const restamper = withTimezone(this.timezone);
@@ -280,7 +282,8 @@ export default class MonthFrame extends TimeFrame {
     }
 
     getTimestampAtIndex(indexOffset: number) {
-        return this.#originMonthStartTimestamp + indexOffset * DAY_MS;
+        const [year, month, date, ...timeParts] = getTimezoneDateParts(this.#originMonthStartTimestamp, 'UTC');
+        return Date.UTC(year, month, date + indexOffset, ...timeParts);
     }
 
     updateSelection(time: Time, selection?: TimeFrameSelection) {

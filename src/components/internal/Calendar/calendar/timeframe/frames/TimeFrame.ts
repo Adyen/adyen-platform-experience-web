@@ -232,7 +232,6 @@ export default abstract class TimeFrame {
     set timezone(timezone: string | null | undefined) {
         this.#timeslice.timezone = timezone;
         this.#timezone = this.#timeslice.timezone;
-        this.withCurrentDayTimestamp();
         this.#applyTimeSliceUpdate();
     }
 
