@@ -9,11 +9,11 @@ import userEvent from '@testing-library/user-event';
 
 beforeAll(() => {
     window.matchMedia = vi.fn().mockImplementation(query => ({
-        matches: false, // or true depending on your test case
+        matches: false,
         media: query,
         onchange: null,
-        addListener: vi.fn(), // Deprecated
-        removeListener: vi.fn(), // Deprecated
+        addListener: vi.fn(),
+        removeListener: vi.fn(),
         addEventListener: vi.fn(),
         removeEventListener: vi.fn(),
         dispatchEvent: vi.fn(),
