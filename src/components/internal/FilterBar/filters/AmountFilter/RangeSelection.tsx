@@ -53,6 +53,7 @@ export const RangeSelection = ({
             <div className="adyen-pe-range-selection-filter__input">
                 <label htmlFor="minValue">{`${i18n.get('from')}:`}</label>
                 <InputBase
+                    data-testid={'minValueFilter'}
                     lang={i18n.locale}
                     name={'minValue'}
                     type="number"
@@ -68,6 +69,7 @@ export const RangeSelection = ({
             <div className="adyen-pe-range-selection-filter__input">
                 <label htmlFor="maxValue">{`${i18n.get('to')}:`}</label>
                 <InputBase
+                    data-testid={'maxValueFilter'}
                     lang={i18n.locale}
                     name={'maxValue'}
                     type="number"
