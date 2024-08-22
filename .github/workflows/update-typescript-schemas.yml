@@ -35,19 +35,22 @@ jobs:
       - name: Create and Push Branch if Changes Exist
         run: |
           if ! git diff --quiet; then
-            git checkout -b update-typescript-schemas-$(date +%s)
+            git checkout -b update-types-$(date +%s)
             git add .
-            git commit -m "Update TypeScript schemas"
+            git commit -m "Update TypeScript specs"
             git push --set-upstream origin $(git branch --show-current)
           fi
 
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v5
-        with:
-          branch: $(git branch --show-current)
-          title: "Update TypeScript specs"
-          body: "Automated PR to update TypeScript specs."
-          labels: |
-            automation
-          base: develop
-        if: ${{ steps.create_and_push_branch.outcome == 'success' }}
+      - name: Install GitHub CLI
+        run: sudo apt-get install gh -y
+
+      - name: Create Pull Request with GitHub CLI
+        run: |
+          if ! git diff --quiet; then
+            gh pr create \
+              --title "Update TypeScript schemas" \
+              --body "Automated PR to update TypeScript specs." \
+              --base develop \
+              --head $(git branch --show-current) \
+              --label automation
+          fi
