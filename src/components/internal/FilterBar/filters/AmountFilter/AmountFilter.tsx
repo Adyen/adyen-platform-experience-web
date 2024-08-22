@@ -39,8 +39,8 @@ export const AmountFilter = ({ updateFilters, selectedCurrencies, availableCurre
             setValue({ minAmount, maxAmount });
             if (isUndefined(minAmount) && isUndefined(maxAmount)) setValueFormattedValue(undefined);
             updateFilters({
-                minAmount: !isUndefined(minAmount) ? String(minAmount * AMOUNT_MULTIPLIER) : undefined,
-                maxAmount: !isUndefined(maxAmount) ? String(maxAmount * AMOUNT_MULTIPLIER) : undefined,
+                minAmount: !isUndefined(minAmount) ? String(Math.round(minAmount * AMOUNT_MULTIPLIER)) : undefined,
+                maxAmount: !isUndefined(maxAmount) ? String(Math.round(maxAmount * AMOUNT_MULTIPLIER)) : undefined,
             });
         },
         [updateFilters]
