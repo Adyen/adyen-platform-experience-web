@@ -54,13 +54,11 @@ response=$(curl -s -w "%{http_code}" --header "PRIVATE-TOKEN: $API_TOKEN" "$GROU
 http_status="${response:(-3)}"
 response_body="${response:0:${#response}-3}"
 
-echo "$response"
-echo "$GROUPS_URL"
+echo "status $http_status"
 
 # Check if initial call succeeded
 if [ "$http_status" -ne 200 ]; then
     echo "$response_body"
-    echo "$response"
     exit 1
 fi
 
