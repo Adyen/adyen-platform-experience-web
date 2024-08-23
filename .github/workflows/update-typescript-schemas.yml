@@ -8,30 +8,31 @@ on:
 
 jobs:
   generate-types:
+    environment: generate-ts-schemas
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '20'
+      - name: Run the preliminary setup steps
+        uses: ./.github/actions/setup-env
 
-      - name: Install dependencies
-        run: npm install
+      - name: Create variables file
+        run: |
+          cat << EOF > ../../scripts/generate-ts-schemas/variables
+          API_TOKEN="${{ secrets.API_TOKEN }}"
+          PROJECT_ID="${{ secrets.PROJECT_ID }}"
+          FOLDER_PATH="${{ secrets.FOLDER_PATH }}"
+          REPO_URL="${{ secrets.REPO_URL }}"
+          CA_CERTS="${{ secrets.CA_CERTS }}"
+          EOF
 
       - name: Run OpenAPI TypeScript Generation Script
         run: npm run schemas:generate
 
       - name: Check for Changes
         run: git diff --quiet || echo "Changes detected"
-
-      - name: Configure Git
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: Create and Push Branch if Changes Exist
         run: |
