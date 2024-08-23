@@ -41,8 +41,6 @@ for ((i=0; i<${#EXCLUDED_RESOURCES[@]}; i++)); do
   excluded_folders+=("$FOLDER_PATH/$resource")
 done
 
-echo "$REPO_URL"
-
 # Function to URL-encode the folder path
 urlencode() {
     echo -n "$1" | perl -MURI::Escape -ne 'print uri_escape($_)';
@@ -55,6 +53,9 @@ GROUPS_URL="https://$REPO_URL/api/v4/projects/$PROJECT_ID/repository/tree?path=$
 response=$(curl -s -w "%{http_code}" --header "PRIVATE-TOKEN: $API_TOKEN" "$GROUPS_URL")
 http_status="${response:(-3)}"
 response_body="${response:0:${#response}-3}"
+
+echo "$response"
+echo "$GROUPS_URL"
 
 # Check if initial call succeeded
 if [ "$http_status" -ne 200 ]; then
