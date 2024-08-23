@@ -36,12 +36,12 @@ BRANCH_NAME="main"
 
 excluded_folders=()
 
-export NODE_EXTRA_CA_CERTS="$CA_CERTS"
-
 for ((i=0; i<${#EXCLUDED_RESOURCES[@]}; i++)); do
   resource=${EXCLUDED_RESOURCES[i]}
   excluded_folders+=("$FOLDER_PATH/$resource")
 done
+
+echo "$REPO_URL"
 
 # Function to URL-encode the folder path
 urlencode() {
@@ -59,6 +59,7 @@ response_body="${response:0:${#response}-3}"
 # Check if initial call succeeded
 if [ "$http_status" -ne 200 ]; then
     echo "$response_body"
+    echo "$response"
     exit 1
 fi
 
