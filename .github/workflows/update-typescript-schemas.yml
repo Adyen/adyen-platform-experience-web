@@ -18,18 +18,14 @@ jobs:
       - name: Run the preliminary setup steps
         uses: ./.github/actions/setup-env
 
-      - name: Set CA_CERTS environment variable
-        run: echo "CA_CERTS=$(npm config get cafile)" >> $GITHUB_ENV
-
       - name: Create variables file
         run: |
-          mkdir -p scripts/generate-ts-schemas
           cat << EOF > scripts/generate-ts-schemas/variables
           API_TOKEN="${{ secrets.API_TOKEN }}"
           PROJECT_ID="${{ secrets.PROJECT_ID }}"
           FOLDER_PATH="${{ secrets.FOLDER_PATH }}"
           REPO_URL="${{ secrets.REPO_URL }}"
-          CA_CERTS="${{ env.CA_CERTS }}"
+          CA_CERTS="${{ secrets.CA_CERTS }}"
           EOF
 
       - name: Run OpenAPI TypeScript Generation Script

@@ -36,6 +36,8 @@ BRANCH_NAME="main"
 
 excluded_folders=()
 
+export NODE_EXTRA_CA_CERTS="$CA_CERTS"
+
 for ((i=0; i<${#EXCLUDED_RESOURCES[@]}; i++)); do
   resource=${EXCLUDED_RESOURCES[i]}
   excluded_folders+=("$FOLDER_PATH/$resource")
