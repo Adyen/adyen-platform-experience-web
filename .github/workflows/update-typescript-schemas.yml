@@ -20,7 +20,8 @@ jobs:
 
       - name: Create variables file
         run: |
-          cat << EOF > ../../scripts/generate-ts-schemas/variables
+          mkdir -p scripts/generate-ts-schemas
+          cat << EOF > scripts/generate-ts-schemas/variables
           API_TOKEN="${{ secrets.API_TOKEN }}"
           PROJECT_ID="${{ secrets.PROJECT_ID }}"
           FOLDER_PATH="${{ secrets.FOLDER_PATH }}"
