@@ -602,6 +602,7 @@ export default class Calendar {
         this.#frame.size = this.#config.blocks;
         this.#frame.timezone = this.#config.timezone;
         this.#frame.trackCurrentDay = this.#config.trackCurrentDay;
+        this.#today = today(this.#frame.timezone);
 
         this.#restoreHighlight();
     }

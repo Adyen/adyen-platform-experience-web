@@ -232,6 +232,13 @@ export default abstract class TimeFrame {
     set timezone(timezone: string | null | undefined) {
         this.#timeslice.timezone = timezone;
         this.#timezone = this.#timeslice.timezone;
+        this.#today = today(this.#timezone);
+
+        if (this.#unwatchCurrentDay) {
+            this.#unwatchCurrentDay();
+            this.#unwatchCurrentDay = this.#today.subscribe(this.refreshFrame.bind(this, true));
+        }
+
         this.#applyTimeSliceUpdate();
     }
 
