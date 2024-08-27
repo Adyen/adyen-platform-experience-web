@@ -66,7 +66,7 @@ export const getTimezoneDateString = (date: number | string | Date, options: Int
 export const getTimezoneDateParts = (date: number | string | Date, timeZone?: string) => {
     const dateString = getTimezoneDateString(date, { ...BASE_FORMAT_OPTIONS, ...DEFAULT_DATETIME_FORMAT, timeZone, hour12: false });
     const [, month = '', day = '', year = '', hours = '', minutes = '', seconds = '', ms = ''] = dateString.match(DATE_PARTS_REGEX) ?? EMPTY_ARRAY;
-    return [+year, +month - 1, +day, +hours, +minutes, +seconds, +ms] as const;
+    return [+year, +month - 1, +day, +hours % 24, +minutes, +seconds, +ms] as const;
 };
 
 export const getEdgesDistance = (fromTime: Time, toTime: Time, timezone?: string) => {

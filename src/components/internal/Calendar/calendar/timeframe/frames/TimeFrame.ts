@@ -459,15 +459,15 @@ export default abstract class TimeFrame {
     }
 
     shiftFrameToTimestamp(timestamp?: number) {
-        const containedTimestamp = this.#getContainedTimestamp(timestamp, false)[0];
-        this.#cursorOffset = this.getCursorBlockOriginTimestampOffset((this.#cursorTimestamp = this.originTimestamp = containedTimestamp));
+        this.#cursorTimestamp = this.originTimestamp = this.#getContainedTimestamp(timestamp, false).reduce((a, b) => a + b);
+        this.#cursorOffset = this.getCursorBlockOriginTimestampOffset(this.#cursorTimestamp);
         this.reoriginate();
 
         [this.#fromBlockOffsetFromOrigin, this.#toBlockOffsetFromOrigin] = this.getEdgeBlockOffsetsFromOrigin();
         this.#shiftOriginIfNecessary();
         this.refreshFrame();
 
-        this.#shiftFrameCursorByOffset(this.getUnitsOffsetForTimestamp(this.getTimestampAtIndex(this.#cursorIndex), containedTimestamp));
+        this.#shiftFrameCursorByOffset(this.getUnitsOffsetForTimestamp(this.getTimestampAtIndex(this.#cursorIndex), this.#cursorTimestamp));
     }
 
     clearSelection() {
@@ -479,7 +479,7 @@ export default abstract class TimeFrame {
     updateSelection(time: Time, selection?: TimeFrameSelection) {
         const currentStart = this.#selectionStartTimestamp as number;
         const currentEnd = this.#selectionEndTimestamp as number;
-        const timestamp = this.#getContainedTimestamp(time, false).reduce((a, b) => a + b, 0);
+        const timestamp = this.#getContainedTimestamp(time, false).reduce((a, b) => a + b);
 
         if (selection === SELECTION_FARTHEST) {
             if (timestamp <= currentStart) selection = SELECTION_TO;

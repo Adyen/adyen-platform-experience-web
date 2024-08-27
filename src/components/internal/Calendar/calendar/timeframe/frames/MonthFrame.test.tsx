@@ -2,12 +2,13 @@
 import { describe, expect, test, vi } from 'vitest';
 import { BASE_LOCALE, SYSTEM_TIMEZONE } from '../../../../../../core/Localization/datetime/restamper/constants';
 import { TIMEZONE_PAST_DATES_TEST_ORIGIN_DATE } from '../../../../../../core/Localization/datetime/restamper/testing/fixtures';
+import { systemToTimezone, timezoneToSystem } from '../../../../../../core/Localization/datetime/restamper';
 import { setupTimers } from '../../../../../../primitives/time/__testing__/fixtures';
-import { DAY_MS } from '../../constants';
-import { getWeekDayIndex } from '../../utils';
+import { getTimezoneDateParts, getWeekDayIndex, withTimezone } from '../../utils';
+import { FirstWeekDay, WeekDay } from '../../types';
 import { mod } from '../../../../../../utils';
+import { DAY_MS } from '../../constants';
 import MonthFrame from './MonthFrame';
-import type { FirstWeekDay, WeekDay } from '../../types';
 
 const DST_TIMEZONES_DATES = new Map([
     [
@@ -85,7 +86,7 @@ const DST_TIMEZONES_DATES = new Map([
             ['2019-12-29T00:00:00.000Z', '2019-12-30T00:00:00.000Z', '2019-12-28T00:00:00.000Z'],
             ['2020-01-26T00:00:00.000Z', '2020-01-27T00:00:00.000Z', '2020-02-01T00:00:00.000Z'],
             ['2020-03-01T00:00:00.000Z', '2020-02-24T00:00:00.000Z', '2020-02-29T00:00:00.000Z'],
-            ['2020-03-28T23:00:00.000Z', '2020-03-29T23:00:00.000Z', '2020-03-27T23:00:00.000Z'],
+            ['2020-03-29T00:00:00.000Z', '2020-03-29T23:00:00.000Z', '2020-03-28T00:00:00.000Z'],
             ['2020-04-25T23:00:00.000Z', '2020-04-26T23:00:00.000Z', '2020-04-24T23:00:00.000Z'],
             ['2020-05-30T23:00:00.000Z', '2020-05-31T23:00:00.000Z', '2020-05-29T23:00:00.000Z'],
             ['2020-06-27T23:00:00.000Z', '2020-06-28T23:00:00.000Z', '2020-06-26T23:00:00.000Z'],
@@ -97,7 +98,7 @@ const DST_TIMEZONES_DATES = new Map([
             ['2020-12-27T00:00:00.000Z', '2020-12-28T00:00:00.000Z', '2020-12-26T00:00:00.000Z'],
             ['2021-01-31T00:00:00.000Z', '2021-02-01T00:00:00.000Z', '2021-01-30T00:00:00.000Z'],
             ['2021-02-28T00:00:00.000Z', '2021-03-01T00:00:00.000Z', '2021-02-27T00:00:00.000Z'],
-            ['2021-03-27T23:00:00.000Z', '2021-03-28T23:00:00.000Z', '2021-03-26T23:00:00.000Z'],
+            ['2021-03-28T00:00:00.000Z', '2021-03-28T23:00:00.000Z', '2021-03-27T00:00:00.000Z'],
             ['2021-04-24T23:00:00.000Z', '2021-04-25T23:00:00.000Z', '2021-04-30T23:00:00.000Z'],
             ['2021-05-29T23:00:00.000Z', '2021-05-30T23:00:00.000Z', '2021-05-28T23:00:00.000Z'],
         ],
@@ -114,7 +115,7 @@ const DST_TIMEZONES_DATES = new Map([
             ['2020-06-27T11:15:00.000Z', '2020-06-28T11:15:00.000Z', '2020-06-26T11:15:00.000Z'],
             ['2020-07-25T11:15:00.000Z', '2020-07-26T11:15:00.000Z', '2020-07-31T11:15:00.000Z'],
             ['2020-08-29T11:15:00.000Z', '2020-08-30T11:15:00.000Z', '2020-08-28T11:15:00.000Z'],
-            ['2020-09-26T10:15:00.000Z', '2020-09-27T10:15:00.000Z', '2020-09-25T10:15:00.000Z'],
+            ['2020-09-26T11:15:00.000Z', '2020-09-27T10:15:00.000Z', '2020-09-25T11:15:00.000Z'],
             ['2020-10-31T10:15:00.000Z', '2020-10-25T10:15:00.000Z', '2020-10-30T10:15:00.000Z'],
             ['2020-11-28T10:15:00.000Z', '2020-11-29T10:15:00.000Z', '2020-11-27T10:15:00.000Z'],
             ['2020-12-26T10:15:00.000Z', '2020-12-27T10:15:00.000Z', '2020-12-25T10:15:00.000Z'],
@@ -268,18 +269,37 @@ const NON_DST_TIMEZONES_DATES = new Map([
     ],
 ]);
 
+const expectedTimestamps = (frame: MonthFrame, monthStartDate: Date | number) => {
+    const iterator = (function* () {
+        const restamper = withTimezone(frame.timezone);
+        let timestamp = timezoneToSystem(restamper, monthStartDate);
+
+        while (true) {
+            let nextTimestamp = systemToTimezone(restamper, timestamp);
+            let [, , , hrs, mins] = getTimezoneDateParts(nextTimestamp, frame.timezone);
+            let difference = 0;
+
+            if (hrs > 0 || mins > 0) {
+                hrs = (hrs > 12 ? 24 : 0) - hrs;
+                mins = (hrs > 1 ? 1 : -1) * mins;
+                difference = hrs * 3600000 + mins * 60000;
+            }
+
+            timestamp += DAY_MS + difference;
+            yield (nextTimestamp += difference);
+        }
+    })();
+    return () => iterator.next().value;
+};
+
 const compareFrameTimestamps = (frame: MonthFrame, monthStartDate: Date | number) => {
-    const currentDate = new Date(monthStartDate);
-    let currentTimeOffset = currentDate.getTimezoneOffset();
+    const nextTimestamp = expectedTimestamps(frame, monthStartDate);
 
     for (const frameBlockRow of frame.frameBlocks[0]!) {
         for (const frameBlockCell of frameBlockRow) {
-            const systemTimeOffset = (currentTimeOffset - (currentTimeOffset = currentDate.getTimezoneOffset())) * 60000;
-            const expectedTimestamp = currentDate.setTime(currentDate.getTime() + systemTimeOffset);
+            const expectedTimestamp = nextTimestamp();
             const actualTimestamp = frameBlockCell.timestamp;
-            // console.log(new Date(expectedTimestamp), new Date(actualTimestamp));
             expect(expectedTimestamp).toBe(actualTimestamp);
-            currentDate.setDate(currentDate.getDate() + 1);
         }
     }
 };
@@ -363,9 +383,6 @@ describe('MonthFrame', () => {
                     const frame = new MonthFrame();
 
                     const runTestRoutine = (monthStartDates: string[][], timezone: string) => {
-                        // [TODO]: Do not skip 'Europe/Lisbon'
-                        if (timezone === 'Europe/Lisbon') return;
-
                         let j = 0;
                         frame.timezone = timezone;
                         frame.shiftFrameToTimestamp();

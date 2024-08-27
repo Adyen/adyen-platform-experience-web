@@ -100,6 +100,22 @@ export default class MonthFrame extends TimeFrame {
         return timestamp < this.originTimestamp ? 0 - offset : offset;
     }
 
+    #getDayOffsetTimestamp(fromTimestamp: Date | number, dayOffset = 0) {
+        const restamper = withTimezone(this.timezone);
+        const restampedTimestamp = timezoneToSystem(restamper, fromTimestamp);
+        const timestamp = systemToTimezone(restamper, restampedTimestamp + dayOffset * DAY_MS);
+        let [, , , hrs, mins] = getTimezoneDateParts(timestamp, this.timezone);
+        let timeOffset = 0;
+
+        if (hrs > 0 || mins > 0) {
+            hrs = (hrs > 12 ? 24 : 0) - hrs;
+            mins = (hrs > 1 ? 1 : -1) * mins;
+            timeOffset = hrs * 3600000 + mins * 60000;
+        }
+
+        return timestamp + timeOffset;
+    }
+
     #getStartForTimestamp(timestamp?: number) {
         return isUndefined(timestamp) || isInfinity(timestamp) ? timestamp : timestamp - computeTimestampOffset(timestamp, this.timezone);
     }
@@ -252,9 +268,7 @@ export default class MonthFrame extends TimeFrame {
         this.origin = originMonth as Month;
         this.#originYear = originYear;
         this.#originMonthStartOffset = this.getUnitsOffsetForTimestamp(weekStartTimestamp, this.originTimestamp) as WeekDay;
-
-        const [year, month, date, ...timeParts] = getTimezoneDateParts(this.originTimestamp, 'UTC');
-        this.#originMonthStartTimestamp = Date.UTC(year, month, date - this.#originMonthStartOffset, ...timeParts);
+        this.#originMonthStartTimestamp = this.#getDayOffsetTimestamp(this.originTimestamp, -this.#originMonthStartOffset);
     }
 
     protected reslice() {
@@ -265,7 +279,7 @@ export default class MonthFrame extends TimeFrame {
     }
 
     protected shiftOrigin(offset: number) {
-        const [year, month, ...restParts] = getTimezoneDateParts(this.originTimestamp, this.timezone);
+        const [year, month] = getTimezoneDateParts(this.originTimestamp, this.timezone);
         const [, offsetMonth, offsetYear] = getMonthDays(month as Month, year, offset);
 
         const restamper = withTimezone(this.timezone);
@@ -282,8 +296,7 @@ export default class MonthFrame extends TimeFrame {
     }
 
     getTimestampAtIndex(indexOffset: number) {
-        const [year, month, date, ...timeParts] = getTimezoneDateParts(this.#originMonthStartTimestamp, 'UTC');
-        return Date.UTC(year, month, date + indexOffset, ...timeParts);
+        return this.#getDayOffsetTimestamp(this.#originMonthStartTimestamp, indexOffset);
     }
 
     updateSelection(time: Time, selection?: TimeFrameSelection) {
