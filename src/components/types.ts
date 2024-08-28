@@ -1,5 +1,6 @@
 import UIElement from './external/UIElement/UIElement';
 import { Core, onErrorHandler } from '../core';
+import { ITransaction } from '../types';
 
 export const enum InteractionKeyCode {
     ARROW_DOWN = 'ArrowDown',
@@ -82,6 +83,8 @@ interface _DataOverviewSelectionProps<T extends { showModal: () => void } = { sh
 interface _DataOverviewComponentProps {
     allowLimitSelection?: boolean;
     balanceAccountId?: string;
+    columns?: string[]; // TODO: Update?
+    onDataRetrieved?: (p: { data: ITransaction[] }) => Promise<any>; // TODO: Update
     onFiltersChanged?: (filters: { [P in FilterParam]?: string }) => any;
     preferredLimit?: 10 | 20;
     showDetails?: boolean;

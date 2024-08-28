@@ -19,12 +19,13 @@ import PaymentMethodCell from './PaymentMethodCell';
 
 // Remove status column temporarily
 // const FIELDS = ['createdAt', 'status', 'paymentMethod', 'transactionType', 'amount'] as const;
-const FIELDS = ['dateAndPaymentMethod', 'createdAt', 'paymentMethod', 'transactionType', 'amount'] as const;
+export const FIELDS = ['dateAndPaymentMethod', 'createdAt', 'paymentMethod', 'transactionType', 'amount'] as const;
 type FieldsType = (typeof FIELDS)[number];
 
 export const TransactionsTable: FC<TransactionTableProps> = ({
     activeBalanceAccount,
     availableCurrencies,
+    columns,
     error,
     hasMultipleCurrencies,
     loading,
@@ -42,7 +43,7 @@ export const TransactionsTable: FC<TransactionTableProps> = ({
     const isMdAndUpViewport = useResponsiveViewport(mediaQueries.up.md);
     const isXsAndDownViewport = useResponsiveViewport(mediaQueries.down.xs);
 
-    const fieldsVisibility: Partial<Record<FieldsType, boolean>> = useMemo(
+    const fieldsVisibility: any = useMemo(
         () => ({
             dateAndPaymentMethod: isXsAndDownViewport,
             createdAt: isSmAndUpViewport,
@@ -52,10 +53,10 @@ export const TransactionsTable: FC<TransactionTableProps> = ({
         [isXsAndDownViewport, isSmAndUpViewport, isMdAndUpViewport]
     );
 
-    const columns = useMemo(
+    const dataGridColumns = useMemo(
         () =>
-            FIELDS.map(key => {
-                const label = i18n.get(getLabel(key));
+            columns?.map((key: string) => {
+                const label = i18n.get(getLabel(key as any));
                 if (key === 'amount') {
                     return {
                         key,
@@ -67,7 +68,7 @@ export const TransactionsTable: FC<TransactionTableProps> = ({
                     };
                 }
 
-                return { key, label, visible: fieldsVisibility[key] };
+                return { key, label, visible: fieldsVisibility[key] as any };
             }),
         [availableCurrencies, fieldsVisibility, hasMultipleCurrencies, i18n, isSmAndUpViewport]
     );
@@ -94,7 +95,7 @@ export const TransactionsTable: FC<TransactionTableProps> = ({
             <DataGrid
                 errorDisplay={errorDisplay}
                 error={error}
-                columns={columns}
+                columns={dataGridColumns}
                 data={transactions}
                 loading={loading}
                 outline={false}

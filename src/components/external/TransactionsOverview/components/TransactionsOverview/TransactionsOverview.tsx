@@ -1,5 +1,5 @@
 import { DataDetailsModal } from '../../../../internal/DataOverviewDisplay/DataDetailsModal';
-import { TransactionsTable } from '../TransactionsTable/TransactionsTable';
+import { FIELDS, TransactionsTable } from '../TransactionsTable/TransactionsTable';
 import useBalanceAccountSelection from '../../../../hooks/useBalanceAccountSelection';
 import BalanceAccountSelector from '../../../../internal/FormFields/Select/BalanceAccountSelector';
 import { TypographyVariant } from '../../../../internal/Typography/types';
@@ -24,13 +24,16 @@ import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatfo
 import { AmountFilter } from '../../../../internal/FilterBar/filters/AmountFilter/AmountFilter';
 import { BASE_CLASS, BASE_CLASS_DETAILS, MAX_TRANSACTIONS_DATE_RANGE_MONTHS, SUMMARY_CLASS, SUMMARY_ITEM_CLASS } from './constants';
 import { mediaQueries, useResponsiveViewport } from '../../hooks/useResponsiveViewport';
+import { reconcileCustomData } from '../utils';
 import './TransactionsOverview.scss';
 
 export const TransactionsOverview = ({
     onFiltersChanged,
     balanceAccounts,
     allowLimitSelection,
+    columns,
     preferredLimit = DEFAULT_PAGE_LIMIT,
+    onDataRetrieved,
     onRecordSelection,
     showDetails,
     isLoadingBalanceAccount,
@@ -85,6 +88,7 @@ export const TransactionsOverview = ({
             enabled: !!activeBalanceAccount?.id && !!transactionsEndpointCall,
         });
 
+    const [transactions, setTransactions] = useState(records);
     const [availableCurrencies, setAvailableCurrencies] = useState<ITransaction['amount']['currency'][] | undefined>([]);
     const [isAvailableCurrenciesFetching, setIsAvailableCurrenciesFetching] = useState(false);
     const handleCurrenciesChange = useCallback((currencies: ITransaction['amount']['currency'][] | undefined, isFetching: boolean) => {
@@ -115,6 +119,31 @@ export const TransactionsOverview = ({
     useEffect(() => {
         statusesFilter.updateSelection({ target: { value: 'Booked', name: 'status' } });
     }, [statusesFilter]);
+
+    useEffect(() => {
+        const fetchCustomData0 = async () => {
+            let reconciledData;
+            if (onDataRetrieved) {
+                const customData = await onDataRetrieved({ data: records });
+                reconciledData = records.map(record => reconcileCustomData(record, customData));
+            }
+            setTransactions(reconciledData ?? (records as any));
+        };
+
+        const fetchCustomData = async () => {
+            try {
+                const customData = await onDataRetrieved?.({ data: records });
+                const reconciledData = records.map(record => reconcileCustomData(record, customData));
+                setTransactions(reconciledData);
+            } catch (err) {
+                // TODO: Replace console.error with proper error handling
+                console.error('Failed to fetch custom data:', err);
+            }
+        };
+
+        if (onDataRetrieved) void fetchCustomData();
+        else setTransactions(records);
+    }, [records, onDataRetrieved]);
 
     const isNarrowViewport = useResponsiveViewport(mediaQueries.down.sm);
 
@@ -220,6 +249,7 @@ export const TransactionsOverview = ({
                 <TransactionsTable
                     activeBalanceAccount={activeBalanceAccount}
                     availableCurrencies={availableCurrencies}
+                    columns={columns}
                     error={error as AdyenPlatformExperienceError}
                     hasMultipleCurrencies={hasMultipleCurrencies}
                     limit={limit}
@@ -229,10 +259,14 @@ export const TransactionsOverview = ({
                     onLimitSelection={updateLimit}
                     onRowClick={onRowClick}
                     showPagination={true}
-                    transactions={records}
+                    transactions={transactions}
                     {...paginationProps}
                 />
             </DataDetailsModal>
         </div>
     );
+};
+
+TransactionsOverview.defaultProps = {
+    columns: FIELDS,
 };

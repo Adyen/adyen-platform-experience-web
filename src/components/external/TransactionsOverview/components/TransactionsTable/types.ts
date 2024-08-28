@@ -5,6 +5,7 @@ import type { IBalanceAccountBase, ITransaction } from '../../../../../types';
 export interface TransactionTableProps extends WithPaginationLimitSelection<PaginationProps> {
     activeBalanceAccount?: IBalanceAccountBase;
     availableCurrencies: ITransaction['amount']['currency'][] | undefined;
+    columns?: any; // TODO: Update?
     loading: boolean;
     error: AdyenPlatformExperienceError | undefined;
     hasMultipleCurrencies: boolean;
