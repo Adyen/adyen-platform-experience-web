@@ -5,7 +5,8 @@ import { CustomCell } from '../DataGrid';
 export const TableCells = <
     Items extends Array<any>,
     Columns extends Array<DataGridColumn<Extract<keyof Items[number], string>>>,
-    CustomCells extends CustomCell<Items, Columns, Columns[number]>
+    Fields extends Readonly<Array<string>>,
+    CustomCells extends CustomCell<Items, Columns, Columns[number], Fields>
 >({
     columns,
     customCells,

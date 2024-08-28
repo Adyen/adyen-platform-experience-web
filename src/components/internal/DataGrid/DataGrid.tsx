@@ -29,12 +29,15 @@ type CellKey<
 export type CustomCell<
     Item extends Array<any>,
     Columns extends Array<DataGridColumn<Extract<keyof Item[number], string>>>,
-    T extends Columns[number]
+    T extends Columns[number],
+    Fields extends Readonly<Array<string>>
 > = {
     [k in T['key']]?: (
         props: Item[0][k] extends NonNullable<Item[0][k]>
-            ? { key: CellKey<Item, Columns, Columns[number], k>; value: Item[number][k]; item: Item[number]; rowIndex: number }
-            : { key: CellKey<Item, Columns, Columns[number], k>; item: Item[number]; rowIndex: number }
+            ? Fields[number] extends CellKey<Item, Columns, Columns[number], k>
+                ? { key: CellKey<Item, Columns, Columns[number], k> | (string & {}); item: Item[number]; rowIndex: number }
+                : { key: CellKey<Item, Columns, Columns[number], k>; value: Item[number][k]; item: Item[number]; rowIndex: number }
+            : { key: CellKey<Item, Columns, Columns[number], k> | (string & {}); item: Item[number]; rowIndex: number }
     ) => ComponentChild;
 };
 
@@ -42,8 +45,9 @@ function DataGrid<
     Items extends Array<any>,
     Columns extends Array<DataGridColumn<Extract<keyof Items[number], string>>>,
     ClickedField extends keyof Items[number],
-    CustomCells extends CustomCell<Items, Columns, Columns[number]>
->({ errorDisplay, ...props }: DataGridProps<Items, Columns, ClickedField, CustomCells>) {
+    Fields extends Readonly<Array<string>>,
+    CustomCells extends CustomCell<Items, Columns, Columns[number], Fields>
+>({ errorDisplay, ...props }: DataGridProps<Items, Columns, ClickedField, Fields, CustomCells>) {
     return (
         <div style={{ width: '100%' }}>
             <DataGridProvider>
@@ -57,8 +61,9 @@ function DataGridTable<
     Items extends Array<any>,
     Columns extends Array<DataGridColumn<Extract<keyof Items[number], string>>>,
     ClickedField extends keyof Items[number],
-    CustomCells extends CustomCell<Items, Columns, Columns[number]>
->({ errorDisplay, ...props }: DataGridProps<Items, Columns, ClickedField, CustomCells>) {
+    Fields extends Readonly<Array<string>>,
+    CustomCells extends CustomCell<Items, Columns, Columns[number], Fields>
+>({ errorDisplay, ...props }: DataGridProps<Items, Columns, ClickedField, Fields, CustomCells>) {
     const children = useMemo(() => toChildArray(props.children), [props.children]);
     const footer = useMemo(() => children.find((child: ComponentChild) => (child as any)?.['type'] === DataGridFooter), [children]);
     const emptyBody = useMemo(() => props.data?.length === 0, [props.data]);
@@ -92,7 +97,11 @@ function DataGridTable<
                             </div>
                         </div>
 
-                        <DataGridBody<Items, Columns, ClickedField, CustomCells> {...props} columns={visibleCols as Columns} emptyBody={emptyBody} />
+                        <DataGridBody<Items, Columns, ClickedField, Fields, CustomCells>
+                            {...props}
+                            columns={visibleCols as Columns}
+                            emptyBody={emptyBody}
+                        />
                     </div>
                     {showMessage &&
                         (emptyBody && !props.error ? (
@@ -116,8 +125,9 @@ function DataGridBody<
     Items extends Array<any>,
     Columns extends Array<DataGridColumn<Extract<keyof Items[number], string>>>,
     ClickedField extends keyof Items[number],
-    CustomCells extends CustomCell<Items, Columns, Columns[number]>
->(props: DataGridProps<Items, Columns, ClickedField, CustomCells> & { emptyBody: boolean }) {
+    Fields extends Readonly<Array<string>>,
+    CustomCells extends CustomCell<Items, Columns, Columns[number], Fields>
+>(props: DataGridProps<Items, Columns, ClickedField, Fields, CustomCells> & { emptyBody: boolean }) {
     const showSkeleton = useMemo(() => props.loading || props.emptyBody || props.error, [props.emptyBody, props.error, props.loading]);
 
     return (
@@ -129,7 +139,7 @@ function DataGridBody<
             {showSkeleton ? (
                 <SkeletonBody columnsNumber={props.columns.length} loading={props.loading} />
             ) : props.onRowClick ? (
-                <InteractiveBody<Items, Columns, ClickedField, CustomCells>
+                <InteractiveBody<Items, Columns, ClickedField, Fields, CustomCells>
                     onRowHover={props.onRowHover}
                     data={props.data}
                     columns={props.columns}
@@ -137,7 +147,7 @@ function DataGridBody<
                     customCells={props.customCells}
                 />
             ) : (
-                <TableBody<Items, Columns, ClickedField, CustomCells>
+                <TableBody<Items, Columns, ClickedField, Fields, CustomCells>
                     onRowHover={props.onRowHover}
                     data={props.data}
                     customCells={props.customCells}

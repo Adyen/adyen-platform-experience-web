@@ -1,5 +1,6 @@
 import UIElement from './external/UIElement/UIElement';
 import { Core, onErrorHandler } from '../core';
+import { TransactionsTableFields } from './external/TransactionsOverview/components/TransactionsTable/types';
 
 export const enum InteractionKeyCode {
     ARROW_DOWN = 'ArrowDown',
@@ -79,16 +80,18 @@ interface _DataOverviewSelectionProps<T extends { showModal: () => void } = { sh
     onRecordSelection?: onRecordSelection<T>;
 }
 
-interface _DataOverviewComponentProps {
+interface _DataOverviewComponentProps<Columns = any> {
     allowLimitSelection?: boolean;
     balanceAccountId?: string;
     onFiltersChanged?: (filters: { [P in FilterParam]?: string }) => any;
     preferredLimit?: 10 | 20;
     showDetails?: boolean;
+    customColumns?: Columns[];
+    onDataRetrieved?: (ids: { id: string }[]) => ({ id: string } & Record<any, any>)[];
 }
 
 export interface TransactionOverviewComponentProps
-    extends _DataOverviewComponentProps,
+    extends _DataOverviewComponentProps<TransactionsTableFields>,
         _DataOverviewSelectionProps<{ id: string; showModal: () => void }> {}
 
 export interface PayoutsOverviewComponentProps

@@ -9,7 +9,7 @@ export enum CellTextPosition {
 
 export interface DataGridColumn<Item> {
     label: string;
-    key: Item | string;
+    key: Item | (string & {});
     position?: CellTextPosition;
     visible?: boolean;
     minWidth?: number;
@@ -20,8 +20,10 @@ export interface DataGridProps<
     Item extends Array<any>,
     Columns extends Array<DataGridColumn<Extract<keyof Item[number], string>>>,
     ClickedField extends keyof Item[number],
-    CustomCells extends CustomCell<Item, Columns, Columns[number]>
+    Fields extends Readonly<Array<string>>,
+    CustomCells extends CustomCell<Item, Columns, Columns[number], Fields>
 > {
+    fields: Fields;
     children?: ComponentChildren;
     columns: Columns;
     condensed: boolean;
@@ -48,14 +50,15 @@ export interface DataGridProps<
 
 export interface InteractiveBodyProps<
     Items extends any[],
-    Columns extends Array<DataGridColumn<Extract<keyof Items[number], string>>>,
+    Columns extends Array<DataGridColumn<Extract<keyof Items[number], string & {}>>>,
     ClickedField extends keyof Items[number],
-    CustomCells extends CustomCell<Items, Columns, Columns[number]>
+    Fields extends Readonly<Array<string>>,
+    CustomCells extends CustomCell<Items, Columns, Columns[number], Fields>
 > {
-    onRowClick?: DataGridProps<Items, Columns, ClickedField, CustomCells>['onRowClick'];
-    data: DataGridProps<Items, Columns, ClickedField, CustomCells>['data'];
-    columns: DataGridProps<Items, Columns, ClickedField, CustomCells>['columns'];
-    customCells: DataGridProps<Items, Columns, ClickedField, CustomCells>['customCells'];
+    onRowClick?: DataGridProps<Items, Columns, ClickedField, Fields, CustomCells>['onRowClick'];
+    data: DataGridProps<Items, Columns, ClickedField, Fields, CustomCells>['data'];
+    columns: DataGridProps<Items, Columns, ClickedField, Fields, CustomCells>['columns'];
+    customCells: DataGridProps<Items, Columns, ClickedField, Fields, CustomCells>['customCells'];
     onRowHover?: (index?: number) => void;
 }
 

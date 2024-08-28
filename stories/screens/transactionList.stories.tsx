@@ -38,6 +38,7 @@ export const Basic: ElementStory<typeof TransactionsOverview> = {
     name: 'Basic (Mocked)',
     args: {
         mockedApi: true,
+        customColumns: ['test', 'createdAt'],
     },
 };
 

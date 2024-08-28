@@ -36,6 +36,7 @@ export const TransactionsOverview = ({
     isLoadingBalanceAccount,
     onContactSupport,
     hideTitle,
+    customColumns,
 }: ExternalUIComponentProps<
     TransactionOverviewComponentProps & { balanceAccounts: IBalanceAccountBase[] | undefined; isLoadingBalanceAccount: boolean }
 >) => {
@@ -230,6 +231,7 @@ export const TransactionsOverview = ({
                     onRowClick={onRowClick}
                     showPagination={true}
                     transactions={records}
+                    customColumns={customColumns}
                     {...paginationProps}
                 />
             </DataDetailsModal>

@@ -2,6 +2,8 @@ import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatfo
 import type { PaginationProps, WithPaginationLimitSelection } from '../../../../internal/Pagination/types';
 import type { IBalanceAccountBase, ITransaction } from '../../../../../types';
 
+export type TransactionsTableFields = 'dateAndPaymentMethod' | 'createdAt' | 'paymentMethod' | 'transactionType' | 'amount' | (string & {});
+
 export interface TransactionTableProps extends WithPaginationLimitSelection<PaginationProps> {
     activeBalanceAccount?: IBalanceAccountBase;
     availableCurrencies: ITransaction['amount']['currency'][] | undefined;
@@ -13,4 +15,5 @@ export interface TransactionTableProps extends WithPaginationLimitSelection<Pagi
     showDetails?: boolean;
     showPagination: boolean;
     transactions: ITransaction[] | undefined;
+    customColumns?: TransactionsTableFields[];
 }

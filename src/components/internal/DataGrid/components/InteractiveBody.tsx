@@ -10,14 +10,15 @@ export const InteractiveBody = <
     Items extends any[],
     Columns extends Array<DataGridColumn<Extract<keyof Items[number], string>>>,
     ClickedField extends keyof Items[number],
-    CustomCells extends CustomCell<Items, Columns, Columns[number]>
+    Fields extends Readonly<Array<string>>,
+    CustomCells extends CustomCell<Items, Columns, Columns[number], Fields>
 >({
     data,
     columns,
     onRowClick,
     customCells,
     onRowHover,
-}: InteractiveBodyProps<Items, Columns, ClickedField, CustomCells>) => {
+}: InteractiveBodyProps<Items, Columns, ClickedField, Fields, CustomCells>) => {
     const onClickCallBack = useCallback(
         (item: Items[number]) => () => onRowClick?.callback(onRowClick?.retrievedField ? item[onRowClick.retrievedField] : item),
         [onRowClick]

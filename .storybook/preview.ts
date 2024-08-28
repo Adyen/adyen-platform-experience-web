@@ -4,6 +4,7 @@ import '../src/components/shared.scss';
 import { createAdyenPlatformExperience } from './utils/create-adyenPE';
 import { enableServerInMockedMode, stopMockedServer } from '../mocks/mock-server/utils';
 import sessionRequest from '../playground/utils/sessionRequest';
+import { all_locales } from '../src';
 
 const preview: Preview = {
     parameters: {
@@ -27,6 +28,7 @@ const preview: Preview = {
             await enableServerInMockedMode();
             const AdyenPlatformExperience = await createAdyenPlatformExperience({
                 ...context.coreOptions,
+                availableTranslations: [all_locales],
                 balanceAccountId: context.args.balanceAccountId,
                 environment: 'beta',
                 onSessionCreate: async () => {
@@ -36,6 +38,9 @@ const preview: Preview = {
                         stopMockedServer();
                     }
                     return await sessionRequest(context.args.session);
+                },
+                translations: {
+                    'en-US': { test: 'Translated test' },
                 },
             });
             return { AdyenPlatformExperience };
