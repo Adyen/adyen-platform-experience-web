@@ -6,14 +6,14 @@ import { EMPTY_OBJECT } from '../../../../utils';
 const useDownload = (endpointName: EndpointName, queryParam?: any, enabled?: boolean) => {
     const downloadEndpoint = useAuthContext().endpoints[endpointName] as any;
 
-    const { data, isFetching } = useFetch({
+    const { data, isFetching, error } = useFetch({
         fetchOptions: { enabled: !!downloadEndpoint && enabled, keepPrevData: true },
         queryFn: async () => {
             return downloadEndpoint!(EMPTY_OBJECT, { ...queryParam });
         },
     });
 
-    return { data, isFetching } as const;
+    return { data, isFetching, error } as const;
 };
 
 export default useDownload;

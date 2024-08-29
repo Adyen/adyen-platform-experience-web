@@ -1,15 +1,23 @@
+import classNames from 'classnames';
+import { VNode } from 'preact';
 import { useEffect, useState } from 'preact/hooks';
+import useCoreContext from '../../../../core/Context/useCoreContext';
+import AdyenPlatformExperienceError from '../../../../core/Errors/AdyenPlatformExperienceError';
 import { EndpointName } from '../../../../types/api/endpoints';
+import { mediaQueries, useResponsiveViewport } from '../../../external/TransactionsOverview/hooks/useResponsiveViewport';
 import Spinner from '../../Spinner';
 import Download from '../../SVGIcons/Download';
 import Button from '../Button';
 import { ButtonVariant } from '../types';
 import useDownload from './useDownload';
+import './DownloadButton.scss';
 
 interface DownloadButtonProps {
     params: any;
     endpointName: EndpointName;
     className?: string;
+    setError?: (error?: AdyenPlatformExperienceError) => any;
+    onError?: (error?: AdyenPlatformExperienceError) => VNode<any>;
 }
 
 function downloadBlob({ blob, filename }: { blob: Blob; filename: string }) {
@@ -29,9 +37,11 @@ function downloadBlob({ blob, filename }: { blob: Blob; filename: string }) {
     a.click();
 }
 
-function DownloadButton({ endpointName, params, ...props }: DownloadButtonProps) {
+function DownloadButton({ endpointName, params, setError, onError, ...props }: DownloadButtonProps) {
+    const { i18n } = useCoreContext();
     const [fetchData, setFetchData] = useState(false);
-    const { data, isFetching } = useDownload(endpointName, params, fetchData);
+    const isSmViewport = useResponsiveViewport(mediaQueries.down.xs);
+    const { data, error, isFetching } = useDownload(endpointName, params, fetchData);
 
     useEffect(() => {
         if (fetchData) {
@@ -45,16 +55,34 @@ function DownloadButton({ endpointName, params, ...props }: DownloadButtonProps)
         }
     }, [data]);
 
+    useEffect(() => {
+        if (setError && error) {
+            setError(error as AdyenPlatformExperienceError);
+        }
+    }, [error]);
+
     const onClick = () => setFetchData(true);
 
-    if (isFetching) {
-        return <Spinner size={'small'} />;
-    }
-
     return (
-        <Button iconButton={true} variant={ButtonVariant.TERTIARY} onClick={onClick} {...props}>
-            <Download />
-        </Button>
+        <div className="adyen-pe-download">
+            {isSmViewport ? (
+                <Button iconButton={true} variant={ButtonVariant.TERTIARY} onClick={onClick}>
+                    {isFetching ? <Spinner size={'small'} /> : <Download />}
+                </Button>
+            ) : (
+                <Button
+                    className={classNames('adyen-pe-download__button', { 'adyen-pe-download__button--loading': isFetching })}
+                    disabled={isFetching}
+                    variant={ButtonVariant.SECONDARY}
+                    onClick={onClick}
+                    iconLeft={isFetching ? <Spinner size={'small'} /> : <Download />}
+                    {...props}
+                >
+                    {isFetching ? i18n.get('downloading') : i18n.get('download')}
+                </Button>
+            )}
+            {error && onError && <div className={'adyen-pe-download__error'}>{onError()}</div>}
+        </div>
     );
 }
 

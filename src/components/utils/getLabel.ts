@@ -14,7 +14,8 @@ const labels = {
     payoutAmount: 'netPayout',
     adjustmentAmount: 'adjustments',
     dateAndPaymentMethod: 'date',
-    reportName: 'report',
+    dateAndReportType: 'date',
+    reportType: 'report',
     reportFile: 'file',
 } as const;
 

@@ -12,7 +12,7 @@ export const DATE_FORMAT_TRANSACTIONS: Intl.DateTimeFormatOptions = {
     hour12: false,
 };
 
-export const DATE_FORMAT_REPORTS_MOBILE: Intl.DateTimeFormatOptions = DATE_FORMAT_TRANSACTIONS;
+export const DATE_FORMAT_REPORTS_MOBILE: Intl.DateTimeFormatOptions = { ...DATE_FORMAT_TRANSACTIONS, year: undefined };
 
 export const DATE_FORMAT_TRANSACTION_DETAILS: Intl.DateTimeFormatOptions = {
     weekday: LONG,
