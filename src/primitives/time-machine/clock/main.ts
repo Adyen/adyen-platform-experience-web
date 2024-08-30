@@ -1,9 +1,31 @@
 import { createInterval } from './interval';
+import { isFunction, noop } from '../../../utils';
 
 export const clock = (() => {
     const interval = createInterval(1000);
-    return async function* (signal?: AbortSignal) {
-        for await (const o_O of interval(signal)) yield Date.now();
+
+    return (callback: () => unknown): (() => void) => {
+        if (!isFunction(callback)) return noop;
+
+        let cancel = () => {
+            controller.abort();
+            controller = cancel = null!;
+        };
+
+        let controller = new AbortController();
+
+        (async () => {
+            for await (const o_O of interval(controller.signal)) {
+                try {
+                    callback();
+                } catch (ex) {
+                    cancel?.();
+                    throw ex;
+                }
+            }
+        })();
+
+        return () => cancel?.();
     };
 })();
 
