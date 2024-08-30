@@ -1,53 +1,61 @@
 import { zoneFrom } from './main';
-import { getter, noop } from '../../../utils';
+import { getter } from '../../../utils';
+import { getWeekDay } from '../utils';
 import { dateFrom, getResolvedTimezone, getTimezoneFormatter, getTimezoneUTCOffset, matchTimezoneFormattedString, restamp } from './utils';
 import type { DateValue } from '../../../utils/datetime/types';
-import type { RecordWithTimezone } from '../types';
+import type { RecordWithTimezone, WeekDay } from '../types';
 
-const DATE_PARTS_REGEXP = /^(\d{2})\/(\d{2})\/(-?\d+),\s+(\d{2}):(\d{2}):(\d{2}).(\d{3})/;
+const WEEK_DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'] as const;
+const DATE_PARTS_REGEXP = /(?<=^\D*)(\d{2})\/(\d{2})\/(-?\d+),\s+(\d{2}):(\d{2}):(\d{2}).(\d{3})/;
+const WEEK_DAY_REGEXP = /^([^,\s]+)/;
 
 export class Zone implements RecordWithTimezone {
-    declare readonly defaultFormatter: Intl.DateTimeFormat;
+    declare readonly formatter: Intl.DateTimeFormat;
     declare readonly timezone: string;
 
     constructor(timezone: string) {
-        const defaultFormatter = getTimezoneFormatter(timezone);
+        const formatter = getTimezoneFormatter(timezone);
         Object.defineProperties(this, {
-            defaultFormatter: getter(() => defaultFormatter),
+            formatter: getter(() => formatter),
             timezone: getter(() => timezone),
         });
     }
 
-    computedTime(date: DateValue, performTimeAdjustments = noop as unknown as (restampedDate: Date, zone: Zone) => unknown) {
-        const zone = zoneFrom(this);
-        const time = dateFrom(zone.timezoneToSystem(date));
-        performTimeAdjustments(time, zone);
-        return zone.systemToTimezone(time);
-    }
-
-    dateParts(date: DateValue) {
-        const dateParts = matchTimezoneFormattedString.call(this, DATE_PARTS_REGEXP, dateFrom(date));
-        const [month = '', day = '', year = '', hrs = '', mins = '', secs = '', ms = ''] = dateParts;
-        return [+year, +month - 1, +day, +hrs, +mins, +secs, +ms] as const;
-    }
-
-    get isSystemTimezone() {
-        return this.timezone === getResolvedTimezone();
-    }
-
-    systemToTimezone(date: DateValue) {
+    fromSystem(date: DateValue) {
         return restamp.call(this, date, 1);
     }
 
-    timezoneOffsets(date: DateValue) {
+    get isSystem() {
+        return this.timezone === getResolvedTimezone();
+    }
+
+    offsets(date: DateValue) {
         const time = dateFrom(date);
         const systemOffset = time.getTimezoneOffset();
-        const timezoneUTCOffset = getTimezoneUTCOffset.call(this, time);
+        const timezoneUTCOffset = getTimezoneUTCOffset.call(this, time) | 0;
         return [timezoneUTCOffset, timezoneUTCOffset - systemOffset] as const;
     }
 
-    timezoneToSystem(date: DateValue) {
+    time(date: DateValue, timeAdjustment?: (restampedDate: Date, zone: Zone) => unknown) {
+        const zone = zoneFrom(this);
+        const time = dateFrom(zone.toSystem(date));
+        timeAdjustment?.(time, zone);
+        return zone.fromSystem(time);
+    }
+
+    timeArray(date: DateValue) {
+        const dateParts = matchTimezoneFormattedString.call(this, DATE_PARTS_REGEXP, dateFrom(date));
+        const [month = '', day = '', year = '', hrs = '', mins = '', secs = '', ms = ''] = dateParts;
+        return [+year, +month - 1, +day, +hrs % 24, +mins, +secs, +ms] as const;
+    }
+
+    toSystem(date: DateValue) {
         return restamp.call(this, date, -1);
+    }
+
+    weekDay(date: DateValue, firstWeekDay: WeekDay = 0) {
+        const [weekDay] = matchTimezoneFormattedString.call(this, WEEK_DAY_REGEXP, dateFrom(date));
+        return getWeekDay(WEEK_DAYS.indexOf(weekDay as (typeof WEEK_DAYS)[number]) as WeekDay, firstWeekDay);
     }
 }
 
