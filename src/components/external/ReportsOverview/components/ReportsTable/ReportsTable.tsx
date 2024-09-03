@@ -148,7 +148,7 @@ export const ReportsTable: FC<ReportsTableProps> = ({
                     },
                     reportFile: ({ item }) => {
                         const queryParam = {
-                            query: { balanceAccountId: balanceAccountId, createdAt: item.createdAt },
+                            query: { balanceAccountId: balanceAccountId, createdAt: item.createdAt, type: item.type },
                         };
                         return (
                             <DownloadButton

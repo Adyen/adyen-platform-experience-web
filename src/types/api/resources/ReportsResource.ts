@@ -78,6 +78,7 @@ export interface operations {
         parameters: {
             query: {
                 balanceAccountId: string;
+                type: string;
                 createdAt?: string;
             };
         };
