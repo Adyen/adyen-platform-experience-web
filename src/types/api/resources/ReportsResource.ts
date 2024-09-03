@@ -8,8 +8,6 @@ export interface paths {
     };
 }
 
-export type webhooks = Record<string, never>;
-
 export interface components {
     schemas: {
         /** @description Reports made within the filters provided for given balanceAccountId */
@@ -23,7 +21,7 @@ export interface components {
              * Format: string
              * @description Name of the report
              */
-            name?: string;
+            type?: string;
         };
         /** @description Link to a different page */
         Link: {
@@ -49,8 +47,6 @@ export interface components {
     pathItems: never;
 }
 
-export type $defs = Record<string, never>;
-
 export type external = Record<string, never>;
 
 export interface operations {
@@ -62,6 +58,7 @@ export interface operations {
         parameters: {
             query: {
                 balanceAccountId: string;
+                type: string;
                 createdSince?: string;
                 createdUntil?: string;
                 cursor?: string;

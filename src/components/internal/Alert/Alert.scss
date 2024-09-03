@@ -50,7 +50,7 @@
     }
 
     &__close-button {
-        --offset-margin: calc(20px - var(--adyen-sdk-spacer-080, 40px));
+        --offset-margin: calc(#{style.token(spacer-080)} - #{style.token(spacer-110)});
         --offset-position: calc(var(--offset-margin) * -1 / 2);
         cursor: pointer;
         display: flex;

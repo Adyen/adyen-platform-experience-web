@@ -74,6 +74,7 @@ export const reportsMock = [
 
         const buffer = await fetch(`/mockFiles/report.csv`).then(response => response.arrayBuffer());
 
+        await delay(2000);
         if (downloadError) {
             return new HttpResponse(
                 JSON.stringify({

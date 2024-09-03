@@ -1,7 +1,7 @@
 @use '../../../../style';
 
 .adyen-pe-download {
-    --offset-margin: calc(1rem - var(--adyen-sdk-spacer-110, 40px));
+    --offset-margin: calc(1rem - #{style.token(spacer-110)});
     --offset-position: calc(var(--offset-margin) * -1 / 2);
     align-items: center;
     cursor: pointer;

@@ -51,7 +51,8 @@ function DownloadButton({ endpointName, params, setError, onError, ...props }: D
 
     useEffect(() => {
         if (data) {
-            downloadBlob(data);
+            // TODO: Fix the types to use type inference here
+            downloadBlob(data as { blob: Blob; filename: string });
         }
     }, [data]);
 
@@ -78,7 +79,7 @@ function DownloadButton({ endpointName, params, setError, onError, ...props }: D
                     iconLeft={isFetching ? <Spinner size={'small'} /> : <Download />}
                     {...props}
                 >
-                    {isFetching ? i18n.get('downloading') : i18n.get('download')}
+                    {isFetching ? `${i18n.get('downloading')}..` : i18n.get('download')}
                 </Button>
             )}
             {error && onError && <div className={'adyen-pe-download__error'}>{onError()}</div>}

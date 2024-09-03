@@ -13,9 +13,10 @@ import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '../../../../internal/Paginati
 import { useCursorPaginatedRecords } from '../../../../internal/Pagination/hooks';
 import { TypographyVariant } from '../../../../internal/Typography/types';
 import Typography from '../../../../internal/Typography/Typography';
-import { ExternalUIComponentProps, FilterParam, PayoutsOverviewComponentProps } from '../../../../types';
+import { ExternalUIComponentProps, FilterParam, ReportsOverviewComponentProps } from '../../../../types';
 import { ReportsTable } from '../ReportsTable/ReportsTable';
 import { BASE_CLASS, EARLIEST_PAYOUT_SINCE_DATE } from './constants';
+import './ReportsOverview.scss';
 
 export const ReportsOverview = ({
     onFiltersChanged,
@@ -26,7 +27,7 @@ export const ReportsOverview = ({
     onContactSupport,
     hideTitle,
 }: ExternalUIComponentProps<
-    PayoutsOverviewComponentProps & { balanceAccounts: IBalanceAccountBase[] | undefined; isLoadingBalanceAccount: boolean }
+    ReportsOverviewComponentProps & { balanceAccounts: IBalanceAccountBase[] | undefined; isLoadingBalanceAccount: boolean }
 >) => {
     const { i18n } = useCoreContext();
     const { getReports: reportsEndpointCall } = useAuthContext().endpoints;
@@ -40,6 +41,7 @@ export const ReportsOverview = ({
             return reportsEndpointCall!(requestOptions, {
                 query: {
                     ...pageRequestParams,
+                    type: 'payout',
                     createdSince:
                         pageRequestParams[FilterParam.CREATED_SINCE] ?? defaultParams.current.defaultFilterParams[FilterParam.CREATED_SINCE],
                     createdUntil:
@@ -72,7 +74,7 @@ export const ReportsOverview = ({
     }, [filters, refreshNowTimestamp]);
 
     return (
-        <div className={BASE_CLASS} style={{ position: 'relative' }}>
+        <div className={BASE_CLASS}>
             {!hideTitle && (
                 <Typography variant={TypographyVariant.TITLE} medium>
                     {i18n.get('reportsTitle')}

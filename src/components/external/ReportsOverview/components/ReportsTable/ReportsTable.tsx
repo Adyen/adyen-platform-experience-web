@@ -1,4 +1,4 @@
-import { FC, useEffect } from 'preact/compat';
+import { FC } from 'preact/compat';
 import { useCallback, useMemo, useState } from 'preact/hooks';
 import { useAuthContext } from '../../../../../core/Auth';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
@@ -97,13 +97,13 @@ export const ReportsTable: FC<ReportsTableProps> = ({
             const alertDetails: Partial<{ key: number; description: string; title: string }> = {};
             switch (error?.errorCode) {
                 case '00_429':
-                    alertDetails.title = i18n.get('errorMessage.somethingWentWrongWithDownload');
-                    alertDetails.description = i18n.get('errorMessage.tooManyDownloads');
+                    alertDetails.title = i18n.get('error.somethingWentWrongWithDownload');
+                    alertDetails.description = i18n.get('reportsError.tooManyDownloads');
                     break;
                 case '00_500':
                 default:
-                    alertDetails.title = i18n.get('errorMessage.somethingWentWrongWithDownload');
-                    alertDetails.description = i18n.get('errorMessage.pleaseTryAgainLater');
+                    alertDetails.title = i18n.get('error.somethingWentWrongWithDownload');
+                    alertDetails.description = i18n.get('error.pleaseTryAgainLater');
                     break;
             }
             setAlert(alertDetails as { title: string; description: string });
@@ -111,9 +111,7 @@ export const ReportsTable: FC<ReportsTableProps> = ({
         [error, onContactSupport]
     );
 
-    useEffect(() => {
-        setAlert(null);
-    }, [loading]);
+    if (loading) setAlert(null);
 
     return (
         <div className={BASE_CLASS}>
@@ -137,7 +135,7 @@ export const ReportsTable: FC<ReportsTableProps> = ({
                         return (
                             <div className={DATE_TYPE_CLASS}>
                                 <Typography variant={TypographyVariant.BODY} stronger>
-                                    {item.name}
+                                    {item.type}
                                 </Typography>
                                 <Typography className={DATE_TYPE_DATE_SECTION_CLASS} variant={TypographyVariant.BODY}>
                                     {dateFormat(item.createdAt, DATE_FORMAT_REPORTS_MOBILE)}
@@ -146,7 +144,7 @@ export const ReportsTable: FC<ReportsTableProps> = ({
                         );
                     },
                     reportType: ({ item }) => {
-                        return item?.['name'] && <Typography variant={TypographyVariant.BODY}>{item?.['name']}</Typography>;
+                        return item?.['type'] && <Typography variant={TypographyVariant.BODY}>{item?.['type']}</Typography>;
                     },
                     reportFile: ({ item }) => {
                         const queryParam = {
@@ -154,6 +152,7 @@ export const ReportsTable: FC<ReportsTableProps> = ({
                         };
                         return (
                             <DownloadButton
+                                className={'adyen-pe-reports-table--download'}
                                 endpointName={'downloadReport'}
                                 params={queryParam}
                                 setError={onDownloadErrorAlert}
