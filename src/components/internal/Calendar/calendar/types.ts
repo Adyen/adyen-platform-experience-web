@@ -113,7 +113,10 @@ export type TimeSlice = Readonly<WithTimeEdges<number>> &
     Readonly<{
         offsets: Readonly<WithTimeEdges<number>>;
         span: number;
-    }>;
+    }> & {
+        get timezone(): string;
+        set timezone(value: string | undefined | null);
+    };
 
 export type TimeSliceFactory = {
     (fromTime?: Time, toTime?: Time): TimeSlice;
@@ -149,6 +152,7 @@ export type CalendarConfig = {
     locale?: string;
     minified?: boolean;
     timeslice?: TimeSlice;
+    timezone?: string;
     trackCurrentDay?: boolean;
 };
 
@@ -234,4 +238,5 @@ export type CalendarWatchAtoms = Partial<WithTimeEdges<number>> & {
     minified?: boolean;
     origin?: number;
     today: number;
+    timezone?: string;
 };

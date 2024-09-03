@@ -1,6 +1,7 @@
 import { clamp } from '../../../../../../../utils';
 import createRangeTimestampsFactory from '../../factory';
-import { getRangeTimestampsContextIntegerPropertyFactory, nowTimestamp, offsetsForNDays, startOfDay, startOfWeekOffset } from '../../utils';
+import { getRangeTimestampsContextIntegerPropertyFactory, nowTimestamp, offsetsForNDays } from '../../utils';
+import { startOfWeek } from '../../../utils';
 import type { WeekDay } from '../../../types';
 
 export const DEFAULT_FIRST_WEEK_DAY = 1;
@@ -17,22 +18,9 @@ const offsetWeek = (weekCount: number = 0) => {
 
         return createRangeTimestampsFactory(
             {
-                from: ({ now, systemToTimezone, timezoneToSystem }) => {
-                    const date = new Date(now);
-                    const restampedDate = new Date(timezoneToSystem(now));
-                    const dayDiff = (date.getDay() - restampedDate.getDay()) as -1 | 1 | 0;
-
-                    startOfDay(date);
-
-                    if (dayDiff) {
-                        // Correction for difference between first (0) and last (6) week day
-                        const dateDiff = dayDiff > 1 ? -1 : dayDiff < -1 ? 1 : dayDiff;
-                        date.setDate(date.getDate() - dateDiff);
-                    }
-
-                    const dateOffset = startOfWeekOffset(firstWeekDayContext.value, date.getDay() as WeekDay) - weeks * 7;
-                    date.setDate(date.getDate() + dateOffset);
-
+                from: ({ now, timezone, systemToTimezone, timezoneToSystem }) => {
+                    const date = new Date(timezoneToSystem(startOfWeek(now, timezone, firstWeekDayContext.value)));
+                    date.setDate(date.getDate() - weeks * 7);
                     return systemToTimezone(date);
                 },
                 ...restConfig,
