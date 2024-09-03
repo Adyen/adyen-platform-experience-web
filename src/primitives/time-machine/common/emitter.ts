@@ -1,15 +1,15 @@
 import { enumerable, identity, isFunction } from '../../../utils';
 
-export interface Observable<T> {
+export interface Emitter<T> {
     (callback: (value: T) => unknown, signal?: AbortSignal): void;
     readonly end: () => void;
     readonly signal: AbortSignal;
 }
 
-export const createObservable = <T, TTransform = T>(
+export const createEmitter = <T, TTransform = T>(
     source: () => Iterable<T> | AsyncIterable<T>,
     transform = identity as (currentValue: T) => TTransform
-): Observable<TTransform> => {
+): Emitter<TTransform> => {
     type TValue = TTransform | typeof suspensionToken;
 
     let activeIterators = 0;
@@ -26,9 +26,9 @@ export const createObservable = <T, TTransform = T>(
 
     let iterator = async function* () {
         try {
-            activeIterators++ || startIterator();
+            activeIterators++ || startIterator?.();
             while (true) {
-                const value = await valuePromise;
+                const value = (await valuePromise) ?? suspensionToken;
                 if (value === suspensionToken) break;
                 yield value;
             }
@@ -43,18 +43,19 @@ export const createObservable = <T, TTransform = T>(
         );
 
         valuePromise.then(value => {
-            if (value) refreshValuePromise();
-            else valuePromise = valuePromiseResolve = null!;
+            if (value === suspensionToken) {
+                valuePromise = valuePromiseResolve = null!;
+            } else refreshValuePromise?.();
         });
     };
 
-    let startIterator = () => {
-        refreshValuePromise();
-        (async () => {
-            for await (const currentValue of source()) {
-                valuePromiseResolve?.(transform(currentValue));
-            }
-        })();
+    let startIterator = async () => {
+        refreshValuePromise?.();
+
+        for await (const currentValue of source()) {
+            if (!activeIterators) break;
+            valuePromiseResolve?.(transform(currentValue));
+        }
     };
 
     const subscribe = ((callback: (value: TTransform) => unknown, signal?: AbortSignal) => {
@@ -73,7 +74,7 @@ export const createObservable = <T, TTransform = T>(
                 callback(value);
             }
         })();
-    }) as Observable<TTransform>;
+    }) as Emitter<TTransform>;
 
     return Object.defineProperties(subscribe, {
         end: enumerable(() => end?.()),
@@ -81,4 +82,4 @@ export const createObservable = <T, TTransform = T>(
     });
 };
 
-export default createObservable;
+export default createEmitter;
