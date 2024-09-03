@@ -40,7 +40,10 @@ const preview: Preview = {
                     return await sessionRequest(context.args.session);
                 },
                 translations: {
-                    'en-US': { test: 'Translated test' },
+                    en_US: {
+                        _store: 'Store',
+                        _product: 'Product',
+                    },
                 },
             });
             return { AdyenPlatformExperience };

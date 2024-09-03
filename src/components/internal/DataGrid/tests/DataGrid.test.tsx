@@ -36,7 +36,6 @@ describe('DataGrid component with clickable rows', () => {
         const screen = render(
             <div>
                 <DataGrid
-                    fields={columns.map(column => column.key)}
                     data={TRANSACTIONS}
                     columns={columns}
                     loading={false}

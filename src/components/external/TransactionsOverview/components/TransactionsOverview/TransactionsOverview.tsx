@@ -37,6 +37,7 @@ export const TransactionsOverview = ({
     onContactSupport,
     hideTitle,
     customColumns,
+    onDataRetrieved,
 }: ExternalUIComponentProps<
     TransactionOverviewComponentProps & { balanceAccounts: IBalanceAccountBase[] | undefined; isLoadingBalanceAccount: boolean }
 >) => {
@@ -149,6 +150,36 @@ export const TransactionsOverview = ({
         return date.toString();
     }, [nowTimestamp]);
 
+    const [transactions, setTransactions] = useState<(ITransaction & Record<string, any> & {})[]>(records);
+    const [loadingCustomRecords, setLoadingCustomRecords] = useState(false);
+
+    const mergedRecords = useCallback(
+        (data: ITransaction[]) => async () => {
+            try {
+                records.length && setLoadingCustomRecords(true);
+                const retrievedData = onDataRetrieved ? await onDataRetrieved(data) : [];
+                setTransactions(
+                    records.map(record => {
+                        const retrievedItem = retrievedData.find(item => item.id === record.id);
+                        return { ...retrievedItem, ...record };
+                    })
+                );
+            } catch (error) {
+                setTransactions(records);
+                console.log(error);
+            } finally {
+                setLoadingCustomRecords(false);
+            }
+        },
+        [onDataRetrieved, records]
+    );
+
+    useEffect(() => {
+        if (onDataRetrieved) {
+            mergedRecords(records)();
+        }
+    }, [onDataRetrieved, mergedRecords, records]);
+
     return (
         <div className={BASE_CLASS}>
             {!hideTitle && (
@@ -225,12 +256,12 @@ export const TransactionsOverview = ({
                     hasMultipleCurrencies={hasMultipleCurrencies}
                     limit={limit}
                     limitOptions={limitOptions}
-                    loading={fetching || isLoadingBalanceAccount || !balanceAccounts}
+                    loading={fetching || isLoadingBalanceAccount || !balanceAccounts || loadingCustomRecords}
                     onContactSupport={onContactSupport}
                     onLimitSelection={updateLimit}
                     onRowClick={onRowClick}
                     showPagination={true}
-                    transactions={records}
+                    transactions={transactions}
                     customColumns={customColumns}
                     {...paginationProps}
                 />

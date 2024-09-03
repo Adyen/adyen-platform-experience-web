@@ -53,7 +53,7 @@ export default defineConfig(async ({ mode }) => {
                       minify: false,
                   }
                 : {
-                      minify: true,
+                      minify: false,
                       lib: {
                           name: 'AdyenPlatformExperienceWeb',
                           entry: resolve(__dirname, './src/index.ts'),
@@ -85,7 +85,9 @@ export default defineConfig(async ({ mode }) => {
             'process.env.VITE_COMMIT_HASH': JSON.stringify(currentVersion.COMMIT_HASH),
             'process.env.VITE_COMMIT_BRANCH': JSON.stringify(currentVersion.COMMIT_BRANCH),
             'process.env.VITE_ADYEN_BUILD_ID': JSON.stringify(currentVersion.ADYEN_BUILD_ID),
-            'process.env.VITE_LOADING_CONTEXT': JSON.stringify(mode === 'development' || mode === 'local-env' ? playground.loadingContext || null : null),
+            'process.env.VITE_LOADING_CONTEXT': JSON.stringify(
+                mode === 'development' || mode === 'local-env' ? playground.loadingContext || null : null
+            ),
             'process.env.SESSION_AUTO_REFRESH': JSON.stringify(
                 isDevMode(mode) ? apiConfigs.sessionApi.autoRefresh || JSON.stringify(null) : undefined
             ),

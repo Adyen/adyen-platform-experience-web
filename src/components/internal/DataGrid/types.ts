@@ -20,10 +20,8 @@ export interface DataGridProps<
     Item extends Array<any>,
     Columns extends Array<DataGridColumn<Extract<keyof Item[number], string>>>,
     ClickedField extends keyof Item[number],
-    Fields extends Readonly<Array<string>>,
-    CustomCells extends CustomCell<Item, Columns, Columns[number], Fields>
+    CustomCells extends CustomCell<Item, Columns, Columns[number]>
 > {
-    fields: Fields;
     children?: ComponentChildren;
     columns: Columns;
     condensed: boolean;
@@ -52,13 +50,12 @@ export interface InteractiveBodyProps<
     Items extends any[],
     Columns extends Array<DataGridColumn<Extract<keyof Items[number], string & {}>>>,
     ClickedField extends keyof Items[number],
-    Fields extends Readonly<Array<string>>,
-    CustomCells extends CustomCell<Items, Columns, Columns[number], Fields>
+    CustomCells extends CustomCell<Items, Columns, Columns[number]>
 > {
-    onRowClick?: DataGridProps<Items, Columns, ClickedField, Fields, CustomCells>['onRowClick'];
-    data: DataGridProps<Items, Columns, ClickedField, Fields, CustomCells>['data'];
-    columns: DataGridProps<Items, Columns, ClickedField, Fields, CustomCells>['columns'];
-    customCells: DataGridProps<Items, Columns, ClickedField, Fields, CustomCells>['customCells'];
+    onRowClick?: DataGridProps<Items, Columns, ClickedField, CustomCells>['onRowClick'];
+    data: DataGridProps<Items, Columns, ClickedField, CustomCells>['data'];
+    columns: DataGridProps<Items, Columns, ClickedField, CustomCells>['columns'];
+    customCells: DataGridProps<Items, Columns, ClickedField, CustomCells>['customCells'];
     onRowHover?: (index?: number) => void;
 }
 

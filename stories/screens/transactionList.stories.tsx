@@ -4,6 +4,7 @@ import { TransactionsOverview } from '../../src';
 import { ElementProps, ElementStory, SessionControls } from '../utils/types';
 import { Container } from '../utils/Container';
 import { EMPTY_SESSION_OBJECT } from '../utils/constants';
+import { getMyCustomData } from '../utils/customDataRequest';
 
 const meta: Meta<ElementProps<typeof TransactionsOverview>> = {
     title: 'screens/Transactions',
@@ -38,7 +39,20 @@ export const Basic: ElementStory<typeof TransactionsOverview> = {
     name: 'Basic (Mocked)',
     args: {
         mockedApi: true,
-        customColumns: ['test', 'createdAt'],
+        customColumns: ['amount', 'paymentMethod', 'transactionType', '_store', '_product', 'createdAt'],
+        /*customColumns: [
+            { label: 'amount', flex: 1, align: 'left', mobile: true },
+            { label: 'paymentMethod', flex: 1.5, align: 'left' },
+            { label: 'transactionType', flex: 2, align: 'left', mobile: true },
+            { label: 'createdAt', flex: 1, align: 'right' },
+        ],*/
+        onDataRetrieved: data => {
+            return new Promise(resolve => {
+                setTimeout(() => {
+                    resolve(getMyCustomData(data));
+                }, 2500);
+            });
+        },
     },
 };
 

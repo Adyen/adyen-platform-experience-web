@@ -90,7 +90,6 @@ export const PayoutsTable: FC<PayoutsTableProps> = ({
     return (
         <div className={BASE_CLASS}>
             <DataGrid
-                fields={AMOUNT_FIELDS}
                 errorDisplay={errorDisplay}
                 error={error}
                 columns={columns}

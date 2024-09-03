@@ -1,8 +1,10 @@
 import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatformExperienceError';
 import type { PaginationProps, WithPaginationLimitSelection } from '../../../../internal/Pagination/types';
 import type { IBalanceAccountBase, ITransaction } from '../../../../../types';
+import { StringWithAutocompleteOptions } from '../../../../../utils/types';
+import { TransactionsTableCols } from './TransactionsTable';
 
-export type TransactionsTableFields = 'dateAndPaymentMethod' | 'createdAt' | 'paymentMethod' | 'transactionType' | 'amount' | (string & {});
+export type TransactionsTableFields = StringWithAutocompleteOptions<TransactionsTableCols>;
 
 export interface TransactionTableProps extends WithPaginationLimitSelection<PaginationProps> {
     activeBalanceAccount?: IBalanceAccountBase;

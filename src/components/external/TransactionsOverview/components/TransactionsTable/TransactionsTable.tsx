@@ -14,14 +14,14 @@ import { AMOUNT_CLASS, BASE_CLASS, DATE_AND_PAYMENT_METHOD_CLASS } from './const
 import './TransactionTable.scss';
 import { mediaQueries, useResponsiveViewport } from '../../hooks/useResponsiveViewport';
 import { FC } from 'preact/compat';
-import { TransactionsTableFields, TransactionTableProps } from './types';
+import { TransactionTableProps } from './types';
 import PaymentMethodCell from './PaymentMethodCell';
 
 // Remove status column temporarily
 // const FIELDS = ['createdAt', 'status', 'paymentMethod', 'transactionType', 'amount'] as const;
 
 const FIELDS = ['dateAndPaymentMethod', 'createdAt', 'paymentMethod', 'transactionType', 'amount'] as const;
-type FieldsType = (typeof FIELDS)[number];
+export type TransactionsTableCols = (typeof FIELDS)[number];
 
 export const TransactionsTable: FC<TransactionTableProps> = ({
     activeBalanceAccount,
@@ -54,22 +54,9 @@ export const TransactionsTable: FC<TransactionTableProps> = ({
         [isXsAndDownViewport, isSmAndUpViewport, isMdAndUpViewport]
     );
 
-    const originalArray = [...FIELDS, ...(customColumns || [])];
-
-    const uniqueValuesSet = new Set<TransactionsTableFields>();
-
-    const uniqueValues: TransactionsTableFields[] = [];
-    for (let i = originalArray.length - 1; i >= 0; i--) {
-        const value = originalArray[i]!;
-        if (!uniqueValuesSet.has(value)) {
-            uniqueValuesSet.add(value);
-            uniqueValues.unshift(value); // Add to the start to maintain the original order
-        }
-    }
-
     const columns = useMemo(
         () =>
-            uniqueValues.map(key => {
+            (customColumns || FIELDS).map(key => {
                 const label = i18n.get(getLabel(key as any));
                 if (key === 'amount') {
                     return {
@@ -82,7 +69,7 @@ export const TransactionsTable: FC<TransactionTableProps> = ({
                     };
                 }
 
-                return { key, label, visible: fieldsVisibility[key] };
+                return { key: key as TransactionsTableCols, label, visible: fieldsVisibility[key] };
             }),
         [availableCurrencies, customColumns, fieldsVisibility, hasMultipleCurrencies, i18n, isSmAndUpViewport]
     );
@@ -107,7 +94,6 @@ export const TransactionsTable: FC<TransactionTableProps> = ({
     return (
         <div className={BASE_CLASS}>
             <DataGrid
-                fields={FIELDS}
                 errorDisplay={errorDisplay}
                 error={error}
                 columns={columns}

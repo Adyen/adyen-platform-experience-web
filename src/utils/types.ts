@@ -40,3 +40,5 @@ export type WithReplacedUnderscoreOrDash<
     Character extends '-' | '_',
     Replace extends '-' | '_'
 > = S extends `${infer T}${Character}${infer U}` ? `${T}${Replace}${U}` : S;
+
+export type StringWithAutocompleteOptions<T> = T | (string & {});
