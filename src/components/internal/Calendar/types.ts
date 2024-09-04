@@ -42,6 +42,7 @@ export interface CalendarProps {
     prepare?: (renderToken: CalendarGridRenderToken, renderContext: any) => any;
     renderControl?: (...args: CalendarGridControlRecord) => VNode | null;
     sinceDate?: Time;
+    timezone?: string;
     trackCurrentDay?: boolean;
     untilDate?: Time;
     useYearView?: boolean;

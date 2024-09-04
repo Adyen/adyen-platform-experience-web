@@ -27,8 +27,12 @@ import {
     SHIFT_FRAME,
     SHIFT_PERIOD,
 } from '../constants';
+import { withTimezone } from '../utils';
+import { MonthFrame, TimeFrame /* , YearFrame */ } from '../timeframe';
 import { createIndexed } from '../../../../../primitives/auxiliary/indexed';
 import { createEffectStack, EffectStack } from '../../../../../primitives/reactive/effectStack';
+import { systemToTimezone, timezoneToSystem } from '../../../../../core/Localization/datetime/restamper';
+import today from '../../../../../primitives/time/today';
 import {
     createWatchlist,
     isWatchlistUnsubscribeToken,
@@ -36,7 +40,6 @@ import {
     WatchListCallable,
     WatchListSubscriptionCallback,
 } from '../../../../../primitives/reactive/watchlist';
-import today from '../../../../../primitives/time/today';
 import {
     boolify,
     boolOrTrue,
@@ -52,7 +55,6 @@ import {
     structFrom,
     withFreezeProxyHandlers,
 } from '../../../../../utils';
-import { MonthFrame, TimeFrame /* , YearFrame */ } from '../timeframe';
 import {
     CalendarConfig,
     CalendarDayOfWeekData,
@@ -109,6 +111,7 @@ export default class Calendar {
         locale: () => this.#frame?.locale,
         minified: () => boolify(this.#config.minified),
         origin: () => this.#frame?.getTimestampAtIndex(0),
+        timezone: () => this.#frame?.timezone,
         to: () => this.#frame?.selectionEnd,
         today: () => this.#today.timestamp,
     });
@@ -514,13 +517,14 @@ export default class Calendar {
             }
         } else {
             const isFauxHighlighting = secretFauxHighlightingHint === EMPTY_OBJECT;
+            const restamper = withTimezone(this.#frame.timezone);
 
             if (!isFauxHighlighting) this.#highlightInProgress = false;
 
             if (fromTimestamp <= this.#frame.selectionStart!) {
-                const selectionStartDay = new Date(this.#frame.selectionStart!);
+                const selectionStartDay = new Date(timezoneToSystem(restamper, this.#frame.selectionStart!));
                 const selectionStartDayEndTimestamp = Math.min(
-                    selectionStartDay.setDate(selectionStartDay.getDate() + 1) - 1,
+                    systemToTimezone(restamper, selectionStartDay.setDate(selectionStartDay.getDate() + 1) - 1),
                     this.#frame.timeslice.to
                 );
 
@@ -530,8 +534,11 @@ export default class Calendar {
 
                 this.#frame.updateSelection(fromTimestamp, SELECTION_FROM);
             } else {
-                const selectionEndDay = new Date(this.#frame.selectionEnd!);
-                const selectionEndDayStartTimestamp = Math.max(selectionEndDay.setHours(0, 0, 0, 0), this.#frame.timeslice.from);
+                const selectionEndDay = new Date(timezoneToSystem(restamper, this.#frame.selectionEnd!));
+                const selectionEndDayStartTimestamp = Math.max(
+                    systemToTimezone(restamper, selectionEndDay.setHours(0, 0, 0, 0)),
+                    this.#frame.timeslice.from
+                );
 
                 if (fromTimestamp <= this.#frame.selectionEnd! && fromTimestamp >= selectionEndDayStartTimestamp) {
                     this.#frame.updateSelection(fromTimestamp, SELECTION_FROM);
@@ -560,14 +567,23 @@ export default class Calendar {
     ) {
         if (!this.#frame) return;
 
-        const date = new Date(time);
+        const restamper = withTimezone(this.#frame?.timezone);
+        const restampedDate = new Date(timezoneToSystem(restamper, time));
         const direction = selectionDirection === SELECTION_FROM ? -1 : 1;
         const [years = 0, months = 0, days = 0, hours = 0, minutes = 0, seconds = 0] = rangeOffsets ?? [];
 
-        date.setFullYear(date.getFullYear() + years * direction, date.getMonth() + months * direction, date.getDate() + days * direction);
-        date.setHours(date.getHours() + hours * direction, date.getMinutes() + minutes * direction, date.getSeconds() + seconds * direction);
+        restampedDate.setFullYear(
+            restampedDate.getFullYear() + years * direction,
+            restampedDate.getMonth() + months * direction,
+            restampedDate.getDate() + days * direction
+        );
+        restampedDate.setHours(
+            restampedDate.getHours() + hours * direction,
+            restampedDate.getMinutes() + minutes * direction,
+            restampedDate.getSeconds() + seconds * direction
+        );
 
-        this.#frame.updateSelection(date.getTime() - direction, selectionDirection);
+        this.#frame.updateSelection(systemToTimezone(restamper, restampedDate.getTime() - direction), selectionDirection);
     }
 
     #restoreHighlight() {
@@ -584,7 +600,9 @@ export default class Calendar {
         this.#frame.firstWeekDay = this.#config.firstWeekDay;
         this.#frame.locale = this.#config.locale;
         this.#frame.size = this.#config.blocks;
+        this.#frame.timezone = this.#config.timezone;
         this.#frame.trackCurrentDay = this.#config.trackCurrentDay;
+        this.#today = today(this.#frame.timezone);
 
         this.#restoreHighlight();
     }
@@ -598,7 +616,9 @@ export default class Calendar {
                 break;
             case SELECT_ONE:
                 if (!boolOrTrue(this.#frame?.blankSelection)) {
-                    this.#frame?.updateSelection(new Date(this.#frame?.selectionStart!).setHours(23, 59, 59, 999), SELECTION_TO);
+                    const restamper = withTimezone(this.#frame?.timezone);
+                    const restampedDate = new Date(timezoneToSystem(restamper, this.#frame?.selectionStart!));
+                    this.#frame?.updateSelection(systemToTimezone(restamper, restampedDate.setHours(23, 59, 59, 999)), SELECTION_TO);
                 }
                 break;
             case SELECT_NONE:

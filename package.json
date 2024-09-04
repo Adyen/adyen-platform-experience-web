@@ -1,6 +1,6 @@
 {
   "name": "@adyen/adyen-platform-experience-web",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "keywords": [
     "adyen",
     "adyen-pe",
@@ -11,6 +11,7 @@
     "components",
     "adyen-platform-experience"
   ],
+  "license": "MIT",
   "type": "module",
   "repository": "github:Adyen/adyen-platform-experience-web",
   "apiVersion": "v1",
@@ -82,7 +83,7 @@
     "translations:sort": "bash scripts/process-translations/sort-translations-json.sh",
     "prepare": "node prepare.cjs && bash ./scripts/process-package-lock.sh",
     "bump-version": "./scripts/bump-version.sh",
-    "version": "changeset version --snapshot",
+    "version": "changeset version",
     "changeset": "changeset",
     "changeset-tag": "changeset tag",
     "create-tag": "npm run changeset-tag",
