@@ -79,7 +79,7 @@ export const reportsMock = [
             return new HttpResponse(
                 JSON.stringify({
                     type: 'https://docs.adyen.com/errors/forbidden',
-                    errorCode: '00_429',
+                    errorCode: '999_429_001',
                     title: 'Forbidden',
                     detail: 'Balance Account does not belong to Account Holder',
                     requestId: '769ac4ce59f0f159ad672d38d3291e91',

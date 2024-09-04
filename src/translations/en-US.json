@@ -85,6 +85,7 @@
     "report": "Report",
     "reportsError.tooManyDownloads": "We could not download all the files. Please try again later.",
     "reportsTitle": "Reports",
+    "reportType.payout": "Payout",
     "reset": "Reset",
     "Reversed": "Reversed",
     "select.filter.placeholder": "Placeholder",

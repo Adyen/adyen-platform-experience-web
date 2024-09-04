@@ -96,7 +96,7 @@ export const ReportsTable: FC<ReportsTableProps> = ({
         () => (error?: AdyenPlatformExperienceError) => {
             const alertDetails: Partial<{ key: number; description: string; title: string }> = {};
             switch (error?.errorCode) {
-                case '00_429':
+                case '999_429_001':
                     alertDetails.title = i18n.get('error.somethingWentWrongWithDownload');
                     alertDetails.description = i18n.get('reportsError.tooManyDownloads');
                     break;
@@ -144,7 +144,7 @@ export const ReportsTable: FC<ReportsTableProps> = ({
                         );
                     },
                     reportType: ({ item }) => {
-                        return item?.['type'] && <Typography variant={TypographyVariant.BODY}>{item?.['type']}</Typography>;
+                        return item?.['type'] && <Typography variant={TypographyVariant.BODY}>{i18n.get(`reportType.${item?.['type']}`)}</Typography>;
                     },
                     reportFile: ({ item }) => {
                         const queryParam = {
