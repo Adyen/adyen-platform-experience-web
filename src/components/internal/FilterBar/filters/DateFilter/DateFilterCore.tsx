@@ -1,6 +1,7 @@
 import Localization from '../../../../../core/Localization';
 import useTimezoneAwareDateFormatting from '../../../../hooks/useTimezoneAwareDateFormatting';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
+import { BASE_LOCALE } from '../../../../../core/Localization/datetime/restamper/constants';
 import { EMPTY_OBJECT } from '../../../../../utils';
 import { CommitAction } from '../../../../../hooks/useCommitAction';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
@@ -16,8 +17,6 @@ const formattingOptions = {
     day: 'numeric',
     year: 'numeric',
 } as const;
-
-const baseDateTimeFormatter = new Intl.DateTimeFormat('en-US', formattingOptions);
 
 const computeDateFilterValue = (i18n: Localization['i18n'], fullDateFormat: Localization['fullDate'], fromDate?: string, toDate?: string) => {
     const from = fromDate && fullDateFormat(fromDate);
@@ -131,16 +130,20 @@ export default function DateFilterCore<T extends DateFilterProps = DateFilterPro
         [selectedPresetOptionValue, fromValue, toValue, props]
     );
 
-    const [customSelection, dateTimeFormatter] = useMemo(() => {
-        let formatter = baseDateTimeFormatter;
+    const customSelection = useMemo(() => i18n.get('rangePreset.custom'), [i18n]);
+
+    const dateTimeFormatter = useMemo(() => {
+        const _formattingOptions = { ...formattingOptions, timeZone: props.timezone };
+        let formatter = new Intl.DateTimeFormat(BASE_LOCALE, _formattingOptions);
+
         try {
-            formatter = new Intl.DateTimeFormat(i18n.locale, formattingOptions);
+            formatter = new Intl.DateTimeFormat(i18n.locale, _formattingOptions);
         } catch {
             /* invalid locale: continue with base `en-US` formatter */
         }
 
-        return [i18n.get('rangePreset.custom'), formatter] as const;
-    }, [i18n]);
+        return formatter;
+    }, [i18n, props.timezone]);
 
     useEffect(() => setSelectedPresetOption(selectedPresetOption), [selectedPresetOption]);
     useEffect(() => setFrom(resolveDate(from || Date.now())), [from]);

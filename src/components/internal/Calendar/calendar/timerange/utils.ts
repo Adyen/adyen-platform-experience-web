@@ -1,5 +1,4 @@
 import { clamp, enumerable, getter, hasOwnProperty, isBitSafeInteger, isFunction, isNullish, isUndefined, struct } from '../../../../../utils';
-import type { WeekDay } from '../types';
 import type {
     RangeTimestamp,
     RangeTimestampOffsets,
@@ -94,21 +93,4 @@ export const parseRangeTimestamp = (timestamp: Date | RangeTimestamp): RangeTime
     } catch {
         /* ignore any parsing exception and implicitly return `undefined` */
     }
-};
-
-export const startOfDay = (date: Date) => date.setHours(0, 0, 0, 0);
-
-export const startOfMonth = (date: Date) => {
-    startOfDay(date);
-    return date.setDate(1);
-};
-
-export const startOfYear = (date: Date) => {
-    startOfDay(date);
-    return date.setMonth(0, 1);
-};
-
-export const startOfWeekOffset = (firstWeekDay: WeekDay, weekDay: WeekDay = firstWeekDay) => {
-    const offset = (((-weekDay % 7) + (firstWeekDay - 7)) % 7) as 0 | -1 | -2 | -3 | -4 | -5 | -6;
-    return 0 + offset; // {0 + expression} => corrects -0 to 0
 };

@@ -7,12 +7,12 @@ export type RestamperTestContext = Readonly<{
 }>;
 
 /**
- * This date is the origin for generating the next sequence of 12 dates (same date per month in the next year).
- * Each DST timezone's offsets correspond to each of the 12 auto-generated dates in the sequence.
+ * This date is the origin for generating the next sequence of 18 dates (same date per month starting from next month).
+ * Each DST timezone's offsets correspond to each of the 18 auto-generated dates in the sequence.
  * @see {getPastDatesMapForEachMonthInYear}
  * @see {DST_TIMEZONES}
  */
-export const TIMEZONE_PAST_DATES_TEST_ORIGIN_DATE = '2021-12-21 10:53:07 AM';
+export const TIMEZONE_PAST_DATES_TEST_ORIGIN_DATE = '2019-12-02T04:53:07.000Z';
 
 /**
  * Offsets correspond to the dates auto-generated for each month of the year via the `getSystemTimezonePastDatesMapForEachMonthInYear` function.
@@ -20,11 +20,11 @@ export const TIMEZONE_PAST_DATES_TEST_ORIGIN_DATE = '2021-12-21 10:53:07 AM';
  * @see {TIMEZONE_PAST_DATES_TEST_ORIGIN_DATE}
  */
 export const DST_TIMEZONES = new Map([
-    ['America/Toronto', [-300, -300, -240, -240, -240, -240, -240, -240, -240, -240, -300, -300]],
-    ['Asia/Jerusalem', [120, 120, 120, 180, 180, 180, 180, 180, 180, 180, 120, 120]],
-    ['Australia/Lord_Howe', [660, 660, 660, 630, 630, 630, 630, 630, 630, 660, 660, 660]],
-    ['Europe/Lisbon', [0, 0, 0, 60, 60, 60, 60, 60, 60, 60, 0, 0]],
-    ['Pacific/Chatham', [825, 825, 825, 765, 765, 765, 765, 765, 765, 825, 825, 825]],
+    ['America/Toronto', [-300, -300, -300, -240, -240, -240, -240, -240, -240, -240, -300, -300, -300, -300, -300, -240, -240, -240]],
+    ['Asia/Jerusalem', [120, 120, 120, 180, 180, 180, 180, 180, 180, 180, 120, 120, 120, 120, 120, 180, 180, 180]],
+    ['Australia/Lord_Howe', [660, 660, 660, 660, 630, 630, 630, 630, 630, 630, 660, 660, 660, 660, 660, 660, 630, 630]],
+    ['Europe/Lisbon', [0, 0, 0, 60, 60, 60, 60, 60, 60, 60, 0, 0, 0, 0, 0, 60, 60, 60]],
+    ['Pacific/Chatham', [825, 825, 825, 825, 765, 765, 765, 765, 765, 825, 825, 825, 825, 825, 825, 825, 765, 765]],
 ]);
 
 /**

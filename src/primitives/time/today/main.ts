@@ -9,18 +9,9 @@ export const today = (() => {
     const restamper = $restamper();
 
     const getTimestampWithTomorrowOffset = (withTimestamp = Date.now()) => {
-        const date = new Date(withTimestamp);
         const restampedDate = new Date(timezoneToSystem(restamper, withTimestamp));
-        const dateDiff = (date.getDate() - restampedDate.getDate()) as -1 | 1 | 0;
-
-        if (dateDiff) {
-            // Correction for difference between first (1) and last (28, 29, 30, 31) day of month
-            const dateOffset = dateDiff > 1 ? -1 : dateDiff < -1 ? 1 : dateDiff;
-            date.setDate(date.getDate() - dateOffset);
-        }
-
-        const currentTimestamp = systemToTimezone(restamper, date.setHours(0, 0, 0, 0)); // current day start timestamp
-        const nextTimestamp = systemToTimezone(restamper, date.setDate(date.getDate() + 1)); // next day start timestamp
+        const currentTimestamp = systemToTimezone(restamper, restampedDate.setHours(0, 0, 0, 0)); // current day start timestamp
+        const nextTimestamp = systemToTimezone(restamper, restampedDate.setDate(restampedDate.getDate() + 1)); // next day start timestamp
         return [currentTimestamp, nextTimestamp - currentTimestamp] as const;
     };
 
