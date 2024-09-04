@@ -20,6 +20,7 @@ const useCalendar = (
         originDate,
         renderControl,
         sinceDate,
+        timezone,
         trackCurrentDay,
         untilDate,
         useYearView,
@@ -138,9 +139,23 @@ const useCalendar = (
             locale: locale ?? i18n.locale,
             minified: useYearView,
             timeslice,
+            timezone,
             trackCurrentDay,
         });
-    }, [activeControls, activeHighlight, blocks, dynamicBlockRows, firstWeekDay, grid, i18n, locale, timeslice, trackCurrentDay, useYearView]);
+    }, [
+        activeControls,
+        activeHighlight,
+        blocks,
+        dynamicBlockRows,
+        firstWeekDay,
+        grid,
+        i18n,
+        locale,
+        timeslice,
+        timezone,
+        trackCurrentDay,
+        useYearView,
+    ]);
 
     useEffect(() => {
         const origins = ([] as number[])
