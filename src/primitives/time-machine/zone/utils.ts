@@ -1,4 +1,4 @@
-import { zoneFrom } from './main';
+import { zoneFrom } from './index';
 import { EMPTY_ARRAY, parseDate } from '../../../utils';
 import type { DateValue } from '../../../utils/datetime/types';
 import type { TimezoneDataSource } from '../types';

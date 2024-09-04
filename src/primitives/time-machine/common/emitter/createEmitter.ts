@@ -1,9 +1,8 @@
-import { enumerable, identity, isFunction } from '../../../utils';
+import { enumerable, identity, isFunction } from '../../../../utils';
+import type { Emitter } from './types';
 
-export interface Emitter<T> {
-    (callback: (value: T) => unknown, signal?: AbortSignal): void;
-    readonly end: () => void;
-    readonly signal: AbortSignal;
+function _assertCallback(callback: unknown): asserts callback is Function {
+    if (!isFunction(callback)) throw new TypeError('Expects callback argument to be callable');
 }
 
 export const createEmitter = <T, TTransform = T>(
@@ -18,6 +17,15 @@ export const createEmitter = <T, TTransform = T>(
     let valuePromiseResolve: (value: TValue | PromiseLike<TValue>) => void;
 
     const suspensionToken: unique symbol = Symbol();
+
+    const assertIterator = () => {
+        if (!isFunction(iterator)) throw new TypeError('Cannot start new subscription');
+    };
+
+    const asyncIterator = () => {
+        assertIterator();
+        return iterator();
+    };
 
     let end = () => {
         controller?.abort();
@@ -59,7 +67,8 @@ export const createEmitter = <T, TTransform = T>(
     };
 
     const subscribe = ((callback: (value: TTransform) => unknown, signal?: AbortSignal) => {
-        if (!isFunction(callback)) throw new TypeError('Expects callback value to be callable');
+        _assertCallback(callback);
+        assertIterator();
 
         if (signal instanceof AbortSignal) {
             if (signal.aborted) return;
@@ -69,7 +78,7 @@ export const createEmitter = <T, TTransform = T>(
         let aborted = false;
 
         (async () => {
-            for await (const value of iterator()) {
+            for await (const value of asyncIterator()) {
                 if (aborted) break;
                 callback(value);
             }
@@ -79,6 +88,7 @@ export const createEmitter = <T, TTransform = T>(
     return Object.defineProperties(subscribe, {
         end: enumerable(() => end?.()),
         signal: enumerable(controller.signal),
+        [Symbol.asyncIterator]: enumerable(asyncIterator),
     });
 };
 

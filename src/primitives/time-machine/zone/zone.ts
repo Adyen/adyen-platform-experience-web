@@ -1,4 +1,4 @@
-import { zoneFrom } from './main';
+import { zoneFrom } from './index';
 import { getter } from '../../../utils';
 import { getWeekDay } from '../utils';
 import { dateFrom, getResolvedTimezone, getTimezoneFormatter, getTimezoneUTCOffset, matchTimezoneFormattedString, restamp } from './utils';
