@@ -11,6 +11,7 @@
     "components",
     "adyen-platform-experience"
   ],
+  "license": "MIT",
   "type": "module",
   "repository": "github:Adyen/adyen-platform-experience-web",
   "apiVersion": "v1",

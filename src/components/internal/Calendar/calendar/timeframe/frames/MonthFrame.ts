@@ -1,7 +1,8 @@
 import TimeFrame from './TimeFrame';
 import { getWeekendDays } from '../common/utils';
-import { computeTimestampOffset, getEdgesDistance, getMonthDays } from '../../utils';
+import { computeTimestampOffset, getEdgesDistance, getMonthDays, getTimezoneDateParts, startOfMonth, startOfWeek, withTimezone } from '../../utils';
 import { DAY_MS, DAY_OF_WEEK_FORMATS, MAXIMUM_MONTH_UNITS } from '../../constants';
+import { systemToTimezone, timezoneToSystem } from '../../../../../../core/Localization/datetime/restamper';
 import createFlagsRecord from '../common/flags';
 import {
     enumerable,
@@ -34,7 +35,6 @@ export default class MonthFrame extends TimeFrame {
     #fromTimestamp: number = -Infinity;
     #toTimestamp: number = Infinity;
     #numberOfBlocks: number = Infinity;
-    #originMonthStartDate!: number;
     #originMonthStartOffset!: WeekDay;
     #originMonthStartTimestamp!: number;
     #originYear!: number;
@@ -96,12 +96,28 @@ export default class MonthFrame extends TimeFrame {
     }
 
     #getBlockTimestampOffsetFromOrigin(timestamp: number) {
-        const offset = getEdgesDistance(timestamp, this.originTimestamp);
+        const offset = getEdgesDistance(timestamp, this.originTimestamp, this.timezone);
         return timestamp < this.originTimestamp ? 0 - offset : offset;
     }
 
+    #getDayOffsetTimestamp(fromTimestamp: Date | number, dayOffset = 0) {
+        const restamper = withTimezone(this.timezone);
+        const restampedTimestamp = timezoneToSystem(restamper, fromTimestamp);
+        const timestamp = systemToTimezone(restamper, restampedTimestamp + dayOffset * DAY_MS);
+        let [, , , hrs, mins] = getTimezoneDateParts(timestamp, this.timezone);
+        let timeOffset = 0;
+
+        if (hrs > 0 || mins > 0) {
+            hrs = (hrs > 12 ? 24 : 0) - hrs;
+            mins = (hrs > 1 ? 1 : -1) * mins;
+            timeOffset = hrs * 3600000 + mins * 60000;
+        }
+
+        return timestamp + timeOffset;
+    }
+
     #getStartForTimestamp(timestamp?: number) {
-        return isUndefined(timestamp) || isInfinity(timestamp) ? timestamp : timestamp - computeTimestampOffset(timestamp);
+        return isUndefined(timestamp) || isInfinity(timestamp) ? timestamp : timestamp - computeTimestampOffset(timestamp, this.timezone);
     }
 
     #updateSelectionTimestamps() {
@@ -110,7 +126,7 @@ export default class MonthFrame extends TimeFrame {
     }
 
     protected getCursorBlockOriginTimestampOffset(timestamp: number): number {
-        return new Date(timestamp).getDate() - 1;
+        return getTimezoneDateParts(timestamp, this.timezone)[2] - 1;
     }
 
     protected getDayOfWeekAtIndex(index: number) {
@@ -131,7 +147,7 @@ export default class MonthFrame extends TimeFrame {
 
             for (const format of DAY_OF_WEEK_FORMATS) {
                 labelDescriptors[format] = enumerable(
-                    date.toLocaleDateString(this.locale, { weekday: format })
+                    date.toLocaleDateString(this.locale, { weekday: format, timeZone: this.timezone })
                 ) as (typeof labelDescriptors)[typeof format];
             }
 
@@ -149,13 +165,16 @@ export default class MonthFrame extends TimeFrame {
     }
 
     protected getFormattedDataForBlockCell(time: Time): [string, string] {
-        const ISOString = new Date(time).toISOString();
-        return [Number(ISOString.slice(8, 10)).toLocaleString(this.locale), ISOString.slice(0, 10)];
+        const [year, month, date] = getTimezoneDateParts(time, this.timezone);
+        return [Number(date).toLocaleString(this.locale), `${year}-${`${month + 1}`.padStart(2, '0')}-${`${date}`.padStart(2, '0')}`];
     }
 
     protected getFormattedDataForFrameBlock(time: Time): [string, string] {
-        const date = new Date(time);
-        return [date.toLocaleDateString(this.locale, { month: 'long', year: 'numeric' }), date.toISOString().slice(0, 7)];
+        const [year, month] = getTimezoneDateParts(time, this.timezone);
+        return [
+            new Date(time).toLocaleDateString(this.locale, { month: 'long', year: 'numeric', timeZone: this.timezone }),
+            `${year}-${`${month + 1}`.padStart(2, '0')}`,
+        ];
     }
 
     protected getFrameBlockAtIndex(index: number): TimeFrameBlock {
@@ -242,26 +261,31 @@ export default class MonthFrame extends TimeFrame {
     }
 
     protected reoriginate() {
-        const date = new Date(this.originTimestamp);
-        const firstDayOffset = ((8 - ((date.getDate() - date.getDay() + this.firstWeekDay) % 7)) % 7) as WeekDay;
+        this.originTimestamp = startOfMonth(this.originTimestamp, this.timezone);
+        const [originYear, originMonth] = getTimezoneDateParts(this.originTimestamp, this.timezone);
+        const weekStartTimestamp = startOfWeek(this.originTimestamp, this.timezone, this.firstWeekDay);
 
-        this.origin = date.getMonth() as Month;
-        this.#originYear = date.getFullYear();
-        this.originTimestamp = date.setDate(1);
-        this.#originMonthStartOffset = firstDayOffset;
-        this.#originMonthStartTimestamp = date.setDate(1 - firstDayOffset);
-        this.#originMonthStartDate = date.getDate();
+        this.origin = originMonth as Month;
+        this.#originYear = originYear;
+        this.#originMonthStartOffset = this.getUnitsOffsetForTimestamp(weekStartTimestamp, this.originTimestamp) as WeekDay;
+        this.#originMonthStartTimestamp = this.#getDayOffsetTimestamp(this.originTimestamp, -this.#originMonthStartOffset);
     }
 
     protected reslice() {
         this.#updateSelectionTimestamps();
         this.#fromTimestamp = this.#getStartForTimestamp(super.fromTimestamp) as number;
         this.#toTimestamp = this.#getStartForTimestamp(super.toTimestamp) as number;
-        this.#numberOfBlocks = getEdgesDistance(super.fromTimestamp, super.toTimestamp) + 1;
+        this.#numberOfBlocks = getEdgesDistance(super.fromTimestamp, super.toTimestamp, this.timezone) + 1;
     }
 
     protected shiftOrigin(offset: number) {
-        this.originTimestamp = new Date(this.originTimestamp).setMonth(this.origin + offset);
+        const [year, month] = getTimezoneDateParts(this.originTimestamp, this.timezone);
+        const [, offsetMonth, offsetYear] = getMonthDays(month as Month, year, offset);
+
+        const restamper = withTimezone(this.timezone);
+        const originTimestamp = new Date(timezoneToSystem(restamper, this.originTimestamp)).setFullYear(offsetYear, offsetMonth);
+
+        this.originTimestamp = systemToTimezone(restamper, originTimestamp);
         this.reoriginate();
     }
 
@@ -272,7 +296,7 @@ export default class MonthFrame extends TimeFrame {
     }
 
     getTimestampAtIndex(indexOffset: number) {
-        return new Date(this.#originMonthStartTimestamp).setDate(this.#originMonthStartDate + indexOffset);
+        return this.#getDayOffsetTimestamp(this.#originMonthStartTimestamp, indexOffset);
     }
 
     updateSelection(time: Time, selection?: TimeFrameSelection) {
@@ -281,7 +305,7 @@ export default class MonthFrame extends TimeFrame {
         this.refreshFrame(true);
     }
 
-    withCurrentDayTimestamp(timestamp: number) {
-        this.#currentDayTimestamp = this.#getStartForTimestamp(timestamp) as number;
+    withCurrentDayTimestamp() {
+        this.#currentDayTimestamp = this.#getStartForTimestamp(Date.now()) as number;
     }
 }

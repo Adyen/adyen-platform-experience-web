@@ -8,7 +8,7 @@ export const getPastDatesMapForEachMonthInYear = (restamper: RestamperWithTimezo
     const pastDate = new Date(TIMEZONE_PAST_DATES_TEST_ORIGIN_DATE);
 
     return new Map(
-        Array.from({ length: 12 }, () => {
+        Array.from({ length: 18 }, () => {
             pastDate.setMonth(pastDate.getMonth() + 1);
             return [pastDate.toISOString(), restamper(pastDate)];
         })

@@ -1,5 +1,5 @@
 import { downsizeTimeFrame, resolveTimeFrameBlockSize } from '../common/utils';
-import { UNBOUNDED_SLICE } from '../../timeslice';
+import $timeslice, { UNBOUNDED_SLICE } from '../../timeslice';
 import { computeTimestampOffset } from '../../utils';
 import {
     CURSOR_BACKWARD,
@@ -12,6 +12,7 @@ import {
     CURSOR_NEXT_BLOCK,
     CURSOR_PREV_BLOCK,
     CURSOR_UPWARD,
+    DAY_MS,
     FIRST_WEEK_DAYS,
     SELECTION_COLLAPSE,
     SELECTION_FARTHEST,
@@ -25,6 +26,7 @@ import {
 import createFlagsRecord from '../common/flags';
 import { createIndexed } from '../../../../../../primitives/auxiliary/indexed';
 import type { WatchListCallable } from '../../../../../../primitives/reactive/watchlist';
+import { BASE_LOCALE } from '../../../../../../core/Localization/datetime/restamper/constants';
 import {
     clamp,
     enumerable,
@@ -55,7 +57,7 @@ import {
 } from '../../types';
 
 export default abstract class TimeFrame {
-    static #DEFAULT_LOCALE = 'en-US' as const;
+    static #DEFAULT_LOCALE = BASE_LOCALE;
 
     #cursorBlockIndex: number = 0;
     #cursorBlockStartIndex!: number;
@@ -74,7 +76,9 @@ export default abstract class TimeFrame {
     #selectionStartTimestamp?: number;
     #selectionEndTimestamp?: number;
     #size: TimeFrameSize = 1;
+    #_timeslice!: TimeSlice;
     #timeslice!: TimeSlice;
+    #timezone!: string;
     #today = today();
     #unwatchCurrentDay?: () => void;
 
@@ -102,7 +106,7 @@ export default abstract class TimeFrame {
     protected abstract shiftOrigin(offset: number): void;
 
     abstract getTimestampAtIndex(indexOffset: number): number;
-    abstract withCurrentDayTimestamp(timestamp: number): void;
+    abstract withCurrentDayTimestamp(): void;
 
     abstract get currentDayTimestamp(): number;
     abstract get rowspan(): number;
@@ -215,32 +219,27 @@ export default abstract class TimeFrame {
     }
 
     set timeslice(timeslice: TimeSlice | null | undefined) {
-        if (timeslice === this.#timeslice || (isNullish(timeslice) && this.#timeslice === UNBOUNDED_SLICE)) return;
+        if (timeslice === this.#_timeslice || (isNullish(timeslice) && this.#_timeslice === UNBOUNDED_SLICE)) return;
+        const { from, to, timezone } = (this.#_timeslice = timeslice ?? UNBOUNDED_SLICE);
+        this.#timeslice = $timeslice(from, to);
+        this.timezone = timezone;
+    }
 
-        const { from, to, span, offsets } = timeslice as TimeSlice;
+    get timezone(): string {
+        return this.#timezone;
+    }
 
-        this.#timeslice = timeslice as TimeSlice;
-        this.#fromTimestamp = from - offsets.from;
-        this.#toTimestamp = to - offsets.to;
-        this.#numberOfBlocks = span;
+    set timezone(timezone: string | null | undefined) {
+        this.#timeslice.timezone = timezone;
+        this.#timezone = this.#timeslice.timezone;
+        this.#today = today(this.#timezone);
 
-        const selectionStartTimestamp = isUndefined(this.#selectionStartTimestamp)
-            ? this.#selectionStartTimestamp
-            : Math.max(this.#selectionStartTimestamp, from);
-        const selectionEndTimestamp = isUndefined(this.#selectionEndTimestamp)
-            ? this.#selectionEndTimestamp
-            : Math.min(this.#selectionEndTimestamp, to);
+        if (this.#unwatchCurrentDay) {
+            this.#unwatchCurrentDay();
+            this.#unwatchCurrentDay = this.#today.subscribe(this.refreshFrame.bind(this, true));
+        }
 
-        if (selectionStartTimestamp === this.#selectionStartTimestamp || selectionEndTimestamp === this.#selectionEndTimestamp) {
-            this.#selectionStartTimestamp = selectionStartTimestamp;
-            this.#selectionEndTimestamp = selectionEndTimestamp;
-        } else this.#selectionStartTimestamp = this.#selectionEndTimestamp = undefined;
-
-        this.reslice();
-        this.#maxFrameSize = downsizeTimeFrame(12, this.numberOfBlocks);
-        this.#size = downsizeTimeFrame(this.#size, this.numberOfBlocks);
-
-        this.shiftFrameToTimestamp(this.#cursorTimestamp);
+        this.#applyTimeSliceUpdate();
     }
 
     set trackCurrentDay(bool: boolean | null | undefined) {
@@ -256,6 +255,33 @@ export default abstract class TimeFrame {
 
     get units() {
         return this.#numberOfUnits;
+    }
+
+    #applyTimeSliceUpdate() {
+        const { from, to, span, offsets } = this.#timeslice;
+
+        this.#fromTimestamp = from - offsets.from;
+        this.#toTimestamp = to - offsets.to;
+        this.#numberOfBlocks = span;
+
+        const selectionStartTimestamp = isUndefined(this.#selectionStartTimestamp)
+            ? this.#selectionStartTimestamp
+            : Math.max(this.#selectionStartTimestamp, from);
+
+        const selectionEndTimestamp = isUndefined(this.#selectionEndTimestamp)
+            ? this.#selectionEndTimestamp
+            : Math.min(this.#selectionEndTimestamp, to);
+
+        if (selectionStartTimestamp === this.#selectionStartTimestamp || selectionEndTimestamp === this.#selectionEndTimestamp) {
+            this.#selectionStartTimestamp = selectionStartTimestamp;
+            this.#selectionEndTimestamp = selectionEndTimestamp;
+        } else this.#selectionStartTimestamp = this.#selectionEndTimestamp = undefined;
+
+        this.reslice();
+        this.#maxFrameSize = downsizeTimeFrame(12, this.numberOfBlocks);
+        this.#size = downsizeTimeFrame(this.#size, this.numberOfBlocks);
+
+        this.shiftFrameToTimestamp(this.#cursorTimestamp);
     }
 
     #getClampedFrameOffset(frameOffset: number) {
@@ -277,7 +303,7 @@ export default abstract class TimeFrame {
             }
         } else timestamp = clampedTimestamp;
 
-        const offset = computeTimestampOffset(timestamp);
+        const offset = computeTimestampOffset(timestamp, this.#timezone);
 
         return [timestamp - offset, offset];
     }
@@ -289,8 +315,7 @@ export default abstract class TimeFrame {
             const block = this.getFrameBlockAtIndex(index);
             if (!block) return undefined as unknown as IndexedCalendarBlock;
 
-            const dateString = `${block.year}-${`0${1 + block.month}`.slice(-2)}-01`;
-            const [label, datetime] = this.getFormattedDataForFrameBlock(new Date(dateString).setHours(12));
+            const [label, datetime] = this.getFormattedDataForFrameBlock(block[block.inner.from]![0] + DAY_MS / 2);
             const blockStartIndex = block.outer.from;
 
             this.#frameBlocksCached[index] = createIndexed<CalendarBlock>(
@@ -306,7 +331,7 @@ export default abstract class TimeFrame {
 
                     return createIndexed(this.rowspan, index => {
                         const [timestamp, flags] = block[index + indexOffset] as (typeof block)[number];
-                        const [label, datetime] = this.getFormattedDataForBlockCell(new Date(timestamp).setHours(12));
+                        const [label, datetime] = this.getFormattedDataForBlockCell(timestamp + DAY_MS / 2);
 
                         return struct({
                             datetime: enumerable(datetime),
@@ -347,7 +372,6 @@ export default abstract class TimeFrame {
     }
 
     protected initialize() {
-        this.withCurrentDayTimestamp(this.#today.timestamp);
         this.timeslice = UNBOUNDED_SLICE;
     }
 
@@ -389,10 +413,10 @@ export default abstract class TimeFrame {
 
             this.#cursorStartIndex = firstBlock.inner.from;
             this.#cursorEndIndex = lastBlock.inner.to;
-            this.#numberOfUnits = lastBlock.outer.to;
+            this.#numberOfUnits = lastBlock.outer.to + 1;
         }
 
-        this.withCurrentDayTimestamp(this.#today.timestamp);
+        this.withCurrentDayTimestamp();
         this.#effect?.();
     }
 
@@ -442,15 +466,15 @@ export default abstract class TimeFrame {
     }
 
     shiftFrameToTimestamp(timestamp?: number) {
-        const containedTimestamp = this.#getContainedTimestamp(timestamp, false)[0];
-        this.#cursorOffset = this.getCursorBlockOriginTimestampOffset((this.#cursorTimestamp = this.originTimestamp = containedTimestamp));
+        this.#cursorTimestamp = this.originTimestamp = this.#getContainedTimestamp(timestamp, false).reduce((a, b) => a + b);
+        this.#cursorOffset = this.getCursorBlockOriginTimestampOffset(this.#cursorTimestamp);
         this.reoriginate();
 
         [this.#fromBlockOffsetFromOrigin, this.#toBlockOffsetFromOrigin] = this.getEdgeBlockOffsetsFromOrigin();
         this.#shiftOriginIfNecessary();
         this.refreshFrame();
 
-        this.#shiftFrameCursorByOffset(this.getUnitsOffsetForTimestamp(this.getTimestampAtIndex(this.#cursorIndex), containedTimestamp));
+        this.#shiftFrameCursorByOffset(this.getUnitsOffsetForTimestamp(this.getTimestampAtIndex(this.#cursorIndex), this.#cursorTimestamp));
     }
 
     clearSelection() {
@@ -459,31 +483,10 @@ export default abstract class TimeFrame {
         this.refreshFrame(true);
     }
 
-    getCursorOrderForTimeRelativeToSelectionEdge(time: Time, selectionEdge: typeof SELECTION_FROM | typeof SELECTION_TO = SELECTION_FROM) {
-        let selectionEdgeTimestamp: number | undefined;
-        let invertedComparison = false;
-
-        switch (selectionEdge) {
-            case SELECTION_FROM:
-                selectionEdgeTimestamp = this.#selectionStartTimestamp;
-                break;
-            case SELECTION_TO:
-                selectionEdgeTimestamp = this.#selectionEndTimestamp;
-                invertedComparison = true;
-                break;
-        }
-
-        if (isUndefined(selectionEdgeTimestamp)) return 0;
-
-        const timestamp = this.#getContainedTimestamp(time, false).reduce((a, b) => a + b, 0);
-        const timestampOffset = this.getUnitsOffsetForTimestamp(selectionEdgeTimestamp, timestamp) * (invertedComparison ? -1 : 1);
-        return timestampOffset && (timestampOffset > 0 ? 1 : -1);
-    }
-
     updateSelection(time: Time, selection?: TimeFrameSelection) {
         const currentStart = this.#selectionStartTimestamp as number;
         const currentEnd = this.#selectionEndTimestamp as number;
-        const timestamp = this.#getContainedTimestamp(time, false).reduce((a, b) => a + b, 0);
+        const timestamp = this.#getContainedTimestamp(time, false).reduce((a, b) => a + b);
 
         if (selection === SELECTION_FARTHEST) {
             if (timestamp <= currentStart) selection = SELECTION_TO;
