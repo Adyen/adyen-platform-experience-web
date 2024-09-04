@@ -1,8 +1,9 @@
 import { useEffect, useRef } from 'preact/compat';
 import { StoryContext } from '@storybook/types';
 import { PreactRenderer } from '@storybook/preact';
+import sessionRequest from '../../playground/utils/sessionRequest';
+import { createAdyenPlatformExperience } from '../../.storybook/utils/create-adyenPE';
 import { getStoryContextAdyenPlatformExperience } from './get-story-context';
-import { stopMockedServer } from '../../mocks/mock-server/utils';
 
 interface IContainer<T extends new (...args: any) => any> {
     component: T;
@@ -13,19 +14,31 @@ interface IContainer<T extends new (...args: any) => any> {
 
 export const Container = <T extends new (args: any) => any>({ component, componentConfiguration, context, mockedApi }: IContainer<T>) => {
     const container = useRef(null);
-    const AdyenPlatformExperience = getStoryContextAdyenPlatformExperience(context);
-    const Component = new component({ ...componentConfiguration, core: AdyenPlatformExperience });
+    const { worker } = getStoryContextAdyenPlatformExperience(context);
 
     useEffect(() => {
-        if (!AdyenPlatformExperience) {
-            return;
-        }
+        const getCore = async () => {
+            const AdyenPlatformExperience = await createAdyenPlatformExperience({
+                ...context.coreOptions,
+                balanceAccountId: context.args.balanceAccountId,
+                environment: 'test',
+                onSessionCreate: async () => {
+                    return await sessionRequest(context.args.session);
+                },
+                translations: {
+                    en_US: {
+                        _store: 'Store',
+                        _product: 'Product',
+                    },
+                },
+            });
+            const Component = new component({ ...componentConfiguration, core: AdyenPlatformExperience });
 
-        Component.mount(container.current ?? '');
-
-        return () => {
-            if (mockedApi) stopMockedServer();
+            Component.mount(container.current ?? '');
+            return { AdyenPlatformExperience };
         };
+
+        void getCore();
     }, []);
 
     return <div ref={container} id="component-root" className="component-wrapper" />;
