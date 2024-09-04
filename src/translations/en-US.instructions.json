@@ -1,0 +1,14 @@
+{
+    "download": "Used as a button label which calls the file download action",
+    "downloading": "Used as a button label when the file download is in progress. This label appears starting with user click download button to initiate a file download until download is completed",
+    "error.pleaseTryAgainLater": "Used as an alert message when there is any error for the file download action except error caused by rate limiter",
+    "error.somethingWentWrongWithDownload": "Used as an alert header for all the errors caused by file download action",
+    "file": "Used as column header in a table to label column of file download buttons",
+    "noReportsFound": "Used when reports table is empty because there isn't any data exists for selected filters",
+    "report": "Used as a column header that indicates the type of the report",
+    "reportsError.tooManyDownloads": "Used as an alert message when there is an overload of download requests on the backend side so, backend returns an error since the rate limiter specifications exceeded",
+    "reportsTitle": "Used as a page title for reports overview component",
+    "reportType.payout": "Used as the values of report column, this data indicates the type of the report. Payout is the only report type we have for now.",
+    "weCouldNotLoadTheReportsOverview": "Used to show an error on reports overview table when there is an error on sessions endpoint",
+    "weCouldNotLoadYourReports": "Used when there is a network error or server error while getting the reports overview table data"
+}
