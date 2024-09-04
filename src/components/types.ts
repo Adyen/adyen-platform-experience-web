@@ -87,7 +87,7 @@ interface _DataOverviewComponentProps {
     showDetails?: boolean;
 }
 
-export interface ReportsOverviewComponentProps extends _DataOverviewComponentProps {}
+export type ReportsOverviewComponentProps = Omit<_DataOverviewComponentProps, 'showDetails'>;
 
 export interface TransactionOverviewComponentProps
     extends _DataOverviewComponentProps,

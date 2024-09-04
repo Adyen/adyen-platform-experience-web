@@ -138,7 +138,9 @@
 
     &__icon-left,
     &__icon-right {
+        align-items: center;
         display: inline-flex;
+        justify-content: center;
     }
 
     &:disabled {

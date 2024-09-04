@@ -8,12 +8,33 @@ const DEFAULT_SORT_DIRECTION = 'desc';
 const REPORTS = endpoints('mock').reports;
 const DOWNLOAD = endpoints('mock').downloadReport;
 const networkError = false;
+const serverError = false;
+const downloadError = false;
 const defaultPaginationLimit = 20;
 
 export const reportsMock = [
     http.get(`${REPORTS}`, async ({ request }) => {
         if (networkError) {
             return HttpResponse.error();
+        }
+
+        if (serverError) {
+            return new HttpResponse(
+                JSON.stringify({
+                    type: 'https://docs.adyen.com/errors/forbidden',
+                    errorCode: '00_500',
+                    title: 'Forbidden',
+                    detail: 'Balance Account does not belong to Account Holder',
+                    requestId: '769ac4ce59f0f159ad672d38d3291e91',
+                    status: 500,
+                }),
+                {
+                    status: 500,
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                }
+            );
         }
         const url = new URL(request.url);
 
@@ -52,6 +73,26 @@ export const reportsMock = [
         const filename = `${['balanceaccount', 'payout', 'report'].concat(reportDate!).filter(Boolean).join('_')}.csv`;
 
         const buffer = await fetch(`/mockFiles/report.csv`).then(response => response.arrayBuffer());
+
+        await delay(2000);
+        if (downloadError) {
+            return new HttpResponse(
+                JSON.stringify({
+                    type: 'https://docs.adyen.com/errors/forbidden',
+                    errorCode: '999_429_001',
+                    title: 'Forbidden',
+                    detail: 'Balance Account does not belong to Account Holder',
+                    requestId: '769ac4ce59f0f159ad672d38d3291e91',
+                    status: 429,
+                }),
+                {
+                    status: 429,
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                }
+            );
+        }
 
         return new HttpResponse(buffer, {
             headers: {

@@ -1,22 +1,22 @@
-import { ReportsTable } from '../ReportsTable/ReportsTable';
-import { BASE_CLASS, EARLIEST_PAYOUT_SINCE_DATE } from './constants';
+import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
+import { useAuthContext } from '../../../../../core/Auth';
+import useCoreContext from '../../../../../core/Context/useCoreContext';
+import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatformExperienceError';
+import { IBalanceAccountBase, IReport } from '../../../../../types';
+import { isFunction } from '../../../../../utils';
+import useBalanceAccountSelection from '../../../../hooks/useBalanceAccountSelection';
+import useDefaultOverviewFilterParams from '../../../../hooks/useDefaultOverviewFilterParams';
 import FilterBar from '../../../../internal/FilterBar';
+import DateFilter from '../../../../internal/FilterBar/filters/DateFilter/DateFilter';
 import BalanceAccountSelector from '../../../../internal/FormFields/Select/BalanceAccountSelector';
 import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '../../../../internal/Pagination/constants';
 import { useCursorPaginatedRecords } from '../../../../internal/Pagination/hooks';
 import { TypographyVariant } from '../../../../internal/Typography/types';
 import Typography from '../../../../internal/Typography/Typography';
-import useBalanceAccountSelection from '../../../../hooks/useBalanceAccountSelection';
-import DateFilter from '../../../../internal/FilterBar/filters/DateFilter/DateFilter';
-import { IReport } from '../../../../../types';
-import useDefaultOverviewFilterParams from '../../../../hooks/useDefaultOverviewFilterParams';
-import { PayoutsOverviewComponentProps, ExternalUIComponentProps, FilterParam } from '../../../../types';
-import { useAuthContext } from '../../../../../core/Auth';
-import useCoreContext from '../../../../../core/Context/useCoreContext';
-import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatformExperienceError';
-import { IBalanceAccountBase } from '../../../../../types';
-import { isFunction } from '../../../../../utils';
-import { useCallback, useEffect, useMemo } from 'preact/hooks';
+import { ExternalUIComponentProps, FilterParam, ReportsOverviewComponentProps } from '../../../../types';
+import { ReportsTable } from '../ReportsTable/ReportsTable';
+import { BASE_CLASS, EARLIEST_PAYOUT_SINCE_DATE } from './constants';
+import './ReportsOverview.scss';
 
 export const ReportsOverview = ({
     onFiltersChanged,
@@ -27,7 +27,7 @@ export const ReportsOverview = ({
     onContactSupport,
     hideTitle,
 }: ExternalUIComponentProps<
-    PayoutsOverviewComponentProps & { balanceAccounts: IBalanceAccountBase[] | undefined; isLoadingBalanceAccount: boolean }
+    ReportsOverviewComponentProps & { balanceAccounts: IBalanceAccountBase[] | undefined; isLoadingBalanceAccount: boolean }
 >) => {
     const { i18n } = useCoreContext();
     const { getReports: reportsEndpointCall } = useAuthContext().endpoints;
@@ -41,6 +41,7 @@ export const ReportsOverview = ({
             return reportsEndpointCall!(requestOptions, {
                 query: {
                     ...pageRequestParams,
+                    type: 'payout',
                     createdSince:
                         pageRequestParams[FilterParam.CREATED_SINCE] ?? defaultParams.current.defaultFilterParams[FilterParam.CREATED_SINCE],
                     createdUntil:
