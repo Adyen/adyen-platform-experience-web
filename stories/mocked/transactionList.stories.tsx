@@ -5,6 +5,7 @@ import { TransactionsMeta } from '../components/transactionList';
 import { Meta } from '@storybook/preact';
 import { endpoints } from '../../endpoints/endpoints';
 import { getMyCustomData } from '../utils/customDataRequest';
+import { TRANSACTIONS } from '../../mocks/mock-data';
 
 const meta: Meta<ElementProps<typeof TransactionsOverview>> = { ...TransactionsMeta, title: 'Mocked/Transactions List' };
 export const Basic: ElementStory<typeof TransactionsOverview> = {
@@ -37,7 +38,7 @@ export const CustomColumns: ElementStory<typeof TransactionsOverview> = {
     name: 'Custom Columns',
     args: {
         mockedApi: true,
-        customColumns: ['_product', 'amount', 'paymentMethod', 'transactionType', '_store', 'createdAt'],
+        customColumns: ['_product', '_store', 'paymentMethod', 'transactionType', 'createdAt', 'amount'],
         /*customColumns: [
             { key: 'amount', flex: 1, align: 'left', mobile: true },
             { key: 'paymentMethod', flex: 1.5, align: 'left' },
@@ -50,6 +51,22 @@ export const CustomColumns: ElementStory<typeof TransactionsOverview> = {
                     resolve(getMyCustomData(data));
                 }, 4500);
             });
+        },
+    },
+    parameters: {
+        msw: {
+            handlers: [
+                http.get(endpoints('mock').transactions, () => {
+                    return HttpResponse.json({
+                        data: [
+                            { ...TRANSACTIONS[0], createdAt: Date.now() },
+                            { ...TRANSACTIONS[4], createdAt: Date.now() },
+                            { ...TRANSACTIONS[6], createdAt: Date.now() },
+                        ],
+                        _links: {},
+                    });
+                }),
+            ],
         },
     },
 };
