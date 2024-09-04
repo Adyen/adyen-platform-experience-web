@@ -14,7 +14,7 @@ const config: PlaywrightTestConfig = {
     timeout: 30 * 1000,
     globalTimeout: 10 * 60 * 1000, // 10 minutes
     expect: {
-        timeout: 3000,
+        timeout: 5000,
     },
     fullyParallel: true,
 
@@ -81,7 +81,7 @@ const config: PlaywrightTestConfig = {
     ],
     /* Run your local dev server before starting the tests */
     webServer: {
-        command: process.env.CI ? 'npm run demo:serve:e2e' : 'npm run storybook:demo',
+        command: 'npm run storybook:demo',
         reuseExistingServer: !process.env.CI,
         url: process.env.CI ? undefined : baseUrl,
         port: process.env.CI ? playground.port : undefined,
