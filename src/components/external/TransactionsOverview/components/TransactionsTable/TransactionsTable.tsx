@@ -20,7 +20,7 @@ import PaymentMethodCell from './PaymentMethodCell';
 // Remove status column temporarily
 // const FIELDS = ['createdAt', 'status', 'paymentMethod', 'transactionType', 'amount'] as const;
 
-const FIELDS = ['dateAndPaymentMethod', 'createdAt', 'paymentMethod', 'transactionType', 'amount'] as const;
+const FIELDS = ['createdAt', 'paymentMethod', 'transactionType', 'amount'] as const;
 export type TransactionsTableCols = (typeof FIELDS)[number];
 
 export const TransactionsTable: FC<TransactionTableProps> = ({
@@ -46,12 +46,10 @@ export const TransactionsTable: FC<TransactionTableProps> = ({
 
     const fieldsVisibility: Partial<Record<string, boolean>> = useMemo(
         () => ({
-            dateAndPaymentMethod: isXsAndDownViewport,
-            createdAt: isSmAndUpViewport,
             transactionType: isMdAndUpViewport,
             paymentMethod: isSmAndUpViewport,
         }),
-        [isXsAndDownViewport, isSmAndUpViewport, isMdAndUpViewport]
+        [isSmAndUpViewport, isMdAndUpViewport]
     );
 
     const columns = useMemo(
@@ -90,7 +88,6 @@ export const TransactionsTable: FC<TransactionTableProps> = ({
         () => () => <DataOverviewError error={error} onContactSupport={onContactSupport} errorMessage={'weCouldNotLoadYourTransactions'} />,
         [error, onContactSupport]
     );
-
     return (
         <div className={BASE_CLASS}>
             <DataGrid
@@ -113,14 +110,7 @@ export const TransactionsTable: FC<TransactionTableProps> = ({
                             />
                         );
                     },*/
-                    dateAndPaymentMethod: ({ item }) => {
-                        return (
-                            <div className={DATE_AND_PAYMENT_METHOD_CLASS}>
-                                <PaymentMethodCell paymentMethod={item.paymentMethod} bankAccount={item.bankAccount} />
-                                <span className={DATE_AND_PAYMENT_METHOD_CLASS}>{dateFormat(item.createdAt, DATE_FORMAT_TRANSACTIONS)}</span>
-                            </div>
-                        );
-                    },
+
                     transactionType: ({ item, rowIndex }) => {
                         const tooltipKey = `tooltip.${item.category}`;
                         return item.category ? (
@@ -131,11 +121,22 @@ export const TransactionsTable: FC<TransactionTableProps> = ({
                             )
                         ) : null;
                     },
-                    createdAt: ({ value }) => <span>{fullDateFormat(value)}</span>,
                     amount: ({ value }) => {
                         const amount = i18n.amount(value.value, value.currency, { hideCurrency: !hasMultipleCurrencies });
                         return <span className={AMOUNT_CLASS}>{amount}</span>;
                     },
+                    createdAt: ({ item, value }) => {
+                        if (isXsAndDownViewport) {
+                            return (
+                                <div className={DATE_AND_PAYMENT_METHOD_CLASS}>
+                                    <PaymentMethodCell paymentMethod={item.paymentMethod} bankAccount={item.bankAccount} />
+                                    <span className={DATE_AND_PAYMENT_METHOD_CLASS}>{dateFormat(item.createdAt, DATE_FORMAT_TRANSACTIONS)}</span>
+                                </div>
+                            );
+                        }
+                        return <span>{fullDateFormat(value)}</span>;
+                    },
+
                     paymentMethod: ({ item }) => <PaymentMethodCell paymentMethod={item.paymentMethod} bankAccount={item.bankAccount} />,
                 }}
             >

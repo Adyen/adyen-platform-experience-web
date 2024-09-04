@@ -156,7 +156,6 @@ export const TransactionsOverview = ({
     const mergedRecords = useCallback(
         (data: ITransaction[]) => async () => {
             try {
-                records.length && setLoadingCustomRecords(true);
                 const retrievedData = onDataRetrieved ? await onDataRetrieved(data) : [];
                 setTransactions(
                     records.map(record => {
@@ -175,7 +174,8 @@ export const TransactionsOverview = ({
     );
 
     useEffect(() => {
-        if (onDataRetrieved) {
+        if (onDataRetrieved && records.length) {
+            setLoadingCustomRecords(true);
             mergedRecords(records)();
         }
     }, [onDataRetrieved, mergedRecords, records]);
@@ -261,7 +261,7 @@ export const TransactionsOverview = ({
                     onLimitSelection={updateLimit}
                     onRowClick={onRowClick}
                     showPagination={true}
-                    transactions={transactions}
+                    transactions={onDataRetrieved ? transactions : records}
                     customColumns={customColumns}
                     {...paginationProps}
                 />

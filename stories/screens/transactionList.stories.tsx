@@ -41,16 +41,16 @@ export const Basic: ElementStory<typeof TransactionsOverview> = {
         mockedApi: true,
         customColumns: ['amount', 'paymentMethod', 'transactionType', '_store', '_product', 'createdAt'],
         /*customColumns: [
-            { label: 'amount', flex: 1, align: 'left', mobile: true },
-            { label: 'paymentMethod', flex: 1.5, align: 'left' },
-            { label: 'transactionType', flex: 2, align: 'left', mobile: true },
-            { label: 'createdAt', flex: 1, align: 'right' },
+            { key: 'amount', flex: 1, align: 'left', mobile: true },
+            { key: 'paymentMethod', flex: 1.5, align: 'left' },
+            { key: 'transactionType', flex: 2, align: 'left', mobile: true },
+            { key: 'createdAt', flex: 1, align: 'right' },
         ],*/
         onDataRetrieved: data => {
             return new Promise(resolve => {
                 setTimeout(() => {
                     resolve(getMyCustomData(data));
-                }, 2500);
+                }, 4500);
             });
         },
     },
