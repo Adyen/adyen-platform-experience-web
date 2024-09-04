@@ -42,7 +42,7 @@ const config: PlaywrightTestConfig = {
     projects: [
         {
             name: 'local-chrome',
-            testDir: 'tests/specs',
+            testDir: 'tests/integration',
             use: {
                 // Use the pre-installed browser already on the machine
                 channel: 'chrome',
@@ -53,7 +53,7 @@ const config: PlaywrightTestConfig = {
         },
         {
             name: 'chromium',
-            testDir: 'tests/specs',
+            testDir: 'tests/integration',
             use: {
                 ...devices['Desktop Chrome'],
                 launchOptions: {
@@ -63,7 +63,7 @@ const config: PlaywrightTestConfig = {
         },
         {
             name: 'firefox',
-            testDir: 'tests/specs',
+            testDir: 'tests/integration',
             use: {
                 ...devices['Desktop Firefox'],
                 launchOptions: {
