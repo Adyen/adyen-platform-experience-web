@@ -1,0 +1,17 @@
+{
+  "translationSourcePaths": [
+    "src/translations/en-US.json"
+  ],
+  "locales": [
+    "da-DK",
+    "de-DE",
+    "es-ES",
+    "fr-FR",
+    "it-IT",
+    "nl-NL",
+    "no-NO",
+    "pt-BR",
+    "sv-SE"
+  ],
+  "placeholderFormat": "YAML"
+}
