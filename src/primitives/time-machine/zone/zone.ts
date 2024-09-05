@@ -1,6 +1,6 @@
 import { zoneFrom } from './index';
-import { getter } from '../../../utils';
 import { getWeekDay } from '../utils';
+import { enumerable } from '../../../utils';
 import { dateFrom, getResolvedTimezone, getTimezoneFormatter, getTimezoneUTCOffset, matchTimezoneFormattedString, restamp } from './utils';
 import type { DateValue } from '../../../utils/datetime/types';
 import type { RecordWithTimezone, WeekDay } from '../types';
@@ -16,8 +16,8 @@ export class Zone implements RecordWithTimezone {
     constructor(timezone: string) {
         const formatter = getTimezoneFormatter(timezone);
         Object.defineProperties(this, {
-            formatter: getter(() => formatter),
-            timezone: getter(() => timezone),
+            formatter: enumerable(formatter),
+            timezone: enumerable(timezone),
         });
     }
 

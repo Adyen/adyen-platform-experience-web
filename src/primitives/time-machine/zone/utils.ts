@@ -4,7 +4,7 @@ import type { DateValue } from '../../../utils/datetime/types';
 import type { TimezoneDataSource } from '../types';
 
 const LOCALE = 'en-US';
-const TZ_OFFSET_REGEXP = /(?<=GMT)(?:([-+](?:0?\d|1[0-4]))(?::?([0-5]\d))?)?$/;
+const TZ_OFFSET_REGEXP = /(?<=GMT)(?:([-+](?:\d(?=:|$)|[01]\d|2[0-3]))(?::(?!$))?(?=([0-5]\d$)?)\2)?$/;
 
 const _getDateTimeFormatOptions = (() => {
     let tz: string | undefined;

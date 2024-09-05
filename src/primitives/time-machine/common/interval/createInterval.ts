@@ -8,7 +8,7 @@ export const createInterval = (delay = DEFAULT_INTERVAL_DELAY): Interval => {
     let currentTime: DOMHighResTimeStamp;
     let startTime: DOMHighResTimeStamp;
 
-    const intervalDelay = Math.max(0, ~~Math.min(delay ?? DEFAULT_INTERVAL_DELAY, MAXIMUM_INTERVAL_DELAY));
+    const intervalDelay = Math.max(0, Math.min(delay ?? DEFAULT_INTERVAL_DELAY, MAXIMUM_INTERVAL_DELAY) | 0);
 
     let emitter = createEmitter(async function* () {
         try {

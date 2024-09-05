@@ -3,17 +3,19 @@ import { getResolvedTimezone } from './utils';
 import { getMappedValue, getter, isString } from '../../../utils';
 import type { TimezoneDataSource } from '../types';
 
+export interface ZoneFn {
+    (timezone?: string): Zone;
+}
+
 export const zone = (() => {
     const ZONES = new Map<string, Zone>();
 
-    const zone = (timezone?: string) => {
+    const zone = ((timezone?: string) => {
         const tz = getResolvedTimezone(timezone);
         return getMappedValue(tz, ZONES, tz => new Zone(tz))!;
-    };
+    }) as ZoneFn & Readonly<{ SYSTEM: string }>;
 
-    return Object.defineProperties(zone as typeof zone & { SYSTEM?: string }, {
-        SYSTEM: getter(getResolvedTimezone),
-    });
+    return Object.defineProperty(zone, 'SYSTEM', getter(getResolvedTimezone));
 })();
 
 export const zoneFrom = (timezoneDataSource?: TimezoneDataSource) => {
