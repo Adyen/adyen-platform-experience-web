@@ -81,13 +81,20 @@ interface _DataOverviewSelectionProps<T extends { showModal: () => void } = { sh
     onRecordSelection?: onRecordSelection<T>;
 }
 
-interface _DataOverviewComponentProps<Columns, DataRetrieved> {
+export type CustomColumn<T extends string> = {
+    [k in T]: {
+        key: k;
+        flex?: number;
+    };
+}[T];
+
+interface _DataOverviewComponentProps<Columns extends string, DataRetrieved> {
     allowLimitSelection?: boolean;
     balanceAccountId?: string;
     onFiltersChanged?: (filters: { [P in FilterParam]?: string }) => any;
     preferredLimit?: 10 | 20;
     showDetails?: boolean;
-    customColumns?: Columns[];
+    columns?: CustomColumn<Columns>[];
     onDataRetrieved?: (data: DataRetrieved[]) => Promise<(DataRetrieved & Record<any, any>)[]>;
 }
 

@@ -16,6 +16,7 @@ import { mediaQueries, useResponsiveViewport } from '../../hooks/useResponsiveVi
 import { FC } from 'preact/compat';
 import { TransactionTableProps } from './types';
 import PaymentMethodCell from './PaymentMethodCell';
+import { CustomColumn } from '../../../../types';
 
 // Remove status column temporarily
 // const FIELDS = ['createdAt', 'status', 'paymentMethod', 'transactionType', 'amount'] as const;
@@ -52,25 +53,25 @@ export const TransactionsTable: FC<TransactionTableProps> = ({
         [isSmAndUpViewport, isMdAndUpViewport]
     );
 
-    const columns = useMemo(
-        () =>
-            (customColumns || FIELDS).map(key => {
-                const label = i18n.get(getLabel(key as any));
-                if (key === 'amount') {
-                    return {
-                        key: 'amount' as const,
-                        label: hasMultipleCurrencies
-                            ? label
-                            : `${label} ${availableCurrencies && availableCurrencies[0] ? `(${getCurrencyCode(availableCurrencies[0])})` : ''}`,
-                        position: key === 'amount' ? CellTextPosition.RIGHT : undefined,
-                        flex: isSmAndUpViewport ? 1.5 : undefined,
-                    };
-                }
+    const tableColumns: CustomColumn<TransactionsTableCols>[] = FIELDS.map(field => ({ key: field }));
 
-                return { key: key as TransactionsTableCols, label, visible: fieldsVisibility[key] };
-            }),
-        [availableCurrencies, customColumns, fieldsVisibility, hasMultipleCurrencies, i18n, isSmAndUpViewport]
-    );
+    const columns = useMemo(() => {
+        return (customColumns || tableColumns).map(({ key, flex }) => {
+            const label = i18n.get(getLabel(key as any));
+            if (key === 'amount') {
+                return {
+                    key: 'amount' as const,
+                    label: hasMultipleCurrencies
+                        ? label
+                        : `${label} ${availableCurrencies && availableCurrencies[0] ? `(${getCurrencyCode(availableCurrencies[0])})` : ''}`,
+                    position: key === 'amount' ? CellTextPosition.RIGHT : undefined,
+                    flex: flex || (isSmAndUpViewport ? 1.5 : undefined),
+                };
+            }
+
+            return { key: key as TransactionsTableCols, label, visible: fieldsVisibility[key], flex: flex };
+        });
+    }, [availableCurrencies, customColumns, fieldsVisibility, hasMultipleCurrencies, i18n, isSmAndUpViewport, tableColumns]);
 
     const EMPTY_TABLE_MESSAGE = {
         title: 'noTransactionsFound',

@@ -3,6 +3,7 @@ import type { PaginationProps, WithPaginationLimitSelection } from '../../../../
 import type { IBalanceAccountBase, ITransaction } from '../../../../../types';
 import { StringWithAutocompleteOptions } from '../../../../../utils/types';
 import { TransactionsTableCols } from './TransactionsTable';
+import { CustomColumn } from '../../../../types';
 
 export type TransactionsTableFields = StringWithAutocompleteOptions<TransactionsTableCols>;
 
@@ -17,5 +18,5 @@ export interface TransactionTableProps extends WithPaginationLimitSelection<Pagi
     showDetails?: boolean;
     showPagination: boolean;
     transactions: ITransaction[] | undefined;
-    customColumns?: TransactionsTableFields[];
+    customColumns?: CustomColumn<TransactionsTableFields>[];
 }

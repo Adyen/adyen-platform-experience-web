@@ -38,13 +38,14 @@ export const CustomColumns: ElementStory<typeof TransactionsOverview> = {
     name: 'Custom Columns',
     args: {
         mockedApi: true,
-        customColumns: ['_product', '_store', 'paymentMethod', 'transactionType', 'createdAt', 'amount'],
-        /*customColumns: [
-            { key: 'amount', flex: 1, align: 'left', mobile: true },
-            { key: 'paymentMethod', flex: 1.5, align: 'left' },
-            { key: 'transactionType', flex: 2, align: 'left', mobile: true },
-            { key: 'createdAt', flex: 1, align: 'right' },
-        ],*/
+        columns: [
+            { key: 'createdAt', flex: 2 },
+            { key: '_store' },
+            { key: '_product' },
+            { key: 'paymentMethod' },
+            { key: 'transactionType' },
+            { key: 'amount', flex: 1 },
+        ],
         onDataRetrieved: data => {
             return new Promise(resolve => {
                 setTimeout(() => {
