@@ -17,7 +17,7 @@ interface DownloadButtonProps {
     endpointName: EndpointName;
     className?: string;
     setError?: (error?: AdyenPlatformExperienceError) => any;
-    onError?: (error?: AdyenPlatformExperienceError) => VNode<any>;
+    errorDisplay?: VNode<any>;
 }
 
 function downloadBlob({ blob, filename }: { blob: Blob; filename: string }) {
@@ -37,7 +37,7 @@ function downloadBlob({ blob, filename }: { blob: Blob; filename: string }) {
     a.click();
 }
 
-function DownloadButton({ endpointName, params, setError, onError, ...props }: DownloadButtonProps) {
+function DownloadButton({ endpointName, params, setError, errorDisplay, ...props }: DownloadButtonProps) {
     const { i18n } = useCoreContext();
     const [fetchData, setFetchData] = useState(false);
     const isSmViewport = useResponsiveViewport(mediaQueries.down.xs);
@@ -82,7 +82,7 @@ function DownloadButton({ endpointName, params, setError, onError, ...props }: D
                     {isFetching ? `${i18n.get('downloading')}..` : i18n.get('download')}
                 </Button>
             )}
-            {error && onError && <div className={'adyen-pe-download__error'}>{onError()}</div>}
+            {error && errorDisplay && <div className={'adyen-pe-download__error'}>{errorDisplay}</div>}
         </div>
     );
 }

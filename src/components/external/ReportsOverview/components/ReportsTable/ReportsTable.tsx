@@ -90,7 +90,7 @@ export const ReportsTable: FC<ReportsTableProps> = ({
         [error, onContactSupport]
     );
 
-    const downloadErrorDisplay = useMemo(() => () => <Warning />, [error, onContactSupport]);
+    const errorIcon = useMemo(() => <Warning />, []);
 
     const onDownloadErrorAlert = useMemo(
         () => (error?: AdyenPlatformExperienceError) => {
@@ -156,7 +156,7 @@ export const ReportsTable: FC<ReportsTableProps> = ({
                                 endpointName={'downloadReport'}
                                 params={queryParam}
                                 setError={onDownloadErrorAlert}
-                                onError={downloadErrorDisplay}
+                                errorDisplay={errorIcon}
                             />
                         );
                     },
