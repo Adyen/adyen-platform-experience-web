@@ -14,7 +14,7 @@ export class TransactionListPage extends BasePage {
     public dateFilter: Locator;
     public firstRow: Locator;
 
-    constructor(page: Page, rootElementSelector = '.transactions-component-container') {
+    constructor(page: Page, rootElementSelector = '.adyen-pe-transactions-overview-container') {
         super(page, rootElementSelector, getPagePath('transactionList'));
         this.dataGrid = new DataGridPage(this.rootElement);
         this.dataGridBody = this.dataGrid.gridBody;
