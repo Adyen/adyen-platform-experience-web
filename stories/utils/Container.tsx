@@ -3,7 +3,6 @@ import { StoryContext } from '@storybook/types';
 import { PreactRenderer } from '@storybook/preact';
 import sessionRequest from '../../playground/utils/sessionRequest';
 import { createAdyenPlatformExperience } from '../../.storybook/utils/create-adyenPE';
-import { getStoryContextAdyenPlatformExperience } from './get-story-context';
 
 interface IContainer<T extends new (...args: any) => any> {
     component: T;
@@ -12,9 +11,8 @@ interface IContainer<T extends new (...args: any) => any> {
     mockedApi?: boolean;
 }
 
-export const Container = <T extends new (args: any) => any>({ component, componentConfiguration, context, mockedApi }: IContainer<T>) => {
+export const Container = <T extends new (args: any) => any>({ component, componentConfiguration, context }: IContainer<T>) => {
     const container = useRef(null);
-    const { worker } = getStoryContextAdyenPlatformExperience(context);
 
     useEffect(() => {
         const getCore = async () => {
@@ -25,12 +23,7 @@ export const Container = <T extends new (args: any) => any>({ component, compone
                 onSessionCreate: async () => {
                     return await sessionRequest(context.args.session);
                 },
-                translations: {
-                    en_US: {
-                        _store: 'Store',
-                        _product: 'Product',
-                    },
-                },
+                ...context.args.coreOptions,
             });
             const Component = new component({ ...componentConfiguration, core: AdyenPlatformExperience });
 

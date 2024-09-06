@@ -37,6 +37,14 @@ Empty.parameters = {
 export const CustomColumns: ElementStory<typeof TransactionsOverview> = {
     name: 'Custom Columns',
     args: {
+        coreOptions: {
+            translations: {
+                en_US: {
+                    _store: 'Store',
+                    _product: 'Product',
+                },
+            },
+        },
         mockedApi: true,
         columns: [
             { key: '_store', flex: 1.5 },
