@@ -66,7 +66,7 @@ export const PayoutsTable: FC<PayoutsTableProps> = ({
         [data, i18n]
     );
 
-    const cols = useTableColumns({
+    const columns = useTableColumns({
         fields: FIELDS,
         columnConfig: {
             fundsCapturedAmount: { ...getAmountFieldConfig('fundsCapturedAmount'), visible: isSmAndUpViewport },
@@ -90,7 +90,7 @@ export const PayoutsTable: FC<PayoutsTableProps> = ({
             <DataGrid
                 errorDisplay={errorDisplay}
                 error={error}
-                columns={cols}
+                columns={columns}
                 data={data}
                 loading={isLoading}
                 outline={false}
