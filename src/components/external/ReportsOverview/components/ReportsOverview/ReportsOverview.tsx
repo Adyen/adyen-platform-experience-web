@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
+import { useCallback, useEffect, useMemo } from 'preact/hooks';
 import { useAuthContext } from '../../../../../core/Auth';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatformExperienceError';
@@ -15,7 +15,7 @@ import { TypographyVariant } from '../../../../internal/Typography/types';
 import Typography from '../../../../internal/Typography/Typography';
 import { ExternalUIComponentProps, FilterParam, ReportsOverviewComponentProps } from '../../../../types';
 import { ReportsTable } from '../ReportsTable/ReportsTable';
-import { BASE_CLASS, EARLIEST_PAYOUT_SINCE_DATE } from './constants';
+import { BASE_CLASS, EARLIEST_PAYOUT_SINCE_DATE, NOTICE_CLASS } from './constants';
 import './ReportsOverview.scss';
 
 export const ReportsOverview = ({
@@ -80,6 +80,9 @@ export const ReportsOverview = ({
                     {i18n.get('reportsTitle')}
                 </Typography>
             )}
+            <div className={NOTICE_CLASS}>
+                <Typography variant={TypographyVariant.BODY}>{i18n.get('reportsNotice')}</Typography>
+            </div>
             <FilterBar>
                 <BalanceAccountSelector
                     activeBalanceAccount={activeBalanceAccount}
