@@ -53,7 +53,7 @@ export default defineConfig(async ({ mode }) => {
                       minify: false,
                   }
                 : {
-                      minify: false,
+                      minify: true,
                       lib: {
                           name: 'AdyenPlatformExperienceWeb',
                           entry: resolve(__dirname, './src/index.ts'),
