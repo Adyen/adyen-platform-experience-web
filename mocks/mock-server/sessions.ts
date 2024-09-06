@@ -1,5 +1,5 @@
-import { endpoints } from '../../endpoints/endpoints';
 import { http, HttpResponse } from 'msw';
+import { endpoints } from '../../endpoints/endpoints';
 
 const PREFIX = endpoints('mock').sessions;
 
