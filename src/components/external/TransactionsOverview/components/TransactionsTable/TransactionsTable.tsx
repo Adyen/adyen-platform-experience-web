@@ -6,7 +6,7 @@ import { TranslationKey } from '../../../../../core/Localization/types';
 import useTimezoneAwareDateFormatting from '../../../../hooks/useTimezoneAwareDateFormatting';
 import DataGrid from '../../../../internal/DataGrid';
 import { CellTextPosition } from '../../../../internal/DataGrid/types';
-import { DATE_FORMAT_MOBILE_TRANSACTIONS, DATE_FORMAT_TRANSACTIONS } from '../../../../internal/DataOverviewDisplay/constants';
+import { DATE_FORMAT_TRANSACTIONS, DATE_FORMAT_TRANSACTIONS_MOBILE } from '../../../../internal/DataOverviewDisplay/constants';
 import DataOverviewError from '../../../../internal/DataOverviewError/DataOverviewError';
 import Pagination from '../../../../internal/Pagination';
 import { TypographyVariant } from '../../../../internal/Typography/types';
@@ -118,7 +118,7 @@ export const TransactionsTable: FC<TransactionTableProps> = ({
                             <div className={DATE_AND_PAYMENT_METHOD_CLASS}>
                                 <PaymentMethodCell paymentMethod={item.paymentMethod} bankAccount={item.bankAccount} />
                                 <Typography variant={TypographyVariant.BODY} className={DATE_METHOD_CLASS}>
-                                    {dateFormat(item.createdAt, DATE_FORMAT_MOBILE_TRANSACTIONS)}
+                                    {dateFormat(item.createdAt, DATE_FORMAT_TRANSACTIONS_MOBILE)}
                                 </Typography>
                             </div>
                         );

@@ -12,7 +12,7 @@ import { AlertTypeOption } from '../../../../internal/Alert/types';
 import DownloadButton from '../../../../internal/Button/DownloadButton/DownloadButton';
 import DataGrid from '../../../../internal/DataGrid';
 import { CellTextPosition } from '../../../../internal/DataGrid/types';
-import { DATE_FORMAT_REPORTS_MOBILE } from '../../../../internal/DataOverviewDisplay/constants';
+import { DATE_FORMAT_REPORTS, DATE_FORMAT_REPORTS_MOBILE } from '../../../../internal/DataOverviewDisplay/constants';
 import DataOverviewError from '../../../../internal/DataOverviewError/DataOverviewError';
 import Pagination from '../../../../internal/Pagination';
 import { PaginationProps, WithPaginationLimitSelection } from '../../../../internal/Pagination/types';
@@ -46,7 +46,7 @@ export const ReportsTable: FC<ReportsTableProps> = ({
     ...paginationProps
 }) => {
     const { i18n } = useCoreContext();
-    const { fullDateFormat, dateFormat } = useTimezoneAwareDateFormatting('UTC');
+    const { dateFormat } = useTimezoneAwareDateFormatting('UTC');
     const { freeze, frozen } = useFreezePeriod(DISABLED_BUTTONS_TIMEOUT);
     const [alert, setAlert] = useState<null | { title: string; description: string }>(null);
     const { refreshing } = useAuthContext();
@@ -131,7 +131,7 @@ export const ReportsTable: FC<ReportsTableProps> = ({
                 customCells={{
                     createdAt: ({ value }) => {
                         if (!value) return null;
-                        return value && <Typography variant={TypographyVariant.BODY}>{fullDateFormat(value)}</Typography>;
+                        return value && <Typography variant={TypographyVariant.BODY}>{dateFormat(value, DATE_FORMAT_REPORTS)}</Typography>;
                     },
                     dateAndReportType: ({ item }) => {
                         return (

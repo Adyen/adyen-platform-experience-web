@@ -25,18 +25,15 @@ const BASE_DATE_TIME_FORMAT: Intl.DateTimeFormatOptions = {
 const BASE_DATE_TIME_MOBILE_FORMAT: Intl.DateTimeFormatOptions = { ...BASE_DATE_TIME_FORMAT, year: undefined };
 
 export const DATE_FORMAT_PAYOUTS: Intl.DateTimeFormatOptions = BASE_DATE_FORMAT;
-export const DATE_FORMAT_MOBILE_PAYOUTS: Intl.DateTimeFormatOptions = BASE_DATE_TIME_MOBILE_FORMAT;
-export const DATE_FORMAT_PAYOUTS_DETAILS: Intl.DateTimeFormatOptions = { ...BASE_DATE_FORMAT, weekday: LONG };
+export const DATE_FORMAT_PAYOUTS_MOBILE: Intl.DateTimeFormatOptions = BASE_DATE_TIME_MOBILE_FORMAT;
+export const DATE_FORMAT_PAYOUT_DETAILS: Intl.DateTimeFormatOptions = { ...BASE_DATE_FORMAT, weekday: LONG };
 
-export const DATE_FORMAT_REPORTS_MOBILE: Intl.DateTimeFormatOptions = BASE_DATE_TIME_MOBILE_FORMAT;
-export const DATE_FORMAT_REPORT_FILE_NAME: Intl.DateTimeFormatOptions = {
-    year: NUMERIC,
-    month: DIGITS_2,
-    day: DIGITS_2,
-};
+export const DATE_FORMAT_REPORTS: Intl.DateTimeFormatOptions = { ...BASE_DATE_FORMAT, month: SHORT };
+export const DATE_FORMAT_REPORTS_MOBILE: Intl.DateTimeFormatOptions = { ...BASE_DATE_FORMAT, year: undefined };
 
 export const DATE_FORMAT_TRANSACTIONS: Intl.DateTimeFormatOptions = BASE_DATE_TIME_FORMAT;
-export const DATE_FORMAT_MOBILE_TRANSACTIONS: Intl.DateTimeFormatOptions = BASE_DATE_TIME_MOBILE_FORMAT;
+export const DATE_FORMAT_TRANSACTIONS_MOBILE: Intl.DateTimeFormatOptions = BASE_DATE_TIME_MOBILE_FORMAT;
+
 export const DATE_FORMAT_TRANSACTION_DETAILS: Intl.DateTimeFormatOptions = {
     ...BASE_DATE_FORMAT,
     ...BASE_TIME_FORMAT,

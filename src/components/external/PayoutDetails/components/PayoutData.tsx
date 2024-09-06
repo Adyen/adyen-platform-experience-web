@@ -7,7 +7,7 @@ import { components } from '../../../../types/api/resources/PayoutsResource';
 import { EMPTY_OBJECT } from '../../../../utils';
 import Accordion from '../../../internal/Accordion/Accordion';
 import Card from '../../../internal/Card/Card';
-import { DATE_FORMAT_PAYOUTS_DETAILS } from '../../../internal/DataOverviewDisplay/constants';
+import { DATE_FORMAT_PAYOUT_DETAILS } from '../../../internal/DataOverviewDisplay/constants';
 import StructuredList from '../../../internal/StructuredList';
 import { ListValue } from '../../../internal/StructuredList/types';
 import { TypographyVariant } from '../../../internal/Typography/types';
@@ -89,7 +89,7 @@ export const PayoutData = ({
     }, [payoutData, i18n]);
 
     const creationDate = useMemo(
-        () => (payout?.createdAt ? dateFormat(new Date(payout?.createdAt), DATE_FORMAT_PAYOUTS_DETAILS) : ''),
+        () => (payout?.createdAt ? dateFormat(new Date(payout?.createdAt), DATE_FORMAT_PAYOUT_DETAILS) : ''),
         [payout, dateFormat]
     );
 
