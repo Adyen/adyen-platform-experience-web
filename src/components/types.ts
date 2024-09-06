@@ -88,22 +88,26 @@ export type CustomColumn<T extends string> = {
     };
 }[T];
 
-interface _DataOverviewComponentProps<Columns extends string, DataRetrieved> {
+interface _DataOverviewComponentProps {
     allowLimitSelection?: boolean;
     balanceAccountId?: string;
     onFiltersChanged?: (filters: { [P in FilterParam]?: string }) => any;
     preferredLimit?: 10 | 20;
     showDetails?: boolean;
+}
+
+interface _CustomizableDataOverview<Columns extends string, DataRetrieved> {
     columns?: CustomColumn<Columns>[];
     onDataRetrieved?: (data: DataRetrieved[]) => Promise<(DataRetrieved & Record<any, any>)[]>;
 }
 
 export interface TransactionOverviewComponentProps
-    extends _DataOverviewComponentProps<TransactionsTableFields, ITransaction>,
+    extends _DataOverviewComponentProps,
+        _CustomizableDataOverview<TransactionsTableFields, ITransaction>,
         _DataOverviewSelectionProps<{ id: string; showModal: () => void }> {}
 
 export interface PayoutsOverviewComponentProps
-    extends _DataOverviewComponentProps<any, IPayout>,
+    extends _DataOverviewComponentProps,
         _DataOverviewSelectionProps<{ balanceAccountId: string; date: string; showModal: () => void }> {}
 
 export const enum FilterParam {

@@ -1,7 +1,6 @@
 import { DATE_FORMAT_TRANSACTIONS } from '../../../../internal/DataOverviewDisplay/constants';
 import Category from '../Category/Category';
 import DataOverviewError from '../../../../internal/DataOverviewError/DataOverviewError';
-import { getLabel } from '../../../../utils/getLabel';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import useTimezoneAwareDateFormatting from '../../../../hooks/useTimezoneAwareDateFormatting';
 import { useCallback, useMemo, useState } from 'preact/hooks';
@@ -16,7 +15,7 @@ import { mediaQueries, useResponsiveViewport } from '../../hooks/useResponsiveVi
 import { FC } from 'preact/compat';
 import { TransactionTableProps } from './types';
 import PaymentMethodCell from './PaymentMethodCell';
-import { CustomColumn } from '../../../../types';
+import { useTableColumns } from '../../../../hooks/useTableColumns';
 
 // Remove status column temporarily
 // const FIELDS = ['createdAt', 'status', 'paymentMethod', 'transactionType', 'amount'] as const;
@@ -45,33 +44,22 @@ export const TransactionsTable: FC<TransactionTableProps> = ({
     const isMdAndUpViewport = useResponsiveViewport(mediaQueries.up.md);
     const isXsAndDownViewport = useResponsiveViewport(mediaQueries.down.xs);
 
-    const fieldsVisibility: Partial<Record<string, boolean>> = useMemo(
-        () => ({
-            transactionType: isMdAndUpViewport,
-            paymentMethod: isSmAndUpViewport,
-        }),
-        [isSmAndUpViewport, isMdAndUpViewport]
-    );
-
-    const tableColumns: CustomColumn<TransactionsTableCols>[] = FIELDS.map(field => ({ key: field }));
-
-    const columns = useMemo(() => {
-        return (customColumns || tableColumns).map(({ key, flex }) => {
-            const label = i18n.get(getLabel(key as any));
-            if (key === 'amount') {
-                return {
-                    key: 'amount' as const,
-                    label: hasMultipleCurrencies
-                        ? label
-                        : `${label} ${availableCurrencies && availableCurrencies[0] ? `(${getCurrencyCode(availableCurrencies[0])})` : ''}`,
-                    position: key === 'amount' ? CellTextPosition.RIGHT : undefined,
-                    flex: flex || (isSmAndUpViewport ? 1.5 : undefined),
-                };
-            }
-
-            return { key: key as TransactionsTableCols, label, visible: fieldsVisibility[key], flex: flex };
-        });
-    }, [availableCurrencies, customColumns, fieldsVisibility, hasMultipleCurrencies, i18n, isSmAndUpViewport, tableColumns]);
+    const amountLabel = i18n.get('amount');
+    const columns = useTableColumns({
+        fields: FIELDS,
+        customColumns,
+        columnConfig: {
+            amount: {
+                label: hasMultipleCurrencies
+                    ? undefined
+                    : `${amountLabel} ${availableCurrencies && availableCurrencies[0] ? `(${getCurrencyCode(availableCurrencies[0])})` : ''}`,
+                position: CellTextPosition.RIGHT,
+                flex: isSmAndUpViewport ? 1.5 : undefined,
+            },
+            transactionType: { visible: isMdAndUpViewport },
+            paymentMethod: { visible: isSmAndUpViewport },
+        },
+    });
 
     const EMPTY_TABLE_MESSAGE = {
         title: 'noTransactionsFound',

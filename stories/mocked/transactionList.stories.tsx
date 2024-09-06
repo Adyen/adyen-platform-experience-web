@@ -39,12 +39,12 @@ export const CustomColumns: ElementStory<typeof TransactionsOverview> = {
     args: {
         mockedApi: true,
         columns: [
-            { key: 'createdAt', flex: 2 },
-            { key: '_store' },
+            { key: '_store', flex: 1.5 },
             { key: '_product' },
             { key: 'paymentMethod' },
             { key: 'transactionType' },
-            { key: 'amount', flex: 1 },
+            { key: 'createdAt' },
+            { key: 'amount', flex: 1.5 },
         ],
         onDataRetrieved: data => {
             return new Promise(resolve => {
