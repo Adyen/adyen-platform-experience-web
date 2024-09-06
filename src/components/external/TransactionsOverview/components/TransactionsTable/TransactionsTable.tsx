@@ -1,4 +1,4 @@
-import { DATE_FORMAT_TRANSACTIONS } from '../../../../internal/DataOverviewDisplay/constants';
+import { DATE_FORMAT_MOBILE_TRANSACTIONS, DATE_FORMAT_TRANSACTIONS } from '../../../../internal/DataOverviewDisplay/constants';
 import Category from '../Category/Category';
 import DataOverviewError from '../../../../internal/DataOverviewError/DataOverviewError';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
@@ -38,7 +38,7 @@ export const TransactionsTable: FC<TransactionTableProps> = ({
     ...paginationProps
 }) => {
     const { i18n } = useCoreContext();
-    const { dateFormat, fullDateFormat } = useTimezoneAwareDateFormatting(activeBalanceAccount?.timeZone);
+    const { dateFormat } = useTimezoneAwareDateFormatting(activeBalanceAccount?.timeZone);
     const [hoveredRow, setHoveredRow] = useState<undefined | number>();
     const isSmAndUpViewport = useResponsiveViewport(mediaQueries.up.sm);
     const isMdAndUpViewport = useResponsiveViewport(mediaQueries.up.md);
@@ -121,11 +121,13 @@ export const TransactionsTable: FC<TransactionTableProps> = ({
                             return (
                                 <div className={DATE_AND_PAYMENT_METHOD_CLASS}>
                                     <PaymentMethodCell paymentMethod={item.paymentMethod} bankAccount={item.bankAccount} />
-                                    <span className={DATE_AND_PAYMENT_METHOD_CLASS}>{dateFormat(item.createdAt, DATE_FORMAT_TRANSACTIONS)}</span>
+                                    <span className={DATE_AND_PAYMENT_METHOD_CLASS}>
+                                        {dateFormat(item.createdAt, DATE_FORMAT_MOBILE_TRANSACTIONS)}
+                                    </span>
                                 </div>
                             );
                         }
-                        return <span>{fullDateFormat(value)}</span>;
+                        return <span>{dateFormat(value, DATE_FORMAT_TRANSACTIONS)}</span>;
                     },
 
                     paymentMethod: ({ item }) => <PaymentMethodCell paymentMethod={item.paymentMethod} bankAccount={item.bankAccount} />,
