@@ -4,7 +4,7 @@ import { http, HttpResponse } from 'msw';
 import { TransactionsMeta } from '../components/transactionList';
 import { Meta } from '@storybook/preact';
 import { endpoints } from '../../endpoints/endpoints';
-import { getMyCustomData } from '../utils/customDataRequest';
+import { getMyCustomData } from './utils/customDataRequest';
 import { TRANSACTIONS } from '../../mocks/mock-data';
 
 const meta: Meta<ElementProps<typeof TransactionsOverview>> = { ...TransactionsMeta, title: 'Mocked/Transactions List' };
