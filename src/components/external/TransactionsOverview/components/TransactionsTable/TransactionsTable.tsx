@@ -58,6 +58,7 @@ export const TransactionsTable: FC<TransactionTableProps> = ({
             },
             transactionType: { visible: isMdAndUpViewport },
             paymentMethod: { visible: isSmAndUpViewport },
+            createdAt: { visible: isSmAndUpViewport },
         },
     });
 
@@ -77,6 +78,7 @@ export const TransactionsTable: FC<TransactionTableProps> = ({
         () => () => <DataOverviewError error={error} onContactSupport={onContactSupport} errorMessage={'weCouldNotLoadYourTransactions'} />,
         [error, onContactSupport]
     );
+
     return (
         <div className={BASE_CLASS}>
             <DataGrid
