@@ -1,4 +1,4 @@
-import { DATE_FORMAT_TRANSACTIONS } from '../../../../internal/DataOverviewDisplay/constants';
+import { DATE_FORMAT_MOBILE_TRANSACTIONS, DATE_FORMAT_TRANSACTIONS } from '../../../../internal/DataOverviewDisplay/constants';
 import Category from '../Category/Category';
 import DataOverviewError from '../../../../internal/DataOverviewError/DataOverviewError';
 import { getLabel } from '../../../../utils/getLabel';
@@ -36,7 +36,7 @@ export const TransactionsTable: FC<TransactionTableProps> = ({
     ...paginationProps
 }) => {
     const { i18n } = useCoreContext();
-    const { dateFormat, fullDateFormat } = useTimezoneAwareDateFormatting(activeBalanceAccount?.timeZone);
+    const { dateFormat } = useTimezoneAwareDateFormatting(activeBalanceAccount?.timeZone);
     const [hoveredRow, setHoveredRow] = useState<undefined | number>();
     const isSmAndUpViewport = useResponsiveViewport(mediaQueries.up.sm);
     const isMdAndUpViewport = useResponsiveViewport(mediaQueries.up.md);
@@ -115,7 +115,7 @@ export const TransactionsTable: FC<TransactionTableProps> = ({
                         return (
                             <div className={DATE_AND_PAYMENT_METHOD_CLASS}>
                                 <PaymentMethodCell paymentMethod={item.paymentMethod} bankAccount={item.bankAccount} />
-                                <span className={DATE_AND_PAYMENT_METHOD_CLASS}>{dateFormat(item.createdAt, DATE_FORMAT_TRANSACTIONS)}</span>
+                                <span className={DATE_AND_PAYMENT_METHOD_CLASS}>{dateFormat(item.createdAt, DATE_FORMAT_MOBILE_TRANSACTIONS)}</span>
                             </div>
                         );
                     },
@@ -129,7 +129,7 @@ export const TransactionsTable: FC<TransactionTableProps> = ({
                             )
                         ) : null;
                     },
-                    createdAt: ({ value }) => <span>{fullDateFormat(value)}</span>,
+                    createdAt: ({ value }) => <span>{dateFormat(value, DATE_FORMAT_TRANSACTIONS)}</span>,
                     amount: ({ value }) => {
                         const amount = i18n.amount(value.value, value.currency, { hideCurrency: !hasMultipleCurrencies });
                         return <span className={AMOUNT_CLASS}>{amount}</span>;
