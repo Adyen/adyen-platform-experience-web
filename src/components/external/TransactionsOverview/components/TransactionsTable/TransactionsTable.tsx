@@ -6,7 +6,7 @@ import { TranslationKey } from '../../../../../core/Localization/types';
 import useTimezoneAwareDateFormatting from '../../../../hooks/useTimezoneAwareDateFormatting';
 import DataGrid from '../../../../internal/DataGrid';
 import { CellTextPosition } from '../../../../internal/DataGrid/types';
-import { DATE_FORMAT_TRANSACTIONS } from '../../../../internal/DataOverviewDisplay/constants';
+import { DATE_FORMAT_MOBILE_TRANSACTIONS, DATE_FORMAT_TRANSACTIONS } from '../../../../internal/DataOverviewDisplay/constants';
 import DataOverviewError from '../../../../internal/DataOverviewError/DataOverviewError';
 import Pagination from '../../../../internal/Pagination';
 import { TypographyVariant } from '../../../../internal/Typography/types';
@@ -38,7 +38,7 @@ export const TransactionsTable: FC<TransactionTableProps> = ({
     ...paginationProps
 }) => {
     const { i18n } = useCoreContext();
-    const { dateFormat, fullDateFormat } = useTimezoneAwareDateFormatting(activeBalanceAccount?.timeZone);
+    const { dateFormat } = useTimezoneAwareDateFormatting(activeBalanceAccount?.timeZone);
     const [hoveredRow, setHoveredRow] = useState<undefined | number>();
     const isSmAndUpViewport = useResponsiveViewport(mediaQueries.up.sm);
     const isMdAndUpViewport = useResponsiveViewport(mediaQueries.up.md);
@@ -118,7 +118,7 @@ export const TransactionsTable: FC<TransactionTableProps> = ({
                             <div className={DATE_AND_PAYMENT_METHOD_CLASS}>
                                 <PaymentMethodCell paymentMethod={item.paymentMethod} bankAccount={item.bankAccount} />
                                 <Typography variant={TypographyVariant.BODY} className={DATE_METHOD_CLASS}>
-                                    {dateFormat(item.createdAt, DATE_FORMAT_TRANSACTIONS)}
+                                    {dateFormat(item.createdAt, DATE_FORMAT_MOBILE_TRANSACTIONS)}
                                 </Typography>
                             </div>
                         );
@@ -133,7 +133,7 @@ export const TransactionsTable: FC<TransactionTableProps> = ({
                             )
                         ) : null;
                     },
-                    createdAt: ({ value }) => <Typography variant={TypographyVariant.BODY}>{fullDateFormat(value)}</Typography>,
+                    createdAt: ({ value }) => <Typography variant={TypographyVariant.BODY}>{dateFormat(value, DATE_FORMAT_TRANSACTIONS)}</Typography>,
                     amount: ({ value }) => {
                         const amount = i18n.amount(value.value, value.currency, { hideCurrency: !hasMultipleCurrencies });
                         return (
