@@ -23,9 +23,13 @@
     }
 
     .adyen-pe-download__button--loading {
-        &,
         &:disabled {
             background-color: style.token(color-background-tertiary);
+        }
+
+        .adyen-pe-spinner {
+            border-color: currentColor;
+            border-top-color: transparent;
         }
     }
 }
