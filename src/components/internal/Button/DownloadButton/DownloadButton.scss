@@ -16,15 +16,12 @@
         gap: style.token(spacer-040);
         padding: style.token(spacer-050);
         text-decoration: none;
-
-        &:disabled {
-            color: style.token(color-label-primary);
-        }
     }
 
     .adyen-pe-download__button--loading {
         &:disabled {
             background-color: style.token(color-background-tertiary);
+            color: style.token(color-label-primary);
         }
 
         .adyen-pe-spinner {
