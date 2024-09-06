@@ -16,6 +16,8 @@ interface DownloadButtonProps {
     params: any;
     endpointName: EndpointName;
     className?: string;
+    disabled?: boolean;
+    onDownloadRequested?: () => void;
     setError?: (error?: AdyenPlatformExperienceError) => any;
     errorDisplay?: VNode<any>;
 }
@@ -37,7 +39,7 @@ function downloadBlob({ blob, filename }: { blob: Blob; filename: string }) {
     a.click();
 }
 
-function DownloadButton({ endpointName, params, setError, errorDisplay, ...props }: DownloadButtonProps) {
+function DownloadButton({ className, disabled, endpointName, params, setError, errorDisplay, onDownloadRequested }: DownloadButtonProps) {
     const { i18n } = useCoreContext();
     const [fetchData, setFetchData] = useState(false);
     const isSmViewport = useResponsiveViewport(mediaQueries.down.xs);
@@ -62,7 +64,10 @@ function DownloadButton({ endpointName, params, setError, errorDisplay, ...props
         }
     }, [error]);
 
-    const onClick = () => setFetchData(true);
+    const onClick = () => {
+        setFetchData(true);
+        onDownloadRequested?.();
+    };
 
     return (
         <div className="adyen-pe-download">
@@ -72,12 +77,11 @@ function DownloadButton({ endpointName, params, setError, errorDisplay, ...props
                 </Button>
             ) : (
                 <Button
-                    className={classNames('adyen-pe-download__button', { 'adyen-pe-download__button--loading': isFetching })}
-                    disabled={isFetching}
+                    className={classNames('adyen-pe-download__button', { 'adyen-pe-download__button--loading': isFetching }, className)}
+                    disabled={disabled || isFetching}
                     variant={ButtonVariant.SECONDARY}
                     onClick={onClick}
                     iconLeft={isFetching ? <Spinner size={'small'} /> : <Download />}
-                    {...props}
                 >
                     {isFetching ? `${i18n.get('downloading')}..` : i18n.get('download')}
                 </Button>

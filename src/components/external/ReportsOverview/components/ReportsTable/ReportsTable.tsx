@@ -5,6 +5,7 @@ import useCoreContext from '../../../../../core/Context/useCoreContext';
 import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatformExperienceError';
 import { TranslationKey } from '../../../../../core/Localization/types';
 import { IReport } from '../../../../../types';
+import useFreezePeriod from '../../../../hooks/useFreezePeriod';
 import useTimezoneAwareDateFormatting from '../../../../hooks/useTimezoneAwareDateFormatting';
 import Alert from '../../../../internal/Alert/Alert';
 import { AlertTypeOption } from '../../../../internal/Alert/types';
@@ -20,7 +21,7 @@ import { TypographyVariant } from '../../../../internal/Typography/types';
 import Typography from '../../../../internal/Typography/Typography';
 import { getLabel } from '../../../../utils/getLabel';
 import { mediaQueries, useResponsiveViewport } from '../../../TransactionsOverview/hooks/useResponsiveViewport';
-import { BASE_CLASS, DATE_TYPE_CLASS, DATE_TYPE_DATE_SECTION_CLASS } from './constants';
+import { BASE_CLASS, DATE_TYPE_CLASS, DATE_TYPE_DATE_SECTION_CLASS, DISABLED_BUTTONS_TIMEOUT } from './constants';
 import './ReportsTable.scss';
 
 const FIELDS = ['createdAt', 'dateAndReportType', 'reportType', 'reportFile'] as const;
@@ -46,6 +47,7 @@ export const ReportsTable: FC<ReportsTableProps> = ({
 }) => {
     const { i18n } = useCoreContext();
     const { fullDateFormat, dateFormat } = useTimezoneAwareDateFormatting('UTC');
+    const { freeze, frozen } = useFreezePeriod(DISABLED_BUTTONS_TIMEOUT);
     const [alert, setAlert] = useState<null | { title: string; description: string }>(null);
     const { refreshing } = useAuthContext();
     const isLoading = useMemo(() => loading || refreshing, [loading, refreshing]);
@@ -154,7 +156,9 @@ export const ReportsTable: FC<ReportsTableProps> = ({
                             <DownloadButton
                                 className={'adyen-pe-reports-table--download'}
                                 endpointName={'downloadReport'}
+                                disabled={frozen}
                                 params={queryParam}
+                                onDownloadRequested={freeze}
                                 setError={onDownloadErrorAlert}
                                 errorDisplay={errorIcon}
                             />

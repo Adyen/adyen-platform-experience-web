@@ -22,7 +22,10 @@
         }
     }
 
-    .adyen-pe-download__button--loading:disabled {
-        background-color: style.token(color-background-tertiary);
+    .adyen-pe-download__button--loading {
+        &,
+        &:disabled {
+            background-color: style.token(color-background-tertiary);
+        }
     }
 }
