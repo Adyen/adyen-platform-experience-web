@@ -58,7 +58,7 @@ export const CustomColumns: ElementStory<typeof TransactionsOverview> = {
             return new Promise(resolve => {
                 setTimeout(() => {
                     resolve(getMyCustomData(data));
-                }, 4500);
+                }, 200);
             });
         },
     },

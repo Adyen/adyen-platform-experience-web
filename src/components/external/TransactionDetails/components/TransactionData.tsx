@@ -9,8 +9,25 @@ import { TagVariant } from '../../../internal/Tag/types';
 import useCoreContext from '../../../../core/Context/useCoreContext';
 import { useMemo } from 'preact/hooks';
 import './TransactionData.scss';
+import { PropsWithChildren } from 'preact/compat';
+import { FunctionalComponent } from 'preact';
+import { TRANSACTION_FIELDS } from '../../TransactionsOverview/components/TransactionsTable/TransactionsTable';
 
-export const TransactionData = ({ transaction, isFetching }: { transaction: TransactionDetailData; isFetching?: boolean }) => {
+const TransactionDataContainer: FunctionalComponent<PropsWithChildren> = ({ children }) => (
+    <div className={'adyen-pe-transaction-data__container'}>{children}</div>
+);
+
+const DETAILS_FIELDS = [
+    'status',
+    'category',
+    'paymentMethod',
+    'bankAccount',
+    'balanceAccount',
+    'id',
+    'balanceAccountId',
+] satisfies (keyof TransactionDetailData)[];
+
+export const TransactionData = ({ transaction, isFetching }: { transaction: TransactionDetailData & Record<string, any>; isFetching?: boolean }) => {
     const { i18n } = useCoreContext();
     const { dateFormat } = useTimezoneAwareDateFormatting(transaction.balanceAccount?.timeZone);
 
@@ -21,13 +38,19 @@ export const TransactionData = ({ transaction, isFetching }: { transaction: Tran
 
     const amountStyle = transaction?.status === 'Booked' ? 'default' : transaction?.status === 'Reversed' ? 'error' : 'pending';
 
+    const customColumns = useMemo(() => {
+        return Object.entries(transaction)
+            .filter(([key]) => ![...DETAILS_FIELDS, ...TRANSACTION_FIELDS].includes(key as any))
+            .map(([key, value]) => ({ key, value }));
+    }, [transaction]);
+
     return (
         <>
             {!transaction ? (
                 <TransactionDataSkeleton isLoading={isFetching} skeletonRowNumber={6} />
             ) : (
                 <div className={'adyen-pe-transaction-data'}>
-                    <div className={'adyen-pe-transaction-data__container'}>
+                    <TransactionDataContainer>
                         {(transaction?.status || transaction?.category) && (
                             <div className={'adyen-pe-transaction-data__section adyen-pe-transaction-data__tag-container'}>
                                 {transaction?.status && (
@@ -73,18 +96,26 @@ export const TransactionData = ({ transaction, isFetching }: { transaction: Tran
                             </div>
                         )}
                         <div className={'adyen-pe-transaction-data__section adyen-pe-transaction-data__label'}>{createdAt}</div>
-                    </div>
+                    </TransactionDataContainer>
 
                     {transaction.balanceAccount?.description && (
-                        <div className={'adyen-pe-transaction-data__container'}>
+                        <TransactionDataContainer>
                             <div className={'adyen-pe-transaction-data__label'}>{i18n.get('account')}</div>
                             <div>{transaction.balanceAccount.description}</div>
-                        </div>
+                        </TransactionDataContainer>
                     )}
-                    <div className={'adyen-pe-transaction-data__container'}>
+                    <TransactionDataContainer>
                         <div className={'adyen-pe-transaction-data__label'}>{i18n.get('referenceID')}</div>
                         <div aria-label={i18n.get('referenceID')}>{transaction.id}</div>
-                    </div>
+                    </TransactionDataContainer>
+                    {customColumns.map(({ key, value }) => {
+                        return (
+                            <TransactionDataContainer key={key}>
+                                <div className={'adyen-pe-transaction-data__label'}>{i18n.get(key as any)}</div>
+                                <div aria-label={i18n.get(key as any)}>{value}</div>
+                            </TransactionDataContainer>
+                        );
+                    })}
                 </div>
             )}
         </>

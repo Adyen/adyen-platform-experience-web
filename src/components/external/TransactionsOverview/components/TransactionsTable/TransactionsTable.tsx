@@ -20,8 +20,8 @@ import { useTableColumns } from '../../../../hooks/useTableColumns';
 // Remove status column temporarily
 // const FIELDS = ['createdAt', 'status', 'paymentMethod', 'transactionType', 'amount'] as const;
 
-const FIELDS = ['createdAt', 'paymentMethod', 'transactionType', 'amount'] as const;
-export type TransactionsTableCols = (typeof FIELDS)[number];
+export const TRANSACTION_FIELDS = ['createdAt', 'paymentMethod', 'transactionType', 'amount'] as const;
+export type TransactionsTableCols = (typeof TRANSACTION_FIELDS)[number];
 
 export const TransactionsTable: FC<TransactionTableProps> = ({
     activeBalanceAccount,
@@ -46,7 +46,7 @@ export const TransactionsTable: FC<TransactionTableProps> = ({
 
     const amountLabel = i18n.get('amount');
     const columns = useTableColumns({
-        fields: FIELDS,
+        fields: TRANSACTION_FIELDS,
         customColumns,
         columnConfig: {
             amount: {
