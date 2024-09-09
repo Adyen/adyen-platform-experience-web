@@ -37,3 +37,12 @@ test.describe('Filters', () => {
 
     //TODO test('filtering by date range should work')
 });
+
+test.describe('Transaction List with custom columns', () => {
+    test('Extra columns should be rendered', async ({ transactionListPage, page }) => {
+        await goToPage({ page, id: `${COMPONENT_PREFIX}--custom-columns` });
+        const transactionList = transactionListPage;
+        await expect(transactionList.getHeader('Store')).toBeAttached();
+        await expect(transactionList.getHeader('Product')).toBeAttached();
+    });
+});

@@ -38,6 +38,9 @@ export class TransactionListPage extends BasePage {
     getCell(id: string, row = 0) {
         return this.dataGrid.getCell(id, row);
     }
+    getHeader(id: string) {
+        return this.dataGrid.getHeader(id);
+    }
 
     async applyDateFilter(from: Date | number | string = Date(), to: Date | number | string = from) {
         await this.dateFilter.click();
