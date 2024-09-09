@@ -14,25 +14,6 @@ export const Basic: ElementStory<typeof TransactionsOverview> = {
         mockedApi: true,
     },
 };
-export const Empty: ElementStory<typeof TransactionsOverview> = {
-    name: 'Empty list',
-    args: {
-        mockedApi: true,
-    },
-};
-
-Empty.parameters = {
-    msw: {
-        handlers: [
-            http.get(endpoints('mock').transactions, () => {
-                return HttpResponse.json({
-                    data: [],
-                    _links: {},
-                });
-            }),
-        ],
-    },
-};
 
 export const CustomColumns: ElementStory<typeof TransactionsOverview> = {
     name: 'Custom Columns',
