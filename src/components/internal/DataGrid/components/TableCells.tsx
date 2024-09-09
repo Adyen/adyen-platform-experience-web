@@ -3,6 +3,10 @@ import { DataGridColumn } from '../types';
 import { CustomCell } from '../DataGrid';
 import Icon from './Icon';
 
+const _iconIsFunction = (icon: any): icon is (value: unknown) => { url: string } => {
+    return typeof icon === 'function' && typeof icon('test') === 'object' && 'url' in icon('test');
+};
+
 export const TableCells = <
     Items extends Array<any>,
     Columns extends Array<DataGridColumn<Extract<keyof Items[number], string>>>,
@@ -41,7 +45,7 @@ export const TableCells = <
                 return (
                     <DataGridCell aria-labelledby={String(key)} key={key} column={key} position={position}>
                         <div className="adyen-pe-data-grid__cell-value">
-                            {icon && <Icon {...icon} />}
+                            {icon && <Icon {...icon} url={_iconIsFunction(icon) ? icon(item[key]).url : icon.url} />}
                             <div>{item[key]}</div>
                         </div>
                     </DataGridCell>

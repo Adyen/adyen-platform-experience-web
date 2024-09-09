@@ -47,8 +47,18 @@ export const CustomColumns: ElementStory<typeof TransactionsOverview> = {
         },
         mockedApi: true,
         columns: [
-            { key: '_store', flex: 1.5, icon: { url: 'https://img.icons8.com/?size=100&id=dsKbt_o77r0L&format=png&color=000000' } },
-            { key: '_product' },
+            {
+                key: '_store',
+                flex: 1.5,
+                icon: value => {
+                    const flag = value === 'New York' ? 'us' : 'au';
+                    return {
+                        url: `https://flagicons.lipis.dev/flags/4x3/${flag}.svg`,
+                        alt: flag,
+                    };
+                },
+            },
+            { key: '_product', icon: { url: 'https://img.icons8.com/?size=100&id=43184&format=png&color=000000', alt: 'Product' } },
             { key: 'paymentMethod' },
             { key: 'transactionType' },
             { key: 'createdAt' },

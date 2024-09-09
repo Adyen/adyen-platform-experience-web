@@ -1,6 +1,7 @@
 import { ComponentChildren, VNode } from 'preact';
 import { CustomCell } from './DataGrid';
 import { TranslationKey } from '../../../core/Localization/types';
+import { DataGridIcon } from '../../types';
 
 export enum CellTextPosition {
     CENTER = 'center',
@@ -14,7 +15,7 @@ export interface DataGridColumn<Item> {
     visible?: boolean;
     minWidth?: number;
     flex?: number;
-    icon?: { url: string; alt?: string };
+    icon?: DataGridIcon;
 }
 
 export interface DataGridProps<

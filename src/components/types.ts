@@ -81,10 +81,12 @@ interface _DataOverviewSelectionProps<T extends { showModal: () => void } = { sh
     onRecordSelection?: onRecordSelection<T>;
 }
 
+export type DataGridIcon = { url: string; alt?: string } | ((value: unknown) => { url: string; alt?: string });
+
 export type DataGridCustomColumnConfig<k> = {
     key: k;
     flex?: number;
-    icon?: { url: string; alt?: string };
+    icon?: DataGridIcon;
 };
 
 export type CustomColumn<T extends string> = {

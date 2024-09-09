@@ -194,10 +194,10 @@
     }
 
     &__cell-value {
-        display: flex;
         align-items: center;
-        width: min-content;
+        display: flex;
         gap: var(--adyen-sdk-spacer-030, 6px);
+        width: min-content;
     }
 
     &__icon-container {
