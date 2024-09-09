@@ -39,8 +39,9 @@ export const TransactionData = ({ transaction, isFetching }: { transaction: Tran
     const amountStyle = transaction?.status === 'Booked' ? 'default' : transaction?.status === 'Reversed' ? 'error' : 'pending';
 
     const customColumns = useMemo(() => {
+        const fields = new Set([...DETAILS_FIELDS, ...TRANSACTION_FIELDS]);
         return Object.entries(transaction)
-            .filter(([key]) => ![...DETAILS_FIELDS, ...TRANSACTION_FIELDS].includes(key as any))
+            .filter(([key]) => !fields.has(key as any))
             .map(([key, value]) => ({ key, value }));
     }, [transaction]);
 
