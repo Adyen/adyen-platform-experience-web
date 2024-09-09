@@ -47,7 +47,7 @@ export const CustomColumns: ElementStory<typeof TransactionsOverview> = {
         },
         mockedApi: true,
         columns: [
-            { key: '_store', flex: 1.5 },
+            { key: '_store', flex: 1.5, icon: { url: 'https://img.icons8.com/?size=100&id=dsKbt_o77r0L&format=png&color=000000' } },
             { key: '_product' },
             { key: 'paymentMethod' },
             { key: 'transactionType' },
@@ -58,7 +58,7 @@ export const CustomColumns: ElementStory<typeof TransactionsOverview> = {
             return new Promise(resolve => {
                 setTimeout(() => {
                     resolve(getMyCustomData(data));
-                }, 200);
+                }, 20);
             });
         },
     },

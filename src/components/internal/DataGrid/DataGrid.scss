@@ -193,6 +193,25 @@
         transform: translateX(-50%);
     }
 
+    &__cell-value {
+        display: flex;
+        align-items: center;
+        width: min-content;
+        gap: var(--adyen-sdk-spacer-030, 6px);
+    }
+
+    &__icon-container {
+        height: var(--adyen-sdk-spacer-090, 24px);
+        width: var(--adyen-sdk-spacer-100, 32px);
+    }
+
+    &__icon {
+        height: 100%;
+        max-width: 100%;
+        object-fit: contain;
+        object-position: center;
+    }
+
     // stylelint-disable order/order
     @include adyen-pe-screen-sm-and-up {
         &__head {

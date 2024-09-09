@@ -1,12 +1,12 @@
 import { useMemo } from 'preact/hooks';
 import { getLabel } from '../utils/getLabel';
 import { CellTextPosition } from '../internal/DataGrid/types';
-import { CustomColumn } from '../types';
+import { CustomColumn, DataGridCustomColumnConfig } from '../types';
 import useCoreContext from '../../core/Context/useCoreContext';
 
-type Columns<k> = { key: k; label?: string; position?: CellTextPosition; flex?: number; visible?: boolean };
+type Columns<k extends string> = DataGridCustomColumnConfig<k> & { label?: string; position?: CellTextPosition; visible?: boolean };
 
-function removeUndefinedProperties<T>(obj: Omit<Columns<T>, 'key'>): Partial<Columns<T>> {
+function removeUndefinedProperties<T extends string>(obj: Omit<Columns<T>, 'key'>): Partial<Columns<T>> {
     let result: Partial<Omit<Columns<T>, 'key'>> = {};
     for (const key of Object.keys(obj) as Array<keyof Omit<Columns<T>, 'key'>>) {
         if (obj[key] !== undefined) {
@@ -30,12 +30,12 @@ export const useTableColumns = <T extends string, C extends string>({
     const tableColumns: CustomColumn<T>[] = fields.map(field => ({ key: field }));
 
     const columns = useMemo(() => {
-        return (customColumns || tableColumns).map(({ key, flex }) => {
+        return (customColumns || tableColumns).map(({ key, flex, icon }) => {
             const label = i18n.get(getLabel(key as any));
 
             const config = removeUndefinedProperties<T>(columnConfig?.[key] || {});
 
-            return { key: key as T, label, visible: true, flex, ...(config || {}) };
+            return { key: key as T, label, visible: true, flex, icon, ...(config || {}) };
         });
     }, [columnConfig, customColumns, i18n, tableColumns]);
 

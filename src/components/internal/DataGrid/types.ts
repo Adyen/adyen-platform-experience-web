@@ -14,6 +14,7 @@ export interface DataGridColumn<Item> {
     visible?: boolean;
     minWidth?: number;
     flex?: number;
+    icon?: { url: string; alt?: string };
 }
 
 export interface DataGridProps<
