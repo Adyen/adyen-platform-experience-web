@@ -1,0 +1,46 @@
+name: Download translations
+
+on:
+  workflow_dispatch:
+    inputs:
+      open_pr:
+        description: 'TRUE to open a new PR with the changes'
+        required: false
+        type: boolean
+        default: FALSE
+
+jobs:
+  download-files:
+    name: Download completed translation files
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+
+      - name: Run the preliminary setup steps
+        uses: ./.github/actions/setup-env
+
+      - name: Run setup steps for translation tasks
+        uses: ./.github/actions/setup-smartling
+
+      - name: Download files
+        run: npx @adyen/smartling-bot@0.3.1 download-files
+
+      - name: Commit files
+        if: ${{ inputs.open_pr }}
+        shell: sh
+        run: |
+          for source_path in $(jq -r '.translationSourcePaths[]' .i18nrc); do
+            root_path=$(dirname $source_path)
+            for locale in $(jq -r '.locales[]' .i18nrc); do
+              git add $(realpath "./$root_path/$locale.json")
+            done
+          done
+          git commit -m 'chore(translations): updated translations'
+
+  create-pr:
+    needs: download-files
+    if: ${{ inputs.open_pr }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "DONE!"
