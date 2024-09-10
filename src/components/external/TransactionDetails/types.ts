@@ -9,7 +9,11 @@ export interface DetailsWithIdProps {
     id: string;
 }
 
-export type DetailsComponentProps = StrictUnion<DetailsWithoutIdProps | DetailsWithIdProps>;
+export interface DetailsWithExtraData {
+    extraDetails: Record<string, any>;
+}
+
+export type DetailsComponentProps = StrictUnion<DetailsWithoutIdProps | DetailsWithIdProps> & DetailsWithExtraData;
 
 export type TransactionDetailData = ITransaction & BalanceAccountProps;
 

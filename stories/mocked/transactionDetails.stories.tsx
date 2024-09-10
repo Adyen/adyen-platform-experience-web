@@ -6,9 +6,28 @@ import { TransactionDetailsMeta } from '../components/transactionDetails';
 const meta: Meta<ElementProps<typeof TransactionDetails>> = { ...TransactionDetailsMeta, title: 'Mocked/Transaction Details' };
 
 export const Basic: ElementStory<typeof TransactionDetails> = {
-    name: 'Basic (Mocked)',
+    name: 'Basic',
     args: {
         mockedApi: true,
+    },
+};
+
+export const CustomData: ElementStory<typeof TransactionDetails> = {
+    name: 'Custom Data',
+    args: {
+        coreOptions: {
+            translations: {
+                en_US: {
+                    _store: 'Store',
+                    _product: 'Product',
+                },
+            },
+        },
+        mockedApi: true,
+        extraDetails: {
+            _store: 'Sidney',
+            _product: 'Coffee',
+        },
     },
 };
 

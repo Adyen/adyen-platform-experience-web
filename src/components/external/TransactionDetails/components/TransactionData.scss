@@ -69,12 +69,26 @@
         line-height: style.token(text-body-line-height);
     }
 
+    &__skeleton-container {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        margin-bottom: style.token(spacer-060);
+    }
+
+    &__status-skeleton {
+        display: flex;
+        gap: 10px;
+        width: 100px;
+    }
+
     &__skeleton {
         @include skeleton.adyen-pe-skeleton();
         display: block;
         height: style.token(spacer-060);
-        margin: style.token(spacer-040) 0;
-        width: 50%;
+        margin: 0;
+        max-width: 250px;
+        width: 100%;
 
         &-loading-content {
             @include skeleton.adyen-pe-skeleton-animation();

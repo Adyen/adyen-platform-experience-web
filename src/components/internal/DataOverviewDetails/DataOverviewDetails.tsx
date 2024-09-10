@@ -68,11 +68,9 @@ export default function DataOverviewDetails(props: ExternalUIComponentProps<Deta
         }
     }, [error, props.onContactSupport]);
 
-    const detailsData = details ?? data;
+    const extraDetails = isDetailsWithId(props) && props.type === 'transaction' ? props.extraDetails : {};
 
-    if (isFetching) {
-        return <Spinner />;
-    }
+    const detailsData = details ?? data;
 
     return (
         <div className="adyen-pe-overview-details">
@@ -86,18 +84,22 @@ export default function DataOverviewDetails(props: ExternalUIComponentProps<Deta
 
             {error && errorProps && (
                 <div className="adyen-pe-overview-details--error-container">
-                    <ErrorMessageDisplay centered withImage {...errorProps} />
+                    <ErrorMessageDisplay withImage {...errorProps} />
                 </div>
             )}
 
-            {props.type === 'transaction' && detailsData && (
+            {props.type === 'transaction' && (
                 <TransactionData
                     transaction={
-                        {
-                            ...detailsData,
-                            balanceAccount: details?.balanceAccount || balanceAccounts?.[0],
-                        } as TransactionDetailData
+                        detailsData
+                            ? ({
+                                  ...(detailsData || {}),
+                                  balanceAccount: details?.balanceAccount || balanceAccounts?.[0],
+                                  ...extraDetails,
+                              } as TransactionDetailData)
+                            : undefined
                     }
+                    error={error && errorProps ? true : false}
                     isFetching={isFetching}
                 />
             )}

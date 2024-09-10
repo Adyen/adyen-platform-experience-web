@@ -12,6 +12,7 @@ import './TransactionData.scss';
 import { PropsWithChildren } from 'preact/compat';
 import { FunctionalComponent } from 'preact';
 import { TRANSACTION_FIELDS } from '../../TransactionsOverview/components/TransactionsTable/TransactionsTable';
+import cx from 'classnames';
 
 const TransactionDataContainer: FunctionalComponent<PropsWithChildren> = ({ children }) => (
     <div className={'adyen-pe-transaction-data__container'}>{children}</div>
@@ -27,10 +28,17 @@ const DETAILS_FIELDS = [
     'balanceAccountId',
 ] satisfies (keyof TransactionDetailData)[];
 
-export const TransactionData = ({ transaction, isFetching }: { transaction: TransactionDetailData & Record<string, any>; isFetching?: boolean }) => {
+export const TransactionData = ({
+    transaction,
+    isFetching,
+    error,
+}: {
+    transaction?: TransactionDetailData & Record<string, any>;
+    isFetching?: boolean;
+    error?: boolean;
+}) => {
     const { i18n } = useCoreContext();
-    const { dateFormat } = useTimezoneAwareDateFormatting(transaction.balanceAccount?.timeZone);
-
+    const { dateFormat } = useTimezoneAwareDateFormatting(transaction?.balanceAccount?.timeZone);
     const createdAt = useMemo(
         () => (transaction ? dateFormat(new Date(transaction.createdAt), DATE_FORMAT_TRANSACTION_DETAILS) : ''),
         [transaction, dateFormat]
@@ -40,16 +48,16 @@ export const TransactionData = ({ transaction, isFetching }: { transaction: Tran
 
     const customColumns = useMemo(() => {
         const fields = new Set([...DETAILS_FIELDS, ...TRANSACTION_FIELDS]);
-        return Object.entries(transaction)
+        return Object.entries(transaction || {})
             .filter(([key]) => !fields.has(key as any))
             .map(([key, value]) => ({ key, value }));
     }, [transaction]);
 
     return (
         <>
-            {!transaction ? (
+            {(!transaction && !error) || isFetching ? (
                 <TransactionDataSkeleton isLoading={isFetching} skeletonRowNumber={6} />
-            ) : (
+            ) : transaction ? (
                 <div className={'adyen-pe-transaction-data'}>
                     <TransactionDataContainer>
                         {(transaction?.status || transaction?.category) && (
@@ -72,7 +80,7 @@ export const TransactionData = ({ transaction, isFetching }: { transaction: Tran
                         <div
                             className={`adyen-pe-transaction-data__section adyen-pe-transaction-data__amount adyen-pe-transaction-data__amount--${amountStyle}`}
                         >
-                            {transaction.amount
+                            {transaction?.amount
                                 ? `${i18n.amount(transaction.amount.value, transaction.amount.currency, {
                                       hideCurrency: true,
                                   })} ${transaction.amount.currency}`
@@ -99,7 +107,7 @@ export const TransactionData = ({ transaction, isFetching }: { transaction: Tran
                         <div className={'adyen-pe-transaction-data__section adyen-pe-transaction-data__label'}>{createdAt}</div>
                     </TransactionDataContainer>
 
-                    {transaction.balanceAccount?.description && (
+                    {transaction?.balanceAccount?.description && (
                         <TransactionDataContainer>
                             <div className={'adyen-pe-transaction-data__label'}>{i18n.get('account')}</div>
                             <div>{transaction.balanceAccount.description}</div>
@@ -107,7 +115,7 @@ export const TransactionData = ({ transaction, isFetching }: { transaction: Tran
                     )}
                     <TransactionDataContainer>
                         <div className={'adyen-pe-transaction-data__label'}>{i18n.get('referenceID')}</div>
-                        <div aria-label={i18n.get('referenceID')}>{transaction.id}</div>
+                        <div aria-label={i18n.get('referenceID')}>{transaction?.id}</div>
                     </TransactionDataContainer>
                     {customColumns.map(({ key, value }) => {
                         return (
@@ -118,7 +126,7 @@ export const TransactionData = ({ transaction, isFetching }: { transaction: Tran
                         );
                     })}
                 </div>
-            )}
+            ) : null}
         </>
     );
 };
