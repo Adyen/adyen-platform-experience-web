@@ -25,6 +25,7 @@ import { AmountFilter } from '../../../../internal/FilterBar/filters/AmountFilte
 import { BASE_CLASS, BASE_CLASS_DETAILS, MAX_TRANSACTIONS_DATE_RANGE_MONTHS, SUMMARY_CLASS, SUMMARY_ITEM_CLASS } from './constants';
 import { mediaQueries, useResponsiveViewport } from '../../hooks/useResponsiveViewport';
 import './TransactionsOverview.scss';
+import { useCustomColumnsData } from '../../../../hooks/useCustomColumnsData';
 
 export const TransactionsOverview = ({
     onFiltersChanged,
@@ -150,35 +151,16 @@ export const TransactionsOverview = ({
         return date.toString();
     }, [nowTimestamp]);
 
-    const [transactions, setTransactions] = useState<(ITransaction & Record<string, any> & {})[]>(records);
-    const [loadingCustomRecords, setLoadingCustomRecords] = useState(false);
-
-    const mergedRecords = useCallback(
-        (data: ITransaction[]) => async () => {
-            try {
-                const retrievedData = onDataRetrieved ? await onDataRetrieved(data) : [];
-                setTransactions(
-                    records.map(record => {
-                        const retrievedItem = retrievedData.find(item => item.id === record.id);
-                        return { ...retrievedItem, ...record };
-                    })
-                );
-            } catch (error) {
-                setTransactions(records);
-                console.log(error);
-            } finally {
-                setLoadingCustomRecords(false);
-            }
-        },
-        [onDataRetrieved, records]
+    const setCustomData = useCallback(
+        ({ records, retrievedData }: { records: ITransaction[]; retrievedData: (ITransaction & Record<string, any>)[] }) =>
+            records.map(record => {
+                const retrievedItem = retrievedData.find(item => item.id === record.id);
+                return { ...retrievedItem, ...record };
+            }),
+        []
     );
 
-    useEffect(() => {
-        if (onDataRetrieved && records.length) {
-            setLoadingCustomRecords(true);
-            mergedRecords(records)();
-        }
-    }, [onDataRetrieved, mergedRecords, records]);
+    const { customRecords: transactions, loadingCustomRecords } = useCustomColumnsData<ITransaction>({ records, onDataRetrieved, setCustomData });
 
     return (
         <div className={BASE_CLASS}>

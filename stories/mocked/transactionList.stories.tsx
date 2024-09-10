@@ -32,7 +32,7 @@ export const CustomColumns: ElementStory<typeof TransactionsOverview> = {
                 key: '_store',
                 flex: 1.5,
                 icon: value => {
-                    const flag = value === 'New York' ? 'us' : 'au';
+                    const flag = value === 'New York' ? 'us' : value === 'Singapore' ? 'sg' : value === 'Madrid' ? 'es' : 'au';
                     return {
                         url: `https://flagicons.lipis.dev/flags/4x3/${flag}.svg`,
                         alt: flag,
@@ -49,7 +49,7 @@ export const CustomColumns: ElementStory<typeof TransactionsOverview> = {
             return new Promise(resolve => {
                 setTimeout(() => {
                     resolve(getMyCustomData(data));
-                }, 20);
+                }, 200);
             });
         },
     },
@@ -62,6 +62,8 @@ export const CustomColumns: ElementStory<typeof TransactionsOverview> = {
                             { ...TRANSACTIONS[0], createdAt: Date.now() },
                             { ...TRANSACTIONS[4], createdAt: Date.now() },
                             { ...TRANSACTIONS[6], createdAt: Date.now() },
+                            { ...TRANSACTIONS[8], createdAt: Date.now() },
+                            { ...TRANSACTIONS[10], createdAt: Date.now() },
                         ],
                         _links: {},
                     });
