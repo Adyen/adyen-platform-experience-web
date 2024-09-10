@@ -72,22 +72,22 @@
     &__skeleton-container {
         display: flex;
         flex-direction: column;
-        gap: 20px;
+        gap: 30px;
         margin-bottom: style.token(spacer-060);
     }
 
     &__status-skeleton {
         display: flex;
         gap: 10px;
-        width: 100px;
+        width: 120px;
     }
 
     &__skeleton {
         @include skeleton.adyen-pe-skeleton();
         display: block;
-        height: style.token(spacer-060);
+        height: style.token(spacer-070);
         margin: 0;
-        max-width: 250px;
+        max-width: 270px;
         width: 100%;
 
         &-loading-content {

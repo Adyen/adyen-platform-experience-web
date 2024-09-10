@@ -56,7 +56,7 @@ export const TransactionData = ({
     return (
         <>
             {(!transaction && !error) || isFetching ? (
-                <TransactionDataSkeleton isLoading={isFetching} skeletonRowNumber={6} />
+                <TransactionDataSkeleton isLoading={isFetching} skeletonRowNumber={5} />
             ) : transaction ? (
                 <div className={'adyen-pe-transaction-data'}>
                     <TransactionDataContainer>
