@@ -109,7 +109,7 @@ export const PayoutsOverview = ({
                     {i18n.get('payoutsTitle')}
                 </Typography>
             )}
-            <FilterBar>
+            <FilterBar titleKey="payoutsTitle">
                 <BalanceAccountSelector
                     activeBalanceAccount={activeBalanceAccount}
                     balanceAccountSelectionOptions={balanceAccountSelectionOptions}

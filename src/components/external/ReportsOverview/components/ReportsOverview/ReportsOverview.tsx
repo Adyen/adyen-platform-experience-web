@@ -83,7 +83,7 @@ export const ReportsOverview = ({
             <div className={NOTICE_CLASS}>
                 <Typography variant={TypographyVariant.BODY}>{i18n.get('reportsNotice')}</Typography>
             </div>
-            <FilterBar>
+            <FilterBar titleKey="reportsTitle">
                 <BalanceAccountSelector
                     activeBalanceAccount={activeBalanceAccount}
                     balanceAccountSelectionOptions={balanceAccountSelectionOptions}

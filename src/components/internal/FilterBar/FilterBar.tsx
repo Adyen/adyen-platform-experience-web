@@ -25,7 +25,7 @@ export default function FilterBar(props: PropsWithChildren<FilterBarProps>) {
         <>
             {isSmViewport && (
                 <div className="adyen-pe-filter-bar__header">
-                    <Typography variant={TypographyVariant.SUBTITLE}>{i18n.get('transactions')}</Typography>
+                    <Typography variant={TypographyVariant.SUBTITLE}>{i18n.get(props.titleKey)}</Typography>
                     <Button
                         className={'adyen-pe-filter-bar__header-icon'}
                         variant={ButtonVariant.SECONDARY}

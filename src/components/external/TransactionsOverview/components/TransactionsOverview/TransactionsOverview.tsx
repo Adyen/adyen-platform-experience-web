@@ -155,7 +155,7 @@ export const TransactionsOverview = ({
                     {i18n.get('transactionsOverviewTitle')}
                 </Typography>
             )}
-            <FilterBar>
+            <FilterBar titleKey="transactions">
                 <BalanceAccountSelector
                     activeBalanceAccount={activeBalanceAccount}
                     balanceAccountSelectionOptions={balanceAccountSelectionOptions}
