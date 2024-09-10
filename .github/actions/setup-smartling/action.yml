@@ -7,7 +7,7 @@ runs:
       shell: sh
       run: |
         cat <<EOF >> .smartlingrc
-        "SMARTLING_PROJECT_ID=${{ secrets.SMARTLING_PROJECT }}"
-        "SMARTLING_USER_IDENTIFIER=${{ secrets.SMARTLING_USER_IDENTIFIER }}"
-        "SMARTLING_USER_SECRET=${{ secrets.SMARTLING_USER_SECRET }}"
+        SMARTLING_PROJECT_ID=${{ secrets.SMARTLING_PROJECT }}
+        SMARTLING_USER_IDENTIFIER=${{ secrets.SMARTLING_USER_IDENTIFIER }}
+        SMARTLING_USER_SECRET=${{ secrets.SMARTLING_USER_SECRET }}
         EOF
