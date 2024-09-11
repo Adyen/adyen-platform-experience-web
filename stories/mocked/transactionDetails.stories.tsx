@@ -25,7 +25,7 @@ export const CustomData: ElementStory<typeof TransactionDetails> = {
         },
         mockedApi: true,
         extraDetails: {
-            _store: 'Sidney',
+            _store: 'Sydney',
             _product: 'Coffee',
         },
     },

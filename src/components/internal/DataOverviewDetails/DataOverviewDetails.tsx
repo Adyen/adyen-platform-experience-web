@@ -12,7 +12,6 @@ import useBalanceAccounts from '../../hooks/useBalanceAccounts';
 import { ExternalUIComponentProps } from '../../types';
 import { getErrorMessage } from '../../utils/getErrorMessage';
 import { ErrorMessageDisplay } from '../ErrorMessageDisplay/ErrorMessageDisplay';
-import Spinner from '../Spinner';
 import { DetailsComponentProps, DetailsWithId, TransactionDetailData } from './types';
 import Typography from '../Typography/Typography';
 import { TypographyVariant } from '../Typography/types';
@@ -68,7 +67,7 @@ export default function DataOverviewDetails(props: ExternalUIComponentProps<Deta
         }
     }, [error, props.onContactSupport]);
 
-    const extraDetails = isDetailsWithId(props) && props.type === 'transaction' ? props.extraDetails : {};
+    const extraDetails = isDetailsWithId(props) && props.type === 'transaction' ? props.extraDetails : EMPTY_OBJECT;
 
     const detailsData = details ?? data;
 
@@ -93,7 +92,7 @@ export default function DataOverviewDetails(props: ExternalUIComponentProps<Deta
                     transaction={
                         detailsData
                             ? ({
-                                  ...(detailsData || {}),
+                                  ...(detailsData || EMPTY_OBJECT),
                                   balanceAccount: details?.balanceAccount || balanceAccounts?.[0],
                                   ...extraDetails,
                               } as TransactionDetailData)
