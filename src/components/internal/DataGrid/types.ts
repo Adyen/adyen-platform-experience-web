@@ -2,6 +2,7 @@ import { ComponentChildren, VNode } from 'preact';
 import { CustomCell } from './DataGrid';
 import { TranslationKey } from '../../../core/Localization/types';
 import { DataGridIcon } from '../../types';
+import { StringWithAutocompleteOptions } from '../../../utils/types';
 
 export enum CellTextPosition {
     CENTER = 'center',
@@ -10,7 +11,7 @@ export enum CellTextPosition {
 
 export interface DataGridColumn<Item> {
     label: string;
-    key: Item | (string & {});
+    key: StringWithAutocompleteOptions<Item>;
     position?: CellTextPosition;
     visible?: boolean;
     minWidth?: number;

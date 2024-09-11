@@ -19,6 +19,7 @@ import { CellTextPosition } from '../../../../internal/DataGrid/types';
 import cx from 'classnames';
 import './PayoutsTable.scss';
 import { useTableColumns } from '../../../../hooks/useTableColumns';
+import { use } from 'msw/lib/core/utils/internal/requestHandlerUtils';
 
 const AMOUNT_FIELDS = ['fundsCapturedAmount', 'adjustmentAmount', 'payoutAmount'] as const;
 const FIELDS = ['createdAt', ...AMOUNT_FIELDS] as const;
@@ -68,11 +69,14 @@ export const PayoutsTable: FC<PayoutsTableProps> = ({
 
     const columns = useTableColumns({
         fields: FIELDS,
-        columnConfig: {
-            fundsCapturedAmount: { ...getAmountFieldConfig('fundsCapturedAmount'), visible: isSmAndUpViewport },
-            adjustmentAmount: { ...getAmountFieldConfig('adjustmentAmount'), visible: isSmAndUpViewport },
-            payoutAmount: getAmountFieldConfig('payoutAmount'),
-        },
+        columnConfig: useMemo(
+            () => ({
+                fundsCapturedAmount: { ...getAmountFieldConfig('fundsCapturedAmount'), visible: isSmAndUpViewport },
+                adjustmentAmount: { ...getAmountFieldConfig('adjustmentAmount'), visible: isSmAndUpViewport },
+                payoutAmount: getAmountFieldConfig('payoutAmount'),
+            }),
+            [getAmountFieldConfig, isSmAndUpViewport]
+        ),
     });
 
     const EMPTY_TABLE_MESSAGE = {
