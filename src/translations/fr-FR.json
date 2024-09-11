@@ -84,6 +84,7 @@
     "remainingAmount": "Montant restant",
     "report": "Rapport",
     "reportsError.tooManyDownloads": "Nous n'avons pas pu télécharger tous les fichiers. Veuillez réessayer plus tard.",
+    "reportsNotice": "Les rapports sont générés tous les jours à minuit, heure UTC.",
     "reportsTitle": "rapports",
     "reportType.payout": "Versement",
     "reset": "Réinitialiser",

@@ -84,6 +84,7 @@
     "remainingAmount": "Återstående belopp",
     "report": "Rapport",
     "reportsError.tooManyDownloads": "Vi kunde inte ladda ned alla filer. Försök igen senare.",
+    "reportsNotice": "Rapporter genereras varje dag vid midnatt, UTC-tid.",
     "reportsTitle": "Rapporter",
     "reportType.payout": "Utbetalning",
     "reset": "Återställ",

@@ -84,6 +84,7 @@
     "remainingAmount": "Resterende beløb",
     "report": "Rapport",
     "reportsError.tooManyDownloads": "Vi kunne ikke downloade alle filerne. Prøv igen senere.",
+    "reportsNotice": "Rapporter genereres hver dag ved midnat, UTC-tid.",
     "reportsTitle": "Rapporter",
     "reportType.payout": "Udbetaling",
     "reset": "Nulstil",

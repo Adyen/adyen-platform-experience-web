@@ -84,6 +84,7 @@
     "remainingAmount": "Restbetrag",
     "report": "Bericht",
     "reportsError.tooManyDownloads": "Wir konnten nicht alle Dateien herunterladen. Bitte versuchen Sie es später erneut.",
+    "reportsNotice": "Die Berichte werden täglich um Mitternacht (UTC-Zeit) generiert.",
     "reportsTitle": "Berichte",
     "reportType.payout": "Auszahlung",
     "reset": "Zurücksetzen",

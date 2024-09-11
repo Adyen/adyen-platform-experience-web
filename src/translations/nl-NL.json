@@ -84,6 +84,7 @@
     "remainingAmount": "Resterend bedrag",
     "report": "Rapport",
     "reportsError.tooManyDownloads": "We konden niet alle bestanden downloaden. Probeer het later opnieuw.",
+    "reportsNotice": "Rapporten worden elke dag om middernacht, UTC-tijd, gegenereerd.",
     "reportsTitle": "Rapporten",
     "reportType.payout": "Uitbetaling",
     "reset": "Resetten",

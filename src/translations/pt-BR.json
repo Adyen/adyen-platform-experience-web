@@ -84,6 +84,7 @@
     "remainingAmount": "Valor restante",
     "report": "Relatório",
     "reportsError.tooManyDownloads": "Não foi possível baixar todos os arquivos. Tente novamente depois.",
+    "reportsNotice": "Os relatórios são gerados todos os dias à meia-noite, horário UTC.",
     "reportsTitle": "Relatórios",
     "reportType.payout": "Liquidação de pagamento",
     "reset": "Reiniciar",

@@ -84,6 +84,7 @@
     "remainingAmount": "Cantidad restante",
     "report": "Informe",
     "reportsError.tooManyDownloads": "No hemos podido descargar todos los archivos. Inténtalo de nuevo más tarde.",
+    "reportsNotice": "Los informes se generan cada día a medianoche, hora UTC.",
     "reportsTitle": "Informes",
     "reportType.payout": "Pago",
     "reset": "Restablecer",

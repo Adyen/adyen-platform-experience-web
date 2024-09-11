@@ -84,6 +84,7 @@
     "remainingAmount": "Importo rimanente",
     "report": "Report",
     "reportsError.tooManyDownloads": "Non siamo riusciti a scaricare tutti i file. Riprova più tardi.",
+    "reportsNotice": "I report vengono generati ogni giorno a mezzanotte, ora UTC.",
     "reportsTitle": "Report",
     "reportType.payout": "Pagamento",
     "reset": "Reimposta",
