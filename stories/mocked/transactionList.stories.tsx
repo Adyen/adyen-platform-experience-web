@@ -73,4 +73,12 @@ export const CustomColumns: ElementStory<typeof TransactionsOverview> = {
     },
 };
 
+export const CustomOrder: ElementStory<typeof TransactionsOverview> = {
+    name: 'Custom order',
+    args: {
+        mockedApi: true,
+        columns: ['transactionType', 'paymentMethod', 'createdAt', 'amount'],
+    },
+};
+
 export default meta;

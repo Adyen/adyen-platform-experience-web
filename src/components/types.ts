@@ -102,7 +102,7 @@ interface _DataOverviewComponentProps {
 }
 
 interface _CustomizableDataOverview<Columns extends string, DataRetrieved> {
-    columns?: CustomColumn<Columns>[];
+    columns?: CustomColumn<Columns>[] | Columns[];
     onDataRetrieved?: (data: DataRetrieved[]) => Promise<(DataRetrieved & Record<any, any>)[]>;
 }
 

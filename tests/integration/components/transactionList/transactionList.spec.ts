@@ -45,4 +45,14 @@ test.describe('Transaction List with custom columns', () => {
         await expect(transactionList.getHeader('Store')).toBeAttached();
         await expect(transactionList.getHeader('Product')).toBeAttached();
     });
+
+    test('Columns should be reordered', async ({ transactionListPage, page }) => {
+        await goToPage({ page, id: `${COMPONENT_PREFIX}--custom-order` });
+        const transactionList = transactionListPage;
+        const headers = transactionList.dataGrid.rootElement.getByRole('columnheader');
+        await expect(headers.nth(0)).toHaveText('Transaction type');
+        await expect(headers.nth(1)).toHaveText('Payment method');
+        await expect(headers.nth(2)).toHaveText('Date');
+        await expect(headers.nth(3)).toHaveText('Amount');
+    });
 });

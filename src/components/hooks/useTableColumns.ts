@@ -16,13 +16,17 @@ function removeUndefinedProperties<T extends string>(obj: Omit<Columns<T>, 'key'
     return result;
 }
 
+function _isStringArray(columns: any): columns is string[] {
+    return columns.every((col: any) => typeof col === 'string');
+}
+
 export const useTableColumns = <T extends string, C extends string>({
     fields,
     customColumns,
     columnConfig,
 }: {
     fields: T[] | Readonly<T[]>;
-    customColumns?: CustomColumn<C>[];
+    customColumns?: CustomColumn<C>[] | C[];
     columnConfig?: { [k in T]?: Omit<Columns<k>, 'key'> };
 }) => {
     const { i18n } = useCoreContext();
@@ -30,12 +34,18 @@ export const useTableColumns = <T extends string, C extends string>({
     const tableColumns: CustomColumn<T>[] = fields.map(field => ({ key: field }));
 
     const columns = useMemo(() => {
-        return (customColumns || tableColumns).map(({ key, flex, icon }) => {
+        const parsedCols = customColumns
+            ? _isStringArray(customColumns)
+                ? customColumns.map<CustomColumn<C>>(col => ({ key: col }))
+                : customColumns
+            : undefined;
+
+        return (parsedCols || tableColumns).map(({ key, flex, icon }) => {
             const label = i18n.get(getLabel(key as any));
 
             const config = removeUndefinedProperties<T>(columnConfig?.[key] || {});
 
-            return { key: key as T, label, visible: true, flex, icon, ...(config || {}) };
+            return { key: key as unknown as T, label, visible: true, flex, icon, ...(config || {}) };
         });
     }, [columnConfig, customColumns, i18n, tableColumns]);
 

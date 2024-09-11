@@ -18,5 +18,5 @@ export interface TransactionTableProps extends WithPaginationLimitSelection<Pagi
     showDetails?: boolean;
     showPagination: boolean;
     transactions: ITransaction[] | undefined;
-    customColumns?: CustomColumn<TransactionsTableFields>[];
+    customColumns?: CustomColumn<TransactionsTableFields>[] | TransactionsTableFields[];
 }

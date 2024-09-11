@@ -58,7 +58,6 @@ export const TransactionsTable: FC<TransactionTableProps> = ({
             },
             transactionType: { visible: isMdAndUpViewport },
             paymentMethod: { visible: isSmAndUpViewport },
-            createdAt: { visible: isSmAndUpViewport },
         },
     });
 

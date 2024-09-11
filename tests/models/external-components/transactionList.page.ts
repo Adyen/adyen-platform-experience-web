@@ -7,7 +7,7 @@ import FilterBarPage from '../internal-components/filterBar';
 
 export class TransactionListPage extends BasePage {
     private readonly _applyDateFilter;
-    private dataGrid: DataGridPage;
+    public dataGrid: DataGridPage;
     public dataGridBody: Locator;
     public filterBar: Locator;
     public balanceAccountFilter: Locator;
