@@ -151,7 +151,7 @@ export const TransactionsOverview = ({
         return date.toString();
     }, [nowTimestamp]);
 
-    const setCustomData = useCallback(
+    const mergeCustomData = useCallback(
         ({ records, retrievedData }: { records: ITransaction[]; retrievedData: (ITransaction & Record<string, any>)[] }) =>
             records.map(record => {
                 const retrievedItem = retrievedData.find(item => item.id === record.id);
@@ -160,7 +160,7 @@ export const TransactionsOverview = ({
         []
     );
 
-    const { customRecords: transactions, loadingCustomRecords } = useCustomColumnsData<ITransaction>({ records, onDataRetrieved, setCustomData });
+    const { customRecords: transactions, loadingCustomRecords } = useCustomColumnsData<ITransaction>({ records, onDataRetrieved, mergeCustomData });
 
     return (
         <div className={BASE_CLASS}>
