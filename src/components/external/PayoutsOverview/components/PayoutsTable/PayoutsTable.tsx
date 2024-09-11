@@ -70,8 +70,8 @@ export const PayoutsTable: FC<PayoutsTableProps> = ({
         fields: FIELDS,
         columnConfig: {
             fundsCapturedAmount: { ...getAmountFieldConfig('fundsCapturedAmount'), visible: isSmAndUpViewport },
-            adjustmentAmount: { ...getAmountFieldConfig('fundsCapturedAmount'), visible: isSmAndUpViewport },
-            payoutAmount: getAmountFieldConfig('fundsCapturedAmount'),
+            adjustmentAmount: { ...getAmountFieldConfig('adjustmentAmount'), visible: isSmAndUpViewport },
+            payoutAmount: getAmountFieldConfig('payoutAmount'),
         },
     });
 
