@@ -10,8 +10,8 @@ on:
         default: FALSE
 
 jobs:
-  upload-files:
-    name: Download translation source files
+  initialize:
+    name: Initialization steps
     runs-on: ubuntu-latest
     environment: smartling-translations # provides Smartling credentials
     steps:
@@ -23,11 +23,25 @@ jobs:
 
       - name: Run setup steps for translation tasks
         uses: ./.github/actions/setup-smartling
+        with:
+          project_id: ${{ secrets.SMARTLING_PROJECT_ID }}
+          user_identifier: ${{ secrets.SMARTLING_USER_IDENTIFIER }}
+          user_secret: ${{ secrets.SMARTLING_USER_SECRET }}
 
+  upload-files:
+    needs: initialize
+    name: Upload translation source files
+    runs-on: ubuntu-latest
+    environment: publish-package # provides NPM credentials
+    steps:
       - name: Create translations job (with authorization)
         if: ${{ inputs.authorize_job }}
-        run: npx @adyen/smartling-bot@0.3.1 upload-files --auto-authorization
+        run: |
+          npm config set //registry.npmjs.org/:_authToken ${{ secrets.NPM_TOKEN }}
+          npx @adyen/smartling-bot@0.3.1 upload-files --auto-authorization
 
       - name: Create translations job (without authorization)
         if: ${{ ! inputs.authorize_job }}
-        run: npx @adyen/smartling-bot@0.3.1 upload-files
+        run: |
+          npm config set //registry.npmjs.org/:_authToken ${{ secrets.NPM_TOKEN }}
+          npx @adyen/smartling-bot@0.3.1 upload-files

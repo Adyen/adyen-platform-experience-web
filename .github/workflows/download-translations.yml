@@ -1,6 +1,8 @@
 name: Download translations
 
 on:
+  pull_request:
+    types: [synchronize]
   workflow_dispatch:
     inputs:
       open_pr:
@@ -10,8 +12,8 @@ on:
         default: FALSE
 
 jobs:
-  download-files:
-    name: Download completed translation files
+  initialize:
+    name: Initialization steps
     runs-on: ubuntu-latest
     environment: smartling-translations # provides Smartling credentials
     steps:
@@ -23,21 +25,33 @@ jobs:
 
       - name: Run setup steps for translation tasks
         uses: ./.github/actions/setup-smartling
+        with:
+          project_id: ${{ secrets.SMARTLING_PROJECT_ID }}
+          user_identifier: ${{ secrets.SMARTLING_USER_IDENTIFIER }}
+          user_secret: ${{ secrets.SMARTLING_USER_SECRET }}
 
+  download-files:
+    needs: initialize
+    name: Download completed translation files
+    runs-on: ubuntu-latest
+    environment: publish-package # provides NPM credentials
+    steps:
       - name: Download files
-        run: npx @adyen/smartling-bot@0.3.1 download-files
-
-      - name: Commit files
-        if: ${{ inputs.open_pr }}
-        shell: sh
         run: |
-          for source_path in $(jq -r '.translationSourcePaths[]' .i18nrc); do
-            root_path=$(dirname $source_path)
-            for locale in $(jq -r '.locales[]' .i18nrc); do
-              git add $(realpath "./$root_path/$locale.json")
-            done
-          done
-          git commit -m 'chore(translations): updated translations'
+          npm config set //registry.npmjs.org/:_authToken ${{ secrets.NPM_TOKEN }}
+          npx @adyen/smartling-bot@0.3.1 download-files
+
+#      - name: Commit files
+#        if: ${{ inputs.open_pr }}
+#        shell: sh
+#        run: |
+#          for source_path in $(jq -r '.translationSourcePaths[]' .i18nrc); do
+#            root_path=$(dirname $source_path)
+#            for locale in $(jq -r '.locales[]' .i18nrc); do
+#              git add $(realpath "./$root_path/$locale.json")
+#            done
+#          done
+#          git commit -m 'chore(translations): updated translations'
 
   create-pr:
     needs: download-files
