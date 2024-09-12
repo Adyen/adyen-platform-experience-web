@@ -52,8 +52,6 @@ export const AmountFilter = ({ updateFilters, selectedCurrencies, availableCurre
             setValueFormattedValue(
                 `${formatAmount(minAmount, showCurrencySymbol)} ${i18n.get('to').toLowerCase()} ${formatAmount(maxAmount, showCurrencySymbol)}`
             );
-        } else if (!isUndefined(minAmount) && !isUndefined(maxAmount) && maxAmount < minAmount) {
-            setValueFormattedValue(undefined);
         } else if (!isUndefined(minAmount) && isUndefined(maxAmount) && minAmount >= 0) {
             setValueFormattedValue(`${i18n.get('from')} ${formatAmount(minAmount, showCurrencySymbol)}`);
         } else if (isUndefined(minAmount) && !isUndefined(maxAmount)) {
