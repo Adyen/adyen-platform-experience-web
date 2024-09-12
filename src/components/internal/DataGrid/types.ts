@@ -1,6 +1,6 @@
 import { ComponentChildren, VNode } from 'preact';
 import { CustomCell } from './DataGrid';
-import { TranslationKey } from '../../../core/Localization/types';
+import { TranslationKey } from '../../../translations';
 
 export enum CellTextPosition {
     CENTER = 'center',

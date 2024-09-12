@@ -8,7 +8,7 @@ import { useCallback, useMemo, useState } from 'preact/hooks';
 import DataGrid from '../../../../internal/DataGrid';
 import Pagination from '../../../../internal/Pagination';
 import { CellTextPosition } from '../../../../internal/DataGrid/types';
-import { TranslationKey } from '../../../../../core/Localization/types';
+import { TranslationKey } from '../../../../../translations';
 import { getCurrencyCode } from '../../../../../core/Localization/amount/amount-util';
 import { AMOUNT_CLASS, BASE_CLASS, DATE_AND_PAYMENT_METHOD_CLASS } from './constants';
 import './TransactionTable.scss';

@@ -12,7 +12,7 @@ import { IPayout } from '../../../../../types';
 import { useMemo } from 'preact/hooks';
 import DataGrid from '../../../../internal/DataGrid';
 import Pagination from '../../../../internal/Pagination';
-import { TranslationKey } from '../../../../../core/Localization/types';
+import { TranslationKey } from '../../../../../translations';
 import { FC } from 'preact/compat';
 import { mediaQueries, useResponsiveViewport } from '../../../TransactionsOverview/hooks/useResponsiveViewport';
 import { CellTextPosition } from '../../../../internal/DataGrid/types';
