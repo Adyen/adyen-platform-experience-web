@@ -7,7 +7,7 @@ import { isFunction } from '../../../../utils';
 const _iconIsFunction = (icon: any): icon is (value: unknown) => { url: string } => {
     if (!isFunction(icon)) return false;
     const iconResult = icon('test');
-    return !!iconResult && typeof iconResult === 'object' && 'url' in iconResult;
+    return !!iconResult;
 };
 
 export const TableCells = <
