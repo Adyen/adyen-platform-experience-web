@@ -1551,7 +1551,7 @@ export const TRANSACTIONS: ITransaction[] = [
         category: 'Payment',
         balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
         status: 'Booked',
-        createdAt: '2024-06-01T06:09:14.369Z',
+        createdAt: '2024-08-01T06:09:14.369Z',
     },
     {
         bankAccount: {
@@ -1565,7 +1565,7 @@ export const TRANSACTIONS: ITransaction[] = [
         category: 'Transfer',
         balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
         status: 'Booked',
-        createdAt: '2024-06-01T08:06:02.187Z',
+        createdAt: '2024-08-01T08:06:02.187Z',
     },
     {
         paymentMethod: {
@@ -1580,7 +1580,7 @@ export const TRANSACTIONS: ITransaction[] = [
         category: 'Payment',
         balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
         status: 'Booked',
-        createdAt: '2024-06-01T15:25:07.719Z',
+        createdAt: '2024-08-01T15:25:07.719Z',
     },
     {
         paymentMethod: {
@@ -1595,7 +1595,7 @@ export const TRANSACTIONS: ITransaction[] = [
         category: 'Fee',
         balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
         status: 'Booked',
-        createdAt: '2024-06-04T23:07:22.760Z',
+        createdAt: '2024-08-04T23:07:22.760Z',
     },
     {
         paymentMethod: {
@@ -1610,7 +1610,7 @@ export const TRANSACTIONS: ITransaction[] = [
         category: 'Fee',
         balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
         status: 'Booked',
-        createdAt: '2024-06-12T13:03:01.249Z',
+        createdAt: '2024-08-12T13:03:01.249Z',
     },
     {
         bankAccount: {
@@ -1624,7 +1624,7 @@ export const TRANSACTIONS: ITransaction[] = [
         category: 'Payment',
         balanceAccountId: 'BA32272223222B5CTDQPM6W2G',
         status: 'Booked',
-        createdAt: '2024-06-12T23:54:27.430Z',
+        createdAt: '2024-08-12T23:54:27.430Z',
     },
     {
         paymentMethod: {
@@ -1639,7 +1639,7 @@ export const TRANSACTIONS: ITransaction[] = [
         category: 'Payment',
         balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
         status: 'Booked',
-        createdAt: '2024-06-13T18:05:24.402Z',
+        createdAt: '2024-08-13T18:05:24.402Z',
     },
     {
         bankAccount: {
@@ -1653,7 +1653,7 @@ export const TRANSACTIONS: ITransaction[] = [
         category: 'Payment',
         balanceAccountId: 'BA32272223222B5CTDQPM6W2G',
         status: 'Booked',
-        createdAt: '2024-06-14T17:26:50.802Z',
+        createdAt: '2024-08-14T17:26:50.802Z',
     },
     {
         paymentMethod: {
@@ -1668,7 +1668,7 @@ export const TRANSACTIONS: ITransaction[] = [
         category: 'Chargeback',
         balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
         status: 'Booked',
-        createdAt: '2024-06-15T18:21:53.060Z',
+        createdAt: '2024-08-15T18:21:53.060Z',
     },
     {
         bankAccount: {
@@ -1682,7 +1682,7 @@ export const TRANSACTIONS: ITransaction[] = [
         category: 'Payment',
         balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
         status: 'Booked',
-        createdAt: '2024-06-17T22:02:56.535Z',
+        createdAt: '2024-08-17T22:02:56.535Z',
     },
     {
         bankAccount: {
@@ -1696,7 +1696,7 @@ export const TRANSACTIONS: ITransaction[] = [
         category: 'Transfer',
         balanceAccountId: 'BA32272223222B5CTDQPM6W2G',
         status: 'Booked',
-        createdAt: '2024-06-19T00:56:59.883Z',
+        createdAt: '2024-08-19T00:56:59.883Z',
     },
     {
         bankAccount: {
@@ -1710,7 +1710,7 @@ export const TRANSACTIONS: ITransaction[] = [
         category: 'Transfer',
         balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
         status: 'Booked',
-        createdAt: '2024-06-19T01:54:48.267Z',
+        createdAt: '2024-08-19T01:54:48.267Z',
     },
     {
         paymentMethod: {
@@ -1725,7 +1725,7 @@ export const TRANSACTIONS: ITransaction[] = [
         category: 'Refund',
         balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
         status: 'Booked',
-        createdAt: '2024-06-19T03:05:56.456Z',
+        createdAt: '2024-08-19T03:05:56.456Z',
     },
     {
         bankAccount: {
@@ -1739,7 +1739,7 @@ export const TRANSACTIONS: ITransaction[] = [
         category: 'Payment',
         balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
         status: 'Booked',
-        createdAt: '2024-06-19T03:51:15.171Z',
+        createdAt: '2024-08-19T03:51:15.171Z',
     },
     {
         bankAccount: {
@@ -1753,7 +1753,7 @@ export const TRANSACTIONS: ITransaction[] = [
         category: 'Refund',
         balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
         status: 'Booked',
-        createdAt: '2024-06-19T23:36:51.534Z',
+        createdAt: '2024-08-19T23:36:51.534Z',
     },
     {
         bankAccount: {
@@ -1767,7 +1767,7 @@ export const TRANSACTIONS: ITransaction[] = [
         category: 'Transfer',
         balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
         status: 'Booked',
-        createdAt: '2024-06-21T06:43:53.146Z',
+        createdAt: '2024-08-21T06:43:53.146Z',
     },
     {
         bankAccount: {
@@ -1781,7 +1781,7 @@ export const TRANSACTIONS: ITransaction[] = [
         category: 'Transfer',
         balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
         status: 'Booked',
-        createdAt: '2024-06-21T18:45:43.946Z',
+        createdAt: '2024-08-21T18:45:43.946Z',
     },
     {
         bankAccount: {
@@ -1795,7 +1795,7 @@ export const TRANSACTIONS: ITransaction[] = [
         category: 'Transfer',
         balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
         status: 'Booked',
-        createdAt: '2024-06-22T14:09:02.145Z',
+        createdAt: '2024-08-22T14:09:02.145Z',
     },
     {
         paymentMethod: {
@@ -1810,7 +1810,7 @@ export const TRANSACTIONS: ITransaction[] = [
         category: 'Payment',
         balanceAccountId: 'BA32272223222B5CTDQPM6W2G',
         status: 'Booked',
-        createdAt: '2024-06-24T23:11:09.775Z',
+        createdAt: '2024-08-24T23:11:09.775Z',
     },
     {
         bankAccount: {
@@ -1824,7 +1824,7 @@ export const TRANSACTIONS: ITransaction[] = [
         category: 'Payment',
         balanceAccountId: 'BA32272223222B5CTDQPM6W2G',
         status: 'Booked',
-        createdAt: '2024-06-27T06:46:48.678Z',
+        createdAt: '2024-08-27T06:46:48.678Z',
     },
     {
         paymentMethod: {
@@ -1838,7 +1838,7 @@ export const TRANSACTIONS: ITransaction[] = [
         category: 'Payment',
         balanceAccountId: 'BA32272223222B5CTDQPM6W2G',
         status: 'Booked',
-        createdAt: '2024-06-30T05:16:44.764Z',
+        createdAt: '2024-08-30T05:16:44.764Z',
     },
     {
         bankAccount: {
@@ -1852,7 +1852,7 @@ export const TRANSACTIONS: ITransaction[] = [
         category: 'Payment',
         balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
         status: 'Booked',
-        createdAt: '2024-06-30T19:58:16.527Z',
+        createdAt: '2024-08-30T19:58:16.527Z',
     },
 ];
 
