@@ -17,7 +17,7 @@ function removeUndefinedProperties<T extends string>(obj: Omit<Columns<T>, 'key'
 }
 
 function _isStringArray(columns: any): columns is string[] {
-    return columns.every((col: any) => typeof col === 'string');
+    return columns.every(isString);
 }
 
 export const useTableColumns = <T extends string, C extends string>({
