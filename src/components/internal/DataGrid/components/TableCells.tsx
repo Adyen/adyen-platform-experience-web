@@ -2,9 +2,12 @@ import DataGridCell from '../DataGridCell';
 import { DataGridColumn } from '../types';
 import { CustomCell } from '../DataGrid';
 import Icon from './Icon';
+import { isFunction } from '../../../../utils';
 
 const _iconIsFunction = (icon: any): icon is (value: unknown) => { url: string } => {
-    return typeof icon === 'function' && typeof icon('test') === 'object' && 'url' in icon('test');
+    if (!isFunction(icon)) return false;
+    const iconResult = icon('test');
+    return !!iconResult && typeof iconResult === 'object' && 'url' in iconResult;
 };
 
 export const TableCells = <
