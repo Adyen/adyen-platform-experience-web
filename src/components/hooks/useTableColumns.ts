@@ -45,7 +45,7 @@ export const useTableColumns = <T extends string, C extends string>({
 
             const config = removeUndefinedProperties<T>(columnConfig?.[key] || EMPTY_OBJECT);
 
-            return { key: key as unknown as T, label, visible: true, flex, icon, ...(config || {}) };
+            return { key: key as unknown as T, label, visible: true, flex, icon, ...(config || EMPTY_OBJECT) };
         });
     }, [columnConfig, customColumns, i18n, tableColumns]);
 
