@@ -44,11 +44,11 @@ export const TableCells = <
                             </div>
                         </DataGridCell>
                     );
-
+                const iconObject = _iconIsFunction(icon) ? icon(item[key]) : icon;
                 return (
                     <DataGridCell aria-labelledby={String(key)} key={key} column={key} position={position}>
                         <div className="adyen-pe-data-grid__cell-value">
-                            {icon && <Icon {...icon} url={_iconIsFunction(icon) ? icon(item[key]).url : icon.url} />}
+                            {iconObject?.url && <Icon {...icon} url={iconObject?.url} />}
                             <div>{item[key]}</div>
                         </div>
                     </DataGridCell>
