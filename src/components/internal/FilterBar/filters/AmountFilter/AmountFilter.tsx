@@ -37,6 +37,7 @@ export const AmountFilter = ({ updateFilters, selectedCurrencies, availableCurre
         (params: { minAmount: number | undefined; maxAmount: number | undefined; filterValue: string | undefined }) => {
             const { minAmount, maxAmount } = params ?? EMPTY_OBJECT;
             setValue({ minAmount, maxAmount });
+
             if (isUndefined(minAmount) && isUndefined(maxAmount)) setValueFormattedValue(undefined);
             updateFilters({
                 minAmount: !isUndefined(minAmount) ? String(Math.round(minAmount * AMOUNT_MULTIPLIER)) : undefined,
@@ -45,13 +46,14 @@ export const AmountFilter = ({ updateFilters, selectedCurrencies, availableCurre
         },
         [updateFilters]
     );
-
     if (value && (value.minAmount || value.maxAmount)) {
         const { minAmount, maxAmount } = value ?? {};
         if (!isUndefined(minAmount) && !isUndefined(maxAmount) && minAmount <= maxAmount) {
             setValueFormattedValue(
                 `${formatAmount(minAmount, showCurrencySymbol)} ${i18n.get('to').toLowerCase()} ${formatAmount(maxAmount, showCurrencySymbol)}`
             );
+        } else if (!isUndefined(minAmount) && !isUndefined(maxAmount) && maxAmount < minAmount) {
+            setValueFormattedValue(undefined);
         } else if (!isUndefined(minAmount) && isUndefined(maxAmount) && minAmount >= 0) {
             setValueFormattedValue(`${i18n.get('from')} ${formatAmount(minAmount, showCurrencySymbol)}`);
         } else if (isUndefined(minAmount) && !isUndefined(maxAmount)) {

@@ -41,11 +41,15 @@ export const RangeSelection = ({
         if (editAction === CommitAction.CLEAR) clearFilter();
     }, [applyFilter, clearFilter, editAction]);
 
-    const filterValue = useMemo(() => ({ minAmount, maxAmount }), [maxAmount, minAmount]);
+    const filterValue = useMemo(() => ({ minAmount: Number(minAmount), maxAmount: Number(maxAmount) }), [maxAmount, minAmount]);
 
     useEffect(() => {
-        if (filterValue.minAmount || filterValue.maxAmount) onValueUpdated(`${filterValue.minAmount}-${filterValue.maxAmount}`);
-        else onValueUpdated(null);
+        if (!isUndefined(filterValue.maxAmount) && !isUndefined(filterValue.minAmount) && filterValue.minAmount > filterValue.maxAmount) {
+            onValueUpdated(null);
+        } else {
+            if (filterValue.minAmount || filterValue.maxAmount) onValueUpdated(`${filterValue.minAmount}-${filterValue.maxAmount}`);
+            else onValueUpdated(null);
+        }
     }, [filterValue, onValueUpdated]);
 
     return (
