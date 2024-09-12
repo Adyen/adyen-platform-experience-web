@@ -43,7 +43,7 @@ export const useTableColumns = <T extends string, C extends string>({
         return (parsedCols || tableColumns).map(({ key, flex, icon }) => {
             const label = i18n.get(getLabel(key as any));
 
-            const config = removeUndefinedProperties<T>(columnConfig?.[key] || {});
+            const config = removeUndefinedProperties<T>(columnConfig?.[key] || EMPTY_OBJECT);
 
             return { key: key as unknown as T, label, visible: true, flex, icon, ...(config || {}) };
         });
