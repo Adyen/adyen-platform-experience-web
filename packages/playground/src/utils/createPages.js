@@ -24,13 +24,13 @@ const insertHeader = pages => {
             <ul class="playground-nav__list">${links.join('')}</ul>
         </nav>
         
-        <div class='playground-footer'>
-            <div class='playground-footer__profile'>
-                <div class='playground-footer__avatar'></div>
-                <div class='playground-footer__name'>Cody</div>
-                <div class="playground-footer__more"></div>
-            </div>
-        </div>
+<!--        <div class='playground-footer'>-->
+<!--            <div class='playground-footer__profile'>-->
+<!--                <div class='playground-footer__avatar'></div>-->
+<!--                <div class='playground-footer__name'>Cody</div>-->
+<!--                <div class="playground-footer__more"></div>-->
+<!--            </div>-->
+<!--        </div>-->
       </div>
     `;
 
