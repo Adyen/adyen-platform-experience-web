@@ -9,7 +9,7 @@ type Columns<k extends string> = DataGridCustomColumnConfig<k> & { label?: strin
 function removeUndefinedProperties<T extends string>(obj: Omit<Columns<T>, 'key'>): Partial<Columns<T>> {
     let result: Partial<Omit<Columns<T>, 'key'>> = {};
     for (const key of Object.keys(obj) as Array<keyof Omit<Columns<T>, 'key'>>) {
-        if (obj[key] !== undefined) {
+        if (!isUndefined(obj[key])) {
             result = { ...result, [key as keyof T]: obj[key] };
         }
     }
