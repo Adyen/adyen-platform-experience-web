@@ -1,4 +1,4 @@
-import { DATE_FORMAT_PAYOUTS } from '../../../../internal/DataOverviewDisplay/constants';
+import { DATE_FORMAT_MOBILE_PAYOUTS, DATE_FORMAT_PAYOUTS } from '../../../../internal/DataOverviewDisplay/constants';
 import DataOverviewError from '../../../../internal/DataOverviewError/DataOverviewError';
 import { BASE_CLASS, NET_PAYOUT_CLASS } from './constants';
 import { PaginationProps, WithPaginationLimitSelection } from '../../../../internal/Pagination/types';
@@ -101,15 +101,7 @@ export const PayoutsTable: FC<PayoutsTableProps> = ({
                 customCells={{
                     createdAt: ({ value }) => {
                         if (!value) return null;
-                        if (!isSmAndUpViewport)
-                            return dateFormat(value, {
-                                month: 'short',
-                                day: 'numeric',
-                                year: undefined,
-                                hour: '2-digit',
-                                minute: '2-digit',
-                                hour12: false,
-                            });
+                        if (!isSmAndUpViewport) return dateFormat(value, DATE_FORMAT_MOBILE_PAYOUTS);
                         return value && dateFormat(value, DATE_FORMAT_PAYOUTS);
                     },
                     fundsCapturedAmount: ({ value }) => {
