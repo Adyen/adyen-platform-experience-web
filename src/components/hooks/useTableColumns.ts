@@ -3,6 +3,7 @@ import { getLabel } from '../utils/getLabel';
 import { CellTextPosition } from '../internal/DataGrid/types';
 import { CustomColumn, DataGridCustomColumnConfig } from '../types';
 import useCoreContext from '../../core/Context/useCoreContext';
+import { EMPTY_OBJECT, isString, isUndefined } from '../../utils';
 
 type Columns<k extends string> = DataGridCustomColumnConfig<k> & { label?: string; position?: CellTextPosition; visible?: boolean };
 
@@ -31,7 +32,7 @@ export const useTableColumns = <T extends string, C extends string>({
 }) => {
     const { i18n } = useCoreContext();
 
-    const tableColumns: CustomColumn<T>[] = fields.map(field => ({ key: field }));
+    const tableColumns: CustomColumn<T>[] = useMemo(() => fields.map(field => ({ key: field })), [fields]);
 
     const columns = useMemo(() => {
         const parsedCols = customColumns
