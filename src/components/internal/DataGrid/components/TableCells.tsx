@@ -48,7 +48,7 @@ export const TableCells = <
                 return (
                     <DataGridCell aria-labelledby={String(key)} key={key} column={key} position={position}>
                         <div className="adyen-pe-data-grid__cell-value">
-                            {iconObject?.url && <Icon {...icon} url={iconObject?.url} />}
+                            {iconObject?.url && <Icon {...iconObject} />}
                             <div>{item[key]}</div>
                         </div>
                     </DataGridCell>
