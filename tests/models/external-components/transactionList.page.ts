@@ -7,7 +7,7 @@ import FilterBarPage from '../internal-components/filterBar';
 
 export class TransactionListPage extends BasePage {
     private readonly _applyDateFilter;
-    private dataGrid: DataGridPage;
+    public dataGrid: DataGridPage;
     public dataGridBody: Locator;
     public filterBar: Locator;
     public balanceAccountFilter: Locator;
@@ -37,6 +37,9 @@ export class TransactionListPage extends BasePage {
 
     getCell(id: string, row = 0) {
         return this.dataGrid.getCell(id, row);
+    }
+    getHeader(id: string) {
+        return this.dataGrid.getHeader(id);
     }
 
     async applyDateFilter(from: Date | number | string = Date(), to: Date | number | string = from) {

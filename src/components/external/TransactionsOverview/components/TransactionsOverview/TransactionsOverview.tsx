@@ -25,6 +25,7 @@ import { AmountFilter } from '../../../../internal/FilterBar/filters/AmountFilte
 import { BASE_CLASS, BASE_CLASS_DETAILS, MAX_TRANSACTIONS_DATE_RANGE_MONTHS, SUMMARY_CLASS, SUMMARY_ITEM_CLASS } from './constants';
 import { mediaQueries, useResponsiveViewport } from '../../hooks/useResponsiveViewport';
 import './TransactionsOverview.scss';
+import { useCustomColumnsData } from '../../../../hooks/useCustomColumnsData';
 
 export const TransactionsOverview = ({
     onFiltersChanged,
@@ -36,6 +37,8 @@ export const TransactionsOverview = ({
     isLoadingBalanceAccount,
     onContactSupport,
     hideTitle,
+    columns,
+    onDataRetrieved,
 }: ExternalUIComponentProps<
     TransactionOverviewComponentProps & { balanceAccounts: IBalanceAccountBase[] | undefined; isLoadingBalanceAccount: boolean }
 >) => {
@@ -148,6 +151,17 @@ export const TransactionsOverview = ({
         return date.toString();
     }, [nowTimestamp]);
 
+    const mergeCustomData = useCallback(
+        ({ records, retrievedData }: { records: ITransaction[]; retrievedData: (ITransaction & Record<string, any>)[] }) =>
+            records.map(record => {
+                const retrievedItem = retrievedData.find(item => item.id === record.id);
+                return { ...retrievedItem, ...record };
+            }),
+        []
+    );
+
+    const { customRecords: transactions, loadingCustomRecords } = useCustomColumnsData<ITransaction>({ records, onDataRetrieved, mergeCustomData });
+
     return (
         <div className={BASE_CLASS}>
             {!hideTitle && (
@@ -224,12 +238,13 @@ export const TransactionsOverview = ({
                     hasMultipleCurrencies={hasMultipleCurrencies}
                     limit={limit}
                     limitOptions={limitOptions}
-                    loading={fetching || isLoadingBalanceAccount || !balanceAccounts}
+                    loading={fetching || isLoadingBalanceAccount || !balanceAccounts || loadingCustomRecords}
                     onContactSupport={onContactSupport}
                     onLimitSelection={updateLimit}
                     onRowClick={onRowClick}
                     showPagination={true}
-                    transactions={records}
+                    transactions={onDataRetrieved ? transactions : records}
+                    customColumns={columns}
                     {...paginationProps}
                 />
             </DataDetailsModal>

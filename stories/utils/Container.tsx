@@ -12,7 +12,7 @@ interface IContainer<T extends new (...args: any) => any> {
     mockedApi?: boolean;
 }
 
-export const Container = <T extends new (args: any) => any>({ component, componentConfiguration, context, mockedApi }: IContainer<T>) => {
+export const Container = <T extends new (args: any) => any>({ component, componentConfiguration, context }: IContainer<T>) => {
     const container = useRef(null);
 
     useEffect(() => {
@@ -26,6 +26,7 @@ export const Container = <T extends new (args: any) => any>({ component, compone
                 onSessionCreate: async () => {
                     return await sessionRequest(context.args.session);
                 },
+                ...context.args.coreOptions,
             });
 
             Component = new component({ ...componentConfiguration, core });
