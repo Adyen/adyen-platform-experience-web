@@ -1,4 +1,11 @@
-import { DEFAULT_DATETIME_FORMAT, DEFAULT_TRANSLATIONS, EXCLUDE_PROPS, FALLBACK_LOCALE, SUPPORTED_LOCALES } from './constants/localization';
+import {
+    DEFAULT_DATETIME_FORMAT,
+    DEFAULT_TRANSLATIONS,
+    EXCLUDE_PROPS,
+    FALLBACK_LOCALE,
+    getLocalesFromTranslationSourcesRecord,
+    SUPPORTED_LOCALES,
+} from './constants/localization';
 import type {
     CustomTranslations,
     Locale,
@@ -8,6 +15,7 @@ import type {
     TranslationSource,
     TranslationSourceRecord,
 } from '../../translations';
+import { en_US } from '../../translations';
 import { getLocalisedAmount } from './amount/amount-util';
 import restamper, { RestamperWithTimezone } from './datetime/restamper';
 import { createTranslationsLoader, getLocalizationProxyDescriptors } from './localization-utils';
@@ -15,12 +23,11 @@ import { formatCustomTranslations, getTranslation, toTwoLetterCode } from './uti
 import { createWatchlist } from '../../primitives/reactive/watchlist';
 import { ALREADY_RESOLVED_PROMISE, isNull, isNullish, isUndefined, noop, struct } from '../../utils';
 
-const defaultTranslations = { [FALLBACK_LOCALE]: DEFAULT_TRANSLATIONS };
-
 export default class Localization {
     #locale: Locale = FALLBACK_LOCALE;
     #languageCode: string = toTwoLetterCode(this.#locale);
-    #supportedLocales: Readonly<Locale[]> = SUPPORTED_LOCALES;
+    #availableLocales: Readonly<Locale[]> = [FALLBACK_LOCALE] as const;
+    #supportedLocales: Readonly<Locale[]> = this.#availableLocales;
 
     #customTranslations?: CustomTranslations;
     #translations: Translations = DEFAULT_TRANSLATIONS;
@@ -40,9 +47,10 @@ export default class Localization {
         this.watch(noop);
 
         this.preferredTranslations = Object.freeze(
-            availableTranslations?.reduce((records, curr) => ({ ...records, ...curr }), defaultTranslations) ?? defaultTranslations
+            availableTranslations?.reduce((records, curr) => ({ ...records, ...curr }), en_US) ?? { ...en_US }
         );
 
+        this.#availableLocales = getLocalesFromTranslationSourcesRecord(this.preferredTranslations);
         this.locale = locale;
     }
 
@@ -52,10 +60,10 @@ export default class Localization {
 
     set customTranslations(customTranslations: CustomTranslations | undefined | null) {
         let translations: CustomTranslations | undefined = undefined;
-        let supportedLocales: Locale[] = SUPPORTED_LOCALES;
+        let supportedLocales: Locale[] = [...this.#availableLocales];
 
         if (!isNullish(customTranslations)) {
-            translations = formatCustomTranslations(customTranslations, supportedLocales);
+            translations = formatCustomTranslations(customTranslations, SUPPORTED_LOCALES);
             const localesFromCustomTranslations = Object.keys(translations) as Locale[];
 
             // default locales + validated custom locales
