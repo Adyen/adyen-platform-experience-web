@@ -101,14 +101,14 @@ export const transactionsMocks = [
         });
     }),
 
-    http.get(mockEndpoints.transaction, ({ params }) => {
+    http.get(mockEndpoints.transaction, async ({ params }) => {
         const matchingMock = [...TRANSACTIONS, DEFAULT_TRANSACTION].find(mock => mock.id === params.id);
 
         if (!matchingMock) {
             HttpResponse.text('Cannot find matching Transaction mock', { status: 404 });
             return;
         }
-
+        await delay(1000);
         return HttpResponse.json(matchingMock);
     }),
 
