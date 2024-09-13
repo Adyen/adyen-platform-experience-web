@@ -12,7 +12,6 @@ import useBalanceAccounts from '../../hooks/useBalanceAccounts';
 import { ExternalUIComponentProps } from '../../types';
 import { getErrorMessage } from '../../utils/getErrorMessage';
 import { ErrorMessageDisplay } from '../ErrorMessageDisplay/ErrorMessageDisplay';
-import Spinner from '../Spinner';
 import { DetailsComponentProps, DetailsWithId, TransactionDetailData } from './types';
 import Typography from '../Typography/Typography';
 import { TypographyVariant } from '../Typography/types';
@@ -68,11 +67,9 @@ export default function DataOverviewDetails(props: ExternalUIComponentProps<Deta
         }
     }, [error, props.onContactSupport]);
 
-    const detailsData = details ?? data;
+    const extraDetails = isDetailsWithId(props) && props.type === 'transaction' ? props.extraDetails : EMPTY_OBJECT;
 
-    if (isFetching) {
-        return <Spinner />;
-    }
+    const detailsData = details ?? data;
 
     return (
         <div className="adyen-pe-overview-details">
@@ -86,18 +83,22 @@ export default function DataOverviewDetails(props: ExternalUIComponentProps<Deta
 
             {error && errorProps && (
                 <div className="adyen-pe-overview-details--error-container">
-                    <ErrorMessageDisplay centered withImage {...errorProps} />
+                    <ErrorMessageDisplay withImage {...errorProps} />
                 </div>
             )}
 
-            {props.type === 'transaction' && detailsData && (
+            {props.type === 'transaction' && (
                 <TransactionData
                     transaction={
-                        {
-                            ...detailsData,
-                            balanceAccount: details?.balanceAccount || balanceAccounts?.[0],
-                        } as TransactionDetailData
+                        detailsData
+                            ? ({
+                                  ...(detailsData || EMPTY_OBJECT),
+                                  balanceAccount: details?.balanceAccount || balanceAccounts?.[0],
+                                  ...extraDetails,
+                              } as TransactionDetailData)
+                            : undefined
                     }
+                    error={error && errorProps ? true : false}
                     isFetching={isFetching}
                 />
             )}

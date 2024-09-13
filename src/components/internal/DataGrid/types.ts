@@ -1,6 +1,8 @@
 import { ComponentChildren, VNode } from 'preact';
 import { CustomCell } from './DataGrid';
 import { TranslationKey } from '../../../core/Localization/types';
+import { DataGridIcon } from '../../types';
+import { StringWithAutocompleteOptions } from '../../../utils/types';
 
 export enum CellTextPosition {
     CENTER = 'center',
@@ -9,11 +11,12 @@ export enum CellTextPosition {
 
 export interface DataGridColumn<Item> {
     label: string;
-    key: Item | string;
+    key: StringWithAutocompleteOptions<Item>;
     position?: CellTextPosition;
     visible?: boolean;
     minWidth?: number;
     flex?: number;
+    icon?: DataGridIcon;
 }
 
 export interface DataGridProps<
@@ -48,7 +51,7 @@ export interface DataGridProps<
 
 export interface InteractiveBodyProps<
     Items extends any[],
-    Columns extends Array<DataGridColumn<Extract<keyof Items[number], string>>>,
+    Columns extends Array<DataGridColumn<Extract<keyof Items[number], string & {}>>>,
     ClickedField extends keyof Items[number],
     CustomCells extends CustomCell<Items, Columns, Columns[number]>
 > {

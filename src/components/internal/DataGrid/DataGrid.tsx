@@ -17,15 +17,6 @@ export const INITIAL_STATE = Object.freeze({
     index: -1,
 });
 
-type CellKey<
-    Item extends Array<any>,
-    Columns extends Array<DataGridColumn<Extract<keyof Item[number], string>>>,
-    Column extends DataGridColumn<Extract<keyof Item[number], string>>,
-    T extends Columns[number]['key']
-> = {
-    [k in Column['key']]: k;
-}[T];
-
 export type CustomCell<
     Item extends Array<any>,
     Columns extends Array<DataGridColumn<Extract<keyof Item[number], string>>>,
@@ -33,8 +24,8 @@ export type CustomCell<
 > = {
     [k in T['key']]?: (
         props: Item[0][k] extends NonNullable<Item[0][k]>
-            ? { key: CellKey<Item, Columns, Columns[number], k>; value: Item[number][k]; item: Item[number]; rowIndex: number }
-            : { key: CellKey<Item, Columns, Columns[number], k>; item: Item[number]; rowIndex: number }
+            ? { key: k; value: Item[number][k]; item: Item[number]; rowIndex: number }
+            : { key: k; item: Item[number]; rowIndex: number }
     ) => ComponentChild;
 };
 

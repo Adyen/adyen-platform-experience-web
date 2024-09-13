@@ -1,6 +1,8 @@
 import DataGridCell from '../DataGridCell';
 import { DataGridColumn } from '../types';
 import { CustomCell } from '../DataGrid';
+import Icon from './Icon';
+import { isFunction } from '../../../../utils';
 
 export const TableCells = <
     Items extends Array<any>,
@@ -19,7 +21,7 @@ export const TableCells = <
 }) => {
     return (
         <>
-            {columns.map(({ key, position }) => {
+            {columns.map(({ key, position, icon }) => {
                 if (customCells?.[key])
                     return (
                         <DataGridCell aria-labelledby={String(key)} key={key} column={key} position={position}>
@@ -36,10 +38,13 @@ export const TableCells = <
                             </div>
                         </DataGridCell>
                     );
-
+                const iconObject = isFunction(icon) ? icon(item[key]) : icon;
                 return (
                     <DataGridCell aria-labelledby={String(key)} key={key} column={key} position={position}>
-                        <div>{item[key]}</div>
+                        <div className="adyen-pe-data-grid__cell-value">
+                            {iconObject?.url && <Icon {...iconObject} />}
+                            <div>{item[key]}</div>
+                        </div>
                     </DataGridCell>
                 );
             })}
