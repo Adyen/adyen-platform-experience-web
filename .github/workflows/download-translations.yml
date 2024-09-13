@@ -12,8 +12,8 @@ on:
         default: FALSE
 
 jobs:
-  initialize:
-    name: Initialization steps
+  download-files:
+    name: Download completed translation files
     runs-on: ubuntu-latest
     environment: smartling-translations # provides Smartling credentials
     steps:
@@ -30,16 +30,9 @@ jobs:
           user_identifier: ${{ secrets.SMARTLING_USER_IDENTIFIER }}
           user_secret: ${{ secrets.SMARTLING_USER_SECRET }}
 
-  download-files:
-    needs: initialize
-    name: Download completed translation files
-    runs-on: ubuntu-latest
-    environment: publish-package # provides NPM credentials
-    steps:
       - name: Download files
         run: |
-          npm config set //registry.npmjs.org/:_authToken ${{ secrets.NPM_TOKEN }}
-          npx @adyen/smartling-bot@0.3.1 download-files
+          npx -y @adyen/smartling-bot@latest download-files
 
 #      - name: Commit files
 #        if: ${{ inputs.open_pr }}
