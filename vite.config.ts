@@ -41,6 +41,9 @@ export default defineConfig(async ({ mode }) => {
     return {
         root: mode === 'demo' ? demoPlaygroundDir : './playground',
         base: '',
+        json: {
+            stringify: true,
+        },
         build:
             mode === 'demo'
                 ? {

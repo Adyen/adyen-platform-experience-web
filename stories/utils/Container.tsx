@@ -1,8 +1,9 @@
 import { useEffect, useRef } from 'preact/compat';
 import { StoryContext } from '@storybook/types';
 import { PreactRenderer } from '@storybook/preact';
+import { AdyenPlatformExperience } from '../../src';
+import BaseElement from '../../src/components/external/BaseElement';
 import sessionRequest from '../../playground/utils/sessionRequest';
-import { createAdyenPlatformExperience } from '../../.storybook/utils/create-adyenPE';
 
 interface IContainer<T extends new (...args: any) => any> {
     component: T;
@@ -15,8 +16,10 @@ export const Container = <T extends new (args: any) => any>({ component, compone
     const container = useRef(null);
 
     useEffect(() => {
-        const getCore = async () => {
-            const AdyenPlatformExperience = await createAdyenPlatformExperience({
+        let Component: BaseElement<any>;
+
+        void (async () => {
+            const core = await AdyenPlatformExperience({
                 ...context.coreOptions,
                 balanceAccountId: context.args.balanceAccountId,
                 environment: 'test',
@@ -25,13 +28,12 @@ export const Container = <T extends new (args: any) => any>({ component, compone
                 },
                 ...context.args.coreOptions,
             });
-            const Component = new component({ ...componentConfiguration, core: AdyenPlatformExperience });
 
+            Component = new component({ ...componentConfiguration, core });
             Component.mount(container.current ?? '');
-            return { AdyenPlatformExperience };
-        };
+        })();
 
-        void getCore();
+        return () => Component.unmount();
     }, []);
 
     return <div ref={container} id="component-root" className="component-wrapper" />;
