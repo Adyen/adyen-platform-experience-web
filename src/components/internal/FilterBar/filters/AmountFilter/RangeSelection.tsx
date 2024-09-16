@@ -47,9 +47,7 @@ export const RangeSelection = ({
         const { maxAmount, minAmount } = filterValue;
         if ((isUndefined(maxAmount) && isUndefined(minAmount)) || minAmount > maxAmount) {
             onValueUpdated(null);
-        } else if (!isUndefined(maxAmount) || !isUndefined(minAmount)) {
-            onValueUpdated(`${minAmount}-${maxAmount}`);
-        } else onValueUpdated(null);
+        } else onValueUpdated(`${minAmount}-${maxAmount}`);
     }, [filterValue, onValueUpdated]);
 
     return (
