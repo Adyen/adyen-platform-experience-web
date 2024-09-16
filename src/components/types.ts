@@ -1,5 +1,7 @@
 import UIElement from './external/UIElement/UIElement';
 import { Core, onErrorHandler } from '../core';
+import { TransactionsTableFields } from './external/TransactionsOverview/components/TransactionsTable/types';
+import type { ITransaction } from '../types';
 
 export const enum InteractionKeyCode {
     ARROW_DOWN = 'ArrowDown',
@@ -79,6 +81,18 @@ interface _DataOverviewSelectionProps<T extends { showModal: () => void } = { sh
     onRecordSelection?: onRecordSelection<T>;
 }
 
+export type DataGridIcon = { url: string; alt?: string } | ((value: unknown) => { url: string; alt?: string });
+
+export type DataGridCustomColumnConfig<k> = {
+    key: k;
+    flex?: number;
+    icon?: DataGridIcon;
+};
+
+export type CustomColumn<T extends string> = {
+    [k in T]: DataGridCustomColumnConfig<k>;
+}[T];
+
 interface _DataOverviewComponentProps {
     allowLimitSelection?: boolean;
     balanceAccountId?: string;
@@ -89,8 +103,14 @@ interface _DataOverviewComponentProps {
 
 export type ReportsOverviewComponentProps = Omit<_DataOverviewComponentProps, 'showDetails'>;
 
+interface _CustomizableDataOverview<Columns extends string, DataRetrieved> {
+    columns?: CustomColumn<Columns>[] | Columns[];
+    onDataRetrieved?: (data: DataRetrieved[]) => Promise<(DataRetrieved & Record<any, any>)[]>;
+}
+
 export interface TransactionOverviewComponentProps
     extends _DataOverviewComponentProps,
+        _CustomizableDataOverview<TransactionsTableFields, ITransaction>,
         _DataOverviewSelectionProps<{ id: string; showModal: () => void }> {}
 
 export interface PayoutsOverviewComponentProps

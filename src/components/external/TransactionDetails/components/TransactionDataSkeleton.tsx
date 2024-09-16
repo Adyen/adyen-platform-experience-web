@@ -5,7 +5,19 @@ const TransactionDataSkeleton = ({ isLoading, skeletonRowNumber = 0 }: { isLoadi
     const skeletonRows = useMemo(() => Array.from({ length: skeletonRowNumber }, (_, index) => index), [skeletonRowNumber]);
 
     return (
-        <>
+        <div className="adyen-pe-transaction-data__skeleton-container">
+            <div className={'adyen-pe-transaction-data__status-skeleton'}>
+                <span
+                    className={cx('adyen-pe-transaction-data__skeleton', {
+                        'adyen-pe-transaction-data__skeleton-loading-content': isLoading,
+                    })}
+                />
+                <span
+                    className={cx('adyen-pe-transaction-data__skeleton', {
+                        'adyen-pe-transaction-data__skeleton-loading-content': isLoading,
+                    })}
+                />
+            </div>
             {skeletonRows.map(key => (
                 <span
                     className={cx({
@@ -15,7 +27,7 @@ const TransactionDataSkeleton = ({ isLoading, skeletonRowNumber = 0 }: { isLoadi
                     key={`transaction-data-skeleton-${key}`}
                 />
             ))}
-        </>
+        </div>
     );
 };
 

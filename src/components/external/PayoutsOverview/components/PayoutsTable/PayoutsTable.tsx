@@ -1,12 +1,12 @@
 import cx from 'classnames';
 import { FC } from 'preact/compat';
-import { useMemo } from 'preact/hooks';
 import { useAuthContext } from '../../../../../core/Auth';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatformExperienceError';
 import { getCurrencyCode } from '../../../../../core/Localization/amount/amount-util';
 import { TranslationKey } from '../../../../../core/Localization/types';
 import { IPayout } from '../../../../../types';
+import { useCallback, useMemo } from 'preact/hooks';
 import useTimezoneAwareDateFormatting from '../../../../hooks/useTimezoneAwareDateFormatting';
 import DataGrid from '../../../../internal/DataGrid';
 import { CellTextPosition } from '../../../../internal/DataGrid/types';
@@ -20,6 +20,7 @@ import { getLabel } from '../../../../utils/getLabel';
 import { mediaQueries, useResponsiveViewport } from '../../../TransactionsOverview/hooks/useResponsiveViewport';
 import { BASE_CLASS, NET_PAYOUT_CLASS } from './constants';
 import './PayoutsTable.scss';
+import { useTableColumns } from '../../../../hooks/useTableColumns';
 
 const AMOUNT_FIELDS = ['fundsCapturedAmount', 'adjustmentAmount', 'payoutAmount'] as const;
 const FIELDS = ['createdAt', ...AMOUNT_FIELDS] as const;
@@ -53,31 +54,31 @@ export const PayoutsTable: FC<PayoutsTableProps> = ({
     const { refreshing } = useAuthContext();
     const isLoading = useMemo(() => loading || refreshing, [loading, refreshing]);
     const isSmAndUpViewport = useResponsiveViewport(mediaQueries.up.sm);
-    const fieldsVisibility: Partial<Record<(typeof FIELDS)[number], boolean>> = useMemo(
-        () => ({
-            fundsCapturedAmount: isSmAndUpViewport,
-            adjustmentAmount: isSmAndUpViewport,
-        }),
-        [isSmAndUpViewport]
+
+    const getAmountFieldConfig = useCallback(
+        (key: (typeof FIELDS)[number]) => {
+            const label = i18n.get(getLabel(key));
+            if (_isAmountFieldKey(key)) {
+                return {
+                    label: data?.[0]?.[key]?.currency ? `${label} (${getCurrencyCode(data?.[0]?.[key]?.currency)})` : label,
+                    position: CellTextPosition.RIGHT,
+                };
+            }
+        },
+        [data, i18n]
     );
 
-    const columns = useMemo(
-        () =>
-            FIELDS.map(key => {
-                const label = i18n.get(getLabel(key));
-                if (_isAmountFieldKey(key)) {
-                    return {
-                        key,
-                        label: data?.[0]?.[key]?.currency ? `${label} (${getCurrencyCode(data?.[0]?.[key]?.currency)})` : label,
-                        visible: fieldsVisibility[key],
-                        position: CellTextPosition.RIGHT,
-                    };
-                }
-
-                return { key, label, visible: fieldsVisibility[key] };
+    const columns = useTableColumns({
+        fields: FIELDS,
+        columnConfig: useMemo(
+            () => ({
+                fundsCapturedAmount: { ...getAmountFieldConfig('fundsCapturedAmount'), visible: isSmAndUpViewport },
+                adjustmentAmount: { ...getAmountFieldConfig('adjustmentAmount'), visible: isSmAndUpViewport },
+                payoutAmount: getAmountFieldConfig('payoutAmount'),
             }),
-        [i18n, fieldsVisibility, data]
-    );
+            [getAmountFieldConfig, isSmAndUpViewport]
+        ),
+    });
 
     const EMPTY_TABLE_MESSAGE = {
         title: 'noPayoutsFound',
