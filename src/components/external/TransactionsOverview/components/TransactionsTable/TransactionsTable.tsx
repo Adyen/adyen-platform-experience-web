@@ -1,7 +1,6 @@
 import { DATE_FORMAT_MOBILE_TRANSACTIONS, DATE_FORMAT_TRANSACTIONS } from '../../../../internal/DataOverviewDisplay/constants';
 import Category from '../Category/Category';
 import DataOverviewError from '../../../../internal/DataOverviewError/DataOverviewError';
-import { getLabel } from '../../../../utils/getLabel';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import useTimezoneAwareDateFormatting from '../../../../hooks/useTimezoneAwareDateFormatting';
 import { useCallback, useMemo, useState } from 'preact/hooks';
@@ -16,11 +15,13 @@ import { mediaQueries, useResponsiveViewport } from '../../hooks/useResponsiveVi
 import { FC } from 'preact/compat';
 import { TransactionTableProps } from './types';
 import PaymentMethodCell from './PaymentMethodCell';
+import { useTableColumns } from '../../../../hooks/useTableColumns';
 
 // Remove status column temporarily
 // const FIELDS = ['createdAt', 'status', 'paymentMethod', 'transactionType', 'amount'] as const;
-const FIELDS = ['dateAndPaymentMethod', 'createdAt', 'paymentMethod', 'transactionType', 'amount'] as const;
-type FieldsType = (typeof FIELDS)[number];
+
+export const TRANSACTION_FIELDS = ['createdAt', 'paymentMethod', 'transactionType', 'amount'] as const;
+export type TransactionsTableCols = (typeof TRANSACTION_FIELDS)[number];
 
 export const TransactionsTable: FC<TransactionTableProps> = ({
     activeBalanceAccount,
@@ -33,6 +34,7 @@ export const TransactionsTable: FC<TransactionTableProps> = ({
     showDetails,
     showPagination,
     transactions,
+    customColumns,
     ...paginationProps
 }) => {
     const { i18n } = useCoreContext();
@@ -42,35 +44,22 @@ export const TransactionsTable: FC<TransactionTableProps> = ({
     const isMdAndUpViewport = useResponsiveViewport(mediaQueries.up.md);
     const isXsAndDownViewport = useResponsiveViewport(mediaQueries.down.xs);
 
-    const fieldsVisibility: Partial<Record<FieldsType, boolean>> = useMemo(
-        () => ({
-            dateAndPaymentMethod: isXsAndDownViewport,
-            createdAt: isSmAndUpViewport,
-            transactionType: isMdAndUpViewport,
-            paymentMethod: isSmAndUpViewport,
-        }),
-        [isXsAndDownViewport, isSmAndUpViewport, isMdAndUpViewport]
-    );
-
-    const columns = useMemo(
-        () =>
-            FIELDS.map(key => {
-                const label = i18n.get(getLabel(key));
-                if (key === 'amount') {
-                    return {
-                        key,
-                        label: hasMultipleCurrencies
-                            ? label
-                            : `${label} ${availableCurrencies && availableCurrencies[0] ? `(${getCurrencyCode(availableCurrencies[0])})` : ''}`,
-                        position: key === 'amount' ? CellTextPosition.RIGHT : undefined,
-                        flex: isSmAndUpViewport ? 1.5 : undefined,
-                    };
-                }
-
-                return { key, label, visible: fieldsVisibility[key] };
-            }),
-        [availableCurrencies, fieldsVisibility, hasMultipleCurrencies, i18n, isSmAndUpViewport]
-    );
+    const amountLabel = i18n.get('amount');
+    const columns = useTableColumns({
+        fields: TRANSACTION_FIELDS,
+        customColumns,
+        columnConfig: {
+            amount: {
+                label: hasMultipleCurrencies
+                    ? undefined
+                    : `${amountLabel} ${availableCurrencies && availableCurrencies[0] ? `(${getCurrencyCode(availableCurrencies[0])})` : ''}`,
+                position: CellTextPosition.RIGHT,
+                flex: isSmAndUpViewport ? 1.5 : undefined,
+            },
+            transactionType: { visible: isMdAndUpViewport },
+            paymentMethod: { visible: isSmAndUpViewport },
+        },
+    });
 
     const EMPTY_TABLE_MESSAGE = {
         title: 'noTransactionsFound',
@@ -111,14 +100,7 @@ export const TransactionsTable: FC<TransactionTableProps> = ({
                             />
                         );
                     },*/
-                    dateAndPaymentMethod: ({ item }) => {
-                        return (
-                            <div className={DATE_AND_PAYMENT_METHOD_CLASS}>
-                                <PaymentMethodCell paymentMethod={item.paymentMethod} bankAccount={item.bankAccount} />
-                                <span className={DATE_AND_PAYMENT_METHOD_CLASS}>{dateFormat(item.createdAt, DATE_FORMAT_MOBILE_TRANSACTIONS)}</span>
-                            </div>
-                        );
-                    },
+
                     transactionType: ({ item, rowIndex }) => {
                         const tooltipKey = `tooltip.${item.category}`;
                         return item.category ? (
@@ -129,11 +111,24 @@ export const TransactionsTable: FC<TransactionTableProps> = ({
                             )
                         ) : null;
                     },
-                    createdAt: ({ value }) => <span>{dateFormat(value, DATE_FORMAT_TRANSACTIONS)}</span>,
                     amount: ({ value }) => {
                         const amount = i18n.amount(value.value, value.currency, { hideCurrency: !hasMultipleCurrencies });
                         return <span className={AMOUNT_CLASS}>{amount}</span>;
                     },
+                    createdAt: ({ item, value }) => {
+                        if (isXsAndDownViewport) {
+                            return (
+                                <div className={DATE_AND_PAYMENT_METHOD_CLASS}>
+                                    <PaymentMethodCell paymentMethod={item.paymentMethod} bankAccount={item.bankAccount} />
+                                    <span className={DATE_AND_PAYMENT_METHOD_CLASS}>
+                                        {dateFormat(item.createdAt, DATE_FORMAT_MOBILE_TRANSACTIONS)}
+                                    </span>
+                                </div>
+                            );
+                        }
+                        return <span>{dateFormat(value, DATE_FORMAT_TRANSACTIONS)}</span>;
+                    },
+
                     paymentMethod: ({ item }) => <PaymentMethodCell paymentMethod={item.paymentMethod} bankAccount={item.bankAccount} />,
                 }}
             >

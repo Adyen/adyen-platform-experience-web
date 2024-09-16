@@ -1,9 +1,9 @@
 import { useEffect, useRef } from 'preact/compat';
 import { StoryContext } from '@storybook/types';
 import { PreactRenderer } from '@storybook/preact';
+import { AdyenPlatformExperience } from '../../src';
+import BaseElement from '../../src/components/external/BaseElement';
 import sessionRequest from '../../playground/utils/sessionRequest';
-import { createAdyenPlatformExperience } from '../../.storybook/utils/create-adyenPE';
-import { getStoryContextAdyenPlatformExperience } from './get-story-context';
 
 interface IContainer<T extends new (...args: any) => any> {
     component: T;
@@ -12,27 +12,28 @@ interface IContainer<T extends new (...args: any) => any> {
     mockedApi?: boolean;
 }
 
-export const Container = <T extends new (args: any) => any>({ component, componentConfiguration, context, mockedApi }: IContainer<T>) => {
+export const Container = <T extends new (args: any) => any>({ component, componentConfiguration, context }: IContainer<T>) => {
     const container = useRef(null);
-    const { worker } = getStoryContextAdyenPlatformExperience(context);
 
     useEffect(() => {
-        const getCore = async () => {
-            const AdyenPlatformExperience = await createAdyenPlatformExperience({
+        let Component: BaseElement<any>;
+
+        void (async () => {
+            const core = await AdyenPlatformExperience({
                 ...context.coreOptions,
                 balanceAccountId: context.args.balanceAccountId,
                 environment: 'test',
                 onSessionCreate: async () => {
                     return await sessionRequest(context.args.session);
                 },
+                ...context.args.coreOptions,
             });
-            const Component = new component({ ...componentConfiguration, core: AdyenPlatformExperience });
 
+            Component = new component({ ...componentConfiguration, core });
             Component.mount(container.current ?? '');
-            return { AdyenPlatformExperience };
-        };
+        })();
 
-        void getCore();
+        return () => Component.unmount();
     }, []);
 
     return <div ref={container} id="component-root" className="component-wrapper" />;
