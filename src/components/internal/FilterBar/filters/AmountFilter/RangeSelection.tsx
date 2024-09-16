@@ -44,12 +44,12 @@ export const RangeSelection = ({
     const filterValue = useMemo(() => ({ minAmount: Number(minAmount), maxAmount: Number(maxAmount) }), [maxAmount, minAmount]);
 
     useEffect(() => {
-        if (!isUndefined(filterValue.maxAmount) && !isUndefined(filterValue.minAmount) && filterValue.minAmount > filterValue.maxAmount) {
+        const { maxAmount, minAmount } = filterValue;
+        if (isUndefined(maxAmount) && isUndefined(minAmount)) {
             onValueUpdated(null);
-        } else {
-            if (filterValue.minAmount || filterValue.maxAmount) onValueUpdated(`${filterValue.minAmount}-${filterValue.maxAmount}`);
-            else onValueUpdated(null);
-        }
+        } else if (maxAmount && minAmount && maxAmount >= minAmount) {
+            onValueUpdated(`${minAmount}-${maxAmount}`);
+        } else onValueUpdated(null);
     }, [filterValue, onValueUpdated]);
 
     return (
