@@ -28,7 +28,7 @@ const FIELDS = ['createdAt', 'dateAndReportType', 'reportType', 'reportFile'] as
 type FieldsType = (typeof FIELDS)[number];
 
 export interface ReportsTableProps extends WithPaginationLimitSelection<PaginationProps> {
-    balanceAccountId: string;
+    balanceAccountId: string | undefined;
     loading: boolean;
     error?: AdyenPlatformExperienceError;
     onContactSupport?: () => void;
