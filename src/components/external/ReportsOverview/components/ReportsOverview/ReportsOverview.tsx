@@ -100,20 +100,19 @@ export const ReportsOverview = ({
                     updateFilters={updateFilters}
                 />
             </FilterBar>
-            {activeBalanceAccount && (
-                <ReportsTable
-                    balanceAccountId={activeBalanceAccount.id}
-                    loading={fetching || isLoadingBalanceAccount || !balanceAccounts}
-                    data={records}
-                    showPagination={true}
-                    limit={limit}
-                    limitOptions={limitOptions}
-                    onContactSupport={onContactSupport}
-                    onLimitSelection={updateLimit}
-                    error={error as AdyenPlatformExperienceError}
-                    {...paginationProps}
-                />
-            )}
+
+            <ReportsTable
+                balanceAccountId={activeBalanceAccount?.id}
+                loading={fetching || isLoadingBalanceAccount || !balanceAccounts || !activeBalanceAccount}
+                data={records}
+                showPagination={true}
+                limit={limit}
+                limitOptions={limitOptions}
+                onContactSupport={onContactSupport}
+                onLimitSelection={updateLimit}
+                error={error as AdyenPlatformExperienceError}
+                {...paginationProps}
+            />
         </div>
     );
 };
