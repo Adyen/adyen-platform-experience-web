@@ -1,4 +1,4 @@
-import { TranslationKey } from '../../../core/Localization/types';
+import { TranslationKey } from '../../../translations';
 import { StructuredListLayouts } from './StructuredList';
 import { ComponentChild } from 'preact';
 

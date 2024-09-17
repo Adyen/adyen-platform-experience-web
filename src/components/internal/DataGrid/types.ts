@@ -1,6 +1,6 @@
 import { ComponentChildren, VNode } from 'preact';
 import { CustomCell } from './DataGrid';
-import { TranslationKey } from '../../../core/Localization/types';
+import { TranslationKey } from '../../../translations';
 import { DataGridIcon } from '../../types';
 import { StringWithAutocompleteOptions } from '../../../utils/types';
 

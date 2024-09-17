@@ -7,14 +7,14 @@ export const createLanguageButtons = ({ core }: { core: Core<any, any> }) => {
         const { localization } = core;
         const container = document.createElement('div');
         const selector = document.createElement('select');
+        const locales = localization.supportedLocales;
 
         container.classList.add('locale-selection-container');
+        selector.disabled = locales.length < 2;
 
         selector.addEventListener('change', async function () {
             await core.update({ locale: this.value });
         });
-
-        const locales = [...localization.supportedLocales].sort((a, b) => a.localeCompare(b));
 
         locales.forEach(locale => {
             const optionElement = document.createElement('option');
