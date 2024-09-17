@@ -29,7 +29,6 @@ export const DATE_FORMAT_PAYOUTS_MOBILE: Intl.DateTimeFormatOptions = BASE_DATE_
 export const DATE_FORMAT_PAYOUT_DETAILS: Intl.DateTimeFormatOptions = { ...BASE_DATE_FORMAT, weekday: LONG };
 
 export const DATE_FORMAT_REPORTS: Intl.DateTimeFormatOptions = { ...BASE_DATE_FORMAT, month: SHORT };
-export const DATE_FORMAT_REPORTS_MOBILE: Intl.DateTimeFormatOptions = { ...BASE_DATE_FORMAT, year: undefined };
 
 export const DATE_FORMAT_TRANSACTIONS: Intl.DateTimeFormatOptions = BASE_DATE_TIME_FORMAT;
 export const DATE_FORMAT_TRANSACTIONS_MOBILE: Intl.DateTimeFormatOptions = BASE_DATE_TIME_MOBILE_FORMAT;
