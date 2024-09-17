@@ -1,11 +1,10 @@
 import { JSX } from 'preact';
-import { asPlainObject, EMPTY_OBJECT, hasOwnProperty } from '../../utils';
-import { defaultTranslation, FALLBACK_LOCALE, LOCALE_FORMAT_REGEX } from './constants/locale';
-import { CustomTranslations, SupportedLocale, Translations, TranslationOptions } from './types';
-import { en_US } from '../../translations';
+import { DEFAULT_TRANSLATIONS, FALLBACK_LOCALE } from './constants/localization';
+import { asPlainObject, EMPTY_OBJECT, hasOwnProperty, isFunction } from '../../utils';
+import type { CustomTranslations, Locale, TranslationOptions, Translations, TranslationSource } from '../../translations';
 
 const DEFAULT_TRANSLATION_OPTIONS: TranslationOptions = { values: EMPTY_OBJECT, count: 0 } as const;
-const FALLBACK_TRANSLATIONS_FILES = { 'en-US': en_US['en_US'] } as const;
+const LOCALE_FORMAT_REGEX = /^[a-z]{2}-[A-Z]{2}$/;
 
 /**
  * Convert to ISO 639-1
@@ -21,10 +20,10 @@ export const toTwoLetterCode = (locale: string) => locale.substring(0, 2).toLowe
  * matchLocale('en-GB');
  * // 'en-US'
  */
-export function matchLocale(locale: string, supportedLocales: SupportedLocale[] | string[]): SupportedLocale | null {
+export function matchLocale(locale: string, supportedLocales: Locale[]): Locale | null {
     if (!locale) return null;
-    const twoLetterCode = toTwoLetterCode(locale as SupportedLocale);
-    return (supportedLocales.find(supportedLocale => toTwoLetterCode(supportedLocale) === twoLetterCode) as SupportedLocale) || null;
+    const twoLetterCode = toTwoLetterCode(locale);
+    return supportedLocales.find(supportedLocale => toTwoLetterCode(supportedLocale) === twoLetterCode) || null;
 }
 
 /**
@@ -35,11 +34,11 @@ export function matchLocale(locale: string, supportedLocales: SupportedLocale[] 
  * formatLocale('En_us');
  * // 'en-US'
  */
-export function formatLocale(locale: string): SupportedLocale | null {
+export function formatLocale(locale: string): Locale | null {
     const localeString = locale.replace('_', '-');
 
     // If it's already formatted, return the locale
-    if (LOCALE_FORMAT_REGEX.test(localeString)) return localeString as SupportedLocale;
+    if (LOCALE_FORMAT_REGEX.test(localeString)) return localeString as Locale;
 
     // Split the string in two
     const [languageCode, countryCode] = localeString.split('-');
@@ -48,7 +47,7 @@ export function formatLocale(locale: string): SupportedLocale | null {
     if (!languageCode || !countryCode) return null;
 
     // Ensure correct format and join the strings back together
-    const fullLocale = `${languageCode.toLowerCase()}-${countryCode.toUpperCase()}` as SupportedLocale;
+    const fullLocale = `${languageCode.toLowerCase()}-${countryCode.toUpperCase()}` as Locale;
 
     return fullLocale.length === 5 ? fullLocale : null;
 }
@@ -60,16 +59,16 @@ export function formatLocale(locale: string): SupportedLocale | null {
  * @param locale -
  * @param supportedLocales -
  */
-export function parseLocale(locale: string, supportedLocales: Readonly<SupportedLocale[]> | string[]): SupportedLocale | null {
+export function parseLocale(locale: string, supportedLocales: Locale[]): Locale | null {
     const trimmedLocale = locale.trim();
 
     if (!trimmedLocale || trimmedLocale.length < 1 || trimmedLocale.length > 5) return FALLBACK_LOCALE;
 
     const formattedLocale = formatLocale(trimmedLocale);
 
-    if (formattedLocale && supportedLocales.indexOf(formattedLocale) > -1) return formattedLocale;
+    if (formattedLocale && supportedLocales.includes(formattedLocale)) return formattedLocale;
 
-    return matchLocale(formattedLocale ?? trimmedLocale, [...supportedLocales]);
+    return matchLocale(formattedLocale ?? trimmedLocale, supportedLocales);
 }
 
 /**
@@ -77,10 +76,7 @@ export function parseLocale(locale: string, supportedLocales: Readonly<Supported
  * @param customTranslations -
  * @param supportedLocales -
  */
-export function formatCustomTranslations(
-    customTranslations: CustomTranslations = EMPTY_OBJECT,
-    supportedLocales: Readonly<SupportedLocale[]> | string[]
-): CustomTranslations {
+export function formatCustomTranslations(customTranslations: CustomTranslations = EMPTY_OBJECT, supportedLocales: Locale[]): CustomTranslations {
     if (customTranslations === EMPTY_OBJECT) return customTranslations;
 
     return (Object.keys(customTranslations) as Extract<keyof CustomTranslations, string>[]).reduce((translations, locale) => {
@@ -136,17 +132,16 @@ export const getTranslation = (translations: Record<string, string>, key: string
  */
 export const loadTranslations = async (
     locale: string,
-    translations?: { [locale: string]: Translations },
+    translations: { [locale: Locale]: TranslationSource } = EMPTY_OBJECT,
     customTranslations: CustomTranslations = EMPTY_OBJECT
-) => {
-    const translationFiles = translations ?? FALLBACK_TRANSLATIONS_FILES;
+): Promise<Translations> => {
     // Match locale to one of our available locales (e.g. es-AR => es-ES)
-    const localeToLoad = parseLocale(locale, Object.keys(translationFiles) as SupportedLocale[]) || FALLBACK_LOCALE;
-    const loadedLocale = translationFiles[localeToLoad as keyof typeof translationFiles] || translationFiles[FALLBACK_LOCALE];
+    const localeToLoad = parseLocale(locale, Object.keys(translations) as Locale[]) || FALLBACK_LOCALE;
+    const loadedLocale = translations[localeToLoad as keyof typeof translations];
 
     return {
-        ...defaultTranslation, // Default en-US translations (in case any other translation file is missing any key)
-        ...loadedLocale, // Merge with our locale file of the locale they are loading
+        ...DEFAULT_TRANSLATIONS, // Default en-US translations (in case any other translation file is missing any key)
+        ...((await (isFunction(loadedLocale) ? loadedLocale() : loadedLocale)) ?? EMPTY_OBJECT), // Merge with our locale file of the locale they are loading
         ...asPlainObject(customTranslations?.[locale]), // Merge with their custom locales if available
     };
 };
