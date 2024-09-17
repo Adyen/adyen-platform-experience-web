@@ -5,7 +5,7 @@ import Category from '../Category/Category';
 import DataOverviewError from '../../../../internal/DataOverviewError/DataOverviewError';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { getCurrencyCode } from '../../../../../core/Localization/amount/amount-util';
-import { TranslationKey } from '../../../../../core/Localization/types';
+import { TranslationKey } from '../../../../../translations';
 import useTimezoneAwareDateFormatting from '../../../../hooks/useTimezoneAwareDateFormatting';
 import DataGrid from '../../../../internal/DataGrid';
 import { CellTextPosition } from '../../../../internal/DataGrid/types';

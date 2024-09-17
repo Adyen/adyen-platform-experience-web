@@ -192,7 +192,7 @@ describe('formatCustomTranslations()', () => {
                 paymentId: 'customString',
             },
         };
-        const defaultSupportedLocales = ['es-ES', 'ca-CA'];
+        const defaultSupportedLocales = ['es-ES' as const, 'ca-CA' as const];
         const expectedCustomTranslations = {
             'ca-CA': {
                 paymentId: 'customString',

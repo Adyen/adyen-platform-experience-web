@@ -1,7 +1,7 @@
 import classnames from 'classnames';
 import { useMemo } from 'preact/hooks';
 import useCoreContext from '../../../../core/Context/useCoreContext';
-import { TranslationKey } from '../../../../core/Localization/types';
+import { TranslationKey } from '../../../../translations';
 import { IPayoutDetails } from '../../../../types';
 import { components } from '../../../../types/api/resources/PayoutsResource';
 import { EMPTY_OBJECT } from '../../../../utils';

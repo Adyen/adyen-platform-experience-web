@@ -1,4 +1,4 @@
-import type { TranslationKey } from '../../../core/Localization/types';
+import type { TranslationKey } from '../../../translations';
 
 export interface FilterBarProps {
     canResetFilters?: boolean;

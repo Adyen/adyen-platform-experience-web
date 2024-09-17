@@ -1,28 +1,46 @@
-import _da_DK from './da-DK.json';
-import _de_DE from './de-DE.json';
+import type { KeyOfRecord, WithReplacedUnderscoreOrDash } from '../utils/types';
 import _en_US from './en-US.json';
-import _es_ES from './es-ES.json';
-import _fr_FR from './fr-FR.json';
-import _it_IT from './it-IT.json';
-import _nl_NL from './nl-NL.json';
-import _no_NO from './no-NO.json';
-import _pt_BR from './pt-BR.json';
-import _sv_SE from './sv-SE.json';
 
-export const da_DK = { da_DK: _da_DK };
-export const de_DE = { de_DE: _de_DE };
-export const en_US = { en_US: _en_US };
-export const es_ES = { es_ES: _es_ES };
-export const fr_FR = { fr_FR: _fr_FR };
-export const it_IT = { it_IT: _it_IT };
-export const nl_NL = { nl_NL: _nl_NL };
-export const no_NO = { no_NO: _no_NO };
-export const pt_BR = { pt_BR: _pt_BR };
-export const sv_SE = { sv_SE: _sv_SE };
+type _SupportedLocale = KeyOfRecord<typeof all_locales>;
+type _Translations = Translations | PromiseLike<Translations>;
+
+export type CustomTranslations = Record<string, Translations>;
+export type Locale = `${Lowercase<string>}-${Uppercase<string>}`;
+export type SupportedLocale = WithReplacedUnderscoreOrDash<_SupportedLocale, '_', '-'>;
+export type TranslationKey = KeyOfRecord<typeof _en_US>;
+export type Translations = { [key in TranslationKey]?: string };
+export type TranslationSource = _Translations | (() => _Translations);
+
+export type TranslationSourceRecord = {
+    [K in _SupportedLocale]: {
+        [P in K]: TranslationSource;
+    };
+}[_SupportedLocale];
+
+export type TranslationOptions = {
+    values?: Record<string, string | number>;
+    count?: number;
+};
+
+const _getTranslations = (translationsPromise: Promise<{ default: Translations }>) =>
+    translationsPromise.then(({ default: translations }) => translations);
+
+export const da_DK = { da_DK: () => _getTranslations(import('./da-DK.json')) };
+export const de_DE = { de_DE: () => _getTranslations(import('./de-DE.json')) };
+export const es_ES = { es_ES: () => _getTranslations(import('./es-ES.json')) };
+export const fr_FR = { fr_FR: () => _getTranslations(import('./fr-FR.json')) };
+export const it_IT = { it_IT: () => _getTranslations(import('./it-IT.json')) };
+export const nl_NL = { nl_NL: () => _getTranslations(import('./nl-NL.json')) };
+export const no_NO = { no_NO: () => _getTranslations(import('./no-NO.json')) };
+export const pt_BR = { pt_BR: () => _getTranslations(import('./pt-BR.json')) };
+export const sv_SE = { sv_SE: () => _getTranslations(import('./sv-SE.json')) };
+
+export const en_US = { en_US: _en_US as Translations };
 
 export const all_locales = {
     ...da_DK,
     ...de_DE,
+    ...en_US,
     ...es_ES,
     ...fr_FR,
     ...it_IT,
@@ -30,4 +48,4 @@ export const all_locales = {
     ...no_NO,
     ...pt_BR,
     ...sv_SE,
-};
+} as const;

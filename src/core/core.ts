@@ -1,12 +1,11 @@
 import type { CoreOptions, onErrorHandler } from './types';
-import type { LangFile } from './Localization/types';
 import { FALLBACK_ENV, resolveEnvironment } from './utils';
 import { AuthSession } from './Auth/session/AuthSession';
 import BaseElement from '../components/external/BaseElement';
-import Localization from './Localization';
+import Localization, { TranslationSourceRecord } from './Localization';
 import { EMPTY_OBJECT } from '../utils';
 
-class Core<AvailableTranslations extends LangFile[] = [], CustomTranslations extends {} = {}> {
+class Core<AvailableTranslations extends TranslationSourceRecord[] = [], CustomTranslations extends {} = {}> {
     public static readonly version = process.env.VITE_VERSION!;
 
     public components: BaseElement<any>[] = [];
