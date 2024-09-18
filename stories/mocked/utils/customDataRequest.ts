@@ -28,8 +28,7 @@ const getStoreById = (id: string) => {
     return { value: store.value, icon: { url: `https://flagicons.lipis.dev/flags/4x3/${store.flag}.svg` } };
 };
 
-const txMatcher = (data: ITransaction[]) =>
-    data.map(({ id }) => ({ id, _product: getProductById(id), _store: getStoreById(id), transactionType: 'TEst' }));
+const txMatcher = (data: ITransaction[]) => data.map(({ id }) => ({ id, _product: getProductById(id), _store: getStoreById(id), _reference: id }));
 
 export const getMyCustomData = async (data: ITransaction[]) => {
     const customData = txMatcher(data);

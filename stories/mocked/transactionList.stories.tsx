@@ -15,6 +15,22 @@ export const Basic: ElementStory<typeof TransactionsOverview> = {
     },
 };
 
+const CUSTOM_COLUMNS_MOCK_HANDLER = {
+    handlers: [
+        http.get(endpoints('mock').transactions, () => {
+            return HttpResponse.json({
+                data: [
+                    { ...TRANSACTIONS[0], createdAt: Date.now() },
+                    { ...TRANSACTIONS[4], createdAt: Date.now() },
+                    { ...TRANSACTIONS[6], createdAt: Date.now() },
+                    { ...TRANSACTIONS[8], createdAt: Date.now() },
+                    { ...TRANSACTIONS[10], createdAt: Date.now() },
+                ],
+                _links: {},
+            });
+        }),
+    ],
+};
 export const CustomColumns: ElementStory<typeof TransactionsOverview> = {
     name: 'Custom Columns',
     args: {
@@ -23,6 +39,7 @@ export const CustomColumns: ElementStory<typeof TransactionsOverview> = {
                 en_US: {
                     _store: 'Store',
                     _product: 'Product',
+                    _reference: 'Reference',
                 },
             },
         },
@@ -34,8 +51,8 @@ export const CustomColumns: ElementStory<typeof TransactionsOverview> = {
             },
             { key: '_product' },
             { key: 'paymentMethod' },
-            { key: 'transactionType' },
             { key: 'createdAt' },
+            { key: '_reference' },
             { key: 'amount', flex: 1.5 },
         ],
         onDataRetrieved: data => {
@@ -47,22 +64,7 @@ export const CustomColumns: ElementStory<typeof TransactionsOverview> = {
         },
     },
     parameters: {
-        msw: {
-            handlers: [
-                http.get(endpoints('mock').transactions, () => {
-                    return HttpResponse.json({
-                        data: [
-                            { ...TRANSACTIONS[0], createdAt: Date.now() },
-                            { ...TRANSACTIONS[4], createdAt: Date.now() },
-                            { ...TRANSACTIONS[6], createdAt: Date.now() },
-                            { ...TRANSACTIONS[8], createdAt: Date.now() },
-                            { ...TRANSACTIONS[10], createdAt: Date.now() },
-                        ],
-                        _links: {},
-                    });
-                }),
-            ],
-        },
+        msw: CUSTOM_COLUMNS_MOCK_HANDLER,
     },
 };
 
@@ -71,6 +73,9 @@ export const CustomOrder: ElementStory<typeof TransactionsOverview> = {
     args: {
         mockedApi: true,
         columns: ['transactionType', 'paymentMethod', 'createdAt', 'amount'],
+    },
+    parameters: {
+        msw: CUSTOM_COLUMNS_MOCK_HANDLER,
     },
 };
 
