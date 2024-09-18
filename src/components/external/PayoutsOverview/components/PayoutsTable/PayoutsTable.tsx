@@ -17,7 +17,7 @@ import { PaginationProps, WithPaginationLimitSelection } from '../../../../inter
 import { TypographyVariant } from '../../../../internal/Typography/types';
 import Typography from '../../../../internal/Typography/Typography';
 import { getLabel } from '../../../../utils/getLabel';
-import { mediaQueries, useResponsiveViewport } from '../../../TransactionsOverview/hooks/useResponsiveViewport';
+import { mediaQueries, useResponsiveViewport } from '../../../../hooks/useResponsiveViewport';
 import { BASE_CLASS, NET_PAYOUT_CLASS } from './constants';
 import './PayoutsTable.scss';
 import { useTableColumns } from '../../../../hooks/useTableColumns';

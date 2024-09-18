@@ -1,4 +1,4 @@
-import { mediaQueries, useResponsiveViewport } from '../../external/TransactionsOverview/hooks/useResponsiveViewport';
+import { mediaQueries, useResponsiveViewport } from '../../hooks/useResponsiveViewport';
 import Popover from '../Popover/Popover';
 import { PopoverContainerVariant } from '../Popover/types';
 import { useTooltipListeners } from './useTooltipListeners';
