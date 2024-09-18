@@ -16,7 +16,6 @@ export interface DataGridColumn<Item> {
     visible?: boolean;
     minWidth?: number;
     flex?: number;
-    icon?: DataGridIcon;
 }
 
 export interface DataGridProps<
