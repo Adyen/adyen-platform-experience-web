@@ -7,7 +7,7 @@ import { WithPartialField } from '../../../../../utils/types';
 import { BASE_CLASS, ITEM_CLASS } from './constants';
 import { memo } from 'preact/compat';
 import { ITransaction } from '../../../../../types';
-import { mediaQueries, useResponsiveViewport } from '../../hooks/useResponsiveViewport';
+import { mediaQueries, useResponsiveViewport } from '../../../../hooks/useResponsiveViewport';
 import './TransactionTotals.scss';
 import { TotalsCard } from './TotalsCard';
 
