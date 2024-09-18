@@ -1,6 +1,6 @@
 @use '../../../style';
 
-%adyen-pe-data-overview {
+@mixin adyen-pe-data-overview {
     display: flex;
     flex-direction: column;
     gap: style.token(spacer-070);
@@ -8,4 +8,6 @@
     .adyen-pe-filter-bar {
         margin: calc(#{style.token(spacer-050)} * -1) 0;
     }
+
+    @content;
 }

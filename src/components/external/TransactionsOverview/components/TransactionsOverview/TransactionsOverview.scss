@@ -1,10 +1,9 @@
+@use '../../../../internal/DataOverviewDisplay/styles' as *;
+@use '../../../../../style/breakpoints' as breakpoints;
 @use '../../../../../style';
-@import '../../../../internal/DataOverviewDisplay/styles';
-//stylelint-disable no-invalid-position-at-import-rule
-@import '../../../../../style/breakpoints';
 
 .adyen-pe-transactions-overview {
-    @extend %adyen-pe-data-overview;
+    @include adyen-pe-data-overview;
 
     &__summary {
         display: flex;
@@ -16,7 +15,7 @@
     &__summary-item {
         flex-grow: 1;
 
-        @include adyen-pe-screen-md-and-up {
+        @include breakpoints.adyen-pe-screen-md-and-up {
             flex-grow: unset;
         }
     }
