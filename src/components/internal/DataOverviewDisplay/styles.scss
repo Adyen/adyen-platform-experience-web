@@ -9,3 +9,8 @@
         margin: calc(#{style.token(spacer-050)} * -1) 0;
     }
 }
+
+@mixin adyen-pe-data-overview {
+    @extend %adyen-pe-data-overview;
+    @content;
+}

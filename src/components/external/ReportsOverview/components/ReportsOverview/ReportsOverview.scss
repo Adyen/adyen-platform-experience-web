@@ -1,8 +1,8 @@
+@use '../../../../internal/DataOverviewDisplay/styles' as *;
 @use '../../../../../style';
-@import '../../../../internal/DataOverviewDisplay/styles';
 
 .adyen-pe-reports-overview {
-    @extend %adyen-pe-data-overview;
+    @include adyen-pe-data-overview;
 
     .adyen-pe-data-overview-header__description {
         color: style.token(color-label-primary);
