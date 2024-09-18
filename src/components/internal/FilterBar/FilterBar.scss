@@ -40,5 +40,10 @@
         align-items: center;
         display: flex;
         justify-content: space-between;
+
+        &__button {
+            padding: 0;
+            width: calc(#{style.token(spacer-060)} * 3);
+        }
     }
 }
