@@ -2,7 +2,7 @@ import { FC } from 'preact/compat';
 import Typography from '../../Typography/Typography';
 import useCoreContext from '../../../../core/Context/useCoreContext';
 import { TypographyElement, TypographyVariant } from '../../Typography/types';
-import type { TranslationKey } from '../../../../core/Localization/types';
+import type { TranslationKey } from '../../../../translations';
 import type { UIElementProps } from '../../../types';
 import './DataOverviewHeader.scss';
 
