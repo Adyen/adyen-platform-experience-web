@@ -89,7 +89,7 @@ main {
 }
 
 h1,
-header p {
+.page-header p {
     font-size: 1.4em;
     font-weight: 200;
     margin: 0;
@@ -100,11 +100,11 @@ header p {
     }
 }
 
-header p {
+.page-header p {
     padding: 12px;
 
     @media screen and (min-width: 1240px) {
-        padding: 0px;
+        padding: 0;
     }
 
     span {

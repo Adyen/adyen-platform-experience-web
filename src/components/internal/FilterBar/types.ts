@@ -1,7 +1,17 @@
-import type { TranslationKey } from '../../../core/Localization/types';
+import type { Dispatch } from 'preact/compat';
+import type { StateUpdater } from 'preact/hooks';
 
-export interface FilterBarProps {
+export interface FilterBarMobileSwitchProps extends FilterBarState {
+    setShowingFilters: NonNullable<FilterBarState['setShowingFilters']>;
+}
+
+export interface FilterBarProps extends FilterBarState {
     canResetFilters?: boolean;
     resetFilters?: () => void;
-    titleKey: TranslationKey;
+}
+
+export interface FilterBarState {
+    isMobileViewport?: boolean;
+    showingFilters?: boolean;
+    setShowingFilters?: Dispatch<StateUpdater<boolean>>;
 }
