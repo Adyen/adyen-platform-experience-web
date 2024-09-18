@@ -1,54 +1,60 @@
-import { mediaQueries, useResponsiveViewport } from '../../external/TransactionsOverview/hooks/useResponsiveViewport';
-import { ButtonVariant } from '../Button/types';
+import cx from 'classnames';
+import Button from '../Button';
 import Close from '../SVGIcons/Close';
 import Filter from '../SVGIcons/Filter';
-import { TypographyVariant } from '../Typography/types';
-import Typography from '../Typography/Typography';
-import useCoreContext from '../../../core/Context/useCoreContext';
-import cx from 'classnames';
+import { isFunction } from '../../../utils';
+import { ButtonVariant } from '../Button/types';
 import { PropsWithChildren } from 'preact/compat';
 import { useEffect, useState } from 'preact/hooks';
-import Button from '../Button';
+import useCoreContext from '../../../core/Context/useCoreContext';
+import { mediaQueries, useResponsiveViewport } from '../../external/TransactionsOverview/hooks/useResponsiveViewport';
+import type { FilterBarMobileSwitchProps, FilterBarProps } from './types';
 import './FilterBar.scss';
-import { FilterBarProps } from './types';
 
-export default function FilterBar(props: PropsWithChildren<FilterBarProps>) {
-    const { i18n } = useCoreContext();
-    const isSmViewport = useResponsiveViewport(mediaQueries.down.xs);
-    const [showFilters, setShowFilters] = useState(!isSmViewport);
+const MOBILE_SWITCH_CLASS = 'adyen-pe-filter-bar-mobile-switch';
+
+export const useFilterBarState = () => {
+    const isMobileViewport = useResponsiveViewport(mediaQueries.down.xs);
+    const [showingFilters, setShowingFilters] = useState(!isMobileViewport);
 
     useEffect(() => {
-        setShowFilters(!isSmViewport);
-    }, [isSmViewport]);
+        setShowingFilters(!isMobileViewport);
+    }, [isMobileViewport]);
 
-    return (
-        <>
-            {isSmViewport && (
-                <div className="adyen-pe-filter-bar__header">
-                    <Typography variant={TypographyVariant.SUBTITLE}>{i18n.get(props.titleKey)}</Typography>
-                    <Button
-                        className={'adyen-pe-filter-bar__header-icon'}
-                        variant={ButtonVariant.SECONDARY}
-                        iconButton
-                        onClick={() => setShowFilters(prevState => !prevState)}
-                    >
-                        {showFilters ? <Close /> : <Filter />}
-                    </Button>
-                </div>
+    return { isMobileViewport, showingFilters, setShowingFilters } as const;
+};
+
+export const FilterBarMobileSwitch = ({ isMobileViewport, showingFilters, setShowingFilters }: FilterBarMobileSwitchProps) => {
+    return isMobileViewport ? (
+        <div className={MOBILE_SWITCH_CLASS}>
+            <Button
+                iconButton
+                className={`${MOBILE_SWITCH_CLASS}__button`}
+                disabled={!isFunction(setShowingFilters)}
+                onClick={() => setShowingFilters?.(!showingFilters)}
+                variant={ButtonVariant.SECONDARY}
+            >
+                {showingFilters ? <Close /> : <Filter />}
+            </Button>
+        </div>
+    ) : null;
+};
+
+export const FilterBar = (props: PropsWithChildren<FilterBarProps>) => {
+    const { i18n } = useCoreContext();
+    return props.showingFilters ? (
+        <div
+            aria-label={i18n.get('filterBar')}
+            className={cx('adyen-pe-filter-bar', { 'adyen-pe-filter-bar__content--mobile': props.isMobileViewport })}
+        >
+            {props.children}
+            {props.canResetFilters && !!props.resetFilters && (
+                <Button variant={ButtonVariant.TERTIARY} onClick={props.resetFilters}>
+                    {i18n.get('button.clearAll')}
+                </Button>
             )}
-            {showFilters && (
-                <div
-                    aria-label={i18n.get('filterBar')}
-                    className={cx('adyen-pe-filter-bar', { 'adyen-pe-filter-bar__content--mobile': isSmViewport })}
-                >
-                    {props.children}
-                    {props.canResetFilters && !!props.resetFilters && (
-                        <Button variant={ButtonVariant.TERTIARY} onClick={props.resetFilters}>
-                            {i18n.get('button.clearAll')}
-                        </Button>
-                    )}
-                </div>
-            )}
-        </>
-    );
-}
+        </div>
+    ) : null;
+};
+
+export default FilterBar;

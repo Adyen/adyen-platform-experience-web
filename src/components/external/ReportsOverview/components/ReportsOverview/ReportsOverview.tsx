@@ -1,22 +1,19 @@
 import { useCallback, useEffect, useMemo } from 'preact/hooks';
 import { useAuthContext } from '../../../../../core/Auth';
-import useCoreContext from '../../../../../core/Context/useCoreContext';
 import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatformExperienceError';
 import { IBalanceAccountBase, IReport } from '../../../../../types';
 import { isFunction } from '../../../../../utils';
 import useBalanceAccountSelection from '../../../../hooks/useBalanceAccountSelection';
 import useDefaultOverviewFilterParams from '../../../../hooks/useDefaultOverviewFilterParams';
-import FilterBar from '../../../../internal/FilterBar';
+import FilterBar, { FilterBarMobileSwitch, useFilterBarState } from '../../../../internal/FilterBar';
 import DateFilter from '../../../../internal/FilterBar/filters/DateFilter/DateFilter';
 import BalanceAccountSelector from '../../../../internal/FormFields/Select/BalanceAccountSelector';
 import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '../../../../internal/Pagination/constants';
 import { useCursorPaginatedRecords } from '../../../../internal/Pagination/hooks';
-import { TypographyVariant } from '../../../../internal/Typography/types';
-import Typography from '../../../../internal/Typography/Typography';
+import { DataOverviewHeader } from '../../../../internal/DataOverviewDisplay/DataOverviewHeader';
 import { ExternalUIComponentProps, FilterParam, ReportsOverviewComponentProps } from '../../../../types';
 import { ReportsTable } from '../ReportsTable/ReportsTable';
-import { BASE_CLASS, EARLIEST_PAYOUT_SINCE_DATE, NOTICE_CLASS } from './constants';
-import './ReportsOverview.scss';
+import { BASE_CLASS, EARLIEST_PAYOUT_SINCE_DATE } from './constants';
 
 export const ReportsOverview = ({
     onFiltersChanged,
@@ -29,7 +26,6 @@ export const ReportsOverview = ({
 }: ExternalUIComponentProps<
     ReportsOverviewComponentProps & { balanceAccounts: IBalanceAccountBase[] | undefined; isLoadingBalanceAccount: boolean }
 >) => {
-    const { i18n } = useCoreContext();
     const { getReports: reportsEndpointCall } = useAuthContext().endpoints;
     const { activeBalanceAccount, balanceAccountSelectionOptions, onBalanceAccountSelection } = useBalanceAccountSelection(balanceAccounts);
     const { defaultParams, nowTimestamp, refreshNowTimestamp } = useDefaultOverviewFilterParams('reports', activeBalanceAccount);
@@ -54,6 +50,7 @@ export const ReportsOverview = ({
     );
 
     // FILTERS
+    const filterBarState = useFilterBarState();
     const _onFiltersChanged = useMemo(() => (isFunction(onFiltersChanged) ? onFiltersChanged : void 0), [onFiltersChanged]);
     const preferredLimitOptions = useMemo(() => (allowLimitSelection ? LIMIT_OPTIONS : undefined), [allowLimitSelection]);
 
@@ -75,15 +72,10 @@ export const ReportsOverview = ({
 
     return (
         <div className={BASE_CLASS}>
-            {!hideTitle && (
-                <Typography variant={TypographyVariant.TITLE} medium>
-                    {i18n.get('reportsTitle')}
-                </Typography>
-            )}
-            <div className={NOTICE_CLASS}>
-                <Typography variant={TypographyVariant.BODY}>{i18n.get('reportsNotice')}</Typography>
-            </div>
-            <FilterBar titleKey="reportsTitle">
+            <DataOverviewHeader hideTitle={hideTitle} titleKey="reportsTitle" descriptionKey="reportsNotice">
+                <FilterBarMobileSwitch {...filterBarState} />
+            </DataOverviewHeader>
+            <FilterBar {...filterBarState}>
                 <BalanceAccountSelector
                     activeBalanceAccount={activeBalanceAccount}
                     balanceAccountSelectionOptions={balanceAccountSelectionOptions}
