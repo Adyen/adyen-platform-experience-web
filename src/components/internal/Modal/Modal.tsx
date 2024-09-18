@@ -1,5 +1,5 @@
 import { useClickOutside } from '../../../hooks/element/useClickOutside';
-import { mediaQueries, useResponsiveViewport } from '../../external/TransactionsOverview/hooks/useResponsiveViewport';
+import { mediaQueries, useResponsiveViewport } from '../../hooks/useResponsiveViewport';
 import Button from '../Button';
 import { ButtonVariant } from '../Button/types';
 import Close from '../SVGIcons/Close';

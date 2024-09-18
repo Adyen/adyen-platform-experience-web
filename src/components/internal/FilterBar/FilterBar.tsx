@@ -7,7 +7,7 @@ import { ButtonVariant } from '../Button/types';
 import { PropsWithChildren } from 'preact/compat';
 import { useEffect, useState } from 'preact/hooks';
 import useCoreContext from '../../../core/Context/useCoreContext';
-import { mediaQueries, useResponsiveViewport } from '../../external/TransactionsOverview/hooks/useResponsiveViewport';
+import { mediaQueries, useResponsiveViewport } from '../../hooks/useResponsiveViewport';
 import type { FilterBarMobileSwitchProps, FilterBarProps } from './types';
 import './FilterBar.scss';
 
