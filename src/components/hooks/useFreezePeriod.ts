@@ -15,14 +15,13 @@ export const useFreezePeriod = (timeout = 1000, initialState = false) => {
         setFrozen(true);
     }, [frozen, timeout]);
 
-    useEffect(
-        () => () => {
+    useEffect(() => {
+        return () => {
             cancelAnimationFrame(rafId.current!);
             clearTimeout(timeoutId.current!);
             rafId.current = timeoutId.current = null!;
-        },
-        [timeout]
-    );
+        };
+    }, [timeout]);
 
     return { freeze, frozen } as const;
 };
