@@ -14,6 +14,7 @@ import { DataOverviewHeader } from '../../../../internal/DataOverviewDisplay/Dat
 import { ExternalUIComponentProps, FilterParam, ReportsOverviewComponentProps } from '../../../../types';
 import { ReportsTable } from '../ReportsTable/ReportsTable';
 import { BASE_CLASS, EARLIEST_PAYOUT_SINCE_DATE } from './constants';
+import './ReportsOverview.scss';
 
 export const ReportsOverview = ({
     onFiltersChanged,
