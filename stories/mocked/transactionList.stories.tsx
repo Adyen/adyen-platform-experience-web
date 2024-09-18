@@ -31,15 +31,8 @@ export const CustomColumns: ElementStory<typeof TransactionsOverview> = {
             {
                 key: '_store',
                 flex: 1.5,
-                icon: value => {
-                    const flag = value === 'New York' ? 'us' : value === 'Singapore' ? 'sg' : value === 'Madrid' ? 'es' : 'au';
-                    return {
-                        url: `https://flagicons.lipis.dev/flags/4x3/${flag}.svg`,
-                        alt: flag,
-                    };
-                },
             },
-            { key: '_product', icon: { url: 'https://img.icons8.com/?size=100&id=43184&format=png&color=000000', alt: 'Product' } },
+            { key: '_product' },
             { key: 'paymentMethod' },
             { key: 'transactionType' },
             { key: 'createdAt' },

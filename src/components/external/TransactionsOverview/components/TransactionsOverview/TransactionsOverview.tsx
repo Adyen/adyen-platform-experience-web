@@ -6,7 +6,7 @@ import { TypographyVariant } from '../../../../internal/Typography/types';
 import Typography from '../../../../internal/Typography/Typography';
 import DateFilter from '../../../../internal/FilterBar/filters/DateFilter/DateFilter';
 import FilterBar from '../../../../internal/FilterBar';
-import { TransactionOverviewComponentProps, ExternalUIComponentProps, FilterParam } from '../../../../types';
+import { TransactionOverviewComponentProps, ExternalUIComponentProps, FilterParam, CustomDataRetrieved } from '../../../../types';
 import useModalDetails from '../../../../../hooks/useModalDetails/useModalDetails';
 import { useAuthContext } from '../../../../../core/Auth';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
@@ -152,7 +152,7 @@ export const TransactionsOverview = ({
     }, [nowTimestamp]);
 
     const mergeCustomData = useCallback(
-        ({ records, retrievedData }: { records: ITransaction[]; retrievedData: (ITransaction & Record<string, any>)[] }) =>
+        ({ records, retrievedData }: { records: ITransaction[]; retrievedData: CustomDataRetrieved[] }) =>
             records.map(record => {
                 const retrievedItem = retrievedData.find(item => item.id === record.id);
                 return { ...retrievedItem, ...record };

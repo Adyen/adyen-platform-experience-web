@@ -41,12 +41,12 @@ export const useTableColumns = <T extends string, C extends string>({
                 : customColumns
             : undefined;
 
-        return (parsedCols || tableColumns).map(({ key, flex, icon }) => {
+        return (parsedCols || tableColumns).map(({ key, flex }) => {
             const label = i18n.get(getLabel(key as any));
 
             const config = removeUndefinedProperties<T>(columnConfig?.[key] || EMPTY_OBJECT);
 
-            return { key: key as unknown as T, label, visible: true, flex, icon, ...(config || EMPTY_OBJECT) };
+            return { key: key as unknown as T, label, visible: true, flex, ...(config || EMPTY_OBJECT) };
         });
     }, [columnConfig, customColumns, i18n, tableColumns]);
 

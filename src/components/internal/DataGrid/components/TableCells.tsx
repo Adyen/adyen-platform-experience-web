@@ -2,7 +2,11 @@ import DataGridCell from '../DataGridCell';
 import { DataGridColumn } from '../types';
 import { CustomCell } from '../DataGrid';
 import Icon from './Icon';
-import { isFunction } from '../../../../utils';
+import { CustomDataObject } from '../../../types';
+
+function _itemIsObject(item: any): item is CustomDataObject {
+    return typeof item === 'object' && 'value' in item;
+}
 
 export const TableCells = <
     Items extends Array<any>,
@@ -21,7 +25,7 @@ export const TableCells = <
 }) => {
     return (
         <>
-            {columns.map(({ key, position, icon }) => {
+            {columns.map(({ key, position }) => {
                 if (customCells?.[key])
                     return (
                         <DataGridCell aria-labelledby={String(key)} key={key} column={key} position={position}>
@@ -38,12 +42,13 @@ export const TableCells = <
                             </div>
                         </DataGridCell>
                     );
-                const iconObject = isFunction(icon) ? icon(item[key]) : icon;
+                const value = _itemIsObject(item[key]) ? item[key]?.value : item[key];
+                const icon = _itemIsObject(item[key]) ? item[key]?.icon : undefined;
                 return (
                     <DataGridCell aria-labelledby={String(key)} key={key} column={key} position={position}>
                         <div className="adyen-pe-data-grid__cell-value">
-                            {iconObject?.url && <Icon {...iconObject} />}
-                            <div>{item[key]}</div>
+                            {icon?.url && <Icon {...icon} />}
+                            <div>{value}</div>
                         </div>
                     </DataGridCell>
                 );
