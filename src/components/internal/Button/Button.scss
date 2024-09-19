@@ -10,6 +10,7 @@
     box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0);
     cursor: pointer;
     display: inline-flex;
+    font-family: inherit;
     height: fit-content;
     justify-content: center;
     padding: style.token(spacer-040) style.token(spacer-060);
@@ -138,7 +139,9 @@
 
     &__icon-left,
     &__icon-right {
+        align-items: center;
         display: inline-flex;
+        justify-content: center;
     }
 
     &:disabled {

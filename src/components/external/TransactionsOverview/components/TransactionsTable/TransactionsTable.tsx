@@ -1,20 +1,22 @@
-import { DATE_FORMAT_MOBILE_TRANSACTIONS, DATE_FORMAT_TRANSACTIONS } from '../../../../internal/DataOverviewDisplay/constants';
+import { FC } from 'preact/compat';
+import { useCallback, useMemo, useState } from 'preact/hooks';
+import { DATE_FORMAT_TRANSACTIONS_MOBILE, DATE_FORMAT_TRANSACTIONS } from '../../../../internal/DataOverviewDisplay/constants';
 import Category from '../Category/Category';
 import DataOverviewError from '../../../../internal/DataOverviewError/DataOverviewError';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
-import useTimezoneAwareDateFormatting from '../../../../hooks/useTimezoneAwareDateFormatting';
-import { useCallback, useMemo, useState } from 'preact/hooks';
-import DataGrid from '../../../../internal/DataGrid';
-import Pagination from '../../../../internal/Pagination';
-import { CellTextPosition } from '../../../../internal/DataGrid/types';
-import { TranslationKey } from '../../../../../core/Localization/types';
 import { getCurrencyCode } from '../../../../../core/Localization/amount/amount-util';
-import { AMOUNT_CLASS, BASE_CLASS, DATE_AND_PAYMENT_METHOD_CLASS } from './constants';
+import { TranslationKey } from '../../../../../translations';
+import useTimezoneAwareDateFormatting from '../../../../hooks/useTimezoneAwareDateFormatting';
+import DataGrid from '../../../../internal/DataGrid';
+import { CellTextPosition } from '../../../../internal/DataGrid/types';
+import Pagination from '../../../../internal/Pagination';
+import { TypographyVariant } from '../../../../internal/Typography/types';
+import Typography from '../../../../internal/Typography/Typography';
+import { mediaQueries, useResponsiveViewport } from '../../../../hooks/useResponsiveViewport';
+import { AMOUNT_CLASS, BASE_CLASS, DATE_AND_PAYMENT_METHOD_CLASS, DATE_METHOD_CLASS } from './constants';
 import './TransactionTable.scss';
-import { mediaQueries, useResponsiveViewport } from '../../hooks/useResponsiveViewport';
-import { FC } from 'preact/compat';
-import { TransactionTableProps } from './types';
 import PaymentMethodCell from './PaymentMethodCell';
+import { TransactionTableProps } from './types';
 import { useTableColumns } from '../../../../hooks/useTableColumns';
 
 // Remove status column temporarily
@@ -105,28 +107,32 @@ export const TransactionsTable: FC<TransactionTableProps> = ({
                         const tooltipKey = `tooltip.${item.category}`;
                         return item.category ? (
                             i18n.has(tooltipKey) ? (
-                                <Category value={item.category} isContainerHovered={rowIndex === hoveredRow} />
+                                <Category isContainerHovered={rowIndex === hoveredRow} value={item.category} />
                             ) : (
-                                item.category
+                                <Typography variant={TypographyVariant.BODY}>{item.category}</Typography>
                             )
                         ) : null;
                     },
                     amount: ({ value }) => {
                         const amount = i18n.amount(value.value, value.currency, { hideCurrency: !hasMultipleCurrencies });
-                        return <span className={AMOUNT_CLASS}>{amount}</span>;
+                        return (
+                            <Typography variant={TypographyVariant.BODY} className={AMOUNT_CLASS}>
+                                {amount}
+                            </Typography>
+                        );
                     },
                     createdAt: ({ item, value }) => {
                         if (isXsAndDownViewport) {
                             return (
                                 <div className={DATE_AND_PAYMENT_METHOD_CLASS}>
                                     <PaymentMethodCell paymentMethod={item.paymentMethod} bankAccount={item.bankAccount} />
-                                    <span className={DATE_AND_PAYMENT_METHOD_CLASS}>
-                                        {dateFormat(item.createdAt, DATE_FORMAT_MOBILE_TRANSACTIONS)}
-                                    </span>
+                                    <Typography variant={TypographyVariant.BODY} className={DATE_METHOD_CLASS}>
+                                        {dateFormat(item.createdAt, DATE_FORMAT_TRANSACTIONS_MOBILE)}
+                                    </Typography>
                                 </div>
                             );
                         }
-                        return <span>{dateFormat(value, DATE_FORMAT_TRANSACTIONS)}</span>;
+                        return <Typography variant={TypographyVariant.BODY}>{dateFormat(value, DATE_FORMAT_TRANSACTIONS)}</Typography>;
                     },
 
                     paymentMethod: ({ item }) => <PaymentMethodCell paymentMethod={item.paymentMethod} bankAccount={item.bankAccount} />,

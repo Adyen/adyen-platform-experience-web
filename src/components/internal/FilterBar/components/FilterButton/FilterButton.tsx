@@ -20,7 +20,7 @@ function FilterButton(
 
     return (
         <button className={classes} ref={ref} onClick={click} {...restAttributes}>
-            <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY} stronger={true}>
+            <Typography el={TypographyElement.DIV} variant={TypographyVariant.BODY} stronger={true}>
                 {children}
             </Typography>
         </button>

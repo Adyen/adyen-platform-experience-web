@@ -44,6 +44,21 @@ test.describe('Transaction List with custom columns', () => {
         const transactionList = transactionListPage;
         await expect(transactionList.getHeader('Store')).toBeAttached();
         await expect(transactionList.getHeader('Product')).toBeAttached();
+        await expect(transactionList.getHeader('Reference')).toBeAttached();
+    });
+
+    test('Extra columns values should render with string or the format {value: string}', async ({ transactionListPage, page }) => {
+        await goToPage({ page, id: `${COMPONENT_PREFIX}--custom-columns` });
+        const transactionList = transactionListPage;
+
+        // _store: { value: string; icon: { url: string } }
+        const storeFirstRow = transactionList.getCell('_store', 0);
+        await expect(storeFirstRow).toHaveText('Sydney');
+        await expect(storeFirstRow.getByRole('img')).toBeAttached();
+
+        // _reference: string
+        const referenceFirstRow = transactionList.getCell('_reference', 0);
+        await expect(referenceFirstRow).toHaveText('8W54BM75W7DYCIVK');
     });
 
     test('Columns should be reordered', async ({ transactionListPage, page }) => {
