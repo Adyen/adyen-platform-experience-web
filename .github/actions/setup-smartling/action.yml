@@ -2,6 +2,9 @@ name: Setup Smartling
 description: Setup Smartling for translation workflows
 
 inputs:
+  npm_token:
+    description: 'SMARTLING_BOT_NPM_TOKEN'
+    required: true
   project_id:
     description: 'SMARTLING_PROJECT_ID'
     required: true
@@ -27,3 +30,4 @@ runs:
         SMARTLING_USER_IDENTIFIER=$SMARTLING_USER_IDENTIFIER
         SMARTLING_USER_SECRET=$SMARTLING_USER_SECRET
         EOF
+        npm config set //registry.npmjs.org/:_authToken ${{ inputs.npm_token }}

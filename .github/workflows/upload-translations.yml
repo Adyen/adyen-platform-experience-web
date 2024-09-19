@@ -10,16 +10,6 @@ on:
         default: FALSE
 
 jobs:
-  npm-token:
-    name: Set NPM token
-    runs-on: ubuntu-latest
-    environment: publish-package # provides NPM credentials
-    steps:
-      - name: Set token
-        run: npm config set //registry.npmjs.org/:_authToken ${{ env.npm_token }}
-        env:
-          npm_token: ${{ secrets.NPM_TOKEN }}
-
   upload-files:
     name: Upload translation source files
     runs-on: ubuntu-latest
@@ -35,6 +25,7 @@ jobs:
       - name: Run setup steps for translation tasks
         uses: ./.github/actions/setup-smartling
         with:
+          npm_token: ${{ secrets.NPM_SMARTLING_BOT_READ_TOKEN }}
           project_id: ${{ secrets.SMARTLING_PROJECT_ID }}
           user_identifier: ${{ secrets.SMARTLING_USER_IDENTIFIER }}
           user_secret: ${{ secrets.SMARTLING_USER_SECRET }}
