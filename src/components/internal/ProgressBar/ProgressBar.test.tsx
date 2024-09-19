@@ -74,4 +74,14 @@ describe('ProgressBar', () => {
         const fillElement = within(screen.getByRole('progressbar')).getByTitle(labels.current);
         expect(fillElement).toHaveStyle(`width: 100%`);
     });
+
+    test('should stay at 0% when value is negative', () => {
+        const value = -200;
+        const max = 100;
+        const labels = { current: 'Negative Value' };
+        render(<ProgressBar value={value} max={max} labels={labels} />);
+
+        const fillElement = within(screen.getByRole('progressbar')).getByTitle(labels.current);
+        expect(fillElement).toHaveStyle(`width: 0%`);
+    });
 });
