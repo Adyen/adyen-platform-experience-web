@@ -1,15 +1,7 @@
 name: Download translations
 
 on:
-  pull_request:
-    types: [synchronize]
   workflow_dispatch:
-    inputs:
-      open_pr:
-        description: 'TRUE to open a new PR with the changes'
-        required: false
-        type: boolean
-        default: FALSE
 
 jobs:
   download-files:
@@ -31,24 +23,36 @@ jobs:
           user_identifier: ${{ secrets.SMARTLING_USER_IDENTIFIER }}
           user_secret: ${{ secrets.SMARTLING_USER_SECRET }}
 
-      - name: Download files
-        run: npx -y @adyen/smartling-bot@0.6.x download-files
+      - name: Download and commit files
+        run: |
+          # Checkout the default branch
+          gh pr checkout $BASE_BRANCH -b $NEW_BRANCH
 
-#      - name: Commit files
-#        if: ${{ inputs.open_pr }}
-#        shell: sh
-#        run: |
-#          for source_path in $(jq -r '.translationSourcePaths[]' .i18nrc); do
-#            root_path=$(dirname $source_path)
-#            for locale in $(jq -r '.locales[]' .i18nrc); do
-#              git add $(realpath "./$root_path/$locale.json")
-#            done
-#          done
-#          git commit -m 'chore(translations): updated translations'
+          # Download files from Smartling
+          npx -y @adyen/smartling-bot@0.6.x download-files
 
-  create-pr:
-    needs: [download-files]
-    if: ${{ inputs.open_pr }}
-    runs-on: ubuntu-latest
-    steps:
-      - run: echo "DONE!"
+          # Stage downloaded files
+          for source_path in $(jq -r '.translationSourcePaths[]' .i18nrc); do
+            root_path=$(dirname $source_path)
+            for locale in $(jq -r '.locales[]' .i18nrc); do
+              echo $(realpath "./$root_path/$locale.json")
+              git add $(realpath "./$root_path/$locale.json")
+            done
+          done
+
+          if git diff-index --cached --quiet HEAD; then
+            # there are no changes to commit
+            echo "No translations updates"
+          else
+            # Create a commit for staged files and push
+            git commit -m $COMMIT_TITLE
+            git push
+
+            # Create a PR on the default branch
+            gh pr create --base $BASE_BRANCH --head $NEW_BRANCH --fill
+          fi
+        env:
+          BASE_BRANCH: "develop"
+          NEW_BRANCH: "bot/translations"
+          COMMIT_TITLE: "Update translations"
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
