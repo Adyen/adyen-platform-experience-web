@@ -4,7 +4,7 @@ import useBalanceAccountSelection from '../../../../hooks/useBalanceAccountSelec
 import BalanceAccountSelector from '../../../../internal/FormFields/Select/BalanceAccountSelector';
 import DateFilter from '../../../../internal/FilterBar/filters/DateFilter/DateFilter';
 import FilterBar, { FilterBarMobileSwitch, useFilterBarState } from '../../../../internal/FilterBar';
-import { TransactionOverviewComponentProps, ExternalUIComponentProps, FilterParam } from '../../../../types';
+import { TransactionOverviewComponentProps, ExternalUIComponentProps, FilterParam, CustomDataRetrieved } from '../../../../types';
 import useModalDetails from '../../../../../hooks/useModalDetails/useModalDetails';
 import { useAuthContext } from '../../../../../core/Auth';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
@@ -152,7 +152,7 @@ export const TransactionsOverview = ({
     }, [nowTimestamp]);
 
     const mergeCustomData = useCallback(
-        ({ records, retrievedData }: { records: ITransaction[]; retrievedData: (ITransaction & Record<string, any>)[] }) =>
+        ({ records, retrievedData }: { records: ITransaction[]; retrievedData: CustomDataRetrieved[] }) =>
             records.map(record => {
                 const retrievedItem = retrievedData.find(item => item.id === record.id);
                 return { ...retrievedItem, ...record };
