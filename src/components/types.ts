@@ -1,7 +1,7 @@
 import UIElement from './external/UIElement/UIElement';
 import { Core, onErrorHandler } from '../core';
 import { TransactionsTableFields } from './external/TransactionsOverview/components/TransactionsTable/types';
-import type { IPayout, ITransaction } from '../types';
+import type { ITransaction } from '../types';
 
 export const enum InteractionKeyCode {
     ARROW_DOWN = 'ArrowDown',
@@ -100,6 +100,8 @@ interface _DataOverviewComponentProps {
     preferredLimit?: 10 | 20;
     showDetails?: boolean;
 }
+
+export type ReportsOverviewComponentProps = Omit<_DataOverviewComponentProps, 'showDetails'>;
 
 interface _CustomizableDataOverview<Columns extends string, DataRetrieved> {
     columns?: CustomColumn<Columns>[] | Columns[];

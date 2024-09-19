@@ -1,6 +1,6 @@
+import { getErrorType, getRequestObject, getResponseContentType, getResponseDownloadFilename, handleFetchError, isAdyenErrorResponse } from './utils';
 import { API_VERSION } from './constants';
 import { normalizeLoadingContext, normalizeUrl } from '../utils';
-import { getErrorType, getRequestObject, handleFetchError, isAdyenErrorResponse } from './utils';
 import { HttpOptions } from './types';
 import { onErrorHandler } from '../types';
 
@@ -41,7 +41,7 @@ export async function http<T>(options: HttpOptions, data?: any): Promise<T> {
 
             if (res.ok) {
                 try {
-                    const contentType = res.headers.get('Content-Type')?.split(';', 1)[0];
+                    const contentType = getResponseContentType(res);
 
                     //TODO: when backend is ready double check this logic
                     switch (contentType) {
@@ -51,7 +51,9 @@ export async function http<T>(options: HttpOptions, data?: any): Promise<T> {
                             //   (2) if response body content is not valid JSON
                             return await res.json(); // (!!)
                         default:
-                            return await res.blob();
+                            const blob = await res.blob();
+                            const filename = getResponseDownloadFilename(res);
+                            return { blob, filename } as const;
                     }
                 } catch (ex) {
                     // If it does throw an exception, the exception will be propagated to the caller (unhandled).

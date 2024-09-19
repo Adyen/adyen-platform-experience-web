@@ -1,6 +1,6 @@
 import { memo } from 'preact/compat';
 import Select from '../../../../internal/FormFields/Select';
-import { mediaQueries, useResponsiveViewport } from '../../hooks/useResponsiveViewport';
+import { mediaQueries, useResponsiveViewport } from '../../../../hooks/useResponsiveViewport';
 import type { SelectProps } from '../../../../internal/FormFields/Select/types';
 import useMultiSelectionFilter from './useMultiSelectionFilter';
 
