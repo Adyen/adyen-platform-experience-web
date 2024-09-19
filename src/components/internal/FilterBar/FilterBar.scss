@@ -36,14 +36,14 @@
         }
     }
 
-    &__header {
+    &-mobile-switch {
         align-items: center;
         display: flex;
-        flex-direction: row;
         justify-content: space-between;
 
-        &-icon {
-            align-self: flex-end;
+        &__button {
+            padding: 0;
+            width: calc(#{style.token(spacer-060)} * 3);
         }
     }
 }

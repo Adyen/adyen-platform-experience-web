@@ -31,7 +31,7 @@
         flex-direction: column;
         gap: style.token(spacer-040);
 
-        span {
+        &--date {
             color: style.token(color-label-secondary);
         }
     }

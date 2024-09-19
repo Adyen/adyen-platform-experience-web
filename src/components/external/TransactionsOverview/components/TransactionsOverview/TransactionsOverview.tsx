@@ -2,16 +2,15 @@ import { DataDetailsModal } from '../../../../internal/DataOverviewDisplay/DataD
 import { TransactionsTable } from '../TransactionsTable/TransactionsTable';
 import useBalanceAccountSelection from '../../../../hooks/useBalanceAccountSelection';
 import BalanceAccountSelector from '../../../../internal/FormFields/Select/BalanceAccountSelector';
-import { TypographyVariant } from '../../../../internal/Typography/types';
-import Typography from '../../../../internal/Typography/Typography';
 import DateFilter from '../../../../internal/FilterBar/filters/DateFilter/DateFilter';
-import FilterBar from '../../../../internal/FilterBar';
+import FilterBar, { FilterBarMobileSwitch, useFilterBarState } from '../../../../internal/FilterBar';
 import { TransactionOverviewComponentProps, ExternalUIComponentProps, FilterParam, CustomDataRetrieved } from '../../../../types';
 import useModalDetails from '../../../../../hooks/useModalDetails/useModalDetails';
 import { useAuthContext } from '../../../../../core/Auth';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
 import { useCursorPaginatedRecords } from '../../../../internal/Pagination/hooks';
+import { DataOverviewHeader } from '../../../../internal/DataOverviewDisplay/DataOverviewHeader';
 import { IBalanceAccountBase, ITransaction } from '../../../../../types';
 import { isFunction, isUndefined, listFrom } from '../../../../../utils';
 import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '../../../../internal/Pagination/constants';
@@ -23,9 +22,9 @@ import useTransactionsOverviewMultiSelectionFilters from '../../hooks/useTransac
 import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatformExperienceError';
 import { AmountFilter } from '../../../../internal/FilterBar/filters/AmountFilter/AmountFilter';
 import { BASE_CLASS, BASE_CLASS_DETAILS, MAX_TRANSACTIONS_DATE_RANGE_MONTHS, SUMMARY_CLASS, SUMMARY_ITEM_CLASS } from './constants';
-import { mediaQueries, useResponsiveViewport } from '../../hooks/useResponsiveViewport';
-import './TransactionsOverview.scss';
+import { mediaQueries, useResponsiveViewport } from '../../../../hooks/useResponsiveViewport';
 import { useCustomColumnsData } from '../../../../hooks/useCustomColumnsData';
+import './TransactionsOverview.scss';
 
 export const TransactionsOverview = ({
     onFiltersChanged,
@@ -72,6 +71,7 @@ export const TransactionsOverview = ({
     );
 
     // FILTERS
+    const filterBarState = useFilterBarState();
     const _onFiltersChanged = useMemo(() => (isFunction(onFiltersChanged) ? onFiltersChanged : void 0), [onFiltersChanged]);
     const preferredLimitOptions = useMemo(() => (allowLimitSelection ? LIMIT_OPTIONS : undefined), [allowLimitSelection]);
 
@@ -164,12 +164,10 @@ export const TransactionsOverview = ({
 
     return (
         <div className={BASE_CLASS}>
-            {!hideTitle && (
-                <Typography variant={TypographyVariant.TITLE} medium>
-                    {i18n.get('transactionsOverviewTitle')}
-                </Typography>
-            )}
-            <FilterBar>
+            <DataOverviewHeader hideTitle={hideTitle} titleKey="transactionsOverviewTitle">
+                <FilterBarMobileSwitch {...filterBarState} />
+            </DataOverviewHeader>
+            <FilterBar {...filterBarState}>
                 <BalanceAccountSelector
                     activeBalanceAccount={activeBalanceAccount}
                     balanceAccountSelectionOptions={balanceAccountSelectionOptions}

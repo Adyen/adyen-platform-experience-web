@@ -1,0 +1,85 @@
+@use '../../../style';
+
+.adyen-pe-alert {
+    $adyen-pe-alert: &;
+    $adyen-pe-types-list: success, highlight, warning, critical;
+
+    box-sizing: border-box;
+    container-type: inline-size;
+    display: flex;
+    max-width: 700px;
+    width: 100%;
+
+    &__inner-container {
+        align-items: flex-start;
+        border-radius: style.token(border-radius-m);
+        display: flex;
+        gap: style.token(spacer-070);
+        padding: style.token(spacer-070);
+        width: 100%;
+
+        @container (min-width: 460px) {
+            gap: style.token(spacer-080);
+            padding: style.token(spacer-080);
+        }
+    }
+
+    &__icon {
+        align-items: center;
+        display: flex;
+        height: style.token(spacer-090);
+    }
+
+    &__content {
+        max-width: 500px;
+        width: 100%;
+    }
+
+    &__title {
+        flex-grow: 1;
+    }
+
+    &__description:not(:first-child) {
+        margin-top: style.token(spacer-020);
+    }
+
+    &__actions {
+        display: flex;
+        gap: style.token(spacer-070);
+        margin-top: style.token(spacer-050);
+    }
+
+    &__close-button {
+        --offset-margin: calc(#{style.token(spacer-080)} - #{style.token(spacer-110)});
+        --offset-position: calc(var(--offset-margin) * -1 / 2);
+        cursor: pointer;
+        display: flex;
+        flex-grow: 1;
+        justify-content: flex-end;
+        margin-right: var(--offset-margin);
+        margin-top: var(--offset-margin);
+        position: relative;
+        right: var(--offset-position);
+        top: var(--offset-position);
+
+        .adyen-pe-button--tertiary:hover {
+            background-color: unset !important;
+        }
+    }
+
+    @each $type in $adyen-pe-types-list {
+        &--#{$type} {
+            background-color: style.token(color-background-#{$type}-weak);
+
+            #{$adyen-pe-alert}__icon {
+                color: style.token(color-background-#{$type}-strong);
+            }
+
+            #{$adyen-pe-alert}__title,
+            #{$adyen-pe-alert}__description,
+            #{$adyen-pe-alert}__close-button {
+                color: style.token(color-label-primary);
+            }
+        }
+    }
+}
