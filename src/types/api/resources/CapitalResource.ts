@@ -1,6 +1,6 @@
 export interface paths {
     '/v1/capital/grantOffers/dynamic/configuration': {
-        get: operations['getConfiguration'];
+        get: operations['getCapitalDynamicConfiguration'];
     };
     '/v1/capital/grantOffers/dynamic': {
         get: operations['dynamicGrantOffer'];
@@ -20,7 +20,7 @@ export interface operations {
      * Get reports
      * @description Given filters, provides list of reports for a balance account
      */
-    getConfiguration: {
+    getCapitalDynamicConfiguration: {
         responses: {
             /** @description OK - the request has succeeded. */
             200: {

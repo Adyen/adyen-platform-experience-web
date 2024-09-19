@@ -18,10 +18,33 @@ export const DEFAULT_GRANTS = [
             currency: 'USD',
         },
         repayedAmount: {
-            value: 150000,
+            value: 1200000,
             currency: 'USD',
         },
-        repaymentPeriodLeft: 118,
+        repayedGrantAmount: {
+            value: 1187000,
+            currency: 'USD',
+        },
+        repayedFeesAmount: {
+            value: 13000,
+            currency: 'USD',
+        },
+        feesAmount: {
+            value: 22000,
+            currency: 'USD',
+        },
+        repaymentAmount: {
+            value: 2022000,
+            currency: 'USD',
+        },
+        thresholdPaymentAmount: {
+            value: 80000,
+            currency: 'USD',
+        },
+        repaymentRate: 11,
+        expectedRepaymentPeriodDays: 365,
+        maximumRepaymentPeriodDays: 540,
+        repaymentPeriodLeft: 135,
         status: 'Pending',
     },
 ] as const;
