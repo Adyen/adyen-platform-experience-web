@@ -1,3 +1,5 @@
+//TODO: Generate this file once the openapi specs are available
+
 export interface paths {
     '/v1/capital/grantOffers/dynamic/configuration': {
         get: operations['getCapitalDynamicConfiguration'];
@@ -16,10 +18,6 @@ export interface paths {
     };
 }
 export interface operations {
-    /**
-     * Get reports
-     * @description Given filters, provides list of reports for a balance account
-     */
     getCapitalDynamicConfiguration: {
         responses: {
             /** @description OK - the request has succeeded. */
@@ -85,7 +83,6 @@ export interface operations {
 
 export interface components {
     schemas: {
-        /** @description Reports made within the filters provided for given balanceAccountId */
         grantOfferDTO: {
             id: string;
             grantAmount: {

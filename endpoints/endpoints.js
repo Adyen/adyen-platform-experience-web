@@ -16,10 +16,10 @@ export const endpoints = mode => {
         reports: `${baseUrl}/reports`,
         downloadReport: `${baseUrl}/reports/download`,
         capital: {
-            dynamicConfig: `${baseUrl}/capital/grantOffers/dynamic/configuration`,
+            dynamicOfferConfig: `${baseUrl}/capital/grantOffers/dynamic/configuration`,
             dynamicOffer: `${baseUrl}/capital/grantOffers/dynamic`,
-            grantReview: `${baseUrl}/capital/grantOffers/review`,
-            signOffer: `${baseUrl}/capital/grantOffers/dynamic/sign/${matchVariable}`,
+            offerReview: `${baseUrl}/capital/grantOffers/review`,
+            offerSign: `${baseUrl}/capital/grantOffers/dynamic/sign/${matchVariable}`,
             grants: `${baseUrl}/capital/grants`,
         },
     };

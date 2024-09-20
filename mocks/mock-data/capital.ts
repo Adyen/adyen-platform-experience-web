@@ -1,4 +1,4 @@
-import { IDynamicOfferConfig, IGrantOffer } from '../../src';
+import { IDynamicOfferConfig, IGrant } from '../../src';
 
 export const DYNAMIC_CAPITAL_OFFER = {
     minAmount: {
@@ -50,4 +50,4 @@ export const DEFAULT_GRANTS = [
         repaymentPeriodLeft: 135,
         status: 'Pending',
     },
-] satisfies IGrantOffer[];
+] satisfies IGrant[];
