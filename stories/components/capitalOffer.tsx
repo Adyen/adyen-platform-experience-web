@@ -8,6 +8,11 @@ export const capitalOfferMeta: Meta<ElementProps<typeof CapitalOffer>> = {
         dynamicOffersConfig: { control: 'object' },
         hideTitle: { type: 'boolean' },
         onOfferSigned: enabledDisabledCallbackRadioControls('onOfferSigned'),
+        balanceAccountId: {
+            table: {
+                disable: true,
+            },
+        },
     },
     args: {
         dynamicOffersConfig: undefined,
