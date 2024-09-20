@@ -1,0 +1,8 @@
+@use '../../../style';
+
+.adyen-pe-info-box {
+    background-color: style.token(color-background-selected);
+    border-radius: style.token(border-radius-m);
+    display: inline-block;
+    padding: style.token(spacer-080);
+}
