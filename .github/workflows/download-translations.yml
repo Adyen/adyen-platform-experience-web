@@ -36,7 +36,6 @@ jobs:
           for source_path in $(jq -r '.translationSourcePaths[]' .i18nrc); do
             root_path=$(dirname $source_path)
             for locale in $(jq -r '.locales[]' .i18nrc); do
-              echo $(realpath "./$root_path/$locale.json")
               git add $(realpath "./$root_path/$locale.json")
             done
           done
@@ -44,7 +43,6 @@ jobs:
           if git diff-index --cached --quiet HEAD; then
             # there are no changes to commit
             echo "No translations updates"
-            git branch -D ${{ env.BRANCH_NAME }}
           else
             # Create a commit for staged files and push
             git commit -m ${{ env.COMMIT_TITLE }}
