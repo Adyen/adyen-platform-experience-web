@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'preact/hooks';
+import { OnDataRetrievedCallback } from '../types';
 
 export const useCustomColumnsData = <T>({
     records,
@@ -6,8 +7,8 @@ export const useCustomColumnsData = <T>({
     mergeCustomData,
 }: {
     records: T[];
-    onDataRetrieved: ((arg: T[]) => Promise<(T & Record<string, any>)[]>) | undefined;
-    mergeCustomData: (args: { retrievedData: (T & Record<string, any>)[]; records: T[] }) => (T & Record<string, any>)[];
+    onDataRetrieved: OnDataRetrievedCallback<T> | undefined;
+    mergeCustomData: (args: { retrievedData: Awaited<ReturnType<OnDataRetrievedCallback<T>>>; records: T[] }) => (T & Record<string, any>)[];
 }) => {
     const [customRecords, setCustomRecords] = useState<T[] | (T & Record<string, any>)[]>(records);
     const [loadingCustomRecords, setLoadingCustomRecords] = useState(false);
@@ -16,6 +17,7 @@ export const useCustomColumnsData = <T>({
         (data: T[]) => async () => {
             try {
                 const retrievedData = onDataRetrieved ? await onDataRetrieved(data) : [];
+
                 setCustomRecords(mergeCustomData({ records, retrievedData }));
             } catch (error) {
                 setCustomRecords(records);
@@ -34,5 +36,5 @@ export const useCustomColumnsData = <T>({
         }
     }, [onDataRetrieved, mergedRecords, records]);
 
-    return { customRecords: customRecords as T[], loadingCustomRecords } as const;
+    return { customRecords: customRecords, loadingCustomRecords } as const;
 };

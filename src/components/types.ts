@@ -86,7 +86,6 @@ export type DataGridIcon = { url: string; alt?: string } | ((value: unknown) => 
 export type DataGridCustomColumnConfig<k> = {
     key: k;
     flex?: number;
-    icon?: DataGridIcon;
 };
 
 export type CustomColumn<T extends string> = {
@@ -103,9 +102,15 @@ interface _DataOverviewComponentProps {
 
 export type ReportsOverviewComponentProps = Omit<_DataOverviewComponentProps, 'showDetails'>;
 
+export type CustomDataObject = { value: any; icon?: { url: string; alt?: string } };
+
+export type CustomDataRetrieved = { [k: string]: CustomDataObject | (string | number) };
+
+export type OnDataRetrievedCallback<DataRetrieved> = (data: DataRetrieved[]) => Promise<CustomDataRetrieved[]>;
+
 interface _CustomizableDataOverview<Columns extends string, DataRetrieved> {
     columns?: CustomColumn<Columns>[] | Columns[];
-    onDataRetrieved?: (data: DataRetrieved[]) => Promise<(DataRetrieved & Record<any, any>)[]>;
+    onDataRetrieved?: OnDataRetrievedCallback<DataRetrieved>;
 }
 
 export interface TransactionOverviewComponentProps
