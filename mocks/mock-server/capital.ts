@@ -1,4 +1,4 @@
-import { DYNAMIC_CAPITAL_OFFER, DEFAULT_GRANTS } from '../mock-data';
+import { DYNAMIC_CAPITAL_OFFER, SINGLE_GRANT } from '../mock-data';
 import { endpoints } from '../../endpoints/endpoints';
 import { delay } from './utils';
 import { http, HttpResponse } from 'msw';
@@ -21,7 +21,7 @@ export const capitalMock = [
         }
         await delay(500);
         return HttpResponse.json({
-            data: DEFAULT_GRANTS,
+            data: SINGLE_GRANT,
         });
     }),
 ];
