@@ -13,6 +13,8 @@
     "calendar.nextMonth": "Next month",
     "calendar.previousMonth": "Previous month",
     "calendar.timezone": "Timezone is set on: GMT%{offset} (%{time})",
+    "capital.grantOffer": "Grant offer",
+    "capital.grantOfferSummary": "Grant offer summary",
     "capture": "Captured",
     "category": "Category",
     "chargeback": "Chargebacks",
