@@ -7,7 +7,7 @@ const mockEndpoints = endpoints('mock').capital;
 const networkError = false;
 
 export const capitalMock = [
-    http.get(mockEndpoints.dynamicConfig, async () => {
+    http.get(mockEndpoints.dynamicOfferConfig, async () => {
         if (networkError) {
             return HttpResponse.error();
         }
