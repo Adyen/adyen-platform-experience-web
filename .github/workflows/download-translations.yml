@@ -6,6 +6,7 @@ on:
 jobs:
   download-files:
     name: Download completed translation files
+    if: ${{ github.event.ref == 'develop' }}
     runs-on: ubuntu-latest
     environment: smartling-translations # provides Smartling credentials
     steps:
@@ -26,7 +27,7 @@ jobs:
       - name: Download and commit files
         run: |
           # Checkout the default branch
-          gh pr checkout $BASE_BRANCH -b $NEW_BRANCH
+          gh pr checkout ${{ github.event.ref }} -b ${{ env.BRANCH_NAME }}
 
           # Download files from Smartling
           npx -y @adyen/smartling-bot@0.6.x download-files
@@ -45,14 +46,13 @@ jobs:
             echo "No translations updates"
           else
             # Create a commit for staged files and push
-            git commit -m $COMMIT_TITLE
+            git commit -m ${{ env.COMMIT_TITLE }}
             git push
 
             # Create a PR on the default branch
-            gh pr create --base $BASE_BRANCH --head $NEW_BRANCH --fill
+            gh pr create --base ${{ github.event.ref }} --head ${{ env.BRANCH_NAME }} --fill
           fi
         env:
-          BASE_BRANCH: "develop"
-          NEW_BRANCH: "bot/translations"
+          BRANCH_NAME: "bot/translations"
           COMMIT_TITLE: "Update translations"
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
