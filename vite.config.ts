@@ -111,7 +111,7 @@ export default defineConfig(async ({ mode }) => {
             coverage: {
                 provider: 'c8',
                 reporter: 'lcov',
-                reportsDirectory: resolve(__dirname, '../../coverage'),
+                reportsDirectory: resolve(__dirname, 'coverage'),
             },
         },
         server: {
