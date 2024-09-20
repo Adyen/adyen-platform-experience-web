@@ -1,3 +1,5 @@
+import { IDynamicOfferConfig, IGrantOffer } from '../../src';
+
 export const DYNAMIC_CAPITAL_OFFER = {
     minAmount: {
         value: 100000,
@@ -8,7 +10,7 @@ export const DYNAMIC_CAPITAL_OFFER = {
         currency: 'USD',
     },
     step: 10000,
-} as const;
+} satisfies IDynamicOfferConfig;
 
 export const DEFAULT_GRANTS = [
     {
@@ -41,10 +43,11 @@ export const DEFAULT_GRANTS = [
             value: 80000,
             currency: 'USD',
         },
+
         repaymentRate: 11,
         expectedRepaymentPeriodDays: 365,
         maximumRepaymentPeriodDays: 540,
         repaymentPeriodLeft: 135,
         status: 'Pending',
     },
-] as const;
+] satisfies IGrantOffer[];

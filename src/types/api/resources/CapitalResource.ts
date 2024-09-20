@@ -88,43 +88,11 @@ export interface components {
         /** @description Reports made within the filters provided for given balanceAccountId */
         grantOfferDTO: {
             id: string;
-            amount: {
-                value: number;
-                currency: string;
-            };
-            fees: {
-                value: number;
-                currency: string;
-            };
-            totalAmount: {
-                value: number;
-                currency: string;
-            };
-            thresholdAmount: {
-                value: number;
-                currency: string;
-            };
-            repaymentRate: number;
-            expectedRepaymentPeriodDays: number;
-            maximumRepaymentPeriodDays: number;
-        };
-
-        configuration: {
-            minAmount: {
-                value: number;
-                currency: string;
-            };
-            maxAmount: {
-                value: number;
-                currency: string;
-            };
-            step: number;
-        };
-        getGrantOfferReview: components['schemas']['grantOfferDTO'];
-        dynamicGrantOffer: components['schemas']['grantOfferDTO'];
-        signOffer: {
-            id: string;
             grantAmount: {
+                value: number;
+                currency: string;
+            };
+            feesAmount: {
                 value: number;
                 currency: string;
             };
@@ -140,10 +108,6 @@ export interface components {
                 value: number;
                 currency: string;
             };
-            feesAmount: {
-                value: number;
-                currency: string;
-            };
             repaymentAmount: {
                 value: number;
                 currency: string;
@@ -152,14 +116,28 @@ export interface components {
                 value: number;
                 currency: string;
             };
+
             repaymentRate: number;
             expectedRepaymentPeriodDays: number;
-            maximumRepaymentPeriodDays: number;
             repaymentPeriodLeft: number;
-            status: 'Pending' | 'Booked' | 'Reversed';
+            maximumRepaymentPeriodDays: number;
+            status: 'Pending' | 'Active' | 'Repaid' | 'Failed' | 'WrittenOff' | 'Revoked';
         };
+        configuration: {
+            minAmount: {
+                value: number;
+                currency: string;
+            };
+            maxAmount: {
+                value: number;
+                currency: string;
+            };
+            step: number;
+        };
+        getGrantOfferReview: components['schemas']['grantOfferDTO'];
+        dynamicGrantOffer: components['schemas']['grantOfferDTO'];
+        signOffer: components['schemas']['grantOfferDTO'];
         getGrants: components['schemas']['grantOfferDTO'][];
-        DownloadReportResponseDTO: Uint8Array;
     };
     responses: never;
     parameters: never;
