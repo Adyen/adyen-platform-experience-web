@@ -26,8 +26,8 @@ jobs:
 
       - name: Download and commit files
         run: |
-          # Checkout the default branch
-          gh pr checkout ${{ github.ref_name }} -b ${{ env.BRANCH_NAME }}
+          # Checkout new branch from the default branch
+          git checkout -B ${{ env.BRANCH_NAME }} ${{ github.ref_name }}
 
           # Download files from Smartling
           npx -y @adyen/smartling-bot@0.6.x download-files
@@ -44,6 +44,7 @@ jobs:
           if git diff-index --cached --quiet HEAD; then
             # there are no changes to commit
             echo "No translations updates"
+            git branch -D ${{ env.BRANCH_NAME }}
           else
             # Create a commit for staged files and push
             git commit -m ${{ env.COMMIT_TITLE }}
