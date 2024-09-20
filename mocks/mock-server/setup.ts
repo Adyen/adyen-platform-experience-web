@@ -1,6 +1,8 @@
 import { http, HttpResponse } from 'msw';
 import { endpoints } from '../../endpoints/endpoints';
 import { delay } from './utils';
+import { EndpointName } from '../../src/types/api/endpoints';
+import { HttpMethod } from '../../src/core/Http/types';
 
 const networkError = false;
 const path = endpoints('mock').setup;
@@ -49,7 +51,15 @@ export const setupMock = [
                     method: 'GET',
                     url: 'reports/download',
                 },
-            },
+                getGrants: {
+                    method: 'GET',
+                    url: 'capital/grants',
+                },
+                getCapitalDynamicConfiguration: {
+                    method: 'GET',
+                    url: 'capital/grantOffers/dynamic/configuration',
+                },
+            } satisfies Record<EndpointName, { method: HttpMethod; url: string }>,
         });
     }),
 ];

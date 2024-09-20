@@ -15,5 +15,12 @@ export const endpoints = mode => {
         setup: `${baseUrl}/setup`,
         reports: `${baseUrl}/reports`,
         downloadReport: `${baseUrl}/reports/download`,
+        capital: {
+            dynamicOfferConfig: `${baseUrl}/capital/grantOffers/dynamic/configuration`,
+            dynamicOffer: `${baseUrl}/capital/grantOffers/dynamic`,
+            offerReview: `${baseUrl}/capital/grantOffers/review`,
+            offerSign: `${baseUrl}/capital/grantOffers/dynamic/sign/${matchVariable}`,
+            grants: `${baseUrl}/capital/grants`,
+        },
     };
 };
