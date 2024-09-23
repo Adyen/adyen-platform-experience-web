@@ -1,5 +1,6 @@
 import { toChildArray } from 'preact';
-import { useCallback, useLayoutEffect, useMemo, useState } from 'preact/hooks';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useState } from 'preact/hooks';
+import { getDecimalAmount } from '../../../../core/Localization/amount/amount-util';
 import { boolOrFalse, EMPTY_ARRAY, noop } from '../../../../utils';
 import { ButtonVariant } from '../../../internal/Button/types';
 import useCoreContext from '../../../../core/Context/useCoreContext';
@@ -67,6 +68,16 @@ export const TransactionDataContextProvider = ({ children, error, forceHideTitle
     useLayoutEffect(() => {
         forceHideTitle?.(!dataViewActive);
     }, [dataViewActive, forceHideTitle]);
+
+    useEffect(() => {
+        let amount = 0;
+        if (transaction) {
+            const { currency, value } = transaction.amount;
+            amount = getDecimalAmount(value, currency);
+        }
+        setRefundValueMax(amount);
+        setRefundValue(amount);
+    }, [i18n, transaction]);
 
     if (isLoading || !(transaction || error)) {
         return <TransactionDataSkeleton skeletonRowNumber={5} />;
