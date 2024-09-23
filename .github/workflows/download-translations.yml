@@ -1,0 +1,57 @@
+name: Download translations
+
+on:
+  workflow_dispatch:
+
+jobs:
+  download-files:
+    name: Download completed translation files
+    if: github.event_name == 'workflow_dispatch' && github.ref_name == 'develop'
+    runs-on: ubuntu-latest
+    environment: smartling-translations # provides Smartling credentials
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+
+      - name: Run the preliminary setup steps
+        uses: ./.github/actions/setup-env
+
+      - name: Run setup steps for translation tasks
+        uses: ./.github/actions/setup-smartling
+        with:
+          npm_token: ${{ secrets.NPM_SMARTLING_BOT_READ_TOKEN }}
+          project_id: ${{ secrets.SMARTLING_PROJECT_ID }}
+          user_identifier: ${{ secrets.SMARTLING_USER_IDENTIFIER }}
+          user_secret: ${{ secrets.SMARTLING_USER_SECRET }}
+
+      - name: Download and commit files
+        run: |
+          # Checkout new branch from the default branch
+          git checkout -B ${{ env.BRANCH_NAME }} ${{ github.ref_name }}
+
+          # Download files from Smartling
+          npx -y @adyen/smartling-bot@0.6.x download-files
+
+          # Stage downloaded files
+          for source_path in $(jq -r '.translationSourcePaths[]' .i18nrc); do
+            root_path=$(dirname $source_path)
+            for locale in $(jq -r '.locales[]' .i18nrc); do
+              git add $(realpath "./$root_path/$locale.json")
+            done
+          done
+
+          if git diff-index --cached --quiet HEAD; then
+            # there are no changes to commit
+            echo "No translations updates"
+          else
+            # Create a commit for staged files and push
+            git commit -m ${{ env.COMMIT_TITLE }}
+            git push
+
+            # Create a PR on the default branch
+            gh pr create --base ${{ github.ref_name }} --head ${{ env.BRANCH_NAME }} --fill
+          fi
+        env:
+          BRANCH_NAME: "bot/translations"
+          COMMIT_TITLE: "Update translations"
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
