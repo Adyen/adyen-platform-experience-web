@@ -136,10 +136,6 @@
         }
     }
 
-    .adyen-pe-spinner__wrapper {
-        padding: style.token(spacer-130);
-    }
-
     &--outline {
         border: style.token(border-width-s) solid style.token(color-outline-secondary);
         border-radius: style.token(border-radius-m);
@@ -191,6 +187,25 @@
         text-align: center;
         top: style.token(spacer-080);
         transform: translateX(-50%);
+    }
+
+    &__cell-value {
+        align-items: center;
+        display: flex;
+        gap: style.token(spacer-030);
+        width: min-content;
+    }
+
+    &__icon-container {
+        height: style.token(spacer-090);
+        width: style.token(spacer-100);
+    }
+
+    &__icon {
+        height: 100%;
+        max-width: 100%;
+        object-fit: contain;
+        object-position: center;
     }
 
     // stylelint-disable order/order

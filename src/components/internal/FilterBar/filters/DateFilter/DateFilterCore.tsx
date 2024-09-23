@@ -1,5 +1,7 @@
 import Localization from '../../../../../core/Localization';
+import useTimezoneAwareDateFormatting from '../../../../hooks/useTimezoneAwareDateFormatting';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
+import { BASE_LOCALE } from '../../../../../core/Localization/datetime/restamper/constants';
 import { EMPTY_OBJECT } from '../../../../../utils';
 import { CommitAction } from '../../../../../hooks/useCommitAction';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
@@ -16,11 +18,9 @@ const formattingOptions = {
     year: 'numeric',
 } as const;
 
-const baseDateTimeFormatter = new Intl.DateTimeFormat('en-US', formattingOptions);
-
-const computeDateFilterValue = (i18n: Localization['i18n'], fromDate?: string, toDate?: string) => {
-    const from = fromDate && i18n.fullDate(fromDate);
-    const to = toDate && i18n.fullDate(toDate);
+const computeDateFilterValue = (i18n: Localization['i18n'], fullDateFormat: Localization['fullDate'], fromDate?: string, toDate?: string) => {
+    const from = fromDate && fullDateFormat(fromDate);
+    const to = toDate && fullDateFormat(toDate);
 
     if (from && to) return `${from} - ${to}`;
     if (from) return i18n.get('filter.date.since', { values: { date: from } });
@@ -51,15 +51,16 @@ const renderDateFilterModalBody = (() => {
         untilDate,
     }: FilterEditModalRenderProps<DateFilterProps>) => {
         const { i18n } = useCoreContext();
+        const { fullDateFormat } = useTimezoneAwareDateFormatting(timezone);
         const [presetOption, setPresetOption] = useState(selectedPresetOption);
         const originDate = useMemo(() => [new Date(from as string), new Date(to as string)], [from, to]);
         const datePickerRef = useRef<CalendarHandle & { selection?: string }>();
 
         const onHighlight = useCallback(
             (from?: number, to?: number) => {
-                onValueUpdated(computeDateFilterValue(i18n, resolveDate(from), resolveDate(to)));
+                onValueUpdated(computeDateFilterValue(i18n, fullDateFormat, resolveDate(from), resolveDate(to)));
             },
-            [i18n, onValueUpdated]
+            [i18n, fullDateFormat, onValueUpdated]
         );
 
         useEffect(() => {
@@ -110,6 +111,7 @@ export default function DateFilterCore<T extends DateFilterProps = DateFilterPro
     ...props
 }: FilterProps<T>) {
     const { i18n } = useCoreContext();
+    const { fullDateFormat } = useTimezoneAwareDateFormatting(props.timezone);
     const [selectedPresetOptionValue, setSelectedPresetOption] = useState<string>();
     const [fromValue, setFrom] = useState<string>();
     const [toValue, setTo] = useState<string>();
@@ -128,16 +130,20 @@ export default function DateFilterCore<T extends DateFilterProps = DateFilterPro
         [selectedPresetOptionValue, fromValue, toValue, props]
     );
 
-    const [customSelection, dateTimeFormatter] = useMemo(() => {
-        let formatter = baseDateTimeFormatter;
+    const customSelection = useMemo(() => i18n.get('rangePreset.custom'), [i18n]);
+
+    const dateTimeFormatter = useMemo(() => {
+        const _formattingOptions = { ...formattingOptions, timeZone: props.timezone };
+        let formatter = new Intl.DateTimeFormat(BASE_LOCALE, _formattingOptions);
+
         try {
-            formatter = new Intl.DateTimeFormat(i18n.locale, formattingOptions);
+            formatter = new Intl.DateTimeFormat(i18n.locale, _formattingOptions);
         } catch {
             /* invalid locale: continue with base `en-US` formatter */
         }
 
-        return [i18n.get('rangePreset.custom'), formatter] as const;
-    }, [i18n]);
+        return formatter;
+    }, [i18n, props.timezone]);
 
     useEffect(() => setSelectedPresetOption(selectedPresetOption), [selectedPresetOption]);
     useEffect(() => setFrom(resolveDate(from || Date.now())), [from]);
@@ -161,7 +167,7 @@ export default function DateFilterCore<T extends DateFilterProps = DateFilterPro
             onChange={onChange}
             render={renderDateFilterModalBody}
             selectedPresetOption={selectedPresetOption}
-            value={computeDateFilterValue(i18n, from, to)}
+            value={computeDateFilterValue(i18n, fullDateFormat, from, to)}
             withContentPadding={false}
         />
     );

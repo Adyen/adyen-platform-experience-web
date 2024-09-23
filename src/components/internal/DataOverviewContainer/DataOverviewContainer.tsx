@@ -1,7 +1,7 @@
 import { WITH_ERROR_CLASS } from './constants';
 import { ErrorMessageDisplay } from '../ErrorMessageDisplay/ErrorMessageDisplay';
 import { useAuthContext } from '../../../core/Auth';
-import { TranslationKey } from '../../../core/Localization/types';
+import { TranslationKey } from '../../../translations';
 import cx from 'classnames';
 import { PropsWithChildren } from 'preact/compat';
 import { getErrorMessage } from '../../utils/getErrorMessage';

@@ -2,6 +2,8 @@ import { isNullish } from '../../utils';
 import { AdyenErrorResponse, ErrorLevel, HttpOptions } from './types';
 import AdyenPlatformExperienceError from '../Errors/AdyenPlatformExperienceError';
 
+const FILENAME_EXTRACTION_REGEX = /^[^]*?filename[^;\n]*=\s*(?:UTF-\d['"]*)?(?:(['"])([^]*?)\1|([^;\n]*))?[^]*?$/;
+
 export const enum ErrorTypes {
     /** Network error. */
     NETWORK_ERROR = 'NETWORK_ERROR',
@@ -28,8 +30,17 @@ export const getErrorType = (errorCode: number): ErrorTypes => {
     }
 };
 
+export const getResponseContentType = (response: Response): string | undefined => response.headers.get('Content-Type')?.split(';', 1)[0];
+
+export const getResponseDownloadFilename = (response: Response): string | undefined => {
+    const disposition = response.headers.get('Content-Disposition') ?? '';
+    const filename = disposition.replace(FILENAME_EXTRACTION_REGEX, '$2$3');
+    return decodeURIComponent(filename);
+};
+
 export const getRequestObject = (options: HttpOptions, data?: any): RequestInit => {
     const { headers = [], method = 'GET' } = options;
+    const SDKVersion = process.env.VITE_VERSION;
 
     return {
         method,
@@ -40,6 +51,7 @@ export const getRequestObject = (options: HttpOptions, data?: any): RequestInit 
             Accept: 'application/json, text/plain, */*',
             'Content-Type': 'application/json',
             ...headers,
+            ...(SDKVersion && { 'SDK-Version': SDKVersion }),
         },
         redirect: 'follow',
         signal: options.signal,

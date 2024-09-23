@@ -1,18 +1,19 @@
 import classnames from 'classnames';
 import { useMemo } from 'preact/hooks';
 import useCoreContext from '../../../../core/Context/useCoreContext';
-import { TranslationKey } from '../../../../core/Localization/types';
+import { TranslationKey } from '../../../../translations';
 import { IPayoutDetails } from '../../../../types';
 import { components } from '../../../../types/api/resources/PayoutsResource';
 import { EMPTY_OBJECT } from '../../../../utils';
 import Accordion from '../../../internal/Accordion/Accordion';
 import Card from '../../../internal/Card/Card';
-import { DATE_FORMAT_PAYOUTS_DETAILS } from '../../../internal/DataOverviewDisplay/constants';
+import { DATE_FORMAT_PAYOUT_DETAILS } from '../../../internal/DataOverviewDisplay/constants';
 import StructuredList from '../../../internal/StructuredList';
 import { ListValue } from '../../../internal/StructuredList/types';
 import { TypographyVariant } from '../../../internal/Typography/types';
 import Typography from '../../../internal/Typography/Typography';
 import TransactionDataSkeleton from '../../TransactionDetails/components/TransactionDataSkeleton';
+import useTimezoneAwareDateFormatting from '../../../hooks/useTimezoneAwareDateFormatting';
 import './PayoutData.scss';
 import {
     PD_BASE_CLASS,
@@ -43,6 +44,7 @@ export const PayoutData = ({
 }) => {
     const { payout }: { payout: Payout } = payoutData ?? EMPTY_OBJECT;
     const { i18n } = useCoreContext();
+    const { dateFormat } = useTimezoneAwareDateFormatting('UTC');
     const adjustments = useMemo(() => {
         const data = payoutData?.amountBreakdowns?.adjustmentBreakdown?.reduce(
             (accumulator, currentValue) => {
@@ -87,8 +89,8 @@ export const PayoutData = ({
     }, [payoutData, i18n]);
 
     const creationDate = useMemo(
-        () => (payout?.createdAt ? i18n.date(new Date(payout?.createdAt), DATE_FORMAT_PAYOUTS_DETAILS).toString() : ''),
-        [payout, i18n]
+        () => (payout?.createdAt ? dateFormat(new Date(payout?.createdAt), DATE_FORMAT_PAYOUT_DETAILS) : ''),
+        [payout, dateFormat]
     );
 
     return (

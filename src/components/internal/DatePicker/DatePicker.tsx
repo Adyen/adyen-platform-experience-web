@@ -64,6 +64,7 @@ const DatePicker = forwardRef((props: DatePickerProps, ref) => {
                 highlight={props.highlight ?? calendar.highlight.MANY}
                 onHighlight={onHighlight}
                 renderControl={controlsRenderer}
+                trackCurrentDay={true}
             />
             {withTimezone && <div className={'adyen-pe-datepicker__timezone'}>{i18n.get('calendar.timezone', timezoneI18nOptions)}</div>}
         </div>

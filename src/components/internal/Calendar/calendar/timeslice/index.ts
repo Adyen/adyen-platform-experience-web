@@ -1,21 +1,33 @@
 import __TimeSlice__ from './TimeSlice';
 import { RANGE_FROM, RANGE_TO } from '../constants';
 import { TimeSlice, TimeSliceFactory } from '../types';
-import { struct } from '../../../../../utils';
+import { getter, struct } from '../../../../../utils';
+import { withTimezone } from '../utils';
 
 const factory = ((...args: any[]) => {
-    const slice = new __TimeSlice__(...args);
+    let tz = withTimezone().tz.current;
+    let slice = new __TimeSlice__(tz, ...args);
 
     return struct({
-        from: { value: slice.startTimestamp },
-        to: { value: slice.endTimestamp },
+        from: getter(() => slice.startTimestamp, false),
+        to: getter(() => slice.endTimestamp, false),
         offsets: {
             value: struct({
-                from: { value: slice.startTimestampOffset },
-                to: { value: slice.endTimestampOffset },
+                from: getter(() => slice.startTimestampOffset, false),
+                to: getter(() => slice.endTimestampOffset, false),
             }),
         },
-        span: { value: slice.numberOfMonths },
+        span: getter(() => slice.numberOfMonths, false),
+        timezone: {
+            ...getter(() => tz, false),
+            set: (timezone: string | undefined | null) => {
+                const currentTimezone = tz;
+                tz = withTimezone(timezone ?? undefined).tz.current;
+                if (tz !== currentTimezone) {
+                    slice = new __TimeSlice__(tz, ...args);
+                }
+            },
+        },
     }) as TimeSlice;
 }) as TimeSliceFactory;
 

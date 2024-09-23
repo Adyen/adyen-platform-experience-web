@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useRef, useState } from 'preact/hooks';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import type { RestampContext } from '../../../../../core/Localization/datetime/restamper';
-import type { TranslationKey } from '../../../../../core/Localization/types';
+import type { TranslationKey } from '../../../../../translations';
 import { RangeTimestamp, RangeTimestamps } from '../../../Calendar/calendar/timerange';
 import * as RangePreset from '../../../Calendar/calendar/timerange/presets';
 
@@ -32,8 +32,8 @@ export const useTimeRangeSelection = ({
     timezone,
 }: UseTimeRangeSelectionConfig) => {
     const { i18n } = useCoreContext();
-    const [from, setFrom] = useState<string>();
-    const [to, setTo] = useState<string>();
+    const [from, setFrom] = useState<number>();
+    const [to, setTo] = useState<number>();
     const [selectedOption, setSelectedOption] = useState<string>();
     const NOW = useRef<typeof now>();
     const TZ = useRef<typeof timezone>();
@@ -64,12 +64,12 @@ export const useTimeRangeSelection = ({
             const ranges = getRangesForOption(option, selectionOptions);
             if (!ranges) return;
 
-            setFrom(i18n.fullDate(ranges.from));
-            setTo(i18n.fullDate(ranges.to));
+            setFrom(ranges.from);
+            setTo(ranges.to);
             setIsCustomSelection(false);
             setSelectedOption(option);
         },
-        [i18n, customOption, getRangesForOption, selectedOption, selectionOptions]
+        [customOption, getRangesForOption, selectedOption, selectionOptions]
     );
 
     const customSelection = useCallback(() => {

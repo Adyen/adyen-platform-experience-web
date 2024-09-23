@@ -16,7 +16,7 @@ import CloseCircle from '../../../internal/SVGIcons/CloseCircle';
 import InputBase from '../../../internal/FormFields/InputBase';
 import Typography from '../../../internal/Typography/Typography';
 import { TypographyElement, TypographyVariant } from '../../../internal/Typography/types';
-import { TranslationKey } from '../../../../core/Localization/types';
+import { TranslationKey } from '../../../../translations';
 import { ARIA_ERROR_SUFFIX } from '../../../../core/Errors/constants';
 import { TagVariant } from '../../../internal/Tag/types';
 import { Tag } from '../../../internal/Tag/Tag';

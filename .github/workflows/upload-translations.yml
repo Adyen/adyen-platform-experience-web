@@ -1,0 +1,38 @@
+name: Upload translations
+
+on:
+  workflow_dispatch:
+    inputs:
+      authorize_job:
+        description: 'Automatically authorize job'
+        type: boolean
+        default: false
+
+jobs:
+  upload-files:
+    name: Upload translation source files
+    if: github.event_name == 'workflow_dispatch' && github.ref_name == 'develop'
+    runs-on: ubuntu-latest
+    environment: smartling-translations # provides Smartling credentials
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+
+      - name: Run the preliminary setup steps
+        uses: ./.github/actions/setup-env
+
+      - name: Run setup steps for translation tasks
+        uses: ./.github/actions/setup-smartling
+        with:
+          npm_token: ${{ secrets.NPM_SMARTLING_BOT_READ_TOKEN }}
+          project_id: ${{ secrets.SMARTLING_PROJECT_ID }}
+          user_identifier: ${{ secrets.SMARTLING_USER_IDENTIFIER }}
+          user_secret: ${{ secrets.SMARTLING_USER_SECRET }}
+
+      - name: Create translations job (with authorization)
+        if: ${{ inputs.authorize_job }}
+        run: npx -y @adyen/smartling-bot@0.6.x upload-files --auto-authorization
+
+      - name: Create translations job (without authorization)
+        if: ${{ ! inputs.authorize_job }}
+        run: npx -y @adyen/smartling-bot@0.6.x upload-files

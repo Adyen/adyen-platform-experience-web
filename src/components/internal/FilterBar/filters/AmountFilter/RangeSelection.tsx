@@ -41,11 +41,13 @@ export const RangeSelection = ({
         if (editAction === CommitAction.CLEAR) clearFilter();
     }, [applyFilter, clearFilter, editAction]);
 
-    const filterValue = useMemo(() => ({ minAmount, maxAmount }), [maxAmount, minAmount]);
+    const filterValue = useMemo(() => ({ minAmount: Number(minAmount), maxAmount: Number(maxAmount) }), [maxAmount, minAmount]);
 
     useEffect(() => {
-        if (filterValue.minAmount || filterValue.maxAmount) onValueUpdated(`${filterValue.minAmount}-${filterValue.maxAmount}`);
-        else onValueUpdated(null);
+        const { maxAmount, minAmount } = filterValue;
+        if ((isUndefined(maxAmount) && isUndefined(minAmount)) || minAmount > maxAmount) {
+            onValueUpdated(null);
+        } else onValueUpdated(`${minAmount}-${maxAmount}`);
     }, [filterValue, onValueUpdated]);
 
     return (
@@ -53,12 +55,13 @@ export const RangeSelection = ({
             <div className="adyen-pe-range-selection-filter__input">
                 <label htmlFor="minValue">{`${i18n.get('from')}:`}</label>
                 <InputBase
+                    data-testid={'minValueFilter'}
                     lang={i18n.locale}
                     name={'minValue'}
                     type="number"
                     value={minAmount}
                     onInput={e => {
-                        e.currentTarget && setMinAmount(e.currentTarget.value !== '' ? parseFloat(e.currentTarget.value) : undefined);
+                        e.currentTarget && setMinAmount(e.currentTarget.value !== '' ? (e.currentTarget.value as any) : undefined);
                     }}
                     min={0}
                     isInvalid={minAmount ? minAmount < 0 : false}
@@ -68,12 +71,13 @@ export const RangeSelection = ({
             <div className="adyen-pe-range-selection-filter__input">
                 <label htmlFor="maxValue">{`${i18n.get('to')}:`}</label>
                 <InputBase
+                    data-testid={'maxValueFilter'}
                     lang={i18n.locale}
                     name={'maxValue'}
                     type="number"
                     value={maxAmount}
                     onInput={e => {
-                        e.currentTarget && setMaxAmount(e.currentTarget.value !== '' ? parseFloat(e.currentTarget.value) : undefined);
+                        e.currentTarget && setMaxAmount(e.currentTarget.value !== '' ? (e.currentTarget.value as any) : undefined);
                     }}
                     min={minAmount}
                     isInvalid={!isUndefined(maxAmount) && !isUndefined(minAmount) && maxAmount < minAmount}

@@ -1,21 +1,36 @@
+import {
+    DEFAULT_DATETIME_FORMAT,
+    DEFAULT_TRANSLATIONS,
+    EXCLUDE_PROPS,
+    FALLBACK_LOCALE,
+    getLocalesFromTranslationSourcesRecord,
+    SUPPORTED_LOCALES,
+} from './constants/localization';
+import type {
+    CustomTranslations,
+    Locale,
+    TranslationKey,
+    TranslationOptions,
+    Translations,
+    TranslationSource,
+    TranslationSourceRecord,
+} from '../../translations';
+import { en_US } from '../../translations';
 import { getLocalisedAmount } from './amount/amount-util';
-import { defaultTranslation, FALLBACK_LOCALE } from './constants/locale';
-import { DEFAULT_DATETIME_FORMAT, DEFAULT_LOCALES, EXCLUDE_PROPS } from './constants/localization';
-import restamper, { RestamperWithTimezone, systemToTimezone } from './datetime/restamper';
+import restamper, { RestamperWithTimezone } from './datetime/restamper';
 import { createTranslationsLoader, getLocalizationProxyDescriptors } from './localization-utils';
-import { CustomTranslations, LangFile, SupportedLocale, Translations, TranslationKey, TranslationOptions } from './types';
 import { formatCustomTranslations, getTranslation, toTwoLetterCode } from './utils';
 import { createWatchlist } from '../../primitives/reactive/watchlist';
 import { ALREADY_RESOLVED_PROMISE, isNull, isNullish, isUndefined, noop, struct } from '../../utils';
-import { en_US } from '../../translations';
 
 export default class Localization {
-    #locale: SupportedLocale | string = FALLBACK_LOCALE;
+    #locale: Locale = FALLBACK_LOCALE;
     #languageCode: string = toTwoLetterCode(this.#locale);
-    #supportedLocales: Readonly<SupportedLocale[]> | string[] = DEFAULT_LOCALES;
+    #availableLocales: Readonly<Locale[]> = [FALLBACK_LOCALE] as const;
+    #supportedLocales: Readonly<Locale[]> = this.#availableLocales;
 
     #customTranslations?: CustomTranslations;
-    #translations: Record<string, string> = defaultTranslation;
+    #translations: Translations = DEFAULT_TRANSLATIONS;
     #translationsLoader = createTranslationsLoader.call(this);
 
     #ready: Promise<void> = ALREADY_RESOLVED_PROMISE;
@@ -26,16 +41,16 @@ export default class Localization {
 
     private watch = this.#refreshWatchlist.subscribe.bind(undefined);
     public i18n: Omit<Localization, (typeof EXCLUDE_PROPS)[number]> = struct(getLocalizationProxyDescriptors.call(this));
-    public preferredTranslations?: { [k in SupportedLocale]?: Translations } | { [k: string]: Translations };
+    public preferredTranslations?: Readonly<{ [k: Locale]: TranslationSource }>;
 
-    constructor(locale: SupportedLocale | string = FALLBACK_LOCALE, translationsFiles?: LangFile[]) {
+    constructor(locale: string = FALLBACK_LOCALE, availableTranslations?: TranslationSourceRecord[]) {
         this.watch(noop);
 
-        this.preferredTranslations =
-            translationsFiles &&
-            translationsFiles.reduce((prev, curr) => ({ ...prev, ...curr }), {
-                [FALLBACK_LOCALE]: en_US['en_US'],
-            });
+        this.preferredTranslations = Object.freeze(
+            availableTranslations?.reduce((records, curr) => ({ ...records, ...curr }), en_US) ?? { ...en_US }
+        );
+
+        this.#availableLocales = getLocalesFromTranslationSourcesRecord(this.preferredTranslations);
         this.locale = locale;
     }
 
@@ -45,16 +60,16 @@ export default class Localization {
 
     set customTranslations(customTranslations: CustomTranslations | undefined | null) {
         let translations: CustomTranslations | undefined = undefined;
-        let supportedLocales: (SupportedLocale | string)[] = [...DEFAULT_LOCALES];
+        let supportedLocales: Locale[] = [...this.#availableLocales];
 
         if (!isNullish(customTranslations)) {
-            translations = formatCustomTranslations(customTranslations, DEFAULT_LOCALES);
-            const localesFromCustomTranslations = Object.keys(translations) as string[];
+            translations = formatCustomTranslations(customTranslations, SUPPORTED_LOCALES);
+            const localesFromCustomTranslations = Object.keys(translations) as Locale[];
 
             // default locales + validated custom locales
-            supportedLocales = [...DEFAULT_LOCALES, ...localesFromCustomTranslations].filter(
-                (locale, index, locales) => locales.indexOf(locale) === index
-            );
+            supportedLocales = [...supportedLocales, ...localesFromCustomTranslations]
+                .sort()
+                .filter((locale, index, locales) => locales.indexOf(locale) === index);
         }
 
         this.#translationsLoader.supportedLocales = supportedLocales;
@@ -69,11 +84,11 @@ export default class Localization {
         return this.#refreshWatchlist.snapshot.timestamp;
     }
 
-    get locale(): SupportedLocale | string {
+    get locale(): Locale {
         return this.#locale;
     }
 
-    set locale(locale: SupportedLocale | string | undefined | null) {
+    set locale(locale: string | undefined | null) {
         if (!isNullish(locale)) {
             this.#translationsLoader.locale = locale;
             if (this.#locale === this.#translationsLoader.locale) return;
@@ -85,7 +100,7 @@ export default class Localization {
         return this.#ready;
     }
 
-    get supportedLocales(): Readonly<SupportedLocale[]> | string[] {
+    get supportedLocales(): Readonly<Locale[]> {
         return this.#supportedLocales;
     }
 
@@ -114,7 +129,7 @@ export default class Localization {
         const currentRefresh = (this.#currentRefresh = (async () => {
             this.#translations = await this.#translationsLoader.load(customTranslations);
             this.#locale = this.#translationsLoader.locale;
-            this.#supportedLocales = this.#translationsLoader.supportedLocales;
+            this.#supportedLocales = Object.freeze(this.#translationsLoader.supportedLocales);
             this.#customTranslations = customTranslations;
             this.#languageCode = toTwoLetterCode(this.#locale);
             this.#refreshWatchlist.requestNotification();
@@ -182,8 +197,12 @@ export default class Localization {
      * @param date - Date to be localized
      */
     fullDate(date: number | string | Date) {
-        const timestamp = systemToTimezone(this.#restamp, date);
-        const [, month, day, year, time] = new Date(timestamp).toString().split(/\s+/g);
-        return `${month} ${day}, ${year}, ${time}`;
+        return this.date(date, {
+            month: 'short',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: false,
+        });
     }
 }

@@ -1,3 +1,6 @@
+import { TRANSACTION_FIELDS } from '../TransactionsOverview/components/TransactionsTable/TransactionsTable';
+import type { TransactionDetailData } from './types';
+
 export const TX_DATA_CLASS = 'adyen-pe-transaction-data';
 export const TX_DATA_AMOUNT = `${TX_DATA_CLASS}__amount`;
 export const TX_DATA_ACTION_BAR = `${TX_DATA_CLASS}__action-bar`;
@@ -20,5 +23,12 @@ export const TX_DATA_PAY_METHOD_LOGO = `${TX_DATA_PAY_METHOD}-logo`;
 export const TX_DATA_PAY_METHOD_LOGO_CONTAINER = `${TX_DATA_PAY_METHOD_LOGO}-container`;
 export const TX_DATA_SECTION = `${TX_DATA_CLASS}__section`;
 export const TX_DATA_SKELETON = `${TX_DATA_CLASS}__skeleton`;
+export const TX_DATA_SKELETON_CONTAINER = `${TX_DATA_SKELETON}-container`;
 export const TX_DATA_SKELETON_LOADING = `${TX_DATA_SKELETON}--loading-content`;
+export const TX_DATA_STATUS_SKELETON = `${TX_DATA_CLASS}__status-skeleton`;
 export const TX_DATA_TAG_CONTAINER = `${TX_DATA_CLASS}__tag-container`;
+
+export const TX_DETAILS_RESERVED_FIELDS_SET = new Set([
+    ...(['status', 'category', 'paymentMethod', 'bankAccount', 'balanceAccount', 'id', 'balanceAccountId'] satisfies (keyof TransactionDetailData)[]),
+    ...TRANSACTION_FIELDS,
+]);

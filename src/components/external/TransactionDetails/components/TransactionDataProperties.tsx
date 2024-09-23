@@ -1,5 +1,6 @@
 import { useMemo } from 'preact/hooks';
-import { TX_DATA_CONTAINER, TX_DATA_LABEL } from '../constants';
+import { TX_DATA_LABEL, TX_DETAILS_RESERVED_FIELDS_SET } from '../constants';
+import TransactionDetailsDataContainer from './TransactionDetailsDataContainer';
 import useCoreContext from '../../../../core/Context/useCoreContext';
 import useTransactionDataContext from '../context';
 
@@ -8,19 +9,28 @@ const TransactionDataProperties = () => {
     const { transaction } = useTransactionDataContext();
 
     return useMemo(() => {
-        const { balanceAccountDescription, id } = transaction;
+        const { balanceAccount, id } = transaction;
+        const customColumns = Object.entries(transaction).filter(([key]) => !TX_DETAILS_RESERVED_FIELDS_SET.has(key as any));
         return (
             <>
-                {balanceAccountDescription && (
-                    <div className={TX_DATA_CONTAINER}>
+                {balanceAccount?.description && (
+                    <TransactionDetailsDataContainer>
                         <div className={TX_DATA_LABEL}>{i18n.get('account')}</div>
-                        <div>{balanceAccountDescription}</div>
-                    </div>
+                        <div>{balanceAccount.description}</div>
+                    </TransactionDetailsDataContainer>
                 )}
-                <div className={TX_DATA_CONTAINER}>
+
+                <TransactionDetailsDataContainer>
                     <div className={TX_DATA_LABEL}>{i18n.get('referenceID')}</div>
                     <div aria-label={i18n.get('referenceID')}>{id}</div>
-                </div>
+                </TransactionDetailsDataContainer>
+
+                {customColumns.map(([key, value]) => (
+                    <TransactionDetailsDataContainer key={key}>
+                        <div className={TX_DATA_LABEL}>{i18n.get(key as any)}</div>
+                        <div aria-label={i18n.get(key as any)}>{value}</div>
+                    </TransactionDetailsDataContainer>
+                ))}
             </>
         );
     }, [i18n, transaction]);

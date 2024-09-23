@@ -1,21 +1,21 @@
 import { useMemo } from 'preact/hooks';
 import { TX_DATA_LABEL, TX_DATA_SECTION } from '../constants';
 import { DATE_FORMAT_TRANSACTION_DETAILS } from '../../../internal/DataOverviewDisplay/constants';
-import useCoreContext from '../../../../core/Context/useCoreContext';
+import useTimezoneAwareDateFormatting from '../../../hooks/useTimezoneAwareDateFormatting';
 import useTransactionDataContext from '../context';
 
 const TransactionDataDate = () => {
-    const { i18n } = useCoreContext();
     const { transaction } = useTransactionDataContext();
+    const { dateFormat } = useTimezoneAwareDateFormatting(transaction?.balanceAccount?.timeZone);
 
     return useMemo(
         () =>
             transaction ? (
                 <div className={`${TX_DATA_SECTION} ${TX_DATA_LABEL}`}>
-                    {i18n.date(new Date(transaction.createdAt), DATE_FORMAT_TRANSACTION_DETAILS).toString()}
+                    {dateFormat(new Date(transaction.createdAt), DATE_FORMAT_TRANSACTION_DETAILS)}
                 </div>
             ) : null,
-        [i18n, transaction]
+        [dateFormat, transaction]
     );
 };
 

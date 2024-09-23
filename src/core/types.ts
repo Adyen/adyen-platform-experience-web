@@ -1,14 +1,15 @@
 import type { SessionRequest } from './Auth';
-import type { CustomTranslations as Translations, LangFile } from './Localization/types';
+import type { CustomTranslations as Translations, TranslationSourceRecord } from '../translations';
 import type { KeyOfRecord, WithReplacedUnderscoreOrDash } from '../utils/types';
+import { FALLBACK_LOCALE } from './Localization/constants/localization';
 
-type CreateLocalesUnionFromAvailableTranslations<T extends LangFile[]> = T extends T
-    ? Extract<WithReplacedUnderscoreOrDash<KeyOfRecord<T[number]>, '_', '-'>, string> | 'en-US'
+type CreateLocalesUnionFromAvailableTranslations<T extends TranslationSourceRecord[]> = T extends T
+    ? Extract<WithReplacedUnderscoreOrDash<KeyOfRecord<T[number]>, '_', '-'>, string> | typeof FALLBACK_LOCALE
     : never;
 
 type CreateLocalesUnionFromCustomTranslations<T extends Translations> = Extract<KeyOfRecord<T extends Translations ? T : {}>, string>;
 
-interface _CoreOptions<AvailableTranslations extends LangFile[] = [], CustomTranslations extends Translations = {}> {
+interface _CoreOptions<AvailableTranslations extends TranslationSourceRecord[] = [], CustomTranslations extends Translations = {}> {
     availableTranslations?: AvailableTranslations;
 
     /**
@@ -42,7 +43,7 @@ interface _CoreOptions<AvailableTranslations extends LangFile[] = [], CustomTran
     translations?: CustomTranslations extends Translations ? CustomTranslations : Translations;
 }
 
-export interface CoreOptions<AvailableTranslations extends LangFile[] = [], CustomTranslations extends {} = {}>
+export interface CoreOptions<AvailableTranslations extends TranslationSourceRecord[] = [], CustomTranslations extends {} = {}>
     extends _CoreOptions<AvailableTranslations, CustomTranslations extends Translations ? CustomTranslations : unknown> {}
 
 export type DevEnvironment = 'test' | 'live' | 'beta';

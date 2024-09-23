@@ -1,27 +1,32 @@
-import { DATE_FORMAT_TRANSACTIONS } from '../../../../internal/DataOverviewDisplay/constants';
+import { FC } from 'preact/compat';
+import { useCallback, useMemo, useState } from 'preact/hooks';
+import { DATE_FORMAT_TRANSACTIONS_MOBILE, DATE_FORMAT_TRANSACTIONS } from '../../../../internal/DataOverviewDisplay/constants';
 import Category from '../Category/Category';
 import DataOverviewError from '../../../../internal/DataOverviewError/DataOverviewError';
-import { getLabel } from '../../../../utils/getLabel';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
-import { useCallback, useMemo, useState } from 'preact/hooks';
-import DataGrid from '../../../../internal/DataGrid';
-import Pagination from '../../../../internal/Pagination';
-import { CellTextPosition } from '../../../../internal/DataGrid/types';
-import { TranslationKey } from '../../../../../core/Localization/types';
 import { getCurrencyCode } from '../../../../../core/Localization/amount/amount-util';
-import { AMOUNT_CLASS, BASE_CLASS, DATE_AND_PAYMENT_METHOD_CLASS } from './constants';
+import { TranslationKey } from '../../../../../translations';
+import useTimezoneAwareDateFormatting from '../../../../hooks/useTimezoneAwareDateFormatting';
+import DataGrid from '../../../../internal/DataGrid';
+import { CellTextPosition } from '../../../../internal/DataGrid/types';
+import Pagination from '../../../../internal/Pagination';
+import { TypographyVariant } from '../../../../internal/Typography/types';
+import Typography from '../../../../internal/Typography/Typography';
+import { mediaQueries, useResponsiveViewport } from '../../../../hooks/useResponsiveViewport';
+import { AMOUNT_CLASS, BASE_CLASS, DATE_AND_PAYMENT_METHOD_CLASS, DATE_METHOD_CLASS } from './constants';
 import './TransactionTable.scss';
-import { mediaQueries, useResponsiveViewport } from '../../hooks/useResponsiveViewport';
-import { FC } from 'preact/compat';
-import { TransactionTableProps } from './types';
 import PaymentMethodCell from './PaymentMethodCell';
+import { TransactionTableProps } from './types';
+import { useTableColumns } from '../../../../hooks/useTableColumns';
 
 // Remove status column temporarily
 // const FIELDS = ['createdAt', 'status', 'paymentMethod', 'transactionType', 'amount'] as const;
-const FIELDS = ['dateAndPaymentMethod', 'createdAt', 'paymentMethod', 'transactionType', 'amount'] as const;
-type FieldsType = (typeof FIELDS)[number];
+
+export const TRANSACTION_FIELDS = ['createdAt', 'paymentMethod', 'transactionType', 'amount'] as const;
+export type TransactionsTableCols = (typeof TRANSACTION_FIELDS)[number];
 
 export const TransactionsTable: FC<TransactionTableProps> = ({
+    activeBalanceAccount,
     availableCurrencies,
     error,
     hasMultipleCurrencies,
@@ -31,43 +36,32 @@ export const TransactionsTable: FC<TransactionTableProps> = ({
     showDetails,
     showPagination,
     transactions,
+    customColumns,
     ...paginationProps
 }) => {
     const { i18n } = useCoreContext();
+    const { dateFormat } = useTimezoneAwareDateFormatting(activeBalanceAccount?.timeZone);
     const [hoveredRow, setHoveredRow] = useState<undefined | number>();
     const isSmAndUpViewport = useResponsiveViewport(mediaQueries.up.sm);
     const isMdAndUpViewport = useResponsiveViewport(mediaQueries.up.md);
     const isXsAndDownViewport = useResponsiveViewport(mediaQueries.down.xs);
 
-    const fieldsVisibility: Partial<Record<FieldsType, boolean>> = useMemo(
-        () => ({
-            dateAndPaymentMethod: isXsAndDownViewport,
-            createdAt: isSmAndUpViewport,
-            transactionType: isMdAndUpViewport,
-            paymentMethod: isSmAndUpViewport,
-        }),
-        [isXsAndDownViewport, isSmAndUpViewport, isMdAndUpViewport]
-    );
-
-    const columns = useMemo(
-        () =>
-            FIELDS.map(key => {
-                const label = i18n.get(getLabel(key));
-                if (key === 'amount') {
-                    return {
-                        key,
-                        label: hasMultipleCurrencies
-                            ? label
-                            : `${label} ${availableCurrencies && availableCurrencies[0] ? `(${getCurrencyCode(availableCurrencies[0])})` : ''}`,
-                        position: key === 'amount' ? CellTextPosition.RIGHT : undefined,
-                        flex: isSmAndUpViewport ? 1.5 : undefined,
-                    };
-                }
-
-                return { key, label, visible: fieldsVisibility[key] };
-            }),
-        [availableCurrencies, fieldsVisibility, hasMultipleCurrencies, i18n, isSmAndUpViewport]
-    );
+    const amountLabel = i18n.get('amount');
+    const columns = useTableColumns({
+        fields: TRANSACTION_FIELDS,
+        customColumns,
+        columnConfig: {
+            amount: {
+                label: hasMultipleCurrencies
+                    ? undefined
+                    : `${amountLabel} ${availableCurrencies && availableCurrencies[0] ? `(${getCurrencyCode(availableCurrencies[0])})` : ''}`,
+                position: CellTextPosition.RIGHT,
+                flex: isSmAndUpViewport ? 1.5 : undefined,
+            },
+            transactionType: { visible: isMdAndUpViewport },
+            paymentMethod: { visible: isSmAndUpViewport },
+        },
+    });
 
     const EMPTY_TABLE_MESSAGE = {
         title: 'noTransactionsFound',
@@ -108,29 +102,39 @@ export const TransactionsTable: FC<TransactionTableProps> = ({
                             />
                         );
                     },*/
-                    dateAndPaymentMethod: ({ item }) => {
-                        return (
-                            <div className={DATE_AND_PAYMENT_METHOD_CLASS}>
-                                <PaymentMethodCell paymentMethod={item.paymentMethod} bankAccount={item.bankAccount} />
-                                <span className={DATE_AND_PAYMENT_METHOD_CLASS}>{i18n.date(item.createdAt, DATE_FORMAT_TRANSACTIONS)}</span>
-                            </div>
-                        );
-                    },
+
                     transactionType: ({ item, rowIndex }) => {
                         const tooltipKey = `tooltip.${item.category}`;
                         return item.category ? (
                             i18n.has(tooltipKey) ? (
-                                <Category value={item.category} isContainerHovered={rowIndex === hoveredRow} />
+                                <Category isContainerHovered={rowIndex === hoveredRow} value={item.category} />
                             ) : (
-                                item.category
+                                <Typography variant={TypographyVariant.BODY}>{item.category}</Typography>
                             )
                         ) : null;
                     },
-                    createdAt: ({ value }) => <span>{i18n.fullDate(value)}</span>,
                     amount: ({ value }) => {
                         const amount = i18n.amount(value.value, value.currency, { hideCurrency: !hasMultipleCurrencies });
-                        return <span className={AMOUNT_CLASS}>{amount}</span>;
+                        return (
+                            <Typography variant={TypographyVariant.BODY} className={AMOUNT_CLASS}>
+                                {amount}
+                            </Typography>
+                        );
                     },
+                    createdAt: ({ item, value }) => {
+                        if (isXsAndDownViewport) {
+                            return (
+                                <div className={DATE_AND_PAYMENT_METHOD_CLASS}>
+                                    <PaymentMethodCell paymentMethod={item.paymentMethod} bankAccount={item.bankAccount} />
+                                    <Typography variant={TypographyVariant.BODY} className={DATE_METHOD_CLASS}>
+                                        {dateFormat(item.createdAt, DATE_FORMAT_TRANSACTIONS_MOBILE)}
+                                    </Typography>
+                                </div>
+                            );
+                        }
+                        return <Typography variant={TypographyVariant.BODY}>{dateFormat(value, DATE_FORMAT_TRANSACTIONS)}</Typography>;
+                    },
+
                     paymentMethod: ({ item }) => <PaymentMethodCell paymentMethod={item.paymentMethod} bankAccount={item.bankAccount} />,
                 }}
             >

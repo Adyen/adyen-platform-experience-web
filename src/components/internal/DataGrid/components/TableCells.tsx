@@ -1,6 +1,12 @@
 import DataGridCell from '../DataGridCell';
 import { DataGridColumn } from '../types';
 import { CustomCell } from '../DataGrid';
+import Icon from './Icon';
+import { CustomDataObject } from '../../../types';
+
+const _isCustomDataObject = (item: any): item is CustomDataObject => {
+    return !!item && typeof item === 'object' && 'value' in item;
+};
 
 export const TableCells = <
     Items extends Array<any>,
@@ -37,9 +43,15 @@ export const TableCells = <
                         </DataGridCell>
                     );
 
+                // TODO: remove typecast as CustomDataObject
+                const { icon, value } = _isCustomDataObject(item[key]) ? (item[key] as CustomDataObject) : { value: item[key], icon: undefined };
+
                 return (
                     <DataGridCell aria-labelledby={String(key)} key={key} column={key} position={position}>
-                        <div>{item[key]}</div>
+                        <div className="adyen-pe-data-grid__cell-value">
+                            {icon?.url && <Icon {...icon} />}
+                            <div>{value}</div>
+                        </div>
                     </DataGridCell>
                 );
             })}

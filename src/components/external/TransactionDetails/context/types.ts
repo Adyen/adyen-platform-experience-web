@@ -19,9 +19,10 @@ export interface ITransactionDataContext {
 
 export interface TransactionDataContextProviderProps {
     children?: any;
+    error?: boolean;
     forceHideTitle?: Dispatch<StateUpdater<boolean>>;
     isFetching?: boolean;
-    transaction: TransactionDetailData;
+    transaction?: TransactionDetailData;
 }
 
 export type RefundReason = (typeof REFUND_REASONS)[number];

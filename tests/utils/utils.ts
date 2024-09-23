@@ -1,31 +1,15 @@
 import { pages } from '../../playground/pages';
 import keys from '../../src/translations/en-US.json' assert { type: 'json' };
-import { BrowserContext, Page } from '@playwright/test';
+import { Page } from '@playwright/test';
+import dotenv from 'dotenv';
+dotenv.config({ path: './envs/.env' });
 
 type PageId = (typeof pages)[number]['id'];
 export const getPagePath = (id: PageId) => pages.find(page => page.id === id)?.id ?? '';
 
 export const getTranslatedKey = (key: keyof typeof keys) => keys[key] ?? '';
 
-export const mockGETRoute = async <T>({ response, route: path, context }: { response: T; route: string; context: BrowserContext }) => {
-    const normalizedRoute = path.startsWith('/') ? `**/*${path}/**` : `**/*/${path}/**`;
-    await context.route(normalizedRoute, async route => {
-        await route.fulfill({ json: response });
-    });
-};
-
-export const scriptToAddDefaultID = async (page: Page, id: string) => {
-    await page.addInitScript(id => {
-        Object.assign(window, { defaultID: id });
-    }, id);
-};
-
-export const scriptToAddInitialConfig = async (context: BrowserContext, scriptPath: string) => {
-    await context.addInitScript({ path: scriptPath });
-};
-
 const MONTHS_WITH_30_DAYS = [3, 5, 8, 10] as const;
-const INITIAL_CURSOR_DATE_SELECTOR = `[data-within-month='1'][tabindex='0'] [datetime]`;
 
 const _clampTimestamp = (min: number, max: number, date: Date | number | string) => new Date(Math.max(Math.min(new Date(date).getTime(), max), min));
 const _getTimestamp = (date: Date, fallback: number) => (Number.isFinite(date.getTime()) ? date.getTime() : fallback);
@@ -53,8 +37,11 @@ export const applyDateFilter = (page: Page, options?: ApplyDateFilterOptions) =>
         let toDate = _clampTimestamp(minTimestamp, maxTimestamp, to);
         if (fromDate > toDate) [fromDate, toDate] = [toDate, fromDate];
 
-        const initialCursorDate = new Date((await page.locator(INITIAL_CURSOR_DATE_SELECTOR).getAttribute('datetime')) ?? now);
-        const rangeDates = [fromDate, toDate, initialCursorDate];
+        const firstMonthDay = (await page.locator(`[data-within-month='1'] [datetime]`).all())[0]!;
+        const firstVisibleDate = new Date((await firstMonthDay.getAttribute('datetime'))!);
+        const rangeDates = [fromDate, toDate, firstVisibleDate];
+
+        for (let i = 1; i >= 0; i--) await firstMonthDay.click();
 
         for (let i = 1; i >= 0; i--) {
             const date = rangeDates[i]!;
@@ -82,4 +69,8 @@ export const applyDateFilter = (page: Page, options?: ApplyDateFilterOptions) =>
 
         await applyButton.click();
     };
+};
+
+export const goToPage = async ({ page, id }: { page: Page; id: string }) => {
+    await page.goto(`http://localhost:${process.env.PLAYGROUND_PORT}/iframe.html?id=${id}`);
 };

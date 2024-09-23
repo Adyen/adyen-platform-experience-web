@@ -7,14 +7,14 @@ import FilterBarPage from '../internal-components/filterBar';
 
 export class TransactionListPage extends BasePage {
     private readonly _applyDateFilter;
-    private dataGrid: DataGridPage;
+    public dataGrid: DataGridPage;
     public dataGridBody: Locator;
     public filterBar: Locator;
     public balanceAccountFilter: Locator;
     public dateFilter: Locator;
     public firstRow: Locator;
 
-    constructor(page: Page, rootElementSelector = '.transactions-component-container') {
+    constructor(page: Page, rootElementSelector = '.adyen-pe-transactions-overview-container') {
         super(page, rootElementSelector, getPagePath('transactionList'));
         this.dataGrid = new DataGridPage(this.rootElement);
         this.dataGridBody = this.dataGrid.gridBody;
@@ -37,6 +37,9 @@ export class TransactionListPage extends BasePage {
 
     getCell(id: string, row = 0) {
         return this.dataGrid.getCell(id, row);
+    }
+    getHeader(id: string) {
+        return this.dataGrid.getHeader(id);
     }
 
     async applyDateFilter(from: Date | number | string = Date(), to: Date | number | string = from) {

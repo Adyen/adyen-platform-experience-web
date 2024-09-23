@@ -3,12 +3,13 @@ import { useCallback, useLayoutEffect, useMemo, useState } from 'preact/hooks';
 import { boolOrFalse, EMPTY_ARRAY, noop } from '../../../../utils';
 import { ButtonVariant } from '../../../internal/Button/types';
 import useCoreContext from '../../../../core/Context/useCoreContext';
+import TransactionDataSkeleton from '../components/TransactionDataSkeleton';
 import { TransactionDataContext } from './TransactionDataContext';
 import { REFUND_REASONS } from './constants';
 import type { ButtonActionObject, ButtonActionsList } from '../../../internal/Button/ButtonActions/types';
 import type { RefundReason, TransactionDataContextProviderProps } from './types';
 
-export const TransactionDataContextProvider = ({ children, forceHideTitle, isFetching, transaction }: TransactionDataContextProviderProps) => {
+export const TransactionDataContextProvider = ({ children, error, forceHideTitle, isFetching, transaction }: TransactionDataContextProviderProps) => {
     const [dataViewActive, setDataViewActive] = useState(true);
     const [refundReference, setRefundReference] = useState<string>();
     const [refundReason, setRefundReason] = useState<RefundReason>(REFUND_REASONS[0]);
@@ -67,7 +68,11 @@ export const TransactionDataContextProvider = ({ children, forceHideTitle, isFet
         forceHideTitle?.(!dataViewActive);
     }, [dataViewActive, forceHideTitle]);
 
-    return (
+    if (isLoading || !(transaction || error)) {
+        return <TransactionDataSkeleton skeletonRowNumber={5} />;
+    }
+
+    return transaction ? (
         <TransactionDataContext.Provider
             value={{
                 dataViewActive,
@@ -85,7 +90,7 @@ export const TransactionDataContextProvider = ({ children, forceHideTitle, isFet
         >
             {toChildArray(children)}
         </TransactionDataContext.Provider>
-    );
+    ) : null;
 };
 
 export default TransactionDataContextProvider;
