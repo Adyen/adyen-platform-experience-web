@@ -15,6 +15,7 @@
     "calendar.timezone": "Timezone is set on: GMT%{offset} (%{time})",
     "capital.grantOffer": "Grant offer",
     "capital.grantOfferSummary": "Grant offer summary",
+    "capital.grants": "Grants",
     "capital.subtitle": "Powered by Adyen",
     "capital.grants": "Grants",
     "capture": "Captured",
