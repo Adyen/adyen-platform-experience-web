@@ -1,0 +1,32 @@
+@use '../../../style';
+
+.adyen-pe-pagination {
+    display: flex;
+    padding: style.token(spacer-070) style.token(spacer-040);
+    text-align: right;
+
+    &__context {
+        align-items: center;
+        display: flex;
+        gap: style.token(spacer-070);
+    }
+
+    &__controls {
+        display: flex;
+        gap: style.token(spacer-070);
+        margin-left: auto;
+    }
+
+    &__limit-selector {
+        text-align: left;
+
+        .adyen-pe-button {
+            width: auto;
+        }
+
+        .adyen-pe-popover {
+            min-width: auto;
+            width: auto;
+        }
+    }
+}

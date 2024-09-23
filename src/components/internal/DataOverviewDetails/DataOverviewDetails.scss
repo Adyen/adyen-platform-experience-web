@@ -1,0 +1,16 @@
+@use '../../../style';
+
+.adyen-pe-overview-details {
+    &--title {
+        margin-bottom: style.token(spacer-070);
+    }
+
+    .adyen-pe-error-message-display {
+        left: 0;
+        margin: 0 auto 10px;
+        max-width: 450px;
+        position: relative;
+        top: 0;
+        transform: none;
+    }
+}

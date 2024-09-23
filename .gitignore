@@ -37,7 +37,12 @@ Vagrantfile
 .demo/
 demo
 
-packages/playground/storybook-static/
+storybook-static/
 
 playwright-report
 test-results
+
+scripts/generate-ts-schemas/variables
+
+## credentials
+.smartlingrc

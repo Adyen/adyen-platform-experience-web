@@ -1,0 +1,78 @@
+@use '../../../style';
+//stylelint-disable no-invalid-position-at-import-rule
+@import '../../../style/breakpoints.scss';
+
+// TODO: Move this to an accessibility mixin
+.adyen-pe-sr-only {
+    clip: rect(0 0 0 0);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute !important;
+    width: 1px;
+}
+
+.adyen-pe-expandable-card {
+    $adyen-pe-expandable-card: &;
+
+    position: relative;
+
+    &__container {
+        background-color: style.token(color-background-primary);
+        border: style.token(border-width-s) solid style.token(color-outline-primary);
+        border-radius: style.token(border-radius-m);
+        display: block;
+        overflow: hidden;
+
+        &--overlay {
+            box-shadow: 0 2px 4px 0 rgba(#00112c, 0.04), 0 6px 12px 0 rgba(#00112c, 0.08);
+            position: absolute;
+            top: 0;
+            z-index: 100;
+        }
+
+        &--hidden {
+            visibility: hidden;
+        }
+
+        &--button {
+            &:hover {
+                background-color: style.token(color-background-primary-hover);
+
+                #{$adyen-pe-expandable-card}__chevron {
+                    background-color: style.token(color-background-tertiary-hover);
+                }
+            }
+        }
+
+        &--filled {
+            background-color: style.token(color-background-secondary);
+
+            &:hover {
+                background-color: style.token(color-background-secondary-hover);
+            }
+        }
+    }
+
+    &__content {
+        padding: style.token(spacer-060);
+
+        @include adyen-pe-screen-sm-and-up {
+            padding-left: style.token(spacer-080);
+            padding-right: style.token(spacer-080);
+        }
+
+        &--expandable {
+            padding-bottom: style.token(spacer-040);
+        }
+    }
+
+    &__chevron {
+        align-items: center;
+        background-color: style.token(color-background-tertiary);
+        display: flex;
+        height: 20px;
+        justify-content: center;
+    }
+}

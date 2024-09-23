@@ -1,0 +1,227 @@
+@use '../../../style/skeleton' as skeleton;
+@use '../../../style';
+// stylelint-disable no-invalid-position-at-import-rule
+@import '../../../style/breakpoints';
+
+.adyen-pe-data-grid {
+    --adyen-pe-data-grid-cols: #{auto-fit};
+    --adyen-pe-data-grid-cells: #{repeat(var(--adyen-pe-data-grid-cols), minmax(100px, 1fr))};
+    $adyen-pe-data-grid: &;
+    $adyen-pe-data-grid__cell: #{$adyen-pe-data-grid}__cell;
+
+    display: grid;
+    font-size: style.token(text-body-font-size);
+    grid-template-rows: auto 1fr;
+    overflow: hidden;
+    text-align: left;
+
+    &__header {
+        border-bottom: style.token(border-width-s) solid style.token(color-outline-primary);
+        display: grid;
+        grid-template-columns: var(--adyen-pe-data-grid-cells);
+        min-width: fit-content;
+        width: 100%;
+    }
+
+    &--scrollable #{$adyen-pe-data-grid}__table-wrapper {
+        overflow: auto;
+    }
+
+    &--loading {
+        border-color: transparent;
+    }
+
+    &--empty {
+        position: relative;
+    }
+
+    .adyen-pe-error-message-display {
+        top: 60px;
+    }
+
+    &__table {
+        border-collapse: separate;
+        border-spacing: 0;
+        width: 100%;
+    }
+
+    &__head {
+        display: none;
+    }
+
+    &__row {
+        background: style.token(color-background-primary);
+        border-bottom: style.token(border-width-s) solid style.token(color-outline-primary);
+        display: grid;
+        grid-template-columns: var(--adyen-pe-data-grid-cells);
+        min-width: fit-content;
+        overflow: hidden;
+        vertical-align: top;
+
+        #{$adyen-pe-data-grid}__body {
+            border-bottom: 0;
+        }
+
+        &--clickable {
+            cursor: pointer;
+
+            &:hover,
+            &:focus {
+                background: style.token(color-background-primary-hover);
+                outline-offset: -1px;
+            }
+        }
+    }
+
+    #{$adyen-pe-data-grid__cell} {
+        align-items: center;
+        box-sizing: border-box;
+        display: flex;
+        height: 100%;
+        overflow: hidden;
+        padding: style.token(spacer-070) style.token(spacer-020);
+        text-overflow: ellipsis;
+        vertical-align: middle;
+        white-space: nowrap;
+        width: auto;
+        word-break: break-word;
+
+        .adyen-pe-button--link {
+            display: block;
+            height: initial;
+            margin: -2px -4px;
+        }
+
+        &--right {
+            justify-content: end;
+        }
+
+        &--center {
+            justify-content: center;
+        }
+
+        &#{$adyen-pe-data-grid__cell}--heading {
+            border-bottom-color: style.token(color-outline-secondary);
+            color: style.token(color-label-primary);
+            display: flex;
+            font-weight: style.token(text-body-strongest-font-weight);
+            padding: style.token(spacer-070);
+            position: relative;
+
+            &:not(:last-child)::after {
+                background: style.token(color-separator-primary);
+                bottom: 25%;
+                content: '';
+                position: absolute;
+                right: 0;
+                top: 25%;
+                width: style.token(spacer-010);
+            }
+        }
+
+        &--heading-content {
+            width: fit-content;
+        }
+    }
+
+    #{$adyen-pe-data-grid}__table-wrapper {
+        margin-bottom: style.token(spacer-070);
+    }
+
+    &__footer {
+        background: style.token(color-background-primary);
+
+        .adyen-pe-pagination {
+            padding: 0;
+        }
+    }
+
+    &--outline {
+        border: style.token(border-width-s) solid style.token(color-outline-secondary);
+        border-radius: style.token(border-radius-m);
+
+        #{$adyen-pe-data-grid}__table-wrapper {
+            margin-bottom: 0;
+        }
+
+        #{$adyen-pe-data-grid}__body #{$adyen-pe-data-grid}__row {
+            &:last-child #{$adyen-pe-data-grid__cell} {
+                border-bottom: style.token(border-width-s) solid style.token(color-outline-secondary);
+            }
+        }
+
+        #{$adyen-pe-data-grid}__footer .adyen-pe-pagination {
+            padding: style.token(spacer-070) style.token(spacer-040);
+        }
+    }
+
+    &__empty-cell {
+        display: inline-block;
+        height: style.token(spacer-050);
+    }
+
+    &__skeleton-cell {
+        text-align: center;
+    }
+
+    &__skeleton-cell-content {
+        @include skeleton.adyen-pe-skeleton();
+        height: style.token(spacer-060);
+    }
+
+    &__skeleton-cell-content--loading {
+        @include skeleton.adyen-pe-skeleton-animation();
+    }
+
+    &__empty-message {
+        background: style.token(color-background-primary);
+        border: style.token(border-width-s) solid style.token(color-outline-primary);
+        border-radius: style.token(spacer-060);
+        box-shadow: 0 6px 12px 0 rgba(0, 17, 44, 0.08);
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-050);
+        left: 50%;
+        padding: style.token(spacer-120);
+        position: absolute;
+        text-align: center;
+        top: style.token(spacer-080);
+        transform: translateX(-50%);
+    }
+
+    &__cell-value {
+        align-items: center;
+        display: flex;
+        gap: style.token(spacer-030);
+        width: min-content;
+    }
+
+    &__icon-container {
+        height: style.token(spacer-090);
+        width: style.token(spacer-100);
+    }
+
+    &__icon {
+        height: 100%;
+        max-width: 100%;
+        object-fit: contain;
+        object-position: center;
+    }
+
+    // stylelint-disable order/order
+    @include adyen-pe-screen-sm-and-up {
+        &__head {
+            border-left: style.token(border-width-s) solid transparent;
+            border-right: style.token(border-width-s) solid transparent;
+            box-sizing: border-box;
+            display: block;
+            height: 100%;
+            overflow: visible;
+            position: relative;
+        }
+
+        #{$adyen-pe-data-grid__cell} {
+            padding: style.token(spacer-070);
+        }
+    }
+}

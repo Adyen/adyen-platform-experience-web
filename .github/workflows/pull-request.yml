@@ -3,7 +3,9 @@ name: Pull Request workflow
 on:
   pull_request:
     branches:
-      - main # or the name of your default branch
+      - main
+      - develop
+      - group/*
     types: [opened, synchronize, reopened]
     paths-ignore:
       - README.md
@@ -16,7 +18,7 @@ jobs:
 
     steps:
       - name: Checkout the repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Run the preliminary setup steps
         uses: ./.github/actions/setup-env

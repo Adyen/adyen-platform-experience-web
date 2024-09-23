@@ -1,0 +1,32 @@
+@use '../../../../../style';
+
+.adyen-pe-range-selection-filter {
+    display: flex;
+    flex-direction: column;
+    font-size: style.token(text-body-font-size);
+    gap: style.token(spacer-070);
+
+    &__input {
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-040);
+    }
+
+    /* stylelint-disable-next-line selector-no-qualifying-type */
+    input[type='number']::-webkit-inner-spin-button,
+    input[type='number']::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        -moz-appearance: textfield;
+        margin: 0;
+    }
+
+    /* stylelint-disable-next-line selector-no-qualifying-type */
+    input[type='number'] {
+        appearance: textfield;
+    }
+
+    label {
+        color: style.token(color-label-primary);
+        font-weight: style.token(text-body-stronger-font-weight);
+    }
+}

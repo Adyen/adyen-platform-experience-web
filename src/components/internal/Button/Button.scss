@@ -1,0 +1,150 @@
+@use '../../../style';
+
+.adyen-pe-button {
+    $adyen-pe-button: &;
+
+    align-items: center;
+    appearance: none;
+    border: 0;
+    border-radius: style.token(border-radius-m);
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0);
+    cursor: pointer;
+    display: inline-flex;
+    font-family: inherit;
+    height: fit-content;
+    justify-content: center;
+    padding: style.token(spacer-040) style.token(spacer-060);
+    text-decoration: none;
+    transition: 125ms cubic-bezier(0.785, 0.135, 0.15, 0.86);
+    transition-property: color, background-color, box-shadow;
+    user-select: none;
+
+    &__label {
+        align-items: center;
+        display: inline-flex;
+        line-height: style.token(text-body-line-height);
+        vertical-align: middle;
+        white-space: nowrap;
+        width: 100%;
+    }
+
+    &--hidden {
+        display: none;
+    }
+
+    &--primary {
+        background-color: style.token(color-background-inverse-primary);
+        color: style.token(color-label-inverse-primary);
+
+        &:hover {
+            background-color: style.token(color-background-inverse-primary-hover);
+        }
+
+        &:active {
+            background-color: style.token(color-background-inverse-primary-active);
+        }
+
+        &:disabled {
+            background-color: style.token(color-background-disabled);
+            color: style.token(color-label-disabled);
+        }
+    }
+
+    &--secondary {
+        background-color: style.token(color-background-primary);
+        box-shadow: inset 0 0 0 1px #c9cdd3;
+        color: style.token(color-label-primary);
+
+        &:hover {
+            background-color: style.token(color-background-primary-hover);
+            box-shadow: inset 0 0 0 1px style.token(color-outline-primary-hover);
+            color: style.token(color-label-secondary);
+        }
+
+        &:hover:not(:focus) {
+            box-shadow: inset 0 0 0 1px style.token(color-outline-primary-hover);
+        }
+
+        &:active {
+            background-color: style.token(color-background-tertiary);
+            box-shadow: inset 0 0 0 1px #c9cdd3;
+            color: style.token(color-label-primary-active);
+        }
+
+        &:disabled,
+        &:disabled:not(:focus) {
+            background-color: style.token(color-background-primary);
+            box-shadow: inset 0 0 0 1px style.token(color-outline-primary);
+            color: style.token(color-label-disabled);
+        }
+    }
+
+    &--tertiary {
+        background-color: transparent;
+        box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0);
+        color: style.token(color-label-primary);
+        height: auto;
+        padding: style.token(spacer-000);
+        text-decoration: underline;
+
+        &:hover {
+            background-color: style.token(color-background-primary);
+            color: style.token(color-label-primary-hover);
+            text-decoration: none;
+        }
+
+        &:active {
+            background-color: style.token(color-background-primary);
+            color: style.token(color-label-primary-active);
+            text-decoration: none;
+        }
+
+        &:disabled {
+            background-color: style.token(color-background-primary);
+            color: style.token(color-label-disabled);
+        }
+    }
+
+    &--circle {
+        align-items: center;
+        border-radius: 10000rem;
+        justify-content: center;
+        min-width: auto;
+        padding: 0;
+    }
+
+    &--icon {
+        //Icons will always take equal width and height
+        //Modify width and height automatically adjust to the same size
+        height: auto;
+        position: relative;
+        width: style.token(spacer-110);
+
+        &-content svg {
+            display: block;
+        }
+
+        &::before {
+            content: '';
+            float: left;
+            padding-top: 100%;
+        }
+
+        &::after {
+            clear: both;
+            content: '';
+            display: table;
+        }
+    }
+
+    &__icon-left,
+    &__icon-right {
+        align-items: center;
+        display: inline-flex;
+        justify-content: center;
+    }
+
+    &:disabled {
+        cursor: not-allowed;
+    }
+}

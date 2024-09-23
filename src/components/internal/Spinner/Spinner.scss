@@ -1,0 +1,54 @@
+@use '../../../style';
+
+.adyen-pe-spinner__wrapper {
+    align-items: center;
+    display: flex;
+    height: 100%;
+    justify-content: center;
+}
+
+.adyen-pe-spinner__wrapper--inline {
+    display: inline-block;
+    height: auto;
+    margin-right: 8px;
+
+    [dir='rtl'] & {
+        margin-left: 8px;
+        margin-right: 0;
+    }
+}
+
+.adyen-pe-spinner {
+    animation: rotateSpinner 1.5s infinite linear;
+    border: 3px solid style.token(color-outline-primary-active);
+    border-radius: 50%;
+    border-top-color: transparent;
+    height: 43px;
+    width: 43px;
+}
+
+.adyen-pe-spinner--large {
+    height: 43px;
+    width: 43px;
+}
+
+.adyen-pe-spinner--small {
+    border-width: 2px;
+    height: 16px;
+    width: 16px;
+}
+
+.adyen-pe-spinner--medium {
+    height: 28px;
+    width: 28px;
+}
+
+@keyframes rotateSpinner {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}

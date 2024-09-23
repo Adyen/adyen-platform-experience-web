@@ -1,0 +1,80 @@
+@use '../../../style';
+
+.adyen-pe-datepicker {
+    --adyen-pe-datepicker-margin: 1.25rem;
+    --adyen-pe-datepicker-max-width: calc(var(--adyen-pe-datepicker-tap-target-size) * 7);
+    --adyen-pe-datepicker-tap-target-size: 2.5rem;
+    --adyen-pe-datepicker-vertical-offset: 1.125rem;
+
+    margin: var(--adyen-pe-datepicker-margin);
+    padding-top: var(--adyen-pe-datepicker-vertical-offset);
+    position: relative;
+    width: var(--adyen-pe-datepicker-max-width);
+
+    &--with-timezone {
+        padding-bottom: calc(var(--adyen-pe-datepicker-vertical-offset) * 2);
+    }
+
+    &__controls {
+        --adyen-pe-datepicker-control-vertical-offset: calc(var(--adyen-pe-datepicker-tap-target-size) / 2 - 50%);
+
+        inset: auto 0;
+        margin: 0 calc(var(--adyen-pe-datepicker-margin) / 3 * -1);
+        position: absolute;
+        transform: translateY(calc(var(--adyen-pe-datepicker-control-vertical-offset) - #{style.token(spacer-030)} / 2));
+
+        > :nth-child(n) {
+            &:not(.adyen-pe-button--prev, .adyen-pe-button--next) {
+                display: none;
+            }
+        }
+
+        > .adyen-pe-button--prev,
+        > .adyen-pe-button--next {
+            color: inherit;
+            display: inline-flex;
+            transform: rotate(-90deg);
+        }
+
+        > .adyen-pe-button--prev {
+            float: left;
+        }
+
+        > .adyen-pe-button--next {
+            float: right;
+        }
+    }
+
+    &__selector-container {
+        bottom: var(--adyen-pe-datepicker-vertical-offset);
+        margin: calc(var(--adyen-pe-datepicker-margin) / 5 * -1);
+        margin-bottom: 0;
+        position: relative;
+        z-index: 1;
+
+        .adyen-pe-popover {
+            width: 100%;
+        }
+    }
+
+    &__timezone {
+        color: style.token(color-label-primary-hover);
+        font-size: style.token(text-caption-font-size);
+        font-weight: style.token(text-body-stronger-font-weight);
+        height: var(--adyen-pe-datepicker-tap-target-size);
+        inset: auto 0 0;
+        line-height: calc(var(--adyen-pe-datepicker-tap-target-size) - 1px);
+        margin: calc(var(--adyen-pe-datepicker-margin) * -1);
+        padding: 0 var(--adyen-pe-datepicker-margin);
+        position: absolute;
+
+        &::before {
+            background: style.token(color-background-secondary);
+            border-top: style.token(border-width-s) solid style.token(color-outline-primary);
+            content: '';
+            inset: 0;
+            position: absolute;
+            z-index: -1;
+        }
+    }
+}

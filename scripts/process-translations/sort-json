@@ -1,0 +1,26 @@
+#!/usr/bin/env node
+
+try {
+    const SOURCE_OBJ = JSON.parse(process.argv[2] /* JSON string received as command argument */);
+
+    // JSON string with keys sorted in alphabetical order (case-insensitive)
+    const sortedJSON = JSON.stringify(
+        Object.fromEntries(
+            Object.entries(SOURCE_OBJ)
+                .sort(([a], [b]) => a.localeCompare(b))
+        )
+    );
+
+    // JSON string for the source object
+    const sourceJSON = JSON.stringify(SOURCE_OBJ);
+
+    if (sortedJSON !== sourceJSON) {
+        // json mismatch:
+        // one or more keys are out of order
+        // write sorted json to stdout
+        console.log(sortedJSON);
+    }
+} catch (ex) {
+    console.error(ex);
+    process.exitCode = 1;
+}

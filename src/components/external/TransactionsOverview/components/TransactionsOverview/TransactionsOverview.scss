@@ -1,0 +1,22 @@
+@use '../../../../internal/DataOverviewDisplay/styles' as *;
+@use '../../../../../style/breakpoints' as breakpoints;
+@use '../../../../../style';
+
+.adyen-pe-transactions-overview {
+    @include adyen-pe-data-overview;
+
+    &__summary {
+        display: flex;
+        flex-wrap: wrap-reverse;
+        gap: style.token(spacer-060);
+        justify-content: space-between;
+    }
+
+    &__summary-item {
+        flex-grow: 1;
+
+        @include breakpoints.adyen-pe-screen-md-and-up {
+            flex-grow: unset;
+        }
+    }
+}

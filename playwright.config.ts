@@ -10,11 +10,11 @@ const baseUrl = `http://${playground.host}:${playground.port}`;
  * See https://playwright.dev/docs/test-configuration.
  */
 const config: PlaywrightTestConfig = {
-    testDir: './packages/lib/tests',
+    testDir: './tests',
     timeout: 30 * 1000,
     globalTimeout: 10 * 60 * 1000, // 10 minutes
     expect: {
-        timeout: 3000,
+        timeout: 7000,
     },
     fullyParallel: true,
 
@@ -30,7 +30,7 @@ const config: PlaywrightTestConfig = {
     reporter: 'html',
     use: {
         /* Maximum time each action such as `click()` can take. Defaults to 0 (no limit). */
-        actionTimeout: 1000,
+        actionTimeout: 5000,
         /* Base URL to use in actions like `await page.goto('/')`. */
         baseURL: baseUrl,
 
@@ -42,6 +42,7 @@ const config: PlaywrightTestConfig = {
     projects: [
         {
             name: 'local-chrome',
+            testDir: 'tests/integration',
             use: {
                 // Use the pre-installed browser already on the machine
                 channel: 'chrome',
@@ -52,6 +53,7 @@ const config: PlaywrightTestConfig = {
         },
         {
             name: 'chromium',
+            testDir: 'tests/integration',
             use: {
                 ...devices['Desktop Chrome'],
                 launchOptions: {
@@ -61,6 +63,7 @@ const config: PlaywrightTestConfig = {
         },
         {
             name: 'firefox',
+            testDir: 'tests/integration',
             use: {
                 ...devices['Desktop Firefox'],
                 launchOptions: {
@@ -68,10 +71,17 @@ const config: PlaywrightTestConfig = {
                 },
             },
         },
+        {
+            name: 'contract',
+            testDir: 'tests/contract',
+            use: {
+                ignoreHTTPSErrors: true,
+            },
+        },
     ],
     /* Run your local dev server before starting the tests */
     webServer: {
-        command: process.env.CI ? 'npm run demo:serve' : 'npm run start:mocked',
+        command: 'npm run storybook:demo',
         reuseExistingServer: !process.env.CI,
         url: process.env.CI ? undefined : baseUrl,
         port: process.env.CI ? playground.port : undefined,

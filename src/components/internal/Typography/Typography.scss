@@ -1,0 +1,76 @@
+@use '../../../style';
+
+.adyen-pe-typography {
+    // Reset preset browser margin on all elements
+    margin: 0;
+
+    // Caption
+    &--caption {
+        font-size: style.token(text-caption-font-size);
+        font-weight: style.token(text-body-font-weight);
+        letter-spacing: #{style.token(text-caption-letter-spacing)};
+        line-height: style.token(text-caption-line-height);
+    }
+
+    &--caption-wide {
+        line-height: style.token(text-body-line-height);
+    }
+
+    &--caption-stronger {
+        font-weight: style.token(text-body-stronger-font-weight);
+    }
+
+    // Body
+    &--body {
+        font-size: style.token(text-body-font-size);
+        font-weight: style.token(text-body-font-weight);
+        letter-spacing: #{style.token(text-body-letter-spacing)};
+        line-height: style.token(text-body-line-height);
+    }
+
+    &--body-wide {
+        line-height: style.token(text-body-wide-line-height);
+    }
+
+    &--body-stronger {
+        font-weight: style.token(text-body-stronger-font-weight);
+    }
+
+    &--body-strongest {
+        font-weight: style.token(text-body-strongest-font-weight);
+    }
+
+    // Subtitle
+    &--subtitle {
+        font-size: style.token(text-subtitle-font-size);
+        font-weight: style.token(text-body-stronger-font-weight);
+        letter-spacing: #{style.token(text-subtitle-letter-spacing)};
+        line-height: style.token(text-subtitle-line-height);
+    }
+
+    &--subtitle-stronger {
+        font-weight: style.token(text-body-strongest-font-weight);
+    }
+
+    // Title
+    &--title {
+        font-size: style.token(text-title-m-font-size);
+        font-weight: style.token(text-body-strongest-font-weight);
+        letter-spacing: #{style.token(text-title-letter-spacing)};
+        line-height: style.token(text-title-m-mobile-line-height);
+    }
+
+    &--title-m {
+        font-size: style.token(text-title-m-font-size);
+        font-weight: style.token(text-body-strongest-font-weight);
+        letter-spacing: #{style.token(text-title-m-letter-spacing)};
+        line-height: style.token(text-title-m-line-height);
+    }
+
+    &--title-l {
+        font-size: style.token(text-title-l-font-size);
+        font-weight: style.token(text-body-strongest-font-weight);
+        letter-spacing: #{style.token(text-title-l-letter-spacing)};
+        line-height: style.token(text-title-l-line-height);
+    }
+}

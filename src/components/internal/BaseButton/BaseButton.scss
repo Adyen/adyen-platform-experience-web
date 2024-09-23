@@ -1,0 +1,18 @@
+.adyen-pe-base-button {
+    $adyen-pe-button: &;
+
+    appearance: none;
+    cursor: pointer;
+    padding: 0;
+    text-align: unset;
+    text-decoration: none;
+    user-select: none;
+
+    &:disabled {
+        cursor: not-allowed;
+    }
+
+    &--full-width {
+        width: 100%;
+    }
+}

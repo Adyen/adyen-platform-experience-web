@@ -1,0 +1,41 @@
+@use '../../../style';
+
+.adyen-pe-tag {
+    align-items: center;
+    border-radius: style.token(border-radius-s);
+    cursor: default;
+    display: inline-flex;
+    flex-direction: row;
+    font-size: style.token(text-caption-font-size);
+    font-weight: style.token(text-body-stronger-font-weight);
+    justify-content: center;
+    min-width: 2.5rem;
+    padding: style.token(spacer-020) style.token(spacer-040);
+    width: fit-content;
+
+    &--success {
+        background: style.token(color-background-success-weak);
+        color: style.token(color-label-on-background-success-weak);
+    }
+
+    &--error {
+        background: style.token(color-background-critical-weak);
+        color: style.token(color-label-critical);
+    }
+
+    &--default {
+        background: style.token(color-background-secondary);
+        color: style.token(color-label-secondary);
+    }
+
+    &--warning {
+        background: style.token(color-background-warning-weak);
+        color: style.token(color-label-on-background-warning-weak);
+    }
+
+    &--primary {
+        background: style.token(color-background-primary);
+        color: style.token(color-label-primary);
+        outline: style.token(border-width-s) solid style.token(color-outline-primary);
+    }
+}

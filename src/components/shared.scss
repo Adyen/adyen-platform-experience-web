@@ -1,0 +1,8 @@
+@use '../style';
+
+.adyen-pe {
+    &-component,
+    &-popover {
+        color: style.token(color-label-primary);
+    }
+}

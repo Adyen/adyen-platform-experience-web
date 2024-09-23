@@ -9,7 +9,7 @@ NC='\033[0m'
 echo "----- ${LIGHT_BLUE}Pre-commit hook checks started${NC} -----"
 
 echo "${LIGHT_GREEN}Formatting code with prettier!${NC}"
-npx lint-staged
+npx lint-staged --allow-empty
 
 # Sucessfull checking
 echo " ${GREEN}✓✓✓✓✓ prettier code format checked${NC}"

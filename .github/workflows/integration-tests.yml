@@ -1,0 +1,79 @@
+name: Integration Tests
+
+on:
+  pull_request_review:
+    types: [submitted]
+  pull_request:
+    types: [synchronize]
+    branches:
+      - main
+      - develop
+      - group/*
+
+jobs:
+  is-pr-approved:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+
+      - id: check-approval
+        run: gh pr status --json reviews -q '.currentBranch.reviews' | jq '.[]' | jq '.state' | grep APPROVED
+        env:
+          GH_TOKEN: ${{ github.token }}
+        continue-on-error: true
+
+      - run: echo ${{ steps.check-approval.outcome == 'success' }}
+    outputs:
+      approved: ${{ steps.check-approval.outcome == 'success' }}
+
+  e2e-local-mocked-api:
+    needs: is-pr-approved
+    if: needs.is-pr-approved.outputs.approved == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      CI: true
+      PLAYGROUND_HOST: localhost
+      PLAYGROUND_PORT: 4173
+      PLAYGROUND_URL: http://localhost:4173
+      MOCK_SERVER_PORT: 8083
+      VITE_MODE: demo
+    steps:
+      - name: Checkout the repo
+        uses: actions/checkout@v3
+
+      - name: Run the preliminary setup steps
+        uses: ./.github/actions/setup-env
+
+      - name: Fetch latest Chrome stable version
+        id: latest-chrome-version
+        run: echo "version=$( curl -s https://chromiumdash.appspot.com/fetch_releases?channel=Stable&platform=Linux&num=1 | jq '.[0].version' )" >> $GITHUB_OUTPUT
+
+      - name: Cache Chrome
+        id: cache-chrome
+        uses: actions/cache@v3
+        with:
+          path: /opt/hostedtoolcache/chromium/latest
+          key: chrome-${{ steps.latest-chrome-version.outputs.version }}
+
+      - name: Install Chrome (if not available in cache)
+        if: steps.cache-chrome.outputs.cache-hit != 'true'
+        uses: browser-actions/setup-chrome@latest
+        with:
+          chrome-version: stable
+
+      - name: Build demo
+        run: npm run build:demo
+
+      - name: Run tests
+        run: npm run test:integration -- --project local-chrome
+
+      - name: Upload Playwright report (on failure)
+        if: failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: playwright-report-${{ github.sha }}
+          path: playwright-report/
+          retention-days: 3

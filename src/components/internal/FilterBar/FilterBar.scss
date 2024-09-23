@@ -1,0 +1,49 @@
+@use '../../../style';
+
+.adyen-pe-filter-bar {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: style.token(spacer-040);
+    padding: style.token(spacer-050) style.token(spacer-000);
+    white-space: nowrap;
+
+    .adyen-pe-button--secondary.adyen-pe-dropdown__button,
+    .adyen-pe-filter-button {
+        &,
+        &:hover {
+            box-shadow: none;
+        }
+
+        &:focus-visible {
+            outline: 0;
+        }
+
+        &--has-selection {
+            &,
+            &:hover {
+                border: style.token(border-width-s) solid style.token(color-outline-primary-active);
+                box-shadow: inset 0 0 0 1px #c9cdd3;
+            }
+        }
+
+        &--active,
+        &:active,
+        &:focus {
+            border: style.token(border-width-s) solid style.token(color-outline-primary-active);
+            box-shadow: none !important;
+            outline: style.token(border-width-s) solid style.token(color-outline-primary-active);
+        }
+    }
+
+    &-mobile-switch {
+        align-items: center;
+        display: flex;
+        justify-content: space-between;
+
+        &__button {
+            padding: 0;
+            width: calc(#{style.token(spacer-060)} * 3);
+        }
+    }
+}
