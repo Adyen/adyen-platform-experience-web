@@ -12,6 +12,7 @@ import { preact } from '@preact/preset-vite';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { checker } from 'vite-plugin-checker';
 import { realApiProxies } from './endpoints/realApiProxies';
+import svgr from 'vite-plugin-svgr';
 const currentVersion = version();
 const externalDependencies = Object.keys(packageJson.dependencies);
 
@@ -126,6 +127,11 @@ export default defineConfig(async ({ mode }) => {
             proxy: undefined,
         },
         plugins: [
+            svgr({
+                svgrOptions: { jsxRuntime: 'automatic', exportType: 'default' },
+                esbuildOptions: { jsx: 'automatic' },
+                include: '**/*.svg?component',
+            }),
             preact(),
             isDevMode(mode)
                 ? checker({
