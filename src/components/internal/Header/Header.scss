@@ -1,6 +1,6 @@
-@use '../../../../style';
+@use '../../../style';
 
-.adyen-pe-data-overview-header {
+.adyen-pe-header {
     align-items: flex-start;
     display: flex;
     position: relative;
@@ -21,7 +21,11 @@
         }
     }
 
-    &__title + &__description {
+    &__title + &__subtitle {
         margin-top: style.token(spacer-020);
+    }
+
+    &__divider {
+        margin-top: style.token(spacer-070);
     }
 }

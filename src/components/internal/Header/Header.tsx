@@ -1,21 +1,23 @@
 import { FC } from 'preact/compat';
-import Typography from '../../Typography/Typography';
-import useCoreContext from '../../../../core/Context/useCoreContext';
-import { TypographyElement, TypographyVariant } from '../../Typography/types';
-import type { TranslationKey } from '../../../../translations';
-import type { UIElementProps } from '../../../types';
-import './DataOverviewHeader.scss';
+import Typography from '../Typography/Typography';
+import useCoreContext from '../../../core/Context/useCoreContext';
+import { TypographyElement, TypographyVariant } from '../Typography/types';
+import type { TranslationKey } from '../../../translations';
+import type { UIElementProps } from '../../types';
+import './Header.scss';
+import { Divider } from '../Divider/Divider';
 
-export const BASE_CLASS = 'adyen-pe-data-overview-header';
+export const BASE_CLASS = 'adyen-pe-header';
 
-export interface DataOverviewHeaderProps {
+export interface HeaderProps {
     baseClassName?: string;
-    descriptionKey?: TranslationKey;
+    hasDivider?: boolean;
     hideTitle?: UIElementProps['hideTitle'];
+    subtitleKey?: TranslationKey;
     titleKey?: TranslationKey;
 }
 
-export const DataOverviewHeader: FC<DataOverviewHeaderProps> = ({ baseClassName = BASE_CLASS, children, hideTitle, titleKey, descriptionKey }) => {
+export const Header: FC<HeaderProps> = ({ baseClassName = BASE_CLASS, children, hasDivider, hideTitle, titleKey, subtitleKey }) => {
     const { i18n } = useCoreContext();
     return (
         <header className={baseClassName}>
@@ -27,13 +29,14 @@ export const DataOverviewHeader: FC<DataOverviewHeaderProps> = ({ baseClassName 
                         </Typography>
                     </div>
                 )}
-                {descriptionKey && (
-                    <p className={`${baseClassName}__description`}>
+                {subtitleKey && (
+                    <p className={`${baseClassName}__subtitle`}>
                         <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY}>
-                            {i18n.get(descriptionKey)}
+                            {i18n.get(subtitleKey)}
                         </Typography>
                     </p>
                 )}
+                {hasDivider && <Divider className={`${baseClassName}__divider`} />}
             </div>
             {children && <div className={`${baseClassName}__controls`}>{children}</div>}
         </header>
