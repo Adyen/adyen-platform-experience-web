@@ -4,8 +4,7 @@
 
 ### Patch Changes
 
--   e5bb419: - Fix broken translation type declarations
--   -   Fix broken translation type declarations
+-   e5bb419: Fix broken translation type declarations
 
 ## 1.1.0
 
