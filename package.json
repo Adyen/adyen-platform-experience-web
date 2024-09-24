@@ -69,7 +69,7 @@
     "type-check": "tsc --preserveWatchOutput",
     "types:watch": "tsc --preserveWatchOutput --watch && tsc --project tsconfig-build.json --watch",
     "format:all": "prettier --write 'src/**/*.{ts,js,css, scss, html}' && prettier --write 'src/**/*.{ts,js,css, scss, html}'",
-    "storybook": "concurrently --kill-others-on-fail 'npm run types:watch' 'vite-node --mode loop .storybook/runStorybook.ts' ",
+    "storybook": "concurrently --kill-others-on-fail 'npm run types:watch' 'vite-node --mode development .storybook/runStorybook.ts' ",
     "storybook:local": "concurrently --kill-others-on-fail 'npm run types:watch' 'vite-node --mode local-env .storybook/runStorybook.ts' ",
     "storybook:test": "concurrently --kill-others-on-fail 'npm run types:watch' 'vite-node --mode development .storybook/runStorybook.ts' ",
     "storybook:beta": "concurrently --kill-others-on-fail 'npm run types:watch' 'vite-node --mode beta .storybook/runStorybook.ts' ",
