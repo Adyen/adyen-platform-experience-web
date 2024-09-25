@@ -1,4 +1,4 @@
 export interface CapitalOverviewProps {
-    skipPreQualifiedAlert?: boolean;
+    skipPreQualifiedIntro?: boolean;
     onOfferReview?(): void;
 }

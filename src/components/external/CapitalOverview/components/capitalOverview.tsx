@@ -10,7 +10,7 @@ import { useAuthContext } from '../../../../core/Auth';
 import { useFetch } from '../../../../hooks/useFetch/useFetch';
 import { EMPTY_OBJECT } from '../../../../utils';
 
-export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<CapitalOverviewProps>> = ({ hideTitle, skipPreQualifiedAlert }) => {
+export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<CapitalOverviewProps>> = ({ hideTitle, skipPreQualifiedIntro }) => {
     const { i18n } = useCoreContext();
 
     const { getGrants: grantsEndpointCall, getCapitalDynamicConfiguration: dynamicConfigurationEndpointCall } = useAuthContext().endpoints;
