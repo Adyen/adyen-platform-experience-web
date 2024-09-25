@@ -9,6 +9,7 @@ import { FunctionalComponent } from 'preact';
 import { useAuthContext } from '../../../../core/Auth';
 import { useFetch } from '../../../../hooks/useFetch/useFetch';
 import { EMPTY_OBJECT } from '../../../../utils';
+import { CapitalHeader } from '../../../internal/CapitalHeader';
 
 export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<CapitalOverviewProps>> = ({ hideTitle, skipPreQualifiedIntro }) => {
     const { i18n } = useCoreContext();
@@ -44,13 +45,7 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
 
     return (
         <div className={CAPITAL_OVERVIEW_CLASS_NAMES.base}>
-            {!hideTitle && (
-                <div className={CAPITAL_OVERVIEW_CLASS_NAMES.title}>
-                    <Typography variant={TypographyVariant.TITLE} medium>
-                        {i18n.get(grantList?.length ? 'capital.grants' : 'capital.grantOffer')}
-                    </Typography>
-                </div>
-            )}
+            {!hideTitle && <CapitalHeader hideTitle={hideTitle} titleKey={grantList?.length ? 'capital.grants' : 'capital.grantOffer'} />}
             {grantList?.length ? (
                 <div>{'Placeholder for grants list'}</div>
             ) : dynamicOffer?.maxAmount ? (
