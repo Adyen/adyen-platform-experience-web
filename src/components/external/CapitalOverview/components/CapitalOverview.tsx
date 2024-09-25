@@ -1,4 +1,4 @@
-import {  useMemo } from 'preact/hooks';
+import { useMemo } from 'preact/hooks';
 import { ExternalUIComponentProps } from '../../../types';
 import { CapitalOverviewProps } from '../types';
 import { CAPITAL_OVERVIEW_CLASS_NAMES } from '../constants';
