@@ -11,7 +11,7 @@ export const capitalMock = [
         if (networkError) {
             return HttpResponse.error();
         }
-        await delay(500);
+        await delay(200);
         return HttpResponse.json(DYNAMIC_CAPITAL_OFFER);
     }),
 
@@ -19,7 +19,7 @@ export const capitalMock = [
         if (networkError) {
             return HttpResponse.error();
         }
-        await delay(500);
+        await delay(200);
         return HttpResponse.json({
             data: SINGLE_GRANT,
         });
