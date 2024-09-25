@@ -1,1 +1,1 @@
-export { default as CapitalOverview } from './CapitalOverview';
+export { default as CapitalOverview } from './CapitalOverviewElement';

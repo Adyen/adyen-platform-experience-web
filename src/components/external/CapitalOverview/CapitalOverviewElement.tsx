@@ -1,7 +1,7 @@
 import { _UIComponentProps } from '../../types';
 import UIElement from '../UIElement/UIElement';
 import { CapitalOverviewProps } from './types';
-import { CapitalOverview } from './components/capitalOverview';
+import { CapitalOverview } from './components/CapitalOverview';
 
 export class CapitalOverviewElement extends UIElement<CapitalOverviewProps> {
     public static type = 'capitalOverview';
