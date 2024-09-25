@@ -3,9 +3,9 @@
  */
 import { render, within } from '@testing-library/preact';
 import { describe, test, expect, beforeEach, vi, Mock } from 'vitest';
-import { TRANSACTIONS } from '../../../../../mocks/mock-data';
+import { TRANSACTIONS } from '../../../../mocks/mock-data';
 import userEvent from '@testing-library/user-event';
-import DataGrid from '../../DataGrid';
+import DataGrid from './index';
 
 const columns = [
     {

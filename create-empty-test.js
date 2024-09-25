@@ -2,7 +2,7 @@ import path from 'path';
 import { writeFile, existsSync, readdir } from 'node:fs';
 
 // const directoriesToScan = ['src/components/internal', 'src/hooks', 'src/core/Localization', 'src/primitives', 'src/utils'];
-const directoriesToScan = ['src/components/utils'];
+const directoriesToScan = ['src/components/internal'];
 
 const testFileExtension = '.test.tsx'; // Adjust based on your project
 
