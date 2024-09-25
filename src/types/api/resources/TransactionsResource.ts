@@ -11,6 +11,13 @@ export interface paths {
          */
         get: operations['getTransaction'];
     };
+    '/v1/transactions/{transactionId}/refund': {
+        /**
+         * Refund a transaction
+         * @description Given a transaction ID and refund information, it initiates a refund
+         */
+        post: operations['refundTransaction'];
+    };
     '/v1/transactions/totals': {
         /**
          * Get transaction totals
@@ -113,6 +120,40 @@ export interface components {
         };
         /** @enum {string} */
         SortDirection: 'asc' | 'desc';
+        TransactionLineItem: {
+            id: number;
+            itemAmount : number;
+            itemVatPercentage : number;
+        };
+        TransactionRefundStatus: {
+            amount: components['schemas']['Amount'];
+            status: 'COMPLETED' | 'FAILED' | 'IN_PROGRESS';
+        };
+        TransactionRefundDetails: {
+            refundStatuses: components['schemas']['TransactionRefundStatus'][];
+            refundMode: 'FULLY_REFUNDABLE_ONLY' | 'NON_REFUNDABLE' | 'PARTIALLY_REFUNDABLE_ANY_AMOUNT' | 'PARTIALLY_REFUNDABLE_WITH_LINE_ITEMS_REQUIRED';
+            refundLocked: boolean;
+            refundableAmount: components['schemas']['Amount'];
+        };
+        TransactionResponse: components['schemas']['SingleTransaction'] & {
+            originalAmount: components['schemas']['Amount'];
+            lineItems: components['schemas']['TransactionLineItem'][];
+            refundDetails: components['schemas']['TransactionRefundDetails'];
+        };
+        TransactionRefundRequest: {
+            amount: components['schemas']['Amount'];
+            merchantRefundReason: string;
+            reference: string;
+            lineItems: components['schemas']['TransactionLineItem'][];
+        };
+        TransactionRefundResponse: {
+            status: 'RECEIVED';
+            transactionId: components['schemas']['SingleTransaction']['id'];
+            amount: components['schemas']['Amount'];
+            merchantRefundReason: string;
+            reference: string;
+            lineItems: components['schemas']['TransactionLineItem'][];
+        };
     };
     responses: never;
     parameters: never;
@@ -140,7 +181,31 @@ export interface operations {
             /** @description OK - the request has succeeded. */
             200: {
                 content: {
-                    'application/json': components['schemas']['SingleTransaction'];
+                    'application/json': components['schemas']['TransactionResponse'];
+                };
+            };
+        };
+    };
+    /**
+     * Refund transaction
+     * @description Given a transaction ID and refund information, it initiates a refund
+     */
+    refundTransaction: {
+        parameters: {
+            path: {
+                transactionId: string;
+            };
+        };
+        requestBody: {
+            content: {
+                'application/json': components['schemas']['TransactionRefundRequest'];
+            },
+        };
+        responses: {
+            /** @description OK - the request has succeeded. */
+            200: {
+                content: {
+                    'application/json': components['schemas']['TransactionRefundResponse'];
                 };
             };
         };
