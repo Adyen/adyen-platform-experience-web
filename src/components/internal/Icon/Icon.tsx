@@ -58,7 +58,8 @@ export const Icon = ({ className, name, ...props }: IconProps) => {
         }
     }, [name]);
 
-    return (
+
+    return IconComponent && (
         <span className={cx('adyen-pe-icon', className)} role="img" aria-hidden {...props}>
             {IconComponent}
         </span>
