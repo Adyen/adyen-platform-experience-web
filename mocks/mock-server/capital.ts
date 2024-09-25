@@ -21,7 +21,40 @@ export const capitalMock = [
         }
         await delay(200);
         return HttpResponse.json({
-            data: SINGLE_GRANT,
+            data: [],
         });
     }),
 ];
+
+export const CapitalMockedResponses = {
+    prequalified: [
+        http.get(mockEndpoints.dynamicOfferConfig, async () => {
+            if (networkError) {
+                return HttpResponse.error();
+            }
+            await delay(200);
+            return HttpResponse.json(DYNAMIC_CAPITAL_OFFER);
+        }),
+
+        http.get(mockEndpoints.grants, async () => {
+            if (networkError) {
+                return HttpResponse.error();
+            }
+            await delay(200);
+            return HttpResponse.json({
+                data: [],
+            });
+        }),
+    ],
+    grantList: [
+        http.get(mockEndpoints.grants, async () => {
+            if (networkError) {
+                return HttpResponse.error();
+            }
+            await delay(200);
+            return HttpResponse.json({
+                data: [SINGLE_GRANT],
+            });
+        }),
+    ],
+};
