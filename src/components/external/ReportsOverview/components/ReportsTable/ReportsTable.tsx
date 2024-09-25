@@ -117,9 +117,7 @@ export const ReportsTable: FC<ReportsTableProps> = ({
 
     return (
         <div className={BASE_CLASS}>
-            {alert && (
-                <Alert isOpen={!!alert} onClose={removeAlert} type={AlertTypeOption.WARNING} className={'adyen-pe-reports-table-alert'} {...alert} />
-            )}
+            {alert && <Alert onClose={removeAlert} type={AlertTypeOption.WARNING} className={'adyen-pe-reports-table-alert'} {...alert} />}
             <DataGrid
                 errorDisplay={errorDisplay}
                 error={error}
