@@ -42,7 +42,7 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
     );
 
     const dynamicOffer = dynamicOfferQuery.data;
-    const grantList = grantsQuery.data;
+    const grantList = grantsQuery.data?.data;
 
     const showPreQualified = dynamicOffer?.maxAmount && !skipPreQualifiedIntro;
     const showGrantsList = grantList?.length;
