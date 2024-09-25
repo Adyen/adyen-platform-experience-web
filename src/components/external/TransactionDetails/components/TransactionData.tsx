@@ -47,7 +47,7 @@ export const TransactionData = ({
     const amountStyle = transaction?.status === 'Booked' ? 'default' : transaction?.status === 'Reversed' ? 'error' : 'pending';
 
     const customColumns = useMemo(() => {
-        const fields = new Set([...DETAILS_FIELDS, ...TRANSACTION_FIELDS]);
+        const fields = new Set([...DETAILS_FIELDS, ...TRANSACTION_FIELDS, 'lineItems', 'originalAmount', 'refundDetails']);
         return Object.entries(transaction || {})
             .filter(([key]) => !fields.has(key as any))
             .map(([key, value]) => ({ key, value }));

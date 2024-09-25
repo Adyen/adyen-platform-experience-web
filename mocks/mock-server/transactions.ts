@@ -1,6 +1,7 @@
 import { http, HttpResponse } from 'msw';
-import { ITransaction } from '../../src';
+import { ITransaction, ITransactionWithDetails } from '../../src';
 import { DEFAULT_TRANSACTION, TRANSACTIONS } from '../mock-data';
+import { EMPTY_ARRAY, EMPTY_OBJECT } from '../../src/utils';
 import { compareDates, computeHash, delay, getPaginationLinks } from './utils';
 import { endpoints } from '../../endpoints/endpoints';
 
@@ -17,6 +18,42 @@ const TRANSACTIONS_TOTALS_CACHE = new Map<string, Map<string, _ITransactionTotal
 const mockEndpoints = endpoints('mock');
 const networkError = false;
 const serverError = false;
+
+const enrichTransactionDataWithDetails = (
+    transaction: ITransaction,
+    { feeAmount, refundLocked = false, refundMode = 'FULLY_REFUNDABLE_ONLY' } = EMPTY_OBJECT as {
+        feeAmount?: number;
+        refundLocked?: boolean;
+        refundMode?: ITransactionWithDetails['refundDetails']['refundMode'];
+    }
+): ITransactionWithDetails => {
+    const { currency, value: transactionAmount } = transaction.amount;
+    let originalAmount = transactionAmount + Math.max(0, feeAmount ?? 0);
+    let lineItems = EMPTY_ARRAY as unknown as ITransactionWithDetails['lineItems'];
+    let refundableAmount: number | undefined;
+
+    switch (refundMode) {
+        case 'NON_REFUNDABLE':
+            refundableAmount = 0;
+            refundLocked = false;
+            break;
+        case 'PARTIALLY_REFUNDABLE_WITH_LINE_ITEMS_REQUIRED':
+            lineItems = []; // [TODO]: use default line items list
+            break;
+    }
+
+    return {
+        ...transaction,
+        lineItems,
+        originalAmount: { currency, value: originalAmount },
+        refundDetails: {
+            refundLocked,
+            refundMode,
+            refundableAmount: { currency, value: refundableAmount ?? originalAmount },
+            refundStatuses: EMPTY_ARRAY as unknown as any[],
+        },
+    };
+};
 
 const fetchTransactionsForRequest = (req: Request) => {
     const url = new URL(req.url);
@@ -109,7 +146,7 @@ export const transactionsMocks = [
             return;
         }
         await delay(1000);
-        return HttpResponse.json(matchingMock);
+        return HttpResponse.json(enrichTransactionDataWithDetails(matchingMock));
     }),
 
     http.get(mockEndpoints.transactionsTotals, ({ request }) => {
