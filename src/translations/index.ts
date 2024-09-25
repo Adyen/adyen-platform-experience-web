@@ -1,5 +1,6 @@
 import type { KeyOfRecord, WithReplacedUnderscoreOrDash } from '../utils/types';
-import _en_US from './en-US.json';
+import EN_US from './en-US.json';
+const _en_US = { ...EN_US };
 
 type _SupportedLocale = KeyOfRecord<typeof all_locales>;
 type _Translations = Translations | PromiseLike<Translations>;
