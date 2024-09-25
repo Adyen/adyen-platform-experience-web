@@ -1,6 +1,8 @@
 @use '../../../style';
 
 .adyen-pe-divider {
-    border-width: 0;
     border-bottom: solid style.token(color-separator-primary) 1px;
+    border-left: 0;
+    border-right: 0;
+    border-top: 0;
 }
