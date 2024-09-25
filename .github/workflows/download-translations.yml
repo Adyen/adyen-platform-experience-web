@@ -6,7 +6,7 @@ on:
 jobs:
   download-files:
     name: Download completed translation files
-    if: ${{ github.event.ref == 'develop' }}
+    if: github.event_name == 'workflow_dispatch' && github.ref_name == 'develop'
     runs-on: ubuntu-latest
     environment: smartling-translations # provides Smartling credentials
     steps:
@@ -26,8 +26,8 @@ jobs:
 
       - name: Download and commit files
         run: |
-          # Checkout the default branch
-          gh pr checkout ${{ github.event.ref }} -b ${{ env.BRANCH_NAME }}
+          # Checkout new branch from the default branch
+          git checkout -B ${{ env.BRANCH_NAME }} ${{ github.ref_name }}
 
           # Download files from Smartling
           npx -y @adyen/smartling-bot@0.6.x download-files
@@ -36,7 +36,6 @@ jobs:
           for source_path in $(jq -r '.translationSourcePaths[]' .i18nrc); do
             root_path=$(dirname $source_path)
             for locale in $(jq -r '.locales[]' .i18nrc); do
-              echo $(realpath "./$root_path/$locale.json")
               git add $(realpath "./$root_path/$locale.json")
             done
           done
@@ -50,7 +49,7 @@ jobs:
             git push
 
             # Create a PR on the default branch
-            gh pr create --base ${{ github.event.ref }} --head ${{ env.BRANCH_NAME }} --fill
+            gh pr create --base ${{ github.ref_name }} --head ${{ env.BRANCH_NAME }} --fill
           fi
         env:
           BRANCH_NAME: "bot/translations"
