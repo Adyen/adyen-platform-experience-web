@@ -1,7 +1,4 @@
 import { useMemo } from 'preact/hooks';
-import useCoreContext from '../../../../core/Context/useCoreContext';
-import Typography from '../../../internal/Typography/Typography';
-import { TypographyVariant } from '../../../internal/Typography/types';
 import { ExternalUIComponentProps } from '../../../types';
 import { CapitalOverviewProps } from '../types';
 import { CAPITAL_OVERVIEW_CLASS_NAMES } from '../constants';
@@ -12,8 +9,6 @@ import { EMPTY_OBJECT } from '../../../../utils';
 import { CapitalHeader } from '../../../internal/CapitalHeader';
 
 export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<CapitalOverviewProps>> = ({ hideTitle, skipPreQualifiedIntro }) => {
-    const { i18n } = useCoreContext();
-
     const { getGrants: grantsEndpointCall, getCapitalDynamicConfiguration: dynamicConfigurationEndpointCall } = useAuthContext().endpoints;
 
     const grantsQuery = useFetch(
@@ -45,7 +40,7 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
 
     return (
         <div className={CAPITAL_OVERVIEW_CLASS_NAMES.base}>
-            {!hideTitle && <CapitalHeader hideTitle={hideTitle} titleKey={grantList?.length ? 'capital.grants' : 'capital.grantOffer'} />}
+            <CapitalHeader hideTitle={hideTitle} titleKey={grantList?.length ? 'capital.grants' : 'capital.grantOffer'} />
             {grantList?.length ? (
                 <div>{'Placeholder for grants list'}</div>
             ) : dynamicOffer?.maxAmount ? (
