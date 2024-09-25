@@ -36,7 +36,7 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
     );
 
     const dynamicOffer = useMemo(() => dynamicOfferQuery.data, [dynamicOfferQuery.data]);
-    const grantList = useMemo(() => grantsQuery.data, [grantsQuery.data]);
+    const grantList = useMemo(() => grantsQuery.data?.data, [grantsQuery.data]);
 
     return (
         <div className={CAPITAL_OVERVIEW_CLASS_NAMES.base}>

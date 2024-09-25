@@ -134,7 +134,7 @@ export interface components {
         getGrantOfferReview: components['schemas']['grantOfferDTO'];
         dynamicGrantOffer: components['schemas']['grantOfferDTO'];
         signOffer: components['schemas']['grantOfferDTO'];
-        getGrants: components['schemas']['grantOfferDTO'][];
+        getGrants: { data: components['schemas']['grantOfferDTO'][] };
     };
     responses: never;
     parameters: never;
