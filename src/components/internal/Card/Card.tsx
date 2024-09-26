@@ -7,6 +7,7 @@ import {
     CARD_HEADER,
     CARD_HEADER_CONTENT,
     CARD_NO_OUTLINE,
+    CARD_NO_PADDING,
     CARD_SUBTITLE,
     CARD_TITLE,
 } from './constants';
@@ -25,11 +26,18 @@ const Card = ({
     renderFooter,
     filled,
     noOutline,
+    noPadding,
     classNameModifiers,
 }: PropsWithChildren<CardProps>) => {
     const Tag = el || 'header';
     return (
-        <section className={classNames(CARD_BASE_CLASS, { [CARD_FILLED]: filled, [CARD_NO_OUTLINE]: noOutline }, classNameModifiers)}>
+        <section
+            className={classNames(
+                CARD_BASE_CLASS,
+                { [CARD_FILLED]: filled, [CARD_NO_OUTLINE]: noOutline, [CARD_NO_PADDING]: noPadding },
+                classNameModifiers
+            )}
+        >
             {(title || renderHeader) && (
                 <Tag className={CARD_HEADER}>
                     {(title || renderHeader) && (

@@ -10,6 +10,7 @@ export interface CardProps {
     renderFooter?: ComponentChild;
     filled?: boolean;
     noOutline?: boolean;
+    noPadding?: boolean;
     buttonAriaLabel?: string;
     classNameModifiers?: string[];
 }
