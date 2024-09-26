@@ -9,6 +9,10 @@ if ${{ github.event_name }}; then
   PROJECT_ROOT=$(realpath "$SCRIPT_DIR/../..")
   I18N_RC_PATH=$(realpath "$PROJECT_ROOT/.i18nrc")
 
+  # Configure the current Git user (the GitHub actor)
+  git config --local user.name "${GITHUB_ACTOR}"
+  git config --local user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+
   # Stage downloaded files
   for source_path in $(jq -r '.translationSourcePaths[]' $I18N_RC_PATH); do
     git add $(dirname $source_path)
