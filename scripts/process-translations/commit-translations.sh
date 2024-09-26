@@ -2,6 +2,7 @@
 
 # (!) This script only exists to be executed in the context of a GitHub action
 # (!) You should never have to execute it yourself
+
 if ${{ github.event_name }}; then
   # Root dir of the project
   SCRIPT_DIR=$(dirname "$0")
@@ -10,10 +11,7 @@ if ${{ github.event_name }}; then
 
   # Stage downloaded files
   for source_path in $(jq -r '.translationSourcePaths[]' $I18N_RC_PATH); do
-    root_path=$(dirname $source_path)
-    for locale in $(jq -r '.locales[]' $I18N_RC_PATH); do
-      git add $(realpath "./$root_path/$locale.json")
-    done
+    git add $(dirname $source_path)
   done
 
   if git diff-index --cached --quiet HEAD; then
