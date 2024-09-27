@@ -53,16 +53,16 @@ jobs:
           }
 
           # create post-download shell script file
-          touch ${{ POST_DOWNLOAD_FILE_PATH }}
-          chmod +x ${{ POST_DOWNLOAD_FILE_PATH }}
+          touch ${{ env.POST_DOWNLOAD_FILE_PATH }}
+          chmod +x ${{ env.POST_DOWNLOAD_FILE_PATH }}
 
-          cat <<EOF >> ${{ POST_DOWNLOAD_FILE_PATH }}
+          cat <<EOF >> ${{ env.POST_DOWNLOAD_FILE_PATH }}
           #!/bin/sh
           commit_translations
           EOF
 
           # Download files from Smartling
-          npx -y @adyen/smartling-bot@0.x.x download-files -p ${{ POST_DOWNLOAD_FILE_PATH }}
+          npx -y @adyen/smartling-bot@0.x.x download-files -p ${{ env.POST_DOWNLOAD_FILE_PATH }}
         env:
           BASE_REF: ${{ github.ref_name }}
           BRANCH_NAME: "bot/translations"
