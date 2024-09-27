@@ -59,6 +59,43 @@ export interface components {
             thresholdAmount?: components['schemas']['Amount'];
             totalAmount?: components['schemas']['Amount'];
         };
+        GrantDTO: {
+            id: string;
+            grantAmount: {
+                value: number;
+                currency: string;
+            };
+            feesAmount: {
+                value: number;
+                currency: string;
+            };
+            repayedAmount: {
+                value: number;
+                currency: string;
+            };
+            repayedGrantAmount: {
+                value: number;
+                currency: string;
+            };
+            repayedFeesAmount: {
+                value: number;
+                currency: string;
+            };
+            repaymentAmount: {
+                value: number;
+                currency: string;
+            };
+            thresholdPaymentAmount: {
+                value: number;
+                currency: string;
+            };
+
+            repaymentRate: number;
+            expectedRepaymentPeriodDays: number;
+            repaymentPeriodLeft: number;
+            maximumRepaymentPeriodDays: number;
+            status: 'Pending' | 'Active' | 'Repaid' | 'Failed' | 'WrittenOff' | 'Revoked';
+        };
         DynamicOffersResponseDTO: {
             maxAmount?: components['schemas']['Amount'];
             minAmount?: components['schemas']['Amount'];
@@ -70,8 +107,8 @@ export interface components {
             amount: number;
             currency: string;
         };
-        signOffer: components['schemas']['GrantOfferResponseDTO'];
-        getGrants: { data: components['schemas']['GrantOfferResponseDTO'][] };
+        signOffer: components['schemas']['GrantDTO'];
+        getGrants: { data: components['schemas']['GrantDTO'][] };
     };
     responses: never;
     parameters: never;
