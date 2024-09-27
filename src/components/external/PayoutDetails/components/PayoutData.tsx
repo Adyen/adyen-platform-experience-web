@@ -7,7 +7,7 @@ import { components } from '../../../../types/api/resources/PayoutsResource';
 import { EMPTY_OBJECT } from '../../../../utils';
 import Accordion from '../../../internal/Accordion/Accordion';
 import Card from '../../../internal/Card/Card';
-import { DATE_FORMAT_PAYOUT_DETAILS } from '../../../internal/DataOverviewDisplay/constants';
+import { DATE_FORMAT_PAYOUT_DETAILS } from '../../../../constants';
 import StructuredList from '../../../internal/StructuredList';
 import { ListValue } from '../../../internal/StructuredList/types';
 import { TypographyVariant } from '../../../internal/Typography/types';

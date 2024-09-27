@@ -12,7 +12,7 @@ import { AlertTypeOption } from '../../../../internal/Alert/types';
 import DownloadButton from '../../../../internal/Button/DownloadButton/DownloadButton';
 import DataGrid from '../../../../internal/DataGrid';
 import { CellTextPosition } from '../../../../internal/DataGrid/types';
-import { DATE_FORMAT_REPORTS } from '../../../../internal/DataOverviewDisplay/constants';
+import { DATE_FORMAT_REPORTS } from '../../../../../constants';
 import DataOverviewError from '../../../../internal/DataOverviewError/DataOverviewError';
 import Pagination from '../../../../internal/Pagination';
 import { PaginationProps, WithPaginationLimitSelection } from '../../../../internal/Pagination/types';

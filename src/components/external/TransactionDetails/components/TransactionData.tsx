@@ -1,4 +1,4 @@
-import { DATE_FORMAT_TRANSACTION_DETAILS } from '../../../internal/DataOverviewDisplay/constants';
+import { DATE_FORMAT_TRANSACTION_DETAILS } from '../../../../constants';
 import { TransactionDetailData } from '../types';
 import TransactionDataSkeleton from './TransactionDataSkeleton';
 import useTimezoneAwareDateFormatting from '../../../../hooks/useTimezoneAwareDateFormatting';

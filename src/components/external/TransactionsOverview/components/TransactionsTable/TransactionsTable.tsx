@@ -1,6 +1,6 @@
 import { FC } from 'preact/compat';
 import { useCallback, useMemo, useState } from 'preact/hooks';
-import { DATE_FORMAT_TRANSACTIONS_MOBILE, DATE_FORMAT_TRANSACTIONS } from '../../../../internal/DataOverviewDisplay/constants';
+import { DATE_FORMAT_TRANSACTIONS_MOBILE, DATE_FORMAT_TRANSACTIONS } from '../../../../../constants';
 import Category from '../Category/Category';
 import DataOverviewError from '../../../../internal/DataOverviewError/DataOverviewError';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
