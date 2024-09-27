@@ -1,7 +1,5 @@
 import { DelayMode, http, HttpHandler, HttpResponse, JsonBodyType } from 'msw';
 import { delay } from './utils';
-import { paths as CapitalPaths } from '../../../src/types/api/resources/CapitalResource';
-import { paths as TransactionPaths } from '../../../src/types/api/resources/TransactionsResource';
 
 type RemoveVersionFromUrl<T extends string> = T extends `${infer Prefix}/v${string}/${infer Rest}` ? `${Prefix}/${Rest}` : T;
 type PathWithBaseUrl<T extends string> = `${string}${RemoveVersionFromUrl<T>}`;
