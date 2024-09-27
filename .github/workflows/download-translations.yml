@@ -29,29 +29,6 @@ jobs:
           # Checkout new branch from the default branch
           git checkout -B ${{ env.BRANCH_NAME }} ${{ env.BASE_REF }}
 
-          commit_translations() {
-            # Configure the current Git user (the GitHub actor)
-            git config --local user.name "${GITHUB_ACTOR}"
-            git config --local user.email "${GITHUB_ACTOR}@users.noreply.github.com"
-
-            # Stage downloaded files
-            for source_path in $(jq -r '.translationSourcePaths[]' .i18nrc); do
-              git add $(dirname $source_path)
-            done
-
-            if git diff-index --cached --quiet HEAD; then
-              # there are no changes to commit
-              echo "No translations updates"
-            else
-              # Create a commit for staged files and push
-              git commit -m "${{ env.COMMIT_TITLE }}"
-              git push -u origin ${{ env.BRANCH_NAME }}
-
-              # Create a PR on the default branch (using GitHub CLI)
-              gh pr create --base ${{ env.BASE_REF }} --head ${{ env.BRANCH_NAME }} --fill
-            fi
-          }
-
           # create post-download shell script file
           mkdir -p $(dirname ${{ env.POST_DOWNLOAD_FILE_PATH }})
           touch ${{ env.POST_DOWNLOAD_FILE_PATH }}
@@ -59,7 +36,26 @@ jobs:
 
           cat <<EOF >> ${{ env.POST_DOWNLOAD_FILE_PATH }}
           #!/bin/sh
-          commit_translations
+          # Configure the current Git user (the GitHub actor)
+          git config --local user.name "${GITHUB_ACTOR}"
+          git config --local user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+
+          # Stage downloaded files
+          for source_path in $(jq -r '.translationSourcePaths[]' .i18nrc); do
+            git add $(dirname $source_path)
+          done
+
+          if git diff-index --cached --quiet HEAD; then
+            # there are no changes to commit
+            echo "No translations updates"
+          else
+            # Create a commit for staged files and push
+            git commit -m "${COMMIT_TITLE}"
+            git push -u origin ${BRANCH_NAME}
+
+            # Create a PR on the default branch (using GitHub CLI)
+            gh pr create --base ${BASE_REF} --head ${BRANCH_NAME} --fill
+          fi
           EOF
 
           # Download files from Smartling
