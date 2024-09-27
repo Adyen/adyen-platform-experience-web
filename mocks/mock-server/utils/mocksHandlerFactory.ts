@@ -24,32 +24,27 @@ export const getHandlerCallback = <T extends JsonBodyType>({
     };
 };
 
-type ResourceType = 'Capital' | 'Transactions';
-type ResourcePaths = {
-    Capital: CapitalPaths;
-    Transactions: TransactionPaths;
-};
-
-type Handlers<Resource extends ResourceType, T extends Record<string, any>> = {
+type Handlers<Resource extends Record<string, any>, T extends Record<string, any>> = {
     [k in keyof T]: {
         method?: 'get' | 'post';
-        endpoint: `${string}${PathWithBaseUrl<Extract<keyof ResourcePaths[Resource], string>>}`;
+        endpoint: `${string}${PathWithBaseUrl<Extract<keyof Resource, string>>}`;
         handler?: ReturnType<typeof getHandlerCallback>;
         response?: JsonBodyType;
     }[];
 };
 
-export const mocksHandlerFactory = <Resource extends ResourceType, T extends Record<string, any>>(
-    Resource: Resource,
-    handlers: Handlers<typeof Resource, T>
-) => {
-    const result = {} as {
-        [k in keyof T]: HttpHandler[];
-    };
-    for (const handlerKey in handlers) {
-        result[handlerKey] = handlers[handlerKey]!.map(({ method, endpoint, handler, response }) =>
-            http[method || 'get'](endpoint, handler || getHandlerCallback({ response }))
-        );
-    }
-    return result;
+export const mocksFactory = <Endpoints extends Record<string, any>>() => {
+    return new MocksHandlerFactory<Endpoints>()['generate'];
 };
+
+class MocksHandlerFactory<Endpoints extends Record<string, any>> {
+    public generate<T extends Record<string, any>>(handlers: Handlers<Endpoints, T>): { [K in keyof T]: HttpHandler[] } {
+        const result = {} as { [K in keyof T]: HttpHandler[] };
+        for (const handlerKey in handlers) {
+            result[handlerKey] = handlers[handlerKey]!.map(({ method, endpoint, handler, response }) =>
+                http[method || 'get'](endpoint, handler || getHandlerCallback({ response }))
+            );
+        }
+        return result;
+    }
+}

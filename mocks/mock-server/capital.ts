@@ -2,7 +2,8 @@ import { DYNAMIC_CAPITAL_OFFER, SINGLE_GRANT } from '../mock-data';
 import { endpoints } from '../../endpoints/endpoints';
 import { http, HttpResponse } from 'msw';
 import { delay } from './utils/utils';
-import { getHandlerCallback, mocksHandlerFactory } from './utils/mocksHandlerFactory';
+import { getHandlerCallback, mocksFactory } from './utils/mocksHandlerFactory';
+import { paths as CapitalPaths } from '../../src/types/api/resources/CapitalResource';
 
 const mockEndpoints = endpoints('mock').capital;
 const networkError = false;
@@ -26,7 +27,9 @@ export const capitalMock = [
     http.get(mockEndpoints.grants, EMPTY_GRANTS_LIST),
 ];
 
-export const CapitalMockedResponses = mocksHandlerFactory('Capital', {
+const capitalFactory = mocksFactory<CapitalPaths>();
+
+export const CapitalMockedResponses = capitalFactory({
     unqualified: [
         { endpoint: mockEndpoints.dynamicOfferConfig, handler: EMPTY_OFFER },
         { endpoint: mockEndpoints.grants, handler: EMPTY_GRANTS_LIST },
@@ -35,7 +38,7 @@ export const CapitalMockedResponses = mocksHandlerFactory('Capital', {
         { endpoint: mockEndpoints.dynamicOfferConfig, response: DYNAMIC_CAPITAL_OFFER },
         { endpoint: mockEndpoints.grants, handler: EMPTY_GRANTS_LIST },
     ],
-    grantList_singleGrant: [
+    singleGrant_active: [
         { endpoint: mockEndpoints.dynamicOfferConfig, handler: EMPTY_OFFER },
         { endpoint: mockEndpoints.grants, response: { data: SINGLE_GRANT } },
     ],
