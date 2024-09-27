@@ -94,8 +94,9 @@ export interface components {
             expectedRepaymentPeriodDays: number;
             repaymentPeriodLeft: number;
             maximumRepaymentPeriodDays: number;
-            status: 'Pending' | 'Active' | 'Repaid' | 'Failed' | 'WrittenOff' | 'Revoked';
+            status: components['schemas']['GrantStatus'];
         };
+        GrantStatus: 'Pending' | 'Active' | 'Repaid' | 'Failed' | 'WrittenOff' | 'Revoked';
         DynamicOffersResponseDTO: {
             maxAmount?: components['schemas']['Amount'];
             minAmount?: components['schemas']['Amount'];
