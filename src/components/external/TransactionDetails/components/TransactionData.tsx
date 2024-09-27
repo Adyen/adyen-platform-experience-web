@@ -12,7 +12,6 @@ import './TransactionData.scss';
 import { PropsWithChildren } from 'preact/compat';
 import { FunctionalComponent } from 'preact';
 import { TRANSACTION_FIELDS } from '../../TransactionsOverview/components/TransactionsTable/TransactionsTable';
-import cx from 'classnames';
 
 const TransactionDataContainer: FunctionalComponent<PropsWithChildren> = ({ children }) => (
     <div className={'adyen-pe-transaction-data__container'}>{children}</div>
@@ -47,7 +46,7 @@ export const TransactionData = ({
     const amountStyle = transaction?.status === 'Booked' ? 'default' : transaction?.status === 'Reversed' ? 'error' : 'pending';
 
     const customColumns = useMemo(() => {
-        const fields = new Set([...DETAILS_FIELDS, ...TRANSACTION_FIELDS, 'lineItems', 'originalAmount', 'refundDetails']);
+        const fields = new Set([...DETAILS_FIELDS, ...TRANSACTION_FIELDS, 'lineItems', 'originalAmount', 'refundDetails', 'splitAmount']);
         return Object.entries(transaction || {})
             .filter(([key]) => !fields.has(key as any))
             .map(([key, value]) => ({ key, value }));

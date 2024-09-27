@@ -1,7 +1,7 @@
 import { http, HttpResponse } from 'msw';
 import { ITransaction, ITransactionWithDetails } from '../../src';
-import { DEFAULT_TRANSACTION, TRANSACTIONS } from '../mock-data';
-import { EMPTY_ARRAY, EMPTY_OBJECT } from '../../src/utils';
+import { DEFAULT_LINE_ITEMS, DEFAULT_REFUND_STATUSES, DEFAULT_TRANSACTION, TRANSACTIONS } from '../mock-data';
+import { clamp, EMPTY_ARRAY, EMPTY_OBJECT, isUndefined } from '../../src/utils';
 import { compareDates, computeHash, delay, getPaginationLinks } from './utils';
 import { endpoints } from '../../endpoints/endpoints';
 
@@ -15,30 +15,43 @@ const DEFAULT_SORT_DIRECTION = 'desc';
 const TRANSACTIONS_CACHE = new Map<string, ITransaction[]>();
 const TRANSACTIONS_TOTALS_CACHE = new Map<string, Map<string, _ITransactionTotals>>();
 
+const KLARNA_OR_PAYPAL = ['klarna', 'paypal'];
+const PAYMENT_OR_TRANSFER = ['Payment', 'Transfer'];
+
 const mockEndpoints = endpoints('mock');
 const networkError = false;
 const serverError = false;
 
 const enrichTransactionDataWithDetails = (
     transaction: ITransaction,
-    { feeAmount, refundLocked = false, refundMode = 'FULLY_REFUNDABLE_ONLY' } = EMPTY_OBJECT as {
+    { feeAmount, lineItemsSlice, refundLocked = false, refundMode = 'FULLY_REFUNDABLE_ONLY' } = EMPTY_OBJECT as {
         feeAmount?: number;
+        lineItemsSlice?: [sliceStart: number, sliceEnd?: number];
         refundLocked?: boolean;
         refundMode?: ITransactionWithDetails['refundDetails']['refundMode'];
     }
 ): ITransactionWithDetails => {
+    const splitAmount = Math.max(0, feeAmount ?? 0);
     const { currency, value: transactionAmount } = transaction.amount;
-    let originalAmount = transactionAmount + Math.max(0, feeAmount ?? 0);
+
     let lineItems = EMPTY_ARRAY as unknown as ITransactionWithDetails['lineItems'];
+    let refundStatuses = EMPTY_ARRAY as unknown as ITransactionWithDetails['refundDetails']['refundStatuses'];
+    let originalAmount = transactionAmount + splitAmount;
     let refundableAmount: number | undefined;
+
+    if (refundMode === 'PARTIALLY_REFUNDABLE_WITH_LINE_ITEMS_REQUIRED') {
+        if (isUndefined(lineItemsSlice)) lineItemsSlice = [0];
+    }
 
     switch (refundMode) {
         case 'NON_REFUNDABLE':
             refundableAmount = 0;
             refundLocked = false;
             break;
+        case 'PARTIALLY_REFUNDABLE_ANY_AMOUNT':
         case 'PARTIALLY_REFUNDABLE_WITH_LINE_ITEMS_REQUIRED':
-            lineItems = []; // [TODO]: use default line items list
+            refundStatuses = DEFAULT_REFUND_STATUSES.map(data => ({ ...data, amount: { ...data.amount, currency } }));
+            if (lineItemsSlice) lineItems = DEFAULT_LINE_ITEMS.slice(...lineItemsSlice);
             break;
     }
 
@@ -46,11 +59,12 @@ const enrichTransactionDataWithDetails = (
         ...transaction,
         lineItems,
         originalAmount: { currency, value: originalAmount },
+        splitAmount: { currency, value: splitAmount },
         refundDetails: {
             refundLocked,
             refundMode,
+            refundStatuses,
             refundableAmount: { currency, value: refundableAmount ?? originalAmount },
-            refundStatuses: EMPTY_ARRAY as unknown as any[],
         },
     };
 };
@@ -141,12 +155,32 @@ export const transactionsMocks = [
     http.get(mockEndpoints.transaction, async ({ params }) => {
         const matchingMock = [...TRANSACTIONS, DEFAULT_TRANSACTION].find(mock => mock.id === params.id);
 
-        if (!matchingMock) {
-            HttpResponse.text('Cannot find matching Transaction mock', { status: 404 });
-            return;
-        }
+        if (!matchingMock) return HttpResponse.text('Cannot find matching Transaction mock', { status: 404 });
+
         await delay(1000);
-        return HttpResponse.json(enrichTransactionDataWithDetails(matchingMock));
+
+        if (PAYMENT_OR_TRANSFER.includes(matchingMock.category)) {
+            if (KLARNA_OR_PAYPAL.includes(matchingMock.paymentMethod?.type!)) {
+                return HttpResponse.json(
+                    enrichTransactionDataWithDetails(matchingMock, {
+                        feeAmount: 350,
+                        refundMode: 'PARTIALLY_REFUNDABLE_WITH_LINE_ITEMS_REQUIRED',
+                    })
+                );
+            }
+
+            const amount = matchingMock.amount.value;
+            const isLargeAmount = amount >= 100000;
+
+            return HttpResponse.json(
+                enrichTransactionDataWithDetails(matchingMock, {
+                    feeAmount: clamp(0, Math.round(amount * (!matchingMock.paymentMethod?.lastFourDigits && isLargeAmount ? 0.025 : 0.034)), 10000),
+                    refundMode: isLargeAmount ? 'PARTIALLY_REFUNDABLE_ANY_AMOUNT' : 'FULLY_REFUNDABLE_ONLY',
+                })
+            );
+        }
+
+        return HttpResponse.json(enrichTransactionDataWithDetails(matchingMock, { refundMode: 'NON_REFUNDABLE' }));
     }),
 
     http.get(mockEndpoints.transactionsTotals, ({ request }) => {

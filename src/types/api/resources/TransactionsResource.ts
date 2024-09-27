@@ -121,9 +121,16 @@ export interface components {
         /** @enum {string} */
         SortDirection: 'asc' | 'desc';
         TransactionLineItem: {
-            id: number;
-            itemAmount : number;
-            itemVatPercentage : number;
+            amountIncludingTax: number;
+            brand?: string;
+            color?: string;
+            description: string;
+            id: string;
+            itemCategory?: string;
+            quantity: number;
+            size?: string;
+            sku?: string;
+            taxPercentage: number;
         };
         TransactionRefundStatus: {
             amount: components['schemas']['Amount'];
@@ -137,6 +144,7 @@ export interface components {
         };
         TransactionResponse: components['schemas']['SingleTransaction'] & {
             originalAmount: components['schemas']['Amount'];
+            splitAmount: components['schemas']['Amount'];
             lineItems: components['schemas']['TransactionLineItem'][];
             refundDetails: components['schemas']['TransactionRefundDetails'];
         };
