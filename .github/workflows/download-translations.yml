@@ -6,7 +6,7 @@ on:
 jobs:
   download-files:
     name: Download completed translation files
-    if: github.event_name == 'workflow_dispatch' && github.ref_name == 'develop'
+    if: github.event_name == 'workflow_dispatch' && (github.ref_name == 'develop' || startsWith(github.ref_name, 'group/'))
     runs-on: ubuntu-latest
     environment: smartling-translations # provides Smartling credentials
     steps:
@@ -27,31 +27,12 @@ jobs:
       - name: Download and commit files
         run: |
           # Checkout new branch from the default branch
-          git checkout -B ${{ env.BRANCH_NAME }} ${{ github.ref_name }}
+          git checkout -B ${{ env.BRANCH_NAME }} ${{ env.BASE_REF }}
 
           # Download files from Smartling
-          npx -y @adyen/smartling-bot@0.6.x download-files
-
-          # Stage downloaded files
-          for source_path in $(jq -r '.translationSourcePaths[]' .i18nrc); do
-            root_path=$(dirname $source_path)
-            for locale in $(jq -r '.locales[]' .i18nrc); do
-              git add $(realpath "./$root_path/$locale.json")
-            done
-          done
-
-          if git diff-index --cached --quiet HEAD; then
-            # there are no changes to commit
-            echo "No translations updates"
-          else
-            # Create a commit for staged files and push
-            git commit -m ${{ env.COMMIT_TITLE }}
-            git push
-
-            # Create a PR on the default branch
-            gh pr create --base ${{ github.ref_name }} --head ${{ env.BRANCH_NAME }} --fill
-          fi
+          npx -y @adyen/smartling-bot@0.x.x download-files -p ./scripts/process-translations/commit-translations.sh
         env:
+          BASE_REF: ${{ github.ref_name }}
           BRANCH_NAME: "bot/translations"
           COMMIT_TITLE: "Update translations"
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
