@@ -27,7 +27,7 @@ export const getHandlerCallback = <T extends JsonBodyType>({
 type Handlers<Resource extends Record<string, any>, T extends Record<string, any>> = {
     [k in keyof T]: {
         method?: 'get' | 'post';
-        endpoint: `${string}${PathWithBaseUrl<Extract<keyof Resource, string>>}`;
+        endpoint: PathWithBaseUrl<Extract<keyof Resource, string>>;
         handler?: ReturnType<typeof getHandlerCallback>;
         response?: JsonBodyType;
     }[];
