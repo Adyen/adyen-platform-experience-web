@@ -7,7 +7,7 @@ import { getCurrencyCode } from '../../../../../core/Localization/amount/amount-
 import { TranslationKey } from '../../../../../translations';
 import { IPayout } from '../../../../../types';
 import { useCallback, useMemo } from 'preact/hooks';
-import useTimezoneAwareDateFormatting from '../../../../hooks/useTimezoneAwareDateFormatting';
+import useTimezoneAwareDateFormatting from '../../../../../hooks/useTimezoneAwareDateFormatting';
 import DataGrid from '../../../../internal/DataGrid';
 import { CellTextPosition } from '../../../../internal/DataGrid/types';
 import { DATE_FORMAT_PAYOUTS, DATE_FORMAT_PAYOUTS_MOBILE } from '../../../../internal/DataOverviewDisplay/constants';
@@ -17,10 +17,10 @@ import { PaginationProps, WithPaginationLimitSelection } from '../../../../inter
 import { TypographyVariant } from '../../../../internal/Typography/types';
 import Typography from '../../../../internal/Typography/Typography';
 import { getLabel } from '../../../../utils/getLabel';
-import { mediaQueries, useResponsiveViewport } from '../../../../hooks/useResponsiveViewport';
+import { mediaQueries, useResponsiveViewport } from '../../../../../hooks/useResponsiveViewport';
 import { BASE_CLASS, NET_PAYOUT_CLASS } from './constants';
 import './PayoutsTable.scss';
-import { useTableColumns } from '../../../../hooks/useTableColumns';
+import { useTableColumns } from '../../../../../hooks/useTableColumns';
 
 const AMOUNT_FIELDS = ['fundsCapturedAmount', 'adjustmentAmount', 'payoutAmount'] as const;
 const FIELDS = ['createdAt', ...AMOUNT_FIELDS] as const;

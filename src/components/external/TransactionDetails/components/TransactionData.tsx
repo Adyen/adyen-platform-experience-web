@@ -1,7 +1,7 @@
 import { DATE_FORMAT_TRANSACTION_DETAILS } from '../../../internal/DataOverviewDisplay/constants';
 import { TransactionDetailData } from '../types';
 import TransactionDataSkeleton from './TransactionDataSkeleton';
-import useTimezoneAwareDateFormatting from '../../../hooks/useTimezoneAwareDateFormatting';
+import useTimezoneAwareDateFormatting from '../../../../hooks/useTimezoneAwareDateFormatting';
 import { Image } from '../../../internal/Image/Image';
 import { parsePaymentMethodType } from '../../TransactionsOverview/components/utils';
 import { Tag } from '../../../internal/Tag/Tag';

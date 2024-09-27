@@ -6,18 +6,18 @@ import DataOverviewError from '../../../../internal/DataOverviewError/DataOvervi
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { getCurrencyCode } from '../../../../../core/Localization/amount/amount-util';
 import { TranslationKey } from '../../../../../translations';
-import useTimezoneAwareDateFormatting from '../../../../hooks/useTimezoneAwareDateFormatting';
+import useTimezoneAwareDateFormatting from '../../../../../hooks/useTimezoneAwareDateFormatting';
 import DataGrid from '../../../../internal/DataGrid';
 import { CellTextPosition } from '../../../../internal/DataGrid/types';
 import Pagination from '../../../../internal/Pagination';
 import { TypographyVariant } from '../../../../internal/Typography/types';
 import Typography from '../../../../internal/Typography/Typography';
-import { mediaQueries, useResponsiveViewport } from '../../../../hooks/useResponsiveViewport';
+import { mediaQueries, useResponsiveViewport } from '../../../../../hooks/useResponsiveViewport';
 import { AMOUNT_CLASS, BASE_CLASS, DATE_AND_PAYMENT_METHOD_CLASS, DATE_METHOD_CLASS } from './constants';
 import './TransactionTable.scss';
 import PaymentMethodCell from './PaymentMethodCell';
 import { TransactionTableProps } from './types';
-import { useTableColumns } from '../../../../hooks/useTableColumns';
+import { useTableColumns } from '../../../../../hooks/useTableColumns';
 
 // Remove status column temporarily
 // const FIELDS = ['createdAt', 'status', 'paymentMethod', 'transactionType', 'amount'] as const;

@@ -1,6 +1,6 @@
 import { DataDetailsModal } from '../../../../internal/DataOverviewDisplay/DataDetailsModal';
 import { TransactionsTable } from '../TransactionsTable/TransactionsTable';
-import useBalanceAccountSelection from '../../../../hooks/useBalanceAccountSelection';
+import useBalanceAccountSelection from '../../../../../hooks/useBalanceAccountSelection';
 import BalanceAccountSelector from '../../../../internal/FormFields/Select/BalanceAccountSelector';
 import DateFilter from '../../../../internal/FilterBar/filters/DateFilter/DateFilter';
 import FilterBar, { FilterBarMobileSwitch, useFilterBarState } from '../../../../internal/FilterBar';
@@ -17,13 +17,13 @@ import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '../../../../internal/Paginati
 import TransactionTotals from '../TransactionTotals/TransactionTotals';
 import { Balances } from '../Balances/Balances';
 import MultiSelectionFilter from '../MultiSelectionFilter';
-import useDefaultOverviewFilterParams from '../../../../hooks/useDefaultOverviewFilterParams';
+import useDefaultOverviewFilterParams from '../../../../../hooks/useDefaultOverviewFilterParams';
 import useTransactionsOverviewMultiSelectionFilters from '../../hooks/useTransactionsOverviewMultiSelectionFilters';
 import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatformExperienceError';
 import { AmountFilter } from '../../../../internal/FilterBar/filters/AmountFilter/AmountFilter';
 import { BASE_CLASS, BASE_CLASS_DETAILS, MAX_TRANSACTIONS_DATE_RANGE_MONTHS, SUMMARY_CLASS, SUMMARY_ITEM_CLASS } from './constants';
-import { mediaQueries, useResponsiveViewport } from '../../../../hooks/useResponsiveViewport';
-import { useCustomColumnsData } from '../../../../hooks/useCustomColumnsData';
+import { mediaQueries, useResponsiveViewport } from '../../../../../hooks/useResponsiveViewport';
+import { useCustomColumnsData } from '../../../../../hooks/useCustomColumnsData';
 import './TransactionsOverview.scss';
 
 export const TransactionsOverview = ({

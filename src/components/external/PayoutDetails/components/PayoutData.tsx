@@ -13,7 +13,7 @@ import { ListValue } from '../../../internal/StructuredList/types';
 import { TypographyVariant } from '../../../internal/Typography/types';
 import Typography from '../../../internal/Typography/Typography';
 import TransactionDataSkeleton from '../../TransactionDetails/components/TransactionDataSkeleton';
-import useTimezoneAwareDateFormatting from '../../../hooks/useTimezoneAwareDateFormatting';
+import useTimezoneAwareDateFormatting from '../../../../hooks/useTimezoneAwareDateFormatting';
 import './PayoutData.scss';
 import {
     PD_BASE_CLASS,
