@@ -1,5 +1,3 @@
-import { endpoints } from './endpoints.js';
-
 const makeProxyOptions = ({ url, version, username, password, apiKey }, basicAuth = false) => ({
     target: `${url}${version ?? ''}`,
     ...(apiKey ? {} : { auth: `${username}:${password}` }),
@@ -58,9 +56,7 @@ export const realApiProxies = (configs, mode) => {
     const { sessionApi } = configs;
     const sessionApiProxyOptions = makeSessionProxyOptions(sessionApi, mode);
 
-    const endpointRegex = mode === 'netlify' ? endpoints('netlify') : endpoints('viteDev');
-
     return {
-        [endpointRegex.sessions]: sessionApiProxyOptions,
+        ['/api/authe/api/v1/sessions']: sessionApiProxyOptions,
     };
 };
