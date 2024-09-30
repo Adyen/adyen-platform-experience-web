@@ -150,17 +150,17 @@ export interface components {
         };
         TransactionRefundRequest: {
             amount: components['schemas']['Amount'];
-            merchantRefundReason: string;
-            reference: string;
-            lineItems: components['schemas']['TransactionLineItem'][];
+            merchantRefundReason?: string;
+            reference?: string;
+            lineItems?: components['schemas']['TransactionLineItem'][];
         };
         TransactionRefundResponse: {
             status: 'RECEIVED';
             transactionId: components['schemas']['SingleTransaction']['id'];
             amount: components['schemas']['Amount'];
-            merchantRefundReason: string;
-            reference: string;
-            lineItems: components['schemas']['TransactionLineItem'][];
+            merchantRefundReason?: string;
+            reference?: string;
+            lineItems?: components['schemas']['TransactionLineItem'][];
         };
     };
     responses: never;
