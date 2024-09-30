@@ -10,6 +10,7 @@ import { CapitalHeader } from '../../../internal/CapitalHeader';
 import '../CapitalOverview.scss';
 import PreQualified from './PreQualified';
 import { IDynamicOfferConfig } from '../../../../types';
+import Unqualified from './Unqualified';
 
 export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<CapitalOverviewProps>> = ({
     hideTitle,
@@ -55,14 +56,33 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
 
     return (
         <div className={CAPITAL_OVERVIEW_CLASS_NAMES.base}>
-            <CapitalHeader hideTitle={hideTitle} hasSubtitle={false} titleKey={grantList?.length ? 'capital.grants' : 'capital.grantOffer'} />
-            {showSkeleton ? <div className={CAPITAL_OVERVIEW_CLASS_NAMES.skeleton}></div> : null}
+            {showSkeleton ? (
+                <>
+                    <div className={CAPITAL_OVERVIEW_CLASS_NAMES.headerSkeleton}></div>
+                    <div className={CAPITAL_OVERVIEW_CLASS_NAMES.skeleton}></div>
+                </>
+            ) : null}
+
             {!showSkeleton &&
                 (showGrantsList ? (
-                    <div>{'Placeholder for grants list'}</div>
-                ) : showPreQualified ? (
-                    <PreQualified dynamicOffer={dynamicOffer as Required<IDynamicOfferConfig>} onOfferReview={onOfferReview} />
-                ) : null)}
+                    <div>
+                        <CapitalHeader
+                            hideTitle={hideTitle}
+                            hasSubtitle={false}
+                            titleKey={grantList?.length ? 'capital.grants' : 'capital.grantOffer'}
+                        />
+                        {'Placeholder for grants list'}
+                    </div>
+                ) : (
+                    <>
+                        <CapitalHeader hideTitle={hideTitle} hasSubtitle={false} titleKey={'needSomeExtraMoney'} />
+                        {showPreQualified ? (
+                            <PreQualified dynamicOffer={dynamicOffer as Required<IDynamicOfferConfig>} onOfferReview={onOfferReview} />
+                        ) : (
+                            <Unqualified />
+                        )}
+                    </>
+                ))}
         </div>
     );
 };

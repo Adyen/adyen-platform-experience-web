@@ -12,6 +12,23 @@
         @include skeleton.adyen-pe-skeleton-animation();
     }
 
+    &__header-skeleton {
+        border-radius: 4px;
+        height: style.token(spacer-080);
+        margin-top: style.token(spacer-040);
+        width: 60%;
+        @include skeleton.adyen-pe-skeleton-animation();
+    }
+
+    &__unqualified-state {
+        align-items: center;
+        display: flex;
+        gap: style.token(spacer-090);
+        flex-direction: column;
+        justify-content: center;
+        margin-top: style.token(spacer-080);
+    }
+
     &__pre-qualified-grant {
         display: flex;
         flex-direction: column;

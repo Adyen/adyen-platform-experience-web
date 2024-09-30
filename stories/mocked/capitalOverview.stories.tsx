@@ -18,4 +18,16 @@ export const PreQualified: ElementStory<typeof CapitalOverview> = {
     },
 };
 
+export const Unqualified: ElementStory<typeof CapitalOverview> = {
+    name: 'Unqualified',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: {
+            handlers: CapitalMockedResponses.unqualified,
+        },
+    },
+};
+
 export default meta;

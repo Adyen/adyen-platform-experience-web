@@ -58,6 +58,7 @@
     "id": "ID",
     "incompleteField": "Incomplete field",
     "mobile": "Mobile",
+    "needSomeExtraMoney": "Need some extra money?",
     "netPayout": "Net payout",
     "nextPayouts": "Next Payouts",
     "noData": "No data",
@@ -149,5 +150,6 @@
     "weCouldNotLoadYourBalanceAccounts": "We couldn’t load your balance accounts.",
     "weCouldNotLoadYourPayouts": "We could not load your payouts.",
     "weCouldNotLoadYourReports": "We could not load your reports.",
-    "weCouldNotLoadYourTransactions": "We could not load your transactions."
+    "weCouldNotLoadYourTransactions": "We could not load your transactions.",
+    "youWillSoonQualifyForAFinancialOffer": "You will soon qualify for a financial offer!"
 }
