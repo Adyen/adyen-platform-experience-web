@@ -1,6 +1,6 @@
 import { useLayoutEffect, useMemo, useRef } from 'preact/hooks';
-import { createReflexContainer, Reflex, Reflexable, ReflexAction } from '../../primitives/reactive/reflex';
-import type { Nullable } from '../../utils/types';
+import { createReflexContainer, Reflex, Reflexable, ReflexAction } from '../primitives/reactive/reflex';
+import type { Nullable } from '../utils/types';
 
 const useReflex = <T = any>(action: ReflexAction<T>, reflexable?: Nullable<Reflexable<T>>) => {
     const container = useRef(createReflexContainer<T>());

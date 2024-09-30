@@ -1,13 +1,12 @@
 import cx from 'classnames';
 import Button from '../Button';
-import Close from '../SVGIcons/Close';
-import Filter from '../SVGIcons/Filter';
+import Icon from '../Icon';
 import { isFunction } from '../../../utils';
 import { ButtonVariant } from '../Button/types';
 import { PropsWithChildren } from 'preact/compat';
 import { useEffect, useState } from 'preact/hooks';
 import useCoreContext from '../../../core/Context/useCoreContext';
-import { mediaQueries, useResponsiveViewport } from '../../hooks/useResponsiveViewport';
+import { mediaQueries, useResponsiveViewport } from '../../../hooks/useResponsiveViewport';
 import type { FilterBarMobileSwitchProps, FilterBarProps } from './types';
 import './FilterBar.scss';
 
@@ -34,7 +33,7 @@ export const FilterBarMobileSwitch = ({ isMobileViewport, showingFilters, setSho
                 onClick={() => setShowingFilters?.(!showingFilters)}
                 variant={ButtonVariant.SECONDARY}
             >
-                {showingFilters ? <Close /> : <Filter />}
+                <Icon name={showingFilters ? 'cross' : 'filter'} />
             </Button>
         </div>
     ) : null;

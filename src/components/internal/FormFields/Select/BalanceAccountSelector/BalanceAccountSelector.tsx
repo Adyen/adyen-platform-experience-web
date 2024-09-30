@@ -1,8 +1,8 @@
-import useBalanceAccountSelection from '../../../../hooks/useBalanceAccountSelection';
+import useBalanceAccountSelection from '../../../../../hooks/useBalanceAccountSelection';
 import { memo } from 'preact/compat';
 import { useCallback } from 'preact/hooks';
 import Select from '../../Select';
-import { mediaQueries, useResponsiveViewport } from '../../../../hooks/useResponsiveViewport';
+import { mediaQueries, useResponsiveViewport } from '../../../../../hooks/useResponsiveViewport';
 import { renderDefaultSingleSelectionCheckedness } from '../components/SelectListItem';
 import { SelectItem, SelectProps } from '../types';
 import './BalanceAccountSelector.scss';

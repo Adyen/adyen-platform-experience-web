@@ -1,8 +1,8 @@
 import { useClickOutside } from '../../../hooks/element/useClickOutside';
-import { mediaQueries, useResponsiveViewport } from '../../hooks/useResponsiveViewport';
+import { mediaQueries, useResponsiveViewport } from '../../../hooks/useResponsiveViewport';
 import Button from '../Button';
+import Icon from '../Icon';
 import { ButtonVariant } from '../Button/types';
-import Close from '../SVGIcons/Close';
 import useCoreContext from '../../../core/Context/useCoreContext';
 import { Ref, useCallback, useEffect } from 'preact/hooks';
 import cx from 'classnames';
@@ -83,7 +83,7 @@ export default function Modal({
                                     className={`adyen-pe-modal__header-icon`}
                                     aria-label={i18n.get('dismiss')}
                                 >
-                                    <Close />
+                                    <Icon name="cross" />
                                 </Button>
                             )}
                         </div>
