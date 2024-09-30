@@ -9,6 +9,7 @@ import { EMPTY_OBJECT } from '../../../../utils';
 import { CapitalHeader } from '../../../internal/CapitalHeader';
 import '../CapitalOverview.scss';
 import PreQualified from './PreQualified';
+import { IDynamicOfferConfig } from '../../../../types';
 
 export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<CapitalOverviewProps>> = ({
     hideTitle,
@@ -44,7 +45,7 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
     const dynamicOffer = dynamicOfferQuery.data;
     const grantList = grantsQuery.data?.data;
 
-    const showPreQualified = dynamicOffer?.maxAmount && !skipPreQualifiedIntro;
+    const showPreQualified = dynamicOffer?.maxAmount && dynamicOffer?.minAmount && !skipPreQualifiedIntro;
     const showGrantsList = grantList?.length;
     const showSkeleton = grantsQuery.isFetching || dynamicOfferQuery.isFetching;
 
@@ -56,7 +57,7 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
                 (showGrantsList ? (
                     <div>{'Placeholder for grants list'}</div>
                 ) : showPreQualified ? (
-                    <PreQualified dynamicOffer={dynamicOffer} onOfferReview={onOfferReview} />
+                    <PreQualified dynamicOffer={dynamicOffer as Required<IDynamicOfferConfig>} onOfferReview={onOfferReview} />
                 ) : null)}
         </div>
     );

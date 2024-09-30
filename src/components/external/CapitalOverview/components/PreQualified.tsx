@@ -10,7 +10,7 @@ const PreQualified = ({
     dynamicOffer,
     onOfferReview,
 }: {
-    dynamicOffer: IDynamicOfferConfig;
+    dynamicOffer: Required<IDynamicOfferConfig>;
     onOfferReview: CapitalOverviewProps['onOfferReview'];
 }) => {
     const { i18n } = useCoreContext();
