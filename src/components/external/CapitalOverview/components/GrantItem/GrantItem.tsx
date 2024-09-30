@@ -20,7 +20,7 @@ export const GrantItem: FunctionalComponent<GrantItemProps> = ({ grant }) => {
     const config = useMemo(() => getGrantConfig(grant), [grant]);
 
     return (
-        <Card classNameModifiers={[GRANT_ITEM_CLASS_NAMES.base]} filled={config.isBackgroundFilled}>
+        <Card classNameModifiers={[GRANT_ITEM_CLASS_NAMES.base]} filled={config.isBackgroundFilled} testId={'grant-container'}>
             <div className={GRANT_ITEM_CLASS_NAMES.statusContainer}>
                 {grant.status === 'Active' ? (
                     <>
@@ -35,7 +35,11 @@ export const GrantItem: FunctionalComponent<GrantItemProps> = ({ grant }) => {
                     <Tag label={i18n.get(config.statusKey)} variant={config.statusTagVariant} />
                 ) : null}
             </div>
-            <Typography variant={TypographyVariant.CAPTION} className={cx({ [GRANT_ITEM_CLASS_NAMES.textSecondary]: config.isLabelColorSecondary })}>
+            <Typography
+                variant={TypographyVariant.CAPTION}
+                className={cx({ [GRANT_ITEM_CLASS_NAMES.textSecondary]: config.isLabelColorSecondary })}
+                testId={'grant-amount-label'}
+            >
                 {i18n.get(config.labelKey)}
             </Typography>
             <Typography

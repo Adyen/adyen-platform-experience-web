@@ -13,4 +13,5 @@ export interface CardProps {
     noPadding?: boolean;
     buttonAriaLabel?: string;
     classNameModifiers?: string[];
+    testId?: string;
 }

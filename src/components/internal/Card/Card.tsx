@@ -28,6 +28,7 @@ const Card = ({
     noOutline,
     noPadding,
     classNameModifiers,
+    testId,
 }: PropsWithChildren<CardProps>) => {
     const Tag = el || 'header';
     return (
@@ -37,6 +38,7 @@ const Card = ({
                 { [CARD_FILLED]: filled, [CARD_NO_OUTLINE]: noOutline, [CARD_NO_PADDING]: noPadding },
                 classNameModifiers
             )}
+            data-testid={testId}
         >
             {(title || renderHeader) && (
                 <Tag className={CARD_HEADER}>
