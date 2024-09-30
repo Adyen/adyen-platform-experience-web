@@ -43,7 +43,7 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
 
     return (
         <div className={CAPITAL_OVERVIEW_CLASS_NAMES.base}>
-            <CapitalHeader hideTitle={hideTitle} titleKey={'capital.financialOffer'} />
+            <CapitalHeader hideTitle={hideTitle} titleKey={'capital.businessFinancing'} />
             {grantList?.length ? (
                 <BaseList>
                     {grantList.map(grant => (
