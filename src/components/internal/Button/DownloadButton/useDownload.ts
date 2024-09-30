@@ -1,5 +1,5 @@
 import { useAuthContext } from '../../../../core/Auth';
-import { useFetch } from '../../../../hooks/useFetch/useFetch';
+import { useFetch } from '../../../../hooks/useFetch';
 import { EndpointName } from '../../../../types/api/endpoints';
 import { EMPTY_OBJECT } from '../../../../utils';
 

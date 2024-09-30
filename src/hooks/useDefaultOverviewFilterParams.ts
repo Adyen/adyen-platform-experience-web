@@ -1,8 +1,8 @@
 import useBalanceAccountSelection from './useBalanceAccountSelection';
 import { MutableRef, useCallback, useEffect, useRef, useState } from 'preact/hooks';
-import { getTimeRangeSelectionDefaultPresetOptions } from '../internal/DatePicker/components/TimeRangeSelector';
-import { DEFAULT_TRANSACTIONS_OVERVIEW_MULTI_SELECTION_FILTER_PARAMS } from '../external/TransactionsOverview/components/MultiSelectionFilter';
-import { FilterParam } from '../types';
+import { getTimeRangeSelectionDefaultPresetOptions } from '../components/internal/DatePicker/components/TimeRangeSelector';
+import { DEFAULT_TRANSACTIONS_OVERVIEW_MULTI_SELECTION_FILTER_PARAMS } from '../components/external/TransactionsOverview/components/MultiSelectionFilter';
+import { FilterParam } from '../components/types';
 
 const getDefaultFilterParams = (type: 'transactions' | 'payouts' | 'reports') => {
     const timeRangeOptions = getTimeRangeSelectionDefaultPresetOptions();
