@@ -1,0 +1,7 @@
+@use '../../../../../style';
+
+.adyen-pe-capital-overview {
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-080);
+}
