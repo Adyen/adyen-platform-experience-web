@@ -9,7 +9,7 @@ import useCoreContext from '../../../../../core/Context/useCoreContext';
 import classNames from 'classnames';
 import { useCallback, useEffect } from 'preact/hooks';
 import './SummaryItem.scss';
-import { mediaQueries, useResponsiveViewport } from '../../../../hooks/useResponsiveViewport';
+import { mediaQueries, useResponsiveViewport } from '../../../../../hooks/useResponsiveViewport';
 
 export const SummaryItem = ({
     columnConfigs,
