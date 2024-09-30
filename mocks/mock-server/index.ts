@@ -1,5 +1,5 @@
 import { setupWorker } from 'msw/browser';
-import { getMockHandlers } from './utils';
+import { getMockHandlers } from './utils/utils';
 import { balanceAccountMock } from './balanceAccounts';
 import { payoutsMocks } from './payouts';
 import { transactionsMocks } from './transactions';

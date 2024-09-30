@@ -1,6 +1,6 @@
 import { http, HttpResponse } from 'msw';
 import { endpoints } from '../../endpoints/endpoints';
-import { delay } from './utils';
+import { delay } from './utils/utils';
 import { EndpointName } from '../../src/types/api/endpoints';
 import { HttpMethod } from '../../src/core/Http/types';
 
@@ -55,9 +55,13 @@ export const setupMock = [
                     method: 'GET',
                     url: 'capital/grants',
                 },
-                getCapitalDynamicConfiguration: {
+                getDynamicGrantOffersConfiguration: {
                     method: 'GET',
                     url: 'capital/grantOffers/dynamic/configuration',
+                },
+                reviewGrantOffer: {
+                    method: 'POST',
+                    url: 'capital/grantOffers/review',
                 },
             } satisfies Record<EndpointName, { method: HttpMethod; url: string }>,
         });

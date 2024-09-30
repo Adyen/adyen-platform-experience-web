@@ -15,7 +15,7 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
     skipPreQualifiedIntro,
     onOfferReview,
 }) => {
-    const { getGrants: grantsEndpointCall, getCapitalDynamicConfiguration: dynamicConfigurationEndpointCall } = useAuthContext().endpoints;
+    const { getGrants: grantsEndpointCall, getDynamicGrantOffersConfiguration: dynamicConfigurationEndpointCall } = useAuthContext().endpoints;
 
     const grantsQuery = useFetch(
         useMemo(

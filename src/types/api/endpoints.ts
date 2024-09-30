@@ -9,7 +9,7 @@ export type EndpointsOperations = BalanceAccountOps & PayoutsOps & TransactionsO
 
 // TODO: Replace once we have the openapi specs
 
-type _temporaryCapitalEndpointNames = 'getGrants' | 'getCapitalDynamicConfiguration';
+type _temporaryCapitalEndpointNames = 'getDynamicGrantOffersConfiguration' | 'reviewGrantOffer' | 'getGrants';
 
 export type EndpointName = Extract<keyof EndpointsOperations, SetupResource['schemas']['EndpointName'] | _temporaryCapitalEndpointNames>;
 
