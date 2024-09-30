@@ -68,8 +68,7 @@ export function useFetch<QueryFn extends (...args: any) => Promise<any>, T exten
             const data = await queryFn();
 
             // cache.current.set(url.href, data);
-
-            if (data) dispatch({ type: 'fetched', payload: data });
+            dispatch({ type: 'fetched', payload: data });
         } catch (error) {
             if (cancelRequest.current) return;
             dispatch({ type: 'error', payload: error as Error });

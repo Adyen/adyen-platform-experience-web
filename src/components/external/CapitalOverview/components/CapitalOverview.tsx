@@ -21,7 +21,7 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
     const grantsQuery = useFetch(
         useMemo(
             () => ({
-                fetchOptions: { enabled: true },
+                fetchOptions: { enabled: !!grantsEndpointCall },
                 queryFn: async () => {
                     return grantsEndpointCall?.(EMPTY_OBJECT);
                 },
@@ -33,7 +33,7 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
     const dynamicOfferQuery = useFetch(
         useMemo(
             () => ({
-                fetchOptions: { enabled: true },
+                fetchOptions: { enabled: !!dynamicConfigurationEndpointCall },
                 queryFn: async () => {
                     return dynamicConfigurationEndpointCall?.(EMPTY_OBJECT);
                 },
@@ -47,12 +47,16 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
 
     const showPreQualified = dynamicOffer?.maxAmount && dynamicOffer?.minAmount && !skipPreQualifiedIntro;
     const showGrantsList = grantList?.length;
-    const showSkeleton = grantsQuery.isFetching || dynamicOfferQuery.isFetching;
+    const showSkeleton =
+        (!grantsEndpointCall && !dynamicConfigurationEndpointCall) ||
+        (!dynamicOffer && !grantList) ||
+        grantsQuery.isFetching ||
+        dynamicOfferQuery.isFetching;
 
     return (
         <div className={CAPITAL_OVERVIEW_CLASS_NAMES.base}>
             <CapitalHeader hideTitle={hideTitle} hasSubtitle={false} titleKey={grantList?.length ? 'capital.grants' : 'capital.grantOffer'} />
-            {showSkeleton && <div className={CAPITAL_OVERVIEW_CLASS_NAMES.skeleton}></div>}
+            {showSkeleton ? <div className={CAPITAL_OVERVIEW_CLASS_NAMES.skeleton}></div> : null}
             {!showSkeleton &&
                 (showGrantsList ? (
                     <div>{'Placeholder for grants list'}</div>
