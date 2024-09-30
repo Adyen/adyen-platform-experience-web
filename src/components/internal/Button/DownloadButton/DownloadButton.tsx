@@ -4,7 +4,7 @@ import { useEffect, useState } from 'preact/hooks';
 import useCoreContext from '../../../../core/Context/useCoreContext';
 import AdyenPlatformExperienceError from '../../../../core/Errors/AdyenPlatformExperienceError';
 import { EndpointName } from '../../../../types/api/endpoints';
-import { mediaQueries, useResponsiveViewport } from '../../../hooks/useResponsiveViewport';
+import { mediaQueries, useResponsiveViewport } from '../../../../hooks/useResponsiveViewport';
 import Spinner from '../../Spinner';
 import Download from '../../SVGIcons/Download';
 import Button from '../Button';
