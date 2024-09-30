@@ -1,7 +1,7 @@
-import { capitalize } from '../../utils';
+import { capitalize } from '../utils';
 import { useCallback, useMemo, useState } from 'preact/hooks';
-import type { SelectItem } from '../internal/FormFields/Select/types';
-import type { IBalanceAccountBase } from '../../types';
+import type { SelectItem } from '../components/internal/FormFields/Select/types';
+import type { IBalanceAccountBase } from '../types';
 
 const useBalanceAccountSelection = (balanceAccounts?: IBalanceAccountBase[]) => {
     const [selectedBalanceAccountIndex, setSelectedBalanceAccountIndex] = useState(0);
