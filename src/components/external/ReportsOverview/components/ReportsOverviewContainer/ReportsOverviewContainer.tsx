@@ -1,4 +1,4 @@
-import useBalanceAccounts from '../../../../hooks/useBalanceAccounts';
+import useBalanceAccounts from '../../../../../hooks/useBalanceAccounts';
 import DataOverviewContainer from '../../../../internal/DataOverviewContainer/DataOverviewContainer';
 import type { ExternalUIComponentProps, ReportsOverviewComponentProps } from '../../../../types';
 import { ReportsOverview } from '../ReportsOverview/ReportsOverview';
