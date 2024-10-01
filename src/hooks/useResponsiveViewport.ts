@@ -1,6 +1,6 @@
-import { BREAKPOINTS } from '../../constants';
-import { useMediaQuery } from '../../hooks/useMediaQuery';
-import type { ValueOfRecord } from '../../utils/types';
+import { BREAKPOINTS } from '../constants';
+import { useMediaQuery } from './useMediaQuery';
+import type { ValueOfRecord } from '../utils/types';
 
 export const mediaQueries = {
     up: {

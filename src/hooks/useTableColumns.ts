@@ -1,9 +1,9 @@
 import { useMemo } from 'preact/hooks';
-import { getLabel } from '../utils/getLabel';
-import { CellTextPosition } from '../internal/DataGrid/types';
-import { CustomColumn, DataGridCustomColumnConfig } from '../types';
-import useCoreContext from '../../core/Context/useCoreContext';
-import { EMPTY_OBJECT, isString, isUndefined } from '../../utils';
+import { getLabel } from '../components/utils/getLabel';
+import { CellTextPosition } from '../components/internal/DataGrid/types';
+import { CustomColumn, DataGridCustomColumnConfig } from '../components/types';
+import useCoreContext from '../core/Context/useCoreContext';
+import { EMPTY_OBJECT, isString, isUndefined } from '../utils';
 
 type Columns<k extends string> = DataGridCustomColumnConfig<k> & { label?: string; position?: CellTextPosition; visible?: boolean };
 

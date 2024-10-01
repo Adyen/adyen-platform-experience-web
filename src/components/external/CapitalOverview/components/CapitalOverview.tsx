@@ -4,7 +4,7 @@ import { CapitalOverviewProps } from '../types';
 import { CAPITAL_OVERVIEW_CLASS_NAMES } from '../constants';
 import { FunctionalComponent } from 'preact';
 import { useAuthContext } from '../../../../core/Auth';
-import { useFetch } from '../../../../hooks/useFetch/useFetch';
+import { useFetch } from '../../../../hooks/useFetch';
 import { EMPTY_OBJECT } from '../../../../utils';
 import { CapitalHeader } from '../../../internal/CapitalHeader';
 import '../CapitalOverview.scss';

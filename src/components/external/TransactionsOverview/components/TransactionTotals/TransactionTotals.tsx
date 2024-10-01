@@ -1,13 +1,13 @@
 import { useCallback, useMemo } from 'preact/hooks';
 import { EMPTY_OBJECT } from '../../../../../utils';
 import { useAuthContext } from '../../../../../core/Auth';
-import { useFetch } from '../../../../../hooks/useFetch/useFetch';
+import { useFetch } from '../../../../../hooks/useFetch';
 import { OperationParameters } from '../../../../../types/api/endpoints';
 import { WithPartialField } from '../../../../../utils/types';
 import { BASE_CLASS, ITEM_CLASS } from './constants';
 import { memo } from 'preact/compat';
 import { ITransaction } from '../../../../../types';
-import { mediaQueries, useResponsiveViewport } from '../../../../hooks/useResponsiveViewport';
+import { mediaQueries, useResponsiveViewport } from '../../../../../hooks/useResponsiveViewport';
 import './TransactionTotals.scss';
 import { TotalsCard } from './TotalsCard';
 

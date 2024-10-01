@@ -1,4 +1,4 @@
-import { mediaQueries, useResponsiveViewport } from '../../../../hooks/useResponsiveViewport';
+import { mediaQueries, useResponsiveViewport } from '../../../../../hooks/useResponsiveViewport';
 import FilterButton from '../../components/FilterButton/FilterButton';
 import Popover from '../../../Popover/Popover';
 import { PopoverContainerPosition, PopoverContainerVariant } from '../../../Popover/types';
