@@ -6,10 +6,15 @@ import { CapitalMockedResponses } from '../../mocks/mock-server/capital';
 
 const meta: Meta<ElementProps<typeof CapitalOverview>> = { ...CapitalOverviewMeta, title: 'Mocked/Capital Overview' };
 
-export const Basic: ElementStory<typeof CapitalOverview> = {
-    name: 'Basic',
+export const PreQualified: ElementStory<typeof CapitalOverview> = {
+    name: 'Pre-qualified',
     args: {
         mockedApi: true,
+    },
+    parameters: {
+        msw: {
+            handlers: CapitalMockedResponses.prequalified,
+        },
     },
 };
 

@@ -9,15 +9,21 @@ import { EMPTY_OBJECT } from '../../../../../utils';
 import { CapitalHeader } from '../../../../internal/CapitalHeader';
 import { BaseList } from '../../../../internal/BaseList/BaseList';
 import { GrantItem } from '../GrantItem/GrantItem';
+import PreQualified from '../PreQualified';
+import { IDynamicOfferConfig } from '../../../../../types';
 import './CapitalOverview.scss';
 
-export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<CapitalOverviewProps>> = ({ hideTitle }) => {
+export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<CapitalOverviewProps>> = ({
+    hideTitle,
+    skipPreQualifiedIntro,
+    onOfferReview,
+}) => {
     const { getGrants: grantsEndpointCall, getDynamicGrantOffersConfiguration: dynamicConfigurationEndpointCall } = useAuthContext().endpoints;
 
     const grantsQuery = useFetch(
         useMemo(
             () => ({
-                fetchOptions: { enabled: true },
+                fetchOptions: { enabled: !!grantsEndpointCall },
                 queryFn: async () => {
                     return grantsEndpointCall?.(EMPTY_OBJECT);
                 },
@@ -29,7 +35,7 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
     const dynamicOfferQuery = useFetch(
         useMemo(
             () => ({
-                fetchOptions: { enabled: true },
+                fetchOptions: { enabled: !!dynamicConfigurationEndpointCall },
                 queryFn: async () => {
                     return dynamicConfigurationEndpointCall?.(EMPTY_OBJECT);
                 },
@@ -38,23 +44,33 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
         )
     );
 
-    const dynamicOffer = useMemo(() => dynamicOfferQuery.data, [dynamicOfferQuery.data]);
-    const grantList = useMemo(() => grantsQuery.data?.data, [grantsQuery.data]);
+    const dynamicOffer = dynamicOfferQuery.data;
+    const grantList = grantsQuery.data?.data;
+
+    const showPreQualified = dynamicOffer?.maxAmount && dynamicOffer?.minAmount && !skipPreQualifiedIntro;
+    const showGrantsList = grantList?.length;
+    const showSkeleton =
+        (!grantsEndpointCall && !dynamicConfigurationEndpointCall) ||
+        (!dynamicOffer && !grantList) ||
+        grantsQuery.isFetching ||
+        dynamicOfferQuery.isFetching;
 
     return (
         <div className={CAPITAL_OVERVIEW_CLASS_NAMES.base}>
             <CapitalHeader hideTitle={hideTitle} titleKey={'capital.businessFinancing'} />
-            {grantList?.length ? (
-                <BaseList>
-                    {grantList.map(grant => (
-                        <li key={grant.id}>
-                            <GrantItem grant={grant} />
-                        </li>
-                    ))}
-                </BaseList>
-            ) : dynamicOffer?.maxAmount ? (
-                <div>{'Placeholder for prequalified component'}</div>
-            ) : null}
+            {showSkeleton ? <div className={CAPITAL_OVERVIEW_CLASS_NAMES.skeleton}></div> : null}
+            {!showSkeleton &&
+                (showGrantsList ? (
+                    <BaseList>
+                        {grantList.map(grant => (
+                            <li key={grant.id}>
+                                <GrantItem grant={grant} />
+                            </li>
+                        ))}
+                    </BaseList>
+                ) : showPreQualified ? (
+                    <PreQualified dynamicOffer={dynamicOffer as Required<IDynamicOfferConfig>} onOfferReview={onOfferReview} />
+                ) : null)}
         </div>
     );
 };
