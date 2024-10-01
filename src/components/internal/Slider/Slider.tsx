@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'preact/hooks';
 import './Slider.scss';
 import { JSX } from 'preact';
 import { calculateProgress } from './calculateProgress';
+import cx from 'classnames';
 
 /**
  * Props for the Slider component.
@@ -39,12 +40,17 @@ interface SliderProps {
     onValueChange?: (value: number) => void;
 
     /**
+     * Optional class name(s) for styling the Slider.
+     */
+    className?: string;
+
+    /**
      * Any additional attributes or properties that can be passed to the Slider element
      */
     [key: string]: any;
 }
 
-const Slider = ({ min = 0, max = 100, step = 1, value: initialValue = 0, onValueChange, ...props }: SliderProps) => {
+const Slider = ({ min = 0, max = 100, step = 1, value: initialValue = 0, onValueChange, className, ...props }: SliderProps) => {
     const [value, setValue] = useState<number>(initialValue);
 
     useEffect(() => {
@@ -66,7 +72,7 @@ const Slider = ({ min = 0, max = 100, step = 1, value: initialValue = 0, onValue
     return (
         <input
             type="range"
-            className="adyen-pe-slider"
+            className={cx('adyen-pe-slider', className)}
             min={min}
             max={max}
             step={step}
