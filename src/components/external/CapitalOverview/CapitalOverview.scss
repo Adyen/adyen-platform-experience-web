@@ -7,9 +7,9 @@
     gap: 20px;
 
     &__skeleton {
+        @include skeleton.adyen-pe-skeleton-animation();
         border-radius: 5px;
         height: style.token(spacer-140);
-        @include skeleton.adyen-pe-skeleton-animation();
     }
 
     &__header-skeleton {
