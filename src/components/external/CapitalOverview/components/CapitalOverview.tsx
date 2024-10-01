@@ -12,6 +12,8 @@ import PreQualified from './PreQualified';
 import { IDynamicOfferConfig } from '../../../../types';
 import Unqualified from './Unqualified';
 
+type CapitalOverviewState = 'Loading' | 'Unqualified' | 'PreQualified' | 'GrantList';
+
 export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<CapitalOverviewProps>> = ({
     hideTitle,
     skipPreQualifiedIntro,
@@ -46,43 +48,66 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
     const dynamicOffer = dynamicOfferQuery.data;
     const grantList = grantsQuery.data?.data;
 
-    const showPreQualified = dynamicOffer?.maxAmount && dynamicOffer?.minAmount && !skipPreQualifiedIntro;
-    const showGrantsList = grantList?.length;
-    const showSkeleton =
-        (!grantsEndpointCall && !dynamicConfigurationEndpointCall) ||
-        (!dynamicOffer && !grantList) ||
-        grantsQuery.isFetching ||
-        dynamicOfferQuery.isFetching;
+    const state = useMemo<CapitalOverviewState>(() => {
+        if (
+            (!grantsEndpointCall && !dynamicConfigurationEndpointCall) ||
+            (!dynamicOffer && !grantList) ||
+            grantsQuery.isFetching ||
+            dynamicOfferQuery.isFetching
+        ) {
+            return 'Loading';
+        } else if (grantList?.length) {
+            return 'GrantList';
+        } else if (dynamicOffer?.maxAmount && dynamicOffer?.minAmount && !skipPreQualifiedIntro) {
+            return 'PreQualified';
+        }
+        return 'Unqualified';
+    }, [
+        dynamicConfigurationEndpointCall,
+        dynamicOffer,
+        dynamicOfferQuery.isFetching,
+        grantList,
+        grantsEndpointCall,
+        grantsQuery.isFetching,
+        skipPreQualifiedIntro,
+    ]);
 
     return (
         <div className={CAPITAL_OVERVIEW_CLASS_NAMES.base}>
-            {showSkeleton ? (
-                <>
-                    <div className={CAPITAL_OVERVIEW_CLASS_NAMES.headerSkeleton}></div>
-                    <div className={CAPITAL_OVERVIEW_CLASS_NAMES.skeleton}></div>
-                </>
-            ) : null}
-
-            {!showSkeleton &&
-                (showGrantsList ? (
-                    <div>
-                        <CapitalHeader
-                            hideTitle={hideTitle}
-                            hasSubtitle={false}
-                            titleKey={grantList?.length ? 'capital.grants' : 'capital.grantOffer'}
-                        />
-                        {'Placeholder for grants list'}
-                    </div>
-                ) : (
-                    <>
-                        <CapitalHeader hideTitle={hideTitle} hasSubtitle={false} titleKey={'needSomeExtraMoney'} />
-                        {showPreQualified ? (
-                            <PreQualified dynamicOffer={dynamicOffer as Required<IDynamicOfferConfig>} onOfferReview={onOfferReview} />
-                        ) : (
-                            <Unqualified />
-                        )}
-                    </>
-                ))}
+            {(() => {
+                switch (state) {
+                    case 'Loading':
+                        return (
+                            <>
+                                <div className={CAPITAL_OVERVIEW_CLASS_NAMES.headerSkeleton}></div>
+                                <div className={CAPITAL_OVERVIEW_CLASS_NAMES.skeleton}></div>
+                            </>
+                        );
+                    case 'GrantList':
+                        return (
+                            <div>
+                                <CapitalHeader
+                                    hideTitle={hideTitle}
+                                    hasSubtitle={false}
+                                    titleKey={grantList?.length ? 'capital.grants' : 'capital.grantOffer'}
+                                />
+                                {'Placeholder for grants list'}
+                            </div>
+                        );
+                    case 'PreQualified':
+                        return (
+                            <PreQualified
+                                hideTitle={hideTitle}
+                                dynamicOffer={dynamicOffer as Required<IDynamicOfferConfig>}
+                                onOfferReview={onOfferReview}
+                            />
+                        );
+                    case 'Unqualified':
+                        return <Unqualified hideTitle={hideTitle} />;
+                    default:
+                        return null;
+                }
+            })()}
         </div>
     );
 };
