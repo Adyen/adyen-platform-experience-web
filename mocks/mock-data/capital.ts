@@ -3,11 +3,11 @@ import { IDynamicOfferConfig, IGrant } from '../../src';
 export const DYNAMIC_CAPITAL_OFFER = {
     minAmount: {
         value: 100000,
-        currency: 'USD',
+        currency: 'EUR',
     },
     maxAmount: {
         value: 2500000,
-        currency: 'USD',
+        currency: 'EUR',
     },
     step: 10000,
 } satisfies IDynamicOfferConfig;
