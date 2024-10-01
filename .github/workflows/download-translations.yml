@@ -30,8 +30,7 @@ jobs:
           git checkout -B ${{ env.BRANCH_NAME }} ${{ env.BASE_REF }}
 
           # create post-download shell script file
-          echo ${POST_DOWNLOAD_FILE_PATH}
-          mkdir -p "$(dirname ${POST_DOWNLOAD_FILE_PATH})"
+          mkdir -p "$(node -e "console.log(require('path').dirname('$POST_DOWNLOAD_FILE_PATH'))")"
           touch ${{ env.POST_DOWNLOAD_FILE_PATH }}
           chmod +x ${{ env.POST_DOWNLOAD_FILE_PATH }}
 
