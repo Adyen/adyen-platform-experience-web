@@ -28,6 +28,14 @@ describe('Slider', () => {
         expect(slider.value).toBe('20');
     });
 
+    test('renders the slider with additionally provided attributes', () => {
+        render(<Slider id="some-random-id" attribute="value" />);
+        const slider: HTMLInputElement = screen.getByRole('slider');
+
+        expect(slider).toHaveAttribute('id', 'some-random-id');
+        expect(slider).toHaveAttribute('attribute', 'value');
+    });
+
     test('updates the value when slider is changed', async () => {
         render(<Slider />);
 

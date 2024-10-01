@@ -37,9 +37,14 @@ interface SliderProps {
      * @param value - The new value of the slider.
      */
     onValueChange?: (value: number) => void;
+
+    /**
+     * Any additional attributes or properties that can be passed to the Slider element
+     */
+    [key: string]: any;
 }
 
-const Slider = ({ min = 0, max = 100, step = 1, value: initialValue = 0, onValueChange }: SliderProps) => {
+const Slider = ({ min = 0, max = 100, step = 1, value: initialValue = 0, onValueChange, ...props }: SliderProps) => {
     const [value, setValue] = useState<number>(initialValue);
 
     useEffect(() => {
@@ -68,6 +73,7 @@ const Slider = ({ min = 0, max = 100, step = 1, value: initialValue = 0, onValue
             value={value}
             onInput={handleInputChange}
             style={{ backgroundSize: `${progress}% 100%` }}
+            {...props}
         />
     );
 };
