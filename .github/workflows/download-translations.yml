@@ -30,11 +30,12 @@ jobs:
           git checkout -B ${{ env.BRANCH_NAME }} ${{ env.BASE_REF }}
 
           # create post-download shell script file
-          mkdir -p $(dirname "$POST_DOWNLOAD_FILE_PATH")
+          echo ${POST_DOWNLOAD_FILE_PATH}
+          mkdir -p "$(dirname ${POST_DOWNLOAD_FILE_PATH})"
           touch ${{ env.POST_DOWNLOAD_FILE_PATH }}
           chmod +x ${{ env.POST_DOWNLOAD_FILE_PATH }}
 
-          cat <<EOF >> $POST_DOWNLOAD_FILE_PATH
+          cat <<EOF >> ${POST_DOWNLOAD_FILE_PATH}
           #!/bin/sh
           # Configure the current Git user (the GitHub actor)
           git config --local user.name "${GITHUB_ACTOR}"
