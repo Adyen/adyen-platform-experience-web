@@ -25,16 +25,6 @@ export const capitalMock = [
         return HttpResponse.json(DYNAMIC_CAPITAL_OFFER);
     }),
     http.get(mockEndpoints.grants, EMPTY_GRANTS_LIST),
-
-    http.get(mockEndpoints.grants, async () => {
-        if (networkError) {
-            return HttpResponse.error();
-        }
-        await delay(200);
-        return HttpResponse.json({
-            data: [],
-        });
-    }),
 ];
 const capitalFactory = mocksFactory<CapitalPaths>();
 
