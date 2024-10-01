@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useReducer, useRef } from 'preact/hooks';
-import { ErrorLevel } from '../../core/Http/types';
-import { boolOrTrue } from '../../utils';
+import { ErrorLevel } from '../core/Http/types';
+import { boolOrTrue } from '../utils';
 
 export interface State<T> {
     data?: T;

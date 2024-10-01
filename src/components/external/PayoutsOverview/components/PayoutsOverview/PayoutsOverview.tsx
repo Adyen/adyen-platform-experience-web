@@ -4,11 +4,11 @@ import FilterBar, { FilterBarMobileSwitch, useFilterBarState } from '../../../..
 import BalanceAccountSelector from '../../../../internal/FormFields/Select/BalanceAccountSelector';
 import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '../../../../internal/Pagination/constants';
 import { useCursorPaginatedRecords } from '../../../../internal/Pagination/hooks';
-import useBalanceAccountSelection from '../../../../hooks/useBalanceAccountSelection';
+import useBalanceAccountSelection from '../../../../../hooks/useBalanceAccountSelection';
 import DateFilter from '../../../../internal/FilterBar/filters/DateFilter/DateFilter';
 import useModalDetails from '../../../../../hooks/useModalDetails/useModalDetails';
 import { IPayout } from '../../../../../types';
-import useDefaultOverviewFilterParams from '../../../../hooks/useDefaultOverviewFilterParams';
+import useDefaultOverviewFilterParams from '../../../../../hooks/useDefaultOverviewFilterParams';
 import { Header } from '../../../../internal/Header';
 import { PayoutsOverviewComponentProps, ExternalUIComponentProps, FilterParam } from '../../../../types';
 import { useAuthContext } from '../../../../../core/Auth';
