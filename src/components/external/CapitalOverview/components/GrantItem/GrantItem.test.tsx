@@ -15,15 +15,17 @@ import {
     WRITTEN_OFF_GRANT,
 } from '../../../../../../mocks/mock-data';
 
+const dateRegex = /^[A-Z][a-z]{2} \d{2}, \d{4}$/;
+
 describe('GrantItem', () => {
     test('renders active grant', () => {
         render(<GrantItem grant={ACTIVE_GRANT} />);
 
         const container = screen.getByTestId('grant-container');
-        expect(container).not.toHaveClass('adyen-pe-card__text--secondary');
+        expect(container).not.toHaveClass('adyen-pe-card--filled');
 
         const termEndsLabel = screen.getByText('Term ends:');
-        const repaymentPeriodEndDate = screen.getByText('Feb 12, 2025');
+        const repaymentPeriodEndDate = screen.getByText(dateRegex);
         expect(termEndsLabel).toBeInTheDocument();
         expect(repaymentPeriodEndDate).toBeInTheDocument();
 
@@ -44,10 +46,10 @@ describe('GrantItem', () => {
         render(<GrantItem grant={ACTIVE_UNREPAID_GRANT} />);
 
         const container = screen.getByTestId('grant-container');
-        expect(container).not.toHaveClass('adyen-pe-card__text--secondary');
+        expect(container).not.toHaveClass('adyen-pe-card--filled');
 
         const termEndsLabel = screen.getByText('Term ends:');
-        const repaymentPeriodEndDate = screen.getByText('Feb 12, 2025');
+        const repaymentPeriodEndDate = screen.getByText(dateRegex);
         expect(termEndsLabel).toBeInTheDocument();
         expect(repaymentPeriodEndDate).toBeInTheDocument();
 
@@ -68,7 +70,7 @@ describe('GrantItem', () => {
         render(<GrantItem grant={FAILED_GRANT} />);
 
         const container = screen.getByTestId('grant-container');
-        expect(container).not.toHaveClass('adyen-pe-card__text--secondary');
+        expect(container).not.toHaveClass('adyen-pe-card--filled');
 
         const status = screen.getByText('Failed');
         expect(status).toBeInTheDocument();
@@ -89,7 +91,7 @@ describe('GrantItem', () => {
         render(<GrantItem grant={PENDING_GRANT} />);
 
         const container = screen.getByTestId('grant-container');
-        expect(container).not.toHaveClass('adyen-pe-card__text--secondary');
+        expect(container).not.toHaveClass('adyen-pe-card--filled');
 
         const status = screen.getByText('Pending');
         expect(status).toBeInTheDocument();
@@ -131,7 +133,7 @@ describe('GrantItem', () => {
         render(<GrantItem grant={REVOKED_GRANT} />);
 
         const container = screen.getByTestId('grant-container');
-        expect(container).not.toHaveClass('adyen-pe-card__text--secondary');
+        expect(container).not.toHaveClass('adyen-pe-card--filled');
 
         const status = screen.getByText('Revoked');
         expect(status).toBeInTheDocument();
@@ -152,7 +154,7 @@ describe('GrantItem', () => {
         render(<GrantItem grant={WRITTEN_OFF_GRANT} />);
 
         const container = screen.getByTestId('grant-container');
-        expect(container).not.toHaveClass('adyen-pe-card__text--secondary');
+        expect(container).not.toHaveClass('adyen-pe-card--filled');
 
         const status = screen.getByText('Written off');
         expect(status).toBeInTheDocument();

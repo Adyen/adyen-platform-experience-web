@@ -40,7 +40,7 @@ export const GrantItem: FunctionalComponent<GrantItemProps> = ({ grant }) => {
                 className={cx({ [GRANT_ITEM_CLASS_NAMES.textSecondary]: config.isLabelColorSecondary })}
                 testId={'grant-amount-label'}
             >
-                {i18n.get(config.labelKey)}
+                {i18n.get(config.amountLabelKey)}
             </Typography>
             <Typography
                 variant={TypographyVariant.TITLE}

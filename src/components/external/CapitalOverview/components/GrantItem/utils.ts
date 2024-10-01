@@ -4,7 +4,7 @@ import { TagVariant } from '../../../../internal/Tag/types';
 
 const getIsBackgroundFilled = (status: IGrantStatus) => status === 'Repaid';
 
-const getLabelKey = ({ status, repayedAmount }: IGrant): TranslationKey => {
+const getAmountLabelKey = ({ status, repayedAmount }: IGrant): TranslationKey => {
     if (status === 'Active') {
         return repayedAmount.value ? 'capital.repaid' : 'capital.initialFunds';
     } else if (status === 'Repaid') {
@@ -59,11 +59,11 @@ export const getGrantConfig = (grant: IGrant) => {
 
     return {
         amount: getAmount(grant),
+        amountLabelKey: getAmountLabelKey(grant),
         isAmountColorSecondary: !isGrantActive,
         isBackgroundFilled: getIsBackgroundFilled(grant.status),
         isLabelColorSecondary: isGrantActiveOrRepaid,
         isProgressBarVisible: isGrantActive,
-        labelKey: getLabelKey(grant),
         repaymentPeriodEndDate: getRepaymentPeriodEndDate(grant.repaymentPeriodLeft),
         statusKey: getStatusKey(grant.status),
         statusTagVariant: getStatusTagVariant(grant.status),
