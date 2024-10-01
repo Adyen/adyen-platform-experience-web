@@ -17,10 +17,10 @@ import './GrantItem.scss';
 export const GrantItem: FunctionalComponent<GrantItemProps> = ({ grant }) => {
     const { i18n } = useCoreContext();
     const { dateFormat } = useTimezoneAwareDateFormatting();
-    const config = useMemo(() => getGrantConfig(grant), [grant]);
+    const grantConfig = useMemo(() => getGrantConfig(grant), [grant]);
 
     return (
-        <Card classNameModifiers={[GRANT_ITEM_CLASS_NAMES.base]} filled={config.isBackgroundFilled} testId={'grant-container'}>
+        <Card classNameModifiers={[GRANT_ITEM_CLASS_NAMES.base]} filled={grantConfig.isBackgroundFilled} testId={'grant-container'}>
             <div className={GRANT_ITEM_CLASS_NAMES.statusContainer}>
                 {grant.status === 'Active' ? (
                     <>
@@ -28,28 +28,28 @@ export const GrantItem: FunctionalComponent<GrantItemProps> = ({ grant }) => {
                             {i18n.get('capital.termEnds')}
                         </Typography>
                         <Typography variant={TypographyVariant.CAPTION} stronger el={TypographyElement.SPAN}>
-                            {dateFormat(config.repaymentPeriodEndDate, DATE_FORMAT_CAPITAL_OVERVIEW)}
+                            {dateFormat(grantConfig.repaymentPeriodEndDate, DATE_FORMAT_CAPITAL_OVERVIEW)}
                         </Typography>
                     </>
-                ) : config.statusKey ? (
-                    <Tag label={i18n.get(config.statusKey)} variant={config.statusTagVariant} />
+                ) : grantConfig.statusKey ? (
+                    <Tag label={i18n.get(grantConfig.statusKey)} variant={grantConfig.statusTagVariant} />
                 ) : null}
             </div>
             <Typography
                 variant={TypographyVariant.CAPTION}
-                className={cx({ [GRANT_ITEM_CLASS_NAMES.textSecondary]: config.isLabelColorSecondary })}
+                className={cx({ [GRANT_ITEM_CLASS_NAMES.textSecondary]: grantConfig.isLabelColorSecondary })}
                 testId={'grant-amount-label'}
             >
-                {i18n.get(config.amountLabelKey)}
+                {i18n.get(grantConfig.amountLabelKey)}
             </Typography>
             <Typography
                 variant={TypographyVariant.TITLE}
                 medium
-                className={cx({ [GRANT_ITEM_CLASS_NAMES.textSecondary]: config.isAmountColorSecondary })}
+                className={cx({ [GRANT_ITEM_CLASS_NAMES.textSecondary]: grantConfig.isAmountColorSecondary })}
             >
-                {i18n.amount(config.amount.value, config.amount.currency)}
+                {i18n.amount(grantConfig.amount.value, grantConfig.amount.currency)}
             </Typography>
-            {config.isProgressBarVisible && (
+            {grantConfig.isProgressBarVisible && (
                 <ProgressBar
                     className={GRANT_ITEM_CLASS_NAMES.progressBar}
                     value={grant.repayedGrantAmount.value}

@@ -30,10 +30,12 @@ describe('GrantItem', () => {
         expect(repaymentPeriodEndDate).toBeInTheDocument();
 
         const amountLabel = screen.getByTestId('grant-amount-label');
+        expect(amountLabel).toBeInTheDocument();
         expect(amountLabel).toHaveTextContent('Repaid');
         expect(amountLabel).toHaveClass('adyen-pe-grant-item__text--secondary');
 
         const amount = screen.getByText('$11,870.00');
+        expect(amount).toBeInTheDocument();
         expect(amount).not.toHaveClass('adyen-pe-grant-item__text--secondary');
 
         const progressBar = screen.getByRole('progressbar');
@@ -54,10 +56,12 @@ describe('GrantItem', () => {
         expect(repaymentPeriodEndDate).toBeInTheDocument();
 
         const amountLabel = screen.getByTestId('grant-amount-label');
+        expect(amountLabel).toBeInTheDocument();
         expect(amountLabel).toHaveTextContent('Initial funds');
         expect(amountLabel).toHaveClass('adyen-pe-grant-item__text--secondary');
 
         const amount = screen.getByText('$20,000.00');
+        expect(amount).toBeInTheDocument();
         expect(amount).not.toHaveClass('adyen-pe-grant-item__text--secondary');
 
         const progressBar = screen.getByRole('progressbar');
@@ -77,10 +81,12 @@ describe('GrantItem', () => {
         expect(status).toHaveClass('adyen-pe-tag--error');
 
         const amountLabel = screen.getByTestId('grant-amount-label');
+        expect(amountLabel).toBeInTheDocument();
         expect(amountLabel).toHaveTextContent('Requested funds');
         expect(amountLabel).not.toHaveClass('adyen-pe-grant-item__text--secondary');
 
         const amount = screen.getByText('$20,000.00');
+        expect(amount).toBeInTheDocument();
         expect(amount).toHaveClass('adyen-pe-grant-item__text--secondary');
 
         const progressBar = screen.queryByRole('progressbar');
@@ -98,10 +104,12 @@ describe('GrantItem', () => {
         expect(status).toHaveClass('adyen-pe-tag--default');
 
         const amountLabel = screen.getByTestId('grant-amount-label');
+        expect(amountLabel).toBeInTheDocument();
         expect(amountLabel).toHaveTextContent('Requested funds');
         expect(amountLabel).not.toHaveClass('adyen-pe-grant-item__text--secondary');
 
         const amount = screen.getByText('$20,000.00');
+        expect(amount).toBeInTheDocument();
         expect(amount).toHaveClass('adyen-pe-grant-item__text--secondary');
 
         const progressBar = screen.queryByRole('progressbar');
@@ -119,10 +127,12 @@ describe('GrantItem', () => {
         expect(status).toHaveClass('adyen-pe-tag--light');
 
         const amountLabel = screen.getByTestId('grant-amount-label');
+        expect(amountLabel).toBeInTheDocument();
         expect(amountLabel).toHaveTextContent('Initial funds');
         expect(amountLabel).toHaveClass('adyen-pe-grant-item__text--secondary');
 
         const amount = screen.getByText('$20,000.00');
+        expect(amount).toBeInTheDocument();
         expect(amount).toHaveClass('adyen-pe-grant-item__text--secondary');
 
         const progressBar = screen.queryByRole('progressbar');
@@ -140,10 +150,12 @@ describe('GrantItem', () => {
         expect(status).toHaveClass('adyen-pe-tag--warning');
 
         const amountLabel = screen.getByTestId('grant-amount-label');
+        expect(amountLabel).toBeInTheDocument();
         expect(amountLabel).toHaveTextContent('Requested funds');
         expect(amountLabel).not.toHaveClass('adyen-pe-grant-item__text--secondary');
 
         const amount = screen.getByText('$20,000.00');
+        expect(amount).toBeInTheDocument();
         expect(amount).toHaveClass('adyen-pe-grant-item__text--secondary');
 
         const progressBar = screen.queryByRole('progressbar');
@@ -161,10 +173,12 @@ describe('GrantItem', () => {
         expect(status).toHaveClass('adyen-pe-tag--warning');
 
         const amountLabel = screen.getByTestId('grant-amount-label');
+        expect(amountLabel).toBeInTheDocument();
         expect(amountLabel).toHaveTextContent('Requested funds');
         expect(amountLabel).not.toHaveClass('adyen-pe-grant-item__text--secondary');
 
         const amount = screen.getByText('$20,000.00');
+        expect(amount).toBeInTheDocument();
         expect(amount).toHaveClass('adyen-pe-grant-item__text--secondary');
 
         const progressBar = screen.queryByRole('progressbar');
