@@ -1,10 +1,10 @@
-@use '../../../style/skeleton' as skeleton;
-@use '../../../style';
+@use '../../../../../style/skeleton' as skeleton;
+@use '../../../../../style';
 
 .adyen-pe-capital-overview {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: style.token(spacer-080);
 
     &__skeleton {
         @include skeleton.adyen-pe-skeleton-animation();

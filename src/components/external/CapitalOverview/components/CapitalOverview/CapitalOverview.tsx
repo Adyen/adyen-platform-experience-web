@@ -1,15 +1,17 @@
 import { useMemo } from 'preact/hooks';
-import { ExternalUIComponentProps } from '../../../types';
-import { CapitalOverviewProps } from '../types';
-import { CAPITAL_OVERVIEW_CLASS_NAMES } from '../constants';
+import { ExternalUIComponentProps } from '../../../../types';
+import { CapitalOverviewProps } from '../../types';
+import { CAPITAL_OVERVIEW_CLASS_NAMES } from '../../constants';
 import { FunctionalComponent } from 'preact';
-import { useAuthContext } from '../../../../core/Auth';
-import { useFetch } from '../../../../hooks/useFetch';
-import { EMPTY_OBJECT } from '../../../../utils';
-import { CapitalHeader } from '../../../internal/CapitalHeader';
-import '../CapitalOverview.scss';
-import PreQualified from './PreQualified';
-import { IDynamicOfferConfig } from '../../../../types';
+import { useAuthContext } from '../../../../../core/Auth';
+import { useFetch } from '../../../../../hooks/useFetch';
+import { EMPTY_OBJECT } from '../../../../../utils';
+import { CapitalHeader } from '../../../../internal/CapitalHeader';
+import { BaseList } from '../../../../internal/BaseList/BaseList';
+import { GrantItem } from '../GrantItem/GrantItem';
+import PreQualified from '../PreQualified';
+import { IDynamicOfferConfig } from '../../../../../types';
+import './CapitalOverview.scss';
 
 export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<CapitalOverviewProps>> = ({
     hideTitle,
@@ -55,11 +57,17 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
 
     return (
         <div className={CAPITAL_OVERVIEW_CLASS_NAMES.base}>
-            <CapitalHeader hideTitle={hideTitle} hasSubtitle={false} titleKey={grantList?.length ? 'capital.grants' : 'capital.grantOffer'} />
+            <CapitalHeader hideTitle={hideTitle} titleKey={'capital.businessFinancing'} />
             {showSkeleton ? <div className={CAPITAL_OVERVIEW_CLASS_NAMES.skeleton}></div> : null}
             {!showSkeleton &&
                 (showGrantsList ? (
-                    <div>{'Placeholder for grants list'}</div>
+                    <BaseList>
+                        {grantList.map(grant => (
+                            <li key={grant.id}>
+                                <GrantItem grant={grant} />
+                            </li>
+                        ))}
+                    </BaseList>
                 ) : showPreQualified ? (
                     <PreQualified dynamicOffer={dynamicOffer as Required<IDynamicOfferConfig>} onOfferReview={onOfferReview} />
                 ) : null)}

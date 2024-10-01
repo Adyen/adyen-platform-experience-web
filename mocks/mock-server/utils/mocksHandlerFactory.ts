@@ -11,13 +11,13 @@ export const getHandlerCallback = <T extends JsonBodyType>({
 }: {
     response: T;
     networkError?: boolean;
-    delayTime?: DelayMode;
+    delayTime?: number;
 }) => {
     return async () => {
         if (networkError) {
             return HttpResponse.error();
         }
-        await delay(delayTime || 200);
+        await delay(delayTime ?? 0);
         return HttpResponse.json(response);
     };
 };
@@ -28,6 +28,7 @@ type Handlers<Resource extends Record<string, any>, T extends Record<string, any
         endpoint: PathWithBaseUrl<Extract<keyof Resource, string>>;
         handler?: ReturnType<typeof getHandlerCallback>;
         response?: JsonBodyType;
+        delay?: number;
     }[];
 };
 
@@ -39,8 +40,8 @@ class MocksHandlerFactory<Endpoints extends Record<string, any>> {
     public generate<T extends Record<string, any>>(handlers: Handlers<Endpoints, T>): { [K in keyof T]: HttpHandler[] } {
         const result = {} as { [K in keyof T]: HttpHandler[] };
         for (const handlerKey in handlers) {
-            result[handlerKey] = handlers[handlerKey]!.map(({ method, endpoint, handler, response }) =>
-                http[method || 'get'](endpoint, handler || getHandlerCallback({ response }))
+            result[handlerKey] = handlers[handlerKey]!.map(({ method, endpoint, handler, response, delay }) =>
+                http[method || 'get'](endpoint, handler || getHandlerCallback({ response, delayTime: delay }))
             );
         }
         return result;
