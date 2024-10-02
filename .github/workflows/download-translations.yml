@@ -29,10 +29,15 @@ jobs:
           # Checkout new branch from the default branch
           git checkout -B ${{ env.BRANCH_NAME }} ${{ env.BASE_REF }}
 
+          # Configure the Git user (GitHub Actions Bot)
+          # See https://github.com/orgs/community/discussions/26560
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+
           # Download files from Smartling
           npx -y @adyen/smartling-bot@0.x.x download-files -p ./scripts/process-translations/post-download.sh
         env:
           BASE_REF: ${{ github.ref_name }}
           BRANCH_NAME: "bot/translations"
-          COMMIT_TITLE: "Update translations"
+          COMMIT_TITLE: "chore(lang): update translations"
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
