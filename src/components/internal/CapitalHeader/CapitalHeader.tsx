@@ -6,5 +6,5 @@ export type CapitalHeaderProps = Omit<HeaderProps, 'subtitleKey'> & {
 };
 
 export const CapitalHeader: FunctionalComponent<CapitalHeaderProps> = ({ hasSubtitle = true, ...restOfProps }) => {
-    return <Header {...restOfProps} subtitleKey={hasSubtitle ? 'capital.subtitle' : undefined} />;
+    return <Header {...restOfProps} subtitleKey={hasSubtitle ? 'capital.poweredByAdyen' : undefined} />;
 };

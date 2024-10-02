@@ -1,16 +1,19 @@
 import { useMemo } from 'preact/hooks';
-import { ExternalUIComponentProps } from '../../../types';
-import { CapitalOverviewProps } from '../types';
-import { CAPITAL_OVERVIEW_CLASS_NAMES } from '../constants';
+import { ExternalUIComponentProps } from '../../../../types';
+import { CapitalOverviewProps } from '../../types';
+import { CAPITAL_OVERVIEW_CLASS_NAMES } from '../../constants';
 import { FunctionalComponent } from 'preact';
-import { useAuthContext } from '../../../../core/Auth';
-import { useFetch } from '../../../../hooks/useFetch';
-import { EMPTY_OBJECT } from '../../../../utils';
-import { CapitalHeader } from '../../../internal/CapitalHeader';
+import { useAuthContext } from '../../../../../core/Auth';
+import { useFetch } from '../../../../../hooks/useFetch';
+import { EMPTY_OBJECT } from '../../../../../utils';
+import { CapitalHeader } from '../../../../internal/CapitalHeader';
+import { BaseList } from '../../../../internal/BaseList/BaseList';
+import { GrantItem } from '../GrantItem/GrantItem';
+import PreQualified from '../PreQualified';
+import { IDynamicOfferConfig } from '../../../../../types';
+import './CapitalOverview.scss';
 import '../CapitalOverview.scss';
-import PreQualified from './PreQualified';
-import { IDynamicOfferConfig } from '../../../../types';
-import Unqualified from './Unqualified';
+import Unqualified from '../Unqualified';
 
 type CapitalOverviewState = 'Loading' | 'Unqualified' | 'PreQualified' | 'GrantList';
 
@@ -86,12 +89,14 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
                     case 'GrantList':
                         return (
                             <div>
-                                <CapitalHeader
-                                    hideTitle={hideTitle}
-                                    hasSubtitle={false}
-                                    titleKey={grantList?.length ? 'capital.grants' : 'capital.grantOffer'}
-                                />
-                                {'Placeholder for grants list'}
+                                <CapitalHeader hideTitle={hideTitle} titleKey={'capital.businessFinancing'} />
+                                <BaseList>
+                                    {grantList?.map(grant => (
+                                        <li key={grant.id}>
+                                            <GrantItem grant={grant} />
+                                        </li>
+                                    ))}
+                                </BaseList>
                             </div>
                         );
                     case 'PreQualified':

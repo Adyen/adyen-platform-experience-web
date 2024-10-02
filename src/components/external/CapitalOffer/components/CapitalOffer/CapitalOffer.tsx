@@ -12,7 +12,10 @@ export const CapitalOffer: FunctionalComponent<ExternalUIComponentProps<CapitalO
 
     return (
         <div className={CAPITAL_OFFER_CLASS_NAMES.base}>
-            <CapitalHeader hideTitle={hideTitle} titleKey={state === 'OfferSummary' ? 'capital.grantOfferSummary' : 'capital.grantOffer'} />
+            <CapitalHeader
+                hideTitle={hideTitle}
+                titleKey={state === 'OfferSummary' ? 'capital.businessFinancingSummary' : 'capital.businessFinancing'}
+            />
         </div>
     );
 };
