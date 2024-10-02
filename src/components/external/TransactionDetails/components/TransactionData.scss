@@ -1,4 +1,3 @@
-@use '../../../../style/skeleton' as skeleton;
 @use '../../../../style';
 
 .adyen-pe-transaction-data {
@@ -175,31 +174,5 @@
         font-size: style.token(text-body-font-size);
         font-weight: style.token(text-body-font-weight);
         line-height: style.token(text-body-line-height);
-    }
-
-    &__skeleton-container {
-        display: flex;
-        flex-direction: column;
-        gap: 30px;
-        margin-bottom: style.token(spacer-060);
-    }
-
-    &__status-skeleton {
-        display: flex;
-        gap: 10px;
-        width: 120px;
-    }
-
-    &__skeleton {
-        @include skeleton.adyen-pe-skeleton();
-        display: block;
-        height: style.token(spacer-070);
-        margin: 0;
-        max-width: 270px;
-        width: 100%;
-
-        &--loading-content {
-            @include skeleton.adyen-pe-skeleton-animation();
-        }
     }
 }

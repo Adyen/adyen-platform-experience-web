@@ -4,7 +4,7 @@ import { getDecimalAmount } from '../../../../core/Localization/amount/amount-ut
 import { boolOrFalse, EMPTY_ARRAY, noop } from '../../../../utils';
 import { ButtonVariant } from '../../../internal/Button/types';
 import useCoreContext from '../../../../core/Context/useCoreContext';
-import TransactionDataSkeleton from '../components/TransactionDataSkeleton';
+import DataOverviewDetailsSkeleton from '../../../internal/DataOverviewDetails/DataOverviewDetailsSkeleton';
 import { TransactionDataContext } from './TransactionDataContext';
 import { REFUND_REASONS } from './constants';
 import type { ButtonActionObject, ButtonActionsList } from '../../../internal/Button/ButtonActions/types';
@@ -80,7 +80,7 @@ export const TransactionDataContextProvider = ({ children, error, forceHideTitle
     }, [i18n, transaction]);
 
     if (isLoading || !(transaction || error)) {
-        return <TransactionDataSkeleton skeletonRowNumber={5} />;
+        return <DataOverviewDetailsSkeleton skeletonRowNumber={5} />;
     }
 
     return transaction ? (

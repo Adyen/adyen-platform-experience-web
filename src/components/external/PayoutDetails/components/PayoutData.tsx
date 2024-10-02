@@ -12,7 +12,7 @@ import StructuredList from '../../../internal/StructuredList';
 import { ListValue } from '../../../internal/StructuredList/types';
 import { TypographyVariant } from '../../../internal/Typography/types';
 import Typography from '../../../internal/Typography/Typography';
-import TransactionDataSkeleton from '../../TransactionDetails/components/TransactionDataSkeleton';
+import DataOverviewDetailsSkeleton from '../../../internal/DataOverviewDetails/DataOverviewDetailsSkeleton';
 import useTimezoneAwareDateFormatting from '../../../../hooks/useTimezoneAwareDateFormatting';
 import './PayoutData.scss';
 import {
@@ -96,7 +96,7 @@ export const PayoutData = ({
     return (
         <>
             {!payout ? (
-                <TransactionDataSkeleton skeletonRowNumber={6} />
+                <DataOverviewDetailsSkeleton skeletonRowNumber={6} />
             ) : (
                 <div className={PD_BASE_CLASS}>
                     <div className={PD_TITLE_CLASS}>
