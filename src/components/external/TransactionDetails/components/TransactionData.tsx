@@ -12,7 +12,7 @@ import './TransactionData.scss';
 import { PropsWithChildren } from 'preact/compat';
 import { FunctionalComponent } from 'preact';
 import { TRANSACTION_FIELDS } from '../../TransactionsOverview/components/TransactionsTable/TransactionsTable';
-import cx from 'classnames';
+import { _isCustomDataObject } from '../../../internal/DataGrid/components/TableCells';
 
 const TransactionDataContainer: FunctionalComponent<PropsWithChildren> = ({ children }) => (
     <div className={'adyen-pe-transaction-data__container'}>{children}</div>
@@ -50,7 +50,10 @@ export const TransactionData = ({
         const fields = new Set([...DETAILS_FIELDS, ...TRANSACTION_FIELDS]);
         return Object.entries(transaction || {})
             .filter(([key]) => !fields.has(key as any))
-            .map(([key, value]) => ({ key, value }));
+            .map(([key, value]) => ({
+                key,
+                value: _isCustomDataObject(value) ? value.value : value,
+            }));
     }, [transaction]);
 
     return (
