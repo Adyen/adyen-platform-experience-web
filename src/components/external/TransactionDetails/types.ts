@@ -1,5 +1,5 @@
-import { StrictUnion } from '../../../utils/types';
-import { IBalanceAccountBase, ITransaction } from '../../../types';
+import type { StrictUnion } from '../../../utils/types';
+import type { IBalanceAccountBase, ITransaction } from '../../../types';
 
 export interface DetailsWithoutIdProps {
     data: TransactionDetailData;

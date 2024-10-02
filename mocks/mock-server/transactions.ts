@@ -190,7 +190,47 @@ export const transactionsMocks = [
         });
     }),
 
-    http.get(mockEndpoints.transaction, async ({ params }) => fetchTransaction(params)),
+    http.get(mockEndpoints.transactionsTotals, ({ request }) => {
+        const url = new URL(request.url);
+        const searchParams = url.searchParams;
+
+        // Don't filter transactions within the same time window
+        searchParams.delete('categories');
+        searchParams.delete('currencies');
+        searchParams.delete('maxAmount');
+        searchParams.delete('minAmount');
+        searchParams.delete('sortDirection');
+        searchParams.delete('statuses');
+
+        const { hash, transactions } = fetchTransactionsForRequest(request);
+        let totals = TRANSACTIONS_TOTALS_CACHE.get(hash);
+
+        if (totals === undefined) {
+            totals = transactions.reduce((currencyTotalsMap, transaction) => {
+                const { value: amount, currency } = transaction.amount;
+                let currencyTotals = currencyTotalsMap.get(currency);
+
+                if (currencyTotals === undefined) {
+                    currencyTotalsMap.set(currency, (currencyTotals = { expenses: 0, incomings: 0 }));
+                }
+
+                currencyTotals[amount >= 0 ? 'incomings' : 'expenses'] += amount;
+                return currencyTotalsMap;
+            }, new Map<string, _ITransactionTotals>());
+
+            TRANSACTIONS_TOTALS_CACHE.set(hash, totals);
+        }
+
+        const data: (_ITransactionTotals & { currency: string })[] = [];
+
+        for (const [currency, currencyTotals] of totals) {
+            data.push({ currency, ...currencyTotals });
+        }
+
+        return HttpResponse.json({ data });
+    }),
+
+    http.get(mockEndpoints.transaction, ({ params }) => fetchTransaction(params)),
 
     http.post(mockEndpoints.refundTransaction, async ({ request, params }) => {
         try {
@@ -230,45 +270,5 @@ export const transactionsMocks = [
                 { status: 500 }
             );
         }
-    }),
-
-    http.get(mockEndpoints.transactionsTotals, ({ request }) => {
-        const url = new URL(request.url);
-        const searchParams = url.searchParams;
-
-        // Don't filter transactions within the same time window
-        searchParams.delete('categories');
-        searchParams.delete('currencies');
-        searchParams.delete('maxAmount');
-        searchParams.delete('minAmount');
-        searchParams.delete('sortDirection');
-        searchParams.delete('statuses');
-
-        const { hash, transactions } = fetchTransactionsForRequest(request);
-        let totals = TRANSACTIONS_TOTALS_CACHE.get(hash);
-
-        if (totals === undefined) {
-            totals = transactions.reduce((currencyTotalsMap, transaction) => {
-                const { value: amount, currency } = transaction.amount;
-                let currencyTotals = currencyTotalsMap.get(currency);
-
-                if (currencyTotals === undefined) {
-                    currencyTotalsMap.set(currency, (currencyTotals = { expenses: 0, incomings: 0 }));
-                }
-
-                currencyTotals[amount >= 0 ? 'incomings' : 'expenses'] += amount;
-                return currencyTotalsMap;
-            }, new Map<string, _ITransactionTotals>());
-
-            TRANSACTIONS_TOTALS_CACHE.set(hash, totals);
-        }
-
-        const data: (_ITransactionTotals & { currency: string })[] = [];
-
-        for (const [currency, currencyTotals] of totals) {
-            data.push({ currency, ...currencyTotals });
-        }
-
-        return HttpResponse.json({ data });
     }),
 ];

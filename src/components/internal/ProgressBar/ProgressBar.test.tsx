@@ -84,4 +84,14 @@ describe('ProgressBar', () => {
         const fillElement = within(screen.getByRole('progressbar')).getByTitle(labels.current);
         expect(fillElement).toHaveStyle(`width: 0%`);
     });
+
+    test('renders progress bar with correct width accounting for float precision', () => {
+        const value = 29;
+        const max = 100;
+        const labels = { current: 'Negative Value' };
+        render(<ProgressBar value={value} max={max} labels={labels} />);
+
+        const fillElement = within(screen.getByRole('progressbar')).getByTitle(labels.current);
+        expect(fillElement).toHaveStyle(`width: 29%`);
+    });
 });
