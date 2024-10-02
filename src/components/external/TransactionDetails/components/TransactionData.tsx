@@ -1,7 +1,7 @@
-import { DATE_FORMAT_TRANSACTION_DETAILS } from '../../../internal/DataOverviewDisplay/constants';
+import { DATE_FORMAT_TRANSACTION_DETAILS } from '../../../../constants';
 import { TransactionDetailData } from '../types';
 import TransactionDataSkeleton from './TransactionDataSkeleton';
-import useTimezoneAwareDateFormatting from '../../../hooks/useTimezoneAwareDateFormatting';
+import useTimezoneAwareDateFormatting from '../../../../hooks/useTimezoneAwareDateFormatting';
 import { Image } from '../../../internal/Image/Image';
 import { parsePaymentMethodType } from '../../TransactionsOverview/components/utils';
 import { Tag } from '../../../internal/Tag/Tag';
@@ -12,7 +12,7 @@ import './TransactionData.scss';
 import { PropsWithChildren } from 'preact/compat';
 import { FunctionalComponent } from 'preact';
 import { TRANSACTION_FIELDS } from '../../TransactionsOverview/components/TransactionsTable/TransactionsTable';
-import cx from 'classnames';
+import { _isCustomDataObject } from '../../../internal/DataGrid/components/TableCells';
 
 const TransactionDataContainer: FunctionalComponent<PropsWithChildren> = ({ children }) => (
     <div className={'adyen-pe-transaction-data__container'}>{children}</div>
@@ -50,7 +50,10 @@ export const TransactionData = ({
         const fields = new Set([...DETAILS_FIELDS, ...TRANSACTION_FIELDS]);
         return Object.entries(transaction || {})
             .filter(([key]) => !fields.has(key as any))
-            .map(([key, value]) => ({ key, value }));
+            .map(([key, value]) => ({
+                key,
+                value: _isCustomDataObject(value) ? value.value : value,
+            }));
     }, [transaction]);
 
     return (
