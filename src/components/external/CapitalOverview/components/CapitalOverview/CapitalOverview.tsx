@@ -12,7 +12,6 @@ import { GrantItem } from '../GrantItem/GrantItem';
 import PreQualified from '../PreQualified';
 import { IDynamicOfferConfig } from '../../../../../types';
 import './CapitalOverview.scss';
-import '../CapitalOverview.scss';
 import Unqualified from '../Unqualified';
 
 type CapitalOverviewState = 'Loading' | 'Unqualified' | 'PreQualified' | 'GrantList';
