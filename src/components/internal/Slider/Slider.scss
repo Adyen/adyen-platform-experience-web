@@ -1,9 +1,9 @@
 @use '../../../style';
 
 $adyen-pe-slider-track-color: style.token(color-background-selected);
-$adyen-pe-slider-progress-color: style.token(color-decorative-blue);
+$adyen-pe-slider-progress-color: style.token(color-background-highlight-strong);
 $adyen-pe-slider-thumb-background-color: style.token(color-background-primary);
-$adyen-pe-slider-thumb-border-color: style.token(color-decorative-blue);
+$adyen-pe-slider-thumb-border-color: style.token(color-background-highlight-strong);
 $adyen-pe-slider-thumb-size: style.token(spacer-070);
 $adyen-pe-slider-border-size: style.token(spacer-020);
 $adyen-pe-slider-border-radius: style.token(border-radius-m);

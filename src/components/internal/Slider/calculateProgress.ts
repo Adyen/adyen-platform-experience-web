@@ -17,18 +17,16 @@ export function calculateProgress(currentValue: number, min: number, max: number
     if (min >= max) return 0;
 
     // Handle zero step size
-    if (step <= 0) {
-        throw new Error('Step size must be greater than zero.');
-    }
+    const effectiveStep = step > 0 ? step : 1;
 
     // Check for cases where step cannot be accommodated in the range
-    if (step > max - min) return 0;
+    if (effectiveStep > max - min) return 0;
 
     // Snap the current value to the nearest step
-    const snappedValue = Math.round((currentValue - min) / step) * step + min;
+    const snappedValue = Math.round((currentValue - min) / effectiveStep) * effectiveStep + min;
 
     // Calculate the raw progress percentage by checking how far the snapped value is between min and max.
-    const percentage = ((snappedValue - min) / (max - min)) * 100;
+    const percentage = ((snappedValue - min) * 100) / (max - min);
 
     // Clamp the percentage between 0% and 100% to handle out-of-bounds values.
     return Number(clamp(0, percentage, 100).toFixed(2));

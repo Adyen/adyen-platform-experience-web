@@ -56,7 +56,8 @@ describe('calculateProgress', () => {
         expect(calculateProgress(50, 50, 50, 10)).toBe(0);
     });
 
-    test('should handle zero step size and throw an error', () => {
-        expect(() => calculateProgress(50, 0, 100, 0)).toThrow('Step size must be greater than zero.');
+    test('should handle invalid step sizes and default to 1', () => {
+        expect(calculateProgress(50, 0, 100, 0)).toBe(50);
+        expect(calculateProgress(50, 0, 100, -10)).toBe(50);
     });
 });

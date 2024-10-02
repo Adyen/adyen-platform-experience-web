@@ -29,7 +29,7 @@ interface SliderProps {
 
     /**
      * The current value of the slider.
-     * @default 0
+     * @default min
      */
     value?: number;
 
@@ -37,7 +37,7 @@ interface SliderProps {
      * Callback function that is called when the slider value changes.
      * @param value - The new value of the slider.
      */
-    onValueChange?: (value: number) => void;
+    onChange?: (event: JSX.TargetedEvent<HTMLInputElement, Event>) => void;
 
     /**
      * Optional class name(s) for styling the Slider.
@@ -50,24 +50,10 @@ interface SliderProps {
     [key: string]: any;
 }
 
-const Slider = ({ min = 0, max = 100, step = 1, value: initialValue = 0, onValueChange, className, ...props }: SliderProps) => {
-    const [value, setValue] = useState<number>(initialValue);
-
-    useEffect(() => {
-        setValue(initialValue);
-    }, [initialValue]);
-
+const Slider = ({ min = 0, max = 100, step = 1, value = min, onChange, className, ...restOfProps }: SliderProps) => {
     const progress = useMemo(() => {
         return calculateProgress(value, min, max, step);
     }, [value, min, max, step]);
-
-    const handleInputChange = (event: JSX.TargetedEvent<HTMLInputElement, Event>) => {
-        const newValue = Number((event.target as HTMLInputElement).value);
-        setValue(newValue);
-        if (onValueChange) {
-            onValueChange(newValue);
-        }
-    };
 
     return (
         <input
@@ -77,9 +63,9 @@ const Slider = ({ min = 0, max = 100, step = 1, value: initialValue = 0, onValue
             max={max}
             step={step}
             value={value}
-            onInput={handleInputChange}
+            onChange={onChange}
             style={{ backgroundSize: `${progress}% 100%` }}
-            {...props}
+            {...restOfProps}
         />
     );
 };

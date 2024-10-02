@@ -3,7 +3,8 @@
  */
 
 import { render, screen, fireEvent } from '@testing-library/preact';
-import { describe, test, expect } from 'vitest';
+import { describe, test, expect, vi } from 'vitest';
+import { JSX } from 'preact';
 import Slider from './Slider';
 
 describe('Slider', () => {
@@ -28,6 +29,16 @@ describe('Slider', () => {
         expect(slider.value).toBe('20');
     });
 
+    test('renders the slider with default value equal to min', () => {
+        render(<Slider min={10} max={50} step={5} />);
+
+        const slider: HTMLInputElement = screen.getByRole('slider');
+        expect(slider).toHaveAttribute('min', '10');
+        expect(slider).toHaveAttribute('max', '50');
+        expect(slider).toHaveAttribute('step', '5');
+        expect(slider.value).toBe('10');
+    });
+
     test('renders the slider with additionally provided attributes', () => {
         render(<Slider id="some-random-id" attribute="value" />);
         const slider: HTMLInputElement = screen.getByRole('slider');
@@ -36,24 +47,24 @@ describe('Slider', () => {
         expect(slider).toHaveAttribute('attribute', 'value');
     });
 
-    test('updates the value when slider is changed', async () => {
-        render(<Slider />);
+    test('calls onChange callback when the value changes', async () => {
+        const handleValueChange = vi.fn(); // Spy on the callback using vi.fn()
+
+        render(<Slider onChange={handleValueChange} />);
 
         const slider: HTMLInputElement = screen.getByRole('slider');
-
-        fireEvent.input(slider, { target: { value: '50' } });
-
-        expect(slider.value).toBe('50');
+        fireEvent.change(slider, { target: { value: '27' } });
+        expect(handleValueChange).toHaveBeenCalled();
     });
 
-    test('calls onValueChange callback when the value changes', async () => {
-        const handleValueChange = (value: number) => {
-            expect(value).toBe(27);
+    test('calls onChange callback with the right event target value', async () => {
+        const handleValueChange = (event: JSX.TargetedEvent<HTMLInputElement, Event>) => {
+            expect((event.target as HTMLInputElement)?.value).toBe('27');
         };
-        render(<Slider onValueChange={handleValueChange} />);
+        render(<Slider onChange={handleValueChange} />);
 
         const slider: HTMLInputElement = screen.getByRole('slider');
-        fireEvent.input(slider, { target: { value: '27' } });
+        fireEvent.change(slider, { target: { value: '27' } });
     });
 
     test.each([
