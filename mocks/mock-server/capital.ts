@@ -35,7 +35,6 @@ export const capitalMock = [
     }),
     http.get(mockEndpoints.grants, EMPTY_GRANTS_LIST),
 ];
-
 const capitalFactory = mocksFactory<CapitalPaths>();
 
 export const CapitalMockedResponses = capitalFactory({
