@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'preact/hooks';
+import { useMemo } from 'preact/hooks';
 import './Slider.scss';
 import { JSX } from 'preact';
 import { calculateProgress } from './calculateProgress';
