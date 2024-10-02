@@ -38,6 +38,7 @@ describe('calculateProgress', () => {
         expect(calculateProgress(-50, -100, 100, 50)).toBe(25);
         expect(calculateProgress(0, -50, 50, 10)).toBe(50);
         expect(calculateProgress(-40, -100, -20, 10)).toBe(75);
+        expect(calculateProgress(8300, 500, 25000, 100)).toBe(31.84);
     });
 
     test('should snap correctly for floating-point currentValue', () => {

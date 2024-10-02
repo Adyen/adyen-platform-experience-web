@@ -31,5 +31,5 @@ export function calculateProgress(currentValue: number, min: number, max: number
     const percentage = ((snappedValue - min) / (max - min)) * 100;
 
     // Clamp the percentage between 0% and 100% to handle out-of-bounds values.
-    return Math.round(clamp(0, percentage, 100));
+    return Number(clamp(0, percentage, 100).toFixed(2));
 }

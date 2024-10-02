@@ -61,12 +61,12 @@ describe('Slider', () => {
         { value: 25, min: 0, max: 100, expectedProgress: '25% 100%' },
         { value: 75, min: 0, max: 100, expectedProgress: '75% 100%' },
         { value: 10, min: 0, max: 50, expectedProgress: '20% 100%' },
-        { value: 30, min: 10, max: 40, expectedProgress: '67% 100%' },
+        { value: 30, min: 10, max: 40, expectedProgress: '66.67% 100%' },
         // Floating point values
         { value: 0.5, min: 0, max: 1, step: 0.1, expectedProgress: '50% 100%' },
         { value: 0.1, min: 0, max: 1, step: 0.1, expectedProgress: '10% 100%' },
         { value: 1.5, min: 0, max: 10, step: 0.1, expectedProgress: '15% 100%' },
-        { value: 2.75, min: 0, max: 10, step: 0.05, expectedProgress: '28% 100%' },
+        { value: 2.75, min: 0, max: 10, step: 0.05, expectedProgress: '27.5% 100%' },
         // Inverted min/max (invalid case)
         { value: 75, min: 100, max: 0, expectedProgress: '0% 100%' },
         // Negative values
