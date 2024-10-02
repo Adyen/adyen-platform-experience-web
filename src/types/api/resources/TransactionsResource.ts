@@ -134,17 +134,17 @@ export interface components {
         };
         TransactionRefundStatus: {
             amount: components['schemas']['Amount'];
-            status: 'COMPLETED' | 'FAILED' | 'IN_PROGRESS';
+            status: 'completed' | 'failed' | 'in_progress';
         };
         TransactionRefundDetails: {
             refundStatuses: components['schemas']['TransactionRefundStatus'][];
-            refundMode: 'FULLY_REFUNDABLE_ONLY' | 'NON_REFUNDABLE' | 'PARTIALLY_REFUNDABLE_ANY_AMOUNT' | 'PARTIALLY_REFUNDABLE_WITH_LINE_ITEMS_REQUIRED';
+            refundMode: 'fully_refundable_only' | 'non_refundable' | 'partially_refundable_any_amount' | 'partially_refundable_with_line_items_required';
             refundLocked: boolean;
             refundableAmount: components['schemas']['Amount'];
         };
         TransactionResponse: components['schemas']['SingleTransaction'] & {
             originalAmount: components['schemas']['Amount'];
-            splitAmount: components['schemas']['Amount'];
+            deductedAmount: components['schemas']['Amount'];
             lineItems: components['schemas']['TransactionLineItem'][];
             refundDetails: components['schemas']['TransactionRefundDetails'];
         };
@@ -155,7 +155,7 @@ export interface components {
             lineItems?: components['schemas']['TransactionLineItem'][];
         };
         TransactionRefundResponse: {
-            status: 'RECEIVED';
+            status: 'received';
             transactionId: components['schemas']['SingleTransaction']['id'];
             amount: components['schemas']['Amount'];
             merchantRefundReason?: string;

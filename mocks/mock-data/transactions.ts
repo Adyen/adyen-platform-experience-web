@@ -1925,15 +1925,15 @@ export const DEFAULT_LINE_ITEMS: ITransactionWithDetails['lineItems'] = [
 export const DEFAULT_REFUND_STATUSES: ITransactionWithDetails['refundDetails']['refundStatuses'] = [
     {
         amount: { currency: 'USD', value: -1000 },
-        status: 'IN_PROGRESS',
+        status: 'in_progress',
     },
     {
         amount: { currency: 'USD', value: -1200 },
-        status: 'COMPLETED',
+        status: 'completed',
     },
     {
         amount: { currency: 'USD', value: -1000 },
-        status: 'FAILED',
+        status: 'failed',
     },
 ];
 

@@ -26,32 +26,32 @@ const serverError = false;
 
 const enrichTransactionDataWithDetails = (
     transaction: ITransaction,
-    { feeAmount, lineItemsSlice, refundMode = 'FULLY_REFUNDABLE_ONLY' } = EMPTY_OBJECT as {
-        feeAmount?: number;
+    { deductedAmount: _deductedAmount, lineItemsSlice, refundMode = 'fully_refundable_only' } = EMPTY_OBJECT as {
+        deductedAmount?: number;
         lineItemsSlice?: [sliceStart: number, sliceEnd?: number];
         refundMode?: ITransactionWithDetails['refundDetails']['refundMode'];
     }
 ): ITransactionWithDetails => {
-    const splitAmount = Math.max(0, feeAmount ?? 0);
+    const deductedAmount = Math.max(0, _deductedAmount ?? 0);
     const { currency, value: transactionAmount } = transaction.amount;
 
     let lineItems = EMPTY_ARRAY as unknown as ITransactionWithDetails['lineItems'];
     let refundStatuses = EMPTY_ARRAY as unknown as ITransactionWithDetails['refundDetails']['refundStatuses'];
     let refundLocked = TRANSACTIONS_REFUND_LOCKED.has(transaction.id);
-    let originalAmount = transactionAmount + splitAmount;
+    let originalAmount = transactionAmount + deductedAmount;
     let refundableAmount: number | undefined;
 
-    if (refundMode === 'PARTIALLY_REFUNDABLE_WITH_LINE_ITEMS_REQUIRED') {
+    if (refundMode === 'partially_refundable_with_line_items_required') {
         if (isUndefined(lineItemsSlice)) lineItemsSlice = [0];
     }
 
     switch (refundMode) {
-        case 'NON_REFUNDABLE':
+        case 'non_refundable':
             refundableAmount = 0;
             refundLocked = false;
             break;
-        case 'PARTIALLY_REFUNDABLE_ANY_AMOUNT':
-        case 'PARTIALLY_REFUNDABLE_WITH_LINE_ITEMS_REQUIRED':
+        case 'partially_refundable_any_amount':
+        case 'partially_refundable_with_line_items_required':
             refundStatuses = DEFAULT_REFUND_STATUSES.map(data => ({ ...data, amount: { ...data.amount, currency } }));
             if (lineItemsSlice) lineItems = DEFAULT_LINE_ITEMS.slice(...lineItemsSlice);
             break;
@@ -61,7 +61,7 @@ const enrichTransactionDataWithDetails = (
         ...transaction,
         lineItems,
         originalAmount: { currency, value: originalAmount },
-        splitAmount: { currency, value: splitAmount },
+        deductedAmount: { currency, value: deductedAmount },
         refundDetails: {
             refundLocked,
             refundMode,
@@ -83,8 +83,8 @@ const fetchTransaction = async (params: PathParams) => {
         if (KLARNA_OR_PAYPAL.includes(matchingMock.paymentMethod?.type!)) {
             return HttpResponse.json(
                 enrichTransactionDataWithDetails(matchingMock, {
-                    feeAmount: 350,
-                    refundMode: 'PARTIALLY_REFUNDABLE_WITH_LINE_ITEMS_REQUIRED',
+                    deductedAmount: 350,
+                    refundMode: 'partially_refundable_with_line_items_required',
                 })
             );
         }
@@ -94,13 +94,13 @@ const fetchTransaction = async (params: PathParams) => {
 
         return HttpResponse.json(
             enrichTransactionDataWithDetails(matchingMock, {
-                feeAmount: clamp(0, Math.round(amount * (!matchingMock.paymentMethod?.lastFourDigits && isLargeAmount ? 0.025 : 0.034)), 10000),
-                refundMode: isLargeAmount ? 'PARTIALLY_REFUNDABLE_ANY_AMOUNT' : 'FULLY_REFUNDABLE_ONLY',
+                deductedAmount: clamp(0, Math.round(amount * (!matchingMock.paymentMethod?.lastFourDigits && isLargeAmount ? 0.025 : 0.034)), 10000),
+                refundMode: isLargeAmount ? 'partially_refundable_any_amount' : 'fully_refundable_only',
             })
         );
     }
 
-    return HttpResponse.json(enrichTransactionDataWithDetails(matchingMock, { refundMode: 'NON_REFUNDABLE' }));
+    return HttpResponse.json(enrichTransactionDataWithDetails(matchingMock, { refundMode: 'non_refundable' }));
 };
 
 const fetchTransactionsForRequest = (req: Request) => {
@@ -211,10 +211,10 @@ export const transactionsMocks = [
                 amount,
                 ...(merchantRefundReason && { merchantRefundReason }),
                 ...(reference && { reference }),
-                ...(refundDetails.refundMode.startsWith('PARTIALLY_REFUNDABLE') && {
+                ...(refundDetails.refundMode.startsWith('partially_refundable') && {
                     lineItems: lineItems ?? (EMPTY_ARRAY as NonNullable<typeof lineItems>),
                 }),
-                status: 'RECEIVED',
+                status: 'received',
                 transactionId,
             } satisfies ITransactionRefundResponse);
         } catch {
