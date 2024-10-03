@@ -22,6 +22,7 @@
         margin: 0 calc(var(--adyen-pe-datepicker-margin) / 3 * -1);
         position: absolute;
         transform: translateY(calc(var(--adyen-pe-datepicker-control-vertical-offset) - #{style.token(spacer-030)} / 2));
+        z-index: 1;
 
         > :nth-child(n) {
             &:not(.adyen-pe-button--prev, .adyen-pe-button--next) {
