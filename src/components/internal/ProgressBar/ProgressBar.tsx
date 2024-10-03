@@ -49,7 +49,7 @@ interface ProgressBarProps {
  * @param props - ProgressBarProps
  */
 const ProgressBar = ({ max = 1, value, labels, className }: ProgressBarProps) => {
-    const percentage = useMemo(() => clamp(0, (value / max) * 100, 100), [value, max]);
+    const percentage = useMemo(() => clamp(0, (value * 100) / max, 100), [value, max]);
     const shouldDisplayLegend = !!(labels?.current || labels?.max);
     const ariaLabel = labels?.ariaLabel ?? (labels?.current ? `${labels.current}: ${value}` : `${value}/${max}`);
 

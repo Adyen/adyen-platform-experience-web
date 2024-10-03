@@ -4,7 +4,7 @@ import { CustomCell } from '../DataGrid';
 import Icon from './Icon';
 import { CustomDataObject } from '../../../types';
 
-const _isCustomDataObject = (item: any): item is CustomDataObject => {
+export const _isCustomDataObject = (item: any): item is CustomDataObject => {
     return !!item && typeof item === 'object' && 'value' in item;
 };
 
