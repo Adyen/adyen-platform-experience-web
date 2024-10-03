@@ -162,9 +162,10 @@ export interface operations {
      * @description This action verifies offer conditions and makes grant ready for user to accept it
      */
     reviewGrantOffer: {
-        requestBody?: {
+        requestBody: {
             content: {
                 'application/json': components['schemas']['ReviewGrantOfferRequestDTO'];
+                'application/xml': { test: number };
             };
         };
         responses: {

@@ -7,6 +7,8 @@ import {
     REPAID_GRANT,
     REVOKED_GRANT,
     WRITTEN_OFF_GRANT,
+    OFFER_REVIEW,
+    GRANT_OFFER
 } from '../mock-data';
 import { endpoints } from '../../endpoints/endpoints';
 import { http, HttpResponse } from 'msw';
@@ -34,6 +36,8 @@ export const capitalMock = [
         return HttpResponse.json(DYNAMIC_CAPITAL_OFFER);
     }),
     http.get(mockEndpoints.grants, EMPTY_GRANTS_LIST),
+    http.get(mockEndpoints.dynamicOffer, getHandlerCallback({ response: GRANT_OFFER })),
+    http.post(mockEndpoints.offerReview, getHandlerCallback({ response: OFFER_REVIEW })),
 ];
 const capitalFactory = mocksFactory<CapitalPaths>();
 
@@ -74,4 +78,5 @@ export const CapitalMockedResponses = capitalFactory({
         { endpoint: mockEndpoints.dynamicOfferConfig, handler: EMPTY_OFFER },
         { endpoint: mockEndpoints.grants, response: { data: [WRITTEN_OFF_GRANT] } },
     ],
+    grantOffer: [{ endpoint: mockEndpoints.dynamicOffer, response: GRANT_OFFER }]
 });
