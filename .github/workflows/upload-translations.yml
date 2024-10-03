@@ -31,7 +31,7 @@ jobs:
 
       - name: Create translations job (with authorization)
         if: ${{ inputs.authorize_job }}
-        run: npx -y @adyen/smartling-bot@0.x.x upload-files --auto-authorization -r ${{ github.ref_name }}
+        run: npx -y @adyen/smartling-bot@0.x.x upload-files -ar ${{ github.ref_name }}
 
       - name: Create translations job (without authorization)
         if: ${{ ! inputs.authorize_job }}
