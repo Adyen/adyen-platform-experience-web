@@ -165,7 +165,6 @@ export interface operations {
         requestBody: {
             content: {
                 'application/json': components['schemas']['ReviewGrantOfferRequestDTO'];
-                'application/xml': { test: number };
             };
         };
         responses: {
