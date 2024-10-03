@@ -118,7 +118,8 @@ export default function DateFilterCore<T extends DateFilterProps = DateFilterPro
 
     const onChange = useCallback<NonNullable<typeof props.onChange>>(
         params => {
-            const { from, to, selectedPresetOption } = params ?? EMPTY_OBJECT;
+            const { from, to, selectedPresetOption } =
+                params ?? (EMPTY_OBJECT as { from?: string | undefined; to?: string | undefined; selectedPresetOption?: string | undefined });
             try {
                 setSelectedPresetOption(selectedPresetOptionValue ?? selectedPresetOption);
                 setFrom(resolveDate(fromValue ?? from));

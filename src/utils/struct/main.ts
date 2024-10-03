@@ -6,8 +6,8 @@ import type { PredicateType } from '../types';
 
 type _PlainObject<T> = PredicateType<typeof isPlainObject<T>>;
 
-export const asPlainObject = <T>(value?: T, fallback: _PlainObject<T> = EMPTY_OBJECT): _PlainObject<T> =>
-    isPlainObject(value) ? value : asPlainObject(fallback, EMPTY_OBJECT);
+export const asPlainObject = <T>(value?: T, fallback: _PlainObject<T> = EMPTY_OBJECT as _PlainObject<T>): _PlainObject<T> =>
+    isPlainObject(value) ? value : asPlainObject(fallback, EMPTY_OBJECT as _PlainObject<T>);
 
 interface _StructFrom {
     <T extends Record<any, any>, P extends object | null>(o: P, properties: { [K in keyof T]: TypedPropertyDescriptor<T[K]> }): P extends object

@@ -54,7 +54,7 @@ export class AuthSessionSpecification implements _AuthSessionSpecification {
         return deadlines;
     };
 
-    public http: _AuthSessionSpecification['http'] = async (session, sessionSignal, httpOptions: HttpOptions, data?: any) => {
+    public http: _AuthSessionSpecification['http'] = async (session, sessionSignal, httpOptions: HttpOptions) => {
         const { headers, signal, ...restOptions } = httpOptions;
         try {
             const sessionHttpOptions = {
@@ -66,7 +66,7 @@ export class AuthSessionSpecification implements _AuthSessionSpecification {
                 errorHandler: this._errorHandler,
                 signal: isAbortSignal(signal) ? abortSignalForAny([sessionSignal, signal]) : sessionSignal,
             };
-            return await _http(sessionHttpOptions, data);
+            return await _http({ ...sessionHttpOptions, body: httpOptions.body });
         } catch (ex: any) {
             if (ex?.type === ErrorTypes.EXPIRED_TOKEN) throw ERR_SESSION_EXPIRED;
             throw ex;
