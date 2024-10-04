@@ -10,6 +10,12 @@ type MutationOptions<ResponseType> = {
 };
 type MutationStatus = 'idle' | 'loading' | 'success' | 'error';
 
+const catchCallback = (reason: unknown) => {
+    setTimeout(() => {
+        throw reason;
+    }, 0);
+};
+
 function useMutation<queryFn extends (...args: any[]) => any, ResponseType extends Awaited<ReturnType<queryFn>>>({
     queryFn,
     options,
@@ -53,11 +59,6 @@ function useMutation<queryFn extends (...args: any[]) => any, ResponseType exten
                 }
 
                 ALREADY_RESOLVED_PROMISE.then(() => {
-                    const catchCallback = (reason: unknown) => {
-                        setTimeout(() => {
-                            throw reason;
-                        }, 0);
-                    };
                     onSuccess && tryResolve(onSuccess, result).catch(catchCallback);
                     onSettled && tryResolve(onSettled, result, null).catch(catchCallback);
                 });
@@ -76,8 +77,7 @@ function useMutation<queryFn extends (...args: any[]) => any, ResponseType exten
                 }
 
                 // Handle retries
-                if (retryCountRef.current < maxRetries) {
-                    retryCountRef.current += 1;
+                if (retryCountRef.current++ < maxRetries) {
                     const delay = isFunction(retryDelay) ? retryDelay(retryCountRef.current) : retryDelay ?? 1000;
 
                     await new Promise(resolve => setTimeout(resolve, delay));
@@ -91,8 +91,10 @@ function useMutation<queryFn extends (...args: any[]) => any, ResponseType exten
                 }
 
                 // Run error callbacks
-                await onError?.(error);
-                await onSettled?.(undefined, error);
+                ALREADY_RESOLVED_PROMISE.then(() => {
+                    onError && tryResolve(onError, error).catch(catchCallback);
+                    onSettled && tryResolve(onSettled, undefined, error).catch(catchCallback);
+                });
 
                 throw error;
             }
@@ -107,7 +109,7 @@ function useMutation<queryFn extends (...args: any[]) => any, ResponseType exten
         };
     }, []);
 
-    const mutationResult = useMemo(
+    return useMemo(
         () => ({
             data,
             error,
@@ -121,8 +123,6 @@ function useMutation<queryFn extends (...args: any[]) => any, ResponseType exten
         }),
         [data, error, status, mutate, reset]
     );
-
-    return mutationResult;
 }
 
 export default useMutation;
