@@ -64,6 +64,7 @@ export const CapitalOfferSelection = ({ config, onReviewOffer }: CapitalOfferSel
 
     useEffect(() => {
         if (config) {
+            setRequestedValue(config.minAmount.value);
             void getOffer(config.minAmount.value);
         }
     }, [config, getOffer]);

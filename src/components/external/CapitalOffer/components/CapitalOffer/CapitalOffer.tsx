@@ -18,8 +18,6 @@ export const CapitalOffer: FunctionalComponent<ExternalUIComponentProps<CapitalO
     onOfferReviewed,
     onBack,
 }) => {
-    const [state] = useState<CapitalOfferState>('OfferSelection');
-
     const { getDynamicGrantOffersConfiguration } = useAuthContext().endpoints;
 
     const { data: grantOfferConfig } = useFetch({
@@ -59,7 +57,7 @@ export const CapitalOffer: FunctionalComponent<ExternalUIComponentProps<CapitalO
         <div className={CAPITAL_OFFER_CLASS_NAMES.base}>
             <CapitalHeader
                 hideTitle={hideTitle}
-                titleKey={state === 'OfferSummary' ? 'capital.businessFinancingSummary' : 'capital.businessFinancing'}
+                titleKey={CapitalOfferState === 'OfferSummary' ? 'capital.businessFinancingSummary' : 'capital.businessFinancing'}
             />
             {CapitalOfferState === 'OfferSelection' && (
                 <CapitalOfferSelection config={config} onBack={goBackHandler} onReviewOffer={onOfferSelectionHandler} />
