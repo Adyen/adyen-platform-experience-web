@@ -27,4 +27,8 @@ export const TX_DATA_TAG_CONTAINER = `${TX_DATA_CLASS}__tag-container`;
 export const TX_DETAILS_RESERVED_FIELDS_SET = new Set([
     ...(['status', 'category', 'paymentMethod', 'bankAccount', 'balanceAccount', 'id', 'balanceAccountId'] satisfies (keyof TransactionDetailData)[]),
     ...TRANSACTION_FIELDS,
+    'deductedAmount',
+    'lineItems',
+    'originalAmount',
+    'refundDetails',
 ]);
