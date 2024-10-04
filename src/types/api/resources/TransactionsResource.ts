@@ -121,7 +121,7 @@ export interface components {
         /** @enum {string} */
         SortDirection: 'asc' | 'desc';
         TransactionLineItem: {
-            amountIncludingTax: number;
+            amountIncludingTax: components['schemas']['Amount'];
             brand?: string;
             color?: string;
             description: string;

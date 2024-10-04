@@ -24,6 +24,8 @@ const mockEndpoints = endpoints('mock');
 const networkError = false;
 const serverError = false;
 
+const amountWithCurrency = (amount: ITransaction['amount'], currency = amount.currency): ITransaction['amount'] => ({ ...amount, currency });
+
 const enrichTransactionDataWithDetails = (
     transaction: ITransaction,
     { deductedAmount: _deductedAmount, lineItemsSlice, refundMode = 'fully_refundable_only' } = EMPTY_OBJECT as {
@@ -32,13 +34,13 @@ const enrichTransactionDataWithDetails = (
         refundMode?: ITransactionWithDetails['refundDetails']['refundMode'];
     }
 ): ITransactionWithDetails => {
-    const deductedAmount = Math.max(0, _deductedAmount ?? 0);
     const { currency, value: transactionAmount } = transaction.amount;
+    const deductedAmount = Math.max(0, _deductedAmount ?? 0);
+    const originalAmount = transactionAmount + deductedAmount;
 
     let lineItems = EMPTY_ARRAY as unknown as ITransactionWithDetails['lineItems'];
     let refundStatuses = EMPTY_ARRAY as unknown as ITransactionWithDetails['refundDetails']['refundStatuses'];
     let refundLocked = TRANSACTIONS_REFUND_LOCKED.has(transaction.id);
-    let originalAmount = transactionAmount + deductedAmount;
     let refundableAmount: number | undefined;
 
     if (refundMode === 'partially_refundable_with_line_items_required') {
@@ -52,8 +54,18 @@ const enrichTransactionDataWithDetails = (
             break;
         case 'partially_refundable_any_amount':
         case 'partially_refundable_with_line_items_required':
-            refundStatuses = DEFAULT_REFUND_STATUSES.map(data => ({ ...data, amount: { ...data.amount, currency } }));
-            if (lineItemsSlice) lineItems = DEFAULT_LINE_ITEMS.slice(...lineItemsSlice);
+            refundStatuses = DEFAULT_REFUND_STATUSES.map(({ amount, ...restStatusData }) => ({
+                ...restStatusData,
+                amount: amountWithCurrency(amount, currency),
+            }));
+
+            if (lineItemsSlice) {
+                lineItems = DEFAULT_LINE_ITEMS.slice(...lineItemsSlice).map(({ amountIncludingTax, ...restItemData }) => ({
+                    ...restItemData,
+                    amountIncludingTax: amountWithCurrency(amountIncludingTax, currency),
+                }));
+            }
+
             break;
     }
 
