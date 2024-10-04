@@ -66,6 +66,7 @@
     "paymentId": "Payment ID",
     "paymentMethod": "Payment method",
     "payoutDetails": "Payout Details",
+    "payoutsNotice": "Payout information is generated each day at midnight, UTC time.",
     "payoutsTitle": "Payouts",
     "Pending": "Pending",
     "pleaseReachOutToSupportForAssistance": "Please, reach out to support for assistance.",

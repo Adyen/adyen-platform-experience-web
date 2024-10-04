@@ -10,7 +10,7 @@ export interface DetailsWithIdProps {
 }
 
 export interface DetailsWithExtraData {
-    extraDetails: Record<string, any>;
+    extraDetails?: Record<string, any>;
 }
 
 export type DetailsComponentProps = StrictUnion<DetailsWithoutIdProps | DetailsWithIdProps> & DetailsWithExtraData;

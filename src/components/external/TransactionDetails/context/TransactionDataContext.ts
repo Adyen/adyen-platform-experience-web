@@ -10,7 +10,7 @@ export const TransactionDataContext = createContext<ITransactionDataContext>({
     refundReason: REFUND_REASONS[0],
     refundValue: 0,
     refundValueMax: 0,
-    transaction: EMPTY_OBJECT,
+    transaction: EMPTY_OBJECT as ITransactionDataContext['transaction'],
     updateRefundReason: noop,
     updateRefundReference: noop,
     updateRefundValue: noop,

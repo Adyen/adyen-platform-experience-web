@@ -5,6 +5,7 @@
     "error.somethingWentWrongWithDownload": "Will be displayed if an error occurs in the process of carrying out a file download action at any given moment.",
     "file": "Used as column header in a table to label column of file download buttons",
     "noReportsFound": "Will be displayed if there is no reports data available for the given search criteria.",
+    "payoutsNotice": "The preparation of payout information happens at midnight (12:00 AM) in UTC timezone. Payout, in this context, refers to a user's money that gets paid into their designated bank account. UTC here refers to the Coordinated Universal Time, which is the reference origin (0) for other timezones.",
     "refundAmount": "Will be displayed as text label for input that allows the user to enter the amount they want refunded.",
     "refundAmount.excess": "Will be displayed as validation error message if the inputted amount exceeds a maximum.",
     "refundReason": "Will be displayed as text label for selection widget that lets the user choose from a predefined set of refund reasons.",

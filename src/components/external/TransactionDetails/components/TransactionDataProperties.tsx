@@ -1,5 +1,6 @@
 import { useMemo } from 'preact/hooks';
 import { TX_DATA_LABEL, TX_DETAILS_RESERVED_FIELDS_SET } from '../constants';
+import { _isCustomDataObject } from '../../../internal/DataGrid/components/TableCells';
 import TransactionDetailsDataContainer from './TransactionDetailsDataContainer';
 import useCoreContext from '../../../../core/Context/useCoreContext';
 import useTransactionDataContext from '../context';
@@ -10,7 +11,11 @@ const TransactionDataProperties = () => {
 
     return useMemo(() => {
         const { balanceAccount, id } = transaction;
-        const customColumns = Object.entries(transaction).filter(([key]) => !TX_DETAILS_RESERVED_FIELDS_SET.has(key as any));
+
+        const customColumns = Object.entries(transaction)
+            .filter(([key]) => !TX_DETAILS_RESERVED_FIELDS_SET.has(key as any))
+            .map(([key, value]) => [key, _isCustomDataObject(value) ? value.value : value]);
+
         return (
             <>
                 {balanceAccount?.description && (

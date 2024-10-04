@@ -9,7 +9,7 @@ const useDownload = (endpointName: EndpointName, queryParam?: any, enabled?: boo
     return useFetch({
         fetchOptions: { enabled: !!downloadEndpoint && enabled, keepPrevData: true },
         queryFn: async () => {
-            return downloadEndpoint!(EMPTY_OBJECT, { ...queryParam });
+            return downloadEndpoint!(EMPTY_OBJECT as any, { ...queryParam });
         },
     });
 };
