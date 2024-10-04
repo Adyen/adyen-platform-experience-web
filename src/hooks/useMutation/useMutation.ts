@@ -52,9 +52,15 @@ function useMutation<queryFn extends (...args: any[]) => any, ResponseType exten
                     setStatus('success');
                 }
 
-                // Run success callbacks
-                await onSuccess?.(result);
-                await onSettled?.(result, null);
+                const results = await Promise.allSettled([onSuccess?.(result), onSettled?.(result, null)]);
+
+                // Handle any errors from the callbacks
+                results.forEach((res, index) => {
+                    if (res.status === 'rejected') {
+                        const callbackName = index === 0 ? 'onSuccess' : 'onSettled';
+                        console.error(`Error in ${callbackName} callback:`, res.reason);
+                    }
+                });
 
                 return result;
             } catch (err) {
