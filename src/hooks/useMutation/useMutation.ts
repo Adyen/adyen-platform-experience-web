@@ -1,4 +1,5 @@
 import { useState, useCallback, useRef, useMemo, useEffect } from 'preact/hooks';
+import { EMPTY_OBJECT } from '../../utils';
 
 type MutationOptions<ResponseType> = {
     onSuccess?: (data: ResponseType) => void | Promise<void>;
@@ -16,7 +17,7 @@ function useMutation<queryFn extends (...args: any[]) => any, ResponseType exten
     queryFn: queryFn | undefined;
     options?: MutationOptions<ResponseType>;
 }) {
-    const { retry = false, retryDelay = 1000, onSuccess, onError, onSettled } = options || {};
+    const { retry = false, retryDelay = 1000, onSuccess, onError, onSettled } = options || (EMPTY_OBJECT as NonNullable<typeof options>);
 
     const [data, setData] = useState<ResponseType | null>(null);
     const [error, setError] = useState<Error | null>(null);
