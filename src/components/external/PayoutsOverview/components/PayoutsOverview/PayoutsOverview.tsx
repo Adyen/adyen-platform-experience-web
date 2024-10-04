@@ -9,7 +9,7 @@ import DateFilter from '../../../../internal/FilterBar/filters/DateFilter/DateFi
 import useModalDetails from '../../../../../hooks/useModalDetails/useModalDetails';
 import { IPayout } from '../../../../../types';
 import useDefaultOverviewFilterParams from '../../../../../hooks/useDefaultOverviewFilterParams';
-import { DataOverviewHeader } from '../../../../internal/DataOverviewDisplay/DataOverviewHeader';
+import { Header } from '../../../../internal/Header';
 import { PayoutsOverviewComponentProps, ExternalUIComponentProps, FilterParam } from '../../../../types';
 import { useAuthContext } from '../../../../../core/Auth';
 import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatformExperienceError';
@@ -102,9 +102,9 @@ export const PayoutsOverview = ({
 
     return (
         <div className={BASE_CLASS}>
-            <DataOverviewHeader hideTitle={hideTitle} titleKey="payoutsTitle" descriptionKey="payoutsNotice">
+            <Header hideTitle={hideTitle} titleKey="payoutsTitle">
                 <FilterBarMobileSwitch {...filterBarState} />
-            </DataOverviewHeader>
+            </Header>
             <FilterBar {...filterBarState}>
                 <BalanceAccountSelector
                     activeBalanceAccount={activeBalanceAccount}

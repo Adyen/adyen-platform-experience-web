@@ -8,6 +8,11 @@ export const TransactionDetailsMeta: Meta<ElementProps<typeof TransactionDetails
         onContactSupport: enabledDisabledCallbackRadioControls('onContactSupport'),
         hideTitle: { type: 'boolean' },
         id: { type: 'string' },
+        balanceAccountId: {
+            table: {
+                disable: true,
+            },
+        },
     },
     args: {
         hideTitle: false,

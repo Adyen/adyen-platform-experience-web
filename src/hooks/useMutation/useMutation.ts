@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef, useMemo, useEffect } from 'preact/hooks';
-import { ALREADY_RESOLVED_PROMISE, EMPTY_OBJECT, tryResolve } from '../../utils';
+import { ALREADY_RESOLVED_PROMISE, tryResolve } from '../../utils';
 
 type MutationOptions<ResponseType> = {
     onSuccess?: (data: ResponseType) => void | Promise<void>;
@@ -17,7 +17,7 @@ function useMutation<queryFn extends (...args: any[]) => any, ResponseType exten
     queryFn: queryFn | undefined;
     options?: MutationOptions<ResponseType>;
 }) {
-    const { retry = false, retryDelay = 1000, onSuccess, onError, onSettled } = options || (EMPTY_OBJECT as NonNullable<typeof options>);
+    const { retry = false, retryDelay = 1000, onSuccess, onError, onSettled } = options || {};
 
     const [data, setData] = useState<ResponseType | null>(null);
     const [error, setError] = useState<Error | null>(null);
@@ -36,15 +36,11 @@ function useMutation<queryFn extends (...args: any[]) => any, ResponseType exten
 
     const mutate = useCallback(
         async (...variables: Parameters<queryFn>): Promise<ResponseType> => {
-            if (!queryFn) {
-                throw new Error('Query function is required');
-            }
-
             try {
                 setStatus('loading');
                 setError(null);
 
-                const result = await queryFn(...variables);
+                const result = await queryFn?.(...variables);
 
                 // Only update state if component is still mounted
                 if (mountedRef.current) {

@@ -50,7 +50,7 @@ export interface components {
             /** Format: int32 */
             expectedRepaymentPeriodDays: number;
             feesAmount: components['schemas']['Amount'];
-            grantAmount?: components['schemas']['Amount'];
+            grantAmount: components['schemas']['Amount'];
             id?: string;
             /** Format: int32 */
             maximumRepaymentPeriodDays?: number;

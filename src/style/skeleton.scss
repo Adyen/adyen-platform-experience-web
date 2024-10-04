@@ -1,12 +1,4 @@
-@keyframes skeleton-loading {
-    0% {
-        background-color: hsl(220, 10%, 80%);
-    }
-
-    100% {
-        background-color: hsl(220, 10%, 95%);
-    }
-}
+@use 'sass:math';
 
 @mixin adyen-pe-skeleton {
     background-color: hsl(220, 10%, 95%);
@@ -17,7 +9,30 @@
     width: 80%;
 }
 
-@mixin adyen-pe-skeleton-animation {
-    animation: skeleton-loading 0.8s linear infinite alternate;
-    background: inherit;
+@mixin adyen-pe-skeleton-animation($end-color: hsl(220, 10%, 95%)) {
+    $hue: hue($end-color);
+    $saturation: saturation($end-color);
+    $lightness: lightness($end-color);
+
+    $hue-value: math.div($hue, 1deg);
+    $saturation-value: math.div($saturation, 1%);
+    $lightness-value: math.div($lightness, 1%);
+
+    $start-color: hsl($hue, $saturation, 80%);
+
+    $animation-name: skeleton-loading-#{floor($hue-value)}-#{floor($saturation-value)}-#{floor($lightness-value)};
+
+    @at-root {
+        @keyframes #{$animation-name} {
+            0% {
+                background-color: $start-color;
+            }
+            100% {
+                background-color: $end-color;
+            }
+        }
+    }
+
+    animation: #{$animation-name} 0.8s linear infinite alternate;
+    background-color: inherit;
 }

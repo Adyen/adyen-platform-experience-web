@@ -86,7 +86,6 @@ export class AuthSetupContext {
                             return this._session.http(this._beforeHttp, httpOptions) as Promise<EndpointSuccessResponse<Endpoint>>;
                         }) as EndpointHttpCallables<Endpoint>;
                     })()!;
-
                     return sessionAwareEndpoints[endpoint];
                 },
             })

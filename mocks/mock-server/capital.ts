@@ -69,7 +69,7 @@ const OFFER_REVIEW_HANDLER = async ({ request }: { request: StrictRequest<Defaul
         maximumRepaymentPeriodDays: 540,
     } satisfies IGrantOfferResponseDTO;
 
-    await delay(600);
+    await delay(800);
     return HttpResponse.json(response);
 };
 
