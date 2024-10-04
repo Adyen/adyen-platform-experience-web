@@ -10,8 +10,8 @@ import {
 } from './utils';
 
 const createRangeTimestampsFactory = <T extends Record<any, any> = {}>(
-    config: RangeTimestampsConfig = EMPTY_OBJECT as RangeTimestampsConfig,
-    additionalContext: { [P in keyof T]: TypedPropertyDescriptor<T[P]> } = EMPTY_OBJECT as { [P in keyof T]: TypedPropertyDescriptor<T[P]> }
+    config = EMPTY_OBJECT as RangeTimestampsConfig,
+    additionalContext = EMPTY_OBJECT as { [P in keyof T]: TypedPropertyDescriptor<T[P]> }
 ) => {
     const _config = asPlainObject(config);
     const _additionalContext = asPlainObject(additionalContext);

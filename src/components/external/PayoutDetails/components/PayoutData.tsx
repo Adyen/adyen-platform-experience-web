@@ -42,7 +42,7 @@ export const PayoutData = ({
     balanceAccountId: string;
     balanceAccountDescription?: string;
 }) => {
-    const { payout } = payoutData ?? (EMPTY_OBJECT as { payout: Payout });
+    const { payout } = payoutData ?? (EMPTY_OBJECT as NonNullable<typeof payoutData>);
     const { i18n } = useCoreContext();
     const { dateFormat } = useTimezoneAwareDateFormatting('UTC');
     const adjustments = useMemo(() => {

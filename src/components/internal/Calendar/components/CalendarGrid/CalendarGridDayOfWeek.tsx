@@ -1,7 +1,7 @@
 import { memo } from 'preact/compat';
 import { property, propsProperty } from './utils';
 import { getClassName, memoComparator } from '../../../../../utils/preact';
-import { CalendarGridDayOfWeekExtendedProps, CalendarGridDayOfWeekProps, CalendarGridDayOfWeekRenderProps } from './types';
+import { CalendarGridDayOfWeekProps, CalendarGridDayOfWeekRenderProps } from './types';
 import { EMPTY_OBJECT } from '../../../../../utils';
 import { CalendarGridRenderToken } from '../../types';
 import { Ref } from 'preact';
@@ -41,18 +41,15 @@ const CalendarGridDayOfWeek = ({ prepare, flags, labels: { long: longLabel, shor
     };
 
     const renderProps = getGridDayOfWeekRenderProps(props, prepare);
-    const {
-        children: _,
-        className,
-        ...extendedProps
-    } = renderProps.props || (EMPTY_OBJECT as Omit<CalendarGridDayOfWeekRenderProps, keyof CalendarGridDayOfWeekExtendedProps>);
+    const { children: _, className, ...extendedProps } = renderProps.props || (EMPTY_OBJECT as NonNullable<typeof renderProps.props>);
+
     const classes = getClassName(renderProps.className, DEFAULT_CELL_CLASSNAME, className);
 
     const {
         children: __,
         className: childClassName,
         ...extendedChildProps
-    } = renderProps.childProps || (EMPTY_OBJECT as Omit<CalendarGridDayOfWeekRenderProps, keyof CalendarGridDayOfWeekExtendedProps>);
+    } = renderProps.childProps || (EMPTY_OBJECT as NonNullable<typeof renderProps.childProps>);
     const childClasses = getClassName(renderProps.childClassName, DEFAULT_CELL_ABBR_CLASSNAME, childClassName);
 
     return (
