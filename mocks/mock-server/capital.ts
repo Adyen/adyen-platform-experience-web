@@ -32,7 +32,8 @@ const OFFER_REVIEW_HANDLER = async ({ request }: { request: StrictRequest<Defaul
     const url = new URL(request.url);
     const searchParams = url.searchParams;
 
-    const params = searchParams ? { amount: searchParams.get('amount'), currency: searchParams.get('currency') } : await request.json();
+    const params =
+        searchParams && searchParams.size ? { amount: searchParams.get('amount'), currency: searchParams.get('currency') } : await request.json();
 
     const { amount, currency } = params as {
         amount: number;

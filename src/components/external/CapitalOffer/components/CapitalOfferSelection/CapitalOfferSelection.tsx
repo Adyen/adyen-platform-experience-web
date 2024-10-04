@@ -13,9 +13,10 @@ import useMutation from '../../../../../hooks/useMutation/useMutation';
 import { parseDate } from '../../../../../utils';
 import { DAY_MS } from '../../../../internal/Calendar/calendar/constants';
 import { IDynamicOfferConfig, IGrantOfferResponseDTO } from '../../../../../types';
+import './CapitalOfferSelection.scss';
 
 type CapitalOfferSelectionProps = {
-    config: IDynamicOfferConfig;
+    config: IDynamicOfferConfig | undefined;
     onBack: () => void;
     onReviewOffer: (data: IGrantOfferResponseDTO) => void;
 };
@@ -28,7 +29,7 @@ const REPAYMENT_FREQUENCY = 30;
 
 export const CapitalOfferSelection = ({ config, onReviewOffer }: CapitalOfferSelectionProps) => {
     const { i18n } = useCoreContext();
-    const [requestedValue, setRequestedValue] = useState<number>(config.minAmount.value);
+    const [requestedValue, setRequestedValue] = useState<number | undefined>(config?.minAmount.value);
     const currency = useMemo(() => config?.minAmount.currency, [config?.minAmount.currency]);
 
     const { reviewGrantOffer, getDynamicGrantOffer } = useAuthContext().endpoints;
@@ -46,13 +47,13 @@ export const CapitalOfferSelection = ({ config, onReviewOffer }: CapitalOfferSel
     const onReview = useCallback(
         () =>
             reviewOfferMutation.mutate({
-                body: { amount: data?.grantAmount.value || requestedValue, currency: data?.grantAmount.currency || currency },
+                body: { amount: data?.grantAmount.value || requestedValue!, currency: data?.grantAmount.currency || currency! },
                 contentType: 'application/json',
             }),
         [currency, data?.grantAmount.currency, data?.grantAmount.value, requestedValue, reviewOfferMutation]
     );
 
-    const getOffer = useCallback((amount: number) => mutate({}, { query: { amount, currency: currency } }), [currency, mutate]);
+    const getOffer = useCallback((amount: number) => mutate({}, { query: { amount, currency: currency! } }), [currency, mutate]);
     const handleSliderRelease = (event: Event) => getOffer((event.target as any).value);
 
     const expectedRepaymentDate = useMemo(() => {
@@ -73,31 +74,29 @@ export const CapitalOfferSelection = ({ config, onReviewOffer }: CapitalOfferSel
             <p>{'How much money do you need?'}</p>
             {requestedValue && config && <p>{i18n.amount(requestedValue, config.minAmount.currency)}</p>}
             <div>
-                {config && (
-                    <Slider
-                        min={config.minAmount.value}
-                        max={config.maxAmount.value}
-                        step={config.step}
-                        value={requestedValue}
-                        onMouseUp={handleSliderRelease}
-                        onTouchEnd={handleSliderRelease}
-                        onKeyUp={handleSliderRelease}
-                        onChange={event => {
-                            setRequestedValue((event.target as any).value);
-                        }}
-                    />
-                )}
+                <Slider
+                    min={config?.minAmount.value}
+                    max={config?.maxAmount.value}
+                    step={config?.step}
+                    value={requestedValue}
+                    onMouseUp={handleSliderRelease}
+                    onTouchEnd={handleSliderRelease}
+                    onKeyUp={handleSliderRelease}
+                    onChange={event => {
+                        setRequestedValue((event.target as any).value);
+                    }}
+                />
             </div>
-            <InfoBox className="adyen-pe-capital-offer__details">
-                {isLoading ? (
-                    <div className="adyen-pe-capital-offer__loading-container">
-                        <div className="adyen-pe-capital-offer__loading-skeleton"></div>
-                        <div className="adyen-pe-capital-offer__loading-skeleton"></div>
-                        <div className="adyen-pe-capital-offer__loading-skeleton"></div>
-                        <div className="adyen-pe-capital-offer__loading-skeleton"></div>
+            <InfoBox className="adyen-pe-capital-offer-selection__details">
+                {!data || isLoading ? (
+                    <div className="adyen-pe-capital-offer-selection__loading-container">
+                        <div className="adyen-pe-capital-offer-selection__loading-skeleton"></div>
+                        <div className="adyen-pe-capital-offer-selection__loading-skeleton"></div>
+                        <div className="adyen-pe-capital-offer-selection__loading-skeleton"></div>
+                        <div className="adyen-pe-capital-offer-selection__loading-skeleton"></div>
                     </div>
                 ) : data ? (
-                    <div className="adyen-pe-capital-offer__information">
+                    <div className="adyen-pe-capital-offer-selection__information">
                         <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY}>
                             {i18n.get('yourMinimumRepaymentWillBe')}{' '}
                             <Typography variant={TypographyVariant.BODY} el={TypographyElement.SPAN} strongest>
@@ -127,11 +126,11 @@ export const CapitalOfferSelection = ({ config, onReviewOffer }: CapitalOfferSel
                     </div>
                 ) : null}
             </InfoBox>
-            <div className="adyen-pe-capital-offer__buttons">
+            <div className="adyen-pe-capital-offer-selection__buttons">
                 <Button variant={ButtonVariant.SECONDARY} onClick={() => console.log('back')}>
                     {i18n.get('capital.back')}
                 </Button>
-                <Button variant={ButtonVariant.PRIMARY} onClick={onReview}>
+                <Button variant={ButtonVariant.PRIMARY} onClick={onReview} disabled={reviewOfferMutation.isLoading}>
                     {i18n.get('capital.reviewOffer')}
                 </Button>
             </div>
