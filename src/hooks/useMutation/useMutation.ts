@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef, useMemo, useEffect } from 'preact/hooks';
-import { ALREADY_RESOLVED_PROMISE, EMPTY_OBJECT, isNumber, tryResolve } from '../../utils';
+import { ALREADY_RESOLVED_PROMISE, EMPTY_OBJECT, isFunction, isNumber, tryResolve } from '../../utils';
 
 type MutationOptions<ResponseType> = {
     onSuccess?: (data: ResponseType) => void | Promise<void>;
@@ -9,6 +9,12 @@ type MutationOptions<ResponseType> = {
     retryDelay?: number | ((retryAttempt: number) => number);
 };
 type MutationStatus = 'idle' | 'loading' | 'success' | 'error';
+
+const catchCallback = (reason: unknown) => {
+    setTimeout(() => {
+        throw reason;
+    }, 0);
+};
 
 function useMutation<queryFn extends (...args: any[]) => any, ResponseType extends Awaited<ReturnType<queryFn>>>({
     queryFn,
@@ -49,11 +55,6 @@ function useMutation<queryFn extends (...args: any[]) => any, ResponseType exten
                 }
 
                 ALREADY_RESOLVED_PROMISE.then(() => {
-                    const catchCallback = (reason: unknown) => {
-                        setTimeout(() => {
-                            throw reason;
-                        }, 0);
-                    };
                     onSuccess && tryResolve(onSuccess, result).catch(catchCallback);
                     onSettled && tryResolve(onSettled, result, null).catch(catchCallback);
                 });
@@ -62,12 +63,18 @@ function useMutation<queryFn extends (...args: any[]) => any, ResponseType exten
             } catch (err) {
                 const error = err instanceof Error ? err : new Error(String(err));
 
-                const maxRetries = isNumber(retry) ? retry : retry ? 3 : 0;
+                let maxRetries = 0;
+                if (isNumber(retry)) {
+                    maxRetries = Math.max(0, Math.floor(retry));
+                } else if (retry) {
+                    maxRetries = 3; // Default retries when retry is true
+                } else {
+                    maxRetries = 0;
+                }
 
                 // Handle retries
-                if (retryCountRef.current < maxRetries) {
-                    retryCountRef.current += 1;
-                    const delay = typeof retryDelay === 'function' ? retryDelay(retryCountRef.current) : retryDelay ?? 1000;
+                if (retryCountRef.current++ < maxRetries) {
+                    const delay = isFunction(retryDelay) ? retryDelay(retryCountRef.current) : retryDelay ?? 1000;
 
                     await new Promise(resolve => setTimeout(resolve, delay));
                     return mutate(...variables);
@@ -80,8 +87,10 @@ function useMutation<queryFn extends (...args: any[]) => any, ResponseType exten
                 }
 
                 // Run error callbacks
-                await onError?.(error);
-                await onSettled?.(undefined, error);
+                ALREADY_RESOLVED_PROMISE.then(() => {
+                    onError && tryResolve(onError, error).catch(catchCallback);
+                    onSettled && tryResolve(onSettled, undefined, error).catch(catchCallback);
+                });
 
                 throw error;
             }
@@ -96,7 +105,7 @@ function useMutation<queryFn extends (...args: any[]) => any, ResponseType exten
         };
     }, []);
 
-    const mutationResult = useMemo(
+    return useMemo(
         () => ({
             data,
             error,
@@ -110,8 +119,6 @@ function useMutation<queryFn extends (...args: any[]) => any, ResponseType exten
         }),
         [data, error, status, mutate, reset]
     );
-
-    return mutationResult;
 }
 
 export default useMutation;
