@@ -9,7 +9,7 @@ type MutationOptions<ResponseType> = {
 };
 type MutationStatus = 'idle' | 'loading' | 'success' | 'error';
 
-function useMutation<queryFn extends (...args: any) => any, ResponseType extends Awaited<ReturnType<queryFn>>>({
+function useMutation<queryFn extends (...args: any[]) => any, ResponseType extends Awaited<ReturnType<queryFn>>>({
     queryFn,
     options,
 }: {
@@ -43,7 +43,7 @@ function useMutation<queryFn extends (...args: any) => any, ResponseType extends
                 setStatus('loading');
                 setError(null);
 
-                const result = await queryFn(...[...variables]);
+                const result = await queryFn(...variables);
 
                 // Only update state if component is still mounted
                 if (mountedRef.current) {
