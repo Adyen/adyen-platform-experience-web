@@ -27,7 +27,7 @@ const dateStartUTCTimestampOffset = (date: Date | number | string, numberOfDays 
 
 const REPAYMENT_FREQUENCY = 30;
 
-export const CapitalOfferSelection = ({ config, onReviewOffer }: CapitalOfferSelectionProps) => {
+export const CapitalOfferSelection = ({ config, onReviewOffer, onBack }: CapitalOfferSelectionProps) => {
     const { i18n } = useCoreContext();
     const [requestedValue, setRequestedValue] = useState<number | undefined>(config?.minAmount.value);
     const currency = useMemo(() => config?.minAmount.currency, [config?.minAmount.currency]);
@@ -128,7 +128,7 @@ export const CapitalOfferSelection = ({ config, onReviewOffer }: CapitalOfferSel
                 ) : null}
             </InfoBox>
             <div className="adyen-pe-capital-offer-selection__buttons">
-                <Button variant={ButtonVariant.SECONDARY} onClick={() => console.log('back')}>
+                <Button variant={ButtonVariant.SECONDARY} onClick={onBack}>
                     {i18n.get('capital.back')}
                 </Button>
                 <Button variant={ButtonVariant.PRIMARY} onClick={onReview} disabled={reviewOfferMutation.isLoading}>

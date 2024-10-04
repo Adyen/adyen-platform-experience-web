@@ -19,7 +19,6 @@ export const CapitalOffer: FunctionalComponent<ExternalUIComponentProps<CapitalO
     onBack,
 }) => {
     const { getDynamicGrantOffersConfiguration } = useAuthContext().endpoints;
-
     const { data: grantOfferConfig } = useFetch({
         fetchOptions: { enabled: !dynamicOffersConfig },
         queryFn: useCallback(async () => {

@@ -1,4 +1,4 @@
-import { useMemo } from 'preact/hooks';
+import { useCallback, useMemo, useState } from 'preact/hooks';
 import { ExternalUIComponentProps } from '../../../../types';
 import { CapitalOverviewProps } from '../../types';
 import { CAPITAL_OVERVIEW_CLASS_NAMES } from '../../constants';
@@ -13,8 +13,9 @@ import PreQualified from '../PreQualified';
 import { IDynamicOfferConfig } from '../../../../../types';
 import './CapitalOverview.scss';
 import Unqualified from '../Unqualified';
+import { CapitalOffer } from '../../../CapitalOffer/components/CapitalOffer/CapitalOffer';
 
-type CapitalOverviewState = 'Loading' | 'Unqualified' | 'PreQualified' | 'GrantList';
+type CapitalOverviewState = 'Loading' | 'Unqualified' | 'PreQualified' | 'GrantList' | 'CapitalOffer';
 
 export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<CapitalOverviewProps>> = ({
     hideTitle,
@@ -50,6 +51,15 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
     const dynamicOffer = dynamicOfferQuery.data;
     const grantList = grantsQuery.data?.data;
 
+    const [capitalOfferSelection, setCapitalOfferSelection] = useState<boolean>(!!skipPreQualifiedIntro);
+    const onOfferReviewHandler = useCallback(() => {
+        onOfferReview ? onOfferReview() : setCapitalOfferSelection(true);
+    }, [onOfferReview]);
+
+    const goBackToPrequalified = useCallback(() => {
+        setCapitalOfferSelection(false);
+    }, []);
+
     const state = useMemo<CapitalOverviewState>(() => {
         if (
             (!grantsEndpointCall && !dynamicConfigurationEndpointCall) ||
@@ -60,11 +70,14 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
             return 'Loading';
         } else if (grantList?.length) {
             return 'GrantList';
-        } else if (dynamicOffer?.maxAmount && dynamicOffer?.minAmount && !skipPreQualifiedIntro) {
+        } else if (dynamicOffer?.maxAmount && dynamicOffer?.minAmount && !skipPreQualifiedIntro && !capitalOfferSelection) {
             return 'PreQualified';
+        } else if (skipPreQualifiedIntro || capitalOfferSelection) {
+            return 'CapitalOffer';
         }
         return 'Unqualified';
     }, [
+        capitalOfferSelection,
         dynamicConfigurationEndpointCall,
         dynamicOffer,
         dynamicOfferQuery.isFetching,
@@ -103,11 +116,13 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
                             <PreQualified
                                 hideTitle={hideTitle}
                                 dynamicOffer={dynamicOffer as Required<IDynamicOfferConfig>}
-                                onOfferReview={onOfferReview}
+                                onOfferReview={onOfferReviewHandler}
                             />
                         );
                     case 'Unqualified':
                         return <Unqualified hideTitle={hideTitle} />;
+                    case 'CapitalOffer':
+                        return <CapitalOffer onOfferSigned={() => console.log('On offer signed callback')} onBack={goBackToPrequalified} />;
                     default:
                         return null;
                 }
