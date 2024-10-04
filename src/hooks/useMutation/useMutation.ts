@@ -53,8 +53,13 @@ function useMutation<queryFn extends (...args: any[]) => any, ResponseType exten
                 }
 
                 ALREADY_RESOLVED_PROMISE.then(() => {
-                    onSuccess && tryResolve(onSuccess, result);
-                    onSettled && tryResolve(onSettled, result, null);
+                    const catchCallback = (reason: unknown) => {
+                        setTimeout(() => {
+                            throw reason;
+                        }, 0);
+                    };
+                    onSuccess && tryResolve(onSuccess, result).catch(catchCallback);
+                    onSettled && tryResolve(onSettled, result, null).catch(catchCallback);
                 });
 
                 return result;
