@@ -66,7 +66,7 @@ function useMutation<queryFn extends (...args: any[]) => any, ResponseType exten
                     const delay = typeof retryDelay === 'function' ? retryDelay(retryCountRef.current) : retryDelay ?? 1000;
 
                     await new Promise(resolve => setTimeout(resolve, delay));
-                    return mutate(...[...variables]);
+                    return mutate(...variables);
                 }
 
                 // Only update state if component is still mounted
