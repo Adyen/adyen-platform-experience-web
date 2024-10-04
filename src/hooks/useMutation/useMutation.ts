@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef, useMemo, useEffect } from 'preact/hooks';
-import { ALREADY_RESOLVED_PROMISE, tryResolve } from '../../utils';
+import { ALREADY_RESOLVED_PROMISE, EMPTY_OBJECT, tryResolve } from '../../utils';
 
 type MutationOptions<ResponseType> = {
     onSuccess?: (data: ResponseType) => void | Promise<void>;
@@ -17,7 +17,7 @@ function useMutation<queryFn extends (...args: any[]) => any, ResponseType exten
     queryFn: queryFn | undefined;
     options?: MutationOptions<ResponseType>;
 }) {
-    const { retry = false, retryDelay = 1000, onSuccess, onError, onSettled } = options || {};
+    const { retry = false, retryDelay = 1000, onSuccess, onError, onSettled } = options || (EMPTY_OBJECT as NonNullable<typeof options>);
 
     const [data, setData] = useState<ResponseType | null>(null);
     const [error, setError] = useState<Error | null>(null);
@@ -49,8 +49,13 @@ function useMutation<queryFn extends (...args: any[]) => any, ResponseType exten
                 }
 
                 ALREADY_RESOLVED_PROMISE.then(() => {
-                    onSuccess && tryResolve(onSuccess, result);
-                    onSettled && tryResolve(onSettled, result, null);
+                    const catchCallback = (reason: unknown) => {
+                        setTimeout(() => {
+                            throw reason;
+                        }, 0);
+                    };
+                    onSuccess && tryResolve(onSuccess, result).catch(catchCallback);
+                    onSettled && tryResolve(onSettled, result, null).catch(catchCallback);
                 });
 
                 return result;
