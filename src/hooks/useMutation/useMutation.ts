@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef, useMemo, useEffect } from 'preact/hooks';
-import { ALREADY_RESOLVED_PROMISE, EMPTY_OBJECT, tryResolve } from '../../utils';
+import { ALREADY_RESOLVED_PROMISE, EMPTY_OBJECT, isNumber, tryResolve } from '../../utils';
 
 type MutationOptions<ResponseType> = {
     onSuccess?: (data: ResponseType) => void | Promise<void>;
@@ -66,7 +66,8 @@ function useMutation<queryFn extends (...args: any[]) => any, ResponseType exten
             } catch (err) {
                 const error = err instanceof Error ? err : new Error(String(err));
 
-                const maxRetries = typeof retry === 'number' ? retry : retry ? 3 : 0;
+                const maxRetries = isNumber(retry) ? retry : retry ? 3 : 0;
+
                 // Handle retries
                 if (retryCountRef.current < maxRetries) {
                     retryCountRef.current += 1;
