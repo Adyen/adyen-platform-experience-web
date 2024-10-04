@@ -66,7 +66,7 @@ export class AuthSessionSpecification implements _AuthSessionSpecification {
                 errorHandler: this._errorHandler,
                 signal: isAbortSignal(signal) ? abortSignalForAny([sessionSignal, signal]) : sessionSignal,
             };
-            return await _http({ ...sessionHttpOptions, body: httpOptions.body });
+            return await _http(sessionHttpOptions);
         } catch (ex: any) {
             if (ex?.type === ErrorTypes.EXPIRED_TOKEN) throw ERR_SESSION_EXPIRED;
             throw ex;
