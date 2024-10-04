@@ -27,6 +27,58 @@ const dateStartUTCTimestampOffset = (date: Date | number | string, numberOfDays 
 
 const REPAYMENT_FREQUENCY = 30;
 
+const LoadingSkeleton = () => (
+    <div className="adyen-pe-capital-offer-selection__loading-container">
+        {[...Array(4)].map((_, index) => (
+            <div key={index} className="adyen-pe-capital-offer-selection__loading-skeleton"></div>
+        ))}
+    </div>
+);
+
+const InformationDisplay = ({ data }: { data: IGrantOfferResponseDTO }) => {
+    const { i18n } = useCoreContext();
+    const formattedThresholdAmount = useMemo(() => {
+        return data
+            ? `${i18n.amount(data.thresholdAmount.value, data.thresholdAmount.currency)} ${i18n.get('every')} ${REPAYMENT_FREQUENCY} ${i18n.get(
+                  'capital.repaymentDays'
+              )}`
+            : '';
+    }, [data, i18n]);
+    const expectedRepaymentDate = useMemo(() => {
+        const date = data && parseDate(dateStartUTCTimestampOffset(new Date(), data.expectedRepaymentPeriodDays));
+        if (date) return i18n.date(date, { month: 'long' });
+        return null;
+    }, [data, i18n]);
+    return (
+        <div className="adyen-pe-capital-offer-selection__information">
+            <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY}>
+                {i18n.get('yourMinimumRepaymentWillBe')}{' '}
+                <Typography variant={TypographyVariant.BODY} el={TypographyElement.SPAN} strongest>
+                    {formattedThresholdAmount}
+                </Typography>{' '}
+                {i18n.get('until')} {expectedRepaymentDate}
+            </Typography>
+            <StructuredList
+                renderValue={val => (
+                    <Typography el={TypographyElement.SPAN} stronger variant={TypographyVariant.CAPTION}>
+                        {val}
+                    </Typography>
+                )}
+                renderLabel={val => (
+                    <Typography el={TypographyElement.SPAN} variant={TypographyVariant.CAPTION}>
+                        {val}
+                    </Typography>
+                )}
+                items={[
+                    { key: 'capital.fees', value: i18n.amount(data.feesAmount.value, data.feesAmount.currency) },
+                    { key: 'capital.repaymentRate', value: `${data.repaymentRate}% ${i18n.get('capital.daily')}` },
+                    { key: 'capital.expectedRepaymentPeriod', value: data.expectedRepaymentPeriodDays },
+                ]}
+            />
+        </div>
+    );
+};
+
 export const CapitalOfferSelection = ({ config, onReviewOffer, onBack }: CapitalOfferSelectionProps) => {
     const { i18n } = useCoreContext();
     const [requestedValue, setRequestedValue] = useState<number | undefined>(config?.minAmount.value);
@@ -56,12 +108,6 @@ export const CapitalOfferSelection = ({ config, onReviewOffer, onBack }: Capital
     const getOffer = useCallback((amount: number) => mutate({}, { query: { amount, currency: currency! } }), [currency, mutate]);
     const handleSliderRelease = (event: Event) => getOffer((event.target as any).value);
 
-    const expectedRepaymentDate = useMemo(() => {
-        const date = data && parseDate(dateStartUTCTimestampOffset(new Date(), data.expectedRepaymentPeriodDays));
-        if (date) return i18n.date(date, { month: 'long' });
-        return null;
-    }, [data, i18n]);
-
     useEffect(() => {
         if (config) {
             setRequestedValue(config.minAmount.value);
@@ -89,43 +135,7 @@ export const CapitalOfferSelection = ({ config, onReviewOffer, onBack }: Capital
                 />
             </div>
             <InfoBox className="adyen-pe-capital-offer-selection__details">
-                {!data || isLoading ? (
-                    <div className="adyen-pe-capital-offer-selection__loading-container">
-                        <div className="adyen-pe-capital-offer-selection__loading-skeleton"></div>
-                        <div className="adyen-pe-capital-offer-selection__loading-skeleton"></div>
-                        <div className="adyen-pe-capital-offer-selection__loading-skeleton"></div>
-                        <div className="adyen-pe-capital-offer-selection__loading-skeleton"></div>
-                    </div>
-                ) : data ? (
-                    <div className="adyen-pe-capital-offer-selection__information">
-                        <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY}>
-                            {i18n.get('yourMinimumRepaymentWillBe')}{' '}
-                            <Typography variant={TypographyVariant.BODY} el={TypographyElement.SPAN} strongest>
-                                {`${i18n.amount(data.thresholdAmount.value, data.thresholdAmount.currency)} ${i18n.get(
-                                    'every'
-                                )} ${REPAYMENT_FREQUENCY} ${i18n.get('capital.repaymentDays')}`}
-                            </Typography>{' '}
-                            {i18n.get('until')} {expectedRepaymentDate}
-                        </Typography>
-                        <StructuredList
-                            renderValue={val => (
-                                <Typography el={TypographyElement.SPAN} stronger variant={TypographyVariant.CAPTION}>
-                                    {val}
-                                </Typography>
-                            )}
-                            renderLabel={val => (
-                                <Typography el={TypographyElement.SPAN} variant={TypographyVariant.CAPTION}>
-                                    {val}
-                                </Typography>
-                            )}
-                            items={[
-                                { key: 'capital.fees', value: i18n.amount(data.feesAmount.value, data.feesAmount.currency) },
-                                { key: 'capital.repaymentRate', value: `${data.repaymentRate}% ${i18n.get('capital.daily')}` },
-                                { key: 'capital.expectedRepaymentPeriod', value: data.expectedRepaymentPeriodDays },
-                            ]}
-                        />
-                    </div>
-                ) : null}
+                {!data || isLoading ? <LoadingSkeleton /> : data ? <InformationDisplay data={data} /> : null}
             </InfoBox>
             <div className="adyen-pe-capital-offer-selection__buttons">
                 <Button variant={ButtonVariant.SECONDARY} onClick={onBack}>
