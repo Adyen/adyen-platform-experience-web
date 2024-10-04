@@ -1,5 +1,5 @@
 import { delay as mswDelay, DelayMode, HttpHandler } from 'msw';
-import { mockWorker } from './index';
+import { mockWorker } from '../index';
 
 const IS_TEST = Boolean(process.env.E2E_TEST === 'true') || process.env.VITE_MODE === 'demo';
 const MOCK_MODES = ['mocked', 'demo'];

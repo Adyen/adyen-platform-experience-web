@@ -6,5 +6,6 @@ export const CARD_SUBTITLE = `${CARD_BASE_CLASS}__subtitle`;
 export const CARD_HEADER_CONTENT = `${CARD_HEADER}-content`;
 export const CARD_BODY_WITH_TITLE = `${CARD_BODY}--with-title`;
 export const CARD_NO_OUTLINE = `${CARD_BASE_CLASS}--no-outline`;
+export const CARD_NO_PADDING = `${CARD_BASE_CLASS}--no-padding`;
 export const CARD_FILLED = `${CARD_BASE_CLASS}--filled`;
 export const CARD_FOOTER = `${CARD_BASE_CLASS}__footer`;
