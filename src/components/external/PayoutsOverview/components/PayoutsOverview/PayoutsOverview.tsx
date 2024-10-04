@@ -102,7 +102,7 @@ export const PayoutsOverview = ({
 
     return (
         <div className={BASE_CLASS}>
-            <DataOverviewHeader hideTitle={hideTitle} titleKey="payoutsTitle">
+            <DataOverviewHeader hideTitle={hideTitle} titleKey="payoutsTitle" descriptionKey="payoutsNotice">
                 <FilterBarMobileSwitch {...filterBarState} />
             </DataOverviewHeader>
             <FilterBar {...filterBarState}>

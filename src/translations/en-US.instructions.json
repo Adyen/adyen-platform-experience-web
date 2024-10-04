@@ -5,6 +5,7 @@
     "error.somethingWentWrongWithDownload": "Will be displayed if an error occurs in the process of carrying out a file download action at any given moment.",
     "file": "Used as column header in a table to label column of file download buttons",
     "noReportsFound": "Will be displayed if there is no reports data available for the given search criteria.",
+    "payoutsNotice": "The preparation of payout information happens at midnight (12:00 AM) in UTC timezone. Payout, in this context, refers to a user's money that gets paid into their designated bank account. UTC here refers to the Coordinated Universal Time, which is the reference origin (0) for other timezones.",
     "report": "Used as a column header that indicates the type of the report",
     "reportsError.tooManyDownloads": "Will be displayed if the number of initiated file download requests exceeds the number of downloads that can be processed within a given period of time.",
     "reportsNotice": "The generation of reports happens at midnight (12:00 AM) in UTC timezone. UTC here refers to the Coordinated Universal Time, which is the reference origin (0) for other timezones.",
