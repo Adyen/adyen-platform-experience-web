@@ -1,117 +1,42 @@
-import { useCallback, useRef, useState } from 'preact/hooks';
-import { clamp } from '../../../utils';
-import { TagVariant } from '../Tag/types';
-import { Tag } from '../Tag/Tag';
-import { SpinButtonOffsetDirection } from './types';
-import { InteractionKeyCode } from '../../types';
+import cx from 'classnames';
+import _SpinButton from './internal/SpinButton';
+import { SpinButtonControl, SpinButtonProps } from './types';
+import { useCallback, useMemo, useRef, useState } from 'preact/hooks';
+import { defaultRenderControl, defaultRenderValue } from './helpers';
+import { EMPTY_OBJECT, isFunction } from '../../../utils';
+import { BASE_CLASS } from './constants';
 
-const SpinButton = ({ disabled }: { disabled?: boolean }) => {
-    // Core elements (refs)
-    const decrementControl = useRef<HTMLButtonElement>(null);
-    const incrementControl = useRef<HTMLButtonElement>(null);
-    const spinButtonContainer = useRef<HTMLDivElement>(null);
+const SpinButton = ({ asText, className, disabled, leap, max, min, renderControl, renderValue, steps, value, ...restProps }: SpinButtonProps) => {
+    // const minValue = useMemo(() => min ?? 0, [min]);
+    // const maxValue = useMemo(() => Math.max(minValue, max ?? 100), [max, minValue]);
+    // const stepValue = useMemo(() => (step && step > 0) ? step : 1, [step]);
+    // const stepScaleValue = useMemo(() => Math.max(1, stepScale ?? 10), [stepScale]);
+    const [currentValue, setCurrentValue] = useState(0);
+    const _renderControl = useMemo(() => (isFunction(renderControl) ? renderControl : defaultRenderControl), [renderControl]);
+    const _renderValue = useMemo(() => (isFunction(renderValue) ? renderValue : defaultRenderValue), [renderValue]);
 
-    // Declare state
-    const [value, setValue] = useState(0);
+    const decrementControlRef = useCallback((el: HTMLElement | null) => void (spinButton.decrementElem = el), []);
+    const incrementControlRef = useCallback((el: HTMLElement | null) => void (spinButton.incrementElem = el), []);
+    const spinButtonElementRef = useCallback((el: HTMLElement | null) => void (spinButton.spinButtonElem = el), []);
+    const spinButton = useRef(new _SpinButton()).current;
 
-    // Value manipulation functions
-    const getValueOffsetMagnitude = useCallback((isLargeOffset = false) => (isLargeOffset ? 10 : 1), []);
-    const setValueToMaximum = useCallback(() => setValue(100), []);
-    const setValueToMinimum = useCallback(() => setValue(0), []);
+    spinButton.disabled = disabled;
+    spinButton.onChange = setCurrentValue;
 
-    const offsetValue = useCallback(
-        (offsetDirection: 0 | 1 = SpinButtonOffsetDirection.INCREASING, isLargeOffset = false) => {
-            const valueOffset = getValueOffsetMagnitude(isLargeOffset) * Math.pow(-1, offsetDirection);
-            setValue(value => clamp(0, value + valueOffset, 100));
-        },
-        [getValueOffsetMagnitude]
-    );
-
-    // User interaction handlers
-    const onInteractionEventCapture = useCallback(
-        (evt: MouseEvent | KeyboardEvent) => {
-            if (!disabled) return;
-            evt.preventDefault();
-            evt.stopPropagation();
-        },
-        [disabled]
-    );
-
-    const onKeyDownEvent = useCallback((evt: KeyboardEvent) => {
-        switch (evt.code) {
-            // Step decrement
-            case InteractionKeyCode.ARROW_DOWN:
-            case InteractionKeyCode.ARROW_LEFT:
-                offsetValue(SpinButtonOffsetDirection.DECREASING, false);
-                break;
-
-            // Step increment
-            case InteractionKeyCode.ARROW_UP:
-            case InteractionKeyCode.ARROW_RIGHT:
-                offsetValue(SpinButtonOffsetDirection.INCREASING, false);
-                break;
-
-            // Large decrement
-            case InteractionKeyCode.PAGE_DOWN:
-                offsetValue(SpinButtonOffsetDirection.DECREASING, true);
-                break;
-
-            // Large increment
-            case InteractionKeyCode.PAGE_UP:
-                offsetValue(SpinButtonOffsetDirection.INCREASING, true);
-                break;
-
-            // Minimum value
-            case InteractionKeyCode.HOME:
-                setValueToMinimum();
-                break;
-
-            // Maximum value
-            case InteractionKeyCode.END:
-                setValueToMaximum();
-                break;
-
-            // Ignore other keys
-            default:
-                return;
-        }
-
-        // Prevent any default action for handled keys
-        evt.preventDefault();
-    }, []);
-
-    // Render component
     return (
         <div
-            role="spinbutton"
-            ref={spinButtonContainer}
-            tabIndex={disabled ? -1 : 0}
-            aria-valuenow={value}
-            aria-valuemin={0}
-            aria-valuemax={100}
-            onClickCapture={onInteractionEventCapture}
-            onKeyDownCapture={onInteractionEventCapture}
-            onKeyDown={onKeyDownEvent}
+            {...restProps}
+            ref={spinButtonElementRef}
+            className={cx(BASE_CLASS, className)}
+            onClick={spinButton.handleMouseInteraction}
+            onClickCapture={spinButton.startInteraction}
+            onKeyDown={spinButton.handleKeyboardInteraction}
+            onKeyDownCapture={spinButton.startInteraction}
+            {...(isFunction(asText) ? { 'aria-valuetext': asText(currentValue) ?? currentValue } : EMPTY_OBJECT)}
         >
-            {/* Decrement control */}
-            <button
-                type="button"
-                tabIndex={-1}
-                ref={decrementControl}
-                disabled={disabled || value === 0}
-                onClick={() => offsetValue(SpinButtonOffsetDirection.DECREASING, false)}
-            ></button>
-
-            <Tag variant={TagVariant.DEFAULT} label={`${value}`} />
-
-            {/* Increment control */}
-            <button
-                type="button"
-                tabIndex={-1}
-                ref={incrementControl}
-                disabled={disabled || value === 100}
-                onClick={() => offsetValue(SpinButtonOffsetDirection.INCREASING, false)}
-            ></button>
+            {_renderControl(SpinButtonControl.DECREMENT, decrementControlRef)}
+            {_renderValue(currentValue)}
+            {_renderControl(SpinButtonControl.INCREMENT, incrementControlRef)}
         </div>
     );
 };
