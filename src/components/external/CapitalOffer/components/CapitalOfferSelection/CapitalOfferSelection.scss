@@ -28,14 +28,14 @@
         margin-bottom: 5px;
     }
 
-    .adyen-pe-structured-list dd {
-        text-align: right;
-    }
-
     &__information {
         display: flex;
         flex-direction: column;
         gap: 10px;
+
+        .adyen-pe-structured-list dd {
+            text-align: right;
+        }
     }
 
     &__buttons {
