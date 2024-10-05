@@ -1,7 +1,7 @@
 import InfoBox from '../../../../internal/InfoBox';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { IGrantOfferResponseDTO } from '../../../../../types';
-import { useMemo } from 'preact/hooks';
+import { useCallback, useMemo } from 'preact/hooks';
 import { getExpectedRepaymentDate } from '../utils/utils';
 import Typography from '../../../../internal/Typography/Typography';
 import { TypographyElement, TypographyVariant } from '../../../../internal/Typography/types';
@@ -33,6 +33,11 @@ export const CapitalOfferSummary = ({
     const { signOffer } = useAuthContext().endpoints;
 
     const signOfferMutation = useMutation({ queryFn: signOffer });
+
+    const onOfferSignedHandler = useCallback(() => {
+        console.log(grantOffer);
+        onOfferSigned();
+    }, [onOfferSigned, signOfferMutation.data]);
 
     return (
         <div className="adyen-pe-capital-offer-summary">
@@ -105,7 +110,7 @@ export const CapitalOfferSummary = ({
                 <Button variant={ButtonVariant.SECONDARY} onClick={onBack}>
                     {i18n.get('capital.back')}
                 </Button>
-                <Button variant={ButtonVariant.PRIMARY} onClick={onOfferSigned} disabled={signOfferMutation.isLoading}>
+                <Button variant={ButtonVariant.PRIMARY} onClick={onOfferSignedHandler} disabled={signOfferMutation.isLoading}>
                     {i18n.get('capital.reviewOffer')}
                 </Button>
             </div>

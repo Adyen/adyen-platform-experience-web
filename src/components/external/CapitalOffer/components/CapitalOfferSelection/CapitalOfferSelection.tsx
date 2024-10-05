@@ -20,6 +20,7 @@ type CapitalOfferSelectionProps = {
     onReviewOffer: (data: IGrantOfferResponseDTO) => void;
     repaymentFrequency: number;
     requestedAmount: number | undefined;
+    onOfferSelection: (data: IGrantOfferResponseDTO) => void;
 };
 
 const LoadingSkeleton = () => (
@@ -74,7 +75,14 @@ const InformationDisplay = ({ data, repaymentFrequency }: { data: IGrantOfferRes
     );
 };
 
-export const CapitalOfferSelection = ({ config, onReviewOffer, onBack, repaymentFrequency, requestedAmount }: CapitalOfferSelectionProps) => {
+export const CapitalOfferSelection = ({
+    config,
+    onReviewOffer,
+    onBack,
+    repaymentFrequency,
+    requestedAmount,
+    onOfferSelection,
+}: CapitalOfferSelectionProps) => {
     const { i18n } = useCoreContext();
     const [requestedValue, setRequestedValue] = useState<number | undefined>(Number(requestedAmount) || config?.minAmount.value);
     const currency = useMemo(() => config?.minAmount.currency, [config?.minAmount.currency]);
@@ -91,14 +99,13 @@ export const CapitalOfferSelection = ({ config, onReviewOffer, onBack, repayment
         },
     });
 
-    const onReview = useCallback(
-        () =>
-            reviewOfferMutation.mutate({
-                body: { amount: data?.grantAmount.value || requestedValue!, currency: data?.grantAmount.currency || currency! },
-                contentType: 'application/json',
-            }),
-        [currency, data?.grantAmount.currency, data?.grantAmount.value, requestedValue, reviewOfferMutation]
-    );
+    const onReview = useCallback(() => {
+        data && onOfferSelection(data);
+        void reviewOfferMutation.mutate({
+            body: { amount: data?.grantAmount.value || requestedValue!, currency: data?.grantAmount.currency || currency! },
+            contentType: 'application/json',
+        });
+    }, [currency, data, onOfferSelection, requestedValue, reviewOfferMutation]);
 
     const getOffer = useCallback((amount: number) => mutate({}, { query: { amount, currency: currency! } }), [currency, mutate]);
     const handleSliderRelease = (event: Event) => getOffer((event.target as any).value);
@@ -108,7 +115,7 @@ export const CapitalOfferSelection = ({ config, onReviewOffer, onBack, repayment
             setRequestedValue(prev => (!prev ? config.minAmount.value : prev));
             void getOffer(requestedValue || config.minAmount.value);
         }
-    }, [config, getOffer]);
+    }, [config, getOffer, requestedValue]);
 
     return (
         <div>
