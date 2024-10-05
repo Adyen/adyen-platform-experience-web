@@ -57,7 +57,7 @@ export interface components {
             /** Format: int32 */
             repaymentRate?: number;
             thresholdAmount: components['schemas']['Amount'];
-            totalAmount?: components['schemas']['Amount'];
+            totalAmount: components['schemas']['Amount'];
         };
         GrantDTO: {
             id: string;

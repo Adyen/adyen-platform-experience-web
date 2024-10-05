@@ -28,7 +28,7 @@ export default function StructuredList({
 
     return (
         <div aria-label={i18n.get('structuredList')} className={SL_BASE_CLASS}>
-            {formattedItems.map(item => (
+            {formattedItems.map((item, i) => (
                 <dl
                     key={item.id}
                     className={classNames(SL_ITEM_CLASS, {
@@ -37,7 +37,11 @@ export default function StructuredList({
                     })}
                 >
                     <dt className={classNames(SL_LABEL_CLASS, LABEL_COL_CLASS)}>
-                        {renderLabel ? renderLabel(item.label) : <Typography variant={TypographyVariant.BODY}>{item.label}</Typography>}
+                        {renderLabel ? (
+                            renderLabel(item.label, items[i]!.key)
+                        ) : (
+                            <Typography variant={TypographyVariant.BODY}>{item.label}</Typography>
+                        )}
                     </dt>
                     <dd
                         aria-label={`${i18n.get(item.key as TranslationKey)} ${i18n.get('value')}`}

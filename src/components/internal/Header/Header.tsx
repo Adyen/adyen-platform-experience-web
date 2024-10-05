@@ -30,11 +30,11 @@ export const Header: FC<HeaderProps> = ({ baseClassName = BASE_CLASS, children, 
                     </div>
                 )}
                 {subtitleKey && (
-                    <p className={`${baseClassName}__subtitle`}>
+                    <div className={`${baseClassName}__subtitle`}>
                         <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY}>
                             {i18n.get(subtitleKey)}
                         </Typography>
-                    </p>
+                    </div>
                 )}
                 {hasDivider && <Divider className={`${baseClassName}__divider`} />}
             </div>

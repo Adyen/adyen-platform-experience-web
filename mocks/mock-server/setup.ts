@@ -67,6 +67,10 @@ export const setupMock = [
                     method: 'GET',
                     url: 'capital/grantOffers/dynamic',
                 },
+                signOffer: {
+                    method: 'POST',
+                    url: 'capital/grantOffers/dynamic/sign/{grantOfferId}',
+                },
             } satisfies Record<EndpointName, { method: HttpMethod; url: string }>,
         });
     }),

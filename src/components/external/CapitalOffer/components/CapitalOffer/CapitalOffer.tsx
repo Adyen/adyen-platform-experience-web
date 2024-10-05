@@ -9,14 +9,17 @@ import { IGrantOfferResponseDTO } from '../../../../../types';
 import { useAuthContext } from '../../../../../core/Auth';
 import { useFetch } from '../../../../../hooks/useFetch';
 import { EMPTY_OBJECT } from '../../../../../utils';
+import { CapitalOfferSummary } from '../CapitalOfferSummary/CapitalOfferSummary';
 
 type CapitalOfferState = 'OfferSelection' | 'OfferSummary';
+const REPAYMENT_FREQUENCY = 30;
 
 export const CapitalOffer: FunctionalComponent<ExternalUIComponentProps<CapitalOfferProps>> = ({
     hideTitle,
     dynamicOffersConfig,
     onOfferReviewed,
     onBack,
+    onOfferSigned,
 }) => {
     const { getDynamicGrantOffersConfiguration } = useAuthContext().endpoints;
     const { data: grantOfferConfig } = useFetch({
@@ -38,9 +41,16 @@ export const CapitalOffer: FunctionalComponent<ExternalUIComponentProps<CapitalO
     }, [goBackToPreviousStep, onBack]);
 
     const [selectedOffer, setSelectedOffer] = useState<IGrantOfferResponseDTO>();
+    const [requestedAmount, setRequestedAmount] = useState<number>();
+
     const onOfferSelectionHandler = useCallback(
         (data: IGrantOfferResponseDTO) => {
-            onOfferReviewed ? onOfferReviewed(data) : setSelectedOffer(data);
+            setRequestedAmount(data.grantAmount.value);
+            if (onOfferReviewed) {
+                onOfferReviewed(data);
+            } else {
+                setSelectedOffer(data);
+            }
         },
         [onOfferReviewed]
     );
@@ -55,13 +65,27 @@ export const CapitalOffer: FunctionalComponent<ExternalUIComponentProps<CapitalO
     return (
         <div className={CAPITAL_OFFER_CLASS_NAMES.base}>
             <CapitalHeader
+                hasDivider
                 hideTitle={hideTitle}
                 titleKey={CapitalOfferState === 'OfferSummary' ? 'capital.businessFinancingSummary' : 'capital.businessFinancing'}
             />
             {CapitalOfferState === 'OfferSelection' && (
-                <CapitalOfferSelection config={config} onBack={goBackHandler} onReviewOffer={onOfferSelectionHandler} />
+                <CapitalOfferSelection
+                    requestedAmount={requestedAmount}
+                    config={config}
+                    onBack={goBackHandler}
+                    onReviewOffer={onOfferSelectionHandler}
+                    repaymentFrequency={REPAYMENT_FREQUENCY}
+                />
             )}
-            {CapitalOfferState === 'OfferSummary' && <p>{'Placeholder for OfferSummary component'}</p>}
+            {CapitalOfferState === 'OfferSummary' && (
+                <CapitalOfferSummary
+                    grantOffer={selectedOffer!}
+                    repaymentFrequency={REPAYMENT_FREQUENCY}
+                    onBack={() => setSelectedOffer(undefined)}
+                    onOfferSigned={onOfferSigned}
+                />
+            )}
         </div>
     );
 };
