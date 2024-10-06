@@ -5,14 +5,30 @@
     flex-direction: column;
     gap: style.token(spacer-060);
 
-    .adyen-pe-structured-list dd {
-        text-align: right;
-    }
-    .adyen-pe-structured-list__item {
-        margin-bottom: style.token(spacer-020);
+    &__grant-summary {
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-020);
     }
 
     &__list-label {
         color: style.token(color-label-secondary);
+    }
+
+    &__buttons {
+        display: flex;
+        gap: style.token(spacer-050);
+        justify-content: end;
+        margin-top: style.token(spacer-080);
+    }
+
+    &__details {
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-020);
+
+        dd {
+            text-align: right;
+        }
     }
 }

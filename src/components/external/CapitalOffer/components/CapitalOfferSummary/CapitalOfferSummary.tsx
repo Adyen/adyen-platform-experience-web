@@ -12,6 +12,7 @@ import { ButtonVariant } from '../../../../internal/Button/types';
 import useMutation from '../../../../../hooks/useMutation/useMutation';
 import { useAuthContext } from '../../../../../core/Auth';
 import { Tooltip } from '../../../../internal/Tooltip/Tooltip';
+import { EMPTY_OBJECT } from '../../../../../utils';
 
 export const CapitalOfferSummary = ({
     grantOffer,
@@ -35,13 +36,13 @@ export const CapitalOfferSummary = ({
     const signOfferMutation = useMutation({ queryFn: signOffer });
 
     const onOfferSignedHandler = useCallback(() => {
-        console.log(grantOffer);
+        grantOffer.id && void signOfferMutation.mutate(EMPTY_OBJECT, { path: { grantOfferId: grantOffer.id } });
         onOfferSigned();
-    }, [onOfferSigned, signOfferMutation.data]);
+    }, [grantOffer.id, onOfferSigned, signOfferMutation]);
 
     return (
         <div className="adyen-pe-capital-offer-summary">
-            <InfoBox>
+            <InfoBox className="adyen-pe-capital-offer-summary__grant-summary">
                 <Typography el={TypographyElement.PARAGRAPH} variant={TypographyVariant.BODY}>
                     {i18n.get('capital.youAreRequestingFundingOf')}{' '}
                     <strong>{`${i18n.amount(grantOffer.grantAmount.value, grantOffer.grantAmount.currency)}.`}</strong>
@@ -56,62 +57,61 @@ export const CapitalOfferSummary = ({
                     })}
                 </Typography>
             </InfoBox>
-            <div className="adyen-pe-capital-offer-summary__details">
-                <StructuredList
-                    renderLabel={(val, key) => {
-                        if (key === 'capital.repaymentTreshold') {
-                            return (
-                                <Tooltip
-                                    isContainerHovered
-                                    content={i18n.get('capital.minimumRepaymentDaysToRepayFinancing', { values: { days: repaymentFrequency } })}
-                                >
-                                    <span>
-                                        <Typography
-                                            className={'adyen-pe-capital-offer-summary__list-label'}
-                                            el={TypographyElement.SPAN}
-                                            variant={TypographyVariant.CAPTION}
-                                        >
-                                            {val}
-                                        </Typography>
-                                    </span>
-                                </Tooltip>
-                            );
-                        }
+            <StructuredList
+                classNames="adyen-pe-capital-offer-summary__details"
+                renderLabel={(val, key) => {
+                    if (key === 'capital.repaymentThreshold') {
                         return (
-                            <Typography
-                                className={'adyen-pe-capital-offer-summary__list-label'}
-                                el={TypographyElement.SPAN}
-                                variant={TypographyVariant.CAPTION}
+                            <Tooltip
+                                isContainerHovered
+                                content={i18n.get('capital.minimumRepaymentDaysToRepayFinancing', { values: { days: repaymentFrequency } })}
                             >
-                                {val}
-                            </Typography>
+                                <span>
+                                    <Typography
+                                        className={'adyen-pe-capital-offer-summary__list-label'}
+                                        el={TypographyElement.SPAN}
+                                        variant={TypographyVariant.CAPTION}
+                                    >
+                                        {val}
+                                    </Typography>
+                                </span>
+                            </Tooltip>
                         );
-                    }}
-                    renderValue={val => (
-                        <Typography el={TypographyElement.SPAN} variant={TypographyVariant.CAPTION} stronger>
+                    }
+                    return (
+                        <Typography
+                            className={'adyen-pe-capital-offer-summary__list-label'}
+                            el={TypographyElement.SPAN}
+                            variant={TypographyVariant.CAPTION}
+                        >
                             {val}
                         </Typography>
-                    )}
-                    items={[
-                        { key: 'capital.fees', value: i18n.amount(grantOffer.feesAmount.value, grantOffer.feesAmount.currency) },
-                        { key: 'capital.totalRepaymentAmount', value: i18n.amount(grantOffer.totalAmount.value, grantOffer.totalAmount.currency) },
-                        {
-                            key: 'capital.repaymentTreshold',
-                            value: i18n.amount(grantOffer.thresholdAmount.value, grantOffer.thresholdAmount.currency),
-                        },
-                        { key: 'capital.repaymentRatePercentage', value: grantOffer.repaymentRate },
-                        { key: 'capital.expectedRepaymentPeriod', value: grantOffer.expectedRepaymentPeriodDays },
-                        { key: 'capital.maximumRepaymentPeriod', value: grantOffer.maximumRepaymentPeriodDays },
-                        { key: 'capital.balanceAccount', value: 'TODO balance account' },
-                    ]}
-                />
-            </div>
-            <div className="adyen-pe-capital-offer-selection__buttons">
+                    );
+                }}
+                renderValue={val => (
+                    <Typography el={TypographyElement.SPAN} variant={TypographyVariant.CAPTION} stronger>
+                        {val}
+                    </Typography>
+                )}
+                items={[
+                    { key: 'capital.fees', value: i18n.amount(grantOffer.feesAmount.value, grantOffer.feesAmount.currency) },
+                    { key: 'capital.totalRepaymentAmount', value: i18n.amount(grantOffer.totalAmount.value, grantOffer.totalAmount.currency) },
+                    {
+                        key: 'capital.repaymentThreshold',
+                        value: i18n.amount(grantOffer.thresholdAmount.value, grantOffer.thresholdAmount.currency),
+                    },
+                    { key: 'capital.repaymentRatePercentage', value: grantOffer.repaymentRate },
+                    { key: 'capital.expectedRepaymentPeriod', value: grantOffer.expectedRepaymentPeriodDays },
+                    { key: 'capital.maximumRepaymentPeriod', value: grantOffer.maximumRepaymentPeriodDays },
+                    { key: 'capital.balanceAccount', value: 'TODO balance account' },
+                ]}
+            />
+            <div className="adyen-pe-capital-offer-summary__buttons">
                 <Button variant={ButtonVariant.SECONDARY} onClick={onBack}>
                     {i18n.get('capital.back')}
                 </Button>
                 <Button variant={ButtonVariant.PRIMARY} onClick={onOfferSignedHandler} disabled={signOfferMutation.isLoading}>
-                    {i18n.get('capital.reviewOffer')}
+                    {i18n.get('capital.requestFunds')}
                 </Button>
             </div>
         </div>

@@ -8,6 +8,7 @@ import {
     REVOKED_GRANT,
     WRITTEN_OFF_GRANT,
     GRANT_OFFER,
+    SIGNED_OFFER,
 } from '../mock-data';
 import { endpoints } from '../../endpoints/endpoints';
 import { DefaultBodyType, http, HttpResponse, StrictRequest } from 'msw';
@@ -85,6 +86,7 @@ export const capitalMock = [
     http.get(mockEndpoints.grants, EMPTY_GRANTS_LIST),
     http.get(mockEndpoints.dynamicOffer, OFFER_REVIEW_HANDLER),
     http.post(mockEndpoints.offerReview, OFFER_REVIEW_HANDLER),
+    http.post(mockEndpoints.offerSign, getHandlerCallback({ response: SIGNED_OFFER })),
 ];
 const capitalFactory = mocksFactory<CapitalPaths>();
 

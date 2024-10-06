@@ -18,4 +18,5 @@ export interface StructuredListProps {
     renderLabel?: (val: string, key: TranslationKey) => ComponentChild;
     renderValue?: (val: ListValue) => ComponentChild;
     grid?: boolean;
+    classNames?: string;
 }
