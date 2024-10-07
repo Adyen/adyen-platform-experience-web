@@ -1,4 +1,7 @@
+import { IGrant } from '../../../types';
+
 export interface CapitalOverviewProps {
     skipPreQualifiedIntro?: boolean;
-    onOfferReview?(): void;
+    onReviewOptions?(goToNextStep: () => void): void;
+    onOfferSigned?: (data: IGrant, goToNextStep: () => void) => void;
 }

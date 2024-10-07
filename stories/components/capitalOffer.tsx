@@ -1,13 +1,18 @@
 import { Meta } from '@storybook/preact';
 import { ElementProps } from '../utils/types';
-import { enabledDisabledCallbackRadioControls } from '../utils/controls';
 import { CapitalOffer } from '../../src';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { action } from '@storybook/addon-actions';
 
 export const capitalOfferMeta: Meta<ElementProps<typeof CapitalOffer>> = {
     argTypes: {
         dynamicOffersConfig: { control: 'object' },
         hideTitle: { type: 'boolean' },
-        onOfferSigned: enabledDisabledCallbackRadioControls('onOfferSigned'),
+        onOfferSigned: {
+            table: {
+                disable: true,
+            },
+        },
         balanceAccountId: {
             table: {
                 disable: true,
@@ -17,7 +22,7 @@ export const capitalOfferMeta: Meta<ElementProps<typeof CapitalOffer>> = {
     args: {
         dynamicOffersConfig: undefined,
         hideTitle: false,
-        onOfferSigned: () => {},
+        onOfferSigned: action('onOfferSigned'),
         component: CapitalOffer,
     },
     parameters: {

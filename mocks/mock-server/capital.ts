@@ -86,7 +86,7 @@ export const capitalMock = [
     http.get(mockEndpoints.grants, EMPTY_GRANTS_LIST),
     http.get(mockEndpoints.dynamicOffer, OFFER_REVIEW_HANDLER),
     http.post(mockEndpoints.offerReview, OFFER_REVIEW_HANDLER),
-    http.post(mockEndpoints.offerSign, getHandlerCallback({ response: SIGNED_OFFER })),
+    http.post(mockEndpoints.offerSign, getHandlerCallback({ response: SIGNED_OFFER, delayTime: 800 })),
 ];
 const capitalFactory = mocksFactory<CapitalPaths>();
 

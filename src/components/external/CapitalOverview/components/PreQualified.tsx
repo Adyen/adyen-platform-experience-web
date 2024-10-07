@@ -3,25 +3,18 @@ import InfoBox from '../../../internal/InfoBox';
 import Button from '../../../internal/Button/Button';
 import useCoreContext from '../../../../core/Context/useCoreContext';
 import { IDynamicOfferConfig } from '../../../../types';
-import { useCallback, useMemo } from 'preact/hooks';
-import { CapitalOverviewProps } from '../types';
 import { CapitalHeader } from '../../../internal/CapitalHeader';
 
 const PreQualified = ({
     dynamicOffer,
-    onOfferReview,
+    onReviewOfferOptions,
     hideTitle,
 }: {
     dynamicOffer: Required<IDynamicOfferConfig>;
-    onOfferReview: CapitalOverviewProps['onOfferReview'];
+    onReviewOfferOptions: () => void;
     hideTitle?: boolean;
 }) => {
     const { i18n } = useCoreContext();
-
-    // TODO: Implement this function
-    const goToNextStep = useCallback(() => console.log('goToNextStep'), []);
-
-    const onReviewOptions = useMemo(() => (onOfferReview ? onOfferReview : goToNextStep), [goToNextStep, onOfferReview]);
 
     return (
         <>
@@ -37,7 +30,7 @@ const PreQualified = ({
                         </strong>
                     </div>
                 </InfoBox>
-                <Button className={CAPITAL_OVERVIEW_CLASS_NAMES.preQualifiedGrantButton} onClick={onReviewOptions}>
+                <Button className={CAPITAL_OVERVIEW_CLASS_NAMES.preQualifiedGrantButton} onClick={onReviewOfferOptions}>
                     {i18n.get('capital.reviewOptions')}
                 </Button>
             </div>

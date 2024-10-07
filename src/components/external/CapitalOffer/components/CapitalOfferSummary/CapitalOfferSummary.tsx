@@ -1,6 +1,6 @@
 import InfoBox from '../../../../internal/InfoBox';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
-import { IGrantOfferResponseDTO } from '../../../../../types';
+import { IGrant, IGrantOfferResponseDTO } from '../../../../../types';
 import { useCallback, useMemo } from 'preact/hooks';
 import { getExpectedRepaymentDate } from '../utils/utils';
 import Typography from '../../../../internal/Typography/Typography';
@@ -23,7 +23,7 @@ export const CapitalOfferSummary = ({
     grantOffer: IGrantOfferResponseDTO;
     repaymentFrequency: number;
     onBack: () => void;
-    onOfferSigned: () => void;
+    onOfferSigned: (data: IGrant) => void;
 }) => {
     const { i18n } = useCoreContext();
     const expectedRepaymentDate = useMemo(() => {
@@ -33,12 +33,16 @@ export const CapitalOfferSummary = ({
 
     const { signOffer } = useAuthContext().endpoints;
 
-    const signOfferMutation = useMutation({ queryFn: signOffer });
+    const signOfferMutation = useMutation({
+        queryFn: signOffer,
+        options: {
+            onSuccess: data => onOfferSigned(data),
+        },
+    });
 
     const onOfferSignedHandler = useCallback(() => {
         grantOffer.id && void signOfferMutation.mutate(EMPTY_OBJECT, { path: { grantOfferId: grantOffer.id } });
-        onOfferSigned();
-    }, [grantOffer.id, onOfferSigned, signOfferMutation]);
+    }, [grantOffer.id, signOfferMutation]);
 
     return (
         <div className="adyen-pe-capital-offer-summary">
