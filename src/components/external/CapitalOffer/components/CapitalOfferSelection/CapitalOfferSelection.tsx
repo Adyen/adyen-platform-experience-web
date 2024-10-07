@@ -35,9 +35,9 @@ const InformationDisplay = ({ data, repaymentFrequency }: { data: IGrantOfferRes
     const { i18n } = useCoreContext();
     const formattedThresholdAmount = useMemo(() => {
         return data
-            ? `${i18n.amount(data.thresholdAmount.value, data.thresholdAmount.currency)} ${i18n.get('every')} ${repaymentFrequency} ${i18n.get(
-                  'capital.repaymentDays'
-              )}`
+            ? `${i18n.amount(data.thresholdAmount.value, data.thresholdAmount.currency)} ${i18n.get(
+                  'capital.every'
+              )} ${repaymentFrequency} ${i18n.get('capital.repaymentDays')}`
             : '';
     }, [data, i18n, repaymentFrequency]);
     const expectedRepaymentDate = useMemo(() => {
@@ -48,11 +48,11 @@ const InformationDisplay = ({ data, repaymentFrequency }: { data: IGrantOfferRes
     return (
         <div className="adyen-pe-capital-offer-selection__information">
             <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY}>
-                {i18n.get('yourMinimumRepaymentWillBe')}{' '}
+                {i18n.get('capital.yourMinimumRepaymentWillBe')}{' '}
                 <Typography variant={TypographyVariant.BODY} el={TypographyElement.SPAN} strongest>
                     {formattedThresholdAmount}
                 </Typography>{' '}
-                {i18n.get('until')} {expectedRepaymentDate}
+                {i18n.get('capital.until')} {expectedRepaymentDate}
             </Typography>
             <StructuredList
                 renderValue={val => (
