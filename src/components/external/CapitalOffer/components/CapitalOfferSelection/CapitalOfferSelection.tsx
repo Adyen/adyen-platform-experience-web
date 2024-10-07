@@ -110,9 +110,11 @@ export const CapitalOfferSelection = ({ config, onBack }: CapitalOfferSelectionP
         ]
     );
 
+    const getDynamicGrantOfferMutationCallback = getDynamicGrantOfferMutation.mutate;
+
     const getOffer = useCallback(
-        (amount: number) => getDynamicGrantOfferMutation.mutate({}, { query: { amount, currency: currency! } }),
-        [currency, getDynamicGrantOfferMutation]
+        (amount: number) => getDynamicGrantOfferMutationCallback({}, { query: { amount, currency: currency! } }),
+        [currency, getDynamicGrantOfferMutationCallback]
     );
     const handleSliderRelease = (event: Event) => getOffer((event.target as any).value);
 
