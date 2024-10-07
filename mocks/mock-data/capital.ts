@@ -138,29 +138,7 @@ export const GRANT_OFFER = {
     maximumRepaymentPeriodDays: 540,
 };
 
-export const OFFER_REVIEW = {
-    id: '66e12a9a64a6',
-    grantAmount: {
-        value: 2000000,
-        currency: 'EUR',
-    },
-    feesAmount: {
-        value: 22000,
-        currency: 'EUR',
-    },
-    totalAmount: {
-        value: 2022000,
-        currency: 'EUR',
-    },
-    thresholdAmount: {
-        value: 169000,
-        currency: 'EUR',
-
-    },
-    repaymentRate: 11,
-    expectedRepaymentPeriodDays: 365,
-    maximumRepaymentPeriodDays: 540,
-};
+export const OFFER_REVIEW = GRANT_OFFER;
 
 export const SIGNED_OFFER = {
     id: '66e12a9a64a6',
