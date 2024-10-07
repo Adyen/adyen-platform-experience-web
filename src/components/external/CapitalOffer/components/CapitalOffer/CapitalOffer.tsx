@@ -45,7 +45,7 @@ export const CapitalOffer: FunctionalComponent<ExternalUIComponentProps<CapitalO
         [onOfferReviewed]
     );
 
-    const CapitalOfferState = useMemo<CapitalOfferState>(() => {
+    const capitalOfferState = useMemo<CapitalOfferState>(() => {
         if (selectedOffer) {
             return 'OfferSummary';
         }
@@ -56,10 +56,10 @@ export const CapitalOffer: FunctionalComponent<ExternalUIComponentProps<CapitalO
         <div className={CAPITAL_OFFER_CLASS_NAMES.base}>
             <CapitalHeader
                 hideTitle={hideTitle}
-                titleKey={CapitalOfferState === 'OfferSummary' ? 'capital.businessFinancingSummary' : 'capital.businessFinancing'}
+                titleKey={capitalOfferState === 'OfferSummary' ? 'capital.businessFinancingSummary' : 'capital.businessFinancing'}
             />
-            {CapitalOfferState === 'OfferSelection' && <CapitalOfferSelection config={config} onBack={goBackHandler} />}
-            {CapitalOfferState === 'OfferSummary' && <p>{'Placeholder for OfferSummary component'}</p>}
+            {capitalOfferState === 'OfferSelection' && <CapitalOfferSelection config={config} onBack={goBackHandler} />}
+            {capitalOfferState === 'OfferSummary' && <p>{'Placeholder for OfferSummary component'}</p>}
         </div>
     );
 };
