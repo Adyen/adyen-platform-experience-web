@@ -155,6 +155,7 @@ export const OFFER_REVIEW = {
     thresholdAmount: {
         value: 169000,
         currency: 'EUR',
+
     },
     repaymentRate: 11,
     expectedRepaymentPeriodDays: 365,
