@@ -16,7 +16,7 @@ export const CapitalOffer: FunctionalComponent<ExternalUIComponentProps<CapitalO
     hideTitle,
     dynamicOffersConfig,
     onOfferReviewed,
-    onBack,
+    onOfferDismissed,
 }) => {
     const { getDynamicGrantOffersConfiguration } = useAuthContext().endpoints;
     const { data: grantOfferConfig } = useFetch({
@@ -34,8 +34,8 @@ export const CapitalOffer: FunctionalComponent<ExternalUIComponentProps<CapitalO
     }, []);
 
     const goBackHandler = useCallback(() => {
-        onBack ? onBack() : goBackToPreviousStep();
-    }, [goBackToPreviousStep, onBack]);
+        onOfferDismissed ? onOfferDismissed() : goBackToPreviousStep();
+    }, [goBackToPreviousStep, onOfferDismissed]);
 
     const [selectedOffer, setSelectedOffer] = useState<IGrantOfferResponseDTO>();
     const onOfferSelectionHandler = useCallback(
