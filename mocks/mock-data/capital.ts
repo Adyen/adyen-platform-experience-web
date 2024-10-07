@@ -114,3 +114,28 @@ export const WRITTEN_OFF_GRANT: IGrant = {
     id: '1d2c2d289a76',
     status: 'WrittenOff',
 };
+
+export const GRANT_OFFER = {
+    id: '66e12a9a64a6',
+    grantAmount: {
+        value: 2000000,
+        currency: 'USD',
+    },
+    feesAmount: {
+        value: 22000,
+        currency: 'USD',
+    },
+    totalAmount: {
+        value: 2022000,
+        currency: 'USD',
+    },
+    thresholdAmount: {
+        value: 169000,
+        currency: 'USD',
+    },
+    repaymentRate: 11,
+    expectedRepaymentPeriodDays: 365,
+    maximumRepaymentPeriodDays: 540,
+};
+
+export const OFFER_REVIEW = GRANT_OFFER;
