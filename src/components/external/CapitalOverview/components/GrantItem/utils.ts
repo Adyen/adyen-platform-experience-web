@@ -4,16 +4,16 @@ import { TagVariant } from '../../../../internal/Tag/types';
 
 const getIsBackgroundFilled = (status: IGrantStatus) => status === 'Repaid';
 
-const getAmountLabelKey = ({ status, repayedAmount }: IGrant): TranslationKey => {
+const getAmountLabelKey = ({ status, repaidGrantAmount }: IGrant): TranslationKey => {
     if (status === 'Active') {
-        return repayedAmount.value ? 'capital.repaid' : 'capital.initialFunds';
+        return repaidGrantAmount.value ? 'capital.repaid' : 'capital.initialFunds';
     } else if (status === 'Repaid') {
         return 'capital.initialFunds';
     }
     return 'capital.requestedFunds';
 };
 
-const getAmount = (grant: IGrant) => (grant.status === 'Active' && grant.repayedGrantAmount.value ? grant.repayedGrantAmount : grant.grantAmount);
+const getAmount = (grant: IGrant) => (grant.status === 'Active' && grant.repaidGrantAmount.value ? grant.repaidGrantAmount : grant.grantAmount);
 
 const getStatusKey = (status: IGrantStatus): TranslationKey | undefined => {
     switch (status) {
