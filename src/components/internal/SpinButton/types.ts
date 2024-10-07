@@ -1,33 +1,49 @@
 import { ComponentChild } from 'preact';
 import { HTMLProps } from 'preact/compat';
 
-type _AllowedExternalStandardProps = Pick<
-    HTMLProps<any>,
-    | 'aria-controls'
-    | 'aria-hidden'
-    | 'aria-label'
-    | 'aria-labelledby'
-    | 'aria-describedby'
-    | 'aria-description'
-    | 'aria-required'
-    | 'className'
-    | 'hidden'
-    | 'id'
->;
+// See https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attributes
+type _BlacklistedSpinButtonInputProps =
+    | 'accept'
+    | 'alt'
+    | 'capture'
+    | 'checked'
+    | 'dirname'
+    | 'formaction'
+    | 'formAction'
+    | 'formenctype'
+    | 'formEncType'
+    | 'formmethod'
+    | 'formMethod'
+    | 'formnovalidate'
+    | 'formNoValidate'
+    | 'formtarget'
+    | 'formTarget'
+    | 'height'
+    | 'maxlength'
+    | 'maxLength'
+    | 'minlength'
+    | 'minLength'
+    | 'multiple'
+    | 'pattern'
+    | 'placeholder'
+    | 'size'
+    | 'src'
+    | 'width';
 
 export const enum SpinButtonControl {
     INCREMENT,
     DECREMENT,
 }
 
-export interface SpinButtonProps extends _AllowedExternalStandardProps {
-    asText?: (value: number) => string;
+export type SpinButtonControlRender = (control: SpinButtonControl) => ComponentChild;
+
+export interface SpinButtonProps extends Omit<HTMLProps<HTMLInputElement>, _BlacklistedSpinButtonInputProps> {
+    children?: SpinButtonControlRender;
     disabled?: boolean;
     leap?: number;
     max?: number;
     min?: number;
-    renderControl?: (control: SpinButtonControl, ref: (el: HTMLElement | null) => unknown) => ComponentChild;
-    renderValue?: (value: number) => ComponentChild;
-    steps?: number;
+    step?: number;
     value?: number;
+    valueAsText?: (value: number) => string;
 }
