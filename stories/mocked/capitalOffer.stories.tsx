@@ -9,7 +9,7 @@ export const Basic: ElementStory<typeof CapitalOffer> = {
     name: 'Basic',
     args: {
         mockedApi: true,
-        dynamicOffersConfig: {
+        externalDynamicOffersConfig: {
             minAmount: {
                 value: 100000,
                 currency: 'EUR',

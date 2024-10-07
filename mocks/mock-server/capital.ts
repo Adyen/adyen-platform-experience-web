@@ -12,7 +12,7 @@ import {
 } from '../mock-data';
 import { endpoints } from '../../endpoints/endpoints';
 import { DefaultBodyType, http, HttpResponse, StrictRequest } from 'msw';
-import { delay } from './utils/utils';
+import { calculateGrant, delay } from './utils/utils';
 import { getHandlerCallback, mocksFactory } from './utils/mocksHandlerFactory';
 import { paths as CapitalPaths } from '../../src/types/api/resources/CapitalResource';
 import uuid from '../../src/utils/random/uuid';
@@ -29,48 +29,21 @@ const EMPTY_GRANTS_LIST = getHandlerCallback({
 
 const EMPTY_OFFER = getHandlerCallback({ response: {} });
 
-const OFFER_REVIEW_HANDLER = async ({ request }: { request: StrictRequest<DefaultBodyType> }) => {
+const DYNAMIC_OFFER_HANDLER = async ({ request }: { request: StrictRequest<DefaultBodyType> }) => {
     const url = new URL(request.url);
-    const searchParams = url.searchParams;
+    const { amount, currency } = { amount: url.searchParams.get('amount'), currency: url.searchParams.get('currency') };
 
-    const params =
-        searchParams && searchParams.size ? { amount: searchParams.get('amount'), currency: searchParams.get('currency') } : await request.json();
+    if (!amount || !currency) return;
 
-    const { amount, currency } = params as {
-        amount: number;
-        currency: string;
-    };
+    const response = calculateGrant(amount, currency);
+    await delay(800);
+    return HttpResponse.json(response);
+};
 
-    const feesAmount = Math.round(Number(amount) * 0.11 * 100) / 100;
-    const totalAmount = Number(amount) + feesAmount;
+const OFFER_REVIEW_HANDLER = async ({ request }: { request: StrictRequest<DefaultBodyType> }) => {
+    const { amount, currency } = (await request.json()) as { amount: number; currency: string };
 
-    const repaymentFrequencyDays = 30;
-    const numberOfRepayments = Math.floor(365 / repaymentFrequencyDays);
-    const minimumRepayment = Number(totalAmount / numberOfRepayments);
-
-    const response = {
-        id: uuid(),
-        grantAmount: {
-            value: amount,
-            currency: currency,
-        },
-        feesAmount: {
-            value: feesAmount,
-            currency: currency,
-        },
-        totalAmount: {
-            value: totalAmount,
-            currency: currency,
-        },
-        thresholdAmount: {
-            value: minimumRepayment,
-            currency: currency,
-        },
-        repaymentRate: 11,
-        expectedRepaymentPeriodDays: 365,
-        maximumRepaymentPeriodDays: 540,
-    } satisfies IGrantOfferResponseDTO;
-
+    const response = calculateGrant(amount, currency);
     await delay(800);
     return HttpResponse.json(response);
 };
@@ -84,7 +57,7 @@ export const capitalMock = [
         return HttpResponse.json(DYNAMIC_CAPITAL_OFFER);
     }),
     http.get(mockEndpoints.grants, EMPTY_GRANTS_LIST),
-    http.get(mockEndpoints.dynamicOffer, OFFER_REVIEW_HANDLER),
+    http.get(mockEndpoints.dynamicOffer, DYNAMIC_OFFER_HANDLER),
     http.post(mockEndpoints.offerReview, OFFER_REVIEW_HANDLER),
     http.post(mockEndpoints.offerSign, getHandlerCallback({ response: SIGNED_OFFER, delayTime: 800 })),
 ];

@@ -88,26 +88,29 @@ export const CapitalOfferSelection = ({
     const currency = useMemo(() => config?.minAmount.currency, [config?.minAmount.currency]);
 
     const { reviewGrantOffer, getDynamicGrantOffer } = useAuthContext().endpoints;
-    const { mutate, data, isLoading } = useMutation({
+    const getDynamicGrantOfferMutation = useMutation({
         queryFn: getDynamicGrantOffer,
     });
 
     const reviewOfferMutation = useMutation({
         queryFn: reviewGrantOffer,
-        options: {
-            onSuccess: data => onReviewOffer(data),
-        },
     });
 
     const onReview = useCallback(() => {
-        data && onOfferSelection(data);
+        getDynamicGrantOfferMutation.data && onOfferSelection(getDynamicGrantOfferMutation.data);
         void reviewOfferMutation.mutate({
-            body: { amount: data?.grantAmount.value || requestedValue!, currency: data?.grantAmount.currency || currency! },
+            body: {
+                amount: getDynamicGrantOfferMutation.data?.grantAmount.value || requestedValue!,
+                currency: getDynamicGrantOfferMutation.data?.grantAmount.currency || currency!,
+            },
             contentType: 'application/json',
         });
-    }, [currency, data, onOfferSelection, requestedValue, reviewOfferMutation]);
+    }, [currency, getDynamicGrantOfferMutation.data, onOfferSelection, requestedValue, reviewOfferMutation]);
 
-    const getOffer = useCallback((amount: number) => mutate({}, { query: { amount, currency: currency! } }), [currency, mutate]);
+    const getOffer = useCallback(
+        (amount: number) => getDynamicGrantOfferMutation.mutate({}, { query: { amount, currency: currency! } }),
+        [currency, getDynamicGrantOfferMutation]
+    );
     const handleSliderRelease = (event: Event) => getOffer((event.target as any).value);
 
     useEffect(() => {
@@ -137,7 +140,11 @@ export const CapitalOfferSelection = ({
                 />
             </div>
             <InfoBox className="adyen-pe-capital-offer-selection__details">
-                {!data || isLoading ? <LoadingSkeleton /> : data ? <InformationDisplay data={data} repaymentFrequency={repaymentFrequency} /> : null}
+                {!getDynamicGrantOfferMutation.data || getDynamicGrantOfferMutation.isLoading ? (
+                    <LoadingSkeleton />
+                ) : getDynamicGrantOfferMutation.data ? (
+                    <InformationDisplay data={getDynamicGrantOfferMutation.data} repaymentFrequency={repaymentFrequency} />
+                ) : null}
             </InfoBox>
             <div className="adyen-pe-capital-offer-selection__buttons">
                 <Button variant={ButtonVariant.SECONDARY} onClick={onBack}>
