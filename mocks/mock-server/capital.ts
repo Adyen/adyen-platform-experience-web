@@ -8,7 +8,6 @@ import {
     REVOKED_GRANT,
     WRITTEN_OFF_GRANT,
     GRANT_OFFER,
-
 } from '../mock-data';
 import { endpoints } from '../../endpoints/endpoints';
 import { DefaultBodyType, http, HttpResponse, StrictRequest } from 'msw';
@@ -29,8 +28,7 @@ const EMPTY_GRANTS_LIST = getHandlerCallback({
 
 const EMPTY_OFFER = getHandlerCallback({ response: {} });
 
-const 
-_HANDLER = async ({ request }: { request: StrictRequest<DefaultBodyType> }) => {
+const OFFER_REVIEW_HANDLER = async ({ request }: { request: StrictRequest<DefaultBodyType> }) => {
     const url = new URL(request.url);
     const searchParams = url.searchParams;
 
