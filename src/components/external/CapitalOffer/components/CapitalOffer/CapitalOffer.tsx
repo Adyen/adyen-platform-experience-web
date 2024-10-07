@@ -38,7 +38,7 @@ export const CapitalOffer: FunctionalComponent<ExternalUIComponentProps<CapitalO
     }, [goBackToPreviousStep, onOfferDismissed]);
 
     const [selectedOffer, setSelectedOffer] = useState<IGrantOfferResponseDTO>();
-    const onOfferSelectionHandler = useCallback(
+    const onReviewOfferHandler = useCallback(
         (data: IGrantOfferResponseDTO) => {
             onOfferReviewed ? onOfferReviewed(data) : setSelectedOffer(data);
         },
