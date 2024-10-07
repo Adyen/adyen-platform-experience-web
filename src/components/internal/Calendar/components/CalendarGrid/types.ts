@@ -10,13 +10,13 @@ export interface CalendarGridProps {
     prepare?: CalendarProps['prepare'];
 }
 
-export type CalendarGridDateExtendedProps = {
+type CalendarGridDateExtendedProps = {
     childClassName?: JSX.Signalish<string | undefined>;
     childProps?: Exclude<CalendarGridDateExtendedProps['props'], undefined>;
     props?: Omit<CalendarGridDateRenderProps, keyof CalendarGridDateExtendedProps>;
 };
 
-export type CalendarGridDayOfWeekExtendedProps = {
+type CalendarGridDayOfWeekExtendedProps = {
     childClassName?: JSX.Signalish<string | undefined>;
     childProps?: Exclude<CalendarGridDayOfWeekExtendedProps['props'], undefined>;
     props?: Omit<CalendarGridDayOfWeekRenderProps, keyof CalendarGridDayOfWeekExtendedProps>;
