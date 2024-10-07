@@ -122,7 +122,7 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
                     case 'Unqualified':
                         return <Unqualified hideTitle={hideTitle} />;
                     case 'CapitalOffer':
-                        return <CapitalOffer onOfferSigned={() => console.log('On offer signed callback')} onBack={goBackToPrequalified} />;
+                        return <CapitalOffer onOfferSigned={() => console.log('On offer signed callback')} onOfferDismissed={goBackToPrequalified} />;
                     default:
                         return null;
                 }
