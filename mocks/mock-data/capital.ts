@@ -13,32 +13,44 @@ export const DYNAMIC_CAPITAL_OFFER = {
 } satisfies IDynamicOfferConfig;
 
 export const DEFAULT_GRANT: IGrant = {
-    id: '16700c6d53ed',
+    id: '66e12a9a64a6',
     grantAmount: {
         value: 2000000,
         currency: 'USD',
     },
-    repayedAmount: {
+    totalAmount: {
         value: 1200000,
         currency: 'USD',
     },
-    repayedGrantAmount: {
+    feesAmount: {
+        value: 1200000,
+        currency: 'USD',
+    },
+    remainingGrantAmount: {
+        value: 1200000,
+        currency: 'USD',
+    },
+    remainingTotalAmount: {
+        value: 1200000,
+        currency: 'USD',
+    },
+    remainingFeesAmount: {
         value: 1187000,
         currency: 'USD',
     },
-    repayedFeesAmount: {
+    repaidFeesAmount: {
         value: 13000,
         currency: 'USD',
     },
-    feesAmount: {
+    repaidGrantAmount: {
         value: 22000,
         currency: 'USD',
     },
-    repaymentAmount: {
+    repaidTotalAmount: {
         value: 2022000,
         currency: 'USD',
     },
-    thresholdPaymentAmount: {
+    thresholdAmount: {
         value: 80000,
         currency: 'USD',
     },
@@ -46,21 +58,25 @@ export const DEFAULT_GRANT: IGrant = {
     expectedRepaymentPeriodDays: 365,
     maximumRepaymentPeriodDays: 540,
     repaymentPeriodLeft: 135,
-    status: 'Active',
+    termEndsAt: '$ISO_DATE_HERE',
+    balanceAccount: 'BA1234567',
+    balanceAccountDescription: 'Primary balance account',
+    status: 'Pending',
+    actions: {},
 };
 
 export const ACTIVE_GRANT: IGrant = {
     ...DEFAULT_GRANT,
     id: 'afedbe0e05e9',
-    repayedAmount: {
+    repaidTotalAmount: {
         value: 1200000,
         currency: 'USD',
     },
-    repayedGrantAmount: {
+    repaidGrantAmount: {
         value: 1187000,
         currency: 'USD',
     },
-    repayedFeesAmount: {
+    repaidFeesAmount: {
         value: 13000,
         currency: 'USD',
     },
@@ -70,15 +86,15 @@ export const ACTIVE_GRANT: IGrant = {
 export const ACTIVE_UNREPAID_GRANT: IGrant = {
     ...DEFAULT_GRANT,
     id: '923f6376c6f2',
-    repayedAmount: {
+    repaidTotalAmount: {
         value: 0,
         currency: 'USD',
     },
-    repayedGrantAmount: {
+    repaidGrantAmount: {
         value: 0,
         currency: 'USD',
     },
-    repayedFeesAmount: {
+    repaidFeesAmount: {
         value: 0,
         currency: 'USD',
     },
