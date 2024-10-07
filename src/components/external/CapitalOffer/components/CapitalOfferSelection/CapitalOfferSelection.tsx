@@ -18,7 +18,6 @@ import './CapitalOfferSelection.scss';
 type CapitalOfferSelectionProps = {
     config: IDynamicOfferConfig | undefined;
     onBack: () => void;
-    onReviewOffer: (data: IGrantOfferResponseDTO) => void;
 };
 
 const dateStartUTCTimestampOffset = (date: Date | number | string, numberOfDays = 0) => {
@@ -79,7 +78,7 @@ const InformationDisplay = ({ data }: { data: IGrantOfferResponseDTO }) => {
     );
 };
 
-export const CapitalOfferSelection = ({ config, onReviewOffer, onBack }: CapitalOfferSelectionProps) => {
+export const CapitalOfferSelection = ({ config, onBack }: CapitalOfferSelectionProps) => {
     const { i18n } = useCoreContext();
     const [requestedValue, setRequestedValue] = useState<number | undefined>(config?.minAmount.value);
     const currency = useMemo(() => config?.minAmount.currency, [config?.minAmount.currency]);
@@ -91,9 +90,6 @@ export const CapitalOfferSelection = ({ config, onReviewOffer, onBack }: Capital
 
     const reviewOfferMutation = useMutation({
         queryFn: reviewGrantOffer,
-        options: {
-            onSuccess: data => onReviewOffer(data),
-        },
     });
 
     const onReview = useCallback(

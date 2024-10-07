@@ -58,9 +58,7 @@ export const CapitalOffer: FunctionalComponent<ExternalUIComponentProps<CapitalO
                 hideTitle={hideTitle}
                 titleKey={CapitalOfferState === 'OfferSummary' ? 'capital.businessFinancingSummary' : 'capital.businessFinancing'}
             />
-            {CapitalOfferState === 'OfferSelection' && (
-                <CapitalOfferSelection config={config} onBack={goBackHandler} onReviewOffer={onOfferSelectionHandler} />
-            )}
+            {CapitalOfferState === 'OfferSelection' && <CapitalOfferSelection config={config} onBack={goBackHandler} />}
             {CapitalOfferState === 'OfferSummary' && <p>{'Placeholder for OfferSummary component'}</p>}
         </div>
     );
