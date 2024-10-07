@@ -14,19 +14,19 @@ type CapitalOfferState = 'OfferSelection' | 'OfferSummary';
 
 export const CapitalOffer: FunctionalComponent<ExternalUIComponentProps<CapitalOfferProps>> = ({
     hideTitle,
-    dynamicOffersConfig,
+    externalDynamicOffersConfig,
     onOfferReviewed,
     onOfferDismissed,
 }) => {
     const { getDynamicGrantOffersConfiguration } = useAuthContext().endpoints;
-    const { data: grantOfferConfig } = useFetch({
-        fetchOptions: { enabled: !dynamicOffersConfig },
+    const { data: internalDynamicOffersConfig } = useFetch({
+        fetchOptions: { enabled: !externalDynamicOffersConfig },
         queryFn: useCallback(async () => {
             return getDynamicGrantOffersConfiguration?.(EMPTY_OBJECT);
         }, [getDynamicGrantOffersConfiguration]),
     });
 
-    const config = dynamicOffersConfig || grantOfferConfig;
+    const config = externalDynamicOffersConfig || internalDynamicOffersConfig;
 
     const goBackToPreviousStep = useCallback(() => {
         //TODO implement going back to previous step
