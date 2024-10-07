@@ -105,7 +105,7 @@ export const Unqualified: ElementStory<typeof CapitalOverview> = {
 };
 
 export const NoRender: ElementStory<typeof CapitalOverview, { showUnqualified: boolean }> = {
-    name: 'No render',
+    name: 'No render unqualified',
     args: {
         mockedApi: true,
         skipDecorator: true,
