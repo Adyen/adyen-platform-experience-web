@@ -25,13 +25,13 @@
 
     &__loading-skeleton:first-child {
         height: 47px;
-        margin-bottom: 5px;
+        margin-bottom: style.token(spacer-030);
     }
 
     &__information {
         display: flex;
         flex-direction: column;
-        gap: 10px;
+        gap: style.token(spacer-050);
 
         .adyen-pe-structured-list dd {
             text-align: right;
