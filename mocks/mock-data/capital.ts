@@ -58,7 +58,7 @@ export const DEFAULT_GRANT: IGrant = {
     expectedRepaymentPeriodDays: 365,
     maximumRepaymentPeriodDays: 540,
     repaymentPeriodLeft: 135,
-    termEndsAt: '$ISO_DATE_HERE',
+    termEndsAt: '2025-02-15',
     balanceAccount: 'BA1234567',
     balanceAccountDescription: 'Primary balance account',
     status: 'Pending',
