@@ -9,7 +9,7 @@ type PreQualifiedProps = {
     skipPreQualifiedIntro?: boolean;
 };
 
-type PreQualifiedState = 'Intro' | 'Offer';
+type PreQualifiedState = 'Intro' | 'CapitalOffer';
 
 export const PreQualified = ({ hideTitle, dynamicOffer, skipPreQualifiedIntro }: PreQualifiedProps) => {
     const [capitalOfferSelection, setCapitalOfferSelection] = useState<boolean>(!!skipPreQualifiedIntro);
@@ -23,7 +23,7 @@ export const PreQualified = ({ hideTitle, dynamicOffer, skipPreQualifiedIntro }:
 
     const state: PreQualifiedState = useMemo(() => {
         if (skipPreQualifiedIntro || capitalOfferSelection) {
-            return 'Offer';
+            return 'CapitalOffer';
         }
         return 'Intro';
     }, [capitalOfferSelection, skipPreQualifiedIntro]);
@@ -32,7 +32,7 @@ export const PreQualified = ({ hideTitle, dynamicOffer, skipPreQualifiedIntro }:
         <>
             {state === 'Intro' ? (
                 <PreQualifiedIntro hideTitle={hideTitle} dynamicOffer={dynamicOffer} onOfferReview={onOfferReviewHandler} />
-            ) : state === 'Offer' ? (
+            ) : state === 'CapitalOffer' ? (
                 <CapitalOffer onOfferSigned={() => console.log('On offer signed callback')} onOfferDismissed={goBackToPrequalified} />
             ) : null}
         </>
