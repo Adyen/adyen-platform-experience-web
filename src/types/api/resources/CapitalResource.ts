@@ -28,8 +28,8 @@ export interface paths {
     '/v1/capital/grants': {
         get: operations['getGrants'];
     };
-    '/capital/grantOffers/dynamic/sign/{grantOfferId}': {
-        post: operations['signOffer'];
+    '/capital/grantOffers/dynamic/requestFunds/{grantOfferId}': {
+        post: operations['requestFunds'];
     };
 }
 
@@ -48,53 +48,38 @@ export interface components {
         };
         GrantOfferResponseDTO: {
             /** Format: int32 */
-            expectedRepaymentPeriodDays?: number;
-            feesAmount?: components['schemas']['Amount'];
-            grantAmount?: components['schemas']['Amount'];
+            expectedRepaymentPeriodDays: number;
+            feesAmount: components['schemas']['Amount'];
+            grantAmount: components['schemas']['Amount'];
             id?: string;
             /** Format: int32 */
             maximumRepaymentPeriodDays?: number;
             /** Format: int32 */
             repaymentRate?: number;
-            thresholdAmount?: components['schemas']['Amount'];
+            thresholdAmount: components['schemas']['Amount'];
             totalAmount?: components['schemas']['Amount'];
         };
         GrantDTO: {
             id: string;
-            grantAmount: {
-                value: number;
-                currency: string;
-            };
-            feesAmount: {
-                value: number;
-                currency: string;
-            };
-            repayedAmount: {
-                value: number;
-                currency: string;
-            };
-            repayedGrantAmount: {
-                value: number;
-                currency: string;
-            };
-            repayedFeesAmount: {
-                value: number;
-                currency: string;
-            };
-            repaymentAmount: {
-                value: number;
-                currency: string;
-            };
-            thresholdPaymentAmount: {
-                value: number;
-                currency: string;
-            };
-
+            grantAmount: components['schemas']['Amount'];
+            totalAmount: components['schemas']['Amount'];
+            feesAmount: components['schemas']['Amount'];
+            remainingGrantAmount: components['schemas']['Amount'];
+            remainingTotalAmount: components['schemas']['Amount'];
+            remainingFeesAmount: components['schemas']['Amount'];
+            repaidFeesAmount: components['schemas']['Amount'];
+            repaidGrantAmount: components['schemas']['Amount'];
+            repaidTotalAmount: components['schemas']['Amount'];
+            thresholdAmount: components['schemas']['Amount'];
             repaymentRate: number;
             expectedRepaymentPeriodDays: number;
-            repaymentPeriodLeft: number;
             maximumRepaymentPeriodDays: number;
+            repaymentPeriodLeft: number;
+            termEndsAt: string;
+            balanceAccount: string;
+            balanceAccountDescription: string;
             status: components['schemas']['GrantStatus'];
+            actions: Record<string, unknown>;
         };
         GrantStatus: 'Pending' | 'Active' | 'Repaid' | 'Failed' | 'WrittenOff' | 'Revoked';
         DynamicOffersResponseDTO: {
@@ -108,7 +93,7 @@ export interface components {
             amount: number;
             currency: string;
         };
-        signOffer: components['schemas']['GrantDTO'];
+        requestFunds: components['schemas']['GrantDTO'];
         getGrants: { data: components['schemas']['GrantDTO'][] };
     };
     responses: never;
@@ -186,7 +171,7 @@ export interface operations {
             };
         };
     };
-    signOffer: {
+    requestFunds: {
         parameters: {
             path: {
                 grantOfferId: string;
@@ -196,7 +181,7 @@ export interface operations {
             /** @description OK - the request has succeeded. */
             200: {
                 content: {
-                    'application/json': components['schemas']['signOffer'];
+                    'application/json': components['schemas']['requestFunds'];
                 };
             };
         };

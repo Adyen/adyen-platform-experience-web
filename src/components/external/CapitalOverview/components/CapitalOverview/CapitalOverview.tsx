@@ -9,18 +9,13 @@ import { EMPTY_OBJECT } from '../../../../../utils';
 import { CapitalHeader } from '../../../../internal/CapitalHeader';
 import { BaseList } from '../../../../internal/BaseList/BaseList';
 import { GrantItem } from '../GrantItem/GrantItem';
-import PreQualified from '../PreQualified';
-import { IDynamicOfferConfig } from '../../../../../types';
 import './CapitalOverview.scss';
 import Unqualified from '../Unqualified';
+import { PreQualified } from '../PreQualified/PreQualified';
 
 type CapitalOverviewState = 'Loading' | 'Unqualified' | 'PreQualified' | 'GrantList';
 
-export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<CapitalOverviewProps>> = ({
-    hideTitle,
-    skipPreQualifiedIntro,
-    onOfferReview,
-}) => {
+export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<CapitalOverviewProps>> = ({ hideTitle, skipPreQualifiedIntro }) => {
     const { getGrants: grantsEndpointCall, getDynamicGrantOffersConfiguration: dynamicConfigurationEndpointCall } = useAuthContext().endpoints;
 
     const grantsQuery = useFetch(
@@ -99,13 +94,7 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
                             </div>
                         );
                     case 'PreQualified':
-                        return (
-                            <PreQualified
-                                hideTitle={hideTitle}
-                                dynamicOffer={dynamicOffer as Required<IDynamicOfferConfig>}
-                                onOfferReview={onOfferReview}
-                            />
-                        );
+                        return <PreQualified skipPreQualifiedIntro={skipPreQualifiedIntro} hideTitle={hideTitle} dynamicOffer={dynamicOffer!} />;
                     case 'Unqualified':
                         return <Unqualified hideTitle={hideTitle} />;
                     default:

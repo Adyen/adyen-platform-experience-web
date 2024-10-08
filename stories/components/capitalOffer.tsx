@@ -5,7 +5,7 @@ import { CapitalOffer } from '../../src';
 
 export const capitalOfferMeta: Meta<ElementProps<typeof CapitalOffer>> = {
     argTypes: {
-        dynamicOffersConfig: { control: 'object' },
+        externalDynamicOffersConfig: { control: 'object' },
         hideTitle: { type: 'boolean' },
         onOfferSigned: enabledDisabledCallbackRadioControls('onOfferSigned'),
         balanceAccountId: {
@@ -15,7 +15,7 @@ export const capitalOfferMeta: Meta<ElementProps<typeof CapitalOffer>> = {
         },
     },
     args: {
-        dynamicOffersConfig: undefined,
+        externalDynamicOffersConfig: undefined,
         hideTitle: false,
         onOfferSigned: () => {},
         component: CapitalOffer,
@@ -25,4 +25,5 @@ export const capitalOfferMeta: Meta<ElementProps<typeof CapitalOffer>> = {
             sort: 'alpha',
         },
     },
+    decorators: [Story => <div style={{ margin: 'auto', maxWidth: 400, width: '100%' }}>{Story()}</div>],
 };
