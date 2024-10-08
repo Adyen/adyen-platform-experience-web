@@ -1,0 +1,32 @@
+@use '../../../style';
+
+.adyen-pe-capital-slider {
+    &__value {
+        color: style.token(color-label-highlight);
+        font-size: style.token(text-title-l-font-size);
+        font-weight: style.token(text-title-l-font-weight);
+    }
+
+    &__input {
+        margin-bottom: style.token(spacer-070);
+        margin-top: style.token(spacer-070);
+    }
+
+    &__labels {
+        display: flex;
+        justify-content: space-between;
+
+        label {
+            display: flex;
+            flex-direction: column;
+
+            :first-child {
+                color: style.token(color-label-secondary);
+            }
+
+            &:last-child {
+                align-items: flex-end;
+            }
+        }
+    }
+}
