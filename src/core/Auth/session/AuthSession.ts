@@ -4,7 +4,7 @@ import { ERR_SESSION_REFRESH_ABORTED, EVT_SESSION_EXPIRED, EVT_SESSION_READY, Se
 import { createErrorContainer } from '../../../primitives/auxiliary/errorContainer';
 import { createPromisor } from '../../../primitives/async/promisor';
 import { createWatchlist } from '../../../primitives/reactive/watchlist';
-import { boolOrFalse, constant, isFunction } from '../../../utils';
+import { boolOrFalse, boolOrTrue, constant, isFunction } from '../../../utils';
 import type { onErrorHandler } from '../../types';
 
 export class AuthSession {
@@ -81,7 +81,9 @@ export class AuthSession {
                 unlisteners.length = 0;
             };
 
-            this._refresh();
+            if (!this.context.refreshing && boolOrTrue(this.context.isExpired)) {
+                this._refresh();
+            }
         };
     }
 
