@@ -12,9 +12,9 @@ import {
     ROLE_SPIN_BUTTON,
     TABBABLE_TAB_INDEX,
 } from './constants';
-import { ALREADY_RESOLVED_PROMISE, boolOrFalse, clamp } from '../../../../utils';
+import { ALREADY_RESOLVED_PROMISE, boolOrFalse, clamp, EMPTY_OBJECT } from '../../../../utils';
+import { SpinButtonCalibrationProps, SpinButtonState, SpinButtonValueOffset } from './types';
 import { InteractionKeyCode } from '../../../types';
-import { SpinButtonValueOffset } from './types';
 import { add, attr, removeAttr } from './utils';
 
 export default class SpinButton {
@@ -24,14 +24,14 @@ export default class SpinButton {
     private _spinButtonElement: HTMLElement | null = null;
 
     private _disabled = false;
-    private _onChange?: (value: number) => unknown;
+    private _onChange?: (currentState: SpinButtonState) => unknown;
     private _raf?: ReturnType<typeof requestAnimationFrame>;
 
     private _valueMin = 0;
     private _valueMax = 100;
     private _valueNow = 0;
     private _valueStep = 1;
-    private _valueStepScale = 10;
+    private _valueLeap = 10;
 
     constructor() {
         this._dispatchCurrentState = this._dispatchCurrentState.bind(this);
@@ -65,7 +65,16 @@ export default class SpinButton {
     }
 
     private _dispatchCurrentState() {
-        this._onChange?.(this._valueNow);
+        this._onChange?.({
+            disabled: this._disabled,
+            decrementButtonDisabled: this._decrementButtonDisabled,
+            incrementButtonDisabled: this._incrementButtonDisabled,
+            leap: this._valueLeap,
+            max: this._valueMax,
+            min: this._valueMin,
+            step: this._valueStep,
+            value: this._valueNow,
+        });
     }
 
     private _ensureFocusIsPreserved() {
@@ -91,7 +100,7 @@ export default class SpinButton {
         switch (valueOffset) {
             case SpinButtonValueOffset.LEAP_DECREMENT:
             case SpinButtonValueOffset.LEAP_INCREMENT:
-                offset *= this._valueStepScale;
+                offset *= this._valueLeap;
                 break;
         }
 
@@ -206,8 +215,12 @@ export default class SpinButton {
         this._spinButtonElement = elem;
     }
 
-    set onChange(value: ((value: number) => unknown) | undefined | null) {
+    set onChange(value: ((currentState: SpinButtonState) => unknown) | undefined | null) {
         if (this._onChange !== (this._onChange = value ?? undefined)) this._dispatchCurrentState();
+    }
+
+    recalibrate(options = EMPTY_OBJECT as SpinButtonCalibrationProps) {
+        this._dispatchCurrentState();
     }
 
     onKeyboardInteraction(evt: KeyboardEvent) {

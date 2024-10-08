@@ -1,5 +1,6 @@
-import { ComponentChild } from 'preact';
-import { HTMLProps } from 'preact/compat';
+import type { SpinButtonCalibrationProps } from './internal/types';
+import type { HTMLProps } from 'preact/compat';
+import type { ComponentChild } from 'preact';
 
 // See https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attributes
 type _BlacklistedSpinButtonInputProps =
@@ -37,13 +38,10 @@ export const enum SpinButtonControl {
 
 export type SpinButtonControlRender = (control: SpinButtonControl) => ComponentChild;
 
-export interface SpinButtonProps extends Omit<HTMLProps<HTMLInputElement>, _BlacklistedSpinButtonInputProps> {
+export interface SpinButtonProps
+    extends Omit<HTMLProps<HTMLInputElement>, _BlacklistedSpinButtonInputProps | keyof SpinButtonCalibrationProps>,
+        SpinButtonCalibrationProps {
     children?: SpinButtonControlRender;
     disabled?: boolean;
-    leap?: number;
-    max?: number;
-    min?: number;
-    step?: number;
-    value?: number;
     valueAsText?: (value: number) => string;
 }

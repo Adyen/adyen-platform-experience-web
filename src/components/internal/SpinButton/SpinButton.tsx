@@ -3,10 +3,12 @@ import cx from 'classnames';
 import Icon from '../Icon';
 import Button from '../Button';
 import _SpinButton from './internal/SpinButton';
-import { useCallback, useMemo, useRef, useState } from 'preact/hooks';
+import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { BASE_CLASS, BUTTON_CLASS, BUTTON_DECREASE_CLASS, BUTTON_INCREASE_CLASS, INPUT_CLASS, INPUT_SIZER_ELEMENT_CLASS } from './constants';
 import { SpinButtonControl, SpinButtonControlRender, SpinButtonProps } from './types';
+import { EMPTY_OBJECT } from '../../../utils';
 import { ButtonVariant } from '../Button/types';
+import { SpinButtonState } from './internal/types';
 import './SpinButton.scss';
 
 const defaultRenderControl: SpinButtonControlRender = control => {
@@ -21,11 +23,7 @@ const defaultRenderControl: SpinButtonControlRender = control => {
 };
 
 const SpinButton = ({ children, className, disabled, leap, max, min, onKeyDown, step, value, valueAsText, ...restProps }: SpinButtonProps) => {
-    // const minValue = useMemo(() => min ?? 0, [min]);
-    // const maxValue = useMemo(() => Math.max(minValue, max ?? 100), [max, minValue]);
-    // const stepValue = useMemo(() => (step && step > 0) ? step : 1, [step]);
-    // const stepScaleValue = useMemo(() => Math.max(1, stepScale ?? 10), [stepScale]);
-    const [currentValue, setCurrentValue] = useState(value ?? min ?? max ?? 0);
+    const [currentState, setCurrentState] = useState(EMPTY_OBJECT as SpinButtonState);
     const renderControl = useMemo(() => children ?? defaultRenderControl, [children]);
     const spinButton = useRef(new _SpinButton()).current;
 
@@ -34,13 +32,19 @@ const SpinButton = ({ children, className, disabled, leap, max, min, onKeyDown, 
     const increaseButtonRef = useCallback((el: HTMLButtonElement | null) => void (spinButton.incrementButton = el), []);
     const spinButtonElementRef = useCallback((el: HTMLElement | null) => void (spinButton.spinButtonElement = el), []);
 
+    const { value: currentValue } = currentState;
+
     const _onKeyDown = (evt: h.JSX.TargetedKeyboardEvent<HTMLInputElement>) => {
         spinButton.onKeyboardInteraction(evt);
         onKeyDown?.(evt);
     };
 
     spinButton.disabled = disabled;
-    spinButton.onChange = setCurrentValue;
+    spinButton.onChange = setCurrentState;
+
+    useLayoutEffect(() => {
+        spinButton.recalibrate({ leap, max, min, step, value });
+    }, [leap, max, min, step, value]);
 
     return (
         <div ref={containerElementRef} className={cx(BASE_CLASS, className)}>
