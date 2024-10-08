@@ -5,7 +5,7 @@ import useCoreContext from '../../../../core/Context/useCoreContext';
 import { IDynamicOfferConfig } from '../../../../types';
 import { CapitalHeader } from '../../../internal/CapitalHeader';
 
-const PreQualified = ({
+const PreQualifiedIntro = ({
     dynamicOffer,
     onReviewOfferOptions,
     hideTitle,
@@ -38,4 +38,4 @@ const PreQualified = ({
     );
 };
 
-export default PreQualified;
+export default PreQualifiedIntro;
