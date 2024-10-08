@@ -2,9 +2,7 @@ import { _UIComponentProps } from '../../types';
 import UIElement from '../UIElement/UIElement';
 import { CapitalComponentStatus, CapitalOverviewProps } from './types';
 import { CapitalOverview } from './components/CapitalOverview/CapitalOverview';
-import { createDeferred } from '../../../primitives/async/deferred';
 import { EMPTY_OBJECT, noop } from '../../../utils';
-import AuthSession from '../../../core/Auth/session/AuthSession';
 import { waitForSetup } from '../../../utils/waitForSetupCall';
 
 export class CapitalOverviewElement extends UIElement<CapitalOverviewProps> {
