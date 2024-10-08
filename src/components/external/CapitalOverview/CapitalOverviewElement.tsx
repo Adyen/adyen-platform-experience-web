@@ -2,7 +2,22 @@ import { _UIComponentProps } from '../../types';
 import UIElement from '../UIElement/UIElement';
 import { CapitalComponentStatus, CapitalOverviewProps } from './types';
 import { CapitalOverview } from './components/CapitalOverview/CapitalOverview';
-import { EMPTY_OBJECT } from '../../../utils';
+import { createDeferred } from '../../../primitives/async/deferred';
+import { EMPTY_OBJECT, noop } from '../../../utils';
+import AuthSession from '../../../core/Auth/session/AuthSession';
+
+const waitForSetup = async (session: AuthSession) => {
+    const waitDeferred = createDeferred<void>();
+
+    const unsubscribeSession = session.subscribe(() => {
+        if (session.context.refreshing || session.context.isExpired) return;
+        // Session have been refreshed (and we likely have an active session)
+        waitDeferred.resolve();
+        unsubscribeSession();
+    });
+
+    await waitDeferred.promise;
+};
 
 export class CapitalOverviewElement extends UIElement<CapitalOverviewProps> {
     public static type = 'capitalOverview';
@@ -18,25 +33,17 @@ export class CapitalOverviewElement extends UIElement<CapitalOverviewProps> {
     };
 
     public async getState(): Promise<CapitalComponentStatus> {
-        const http = this.props.core.session.context.http;
+        const { session } = this.props.core;
+        await waitForSetup(session);
 
-        const { getGrants, getDynamicGrantOffersConfiguration } = /* this.props.core.session.context.endpoints || {} */ {
-            getGrants: async (options: any) =>
-                await http?.({ method: 'GET', loadingContext: this.props.core.loadingContext, path: '/capital/grants' }),
-            getDynamicGrantOffersConfiguration: async (options: any) =>
-                await http?.({ method: 'GET', loadingContext: this.props.core.loadingContext, path: '/capital/grantOffers/dynamic/configuration' }),
-        };
+        const { getDynamicGrantOffersConfiguration, getGrants } = session.context.endpoints;
 
-        const grants = await getGrants(EMPTY_OBJECT);
-        const config = await getDynamicGrantOffersConfiguration?.(EMPTY_OBJECT);
+        const [config, grants] = await Promise.all([
+            getDynamicGrantOffersConfiguration?.(EMPTY_OBJECT).catch(noop as () => undefined),
+            getGrants?.(EMPTY_OBJECT).catch(noop as () => undefined),
+        ]);
 
-        if (grants.data.length > 0 || (config && config.minAmount)) {
-            return 'OfferAvailable';
-        } else if (grants.data.length === 0 && (!config || !config.minAmount)) {
-            return 'NotQualified';
-        }
-
-        return 'NotQualified';
+        return grants?.data.length! > 0 || (config && config.minAmount) ? 'OfferAvailable' : 'NotQualified';
     }
 }
 
