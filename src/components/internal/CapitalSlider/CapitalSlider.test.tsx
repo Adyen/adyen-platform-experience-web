@@ -29,11 +29,10 @@ describe('CapitalSlider', () => {
     });
 
     test('renders the min and max labels correctly', () => {
-        render(<CapitalSlider dynamicCapitalOffer={dynamicCapitalOffer} />);
+        render(<CapitalSlider dynamicCapitalOffer={dynamicCapitalOffer} value={2000000} />);
         const slider: HTMLInputElement = screen.getByRole('slider', {
             name: 'How much money do you need?',
         });
-        fireEvent.input(slider, { target: { value: '2000000' } });
 
         const minLabel = screen.getByText('min');
         const maxLabel = screen.getByText('max');
@@ -47,11 +46,14 @@ describe('CapitalSlider', () => {
     });
 
     test('updates the displayed value when slider value changes', () => {
-        render(<CapitalSlider dynamicCapitalOffer={dynamicCapitalOffer} />);
+        const { rerender } = render(<CapitalSlider dynamicCapitalOffer={dynamicCapitalOffer} value={50000} />);
         const output = screen.getByRole('status');
         const slider: HTMLInputElement = screen.getByRole('slider');
 
-        fireEvent.input(slider, { target: { value: '2000000' } });
+        expect(output).toHaveTextContent('€500');
+        expect(slider.value).toBe('50000');
+
+        rerender(<CapitalSlider dynamicCapitalOffer={dynamicCapitalOffer} value={2000000} />);
 
         expect(output).toHaveTextContent('€20,000');
         expect(slider.value).toBe('2000000');
