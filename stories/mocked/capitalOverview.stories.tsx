@@ -6,7 +6,7 @@ import { CapitalMockedResponses } from '../../mocks/mock-server/capital';
 
 const meta: Meta<ElementProps<typeof CapitalOverview>> = { ...CapitalOverviewMeta, title: 'Mocked/Capital Overview' };
 
-export const Default: ElementStory<typeof CapitalOverview> = {
+export const WithCallbacks: ElementStory<typeof CapitalOverview> = {
     name: 'With callbacks',
     args: {
         mockedApi: true,
