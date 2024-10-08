@@ -1,4 +1,3 @@
-import Slider from '../../../../internal/Slider';
 import InfoBox from '../../../../internal/InfoBox';
 import Typography from '../../../../internal/Typography/Typography';
 import { TypographyElement, TypographyVariant } from '../../../../internal/Typography/types';
@@ -13,6 +12,7 @@ import useMutation from '../../../../../hooks/useMutation/useMutation';
 import { IDynamicOfferConfig, IGrantOfferResponseDTO } from '../../../../../types';
 import './CapitalOfferSelection.scss';
 import { getExpectedRepaymentDate } from '../utils/utils';
+import CapitalSlider from '../../../../internal/CapitalSlider';
 
 type CapitalOfferSelectionProps = {
     config: IDynamicOfferConfig | undefined;
@@ -119,7 +119,7 @@ export const CapitalOfferSelection = ({
         (amount: number) => getDynamicGrantOfferMutationCallback({}, { query: { amount, currency: currency! } }),
         [currency, getDynamicGrantOfferMutationCallback]
     );
-    const handleSliderRelease = (event: Event) => getOffer((event.target as any).value);
+    const handleSliderRelease = (val: number) => getOffer(val);
 
     useEffect(() => {
         if (config) {
@@ -130,23 +130,14 @@ export const CapitalOfferSelection = ({
 
     return (
         <div>
-            {/* TODO: replace this with Capital Slider component */}
-            <span>{'How much money do you need?'}</span>
-            {requestedValue && config && <p>{i18n.amount(requestedValue, config.minAmount.currency)}</p>}
-            <div>
-                <Slider
-                    min={config?.minAmount.value}
-                    max={config?.maxAmount.value}
-                    step={config?.step}
+            {config && (
+                <CapitalSlider
                     value={requestedValue}
-                    onMouseUp={handleSliderRelease}
-                    onTouchEnd={handleSliderRelease}
-                    onKeyUp={handleSliderRelease}
-                    onChange={event => {
-                        setRequestedValue((event.target as any).value);
-                    }}
+                    dynamicCapitalOffer={config}
+                    onValueChange={setRequestedValue}
+                    onRelease={handleSliderRelease}
                 />
-            </div>
+            )}
             <InfoBox className="adyen-pe-capital-offer-selection__details">
                 {!getDynamicGrantOfferMutation.data || getDynamicGrantOfferMutation.isLoading ? (
                     <LoadingSkeleton />
