@@ -8,17 +8,19 @@ type PreQualifiedProps = {
     dynamicOffer: Required<IDynamicOfferConfig>;
     skipPreQualifiedIntro?: boolean;
     onRequestFundsHandler: (data: IGrant) => void;
+    onSeeOptions?: (goToNextStep: () => void) => void;
 };
 
 type PreQualifiedState = 'Intro' | 'CapitalOffer';
 
-export const PreQualified = ({ hideTitle, dynamicOffer, skipPreQualifiedIntro, onRequestFundsHandler }: PreQualifiedProps) => {
+export const PreQualified = ({ hideTitle, dynamicOffer, skipPreQualifiedIntro, onSeeOptions, onRequestFundsHandler }: PreQualifiedProps) => {
     const [capitalOfferSelection, setCapitalOfferSelection] = useState<boolean>(!!skipPreQualifiedIntro);
-    const onReviewOfferOptionsHandler = useCallback(() => {
-        setCapitalOfferSelection(true);
-    }, []);
+    const goToCapitalOffer = useCallback(() => setCapitalOfferSelection(true), []);
+    const onSeeOptionsHandler = useCallback(() => {
+        onSeeOptions ? onSeeOptions(goToCapitalOffer) : goToCapitalOffer();
+    }, [goToCapitalOffer, onSeeOptions]);
 
-    const goBackToPrequalified = useCallback(() => {
+    const goBackToIntro = useCallback(() => {
         setCapitalOfferSelection(false);
     }, []);
 
@@ -32,9 +34,9 @@ export const PreQualified = ({ hideTitle, dynamicOffer, skipPreQualifiedIntro, o
     return (
         <>
             {state === 'Intro' ? (
-                <PreQualifiedIntro hideTitle={hideTitle} dynamicOffer={dynamicOffer} onReviewOfferOptions={onReviewOfferOptionsHandler} />
+                <PreQualifiedIntro hideTitle={hideTitle} dynamicOffer={dynamicOffer} onSeeOptions={onSeeOptionsHandler} />
             ) : state === 'CapitalOffer' ? (
-                <CapitalOffer onRequestFunds={onRequestFundsHandler} onOfferDismissed={goBackToPrequalified} />
+                <CapitalOffer onRequestFunds={onRequestFundsHandler} onOfferDismissed={goBackToIntro} />
             ) : null}
         </>
     );

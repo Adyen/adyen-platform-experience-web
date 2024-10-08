@@ -7,11 +7,11 @@ import { CapitalHeader } from '../../../internal/CapitalHeader';
 
 const PreQualifiedIntro = ({
     dynamicOffer,
-    onReviewOfferOptions,
+    onSeeOptions,
     hideTitle,
 }: {
     dynamicOffer: Required<IDynamicOfferConfig>;
-    onReviewOfferOptions: () => void;
+    onSeeOptions: () => void;
     hideTitle?: boolean;
 }) => {
     const { i18n } = useCoreContext();
@@ -30,8 +30,8 @@ const PreQualifiedIntro = ({
                         </strong>
                     </div>
                 </InfoBox>
-                <Button className={CAPITAL_OVERVIEW_CLASS_NAMES.preQualifiedGrantButton} onClick={onReviewOfferOptions}>
-                    {i18n.get('capital.reviewOptions')}
+                <Button className={CAPITAL_OVERVIEW_CLASS_NAMES.preQualifiedGrantButton} onClick={onSeeOptions}>
+                    {i18n.get('capital.seeOptions')}
                 </Button>
             </div>
         </>
