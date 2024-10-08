@@ -6,7 +6,7 @@ import { action } from '@storybook/addon-actions';
 
 export const capitalOfferMeta: Meta<ElementProps<typeof CapitalOffer>> = {
     argTypes: {
-        dynamicOffersConfig: { control: 'object' },
+        externalDynamicOffersConfig: { control: 'object' },
         hideTitle: { type: 'boolean' },
         onOfferSigned: {
             table: {
@@ -20,7 +20,7 @@ export const capitalOfferMeta: Meta<ElementProps<typeof CapitalOffer>> = {
         },
     },
     args: {
-        dynamicOffersConfig: undefined,
+        externalDynamicOffersConfig: undefined,
         hideTitle: false,
         onOfferSigned: action('onOfferSigned'),
         component: CapitalOffer,
