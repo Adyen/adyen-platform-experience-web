@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'preact/hooks';
+import { useMemo } from 'preact/hooks';
 import { ExternalUIComponentProps } from '../../../../types';
 import { CapitalOverviewProps } from '../../types';
 import { CAPITAL_OVERVIEW_CLASS_NAMES } from '../../constants';
@@ -9,19 +9,13 @@ import { EMPTY_OBJECT } from '../../../../../utils';
 import { CapitalHeader } from '../../../../internal/CapitalHeader';
 import { BaseList } from '../../../../internal/BaseList/BaseList';
 import { GrantItem } from '../GrantItem/GrantItem';
-import PreQualified from '../PreQualified';
-import { IDynamicOfferConfig } from '../../../../../types';
 import './CapitalOverview.scss';
 import Unqualified from '../Unqualified';
-import { CapitalOffer } from '../../../CapitalOffer/components/CapitalOffer/CapitalOffer';
+import { PreQualified } from '../PreQualified/PreQualified';
 
-type CapitalOverviewState = 'Loading' | 'Unqualified' | 'PreQualified' | 'GrantList' | 'CapitalOffer';
+type CapitalOverviewState = 'Loading' | 'Unqualified' | 'PreQualified' | 'GrantList';
 
-export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<CapitalOverviewProps>> = ({
-    hideTitle,
-    skipPreQualifiedIntro,
-    onOfferReview,
-}) => {
+export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<CapitalOverviewProps>> = ({ hideTitle, skipPreQualifiedIntro }) => {
     const { getGrants: grantsEndpointCall, getDynamicGrantOffersConfiguration: dynamicConfigurationEndpointCall } = useAuthContext().endpoints;
 
     const grantsQuery = useFetch(
@@ -51,15 +45,6 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
     const dynamicOffer = dynamicOfferQuery.data;
     const grantList = grantsQuery.data?.data;
 
-    const [capitalOfferSelection, setCapitalOfferSelection] = useState<boolean>(!!skipPreQualifiedIntro);
-    const onOfferReviewHandler = useCallback(() => {
-        onOfferReview ? onOfferReview() : setCapitalOfferSelection(true);
-    }, [onOfferReview]);
-
-    const goBackToPrequalified = useCallback(() => {
-        setCapitalOfferSelection(false);
-    }, []);
-
     const state = useMemo<CapitalOverviewState>(() => {
         if (
             (!grantsEndpointCall && !dynamicConfigurationEndpointCall) ||
@@ -70,14 +55,11 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
             return 'Loading';
         } else if (grantList?.length) {
             return 'GrantList';
-        } else if (dynamicOffer?.maxAmount && dynamicOffer?.minAmount && !skipPreQualifiedIntro && !capitalOfferSelection) {
+        } else if (dynamicOffer?.maxAmount && dynamicOffer?.minAmount && !skipPreQualifiedIntro) {
             return 'PreQualified';
-        } else if (skipPreQualifiedIntro || capitalOfferSelection) {
-            return 'CapitalOffer';
         }
         return 'Unqualified';
     }, [
-        capitalOfferSelection,
         dynamicConfigurationEndpointCall,
         dynamicOffer,
         dynamicOfferQuery.isFetching,
@@ -112,17 +94,9 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
                             </div>
                         );
                     case 'PreQualified':
-                        return (
-                            <PreQualified
-                                hideTitle={hideTitle}
-                                dynamicOffer={dynamicOffer as Required<IDynamicOfferConfig>}
-                                onOfferReview={onOfferReviewHandler}
-                            />
-                        );
+                        return <PreQualified skipPreQualifiedIntro={skipPreQualifiedIntro} hideTitle={hideTitle} dynamicOffer={dynamicOffer!} />;
                     case 'Unqualified':
                         return <Unqualified hideTitle={hideTitle} />;
-                    case 'CapitalOffer':
-                        return <CapitalOffer onOfferSigned={() => console.log('On offer signed callback')} onOfferDismissed={goBackToPrequalified} />;
                     default:
                         return null;
                 }
