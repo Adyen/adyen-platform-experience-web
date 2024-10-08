@@ -31,7 +31,7 @@ const PreQualifiedIntro = ({
                     </div>
                 </InfoBox>
                 <Button className={CAPITAL_OVERVIEW_CLASS_NAMES.preQualifiedGrantButton} onClick={onSeeOptions}>
-                    {i18n.get('capital.reviewOptions')}
+                    {i18n.get('capital.seeOptions')}
                 </Button>
             </div>
         </>
