@@ -2,7 +2,7 @@ import InfoBox from '../../../../internal/InfoBox';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { IGrant, IGrantOfferResponseDTO } from '../../../../../types';
 import { useCallback, useMemo } from 'preact/hooks';
-import { getExpectedRepaymentDate } from '../utils/utils';
+import { calculateMaximumRepaymentPeriodInMonths, getExpectedRepaymentDate } from '../utils/utils';
 import Typography from '../../../../internal/Typography/Typography';
 import { TypographyElement, TypographyVariant } from '../../../../internal/Typography/types';
 import StructuredList from '../../../../internal/StructuredList';
@@ -59,6 +59,10 @@ export const CapitalOfferSummary = ({
             : reviewGrantOfferMutation.mutate({ body: { amount: 10, currency: '' }, contentType: 'application/json' });
     }, [grantOffer.id, requestFundsCallback, reviewGrantOfferMutation]);
 
+    const maximumRepaymentPeriod = useMemo(
+        () => calculateMaximumRepaymentPeriodInMonths(grantOffer.maximumRepaymentPeriodDays),
+        [grantOffer.maximumRepaymentPeriodDays]
+    );
     return (
         <div className="adyen-pe-capital-offer-summary">
             <InfoBox className="adyen-pe-capital-offer-summary__grant-summary">
@@ -119,9 +123,19 @@ export const CapitalOfferSummary = ({
                         key: 'capital.repaymentThreshold',
                         value: i18n.amount(grantOffer.thresholdAmount.value, grantOffer.thresholdAmount.currency),
                     },
-                    { key: 'capital.repaymentRatePercentage', value: grantOffer.repaymentRate },
-                    { key: 'capital.expectedRepaymentPeriod', value: grantOffer.expectedRepaymentPeriodDays },
-                    { key: 'capital.maximumRepaymentPeriod', value: grantOffer.maximumRepaymentPeriodDays },
+                    {
+                        key: 'capital.repaymentRatePercentage',
+                        value: `${grantOffer.repaymentRate}% ${i18n.get('capital.daily')}`,
+                    },
+                    { key: 'capital.expectedRepaymentPeriod', value: `${grantOffer.expectedRepaymentPeriodDays} ${i18n.get('capital.days')}` },
+                    {
+                        key: 'capital.maximumRepaymentPeriod',
+                        value: maximumRepaymentPeriod
+                            ? `${calculateMaximumRepaymentPeriodInMonths(grantOffer.maximumRepaymentPeriodDays)} ${i18n.get(
+                                  maximumRepaymentPeriod > 1 ? 'capital.months' : 'capital.month'
+                              )}`
+                            : null,
+                    },
                     { key: 'capital.balanceAccount', value: 'TODO balance account' },
                 ]}
             />
