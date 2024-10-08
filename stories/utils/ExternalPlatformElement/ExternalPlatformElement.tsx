@@ -1,10 +1,10 @@
-// ExternalPlatformElement.tsx
 import { FunctionalComponent } from 'preact';
 import { CSSProperties } from 'preact/compat';
+import './ExternalPlatformElement.scss';
+import cx from 'classnames';
 
 interface ExternalPlatformElementProps {
     width?: string | number;
-    // Optional: Allow passing additional styles or class names
     style?: CSSProperties;
     className?: string;
     minHeight?: string;
@@ -18,19 +18,13 @@ export const ExternalPlatformElement: FunctionalComponent<ExternalPlatformElemen
     className,
 }) => {
     const defaultStyles = {
-        backgroundColor: '#F7F7F8', // Grey background
         width: typeof width === 'number' ? `${width}px` : width,
         minHeight: minHeight,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        borderRadius: '5px',
-        border: '1px solid #DBDEE2',
-        ...style, // Allow overriding or extending styles via props
+        ...style,
     };
 
     return (
-        <div className={className} style={defaultStyles}>
+        <div className={cx([className, 'external-platform-element'])} style={defaultStyles}>
             {children}
         </div>
     );

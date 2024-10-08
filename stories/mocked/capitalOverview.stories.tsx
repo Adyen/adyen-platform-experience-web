@@ -5,7 +5,7 @@ import { CapitalOverviewMeta } from '../components/capitalOverview';
 import { CapitalMockedResponses } from '../../mocks/mock-server/capital';
 import { useEffect } from 'preact/compat';
 import getMySessionToken from '../../playground/utils/sessionRequest';
-import { ExternalPlatformElement } from '../utils/ExternalPlatformElement';
+import { ExternalPlatformElement } from '../utils/ExternalPlatformElement/ExternalPlatformElement';
 import { useState } from 'preact/hooks';
 
 const meta: Meta<ElementProps<typeof CapitalOverview>> = { ...CapitalOverviewMeta, title: 'Mocked/Capital Overview' };
