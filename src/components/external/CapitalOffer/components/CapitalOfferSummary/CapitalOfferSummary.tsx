@@ -31,10 +31,10 @@ export const CapitalOfferSummary = ({
         return date ? i18n.date(date, { month: 'long' }) : null;
     }, [grantOffer, i18n]);
 
-    const { signOffer } = useAuthContext().endpoints;
+    const { requestFunds } = useAuthContext().endpoints;
 
     const signOfferMutation = useMutation({
-        queryFn: signOffer,
+        queryFn: requestFunds,
         options: {
             onSuccess: data => onOfferSigned(data),
         },
