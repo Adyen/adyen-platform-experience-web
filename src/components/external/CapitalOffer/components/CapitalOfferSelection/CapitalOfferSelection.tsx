@@ -129,7 +129,7 @@ export const CapitalOfferSelection = ({
     }, [config, getDynamicGrantOfferMutation.data, getOffer, requestedValue]);
 
     return (
-        <div>
+        <div className="adyen-pe-capital-offer-selection">
             {config && (
                 <CapitalSlider
                     value={requestedValue}
