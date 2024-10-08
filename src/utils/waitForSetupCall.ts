@@ -1,5 +1,5 @@
-import AuthSession from '../../core/Auth/session/AuthSession';
-import { createDeferred } from '../../primitives/async/deferred';
+import AuthSession from '../core/Auth/session/AuthSession';
+import { createDeferred } from '../primitives/async/deferred';
 
 export const waitForSetup = async (session: AuthSession) => {
     const waitDeferred = createDeferred<void>();

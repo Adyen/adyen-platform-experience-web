@@ -5,7 +5,7 @@ import { CapitalOverview } from './components/CapitalOverview/CapitalOverview';
 import { createDeferred } from '../../../primitives/async/deferred';
 import { EMPTY_OBJECT, noop } from '../../../utils';
 import AuthSession from '../../../core/Auth/session/AuthSession';
-import { waitForSetup } from '../../../utils/waitForSetupCall/waitForSetupCall';
+import { waitForSetup } from '../../../utils/waitForSetupCall';
 
 export class CapitalOverviewElement extends UIElement<CapitalOverviewProps> {
     public static type = 'capitalOverview';
