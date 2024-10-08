@@ -94,6 +94,9 @@ export const CapitalOfferSelection = ({
 
     const reviewOfferMutation = useMutation({
         queryFn: reviewGrantOffer,
+        options: {
+            onSuccess: data => onReviewOffer(data),
+        },
     });
 
     const onReview = useCallback(() => {

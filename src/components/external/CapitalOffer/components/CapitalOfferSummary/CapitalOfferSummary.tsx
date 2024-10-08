@@ -31,18 +31,33 @@ export const CapitalOfferSummary = ({
         return date ? i18n.date(date, { month: 'long' }) : null;
     }, [grantOffer, i18n]);
 
-    const { requestFunds } = useAuthContext().endpoints;
+    const { requestFunds, reviewGrantOffer } = useAuthContext().endpoints;
 
-    const signOfferMutation = useMutation({
+    const requestFundsMutation = useMutation({
         queryFn: requestFunds,
         options: {
             onSuccess: data => onRequestFunds?.(data),
         },
     });
+    const reviewGrantOfferMutation = useMutation({
+        queryFn: reviewGrantOffer,
+        options: {
+            onSuccess: data => requestFundsCallback(data.id!),
+        },
+    });
 
-    const onOfferSignedHandler = useCallback(() => {
-        grantOffer.id && void signOfferMutation.mutate(EMPTY_OBJECT, { path: { grantOfferId: grantOffer.id } });
-    }, [grantOffer.id, signOfferMutation]);
+    const requestFundsCallback = useCallback(
+        (id: string) => {
+            void requestFundsMutation.mutate(EMPTY_OBJECT, { path: { grantOfferId: id } });
+        },
+        [requestFundsMutation]
+    );
+
+    const onRequestFundsHandler = useCallback(() => {
+        grantOffer.id
+            ? requestFundsCallback(grantOffer.id)
+            : reviewGrantOfferMutation.mutate({ body: { amount: 10, currency: '' }, contentType: 'application/json' });
+    }, [grantOffer.id, requestFundsCallback, reviewGrantOfferMutation]);
 
     return (
         <div className="adyen-pe-capital-offer-summary">
@@ -114,7 +129,7 @@ export const CapitalOfferSummary = ({
                 <Button variant={ButtonVariant.SECONDARY} onClick={onBack}>
                     {i18n.get('capital.back')}
                 </Button>
-                <Button variant={ButtonVariant.PRIMARY} onClick={onOfferSignedHandler} disabled={signOfferMutation.isLoading}>
+                <Button variant={ButtonVariant.PRIMARY} onClick={onRequestFundsHandler} disabled={reviewGrantOfferMutation.isLoading}>
                     {i18n.get('capital.requestFunds')}
                 </Button>
             </div>

@@ -45,7 +45,7 @@ const OFFER_REVIEW_HANDLER = async ({ request }: { request: StrictRequest<Defaul
 
     const response = calculateGrant(amount, currency);
     await delay(800);
-    return HttpResponse.json(response);
+    return HttpResponse.json({ ...response, id: uuid() });
 };
 
 export const capitalMock = [
