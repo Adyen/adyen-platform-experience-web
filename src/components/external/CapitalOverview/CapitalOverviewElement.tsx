@@ -1,9 +1,9 @@
 import { _UIComponentProps } from '../../types';
 import UIElement from '../UIElement/UIElement';
+import sessionReady from '../../utils/sessionReady';
 import { CapitalComponentStatus, CapitalOverviewProps } from './types';
 import { CapitalOverview } from './components/CapitalOverview/CapitalOverview';
 import { EMPTY_OBJECT, noop } from '../../../utils';
-import { waitForSetup } from '../../../utils/waitForSetupCall';
 
 export class CapitalOverviewElement extends UIElement<CapitalOverviewProps> {
     public static type = 'capitalOverview';
@@ -20,7 +20,7 @@ export class CapitalOverviewElement extends UIElement<CapitalOverviewProps> {
 
     public async getState(): Promise<CapitalComponentStatus> {
         const { session } = this.props.core;
-        await waitForSetup(session);
+        await sessionReady(session);
 
         const { getDynamicGrantOffersConfiguration, getGrants } = session.context.endpoints;
 
