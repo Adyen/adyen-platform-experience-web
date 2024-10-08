@@ -48,15 +48,15 @@ export interface components {
         };
         GrantOfferResponseDTO: {
             /** Format: int32 */
-            expectedRepaymentPeriodDays?: number;
-            feesAmount?: components['schemas']['Amount'];
-            grantAmount?: components['schemas']['Amount'];
+            expectedRepaymentPeriodDays: number;
+            feesAmount: components['schemas']['Amount'];
+            grantAmount: components['schemas']['Amount'];
             id?: string;
             /** Format: int32 */
             maximumRepaymentPeriodDays?: number;
             /** Format: int32 */
             repaymentRate?: number;
-            thresholdAmount?: components['schemas']['Amount'];
+            thresholdAmount: components['schemas']['Amount'];
             totalAmount?: components['schemas']['Amount'];
         };
         GrantDTO: {
@@ -83,10 +83,10 @@ export interface components {
         };
         GrantStatus: 'Pending' | 'Active' | 'Repaid' | 'Failed' | 'WrittenOff' | 'Revoked';
         DynamicOffersResponseDTO: {
-            maxAmount?: components['schemas']['Amount'];
-            minAmount?: components['schemas']['Amount'];
+            maxAmount: components['schemas']['Amount'];
+            minAmount: components['schemas']['Amount'];
             /** Format: int32 */
-            step?: number;
+            step: number;
         };
         ReviewGrantOfferRequestDTO: {
             /** Format: int64 */

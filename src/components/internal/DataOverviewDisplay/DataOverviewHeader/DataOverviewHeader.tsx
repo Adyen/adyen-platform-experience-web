@@ -3,7 +3,7 @@ import Typography from '../../Typography/Typography';
 import useCoreContext from '../../../../core/Context/useCoreContext';
 import { TypographyElement, TypographyVariant } from '../../Typography/types';
 import type { TranslationKey } from '../../../../translations';
-import { UIElementProps } from '../../../types';
+import type { UIElementProps } from '../../../types';
 import './DataOverviewHeader.scss';
 
 export const BASE_CLASS = 'adyen-pe-data-overview-header';
