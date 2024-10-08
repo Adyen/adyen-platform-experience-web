@@ -129,7 +129,11 @@ export const CapitalOfferSummary = ({
                 <Button variant={ButtonVariant.SECONDARY} onClick={onBack}>
                     {i18n.get('capital.back')}
                 </Button>
-                <Button variant={ButtonVariant.PRIMARY} onClick={onRequestFundsHandler} disabled={reviewGrantOfferMutation.isLoading}>
+                <Button
+                    variant={ButtonVariant.PRIMARY}
+                    onClick={onRequestFundsHandler}
+                    disabled={reviewGrantOfferMutation.isLoading || reviewGrantOfferMutation.isLoading}
+                >
                     {i18n.get('capital.requestFunds')}
                 </Button>
             </div>
