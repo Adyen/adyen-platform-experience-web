@@ -1,0 +1,94 @@
+@use '../../../style';
+
+/* [TODO]: Move to a global location to allow for reusability */
+.adyen-pe-width-sizer {
+    display: inline-flex;
+    flex-direction: column;
+    flex: 0;
+
+    &__element {
+        clip: rect(0 0 0 0);
+        height: 1px;
+        margin-top: -1px;
+        overflow: hidden;
+    }
+}
+
+.adyen-pe-spinbutton {
+    --adyen-pe-spinbutton__input-block-padding: #{style.token(spacer-040)};
+    --adyen-pe-spinbutton__input-border-width: #{style.token(border-width-m)};
+    --adyen-pe-spinbutton__input-font-size: #{style.token(text-caption-font-size)};
+    --adyen-pe-spinbutton__input-font-weight: #{style.token(text-caption-stronger-font-weight)};
+    --adyen-pe-spinbutton__input-text-align: center;
+
+    align-items: center;
+    display: inline-flex;
+    gap: style.token(spacer-020);
+    width: min-content;
+
+    &__btn {
+        flex: none;
+        font-size: 16px;
+        -webkit-tap-highlight-color: transparent;
+        text-decoration: none;
+        width: 1em;
+
+        &:disabled {
+            pointer-events: none;
+        }
+    }
+
+    &__input {
+        border-radius: style.token(border-radius-s);
+        border-width: var(--adyen-pe-spinbutton__input-border-width);
+        caret-color: transparent;
+        color: style.token(color-label-primary);
+        font-size: var(--adyen-pe-spinbutton__input-font-size);
+        font-weight: var(--adyen-pe-spinbutton__input-font-weight);
+        height: auto;
+        line-height: style.token(text-caption-line-height);
+        padding: style.token(spacer-010) var(--adyen-pe-spinbutton__input-block-padding);
+        text-align: var(--adyen-pe-spinbutton__input-text-align);
+        width: min-content;
+
+        &,
+        &:hover {
+            &,
+            &[readonly],
+            &:active,
+            &:focus {
+                background-color: style.token(color-background-secondary);
+                border-color: transparent;
+                box-shadow: none;
+                outline: none;
+            }
+        }
+
+        &:not(:disabled) {
+            &:active,
+            &:focus {
+                border-color: style.token(color-outline-secondary-active);
+            }
+
+            &:hover {
+                background-color: style.token(color-background-secondary-hover);
+            }
+        }
+
+        .adyen-pe-width-sizer & {
+            width: 100%;
+        }
+    }
+
+    &__input-sizer-element {
+        border: var(--adyen-pe-spinbutton__input-border-width) solid transparent;
+        border-bottom-style: none;
+        border-top-style: none;
+        font-family: monospace;
+        font-size: var(--adyen-pe-spinbutton__input-font-size);
+        font-weight: var(--adyen-pe-spinbutton__input-font-weight);
+        margin-right: 1px; // minimizes content clipping on target input element
+        padding: 0 var(--adyen-pe-spinbutton__input-block-padding);
+        text-align: var(--adyen-pe-spinbutton__input-text-align);
+    }
+}

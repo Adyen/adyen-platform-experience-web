@@ -1,36 +1,26 @@
 import h from 'preact';
 import cx from 'classnames';
-import BaseButton from '../BaseButton';
+import Icon from '../Icon';
+import Button from '../Button';
 import _SpinButton from './internal/SpinButton';
 import { useCallback, useMemo, useRef, useState } from 'preact/hooks';
+import { BASE_CLASS, BUTTON_CLASS, BUTTON_DECREASE_CLASS, BUTTON_INCREASE_CLASS, INPUT_CLASS, INPUT_SIZER_ELEMENT_CLASS } from './constants';
 import { SpinButtonControl, SpinButtonControlRender, SpinButtonProps } from './types';
-import { BASE_CLASS, BUTTON_CLASS, BUTTON_DECREASE_CLASS, BUTTON_INCREASE_CLASS, INPUT_CLASS } from './constants';
+import { ButtonVariant } from '../Button/types';
+import './SpinButton.scss';
 
 const defaultRenderControl: SpinButtonControlRender = control => {
     switch (control) {
         case SpinButtonControl.DECREMENT:
-            return '-';
+            return <Icon name="minus-circle-outline" />;
         case SpinButtonControl.INCREMENT:
-            return '+';
+            return <Icon name="plus-circle-outline" />;
         default:
             return null;
     }
 };
 
-const SpinButton = ({
-    children,
-    className,
-    disabled,
-    leap,
-    max,
-    min,
-    onInput,
-    onKeyDown,
-    step,
-    value,
-    valueAsText,
-    ...restProps
-}: SpinButtonProps) => {
+const SpinButton = ({ children, className, disabled, leap, max, min, onKeyDown, step, value, valueAsText, ...restProps }: SpinButtonProps) => {
     // const minValue = useMemo(() => min ?? 0, [min]);
     // const maxValue = useMemo(() => Math.max(minValue, max ?? 100), [max, minValue]);
     // const stepValue = useMemo(() => (step && step > 0) ? step : 1, [step]);
@@ -44,15 +34,6 @@ const SpinButton = ({
     const increaseButtonRef = useCallback((el: HTMLButtonElement | null) => void (spinButton.incrementButton = el), []);
     const spinButtonElementRef = useCallback((el: HTMLElement | null) => void (spinButton.spinButtonElement = el), []);
 
-    const _onInput = (evt: h.JSX.TargetedInputEvent<HTMLInputElement>) => {
-        try {
-            onInput?.(evt);
-        } finally {
-            const inputElement = evt.currentTarget;
-            if (!inputElement.value) inputElement.value = `${currentValue}`;
-        }
-    };
-
     const _onKeyDown = (evt: h.JSX.TargetedKeyboardEvent<HTMLInputElement>) => {
         spinButton.onKeyboardInteraction(evt);
         onKeyDown?.(evt);
@@ -63,35 +44,43 @@ const SpinButton = ({
 
     return (
         <div ref={containerElementRef} className={cx(BASE_CLASS, className)}>
-            <BaseButton
-                type="button"
+            <Button
+                iconButton
                 ref={decreaseButtonRef}
+                variant={ButtonVariant.TERTIARY}
                 className={cx(BUTTON_CLASS, BUTTON_DECREASE_CLASS)}
                 onClick={spinButton.onMouseInteraction}
             >
                 {renderControl(SpinButtonControl.DECREMENT)}
-            </BaseButton>
+            </Button>
 
-            <input
-                {...restProps}
-                type="text"
-                inputmode="decimal"
-                value={currentValue}
-                ref={spinButtonElementRef}
-                className={cx('adyen-pe-input', INPUT_CLASS)}
-                onKeyDown={_onKeyDown}
-                onInput={_onInput}
-                {...(!!valueAsText && { 'aria-valuetext': valueAsText(currentValue) ?? currentValue })}
-            />
+            <div className="adyen-pe-width-sizer">
+                <input
+                    {...restProps}
+                    readonly
+                    type="text"
+                    inputmode="decimal"
+                    value={currentValue}
+                    ref={spinButtonElementRef}
+                    className={cx('adyen-pe-input', INPUT_CLASS)}
+                    onKeyDown={_onKeyDown}
+                    {...(!!valueAsText && { 'aria-valuetext': valueAsText(currentValue) ?? currentValue })}
+                />
 
-            <BaseButton
-                type="button"
+                <div className={cx('adyen-pe-width-sizer__element', INPUT_SIZER_ELEMENT_CLASS)} aria-hidden={true}>
+                    {currentValue}
+                </div>
+            </div>
+
+            <Button
+                iconButton
                 ref={increaseButtonRef}
+                variant={ButtonVariant.TERTIARY}
                 className={cx(BUTTON_CLASS, BUTTON_INCREASE_CLASS)}
                 onClick={spinButton.onMouseInteraction}
             >
                 {renderControl(SpinButtonControl.INCREMENT)}
-            </BaseButton>
+            </Button>
         </div>
     );
 };
