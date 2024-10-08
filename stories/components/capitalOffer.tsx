@@ -8,7 +8,7 @@ export const capitalOfferMeta: Meta<ElementProps<typeof CapitalOffer>> = {
     argTypes: {
         externalDynamicOffersConfig: { control: 'object' },
         hideTitle: { type: 'boolean' },
-        onOfferSigned: {
+        onRequestFunds: {
             table: {
                 disable: true,
             },
@@ -22,7 +22,7 @@ export const capitalOfferMeta: Meta<ElementProps<typeof CapitalOffer>> = {
     args: {
         externalDynamicOffersConfig: undefined,
         hideTitle: false,
-        onOfferSigned: action('onOfferSigned'),
+        onRequestFunds: action('onRequestFunds'),
         component: CapitalOffer,
     },
     parameters: {

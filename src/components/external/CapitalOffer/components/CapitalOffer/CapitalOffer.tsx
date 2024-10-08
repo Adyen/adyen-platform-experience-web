@@ -17,9 +17,8 @@ const REPAYMENT_FREQUENCY = 30;
 export const CapitalOffer: FunctionalComponent<ExternalUIComponentProps<CapitalOfferProps>> = ({
     hideTitle,
     externalDynamicOffersConfig,
-    onOfferReviewed,
     onOfferDismissed,
-    onOfferSigned,
+    onRequestFunds,
 }) => {
     const { getDynamicGrantOffersConfiguration } = useAuthContext().endpoints;
     const { data: internalDynamicOffersConfig } = useFetch({
@@ -31,29 +30,17 @@ export const CapitalOffer: FunctionalComponent<ExternalUIComponentProps<CapitalO
 
     const config = externalDynamicOffersConfig || internalDynamicOffersConfig;
 
-    const goBackToPreviousStep = useCallback(() => {
-        //TODO implement going back to previous step
-        console.log('goBack');
-    }, []);
-
     const goBackHandler = useCallback(() => {
-        onOfferDismissed ? onOfferDismissed() : goBackToPreviousStep();
-    }, [goBackToPreviousStep, onOfferDismissed]);
+        onOfferDismissed?.();
+    }, [onOfferDismissed]);
 
     const [selectedOffer, setSelectedOffer] = useState<IGrantOfferResponseDTO>();
     const [requestedAmount, setRequestedAmount] = useState<number>();
 
-    const onReviewOfferHandler = useCallback(
-        (data: IGrantOfferResponseDTO) => {
-            setRequestedAmount(data.grantAmount.value);
-            if (onOfferReviewed) {
-                onOfferReviewed(data);
-            } else {
-                setSelectedOffer(prev => (prev ? { ...prev, id: data.id } : prev));
-            }
-        },
-        [onOfferReviewed]
-    );
+    const onReviewOfferHandler = useCallback((data: IGrantOfferResponseDTO) => {
+        setRequestedAmount(data.grantAmount.value);
+        setSelectedOffer(prev => (prev ? { ...prev, id: data.id } : prev));
+    }, []);
 
     const onOfferSelection = useCallback((data: IGrantOfferResponseDTO) => {
         setSelectedOffer(data);
@@ -88,7 +75,7 @@ export const CapitalOffer: FunctionalComponent<ExternalUIComponentProps<CapitalO
                     grantOffer={selectedOffer!}
                     repaymentFrequency={REPAYMENT_FREQUENCY}
                     onBack={() => setSelectedOffer(undefined)}
-                    onOfferSigned={onOfferSigned}
+                    onRequestFunds={onRequestFunds}
                 />
             )}
         </div>

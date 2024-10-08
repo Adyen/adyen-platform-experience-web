@@ -18,12 +18,12 @@ export const CapitalOfferSummary = ({
     grantOffer,
     repaymentFrequency,
     onBack,
-    onOfferSigned,
+    onRequestFunds,
 }: {
     grantOffer: IGrantOfferResponseDTO;
     repaymentFrequency: number;
     onBack: () => void;
-    onOfferSigned: (data: IGrant) => void;
+    onRequestFunds: (data: IGrant) => void;
 }) => {
     const { i18n } = useCoreContext();
     const expectedRepaymentDate = useMemo(() => {
@@ -36,7 +36,7 @@ export const CapitalOfferSummary = ({
     const signOfferMutation = useMutation({
         queryFn: requestFunds,
         options: {
-            onSuccess: data => onOfferSigned(data),
+            onSuccess: data => onRequestFunds(data),
         },
     });
 

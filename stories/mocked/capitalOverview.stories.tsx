@@ -10,7 +10,7 @@ export const Default: ElementStory<typeof CapitalOverview> = {
     name: 'With callbacks',
     args: {
         mockedApi: true,
-        onOfferSigned: (data, goToNextStep) => {
+        onRequestFunds: (data, goToNextStep) => {
             alert(`Amount requested: ${data.grantAmount.value}`);
             goToNextStep();
         },

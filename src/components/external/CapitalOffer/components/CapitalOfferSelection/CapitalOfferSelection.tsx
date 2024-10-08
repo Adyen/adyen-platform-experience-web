@@ -77,11 +77,11 @@ const InformationDisplay = ({ data, repaymentFrequency }: { data: IGrantOfferRes
 
 export const CapitalOfferSelection = ({
     config,
-    onReviewOffer,
     onBack,
     repaymentFrequency,
     requestedAmount,
     onOfferSelection,
+    onReviewOffer,
 }: CapitalOfferSelectionProps) => {
     const { i18n } = useCoreContext();
     const [requestedValue, setRequestedValue] = useState<number | undefined>(Number(requestedAmount) || config?.minAmount.value);
@@ -97,7 +97,10 @@ export const CapitalOfferSelection = ({
     });
 
     const onReview = useCallback(() => {
-        getDynamicGrantOfferMutation.data && onOfferSelection(getDynamicGrantOfferMutation.data);
+        if (getDynamicGrantOfferMutation.data) {
+            onOfferSelection(getDynamicGrantOfferMutation.data);
+            onReviewOffer(getDynamicGrantOfferMutation.data);
+        }
         void reviewOfferMutation.mutate({
             body: {
                 amount: getDynamicGrantOfferMutation.data?.grantAmount.value || requestedValue!,
@@ -105,7 +108,7 @@ export const CapitalOfferSelection = ({
             },
             contentType: 'application/json',
         });
-    }, [currency, getDynamicGrantOfferMutation.data, onOfferSelection, requestedValue, reviewOfferMutation]);
+    }, [currency, getDynamicGrantOfferMutation.data, onOfferSelection, onReviewOffer, requestedValue, reviewOfferMutation]);
 
     const getDynamicGrantOfferMutationCallback = getDynamicGrantOfferMutation.mutate;
 
@@ -118,9 +121,9 @@ export const CapitalOfferSelection = ({
     useEffect(() => {
         if (config) {
             setRequestedValue(prev => (!prev ? config.minAmount.value : prev));
-            void getOffer(requestedValue || config.minAmount.value);
+            !getDynamicGrantOfferMutation.data && void getOffer(requestedValue || config.minAmount.value);
         }
-    }, [config, getOffer, requestedValue]);
+    }, [config, getDynamicGrantOfferMutation.data, getOffer, requestedValue]);
 
     return (
         <div>

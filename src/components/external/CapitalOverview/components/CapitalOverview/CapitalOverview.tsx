@@ -21,7 +21,7 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
     hideTitle,
     skipPreQualifiedIntro,
     onReviewOptions,
-    onOfferSigned,
+    onRequestFunds,
 }) => {
     const { getGrants: grantsEndpointCall, getDynamicGrantOffersConfiguration: dynamicConfigurationEndpointCall } = useAuthContext().endpoints;
 
@@ -54,11 +54,11 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
     const [requestedGrant, setRequestdGrant] = useState<IGrant>();
     const grantList = useMemo(() => (requestedGrant ? [requestedGrant] : grantsQuery.data?.data), [grantsQuery.data?.data, requestedGrant]);
 
-    const onOfferSignedHandler = useCallback(
+    const onRequestFundsHandler = useCallback(
         (data: IGrant) => {
-            onOfferSigned ? onOfferSigned(data, () => setRequestdGrant(data)) : setRequestdGrant(data);
+            onRequestFunds ? onRequestFunds(data, () => setRequestdGrant(data)) : setRequestdGrant(data);
         },
-        [onOfferSigned]
+        [onRequestFunds]
     );
 
     const [capitalOfferSelection, setCapitalOfferSelection] = useState<boolean>(!!skipPreQualifiedIntro);
@@ -132,7 +132,7 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
                     case 'Unqualified':
                         return <Unqualified hideTitle={hideTitle} />;
                     case 'CapitalOffer':
-                        return <CapitalOffer onOfferSigned={onOfferSignedHandler} onOfferDismissed={goBackToPrequalified} />;
+                        return <CapitalOffer onRequestFunds={onRequestFundsHandler} onOfferDismissed={goBackToPrequalified} />;
                     default:
                         return null;
                 }
