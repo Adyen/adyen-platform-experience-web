@@ -20,6 +20,8 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
     hideTitle,
     skipPreQualifiedIntro,
     onRequestFunds,
+    onSeeOptions,
+    onOfferDismissed,
 }) => {
     const { getGrants: grantsEndpointCall, getDynamicGrantOffersConfiguration: dynamicConfigurationEndpointCall } = useAuthContext().endpoints;
 
@@ -110,6 +112,8 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
                     case 'PreQualified':
                         return (
                             <PreQualified
+                                onOfferDismissed={onOfferDismissed}
+                                onSeeOptions={onSeeOptions}
                                 skipPreQualifiedIntro={skipPreQualifiedIntro}
                                 hideTitle={hideTitle}
                                 dynamicOffer={dynamicOffer!}

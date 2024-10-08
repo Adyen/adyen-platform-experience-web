@@ -14,9 +14,13 @@ export const Default: ElementStory<typeof CapitalOverview> = {
             alert(`Amount requested: ${data.grantAmount.value}`);
             goToNextStep();
         },
-        onReviewOptions(goToNextStep: () => void) {
+        onSeeOptions(goToNextStep) {
             alert('Are you sure?');
             goToNextStep();
+        },
+        onOfferDismissed: goToPreviousStep => {
+            alert('Offer dismissed');
+            goToPreviousStep();
         },
     },
     parameters: {
