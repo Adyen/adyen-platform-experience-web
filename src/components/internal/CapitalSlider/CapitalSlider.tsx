@@ -4,7 +4,6 @@ import { JSX } from 'preact';
 import uniqueId from '../../../utils/random/uniqueId';
 import Typography from '../Typography/Typography';
 import { TypographyVariant } from '../Typography/types';
-import { useState } from 'preact/hooks';
 import useCoreContext from '../../../core/Context/useCoreContext';
 import { IDynamicOfferConfig } from '../../../types';
 import cx from 'classnames';
@@ -17,6 +16,12 @@ interface CapitalSliderProps {
      * The dynamic Capital offer
      */
     dynamicCapitalOffer: IDynamicOfferConfig;
+
+    /**
+     * The current value of the CapitalSlider.
+     * @default dynamicCapitalOffer.minAmount.value
+     */
+    value?: number;
 
     /**
      * Callback function that is called when the slider value changes.
@@ -36,14 +41,18 @@ interface CapitalSliderProps {
     className?: string;
 }
 
-const CapitalSlider = ({ dynamicCapitalOffer, onValueChange, onRelease, className }: CapitalSliderProps) => {
+const CapitalSlider = ({
+    dynamicCapitalOffer,
+    value = dynamicCapitalOffer.minAmount.value,
+    onValueChange,
+    onRelease,
+    className,
+}: CapitalSliderProps) => {
     const id = uniqueId();
     const { i18n } = useCoreContext();
-    const [sliderValue, setSliderValue] = useState<number>(dynamicCapitalOffer.minAmount.value);
 
     const handleValueChange = (event: JSX.TargetedEvent<HTMLInputElement, Event>) => {
         const value = Number((event.target as HTMLInputElement).value);
-        setSliderValue(value);
         onValueChange?.(value);
     };
 
@@ -60,11 +69,13 @@ const CapitalSlider = ({ dynamicCapitalOffer, onValueChange, onRelease, classNam
                 </Typography>
             </label>
             <output htmlFor={id} className="adyen-pe-capital-slider__value" aria-live="polite">
-                <span>{i18n.amount(sliderValue, dynamicCapitalOffer.minAmount.currency, { maximumFractionDigits: 0 })}</span>
+                <Typography variant={TypographyVariant.TITLE} strongest>
+                    {i18n.amount(value, dynamicCapitalOffer.minAmount.currency, { maximumFractionDigits: 0 })}
+                </Typography>
             </output>
             <Slider
                 id={id}
-                value={sliderValue}
+                value={value}
                 min={dynamicCapitalOffer.minAmount.value}
                 max={dynamicCapitalOffer.maxAmount.value}
                 step={dynamicCapitalOffer.step}
@@ -76,16 +87,16 @@ const CapitalSlider = ({ dynamicCapitalOffer, onValueChange, onRelease, classNam
             />
             <div className="adyen-pe-capital-slider__labels">
                 <label>
-                    <Typography variant={TypographyVariant.BODY}>{i18n.get('min')}</Typography>
-                    <div>
+                    <Typography variant={TypographyVariant.CAPTION}>{i18n.get('min')}</Typography>
+                    <Typography variant={TypographyVariant.BODY}>
                         {i18n.amount(dynamicCapitalOffer.minAmount.value, dynamicCapitalOffer.minAmount.currency, { maximumFractionDigits: 0 })}
-                    </div>
+                    </Typography>
                 </label>
                 <label>
-                    <Typography variant={TypographyVariant.BODY}>{i18n.get('max')}</Typography>
-                    <div>
+                    <Typography variant={TypographyVariant.CAPTION}>{i18n.get('max')}</Typography>
+                    <Typography variant={TypographyVariant.BODY}>
                         {i18n.amount(dynamicCapitalOffer.maxAmount.value, dynamicCapitalOffer.maxAmount.currency, { maximumFractionDigits: 0 })}
-                    </div>
+                    </Typography>
                 </label>
             </div>
         </div>
