@@ -5,19 +5,7 @@ import { CapitalOverview } from './components/CapitalOverview/CapitalOverview';
 import { createDeferred } from '../../../primitives/async/deferred';
 import { EMPTY_OBJECT, noop } from '../../../utils';
 import AuthSession from '../../../core/Auth/session/AuthSession';
-
-const waitForSetup = async (session: AuthSession) => {
-    const waitDeferred = createDeferred<void>();
-
-    const unsubscribeSession = session.subscribe(() => {
-        if (session.context.refreshing || session.context.isExpired) return;
-        // Session have been refreshed (and we likely have an active session)
-        waitDeferred.resolve();
-        unsubscribeSession();
-    });
-
-    await waitDeferred.promise;
-};
+import { waitForSetup } from '../../../utils/waitForSetupCall/waitForSetupCall';
 
 export class CapitalOverviewElement extends UIElement<CapitalOverviewProps> {
     public static type = 'capitalOverview';
@@ -43,7 +31,7 @@ export class CapitalOverviewElement extends UIElement<CapitalOverviewProps> {
             getGrants?.(EMPTY_OBJECT).catch(noop as () => undefined),
         ]);
 
-        return grants?.data.length! > 0 || (config && config.minAmount) ? 'OfferAvailable' : 'NotQualified';
+        return (grants && grants.data.length! > 0) || (config && config.minAmount) ? 'OfferAvailable' : 'NotQualified';
     }
 }
 

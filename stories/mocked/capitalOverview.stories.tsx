@@ -151,7 +151,7 @@ export const NoRender: ElementStory<typeof CapitalOverview, { showUnqualified: b
             return (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 10, padding: 40 }}>
                     <ExternalPlatformElement>{'Element A'}</ExternalPlatformElement>
-                    <div style={{ display: 'flex', gap: 5 }}>
+                    <div style={{ display: 'flex', gap: 10 }}>
                         <div style={{ width: 600 }}>
                             {st === 'NotQualified' && !context.args.showUnqualified ? (
                                 <ExternalPlatformElement style={{ background: '#51aeff' }}>{'Element D'}</ExternalPlatformElement>
