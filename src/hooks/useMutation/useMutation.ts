@@ -42,15 +42,11 @@ function useMutation<queryFn extends (...args: any[]) => any, ResponseType exten
 
     const mutate = useCallback(
         async (...variables: Parameters<queryFn>): Promise<ResponseType> => {
-            if (!queryFn) {
-                throw new Error('Query function is required');
-            }
-
             try {
                 setStatus('loading');
                 setError(null);
 
-                const result = await queryFn(...variables);
+                const result = await queryFn?.(...variables);
 
                 // Only update state if component is still mounted
                 if (mountedRef.current) {

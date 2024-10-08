@@ -10,6 +10,18 @@ import { useState } from 'preact/hooks';
 
 const meta: Meta<ElementProps<typeof CapitalOverview>> = { ...CapitalOverviewMeta, title: 'Mocked/Capital Overview' };
 
+export const Default: ElementStory<typeof CapitalOverview> = {
+    name: 'Default',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: {
+            handlers: CapitalMockedResponses.prequalified,
+        },
+    },
+};
+
 export const PreQualified: ElementStory<typeof CapitalOverview> = {
     name: 'Pre-qualified',
     args: {
