@@ -2,7 +2,8 @@
  * @vitest-environment jsdom
  */
 import { test } from 'vitest';
-import { useClickOutside } from './useClickOutside.ts';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { useClickOutside } from './useClickOutside';
 
 test('useClickOutside', () => {
     // Write your tests here

@@ -2,7 +2,8 @@
  * @vitest-environment jsdom
  */
 import { test } from 'vitest';
-import { useResponsiveViewport } from './useResponsiveViewport.ts';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { useResponsiveViewport } from './useResponsiveViewport';
 
 test('useResponsiveViewport', () => {
     // Write your tests here

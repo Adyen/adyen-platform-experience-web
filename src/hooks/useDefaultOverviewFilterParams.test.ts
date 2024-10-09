@@ -2,7 +2,8 @@
  * @vitest-environment jsdom
  */
 import { test } from 'vitest';
-import useDefaultOverviewFilterParams from './useDefaultOverviewFilterParams.ts';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import useDefaultOverviewFilterParams from './useDefaultOverviewFilterParams';
 
 test('useDefaultOverviewFilterParams', () => {
     // Write your tests here

@@ -2,7 +2,8 @@
  * @vitest-environment jsdom
  */
 import { test } from 'vitest';
-import useBalanceAccounts from './useBalanceAccounts.ts';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import useBalanceAccounts from './useBalanceAccounts';
 
 test('useBalanceAccounts', () => {
     // Write your tests here

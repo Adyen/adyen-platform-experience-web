@@ -2,7 +2,8 @@
  * @vitest-environment jsdom
  */
 import { test } from 'vitest';
-import useCommitAction from './useCommitAction.ts';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import useCommitAction from './useCommitAction';
 
 test('useCommitAction', () => {
     // Write your tests here

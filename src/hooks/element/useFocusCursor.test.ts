@@ -2,7 +2,8 @@
  * @vitest-environment jsdom
  */
 import { test } from 'vitest';
-import useFocusCursor from './useFocusCursor.ts';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import useFocusCursor from './useFocusCursor';
 
 test('useFocusCursor', () => {
     // Write your tests here

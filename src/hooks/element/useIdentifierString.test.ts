@@ -2,7 +2,8 @@
  * @vitest-environment jsdom
  */
 import { test } from 'vitest';
-import useIdentifierString from './useIdentifierString.ts';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import useIdentifierString from './useIdentifierString';
 
 test('useIdentifierString', () => {
     // Write your tests here

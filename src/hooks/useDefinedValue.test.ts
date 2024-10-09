@@ -2,7 +2,8 @@
  * @vitest-environment jsdom
  */
 import { test } from 'vitest';
-import useDefinedValue from './useDefinedValue.ts';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import useDefinedValue from './useDefinedValue';
 
 test('useDefinedValue', () => {
     // Write your tests here
