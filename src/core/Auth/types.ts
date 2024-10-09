@@ -10,9 +10,33 @@ type _SetupHttpOptions = Omit<HttpOptions, _ExcludedHttpOptions>;
 export type _HasParameter<Parameter extends keyof any, T> = Parameter extends keyof T ? true : false;
 export type _RequiresParameter<T> = _HasParameter<'parameters', T>;
 
-type _EndpointHttpCallable<Endpoint extends EndpointName> = _RequiresParameter<EndpointsOperations[Endpoint]> extends true
-    ? (options: _SetupHttpOptions, params: _Params<EndpointsOperations[Endpoint]>) => Promise<EndpointSuccessResponse<Endpoint>>
-    : (options: _SetupHttpOptions) => Promise<EndpointSuccessResponse<Endpoint>>;
+export type _HasRequestBody<Parameter extends keyof any, T> = Parameter extends keyof T ? true : false;
+export type _RequiresRequestBody<T> = _HasRequestBody<'requestBody', T>;
+
+type ContentTypes<Operation> = Operation extends { requestBody?: { content: infer Content } } ? keyof Content : never;
+
+type RequestBodyContent<Path extends keyof EndpointsOperations> = EndpointsOperations[Path] extends { requestBody?: { content: infer Content } }
+    ? Content
+    : never;
+
+type RequestBodyTypes<Path extends keyof EndpointsOperations> = RequestBodyContent<Path> extends never
+    ? undefined
+    : RequestBodyContent<Path>[keyof RequestBodyContent<Path>];
+
+type ParametersIfRequired<Endpoint extends EndpointName> = _RequiresParameter<EndpointsOperations[Endpoint]> extends true
+    ? [_Params<EndpointsOperations[Endpoint]>]
+    : [];
+
+type RequestBodyIfRequired<Endpoint extends EndpointName> = _RequiresRequestBody<EndpointsOperations[Endpoint]> extends true
+    ? [RequestBodyTypes<Endpoint>]
+    : [];
+
+type _EndpointHttpCallable<Endpoint extends EndpointName> = (
+    options: _RequiresRequestBody<EndpointsOperations[Endpoint]> extends true
+        ? _SetupHttpOptions & { contentType: ContentTypes<EndpointsOperations[Endpoint]>; body: RequestBodyIfRequired<Endpoint>[0] }
+        : _SetupHttpOptions,
+    ...args: [...ParametersIfRequired<Endpoint>]
+) => Promise<EndpointSuccessResponse<Endpoint>>;
 
 export type EndpointHttpCallable<Endpoint extends EndpointName> = Endpoint extends Endpoint ? _EndpointHttpCallable<Endpoint> : never;
 export type EndpointHttpCallables<Endpoint extends EndpointName = EndpointName> = NonNullable<SetupContext['endpoints'][Endpoint]>;

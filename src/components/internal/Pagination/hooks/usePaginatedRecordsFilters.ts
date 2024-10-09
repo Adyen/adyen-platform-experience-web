@@ -4,7 +4,7 @@ import useReactiveState from '../../../../hooks/useReactiveState';
 import { ReactiveStateRecord } from '../../../../hooks/useReactiveState/types';
 
 const usePaginatedRecordsFilters = <FilterValue, FilterParam extends string>(
-    filterParams: ReactiveStateRecord<FilterValue, FilterParam> = EMPTY_OBJECT,
+    filterParams: ReactiveStateRecord<FilterValue, FilterParam> = EMPTY_OBJECT as ReactiveStateRecord<FilterValue, FilterParam>,
     initialFiltersSameAsDefault?: boolean
 ): UsePaginatedRecordsFilters<FilterValue, FilterParam> => {
     const {
