@@ -111,6 +111,16 @@ export default defineConfig(async ({ mode }) => {
             setupFiles: [resolve(__dirname, './config/setupTests.ts')],
             coverage: {
                 provider: 'c8',
+                all: true,
+                include: [
+                    'src/components/internal/**/*.{ts,tsx}',
+                    'src/components/utils/*.{ts,tsx}',
+                    'src/hooks/**/*.{ts,tsx}',
+                    'src/primitives/**/*.{ts,tsx}',
+                    'src/utils/**/*.{ts,tsx}',
+                    'src/core/**/*.{ts,tsx}',
+                ],
+                exclude: ['src/**/index.{ts,tsx}', 'src/**/constants.{ts,tsx}', 'src/**/types.ts', 'node_modules'],
                 reporter: 'lcov',
                 reportsDirectory: resolve(__dirname, 'coverage'),
             },
