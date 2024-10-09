@@ -2,7 +2,8 @@
  * @vitest-environment jsdom
  */
 import { test } from 'vitest';
-import usePaginatedRecords from './usePaginatedRecords.ts';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import usePaginatedRecords from './usePaginatedRecords';
 
 test('usePaginatedRecords', () => {
     // Write your tests here

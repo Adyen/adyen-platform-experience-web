@@ -2,7 +2,8 @@
  * @vitest-environment jsdom
  */
 import { test } from 'vitest';
-import PopoverDismissButton from './PopoverDismissButton.tsx';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import PopoverDismissButton from './PopoverDismissButton';
 
 test('PopoverDismissButton', () => {
     // Write your tests here

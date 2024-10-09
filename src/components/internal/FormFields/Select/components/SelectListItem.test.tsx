@@ -2,7 +2,8 @@
  * @vitest-environment jsdom
  */
 import { test } from 'vitest';
-import SelectListItem from './SelectListItem.tsx';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import SelectListItem from './SelectListItem';
 
 test('SelectListItem', () => {
     // Write your tests here

@@ -2,7 +2,8 @@
  * @vitest-environment jsdom
  */
 import { test } from 'vitest';
-import Calendar from './Calendar.ts';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import Calendar from './Calendar';
 
 test('Calendar', () => {
     // Write your tests here

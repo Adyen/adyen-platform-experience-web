@@ -2,7 +2,8 @@
  * @vitest-environment jsdom
  */
 import { test } from 'vitest';
-import { DataOverviewHeader } from './DataOverviewHeader.tsx';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { DataOverviewHeader } from './DataOverviewHeader';
 
 test('DataOverviewHeader', () => {
     // Write your tests here

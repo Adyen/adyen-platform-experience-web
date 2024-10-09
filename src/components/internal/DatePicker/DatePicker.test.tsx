@@ -2,7 +2,8 @@
  * @vitest-environment jsdom
  */
 import { test } from 'vitest';
-import DatePicker from './DatePicker.tsx';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import DatePicker from './DatePicker';
 
 test('DatePicker', () => {
     // Write your tests here

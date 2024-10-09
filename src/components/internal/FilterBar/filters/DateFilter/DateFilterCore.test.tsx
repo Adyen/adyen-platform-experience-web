@@ -2,7 +2,8 @@
  * @vitest-environment jsdom
  */
 import { test } from 'vitest';
-import DateFilterCore from './DateFilterCore.tsx';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import DateFilterCore from './DateFilterCore';
 
 test('DateFilterCore', () => {
     // Write your tests here

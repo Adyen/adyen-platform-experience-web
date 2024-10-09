@@ -2,7 +2,8 @@
  * @vitest-environment jsdom
  */
 import { test } from 'vitest';
-import BaseFilter from './BaseFilter.tsx';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import BaseFilter from './BaseFilter';
 
 test('BaseFilter', () => {
     // Write your tests here

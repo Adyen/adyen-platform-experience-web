@@ -2,7 +2,8 @@
  * @vitest-environment jsdom
  */
 import { test } from 'vitest';
-import DataGrid from './DataGrid.tsx';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import DataGrid from './DataGrid';
 
 test('DataGrid', () => {
     // Write your tests here

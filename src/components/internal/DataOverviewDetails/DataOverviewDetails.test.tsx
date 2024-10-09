@@ -2,7 +2,8 @@
  * @vitest-environment jsdom
  */
 import { test } from 'vitest';
-import DataOverviewDetails from './DataOverviewDetails.tsx';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import DataOverviewDetails from './DataOverviewDetails';
 
 test('DataOverviewDetails', () => {
     // Write your tests here

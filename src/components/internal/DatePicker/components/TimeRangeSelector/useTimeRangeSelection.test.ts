@@ -2,7 +2,8 @@
  * @vitest-environment jsdom
  */
 import { test } from 'vitest';
-import { useTimeRangeSelection } from './useTimeRangeSelection.ts';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { useTimeRangeSelection } from './useTimeRangeSelection';
 
 test('useTimeRangeSelection', () => {
     // Write your tests here

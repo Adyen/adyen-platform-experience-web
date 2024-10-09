@@ -2,7 +2,8 @@
  * @vitest-environment jsdom
  */
 import { test } from 'vitest';
-import useDownload from './useDownload.ts';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import useDownload from './useDownload';
 
 test('useDownload', () => {
     // Write your tests here

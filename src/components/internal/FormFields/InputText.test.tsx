@@ -2,7 +2,8 @@
  * @vitest-environment jsdom
  */
 import { test } from 'vitest';
-import InputText from './InputText.tsx';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import InputText from './InputText';
 
 test('InputText', () => {
     // Write your tests here

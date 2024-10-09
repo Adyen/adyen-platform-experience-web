@@ -2,7 +2,8 @@
  * @vitest-environment jsdom
  */
 import { test } from 'vitest';
-import CalendarGridDate from './CalendarGridDate.tsx';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import CalendarGridDate from './CalendarGridDate';
 
 test('CalendarGridDate', () => {
     // Write your tests here

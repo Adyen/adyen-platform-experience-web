@@ -2,7 +2,8 @@
  * @vitest-environment jsdom
  */
 import { test } from 'vitest';
-import { InteractiveBody } from './InteractiveBody.tsx';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { InteractiveBody } from './InteractiveBody';
 
 test('InteractiveBody', () => {
     // Write your tests here

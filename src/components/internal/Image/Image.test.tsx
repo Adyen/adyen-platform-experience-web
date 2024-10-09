@@ -2,7 +2,8 @@
  * @vitest-environment jsdom
  */
 import { test } from 'vitest';
-import { Image } from './Image.tsx';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { Image } from './Image';
 
 test('Image', () => {
     // Write your tests here

@@ -2,7 +2,8 @@
  * @vitest-environment jsdom
  */
 import { test } from 'vitest';
-import usePagination from './usePagination.ts';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import usePagination from './usePagination';
 
 test('usePagination', () => {
     // Write your tests here

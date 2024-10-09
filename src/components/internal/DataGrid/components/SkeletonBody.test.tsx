@@ -2,7 +2,8 @@
  * @vitest-environment jsdom
  */
 import { test } from 'vitest';
-import SkeletonBody from './SkeletonBody.tsx';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import SkeletonBody from './SkeletonBody';
 
 test('SkeletonBody', () => {
     // Write your tests here

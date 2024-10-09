@@ -2,7 +2,8 @@
  * @vitest-environment jsdom
  */
 import { test } from 'vitest';
-import CopyText from './CopyText.tsx';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import CopyText from './CopyText';
 
 test('CopyText', () => {
     // Write your tests here

@@ -2,7 +2,8 @@
  * @vitest-environment jsdom
  */
 import { test } from 'vitest';
-import TimeRangeSelector from './TimeRangeSelector.tsx';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import TimeRangeSelector from './TimeRangeSelector';
 
 test('TimeRangeSelector', () => {
     // Write your tests here

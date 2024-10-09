@@ -2,7 +2,8 @@
  * @vitest-environment jsdom
  */
 import { test } from 'vitest';
-import { TableHeaderCell } from './TableHeaderCell.tsx';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { TableHeaderCell } from './TableHeaderCell';
 
 test('TableHeaderCell', () => {
     // Write your tests here

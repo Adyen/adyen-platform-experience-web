@@ -2,7 +2,8 @@
  * @vitest-environment jsdom
  */
 import { test } from 'vitest';
-import InfoBox from './InfoBox.tsx';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import InfoBox from './InfoBox';
 
 test('InfoBox', () => {
     // Write your tests here

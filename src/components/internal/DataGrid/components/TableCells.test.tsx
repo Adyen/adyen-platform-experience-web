@@ -2,7 +2,8 @@
  * @vitest-environment jsdom
  */
 import { test } from 'vitest';
-import { TableCells } from './TableCells.tsx';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { TableCells } from './TableCells';
 
 test('TableCells', () => {
     // Write your tests here

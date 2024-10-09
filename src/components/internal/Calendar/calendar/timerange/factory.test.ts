@@ -1,4 +1,5 @@
 import { assertType, describe, expect, test } from 'vitest';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { SYSTEM_TIMEZONE } from '../../../../../core/Localization/datetime/restamper';
 import createRangeTimestampsFactory from './factory';
 import type { RangeTimestamps } from './types';

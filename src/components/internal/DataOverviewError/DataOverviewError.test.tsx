@@ -2,7 +2,8 @@
  * @vitest-environment jsdom
  */
 import { test } from 'vitest';
-import DataOverviewError from './DataOverviewError.tsx';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import DataOverviewError from './DataOverviewError';
 
 test('DataOverviewError', () => {
     // Write your tests here

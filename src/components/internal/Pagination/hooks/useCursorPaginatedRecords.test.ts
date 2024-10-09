@@ -2,7 +2,8 @@
  * @vitest-environment jsdom
  */
 import { test } from 'vitest';
-import useCursorPaginatedRecords from './useCursorPaginatedRecords.ts';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import useCursorPaginatedRecords from './useCursorPaginatedRecords';
 
 test('useCursorPaginatedRecords', () => {
     // Write your tests here

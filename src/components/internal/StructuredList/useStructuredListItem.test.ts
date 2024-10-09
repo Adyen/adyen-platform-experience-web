@@ -2,7 +2,8 @@
  * @vitest-environment jsdom
  */
 import { test } from 'vitest';
-import { useStructuredListItems } from './useStructuredListItem.ts';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { useStructuredListItems } from './useStructuredListItem';
 
 test('useStructuredListItem', () => {
     // Write your tests here

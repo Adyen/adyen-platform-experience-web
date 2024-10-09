@@ -2,7 +2,8 @@
  * @vitest-environment jsdom
  */
 import { test } from 'vitest';
-import Spinner from './Spinner.tsx';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import Spinner from './Spinner';
 
 test('Spinner', () => {
     // Write your tests here

@@ -2,7 +2,8 @@
  * @vitest-environment jsdom
  */
 import { test } from 'vitest';
-import { useDataGridContext } from './useDataGridContext.ts';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { useDataGridContext } from './useDataGridContext';
 
 test('useDataGridContext', () => {
     // Write your tests here

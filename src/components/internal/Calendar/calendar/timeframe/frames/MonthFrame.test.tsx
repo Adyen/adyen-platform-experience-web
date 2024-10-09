@@ -1,5 +1,6 @@
 // @vitest-environment jsdom
 import { describe, expect, test, vi } from 'vitest';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { BASE_LOCALE, SYSTEM_TIMEZONE } from '../../../../../../core/Localization/datetime/restamper/constants';
 import { TIMEZONE_PAST_DATES_TEST_ORIGIN_DATE } from '../../../../../../core/Localization/datetime/restamper/testing/fixtures';
 import { systemToTimezone, timezoneToSystem } from '../../../../../../core/Localization/datetime/restamper';

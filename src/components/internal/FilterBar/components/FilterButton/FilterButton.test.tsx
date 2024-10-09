@@ -2,7 +2,8 @@
  * @vitest-environment jsdom
  */
 import { test } from 'vitest';
-import FilterButton from './FilterButton.tsx';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import FilterButton from './FilterButton';
 
 test('FilterButton', () => {
     // Write your tests here

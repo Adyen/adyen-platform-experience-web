@@ -2,7 +2,8 @@
  * @vitest-environment jsdom
  */
 import { test } from 'vitest';
-import Pagination from './Pagination.tsx';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import Pagination from './Pagination';
 
 test('Pagination', () => {
     // Write your tests here
