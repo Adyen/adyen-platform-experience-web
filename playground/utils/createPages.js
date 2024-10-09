@@ -65,7 +65,4 @@ const addEventListeners = () => {
 };
 
 insertHeader(pages);
-/*alert(
-    'Playground is being deprecated. Please use storybook. If you find anything missing there that you can only find using playground, notify the team'
-);*/
 // addEventListeners();
