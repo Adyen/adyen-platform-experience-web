@@ -2,7 +2,6 @@
  * @vitest-environment jsdom
  */
 import { render, within } from '@testing-library/preact';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { describe, test, expect, beforeEach, vi, Mock } from 'vitest';
 import { TRANSACTIONS } from '../../../../../mocks/mock-data';
 import userEvent from '@testing-library/user-event';
