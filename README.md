@@ -55,7 +55,7 @@ Have a look at our [contributing guidelines](https://github.com/Adyen/.github/bl
 
 ## See also
 
--   [Documentation](https://docs.adyen.com/)
+-   [Documentation](https://docs.adyen.com/platforms/components-overview/)
 -   [API Explorer](https://docs.adyen.com/api-explorer/)
 
 ## Support
