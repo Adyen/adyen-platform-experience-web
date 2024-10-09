@@ -8,14 +8,19 @@ import {
     ATTR_TAB_INDEX,
     ATTRS_SPIN_BUTTON,
     ATTRS_STEP_CONTROL,
+    DEFAULT_VALUE_LEAP,
+    DEFAULT_VALUE_MAX,
+    DEFAULT_VALUE_MIN,
+    DEFAULT_VALUE_NOW,
+    DEFAULT_VALUE_STEP,
     NON_TABBABLE_TAB_INDEX,
     ROLE_SPIN_BUTTON,
     TABBABLE_TAB_INDEX,
 } from './constants';
-import { ALREADY_RESOLVED_PROMISE, boolOrFalse, clamp, EMPTY_OBJECT } from '../../../../utils';
+import { ALREADY_RESOLVED_PROMISE, asPlainObject, boolOrFalse, clamp, EMPTY_OBJECT, isUndefined } from '../../../../utils';
 import { SpinButtonCalibrationProps, SpinButtonState, SpinButtonValueOffset } from './types';
 import { InteractionKeyCode } from '../../../types';
-import { add, attr, removeAttr } from './utils';
+import { add, attr, divide, removeAttr } from './utils';
 
 export default class SpinButton {
     private _containerElement: HTMLElement | null = null;
@@ -26,15 +31,15 @@ export default class SpinButton {
     private _disabled = false;
     private _onChange?: (currentState: SpinButtonState) => unknown;
     private _raf?: ReturnType<typeof requestAnimationFrame>;
+    private _synchronizePending = false;
 
-    private _valueMin = 0;
-    private _valueMax = 100;
-    private _valueNow = 0;
-    private _valueStep = 1;
-    private _valueLeap = 10;
+    private _valueLeap = DEFAULT_VALUE_LEAP;
+    private _valueMax = DEFAULT_VALUE_MAX;
+    private _valueMin = DEFAULT_VALUE_MIN;
+    private _valueNow = DEFAULT_VALUE_NOW;
+    private _valueStep = DEFAULT_VALUE_STEP;
 
     constructor() {
-        this._dispatchCurrentState = this._dispatchCurrentState.bind(this);
         this._ensureFocusIsPreserved = this._ensureFocusIsPreserved.bind(this);
         this.onKeyboardInteraction = this.onKeyboardInteraction.bind(this);
         this.onMouseInteraction = this.onMouseInteraction.bind(this);
@@ -50,31 +55,12 @@ export default class SpinButton {
 
     private set _value(value: number) {
         const nextValue = clamp(this._valueMin, value, this._valueMax);
-
-        if (this._valueNow !== (this._valueNow = nextValue)) {
-            ALREADY_RESOLVED_PROMISE.then(this._dispatchCurrentState);
-            this._updateDecrementButtonDisability();
-            this._updateIncrementButtonDisability();
-            this._updateValueNowAttribute();
-        }
+        if (this._valueNow !== (this._valueNow = nextValue)) this._synchronize();
     }
 
     private _beforeHandlingInteraction(evt: KeyboardEvent | MouseEvent) {
         evt.preventDefault();
         evt.stopPropagation();
-    }
-
-    private _dispatchCurrentState() {
-        this._onChange?.({
-            disabled: this._disabled,
-            decrementButtonDisabled: this._decrementButtonDisabled,
-            incrementButtonDisabled: this._incrementButtonDisabled,
-            leap: this._valueLeap,
-            max: this._valueMax,
-            min: this._valueMin,
-            step: this._valueStep,
-            value: this._valueNow,
-        });
     }
 
     private _ensureFocusIsPreserved() {
@@ -107,6 +93,17 @@ export default class SpinButton {
         this._value = add(this._valueNow, offset);
     }
 
+    private _recalibrateRange(min?: number, max?: number): readonly [number, number] {
+        const hasMin = !isUndefined(min);
+        const hasMax = !isUndefined(max);
+
+        if (hasMin && hasMax) return [min, min > max ? Math.max(min, DEFAULT_VALUE_MAX) : max] as const;
+        if (hasMin) return [min, Math.max(min, DEFAULT_VALUE_MAX)] as const;
+        if (hasMax) return [Math.min(max, DEFAULT_VALUE_MIN), max] as const;
+
+        return [DEFAULT_VALUE_MIN, DEFAULT_VALUE_MAX] as const;
+    }
+
     private _setupSpinButtonElement(current: HTMLElement | null, next: HTMLElement | null) {
         ATTRS_SPIN_BUTTON.forEach(attr => removeAttr(current, attr));
         attr(next, ATTR_ROLE, ROLE_SPIN_BUTTON);
@@ -120,6 +117,31 @@ export default class SpinButton {
         ATTRS_STEP_CONTROL.forEach(attr => removeAttr(current, attr));
         attr(next, ATTR_TAB_INDEX, NON_TABBABLE_TAB_INDEX);
         this._updateStepButtonDisability(next, disabled);
+    }
+
+    private _synchronize() {
+        if (!this._synchronizePending) {
+            this._synchronizePending = true;
+
+            ALREADY_RESOLVED_PROMISE.then(() => {
+                this._synchronizePending = false;
+
+                this._onChange?.({
+                    disabled: this._disabled,
+                    decrementButtonDisabled: this._decrementButtonDisabled,
+                    incrementButtonDisabled: this._incrementButtonDisabled,
+                    leap: this._valueLeap,
+                    max: this._valueMax,
+                    min: this._valueMin,
+                    step: this._valueStep,
+                    value: this._valueNow,
+                });
+            });
+        }
+
+        this._updateDecrementButtonDisability();
+        this._updateIncrementButtonDisability();
+        this._updateValueNowAttribute();
     }
 
     private _updateDecrementButtonDisability(elem = this._decrementButton) {
@@ -216,11 +238,37 @@ export default class SpinButton {
     }
 
     set onChange(value: ((currentState: SpinButtonState) => unknown) | undefined | null) {
-        if (this._onChange !== (this._onChange = value ?? undefined)) this._dispatchCurrentState();
+        if (this._onChange !== (this._onChange = value ?? undefined)) this._synchronize();
     }
 
     recalibrate(options = EMPTY_OBJECT as SpinButtonCalibrationProps) {
-        this._dispatchCurrentState();
+        let { leap, max, min, step, value } = asPlainObject(options);
+        let shouldSynchronizeChanges = false;
+
+        // recalibrate range
+        [min, max] = this._recalibrateRange(min, max);
+
+        if (this._valueMin !== (this._valueMin = min)) shouldSynchronizeChanges ||= true;
+        if (this._valueMax !== (this._valueMax = max)) shouldSynchronizeChanges ||= true;
+
+        // recalibrate step
+        step = Math.max(0, step ?? DEFAULT_VALUE_STEP) || DEFAULT_VALUE_STEP;
+        leap = isUndefined(leap) ? 0 : Math.max(0, Math.trunc(leap));
+
+        if (this._valueStep !== (this._valueStep = step)) shouldSynchronizeChanges ||= true;
+        if (this._valueLeap !== (this._valueLeap = leap)) shouldSynchronizeChanges ||= true;
+
+        // recalibrate value
+        const rangeMidValue = add(min, divide(add(max, -min), 2));
+        const rangeFallbackValue = add(min, Math.round(divide(add(rangeMidValue, -min), step)) * step);
+        value = clamp(min, value ?? rangeFallbackValue, max);
+
+        if (this._valueNow !== value) {
+            shouldSynchronizeChanges ||= true;
+            this._value = value;
+        }
+
+        if (shouldSynchronizeChanges) this._synchronize();
     }
 
     onKeyboardInteraction(evt: KeyboardEvent) {
