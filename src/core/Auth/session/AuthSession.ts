@@ -5,11 +5,13 @@ import { createErrorContainer } from '../../../primitives/auxiliary/errorContain
 import { createPromisor } from '../../../primitives/async/promisor';
 import { createWatchlist } from '../../../primitives/reactive/watchlist';
 import { boolOrFalse, boolOrTrue, isFunction } from '../../../utils';
+
 import type { onErrorHandler } from '../../types';
 
 export class AuthSession {
     private _canSkipSessionRefresh = false;
     private _refreshPromisorSignal: AbortSignal | undefined;
+    private _sessionIsFrozen = false;
 
     private readonly _errorContainer = createErrorContainer();
     private readonly _specification = new AuthSessionSpecification();
@@ -47,10 +49,12 @@ export class AuthSession {
         endpoints: () => this._setupContext.endpoints,
         hasError: () => this._errorContainer.hasError,
         isExpired: () => this._sessionContext.isExpired,
+        isFrozen: () => this._sessionIsFrozen,
         refreshing: () => !!this._refreshPromisorSignal,
     });
 
-    public readonly destroy = () => {
+    public readonly freeze = () => {
+        this._sessionIsFrozen = true;
         this._watchlist.on.resume = undefined;
         this._watchlist.cancelSubscriptions();
     };

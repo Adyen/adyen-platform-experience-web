@@ -10,6 +10,7 @@ const AuthContext = createContext<AuthSession['context'] & Pick<AuthSession, 'ht
     hasError: false,
     http: asyncNoop,
     isExpired: undefined,
+    isFrozen: false,
     refresh: noop,
     refreshing: false,
 });
