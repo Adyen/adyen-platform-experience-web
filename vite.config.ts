@@ -18,7 +18,7 @@ const externalDependencies = Object.keys(packageJson.dependencies);
 
 const playgroundDir = resolve(__dirname, 'playground/pages');
 const demoPlaygroundDir = resolve(__dirname, 'playground');
-const isDevMode = (mode: any) => ['mocked', 'development'].includes(mode);
+const isDevMode = (mode: any) => ['mocked', 'development', 'local-env'].includes(mode);
 
 async function getPlaygroundEntrypoints() {
     const playgroundPages = await readdir(playgroundDir);
