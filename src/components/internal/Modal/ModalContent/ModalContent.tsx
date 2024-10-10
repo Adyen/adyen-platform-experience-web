@@ -9,12 +9,13 @@ const CLASSNAMES = {
 
 function ModalContent({ type, data }: SelectedDetail) {
     const detailProps: DetailsComponentProps = useMemo(() => {
-        if (type === 'payout') {
-            return { ...(data as PayoutDetailsWithIdProps & { balanceAccountDescription?: string }), type: 'payout' };
-        } else if (type === 'transaction') {
-            return { id: data, type: type } as DetailsComponentProps;
-        } else {
-            return { data: data, type: type } as DetailsComponentProps;
+        switch (type) {
+            case 'payout':
+                return { ...(data as PayoutDetailsWithIdProps & { balanceAccountDescription?: string }), type };
+            case 'transaction':
+                return { id: data, type } as DetailsComponentProps;
+            default:
+                return { data, type } as DetailsComponentProps;
         }
     }, [data, type]);
 
