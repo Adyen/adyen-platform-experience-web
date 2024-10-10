@@ -66,6 +66,7 @@
     "paymentId": "ID di pagamento",
     "paymentMethod": "Metodo di pagamento",
     "payoutDetails": "Dettagli di pagamento",
+    "payoutsNotice": "Le informazioni sui pagamenti vengono generate ogni giorno a mezzanotte, ora UTC.",
     "payoutsTitle": "Pagamenti",
     "Pending": "In sospeso",
     "pleaseReachOutToSupportForAssistance": "Contatta il supporto per ricevere assistenza.",
