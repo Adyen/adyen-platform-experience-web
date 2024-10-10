@@ -138,11 +138,11 @@ export const TransactionsOverview = ({
     const onRowClick = useCallback(
         (value: ITransaction) => {
             updateDetails({
-                selection: { type: 'transaction', data: { ...value, balanceAccount: activeBalanceAccount } },
+                selection: { type: 'transaction', data: value.id },
                 modalSize: 'small',
             }).callback({ id: value.id });
         },
-        [updateDetails, activeBalanceAccount]
+        [updateDetails]
     );
 
     const sinceDate = useMemo(() => {
