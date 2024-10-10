@@ -136,13 +136,13 @@ export const TransactionsOverview = ({
     const { updateDetails, resetDetails, selectedDetail } = useModalDetails(modalOptions);
 
     const onRowClick = useCallback(
-        (value: ITransaction) => {
+        ({ id }: ITransaction) => {
             updateDetails({
-                selection: { type: 'transaction', data: { ...value, balanceAccount: activeBalanceAccount } },
+                selection: { type: 'transaction', data: id },
                 modalSize: 'small',
-            }).callback({ id: value.id });
+            }).callback({ id });
         },
-        [updateDetails, activeBalanceAccount]
+        [updateDetails]
     );
 
     const sinceDate = useMemo(() => {
