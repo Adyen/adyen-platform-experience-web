@@ -24,7 +24,7 @@ const sessionReady = async (session: AuthSession) => {
         if (boolOrTrue(session.context.isExpired)) {
             if ((canRefreshSession ??= !(refreshInProgress || didTriggerRefresh))) {
                 canRefreshSession = false;
-                session.context.refresh!();
+                session.refresh();
                 return;
             }
         }
