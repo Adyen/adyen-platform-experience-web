@@ -1,11 +1,11 @@
 import { createContext, toChildArray } from 'preact';
-import { useContext, useEffect, useState } from 'preact/hooks';
+import { useContext, useEffect, useMemo, useState } from 'preact/hooks';
 import { AuthSession } from './session/AuthSession';
 import { isWatchlistUnsubscribeToken } from '../../primitives/reactive/watchlist';
 import { asyncNoop, EMPTY_OBJECT, noop } from '../../utils';
 import type { AuthProviderProps } from './types';
 
-const AuthContext = createContext<AuthSession['context']>({
+const AuthContext = createContext<AuthSession['context'] & Pick<AuthSession, 'http' | 'refresh'>>({
     endpoints: EMPTY_OBJECT,
     hasError: false,
     http: asyncNoop,
@@ -15,6 +15,7 @@ const AuthContext = createContext<AuthSession['context']>({
 });
 
 export const AuthProvider = ({ children, session }: AuthProviderProps) => {
+    const { http, refresh } = useMemo(() => session, [session]);
     const [, setContextCounter] = useState(0);
     const [unsubscribeCounter, setUnsubscribeCounter] = useState(0);
 
@@ -25,7 +26,7 @@ export const AuthProvider = ({ children, session }: AuthProviderProps) => {
         });
     }, [unsubscribeCounter, session]);
 
-    return <AuthContext.Provider value={session.context}>{toChildArray(children)}</AuthContext.Provider>;
+    return <AuthContext.Provider value={{ ...session.context, http, refresh }}>{toChildArray(children)}</AuthContext.Provider>;
 };
 
 export const useAuthContext = () => useContext(AuthContext);
