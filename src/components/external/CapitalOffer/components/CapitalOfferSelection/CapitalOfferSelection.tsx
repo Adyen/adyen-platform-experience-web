@@ -11,7 +11,7 @@ import { useAuthContext } from '../../../../../core/Auth';
 import useMutation from '../../../../../hooks/useMutation/useMutation';
 import { IDynamicOfferConfig, IGrantOfferResponseDTO } from '../../../../../types';
 import './CapitalOfferSelection.scss';
-import { getExpectedRepaymentDate } from '../utils/utils';
+import { debounce, getExpectedRepaymentDate } from '../utils/utils';
 import CapitalSlider from '../../../../internal/CapitalSlider';
 
 type CapitalOfferSelectionProps = {
@@ -90,6 +90,11 @@ export const CapitalOfferSelection = ({
     const { reviewGrantOffer, getDynamicGrantOffer } = useAuthContext().endpoints;
     const getDynamicGrantOfferMutation = useMutation({
         queryFn: getDynamicGrantOffer,
+        options: {
+            onSettled: useCallback(() => {
+                setIsLoading(false);
+            }, []),
+        },
     });
 
     const reviewOfferMutation = useMutation({
@@ -119,7 +124,21 @@ export const CapitalOfferSelection = ({
         (amount: number) => getDynamicGrantOfferMutationCallback({}, { query: { amount, currency: currency! } }),
         [currency, getDynamicGrantOfferMutationCallback]
     );
-    const handleSliderRelease = (val: number) => getOffer(val);
+
+    const [isLoading, setIsLoading] = useState(false);
+
+    const debouncedGetOfferCall = debounce(getOffer, 300);
+
+    const onChangeHandler = useCallback(
+        (val: number) => {
+            debouncedGetOfferCall.cancel();
+            setIsLoading(true);
+            setRequestedValue(val);
+        },
+        [debouncedGetOfferCall]
+    );
+
+    const handleSliderRelease = (val: number) => debouncedGetOfferCall(val);
 
     useEffect(() => {
         if (config) {
@@ -131,15 +150,10 @@ export const CapitalOfferSelection = ({
     return (
         <div className="adyen-pe-capital-offer-selection">
             {config && (
-                <CapitalSlider
-                    value={requestedValue}
-                    dynamicCapitalOffer={config}
-                    onValueChange={setRequestedValue}
-                    onRelease={handleSliderRelease}
-                />
+                <CapitalSlider value={requestedValue} dynamicCapitalOffer={config} onValueChange={onChangeHandler} onRelease={handleSliderRelease} />
             )}
             <InfoBox className="adyen-pe-capital-offer-selection__details">
-                {!getDynamicGrantOfferMutation.data || getDynamicGrantOfferMutation.isLoading ? (
+                {!getDynamicGrantOfferMutation.data || getDynamicGrantOfferMutation.isLoading || isLoading ? (
                     <LoadingSkeleton />
                 ) : getDynamicGrantOfferMutation.data ? (
                     <InformationDisplay data={getDynamicGrantOfferMutation.data} repaymentFrequency={repaymentFrequency} />
