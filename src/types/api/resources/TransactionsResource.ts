@@ -122,15 +122,21 @@ export interface components {
         SortDirection: 'asc' | 'desc';
         TransactionLineItem: {
             amountIncludingTax: components['schemas']['Amount'];
+            availableQuantity: number;
             brand?: string;
             color?: string;
             description: string;
             id: string;
             itemCategory?: string;
-            quantity: number;
+            originalQuantity: number;
+            refundStatuses: components['schemas']['TransactionLineItemRefundStatus'][];
             size?: string;
             sku?: string;
             taxPercentage: number;
+        };
+        TransactionLineItemRefundStatus: {
+            quantity: number;
+            status: 'completed' | 'failed' | 'in_progress';
         };
         TransactionRefundStatus: {
             amount: components['schemas']['Amount'];

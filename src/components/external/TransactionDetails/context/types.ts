@@ -1,4 +1,4 @@
-import { REFUND_REASONS } from './constants';
+import { REFUND_MODES, REFUND_REASONS } from './constants';
 import type { Dispatch, StateUpdater } from 'preact/hooks';
 import type { TransactionDetailData } from '../types';
 import type { ButtonActionsList } from '../../../internal/Button/ButtonActions/types';
@@ -25,4 +25,13 @@ export interface TransactionDataContextProviderProps {
     transaction?: TransactionDetailData;
 }
 
+export type TransactionLineItem = TransactionDetailData['lineItems'][number];
+export type TransactionLineItemWithQuantity = TransactionLineItem & { quantity: number };
+
+export const enum ActiveView {
+    DETAILS,
+    REFUND,
+}
+
+export type RefundMode = (typeof REFUND_MODES)[number];
 export type RefundReason = (typeof REFUND_REASONS)[number];
