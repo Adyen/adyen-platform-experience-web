@@ -2,7 +2,7 @@ import { useClickOutside } from '../../../hooks/element/useClickOutside';
 import { mediaQueries, useResponsiveViewport } from '../../../hooks/useResponsiveViewport';
 import Button from '../Button';
 import { ButtonVariant } from '../Button/types';
-import Close from '../SVGIcons/Close';
+import Icon from '../Icon';
 import useCoreContext from '../../../core/Context/useCoreContext';
 import { Ref, useCallback, useEffect } from 'preact/hooks';
 import cx from 'classnames';
@@ -42,6 +42,7 @@ export default function Modal({
         return () => window.removeEventListener('keydown', handleEscKey);
     }, [isOpen, handleEscKey]);
 
+    //TODO: Icon fix size
     return (
         <>
             {isOpen && (
@@ -83,7 +84,7 @@ export default function Modal({
                                     className={`adyen-pe-modal__header-icon`}
                                     aria-label={i18n.get('dismiss')}
                                 >
-                                    <Close />
+                                    <Icon name={'cross'} width={16} height={16} />
                                 </Button>
                             )}
                         </div>

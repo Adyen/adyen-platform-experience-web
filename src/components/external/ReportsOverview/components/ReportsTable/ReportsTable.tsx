@@ -14,9 +14,9 @@ import DataGrid from '../../../../internal/DataGrid';
 import { CellTextPosition } from '../../../../internal/DataGrid/types';
 import { DATE_FORMAT_REPORTS } from '../../../../../constants';
 import DataOverviewError from '../../../../internal/DataOverviewError/DataOverviewError';
+import Icon from '../../../../internal/Icon';
 import Pagination from '../../../../internal/Pagination';
 import { PaginationProps, WithPaginationLimitSelection } from '../../../../internal/Pagination/types';
-import Warning from '../../../../internal/SVGIcons/Warning';
 import { TypographyVariant } from '../../../../internal/Typography/types';
 import Typography from '../../../../internal/Typography/Typography';
 import { getLabel } from '../../../../utils/getLabel';
@@ -92,7 +92,7 @@ export const ReportsTable: FC<ReportsTableProps> = ({
         [error, onContactSupport]
     );
 
-    const errorIcon = useMemo(() => <Warning />, []);
+    const errorIcon = useMemo(() => <Icon name={'warning'} />, []);
 
     const onDownloadErrorAlert = useMemo(
         () => (error?: AdyenPlatformExperienceError) => {

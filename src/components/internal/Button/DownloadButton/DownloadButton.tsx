@@ -5,8 +5,8 @@ import useCoreContext from '../../../../core/Context/useCoreContext';
 import AdyenPlatformExperienceError from '../../../../core/Errors/AdyenPlatformExperienceError';
 import { EndpointName } from '../../../../types/api/endpoints';
 import { mediaQueries, useResponsiveViewport } from '../../../../hooks/useResponsiveViewport';
+import Icon from '../../Icon';
 import Spinner from '../../Spinner';
-import Download from '../../SVGIcons/Download';
 import Button from '../Button';
 import { ButtonVariant } from '../types';
 import useDownload from './useDownload';
@@ -69,11 +69,12 @@ function DownloadButton({ className, disabled, endpointName, params, setError, e
         onDownloadRequested?.();
     };
 
+    //TODO: Icon check the look
     return (
         <div className="adyen-pe-download">
             {isSmViewport ? (
                 <Button iconButton={true} variant={ButtonVariant.TERTIARY} onClick={onClick}>
-                    {isFetching ? <Spinner size={'small'} /> : <Download />}
+                    {isFetching ? <Spinner size={'small'} /> : <Icon name={'download'} />}
                 </Button>
             ) : (
                 <Button
@@ -81,7 +82,7 @@ function DownloadButton({ className, disabled, endpointName, params, setError, e
                     disabled={disabled || isFetching}
                     variant={ButtonVariant.SECONDARY}
                     onClick={onClick}
-                    iconLeft={isFetching ? <Spinner size={'small'} /> : <Download />}
+                    iconLeft={isFetching ? <Spinner size={'small'} /> : <Icon name={'download'} />}
                 >
                     {isFetching ? `${i18n.get('downloading')}..` : i18n.get('download')}
                 </Button>

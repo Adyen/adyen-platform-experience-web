@@ -1,8 +1,7 @@
 import { ButtonVariant } from '../../Button/types';
 import { useCallback } from 'preact/hooks';
 import { isFunction } from '../../../../utils';
-import ChevronDown from '../../SVGIcons/ChevronDown';
-import ChevronUp from '../../SVGIcons/ChevronUp';
+import Icon from '../../Icon';
 import { CalendarControlRenderer, CalendarRenderControl } from '../types';
 import useCoreContext from '../../../../core/Context/useCoreContext';
 import useDetachedRender from '../../../../hooks/element/useDetachedRender';
@@ -19,17 +18,18 @@ const useCalendarControlsRendering = (renderControl?: CalendarRenderControl) => 
 
                 let directionModifier: string;
                 let labelModifier: 'next' | 'previous';
-                let Chevron: typeof ChevronDown | typeof ChevronUp;
+                //TODO: Icon Check role presentation
+                let Chevron: (props: any) => ReturnType<typeof Icon>;
 
                 switch (control) {
                     case 'PREV':
                         directionModifier = 'prev';
                         labelModifier = 'previous';
-                        Chevron = ChevronUp;
+                        Chevron = props => <Icon name={'chevron-up'} {...props} />;
                         break;
                     case 'NEXT':
                         directionModifier = labelModifier = 'next';
-                        Chevron = ChevronDown;
+                        Chevron = props => <Icon name={'chevron-down'} {...props} />;
                         break;
                     default:
                         return null;

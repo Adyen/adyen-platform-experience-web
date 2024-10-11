@@ -1,7 +1,5 @@
 import cx from 'classnames';
 import Button from '../Button';
-import Close from '../SVGIcons/Close';
-import Filter from '../SVGIcons/Filter';
 import { isFunction } from '../../../utils';
 import { ButtonVariant } from '../Button/types';
 import { PropsWithChildren } from 'preact/compat';
@@ -10,6 +8,7 @@ import useCoreContext from '../../../core/Context/useCoreContext';
 import { mediaQueries, useResponsiveViewport } from '../../../hooks/useResponsiveViewport';
 import type { FilterBarMobileSwitchProps, FilterBarProps } from './types';
 import './FilterBar.scss';
+import Icon from '../Icon';
 
 const MOBILE_SWITCH_CLASS = 'adyen-pe-filter-bar-mobile-switch';
 
@@ -34,7 +33,7 @@ export const FilterBarMobileSwitch = ({ isMobileViewport, showingFilters, setSho
                 onClick={() => setShowingFilters?.(!showingFilters)}
                 variant={ButtonVariant.SECONDARY}
             >
-                {showingFilters ? <Close /> : <Filter />}
+                {<Icon name={showingFilters ? 'cross' : 'filter'} width={16} height={16} />}
             </Button>
         </div>
     ) : null;

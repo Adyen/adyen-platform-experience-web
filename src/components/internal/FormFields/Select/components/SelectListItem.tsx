@@ -1,10 +1,8 @@
 import cx from 'classnames';
 import { memo } from 'preact/compat';
+import Icon from '../../../Icon';
 import Img from '../../../Img';
 import type { SelectItem, SelectItemProps } from '../types';
-import CheckedBox from '../../../SVGIcons/CheckedBox';
-import UncheckedBox from '../../../SVGIcons/UncheckedBox';
-import Checkmark from '../../../SVGIcons/Checkmark';
 import { boolOrFalse } from '../../../../../utils';
 import {
     DROPDOWN_ELEMENT_ACTIVE_CLASS,
@@ -19,15 +17,21 @@ import {
 type _RenderSelectOptionResult<T extends SelectItem> = ReturnType<SelectItemProps<T>['renderListItem']>;
 type _RenderSelectOptionData<T extends SelectItem> = Parameters<SelectItemProps<T>['renderListItem']>[0];
 
+//TODO: Icon check styles
 export const renderDefaultMultiSelectionCheckedness = <T extends SelectItem>(data: _RenderSelectOptionData<T>): _RenderSelectOptionResult<T> =>
     data.multiSelect ? (
         <span className={DROPDOWN_ELEMENT_CHECKBOX_CLASS}>
-            {data.selected ? <CheckedBox role="presentation" /> : <UncheckedBox role="presentation" />}
+            {<Icon name={data.selected ? 'checkmark-square-fill' : 'square'} role="presentation" width={16} height={16} />}
         </span>
     ) : null;
 
+//TODO: Icon check styles
 export const renderDefaultSingleSelectionCheckedness = <T extends SelectItem>(data: _RenderSelectOptionData<T>): _RenderSelectOptionResult<T> =>
-    data.multiSelect ? null : <span className={DROPDOWN_ELEMENT_CHECKMARK_CLASS}>{data.selected && <Checkmark role="presentation" />}</span>;
+    data.multiSelect ? null : (
+        <span className={DROPDOWN_ELEMENT_CHECKMARK_CLASS}>
+            {data.selected && <Icon name={'checkmark'} role="presentation" width={16} height={16} />}
+        </span>
+    );
 
 export const renderListItemDefault = <T extends SelectItem>(data: _RenderSelectOptionData<T>): _RenderSelectOptionResult<T> => (
     <>

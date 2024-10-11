@@ -1,9 +1,7 @@
-import cx from 'classnames';
 import classnames from 'classnames';
 import { PropsWithChildren } from 'preact/compat';
 import { useCallback, useRef, useState } from 'preact/hooks';
-import ChevronDown from '../SVGIcons/ChevronDown';
-import ChevronUp from '../SVGIcons/ChevronUp';
+import Icon from '../Icon';
 import {
     ACCORDION_BASE_CLASS,
     ACCORDION_CONTENT_CLASS,
@@ -34,7 +32,7 @@ function Accordion({ children, classNames, header, headerInformation }: PropsWit
                 >
                     <div className={ACCORDION_HEADER_CONTROLLER_CLASS}>
                         {header}
-                        {isExpanded ? <ChevronUp height={8} width={15} /> : <ChevronDown height={8} width={15} />}
+                        {<Icon height={8} width={15} name={isExpanded ? 'chevron-up' : 'chevron-down'} />}
                     </div>
                 </button>
                 {headerInformation && <div>{headerInformation}</div>}
