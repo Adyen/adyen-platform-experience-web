@@ -1,0 +1,37 @@
+name: Generate Project Summary
+
+on:
+  schedule:
+    - cron: '0 9 * * 5'
+  workflow_dispatch:
+
+jobs:
+  generate-and-send-summary:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install @octokit/graphql
+
+      - name: Generate Summary
+        id: generate
+        run: node generate-summary.js
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Send Message to Mattermost
+        env:
+          MATTERMOST_WEBHOOK_URL: ${{ secrets.MATTERMOST_WEBHOOK_URL }}
+          SUMMARY: ${{ steps.generate.outputs.summary }}
+        run: |
+          SUMMARY_JSON=$(echo "${SUMMARY}" | python -c 'import json,sys; print(json.dumps(sys.stdin.read()))')
+          curl -X POST -H 'Content-Type: application/json' \
+            --data "{\"text\":${SUMMARY_JSON}}" \
+            $MATTERMOST_WEBHOOK_URL
