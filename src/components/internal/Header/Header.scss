@@ -22,10 +22,10 @@
     }
 
     &__title + &__subtitle {
-        margin-top: style.token(spacer-020);
+        margin: style.token(spacer-020) 0 style.token(spacer-070);
     }
 
     &__divider {
-        margin-top: style.token(spacer-070);
+        margin: style.token(spacer-070) 0;
     }
 }

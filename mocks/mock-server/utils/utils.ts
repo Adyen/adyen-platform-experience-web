@@ -81,7 +81,6 @@ export const calculateGrant = (amount: number | string, currency: string) => {
     const minimumRepayment = Number(totalAmount / numberOfRepayments);
 
     const response = {
-        id: uuid(),
         grantAmount: {
             value: Number(amount),
             currency: currency,

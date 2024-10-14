@@ -6,10 +6,22 @@ import { CapitalMockedResponses } from '../../mocks/mock-server/capital';
 
 const meta: Meta<ElementProps<typeof CapitalOverview>> = { ...CapitalOverviewMeta, title: 'Mocked/Capital Overview' };
 
-export const Default: ElementStory<typeof CapitalOverview> = {
-    name: 'Default',
+export const WithCallbacks: ElementStory<typeof CapitalOverview> = {
+    name: 'With callbacks',
     args: {
         mockedApi: true,
+        onRequestFunds: (data, goToNextStep) => {
+            alert(`Amount requested: ${data.grantAmount.value}`);
+            goToNextStep();
+        },
+        onSeeOptions(goToNextStep) {
+            alert('Are you sure?');
+            goToNextStep();
+        },
+        onOfferDismissed: goToPreviousStep => {
+            alert('Offer dismissed');
+            goToPreviousStep();
+        },
     },
     parameters: {
         msw: {

@@ -1,0 +1,34 @@
+@use '../../../../../style' as style;
+
+.adyen-pe-capital-offer-summary {
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-060);
+
+    &__grant-summary {
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-020);
+    }
+
+    &__list-label {
+        color: style.token(color-label-secondary);
+    }
+
+    &__buttons {
+        display: flex;
+        gap: style.token(spacer-050);
+        justify-content: end;
+        margin-top: style.token(spacer-080);
+    }
+
+    &__details {
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-020);
+
+        dd {
+            text-align: right;
+        }
+    }
+}

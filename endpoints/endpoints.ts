@@ -19,7 +19,7 @@ export const endpoints = (mode: 'netlify' | 'viteDev' | 'mock') => {
             dynamicOfferConfig: `${baseUrl}/capital/grantOffers/dynamic/configuration`,
             dynamicOffer: `${baseUrl}/capital/grantOffers/dynamic`,
             offerReview: `${baseUrl}/capital/grantOffers/review`,
-            offerSign: `${baseUrl}/capital/grantOffers/dynamic/sign/${matchVariable}`,
+            requestFunds: `${baseUrl}/capital/grantOffers/dynamic/requestFunds/${matchVariable}`,
             grants: `${baseUrl}/capital/grants`,
         },
     } as const;
