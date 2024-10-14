@@ -1,5 +1,5 @@
 import './DataOverviewDetails.scss';
-import { useMemo, useState } from 'preact/hooks';
+import { useCallback, useMemo, useState } from 'preact/hooks';
 import { useAuthContext } from '../../../core/Auth';
 import useCoreContext from '../../../core/Context/useCoreContext';
 import AdyenPlatformExperienceError from '../../../core/Errors/AdyenPlatformExperienceError';
@@ -35,7 +35,9 @@ export default function DataOverviewDetails(props: ExternalUIComponentProps<Deta
     const { i18n } = useCoreContext();
     const getDetail = useAuthContext().endpoints[ENDPOINTS_BY_TYPE[props.type]] as any; // [TODO]: Fix type and remove 'as any'
     const titleKey = useMemo(() => TITLES_BY_TYPE[props.type], [props.type]);
-    const [forceHideTitle, setForceHideTitle] = useState(false);
+    const [forceHideTitle, _setForceHideTitle] = useState(false);
+
+    const setForceHideTitle = useCallback((forceHideTitle: boolean) => _setForceHideTitle(forceHideTitle), []);
 
     const { data, error, isFetching } = useFetch(
         useMemo(

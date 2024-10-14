@@ -3,11 +3,11 @@ import { TX_DATA_LABEL, TX_DETAILS_RESERVED_FIELDS_SET } from '../constants';
 import { _isCustomDataObject } from '../../../internal/DataGrid/components/TableCells';
 import TransactionDetailsDataContainer from './TransactionDetailsDataContainer';
 import useCoreContext from '../../../../core/Context/useCoreContext';
-import useTransactionDataContext from '../context';
+import useTransactionDetailsContext from '../context/details';
 
 const TransactionDataProperties = () => {
     const { i18n } = useCoreContext();
-    const { transaction } = useTransactionDataContext();
+    const { transaction } = useTransactionDetailsContext();
 
     return useMemo(() => {
         const { balanceAccount, id } = transaction;

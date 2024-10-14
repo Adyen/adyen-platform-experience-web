@@ -125,6 +125,10 @@
                 resize: none;
             }
 
+            &:disabled {
+                color: style.token(color-label-disabled);
+            }
+
             &-wrapper {
                 flex: 1;
             }
