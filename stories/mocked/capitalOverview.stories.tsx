@@ -7,6 +7,7 @@ import { useEffect } from 'preact/compat';
 import getMySessionToken from '../../playground/utils/sessionRequest';
 import { ExternalPlatformElement } from '../utils/ExternalPlatformElement/ExternalPlatformElement';
 import { useState } from 'preact/hooks';
+import { CapitalComponentState } from '../../src/components/external/CapitalOverview/types';
 
 const meta: Meta<ElementProps<typeof CapitalOverview>> = { ...CapitalOverviewMeta, title: 'Mocked/Capital Overview' };
 
@@ -132,7 +133,7 @@ export const NoRender: ElementStory<typeof CapitalOverview, { showUnqualified: b
     name: 'No render unqualified',
     args: {
         mockedApi: true,
-        skipDecorator: true,
+        skipDecorators: true,
         showUnqualified: true,
     },
     parameters: {
@@ -142,7 +143,7 @@ export const NoRender: ElementStory<typeof CapitalOverview, { showUnqualified: b
     },
     decorators: [
         (story, context) => {
-            const [st, setSt] = useState<string>();
+            const [state, setState] = useState<CapitalComponentState>();
 
             useEffect(() => {
                 const getAdyenPlatformExperienceComponent = async () => {
@@ -153,9 +154,11 @@ export const NoRender: ElementStory<typeof CapitalOverview, { showUnqualified: b
 
                     const state = await AdyenCapitalOffer.getState();
 
-                    state === 'OfferAvailable' || context.args.showUnqualified ? AdyenCapitalOffer.mount('#capital-component') : undefined;
+                    state === 'GrantList' || state === 'PreQualified' || context.args.showUnqualified
+                        ? AdyenCapitalOffer.mount('#capital-component')
+                        : undefined;
 
-                    setSt(state);
+                    setState(state);
                 };
                 void getAdyenPlatformExperienceComponent();
             }, [context.args.showUnqualified]);
@@ -165,7 +168,7 @@ export const NoRender: ElementStory<typeof CapitalOverview, { showUnqualified: b
                     <ExternalPlatformElement>{'Element A'}</ExternalPlatformElement>
                     <div style={{ display: 'flex', gap: 10 }}>
                         <div style={{ width: 600 }}>
-                            {st === 'NotQualified' && !context.args.showUnqualified ? (
+                            {state === 'Unqualified' && !context.args.showUnqualified ? (
                                 <ExternalPlatformElement style={{ background: '#51aeff' }}>{'Element D'}</ExternalPlatformElement>
                             ) : (
                                 <div id="capital-component"></div>

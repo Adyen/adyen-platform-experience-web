@@ -29,7 +29,7 @@ const preview: Preview = {
             },
         },
         balanceAccountId: { type: 'string' },
-        skipDecorator: {
+        skipDecorators: {
             table: {
                 disable: true,
             },

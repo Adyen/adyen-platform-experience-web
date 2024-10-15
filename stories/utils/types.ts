@@ -12,7 +12,7 @@ type GlobalStoriesProps = {
     balanceAccountId?: string;
     component: any;
     coreOptions?: Partial<CoreOptions>;
-    skipDecorator?: boolean;
+    skipDecorators?: boolean;
 };
 
 export type ElementProps<T extends new (...args: any) => any> = Omit<ConstructorParameters<T>[0] & GlobalStoriesProps, 'core'>;
