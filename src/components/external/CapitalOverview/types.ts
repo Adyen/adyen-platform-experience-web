@@ -7,4 +7,4 @@ export interface CapitalOverviewProps {
     onOfferDismissed?: (goToPreviousStep: () => void) => void;
 }
 
-export type CapitalComponentStatus = 'NotQualified' | 'OfferAvailable' | 'OfferAccepted';
+export type CapitalComponentState = 'Unqualified' | 'PreQualified' | 'GrantList';

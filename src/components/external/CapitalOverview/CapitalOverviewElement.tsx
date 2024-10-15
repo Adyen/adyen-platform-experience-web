@@ -1,6 +1,6 @@
 import { _UIComponentProps } from '../../types';
 import UIElement from '../UIElement/UIElement';
-import { CapitalComponentStatus, CapitalOverviewProps } from './types';
+import { CapitalComponentState, CapitalOverviewProps } from './types';
 import { CapitalOverview } from './components/CapitalOverview/CapitalOverview';
 import { EMPTY_OBJECT, noop } from '../../../utils';
 import sessionReady from '../../../core/Auth/session/sessionReady';
@@ -18,7 +18,7 @@ export class CapitalOverviewElement extends UIElement<CapitalOverviewProps> {
         return <CapitalOverview {...this.props} ref={(ref: UIElement<CapitalOverviewProps>) => void (this.componentRef = ref)} />;
     };
 
-    public async getState(): Promise<CapitalComponentStatus> {
+    public async getState(): Promise<CapitalComponentState> {
         const { session } = this.props.core;
         await sessionReady(session);
 
@@ -29,7 +29,7 @@ export class CapitalOverviewElement extends UIElement<CapitalOverviewProps> {
             getGrants?.(EMPTY_OBJECT).catch(noop as () => undefined),
         ]);
 
-        return (grants && grants.data.length > 0) || (config && config.minAmount) ? 'OfferAvailable' : 'NotQualified';
+        return grants && grants.data?.length > 0 ? 'GrantList' : config && config.minAmount ? 'PreQualified' : 'Unqualified';
     }
 }
 
