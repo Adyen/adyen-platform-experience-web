@@ -1,9 +1,9 @@
 import { _UIComponentProps } from '../../types';
 import UIElement from '../UIElement/UIElement';
-import sessionReady from '../../utils/sessionReady';
 import { CapitalComponentStatus, CapitalOverviewProps } from './types';
 import { CapitalOverview } from './components/CapitalOverview/CapitalOverview';
 import { EMPTY_OBJECT, noop } from '../../../utils';
+import sessionReady from '../../../core/Auth/session/sessionReady';
 
 export class CapitalOverviewElement extends UIElement<CapitalOverviewProps> {
     public static type = 'capitalOverview';
