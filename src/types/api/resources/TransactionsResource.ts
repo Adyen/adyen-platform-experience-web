@@ -123,16 +123,11 @@ export interface components {
         TransactionLineItem: {
             amountIncludingTax: components['schemas']['Amount'];
             availableQuantity: number;
-            brand?: string;
-            color?: string;
             description: string;
             id: string;
-            itemCategory?: string;
             originalQuantity: number;
             refundStatuses: components['schemas']['TransactionLineItemRefundStatus'][];
-            size?: string;
             sku?: string;
-            taxPercentage: number;
         };
         TransactionLineItemRefundStatus: {
             quantity: number;
@@ -154,11 +149,15 @@ export interface components {
             lineItems: components['schemas']['TransactionLineItem'][];
             refundDetails: components['schemas']['TransactionRefundDetails'];
         };
+        TransactionRefundRequestLineItem: {
+            item: components['schemas']['TransactionLineItem'];
+            quantity: number;
+        };
         TransactionRefundRequest: {
             amount: components['schemas']['Amount'];
+            lineItems?: components['schemas']['TransactionRefundRequestLineItem'][];
             merchantRefundReason?: string;
             reference?: string;
-            lineItems?: components['schemas']['TransactionLineItem'][];
         };
         TransactionRefundResponse: {
             status: 'received';

@@ -1879,7 +1879,6 @@ export const DEFAULT_LINE_ITEMS: ITransactionWithDetails['lineItems'] = [
         availableQuantity: 2,
         originalQuantity: 6,
         refundStatuses: DEFAULT_LINE_ITEM_REFUND_STATUSES,
-        taxPercentage: 250,
     },
     {
         id: '3aa2de10-3de2-494a-9dc9-6abf77597945',
@@ -1888,7 +1887,6 @@ export const DEFAULT_LINE_ITEMS: ITransactionWithDetails['lineItems'] = [
         availableQuantity: 2,
         originalQuantity: 6,
         refundStatuses: DEFAULT_LINE_ITEM_REFUND_STATUSES,
-        taxPercentage: 250,
     },
     {
         id: '620472a7-7eb3-49e6-8ecd-3219e4d614dc',
@@ -1897,7 +1895,6 @@ export const DEFAULT_LINE_ITEMS: ITransactionWithDetails['lineItems'] = [
         availableQuantity: 2,
         originalQuantity: 6,
         refundStatuses: DEFAULT_LINE_ITEM_REFUND_STATUSES,
-        taxPercentage: 250,
     },
     {
         id: '681839b3-dffb-4909-b569-5e1f0606b143',
@@ -1906,7 +1903,6 @@ export const DEFAULT_LINE_ITEMS: ITransactionWithDetails['lineItems'] = [
         availableQuantity: 2,
         originalQuantity: 6,
         refundStatuses: DEFAULT_LINE_ITEM_REFUND_STATUSES,
-        taxPercentage: 250,
     },
     {
         id: '74e5a2f4-7ca2-4ac0-ae0d-fa7fb4577ba1',
@@ -1915,7 +1911,6 @@ export const DEFAULT_LINE_ITEMS: ITransactionWithDetails['lineItems'] = [
         availableQuantity: 2,
         originalQuantity: 6,
         refundStatuses: DEFAULT_LINE_ITEM_REFUND_STATUSES,
-        taxPercentage: 250,
     },
     {
         id: '9124281f-d310-4d38-849d-56502eadf98e',
@@ -1924,7 +1919,6 @@ export const DEFAULT_LINE_ITEMS: ITransactionWithDetails['lineItems'] = [
         availableQuantity: 2,
         originalQuantity: 6,
         refundStatuses: DEFAULT_LINE_ITEM_REFUND_STATUSES,
-        taxPercentage: 250,
     },
     {
         id: 'af6413df-eaed-4a36-aed3-d05837753e29',
@@ -1933,7 +1927,6 @@ export const DEFAULT_LINE_ITEMS: ITransactionWithDetails['lineItems'] = [
         availableQuantity: 2,
         originalQuantity: 6,
         refundStatuses: DEFAULT_LINE_ITEM_REFUND_STATUSES,
-        taxPercentage: 250,
     },
     {
         id: 'c946c7ff-adb1-4035-9a13-8f703e154f76',
@@ -1942,7 +1935,6 @@ export const DEFAULT_LINE_ITEMS: ITransactionWithDetails['lineItems'] = [
         availableQuantity: 2,
         originalQuantity: 6,
         refundStatuses: DEFAULT_LINE_ITEM_REFUND_STATUSES,
-        taxPercentage: 250,
     },
     {
         id: 'e24de04e-b514-43e9-a42f-44c99b3dcca0',
@@ -1951,7 +1943,6 @@ export const DEFAULT_LINE_ITEMS: ITransactionWithDetails['lineItems'] = [
         availableQuantity: 2,
         originalQuantity: 6,
         refundStatuses: DEFAULT_LINE_ITEM_REFUND_STATUSES,
-        taxPercentage: 250,
     },
 ];
 
