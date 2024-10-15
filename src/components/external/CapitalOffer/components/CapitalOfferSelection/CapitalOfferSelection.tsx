@@ -10,21 +10,18 @@ import { useCallback, useMemo, useState } from 'preact/hooks';
 import { useEffect } from 'preact/compat';
 import { useAuthContext } from '../../../../../core/Auth';
 import useMutation from '../../../../../hooks/useMutation/useMutation';
-import { parseDate } from '../../../../../utils';
-import { DAY_MS } from '../../../../internal/Calendar/calendar/constants';
 import { IDynamicOfferConfig, IGrantOfferResponseDTO } from '../../../../../types';
 import './CapitalOfferSelection.scss';
+import { getExpectedRepaymentDate } from '../utils/utils';
 
 type CapitalOfferSelectionProps = {
     config: IDynamicOfferConfig | undefined;
     onBack: () => void;
+    onReviewOffer: (data: IGrantOfferResponseDTO) => void;
+    repaymentFrequency: number;
+    requestedAmount: number | undefined;
+    onOfferSelection: (data: IGrantOfferResponseDTO) => void;
 };
-
-const dateStartUTCTimestampOffset = (date: Date | number | string, numberOfDays = 0) => {
-    return new Date(new Date(date).setUTCHours(0, 0, 0, 0) + Math.floor(numberOfDays) * DAY_MS);
-};
-
-const REPAYMENT_FREQUENCY = 30;
 
 const LoadingSkeleton = () => (
     <div className="adyen-pe-capital-offer-selection__loading-container">
@@ -34,17 +31,17 @@ const LoadingSkeleton = () => (
     </div>
 );
 
-const InformationDisplay = ({ data }: { data: IGrantOfferResponseDTO }) => {
+const InformationDisplay = ({ data, repaymentFrequency }: { data: IGrantOfferResponseDTO; repaymentFrequency: number }) => {
     const { i18n } = useCoreContext();
     const formattedThresholdAmount = useMemo(() => {
         return data
             ? `${i18n.amount(data.thresholdAmount.value, data.thresholdAmount.currency)} ${i18n.get(
                   'capital.every'
-              )} ${REPAYMENT_FREQUENCY} ${i18n.get('capital.repaymentDays')}`
+              )} ${repaymentFrequency} ${i18n.get('capital.repaymentDays')}`
             : '';
-    }, [data, i18n]);
+    }, [data, i18n, repaymentFrequency]);
     const expectedRepaymentDate = useMemo(() => {
-        const date = data && parseDate(dateStartUTCTimestampOffset(new Date(), data.expectedRepaymentPeriodDays));
+        const date = data.expectedRepaymentPeriodDays && getExpectedRepaymentDate(data.expectedRepaymentPeriodDays);
         if (date) return i18n.date(date, { month: 'long' });
         return null;
     }, [data, i18n]);
@@ -71,16 +68,23 @@ const InformationDisplay = ({ data }: { data: IGrantOfferResponseDTO }) => {
                 items={[
                     { key: 'capital.fees', value: i18n.amount(data.feesAmount.value, data.feesAmount.currency) },
                     { key: 'capital.repaymentRate', value: `${data.repaymentRate}% ${i18n.get('capital.daily')}` },
-                    { key: 'capital.expectedRepaymentPeriod', value: data.expectedRepaymentPeriodDays },
+                    { key: 'capital.expectedRepaymentPeriod', value: `${data.expectedRepaymentPeriodDays} ${i18n.get('capital.days')}` },
                 ]}
             />
         </div>
     );
 };
 
-export const CapitalOfferSelection = ({ config, onBack }: CapitalOfferSelectionProps) => {
+export const CapitalOfferSelection = ({
+    config,
+    onBack,
+    repaymentFrequency,
+    requestedAmount,
+    onOfferSelection,
+    onReviewOffer,
+}: CapitalOfferSelectionProps) => {
     const { i18n } = useCoreContext();
-    const [requestedValue, setRequestedValue] = useState<number | undefined>(config?.minAmount.value);
+    const [requestedValue, setRequestedValue] = useState<number | undefined>(Number(requestedAmount) || config?.minAmount.value);
     const currency = useMemo(() => config?.minAmount.currency, [config?.minAmount.currency]);
 
     const { reviewGrantOffer, getDynamicGrantOffer } = useAuthContext().endpoints;
@@ -90,25 +94,24 @@ export const CapitalOfferSelection = ({ config, onBack }: CapitalOfferSelectionP
 
     const reviewOfferMutation = useMutation({
         queryFn: reviewGrantOffer,
+        options: {
+            onSuccess: data => onReviewOffer(data),
+        },
     });
 
-    const onReview = useCallback(
-        () =>
-            reviewOfferMutation.mutate({
-                body: {
-                    amount: getDynamicGrantOfferMutation.data?.grantAmount.value || requestedValue!,
-                    currency: getDynamicGrantOfferMutation.data?.grantAmount.currency || currency!,
-                },
-                contentType: 'application/json',
-            }),
-        [
-            currency,
-            getDynamicGrantOfferMutation.data?.grantAmount.currency,
-            getDynamicGrantOfferMutation.data?.grantAmount.value,
-            requestedValue,
-            reviewOfferMutation,
-        ]
-    );
+    const onReview = useCallback(() => {
+        if (getDynamicGrantOfferMutation.data) {
+            onOfferSelection(getDynamicGrantOfferMutation.data);
+            onReviewOffer(getDynamicGrantOfferMutation.data);
+        }
+        void reviewOfferMutation.mutate({
+            body: {
+                amount: getDynamicGrantOfferMutation.data?.grantAmount.value || requestedValue!,
+                currency: getDynamicGrantOfferMutation.data?.grantAmount.currency || currency!,
+            },
+            contentType: 'application/json',
+        });
+    }, [currency, getDynamicGrantOfferMutation.data, onOfferSelection, onReviewOffer, requestedValue, reviewOfferMutation]);
 
     const getDynamicGrantOfferMutationCallback = getDynamicGrantOfferMutation.mutate;
 
@@ -120,15 +123,15 @@ export const CapitalOfferSelection = ({ config, onBack }: CapitalOfferSelectionP
 
     useEffect(() => {
         if (config) {
-            setRequestedValue(config.minAmount.value);
-            void getOffer(config.minAmount.value);
+            setRequestedValue(prev => (!prev ? config.minAmount.value : prev));
+            !getDynamicGrantOfferMutation.data && void getOffer(requestedValue || config.minAmount.value);
         }
-    }, [config, getOffer]);
+    }, [config, getDynamicGrantOfferMutation.data, getOffer, requestedValue]);
 
     return (
         <div>
             {/* TODO: replace this with Capital Slider component */}
-            <p>{'How much money do you need?'}</p>
+            <span>{'How much money do you need?'}</span>
             {requestedValue && config && <p>{i18n.amount(requestedValue, config.minAmount.currency)}</p>}
             <div>
                 <Slider
@@ -148,7 +151,7 @@ export const CapitalOfferSelection = ({ config, onBack }: CapitalOfferSelectionP
                 {!getDynamicGrantOfferMutation.data || getDynamicGrantOfferMutation.isLoading ? (
                     <LoadingSkeleton />
                 ) : getDynamicGrantOfferMutation.data ? (
-                    <InformationDisplay data={getDynamicGrantOfferMutation.data} />
+                    <InformationDisplay data={getDynamicGrantOfferMutation.data} repaymentFrequency={repaymentFrequency} />
                 ) : null}
             </InfoBox>
             <div className="adyen-pe-capital-offer-selection__buttons">

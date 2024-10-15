@@ -8,6 +8,7 @@ import {
     REVOKED_GRANT,
     WRITTEN_OFF_GRANT,
     GRANT_OFFER,
+    SIGNED_OFFER,
 } from '../mock-data';
 import { endpoints } from '../../endpoints/endpoints';
 import { DefaultBodyType, http, HttpResponse, StrictRequest } from 'msw';
@@ -44,7 +45,7 @@ const OFFER_REVIEW_HANDLER = async ({ request }: { request: StrictRequest<Defaul
 
     const response = calculateGrant(amount, currency);
     await delay(800);
-    return HttpResponse.json(response);
+    return HttpResponse.json({ ...response, id: uuid() });
 };
 
 export const capitalMock = [
@@ -58,6 +59,7 @@ export const capitalMock = [
     http.get(mockEndpoints.grants, EMPTY_GRANTS_LIST),
     http.get(mockEndpoints.dynamicOffer, DYNAMIC_OFFER_HANDLER),
     http.post(mockEndpoints.offerReview, OFFER_REVIEW_HANDLER),
+    http.post(mockEndpoints.requestFunds, getHandlerCallback({ response: SIGNED_OFFER, delayTime: 800 })),
 ];
 const capitalFactory = mocksFactory<CapitalPaths>();
 

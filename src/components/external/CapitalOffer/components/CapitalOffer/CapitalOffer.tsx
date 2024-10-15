@@ -9,14 +9,16 @@ import { IGrantOfferResponseDTO } from '../../../../../types';
 import { useAuthContext } from '../../../../../core/Auth';
 import { useFetch } from '../../../../../hooks/useFetch';
 import { EMPTY_OBJECT } from '../../../../../utils';
+import { CapitalOfferSummary } from '../CapitalOfferSummary/CapitalOfferSummary';
 
 type CapitalOfferState = 'OfferSelection' | 'OfferSummary';
+const REPAYMENT_FREQUENCY = 30;
 
 export const CapitalOffer: FunctionalComponent<ExternalUIComponentProps<CapitalOfferProps>> = ({
     hideTitle,
     externalDynamicOffersConfig,
-    onOfferReviewed,
     onOfferDismissed,
+    onRequestFunds,
 }) => {
     const { getDynamicGrantOffersConfiguration } = useAuthContext().endpoints;
     const { data: internalDynamicOffersConfig } = useFetch({
@@ -28,22 +30,21 @@ export const CapitalOffer: FunctionalComponent<ExternalUIComponentProps<CapitalO
 
     const config = externalDynamicOffersConfig || internalDynamicOffersConfig;
 
-    const goBackToPreviousStep = useCallback(() => {
-        //TODO implement going back to previous step
-        console.log('goBack');
-    }, []);
-
     const goBackHandler = useCallback(() => {
-        onOfferDismissed ? onOfferDismissed() : goBackToPreviousStep();
-    }, [goBackToPreviousStep, onOfferDismissed]);
+        onOfferDismissed?.();
+    }, [onOfferDismissed]);
 
     const [selectedOffer, setSelectedOffer] = useState<IGrantOfferResponseDTO>();
-    const onReviewOfferHandler = useCallback(
-        (data: IGrantOfferResponseDTO) => {
-            onOfferReviewed ? onOfferReviewed(data) : setSelectedOffer(data);
-        },
-        [onOfferReviewed]
-    );
+    const [requestedAmount, setRequestedAmount] = useState<number>();
+
+    const onReviewOfferHandler = useCallback((data: IGrantOfferResponseDTO) => {
+        setRequestedAmount(data.grantAmount.value);
+        setSelectedOffer(prev => (prev ? { ...prev, id: data.id } : prev));
+    }, []);
+
+    const onOfferSelection = useCallback((data: IGrantOfferResponseDTO) => {
+        setSelectedOffer(data);
+    }, []);
 
     const capitalOfferState = useMemo<CapitalOfferState>(() => {
         if (selectedOffer) {
@@ -55,11 +56,28 @@ export const CapitalOffer: FunctionalComponent<ExternalUIComponentProps<CapitalO
     return (
         <div className={CAPITAL_OFFER_CLASS_NAMES.base}>
             <CapitalHeader
+                hasDivider
                 hideTitle={hideTitle}
                 titleKey={capitalOfferState === 'OfferSummary' ? 'capital.businessFinancingSummary' : 'capital.businessFinancing'}
             />
-            {capitalOfferState === 'OfferSelection' && <CapitalOfferSelection config={config} onBack={goBackHandler} />}
-            {capitalOfferState === 'OfferSummary' && <p>{'Placeholder for OfferSummary component'}</p>}
+            {capitalOfferState === 'OfferSelection' && (
+                <CapitalOfferSelection
+                    requestedAmount={requestedAmount}
+                    config={config}
+                    onBack={goBackHandler}
+                    onOfferSelection={onOfferSelection}
+                    onReviewOffer={onReviewOfferHandler}
+                    repaymentFrequency={REPAYMENT_FREQUENCY}
+                />
+            )}
+            {capitalOfferState === 'OfferSummary' && (
+                <CapitalOfferSummary
+                    grantOffer={selectedOffer!}
+                    repaymentFrequency={REPAYMENT_FREQUENCY}
+                    onBack={() => setSelectedOffer(undefined)}
+                    onRequestFunds={onRequestFunds}
+                />
+            )}
         </div>
     );
 };

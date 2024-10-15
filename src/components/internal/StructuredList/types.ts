@@ -15,7 +15,8 @@ export interface StructuredListProps {
     items: { key: TranslationKey; value: ListValue }[];
     layout?: (typeof StructuredListLayouts)[number];
     highlightable?: boolean;
-    renderLabel?: (val: string) => ComponentChild;
+    renderLabel?: (val: string, key: TranslationKey) => ComponentChild;
     renderValue?: (val: ListValue) => ComponentChild;
     grid?: boolean;
+    classNames?: string;
 }

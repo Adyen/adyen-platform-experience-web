@@ -1,8 +1,7 @@
-import { IDynamicOfferConfig, IGrantOfferResponseDTO } from '../../../types';
+import { IDynamicOfferConfig, IGrant } from '../../../types';
 
 export type CapitalOfferProps = {
     externalDynamicOffersConfig?: IDynamicOfferConfig;
-    onOfferSigned: () => void;
-    onOfferReviewed?: (data: IGrantOfferResponseDTO) => void;
+    onRequestFunds?: (data: IGrant) => void;
     onOfferDismissed?: () => void;
 };

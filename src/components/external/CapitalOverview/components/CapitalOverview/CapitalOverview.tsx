@@ -1,4 +1,4 @@
-import { useMemo } from 'preact/hooks';
+import { useCallback, useMemo, useState } from 'preact/hooks';
 import { ExternalUIComponentProps } from '../../../../types';
 import { CapitalOverviewProps } from '../../types';
 import { CAPITAL_OVERVIEW_CLASS_NAMES } from '../../constants';
@@ -9,13 +9,20 @@ import { EMPTY_OBJECT } from '../../../../../utils';
 import { CapitalHeader } from '../../../../internal/CapitalHeader';
 import { BaseList } from '../../../../internal/BaseList/BaseList';
 import { GrantItem } from '../GrantItem/GrantItem';
+import { IGrant } from '../../../../../types';
 import './CapitalOverview.scss';
 import Unqualified from '../Unqualified';
 import { PreQualified } from '../PreQualified/PreQualified';
 
 type CapitalOverviewState = 'Loading' | 'Unqualified' | 'PreQualified' | 'GrantList';
 
-export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<CapitalOverviewProps>> = ({ hideTitle, skipPreQualifiedIntro }) => {
+export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<CapitalOverviewProps>> = ({
+    hideTitle,
+    skipPreQualifiedIntro,
+    onRequestFunds,
+    onSeeOptions,
+    onOfferDismissed,
+}) => {
     const { getGrants: grantsEndpointCall, getDynamicGrantOffersConfiguration: dynamicConfigurationEndpointCall } = useAuthContext().endpoints;
 
     const grantsQuery = useFetch(
@@ -43,7 +50,16 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
     );
 
     const dynamicOffer = dynamicOfferQuery.data;
-    const grantList = grantsQuery.data?.data;
+
+    const [requestedGrant, setRequestedGrant] = useState<IGrant>();
+    const grantList = useMemo(() => (requestedGrant ? [requestedGrant] : grantsQuery.data?.data), [grantsQuery.data?.data, requestedGrant]);
+
+    const onRequestFundsHandler = useCallback(
+        (data: IGrant) => {
+            onRequestFunds ? onRequestFunds(data, () => setRequestedGrant(data)) : setRequestedGrant(data);
+        },
+        [onRequestFunds]
+    );
 
     const state = useMemo<CapitalOverviewState>(() => {
         if (
@@ -94,7 +110,16 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
                             </div>
                         );
                     case 'PreQualified':
-                        return <PreQualified skipPreQualifiedIntro={skipPreQualifiedIntro} hideTitle={hideTitle} dynamicOffer={dynamicOffer!} />;
+                        return (
+                            <PreQualified
+                                onOfferDismissed={onOfferDismissed}
+                                onSeeOptions={onSeeOptions}
+                                skipPreQualifiedIntro={skipPreQualifiedIntro}
+                                hideTitle={hideTitle}
+                                dynamicOffer={dynamicOffer!}
+                                onRequestFundsHandler={onRequestFundsHandler}
+                            />
+                        );
                     case 'Unqualified':
                         return <Unqualified hideTitle={hideTitle} />;
                     default:
