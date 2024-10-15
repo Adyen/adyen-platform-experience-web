@@ -81,7 +81,7 @@ export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUI
         core.session.errorHandler = externalErrorHandler;
 
         return (
-            <AuthProvider session={core.session} key={performance.now()}>
+            <AuthProvider type={this.type} session={core.session} key={performance.now()}>
                 <CoreProvider
                     i18n={core.localization.i18n}
                     loadingContext={core.loadingContext}

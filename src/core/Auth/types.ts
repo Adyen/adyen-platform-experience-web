@@ -46,6 +46,7 @@ export type EndpointSuccessResponse<Endpoint extends EndpointName> = Endpoint ex
 export interface AuthProviderProps {
     children?: any;
     session: AuthSession;
+    type: string;
 }
 
 export interface SessionObject {
