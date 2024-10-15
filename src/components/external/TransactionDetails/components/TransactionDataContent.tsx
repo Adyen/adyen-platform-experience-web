@@ -27,10 +27,9 @@ import { ActiveView, type RefundReason, type TransactionDataProps } from '../con
 import type { ILineItem } from '../../../../types';
 import './TransactionData.scss';
 
-export const TransactionDataContent = ({
-    forceHideTitle,
-    transaction,
-}: Required<Pick<TransactionDataProps, 'transaction'>> & Pick<TransactionDataProps, 'forceHideTitle'>) => {
+export type TransactionDataContentProps = Required<Pick<TransactionDataProps, 'transaction'>> & Pick<TransactionDataProps, 'forceHideTitle'>;
+
+export const TransactionDataContent = ({ forceHideTitle, transaction }: TransactionDataContentProps) => {
     const [activeView, _setActiveView] = useState(ActiveView.DETAILS);
     const [primaryAction, _setPrimaryAction] = useState<ButtonActionObject>();
     const [secondaryAction, _setSecondaryAction] = useState<ButtonActionObject>();
@@ -110,6 +109,8 @@ export const TransactionDataContent = ({
     switch (activeView) {
         case ActiveView.DETAILS:
         case ActiveView.REFUND: {
+            if (activeView === ActiveView.REFUND && !refundViewAvailable) break;
+
             const commonContextProviderProps = {
                 lineItems,
                 refundAvailable,
@@ -136,7 +137,7 @@ export const TransactionDataContent = ({
                         </TransactionDetailsProvider>
                     )}
 
-                    {activeView === ActiveView.REFUND && refundViewAvailable && (
+                    {activeView === ActiveView.REFUND && (
                         <TransactionRefundProvider
                             {...commonContextProviderProps}
                             availableAmount={availableAmount}
@@ -171,10 +172,9 @@ export const TransactionDataContent = ({
                 </div>
             );
         }
-
-        default:
-            return null;
     }
+
+    return null;
 };
 
 export default TransactionDataContent;
