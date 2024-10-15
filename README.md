@@ -49,13 +49,13 @@ npm start
 
 ## Contributing
 
-We merge every pull request into the `main` branch. We aim to keep `main` in good shape, which allows us to release a new version whenever we need to.
+We merge every pull request into the `develop` branch. We aim to keep `develop` in good shape, which allows us to release a new version whenever we need to.
 
 Have a look at our [contributing guidelines](https://github.com/Adyen/.github/blob/main/CONTRIBUTING.md) to find out how to raise a pull request.
 
 ## See also
 
--   [Documentation](https://docs.adyen.com/)
+-   [Documentation](https://docs.adyen.com/platforms/components-overview/)
 -   [API Explorer](https://docs.adyen.com/api-explorer/)
 
 ## Support

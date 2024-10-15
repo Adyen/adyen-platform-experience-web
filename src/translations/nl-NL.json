@@ -66,6 +66,7 @@
     "paymentId": "Betalings-ID",
     "paymentMethod": "Betaalmethode",
     "payoutDetails": "Uitbetalingsgegevens",
+    "payoutsNotice": "Uitbetalingsinformatie wordt elke dag om middernacht, UTC-tijd, gegenereerd.",
     "payoutsTitle": "Uitbetalingen",
     "Pending": "In behandeling",
     "pleaseReachOutToSupportForAssistance": "Neem contact op support voor ondersteuning.",

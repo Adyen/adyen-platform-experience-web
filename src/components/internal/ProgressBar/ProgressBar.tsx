@@ -4,6 +4,7 @@ import './ProgressBar.scss';
 import Typography from '../Typography/Typography';
 import { TypographyElement, TypographyVariant } from '../Typography/types';
 import { clamp } from '../../../utils';
+import { Tooltip } from '../Tooltip/Tooltip';
 
 interface ProgressBarProps {
     /**
@@ -39,6 +40,21 @@ interface ProgressBarProps {
     };
 
     /**
+     * Tooltips for the progress bar segments.
+     */
+    tooltips?: {
+        /**
+         * Tooltip content to describe the filled portion of the progress bar (progress).
+         */
+        progress?: string;
+
+        /**
+         * Tooltip content to describe the remaining portion of the progress bar.
+         */
+        remaining?: string;
+    };
+
+    /**
      * Optional custom class name to apply additional styles to the progress bar component.
      */
     className?: string;
@@ -48,7 +64,7 @@ interface ProgressBarProps {
  * Accessible custom ProgressBar component
  * @param props - ProgressBarProps
  */
-const ProgressBar = ({ max = 1, value, labels, className }: ProgressBarProps) => {
+const ProgressBar = ({ max = 1, value, labels, tooltips, className }: ProgressBarProps) => {
     const percentage = useMemo(() => clamp(0, (value * 100) / max, 100), [value, max]);
     const shouldDisplayLegend = !!(labels?.current || labels?.max);
     const ariaLabel = labels?.ariaLabel ?? (labels?.current ? `${labels.current}: ${value}` : `${value}/${max}`);
@@ -63,8 +79,20 @@ const ProgressBar = ({ max = 1, value, labels, className }: ProgressBarProps) =>
             aria-label={ariaLabel}
             className={cx('adyen-pe-progress-bar', className)}
         >
-            <div className="adyen-pe-progress-bar__track" title={labels?.max}>
-                <div className="adyen-pe-progress-bar__fill" style={{ width: `${percentage}%` }} title={labels?.current} />
+            <div className="adyen-pe-progress-bar__track">
+                <div className="adyen-pe-progress-bar__track-background"></div>
+                <ProgressBarSegment
+                    tooltipContent={tooltips?.progress}
+                    title={labels?.current}
+                    percentage={percentage}
+                    className="adyen-pe-progress-bar__track-fill"
+                />
+                <ProgressBarSegment
+                    tooltipContent={tooltips?.remaining}
+                    title={labels?.max}
+                    percentage={100 - percentage}
+                    className="adyen-pe-progress-bar__track-remaining"
+                />
             </div>
 
             {shouldDisplayLegend && (
@@ -83,6 +111,16 @@ const ProgressBar = ({ max = 1, value, labels, className }: ProgressBarProps) =>
             )}
         </div>
     );
+};
+interface ProgressBarSegmentProps {
+    tooltipContent?: string;
+    title?: string;
+    percentage: number;
+    className: string;
+}
+const ProgressBarSegment = ({ tooltipContent, title, percentage, className }: ProgressBarSegmentProps) => {
+    const getContent = (title?: string) => <div className={className} title={title} style={{ width: `${percentage}%` }} />;
+    return tooltipContent ? <Tooltip content={tooltipContent}>{getContent()}</Tooltip> : getContent(title);
 };
 
 export default ProgressBar;
