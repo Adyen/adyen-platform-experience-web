@@ -264,7 +264,10 @@ export const transactionsMocks = [
                 ...(merchantRefundReason && { merchantRefundReason }),
                 ...(reference && { reference }),
                 ...(refundDetails.refundMode.startsWith('partially_refundable') && {
-                    lineItems: lineItems ?? (EMPTY_ARRAY as NonNullable<typeof lineItems>),
+                    lineItems: (lineItems ?? (EMPTY_ARRAY as NonNullable<typeof lineItems>)).map(({ item, quantity }) => {
+                        const availableQuantity = Math.max(0, item.availableQuantity - Math.max(0, quantity));
+                        return { ...item, availableQuantity };
+                    }),
                 }),
                 status: 'received',
                 transactionId,
