@@ -1,4 +1,3 @@
-import Slider from '../../../../internal/Slider';
 import InfoBox from '../../../../internal/InfoBox';
 import Typography from '../../../../internal/Typography/Typography';
 import { TypographyElement, TypographyVariant } from '../../../../internal/Typography/types';
@@ -12,7 +11,8 @@ import { useAuthContext } from '../../../../../core/Auth';
 import useMutation from '../../../../../hooks/useMutation/useMutation';
 import { IDynamicOfferConfig, IGrantOfferResponseDTO } from '../../../../../types';
 import './CapitalOfferSelection.scss';
-import { getExpectedRepaymentDate } from '../utils/utils';
+import { debounce, getExpectedRepaymentDate } from '../utils/utils';
+import CapitalSlider from '../../../../internal/CapitalSlider';
 
 type CapitalOfferSelectionProps = {
     config: IDynamicOfferConfig | undefined;
@@ -90,6 +90,11 @@ export const CapitalOfferSelection = ({
     const { reviewGrantOffer, getDynamicGrantOffer } = useAuthContext().endpoints;
     const getDynamicGrantOfferMutation = useMutation({
         queryFn: getDynamicGrantOffer,
+        options: {
+            onSettled: useCallback(() => {
+                setIsLoading(false);
+            }, []),
+        },
     });
 
     const reviewOfferMutation = useMutation({
@@ -119,7 +124,21 @@ export const CapitalOfferSelection = ({
         (amount: number) => getDynamicGrantOfferMutationCallback({}, { query: { amount, currency: currency! } }),
         [currency, getDynamicGrantOfferMutationCallback]
     );
-    const handleSliderRelease = (event: Event) => getOffer((event.target as any).value);
+
+    const [isLoading, setIsLoading] = useState(false);
+
+    const debouncedGetOfferCall = debounce(getOffer, 300);
+
+    const onChangeHandler = useCallback(
+        (val: number) => {
+            debouncedGetOfferCall.cancel();
+            setIsLoading(true);
+            setRequestedValue(val);
+        },
+        [debouncedGetOfferCall]
+    );
+
+    const handleSliderRelease = (val: number) => debouncedGetOfferCall(val);
 
     useEffect(() => {
         if (config) {
@@ -129,26 +148,12 @@ export const CapitalOfferSelection = ({
     }, [config, getDynamicGrantOfferMutation.data, getOffer, requestedValue]);
 
     return (
-        <div>
-            {/* TODO: replace this with Capital Slider component */}
-            <span>{'How much money do you need?'}</span>
-            {requestedValue && config && <p>{i18n.amount(requestedValue, config.minAmount.currency)}</p>}
-            <div>
-                <Slider
-                    min={config?.minAmount.value}
-                    max={config?.maxAmount.value}
-                    step={config?.step}
-                    value={requestedValue}
-                    onMouseUp={handleSliderRelease}
-                    onTouchEnd={handleSliderRelease}
-                    onKeyUp={handleSliderRelease}
-                    onChange={event => {
-                        setRequestedValue((event.target as any).value);
-                    }}
-                />
-            </div>
+        <div className="adyen-pe-capital-offer-selection">
+            {config && (
+                <CapitalSlider value={requestedValue} dynamicCapitalOffer={config} onValueChange={onChangeHandler} onRelease={handleSliderRelease} />
+            )}
             <InfoBox className="adyen-pe-capital-offer-selection__details">
-                {!getDynamicGrantOfferMutation.data || getDynamicGrantOfferMutation.isLoading ? (
+                {!getDynamicGrantOfferMutation.data || getDynamicGrantOfferMutation.isLoading || isLoading ? (
                     <LoadingSkeleton />
                 ) : getDynamicGrantOfferMutation.data ? (
                     <InformationDisplay data={getDynamicGrantOfferMutation.data} repaymentFrequency={repaymentFrequency} />

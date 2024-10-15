@@ -2,8 +2,11 @@
 @use '../../../../../style' as style;
 
 .adyen-pe-capital-offer-selection {
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-080);
+
     &__details {
-        margin-top: style.token(spacer-100);
         max-width: 400px;
         width: 100%;
     }
@@ -42,6 +45,5 @@
         display: flex;
         gap: style.token(spacer-050);
         justify-content: end;
-        margin-top: style.token(spacer-080);
     }
 }

@@ -58,7 +58,7 @@ export const CapitalOffer: FunctionalComponent<ExternalUIComponentProps<CapitalO
             <CapitalHeader
                 hasDivider
                 hideTitle={hideTitle}
-                titleKey={capitalOfferState === 'OfferSummary' ? 'capital.businessFinancingSummary' : 'capital.businessFinancing'}
+                titleKey={capitalOfferState === 'OfferSummary' ? 'capital.businessFinancingSummary' : 'capital.businessFinancingOffer'}
             />
             {capitalOfferState === 'OfferSelection' && (
                 <CapitalOfferSelection
