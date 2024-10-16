@@ -18,7 +18,7 @@ const externalDependencies = Object.keys(packageJson.dependencies);
 
 const playgroundDir = resolve(__dirname, 'playground/pages');
 const demoPlaygroundDir = resolve(__dirname, 'playground');
-const isDevMode = (mode: any) => ['mocked', 'development'].includes(mode);
+const isDevMode = (mode: any) => ['mocked', 'development', 'local-env'].includes(mode);
 
 async function getPlaygroundEntrypoints() {
     const playgroundPages = await readdir(playgroundDir);
@@ -111,6 +111,16 @@ export default defineConfig(async ({ mode }) => {
             setupFiles: [resolve(__dirname, './config/setupTests.ts')],
             coverage: {
                 provider: 'c8',
+                all: true,
+                include: [
+                    'src/components/internal/**/*.{ts,tsx}',
+                    'src/components/utils/*.{ts,tsx}',
+                    'src/hooks/**/*.{ts,tsx}',
+                    'src/primitives/**/*.{ts,tsx}',
+                    'src/utils/**/*.{ts,tsx}',
+                    'src/core/**/*.{ts,tsx}',
+                ],
+                exclude: ['src/**/index.{ts,tsx}', 'src/**/constants.{ts,tsx}', 'src/**/types.ts', 'node_modules'],
                 reporter: 'lcov',
                 reportsDirectory: resolve(__dirname, 'coverage'),
             },
