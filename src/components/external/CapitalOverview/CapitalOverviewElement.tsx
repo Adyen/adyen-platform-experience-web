@@ -1,19 +1,36 @@
 import { _UIComponentProps } from '../../types';
 import UIElement from '../UIElement/UIElement';
-import { CapitalOverviewProps } from './types';
+import { CapitalComponentState, CapitalOverviewProps } from './types';
 import { CapitalOverview } from './components/CapitalOverview/CapitalOverview';
+import { EMPTY_OBJECT, noop } from '../../../utils';
+import sessionReady from '../../../core/Auth/session/sessionReady';
 
 export class CapitalOverviewElement extends UIElement<CapitalOverviewProps> {
     public static type = 'capitalOverview';
 
     constructor(props: _UIComponentProps<CapitalOverviewProps>) {
         super(props);
+
         this.componentToRender = this.componentToRender.bind(this);
     }
 
     public componentToRender = () => {
         return <CapitalOverview {...this.props} ref={(ref: UIElement<CapitalOverviewProps>) => void (this.componentRef = ref)} />;
     };
+
+    public async getState(): Promise<CapitalComponentState> {
+        const { session } = this.props.core;
+        await sessionReady(session);
+
+        const { getDynamicGrantOffersConfiguration, getGrants } = session.context.endpoints;
+
+        const [config, grants] = await Promise.all([
+            getDynamicGrantOffersConfiguration?.(EMPTY_OBJECT).catch(noop as () => undefined),
+            getGrants?.(EMPTY_OBJECT).catch(noop as () => undefined),
+        ]);
+
+        return grants && grants.data?.length > 0 ? 'GrantList' : config && config.minAmount ? 'PreQualified' : 'Unqualified';
+    }
 }
 
 export default CapitalOverviewElement;

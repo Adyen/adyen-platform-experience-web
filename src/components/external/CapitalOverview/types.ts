@@ -6,3 +6,5 @@ export interface CapitalOverviewProps {
     onRequestFunds?: (data: IGrant, goToNextStep: () => void) => void;
     onOfferDismissed?: (goToPreviousStep: () => void) => void;
 }
+
+export type CapitalComponentState = 'Unqualified' | 'PreQualified' | 'GrantList';

@@ -29,6 +29,11 @@ const preview: Preview = {
             },
         },
         balanceAccountId: { type: 'string' },
+        skipDecorators: {
+            table: {
+                disable: true,
+            },
+        },
     },
     loaders: [
         async context => {
