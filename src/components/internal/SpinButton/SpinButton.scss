@@ -3,8 +3,8 @@
 /* [TODO]: Move to a global location to allow for reusability */
 .adyen-pe-width-sizer {
     display: inline-flex;
-    flex-direction: column;
     flex: 0;
+    flex-direction: column;
 
     &__element {
         clip: rect(0 0 0 0);
