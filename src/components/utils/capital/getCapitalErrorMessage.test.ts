@@ -1,5 +1,5 @@
-import { describe, it, expect, vi } from 'vitest';
-import { getCapitalErrorMessage, COMMON_CAPITAL_ERROR_MESSAGE } from './getCapitalErrorMessage'; // Update the path accordingly
+import { describe, expect, it, vi } from 'vitest';
+import { COMMON_CAPITAL_ERROR_MESSAGE, getCapitalErrorMessage } from './getCapitalErrorMessage'; // Update the path accordingly
 import AdyenPlatformExperienceError from '../../../core/Errors/AdyenPlatformExperienceError';
 import { UNDEFINED_ERROR } from '../getCommonErrorCode';
 import { ErrorTypes } from '../../../core/Http/utils';
@@ -94,5 +94,16 @@ describe('getCapitalErrorMessage', () => {
         const result = getCapitalErrorMessage(error);
 
         expect(result).toEqual(UNDEFINED_ERROR);
+    });
+
+    it('should return ErrorMessage from getCommonErrorMessage for error code "29_001"', () => {
+        const error = new AdyenPlatformExperienceError(ErrorTypes.ERROR, 'requestId123', 'Test error message', '29_001');
+
+        const result = getCapitalErrorMessage(error);
+
+        expect(result).toEqual({
+            title: 'theRequestIsMissingRequiredFieldsOrContainsInvalidData',
+            message: ['pleaseReachOutToSupportForAssistance'],
+        });
     });
 });
