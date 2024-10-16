@@ -1,5 +1,5 @@
 import { memo } from 'preact/compat';
-import { createContext, toChildArray } from 'preact';
+import { createContext } from 'preact';
 import { useCallback, useContext, useEffect } from 'preact/hooks';
 import { EMPTY_ARRAY, EMPTY_OBJECT, noop } from '../../../../../utils';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
@@ -48,7 +48,7 @@ export const TransactionDetailsProvider = memo(
 
         return (
             <TransactionDetailsContext.Provider value={{ availableItems: lineItems, primaryAction, secondaryAction, transaction }}>
-                {toChildArray(children)}
+                {children}
             </TransactionDetailsContext.Provider>
         );
     }

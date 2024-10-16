@@ -1,14 +1,8 @@
-import {
-    FULLY_REFUNDABLE_ONLY,
-    PARTIALLY_REFUNDABLE_ANY_AMOUNT,
-    REFUND_MODES_WITHOUT_OPTIONAL_REFUND_FIELDS,
-    REFUND_REASONS,
-} from '../context/constants';
 import cx from 'classnames';
-import { clamp, EMPTY_ARRAY } from '../../../../utils';
+import { EMPTY_ARRAY } from '../../../../utils';
 import { useCallback, useEffect, useState } from 'preact/hooks';
 import { TransactionDetailsProvider } from '../context/details';
-import { type ITransactionRefundContext, TransactionRefundProvider } from '../context/refund';
+import { TransactionRefundProvider } from '../context/refund';
 import TransactionDetailsDataContainer from './TransactionDetailsDataContainer';
 import TransactionDataTags from './TransactionDataTags';
 import TransactionDataAmount from './TransactionDataAmount';
@@ -20,10 +14,11 @@ import TransactionRefundNotice from './TransactionRefundNotice';
 import TransactionRefundReason from './TransactionRefundReason';
 // import TransactionRefundReference from './TransactionRefundReference';
 import useRefundCapabilityData from '../context/useRefundCapabilityData';
+import { FULLY_REFUNDABLE_ONLY, NON_REFUNDABLE, PARTIALLY_REFUNDABLE_ANY_AMOUNT } from '../context/constants';
 import { TX_DATA_ACTION_BAR, TX_DATA_ACTION_BAR_REFUND, TX_DATA_CLASS, TX_DATA_CONTAINER, TX_DATA_CONTAINER_NO_PADDING } from '../constants';
 import ButtonActions from '../../../internal/Button/ButtonActions/ButtonActions';
 import { ButtonActionObject, ButtonActionsLayoutBasic } from '../../../internal/Button/ButtonActions/types';
-import { ActiveView, type RefundReason, type TransactionDataProps } from '../context/types';
+import { ActiveView, type TransactionDataProps } from '../context/types';
 import type { ILineItem } from '../../../../types';
 import './TransactionData.scss';
 
@@ -33,9 +28,6 @@ export const TransactionDataContent = ({ forceHideTitle, transaction }: Transact
     const [activeView, _setActiveView] = useState(ActiveView.DETAILS);
     const [primaryAction, _setPrimaryAction] = useState<ButtonActionObject>();
     const [secondaryAction, _setSecondaryAction] = useState<ButtonActionObject>();
-    const [refundReason, setReason] = useState<RefundReason>(REFUND_REASONS[0]);
-    const [refundReference, setReference] = useState<string>();
-    const [refundAmount, setRefundAmount] = useState(0);
 
     const {
         availableAmount,
@@ -59,30 +51,6 @@ export const TransactionDataContent = ({ forceHideTitle, transaction }: Transact
         [refundViewAvailable]
     );
 
-    const setAmount = useCallback<ITransactionRefundContext['setAmount']>(
-        amount => {
-            if (refundMode !== PARTIALLY_REFUNDABLE_ANY_AMOUNT) return;
-            setRefundAmount(clamp(0, amount, availableAmount));
-        },
-        [availableAmount, refundMode]
-    );
-
-    const setRefundReason = useCallback<ITransactionRefundContext['setRefundReason']>(
-        reason => {
-            if (REFUND_MODES_WITHOUT_OPTIONAL_REFUND_FIELDS.includes(refundMode)) return;
-            setReason(reason);
-        },
-        [refundMode]
-    );
-
-    const setRefundReference = useCallback<ITransactionRefundContext['setRefundReference']>(
-        reference => {
-            if (REFUND_MODES_WITHOUT_OPTIONAL_REFUND_FIELDS.includes(refundMode)) return;
-            setReference(reference || undefined);
-        },
-        [refundMode]
-    );
-
     const renderViewActionButtons = useCallback(() => {
         const actions = [primaryAction!, secondaryAction!].filter(Boolean);
         return actions.length ? (
@@ -102,10 +70,6 @@ export const TransactionDataContent = ({ forceHideTitle, transaction }: Transact
         forceHideTitle?.(activeView !== ActiveView.DETAILS);
     }, [activeView, forceHideTitle]);
 
-    useEffect(() => {
-        setRefundAmount(availableAmount);
-    }, [availableAmount]);
-
     switch (activeView) {
         case ActiveView.DETAILS:
         case ActiveView.REFUND: {
@@ -124,16 +88,14 @@ export const TransactionDataContent = ({ forceHideTitle, transaction }: Transact
                 <div className={TX_DATA_CLASS}>
                     {activeView === ActiveView.DETAILS && (
                         <TransactionDetailsProvider {...commonContextProviderProps} transaction={transaction}>
-                            <>
-                                <TransactionDetailsDataContainer>
-                                    <TransactionDataTags />
-                                    <TransactionDataAmount />
-                                    <TransactionDataPaymentMethod />
-                                    <TransactionDataDate />
-                                </TransactionDetailsDataContainer>
+                            <TransactionDetailsDataContainer>
+                                <TransactionDataTags />
+                                <TransactionDataAmount />
+                                <TransactionDataPaymentMethod />
+                                <TransactionDataDate />
+                            </TransactionDetailsDataContainer>
 
-                                <TransactionDataProperties />
-                            </>
+                            <TransactionDataProperties />
                         </TransactionDetailsProvider>
                     )}
 
@@ -142,29 +104,22 @@ export const TransactionDataContent = ({ forceHideTitle, transaction }: Transact
                             {...commonContextProviderProps}
                             availableAmount={availableAmount}
                             currency={refundCurrency}
-                            refundAmount={refundAmount}
                             refundMode={refundMode}
-                            refundReason={refundReason}
-                            refundReference={refundReference}
-                            setAmount={setAmount}
-                            setRefundReason={setRefundReason}
-                            setRefundReference={setRefundReference}
+                            transactionId={transaction.id}
                         >
-                            <>
-                                <TransactionRefundNotice />
+                            <TransactionRefundNotice />
 
-                                {/* refund amount input */}
-                                {refundMode === FULLY_REFUNDABLE_ONLY && <TransactionRefundFullAmountInput />}
-                                {refundMode === PARTIALLY_REFUNDABLE_ANY_AMOUNT && <TransactionRefundPartialAmountInput />}
+                            {/* refund amount input */}
+                            {refundMode === FULLY_REFUNDABLE_ONLY && <TransactionRefundFullAmountInput />}
+                            {refundMode === PARTIALLY_REFUNDABLE_ANY_AMOUNT && <TransactionRefundPartialAmountInput />}
 
-                                {/* additional refund inputs */}
-                                {REFUND_MODES_WITHOUT_OPTIONAL_REFUND_FIELDS.includes(refundMode) || (
-                                    <>
-                                        <TransactionRefundReason />
-                                        {/*<TransactionRefundReference />*/}
-                                    </>
-                                )}
-                            </>
+                            {/* additional refund inputs */}
+                            {refundMode !== NON_REFUNDABLE && (
+                                <>
+                                    <TransactionRefundReason />
+                                    {/*<TransactionRefundReference />*/}
+                                </>
+                            )}
                         </TransactionRefundProvider>
                     )}
 

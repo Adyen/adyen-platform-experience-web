@@ -1,6 +1,5 @@
 import type { TranslationKey } from '../../../../translations';
 import type { ITransactionWithDetails } from '../../../../types';
-import type { RefundMode } from './types';
 
 export const FULLY_REFUNDABLE_ONLY = 'fully_refundable_only';
 export const NON_REFUNDABLE = 'non_refundable';
@@ -13,11 +12,6 @@ export const REFUND_MODES = Object.freeze([
     PARTIALLY_REFUNDABLE_ANY_AMOUNT,
     PARTIALLY_REFUNDABLE_WITH_LINE_ITEMS_REQUIRED,
 ] as const) satisfies readonly ITransactionWithDetails['refundDetails']['refundMode'][];
-
-export const REFUND_MODES_WITHOUT_OPTIONAL_REFUND_FIELDS: readonly RefundMode[] = Object.freeze([
-    NON_REFUNDABLE,
-    PARTIALLY_REFUNDABLE_WITH_LINE_ITEMS_REQUIRED,
-]);
 
 export const REFUND_REASONS = Object.freeze([
     'refundReason.requested',

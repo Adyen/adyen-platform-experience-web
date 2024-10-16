@@ -1,7 +1,6 @@
 import { useMemo } from 'preact/hooks';
 import { useAuthContext } from '../../../../core/Auth';
 import { boolOrFalse, isFunction } from '../../../../utils';
-import { getDecimalAmount } from '../../../../core/Localization/amount/amount-util';
 import { FULLY_REFUNDABLE_ONLY, NON_REFUNDABLE } from './constants';
 import type { TransactionDataProps } from './types';
 
@@ -13,10 +12,7 @@ export const useRefundCapabilityData = (transaction: TransactionDataProps['trans
 
     const currency = details?.refundableAmount.currency ?? transaction?.amount.currency ?? '';
 
-    const availableAmount = useMemo(
-        () => (transaction ? Math.max(0, getDecimalAmount(details?.refundableAmount.value ?? 0, currency)) : 0),
-        [currency, transaction]
-    );
+    const availableAmount = useMemo(() => (transaction ? Math.max(0, details?.refundableAmount.value ?? 0) : 0), [transaction]);
 
     const available = isFunction(useAuthContext().endpoints.refundTransaction);
     const disabled = nonRefundable || locked || availableAmount <= 0;

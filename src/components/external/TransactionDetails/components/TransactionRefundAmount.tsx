@@ -9,7 +9,7 @@ import {
 } from '../constants';
 import cx from 'classnames';
 import { h } from 'preact';
-import { useCallback, useRef, useState } from 'preact/hooks';
+import { useMemo, useRef, useState } from 'preact/hooks';
 import { boolOrFalse, uniqueId } from '../../../../utils';
 import useCoreContext from '../../../../core/Context/useCoreContext';
 import useTransactionRefundContext from '../context/refund';
@@ -17,10 +17,15 @@ import CloseCircle from '../../../internal/SVGIcons/CloseCircle';
 import InputBase from '../../../internal/FormFields/InputBase';
 import Typography from '../../../internal/Typography/Typography';
 import { TypographyElement, TypographyVariant } from '../../../internal/Typography/types';
+import { getDecimalAmount, getDivider } from '../../../../core/Localization/amount/amount-util';
 import { TranslationKey } from '../../../../translations';
 import { ARIA_ERROR_SUFFIX } from '../../../../core/Errors/constants';
 import { TagVariant } from '../../../internal/Tag/types';
 import { Tag } from '../../../internal/Tag/Tag';
+
+// [TODO]: These utils are reusable and should be located in a shared module
+const formatAmount = (amount: number, currency: string) => getDecimalAmount(amount, currency).toFixed(getCurrencyExponent(currency));
+const getCurrencyExponent = (currency: string) => Math.log10(getDivider(currency));
 
 const _BaseRefundAmountInput = ({
     currency,
@@ -32,8 +37,9 @@ const _BaseRefundAmountInput = ({
     currency: string;
     disabled?: boolean;
     errorMessage: TranslationKey | null;
+    onBlur?: (evt: h.JSX.TargetedEvent<HTMLInputElement>) => unknown;
     onInput?: (evt: h.JSX.TargetedEvent<HTMLInputElement>) => unknown;
-    value: number;
+    value: string | number;
 }) => {
     const { i18n } = useCoreContext();
     const inputIdentifier = useRef(uniqueId());
@@ -84,30 +90,34 @@ const _BaseRefundAmountInput = ({
 };
 
 export const TransactionRefundFullAmountInput = () => {
-    const { amount, currency } = useTransactionRefundContext();
-    return <_BaseRefundAmountInput currency={currency} errorMessage={null} value={amount} disabled />;
+    const { availableAmount, currency } = useTransactionRefundContext();
+    return <_BaseRefundAmountInput currency={currency} errorMessage={null} value={formatAmount(availableAmount, currency)} disabled />;
 };
 
 export const TransactionRefundPartialAmountInput = () => {
-    const { amount, availableAmount, currency, setAmount } = useTransactionRefundContext();
-    const [refundAmount, setRefundAmount] = useState(amount);
+    const { availableAmount, currency, setAmount } = useTransactionRefundContext();
+    const [errorMessage, setErrorMessage] = useState<TranslationKey | null>(null);
+    const [refundAmount, setRefundAmount] = useState(`${formatAmount(availableAmount, currency)}`);
 
-    const onInput = useCallback(
-        (evt: h.JSX.TargetedEvent<HTMLInputElement>) => {
-            const amount = parseFloat(evt.currentTarget.value);
-            setRefundAmount(amount);
-            setAmount(amount);
-        },
-        [setRefundAmount, setAmount]
-    );
+    const computeRefundAmount = useMemo(() => {
+        const exponent = getCurrencyExponent(currency);
+        return (value: string) => Math.trunc(+`${parseFloat(value)}e${exponent}`) || 0;
+    }, [currency]);
 
-    let errorMessage: TranslationKey | null = null;
+    const onInput = (evt: h.JSX.TargetedEvent<HTMLInputElement>) => {
+        const value = evt.currentTarget.value.trim();
+        const amount = computeRefundAmount(value);
+        let message: typeof errorMessage = null;
 
-    if (refundAmount < 0) {
-        errorMessage = 'noNegativeNumbersAllowed';
-    } else if (refundAmount > availableAmount) {
-        errorMessage = 'refundAmount.excess';
-    }
+        if (amount || value) {
+            if (amount < 0) message = 'noNegativeNumbersAllowed';
+            if (amount > availableAmount) message = 'refundAmount.excess';
+        } else message = 'refundAmount.required';
+
+        setRefundAmount(value);
+        setErrorMessage(message);
+        setAmount(message ? 0 : amount);
+    };
 
     return <_BaseRefundAmountInput currency={currency} errorMessage={errorMessage} onInput={onInput} value={refundAmount} />;
 };

@@ -1,13 +1,15 @@
 import { memo } from 'preact/compat';
-import { createContext, toChildArray } from 'preact';
+import { createContext } from 'preact';
 import { useCallback, useContext, useEffect, useMemo, useState } from 'preact/hooks';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
-import { EMPTY_ARRAY, noop } from '../../../../../utils';
-import { FULLY_REFUNDABLE_ONLY, REFUND_REASONS } from '../constants';
+import useMutation from '../../../../../hooks/useMutation/useMutation';
+import { useAuthContext } from '../../../../../core/Auth';
+import { clamp, EMPTY_ARRAY, noop } from '../../../../../utils';
+import { FULLY_REFUNDABLE_ONLY, NON_REFUNDABLE, PARTIALLY_REFUNDABLE_ANY_AMOUNT, REFUND_REASONS } from '../constants';
 import { getRefundableItemsForTransactionLineItems, getRefundAmountByMode, updateRefundItems } from './helpers';
 import type { ITransactionRefundContext, TransactionRefundProviderProps } from './types';
 import { ButtonVariant } from '../../../../internal/Button/types';
-import { ActiveView } from '../types';
+import { ActiveView, type RefundReason } from '../types';
 
 const TransactionRefundContext = createContext<ITransactionRefundContext>({
     amount: 0,
@@ -24,6 +26,7 @@ const TransactionRefundContext = createContext<ITransactionRefundContext>({
     setAmount: noop,
     setRefundReason: noop,
     setRefundReference: noop,
+    transactionId: '',
     updateItems: noop,
 });
 
@@ -33,25 +36,30 @@ export const TransactionRefundProvider = memo(
         children,
         currency,
         lineItems,
-        refundAmount,
-        refundReason,
-        refundReference,
         refundMode,
         setActiveView,
-        setAmount,
         setPrimaryAction,
-        setRefundReason,
-        setRefundReference,
         setSecondaryAction,
+        transactionId,
     }: TransactionRefundProviderProps) => {
         const { i18n } = useCoreContext();
+        const { refundTransaction } = useAuthContext().endpoints;
         const [items, setItems] = useState(EMPTY_ARRAY as ITransactionRefundContext['items']);
+        const [refundReason, setReason] = useState<RefundReason>(REFUND_REASONS[0]);
+        const [refundReference, setReference] = useState<string>();
+        const [refundAmount, setRefundAmount] = useState(0);
 
         const amount = useMemo(
             () => getRefundAmountByMode(refundMode, availableAmount, items, refundAmount),
             [availableAmount, items, refundMode, refundAmount]
         );
 
+        const setAmount = useCallback<ITransactionRefundContext['setAmount']>(
+            amount => void (refundMode === PARTIALLY_REFUNDABLE_ANY_AMOUNT && setRefundAmount(clamp(0, amount, availableAmount))),
+            [availableAmount, refundMode]
+        );
+
+        const formattedAmount = i18n.amount(amount, currency);
         const refundableItems = useMemo(() => getRefundableItemsForTransactionLineItems(currency, lineItems), [currency, lineItems]);
 
         const availableItems = useMemo<ITransactionRefundContext['availableItems']>(
@@ -62,7 +70,10 @@ export const TransactionRefundProvider = memo(
         const clearItems = useCallback<ITransactionRefundContext['clearItems']>(
             function (ids) {
                 setItems(items => {
-                    const _items = arguments.length === 0 ? new Map(items.map(({ id }) => [id, 0])) : new Map(ids?.map(id => [id, 0]) ?? EMPTY_ARRAY);
+                    // prettier-ignore
+                    const _items = arguments.length === 0
+                        ? new Map(items.map(({ id }) => [id, 0]))
+                        : new Map(ids?.map(id => [id, 0]) ?? EMPTY_ARRAY);
 
                     const itemUpdates = [..._items].map(([id, quantity]) => ({ id, quantity } as const));
                     return updateRefundItems(refundableItems, items, itemUpdates);
@@ -72,28 +83,48 @@ export const TransactionRefundProvider = memo(
         );
 
         const updateItems = useCallback<ITransactionRefundContext['updateItems']>(
-            itemUpdates => {
-                setItems(items => updateRefundItems(refundableItems, items, itemUpdates));
-            },
+            itemUpdates => setItems(items => updateRefundItems(refundableItems, items, itemUpdates)),
             [refundableItems]
         );
 
-        const secondaryAction = useCallback(() => {
-            setActiveView(ActiveView.DETAILS);
-        }, [setActiveView]);
+        const setRefundReason = useCallback<ITransactionRefundContext['setRefundReason']>(
+            reason => void (refundMode !== NON_REFUNDABLE && setReason(reason)),
+            [refundMode]
+        );
 
-        const primaryAction = useCallback(noop, []);
+        const setRefundReference = useCallback<ITransactionRefundContext['setRefundReference']>(
+            reference => void (refundMode !== NON_REFUNDABLE && setReference(reference || undefined)),
+            [refundMode]
+        );
+
+        const refund = useMutation({ queryFn: refundTransaction });
+        const secondaryAction = useCallback(() => setActiveView(ActiveView.DETAILS), [setActiveView]);
+
+        const primaryAction = useCallback(async () => {
+            // await refund.mutate(
+            //     {
+            //         data: {},
+            //     },
+            //     {
+            //         path: { transactionId },
+            //     }
+            // );
+        }, [refund, transactionId]);
+
+        useEffect(() => {
+            setRefundAmount(availableAmount);
+        }, [availableAmount]);
 
         useEffect(() => {
             setPrimaryAction(
                 Object.freeze({
                     disabled: amount <= 0,
                     event: primaryAction,
-                    title: i18n.get('refundAction'),
+                    title: amount > 0 ? i18n.get('refundPayment', { values: { amount: formattedAmount } }) : i18n.get('refundAction'),
                     variant: ButtonVariant.PRIMARY,
                 })
             );
-        }, [amount, i18n, primaryAction, setPrimaryAction]);
+        }, [amount, formattedAmount, i18n, primaryAction, setPrimaryAction]);
 
         useEffect(() => {
             setSecondaryAction(
@@ -123,10 +154,11 @@ export const TransactionRefundProvider = memo(
                     setAmount,
                     setRefundReason,
                     setRefundReference,
+                    transactionId,
                     updateItems,
                 }}
             >
-                {toChildArray(children)}
+                {children}
             </TransactionRefundContext.Provider>
         );
     }
