@@ -32,7 +32,7 @@ function Accordion({ children, classNames, header, headerInformation }: PropsWit
                 >
                     <div className={ACCORDION_HEADER_CONTROLLER_CLASS}>
                         {header}
-                        {<Icon height={8} width={15} name={isExpanded ? 'chevron-up' : 'chevron-down'} />}
+                        {<Icon name={isExpanded ? 'chevron-up' : 'chevron-down'} />}
                     </div>
                 </button>
                 {headerInformation && <div>{headerInformation}</div>}

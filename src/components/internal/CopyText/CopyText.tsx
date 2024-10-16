@@ -33,7 +33,7 @@ const CopyText = ({ text }: { text: string }) => {
                 onMouseLeaveCapture={resetTooltipLabel}
             >
                 <span className={'adyen-pe-copy-text__information'}>{text}</span>
-                <Icon name={'copy'} color={'#0070f5'} />
+                <Icon name={'copy'} style={{ color: '#0070f5' }} />
             </Button>
         </Tooltip>
     );

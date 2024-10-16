@@ -18,7 +18,6 @@ const useCalendarControlsRendering = (renderControl?: CalendarRenderControl) => 
 
                 let directionModifier: string;
                 let labelModifier: 'next' | 'previous';
-                //TODO: Icon Check role presentation
                 let Chevron: (props: any) => ReturnType<typeof Icon>;
 
                 switch (control) {

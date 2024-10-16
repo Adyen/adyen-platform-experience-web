@@ -33,7 +33,7 @@ export const FilterBarMobileSwitch = ({ isMobileViewport, showingFilters, setSho
                 onClick={() => setShowingFilters?.(!showingFilters)}
                 variant={ButtonVariant.SECONDARY}
             >
-                {<Icon name={showingFilters ? 'cross' : 'filter'} width={16} height={16} />}
+                {<Icon name={showingFilters ? 'cross' : 'filter'} />}
             </Button>
         </div>
     ) : null;

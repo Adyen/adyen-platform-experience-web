@@ -17,19 +17,17 @@ import {
 type _RenderSelectOptionResult<T extends SelectItem> = ReturnType<SelectItemProps<T>['renderListItem']>;
 type _RenderSelectOptionData<T extends SelectItem> = Parameters<SelectItemProps<T>['renderListItem']>[0];
 
-//TODO: Icon check styles
 export const renderDefaultMultiSelectionCheckedness = <T extends SelectItem>(data: _RenderSelectOptionData<T>): _RenderSelectOptionResult<T> =>
     data.multiSelect ? (
         <span className={DROPDOWN_ELEMENT_CHECKBOX_CLASS}>
-            {<Icon name={data.selected ? 'checkmark-square-fill' : 'square'} role="presentation" width={16} height={16} />}
+            {<Icon name={data.selected ? 'checkmark-square-fill' : 'square'} role="presentation" style={{ width: 16, height: 16 }} />}
         </span>
     ) : null;
 
-//TODO: Icon check styles
 export const renderDefaultSingleSelectionCheckedness = <T extends SelectItem>(data: _RenderSelectOptionData<T>): _RenderSelectOptionResult<T> =>
     data.multiSelect ? null : (
         <span className={DROPDOWN_ELEMENT_CHECKMARK_CLASS}>
-            {data.selected && <Icon name={'checkmark'} role="presentation" width={16} height={16} />}
+            {data.selected && <Icon name={'checkmark'} role="presentation" style={{ width: 16, height: 16 }} />}
         </span>
     );
 

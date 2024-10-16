@@ -50,7 +50,7 @@ export const Icon = ({ className, name, ...props }: IconProps) => {
     useEffect(() => {
         if (icons[name]) {
             icons[name]().then(({ default: LoadedIcon }) => {
-                setIconComponent(<LoadedIcon {...props} />);
+                setIconComponent(<LoadedIcon />);
             });
         } else {
             setIconComponent(null);
@@ -60,7 +60,7 @@ export const Icon = ({ className, name, ...props }: IconProps) => {
 
     return (
         IconComponent && (
-            <span className={cx('adyen-pe-icon', className)} role="img" aria-hidden>
+            <span className={cx('adyen-pe-icon', className)} role="img" aria-hidden {...props}>
                 {IconComponent}
             </span>
         )

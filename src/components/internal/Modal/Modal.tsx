@@ -42,7 +42,6 @@ export default function Modal({
         return () => window.removeEventListener('keydown', handleEscKey);
     }, [isOpen, handleEscKey]);
 
-    //TODO: Icon fix size
     return (
         <>
             {isOpen && (

@@ -54,7 +54,6 @@ const SelectButton = <T extends SelectItem>(props: SelectButtonProps<T> & { appl
     const buttonActiveItem = useMemo(() => (boolOrFalse(multiSelect) ? undefined : active[0]), [active, multiSelect]);
     const buttonTitleText = useMemo(() => buttonActiveItem?.name?.trim() || placeholderText, [buttonActiveItem, placeholderText]);
 
-    //TODO: Icon fix Chevron
     return (
         <SelectButtonElement
             active={active}
@@ -113,7 +112,7 @@ const SelectButton = <T extends SelectItem>(props: SelectButtonProps<T> & { appl
             )}
             {!withoutCollapseIndicator && (
                 <span className={DROPDOWN_BUTTON_COLLAPSE_INDICATOR_CLASS}>
-                    <Icon name={'chevron-down'} role="presentation" width={16} height={16} />
+                    <Icon name={'chevron-down'} role="presentation" style={{ width: 16, height: 16 }} />
                 </span>
             )}
         </SelectButtonElement>

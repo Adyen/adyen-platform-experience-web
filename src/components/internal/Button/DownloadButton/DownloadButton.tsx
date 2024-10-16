@@ -69,7 +69,6 @@ function DownloadButton({ className, disabled, endpointName, params, setError, e
         onDownloadRequested?.();
     };
 
-    //TODO: Icon check the look
     return (
         <div className="adyen-pe-download">
             {isSmViewport ? (
