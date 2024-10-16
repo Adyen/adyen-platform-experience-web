@@ -157,14 +157,12 @@ export interface components {
             amount: components['schemas']['Amount'];
             lineItems?: components['schemas']['TransactionRefundRequestLineItem'][];
             merchantRefundReason?: string;
-            reference?: string;
         };
         TransactionRefundResponse: {
             status: 'received';
             transactionId: components['schemas']['SingleTransaction']['id'];
             amount: components['schemas']['Amount'];
             merchantRefundReason?: string;
-            reference?: string;
             lineItems?: components['schemas']['TransactionLineItem'][];
         };
     };

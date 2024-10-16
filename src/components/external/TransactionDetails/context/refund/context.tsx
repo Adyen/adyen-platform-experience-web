@@ -1,3 +1,10 @@
+import {
+    FULLY_REFUNDABLE_ONLY,
+    NON_REFUNDABLE,
+    PARTIALLY_REFUNDABLE_ANY_AMOUNT,
+    PARTIALLY_REFUNDABLE_WITH_LINE_ITEMS_REQUIRED,
+    REFUND_REASONS,
+} from '../constants';
 import { memo } from 'preact/compat';
 import { createContext } from 'preact';
 import { useCallback, useContext, useEffect, useMemo, useState } from 'preact/hooks';
@@ -5,7 +12,6 @@ import useCoreContext from '../../../../../core/Context/useCoreContext';
 import useMutation from '../../../../../hooks/useMutation/useMutation';
 import { useAuthContext } from '../../../../../core/Auth';
 import { clamp, EMPTY_ARRAY, noop } from '../../../../../utils';
-import { FULLY_REFUNDABLE_ONLY, NON_REFUNDABLE, PARTIALLY_REFUNDABLE_ANY_AMOUNT, REFUND_REASONS } from '../constants';
 import { getRefundableItemsForTransactionLineItems, getRefundAmountByMode, updateRefundItems } from './helpers';
 import type { ITransactionRefundContext, TransactionRefundProviderProps } from './types';
 import { ButtonVariant } from '../../../../internal/Button/types';
@@ -43,7 +49,6 @@ export const TransactionRefundProvider = memo(
         transactionId,
     }: TransactionRefundProviderProps) => {
         const { i18n } = useCoreContext();
-        const { refundTransaction } = useAuthContext().endpoints;
         const [items, setItems] = useState(EMPTY_ARRAY as ITransactionRefundContext['items']);
         const [refundReason, setReason] = useState<RefundReason>(REFUND_REASONS[0]);
         const [refundReference, setReference] = useState<string>();
@@ -97,19 +102,27 @@ export const TransactionRefundProvider = memo(
             [refundMode]
         );
 
-        const refund = useMutation({ queryFn: refundTransaction });
+        const { mutate: refundTransaction } = useMutation({ queryFn: useAuthContext().endpoints.refundTransaction });
         const secondaryAction = useCallback(() => setActiveView(ActiveView.DETAILS), [setActiveView]);
 
         const primaryAction = useCallback(async () => {
-            // await refund.mutate(
-            //     {
-            //         data: {},
-            //     },
-            //     {
-            //         path: { transactionId },
-            //     }
-            // );
-        }, [refund, transactionId]);
+            // [TODO]: Fix broken/missing type inference for useMutation mutate()
+            await refundTransaction(
+                {
+                    body: {
+                        amount: { currency, value: amount },
+                        merchantRefundReason: i18n.get(refundReason),
+                        ...(refundMode === PARTIALLY_REFUNDABLE_WITH_LINE_ITEMS_REQUIRED && {
+                            lineItems: [],
+                        }),
+                    },
+                    contentType: 'application/json',
+                },
+                {
+                    path: { transactionId },
+                }
+            );
+        }, [amount, currency, i18n, refundMode, refundReason, refundTransaction, transactionId]);
 
         useEffect(() => {
             setRefundAmount(availableAmount);
