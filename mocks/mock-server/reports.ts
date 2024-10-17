@@ -9,7 +9,7 @@ const REPORTS = endpoints('mock').reports;
 const DOWNLOAD = endpoints('mock').downloadReport;
 const networkError = false;
 const serverError = false;
-const downloadError = true;
+const downloadError = false;
 const defaultPaginationLimit = 20;
 
 export const reportsMock = [
