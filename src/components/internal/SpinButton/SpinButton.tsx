@@ -61,9 +61,9 @@ const SpinButton = ({ children, className, disabled, leap, max, min, onKeyDown, 
             <div className="adyen-pe-width-sizer">
                 <input
                     {...restProps}
-                    readonly
+                    readOnly
                     type="text"
-                    inputmode="decimal"
+                    inputMode="decimal"
                     value={currentValue}
                     ref={spinButtonElementRef}
                     className={cx('adyen-pe-input', INPUT_CLASS)}

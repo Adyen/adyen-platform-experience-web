@@ -21,8 +21,8 @@ export const ROLE_SPIN_BUTTON = 'spinbutton';
 export const NON_TABBABLE_TAB_INDEX = '-1';
 export const TABBABLE_TAB_INDEX = '0';
 
-export const DEFAULT_VALUE_LEAP = 10;
-export const DEFAULT_VALUE_MAX = 100;
-export const DEFAULT_VALUE_MIN = 0;
-export const DEFAULT_VALUE_NOW = 50;
+export const DEFAULT_VALUE_LEAP = 0;
+export const DEFAULT_VALUE_MAX = Number.POSITIVE_INFINITY;
+export const DEFAULT_VALUE_MIN = Number.NEGATIVE_INFINITY;
+export const DEFAULT_VALUE_NOW = Number.NaN;
 export const DEFAULT_VALUE_STEP = 1;

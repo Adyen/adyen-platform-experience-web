@@ -3,7 +3,7 @@ import type { HTMLProps } from 'preact/compat';
 import type { ComponentChild } from 'preact';
 
 // See https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attributes
-type _BlacklistedSpinButtonInputProps =
+type ExcludedSpinButtonInputProps =
     | 'accept'
     | 'alt'
     | 'capture'
@@ -39,7 +39,7 @@ export const enum SpinButtonControl {
 export type SpinButtonControlRender = (control: SpinButtonControl) => ComponentChild;
 
 export interface SpinButtonProps
-    extends Omit<HTMLProps<HTMLInputElement>, _BlacklistedSpinButtonInputProps | keyof SpinButtonCalibrationProps>,
+    extends Omit<HTMLProps<HTMLInputElement>, ExcludedSpinButtonInputProps | keyof SpinButtonCalibrationProps>,
         SpinButtonCalibrationProps {
     children?: SpinButtonControlRender;
     disabled?: boolean;
