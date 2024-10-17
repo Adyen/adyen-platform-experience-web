@@ -15,7 +15,7 @@ import {
     WRITTEN_OFF_GRANT,
 } from '../../../../../../mocks/mock-data';
 
-const dateRegex = /^[A-Z][a-z]{2} \d{2}, \d{4}$/;
+const dateRegex = /^[A-Z][a-z]{2} \d{1,2}, \d{4}$/;
 
 describe('GrantItem', () => {
     test('renders active grant', () => {
