@@ -16,7 +16,8 @@ import { calculateGrant, delay } from './utils/utils';
 import { getHandlerCallback, mocksFactory } from './utils/mocksHandlerFactory';
 import { paths as CapitalPaths } from '../../src/types/api/resources/CapitalResource';
 import uuid from '../../src/utils/random/uuid';
-import { IGrantOfferResponseDTO } from '../../src';
+import AdyenPlatformExperienceError from '../../src/core/Errors/AdyenPlatformExperienceError';
+import { ErrorTypes } from '../../src/core/Http/utils';
 
 const mockEndpoints = endpoints('mock').capital;
 const networkError = false;
@@ -63,6 +64,14 @@ export const capitalMock = [
 ];
 const capitalFactory = mocksFactory<CapitalPaths>();
 
+const getErrorHandler = (error: AdyenPlatformExperienceError, status = 500) => {
+    return async () => HttpResponse.json({ ...error, status, detail: 'detail' }, { status });
+};
+
+const ERROR_NO_CAPABILITY = new AdyenPlatformExperienceError(ErrorTypes.ERROR, 'MissingCapabilitiesException', 'Message', '01_0422');
+
+const ERROR_INACTIVE_AH = new AdyenPlatformExperienceError(ErrorTypes.ERROR, 'AccountHolderInactiveException', 'Message', '02_0422');
+
 export const CapitalMockedResponses = capitalFactory({
     unqualified: [
         { endpoint: mockEndpoints.dynamicOfferConfig, handler: EMPTY_OFFER },
@@ -101,4 +110,16 @@ export const CapitalMockedResponses = capitalFactory({
         { endpoint: mockEndpoints.grants, response: { data: [WRITTEN_OFF_GRANT] } },
     ],
     grantOffer: [{ endpoint: mockEndpoints.dynamicOffer, response: GRANT_OFFER }],
+    errorNoCapability: [
+        {
+            endpoint: mockEndpoints.dynamicOfferConfig,
+            handler: getErrorHandler(ERROR_NO_CAPABILITY, 422),
+        },
+    ],
+    errorInactiveAccountHolder: [
+        {
+            endpoint: mockEndpoints.dynamicOfferConfig,
+            handler: getErrorHandler(ERROR_INACTIVE_AH, 422),
+        },
+    ],
 });

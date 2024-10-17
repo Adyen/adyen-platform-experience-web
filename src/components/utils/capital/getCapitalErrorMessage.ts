@@ -18,28 +18,28 @@ export const getCapitalErrorMessage = (error: AdyenPlatformExperienceError | und
                 ...UNDEFINED_ERROR,
                 refreshComponent: true,
             };
-        case '01_422': {
+        case '01_0422': {
             return {
                 title: COMMON_CAPITAL_ERROR_MESSAGE.somethingWentWrong,
                 message: [COMMON_CAPITAL_ERROR_MESSAGE.couldNotLoadOffers, COMMON_CAPITAL_ERROR_MESSAGE.contactSupport],
                 onContactSupport,
             };
         }
-        case '02_422': {
+        case '02_0422': {
             return {
                 title: 'capital.accountIsNotActive',
                 message: [COMMON_CAPITAL_ERROR_MESSAGE.couldNotLoadOffers, COMMON_CAPITAL_ERROR_MESSAGE.contactSupport],
                 onContactSupport,
             };
         }
-        case '03_422': {
+        case '03_0422': {
             return {
                 title: COMMON_CAPITAL_ERROR_MESSAGE.somethingWentWrong,
                 message: [COMMON_CAPITAL_ERROR_MESSAGE.couldNotLoadOffers, COMMON_CAPITAL_ERROR_MESSAGE.tryRefreshingThePage],
                 onContactSupport,
             };
         }
-        case '04_422': {
+        case '04_0422': {
             return {
                 title: COMMON_CAPITAL_ERROR_MESSAGE.somethingWentWrong,
                 message: ['capital.couldNotContinueWithTheOffer', COMMON_CAPITAL_ERROR_MESSAGE.contactSupport],

@@ -13,8 +13,11 @@ import { IGrant } from '../../../../../types';
 import './CapitalOverview.scss';
 import Unqualified from '../Unqualified';
 import { PreQualified } from '../PreQualified/PreQualified';
+import { ErrorMessageDisplay } from '../../../../internal/ErrorMessageDisplay/ErrorMessageDisplay';
+import { getCapitalErrorMessage } from '../../../../utils/capital/getCapitalErrorMessage';
+import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatformExperienceError';
 
-type CapitalOverviewState = 'Loading' | 'Unqualified' | 'PreQualified' | 'GrantList';
+type CapitalOverviewState = 'Loading' | 'Error' | 'Unqualified' | 'PreQualified' | 'GrantList';
 
 export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<CapitalOverviewProps>> = ({
     hideTitle,
@@ -61,8 +64,16 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
         [onRequestFunds]
     );
 
+    const showError = useMemo(() => {
+        if (dynamicOfferQuery.error && grantsQuery.error) return true;
+        if (dynamicOfferQuery.error && !grantList?.length) return true;
+        return false;
+    }, [dynamicOfferQuery.error, grantList?.length, grantsQuery.error]);
+
     const state = useMemo<CapitalOverviewState>(() => {
-        if (
+        if (showError) {
+            return 'Error';
+        } else if (
             (!grantsEndpointCall && !dynamicConfigurationEndpointCall) ||
             (!dynamicOffer && !grantList) ||
             grantsQuery.isFetching ||
@@ -82,6 +93,7 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
         grantList,
         grantsEndpointCall,
         grantsQuery.isFetching,
+        showError,
         skipPreQualifiedIntro,
     ]);
 
@@ -95,6 +107,18 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
                                 <div className={CAPITAL_OVERVIEW_CLASS_NAMES.headerSkeleton}></div>
                                 <div className={CAPITAL_OVERVIEW_CLASS_NAMES.skeleton}></div>
                             </>
+                        );
+                    case 'Error':
+                        return (
+                            <div>
+                                <CapitalHeader hideTitle={hideTitle} titleKey={'capital.businessFinancing'} />
+                                <ErrorMessageDisplay
+                                    absolutePosition={false}
+                                    outlined={false}
+                                    withImage
+                                    {...getCapitalErrorMessage(dynamicOfferQuery.error as AdyenPlatformExperienceError)}
+                                />
+                            </div>
                         );
                     case 'GrantList':
                         return (
