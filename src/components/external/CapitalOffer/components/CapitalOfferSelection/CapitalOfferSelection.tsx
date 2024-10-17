@@ -20,7 +20,6 @@ type CapitalOfferSelectionProps = {
     onReviewOffer: (data: IGrantOfferResponseDTO) => void;
     repaymentFrequency: number;
     requestedAmount: number | undefined;
-    onOfferSelection: (data: IGrantOfferResponseDTO) => void;
 };
 
 const LoadingSkeleton = () => (
@@ -75,14 +74,7 @@ const InformationDisplay = ({ data, repaymentFrequency }: { data: IGrantOfferRes
     );
 };
 
-export const CapitalOfferSelection = ({
-    config,
-    onBack,
-    repaymentFrequency,
-    requestedAmount,
-    onOfferSelection,
-    onReviewOffer,
-}: CapitalOfferSelectionProps) => {
+export const CapitalOfferSelection = ({ config, onBack, repaymentFrequency, requestedAmount, onReviewOffer }: CapitalOfferSelectionProps) => {
     const { i18n } = useCoreContext();
     const [requestedValue, setRequestedValue] = useState<number | undefined>(Number(requestedAmount) || config?.minAmount.value);
     const currency = useMemo(() => config?.minAmount.currency, [config?.minAmount.currency]);
@@ -105,10 +97,6 @@ export const CapitalOfferSelection = ({
     });
 
     const onReview = useCallback(() => {
-        if (getDynamicGrantOfferMutation.data) {
-            onOfferSelection(getDynamicGrantOfferMutation.data);
-            onReviewOffer(getDynamicGrantOfferMutation.data);
-        }
         void reviewOfferMutation.mutate({
             body: {
                 amount: getDynamicGrantOfferMutation.data?.grantAmount.value || requestedValue!,
@@ -116,7 +104,7 @@ export const CapitalOfferSelection = ({
             },
             contentType: 'application/json',
         });
-    }, [currency, getDynamicGrantOfferMutation.data, onOfferSelection, onReviewOffer, requestedValue, reviewOfferMutation]);
+    }, [currency, getDynamicGrantOfferMutation.data, requestedValue, reviewOfferMutation]);
 
     const getDynamicGrantOfferMutationCallback = getDynamicGrantOfferMutation.mutate;
 

@@ -39,10 +39,6 @@ export const CapitalOffer: FunctionalComponent<ExternalUIComponentProps<CapitalO
 
     const onReviewOfferHandler = useCallback((data: IGrantOfferResponseDTO) => {
         setRequestedAmount(data.grantAmount.value);
-        setSelectedOffer(prev => (prev ? { ...prev, id: data.id } : prev));
-    }, []);
-
-    const onOfferSelection = useCallback((data: IGrantOfferResponseDTO) => {
         setSelectedOffer(data);
     }, []);
 
@@ -65,7 +61,6 @@ export const CapitalOffer: FunctionalComponent<ExternalUIComponentProps<CapitalO
                     requestedAmount={requestedAmount}
                     config={config}
                     onBack={goBackHandler}
-                    onOfferSelection={onOfferSelection}
                     onReviewOffer={onReviewOfferHandler}
                     repaymentFrequency={REPAYMENT_FREQUENCY}
                 />

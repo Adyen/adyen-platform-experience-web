@@ -54,10 +54,8 @@ export const CapitalOfferSummary = ({
     );
 
     const onRequestFundsHandler = useCallback(() => {
-        grantOffer.id
-            ? requestFundsCallback(grantOffer.id)
-            : reviewGrantOfferMutation.mutate({ body: { amount: 10, currency: '' }, contentType: 'application/json' });
-    }, [grantOffer.id, requestFundsCallback, reviewGrantOfferMutation]);
+        grantOffer.id && requestFundsCallback(grantOffer.id);
+    }, [grantOffer.id, requestFundsCallback]);
 
     const maximumRepaymentPeriod = useMemo(
         () => calculateMaximumRepaymentPeriodInMonths(grantOffer.maximumRepaymentPeriodDays),
