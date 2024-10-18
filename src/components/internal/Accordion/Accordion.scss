@@ -10,10 +10,12 @@
         width: 100%;
 
         &-container {
+            align-items: center;
             background-color: transparent;
             border: style.token(spacer-000);
             cursor: pointer;
             display: flex;
+            gap: style.token(spacer-030);
             padding: style.token(spacer-000);
         }
 

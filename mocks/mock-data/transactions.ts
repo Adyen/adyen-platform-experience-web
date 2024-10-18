@@ -1842,8 +1842,8 @@ export const TRANSACTIONS: ITransaction[] = [
         createdAt: '2024-06-30T05:16:44.764Z',
     },
     {
-        bankAccount: {
-            accountNumberLastFourDigits: '6890',
+        paymentMethod: {
+            type: 'klarna',
         },
         id: '254X7TAUWB140HW0',
         amount: {
@@ -1880,7 +1880,6 @@ export const DEFAULT_LINE_ITEMS: ILineItem[] = [
         description: 'Boots',
         availableQuantity: 2,
         originalQuantity: 6,
-        refundStatuses: DEFAULT_LINE_ITEM_REFUND_STATUSES,
     },
     {
         id: '3aa2de10-3de2-494a-9dc9-6abf77597945',
@@ -1889,7 +1888,6 @@ export const DEFAULT_LINE_ITEMS: ILineItem[] = [
         description: 'Boots',
         availableQuantity: 2,
         originalQuantity: 6,
-        refundStatuses: DEFAULT_LINE_ITEM_REFUND_STATUSES,
     },
     {
         id: '620472a7-7eb3-49e6-8ecd-3219e4d614dc',
@@ -1898,7 +1896,6 @@ export const DEFAULT_LINE_ITEMS: ILineItem[] = [
         description: 'Boots',
         availableQuantity: 2,
         originalQuantity: 6,
-        refundStatuses: DEFAULT_LINE_ITEM_REFUND_STATUSES,
     },
     {
         id: '681839b3-dffb-4909-b569-5e1f0606b143',

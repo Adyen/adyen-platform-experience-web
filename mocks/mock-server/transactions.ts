@@ -160,7 +160,29 @@ const fetchTransaction = async (params: PathParams) => {
 
     await delay(1000);
     passThroughRefundLockDeadlineCheckpoint();
-    return HttpResponse.json(enrichTransactionDataWithDetails(matchingMock));
+
+    if (PAYMENT_OR_TRANSFER.includes(matchingMock.category)) {
+        if (matchingMock.paymentMethod?.type && KLARNA_OR_PAYPAL.includes(matchingMock.paymentMethod.type)) {
+            return HttpResponse.json(
+                enrichTransactionDataWithDetails(matchingMock, {
+                    deductedAmount: 350,
+                    refundMode: 'partially_refundable_with_line_items_required',
+                })
+            );
+        }
+
+        const amount = matchingMock.amount.value;
+        const isLargeAmount = amount >= 100000;
+
+        return HttpResponse.json(
+            enrichTransactionDataWithDetails(matchingMock, {
+                deductedAmount: clamp(0, Math.round(amount * (!matchingMock.paymentMethod?.lastFourDigits && isLargeAmount ? 0.025 : 0.034)), 10000),
+                refundMode: isLargeAmount ? 'partially_refundable_any_amount' : 'fully_refundable_only',
+            })
+        );
+    }
+
+    return HttpResponse.json(enrichTransactionDataWithDetails(matchingMock, { refundMode: 'non_refundable' }));
 };
 
 const fetchTransactionsForRequest = (req: Request) => {
@@ -241,6 +263,21 @@ export const transactionsMocks = [
         const responseDelay = 200 + Math.round(Math.floor(Math.random() * 201) / 50) * 50;
 
         const { transactions } = fetchTransactionsForRequest(request);
+
+        // const enrichedTransactions = transactions.map((transaction: ITransaction) => {
+        //     passThroughRefundLockDeadlineCheckpoint();
+        //
+        //     if (PAYMENT_OR_TRANSFER.includes(transaction?.category)) {
+        //         if (transaction?.paymentMethod?.type && KLARNA_OR_PAYPAL.includes(transaction.paymentMethod.type)) {
+        //             return enrichTransactionDataWithDetails(transaction, {
+        //                 deductedAmount: 350,
+        //                 lineItemsSlice: [0, 4],
+        //                 refundMode: 'partially_refundable_with_line_items_required',
+        //             });
+        //         }
+        //     }
+        //     return transaction;
+        // });
 
         await delay(responseDelay);
 

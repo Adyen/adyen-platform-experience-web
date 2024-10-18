@@ -81,6 +81,7 @@ export interface components {
             id: string;
             paymentMethod?: components['schemas']['PaymentMethod'];
             status: components['schemas']['Status'];
+            lineItems?: components['schemas']['TransactionLineItem'][];
         };
         /** @enum {string} */
         Status: 'Pending' | 'Booked' | 'Reversed';

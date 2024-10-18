@@ -1,0 +1,49 @@
+@use '../../../../style';
+
+.adyen-pe-transaction-line-item {
+    --adyen-pe-content-padding: style.token(spacer-070);
+    border: var(--adyen-sdk-border-width-s, 1px) solid var(--adyen-sdk-color-outline-secondary, #c9cdd3);
+    border-radius: var(--adyen-sdk-spacer-040, 8px);
+    margin-top: style.token(spacer-040);
+    padding: style.token(spacer-020) style.token(spacer-090);
+
+    &--disabled {
+        background-color: style.token(color-outline-primary);
+    }
+
+    &-heading {
+        align-items: center;
+        display: flex;
+        flex-direction: row;
+
+        &--description {
+            align-items: center;
+            display: flex;
+            width: 100%;
+        }
+
+        &--additional-info {
+            align-items: center;
+            display: flex;
+            justify-content: space-between;
+            width: 50%;
+        }
+    }
+
+    .adyen-pe-accordion__header {
+        margin: 0;
+        width: 100%;
+
+        button {
+            width: 100%;
+
+            .adyen-pe-accordion__header-controller {
+                flex: 1;
+            }
+        }
+    }
+
+    .adyen-pe-structured-list__item {
+        margin-bottom: style.token(spacer-040);
+    }
+}
