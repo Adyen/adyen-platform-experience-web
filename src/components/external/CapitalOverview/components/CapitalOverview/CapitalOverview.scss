@@ -5,12 +5,21 @@
     display: flex;
     flex-direction: column;
     gap: style.token(spacer-080);
+    min-height: 150px;
     max-width: 322px;
 
     &__skeleton {
         @include skeleton.adyen-pe-skeleton-animation();
         border-radius: 5px;
-        height: style.token(spacer-140);
+        flex: 1;
+        height: 100%;
+    }
+
+    &__header-skeleton-container {
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+        gap: style.token(spacer-060);
     }
 
     &__header-skeleton {

@@ -103,10 +103,10 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
                 switch (state) {
                     case 'Loading':
                         return (
-                            <>
+                            <div className={CAPITAL_OVERVIEW_CLASS_NAMES.skeletonContainer}>
                                 <div className={CAPITAL_OVERVIEW_CLASS_NAMES.headerSkeleton}></div>
                                 <div className={CAPITAL_OVERVIEW_CLASS_NAMES.skeleton}></div>
-                            </>
+                            </div>
                         );
                     case 'Error':
                         return (

@@ -6,6 +6,8 @@ import {
     BUTTON_LABEL_CLASSNAME,
     ICON_BUTTON_CLASSNAME,
     ICON_BUTTON_CONTENT_CLASSNAME,
+    BUTTON_FULL_WIDTH_CLASSNAME,
+    BUTTON_CONDENSED_CLASSNAME,
 } from './constants';
 import { TypographyElement, TypographyVariant } from '../Typography/types';
 import Typography from '../Typography/Typography';
@@ -14,6 +16,7 @@ import { Ref } from 'preact';
 import { useMemo } from 'preact/hooks';
 import { ButtonProps, ButtonVariant } from './types';
 import './Button.scss';
+import cx from 'classnames';
 
 // TODO: Reuse BaseButton component within Button component
 function Button(
@@ -28,6 +31,8 @@ function Button(
         children,
         className,
         iconButton = false,
+        fullWidth,
+        condensed,
         ...restAttributes
     }: ButtonProps,
     ref: Ref<HTMLButtonElement>
@@ -39,7 +44,11 @@ function Button(
 
     return (
         <button
-            className={iconButton ? `${ICON_BUTTON_CLASSNAME} ${classes}` : classes}
+            className={cx(classes, {
+                [ICON_BUTTON_CLASSNAME]: iconButton,
+                [BUTTON_CONDENSED_CLASSNAME]: condensed,
+                [BUTTON_FULL_WIDTH_CLASSNAME]: fullWidth,
+            })}
             type={type}
             disabled={disabled}
             onClick={click}
