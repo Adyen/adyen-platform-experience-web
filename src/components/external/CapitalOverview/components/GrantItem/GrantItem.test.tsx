@@ -34,7 +34,7 @@ describe('GrantItem', () => {
         expect(amountLabel).toHaveTextContent('Repaid');
         expect(amountLabel).toHaveClass('adyen-pe-grant-item__text--secondary');
 
-        const amount = screen.getByText('$11,870.00');
+        const amount = screen.getByText('$12,000.00');
         expect(amount).toBeInTheDocument();
         expect(amount).not.toHaveClass('adyen-pe-grant-item__text--secondary');
 
@@ -42,6 +42,9 @@ describe('GrantItem', () => {
         expect(progressBar).toBeInTheDocument();
         expect(progressBar).toHaveAttribute('aria-valuenow', '1187000');
         expect(progressBar).toHaveAttribute('aria-valuemax', '2000000');
+
+        const detailsButton = screen.queryByRole('button');
+        expect(detailsButton).toBeInTheDocument();
     });
 
     test('renders active unrepaid grant', () => {
@@ -68,6 +71,9 @@ describe('GrantItem', () => {
         expect(progressBar).toBeInTheDocument();
         expect(progressBar).toHaveAttribute('aria-valuenow', '0');
         expect(progressBar).toHaveAttribute('aria-valuemax', '2000000');
+
+        const detailsButton = screen.queryByRole('button');
+        expect(detailsButton).toBeInTheDocument();
     });
 
     test('renders failed grant', () => {
@@ -91,6 +97,9 @@ describe('GrantItem', () => {
 
         const progressBar = screen.queryByRole('progressbar');
         expect(progressBar).not.toBeInTheDocument();
+
+        const detailsButton = screen.queryByRole('button');
+        expect(detailsButton).not.toBeInTheDocument();
     });
 
     test('renders pending grant', () => {
@@ -114,6 +123,9 @@ describe('GrantItem', () => {
 
         const progressBar = screen.queryByRole('progressbar');
         expect(progressBar).not.toBeInTheDocument();
+
+        const detailsButton = screen.queryByRole('button');
+        expect(detailsButton).not.toBeInTheDocument();
     });
 
     test('renders repaid grant', () => {
@@ -137,6 +149,9 @@ describe('GrantItem', () => {
 
         const progressBar = screen.queryByRole('progressbar');
         expect(progressBar).not.toBeInTheDocument();
+
+        const detailsButton = screen.queryByRole('button');
+        expect(detailsButton).not.toBeInTheDocument();
     });
 
     test('renders revoked grant', () => {
@@ -160,6 +175,9 @@ describe('GrantItem', () => {
 
         const progressBar = screen.queryByRole('progressbar');
         expect(progressBar).not.toBeInTheDocument();
+
+        const detailsButton = screen.queryByRole('button');
+        expect(detailsButton).not.toBeInTheDocument();
     });
 
     test('renders written off grant', () => {
@@ -183,5 +201,8 @@ describe('GrantItem', () => {
 
         const progressBar = screen.queryByRole('progressbar');
         expect(progressBar).not.toBeInTheDocument();
+
+        const detailsButton = screen.queryByRole('button');
+        expect(detailsButton).not.toBeInTheDocument();
     });
 });
