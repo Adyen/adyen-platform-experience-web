@@ -19,9 +19,18 @@
     transition-property: color, background-color, box-shadow;
     user-select: none;
 
+    &--condensed {
+        border-radius: style.token(border-radius-s);
+        padding-bottom: style.token(spacer-030);
+        padding-top: style.token(spacer-030);
+    }
+
+    &--full-width {
+        width: 100%;
+    }
+
     &__label {
         align-items: center;
-        display: inline-flex;
         line-height: style.token(text-body-line-height);
         vertical-align: middle;
         white-space: nowrap;
@@ -102,6 +111,17 @@
         &:disabled {
             background-color: style.token(color-background-primary);
             color: style.token(color-label-disabled);
+        }
+    }
+
+    &--tertiary-with-background {
+        background-color: transparent;
+        color: style.token(color-label-primary);
+
+        &:hover {
+            background-color: style.token(color-background-secondary-hover);
+            color: style.token(color-label-primary-hover);
+            text-decoration: none;
         }
     }
 

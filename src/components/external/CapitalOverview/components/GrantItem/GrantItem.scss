@@ -1,8 +1,6 @@
 @use '../../../../../style';
 
 .adyen-pe-grant-item {
-    border-bottom: 1px solid style.token(color-separator-primary);
-
     &__status-container {
         float: right;
     }
@@ -12,6 +10,10 @@
     }
 
     &__progress-bar {
+        margin-top: style.token(spacer-040);
+    }
+
+    &__details {
         margin-top: style.token(spacer-040);
     }
 }
