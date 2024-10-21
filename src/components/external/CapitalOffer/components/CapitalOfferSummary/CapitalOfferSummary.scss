@@ -3,7 +3,7 @@
 .adyen-pe-capital-offer-summary {
     display: flex;
     flex-direction: column;
-    gap: style.token(spacer-060);
+    gap: style.token(spacer-070);
 
     &__grant-summary {
         display: flex;
@@ -19,7 +19,6 @@
         display: flex;
         gap: style.token(spacer-050);
         justify-content: end;
-        margin-top: style.token(spacer-080);
     }
 
     &__error-alert {
