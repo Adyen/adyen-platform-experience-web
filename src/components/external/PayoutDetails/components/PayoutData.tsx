@@ -100,7 +100,7 @@ export const PayoutData = ({
             ) : (
                 <div className={PD_BASE_CLASS}>
                     <div className={PD_TITLE_CLASS}>
-                        <Typography variant={TypographyVariant.SUBTITLE} stronger>
+                        <Typography variant={TypographyVariant.SUBTITLE} strongest>
                             {i18n.get('netPayout')}
                         </Typography>
                         <Typography variant={TypographyVariant.TITLE} large>

@@ -12,7 +12,7 @@ function PopoverTitle({ title, isImageTitle = false }: PopoverTitleProps) {
     };
 
     return (
-        <Typography strongest={!isImageTitle} variant={getVariant()}>
+        <Typography strongest={!isImageTitle} stronger={isImageTitle} variant={getVariant()}>
             {title}
         </Typography>
     );

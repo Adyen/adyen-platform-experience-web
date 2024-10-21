@@ -43,12 +43,16 @@
     // Subtitle
     &--subtitle {
         font-size: style.token(text-subtitle-font-size);
-        font-weight: style.token(text-body-stronger-font-weight);
+        font-weight: style.token(text-body-font-weight);
         letter-spacing: #{style.token(text-subtitle-letter-spacing)};
         line-height: style.token(text-subtitle-line-height);
     }
 
     &--subtitle-stronger {
+        font-weight: style.token(text-body-stronger-font-weight);
+    }
+
+    &--subtitle-strongest {
         font-weight: style.token(text-body-strongest-font-weight);
     }
 

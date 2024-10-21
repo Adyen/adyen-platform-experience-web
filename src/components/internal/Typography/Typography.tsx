@@ -41,6 +41,8 @@ function Typography({ el, className, stronger, strongest, variant, medium, large
             [`${DEFAULT_TYPOGRAPHY_CLASSNAME}--${TypographyVariant.SUBTITLE}`]: variant === TypographyVariant.SUBTITLE,
             [`${DEFAULT_TYPOGRAPHY_CLASSNAME}--${TypographyVariant.SUBTITLE}-${TypographyModifier.STRONGER}`]:
                 variant === TypographyVariant.SUBTITLE && stronger,
+            [`${DEFAULT_TYPOGRAPHY_CLASSNAME}--${TypographyVariant.SUBTITLE}-${TypographyModifier.STRONGEST}`]:
+                variant === TypographyVariant.SUBTITLE && strongest,
 
             // Title
             [`${DEFAULT_TYPOGRAPHY_CLASSNAME}--${TypographyVariant.TITLE}`]: variant === TypographyVariant.TITLE && !medium && !large,
