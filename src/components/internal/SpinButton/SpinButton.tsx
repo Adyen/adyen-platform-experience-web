@@ -2,7 +2,7 @@ import h from 'preact';
 import cx from 'classnames';
 import Icon from '../Icon';
 import Button from '../Button';
-import _SpinButton from './internal/SpinButton';
+import createSpinButton from './internal/SpinButton';
 import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { BASE_CLASS, BUTTON_CLASS, BUTTON_DECREASE_CLASS, BUTTON_INCREASE_CLASS, INPUT_CLASS, INPUT_SIZER_ELEMENT_CLASS } from './constants';
 import { SpinButtonControl, SpinButtonControlRender, SpinButtonProps } from './types';
@@ -25,25 +25,27 @@ const defaultRenderControl: SpinButtonControlRender = control => {
 const SpinButton = ({ children, className, disabled, leap, max, min, onKeyDown, step, value, valueAsText, ...restProps }: SpinButtonProps) => {
     const [currentState, setCurrentState] = useState(EMPTY_OBJECT as SpinButtonState);
     const renderControl = useMemo(() => children ?? defaultRenderControl, [children]);
-    const spinButton = useRef(new _SpinButton()).current;
+    const abortController = useRef(new AbortController()).current;
+    const spinButton = useRef(createSpinButton(abortController.signal)).current;
 
     const containerElementRef = useCallback((el: HTMLElement | null) => void (spinButton.containerElement = el), []);
     const decreaseButtonRef = useCallback((el: HTMLButtonElement | null) => void (spinButton.decrementButton = el), []);
     const increaseButtonRef = useCallback((el: HTMLButtonElement | null) => void (spinButton.incrementButton = el), []);
-    const spinButtonElementRef = useCallback((el: HTMLElement | null) => void (spinButton.spinButtonElement = el), []);
+    const valueElementRef = useCallback((el: HTMLElement | null) => void (spinButton.valueElement = el), []);
 
     const { value: currentValue } = currentState;
 
     const _onKeyDown = (evt: h.JSX.TargetedKeyboardEvent<HTMLInputElement>) => {
-        spinButton.onKeyboardInteraction(evt);
+        spinButton.keyboardInteraction(evt);
         onKeyDown?.(evt);
     };
 
-    spinButton.disabled = disabled;
-    spinButton.onChange = setCurrentState;
+    spinButton.disabled = disabled!;
+    spinButton.onStateChanged = setCurrentState;
 
     useLayoutEffect(() => {
-        spinButton.recalibrate({ leap, max, min, step, value });
+        spinButton.recalibrate({ leap, max, min, step });
+        spinButton.value = value!;
     }, [leap, max, min, step, value]);
 
     return (
@@ -53,7 +55,7 @@ const SpinButton = ({ children, className, disabled, leap, max, min, onKeyDown, 
                 ref={decreaseButtonRef}
                 variant={ButtonVariant.TERTIARY}
                 className={cx(BUTTON_CLASS, BUTTON_DECREASE_CLASS)}
-                onClick={spinButton.onMouseInteraction}
+                onClick={spinButton.mouseInteraction}
             >
                 {renderControl(SpinButtonControl.DECREMENT)}
             </Button>
@@ -65,7 +67,7 @@ const SpinButton = ({ children, className, disabled, leap, max, min, onKeyDown, 
                     type="text"
                     inputMode="decimal"
                     value={currentValue}
-                    ref={spinButtonElementRef}
+                    ref={valueElementRef}
                     className={cx('adyen-pe-input', INPUT_CLASS)}
                     onKeyDown={_onKeyDown}
                     {...(!!valueAsText && { 'aria-valuetext': valueAsText(currentValue) ?? currentValue })}
@@ -81,7 +83,7 @@ const SpinButton = ({ children, className, disabled, leap, max, min, onKeyDown, 
                 ref={increaseButtonRef}
                 variant={ButtonVariant.TERTIARY}
                 className={cx(BUTTON_CLASS, BUTTON_INCREASE_CLASS)}
-                onClick={spinButton.onMouseInteraction}
+                onClick={spinButton.mouseInteraction}
             >
                 {renderControl(SpinButtonControl.INCREMENT)}
             </Button>

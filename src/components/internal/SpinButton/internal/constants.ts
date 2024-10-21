@@ -26,3 +26,5 @@ export const DEFAULT_VALUE_MAX = Number.POSITIVE_INFINITY;
 export const DEFAULT_VALUE_MIN = Number.NEGATIVE_INFINITY;
 export const DEFAULT_VALUE_NOW = Number.NaN;
 export const DEFAULT_VALUE_STEP = 1;
+
+export const EVENT_STATE_NOTIFICATION = 'spinbutton_state_notification';
