@@ -21,6 +21,10 @@ export const setupMock = [
                     method: 'GET',
                     url: 'balanceAccounts/{balanceAccountId}/balances',
                 },
+                getTransaction: {
+                    method: 'GET',
+                    url: 'transactions/{transactionId}',
+                },
                 getTransactions: {
                     method: 'GET',
                     url: 'transactions',
