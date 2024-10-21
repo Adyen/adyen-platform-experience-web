@@ -54,7 +54,7 @@ export const capitalMock = [
         if (networkError) {
             return HttpResponse.error();
         }
-        await delay(200);
+        await delay(400);
         return HttpResponse.json(DYNAMIC_CAPITAL_OFFER);
     }),
     http.get(mockEndpoints.grants, EMPTY_GRANTS_LIST),
@@ -65,7 +65,10 @@ export const capitalMock = [
 const capitalFactory = mocksFactory<CapitalPaths>();
 
 const getErrorHandler = (error: AdyenPlatformExperienceError, status = 500) => {
-    return async () => HttpResponse.json({ ...error, status, detail: 'detail' }, { status });
+    return async () => {
+        await delay(300);
+        return HttpResponse.json({ ...error, status, detail: 'detail' }, { status });
+    };
 };
 
 const ERROR_NO_CAPABILITY = new AdyenPlatformExperienceError(ErrorTypes.ERROR, 'MissingCapabilitiesException', 'Message', '30_016');

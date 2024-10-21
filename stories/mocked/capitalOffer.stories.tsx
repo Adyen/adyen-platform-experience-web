@@ -16,7 +16,7 @@ export const Default: ElementStory<typeof CapitalOffer> = {
 };
 
 export const ErrorSomethingWentWrong: ElementStory<typeof CapitalOffer> = {
-    name: 'Error - Something went wrong',
+    name: 'Error - Something went wrong with review offer',
     args: {
         mockedApi: true,
         externalDynamicOffersConfig: DYNAMIC_CAPITAL_OFFER,
