@@ -36,5 +36,5 @@ export const Container = <T extends new (args: any) => any>({ component, compone
         return () => Component.unmount();
     }, []);
 
-    return <div ref={container} id="component-root" className="component-wrapper" style={{ width: 'fit-content' }} />;
+    return <div ref={container} id="component-root" className="component-wrapper" />;
 };
