@@ -21,14 +21,11 @@
         justify-content: end;
     }
 
-    &__error-alert {
-        margin-top: style.token(spacer-060);
-    }
-
     &__details {
         display: flex;
         flex-direction: column;
         gap: style.token(spacer-020);
+        margin-bottom: style.token(spacer-030);
 
         dd {
             text-align: right;
