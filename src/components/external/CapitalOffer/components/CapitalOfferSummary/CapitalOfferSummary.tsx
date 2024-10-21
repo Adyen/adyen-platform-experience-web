@@ -14,9 +14,6 @@ import { useAuthContext } from '../../../../../core/Auth';
 import { Tooltip } from '../../../../internal/Tooltip/Tooltip';
 import { EMPTY_OBJECT } from '../../../../../utils';
 import { AdyenErrorResponse } from '../../../../../core/Http/types';
-import { getCapitalErrorMessage } from '../../../../utils/capital/getCapitalErrorMessage';
-import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatformExperienceError';
-import { ErrorMessageDisplay } from '../../../../internal/ErrorMessageDisplay/ErrorMessageDisplay';
 import { AlertTypeOption } from '../../../../internal/Alert/types';
 import Alert from '../../../../internal/Alert/Alert';
 import Icon from '../../../../internal/Icon';
@@ -26,13 +23,11 @@ export const CapitalOfferSummary = ({
     repaymentFrequency,
     onBack,
     onRequestFunds,
-    reviewOfferError,
 }: {
     grantOffer?: IGrantOfferResponseDTO;
     repaymentFrequency: number;
     onBack: () => void;
     onRequestFunds?: (data: IGrant) => void;
-    reviewOfferError: Error | AdyenErrorResponse | undefined;
 }) => {
     const { i18n } = useCoreContext();
     const expectedRepaymentDate = useMemo(() => {
@@ -85,122 +80,106 @@ export const CapitalOfferSummary = ({
 
     return (
         <div className="adyen-pe-capital-offer-summary">
-            {reviewOfferError ? (
-                <ErrorMessageDisplay
-                    absolutePosition={false}
-                    outlined={false}
-                    withImage
-                    {...getCapitalErrorMessage(reviewOfferError as AdyenPlatformExperienceError)}
-                />
-            ) : (
-                <>
-                    <InfoBox className="adyen-pe-capital-offer-summary__grant-summary">
-                        <Typography el={TypographyElement.PARAGRAPH} variant={TypographyVariant.BODY}>
-                            {i18n.get('capital.youAreRequestingFundingOf')}{' '}
-                            <strong>{grantOffer && `${i18n.amount(grantOffer.grantAmount.value, grantOffer.grantAmount.currency)}.`}</strong>
-                        </Typography>
-                        <Typography el={TypographyElement.PARAGRAPH} variant={TypographyVariant.CAPTION}>
-                            {grantOffer &&
-                                i18n.get('capital.minimumRepaymentFrequency', {
-                                    values: {
-                                        amount: i18n.amount(grantOffer.thresholdAmount.value, grantOffer.thresholdAmount.currency),
-                                        days: repaymentFrequency,
-                                        date: expectedRepaymentDate ?? '',
-                                    },
-                                })}
-                        </Typography>
-                    </InfoBox>
-                    <StructuredList
-                        classNames="adyen-pe-capital-offer-summary__details"
-                        renderLabel={(val, key) => {
-                            if (key === 'capital.repaymentThreshold') {
-                                return (
-                                    <Tooltip
-                                        isContainerHovered
-                                        content={i18n.get('capital.minimumRepaymentDaysToRepayFinancing', { values: { days: repaymentFrequency } })}
-                                    >
-                                        <span>
-                                            <Typography
-                                                className={'adyen-pe-capital-offer-summary__list-label'}
-                                                el={TypographyElement.SPAN}
-                                                variant={TypographyVariant.CAPTION}
-                                            >
-                                                {val ?? '-'}
-                                            </Typography>
-                                        </span>
-                                    </Tooltip>
-                                );
-                            }
-                            return (
-                                <Typography
-                                    className={'adyen-pe-capital-offer-summary__list-label'}
-                                    el={TypographyElement.SPAN}
-                                    variant={TypographyVariant.CAPTION}
-                                >
-                                    {val ?? '-'}
-                                </Typography>
-                            );
-                        }}
-                        renderValue={(val, key) => {
-                            if (
-                                key === 'capital.balanceAccount' &&
-                                requestFundsMutation.error &&
-                                requestError &&
-                                requestError.errorCode === '30_013'
-                            ) {
-                                return (
+            <InfoBox className="adyen-pe-capital-offer-summary__grant-summary">
+                <Typography el={TypographyElement.PARAGRAPH} variant={TypographyVariant.BODY}>
+                    {i18n.get('capital.youAreRequestingFundingOf')}{' '}
+                    <strong>{grantOffer && `${i18n.amount(grantOffer.grantAmount.value, grantOffer.grantAmount.currency)}.`}</strong>
+                </Typography>
+                <Typography el={TypographyElement.PARAGRAPH} variant={TypographyVariant.CAPTION}>
+                    {grantOffer &&
+                        i18n.get('capital.minimumRepaymentFrequency', {
+                            values: {
+                                amount: i18n.amount(grantOffer.thresholdAmount.value, grantOffer.thresholdAmount.currency),
+                                days: repaymentFrequency,
+                                date: expectedRepaymentDate ?? '',
+                            },
+                        })}
+                </Typography>
+            </InfoBox>
+            <StructuredList
+                classNames="adyen-pe-capital-offer-summary__details"
+                renderLabel={(val, key) => {
+                    if (key === 'capital.repaymentThreshold') {
+                        return (
+                            <Tooltip
+                                isContainerHovered
+                                content={i18n.get('capital.minimumRepaymentDaysToRepayFinancing', { values: { days: repaymentFrequency } })}
+                            >
+                                <span>
                                     <Typography
+                                        className={'adyen-pe-capital-offer-summary__list-label'}
                                         el={TypographyElement.SPAN}
                                         variant={TypographyVariant.CAPTION}
-                                        stronger
-                                        className={'adyen-pe-capital-offer-summary__details--error'}
                                     >
-                                        <Icon name={'warning-filled'} />
-                                        <span>{i18n.get('capital.primaryBalanceAccount')}</span>
+                                        {val ?? '-'}
                                     </Typography>
-                                );
-                            }
-                            return (
-                                <Typography el={TypographyElement.SPAN} variant={TypographyVariant.CAPTION} stronger>
-                                    {val ?? '-'}
-                                </Typography>
-                            );
-                        }}
-                        items={[
-                            {
-                                key: 'capital.fees',
-                                value: grantOffer && i18n.amount(grantOffer.feesAmount.value, grantOffer.feesAmount.currency),
-                            },
-                            {
-                                key: 'capital.totalRepaymentAmount',
-                                value: grantOffer && i18n.amount(grantOffer.totalAmount.value, grantOffer.totalAmount.currency),
-                            },
-                            {
-                                key: 'capital.repaymentThreshold',
-                                value: grantOffer && i18n.amount(grantOffer.thresholdAmount.value, grantOffer.thresholdAmount.currency),
-                            },
-                            {
-                                key: 'capital.repaymentRatePercentage',
-                                value: grantOffer && `${grantOffer.repaymentRate}% ${i18n.get('capital.daily')}`,
-                            },
-                            {
-                                key: 'capital.expectedRepaymentPeriod',
-                                value: grantOffer && `${grantOffer.expectedRepaymentPeriodDays} ${i18n.get('capital.days')}`,
-                            },
-                            {
-                                key: 'capital.maximumRepaymentPeriod',
-                                value:
-                                    grantOffer && maximumRepaymentPeriod
-                                        ? `${calculateMaximumRepaymentPeriodInMonths(grantOffer.maximumRepaymentPeriodDays)} ${i18n.get(
-                                              maximumRepaymentPeriod > 1 ? 'capital.months' : 'capital.month'
-                                          )}`
-                                        : null,
-                            },
-                            { key: 'capital.balanceAccount', value: grantOffer?.balanceAccount },
-                        ]}
-                    />
-                </>
-            )}
+                                </span>
+                            </Tooltip>
+                        );
+                    }
+                    return (
+                        <Typography
+                            className={'adyen-pe-capital-offer-summary__list-label'}
+                            el={TypographyElement.SPAN}
+                            variant={TypographyVariant.CAPTION}
+                        >
+                            {val ?? '-'}
+                        </Typography>
+                    );
+                }}
+                renderValue={(val, key) => {
+                    if (key === 'capital.balanceAccount' && requestFundsMutation.error && requestError && requestError.errorCode === '30_013') {
+                        return (
+                            <Typography
+                                el={TypographyElement.SPAN}
+                                variant={TypographyVariant.CAPTION}
+                                stronger
+                                className={'adyen-pe-capital-offer-summary__details--error'}
+                            >
+                                <Icon name={'warning-filled'} />
+                                <span>{i18n.get('capital.primaryBalanceAccount')}</span>
+                            </Typography>
+                        );
+                    }
+                    return (
+                        <Typography el={TypographyElement.SPAN} variant={TypographyVariant.CAPTION} stronger>
+                            {val ?? '-'}
+                        </Typography>
+                    );
+                }}
+                items={[
+                    {
+                        key: 'capital.fees',
+                        value: grantOffer && i18n.amount(grantOffer.feesAmount.value, grantOffer.feesAmount.currency),
+                    },
+                    {
+                        key: 'capital.totalRepaymentAmount',
+                        value: grantOffer && i18n.amount(grantOffer.totalAmount.value, grantOffer.totalAmount.currency),
+                    },
+                    {
+                        key: 'capital.repaymentThreshold',
+                        value: grantOffer && i18n.amount(grantOffer.thresholdAmount.value, grantOffer.thresholdAmount.currency),
+                    },
+                    {
+                        key: 'capital.repaymentRatePercentage',
+                        value: grantOffer && `${grantOffer.repaymentRate}% ${i18n.get('capital.daily')}`,
+                    },
+                    {
+                        key: 'capital.expectedRepaymentPeriod',
+                        value: grantOffer && `${grantOffer.expectedRepaymentPeriodDays} ${i18n.get('capital.days')}`,
+                    },
+                    {
+                        key: 'capital.maximumRepaymentPeriod',
+                        value:
+                            grantOffer && maximumRepaymentPeriod
+                                ? `${calculateMaximumRepaymentPeriodInMonths(grantOffer.maximumRepaymentPeriodDays)} ${i18n.get(
+                                      maximumRepaymentPeriod > 1 ? 'capital.months' : 'capital.month'
+                                  )}`
+                                : null,
+                    },
+                    { key: 'capital.balanceAccount', value: grantOffer?.balanceAccount },
+                ]}
+            />
             {requestError && (
                 <Alert
                     className={'adyen-pe-capital-offer-summary__error-alert'}
@@ -210,7 +189,7 @@ export const CapitalOfferSummary = ({
                 />
             )}
             <div className="adyen-pe-capital-offer-summary__buttons">
-                {!reviewOfferError && !requestFundsMutation.error && (
+                {!requestFundsMutation.error && (
                     <Button variant={ButtonVariant.SECONDARY} onClick={onBack}>
                         {i18n.get('capital.back')}
                     </Button>
@@ -218,7 +197,7 @@ export const CapitalOfferSummary = ({
                 <Button
                     variant={ButtonVariant.PRIMARY}
                     onClick={onRequestFundsHandler}
-                    disabled={requestFundsMutation.isLoading || !!reviewOfferError || !!requestFundsMutation.error}
+                    disabled={requestFundsMutation.isLoading || !!requestFundsMutation.error}
                 >
                     {i18n.get('capital.requestFunds')}
                 </Button>

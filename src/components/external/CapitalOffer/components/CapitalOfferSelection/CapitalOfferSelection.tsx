@@ -13,12 +13,14 @@ import { IDynamicOfferConfig, IGrantOfferResponseDTO } from '../../../../../type
 import './CapitalOfferSelection.scss';
 import { debounce, getExpectedRepaymentDate } from '../utils/utils';
 import CapitalSlider from '../../../../internal/CapitalSlider';
-import { AdyenErrorResponse } from '../../../../../core/Http/types';
+import { getCapitalErrorMessage } from '../../../../utils/capital/getCapitalErrorMessage';
+import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatformExperienceError';
+import { ErrorMessageDisplay } from '../../../../internal/ErrorMessageDisplay/ErrorMessageDisplay';
 
 type CapitalOfferSelectionProps = {
     config: IDynamicOfferConfig | undefined;
     onBack: () => void;
-    onReviewOffer: (data?: IGrantOfferResponseDTO, error?: Error | AdyenErrorResponse | undefined) => void;
+    onReviewOffer: (data?: IGrantOfferResponseDTO) => void;
     repaymentFrequency: number;
     requestedAmount: number | undefined;
 };
@@ -93,8 +95,7 @@ export const CapitalOfferSelection = ({ config, onBack, repaymentFrequency, requ
     const reviewOfferMutation = useMutation({
         queryFn: reviewGrantOffer,
         options: {
-            onSuccess: data => onReviewOffer(data, undefined),
-            onError: error => onReviewOffer(undefined, error),
+            onSuccess: data => onReviewOffer(data),
         },
     });
 
@@ -139,16 +140,32 @@ export const CapitalOfferSelection = ({ config, onBack, repaymentFrequency, requ
 
     return (
         <div className="adyen-pe-capital-offer-selection">
-            {config && (
-                <CapitalSlider value={requestedValue} dynamicCapitalOffer={config} onValueChange={onChangeHandler} onRelease={handleSliderRelease} />
+            {reviewOfferMutation.error ? (
+                <ErrorMessageDisplay
+                    absolutePosition={false}
+                    outlined={false}
+                    withImage
+                    {...getCapitalErrorMessage(reviewOfferMutation.error as AdyenPlatformExperienceError)}
+                />
+            ) : (
+                <>
+                    {config && (
+                        <CapitalSlider
+                            value={requestedValue}
+                            dynamicCapitalOffer={config}
+                            onValueChange={onChangeHandler}
+                            onRelease={handleSliderRelease}
+                        />
+                    )}
+                    <InfoBox className="adyen-pe-capital-offer-selection__details">
+                        {!getDynamicGrantOfferMutation.data || getDynamicGrantOfferMutation.isLoading || isLoading ? (
+                            <LoadingSkeleton />
+                        ) : getDynamicGrantOfferMutation.data ? (
+                            <InformationDisplay data={getDynamicGrantOfferMutation.data} repaymentFrequency={repaymentFrequency} />
+                        ) : null}
+                    </InfoBox>
+                </>
             )}
-            <InfoBox className="adyen-pe-capital-offer-selection__details">
-                {!getDynamicGrantOfferMutation.data || getDynamicGrantOfferMutation.isLoading || isLoading ? (
-                    <LoadingSkeleton />
-                ) : getDynamicGrantOfferMutation.data ? (
-                    <InformationDisplay data={getDynamicGrantOfferMutation.data} repaymentFrequency={repaymentFrequency} />
-                ) : null}
-            </InfoBox>
             <div className="adyen-pe-capital-offer-selection__buttons">
                 <Button variant={ButtonVariant.SECONDARY} onClick={onBack}>
                     {i18n.get('capital.back')}
