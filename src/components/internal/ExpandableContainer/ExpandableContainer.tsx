@@ -1,5 +1,5 @@
 import { ExpandableContainerProps } from './types';
-import { useState } from 'preact/hooks';
+import { useCallback, useState } from 'preact/hooks';
 import './ExpandableContainer.scss';
 import useCoreContext from '../../../core/Context/useCoreContext';
 import { FunctionalComponent } from 'preact';
@@ -15,6 +15,10 @@ export const ExpandableContainer: FunctionalComponent<ExpandableContainerProps> 
     const [isOpen, setIsOpen] = useState(false);
     const contentId = uuid();
 
+    const toggleIsOpen = useCallback(() => {
+        setIsOpen(prevIsOpen => !prevIsOpen);
+    }, []);
+
     return (
         <div className={cx(EXPANDABLE_CONTAINER_CLASS_NAMES.base, className)} data-testid="expandable-container">
             {isOpen && (
@@ -26,7 +30,7 @@ export const ExpandableContainer: FunctionalComponent<ExpandableContainerProps> 
                 variant={ButtonVariant.TERTIARY_WITH_BACKGROUND}
                 condensed
                 fullWidth
-                onClick={() => setIsOpen(!isOpen)}
+                onClick={toggleIsOpen}
                 aria-controls={contentId}
                 aria-expanded={isOpen}
                 aria-label={i18n.get(isOpen ? 'expandableCard.collapse' : 'expandableCard.expand')}
