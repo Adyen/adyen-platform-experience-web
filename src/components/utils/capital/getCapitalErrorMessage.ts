@@ -8,38 +8,41 @@ export const COMMON_CAPITAL_ERROR_MESSAGE = {
     somethingWentWrong: 'capital.somethingWentWrong',
 } as const;
 
+const UNKNOWN_ERROR = {
+    title: COMMON_CAPITAL_ERROR_MESSAGE.somethingWentWrong,
+    message: [COMMON_CAPITAL_ERROR_MESSAGE.couldNotLoadOffers, COMMON_CAPITAL_ERROR_MESSAGE.tryRefreshingThePage],
+    refreshComponent: true,
+};
+
 export const getCapitalErrorMessage = (error: AdyenPlatformExperienceError | undefined, onContactSupport?: () => void): ErrorMessage => {
     if (!error) return UNDEFINED_ERROR;
     const commonError = getCommonErrorMessage(error, onContactSupport);
     if (commonError) return commonError;
     switch (error.errorCode) {
         case undefined:
-            return {
-                ...UNDEFINED_ERROR,
-                refreshComponent: true,
-            };
-        case '01_0422': {
+            return UNKNOWN_ERROR;
+        case '30_016': {
             return {
                 title: COMMON_CAPITAL_ERROR_MESSAGE.somethingWentWrong,
                 message: [COMMON_CAPITAL_ERROR_MESSAGE.couldNotLoadOffers, COMMON_CAPITAL_ERROR_MESSAGE.contactSupport],
                 onContactSupport,
             };
         }
-        case '02_0422': {
+        case '30_011': {
             return {
                 title: 'capital.accountIsNotActive',
                 message: [COMMON_CAPITAL_ERROR_MESSAGE.couldNotLoadOffers, COMMON_CAPITAL_ERROR_MESSAGE.contactSupport],
                 onContactSupport,
             };
         }
-        case '03_0422': {
+        case '30_013': {
             return {
                 title: COMMON_CAPITAL_ERROR_MESSAGE.somethingWentWrong,
                 message: [COMMON_CAPITAL_ERROR_MESSAGE.couldNotLoadOffers, COMMON_CAPITAL_ERROR_MESSAGE.tryRefreshingThePage],
                 onContactSupport,
             };
         }
-        case '04_0422': {
+        case '30_600': {
             return {
                 title: COMMON_CAPITAL_ERROR_MESSAGE.somethingWentWrong,
                 message: ['capital.couldNotContinueWithTheOffer', COMMON_CAPITAL_ERROR_MESSAGE.contactSupport],
@@ -47,6 +50,6 @@ export const getCapitalErrorMessage = (error: AdyenPlatformExperienceError | und
             };
         }
         default:
-            return UNDEFINED_ERROR;
+            return UNKNOWN_ERROR;
     }
 };

@@ -22,6 +22,10 @@
         margin-top: style.token(spacer-080);
     }
 
+    &__error-alert {
+        margin-top: style.token(spacer-060);
+    }
+
     &__details {
         display: flex;
         flex-direction: column;
@@ -29,6 +33,17 @@
 
         dd {
             text-align: right;
+        }
+
+        &--error {
+            align-items: center;
+            display: flex;
+            gap: style.token(spacer-020);
+            justify-content: end;
+
+            .adyen-pe-icon {
+                color: style.token(color-label-warning);
+            }
         }
     }
 }

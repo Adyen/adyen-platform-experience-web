@@ -10,6 +10,7 @@ import { useAuthContext } from '../../../../../core/Auth';
 import { useFetch } from '../../../../../hooks/useFetch';
 import { EMPTY_OBJECT } from '../../../../../utils';
 import { CapitalOfferSummary } from '../CapitalOfferSummary/CapitalOfferSummary';
+import { AdyenErrorResponse } from '../../../../../core/Http/types';
 
 type CapitalOfferState = 'OfferSelection' | 'OfferSummary';
 const REPAYMENT_FREQUENCY = 30;
@@ -35,19 +36,22 @@ export const CapitalOffer: FunctionalComponent<ExternalUIComponentProps<CapitalO
     }, [onOfferDismissed]);
 
     const [selectedOffer, setSelectedOffer] = useState<IGrantOfferResponseDTO>();
+    const [reviewOfferError, setReviewOfferError] = useState<Error | AdyenErrorResponse>();
+
     const [requestedAmount, setRequestedAmount] = useState<number>();
 
-    const onReviewOfferHandler = useCallback((data: IGrantOfferResponseDTO) => {
-        setRequestedAmount(data.grantAmount.value);
+    const onReviewOfferHandler = useCallback((data?: IGrantOfferResponseDTO, error?: Error | AdyenErrorResponse | undefined) => {
+        setRequestedAmount(data?.grantAmount.value);
         setSelectedOffer(data);
+        setReviewOfferError(error);
     }, []);
 
     const capitalOfferState = useMemo<CapitalOfferState>(() => {
-        if (selectedOffer) {
+        if (selectedOffer || reviewOfferError) {
             return 'OfferSummary';
         }
         return 'OfferSelection';
-    }, [selectedOffer]);
+    }, [reviewOfferError, selectedOffer]);
 
     return (
         <div className={CAPITAL_OFFER_CLASS_NAMES.base}>
@@ -67,7 +71,8 @@ export const CapitalOffer: FunctionalComponent<ExternalUIComponentProps<CapitalO
             )}
             {capitalOfferState === 'OfferSummary' && (
                 <CapitalOfferSummary
-                    grantOffer={selectedOffer!}
+                    grantOffer={selectedOffer}
+                    reviewOfferError={reviewOfferError}
                     repaymentFrequency={REPAYMENT_FREQUENCY}
                     onBack={() => setSelectedOffer(undefined)}
                     onRequestFunds={onRequestFunds}

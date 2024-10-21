@@ -13,11 +13,12 @@ import { IDynamicOfferConfig, IGrantOfferResponseDTO } from '../../../../../type
 import './CapitalOfferSelection.scss';
 import { debounce, getExpectedRepaymentDate } from '../utils/utils';
 import CapitalSlider from '../../../../internal/CapitalSlider';
+import { AdyenErrorResponse } from '../../../../../core/Http/types';
 
 type CapitalOfferSelectionProps = {
     config: IDynamicOfferConfig | undefined;
     onBack: () => void;
-    onReviewOffer: (data: IGrantOfferResponseDTO) => void;
+    onReviewOffer: (data?: IGrantOfferResponseDTO, error?: Error | AdyenErrorResponse | undefined) => void;
     repaymentFrequency: number;
     requestedAmount: number | undefined;
 };
@@ -92,7 +93,8 @@ export const CapitalOfferSelection = ({ config, onBack, repaymentFrequency, requ
     const reviewOfferMutation = useMutation({
         queryFn: reviewGrantOffer,
         options: {
-            onSuccess: data => onReviewOffer(data),
+            onSuccess: data => onReviewOffer(data, undefined),
+            onError: error => onReviewOffer(undefined, error),
         },
     });
 

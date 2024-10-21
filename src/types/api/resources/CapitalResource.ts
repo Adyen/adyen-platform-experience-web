@@ -58,6 +58,7 @@ export interface components {
             repaymentRate?: number;
             thresholdAmount: components['schemas']['Amount'];
             totalAmount: components['schemas']['Amount'];
+            balanceAccount?: string;
         };
         GrantDTO: {
             id: string;

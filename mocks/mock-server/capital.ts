@@ -37,16 +37,16 @@ const DYNAMIC_OFFER_HANDLER = async ({ request }: { request: StrictRequest<Defau
     if (!amount || !currency) return;
 
     const response = calculateGrant(amount, currency);
-    await delay(800);
+    await delay(400);
     return HttpResponse.json(response);
 };
 
-const OFFER_REVIEW_HANDLER = async ({ request }: { request: StrictRequest<DefaultBodyType> }) => {
+const OFFER_REVIEW_HANDLER = async ({ request }: { request: StrictRequest<DefaultBodyType> }, withBalanceAccount = true) => {
     const { amount, currency } = (await request.json()) as { amount: number; currency: string };
 
     const response = calculateGrant(amount, currency);
-    await delay(800);
-    return HttpResponse.json({ ...response, id: uuid() });
+    await delay(400);
+    return HttpResponse.json({ ...response, id: uuid(), balanceAccount: withBalanceAccount ? response.balanceAccount : undefined });
 };
 
 export const capitalMock = [
@@ -68,9 +68,24 @@ const getErrorHandler = (error: AdyenPlatformExperienceError, status = 500) => {
     return async () => HttpResponse.json({ ...error, status, detail: 'detail' }, { status });
 };
 
-const ERROR_NO_CAPABILITY = new AdyenPlatformExperienceError(ErrorTypes.ERROR, 'MissingCapabilitiesException', 'Message', '01_0422');
+const ERROR_NO_CAPABILITY = new AdyenPlatformExperienceError(ErrorTypes.ERROR, 'MissingCapabilitiesException', 'Message', '30_016');
 
-const ERROR_INACTIVE_AH = new AdyenPlatformExperienceError(ErrorTypes.ERROR, 'AccountHolderInactiveException', 'Message', '02_0422');
+const ERROR_INACTIVE_AH = new AdyenPlatformExperienceError(ErrorTypes.ERROR, 'AccountHolderInactiveException', 'Message', '30_011');
+
+const ERROR_OFFER_REVIEW_WENT_WRONG = new AdyenPlatformExperienceError(ErrorTypes.ERROR, 'Something went wrong', 'Message');
+const ERROR_NO_GRANT_ACCOUNT_CONFIG = new AdyenPlatformExperienceError(
+    ErrorTypes.ERROR,
+    'GrantAccountMisconfigurationException',
+    'Message',
+    '30_600'
+);
+const ERROR_NO_PRIMARY_BALANCE_ACCOUNT = new AdyenPlatformExperienceError(
+    ErrorTypes.ERROR,
+    'MissingPrimaryBalanceAccountException',
+    'Message',
+    '30_013'
+);
+const ERROR_EXCEEDED_GRANT_LIMIT = new AdyenPlatformExperienceError(ErrorTypes.ERROR, 'MissingPrimaryBalanceAccountException', 'Message');
 
 export const CapitalMockedResponses = capitalFactory({
     unqualified: [
@@ -120,6 +135,39 @@ export const CapitalMockedResponses = capitalFactory({
         {
             endpoint: mockEndpoints.dynamicOfferConfig,
             handler: getErrorHandler(ERROR_INACTIVE_AH, 422),
+        },
+    ],
+    reviewOfferWentWrong: [
+        {
+            endpoint: mockEndpoints.offerReview,
+            handler: getErrorHandler(ERROR_OFFER_REVIEW_WENT_WRONG, 500),
+            method: 'post',
+        },
+    ],
+    missingPrimaryBalanceAccount: [
+        {
+            endpoint: mockEndpoints.offerReview,
+            handler: ((req: any) => OFFER_REVIEW_HANDLER(req, false)) as any,
+            method: 'post',
+        },
+        {
+            endpoint: mockEndpoints.requestFunds as any,
+            handler: getErrorHandler(ERROR_NO_PRIMARY_BALANCE_ACCOUNT, 422),
+            method: 'post',
+        },
+    ],
+    noGrantAccountConfig: [
+        {
+            endpoint: mockEndpoints.requestFunds as any,
+            handler: getErrorHandler(ERROR_NO_GRANT_ACCOUNT_CONFIG, 422),
+            method: 'post',
+        },
+    ],
+    exceededGrantLimit: [
+        {
+            endpoint: mockEndpoints.requestFunds as any,
+            handler: getErrorHandler(ERROR_EXCEEDED_GRANT_LIMIT, 422),
+            method: 'post',
         },
     ],
 });

@@ -100,6 +100,7 @@ export const calculateGrant = (amount: number | string, currency: string) => {
         repaymentRate: 11,
         expectedRepaymentPeriodDays: 365,
         maximumRepaymentPeriodDays: 540,
+        balanceAccount: 'Primary balance account',
     } satisfies IGrantOfferResponseDTO;
 
     return response;
