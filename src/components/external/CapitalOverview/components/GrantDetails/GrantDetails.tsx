@@ -9,6 +9,7 @@ import './GrantDetails.scss';
 import { ExpandableContainer } from '../../../../internal/ExpandableContainer/ExpandableContainer';
 import StructuredList from '../../../../internal/StructuredList';
 import { StructuredListItem } from '../../../../internal/StructuredList/types';
+import { getPaymentRatePercentage } from '../../../CapitalOffer/components/utils/utils';
 
 export const GrantDetails: FunctionalComponent<GrantDetailsProps> = ({ grant }) => {
     const { i18n } = useCoreContext();
@@ -23,7 +24,10 @@ export const GrantDetails: FunctionalComponent<GrantDetailsProps> = ({ grant }) 
             { key: 'capital.remainingFee', value: formatAmount(grant.remainingFeesAmount) },
             { key: 'capital.repaidAmount', value: formatAmount(grant.repaidGrantAmount) },
             { key: 'capital.repaidFees', value: formatAmount(grant.repaidFeesAmount) },
-            { key: 'capital.repaymentRate', value: i18n.get('capital.percentDaily', { values: { percent: grant.repaymentRate } }) },
+            {
+                key: 'capital.repaymentRate',
+                value: i18n.get('capital.percentDaily', { values: { percent: getPaymentRatePercentage(grant.repaymentRate) } }),
+            },
             {
                 key: 'capital.expectedRepaymentPeriod',
                 value: i18n.get('capital.daysAndDaysLeft', {
@@ -50,10 +54,10 @@ export const GrantDetails: FunctionalComponent<GrantDetailsProps> = ({ grant }) 
         <ExpandableContainer className={GRANT_DETAILS_CLASS_NAMES.base}>
             <div className={GRANT_DETAILS_CLASS_NAMES.content}>
                 <div className={GRANT_DETAILS_CLASS_NAMES.header}>
-                    <Typography el={TypographyElement.SPAN} variant={TypographyVariant.SUBTITLE}>
+                    <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY}>
                         {i18n.get('capital.yourInitialOfferWas')}
                     </Typography>
-                    <Typography el={TypographyElement.SPAN} variant={TypographyVariant.SUBTITLE} strongest>
+                    <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY} strongest>
                         {i18n.amount(grant.grantAmount.value, grant.grantAmount.currency)}
                     </Typography>
                 </div>

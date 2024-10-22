@@ -12,31 +12,4 @@
     &__progress-bar {
         margin-top: style.token(spacer-040);
     }
-
-    &__details {
-        margin-top: style.token(spacer-040);
-
-        .adyen-pe-structured-list {
-            display: flex;
-            flex-direction: column;
-            gap: style.token(spacer-030);
-
-            dd {
-                text-align: right;
-            }
-        }
-    }
-
-    &__details-content {
-        padding-top: style.token(spacer-060);
-        padding-bottom: style.token(spacer-060);
-    }
-
-    &__details-header {
-        margin-bottom: style.token(spacer-060);
-    }
-
-    &__details-label {
-        color: style.token(color-label-secondary);
-    }
 }
