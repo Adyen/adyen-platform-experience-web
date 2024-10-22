@@ -177,7 +177,7 @@ export const CapitalOfferSummary = ({
                                   )}`
                                 : null,
                     },
-                    { key: 'capital.balanceAccount', value: grantOffer?.balanceAccount },
+                    { key: 'capital.balanceAccount', value: i18n.get('capital.primaryBalanceAccount') },
                 ]}
             />
             {requestError && (
