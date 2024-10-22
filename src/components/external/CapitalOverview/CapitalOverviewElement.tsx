@@ -29,7 +29,7 @@ export class CapitalOverviewElement extends UIElement<CapitalOverviewProps> {
             getGrants?.(EMPTY_OBJECT).catch(noop as () => undefined),
         ]);
 
-        return grants && grants.data?.length > 0 ? 'GrantList' : config && config.minAmount ? 'PreQualified' : 'Unqualified';
+        return grants && grants.grantResponses?.length > 0 ? 'GrantList' : config && config.minAmount ? 'PreQualified' : 'Unqualified';
     }
 }
 
