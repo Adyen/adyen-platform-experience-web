@@ -2,7 +2,7 @@ import InfoBox from '../../../../internal/InfoBox';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { IGrant, IGrantOfferResponseDTO } from '../../../../../types';
 import { useCallback, useMemo } from 'preact/hooks';
-import { calculateMaximumRepaymentPeriodInMonths, getExpectedRepaymentDate } from '../utils/utils';
+import { calculateMaximumRepaymentPeriodInMonths, getExpectedRepaymentDate, getPaymentRatePercentage } from '../utils/utils';
 import Typography from '../../../../internal/Typography/Typography';
 import { TypographyElement, TypographyVariant } from '../../../../internal/Typography/types';
 import StructuredList from '../../../../internal/StructuredList';
@@ -125,7 +125,7 @@ export const CapitalOfferSummary = ({
                     },
                     {
                         key: 'capital.repaymentRatePercentage',
-                        value: `${grantOffer.repaymentRate}% ${i18n.get('capital.daily')}`,
+                        value: `${getPaymentRatePercentage(grantOffer.repaymentRate)}% ${i18n.get('capital.daily')}`,
                     },
                     { key: 'capital.expectedRepaymentPeriod', value: `${grantOffer.expectedRepaymentPeriodDays} ${i18n.get('capital.days')}` },
                     {
