@@ -18,17 +18,14 @@ export type webhooks = Record<string, never>;
 
 export interface components {
   schemas: {
-    /**
-     * @description Always null. This field is only used to expose endpoint names in OpenApi schema. Front-end components generate types from it.
-     * @enum {string}
-     */
-    EndpointName: "downloadReport" | "getReports" | "getTransactions" | "getTransaction" | "getTransactionTotals" | "getBalances" | "getBalanceAccounts" | "getPayouts" | "getPayout";
-    /** @description Allowed endpoints for a given session */
+    /** @enum {string} */
+    EndpointName: "getTransactions" | "getTransaction" | "getTransactionTotals" | "getBalances" | "getBalanceAccounts" | "getPayouts" | "getPayout" | "getReports" | "downloadReport" | "getNetworkTokenActivationData" | "createNetworkTokenActivationData" | "getDynamicGrantOffersConfiguration" | "getDynamicGrantOffer" | "reviewGrantOffer" | "getGrants" | "requestFunds";
     SetupEndpointResponse: {
       method?: string;
       url?: string;
     };
     SetupResponse: {
+      /** @description Always null. This field is only used to expose endpoint names in OpenApi schema. Front-end components generate types from it. */
       endpointTypesExposure?: components["schemas"]["EndpointName"];
       /** @description Allowed endpoints for a given session */
       endpoints: {
