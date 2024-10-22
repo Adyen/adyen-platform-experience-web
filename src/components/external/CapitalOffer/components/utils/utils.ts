@@ -1,5 +1,5 @@
 import { DAY_MS } from '../../../../internal/Calendar/calendar/constants';
-import { parseDate } from '../../../../../utils';
+import { isNullish, parseDate } from '../../../../../utils';
 
 const dateStartUTCTimestampOffset = (date: Date | number | string, numberOfDays = 0) => {
     return new Date(new Date(date).setUTCHours(0, 0, 0, 0) + Math.floor(numberOfDays) * DAY_MS);
@@ -39,4 +39,8 @@ export const debounce = <T extends (...args: any[]) => any>(func: T, delay: numb
     };
 
     return debounced;
+};
+
+export const getPaymentRatePercentage = (rate: number | undefined) => {
+    return !isNullish(rate) ? rate / 100 : undefined;
 };
