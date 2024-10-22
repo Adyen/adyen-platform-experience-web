@@ -7,16 +7,7 @@ import { components as SetupResource } from './resources/SetupResource';
 
 export type EndpointsOperations = BalanceAccountOps & PayoutsOps & TransactionsOps & ReportsOps & CapitalOps;
 
-// TODO: Replace once we have the openapi specs
-
-type _temporaryCapitalEndpointNames =
-    | 'getDynamicGrantOffersConfiguration'
-    | 'reviewGrantOffer'
-    | 'getGrants'
-    | 'getDynamicGrantOffer'
-    | 'requestFunds';
-
-export type EndpointName = Extract<keyof EndpointsOperations, SetupResource['schemas']['EndpointName'] | _temporaryCapitalEndpointNames>;
+export type EndpointName = Extract<keyof EndpointsOperations, SetupResource['schemas']['EndpointName']>;
 
 type CSVEndpoints = 'downloadReport';
 

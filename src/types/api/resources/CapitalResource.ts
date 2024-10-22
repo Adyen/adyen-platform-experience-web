@@ -18,18 +18,26 @@ export interface paths {
          */
         get: operations['getDynamicGrantOffersConfiguration'];
     };
+    '/v1/capital/grants': {
+        /**
+         * Get Grants
+         * @description Get AccountHolders grants
+         */
+        get: operations['getGrants'];
+    };
+    '/v1/capital/grantOffers/dynamic/requestFunds/{grantOfferId}': {
+        /**
+         * Request Funds
+         * @description Submits grant offer request
+         */
+        post: operations['requestFunds'];
+    };
     '/v1/capital/grantOffers/review': {
         /**
          * Review Grant Offer
          * @description This action verifies offer conditions and makes grant ready for user to accept it
          */
         post: operations['reviewGrantOffer'];
-    };
-    '/v1/capital/grants': {
-        get: operations['getGrants'];
-    };
-    '/capital/grantOffers/dynamic/requestFunds/{grantOfferId}': {
-        post: operations['requestFunds'];
     };
 }
 
@@ -51,51 +59,59 @@ export interface components {
             expectedRepaymentPeriodDays: number;
             feesAmount: components['schemas']['Amount'];
             grantAmount: components['schemas']['Amount'];
-            id?: string;
-            /** Format: int32 */
-            maximumRepaymentPeriodDays?: number;
-            /** Format: int32 */
-            repaymentRate?: number;
-            thresholdAmount: components['schemas']['Amount'];
-            totalAmount: components['schemas']['Amount'];
-            balanceAccount?: string;
-        };
-        GrantDTO: {
             id: string;
-            grantAmount: components['schemas']['Amount'];
-            totalAmount: components['schemas']['Amount'];
-            feesAmount: components['schemas']['Amount'];
-            remainingGrantAmount: components['schemas']['Amount'];
-            remainingTotalAmount: components['schemas']['Amount'];
-            remainingFeesAmount: components['schemas']['Amount'];
-            repaidFeesAmount: components['schemas']['Amount'];
-            repaidGrantAmount: components['schemas']['Amount'];
-            repaidTotalAmount: components['schemas']['Amount'];
-            thresholdAmount: components['schemas']['Amount'];
-            repaymentRate: number;
-            expectedRepaymentPeriodDays: number;
+            /** Format: int32 */
             maximumRepaymentPeriodDays: number;
-            repaymentPeriodLeft: number;
-            termEndsAt: string;
-            balanceAccount: string;
-            balanceAccountDescription: string;
-            status: components['schemas']['GrantStatus'];
-            actions: Record<string, unknown>;
+            /** Format: int32 */
+            repaymentRate: number;
+            thresholdAmount: components['schemas']['Amount'];
+            totalAmount: components['schemas']['Amount'];
         };
-        GrantStatus: 'Pending' | 'Active' | 'Repaid' | 'Failed' | 'WrittenOff' | 'Revoked';
         DynamicOffersResponseDTO: {
             maxAmount: components['schemas']['Amount'];
             minAmount: components['schemas']['Amount'];
             /** Format: int32 */
             step: number;
         };
+        GrantResponseDTO: {
+            balanceAccountCode: string;
+            balanceAccountDescription: string;
+            /** Format: int32 */
+            expectedRepaymentPeriodDays: number;
+            feesAmount: components['schemas']['Amount'];
+            grantAmount: components['schemas']['Amount'];
+            id: string;
+            /** Format: int32 */
+            maximumRepaymentPeriodDays: number;
+            /** Format: date-time */
+            offerExpiresAt?: string;
+            remainingFeesAmount: components['schemas']['Amount'];
+            remainingGrantAmount: components['schemas']['Amount'];
+            remainingTotalAmount: components['schemas']['Amount'];
+            repaidFeesAmount: components['schemas']['Amount'];
+            repaidGrantAmount: components['schemas']['Amount'];
+            repaidTotalAmount: components['schemas']['Amount'];
+            /** Format: int64 */
+            repaymentPeriodLeft: number;
+            /** Format: int32 */
+            repaymentRate: number;
+            status: components['schemas']['GrantStatus'];
+            /** Format: date-time */
+            termEndsAt: string;
+            thresholdAmount: components['schemas']['Amount'];
+            totalAmount: components['schemas']['Amount'];
+            actions: any;
+        };
+        /** @enum {string} */
+        GrantStatus: 'Pending' | 'Active' | 'Repaid' | 'Failed' | 'WrittenOff' | 'Revoked';
+        GrantsResponseDTO: {
+            data: components['schemas']['GrantResponseDTO'][];
+        };
         ReviewGrantOfferRequestDTO: {
             /** Format: int64 */
             amount: number;
             currency: string;
         };
-        requestFunds: components['schemas']['GrantDTO'];
-        getGrants: { data: components['schemas']['GrantDTO'][] };
     };
     responses: never;
     parameters: never;
@@ -144,6 +160,39 @@ export interface operations {
         };
     };
     /**
+     * Get Grants
+     * @description Get AccountHolders grants
+     */
+    getGrants: {
+        responses: {
+            /** @description OK - the request has succeeded. */
+            200: {
+                content: {
+                    'application/json': components['schemas']['GrantsResponseDTO'];
+                };
+            };
+        };
+    };
+    /**
+     * Request Funds
+     * @description Submits grant offer request
+     */
+    requestFunds: {
+        parameters: {
+            path: {
+                grantOfferId: string;
+            };
+        };
+        responses: {
+            /** @description OK - the request has succeeded. */
+            200: {
+                content: {
+                    'application/json': components['schemas']['GrantResponseDTO'];
+                };
+            };
+        };
+    };
+    /**
      * Review Grant Offer
      * @description This action verifies offer conditions and makes grant ready for user to accept it
      */
@@ -158,31 +207,6 @@ export interface operations {
             200: {
                 content: {
                     'application/json': components['schemas']['GrantOfferResponseDTO'];
-                };
-            };
-        };
-    };
-    getGrants: {
-        responses: {
-            /** @description OK - the request has succeeded. */
-            200: {
-                content: {
-                    'application/json': components['schemas']['getGrants'];
-                };
-            };
-        };
-    };
-    requestFunds: {
-        parameters: {
-            path: {
-                grantOfferId: string;
-            };
-        };
-        responses: {
-            /** @description OK - the request has succeeded. */
-            200: {
-                content: {
-                    'application/json': components['schemas']['requestFunds'];
                 };
             };
         };
