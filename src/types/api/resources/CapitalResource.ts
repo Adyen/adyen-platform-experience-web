@@ -105,7 +105,7 @@ export interface components {
         /** @enum {string} */
         GrantStatus: 'Pending' | 'Active' | 'Repaid' | 'Failed' | 'WrittenOff' | 'Revoked';
         GrantsResponseDTO: {
-            grantResponses: components['schemas']['GrantResponseDTO'][];
+            data: components['schemas']['GrantResponseDTO'][];
         };
         ReviewGrantOfferRequestDTO: {
             /** Format: int64 */
