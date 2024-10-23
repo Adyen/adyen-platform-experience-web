@@ -15,7 +15,6 @@ import {
     enumerable,
     getter,
     isUndefined,
-    sameValue,
     struct,
 } from '../../../../utils';
 import { add, divide } from './utils';
@@ -25,6 +24,7 @@ export const createSpinButtonContext = (stopNotificationSignal: AbortSignal) => 
     let leap = DEFAULT_VALUE_LEAP;
     let max = DEFAULT_VALUE_MAX;
     let min = DEFAULT_VALUE_MIN;
+    let origin = DEFAULT_VALUE_NOW;
     let step = DEFAULT_VALUE_STEP;
     let value = DEFAULT_VALUE_NOW;
 
@@ -33,7 +33,7 @@ export const createSpinButtonContext = (stopNotificationSignal: AbortSignal) => 
 
     const eventTarget = new EventTarget();
 
-    const normalizeRange = (min?: number, max?: number): readonly [number, number] => {
+    const normalizeRange = (min?: number, max?: number): readonly [min: number, max: number] => {
         const hasMin = !isUndefined(min);
         const hasMax = !isUndefined(max);
 
@@ -53,6 +53,7 @@ export const createSpinButtonContext = (stopNotificationSignal: AbortSignal) => 
 
         if (min !== (min = _min)) sendNotification ||= true;
         if (max !== (max = _max)) sendNotification ||= true;
+        if (sendNotification) recomputeOrigin();
 
         // recalibrate step
         _step = Math.max(0, _step ?? DEFAULT_VALUE_STEP) || DEFAULT_VALUE_STEP;
@@ -67,11 +68,15 @@ export const createSpinButtonContext = (stopNotificationSignal: AbortSignal) => 
         if (sendNotification) sendChangeNotification();
     };
 
+    const recomputeOrigin = () => {
+        const midValue = add(min, divide(add(max, -min), 2));
+        origin = add(min, Math.round(divide(add(midValue, -min), step)) * step);
+    };
+
     const updateValue = (nextValue: number | undefined) => {
-        const rangeMidValue = add(min, divide(add(max, -min), 2));
-        const fallbackValue = add(min, Math.round(divide(add(rangeMidValue, -min), step)) * step);
-        const clampedValue = clamp(min, nextValue ?? fallbackValue, max);
-        return !sameValue(value, (value = clampedValue));
+        const currentValue = getValue();
+        value = clamp(min, Number(nextValue), max);
+        return currentValue !== getValue();
     };
 
     const sendChangeNotification = () => {
@@ -91,7 +96,7 @@ export const createSpinButtonContext = (stopNotificationSignal: AbortSignal) => 
         }
     };
 
-    const getValue = () => value || 0;
+    const getValue = () => value || origin || 0;
 
     const setValue = (value: number | undefined) => {
         if (updateValue(value)) sendChangeNotification();
