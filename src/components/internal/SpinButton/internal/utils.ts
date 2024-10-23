@@ -12,6 +12,7 @@ export const divide = (a: number, b: number) => {
 };
 
 export const getIntExponent = (num: number) => {
+    if (!Number.isFinite(num)) return 0;
     let exponent = 0;
     let n = num;
     while (true) {

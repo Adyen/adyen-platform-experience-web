@@ -1,14 +1,14 @@
 import cx from 'classnames';
 import { BASE_CLASS } from './constants';
-import useSpinButton from './useSpinButton';
+import useSpinButton from './hooks/useSpinButton';
 import SpinButtonControl from './components/SpinButtonControl';
 import SpinButtonValue from './components/SpinButtonValue';
 import { SpinButtonControl as _SpinButtonControl, SpinButtonProps } from './types';
 import './SpinButton.scss';
 
 const SpinButton = (props: SpinButtonProps) => {
-    const { className, leap, ...restProps } = props;
     const { $refs, currentValue, keyboardInteraction, mouseInteraction } = useSpinButton(props);
+    const { className, leap, ...restProps } = props;
 
     return (
         <div ref={$refs.containerElement} className={cx(BASE_CLASS, className)}>

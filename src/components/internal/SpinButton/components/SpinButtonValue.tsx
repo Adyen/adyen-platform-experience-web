@@ -1,6 +1,6 @@
 import cx from 'classnames';
 import h, { Ref } from 'preact';
-import useSpinButton from '../useSpinButton';
+import useSpinButton from '../hooks/useSpinButton';
 import { INPUT_CLASS, INPUT_SIZER_ELEMENT_CLASS } from '../constants';
 import { fixedForwardRef } from '../../../../utils/preact';
 import type { SpinButtonProps } from '../types';

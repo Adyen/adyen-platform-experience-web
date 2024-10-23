@@ -32,7 +32,6 @@ export const createSpinButtonContext = (stopNotificationSignal: AbortSignal) => 
     let notificationPending = false;
 
     const eventTarget = new EventTarget();
-    const { addEventListener, removeEventListener } = Object.getOwnPropertyDescriptors(eventTarget);
 
     const normalizeRange = (min?: number, max?: number): readonly [number, number] => {
         const hasMin = !isUndefined(min);
@@ -103,8 +102,8 @@ export const createSpinButtonContext = (stopNotificationSignal: AbortSignal) => 
     };
 
     return struct<SpinButtonContext>({
-        addEventListener,
-        removeEventListener,
+        addEventListener: enumerable(eventTarget.addEventListener.bind(eventTarget)),
+        removeEventListener: enumerable(eventTarget.removeEventListener.bind(eventTarget)),
         disabled: { ...getter(() => disabled), set: setDisabled },
         decrementDisabled: getter(() => disabled || getValue() === min),
         incrementDisabled: getter(() => disabled || getValue() === max),

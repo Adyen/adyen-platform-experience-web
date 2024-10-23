@@ -1,7 +1,7 @@
-import createSpinButton from './internal/SpinButton';
-import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'preact/hooks';
-import type { SpinButtonCalibrationConfigProps } from './internal/types';
-import type { SpinButtonProps } from './types';
+import createSpinButton from '../internal/createSpinButton';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'preact/hooks';
+import type { SpinButtonCalibrationConfigProps } from '../internal/types';
+import type { SpinButtonProps } from '../types';
 
 type UseSpinButtonProps = SpinButtonCalibrationConfigProps & Pick<SpinButtonProps, 'disabled' | 'value' | 'onStateChange'>;
 
@@ -40,6 +40,10 @@ export const useSpinButton = <T extends UseSpinButtonProps>({ disabled, leap, ma
     useLayoutEffect(() => {
         spinButton.value = value;
     }, [value]);
+
+    useEffect(() => {
+        return () => abortController.abort();
+    }, []);
 
     return { $refs, currentValue, keyboardInteraction, mouseInteraction } as const;
 };

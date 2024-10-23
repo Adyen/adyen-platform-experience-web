@@ -30,6 +30,8 @@ export const contextWithInteractions = <T extends SpinButtonContext & SpinButton
     };
 
     const willHandleAsKeyboardInteraction = (evt: KeyboardEvent) => {
+        let willHandleInteraction = false;
+
         if (evt.type === 'keydown' && evt.currentTarget && evt.currentTarget === context.valueElement) {
             switch (evt.code) {
                 case InteractionKeyCode.ARROW_DOWN:
@@ -40,10 +42,21 @@ export const contextWithInteractions = <T extends SpinButtonContext & SpinButton
                 case InteractionKeyCode.HOME:
                 case InteractionKeyCode.PAGE_DOWN:
                 case InteractionKeyCode.PAGE_UP:
-                    return !context.disabled;
+                    willHandleInteraction = !context.disabled;
+                    break;
+            }
+
+            switch (evt.code) {
+                case InteractionKeyCode.END:
+                    willHandleInteraction &&= Number.isFinite(context.max);
+                    break;
+                case InteractionKeyCode.HOME:
+                    willHandleInteraction &&= Number.isFinite(context.min);
+                    break;
             }
         }
-        return false;
+
+        return willHandleInteraction;
     };
 
     const onKeyboardInteraction = (evt: KeyboardEvent) => {
