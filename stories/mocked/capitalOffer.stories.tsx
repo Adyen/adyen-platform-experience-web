@@ -63,5 +63,16 @@ export const ErrorExceededGrantLimit: ElementStory<typeof CapitalOffer> = {
         },
     },
 };
+export const ErrorNoOfferAvailable: ElementStory<typeof CapitalOffer> = {
+    name: 'Error - No Offer Available',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: {
+            handlers: CapitalMockedResponses.noOfferAvailable,
+        },
+    },
+};
 
 export default meta;

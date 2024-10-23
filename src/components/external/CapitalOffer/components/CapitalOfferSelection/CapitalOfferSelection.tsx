@@ -170,7 +170,11 @@ export const CapitalOfferSelection = ({ config, onBack, repaymentFrequency, requ
                 <Button variant={ButtonVariant.SECONDARY} onClick={onBack}>
                     {i18n.get('capital.back')}
                 </Button>
-                <Button variant={ButtonVariant.PRIMARY} onClick={onReview} disabled={reviewOfferMutation.isLoading}>
+                <Button
+                    variant={ButtonVariant.PRIMARY}
+                    onClick={onReview}
+                    disabled={reviewOfferMutation.isLoading || !config?.minAmount || !!reviewOfferMutation.error}
+                >
                     {i18n.get('capital.reviewOffer')}
                 </Button>
             </div>

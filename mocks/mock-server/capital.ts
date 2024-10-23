@@ -46,7 +46,7 @@ const OFFER_REVIEW_HANDLER = async ({ request }: { request: StrictRequest<Defaul
 
     const response = calculateGrant(amount, currency);
     await delay(400);
-    return HttpResponse.json({ ...response, id: uuid(), balanceAccount: withBalanceAccount ? response.balanceAccount : undefined });
+    return HttpResponse.json({ ...response, id: uuid() });
 };
 
 export const capitalMock = [
@@ -173,4 +173,5 @@ export const CapitalMockedResponses = capitalFactory({
             method: 'post',
         },
     ],
+    noOfferAvailable: [{ endpoint: mockEndpoints.dynamicOfferConfig, handler: getHandlerCallback({ response: undefined, status: 204 }) }],
 });

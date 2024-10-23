@@ -8,17 +8,19 @@ export const getHandlerCallback = <T extends JsonBodyType>({
     response,
     networkError,
     delayTime,
+    status,
 }: {
     response: T;
     networkError?: boolean;
     delayTime?: number;
+    status?: number;
 }) => {
     return async () => {
         if (networkError) {
             return HttpResponse.error();
         }
         await delay(delayTime ?? 0);
-        return HttpResponse.json(response);
+        return HttpResponse.json(response, { status: status || 200 });
     };
 };
 
