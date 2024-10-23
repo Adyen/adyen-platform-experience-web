@@ -23,6 +23,7 @@ type CapitalOfferSelectionProps = {
     onReviewOffer: (data?: IGrantOfferResponseDTO) => void;
     repaymentFrequency: number;
     requestedAmount: number | undefined;
+    emptyGrantOffer: boolean;
 };
 
 const LoadingSkeleton = () => (
@@ -77,7 +78,14 @@ const InformationDisplay = ({ data, repaymentFrequency }: { data: IGrantOfferRes
     );
 };
 
-export const CapitalOfferSelection = ({ config, onBack, repaymentFrequency, requestedAmount, onReviewOffer }: CapitalOfferSelectionProps) => {
+export const CapitalOfferSelection = ({
+    config,
+    onBack,
+    repaymentFrequency,
+    requestedAmount,
+    onReviewOffer,
+    emptyGrantOffer,
+}: CapitalOfferSelectionProps) => {
     const { i18n } = useCoreContext();
     const [requestedValue, setRequestedValue] = useState<number | undefined>(Number(requestedAmount) || config?.minAmount.value);
     const currency = useMemo(() => config?.minAmount.currency, [config?.minAmount.currency]);
@@ -140,7 +148,7 @@ export const CapitalOfferSelection = ({ config, onBack, repaymentFrequency, requ
 
     return (
         <div className="adyen-pe-capital-offer-selection">
-            {reviewOfferMutation.error ? (
+            {reviewOfferMutation.error || emptyGrantOffer ? (
                 <ErrorMessageDisplay
                     absolutePosition={false}
                     outlined={false}
