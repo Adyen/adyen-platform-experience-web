@@ -1,4 +1,6 @@
 import cx from 'classnames';
+import type { ComponentChild } from 'preact';
+import type { PropsWithChildren } from 'preact/compat';
 import { EMPTY_ARRAY } from '../../../../utils';
 import { useCallback, useEffect, useState } from 'preact/hooks';
 import { TransactionDetailsProvider } from '../context/details';
@@ -23,6 +25,16 @@ import type { ILineItem } from '../../../../types';
 import './TransactionData.scss';
 
 export type TransactionDataContentProps = Required<Pick<TransactionDataProps, 'transaction'>> & Pick<TransactionDataProps, 'forceHideTitle'>;
+
+const _TransactionDataContentViewWrapper = ({
+    children,
+    renderViewActionButtons,
+}: PropsWithChildren<{ renderViewActionButtons: () => ComponentChild }>) => (
+    <div className={TX_DATA_CLASS}>
+        {children}
+        {renderViewActionButtons()}
+    </div>
+);
 
 export const TransactionDataContent = ({ forceHideTitle, transaction }: TransactionDataContentProps) => {
     const [activeView, _setActiveView] = useState(ActiveView.DETAILS);
@@ -70,66 +82,64 @@ export const TransactionDataContent = ({ forceHideTitle, transaction }: Transact
         forceHideTitle?.(activeView !== ActiveView.DETAILS);
     }, [activeView, forceHideTitle]);
 
+    if (activeView === ActiveView.REFUND && !refundViewAvailable) return null;
+
+    const commonContextProviderProps = {
+        lineItems,
+        refundAvailable,
+        refundDisabled,
+        setActiveView,
+        setPrimaryAction,
+        setSecondaryAction,
+    } as const;
+
     switch (activeView) {
         case ActiveView.DETAILS:
-        case ActiveView.REFUND: {
-            if (activeView === ActiveView.REFUND && !refundViewAvailable) break;
-
-            const commonContextProviderProps = {
-                lineItems,
-                refundAvailable,
-                refundDisabled,
-                setActiveView,
-                setPrimaryAction,
-                setSecondaryAction,
-            } as const;
-
             return (
-                <div className={TX_DATA_CLASS}>
-                    {activeView === ActiveView.DETAILS && (
-                        <TransactionDetailsProvider {...commonContextProviderProps} transaction={transaction}>
-                            <TransactionDetailsDataContainer>
-                                <TransactionDataTags />
-                                <TransactionDataAmount />
-                                <TransactionDataPaymentMethod />
-                                <TransactionDataDate />
-                            </TransactionDetailsDataContainer>
+                <_TransactionDataContentViewWrapper renderViewActionButtons={renderViewActionButtons}>
+                    <TransactionDetailsProvider {...commonContextProviderProps} transaction={transaction}>
+                        <TransactionDetailsDataContainer>
+                            <TransactionDataTags />
+                            <TransactionDataAmount />
+                            <TransactionDataPaymentMethod />
+                            <TransactionDataDate />
+                        </TransactionDetailsDataContainer>
 
-                            <TransactionDataProperties />
-                        </TransactionDetailsProvider>
-                    )}
-
-                    {activeView === ActiveView.REFUND && (
-                        <TransactionRefundProvider
-                            {...commonContextProviderProps}
-                            availableAmount={availableAmount}
-                            currency={refundCurrency}
-                            refundMode={refundMode}
-                            transactionId={transaction.id}
-                        >
-                            <TransactionRefundNotice />
-
-                            {/* refund amount input */}
-                            {refundMode === FULLY_REFUNDABLE_ONLY && <TransactionRefundFullAmountInput />}
-                            {refundMode === PARTIALLY_REFUNDABLE_ANY_AMOUNT && <TransactionRefundPartialAmountInput />}
-
-                            {/* additional refund inputs */}
-                            {refundMode !== NON_REFUNDABLE && (
-                                <>
-                                    <TransactionRefundReason />
-                                    {/*<TransactionRefundReference />*/}
-                                </>
-                            )}
-                        </TransactionRefundProvider>
-                    )}
-
-                    {renderViewActionButtons()}
-                </div>
+                        <TransactionDataProperties />
+                    </TransactionDetailsProvider>
+                </_TransactionDataContentViewWrapper>
             );
-        }
-    }
 
-    return null;
+        case ActiveView.REFUND:
+            return (
+                <_TransactionDataContentViewWrapper renderViewActionButtons={renderViewActionButtons}>
+                    <TransactionRefundProvider
+                        {...commonContextProviderProps}
+                        availableAmount={availableAmount}
+                        currency={refundCurrency}
+                        refundMode={refundMode}
+                        transactionId={transaction.id}
+                    >
+                        <TransactionRefundNotice />
+
+                        {/* refund amount input */}
+                        {refundMode === FULLY_REFUNDABLE_ONLY && <TransactionRefundFullAmountInput />}
+                        {refundMode === PARTIALLY_REFUNDABLE_ANY_AMOUNT && <TransactionRefundPartialAmountInput />}
+
+                        {/* additional refund inputs */}
+                        {refundMode !== NON_REFUNDABLE && (
+                            <>
+                                <TransactionRefundReason />
+                                {/*<TransactionRefundReference />*/}
+                            </>
+                        )}
+                    </TransactionRefundProvider>
+                </_TransactionDataContentViewWrapper>
+            );
+
+        default:
+            return null;
+    }
 };
 
 export default TransactionDataContent;
