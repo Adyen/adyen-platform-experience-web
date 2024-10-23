@@ -8,10 +8,10 @@ import {
 import { useMemo } from 'preact/hooks';
 import { Image } from '../../../internal/Image/Image';
 import { getDisplayablePaymentMethodForTransaction, getPaymentMethodTypeForTransaction } from '../utils';
-import useTransactionDataContext from '../context';
+import useTransactionDetailsContext from '../context/details';
 
 const TransactionDataPaymentMethod = () => {
-    const { transaction } = useTransactionDataContext();
+    const { transaction } = useTransactionDetailsContext();
 
     return useMemo(() => {
         const paymentMethodType = getPaymentMethodTypeForTransaction(transaction);

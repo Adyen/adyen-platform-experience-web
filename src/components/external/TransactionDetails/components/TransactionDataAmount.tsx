@@ -2,11 +2,11 @@ import { useMemo } from 'preact/hooks';
 import { getAmountStyleForTransaction } from '../utils';
 import { TX_DATA_AMOUNT, TX_DATA_SECTION } from '../constants';
 import useCoreContext from '../../../../core/Context/useCoreContext';
-import useTransactionDataContext from '../context';
+import useTransactionDetailsContext from '../context/details';
 
 const TransactionDataAmount = () => {
     const { i18n } = useCoreContext();
-    const { transaction } = useTransactionDataContext();
+    const { transaction } = useTransactionDetailsContext();
 
     return useMemo(() => {
         const className = `${TX_DATA_SECTION} ${TX_DATA_AMOUNT} ${TX_DATA_AMOUNT}--${getAmountStyleForTransaction(transaction)}`;

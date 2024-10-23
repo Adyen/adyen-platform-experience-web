@@ -4,11 +4,11 @@ import { TagVariant } from '../../../internal/Tag/types';
 import { getTagVariantForTransaction } from '../utils';
 import { TX_DATA_SECTION, TX_DATA_TAG_CONTAINER } from '../constants';
 import useCoreContext from '../../../../core/Context/useCoreContext';
-import useTransactionDataContext from '../context';
+import useTransactionDetailsContext from '../context/details';
 
 const TransactionDataTags = () => {
     const { i18n } = useCoreContext();
-    const { transaction } = useTransactionDataContext();
+    const { transaction } = useTransactionDetailsContext();
 
     return useMemo(() => {
         const { category, status } = transaction;

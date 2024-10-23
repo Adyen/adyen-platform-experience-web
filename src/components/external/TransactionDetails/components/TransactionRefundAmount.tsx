@@ -9,40 +9,41 @@ import {
 } from '../constants';
 import cx from 'classnames';
 import { h } from 'preact';
-import { useCallback, useRef, useState } from 'preact/hooks';
-import useTransactionDataContext from '../context';
+import { useMemo, useRef, useState } from 'preact/hooks';
+import { boolOrFalse, uniqueId } from '../../../../utils';
 import useCoreContext from '../../../../core/Context/useCoreContext';
+import useTransactionRefundContext from '../context/refund';
 import CloseCircle from '../../../internal/SVGIcons/CloseCircle';
 import InputBase from '../../../internal/FormFields/InputBase';
 import Typography from '../../../internal/Typography/Typography';
 import { TypographyElement, TypographyVariant } from '../../../internal/Typography/types';
+import { getDecimalAmount, getDivider } from '../../../../core/Localization/amount/amount-util';
 import { TranslationKey } from '../../../../translations';
 import { ARIA_ERROR_SUFFIX } from '../../../../core/Errors/constants';
 import { TagVariant } from '../../../internal/Tag/types';
 import { Tag } from '../../../internal/Tag/Tag';
-import { uniqueId } from '../../../../utils';
 
-const TransactionRefundAmount = () => {
+// [TODO]: These utils are reusable and should be located in a shared module
+const formatAmount = (amount: number, currency: string) => getDecimalAmount(amount, currency).toFixed(getCurrencyExponent(currency));
+const getCurrencyExponent = (currency: string) => Math.log10(getDivider(currency));
+
+const _BaseRefundAmountInput = ({
+    currency,
+    disabled,
+    errorMessage,
+    onInput,
+    value,
+}: {
+    currency: string;
+    disabled?: boolean;
+    errorMessage: TranslationKey | null;
+    onBlur?: (evt: h.JSX.TargetedEvent<HTMLInputElement>) => unknown;
+    onInput?: (evt: h.JSX.TargetedEvent<HTMLInputElement>) => unknown;
+    value: string | number;
+}) => {
     const { i18n } = useCoreContext();
-    const { transaction, refundValue, refundValueMax, updateRefundValue } = useTransactionDataContext();
-    const [refundAmount, setRefundAmount] = useState(refundValue);
-
     const inputIdentifier = useRef(uniqueId());
     const labelIdentifier = useRef(uniqueId());
-
-    const onInput = useCallback(
-        (evt: h.JSX.TargetedEvent<HTMLInputElement>) => {
-            const amount = parseFloat(evt.currentTarget.value);
-            setRefundAmount(amount);
-            updateRefundValue(amount);
-        },
-        [setRefundAmount, updateRefundValue]
-    );
-
-    let errorMessage: TranslationKey | null = null;
-
-    if (refundAmount < 0) errorMessage = 'noNegativeNumbersAllowed';
-    else if (refundAmount > refundValueMax) errorMessage = 'refundAmount.excess';
 
     return (
         <div className={TX_DATA_CONTAINER}>
@@ -63,14 +64,15 @@ const TransactionRefundAmount = () => {
                 })}
             >
                 <label htmlFor={inputIdentifier.current} aria-labelledby={labelIdentifier.current}>
-                    <Tag label={transaction.amount.currency} variant={TagVariant.DEFAULT} />
+                    {currency && <Tag label={currency} variant={TagVariant.DEFAULT} />}
                     <InputBase
                         min={0}
                         type="number"
                         className={TX_DATA_INPUT}
+                        disabled={boolOrFalse(disabled)}
                         lang={i18n.locale}
                         onInput={onInput}
-                        value={refundAmount}
+                        value={value}
                         uniqueId={inputIdentifier.current}
                     />
                 </label>
@@ -87,4 +89,35 @@ const TransactionRefundAmount = () => {
     );
 };
 
-export default TransactionRefundAmount;
+export const TransactionRefundFullAmountInput = () => {
+    const { availableAmount, currency } = useTransactionRefundContext();
+    return <_BaseRefundAmountInput currency={currency} errorMessage={null} value={formatAmount(availableAmount, currency)} disabled />;
+};
+
+export const TransactionRefundPartialAmountInput = () => {
+    const { availableAmount, currency, setAmount } = useTransactionRefundContext();
+    const [errorMessage, setErrorMessage] = useState<TranslationKey | null>(null);
+    const [refundAmount, setRefundAmount] = useState(`${formatAmount(availableAmount, currency)}`);
+
+    const computeRefundAmount = useMemo(() => {
+        const exponent = getCurrencyExponent(currency);
+        return (value: string) => Math.trunc(+`${parseFloat(value)}e${exponent}`) || 0;
+    }, [currency]);
+
+    const onInput = (evt: h.JSX.TargetedEvent<HTMLInputElement>) => {
+        const value = evt.currentTarget.value.trim();
+        const amount = computeRefundAmount(value);
+        let message: typeof errorMessage = null;
+
+        if (amount || value) {
+            if (amount < 0) message = 'noNegativeNumbersAllowed';
+            if (amount > availableAmount) message = 'refundAmount.excess';
+        } else message = 'refundAmount.required';
+
+        setRefundAmount(value);
+        setErrorMessage(message);
+        setAmount(message ? 0 : amount);
+    };
+
+    return <_BaseRefundAmountInput currency={currency} errorMessage={errorMessage} onInput={onInput} value={refundAmount} />;
+};

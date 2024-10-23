@@ -1,28 +1,46 @@
-import { REFUND_REASONS } from './constants';
-import type { Dispatch, StateUpdater } from 'preact/hooks';
+import { REFUND_MODES, REFUND_REASONS } from './constants';
+import type { PropsWithChildren } from 'preact/compat';
 import type { TransactionDetailData } from '../types';
-import type { ButtonActionsList } from '../../../internal/Button/ButtonActions/types';
+import type { ButtonActionObject } from '../../../internal/Button/ButtonActions/types';
+import type { ILineItem } from '../../../../types';
 
-export interface ITransactionDataContext {
-    dataViewActive: boolean;
-    isLoading: boolean;
-    refundReason: RefundReason;
-    refundReference?: string;
-    refundValue: number;
-    refundValueMax: number;
-    transaction: TransactionDetailData;
-    updateRefundReason: (reason: RefundReason) => void;
-    updateRefundReference: (reference: string) => void;
-    updateRefundValue: (value: number) => void;
-    viewActions: ButtonActionsList;
+export const enum ActiveView {
+    DETAILS,
+    REFUND,
 }
 
-export interface TransactionDataContextProviderProps {
-    children?: any;
+export type RefundMode = (typeof REFUND_MODES)[number];
+export type RefundReason = (typeof REFUND_REASONS)[number];
+
+type _TransactionDataContextBase<T extends TransactionDataContextProviderProps> = Omit<T, _TransactionDataContextExcludedProps> & {
+    primaryAction: () => void;
+    secondaryAction: () => void;
+};
+
+export type _TransactionDataContextExcludedProps =
+    | 'children'
+    | 'lineItems'
+    | 'refundAmount'
+    | 'refundAvailable'
+    | 'refundDisabled'
+    | 'setActiveView'
+    | 'setPrimaryAction'
+    | 'setSecondaryAction';
+
+export type TransactionDataContext<T extends TransactionDataContextProviderProps> = _TransactionDataContextBase<T>;
+
+export interface TransactionDataContextProviderProps extends PropsWithChildren {
+    lineItems: readonly ILineItem[];
+    refundAvailable: boolean;
+    refundDisabled: boolean;
+    setActiveView: (activeView: ActiveView) => void;
+    setPrimaryAction: (action: ButtonActionObject | undefined) => void;
+    setSecondaryAction: (action: ButtonActionObject | undefined) => void;
+}
+
+export interface TransactionDataProps {
     error?: boolean;
-    forceHideTitle?: Dispatch<StateUpdater<boolean>>;
+    forceHideTitle?: (forceHideTitle: boolean) => void;
     isFetching?: boolean;
     transaction?: TransactionDetailData;
 }
-
-export type RefundReason = (typeof REFUND_REASONS)[number];
