@@ -97,7 +97,7 @@ export const calculateGrant = (amount: number | string, currency: string) => {
             value: minimumRepayment,
             currency: currency,
         },
-        repaymentRate: 11,
+        repaymentRate: 1100,
         expectedRepaymentPeriodDays: 365,
         maximumRepaymentPeriodDays: 540,
         id: uuid(),

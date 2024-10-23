@@ -11,7 +11,7 @@ import { useAuthContext } from '../../../../../core/Auth';
 import useMutation from '../../../../../hooks/useMutation/useMutation';
 import { IDynamicOfferConfig, IGrantOfferResponseDTO } from '../../../../../types';
 import './CapitalOfferSelection.scss';
-import { debounce, getExpectedRepaymentDate } from '../utils/utils';
+import { debounce, getExpectedRepaymentDate, getPaymentRatePercentage } from '../utils/utils';
 import CapitalSlider from '../../../../internal/CapitalSlider';
 import { getCapitalErrorMessage } from '../../../../utils/capital/getCapitalErrorMessage';
 import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatformExperienceError';
@@ -70,7 +70,7 @@ const InformationDisplay = ({ data, repaymentFrequency }: { data: IGrantOfferRes
                 )}
                 items={[
                     { key: 'capital.fees', value: i18n.amount(data.feesAmount.value, data.feesAmount.currency) },
-                    { key: 'capital.repaymentRate', value: `${data.repaymentRate}% ${i18n.get('capital.daily')}` },
+                    { key: 'capital.repaymentRate', value: `${getPaymentRatePercentage(data.repaymentRate)}% ${i18n.get('capital.daily')}` },
                     { key: 'capital.expectedRepaymentPeriod', value: `${data.expectedRepaymentPeriodDays} ${i18n.get('capital.days')}` },
                 ]}
             />
