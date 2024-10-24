@@ -1,14 +1,37 @@
 @use '../../../../style';
 
 .adyen-pe-transaction-line-item {
-    --adyen-pe-content-padding: style.token(spacer-070);
-    border: var(--adyen-sdk-border-width-s, 1px) solid var(--adyen-sdk-color-outline-secondary, #c9cdd3);
-    border-radius: var(--adyen-sdk-spacer-040, 8px);
-    margin-top: style.token(spacer-040);
-    padding: style.token(spacer-020) style.token(spacer-090);
+    align-items: flex-start;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    gap: 6px;
+    justify-content: center;
+    width: 100%;
+
+    &-container {
+        border: var(--adyen-sdk-border-width-s, 1px) solid var(--adyen-sdk-color-outline-secondary, #c9cdd3);
+        border-radius: var(--adyen-sdk-spacer-040, 8px);
+        margin-bottom: style.token(spacer-040);
+        padding: 0 style.token(spacer-090);
+
+        .adyen-pe-icon {
+            align-self: center;
+        }
+
+        .adyen-pe-accordion__header {
+            &-controller {
+                width: 100%;
+            }
+
+            &-container {
+                flex-grow: 1;
+            }
+        }
+    }
 
     &--disabled {
-        background-color: style.token(color-outline-primary);
+        background-color: style.token(color-background-disabled);
     }
 
     &-heading {
@@ -27,19 +50,6 @@
             display: flex;
             justify-content: space-between;
             width: 50%;
-        }
-    }
-
-    .adyen-pe-accordion__header {
-        margin: 0;
-        width: 100%;
-
-        button {
-            width: 100%;
-
-            .adyen-pe-accordion__header-controller {
-                flex: 1;
-            }
         }
     }
 

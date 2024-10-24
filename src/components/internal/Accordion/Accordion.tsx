@@ -1,5 +1,5 @@
 import classnames from 'classnames';
-import { PropsWithChildren } from 'preact/compat';
+import { PropsWithChildren, useEffect } from 'preact/compat';
 import { useCallback, useRef, useState } from 'preact/hooks';
 import Icon from '../Icon';
 import {
@@ -12,13 +12,19 @@ import {
 import { AccordionProps } from './types';
 import './Accordion.scss';
 
-function Accordion({ children, classNames, header, headerInformation }: PropsWithChildren<AccordionProps>) {
+function Accordion({ children, classNames, header, headerInformation, renderChevron }: PropsWithChildren<AccordionProps>) {
     const [isExpanded, setIsExpanded] = useState(false);
     const accordionContentRef = useRef<HTMLDivElement>(null);
 
     const toggle = useCallback(() => {
         setIsExpanded(!isExpanded);
     }, [isExpanded]);
+
+    useEffect(() => {
+        if (renderChevron) {
+            renderChevron(isExpanded ? <Icon name={'chevron-up'} /> : <Icon name={'chevron-down'} />);
+        }
+    }, [renderChevron]);
 
     return (
         <div className={classnames(ACCORDION_BASE_CLASS, classNames)}>
@@ -31,11 +37,7 @@ function Accordion({ children, classNames, header, headerInformation }: PropsWit
                     aria-expanded={isExpanded}
                 >
                     <div className={ACCORDION_HEADER_CONTROLLER_CLASS}>{header}</div>
-                    {isExpanded ? (
-                        <Icon name={'chevron-up'} style={{ height: 8, width: 15 }} />
-                    ) : (
-                        <Icon name={'chevron-down'} style={{ height: 8, width: 15 }} />
-                    )}
+                    {!renderChevron && (isExpanded ? <Icon name={'chevron-up'} /> : <Icon name={'chevron-down'} />)}
                 </button>
                 {headerInformation && <div>{headerInformation}</div>}
             </h3>

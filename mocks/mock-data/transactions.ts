@@ -1951,6 +1951,14 @@ export const DEFAULT_LINE_ITEMS: ILineItem[] = [
         originalQuantity: 6,
         refundStatuses: DEFAULT_LINE_ITEM_REFUND_STATUSES,
     },
+    {
+        id: 'e24de04e-b514-43e9-a42f-44c99b3dcca7',
+        amountIncludingTax: { currency: 'USD', value: 0 },
+        description: 'Standard Shipping',
+        availableQuantity: 1,
+        originalQuantity: 1,
+        refundStatuses: DEFAULT_LINE_ITEM_REFUND_STATUSES,
+    },
 ];
 
 export const DEFAULT_REFUND_STATUSES: ITransactionRefundStatus[] = [
