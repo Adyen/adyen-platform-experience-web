@@ -1,3 +1,4 @@
+import { ExternalComponentType } from '../../components/types';
 import { AuthSession } from './session/AuthSession';
 import type { HttpOptions } from '../Http/types';
 import { EndpointData, EndpointName, EndpointsOperations, SetupEndpoint } from '../../types/api/endpoints';
@@ -46,7 +47,7 @@ export type EndpointSuccessResponse<Endpoint extends EndpointName> = Endpoint ex
 export interface AuthProviderProps {
     children?: any;
     session: AuthSession;
-    type: string;
+    type: ExternalComponentType;
 }
 
 export interface SessionObject {

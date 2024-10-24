@@ -1,9 +1,9 @@
 import { ComponentChild, render } from 'preact';
-import { BaseElementProps, BaseElementState } from '../types';
+import { BaseElementProps, BaseElementState, ExternalComponentType } from '../types';
 import { isString, uuid } from '../../utils';
 
 class BaseElement<P> {
-    public static type: string;
+    public static type: ExternalComponentType;
 
     public _component: ComponentChild | Error;
     public _node: Document | ShadowRoot | DocumentFragment | Element | null = null;
