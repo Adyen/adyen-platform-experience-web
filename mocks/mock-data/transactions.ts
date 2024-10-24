@@ -1,4 +1,4 @@
-import type { ITransaction, ITransactionWithDetails } from '../../src';
+import type { ILineItem, ILineItemRefundStatus, ITransaction, ITransactionRefundStatus } from '../../src';
 
 export const TRANSACTIONS: ITransaction[] = [
     {
@@ -1856,7 +1856,7 @@ export const TRANSACTIONS: ITransaction[] = [
     },
 ];
 
-export const DEFAULT_LINE_ITEM_REFUND_STATUSES: ITransactionWithDetails['lineItems'][number]['refundStatuses'] = [
+export const DEFAULT_LINE_ITEM_REFUND_STATUSES: ILineItemRefundStatus[] = [
     {
         quantity: 1,
         status: 'in_progress',
@@ -1871,7 +1871,7 @@ export const DEFAULT_LINE_ITEM_REFUND_STATUSES: ITransactionWithDetails['lineIte
     },
 ];
 
-export const DEFAULT_LINE_ITEMS: ITransactionWithDetails['lineItems'] = [
+export const DEFAULT_LINE_ITEMS: ILineItem[] = [
     {
         id: '2049f87a-d47b-4f57-80b7-d2a5b3bc1018',
         amountIncludingTax: { currency: 'USD', value: 4500 },
@@ -1946,7 +1946,7 @@ export const DEFAULT_LINE_ITEMS: ITransactionWithDetails['lineItems'] = [
     },
 ];
 
-export const DEFAULT_REFUND_STATUSES: ITransactionWithDetails['refundDetails']['refundStatuses'] = [
+export const DEFAULT_REFUND_STATUSES: ITransactionRefundStatus[] = [
     {
         amount: { currency: 'USD', value: -1000 },
         status: 'in_progress',

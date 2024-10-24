@@ -86,6 +86,8 @@
     "refundAmount": "Amount to refund",
     "refundAmount.excess": "You cannot exceed the maximum amount",
     "refundAmount.required": "Enter a refund amount",
+    "refunded.full": "Fully refunded",
+    "refunded.partial": "Partially refunded",
     "refundNotice": "Refunds can take up to 40 days depending on the payment method. Fees are included.",
     "refundPayment": "Refund %{amount}",
     "refundReason": "Reason for refund",

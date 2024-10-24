@@ -12,7 +12,6 @@ import { useRef, useState } from 'preact/hooks';
 import { uniqueId } from '../../../../../utils';
 import { useInputNormalizer } from '../../hooks/useInputNormalizer';
 import { REFUND_REFERENCE_CHAR_LIMIT } from '../../context/constants';
-import useTransactionRefundContext from '../../context/refund';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import TextArea from '../../../../internal/FormFields/TextArea';
 import Typography from '../../../../internal/Typography/Typography';
@@ -20,8 +19,7 @@ import { TypographyElement, TypographyVariant } from '../../../../internal/Typog
 
 const TransactionRefundReference = () => {
     const { i18n } = useCoreContext();
-    const { refundReference, setRefundReference } = useTransactionRefundContext();
-    const [reference, setReference] = useState(refundReference ?? '');
+    const [reference, setReference] = useState('');
     const [characters, setCharactersCount] = useState(reference.length);
 
     const inputNormalizer = useInputNormalizer(REFUND_REFERENCE_CHAR_LIMIT);
@@ -39,7 +37,6 @@ const TransactionRefundReference = () => {
         if (value !== reference) {
             setReference(value);
             setCharactersCount(value.length);
-            setRefundReference(value);
         }
     };
 

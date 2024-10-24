@@ -1,4 +1,4 @@
-import { REFUND_MODES, REFUND_REASONS } from './constants';
+import { REFUND_REASONS } from './constants';
 import type { PropsWithChildren } from 'preact/compat';
 import type { ButtonActionObject } from '../../../internal/Button/ButtonActions/types';
 import type { ILineItem } from '../../../../types';
@@ -8,7 +8,19 @@ export const enum ActiveView {
     REFUND,
 }
 
-export type RefundMode = (typeof REFUND_MODES)[number];
+export const enum RefundState {
+    NONE,
+    PARTIAL,
+    FULL,
+}
+
+export const enum RefundMode {
+    NONE = 'non_refundable',
+    PARTIAL_AMOUNT = 'partially_refundable_any_amount',
+    PARTIAL_LINE_ITEMS = 'partially_refundable_with_line_items_required',
+    FULL_AMOUNT = 'fully_refundable_only',
+}
+
 export type RefundReason = (typeof REFUND_REASONS)[number];
 
 type _TransactionDataContextBase<T extends TransactionDataContextProviderProps> = Omit<T, _TransactionDataContextExcludedProps> & {

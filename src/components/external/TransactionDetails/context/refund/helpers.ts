@@ -1,8 +1,7 @@
 import { clamp, EMPTY_ARRAY, isUndefined } from '../../../../../utils';
-import { FULLY_REFUNDABLE_ONLY, NON_REFUNDABLE, PARTIALLY_REFUNDABLE_ANY_AMOUNT, PARTIALLY_REFUNDABLE_WITH_LINE_ITEMS_REQUIRED } from '../constants';
 import type { ITransactionRefundContext, TransactionRefundItem, TransactionRefundItemUpdates } from './types';
-import type { ILineItem } from '../../../../../types';
-import type { RefundMode } from '../types';
+import type { ILineItem, ITransactionRefundMode } from '../../../../../types';
+import { RefundMode } from '../types';
 
 export const getRefundableItemsForTransactionLineItems = (currency = '', lineItems?: readonly ILineItem[] | ILineItem[]) => {
     const items = lineItems
@@ -27,19 +26,19 @@ export const getRefundableItemsForTransactionLineItems = (currency = '', lineIte
 };
 
 export const getRefundAmountByMode = (
-    refundMode: RefundMode,
+    refundMode: ITransactionRefundMode,
     refundableAmount: number,
     refundItems = EMPTY_ARRAY as ITransactionRefundContext['items'],
     partialRefundAmount = 0
 ): number => {
     switch (refundMode) {
-        case NON_REFUNDABLE:
+        case RefundMode.NONE:
             return 0;
-        case PARTIALLY_REFUNDABLE_ANY_AMOUNT:
+        case RefundMode.PARTIAL_AMOUNT:
             return partialRefundAmount;
-        case PARTIALLY_REFUNDABLE_WITH_LINE_ITEMS_REQUIRED:
+        case RefundMode.PARTIAL_LINE_ITEMS:
             return refundItems.reduce((total, { amount, quantity }) => total + amount * quantity, 0);
-        case FULLY_REFUNDABLE_ONLY:
+        case RefundMode.FULL_AMOUNT:
         default:
             return refundableAmount;
     }

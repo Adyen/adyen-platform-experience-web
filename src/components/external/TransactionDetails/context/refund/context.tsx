@@ -1,12 +1,6 @@
-import {
-    FULLY_REFUNDABLE_ONLY,
-    NON_REFUNDABLE,
-    PARTIALLY_REFUNDABLE_ANY_AMOUNT,
-    PARTIALLY_REFUNDABLE_WITH_LINE_ITEMS_REQUIRED,
-    REFUND_REASONS,
-} from '../constants';
 import { memo } from 'preact/compat';
 import { createContext } from 'preact';
+import { REFUND_REASONS } from '../constants';
 import { useCallback, useContext, useEffect, useMemo, useState } from 'preact/hooks';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import useMutation from '../../../../../hooks/useMutation/useMutation';
@@ -15,7 +9,7 @@ import { clamp, EMPTY_ARRAY, noop } from '../../../../../utils';
 import { getRefundableItemsForTransactionLineItems, getRefundAmountByMode, updateRefundItems } from './helpers';
 import type { ITransactionRefundContext, TransactionRefundProviderProps } from './types';
 import { ButtonVariant } from '../../../../internal/Button/types';
-import { ActiveView, type RefundReason } from '../types';
+import { ActiveView, RefundMode, type RefundReason } from '../types';
 
 const TransactionRefundContext = createContext<ITransactionRefundContext>({
     amount: 0,
@@ -25,13 +19,11 @@ const TransactionRefundContext = createContext<ITransactionRefundContext>({
     currency: '',
     items: EMPTY_ARRAY,
     primaryAction: noop,
-    refundMode: FULLY_REFUNDABLE_ONLY,
+    refundMode: RefundMode.FULL_AMOUNT,
     refundReason: REFUND_REASONS[0],
-    refundReference: void 0,
     secondaryAction: noop,
     setAmount: noop,
     setRefundReason: noop,
-    setRefundReference: noop,
     transactionId: '',
     updateItems: noop,
 });
@@ -51,7 +43,6 @@ export const TransactionRefundProvider = memo(
         const { i18n } = useCoreContext();
         const [items, setItems] = useState(EMPTY_ARRAY as ITransactionRefundContext['items']);
         const [refundReason, setReason] = useState<RefundReason>(REFUND_REASONS[0]);
-        const [refundReference, setReference] = useState<string>();
         const [refundAmount, setRefundAmount] = useState(0);
 
         const amount = useMemo(
@@ -60,7 +51,7 @@ export const TransactionRefundProvider = memo(
         );
 
         const setAmount = useCallback<ITransactionRefundContext['setAmount']>(
-            amount => void (refundMode === PARTIALLY_REFUNDABLE_ANY_AMOUNT && setRefundAmount(clamp(0, amount, availableAmount))),
+            amount => void (refundMode === RefundMode.PARTIAL_AMOUNT && setRefundAmount(clamp(0, amount, availableAmount))),
             [availableAmount, refundMode]
         );
 
@@ -93,12 +84,7 @@ export const TransactionRefundProvider = memo(
         );
 
         const setRefundReason = useCallback<ITransactionRefundContext['setRefundReason']>(
-            reason => void (refundMode !== NON_REFUNDABLE && setReason(reason)),
-            [refundMode]
-        );
-
-        const setRefundReference = useCallback<ITransactionRefundContext['setRefundReference']>(
-            reference => void (refundMode !== NON_REFUNDABLE && setReference(reference || undefined)),
+            reason => void (refundMode !== RefundMode.NONE && setReason(reason)),
             [refundMode]
         );
 
@@ -112,7 +98,7 @@ export const TransactionRefundProvider = memo(
                     body: {
                         amount: { currency, value: amount },
                         merchantRefundReason: i18n.get(refundReason),
-                        ...(refundMode === PARTIALLY_REFUNDABLE_WITH_LINE_ITEMS_REQUIRED && {
+                        ...(refundMode === RefundMode.PARTIAL_LINE_ITEMS && {
                             lineItems: [],
                         }),
                     },
@@ -162,11 +148,9 @@ export const TransactionRefundProvider = memo(
                     primaryAction,
                     refundMode,
                     refundReason,
-                    refundReference,
                     secondaryAction,
                     setAmount,
                     setRefundReason,
-                    setRefundReference,
                     transactionId,
                     updateItems,
                 }}

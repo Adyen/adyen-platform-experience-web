@@ -14,14 +14,13 @@ import TransactionDataProperties from './details/TransactionDataProperties';
 import { TransactionRefundFullAmountInput, TransactionRefundPartialAmountInput } from './refund/TransactionRefundAmount';
 import TransactionRefundNotice from './refund/TransactionRefundNotice';
 import TransactionRefundReason from './refund/TransactionRefundReason';
-import useRefundCapabilityData from '../hooks/useRefundCapabilityData';
-import { FULLY_REFUNDABLE_ONLY, NON_REFUNDABLE, PARTIALLY_REFUNDABLE_ANY_AMOUNT } from '../context/constants';
+import useTransactionRefundMetadata from '../hooks/useTransactionRefundMetadata';
 import { TX_DATA_ACTION_BAR, TX_DATA_ACTION_BAR_REFUND, TX_DATA_CLASS, TX_DATA_CONTAINER, TX_DATA_CONTAINER_NO_PADDING } from './constants';
 import { ButtonActionObject, ButtonActionsLayoutBasic } from '../../../internal/Button/ButtonActions/types';
 import ButtonActions from '../../../internal/Button/ButtonActions/ButtonActions';
+import { ActiveView, RefundMode } from '../context/types';
 import type { TransactionDataProps } from '../types';
 import type { ILineItem } from '../../../../types';
-import { ActiveView } from '../context/types';
 import './TransactionData.scss';
 
 export type TransactionDataContentProps = Required<Pick<TransactionDataProps, 'transaction'>> & Pick<TransactionDataProps, 'forceHideTitle'>;
@@ -47,20 +46,23 @@ export const TransactionDataContent = ({ forceHideTitle, transaction }: Transact
         currency: refundCurrency,
         disabled: refundDisabled,
         mode: refundMode,
-    } = useRefundCapabilityData(transaction);
+        refundable,
+        viewDisabled: refundViewDisabled,
+    } = useTransactionRefundMetadata(transaction);
 
-    const refundViewAvailable = refundAvailable && !refundDisabled;
     const lineItems: readonly ILineItem[] = Object.freeze(transaction?.lineItems ?? EMPTY_ARRAY);
 
     const setPrimaryAction = useCallback((action: ButtonActionObject | undefined) => _setPrimaryAction(action), []);
     const setSecondaryAction = useCallback((action: ButtonActionObject | undefined) => _setSecondaryAction(action), []);
 
+    const shouldPreventActiveViewIfRefund = useCallback(
+        (activeView: ActiveView) => activeView === ActiveView.REFUND && refundViewDisabled,
+        [refundViewDisabled]
+    );
+
     const setActiveView = useCallback(
-        (activeView: ActiveView) => {
-            if (activeView === ActiveView.REFUND && !refundViewAvailable) return;
-            _setActiveView(activeView);
-        },
-        [refundViewAvailable]
+        (activeView: ActiveView) => void (shouldPreventActiveViewIfRefund(activeView) || _setActiveView(activeView)),
+        [shouldPreventActiveViewIfRefund]
     );
 
     const renderViewActionButtons = useCallback(() => {
@@ -75,14 +77,14 @@ export const TransactionDataContent = ({ forceHideTitle, transaction }: Transact
     }, [activeView, primaryAction, secondaryAction]);
 
     useEffect(() => {
-        if (!refundViewAvailable) _setActiveView(ActiveView.DETAILS);
-    }, [refundViewAvailable]);
+        if (refundViewDisabled) _setActiveView(ActiveView.DETAILS);
+    }, [refundViewDisabled]);
 
     useEffect(() => {
         forceHideTitle?.(activeView !== ActiveView.DETAILS);
     }, [activeView, forceHideTitle]);
 
-    if (activeView === ActiveView.REFUND && !refundViewAvailable) return null;
+    if (shouldPreventActiveViewIfRefund(activeView)) return null;
 
     const commonContextProviderProps = {
         lineItems,
@@ -123,11 +125,11 @@ export const TransactionDataContent = ({ forceHideTitle, transaction }: Transact
                         <TransactionRefundNotice />
 
                         {/* refund reason selector */}
-                        {refundMode !== NON_REFUNDABLE && <TransactionRefundReason />}
+                        {refundable && <TransactionRefundReason />}
 
                         {/* refund amount input */}
-                        {refundMode === FULLY_REFUNDABLE_ONLY && <TransactionRefundFullAmountInput />}
-                        {refundMode === PARTIALLY_REFUNDABLE_ANY_AMOUNT && <TransactionRefundPartialAmountInput />}
+                        {refundMode === RefundMode.FULL_AMOUNT && <TransactionRefundFullAmountInput />}
+                        {refundMode === RefundMode.PARTIAL_AMOUNT && <TransactionRefundPartialAmountInput />}
                     </TransactionRefundProvider>
                 </_TransactionDataContentViewWrapper>
             );
