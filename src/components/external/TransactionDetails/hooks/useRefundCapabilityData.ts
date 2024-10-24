@@ -1,8 +1,8 @@
 import { useMemo } from 'preact/hooks';
 import { useAuthContext } from '../../../../core/Auth';
 import { boolOrFalse, isFunction } from '../../../../utils';
-import { FULLY_REFUNDABLE_ONLY, NON_REFUNDABLE } from './constants';
-import type { TransactionDataProps } from './types';
+import { FULLY_REFUNDABLE_ONLY, NON_REFUNDABLE } from '../context/constants';
+import type { TransactionDataProps } from '../types';
 
 export const useRefundCapabilityData = (transaction: TransactionDataProps['transaction']) => {
     const details = transaction?.refundDetails;

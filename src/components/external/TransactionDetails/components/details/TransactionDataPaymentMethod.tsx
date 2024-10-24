@@ -6,9 +6,9 @@ import {
     TX_DATA_SECTION,
 } from '../constants';
 import { useMemo } from 'preact/hooks';
-import { Image } from '../../../internal/Image/Image';
+import { Image } from '../../../../internal/Image/Image';
 import { getDisplayablePaymentMethodForTransaction, getPaymentMethodTypeForTransaction } from '../utils';
-import useTransactionDetailsContext from '../context/details';
+import useTransactionDetailsContext from '../../context/details';
 
 const TransactionDataPaymentMethod = () => {
     const { transaction } = useTransactionDetailsContext();

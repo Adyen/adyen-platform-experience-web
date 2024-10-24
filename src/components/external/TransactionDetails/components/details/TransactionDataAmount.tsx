@@ -1,8 +1,8 @@
 import { useMemo } from 'preact/hooks';
 import { getAmountStyleForTransaction } from '../utils';
 import { TX_DATA_AMOUNT, TX_DATA_SECTION } from '../constants';
-import useCoreContext from '../../../../core/Context/useCoreContext';
-import useTransactionDetailsContext from '../context/details';
+import useCoreContext from '../../../../../core/Context/useCoreContext';
+import useTransactionDetailsContext from '../../context/details';
 
 const TransactionDataAmount = () => {
     const { i18n } = useCoreContext();

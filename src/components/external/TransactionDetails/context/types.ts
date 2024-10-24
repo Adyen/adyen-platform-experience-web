@@ -1,6 +1,5 @@
 import { REFUND_MODES, REFUND_REASONS } from './constants';
 import type { PropsWithChildren } from 'preact/compat';
-import type { TransactionDetailData } from '../types';
 import type { ButtonActionObject } from '../../../internal/Button/ButtonActions/types';
 import type { ILineItem } from '../../../../types';
 
@@ -36,11 +35,4 @@ export interface TransactionDataContextProviderProps extends PropsWithChildren {
     setActiveView: (activeView: ActiveView) => void;
     setPrimaryAction: (action: ButtonActionObject | undefined) => void;
     setSecondaryAction: (action: ButtonActionObject | undefined) => void;
-}
-
-export interface TransactionDataProps {
-    error?: boolean;
-    forceHideTitle?: (forceHideTitle: boolean) => void;
-    isFetching?: boolean;
-    transaction?: TransactionDetailData;
 }

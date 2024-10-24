@@ -9,14 +9,14 @@ import {
 } from '../constants';
 import { h } from 'preact';
 import { useRef, useState } from 'preact/hooks';
-import { uniqueId } from '../../../../utils';
-import { useInputNormalizer } from '../context/useInputNormalizer';
-import { REFUND_REFERENCE_CHAR_LIMIT } from '../context/constants';
-import useTransactionRefundContext from '../context/refund';
-import useCoreContext from '../../../../core/Context/useCoreContext';
-import TextArea from '../../../internal/FormFields/TextArea';
-import Typography from '../../../internal/Typography/Typography';
-import { TypographyElement, TypographyVariant } from '../../../internal/Typography/types';
+import { uniqueId } from '../../../../../utils';
+import { useInputNormalizer } from '../../hooks/useInputNormalizer';
+import { REFUND_REFERENCE_CHAR_LIMIT } from '../../context/constants';
+import useTransactionRefundContext from '../../context/refund';
+import useCoreContext from '../../../../../core/Context/useCoreContext';
+import TextArea from '../../../../internal/FormFields/TextArea';
+import Typography from '../../../../internal/Typography/Typography';
+import { TypographyElement, TypographyVariant } from '../../../../internal/Typography/types';
 
 const TransactionRefundReference = () => {
     const { i18n } = useCoreContext();

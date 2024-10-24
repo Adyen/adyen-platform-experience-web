@@ -1,10 +1,10 @@
 import { useMemo } from 'preact/hooks';
-import { Tag } from '../../../internal/Tag/Tag';
-import { TagVariant } from '../../../internal/Tag/types';
+import { Tag } from '../../../../internal/Tag/Tag';
+import { TagVariant } from '../../../../internal/Tag/types';
 import { getTagVariantForTransaction } from '../utils';
 import { TX_DATA_SECTION, TX_DATA_TAG_CONTAINER } from '../constants';
-import useCoreContext from '../../../../core/Context/useCoreContext';
-import useTransactionDetailsContext from '../context/details';
+import useCoreContext from '../../../../../core/Context/useCoreContext';
+import useTransactionDetailsContext from '../../context/details';
 
 const TransactionDataTags = () => {
     const { i18n } = useCoreContext();

@@ -20,3 +20,10 @@ export type TransactionDetailData = ITransactionWithDetails & BalanceAccountProp
 export interface BalanceAccountProps {
     balanceAccount?: IBalanceAccountBase;
 }
+
+export interface TransactionDataProps {
+    error?: boolean;
+    forceHideTitle?: (forceHideTitle: boolean) => void;
+    isFetching?: boolean;
+    transaction?: TransactionDetailData;
+}

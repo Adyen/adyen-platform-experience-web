@@ -1,5 +1,5 @@
-import { TRANSACTION_FIELDS } from '../TransactionsOverview/components/TransactionsTable/TransactionsTable';
-import type { TransactionDetailData } from './types';
+import { TRANSACTION_FIELDS } from '../../TransactionsOverview/components/TransactionsTable/TransactionsTable';
+import type { TransactionDetailData } from '../types';
 
 export const TX_DATA_CLASS = 'adyen-pe-transaction-data';
 export const TX_DATA_AMOUNT = `${TX_DATA_CLASS}__amount`;

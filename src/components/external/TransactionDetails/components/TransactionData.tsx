@@ -1,7 +1,7 @@
 import { boolOrFalse } from '../../../../utils';
 import DataOverviewDetailsSkeleton from '../../../internal/DataOverviewDetails/DataOverviewDetailsSkeleton';
 import TransactionDataContent from './TransactionDataContent';
-import type { TransactionDataProps } from '../context/types';
+import type { TransactionDataProps } from '../types';
 import './TransactionData.scss';
 
 export const TransactionData = ({ error, forceHideTitle, isFetching, transaction }: TransactionDataProps) => {

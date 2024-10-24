@@ -1,8 +1,8 @@
 import { useMemo } from 'preact/hooks';
 import { TX_DATA_CONTAINER, TX_DATA_HEAD_CONTAINER } from '../constants';
-import useCoreContext from '../../../../core/Context/useCoreContext';
-import Typography from '../../../internal/Typography/Typography';
-import { TypographyElement, TypographyVariant } from '../../../internal/Typography/types';
+import useCoreContext from '../../../../../core/Context/useCoreContext';
+import Typography from '../../../../internal/Typography/Typography';
+import { TypographyElement, TypographyVariant } from '../../../../internal/Typography/types';
 
 const TransactionRefundNotice = () => {
     const { i18n } = useCoreContext();
