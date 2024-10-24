@@ -13,7 +13,7 @@ import { GRANT_ITEM_CLASS_NAMES } from './constants';
 import { getGrantConfig } from './utils';
 import { GrantItemProps } from './types';
 import './GrantItem.scss';
-import { ExpandableContainer } from '../../../../internal/ExpandableContainer/ExpandableContainer';
+import { GrantDetails } from '../GrantDetails/GrantDetails';
 
 export const GrantItem: FunctionalComponent<GrantItemProps> = ({ grant }) => {
     const { i18n } = useCoreContext();
@@ -60,7 +60,7 @@ export const GrantItem: FunctionalComponent<GrantItemProps> = ({ grant }) => {
                     />
                 )}
             </Card>
-            <ExpandableContainer className={GRANT_ITEM_CLASS_NAMES.details}>{'Grant details'}</ExpandableContainer>
+            {grantConfig.hasDetails && <GrantDetails grant={grant} />}
         </div>
     );
 };
