@@ -3,9 +3,9 @@ import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } fr
 import type { SpinButtonCalibrationConfigProps } from '../internal/types';
 import type { SpinButtonProps } from '../types';
 
-type UseSpinButtonProps = SpinButtonCalibrationConfigProps & Pick<SpinButtonProps, 'disabled' | 'value' | 'onStateChange'>;
+type UseSpinButtonProps = SpinButtonCalibrationConfigProps & Pick<SpinButtonProps, 'disabled' | 'value' | 'onStatePush'>;
 
-export const useSpinButton = <T extends UseSpinButtonProps>({ disabled, leap, max, min, step, value, onStateChange }: T) => {
+export const useSpinButton = <T extends UseSpinButtonProps>({ disabled, leap, max, min, step, value, onStatePush }: T) => {
     const [, setLastChangeTimestamp] = useState(performance.now());
     const abortController = useRef(new AbortController()).current;
     const spinButton = useRef(createSpinButton(abortController.signal)).current;
@@ -23,11 +23,13 @@ export const useSpinButton = <T extends UseSpinButtonProps>({ disabled, leap, ma
         []
     );
 
-    spinButton.onStateChange = useCallback(() => {
-        setLastChangeTimestamp(performance.now());
-        const { disabled, decrementDisabled, incrementDisabled, leap, max, min, step, value } = spinButton;
-        onStateChange?.({ disabled, decrementDisabled, incrementDisabled, leap, max, min, step, value } as const);
-    }, [onStateChange]);
+    spinButton.onStatePush = useCallback<NonNullable<typeof onStatePush>>(
+        currentState => {
+            setLastChangeTimestamp(performance.now());
+            onStatePush?.(currentState);
+        },
+        [onStatePush]
+    );
 
     useLayoutEffect(() => {
         spinButton.disabled = disabled;

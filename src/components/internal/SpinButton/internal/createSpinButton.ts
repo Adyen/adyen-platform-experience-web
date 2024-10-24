@@ -3,12 +3,10 @@ import contextWithInteractions from './interactions';
 import createSpinButtonContext from './context';
 import { EVENT_STATE_NOTIFICATION } from './constants';
 import { struct } from '../../../../utils';
-import type { SpinButtonRecord, SpinButtonStateChangeCallback } from './types';
+import type { SpinButtonPushStateCallback, SpinButtonRecord, SpinButtonState } from './types';
 
 const createSpinButton = (signal: AbortSignal) => {
-    let onStateChange: SpinButtonStateChangeCallback | undefined = undefined;
     const context = createSpinButtonContext(signal);
-    const updateState = () => void onStateChange?.();
 
     const {
         signal: _,
@@ -17,15 +15,34 @@ const createSpinButton = (signal: AbortSignal) => {
         ...spinButtonRecordProps
     } = Object.getOwnPropertyDescriptors(contextWithInteractions(contextWithElements(context)));
 
-    const setStateChangeCallback = (value: typeof onStateChange | null) => {
-        if (onStateChange !== (onStateChange = value ?? undefined)) updateState();
+    const getState = (): Readonly<SpinButtonState> => {
+        const { disabled, decrementDisabled, incrementDisabled, leap, max, min, step, value } = context;
+        return { disabled, decrementDisabled, incrementDisabled, leap, max, min, step, value } as const;
     };
 
-    context.addEventListener(EVENT_STATE_NOTIFICATION, updateState, { signal });
+    const pushState = () => {
+        onStatePush?.({ ...currentState });
+    };
+
+    const setPushStateCallback = (value: typeof onStatePush | null) => {
+        if (onStatePush !== (onStatePush = value ?? undefined)) pushState();
+    };
+
+    let currentState = getState();
+    let onStatePush: SpinButtonPushStateCallback | undefined = undefined;
+
+    context.addEventListener(
+        EVENT_STATE_NOTIFICATION,
+        () => {
+            currentState = getState();
+            pushState();
+        },
+        { signal }
+    );
 
     return struct({
         ...spinButtonRecordProps,
-        onStateChange: { set: setStateChangeCallback },
+        onStatePush: { set: setPushStateCallback },
     }) as SpinButtonRecord;
 };
 

@@ -1,4 +1,4 @@
-import type { SpinButtonCalibrationConfigProps, SpinButtonContextElements, SpinButtonContextInteractions, SpinButtonRecord } from './internal/types';
+import type { SpinButtonCalibrationConfigProps, SpinButtonRecord } from './internal/types';
 import type { HTMLProps } from 'preact/compat';
 
 // See https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attributes
@@ -35,16 +35,11 @@ export const enum SpinButtonControl {
     DECREMENT,
 }
 
-export type SpinButtonState = Omit<
-    SpinButtonRecord,
-    keyof SpinButtonContextElements | keyof SpinButtonContextInteractions | 'onStateChange' | 'recalibrate'
->;
-
 export interface SpinButtonProps
     extends Omit<HTMLProps<HTMLInputElement>, ExcludedSpinButtonInputProps | keyof SpinButtonCalibrationConfigProps>,
         SpinButtonCalibrationConfigProps {
     disabled?: boolean;
-    onStateChange?: (currentState: SpinButtonState) => unknown;
+    onStatePush?: NonNullable<SpinButtonRecord['onStatePush']>;
     value?: number;
     valueAsText?: (value: number) => string;
 }

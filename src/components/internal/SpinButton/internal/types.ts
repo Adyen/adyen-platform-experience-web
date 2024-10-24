@@ -38,14 +38,19 @@ export interface SpinButtonContextWritableFields {
 }
 
 export type SpinButtonCalibrationConfigProps = Partial<Pick<SpinButtonContext, 'leap' | 'max' | 'min' | 'step'>>;
-export type SpinButtonStateChangeCallback = () => unknown;
+export type SpinButtonPushStateCallback = (currentState: SpinButtonState) => unknown;
 
 export type SpinButtonRecord = Omit<SpinButtonContext, keyof EventTarget | keyof SpinButtonContextWritableFields | 'signal'> &
     SpinButtonContextElements &
     SpinButtonContextInteractions &
     SpinButtonContextWritableFields & {
-        set onStateChange(callback: SpinButtonStateChangeCallback | undefined | null);
+        set onStatePush(callback: SpinButtonPushStateCallback | undefined | null);
     };
+
+export type SpinButtonState = Omit<
+    SpinButtonRecord,
+    keyof SpinButtonContextElements | keyof SpinButtonContextInteractions | 'onStatePush' | 'recalibrate'
+>;
 
 export const enum SpinButtonValueOffset {
     STEP_INCREMENT,
