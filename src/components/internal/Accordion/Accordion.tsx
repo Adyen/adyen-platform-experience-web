@@ -22,22 +22,36 @@ function Accordion({ children, classNames, header, headerInformation, renderChev
 
     useEffect(() => {
         if (renderChevron) {
-            renderChevron(isExpanded ? <Icon name={'chevron-up'} /> : <Icon name={'chevron-down'} />);
+            renderChevron(
+                <Icon
+                    role="button"
+                    area-hidden={false}
+                    name={isExpanded ? 'chevron-up' : 'chevron-down'}
+                    id={'accordion-controller'}
+                    aria-controls="accordion-content"
+                    aria-expanded={isExpanded}
+                    tabIndex={1}
+                />
+            );
         }
-    }, [renderChevron]);
+    }, [renderChevron, isExpanded]);
 
     return (
         <div className={classnames(ACCORDION_BASE_CLASS, classNames)}>
             <h3 className={ACCORDION_HEADER_CLASS}>
-                <button
-                    id={'accordion-controller'}
-                    aria-controls="accordion-content"
-                    className={ACCORDION_HEADER_CONTAINER_CLASS}
-                    onClick={toggle}
-                    aria-expanded={isExpanded}
-                >
+                <button role={'presentation'} aria-hidden={true} tabIndex={-1} className={ACCORDION_HEADER_CONTAINER_CLASS} onClick={toggle}>
                     <div className={ACCORDION_HEADER_CONTROLLER_CLASS}>{header}</div>
-                    {!renderChevron && (isExpanded ? <Icon name={'chevron-up'} /> : <Icon name={'chevron-down'} />)}
+                    {!renderChevron && (
+                        <Icon
+                            role="button"
+                            area-hidden={false}
+                            name={isExpanded ? 'chevron-up' : 'chevron-down'}
+                            id={'accordion-controller'}
+                            aria-controls="accordion-content"
+                            aria-expanded={isExpanded}
+                            tabIndex={1}
+                        />
+                    )}
                 </button>
                 {headerInformation && <div>{headerInformation}</div>}
             </h3>

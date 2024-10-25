@@ -1,12 +1,14 @@
 @use '../../../style';
 
 .adyen-pe-accordion {
+    margin: style.token(spacer-060) style.token(spacer-000);
+
     &__header {
         align-items: center;
         display: flex;
         justify-content: space-between;
-        margin: style.token(spacer-060) style.token(spacer-000);
-        padding: style.token(spacer-040) style.token(spacer-000);
+        margin: style.token(spacer-000);
+        padding: style.token(spacer-040) 0;
         width: 100%;
 
         &-container {

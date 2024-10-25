@@ -44,7 +44,7 @@ export const useLineItemData = (view: ActiveView) => {
         [allItems]
     );
 
-    const hasSelectAll = useMemo(() => view === ActiveView.REFUND && allItems.length > 5, [view, allItems]);
+    const hasSelectAll = useMemo(() => view === ActiveView.REFUND && allItems.length >= 5, [view, allItems]);
 
     const selectAllItems = useCallback<ILineItemRefundData['selectAllItems']>(() => {
         const itemsToRefund = refundItems.map(({ id, availableQuantity: quantity, amountIncludingTax: amount }) => ({

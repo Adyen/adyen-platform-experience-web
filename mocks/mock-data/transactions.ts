@@ -1874,6 +1874,13 @@ export const DEFAULT_LINE_ITEM_REFUND_STATUSES: ILineItemRefundStatus[] = [
 
 export const DEFAULT_LINE_ITEMS: ILineItem[] = [
     {
+        id: 'e24de04e-b514-43e9-a42f-44c99b3dcca7',
+        amountIncludingTax: { currency: 'USD', value: 0 },
+        description: 'Standard Shipping',
+        availableQuantity: 1,
+        originalQuantity: 1,
+    },
+    {
         id: '2049f87a-d47b-4f57-80b7-d2a5b3bc1018',
         reference: '2049f87a-d47b-4f57-80b7-d2a5b3bc1018',
         amountIncludingTax: { currency: 'USD', value: 4500 },
@@ -1949,14 +1956,6 @@ export const DEFAULT_LINE_ITEMS: ILineItem[] = [
         description: 'Boots',
         availableQuantity: 2,
         originalQuantity: 6,
-        refundStatuses: DEFAULT_LINE_ITEM_REFUND_STATUSES,
-    },
-    {
-        id: 'e24de04e-b514-43e9-a42f-44c99b3dcca7',
-        amountIncludingTax: { currency: 'USD', value: 0 },
-        description: 'Standard Shipping',
-        availableQuantity: 1,
-        originalQuantity: 1,
         refundStatuses: DEFAULT_LINE_ITEM_REFUND_STATUSES,
     },
 ];

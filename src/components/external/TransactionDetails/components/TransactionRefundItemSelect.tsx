@@ -75,8 +75,8 @@ const TransactionRefundItemSelect = ({
             {status !== 'available' && <div>{getTagByStatus(status)}</div>}
             <div style={{ display: 'flex', width: '100%', gap: '6px' }}>
                 <div className={'adyen-pe-transaction-line-item-heading--description'}>
-                    {
-                        <div style={{ display: status === 'available' && showCheckbox ? 'block' : 'none', zIndex: 10 }}>
+                    {status === 'available' && showCheckbox && (
+                        <div style={{ zIndex: 10 }}>
                             <Icon
                                 role="checkbox"
                                 aria-checked={checked}
@@ -86,7 +86,7 @@ const TransactionRefundItemSelect = ({
                                 onClick={onClick}
                             />
                         </div>
-                    }
+                    )}
                     <Typography variant={TypographyVariant.BODY} stronger>
                         {description}
                     </Typography>
