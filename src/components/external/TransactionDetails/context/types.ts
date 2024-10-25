@@ -8,17 +8,23 @@ export const enum ActiveView {
     REFUND,
 }
 
-export const enum RefundState {
-    NONE,
+export const enum RefundedState {
+    INDETERMINATE,
     PARTIAL,
     FULL,
 }
 
 export const enum RefundMode {
-    NONE = 'non_refundable',
+    NON_REFUNDABLE = 'non_refundable',
     PARTIAL_AMOUNT = 'partially_refundable_any_amount',
     PARTIAL_LINE_ITEMS = 'partially_refundable_with_line_items_required',
     FULL_AMOUNT = 'fully_refundable_only',
+}
+
+export const enum RefundStatus {
+    IN_PROGRESS = 'in_progress',
+    COMPLETED = 'completed',
+    FAILED = 'failed',
 }
 
 export type RefundReason = (typeof REFUND_REASONS)[number];

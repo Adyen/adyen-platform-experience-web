@@ -1,6 +1,6 @@
 import { clamp, EMPTY_ARRAY, isUndefined } from '../../../../../utils';
 import type { ITransactionRefundContext, TransactionRefundItem, TransactionRefundItemUpdates } from './types';
-import type { ILineItem, ITransactionRefundMode } from '../../../../../types';
+import type { ILineItem, IRefundMode } from '../../../../../types';
 import { RefundMode } from '../types';
 
 export const getRefundableItemsForTransactionLineItems = (currency = '', lineItems?: readonly ILineItem[] | ILineItem[]) => {
@@ -26,13 +26,13 @@ export const getRefundableItemsForTransactionLineItems = (currency = '', lineIte
 };
 
 export const getRefundAmountByMode = (
-    refundMode: ITransactionRefundMode,
+    refundMode: IRefundMode,
     refundableAmount: number,
     refundItems = EMPTY_ARRAY as ITransactionRefundContext['items'],
     partialRefundAmount = 0
 ): number => {
     switch (refundMode) {
-        case RefundMode.NONE:
+        case RefundMode.NON_REFUNDABLE:
             return 0;
         case RefundMode.PARTIAL_AMOUNT:
             return partialRefundAmount;

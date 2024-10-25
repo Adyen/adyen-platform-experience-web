@@ -84,7 +84,8 @@ export const TransactionRefundProvider = memo(
         );
 
         const setRefundReason = useCallback<ITransactionRefundContext['setRefundReason']>(
-            reason => void (refundMode !== RefundMode.NONE && setReason(reason)),
+            // [TODO]: Skip refund mode check here and use the `refundable` property from `useTransactionRefundMetadata`
+            reason => void (refundMode !== RefundMode.NON_REFUNDABLE && setReason(reason)),
             [refundMode]
         );
 

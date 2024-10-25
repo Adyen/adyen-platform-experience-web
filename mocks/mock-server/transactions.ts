@@ -1,5 +1,5 @@
 import { http, HttpResponse, PathParams } from 'msw';
-import { ITransaction, ITransactionRefundMode, ITransactionRefundPayload, ITransactionRefundResponse, ITransactionWithDetails } from '../../src';
+import { ITransaction, IRefundMode, ITransactionRefundPayload, ITransactionRefundResponse, ITransactionWithDetails } from '../../src';
 import { DEFAULT_LINE_ITEMS, DEFAULT_REFUND_STATUSES, DEFAULT_TRANSACTION, TRANSACTIONS } from '../mock-data';
 import { clamp, EMPTY_ARRAY, getMappedValue } from '../../src/utils';
 import { compareDates, computeHash, delay, getPaginationLinks } from './utils';
@@ -12,7 +12,7 @@ interface _ITransactionTotals {
 
 interface _ITransactionDetailsMetadata {
     deductedAmount?: number;
-    refundMode?: ITransactionRefundMode;
+    refundMode?: IRefundMode;
 }
 
 const DEFAULT_PAGINATION_LIMIT = 10;

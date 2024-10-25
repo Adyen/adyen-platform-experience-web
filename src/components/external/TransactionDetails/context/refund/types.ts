@@ -1,5 +1,5 @@
 import type { TransactionDetailData } from '../../types';
-import type { ILineItem, ITransactionRefundMode } from '../../../../../types';
+import type { ILineItem, IRefundMode } from '../../../../../types';
 import type { RefundReason, TransactionDataContext, TransactionDataContextProviderProps } from '../types';
 
 type _ITransactionRefundContextBase = TransactionDataContext<TransactionRefundProviderProps>;
@@ -26,6 +26,6 @@ export type TransactionRefundItemUpdates = Readonly<Omit<TransactionRefundItem, 
 export interface TransactionRefundProviderProps extends TransactionDataContextProviderProps {
     availableAmount: number;
     currency: string;
-    refundMode: ITransactionRefundMode;
+    refundMode: IRefundMode;
     transactionId: TransactionDetailData['id'];
 }

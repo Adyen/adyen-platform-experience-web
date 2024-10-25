@@ -40,15 +40,7 @@ export const TransactionDataContent = ({ forceHideTitle, transaction }: Transact
     const [primaryAction, _setPrimaryAction] = useState<ButtonActionObject>();
     const [secondaryAction, _setSecondaryAction] = useState<ButtonActionObject>();
 
-    const {
-        availableAmount,
-        available: refundAvailable,
-        currency: refundCurrency,
-        disabled: refundDisabled,
-        mode: refundMode,
-        refundable,
-        viewDisabled: refundViewDisabled,
-    } = useTransactionRefundMetadata(transaction);
+    const { refundable, refundableAmount, refundAvailable, refundCurrency, refundDisabled, refundMode } = useTransactionRefundMetadata(transaction);
 
     const lineItems: readonly ILineItem[] = Object.freeze(transaction?.lineItems ?? EMPTY_ARRAY);
 
@@ -56,8 +48,8 @@ export const TransactionDataContent = ({ forceHideTitle, transaction }: Transact
     const setSecondaryAction = useCallback((action: ButtonActionObject | undefined) => _setSecondaryAction(action), []);
 
     const shouldPreventActiveViewIfRefund = useCallback(
-        (activeView: ActiveView) => activeView === ActiveView.REFUND && refundViewDisabled,
-        [refundViewDisabled]
+        (activeView: ActiveView) => activeView === ActiveView.REFUND && refundDisabled,
+        [refundDisabled]
     );
 
     const setActiveView = useCallback(
@@ -77,8 +69,8 @@ export const TransactionDataContent = ({ forceHideTitle, transaction }: Transact
     }, [activeView, primaryAction, secondaryAction]);
 
     useEffect(() => {
-        if (refundViewDisabled) _setActiveView(ActiveView.DETAILS);
-    }, [refundViewDisabled]);
+        if (refundDisabled) _setActiveView(ActiveView.DETAILS);
+    }, [refundDisabled]);
 
     useEffect(() => {
         forceHideTitle?.(activeView !== ActiveView.DETAILS);
@@ -117,7 +109,7 @@ export const TransactionDataContent = ({ forceHideTitle, transaction }: Transact
                 <_TransactionDataContentViewWrapper renderViewActionButtons={renderViewActionButtons}>
                     <TransactionRefundProvider
                         {...commonContextProviderProps}
-                        availableAmount={availableAmount}
+                        availableAmount={refundableAmount}
                         currency={refundCurrency}
                         refundMode={refundMode}
                         transactionId={transaction.id}

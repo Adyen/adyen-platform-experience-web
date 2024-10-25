@@ -120,6 +120,10 @@ export interface components {
         };
         /** @enum {string} */
         SortDirection: 'asc' | 'desc';
+        /** @enum {string} */
+        RefundMode: 'fully_refundable_only' | 'non_refundable' | 'partially_refundable_any_amount' | 'partially_refundable_with_line_items_required';
+        /** @enum {string} */
+        RefundStatus: 'completed' | 'failed' | 'in_progress';
         TransactionLineItem: {
             amountIncludingTax: components['schemas']['Amount'];
             availableQuantity: number;
@@ -131,15 +135,15 @@ export interface components {
         };
         TransactionLineItemRefundStatus: {
             quantity: number;
-            status: 'completed' | 'failed' | 'in_progress';
+            status: components['schemas']['RefundStatus'];
         };
         TransactionRefundStatus: {
             amount: components['schemas']['Amount'];
-            status: 'completed' | 'failed' | 'in_progress';
+            status: components['schemas']['RefundStatus'];
         };
         TransactionRefundDetails: {
             refundStatuses: components['schemas']['TransactionRefundStatus'][];
-            refundMode: 'fully_refundable_only' | 'non_refundable' | 'partially_refundable_any_amount' | 'partially_refundable_with_line_items_required';
+            refundMode: components['schemas']['RefundMode'];
             refundLocked: boolean;
             refundableAmount: components['schemas']['Amount'];
         };
