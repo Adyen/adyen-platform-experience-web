@@ -1,13 +1,10 @@
 import { createContext, toChildArray } from 'preact';
 import { useContext, useEffect, useMemo, useState } from 'preact/hooks';
 import { ErrorMessageDisplay } from '../../components/internal/ErrorMessageDisplay/ErrorMessageDisplay';
-import { ExternalComponentType } from '../../components/types';
-import { TranslationKey } from '../../translations';
 import { AuthSession } from './session/AuthSession';
 import { isWatchlistUnsubscribeToken } from '../../primitives/reactive/watchlist';
-import sessionAwareComponentAvailability from './session/utils/sessionAwareComponentAvailability';
+import sessionAwareComponentAvailability, { componentAvailabilityErrors } from './session/utils/sessionAwareComponentAvailability';
 import { asyncNoop, EMPTY_OBJECT, isUndefined, noop } from '../../utils';
-import componentAvailabilityErrors from './session/utils/sessionAwareComponentAvailability/helpers/componentAvailabilityErrors';
 import type { AuthProviderProps } from './types';
 
 const AuthContext = createContext<AuthSession['context'] & Pick<AuthSession, 'http' | 'refresh'>>({
