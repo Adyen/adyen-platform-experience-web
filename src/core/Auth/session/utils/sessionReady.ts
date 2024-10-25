@@ -1,7 +1,7 @@
-import AuthSession from './AuthSession';
-import { isWatchlistUnsubscribeToken } from '../../../primitives/reactive/watchlist';
-import { createDeferred } from '../../../primitives/async/deferred';
-import { boolOrTrue } from '../../../utils';
+import AuthSession from '../AuthSession';
+import { isWatchlistUnsubscribeToken } from '../../../../primitives/reactive/watchlist';
+import { createDeferred } from '../../../../primitives/async/deferred';
+import { boolOrTrue } from '../../../../utils';
 
 const sessionReady = async (session: AuthSession) => {
     const ready = createDeferred<void>();

@@ -1,4 +1,5 @@
 {
+    "contactSupportForHelp": "Will be displayed when an error occurs to indicate customer to contact their support",
     "download": "Used as a button label which calls the file download action",
     "downloading": "Will be displayed as indication that a download action is in progress, usually followed by an ellipsis (…).",
     "error.pleaseTryAgainLater": "Will be displayed if an action was attempted that cannot be completed at the given moment, but could possibly be completed at a later time.",
