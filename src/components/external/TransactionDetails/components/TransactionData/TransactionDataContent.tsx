@@ -1,4 +1,3 @@
-import cx from 'classnames';
 import type { ComponentChild } from 'preact';
 import type { PropsWithChildren } from 'preact/compat';
 import { EMPTY_ARRAY } from '../../../../../utils';
@@ -12,7 +11,7 @@ import { TransactionRefundFullAmountInput, TransactionRefundPartialAmountInput }
 import TransactionRefundNotice from '../refund/TransactionRefundNotice';
 import TransactionRefundReason from '../refund/TransactionRefundReason';
 import useTransactionRefundMetadata from '../../hooks/useTransactionRefundMetadata';
-import { TX_DATA_ACTION_BAR, TX_DATA_ACTION_BAR_REFUND, TX_DATA_CLASS, TX_DATA_CONTAINER, TX_DATA_CONTAINER_NO_PADDING } from '../constants';
+import { TX_DATA_ACTION_BAR, TX_DATA_CLASS, TX_STATUS_BOX } from '../constants';
 import { ButtonActionObject, ButtonActionsLayoutBasic } from '../../../../internal/Button/ButtonActions/types';
 import ButtonActions from '../../../../internal/Button/ButtonActions/ButtonActions';
 import { ActiveView, RefundMode } from '../../context/types';
@@ -57,13 +56,11 @@ export const TransactionDataContent = ({ forceHideTitle, transaction }: Transact
     const renderViewActionButtons = useCallback(() => {
         const actions = [primaryAction!, secondaryAction!].filter(Boolean);
         return actions.length ? (
-            <div className={cx(TX_DATA_ACTION_BAR, { [TX_DATA_ACTION_BAR_REFUND]: activeView === ActiveView.REFUND })}>
-                <div className={cx(TX_DATA_CONTAINER, TX_DATA_CONTAINER_NO_PADDING)}>
-                    <ButtonActions actions={actions} layout={ButtonActionsLayoutBasic.BUTTONS_END} />
-                </div>
-            </div>
+            <TransactionDetailsDataContainer className={TX_DATA_ACTION_BAR}>
+                <ButtonActions actions={actions} layout={ButtonActionsLayoutBasic.BUTTONS_END} />
+            </TransactionDetailsDataContainer>
         ) : null;
-    }, [activeView, primaryAction, secondaryAction]);
+    }, [primaryAction, secondaryAction]);
 
     useEffect(() => {
         if (refundDisabled) _setActiveView(ActiveView.DETAILS);
@@ -90,8 +87,8 @@ export const TransactionDataContent = ({ forceHideTitle, transaction }: Transact
             return (
                 <_TransactionDataContentViewWrapper renderViewActionButtons={renderViewActionButtons}>
                     <TransactionDetailsProvider {...commonContextProviderProps} transaction={transaction}>
-                        <TransactionDetailsDataContainer>
-                            <TransactionStatusBox />
+                        <TransactionDetailsDataContainer className={TX_STATUS_BOX}>
+                            <TransactionStatusBox transaction={transaction} />
                         </TransactionDetailsDataContainer>
 
                         <TransactionDataProperties />
