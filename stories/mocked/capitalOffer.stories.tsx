@@ -75,4 +75,16 @@ export const ErrorNoOfferAvailable: ElementStory<typeof CapitalOffer> = {
     },
 };
 
+export const ErrorHasActiveGrant: ElementStory<typeof CapitalOffer> = {
+    name: 'Error - Has Active Grant Exception',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: {
+            handlers: CapitalMockedResponses.hasActiveGrants,
+        },
+    },
+};
+
 export default meta;

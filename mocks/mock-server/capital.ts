@@ -174,4 +174,5 @@ export const CapitalMockedResponses = capitalFactory({
         },
     ],
     noOfferAvailable: [{ endpoint: mockEndpoints.dynamicOfferConfig, handler: getHandlerCallback({ response: undefined, status: 204 }) }],
+    hasActiveGrants: [{ endpoint: mockEndpoints.dynamicOfferConfig, handler: getHandlerCallback({ response: undefined, status: 204 }) }],
 });
