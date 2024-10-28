@@ -4,7 +4,7 @@ import { DATE_FORMAT_TRANSACTION_DETAILS } from '../../../../../constants';
 import useTimezoneAwareDateFormatting from '../../../../../hooks/useTimezoneAwareDateFormatting';
 import useTransactionDetailsContext from '../../context/details';
 
-const TransactionDataDate = () => {
+const TransactionDate = () => {
     const { transaction } = useTransactionDetailsContext();
     const { dateFormat } = useTimezoneAwareDateFormatting(transaction?.balanceAccount?.timeZone);
 
@@ -19,4 +19,4 @@ const TransactionDataDate = () => {
     );
 };
 
-export default TransactionDataDate;
+export default TransactionDate;

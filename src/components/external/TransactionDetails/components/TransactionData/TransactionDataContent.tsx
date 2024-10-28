@@ -6,11 +6,8 @@ import { useCallback, useEffect, useState } from 'preact/hooks';
 import { TransactionDetailsProvider } from '../../context/details';
 import { TransactionRefundProvider } from '../../context/refund';
 import TransactionDetailsDataContainer from '../details/TransactionDetailsDataContainer';
-import TransactionDataTags from '../details/TransactionDataTags';
-import TransactionDataAmount from '../details/TransactionDataAmount';
-import TransactionDataPaymentMethod from '../details/TransactionDataPaymentMethod';
-import TransactionDataDate from '../details/TransactionDataDate';
 import TransactionDataProperties from '../details/TransactionDataProperties';
+import TransactionStatusBox from '../details/TransactionStatusBox';
 import { TransactionRefundFullAmountInput, TransactionRefundPartialAmountInput } from '../refund/TransactionRefundAmount';
 import TransactionRefundNotice from '../refund/TransactionRefundNotice';
 import TransactionRefundReason from '../refund/TransactionRefundReason';
@@ -73,8 +70,9 @@ export const TransactionDataContent = ({ forceHideTitle, transaction }: Transact
     }, [refundDisabled]);
 
     useEffect(() => {
-        forceHideTitle?.(activeView !== ActiveView.DETAILS);
-    }, [activeView, forceHideTitle]);
+        // forceHideTitle?.(activeView !== ActiveView.DETAILS);
+        forceHideTitle?.(true); // always hide title
+    }, [/*activeView,*/ forceHideTitle]);
 
     if (shouldPreventActiveViewIfRefund(activeView)) return null;
 
@@ -93,10 +91,7 @@ export const TransactionDataContent = ({ forceHideTitle, transaction }: Transact
                 <_TransactionDataContentViewWrapper renderViewActionButtons={renderViewActionButtons}>
                     <TransactionDetailsProvider {...commonContextProviderProps} transaction={transaction}>
                         <TransactionDetailsDataContainer>
-                            <TransactionDataTags />
-                            <TransactionDataAmount />
-                            <TransactionDataPaymentMethod />
-                            <TransactionDataDate />
+                            <TransactionStatusBox />
                         </TransactionDetailsDataContainer>
 
                         <TransactionDataProperties />

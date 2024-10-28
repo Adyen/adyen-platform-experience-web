@@ -10,7 +10,7 @@ import { Image } from '../../../../internal/Image/Image';
 import { getDisplayablePaymentMethodForTransaction, getPaymentMethodTypeForTransaction } from '../utils';
 import useTransactionDetailsContext from '../../context/details';
 
-const TransactionDataPaymentMethod = () => {
+const TransactionPaymentMethod = () => {
     const { transaction } = useTransactionDetailsContext();
 
     return useMemo(() => {
@@ -27,4 +27,4 @@ const TransactionDataPaymentMethod = () => {
     }, [transaction]);
 };
 
-export default TransactionDataPaymentMethod;
+export default TransactionPaymentMethod;
