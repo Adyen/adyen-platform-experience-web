@@ -1,5 +1,7 @@
 @use '../../../../../style/skeleton' as skeleton;
 @use '../../../../../style' as style;
+//stylelint-disable no-invalid-position-at-import-rule
+@import '../../../../../style/breakpoints.scss';
 
 .adyen-pe-capital-offer-selection {
     display: flex;
@@ -26,7 +28,7 @@
     }
 
     &__loading-skeleton:first-child {
-        height: 30px;
+        height: 50px;
     }
 
     &__information {
@@ -43,5 +45,12 @@
         display: flex;
         gap: style.token(spacer-050);
         justify-content: end;
+    }
+
+    // stylelint-disable order/order
+    @include adyen-pe-screen-sm-and-up {
+        &__loading-skeleton:first-child {
+            height: 30px;
+        }
     }
 }
