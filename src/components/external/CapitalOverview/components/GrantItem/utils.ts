@@ -2,6 +2,8 @@ import { IGrant, IGrantStatus } from '../../../../../types';
 import { TranslationKey } from '../../../../../translations';
 import { TagVariant } from '../../../../internal/Tag/types';
 
+const getHasDetails = (status: IGrantStatus) => status === 'Active';
+
 const getIsBackgroundFilled = (status: IGrantStatus) => status === 'Repaid';
 
 const getAmountLabelKey = ({ status, repaidGrantAmount }: IGrant): TranslationKey => {
@@ -13,7 +15,7 @@ const getAmountLabelKey = ({ status, repaidGrantAmount }: IGrant): TranslationKe
     return 'capital.requestedFunds';
 };
 
-const getAmount = (grant: IGrant) => (grant.status === 'Active' && grant.repaidGrantAmount.value ? grant.repaidGrantAmount : grant.grantAmount);
+const getAmount = (grant: IGrant) => (grant.status === 'Active' && grant.repaidTotalAmount.value ? grant.repaidTotalAmount : grant.grantAmount);
 
 const getStatusKey = (status: IGrantStatus): TranslationKey | undefined => {
     switch (status) {
@@ -60,6 +62,7 @@ export const getGrantConfig = (grant: IGrant) => {
     return {
         amount: getAmount(grant),
         amountLabelKey: getAmountLabelKey(grant),
+        hasDetails: getHasDetails(grant.status),
         isAmountColorSecondary: !isGrantActive,
         isBackgroundFilled: getIsBackgroundFilled(grant.status),
         isLabelColorSecondary: isGrantActiveOrRepaid,

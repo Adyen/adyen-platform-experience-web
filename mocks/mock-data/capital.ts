@@ -19,15 +19,15 @@ export const DEFAULT_GRANT: IGrant = {
         currency: 'USD',
     },
     totalAmount: {
-        value: 1200000,
+        value: 2022000,
         currency: 'USD',
     },
     feesAmount: {
-        value: 1200000,
+        value: 22000,
         currency: 'USD',
     },
     remainingGrantAmount: {
-        value: 1200000,
+        value: 813000,
         currency: 'USD',
     },
     remainingTotalAmount: {
@@ -35,7 +35,7 @@ export const DEFAULT_GRANT: IGrant = {
         currency: 'USD',
     },
     remainingFeesAmount: {
-        value: 1187000,
+        value: 9000,
         currency: 'USD',
     },
     repaidFeesAmount: {

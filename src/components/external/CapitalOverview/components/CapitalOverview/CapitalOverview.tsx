@@ -7,12 +7,11 @@ import { useAuthContext } from '../../../../../core/Auth';
 import { useFetch } from '../../../../../hooks/useFetch';
 import { EMPTY_OBJECT } from '../../../../../utils';
 import { CapitalHeader } from '../../../../internal/CapitalHeader';
-import { BaseList } from '../../../../internal/BaseList/BaseList';
-import { GrantItem } from '../GrantItem/GrantItem';
 import { IGrant } from '../../../../../types';
 import './CapitalOverview.scss';
 import Unqualified from '../Unqualified';
 import { PreQualified } from '../PreQualified/PreQualified';
+import { GrantList } from '../GrantList/GrantList';
 import { ErrorMessageDisplay } from '../../../../internal/ErrorMessageDisplay/ErrorMessageDisplay';
 import { getCapitalErrorMessage } from '../../../../utils/capital/getCapitalErrorMessage';
 import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatformExperienceError';
@@ -121,18 +120,7 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
                             </div>
                         );
                     case 'GrantList':
-                        return (
-                            <div>
-                                <CapitalHeader hideTitle={hideTitle} titleKey={'capital.businessFinancing'} />
-                                <BaseList>
-                                    {grantList?.map(grant => (
-                                        <li key={grant.id}>
-                                            <GrantItem grant={grant} />
-                                        </li>
-                                    ))}
-                                </BaseList>
-                            </div>
-                        );
+                        return grantList && <GrantList grantList={grantList} hideTitle={hideTitle} />;
                     case 'PreQualified':
                         return (
                             <PreQualified

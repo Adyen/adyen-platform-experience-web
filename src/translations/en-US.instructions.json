@@ -1,4 +1,5 @@
 {
+    "capital.daysAndDaysLeft": "Used to display the total days and the remaining days of a grant repayment",
     "capital.upTo": "Used as a continuation of capital.preQualifiedToReceiveFunds, so the sentence would be like 'You have been pre-qualified to receive funds up to <amount>'",
     "download": "Used as a button label which calls the file download action",
     "downloading": "Will be displayed as indication that a download action is in progress, usually followed by an ellipsis (…).",
