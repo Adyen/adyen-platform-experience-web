@@ -1,8 +1,7 @@
-import { boolOrFalse } from '../../../../utils';
-import DataOverviewDetailsSkeleton from '../../../internal/DataOverviewDetails/DataOverviewDetailsSkeleton';
+import { boolOrFalse } from '../../../../../utils';
+import DataOverviewDetailsSkeleton from '../../../../internal/DataOverviewDetails/DataOverviewDetailsSkeleton';
 import TransactionDataContent from './TransactionDataContent';
-import type { TransactionDataProps } from '../types';
-import './TransactionData.scss';
+import type { TransactionDataProps } from '../../types';
 
 export const TransactionData = ({ error, forceHideTitle, isFetching, transaction }: TransactionDataProps) => {
     const isLoading = boolOrFalse(isFetching);

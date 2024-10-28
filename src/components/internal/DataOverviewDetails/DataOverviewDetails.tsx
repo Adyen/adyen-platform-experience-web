@@ -7,7 +7,7 @@ import { useFetch } from '../../../hooks/useFetch';
 import { IPayoutDetails } from '../../../types';
 import { EMPTY_OBJECT } from '../../../utils';
 import { PayoutData } from '../../external/PayoutDetails/components/PayoutData';
-import { TransactionData } from '../../external/TransactionDetails/components/TransactionData';
+import TransactionData from '../../external/TransactionDetails/components/TransactionData';
 import useBalanceAccounts from '../../../hooks/useBalanceAccounts';
 import { ExternalUIComponentProps } from '../../types';
 import { getErrorMessage } from '../../utils/getErrorMessage';
