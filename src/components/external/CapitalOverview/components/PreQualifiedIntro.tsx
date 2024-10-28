@@ -22,7 +22,7 @@ const PreQualifiedIntro = ({
             <div className={CAPITAL_OVERVIEW_CLASS_NAMES.preQualifiedGrant}>
                 <InfoBox>
                     <div>
-                        {i18n.get('capital.preQualifiedToReceiveFunds')}
+                        {i18n.get('capital.preQualifiedForBusinessFinancing')}
                         <strong>
                             {i18n.get('capital.upTo', {
                                 values: { amount: i18n.amount(dynamicOffer.maxAmount.value, dynamicOffer.maxAmount.currency) },
