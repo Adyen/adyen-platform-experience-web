@@ -24,6 +24,7 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
     onRequestFunds,
     onSeeOptions,
     onOfferDismissed,
+    onContactSupport,
 }) => {
     const { getGrants: grantsEndpointCall, getDynamicGrantOffersConfiguration: dynamicConfigurationEndpointCall } = useAuthContext().endpoints;
 
@@ -115,7 +116,8 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
                                     absolutePosition={false}
                                     outlined={false}
                                     withImage
-                                    {...getCapitalErrorMessage(dynamicOfferQuery.error as AdyenPlatformExperienceError)}
+                                    onContactSupport={onContactSupport}
+                                    {...getCapitalErrorMessage(dynamicOfferQuery.error as AdyenPlatformExperienceError, onContactSupport)}
                                 />
                             </div>
                         );

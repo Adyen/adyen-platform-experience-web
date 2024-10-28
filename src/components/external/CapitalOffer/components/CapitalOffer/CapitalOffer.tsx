@@ -19,6 +19,7 @@ export const CapitalOffer: FunctionalComponent<ExternalUIComponentProps<CapitalO
     externalDynamicOffersConfig,
     onOfferDismissed,
     onRequestFunds,
+    onContactSupport,
 }) => {
     const { getDynamicGrantOffersConfiguration } = useAuthContext().endpoints;
 
@@ -76,6 +77,7 @@ export const CapitalOffer: FunctionalComponent<ExternalUIComponentProps<CapitalO
                     onReviewOffer={onReviewOfferHandler}
                     repaymentFrequency={REPAYMENT_FREQUENCY}
                     emptyGrantOffer={emptyGrantOffer}
+                    onContactSupport={onContactSupport}
                 />
             )}
             {capitalOfferState === 'OfferSummary' && (
@@ -84,6 +86,7 @@ export const CapitalOffer: FunctionalComponent<ExternalUIComponentProps<CapitalO
                     repaymentFrequency={REPAYMENT_FREQUENCY}
                     onBack={() => setSelectedOffer(undefined)}
                     onRequestFunds={onRequestFunds}
+                    onContactSupport={onContactSupport}
                 />
             )}
         </div>

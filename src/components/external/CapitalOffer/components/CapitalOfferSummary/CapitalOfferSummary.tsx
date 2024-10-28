@@ -28,6 +28,7 @@ export const CapitalOfferSummary = ({
     repaymentFrequency: number;
     onBack: () => void;
     onRequestFunds?: (data: IGrant) => void;
+    onContactSupport?: () => void;
 }) => {
     const { i18n } = useCoreContext();
     const expectedRepaymentDate = useMemo(() => {

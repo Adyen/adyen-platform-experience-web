@@ -24,6 +24,7 @@ type CapitalOfferSelectionProps = {
     repaymentFrequency: number;
     requestedAmount: number | undefined;
     emptyGrantOffer: boolean;
+    onContactSupport: (() => void) | undefined;
 };
 
 const LoadingSkeleton = () => (
@@ -85,6 +86,7 @@ export const CapitalOfferSelection = ({
     requestedAmount,
     onReviewOffer,
     emptyGrantOffer,
+    onContactSupport,
 }: CapitalOfferSelectionProps) => {
     const { i18n } = useCoreContext();
     const [requestedValue, setRequestedValue] = useState<number | undefined>(Number(requestedAmount) || config?.minAmount.value);
@@ -153,6 +155,8 @@ export const CapitalOfferSelection = ({
                     absolutePosition={false}
                     outlined={false}
                     withImage
+                    onContactSupport={onContactSupport}
+                    onGoBack={onBack}
                     {...getCapitalErrorMessage(reviewOfferMutation.error as AdyenPlatformExperienceError)}
                 />
             ) : (
@@ -174,7 +178,7 @@ export const CapitalOfferSelection = ({
                     </InfoBox>
                 </>
             )}
-            {reviewOfferMutation.error && (
+            {!reviewOfferMutation.error && (
                 <div className="adyen-pe-capital-offer-selection__buttons">
                     <Button variant={ButtonVariant.SECONDARY} onClick={onBack}>
                         {i18n.get('capital.back')}

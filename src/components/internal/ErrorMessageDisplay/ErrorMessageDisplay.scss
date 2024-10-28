@@ -30,4 +30,11 @@
         top: style.token(spacer-080);
         transform: translateX(-50%);
     }
+
+    &__button {
+        align-items: center;
+        display: flex;
+        gap: style.token(spacer-040);
+        justify-content: center;
+    }
 }
