@@ -80,7 +80,7 @@ export const CapitalOffer: FunctionalComponent<ExternalUIComponentProps<CapitalO
             )}
             {capitalOfferState === 'OfferSummary' && (
                 <CapitalOfferSummary
-                    grantOffer={selectedOffer}
+                    grantOffer={selectedOffer!}
                     repaymentFrequency={REPAYMENT_FREQUENCY}
                     onBack={() => setSelectedOffer(undefined)}
                     onRequestFunds={onRequestFunds}

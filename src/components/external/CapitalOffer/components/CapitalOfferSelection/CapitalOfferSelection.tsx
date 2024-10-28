@@ -174,18 +174,16 @@ export const CapitalOfferSelection = ({
                     </InfoBox>
                 </>
             )}
-            <div className="adyen-pe-capital-offer-selection__buttons">
-                <Button variant={ButtonVariant.SECONDARY} onClick={onBack}>
-                    {i18n.get('capital.back')}
-                </Button>
-                <Button
-                    variant={ButtonVariant.PRIMARY}
-                    onClick={onReview}
-                    disabled={reviewOfferMutation.isLoading || !config?.minAmount || !!reviewOfferMutation.error}
-                >
-                    {i18n.get('capital.reviewOffer')}
-                </Button>
-            </div>
+            {reviewOfferMutation.error && (
+                <div className="adyen-pe-capital-offer-selection__buttons">
+                    <Button variant={ButtonVariant.SECONDARY} onClick={onBack}>
+                        {i18n.get('capital.back')}
+                    </Button>
+                    <Button variant={ButtonVariant.PRIMARY} onClick={onReview} disabled={reviewOfferMutation.isLoading || !config?.minAmount}>
+                        {i18n.get('capital.reviewOffer')}
+                    </Button>
+                </div>
+            )}
         </div>
     );
 };

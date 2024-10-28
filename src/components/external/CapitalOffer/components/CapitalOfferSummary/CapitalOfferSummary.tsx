@@ -24,14 +24,14 @@ export const CapitalOfferSummary = ({
     onBack,
     onRequestFunds,
 }: {
-    grantOffer?: IGrantOfferResponseDTO;
+    grantOffer: IGrantOfferResponseDTO;
     repaymentFrequency: number;
     onBack: () => void;
     onRequestFunds?: (data: IGrant) => void;
 }) => {
     const { i18n } = useCoreContext();
     const expectedRepaymentDate = useMemo(() => {
-        const date = grantOffer ? getExpectedRepaymentDate(grantOffer.expectedRepaymentPeriodDays) : undefined;
+        const date = getExpectedRepaymentDate(grantOffer.expectedRepaymentPeriodDays);
         return date ? i18n.date(date, { month: 'long' }) : null;
     }, [grantOffer, i18n]);
 
@@ -52,12 +52,12 @@ export const CapitalOfferSummary = ({
     );
 
     const onRequestFundsHandler = useCallback(() => {
-        grantOffer?.id && requestFundsCallback(grantOffer.id);
-    }, [grantOffer?.id, requestFundsCallback]);
+        grantOffer.id && requestFundsCallback(grantOffer.id);
+    }, [grantOffer.id, requestFundsCallback]);
 
     const maximumRepaymentPeriod = useMemo(
-        () => calculateMaximumRepaymentPeriodInMonths(grantOffer?.maximumRepaymentPeriodDays),
-        [grantOffer?.maximumRepaymentPeriodDays]
+        () => calculateMaximumRepaymentPeriodInMonths(grantOffer.maximumRepaymentPeriodDays),
+        [grantOffer.maximumRepaymentPeriodDays]
     );
 
     const requestError = useMemo<{ title: string; message: string; errorCode?: string } | null>(() => {
@@ -83,17 +83,16 @@ export const CapitalOfferSummary = ({
             <InfoBox className="adyen-pe-capital-offer-summary__grant-summary">
                 <Typography el={TypographyElement.PARAGRAPH} variant={TypographyVariant.BODY}>
                     {i18n.get('capital.youAreRequestingFundingOf')}{' '}
-                    <strong>{grantOffer && `${i18n.amount(grantOffer.grantAmount.value, grantOffer.grantAmount.currency)}.`}</strong>
+                    <strong>{`${i18n.amount(grantOffer.grantAmount.value, grantOffer.grantAmount.currency)}.`}</strong>
                 </Typography>
                 <Typography el={TypographyElement.PARAGRAPH} variant={TypographyVariant.CAPTION}>
-                    {grantOffer &&
-                        i18n.get('capital.minimumRepaymentFrequency', {
-                            values: {
-                                amount: i18n.amount(grantOffer.thresholdAmount.value, grantOffer.thresholdAmount.currency),
-                                days: repaymentFrequency,
-                                date: expectedRepaymentDate ?? '',
-                            },
-                        })}
+                    {i18n.get('capital.minimumRepaymentFrequency', {
+                        values: {
+                            amount: i18n.amount(grantOffer.thresholdAmount.value, grantOffer.thresholdAmount.currency),
+                            days: repaymentFrequency,
+                            date: expectedRepaymentDate ?? '',
+                        },
+                    })}
                 </Typography>
             </InfoBox>
             <StructuredList
@@ -150,32 +149,31 @@ export const CapitalOfferSummary = ({
                 items={[
                     {
                         key: 'capital.fees',
-                        value: grantOffer && i18n.amount(grantOffer.feesAmount.value, grantOffer.feesAmount.currency),
+                        value: i18n.amount(grantOffer.feesAmount.value, grantOffer.feesAmount.currency),
                     },
                     {
                         key: 'capital.totalRepaymentAmount',
-                        value: grantOffer && i18n.amount(grantOffer.totalAmount.value, grantOffer.totalAmount.currency),
+                        value: i18n.amount(grantOffer.totalAmount.value, grantOffer.totalAmount.currency),
                     },
                     {
                         key: 'capital.repaymentThreshold',
-                        value: grantOffer && i18n.amount(grantOffer.thresholdAmount.value, grantOffer.thresholdAmount.currency),
+                        value: i18n.amount(grantOffer.thresholdAmount.value, grantOffer.thresholdAmount.currency),
                     },
                     {
                         key: 'capital.repaymentRatePercentage',
-                        value: grantOffer && `${getPaymentRatePercentage(grantOffer.repaymentRate)}% ${i18n.get('capital.daily')}`,
+                        value: `${getPaymentRatePercentage(grantOffer.repaymentRate)}% ${i18n.get('capital.daily')}`,
                     },
                     {
                         key: 'capital.expectedRepaymentPeriod',
-                        value: grantOffer && `${grantOffer.expectedRepaymentPeriodDays} ${i18n.get('capital.days')}`,
+                        value: `${grantOffer.expectedRepaymentPeriodDays} ${i18n.get('capital.days')}`,
                     },
                     {
                         key: 'capital.maximumRepaymentPeriod',
-                        value:
-                            grantOffer && maximumRepaymentPeriod
-                                ? `${calculateMaximumRepaymentPeriodInMonths(grantOffer.maximumRepaymentPeriodDays)} ${i18n.get(
-                                      maximumRepaymentPeriod > 1 ? 'capital.months' : 'capital.month'
-                                  )}`
-                                : null,
+                        value: maximumRepaymentPeriod
+                            ? `${calculateMaximumRepaymentPeriodInMonths(grantOffer.maximumRepaymentPeriodDays)} ${i18n.get(
+                                  maximumRepaymentPeriod > 1 ? 'capital.months' : 'capital.month'
+                              )}`
+                            : null,
                     },
                     { key: 'capital.balanceAccount', value: i18n.get('capital.primaryBalanceAccount') },
                 ]}

@@ -35,13 +35,6 @@ export const getCapitalErrorMessage = (error: AdyenPlatformExperienceError | und
                 onContactSupport,
             };
         }
-        case '30_013': {
-            return {
-                title: COMMON_CAPITAL_ERROR_MESSAGE.somethingWentWrong,
-                message: [COMMON_CAPITAL_ERROR_MESSAGE.couldNotLoadOffers, COMMON_CAPITAL_ERROR_MESSAGE.tryRefreshingThePage],
-                onContactSupport,
-            };
-        }
         case '30_600': {
             return {
                 title: COMMON_CAPITAL_ERROR_MESSAGE.somethingWentWrong,

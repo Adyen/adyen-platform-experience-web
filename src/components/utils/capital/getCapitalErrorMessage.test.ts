@@ -58,20 +58,6 @@ describe('getCapitalErrorMessage', () => {
         });
     });
 
-    it('should return specific ErrorMessage when error.errorCode is "30_013"', () => {
-        const error = new AdyenPlatformExperienceError(ErrorTypes.ERROR, 'requestId123', 'Test error message', '30_013');
-
-        const mockOnContactSupport = vi.fn();
-
-        const result = getCapitalErrorMessage(error, mockOnContactSupport);
-
-        expect(result).toEqual({
-            title: COMMON_CAPITAL_ERROR_MESSAGE.somethingWentWrong,
-            message: [COMMON_CAPITAL_ERROR_MESSAGE.couldNotLoadOffers, COMMON_CAPITAL_ERROR_MESSAGE.tryRefreshingThePage],
-            onContactSupport: mockOnContactSupport,
-        });
-    });
-
     it('should return ErrorMessage from getCommonErrorMessage for error code "29_001"', () => {
         const error = new AdyenPlatformExperienceError(ErrorTypes.ERROR, 'requestId123', 'Test error message', '29_001');
 

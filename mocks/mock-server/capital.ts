@@ -41,7 +41,7 @@ const DYNAMIC_OFFER_HANDLER = async ({ request }: { request: StrictRequest<Defau
     return HttpResponse.json(response);
 };
 
-const OFFER_REVIEW_HANDLER = async ({ request }: { request: StrictRequest<DefaultBodyType> }, withBalanceAccount = true) => {
+const OFFER_REVIEW_HANDLER = async ({ request }: { request: StrictRequest<DefaultBodyType> }) => {
     const { amount, currency } = (await request.json()) as { amount: number; currency: string };
 
     const response = calculateGrant(amount, currency);
@@ -150,7 +150,7 @@ export const CapitalMockedResponses = capitalFactory({
     missingPrimaryBalanceAccount: [
         {
             endpoint: mockEndpoints.offerReview,
-            handler: ((req: any) => OFFER_REVIEW_HANDLER(req, false)) as any,
+            handler: ((req: any) => OFFER_REVIEW_HANDLER(req)) as any,
             method: 'post',
         },
         {
@@ -162,7 +162,7 @@ export const CapitalMockedResponses = capitalFactory({
     noGrantAccountConfig: [
         {
             endpoint: mockEndpoints.requestFunds as any,
-            handler: getErrorHandler(ERROR_NO_GRANT_ACCOUNT_CONFIG, 422),
+            handler: getErrorHandler(ERROR_NO_GRANT_ACCOUNT_CONFIG, 500),
             method: 'post',
         },
     ],
