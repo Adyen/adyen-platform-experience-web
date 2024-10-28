@@ -1,3 +1,4 @@
+import cx from 'classnames';
 import { useEffect } from 'preact/compat';
 import { useCallback, useMemo, useState } from 'preact/hooks';
 import { JSXInternal } from 'preact/src/jsx';
@@ -10,6 +11,7 @@ import { TagVariant } from '../../../internal/Tag/types';
 import { TypographyVariant } from '../../../internal/Typography/types';
 import Typography from '../../../internal/Typography/Typography';
 import { useTransactionRefundContext } from '../context/refund';
+import './TransactionRefundItemSelect.scss';
 
 const TransactionRefundItemSelect = ({
     amountIncludingTax,
@@ -32,7 +34,7 @@ const TransactionRefundItemSelect = ({
     const { i18n } = useCoreContext();
     const [checked, setChecked] = useState(false);
     const { updateItems, clearItems } = useTransactionRefundContext();
-    const { items } = useTransactionRefundContext();
+    const { items, availableItems } = useTransactionRefundContext();
 
     const getTagByStatus = (status: components['schemas']['TransactionLineItemRefundStatus']['status'] | 'available') => {
         switch (status) {
@@ -47,10 +49,13 @@ const TransactionRefundItemSelect = ({
 
     useEffect(() => {
         if (isLineItem) {
-            const shouldChecked = items.find(item => item.id === additionalData.id);
+            const shouldChecked = items.find(item => item.reference === additionalData.reference);
             setChecked(!!shouldChecked);
+        } else {
+            if (items.length === availableItems.length && !checked) setChecked(true);
+            if (checked && items.length !== availableItems.length) setChecked(false);
         }
-    }, [items]);
+    }, [items, availableItems]);
 
     const onClick = useCallback(
         (e: MouseEvent) => {
@@ -60,9 +65,9 @@ const TransactionRefundItemSelect = ({
             }
             if (isLineItem) {
                 if (!checked) {
-                    updateItems([{ id: additionalData.id, amount: amountIncludingTax.value, quantity: availableQuantity }]);
+                    updateItems([{ reference: additionalData.reference, amount: amountIncludingTax.value, quantity: availableQuantity }]);
                 } else {
-                    clearItems([additionalData.id]);
+                    clearItems([additionalData.reference]);
                 }
             }
             setChecked(!checked);
@@ -71,7 +76,7 @@ const TransactionRefundItemSelect = ({
     );
 
     return (
-        <div className={'adyen-pe-transaction-line-item'}>
+        <div className={cx('adyen-pe-transaction-line-item', classNames)}>
             {status !== 'available' && <div>{getTagByStatus(status)}</div>}
             <div style={{ display: 'flex', width: '100%', gap: '6px' }}>
                 <div className={'adyen-pe-transaction-line-item-heading--description'}>

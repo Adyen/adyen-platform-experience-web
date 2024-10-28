@@ -7,7 +7,7 @@ type _ITransactionRefundContextBase = TransactionDataContext<Omit<TransactionRef
 export interface ITransactionRefundContext extends _ITransactionRefundContextBase {
     amount: number;
     availableItems: readonly ILineItem[];
-    clearItems: (ids?: TransactionRefundItem['id'][]) => void;
+    clearItems: (references?: TransactionRefundItem['reference'][]) => void;
     interactionsDisabled: boolean;
     items: readonly TransactionRefundItem[];
     refundReason: RefundReason;
@@ -17,7 +17,7 @@ export interface ITransactionRefundContext extends _ITransactionRefundContextBas
 }
 
 export type TransactionRefundItem = Readonly<{
-    id: ILineItem['id'];
+    reference: ILineItem['reference'];
     amount: ILineItem['amountIncludingTax']['value'];
     quantity: ILineItem['availableQuantity'];
 }>;

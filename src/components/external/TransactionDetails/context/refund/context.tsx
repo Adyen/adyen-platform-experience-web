@@ -77,9 +77,11 @@ export const TransactionRefundProvider = memo(
                     primaryAction,
                     refundMode,
                     refundReason,
+                    refundReference,
                     secondaryAction,
                     setAmount,
                     setRefundReason,
+                    setRefundReference,
                     transactionId,
                     updateItems,
                 }}

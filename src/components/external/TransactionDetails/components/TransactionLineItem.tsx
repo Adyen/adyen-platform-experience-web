@@ -7,10 +7,13 @@ import { components } from '../../../../types/api/resources/TransactionsResource
 import Accordion from '../../../internal/Accordion/Accordion';
 import StructuredList from '../../../internal/StructuredList';
 import './TransactionListItem.scss';
-
 import TransactionRefundItemSelect from './TransactionRefundItemSelect';
 
-const DISABLED_STATUSES: Array<components['schemas']['TransactionLineItemRefundStatus']['status'] | 'available'> = ['in_progress', 'completed'];
+const DISABLED_STATUSES: Array<components['schemas']['TransactionLineItemRefundStatus']['status'] | 'available'> = [
+    'in_progress',
+    'completed',
+    'failed',
+];
 //
 const detailDataFields = ['currency', 'id', 'sku'];
 const TransactionLineItem = ({

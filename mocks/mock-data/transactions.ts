@@ -1885,7 +1885,7 @@ export const DEFAULT_LINE_ITEMS: ILineItem[] = [
         reference: '2049f87a-d47b-4f57-80b7-d2a5b3bc1018',
         amountIncludingTax: { currency: 'USD', value: 4500 },
         description: 'Boots',
-        availableQuantity: 2,
+        availableQuantity: 3,
         originalQuantity: 6,
     },
     {
