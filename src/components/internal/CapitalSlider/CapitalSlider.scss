@@ -1,13 +1,12 @@
 @use '../../../style';
 
 .adyen-pe-capital-slider {
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-060);
+
     &__value {
         color: style.token(color-label-highlight);
-    }
-
-    &__input {
-        margin-bottom: style.token(spacer-070);
-        margin-top: style.token(spacer-070);
     }
 
     &__labels {

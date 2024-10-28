@@ -68,23 +68,25 @@ const CapitalSlider = ({
                     {i18n.get('capital.howMuchMoneyDoYouNeed')}
                 </Typography>
             </label>
-            <output htmlFor={id} className="adyen-pe-capital-slider__value" aria-live="polite">
-                <Typography variant={TypographyVariant.TITLE} strongest>
-                    {i18n.amount(value, dynamicCapitalOffer.minAmount.currency, { maximumFractionDigits: 0 })}
-                </Typography>
-            </output>
-            <Slider
-                id={id}
-                value={value}
-                min={dynamicCapitalOffer.minAmount.value}
-                max={dynamicCapitalOffer.maxAmount.value}
-                step={dynamicCapitalOffer.step}
-                onChange={handleValueChange}
-                onMouseUp={handleRelease}
-                onTouchEnd={handleRelease}
-                onKeyUp={handleRelease}
-                className="adyen-pe-capital-slider__input"
-            />
+            <div>
+                <output htmlFor={id} className="adyen-pe-capital-slider__value" aria-live="polite">
+                    <Typography variant={TypographyVariant.TITLE} strongest>
+                        {i18n.amount(value, dynamicCapitalOffer.minAmount.currency, { maximumFractionDigits: 0 })}
+                    </Typography>
+                </output>
+                <Slider
+                    id={id}
+                    value={value}
+                    min={dynamicCapitalOffer.minAmount.value}
+                    max={dynamicCapitalOffer.maxAmount.value}
+                    step={dynamicCapitalOffer.step}
+                    onChange={handleValueChange}
+                    onMouseUp={handleRelease}
+                    onTouchEnd={handleRelease}
+                    onKeyUp={handleRelease}
+                    className="adyen-pe-capital-slider__input"
+                />
+            </div>
             <div className="adyen-pe-capital-slider__labels">
                 <label>
                     <Typography variant={TypographyVariant.CAPTION}>{i18n.get('min')}</Typography>
