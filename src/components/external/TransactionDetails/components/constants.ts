@@ -15,6 +15,7 @@ export const TX_DATA_INPUT_CONTAINER_WITH_ERROR = `${TX_DATA_INPUT_CONTAINER}--w
 export const TX_DATA_INPUT_HEAD = `${TX_DATA_INPUT}-head`;
 export const TX_DATA_INPUT_TEXTAREA = `${TX_DATA_INPUT}--textarea`;
 export const TX_DATA_LABEL = `${TX_DATA_CLASS}__label`;
+export const TX_DATA_LIST = `${TX_DATA_CLASS}__list`;
 export const TX_DATA_PAY_METHOD = `${TX_DATA_CLASS}__payment-method`;
 export const TX_DATA_PAY_METHOD_DETAIL = `${TX_DATA_PAY_METHOD}-detail`;
 export const TX_DATA_PAY_METHOD_LOGO = `${TX_DATA_PAY_METHOD}-logo`;

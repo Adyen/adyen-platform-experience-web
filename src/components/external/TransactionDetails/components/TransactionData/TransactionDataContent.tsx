@@ -27,6 +27,7 @@ const _TransactionDataContentViewWrapper = ({
 }: PropsWithChildren<{ renderViewActionButtons: () => ComponentChild }>) => (
     <div className={TX_DATA_CLASS}>
         {children}
+        {/* renderViewMessageBox() */}
         {renderViewActionButtons()}
     </div>
 );

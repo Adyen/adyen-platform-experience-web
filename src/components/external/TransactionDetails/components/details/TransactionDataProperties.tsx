@@ -1,9 +1,11 @@
 import { useMemo } from 'preact/hooks';
-import { TX_DATA_LABEL, TX_DETAILS_RESERVED_FIELDS_SET } from '../constants';
+import { TX_DATA_LABEL, TX_DATA_LIST, TX_DETAILS_RESERVED_FIELDS_SET } from '../constants';
 import { _isCustomDataObject } from '../../../../internal/DataGrid/components/TableCells';
-import TransactionDetailsDataContainer from './TransactionDetailsDataContainer';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import useTransactionDetailsContext from '../../context/details';
+import StructuredList from '../../../../internal/StructuredList';
+import { StructuredListProps } from '../../../../internal/StructuredList/types';
+import { EMPTY_OBJECT } from '../../../../../utils';
 
 const TransactionDataProperties = () => {
     const { i18n } = useCoreContext();
@@ -16,27 +18,21 @@ const TransactionDataProperties = () => {
             .filter(([key]) => !TX_DETAILS_RESERVED_FIELDS_SET.has(key as any))
             .map(([key, value]) => [key, _isCustomDataObject(value) ? value.value : value]);
 
+        const listItems: StructuredListProps['items'] = [
+            balanceAccount?.description
+                ? { key: 'account', value: balanceAccount.description }
+                : (EMPTY_OBJECT as StructuredListProps['items'][number]),
+            ...customColumns.map(([key, value]) => ({ key, value })),
+            { key: 'referenceID', value: id },
+        ];
+
         return (
-            <>
-                {balanceAccount?.description && (
-                    <TransactionDetailsDataContainer>
-                        <div className={TX_DATA_LABEL}>{i18n.get('account')}</div>
-                        <div>{balanceAccount.description}</div>
-                    </TransactionDetailsDataContainer>
-                )}
-
-                <TransactionDetailsDataContainer>
-                    <div className={TX_DATA_LABEL}>{i18n.get('referenceID')}</div>
-                    <div aria-label={i18n.get('referenceID')}>{id}</div>
-                </TransactionDetailsDataContainer>
-
-                {customColumns.map(([key, value]) => (
-                    <TransactionDetailsDataContainer key={key}>
-                        <div className={TX_DATA_LABEL}>{i18n.get(key as any)}</div>
-                        <div aria-label={i18n.get(key as any)}>{value}</div>
-                    </TransactionDetailsDataContainer>
-                ))}
-            </>
+            <StructuredList
+                className={TX_DATA_LIST}
+                items={listItems}
+                layout="4-8"
+                renderLabel={label => <div className={TX_DATA_LABEL}>{label}</div>}
+            />
         );
     }, [i18n, transaction]);
 };

@@ -17,6 +17,16 @@
         width: 100%;
     }
 
+    &__list {
+        .adyen-pe-structured-list {
+            &__label,
+            &__content {
+                padding-bottom: style.token(spacer-030);
+                padding-top: style.token(spacer-030);
+            }
+        }
+    }
+
     &__amount {
         color: style.token(color-label-primary);
         font-size: style.token(text-title-l-font-size);
