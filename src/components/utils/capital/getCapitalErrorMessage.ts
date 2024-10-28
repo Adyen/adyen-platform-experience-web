@@ -3,7 +3,7 @@ import { ErrorMessage, getCommonErrorMessage, UNDEFINED_ERROR } from '../getComm
 
 export const COMMON_CAPITAL_ERROR_MESSAGE = {
     contactSupport: 'capital.pleaseContactSupportForHelp',
-    couldNotLoadOffers: 'capital.couldNotLoadFinancialOffers',
+    couldNotLoadOffers: 'capital.couldNotContinueWithTheOffer',
     tryRefreshingThePage: 'capital.tryRefreshingThePageOrComeBackLater',
     somethingWentWrong: 'capital.somethingWentWrong',
 } as const;
@@ -14,6 +14,7 @@ const UNKNOWN_ERROR = {
 };
 
 export const getCapitalErrorMessage = (error: AdyenPlatformExperienceError | undefined, onContactSupport?: () => void): ErrorMessage => {
+    console.log(error);
     if (!error) return UNDEFINED_ERROR;
     const commonError = getCommonErrorMessage(error, onContactSupport);
     if (commonError) return commonError;

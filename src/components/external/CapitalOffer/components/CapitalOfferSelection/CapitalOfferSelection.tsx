@@ -157,7 +157,7 @@ export const CapitalOfferSelection = ({
                     withImage
                     onContactSupport={onContactSupport}
                     onGoBack={onBack}
-                    {...getCapitalErrorMessage(reviewOfferMutation.error as AdyenPlatformExperienceError)}
+                    {...getCapitalErrorMessage(reviewOfferMutation.error as AdyenPlatformExperienceError, onContactSupport)}
                 />
             ) : (
                 <>
@@ -178,7 +178,7 @@ export const CapitalOfferSelection = ({
                     </InfoBox>
                 </>
             )}
-            {!reviewOfferMutation.error && (
+            {!reviewOfferMutation.error && !emptyGrantOffer && (
                 <div className="adyen-pe-capital-offer-selection__buttons">
                     <Button variant={ButtonVariant.SECONDARY} onClick={onBack}>
                         {i18n.get('capital.back')}

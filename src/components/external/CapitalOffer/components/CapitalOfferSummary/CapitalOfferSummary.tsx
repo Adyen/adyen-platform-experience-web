@@ -17,12 +17,18 @@ import { AdyenErrorResponse } from '../../../../../core/Http/types';
 import { AlertTypeOption } from '../../../../internal/Alert/types';
 import Alert from '../../../../internal/Alert/Alert';
 import Icon from '../../../../internal/Icon';
+import { ErrorMessageDisplay } from '../../../../internal/ErrorMessageDisplay/ErrorMessageDisplay';
+import { getCapitalErrorMessage } from '../../../../utils/capital/getCapitalErrorMessage';
+import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatformExperienceError';
+
+const errorMessageWithAlert = ['30_013'];
 
 export const CapitalOfferSummary = ({
     grantOffer,
     repaymentFrequency,
     onBack,
     onRequestFunds,
+    onContactSupport,
 }: {
     grantOffer: IGrantOfferResponseDTO;
     repaymentFrequency: number;
@@ -61,25 +67,37 @@ export const CapitalOfferSummary = ({
         [grantOffer.maximumRepaymentPeriodDays]
     );
 
-    const requestError = useMemo<{ title: string; message: string; errorCode?: string } | null>(() => {
+    const requestErrorAlert = useMemo<{ title: string; message: string; errorCode?: string } | null>(() => {
         const err = requestFundsMutation.error ? (requestFundsMutation.error as AdyenErrorResponse) : null;
-        if (!err) return null;
-        switch (err.errorCode) {
-            case '30_013':
-                return {
-                    title: i18n.get('capital.thereIsNoPrimaryBalanceAccountConfigured'),
-                    message: i18n.get('capital.weCannotContinueWithTheOffer'),
-                    errorCode: '30_013',
-                };
-            default:
-                return {
-                    title: i18n.get('capital.somethingWentWrong'),
-                    message: i18n.get('capital.weCouldNotContinueWithTheOffer'),
-                };
+
+        if (err && errorMessageWithAlert.includes(err.errorCode)) {
+            switch (err.errorCode) {
+                case '30_013':
+                    return {
+                        title: i18n.get('capital.thereIsNoPrimaryBalanceAccountConfigured'),
+                        message: i18n.get('capital.weCannotContinueWithTheOffer'),
+                        errorCode: '30_013',
+                    };
+                default:
+                    return {
+                        title: i18n.get('capital.somethingWentWrong'),
+                        message: i18n.get('capital.weCouldNotContinueWithTheOffer'),
+                    };
+            }
         }
+
+        return null;
     }, [i18n, requestFundsMutation.error]);
 
-    return (
+    return !requestErrorAlert && requestFundsMutation.error ? (
+        <ErrorMessageDisplay
+            absolutePosition={false}
+            withImage
+            onGoBack={onBack}
+            outlined={false}
+            {...getCapitalErrorMessage(requestFundsMutation.error as AdyenPlatformExperienceError, onContactSupport)}
+        />
+    ) : (
         <div className="adyen-pe-capital-offer-summary">
             <InfoBox className="adyen-pe-capital-offer-summary__grant-summary">
                 <Typography el={TypographyElement.PARAGRAPH} variant={TypographyVariant.BODY}>
@@ -128,7 +146,12 @@ export const CapitalOfferSummary = ({
                     );
                 }}
                 renderValue={(val, key) => {
-                    if (key === 'capital.balanceAccount' && requestFundsMutation.error && requestError && requestError.errorCode === '30_013') {
+                    if (
+                        key === 'capital.balanceAccount' &&
+                        requestFundsMutation.error &&
+                        requestErrorAlert &&
+                        requestErrorAlert.errorCode === '30_013'
+                    ) {
                         return (
                             <Typography
                                 el={TypographyElement.SPAN}
@@ -179,12 +202,12 @@ export const CapitalOfferSummary = ({
                     { key: 'capital.balanceAccount', value: i18n.get('capital.primaryBalanceAccount') },
                 ]}
             />
-            {requestError && (
+            {requestErrorAlert && (
                 <Alert
                     className={'adyen-pe-capital-offer-summary__error-alert'}
                     type={AlertTypeOption.WARNING}
-                    title={requestError.title}
-                    description={requestError.message}
+                    title={requestErrorAlert.title}
+                    description={requestErrorAlert.message}
                 />
             )}
             <div className="adyen-pe-capital-offer-summary__buttons">
