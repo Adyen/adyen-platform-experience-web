@@ -31,7 +31,7 @@ export const DEFAULT_GRANT: IGrant = {
         currency: 'USD',
     },
     remainingTotalAmount: {
-        value: 1200000,
+        value: 822000,
         currency: 'USD',
     },
     remainingFeesAmount: {

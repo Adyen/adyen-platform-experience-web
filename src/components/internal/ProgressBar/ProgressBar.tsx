@@ -81,18 +81,22 @@ const ProgressBar = ({ max = 1, value, labels, tooltips, className }: ProgressBa
         >
             <div className="adyen-pe-progress-bar__track">
                 <div className="adyen-pe-progress-bar__track-background"></div>
-                <ProgressBarSegment
-                    tooltipContent={tooltips?.progress}
-                    title={labels?.current}
-                    percentage={percentage}
-                    className="adyen-pe-progress-bar__track-fill"
-                />
-                <ProgressBarSegment
-                    tooltipContent={tooltips?.remaining}
-                    title={labels?.max}
-                    percentage={100 - percentage}
-                    className="adyen-pe-progress-bar__track-remaining"
-                />
+                <Tooltip content={tooltips?.progress || ''}>
+                    <ProgressBarSegment
+                        tooltipContent={tooltips?.progress}
+                        title={labels?.current}
+                        percentage={percentage}
+                        className="adyen-pe-progress-bar__track-fill"
+                    />
+                </Tooltip>
+                <Tooltip content={tooltips?.remaining || ''}>
+                    <ProgressBarSegment
+                        tooltipContent={tooltips?.remaining}
+                        title={labels?.max}
+                        percentage={100 - percentage}
+                        className="adyen-pe-progress-bar__track-remaining"
+                    />
+                </Tooltip>
             </div>
 
             {shouldDisplayLegend && (
@@ -119,8 +123,7 @@ interface ProgressBarSegmentProps {
     className: string;
 }
 const ProgressBarSegment = ({ tooltipContent, title, percentage, className }: ProgressBarSegmentProps) => {
-    const getContent = (title?: string) => <div className={className} title={title} style={{ width: `${percentage}%` }} />;
-    return tooltipContent ? <Tooltip content={tooltipContent}>{getContent()}</Tooltip> : getContent(title);
+    return <div className={className} title={title} style={{ width: `${percentage}%` }} />;
 };
 
 export default ProgressBar;

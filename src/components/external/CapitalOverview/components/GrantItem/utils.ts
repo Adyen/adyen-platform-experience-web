@@ -57,7 +57,6 @@ export const getRepaymentPeriodEndDate = (repaymentPeriodLeft: number) => {
 
 export const getGrantConfig = (grant: IGrant) => {
     const isGrantActive = grant.status === 'Active';
-    const isGrantActiveOrRepaid = isGrantActive || grant.status === 'Repaid';
 
     return {
         amount: getAmount(grant),
@@ -65,7 +64,7 @@ export const getGrantConfig = (grant: IGrant) => {
         hasDetails: getHasDetails(grant.status),
         isAmountColorSecondary: !isGrantActive,
         isBackgroundFilled: getIsBackgroundFilled(grant.status),
-        isLabelColorSecondary: isGrantActiveOrRepaid,
+        isLabelColorSecondary: isGrantActive,
         isProgressBarVisible: isGrantActive,
         repaymentPeriodEndDate: getRepaymentPeriodEndDate(grant.repaymentPeriodLeft),
         statusKey: getStatusKey(grant.status),

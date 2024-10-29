@@ -54,9 +54,13 @@ export const GrantItem: FunctionalComponent<GrantItemProps> = ({ grant }) => {
                 {grantConfig.isProgressBarVisible && (
                     <ProgressBar
                         className={GRANT_ITEM_CLASS_NAMES.progressBar}
-                        value={grant.repaidGrantAmount.value}
-                        max={grant.grantAmount.value}
+                        value={grant.repaidTotalAmount.value}
+                        max={grant.totalAmount.value}
                         labels={{ current: i18n.get('capital.repaid'), max: i18n.get('capital.remaining') }}
+                        tooltips={{
+                            remaining: i18n.amount(grant.remainingTotalAmount.value, grant.remainingTotalAmount.currency),
+                            progress: i18n.amount(grant.repaidTotalAmount.value, grant.repaidTotalAmount.currency),
+                        }}
                     />
                 )}
             </Card>
