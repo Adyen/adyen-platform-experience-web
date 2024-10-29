@@ -9,6 +9,7 @@ import {
     WRITTEN_OFF_GRANT,
     GRANT_OFFER,
     SIGNED_OFFER,
+    PENDING_GRANT_WITH_ACTIONS,
 } from '../mock-data';
 import { endpoints } from '../../endpoints/endpoints';
 import { DefaultBodyType, http, HttpResponse, StrictRequest } from 'msw';
@@ -16,7 +17,6 @@ import { calculateGrant, delay } from './utils/utils';
 import { getHandlerCallback, mocksFactory } from './utils/mocksHandlerFactory';
 import { paths as CapitalPaths } from '../../src/types/api/resources/CapitalResource';
 import uuid from '../../src/utils/random/uuid';
-import { IGrantOfferResponseDTO } from '../../src';
 
 const mockEndpoints = endpoints('mock').capital;
 const networkError = false;
@@ -87,6 +87,10 @@ export const CapitalMockedResponses = capitalFactory({
     pendingGrant: [
         { endpoint: mockEndpoints.dynamicOfferConfig, handler: EMPTY_OFFER },
         { endpoint: mockEndpoints.grants, response: { data: [PENDING_GRANT] } },
+    ],
+    pendingGrantWithActions: [
+        { endpoint: mockEndpoints.dynamicOfferConfig, handler: EMPTY_OFFER },
+        { endpoint: mockEndpoints.grants, response: { data: [PENDING_GRANT_WITH_ACTIONS] } },
     ],
     repaidGrant: [
         { endpoint: mockEndpoints.dynamicOfferConfig, handler: EMPTY_OFFER },
