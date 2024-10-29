@@ -17,10 +17,7 @@ import { AdyenErrorResponse } from '../../../../../core/Http/types';
 import { AlertTypeOption } from '../../../../internal/Alert/types';
 import Alert from '../../../../internal/Alert/Alert';
 import Icon from '../../../../internal/Icon';
-import { ErrorMessageDisplay } from '../../../../internal/ErrorMessageDisplay/ErrorMessageDisplay';
-import { getCapitalErrorMessage } from '../../../../utils/capital/getCapitalErrorMessage';
-import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatformExperienceError';
-import CapitalErrorMessageDisplay from '../utils/CapitalErrorMessageDisplay';
+import { CapitalErrorMessageDisplay } from '../utils/CapitalErrorMessageDisplay';
 
 const errorMessageWithAlert = ['30_013'];
 

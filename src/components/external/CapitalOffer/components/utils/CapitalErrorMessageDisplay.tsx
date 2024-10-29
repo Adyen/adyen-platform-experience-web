@@ -7,7 +7,7 @@ import { ButtonVariant } from '../../../../internal/Button/types';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { AdyenErrorResponse } from '../../../../../core/Http/types';
 
-const CapitalErrorMessageDisplay = ({
+export const CapitalErrorMessageDisplay = ({
     onBack,
     error,
     onContactSupport,
@@ -37,5 +37,3 @@ const CapitalErrorMessageDisplay = ({
         />
     );
 };
-
-export default CapitalErrorMessageDisplay;
