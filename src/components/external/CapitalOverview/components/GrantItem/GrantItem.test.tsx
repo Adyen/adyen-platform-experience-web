@@ -32,7 +32,7 @@ describe('GrantItem', () => {
         const amountLabel = screen.getByTestId('grant-amount-label');
         expect(amountLabel).toBeInTheDocument();
         expect(amountLabel).toHaveTextContent('Repaid');
-        expect(amountLabel).toHaveClass('adyen-pe-grant-item__text--secondary');
+        expect(amountLabel).toHaveClass('adyen-pe-typography--caption');
 
         const amount = screen.getByText('$12,000.00');
         expect(amount).toBeInTheDocument();
@@ -40,10 +40,10 @@ describe('GrantItem', () => {
 
         const progressBar = screen.getByRole('progressbar');
         expect(progressBar).toBeInTheDocument();
-        expect(progressBar).toHaveAttribute('aria-valuenow', '1187000');
-        expect(progressBar).toHaveAttribute('aria-valuemax', '2000000');
+        expect(progressBar).toHaveAttribute('aria-valuenow', '1200000');
+        expect(progressBar).toHaveAttribute('aria-valuemax', '2022000');
 
-        const detailsButton = screen.queryByRole('button');
+        const detailsButton = screen.getByLabelText('Expand');
         expect(detailsButton).toBeInTheDocument();
     });
 
@@ -60,19 +60,19 @@ describe('GrantItem', () => {
 
         const amountLabel = screen.getByTestId('grant-amount-label');
         expect(amountLabel).toBeInTheDocument();
-        expect(amountLabel).toHaveTextContent('Initial funds');
+        expect(amountLabel).toHaveTextContent('Repaid');
         expect(amountLabel).toHaveClass('adyen-pe-grant-item__text--secondary');
 
-        const amount = screen.getByText('$20,000.00');
+        const amount = screen.getByText('$0.00');
         expect(amount).toBeInTheDocument();
         expect(amount).not.toHaveClass('adyen-pe-grant-item__text--secondary');
 
         const progressBar = screen.getByRole('progressbar');
         expect(progressBar).toBeInTheDocument();
         expect(progressBar).toHaveAttribute('aria-valuenow', '0');
-        expect(progressBar).toHaveAttribute('aria-valuemax', '2000000');
+        expect(progressBar).toHaveAttribute('aria-valuemax', '2022000');
 
-        const detailsButton = screen.queryByRole('button');
+        const detailsButton = screen.getByLabelText('Expand');
         expect(detailsButton).toBeInTheDocument();
     });
 
@@ -141,7 +141,7 @@ describe('GrantItem', () => {
         const amountLabel = screen.getByTestId('grant-amount-label');
         expect(amountLabel).toBeInTheDocument();
         expect(amountLabel).toHaveTextContent('Initial funds');
-        expect(amountLabel).toHaveClass('adyen-pe-grant-item__text--secondary');
+        expect(amountLabel).toHaveClass('adyen-pe-typography adyen-pe-typography--caption');
 
         const amount = screen.getByText('$20,000.00');
         expect(amount).toBeInTheDocument();

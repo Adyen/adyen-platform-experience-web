@@ -119,11 +119,8 @@ interface ProgressBarSegmentProps {
     className: string;
 }
 const ProgressBarSegment = ({ tooltipContent, title, percentage, className }: ProgressBarSegmentProps) => {
-    return (
-        <Tooltip content={tooltipContent || title || ''}>
-            <span className={className} style={{ width: `${percentage}%` }} />
-        </Tooltip>
-    );
+    const getContent = (title?: string) => <div className={className} title={title} style={{ width: `${percentage}%` }} />;
+    return tooltipContent ? <Tooltip content={tooltipContent}>{getContent()}</Tooltip> : getContent(title);
 };
 
 export default ProgressBar;
