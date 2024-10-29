@@ -65,27 +65,34 @@ export const GrantItem: FunctionalComponent<GrantItemProps> = ({ grant }) => {
                 )}
             </Card>
             {grantConfig.hasDetails && <GrantDetails grant={grant} />}
-            {grant.missingActions.map(action => (
-                <Alert
-                    key={action.type}
-                    className={GRANT_ITEM_CLASS_NAMES.actions}
-                    type={AlertTypeOption.WARNING}
-                    title={`${i18n.get('capital.signTermsAndConditionsToReceiveFunds')}${
-                        grant.offerExpiresAt
-                            ? ` ${i18n.get('capital.thisOfferExpiresOn', {
-                                  values: {
-                                      date: dateFormat(grant.offerExpiresAt, DATE_FORMAT_CAPITAL_OVERVIEW),
-                                  },
-                              })}`
-                            : ''
-                    }`}
-                    description={
-                        <Button className={GRANT_ITEM_CLASS_NAMES.actionButton} href={enhanceUrl(action.url)}>
-                            {i18n.get('capital.goToTermsAndConditions')}
-                        </Button>
-                    }
-                />
-            ))}
+            {grant.missingActions.map(action => {
+                const enhancedUrl = enhanceUrl(action.url);
+                return (
+                    <Alert
+                        key={action.type}
+                        className={GRANT_ITEM_CLASS_NAMES.actions}
+                        type={AlertTypeOption.WARNING}
+                        title={`${i18n.get('capital.signTermsAndConditionsToReceiveFunds')}${
+                            grant.offerExpiresAt
+                                ? ` ${i18n.get('capital.thisOfferExpiresOn', {
+                                      values: {
+                                          date: dateFormat(grant.offerExpiresAt, DATE_FORMAT_CAPITAL_OVERVIEW),
+                                      },
+                                  })}`
+                                : ''
+                        }`}
+                        {...(enhancedUrl
+                            ? {
+                                  description: (
+                                      <Button className={GRANT_ITEM_CLASS_NAMES.actionButton} href={enhancedUrl}>
+                                          {i18n.get('capital.goToTermsAndConditions')}
+                                      </Button>
+                                  ),
+                              }
+                            : {})}
+                    />
+                );
+            })}
         </div>
     );
 };

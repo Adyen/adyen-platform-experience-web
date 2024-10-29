@@ -27,4 +27,9 @@ describe('enhanceTermsAndConditionsUrl', () => {
         vi.stubGlobal('location', { href: windowUrl });
         expect(enhanceTermsAndConditionsUrl(inputUrl)).toEqual(expectedEnhancedUrl);
     });
+
+    test('should return undefined if the input URL is not valid', () => {
+        const inputUrl = 'invalid url';
+        expect(enhanceTermsAndConditionsUrl(inputUrl)).toBeUndefined();
+    });
 });

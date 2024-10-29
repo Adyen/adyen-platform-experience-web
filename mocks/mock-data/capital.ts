@@ -120,7 +120,7 @@ export const PENDING_GRANT_WITH_ACTIONS: IGrant = {
     missingActions: [
         {
             type: 'signToS',
-            url: 'url',
+            url: 'https://www.adyen.com/',
         },
     ],
 };
