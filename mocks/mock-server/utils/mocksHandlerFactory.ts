@@ -1,4 +1,4 @@
-import { DelayMode, http, HttpHandler, HttpResponse, JsonBodyType } from 'msw';
+import { http, HttpHandler, HttpResponse, JsonBodyType } from 'msw';
 import { delay } from './utils';
 
 type RemoveVersionFromUrl<T extends string> = T extends `${infer Prefix}/v${string}/${infer Rest}` ? `${Prefix}/${Rest}` : T;
@@ -8,17 +8,19 @@ export const getHandlerCallback = <T extends JsonBodyType>({
     response,
     networkError,
     delayTime,
+    status,
 }: {
     response: T;
     networkError?: boolean;
     delayTime?: number;
+    status?: number;
 }) => {
     return async () => {
         if (networkError) {
             return HttpResponse.error();
         }
         await delay(delayTime ?? 0);
-        return HttpResponse.json(response);
+        return HttpResponse.json(response, { status: status || 200 });
     };
 };
 

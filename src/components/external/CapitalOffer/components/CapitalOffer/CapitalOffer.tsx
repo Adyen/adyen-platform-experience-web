@@ -5,7 +5,7 @@ import { CapitalOfferProps } from '../../types';
 import { CAPITAL_OFFER_CLASS_NAMES } from './constants';
 import { CapitalHeader } from '../../../../internal/CapitalHeader';
 import { CapitalOfferSelection } from '../CapitalOfferSelection/CapitalOfferSelection';
-import { IGrantOfferResponseDTO } from '../../../../../types';
+import { IDynamicOfferConfig, IGrantOfferResponseDTO } from '../../../../../types';
 import { useAuthContext } from '../../../../../core/Auth';
 import { useFetch } from '../../../../../hooks/useFetch';
 import { EMPTY_OBJECT } from '../../../../../utils';
@@ -19,10 +19,22 @@ export const CapitalOffer: FunctionalComponent<ExternalUIComponentProps<CapitalO
     externalDynamicOffersConfig,
     onOfferDismissed,
     onRequestFunds,
+    onContactSupport,
 }) => {
     const { getDynamicGrantOffersConfiguration } = useAuthContext().endpoints;
+
+    const [emptyGrantOffer, setEmptyGrantOffer] = useState(false);
+    const onSuccess = useCallback((data: IDynamicOfferConfig | undefined) => {
+        if (data) {
+            setEmptyGrantOffer(false);
+        } else setEmptyGrantOffer(true);
+    }, []);
+
     const { data: internalDynamicOffersConfig } = useFetch({
-        fetchOptions: { enabled: !externalDynamicOffersConfig },
+        fetchOptions: {
+            enabled: !externalDynamicOffersConfig && !!getDynamicGrantOffersConfiguration,
+            onSuccess: onSuccess,
+        },
         queryFn: useCallback(async () => {
             return getDynamicGrantOffersConfiguration?.(EMPTY_OBJECT);
         }, [getDynamicGrantOffersConfiguration]),
@@ -35,14 +47,11 @@ export const CapitalOffer: FunctionalComponent<ExternalUIComponentProps<CapitalO
     }, [onOfferDismissed]);
 
     const [selectedOffer, setSelectedOffer] = useState<IGrantOfferResponseDTO>();
+
     const [requestedAmount, setRequestedAmount] = useState<number>();
 
-    const onReviewOfferHandler = useCallback((data: IGrantOfferResponseDTO) => {
-        setRequestedAmount(data.grantAmount.value);
-        setSelectedOffer(prev => (prev ? { ...prev, id: data.id } : prev));
-    }, []);
-
-    const onOfferSelection = useCallback((data: IGrantOfferResponseDTO) => {
+    const onReviewOfferHandler = useCallback((data?: IGrantOfferResponseDTO) => {
+        setRequestedAmount(data?.grantAmount.value);
         setSelectedOffer(data);
     }, []);
 
@@ -65,9 +74,10 @@ export const CapitalOffer: FunctionalComponent<ExternalUIComponentProps<CapitalO
                     requestedAmount={requestedAmount}
                     config={config}
                     onBack={goBackHandler}
-                    onOfferSelection={onOfferSelection}
                     onReviewOffer={onReviewOfferHandler}
                     repaymentFrequency={REPAYMENT_FREQUENCY}
+                    emptyGrantOffer={emptyGrantOffer}
+                    onContactSupport={onContactSupport}
                 />
             )}
             {capitalOfferState === 'OfferSummary' && (
@@ -76,6 +86,7 @@ export const CapitalOffer: FunctionalComponent<ExternalUIComponentProps<CapitalO
                     repaymentFrequency={REPAYMENT_FREQUENCY}
                     onBack={() => setSelectedOffer(undefined)}
                     onRequestFunds={onRequestFunds}
+                    onContactSupport={onContactSupport}
                 />
             )}
         </div>

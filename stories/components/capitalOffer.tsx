@@ -3,10 +3,12 @@ import { ElementProps } from '../utils/types';
 import { CapitalOffer } from '../../src';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { action } from '@storybook/addon-actions';
+import { enabledDisabledCallbackRadioControls } from '../utils/controls';
 
 export const capitalOfferMeta: Meta<ElementProps<typeof CapitalOffer>> = {
     argTypes: {
         externalDynamicOffersConfig: { control: 'object' },
+        onContactSupport: enabledDisabledCallbackRadioControls('onContactSupport'),
         hideTitle: { type: 'boolean' },
         onRequestFunds: {
             table: {
@@ -30,5 +32,5 @@ export const capitalOfferMeta: Meta<ElementProps<typeof CapitalOffer>> = {
             sort: 'alpha',
         },
     },
-    decorators: [Story => <div style={{ margin: 'auto', maxWidth: 400, width: '100%' }}>{Story()}</div>],
+    decorators: [Story => <div style={{ margin: 'auto', maxWidth: 600, width: '100%' }}>{Story()}</div>],
 };

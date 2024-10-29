@@ -183,4 +183,27 @@ export const NoRender: ElementStory<typeof CapitalOverview, { showUnqualified: b
     ],
 };
 
+export const ErrorNoCapability: ElementStory<typeof CapitalOverview> = {
+    name: 'Error - No capability',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: {
+            handlers: CapitalMockedResponses.errorNoCapability,
+        },
+    },
+};
+export const ErrorInactiveAH: ElementStory<typeof CapitalOverview> = {
+    name: 'Error - Inactive Account Holder',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: {
+            handlers: CapitalMockedResponses.errorInactiveAccountHolder,
+        },
+    },
+};
+
 export default meta;

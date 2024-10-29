@@ -19,6 +19,6 @@ export const CapitalOverviewMeta: Meta<ElementProps<typeof CapitalOverview>> = {
         },
     },
     decorators: [
-        (Story, context) => (context.args.skipDecorators ? Story() : <div style={{ margin: 'auto', maxWidth: 400, width: '100%' }}>{Story()}</div>),
+        (Story, context) => (context.args.skipDecorators ? Story() : <div style={{ margin: 'auto', maxWidth: 600, width: '100%' }}>{Story()}</div>),
     ],
 };

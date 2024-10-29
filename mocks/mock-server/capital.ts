@@ -16,7 +16,8 @@ import { calculateGrant, delay } from './utils/utils';
 import { getHandlerCallback, mocksFactory } from './utils/mocksHandlerFactory';
 import { paths as CapitalPaths } from '../../src/types/api/resources/CapitalResource';
 import uuid from '../../src/utils/random/uuid';
-import { IGrantOfferResponseDTO } from '../../src';
+import AdyenPlatformExperienceError from '../../src/core/Errors/AdyenPlatformExperienceError';
+import { ErrorTypes } from '../../src/core/Http/utils';
 
 const mockEndpoints = endpoints('mock').capital;
 const networkError = false;
@@ -36,7 +37,7 @@ const DYNAMIC_OFFER_HANDLER = async ({ request }: { request: StrictRequest<Defau
     if (!amount || !currency) return;
 
     const response = calculateGrant(amount, currency);
-    await delay(800);
+    await delay(400);
     return HttpResponse.json(response);
 };
 
@@ -44,7 +45,7 @@ const OFFER_REVIEW_HANDLER = async ({ request }: { request: StrictRequest<Defaul
     const { amount, currency } = (await request.json()) as { amount: number; currency: string };
 
     const response = calculateGrant(amount, currency);
-    await delay(800);
+    await delay(400);
     return HttpResponse.json({ ...response, id: uuid() });
 };
 
@@ -53,7 +54,7 @@ export const capitalMock = [
         if (networkError) {
             return HttpResponse.error();
         }
-        await delay(200);
+        await delay(400);
         return HttpResponse.json(DYNAMIC_CAPITAL_OFFER);
     }),
     http.get(mockEndpoints.grants, EMPTY_GRANTS_LIST),
@@ -62,6 +63,32 @@ export const capitalMock = [
     http.post(mockEndpoints.requestFunds, getHandlerCallback({ response: SIGNED_OFFER, delayTime: 800 })),
 ];
 const capitalFactory = mocksFactory<CapitalPaths>();
+
+const getErrorHandler = (error: AdyenPlatformExperienceError, status = 500) => {
+    return async () => {
+        await delay(300);
+        return HttpResponse.json({ ...error, status, detail: 'detail' }, { status });
+    };
+};
+
+const ERROR_NO_CAPABILITY = new AdyenPlatformExperienceError(ErrorTypes.ERROR, 'MissingCapabilitiesException', 'Message', '30_016');
+
+const ERROR_INACTIVE_AH = new AdyenPlatformExperienceError(ErrorTypes.ERROR, 'AccountHolderInactiveException', 'Message', '30_011');
+
+const ERROR_OFFER_REVIEW_WENT_WRONG = new AdyenPlatformExperienceError(ErrorTypes.ERROR, 'Something went wrong', 'Message');
+const ERROR_NO_GRANT_ACCOUNT_CONFIG = new AdyenPlatformExperienceError(
+    ErrorTypes.ERROR,
+    'GrantAccountMisconfigurationException',
+    'Message',
+    '30_600'
+);
+const ERROR_NO_PRIMARY_BALANCE_ACCOUNT = new AdyenPlatformExperienceError(
+    ErrorTypes.ERROR,
+    'MissingPrimaryBalanceAccountException',
+    'Message',
+    '30_013'
+);
+const ERROR_EXCEEDED_GRANT_LIMIT = new AdyenPlatformExperienceError(ErrorTypes.ERROR, 'MissingPrimaryBalanceAccountException', 'Message');
 
 export const CapitalMockedResponses = capitalFactory({
     unqualified: [
@@ -101,4 +128,51 @@ export const CapitalMockedResponses = capitalFactory({
         { endpoint: mockEndpoints.grants, response: { data: [WRITTEN_OFF_GRANT] } },
     ],
     grantOffer: [{ endpoint: mockEndpoints.dynamicOffer, response: GRANT_OFFER }],
+    errorNoCapability: [
+        {
+            endpoint: mockEndpoints.dynamicOfferConfig,
+            handler: getErrorHandler(ERROR_NO_CAPABILITY, 422),
+        },
+    ],
+    errorInactiveAccountHolder: [
+        {
+            endpoint: mockEndpoints.dynamicOfferConfig,
+            handler: getErrorHandler(ERROR_INACTIVE_AH, 422),
+        },
+    ],
+    reviewOfferWentWrong: [
+        {
+            endpoint: mockEndpoints.offerReview,
+            handler: getErrorHandler(ERROR_OFFER_REVIEW_WENT_WRONG, 500),
+            method: 'post',
+        },
+    ],
+    missingPrimaryBalanceAccount: [
+        {
+            endpoint: mockEndpoints.offerReview,
+            handler: ((req: any) => OFFER_REVIEW_HANDLER(req)) as any,
+            method: 'post',
+        },
+        {
+            endpoint: mockEndpoints.requestFunds as any,
+            handler: getErrorHandler(ERROR_NO_PRIMARY_BALANCE_ACCOUNT, 422),
+            method: 'post',
+        },
+    ],
+    noGrantAccountConfig: [
+        {
+            endpoint: mockEndpoints.requestFunds as any,
+            handler: getErrorHandler(ERROR_NO_GRANT_ACCOUNT_CONFIG, 500),
+            method: 'post',
+        },
+    ],
+    exceededGrantLimit: [
+        {
+            endpoint: mockEndpoints.requestFunds as any,
+            handler: getErrorHandler(ERROR_EXCEEDED_GRANT_LIMIT, 422),
+            method: 'post',
+        },
+    ],
+    noOfferAvailable: [{ endpoint: mockEndpoints.dynamicOfferConfig, handler: getHandlerCallback({ response: undefined, status: 204 }) }],
+    hasActiveGrants: [{ endpoint: mockEndpoints.dynamicOfferConfig, handler: getHandlerCallback({ response: undefined, status: 204 }) }],
 });

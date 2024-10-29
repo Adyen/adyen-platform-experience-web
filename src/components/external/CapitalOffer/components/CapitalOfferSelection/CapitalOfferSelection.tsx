@@ -13,14 +13,16 @@ import { IDynamicOfferConfig, IGrantOfferResponseDTO } from '../../../../../type
 import './CapitalOfferSelection.scss';
 import { debounce, getExpectedRepaymentDate, getPaymentRatePercentage } from '../utils/utils';
 import CapitalSlider from '../../../../internal/CapitalSlider';
+import { CapitalErrorMessageDisplay } from '../utils/CapitalErrorMessageDisplay';
 
 type CapitalOfferSelectionProps = {
     config: IDynamicOfferConfig | undefined;
     onBack: () => void;
-    onReviewOffer: (data: IGrantOfferResponseDTO) => void;
+    onReviewOffer: (data?: IGrantOfferResponseDTO) => void;
     repaymentFrequency: number;
     requestedAmount: number | undefined;
-    onOfferSelection: (data: IGrantOfferResponseDTO) => void;
+    emptyGrantOffer: boolean;
+    onContactSupport: (() => void) | undefined;
 };
 
 const LoadingSkeleton = () => (
@@ -80,8 +82,9 @@ export const CapitalOfferSelection = ({
     onBack,
     repaymentFrequency,
     requestedAmount,
-    onOfferSelection,
     onReviewOffer,
+    emptyGrantOffer,
+    onContactSupport,
 }: CapitalOfferSelectionProps) => {
     const { i18n } = useCoreContext();
     const [requestedValue, setRequestedValue] = useState<number | undefined>(Number(requestedAmount) || config?.minAmount.value);
@@ -105,10 +108,6 @@ export const CapitalOfferSelection = ({
     });
 
     const onReview = useCallback(() => {
-        if (getDynamicGrantOfferMutation.data) {
-            onOfferSelection(getDynamicGrantOfferMutation.data);
-            onReviewOffer(getDynamicGrantOfferMutation.data);
-        }
         void reviewOfferMutation.mutate({
             body: {
                 amount: getDynamicGrantOfferMutation.data?.grantAmount.value || requestedValue!,
@@ -116,7 +115,7 @@ export const CapitalOfferSelection = ({
             },
             contentType: 'application/json',
         });
-    }, [currency, getDynamicGrantOfferMutation.data, onOfferSelection, onReviewOffer, requestedValue, reviewOfferMutation]);
+    }, [currency, getDynamicGrantOfferMutation.data, requestedValue, reviewOfferMutation]);
 
     const getDynamicGrantOfferMutationCallback = getDynamicGrantOfferMutation.mutate;
 
@@ -149,24 +148,35 @@ export const CapitalOfferSelection = ({
 
     return (
         <div className="adyen-pe-capital-offer-selection">
-            {config && (
-                <CapitalSlider value={requestedValue} dynamicCapitalOffer={config} onValueChange={onChangeHandler} onRelease={handleSliderRelease} />
+            {reviewOfferMutation.error || emptyGrantOffer ? (
+                <CapitalErrorMessageDisplay error={reviewOfferMutation.error} onBack={onBack} onContactSupport={onContactSupport} />
+            ) : (
+                <>
+                    {config && (
+                        <CapitalSlider
+                            value={requestedValue}
+                            dynamicCapitalOffer={config}
+                            onValueChange={onChangeHandler}
+                            onRelease={handleSliderRelease}
+                        />
+                    )}
+                    <InfoBox className="adyen-pe-capital-offer-selection__details">
+                        {!getDynamicGrantOfferMutation.data || getDynamicGrantOfferMutation.isLoading || isLoading ? (
+                            <LoadingSkeleton />
+                        ) : getDynamicGrantOfferMutation.data ? (
+                            <InformationDisplay data={getDynamicGrantOfferMutation.data} repaymentFrequency={repaymentFrequency} />
+                        ) : null}
+                    </InfoBox>
+                    <div className="adyen-pe-capital-offer-selection__buttons">
+                        <Button variant={ButtonVariant.SECONDARY} onClick={onBack}>
+                            {i18n.get('capital.back')}
+                        </Button>
+                        <Button variant={ButtonVariant.PRIMARY} onClick={onReview} disabled={reviewOfferMutation.isLoading || !config?.minAmount}>
+                            {i18n.get('capital.reviewOffer')}
+                        </Button>
+                    </div>
+                </>
             )}
-            <InfoBox className="adyen-pe-capital-offer-selection__details">
-                {!getDynamicGrantOfferMutation.data || getDynamicGrantOfferMutation.isLoading || isLoading ? (
-                    <LoadingSkeleton />
-                ) : getDynamicGrantOfferMutation.data ? (
-                    <InformationDisplay data={getDynamicGrantOfferMutation.data} repaymentFrequency={repaymentFrequency} />
-                ) : null}
-            </InfoBox>
-            <div className="adyen-pe-capital-offer-selection__buttons">
-                <Button variant={ButtonVariant.SECONDARY} onClick={onBack}>
-                    {i18n.get('capital.back')}
-                </Button>
-                <Button variant={ButtonVariant.PRIMARY} onClick={onReview} disabled={reviewOfferMutation.isLoading}>
-                    {i18n.get('capital.reviewOffer')}
-                </Button>
-            </div>
         </div>
     );
 };
