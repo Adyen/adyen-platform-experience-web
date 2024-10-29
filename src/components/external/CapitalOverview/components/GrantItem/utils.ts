@@ -72,9 +72,13 @@ export const getGrantConfig = (grant: IGrant) => {
     };
 };
 
-export const enhanceTermsAndConditionsUrl = (url: string) => {
+export const enhanceTermsAndConditionsUrl = (url: string): string | undefined => {
     const redirectUrl = window.location.href;
-    const baseTermsAndConditionsUrl = new URL(url);
-    baseTermsAndConditionsUrl.searchParams.set('redirectUrl', redirectUrl);
-    return baseTermsAndConditionsUrl.href;
+    try {
+        const baseTermsAndConditionsUrl = new URL(url);
+        baseTermsAndConditionsUrl.searchParams.set('redirectUrl', redirectUrl);
+        return baseTermsAndConditionsUrl.href;
+    } catch {
+        return undefined;
+    }
 };
