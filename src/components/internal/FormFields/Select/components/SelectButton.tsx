@@ -32,7 +32,7 @@ const SelectButtonElement = <T extends SelectItem>({
     filterable,
     toggleButtonRef,
     ...props
-}: PropsWithChildren<SelectButtonProps<T> & Partial<HTMLAttributes<HTMLButtonElement | HTMLDivElement>>>) => {
+}: PropsWithChildren<SelectButtonProps<T> & Partial<HTMLAttributes<HTMLAnchorElement | HTMLButtonElement | HTMLDivElement>>>) => {
     const baseClassName = useMemo(() => (filterable ? cx(DROPDOWN_BUTTON_CLASSNAME, className) : className), [className, filterable]);
     return filterable ? (
         <div {...props} className={baseClassName} ref={toggleButtonRef as Ref<HTMLDivElement>} />
