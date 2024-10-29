@@ -5,6 +5,7 @@ import {
     FAILED_GRANT,
     GRANT_OFFER,
     PENDING_GRANT,
+    PENDING_GRANT_WITH_ACTIONS,
     REPAID_GRANT,
     REVOKED_GRANT,
     SIGNED_OFFER,
@@ -127,6 +128,10 @@ export const CapitalMockedResponses = capitalFactory({
     pendingGrant: [
         { endpoint: mockEndpoints.dynamicOfferConfig, handler: EMPTY_OFFER },
         { endpoint: mockEndpoints.grants, response: { data: [PENDING_GRANT] } },
+    ],
+    pendingGrantWithActions: [
+        { endpoint: mockEndpoints.dynamicOfferConfig, handler: EMPTY_OFFER },
+        { endpoint: mockEndpoints.grants, response: { data: [PENDING_GRANT_WITH_ACTIONS] } },
     ],
     repaidGrant: [
         { endpoint: mockEndpoints.dynamicOfferConfig, handler: EMPTY_OFFER },

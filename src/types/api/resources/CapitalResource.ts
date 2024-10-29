@@ -100,7 +100,10 @@ export interface components {
             termEndsAt: string;
             thresholdAmount: components['schemas']['Amount'];
             totalAmount: components['schemas']['Amount'];
-            actions: any;
+            missingActions: {
+                type: 'signToS';
+                url: string;
+            }[];
         };
         /** @enum {string} */
         GrantStatus: 'Pending' | 'Active' | 'Repaid' | 'Failed' | 'WrittenOff' | 'Revoked';
