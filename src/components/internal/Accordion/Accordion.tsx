@@ -22,6 +22,8 @@ function Accordion({ children, classNames, header, headerInformation }: PropsWit
         setIsExpanded(!isExpanded);
     }, [isExpanded]);
 
+    console.log('test');
+
     return (
         <div className={classnames(ACCORDION_BASE_CLASS, classNames)}>
             <h3 className={ACCORDION_HEADER_CLASS}>
