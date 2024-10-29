@@ -91,3 +91,10 @@ export const getGrantConfig = (grant: IGrant) => {
         statusTooltipKey: getStatusTooltipKey(grant),
     };
 };
+
+export const enhanceTermsAndConditionsUrl = (url: string) => {
+    const redirectUrl = window.location.href;
+    const baseTermsAndConditionsUrl = new URL(url);
+    baseTermsAndConditionsUrl.searchParams.set('redirectUrl', redirectUrl);
+    return baseTermsAndConditionsUrl.href;
+};
