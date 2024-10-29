@@ -13,10 +13,7 @@ import { IDynamicOfferConfig, IGrantOfferResponseDTO } from '../../../../../type
 import './CapitalOfferSelection.scss';
 import { debounce, getExpectedRepaymentDate, getPaymentRatePercentage } from '../utils/utils';
 import CapitalSlider from '../../../../internal/CapitalSlider';
-import { getCapitalErrorMessage } from '../../../../utils/capital/getCapitalErrorMessage';
-import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatformExperienceError';
-import { ErrorMessageDisplay } from '../../../../internal/ErrorMessageDisplay/ErrorMessageDisplay';
-import CapitalErrorMessageDisplay from '../utils/CapitalErrorMessageDisplay';
+import { CapitalErrorMessageDisplay } from '../utils/CapitalErrorMessageDisplay';
 
 type CapitalOfferSelectionProps = {
     config: IDynamicOfferConfig | undefined;
