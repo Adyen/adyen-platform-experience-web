@@ -30,6 +30,14 @@
         margin-top: style.token(spacer-040);
     }
 
+    &__actions {
+        margin-top: style.token(spacer-080);
+    }
+
+    &__action-button {
+        margin-top: style.token(spacer-030);
+    }
+
     &__overview {
         padding-bottom: style.token(spacer-060);
         padding-top: style.token(spacer-060);
