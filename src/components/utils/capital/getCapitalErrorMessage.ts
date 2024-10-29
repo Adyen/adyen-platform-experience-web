@@ -1,5 +1,5 @@
 import AdyenPlatformExperienceError from '../../../core/Errors/AdyenPlatformExperienceError';
-import { ErrorMessage, getCommonErrorMessage, UNDEFINED_ERROR } from '../getCommonErrorCode';
+import { ErrorMessage, getCommonErrorMessage } from '../getCommonErrorCode';
 
 export const COMMON_CAPITAL_ERROR_MESSAGE = {
     contactSupport: 'capital.pleaseContactSupportForHelp',
@@ -14,8 +14,7 @@ const UNKNOWN_ERROR = {
 };
 
 export const getCapitalErrorMessage = (error: AdyenPlatformExperienceError | undefined, onContactSupport?: () => void): ErrorMessage => {
-    console.log(error);
-    if (!error) return UNDEFINED_ERROR;
+    if (!error) return UNKNOWN_ERROR;
     const commonError = getCommonErrorMessage(error, onContactSupport);
     if (commonError) return commonError;
     switch (error.errorCode) {

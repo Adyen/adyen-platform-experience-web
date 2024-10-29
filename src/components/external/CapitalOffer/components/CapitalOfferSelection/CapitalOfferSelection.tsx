@@ -16,6 +16,7 @@ import CapitalSlider from '../../../../internal/CapitalSlider';
 import { getCapitalErrorMessage } from '../../../../utils/capital/getCapitalErrorMessage';
 import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatformExperienceError';
 import { ErrorMessageDisplay } from '../../../../internal/ErrorMessageDisplay/ErrorMessageDisplay';
+import CapitalErrorMessageDisplay from '../utils/CapitalErrorMessageDisplay';
 
 type CapitalOfferSelectionProps = {
     config: IDynamicOfferConfig | undefined;
@@ -151,14 +152,7 @@ export const CapitalOfferSelection = ({
     return (
         <div className="adyen-pe-capital-offer-selection">
             {reviewOfferMutation.error || emptyGrantOffer ? (
-                <ErrorMessageDisplay
-                    absolutePosition={false}
-                    outlined={false}
-                    withImage
-                    onContactSupport={onContactSupport}
-                    onGoBack={onBack}
-                    {...getCapitalErrorMessage(reviewOfferMutation.error as AdyenPlatformExperienceError, onContactSupport)}
-                />
+                <CapitalErrorMessageDisplay error={reviewOfferMutation.error} onBack={onBack} onContactSupport={onContactSupport} />
             ) : (
                 <>
                     {config && (
@@ -176,17 +170,15 @@ export const CapitalOfferSelection = ({
                             <InformationDisplay data={getDynamicGrantOfferMutation.data} repaymentFrequency={repaymentFrequency} />
                         ) : null}
                     </InfoBox>
+                    <div className="adyen-pe-capital-offer-selection__buttons">
+                        <Button variant={ButtonVariant.SECONDARY} onClick={onBack}>
+                            {i18n.get('capital.back')}
+                        </Button>
+                        <Button variant={ButtonVariant.PRIMARY} onClick={onReview} disabled={reviewOfferMutation.isLoading || !config?.minAmount}>
+                            {i18n.get('capital.reviewOffer')}
+                        </Button>
+                    </div>
                 </>
-            )}
-            {!reviewOfferMutation.error && !emptyGrantOffer && (
-                <div className="adyen-pe-capital-offer-selection__buttons">
-                    <Button variant={ButtonVariant.SECONDARY} onClick={onBack}>
-                        {i18n.get('capital.back')}
-                    </Button>
-                    <Button variant={ButtonVariant.PRIMARY} onClick={onReview} disabled={reviewOfferMutation.isLoading || !config?.minAmount}>
-                        {i18n.get('capital.reviewOffer')}
-                    </Button>
-                </div>
             )}
         </div>
     );

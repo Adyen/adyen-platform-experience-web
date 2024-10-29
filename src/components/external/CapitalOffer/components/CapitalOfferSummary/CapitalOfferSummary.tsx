@@ -20,6 +20,7 @@ import Icon from '../../../../internal/Icon';
 import { ErrorMessageDisplay } from '../../../../internal/ErrorMessageDisplay/ErrorMessageDisplay';
 import { getCapitalErrorMessage } from '../../../../utils/capital/getCapitalErrorMessage';
 import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatformExperienceError';
+import CapitalErrorMessageDisplay from '../utils/CapitalErrorMessageDisplay';
 
 const errorMessageWithAlert = ['30_013'];
 
@@ -90,13 +91,7 @@ export const CapitalOfferSummary = ({
     }, [i18n, requestFundsMutation.error]);
 
     return !requestErrorAlert && requestFundsMutation.error ? (
-        <ErrorMessageDisplay
-            absolutePosition={false}
-            withImage
-            onGoBack={onBack}
-            outlined={false}
-            {...getCapitalErrorMessage(requestFundsMutation.error as AdyenPlatformExperienceError, onContactSupport)}
-        />
+        <CapitalErrorMessageDisplay error={requestFundsMutation.error} onBack={onBack} onContactSupport={onContactSupport} />
     ) : (
         <div className="adyen-pe-capital-offer-summary">
             <InfoBox className="adyen-pe-capital-offer-summary__grant-summary">
@@ -129,7 +124,7 @@ export const CapitalOfferSummary = ({
                                         el={TypographyElement.SPAN}
                                         variant={TypographyVariant.CAPTION}
                                     >
-                                        {val ?? '-'}
+                                        {val}
                                     </Typography>
                                 </span>
                             </Tooltip>
@@ -166,7 +161,7 @@ export const CapitalOfferSummary = ({
                     }
                     return (
                         <Typography el={TypographyElement.SPAN} variant={TypographyVariant.CAPTION} stronger>
-                            {val ?? '-'}
+                            {val}
                         </Typography>
                     );
                 }}
