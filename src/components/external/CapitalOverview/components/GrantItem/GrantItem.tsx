@@ -14,6 +14,9 @@ import { getGrantConfig } from './utils';
 import { GrantItemProps } from './types';
 import './GrantItem.scss';
 import { GrantDetails } from '../GrantDetails/GrantDetails';
+import Alert from '../../../../internal/Alert/Alert';
+import { AlertTypeOption } from '../../../../internal/Alert/types';
+import Button from '../../../../internal/Button';
 
 export const GrantItem: FunctionalComponent<GrantItemProps> = ({ grant }) => {
     const { i18n } = useCoreContext();
@@ -61,6 +64,27 @@ export const GrantItem: FunctionalComponent<GrantItemProps> = ({ grant }) => {
                 )}
             </Card>
             {grantConfig.hasDetails && <GrantDetails grant={grant} />}
+            {grant.missingActions.map(action => (
+                <Alert
+                    key={action.type}
+                    className={GRANT_ITEM_CLASS_NAMES.actions}
+                    type={AlertTypeOption.WARNING}
+                    title={`${i18n.get('capital.signTermsAndConditionsToReceiveFunds')}${
+                        grant.offerExpiresAt
+                            ? ` ${i18n.get('capital.thisOfferExpiresOn', {
+                                  values: {
+                                      date: dateFormat(grant.offerExpiresAt, DATE_FORMAT_CAPITAL_OVERVIEW),
+                                  },
+                              })}`
+                            : ''
+                    }`}
+                    description={
+                        <Button className={GRANT_ITEM_CLASS_NAMES.actionButton} href={action.url}>
+                            {i18n.get('capital.goToTermsAndConditions')}
+                        </Button>
+                    }
+                />
+            ))}
         </div>
     );
 };

@@ -87,6 +87,16 @@ export const WithPendingGrant: ElementStory<typeof CapitalOverview> = {
     },
 };
 
+export const WithPendingGrantWithActions: ElementStory<typeof CapitalOverview> = {
+    name: 'With Pending Grant With Actions',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: CapitalMockedResponses.pendingGrantWithActions,
+    },
+};
+
 export const WithRepaidGrant: ElementStory<typeof CapitalOverview> = {
     name: 'With Repaid Grant',
     args: {
