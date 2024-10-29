@@ -81,22 +81,18 @@ const ProgressBar = ({ max = 1, value, labels, tooltips, className }: ProgressBa
         >
             <div className="adyen-pe-progress-bar__track">
                 <div className="adyen-pe-progress-bar__track-background"></div>
-                <Tooltip content={tooltips?.progress || ''}>
-                    <ProgressBarSegment
-                        tooltipContent={tooltips?.progress}
-                        title={labels?.current}
-                        percentage={percentage}
-                        className="adyen-pe-progress-bar__track-fill"
-                    />
-                </Tooltip>
-                <Tooltip content={tooltips?.remaining || ''}>
-                    <ProgressBarSegment
-                        tooltipContent={tooltips?.remaining}
-                        title={labels?.max}
-                        percentage={100 - percentage}
-                        className="adyen-pe-progress-bar__track-remaining"
-                    />
-                </Tooltip>
+                <ProgressBarSegment
+                    tooltipContent={tooltips?.progress}
+                    title={labels?.current}
+                    percentage={percentage}
+                    className="adyen-pe-progress-bar__track-fill"
+                />
+                <ProgressBarSegment
+                    tooltipContent={tooltips?.remaining}
+                    title={labels?.max}
+                    percentage={100 - percentage}
+                    className="adyen-pe-progress-bar__track-remaining"
+                />
             </div>
 
             {shouldDisplayLegend && (
@@ -123,7 +119,11 @@ interface ProgressBarSegmentProps {
     className: string;
 }
 const ProgressBarSegment = ({ tooltipContent, title, percentage, className }: ProgressBarSegmentProps) => {
-    return <div className={className} title={title} style={{ width: `${percentage}%` }} />;
+    return (
+        <Tooltip content={tooltipContent || title || ''}>
+            <span className={className} style={{ width: `${percentage}%` }} />
+        </Tooltip>
+    );
 };
 
 export default ProgressBar;

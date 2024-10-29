@@ -58,8 +58,12 @@ export const GrantItem: FunctionalComponent<GrantItemProps> = ({ grant }) => {
                         max={grant.totalAmount.value}
                         labels={{ current: i18n.get('capital.repaid'), max: i18n.get('capital.remaining') }}
                         tooltips={{
-                            remaining: i18n.amount(grant.remainingTotalAmount.value, grant.remainingTotalAmount.currency),
-                            progress: i18n.amount(grant.repaidTotalAmount.value, grant.repaidTotalAmount.currency),
+                            remaining: `${i18n.amount(grant.remainingTotalAmount.value, grant.remainingTotalAmount.currency)} ${i18n
+                                .get('capital.remaining')
+                                ?.toLowerCase()}`,
+                            progress: `${i18n.amount(grant.repaidTotalAmount.value, grant.repaidTotalAmount.currency)} ${i18n
+                                .get('capital.repaid')
+                                ?.toLowerCase()}`,
                         }}
                     />
                 )}
