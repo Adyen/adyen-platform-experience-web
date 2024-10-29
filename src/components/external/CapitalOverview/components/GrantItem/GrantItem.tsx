@@ -1,5 +1,5 @@
 import { FunctionalComponent } from 'preact';
-import { useMemo } from 'preact/hooks';
+import { useCallback, useMemo } from 'preact/hooks';
 import cx from 'classnames';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import useTimezoneAwareDateFormatting from '../../../../../hooks/useTimezoneAwareDateFormatting';
@@ -10,7 +10,7 @@ import { Tag } from '../../../../internal/Tag/Tag';
 import ProgressBar from '../../../../internal/ProgressBar';
 import { DATE_FORMAT_CAPITAL_OVERVIEW } from '../../../../../constants';
 import { GRANT_ITEM_CLASS_NAMES } from './constants';
-import { getGrantConfig } from './utils';
+import { enhanceTermsAndConditionsUrl, getGrantConfig } from './utils';
 import { GrantItemProps } from './types';
 import './GrantItem.scss';
 import { GrantDetails } from '../GrantDetails/GrantDetails';
@@ -22,6 +22,7 @@ export const GrantItem: FunctionalComponent<GrantItemProps> = ({ grant }) => {
     const { i18n } = useCoreContext();
     const { dateFormat } = useTimezoneAwareDateFormatting();
     const grantConfig = useMemo(() => getGrantConfig(grant), [grant]);
+    const enhanceUrl = useCallback(enhanceTermsAndConditionsUrl, []);
 
     return (
         <div className={GRANT_ITEM_CLASS_NAMES.base}>
@@ -79,7 +80,7 @@ export const GrantItem: FunctionalComponent<GrantItemProps> = ({ grant }) => {
                             : ''
                     }`}
                     description={
-                        <Button className={GRANT_ITEM_CLASS_NAMES.actionButton} href={action.url}>
+                        <Button className={GRANT_ITEM_CLASS_NAMES.actionButton} href={enhanceUrl(action.url)}>
                             {i18n.get('capital.goToTermsAndConditions')}
                         </Button>
                     }
