@@ -48,7 +48,7 @@ const getStatusTagVariant = (status: IGrantStatus): TagVariant => {
     }
 };
 
-export const getRepaymentPeriodEndDate = (repaymentPeriodLeft: number) => {
+const getRepaymentPeriodEndDate = (repaymentPeriodLeft: number) => {
     const today = new Date();
     const endDate = new Date();
     endDate.setDate(today.getDate() + repaymentPeriodLeft);
@@ -70,4 +70,11 @@ export const getGrantConfig = (grant: IGrant) => {
         statusKey: getStatusKey(grant.status),
         statusTagVariant: getStatusTagVariant(grant.status),
     };
+};
+
+export const enhanceTermsAndConditionsUrl = (url: string) => {
+    const redirectUrl = window.location.href;
+    const baseTermsAndConditionsUrl = new URL(url);
+    baseTermsAndConditionsUrl.searchParams.set('redirectUrl', redirectUrl);
+    return baseTermsAndConditionsUrl.href;
 };
