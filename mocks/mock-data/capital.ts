@@ -31,7 +31,7 @@ export const DEFAULT_GRANT: IGrant = {
         currency: 'USD',
     },
     remainingTotalAmount: {
-        value: 822000,
+        value: 2022000,
         currency: 'USD',
     },
     remainingFeesAmount: {
@@ -81,6 +81,10 @@ export const ACTIVE_GRANT: IGrant = {
         currency: 'USD',
     },
     status: 'Active',
+    remainingTotalAmount: {
+        value: 822000,
+        currency: 'USD',
+    },
 };
 
 export const ACTIVE_UNREPAID_GRANT: IGrant = {

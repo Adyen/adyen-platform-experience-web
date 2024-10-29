@@ -8,14 +8,21 @@ const getIsBackgroundFilled = (status: IGrantStatus) => status === 'Repaid';
 
 const getAmountLabelKey = ({ status, repaidGrantAmount }: IGrant): TranslationKey => {
     if (status === 'Active') {
-        return repaidGrantAmount.value ? 'capital.repaid' : 'capital.initialFunds';
+        return repaidGrantAmount.value || repaidGrantAmount.value === 0 ? 'capital.repaid' : 'capital.initialFunds';
     } else if (status === 'Repaid') {
         return 'capital.initialFunds';
     }
     return 'capital.requestedFunds';
 };
 
-const getAmount = (grant: IGrant) => (grant.status === 'Active' && grant.repaidTotalAmount.value ? grant.repaidTotalAmount : grant.grantAmount);
+const getAmount = (grant: IGrant) => {
+    switch (grant.status) {
+        case 'Active':
+            return grant.repaidTotalAmount.value || grant.repaidTotalAmount.value === 0 ? grant.repaidTotalAmount : grant.totalAmount;
+        default:
+            return grant.grantAmount;
+    }
+};
 
 const getStatusKey = (status: IGrantStatus): TranslationKey | undefined => {
     switch (status) {
