@@ -95,9 +95,9 @@ export default function DataOverviewDetails(props: ExternalUIComponentProps<Deta
                     transaction={
                         detailsData
                             ? ({
+                                  ...extraDetails,
                                   ...(detailsData || EMPTY_OBJECT),
                                   balanceAccount: details?.balanceAccount || balanceAccounts?.[0],
-                                  ...extraDetails,
                               } as TransactionDetailData)
                             : undefined
                     }
