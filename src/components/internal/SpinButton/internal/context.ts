@@ -33,6 +33,16 @@ export const createSpinButtonContext = (stopNotificationSignal: AbortSignal) => 
 
     const eventTarget = new EventTarget();
 
+    /**
+     * Given the optional `min` and/or `max` values as arguments respectively, this function will return an array
+     * `[normalized_min, normalized_max]` so that `normalized_max` is always greater than or equal to `normalized_min`.
+     *
+     * If the specified `min` and/or `max` value is not a finite number, the corresponding default value
+     * (`DEFAULT_VALUE_MIN` or `DEFAULT_VALUE_MAX` respectively) is used instead for any computation.
+     *
+     * The `min` value, when specified, is used as a pivot value — which means that the `normalized_max` value will
+     * never be lower than the specified `min` value, even when the specified `max` value is.
+     */
     const normalizeRange = (min?: number, max?: number): readonly [min: number, max: number] => {
         const hasMin = !isUndefined(min);
         const hasMax = !isUndefined(max);
@@ -68,6 +78,16 @@ export const createSpinButtonContext = (stopNotificationSignal: AbortSignal) => 
         if (sendNotification) sendChangeNotification();
     };
 
+    /**
+     * Recomputes the range origin value based on the current `min` and `max` values of the context.
+     * This computation is done in two definite steps:
+     *
+     * 1. Calculate the mid_value of the range:
+     *     > `min + (max - min) / 2`
+     *
+     * 2. Snap the mid_value to the nearest stepped value based on `step` using the `min` as pivot:
+     *     > `min + Math.round((mid_value - min) / step) * step`
+     */
     const recomputeOrigin = () => {
         const midValue = add(min, divide(add(max, -min), 2));
         origin = add(min, Math.round(divide(add(midValue, -min), step)) * step);

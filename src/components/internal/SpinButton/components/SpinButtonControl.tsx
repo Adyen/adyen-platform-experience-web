@@ -11,17 +11,17 @@ import { ButtonVariant } from '../../Button/types';
 
 export type SpinButtonControlProps = {
     control: _SpinButtonControl;
-    onMouseInteraction: ReturnType<typeof useSpinButton>['mouseInteraction'];
+    onButtonClick: ReturnType<typeof useSpinButton>['onButtonClick'];
 };
 
-const SpinButtonControl = fixedForwardRef(({ control, onMouseInteraction }: SpinButtonControlProps, ref: Ref<HTMLButtonElement>) => {
+const SpinButtonControl = fixedForwardRef(({ control, onButtonClick }: SpinButtonControlProps, ref: Ref<HTMLButtonElement>) => {
     const buttonClassNames = cx(BUTTON_CLASS, {
         [BUTTON_DECREASE_CLASS]: control === _SpinButtonControl.DECREMENT,
         [BUTTON_INCREASE_CLASS]: control === _SpinButtonControl.INCREMENT,
     });
 
     return (
-        <Button iconButton ref={ref} variant={ButtonVariant.TERTIARY} className={buttonClassNames} onClick={onMouseInteraction}>
+        <Button iconButton ref={ref} variant={ButtonVariant.TERTIARY} className={buttonClassNames} onClick={onButtonClick}>
             {control === _SpinButtonControl.DECREMENT && <Icon name="minus-circle-outline" />}
             {control === _SpinButtonControl.INCREMENT && <Icon name="plus-circle-outline" />}
         </Button>

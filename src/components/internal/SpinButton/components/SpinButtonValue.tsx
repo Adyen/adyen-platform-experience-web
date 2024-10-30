@@ -6,13 +6,13 @@ import { fixedForwardRef } from '../../../../utils/preact';
 import type { SpinButtonProps } from '../types';
 
 export type SpinButtonValueProps = {
-    onKeyboardInteraction: ReturnType<typeof useSpinButton>['keyboardInteraction'];
+    onInteractionKeyPress: ReturnType<typeof useSpinButton>['onInteractionKeyPress'];
 } & Partial<SpinButtonProps>;
 
 const SpinButtonValue = fixedForwardRef(
-    ({ onKeyboardInteraction, onKeyDown, value, valueAsText, ...restProps }: SpinButtonValueProps, ref: Ref<HTMLInputElement>) => {
+    ({ onInteractionKeyPress, onKeyDown, value, valueAsText, ...restProps }: SpinButtonValueProps, ref: Ref<HTMLInputElement>) => {
         const _onKeyDown = (evt: h.JSX.TargetedKeyboardEvent<HTMLInputElement>) => {
-            onKeyboardInteraction(evt);
+            onInteractionKeyPress(evt);
             onKeyDown?.(evt);
         };
 
@@ -27,7 +27,7 @@ const SpinButtonValue = fixedForwardRef(
                     ref={ref}
                     className={cx('adyen-pe-input', INPUT_CLASS)}
                     onKeyDown={_onKeyDown}
-                    {...(!!valueAsText && { 'aria-valuetext': valueAsText(value!) ?? value })}
+                    {...(valueAsText && { 'aria-valuetext': valueAsText(value!) ?? value })}
                 />
 
                 <div className={cx('adyen-pe-width-sizer__element', INPUT_SIZER_ELEMENT_CLASS)} aria-hidden={true}>

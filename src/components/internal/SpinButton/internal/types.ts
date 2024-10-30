@@ -26,8 +26,8 @@ export interface SpinButtonContextElements {
 }
 
 export interface SpinButtonContextInteractions {
-    readonly keyboardInteraction: (evt: KeyboardEvent) => void;
-    readonly mouseInteraction: (evt: MouseEvent) => void;
+    readonly onButtonClick: (evt: MouseEvent) => void;
+    readonly onInteractionKeyPress: (evt: KeyboardEvent) => void;
 }
 
 export interface SpinButtonContextWritableFields {

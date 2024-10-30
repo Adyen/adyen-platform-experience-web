@@ -7,16 +7,16 @@ import { SpinButtonControl as _SpinButtonControl, SpinButtonProps } from './type
 import './SpinButton.scss';
 
 const SpinButton = (props: SpinButtonProps) => {
-    const { $refs, currentValue, keyboardInteraction, mouseInteraction } = useSpinButton(props);
+    const { $refs, currentValue, onButtonClick, onInteractionKeyPress } = useSpinButton(props);
     const { className, leap, ...restProps } = props;
 
     return (
         <div ref={$refs.containerElement} className={cx(BASE_CLASS, className)}>
-            <SpinButtonControl control={_SpinButtonControl.DECREMENT} ref={$refs.decrementButton} onMouseInteraction={mouseInteraction} />
+            <SpinButtonControl control={_SpinButtonControl.DECREMENT} ref={$refs.decrementButton} onButtonClick={onButtonClick} />
 
-            <SpinButtonValue {...restProps} ref={$refs.valueElement} value={currentValue} onKeyboardInteraction={keyboardInteraction} />
+            <SpinButtonValue {...restProps} ref={$refs.valueElement} value={currentValue} onInteractionKeyPress={onInteractionKeyPress} />
 
-            <SpinButtonControl control={_SpinButtonControl.INCREMENT} ref={$refs.incrementButton} onMouseInteraction={mouseInteraction} />
+            <SpinButtonControl control={_SpinButtonControl.INCREMENT} ref={$refs.incrementButton} onButtonClick={onButtonClick} />
         </div>
     );
 };

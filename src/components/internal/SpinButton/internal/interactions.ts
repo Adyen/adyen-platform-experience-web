@@ -4,23 +4,24 @@ import { InteractionKeyCode } from '../../../types';
 import { SpinButtonContext, SpinButtonContextElements, SpinButtonContextInteractions, SpinButtonValueOffset } from './types';
 
 export const contextWithInteractions = <T extends SpinButtonContext & SpinButtonContextElements>(context: T) => {
-    const beforeHandlingInteraction = (evt: KeyboardEvent | MouseEvent) => {
-        evt.preventDefault();
-        evt.stopPropagation();
-    };
+    // Helper functions
+    const stepDown = () => offsetValue(SpinButtonValueOffset.STEP_DECREMENT);
+    const stepUp = () => offsetValue(SpinButtonValueOffset.STEP_INCREMENT);
+    const leapDown = () => offsetValue(SpinButtonValueOffset.LEAP_DECREMENT);
+    const leapUp = () => offsetValue(SpinButtonValueOffset.LEAP_INCREMENT);
+    const setToMax = () => void (context.value = context.max);
+    const setToMin = () => void (context.value = context.min);
 
     const offsetValue = (valueOffset = SpinButtonValueOffset.STEP_INCREMENT) => {
         let offset = context.step;
 
         switch (valueOffset) {
-            case SpinButtonValueOffset.LEAP_DECREMENT:
             case SpinButtonValueOffset.STEP_DECREMENT:
                 offset *= -1;
                 break;
-        }
-
-        switch (valueOffset) {
             case SpinButtonValueOffset.LEAP_DECREMENT:
+                offset *= -context.leap;
+                break;
             case SpinButtonValueOffset.LEAP_INCREMENT:
                 offset *= context.leap;
                 break;
@@ -29,7 +30,12 @@ export const contextWithInteractions = <T extends SpinButtonContext & SpinButton
         context.value = add(context.value, offset);
     };
 
-    const willHandleAsKeyboardInteraction = (evt: KeyboardEvent) => {
+    const preventDefaultEvent = (evt: KeyboardEvent | MouseEvent) => {
+        evt.preventDefault();
+        evt.stopPropagation();
+    };
+
+    const willHandleAsInteractionKey = (evt: KeyboardEvent) => {
         let willHandleInteraction = false;
 
         if (evt.type === 'keydown' && evt.currentTarget && evt.currentTarget === context.valueElement) {
@@ -59,65 +65,51 @@ export const contextWithInteractions = <T extends SpinButtonContext & SpinButton
         return willHandleInteraction;
     };
 
-    const onKeyboardInteraction = (evt: KeyboardEvent) => {
-        if (willHandleAsKeyboardInteraction(evt)) {
-            beforeHandlingInteraction(evt);
+    // Main function for handling interaction keys
+    const onInteractionKeyPress = (evt: KeyboardEvent) => {
+        if (!willHandleAsInteractionKey(evt)) return;
 
-            switch (evt.code) {
-                case InteractionKeyCode.ARROW_DOWN:
-                case InteractionKeyCode.ARROW_LEFT:
-                    offsetValue(SpinButtonValueOffset.STEP_DECREMENT);
-                    break;
-                case InteractionKeyCode.ARROW_RIGHT:
-                case InteractionKeyCode.ARROW_UP:
-                    offsetValue(SpinButtonValueOffset.STEP_INCREMENT);
-                    break;
-                case InteractionKeyCode.END:
-                    context.value = context.max;
-                    break;
-                case InteractionKeyCode.HOME:
-                    context.value = context.min;
-                    break;
-                case InteractionKeyCode.PAGE_DOWN:
-                    offsetValue(SpinButtonValueOffset.LEAP_DECREMENT);
-                    break;
-                case InteractionKeyCode.PAGE_UP:
-                    offsetValue(SpinButtonValueOffset.LEAP_INCREMENT);
-                    break;
-            }
+        preventDefaultEvent(evt);
+
+        switch (evt.code) {
+            case InteractionKeyCode.ARROW_DOWN:
+            case InteractionKeyCode.ARROW_LEFT:
+                stepDown();
+                break;
+            case InteractionKeyCode.ARROW_RIGHT:
+            case InteractionKeyCode.ARROW_UP:
+                stepUp();
+                break;
+            case InteractionKeyCode.END:
+                setToMax();
+                break;
+            case InteractionKeyCode.HOME:
+                setToMin();
+                break;
+            case InteractionKeyCode.PAGE_DOWN:
+                leapDown();
+                break;
+            case InteractionKeyCode.PAGE_UP:
+                leapUp();
+                break;
         }
     };
 
-    const willHandleAsMouseInteraction = (evt: MouseEvent) => {
-        if (evt.type === 'click' && evt.currentTarget) {
-            switch (evt.currentTarget) {
-                case context.decrementButton:
-                    return !context.decrementDisabled;
-                case context.incrementButton:
-                    return !context.incrementDisabled;
-            }
-        }
-        return false;
-    };
-
-    const onMouseInteraction = (evt: MouseEvent) => {
-        if (willHandleAsMouseInteraction(evt)) {
-            beforeHandlingInteraction(evt);
-
-            switch (evt.currentTarget) {
-                case context.decrementButton:
-                    offsetValue(SpinButtonValueOffset.STEP_DECREMENT);
-                    break;
-                case context.incrementButton:
-                    offsetValue(SpinButtonValueOffset.STEP_INCREMENT);
-                    break;
-            }
+    // Main function for button click interactions
+    const onButtonClick = (evt: MouseEvent) => {
+        if (evt.type !== 'click') return;
+        if (evt.currentTarget === context.decrementButton && !context.decrementDisabled) {
+            preventDefaultEvent(evt);
+            stepDown();
+        } else if (evt.currentTarget === context.incrementButton && !context.incrementDisabled) {
+            preventDefaultEvent(evt);
+            stepUp();
         }
     };
 
     return Object.defineProperties(context as T & SpinButtonContextInteractions, {
-        keyboardInteraction: enumerable(onKeyboardInteraction),
-        mouseInteraction: enumerable(onMouseInteraction),
+        onButtonClick: enumerable(onButtonClick),
+        onInteractionKeyPress: enumerable(onInteractionKeyPress),
     });
 };
 

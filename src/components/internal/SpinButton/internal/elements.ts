@@ -13,7 +13,7 @@ import {
     ROLE_SPIN_BUTTON,
     TABBABLE_TAB_INDEX,
 } from './constants';
-import { attr, removeAttr } from './utils';
+import { removeAttr, setAttr } from './utils';
 import { getter } from '../../../../utils';
 import type { SpinButtonContext, SpinButtonContextElements } from './types';
 
@@ -40,45 +40,48 @@ export const contextWithElements = <T extends SpinButtonContext>(context: T) => 
     };
 
     const setDecrementButton = (elem: HTMLButtonElement | null) => {
-        setupButton(elem, decrementButton, context.decrementDisabled);
-        decrementButton = elem;
+        clearButtonElementAttributes(decrementButton);
+        initializeButtonElementAttributes((decrementButton = elem), context.decrementDisabled);
     };
 
     const setIncrementButton = (elem: HTMLButtonElement | null) => {
-        setupButton(elem, incrementButton, context.incrementDisabled);
-        incrementButton = elem;
+        clearButtonElementAttributes(incrementButton);
+        initializeButtonElementAttributes((incrementButton = elem), context.incrementDisabled);
     };
 
     const setValueElement = (elem: HTMLElement | null) => {
         ATTRS_SPIN_BUTTON.forEach(attr => removeAttr(valueElement, attr));
-        attr((valueElement = elem), ATTR_ROLE, ROLE_SPIN_BUTTON);
+        setAttr((valueElement = elem), ATTR_ROLE, ROLE_SPIN_BUTTON);
         updateValueElementAttributes();
     };
 
-    const setupButton = (current: HTMLButtonElement | null, previous: HTMLButtonElement | null, disabled: boolean) => {
-        ATTRS_STEP_CONTROL.forEach(attr => removeAttr(previous, attr));
-        attr(current, ATTR_TAB_INDEX, NON_TABBABLE_TAB_INDEX);
-        updateButtonElementAttributes(current, disabled);
+    const clearButtonElementAttributes = (elem: HTMLButtonElement | null) => {
+        ATTRS_STEP_CONTROL.forEach(attr => removeAttr(elem, attr));
+    };
+
+    const initializeButtonElementAttributes = (elem: HTMLButtonElement | null, disabled: boolean) => {
+        setAttr(elem, ATTR_TAB_INDEX, NON_TABBABLE_TAB_INDEX);
+        updateButtonElementAttributes(elem, disabled);
     };
 
     const updateButtonElementAttributes = (elem: HTMLButtonElement | null, disabled: boolean) => {
-        disabled ? attr(elem, ATTR_DISABLED, '') : removeAttr(elem, ATTR_DISABLED);
+        disabled ? setAttr(elem, ATTR_DISABLED, '') : removeAttr(elem, ATTR_DISABLED);
     };
 
     const updateValueElementAttributes = () => {
         if (context.disabled) {
-            attr(valueElement, ATTR_ARIA_DISABLED, 'true');
-            attr(valueElement, ATTR_DISABLED, '');
+            setAttr(valueElement, ATTR_ARIA_DISABLED, 'true');
+            setAttr(valueElement, ATTR_DISABLED, '');
             removeAttr(valueElement, ATTR_TAB_INDEX);
         } else {
             removeAttr(valueElement, ATTR_ARIA_DISABLED);
             removeAttr(valueElement, ATTR_DISABLED);
-            attr(valueElement, ATTR_TAB_INDEX, TABBABLE_TAB_INDEX);
+            setAttr(valueElement, ATTR_TAB_INDEX, TABBABLE_TAB_INDEX);
         }
 
-        attr(valueElement, ATTR_ARIA_VALUE_MAX, `${context.max}`);
-        attr(valueElement, ATTR_ARIA_VALUE_MIN, `${context.min}`);
-        attr(valueElement, ATTR_ARIA_VALUE_NOW, `${context.value}`);
+        setAttr(valueElement, ATTR_ARIA_VALUE_MAX, `${context.max}`);
+        setAttr(valueElement, ATTR_ARIA_VALUE_MIN, `${context.min}`);
+        setAttr(valueElement, ATTR_ARIA_VALUE_NOW, `${context.value}`);
     };
 
     context.addEventListener(

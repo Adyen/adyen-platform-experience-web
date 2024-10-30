@@ -10,7 +10,7 @@ export const useSpinButton = <T extends UseSpinButtonProps>({ disabled, leap, ma
     const abortController = useRef(new AbortController()).current;
     const spinButton = useRef(createSpinButton(abortController.signal)).current;
 
-    const { keyboardInteraction, mouseInteraction, value: currentValue } = spinButton;
+    const { onButtonClick, onInteractionKeyPress, value: currentValue } = spinButton;
 
     const $refs = useMemo(
         () =>
@@ -47,7 +47,7 @@ export const useSpinButton = <T extends UseSpinButtonProps>({ disabled, leap, ma
         return () => abortController.abort();
     }, []);
 
-    return { $refs, currentValue, keyboardInteraction, mouseInteraction } as const;
+    return { $refs, currentValue, onButtonClick, onInteractionKeyPress } as const;
 };
 
 export default useSpinButton;
