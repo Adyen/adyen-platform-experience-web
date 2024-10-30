@@ -132,3 +132,5 @@ export const enum FilterParam {
     MIN_AMOUNT = 'minAmount',
     MAX_AMOUNT = 'maxAmount',
 }
+
+export type ExternalComponentType = 'transactions' | 'transactionDetails' | 'payouts' | 'payoutDetails' | 'reports';
