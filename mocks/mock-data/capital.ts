@@ -62,7 +62,7 @@ export const DEFAULT_GRANT: IGrant = {
     balanceAccountCode: 'BA1234567',
     balanceAccountDescription: 'Primary balance account',
     status: 'Pending',
-    actions: {},
+    missingActions: [],
 };
 
 export const ACTIVE_GRANT: IGrant = {
@@ -111,6 +111,18 @@ export const PENDING_GRANT: IGrant = {
     ...DEFAULT_GRANT,
     id: '7e18b082372f',
     status: 'Pending',
+};
+
+export const PENDING_GRANT_WITH_ACTIONS: IGrant = {
+    ...PENDING_GRANT,
+    id: '14588ba8f278',
+    offerExpiresAt: '2025-02-15',
+    missingActions: [
+        {
+            type: 'signToS',
+            url: 'https://www.adyen.com/',
+        },
+    ],
 };
 
 export const REPAID_GRANT: IGrant = {

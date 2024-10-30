@@ -48,11 +48,15 @@ const getStatusTagVariant = (status: IGrantStatus): TagVariant => {
     }
 };
 
-export const getRepaymentPeriodEndDate = (repaymentPeriodLeft: number) => {
+const getRepaymentPeriodEndDate = (repaymentPeriodLeft: number) => {
     const today = new Date();
     const endDate = new Date();
     endDate.setDate(today.getDate() + repaymentPeriodLeft);
     return endDate;
+};
+
+const getIsPendingToS = (grant: IGrant) => {
+    return grant.status === 'Pending' && !!grant.missingActions?.find((action: any) => action.type === 'signToS');
 };
 
 export const getGrantConfig = (grant: IGrant) => {
@@ -70,5 +74,17 @@ export const getGrantConfig = (grant: IGrant) => {
         repaymentPeriodEndDate: getRepaymentPeriodEndDate(grant.repaymentPeriodLeft),
         statusKey: getStatusKey(grant.status),
         statusTagVariant: getStatusTagVariant(grant.status),
+        pendingToS: getIsPendingToS(grant),
     };
+};
+
+export const enhanceTermsAndConditionsUrl = (url: string): string | undefined => {
+    const redirectUrl = window.location.href;
+    try {
+        const baseTermsAndConditionsUrl = new URL(url);
+        baseTermsAndConditionsUrl.searchParams.set('redirectUrl', redirectUrl);
+        return baseTermsAndConditionsUrl.href;
+    } catch {
+        return undefined;
+    }
 };

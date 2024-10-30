@@ -18,6 +18,14 @@ import { ButtonProps, ButtonVariant } from './types';
 import './Button.scss';
 import cx from 'classnames';
 
+const isHTMLAnchorElementRef = (ref: any): ref is Ref<HTMLAnchorElement> => {
+    return ref && ref.current instanceof HTMLAnchorElement;
+};
+
+const isHTMLButtonElementRef = (ref: any): ref is Ref<HTMLButtonElement> => {
+    return ref && ref.current instanceof HTMLButtonElement;
+};
+
 // TODO: Reuse BaseButton component within Button component
 function Button(
     {
@@ -33,29 +41,34 @@ function Button(
         iconButton = false,
         fullWidth,
         condensed,
+        href,
         ...restAttributes
     }: ButtonProps,
-    ref: Ref<HTMLButtonElement>
+    ref: Ref<HTMLAnchorElement | HTMLButtonElement> | undefined
 ) {
     const classNameValue = useMemo(() => parseClassName('', className) || '', [className]);
     const disabledValue = useMemo(() => parseBooleanProp(disabled), [disabled]);
 
     const { classes, click } = useButton(classNameValue, [...classNameModifiers, variant], DEFAULT_BUTTON_CLASSNAME, disabledValue, onClick);
 
-    return (
-        <button
-            className={cx(classes, {
+    const allProps = useMemo(
+        () => ({
+            className: cx(classes, {
                 [ICON_BUTTON_CLASSNAME]: iconButton,
                 [BUTTON_CONDENSED_CLASSNAME]: condensed,
                 [BUTTON_FULL_WIDTH_CLASSNAME]: fullWidth,
-            })}
-            type={type}
-            disabled={disabled}
-            onClick={click}
-            ref={ref}
-            {...restAttributes}
-        >
-            {iconButton ? (
+            }),
+            type,
+            disabled,
+            onClick: click,
+            ...restAttributes,
+        }),
+        [classes, click, condensed, disabled, fullWidth, iconButton, restAttributes, type]
+    );
+
+    const allChildren = useMemo(
+        () =>
+            iconButton ? (
                 <div className={`${ICON_BUTTON_CONTENT_CLASSNAME}`}>{children}</div>
             ) : (
                 <>
@@ -65,9 +78,31 @@ function Button(
                     </Typography>
                     {iconRight && <span className={BUTTON_ICON_RIGHT_CLASSNAME}>{iconRight}</span>}
                 </>
-            )}
-        </button>
+            ),
+        [children, iconButton, iconLeft, iconRight]
     );
+
+    if (href) {
+        if (ref && isHTMLButtonElementRef(ref)) {
+            console.warn('Button ref should be of type HTMLAnchorElement');
+        }
+
+        return (
+            <a {...allProps} href={href} ref={ref as Ref<HTMLAnchorElement>}>
+                {allChildren}
+            </a>
+        );
+    } else {
+        if (ref && isHTMLAnchorElementRef(ref)) {
+            console.warn('Button ref should be of type HTMLButtonElement');
+        }
+
+        return (
+            <button {...allProps} ref={ref as Ref<HTMLButtonElement>}>
+                {allChildren}
+            </button>
+        );
+    }
 }
 
 export default fixedForwardRef(Button);

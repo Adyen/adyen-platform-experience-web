@@ -1,7 +1,7 @@
 import { VNode } from 'preact';
 import { JSXInternal } from 'preact/src/jsx';
 
-export interface ButtonProps extends JSXInternal.HTMLAttributes<HTMLButtonElement> {
+export interface ButtonProps extends JSXInternal.HTMLAttributes<HTMLAnchorElement | HTMLButtonElement> {
     classNameModifiers?: string[];
     condensed?: boolean;
     variant?: ButtonVariant;
