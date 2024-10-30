@@ -2,6 +2,7 @@ import type { ComponentChild } from 'preact';
 import type { PropsWithChildren } from 'preact/compat';
 import { EMPTY_ARRAY } from '../../../../../utils';
 import { useCallback, useEffect, useState } from 'preact/hooks';
+import { useModalContext } from '../../../../internal/Modal/Modal';
 import { TransactionDetailsProvider } from '../../context/details';
 import { TransactionRefundProvider } from '../../context/refund';
 import TransactionDetailsDataContainer from '../details/TransactionDetailsDataContainer';
@@ -38,6 +39,7 @@ export const TransactionDataContent = ({ forceHideTitle, transaction }: Transact
     const [secondaryAction, _setSecondaryAction] = useState<ButtonActionObject>();
 
     const { refundable, refundableAmount, refundAvailable, refundCurrency, refundDisabled, refundMode } = useTransactionRefundMetadata(transaction);
+    const { withinModal } = useModalContext();
 
     const lineItems: readonly ILineItem[] = Object.freeze(transaction?.lineItems ?? EMPTY_ARRAY);
 
@@ -68,9 +70,8 @@ export const TransactionDataContent = ({ forceHideTitle, transaction }: Transact
     }, [refundDisabled]);
 
     useEffect(() => {
-        // forceHideTitle?.(activeView !== ActiveView.DETAILS);
-        forceHideTitle?.(true); // always hide title
-    }, [/*activeView,*/ forceHideTitle]);
+        forceHideTitle?.(withinModal); // always hide title if within modal
+    }, [forceHideTitle, withinModal]);
 
     if (shouldPreventActiveViewIfRefund(activeView)) return null;
 
