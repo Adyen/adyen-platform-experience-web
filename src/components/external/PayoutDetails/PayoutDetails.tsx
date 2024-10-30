@@ -1,10 +1,10 @@
 import { PayoutDetailsWithIdProps } from '../../internal/DataOverviewDetails/types';
-import { _UIComponentProps } from '../../types';
+import { _UIComponentProps, ExternalComponentType } from '../../types';
 import UIElement from '../UIElement/UIElement';
 import DataOverviewDetails from '../../internal/DataOverviewDetails/DataOverviewDetails';
 
 export class PayoutElement extends UIElement<PayoutDetailsWithIdProps> {
-    public static type = 'payoutDetails';
+    public static type: ExternalComponentType = 'payoutDetails';
 
     constructor(props: _UIComponentProps<PayoutDetailsWithIdProps>) {
         super(props);
