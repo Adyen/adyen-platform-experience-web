@@ -3,7 +3,7 @@
 .adyen-pe-capital-slider {
     display: flex;
     flex-direction: column;
-    gap: style.token(spacer-060);
+    gap: style.token(spacer-070);
 
     &__value {
         color: style.token(color-label-highlight);
@@ -12,6 +12,7 @@
     &__labels {
         display: flex;
         justify-content: space-between;
+        margin-bottom: style.token(spacer-030);
 
         label {
             display: flex;
