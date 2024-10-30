@@ -2,7 +2,6 @@ import type { ComponentChild } from 'preact';
 import type { PropsWithChildren } from 'preact/compat';
 import { EMPTY_ARRAY } from '../../../../../utils';
 import { useCallback, useEffect, useState } from 'preact/hooks';
-import { useModalContext } from '../../../../internal/Modal/Modal';
 import { TransactionDetailsProvider } from '../../context/details';
 import { TransactionRefundProvider } from '../../context/refund';
 import TransactionDetailsDataContainer from '../details/TransactionDetailsDataContainer';
@@ -20,7 +19,7 @@ import type { TransactionDataProps } from '../../types';
 import type { ILineItem } from '../../../../../types';
 import './TransactionData.scss';
 
-export type TransactionDataContentProps = Required<Pick<TransactionDataProps, 'transaction'>> & Pick<TransactionDataProps, 'forceHideTitle'>;
+export type TransactionDataContentProps = Required<Pick<TransactionDataProps, 'transaction'>>;
 
 const _TransactionDataContentViewWrapper = ({
     children,
@@ -33,13 +32,12 @@ const _TransactionDataContentViewWrapper = ({
     </div>
 );
 
-export const TransactionDataContent = ({ forceHideTitle, transaction }: TransactionDataContentProps) => {
+export const TransactionDataContent = ({ transaction }: TransactionDataContentProps) => {
     const [activeView, _setActiveView] = useState(ActiveView.DETAILS);
     const [primaryAction, _setPrimaryAction] = useState<ButtonActionObject>();
     const [secondaryAction, _setSecondaryAction] = useState<ButtonActionObject>();
 
     const { refundable, refundableAmount, refundAvailable, refundCurrency, refundDisabled, refundMode } = useTransactionRefundMetadata(transaction);
-    const { withinModal } = useModalContext();
 
     const lineItems: readonly ILineItem[] = Object.freeze(transaction?.lineItems ?? EMPTY_ARRAY);
 
@@ -68,10 +66,6 @@ export const TransactionDataContent = ({ forceHideTitle, transaction }: Transact
     useEffect(() => {
         if (refundDisabled) _setActiveView(ActiveView.DETAILS);
     }, [refundDisabled]);
-
-    useEffect(() => {
-        forceHideTitle?.(withinModal); // always hide title if within modal
-    }, [forceHideTitle, withinModal]);
 
     if (shouldPreventActiveViewIfRefund(activeView)) return null;
 

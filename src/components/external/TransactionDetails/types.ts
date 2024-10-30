@@ -23,7 +23,6 @@ export interface BalanceAccountProps {
 
 export interface TransactionDataProps {
     error?: boolean;
-    forceHideTitle?: (forceHideTitle: boolean) => void;
     isFetching?: boolean;
     transaction?: TransactionDetailData;
 }
