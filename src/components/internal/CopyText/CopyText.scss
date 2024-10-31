@@ -8,6 +8,7 @@
 
     span &__information {
         color: style.token(color-label-highlight);
+        display: block;
         font-size: style.token(text-body-font-size);
         font-weight: style.token(text-body-font-weight);
         line-height: style.token(text-body-line-height);
@@ -15,6 +16,17 @@
         text-overflow: ellipsis;
         white-space: nowrap;
         width: 80px;
+    }
+
+    &__text {
+        cursor: pointer;
+    }
+
+    &__container {
+        align-items: center;
+        cursor: pointer;
+        display: flex;
+        gap: style.token(spacer-040);
     }
 
     &:hover {
