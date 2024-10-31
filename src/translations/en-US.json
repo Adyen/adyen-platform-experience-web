@@ -17,6 +17,7 @@
     "category": "Category",
     "chargeback": "Chargebacks",
     "closeIconLabel": "Close",
+    "contactSupportForHelp": "Contact support for help.",
     "contactSupportForHelpAndShareErrorCode": "Contact support for help and share error code %{requestId}",
     "correction": "Corrections",
     "currency": "Currency",
