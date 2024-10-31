@@ -1,5 +1,7 @@
 @use '../../../../../style/skeleton' as skeleton;
 @use '../../../../../style' as style;
+//stylelint-disable no-invalid-position-at-import-rule
+@import '../../../../../style/breakpoints.scss';
 
 .adyen-pe-capital-offer-selection {
     display: flex;
@@ -13,7 +15,7 @@
     &__loading-container {
         display: flex;
         flex-direction: column;
-        gap: style.token(spacer-040);
+        gap: style.token(spacer-030);
     }
 
     &__loading-skeleton {
@@ -21,19 +23,18 @@
         background: #cbe3ff;
         border-radius: style.token(border-radius-s);
         display: block;
-        height: 20px;
+        height: 14px;
         width: 100%;
     }
 
     &__loading-skeleton:first-child {
-        height: 47px;
-        margin-bottom: style.token(spacer-030);
+        height: 50px;
     }
 
     &__information {
         display: flex;
         flex-direction: column;
-        gap: style.token(spacer-050);
+        gap: style.token(spacer-060);
 
         .adyen-pe-structured-list dd {
             text-align: right;
@@ -44,5 +45,12 @@
         display: flex;
         gap: style.token(spacer-050);
         justify-content: end;
+    }
+
+    // stylelint-disable order/order
+    @include adyen-pe-screen-sm-and-up {
+        &__loading-skeleton:first-child {
+            height: 30px;
+        }
     }
 }

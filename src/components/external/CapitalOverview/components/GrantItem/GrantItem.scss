@@ -12,4 +12,9 @@
     &__progress-bar {
         margin-top: style.token(spacer-040);
     }
+
+    &__overview {
+        padding-bottom: style.token(spacer-060);
+        padding-top: style.token(spacer-060);
+    }
 }
