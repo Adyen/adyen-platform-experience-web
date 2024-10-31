@@ -95,7 +95,7 @@ export const TransactionRefundFullAmountInput = () => {
 };
 
 export const TransactionRefundPartialAmountInput = () => {
-    const { availableAmount, currency, setAmount } = useTransactionRefundContext();
+    const { availableAmount, currency, interactionsDisabled, setAmount } = useTransactionRefundContext();
     const [errorMessage, setErrorMessage] = useState<TranslationKey | null>(null);
     const [refundAmount, setRefundAmount] = useState(`${formatAmount(availableAmount, currency)}`);
 
@@ -119,5 +119,13 @@ export const TransactionRefundPartialAmountInput = () => {
         setAmount(message ? 0 : amount);
     };
 
-    return <_BaseRefundAmountInput currency={currency} errorMessage={errorMessage} onInput={onInput} value={refundAmount} />;
+    return (
+        <_BaseRefundAmountInput
+            currency={currency}
+            errorMessage={errorMessage}
+            onInput={onInput}
+            value={refundAmount}
+            disabled={interactionsDisabled}
+        />
+    );
 };

@@ -8,6 +8,7 @@ export interface ITransactionRefundContext extends _ITransactionRefundContextBas
     amount: number;
     availableItems: readonly ILineItem[];
     clearItems: (ids?: TransactionRefundItem['id'][]) => void;
+    interactionsDisabled: boolean;
     items: readonly TransactionRefundItem[];
     refundReason: RefundReason;
     setAmount: (amount: number) => void;

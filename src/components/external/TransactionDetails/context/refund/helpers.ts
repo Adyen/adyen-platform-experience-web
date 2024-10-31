@@ -1,48 +1,5 @@
 import { clamp, EMPTY_ARRAY, isUndefined } from '../../../../../utils';
 import type { ITransactionRefundContext, TransactionRefundItem, TransactionRefundItemUpdates } from './types';
-import type { ILineItem, IRefundMode } from '../../../../../types';
-import { RefundMode } from '../types';
-
-export const getRefundableItemsForTransactionLineItems = (currency = '', lineItems?: readonly ILineItem[] | ILineItem[]) => {
-    const items = lineItems
-        ?.filter(item => {
-            if (item.amountIncludingTax.currency !== currency) return;
-            const qty = item.availableQuantity;
-            return qty > 0 && Number.isFinite(qty) && Math.trunc(qty) === qty;
-        })
-        .map(
-            ({ id, ...item }) =>
-                [
-                    id,
-                    Object.freeze({
-                        amount: item.amountIncludingTax.value,
-                        quantity: item.availableQuantity,
-                        id,
-                    }),
-                ] as const
-        );
-
-    return new Map<string, TransactionRefundItem>(items ?? EMPTY_ARRAY);
-};
-
-export const getRefundAmountByMode = (
-    refundMode: IRefundMode,
-    refundableAmount: number,
-    refundItems = EMPTY_ARRAY as ITransactionRefundContext['items'],
-    partialRefundAmount = 0
-): number => {
-    switch (refundMode) {
-        case RefundMode.NON_REFUNDABLE:
-            return 0;
-        case RefundMode.PARTIAL_AMOUNT:
-            return partialRefundAmount;
-        case RefundMode.PARTIAL_LINE_ITEMS:
-            return refundItems.reduce((total, { amount, quantity }) => total + amount * quantity, 0);
-        case RefundMode.FULL_AMOUNT:
-        default:
-            return refundableAmount;
-    }
-};
 
 const _updateRefundItemQuantity = (
     refundableItems: Map<string, TransactionRefundItem>,

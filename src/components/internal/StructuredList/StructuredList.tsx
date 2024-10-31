@@ -29,9 +29,9 @@ export default function StructuredList({
 
     return (
         <div aria-label={i18n.get('structuredList')} className={cx(SL_BASE_CLASS, className)}>
-            {formattedItems.map(item => (
+            {formattedItems.map((item, index) => (
                 <dl
-                    key={item.id}
+                    key={`${index}_${item.id || '0'}`}
                     className={cx(SL_ITEM_CLASS, {
                         [SL_ITEM_WITH_HIGHLIGHT_CLASS]: highlightable,
                         [SL_GRID_CLASS]: grid,
