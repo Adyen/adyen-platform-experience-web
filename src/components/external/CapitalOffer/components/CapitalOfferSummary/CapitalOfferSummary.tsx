@@ -133,7 +133,7 @@ export const CapitalOfferSummary = ({
                             el={TypographyElement.SPAN}
                             variant={TypographyVariant.CAPTION}
                         >
-                            {val ?? '-'}
+                            {val}
                         </Typography>
                     );
                 }}
