@@ -33,17 +33,17 @@ function useMutation<queryFn extends (...args: any[]) => any, ResponseType exten
 
     // Use refs for mutable values that shouldn't trigger re-renders
     const mountedRef = useRef(true);
-    const retryCountRef = useRef(1);
+    const retryCountRef = useRef(0);
 
     const reset = useCallback(() => {
         setData(null);
         setError(null);
         setStatus('idle');
-        retryCountRef.current = 1;
+        retryCountRef.current = 0;
     }, []);
 
     const resetRetries = useCallback(() => {
-        retryCountRef.current = 1;
+        retryCountRef.current = 0;
     }, []);
 
     const mutate = useCallback(
