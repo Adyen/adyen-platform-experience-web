@@ -1,7 +1,7 @@
 import { http, HttpResponse, PathParams } from 'msw';
 import { ITransaction, IRefundMode, ITransactionRefundPayload, ITransactionRefundResponse, ITransactionWithDetails } from '../../src';
 import { DEFAULT_LINE_ITEMS, DEFAULT_REFUND_STATUSES, DEFAULT_TRANSACTION, TRANSACTIONS } from '../mock-data';
-import { clamp, EMPTY_ARRAY, getMappedValue } from '../../src/utils';
+import { clamp, EMPTY_ARRAY, getMappedValue, uuid } from '../../src/utils';
 import { compareDates, computeHash, delay, getPaginationLinks } from './utils';
 import { endpoints } from '../../endpoints/endpoints';
 
@@ -19,6 +19,7 @@ const DEFAULT_PAGINATION_LIMIT = 10;
 const DEFAULT_SORT_DIRECTION = 'desc';
 const TRANSACTIONS_CACHE = new Map<string, ITransaction[]>();
 const TRANSACTIONS_TOTALS_CACHE = new Map<string, Map<string, _ITransactionTotals>>();
+const TRANSACTIONS_DETAILS_CACHE = new Map<string, ITransactionWithDetails>();
 const TRANSACTIONS_REFUND_LOCKED_DEADLINES = new Map<number, Set<string>>();
 const TRANSACTIONS_REFUND_LOCKED = new Set<string>();
 
@@ -40,7 +41,7 @@ const getTransactionWithAmountDeduction = <T extends ITransaction>(
     return {
         ...transaction,
         amount: { currency, value: transactionAmount },
-        deductedAmount: { currency, value: deductedAmount },
+        deductedAmount: { currency, value: deductedAmount && -deductedAmount },
         originalAmount: { currency, value: originalAmount },
     };
 };
@@ -64,10 +65,18 @@ const getTransactionMetadata = <T extends ITransaction>(transaction: T) => {
     return { deductedAmount, refundMode } as const;
 };
 
+const getPaymentOrTransferWithDetails = <T extends ITransaction>(transaction: T, deductedAmount = 0) => {
+    return getMappedValue(transaction.id, TRANSACTIONS_DETAILS_CACHE, () => {
+        const tx = getTransactionWithAmountDeduction(transaction, deductedAmount) as unknown as ITransactionWithDetails;
+        tx.paymentPspReference = uuid();
+        return tx;
+    });
+};
+
 const enrichTransactionDataWithDetails = <T extends ITransaction>(
     transaction: T,
     metadata = getTransactionMetadata(transaction) as _ITransactionDetailsMetadata
-): T & Omit<ITransactionWithDetails, keyof T> => {
+): ITransactionWithDetails => {
     const { currency, value: originalAmount } = transaction.amount;
     const { deductedAmount = 0, refundMode = 'fully_refundable_only' } = metadata;
 
@@ -86,8 +95,54 @@ const enrichTransactionDataWithDetails = <T extends ITransaction>(
             break;
     }
 
+    let transactionWithDetails = { ...transaction } as unknown as ITransactionWithDetails;
+
+    switch (transaction.category) {
+        case 'Payment':
+        case 'Transfer':
+            transactionWithDetails = getPaymentOrTransferWithDetails(transaction, deductedAmount)!;
+            break;
+
+        case 'Refund': {
+            transactionWithDetails = getMappedValue(transaction.id, TRANSACTIONS_DETAILS_CACHE, () => {
+                const { value: amount, currency } = transaction.amount;
+                let refundType: NonNullable<ITransactionWithDetails['refundMetadata']>['refundType'] = 'partial';
+                let paymentTx: ITransaction | undefined;
+
+                for (const tx of TRANSACTIONS) {
+                    if (!PAYMENT_OR_TRANSFER.includes(tx.category)) continue;
+                    if (tx.balanceAccountId !== transaction.balanceAccountId) continue;
+                    if (tx.amount.currency !== currency) continue;
+
+                    const txAmount = -tx.amount.value;
+
+                    if (txAmount < amount) paymentTx ??= tx;
+                    if (txAmount === amount && (paymentTx = tx) && (refundType = 'full')) break;
+                }
+
+                if (paymentTx) {
+                    const payment = getPaymentOrTransferWithDetails(paymentTx)!;
+                    const tx = { ...transactionWithDetails };
+
+                    tx.originalAmount = { ...payment.amount };
+                    tx.paymentPspReference = payment.paymentPspReference;
+                    tx.refundMetadata = {
+                        originalPaymentId: payment.id,
+                        refundPspReference: uuid(),
+                        refundReason: 'refundReason.requested',
+                        refundType,
+                    };
+
+                    return tx;
+                }
+            })!;
+
+            break;
+        }
+    }
+
     return {
-        ...getTransactionWithAmountDeduction(transaction, deductedAmount),
+        ...transactionWithDetails,
         lineItems: DEFAULT_LINE_ITEMS.map(item => ({ ...item, amountIncludingTax: { ...item.amountIncludingTax, currency } })),
         refundDetails: {
             refundLocked,
@@ -260,10 +315,15 @@ export const transactionsMocks = [
                 amount,
                 ...(merchantRefundReason && { merchantRefundReason }),
                 ...(refundDetails.refundMode.startsWith('partially_refundable') && {
-                    lineItems: (lineItems ?? (EMPTY_ARRAY as NonNullable<typeof lineItems>)).map(({ item, quantity }) => {
-                        const availableQuantity = Math.max(0, item.availableQuantity - Math.max(0, quantity));
-                        return { ...item, availableQuantity };
-                    }),
+                    lineItems: (lineItems ?? (EMPTY_ARRAY as NonNullable<typeof lineItems>))
+                        .map(({ reference, quantity }) => {
+                            const item = DEFAULT_LINE_ITEMS.find(({ reference: _reference }) => reference === _reference);
+                            if (item) {
+                                const availableQuantity = Math.max(0, item.availableQuantity - Math.max(0, quantity));
+                                return { ...item, availableQuantity };
+                            }
+                        })
+                        .filter(Boolean) as NonNullable<ITransactionRefundResponse['lineItems']>,
                 }),
                 status: 'received',
                 transactionId,

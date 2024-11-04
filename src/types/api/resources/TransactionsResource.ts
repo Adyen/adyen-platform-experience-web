@@ -130,6 +130,7 @@ export interface components {
             description: string;
             id: string;
             originalQuantity: number;
+            reference: string;
             refundStatuses: components['schemas']['TransactionLineItemRefundStatus'][];
             sku?: string;
         };
@@ -147,14 +148,23 @@ export interface components {
             refundLocked: boolean;
             refundableAmount: components['schemas']['Amount'];
         };
+        RefundMetadataType: 'partial' | 'full';
+        RefundMetadata: {
+            originalPaymentId: string;
+            refundPspReference: string;
+            refundReason?: string;
+            refundType: components['schemas']['RefundMetadataType'];
+        };
         TransactionResponse: components['schemas']['SingleTransaction'] & {
-            originalAmount: components['schemas']['Amount'];
-            deductedAmount: components['schemas']['Amount'];
+            originalAmount?: components['schemas']['Amount'];
+            deductedAmount?: components['schemas']['Amount'];
+            paymentPspReference?: string;
             lineItems: components['schemas']['TransactionLineItem'][];
             refundDetails: components['schemas']['TransactionRefundDetails'];
+            refundMetadata?: components['schemas']['RefundMetadata'];
         };
         TransactionRefundRequestLineItem: {
-            item: components['schemas']['TransactionLineItem'];
+            reference: components['schemas']['TransactionLineItem']['reference'];
             quantity: number;
         };
         TransactionRefundRequest: {

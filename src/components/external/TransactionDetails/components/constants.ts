@@ -29,5 +29,7 @@ export const TX_DETAILS_RESERVED_FIELDS_SET = new Set([
     'deductedAmount',
     'lineItems',
     'originalAmount',
+    'paymentPspReference',
     'refundDetails',
+    'refundMetadata',
 ]);
