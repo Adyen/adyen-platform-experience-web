@@ -121,9 +121,8 @@ function useMutation<queryFn extends (...args: any[]) => any, ResponseType exten
             isError: status === 'error',
             mutate,
             reset,
-            resetRetries,
         }),
-        [data, error, status, mutate, reset, resetRetries]
+        [data, error, status, mutate, reset]
     );
 }
 
