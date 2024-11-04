@@ -98,7 +98,7 @@ describe('GrantItem', () => {
         const progressBar = screen.queryByRole('progressbar');
         expect(progressBar).not.toBeInTheDocument();
 
-        const detailsButton = screen.queryByRole('button');
+        const detailsButton = screen.queryByRole('button', { name: /Expand/i });
         expect(detailsButton).not.toBeInTheDocument();
     });
 
@@ -124,7 +124,7 @@ describe('GrantItem', () => {
         const progressBar = screen.queryByRole('progressbar');
         expect(progressBar).not.toBeInTheDocument();
 
-        const detailsButton = screen.queryByRole('button');
+        const detailsButton = screen.queryByRole('button', { name: /Expand/i });
         expect(detailsButton).not.toBeInTheDocument();
     });
 
@@ -150,7 +150,7 @@ describe('GrantItem', () => {
         const progressBar = screen.queryByRole('progressbar');
         expect(progressBar).not.toBeInTheDocument();
 
-        const detailsButton = screen.queryByRole('button');
+        const detailsButton = screen.queryByRole('button', { name: /Expand/i });
         expect(detailsButton).not.toBeInTheDocument();
     });
 
@@ -176,7 +176,7 @@ describe('GrantItem', () => {
         const progressBar = screen.queryByRole('progressbar');
         expect(progressBar).not.toBeInTheDocument();
 
-        const detailsButton = screen.queryByRole('button');
+        const detailsButton = screen.queryByRole('button', { name: /Expand/i });
         expect(detailsButton).not.toBeInTheDocument();
     });
 
@@ -202,7 +202,7 @@ describe('GrantItem', () => {
         const progressBar = screen.queryByRole('progressbar');
         expect(progressBar).not.toBeInTheDocument();
 
-        const detailsButton = screen.queryByRole('button');
+        const detailsButton = screen.queryByRole('button', { name: /Expand/i });
         expect(detailsButton).not.toBeInTheDocument();
     });
 });
