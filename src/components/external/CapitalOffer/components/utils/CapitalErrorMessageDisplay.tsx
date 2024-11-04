@@ -26,7 +26,6 @@ export const CapitalErrorMessageDisplay = ({
         ),
         [i18n, onBack]
     );
-
     return (
         <ErrorMessageDisplay
             absolutePosition={false}
