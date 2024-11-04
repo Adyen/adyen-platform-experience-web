@@ -49,7 +49,7 @@ const InformationDisplay = ({ data, repaymentFrequency }: { data: IGrantOfferRes
     }, [data, i18n]);
     return (
         <div className="adyen-pe-capital-offer-selection__information">
-            <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY}>
+            <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY} wide={true}>
                 {i18n.get('capital.yourMinimumRepaymentWillBe')}{' '}
                 <Typography variant={TypographyVariant.BODY} el={TypographyElement.SPAN} strongest>
                     {formattedThresholdAmount}

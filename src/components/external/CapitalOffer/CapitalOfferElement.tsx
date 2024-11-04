@@ -9,6 +9,7 @@ export class CapitalOfferElement extends UIElement<CapitalOfferProps> {
     constructor(props: _UIComponentProps<CapitalOfferProps>) {
         super(props);
         this.componentToRender = this.componentToRender.bind(this);
+        this.maxWidth = 600;
     }
 
     public componentToRender = () => {

@@ -1,4 +1,5 @@
 export const GRANT_ITEM_CLASS_NAMES = {
+    amount: 'adyen-pe-grant-item__amount',
     base: 'adyen-pe-grant-item',
     overview: 'adyen-pe-grant-item__overview',
     details: 'adyen-pe-grant-item__details',

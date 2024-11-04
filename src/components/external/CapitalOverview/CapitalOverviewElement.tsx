@@ -11,6 +11,7 @@ export class CapitalOverviewElement extends UIElement<CapitalOverviewProps> {
     constructor(props: _UIComponentProps<CapitalOverviewProps>) {
         super(props);
 
+        this.maxWidth = 600;
         this.componentToRender = this.componentToRender.bind(this);
     }
 
