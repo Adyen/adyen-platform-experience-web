@@ -94,7 +94,7 @@ export const CapitalOfferSelection = ({
     const getDynamicGrantOfferMutation = useMutation({
         queryFn: getDynamicGrantOffer,
         options: {
-            retry: 5,
+            retry: 1,
             shouldRetry: useCallback((error: any) => {
                 return error.status === 500;
             }, []),
