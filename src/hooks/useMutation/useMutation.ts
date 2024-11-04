@@ -42,6 +42,10 @@ function useMutation<queryFn extends (...args: any[]) => any, ResponseType exten
         retryCountRef.current = 1;
     }, []);
 
+    const resetRetries = useCallback(() => {
+        retryCountRef.current = 1;
+    }, []);
+
     const mutate = useCallback(
         async (...variables: Parameters<queryFn>): Promise<ResponseType> => {
             try {
@@ -59,6 +63,7 @@ function useMutation<queryFn extends (...args: any[]) => any, ResponseType exten
                 ALREADY_RESOLVED_PROMISE.then(() => {
                     onSuccess && tryResolve(onSuccess, result).catch(catchCallback);
                     onSettled && tryResolve(onSettled, result, null).catch(catchCallback);
+                    resetRetries();
                 });
 
                 return result;
@@ -70,13 +75,12 @@ function useMutation<queryFn extends (...args: any[]) => any, ResponseType exten
                     maxRetries = 0;
                 }
 
-                if (maxRetries === retry) retryCountRef.current = 1;
-
                 // Handle retries
                 if (retryCountRef.current++ < maxRetries) {
                     const delay = isFunction(retryDelay) ? retryDelay(retryCountRef.current) : retryDelay ?? 1000;
 
                     await new Promise(resolve => setTimeout(resolve, delay));
+
                     return mutate(...variables);
                 }
 
@@ -90,12 +94,13 @@ function useMutation<queryFn extends (...args: any[]) => any, ResponseType exten
                 ALREADY_RESOLVED_PROMISE.then(() => {
                     onError && tryResolve(onError, error).catch(catchCallback);
                     onSettled && tryResolve(onSettled, undefined, error).catch(catchCallback);
+                    resetRetries();
                 });
 
                 throw error;
             }
         },
-        [queryFn, onSuccess, onSettled, retry, shouldRetry, retryDelay, onError]
+        [queryFn, onSuccess, onSettled, retry, shouldRetry, retryDelay, resetRetries, onError]
     );
 
     // Cleanup on unmount
@@ -116,8 +121,9 @@ function useMutation<queryFn extends (...args: any[]) => any, ResponseType exten
             isError: status === 'error',
             mutate,
             reset,
+            resetRetries,
         }),
-        [data, error, status, mutate, reset]
+        [data, error, status, mutate, reset, resetRetries]
     );
 }
 
