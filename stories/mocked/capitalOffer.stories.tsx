@@ -15,15 +15,38 @@ export const Default: ElementStory<typeof CapitalOffer> = {
     },
 };
 
-export const ErrorSomethingWentWrong: ElementStory<typeof CapitalOffer> = {
-    name: 'Error - Something went wrong with review offer',
+export const ErrorNoOfferAvailable: ElementStory<typeof CapitalOffer> = {
+    name: 'Error - Dynamic offer - No config',
     args: {
         mockedApi: true,
-        externalDynamicOffersConfig: DYNAMIC_CAPITAL_OFFER,
     },
     parameters: {
         msw: {
-            handlers: CapitalMockedResponses.reviewOfferWentWrong,
+            handlers: CapitalMockedResponses.noOfferAvailable,
+        },
+    },
+};
+
+export const ErrorNoCapability: ElementStory<typeof CapitalOffer> = {
+    name: 'Error - Dynamic offer config - No capability',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: {
+            handlers: CapitalMockedResponses.errorNoCapability,
+        },
+    },
+};
+
+export const ErrorInactiveAH: ElementStory<typeof CapitalOffer> = {
+    name: 'Error - Dynamic offer config - Inactive account holder',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: {
+            handlers: CapitalMockedResponses.errorInactiveAccountHolder,
         },
     },
 };
@@ -42,7 +65,7 @@ export const ErrorExceededRetries: ElementStory<typeof CapitalOffer> = {
 };
 
 export const ErrorOnDynamicOffer: ElementStory<typeof CapitalOffer> = {
-    name: 'Error - Dynamic offer - Server error',
+    name: 'Error - Dynamic offer - Temporary server error',
     args: {
         mockedApi: true,
         externalDynamicOffersConfig: DYNAMIC_CAPITAL_OFFER,
@@ -54,8 +77,34 @@ export const ErrorOnDynamicOffer: ElementStory<typeof CapitalOffer> = {
     },
 };
 
+export const ErrorSomethingWentWrong: ElementStory<typeof CapitalOffer> = {
+    name: 'Error - Review offer - Generic',
+    args: {
+        mockedApi: true,
+        externalDynamicOffersConfig: DYNAMIC_CAPITAL_OFFER,
+    },
+    parameters: {
+        msw: {
+            handlers: CapitalMockedResponses.reviewOfferWentWrong,
+        },
+    },
+};
+
+export const ErrorGenericRequestFunds: ElementStory<typeof CapitalOffer> = {
+    name: 'Error - Request funds - Generic',
+    args: {
+        mockedApi: true,
+        externalDynamicOffersConfig: DYNAMIC_CAPITAL_OFFER,
+    },
+    parameters: {
+        msw: {
+            handlers: CapitalMockedResponses.noGrantAccountConfig,
+        },
+    },
+};
+
 export const ErrorNoGrantAccountConfig: ElementStory<typeof CapitalOffer> = {
-    name: 'Error - No grant account config',
+    name: 'Error - Request funds - No grant account',
     args: {
         mockedApi: true,
         externalDynamicOffersConfig: DYNAMIC_CAPITAL_OFFER,
@@ -68,47 +117,13 @@ export const ErrorNoGrantAccountConfig: ElementStory<typeof CapitalOffer> = {
 };
 
 export const ErrorNoPrimaryBalanceAccount: ElementStory<typeof CapitalOffer> = {
-    name: 'Error - No Primary Balance Account',
+    name: 'Error - Request funds - No primary balance account',
     args: {
         mockedApi: true,
     },
     parameters: {
         msw: {
             handlers: CapitalMockedResponses.missingPrimaryBalanceAccount,
-        },
-    },
-};
-export const ErrorExceededGrantLimit: ElementStory<typeof CapitalOffer> = {
-    name: 'Error - Exceeded Grant Limit',
-    args: {
-        mockedApi: true,
-    },
-    parameters: {
-        msw: {
-            handlers: CapitalMockedResponses.exceededGrantLimit,
-        },
-    },
-};
-export const ErrorNoOfferAvailable: ElementStory<typeof CapitalOffer> = {
-    name: 'Error - No Offer Available',
-    args: {
-        mockedApi: true,
-    },
-    parameters: {
-        msw: {
-            handlers: CapitalMockedResponses.noOfferAvailable,
-        },
-    },
-};
-
-export const ErrorHasActiveGrant: ElementStory<typeof CapitalOffer> = {
-    name: 'Error - Has Active Grant Exception',
-    args: {
-        mockedApi: true,
-    },
-    parameters: {
-        msw: {
-            handlers: CapitalMockedResponses.hasActiveGrants,
         },
     },
 };

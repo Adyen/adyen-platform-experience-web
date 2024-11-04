@@ -3,12 +3,12 @@ import {
     ACTIVE_UNREPAID_GRANT,
     DYNAMIC_CAPITAL_OFFER,
     FAILED_GRANT,
+    GRANT_OFFER,
     PENDING_GRANT,
     REPAID_GRANT,
     REVOKED_GRANT,
-    WRITTEN_OFF_GRANT,
-    GRANT_OFFER,
     SIGNED_OFFER,
+    WRITTEN_OFF_GRANT,
 } from '../mock-data';
 import { endpoints } from '../../endpoints/endpoints';
 import { DefaultBodyType, http, HttpResponse, StrictRequest } from 'msw';
@@ -175,6 +175,13 @@ export const CapitalMockedResponses = capitalFactory({
         {
             endpoint: mockEndpoints.requestFunds as any,
             handler: getErrorHandler(ERROR_NO_GRANT_ACCOUNT_CONFIG, 500),
+            method: 'post',
+        },
+    ],
+    requestFundGenericError: [
+        {
+            endpoint: mockEndpoints.requestFunds as any,
+            handler: getErrorHandler(new AdyenPlatformExperienceError(ErrorTypes.ERROR, '1234', 'Message', '500'), 500),
             method: 'post',
         },
     ],
