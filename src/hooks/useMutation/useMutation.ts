@@ -8,6 +8,7 @@ type MutationOptions<ResponseType> = {
     onSettled?: (data: ResponseType | undefined, error: Error | AdyenErrorResponse | null) => void | Promise<void>;
     retry?: number | boolean;
     retryDelay?: number | ((retryAttempt: number) => number);
+    shouldRetry?: (error: AdyenErrorResponse) => boolean;
 };
 type MutationStatus = 'idle' | 'loading' | 'success' | 'error';
 
@@ -24,7 +25,7 @@ function useMutation<queryFn extends (...args: any[]) => any, ResponseType exten
     queryFn: queryFn | undefined;
     options?: MutationOptions<ResponseType>;
 }) {
-    const { retry = false, retryDelay = 1000, onSuccess, onError, onSettled } = options || (EMPTY_OBJECT as NonNullable<typeof options>);
+    const { retry = false, retryDelay = 1000, onSuccess, onError, onSettled, shouldRetry } = options || (EMPTY_OBJECT as NonNullable<typeof options>);
 
     const [data, setData] = useState<ResponseType | null>(null);
     const [error, setError] = useState<Error | AdyenErrorResponse | null>(null);
@@ -32,13 +33,13 @@ function useMutation<queryFn extends (...args: any[]) => any, ResponseType exten
 
     // Use refs for mutable values that shouldn't trigger re-renders
     const mountedRef = useRef(true);
-    const retryCountRef = useRef(0);
+    const retryCountRef = useRef(1);
 
     const reset = useCallback(() => {
         setData(null);
         setError(null);
         setStatus('idle');
-        retryCountRef.current = 0;
+        retryCountRef.current = 1;
     }, []);
 
     const mutate = useCallback(
@@ -63,13 +64,13 @@ function useMutation<queryFn extends (...args: any[]) => any, ResponseType exten
                 return result;
             } catch (error: any) {
                 let maxRetries = 0;
-                if (isNumber(retry)) {
+                if (isNumber(retry) && (shouldRetry ? shouldRetry(error) : true)) {
                     maxRetries = Math.max(0, Math.floor(retry));
-                } else if (retry) {
-                    maxRetries = 3; // Default retries when retry is true
                 } else {
                     maxRetries = 0;
                 }
+
+                if (maxRetries === retry) retryCountRef.current = 1;
 
                 // Handle retries
                 if (retryCountRef.current++ < maxRetries) {
@@ -94,7 +95,7 @@ function useMutation<queryFn extends (...args: any[]) => any, ResponseType exten
                 throw error;
             }
         },
-        [queryFn, retry, retryDelay, onSuccess, onError, onSettled]
+        [queryFn, onSuccess, onSettled, retry, shouldRetry, retryDelay, onError]
     );
 
     // Cleanup on unmount

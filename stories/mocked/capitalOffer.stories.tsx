@@ -28,6 +28,32 @@ export const ErrorSomethingWentWrong: ElementStory<typeof CapitalOffer> = {
     },
 };
 
+export const ErrorExceededRetries: ElementStory<typeof CapitalOffer> = {
+    name: 'Error - Dynamic offer - Generic (after exceeded retries)',
+    args: {
+        mockedApi: true,
+        externalDynamicOffersConfig: DYNAMIC_CAPITAL_OFFER,
+    },
+    parameters: {
+        msw: {
+            handlers: CapitalMockedResponses.dynamicOfferExceededRetries,
+        },
+    },
+};
+
+export const ErrorOnDynamicOffer: ElementStory<typeof CapitalOffer> = {
+    name: 'Error - Dynamic offer - Server error',
+    args: {
+        mockedApi: true,
+        externalDynamicOffersConfig: DYNAMIC_CAPITAL_OFFER,
+    },
+    parameters: {
+        msw: {
+            handlers: CapitalMockedResponses.dynamicOfferServerError,
+        },
+    },
+};
+
 export const ErrorNoGrantAccountConfig: ElementStory<typeof CapitalOffer> = {
     name: 'Error - No grant account config',
     args: {

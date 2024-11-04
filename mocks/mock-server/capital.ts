@@ -30,7 +30,9 @@ const EMPTY_GRANTS_LIST = getHandlerCallback({
 
 const EMPTY_OFFER = getHandlerCallback({ response: {} });
 
-const DYNAMIC_OFFER_HANDLER = async ({ request }: { request: StrictRequest<DefaultBodyType> }) => {
+let retry = 0;
+
+const DYNAMIC_OFFER_HANDLER = async ({ request }: { request: StrictRequest<DefaultBodyType> }, retries?: number) => {
     const url = new URL(request.url);
     const { amount, currency } = { amount: url.searchParams.get('amount'), currency: url.searchParams.get('currency') };
 
@@ -38,6 +40,16 @@ const DYNAMIC_OFFER_HANDLER = async ({ request }: { request: StrictRequest<Defau
 
     const response = calculateGrant(amount, currency);
     await delay(400);
+    if (retries && retry < retries) retry += 1;
+    const options = { status: 500 };
+
+    if (retry < (retries || 0)) {
+        const error = new AdyenPlatformExperienceError(ErrorTypes.ERROR, 'ServerError', 'Message', '500');
+
+        return HttpResponse.json({ ...error, status: 500, detail: 'detail' }, options);
+    }
+    if (retries && retry === retries) retry = 0;
+
     return HttpResponse.json(response);
 };
 
@@ -175,4 +187,6 @@ export const CapitalMockedResponses = capitalFactory({
     ],
     noOfferAvailable: [{ endpoint: mockEndpoints.dynamicOfferConfig, handler: getHandlerCallback({ response: undefined, status: 204 }) }],
     hasActiveGrants: [{ endpoint: mockEndpoints.dynamicOfferConfig, handler: getHandlerCallback({ response: undefined, status: 204 }) }],
+    dynamicOfferServerError: [{ endpoint: mockEndpoints.dynamicOffer, handler: ((req: any) => DYNAMIC_OFFER_HANDLER(req, 3)) as any }],
+    dynamicOfferExceededRetries: [{ endpoint: mockEndpoints.dynamicOffer, handler: ((req: any) => DYNAMIC_OFFER_HANDLER(req, 10)) as any }],
 });
