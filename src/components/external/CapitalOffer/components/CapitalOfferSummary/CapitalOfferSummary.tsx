@@ -142,12 +142,7 @@ export const CapitalOfferSummary = ({
                     );
                 }}
                 renderValue={(val, key) => {
-                    if (
-                        key === 'capital.balanceAccount' &&
-                        requestFundsMutation.error &&
-                        requestErrorAlert &&
-                        requestErrorAlert.errorCode === '30_013'
-                    ) {
+                    if (key === 'capital.account' && requestFundsMutation.error && requestErrorAlert && requestErrorAlert.errorCode === '30_013') {
                         return (
                             <Typography
                                 el={TypographyElement.SPAN}
@@ -195,7 +190,7 @@ export const CapitalOfferSummary = ({
                               )}`
                             : null,
                     },
-                    { key: 'capital.balanceAccount', value: i18n.get('capital.primaryAccount') },
+                    { key: 'capital.account', value: i18n.get('capital.primaryAccount') },
                 ]}
             />
             {requestErrorAlert && (
