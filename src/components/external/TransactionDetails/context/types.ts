@@ -27,6 +27,11 @@ export const enum RefundStatus {
     FAILED = 'failed',
 }
 
+export const enum RefundType {
+    PARTIAL = 'partial',
+    FULL = 'full',
+}
+
 export type RefundReason = (typeof REFUND_REASONS)[number];
 
 type _TransactionDataContextBase<T extends TransactionDataContextProviderProps> = Omit<T, _TransactionDataContextExcludedProps> & {

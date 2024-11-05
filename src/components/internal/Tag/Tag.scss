@@ -33,6 +33,12 @@
         color: style.token(color-label-on-background-warning-weak);
     }
 
+    // Adopted from the latest Bento tag variants spec
+    &--blue {
+        background: style.token(color-background-highlight-weak);
+        color: style.token(color-label-on-background-highlight-weak);
+    }
+
     &--primary {
         background: style.token(color-background-primary);
         color: style.token(color-label-primary);

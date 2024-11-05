@@ -41,7 +41,7 @@ const getTransactionWithAmountDeduction = <T extends ITransaction>(
     return {
         ...transaction,
         amount: { currency, value: transactionAmount },
-        deductedAmount: { currency, value: deductedAmount && -deductedAmount },
+        deductedAmount: { currency, value: deductedAmount },
         originalAmount: { currency, value: originalAmount },
     };
 };
@@ -107,7 +107,7 @@ const enrichTransactionDataWithDetails = <T extends ITransaction>(
             transactionWithDetails = getMappedValue(transaction.id, TRANSACTIONS_DETAILS_CACHE, () => {
                 const { value: amount, currency } = transaction.amount;
                 let refundType: NonNullable<ITransactionWithDetails['refundMetadata']>['refundType'] = 'partial';
-                let paymentTx: ITransaction | undefined;
+                let paymentTx: ITransaction | undefined = undefined;
 
                 for (const tx of TRANSACTIONS) {
                     if (!PAYMENT_OR_TRANSFER.includes(tx.category)) continue;
