@@ -72,7 +72,7 @@ export const CapitalOfferSummary = ({
             switch (err.errorCode) {
                 case '30_013':
                     return {
-                        title: i18n.get('capital.thereIsNoPrimaryBalanceAccountConfigured'),
+                        title: i18n.get('capital.thereIsNoPrimaryAccountConfigured'),
                         message: i18n.get('capital.weCannotContinueWithTheOffer'),
                         errorCode: '30_013',
                     };
@@ -86,6 +86,10 @@ export const CapitalOfferSummary = ({
 
         return null;
     }, [i18n, requestFundsMutation.error]);
+
+    const contactSupport = useMemo(() => {
+        return onContactSupport ? () => <Button onClick={onContactSupport}>{i18n.get('reachOutToSupport')}</Button> : undefined;
+    }, [i18n, onContactSupport]);
 
     return !requestErrorAlert && requestFundsMutation.error ? (
         <CapitalErrorMessageDisplay error={requestFundsMutation.error} onBack={onBack} onContactSupport={onContactSupport} />
@@ -152,7 +156,7 @@ export const CapitalOfferSummary = ({
                                 className={'adyen-pe-capital-offer-summary__details--error'}
                             >
                                 <Icon name={'warning-filled'} />
-                                <span>{i18n.get('capital.primaryBalanceAccount')}</span>
+                                <span>{i18n.get('capital.primaryAccount')}</span>
                             </Typography>
                         );
                     }
@@ -191,7 +195,7 @@ export const CapitalOfferSummary = ({
                               )}`
                             : null,
                     },
-                    { key: 'capital.balanceAccount', value: i18n.get('capital.primaryBalanceAccount') },
+                    { key: 'capital.balanceAccount', value: i18n.get('capital.primaryAccount') },
                 ]}
             />
             {requestErrorAlert && (
@@ -200,7 +204,13 @@ export const CapitalOfferSummary = ({
                     type={AlertTypeOption.WARNING}
                     title={requestErrorAlert.title}
                     description={requestErrorAlert.message}
-                />
+                >
+                    {onContactSupport ? (
+                        <Button className={'adyen-pe-capital-offer-summary__error-alert-button'} onClick={onContactSupport}>
+                            {i18n.get('reachOutToSupport')}
+                        </Button>
+                    ) : null}
+                </Alert>
             )}
             <div className="adyen-pe-capital-offer-summary__buttons">
                 {requestFundsMutation.error && !requestErrorAlert ? null : (
