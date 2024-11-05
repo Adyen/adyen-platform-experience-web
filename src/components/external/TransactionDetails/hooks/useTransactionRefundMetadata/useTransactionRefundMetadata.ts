@@ -19,6 +19,7 @@ export const useTransactionRefundMetadata = (transaction: TransactionDataProps['
     const refundCurrency = details?.refundableAmount.currency ?? transaction?.amount.currency ?? '';
     const refundDisabled = !refundAvailable || refundLocked;
 
+    // [TODO]: Introduce logic to compute already refunded amount
     const refundedAmount = 0;
 
     const refundedState = useMemo(() => {

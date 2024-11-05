@@ -3,6 +3,7 @@ import type { PropsWithChildren } from 'preact/compat';
 import { EMPTY_ARRAY } from '../../../../../utils';
 import { useCallback, useEffect, useState } from 'preact/hooks';
 import { TransactionDetailsProvider } from '../../context/details';
+import { TransactionNavigatorProvider } from '../../context/navigator';
 import { TransactionRefundProvider } from '../../context/refund';
 import TransactionDetailsDataContainer from '../details/TransactionDetailsDataContainer';
 import TransactionDataProperties from '../details/TransactionDataProperties';
@@ -82,13 +83,15 @@ export const TransactionDataContent = ({ transaction }: TransactionDataContentPr
         case ActiveView.DETAILS:
             return (
                 <_TransactionDataContentViewWrapper renderViewActionButtons={renderViewActionButtons}>
-                    <TransactionDetailsProvider {...commonContextProviderProps} transaction={transaction}>
-                        <TransactionDetailsDataContainer className={TX_STATUS_BOX}>
-                            <TransactionStatusBox transaction={transaction} />
-                        </TransactionDetailsDataContainer>
+                    <TransactionNavigatorProvider>
+                        <TransactionDetailsProvider {...commonContextProviderProps} transaction={transaction}>
+                            <TransactionDetailsDataContainer className={TX_STATUS_BOX}>
+                                <TransactionStatusBox transaction={transaction} />
+                            </TransactionDetailsDataContainer>
 
-                        <TransactionDataProperties />
-                    </TransactionDetailsProvider>
+                            <TransactionDataProperties />
+                        </TransactionDetailsProvider>
+                    </TransactionNavigatorProvider>
                 </_TransactionDataContentViewWrapper>
             );
 
