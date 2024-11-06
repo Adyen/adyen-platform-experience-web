@@ -9,8 +9,9 @@ export const capitalOfferMeta: Meta<ElementProps<typeof CapitalOffer>> = {
     argTypes: {
         externalDynamicOffersConfig: { control: 'object' },
         onContactSupport: enabledDisabledCallbackRadioControls('onContactSupport'),
+        onOfferSelect: enabledDisabledCallbackRadioControls('onOfferSelect'),
         hideTitle: { type: 'boolean' },
-        onRequestFunds: {
+        onFundsRequest: {
             table: {
                 disable: true,
             },
@@ -24,7 +25,7 @@ export const capitalOfferMeta: Meta<ElementProps<typeof CapitalOffer>> = {
     args: {
         externalDynamicOffersConfig: undefined,
         hideTitle: false,
-        onRequestFunds: action('onRequestFunds'),
+        onFundsRequest: action('onRequestFunds'),
         component: CapitalOffer,
     },
     parameters: {

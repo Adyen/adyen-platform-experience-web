@@ -21,8 +21,8 @@ type CapitalOverviewState = 'Loading' | 'Error' | 'Unqualified' | 'PreQualified'
 export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<CapitalOverviewProps>> = ({
     hideTitle,
     skipPreQualifiedIntro,
-    onRequestFunds,
-    onSeeOptions,
+    onFundsRequest,
+    onOfferOptionsRequest,
     onOfferDismissed,
     onContactSupport,
 }) => {
@@ -59,9 +59,9 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
 
     const onRequestFundsHandler = useCallback(
         (data: IGrant) => {
-            onRequestFunds ? onRequestFunds(data, () => setRequestedGrant(data)) : setRequestedGrant(data);
+            onFundsRequest ? onFundsRequest(data, () => setRequestedGrant(data)) : setRequestedGrant(data);
         },
-        [onRequestFunds]
+        [onFundsRequest]
     );
 
     const showError = useMemo(() => {
@@ -140,7 +140,7 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
                         return (
                             <PreQualified
                                 onOfferDismissed={onOfferDismissed}
-                                onSeeOptions={onSeeOptions}
+                                onSeeOptions={onOfferOptionsRequest}
                                 skipPreQualifiedIntro={skipPreQualifiedIntro}
                                 hideTitle={hideTitle}
                                 dynamicOffer={dynamicOffer!}
