@@ -31,7 +31,7 @@ describe('GrantItem', () => {
 
         const amountLabel = screen.getByTestId('grant-amount-label');
         expect(amountLabel).toBeInTheDocument();
-        expect(amountLabel).toHaveTextContent('Pending');
+        expect(amountLabel).toHaveTextContent('Remaining');
         expect(amountLabel).toHaveClass('adyen-pe-typography--caption');
 
         const amount = screen.getByText('$8,220.00');
@@ -60,7 +60,7 @@ describe('GrantItem', () => {
 
         const amountLabel = screen.getByTestId('grant-amount-label');
         expect(amountLabel).toBeInTheDocument();
-        expect(amountLabel).toHaveTextContent('Pending');
+        expect(amountLabel).toHaveTextContent('Remaining');
         expect(amountLabel).toHaveClass('adyen-pe-grant-item__text--secondary');
 
         const amount = screen.getByText('$20,220.00');
