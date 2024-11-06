@@ -15,11 +15,11 @@ export const WithCallbacks: ElementStory<typeof CapitalOverview> = {
     name: 'With callbacks',
     args: {
         mockedApi: true,
-        onRequestFunds: (data, goToNextStep) => {
+        onFundsRequest: (data, goToNextStep) => {
             alert(`Amount requested: ${data.grantAmount.value}`);
             goToNextStep();
         },
-        onSeeOptions(goToNextStep) {
+        onOfferOptionsRequest(goToNextStep) {
             alert('Are you sure?');
             goToNextStep();
         },
