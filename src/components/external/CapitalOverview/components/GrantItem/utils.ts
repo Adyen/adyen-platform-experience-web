@@ -8,7 +8,7 @@ const getIsBackgroundFilled = (status: IGrantStatus) => status === 'Repaid';
 
 const getAmountLabelKey = ({ status }: IGrant): TranslationKey => {
     if (status === 'Active') {
-        return 'capital.pending';
+        return 'capital.remaining';
     } else if (status === 'Repaid') {
         return 'capital.initialFunds';
     }
