@@ -30,15 +30,16 @@ export const useLineItemData = (view: ActiveView) => {
                 const currentValue = current.get('available');
                 const valueToAdd = currentValue ? [...currentValue, item] : [item];
                 current.set('available', valueToAdd);
-                if (item.refundStatuses && item.refundStatuses.length > 0) {
-                    item.refundStatuses.map(status => {
-                        const statusValue = current.get(status.status);
-                        const statusValueToAdd = statusValue
-                            ? [...statusValue, { ...item, availableQuantity: status.quantity }]
-                            : [{ ...item, availableQuantity: status.quantity }];
-                        current.set(status.status, statusValueToAdd);
-                    });
-                }
+                //TODO: Remove or comment out this logic when the research completed
+                // if (item.refundStatuses && item.refundStatuses.length > 0) {
+                //     item.refundStatuses.map(status => {
+                //         const statusValue = current.get(status.status);
+                //         const statusValueToAdd = statusValue
+                //             ? [...statusValue, { ...item, availableQuantity: status.quantity }]
+                //             : [{ ...item, availableQuantity: status.quantity }];
+                //         current.set(status.status, statusValueToAdd);
+                //     });
+                // }
                 return current;
             }, new Map()),
         [allItems]
@@ -97,7 +98,7 @@ export const useLineItemData = (view: ActiveView) => {
                 current[status] = itemsWithStatus.get(status) ?? [];
                 return current;
             }, {} as Record<RefundStatus, ILineItem[]>),
-        [itemsWithStatus]
+        [statuses, itemsWithStatus]
     );
 
     return {

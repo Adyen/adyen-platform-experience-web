@@ -1,6 +1,6 @@
 import cx from 'classnames';
 import { useEffect } from 'preact/compat';
-import { useCallback, useMemo, useState } from 'preact/hooks';
+import { useCallback, useState } from 'preact/hooks';
 import { JSXInternal } from 'preact/src/jsx';
 import useCoreContext from '../../../../core/Context/useCoreContext';
 import { ITransactionLineItem } from '../../../../types';

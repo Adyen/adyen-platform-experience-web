@@ -1,6 +1,6 @@
 import { useMemo } from 'preact/hooks';
 import useCoreContext from '../../../../core/Context/useCoreContext';
-import { ILineItem, ITransactionLineItem } from '../../../../types';
+import { ILineItem } from '../../../../types';
 import { TypographyVariant } from '../../../internal/Typography/types';
 import Typography from '../../../internal/Typography/Typography';
 import { TX_DATA_CONTAINER } from '../constants';
