@@ -12,7 +12,6 @@ import {
     getDisplayablePaymentMethodForTransaction,
     getPaymentMethodTypeForTransaction,
     getRefundTypeForTransaction,
-    // getTagVariantForTransaction
 } from '../utils';
 import cx from 'classnames';
 import { memo } from 'preact/compat';
@@ -22,12 +21,14 @@ import useCoreContext from '../../../../../core/Context/useCoreContext';
 import useTimezoneAwareDateFormatting from '../../../../../hooks/useTimezoneAwareDateFormatting';
 import type { TransactionDataContentProps } from '../TransactionData/TransactionDataContent';
 import type { TranslationKey } from '../../../../../translations';
+import { RefundedState, RefundType } from '../../context/types';
 import { Image } from '../../../../internal/Image/Image';
 import { TagVariant } from '../../../../internal/Tag/types';
 import { Tag } from '../../../../internal/Tag/Tag';
-import { RefundType } from '../../context/types';
 
-const TransactionStatusBox = ({ transaction }: Pick<TransactionDataContentProps, 'transaction'>) => {
+type TransactionStatusBoxProps = Pick<TransactionDataContentProps, 'transaction'> & { refundedState: RefundedState };
+
+const TransactionStatusBox = ({ refundedState, transaction }: TransactionStatusBoxProps) => {
     const { i18n } = useCoreContext();
     const { dateFormat } = useTimezoneAwareDateFormatting(transaction?.balanceAccount?.timeZone);
     const { amount, category, createdAt /*, status*/ } = transaction;
@@ -60,6 +61,13 @@ const TransactionStatusBox = ({ transaction }: Pick<TransactionDataContentProps,
                         {refundType === RefundType.FULL && <Tag label={i18n.get('Full' as TranslationKey)} variant={TagVariant.SUCCESS} />}
                         {refundType === RefundType.PARTIAL && <Tag label={i18n.get('Partial' as TranslationKey)} variant={TagVariant.BLUE} />}
                     </>
+                )}
+
+                {/* refunded state: only available for refundable transactions */}
+                {/* [TODO]: Add translation entries for the following tokens and substitute here: 'Fully refunded' | 'Partially refunded' */}
+                {refundedState === RefundedState.FULL && <Tag label={i18n.get('Fully refunded' as TranslationKey)} variant={TagVariant.SUCCESS} />}
+                {refundedState === RefundedState.PARTIAL && (
+                    <Tag label={i18n.get('Partially refunded' as TranslationKey)} variant={TagVariant.BLUE} />
                 )}
             </div>
 

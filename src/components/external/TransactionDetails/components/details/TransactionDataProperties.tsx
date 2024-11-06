@@ -53,7 +53,7 @@ const TransactionDataProperties = () => {
                 ? { key: 'refundReason' as const, value: i18n.get(refundMetadata.refundReason as TranslationKey) }
                 : SKIP_ITEM,
 
-            // ids
+            // reference id
             { key: 'referenceID' as const, value: id },
 
             // refund psp reference
