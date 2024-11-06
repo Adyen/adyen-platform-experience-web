@@ -19,7 +19,7 @@ import { calculateSliderAdjustedMidValue } from '../../../../internal/Slider/Sli
 type CapitalOfferSelectionProps = {
     config: IDynamicOfferConfig | undefined;
     onBack: () => void;
-    onReviewOffer: (data?: IGrantOfferResponseDTO) => void;
+    onOfferSelect: (data: IGrantOfferResponseDTO) => void;
     repaymentFrequency: number;
     requestedAmount: number | undefined;
     emptyGrantOffer: boolean;
@@ -83,7 +83,7 @@ export const CapitalOfferSelection = ({
     onBack,
     repaymentFrequency,
     requestedAmount,
-    onReviewOffer,
+    onOfferSelect,
     emptyGrantOffer,
     onContactSupport,
 }: CapitalOfferSelectionProps) => {
@@ -111,7 +111,7 @@ export const CapitalOfferSelection = ({
     const reviewOfferMutation = useMutation({
         queryFn: reviewGrantOffer,
         options: {
-            onSuccess: data => onReviewOffer(data),
+            onSuccess: data => onOfferSelect(data),
         },
     });
 

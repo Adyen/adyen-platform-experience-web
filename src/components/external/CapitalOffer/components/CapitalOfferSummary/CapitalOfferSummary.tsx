@@ -25,13 +25,13 @@ export const CapitalOfferSummary = ({
     grantOffer,
     repaymentFrequency,
     onBack,
-    onRequestFunds,
+    onFundsRequest,
     onContactSupport,
 }: {
     grantOffer: IGrantOfferResponseDTO;
     repaymentFrequency: number;
     onBack: () => void;
-    onRequestFunds?: (data: IGrant) => void;
+    onFundsRequest?: (data: IGrant) => void;
     onContactSupport?: () => void;
 }) => {
     const { i18n } = useCoreContext();
@@ -45,7 +45,7 @@ export const CapitalOfferSummary = ({
     const requestFundsMutation = useMutation({
         queryFn: requestFunds,
         options: {
-            onSuccess: data => onRequestFunds?.(data),
+            onSuccess: data => onFundsRequest?.(data),
         },
     });
 
