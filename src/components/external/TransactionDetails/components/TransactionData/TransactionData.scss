@@ -1,16 +1,38 @@
-@use '../../../../style';
+@use '../../../../../style';
 
 .adyen-pe-transaction-data {
-    &__container:not(&__container--without-padding) {
-        padding-bottom: style.token(spacer-080);
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-080);
+
+    &__container {
+        align-items: flex-start;
+        display: flex;
+        flex-direction: column;
+        width: 100%;
     }
 
-    &__section:not(:last-child) {
-        margin-bottom: style.token(spacer-030);
+    &__action-bar {
+        flex-direction: row;
+        width: 100%;
+
+        .adyen-pe-button__label {
+            gap: style.token(spacer-040);
+        }
+
+        .adyen-pe-icon {
+            font-size: 16px;
+        }
     }
 
-    &__action-bar--refund-view {
-        padding-top: style.token(spacer-080);
+    &__list {
+        .adyen-pe-structured-list {
+            &__label,
+            &__content {
+                padding-bottom: style.token(spacer-030);
+                padding-top: style.token(spacer-030);
+            }
+        }
     }
 
     &__amount {
@@ -51,14 +73,17 @@
         object-position: center;
     }
 
-    &__tag-container {
-        display: flex;
-        gap: style.token(spacer-020);
+    &__status-box {
+        border: style.token(border-width-s) solid style.token(color-outline-primary);
+        border-radius: style.token(border-radius-l);
+        gap: style.token(spacer-030);
+        padding: style.token(spacer-060);
+        width: max-content;
     }
 
-    &__action-buttons {
+    &__tags {
         display: flex;
-        justify-content: flex-end;
+        gap: style.token(spacer-020);
     }
 
     &__input-container {
@@ -66,6 +91,7 @@
         font-weight: style.token(text-body-font-weight);
         line-height: style.token(text-body-line-height);
         position: relative;
+        width: 100%;
 
         > label,
         > .adyen-pe-dropdown {

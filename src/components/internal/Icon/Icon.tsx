@@ -4,6 +4,7 @@ import { JSX } from 'preact';
 import { useState, useEffect } from 'preact/hooks';
 
 const icons = {
+    'angle-right': () => import('../../../images/icons/angle-right.svg?component'),
     'checkmark-circle-fill': () => import('../../../images/icons/checkmark-circle-fill.svg?component'),
     'checkmark-square-fill': () => import('../../../images/icons/checkmark-square-fill.svg?component'),
     checkmark: () => import('../../../images/icons/checkmark.svg?component'),

@@ -1,4 +1,5 @@
 {
+    "back": "Used as label for button which navigates backwards to previous page, view or state",
     "contactSupportForHelp": "Will be displayed when an error occurs to indicate customer to contact their support",
     "download": "Used as a button label which calls the file download action",
     "downloading": "Will be displayed as indication that a download action is in progress, usually followed by an ellipsis (…).",
@@ -10,6 +11,9 @@
     "refundAmount": "Will be displayed as text label for input that allows the user to enter the amount they want refunded.",
     "refundAmount.excess": "Will be displayed as validation error message if the inputted amount exceeds a maximum.",
     "refundAmount.required": "Will be displayed as validation error message if the amount input field is empty or invalid.",
+    "refunded.full": "Used to indicate that a payment has been refunded up to the full amount.",
+    "refunded.partial": "Used to indicate that only a part of a payment has been refunded.",
+    "refundingPayment": "Will be displayed as indication that a refund action is in progress, usually followed by an ellipsis (…).",
     "refundPayment": "Will be displayed as a button label informing the user of how much they are about to refund if they continue with the refund action. The %{amount} placeholder represents the refund amount formatted like so: $45.99",
     "refundReason": "Will be displayed as text label for selection widget that lets the user choose from a predefined set of refund reasons.",
     "refundReason.duplicate": "Used to indicate that a transaction is repeat payment for a similar item.",

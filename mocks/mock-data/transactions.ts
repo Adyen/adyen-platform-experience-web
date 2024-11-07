@@ -1,4 +1,4 @@
-import type { ITransaction, ITransactionWithDetails } from '../../src';
+import type { ILineItem, ILineItemRefundStatus, ITransaction, ITransactionRefundStatus } from '../../src';
 
 export const TRANSACTIONS: ITransaction[] = [
     {
@@ -570,15 +570,16 @@ export const TRANSACTIONS: ITransaction[] = [
     },
     {
         paymentMethod: {
-            type: 'paypal',
+            lastFourDigits: '5995',
+            type: 'mc',
         },
         id: 'C3C9U591L10E8II3',
         amount: {
             currency: 'USD',
-            value: 13000,
+            value: 13550,
         },
         category: 'Payment',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2G',
+        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
         status: 'Booked',
         createdAt: '2024-02-28T22:26:05.420Z',
     },
@@ -1856,7 +1857,7 @@ export const TRANSACTIONS: ITransaction[] = [
     },
 ];
 
-export const DEFAULT_LINE_ITEM_REFUND_STATUSES: ITransactionWithDetails['lineItems'][number]['refundStatuses'] = [
+export const DEFAULT_LINE_ITEM_REFUND_STATUSES: ILineItemRefundStatus[] = [
     {
         quantity: 1,
         status: 'in_progress',
@@ -1871,9 +1872,10 @@ export const DEFAULT_LINE_ITEM_REFUND_STATUSES: ITransactionWithDetails['lineIte
     },
 ];
 
-export const DEFAULT_LINE_ITEMS: ITransactionWithDetails['lineItems'] = [
+export const DEFAULT_LINE_ITEMS: ILineItem[] = [
     {
         id: '2049f87a-d47b-4f57-80b7-d2a5b3bc1018',
+        reference: '2049f87a-d47b-4f57-80b7-d2a5b3bc1018',
         amountIncludingTax: { currency: 'USD', value: 4500 },
         description: 'Boots',
         availableQuantity: 2,
@@ -1882,6 +1884,7 @@ export const DEFAULT_LINE_ITEMS: ITransactionWithDetails['lineItems'] = [
     },
     {
         id: '3aa2de10-3de2-494a-9dc9-6abf77597945',
+        reference: '3aa2de10-3de2-494a-9dc9-6abf77597945',
         amountIncludingTax: { currency: 'USD', value: 4500 },
         description: 'Boots',
         availableQuantity: 2,
@@ -1890,6 +1893,7 @@ export const DEFAULT_LINE_ITEMS: ITransactionWithDetails['lineItems'] = [
     },
     {
         id: '620472a7-7eb3-49e6-8ecd-3219e4d614dc',
+        reference: '620472a7-7eb3-49e6-8ecd-3219e4d614dc',
         amountIncludingTax: { currency: 'USD', value: 4500 },
         description: 'Boots',
         availableQuantity: 2,
@@ -1898,6 +1902,7 @@ export const DEFAULT_LINE_ITEMS: ITransactionWithDetails['lineItems'] = [
     },
     {
         id: '681839b3-dffb-4909-b569-5e1f0606b143',
+        reference: '681839b3-dffb-4909-b569-5e1f0606b143',
         amountIncludingTax: { currency: 'USD', value: 4500 },
         description: 'Boots',
         availableQuantity: 2,
@@ -1906,6 +1911,7 @@ export const DEFAULT_LINE_ITEMS: ITransactionWithDetails['lineItems'] = [
     },
     {
         id: '74e5a2f4-7ca2-4ac0-ae0d-fa7fb4577ba1',
+        reference: '74e5a2f4-7ca2-4ac0-ae0d-fa7fb4577ba1',
         amountIncludingTax: { currency: 'USD', value: 4500 },
         description: 'Boots',
         availableQuantity: 2,
@@ -1914,6 +1920,7 @@ export const DEFAULT_LINE_ITEMS: ITransactionWithDetails['lineItems'] = [
     },
     {
         id: '9124281f-d310-4d38-849d-56502eadf98e',
+        reference: '9124281f-d310-4d38-849d-56502eadf98e',
         amountIncludingTax: { currency: 'USD', value: 4500 },
         description: 'Boots',
         availableQuantity: 2,
@@ -1922,6 +1929,7 @@ export const DEFAULT_LINE_ITEMS: ITransactionWithDetails['lineItems'] = [
     },
     {
         id: 'af6413df-eaed-4a36-aed3-d05837753e29',
+        reference: 'af6413df-eaed-4a36-aed3-d05837753e29',
         amountIncludingTax: { currency: 'USD', value: 4500 },
         description: 'Boots',
         availableQuantity: 2,
@@ -1930,6 +1938,7 @@ export const DEFAULT_LINE_ITEMS: ITransactionWithDetails['lineItems'] = [
     },
     {
         id: 'c946c7ff-adb1-4035-9a13-8f703e154f76',
+        reference: 'c946c7ff-adb1-4035-9a13-8f703e154f76',
         amountIncludingTax: { currency: 'USD', value: 4500 },
         description: 'Boots',
         availableQuantity: 2,
@@ -1938,6 +1947,7 @@ export const DEFAULT_LINE_ITEMS: ITransactionWithDetails['lineItems'] = [
     },
     {
         id: 'e24de04e-b514-43e9-a42f-44c99b3dcca0',
+        reference: 'e24de04e-b514-43e9-a42f-44c99b3dcca0',
         amountIncludingTax: { currency: 'USD', value: 4500 },
         description: 'Boots',
         availableQuantity: 2,
@@ -1946,7 +1956,7 @@ export const DEFAULT_LINE_ITEMS: ITransactionWithDetails['lineItems'] = [
     },
 ];
 
-export const DEFAULT_REFUND_STATUSES: ITransactionWithDetails['refundDetails']['refundStatuses'] = [
+export const DEFAULT_REFUND_STATUSES: ITransactionRefundStatus[] = [
     {
         amount: { currency: 'USD', value: -1000 },
         status: 'in_progress',

@@ -1,6 +1,7 @@
 import type { ILineItem } from '../../../../../types';
 import type { TransactionDetailData } from '../../types';
 import type { TransactionDataContext, TransactionDataContextProviderProps } from '../types';
+import type { TransactionNavigator } from '../../hooks/useTransaction/transactionNavigator/types';
 
 type _ITransactionDetailsContextBase = Pick<
     TransactionDataContext<TransactionDetailsProviderProps>,
@@ -13,4 +14,5 @@ export interface ITransactionDetailsContext extends _ITransactionDetailsContextB
 
 export interface TransactionDetailsProviderProps extends TransactionDataContextProviderProps {
     transaction: TransactionDetailData;
+    transactionNavigator: TransactionNavigator;
 }

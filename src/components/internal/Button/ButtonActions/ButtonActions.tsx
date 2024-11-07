@@ -28,12 +28,12 @@ function ButtonActions({ actions, layout = ButtonActionsLayout.BUTTONS_END }: Bu
                 {reversedActions.map((button, index) => (
                     <Button
                         aria-label={button.title}
-                        key={index}
+                        key={`${index}_${button.title || '0'}`}
                         disabled={button.disabled}
                         variant={button.variant || generateButtonVariantByIndex(index)}
                         onClick={button.event}
                     >
-                        {button.title}
+                        {button.renderTitle ? button.renderTitle(button.title) : button.title}
                     </Button>
                 ))}
             </div>

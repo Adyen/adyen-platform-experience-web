@@ -1,4 +1,5 @@
 import { ButtonVariant } from '../types';
+import { ComponentChild } from 'preact';
 
 export interface ButtonActionObject {
     title: string;
@@ -6,6 +7,7 @@ export interface ButtonActionObject {
     icon?: Node;
     disabled?: boolean;
     variant?: ButtonVariant;
+    renderTitle?: (title: string) => ComponentChild;
 }
 
 export type ButtonActionsList = ButtonActionObject[] | readonly ButtonActionObject[];
