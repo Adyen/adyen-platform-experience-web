@@ -18,6 +18,7 @@ import { AlertTypeOption } from '../../../../internal/Alert/types';
 import Alert from '../../../../internal/Alert/Alert';
 import Icon from '../../../../internal/Icon';
 import { CapitalErrorMessageDisplay } from '../utils/CapitalErrorMessageDisplay';
+import cx from 'classnames';
 
 const errorMessageWithAlert = ['30_013'];
 
@@ -138,21 +139,19 @@ export const CapitalOfferSummary = ({
                     );
                 }}
                 renderValue={(val, key) => {
-                    if (key === 'capital.account' && requestFundsMutation.error && requestErrorAlert && requestErrorAlert.errorCode === '30_013') {
-                        return (
-                            <Typography
-                                el={TypographyElement.SPAN}
-                                variant={TypographyVariant.CAPTION}
-                                stronger
-                                className={'adyen-pe-capital-offer-summary__details--error'}
-                            >
-                                <Icon name={'warning-filled'} />
-                                <span>{i18n.get('capital.primaryAccount')}</span>
-                            </Typography>
-                        );
-                    }
+                    const showWarningIcon =
+                        key === 'capital.account' && requestFundsMutation.error && requestErrorAlert && requestErrorAlert.errorCode === '30_013';
+
                     return (
-                        <Typography el={TypographyElement.SPAN} variant={TypographyVariant.CAPTION} stronger>
+                        <Typography
+                            className={cx({
+                                ['adyen-pe-capital-offer-summary__details--error']: showWarningIcon,
+                            })}
+                            el={TypographyElement.SPAN}
+                            variant={TypographyVariant.CAPTION}
+                            stronger
+                        >
+                            {showWarningIcon ? <Icon name={'warning-filled'} /> : null}
                             {val}
                         </Typography>
                     );
