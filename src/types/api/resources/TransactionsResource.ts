@@ -132,7 +132,7 @@ export interface components {
             id: string;
             originalQuantity: number;
             reference: string;
-            refundStatuses: components['schemas']['TransactionLineItemRefundStatus'][];
+            refundStatuses?: components['schemas']['TransactionLineItemRefundStatus'][];
             sku?: string;
         };
         TransactionLineItemRefundStatus: {

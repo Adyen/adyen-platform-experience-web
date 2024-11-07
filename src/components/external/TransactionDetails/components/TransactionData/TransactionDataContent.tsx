@@ -3,6 +3,7 @@ import type { PropsWithChildren } from 'preact/compat';
 import { EMPTY_ARRAY } from '../../../../../utils';
 import { useCallback, useLayoutEffect, useState } from 'preact/hooks';
 import { TransactionDetailsProvider } from '../../context/details';
+import { TransactionNavigatorProvider } from '../../context/navigator';
 import { TransactionRefundProvider } from '../../context/refund';
 import TransactionDetailsDataContainer from '../details/TransactionDetailsDataContainer';
 import TransactionDataProperties from '../details/TransactionDataProperties';
@@ -20,6 +21,7 @@ import { ActiveView, RefundMode } from '../../context/types';
 import type { TransactionDataProps } from '../../types';
 import type { ILineItem } from '../../../../../types';
 import './TransactionData.scss';
+import TransactionLineItems from '../TransactionLineItems';
 
 export interface TransactionDataContentProps {
     transaction: NonNullable<TransactionDataProps['transaction']>;
@@ -102,6 +104,7 @@ export const TransactionDataContent = ({ transaction: initialTransaction }: Tran
                         </TransactionDetailsDataContainer>
 
                         <TransactionDataProperties />
+                        {transaction?.lineItems && transaction?.lineItems.length > 0 && <TransactionLineItems view={ActiveView.DETAILS} />}
                     </TransactionDetailsProvider>
                 </_TransactionDataContentViewWrapper>
             );

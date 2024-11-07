@@ -1875,8 +1875,9 @@ export const DEFAULT_LINE_ITEM_REFUND_STATUSES: ILineItemRefundStatus[] = [
 export const DEFAULT_LINE_ITEMS: ILineItem[] = [
     {
         id: 'e24de04e-b514-43e9-a42f-44c99b3dcca7',
+        reference: 'af6413df-eaed-4a36-aed3-d05837753e07',
         amountIncludingTax: { currency: 'USD', value: 0 },
-        description: 'Standard Shipping',
+        description: 'Standard Shipping Lorem ipsum blabla very long text over here, why whywhwy it’s a lot of characters mygod',
         availableQuantity: 1,
         originalQuantity: 1,
     },

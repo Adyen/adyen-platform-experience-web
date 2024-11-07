@@ -53,7 +53,7 @@ const getTransactionMetadata = <T extends ITransaction>(transaction: T) => {
 
     if (PAYMENT_OR_TRANSFER.includes(transaction.category)) {
         if (KLARNA_OR_PAYPAL.includes(transaction.paymentMethod?.type!)) {
-            refundMode = 'partially_refundable_with_line_items_required';
+            refundMode = 'partially_refundable_any_amount'; // 'partially_refundable_with_line_items_required';
             deductedAmount = 350;
         } else {
             const amount = transaction.amount.value;
@@ -100,10 +100,15 @@ const enrichTransactionDataWithDetails = <T extends ITransaction>(
 
     switch (transaction.category) {
         case 'Payment':
-        case 'Transfer':
+        case 'Transfer': {
             transactionWithDetails = getPaymentOrTransferWithDetails(transaction, deductedAmount)!;
+            const lineItems = DEFAULT_LINE_ITEMS.map(item => ({
+                ...item,
+                amountIncludingTax: { ...item.amountIncludingTax, currency },
+            }));
+            transactionWithDetails = { ...transactionWithDetails, ...{ lineItems: lineItems } };
             break;
-
+        }
         case 'Refund': {
             transactionWithDetails = getMappedValue(transaction.id, TRANSACTIONS_DETAILS_CACHE, () => {
                 const { value: amount, currency } = transaction.amount;
@@ -144,7 +149,6 @@ const enrichTransactionDataWithDetails = <T extends ITransaction>(
 
     return {
         ...transactionWithDetails,
-        lineItems: DEFAULT_LINE_ITEMS.map(item => ({ ...item, amountIncludingTax: { ...item.amountIncludingTax, currency } })),
         refundDetails: {
             refundLocked,
             refundMode,
@@ -168,7 +172,7 @@ const fetchTransaction = async (params: PathParams) => {
                 enrichTransactionDataWithDetails(matchingMock, {
                     deductedAmount: 350,
                     lineItemsSlice: [0, 6],
-                    refundMode: 'partially_refundable_with_line_items_required',
+                    refundMode: 'partially_refundable_any_amount', //'partially_refundable_with_line_items_required',
                 })
             );
         }

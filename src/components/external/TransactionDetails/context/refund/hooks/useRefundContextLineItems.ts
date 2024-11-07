@@ -16,13 +16,13 @@ export const useRefundContextLineItems = <T extends _BaseUseRefundContextLineIte
                 return qty > 0 && Number.isFinite(qty) && Math.trunc(qty) === qty;
             })
             .map(
-                ({ id, ...item }) =>
+                ({ reference, ...item }) =>
                     [
-                        id,
+                        reference,
                         Object.freeze({
                             amount: item.amountIncludingTax.value,
                             quantity: item.availableQuantity,
-                            id,
+                            reference,
                         }),
                     ] as const
             );
@@ -31,7 +31,7 @@ export const useRefundContextLineItems = <T extends _BaseUseRefundContextLineIte
     }, [currency, lineItems]);
 
     const availableItems = useMemo<ITransactionRefundContext['availableItems']>(
-        () => lineItems?.filter(({ id }) => refundableItems.has(id)) ?? EMPTY_ARRAY,
+        () => lineItems?.filter(({ reference }) => refundableItems.has(reference)) ?? EMPTY_ARRAY,
         [items, lineItems, refundableItems]
     );
 
@@ -40,10 +40,10 @@ export const useRefundContextLineItems = <T extends _BaseUseRefundContextLineIte
             setItems(items => {
                 // prettier-ignore
                 const _items = arguments.length === 0
-                    ? new Map(items.map(({ id }) => [id, 0]))
+                    ? new Map(items.map(({ reference }) => [reference, 0]))
                     : new Map(ids?.map(id => [id, 0]) ?? EMPTY_ARRAY);
 
-                const itemUpdates = [..._items].map(([id, quantity]) => ({ id, quantity } as const));
+                const itemUpdates = [..._items].map(([reference, quantity]) => ({ reference, quantity } as const));
                 return updateRefundItems(refundableItems, items, itemUpdates);
             });
         },

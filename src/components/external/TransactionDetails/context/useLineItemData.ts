@@ -1,4 +1,3 @@
-import { useEffect } from 'preact/compat';
 import { useCallback, useMemo } from 'preact/hooks';
 import { ILineItem, ITransaction, ITransactionLineItem } from '../../../../types';
 import { components } from '../../../../types/api/resources/TransactionsResource';
@@ -102,7 +101,7 @@ export const useLineItemData = (view: ActiveView) => {
     );
 
     return {
-        statusesByCurrentView,
+        itemsWithStatus,
         lineItemsByStatus,
         hasSelectAll,
         clearAllItems,
@@ -110,6 +109,7 @@ export const useLineItemData = (view: ActiveView) => {
         totalQuantity,
         selectAllItems,
         handleSelectAll,
+        statusesByCurrentView,
     };
 };
 

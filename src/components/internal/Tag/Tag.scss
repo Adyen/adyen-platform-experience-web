@@ -44,9 +44,4 @@
         color: style.token(color-label-primary);
         outline: style.token(border-width-s) solid style.token(color-outline-primary);
     }
-
-    &--blue {
-        background-color: style.token(color-background-highlight-weak);
-        color: style.token(color-label-on-background-highlight-weak);
-    }
 }

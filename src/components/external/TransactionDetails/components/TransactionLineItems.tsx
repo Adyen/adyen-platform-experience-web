@@ -3,9 +3,9 @@ import useCoreContext from '../../../../core/Context/useCoreContext';
 import { ILineItem } from '../../../../types';
 import { TypographyVariant } from '../../../internal/Typography/types';
 import Typography from '../../../internal/Typography/Typography';
-import { TX_DATA_CONTAINER } from '../constants';
 import { ActiveView } from '../context/types';
 import useLineItemData from '../context/useLineItemData';
+import { TX_DATA_CONTAINER } from './constants';
 import TransactionLineItem from './TransactionLineItem';
 import TransactionRefundItemSelect from './TransactionRefundItemSelect';
 
@@ -13,6 +13,7 @@ const TransactionLineItems = ({ view }: { view: ActiveView }) => {
     const { i18n } = useCoreContext();
     const { hasSelectAll, totalAmount, totalQuantity, statusesByCurrentView, lineItemsByStatus, handleSelectAll } = useLineItemData(view);
 
+    console.log(lineItemsByStatus['available']);
     return useMemo(() => {
         return (
             <div className={`${TX_DATA_CONTAINER}`}>
