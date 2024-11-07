@@ -1,0 +1,34 @@
+@use '../../../../../style';
+
+//stylelint-disable no-invalid-position-at-import-rule
+@import '../../../../../style/breakpoints.scss';
+
+.adyen-pe-grant-list {
+    display: flex;
+    flex-direction: column;
+
+    &__header-container {
+        display: flex;
+        flex-direction: column;
+    }
+
+    &__offer-button {
+        margin-bottom: style.token(spacer-070);
+    }
+
+    &__items {
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-070);
+    }
+
+    // stylelint-disable order/order
+    @include adyen-pe-screen-sm-and-up {
+        gap: 0;
+
+        &__header-container {
+            flex-direction: row;
+            justify-content: space-between;
+        }
+    }
+}

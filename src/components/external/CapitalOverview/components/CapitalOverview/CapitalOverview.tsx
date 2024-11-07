@@ -97,6 +97,8 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
         skipPreQualifiedIntro,
     ]);
 
+    const newOfferAvailable = useMemo(() => (!!dynamicOffer && dynamicOffer.minAmount && dynamicOffer.maxAmount ? true : false), [dynamicOffer]);
+
     return (
         <div className={CAPITAL_OVERVIEW_CLASS_NAMES.base}>
             {(() => {
@@ -122,7 +124,7 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
                             </div>
                         );
                     case 'GrantList':
-                        return grantList && <GrantList grantList={grantList} hideTitle={hideTitle} />;
+                        return grantList && <GrantList grantList={grantList} hideTitle={hideTitle} newOfferAvailable={newOfferAvailable} />;
                     case 'PreQualified':
                         return (
                             <PreQualified

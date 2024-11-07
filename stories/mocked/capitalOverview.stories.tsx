@@ -97,6 +97,16 @@ export const WithRepaidGrant: ElementStory<typeof CapitalOverview> = {
     },
 };
 
+export const WithMultipleRepaidGrant: ElementStory<typeof CapitalOverview> = {
+    name: 'With Multiple Repaid Grant',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: CapitalMockedResponses.multipleRepaidGrants,
+    },
+};
+
 export const WithRevokedGrant: ElementStory<typeof CapitalOverview> = {
     name: 'With Revoked Grant',
     args: {
@@ -114,6 +124,26 @@ export const WithWrittenOffGrant: ElementStory<typeof CapitalOverview> = {
     },
     parameters: {
         msw: CapitalMockedResponses.writtenOffGrant,
+    },
+};
+
+export const WithNewOfferAvailable: ElementStory<typeof CapitalOverview> = {
+    name: 'With New Offer Available',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: CapitalMockedResponses.newOfferAvailable,
+    },
+};
+
+export const WithMultipleGrants: ElementStory<typeof CapitalOverview> = {
+    name: 'With Multiple Grants',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: CapitalMockedResponses.multipleGrants,
     },
 };
 
