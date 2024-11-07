@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo } from 'preact/hooks';
 import { EMPTY_OBJECT } from '../../../../../utils';
 import { useAuthContext } from '../../../../../core/Auth';
-import { useFetch } from '../../../../../hooks/useFetch/useFetch';
+import { useFetch } from '../../../../../hooks/useFetch';
 import { memo } from 'preact/compat';
 import { BASE_CLASS } from './constants';
 import ExpandableCard from '../../../../internal/ExpandableCard/ExpandableCard';

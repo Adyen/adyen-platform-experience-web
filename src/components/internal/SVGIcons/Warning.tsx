@@ -1,5 +1,8 @@
 import { SVGProps } from 'preact/compat';
 
+/**
+ * @deprecated This component is deprecated. Use <Icon name="warning"/> instead.
+ */
 const Warning = ({ ...props }: Omit<SVGProps<SVGElement>, 'ref'>) => (
     <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
         <path d="M8.75 4.58008H7.25V9.08008H8.75V4.58008Z" fill="currentColor" />

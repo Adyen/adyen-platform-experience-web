@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import { useMemo } from 'preact/hooks';
 import useCoreContext from '../../../core/Context/useCoreContext';
-import { TranslationKey } from '../../../core/Localization/types';
+import { TranslationKey } from '../../../translations';
 import { TypographyVariant } from '../Typography/types';
 import Typography from '../Typography/Typography';
 import { SL_BASE_CLASS, SL_CONTENT_CLASS, SL_GRID_CLASS, SL_ITEM_CLASS, SL_ITEM_WITH_HIGHLIGHT_CLASS, SL_LABEL_CLASS } from './constants';

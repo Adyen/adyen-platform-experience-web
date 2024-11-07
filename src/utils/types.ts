@@ -43,3 +43,5 @@ export type WithReplacedUnderscoreOrDash<
 
 type StrictUnionHelper<T, TAll> = T extends any ? T & Partial<Record<Exclude<KeyOfRecord<TAll>, keyof T>, never>> : never;
 export type StrictUnion<T> = StrictUnionHelper<T, T>;
+
+export type StringWithAutocompleteOptions<T> = T | (string & {});

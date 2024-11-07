@@ -1,5 +1,5 @@
 import Localization from '../../../../../core/Localization';
-import { TranslationKey } from '../../../../../core/Localization/types';
+import { TranslationKey } from '../../../../../translations';
 import { RefObject } from 'preact';
 import { HTMLAttributes } from 'preact/compat';
 

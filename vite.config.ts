@@ -12,12 +12,13 @@ import { preact } from '@preact/preset-vite';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { checker } from 'vite-plugin-checker';
 import { realApiProxies } from './endpoints/realApiProxies';
+import svgr from 'vite-plugin-svgr';
 const currentVersion = version();
 const externalDependencies = Object.keys(packageJson.dependencies);
 
 const playgroundDir = resolve(__dirname, 'playground/pages');
 const demoPlaygroundDir = resolve(__dirname, 'playground');
-const isDevMode = (mode: any) => ['mocked', 'development'].includes(mode);
+const isDevMode = (mode: any) => ['mocked', 'development', 'local-env'].includes(mode);
 
 async function getPlaygroundEntrypoints() {
     const playgroundPages = await readdir(playgroundDir);
@@ -41,6 +42,9 @@ export default defineConfig(async ({ mode }) => {
     return {
         root: mode === 'demo' ? demoPlaygroundDir : './playground',
         base: '',
+        json: {
+            stringify: true,
+        },
         build:
             mode === 'demo'
                 ? {
@@ -85,7 +89,9 @@ export default defineConfig(async ({ mode }) => {
             'process.env.VITE_COMMIT_HASH': JSON.stringify(currentVersion.COMMIT_HASH),
             'process.env.VITE_COMMIT_BRANCH': JSON.stringify(currentVersion.COMMIT_BRANCH),
             'process.env.VITE_ADYEN_BUILD_ID': JSON.stringify(currentVersion.ADYEN_BUILD_ID),
-            'process.env.VITE_LOADING_CONTEXT': JSON.stringify(mode === 'development' || mode === 'local-env' ? playground.loadingContext || null : null),
+            'process.env.VITE_LOADING_CONTEXT': JSON.stringify(
+                mode === 'development' || mode === 'local-env' ? playground.loadingContext || null : null
+            ),
             'process.env.SESSION_AUTO_REFRESH': JSON.stringify(
                 isDevMode(mode) ? apiConfigs.sessionApi.autoRefresh || JSON.stringify(null) : undefined
             ),
@@ -105,8 +111,18 @@ export default defineConfig(async ({ mode }) => {
             setupFiles: [resolve(__dirname, './config/setupTests.ts')],
             coverage: {
                 provider: 'c8',
+                all: true,
+                include: [
+                    'src/components/internal/**/*.{ts,tsx}',
+                    'src/components/utils/*.{ts,tsx}',
+                    'src/hooks/**/*.{ts,tsx}',
+                    'src/primitives/**/*.{ts,tsx}',
+                    'src/utils/**/*.{ts,tsx}',
+                    'src/core/**/*.{ts,tsx}',
+                ],
+                exclude: ['src/**/index.{ts,tsx}', 'src/**/constants.{ts,tsx}', 'src/**/types.ts', 'node_modules'],
                 reporter: 'lcov',
-                reportsDirectory: resolve(__dirname, '../../coverage'),
+                reportsDirectory: resolve(__dirname, 'coverage'),
             },
         },
         server: {
@@ -121,6 +137,11 @@ export default defineConfig(async ({ mode }) => {
             proxy: undefined,
         },
         plugins: [
+            svgr({
+                svgrOptions: { jsxRuntime: 'automatic', exportType: 'default' },
+                esbuildOptions: { jsx: 'automatic' },
+                include: '**/*.svg?component',
+            }),
             preact(),
             isDevMode(mode)
                 ? checker({

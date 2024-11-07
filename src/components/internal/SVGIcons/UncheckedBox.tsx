@@ -2,6 +2,9 @@ import { Ref } from 'preact';
 import { SVGProps } from 'preact/compat';
 import { fixedForwardRef } from '../../../utils/preact';
 
+/**
+ * @deprecated This component is deprecated. Use <Icon name="square"/> instead.
+ */
 const UncheckedBox = fixedForwardRef(({ title, ...props }: Omit<SVGProps<SVGElement>, 'ref'>, ref: Ref<SVGSVGElement>) => (
     <svg {...props} ref={ref} xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
         {title && <title>{title}</title>}

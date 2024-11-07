@@ -66,6 +66,7 @@
     "paymentId": "ID do pagamento",
     "paymentMethod": "Método de pagamento",
     "payoutDetails": "Detalhes do repasse do pagamento",
+    "payoutsNotice": "As informações de repasse do pagamento são geradas todos os dias à meia-noite, horário UTC.",
     "payoutsTitle": "Liquidação",
     "Pending": "Pendente",
     "pleaseReachOutToSupportForAssistance": "Entre em contato com o suporte para obter assistência.",

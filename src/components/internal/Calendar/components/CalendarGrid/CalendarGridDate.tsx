@@ -65,14 +65,18 @@ const CalendarGridDate = fixedForwardRef(
         }
 
         const renderProps = getGridDateRenderProps(props, prepare);
-        const { children: _, className, ...extendedProps } = renderProps.props || EMPTY_OBJECT;
+        const { children: _, className, ...extendedProps } = renderProps.props || (EMPTY_OBJECT as NonNullable<typeof renderProps.props>);
         const classes = getClassName(renderProps.className, DEFAULT_DATE_CELL_CLASSNAME, className);
 
         return (
             <td {...extendedProps} {...props} className={classes}>
                 {(!onlyCellsWithin || withinMonth) &&
                     (() => {
-                        const { children: _, className, ...extendedProps } = renderProps.childProps || EMPTY_OBJECT;
+                        const {
+                            children: _,
+                            className,
+                            ...extendedProps
+                        } = renderProps.childProps || (EMPTY_OBJECT as NonNullable<typeof renderProps.childProps>);
                         const classes = getClassName(renderProps.childClassName, DEFAULT_DATE_TIME_CLASSNAME, className);
                         return (
                             <time {...extendedProps} className={classes} dateTime={datetime}>

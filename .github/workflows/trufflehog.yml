@@ -1,0 +1,23 @@
+name: Leaked Secrets Scan
+on:
+  pull_request:
+  push:
+    branches:
+      - "main"
+      - "develop"
+jobs:
+  TruffleHog:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: TruffleHog OSS
+        uses: trufflesecurity/trufflehog@v3.82.2
+        with:
+          path: ./
+          base: ${{ github.event.repository.default_branch }}
+          head: HEAD
+          extra_args: --debug --only-verified

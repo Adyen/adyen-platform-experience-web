@@ -1,5 +1,5 @@
 import AdyenPlatformExperienceError from '../../core/Errors/AdyenPlatformExperienceError';
-import { TranslationKey } from '../../core/Localization/types';
+import { TranslationKey } from '../../translations';
 import { JSXInternal } from 'preact/src/jsx';
 
 export type ErrorMessage = {

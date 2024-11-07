@@ -1,6 +1,6 @@
 import { useMemo } from 'preact/hooks';
 import useCoreContext from '../../../core/Context/useCoreContext';
-import { TranslationKey } from '../../../core/Localization/types';
+import { TranslationKey } from '../../../translations';
 import { uuid } from '../../../utils';
 import { ListValue } from './types';
 

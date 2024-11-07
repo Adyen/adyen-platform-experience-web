@@ -2,7 +2,7 @@ import Typography from '../Typography/Typography';
 import { TypographyVariant } from '../Typography/types';
 import { useCallback } from 'preact/hooks';
 import useCoreContext from '../../../core/Context/useCoreContext';
-import { TranslationKey } from '../../../core/Localization/types';
+import { TranslationKey } from '../../../translations';
 import './ErrorMessageDisplay.scss';
 import { JSXInternal } from 'preact/src/jsx';
 import noResults from '../../../images/no-results.svg';

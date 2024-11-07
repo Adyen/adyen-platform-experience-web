@@ -1,4 +1,4 @@
-import { TranslationKey } from '../../core/Localization/types';
+import { TranslationKey } from '../../translations';
 import { ModalSize } from '../../components/internal/Modal/types';
 
 type CallbackFunction<T> = (arg: T) => void;

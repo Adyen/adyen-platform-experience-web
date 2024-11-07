@@ -1,6 +1,11 @@
 name: Compressed Size
 
-on: [pull_request]
+on:
+  pull_request:
+    branches:
+      - main
+      - develop
+      - group/*
 
 jobs:
   is-pr-approved:

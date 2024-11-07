@@ -66,6 +66,7 @@
     "paymentId": "Betalings-id",
     "paymentMethod": "Betalingsmetode",
     "payoutDetails": "Oplysninger om udbetaling",
+    "payoutsNotice": "Udbetalingsoplysninger genereres hver dag ved midnat, UTC-tid.",
     "payoutsTitle": "Udbetalinger",
     "Pending": "Afventer",
     "pleaseReachOutToSupportForAssistance": "Kontakt support for at få hjælp.",

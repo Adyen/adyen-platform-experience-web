@@ -3,16 +3,16 @@ import { useCallback, useMemo, useState } from 'preact/hooks';
 import { useAuthContext } from '../../../../../core/Auth';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatformExperienceError';
-import { TranslationKey } from '../../../../../core/Localization/types';
+import { TranslationKey } from '../../../../../translations';
 import { IReport } from '../../../../../types';
-import useFreezePeriod from '../../../../hooks/useFreezePeriod';
-import useTimezoneAwareDateFormatting from '../../../../hooks/useTimezoneAwareDateFormatting';
+import useFreezePeriod from '../../../../../hooks/useFreezePeriod';
+import useTimezoneAwareDateFormatting from '../../../../../hooks/useTimezoneAwareDateFormatting';
 import Alert from '../../../../internal/Alert/Alert';
 import { AlertTypeOption } from '../../../../internal/Alert/types';
 import DownloadButton from '../../../../internal/Button/DownloadButton/DownloadButton';
 import DataGrid from '../../../../internal/DataGrid';
 import { CellTextPosition } from '../../../../internal/DataGrid/types';
-import { DATE_FORMAT_REPORTS, DATE_FORMAT_REPORTS_MOBILE } from '../../../../internal/DataOverviewDisplay/constants';
+import { DATE_FORMAT_REPORTS } from '../../../../../constants';
 import DataOverviewError from '../../../../internal/DataOverviewError/DataOverviewError';
 import Pagination from '../../../../internal/Pagination';
 import { PaginationProps, WithPaginationLimitSelection } from '../../../../internal/Pagination/types';
@@ -20,7 +20,7 @@ import Warning from '../../../../internal/SVGIcons/Warning';
 import { TypographyVariant } from '../../../../internal/Typography/types';
 import Typography from '../../../../internal/Typography/Typography';
 import { getLabel } from '../../../../utils/getLabel';
-import { mediaQueries, useResponsiveViewport } from '../../../TransactionsOverview/hooks/useResponsiveViewport';
+import { mediaQueries, useResponsiveViewport } from '../../../../../hooks/useResponsiveViewport';
 import { BASE_CLASS, DATE_TYPE_CLASS, DATE_TYPE_DATE_SECTION_CLASS, DISABLED_BUTTONS_TIMEOUT } from './constants';
 import './ReportsTable.scss';
 
@@ -28,7 +28,7 @@ const FIELDS = ['createdAt', 'dateAndReportType', 'reportType', 'reportFile'] as
 type FieldsType = (typeof FIELDS)[number];
 
 export interface ReportsTableProps extends WithPaginationLimitSelection<PaginationProps> {
-    balanceAccountId: string;
+    balanceAccountId: string | undefined;
     loading: boolean;
     error?: AdyenPlatformExperienceError;
     onContactSupport?: () => void;
@@ -52,7 +52,7 @@ export const ReportsTable: FC<ReportsTableProps> = ({
     const { refreshing } = useAuthContext();
     const isLoading = useMemo(() => loading || refreshing, [loading, refreshing]);
     const isSmAndUpViewport = useResponsiveViewport(mediaQueries.up.sm);
-    const isXsAndDownViewport = useResponsiveViewport(mediaQueries.down.sm);
+    const isXsAndDownViewport = useResponsiveViewport(mediaQueries.down.xs);
 
     const fieldsVisibility: Partial<Record<FieldsType, boolean>> = useMemo(
         () => ({
@@ -117,9 +117,7 @@ export const ReportsTable: FC<ReportsTableProps> = ({
 
     return (
         <div className={BASE_CLASS}>
-            {alert && (
-                <Alert isOpen={!!alert} onClose={removeAlert} type={AlertTypeOption.WARNING} className={'adyen-pe-reports-table-alert'} {...alert} />
-            )}
+            {alert && <Alert onClose={removeAlert} type={AlertTypeOption.WARNING} className={'adyen-pe-reports-table-alert'} {...alert} />}
             <DataGrid
                 errorDisplay={errorDisplay}
                 error={error}
@@ -137,10 +135,10 @@ export const ReportsTable: FC<ReportsTableProps> = ({
                         return (
                             <div className={DATE_TYPE_CLASS}>
                                 <Typography variant={TypographyVariant.BODY} stronger>
-                                    {item.type}
+                                    {i18n.get(`reportType.${item?.['type']}`)}
                                 </Typography>
                                 <Typography className={DATE_TYPE_DATE_SECTION_CLASS} variant={TypographyVariant.BODY}>
-                                    {dateFormat(item.createdAt, DATE_FORMAT_REPORTS_MOBILE)}
+                                    {dateFormat(item.createdAt, DATE_FORMAT_REPORTS)}
                                 </Typography>
                             </div>
                         );

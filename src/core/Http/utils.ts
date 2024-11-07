@@ -38,7 +38,7 @@ export const getResponseDownloadFilename = (response: Response): string | undefi
     return decodeURIComponent(filename);
 };
 
-export const getRequestObject = (options: HttpOptions, data?: any): RequestInit => {
+export const getRequestObject = (options: HttpOptions): RequestInit => {
     const { headers = [], method = 'GET' } = options;
     const SDKVersion = process.env.VITE_VERSION;
 
@@ -49,14 +49,14 @@ export const getRequestObject = (options: HttpOptions, data?: any): RequestInit 
         credentials: 'same-origin',
         headers: {
             Accept: 'application/json, text/plain, */*',
-            'Content-Type': 'application/json',
+            'Content-Type': options.contentType ?? 'application/json',
             ...headers,
             ...(SDKVersion && { 'SDK-Version': SDKVersion }),
         },
         redirect: 'follow',
         signal: options.signal,
         referrerPolicy: 'no-referrer-when-downgrade',
-        ...(method === 'POST' && data && { body: JSON.stringify(data) }),
+        ...(method === 'POST' && options.body && { body: JSON.stringify(options.body) }),
     };
 };
 

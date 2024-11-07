@@ -1,0 +1,33 @@
+name: Setup Smartling
+description: Setup Smartling for translation workflows
+
+inputs:
+  npm_token:
+    description: 'SMARTLING_BOT_NPM_TOKEN'
+    required: true
+  project_id:
+    description: 'SMARTLING_PROJECT_ID'
+    required: true
+  user_identifier:
+    description: 'SMARTLING_USER_IDENTIFIER'
+    required: true
+  user_secret:
+    description: 'SMARTLING_USER_SECRET'
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Create the configuration file
+      shell: sh
+      env:
+        SMARTLING_PROJECT_ID: ${{ inputs.project_id }}
+        SMARTLING_USER_IDENTIFIER: ${{ inputs.user_identifier }}
+        SMARTLING_USER_SECRET: ${{ inputs.user_secret }}
+      run: |
+        cat <<EOF >> .smartlingrc
+        SMARTLING_PROJECT_ID=$SMARTLING_PROJECT_ID
+        SMARTLING_USER_IDENTIFIER=$SMARTLING_USER_IDENTIFIER
+        SMARTLING_USER_SECRET=$SMARTLING_USER_SECRET
+        EOF
+        npm config set //registry.npmjs.org/:_authToken ${{ inputs.npm_token }}

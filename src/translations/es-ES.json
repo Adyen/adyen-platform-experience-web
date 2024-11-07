@@ -66,6 +66,7 @@
     "paymentId": "ID de pago",
     "paymentMethod": "Método de pago",
     "payoutDetails": "Detalles de pago",
+    "payoutsNotice": "La información de pago se genera todos los días a medianoche, hora UTC.",
     "payoutsTitle": "Pagos",
     "Pending": "Pendiente",
     "pleaseReachOutToSupportForAssistance": "Ponte en contacto con soporte para obtener ayuda.",

@@ -3,7 +3,9 @@ name: Pull Request workflow
 on:
   pull_request:
     branches:
-      - main # or the name of your default branch
+      - main
+      - develop
+      - group/*
     types: [opened, synchronize, reopened]
     paths-ignore:
       - README.md

@@ -15,6 +15,9 @@ class DataGridPage {
     getRow(row = 0) {
         return this.gridBody.getByRole('row').nth(row);
     }
+    getHeader(label: string) {
+        return this.rootElement.getByRole('columnheader', { name: label });
+    }
 }
 
 export default DataGridPage;

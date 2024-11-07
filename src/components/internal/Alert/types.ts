@@ -1,4 +1,4 @@
-import { VNode } from 'preact';
+import { ComponentChild, VNode } from 'preact';
 import { JSXInternal } from 'preact/src/jsx';
 
 export interface AlertProps {
@@ -6,8 +6,8 @@ export interface AlertProps {
     type: AlertTypeOption;
     title?: VNode<Element> | string;
     description?: VNode<Element> | string;
-    isOpen: boolean;
-    onClose: (event: JSXInternal.TargetedMouseEvent<HTMLButtonElement>) => void;
+    children?: ComponentChild;
+    onClose?: (event: JSXInternal.TargetedMouseEvent<HTMLButtonElement>) => void;
 }
 
 export enum AlertTypeOption {

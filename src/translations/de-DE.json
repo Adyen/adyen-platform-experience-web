@@ -66,6 +66,7 @@
     "paymentId": "Zahlungs-ID",
     "paymentMethod": "Zahlungsart",
     "payoutDetails": "Auszahlungsdetails",
+    "payoutsNotice": "Auszahlungsinformationen werden täglich um Mitternacht (UTC-Zeit) generiert.",
     "payoutsTitle": "Auszahlungen",
     "Pending": "Ausstehend",
     "pleaseReachOutToSupportForAssistance": "Bitte wenden Sie sich an den Support, wenn Sie Hilfe benötigen.",

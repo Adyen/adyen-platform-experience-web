@@ -23,7 +23,7 @@ const logTelemetry = (config: LogConfig) => (event: Record<string, any>) => {
         ...event,
     };
 
-    return httpPost(options, telemetryEvent);
+    return httpPost({ ...options, body: telemetryEvent });
 };
 
 export default logTelemetry;

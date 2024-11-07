@@ -66,6 +66,7 @@
     "paymentId": "ID de paiement",
     "paymentMethod": "Mode de paiement",
     "payoutDetails": "Informations pour le reversement",
+    "payoutsNotice": "Les informations sur les reversements sont générées tous les jours à minuit, heure UTC.",
     "payoutsTitle": "Reversements",
     "Pending": "En attente",
     "pleaseReachOutToSupportForAssistance": "Veuillez contacter l'assistance pour obtenir de l'aide.",

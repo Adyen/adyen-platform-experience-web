@@ -49,7 +49,7 @@
         &--filled {
             background-color: style.token(color-background-secondary);
 
-            &:hover {
+            &:not(:only-child):hover {
                 background-color: style.token(color-background-secondary-hover);
             }
         }

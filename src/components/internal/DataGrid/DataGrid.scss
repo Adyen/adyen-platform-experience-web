@@ -189,6 +189,25 @@
         transform: translateX(-50%);
     }
 
+    &__cell-value {
+        align-items: center;
+        display: flex;
+        gap: style.token(spacer-030);
+        width: min-content;
+    }
+
+    &__icon-container {
+        height: style.token(spacer-090);
+        width: style.token(spacer-100);
+    }
+
+    &__icon {
+        height: 100%;
+        max-width: 100%;
+        object-fit: contain;
+        object-position: center;
+    }
+
     // stylelint-disable order/order
     @include adyen-pe-screen-sm-and-up {
         &__head {

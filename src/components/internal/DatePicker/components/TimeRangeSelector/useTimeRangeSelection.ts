@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useRef, useState } from 'preact/hooks';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import type { RestampContext } from '../../../../../core/Localization/datetime/restamper';
-import type { TranslationKey } from '../../../../../core/Localization/types';
+import type { TranslationKey } from '../../../../../translations';
 import { RangeTimestamp, RangeTimestamps } from '../../../Calendar/calendar/timerange';
 import * as RangePreset from '../../../Calendar/calendar/timerange/presets';
 

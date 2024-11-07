@@ -1,7 +1,7 @@
-import { DATE_FORMAT_TRANSACTION_DETAILS } from '../../../internal/DataOverviewDisplay/constants';
+import { DATE_FORMAT_TRANSACTION_DETAILS } from '../../../../constants';
 import { TransactionDetailData } from '../types';
 import TransactionDataSkeleton from './TransactionDataSkeleton';
-import useTimezoneAwareDateFormatting from '../../../hooks/useTimezoneAwareDateFormatting';
+import useTimezoneAwareDateFormatting from '../../../../hooks/useTimezoneAwareDateFormatting';
 import { Image } from '../../../internal/Image/Image';
 import { parsePaymentMethodType } from '../../TransactionsOverview/components/utils';
 import { Tag } from '../../../internal/Tag/Tag';
@@ -9,11 +9,36 @@ import { TagVariant } from '../../../internal/Tag/types';
 import useCoreContext from '../../../../core/Context/useCoreContext';
 import { useMemo } from 'preact/hooks';
 import './TransactionData.scss';
+import { PropsWithChildren } from 'preact/compat';
+import { FunctionalComponent } from 'preact';
+import { TRANSACTION_FIELDS } from '../../TransactionsOverview/components/TransactionsTable/TransactionsTable';
+import { _isCustomDataObject } from '../../../internal/DataGrid/components/TableCells';
 
-export const TransactionData = ({ transaction, isFetching }: { transaction: TransactionDetailData; isFetching?: boolean }) => {
+const TransactionDataContainer: FunctionalComponent<PropsWithChildren> = ({ children }) => (
+    <div className={'adyen-pe-transaction-data__container'}>{children}</div>
+);
+
+const DETAILS_FIELDS = [
+    'status',
+    'category',
+    'paymentMethod',
+    'bankAccount',
+    'balanceAccount',
+    'id',
+    'balanceAccountId',
+] satisfies (keyof TransactionDetailData)[];
+
+export const TransactionData = ({
+    transaction,
+    isFetching,
+    error,
+}: {
+    transaction?: TransactionDetailData & Record<string, any>;
+    isFetching?: boolean;
+    error?: boolean;
+}) => {
     const { i18n } = useCoreContext();
-    const { dateFormat } = useTimezoneAwareDateFormatting(transaction.balanceAccount?.timeZone);
-
+    const { dateFormat } = useTimezoneAwareDateFormatting(transaction?.balanceAccount?.timeZone);
     const createdAt = useMemo(
         () => (transaction ? dateFormat(new Date(transaction.createdAt), DATE_FORMAT_TRANSACTION_DETAILS) : ''),
         [transaction, dateFormat]
@@ -21,13 +46,23 @@ export const TransactionData = ({ transaction, isFetching }: { transaction: Tran
 
     const amountStyle = transaction?.status === 'Booked' ? 'default' : transaction?.status === 'Reversed' ? 'error' : 'pending';
 
+    const customColumns = useMemo(() => {
+        const fields = new Set([...DETAILS_FIELDS, ...TRANSACTION_FIELDS]);
+        return Object.entries(transaction || {})
+            .filter(([key]) => !fields.has(key as any))
+            .map(([key, value]) => ({
+                key,
+                value: _isCustomDataObject(value) ? value.value : value,
+            }));
+    }, [transaction]);
+
     return (
         <>
-            {!transaction ? (
-                <TransactionDataSkeleton isLoading={isFetching} skeletonRowNumber={6} />
-            ) : (
+            {(!transaction && !error) || isFetching ? (
+                <TransactionDataSkeleton isLoading={isFetching} skeletonRowNumber={5} />
+            ) : transaction ? (
                 <div className={'adyen-pe-transaction-data'}>
-                    <div className={'adyen-pe-transaction-data__container'}>
+                    <TransactionDataContainer>
                         {(transaction?.status || transaction?.category) && (
                             <div className={'adyen-pe-transaction-data__section adyen-pe-transaction-data__tag-container'}>
                                 {transaction?.status && (
@@ -48,7 +83,7 @@ export const TransactionData = ({ transaction, isFetching }: { transaction: Tran
                         <div
                             className={`adyen-pe-transaction-data__section adyen-pe-transaction-data__amount adyen-pe-transaction-data__amount--${amountStyle}`}
                         >
-                            {transaction.amount
+                            {transaction?.amount
                                 ? `${i18n.amount(transaction.amount.value, transaction.amount.currency, {
                                       hideCurrency: true,
                                   })} ${transaction.amount.currency}`
@@ -73,20 +108,28 @@ export const TransactionData = ({ transaction, isFetching }: { transaction: Tran
                             </div>
                         )}
                         <div className={'adyen-pe-transaction-data__section adyen-pe-transaction-data__label'}>{createdAt}</div>
-                    </div>
+                    </TransactionDataContainer>
 
-                    {transaction.balanceAccount?.description && (
-                        <div className={'adyen-pe-transaction-data__container'}>
+                    {transaction?.balanceAccount?.description && (
+                        <TransactionDataContainer>
                             <div className={'adyen-pe-transaction-data__label'}>{i18n.get('account')}</div>
                             <div>{transaction.balanceAccount.description}</div>
-                        </div>
+                        </TransactionDataContainer>
                     )}
-                    <div className={'adyen-pe-transaction-data__container'}>
+                    <TransactionDataContainer>
                         <div className={'adyen-pe-transaction-data__label'}>{i18n.get('referenceID')}</div>
-                        <div aria-label={i18n.get('referenceID')}>{transaction.id}</div>
-                    </div>
+                        <div aria-label={i18n.get('referenceID')}>{transaction?.id}</div>
+                    </TransactionDataContainer>
+                    {customColumns.map(({ key, value }) => {
+                        return (
+                            <TransactionDataContainer key={key}>
+                                <div className={'adyen-pe-transaction-data__label'}>{i18n.get(key as any)}</div>
+                                <div aria-label={i18n.get(key as any)}>{value}</div>
+                            </TransactionDataContainer>
+                        );
+                    })}
                 </div>
-            )}
+            ) : null}
         </>
     );
 };

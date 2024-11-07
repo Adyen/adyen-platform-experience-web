@@ -1,5 +1,8 @@
 import { SVGProps } from 'preact/compat';
 
+/**
+ * @deprecated This component is deprecated. Use <Icon name="filter"/> instead.
+ */
 const Filter = ({ ...props }: Omit<SVGProps<SVGElement>, 'ref'>) => (
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
         <path

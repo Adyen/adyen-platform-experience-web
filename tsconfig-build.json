@@ -2,7 +2,11 @@
     "extends": "./tsconfig.json",
     "include": [],
     "files": [
-        "src/index.ts", "src/declarations/scss.d.ts", "src/declarations/vite-env.d.ts"],
+        "src/index.ts",
+        "src/declarations/scss.d.ts",
+        "src/declarations/vite-env.d.ts",
+        "src/declarations/svgr.d.ts"
+    ],
     "compilerOptions": {
         "rootDir": "src",
         "noEmit": false,

@@ -2,7 +2,7 @@ import { AuthProvider } from '../../../core/Auth';
 import CoreProvider from '../../../core/Context/CoreProvider';
 import { JSXInternal } from 'preact/src/jsx';
 import BaseElement from '../BaseElement';
-import { BaseElementProps, IUIElement, UIElementProps, UIElementStatus } from '../../types';
+import { BaseElementProps, ExternalComponentType, IUIElement, UIElementProps, UIElementStatus } from '../../types';
 import './UIElement.scss';
 
 export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUIElement {
@@ -26,7 +26,7 @@ export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUI
     /**
      * Get the element's displayable name
      */
-    get displayName(): string {
+    get displayName(): ExternalComponentType {
         return this.type;
     }
 
@@ -40,7 +40,7 @@ export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUI
     /**
      * Return the type of an element
      */
-    get type(): string {
+    get type(): ExternalComponentType {
         return (this.constructor as typeof UIElement)?.type;
     }
 
@@ -81,7 +81,7 @@ export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUI
         core.session.errorHandler = externalErrorHandler;
 
         return (
-            <AuthProvider session={core.session} key={performance.now()}>
+            <AuthProvider type={this.type} session={core.session} key={performance.now()}>
                 <CoreProvider
                     i18n={core.localization.i18n}
                     loadingContext={core.loadingContext}

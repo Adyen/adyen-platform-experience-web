@@ -38,7 +38,7 @@ const collectId = ({ loadingContext, experiments }: CollectIdProps) => {
             return Promise.resolve(checkoutAttemptIdSession.id);
         }
 
-        promise = httpPost<{ id: string }>(options, { experiments })
+        promise = httpPost<{ id: string }>({ ...options, body: { experiments } })
             .then(conversion => {
                 if (conversion.id) {
                     storage.set({ id: conversion.id, timestamp: Date.now() });

@@ -1,10 +1,10 @@
-import { _UIComponentProps } from '../../types';
+import { _UIComponentProps, ExternalComponentType } from '../../types';
 import UIElement from '../UIElement/UIElement';
 import DataOverviewDetails from '../../internal/DataOverviewDetails/DataOverviewDetails';
 import { DetailsComponentProps } from './types';
 
 export class TransactionElement extends UIElement<DetailsComponentProps> {
-    public static type = 'transactionDetails';
+    public static type: ExternalComponentType = 'transactionDetails';
 
     constructor(props: _UIComponentProps<DetailsComponentProps>) {
         super(props);

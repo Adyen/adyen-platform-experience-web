@@ -3,25 +3,19 @@
 .adyen-pe-alert {
     $adyen-pe-alert: &;
     $adyen-pe-types-list: success, highlight, warning, critical;
-
+    align-items: flex-start;
+    border-radius: style.token(border-radius-m);
     box-sizing: border-box;
     container-type: inline-size;
     display: flex;
+    gap: style.token(spacer-070);
     max-width: 700px;
+    padding: style.token(spacer-070);
     width: 100%;
 
-    &__inner-container {
-        align-items: flex-start;
-        border-radius: style.token(border-radius-m);
-        display: flex;
-        gap: style.token(spacer-070);
-        padding: style.token(spacer-070);
-        width: 100%;
-
-        @container (min-width: 460px) {
-            gap: style.token(spacer-080);
-            padding: style.token(spacer-080);
-        }
+    @container (min-width: 460px) {
+        gap: style.token(spacer-080);
+        padding: style.token(spacer-080);
     }
 
     &__icon {
@@ -31,7 +25,6 @@
     }
 
     &__content {
-        max-width: 500px;
         width: 100%;
     }
 
@@ -41,12 +34,6 @@
 
     &__description:not(:first-child) {
         margin-top: style.token(spacer-020);
-    }
-
-    &__actions {
-        display: flex;
-        gap: style.token(spacer-070);
-        margin-top: style.token(spacer-050);
     }
 
     &__close-button {

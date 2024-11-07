@@ -1,6 +1,6 @@
 import { UseTimeRangeSelectionConfig } from '../../../DatePicker/components/TimeRangeSelector';
 import DateFilterCore from './DateFilterCore';
-import useDefaultOverviewFilterParams from '../../../../hooks/useDefaultOverviewFilterParams';
+import useDefaultOverviewFilterParams from '../../../../../hooks/useDefaultOverviewFilterParams';
 import { FilterParam } from '../../../../types';
 import { useCallback, useMemo, useState } from 'preact/hooks';
 import useCoreContext from '../../../../../core/Context/useCoreContext';

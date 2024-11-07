@@ -1,0 +1,48 @@
+@use '../../../style';
+
+.adyen-pe-progress-bar {
+    $adyen-track-bg-color: style.token(color-background-selected);
+    $adyen-fill-bg-color: style.token(color-decorative-blue);
+    $adyen-progress-border-radius: style.token(border-radius-m);
+
+    &__track {
+        background-color: $adyen-track-bg-color;
+        border-radius: $adyen-progress-border-radius;
+        height: style.token(spacer-040);
+        width: 100%;
+    }
+
+    &__fill {
+        background-color: $adyen-fill-bg-color;
+        border-radius: $adyen-progress-border-radius;
+        height: 100%;
+        transition: width 0.3s ease-in-out;
+    }
+
+    &__legend {
+        font-size: style.token(text-caption-font-size);
+        margin-top: style.token(spacer-040);
+        width: 100%;
+
+        &-label {
+            margin-right: style.token(spacer-070);
+
+            &::before {
+                border-radius: 50%;
+                content: '';
+                display: inline-block;
+                height: style.token(spacer-040);
+                margin-right: style.token(spacer-040);
+                width: style.token(spacer-040);
+            }
+
+            &:first-child::before {
+                background-color: $adyen-fill-bg-color;
+            }
+
+            &:last-child::before {
+                background-color: $adyen-track-bg-color;
+            }
+        }
+    }
+}

@@ -4,7 +4,7 @@ import useMounted from '../useMounted';
 import { ReactiveStateRecord, ReactiveStateUpdateRequest, ReactiveStateUpdateRequestWithField, UseReactiveStateRecord } from './types';
 
 const useReactiveState = <Value, Param extends string>(
-    params: ReactiveStateRecord<Value, Param> = EMPTY_OBJECT,
+    params: ReactiveStateRecord<Value, Param> = EMPTY_OBJECT as ReactiveStateRecord<Value, Param>,
     initialStateSameAsDefault = true
 ): UseReactiveStateRecord<Value, Param> => {
     const $hasDefaultState = useRef(initialStateSameAsDefault);
