@@ -570,7 +570,8 @@ export const TRANSACTIONS: ITransaction[] = [
     },
     {
         paymentMethod: {
-            type: 'paypal',
+            lastFourDigits: '5995',
+            type: 'mc',
         },
         id: 'C3C9U591L10E8II3',
         amount: {

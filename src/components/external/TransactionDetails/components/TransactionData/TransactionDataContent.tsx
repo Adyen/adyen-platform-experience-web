@@ -1,16 +1,17 @@
 import type { ComponentChild } from 'preact';
 import type { PropsWithChildren } from 'preact/compat';
 import { EMPTY_ARRAY } from '../../../../../utils';
-import { useCallback, useEffect, useState } from 'preact/hooks';
+import { useCallback, useLayoutEffect, useState } from 'preact/hooks';
 import { TransactionDetailsProvider } from '../../context/details';
-import { TransactionNavigatorProvider } from '../../context/navigator';
 import { TransactionRefundProvider } from '../../context/refund';
 import TransactionDetailsDataContainer from '../details/TransactionDetailsDataContainer';
 import TransactionDataProperties from '../details/TransactionDataProperties';
 import TransactionStatusBox from '../details/TransactionStatusBox';
+import DataOverviewDetailsSkeleton from '../../../../internal/DataOverviewDetails/DataOverviewDetailsSkeleton';
 import { TransactionRefundFullAmountInput, TransactionRefundPartialAmountInput } from '../refund/TransactionRefundAmount';
 import TransactionRefundNotice from '../refund/TransactionRefundNotice';
 import TransactionRefundReason from '../refund/TransactionRefundReason';
+import useTransaction from '../../hooks/useTransaction';
 import useTransactionRefundMetadata from '../../hooks/useTransactionRefundMetadata';
 import { TX_DATA_ACTION_BAR, TX_DATA_CLASS, TX_STATUS_BOX } from '../constants';
 import { ButtonActionObject, ButtonActionsLayoutBasic } from '../../../../internal/Button/ButtonActions/types';
@@ -20,7 +21,9 @@ import type { TransactionDataProps } from '../../types';
 import type { ILineItem } from '../../../../../types';
 import './TransactionData.scss';
 
-export type TransactionDataContentProps = Required<Pick<TransactionDataProps, 'transaction'>>;
+export interface TransactionDataContentProps {
+    transaction: NonNullable<TransactionDataProps['transaction']>;
+}
 
 const _TransactionDataContentViewWrapper = ({
     children,
@@ -33,12 +36,14 @@ const _TransactionDataContentViewWrapper = ({
     </div>
 );
 
-export const TransactionDataContent = ({ transaction }: TransactionDataContentProps) => {
+export const TransactionDataContent = ({ transaction: initialTransaction }: TransactionDataContentProps) => {
     const [activeView, _setActiveView] = useState(ActiveView.DETAILS);
     const [primaryAction, _setPrimaryAction] = useState<ButtonActionObject>();
     const [secondaryAction, _setSecondaryAction] = useState<ButtonActionObject>();
 
-    const { refundable, refundableAmount, refundAvailable, refundCurrency, refundDisabled, refundMode } = useTransactionRefundMetadata(transaction);
+    const { fetchingTransaction, refreshTransaction, transaction, transactionNavigator } = useTransaction(initialTransaction);
+    const { refundable, refundableAmount, refundAvailable, refundCurrency, refundDisabled, refundedState, refundMode } =
+        useTransactionRefundMetadata(transaction);
 
     const lineItems: readonly ILineItem[] = Object.freeze(transaction?.lineItems ?? EMPTY_ARRAY);
 
@@ -64,9 +69,17 @@ export const TransactionDataContent = ({ transaction }: TransactionDataContentPr
         ) : null;
     }, [primaryAction, secondaryAction]);
 
-    useEffect(() => {
+    useLayoutEffect(() => {
+        _setActiveView(ActiveView.DETAILS);
+    }, [transaction]);
+
+    useLayoutEffect(() => {
         if (refundDisabled) _setActiveView(ActiveView.DETAILS);
     }, [refundDisabled]);
+
+    if (fetchingTransaction) {
+        return <DataOverviewDetailsSkeleton skeletonRowNumber={5} />;
+    }
 
     if (shouldPreventActiveViewIfRefund(activeView)) return null;
 
@@ -83,15 +96,13 @@ export const TransactionDataContent = ({ transaction }: TransactionDataContentPr
         case ActiveView.DETAILS:
             return (
                 <_TransactionDataContentViewWrapper renderViewActionButtons={renderViewActionButtons}>
-                    <TransactionNavigatorProvider>
-                        <TransactionDetailsProvider {...commonContextProviderProps} transaction={transaction}>
-                            <TransactionDetailsDataContainer className={TX_STATUS_BOX}>
-                                <TransactionStatusBox transaction={transaction} />
-                            </TransactionDetailsDataContainer>
+                    <TransactionDetailsProvider {...commonContextProviderProps} transaction={transaction} transactionNavigator={transactionNavigator}>
+                        <TransactionDetailsDataContainer className={TX_STATUS_BOX}>
+                            <TransactionStatusBox transaction={transaction} refundedState={refundedState} />
+                        </TransactionDetailsDataContainer>
 
-                            <TransactionDataProperties />
-                        </TransactionDetailsProvider>
-                    </TransactionNavigatorProvider>
+                        <TransactionDataProperties />
+                    </TransactionDetailsProvider>
                 </_TransactionDataContentViewWrapper>
             );
 
@@ -103,6 +114,7 @@ export const TransactionDataContent = ({ transaction }: TransactionDataContentPr
                         availableAmount={refundableAmount}
                         currency={refundCurrency}
                         refundMode={refundMode}
+                        refreshTransaction={refreshTransaction}
                         transactionId={transaction.id}
                     >
                         <TransactionRefundNotice />

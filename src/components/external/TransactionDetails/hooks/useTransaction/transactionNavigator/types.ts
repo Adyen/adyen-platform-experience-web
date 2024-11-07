@@ -1,7 +1,8 @@
-import type { ITransaction } from '../../../../../types';
+import type { ITransaction } from '../../../../../../types';
 
 export interface TransactionNavigation {
-    get from(): ITransaction['id'] | undefined; // `undefined` only for the first navigation
+    // `undefined` only for the first navigation
+    get from(): ITransaction['id'] | undefined;
     get to(): ITransaction['id'];
 }
 

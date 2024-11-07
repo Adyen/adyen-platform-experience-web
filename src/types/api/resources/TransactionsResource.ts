@@ -170,13 +170,13 @@ export interface components {
         TransactionRefundRequest: {
             amount: components['schemas']['Amount'];
             lineItems?: components['schemas']['TransactionRefundRequestLineItem'][];
-            merchantRefundReason?: string;
+            refundReason?: string;
         };
         TransactionRefundResponse: {
             status: 'received';
             transactionId: components['schemas']['SingleTransaction']['id'];
             amount: components['schemas']['Amount'];
-            merchantRefundReason?: string;
+            refundReason?: string;
             lineItems?: components['schemas']['TransactionLineItem'][];
         };
     };

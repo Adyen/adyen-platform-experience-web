@@ -1,7 +1,7 @@
 import { REFUND_REASONS } from './constants';
 import type { PropsWithChildren } from 'preact/compat';
 import type { ButtonActionObject } from '../../../internal/Button/ButtonActions/types';
-import type { ILineItem } from '../../../../types';
+import type { ILineItem, ITransaction } from '../../../../types';
 
 export const enum ActiveView {
     DETAILS,

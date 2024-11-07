@@ -4,7 +4,7 @@ import AuthSession from '../../../../../../core/Auth/session/AuthSession';
 import type { ITransactionRefundContext, TransactionRefundProviderProps } from '../types';
 import type { ITransaction, ITransactionRefundPayload } from '../../../../../../types';
 
-type _BaseUseRefundActionProps = Pick<TransactionRefundProviderProps, 'transactionId'> &
+type _BaseUseRefundActionProps = Pick<TransactionRefundProviderProps, 'refreshTransaction' | 'transactionId'> &
     Pick<ITransactionRefundContext, 'refundReason'> & {
         refundAmount: ITransaction['amount'];
         refundInProgress: boolean;
@@ -12,8 +12,9 @@ type _BaseUseRefundActionProps = Pick<TransactionRefundProviderProps, 'transacti
     };
 
 export const useRefundAction = <T extends _BaseUseRefundActionProps>({
+    refreshTransaction,
     refundAmount: amount,
-    refundReason: merchantRefundReason,
+    refundReason,
     refundInProgress,
     refundTransaction,
     transactionId,
@@ -38,10 +39,10 @@ export const useRefundAction = <T extends _BaseUseRefundActionProps>({
     const refundPayload = useMemo<ITransactionRefundPayload>(
         () => ({
             amount,
-            merchantRefundReason,
+            refundReason,
             // ...(refundMode === RefundMode.PARTIAL_LINE_ITEMS && { lineItems: [] }),
         }),
-        [amount, merchantRefundReason]
+        [amount, refundReason]
     );
 
     const refundAction = useCallback(
@@ -53,8 +54,8 @@ export const useRefundAction = <T extends _BaseUseRefundActionProps>({
                     contentType: 'application/json',
                 },
                 refundParams
-            ),
-        [refundTransaction, refundParams, refundPayload]
+            ).then(refreshTransaction),
+        [refreshTransaction, refundTransaction, refundParams, refundPayload]
     );
 
     const refundActionLabel = useMemo(() => {

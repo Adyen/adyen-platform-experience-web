@@ -1,6 +1,6 @@
-import { EMPTY_ARRAY, enumerable, getter, isEmptyString, isFunction, isNullish, struct } from '../../../../../utils';
+import { EMPTY_ARRAY, enumerable, getter, isEmptyString, isFunction, isNullish, struct } from '../../../../../../utils';
 import type { TransactionNavigation, TransactionNavigationCallback, TransactionNavigator } from './types';
-import type { ITransaction } from '../../../../../types';
+import type { ITransaction } from '../../../../../../types';
 
 export const createDuplexTransactionNavigator = () => {
     let [currentTransactionId, previousTransactionId, fromTransactionId, toTransactionId] = EMPTY_ARRAY as readonly ITransaction['id'][];
@@ -30,8 +30,14 @@ export const createDuplexTransactionNavigator = () => {
         currentTransactionId = previousTransactionId = fromTransactionId = toTransactionId = undefined;
 
         if (!isEmptyString(_fromTransactionId) && !isEmptyString(_toTransactionId)) {
+            fromTransactionId = _fromTransactionId;
             toTransactionId = _toTransactionId;
-            currentTransactionId = fromTransactionId = _fromTransactionId;
+
+            currentTransactionId =
+                cachedCurrentTransactionId === fromTransactionId || cachedCurrentTransactionId === toTransactionId
+                    ? cachedCurrentTransactionId
+                    : fromTransactionId;
+
             if (cachedCurrentTransactionId !== currentTransactionId) triggerNavigationCallback();
         }
     };

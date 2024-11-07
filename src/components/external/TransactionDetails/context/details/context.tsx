@@ -3,7 +3,8 @@ import { createContext } from 'preact';
 import { useCallback, useContext, useEffect, useMemo } from 'preact/hooks';
 import { EMPTY_ARRAY, EMPTY_OBJECT, noop } from '../../../../../utils';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
-import { useTransactionNavigatorContext } from '../navigator';
+import Icon from '../../../../internal/Icon';
+import type { ButtonActionObject } from '../../../../internal/Button/ButtonActions/types';
 import type { ITransactionDetailsContext, TransactionDetailsProviderProps } from './types';
 import type { TranslationKey } from '../../../../../translations';
 import { ButtonVariant } from '../../../../internal/Button/types';
@@ -31,12 +32,14 @@ export const TransactionDetailsProvider = memo(
         setPrimaryAction,
         setSecondaryAction,
         transaction,
+        transactionNavigator,
     }: TransactionDetailsProviderProps) => {
         const { i18n } = useCoreContext();
-        const { currentTransaction, canNavigateBackward, canNavigateForward, backward, forward, reset } = useTransactionNavigatorContext();
+        const { currentTransaction, canNavigateBackward, canNavigateForward, backward, forward } = transactionNavigator;
 
         const primaryActionLabel = useMemo(() => i18n.get('refundAction'), [i18n]);
         const primaryActionDisabled = useMemo(() => !primaryActionAvailable || refundDisabled, [primaryActionAvailable, refundDisabled]);
+
         const primaryAction = useCallback(
             () => void (!primaryActionDisabled && setActiveView(ActiveView.REFUND)),
             [primaryActionDisabled, setActiveView]
@@ -60,17 +63,15 @@ export const TransactionDetailsProvider = memo(
         const secondaryActionLabel = useMemo(() => {
             switch (_secondaryAction) {
                 case TransactionNavigationAction.BACKWARD:
-                    return i18n.get('Go to refund' as TranslationKey);
+                    // [TODO]: Add translation entries for the following tokens and substitute here:
+                    //    'Back to refund'
+                    return i18n.get('Back to refund' as TranslationKey);
                 case TransactionNavigationAction.FORWARD:
+                    // [TODO]: Add translation entries for the following tokens and substitute here:
+                    //    'Go to payment'
                     return i18n.get('Go to payment' as TranslationKey);
             }
         }, [_secondaryAction, i18n]);
-
-        useEffect(() => {
-            if (transaction.category === 'Refund') {
-                reset(transaction.id, transaction.refundMetadata?.originalPaymentId);
-            }
-        }, [reset, transaction]);
 
         useEffect(() => {
             setPrimaryAction(
@@ -80,7 +81,7 @@ export const TransactionDetailsProvider = memo(
                           event: primaryAction,
                           title: primaryActionLabel,
                           variant: ButtonVariant.PRIMARY,
-                      })
+                      } as ButtonActionObject)
                     : undefined
             );
         }, [primaryAction, primaryActionAvailable, primaryActionDisabled, primaryActionLabel, setPrimaryAction]);
@@ -92,8 +93,14 @@ export const TransactionDetailsProvider = memo(
                           disabled: false,
                           event: secondaryAction,
                           title: secondaryActionLabel,
+                          renderTitle: title => (
+                              <>
+                                  <Icon name="angle-right" />
+                                  <span>{title}</span>
+                              </>
+                          ),
                           variant: ButtonVariant.SECONDARY,
-                      })
+                      } as ButtonActionObject)
                     : undefined
             );
         }, [_secondaryAction, secondaryAction, secondaryActionLabel, setSecondaryAction]);

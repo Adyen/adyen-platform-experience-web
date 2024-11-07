@@ -15,6 +15,14 @@
     &__action-bar {
         flex-direction: row;
         width: 100%;
+
+        .adyen-pe-button__label {
+            gap: style.token(spacer-040);
+        }
+
+        .adyen-pe-icon {
+            font-size: 16px;
+        }
     }
 
     &__list {
