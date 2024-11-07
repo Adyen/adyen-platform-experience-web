@@ -31,10 +31,10 @@ describe('GrantItem', () => {
 
         const amountLabel = screen.getByTestId('grant-amount-label');
         expect(amountLabel).toBeInTheDocument();
-        expect(amountLabel).toHaveTextContent('Repaid');
+        expect(amountLabel).toHaveTextContent('Remaining');
         expect(amountLabel).toHaveClass('adyen-pe-typography--caption');
 
-        const amount = screen.getByText('$12,000.00');
+        const amount = screen.getByText('$8,220.00');
         expect(amount).toBeInTheDocument();
         expect(amount).not.toHaveClass('adyen-pe-grant-item__text--secondary');
 
@@ -60,10 +60,10 @@ describe('GrantItem', () => {
 
         const amountLabel = screen.getByTestId('grant-amount-label');
         expect(amountLabel).toBeInTheDocument();
-        expect(amountLabel).toHaveTextContent('Repaid');
+        expect(amountLabel).toHaveTextContent('Remaining');
         expect(amountLabel).toHaveClass('adyen-pe-grant-item__text--secondary');
 
-        const amount = screen.getByText('$0.00');
+        const amount = screen.getByText('$20,220.00');
         expect(amount).toBeInTheDocument();
         expect(amount).not.toHaveClass('adyen-pe-grant-item__text--secondary');
 

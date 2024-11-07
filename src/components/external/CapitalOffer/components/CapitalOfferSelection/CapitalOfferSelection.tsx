@@ -14,6 +14,7 @@ import './CapitalOfferSelection.scss';
 import { debounce, getExpectedRepaymentDate, getPaymentRatePercentage } from '../utils/utils';
 import CapitalSlider from '../../../../internal/CapitalSlider';
 import { CapitalErrorMessageDisplay } from '../utils/CapitalErrorMessageDisplay';
+import { calculateSliderAdjustedMidValue } from '../../../../internal/Slider/Slider';
 
 type CapitalOfferSelectionProps = {
     config: IDynamicOfferConfig | undefined;
@@ -87,7 +88,10 @@ export const CapitalOfferSelection = ({
     onContactSupport,
 }: CapitalOfferSelectionProps) => {
     const { i18n } = useCoreContext();
-    const [requestedValue, setRequestedValue] = useState<number | undefined>(Number(requestedAmount) || config?.minAmount.value);
+
+    const initialValue = config ? calculateSliderAdjustedMidValue(config.minAmount.value, config.maxAmount.value, config.step) : undefined;
+    const [requestedValue, setRequestedValue] = useState<number | undefined>(Number(requestedAmount) || initialValue);
+
     const currency = useMemo(() => config?.minAmount.currency, [config?.minAmount.currency]);
 
     const { reviewGrantOffer, getDynamicGrantOffer } = useAuthContext().endpoints;
