@@ -11,6 +11,18 @@ import Tabs from '../../../../internal/Tabs/Tabs';
 import { useMemo } from 'preact/hooks';
 import { IGrant } from '../../../../../types';
 
+const List = ({ grants }: { grants: IGrant[] }) => {
+    return (
+        <BaseList classNames={'adyen-pe-grant-list__items'}>
+            {grants.map(grant => (
+                <li key={grant.id}>
+                    <GrantItem grant={grant} />
+                </li>
+            ))}
+        </BaseList>
+    );
+};
+
 export const GrantList: FunctionalComponent<GrantListProps> = ({ grantList, hideTitle, newOfferAvailable }) => {
     const { i18n } = useCoreContext();
 
@@ -29,6 +41,11 @@ export const GrantList: FunctionalComponent<GrantListProps> = ({ grantList, hide
         return [active, inactive];
     }, [grantList]);
 
+    const display = useMemo<'SingleGrant' | 'Tabs' | undefined>(() => {
+        if (grantList.length === 1) return 'SingleGrant';
+        if (grantList.length > 1) return 'Tabs';
+    }, [grantList.length]);
+
     return (
         <div className="adyen-pe-grant-list">
             <div className="adyen-pe-grant-list__header-container">
@@ -40,37 +57,24 @@ export const GrantList: FunctionalComponent<GrantListProps> = ({ grantList, hide
                 ) : null}
             </div>
 
-            <Tabs
-                tabs={[
-                    {
-                        label: 'capital.active',
-                        content: (
-                            <BaseList classNames={'adyen-pe-grant-list__items'}>
-                                {activeGrants.map(grant => (
-                                    <li key={grant.id}>
-                                        <GrantItem grant={grant} />
-                                    </li>
-                                ))}
-                            </BaseList>
-                        ),
-                        id: 'active',
-                    },
-                    {
-                        label: 'capital.inactive',
-                        content: (
-                            <BaseList classNames={'adyen-pe-grant-list__items'}>
-                                {inactiveGrants.map(grant => (
-                                    <li key={grant.id}>
-                                        <GrantItem grant={grant} />
-                                    </li>
-                                ))}
-                            </BaseList>
-                        ),
-                        id: 'inactive',
-                    },
-                ]}
-                defaultActiveTab={'active'}
-            />
+            {display === 'SingleGrant' && <List grants={grantList} />}
+            {display === 'Tabs' && (
+                <Tabs
+                    tabs={[
+                        {
+                            label: 'capital.active',
+                            content: <List grants={activeGrants} />,
+                            id: 'active',
+                        },
+                        {
+                            label: 'capital.inactive',
+                            content: <List grants={inactiveGrants} />,
+                            id: 'inactive',
+                        },
+                    ]}
+                    defaultActiveTab={'active'}
+                />
+            )}
         </div>
     );
 };
