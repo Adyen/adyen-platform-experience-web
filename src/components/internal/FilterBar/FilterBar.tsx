@@ -1,7 +1,6 @@
 import cx from 'classnames';
 import Button from '../Button';
-import Close from '../SVGIcons/Close';
-import Filter from '../SVGIcons/Filter';
+import Icon from '../Icon';
 import { isFunction } from '../../../utils';
 import { ButtonVariant } from '../Button/types';
 import { PropsWithChildren } from 'preact/compat';
@@ -34,7 +33,7 @@ export const FilterBarMobileSwitch = ({ isMobileViewport, showingFilters, setSho
                 onClick={() => setShowingFilters?.(!showingFilters)}
                 variant={ButtonVariant.SECONDARY}
             >
-                {showingFilters ? <Close /> : <Filter />}
+                <Icon name={showingFilters ? 'cross' : 'filter'} />
             </Button>
         </div>
     ) : null;

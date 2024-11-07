@@ -1,4 +1,4 @@
-import { IBalanceAccountBase, ITransaction } from '../../../types';
+import { IBalanceAccountBase, ITransactionWithDetails } from '../../../types';
 import { DetailsWithExtraData } from '../../external';
 
 //TODO: Revisit those types to find the most appropriate file
@@ -21,7 +21,7 @@ export type DetailsWithId =
 
 export type DetailsComponentProps = (TransactionDetailsWithoutIdProps & { type: 'transaction' }) | DetailsWithId;
 
-export type TransactionDetailData = ITransaction & BalanceAccountProps;
+export type TransactionDetailData = ITransactionWithDetails & BalanceAccountProps;
 
 export interface BalanceAccountProps {
     balanceAccount?: IBalanceAccountBase;

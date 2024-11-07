@@ -42,6 +42,9 @@
         justify-content: space-between;
 
         &__button {
+            --icon-size: 16px;
+
+            font-size: var(--icon-size);
             padding: 0;
             width: calc(#{style.token(spacer-060)} * 3);
         }

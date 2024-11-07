@@ -116,6 +116,16 @@
     display: block;
 }
 
+.adyen-pe-input-wrapper--autoresizable-textarea {
+    display: flex;
+    overflow: hidden;
+
+    > textarea {
+        overflow-y: scroll;
+        resize: none;
+    }
+}
+
 .adyen-pe-input__inline-validation {
     height: 16px;
     position: absolute;
@@ -179,4 +189,17 @@
     border-color: transparent;
     color: style.token(color-label-primary-hover);
     cursor: default;
+}
+
+/* stylelint-disable-next-line selector-no-qualifying-type */
+.adyen-pe-input[type='number']::-webkit-inner-spin-button,
+.adyen-pe-input[type='number']::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    -moz-appearance: textfield;
+    margin: 0;
+}
+
+/* stylelint-disable-next-line selector-no-qualifying-type */
+.adyen-pe-input[type='number'] {
+    appearance: textfield;
 }
