@@ -87,10 +87,6 @@ export const CapitalOfferSummary = ({
         return null;
     }, [i18n, requestFundsMutation.error]);
 
-    const contactSupport = useMemo(() => {
-        return onContactSupport ? () => <Button onClick={onContactSupport}>{i18n.get('reachOutToSupport')}</Button> : undefined;
-    }, [i18n, onContactSupport]);
-
     return !requestErrorAlert && requestFundsMutation.error ? (
         <CapitalErrorMessageDisplay error={requestFundsMutation.error} onBack={onBack} onContactSupport={onContactSupport} />
     ) : (
