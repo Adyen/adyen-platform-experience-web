@@ -113,7 +113,7 @@ export const TransactionDataContent = ({ transaction: initialTransaction }: Tran
         // TODO:Add translation
         return refundStatuses?.length || refundLocked ? (
             <>
-                {refundLocked && <Alert type={AlertTypeOption.IN_PROGRESS} description={'The refund is being processed. Please come back later.'} />}
+                {refundLocked && <Alert type={AlertTypeOption.HIGHLIGHT} description={'The refund is being processed. Please come back later.'} />}
                 {refundStatuses.map((status, index) => (
                     <Alert key={`${Math.random()}-${index}`} type={status?.type ?? AlertTypeOption.HIGHLIGHT} description={status?.label} />
                 ))}

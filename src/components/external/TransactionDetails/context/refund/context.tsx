@@ -43,7 +43,7 @@ export const TransactionRefundProvider = memo(
         setSecondaryAction,
         transactionId,
     }: TransactionRefundProviderProps) => {
-        const { isLoading: refundInProgress, mutate: refundTransaction } = useMutation({ queryFn: useAuthContext().endpoints.refundTransaction });
+        const { isLoading: refundInProgress, mutate: refundTransaction } = useMutation({ queryFn: useAuthContext().endpoints.initiateRefund });
         const { availableItems, clearItems, items, updateItems } = useRefundContextLineItems({ currency, lineItems });
         const interactionsDisabled = refundInProgress;
 

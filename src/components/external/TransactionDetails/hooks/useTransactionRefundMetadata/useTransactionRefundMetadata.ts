@@ -16,11 +16,11 @@ export const useTransactionRefundMetadata = (transaction: TransactionDataProps['
     const refundLocked = boolOrFalse(details?.refundLocked);
     const refundable = refundMode !== RefundMode.NON_REFUNDABLE;
 
-    const refundableAmount = useMemo(() => (transaction ? Math.max(0, details?.refundableAmount.value ?? 0) : 0), [details, transaction]);
+    const refundableAmount = useMemo(() => (transaction ? Math.max(0, details?.refundableAmount?.value ?? 0) : 0), [details, transaction]);
 
-    const refundAuthorization = isFunction(useAuthContext().endpoints.refundTransaction);
+    const refundAuthorization = isFunction(useAuthContext().endpoints.initiateRefund);
     const refundAvailable = refundAuthorization && refundable && refundableAmount > 0;
-    const refundCurrency = details?.refundableAmount.currency ?? transaction?.amount.currency ?? '';
+    const refundCurrency = details?.refundableAmount?.currency ?? transaction?.amount.currency ?? '';
     const refundDisabled = !refundAvailable || refundLocked;
 
     // [TODO]: Introduce logic to compute already refunded amount
@@ -75,11 +75,11 @@ export const useTransactionRefundMetadata = (transaction: TransactionDataProps['
         }
 
         return statusAlerts;
-    }, [transaction]);
+    }, [details?.refundStatuses, transaction, refundableAmount, i18n, refundCurrency, refundedAmount]);
 
     const refundedState = useMemo(() => {
         const { some: someRefunded, every: allRefunded } = checkRefundStatusCollection(
-            ({ status, amount }) => status === RefundStatus.COMPLETED,
+            ({ status }) => status === RefundStatus.COMPLETED,
             details?.refundStatuses
         );
 

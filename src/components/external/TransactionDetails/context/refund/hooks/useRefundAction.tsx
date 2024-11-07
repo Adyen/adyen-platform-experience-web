@@ -10,12 +10,11 @@ type _BaseUseRefundActionProps = Pick<TransactionRefundProviderProps, 'refreshTr
     Pick<ITransactionRefundContext, 'refundReason'> & {
         refundAmount: ITransaction['amount'];
         refundInProgress: boolean;
-        refundTransaction: AuthSession['context']['endpoints']['refundTransaction'];
+        refundTransaction: AuthSession['context']['endpoints']['initiateRefund'];
         setActiveView: (activeView: ActiveView) => void;
     };
 
 export const useRefundAction = <T extends _BaseUseRefundActionProps>({
-    refreshTransaction,
     refundAmount: amount,
     refundReason,
     refundInProgress,
@@ -78,7 +77,7 @@ export const useRefundAction = <T extends _BaseUseRefundActionProps>({
                 .catch(() => {
                     setActiveView(ActiveView.REFUND_ERROR);
                 }),
-        [refreshTransaction, refundTransaction, refundParams, refundPayload, setActiveView, refreshTransaction]
+        [refundTransaction, refundParams, refundPayload, setActiveView]
     );
 
     const refundActionLabel = useMemo(() => {

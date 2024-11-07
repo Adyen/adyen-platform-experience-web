@@ -14,8 +14,6 @@ export const AlertIcon = ({ className, type }: AlertIconProps) => {
             return <Icon name="cross-circle-fill" className={className} />;
         case AlertTypeOption.HIGHLIGHT:
             return <Icon name="info-filled" className={className} />;
-        case AlertTypeOption.IN_PROGRESS:
-            return <Icon name="clock" className={className} />;
         case AlertTypeOption.SUCCESS:
         default:
             return <Icon name="checkmark-circle-fill" className={className} />;
