@@ -24,7 +24,7 @@ const TransactionRefundItemSelect = ({
     handleSelection,
     isLineItem = false,
     ...additionalData
-}: ITransactionLineItem & { status: components['schemas']['TransactionLineItemRefundStatus']['status'] | 'available' } & {
+}: Omit<ITransactionLineItem, 'refundStatuses'> & { status: components['schemas']['TransactionLineItemRefundStatus']['status'] | 'available' } & {
     showCheckbox?: boolean;
     isLineItem: boolean;
     handleSelection?: (e: any) => any;
