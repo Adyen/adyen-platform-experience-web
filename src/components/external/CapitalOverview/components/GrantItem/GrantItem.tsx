@@ -23,7 +23,11 @@ export const GrantItem: FunctionalComponent<GrantItemProps> = ({ grant }) => {
 
     return (
         <div className={GRANT_ITEM_CLASS_NAMES.base}>
-            <Card classNameModifiers={[GRANT_ITEM_CLASS_NAMES.overview]} filled={grantConfig.isBackgroundFilled} testId={'grant-container'}>
+            <Card
+                classNameModifiers={[GRANT_ITEM_CLASS_NAMES.overview, GRANT_ITEM_CLASS_NAMES.grantContainer]}
+                filled={grantConfig.isBackgroundFilled}
+                testId={'grant-container'}
+            >
                 <div className={GRANT_ITEM_CLASS_NAMES.grantContainer}>
                     <div className={GRANT_ITEM_CLASS_NAMES.statusContainer}>
                         <Typography
@@ -75,7 +79,7 @@ export const GrantItem: FunctionalComponent<GrantItemProps> = ({ grant }) => {
                     )}
                     {grant.status !== 'Active' ? (
                         <div className={GRANT_ITEM_CLASS_NAMES.loanID}>
-                            <CopyText text={grant.id} label={i18n.get('capital.loanID')} isHovered type={'Text'} />
+                            <CopyText textToCopy={grant.id} buttonLabel={i18n.get('capital.loanID')} isHovered type={'Text'} />
                         </div>
                     ) : null}
                 </div>
