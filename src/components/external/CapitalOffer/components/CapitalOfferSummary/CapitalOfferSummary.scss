@@ -42,4 +42,8 @@
             }
         }
     }
+
+    &__error-alert-button {
+        margin-top: style.token(spacer-050);
+    }
 }
