@@ -3,7 +3,6 @@ import type { PropsWithChildren } from 'preact/compat';
 import { EMPTY_ARRAY } from '../../../../../utils';
 import { useCallback, useLayoutEffect, useState } from 'preact/hooks';
 import { TransactionDetailsProvider } from '../../context/details';
-import { TransactionNavigatorProvider } from '../../context/navigator';
 import { TransactionRefundProvider } from '../../context/refund';
 import TransactionDetailsDataContainer from '../details/TransactionDetailsDataContainer';
 import TransactionDataProperties from '../details/TransactionDataProperties';
