@@ -102,10 +102,12 @@ const enrichTransactionDataWithDetails = <T extends ITransaction>(
         case 'Payment':
         case 'Transfer': {
             transactionWithDetails = getPaymentOrTransferWithDetails(transaction, deductedAmount)!;
-            const lineItems = DEFAULT_LINE_ITEMS.map(item => ({
-                ...item,
-                amountIncludingTax: { ...item.amountIncludingTax, currency },
-            }));
+            const lineItems = KLARNA_OR_PAYPAL.includes(transaction?.paymentMethod?.type ?? '')
+                ? DEFAULT_LINE_ITEMS.map(item => ({
+                      ...item,
+                      amountIncludingTax: { ...item.amountIncludingTax, currency },
+                  }))
+                : [];
             transactionWithDetails = { ...transactionWithDetails, ...{ lineItems: lineItems } };
             break;
         }
@@ -171,7 +173,6 @@ const fetchTransaction = async (params: PathParams) => {
             return HttpResponse.json(
                 enrichTransactionDataWithDetails(matchingMock, {
                     deductedAmount: 350,
-                    lineItemsSlice: [0, 6],
                     refundMode: 'partially_refundable_any_amount', //'partially_refundable_with_line_items_required',
                 })
             );
@@ -270,21 +271,6 @@ export const transactionsMocks = [
 
         const { transactions } = fetchTransactionsForRequest(request);
 
-        // const enrichedTransactions = transactions.map((transaction: ITransaction) => {
-        //     passThroughRefundLockDeadlineCheckpoint();
-        //
-        //     if (PAYMENT_OR_TRANSFER.includes(transaction?.category)) {
-        //         if (transaction?.paymentMethod?.type && KLARNA_OR_PAYPAL.includes(transaction.paymentMethod.type)) {
-        //             return enrichTransactionDataWithDetails(transaction, {
-        //                 deductedAmount: 350,
-        //                 lineItemsSlice: [0, 4],
-        //                 refundMode: 'partially_refundable_with_line_items_required',
-        //             });
-        //         }
-        //     }
-        //     return transaction;
-        // });
-
         await delay(responseDelay);
 
         return HttpResponse.json({
@@ -346,7 +332,7 @@ export const transactionsMocks = [
             let data = null;
 
             if (!transactionResponse.ok) throw await transactionResponse.text();
-            const { amount, lineItems, merchantRefundReason } = (await request.json()) as ITransactionRefundPayload;
+            const { amount, lineItems, refundReason } = (await request.json()) as ITransactionRefundPayload;
             const { id: transactionId, refundDetails, lineItems: originalLineItems } = (await transactionResponse.json()) as ITransactionWithDetails;
 
             const lockDeadline = Date.now() + 2 * 60 * 1000; // 2 minutes
@@ -357,7 +343,7 @@ export const transactionsMocks = [
 
             return HttpResponse.json({
                 amount,
-                ...(merchantRefundReason && { merchantRefundReason }),
+                ...(refundReason && { refundReason }),
                 ...(refundDetails.refundMode.startsWith('partially_refundable') && {
                     lineItems: (lineItems ?? (EMPTY_ARRAY as NonNullable<typeof lineItems>)).map(({ quantity, ...rest }) => {
                         const originalLineItem = originalLineItems?.find(({ reference }: { reference: string }) => rest.reference === reference)!;
