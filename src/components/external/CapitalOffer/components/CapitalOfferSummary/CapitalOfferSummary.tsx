@@ -18,6 +18,7 @@ import { AlertTypeOption } from '../../../../internal/Alert/types';
 import Alert from '../../../../internal/Alert/Alert';
 import Icon from '../../../../internal/Icon';
 import { CapitalErrorMessageDisplay } from '../utils/CapitalErrorMessageDisplay';
+import cx from 'classnames';
 
 const errorMessageWithAlert = ['30_013'];
 
@@ -72,7 +73,7 @@ export const CapitalOfferSummary = ({
             switch (err.errorCode) {
                 case '30_013':
                     return {
-                        title: i18n.get('capital.thereIsNoPrimaryBalanceAccountConfigured'),
+                        title: i18n.get('capital.thereIsNoPrimaryAccountConfigured'),
                         message: i18n.get('capital.weCannotContinueWithTheOffer'),
                         errorCode: '30_013',
                     };
@@ -138,26 +139,19 @@ export const CapitalOfferSummary = ({
                     );
                 }}
                 renderValue={(val, key) => {
-                    if (
-                        key === 'capital.balanceAccount' &&
-                        requestFundsMutation.error &&
-                        requestErrorAlert &&
-                        requestErrorAlert.errorCode === '30_013'
-                    ) {
-                        return (
-                            <Typography
-                                el={TypographyElement.SPAN}
-                                variant={TypographyVariant.CAPTION}
-                                stronger
-                                className={'adyen-pe-capital-offer-summary__details--error'}
-                            >
-                                <Icon name={'warning-filled'} />
-                                <span>{i18n.get('capital.primaryBalanceAccount')}</span>
-                            </Typography>
-                        );
-                    }
+                    const showWarningIcon =
+                        key === 'capital.account' && requestFundsMutation.error && requestErrorAlert && requestErrorAlert.errorCode === '30_013';
+
                     return (
-                        <Typography el={TypographyElement.SPAN} variant={TypographyVariant.CAPTION} stronger>
+                        <Typography
+                            className={cx({
+                                ['adyen-pe-capital-offer-summary__details--error']: showWarningIcon,
+                            })}
+                            el={TypographyElement.SPAN}
+                            variant={TypographyVariant.CAPTION}
+                            stronger
+                        >
+                            {showWarningIcon ? <Icon name={'warning-filled'} /> : null}
                             {val}
                         </Typography>
                     );
@@ -191,7 +185,7 @@ export const CapitalOfferSummary = ({
                               )}`
                             : null,
                     },
-                    { key: 'capital.balanceAccount', value: i18n.get('capital.primaryBalanceAccount') },
+                    { key: 'capital.account', value: i18n.get('capital.primaryAccount') },
                 ]}
             />
             {requestErrorAlert && (
@@ -200,7 +194,13 @@ export const CapitalOfferSummary = ({
                     type={AlertTypeOption.WARNING}
                     title={requestErrorAlert.title}
                     description={requestErrorAlert.message}
-                />
+                >
+                    {onContactSupport ? (
+                        <Button className={'adyen-pe-capital-offer-summary__error-alert-button'} onClick={onContactSupport}>
+                            {i18n.get('reachOutToSupport')}
+                        </Button>
+                    ) : null}
+                </Alert>
             )}
             <div className="adyen-pe-capital-offer-summary__buttons">
                 {!requestFundsMutation.error && (
