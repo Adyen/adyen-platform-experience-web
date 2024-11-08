@@ -13,7 +13,6 @@ const TransactionLineItems = ({ view }: { view: ActiveView }) => {
     const { i18n } = useCoreContext();
     const { hasSelectAll, totalAmount, totalQuantity, statusesByCurrentView, lineItemsByStatus, handleSelectAll } = useLineItemData(view);
 
-    console.log(lineItemsByStatus['available']);
     return useMemo(() => {
         return (
             <div className={`${TX_DATA_CONTAINER}`}>
