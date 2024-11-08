@@ -124,7 +124,18 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
                             </div>
                         );
                     case 'GrantList':
-                        return grantList && <GrantList grantList={grantList} hideTitle={hideTitle} newOfferAvailable={newOfferAvailable} />;
+                        return (
+                            grantList && (
+                                <GrantList
+                                    externalDynamicOffersConfig={dynamicOffer}
+                                    grantList={grantList}
+                                    hideTitle={hideTitle}
+                                    newOfferAvailable={newOfferAvailable}
+                                    onRequestFundsHandler={onRequestFundsHandler}
+                                    onOfferDismissed={onOfferDismissed}
+                                />
+                            )
+                        );
                     case 'PreQualified':
                         return (
                             <PreQualified

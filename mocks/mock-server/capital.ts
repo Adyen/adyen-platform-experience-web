@@ -119,27 +119,8 @@ export const CapitalMockedResponses = capitalFactory({
         { endpoint: mockEndpoints.dynamicOfferConfig, handler: EMPTY_OFFER },
         { endpoint: mockEndpoints.grants, response: { data: [REPAID_GRANT] } },
     ],
-    multipleRepaidGrants: [
-        { endpoint: mockEndpoints.dynamicOfferConfig, handler: EMPTY_OFFER },
-        {
-            endpoint: mockEndpoints.grants,
-            response: {
-                data: [
-                    REPAID_GRANT,
-                    {
-                        ...REPAID_GRANT,
-                        id: 'c6bi2512869f',
-                        grantAmount: {
-                            value: 1200000,
-                            currency: 'USD',
-                        },
-                    },
-                ],
-            },
-        },
-    ],
     multipleGrants: [
-        { endpoint: mockEndpoints.dynamicOfferConfig, handler: EMPTY_OFFER },
+        { endpoint: mockEndpoints.dynamicOfferConfig, response: DYNAMIC_CAPITAL_OFFER },
         {
             endpoint: mockEndpoints.grants,
             response: {

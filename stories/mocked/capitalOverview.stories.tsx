@@ -97,16 +97,6 @@ export const WithRepaidGrant: ElementStory<typeof CapitalOverview> = {
     },
 };
 
-export const WithMultipleRepaidGrant: ElementStory<typeof CapitalOverview> = {
-    name: 'With Multiple Repaid Grant',
-    args: {
-        mockedApi: true,
-    },
-    parameters: {
-        msw: CapitalMockedResponses.multipleRepaidGrants,
-    },
-};
-
 export const WithRevokedGrant: ElementStory<typeof CapitalOverview> = {
     name: 'With Revoked Grant',
     args: {

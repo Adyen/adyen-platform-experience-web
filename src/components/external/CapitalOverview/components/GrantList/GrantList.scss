@@ -26,7 +26,12 @@
     @include adyen-pe-screen-sm-and-up {
         gap: 0;
 
+        &__offer-button {
+            margin-bottom: 0;
+        }
+
         &__header-container {
+            align-items: center;
             flex-direction: row;
             justify-content: space-between;
         }
