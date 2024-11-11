@@ -24,7 +24,7 @@ export const GrantItem: FunctionalComponent<GrantItemProps> = ({ grant }) => {
     return (
         <div className={GRANT_ITEM_CLASS_NAMES.base}>
             <Card classNameModifiers={[GRANT_ITEM_CLASS_NAMES.overview]} filled={grantConfig.isBackgroundFilled} testId={'grant-container'}>
-                <div className={GRANT_ITEM_CLASS_NAMES.cardContainer}>
+                <div className={GRANT_ITEM_CLASS_NAMES.cardContent}>
                     <div className={GRANT_ITEM_CLASS_NAMES.statusContainer}>
                         <Typography
                             variant={TypographyVariant.CAPTION}
