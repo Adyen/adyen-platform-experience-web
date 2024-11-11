@@ -55,7 +55,10 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
     const dynamicOffer = dynamicOfferQuery.data;
 
     const [requestedGrant, setRequestedGrant] = useState<IGrant>();
-    const grantList = useMemo(() => (requestedGrant ? [requestedGrant] : grantsQuery.data?.data), [grantsQuery.data?.data, requestedGrant]);
+    const grantList = useMemo(
+        () => (requestedGrant ? [requestedGrant, ...(grantsQuery.data?.data || [])] : grantsQuery.data?.data),
+        [grantsQuery.data?.data, requestedGrant]
+    );
 
     const onFundsRequestHandler = useCallback(
         (data: IGrant) => {

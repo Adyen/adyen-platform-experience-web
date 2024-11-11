@@ -4,6 +4,7 @@ import './GrantList.scss';
 import { useCallback, useState } from 'preact/hooks';
 import { CapitalOffer } from '../../../CapitalOffer/components/CapitalOffer/CapitalOffer';
 import { GrantsDisplay } from './GrantsDisplay';
+import { IGrant } from '../../../../../types';
 
 export const GrantList: FunctionalComponent<GrantListProps> = ({
     onFundsRequestHandler,
@@ -21,12 +22,20 @@ export const GrantList: FunctionalComponent<GrantListProps> = ({
         onOfferDismissed ? onOfferDismissed(goBackToPreviousStep) : goBackToPreviousStep();
     }, [goBackToPreviousStep, onOfferDismissed]);
 
+    const goBackToGrantListOnFundsRequest = useCallback(
+        (data: IGrant) => {
+            onFundsRequestHandler(data);
+            setCapitalOfferSelection(false);
+        },
+        [onFundsRequestHandler]
+    );
+
     return (
         <>
             {capitalOfferSelection ? (
                 <CapitalOffer
                     externalDynamicOffersConfig={externalDynamicOffersConfig}
-                    onFundsRequest={onFundsRequestHandler}
+                    onFundsRequest={goBackToGrantListOnFundsRequest}
                     onOfferDismissed={goBackToList}
                 />
             ) : (

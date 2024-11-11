@@ -30,7 +30,7 @@ export const GrantsDisplay: FunctionalComponent<GrantsProps> = ({ grantList, hid
         const inactive: IGrant[] = [];
 
         grantList?.forEach(grant => {
-            if (grant.status === 'Active') {
+            if (grant.status === 'Active' || grant.status === 'Pending') {
                 active.push(grant);
             } else {
                 inactive.push(grant);
