@@ -45,8 +45,8 @@ export const GrantDetails: FunctionalComponent<GrantDetailsProps> = ({ grant }) 
             { key: 'capital.totalRepaymentAmount', value: formatAmount(grant.totalAmount) },
             { key: 'capital.repaymentThreshold', value: formatAmount(grant.thresholdAmount) },
             { key: 'capital.loanID', value: grant.id },
-            { key: 'capital.balanceDescription', value: grant.balanceAccountDescription },
-            { key: 'capital.balanceAccount', value: grant.balanceAccountCode },
+            { key: 'capital.accountDescription', value: grant.balanceAccountDescription },
+            { key: 'capital.accountID', value: grant.balanceAccountCode },
         ];
     }, [grant, formatAmount, i18n]);
 

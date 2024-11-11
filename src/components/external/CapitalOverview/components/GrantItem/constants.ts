@@ -9,6 +9,6 @@ export const GRANT_ITEM_CLASS_NAMES = {
     statusContainer: 'adyen-pe-grant-item__status-container',
     textSecondary: 'adyen-pe-grant-item__text--secondary',
     progressBar: 'adyen-pe-grant-item__progress-bar',
-    grantContainer: 'adyen-pe-grant-item__details-container',
+    cardContainer: 'adyen-pe-grant-item__card-container',
     loanID: 'adyen-pe-grant-item__loan-id',
 };

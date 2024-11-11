@@ -17,9 +17,10 @@ const REPAYMENT_FREQUENCY = 30;
 export const CapitalOffer: FunctionalComponent<ExternalUIComponentProps<CapitalOfferProps>> = ({
     hideTitle,
     externalDynamicOffersConfig,
-    onOfferDismissed,
-    onRequestFunds,
     onContactSupport,
+    onFundsRequest,
+    onOfferDismissed,
+    onOfferSelect,
 }) => {
     const { getDynamicGrantOffersConfiguration } = useAuthContext().endpoints;
 
@@ -50,10 +51,17 @@ export const CapitalOffer: FunctionalComponent<ExternalUIComponentProps<CapitalO
 
     const [requestedAmount, setRequestedAmount] = useState<number>();
 
-    const onReviewOfferHandler = useCallback((data?: IGrantOfferResponseDTO) => {
-        setRequestedAmount(data?.grantAmount.value);
-        setSelectedOffer(data);
-    }, []);
+    const onOfferSelectHandler = useCallback(
+        (data: IGrantOfferResponseDTO) => {
+            if (onOfferSelect) {
+                onOfferSelect(data);
+            } else {
+                setRequestedAmount(data?.grantAmount.value);
+                setSelectedOffer(data);
+            }
+        },
+        [onOfferSelect]
+    );
 
     const capitalOfferState = useMemo<CapitalOfferState>(() => {
         if (selectedOffer) {
@@ -74,7 +82,7 @@ export const CapitalOffer: FunctionalComponent<ExternalUIComponentProps<CapitalO
                     requestedAmount={requestedAmount}
                     config={config}
                     onBack={goBackHandler}
-                    onReviewOffer={onReviewOfferHandler}
+                    onOfferSelect={onOfferSelectHandler}
                     repaymentFrequency={REPAYMENT_FREQUENCY}
                     emptyGrantOffer={emptyGrantOffer}
                     onContactSupport={onContactSupport}
@@ -85,7 +93,7 @@ export const CapitalOffer: FunctionalComponent<ExternalUIComponentProps<CapitalO
                     grantOffer={selectedOffer!}
                     repaymentFrequency={REPAYMENT_FREQUENCY}
                     onBack={() => setSelectedOffer(undefined)}
-                    onRequestFunds={onRequestFunds}
+                    onFundsRequest={onFundsRequest}
                     onContactSupport={onContactSupport}
                 />
             )}
