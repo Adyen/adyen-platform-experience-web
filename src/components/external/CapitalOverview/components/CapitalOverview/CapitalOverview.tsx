@@ -57,7 +57,7 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
     const [requestedGrant, setRequestedGrant] = useState<IGrant>();
     const grantList = useMemo(() => (requestedGrant ? [requestedGrant] : grantsQuery.data?.data), [grantsQuery.data?.data, requestedGrant]);
 
-    const onRequestFundsHandler = useCallback(
+    const onFundsRequestHandler = useCallback(
         (data: IGrant) => {
             onFundsRequest ? onFundsRequest(data, () => setRequestedGrant(data)) : setRequestedGrant(data);
         },
@@ -131,7 +131,7 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
                                     grantList={grantList}
                                     hideTitle={hideTitle}
                                     newOfferAvailable={newOfferAvailable}
-                                    onRequestFundsHandler={onRequestFundsHandler}
+                                    onFundsRequestHandler={onFundsRequestHandler}
                                     onOfferDismissed={onOfferDismissed}
                                 />
                             )
@@ -140,11 +140,11 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
                         return (
                             <PreQualified
                                 onOfferDismissed={onOfferDismissed}
-                                onSeeOptions={onOfferOptionsRequest}
+                                onOfferOptionsRequest={onOfferOptionsRequest}
                                 skipPreQualifiedIntro={skipPreQualifiedIntro}
                                 hideTitle={hideTitle}
                                 dynamicOffer={dynamicOffer!}
-                                onRequestFundsHandler={onRequestFundsHandler}
+                                onFundsRequestHandler={onFundsRequestHandler}
                             />
                         );
                     case 'Unqualified':

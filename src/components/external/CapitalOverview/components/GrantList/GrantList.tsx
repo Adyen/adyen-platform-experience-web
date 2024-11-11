@@ -6,7 +6,7 @@ import { CapitalOffer } from '../../../CapitalOffer/components/CapitalOffer/Capi
 import { GrantsDisplay } from './GrantsDisplay';
 
 export const GrantList: FunctionalComponent<GrantListProps> = ({
-    onRequestFundsHandler,
+    onFundsRequestHandler,
     onOfferDismissed,
     grantList,
     newOfferAvailable,
@@ -26,7 +26,7 @@ export const GrantList: FunctionalComponent<GrantListProps> = ({
             {capitalOfferSelection ? (
                 <CapitalOffer
                     externalDynamicOffersConfig={externalDynamicOffersConfig}
-                    onRequestFunds={onRequestFundsHandler}
+                    onFundsRequest={onFundsRequestHandler}
                     onOfferDismissed={goBackToList}
                 />
             ) : (
