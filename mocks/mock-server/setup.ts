@@ -75,6 +75,10 @@ export const setupMock = [
                     method: 'GET',
                     url: 'capital/grants/missingActions/signToS',
                 },
+                signToSActionDetails: {
+                    method: 'GET',
+                    url: 'capital/grants/missingActions/signToS',
+                },
             } satisfies Record<EndpointName, { method: HttpMethod; url: string }>,
         });
     }),
