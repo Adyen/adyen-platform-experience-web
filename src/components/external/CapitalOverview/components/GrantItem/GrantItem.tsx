@@ -1,5 +1,5 @@
 import { FunctionalComponent } from 'preact';
-import { useCallback, useMemo } from 'preact/hooks';
+import { useMemo } from 'preact/hooks';
 import cx from 'classnames';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import useTimezoneAwareDateFormatting from '../../../../../hooks/useTimezoneAwareDateFormatting';
@@ -10,20 +10,17 @@ import { Tag } from '../../../../internal/Tag/Tag';
 import ProgressBar from '../../../../internal/ProgressBar';
 import { DATE_FORMAT_CAPITAL_OVERVIEW } from '../../../../../constants';
 import { GRANT_ITEM_CLASS_NAMES } from './constants';
-import { enhanceTermsAndConditionsUrl, getGrantConfig } from './utils';
+import { getGrantConfig } from './utils';
 import { GrantItemProps } from './types';
 import './GrantItem.scss';
 import { GrantDetails } from '../GrantDetails/GrantDetails';
-import Alert from '../../../../internal/Alert/Alert';
-import { AlertTypeOption } from '../../../../internal/Alert/types';
-import Button from '../../../../internal/Button';
+import { GrantAction } from '../GrantAction/GrantAction';
 import CopyText from '../../../../internal/CopyText/CopyText';
 
 export const GrantItem: FunctionalComponent<GrantItemProps> = ({ grant }) => {
     const { i18n } = useCoreContext();
     const { dateFormat } = useTimezoneAwareDateFormatting();
     const grantConfig = useMemo(() => getGrantConfig(grant), [grant]);
-    const enhanceUrl = useCallback(enhanceTermsAndConditionsUrl, []);
 
     return (
         <div className={GRANT_ITEM_CLASS_NAMES.base}>
@@ -85,34 +82,8 @@ export const GrantItem: FunctionalComponent<GrantItemProps> = ({ grant }) => {
                 </div>
             </Card>
             {grantConfig.hasDetails && <GrantDetails grant={grant} />}
-            {grant.missingActions.map(action => {
-                const enhancedUrl = enhanceUrl(action.url);
-                return (
-                    <Alert
-                        key={action.type}
-                        className={GRANT_ITEM_CLASS_NAMES.actions}
-                        type={AlertTypeOption.WARNING}
-                        title={`${i18n.get('capital.signTermsAndConditionsToReceiveFunds')}${
-                            grant.offerExpiresAt
-                                ? ` ${i18n.get('capital.thisOfferExpiresOn', {
-                                      values: {
-                                          date: dateFormat(grant.offerExpiresAt, DATE_FORMAT_CAPITAL_OVERVIEW),
-                                      },
-                                  })}`
-                                : ''
-                        }`}
-                        {...(enhancedUrl
-                            ? {
-                                  description: (
-                                      <Button className={GRANT_ITEM_CLASS_NAMES.actionButton} href={enhancedUrl}>
-                                          {i18n.get('capital.goToTermsAndConditions')}
-                                      </Button>
-                                  ),
-                              }
-                            : {})}
-                    />
-                );
-            })}
+            {grant.missingActions &&
+                grant.missingActions.map(action => <GrantAction key={action.type} action={action} offerExpiresAt={grant.offerExpiresAt} />)}
         </div>
     );
 };

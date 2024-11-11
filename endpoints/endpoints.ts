@@ -16,11 +16,12 @@ export const endpoints = (mode: 'netlify' | 'viteDev' | 'mock') => {
         reports: `${baseUrl}/reports`,
         downloadReport: `${baseUrl}/reports/download`,
         capital: {
+            createOffer: `${baseUrl}/capital/grantOffers/create`,
             dynamicOfferConfig: `${baseUrl}/capital/grantOffers/dynamic/configuration`,
             dynamicOffer: `${baseUrl}/capital/grantOffers/dynamic`,
-            offerReview: `${baseUrl}/capital/grantOffers/review`,
-            requestFunds: `${baseUrl}/capital/grantOffers/dynamic/requestFunds/${matchVariable}`,
             grants: `${baseUrl}/capital/grants`,
+            requestFunds: `${baseUrl}/capital/grantOffers/dynamic/requestFunds/${matchVariable}`,
+            signToS: `${baseUrl}/capital/grants/missingActions/signToS`,
         },
     } as const;
 };

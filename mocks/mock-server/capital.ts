@@ -9,6 +9,7 @@ import {
     REPAID_GRANT,
     REVOKED_GRANT,
     SIGNED_OFFER,
+    SIGN_TOS_ACTION_DETAILS,
     WRITTEN_OFF_GRANT,
 } from '../mock-data';
 import { endpoints } from '../../endpoints/endpoints';
@@ -73,7 +74,7 @@ export const capitalMock = [
     }),
     http.get(mockEndpoints.grants, EMPTY_GRANTS_LIST),
     http.get(mockEndpoints.dynamicOffer, DYNAMIC_OFFER_HANDLER),
-    http.post(mockEndpoints.offerReview, OFFER_REVIEW_HANDLER),
+    http.post(mockEndpoints.createOffer, OFFER_REVIEW_HANDLER),
     http.post(mockEndpoints.requestFunds, getHandlerCallback({ response: SIGNED_OFFER, delayTime: 800 })),
 ];
 const capitalFactory = mocksFactory<CapitalPaths>();
@@ -132,6 +133,7 @@ export const CapitalMockedResponses = capitalFactory({
     pendingGrantWithActions: [
         { endpoint: mockEndpoints.dynamicOfferConfig, handler: EMPTY_OFFER },
         { endpoint: mockEndpoints.grants, response: { data: [PENDING_GRANT_WITH_ACTIONS] } },
+        { endpoint: mockEndpoints.signToS, response: SIGN_TOS_ACTION_DETAILS },
     ],
     repaidGrant: [
         { endpoint: mockEndpoints.dynamicOfferConfig, handler: EMPTY_OFFER },
@@ -160,14 +162,14 @@ export const CapitalMockedResponses = capitalFactory({
     ],
     reviewOfferWentWrong: [
         {
-            endpoint: mockEndpoints.offerReview,
+            endpoint: mockEndpoints.createOffer,
             handler: getErrorHandler(ERROR_OFFER_REVIEW_WENT_WRONG, 500),
             method: 'post',
         },
     ],
     missingPrimaryBalanceAccount: [
         {
-            endpoint: mockEndpoints.offerReview,
+            endpoint: mockEndpoints.createOffer,
             handler: ((req: any) => OFFER_REVIEW_HANDLER(req)) as any,
             method: 'post',
         },

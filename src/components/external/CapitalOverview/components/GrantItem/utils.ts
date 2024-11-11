@@ -71,14 +71,3 @@ export const getGrantConfig = (grant: IGrant) => {
         statusTagVariant: getStatusTagVariant(grant.status),
     };
 };
-
-export const enhanceTermsAndConditionsUrl = (url: string): string | undefined => {
-    const redirectUrl = window.location.href;
-    try {
-        const baseTermsAndConditionsUrl = new URL(url);
-        baseTermsAndConditionsUrl.searchParams.set('redirectUrl', redirectUrl);
-        return baseTermsAndConditionsUrl.href;
-    } catch {
-        return undefined;
-    }
-};
