@@ -16,7 +16,7 @@ export const Default: ElementStory<typeof CapitalOffer> = {
 };
 
 export const ErrorNoOfferAvailable: ElementStory<typeof CapitalOffer> = {
-    name: 'Error - Dynamic offer - No config',
+    name: 'Error - Dynamic offer config - No config',
     args: {
         mockedApi: true,
     },

@@ -30,9 +30,9 @@ const EMPTY_GRANTS_LIST = getHandlerCallback({
 
 const EMPTY_OFFER = getHandlerCallback({ response: {} });
 
-let retry = 0;
+let retries = 0;
 
-const DYNAMIC_OFFER_HANDLER = async ({ request }: { request: StrictRequest<DefaultBodyType> }, retries?: number) => {
+const DYNAMIC_OFFER_HANDLER = async ({ request }: { request: StrictRequest<DefaultBodyType> }, retriesLimit?: number) => {
     const url = new URL(request.url);
     const { amount, currency } = { amount: url.searchParams.get('amount'), currency: url.searchParams.get('currency') };
 
@@ -41,15 +41,15 @@ const DYNAMIC_OFFER_HANDLER = async ({ request }: { request: StrictRequest<Defau
     const response = calculateGrant(amount, currency);
     await delay(400);
 
-    if (retry < (retries || 0)) {
-        if (retries && retry < retries) retry += 1;
+    if (retries < (retriesLimit || 0)) {
+        if (retriesLimit && retries < retriesLimit) retries += 1;
         const options = { status: 500 };
 
         const error = new AdyenPlatformExperienceError(ErrorTypes.ERROR, 'ServerError', 'Message', '500');
 
         return HttpResponse.json({ ...error, status: 500, detail: 'detail' }, options);
     }
-    if (retries && retry === retries) retry = 0;
+    if (retriesLimit && retries === retriesLimit) retries = 0;
 
     return HttpResponse.json(response);
 };
