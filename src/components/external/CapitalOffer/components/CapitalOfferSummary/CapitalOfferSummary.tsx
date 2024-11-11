@@ -183,7 +183,7 @@ export const CapitalOfferSummary = ({
                             ? `${calculateMaximumRepaymentPeriodInMonths(grantOffer.maximumRepaymentPeriodDays)} ${i18n.get(
                                   maximumRepaymentPeriod > 1 ? 'capital.months' : 'capital.month'
                               )}`
-                            : null,
+                            : '-',
                     },
                     { key: 'capital.account', value: i18n.get('capital.primaryAccount') },
                 ]}

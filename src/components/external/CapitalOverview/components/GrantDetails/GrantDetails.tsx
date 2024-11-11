@@ -15,7 +15,7 @@ export const GrantDetails: FunctionalComponent<GrantDetailsProps> = ({ grant }) 
     const { i18n } = useCoreContext();
     const formatAmount = useCallback((amount: { value: number; currency: string }) => i18n.amount(amount.value, amount.currency), [i18n]);
     const structuredListItems = useMemo<StructuredListItem[]>(() => {
-        const maximumRepaymentPeriodMonths = Math.ceil(grant.maximumRepaymentPeriodDays / 30);
+        const maximumRepaymentPeriodMonths = grant.maximumRepaymentPeriodDays ? Math.ceil(grant.maximumRepaymentPeriodDays / 30) : null;
         return [
             {
                 key: 'capital.remainingAmount',
@@ -39,7 +39,7 @@ export const GrantDetails: FunctionalComponent<GrantDetailsProps> = ({ grant }) 
             },
             {
                 key: 'capital.maximumRepaymentPeriod',
-                value: `${maximumRepaymentPeriodMonths} ${i18n.get('capital.months')}`,
+                value: maximumRepaymentPeriodMonths ? `${maximumRepaymentPeriodMonths} ${i18n.get('capital.months')}` : '-',
             },
             { key: 'capital.totalFees', value: formatAmount(grant.feesAmount) },
             { key: 'capital.totalRepaymentAmount', value: formatAmount(grant.totalAmount) },
