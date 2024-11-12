@@ -4,8 +4,8 @@ import Button from '../Button';
 import Icon from '../Icon';
 import { ButtonVariant } from '../Button/types';
 import useCoreContext from '../../../core/Context/useCoreContext';
-import { Ref, useCallback, useContext, useEffect } from 'preact/hooks';
-import { createContext } from 'preact';
+import { useCallback, useContext, useEffect } from 'preact/hooks';
+import { createContext, Ref } from 'preact';
 import cx from 'classnames';
 import './Modal.scss';
 import { ModalProps } from './types';
@@ -27,7 +27,7 @@ export default function Modal({
 }: ModalProps) {
     const isSmViewport = useResponsiveViewport(mediaQueries.down.xs);
     const { i18n } = useCoreContext();
-    const targetElement = useClickOutside(null, onClose) as Ref<HTMLDivElement | null>;
+    const targetElement = useClickOutside(null, onClose) as Ref<HTMLDivElement>;
 
     const handleEscKey = useCallback(
         (e: KeyboardEvent) => {

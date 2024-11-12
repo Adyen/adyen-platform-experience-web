@@ -8,7 +8,8 @@ import useCommitAction, { CommitAction } from '../../../../../hooks/useCommitAct
 import useUniqueIdentifier from '../../../../../hooks/element/useUniqueIdentifier';
 import { isEmptyString, isNull } from '../../../../../utils';
 import { memo } from 'preact/compat';
-import { Ref, useCallback, useEffect, useMemo, useState } from 'preact/hooks';
+import { MutableRef, useCallback, useEffect, useMemo, useState } from 'preact/hooks';
+import { Ref } from 'preact';
 import useBooleanState from '../../../../../hooks/useBooleanState';
 import '../../../FormFields';
 import InputText from '../../../FormFields/InputText';
@@ -60,7 +61,7 @@ const BaseFilter = <T extends BaseFilterProps = BaseFilterProps>({ render, ...pr
     const [hasInitialValue, updateHasInitialValue] = useBooleanState(false);
     const [valueChanged, updateValueChanged] = useBooleanState(false);
     const [disabledApply, updateDisabledApply] = useBooleanState(isValueEmpty(props.value));
-    const targetElement = useUniqueIdentifier() as Ref<Element | null>;
+    const targetElement = useUniqueIdentifier() as NonNullable<MutableRef<Element | null>>;
 
     const renderModalBody = useMemo(() => render ?? renderFallback<T>, [render]);
 
@@ -126,7 +127,7 @@ const BaseFilter = <T extends BaseFilterProps = BaseFilterProps>({ render, ...pr
                             ]}
                             onClick={editMode ? closeEditDialog : openEditDialog}
                             tabIndex={0}
-                            ref={targetElement as Ref<HTMLButtonElement | null>}
+                            ref={targetElement as Ref<HTMLButtonElement>}
                         >
                             <div className="adyen-pe-filter-button__default-container">
                                 <Typography
