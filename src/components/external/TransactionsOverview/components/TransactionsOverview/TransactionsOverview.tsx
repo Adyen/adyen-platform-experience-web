@@ -12,7 +12,7 @@ import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
 import { useCursorPaginatedRecords } from '../../../../internal/Pagination/hooks';
 import { DataOverviewHeader } from '../../../../internal/DataOverviewDisplay/DataOverviewHeader';
 import { IBalanceAccountBase, ITransaction } from '../../../../../types';
-import { isFunction, isUndefined, listFrom } from '../../../../../utils';
+import { EMPTY_OBJECT, isFunction, isUndefined, listFrom } from '../../../../../utils';
 import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '../../../../internal/Pagination/constants';
 import TransactionTotals from '../TransactionTotals/TransactionTotals';
 import { Balances } from '../Balances/Balances';
@@ -133,24 +133,6 @@ export const TransactionsOverview = ({
 
     const modalOptions = useMemo(() => ({ transaction: transactionDetails }), [transactionDetails]);
 
-    const { updateDetails, resetDetails, selectedDetail } = useModalDetails(modalOptions);
-
-    const onRowClick = useCallback(
-        ({ id }: ITransaction) => {
-            updateDetails({
-                selection: { type: 'transaction', data: id },
-                modalSize: 'small',
-            }).callback({ id });
-        },
-        [updateDetails]
-    );
-
-    const sinceDate = useMemo(() => {
-        const date = new Date(nowTimestamp);
-        date.setMonth(date.getMonth() - MAX_TRANSACTIONS_DATE_RANGE_MONTHS);
-        return date.toString();
-    }, [nowTimestamp]);
-
     const mergeCustomData = useCallback(
         ({ records, retrievedData }: { records: ITransaction[]; retrievedData: CustomDataRetrieved[] }) =>
             records.map(record => {
@@ -161,6 +143,27 @@ export const TransactionsOverview = ({
     );
 
     const { customRecords: transactions, loadingCustomRecords } = useCustomColumnsData<ITransaction>({ records, onDataRetrieved, mergeCustomData });
+    const { updateDetails, resetDetails, selectedDetail } = useModalDetails(modalOptions);
+
+    const onRowClick = useCallback(
+        ({ id }: ITransaction) => {
+            updateDetails({
+                selection: {
+                    type: 'transaction',
+                    data: id,
+                    extraDetails: transactions?.find(({ id: _id }) => _id === id) ?? EMPTY_OBJECT,
+                },
+                modalSize: 'small',
+            }).callback({ id });
+        },
+        [updateDetails, transactions]
+    );
+
+    const sinceDate = useMemo(() => {
+        const date = new Date(nowTimestamp);
+        date.setMonth(date.getMonth() - MAX_TRANSACTIONS_DATE_RANGE_MONTHS);
+        return date.toString();
+    }, [nowTimestamp]);
 
     return (
         <div className={BASE_CLASS}>

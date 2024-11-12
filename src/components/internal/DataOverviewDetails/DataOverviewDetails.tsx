@@ -1,13 +1,12 @@
 import './DataOverviewDetails.scss';
-import { useCallback, useMemo, useState } from 'preact/hooks';
+import { useMemo } from 'preact/hooks';
 import { useAuthContext } from '../../../core/Auth';
-import useCoreContext from '../../../core/Context/useCoreContext';
 import AdyenPlatformExperienceError from '../../../core/Errors/AdyenPlatformExperienceError';
 import { useFetch } from '../../../hooks/useFetch';
 import { IPayoutDetails } from '../../../types';
 import { EMPTY_OBJECT } from '../../../utils';
 import { PayoutData } from '../../external/PayoutDetails/components/PayoutData';
-import { TransactionData } from '../../external/TransactionDetails/components/TransactionData';
+import TransactionData from '../../external/TransactionDetails/components/TransactionData';
 import useBalanceAccounts from '../../../hooks/useBalanceAccounts';
 import { ExternalUIComponentProps } from '../../types';
 import { getErrorMessage } from '../../utils/getErrorMessage';
@@ -15,15 +14,11 @@ import { ErrorMessageDisplay } from '../ErrorMessageDisplay/ErrorMessageDisplay'
 import { DetailsComponentProps, DetailsWithId, TransactionDetailData } from './types';
 import Typography from '../Typography/Typography';
 import { TypographyVariant } from '../Typography/types';
+import useDataOverviewDetailsTitle from './useDataOverviewDetailsTitle';
 
 const ENDPOINTS_BY_TYPE = {
     transaction: 'getTransaction',
     payout: 'getPayout',
-} as const;
-
-const TITLES_BY_TYPE = {
-    transaction: 'transactionDetails',
-    payout: 'payoutDetails',
 } as const;
 
 const isDetailsWithId = (props: DetailsComponentProps): props is DetailsWithId => !('data' in props);
@@ -31,13 +26,9 @@ const isDetailsWithId = (props: DetailsComponentProps): props is DetailsWithId =
 export default function DataOverviewDetails(props: ExternalUIComponentProps<DetailsComponentProps>) {
     const details = useMemo(() => (isDetailsWithId(props) ? null : props.data), [props]);
     const dataId = useMemo(() => (isDetailsWithId(props) ? props.id : null), [props]);
-
-    const { i18n } = useCoreContext();
     const getDetail = useAuthContext().endpoints[ENDPOINTS_BY_TYPE[props.type]] as any; // [TODO]: Fix type and remove 'as any'
-    const titleKey = useMemo(() => TITLES_BY_TYPE[props.type], [props.type]);
-    const [forceHideTitle, _setForceHideTitle] = useState(false);
 
-    const setForceHideTitle = useCallback((forceHideTitle: boolean) => _setForceHideTitle(forceHideTitle), []);
+    const { hideTitle, title } = useDataOverviewDetailsTitle(props);
 
     const { data, error, isFetching } = useFetch(
         useMemo(
@@ -76,10 +67,10 @@ export default function DataOverviewDetails(props: ExternalUIComponentProps<Deta
 
     return (
         <div className="adyen-pe-overview-details">
-            {!forceHideTitle && !props.hideTitle && (
+            {!hideTitle && (
                 <div className="adyen-pe-overview-details--title">
                     <Typography variant={TypographyVariant.TITLE} medium>
-                        {i18n.get(titleKey)}
+                        {title}
                     </Typography>
                 </div>
             )}
@@ -95,15 +86,14 @@ export default function DataOverviewDetails(props: ExternalUIComponentProps<Deta
                     transaction={
                         detailsData
                             ? ({
+                                  ...extraDetails,
                                   ...(detailsData || EMPTY_OBJECT),
                                   balanceAccount: details?.balanceAccount || balanceAccounts?.[0],
-                                  ...extraDetails,
                               } as TransactionDetailData)
                             : undefined
                     }
                     error={!!(error && errorProps)}
                     isFetching={isFetching}
-                    forceHideTitle={setForceHideTitle}
                 />
             )}
             {props.type === 'payout' && detailsData && (

@@ -120,49 +120,63 @@ export interface components {
         };
         /** @enum {string} */
         SortDirection: 'asc' | 'desc';
+        /** @enum {string} */
+        RefundMode: 'fully_refundable_only' | 'non_refundable' | 'partially_refundable_any_amount' | 'partially_refundable_with_line_items_required';
+        /** @enum {string} */
+        RefundStatus: 'completed' | 'failed' | 'in_progress';
         TransactionLineItem: {
             amountIncludingTax: components['schemas']['Amount'];
             availableQuantity: number;
             description: string;
             id: string;
             originalQuantity: number;
+            reference: string;
             refundStatuses: components['schemas']['TransactionLineItemRefundStatus'][];
             sku?: string;
         };
         TransactionLineItemRefundStatus: {
             quantity: number;
-            status: 'completed' | 'failed' | 'in_progress';
+            status: components['schemas']['RefundStatus'];
         };
         TransactionRefundStatus: {
             amount: components['schemas']['Amount'];
-            status: 'completed' | 'failed' | 'in_progress';
+            status: components['schemas']['RefundStatus'];
         };
         TransactionRefundDetails: {
             refundStatuses: components['schemas']['TransactionRefundStatus'][];
-            refundMode: 'fully_refundable_only' | 'non_refundable' | 'partially_refundable_any_amount' | 'partially_refundable_with_line_items_required';
+            refundMode: components['schemas']['RefundMode'];
             refundLocked: boolean;
             refundableAmount: components['schemas']['Amount'];
         };
+        RefundMetadataType: 'partial' | 'full';
+        RefundMetadata: {
+            originalPaymentId: string;
+            refundPspReference: string;
+            refundReason?: string;
+            refundType: components['schemas']['RefundMetadataType'];
+        };
         TransactionResponse: components['schemas']['SingleTransaction'] & {
-            originalAmount: components['schemas']['Amount'];
-            deductedAmount: components['schemas']['Amount'];
+            originalAmount?: components['schemas']['Amount'];
+            deductedAmount?: components['schemas']['Amount'];
+            paymentPspReference?: string;
             lineItems: components['schemas']['TransactionLineItem'][];
             refundDetails: components['schemas']['TransactionRefundDetails'];
+            refundMetadata?: components['schemas']['RefundMetadata'];
         };
         TransactionRefundRequestLineItem: {
-            item: components['schemas']['TransactionLineItem'];
+            reference: components['schemas']['TransactionLineItem']['reference'];
             quantity: number;
         };
         TransactionRefundRequest: {
             amount: components['schemas']['Amount'];
             lineItems?: components['schemas']['TransactionRefundRequestLineItem'][];
-            merchantRefundReason?: string;
+            refundReason?: string;
         };
         TransactionRefundResponse: {
             status: 'received';
             transactionId: components['schemas']['SingleTransaction']['id'];
             amount: components['schemas']['Amount'];
-            merchantRefundReason?: string;
+            refundReason?: string;
             lineItems?: components['schemas']['TransactionLineItem'][];
         };
     };

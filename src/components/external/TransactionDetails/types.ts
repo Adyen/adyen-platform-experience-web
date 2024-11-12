@@ -20,3 +20,9 @@ export type TransactionDetailData = ITransactionWithDetails & BalanceAccountProp
 export interface BalanceAccountProps {
     balanceAccount?: IBalanceAccountBase;
 }
+
+export interface TransactionDataProps {
+    error?: boolean;
+    isFetching?: boolean;
+    transaction?: TransactionDetailData;
+}

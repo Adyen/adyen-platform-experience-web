@@ -7,13 +7,15 @@ const CLASSNAMES = {
     base: 'adyen-pe-modal-content',
 };
 
-function ModalContent({ type, data }: SelectedDetail) {
+// [TODO]: Consider covering ...restData with type information (added here as a hack to capture extra details)
+function ModalContent({ type, data, ...restData }: SelectedDetail) {
     const detailProps: DetailsComponentProps = useMemo(() => {
         switch (type) {
             case 'payout':
                 return { ...(data as PayoutDetailsWithIdProps & { balanceAccountDescription?: string }), type };
             case 'transaction':
-                return { id: data, type } as DetailsComponentProps;
+                // [TODO]: Consider providing type information for ...restData (added here to provide extra details)
+                return { id: data, type, ...restData } as DetailsComponentProps;
             default:
                 return { data, type } as DetailsComponentProps;
         }
