@@ -64,7 +64,7 @@
     "lint": "eslint 'src/**/*.{js,ts,tsx}' --quiet && stylelint 'src/**/*.scss' --fix",
     "test": "vitest --config vite.config.ts",
     "test:coverage": "vitest --config vite.config.ts --coverage",
-    "test:integration": "playwright test",
+    "test:integration": "playwright test --project local-chrome",
     "test:integration:debug": "cross-env PWDEBUG=console playwright test --debug --project local-chrome",
     "type-check": "tsc --preserveWatchOutput",
     "types:watch": "tsc --preserveWatchOutput --watch && tsc --project tsconfig-build.json --watch",
