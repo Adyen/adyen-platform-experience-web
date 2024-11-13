@@ -1,10 +1,11 @@
 import { useState, useCallback, useRef, useMemo, useEffect } from 'preact/hooks';
 import { ALREADY_RESOLVED_PROMISE, EMPTY_OBJECT, isFunction, isNumber, tryResolve } from '../../utils';
+import { AdyenErrorResponse } from '../../core/Http/types';
 
 type MutationOptions<ResponseType> = {
     onSuccess?: (data: ResponseType) => void | Promise<void>;
-    onError?: (error: Error) => void | Promise<void>;
-    onSettled?: (data: ResponseType | undefined, error: Error | null) => void | Promise<void>;
+    onError?: (error: Error | AdyenErrorResponse) => void | Promise<void>;
+    onSettled?: (data: ResponseType | undefined, error: Error | AdyenErrorResponse | null) => void | Promise<void>;
     retry?: number | boolean;
     retryDelay?: number | ((retryAttempt: number) => number);
 };
@@ -26,7 +27,7 @@ function useMutation<queryFn extends (...args: any[]) => any, ResponseType exten
     const { retry = false, retryDelay = 1000, onSuccess, onError, onSettled } = options || (EMPTY_OBJECT as NonNullable<typeof options>);
 
     const [data, setData] = useState<ResponseType | null>(null);
-    const [error, setError] = useState<Error | null>(null);
+    const [error, setError] = useState<Error | AdyenErrorResponse | null>(null);
     const [status, setStatus] = useState<MutationStatus>('idle');
 
     // Use refs for mutable values that shouldn't trigger re-renders
@@ -42,15 +43,11 @@ function useMutation<queryFn extends (...args: any[]) => any, ResponseType exten
 
     const mutate = useCallback(
         async (...variables: Parameters<queryFn>): Promise<ResponseType> => {
-            if (!queryFn) {
-                throw new Error('Query function is required');
-            }
-
             try {
                 setStatus('loading');
                 setError(null);
 
-                const result = await queryFn(...variables);
+                const result = await queryFn?.(...variables);
 
                 // Only update state if component is still mounted
                 if (mountedRef.current) {
@@ -64,9 +61,7 @@ function useMutation<queryFn extends (...args: any[]) => any, ResponseType exten
                 });
 
                 return result;
-            } catch (err) {
-                const error = err instanceof Error ? err : new Error(String(err));
-
+            } catch (error: any) {
                 let maxRetries = 0;
                 if (isNumber(retry)) {
                     maxRetries = Math.max(0, Math.floor(retry));

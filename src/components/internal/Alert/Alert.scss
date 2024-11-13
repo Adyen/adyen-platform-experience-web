@@ -8,9 +8,9 @@
     box-sizing: border-box;
     container-type: inline-size;
     display: flex;
-    gap: style.token(spacer-070);
+    gap: style.token(spacer-080);
     max-width: 700px;
-    padding: style.token(spacer-070);
+    padding: style.token(spacer-080);
     width: 100%;
 
     @container (min-width: 460px) {

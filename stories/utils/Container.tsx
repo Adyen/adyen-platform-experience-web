@@ -4,6 +4,7 @@ import { PreactRenderer } from '@storybook/preact';
 import { AdyenPlatformExperience } from '../../src';
 import BaseElement from '../../src/components/external/BaseElement';
 import sessionRequest from '../../playground/utils/sessionRequest';
+import './styles.scss';
 
 interface IContainer<T extends new (...args: any) => any> {
     component: T;

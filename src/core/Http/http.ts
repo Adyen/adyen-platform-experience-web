@@ -40,6 +40,11 @@ export async function http<T>(options: HttpOptions): Promise<T> {
             const res = await fetch(url, request); // (!)
 
             if (res.ok) {
+                if (res.status === 204) {
+                    // No content to process
+                    return null;
+                }
+
                 try {
                     const contentType = getResponseContentType(res);
 
