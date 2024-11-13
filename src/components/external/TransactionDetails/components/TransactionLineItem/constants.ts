@@ -1,0 +1,9 @@
+export const TX_LINE_ITEM_CLASS = 'adyen-pe-transaction-line-item';
+export const TX_LINE_ITEM_TITLE_CLASS = `${TX_LINE_ITEM_CLASS}__title`;
+export const TX_LINE_ITEM_TITLE_CONTAINER_CLASS = `${TX_LINE_ITEM_TITLE_CLASS}-container`;
+export const TX_LINE_ITEM_TITLE_DESCRIPTION_CLASS = `${TX_LINE_ITEM_TITLE_CLASS}-description`;
+export const TX_LINE_ITEM_TITLE_DETAIL_CLASS = `${TX_LINE_ITEM_TITLE_CLASS}-detail-data`;
+export const TX_LINE_ITEM_CONTAINER_CLASS = `${TX_LINE_ITEM_CLASS}-container`;
+export const TX_LINE_ITEM_DISABLED_CLASS = `${TX_LINE_ITEM_CLASS}--disabled`;
+export const TX_LINE_ITEM_LIST_CLASS = `${TX_LINE_ITEM_CLASS}__list`;
+export const TX_LINE_ITEM_LIST_LABEL_CLASS = `${TX_LINE_ITEM_LIST_CLASS}-label`;

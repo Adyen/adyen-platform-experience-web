@@ -1,14 +1,40 @@
 @use '../../../../../style';
 
 .adyen-pe-transaction-line-item {
-    align-items: flex-start;
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
-    font-family: system-ui;
-    gap: 6px;
-    justify-content: center;
-    width: 100%;
+    &__title {
+        align-items: flex-start;
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+        font-family: system-ui;
+        gap: 6px;
+        justify-content: center;
+        width: 100%;
+
+        &-container {
+            align-items: center;
+            display: flex;
+            gap: 6px;
+            width: 100%;
+        }
+
+        &-description {
+            -webkit-box-orient: vertical;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            overflow: hidden;
+            text-align: left;
+            text-overflow: ellipsis;
+            width: 100%;
+        }
+
+        &-detail-data {
+            align-items: center;
+            display: flex;
+            justify-content: space-between;
+            width: 50%;
+        }
+    }
 
     &-container {
         border: var(--adyen-sdk-border-width-s, 1px) solid var(--adyen-sdk-color-outline-secondary, #c9cdd3);
@@ -32,35 +58,25 @@
         }
     }
 
+    &__list {
+        &-label {
+            color: style.token(color-label-secondary);
+            font-size: style.token(text-body-font-size);
+            font-weight: style.token(text-body-font-weight);
+            line-height: style.token(text-body-line-height);
+            padding-bottom: style.token(spacer-030);
+            padding-top: style.token(spacer-030);
+        }
+
+        .adyen-pe-structured-list {
+            &__content {
+                padding-bottom: style.token(spacer-030);
+                padding-top: style.token(spacer-030);
+            }
+        }
+    }
+
     &--disabled {
         background-color: style.token(color-background-disabled);
-    }
-
-    &-heading {
-        align-items: center;
-        display: flex;
-        flex-direction: row;
-
-        &--description {
-            align-items: center;
-            -webkit-box-orient: vertical;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            overflow: hidden;
-            text-align: left;
-            text-overflow: ellipsis;
-            width: 100%;
-        }
-
-        &--additional-info {
-            align-items: center;
-            display: flex;
-            justify-content: space-between;
-            width: 50%;
-        }
-    }
-
-    .adyen-pe-structured-list__item {
-        margin-bottom: style.token(spacer-040);
     }
 }

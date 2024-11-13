@@ -56,10 +56,10 @@ export const useLineItemData = (view: ActiveView) => {
         updateItems(itemsToRefund);
     }, [refundItems, updateItems]);
 
-    const calculateAllItemsQuantity = useCallback<ILineItemRefundData['allItemsQuantity']>(
-        () => refundItems.reduce((current, { availableQuantity }) => current + availableQuantity, 0),
-        [refundItems]
-    );
+    // const calculateAllItemsQuantity = useCallback<ILineItemRefundData['allItemsQuantity']>(
+    //     () => refundItems.reduce((current, { availableQuantity }) => current + availableQuantity, 0),
+    //     [refundItems]
+    // );
 
     const clearAllItems = useCallback<ILineItemRefundData['selectAllItems']>(() => {
         const refsToUnselect = selectedItems.map(item => item.reference);
@@ -88,8 +88,8 @@ export const useLineItemData = (view: ActiveView) => {
         }
     }, [view]);
 
-    const totalAmount = useMemo(() => ({ value: availableAmount, currency }), [availableAmount, currency]);
-    const totalQuantity = useMemo(() => calculateAllItemsQuantity(), [calculateAllItemsQuantity]);
+    // const totalAmount = useMemo(() => ({ value: availableAmount, currency }), [availableAmount, currency]);
+    // const totalQuantity = useMemo(() => calculateAllItemsQuantity(), [calculateAllItemsQuantity]);
     const statuses = useMemo(() => Array.from(itemsWithStatus.keys()), [itemsWithStatus]);
     const statusesByCurrentView = useMemo(() => statusByView?.filter((s: RefundStatus) => statuses?.includes(s)), [itemsWithStatus]);
     const lineItemsByStatus = useMemo(
@@ -105,8 +105,6 @@ export const useLineItemData = (view: ActiveView) => {
         itemsWithStatus,
         lineItemsByStatus,
         clearAllItems,
-        totalAmount,
-        totalQuantity,
         selectAllItems,
         handleSelectAll,
         statusesByCurrentView,

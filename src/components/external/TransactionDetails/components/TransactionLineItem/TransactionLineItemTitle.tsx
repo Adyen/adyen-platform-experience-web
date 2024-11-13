@@ -10,6 +10,12 @@ import { Tag } from '../../../../internal/Tag/Tag';
 // import { TagVariant } from '../../../internal/Tag/types';
 import { TypographyVariant } from '../../../../internal/Typography/types';
 import Typography from '../../../../internal/Typography/Typography';
+import {
+    TX_LINE_ITEM_TITLE_CLASS,
+    TX_LINE_ITEM_TITLE_CONTAINER_CLASS,
+    TX_LINE_ITEM_TITLE_DESCRIPTION_CLASS,
+    TX_LINE_ITEM_TITLE_DETAIL_CLASS,
+} from './constants';
 // import { useTransactionRefundContext } from '../../context/refund';
 
 const TransactionLineItemTitle = ({
@@ -88,10 +94,10 @@ const TransactionLineItemTitle = ({
     }, []);
 
     return (
-        <div className={cx('adyen-pe-transaction-line-item', classNames)}>
+        <div className={cx(TX_LINE_ITEM_TITLE_CLASS, classNames)}>
             {/*{status !== 'available' && <div>{getTagByStatus(status)}</div>}*/}
-            <div style={{ display: 'flex', width: '100%', gap: '6px' }}>
-                <div className={'adyen-pe-transaction-line-item-heading--description'}>
+            <div className={TX_LINE_ITEM_TITLE_CONTAINER_CLASS}>
+                <div className={TX_LINE_ITEM_TITLE_DESCRIPTION_CLASS}>
                     {/*{status === 'available' && showCheckbox && (*/}
                     {/*    <div style={{ zIndex: 10 }}>*/}
                     {/*        <Icon*/}
@@ -108,7 +114,7 @@ const TransactionLineItemTitle = ({
                         {description}
                     </Typography>
                 </div>
-                <div className={'adyen-pe-transaction-line-item-heading--additional-info'}>
+                <div className={TX_LINE_ITEM_TITLE_DETAIL_CLASS}>
                     <Typography variant={TypographyVariant.CAPTION} stronger>
                         <Tag attribute-label={availableQuantity} label={`${availableQuantity}`} />
                     </Typography>

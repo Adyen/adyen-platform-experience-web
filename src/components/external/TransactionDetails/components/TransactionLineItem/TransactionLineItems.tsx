@@ -11,7 +11,7 @@ import TransactionLineItem from './TransactionLineItem';
 
 const TransactionLineItems = ({ view }: { view: ActiveView }) => {
     const { i18n } = useCoreContext();
-    const { totalAmount, totalQuantity, statusesByCurrentView, lineItemsByStatus, handleSelectAll } = useLineItemData(view);
+    const { statusesByCurrentView, lineItemsByStatus, handleSelectAll } = useLineItemData(view);
 
     return useMemo(() => {
         return (

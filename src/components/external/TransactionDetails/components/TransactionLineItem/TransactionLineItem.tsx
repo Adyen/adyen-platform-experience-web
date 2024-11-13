@@ -1,5 +1,4 @@
 import classNames from 'classnames';
-import { useEffect } from 'preact/compat';
 import { useCallback, useMemo, useState } from 'preact/hooks';
 import { JSXInternal } from 'preact/src/jsx';
 import { TranslationKey } from '../../../../../translations';
@@ -8,6 +7,7 @@ import { components } from '../../../../../types/api/resources/TransactionsResou
 import Accordion from '../../../../internal/Accordion/Accordion';
 import StructuredList from '../../../../internal/StructuredList';
 import './TransactionListItem.scss';
+import { TX_LINE_ITEM_CONTAINER_CLASS, TX_LINE_ITEM_DISABLED_CLASS, TX_LINE_ITEM_LIST_CLASS, TX_LINE_ITEM_LIST_LABEL_CLASS } from './constants';
 import TransactionLineItemTitle from './TransactionLineItemTitle';
 
 const DISABLED_STATUSES: Array<components['schemas']['TransactionLineItemRefundStatus']['status'] | 'available'> = [
@@ -59,8 +59,8 @@ const TransactionLineItem = ({
     return (
         <div
             key={`${additionalData.id}-${status}`}
-            className={classNames(`adyen-pe-transaction-line-item-container`, {
-                'adyen-pe-transaction-line-item--disabled': DISABLED_STATUSES.includes(status),
+            className={classNames(TX_LINE_ITEM_CONTAINER_CLASS, {
+                [TX_LINE_ITEM_DISABLED_CLASS]: DISABLED_STATUSES.includes(status),
             })}
         >
             <Accordion
@@ -82,7 +82,12 @@ const TransactionLineItem = ({
                     />
                 }
             >
-                <StructuredList layout="3-9" items={detailData} />
+                <StructuredList
+                    className={TX_LINE_ITEM_LIST_CLASS}
+                    layout="3-9"
+                    items={detailData}
+                    renderLabel={label => <div className={TX_LINE_ITEM_LIST_LABEL_CLASS}>{label}</div>}
+                />
             </Accordion>
         </div>
     );
