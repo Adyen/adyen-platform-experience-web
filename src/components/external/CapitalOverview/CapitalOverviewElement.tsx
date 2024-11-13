@@ -1,12 +1,12 @@
-import { _UIComponentProps } from '../../types';
+import { _UIComponentProps, ExternalComponentType } from '../../types';
 import UIElement from '../UIElement/UIElement';
 import { CapitalComponentState, CapitalOverviewProps } from './types';
 import { CapitalOverview } from './components/CapitalOverview/CapitalOverview';
 import { EMPTY_OBJECT, noop } from '../../../utils';
-import sessionReady from '../../../core/Auth/session/sessionReady';
+import sessionReady from '../../../core/Auth/session/utils/sessionReady';
 
 export class CapitalOverviewElement extends UIElement<CapitalOverviewProps> {
-    public static type = 'capitalOverview';
+    public static type: ExternalComponentType = 'capitalOverview';
 
     constructor(props: _UIComponentProps<CapitalOverviewProps>) {
         super(props);

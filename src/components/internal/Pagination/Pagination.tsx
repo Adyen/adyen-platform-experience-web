@@ -30,18 +30,20 @@ export default function Pagination({ next, hasNext, hasPrev, page, prev, limit, 
     return (
         <div aria-label={i18n.get('paginatedNavigation')} className={`adyen-pe-pagination ${classnames({})}`}>
             <div className="adyen-pe-pagination__context">
-                <span>{i18n.get('pagination.showing')}</span>
                 {_limitOptions && onLimitSelection && (
-                    <div className="adyen-pe-pagination__limit-selector">
-                        <Select
-                            setToTargetWidth={true}
-                            filterable={false}
-                            multiSelect={false}
-                            items={_limitOptions}
-                            onChange={_onLimitChanged}
-                            selected={`${limit ?? ''}`}
-                        />
-                    </div>
+                    <>
+                        <span>{i18n.get('pagination.showing')}</span>
+                        <div className="adyen-pe-pagination__limit-selector">
+                            <Select
+                                setToTargetWidth={true}
+                                filterable={false}
+                                multiSelect={false}
+                                items={_limitOptions}
+                                onChange={_onLimitChanged}
+                                selected={`${limit ?? ''}`}
+                            />
+                        </div>
+                    </>
                 )}
             </div>
 

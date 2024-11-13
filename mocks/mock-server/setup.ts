@@ -23,13 +23,13 @@ export const setupMock = [
                     method: 'GET',
                     url: 'balanceAccounts/{balanceAccountId}/balances',
                 },
-                getTransactions: {
-                    method: 'GET',
-                    url: 'transactions',
-                },
                 getTransaction: {
                     method: 'GET',
                     url: 'transactions/{transactionId}',
+                },
+                getTransactions: {
+                    method: 'GET',
+                    url: 'transactions',
                 },
                 getTransactionTotals: {
                     method: 'GET',
