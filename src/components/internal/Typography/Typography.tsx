@@ -1,10 +1,11 @@
+import { fixedForwardRef } from '../../../utils/preact';
 import { DEFAULT_TYPOGRAPHY_CLASSNAME } from './constants';
 import cx from 'classnames';
 import { useMemo } from 'preact/hooks';
 import { TypographyElement, TypographyModifier, TypographyVariant } from './types';
 import { memo, PropsWithChildren } from 'preact/compat';
 import './Typography.scss';
-import { ComponentChild } from 'preact';
+import { ComponentChild, Ref } from 'preact';
 
 interface TypographyProps {
     el?: TypographyElement;
@@ -18,7 +19,7 @@ interface TypographyProps {
     className?: string;
 }
 
-function Typography({ el, className, stronger, strongest, variant, medium, large, wide, children }: PropsWithChildren<TypographyProps>) {
+function Typography({ el, className, stronger, strongest, variant, medium, large, wide, children }: PropsWithChildren<TypographyProps>, ref?: any) {
     const Tag = el || 'p';
     const conditionalClasses = useMemo(
         () => ({
@@ -51,7 +52,11 @@ function Typography({ el, className, stronger, strongest, variant, medium, large
         [variant, wide, stronger, medium, large, strongest]
     );
 
-    return <Tag className={cx([`${DEFAULT_TYPOGRAPHY_CLASSNAME}`, conditionalClasses, className])}>{children}</Tag>;
+    return (
+        <Tag ref={ref} className={cx([`${DEFAULT_TYPOGRAPHY_CLASSNAME}`, conditionalClasses, className])}>
+            {children}
+        </Tag>
+    );
 }
 
-export default memo(Typography);
+export default memo(fixedForwardRef(Typography));

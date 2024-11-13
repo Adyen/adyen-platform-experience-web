@@ -1,21 +1,23 @@
 import classNames from 'classnames';
+import { useEffect } from 'preact/compat';
 import { useCallback, useMemo, useState } from 'preact/hooks';
 import { JSXInternal } from 'preact/src/jsx';
-import { TranslationKey } from '../../../../translations';
-import { ITransactionLineItem } from '../../../../types';
-import { components } from '../../../../types/api/resources/TransactionsResource';
-import Accordion from '../../../internal/Accordion/Accordion';
-import StructuredList from '../../../internal/StructuredList';
+import { TranslationKey } from '../../../../../translations';
+import { ITransactionLineItem } from '../../../../../types';
+import { components } from '../../../../../types/api/resources/TransactionsResource';
+import Accordion from '../../../../internal/Accordion/Accordion';
+import StructuredList from '../../../../internal/StructuredList';
 import './TransactionListItem.scss';
-import TransactionRefundItemSelect from './TransactionRefundItemSelect';
+import TransactionLineItemTitle from './TransactionLineItemTitle';
 
 const DISABLED_STATUSES: Array<components['schemas']['TransactionLineItemRefundStatus']['status'] | 'available'> = [
     'in_progress',
     'completed',
     'failed',
 ];
-//
-const detailDataFields = ['currency', 'id', 'sku'];
+
+const getDetailDataFields = (isTruncated: boolean) => [...(isTruncated ? ['description'] : []), 'currency', 'sku', 'id'];
+
 const TransactionLineItem = ({
     amountIncludingTax,
     description,
@@ -31,11 +33,12 @@ const TransactionLineItem = ({
     handleSelection?: (e: any) => any;
 }) => {
     const [chevron, setChevron] = useState<JSXInternal.Element | null>(null);
+    const [isTruncated, setIsTruncated] = useState(false);
 
     const detailData = useMemo(() => {
-        const additionalDataWithCurrency = { ...additionalData, currency: amountIncludingTax.currency };
+        const additionalDataWithCurrency = { ...additionalData, currency: amountIncludingTax.currency, description };
 
-        return detailDataFields
+        return getDetailDataFields(isTruncated)
             .filter(key => Object.keys(additionalDataWithCurrency).includes(key))
             .map(
                 key =>
@@ -44,7 +47,7 @@ const TransactionLineItem = ({
                         value: string;
                     })
             );
-    }, [additionalData, amountIncludingTax.currency]);
+    }, [additionalData, amountIncludingTax.currency, isTruncated]);
 
     const onChevronChange = useCallback(
         (e: any) => {
@@ -63,7 +66,7 @@ const TransactionLineItem = ({
             <Accordion
                 renderChevron={onChevronChange}
                 header={
-                    <TransactionRefundItemSelect
+                    <TransactionLineItemTitle
                         {...{
                             chevron: chevron,
                             amountIncludingTax,
@@ -73,12 +76,13 @@ const TransactionLineItem = ({
                             showCheckbox,
                             handleSelection,
                             isLineItem,
+                            setTitleTruncated: setIsTruncated,
                             ...additionalData,
                         }}
                     />
                 }
             >
-                <StructuredList layout={'3-9'} items={detailData} />
+                <StructuredList layout="3-9" items={detailData} />
             </Accordion>
         </div>
     );

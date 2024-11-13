@@ -1,6 +1,5 @@
 import { http, HttpResponse, PathParams } from 'msw';
-import { ILineItem, IRefundMode, ITransaction, ITransactionRefundPayload, ITransactionRefundResponse, ITransactionWithDetails } from '../../src';
-import transactionRefundReference from '../../src/components/external/TransactionDetails/components/TransactionRefundReference';
+import { IRefundMode, ITransaction, ITransactionRefundPayload, ITransactionRefundResponse, ITransactionWithDetails } from '../../src';
 import { DEFAULT_LINE_ITEMS, DEFAULT_REFUND_STATUSES, DEFAULT_TRANSACTION, TRANSACTIONS } from '../mock-data';
 import { clamp, EMPTY_ARRAY, getMappedValue, uuid } from '../../src/utils';
 import { compareDates, computeHash, delay, getPaginationLinks } from './utils';
@@ -303,9 +302,12 @@ export const transactionsMocks = [
                 const { value: amount, currency } = transaction.amount;
                 let currencyTotals = currencyTotalsMap.get(currency);
 
+                //TODO: Review
                 if (currencyTotals === undefined) {
                     currencyTotalsMap.set(currency, (currencyTotals = { expenses: 0, incomings: 0 }));
                 }
+
+                // currenctyTotals ??= currencyTotalsMap.set(currency, (currencyTotals = { expenses: 0, incomings: 0 }));
 
                 currencyTotals[amount >= 0 ? 'incomings' : 'expenses'] += amount;
                 return currencyTotalsMap;
@@ -328,8 +330,6 @@ export const transactionsMocks = [
     http.post(mockEndpoints.refundTransaction, async ({ request, params }) => {
         try {
             const transactionResponse = await fetchTransaction(params);
-
-            let data = null;
 
             if (!transactionResponse.ok) throw await transactionResponse.text();
             const { amount, lineItems, refundReason } = (await request.json()) as ITransactionRefundPayload;

@@ -20,7 +20,7 @@ import { ActiveView, RefundMode } from '../../context/types';
 import type { TransactionDataProps } from '../../types';
 import type { ILineItem } from '../../../../../types';
 import './TransactionData.scss';
-import TransactionLineItems from '../TransactionLineItems';
+import TransactionLineItems from '../TransactionLineItem/TransactionLineItems';
 
 export interface TransactionDataContentProps {
     transaction: NonNullable<TransactionDataProps['transaction']>;

@@ -1,9 +1,9 @@
 import { useCallback, useMemo } from 'preact/hooks';
-import { ILineItem, ITransaction, ITransactionLineItem } from '../../../../types';
-import { components } from '../../../../types/api/resources/TransactionsResource';
-import useTransactionDetailsContext from './details';
-import { useTransactionRefundContext } from './refund';
-import { ActiveView } from './types';
+import { ILineItem, ITransaction, ITransactionLineItem } from '../../../../../types';
+import { components } from '../../../../../types/api/resources/TransactionsResource';
+import useTransactionDetailsContext from '../../context/details';
+import { useTransactionRefundContext } from '../../context/refund';
+import { ActiveView } from '../../context/types';
 
 interface ILineItemRefundData {
     selectAllItems: () => void;
@@ -29,7 +29,7 @@ export const useLineItemData = (view: ActiveView) => {
                 const currentValue = current.get('available');
                 const valueToAdd = currentValue ? [...currentValue, item] : [item];
                 current.set('available', valueToAdd);
-                //TODO: Remove or comment out this logic when the research completed
+                //TODO: Remove or uncomment this logic when the research completed
                 // if (item.refundStatuses && item.refundStatuses.length > 0) {
                 //     item.refundStatuses.map(status => {
                 //         const statusValue = current.get(status.status);
@@ -44,7 +44,8 @@ export const useLineItemData = (view: ActiveView) => {
         [allItems]
     );
 
-    const hasSelectAll = useMemo(() => view === ActiveView.REFUND && allItems.length >= 5, [view, allItems]);
+    //TODO: Remove or uncomment this logic when the research completed
+    // const hasSelectAll = useMemo(() => view === ActiveView.REFUND && allItems.length >= 5, [view, allItems]);
 
     const selectAllItems = useCallback<ILineItemRefundData['selectAllItems']>(() => {
         const itemsToRefund = refundItems.map(({ reference, availableQuantity: quantity, amountIncludingTax: amount }) => ({
@@ -103,7 +104,6 @@ export const useLineItemData = (view: ActiveView) => {
     return {
         itemsWithStatus,
         lineItemsByStatus,
-        hasSelectAll,
         clearAllItems,
         totalAmount,
         totalQuantity,
