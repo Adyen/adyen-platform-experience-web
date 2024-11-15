@@ -6,21 +6,21 @@ import { UnknownRefError } from './errors';
 import { REF } from './constants';
 
 export const createReflexRegister = (() => {
-    const _getRecordForRef = <T = any>(register: WeakMap<Ref, ReflexRecord>, ref: Ref<T>): ReflexRecord<T> => {
+    const _getRecordForRef = <T = any>(register: WeakMap<NonNullable<Ref>, ReflexRecord>, ref: NonNullable<Ref<T>>): ReflexRecord<T> => {
         const record = register.get(ref);
         if (!record) throw new UnknownRefError();
         return record;
     };
 
     const _bindReflexAction = <T = any>(
-        register: WeakMap<Ref, ReflexRecord>,
-        reflexable: Reflexable<T>,
+        register: WeakMap<NonNullable<Ref>, ReflexRecord>,
+        reflexable: NonNullable<Reflexable<T>>,
         action?: ReflexAction<T>
     ): ReflexRecord<T>[0] => {
         let record: ReflexRecord<T> | undefined;
         let actions: Defined<typeof record>[1];
 
-        const _ref = unwrap(reflexable);
+        const _ref = unwrap(reflexable) as NonNullable<Ref>;
 
         try {
             record = _getRecordForRef(register, _ref);
@@ -37,13 +37,15 @@ export const createReflexRegister = (() => {
         else {
             const isCallbackRef = isFunction(_ref);
 
-            const _updateCurrentInstance: RefAsCallback<T> = isCallbackRef
+            const _updateCurrentInstance: RefAsCallback<T | undefined> = isCallbackRef
                 ? instance => {
                       _ref((_current = instance));
                   }
                 : instance => {
-                      _ref.current = instance;
-                      _current = _ref.current;
+                      if (_ref) {
+                          _ref.current = instance;
+                          _current = _ref.current;
+                      }
                   };
 
             const reflex = (instance => {
@@ -92,18 +94,22 @@ export const createReflexRegister = (() => {
         return record[0];
     };
 
-    const _unbindReflexAction = <T = any>(register: WeakMap<Ref, ReflexRecord>, reflexable: Reflexable<T>, action: ReflexAction<T>): void => {
+    const _unbindReflexAction = <T = any>(
+        register: WeakMap<NonNullable<Ref>, ReflexRecord>,
+        reflexable: Reflexable<T>,
+        action: ReflexAction<T>
+    ): void => {
         const _ref = unwrap(reflexable);
-        const [, actions] = _getRecordForRef(register, _ref);
+        const [, actions] = _getRecordForRef(register, _ref as NonNullable<Ref>);
         const bindings = actions.get(action) || 0;
 
         if (bindings === 1) actions.delete(action);
         else if (bindings > 1) actions.set(action, bindings - 1);
-        if (actions.size === 0) register.delete(_ref);
+        if (actions.size === 0 && _ref) register.delete(_ref);
     };
 
     return (): ReflexRegister => {
-        const _register = new WeakMap<Ref, ReflexRecord>();
+        const _register = new WeakMap<NonNullable<Ref>, ReflexRecord>();
         return struct({
             bind: enumerable(_bindReflexAction.bind(void 0, _register)),
             unbind: enumerable(_unbindReflexAction.bind(void 0, _register)),

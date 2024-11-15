@@ -3,9 +3,13 @@
 .adyen-pe__tooltip-target {
     &--hovered {
         text-decoration: underline;
-        text-decoration-color: style.token(color-decorative-blue);
+        text-decoration-color: style.token(color-outline-tertiary);
         text-decoration-style: dashed;
         text-decoration-thickness: 1px;
         text-underline-offset: style.token(spacer-020);
+
+        &:hover {
+            text-decoration-color: style.token(color-outline-tertiary-active);
+        }
     }
 }
