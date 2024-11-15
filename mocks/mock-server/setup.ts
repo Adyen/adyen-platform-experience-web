@@ -59,7 +59,7 @@ export const setupMock = [
                     method: 'GET',
                     url: 'capital/grantOffers/dynamic/configuration',
                 },
-                reviewGrantOffer: {
+                createGrantOffer: {
                     method: 'POST',
                     url: 'capital/grantOffers/review',
                 },
