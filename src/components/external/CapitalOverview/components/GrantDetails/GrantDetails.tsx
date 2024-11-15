@@ -16,7 +16,7 @@ export const GrantDetails: FunctionalComponent<GrantDetailsProps> = ({ grant }) 
     const formatAmount = useCallback((amount: { value: number; currency: string }) => i18n.amount(amount.value, amount.currency), [i18n]);
     const structuredListItems = useMemo<StructuredListItem[]>(() => {
         const maximumRepaymentPeriodMonths = grant.maximumRepaymentPeriodDays ? Math.ceil(grant.maximumRepaymentPeriodDays / 30) : null;
-        return [
+        const items: StructuredListItem[] = [
             {
                 key: 'capital.remainingAmount',
                 value: i18n.amount(grant.remainingGrantAmount.value, grant.remainingGrantAmount.currency),
@@ -37,10 +37,6 @@ export const GrantDetails: FunctionalComponent<GrantDetailsProps> = ({ grant }) 
                     },
                 }),
             },
-            {
-                key: 'capital.maximumRepaymentPeriod',
-                value: maximumRepaymentPeriodMonths ? `${maximumRepaymentPeriodMonths} ${i18n.get('capital.months')}` : '-',
-            },
             { key: 'capital.totalFees', value: formatAmount(grant.feesAmount) },
             { key: 'capital.totalRepaymentAmount', value: formatAmount(grant.totalAmount) },
             { key: 'capital.repaymentThreshold', value: formatAmount(grant.thresholdAmount) },
@@ -48,6 +44,15 @@ export const GrantDetails: FunctionalComponent<GrantDetailsProps> = ({ grant }) 
             { key: 'capital.accountDescription', value: grant.balanceAccountDescription },
             { key: 'capital.accountID', value: grant.balanceAccountCode },
         ];
+
+        if (maximumRepaymentPeriodMonths) {
+            items.splice(5, 0, {
+                key: 'capital.maximumRepaymentPeriod',
+                value: `${maximumRepaymentPeriodMonths} ${i18n.get('capital.months')}`,
+            });
+        }
+
+        return items;
     }, [grant, formatAmount, i18n]);
 
     return (
