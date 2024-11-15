@@ -21,7 +21,7 @@ const SpinButtonControl = fixedForwardRef(({ control, onButtonClick }: SpinButto
     });
 
     return (
-        <Button iconButton ref={ref} variant={ButtonVariant.TERTIARY} className={buttonClassNames} onClick={onButtonClick}>
+        <Button iconButton ref={ref as any} variant={ButtonVariant.TERTIARY} className={buttonClassNames} onClick={onButtonClick}>
             {control === _SpinButtonControl.DECREMENT && <Icon name="minus-circle-outline" />}
             {control === _SpinButtonControl.INCREMENT && <Icon name="plus-circle-outline" />}
         </Button>
