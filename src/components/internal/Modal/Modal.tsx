@@ -1,13 +1,18 @@
 import { useClickOutside } from '../../../hooks/element/useClickOutside';
 import { mediaQueries, useResponsiveViewport } from '../../../hooks/useResponsiveViewport';
 import Button from '../Button';
+import Icon from '../Icon';
 import { ButtonVariant } from '../Button/types';
-import Close from '../SVGIcons/Close';
 import useCoreContext from '../../../core/Context/useCoreContext';
-import { Ref, useCallback, useEffect } from 'preact/hooks';
+import { useCallback, useContext, useEffect } from 'preact/hooks';
+import { createContext, Ref } from 'preact';
 import cx from 'classnames';
 import './Modal.scss';
 import { ModalProps } from './types';
+
+const ModalContext = createContext({ withinModal: false });
+
+export const useModalContext = () => useContext(ModalContext);
 
 export default function Modal({
     title,
@@ -22,7 +27,7 @@ export default function Modal({
 }: ModalProps) {
     const isSmViewport = useResponsiveViewport(mediaQueries.down.xs);
     const { i18n } = useCoreContext();
-    const targetElement = useClickOutside(null, onClose) as Ref<HTMLDivElement | null>;
+    const targetElement = useClickOutside(null, onClose) as Ref<HTMLDivElement>;
 
     const handleEscKey = useCallback(
         (e: KeyboardEvent) => {
@@ -56,39 +61,41 @@ export default function Modal({
                     aria-hidden={!open}
                     {...props}
                 >
-                    <div
-                        className={cx('adyen-pe-modal', {
-                            'adyen-pe-modal--fluid': size === 'fluid',
-                            'adyen-pe-modal--small': size === 'small',
-                            'adyen-pe-modal--large': size === 'large',
-                            'adyen-pe-modal--extra-large': size === 'extra-large',
-                            'adyen-pe-modal--full-screen': size === 'full-screen' || isSmViewport,
-                        })}
-                        ref={targetElement}
-                    >
+                    <ModalContext.Provider value={{ withinModal: true }}>
                         <div
-                            className={cx('adyen-pe-modal__header', {
-                                'adyen-pe-modal__header--with-title': title,
-                                'adyen-pe-modal__header--with-border-bottom': headerWithBorder,
+                            className={cx('adyen-pe-modal', {
+                                'adyen-pe-modal--fluid': size === 'fluid',
+                                'adyen-pe-modal--small': size === 'small',
+                                'adyen-pe-modal--large': size === 'large',
+                                'adyen-pe-modal--extra-large': size === 'extra-large',
+                                'adyen-pe-modal--full-screen': size === 'full-screen' || isSmViewport,
                             })}
+                            ref={targetElement}
                         >
-                            {title && <div className={`adyen-pe-modal__header__title`}>{title}</div>}
+                            <div
+                                className={cx('adyen-pe-modal__header', {
+                                    'adyen-pe-modal__header--with-title': title,
+                                    'adyen-pe-modal__header--with-border-bottom': headerWithBorder,
+                                })}
+                            >
+                                {title && <div className={`adyen-pe-modal__header__title`}>{title}</div>}
 
-                            {isDismissible && (
-                                <Button
-                                    onClick={onClose}
-                                    variant={ButtonVariant.TERTIARY}
-                                    iconButton
-                                    classNameModifiers={['circle']}
-                                    className={`adyen-pe-modal__header-icon`}
-                                    aria-label={i18n.get('dismiss')}
-                                >
-                                    <Close />
-                                </Button>
-                            )}
+                                {isDismissible && (
+                                    <Button
+                                        onClick={onClose}
+                                        variant={ButtonVariant.TERTIARY}
+                                        iconButton
+                                        classNameModifiers={['circle']}
+                                        className={`adyen-pe-modal__header-icon`}
+                                        aria-label={i18n.get('dismiss')}
+                                    >
+                                        <Icon name="cross" />
+                                    </Button>
+                                )}
+                            </div>
+                            <div className={'adyen-pe-modal__content'}>{children}</div>
                         </div>
-                        <div className={'adyen-pe-modal__content'}>{children}</div>
-                    </div>
+                    </ModalContext.Provider>
                 </div>
             )}
         </>
