@@ -7,7 +7,6 @@ import { ActiveView } from '../../context/types';
 import useLineItemData from '../../hooks/useLineItemData/useLineItemData';
 import { TX_DATA_CONTAINER } from '../constants';
 import TransactionLineItem from './TransactionLineItem';
-// import TransactionRefundItemSelect from './TransactionRefundItemSelect';
 
 const TransactionLineItems = ({ view }: { view: ActiveView }) => {
     const { i18n } = useCoreContext();
@@ -18,7 +17,7 @@ const TransactionLineItems = ({ view }: { view: ActiveView }) => {
             <div className={`${TX_DATA_CONTAINER}`}>
                 <Typography variant={TypographyVariant.BODY}>{i18n.get('orderItem')}</Typography>
                 {/*{Boolean(hasSelectAll) && (*/}
-                {/*    <TransactionRefundItemSelect*/}
+                {/*    <TransactionLineItemTitle*/}
                 {/*        classNames={'adyen-pe-transaction__refund-all'}*/}
                 {/*        id={'refund-all'}*/}
                 {/*        reference={'refund-all'}*/}
