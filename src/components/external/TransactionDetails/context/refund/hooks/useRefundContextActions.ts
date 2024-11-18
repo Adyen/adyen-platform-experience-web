@@ -17,11 +17,11 @@ export const useRefundContextActions = <T extends _BaseUseRefundContextActionsPr
     setSecondaryAction,
     ...refundActionProps
 }: T) => {
-    const { refundAction, refundActionLabel: primaryActionLabel } = useRefundAction({ ...refundActionProps, refundAmount });
+    const { refundAction, refundActionLabel: primaryActionLabel } = useRefundAction({ ...refundActionProps, refundAmount, setActiveView });
     const { i18n } = useCoreContext();
 
     const primaryActionDisabled = useMemo(() => interactionsDisabled || refundAmount.value <= 0, [refundAmount, interactionsDisabled]);
-    const primaryAction = useCallback(() => void (!primaryActionDisabled && refundAction()), [primaryActionDisabled, refundAction]);
+    const primaryAction = useCallback(() => !primaryActionDisabled && refundAction(), [primaryActionDisabled, refundAction]);
 
     const secondaryActionDisabled = interactionsDisabled;
     const secondaryActionLabel = useMemo(() => i18n.get('back'), [i18n]);
@@ -36,8 +36,8 @@ export const useRefundContextActions = <T extends _BaseUseRefundContextActionsPr
             Object.freeze({
                 disabled: primaryActionDisabled,
                 event: primaryAction,
-                title: primaryActionLabel,
                 variant: ButtonVariant.PRIMARY,
+                ...primaryActionLabel,
             })
         );
     }, [primaryAction, primaryActionDisabled, primaryActionLabel, setPrimaryAction]);

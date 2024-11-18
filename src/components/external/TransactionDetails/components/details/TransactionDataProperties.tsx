@@ -1,4 +1,5 @@
 import { useMemo } from 'preact/hooks';
+import CopyText from '../../../../internal/CopyText/CopyText';
 import { TX_DATA_LABEL, TX_DATA_LIST, TX_DETAILS_RESERVED_FIELDS_SET } from '../constants';
 import { _isCustomDataObject } from '../../../../internal/DataGrid/components/TableCells';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
@@ -50,11 +51,16 @@ const TransactionDataProperties = () => {
 
             // refund reason
             isRefundTransaction && refundMetadata?.refundReason
-                ? { key: 'refundReason' as const, value: i18n.get(refundMetadata.refundReason as TranslationKey) }
+                ? {
+                      key: 'refundReason' as const,
+                      value: i18n.has(`refundReason.${refundMetadata.refundReason}` as TranslationKey)
+                          ? i18n.get(`refundReason.${refundMetadata.refundReason}` as TranslationKey)
+                          : refundMetadata.refundReason,
+                  }
                 : SKIP_ITEM,
 
             // reference id
-            { key: 'referenceID' as const, value: id },
+            { key: 'referenceID' as const, value: <CopyText text={id} /> },
 
             // refund psp reference
             // [TODO]: Add translation entries for the following tokens and substitute here:

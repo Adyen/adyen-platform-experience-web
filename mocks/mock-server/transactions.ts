@@ -50,8 +50,8 @@ const getTransactionMetadata = <T extends ITransaction>(transaction: T) => {
     let refundMode: ITransactionWithDetails['refundDetails']['refundMode'] = 'non_refundable';
     let deductedAmount = 0;
 
-    if (PAYMENT_OR_TRANSFER.includes(transaction.category)) {
-        if (KLARNA_OR_PAYPAL.includes(transaction.paymentMethod?.type!)) {
+    if (PAYMENT_OR_TRANSFER.includes(transaction?.category)) {
+        if (KLARNA_OR_PAYPAL.includes(transaction?.paymentMethod?.type ?? '')) {
             refundMode = 'partially_refundable_with_line_items_required';
             deductedAmount = 350;
         } else {
@@ -129,7 +129,7 @@ const enrichTransactionDataWithDetails = <T extends ITransaction>(
                     tx.refundMetadata = {
                         originalPaymentId: payment.id,
                         refundPspReference: uuid(),
-                        refundReason: 'refundReason.requested',
+                        refundReason: 'requested_by_customer',
                         refundType,
                     };
 
@@ -302,7 +302,7 @@ export const transactionsMocks = [
 
             if (!transactionResponse.ok) throw await transactionResponse.text();
 
-            const { amount, lineItems, merchantRefundReason } = (await request.json()) as ITransactionRefundPayload;
+            const { amount, lineItems, refundReason } = (await request.json()) as ITransactionRefundPayload;
             const { id: transactionId, refundDetails } = (await transactionResponse.json()) as ITransactionWithDetails;
 
             const lockDeadline = Date.now() + 2 * 60 * 1000; // 2 minutes
@@ -313,7 +313,7 @@ export const transactionsMocks = [
 
             return HttpResponse.json({
                 amount,
-                ...(merchantRefundReason && { merchantRefundReason }),
+                ...(refundReason && { refundReason }),
                 ...(refundDetails.refundMode.startsWith('partially_refundable') && {
                     lineItems: (lineItems ?? (EMPTY_ARRAY as NonNullable<typeof lineItems>))
                         .map(({ reference, quantity }) => {

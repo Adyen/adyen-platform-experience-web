@@ -15,4 +15,5 @@ export enum AlertTypeOption {
     CRITICAL = 'critical',
     HIGHLIGHT = 'highlight',
     SUCCESS = 'success',
+    IN_PROGRESS = 'in_progress',
 }

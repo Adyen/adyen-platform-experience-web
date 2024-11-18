@@ -205,4 +205,33 @@
         font-weight: style.token(text-body-font-weight);
         line-height: style.token(text-body-line-height);
     }
+
+    &__refund {
+        &-response {
+            align-items: center;
+            display: flex;
+            flex-direction: column;
+            gap: style.token(spacer-070);
+            padding: style.token(spacer-100) 0;
+            text-align: center;
+        }
+
+        &-response-icon {
+            height: style.token(spacer-100);
+            width: style.token(spacer-100);
+
+            &--success {
+                color: style.token(color-background-success-strong);
+            }
+
+            &--error {
+                color: style.token(color-background-critical-strong);
+            }
+
+            svg {
+                height: inherit;
+                width: inherit;
+            }
+        }
+    }
 }

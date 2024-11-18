@@ -5,6 +5,7 @@ export type ICategory = ITransaction['category'];
 export type ILineItem = ITransactionWithDetails['lineItems'][number];
 export type ILineItemRefundStatus = ILineItem['refundStatuses'][number];
 export type IRefundMode = Schema<components, 'RefundMode'>;
+export type IRefundReason = Schema<components, 'RefundReason'>;
 export type IRefundStatus = Schema<components, 'RefundStatus'>;
 export type ITransaction = Schema<components, 'SingleTransaction'>;
 export type ITransactionTotal = Schema<components, 'TransactionTotal'>;

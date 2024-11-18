@@ -37,7 +37,9 @@ export const useTransaction = (initialTransaction: TransactionDataContentProps['
         queryFn,
     });
 
-    const refreshTransaction = useCallback(() => setFetchTransactionId(undefined!), []);
+    const refreshTransaction = useCallback(() => {
+        return setFetchTransactionId(undefined!);
+    }, []);
 
     useEffect(() => {
         if (!fetchTransactionId) setFetchTransactionId(transaction.id);

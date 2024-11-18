@@ -1,11 +1,3 @@
-import type { TranslationKey } from '../../../../translations';
-
-export const REFUND_REASONS = Object.freeze([
-    'refundReason.requested',
-    'refundReason.issue',
-    'refundReason.fraud',
-    'refundReason.duplicate',
-    'refundReason.other',
-] as const) satisfies readonly TranslationKey[];
+export const REFUND_REASONS = Object.freeze(['requested_by_customer', 'issue_with_item_sold', 'fraudulent', 'duplicate', 'other'] as const);
 
 export const REFUND_REFERENCE_CHAR_LIMIT = 80;
