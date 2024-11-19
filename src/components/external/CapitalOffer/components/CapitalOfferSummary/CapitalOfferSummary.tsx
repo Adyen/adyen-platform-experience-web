@@ -19,6 +19,7 @@ import Alert from '../../../../internal/Alert/Alert';
 import Icon from '../../../../internal/Icon';
 import { CapitalErrorMessageDisplay } from '../utils/CapitalErrorMessageDisplay';
 import cx from 'classnames';
+import { StructuredListItem } from '../../../../internal/StructuredList/types';
 
 const errorMessageWithAlert = ['30_013'];
 
@@ -88,6 +89,53 @@ export const CapitalOfferSummary = ({
         return null;
     }, [i18n, requestFundsMutation.error]);
 
+    const structuredListItems = useMemo(() => {
+        const summaryItems: StructuredListItem[] = [
+            {
+                key: 'capital.fees',
+                value: i18n.amount(grantOffer.feesAmount.value, grantOffer.feesAmount.currency),
+            },
+            {
+                key: 'capital.totalRepaymentAmount',
+                value: i18n.amount(grantOffer.totalAmount.value, grantOffer.totalAmount.currency),
+            },
+            {
+                key: 'capital.repaymentThreshold',
+                value: i18n.amount(grantOffer.thresholdAmount.value, grantOffer.thresholdAmount.currency),
+            },
+            {
+                key: 'capital.repaymentRatePercentage',
+                value: `${getPaymentRatePercentage(grantOffer.repaymentRate)}% ${i18n.get('capital.daily')}`,
+            },
+            {
+                key: 'capital.expectedRepaymentPeriod',
+                value: `${grantOffer.expectedRepaymentPeriodDays} ${i18n.get('capital.days')}`,
+            },
+            { key: 'capital.account', value: i18n.get('capital.primaryAccount') },
+        ];
+
+        if (maximumRepaymentPeriod)
+            summaryItems.splice(4, 0, {
+                key: 'capital.maximumRepaymentPeriod',
+                value: `${calculateMaximumRepaymentPeriodInMonths(grantOffer.maximumRepaymentPeriodDays)} ${i18n.get(
+                    maximumRepaymentPeriod > 1 ? 'capital.months' : 'capital.month'
+                )}`,
+            });
+        return summaryItems;
+    }, [
+        grantOffer.expectedRepaymentPeriodDays,
+        grantOffer.feesAmount.currency,
+        grantOffer.feesAmount.value,
+        grantOffer.maximumRepaymentPeriodDays,
+        grantOffer.repaymentRate,
+        grantOffer.thresholdAmount.currency,
+        grantOffer.thresholdAmount.value,
+        grantOffer.totalAmount.currency,
+        grantOffer.totalAmount.value,
+        i18n,
+        maximumRepaymentPeriod,
+    ]);
+
     return !requestErrorAlert && requestFundsMutation.error ? (
         <CapitalErrorMessageDisplay error={requestFundsMutation.error} onBack={onBack} onContactSupport={onContactSupport} />
     ) : (
@@ -156,37 +204,7 @@ export const CapitalOfferSummary = ({
                         </Typography>
                     );
                 }}
-                items={[
-                    {
-                        key: 'capital.fees',
-                        value: i18n.amount(grantOffer.feesAmount.value, grantOffer.feesAmount.currency),
-                    },
-                    {
-                        key: 'capital.totalRepaymentAmount',
-                        value: i18n.amount(grantOffer.totalAmount.value, grantOffer.totalAmount.currency),
-                    },
-                    {
-                        key: 'capital.repaymentThreshold',
-                        value: i18n.amount(grantOffer.thresholdAmount.value, grantOffer.thresholdAmount.currency),
-                    },
-                    {
-                        key: 'capital.repaymentRatePercentage',
-                        value: `${getPaymentRatePercentage(grantOffer.repaymentRate)}% ${i18n.get('capital.daily')}`,
-                    },
-                    {
-                        key: 'capital.expectedRepaymentPeriod',
-                        value: `${grantOffer.expectedRepaymentPeriodDays} ${i18n.get('capital.days')}`,
-                    },
-                    {
-                        key: 'capital.maximumRepaymentPeriod',
-                        value: maximumRepaymentPeriod
-                            ? `${calculateMaximumRepaymentPeriodInMonths(grantOffer.maximumRepaymentPeriodDays)} ${i18n.get(
-                                  maximumRepaymentPeriod > 1 ? 'capital.months' : 'capital.month'
-                              )}`
-                            : null,
-                    },
-                    { key: 'capital.account', value: i18n.get('capital.primaryAccount') },
-                ]}
+                items={structuredListItems}
             />
             {requestErrorAlert && (
                 <Alert
