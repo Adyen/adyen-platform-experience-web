@@ -14,7 +14,7 @@ export type SpinButtonControlProps = {
     onButtonClick: ReturnType<typeof useSpinButton>['onButtonClick'];
 };
 
-const SpinButtonControl = fixedForwardRef(({ control, onButtonClick }: SpinButtonControlProps, ref: Ref<HTMLButtonElement>) => {
+const SpinButtonControl = fixedForwardRef(({ control, onButtonClick }: SpinButtonControlProps, ref: Ref<HTMLAnchorElement | HTMLButtonElement>) => {
     const buttonClassNames = cx(BUTTON_CLASS, {
         [BUTTON_DECREASE_CLASS]: control === _SpinButtonControl.DECREMENT,
         [BUTTON_INCREASE_CLASS]: control === _SpinButtonControl.INCREMENT,
