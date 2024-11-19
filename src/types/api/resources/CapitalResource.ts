@@ -37,7 +37,7 @@ export interface paths {
          * Review Grant Offer
          * @description This action verifies offer conditions and makes grant ready for user to accept it
          */
-        post: operations['reviewGrantOffer'];
+        post: operations['createGrantOffer'];
     };
 }
 
@@ -196,7 +196,7 @@ export interface operations {
      * Review Grant Offer
      * @description This action verifies offer conditions and makes grant ready for user to accept it
      */
-    reviewGrantOffer: {
+    createGrantOffer: {
         requestBody: {
             content: {
                 'application/json': components['schemas']['ReviewGrantOfferRequestDTO'];
