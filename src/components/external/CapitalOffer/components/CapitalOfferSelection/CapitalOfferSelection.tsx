@@ -89,15 +89,23 @@ export const CapitalOfferSelection = ({
 }: CapitalOfferSelectionProps) => {
     const { i18n } = useCoreContext();
 
-    const initialValue = config ? calculateSliderAdjustedMidValue(config.minAmount.value, config.maxAmount.value, config.step) : undefined;
-    const [requestedValue, setRequestedValue] = useState<number | undefined>(Number(requestedAmount) || initialValue);
+    const initialValue = useMemo(() => {
+        if (config) return calculateSliderAdjustedMidValue(config.minAmount.value, config.maxAmount.value, config.step);
+        return undefined;
+    }, [config]);
+
+    const [requestedValue, setRequestedValue] = useState<number | undefined>(requestedAmount ? Number(requestedAmount) : initialValue);
 
     const currency = useMemo(() => config?.minAmount.currency, [config?.minAmount.currency]);
 
-    const { reviewGrantOffer, getDynamicGrantOffer } = useAuthContext().endpoints;
+    const { createGrantOffer, getDynamicGrantOffer } = useAuthContext().endpoints;
     const getDynamicGrantOfferMutation = useMutation({
         queryFn: getDynamicGrantOffer,
         options: {
+            retry: 1,
+            shouldRetry: useCallback((error: any) => {
+                return error.status === 500;
+            }, []),
             onSettled: useCallback(() => {
                 setIsLoading(false);
             }, []),
@@ -105,7 +113,7 @@ export const CapitalOfferSelection = ({
     });
 
     const reviewOfferMutation = useMutation({
-        queryFn: reviewGrantOffer,
+        queryFn: createGrantOffer,
         options: {
             onSuccess: data => onOfferSelect(data),
         },
@@ -121,11 +129,9 @@ export const CapitalOfferSelection = ({
         });
     }, [currency, getDynamicGrantOfferMutation.data, requestedValue, reviewOfferMutation]);
 
-    const getDynamicGrantOfferMutationCallback = getDynamicGrantOfferMutation.mutate;
-
     const getOffer = useCallback(
-        (amount: number) => getDynamicGrantOfferMutationCallback({}, { query: { amount, currency: currency! } }),
-        [currency, getDynamicGrantOfferMutationCallback]
+        (amount: number) => getDynamicGrantOfferMutation.mutate({}, { query: { amount, currency: currency! } }),
+        [currency, getDynamicGrantOfferMutation]
     );
 
     const [isLoading, setIsLoading] = useState(false);
@@ -145,14 +151,14 @@ export const CapitalOfferSelection = ({
 
     useEffect(() => {
         if (config) {
-            setRequestedValue(prev => (!prev ? config.minAmount.value : prev));
-            !getDynamicGrantOfferMutation.data && void getOffer(requestedValue || config.minAmount.value);
+            setRequestedValue(prev => (!prev ? initialValue || config.minAmount.value : prev));
+            !getDynamicGrantOfferMutation.data && void getOffer(requestedValue || initialValue || config.minAmount.value);
         }
-    }, [config, getDynamicGrantOfferMutation.data, getOffer, requestedValue]);
+    }, [config, getDynamicGrantOfferMutation.data, getOffer, initialValue, requestedValue]);
 
     return (
         <div className="adyen-pe-capital-offer-selection">
-            {reviewOfferMutation.error || emptyGrantOffer ? (
+            {reviewOfferMutation.error || getDynamicGrantOfferMutation.error || emptyGrantOffer ? (
                 <CapitalErrorMessageDisplay error={reviewOfferMutation.error} onBack={onBack} onContactSupport={onContactSupport} />
             ) : (
                 <>
