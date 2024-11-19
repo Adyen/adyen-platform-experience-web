@@ -11,30 +11,6 @@ import { CapitalComponentState } from '../../src/components/external/CapitalOver
 
 const meta: Meta<ElementProps<typeof CapitalOverview>> = { ...CapitalOverviewMeta, title: 'Mocked/Capital Overview' };
 
-export const WithCallbacks: ElementStory<typeof CapitalOverview> = {
-    name: 'With callbacks',
-    args: {
-        mockedApi: true,
-        onFundsRequest: (data, goToNextStep) => {
-            alert(`Amount requested: ${data.grantAmount.value}`);
-            goToNextStep();
-        },
-        onOfferOptionsRequest(goToNextStep) {
-            alert('Are you sure?');
-            goToNextStep();
-        },
-        onOfferDismissed: goToPreviousStep => {
-            alert('Offer dismissed');
-            goToPreviousStep();
-        },
-    },
-    parameters: {
-        msw: {
-            handlers: CapitalMockedResponses.prequalified,
-        },
-    },
-};
-
 export const PreQualified: ElementStory<typeof CapitalOverview> = {
     name: 'Pre-qualified',
     args: {
@@ -143,7 +119,7 @@ export const NoRender: ElementStory<typeof CapitalOverview, { showUnqualified: b
     },
     decorators: [
         (story, context) => {
-            const [state, setState] = useState<CapitalComponentState>();
+            const [state, setState] = useState<CapitalComponentState['state']>();
 
             useEffect(() => {
                 const getAdyenPlatformExperienceComponent = async () => {
@@ -152,7 +128,7 @@ export const NoRender: ElementStory<typeof CapitalOverview, { showUnqualified: b
                     });
                     const AdyenCapitalOffer = new CapitalOverview({ core });
 
-                    const state = await AdyenCapitalOffer.getState();
+                    const { state } = await AdyenCapitalOffer.getState();
 
                     state === 'GrantList' || state === 'PreQualified' || context.args.showUnqualified
                         ? AdyenCapitalOffer.mount('#capital-component')
