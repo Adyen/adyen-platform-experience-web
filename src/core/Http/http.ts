@@ -87,6 +87,7 @@ export async function http<T>(options: HttpOptions): Promise<T> {
             if (isAdyenErrorResponse(response)) {
                 error.message = response.detail;
                 error.errorCode = response.errorCode;
+                error.status = response.status;
             }
             errorHandlerHelper(options.errorHandler, error);
         } catch (ex) {

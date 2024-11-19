@@ -221,7 +221,7 @@ export const CapitalOfferSummary = ({
                 </Alert>
             )}
             <div className="adyen-pe-capital-offer-summary__buttons">
-                {!requestFundsMutation.error && (
+                {requestFundsMutation.error && !requestErrorAlert ? null : (
                     <Button variant={ButtonVariant.SECONDARY} onClick={onBack}>
                         {i18n.get('capital.back')}
                     </Button>

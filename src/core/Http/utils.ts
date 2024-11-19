@@ -72,6 +72,7 @@ export function handleFetchError({
     errorCode?: string;
     type?: ErrorTypes;
     requestId?: string;
+    status?: number;
 }) {
     switch (level) {
         case 'silent': {

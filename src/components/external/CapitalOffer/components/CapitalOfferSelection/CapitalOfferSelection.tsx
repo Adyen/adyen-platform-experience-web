@@ -98,6 +98,10 @@ export const CapitalOfferSelection = ({
     const getDynamicGrantOfferMutation = useMutation({
         queryFn: getDynamicGrantOffer,
         options: {
+            retry: 1,
+            shouldRetry: useCallback((error: any) => {
+                return error.status === 500;
+            }, []),
             onSettled: useCallback(() => {
                 setIsLoading(false);
             }, []),
@@ -152,7 +156,7 @@ export const CapitalOfferSelection = ({
 
     return (
         <div className="adyen-pe-capital-offer-selection">
-            {reviewOfferMutation.error || emptyGrantOffer ? (
+            {reviewOfferMutation.error || getDynamicGrantOfferMutation.error || emptyGrantOffer ? (
                 <CapitalErrorMessageDisplay error={reviewOfferMutation.error} onBack={onBack} onContactSupport={onContactSupport} />
             ) : (
                 <>

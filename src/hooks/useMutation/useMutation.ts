@@ -8,6 +8,7 @@ type MutationOptions<ResponseType> = {
     onSettled?: (data: ResponseType | undefined, error: Error | AdyenErrorResponse | null) => void | Promise<void>;
     retry?: number | boolean;
     retryDelay?: number | ((retryAttempt: number) => number);
+    shouldRetry?: (error: AdyenErrorResponse) => boolean;
 };
 type MutationStatus = 'idle' | 'loading' | 'success' | 'error';
 
@@ -24,7 +25,7 @@ function useMutation<queryFn extends (...args: any[]) => any, ResponseType exten
     queryFn: queryFn | undefined;
     options?: MutationOptions<ResponseType>;
 }) {
-    const { retry = false, retryDelay = 1000, onSuccess, onError, onSettled } = options || (EMPTY_OBJECT as NonNullable<typeof options>);
+    const { retry = false, retryDelay = 1000, onSuccess, onError, onSettled, shouldRetry } = options || (EMPTY_OBJECT as NonNullable<typeof options>);
 
     const [data, setData] = useState<ResponseType | null>(null);
     const [error, setError] = useState<Error | AdyenErrorResponse | null>(null);
@@ -38,6 +39,10 @@ function useMutation<queryFn extends (...args: any[]) => any, ResponseType exten
         setData(null);
         setError(null);
         setStatus('idle');
+        retryCountRef.current = 0;
+    }, []);
+
+    const resetRetries = useCallback(() => {
         retryCountRef.current = 0;
     }, []);
 
@@ -58,15 +63,14 @@ function useMutation<queryFn extends (...args: any[]) => any, ResponseType exten
                 ALREADY_RESOLVED_PROMISE.then(() => {
                     onSuccess && tryResolve(onSuccess, result).catch(catchCallback);
                     onSettled && tryResolve(onSettled, result, null).catch(catchCallback);
+                    resetRetries();
                 });
 
                 return result;
             } catch (error: any) {
                 let maxRetries = 0;
-                if (isNumber(retry)) {
+                if (isNumber(retry) && (shouldRetry ? shouldRetry(error) : true)) {
                     maxRetries = Math.max(0, Math.floor(retry));
-                } else if (retry) {
-                    maxRetries = 3; // Default retries when retry is true
                 } else {
                     maxRetries = 0;
                 }
@@ -76,6 +80,7 @@ function useMutation<queryFn extends (...args: any[]) => any, ResponseType exten
                     const delay = isFunction(retryDelay) ? retryDelay(retryCountRef.current) : retryDelay ?? 1000;
 
                     await new Promise(resolve => setTimeout(resolve, delay));
+
                     return mutate(...variables);
                 }
 
@@ -89,12 +94,13 @@ function useMutation<queryFn extends (...args: any[]) => any, ResponseType exten
                 ALREADY_RESOLVED_PROMISE.then(() => {
                     onError && tryResolve(onError, error).catch(catchCallback);
                     onSettled && tryResolve(onSettled, undefined, error).catch(catchCallback);
+                    resetRetries();
                 });
 
                 throw error;
             }
         },
-        [queryFn, retry, retryDelay, onSuccess, onError, onSettled]
+        [queryFn, onSuccess, onSettled, retry, shouldRetry, retryDelay, resetRetries, onError]
     );
 
     // Cleanup on unmount
