@@ -16,7 +16,7 @@ const TRANSACTIONS_TOTALS_CACHE = new Map<string, Map<string, _ITransactionTotal
 
 const mockEndpoints = endpoints('mock');
 const networkError = false;
-const serverError = true;
+const serverError = false;
 
 const fetchTransactionsForRequest = (req: Request) => {
     const url = new URL(req.url);
