@@ -11,6 +11,7 @@ export const COMMON_CAPITAL_ERROR_MESSAGE = {
 const UNKNOWN_ERROR = {
     title: COMMON_CAPITAL_ERROR_MESSAGE.somethingWentWrong,
     message: [COMMON_CAPITAL_ERROR_MESSAGE.couldNotLoadOffers, COMMON_CAPITAL_ERROR_MESSAGE.tryRefreshingThePage],
+    refreshComponent: true,
 };
 
 export const getCapitalErrorMessage = (error: AdyenPlatformExperienceError | undefined, onContactSupport?: () => void): ErrorMessage => {
@@ -19,7 +20,7 @@ export const getCapitalErrorMessage = (error: AdyenPlatformExperienceError | und
     if (commonError) return commonError;
     switch (error.errorCode) {
         case undefined:
-            return { ...UNKNOWN_ERROR, ...(onContactSupport ? { onContactSupport } : { refreshComponent: true }) };
+            return { ...UNKNOWN_ERROR, ...(onContactSupport ? { onContactSupport } : {}) };
         case '30_016': {
             return {
                 title: COMMON_CAPITAL_ERROR_MESSAGE.somethingWentWrong,

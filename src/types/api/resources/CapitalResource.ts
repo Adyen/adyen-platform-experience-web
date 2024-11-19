@@ -37,7 +37,7 @@ export interface paths {
          * Review Grant Offer
          * @description This action verifies offer conditions and makes grant ready for user to accept it
          */
-        post: operations['reviewGrantOffer'];
+        post: operations['createGrantOffer'];
     };
 }
 
@@ -61,7 +61,7 @@ export interface components {
             grantAmount: components['schemas']['Amount'];
             id: string;
             /** Format: int32 */
-            maximumRepaymentPeriodDays: number;
+            maximumRepaymentPeriodDays?: number;
             /** Format: int32 */
             repaymentRate: number;
             thresholdAmount: components['schemas']['Amount'];
@@ -82,7 +82,7 @@ export interface components {
             grantAmount: components['schemas']['Amount'];
             id: string;
             /** Format: int32 */
-            maximumRepaymentPeriodDays: number;
+            maximumRepaymentPeriodDays?: number;
             /** Format: date-time */
             offerExpiresAt?: string;
             remainingFeesAmount: components['schemas']['Amount'];
@@ -196,7 +196,7 @@ export interface operations {
      * Review Grant Offer
      * @description This action verifies offer conditions and makes grant ready for user to accept it
      */
-    reviewGrantOffer: {
+    createGrantOffer: {
         requestBody: {
             content: {
                 'application/json': components['schemas']['ReviewGrantOfferRequestDTO'];

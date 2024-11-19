@@ -204,7 +204,7 @@ export const NoRender: ElementStory<typeof CapitalOverview, { showUnqualified: b
 };
 
 export const ErrorNoCapability: ElementStory<typeof CapitalOverview> = {
-    name: 'Error - No capability',
+    name: 'Error - Dynamic offer config - No capability',
     args: {
         mockedApi: true,
     },
@@ -215,7 +215,7 @@ export const ErrorNoCapability: ElementStory<typeof CapitalOverview> = {
     },
 };
 export const ErrorInactiveAH: ElementStory<typeof CapitalOverview> = {
-    name: 'Error - Inactive Account Holder',
+    name: 'Error - Dynamic offer config - Inactive account holder',
     args: {
         mockedApi: true,
     },
