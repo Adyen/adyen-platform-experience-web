@@ -46,7 +46,6 @@ export const ErrorMessageDisplay = ({
     renderSecondaryButton,
 }: ErrorMessageDisplayProps) => {
     const { i18n, updateCore } = useCoreContext();
-
     const renderMessage = useCallback(
         (errorMessage: TranslationKey | TranslationKey[]) => {
             if (Array.isArray(errorMessage)) {
