@@ -28,29 +28,19 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
 }) => {
     const { getGrants: grantsEndpointCall, getDynamicGrantOffersConfiguration: dynamicConfigurationEndpointCall } = useAuthContext().endpoints;
 
-    const grantsQuery = useFetch(
-        useMemo(
-            () => ({
-                fetchOptions: { enabled: !!grantsEndpointCall },
-                queryFn: async () => {
-                    return grantsEndpointCall?.(EMPTY_OBJECT);
-                },
-            }),
-            [grantsEndpointCall]
-        )
-    );
+    const grantsQuery = useFetch({
+        fetchOptions: { enabled: !!grantsEndpointCall },
+        queryFn: useCallback(async () => {
+            return grantsEndpointCall?.(EMPTY_OBJECT);
+        }, []),
+    });
 
-    const dynamicOfferQuery = useFetch(
-        useMemo(
-            () => ({
-                fetchOptions: { enabled: !!dynamicConfigurationEndpointCall },
-                queryFn: async () => {
-                    return dynamicConfigurationEndpointCall?.(EMPTY_OBJECT);
-                },
-            }),
-            [dynamicConfigurationEndpointCall]
-        )
-    );
+    const dynamicOfferQuery = useFetch({
+        fetchOptions: { enabled: !!dynamicConfigurationEndpointCall },
+        queryFn: useCallback(async () => {
+            return dynamicConfigurationEndpointCall?.(EMPTY_OBJECT);
+        }, []),
+    });
 
     const dynamicOffer = dynamicOfferQuery.data;
 

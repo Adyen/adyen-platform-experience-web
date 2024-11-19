@@ -45,7 +45,7 @@ export const PreQualified = ({
             {state === 'Intro' ? (
                 <PreQualifiedIntro hideTitle={hideTitle} dynamicOffer={dynamicOffer} onSeeOptions={onSeeOptionsHandler} />
             ) : state === 'CapitalOffer' ? (
-                <CapitalOffer onFundsRequest={onRequestFundsHandler} onOfferDismissed={goBackToIntro} />
+                <CapitalOffer onFundsRequest={onRequestFundsHandler} onOfferDismissed={goBackToIntro} externalDynamicOffersConfig={dynamicOffer} />
             ) : null}
         </>
     );
