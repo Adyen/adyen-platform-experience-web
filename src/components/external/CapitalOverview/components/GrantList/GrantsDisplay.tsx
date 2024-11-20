@@ -65,12 +65,12 @@ export const GrantsDisplay: FunctionalComponent<GrantsProps> = ({ grantList, hid
                 <Tabs
                     tabs={[
                         {
-                            label: 'capital.active',
+                            label: 'capital.inProgress',
                             content: <List grants={activeGrants} />,
                             id: 'active',
                         },
                         {
-                            label: 'capital.inactive',
+                            label: 'capital.settled',
                             content: <List grants={inactiveGrants} />,
                             id: 'inactive',
                         },
