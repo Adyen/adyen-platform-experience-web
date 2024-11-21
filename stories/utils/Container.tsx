@@ -23,7 +23,7 @@ export const Container = <T extends new (args: any) => any>({ component, compone
             const core = await AdyenPlatformExperience({
                 ...context.coreOptions,
                 balanceAccountId: context.args.balanceAccountId,
-                environment: 'test',
+                environment: 'live',
                 onSessionCreate: async () => {
                     return await sessionRequest(context.args.session);
                 },
