@@ -8,6 +8,7 @@ import {
     ICON_BUTTON_CONTENT_CLASSNAME,
     BUTTON_FULL_WIDTH_CLASSNAME,
     BUTTON_CONDENSED_CLASSNAME,
+    BUTTON_LOADING_CLASSNAME,
 } from './constants';
 import { TypographyElement, TypographyVariant } from '../Typography/types';
 import Typography from '../Typography/Typography';
@@ -17,6 +18,7 @@ import { useMemo } from 'preact/hooks';
 import { ButtonProps, ButtonVariant } from './types';
 import './Button.scss';
 import cx from 'classnames';
+import Spinner from '../Spinner';
 
 // TODO: Reuse BaseButton component within Button component
 function Button(
@@ -33,6 +35,7 @@ function Button(
         iconButton = false,
         fullWidth,
         condensed,
+        state = 'default',
         ...restAttributes
     }: ButtonProps,
     ref: Ref<HTMLButtonElement>
@@ -44,13 +47,14 @@ function Button(
 
     return (
         <button
-            className={cx(classes, {
+            className={cx(iconButton ? `${ICON_BUTTON_CLASSNAME} ${classes}` : classes, {
                 [ICON_BUTTON_CLASSNAME]: iconButton,
                 [BUTTON_CONDENSED_CLASSNAME]: condensed,
                 [BUTTON_FULL_WIDTH_CLASSNAME]: fullWidth,
+                [BUTTON_LOADING_CLASSNAME]: state === 'loading',
             })}
             type={type}
-            disabled={disabled}
+            disabled={disabled || state === 'loading'}
             onClick={click}
             ref={ref}
             {...restAttributes}
@@ -59,6 +63,7 @@ function Button(
                 <div className={`${ICON_BUTTON_CONTENT_CLASSNAME}`}>{children}</div>
             ) : (
                 <>
+                    {state === 'loading' && <Spinner size={'x-small'} />}
                     {iconLeft && <span className={BUTTON_ICON_LEFT_CLASSNAME}>{iconLeft}</span>}
                     <Typography className={BUTTON_LABEL_CLASSNAME} el={TypographyElement.SPAN} variant={TypographyVariant.BODY} stronger={true}>
                         {children}
