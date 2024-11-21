@@ -2,7 +2,24 @@
 
 .adyen-pe-grant-item {
     &__status-container {
-        float: right;
+        align-items: center;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    &__card-content {
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-010);
+    }
+
+    &__loan-id {
+        cursor: pointer;
+        display: flex;
+        gap: style.token(spacer-040);
+        justify-content: center;
+        margin-top: style.token(spacer-010);
+        width: fit-content;
     }
 
     &__text--secondary {
@@ -13,11 +30,8 @@
         margin-top: style.token(spacer-040);
     }
 
-    &__actions {
-        margin-top: style.token(spacer-080);
-    }
-
-    &__action-button {
-        margin-top: style.token(spacer-030);
+    &__overview {
+        padding-bottom: style.token(spacer-060);
+        padding-top: style.token(spacer-060);
     }
 }

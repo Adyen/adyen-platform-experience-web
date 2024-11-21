@@ -58,12 +58,9 @@ function Button(
                 [BUTTON_CONDENSED_CLASSNAME]: condensed,
                 [BUTTON_FULL_WIDTH_CLASSNAME]: fullWidth,
             }),
-            type,
-            disabled,
-            onClick: click,
             ...restAttributes,
         }),
-        [classes, click, condensed, disabled, fullWidth, iconButton, restAttributes, type]
+        [classes, condensed, fullWidth, iconButton, restAttributes]
     );
 
     const allChildren = useMemo(
@@ -98,7 +95,7 @@ function Button(
         }
 
         return (
-            <button {...allProps} ref={ref as Ref<HTMLButtonElement>}>
+            <button {...allProps} ref={ref as Ref<HTMLButtonElement>} type={type} disabled={disabled} onClick={click}>
                 {allChildren}
             </button>
         );

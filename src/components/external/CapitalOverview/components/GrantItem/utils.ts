@@ -6,16 +6,16 @@ const getHasDetails = (status: IGrantStatus) => status === 'Active';
 
 const getIsBackgroundFilled = (status: IGrantStatus) => status === 'Repaid';
 
-const getAmountLabelKey = ({ status, repaidGrantAmount }: IGrant): TranslationKey => {
+const getAmountLabelKey = ({ status }: IGrant): TranslationKey => {
     if (status === 'Active') {
-        return repaidGrantAmount.value ? 'capital.repaid' : 'capital.initialFunds';
+        return 'capital.remaining';
     } else if (status === 'Repaid') {
         return 'capital.initialFunds';
     }
     return 'capital.requestedFunds';
 };
 
-const getAmount = (grant: IGrant) => (grant.status === 'Active' && grant.repaidTotalAmount.value ? grant.repaidTotalAmount : grant.grantAmount);
+const getAmount = (grant: IGrant) => (grant.status === 'Active' ? grant.remainingTotalAmount : grant.grantAmount);
 
 const getStatusKey = (status: IGrantStatus): TranslationKey | undefined => {
     switch (status) {
@@ -61,7 +61,6 @@ const getIsPendingToS = (grant: IGrant) => {
 
 export const getGrantConfig = (grant: IGrant) => {
     const isGrantActive = grant.status === 'Active';
-    const isGrantActiveOrRepaid = isGrantActive || grant.status === 'Repaid';
 
     return {
         amount: getAmount(grant),
@@ -69,7 +68,7 @@ export const getGrantConfig = (grant: IGrant) => {
         hasDetails: getHasDetails(grant.status),
         isAmountColorSecondary: !isGrantActive,
         isBackgroundFilled: getIsBackgroundFilled(grant.status),
-        isLabelColorSecondary: isGrantActiveOrRepaid,
+        isLabelColorSecondary: isGrantActive,
         isProgressBarVisible: isGrantActive,
         repaymentPeriodEndDate: getRepaymentPeriodEndDate(grant.repaymentPeriodLeft),
         statusKey: getStatusKey(grant.status),

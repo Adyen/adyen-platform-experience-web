@@ -18,6 +18,8 @@ import { AlertTypeOption } from '../../../../internal/Alert/types';
 import Alert from '../../../../internal/Alert/Alert';
 import Icon from '../../../../internal/Icon';
 import { CapitalErrorMessageDisplay } from '../utils/CapitalErrorMessageDisplay';
+import cx from 'classnames';
+import { StructuredListItem } from '../../../../internal/StructuredList/types';
 
 const errorMessageWithAlert = ['30_013'];
 
@@ -25,13 +27,13 @@ export const CapitalOfferSummary = ({
     grantOffer,
     repaymentFrequency,
     onBack,
-    onRequestFunds,
+    onFundsRequest,
     onContactSupport,
 }: {
     grantOffer: IGrantOfferResponseDTO;
     repaymentFrequency: number;
     onBack: () => void;
-    onRequestFunds?: (data: IGrant) => void;
+    onFundsRequest?: (data: IGrant) => void;
     onContactSupport?: () => void;
 }) => {
     const { i18n } = useCoreContext();
@@ -45,7 +47,7 @@ export const CapitalOfferSummary = ({
     const requestFundsMutation = useMutation({
         queryFn: requestFunds,
         options: {
-            onSuccess: data => onRequestFunds?.(data),
+            onSuccess: data => onFundsRequest?.(data),
         },
     });
 
@@ -72,7 +74,7 @@ export const CapitalOfferSummary = ({
             switch (err.errorCode) {
                 case '30_013':
                     return {
-                        title: i18n.get('capital.thereIsNoPrimaryBalanceAccountConfigured'),
+                        title: i18n.get('capital.thereIsNoPrimaryAccountConfigured'),
                         message: i18n.get('capital.weCannotContinueWithTheOffer'),
                         errorCode: '30_013',
                     };
@@ -86,6 +88,53 @@ export const CapitalOfferSummary = ({
 
         return null;
     }, [i18n, requestFundsMutation.error]);
+
+    const structuredListItems = useMemo(() => {
+        const summaryItems: StructuredListItem[] = [
+            {
+                key: 'capital.fees',
+                value: i18n.amount(grantOffer.feesAmount.value, grantOffer.feesAmount.currency),
+            },
+            {
+                key: 'capital.totalRepaymentAmount',
+                value: i18n.amount(grantOffer.totalAmount.value, grantOffer.totalAmount.currency),
+            },
+            {
+                key: 'capital.repaymentThreshold',
+                value: i18n.amount(grantOffer.thresholdAmount.value, grantOffer.thresholdAmount.currency),
+            },
+            {
+                key: 'capital.repaymentRatePercentage',
+                value: `${getPaymentRatePercentage(grantOffer.repaymentRate)}% ${i18n.get('capital.daily')}`,
+            },
+            {
+                key: 'capital.expectedRepaymentPeriod',
+                value: `${grantOffer.expectedRepaymentPeriodDays} ${i18n.get('capital.days')}`,
+            },
+            { key: 'capital.account', value: i18n.get('capital.primaryAccount') },
+        ];
+
+        if (maximumRepaymentPeriod)
+            summaryItems.splice(4, 0, {
+                key: 'capital.maximumRepaymentPeriod',
+                value: `${calculateMaximumRepaymentPeriodInMonths(grantOffer.maximumRepaymentPeriodDays)} ${i18n.get(
+                    maximumRepaymentPeriod > 1 ? 'capital.months' : 'capital.month'
+                )}`,
+            });
+        return summaryItems;
+    }, [
+        grantOffer.expectedRepaymentPeriodDays,
+        grantOffer.feesAmount.currency,
+        grantOffer.feesAmount.value,
+        grantOffer.maximumRepaymentPeriodDays,
+        grantOffer.repaymentRate,
+        grantOffer.thresholdAmount.currency,
+        grantOffer.thresholdAmount.value,
+        grantOffer.totalAmount.currency,
+        grantOffer.totalAmount.value,
+        i18n,
+        maximumRepaymentPeriod,
+    ]);
 
     return !requestErrorAlert && requestFundsMutation.error ? (
         <CapitalErrorMessageDisplay error={requestFundsMutation.error} onBack={onBack} onContactSupport={onContactSupport} />
@@ -138,61 +187,24 @@ export const CapitalOfferSummary = ({
                     );
                 }}
                 renderValue={(val, key) => {
-                    if (
-                        key === 'capital.balanceAccount' &&
-                        requestFundsMutation.error &&
-                        requestErrorAlert &&
-                        requestErrorAlert.errorCode === '30_013'
-                    ) {
-                        return (
-                            <Typography
-                                el={TypographyElement.SPAN}
-                                variant={TypographyVariant.CAPTION}
-                                stronger
-                                className={'adyen-pe-capital-offer-summary__details--error'}
-                            >
-                                <Icon name={'warning-filled'} />
-                                <span>{i18n.get('capital.primaryBalanceAccount')}</span>
-                            </Typography>
-                        );
-                    }
+                    const showWarningIcon =
+                        key === 'capital.account' && requestFundsMutation.error && requestErrorAlert && requestErrorAlert.errorCode === '30_013';
+
                     return (
-                        <Typography el={TypographyElement.SPAN} variant={TypographyVariant.CAPTION} stronger>
+                        <Typography
+                            className={cx({
+                                ['adyen-pe-capital-offer-summary__details--error']: showWarningIcon,
+                            })}
+                            el={TypographyElement.SPAN}
+                            variant={TypographyVariant.CAPTION}
+                            stronger
+                        >
+                            {showWarningIcon ? <Icon name={'warning-filled'} /> : null}
                             {val}
                         </Typography>
                     );
                 }}
-                items={[
-                    {
-                        key: 'capital.fees',
-                        value: i18n.amount(grantOffer.feesAmount.value, grantOffer.feesAmount.currency),
-                    },
-                    {
-                        key: 'capital.totalRepaymentAmount',
-                        value: i18n.amount(grantOffer.totalAmount.value, grantOffer.totalAmount.currency),
-                    },
-                    {
-                        key: 'capital.repaymentThreshold',
-                        value: i18n.amount(grantOffer.thresholdAmount.value, grantOffer.thresholdAmount.currency),
-                    },
-                    {
-                        key: 'capital.repaymentRatePercentage',
-                        value: `${getPaymentRatePercentage(grantOffer.repaymentRate)}% ${i18n.get('capital.daily')}`,
-                    },
-                    {
-                        key: 'capital.expectedRepaymentPeriod',
-                        value: `${grantOffer.expectedRepaymentPeriodDays} ${i18n.get('capital.days')}`,
-                    },
-                    {
-                        key: 'capital.maximumRepaymentPeriod',
-                        value: maximumRepaymentPeriod
-                            ? `${calculateMaximumRepaymentPeriodInMonths(grantOffer.maximumRepaymentPeriodDays)} ${i18n.get(
-                                  maximumRepaymentPeriod > 1 ? 'capital.months' : 'capital.month'
-                              )}`
-                            : null,
-                    },
-                    { key: 'capital.balanceAccount', value: i18n.get('capital.primaryBalanceAccount') },
-                ]}
+                items={structuredListItems}
             />
             {requestErrorAlert && (
                 <Alert
@@ -200,10 +212,16 @@ export const CapitalOfferSummary = ({
                     type={AlertTypeOption.WARNING}
                     title={requestErrorAlert.title}
                     description={requestErrorAlert.message}
-                />
+                >
+                    {onContactSupport ? (
+                        <Button className={'adyen-pe-capital-offer-summary__error-alert-button'} onClick={onContactSupport}>
+                            {i18n.get('reachOutToSupport')}
+                        </Button>
+                    ) : null}
+                </Alert>
             )}
             <div className="adyen-pe-capital-offer-summary__buttons">
-                {!requestFundsMutation.error && (
+                {requestFundsMutation.error && !requestErrorAlert ? null : (
                     <Button variant={ButtonVariant.SECONDARY} onClick={onBack}>
                         {i18n.get('capital.back')}
                     </Button>

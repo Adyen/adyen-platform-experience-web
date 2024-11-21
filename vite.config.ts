@@ -45,6 +45,14 @@ export default defineConfig(async ({ mode }) => {
         json: {
             stringify: true,
         },
+        css: {
+            preprocessorOptions: {
+                scss: {
+                    api: 'modern-compiler',
+                    silenceDeprecations: ['legacy-js-api'],
+                },
+            },
+        },
         build:
             mode === 'demo'
                 ? {

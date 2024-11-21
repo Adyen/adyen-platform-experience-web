@@ -4,6 +4,13 @@
  */
 
 export interface paths {
+    '/v1/capital/grantOffers/create': {
+        /**
+         * Create Grant Offer
+         * @description This action verifies offer conditions and makes grant ready for user to accept it
+         */
+        post: operations['createGrantOffer'];
+    };
     '/v1/capital/grantOffers/dynamic': {
         /**
          * Get Dynamic Grant Offer
@@ -32,12 +39,12 @@ export interface paths {
          */
         post: operations['requestFunds'];
     };
-    '/v1/capital/grantOffers/review': {
+    '/v1/capital/grants/missingActions/signToS': {
         /**
-         * Review Grant Offer
-         * @description This action verifies offer conditions and makes grant ready for user to accept it
+         * Get SignToS action details
+         * @description Add @Operation annotation to provide a description
          */
-        post: operations['reviewGrantOffer'];
+        get: operations['signToSActionDetails'];
     };
 }
 
@@ -61,11 +68,16 @@ export interface components {
             grantAmount: components['schemas']['Amount'];
             id: string;
             /** Format: int32 */
-            maximumRepaymentPeriodDays: number;
+            maximumRepaymentPeriodDays?: number;
             /** Format: int32 */
             repaymentRate: number;
             thresholdAmount: components['schemas']['Amount'];
             totalAmount: components['schemas']['Amount'];
+        };
+        CreateGrantOfferRequestDTO: {
+            /** Format: int64 */
+            amount: number;
+            currency: string;
         };
         DynamicOffersResponseDTO: {
             maxAmount: components['schemas']['Amount'];
@@ -82,7 +94,8 @@ export interface components {
             grantAmount: components['schemas']['Amount'];
             id: string;
             /** Format: int32 */
-            maximumRepaymentPeriodDays: number;
+            maximumRepaymentPeriodDays?: number;
+            missingActions?: components['schemas']['MissingActionDTO'][];
             /** Format: date-time */
             offerExpiresAt?: string;
             remainingFeesAmount: components['schemas']['Amount'];
@@ -100,20 +113,19 @@ export interface components {
             termEndsAt: string;
             thresholdAmount: components['schemas']['Amount'];
             totalAmount: components['schemas']['Amount'];
-            missingActions: {
-                type: 'signToS';
-                url: string;
-            }[];
         };
         /** @enum {string} */
         GrantStatus: 'Pending' | 'Active' | 'Repaid' | 'Failed' | 'WrittenOff' | 'Revoked';
         GrantsResponseDTO: {
             data: components['schemas']['GrantResponseDTO'][];
         };
-        ReviewGrantOfferRequestDTO: {
-            /** Format: int64 */
-            amount: number;
-            currency: string;
+        MissingActionDTO: {
+            type: components['schemas']['MissingActionType'];
+        };
+        /** @enum {string} */
+        MissingActionType: 'signToS';
+        MissingTOSActionDetailsResponseDTO: {
+            url: string;
         };
     };
     responses: never;
@@ -128,6 +140,25 @@ export type $defs = Record<string, never>;
 export type external = Record<string, never>;
 
 export interface operations {
+    /**
+     * Create Grant Offer
+     * @description This action verifies offer conditions and makes grant ready for user to accept it
+     */
+    createGrantOffer: {
+        requestBody: {
+            content: {
+                'application/json': components['schemas']['CreateGrantOfferRequestDTO'];
+            };
+        };
+        responses: {
+            /** @description OK - the request has succeeded. */
+            200: {
+                content: {
+                    'application/json': components['schemas']['GrantOfferResponseDTO'];
+                };
+            };
+        };
+    };
     /**
      * Get Dynamic Grant Offer
      * @description Get grant offer details for specific parameters
@@ -196,20 +227,21 @@ export interface operations {
         };
     };
     /**
-     * Review Grant Offer
-     * @description This action verifies offer conditions and makes grant ready for user to accept it
+     * Get SignToS action details
+     * @description Add @Operation annotation to provide a description
      */
-    reviewGrantOffer: {
-        requestBody: {
-            content: {
-                'application/json': components['schemas']['ReviewGrantOfferRequestDTO'];
+    signToSActionDetails: {
+        parameters: {
+            query: {
+                redirectUrl: string;
+                locale: string;
             };
         };
         responses: {
             /** @description OK - the request has succeeded. */
             200: {
                 content: {
-                    'application/json': components['schemas']['GrantOfferResponseDTO'];
+                    'application/json': components['schemas']['MissingTOSActionDetailsResponseDTO'];
                 };
             };
         };

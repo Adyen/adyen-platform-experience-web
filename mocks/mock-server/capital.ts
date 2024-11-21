@@ -3,13 +3,14 @@ import {
     ACTIVE_UNREPAID_GRANT,
     DYNAMIC_CAPITAL_OFFER,
     FAILED_GRANT,
+    GRANT_OFFER,
     PENDING_GRANT,
+    PENDING_GRANT_WITH_ACTIONS,
     REPAID_GRANT,
     REVOKED_GRANT,
-    WRITTEN_OFF_GRANT,
-    GRANT_OFFER,
     SIGNED_OFFER,
-    PENDING_GRANT_WITH_ACTIONS,
+    SIGN_TOS_ACTION_DETAILS,
+    WRITTEN_OFF_GRANT,
 } from '../mock-data';
 import { endpoints } from '../../endpoints/endpoints';
 import { DefaultBodyType, http, HttpResponse, StrictRequest } from 'msw';
@@ -31,7 +32,9 @@ const EMPTY_GRANTS_LIST = getHandlerCallback({
 
 const EMPTY_OFFER = getHandlerCallback({ response: {} });
 
-const DYNAMIC_OFFER_HANDLER = async ({ request }: { request: StrictRequest<DefaultBodyType> }) => {
+let retries = 0;
+
+const DYNAMIC_OFFER_HANDLER = async ({ request }: { request: StrictRequest<DefaultBodyType> }, retriesLimit?: number) => {
     const url = new URL(request.url);
     const { amount, currency } = { amount: url.searchParams.get('amount'), currency: url.searchParams.get('currency') };
 
@@ -39,6 +42,17 @@ const DYNAMIC_OFFER_HANDLER = async ({ request }: { request: StrictRequest<Defau
 
     const response = calculateGrant(amount, currency);
     await delay(400);
+
+    if (retries < (retriesLimit || 0)) {
+        if (retriesLimit && retries < retriesLimit) retries += 1;
+        const options = { status: 500 };
+
+        const error = new AdyenPlatformExperienceError(ErrorTypes.ERROR, 'ServerError', 'Message', '500');
+
+        return HttpResponse.json({ ...error, status: 500, detail: 'detail' }, options);
+    }
+    if (retriesLimit && retries === retriesLimit) retries = 0;
+
     return HttpResponse.json(response);
 };
 
@@ -60,7 +74,7 @@ export const capitalMock = [
     }),
     http.get(mockEndpoints.grants, EMPTY_GRANTS_LIST),
     http.get(mockEndpoints.dynamicOffer, DYNAMIC_OFFER_HANDLER),
-    http.post(mockEndpoints.offerReview, OFFER_REVIEW_HANDLER),
+    http.post(mockEndpoints.createOffer, OFFER_REVIEW_HANDLER),
     http.post(mockEndpoints.requestFunds, getHandlerCallback({ response: SIGNED_OFFER, delayTime: 800 })),
 ];
 const capitalFactory = mocksFactory<CapitalPaths>();
@@ -119,6 +133,7 @@ export const CapitalMockedResponses = capitalFactory({
     pendingGrantWithActions: [
         { endpoint: mockEndpoints.dynamicOfferConfig, handler: EMPTY_OFFER },
         { endpoint: mockEndpoints.grants, response: { data: [PENDING_GRANT_WITH_ACTIONS] } },
+        { endpoint: mockEndpoints.signToS, response: SIGN_TOS_ACTION_DETAILS },
     ],
     repaidGrant: [
         { endpoint: mockEndpoints.dynamicOfferConfig, handler: EMPTY_OFFER },
@@ -147,14 +162,14 @@ export const CapitalMockedResponses = capitalFactory({
     ],
     reviewOfferWentWrong: [
         {
-            endpoint: mockEndpoints.offerReview,
+            endpoint: mockEndpoints.createOffer,
             handler: getErrorHandler(ERROR_OFFER_REVIEW_WENT_WRONG, 500),
             method: 'post',
         },
     ],
     missingPrimaryBalanceAccount: [
         {
-            endpoint: mockEndpoints.offerReview,
+            endpoint: mockEndpoints.createOffer,
             handler: ((req: any) => OFFER_REVIEW_HANDLER(req)) as any,
             method: 'post',
         },
@@ -171,6 +186,13 @@ export const CapitalMockedResponses = capitalFactory({
             method: 'post',
         },
     ],
+    requestFundGenericError: [
+        {
+            endpoint: mockEndpoints.requestFunds as any,
+            handler: getErrorHandler(new AdyenPlatformExperienceError(ErrorTypes.ERROR, '1234', 'Message', '500'), 500),
+            method: 'post',
+        },
+    ],
     exceededGrantLimit: [
         {
             endpoint: mockEndpoints.requestFunds as any,
@@ -180,4 +202,6 @@ export const CapitalMockedResponses = capitalFactory({
     ],
     noOfferAvailable: [{ endpoint: mockEndpoints.dynamicOfferConfig, handler: getHandlerCallback({ response: undefined, status: 204 }) }],
     hasActiveGrants: [{ endpoint: mockEndpoints.dynamicOfferConfig, handler: getHandlerCallback({ response: undefined, status: 204 }) }],
+    dynamicOfferServerError: [{ endpoint: mockEndpoints.dynamicOffer, handler: ((req: any) => DYNAMIC_OFFER_HANDLER(req, 1)) as any }],
+    dynamicOfferExceededRetries: [{ endpoint: mockEndpoints.dynamicOffer, handler: ((req: any) => DYNAMIC_OFFER_HANDLER(req, 10)) as any }],
 });

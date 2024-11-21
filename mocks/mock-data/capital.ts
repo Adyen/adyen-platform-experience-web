@@ -31,7 +31,7 @@ export const DEFAULT_GRANT: IGrant = {
         currency: 'USD',
     },
     remainingTotalAmount: {
-        value: 1200000,
+        value: 2022000,
         currency: 'USD',
     },
     remainingFeesAmount: {
@@ -81,6 +81,10 @@ export const ACTIVE_GRANT: IGrant = {
         currency: 'USD',
     },
     status: 'Active',
+    remainingTotalAmount: {
+        value: 822000,
+        currency: 'USD',
+    },
 };
 
 export const ACTIVE_UNREPAID_GRANT: IGrant = {
@@ -117,12 +121,7 @@ export const PENDING_GRANT_WITH_ACTIONS: IGrant = {
     ...PENDING_GRANT,
     id: '14588ba8f278',
     offerExpiresAt: '2025-02-15',
-    missingActions: [
-        {
-            type: 'signToS',
-            url: 'https://www.adyen.com/',
-        },
-    ],
+    missingActions: [{ type: 'signToS' }],
 };
 
 export const REPAID_GRANT: IGrant = {
@@ -203,4 +202,8 @@ export const SIGNED_OFFER = {
     maximumRepaymentPeriodDays: 540,
     repaymentPeriodLeft: 135,
     status: 'Pending',
+};
+
+export const SIGN_TOS_ACTION_DETAILS = {
+    url: 'https://www.adyen.com/',
 };

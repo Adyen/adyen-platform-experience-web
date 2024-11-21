@@ -4,6 +4,8 @@ import Button from '../../../internal/Button/Button';
 import useCoreContext from '../../../../core/Context/useCoreContext';
 import { IDynamicOfferConfig } from '../../../../types';
 import { CapitalHeader } from '../../../internal/CapitalHeader';
+import Typography from '../../../internal/Typography/Typography';
+import { TypographyVariant } from '../../../internal/Typography/types';
 
 const PreQualifiedIntro = ({
     dynamicOffer,
@@ -21,14 +23,14 @@ const PreQualifiedIntro = ({
             <CapitalHeader hideTitle={hideTitle} hasSubtitle={false} titleKey={'needSomeExtraMoney'} />
             <div className={CAPITAL_OVERVIEW_CLASS_NAMES.preQualifiedGrant}>
                 <InfoBox>
-                    <div>
-                        {i18n.get('capital.preQualifiedToReceiveFunds')}
+                    <Typography variant={TypographyVariant.BODY}>
+                        {i18n.get('capital.preQualifiedForBusinessFinancing')}
                         <strong>
                             {i18n.get('capital.upTo', {
                                 values: { amount: i18n.amount(dynamicOffer.maxAmount.value, dynamicOffer.maxAmount.currency) },
                             })}
                         </strong>
-                    </div>
+                    </Typography>
                 </InfoBox>
                 <Button className={CAPITAL_OVERVIEW_CLASS_NAMES.preQualifiedGrantButton} onClick={onSeeOptions}>
                     {i18n.get('capital.seeOptions')}

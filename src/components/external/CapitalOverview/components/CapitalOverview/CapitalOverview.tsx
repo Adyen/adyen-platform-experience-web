@@ -21,36 +21,26 @@ type CapitalOverviewState = 'Loading' | 'Error' | 'Unqualified' | 'PreQualified'
 export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<CapitalOverviewProps>> = ({
     hideTitle,
     skipPreQualifiedIntro,
-    onRequestFunds,
-    onSeeOptions,
+    onFundsRequest,
+    onOfferOptionsRequest,
     onOfferDismissed,
     onContactSupport,
 }) => {
     const { getGrants: grantsEndpointCall, getDynamicGrantOffersConfiguration: dynamicConfigurationEndpointCall } = useAuthContext().endpoints;
 
-    const grantsQuery = useFetch(
-        useMemo(
-            () => ({
-                fetchOptions: { enabled: !!grantsEndpointCall },
-                queryFn: async () => {
-                    return grantsEndpointCall?.(EMPTY_OBJECT);
-                },
-            }),
-            [grantsEndpointCall]
-        )
-    );
+    const grantsQuery = useFetch({
+        fetchOptions: { enabled: !!grantsEndpointCall },
+        queryFn: useCallback(async () => {
+            return grantsEndpointCall?.(EMPTY_OBJECT);
+        }, []),
+    });
 
-    const dynamicOfferQuery = useFetch(
-        useMemo(
-            () => ({
-                fetchOptions: { enabled: !!dynamicConfigurationEndpointCall },
-                queryFn: async () => {
-                    return dynamicConfigurationEndpointCall?.(EMPTY_OBJECT);
-                },
-            }),
-            [dynamicConfigurationEndpointCall]
-        )
-    );
+    const dynamicOfferQuery = useFetch({
+        fetchOptions: { enabled: !!dynamicConfigurationEndpointCall },
+        queryFn: useCallback(async () => {
+            return dynamicConfigurationEndpointCall?.(EMPTY_OBJECT);
+        }, []),
+    });
 
     const dynamicOffer = dynamicOfferQuery.data;
 
@@ -59,9 +49,9 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
 
     const onRequestFundsHandler = useCallback(
         (data: IGrant) => {
-            onRequestFunds ? onRequestFunds(data, () => setRequestedGrant(data)) : setRequestedGrant(data);
+            onFundsRequest ? onFundsRequest(data, () => setRequestedGrant(data)) : setRequestedGrant(data);
         },
-        [onRequestFunds]
+        [onFundsRequest]
     );
 
     const showError = useMemo(() => {
@@ -127,7 +117,7 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
                         return (
                             <PreQualified
                                 onOfferDismissed={onOfferDismissed}
-                                onSeeOptions={onSeeOptions}
+                                onSeeOptions={onOfferOptionsRequest}
                                 skipPreQualifiedIntro={skipPreQualifiedIntro}
                                 hideTitle={hideTitle}
                                 dynamicOffer={dynamicOffer!}
