@@ -23,7 +23,7 @@
         background: #cbe3ff;
         border-radius: style.token(border-radius-s);
         display: block;
-        height: 14px;
+        height: 20px;
         width: 100%;
     }
 
@@ -50,7 +50,7 @@
     // stylelint-disable order/order
     @include adyen-pe-screen-sm-and-up {
         &__loading-skeleton:first-child {
-            height: 30px;
+            height: 42px;
         }
     }
 }
