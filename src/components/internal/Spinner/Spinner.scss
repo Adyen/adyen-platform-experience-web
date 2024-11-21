@@ -21,6 +21,7 @@
 .adyen-pe-spinner {
     animation: rotateSpinner 1.5s infinite linear;
     border: 3px solid style.token(color-outline-primary-active);
+    border-color: inherit;
     border-radius: 50%;
     border-top-color: transparent;
     height: 43px;
@@ -36,6 +37,12 @@
     border-width: 2px;
     height: 16px;
     width: 16px;
+}
+
+.adyen-pe-spinner--x-small {
+    border-width: 2px;
+    height: 13.5px;
+    width: 13.5px;
 }
 
 .adyen-pe-spinner--medium {
