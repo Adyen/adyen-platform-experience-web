@@ -34,7 +34,7 @@ const getStatusKey = (status: IGrantStatus, grant: IGrant): TranslationKey | und
     }
 };
 
-const getStatusTagVariant = (status: IGrantStatus): TagVariant => {
+const getStatusTagVariant = (status: IGrantStatus, grant: IGrant): TagVariant => {
     switch (status) {
         case 'Failed':
             return TagVariant.ERROR;
@@ -43,6 +43,8 @@ const getStatusTagVariant = (status: IGrantStatus): TagVariant => {
         case 'Revoked':
         case 'WrittenOff':
             return TagVariant.WARNING;
+        case 'Pending':
+            return grant.missingActions?.length ? TagVariant.WARNING : TagVariant.DEFAULT;
         default:
             return TagVariant.DEFAULT;
     }
@@ -68,7 +70,7 @@ export const getGrantConfig = (grant: IGrant) => {
         isProgressBarVisible: isGrantActive,
         repaymentPeriodEndDate: getRepaymentPeriodEndDate(grant.repaymentPeriodLeft),
         statusKey: getStatusKey(grant.status, grant),
-        statusTagVariant: getStatusTagVariant(grant.status),
+        statusTagVariant: getStatusTagVariant(grant.status, grant),
         pendingToS: grant.missingActions?.some(action => action.type === 'signToS') || false,
     };
 };
