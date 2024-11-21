@@ -143,7 +143,7 @@ export const CapitalOfferSummary = ({
             <InfoBox className="adyen-pe-capital-offer-summary__grant-summary">
                 <Typography el={TypographyElement.PARAGRAPH} variant={TypographyVariant.BODY}>
                     {i18n.get('capital.youAreRequestingFundingOf')}{' '}
-                    <strong>{`${i18n.amount(grantOffer.grantAmount.value, grantOffer.grantAmount.currency)}.`}</strong>
+                    <strong>{`${i18n.amount(grantOffer.grantAmount.value, grantOffer.grantAmount.currency, { minimumFractionDigits: 0 })}.`}</strong>
                 </Typography>
                 <Typography el={TypographyElement.PARAGRAPH} variant={TypographyVariant.CAPTION}>
                     {i18n.get('capital.minimumRepaymentFrequency', {

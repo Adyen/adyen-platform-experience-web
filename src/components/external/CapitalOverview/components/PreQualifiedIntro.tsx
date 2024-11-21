@@ -27,7 +27,9 @@ const PreQualifiedIntro = ({
                         {i18n.get('capital.preQualifiedForBusinessFinancing')}
                         <strong>
                             {i18n.get('capital.upTo', {
-                                values: { amount: i18n.amount(dynamicOffer.maxAmount.value, dynamicOffer.maxAmount.currency) },
+                                values: {
+                                    amount: i18n.amount(dynamicOffer.maxAmount.value, dynamicOffer.maxAmount.currency, { minimumFractionDigits: 0 }),
+                                },
                             })}
                         </strong>
                     </Typography>
