@@ -1,4 +1,4 @@
-import { FunctionalComponent } from 'preact';
+import { FunctionalComponent, h } from 'preact';
 import { useMemo } from 'preact/hooks';
 import cx from 'classnames';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
@@ -16,6 +16,27 @@ import './GrantItem.scss';
 import { GrantDetails } from '../GrantDetails/GrantDetails';
 import { GrantAction } from '../GrantAction/GrantAction';
 import CopyText from '../../../../internal/CopyText/CopyText';
+import { TranslationKey } from '../../../../../translations';
+import { IGrant } from '../../../../../types';
+import { Tooltip } from '../../../../internal/Tooltip/Tooltip';
+
+const STATUS_TOOLTIP_MESSAGE = <Config extends { pendingToS: boolean }>(
+    status: IGrant['status'],
+    grantConfig: Config
+): TranslationKey | undefined => {
+    switch (status) {
+        case 'Pending':
+            return grantConfig.pendingToS ? 'capital.signTheTermsToReceiveYourFunds' : 'capital.youShouldGetTheFundsWithinOneBusinessDay';
+        case 'Failed':
+            return 'capital.weCouldNotProcessThisRequestTryAgain';
+        case 'WrittenOff':
+            return 'capital.youAcceptedTheseFundsButDidNotRepayThem';
+        case 'Revoked':
+            return 'capital.youAcceptedButThenReturnedTheseFunds';
+        default:
+            return undefined;
+    }
+};
 
 export const GrantItem: FunctionalComponent<GrantItemProps> = ({ grant }) => {
     const { i18n } = useCoreContext();
@@ -45,7 +66,15 @@ export const GrantItem: FunctionalComponent<GrantItemProps> = ({ grant }) => {
                                     </Typography>
                                 </>
                             ) : grantConfig.statusKey ? (
-                                <Tag label={i18n.get(grantConfig.statusKey)} variant={grantConfig.statusTagVariant} />
+                                STATUS_TOOLTIP_MESSAGE(grant.status, grantConfig) ? (
+                                    <Tooltip content={i18n.get(STATUS_TOOLTIP_MESSAGE(grant.status, grantConfig)!)}>
+                                        <div>
+                                            <Tag label={i18n.get(grantConfig.statusKey)} variant={grantConfig.statusTagVariant} />
+                                        </div>
+                                    </Tooltip>
+                                ) : (
+                                    <Tag label={i18n.get(grantConfig.statusKey)} variant={grantConfig.statusTagVariant} />
+                                )
                             ) : null}
                         </div>
                     </div>

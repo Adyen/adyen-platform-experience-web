@@ -17,14 +17,14 @@ const getAmountLabelKey = ({ status }: IGrant): TranslationKey => {
 
 const getAmount = (grant: IGrant) => (grant.status === 'Active' ? grant.remainingTotalAmount : grant.grantAmount);
 
-const getStatusKey = (status: IGrantStatus): TranslationKey | undefined => {
+const getStatusKey = (status: IGrantStatus, grant: IGrant): TranslationKey | undefined => {
     switch (status) {
         case 'Active':
             return undefined;
         case 'Failed':
             return 'capital.failed';
         case 'Pending':
-            return 'capital.pending';
+            return grant.missingActions?.length ? 'capital.actionRequired' : 'capital.pending';
         case 'Repaid':
             return 'capital.fullyRepaid';
         case 'Revoked':
@@ -67,7 +67,8 @@ export const getGrantConfig = (grant: IGrant) => {
         isLabelColorSecondary: isGrantActive,
         isProgressBarVisible: isGrantActive,
         repaymentPeriodEndDate: getRepaymentPeriodEndDate(grant.repaymentPeriodLeft),
-        statusKey: getStatusKey(grant.status),
+        statusKey: getStatusKey(grant.status, grant),
         statusTagVariant: getStatusTagVariant(grant.status),
+        pendingToS: grant.missingActions?.some(action => action.type === 'signToS') || false,
     };
 };
