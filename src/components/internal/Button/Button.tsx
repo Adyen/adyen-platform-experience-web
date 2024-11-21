@@ -8,6 +8,7 @@ import {
     ICON_BUTTON_CONTENT_CLASSNAME,
     BUTTON_FULL_WIDTH_CLASSNAME,
     BUTTON_CONDENSED_CLASSNAME,
+    BUTTON_LOADING_CLASSNAME,
 } from './constants';
 import { TypographyElement, TypographyVariant } from '../Typography/types';
 import Typography from '../Typography/Typography';
@@ -17,6 +18,7 @@ import { useMemo } from 'preact/hooks';
 import { ButtonProps, ButtonVariant } from './types';
 import './Button.scss';
 import cx from 'classnames';
+import Spinner from '../Spinner';
 
 const isHTMLAnchorElementRef = (ref: any): ref is Ref<HTMLAnchorElement> => {
     return ref && ref.current instanceof HTMLAnchorElement;
@@ -42,6 +44,7 @@ function Button(
         fullWidth,
         condensed,
         href,
+        state = 'default',
         ...restAttributes
     }: ButtonProps,
     ref: Ref<HTMLAnchorElement | HTMLButtonElement> | undefined
@@ -53,14 +56,16 @@ function Button(
 
     const allProps = useMemo(
         () => ({
-            className: cx(classes, {
+            className: cx(iconButton ? `${ICON_BUTTON_CLASSNAME} ${classes}` : classes, {
                 [ICON_BUTTON_CLASSNAME]: iconButton,
                 [BUTTON_CONDENSED_CLASSNAME]: condensed,
                 [BUTTON_FULL_WIDTH_CLASSNAME]: fullWidth,
+                [BUTTON_LOADING_CLASSNAME]: state === 'loading',
             }),
+            disabled: disabled || state === 'loading',
             ...restAttributes,
         }),
-        [classes, condensed, fullWidth, iconButton, restAttributes]
+        [classes, condensed, disabled, fullWidth, iconButton, restAttributes, state]
     );
 
     const allChildren = useMemo(
@@ -69,6 +74,7 @@ function Button(
                 <div className={`${ICON_BUTTON_CONTENT_CLASSNAME}`}>{children}</div>
             ) : (
                 <>
+                    {state === 'loading' && <Spinner size={'x-small'} />}
                     {iconLeft && <span className={BUTTON_ICON_LEFT_CLASSNAME}>{iconLeft}</span>}
                     <Typography className={BUTTON_LABEL_CLASSNAME} el={TypographyElement.SPAN} variant={TypographyVariant.BODY} stronger={true}>
                         {children}
@@ -76,7 +82,7 @@ function Button(
                     {iconRight && <span className={BUTTON_ICON_RIGHT_CLASSNAME}>{iconRight}</span>}
                 </>
             ),
-        [children, iconButton, iconLeft, iconRight]
+        [children, iconButton, iconLeft, iconRight, state]
     );
 
     if (href) {
@@ -95,7 +101,7 @@ function Button(
         }
 
         return (
-            <button {...allProps} ref={ref as Ref<HTMLButtonElement>} type={type} disabled={disabled} onClick={click}>
+            <button {...allProps} ref={ref as Ref<HTMLButtonElement>} type={type} onClick={click}>
                 {allChildren}
             </button>
         );

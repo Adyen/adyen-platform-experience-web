@@ -3,13 +3,14 @@ import { JSXInternal } from 'preact/src/jsx';
 
 export interface ButtonProps extends JSXInternal.HTMLAttributes<HTMLAnchorElement | HTMLButtonElement> {
     classNameModifiers?: string[];
-    condensed?: boolean;
     variant?: ButtonVariant;
     iconLeft?: VNode<Element>;
     iconRight?: VNode<Element>;
     inline?: boolean;
     iconButton?: boolean;
     fullWidth?: boolean;
+    condensed?: boolean;
+    state?: 'loading' | 'default';
 }
 
 export enum ButtonVariant {
