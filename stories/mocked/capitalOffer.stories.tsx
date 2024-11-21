@@ -53,7 +53,6 @@ export const ErrorExceededRetries: ElementStory<typeof CapitalOffer> = {
     name: 'Error - Dynamic offer - Generic (after exceeded retries)',
     args: {
         mockedApi: true,
-        externalDynamicOffersConfig: DYNAMIC_CAPITAL_OFFER,
     },
     parameters: {
         msw: {
@@ -66,7 +65,6 @@ export const ErrorOnDynamicOffer: ElementStory<typeof CapitalOffer> = {
     name: 'Error - Dynamic offer - Temporary server error',
     args: {
         mockedApi: true,
-        externalDynamicOffersConfig: DYNAMIC_CAPITAL_OFFER,
     },
     parameters: {
         msw: {
@@ -91,7 +89,6 @@ export const ErrorGenericRequestFunds: ElementStory<typeof CapitalOffer> = {
     name: 'Error - Request funds - Generic',
     args: {
         mockedApi: true,
-        externalDynamicOffersConfig: DYNAMIC_CAPITAL_OFFER,
     },
     parameters: {
         msw: {

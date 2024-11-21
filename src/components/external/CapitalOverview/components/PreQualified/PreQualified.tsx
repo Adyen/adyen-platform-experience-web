@@ -7,8 +7,8 @@ type PreQualifiedProps = {
     dynamicOffer: Required<IDynamicOfferConfig>;
     hideTitle: boolean | undefined;
     onFundsRequest: (data: IGrant) => void;
-    onOfferDismiss?: (goToPreviousStep: () => void) => void;
-    onOfferOptionsRequest?: (goToNextStep: () => void) => void;
+    onOfferDismiss?: () => void;
+    onOfferOptionsRequest?: () => void;
     skipPreQualifiedIntro?: boolean;
 };
 
@@ -25,12 +25,12 @@ export const PreQualified = ({
     const [capitalOfferSelection, setCapitalOfferSelection] = useState<boolean>(!!skipPreQualifiedIntro);
     const goToCapitalOffer = useCallback(() => setCapitalOfferSelection(true), []);
     const onSeeOptionsHandler = useCallback(() => {
-        onOfferOptionsRequest ? onOfferOptionsRequest(goToCapitalOffer) : goToCapitalOffer();
+        onOfferOptionsRequest ? onOfferOptionsRequest() : goToCapitalOffer();
     }, [goToCapitalOffer, onOfferOptionsRequest]);
 
     const goBackToPreviousStep = useCallback(() => setCapitalOfferSelection(false), []);
     const goBackToIntro = useCallback(() => {
-        onOfferDismiss ? onOfferDismiss(goBackToPreviousStep) : goBackToPreviousStep();
+        onOfferDismiss ? onOfferDismiss() : goBackToPreviousStep();
     }, [goBackToPreviousStep, onOfferDismiss]);
 
     const state: PreQualifiedState = useMemo(() => {

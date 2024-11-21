@@ -7,19 +7,11 @@ import { enabledDisabledCallbackRadioControls } from '../utils/controls';
 
 export const capitalOfferMeta: Meta<ElementProps<typeof CapitalOffer>> = {
     argTypes: {
-        onContactSupport: enabledDisabledCallbackRadioControls('onContactSupport'),
-        onOfferSelect: enabledDisabledCallbackRadioControls('onOfferSelect'),
         hideTitle: { type: 'boolean' },
-        onFundsRequest: {
-            table: {
-                disable: true,
-            },
-        },
-        balanceAccountId: {
-            table: {
-                disable: true,
-            },
-        },
+        onContactSupport: enabledDisabledCallbackRadioControls('onContactSupport'),
+        onFundsRequest: enabledDisabledCallbackRadioControls('onOfferSelect'),
+        onOfferDismiss: enabledDisabledCallbackRadioControls('onOfferSelect'),
+        onOfferSelect: enabledDisabledCallbackRadioControls('onOfferSelect'),
     },
     args: {
         hideTitle: false,
