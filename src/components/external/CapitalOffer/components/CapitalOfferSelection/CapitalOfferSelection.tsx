@@ -156,6 +156,11 @@ export const CapitalOfferSelection = ({
         }
     }, [config, getDynamicGrantOfferMutation.data, getOffer, initialValue, requestedValue]);
 
+    const loadingButtonState = useMemo(
+        () => reviewOfferMutation.isLoading || getDynamicGrantOfferMutation.isLoading || isLoading,
+        [getDynamicGrantOfferMutation.isLoading, isLoading, reviewOfferMutation.isLoading]
+    );
+
     return (
         <div className="adyen-pe-capital-offer-selection">
             {reviewOfferMutation.error || getDynamicGrantOfferMutation.error || emptyGrantOffer ? (
@@ -181,8 +186,13 @@ export const CapitalOfferSelection = ({
                         <Button variant={ButtonVariant.SECONDARY} onClick={onBack}>
                             {i18n.get('capital.back')}
                         </Button>
-                        <Button variant={ButtonVariant.PRIMARY} onClick={onReview} disabled={reviewOfferMutation.isLoading || !config?.minAmount}>
-                            {i18n.get('capital.reviewOffer')}
+                        <Button
+                            variant={ButtonVariant.PRIMARY}
+                            state={loadingButtonState ? 'loading' : undefined}
+                            onClick={onReview}
+                            disabled={reviewOfferMutation.isLoading || !config?.minAmount}
+                        >
+                            {i18n.get(loadingButtonState ? 'capital.loading' : 'capital.reviewOffer')}
                         </Button>
                     </div>
                 </>
