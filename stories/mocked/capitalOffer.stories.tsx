@@ -2,7 +2,6 @@ import { Meta } from '@storybook/preact';
 import { ElementProps, ElementStory } from '../utils/types';
 import { capitalOfferMeta } from '../components/capitalOffer';
 import { CapitalOffer } from '../../src';
-import { DYNAMIC_CAPITAL_OFFER } from '../../mocks/mock-data';
 import { CapitalMockedResponses } from '../../mocks/mock-server/capital';
 
 const meta: Meta<ElementProps<typeof CapitalOffer>> = { ...capitalOfferMeta, title: 'Mocked/Capital Offer' };
@@ -11,7 +10,6 @@ export const Default: ElementStory<typeof CapitalOffer> = {
     name: 'Default',
     args: {
         mockedApi: true,
-        externalDynamicOffersConfig: DYNAMIC_CAPITAL_OFFER,
     },
 };
 
@@ -55,7 +53,6 @@ export const ErrorExceededRetries: ElementStory<typeof CapitalOffer> = {
     name: 'Error - Dynamic offer - Generic (after exceeded retries)',
     args: {
         mockedApi: true,
-        externalDynamicOffersConfig: DYNAMIC_CAPITAL_OFFER,
     },
     parameters: {
         msw: {
@@ -68,7 +65,6 @@ export const ErrorOnDynamicOffer: ElementStory<typeof CapitalOffer> = {
     name: 'Error - Dynamic offer - Temporary server error',
     args: {
         mockedApi: true,
-        externalDynamicOffersConfig: DYNAMIC_CAPITAL_OFFER,
     },
     parameters: {
         msw: {
@@ -81,7 +77,6 @@ export const ErrorSomethingWentWrong: ElementStory<typeof CapitalOffer> = {
     name: 'Error - Review offer - Generic',
     args: {
         mockedApi: true,
-        externalDynamicOffersConfig: DYNAMIC_CAPITAL_OFFER,
     },
     parameters: {
         msw: {
@@ -94,7 +89,6 @@ export const ErrorGenericRequestFunds: ElementStory<typeof CapitalOffer> = {
     name: 'Error - Request funds - Generic',
     args: {
         mockedApi: true,
-        externalDynamicOffersConfig: DYNAMIC_CAPITAL_OFFER,
     },
     parameters: {
         msw: {
@@ -107,7 +101,6 @@ export const ErrorNoGrantAccountConfig: ElementStory<typeof CapitalOffer> = {
     name: 'Error - Request funds - No grant account',
     args: {
         mockedApi: true,
-        externalDynamicOffersConfig: DYNAMIC_CAPITAL_OFFER,
     },
     parameters: {
         msw: {

@@ -20,11 +20,11 @@ type CapitalOverviewState = 'Loading' | 'Error' | 'Unqualified' | 'PreQualified'
 
 export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<CapitalOverviewProps>> = ({
     hideTitle,
-    skipPreQualifiedIntro,
-    onFundsRequest,
-    onOfferOptionsRequest,
-    onOfferDismissed,
     onContactSupport,
+    onFundsRequest,
+    onOfferDismiss,
+    onOfferOptionsRequest,
+    skipPreQualifiedIntro,
 }) => {
     const { getGrants: grantsEndpointCall, getDynamicGrantOffersConfiguration: dynamicConfigurationEndpointCall } = useAuthContext().endpoints;
 
@@ -47,9 +47,9 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
     const [requestedGrant, setRequestedGrant] = useState<IGrant>();
     const grantList = useMemo(() => (requestedGrant ? [requestedGrant] : grantsQuery.data?.data), [grantsQuery.data?.data, requestedGrant]);
 
-    const onRequestFundsHandler = useCallback(
+    const handleFundsRequest = useCallback(
         (data: IGrant) => {
-            onFundsRequest ? onFundsRequest(data, () => setRequestedGrant(data)) : setRequestedGrant(data);
+            onFundsRequest ? onFundsRequest(data) : setRequestedGrant(data);
         },
         [onFundsRequest]
     );
@@ -116,12 +116,12 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
                     case 'PreQualified':
                         return (
                             <PreQualified
-                                onOfferDismissed={onOfferDismissed}
-                                onSeeOptions={onOfferOptionsRequest}
+                                onOfferDismiss={onOfferDismiss}
+                                onOfferOptionsRequest={onOfferOptionsRequest}
                                 skipPreQualifiedIntro={skipPreQualifiedIntro}
                                 hideTitle={hideTitle}
                                 dynamicOffer={dynamicOffer!}
-                                onRequestFundsHandler={onRequestFundsHandler}
+                                onFundsRequest={handleFundsRequest}
                             />
                         );
                     case 'Unqualified':
