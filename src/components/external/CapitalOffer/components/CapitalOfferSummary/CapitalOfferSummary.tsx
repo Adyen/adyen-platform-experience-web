@@ -104,8 +104,8 @@ export const CapitalOfferSummary = ({
                 value: i18n.amount(grantOffer.thresholdAmount.value, grantOffer.thresholdAmount.currency),
             },
             {
-                key: 'capital.repaymentRatePercentage',
-                value: `${getPaymentRatePercentage(grantOffer.repaymentRate)}% ${i18n.get('capital.daily')}`,
+                key: 'capital.repaymentRate',
+                value: `${getPaymentRatePercentage(grantOffer.repaymentRate)}}`,
             },
             {
                 key: 'capital.expectedRepaymentPeriod',
