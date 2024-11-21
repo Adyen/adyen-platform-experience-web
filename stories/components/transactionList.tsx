@@ -11,7 +11,6 @@ export const TransactionsMeta: Meta<ElementProps<typeof TransactionsOverview>> =
         hideTitle: { type: 'boolean' },
         preferredLimit: { type: 'number', min: 1, max: 100 },
         allowLimitSelection: { type: 'boolean' },
-        balanceAccountId: { type: 'string' },
     },
     args: {
         preferredLimit: 10,
