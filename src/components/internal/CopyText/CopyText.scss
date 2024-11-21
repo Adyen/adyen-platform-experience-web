@@ -18,6 +18,7 @@
 
     &__information {
         color: style.token(color-label-highlight);
+        display: block;
         font-size: style.token(text-body-font-size);
         font-weight: style.token(text-body-font-weight);
         line-height: style.token(text-body-line-height);

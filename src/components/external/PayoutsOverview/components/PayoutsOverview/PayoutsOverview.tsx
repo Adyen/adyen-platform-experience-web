@@ -9,7 +9,7 @@ import DateFilter from '../../../../internal/FilterBar/filters/DateFilter/DateFi
 import useModalDetails from '../../../../../hooks/useModalDetails/useModalDetails';
 import { IPayout } from '../../../../../types';
 import useDefaultOverviewFilterParams from '../../../../../hooks/useDefaultOverviewFilterParams';
-import { DataOverviewHeader } from '../../../../internal/DataOverviewDisplay/DataOverviewHeader';
+import { DataOverviewHeader } from '../../../../internal/DataOverviewDisplay/DataOverviewHeader/DataOverviewHeader';
 import { PayoutsOverviewComponentProps, ExternalUIComponentProps, FilterParam } from '../../../../types';
 import { useAuthContext } from '../../../../../core/Auth';
 import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatformExperienceError';

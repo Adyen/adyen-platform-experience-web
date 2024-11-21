@@ -1,5 +1,10 @@
 @use '../../../style';
 
+@mixin adyen-pe-tag--light {
+    background: style.token(color-background-primary);
+    color: style.token(color-label-primary);
+}
+
 .adyen-pe-tag {
     align-items: center;
     border-radius: style.token(border-radius-s);
@@ -33,9 +38,12 @@
         color: style.token(color-label-on-background-warning-weak);
     }
 
-    &--primary {
-        background: style.token(color-background-primary);
-        color: style.token(color-label-primary);
+    &--light {
+        @include adyen-pe-tag--light;
+    }
+
+    &--light-with-outline {
+        @include adyen-pe-tag--light;
         outline: style.token(border-width-s) solid style.token(color-outline-primary);
     }
 }
