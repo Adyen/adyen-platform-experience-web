@@ -50,7 +50,6 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
         [grantsQuery.data?.data, requestedGrant]
     );
 
-
     const handleFundsRequest = useCallback(
         (data: IGrant) => {
             onFundsRequest ? onFundsRequest(data) : setRequestedGrant(data);
@@ -125,8 +124,8 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
                                     grantList={grantList}
                                     hideTitle={hideTitle}
                                     newOfferAvailable={newOfferAvailable}
-                                    onFundsRequestHandler={onFundsRequestHandler}
-                                    onOfferDismissed={onOfferDismissed}
+                                    onFundsRequestHandler={handleFundsRequest}
+                                    onOfferDismissed={onOfferDismiss}
                                 />
                             )
                         );
@@ -139,7 +138,6 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
                                 hideTitle={hideTitle}
                                 dynamicOffer={dynamicOffer!}
                                 onFundsRequest={handleFundsRequest}
-
                             />
                         );
                     case 'Unqualified':

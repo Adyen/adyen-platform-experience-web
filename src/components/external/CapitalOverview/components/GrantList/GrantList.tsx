@@ -36,7 +36,7 @@ export const GrantList: FunctionalComponent<GrantListProps> = ({
                 <CapitalOffer
                     externalDynamicOffersConfig={externalDynamicOffersConfig}
                     onFundsRequest={goBackToGrantListOnFundsRequest}
-                    onOfferDismissed={goBackToList}
+                    onOfferDismiss={goBackToList}
                 />
             ) : (
                 <GrantsDisplay grantList={grantList} newOfferAvailable={newOfferAvailable} onNewOfferRequest={goToNextStep} />
