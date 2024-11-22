@@ -1,20 +1,46 @@
 import { FunctionalComponent } from 'preact';
 import { GrantListProps } from './types';
-import { CapitalHeader } from '../../../../internal/CapitalHeader';
-import { BaseList } from '../../../../internal/BaseList/BaseList';
-import { GrantItem } from '../GrantItem/GrantItem';
+import './GrantList.scss';
+import { useCallback, useState } from 'preact/hooks';
+import { CapitalOffer } from '../../../CapitalOffer/components/CapitalOffer/CapitalOffer';
+import { GrantsDisplay } from './GrantsDisplay';
+import { IGrant } from '../../../../../types';
 
-export const GrantList: FunctionalComponent<GrantListProps> = ({ grantList, hideTitle }) => {
+export const GrantList: FunctionalComponent<GrantListProps> = ({
+    onFundsRequestHandler,
+    onOfferDismissed,
+    grantList,
+    newOfferAvailable,
+    externalDynamicOffersConfig,
+}) => {
+    const [capitalOfferSelection, setCapitalOfferSelection] = useState<boolean>(false);
+
+    const goBackToPreviousStep = useCallback(() => setCapitalOfferSelection(false), []);
+    const goToNextStep = useCallback(() => setCapitalOfferSelection(true), []);
+
+    const goBackToList = useCallback(() => {
+        onOfferDismissed ? onOfferDismissed(goBackToPreviousStep) : goBackToPreviousStep();
+    }, [goBackToPreviousStep, onOfferDismissed]);
+
+    const goBackToGrantListOnFundsRequest = useCallback(
+        (data: IGrant) => {
+            onFundsRequestHandler(data);
+            setCapitalOfferSelection(false);
+        },
+        [onFundsRequestHandler]
+    );
+
     return (
-        <div>
-            <CapitalHeader hideTitle={hideTitle} titleKey={'capital.businessFinancing'} />
-            <BaseList>
-                {grantList?.map(grant => (
-                    <li key={grant.id}>
-                        <GrantItem grant={grant} />
-                    </li>
-                ))}
-            </BaseList>
-        </div>
+        <>
+            {capitalOfferSelection ? (
+                <CapitalOffer
+                    externalDynamicOffersConfig={externalDynamicOffersConfig}
+                    onFundsRequest={goBackToGrantListOnFundsRequest}
+                    onOfferDismiss={goBackToList}
+                />
+            ) : (
+                <GrantsDisplay grantList={grantList} newOfferAvailable={newOfferAvailable} onNewOfferRequest={goToNextStep} />
+            )}
+        </>
     );
 };

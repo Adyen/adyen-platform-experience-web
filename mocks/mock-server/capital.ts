@@ -68,7 +68,7 @@ export const capitalMock = [
             return HttpResponse.error();
         }
         await delay(400);
-        return HttpResponse.json(DYNAMIC_CAPITAL_OFFER);
+        return HttpResponse.json({});
     }),
     http.get(mockEndpoints.grants, EMPTY_GRANTS_LIST),
     http.get(mockEndpoints.dynamicOffer, DYNAMIC_OFFER_HANDLER),
@@ -132,6 +132,38 @@ export const CapitalMockedResponses = capitalFactory({
         { endpoint: mockEndpoints.dynamicOfferConfig, handler: EMPTY_OFFER },
         { endpoint: mockEndpoints.grants, response: { data: [REPAID_GRANT] } },
     ],
+    multipleGrants: [
+        { endpoint: mockEndpoints.dynamicOfferConfig, response: DYNAMIC_CAPITAL_OFFER },
+        {
+            endpoint: mockEndpoints.grants,
+            response: {
+                data: [
+                    REPAID_GRANT,
+                    {
+                        ...REPAID_GRANT,
+                        id: 'c6bi2512869f',
+                        grantAmount: {
+                            value: 1200000,
+                            currency: 'USD',
+                        },
+                    },
+                    {
+                        ...REPAID_GRANT,
+                        id: 'c6bi2512869f',
+                        grantAmount: {
+                            value: 2200000,
+                            currency: 'USD',
+                        },
+                        status: 'Active',
+                    },
+                ],
+            },
+        },
+    ],
+    newOfferAvailable: [
+        { endpoint: mockEndpoints.dynamicOfferConfig, response: DYNAMIC_CAPITAL_OFFER },
+        { endpoint: mockEndpoints.grants, response: { data: [REPAID_GRANT] } },
+    ],
     revokedGrant: [
         { endpoint: mockEndpoints.dynamicOfferConfig, handler: EMPTY_OFFER },
         { endpoint: mockEndpoints.grants, response: { data: [REVOKED_GRANT] } },
@@ -161,6 +193,7 @@ export const CapitalMockedResponses = capitalFactory({
         },
     ],
     missingPrimaryBalanceAccount: [
+        { endpoint: mockEndpoints.dynamicOfferConfig, response: DYNAMIC_CAPITAL_OFFER },
         {
             endpoint: mockEndpoints.offerReview,
             handler: ((req: any) => OFFER_REVIEW_HANDLER(req)) as any,
@@ -187,6 +220,7 @@ export const CapitalMockedResponses = capitalFactory({
         },
     ],
     exceededGrantLimit: [
+        { endpoint: mockEndpoints.dynamicOfferConfig, response: DYNAMIC_CAPITAL_OFFER },
         {
             endpoint: mockEndpoints.requestFunds as any,
             handler: getErrorHandler(ERROR_EXCEEDED_GRANT_LIMIT, 422),
