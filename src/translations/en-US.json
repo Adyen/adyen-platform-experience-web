@@ -64,6 +64,7 @@
     "capital.seeOptions": "See options",
     "capital.signTermsAndConditionsToReceiveFunds": "Sign the Terms & Conditions to receive your funds.",
     "capital.somethingWentWrong": "Something went wrong",
+    "capital.somethingWentWrongTryRefreshingOrComeBackLater": "Something went wrong. Try refreshing the page or come back later.",
     "capital.termEnds": "Term ends: ",
     "capital.thereIsNoPrimaryAccountConfigured": "There is no primary account configured",
     "capital.thisOfferExpiresOn": "This offer expires on %{date}.",

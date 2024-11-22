@@ -104,6 +104,7 @@ const ERROR_NO_PRIMARY_BALANCE_ACCOUNT = new AdyenPlatformExperienceError(
     '30_013'
 );
 const ERROR_EXCEEDED_GRANT_LIMIT = new AdyenPlatformExperienceError(ErrorTypes.ERROR, 'MissingPrimaryBalanceAccountException', 'Message');
+const ERROR_MISSING_ACTIONS = new AdyenPlatformExperienceError(ErrorTypes.ERROR, 'Something went wrong', 'Message');
 
 export const CapitalMockedResponses = capitalFactory({
     unqualified: [
@@ -204,4 +205,9 @@ export const CapitalMockedResponses = capitalFactory({
     hasActiveGrants: [{ endpoint: mockEndpoints.dynamicOfferConfig, handler: getHandlerCallback({ response: undefined, status: 204 }) }],
     dynamicOfferServerError: [{ endpoint: mockEndpoints.dynamicOffer, handler: ((req: any) => DYNAMIC_OFFER_HANDLER(req, 1)) as any }],
     dynamicOfferExceededRetries: [{ endpoint: mockEndpoints.dynamicOffer, handler: ((req: any) => DYNAMIC_OFFER_HANDLER(req, 10)) as any }],
+    missingActionsError: [
+        { endpoint: mockEndpoints.dynamicOfferConfig, handler: EMPTY_OFFER },
+        { endpoint: mockEndpoints.grants, response: { data: [PENDING_GRANT_WITH_ACTIONS] } },
+        { endpoint: mockEndpoints.signToS, handler: getErrorHandler(ERROR_MISSING_ACTIONS, 500) },
+    ],
 });

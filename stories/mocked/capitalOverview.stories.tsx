@@ -180,6 +180,7 @@ export const ErrorNoCapability: ElementStory<typeof CapitalOverview> = {
         },
     },
 };
+
 export const ErrorInactiveAH: ElementStory<typeof CapitalOverview> = {
     name: 'Error - Dynamic offer config - Inactive account holder',
     args: {
@@ -188,6 +189,18 @@ export const ErrorInactiveAH: ElementStory<typeof CapitalOverview> = {
     parameters: {
         msw: {
             handlers: CapitalMockedResponses.errorInactiveAccountHolder,
+        },
+    },
+};
+
+export const ErrorMissingActions: ElementStory<typeof CapitalOverview> = {
+    name: 'Error - Missing actions - Generic',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: {
+            handlers: CapitalMockedResponses.missingActionsError,
         },
     },
 };
