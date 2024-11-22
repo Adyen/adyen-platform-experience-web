@@ -45,7 +45,10 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
     const dynamicOffer = dynamicOfferQuery.data;
 
     const [requestedGrant, setRequestedGrant] = useState<IGrant>();
-    const grantList = useMemo(() => (requestedGrant ? [requestedGrant] : grantsQuery.data?.data), [grantsQuery.data?.data, requestedGrant]);
+    const grantList = useMemo(
+        () => (requestedGrant ? [requestedGrant, ...(grantsQuery.data?.data || [])] : grantsQuery.data?.data),
+        [grantsQuery.data?.data, requestedGrant]
+    );
 
     const handleFundsRequest = useCallback(
         (data: IGrant) => {
@@ -87,6 +90,8 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
         skipPreQualifiedIntro,
     ]);
 
+    const newOfferAvailable = useMemo(() => (!!dynamicOffer && dynamicOffer.minAmount && dynamicOffer.maxAmount ? true : false), [dynamicOffer]);
+
     return (
         <div className={CAPITAL_OVERVIEW_CLASS_NAMES.base}>
             {(() => {
@@ -112,7 +117,18 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
                             </div>
                         );
                     case 'GrantList':
-                        return grantList && <GrantList grantList={grantList} hideTitle={hideTitle} />;
+                        return (
+                            grantList && (
+                                <GrantList
+                                    externalDynamicOffersConfig={dynamicOffer}
+                                    grantList={grantList}
+                                    hideTitle={hideTitle}
+                                    newOfferAvailable={newOfferAvailable}
+                                    onFundsRequestHandler={handleFundsRequest}
+                                    onOfferDismissed={onOfferDismiss}
+                                />
+                            )
+                        );
                     case 'PreQualified':
                         return (
                             <PreQualified

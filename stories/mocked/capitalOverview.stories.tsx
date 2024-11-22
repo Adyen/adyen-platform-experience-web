@@ -93,6 +93,26 @@ export const WithWrittenOffGrant: ElementStory<typeof CapitalOverview> = {
     },
 };
 
+export const WithNewOfferAvailable: ElementStory<typeof CapitalOverview> = {
+    name: 'With New Offer Available',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: CapitalMockedResponses.newOfferAvailable,
+    },
+};
+
+export const WithMultipleGrants: ElementStory<typeof CapitalOverview> = {
+    name: 'With Multiple Grants',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: CapitalMockedResponses.multipleGrants,
+    },
+};
+
 export const Unqualified: ElementStory<typeof CapitalOverview> = {
     name: 'Unqualified',
     args: {
