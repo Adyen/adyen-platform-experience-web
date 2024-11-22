@@ -20,11 +20,11 @@ type CapitalOverviewState = 'Loading' | 'Error' | 'Unqualified' | 'PreQualified'
 
 export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<CapitalOverviewProps>> = ({
     hideTitle,
-    skipPreQualifiedIntro,
-    onFundsRequest,
-    onOfferOptionsRequest,
-    onOfferDismissed,
     onContactSupport,
+    onFundsRequest,
+    onOfferDismiss,
+    onOfferOptionsRequest,
+    skipPreQualifiedIntro,
 }) => {
     const { getGrants: grantsEndpointCall, getDynamicGrantOffersConfiguration: dynamicConfigurationEndpointCall } = useAuthContext().endpoints;
 
@@ -50,9 +50,10 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
         [grantsQuery.data?.data, requestedGrant]
     );
 
-    const onFundsRequestHandler = useCallback(
+
+    const handleFundsRequest = useCallback(
         (data: IGrant) => {
-            onFundsRequest ? onFundsRequest(data, () => setRequestedGrant(data)) : setRequestedGrant(data);
+            onFundsRequest ? onFundsRequest(data) : setRequestedGrant(data);
         },
         [onFundsRequest]
     );
@@ -132,12 +133,13 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
                     case 'PreQualified':
                         return (
                             <PreQualified
-                                onOfferDismissed={onOfferDismissed}
+                                onOfferDismiss={onOfferDismiss}
                                 onOfferOptionsRequest={onOfferOptionsRequest}
                                 skipPreQualifiedIntro={skipPreQualifiedIntro}
                                 hideTitle={hideTitle}
                                 dynamicOffer={dynamicOffer!}
-                                onFundsRequestHandler={onFundsRequestHandler}
+                                onFundsRequest={handleFundsRequest}
+
                             />
                         );
                     case 'Unqualified':

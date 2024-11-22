@@ -10,23 +10,23 @@ import Icon from '../Icon';
 const CopyText = ({
     textToCopy,
     isHovered,
-    visibleLabel,
+    buttonLabel,
     type = 'Link',
 }: {
     textToCopy: string;
     isHovered?: boolean;
-    visibleLabel?: string;
+    buttonLabel?: string;
     type?: 'Link' | 'Text';
 }) => {
     const { i18n } = useCoreContext();
 
-    const [iconTooltipLabel, setIconTooltipLabel] = useState(i18n.get('copy'));
+    const [tooltipLabel, setTooltipLabel] = useState(i18n.get('copy'));
 
     const onClick = useCallback(async () => {
         if (textToCopy) {
             try {
                 await navigator.clipboard.writeText(textToCopy);
-                setIconTooltipLabel(i18n.get('copied'));
+                setTooltipLabel(i18n.get('copied'));
             } catch (e) {
                 console.log(e);
             }
@@ -34,7 +34,7 @@ const CopyText = ({
     }, [i18n, textToCopy]);
 
     const resetTooltipLabel = useCallback(() => {
-        setIconTooltipLabel(i18n.get('copy'));
+        setTooltipLabel(i18n.get('copy'));
     }, [i18n]);
 
     return (
@@ -50,10 +50,10 @@ const CopyText = ({
                         ['adyen-pe-copy-text__text']: type === 'Text',
                     })}
                 >
-                    {visibleLabel || textToCopy}
+                    {buttonLabel || textToCopy}
                 </span>
             </Tooltip>
-            <Tooltip content={iconTooltipLabel}>
+            <Tooltip content={tooltipLabel}>
                 <Button
                     variant={ButtonVariant.TERTIARY}
                     className="adyen-pe-copy-text"

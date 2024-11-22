@@ -15,11 +15,11 @@ type CapitalOfferState = 'OfferSelection' | 'OfferSummary';
 const REPAYMENT_FREQUENCY = 30;
 
 export const CapitalOffer: FunctionalComponent<ExternalUIComponentProps<CapitalOfferProps>> = ({
-    hideTitle,
     externalDynamicOffersConfig,
+    hideTitle,
     onContactSupport,
     onFundsRequest,
-    onOfferDismissed,
+    onOfferDismiss,
     onOfferSelect,
 }) => {
     const { getDynamicGrantOffersConfiguration } = useAuthContext().endpoints;
@@ -44,8 +44,8 @@ export const CapitalOffer: FunctionalComponent<ExternalUIComponentProps<CapitalO
     const config = externalDynamicOffersConfig || internalDynamicOffersConfig;
 
     const goBackHandler = useCallback(() => {
-        onOfferDismissed?.();
-    }, [onOfferDismissed]);
+        onOfferDismiss?.();
+    }, [onOfferDismiss]);
 
     const [selectedOffer, setSelectedOffer] = useState<IGrantOfferResponseDTO>();
 
