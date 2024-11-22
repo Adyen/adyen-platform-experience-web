@@ -33,16 +33,6 @@ export const WithActiveGrant: ElementStory<typeof CapitalOverview> = {
     },
 };
 
-export const WithActiveUnrepaidGrant: ElementStory<typeof CapitalOverview> = {
-    name: 'With Active Unrepaid Grant',
-    args: {
-        mockedApi: true,
-    },
-    parameters: {
-        msw: CapitalMockedResponses.activeUnrepaidGrant,
-    },
-};
-
 export const WithFailedGrant: ElementStory<typeof CapitalOverview> = {
     name: 'With Failed Grant',
     args: {
@@ -60,6 +50,16 @@ export const WithPendingGrant: ElementStory<typeof CapitalOverview> = {
     },
     parameters: {
         msw: CapitalMockedResponses.pendingGrant,
+    },
+};
+
+export const WithPendingGrantWithActions: ElementStory<typeof CapitalOverview> = {
+    name: 'With Pending Grant With Actions',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: CapitalMockedResponses.pendingGrantWithActions,
     },
 };
 
@@ -190,6 +190,7 @@ export const ErrorNoCapability: ElementStory<typeof CapitalOverview> = {
         },
     },
 };
+
 export const ErrorInactiveAH: ElementStory<typeof CapitalOverview> = {
     name: 'Error - Dynamic offer config - Inactive account holder',
     args: {
@@ -198,6 +199,18 @@ export const ErrorInactiveAH: ElementStory<typeof CapitalOverview> = {
     parameters: {
         msw: {
             handlers: CapitalMockedResponses.errorInactiveAccountHolder,
+        },
+    },
+};
+
+export const ErrorMissingActions: ElementStory<typeof CapitalOverview> = {
+    name: 'Error - Missing actions - Generic',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: {
+            handlers: CapitalMockedResponses.missingActionsError,
         },
     },
 };

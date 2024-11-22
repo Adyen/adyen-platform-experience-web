@@ -5,15 +5,7 @@
 import { render, screen } from '@testing-library/preact';
 import { describe, test, expect } from 'vitest';
 import { GrantItem } from './GrantItem';
-import {
-    ACTIVE_GRANT,
-    ACTIVE_UNREPAID_GRANT,
-    FAILED_GRANT,
-    PENDING_GRANT,
-    REPAID_GRANT,
-    REVOKED_GRANT,
-    WRITTEN_OFF_GRANT,
-} from '../../../../../../mocks/mock-data';
+import { ACTIVE_GRANT, FAILED_GRANT, PENDING_GRANT, REPAID_GRANT, REVOKED_GRANT, WRITTEN_OFF_GRANT } from '../../../../../../mocks/mock-data';
 
 const dateRegex = /^[A-Z][a-z]{2} \d{1,2}, \d{4}$/;
 
@@ -41,35 +33,6 @@ describe('GrantItem', () => {
         const progressBar = screen.getByRole('progressbar');
         expect(progressBar).toBeInTheDocument();
         expect(progressBar).toHaveAttribute('aria-valuenow', '1200000');
-        expect(progressBar).toHaveAttribute('aria-valuemax', '2022000');
-
-        const detailsButton = screen.getByLabelText('Expand');
-        expect(detailsButton).toBeInTheDocument();
-    });
-
-    test('renders active unrepaid grant', () => {
-        render(<GrantItem grant={ACTIVE_UNREPAID_GRANT} />);
-
-        const container = screen.getByTestId('grant-container');
-        expect(container).not.toHaveClass('adyen-pe-card--filled');
-
-        const termEndsLabel = screen.getByText('Term ends:');
-        const repaymentPeriodEndDate = screen.getByText(dateRegex);
-        expect(termEndsLabel).toBeInTheDocument();
-        expect(repaymentPeriodEndDate).toBeInTheDocument();
-
-        const amountLabel = screen.getByTestId('grant-amount-label');
-        expect(amountLabel).toBeInTheDocument();
-        expect(amountLabel).toHaveTextContent('Remaining');
-        expect(amountLabel).toHaveClass('adyen-pe-grant-item__text--secondary');
-
-        const amount = screen.getByText('$20,220.00');
-        expect(amount).toBeInTheDocument();
-        expect(amount).not.toHaveClass('adyen-pe-grant-item__text--secondary');
-
-        const progressBar = screen.getByRole('progressbar');
-        expect(progressBar).toBeInTheDocument();
-        expect(progressBar).toHaveAttribute('aria-valuenow', '0');
         expect(progressBar).toHaveAttribute('aria-valuemax', '2022000');
 
         const detailsButton = screen.getByLabelText('Expand');

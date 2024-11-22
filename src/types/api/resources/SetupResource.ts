@@ -34,7 +34,9 @@ export interface components {
             | 'getDynamicGrantOffer'
             | 'createGrantOffer'
             | 'getGrants'
-            | 'requestFunds';
+            | 'requestFunds'
+            | 'signToSActionDetails'
+            | 'initiateRefund';
         SetupEndpointResponse: {
             method?: string;
             url?: string;
