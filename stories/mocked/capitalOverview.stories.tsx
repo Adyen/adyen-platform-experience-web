@@ -33,16 +33,6 @@ export const WithActiveGrant: ElementStory<typeof CapitalOverview> = {
     },
 };
 
-export const WithActiveUnrepaidGrant: ElementStory<typeof CapitalOverview> = {
-    name: 'With Active Unrepaid Grant',
-    args: {
-        mockedApi: true,
-    },
-    parameters: {
-        msw: CapitalMockedResponses.activeUnrepaidGrant,
-    },
-};
-
 export const WithFailedGrant: ElementStory<typeof CapitalOverview> = {
     name: 'With Failed Grant',
     args: {

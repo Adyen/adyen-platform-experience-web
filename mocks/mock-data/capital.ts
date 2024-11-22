@@ -87,24 +87,6 @@ export const ACTIVE_GRANT: IGrant = {
     },
 };
 
-export const ACTIVE_UNREPAID_GRANT: IGrant = {
-    ...DEFAULT_GRANT,
-    id: '923f6376c6f2',
-    repaidTotalAmount: {
-        value: 0,
-        currency: 'USD',
-    },
-    repaidGrantAmount: {
-        value: 0,
-        currency: 'USD',
-    },
-    repaidFeesAmount: {
-        value: 0,
-        currency: 'USD',
-    },
-    status: 'Active',
-};
-
 export const FAILED_GRANT: IGrant = {
     ...DEFAULT_GRANT,
     id: '6d9d171783ba',

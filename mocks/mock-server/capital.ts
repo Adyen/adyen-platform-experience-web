@@ -1,6 +1,5 @@
 import {
     ACTIVE_GRANT,
-    ACTIVE_UNREPAID_GRANT,
     DYNAMIC_CAPITAL_OFFER,
     FAILED_GRANT,
     GRANT_OFFER,
@@ -118,10 +117,6 @@ export const CapitalMockedResponses = capitalFactory({
     activeGrant: [
         { endpoint: mockEndpoints.dynamicOfferConfig, handler: EMPTY_OFFER },
         { endpoint: mockEndpoints.grants, response: { data: [ACTIVE_GRANT] } },
-    ],
-    activeUnrepaidGrant: [
-        { endpoint: mockEndpoints.dynamicOfferConfig, handler: EMPTY_OFFER },
-        { endpoint: mockEndpoints.grants, response: { data: [ACTIVE_UNREPAID_GRANT] } },
     ],
     failedGrant: [
         { endpoint: mockEndpoints.dynamicOfferConfig, handler: EMPTY_OFFER },
