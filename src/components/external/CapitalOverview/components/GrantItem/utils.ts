@@ -24,7 +24,7 @@ const getStatusKey = ({ status, missingActions }: IGrant): TranslationKey | unde
         case 'Failed':
             return 'capital.failed';
         case 'Pending':
-            return missingActions ? 'capital.actionNeeded' : 'capital.pending';
+            return missingActions && missingActions.length ? 'capital.actionNeeded' : 'capital.pending';
         case 'Repaid':
             return 'capital.fullyRepaid';
         case 'Revoked':
@@ -57,13 +57,12 @@ const getRepaymentPeriodEndDate = (repaymentPeriodLeft: number) => {
     return endDate;
 };
 
-export const STATUS_TOOLTIP_MESSAGE = <Config extends { pendingToS: boolean }>(
-    status: IGrant['status'],
-    grantConfig: Config
-): TranslationKey | undefined => {
-    switch (status) {
+export const STATUS_TOOLTIP_MESSAGE = (grant: IGrant): TranslationKey | undefined => {
+    const pendingToS = grant.missingActions?.some(action => action.type === 'signToS') || false;
+
+    switch (grant.status) {
         case 'Pending':
-            return grantConfig.pendingToS ? 'capital.signTheTermsToReceiveYourFunds' : 'capital.youShouldGetTheFundsWithinOneBusinessDay';
+            return pendingToS ? 'capital.signTheTermsToReceiveYourFunds' : 'capital.youShouldGetTheFundsWithinOneBusinessDay';
         case 'Failed':
             return 'capital.weCouldNotProcessThisRequestTryAgain';
         case 'WrittenOff':
@@ -90,5 +89,6 @@ export const getGrantConfig = (grant: IGrant) => {
         statusKey: getStatusKey(grant),
         statusTagVariant: getStatusTagVariant(grant),
         pendingToS: grant.missingActions?.some(action => action.type === 'signToS') || false,
+        tooltipMessage: STATUS_TOOLTIP_MESSAGE(grant),
     };
 };

@@ -10,7 +10,7 @@ import { Tag } from '../../../../internal/Tag/Tag';
 import ProgressBar from '../../../../internal/ProgressBar';
 import { DATE_FORMAT_CAPITAL_OVERVIEW } from '../../../../../constants';
 import { GRANT_ITEM_CLASS_NAMES } from './constants';
-import { getGrantConfig, STATUS_TOOLTIP_MESSAGE } from './utils';
+import { getGrantConfig } from './utils';
 import { GrantItemProps } from './types';
 import './GrantItem.scss';
 import { GrantDetails } from '../GrantDetails/GrantDetails';
@@ -46,8 +46,8 @@ export const GrantItem: FunctionalComponent<GrantItemProps> = ({ grant }) => {
                                     </Typography>
                                 </>
                             ) : grantConfig.statusKey ? (
-                                STATUS_TOOLTIP_MESSAGE(grant.status, grantConfig) ? (
-                                    <Tooltip content={i18n.get(STATUS_TOOLTIP_MESSAGE(grant.status, grantConfig)!)}>
+                                grantConfig.tooltipMessage ? (
+                                    <Tooltip content={i18n.get(grantConfig.tooltipMessage)}>
                                         <div>
                                             <Tag label={i18n.get(grantConfig.statusKey)} variant={grantConfig.statusTagVariant} />
                                         </div>
