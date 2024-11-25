@@ -1,4 +1,4 @@
-import { FunctionalComponent, h } from 'preact';
+import { FunctionalComponent } from 'preact';
 import { useMemo } from 'preact/hooks';
 import cx from 'classnames';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
@@ -10,33 +10,13 @@ import { Tag } from '../../../../internal/Tag/Tag';
 import ProgressBar from '../../../../internal/ProgressBar';
 import { DATE_FORMAT_CAPITAL_OVERVIEW } from '../../../../../constants';
 import { GRANT_ITEM_CLASS_NAMES } from './constants';
-import { getGrantConfig } from './utils';
+import { getGrantConfig, STATUS_TOOLTIP_MESSAGE } from './utils';
 import { GrantItemProps } from './types';
 import './GrantItem.scss';
 import { GrantDetails } from '../GrantDetails/GrantDetails';
 import { GrantAction } from '../GrantAction/GrantAction';
 import CopyText from '../../../../internal/CopyText/CopyText';
-import { TranslationKey } from '../../../../../translations';
-import { IGrant } from '../../../../../types';
 import { Tooltip } from '../../../../internal/Tooltip/Tooltip';
-
-const STATUS_TOOLTIP_MESSAGE = <Config extends { pendingToS: boolean }>(
-    status: IGrant['status'],
-    grantConfig: Config
-): TranslationKey | undefined => {
-    switch (status) {
-        case 'Pending':
-            return grantConfig.pendingToS ? 'capital.signTheTermsToReceiveYourFunds' : 'capital.youShouldGetTheFundsWithinOneBusinessDay';
-        case 'Failed':
-            return 'capital.weCouldNotProcessThisRequestTryAgain';
-        case 'WrittenOff':
-            return 'capital.youAcceptedTheseFundsButDidNotRepayThem';
-        case 'Revoked':
-            return 'capital.youAcceptedButThenReturnedTheseFunds';
-        default:
-            return undefined;
-    }
-};
 
 export const GrantItem: FunctionalComponent<GrantItemProps> = ({ grant }) => {
     const { i18n } = useCoreContext();

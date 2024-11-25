@@ -24,7 +24,7 @@ const getStatusKey = (status: IGrantStatus, grant: IGrant): TranslationKey | und
         case 'Failed':
             return 'capital.failed';
         case 'Pending':
-            return grant.missingActions?.length ? 'capital.actionRequired' : 'capital.pending';
+            return grant.missingActions?.length ? 'capital.actionNeeded' : 'capital.pending';
         case 'Repaid':
             return 'capital.fullyRepaid';
         case 'Revoked':
@@ -55,6 +55,24 @@ const getRepaymentPeriodEndDate = (repaymentPeriodLeft: number) => {
     const endDate = new Date();
     endDate.setDate(today.getDate() + repaymentPeriodLeft);
     return endDate;
+};
+
+export const STATUS_TOOLTIP_MESSAGE = <Config extends { pendingToS: boolean }>(
+    status: IGrant['status'],
+    grantConfig: Config
+): TranslationKey | undefined => {
+    switch (status) {
+        case 'Pending':
+            return grantConfig.pendingToS ? 'capital.signTheTermsToReceiveYourFunds' : 'capital.youShouldGetTheFundsWithinOneBusinessDay';
+        case 'Failed':
+            return 'capital.weCouldNotProcessThisRequestTryAgain';
+        case 'WrittenOff':
+            return 'capital.youAcceptedTheseFundsButDidNotRepayThem';
+        case 'Revoked':
+            return 'capital.youAcceptedButThenReturnedTheseFunds';
+        default:
+            return undefined;
+    }
 };
 
 export const getGrantConfig = (grant: IGrant) => {
