@@ -61,7 +61,7 @@ export const setupMock = [
                 },
                 createGrantOffer: {
                     method: 'POST',
-                    url: 'capital/grantOffers/review',
+                    url: 'capital/grantOffers/create',
                 },
                 getDynamicGrantOffer: {
                     method: 'GET',
@@ -70,6 +70,10 @@ export const setupMock = [
                 requestFunds: {
                     method: 'POST',
                     url: 'capital/grantOffers/dynamic/requestFunds/{grantOfferId}',
+                },
+                signToSActionDetails: {
+                    method: 'GET',
+                    url: 'capital/grants/missingActions/signToS',
                 },
             } satisfies Record<EndpointName, { method: HttpMethod; url: string }>,
         });

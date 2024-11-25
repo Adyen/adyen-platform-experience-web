@@ -20,11 +20,11 @@ type CapitalOverviewState = 'Loading' | 'Error' | 'Unqualified' | 'PreQualified'
 
 export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<CapitalOverviewProps>> = ({
     hideTitle,
-    skipPreQualifiedIntro,
-    onFundsRequest,
-    onOfferOptionsRequest,
-    onOfferDismissed,
     onContactSupport,
+    onFundsRequest,
+    onOfferDismiss,
+    onOfferOptionsRequest,
+    skipPreQualifiedIntro,
 }) => {
     const { getGrants: grantsEndpointCall, getDynamicGrantOffersConfiguration: dynamicConfigurationEndpointCall } = useAuthContext().endpoints;
 
@@ -45,11 +45,14 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
     const dynamicOffer = dynamicOfferQuery.data;
 
     const [requestedGrant, setRequestedGrant] = useState<IGrant>();
-    const grantList = useMemo(() => (requestedGrant ? [requestedGrant] : grantsQuery.data?.data), [grantsQuery.data?.data, requestedGrant]);
+    const grantList = useMemo(
+        () => (requestedGrant ? [requestedGrant, ...(grantsQuery.data?.data || [])] : grantsQuery.data?.data),
+        [grantsQuery.data?.data, requestedGrant]
+    );
 
-    const onRequestFundsHandler = useCallback(
+    const handleFundsRequest = useCallback(
         (data: IGrant) => {
-            onFundsRequest ? onFundsRequest(data, () => setRequestedGrant(data)) : setRequestedGrant(data);
+            onFundsRequest ? onFundsRequest(data) : setRequestedGrant(data);
         },
         [onFundsRequest]
     );
@@ -87,6 +90,8 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
         skipPreQualifiedIntro,
     ]);
 
+    const newOfferAvailable = useMemo(() => (!!dynamicOffer && dynamicOffer.minAmount && dynamicOffer.maxAmount ? true : false), [dynamicOffer]);
+
     return (
         <div className={CAPITAL_OVERVIEW_CLASS_NAMES.base}>
             {(() => {
@@ -112,16 +117,27 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
                             </div>
                         );
                     case 'GrantList':
-                        return grantList && <GrantList grantList={grantList} hideTitle={hideTitle} />;
+                        return (
+                            grantList && (
+                                <GrantList
+                                    externalDynamicOffersConfig={dynamicOffer}
+                                    grantList={grantList}
+                                    hideTitle={hideTitle}
+                                    newOfferAvailable={newOfferAvailable}
+                                    onFundsRequestHandler={handleFundsRequest}
+                                    onOfferDismissed={onOfferDismiss}
+                                />
+                            )
+                        );
                     case 'PreQualified':
                         return (
                             <PreQualified
-                                onOfferDismissed={onOfferDismissed}
-                                onSeeOptions={onOfferOptionsRequest}
+                                onOfferDismiss={onOfferDismiss}
+                                onOfferOptionsRequest={onOfferOptionsRequest}
                                 skipPreQualifiedIntro={skipPreQualifiedIntro}
                                 hideTitle={hideTitle}
                                 dynamicOffer={dynamicOffer!}
-                                onRequestFundsHandler={onRequestFundsHandler}
+                                onFundsRequest={handleFundsRequest}
                             />
                         );
                     case 'Unqualified':

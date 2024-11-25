@@ -9,7 +9,7 @@ const Unqualified = ({ hideTitle }: { hideTitle?: boolean }) => {
 
     return (
         <>
-            <CapitalHeader hideTitle={hideTitle} hasSubtitle={false} titleKey={'needSomeExtraMoney'} />
+            <CapitalHeader hideTitle={hideTitle} titleKey={'needSomeExtraMoney'} />
             <div className={'adyen-pe-capital-overview__unqualified-state'}>
                 <div className="adyen-pe-capital-overview__unqualified-state-img">
                     <img srcSet={unqualifiedImage} alt="" />

@@ -62,7 +62,7 @@ export const DEFAULT_GRANT: IGrant = {
     balanceAccountCode: 'BA1234567',
     balanceAccountDescription: 'Primary balance account',
     status: 'Pending',
-    actions: {},
+    missingActions: [],
 };
 
 export const ACTIVE_GRANT: IGrant = {
@@ -87,24 +87,6 @@ export const ACTIVE_GRANT: IGrant = {
     },
 };
 
-export const ACTIVE_UNREPAID_GRANT: IGrant = {
-    ...DEFAULT_GRANT,
-    id: '923f6376c6f2',
-    repaidTotalAmount: {
-        value: 0,
-        currency: 'USD',
-    },
-    repaidGrantAmount: {
-        value: 0,
-        currency: 'USD',
-    },
-    repaidFeesAmount: {
-        value: 0,
-        currency: 'USD',
-    },
-    status: 'Active',
-};
-
 export const FAILED_GRANT: IGrant = {
     ...DEFAULT_GRANT,
     id: '6d9d171783ba',
@@ -115,6 +97,13 @@ export const PENDING_GRANT: IGrant = {
     ...DEFAULT_GRANT,
     id: '7e18b082372f',
     status: 'Pending',
+};
+
+export const PENDING_GRANT_WITH_ACTIONS: IGrant = {
+    ...PENDING_GRANT,
+    id: '14588ba8f278',
+    offerExpiresAt: '2025-02-15',
+    missingActions: [{ type: 'signToS' }],
 };
 
 export const REPAID_GRANT: IGrant = {
@@ -195,4 +184,8 @@ export const SIGNED_OFFER = {
     maximumRepaymentPeriodDays: 540,
     repaymentPeriodLeft: 135,
     status: 'Pending',
+};
+
+export const SIGN_TOS_ACTION_DETAILS = {
+    url: 'https://www.adyen.com/',
 };

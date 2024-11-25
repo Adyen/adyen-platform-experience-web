@@ -14,6 +14,7 @@ import { getGrantConfig } from './utils';
 import { GrantItemProps } from './types';
 import './GrantItem.scss';
 import { GrantDetails } from '../GrantDetails/GrantDetails';
+import { GrantAction } from '../GrantAction/GrantAction';
 import CopyText from '../../../../internal/CopyText/CopyText';
 
 export const GrantItem: FunctionalComponent<GrantItemProps> = ({ grant }) => {
@@ -81,6 +82,8 @@ export const GrantItem: FunctionalComponent<GrantItemProps> = ({ grant }) => {
                 </div>
             </Card>
             {grantConfig.hasDetails && <GrantDetails grant={grant} />}
+            {grant.missingActions &&
+                grant.missingActions.map(action => <GrantAction key={action.type} action={action} offerExpiresAt={grant.offerExpiresAt} />)}
         </div>
     );
 };

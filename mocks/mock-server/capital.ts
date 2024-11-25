@@ -1,13 +1,14 @@
 import {
     ACTIVE_GRANT,
-    ACTIVE_UNREPAID_GRANT,
     DYNAMIC_CAPITAL_OFFER,
     FAILED_GRANT,
     GRANT_OFFER,
     PENDING_GRANT,
+    PENDING_GRANT_WITH_ACTIONS,
     REPAID_GRANT,
     REVOKED_GRANT,
     SIGNED_OFFER,
+    SIGN_TOS_ACTION_DETAILS,
     WRITTEN_OFF_GRANT,
 } from '../mock-data';
 import { endpoints } from '../../endpoints/endpoints';
@@ -68,11 +69,11 @@ export const capitalMock = [
             return HttpResponse.error();
         }
         await delay(400);
-        return HttpResponse.json(DYNAMIC_CAPITAL_OFFER);
+        return HttpResponse.json({});
     }),
     http.get(mockEndpoints.grants, EMPTY_GRANTS_LIST),
     http.get(mockEndpoints.dynamicOffer, DYNAMIC_OFFER_HANDLER),
-    http.post(mockEndpoints.offerReview, OFFER_REVIEW_HANDLER),
+    http.post(mockEndpoints.createOffer, OFFER_REVIEW_HANDLER),
     http.post(mockEndpoints.requestFunds, getHandlerCallback({ response: SIGNED_OFFER, delayTime: 800 })),
 ];
 const capitalFactory = mocksFactory<CapitalPaths>();
@@ -102,6 +103,7 @@ const ERROR_NO_PRIMARY_BALANCE_ACCOUNT = new AdyenPlatformExperienceError(
     '30_013'
 );
 const ERROR_EXCEEDED_GRANT_LIMIT = new AdyenPlatformExperienceError(ErrorTypes.ERROR, 'MissingPrimaryBalanceAccountException', 'Message');
+const ERROR_MISSING_ACTIONS = new AdyenPlatformExperienceError(ErrorTypes.ERROR, 'Something went wrong', 'Message');
 
 export const CapitalMockedResponses = capitalFactory({
     unqualified: [
@@ -116,10 +118,6 @@ export const CapitalMockedResponses = capitalFactory({
         { endpoint: mockEndpoints.dynamicOfferConfig, handler: EMPTY_OFFER },
         { endpoint: mockEndpoints.grants, response: { data: [ACTIVE_GRANT] } },
     ],
-    activeUnrepaidGrant: [
-        { endpoint: mockEndpoints.dynamicOfferConfig, handler: EMPTY_OFFER },
-        { endpoint: mockEndpoints.grants, response: { data: [ACTIVE_UNREPAID_GRANT] } },
-    ],
     failedGrant: [
         { endpoint: mockEndpoints.dynamicOfferConfig, handler: EMPTY_OFFER },
         { endpoint: mockEndpoints.grants, response: { data: [FAILED_GRANT] } },
@@ -128,8 +126,45 @@ export const CapitalMockedResponses = capitalFactory({
         { endpoint: mockEndpoints.dynamicOfferConfig, handler: EMPTY_OFFER },
         { endpoint: mockEndpoints.grants, response: { data: [PENDING_GRANT] } },
     ],
+    pendingGrantWithActions: [
+        { endpoint: mockEndpoints.dynamicOfferConfig, handler: EMPTY_OFFER },
+        { endpoint: mockEndpoints.grants, response: { data: [PENDING_GRANT_WITH_ACTIONS] } },
+        { endpoint: mockEndpoints.signToS, response: SIGN_TOS_ACTION_DETAILS },
+    ],
     repaidGrant: [
         { endpoint: mockEndpoints.dynamicOfferConfig, handler: EMPTY_OFFER },
+        { endpoint: mockEndpoints.grants, response: { data: [REPAID_GRANT] } },
+    ],
+    multipleGrants: [
+        { endpoint: mockEndpoints.dynamicOfferConfig, response: DYNAMIC_CAPITAL_OFFER },
+        {
+            endpoint: mockEndpoints.grants,
+            response: {
+                data: [
+                    REPAID_GRANT,
+                    {
+                        ...REPAID_GRANT,
+                        id: 'c6bi2512869f',
+                        grantAmount: {
+                            value: 1200000,
+                            currency: 'USD',
+                        },
+                    },
+                    {
+                        ...REPAID_GRANT,
+                        id: 'c6bi2512869f',
+                        grantAmount: {
+                            value: 2200000,
+                            currency: 'USD',
+                        },
+                        status: 'Active',
+                    },
+                ],
+            },
+        },
+    ],
+    newOfferAvailable: [
+        { endpoint: mockEndpoints.dynamicOfferConfig, response: DYNAMIC_CAPITAL_OFFER },
         { endpoint: mockEndpoints.grants, response: { data: [REPAID_GRANT] } },
     ],
     revokedGrant: [
@@ -155,14 +190,15 @@ export const CapitalMockedResponses = capitalFactory({
     ],
     reviewOfferWentWrong: [
         {
-            endpoint: mockEndpoints.offerReview,
+            endpoint: mockEndpoints.createOffer,
             handler: getErrorHandler(ERROR_OFFER_REVIEW_WENT_WRONG, 500),
             method: 'post',
         },
     ],
     missingPrimaryBalanceAccount: [
+        { endpoint: mockEndpoints.dynamicOfferConfig, response: DYNAMIC_CAPITAL_OFFER },
         {
-            endpoint: mockEndpoints.offerReview,
+            endpoint: mockEndpoints.createOffer,
             handler: ((req: any) => OFFER_REVIEW_HANDLER(req)) as any,
             method: 'post',
         },
@@ -187,6 +223,7 @@ export const CapitalMockedResponses = capitalFactory({
         },
     ],
     exceededGrantLimit: [
+        { endpoint: mockEndpoints.dynamicOfferConfig, response: DYNAMIC_CAPITAL_OFFER },
         {
             endpoint: mockEndpoints.requestFunds as any,
             handler: getErrorHandler(ERROR_EXCEEDED_GRANT_LIMIT, 422),
@@ -197,4 +234,9 @@ export const CapitalMockedResponses = capitalFactory({
     hasActiveGrants: [{ endpoint: mockEndpoints.dynamicOfferConfig, handler: getHandlerCallback({ response: undefined, status: 204 }) }],
     dynamicOfferServerError: [{ endpoint: mockEndpoints.dynamicOffer, handler: ((req: any) => DYNAMIC_OFFER_HANDLER(req, 1)) as any }],
     dynamicOfferExceededRetries: [{ endpoint: mockEndpoints.dynamicOffer, handler: ((req: any) => DYNAMIC_OFFER_HANDLER(req, 10)) as any }],
+    missingActionsError: [
+        { endpoint: mockEndpoints.dynamicOfferConfig, handler: EMPTY_OFFER },
+        { endpoint: mockEndpoints.grants, response: { data: [PENDING_GRANT_WITH_ACTIONS] } },
+        { endpoint: mockEndpoints.signToS, handler: getErrorHandler(ERROR_MISSING_ACTIONS, 500) },
+    ],
 });

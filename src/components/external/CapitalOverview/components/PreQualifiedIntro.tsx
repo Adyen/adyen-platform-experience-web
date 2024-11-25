@@ -20,7 +20,7 @@ const PreQualifiedIntro = ({
 
     return (
         <>
-            <CapitalHeader hideTitle={hideTitle} hasSubtitle={false} titleKey={'needSomeExtraMoney'} />
+            <CapitalHeader hideTitle={hideTitle} titleKey={'needSomeExtraMoney'} />
             <div className={CAPITAL_OVERVIEW_CLASS_NAMES.preQualifiedGrant}>
                 <InfoBox>
                     <Typography variant={TypographyVariant.BODY}>
