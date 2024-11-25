@@ -1,5 +1,5 @@
 import { FunctionalComponent } from 'preact';
-import { useCallback, useMemo } from 'preact/hooks';
+import { useCallback, useMemo, useState } from 'preact/hooks';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import useTimezoneAwareDateFormatting from '../../../../../hooks/useTimezoneAwareDateFormatting';
 import { DATE_FORMAT_CAPITAL_OVERVIEW } from '../../../../../constants';
@@ -12,32 +12,51 @@ import Button from '../../../../internal/Button';
 import { useAuthContext } from '../../../../../core/Auth';
 import { EMPTY_OBJECT } from '../../../../../utils';
 import { useFetch } from '../../../../../hooks/useFetch';
+import { useEffect } from 'preact/compat';
+import { getTopWindowHref, setTopWindowHref } from './utils';
 
 export const GrantAction: FunctionalComponent<GrantActionProps> = ({ action, offerExpiresAt }) => {
-    const { i18n } = useCoreContext();
+    const { i18n, updateCore } = useCoreContext();
     const { dateFormat } = useTimezoneAwareDateFormatting();
     const { signToSActionDetails } = useAuthContext().endpoints;
+    const [shouldRedirectToToS, setShouldRedirectToToS] = useState(false);
 
     const fetchCallback = useCallback(async () => {
         if (action.type === 'signToS') {
             return signToSActionDetails?.(EMPTY_OBJECT, {
                 query: {
-                    // To always get the top level href (useful when component is rendered inside an iframe)
-                    redirectUrl: window.top?.location.href || window.location.href,
+                    redirectUrl: getTopWindowHref(),
                     locale: i18n.locale,
                 },
             });
         }
     }, [action, i18n.locale, signToSActionDetails]);
 
-    const { data, isFetching } = useFetch({
-        fetchOptions: useMemo(() => ({ enabled: !!signToSActionDetails }), [signToSActionDetails]),
+    const { data, isFetching, error } = useFetch({
+        fetchOptions: useMemo(() => ({ enabled: !!signToSActionDetails && shouldRedirectToToS }), [signToSActionDetails, shouldRedirectToToS]),
         queryFn: fetchCallback,
     });
 
-    return (
+    useEffect(() => {
+        const url = data?.url;
+        if (url) {
+            setTopWindowHref(url);
+        }
+    }, [data, shouldRedirectToToS]);
+
+    return error ? (
         <Alert
-            key={action.type}
+            className={GRANT_ACTION_CLASS_NAMES.base}
+            type={AlertTypeOption.CRITICAL}
+            title={i18n.get('capital.somethingWentWrongTryRefreshingOrComeBackLater')}
+            description={
+                <Button className={GRANT_ACTION_CLASS_NAMES.button} onClick={updateCore}>
+                    {i18n.get('refresh')}
+                </Button>
+            }
+        />
+    ) : (
+        <Alert
             className={GRANT_ACTION_CLASS_NAMES.base}
             type={AlertTypeOption.WARNING}
             title={`${i18n.get('capital.signTermsAndConditionsToReceiveFunds')}${
@@ -49,15 +68,16 @@ export const GrantAction: FunctionalComponent<GrantActionProps> = ({ action, off
                       })}`
                     : ''
             }`}
-            {...(data?.url
-                ? {
-                      description: (
-                          <Button className={GRANT_ACTION_CLASS_NAMES.button} href={data.url} disabled={isFetching}>
-                              {i18n.get('capital.goToTermsAndConditions')}
-                          </Button>
-                      ),
-                  }
-                : {})}
+            description={
+                <Button
+                    className={GRANT_ACTION_CLASS_NAMES.button}
+                    onClick={() => setShouldRedirectToToS(true)}
+                    disabled={isFetching}
+                    state={isFetching ? 'loading' : undefined}
+                >
+                    {i18n.get('capital.goToTermsAndConditions')}
+                </Button>
+            }
         />
     );
 };

@@ -57,6 +57,11 @@
             background-color: style.token(color-background-disabled);
             color: style.token(color-label-disabled);
         }
+
+        &.--loading {
+            background: style.token(color-background-disabled);
+            color: style.token(color-label-disabled);
+        }
     }
 
     &--secondary {
@@ -112,6 +117,10 @@
             background-color: style.token(color-background-primary);
             color: style.token(color-label-disabled);
         }
+    }
+
+    &--loading {
+        gap: style.token(spacer-040);
     }
 
     &--tertiary-with-background {

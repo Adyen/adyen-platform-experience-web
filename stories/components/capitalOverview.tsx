@@ -6,8 +6,11 @@ import { action } from '@storybook/addon-actions';
 
 export const CapitalOverviewMeta: Meta<ElementProps<typeof CapitalOverview>> = {
     argTypes: {
-        onContactSupport: enabledDisabledCallbackRadioControls('onContactSupport'),
         hideTitle: { type: 'boolean' },
+        onContactSupport: enabledDisabledCallbackRadioControls('onContactSupport'),
+        onFundsRequest: enabledDisabledCallbackRadioControls('onFundsRequest'),
+        onOfferDismiss: enabledDisabledCallbackRadioControls('onOfferDismiss'),
+        onOfferOptionsRequest: enabledDisabledCallbackRadioControls('onOfferOptionsRequest'),
     },
     args: {
         hideTitle: false,

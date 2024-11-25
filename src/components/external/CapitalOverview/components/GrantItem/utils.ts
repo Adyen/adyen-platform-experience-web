@@ -6,7 +6,7 @@ const getHasDetails = (status: IGrantStatus) => status === 'Active';
 
 const getIsBackgroundFilled = (status: IGrantStatus) => status === 'Repaid';
 
-const getAmountLabelKey = ({ status }: IGrant): TranslationKey => {
+const getAmountLabelKey = (status: IGrantStatus): TranslationKey => {
     if (status === 'Active') {
         return 'capital.remaining';
     } else if (status === 'Repaid') {
@@ -17,14 +17,14 @@ const getAmountLabelKey = ({ status }: IGrant): TranslationKey => {
 
 const getAmount = (grant: IGrant) => (grant.status === 'Active' ? grant.remainingTotalAmount : grant.grantAmount);
 
-const getStatusKey = (status: IGrantStatus, grant: IGrant): TranslationKey | undefined => {
+const getStatusKey = ({ status, missingActions }: IGrant): TranslationKey | undefined => {
     switch (status) {
         case 'Active':
             return undefined;
         case 'Failed':
             return 'capital.failed';
         case 'Pending':
-            return grant.missingActions?.length ? 'capital.actionNeeded' : 'capital.pending';
+            return missingActions ? 'capital.actionNeeded' : 'capital.pending';
         case 'Repaid':
             return 'capital.fullyRepaid';
         case 'Revoked':
@@ -34,17 +34,17 @@ const getStatusKey = (status: IGrantStatus, grant: IGrant): TranslationKey | und
     }
 };
 
-const getStatusTagVariant = (status: IGrantStatus, grant: IGrant): TagVariant => {
+const getStatusTagVariant = ({ status, missingActions }: IGrant): TagVariant => {
     switch (status) {
         case 'Failed':
             return TagVariant.ERROR;
+        case 'Pending':
+            return missingActions?.length ? TagVariant.WARNING : TagVariant.DEFAULT;
         case 'Repaid':
             return TagVariant.LIGHT;
         case 'Revoked':
         case 'WrittenOff':
             return TagVariant.WARNING;
-        case 'Pending':
-            return grant.missingActions?.length ? TagVariant.WARNING : TagVariant.DEFAULT;
         default:
             return TagVariant.DEFAULT;
     }
@@ -80,15 +80,15 @@ export const getGrantConfig = (grant: IGrant) => {
 
     return {
         amount: getAmount(grant),
-        amountLabelKey: getAmountLabelKey(grant),
+        amountLabelKey: getAmountLabelKey(grant.status),
         hasDetails: getHasDetails(grant.status),
         isAmountColorSecondary: !isGrantActive,
         isBackgroundFilled: getIsBackgroundFilled(grant.status),
         isLabelColorSecondary: isGrantActive,
         isProgressBarVisible: isGrantActive,
         repaymentPeriodEndDate: getRepaymentPeriodEndDate(grant.repaymentPeriodLeft),
-        statusKey: getStatusKey(grant.status, grant),
-        statusTagVariant: getStatusTagVariant(grant.status, grant),
+        statusKey: getStatusKey(grant),
+        statusTagVariant: getStatusTagVariant(grant),
         pendingToS: grant.missingActions?.some(action => action.type === 'signToS') || false,
     };
 };
