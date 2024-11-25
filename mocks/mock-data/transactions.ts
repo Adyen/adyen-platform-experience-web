@@ -1965,10 +1965,10 @@ export const DEFAULT_REFUND_STATUSES: ITransactionRefundStatus = [
         amount: { currency: 'USD', value: -202000 },
         status: 'completed',
     },
-    // {
-    //     amount: { currency: 'USD', value: -1000 },
-    //     status: 'failed',
-    // },
+    {
+        amount: { currency: 'USD', value: -1000 },
+        status: 'failed',
+    },
 ];
 
 export const DEFAULT_TRANSACTION: ITransaction = {

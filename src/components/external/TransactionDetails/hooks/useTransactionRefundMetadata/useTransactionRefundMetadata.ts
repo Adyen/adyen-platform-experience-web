@@ -68,12 +68,27 @@ export const useTransactionRefundMetadata = (transaction: TransactionDataProps['
                                 )} is being processed. You can only send a refund for the remaining amount.`,
                             });
                             return;
+                        case RefundStatus.FAILED:
+                            if (value === refundableAmount) {
+                                statusAlerts.push({
+                                    type: AlertTypeOption.WARNING,
+                                    label: `It is not possible to request a refund for this payment. Please contact support.`,
+                                });
+                            } else {
+                                statusAlerts.push({
+                                    type: AlertTypeOption.WARNING,
+                                    label: `The refund for ${i18n.amount(
+                                        value,
+                                        amount.currency
+                                    )} has failed. It is not currently possible to refund this amount. Please contact support.`,
+                                });
+                            }
+                            return;
                         default:
                             return;
                     }
                 });
         }
-
         return statusAlerts;
     }, [details?.refundStatuses, transaction, refundableAmount, i18n, refundCurrency, refundedAmount]);
 
@@ -95,7 +110,7 @@ export const useTransactionRefundMetadata = (transaction: TransactionDataProps['
         switch (refundMode) {
             case RefundMode.PARTIAL_AMOUNT:
             case RefundMode.PARTIAL_LINE_ITEMS:
-                if (refundableAmount > 0 && refundedAmount > 0 && someRefunded) {
+                if ((refundableAmount > 0 || (someRefunded && !allRefunded)) && refundedAmount > 0) {
                     return RefundedState.PARTIAL;
                 }
         }

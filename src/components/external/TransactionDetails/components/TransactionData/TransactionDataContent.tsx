@@ -176,7 +176,9 @@ export const TransactionDataContent = ({ transaction: initialTransaction }: Tran
 
                         {/* refund amount input */}
                         {refundMode === RefundMode.FULL_AMOUNT && <TransactionRefundFullAmountInput />}
-                        {refundMode === RefundMode.PARTIAL_AMOUNT && <TransactionRefundPartialAmountInput />}
+                        {(refundMode === RefundMode.PARTIAL_AMOUNT || refundMode === RefundMode.PARTIAL_LINE_ITEMS) && (
+                            <TransactionRefundPartialAmountInput />
+                        )}
                     </TransactionRefundProvider>
                 </_TransactionDataContentViewWrapper>
             );
