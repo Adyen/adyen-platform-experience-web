@@ -105,7 +105,7 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
                         );
                     case 'Error':
                         return (
-                            <div>
+                            <div className={CAPITAL_OVERVIEW_CLASS_NAMES.errorContainer}>
                                 <CapitalHeader hideTitle={hideTitle} titleKey={'capital.businessFinancing'} />
                                 <ErrorMessageDisplay
                                     absolutePosition={false}

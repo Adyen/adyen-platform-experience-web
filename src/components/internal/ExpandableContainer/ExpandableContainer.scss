@@ -6,7 +6,10 @@
     }
 
     &__toggle-button-icon {
+        display: flex;
         font-size: 16px;
+        justify-content: center;
         line-height: 0;
+        width: 100%;
     }
 }
