@@ -6,8 +6,6 @@ import { ButtonVariant } from '../Button/types';
 import Icon from '../Icon';
 import { Tooltip } from '../Tooltip/Tooltip';
 import './CopyText.scss';
-import { TypographyVariant } from '../Typography/types';
-import Typography from '../Typography/Typography';
 
 const CopyText = ({
     textToCopy,
