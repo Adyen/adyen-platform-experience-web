@@ -103,7 +103,7 @@ describe('GrantItem', () => {
 
         const amountLabel = screen.getByTestId('grant-amount-label');
         expect(amountLabel).toBeInTheDocument();
-        expect(amountLabel).toHaveTextContent('Initial funds');
+        expect(amountLabel).toHaveTextContent('Requested funds');
         expect(amountLabel).toHaveClass('adyen-pe-typography adyen-pe-typography--caption');
 
         const amount = screen.getByText('$20,000.00');

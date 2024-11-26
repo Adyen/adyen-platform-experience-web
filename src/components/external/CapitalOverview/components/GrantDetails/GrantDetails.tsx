@@ -21,7 +21,7 @@ export const GrantDetails: FunctionalComponent<GrantDetailsProps> = ({ grant }) 
                 key: 'capital.remainingAmount',
                 value: i18n.amount(grant.remainingGrantAmount.value, grant.remainingGrantAmount.currency),
             },
-            { key: 'capital.remainingFee', value: formatAmount(grant.remainingFeesAmount) },
+            { key: 'capital.remainingFees', value: formatAmount(grant.remainingFeesAmount) },
             { key: 'capital.repaidAmount', value: formatAmount(grant.repaidGrantAmount) },
             { key: 'capital.repaidFees', value: formatAmount(grant.repaidFeesAmount) },
             {
@@ -42,15 +42,15 @@ export const GrantDetails: FunctionalComponent<GrantDetailsProps> = ({ grant }) 
             { key: 'capital.totalFees', value: formatAmount(grant.feesAmount) },
             { key: 'capital.totalRepaymentAmount', value: formatAmount(grant.totalAmount) },
             { key: 'capital.repaymentThreshold', value: formatAmount(grant.thresholdAmount) },
-            { key: 'capital.loanID', value: grant.id },
-            { key: 'capital.accountDescription', value: grant.balanceAccountDescription },
-            { key: 'capital.accountID', value: grant.balanceAccountCode },
+            { key: 'capital.grantID', value: grant.id },
+            { key: 'accountDescription', value: grant.balanceAccountDescription },
+            { key: 'accountID', value: grant.balanceAccountCode },
         ];
 
         if (maximumRepaymentPeriodMonths) {
             items.splice(5, 0, {
                 key: 'capital.maximumRepaymentPeriod',
-                value: `${maximumRepaymentPeriodMonths} ${i18n.get('capital.months')}`,
+                value: i18n.get('capital.xMonths', { values: { months: maximumRepaymentPeriodMonths } }),
             });
         }
 
