@@ -1,6 +1,7 @@
 import cx from 'classnames';
 import { forwardRef } from 'preact/compat';
-import { Ref, useCallback, useMemo, useState } from 'preact/hooks';
+import { useCallback, useMemo, useState } from 'preact/hooks';
+import { Ref } from 'preact';
 import useCoreContext from '../../../core/Context/useCoreContext';
 import { boolOrTrue, EMPTY_OBJECT, noop } from '../../../utils';
 import useReflex from '../../../hooks/useReflex';

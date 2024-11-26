@@ -48,6 +48,11 @@
             background-color: style.token(color-background-disabled);
             color: style.token(color-label-disabled);
         }
+
+        &.--loading {
+            background: style.token(color-background-disabled);
+            color: style.token(color-label-disabled);
+        }
     }
 
     &--secondary {
@@ -102,6 +107,21 @@
         &:disabled {
             background-color: style.token(color-background-primary);
             color: style.token(color-label-disabled);
+        }
+    }
+
+    &--loading {
+        gap: style.token(spacer-040);
+    }
+
+    &--tertiary-with-background {
+        background-color: transparent;
+        color: style.token(color-label-primary);
+
+        &:hover {
+            background-color: style.token(color-background-secondary-hover);
+            color: style.token(color-label-primary-hover);
+            text-decoration: none;
         }
     }
 
