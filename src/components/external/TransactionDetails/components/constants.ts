@@ -22,6 +22,10 @@ export const TX_DATA_PAY_METHOD_LOGO = `${TX_DATA_PAY_METHOD}-logo`;
 export const TX_DATA_PAY_METHOD_LOGO_CONTAINER = `${TX_DATA_PAY_METHOD_LOGO}-container`;
 export const TX_DATA_TAGS = `${TX_DATA_CLASS}__tags`;
 export const TX_STATUS_BOX = `${TX_DATA_CLASS}__status-box`;
+export const TX_REFUND_RESPONSE = `${TX_DATA_CLASS}__refund-response`;
+export const TX_REFUND_RESPONSE_ICON = `${TX_DATA_CLASS}__refund-response-icon`;
+export const TX_REFUND_RESPONSE_SUCCESS_ICON = `${TX_REFUND_RESPONSE_ICON}--success`;
+export const TX_REFUND_RESPONSE_ERROR_ICON = `${TX_REFUND_RESPONSE_ICON}--error`;
 
 export const TX_DETAILS_RESERVED_FIELDS_SET = new Set([
     ...(['status', 'category', 'paymentMethod', 'bankAccount', 'balanceAccount', 'id', 'balanceAccountId'] satisfies (keyof TransactionDetailData)[]),

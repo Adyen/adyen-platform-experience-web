@@ -3,7 +3,7 @@ import type { IRefundStatus } from '../../../../../types';
 type _RefundItem = { status: IRefundStatus };
 
 export const checkRefundStatusCollection = <T extends _RefundItem>(predicate: (item: T) => unknown, refundStatusCollection?: T[]) => {
-    let every = false;
+    let every = refundStatusCollection ? refundStatusCollection?.length > 0 : false;
     let some = false;
 
     refundStatusCollection?.forEach(item => {

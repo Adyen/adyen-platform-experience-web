@@ -1857,7 +1857,7 @@ export const TRANSACTIONS: ITransaction[] = [
     },
 ];
 
-export const DEFAULT_LINE_ITEM_REFUND_STATUSES: ILineItemRefundStatus[] = [
+export const DEFAULT_LINE_ITEM_REFUND_STATUSES: ILineItemRefundStatus = [
     {
         quantity: 1,
         status: 'in_progress',
@@ -1956,13 +1956,13 @@ export const DEFAULT_LINE_ITEMS: ILineItem[] = [
     },
 ];
 
-export const DEFAULT_REFUND_STATUSES: ITransactionRefundStatus[] = [
+export const DEFAULT_REFUND_STATUSES: ITransactionRefundStatus = [
     {
         amount: { currency: 'USD', value: -1000 },
         status: 'in_progress',
     },
     {
-        amount: { currency: 'USD', value: -1200 },
+        amount: { currency: 'USD', value: -202000 },
         status: 'completed',
     },
     {

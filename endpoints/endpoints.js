@@ -10,7 +10,7 @@ export const endpoints = mode => {
         payout: `${baseUrl}/payouts/breakdown`,
         transactions: `${baseUrl}/transactions`,
         transaction: `${baseUrl}/transactions/${matchVariable}`,
-        refundTransaction: `${baseUrl}/transactions/${matchVariable}/refund`,
+        initiateRefund: `${baseUrl}/transactions/${matchVariable}/refund`,
         transactionsTotals: `${baseUrl}/transactions/totals`,
         sessions: `/api/authe/api/v1/sessions`,
         setup: `${baseUrl}/setup`,

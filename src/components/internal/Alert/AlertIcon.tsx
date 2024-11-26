@@ -8,13 +8,13 @@ export interface AlertIconProps {
 
 export const AlertIcon = ({ className, type }: AlertIconProps) => {
     switch (type) {
-        case 'warning':
+        case AlertTypeOption.WARNING:
             return <Icon name="warning" className={className} />;
-        case 'critical':
+        case AlertTypeOption.CRITICAL:
             return <Icon name="cross-circle-fill" className={className} />;
-        case 'highlight':
+        case AlertTypeOption.HIGHLIGHT:
             return <Icon name="info-filled" className={className} />;
-        case 'success':
+        case AlertTypeOption.SUCCESS:
         default:
             return <Icon name="checkmark-circle-fill" className={className} />;
     }

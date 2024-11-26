@@ -29,7 +29,7 @@ export const setupMock = [
                     method: 'GET',
                     url: 'transactions/{transactionId}',
                 },
-                refundTransaction: {
+                initiateRefund: {
                     method: 'POST',
                     url: 'transactions/{transactionId}/refund',
                 },

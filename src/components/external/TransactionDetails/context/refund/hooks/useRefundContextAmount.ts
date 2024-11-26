@@ -22,10 +22,11 @@ export const useRefundContextAmount = <T extends _BaseUseRefundContextAmountProp
         switch (refundMode) {
             case RefundMode.NON_REFUNDABLE:
                 return 0;
+            case RefundMode.PARTIAL_LINE_ITEMS:
             case RefundMode.PARTIAL_AMOUNT:
                 return refundAmount;
-            case RefundMode.PARTIAL_LINE_ITEMS:
-                return items.reduce((total, { amount, quantity }) => total + amount * quantity, 0);
+            // case RefundMode.PARTIAL_LINE_ITEMS:
+            //     return items.reduce((total, { amount, quantity }) => total + amount * quantity, 0);
             case RefundMode.FULL_AMOUNT:
             default:
                 return availableAmount;

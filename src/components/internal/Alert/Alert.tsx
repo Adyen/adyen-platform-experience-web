@@ -1,12 +1,12 @@
 import cx from 'classnames';
 import Button from '../Button';
 import { ButtonVariant } from '../Button/types';
+import Icon from '../Icon';
 import { TypographyElement, TypographyVariant } from '../Typography/types';
 import Typography from '../Typography/Typography';
+import { AlertIcon } from './AlertIcon';
 import { AlertProps } from './types';
 import './Alert.scss';
-import Icon from '../Icon';
-import { AlertIcon } from './AlertIcon';
 
 export const Alert = ({ className, description, title, type, children, onClose }: AlertProps) => (
     <div className={cx('adyen-pe-alert', `adyen-pe-alert--${type}`, className)} role="alert">

@@ -1,6 +1,13 @@
 import { http, HttpResponse, PathParams } from 'msw';
-import { ITransaction, IRefundMode, ITransactionRefundPayload, ITransactionRefundResponse, ITransactionWithDetails } from '../../src';
-import { DEFAULT_LINE_ITEMS, DEFAULT_REFUND_STATUSES, DEFAULT_TRANSACTION, TRANSACTIONS } from '../mock-data';
+import {
+    ITransaction,
+    IRefundMode,
+    ITransactionRefundPayload,
+    ITransactionRefundResponse,
+    ITransactionWithDetails,
+    ITransactionRefundStatus,
+} from '../../src';
+import { DEFAULT_REFUND_STATUSES, DEFAULT_TRANSACTION, TRANSACTIONS } from '../mock-data';
 import { clamp, EMPTY_ARRAY, getMappedValue, uuid } from '../../src/utils';
 import { compareDates, computeHash, delay, getPaginationLinks } from './utils';
 import { endpoints } from '../../endpoints/endpoints';
@@ -29,6 +36,7 @@ const PAYMENT_OR_TRANSFER = ['Payment', 'Transfer'];
 const mockEndpoints = endpoints('mock');
 const networkError = false;
 const serverError = false;
+const refundActionError = false;
 
 const getTransactionWithAmountDeduction = <T extends ITransaction>(
     transaction: T,
@@ -47,11 +55,11 @@ const getTransactionWithAmountDeduction = <T extends ITransaction>(
 };
 
 const getTransactionMetadata = <T extends ITransaction>(transaction: T) => {
-    let refundMode: ITransactionWithDetails['refundDetails']['refundMode'] = 'non_refundable';
+    let refundMode: IRefundMode = 'non_refundable';
     let deductedAmount = 0;
 
-    if (PAYMENT_OR_TRANSFER.includes(transaction.category)) {
-        if (KLARNA_OR_PAYPAL.includes(transaction.paymentMethod?.type!)) {
+    if (PAYMENT_OR_TRANSFER.includes(transaction?.category)) {
+        if (KLARNA_OR_PAYPAL.includes(transaction?.paymentMethod?.type ?? '')) {
             refundMode = 'partially_refundable_with_line_items_required';
             deductedAmount = 350;
         } else {
@@ -80,7 +88,7 @@ const enrichTransactionDataWithDetails = <T extends ITransaction>(
     const { currency, value: originalAmount } = transaction.amount;
     const { deductedAmount = 0, refundMode = 'fully_refundable_only' } = metadata;
 
-    let refundStatuses = EMPTY_ARRAY as unknown as ITransactionWithDetails['refundDetails']['refundStatuses'];
+    let refundStatuses = EMPTY_ARRAY as unknown as ITransactionRefundStatus;
     let refundLocked = TRANSACTIONS_REFUND_LOCKED.has(transaction.id);
     let refundableAmount: number | undefined;
 
@@ -91,7 +99,7 @@ const enrichTransactionDataWithDetails = <T extends ITransaction>(
             break;
         case 'partially_refundable_any_amount':
         case 'partially_refundable_with_line_items_required':
-            refundStatuses = DEFAULT_REFUND_STATUSES.map(status => ({ ...status, amount: { ...status.amount, currency } }));
+            refundStatuses = DEFAULT_REFUND_STATUSES?.map(status => ({ ...status, amount: { ...status.amount, currency } }));
             break;
     }
 
@@ -129,7 +137,7 @@ const enrichTransactionDataWithDetails = <T extends ITransaction>(
                     tx.refundMetadata = {
                         originalPaymentId: payment.id,
                         refundPspReference: uuid(),
-                        refundReason: 'refundReason.requested',
+                        refundReason: 'requested_by_customer',
                         refundType,
                     };
 
@@ -143,7 +151,7 @@ const enrichTransactionDataWithDetails = <T extends ITransaction>(
 
     return {
         ...transactionWithDetails,
-        lineItems: DEFAULT_LINE_ITEMS.map(item => ({ ...item, amountIncludingTax: { ...item.amountIncludingTax, currency } })),
+        // lineItems: DEFAULT_LINE_ITEMS.map(item => ({ ...item, amountIncludingTax: { ...item.amountIncludingTax, currency } })),
         refundDetails: {
             refundLocked,
             refundMode,
@@ -296,13 +304,19 @@ export const transactionsMocks = [
 
     http.get(mockEndpoints.transaction, ({ params }) => fetchTransaction(params)),
 
-    http.post(mockEndpoints.refundTransaction, async ({ request, params }) => {
+    http.post(mockEndpoints.initiateRefund, async ({ request, params }) => {
         try {
+            if (refundActionError) return HttpResponse.error();
+
             const transactionResponse = await fetchTransaction(params);
 
             if (!transactionResponse.ok) throw await transactionResponse.text();
 
-            const { amount, lineItems, merchantRefundReason } = (await request.json()) as ITransactionRefundPayload;
+            const {
+                amount,
+                // lineItems,
+                refundReason,
+            } = (await request.json()) as ITransactionRefundPayload;
             const { id: transactionId, refundDetails } = (await transactionResponse.json()) as ITransactionWithDetails;
 
             const lockDeadline = Date.now() + 2 * 60 * 1000; // 2 minutes
@@ -313,20 +327,20 @@ export const transactionsMocks = [
 
             return HttpResponse.json({
                 amount,
-                ...(merchantRefundReason && { merchantRefundReason }),
-                ...(refundDetails.refundMode.startsWith('partially_refundable') && {
-                    lineItems: (lineItems ?? (EMPTY_ARRAY as NonNullable<typeof lineItems>))
-                        .map(({ reference, quantity }) => {
-                            const item = DEFAULT_LINE_ITEMS.find(({ reference: _reference }) => reference === _reference);
-                            if (item) {
-                                const availableQuantity = Math.max(0, item.availableQuantity - Math.max(0, quantity));
-                                return { ...item, availableQuantity };
-                            }
-                        })
-                        .filter(Boolean) as NonNullable<ITransactionRefundResponse['lineItems']>,
-                }),
+                ...(refundReason && { refundReason }),
+                ...(refundDetails?.refundMode.startsWith('partially_refundable') &&
+                    {
+                        // lineItems: (lineItems ?? (EMPTY_ARRAY as NonNullable<typeof lineItems>))
+                        //     .map(({ reference, quantity }) => {
+                        //         const item = DEFAULT_LINE_ITEMS.find(({ reference: _reference }) => reference === _reference);
+                        //         if (item) {
+                        //             const availableQuantity = Math.max(0, item.availableQuantity - Math.max(0, quantity));
+                        //             return { ...item, availableQuantity };
+                        //         }
+                        //     })
+                        //     .filter(Boolean) as NonNullable<ITransactionRefundResponse['lineItems']>,
+                    }),
                 status: 'received',
-                transactionId,
             } satisfies ITransactionRefundResponse);
         } catch {
             return HttpResponse.json(
