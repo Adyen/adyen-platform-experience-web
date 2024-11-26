@@ -1,11 +1,13 @@
+import cx from 'classnames';
+import { useCallback, useState } from 'preact/hooks';
+import useCoreContext from '../../../core/Context/useCoreContext';
 import Button from '../Button';
 import { ButtonVariant } from '../Button/types';
-import { useCallback, useState } from 'preact/hooks';
+import Icon from '../Icon';
 import { Tooltip } from '../Tooltip/Tooltip';
 import './CopyText.scss';
-import cx from 'classnames';
-import useCoreContext from '../../../core/Context/useCoreContext';
-import Icon from '../Icon';
+import { TypographyVariant } from '../Typography/types';
+import Typography from '../Typography/Typography';
 
 const CopyText = ({
     textToCopy,
@@ -16,7 +18,7 @@ const CopyText = ({
     textToCopy: string;
     isHovered?: boolean;
     buttonLabel?: string;
-    type?: 'Link' | 'Text';
+    type?: 'Link' | 'Text' | 'Default';
 }) => {
     const { i18n } = useCoreContext();
 
@@ -45,7 +47,8 @@ const CopyText = ({
         >
             <Tooltip content={textToCopy} isContainerHovered={isHovered}>
                 <span
-                    className={cx('adyen-pe-copy-text__label', {
+                    className={cx({
+                        ['adyen-pe-copy-text__label']: type !== 'Default',
                         ['adyen-pe-copy-text__information']: type === 'Link',
                         ['adyen-pe-copy-text__text']: type === 'Text',
                     })}
