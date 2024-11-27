@@ -52,7 +52,7 @@ describe('getCapitalErrorMessage', () => {
         const result = getCapitalErrorMessage(error, mockOnContactSupport);
 
         expect(result).toEqual({
-            title: 'capital.accountIsNotActive',
+            title: 'capital.accountIsInactive',
             message: [COMMON_CAPITAL_ERROR_MESSAGE.couldNotLoadOffers, COMMON_CAPITAL_ERROR_MESSAGE.contactSupport],
             onContactSupport: mockOnContactSupport,
         });

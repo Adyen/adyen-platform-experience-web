@@ -31,7 +31,7 @@ export const CapitalOffer: FunctionalComponent<ExternalUIComponentProps<CapitalO
         } else setEmptyGrantOffer(true);
     }, []);
 
-    const { data: internalDynamicOffersConfig } = useFetch({
+    const { data: internalDynamicOffersConfig, error: dynamicConfigError } = useFetch({
         fetchOptions: {
             enabled: !externalDynamicOffersConfig && !!getDynamicGrantOffersConfiguration,
             onSuccess: onSuccess,
@@ -81,6 +81,7 @@ export const CapitalOffer: FunctionalComponent<ExternalUIComponentProps<CapitalO
                 <CapitalOfferSelection
                     requestedAmount={requestedAmount}
                     config={config}
+                    dynamicConfigError={dynamicConfigError}
                     onBack={goBackHandler}
                     onOfferSelect={onOfferSelectHandler}
                     repaymentFrequency={REPAYMENT_FREQUENCY}

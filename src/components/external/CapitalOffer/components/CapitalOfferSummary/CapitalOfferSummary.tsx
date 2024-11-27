@@ -81,7 +81,7 @@ export const CapitalOfferSummary = ({
                 default:
                     return {
                         title: i18n.get('capital.somethingWentWrong'),
-                        message: i18n.get('capital.weCouldNotContinueWithTheOffer'),
+                        message: i18n.get('capital.weCouldNotLoadFinancialOffers'),
                     };
             }
         }
@@ -217,7 +217,7 @@ export const CapitalOfferSummary = ({
                 >
                     {onContactSupport ? (
                         <Button className={'adyen-pe-capital-offer-summary__error-alert-button'} onClick={onContactSupport}>
-                            {i18n.get('reachOutToSupport')}
+                            {i18n.get('contactSupport')}
                         </Button>
                     ) : null}
                 </Alert>

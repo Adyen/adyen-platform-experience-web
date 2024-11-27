@@ -15,6 +15,7 @@ import { debounce, getExpectedRepaymentDate, getPaymentRatePercentage } from '..
 import CapitalSlider from '../../../../internal/CapitalSlider';
 import { CapitalErrorMessageDisplay } from '../utils/CapitalErrorMessageDisplay';
 import { calculateSliderAdjustedMidValue } from '../../../../internal/Slider/Slider';
+import { EMPTY_OBJECT } from '../../../../../utils';
 
 type CapitalOfferSelectionProps = {
     config: IDynamicOfferConfig | undefined;
@@ -24,6 +25,7 @@ type CapitalOfferSelectionProps = {
     requestedAmount: number | undefined;
     emptyGrantOffer: boolean;
     onContactSupport: (() => void) | undefined;
+    dynamicConfigError?: Error;
 };
 
 const LoadingSkeleton = () => (
@@ -91,6 +93,7 @@ export const CapitalOfferSelection = ({
     onOfferSelect,
     emptyGrantOffer,
     onContactSupport,
+    dynamicConfigError,
 }: CapitalOfferSelectionProps) => {
     const { i18n } = useCoreContext();
 
@@ -134,10 +137,7 @@ export const CapitalOfferSelection = ({
         });
     }, [currency, getDynamicGrantOfferMutation.data, requestedValue, reviewOfferMutation]);
 
-    const getOffer = useCallback(
-        (amount: number) => getDynamicGrantOfferMutation.mutate({}, { query: { amount, currency: currency! } }),
-        [currency, getDynamicGrantOfferMutation]
-    );
+    const getOffer = useCallback((amount: number) => getDynamicGrantOfferMutation.mutate({}, { query: { amount, currency: currency! } }), [currency]);
 
     const [isLoading, setIsLoading] = useState(false);
 
@@ -168,8 +168,13 @@ export const CapitalOfferSelection = ({
 
     return (
         <div className="adyen-pe-capital-offer-selection">
-            {reviewOfferMutation.error || getDynamicGrantOfferMutation.error || emptyGrantOffer ? (
-                <CapitalErrorMessageDisplay error={reviewOfferMutation.error} onBack={onBack} onContactSupport={onContactSupport} />
+            {reviewOfferMutation.error || getDynamicGrantOfferMutation.error || emptyGrantOffer || dynamicConfigError ? (
+                <CapitalErrorMessageDisplay
+                    error={reviewOfferMutation.error}
+                    onBack={onBack}
+                    onContactSupport={onContactSupport}
+                    emptyGrantOffer={emptyGrantOffer}
+                />
             ) : (
                 <>
                     {config && (
