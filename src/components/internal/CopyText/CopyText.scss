@@ -6,18 +6,60 @@
     display: inline-flex;
     text-decoration: none;
 
-    span &__information {
+    &__text {
+        color: style.token(color-label-primary);
+        cursor: pointer;
+    }
+
+    &__label {
+        font-size: style.token(text-caption-font-size);
+        font-weight: style.token(text-caption-font-weight);
+    }
+
+    &__information {
         color: style.token(color-label-highlight);
         font-size: style.token(text-body-font-size);
         font-weight: style.token(text-body-font-weight);
         line-height: style.token(text-body-line-height);
+        max-width: 80px;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
-        width: 80px;
+    }
+
+    &__container {
+        align-items: center;
+        cursor: pointer;
+        display: inline-flex;
+        gap: style.token(spacer-020);
+    }
+
+    &__icon {
+        cursor: pointer;
+        display: flex;
+
+        &:hover {
+            color: style.token(color-label-primary-hover);
+        }
+    }
+
+    &__container--information,
+    &__icon--information {
+        color: style.token(color-label-highlight);
+
+        &:hover {
+            color: style.token(color-label-highlight);
+        }
+    }
+
+    &__icon--information span {
+        cursor: pointer;
+        display: flex;
     }
 
     &:hover {
+        background-color: inherit;
+        color: inherit;
         cursor: default;
     }
 }

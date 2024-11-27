@@ -60,7 +60,7 @@ const TransactionDataProperties = () => {
                 : SKIP_ITEM,
 
             // reference id
-            { key: 'referenceID' as const, value: <CopyText text={id} /> },
+            { key: 'referenceID' as const, value: <CopyText type={'Default'} textToCopy={id} /> },
 
             // refund psp reference
             // [TODO]: Add translation entries for the following tokens and substitute here:

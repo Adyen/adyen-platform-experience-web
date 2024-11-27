@@ -1,7 +1,9 @@
-import { Ref, useCallback, useLayoutEffect, useMemo, useRef, useState } from 'preact/hooks';
+import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'preact/hooks';
+import { Ref } from 'preact';
 import { createReflexContainer, isReflex, Reflex } from '../../primitives/reactive/reflex';
 import { uniqueFlattenReversed } from '../../utils';
 import type { List, Nullable } from '../../utils/types';
+import { isRefObject } from '../../primitives/reactive/reflex/helpers';
 
 const EXCESS_SPACE_REGEX = /^\s+|\s+(?=\s|$)/g;
 
@@ -42,10 +44,12 @@ const useIdentifierString = (...refs: List<Nullable<Ref<Element> | Reflex<Elemen
             const IDS = new Set<string>();
 
             for (const ref of $refs) {
-                const id = ref?.current?.id ?? '';
-                if (!id) continue;
-                IDS.delete(id);
-                IDS.add(id);
+                if (isRefObject(ref)) {
+                    const id = ref?.current?.id ?? '';
+                    if (!id) continue;
+                    IDS.delete(id);
+                    IDS.add(id);
+                }
             }
 
             $id.current = [...IDS].join(' ').replace(EXCESS_SPACE_REGEX, '');
