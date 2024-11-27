@@ -17,6 +17,7 @@
     "category": "Categorie",
     "chargeback": "Chargebacks",
     "closeIconLabel": "Sluiten",
+    "contactSupportForHelp": "Neem contact op met support voor hulp.",
     "contactSupportForHelpAndShareErrorCode": "Neem contact op met support voor hulp en vermeld de foutcode %{requestId}",
     "correction": "Correcties",
     "currency": "Valuta",

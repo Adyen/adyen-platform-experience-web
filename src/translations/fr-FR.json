@@ -17,6 +17,7 @@
     "category": "Catégorie",
     "chargeback": "Impayés",
     "closeIconLabel": "Fermer",
+    "contactSupportForHelp": "Contactez l'assistance pour obtenir de l'aide.",
     "contactSupportForHelpAndShareErrorCode": "Contactez l'assistance pour obtenir de l'aide et partagez le code d'erreur %{requestId}",
     "correction": "Corrections",
     "currency": "Devise",

@@ -17,6 +17,7 @@
     "category": "Categoría",
     "chargeback": "Contracargos",
     "closeIconLabel": "Cerrar",
+    "contactSupportForHelp": "Contacta con el servicio de soporte para obtener ayuda.",
     "contactSupportForHelpAndShareErrorCode": "Ponte en contacto con el servicio de asistencia para obtener ayuda y compartir el código de error %{requestId}",
     "correction": "Correcciones",
     "currency": "Divisa",

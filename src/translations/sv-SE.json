@@ -17,6 +17,7 @@
     "category": "Kategori",
     "chargeback": "Chargebacks",
     "closeIconLabel": "Stäng",
+    "contactSupportForHelp": "Kontakta support för hjälp.",
     "contactSupportForHelpAndShareErrorCode": "Kontakta supporten för hjälp och använd felkoden %{requestId}",
     "correction": "Rättelser",
     "currency": "Valuta",

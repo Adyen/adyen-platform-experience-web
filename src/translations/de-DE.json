@@ -17,6 +17,7 @@
     "category": "Kategorie",
     "chargeback": "Chargebacks",
     "closeIconLabel": "Schließen",
+    "contactSupportForHelp": "Kontaktieren Sie den Support, um Hilfe zu erhalten.",
     "contactSupportForHelpAndShareErrorCode": "Kontaktieren Sie den Support, um Hilfe zu erhalten, und geben Sie den Fehlercode %{requestId} an.",
     "correction": "Korrekturen",
     "currency": "Währung",

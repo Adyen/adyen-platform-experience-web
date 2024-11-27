@@ -17,6 +17,7 @@
     "category": "Kategori",
     "chargeback": "Chargebacks",
     "closeIconLabel": "Lukk",
+    "contactSupportForHelp": "Kontakt brukerstøtten for å få hjelp.",
     "contactSupportForHelpAndShareErrorCode": "Kontakt brukerstøtten for hjelp og del feilkoden %{requestId}",
     "correction": "Rettelser",
     "currency": "Valuta",
