@@ -3,7 +3,7 @@ import { ErrorMessage, getCommonErrorMessage } from '../getCommonErrorCode';
 
 export const COMMON_CAPITAL_ERROR_MESSAGE = {
     contactSupport: 'capital.pleaseContactSupportForHelp',
-    couldNotLoadOffers: 'capital.couldNotContinueWithTheOffer',
+    couldNotLoadOffers: 'capital.weCouldNotLoadFinancialOffers',
     tryRefreshingThePage: 'capital.tryRefreshingThePageOrComeBackLater',
     somethingWentWrong: 'capital.somethingWentWrong',
 } as const;
@@ -30,7 +30,7 @@ export const getCapitalErrorMessage = (error: AdyenPlatformExperienceError | und
         }
         case '30_011': {
             return {
-                title: 'capital.accountIsNotActive',
+                title: 'capital.accountIsInactive',
                 message: [COMMON_CAPITAL_ERROR_MESSAGE.couldNotLoadOffers, COMMON_CAPITAL_ERROR_MESSAGE.contactSupport],
                 onContactSupport,
             };
@@ -38,8 +38,14 @@ export const getCapitalErrorMessage = (error: AdyenPlatformExperienceError | und
         case '30_600': {
             return {
                 title: COMMON_CAPITAL_ERROR_MESSAGE.somethingWentWrong,
-                message: ['capital.couldNotContinueWithTheOffer', COMMON_CAPITAL_ERROR_MESSAGE.contactSupport],
+                message: ['capital.weCouldNotContinueWithTheOffer'],
                 onContactSupport,
+            };
+        }
+        case 'EMPTY_CONFIG': {
+            return {
+                title: COMMON_CAPITAL_ERROR_MESSAGE.somethingWentWrong,
+                message: ['capital.weCouldNotContinueWithTheOffer'],
             };
         }
         default:
