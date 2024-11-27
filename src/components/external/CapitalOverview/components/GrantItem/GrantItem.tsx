@@ -46,8 +46,8 @@ export const GrantItem: FunctionalComponent<GrantItemProps> = ({ grant }) => {
                                     </Typography>
                                 </>
                             ) : grantConfig.statusKey ? (
-                                grantConfig.tooltipMessage ? (
-                                    <Tooltip content={i18n.get(grantConfig.tooltipMessage)}>
+                                grantConfig.statusTooltipKey ? (
+                                    <Tooltip content={i18n.get(grantConfig.statusTooltipKey)}>
                                         <div>
                                             <Tag label={i18n.get(grantConfig.statusKey)} variant={grantConfig.statusTagVariant} />
                                         </div>

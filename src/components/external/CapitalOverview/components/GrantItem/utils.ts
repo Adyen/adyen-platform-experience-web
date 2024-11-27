@@ -57,12 +57,16 @@ const getRepaymentPeriodEndDate = (repaymentPeriodLeft: number) => {
     return endDate;
 };
 
-export const STATUS_TOOLTIP_MESSAGE = (grant: IGrant): TranslationKey | undefined => {
+export const getStatusTooltipKey = (grant: IGrant): TranslationKey | undefined => {
     const pendingToS = grant.missingActions?.some(action => action.type === 'signToS') || false;
 
     switch (grant.status) {
         case 'Pending':
-            return pendingToS ? 'capital.signTheTermsToReceiveYourFunds' : 'capital.youShouldGetTheFundsWithinOneBusinessDay';
+            return grant.missingActions?.length
+                ? pendingToS
+                    ? 'capital.signTheTermsToReceiveYourFunds'
+                    : undefined
+                : 'capital.youShouldGetTheFundsWithinOneBusinessDay';
         case 'Failed':
             return 'capital.weCouldNotProcessThisRequestTryAgain';
         case 'WrittenOff':
@@ -88,7 +92,6 @@ export const getGrantConfig = (grant: IGrant) => {
         repaymentPeriodEndDate: getRepaymentPeriodEndDate(grant.repaymentPeriodLeft),
         statusKey: getStatusKey(grant),
         statusTagVariant: getStatusTagVariant(grant),
-        pendingToS: grant.missingActions?.some(action => action.type === 'signToS') || false,
-        tooltipMessage: STATUS_TOOLTIP_MESSAGE(grant),
+        statusTooltipKey: getStatusTooltipKey(grant),
     };
 };
