@@ -197,7 +197,7 @@ export const CapitalOfferSelection = ({
                             onClick={onReview}
                             disabled={reviewOfferMutation.isLoading || !config?.minAmount}
                         >
-                            {i18n.get(loadingButtonState ? 'capital.loading' : 'capital.reviewOffer')}
+                            {i18n.get(loadingButtonState ? 'loading' : 'capital.reviewOffer')}
                         </Button>
                     </div>
                 </>
