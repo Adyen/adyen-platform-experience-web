@@ -105,7 +105,9 @@ export const CapitalOfferSummary = ({
             },
             {
                 key: 'capital.repaymentRate',
-                value: `${getPaymentRatePercentage(grantOffer.repaymentRate)}}`,
+                value: `${i18n.get('capital.xPercentage', {
+                    values: { percentage: getPaymentRatePercentage(grantOffer.repaymentRate) },
+                })}`,
             },
             {
                 key: 'capital.expectedRepaymentPeriod',

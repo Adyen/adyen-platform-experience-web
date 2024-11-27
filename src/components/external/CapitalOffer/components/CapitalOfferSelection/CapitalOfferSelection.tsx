@@ -70,7 +70,12 @@ const InformationDisplay = ({ data, repaymentFrequency }: { data: IGrantOfferRes
                 )}
                 items={[
                     { key: 'capital.fees', value: i18n.amount(data.feesAmount.value, data.feesAmount.currency) },
-                    { key: 'capital.repaymentRate', value: `${getPaymentRatePercentage(data.repaymentRate)}` },
+                    {
+                        key: 'capital.repaymentRate',
+                        value: `${i18n.get('capital.xPercentage', {
+                            values: { percentage: getPaymentRatePercentage(data.repaymentRate) },
+                        })}`,
+                    },
                     { key: 'capital.expectedRepaymentPeriod', value: `${data.expectedRepaymentPeriodDays} ${i18n.get('capital.days')}` },
                 ]}
             />
