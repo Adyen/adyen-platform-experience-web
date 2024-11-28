@@ -73,7 +73,7 @@ const InformationDisplay = ({ data, repaymentFrequency }: { data: IGrantOfferRes
                 items={[
                     { key: 'capital.fees', value: i18n.amount(data.feesAmount.value, data.feesAmount.currency) },
                     {
-                        key: 'capital.repaymentRate',
+                        key: 'capital.dailyRepaymentRate',
                         value: `${i18n.get('capital.xPercentage', {
                             values: { percentage: getPaymentRatePercentage(data.repaymentRate) },
                         })}`,
