@@ -159,7 +159,7 @@ export const CapitalOfferSelection = ({
             setRequestedValue(prev => (!prev ? (requestedAmount ? Number(requestedAmount) : initialValue || config.minAmount.value) : prev));
             void getOffer(requestedValue || initialValue || config.minAmount.value);
         }
-    }, [config, getDynamicGrantOfferMutation.data, getOffer, initialValue, requestedValue]);
+    }, [config, getDynamicGrantOfferMutation.data, getOffer, initialValue, requestedAmount, requestedValue]);
 
     const loadingButtonState = useMemo(
         () => reviewOfferMutation.isLoading || getDynamicGrantOfferMutation.isLoading || isLoading,
