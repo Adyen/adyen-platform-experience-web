@@ -11,6 +11,11 @@ export const Default: ElementStory<typeof CapitalOffer> = {
     args: {
         mockedApi: true,
     },
+    parameters: {
+        msw: {
+            handlers: CapitalMockedResponses.default,
+        },
+    },
 };
 
 export const ErrorNoOfferAvailable: ElementStory<typeof CapitalOffer> = {
