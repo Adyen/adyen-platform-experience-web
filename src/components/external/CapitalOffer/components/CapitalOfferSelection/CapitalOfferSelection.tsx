@@ -102,7 +102,7 @@ export const CapitalOfferSelection = ({
         return undefined;
     }, [config]);
 
-    const [requestedValue, setRequestedValue] = useState<number | undefined>(requestedAmount ? Number(requestedAmount) : initialValue);
+    const [requestedValue, setRequestedValue] = useState<number | undefined>(undefined);
 
     const currency = useMemo(() => config?.minAmount.currency, [config?.minAmount.currency]);
 
@@ -156,7 +156,7 @@ export const CapitalOfferSelection = ({
 
     useEffect(() => {
         if (config && !getDynamicGrantOfferMutation.data && !requestedValue) {
-            setRequestedValue(prev => (!prev ? initialValue || config.minAmount.value : prev));
+            setRequestedValue(prev => (!prev ? (requestedAmount ? Number(requestedAmount) : initialValue || config.minAmount.value) : prev));
             void getOffer(requestedValue || initialValue || config.minAmount.value);
         }
     }, [config, getDynamicGrantOfferMutation.data, getOffer, initialValue, requestedValue]);
