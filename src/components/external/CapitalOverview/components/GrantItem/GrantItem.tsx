@@ -85,7 +85,7 @@ export const GrantItem: FunctionalComponent<GrantItemProps> = ({ grant }) => {
                     )}
                     {grant.status !== 'Active' ? (
                         <div className={GRANT_ITEM_CLASS_NAMES.loanID}>
-                            <CopyText textToCopy={grant.id} buttonLabel={i18n.get('capital.loanID')} isHovered type={'Text'} />
+                            <CopyText textToCopy={grant.id} buttonLabel={i18n.get('capital.grantID')} isHovered type={'Text'} />
                         </div>
                     ) : null}
                 </div>

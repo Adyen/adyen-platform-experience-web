@@ -38,13 +38,6 @@ const LoadingSkeleton = () => (
 
 const InformationDisplay = ({ data, repaymentFrequency }: { data: IGrantOfferResponseDTO; repaymentFrequency: number }) => {
     const { i18n } = useCoreContext();
-    const formattedThresholdAmount = useMemo(() => {
-        return data
-            ? `${i18n.amount(data.thresholdAmount.value, data.thresholdAmount.currency)} ${i18n.get(
-                  'capital.every'
-              )} ${repaymentFrequency} ${i18n.get('capital.repaymentDays')}`
-            : '';
-    }, [data, i18n, repaymentFrequency]);
     const expectedRepaymentDate = useMemo(() => {
         const date = data.expectedRepaymentPeriodDays && getExpectedRepaymentDate(data.expectedRepaymentPeriodDays);
         if (date) return i18n.date(date, { month: 'long' });
@@ -53,11 +46,21 @@ const InformationDisplay = ({ data, repaymentFrequency }: { data: IGrantOfferRes
     return (
         <div className="adyen-pe-capital-offer-selection__information">
             <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY} wide={true}>
-                {i18n.get('capital.yourMinimumRepaymentWillBe')}{' '}
+                {i18n.get('capital.yourMinimumRepaymentWillBeXEveryXDaysUntilX.part1')}
                 <Typography variant={TypographyVariant.BODY} el={TypographyElement.SPAN} strongest>
-                    {formattedThresholdAmount}
+                    {i18n.get('capital.yourMinimumRepaymentWillBeXEveryXDaysUntilX.part2', {
+                        values: {
+                            amount: i18n.amount(data.thresholdAmount.value, data.thresholdAmount.currency),
+                            days: repaymentFrequency,
+                        },
+                    })}
                 </Typography>{' '}
-                {i18n.get('capital.until')} {expectedRepaymentDate}
+                {expectedRepaymentDate &&
+                    i18n.get('capital.yourMinimumRepaymentWillBeXEveryXDaysUntilX.part3', {
+                        values: {
+                            date: expectedRepaymentDate,
+                        },
+                    })}
             </Typography>
             <StructuredList
                 renderValue={val => (
@@ -78,7 +81,10 @@ const InformationDisplay = ({ data, repaymentFrequency }: { data: IGrantOfferRes
                             values: { percentage: getPaymentRatePercentage(data.repaymentRate) },
                         })}`,
                     },
-                    { key: 'capital.expectedRepaymentPeriod', value: `${data.expectedRepaymentPeriodDays} ${i18n.get('capital.days')}` },
+                    {
+                        key: 'capital.expectedRepaymentPeriod',
+                        value: i18n.get('capital.xDays', { values: { days: data.expectedRepaymentPeriodDays } }),
+                    },
                 ]}
             />
         </div>
@@ -137,7 +143,10 @@ export const CapitalOfferSelection = ({
         });
     }, [currency, getDynamicGrantOfferMutation.data, requestedValue, reviewOfferMutation]);
 
-    const getOffer = useCallback((amount: number) => getDynamicGrantOfferMutation.mutate({}, { query: { amount, currency: currency! } }), [currency]);
+    const getOffer = useCallback(
+        (amount: number) => getDynamicGrantOfferMutation.mutate({}, { query: { amount, currency: currency! } }),
+        [currency, getDynamicGrantOfferMutation]
+    );
 
     const [isLoading, setIsLoading] = useState(false);
 
@@ -194,7 +203,7 @@ export const CapitalOfferSelection = ({
                     </InfoBox>
                     <div className="adyen-pe-capital-offer-selection__buttons">
                         <Button variant={ButtonVariant.SECONDARY} onClick={onBack}>
-                            {i18n.get('capital.back')}
+                            {i18n.get('back')}
                         </Button>
                         <Button
                             variant={ButtonVariant.PRIMARY}

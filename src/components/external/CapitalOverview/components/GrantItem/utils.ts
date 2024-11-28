@@ -6,14 +6,7 @@ const getHasDetails = (status: IGrantStatus) => status === 'Active';
 
 const getIsBackgroundFilled = (status: IGrantStatus) => status === 'Repaid';
 
-const getAmountLabelKey = (status: IGrantStatus): TranslationKey => {
-    if (status === 'Active') {
-        return 'capital.remaining';
-    } else if (status === 'Repaid') {
-        return 'capital.initialFunds';
-    }
-    return 'capital.requestedFunds';
-};
+const getAmountLabelKey = (status: IGrantStatus): TranslationKey => (status === 'Active' ? 'capital.remaining' : 'capital.requestedFunds');
 
 const getAmount = (grant: IGrant) => (grant.status === 'Active' ? grant.remainingTotalAmount : grant.grantAmount);
 

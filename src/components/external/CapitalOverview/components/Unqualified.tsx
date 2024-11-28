@@ -9,13 +9,13 @@ const Unqualified = ({ hideTitle }: { hideTitle?: boolean }) => {
 
     return (
         <>
-            <CapitalHeader hideTitle={hideTitle} titleKey={'needSomeExtraMoney'} />
+            <CapitalHeader hideTitle={hideTitle} titleKey={'capital.needSomeExtraMoney'} />
             <div className={'adyen-pe-capital-overview__unqualified-state'}>
                 <div className="adyen-pe-capital-overview__unqualified-state-img">
                     <img srcSet={unqualifiedImage} alt="" />
                 </div>
                 <Typography el={TypographyElement.PARAGRAPH} variant={TypographyVariant.BODY} large>
-                    {i18n.get('youWillSoonQualifyForAFinancialOffer')}
+                    {i18n.get('capital.youWillSoonQualifyForAFinancialOffer')}
                 </Typography>
             </div>
         </>

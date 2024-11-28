@@ -24,7 +24,7 @@ export const CapitalErrorMessageDisplay = ({
     const onBackButton = useCallback(
         () => (
             <Button variant={ButtonVariant.SECONDARY} onClick={onBack}>
-                {i18n.get('capital.back')}
+                {i18n.get('back')}
             </Button>
         ),
         [i18n, onBack]

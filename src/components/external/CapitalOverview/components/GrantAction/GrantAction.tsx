@@ -48,7 +48,7 @@ export const GrantAction: FunctionalComponent<GrantActionProps> = ({ action, off
         <Alert
             className={GRANT_ACTION_CLASS_NAMES.base}
             type={AlertTypeOption.CRITICAL}
-            title={i18n.get('capital.somethingWentWrongTryRefreshingOrComeBackLater')}
+            title={i18n.get('somethingWentWrongTryRefreshingOrComeBackLater')}
             description={
                 <Button className={GRANT_ACTION_CLASS_NAMES.button} onClick={updateCore}>
                     {i18n.get('refresh')}

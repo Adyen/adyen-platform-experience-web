@@ -2,10 +2,10 @@ import AdyenPlatformExperienceError from '../../../core/Errors/AdyenPlatformExpe
 import { ErrorMessage, getCommonErrorMessage } from '../getCommonErrorCode';
 
 export const COMMON_CAPITAL_ERROR_MESSAGE = {
-    contactSupport: 'capital.pleaseContactSupportForHelp',
+    contactSupport: 'pleaseContactSupportForHelp',
     couldNotLoadOffers: 'capital.weCouldNotLoadFinancialOffers',
-    tryRefreshingThePage: 'capital.tryRefreshingThePageOrComeBackLater',
-    somethingWentWrong: 'capital.somethingWentWrong',
+    tryRefreshingThePage: 'tryRefreshingThePageOrComeBackLater',
+    somethingWentWrong: 'somethingWentWrong',
 } as const;
 
 const UNKNOWN_ERROR = {

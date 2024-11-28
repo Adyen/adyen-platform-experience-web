@@ -75,12 +75,12 @@ export const CapitalOfferSummary = ({
                 case '30_013':
                     return {
                         title: i18n.get('capital.thereIsNoPrimaryAccountConfigured'),
-                        message: i18n.get('capital.weCannotContinueWithTheOffer'),
+                        message: i18n.get('capital.weCouldNotContinueWithTheOfferPleaseContactSupport'),
                         errorCode: '30_013',
                     };
                 default:
                     return {
-                        title: i18n.get('capital.somethingWentWrong'),
+                        title: i18n.get('somethingWentWrong'),
                         message: i18n.get('capital.weCouldNotLoadFinancialOffers'),
                     };
             }
@@ -105,38 +105,25 @@ export const CapitalOfferSummary = ({
             },
             {
                 key: 'capital.dailyRepaymentRate',
-                value: `${i18n.get('capital.xPercent', {
-                    values: { percentage: getPaymentRatePercentage(grantOffer.repaymentRate) },
-                })}`,
+                value: i18n.get('capital.xPercent', { values: { percentage: getPaymentRatePercentage(grantOffer.repaymentRate) } }),
             },
             {
                 key: 'capital.expectedRepaymentPeriod',
-                value: `${grantOffer.expectedRepaymentPeriodDays} ${i18n.get('capital.days')}`,
+                value: i18n.get('capital.xDays', { values: { days: grantOffer.expectedRepaymentPeriodDays } }),
             },
-            { key: 'capital.account', value: i18n.get('capital.primaryAccount') },
+            { key: 'account', value: i18n.get('capital.primaryAccount') },
         ];
 
         if (maximumRepaymentPeriod)
             summaryItems.splice(4, 0, {
                 key: 'capital.maximumRepaymentPeriod',
-                value: `${calculateMaximumRepaymentPeriodInMonths(grantOffer.maximumRepaymentPeriodDays)} ${i18n.get(
-                    maximumRepaymentPeriod > 1 ? 'capital.months' : 'capital.month'
-                )}`,
+                value:
+                    maximumRepaymentPeriod === 1
+                        ? i18n.get('capital.oneMonth')
+                        : i18n.get('capital.xMonths', { values: { months: maximumRepaymentPeriod } }),
             });
         return summaryItems;
-    }, [
-        grantOffer.expectedRepaymentPeriodDays,
-        grantOffer.feesAmount.currency,
-        grantOffer.feesAmount.value,
-        grantOffer.maximumRepaymentPeriodDays,
-        grantOffer.repaymentRate,
-        grantOffer.thresholdAmount.currency,
-        grantOffer.thresholdAmount.value,
-        grantOffer.totalAmount.currency,
-        grantOffer.totalAmount.value,
-        i18n,
-        maximumRepaymentPeriod,
-    ]);
+    }, [grantOffer, i18n, maximumRepaymentPeriod]);
 
     return !requestErrorAlert && requestFundsMutation.error ? (
         <CapitalErrorMessageDisplay error={requestFundsMutation.error} onBack={onBack} onContactSupport={onContactSupport} />
@@ -148,7 +135,7 @@ export const CapitalOfferSummary = ({
                     <strong>{`${i18n.amount(grantOffer.grantAmount.value, grantOffer.grantAmount.currency, { minimumFractionDigits: 0 })}.`}</strong>
                 </Typography>
                 <Typography el={TypographyElement.PARAGRAPH} variant={TypographyVariant.CAPTION}>
-                    {i18n.get('capital.minimumRepaymentFrequency', {
+                    {i18n.get('capital.yourMinimumRepaymentWillBeXEveryXDaysUntilX', {
                         values: {
                             amount: i18n.amount(grantOffer.thresholdAmount.value, grantOffer.thresholdAmount.currency),
                             days: repaymentFrequency,
@@ -164,7 +151,7 @@ export const CapitalOfferSummary = ({
                         return (
                             <Tooltip
                                 isContainerHovered
-                                content={i18n.get('capital.minimumRepaymentDaysToRepayFinancing', { values: { days: repaymentFrequency } })}
+                                content={i18n.get('capital.minimumRepaymentToRepayTheFinancingOnTime', { values: { days: repaymentFrequency } })}
                             >
                                 <span>
                                     <Typography
@@ -190,7 +177,7 @@ export const CapitalOfferSummary = ({
                 }}
                 renderValue={(val, key) => {
                     const showWarningIcon =
-                        key === 'capital.account' && requestFundsMutation.error && requestErrorAlert && requestErrorAlert.errorCode === '30_013';
+                        key === 'account' && requestFundsMutation.error && requestErrorAlert && requestErrorAlert.errorCode === '30_013';
 
                     return (
                         <Typography
@@ -225,7 +212,7 @@ export const CapitalOfferSummary = ({
             <div className="adyen-pe-capital-offer-summary__buttons">
                 {requestFundsMutation.error && !requestErrorAlert ? null : (
                     <Button variant={ButtonVariant.SECONDARY} onClick={onBack}>
-                        {i18n.get('capital.back')}
+                        {i18n.get('back')}
                     </Button>
                 )}
                 <Button
