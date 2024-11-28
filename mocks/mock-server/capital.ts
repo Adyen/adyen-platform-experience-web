@@ -106,6 +106,10 @@ const ERROR_EXCEEDED_GRANT_LIMIT = new AdyenPlatformExperienceError(ErrorTypes.E
 const ERROR_MISSING_ACTIONS = new AdyenPlatformExperienceError(ErrorTypes.ERROR, 'Something went wrong', 'Message');
 
 export const CapitalMockedResponses = capitalFactory({
+    default: [
+        { endpoint: mockEndpoints.dynamicOfferConfig, response: DYNAMIC_CAPITAL_OFFER },
+        { endpoint: mockEndpoints.grants, handler: EMPTY_GRANTS_LIST },
+    ],
     unqualified: [
         { endpoint: mockEndpoints.dynamicOfferConfig, handler: EMPTY_OFFER },
         { endpoint: mockEndpoints.grants, handler: EMPTY_GRANTS_LIST },
