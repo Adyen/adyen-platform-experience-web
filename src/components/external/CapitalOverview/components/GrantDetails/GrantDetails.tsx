@@ -62,7 +62,7 @@ export const GrantDetails: FunctionalComponent<GrantDetailsProps> = ({ grant }) 
             <div className={GRANT_DETAILS_CLASS_NAMES.content}>
                 <div className={GRANT_DETAILS_CLASS_NAMES.header}>
                     <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY}>
-                        {i18n.get('capital.yourInitialOfferWas')}
+                        {i18n.get('capital.yourRequestedFundsWere')}
                     </Typography>
                     <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY} strongest>
                         {i18n.amount(grant.grantAmount.value, grant.grantAmount.currency)}
