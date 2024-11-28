@@ -6,13 +6,13 @@
     "da-DK",
     "de-DE",
     "es-ES",
+    "fi-FI"
     "fr-FR",
     "it-IT",
     "nl-NL",
     "no-NO",
     "pt-BR",
     "sv-SE",
-    "fi-FI"
   ],
   "placeholderFormat": "YAML"
 }
