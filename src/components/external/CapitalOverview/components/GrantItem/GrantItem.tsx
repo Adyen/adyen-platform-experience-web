@@ -16,6 +16,7 @@ import './GrantItem.scss';
 import { GrantDetails } from '../GrantDetails/GrantDetails';
 import { GrantAction } from '../GrantAction/GrantAction';
 import CopyText from '../../../../internal/CopyText/CopyText';
+import { Tooltip } from '../../../../internal/Tooltip/Tooltip';
 
 export const GrantItem: FunctionalComponent<GrantItemProps> = ({ grant }) => {
     const { i18n } = useCoreContext();
@@ -45,7 +46,15 @@ export const GrantItem: FunctionalComponent<GrantItemProps> = ({ grant }) => {
                                     </Typography>
                                 </>
                             ) : grantConfig.statusKey ? (
-                                <Tag label={i18n.get(grantConfig.statusKey)} variant={grantConfig.statusTagVariant} />
+                                grantConfig.statusTooltipKey ? (
+                                    <Tooltip content={i18n.get(grantConfig.statusTooltipKey)}>
+                                        <div>
+                                            <Tag label={i18n.get(grantConfig.statusKey)} variant={grantConfig.statusTagVariant} />
+                                        </div>
+                                    </Tooltip>
+                                ) : (
+                                    <Tag label={i18n.get(grantConfig.statusKey)} variant={grantConfig.statusTagVariant} />
+                                )
                             ) : null}
                         </div>
                     </div>
