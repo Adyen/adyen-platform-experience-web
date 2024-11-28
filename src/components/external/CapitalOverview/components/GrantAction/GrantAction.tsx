@@ -15,7 +15,7 @@ import { useFetch } from '../../../../../hooks/useFetch';
 import { useEffect } from 'preact/compat';
 import { getTopWindowHref, setTopWindowHref } from './utils';
 
-export const GrantAction: FunctionalComponent<GrantActionProps> = ({ action, offerExpiresAt }) => {
+export const GrantAction: FunctionalComponent<GrantActionProps> = ({ action, className, offerExpiresAt }) => {
     const { i18n, updateCore } = useCoreContext();
     const { dateFormat } = useTimezoneAwareDateFormatting();
     const { signToSActionDetails } = useAuthContext().endpoints;
@@ -46,7 +46,7 @@ export const GrantAction: FunctionalComponent<GrantActionProps> = ({ action, off
 
     return error ? (
         <Alert
-            className={GRANT_ACTION_CLASS_NAMES.base}
+            className={className}
             type={AlertTypeOption.CRITICAL}
             title={i18n.get('somethingWentWrongTryRefreshingOrComeBackLater')}
             description={
@@ -57,7 +57,7 @@ export const GrantAction: FunctionalComponent<GrantActionProps> = ({ action, off
         />
     ) : (
         <Alert
-            className={GRANT_ACTION_CLASS_NAMES.base}
+            className={className}
             type={AlertTypeOption.WARNING}
             title={`${i18n.get('capital.signTermsAndConditionsToReceiveFunds')}${
                 offerExpiresAt

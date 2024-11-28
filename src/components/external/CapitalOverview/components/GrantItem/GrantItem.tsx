@@ -17,6 +17,8 @@ import { GrantDetails } from '../GrantDetails/GrantDetails';
 import { GrantAction } from '../GrantAction/GrantAction';
 import CopyText from '../../../../internal/CopyText/CopyText';
 import { Tooltip } from '../../../../internal/Tooltip/Tooltip';
+import Alert from '../../../../internal/Alert/Alert';
+import { AlertTypeOption } from '../../../../internal/Alert/types';
 
 export const GrantItem: FunctionalComponent<GrantItemProps> = ({ grant }) => {
     const { i18n } = useCoreContext();
@@ -91,8 +93,17 @@ export const GrantItem: FunctionalComponent<GrantItemProps> = ({ grant }) => {
                 </div>
             </Card>
             {grantConfig.hasDetails && <GrantDetails grant={grant} />}
-            {grant.missingActions &&
-                grant.missingActions.map(action => <GrantAction key={action.type} action={action} offerExpiresAt={grant.offerExpiresAt} />)}
+            {grant.missingActions && grant.missingActions.length ? (
+                grant.missingActions.map(action => (
+                    <GrantAction key={action.type} action={action} className={GRANT_ITEM_CLASS_NAMES.alert} offerExpiresAt={grant.offerExpiresAt} />
+                ))
+            ) : (
+                <Alert
+                    className={GRANT_ITEM_CLASS_NAMES.alert}
+                    type={AlertTypeOption.HIGHLIGHT}
+                    title={i18n.get('capital.weReceivedYourRequestAndWeAreWorkingOnItNowCheckBackSoon')}
+                />
+            )}
         </div>
     );
 };

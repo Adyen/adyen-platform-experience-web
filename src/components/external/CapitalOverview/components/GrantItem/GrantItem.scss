@@ -7,6 +7,10 @@
         justify-content: space-between;
     }
 
+    &__alert {
+        margin-top: style.token(spacer-080);
+    }
+
     &__card-content {
         display: flex;
         flex-direction: column;
