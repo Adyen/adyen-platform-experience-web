@@ -11,7 +11,8 @@
     "nl-NL",
     "no-NO",
     "pt-BR",
-    "sv-SE"
+    "sv-SE",
+    "fi-FI"
   ],
   "placeholderFormat": "YAML"
 }
