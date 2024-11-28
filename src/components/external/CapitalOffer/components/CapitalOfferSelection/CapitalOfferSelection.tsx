@@ -155,9 +155,9 @@ export const CapitalOfferSelection = ({
     const handleSliderRelease = (val: number) => debouncedGetOfferCall(val);
 
     useEffect(() => {
-        if (config) {
+        if (config && !getDynamicGrantOfferMutation.data && !requestedValue) {
             setRequestedValue(prev => (!prev ? initialValue || config.minAmount.value : prev));
-            !getDynamicGrantOfferMutation.data && void getOffer(requestedValue || initialValue || config.minAmount.value);
+            void getOffer(requestedValue || initialValue || config.minAmount.value);
         }
     }, [config, getDynamicGrantOfferMutation.data, getOffer, initialValue, requestedValue]);
 
