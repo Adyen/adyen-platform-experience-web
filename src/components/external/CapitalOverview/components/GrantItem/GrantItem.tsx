@@ -85,24 +85,33 @@ export const GrantItem: FunctionalComponent<GrantItemProps> = ({ grant }) => {
                             }}
                         />
                     )}
-                    {grant.status !== 'Active' ? (
-                        <div className={GRANT_ITEM_CLASS_NAMES.loanID}>
+                    {grantConfig.isGrantIdVisible ? (
+                        <div className={GRANT_ITEM_CLASS_NAMES.grantID}>
                             <CopyText textToCopy={grant.id} buttonLabel={i18n.get('capital.grantID')} isHovered type={'Text'} />
                         </div>
                     ) : null}
                 </div>
             </Card>
             {grantConfig.hasDetails && <GrantDetails grant={grant} />}
-            {grant.missingActions && grant.missingActions.length ? (
-                grant.missingActions.map(action => (
-                    <GrantAction key={action.type} action={action} className={GRANT_ITEM_CLASS_NAMES.alert} offerExpiresAt={grant.offerExpiresAt} />
-                ))
-            ) : (
-                <Alert
-                    className={GRANT_ITEM_CLASS_NAMES.alert}
-                    type={AlertTypeOption.HIGHLIGHT}
-                    title={i18n.get('capital.weReceivedYourRequestAndWeAreWorkingOnItNowCheckBackSoon')}
-                />
+            {grantConfig.hasAlerts && (
+                <>
+                    {grant.missingActions && grant.missingActions.length ? (
+                        grant.missingActions.map(action => (
+                            <GrantAction
+                                key={action.type}
+                                action={action}
+                                className={GRANT_ITEM_CLASS_NAMES.alert}
+                                offerExpiresAt={grant.offerExpiresAt}
+                            />
+                        ))
+                    ) : (
+                        <Alert
+                            className={GRANT_ITEM_CLASS_NAMES.alert}
+                            type={AlertTypeOption.HIGHLIGHT}
+                            title={i18n.get('capital.weReceivedYourRequestAndWeAreWorkingOnItNowCheckBackSoon')}
+                        />
+                    )}
+                </>
             )}
         </div>
     );
