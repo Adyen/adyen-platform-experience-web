@@ -25,8 +25,10 @@ export const GrantDetails: FunctionalComponent<GrantDetailsProps> = ({ grant }) 
             { key: 'capital.repaidAmount', value: formatAmount(grant.repaidGrantAmount) },
             { key: 'capital.repaidFees', value: formatAmount(grant.repaidFeesAmount) },
             {
-                key: 'capital.repaymentRate',
-                value: i18n.get('capital.percentDaily', { values: { percent: getPaymentRatePercentage(grant.repaymentRate) } }),
+                key: 'capital.dailyRepaymentRate',
+                value: `${i18n.get('capital.xPercent', {
+                    values: { percentage: getPaymentRatePercentage(grant.repaymentRate) },
+                })}`,
             },
             {
                 key: 'capital.expectedRepaymentPeriod',

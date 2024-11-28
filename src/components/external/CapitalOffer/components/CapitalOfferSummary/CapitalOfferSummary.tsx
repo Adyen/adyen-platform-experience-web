@@ -104,8 +104,10 @@ export const CapitalOfferSummary = ({
                 value: i18n.amount(grantOffer.thresholdAmount.value, grantOffer.thresholdAmount.currency),
             },
             {
-                key: 'capital.repaymentRatePercentage',
-                value: `${getPaymentRatePercentage(grantOffer.repaymentRate)}% ${i18n.get('capital.daily')}`,
+                key: 'capital.dailyRepaymentRate',
+                value: `${i18n.get('capital.xPercent', {
+                    values: { percentage: getPaymentRatePercentage(grantOffer.repaymentRate) },
+                })}`,
             },
             {
                 key: 'capital.expectedRepaymentPeriod',
@@ -143,7 +145,7 @@ export const CapitalOfferSummary = ({
             <InfoBox className="adyen-pe-capital-offer-summary__grant-summary">
                 <Typography el={TypographyElement.PARAGRAPH} variant={TypographyVariant.BODY}>
                     {i18n.get('capital.youAreRequestingFundingOf')}{' '}
-                    <strong>{`${i18n.amount(grantOffer.grantAmount.value, grantOffer.grantAmount.currency)}.`}</strong>
+                    <strong>{`${i18n.amount(grantOffer.grantAmount.value, grantOffer.grantAmount.currency, { minimumFractionDigits: 0 })}.`}</strong>
                 </Typography>
                 <Typography el={TypographyElement.PARAGRAPH} variant={TypographyVariant.CAPTION}>
                     {i18n.get('capital.minimumRepaymentFrequency', {
@@ -228,10 +230,11 @@ export const CapitalOfferSummary = ({
                 )}
                 <Button
                     variant={ButtonVariant.PRIMARY}
+                    state={requestFundsMutation.isLoading ? 'loading' : undefined}
                     onClick={onRequestFundsHandler}
                     disabled={requestFundsMutation.isLoading || !!requestFundsMutation.error}
                 >
-                    {i18n.get('capital.requestFunds')}
+                    {i18n.get(requestFundsMutation.isLoading ? 'capital.requesting' : 'capital.requestFunds')}
                 </Button>
             </div>
         </div>

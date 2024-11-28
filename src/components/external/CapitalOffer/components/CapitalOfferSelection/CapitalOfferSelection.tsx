@@ -72,7 +72,12 @@ const InformationDisplay = ({ data, repaymentFrequency }: { data: IGrantOfferRes
                 )}
                 items={[
                     { key: 'capital.fees', value: i18n.amount(data.feesAmount.value, data.feesAmount.currency) },
-                    { key: 'capital.repaymentRate', value: `${getPaymentRatePercentage(data.repaymentRate)}% ${i18n.get('capital.daily')}` },
+                    {
+                        key: 'capital.dailyRepaymentRate',
+                        value: `${i18n.get('capital.xPercent', {
+                            values: { percentage: getPaymentRatePercentage(data.repaymentRate) },
+                        })}`,
+                    },
                     { key: 'capital.expectedRepaymentPeriod', value: `${data.expectedRepaymentPeriodDays} ${i18n.get('capital.days')}` },
                 ]}
             />
@@ -156,6 +161,11 @@ export const CapitalOfferSelection = ({
         }
     }, [config, getDynamicGrantOfferMutation.data, getOffer, initialValue, requestedValue]);
 
+    const loadingButtonState = useMemo(
+        () => reviewOfferMutation.isLoading || getDynamicGrantOfferMutation.isLoading || isLoading,
+        [getDynamicGrantOfferMutation.isLoading, isLoading, reviewOfferMutation.isLoading]
+    );
+
     return (
         <div className="adyen-pe-capital-offer-selection">
             {reviewOfferMutation.error || getDynamicGrantOfferMutation.error || emptyGrantOffer || dynamicConfigError ? (
@@ -186,8 +196,13 @@ export const CapitalOfferSelection = ({
                         <Button variant={ButtonVariant.SECONDARY} onClick={onBack}>
                             {i18n.get('capital.back')}
                         </Button>
-                        <Button variant={ButtonVariant.PRIMARY} onClick={onReview} disabled={reviewOfferMutation.isLoading || !config?.minAmount}>
-                            {i18n.get('capital.reviewOffer')}
+                        <Button
+                            variant={ButtonVariant.PRIMARY}
+                            state={loadingButtonState ? 'loading' : undefined}
+                            onClick={onReview}
+                            disabled={reviewOfferMutation.isLoading || !config?.minAmount}
+                        >
+                            {i18n.get(loadingButtonState ? 'loading' : 'capital.reviewOffer')}
                         </Button>
                     </div>
                 </>

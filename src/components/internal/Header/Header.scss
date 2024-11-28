@@ -22,7 +22,7 @@
     }
 
     &__title + &__subtitle {
-        margin: style.token(spacer-020) 0 style.token(spacer-070);
+        margin-top: style.token(spacer-020);
     }
 
     &__divider {

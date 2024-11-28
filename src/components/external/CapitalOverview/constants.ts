@@ -6,4 +6,5 @@ export const CAPITAL_OVERVIEW_CLASS_NAMES = {
     skeletonContainer: 'adyen-pe-capital-overview__header-skeleton-container',
     preQualifiedGrant: 'adyen-pe-capital-overview__pre-qualified-grant',
     preQualifiedGrantButton: 'adyen-pe-capital-overview__pre-qualified-grant-review-button',
+    errorContainer: 'adyen-pe-capital-overview__error-container',
 };
