@@ -29,7 +29,7 @@ const _getTranslations = (translationsPromise: Promise<{ default: Translations }
 export const da_DK = { da_DK: () => _getTranslations(import('./da-DK.json')) };
 export const de_DE = { de_DE: () => _getTranslations(import('./de-DE.json')) };
 export const es_ES = { es_ES: () => _getTranslations(import('./es-ES.json')) };
-export const fi_FI = { sv_SE: () => _getTranslations(import('./fi-FI.json')) };
+export const fi_FI = { fi_FI: () => _getTranslations(import('./fi-FI.json')) };
 export const fr_FR = { fr_FR: () => _getTranslations(import('./fr-FR.json')) };
 export const it_IT = { it_IT: () => _getTranslations(import('./it-IT.json')) };
 export const nl_NL = { nl_NL: () => _getTranslations(import('./nl-NL.json')) };
