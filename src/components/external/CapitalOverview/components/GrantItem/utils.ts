@@ -73,13 +73,16 @@ export const getStatusTooltipKey = (grant: IGrant): TranslationKey | undefined =
 
 export const getGrantConfig = (grant: IGrant) => {
     const isGrantActive = grant.status === 'Active';
+    const isGrantPending = grant.status === 'Pending';
 
     return {
         amount: getAmount(grant),
         amountLabelKey: getAmountLabelKey(grant.status),
+        hasAlerts: isGrantPending,
         hasDetails: getHasDetails(grant.status),
         isAmountColorSecondary: !isGrantActive,
         isBackgroundFilled: getIsBackgroundFilled(grant.status),
+        isGrantIdVisible: !isGrantActive,
         isLabelColorSecondary: isGrantActive,
         isProgressBarVisible: isGrantActive,
         repaymentPeriodEndDate: getRepaymentPeriodEndDate(grant.repaymentPeriodLeft),
