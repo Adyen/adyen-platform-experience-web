@@ -1,13 +1,13 @@
 import { useClickOutside } from '../../../hooks/element/useClickOutside';
 import { mediaQueries, useResponsiveViewport } from '../../../hooks/useResponsiveViewport';
 import Button from '../Button';
-import Icon from '../Icon';
 import { ButtonVariant } from '../Button/types';
 import useCoreContext from '../../../core/Context/useCoreContext';
 import { useCallback, useContext, useEffect } from 'preact/hooks';
 import { createContext, Ref } from 'preact';
 import cx from 'classnames';
 import './Modal.scss';
+import Icon from '../Icon';
 import { ModalProps } from './types';
 
 const ModalContext = createContext({ withinModal: false });

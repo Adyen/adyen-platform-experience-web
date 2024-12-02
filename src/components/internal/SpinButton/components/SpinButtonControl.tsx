@@ -1,8 +1,8 @@
 import cx from 'classnames';
 import { Ref } from 'preact';
 import { memo } from 'preact/compat';
-import Icon from '../../Icon';
 import Button from '../../Button/Button';
+import Icon from '../../Icon/Icon';
 import useSpinButton from '../hooks/useSpinButton';
 import { fixedForwardRef } from '../../../../utils/preact';
 import { BUTTON_CLASS, BUTTON_DECREASE_CLASS, BUTTON_INCREASE_CLASS } from '../constants';
