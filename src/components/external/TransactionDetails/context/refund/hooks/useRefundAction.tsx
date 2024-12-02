@@ -35,12 +35,7 @@ export const useRefundAction = <T extends _BaseUseRefundActionProps>({
     const refundingPaymentLabel = useMemo(
         () => ({
             title: `${i18n.get('inProgress')}..`,
-            renderTitle: (title: string) => (
-                <>
-                    <Spinner size={'small'} />
-                    {title}
-                </>
-            ),
+            state: 'loading',
         }),
         [i18n]
     );

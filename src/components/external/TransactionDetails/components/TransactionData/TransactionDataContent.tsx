@@ -110,16 +110,15 @@ export const TransactionDataContent = ({ transaction: initialTransaction }: Tran
     }, [primaryAction, secondaryAction]);
 
     const renderMessages = useCallback(() => {
-        // TODO:Add translation
         return refundStatuses?.length || refundLocked ? (
             <>
-                {refundLocked && <Alert type={AlertTypeOption.HIGHLIGHT} description={'The refund is being processed. Please come back later.'} />}
+                {refundLocked && <Alert type={AlertTypeOption.HIGHLIGHT} description={i18n.get('refund.theRefundIsBeingProcessed')} />}
                 {refundStatuses.map((status, index) => (
                     <Alert key={`${Math.random()}-${index}`} type={status?.type ?? AlertTypeOption.HIGHLIGHT} description={status?.label} />
                 ))}
             </>
         ) : null;
-    }, [refundStatuses, refundLocked]);
+    }, [i18n, refundStatuses, refundLocked]);
 
     useLayoutEffect(() => {
         _setActiveView(ActiveView.DETAILS);

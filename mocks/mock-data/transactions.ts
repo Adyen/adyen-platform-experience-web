@@ -1962,11 +1962,27 @@ export const DEFAULT_REFUND_STATUSES: ITransactionRefundStatus = [
         status: 'in_progress',
     },
     {
+        amount: { currency: 'USD', value: -2000 },
+        status: 'in_progress',
+    },
+    {
         amount: { currency: 'USD', value: -202000 },
         status: 'completed',
     },
     {
+        amount: { currency: 'USD', value: -2000 },
+        status: 'in_progress',
+    },
+    {
+        amount: { currency: 'USD', value: -2000 },
+        status: 'completed',
+    },
+    {
         amount: { currency: 'USD', value: -1000 },
+        status: 'failed',
+    },
+    {
+        amount: { currency: 'USD', value: -2000 },
         status: 'failed',
     },
 ];
