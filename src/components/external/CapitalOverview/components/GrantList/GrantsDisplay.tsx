@@ -70,7 +70,7 @@ export const GrantsDisplay: FunctionalComponent<GrantsProps> = ({ grantList, hid
                             id: 'active',
                         },
                         {
-                            label: 'capital.settled',
+                            label: 'capital.closed',
                             content: <List grants={inactiveGrants} />,
                             id: 'inactive',
                         },
