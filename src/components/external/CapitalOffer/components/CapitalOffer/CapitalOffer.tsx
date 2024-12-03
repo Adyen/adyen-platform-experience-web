@@ -43,10 +43,6 @@ export const CapitalOffer: FunctionalComponent<ExternalUIComponentProps<CapitalO
 
     const config = externalDynamicOffersConfig || internalDynamicOffersConfig;
 
-    const goBackHandler = useCallback(() => {
-        onOfferDismiss?.();
-    }, [onOfferDismiss]);
-
     const [selectedOffer, setSelectedOffer] = useState<IGrantOfferResponseDTO>();
 
     const [requestedAmount, setRequestedAmount] = useState<number>();
@@ -82,7 +78,7 @@ export const CapitalOffer: FunctionalComponent<ExternalUIComponentProps<CapitalO
                     requestedAmount={requestedAmount}
                     dynamicOffersConfig={config}
                     dynamicOffersConfigError={dynamicOffersConfigError}
-                    onOfferDismiss={goBackHandler}
+                    onOfferDismiss={onOfferDismiss}
                     onOfferSelect={onOfferSelectHandler}
                     repaymentFrequency={REPAYMENT_FREQUENCY}
                     emptyGrantOffer={emptyGrantOffer}

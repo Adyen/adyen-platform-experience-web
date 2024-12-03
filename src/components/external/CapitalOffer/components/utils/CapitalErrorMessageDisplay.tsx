@@ -9,23 +9,27 @@ import { AdyenErrorResponse } from '../../../../../core/Http/types';
 import { ErrorTypes } from '../../../../../core/Http/utils';
 
 export const CapitalErrorMessageDisplay = ({
-    onBack,
+    emptyGrantOffer,
     error,
     onContactSupport,
-    emptyGrantOffer,
+    onBack,
 }: {
-    onBack: () => void;
-    error: Error | AdyenErrorResponse | null;
-    onContactSupport?: () => void;
     emptyGrantOffer?: boolean;
+    error: Error | AdyenErrorResponse | null;
+    onBack?: () => void;
+    onContactSupport?: () => void;
 }) => {
     const { i18n } = useCoreContext();
 
-    const onBackButton = useCallback(
+    const renderSecondaryButton = useCallback(
         () => (
-            <Button variant={ButtonVariant.SECONDARY} onClick={onBack}>
-                {i18n.get('back')}
-            </Button>
+            <>
+                {onBack && (
+                    <Button variant={ButtonVariant.SECONDARY} onClick={onBack}>
+                        {i18n.get('back')}
+                    </Button>
+                )}
+            </>
         ),
         [i18n, onBack]
     );
@@ -40,7 +44,7 @@ export const CapitalErrorMessageDisplay = ({
         <ErrorMessageDisplay
             absolutePosition={false}
             withImage
-            renderSecondaryButton={onBackButton}
+            renderSecondaryButton={renderSecondaryButton}
             outlined={false}
             {...getCapitalErrorMessage(capitalError as AdyenPlatformExperienceError, onContactSupport)}
         />

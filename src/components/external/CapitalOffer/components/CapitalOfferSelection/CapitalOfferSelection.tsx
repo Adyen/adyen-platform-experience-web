@@ -208,9 +208,11 @@ export const CapitalOfferSelection = ({
                         ) : null}
                     </InfoBox>
                     <div className="adyen-pe-capital-offer-selection__buttons">
-                        <Button variant={ButtonVariant.SECONDARY} onClick={onOfferDismiss}>
-                            {i18n.get('back')}
-                        </Button>
+                        {onOfferDismiss && (
+                            <Button variant={ButtonVariant.SECONDARY} onClick={onOfferDismiss}>
+                                {i18n.get('back')}
+                            </Button>
+                        )}
                         <Button
                             variant={ButtonVariant.PRIMARY}
                             state={loadingButtonState ? 'loading' : undefined}
