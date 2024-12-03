@@ -1,10 +1,10 @@
-import { IDynamicOfferConfig, IGrant } from '../../../../../types';
+import { IDynamicOffersConfig, IGrant } from '../../../../../types';
 import PreQualifiedIntro from '../PreQualifiedIntro';
 import { useCallback, useMemo, useState } from 'preact/hooks';
 import { CapitalOffer } from '../../../CapitalOffer/components/CapitalOffer/CapitalOffer';
 
 type PreQualifiedProps = {
-    dynamicOffer: Required<IDynamicOfferConfig>;
+    dynamicOffer: Required<IDynamicOffersConfig>;
     hideTitle: boolean | undefined;
     onFundsRequest: (data: IGrant) => void;
     onOfferDismiss?: () => void;

@@ -5,17 +5,17 @@
 import { render, screen, fireEvent } from '@testing-library/preact';
 import { describe, test, expect, vi } from 'vitest';
 import CapitalSlider from './CapitalSlider';
-import { IDynamicOfferConfig } from '../../../types';
+import { IDynamicOffersConfig } from '../../../types';
 
 describe('CapitalSlider', () => {
-    const dynamicCapitalOffer: IDynamicOfferConfig = {
+    const dynamicOffersConfig: IDynamicOffersConfig = {
         minAmount: { value: 50000, currency: 'EUR' },
         maxAmount: { value: 2500000, currency: 'EUR' },
         step: 10000,
     };
 
     test('renders the Slider with the correct default attributes', () => {
-        render(<CapitalSlider dynamicCapitalOffer={dynamicCapitalOffer} />);
+        render(<CapitalSlider dynamicOffersConfig={dynamicOffersConfig} />);
 
         const slider: HTMLInputElement = screen.getByRole('slider', {
             name: 'How much money do you need?',
@@ -29,10 +29,7 @@ describe('CapitalSlider', () => {
     });
 
     test('renders the min and max labels correctly', () => {
-        render(<CapitalSlider dynamicCapitalOffer={dynamicCapitalOffer} value={2000000} />);
-        const slider: HTMLInputElement = screen.getByRole('slider', {
-            name: 'How much money do you need?',
-        });
+        render(<CapitalSlider dynamicOffersConfig={dynamicOffersConfig} value={2000000} />);
 
         const minLabel = screen.getByText('min');
         const maxLabel = screen.getByText('max');
@@ -46,14 +43,14 @@ describe('CapitalSlider', () => {
     });
 
     test('updates the displayed value when slider value changes', () => {
-        const { rerender } = render(<CapitalSlider dynamicCapitalOffer={dynamicCapitalOffer} value={50000} />);
+        const { rerender } = render(<CapitalSlider dynamicOffersConfig={dynamicOffersConfig} value={50000} />);
         const output = screen.getByRole('status');
         const slider: HTMLInputElement = screen.getByRole('slider');
 
         expect(output).toHaveTextContent('€500');
         expect(slider.value).toBe('50000');
 
-        rerender(<CapitalSlider dynamicCapitalOffer={dynamicCapitalOffer} value={2000000} />);
+        rerender(<CapitalSlider dynamicOffersConfig={dynamicOffersConfig} value={2000000} />);
 
         expect(output).toHaveTextContent('€20,000');
         expect(slider.value).toBe('2000000');
@@ -61,7 +58,7 @@ describe('CapitalSlider', () => {
 
     test('calls onValueChange callback when the value changes', async () => {
         const handleValueChange = vi.fn();
-        render(<CapitalSlider dynamicCapitalOffer={dynamicCapitalOffer} onValueChange={handleValueChange} />);
+        render(<CapitalSlider dynamicOffersConfig={dynamicOffersConfig} onValueChange={handleValueChange} />);
 
         const slider: HTMLInputElement = screen.getByRole('slider');
         fireEvent.input(slider, { target: { value: '400000' } });
@@ -71,7 +68,7 @@ describe('CapitalSlider', () => {
 
     test('calls onRelease callback when the user releases the slider with the mouse', () => {
         const handleRelease = vi.fn();
-        render(<CapitalSlider dynamicCapitalOffer={dynamicCapitalOffer} onRelease={handleRelease} />);
+        render(<CapitalSlider dynamicOffersConfig={dynamicOffersConfig} onRelease={handleRelease} />);
 
         const slider: HTMLInputElement = screen.getByRole('slider');
 
@@ -84,7 +81,7 @@ describe('CapitalSlider', () => {
     // TODO: Not sure how to test this one, it doesn't seem to work, skipping for now
     test.skip('calls onRelease callback when the user releases the slider with a touch', async () => {
         const handleRelease = vi.fn();
-        render(<CapitalSlider dynamicCapitalOffer={dynamicCapitalOffer} onRelease={handleRelease} />);
+        render(<CapitalSlider dynamicOffersConfig={dynamicOffersConfig} onRelease={handleRelease} />);
 
         const slider: HTMLInputElement = screen.getByRole('slider');
 
@@ -96,7 +93,7 @@ describe('CapitalSlider', () => {
 
     test('calls onRelease callback when the user releases the slider with the keyboard', () => {
         const handleRelease = vi.fn();
-        render(<CapitalSlider dynamicCapitalOffer={dynamicCapitalOffer} onRelease={handleRelease} />);
+        render(<CapitalSlider dynamicOffersConfig={dynamicOffersConfig} onRelease={handleRelease} />);
 
         const slider: HTMLInputElement = screen.getByRole('slider');
 

@@ -5,7 +5,7 @@ import uniqueId from '../../../utils/random/uniqueId';
 import Typography from '../Typography/Typography';
 import { TypographyVariant } from '../Typography/types';
 import useCoreContext from '../../../core/Context/useCoreContext';
-import { IDynamicOfferConfig } from '../../../types';
+import { IDynamicOffersConfig } from '../../../types';
 import cx from 'classnames';
 
 /**
@@ -15,7 +15,7 @@ interface CapitalSliderProps {
     /**
      * The dynamic Capital offer
      */
-    dynamicCapitalOffer: IDynamicOfferConfig;
+    dynamicOffersConfig: IDynamicOffersConfig;
 
     /**
      * The current value of the CapitalSlider.
@@ -42,8 +42,8 @@ interface CapitalSliderProps {
 }
 
 const CapitalSlider = ({
-    dynamicCapitalOffer,
-    value = dynamicCapitalOffer.minAmount.value,
+    dynamicOffersConfig,
+    value = dynamicOffersConfig.minAmount.value,
     onValueChange,
     onRelease,
     className,
@@ -71,15 +71,15 @@ const CapitalSlider = ({
             <div>
                 <output htmlFor={id} className="adyen-pe-capital-slider__value" aria-live="polite">
                     <Typography variant={TypographyVariant.TITLE} strongest>
-                        {i18n.amount(value, dynamicCapitalOffer.minAmount.currency, { maximumFractionDigits: 0 })}
+                        {i18n.amount(value, dynamicOffersConfig.minAmount.currency, { maximumFractionDigits: 0 })}
                     </Typography>
                 </output>
                 <Slider
                     id={id}
                     value={value}
-                    min={dynamicCapitalOffer.minAmount.value}
-                    max={dynamicCapitalOffer.maxAmount.value}
-                    step={dynamicCapitalOffer.step}
+                    min={dynamicOffersConfig.minAmount.value}
+                    max={dynamicOffersConfig.maxAmount.value}
+                    step={dynamicOffersConfig.step}
                     onChange={handleValueChange}
                     onMouseUp={handleRelease}
                     onTouchEnd={handleRelease}
@@ -91,13 +91,13 @@ const CapitalSlider = ({
                 <label>
                     <Typography variant={TypographyVariant.CAPTION}>{i18n.get('min')}</Typography>
                     <Typography variant={TypographyVariant.BODY}>
-                        {i18n.amount(dynamicCapitalOffer.minAmount.value, dynamicCapitalOffer.minAmount.currency, { maximumFractionDigits: 0 })}
+                        {i18n.amount(dynamicOffersConfig.minAmount.value, dynamicOffersConfig.minAmount.currency, { maximumFractionDigits: 0 })}
                     </Typography>
                 </label>
                 <label>
                     <Typography variant={TypographyVariant.CAPTION}>{i18n.get('max')}</Typography>
                     <Typography variant={TypographyVariant.BODY}>
-                        {i18n.amount(dynamicCapitalOffer.maxAmount.value, dynamicCapitalOffer.maxAmount.currency, { maximumFractionDigits: 0 })}
+                        {i18n.amount(dynamicOffersConfig.maxAmount.value, dynamicOffersConfig.maxAmount.currency, { maximumFractionDigits: 0 })}
                     </Typography>
                 </label>
             </div>

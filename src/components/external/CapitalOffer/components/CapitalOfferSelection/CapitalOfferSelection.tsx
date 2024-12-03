@@ -9,23 +9,22 @@ import { useCallback, useMemo, useState } from 'preact/hooks';
 import { useEffect } from 'preact/compat';
 import { useAuthContext } from '../../../../../core/Auth';
 import useMutation from '../../../../../hooks/useMutation/useMutation';
-import { IDynamicOfferConfig, IGrantOfferResponseDTO } from '../../../../../types';
+import { IDynamicOffersConfig, IGrantOfferResponseDTO } from '../../../../../types';
 import './CapitalOfferSelection.scss';
 import { debounce, getExpectedRepaymentDate, getPaymentRatePercentage } from '../utils/utils';
 import CapitalSlider from '../../../../internal/CapitalSlider';
 import { CapitalErrorMessageDisplay } from '../utils/CapitalErrorMessageDisplay';
 import { calculateSliderAdjustedMidValue } from '../../../../internal/Slider/Slider';
-import { EMPTY_OBJECT } from '../../../../../utils';
 
 type CapitalOfferSelectionProps = {
-    config: IDynamicOfferConfig | undefined;
-    onBack: () => void;
+    dynamicOffersConfig: IDynamicOffersConfig | undefined;
+    dynamicOffersConfigError?: Error;
+    emptyGrantOffer: boolean;
+    onContactSupport?: () => void;
+    onOfferDismiss?: () => void;
     onOfferSelect: (data: IGrantOfferResponseDTO) => void;
     repaymentFrequency: number;
     requestedAmount: number | undefined;
-    emptyGrantOffer: boolean;
-    onContactSupport: (() => void) | undefined;
-    dynamicConfigError?: Error;
 };
 
 const LoadingSkeleton = () => (
@@ -92,25 +91,30 @@ const InformationDisplay = ({ data, repaymentFrequency }: { data: IGrantOfferRes
 };
 
 export const CapitalOfferSelection = ({
-    config,
-    onBack,
-    repaymentFrequency,
-    requestedAmount,
-    onOfferSelect,
+    dynamicOffersConfig,
+    dynamicOffersConfigError,
     emptyGrantOffer,
     onContactSupport,
-    dynamicConfigError,
+    onOfferDismiss,
+    onOfferSelect,
+    repaymentFrequency,
+    requestedAmount,
 }: CapitalOfferSelectionProps) => {
     const { i18n } = useCoreContext();
 
     const initialValue = useMemo(() => {
-        if (config) return calculateSliderAdjustedMidValue(config.minAmount.value, config.maxAmount.value, config.step);
+        if (dynamicOffersConfig)
+            return calculateSliderAdjustedMidValue(
+                dynamicOffersConfig.minAmount.value,
+                dynamicOffersConfig.maxAmount.value,
+                dynamicOffersConfig.step
+            );
         return undefined;
-    }, [config]);
+    }, [dynamicOffersConfig]);
 
     const [requestedValue, setRequestedValue] = useState<number | undefined>(undefined);
 
-    const currency = useMemo(() => config?.minAmount.currency, [config?.minAmount.currency]);
+    const currency = useMemo(() => dynamicOffersConfig?.minAmount.currency, [dynamicOffersConfig?.minAmount.currency]);
 
     const { createGrantOffer, getDynamicGrantOffer } = useAuthContext().endpoints;
     const getDynamicGrantOfferMutation = useMutation({
@@ -164,11 +168,13 @@ export const CapitalOfferSelection = ({
     const handleSliderRelease = (val: number) => debouncedGetOfferCall(val);
 
     useEffect(() => {
-        if (config && !getDynamicGrantOfferMutation.data && !requestedValue) {
-            setRequestedValue(prev => (!prev ? (requestedAmount ? Number(requestedAmount) : initialValue || config.minAmount.value) : prev));
-            void getOffer(requestedValue || initialValue || config.minAmount.value);
+        if (dynamicOffersConfig && !getDynamicGrantOfferMutation.data && !requestedValue) {
+            setRequestedValue(prev =>
+                !prev ? (requestedAmount ? Number(requestedAmount) : initialValue || dynamicOffersConfig.minAmount.value) : prev
+            );
+            void getOffer(requestedValue || initialValue || dynamicOffersConfig.minAmount.value);
         }
-    }, [config, getDynamicGrantOfferMutation.data, getOffer, initialValue, requestedAmount, requestedValue]);
+    }, [dynamicOffersConfig, getDynamicGrantOfferMutation.data, getOffer, initialValue, requestedAmount, requestedValue]);
 
     const loadingButtonState = useMemo(
         () => reviewOfferMutation.isLoading || getDynamicGrantOfferMutation.isLoading || isLoading,
@@ -177,19 +183,19 @@ export const CapitalOfferSelection = ({
 
     return (
         <div className="adyen-pe-capital-offer-selection">
-            {reviewOfferMutation.error || getDynamicGrantOfferMutation.error || emptyGrantOffer || dynamicConfigError ? (
+            {reviewOfferMutation.error || getDynamicGrantOfferMutation.error || emptyGrantOffer || dynamicOffersConfigError ? (
                 <CapitalErrorMessageDisplay
                     error={reviewOfferMutation.error}
-                    onBack={onBack}
+                    onBack={onOfferDismiss}
                     onContactSupport={onContactSupport}
                     emptyGrantOffer={emptyGrantOffer}
                 />
             ) : (
                 <>
-                    {config && (
+                    {dynamicOffersConfig && (
                         <CapitalSlider
                             value={requestedValue}
-                            dynamicCapitalOffer={config}
+                            dynamicOffersConfig={dynamicOffersConfig}
                             onValueChange={onChangeHandler}
                             onRelease={handleSliderRelease}
                         />
@@ -202,14 +208,14 @@ export const CapitalOfferSelection = ({
                         ) : null}
                     </InfoBox>
                     <div className="adyen-pe-capital-offer-selection__buttons">
-                        <Button variant={ButtonVariant.SECONDARY} onClick={onBack}>
+                        <Button variant={ButtonVariant.SECONDARY} onClick={onOfferDismiss}>
                             {i18n.get('back')}
                         </Button>
                         <Button
                             variant={ButtonVariant.PRIMARY}
                             state={loadingButtonState ? 'loading' : undefined}
                             onClick={onReview}
-                            disabled={reviewOfferMutation.isLoading || !config?.minAmount}
+                            disabled={reviewOfferMutation.isLoading || !dynamicOffersConfig?.minAmount}
                         >
                             {i18n.get(loadingButtonState ? 'loading' : 'capital.reviewOffer')}
                         </Button>

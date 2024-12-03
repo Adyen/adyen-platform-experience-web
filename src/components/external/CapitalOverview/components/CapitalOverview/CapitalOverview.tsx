@@ -124,8 +124,8 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
                                     grantList={grantList}
                                     hideTitle={hideTitle}
                                     newOfferAvailable={newOfferAvailable}
-                                    onFundsRequestHandler={handleFundsRequest}
-                                    onOfferDismissed={onOfferDismiss}
+                                    onFundsRequest={handleFundsRequest}
+                                    onOfferDismiss={onOfferDismiss}
                                 />
                             )
                         );
