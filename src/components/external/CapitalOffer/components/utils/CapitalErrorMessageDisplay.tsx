@@ -15,7 +15,7 @@ export const CapitalErrorMessageDisplay = ({
     onBack,
 }: {
     emptyGrantOffer?: boolean;
-    error: Error | AdyenErrorResponse | null;
+    error?: Error | AdyenErrorResponse;
     onBack?: () => void;
     onContactSupport?: () => void;
 }) => {

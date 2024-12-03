@@ -38,14 +38,15 @@ export const getCapitalErrorMessage = (error: AdyenPlatformExperienceError | und
         case '30_600': {
             return {
                 title: COMMON_CAPITAL_ERROR_MESSAGE.somethingWentWrong,
-                message: ['capital.weCouldNotContinueWithTheOffer'],
+                message: ['capital.weCouldNotContinueWithTheOffer', COMMON_CAPITAL_ERROR_MESSAGE.contactSupportForHelp],
                 onContactSupport,
             };
         }
         case 'EMPTY_CONFIG': {
             return {
                 title: COMMON_CAPITAL_ERROR_MESSAGE.somethingWentWrong,
-                message: ['capital.weCouldNotContinueWithTheOffer'],
+                message: ['capital.weCouldNotContinueWithTheOffer', COMMON_CAPITAL_ERROR_MESSAGE.contactSupportForHelp],
+                onContactSupport,
             };
         }
         default:
