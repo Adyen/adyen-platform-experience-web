@@ -145,18 +145,40 @@ export const TransactionsOverview = ({
     const { customRecords: transactions, loadingCustomRecords } = useCustomColumnsData<ITransaction>({ records, onDataRetrieved, mergeCustomData });
     const { updateDetails, resetDetails, selectedDetail } = useModalDetails(modalOptions);
 
+    const getExtraFieldsById = useCallback(
+        ({ id }: { id: string }) => {
+            const record = records.find(r => r.id === id);
+            const retrievedItem = transactions.find(item => item.id === id) as Record<string, any>;
+
+            if (record && retrievedItem) {
+                // Extract fields from 'retrievedItem' that are not in 'record'
+                const extraFields = Object.keys(retrievedItem).reduce((acc, key) => {
+                    if (!(key in record)) {
+                        acc[key] = retrievedItem[key];
+                    }
+                    return acc;
+                }, {} as Partial<CustomDataRetrieved>);
+                return extraFields;
+            }
+
+            // If no matching 'retrievedItem' or 'record' is found, return null or empty object
+            return null;
+        },
+        [records, transactions]
+    );
+
     const onRowClick = useCallback(
         ({ id }: ITransaction) => {
             updateDetails({
                 selection: {
                     type: 'transaction',
                     data: id,
-                    extraDetails: transactions?.find(({ id: _id }) => _id === id) ?? EMPTY_OBJECT,
+                    extraDetails: getExtraFieldsById({ id }) ?? EMPTY_OBJECT,
                 },
                 modalSize: 'small',
             }).callback({ id });
         },
-        [updateDetails, transactions]
+        [updateDetails, getExtraFieldsById]
     );
 
     const sinceDate = useMemo(() => {
