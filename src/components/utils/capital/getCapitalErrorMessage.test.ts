@@ -39,7 +39,7 @@ describe('getCapitalErrorMessage', () => {
 
         expect(result).toEqual({
             title: COMMON_CAPITAL_ERROR_MESSAGE.somethingWentWrong,
-            message: [COMMON_CAPITAL_ERROR_MESSAGE.couldNotLoadOffers, COMMON_CAPITAL_ERROR_MESSAGE.contactSupport],
+            message: [COMMON_CAPITAL_ERROR_MESSAGE.couldNotLoadOffers, COMMON_CAPITAL_ERROR_MESSAGE.contactSupportForHelp],
             onContactSupport: mockOnContactSupport,
         });
     });
@@ -53,7 +53,7 @@ describe('getCapitalErrorMessage', () => {
 
         expect(result).toEqual({
             title: 'capital.accountIsInactive',
-            message: [COMMON_CAPITAL_ERROR_MESSAGE.couldNotLoadOffers, COMMON_CAPITAL_ERROR_MESSAGE.contactSupport],
+            message: [COMMON_CAPITAL_ERROR_MESSAGE.couldNotLoadOffers, COMMON_CAPITAL_ERROR_MESSAGE.contactSupportForHelp],
             onContactSupport: mockOnContactSupport,
         });
     });
