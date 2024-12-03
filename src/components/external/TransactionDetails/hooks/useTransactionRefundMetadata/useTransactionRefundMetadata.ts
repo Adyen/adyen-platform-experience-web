@@ -72,15 +72,22 @@ export const useTransactionRefundMetadata = (transaction: TransactionDataProps['
                             label: `You already refunded ${amountString}, the remaining balance is ${i18n.amount(refundableAmount, refundCurrency)}`,
                         };
                     case RefundStatus.IN_PROGRESS:
-                        return {
-                            type: AlertTypeOption.HIGHLIGHT,
-                            label: `The partial refund of ${amountString} is being processed. You can only send a refund for the remaining amount.`,
-                        };
+                        if (totalAmount === transactionAmount) {
+                            return {
+                                type: AlertTypeOption.WARNING,
+                                label: `The refund is currently being processed.`,
+                            };
+                        } else {
+                            return {
+                                type: AlertTypeOption.HIGHLIGHT,
+                                label: `The partial refund of ${amountString} is being processed. You can only send a refund for the remaining amount.`,
+                            };
+                        }
                     case RefundStatus.FAILED:
                         if (totalAmount === transactionAmount) {
                             return {
                                 type: AlertTypeOption.WARNING,
-                                label: `It is not possible to request a refund for this payment. Please contact support.`,
+                                label: `It is not possible to refund this payment. Please contact support.`,
                             };
                         } else {
                             return {
