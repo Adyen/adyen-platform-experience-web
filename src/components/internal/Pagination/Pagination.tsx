@@ -5,11 +5,10 @@ import classnames from 'classnames';
 import { useCallback, useMemo } from 'preact/hooks';
 import Button from '../Button';
 import './Pagination.scss';
+import Icon from '../Icon';
 import { PaginationProps } from './types';
 import Select from '../FormFields/Select';
 import { SelectItem } from '../FormFields/Select/types';
-import ChevronLeft from '../SVGIcons/ChevronLeft';
-import ChevronRight from '../SVGIcons/ChevronRight';
 
 export default function Pagination({ next, hasNext, hasPrev, page, prev, limit, limitOptions, onLimitSelection }: PaginationProps) {
     const { i18n } = useCoreContext();
@@ -56,7 +55,7 @@ export default function Pagination({ next, hasNext, hasPrev, page, prev, limit, 
                     classNameModifiers={['circle'].concat(hasPrev ? EMPTY_ARRAY : 'disabled')}
                     onClick={prev}
                 >
-                    <ChevronLeft disabled={!hasPrev} />
+                    <Icon name={'chevron-left'} disabled={!hasPrev} />
                 </Button>
                 <Button
                     aria-label={i18n.get('pagination.nextPage')}
@@ -66,7 +65,7 @@ export default function Pagination({ next, hasNext, hasPrev, page, prev, limit, 
                     classNameModifiers={['circle'].concat(hasNext ? EMPTY_ARRAY : 'disabled')}
                     onClick={next}
                 >
-                    <ChevronRight disabled={!hasNext} />
+                    <Icon name={'chevron-right'} disabled={!hasNext} />
                 </Button>
             </div>
         </div>

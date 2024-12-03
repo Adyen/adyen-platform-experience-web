@@ -2,20 +2,21 @@
 import './Svg.scss';
 
 import cx from 'classnames';
-import { Suspense } from 'preact/compat';
+import { Ref } from 'preact';
+import { Suspense, SVGProps } from 'preact/compat';
 
 import { svgs, unscalableIconNames } from './svgs';
 
 export type SvgName = keyof typeof svgs;
 
-export interface SvgProps {
+export interface SvgProps extends Omit<SVGProps<SVGElement>, 'ref'> {
     name: SvgName;
     alt?: string;
     className?: string;
     testId?: string;
 }
 
-export const Svg = ({ className, name, testId, alt }: SvgProps) => {
+export const Svg = ({ className, name, testId, alt, ...props }: SvgProps & { ref?: Ref<SVGSVGElement> }) => {
     const LazyLoadedSvg = svgs[name];
     /**
      * TODO: temporary solution to add a viewbox to the ui-asset-icons
@@ -35,7 +36,11 @@ export const Svg = ({ className, name, testId, alt }: SvgProps) => {
     return (
         <span className={cx(`adyen-fp-icon`, className)} data-testid={testId}>
             <Suspense fallback={null}>
-                {viewBox ? <LazyLoadedSvg alt={alt} aria-hidden={true} viewBox={viewBox} /> : <LazyLoadedSvg alt={alt} aria-hidden={true} />}
+                {viewBox ? (
+                    <LazyLoadedSvg alt={alt} aria-hidden={true} viewBox={viewBox} {...props} />
+                ) : (
+                    <LazyLoadedSvg alt={alt} aria-hidden={true} {...props} />
+                )}
             </Suspense>
         </span>
     );

@@ -1,10 +1,9 @@
+import Icon from '../Icon';
 import { ExpandableCardProps } from './types';
 import { PropsWithChildren } from 'preact/compat';
 import classNames from 'classnames';
 import { useCallback, useEffect, useRef, useState } from 'preact/hooks';
 import './ExpandableCard.scss';
-import ChevronUp from '../SVGIcons/ChevronUp';
-import ChevronDown from '../SVGIcons/ChevronDown';
 import {
     BASE_CLASS,
     CHEVRON_CLASS,
@@ -72,7 +71,7 @@ const ExpandableCard = ({ renderHeader, children, filled, fullWidth, ...listener
                         <span className="adyen-pe-sr-only">{i18n.get('expandableCard.expand')}</span>
                         <div className={classNames(CONTENT_CLASS, CONTENT_EXPANDABLE_CLASS)}>{renderHeader}</div>
                         <div className={CHEVRON_CLASS}>
-                            <ChevronDown role="presentation" />
+                            <Icon name={'chevron-down'} role="presentation" />
                         </div>
                     </BaseButton>
                     <BaseButton
@@ -97,7 +96,7 @@ const ExpandableCard = ({ renderHeader, children, filled, fullWidth, ...listener
                             <div>{children}</div>
                         </div>
                         <div className={CHEVRON_CLASS}>
-                            <ChevronUp role="presentation" />
+                            <Icon name={'chevron-up'} role="presentation" />
                         </div>
                     </BaseButton>
                 </>

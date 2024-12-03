@@ -3,11 +3,11 @@ import { Ref } from 'preact';
 import { MutableRef, useMemo } from 'preact/hooks';
 import { HTMLAttributes, PropsWithChildren } from 'preact/compat';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
+import Icon from '../../../Icon';
 import Img from '../../../Img';
 import Button from '../../../Button';
 import { ButtonVariant } from '../../../Button/types';
 import Typography from '../../../Typography/Typography';
-import ChevronDown from '../../../SVGIcons/ChevronDown';
 import { TypographyElement, TypographyVariant } from '../../../Typography/types';
 import { boolOrFalse } from '../../../../../utils';
 import {
@@ -112,7 +112,7 @@ const SelectButton = <T extends SelectItem>(props: SelectButtonProps<T> & { appl
             )}
             {!withoutCollapseIndicator && (
                 <span className={DROPDOWN_BUTTON_COLLAPSE_INDICATOR_CLASS}>
-                    <ChevronDown role="presentation" />
+                    <Icon name={'chevron-down'} role="presentation" />
                 </span>
             )}
         </SelectButtonElement>

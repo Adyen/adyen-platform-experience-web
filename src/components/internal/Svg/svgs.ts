@@ -1,27 +1,18 @@
 /* eslint-disable import/no-relative-packages */
 import { lazy } from 'preact/compat';
 
-/**
- * Icons are fetched from @adyen/ui-assets-icons-16 package
- * @see https://adyen-ui-assets.netlify.app/
- *
- * This is a subset of the available icons in the package, not because
- * of a specific optimization, but vite needs complete paths to icons as
- * shown below for static analysis.
- *
- * How to add a new icon?
- * Search for it in the url/package above, add the entry below changing
- * the object key and the svg filename.
- */
 export const svgs = {
     // icons
     checkmark: lazy(() => import('@adyen/ui-assets-icons-16/svg/checkmark.svg?component')),
+    'checkmark-small': lazy(() => import('@adyen/ui-assets-icons-16/svg/checkmark-small.svg?component')),
     'checkmark-circle-fill': lazy(() => import('@adyen/ui-assets-icons-16/svg/checkmark-circle-fill.svg?component')),
     'checkmark-square-fill': lazy(() => import('@adyen/ui-assets-icons-16/svg/checkmark-square-fill.svg?component')),
     'chevron-down': lazy(() => import('@adyen/ui-assets-icons-16/svg/chevron-down.svg?component')),
+    'chevron-down-small': lazy(() => import('@adyen/ui-assets-icons-16/svg/chevron-down-small.svg?component')),
     'chevron-left': lazy(() => import('@adyen/ui-assets-icons-16/svg/chevron-left.svg?component')),
     'chevron-right': lazy(() => import('@adyen/ui-assets-icons-16/svg/chevron-right.svg?component')),
     'chevron-up': lazy(() => import('@adyen/ui-assets-icons-16/svg/chevron-up.svg?component')),
+    'chevron-up-small': lazy(() => import('@adyen/ui-assets-icons-16/svg/chevron-up-small.svg?component')),
     copy: lazy(() => import('@adyen/ui-assets-icons-16/svg/copy.svg?component')),
     cross: lazy(() => import('@adyen/ui-assets-icons-16/svg/cross.svg?component')),
     'cross-circle-fill': lazy(() => import('@adyen/ui-assets-icons-16/svg/cross-circle-fill.svg?component')),
@@ -44,6 +35,7 @@ export const unscalableIconNames = [
     'chevron-left',
     'chevron-right',
     'chevron-up',
+    'chevron-up-small',
     'copy',
     'cross',
     'cross-circle-fill',
