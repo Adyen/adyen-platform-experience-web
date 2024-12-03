@@ -5,7 +5,7 @@ import { CapitalOfferProps } from '../../types';
 import { CAPITAL_OFFER_CLASS_NAMES } from './constants';
 import { CapitalHeader } from '../../../../internal/CapitalHeader';
 import { CapitalOfferSelection } from '../CapitalOfferSelection/CapitalOfferSelection';
-import { IDynamicOfferConfig, IGrantOfferResponseDTO } from '../../../../../types';
+import { IDynamicOffersConfig, IGrantOfferResponseDTO } from '../../../../../types';
 import { useAuthContext } from '../../../../../core/Auth';
 import { useFetch } from '../../../../../hooks/useFetch';
 import { EMPTY_OBJECT } from '../../../../../utils';
@@ -25,13 +25,13 @@ export const CapitalOffer: FunctionalComponent<ExternalUIComponentProps<CapitalO
     const { getDynamicGrantOffersConfiguration } = useAuthContext().endpoints;
 
     const [emptyGrantOffer, setEmptyGrantOffer] = useState(false);
-    const onSuccess = useCallback((data: IDynamicOfferConfig | undefined) => {
+    const onSuccess = useCallback((data: IDynamicOffersConfig | undefined) => {
         if (data) {
             setEmptyGrantOffer(false);
         } else setEmptyGrantOffer(true);
     }, []);
 
-    const { data: internalDynamicOffersConfig, error: dynamicConfigError } = useFetch({
+    const { data: internalDynamicOffersConfig, error: dynamicOffersConfigError } = useFetch({
         fetchOptions: {
             enabled: !externalDynamicOffersConfig && !!getDynamicGrantOffersConfiguration,
             onSuccess: onSuccess,
@@ -42,10 +42,6 @@ export const CapitalOffer: FunctionalComponent<ExternalUIComponentProps<CapitalO
     });
 
     const config = externalDynamicOffersConfig || internalDynamicOffersConfig;
-
-    const goBackHandler = useCallback(() => {
-        onOfferDismiss?.();
-    }, [onOfferDismiss]);
 
     const [selectedOffer, setSelectedOffer] = useState<IGrantOfferResponseDTO>();
 
@@ -80,9 +76,9 @@ export const CapitalOffer: FunctionalComponent<ExternalUIComponentProps<CapitalO
             {capitalOfferState === 'OfferSelection' && (
                 <CapitalOfferSelection
                     requestedAmount={requestedAmount}
-                    config={config}
-                    dynamicConfigError={dynamicConfigError}
-                    onBack={goBackHandler}
+                    dynamicOffersConfig={config}
+                    dynamicOffersConfigError={dynamicOffersConfigError}
+                    onOfferDismiss={onOfferDismiss}
                     onOfferSelect={onOfferSelectHandler}
                     repaymentFrequency={REPAYMENT_FREQUENCY}
                     emptyGrantOffer={emptyGrantOffer}

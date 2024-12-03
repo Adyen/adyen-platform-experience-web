@@ -7,11 +7,11 @@ import { GrantsDisplay } from './GrantsDisplay';
 import { IGrant } from '../../../../../types';
 
 export const GrantList: FunctionalComponent<GrantListProps> = ({
-    onFundsRequestHandler,
-    onOfferDismissed,
+    externalDynamicOffersConfig,
     grantList,
     newOfferAvailable,
-    externalDynamicOffersConfig,
+    onFundsRequest,
+    onOfferDismiss,
 }) => {
     const [capitalOfferSelection, setCapitalOfferSelection] = useState<boolean>(false);
 
@@ -19,15 +19,15 @@ export const GrantList: FunctionalComponent<GrantListProps> = ({
     const goToNextStep = useCallback(() => setCapitalOfferSelection(true), []);
 
     const goBackToList = useCallback(() => {
-        onOfferDismissed ? onOfferDismissed(goBackToPreviousStep) : goBackToPreviousStep();
-    }, [goBackToPreviousStep, onOfferDismissed]);
+        onOfferDismiss ? onOfferDismiss(goBackToPreviousStep) : goBackToPreviousStep();
+    }, [goBackToPreviousStep, onOfferDismiss]);
 
     const goBackToGrantListOnFundsRequest = useCallback(
         (data: IGrant) => {
-            onFundsRequestHandler(data);
+            onFundsRequest(data);
             setCapitalOfferSelection(false);
         },
-        [onFundsRequestHandler]
+        [onFundsRequest]
     );
 
     return (

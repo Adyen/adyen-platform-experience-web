@@ -1,12 +1,12 @@
-import { IDynamicOfferConfig, IGrant } from '../../../../../types';
+import { IDynamicOffersConfig, IGrant } from '../../../../../types';
 
 export interface GrantListProps {
+    externalDynamicOffersConfig?: IDynamicOffersConfig;
     grantList: IGrant[];
     hideTitle?: boolean;
     newOfferAvailable: boolean;
-    onFundsRequestHandler: (data: IGrant) => void;
-    onOfferDismissed?: (goToPreviousStep: () => void) => void;
-    externalDynamicOffersConfig?: IDynamicOfferConfig;
+    onFundsRequest: (data: IGrant) => void;
+    onOfferDismiss?: (goToPreviousStep: () => void) => void;
 }
 
 export interface GrantsProps {

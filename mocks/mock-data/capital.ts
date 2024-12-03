@@ -1,4 +1,4 @@
-import { IDynamicOfferConfig, IGrant } from '../../src';
+import { IDynamicOffersConfig, IGrant } from '../../src';
 
 export const DYNAMIC_CAPITAL_OFFER = {
     minAmount: {
@@ -10,7 +10,7 @@ export const DYNAMIC_CAPITAL_OFFER = {
         currency: 'EUR',
     },
     step: 10000,
-} satisfies IDynamicOfferConfig;
+} satisfies IDynamicOffersConfig;
 
 export const DEFAULT_GRANT: IGrant = {
     id: '66e12a9a64a6',
