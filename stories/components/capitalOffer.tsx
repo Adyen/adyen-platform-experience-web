@@ -9,8 +9,8 @@ export const capitalOfferMeta: Meta<ElementProps<typeof CapitalOffer>> = {
     argTypes: {
         hideTitle: { type: 'boolean' },
         onContactSupport: enabledDisabledCallbackRadioControls('onContactSupport'),
-        onFundsRequest: enabledDisabledCallbackRadioControls('onOfferSelect'),
-        onOfferDismiss: enabledDisabledCallbackRadioControls('onOfferSelect'),
+        onFundsRequest: enabledDisabledCallbackRadioControls('onFundsRequest'),
+        onOfferDismiss: enabledDisabledCallbackRadioControls('onOfferDismiss'),
         onOfferSelect: enabledDisabledCallbackRadioControls('onOfferSelect'),
     },
     args: {
