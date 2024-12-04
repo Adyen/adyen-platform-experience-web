@@ -65,7 +65,7 @@ describe('getCapitalErrorMessage', () => {
 
         expect(result).toEqual({
             title: 'theRequestIsMissingRequiredFieldsOrContainsInvalidData',
-            message: ['pleaseReachOutToSupportForAssistance'],
+            message: ['contactSupportForHelp'],
         });
     });
 });
