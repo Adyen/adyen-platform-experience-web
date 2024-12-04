@@ -5,26 +5,31 @@ import Icon from '../Icon';
 import { TypographyElement, TypographyVariant } from '../Typography/types';
 import Typography from '../Typography/Typography';
 import { AlertIcon } from './AlertIcon';
-import { AlertProps } from './types';
+import { AlertProps, AlertVariantOption } from './types';
 import './Alert.scss';
 
-export const Alert = ({ className, description, title, type, children, onClose }: AlertProps) => (
-    <div className={cx('adyen-pe-alert', `adyen-pe-alert--${type}`, className)} role="alert">
+export const Alert = ({ className, description, title, type, children, onClose, variant = AlertVariantOption.DEFAULT }: AlertProps) => (
+    <div className={cx('adyen-pe-alert', `adyen-pe-alert--${type}`, `adyen-pe-alert--${variant}`, className)} role="alert">
         <AlertIcon type={type} className="adyen-pe-alert__icon" />
         <div className={'adyen-pe-alert__content'}>
-            {title && (
+            {title && variant !== AlertVariantOption.TIP && (
                 <Typography className={'adyen-pe-alert__title'} el={TypographyElement.DIV} variant={TypographyVariant.BODY} wide strongest>
                     {title}
                 </Typography>
             )}
             {description && (
-                <Typography className={'adyen-pe-alert__description'} el={TypographyElement.DIV} variant={TypographyVariant.BODY} wide>
+                <Typography
+                    className={'adyen-pe-alert__description'}
+                    el={TypographyElement.DIV}
+                    variant={variant !== AlertVariantOption.TIP ? TypographyVariant.CAPTION : TypographyVariant.BODY}
+                    wide
+                >
                     {description}
                 </Typography>
             )}
             {children}
         </div>
-        {onClose && (
+        {onClose && variant !== AlertVariantOption.TIP && (
             <div className="adyen-pe-alert__close-button">
                 <Button iconButton variant={ButtonVariant.TERTIARY} onClick={onClose}>
                     <Icon name="cross" />

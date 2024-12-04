@@ -6,7 +6,7 @@ import useCoreContext from '../../../../../core/Context/useCoreContext';
 import type { ILineItem } from '../../../../../types';
 import { EMPTY_ARRAY } from '../../../../../utils';
 import Alert from '../../../../internal/Alert/Alert';
-import { AlertTypeOption } from '../../../../internal/Alert/types';
+import { AlertTypeOption, AlertVariantOption } from '../../../../internal/Alert/types';
 import Button from '../../../../internal/Button';
 import ButtonActions from '../../../../internal/Button/ButtonActions/ButtonActions';
 import { ButtonActionObject, ButtonActionsLayoutBasic } from '../../../../internal/Button/ButtonActions/types';
@@ -28,6 +28,7 @@ import {
     TX_REFUND_RESPONSE_ERROR_ICON,
     TX_REFUND_RESPONSE_ICON,
     TX_REFUND_RESPONSE_SUCCESS_ICON,
+    TX_REFUND_STATUSES_CONTAINER,
     TX_STATUS_BOX,
 } from '../constants';
 import TransactionDataProperties from '../details/TransactionDataProperties';
@@ -121,17 +122,23 @@ export const TransactionDataContent = ({ transaction: initialTransaction }: Tran
 
     const renderMessages = useCallback(() => {
         return refundStatuses?.length || refundLocked ? (
-            <>
+            <div className={TX_REFUND_STATUSES_CONTAINER}>
                 {refundLocked && (
                     <Alert
                         type={AlertTypeOption.HIGHLIGHT}
+                        variant={AlertVariantOption.TIP}
                         description={`${i18n.get('refund.theRefundIsBeingProcessed')} ${i18n.get('pleaseComeBackLater')}`}
                     />
                 )}
                 {refundStatuses.map((status, index) => (
-                    <Alert key={`${Math.random()}-${index}`} type={status?.type ?? AlertTypeOption.HIGHLIGHT} description={status?.label} />
+                    <Alert
+                        key={`${Math.random()}-${index}`}
+                        variant={AlertVariantOption.TIP}
+                        type={status?.type ?? AlertTypeOption.HIGHLIGHT}
+                        description={status?.label}
+                    />
                 ))}
-            </>
+            </div>
         ) : null;
     }, [i18n, refundStatuses, refundLocked]);
 
@@ -194,7 +201,13 @@ export const TransactionDataContent = ({ transaction: initialTransaction }: Tran
                             <TransactionRefundPartialAmountInput />
                         )}
 
-                        {refundableAmountLabel && <Alert type={refundableAmountLabel.type} description={refundableAmountLabel.description} />}
+                        {refundableAmountLabel && (
+                            <Alert
+                                variant={AlertVariantOption.TIP}
+                                type={refundableAmountLabel.type}
+                                description={refundableAmountLabel.description}
+                            />
+                        )}
                     </TransactionRefundProvider>
                 </_TransactionDataContentViewWrapper>
             );

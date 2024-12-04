@@ -206,6 +206,12 @@
         line-height: style.token(text-body-line-height);
     }
 
+    &__refund-statuses-container {
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-060);
+    }
+
     &__refund {
         &-response {
             align-items: center;
