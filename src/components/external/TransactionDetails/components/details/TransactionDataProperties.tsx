@@ -11,7 +11,7 @@ import { isNullish } from '../../../../../utils';
 
 const TransactionDataProperties = () => {
     const { i18n } = useCoreContext();
-    const { transaction } = useTransactionDetailsContext();
+    const { transaction, extraFields } = useTransactionDetailsContext();
 
     return useMemo(() => {
         const { balanceAccount, category, id, paymentPspReference, refundMetadata } = transaction;
@@ -42,12 +42,12 @@ const TransactionDataProperties = () => {
             balanceAccount?.description ? { key: 'account' as const, value: balanceAccount.description } : SKIP_ITEM,
 
             // custom data
-            ...Object.entries(transaction)
+            ...(Object.entries(extraFields || {})
                 .filter(([key]) => !TX_DETAILS_RESERVED_FIELDS_SET.has(key as any))
                 .map(([key, value]) => ({
                     key: key as TranslationKey,
                     value: _isCustomDataObject(value) ? value.value : value,
-                })),
+                })) || {}),
 
             // refund reason
             isRefundTransaction && refundMetadata?.refundReason
