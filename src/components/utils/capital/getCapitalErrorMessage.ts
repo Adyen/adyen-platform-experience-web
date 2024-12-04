@@ -2,7 +2,7 @@ import AdyenPlatformExperienceError from '../../../core/Errors/AdyenPlatformExpe
 import { ErrorMessage, getCommonErrorMessage } from '../getCommonErrorCode';
 
 export const COMMON_CAPITAL_ERROR_MESSAGE = {
-    contactSupport: 'pleaseContactSupportForHelp',
+    contactSupportForHelp: 'contactSupportForHelp',
     couldNotLoadOffers: 'capital.weCouldNotLoadFinancialOffers',
     tryRefreshingThePage: 'tryRefreshingThePageOrComeBackLater',
     somethingWentWrong: 'somethingWentWrong',
@@ -24,28 +24,29 @@ export const getCapitalErrorMessage = (error: AdyenPlatformExperienceError | und
         case '30_016': {
             return {
                 title: COMMON_CAPITAL_ERROR_MESSAGE.somethingWentWrong,
-                message: [COMMON_CAPITAL_ERROR_MESSAGE.couldNotLoadOffers, COMMON_CAPITAL_ERROR_MESSAGE.contactSupport],
+                message: [COMMON_CAPITAL_ERROR_MESSAGE.couldNotLoadOffers, COMMON_CAPITAL_ERROR_MESSAGE.contactSupportForHelp],
                 onContactSupport,
             };
         }
         case '30_011': {
             return {
                 title: 'capital.accountIsInactive',
-                message: [COMMON_CAPITAL_ERROR_MESSAGE.couldNotLoadOffers, COMMON_CAPITAL_ERROR_MESSAGE.contactSupport],
+                message: [COMMON_CAPITAL_ERROR_MESSAGE.couldNotLoadOffers, COMMON_CAPITAL_ERROR_MESSAGE.contactSupportForHelp],
                 onContactSupport,
             };
         }
         case '30_600': {
             return {
                 title: COMMON_CAPITAL_ERROR_MESSAGE.somethingWentWrong,
-                message: ['capital.weCouldNotContinueWithTheOffer'],
+                message: ['capital.weCouldNotContinueWithTheOffer', COMMON_CAPITAL_ERROR_MESSAGE.contactSupportForHelp],
                 onContactSupport,
             };
         }
         case 'EMPTY_CONFIG': {
             return {
                 title: COMMON_CAPITAL_ERROR_MESSAGE.somethingWentWrong,
-                message: ['capital.weCouldNotContinueWithTheOffer'],
+                message: ['capital.weCouldNotContinueWithTheOffer', COMMON_CAPITAL_ERROR_MESSAGE.contactSupportForHelp],
+                onContactSupport,
             };
         }
         default:

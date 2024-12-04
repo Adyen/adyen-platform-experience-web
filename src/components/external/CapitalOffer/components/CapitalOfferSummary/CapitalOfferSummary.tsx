@@ -75,7 +75,7 @@ export const CapitalOfferSummary = ({
                 case '30_013':
                     return {
                         title: i18n.get('capital.thereIsNoPrimaryAccountConfigured'),
-                        message: i18n.get('capital.weCouldNotContinueWithTheOfferPleaseContactSupport'),
+                        message: i18n.get('capital.weCouldNotContinueWithTheOfferContactSupportForHelp'),
                         errorCode: '30_013',
                     };
                 default:

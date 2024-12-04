@@ -185,7 +185,7 @@ export const CapitalOfferSelection = ({
         <div className="adyen-pe-capital-offer-selection">
             {reviewOfferMutation.error || getDynamicGrantOfferMutation.error || emptyGrantOffer || dynamicOffersConfigError ? (
                 <CapitalErrorMessageDisplay
-                    error={reviewOfferMutation.error}
+                    error={reviewOfferMutation.error || getDynamicGrantOfferMutation.error || dynamicOffersConfigError}
                     onBack={onOfferDismiss}
                     onContactSupport={onContactSupport}
                     emptyGrantOffer={emptyGrantOffer}
