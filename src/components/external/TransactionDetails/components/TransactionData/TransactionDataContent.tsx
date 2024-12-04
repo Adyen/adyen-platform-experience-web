@@ -81,8 +81,18 @@ export const TransactionDataContent = ({ transaction: initialTransaction }: Tran
     const [secondaryAction, _setSecondaryAction] = useState<ButtonActionObject>();
 
     const { fetchingTransaction, refreshTransaction, transaction, transactionNavigator } = useTransaction(initialTransaction);
-    const { refundable, refundableAmount, refundAvailable, refundCurrency, refundDisabled, refundedState, refundStatuses, refundMode, refundLocked } =
-        useTransactionRefundMetadata(transaction);
+    const {
+        refundable,
+        refundableAmount,
+        refundAvailable,
+        refundCurrency,
+        refundDisabled,
+        refundableAmountLabel,
+        refundedState,
+        refundStatuses,
+        refundMode,
+        refundLocked,
+    } = useTransactionRefundMetadata(transaction);
 
     const { i18n } = useCoreContext();
     const lineItems: readonly ILineItem[] = Object.freeze(transaction?.lineItems ?? EMPTY_ARRAY);
@@ -112,7 +122,12 @@ export const TransactionDataContent = ({ transaction: initialTransaction }: Tran
     const renderMessages = useCallback(() => {
         return refundStatuses?.length || refundLocked ? (
             <>
-                {refundLocked && <Alert type={AlertTypeOption.HIGHLIGHT} description={i18n.get('refund.theRefundIsBeingProcessed')} />}
+                {refundLocked && (
+                    <Alert
+                        type={AlertTypeOption.HIGHLIGHT}
+                        description={`${i18n.get('refund.theRefundIsBeingProcessed')} ${i18n.get('pleaseComeBackLater')}`}
+                    />
+                )}
                 {refundStatuses.map((status, index) => (
                     <Alert key={`${Math.random()}-${index}`} type={status?.type ?? AlertTypeOption.HIGHLIGHT} description={status?.label} />
                 ))}
@@ -178,6 +193,8 @@ export const TransactionDataContent = ({ transaction: initialTransaction }: Tran
                         {(refundMode === RefundMode.PARTIAL_AMOUNT || refundMode === RefundMode.PARTIAL_LINE_ITEMS) && (
                             <TransactionRefundPartialAmountInput />
                         )}
+
+                        {refundableAmountLabel && <Alert type={refundableAmountLabel.type} description={refundableAmountLabel.description} />}
                     </TransactionRefundProvider>
                 </_TransactionDataContentViewWrapper>
             );

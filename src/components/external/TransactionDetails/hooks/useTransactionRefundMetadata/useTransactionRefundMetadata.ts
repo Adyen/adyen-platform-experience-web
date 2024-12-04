@@ -8,6 +8,8 @@ import { checkRefundStatusCollection } from './helpers';
 import type { IRefundMode } from '../../../../../types';
 import type { TransactionDataProps } from '../../types';
 
+const allStatuses = ['completed', 'in_progress', 'failed'];
+
 export const useTransactionRefundMetadata = (transaction: TransactionDataProps['transaction']) => {
     const { i18n } = useCoreContext();
 
@@ -15,7 +17,7 @@ export const useTransactionRefundMetadata = (transaction: TransactionDataProps['
     const refundMode: IRefundMode = details?.refundMode ?? RefundMode.FULL_AMOUNT;
     const refundLocked = boolOrFalse(details?.refundLocked);
     const refundable = refundMode !== RefundMode.NON_REFUNDABLE;
-    const transactionAmount = transaction?.amount.value;
+    const originalAmount = transaction?.originalAmount?.value;
 
     const refundableAmount = useMemo(() => (transaction ? Math.max(0, details?.refundableAmount?.value ?? 0) : 0), [details, transaction]);
 
@@ -29,6 +31,12 @@ export const useTransactionRefundMetadata = (transaction: TransactionDataProps['
         return (
             statusDetails
                 ?.filter(currentStatus => currentStatus.amount.value !== 0)
+                .sort((firstStatus, secondStatus) => {
+                    if (allStatuses.includes(firstStatus.status) && allStatuses.includes(secondStatus.status)) {
+                        return allStatuses.indexOf(firstStatus.status) > allStatuses.indexOf(secondStatus.status) ? 0 : -1;
+                    }
+                    return -1;
+                })
                 .reduce((res, currentStatusValue) => {
                     const currentStatus = currentStatusValue.status;
                     const amount = ~currentStatusValue.amount.value + 1;
@@ -53,46 +61,47 @@ export const useTransactionRefundMetadata = (transaction: TransactionDataProps['
     );
 
     const refundStatuses = useMemo(() => {
-        if (refundableAmount === 0 && refundedAmount > 0 && allRefunded && refundedAmount === transactionAmount) {
-            //TODO: Add those as translation
-            return [{ type: AlertTypeOption.HIGHLIGHT, label: `The full amount has been refunded back to the customer.` }];
+        if (refundableAmount === 0 && refundedAmount > 0 && allRefunded && refundedAmount === originalAmount) {
+            return [{ type: AlertTypeOption.HIGHLIGHT, label: i18n.get('refund.fullAmountRefunded') }];
         } else {
             const statusAlerts = Object.keys(statuses)?.map(status => {
                 const currentStatus = status as 'in_progress' | 'completed' | 'failed';
-                const amountString = statuses?.[currentStatus]?.amounts.reduce(
-                    (res, value) => `${res ? `${res},` : ''} ${i18n.amount(value, statuses?.[currentStatus]?.currency)}`,
-                    ''
-                );
+                const formattedAmount = statuses?.[currentStatus]?.amounts.reduce((res, value, currentIndex) => {
+                    const amountsLength = statuses?.[currentStatus]?.amounts.length;
+                    if (amountsLength > 0 && currentIndex === amountsLength - 1)
+                        return `${res ? `${res}` : ''} ${i18n.get('and')} ${i18n.amount(value, statuses?.[currentStatus]?.currency)}`;
+                    return `${res ? `${res},` : ''} ${i18n.amount(value, statuses?.[currentStatus]?.currency)}`;
+                }, '');
                 const totalAmount = statuses?.[currentStatus]?.amounts.reduce((sum, amount) => sum + amount, 0);
+
                 switch (status) {
                     case RefundStatus.COMPLETED:
-                        //TODO: Add those as translation
                         return {
                             type: AlertTypeOption.HIGHLIGHT,
-                            label: `You already refunded ${amountString}, the remaining balance is ${i18n.amount(refundableAmount, refundCurrency)}`,
+                            label: i18n.get('refund.amountAlreadyRefunded', { values: { amount: formattedAmount } }),
                         };
                     case RefundStatus.IN_PROGRESS:
-                        if (totalAmount === transactionAmount) {
+                        if (totalAmount === originalAmount) {
                             return {
                                 type: AlertTypeOption.WARNING,
-                                label: `The refund is currently being processed.`,
+                                label: i18n.get('refund.theRefundIsBeingProcessed'),
                             };
                         } else {
                             return {
                                 type: AlertTypeOption.HIGHLIGHT,
-                                label: `The partial refund of ${amountString} is being processed. You can only send a refund for the remaining amount.`,
+                                label: i18n.get('refund.amountInProgress', { values: { amount: formattedAmount } }),
                             };
                         }
                     case RefundStatus.FAILED:
-                        if (totalAmount === transactionAmount) {
+                        if (totalAmount === originalAmount) {
                             return {
                                 type: AlertTypeOption.WARNING,
-                                label: `It is not possible to refund this payment. Please contact support.`,
+                                label: i18n.get('refund.fullAmountFailed'),
                             };
                         } else {
                             return {
                                 type: AlertTypeOption.WARNING,
-                                label: `The refund for ${amountString} has failed. It is not currently possible to refund this amount. Please contact support.`,
+                                label: i18n.get('refund.amountFailed', { values: { amount: formattedAmount } }),
                             };
                         }
                     default:
@@ -101,12 +110,33 @@ export const useTransactionRefundMetadata = (transaction: TransactionDataProps['
             });
             return statusAlerts ?? [];
         }
-    }, [details?.refundStatuses, refundableAmount, transactionAmount, i18n, refundCurrency, refundedAmount, statuses, allRefunded]);
+    }, [refundableAmount, originalAmount, i18n, refundedAmount, statuses, allRefunded]);
+
+    const refundableAmountLabel = useMemo(() => {
+        if (refundableAmount > 0) {
+            const formattedAmount = i18n.amount(refundableAmount, refundCurrency);
+            switch (refundMode) {
+                case RefundMode.FULL_AMOUNT:
+                    return {
+                        type: AlertTypeOption.HIGHLIGHT,
+                        description: i18n.get('refund.onlyRefundable', { values: { amount: formattedAmount } }),
+                    };
+                case RefundMode.PARTIAL_AMOUNT:
+                    return {
+                        type: AlertTypeOption.HIGHLIGHT,
+                        description: i18n.get('refund.maximumRefundable', { values: { amount: formattedAmount } }),
+                    };
+                default:
+                    return null;
+            }
+        }
+        return null;
+    }, [i18n, refundableAmount, refundCurrency, refundMode]);
 
     const refundedState = useMemo(() => {
         switch (refundMode) {
             case RefundMode.NON_REFUNDABLE:
-                if (refundableAmount === 0 && refundedAmount > 0 && allRefunded && refundedAmount === transactionAmount) {
+                if (refundableAmount === 0 && refundedAmount > 0 && allRefunded && refundedAmount === originalAmount) {
                     return RefundedState.FULL;
                 }
         }
@@ -114,20 +144,18 @@ export const useTransactionRefundMetadata = (transaction: TransactionDataProps['
         switch (refundMode) {
             case RefundMode.PARTIAL_AMOUNT:
             case RefundMode.PARTIAL_LINE_ITEMS:
-                if (
-                    refundableAmount > 0 ||
-                    (someRefunded && refundedAmount > 0 && !isUndefined(transactionAmount) && refundedAmount < transactionAmount)
-                ) {
+                if (refundableAmount > 0 || (someRefunded && refundedAmount > 0 && !isUndefined(originalAmount) && refundedAmount < originalAmount)) {
                     return RefundedState.PARTIAL;
                 }
         }
 
         return RefundedState.INDETERMINATE;
-    }, [details, refundableAmount, refundedAmount, refundMode, someRefunded, allRefunded]);
+    }, [refundableAmount, refundedAmount, refundMode, originalAmount, someRefunded, allRefunded]);
 
     return {
         refundableAmount, // the maximum amount still available for refund
         refundable, // whether the refund mode of the payment allows for refund
+        refundableAmountLabel,
         refundAvailable, // whether a refund can be initiated for the payment
         refundAuthorization, // whether the authenticated user has sufficient permission to initiate refunds
         refundCurrency, // the payment currency for any initiated refund
