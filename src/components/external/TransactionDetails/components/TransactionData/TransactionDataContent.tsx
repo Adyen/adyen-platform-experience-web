@@ -207,7 +207,7 @@ export const TransactionDataContent = ({ transaction: initialTransaction }: Tran
                     subtitle={i18n.get('refundActionSuccessSubtitle')}
                     action={() => (
                         <Button variant={ButtonVariant.SECONDARY} onClick={refreshTransaction}>
-                            {i18n.get('goToPayment')}
+                            {i18n.get('goBack')}
                         </Button>
                     )}
                 />
@@ -221,7 +221,7 @@ export const TransactionDataContent = ({ transaction: initialTransaction }: Tran
                     subtitle={i18n.get('refundActionErrorSubtitle')}
                     action={() => (
                         <Button variant={ButtonVariant.SECONDARY} onClick={refreshTransaction}>
-                            {i18n.get('goToPayment')}
+                            {i18n.get('goBack')}
                         </Button>
                     )}
                 />
