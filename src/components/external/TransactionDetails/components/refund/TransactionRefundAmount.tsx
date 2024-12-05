@@ -31,12 +31,14 @@ const _BaseRefundAmountInput = ({
     currency,
     disabled,
     errorMessage,
+    errorMessageArg,
     onInput,
     value,
 }: {
     currency: string;
     disabled?: boolean;
     errorMessage: TranslationKey | null;
+    errorMessageArg?: string;
     onBlur?: (evt: h.JSX.TargetedEvent<HTMLInputElement>) => unknown;
     onInput?: (evt: h.JSX.TargetedEvent<HTMLInputElement>) => unknown;
     value: string | number;
@@ -44,6 +46,8 @@ const _BaseRefundAmountInput = ({
     const { i18n } = useCoreContext();
     const inputIdentifier = useRef(uniqueId());
     const labelIdentifier = useRef(uniqueId());
+
+    const error = errorMessage ? (errorMessageArg ? i18n.get(errorMessage, { values: { amount: errorMessageArg } }) : i18n.get(errorMessage)) : '';
 
     return (
         <div className={TX_DATA_CONTAINER}>
@@ -80,7 +84,7 @@ const _BaseRefundAmountInput = ({
                     <div className="adyen-pe-input__invalid-value" id={`${inputIdentifier.current}${ARIA_ERROR_SUFFIX}`}>
                         <CloseCircle />
                         <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY}>
-                            {i18n.get(errorMessage)}
+                            {error}
                         </Typography>
                     </div>
                 )}
@@ -98,7 +102,7 @@ export const TransactionRefundPartialAmountInput = () => {
     const { availableAmount, currency, interactionsDisabled, setAmount } = useTransactionRefundContext();
     const [errorMessage, setErrorMessage] = useState<TranslationKey | null>(null);
     const [refundAmount, setRefundAmount] = useState(`${formatAmount(availableAmount, currency)}`);
-
+    const { i18n } = useCoreContext();
     const computeRefundAmount = useMemo(() => {
         const exponent = getCurrencyExponent(currency);
         return (value: string) => Math.trunc(+`${parseFloat(value)}e${exponent}`) || 0;
@@ -123,6 +127,7 @@ export const TransactionRefundPartialAmountInput = () => {
         <_BaseRefundAmountInput
             currency={currency}
             errorMessage={errorMessage}
+            errorMessageArg={i18n.amount(availableAmount, currency)}
             onInput={onInput}
             value={refundAmount}
             disabled={interactionsDisabled}
