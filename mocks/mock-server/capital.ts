@@ -85,17 +85,12 @@ const getErrorHandler = (error: AdyenPlatformExperienceError, status = 500) => {
     };
 };
 
-const ERROR_NO_CAPABILITY = new AdyenPlatformExperienceError(ErrorTypes.ERROR, 'MissingCapabilitiesException', 'Message', '30_016');
+const ERROR_NO_CAPABILITY = new AdyenPlatformExperienceError(ErrorTypes.ERROR, '825ac4ce59f0f159ad672d38d3291i55', 'Message', '30_016');
 
-const ERROR_INACTIVE_AH = new AdyenPlatformExperienceError(ErrorTypes.ERROR, 'AccountHolderInactiveException', 'Message', '30_011');
+const ERROR_INACTIVE_AH = new AdyenPlatformExperienceError(ErrorTypes.ERROR, '769ac4ce59f0f159ad672d38d3291e92', 'Message', '30_011');
 
 const ERROR_OFFER_REVIEW_WENT_WRONG = new AdyenPlatformExperienceError(ErrorTypes.ERROR, 'Something went wrong', 'Message');
-const ERROR_NO_GRANT_ACCOUNT_CONFIG = new AdyenPlatformExperienceError(
-    ErrorTypes.ERROR,
-    'GrantAccountMisconfigurationException',
-    'Message',
-    '30_600'
-);
+const ERROR_NO_GRANT_ACCOUNT_CONFIG = new AdyenPlatformExperienceError(ErrorTypes.ERROR, '226ac4ce59f0f159ad672d38d3291e93', 'Message', '30_600');
 const ERROR_NO_PRIMARY_BALANCE_ACCOUNT = new AdyenPlatformExperienceError(
     ErrorTypes.ERROR,
     'MissingPrimaryBalanceAccountException',
