@@ -1,7 +1,7 @@
 import cx from 'classnames';
 import type { ComponentChild } from 'preact';
 import type { PropsWithChildren } from 'preact/compat';
-import { useCallback, useLayoutEffect, useState } from 'preact/hooks';
+import { useCallback, useLayoutEffect, useMemo, useState } from 'preact/hooks';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import type { ILineItem } from '../../../../../types';
 import { EMPTY_ARRAY } from '../../../../../utils';
@@ -80,10 +80,24 @@ export const TransactionDataContent = ({ transaction: initialTransaction, extraF
     const [activeView, _setActiveView] = useState(ActiveView.DETAILS);
     const [primaryAction, _setPrimaryAction] = useState<ButtonActionObject>();
     const [secondaryAction, _setSecondaryAction] = useState<ButtonActionObject>();
+    //TODO: Remove this when locked status returns from backend
+    const [locked, setLocked] = useState(false);
 
     const { fetchingTransaction, refreshTransaction, transaction, transactionNavigator } = useTransaction(initialTransaction);
-    const { refundable, refundableAmount, refundAvailable, refundCurrency, refundDisabled, refundedState, refundStatuses, refundMode, refundLocked } =
-        useTransactionRefundMetadata(transaction);
+    const {
+        refundable,
+        refundableAmount,
+        refundAvailable,
+        refundCurrency,
+        refundDisabled: refundDisabledMetaData,
+        refundedState,
+        refundStatuses,
+        refundMode,
+        refundLocked,
+    } = useTransactionRefundMetadata(transaction);
+
+    //TODO: Remove this and do not rename refundDetails from the hook when locked status returns from backend
+    const refundDisabled = useMemo(() => refundDisabledMetaData || locked, [refundDisabledMetaData, locked]);
 
     const { i18n } = useCoreContext();
     const lineItems: readonly ILineItem[] = Object.freeze(transaction?.lineItems ?? EMPTY_ARRAY);
@@ -110,17 +124,25 @@ export const TransactionDataContent = ({ transaction: initialTransaction, extraF
         ) : null;
     }, [primaryAction, secondaryAction]);
 
+    const onRefundSuccess = useCallback(() => {
+        console.log('hey');
+        setLocked(true);
+        refreshTransaction();
+    }, [setLocked, refreshTransaction]);
+
     const renderMessages = useCallback(() => {
         // TODO:Add translation
-        return refundStatuses?.length || refundLocked ? (
+        return refundStatuses?.length || refundLocked || locked ? (
             <>
-                {refundLocked && <Alert type={AlertTypeOption.HIGHLIGHT} description={'The refund is being processed. Please come back later.'} />}
+                {(refundLocked || locked) && (
+                    <Alert type={AlertTypeOption.HIGHLIGHT} description={'The refund is being processed. Please come back later.'} />
+                )}
                 {refundStatuses.map((status, index) => (
                     <Alert key={`${Math.random()}-${index}`} type={status?.type ?? AlertTypeOption.HIGHLIGHT} description={status?.label} />
                 ))}
             </>
         ) : null;
-    }, [refundStatuses, refundLocked]);
+    }, [refundStatuses, refundLocked, locked]);
 
     useLayoutEffect(() => {
         _setActiveView(ActiveView.DETAILS);
@@ -196,7 +218,7 @@ export const TransactionDataContent = ({ transaction: initialTransaction, extraF
                     title={i18n.get('refundActionSuccessTitle')}
                     subtitle={i18n.get('refundActionSuccessSubtitle')}
                     action={() => (
-                        <Button variant={ButtonVariant.SECONDARY} onClick={refreshTransaction}>
+                        <Button variant={ButtonVariant.SECONDARY} onClick={onRefundSuccess}>
                             {i18n.get('goToPayment')}
                         </Button>
                     )}
