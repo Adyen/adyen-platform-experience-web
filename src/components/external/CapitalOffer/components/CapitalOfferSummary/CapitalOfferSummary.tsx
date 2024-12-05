@@ -135,7 +135,7 @@ export const CapitalOfferSummary = ({
                     <strong>{`${i18n.amount(grantOffer.grantAmount.value, grantOffer.grantAmount.currency, { minimumFractionDigits: 0 })}.`}</strong>
                 </Typography>
                 <Typography el={TypographyElement.PARAGRAPH} variant={TypographyVariant.CAPTION}>
-                    {i18n.get('capital.yourMinimumRepaymentWillBeXEveryXDaysUntilX', {
+                    {i18n.get('capital.youWillNeedToRepayAMinimumOfXEveryXDaysToPayOffTheFunds', {
                         values: {
                             amount: i18n.amount(grantOffer.thresholdAmount.value, grantOffer.thresholdAmount.currency),
                             days: repaymentFrequency,
