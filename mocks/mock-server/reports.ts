@@ -1,6 +1,6 @@
 import { endpoints } from '../../endpoints/endpoints';
 import { http, HttpResponse } from 'msw';
-import { compareDates, delay, getPaginationLinks } from './utils';
+import { compareDates, delay, getPaginationLinks } from './utils/utils';
 import { getReports } from '../mock-data/reports';
 
 const DEFAULT_SORT_DIRECTION = 'desc';

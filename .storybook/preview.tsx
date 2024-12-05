@@ -1,7 +1,7 @@
 import { Preview } from '@storybook/preact';
 import '../playground/assets/style/style.scss';
 import '../src/components/shared.scss';
-import { getMockHandlers } from '../mocks/mock-server/utils';
+import { getMockHandlers } from '../mocks/mock-server/utils/utils';
 import { mswLoader, initialize, getWorker } from 'msw-storybook-addon';
 import { mocks } from '../mocks/mock-server';
 import { Container } from '../stories/utils/Container';
@@ -29,6 +29,11 @@ const preview: Preview = {
             },
         },
         balanceAccountId: { type: 'string' },
+        skipDecorators: {
+            table: {
+                disable: true,
+            },
+        },
     },
     loaders: [
         async context => {
