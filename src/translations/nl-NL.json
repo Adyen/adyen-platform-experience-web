@@ -109,6 +109,7 @@
     "expandableCard.collapse": "Samenvoegen",
     "expandableCard.expand": "Uitvouwen",
     "export": "Exporteren",
+    "fee": "Kosten",
     "file": "Bestand",
     "filter.date.since": "Sinds %{date}",
     "filter.date.until": "Tot %{date}",

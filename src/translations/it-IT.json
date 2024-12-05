@@ -109,6 +109,7 @@
     "expandableCard.collapse": "Comprimi",
     "expandableCard.expand": "Espandi",
     "export": "Esporta",
+    "fee": "Commissioni",
     "file": "File",
     "filter.date.since": "Dal %{date}",
     "filter.date.until": "Fino a %{date}",

@@ -109,6 +109,7 @@
     "expandableCard.collapse": "Zuklappen",
     "expandableCard.expand": "Aufklappen",
     "export": "Exportieren",
+    "fee": "Gebühren",
     "file": "Datei",
     "filter.date.since": "Seit %{date}",
     "filter.date.until": "Bis %{date}",

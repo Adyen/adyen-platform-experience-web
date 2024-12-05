@@ -109,6 +109,7 @@
     "expandableCard.collapse": "Minimera",
     "expandableCard.expand": "Expandera",
     "export": "Exportera",
+    "fee": "Avgifter",
     "file": "Fil",
     "filter.date.since": "Sedan %{date}",
     "filter.date.until": "Till %{date}",

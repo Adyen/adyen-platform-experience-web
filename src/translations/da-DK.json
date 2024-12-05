@@ -109,6 +109,7 @@
     "expandableCard.collapse": "Skjul",
     "expandableCard.expand": "Udvid",
     "export": "Eksporter",
+    "fee": "Gebyrer",
     "file": "Fil",
     "filter.date.since": "Siden %{date}",
     "filter.date.until": "Indtil %{date}",

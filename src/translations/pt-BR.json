@@ -109,6 +109,7 @@
     "expandableCard.collapse": "Recolher",
     "expandableCard.expand": "Expandir",
     "export": "Exportar",
+    "fee": "Taxas",
     "file": "Arquivo",
     "filter.date.since": "De %{date}",
     "filter.date.until": "Até %{date}",
