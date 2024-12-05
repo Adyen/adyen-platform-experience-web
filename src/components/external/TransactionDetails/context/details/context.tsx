@@ -66,7 +66,7 @@ export const TransactionDetailsProvider = memo(
             switch (_secondaryAction) {
                 case TransactionNavigationAction.BACKWARD:
                     return {
-                        title: i18n.get('refund.backToRefund' as TranslationKey),
+                        title: i18n.get('refund.returnToRefund' as TranslationKey),
                         renderTitle: (title: string) => (
                             <>
                                 <Icon style={{ transform: 'scaleX(-1)' }} name="angle-right" />
