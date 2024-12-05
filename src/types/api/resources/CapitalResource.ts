@@ -32,7 +32,7 @@ export interface paths {
          */
         get: operations['getGrants'];
     };
-    '/v1/capital/grantOffers/dynamic/requestFunds/{grantOfferId}': {
+    '/v1/capital/grants/{grantOfferId}': {
         /**
          * Request Funds
          * @description Submits grant offer request
@@ -53,11 +53,11 @@ export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
         Amount: {
-            /** @description The three-character [ISO currency code](https://docs.adyen.com/development-resources/currency-codes). */
+            /** @description The three-character [ISO currency code](https://docs.adyen.com/development-resources/currency-codes#currency-codes). */
             currency: string;
             /**
              * Format: int64
-             * @description The amount of the transaction, in [minor units](https://docs.adyen.com/development-resources/currency-codes).
+             * @description The amount of the transaction, in [minor units](https://docs.adyen.com/development-resources/currency-codes#minor-units).
              */
             value: number;
         };
