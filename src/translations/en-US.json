@@ -109,6 +109,7 @@
     "expandableCard.collapse": "Collapse",
     "expandableCard.expand": "Expand",
     "export": "Export",
+    "fee": "Fees",
     "file": "File",
     "filter.date.since": "Since %{date}",
     "filter.date.until": "Until %{date}",
