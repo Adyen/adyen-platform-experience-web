@@ -153,7 +153,7 @@ const enrichTransactionDataWithDetails = <T extends ITransaction>(
         ...transactionWithDetails,
         // lineItems: DEFAULT_LINE_ITEMS.map(item => ({ ...item, amountIncludingTax: { ...item.amountIncludingTax, currency } })),
         refundDetails: {
-            refundLocked,
+            refundLocked: false,
             refundMode,
             refundStatuses,
             refundableAmount: { currency, value: refundableAmount ?? originalAmount },

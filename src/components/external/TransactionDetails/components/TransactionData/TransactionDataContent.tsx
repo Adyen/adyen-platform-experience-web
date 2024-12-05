@@ -1,7 +1,7 @@
 import cx from 'classnames';
 import type { ComponentChild } from 'preact';
 import type { PropsWithChildren } from 'preact/compat';
-import { useCallback, useLayoutEffect, useState } from 'preact/hooks';
+import { useCallback, useLayoutEffect, useMemo, useState } from 'preact/hooks';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import type { ILineItem } from '../../../../../types';
 import { EMPTY_ARRAY } from '../../../../../utils';
@@ -41,6 +41,7 @@ import './TransactionData.scss';
 
 export interface TransactionDataContentProps {
     transaction: NonNullable<TransactionDataProps['transaction']>;
+    extraFields: Record<string, any> | undefined;
 }
 
 const _TransactionDataContentViewWrapper = ({
@@ -76,24 +77,29 @@ const _RefundResponseViewWrapper = ({
     </div>
 );
 
-export const TransactionDataContent = ({ transaction: initialTransaction }: TransactionDataContentProps) => {
+export const TransactionDataContent = ({ transaction: initialTransaction, extraFields }: TransactionDataContentProps) => {
     const [activeView, _setActiveView] = useState(ActiveView.DETAILS);
     const [primaryAction, _setPrimaryAction] = useState<ButtonActionObject>();
     const [secondaryAction, _setSecondaryAction] = useState<ButtonActionObject>();
+    //TODO: Remove this when locked status returns from backend
+    const [locked, setLocked] = useState(false);
 
     const { fetchingTransaction, refreshTransaction, transaction, transactionNavigator } = useTransaction(initialTransaction);
     const {
         refundable,
         refundableAmount,
+        refundableAmountLabel,
         refundAvailable,
         refundCurrency,
-        refundDisabled,
-        refundableAmountLabel,
+        refundDisabled: refundDisabledMetaData,
         refundedState,
         refundStatuses,
         refundMode,
         refundLocked,
     } = useTransactionRefundMetadata(transaction);
+
+    //TODO: Remove this and do not rename refundDetails from the hook when locked status returns from backend
+    const refundDisabled = useMemo(() => refundDisabledMetaData || locked, [refundDisabledMetaData, locked]);
 
     const { i18n } = useCoreContext();
     const lineItems: readonly ILineItem[] = Object.freeze(transaction?.lineItems ?? EMPTY_ARRAY);
@@ -120,10 +126,15 @@ export const TransactionDataContent = ({ transaction: initialTransaction }: Tran
         ) : null;
     }, [primaryAction, secondaryAction]);
 
+    const onRefundSuccess = useCallback(() => {
+        setLocked(true);
+        refreshTransaction();
+    }, [setLocked, refreshTransaction]);
+
     const renderMessages = useCallback(() => {
         return refundStatuses?.length || refundLocked ? (
             <div className={TX_REFUND_STATUSES_CONTAINER}>
-                {refundLocked && (
+                {(refundLocked || locked) && (
                     <Alert
                         type={AlertTypeOption.HIGHLIGHT}
                         variant={AlertVariantOption.TIP}
@@ -140,7 +151,7 @@ export const TransactionDataContent = ({ transaction: initialTransaction }: Tran
                 ))}
             </div>
         ) : null;
-    }, [i18n, refundStatuses, refundLocked]);
+    }, [i18n, refundStatuses, refundLocked, locked]);
 
     useLayoutEffect(() => {
         _setActiveView(ActiveView.DETAILS);
@@ -169,7 +180,12 @@ export const TransactionDataContent = ({ transaction: initialTransaction }: Tran
         case ActiveView.DETAILS:
             return (
                 <_TransactionDataContentViewWrapper renderViewActionButtons={renderViewActionButtons} renderViewMessageBox={renderMessages}>
-                    <TransactionDetailsProvider {...commonContextProviderProps} transaction={transaction} transactionNavigator={transactionNavigator}>
+                    <TransactionDetailsProvider
+                        {...commonContextProviderProps}
+                        transaction={transaction}
+                        transactionNavigator={transactionNavigator}
+                        extraFields={extraFields}
+                    >
                         <TransactionDetailsDataContainer className={TX_STATUS_BOX}>
                             <TransactionStatusBox transaction={transaction} refundedState={refundedState} />
                         </TransactionDetailsDataContainer>
