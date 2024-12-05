@@ -69,7 +69,7 @@ export const setupMock = [
                 },
                 requestFunds: {
                     method: 'POST',
-                    url: 'capital/grantOffers/dynamic/requestFunds/{grantOfferId}',
+                    url: 'capital/grants/{grantOfferId}',
                 },
                 signToSActionDetails: {
                     method: 'GET',
