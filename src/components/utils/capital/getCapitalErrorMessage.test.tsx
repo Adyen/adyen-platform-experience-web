@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { COMMON_CAPITAL_ERROR_MESSAGE, getCapitalErrorMessage } from './getCapitalErrorMessage'; // Update the path accordingly
 import AdyenPlatformExperienceError from '../../../core/Errors/AdyenPlatformExperienceError';
 import { ErrorTypes } from '../../../core/Http/utils';
+import CopyText from '../../internal/CopyText/CopyText';
 
 const UNDEFINED_ERROR = {
     title: COMMON_CAPITAL_ERROR_MESSAGE.somethingWentWrong,
@@ -37,11 +38,9 @@ describe('getCapitalErrorMessage', () => {
 
         const result = getCapitalErrorMessage(error, mockOnContactSupport);
 
-        expect(result).toEqual({
-            title: COMMON_CAPITAL_ERROR_MESSAGE.somethingWentWrong,
-            message: [COMMON_CAPITAL_ERROR_MESSAGE.couldNotLoadOffers, COMMON_CAPITAL_ERROR_MESSAGE.contactSupportForHelp],
-            onContactSupport: mockOnContactSupport,
-        });
+        expect(result.title).toEqual(COMMON_CAPITAL_ERROR_MESSAGE.somethingWentWrong);
+        expect(result.message).toEqual([COMMON_CAPITAL_ERROR_MESSAGE.couldNotLoadOffers, 'theErrorCodeIs']);
+        expect(result.onContactSupport).toEqual(mockOnContactSupport);
     });
 
     it('should return specific ErrorMessage when error.errorCode is "30_011"', () => {
@@ -51,11 +50,9 @@ describe('getCapitalErrorMessage', () => {
 
         const result = getCapitalErrorMessage(error, mockOnContactSupport);
 
-        expect(result).toEqual({
-            title: 'capital.accountIsInactive',
-            message: [COMMON_CAPITAL_ERROR_MESSAGE.couldNotLoadOffers, COMMON_CAPITAL_ERROR_MESSAGE.contactSupportForHelp],
-            onContactSupport: mockOnContactSupport,
-        });
+        expect(result.title).toEqual('capital.accountIsInactive');
+        expect(result.message).toEqual([COMMON_CAPITAL_ERROR_MESSAGE.couldNotLoadOffers, 'theErrorCodeIs']);
+        expect(result.onContactSupport).toEqual(mockOnContactSupport);
     });
 
     it('should return ErrorMessage from getCommonErrorMessage for error code "29_001"', () => {
