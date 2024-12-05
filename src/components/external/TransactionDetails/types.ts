@@ -25,4 +25,5 @@ export interface TransactionDataProps {
     error?: boolean;
     isFetching?: boolean;
     transaction?: TransactionDetailData & { lineItems?: ILineItem[] };
+    extraFields: Record<string, any> | undefined;
 }

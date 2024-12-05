@@ -86,7 +86,6 @@ export default function DataOverviewDetails(props: ExternalUIComponentProps<Deta
                     transaction={
                         detailsData
                             ? ({
-                                  ...extraDetails,
                                   ...(detailsData || EMPTY_OBJECT),
                                   balanceAccount: details?.balanceAccount || balanceAccounts?.[0],
                               } as TransactionDetailData)
@@ -94,6 +93,7 @@ export default function DataOverviewDetails(props: ExternalUIComponentProps<Deta
                     }
                     error={!!(error && errorProps)}
                     isFetching={isFetching}
+                    extraFields={extraDetails}
                 />
             )}
             {props.type === 'payout' && detailsData && (

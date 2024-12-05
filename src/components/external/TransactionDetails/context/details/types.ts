@@ -10,9 +10,11 @@ type _ITransactionDetailsContextBase = Pick<
 
 export interface ITransactionDetailsContext extends _ITransactionDetailsContextBase {
     availableItems: readonly ILineItem[];
+    extraFields: Record<string, any> | undefined;
 }
 
 export interface TransactionDetailsProviderProps extends TransactionDataContextProviderProps {
     transaction: TransactionDetailData;
+    extraFields: Record<string, any> | undefined;
     transactionNavigator: TransactionNavigator;
 }
