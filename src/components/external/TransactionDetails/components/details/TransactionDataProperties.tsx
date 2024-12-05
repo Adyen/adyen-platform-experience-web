@@ -27,16 +27,14 @@ const TransactionDataProperties = () => {
         const deductedAmount = getFormattedAmount(transaction.deductedAmount);
         const originalAmount = getFormattedAmount(transaction.originalAmount);
 
-        // [TODO]: Add translation entries for the following tokens and substitute here:
-        //   'Fee' | 'Original amount' | 'Original payment' | 'Payment PSP Reference' | 'PSP Reference' | 'Refund fee'
-        const deductedAmountKey = isRefundTransaction ? ('Refund fee' as TranslationKey) : ('Fee' as TranslationKey);
-        const originalAmountKey = isRefundTransaction ? ('Original payment' as TranslationKey) : ('Original amount' as TranslationKey);
-        const paymentReferenceKey = isRefundTransaction ? ('Payment PSP Reference' as TranslationKey) : ('PSP Reference' as TranslationKey);
+        const deductedAmountKey = isRefundTransaction ? 'refund.refundFee' : 'refund.fee';
+        const originalAmountKey = isRefundTransaction ? 'refund.originalPayment' : 'refund.originalAmount';
+        const paymentReferenceKey = isRefundTransaction ? 'refund.paymentPspReference' : 'refund.pspReference';
 
         const listItems: StructuredListProps['items'] = [
             // amounts
-            originalAmount ? { key: originalAmountKey, value: originalAmount } : SKIP_ITEM,
-            deductedAmount ? { key: deductedAmountKey, value: deductedAmount } : SKIP_ITEM,
+            originalAmount ? { key: originalAmountKey as TranslationKey, value: originalAmount } : SKIP_ITEM,
+            deductedAmount ? { key: deductedAmountKey as TranslationKey, value: deductedAmount } : SKIP_ITEM,
 
             // balance account
             balanceAccount?.description ? { key: 'account' as const, value: balanceAccount.description } : SKIP_ITEM,
@@ -62,15 +60,12 @@ const TransactionDataProperties = () => {
             // reference id
             { key: 'referenceID' as const, value: <CopyText type={'Default'} textToCopy={id} /> },
 
-            // refund psp reference
-            // [TODO]: Add translation entries for the following tokens and substitute here:
-            //   'Refund PSP Reference'
             isRefundTransaction && refundMetadata?.refundPspReference
-                ? { key: 'Refund PSP Reference' as TranslationKey, value: refundMetadata.refundPspReference }
+                ? { key: 'refund.refundPspReference' as TranslationKey, value: refundMetadata.refundPspReference }
                 : SKIP_ITEM,
 
             // psp reference
-            paymentPspReference ? { key: paymentReferenceKey, value: paymentPspReference } : SKIP_ITEM,
+            paymentPspReference ? { key: paymentReferenceKey as TranslationKey, value: paymentPspReference } : SKIP_ITEM,
         ].filter(Boolean);
 
         return (

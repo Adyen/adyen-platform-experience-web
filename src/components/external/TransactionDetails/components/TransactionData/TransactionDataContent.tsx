@@ -6,7 +6,7 @@ import useCoreContext from '../../../../../core/Context/useCoreContext';
 import type { ILineItem } from '../../../../../types';
 import { EMPTY_ARRAY } from '../../../../../utils';
 import Alert from '../../../../internal/Alert/Alert';
-import { AlertTypeOption } from '../../../../internal/Alert/types';
+import { AlertTypeOption, AlertVariantOption } from '../../../../internal/Alert/types';
 import Button from '../../../../internal/Button';
 import ButtonActions from '../../../../internal/Button/ButtonActions/ButtonActions';
 import { ButtonActionObject, ButtonActionsLayoutBasic } from '../../../../internal/Button/ButtonActions/types';
@@ -28,6 +28,7 @@ import {
     TX_REFUND_RESPONSE_ERROR_ICON,
     TX_REFUND_RESPONSE_ICON,
     TX_REFUND_RESPONSE_SUCCESS_ICON,
+    TX_REFUND_STATUSES_CONTAINER,
     TX_STATUS_BOX,
 } from '../constants';
 import TransactionDataProperties from '../details/TransactionDataProperties';
@@ -87,6 +88,7 @@ export const TransactionDataContent = ({ transaction: initialTransaction, extraF
     const {
         refundable,
         refundableAmount,
+        refundableAmountLabel,
         refundAvailable,
         refundCurrency,
         refundDisabled: refundDisabledMetaData,
@@ -125,24 +127,31 @@ export const TransactionDataContent = ({ transaction: initialTransaction, extraF
     }, [primaryAction, secondaryAction]);
 
     const onRefundSuccess = useCallback(() => {
-        console.log('hey');
         setLocked(true);
         refreshTransaction();
     }, [setLocked, refreshTransaction]);
 
     const renderMessages = useCallback(() => {
-        // TODO:Add translation
-        return refundStatuses?.length || refundLocked || locked ? (
-            <>
+        return refundStatuses?.length || refundLocked ? (
+            <div className={TX_REFUND_STATUSES_CONTAINER}>
                 {(refundLocked || locked) && (
-                    <Alert type={AlertTypeOption.HIGHLIGHT} description={'The refund is being processed. Please come back later.'} />
+                    <Alert
+                        type={AlertTypeOption.HIGHLIGHT}
+                        variant={AlertVariantOption.TIP}
+                        description={`${i18n.get('refund.theRefundIsBeingProcessed')} ${i18n.get('pleaseComeBackLater')}`}
+                    />
                 )}
                 {refundStatuses.map((status, index) => (
-                    <Alert key={`${Math.random()}-${index}`} type={status?.type ?? AlertTypeOption.HIGHLIGHT} description={status?.label} />
+                    <Alert
+                        key={`${Math.random()}-${index}`}
+                        variant={AlertVariantOption.TIP}
+                        type={status?.type ?? AlertTypeOption.HIGHLIGHT}
+                        description={status?.label}
+                    />
                 ))}
-            </>
+            </div>
         ) : null;
-    }, [refundStatuses, refundLocked, locked]);
+    }, [i18n, refundStatuses, refundLocked, locked]);
 
     useLayoutEffect(() => {
         _setActiveView(ActiveView.DETAILS);
@@ -207,6 +216,14 @@ export const TransactionDataContent = ({ transaction: initialTransaction, extraF
                         {(refundMode === RefundMode.PARTIAL_AMOUNT || refundMode === RefundMode.PARTIAL_LINE_ITEMS) && (
                             <TransactionRefundPartialAmountInput />
                         )}
+
+                        {refundableAmountLabel && (
+                            <Alert
+                                variant={AlertVariantOption.TIP}
+                                type={refundableAmountLabel.type}
+                                description={refundableAmountLabel.description}
+                            />
+                        )}
                     </TransactionRefundProvider>
                 </_TransactionDataContentViewWrapper>
             );
@@ -218,8 +235,8 @@ export const TransactionDataContent = ({ transaction: initialTransaction, extraF
                     title={i18n.get('refundActionSuccessTitle')}
                     subtitle={i18n.get('refundActionSuccessSubtitle')}
                     action={() => (
-                        <Button variant={ButtonVariant.SECONDARY} onClick={onRefundSuccess}>
-                            {i18n.get('goToPayment')}
+                        <Button variant={ButtonVariant.SECONDARY} onClick={refreshTransaction}>
+                            {i18n.get('goBack')}
                         </Button>
                     )}
                 />
@@ -233,7 +250,7 @@ export const TransactionDataContent = ({ transaction: initialTransaction, extraF
                     subtitle={i18n.get('refundActionErrorSubtitle')}
                     action={() => (
                         <Button variant={ButtonVariant.SECONDARY} onClick={refreshTransaction}>
-                            {i18n.get('goToPayment')}
+                            {i18n.get('goBack')}
                         </Button>
                     )}
                 />

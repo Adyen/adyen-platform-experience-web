@@ -65,10 +65,8 @@ export const TransactionDetailsProvider = memo(
         const secondaryActionLabel = useMemo(() => {
             switch (_secondaryAction) {
                 case TransactionNavigationAction.BACKWARD:
-                    // [TODO]: Add translation entries for the following tokens and substitute here:
-                    //    'Back to refund'
                     return {
-                        title: i18n.get('Back to refund' as TranslationKey),
+                        title: i18n.get('refund.backToRefund' as TranslationKey),
                         renderTitle: (title: string) => (
                             <>
                                 <Icon style={{ transform: 'scaleX(-1)' }} name="angle-right" />
@@ -77,10 +75,8 @@ export const TransactionDetailsProvider = memo(
                         ),
                     };
                 case TransactionNavigationAction.FORWARD:
-                    // [TODO]: Add translation entries for the following tokens and substitute here:
-                    //    'Go to payment'
                     return {
-                        title: i18n.get('Go to payment' as TranslationKey),
+                        title: i18n.get('refund.goToPayment' as TranslationKey),
                         renderTitle: (title: string) => (
                             <>
                                 <Icon name="angle-right" />

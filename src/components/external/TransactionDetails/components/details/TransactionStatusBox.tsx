@@ -57,18 +57,13 @@ const TransactionStatusBox = ({ refundedState, transaction }: TransactionStatusB
                 {/* refund type: only available for transaction.category == Refund */}
                 {refundType && (
                     <>
-                        {/* [TODO]: Add translation entries for the following tokens and substitute here: 'Full' | 'Partial' */}
-                        {refundType === RefundType.FULL && <Tag label={i18n.get('Full' as TranslationKey)} variant={TagVariant.SUCCESS} />}
-                        {refundType === RefundType.PARTIAL && <Tag label={i18n.get('Partial' as TranslationKey)} variant={TagVariant.BLUE} />}
+                        {refundType === RefundType.FULL && <Tag label={i18n.get('full')} variant={TagVariant.SUCCESS} />}
+                        {refundType === RefundType.PARTIAL && <Tag label={i18n.get('partial')} variant={TagVariant.BLUE} />}
                     </>
                 )}
 
-                {/* refunded state: only available for refundable transactions */}
-                {/* [TODO]: Add translation entries for the following tokens and substitute here: 'Fully refunded' | 'Partially refunded' */}
-                {refundedState === RefundedState.FULL && <Tag label={i18n.get('Fully refunded' as TranslationKey)} variant={TagVariant.SUCCESS} />}
-                {refundedState === RefundedState.PARTIAL && (
-                    <Tag label={i18n.get('Partially refunded' as TranslationKey)} variant={TagVariant.BLUE} />
-                )}
+                {refundedState === RefundedState.FULL && <Tag label={i18n.get('refunded.full')} variant={TagVariant.SUCCESS} />}
+                {refundedState === RefundedState.PARTIAL && <Tag label={i18n.get('refunded.partial')} variant={TagVariant.BLUE} />}
             </div>
 
             {formattedAmount && (
