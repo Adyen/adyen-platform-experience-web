@@ -40,6 +40,7 @@ import './TransactionData.scss';
 
 export interface TransactionDataContentProps {
     transaction: NonNullable<TransactionDataProps['transaction']>;
+    extraFields: Record<string, any> | undefined;
 }
 
 const _TransactionDataContentViewWrapper = ({
@@ -75,7 +76,7 @@ const _RefundResponseViewWrapper = ({
     </div>
 );
 
-export const TransactionDataContent = ({ transaction: initialTransaction }: TransactionDataContentProps) => {
+export const TransactionDataContent = ({ transaction: initialTransaction, extraFields }: TransactionDataContentProps) => {
     const [activeView, _setActiveView] = useState(ActiveView.DETAILS);
     const [primaryAction, _setPrimaryAction] = useState<ButtonActionObject>();
     const [secondaryAction, _setSecondaryAction] = useState<ButtonActionObject>();
@@ -170,7 +171,12 @@ export const TransactionDataContent = ({ transaction: initialTransaction }: Tran
         case ActiveView.DETAILS:
             return (
                 <_TransactionDataContentViewWrapper renderViewActionButtons={renderViewActionButtons} renderViewMessageBox={renderMessages}>
-                    <TransactionDetailsProvider {...commonContextProviderProps} transaction={transaction} transactionNavigator={transactionNavigator}>
+                    <TransactionDetailsProvider
+                        {...commonContextProviderProps}
+                        transaction={transaction}
+                        transactionNavigator={transactionNavigator}
+                        extraFields={extraFields}
+                    >
                         <TransactionDetailsDataContainer className={TX_STATUS_BOX}>
                             <TransactionStatusBox transaction={transaction} refundedState={refundedState} />
                         </TransactionDetailsDataContainer>
