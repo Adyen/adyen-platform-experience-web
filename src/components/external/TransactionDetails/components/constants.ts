@@ -26,6 +26,7 @@ export const TX_REFUND_RESPONSE = `${TX_DATA_CLASS}__refund-response`;
 export const TX_REFUND_RESPONSE_ICON = `${TX_DATA_CLASS}__refund-response-icon`;
 export const TX_REFUND_RESPONSE_SUCCESS_ICON = `${TX_REFUND_RESPONSE_ICON}--success`;
 export const TX_REFUND_RESPONSE_ERROR_ICON = `${TX_REFUND_RESPONSE_ICON}--error`;
+export const TX_REFUND_STATUSES_CONTAINER = `${TX_DATA_CLASS}__refund-statuses-container`;
 
 export const TX_DETAILS_RESERVED_FIELDS_SET = new Set([
     ...(['status', 'category', 'paymentMethod', 'bankAccount', 'balanceAccount', 'id', 'balanceAccountId'] satisfies (keyof TransactionDetailData)[]),

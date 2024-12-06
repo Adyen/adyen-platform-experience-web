@@ -32,6 +32,7 @@ function ButtonActions({ actions, layout = ButtonActionsLayout.BUTTONS_END }: Bu
                         disabled={button.disabled}
                         variant={button.variant || generateButtonVariantByIndex(index)}
                         onClick={button.event}
+                        state={button.state ?? 'default'}
                     >
                         {button.renderTitle ? button.renderTitle(button.title) : button.title}
                     </Button>

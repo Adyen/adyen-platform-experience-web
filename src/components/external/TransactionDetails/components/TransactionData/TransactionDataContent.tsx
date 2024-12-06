@@ -1,12 +1,12 @@
 import cx from 'classnames';
 import type { ComponentChild } from 'preact';
 import type { PropsWithChildren } from 'preact/compat';
-import { useCallback, useLayoutEffect, useState } from 'preact/hooks';
+import { useCallback, useLayoutEffect, useMemo, useState } from 'preact/hooks';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import type { ILineItem } from '../../../../../types';
 import { EMPTY_ARRAY } from '../../../../../utils';
 import Alert from '../../../../internal/Alert/Alert';
-import { AlertTypeOption } from '../../../../internal/Alert/types';
+import { AlertTypeOption, AlertVariantOption } from '../../../../internal/Alert/types';
 import Button from '../../../../internal/Button';
 import ButtonActions from '../../../../internal/Button/ButtonActions/ButtonActions';
 import { ButtonActionObject, ButtonActionsLayoutBasic } from '../../../../internal/Button/ButtonActions/types';
@@ -28,6 +28,7 @@ import {
     TX_REFUND_RESPONSE_ERROR_ICON,
     TX_REFUND_RESPONSE_ICON,
     TX_REFUND_RESPONSE_SUCCESS_ICON,
+    TX_REFUND_STATUSES_CONTAINER,
     TX_STATUS_BOX,
 } from '../constants';
 import TransactionDataProperties from '../details/TransactionDataProperties';
@@ -80,10 +81,25 @@ export const TransactionDataContent = ({ transaction: initialTransaction, extraF
     const [activeView, _setActiveView] = useState(ActiveView.DETAILS);
     const [primaryAction, _setPrimaryAction] = useState<ButtonActionObject>();
     const [secondaryAction, _setSecondaryAction] = useState<ButtonActionObject>();
+    //TODO: Remove this when locked status returns from backend
+    const [locked, setLocked] = useState(false);
 
     const { fetchingTransaction, refreshTransaction, transaction, transactionNavigator } = useTransaction(initialTransaction);
-    const { refundable, refundableAmount, refundAvailable, refundCurrency, refundDisabled, refundedState, refundStatuses, refundMode, refundLocked } =
-        useTransactionRefundMetadata(transaction);
+    const {
+        refundable,
+        refundableAmount,
+        refundableAmountLabel,
+        refundAvailable,
+        refundCurrency,
+        refundDisabled: refundDisabledMetaData,
+        refundedState,
+        refundStatuses,
+        refundMode,
+        refundLocked,
+    } = useTransactionRefundMetadata(transaction);
+
+    //TODO: Remove this and do not rename refundDetails from the hook when locked status returns from backend
+    const refundDisabled = useMemo(() => refundDisabledMetaData || locked, [refundDisabledMetaData, locked]);
 
     const { i18n } = useCoreContext();
     const lineItems: readonly ILineItem[] = Object.freeze(transaction?.lineItems ?? EMPTY_ARRAY);
@@ -110,17 +126,32 @@ export const TransactionDataContent = ({ transaction: initialTransaction, extraF
         ) : null;
     }, [primaryAction, secondaryAction]);
 
+    const onRefundSuccess = useCallback(() => {
+        setLocked(true);
+        refreshTransaction();
+    }, [setLocked, refreshTransaction]);
+
     const renderMessages = useCallback(() => {
-        // TODO:Add translation
         return refundStatuses?.length || refundLocked ? (
-            <>
-                {refundLocked && <Alert type={AlertTypeOption.HIGHLIGHT} description={'The refund is being processed. Please come back later.'} />}
+            <div className={TX_REFUND_STATUSES_CONTAINER}>
+                {(refundLocked || locked) && (
+                    <Alert
+                        type={AlertTypeOption.HIGHLIGHT}
+                        variant={AlertVariantOption.TIP}
+                        description={`${i18n.get('refund.theRefundIsBeingProcessed')} ${i18n.get('pleaseComeBackLater')}`}
+                    />
+                )}
                 {refundStatuses.map((status, index) => (
-                    <Alert key={`${Math.random()}-${index}`} type={status?.type ?? AlertTypeOption.HIGHLIGHT} description={status?.label} />
+                    <Alert
+                        key={`${Math.random()}-${index}`}
+                        variant={AlertVariantOption.TIP}
+                        type={status?.type ?? AlertTypeOption.HIGHLIGHT}
+                        description={status?.label}
+                    />
                 ))}
-            </>
+            </div>
         ) : null;
-    }, [refundStatuses, refundLocked]);
+    }, [i18n, refundStatuses, refundLocked, locked]);
 
     useLayoutEffect(() => {
         _setActiveView(ActiveView.DETAILS);
@@ -185,6 +216,14 @@ export const TransactionDataContent = ({ transaction: initialTransaction, extraF
                         {(refundMode === RefundMode.PARTIAL_AMOUNT || refundMode === RefundMode.PARTIAL_LINE_ITEMS) && (
                             <TransactionRefundPartialAmountInput />
                         )}
+
+                        {refundableAmountLabel && (
+                            <Alert
+                                variant={AlertVariantOption.TIP}
+                                type={refundableAmountLabel.type}
+                                description={refundableAmountLabel.description}
+                            />
+                        )}
                     </TransactionRefundProvider>
                 </_TransactionDataContentViewWrapper>
             );
@@ -197,7 +236,7 @@ export const TransactionDataContent = ({ transaction: initialTransaction, extraF
                     subtitle={i18n.get('refundActionSuccessSubtitle')}
                     action={() => (
                         <Button variant={ButtonVariant.SECONDARY} onClick={refreshTransaction}>
-                            {i18n.get('goToPayment')}
+                            {i18n.get('goBack')}
                         </Button>
                     )}
                 />
@@ -211,7 +250,7 @@ export const TransactionDataContent = ({ transaction: initialTransaction, extraF
                     subtitle={i18n.get('refundActionErrorSubtitle')}
                     action={() => (
                         <Button variant={ButtonVariant.SECONDARY} onClick={refreshTransaction}>
-                            {i18n.get('goToPayment')}
+                            {i18n.get('goBack')}
                         </Button>
                     )}
                 />
