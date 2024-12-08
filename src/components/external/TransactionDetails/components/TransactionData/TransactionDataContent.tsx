@@ -3,7 +3,7 @@ import type { ComponentChild } from 'preact';
 import type { PropsWithChildren } from 'preact/compat';
 import { useCallback, useLayoutEffect, useMemo, useState } from 'preact/hooks';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
-import type { ILineItem } from '../../../../../types';
+import type { IBalanceAccountBase, ILineItem } from '../../../../../types';
 import { EMPTY_ARRAY } from '../../../../../utils';
 import Alert from '../../../../internal/Alert/Alert';
 import { AlertTypeOption, AlertVariantOption } from '../../../../internal/Alert/types';
@@ -42,6 +42,7 @@ import './TransactionData.scss';
 export interface TransactionDataContentProps {
     transaction: NonNullable<TransactionDataProps['transaction']>;
     extraFields: Record<string, any> | undefined;
+    balanceAccount?: IBalanceAccountBase;
 }
 
 const _TransactionDataContentViewWrapper = ({
@@ -127,8 +128,8 @@ export const TransactionDataContent = ({ transaction: initialTransaction, extraF
     }, [primaryAction, secondaryAction]);
 
     const onRefundSuccess = useCallback(() => {
-        setLocked(true);
         refreshTransaction();
+        setLocked(true);
     }, [setLocked, refreshTransaction]);
 
     const renderMessages = useCallback(() => {
@@ -235,7 +236,7 @@ export const TransactionDataContent = ({ transaction: initialTransaction, extraF
                     title={i18n.get('refundActionSuccessTitle')}
                     subtitle={i18n.get('refundActionSuccessSubtitle')}
                     action={() => (
-                        <Button variant={ButtonVariant.SECONDARY} onClick={refreshTransaction}>
+                        <Button variant={ButtonVariant.SECONDARY} onClick={onRefundSuccess}>
                             {i18n.get('goBack')}
                         </Button>
                     )}

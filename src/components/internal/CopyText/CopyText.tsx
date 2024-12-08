@@ -38,7 +38,7 @@ const CopyText = ({
     }, [i18n]);
 
     return (
-        <div
+        <span
             className={cx('adyen-pe-copy-text__container', {
                 ['adyen-pe-copy-text__container--information']: type === 'Link',
             })}
@@ -71,7 +71,7 @@ const CopyText = ({
                     </div>
                 </Button>
             </Tooltip>
-        </div>
+        </span>
     );
 };
 
