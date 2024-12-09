@@ -171,6 +171,7 @@
             }
         }
 
+        .adyen-pe-input__refund-invalid-value,
         .adyen-pe-input__invalid-value {
             align-items: center;
             color: style.token(color-label-critical);

@@ -81,7 +81,7 @@ const _BaseRefundAmountInput = ({
                     />
                 </label>
                 {errorMessage && (
-                    <div className="adyen-pe-input__invalid-value" id={`${inputIdentifier.current}${ARIA_ERROR_SUFFIX}`}>
+                    <div className="adyen-pe-input__refund-invalid-value" id={`${inputIdentifier.current}${ARIA_ERROR_SUFFIX}`}>
                         <CloseCircle />
                         <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY}>
                             {error}
