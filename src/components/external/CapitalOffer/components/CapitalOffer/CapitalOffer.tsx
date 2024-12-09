@@ -12,7 +12,6 @@ import { EMPTY_OBJECT } from '../../../../../utils';
 import { CapitalOfferSummary } from '../CapitalOfferSummary/CapitalOfferSummary';
 
 type CapitalOfferState = 'OfferSelection' | 'OfferSummary';
-const REPAYMENT_FREQUENCY = 30;
 
 export const CapitalOffer: FunctionalComponent<ExternalUIComponentProps<CapitalOfferProps>> = ({
     externalDynamicOffersConfig,
@@ -80,7 +79,6 @@ export const CapitalOffer: FunctionalComponent<ExternalUIComponentProps<CapitalO
                     dynamicOffersConfigError={dynamicOffersConfigError}
                     onOfferDismiss={onOfferDismiss}
                     onOfferSelect={onOfferSelectHandler}
-                    repaymentFrequency={REPAYMENT_FREQUENCY}
                     emptyGrantOffer={emptyGrantOffer}
                     onContactSupport={onContactSupport}
                 />
@@ -88,7 +86,6 @@ export const CapitalOffer: FunctionalComponent<ExternalUIComponentProps<CapitalO
             {capitalOfferState === 'OfferSummary' && (
                 <CapitalOfferSummary
                     grantOffer={selectedOffer!}
-                    repaymentFrequency={REPAYMENT_FREQUENCY}
                     onBack={() => setSelectedOffer(undefined)}
                     onFundsRequest={onFundsRequest}
                     onContactSupport={onContactSupport}

@@ -15,6 +15,7 @@ import { debounce, getExpectedRepaymentDate, getPaymentRatePercentage } from '..
 import CapitalSlider from '../../../../internal/CapitalSlider';
 import { CapitalErrorMessageDisplay } from '../utils/CapitalErrorMessageDisplay';
 import { calculateSliderAdjustedMidValue } from '../../../../internal/Slider/Slider';
+import { CAPITAL_REPAYMENT_FREQUENCY } from '../../../../constants';
 
 type CapitalOfferSelectionProps = {
     dynamicOffersConfig: IDynamicOffersConfig | undefined;
@@ -23,7 +24,6 @@ type CapitalOfferSelectionProps = {
     onContactSupport?: () => void;
     onOfferDismiss?: () => void;
     onOfferSelect: (data: IGrantOfferResponseDTO) => void;
-    repaymentFrequency: number;
     requestedAmount: number | undefined;
 };
 
@@ -35,7 +35,7 @@ const LoadingSkeleton = () => (
     </div>
 );
 
-const InformationDisplay = ({ data, repaymentFrequency }: { data: IGrantOfferResponseDTO; repaymentFrequency: number }) => {
+const InformationDisplay = ({ data }: { data: IGrantOfferResponseDTO }) => {
     const { i18n } = useCoreContext();
     const expectedRepaymentDate = useMemo(() => {
         const date = data.expectedRepaymentPeriodDays && getExpectedRepaymentDate(data.expectedRepaymentPeriodDays);
@@ -50,7 +50,7 @@ const InformationDisplay = ({ data, repaymentFrequency }: { data: IGrantOfferRes
                     {i18n.get('capital.youWillNeedToRepayAMinimumOfXEveryXDaysToPayOffTheFunds.part2', {
                         values: {
                             amount: i18n.amount(data.thresholdAmount.value, data.thresholdAmount.currency),
-                            days: repaymentFrequency,
+                            days: CAPITAL_REPAYMENT_FREQUENCY,
                         },
                     })}
                 </Typography>{' '}
@@ -97,7 +97,6 @@ export const CapitalOfferSelection = ({
     onContactSupport,
     onOfferDismiss,
     onOfferSelect,
-    repaymentFrequency,
     requestedAmount,
 }: CapitalOfferSelectionProps) => {
     const { i18n } = useCoreContext();
@@ -204,7 +203,7 @@ export const CapitalOfferSelection = ({
                         {!getDynamicGrantOfferMutation.data || getDynamicGrantOfferMutation.isLoading || isLoading ? (
                             <LoadingSkeleton />
                         ) : getDynamicGrantOfferMutation.data ? (
-                            <InformationDisplay data={getDynamicGrantOfferMutation.data} repaymentFrequency={repaymentFrequency} />
+                            <InformationDisplay data={getDynamicGrantOfferMutation.data} />
                         ) : null}
                     </InfoBox>
                     <div className="adyen-pe-capital-offer-selection__buttons">

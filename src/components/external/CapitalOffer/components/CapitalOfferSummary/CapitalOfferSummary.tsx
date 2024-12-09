@@ -20,18 +20,17 @@ import Icon from '../../../../internal/Icon';
 import { CapitalErrorMessageDisplay } from '../utils/CapitalErrorMessageDisplay';
 import cx from 'classnames';
 import { StructuredListItem } from '../../../../internal/StructuredList/types';
+import { CAPITAL_REPAYMENT_FREQUENCY } from '../../../../constants';
 
 const errorMessageWithAlert = ['30_013'];
 
 export const CapitalOfferSummary = ({
     grantOffer,
-    repaymentFrequency,
     onBack,
     onFundsRequest,
     onContactSupport,
 }: {
     grantOffer: IGrantOfferResponseDTO;
-    repaymentFrequency: number;
     onBack: () => void;
     onFundsRequest?: (data: IGrant) => void;
     onContactSupport?: () => void;
@@ -138,7 +137,7 @@ export const CapitalOfferSummary = ({
                     {i18n.get('capital.youWillNeedToRepayAMinimumOfXEveryXDaysToPayOffTheFunds', {
                         values: {
                             amount: i18n.amount(grantOffer.thresholdAmount.value, grantOffer.thresholdAmount.currency),
-                            days: repaymentFrequency,
+                            days: CAPITAL_REPAYMENT_FREQUENCY,
                             date: expectedRepaymentDate ?? '',
                         },
                     })}
@@ -151,7 +150,9 @@ export const CapitalOfferSummary = ({
                         return (
                             <Tooltip
                                 isContainerHovered
-                                content={i18n.get('capital.minimumRepaymentToRepayTheFinancingOnTime', { values: { days: repaymentFrequency } })}
+                                content={i18n.get('capital.minimumRepaymentToRepayTheFinancingOnTime', {
+                                    values: { days: CAPITAL_REPAYMENT_FREQUENCY },
+                                })}
                             >
                                 <span>
                                     <Typography
