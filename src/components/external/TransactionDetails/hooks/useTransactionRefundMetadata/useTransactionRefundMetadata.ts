@@ -144,7 +144,7 @@ export const useTransactionRefundMetadata = (transaction: TransactionDataProps['
         switch (refundMode) {
             case RefundMode.PARTIAL_AMOUNT:
             case RefundMode.PARTIAL_LINE_ITEMS:
-                if (refundableAmount > 0 || (someRefunded && refundedAmount > 0 && !isUndefined(originalAmount) && refundedAmount < originalAmount)) {
+                if (refundableAmount > 0 && someRefunded && refundedAmount > 0 && !isUndefined(originalAmount) && refundedAmount < originalAmount) {
                     return RefundedState.PARTIAL;
                 }
         }
