@@ -215,7 +215,7 @@ export const TransactionDataContent = ({ transaction: initialTransaction, extraF
                         {/* refund amount input */}
                         {refundMode === RefundMode.FULL_AMOUNT && <TransactionRefundFullAmountInput />}
                         {(refundMode === RefundMode.PARTIAL_AMOUNT || refundMode === RefundMode.PARTIAL_LINE_ITEMS) && (
-                            <TransactionRefundPartialAmountInput />
+                            <TransactionRefundPartialAmountInput locale={i18n.locale} />
                         )}
 
                         {refundableAmountLabel && (
