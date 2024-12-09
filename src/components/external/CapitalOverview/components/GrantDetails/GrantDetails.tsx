@@ -10,6 +10,8 @@ import { ExpandableContainer } from '../../../../internal/ExpandableContainer/Ex
 import StructuredList from '../../../../internal/StructuredList';
 import { StructuredListItem } from '../../../../internal/StructuredList/types';
 import { getPaymentRatePercentage } from '../../../CapitalOffer/components/utils/utils';
+import { Tooltip } from '../../../../internal/Tooltip/Tooltip';
+import { CAPITAL_REPAYMENT_FREQUENCY } from '../../../../constants';
 
 export const GrantDetails: FunctionalComponent<GrantDetailsProps> = ({ grant }) => {
     const { i18n } = useCoreContext();
@@ -69,11 +71,30 @@ export const GrantDetails: FunctionalComponent<GrantDetailsProps> = ({ grant }) 
                     </Typography>
                 </div>
                 <StructuredList
-                    renderLabel={val => (
-                        <Typography el={TypographyElement.SPAN} variant={TypographyVariant.CAPTION} className={GRANT_DETAILS_CLASS_NAMES.label}>
-                            {val}
-                        </Typography>
-                    )}
+                    renderLabel={(val, key) =>
+                        key === 'capital.repaymentThreshold' ? (
+                            <Tooltip
+                                isContainerHovered
+                                content={i18n.get('capital.minimumRepaymentToRepayTheFinancingOnTime', {
+                                    values: { days: CAPITAL_REPAYMENT_FREQUENCY },
+                                })}
+                            >
+                                <span>
+                                    <Typography
+                                        className={GRANT_DETAILS_CLASS_NAMES.label}
+                                        el={TypographyElement.SPAN}
+                                        variant={TypographyVariant.CAPTION}
+                                    >
+                                        {val}
+                                    </Typography>
+                                </span>
+                            </Tooltip>
+                        ) : (
+                            <Typography className={GRANT_DETAILS_CLASS_NAMES.label} el={TypographyElement.SPAN} variant={TypographyVariant.CAPTION}>
+                                {val}
+                            </Typography>
+                        )
+                    }
                     renderValue={val => (
                         <Typography el={TypographyElement.SPAN} stronger variant={TypographyVariant.CAPTION}>
                             {val}
