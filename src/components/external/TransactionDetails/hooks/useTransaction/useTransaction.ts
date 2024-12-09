@@ -14,11 +14,12 @@ export const useTransaction = (initialTransaction: TransactionDataContentProps['
     const _transactionNavigator = useRef(createDuplexTransactionNavigator());
     const transactionNavigator = _transactionNavigator.current;
 
+    const navigationAction = useRef(false);
     const cachedIsFetching = useRef(false);
     const cachedInitialTransaction = useRef(initialTransaction);
     const lastFetchTransactionId = useRef(fetchTransactionId);
 
-    const fetchEnabled = useMemo(() => !!getTransaction && !!fetchTransactionId, [fetchTransactionId, getTransaction]);
+    const fetchEnabled = useMemo(() => !!getTransaction && !!fetchTransactionId && navigationAction.current, [fetchTransactionId, getTransaction]);
 
     const queryFn = useCallback(
         () =>
@@ -52,12 +53,14 @@ export const useTransaction = (initialTransaction: TransactionDataContentProps['
         if (transaction.category === 'Refund') {
             navigator.reset(transaction.id, transaction.refundMetadata?.originalPaymentId);
             navigator.onNavigation = ({ to: id }) => {
+                navigationAction.current = true;
                 setLastFetchTimestamp(performance.now());
                 if (id) setFetchTransactionId(id);
             };
         }
 
         return () => {
+            navigationAction.current = false;
             navigator.onNavigation = null;
             navigator.reset();
         };

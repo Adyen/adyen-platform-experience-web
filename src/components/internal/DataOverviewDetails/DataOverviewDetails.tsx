@@ -3,7 +3,7 @@ import { useMemo } from 'preact/hooks';
 import { useAuthContext } from '../../../core/Auth';
 import AdyenPlatformExperienceError from '../../../core/Errors/AdyenPlatformExperienceError';
 import { useFetch } from '../../../hooks/useFetch';
-import { IPayoutDetails } from '../../../types';
+import { IBalanceAccountBase, IPayoutDetails } from '../../../types';
 import { EMPTY_OBJECT } from '../../../utils';
 import { PayoutData } from '../../external/PayoutDetails/components/PayoutData';
 import TransactionData from '../../external/TransactionDetails/components/TransactionData';
@@ -23,7 +23,7 @@ const ENDPOINTS_BY_TYPE = {
 
 const isDetailsWithId = (props: DetailsComponentProps): props is DetailsWithId => !('data' in props);
 
-export default function DataOverviewDetails(props: ExternalUIComponentProps<DetailsComponentProps>) {
+export default function DataOverviewDetails(props: ExternalUIComponentProps<DetailsComponentProps> & { balanceAccount?: IBalanceAccountBase }) {
     const details = useMemo(() => (isDetailsWithId(props) ? null : props.data), [props]);
     const dataId = useMemo(() => (isDetailsWithId(props) ? props.id : null), [props]);
     const getDetail = useAuthContext().endpoints[ENDPOINTS_BY_TYPE[props.type]] as any; // [TODO]: Fix type and remove 'as any'
@@ -51,8 +51,8 @@ export default function DataOverviewDetails(props: ExternalUIComponentProps<Deta
         )
     );
 
-    const balanceAccountId = props.type === 'payout' ? props.balanceAccountDescription : data?.balanceAccountId;
-    const hasBalanceAccountDetail = props.type === 'payout' ? props?.balanceAccountDescription : details?.balanceAccount?.description;
+    const balanceAccountId = props.type === 'payout' ? props.id : data?.balanceAccountId;
+    const hasBalanceAccountDetail = props.type === 'payout' ? props?.balanceAccountDescription : props?.balanceAccount;
     const { balanceAccounts } = useBalanceAccounts(balanceAccountId, !hasBalanceAccountDetail);
 
     const errorProps = useMemo(() => {
@@ -87,7 +87,7 @@ export default function DataOverviewDetails(props: ExternalUIComponentProps<Deta
                         detailsData
                             ? ({
                                   ...(detailsData || EMPTY_OBJECT),
-                                  balanceAccount: details?.balanceAccount || balanceAccounts?.[0],
+                                  balanceAccount: props?.balanceAccount || balanceAccounts?.[0],
                               } as TransactionDetailData)
                             : undefined
                     }

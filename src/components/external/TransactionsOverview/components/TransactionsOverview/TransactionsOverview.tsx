@@ -173,12 +173,13 @@ export const TransactionsOverview = ({
                 selection: {
                     type: 'transaction',
                     data: id,
+                    balanceAccount: activeBalanceAccount || '',
                     extraDetails: getExtraFieldsById({ id }) ?? EMPTY_OBJECT,
                 },
                 modalSize: 'small',
             }).callback({ id });
         },
-        [updateDetails, getExtraFieldsById]
+        [activeBalanceAccount, updateDetails, getExtraFieldsById]
     );
 
     const sinceDate = useMemo(() => {
