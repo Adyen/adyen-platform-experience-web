@@ -98,7 +98,7 @@ export const TransactionRefundFullAmountInput = () => {
     return <_BaseRefundAmountInput currency={currency} errorMessage={null} value={formatAmount(availableAmount, currency)} disabled />;
 };
 
-export const TransactionRefundPartialAmountInput = () => {
+export const TransactionRefundPartialAmountInput = ({ locale }: { locale: string }) => {
     const { availableAmount, currency, interactionsDisabled, setAmount } = useTransactionRefundContext();
     const [errorMessage, setErrorMessage] = useState<TranslationKey | null>(null);
     const [refundAmount, setRefundAmount] = useState(`${formatAmount(availableAmount, currency)}`);
@@ -109,7 +109,7 @@ export const TransactionRefundPartialAmountInput = () => {
     }, [currency]);
 
     const onInput = (evt: h.JSX.TargetedEvent<HTMLInputElement>) => {
-        const value = evt.currentTarget.value.trim();
+        let value = evt.currentTarget.value.trim();
         const amount = computeRefundAmount(value);
         let message: typeof errorMessage = null;
 
@@ -117,6 +117,24 @@ export const TransactionRefundPartialAmountInput = () => {
             if (amount < 0) message = 'noNegativeNumbersAllowed';
             if (amount > availableAmount) message = 'refundAmount.excess';
         } else message = 'refundAmount.required';
+
+        // Get the decimal separator based on the user's locale
+        const decimalSeparator = 1.1.toLocaleString(locale).match(/\d(.*?)\d/)?.[1] || '.';
+        // Split the input value at the decimal separator
+        const parts = value.split(decimalSeparator);
+
+        if (parts.length === 2) {
+            const exponent = getCurrencyExponent(currency);
+
+            const integerPart = parts[0]!;
+            let decimalPart = parts[1]!;
+
+            if (decimalPart.length >= exponent) {
+                decimalPart = decimalPart.substring(0, exponent);
+                value = integerPart + decimalSeparator + decimalPart;
+                evt.currentTarget.value = value;
+            }
+        }
 
         setRefundAmount(value);
         setErrorMessage(message);
