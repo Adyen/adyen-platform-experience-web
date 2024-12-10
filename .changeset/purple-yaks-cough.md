@@ -2,7 +2,7 @@
 '@adyen/adyen-platform-experience-web': minor
 ---
 
-This release introduces two new components: **CapitalOverview** and **CapitalOffer**. This components will enable you to integrate all the features required to offer business financing (also called a grant) in your user interface with minimal engineering effort.
+This release introduces two new components: **CapitalOverview** and **CapitalOffer**. These components will enable you to integrate all the features required to offer business financing (also called a grant) in your user interface with minimal engineering effort.
 
 The **Capital Overview** component enables users to:
 
