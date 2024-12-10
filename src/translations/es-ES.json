@@ -17,7 +17,7 @@
     "calendar.timezone": "La zona horaria está establecida en: GMT%{offset} (%{time})",
     "capture": "Capturado",
     "category": "Categoría",
-    "chargeback": "Chargebacks",
+    "chargeback": "Contracargos",
     "closeIconLabel": "Cerrar",
     "contactSupportForHelp": "Contacta con el servicio de soporte para obtener ayuda.",
     "contactSupportForHelpAndShareErrorCode": "Contacta al equipo de soporte para obtener ayuda y comparte con ellos el código del error %{requestId}",
