@@ -133,7 +133,7 @@ export const TransactionDataContent = ({ transaction: initialTransaction, extraF
     }, [setLocked, refreshTransaction]);
 
     const renderMessages = useCallback(() => {
-        return refundStatuses?.length || refundLocked ? (
+        return refundStatuses?.length || refundLocked || locked ? (
             <div className={TX_REFUND_STATUSES_CONTAINER}>
                 {(refundLocked || locked) && (
                     <Alert
