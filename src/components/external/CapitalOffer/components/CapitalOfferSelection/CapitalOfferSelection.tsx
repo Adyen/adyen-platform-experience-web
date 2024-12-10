@@ -45,18 +45,11 @@ const InformationDisplay = ({ data }: { data: IGrantOfferResponseDTO }) => {
     return (
         <div className="adyen-pe-capital-offer-selection__information">
             <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY} wide={true}>
-                {i18n.get('capital.youWillNeedToRepayAMinimumOfXEveryXDaysToPayOffTheFunds.part1')}
-                <Typography variant={TypographyVariant.BODY} el={TypographyElement.SPAN} strongest>
-                    {i18n.get('capital.youWillNeedToRepayAMinimumOfXEveryXDaysToPayOffTheFunds.part2', {
+                {expectedRepaymentDate &&
+                    i18n.get('capital.youWillNeedToRepayAMinimumOfXEveryXDaysToPayOffTheFunds', {
                         values: {
                             amount: i18n.amount(data.thresholdAmount.value, data.thresholdAmount.currency),
                             days: CAPITAL_REPAYMENT_FREQUENCY,
-                        },
-                    })}
-                </Typography>{' '}
-                {expectedRepaymentDate &&
-                    i18n.get('capital.youWillNeedToRepayAMinimumOfXEveryXDaysToPayOffTheFunds.part3', {
-                        values: {
                             date: expectedRepaymentDate,
                         },
                     })}
