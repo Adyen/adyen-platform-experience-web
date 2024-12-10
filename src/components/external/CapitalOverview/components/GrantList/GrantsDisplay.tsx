@@ -42,8 +42,9 @@ export const GrantsDisplay: FunctionalComponent<GrantsProps> = ({ grantList, hid
 
     const displayMode = useMemo<'SingleGrant' | 'Tabs' | undefined>(() => {
         if (grantList.length === 1) return 'SingleGrant';
-        if (grantList.length > 1) return 'Tabs';
-    }, [grantList.length]);
+        if (grantList.length > 1 && activeGrants.length && inactiveGrants.length) return 'Tabs';
+        return 'SingleGrant';
+    }, [activeGrants.length, grantList.length, inactiveGrants.length]);
 
     const showNewOfferButton = useMemo(() => {
         return newOfferAvailable && !activeGrants.some(grant => grant.status === 'Pending');
