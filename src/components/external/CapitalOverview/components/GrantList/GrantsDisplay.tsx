@@ -40,8 +40,7 @@ export const GrantsDisplay: FunctionalComponent<GrantsProps> = ({ grantList, hid
         return [active, inactive];
     }, [grantList]);
 
-    const displayMode = useMemo<'SingleGrant' | 'Tabs' | undefined>(() => {
-        if (grantList.length === 1) return 'SingleGrant';
+    const displayMode = useMemo<'SingleGrant' | 'Tabs'>(() => {
         if (grantList.length > 1 && activeGrants.length && inactiveGrants.length) return 'Tabs';
         return 'SingleGrant';
     }, [activeGrants.length, grantList.length, inactiveGrants.length]);
