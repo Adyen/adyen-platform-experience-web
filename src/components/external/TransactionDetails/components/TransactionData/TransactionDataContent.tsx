@@ -2,9 +2,11 @@ import cx from 'classnames';
 import type { ComponentChild } from 'preact';
 import type { PropsWithChildren } from 'preact/compat';
 import { useCallback, useLayoutEffect, useMemo, useState } from 'preact/hooks';
+import { useAuthContext } from '../../../../../core/Auth';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
+import { useFetch } from '../../../../../hooks/useFetch';
 import type { IBalanceAccountBase, ILineItem } from '../../../../../types';
-import { EMPTY_ARRAY } from '../../../../../utils';
+import { EMPTY_ARRAY, EMPTY_OBJECT } from '../../../../../utils';
 import Alert from '../../../../internal/Alert/Alert';
 import { AlertTypeOption, AlertVariantOption } from '../../../../internal/Alert/types';
 import Button from '../../../../internal/Button';
@@ -113,6 +115,21 @@ export const TransactionDataContent = ({ transaction: initialTransaction, extraF
         [refundDisabled]
     );
 
+    const { getBalanceAccounts: balanceAccountEndpointCall } = useAuthContext().endpoints;
+
+    const { data: balanceAccounts } = useFetch(
+        useMemo(
+            () => ({
+                fetchOptions: {
+                    enabled: !!balanceAccountEndpointCall && !transaction.balanceAccount && !!transaction.balanceAccountId,
+                    keepPrevData: true,
+                },
+                queryFn: async () => balanceAccountEndpointCall?.(EMPTY_OBJECT),
+            }),
+            [transaction.balanceAccountId, transaction.balanceAccount, balanceAccountEndpointCall]
+        )
+    );
+
     const setActiveView = useCallback(
         (activeView: ActiveView) => void (shouldPreventActiveViewIfRefund(activeView) || _setActiveView(activeView)),
         [shouldPreventActiveViewIfRefund]
@@ -154,6 +171,8 @@ export const TransactionDataContent = ({ transaction: initialTransaction, extraF
         ) : null;
     }, [i18n, refundStatuses, refundLocked, locked]);
 
+    const balanceAccountData = transaction.balanceAccount ?? balanceAccounts?.data?.find(account => account.id === transaction.balanceAccountId);
+
     useLayoutEffect(() => {
         _setActiveView(ActiveView.DETAILS);
     }, [transaction]);
@@ -183,7 +202,11 @@ export const TransactionDataContent = ({ transaction: initialTransaction, extraF
                 <_TransactionDataContentViewWrapper renderViewActionButtons={renderViewActionButtons} renderViewMessageBox={renderMessages}>
                     <TransactionDetailsProvider
                         {...commonContextProviderProps}
-                        transaction={transaction}
+                        transaction={
+                            !transaction.balanceAccount && !!balanceAccountData
+                                ? { ...transaction, balanceAccount: balanceAccountData as IBalanceAccountBase }
+                                : { ...transaction }
+                        }
                         transactionNavigator={transactionNavigator}
                         extraFields={extraFields}
                     >

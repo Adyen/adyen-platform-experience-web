@@ -48,8 +48,8 @@ export const TransactionDetailsProvider = memo(
         );
 
         const _secondaryAction = useMemo<TransactionNavigationAction | undefined>(() => {
-            if (currentTransaction !== transaction.id) return;
             if (canNavigateBackward) return TransactionNavigationAction.BACKWARD;
+            if (currentTransaction !== transaction.id) return;
             if (canNavigateForward) return TransactionNavigationAction.FORWARD;
         }, [canNavigateBackward, canNavigateForward, currentTransaction, transaction]);
 
