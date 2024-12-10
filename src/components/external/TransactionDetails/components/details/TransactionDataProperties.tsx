@@ -58,7 +58,7 @@ const TransactionDataProperties = () => {
                 : SKIP_ITEM,
 
             // reference id
-            { key: 'referenceID' as const, value: <CopyText type={'Default'} textToCopy={id} /> },
+            { key: 'referenceID' as const, value: <CopyText type={'Default'} textToCopy={id} showCopyTextTooltip={false} /> },
 
             isRefundTransaction && refundMetadata?.refundPspReference
                 ? { key: 'refund.refundPspReference' as TranslationKey, value: refundMetadata.refundPspReference }

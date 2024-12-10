@@ -11,11 +11,13 @@ const CopyText = ({
     textToCopy,
     isHovered,
     buttonLabel,
+    showCopyTextTooltip = true,
     type = 'Link',
 }: {
     textToCopy: string;
     isHovered?: boolean;
     buttonLabel?: string;
+    showCopyTextTooltip?: boolean;
     type?: 'Link' | 'Text' | 'Default';
 }) => {
     const { i18n } = useCoreContext();
@@ -43,7 +45,19 @@ const CopyText = ({
                 ['adyen-pe-copy-text__container--information']: type === 'Link',
             })}
         >
-            <Tooltip content={textToCopy} isContainerHovered={isHovered}>
+            {showCopyTextTooltip ? (
+                <Tooltip content={textToCopy} isContainerHovered={isHovered}>
+                    <span
+                        className={cx({
+                            ['adyen-pe-copy-text__label']: type !== 'Default',
+                            ['adyen-pe-copy-text__information']: type === 'Link',
+                            ['adyen-pe-copy-text__text']: type === 'Text',
+                        })}
+                    >
+                        {buttonLabel || textToCopy}
+                    </span>
+                </Tooltip>
+            ) : (
                 <span
                     className={cx({
                         ['adyen-pe-copy-text__label']: type !== 'Default',
@@ -53,7 +67,7 @@ const CopyText = ({
                 >
                     {buttonLabel || textToCopy}
                 </span>
-            </Tooltip>
+            )}
             <Tooltip content={tooltipLabel}>
                 <Button
                     variant={ButtonVariant.TERTIARY}
