@@ -68,7 +68,7 @@ export const useTransactionRefundMetadata = (transaction: TransactionDataProps['
                 const currentStatus = status as 'in_progress' | 'completed' | 'failed';
                 const formattedAmount = statuses?.[currentStatus]?.amounts.reduce((res, value, currentIndex) => {
                     const amountsLength = statuses?.[currentStatus]?.amounts.length;
-                    if (amountsLength > 0 && currentIndex === amountsLength - 1)
+                    if (amountsLength > 1 && currentIndex === amountsLength - 1)
                         return `${res ? `${res}` : ''} ${i18n.get('and')} ${i18n.amount(value, statuses?.[currentStatus]?.currency)}`;
                     return `${res ? `${res},` : ''} ${i18n.amount(value, statuses?.[currentStatus]?.currency)}`;
                 }, '');
@@ -83,7 +83,7 @@ export const useTransactionRefundMetadata = (transaction: TransactionDataProps['
                     case RefundStatus.IN_PROGRESS:
                         if (totalAmount === originalAmount) {
                             return {
-                                type: AlertTypeOption.WARNING,
+                                type: AlertTypeOption.HIGHLIGHT,
                                 label: i18n.get('refund.theRefundIsBeingProcessed'),
                             };
                         } else {
