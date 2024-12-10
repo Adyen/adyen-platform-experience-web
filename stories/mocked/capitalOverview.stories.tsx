@@ -150,7 +150,7 @@ export const NoRender: ElementStory<typeof CapitalOverview, { showUnqualified: b
 
                     const { state } = await AdyenCapitalOffer.getState();
 
-                    state === 'GrantList' || state === 'PreQualified' || context.args.showUnqualified
+                    state === 'hasRequestedGrants' || state === 'isPreQualified' || context.args.showUnqualified
                         ? AdyenCapitalOffer.mount('#capital-component')
                         : undefined;
 
@@ -164,7 +164,7 @@ export const NoRender: ElementStory<typeof CapitalOverview, { showUnqualified: b
                     <ExternalPlatformElement>{'Element A'}</ExternalPlatformElement>
                     <div style={{ display: 'flex', gap: 10 }}>
                         <div style={{ width: 600 }}>
-                            {state === 'Unqualified' && !context.args.showUnqualified ? (
+                            {state === 'isUnqualified' && !context.args.showUnqualified ? (
                                 <ExternalPlatformElement style={{ background: '#51aeff' }}>{'Element D'}</ExternalPlatformElement>
                             ) : (
                                 <div id="capital-component"></div>
