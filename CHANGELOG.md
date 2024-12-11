@@ -4,7 +4,7 @@
 
 ### Minor Changes
 
--   105a719: This release introduces two new components: **CapitalOverview** and **CapitalOffer**. These components will enable you to integrate all the features required to offer business financing (also called a grant) in your user interface with minimal engineering effort.
+-   105a719: Introduction of two new components: **CapitalOverview** and **CapitalOffer**. These components will enable you to integrate all the features required to offer business financing (also called a grant) in your user interface with minimal engineering effort.
 
     The **Capital Overview** component enables users to:
 
@@ -22,11 +22,17 @@
 
     **By default, the Capital Overview component includes the Capital Offer component, which together provide the complete flow.**
 
--   e962c6d: Added Refunds Component
+-   e962c6d: Introduction of **Refunds** feature.
 
     Added refunds feature to a transactions overview and transaction details components which makes user to refund the money to shopper.
     Having this feature will make the refund button appear on the transaction details and it will be possible to refund money fully or partially.
     Additionally, more information added to transaction details such as fee and original amount.
+
+-   c0367c9: Introduction of fi-FI locale to available translations.
+
+### Patch Changes
+
+-   3f5367a: Add translations to type column in the transactions overview table.
 
 ## 1.1.1
 
