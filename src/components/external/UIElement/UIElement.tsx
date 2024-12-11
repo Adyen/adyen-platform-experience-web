@@ -11,6 +11,7 @@ export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUI
     public componentToRender: (() => JSXInternal.Element) | null = null;
     public elementRef: UIElement<P> | null;
     public onContactSupport?: () => void;
+    public maxWidth: number | undefined;
 
     constructor(props: P & UIElementProps & BaseElementProps) {
         super(props);
@@ -88,7 +89,11 @@ export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUI
                     updateCore={updateCore}
                     externalErrorHandler={externalErrorHandler}
                 >
-                    {this.componentToRender && <div className="adyen-pe-component">{this.componentToRender()}</div>}
+                    {this.componentToRender && (
+                        <div className="adyen-pe-component" style={{ maxWidth: this.maxWidth }}>
+                            {this.componentToRender()}
+                        </div>
+                    )}
                 </CoreProvider>
             </AuthProvider>
         );

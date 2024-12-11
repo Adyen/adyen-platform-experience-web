@@ -134,7 +134,7 @@ export const PayoutData = ({
                                         <div className={PD_SECTION_CLASS}>
                                             {
                                                 <div className={PD_CARD_CLASS}>
-                                                    <Card>
+                                                    <Card noPadding>
                                                         <StructuredList items={fundsCaptured} />
                                                     </Card>
                                                 </div>
@@ -164,6 +164,7 @@ export const PayoutData = ({
                                     {adjustments?.additions && Object.keys(adjustments?.additions).length > 0 && (
                                         <div className={PD_CARD_CLASS}>
                                             <Card
+                                                noPadding
                                                 renderHeader={
                                                     <Typography className={PD_CARD_TITLE_CLASS} variant={TypographyVariant.CAPTION} stronger>
                                                         {i18n.get('additions')}
@@ -177,6 +178,7 @@ export const PayoutData = ({
                                     {adjustments?.subtractions && Object.keys(adjustments?.subtractions).length > 0 && (
                                         <div className={PD_CARD_CLASS}>
                                             <Card
+                                                noPadding
                                                 renderHeader={
                                                     <Typography className={PD_CARD_TITLE_CLASS} variant={TypographyVariant.CAPTION} stronger>
                                                         {i18n.get('subtractions')}

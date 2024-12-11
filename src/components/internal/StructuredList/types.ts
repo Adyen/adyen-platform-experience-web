@@ -12,11 +12,11 @@ export type StructuredListItem = {
 export type ListValue = string | number | ComponentChild;
 
 export interface StructuredListProps {
-    className?: string;
-    items: { key: TranslationKey; value: ListValue }[];
+    items: StructuredListItem[];
     layout?: (typeof StructuredListLayouts)[number];
     highlightable?: boolean;
-    renderLabel?: (val: string) => ComponentChild;
-    renderValue?: (val: ListValue) => ComponentChild;
+    renderLabel?: (val: string, key: TranslationKey) => ComponentChild;
+    renderValue?: (val: ListValue, key: TranslationKey) => ComponentChild;
     grid?: boolean;
+    classNames?: string;
 }
