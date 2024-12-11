@@ -4,6 +4,7 @@ import { JSXInternal } from 'preact/src/jsx';
 import BaseElement from '../BaseElement';
 import { BaseElementProps, ExternalComponentType, IUIElement, UIElementProps, UIElementStatus } from '../../types';
 import './UIElement.scss';
+import cx from 'classnames';
 
 export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUIElement {
     protected componentRef: UIElement<P> | null = null;
@@ -11,7 +12,7 @@ export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUI
     public componentToRender: (() => JSXInternal.Element) | null = null;
     public elementRef: UIElement<P> | null;
     public onContactSupport?: () => void;
-    public maxWidth: number | undefined;
+    public customClassNames: string | undefined;
 
     constructor(props: P & UIElementProps & BaseElementProps) {
         super(props);
@@ -89,11 +90,7 @@ export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUI
                     updateCore={updateCore}
                     externalErrorHandler={externalErrorHandler}
                 >
-                    {this.componentToRender && (
-                        <div className="adyen-pe-component" style={{ maxWidth: this.maxWidth }}>
-                            {this.componentToRender()}
-                        </div>
-                    )}
+                    {this.componentToRender && <div className={cx('adyen-pe-component', this.customClassNames)}>{this.componentToRender()}</div>}
                 </CoreProvider>
             </AuthProvider>
         );
