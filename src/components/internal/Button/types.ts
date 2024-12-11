@@ -1,7 +1,7 @@
 import { VNode } from 'preact';
 import { JSXInternal } from 'preact/src/jsx';
 
-export interface ButtonProps extends JSXInternal.HTMLAttributes<HTMLButtonElement> {
+export interface ButtonProps extends JSXInternal.HTMLAttributes<HTMLAnchorElement | HTMLButtonElement> {
     classNameModifiers?: string[];
     variant?: ButtonVariant;
     iconLeft?: VNode<Element>;
@@ -17,5 +17,6 @@ export enum ButtonVariant {
     PRIMARY = 'primary',
     SECONDARY = 'secondary',
     TERTIARY = 'tertiary',
+    TERTIARY_WITH_BACKGROUND = 'tertiary-with-background',
     LINK = 'link',
 }

@@ -10,7 +10,7 @@ import { useAuthContext } from '../../../../../core/Auth';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
 import { useCursorPaginatedRecords } from '../../../../internal/Pagination/hooks';
-import { DataOverviewHeader } from '../../../../internal/DataOverviewDisplay/DataOverviewHeader';
+import { Header } from '../../../../internal/Header';
 import { IBalanceAccountBase, ITransaction } from '../../../../../types';
 import { EMPTY_OBJECT, isFunction, isUndefined, listFrom } from '../../../../../utils';
 import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '../../../../internal/Pagination/constants';
@@ -190,9 +190,9 @@ export const TransactionsOverview = ({
 
     return (
         <div className={BASE_CLASS}>
-            <DataOverviewHeader hideTitle={hideTitle} titleKey="transactionsOverviewTitle">
+            <Header hideTitle={hideTitle} titleKey="transactionsOverviewTitle">
                 <FilterBarMobileSwitch {...filterBarState} />
-            </DataOverviewHeader>
+            </Header>
             <FilterBar {...filterBarState}>
                 <BalanceAccountSelector
                     activeBalanceAccount={activeBalanceAccount}

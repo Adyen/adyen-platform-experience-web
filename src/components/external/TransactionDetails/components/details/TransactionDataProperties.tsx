@@ -70,7 +70,7 @@ const TransactionDataProperties = () => {
 
         return (
             <StructuredList
-                className={TX_DATA_LIST}
+                classNames={TX_DATA_LIST}
                 items={listItems}
                 layout="5-7"
                 renderLabel={label => <div className={TX_DATA_LABEL}>{label}</div>}
