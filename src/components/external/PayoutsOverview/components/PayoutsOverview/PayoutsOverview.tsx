@@ -4,12 +4,12 @@ import FilterBar, { FilterBarMobileSwitch, useFilterBarState } from '../../../..
 import BalanceAccountSelector from '../../../../internal/FormFields/Select/BalanceAccountSelector';
 import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '../../../../internal/Pagination/constants';
 import { useCursorPaginatedRecords } from '../../../../internal/Pagination/hooks';
-import useBalanceAccountSelection from '../../../../hooks/useBalanceAccountSelection';
+import useBalanceAccountSelection from '../../../../../hooks/useBalanceAccountSelection';
 import DateFilter from '../../../../internal/FilterBar/filters/DateFilter/DateFilter';
 import useModalDetails from '../../../../../hooks/useModalDetails/useModalDetails';
 import { IPayout } from '../../../../../types';
-import useDefaultOverviewFilterParams from '../../../../hooks/useDefaultOverviewFilterParams';
-import { DataOverviewHeader } from '../../../../internal/DataOverviewDisplay/DataOverviewHeader';
+import useDefaultOverviewFilterParams from '../../../../../hooks/useDefaultOverviewFilterParams';
+import { DataOverviewHeader } from '../../../../internal/DataOverviewDisplay/DataOverviewHeader/DataOverviewHeader';
 import { PayoutsOverviewComponentProps, ExternalUIComponentProps, FilterParam } from '../../../../types';
 import { useAuthContext } from '../../../../../core/Auth';
 import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatformExperienceError';
@@ -102,7 +102,7 @@ export const PayoutsOverview = ({
 
     return (
         <div className={BASE_CLASS}>
-            <DataOverviewHeader hideTitle={hideTitle} titleKey="payoutsTitle">
+            <DataOverviewHeader hideTitle={hideTitle} titleKey="payoutsTitle" descriptionKey="payoutsNotice">
                 <FilterBarMobileSwitch {...filterBarState} />
             </DataOverviewHeader>
             <FilterBar {...filterBarState}>

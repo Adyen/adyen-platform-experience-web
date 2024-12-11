@@ -13,9 +13,9 @@ const errorHandlerHelper = (errorHandler?: onErrorHandler, error?: any) => {
     }
 };
 
-export async function http<T>(options: HttpOptions, data?: any): Promise<T> {
+export async function http<T>(options: HttpOptions): Promise<T> {
     const { errorLevel, loadingContext = '', path } = options;
-    const request = getRequestObject(options, data);
+    const request = getRequestObject(options);
     const url = new URL(`${normalizeLoadingContext(loadingContext)}${API_VERSION}${normalizeUrl(path)}`);
 
     if (options.params) {
@@ -40,6 +40,11 @@ export async function http<T>(options: HttpOptions, data?: any): Promise<T> {
             const res = await fetch(url, request); // (!)
 
             if (res.ok) {
+                if (res.status === 204) {
+                    // No content to process
+                    return null;
+                }
+
                 try {
                     const contentType = getResponseContentType(res);
 
@@ -82,6 +87,7 @@ export async function http<T>(options: HttpOptions, data?: any): Promise<T> {
             if (isAdyenErrorResponse(response)) {
                 error.message = response.detail;
                 error.errorCode = response.errorCode;
+                error.status = response.status;
             }
             errorHandlerHelper(options.errorHandler, error);
         } catch (ex) {
@@ -108,6 +114,6 @@ export function httpGet<T>(options: Omit<HttpOptions, 'method'>): Promise<T> {
     return http<T>({ ...options, method: 'GET' });
 }
 
-export function httpPost<T>(options: Omit<HttpOptions, 'method'>, data?: any): Promise<T> {
-    return http<T>({ ...options, method: 'POST' }, data);
+export function httpPost<T>(options: Omit<HttpOptions, 'method'>): Promise<T> {
+    return http<T>({ ...options, method: 'POST' });
 }

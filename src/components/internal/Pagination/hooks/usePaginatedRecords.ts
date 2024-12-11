@@ -23,6 +23,7 @@ import {
     WithEitherPages,
 } from '../types';
 import AdyenPlatformExperienceError from '../../../../core/Errors/AdyenPlatformExperienceError';
+import { ReactiveStateRecord } from '../../../../hooks/useReactiveState/types';
 
 const offsetPaginatedResponseFields = ['hasNext', 'hasPrevious'] as const;
 
@@ -73,7 +74,7 @@ const parseOffsetPaginatedResponseData = <T, DataField extends string>(
 const usePaginatedRecords = <T, DataField extends string, FilterValue extends string, FilterParam extends string>({
     dataField = 'data' as PaginatedResponseDataField<DataField>,
     fetchRecords,
-    filterParams = EMPTY_OBJECT,
+    filterParams = EMPTY_OBJECT as ReactiveStateRecord<FilterValue, FilterParam>,
     initialFiltersSameAsDefault = true,
     initialize,
     onFiltersChanged,

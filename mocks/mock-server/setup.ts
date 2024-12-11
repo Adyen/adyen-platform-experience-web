@@ -1,6 +1,8 @@
 import { http, HttpResponse } from 'msw';
 import { endpoints } from '../../endpoints/endpoints';
-import { delay } from './utils';
+import { delay } from './utils/utils';
+import { EndpointName } from '../../src/types/api/endpoints';
+import { HttpMethod } from '../../src/core/Http/types';
 
 const networkError = false;
 const path = endpoints('mock').setup;
@@ -29,6 +31,10 @@ export const setupMock = [
                     method: 'GET',
                     url: 'transactions/{transactionId}',
                 },
+                initiateRefund: {
+                    method: 'POST',
+                    url: 'transactions/{transactionId}/refund',
+                },
                 getTransactionTotals: {
                     method: 'GET',
                     url: 'transactions/totals',
@@ -49,7 +55,31 @@ export const setupMock = [
                     method: 'GET',
                     url: 'reports/download',
                 },
-            },
+                getGrants: {
+                    method: 'GET',
+                    url: 'capital/grants',
+                },
+                getDynamicGrantOffersConfiguration: {
+                    method: 'GET',
+                    url: 'capital/grantOffers/dynamic/configuration',
+                },
+                createGrantOffer: {
+                    method: 'POST',
+                    url: 'capital/grantOffers/create',
+                },
+                getDynamicGrantOffer: {
+                    method: 'GET',
+                    url: 'capital/grantOffers/dynamic',
+                },
+                requestFunds: {
+                    method: 'POST',
+                    url: 'capital/grants/{grantOfferId}',
+                },
+                signToSActionDetails: {
+                    method: 'GET',
+                    url: 'capital/grants/missingActions/signToS',
+                },
+            } satisfies Record<EndpointName, { method: HttpMethod; url: string }>,
         });
     }),
 ];

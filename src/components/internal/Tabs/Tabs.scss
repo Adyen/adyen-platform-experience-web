@@ -1,0 +1,46 @@
+@use '../../../style';
+
+.adyen-fp-tabs {
+    align-items: flex-start;
+    background: style.token(color-background-tertiary);
+    border-radius: style.token(border-radius-l);
+    display: flex;
+    gap: style.token(spacer-020);
+    padding: style.token(spacer-020);
+    width: fit-content;
+
+    button {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        border: 0;
+        text-decoration: none;
+    }
+
+    &__tab {
+        border-radius: style.token(border-radius-m);
+        cursor: pointer;
+        padding: style.token(spacer-020) style.token(spacer-080);
+        text-align: center;
+        transition: background 150ms ease-in-out, transform 150ms ease;
+
+        &:focus,
+        &:hover:not(:disabled),
+        &[aria-selected='true'] {
+            background: style.token(color-background-primary);
+        }
+
+        &:disabled {
+            color: style.token(color-background-disabled);
+        }
+    }
+}
+
+.adyen-fp-tabpanel {
+    &__wrapper {
+        padding-top: style.token(spacer-080);
+    }
+
+    &__content {
+        padding: 0;
+    }
+}

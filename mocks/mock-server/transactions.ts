@@ -1,7 +1,15 @@
-import { http, HttpResponse } from 'msw';
-import { ITransaction } from '../../src';
-import { DEFAULT_TRANSACTION, TRANSACTIONS } from '../mock-data';
-import { compareDates, computeHash, delay, getPaginationLinks } from './utils';
+import { http, HttpResponse, PathParams } from 'msw';
+import {
+    ITransaction,
+    IRefundMode,
+    ITransactionRefundPayload,
+    ITransactionRefundResponse,
+    ITransactionWithDetails,
+    ITransactionRefundStatus,
+} from '../../src';
+import { COMPLETED_REFUND_STATUSES, DEFAULT_REFUND_STATUSES, DEFAULT_TRANSACTION, IN_PROGRESS_REFUND_STATUSES, TRANSACTIONS } from '../mock-data';
+import { clamp, EMPTY_ARRAY, getMappedValue, uuid } from '../../src/utils';
+import { compareDates, computeHash, delay, getPaginationLinks } from './utils/utils';
 import { endpoints } from '../../endpoints/endpoints';
 
 interface _ITransactionTotals {
@@ -9,14 +17,159 @@ interface _ITransactionTotals {
     incomings: number;
 }
 
+interface _ITransactionDetailsMetadata {
+    deductedAmount?: number;
+    refundMode?: IRefundMode;
+}
+
 const DEFAULT_PAGINATION_LIMIT = 10;
 const DEFAULT_SORT_DIRECTION = 'desc';
 const TRANSACTIONS_CACHE = new Map<string, ITransaction[]>();
 const TRANSACTIONS_TOTALS_CACHE = new Map<string, Map<string, _ITransactionTotals>>();
+const TRANSACTIONS_DETAILS_CACHE = new Map<string, ITransactionWithDetails>();
+const TRANSACTIONS_REFUND_LOCKED_DEADLINES = new Map<number, Set<string>>();
+const TRANSACTIONS_REFUND_LOCKED = new Set<string>();
+
+const KLARNA_OR_PAYPAL = ['klarna', 'paypal'];
+const PAYMENT_OR_TRANSFER = ['Payment', 'Transfer'];
 
 const mockEndpoints = endpoints('mock');
 const networkError = false;
 const serverError = false;
+const refundActionError = false;
+
+const getTransactionWithAmountDeduction = <T extends ITransaction>(
+    transaction: T,
+    amountDeduction = 0
+): T & Pick<ITransactionWithDetails, 'deductedAmount' | 'originalAmount'> => {
+    const { currency, value: originalAmount } = transaction.amount;
+    const deductedAmount = Math.max(0, amountDeduction ?? 0);
+    const transactionAmount = originalAmount - deductedAmount;
+
+    return {
+        ...transaction,
+        amount: { currency, value: transactionAmount },
+        deductedAmount: { currency, value: deductedAmount },
+        originalAmount: { currency, value: originalAmount },
+    };
+};
+
+const getTransactionMetadata = <T extends ITransaction>(transaction: T) => {
+    let refundMode: IRefundMode = 'non_refundable';
+    let deductedAmount = 0;
+
+    if (PAYMENT_OR_TRANSFER.includes(transaction?.category)) {
+        if (KLARNA_OR_PAYPAL.includes(transaction?.paymentMethod?.type ?? '')) {
+            refundMode = 'partially_refundable_with_line_items_required';
+            deductedAmount = 350;
+        } else {
+            const amount = transaction.amount.value;
+            const isLargeAmount = amount >= 100000;
+            refundMode = isLargeAmount ? 'partially_refundable_any_amount' : 'fully_refundable_only';
+            deductedAmount = clamp(0, Math.round(amount * (!transaction.paymentMethod?.lastFourDigits && isLargeAmount ? 0.025 : 0.034)), 10000);
+        }
+    }
+
+    return { deductedAmount, refundMode } as const;
+};
+
+const getPaymentOrTransferWithDetails = <T extends ITransaction>(transaction: T, deductedAmount = 0) => {
+    return getMappedValue(transaction.id, TRANSACTIONS_DETAILS_CACHE, () => {
+        const tx = getTransactionWithAmountDeduction(transaction, deductedAmount) as unknown as ITransactionWithDetails;
+        tx.paymentPspReference = uuid();
+        return tx;
+    });
+};
+
+const enrichTransactionDataWithDetails = <T extends ITransaction>(
+    transaction: T,
+    metadata = getTransactionMetadata(transaction) as _ITransactionDetailsMetadata
+): ITransactionWithDetails => {
+    const { currency, value: originalAmount } = transaction.amount;
+    const { deductedAmount = 0, refundMode = 'fully_refundable_only' } = metadata;
+
+    let refundStatuses = EMPTY_ARRAY as unknown as ITransactionRefundStatus;
+    let refundLocked = TRANSACTIONS_REFUND_LOCKED.has(transaction.id);
+    let refundableAmount: number | undefined;
+
+    switch (refundMode) {
+        case 'non_refundable':
+            refundableAmount = 0;
+            refundLocked = false;
+            break;
+        case 'partially_refundable_any_amount':
+        case 'partially_refundable_with_line_items_required':
+            refundStatuses = DEFAULT_REFUND_STATUSES?.map(status => ({ ...status, amount: { ...status.amount, currency } }));
+            break;
+    }
+
+    let transactionWithDetails = { ...transaction } as unknown as ITransactionWithDetails;
+
+    switch (transaction.category) {
+        case 'Payment':
+        case 'Transfer':
+            transactionWithDetails = getPaymentOrTransferWithDetails(transaction, deductedAmount)!;
+            break;
+
+        case 'Refund': {
+            transactionWithDetails = getMappedValue(transaction.id, TRANSACTIONS_DETAILS_CACHE, () => {
+                const { value: amount, currency } = transaction.amount;
+                let refundType: NonNullable<ITransactionWithDetails['refundMetadata']>['refundType'] = 'partial';
+                let paymentTx: ITransaction | undefined = undefined;
+
+                for (const tx of TRANSACTIONS) {
+                    if (!PAYMENT_OR_TRANSFER.includes(tx.category)) continue;
+                    if (tx.balanceAccountId !== transaction.balanceAccountId) continue;
+                    if (tx.amount.currency !== currency) continue;
+
+                    const txAmount = -tx.amount.value;
+
+                    if (txAmount < amount) paymentTx ??= tx;
+                    if (txAmount === amount && (paymentTx = tx) && (refundType = 'full')) break;
+                }
+
+                if (paymentTx) {
+                    const payment = getPaymentOrTransferWithDetails(paymentTx)!;
+                    const tx = { ...transactionWithDetails };
+
+                    tx.originalAmount = { ...payment.amount };
+                    tx.paymentPspReference = payment.paymentPspReference;
+                    tx.refundMetadata = {
+                        originalPaymentId: payment.id,
+                        refundPspReference: uuid(),
+                        refundReason: 'requested_by_customer',
+                        refundType,
+                    };
+
+                    return tx;
+                }
+            })!;
+
+            break;
+        }
+    }
+
+    return {
+        ...transactionWithDetails,
+        // lineItems: DEFAULT_LINE_ITEMS.map(item => ({ ...item, amountIncludingTax: { ...item.amountIncludingTax, currency } })),
+        refundDetails: {
+            refundLocked: false,
+            refundMode,
+            refundStatuses,
+            refundableAmount: { currency, value: refundableAmount ?? originalAmount },
+        },
+    };
+};
+
+const fetchTransaction = async (params: PathParams) => {
+    const matchingMock = [...TRANSACTIONS, DEFAULT_TRANSACTION].find(mock => mock.id === params.id);
+
+    if (!matchingMock) return HttpResponse.text('Cannot find matching Transaction mock', { status: 404 });
+
+    await delay(1000);
+    passThroughRefundLockDeadlineCheckpoint();
+    return HttpResponse.json(enrichTransactionDataWithDetails(matchingMock));
+};
 
 const fetchTransactionsForRequest = (req: Request) => {
     const url = new URL(req.url);
@@ -64,26 +217,29 @@ const fetchTransactionsForRequest = (req: Request) => {
     return { hash, transactions } as const;
 };
 
+const passThroughRefundLockDeadlineCheckpoint = () => {
+    for (const [deadline, transactions] of TRANSACTIONS_REFUND_LOCKED_DEADLINES) {
+        if (deadline > Date.now()) return;
+        transactions.forEach(tx => TRANSACTIONS_REFUND_LOCKED.delete(tx));
+        TRANSACTIONS_REFUND_LOCKED_DEADLINES.delete(deadline);
+    }
+};
+
 export const transactionsMocks = [
     http.get(mockEndpoints.transactions, async ({ request }) => {
         if (networkError) return HttpResponse.error();
 
         if (serverError) {
-            return new HttpResponse(
-                JSON.stringify({
+            return HttpResponse.json(
+                {
                     type: 'https://docs.adyen.com/errors/forbidden',
                     errorCode: '00_500',
                     title: 'Forbidden',
                     detail: 'Balance Account does not belong to Account Holder',
                     requestId: '769ac4ce59f0f159ad672d38d3291e91',
                     status: 500,
-                }),
-                {
-                    status: 500,
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                }
+                },
+                { status: 500 }
             );
         }
 
@@ -95,21 +251,15 @@ export const transactionsMocks = [
         const { transactions } = fetchTransactionsForRequest(request);
 
         await delay(responseDelay);
+
         return HttpResponse.json({
-            data: transactions.slice(cursor, cursor + limit),
+            data: transactions.slice(cursor, cursor + limit).map(tx => {
+                const { deductedAmount: deduction } = getTransactionMetadata(tx);
+                const { deductedAmount, originalAmount, ...transaction } = getTransactionWithAmountDeduction(tx, deduction);
+                return transaction;
+            }),
             _links: getPaginationLinks(cursor, limit, transactions.length),
         });
-    }),
-
-    http.get(mockEndpoints.transaction, async ({ params }) => {
-        const matchingMock = [...TRANSACTIONS, DEFAULT_TRANSACTION].find(mock => mock.id === params.id);
-
-        if (!matchingMock) {
-            HttpResponse.text('Cannot find matching Transaction mock', { status: 404 });
-            return;
-        }
-        await delay(1000);
-        return HttpResponse.json(matchingMock);
     }),
 
     http.get(mockEndpoints.transactionsTotals, ({ request }) => {
@@ -150,5 +300,60 @@ export const transactionsMocks = [
         }
 
         return HttpResponse.json({ data });
+    }),
+
+    http.get(mockEndpoints.transaction, ({ params }) => fetchTransaction(params)),
+
+    http.post(mockEndpoints.initiateRefund, async ({ request, params }) => {
+        try {
+            if (refundActionError) return HttpResponse.error();
+
+            const transactionResponse = await fetchTransaction(params);
+
+            if (!transactionResponse.ok) throw await transactionResponse.text();
+
+            const {
+                amount,
+                // lineItems,
+                refundReason,
+            } = (await request.json()) as ITransactionRefundPayload;
+            const { id: transactionId, refundDetails } = (await transactionResponse.json()) as ITransactionWithDetails;
+
+            const lockDeadline = Date.now() + 2 * 60 * 1000; // 2 minutes
+            const deadlineTransactions = getMappedValue(lockDeadline, TRANSACTIONS_REFUND_LOCKED_DEADLINES, () => new Set())!;
+
+            deadlineTransactions.add(transactionId);
+            TRANSACTIONS_REFUND_LOCKED.add(transactionId);
+
+            return HttpResponse.json({
+                amount,
+                ...(refundReason && { refundReason }),
+                ...(refundDetails?.refundMode.startsWith('partially_refundable') &&
+                    {
+                        // lineItems: (lineItems ?? (EMPTY_ARRAY as NonNullable<typeof lineItems>))
+                        //     .map(({ reference, quantity }) => {
+                        //         const item = DEFAULT_LINE_ITEMS.find(({ reference: _reference }) => reference === _reference);
+                        //         if (item) {
+                        //             const availableQuantity = Math.max(0, item.availableQuantity - Math.max(0, quantity));
+                        //             return { ...item, availableQuantity };
+                        //         }
+                        //     })
+                        //     .filter(Boolean) as NonNullable<ITransactionRefundResponse['lineItems']>,
+                    }),
+                status: 'received',
+            } satisfies ITransactionRefundResponse);
+        } catch {
+            return HttpResponse.json(
+                {
+                    type: 'https://docs.adyen.com/errors/forbidden',
+                    errorCode: '00_500',
+                    title: 'Forbidden',
+                    detail: 'Cannot process refund for this transaction',
+                    requestId: '769ac4ce59f0f159ad672d38d3291e91',
+                    status: 500,
+                },
+                { status: 500 }
+            );
+        }
     }),
 ];

@@ -1,4 +1,4 @@
-import useBalanceAccounts from '../../../../hooks/useBalanceAccounts';
+import useBalanceAccounts from '../../../../../hooks/useBalanceAccounts';
 import DataOverviewContainer from '../../../../internal/DataOverviewContainer/DataOverviewContainer';
 import type { TransactionOverviewComponentProps, ExternalUIComponentProps } from '../../../../types';
 import { TransactionsOverview } from '../TransactionsOverview/TransactionsOverview';

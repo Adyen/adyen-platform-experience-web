@@ -2,8 +2,9 @@ import { AuthProvider } from '../../../core/Auth';
 import CoreProvider from '../../../core/Context/CoreProvider';
 import { JSXInternal } from 'preact/src/jsx';
 import BaseElement from '../BaseElement';
-import { BaseElementProps, IUIElement, UIElementProps, UIElementStatus } from '../../types';
+import { BaseElementProps, ExternalComponentType, IUIElement, UIElementProps, UIElementStatus } from '../../types';
 import './UIElement.scss';
+import cx from 'classnames';
 
 export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUIElement {
     protected componentRef: UIElement<P> | null = null;
@@ -11,6 +12,7 @@ export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUI
     public componentToRender: (() => JSXInternal.Element) | null = null;
     public elementRef: UIElement<P> | null;
     public onContactSupport?: () => void;
+    public customClassNames: string | undefined;
 
     constructor(props: P & UIElementProps & BaseElementProps) {
         super(props);
@@ -26,7 +28,7 @@ export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUI
     /**
      * Get the element's displayable name
      */
-    get displayName(): string {
+    get displayName(): ExternalComponentType {
         return this.type;
     }
 
@@ -40,7 +42,7 @@ export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUI
     /**
      * Return the type of an element
      */
-    get type(): string {
+    get type(): ExternalComponentType {
         return (this.constructor as typeof UIElement)?.type;
     }
 
@@ -81,14 +83,14 @@ export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUI
         core.session.errorHandler = externalErrorHandler;
 
         return (
-            <AuthProvider session={core.session} key={performance.now()}>
+            <AuthProvider type={this.type} session={core.session} key={performance.now()}>
                 <CoreProvider
                     i18n={core.localization.i18n}
                     loadingContext={core.loadingContext}
                     updateCore={updateCore}
                     externalErrorHandler={externalErrorHandler}
                 >
-                    {this.componentToRender && <div className="adyen-pe-component">{this.componentToRender()}</div>}
+                    {this.componentToRender && <div className={cx('adyen-pe-component', this.customClassNames)}>{this.componentToRender()}</div>}
                 </CoreProvider>
             </AuthProvider>
         );

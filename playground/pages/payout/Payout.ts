@@ -1,13 +1,13 @@
 import { AdyenPlatformExperience, PayoutDetails, all_locales } from '../../../src';
 import '../../utils/createPages';
 import '../../assets/style/style.scss';
-import { enableServerInMockedMode } from '../../../mocks/mock-server/utils';
+import { enableServerInMockedMode } from '../../../mocks/mock-server/utils/utils';
 import sessionRequest from '../../utils/sessionRequest';
 import { createLanguageButtons } from '../../utils/createLanguageButtons';
 import { getDefaultID, getSearchParameters, TEST_CONFIG } from '../../utils/utils';
 
-const DEFAULT_PAYOUT_DATE = '2024-06-09T00:00:00.000Z';
-const DEFAULT_PAYOUT_ID = getDefaultID('1234567890123456');
+const DEFAULT_PAYOUT_DATE = '2023-10-29T10:00:00.000Z';
+const DEFAULT_PAYOUT_ID = getDefaultID('BA32272223222B5CTDQPM6W2G');
 
 enableServerInMockedMode()
     .then(async () => {

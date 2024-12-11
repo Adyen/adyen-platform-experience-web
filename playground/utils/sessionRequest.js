@@ -16,9 +16,11 @@ const getMySessionToken = async session => {
                 },
             ],
             roles: [
+                'Transactions Overview Component: Manage Refunds',
                 'Transactions Overview Component: View',
                 'Payouts Overview Component: View',
                 'Reports Overview Component: View',
+                'Capital Component: Manage',
                 ...(session?.roles?.length ? session.roles : []),
             ],
         },

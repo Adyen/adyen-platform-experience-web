@@ -1,41 +1,91 @@
+import cx from 'classnames';
+import { useCallback, useState } from 'preact/hooks';
+import useCoreContext from '../../../core/Context/useCoreContext';
 import Button from '../Button';
 import { ButtonVariant } from '../Button/types';
-import { useCallback, useState } from 'preact/hooks';
+import Icon from '../Icon';
 import { Tooltip } from '../Tooltip/Tooltip';
-import Copy from '../SVGIcons/Copy';
 import './CopyText.scss';
 
-const CopyText = ({ text }: { text: string }) => {
-    const [tooltipLabel, setTooltipLabel] = useState(text);
+const CopyText = ({
+    textToCopy,
+    isHovered,
+    buttonLabel,
+    showCopyTextTooltip = true,
+    type = 'Link',
+}: {
+    textToCopy: string;
+    isHovered?: boolean;
+    buttonLabel?: string;
+    showCopyTextTooltip?: boolean;
+    type?: 'Link' | 'Text' | 'Default';
+}) => {
+    const { i18n } = useCoreContext();
+
+    const [tooltipLabel, setTooltipLabel] = useState(i18n.get('copy'));
 
     const onClick = useCallback(async () => {
-        if (text) {
+        if (textToCopy) {
             try {
-                await navigator.clipboard.writeText(text);
-                setTooltipLabel('Copied');
+                await navigator.clipboard.writeText(textToCopy);
+                setTooltipLabel(i18n.get('copied'));
             } catch (e) {
                 console.log(e);
             }
         }
-    }, [text]);
+    }, [i18n, textToCopy]);
 
     const resetTooltipLabel = useCallback(() => {
-        setTooltipLabel(text);
-    }, [setTooltipLabel, text]);
+        setTooltipLabel(i18n.get('copy'));
+    }, [i18n]);
 
     return (
-        <Tooltip content={tooltipLabel}>
-            <Button
-                variant={ButtonVariant.TERTIARY}
-                className={'adyen-pe-copy-text'}
-                onClick={onClick}
-                onBlur={resetTooltipLabel}
-                onMouseLeaveCapture={resetTooltipLabel}
-            >
-                <span className={'adyen-pe-copy-text__information'}>{text}</span>
-                <Copy fill={'#0070f5'} />
-            </Button>
-        </Tooltip>
+        <span
+            className={cx('adyen-pe-copy-text__container', {
+                ['adyen-pe-copy-text__container--information']: type === 'Link',
+            })}
+        >
+            {showCopyTextTooltip ? (
+                <Tooltip content={textToCopy} isContainerHovered={isHovered}>
+                    <span
+                        className={cx({
+                            ['adyen-pe-copy-text__label']: type !== 'Default',
+                            ['adyen-pe-copy-text__information']: type === 'Link',
+                            ['adyen-pe-copy-text__text']: type === 'Text',
+                        })}
+                    >
+                        {buttonLabel || textToCopy}
+                    </span>
+                </Tooltip>
+            ) : (
+                <span
+                    className={cx({
+                        ['adyen-pe-copy-text__label']: type !== 'Default',
+                        ['adyen-pe-copy-text__information']: type === 'Link',
+                        ['adyen-pe-copy-text__text']: type === 'Text',
+                    })}
+                >
+                    {buttonLabel || textToCopy}
+                </span>
+            )}
+            <Tooltip content={tooltipLabel}>
+                <Button
+                    variant={ButtonVariant.TERTIARY}
+                    className="adyen-pe-copy-text"
+                    onClick={onClick}
+                    onBlur={resetTooltipLabel}
+                    onMouseLeaveCapture={resetTooltipLabel}
+                >
+                    <div
+                        className={cx('adyen-pe-copy-text__icon', {
+                            ['adyen-pe-copy-text__icon--information']: type === 'Link',
+                        })}
+                    >
+                        <Icon name={'copy'} />
+                    </div>
+                </Button>
+            </Tooltip>
+        </span>
     );
 };
 

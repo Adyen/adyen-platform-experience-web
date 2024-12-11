@@ -15,6 +15,7 @@ export interface HttpOptions {
     params?: URLSearchParams;
     signal?: AbortSignal;
     origin?: string;
+    body?: any;
 }
 
 export type AdyenErrorResponse = {

@@ -7,13 +7,13 @@ import { components } from '../../../../types/api/resources/PayoutsResource';
 import { EMPTY_OBJECT } from '../../../../utils';
 import Accordion from '../../../internal/Accordion/Accordion';
 import Card from '../../../internal/Card/Card';
-import { DATE_FORMAT_PAYOUT_DETAILS } from '../../../internal/DataOverviewDisplay/constants';
+import { DATE_FORMAT_PAYOUT_DETAILS } from '../../../../constants';
 import StructuredList from '../../../internal/StructuredList';
 import { ListValue } from '../../../internal/StructuredList/types';
 import { TypographyVariant } from '../../../internal/Typography/types';
 import Typography from '../../../internal/Typography/Typography';
-import TransactionDataSkeleton from '../../TransactionDetails/components/TransactionDataSkeleton';
-import useTimezoneAwareDateFormatting from '../../../hooks/useTimezoneAwareDateFormatting';
+import DataOverviewDetailsSkeleton from '../../../internal/DataOverviewDetails/DataOverviewDetailsSkeleton';
+import useTimezoneAwareDateFormatting from '../../../../hooks/useTimezoneAwareDateFormatting';
 import './PayoutData.scss';
 import {
     PD_BASE_CLASS,
@@ -42,9 +42,10 @@ export const PayoutData = ({
     balanceAccountId: string;
     balanceAccountDescription?: string;
 }) => {
-    const { payout }: { payout: Payout } = payoutData ?? EMPTY_OBJECT;
-    const { i18n } = useCoreContext();
+    const { payout } = payoutData ?? (EMPTY_OBJECT as NonNullable<typeof payoutData>);
     const { dateFormat } = useTimezoneAwareDateFormatting('UTC');
+    const { i18n } = useCoreContext();
+
     const adjustments = useMemo(() => {
         const data = payoutData?.amountBreakdowns?.adjustmentBreakdown?.reduce(
             (accumulator, currentValue) => {
@@ -96,7 +97,7 @@ export const PayoutData = ({
     return (
         <>
             {!payout ? (
-                <TransactionDataSkeleton isLoading={isFetching} skeletonRowNumber={6} />
+                <DataOverviewDetailsSkeleton skeletonRowNumber={6} />
             ) : (
                 <div className={PD_BASE_CLASS}>
                     <div className={PD_TITLE_CLASS}>
@@ -133,7 +134,7 @@ export const PayoutData = ({
                                         <div className={PD_SECTION_CLASS}>
                                             {
                                                 <div className={PD_CARD_CLASS}>
-                                                    <Card>
+                                                    <Card noPadding>
                                                         <StructuredList items={fundsCaptured} />
                                                     </Card>
                                                 </div>
@@ -163,6 +164,7 @@ export const PayoutData = ({
                                     {adjustments?.additions && Object.keys(adjustments?.additions).length > 0 && (
                                         <div className={PD_CARD_CLASS}>
                                             <Card
+                                                noPadding
                                                 renderHeader={
                                                     <Typography className={PD_CARD_TITLE_CLASS} variant={TypographyVariant.CAPTION} stronger>
                                                         {i18n.get('additions')}
@@ -176,6 +178,7 @@ export const PayoutData = ({
                                     {adjustments?.subtractions && Object.keys(adjustments?.subtractions).length > 0 && (
                                         <div className={PD_CARD_CLASS}>
                                             <Card
+                                                noPadding
                                                 renderHeader={
                                                     <Typography className={PD_CARD_TITLE_CLASS} variant={TypographyVariant.CAPTION} stronger>
                                                         {i18n.get('subtractions')}
