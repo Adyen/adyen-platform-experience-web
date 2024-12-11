@@ -1,12 +1,18 @@
 @use '../../../style';
 
 .adyen-pe-card {
+    background-color: style.token(color-background-primary);
     border: style.token(border-width-s) solid style.token(color-outline-primary);
     border-radius: style.token(border-radius-m);
     overflow: hidden;
+    padding: style.token(spacer-070);
+
+    &--no-padding {
+        padding: 0;
+    }
 
     &--filled {
-        background-color: style.token(color-outline-tertiary);
+        background-color: style.token(color-background-secondary);
     }
 
     &--no-outline {
@@ -22,7 +28,6 @@
     }
 
     &__body {
-        background-color: style.token(color-background-primary);
         color: style.token(color-label-primary);
         font-weight: style.token(text-body-strongest-font-weight);
         line-height: style.token(text-caption-line-height);

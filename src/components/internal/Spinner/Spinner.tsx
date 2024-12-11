@@ -7,9 +7,9 @@ interface SpinnerProps {
     inline?: boolean;
 
     /**
-     * size of the spinner (small/medium/large)
+     * size of the spinner (x-small/small/medium/large)
      */
-    size?: string;
+    size?: 'x-small' | 'small' | 'medium' | 'large';
 }
 
 /**

@@ -1,12 +1,14 @@
 import { useState, useCallback, useRef, useMemo, useEffect } from 'preact/hooks';
 import { ALREADY_RESOLVED_PROMISE, EMPTY_OBJECT, isFunction, isNumber, tryResolve } from '../../utils';
+import { AdyenErrorResponse } from '../../core/Http/types';
 
 type MutationOptions<ResponseType> = {
     onSuccess?: (data: ResponseType) => void | Promise<void>;
-    onError?: (error: Error) => void | Promise<void>;
-    onSettled?: (data: ResponseType | undefined, error: Error | null) => void | Promise<void>;
+    onError?: (error: Error | AdyenErrorResponse) => void | Promise<void>;
+    onSettled?: (data: ResponseType | undefined, error: Error | AdyenErrorResponse | null) => void | Promise<void>;
     retry?: number | boolean;
     retryDelay?: number | ((retryAttempt: number) => number);
+    shouldRetry?: (error: AdyenErrorResponse) => boolean;
 };
 type MutationStatus = 'idle' | 'loading' | 'success' | 'error';
 
@@ -23,10 +25,10 @@ function useMutation<queryFn extends (...args: any[]) => any, ResponseType exten
     queryFn: queryFn | undefined;
     options?: MutationOptions<ResponseType>;
 }) {
-    const { retry = false, retryDelay = 1000, onSuccess, onError, onSettled } = options || (EMPTY_OBJECT as NonNullable<typeof options>);
+    const { retry = false, retryDelay = 1000, onSuccess, onError, onSettled, shouldRetry } = options || (EMPTY_OBJECT as NonNullable<typeof options>);
 
     const [data, setData] = useState<ResponseType | null>(null);
-    const [error, setError] = useState<Error | null>(null);
+    const [error, setError] = useState<Error | AdyenErrorResponse | null>(null);
     const [status, setStatus] = useState<MutationStatus>('idle');
 
     // Use refs for mutable values that shouldn't trigger re-renders
@@ -40,17 +42,17 @@ function useMutation<queryFn extends (...args: any[]) => any, ResponseType exten
         retryCountRef.current = 0;
     }, []);
 
+    const resetRetries = useCallback(() => {
+        retryCountRef.current = 0;
+    }, []);
+
     const mutate = useCallback(
         async (...variables: Parameters<queryFn>): Promise<ResponseType> => {
-            if (!queryFn) {
-                throw new Error('Query function is required');
-            }
-
             try {
                 setStatus('loading');
                 setError(null);
 
-                const result = await queryFn(...variables);
+                const result = await queryFn?.(...variables);
 
                 // Only update state if component is still mounted
                 if (mountedRef.current) {
@@ -61,17 +63,14 @@ function useMutation<queryFn extends (...args: any[]) => any, ResponseType exten
                 ALREADY_RESOLVED_PROMISE.then(() => {
                     onSuccess && tryResolve(onSuccess, result).catch(catchCallback);
                     onSettled && tryResolve(onSettled, result, null).catch(catchCallback);
+                    resetRetries();
                 });
 
                 return result;
-            } catch (err) {
-                const error = err instanceof Error ? err : new Error(String(err));
-
+            } catch (error: any) {
                 let maxRetries = 0;
-                if (isNumber(retry)) {
+                if (isNumber(retry) && (shouldRetry ? shouldRetry(error) : true)) {
                     maxRetries = Math.max(0, Math.floor(retry));
-                } else if (retry) {
-                    maxRetries = 3; // Default retries when retry is true
                 } else {
                     maxRetries = 0;
                 }
@@ -81,6 +80,7 @@ function useMutation<queryFn extends (...args: any[]) => any, ResponseType exten
                     const delay = isFunction(retryDelay) ? retryDelay(retryCountRef.current) : retryDelay ?? 1000;
 
                     await new Promise(resolve => setTimeout(resolve, delay));
+
                     return mutate(...variables);
                 }
 
@@ -94,12 +94,13 @@ function useMutation<queryFn extends (...args: any[]) => any, ResponseType exten
                 ALREADY_RESOLVED_PROMISE.then(() => {
                     onError && tryResolve(onError, error).catch(catchCallback);
                     onSettled && tryResolve(onSettled, undefined, error).catch(catchCallback);
+                    resetRetries();
                 });
 
                 throw error;
             }
         },
-        [queryFn, retry, retryDelay, onSuccess, onError, onSettled]
+        [queryFn, onSuccess, onSettled, retry, shouldRetry, retryDelay, resetRetries, onError]
     );
 
     // Cleanup on unmount
