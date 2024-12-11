@@ -9,7 +9,7 @@ export class CapitalOfferElement extends UIElement<CapitalOfferElementProps> {
     constructor(props: _UIComponentProps<CapitalOfferElementProps>) {
         super(props);
         this.componentToRender = this.componentToRender.bind(this);
-        this.maxWidth = 600;
+        this.customClassNames = 'adyen-pe-capital-offer-component';
     }
 
     public componentToRender = () => {
