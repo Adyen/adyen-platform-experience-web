@@ -3,122 +3,168 @@
  * Do not make direct changes to the file.
  */
 
+
 export interface paths {
-    '/v1/transactions/{transactionId}': {
-        /**
-         * Get transaction details
-         * @description Given a transaction ID, it retrieves its details
-         */
-        get: operations['getTransaction'];
-    };
-    '/v1/transactions/totals': {
-        /**
-         * Get transaction totals
-         * @description Given filters, provides total of incomings and expenses for all transactions matching the criteria
-         */
-        get: operations['getTransactionTotals'];
-    };
-    '/v1/transactions': {
-        /**
-         * Get transactions
-         * @description Given filters, provides list of transactions for a balance account
-         */
-        get: operations['getTransactions'];
-    };
+  "/v1/transactions/{transactionId}": {
+    /**
+     * Get transaction details
+     * @description Given a transaction ID, it retrieves its details
+     */
+    get: operations["getTransaction"];
+  };
+  "/v1/transactions/totals": {
+    /**
+     * Get transaction totals
+     * @description Given filters, provides total of incomings and expenses for all transactions matching the criteria
+     */
+    get: operations["getTransactionTotals"];
+  };
+  "/v1/transactions": {
+    /**
+     * Get transactions
+     * @description Given filters, provides list of transactions for a balance account
+     */
+    get: operations["getTransactions"];
+  };
+  "/v1/transactions/{transactionId}/refundPayment": {
+    /** @description Add @Operation annotation to provide a description */
+    post: operations["initiateRefund"];
+  };
 }
 
 export type webhooks = Record<string, never>;
 
 export interface components {
-    schemas: {
-        /** @description Amount */
-        Amount: {
-            /** @description The three-character [ISO currency code](https://docs.adyen.com/development-resources/currency-codes). */
-            currency: string;
-            /**
-             * Format: int64
-             * @description The amount of the transaction, in [minor units](https://docs.adyen.com/development-resources/currency-codes).
-             */
-            value: number;
-        };
-        /** @description Information about the bank account */
-        BankAccount: {
-            /** @description Last four digits of the account number or IBAN. */
-            accountNumberLastFourDigits: string;
-        };
-        /**
-         * @description Category
-         * @enum {string}
-         */
-        Category: 'ATM' | 'Capital' | 'Correction' | 'Fee' | 'Payment' | 'Refund' | 'Chargeback' | 'Transfer' | 'Other';
-        /** @description Payment method or payment instrument */
-        PaymentMethod: {
-            /** @description Last four digits of the card */
-            lastFourDigits?: string;
-            /** @description Payment method type code of the transaction f.e. klarna, visa, mc */
-            type: string;
-        };
-        /** @description Transactions made within the filters provided for given balanceAccountId */
-        SingleTransaction: {
-            amount: components['schemas']['Amount'];
-            /** @description BalanceAccount ID */
-            balanceAccountId: string;
-            bankAccount?: components['schemas']['BankAccount'];
-            category: components['schemas']['Category'];
-            /**
-             * Format: date-time
-             * @description Date created
-             */
-            createdAt: string;
-            /** @description ID */
-            id: string;
-            paymentMethod?: components['schemas']['PaymentMethod'];
-            status: components['schemas']['Status'];
-        };
-        /** @enum {string} */
-        Status: 'Pending' | 'Booked' | 'Reversed';
-        /** @description Collection of transaction totals per currency */
-        TransactionTotal: {
-            /** @description ISO currency code */
-            currency: string;
-            /**
-             * Format: int64
-             * @description Sum of expenses of transactions (negative transaction amount values)
-             */
-            expenses: number;
-            /**
-             * Format: int64
-             * @description Sum of incomings of transactions (positive transaction amount values)
-             */
-            incomings: number;
-        };
-        TransactionTotalsResponse: {
-            /** @description Collection of transaction totals per currency */
-            data: components['schemas']['TransactionTotal'][];
-        };
-        /** @description Link to a different page */
-        Link: {
-            /** @description Cursor for a different page */
-            cursor: string;
-        };
-        /** @description Links */
-        Links: {
-            next: components['schemas']['Link'];
-            prev: components['schemas']['Link'];
-        };
-        TransactionsResponse: {
-            _links: components['schemas']['Links'];
-            /** @description Transactions made within the filters provided for given balanceAccountId */
-            data: components['schemas']['SingleTransaction'][];
-        };
-        /** @enum {string} */
-        SortDirection: 'asc' | 'desc';
+  schemas: {
+    Amount: {
+      /** @description The three-character [ISO currency code](https://docs.adyen.com/development-resources/currency-codes). */
+      currency: string;
+      /**
+       * Format: int64
+       * @description The amount of the transaction, in [minor units](https://docs.adyen.com/development-resources/currency-codes).
+       */
+      value: number;
     };
-    responses: never;
-    parameters: never;
-    requestBodies: never;
-    headers: never;
-    pathItems: never;
+    BankAccount: {
+      /** @description Last four digits of the account number or IBAN. */
+      accountNumberLastFourDigits: string;
+    };
+    /** @enum {string} */
+    Category: "ATM" | "Capital" | "Correction" | "Fee" | "Payment" | "Refund" | "Chargeback" | "Transfer" | "Other";
+    ExistingRefund: {
+      amount: components["schemas"]["Amount"];
+      status: components["schemas"]["RefundStatus"];
+    };
+    PaymentMethod: {
+      /** @description Last four digits of the card */
+      lastFourDigits?: string;
+      /** @description Payment method type code of the transaction f.e. klarna, visa, mc */
+      type: string;
+    };
+    RefundDetails: {
+      refundLocked?: boolean;
+      refundMode: components["schemas"]["RefundMode"];
+      refundStatuses?: components["schemas"]["ExistingRefund"][];
+      refundableAmount?: components["schemas"]["Amount"];
+    };
+    /** @enum {string} */
+    RefundMode: "non_refundable" | "partially_refundable_with_line_items_required" | "partially_refundable_any_amount" | "fully_refundable_only";
+    /** @enum {string} */
+    RefundReason: "requested_by_customer" | "issue_with_item_sold" | "fraudulent" | "duplicate" | "other";
+    /** @enum {string} */
+    RefundStatus: "in_progress" | "completed" | "failed";
+    RefundTransactionDetails: {
+      originalPaymentId: string;
+      refundPspReference: string;
+      refundReason?: components["schemas"]["RefundReason"];
+      refundType: components["schemas"]["RefundType"];
+    };
+    /** @enum {string} */
+    RefundType: "partial" | "full";
+    SingleTransaction: {
+      /** @description Amount */
+      amount: components["schemas"]["Amount"];
+      /** @description BalanceAccount ID */
+      balanceAccountId: string;
+      /** @description Information about the bank account */
+      bankAccount?: components["schemas"]["BankAccount"];
+      /** @description Category */
+      category: components["schemas"]["Category"];
+      /**
+       * Format: date-time
+       * @description Date created
+       */
+      createdAt: string;
+      /** @description The remaining amount on the payment without this split */
+      deductedAmount?: components["schemas"]["Amount"];
+      /** @description ID */
+      id: string;
+      /** @description Amount in original PSP payment */
+      originalAmount?: components["schemas"]["Amount"];
+      /** @description Payment method or payment instrument */
+      paymentMethod?: components["schemas"]["PaymentMethod"];
+      /** @description When Category is payment, this is the PSP reference of the PSP payment */
+      paymentPspReference?: string;
+      /** @description Additional data related to refund operations */
+      refundDetails?: components["schemas"]["RefundDetails"];
+      /** @description When Category is refund, additional information and references related to the refund */
+      refundMetadata?: components["schemas"]["RefundTransactionDetails"];
+      /** @description Status */
+      status: components["schemas"]["Status"];
+    };
+    /** @enum {string} */
+    Status: "Pending" | "Booked" | "Reversed";
+    TransactionTotal: {
+      /** @description ISO currency code */
+      currency: string;
+      /**
+       * Format: int64
+       * @description Sum of expenses of transactions (negative transaction amount values)
+       */
+      expenses: number;
+      /**
+       * Format: int64
+       * @description Sum of incomings of transactions (positive transaction amount values)
+       */
+      incomings: number;
+    };
+    TransactionTotalsResponse: {
+      /** @description Collection of transaction totals per currency */
+      data: components["schemas"]["TransactionTotal"][];
+    };
+    Link: {
+      /** @description Cursor for a different page */
+      cursor: string;
+    };
+    Links: {
+      /** @description Link to a different page */
+      next: components["schemas"]["Link"];
+      /** @description Link to a different page */
+      prev: components["schemas"]["Link"];
+    };
+    TransactionsResponse: {
+      /** @description Links */
+      _links: components["schemas"]["Links"];
+      /** @description Transactions made within the filters provided for given balanceAccountId */
+      data: components["schemas"]["SingleTransaction"][];
+    };
+    /** @enum {string} */
+    SortDirection: "asc" | "desc";
+    RefundResponse: {
+      amount: components["schemas"]["Amount"];
+      refundReason?: string;
+      status?: string;
+    };
+    RefundRequest: {
+      amount: components["schemas"]["Amount"];
+      refundReason: components["schemas"]["RefundReason"];
+    };
+  };
+  responses: never;
+  parameters: never;
+  requestBodies: never;
+  headers: never;
+  pathItems: never;
 }
 
 export type $defs = Record<string, never>;
@@ -126,78 +172,100 @@ export type $defs = Record<string, never>;
 export type external = Record<string, never>;
 
 export interface operations {
-    /**
-     * Get transaction details
-     * @description Given a transaction ID, it retrieves its details
-     */
-    getTransaction: {
-        parameters: {
-            path: {
-                transactionId: string;
-            };
-        };
-        responses: {
-            /** @description OK - the request has succeeded. */
-            200: {
-                content: {
-                    'application/json': components['schemas']['SingleTransaction'];
-                };
-            };
-        };
+
+  /**
+   * Get transaction details
+   * @description Given a transaction ID, it retrieves its details
+   */
+  getTransaction: {
+    parameters: {
+      path: {
+        transactionId: string;
+      };
     };
-    /**
-     * Get transaction totals
-     * @description Given filters, provides total of incomings and expenses for all transactions matching the criteria
-     */
-    getTransactionTotals: {
-        parameters: {
-            query: {
-                balanceAccountId: string;
-                createdSince?: string;
-                createdUntil?: string;
-                categories?: string[];
-                statuses?: components['schemas']['Status'][];
-                currencies?: string[];
-                minAmount?: number;
-                maxAmount?: number;
-            };
+    responses: {
+      /** @description OK - the request has succeeded. */
+      200: {
+        content: {
+          "application/json": components["schemas"]["SingleTransaction"];
         };
-        responses: {
-            /** @description OK - the request has succeeded. */
-            200: {
-                content: {
-                    'application/json': components['schemas']['TransactionTotalsResponse'];
-                };
-            };
-        };
+      };
     };
-    /**
-     * Get transactions
-     * @description Given filters, provides list of transactions for a balance account
-     */
-    getTransactions: {
-        parameters: {
-            query: {
-                balanceAccountId: string;
-                createdSince?: string;
-                createdUntil?: string;
-                categories?: string[];
-                statuses?: components['schemas']['Status'][];
-                currencies?: string[];
-                minAmount?: number;
-                maxAmount?: number;
-                cursor?: string;
-                sortDirection?: components['schemas']['SortDirection'];
-                limit?: number;
-            };
-        };
-        responses: {
-            /** @description OK - the request has succeeded. */
-            200: {
-                content: {
-                    'application/json': components['schemas']['TransactionsResponse'];
-                };
-            };
-        };
+  };
+  /**
+   * Get transaction totals
+   * @description Given filters, provides total of incomings and expenses for all transactions matching the criteria
+   */
+  getTransactionTotals: {
+    parameters: {
+      query: {
+        balanceAccountId: string;
+        createdSince?: string;
+        createdUntil?: string;
+        categories?: string[];
+        statuses?: components["schemas"]["Status"][];
+        currencies?: string[];
+        minAmount?: number;
+        maxAmount?: number;
+      };
     };
+    responses: {
+      /** @description OK - the request has succeeded. */
+      200: {
+        content: {
+          "application/json": components["schemas"]["TransactionTotalsResponse"];
+        };
+      };
+    };
+  };
+  /**
+   * Get transactions
+   * @description Given filters, provides list of transactions for a balance account
+   */
+  getTransactions: {
+    parameters: {
+      query: {
+        balanceAccountId: string;
+        createdSince?: string;
+        createdUntil?: string;
+        categories?: string[];
+        statuses?: components["schemas"]["Status"][];
+        currencies?: string[];
+        minAmount?: number;
+        maxAmount?: number;
+        cursor?: string;
+        sortDirection?: components["schemas"]["SortDirection"];
+        limit?: number;
+      };
+    };
+    responses: {
+      /** @description OK - the request has succeeded. */
+      200: {
+        content: {
+          "application/json": components["schemas"]["TransactionsResponse"];
+        };
+      };
+    };
+  };
+  /** @description Add @Operation annotation to provide a description */
+  initiateRefund: {
+    parameters: {
+      path: {
+        transactionId: string;
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["RefundRequest"];
+      };
+    };
+    responses: {
+      /** @description OK - the request has succeeded. */
+      200: {
+        content: {
+          "application/json": components["schemas"]["RefundResponse"];
+        };
+      };
+    };
+  };
 }

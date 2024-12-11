@@ -112,10 +112,12 @@ $adyen-icon-touch-size: style.token(spacer-110);
     }
 
     &__header-icon {
+        --icon-size: 16px;
         --offset-margin: calc(1rem - #{$adyen-icon-touch-size});
         --offset-position: calc(var(--offset-margin) * -1 / 2);
 
         cursor: pointer;
+        font-size: var(--icon-size);
         margin-right: var(--offset-margin);
         margin-top: var(--offset-margin);
         position: relative;

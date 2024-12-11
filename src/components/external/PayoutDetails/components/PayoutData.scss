@@ -26,6 +26,10 @@
         margin: 0 calc(var(--adyen-pe-data-details-padding) * -1);
         padding: style.token(spacer-040) var(--adyen-pe-data-details-padding);
 
+        .adyen-pe-card__header {
+            background-color: style.token(color-background-secondary);
+        }
+
         &--card-title {
             color: style.token(color-label-secondary);
             padding: style.token(spacer-000);

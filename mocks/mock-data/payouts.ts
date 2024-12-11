@@ -573,7 +573,7 @@ export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string 
                 value: 90000,
                 currency: 'EUR',
             },
-            createdAt: '2024-10-29T10:00:00.000Z',
+            createdAt: '2023-10-29T10:00:00.000Z',
         },
         amountBreakdowns: {
             fundsCapturedBreakdown: [

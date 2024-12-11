@@ -3,8 +3,10 @@ import { StructuredListLayouts } from './StructuredList';
 import { ComponentChild } from 'preact';
 
 export type StructuredListItem = {
+    label?: string;
+    id?: string;
+    value: any;
     key: TranslationKey;
-    value: ListValue;
 };
 
 export type ListValue = string | number | ComponentChild;
