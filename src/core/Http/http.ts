@@ -40,6 +40,11 @@ export async function http<T>(options: HttpOptions): Promise<T> {
             const res = await fetch(url, request); // (!)
 
             if (res.ok) {
+                if (res.status === 204) {
+                    // No content to process
+                    return null;
+                }
+
                 try {
                     const contentType = getResponseContentType(res);
 
@@ -82,6 +87,7 @@ export async function http<T>(options: HttpOptions): Promise<T> {
             if (isAdyenErrorResponse(response)) {
                 error.message = response.detail;
                 error.errorCode = response.errorCode;
+                error.status = response.status;
             }
             errorHandlerHelper(options.errorHandler, error);
         } catch (ex) {

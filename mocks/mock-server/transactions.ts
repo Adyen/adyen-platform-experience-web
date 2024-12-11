@@ -1,7 +1,7 @@
 import { http, HttpResponse } from 'msw';
 import { ITransaction } from '../../src';
 import { DEFAULT_TRANSACTION, TRANSACTIONS } from '../mock-data';
-import { compareDates, computeHash, delay, getPaginationLinks } from './utils';
+import { compareDates, computeHash, delay, getPaginationLinks } from './utils/utils';
 import { endpoints } from '../../endpoints/endpoints';
 
 interface _ITransactionTotals {

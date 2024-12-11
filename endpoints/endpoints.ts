@@ -1,4 +1,4 @@
-export const endpoints = mode => {
+export const endpoints = (mode: 'netlify' | 'viteDev' | 'mock') => {
     const matchVariable = mode === 'netlify' ? '(.*)' : ':id';
     const prefix = mode === 'viteDev' ? '^' : 'https://platform-components-external-test.adyen.com/platform-components-external/api';
     const baseUrl = prefix + '/v([0-9]+)';
@@ -15,5 +15,13 @@ export const endpoints = mode => {
         setup: `${baseUrl}/setup`,
         reports: `${baseUrl}/reports`,
         downloadReport: `${baseUrl}/reports/download`,
-    };
+        capital: {
+            createOffer: `${baseUrl}/capital/grantOffers/create`,
+            dynamicOfferConfig: `${baseUrl}/capital/grantOffers/dynamic/configuration`,
+            dynamicOffer: `${baseUrl}/capital/grantOffers/dynamic`,
+            grants: `${baseUrl}/capital/grants`,
+            requestFunds: `${baseUrl}/capital/grants/${matchVariable}`,
+            signToS: `${baseUrl}/capital/grants/missingActions/signToS`,
+        },
+    } as const;
 };

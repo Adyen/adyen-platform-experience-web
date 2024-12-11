@@ -17,10 +17,10 @@ export interface SpinButtonContext extends Omit<EventTarget, 'dispatchEvent'>, S
 export interface SpinButtonContextElements {
     get containerElement(): HTMLElement | null;
     set containerElement(elem: HTMLElement | null);
-    get decrementButton(): HTMLButtonElement | null;
-    set decrementButton(elem: HTMLButtonElement | null);
-    get incrementButton(): HTMLButtonElement | null;
-    set incrementButton(elem: HTMLButtonElement | null);
+    get decrementButton(): HTMLAnchorElement | HTMLButtonElement | null;
+    set decrementButton(elem: HTMLAnchorElement | HTMLButtonElement | null);
+    get incrementButton(): HTMLAnchorElement | HTMLButtonElement | null;
+    set incrementButton(elem: HTMLAnchorElement | HTMLButtonElement | null);
     get valueElement(): HTMLElement | null;
     set valueElement(elem: HTMLElement | null);
 }
