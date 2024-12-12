@@ -10,6 +10,7 @@ export const endpoints = (mode: 'netlify' | 'viteDev' | 'mock') => {
         payout: `${baseUrl}/payouts/breakdown`,
         transactions: `${baseUrl}/transactions`,
         transaction: `${baseUrl}/transactions/${matchVariable}`,
+        initiateRefund: `${baseUrl}/transactions/${matchVariable}/refund`,
         transactionsTotals: `${baseUrl}/transactions/totals`,
         sessions: `/api/authe/api/v1/sessions`,
         setup: `${baseUrl}/setup`,

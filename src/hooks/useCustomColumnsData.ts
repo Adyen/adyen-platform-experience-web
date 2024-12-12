@@ -36,5 +36,5 @@ export const useCustomColumnsData = <T>({
         }
     }, [onDataRetrieved, mergedRecords, records]);
 
-    return { customRecords: customRecords, loadingCustomRecords } as const;
+    return { customRecords, loadingCustomRecords } as const;
 };

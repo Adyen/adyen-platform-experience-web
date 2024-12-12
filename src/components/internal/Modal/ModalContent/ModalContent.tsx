@@ -1,24 +1,23 @@
 import { useMemo } from 'preact/hooks';
-import { hasOwnProperty } from '../../../../utils';
-import { TransactionDetailData } from '../../../external';
 import DataOverviewDetails from '../../DataOverviewDetails/DataOverviewDetails';
-import { DetailsComponentProps, DetailsWithId, PayoutDetailsWithIdProps, SelectedDetail } from '../../DataOverviewDetails/types';
+import { DetailsComponentProps, PayoutDetailsWithIdProps, SelectedDetail } from '../../DataOverviewDetails/types';
 import './ModalContent.scss';
 
 const CLASSNAMES = {
     base: 'adyen-pe-modal-content',
 };
 
-const isDetailsWithoutId = (data: string | TransactionDetailData): data is TransactionDetailData => hasOwnProperty(data, 'id');
-
-function ModalContent({ type, data }: SelectedDetail) {
+// [TODO]: Consider covering ...restData with type information (added here as a hack to capture extra details)
+function ModalContent({ type, data, ...restData }: SelectedDetail) {
     const detailProps: DetailsComponentProps = useMemo(() => {
-        if (type === 'payout') {
-            return { ...(data as PayoutDetailsWithIdProps & { balanceAccountDescription?: string }), type: 'payout' };
-        } else {
-            return isDetailsWithoutId(data as string | TransactionDetailData)
-                ? { data: data as TransactionDetailData, type: type }
-                : ({ id: data, type: type } as DetailsWithId);
+        switch (type) {
+            case 'payout':
+                return { ...(data as PayoutDetailsWithIdProps & { balanceAccountDescription?: string }), type };
+            case 'transaction':
+                // [TODO]: Consider providing type information for ...restData (added here to provide extra details)
+                return { id: data, type, ...restData } as DetailsComponentProps;
+            default:
+                return { data, type } as DetailsComponentProps;
         }
     }, [data, type]);
 

@@ -9,7 +9,7 @@ import { StructuredListProps } from './types';
 import './StructuredList.scss';
 import { useStructuredListItems } from './useStructuredListItem';
 
-export const StructuredListLayouts = ['3-9', '6-6', '4-8', '8-4', '5-7', '7-5'] as const satisfies ReadonlyArray<`${number}-${number}`>;
+export const StructuredListLayouts = ['3-9', '4-8', '5-7', '6-6', '7-5', '8-4'] as const satisfies ReadonlyArray<`${number}-${number}`>;
 
 const DEFAULT_LAYOUT = '6-6';
 export default function StructuredList({
@@ -28,10 +28,10 @@ export default function StructuredList({
     const { i18n } = useCoreContext();
 
     return (
-        <div aria-label={i18n.get('structuredList')} className={cx([SL_BASE_CLASS, classNames])}>
-            {formattedItems.map((item, i) => (
+        <div aria-label={i18n.get('structuredList')} className={cx(SL_BASE_CLASS, classNames)}>
+            {formattedItems.map((item, index) => (
                 <dl
-                    key={item.id}
+                    key={`${index}_${item.id || '0'}`}
                     className={cx(SL_ITEM_CLASS, {
                         [SL_ITEM_WITH_HIGHLIGHT_CLASS]: highlightable,
                         [SL_GRID_CLASS]: grid,
@@ -39,7 +39,7 @@ export default function StructuredList({
                 >
                     <dt className={cx(SL_LABEL_CLASS, LABEL_COL_CLASS)}>
                         {renderLabel ? (
-                            renderLabel(item.label, items[i]!.key)
+                            renderLabel(item.label, items[index]!.key)
                         ) : (
                             <Typography variant={TypographyVariant.BODY}>{item.label}</Typography>
                         )}

@@ -12,7 +12,7 @@ import StructuredList from '../../../internal/StructuredList';
 import { ListValue } from '../../../internal/StructuredList/types';
 import { TypographyVariant } from '../../../internal/Typography/types';
 import Typography from '../../../internal/Typography/Typography';
-import TransactionDataSkeleton from '../../TransactionDetails/components/TransactionDataSkeleton';
+import DataOverviewDetailsSkeleton from '../../../internal/DataOverviewDetails/DataOverviewDetailsSkeleton';
 import useTimezoneAwareDateFormatting from '../../../../hooks/useTimezoneAwareDateFormatting';
 import './PayoutData.scss';
 import {
@@ -43,8 +43,9 @@ export const PayoutData = ({
     balanceAccountDescription?: string;
 }) => {
     const { payout } = payoutData ?? (EMPTY_OBJECT as NonNullable<typeof payoutData>);
-    const { i18n } = useCoreContext();
     const { dateFormat } = useTimezoneAwareDateFormatting('UTC');
+    const { i18n } = useCoreContext();
+
     const adjustments = useMemo(() => {
         const data = payoutData?.amountBreakdowns?.adjustmentBreakdown?.reduce(
             (accumulator, currentValue) => {
@@ -96,7 +97,7 @@ export const PayoutData = ({
     return (
         <>
             {!payout ? (
-                <TransactionDataSkeleton isLoading={isFetching} skeletonRowNumber={6} />
+                <DataOverviewDetailsSkeleton skeletonRowNumber={6} />
             ) : (
                 <div className={PD_BASE_CLASS}>
                     <div className={PD_TITLE_CLASS}>
