@@ -29,11 +29,15 @@ const preview: Preview = {
             },
         },
         balanceAccountId: { type: 'string' },
+        locale: { control: 'select', options: ['da-DK', 'de-DE', 'en-US', 'es-ES', 'fi-FI', 'fr-FR', 'it-IT', 'nl-NL', 'no-NO', 'pt-BR', 'sv-SE'] },
         skipDecorators: {
             table: {
                 disable: true,
             },
         },
+    },
+    args: {
+        locale: 'en-US',
     },
     loaders: [
         async context => {
@@ -49,7 +53,15 @@ const preview: Preview = {
         mswLoader,
     ],
     render: (args, context) => {
-        return <Container component={args.component} componentConfiguration={args} context={context} mockedApi={args.mockedApi} />;
+        return (
+            <Container
+                locale={context.args.locale || 'en-US'}
+                component={args.component}
+                componentConfiguration={args}
+                context={context}
+                mockedApi={args.mockedApi}
+            />
+        );
     },
 };
 
