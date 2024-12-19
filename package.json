@@ -64,7 +64,7 @@
     "start:mock:e2e": "concurrently --kill-others-on-fail 'npm run types:watch' 'cross-env E2E_TEST=true vite dev --mode mocked --config vite.config.ts' --names 'lib-types,playground' -c blue,green,cyan,yellow",
     "lint": "eslint 'src/**/*.{js,ts,tsx}' --quiet && stylelint 'src/**/*.scss' --fix",
     "test": "vitest --config vite.config.ts",
-    "test:coverage": "vitest --config vite.config.ts --coverage",
+    "test:coverage": "vitest run --config vite.config.ts --coverage",
     "test:integration": "playwright test --project local-chrome",
     "test:integration:debug": "cross-env PWDEBUG=console playwright test --debug --project local-chrome",
     "type-check": "tsc --preserveWatchOutput",
@@ -118,7 +118,7 @@
     "@types/node": "^20.4.7",
     "@typescript-eslint/eslint-plugin": "^5.4.0",
     "@typescript-eslint/parser": "^5.8.1",
-    "@vitest/coverage-c8": "^0.30.1",
+    "@vitest/coverage-v8": "^2.1.4",
     "autoprefixer": "^10.4.20",
     "concurrently": "^7.0.0",
     "cross-env": "^7.0.3",
@@ -155,7 +155,7 @@
     "vite-node": "^0.30.1",
     "vite-plugin-checker": "^0.5.6",
     "vite-plugin-svgr": "^4.2.0",
-    "vitest": "^0.30.1"
+    "vitest": "^2.1.4"
   },
   "msw": {
     "workerDirectory": [

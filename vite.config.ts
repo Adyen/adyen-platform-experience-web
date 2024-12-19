@@ -118,7 +118,7 @@ export default defineConfig(async ({ mode }) => {
             root: resolve(__dirname, './src'),
             setupFiles: [resolve(__dirname, './config/setupTests.ts')],
             coverage: {
-                provider: 'c8',
+                provider: 'v8',
                 all: true,
                 include: [
                     'src/components/internal/**/*.{ts,tsx}',
