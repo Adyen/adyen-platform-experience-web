@@ -1,6 +1,6 @@
 import { CurrencyCode } from '../types';
 import { isValidCurrencyCode, getCurrencyCode, getLocalisedAmount, getLocalisedPercentage, getDivider } from './amount-util';
-import { beforeAll, afterEach, afterAll, describe, expect, test, vi, SpyInstance } from 'vitest';
+import { beforeAll, afterEach, afterAll, describe, expect, test, vi, MockInstance } from 'vitest';
 
 describe('isValidCurrencyCode', () => {
     // In the past this currency code was an exception, test that everything still works
@@ -30,7 +30,7 @@ describe('getCurrencyCode', () => {
 });
 
 describe('getLocalisedAmount', () => {
-    let spyOnToLocaleString: SpyInstance<[locales?: Intl.LocalesArgument, options?: Intl.NumberFormatOptions | undefined], string>;
+    let spyOnToLocaleString: MockInstance;
 
     beforeAll(() => {
         spyOnToLocaleString = vi.spyOn(Number.prototype, 'toLocaleString');
