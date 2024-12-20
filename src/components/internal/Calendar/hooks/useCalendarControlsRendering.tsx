@@ -3,8 +3,6 @@ import { useCallback } from 'preact/hooks';
 import { isFunction } from '../../../../utils';
 import Icon from '../../Icon';
 import { IconName } from '../../Icon/Icon';
-import ChevronDown from '../../SVGIcons/ChevronDown';
-import ChevronUp from '../../SVGIcons/ChevronUp';
 import { CalendarControlRenderer, CalendarRenderControl } from '../types';
 import useCoreContext from '../../../../core/Context/useCoreContext';
 import useDetachedRender from '../../../../hooks/element/useDetachedRender';

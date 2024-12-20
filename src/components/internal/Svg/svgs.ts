@@ -3,6 +3,7 @@ import { lazy } from 'preact/compat';
 
 export const svgs = {
     // icons
+    'angle-right': lazy(() => import('@adyen/ui-assets-icons-16/svg/angle-right.svg?component')),
     checkmark: lazy(() => import('@adyen/ui-assets-icons-16/svg/checkmark.svg?component')),
     'checkmark-small': lazy(() => import('@adyen/ui-assets-icons-16/svg/checkmark-small.svg?component')),
     'checkmark-circle-fill': lazy(() => import('@adyen/ui-assets-icons-16/svg/checkmark-circle-fill.svg?component')),
