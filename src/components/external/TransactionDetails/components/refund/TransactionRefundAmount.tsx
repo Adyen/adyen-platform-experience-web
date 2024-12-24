@@ -82,7 +82,7 @@ const _BaseRefundAmountInput = ({
                 </label>
                 {errorMessage && (
                     <div className="adyen-pe-input__refund-invalid-value" id={`${inputIdentifier.current}${ARIA_ERROR_SUFFIX}`}>
-                        <Icon name={'cross-circle-fill'} />
+                        <Icon name="cross-circle-fill" />
                         <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY}>
                             {error}
                         </Typography>

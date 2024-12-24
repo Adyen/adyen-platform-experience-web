@@ -73,7 +73,7 @@ function DownloadButton({ className, disabled, endpointName, params, setError, e
         <div className="adyen-pe-download">
             {isSmViewport ? (
                 <Button iconButton={true} variant={ButtonVariant.TERTIARY} onClick={onClick}>
-                    {isFetching ? <Spinner size={'small'} /> : <Icon name={'download'} />}
+                    {isFetching ? <Spinner size={'small'} /> : <Icon name="download" />}
                 </Button>
             ) : (
                 <Button
@@ -81,7 +81,7 @@ function DownloadButton({ className, disabled, endpointName, params, setError, e
                     disabled={disabled || isFetching}
                     variant={ButtonVariant.SECONDARY}
                     onClick={onClick}
-                    iconLeft={isFetching ? <Spinner size={'small'} /> : <Icon name={'download'} />}
+                    iconLeft={isFetching ? <Spinner size={'small'} /> : <Icon name="download" />}
                 >
                     {isFetching ? `${i18n.get('downloading')}..` : i18n.get('download')}
                 </Button>

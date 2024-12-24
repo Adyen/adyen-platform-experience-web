@@ -20,13 +20,13 @@ type _RenderSelectOptionData<T extends SelectItem> = Parameters<SelectItemProps<
 export const renderDefaultMultiSelectionCheckedness = <T extends SelectItem>(data: _RenderSelectOptionData<T>): _RenderSelectOptionResult<T> =>
     data.multiSelect ? (
         <span className={DROPDOWN_ELEMENT_CHECKBOX_CLASS}>
-            {data.selected ? <Icon name={'checkmark-square-fill'} role="presentation" /> : <Icon name={'square'} role="presentation" />}
+            <Icon name={data.selected ? 'checkmark-square-fill' : 'square'} role="presentation" />
         </span>
     ) : null;
 
 export const renderDefaultSingleSelectionCheckedness = <T extends SelectItem>(data: _RenderSelectOptionData<T>): _RenderSelectOptionResult<T> =>
     data.multiSelect ? null : (
-        <span className={DROPDOWN_ELEMENT_CHECKMARK_CLASS}>{data.selected && <Icon name={'checkmark'} role="presentation" />}</span>
+        <span className={DROPDOWN_ELEMENT_CHECKMARK_CLASS}>{data.selected && <Icon name="checkmark" role="presentation" />}</span>
     );
 
 export const renderListItemDefault = <T extends SelectItem>(data: _RenderSelectOptionData<T>): _RenderSelectOptionResult<T> => (

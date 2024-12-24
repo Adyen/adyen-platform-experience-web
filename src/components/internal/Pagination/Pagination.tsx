@@ -55,7 +55,7 @@ export default function Pagination({ next, hasNext, hasPrev, page, prev, limit, 
                     classNameModifiers={['circle'].concat(hasPrev ? EMPTY_ARRAY : 'disabled')}
                     onClick={prev}
                 >
-                    <Icon name={'chevron-left'} disabled={!hasPrev} />
+                    <Icon name="chevron-left" disabled={!hasPrev} />
                 </Button>
                 <Button
                     aria-label={i18n.get('pagination.nextPage')}
@@ -65,7 +65,7 @@ export default function Pagination({ next, hasNext, hasPrev, page, prev, limit, 
                     classNameModifiers={['circle'].concat(hasNext ? EMPTY_ARRAY : 'disabled')}
                     onClick={next}
                 >
-                    <Icon name={'chevron-right'} disabled={!hasNext} />
+                    <Icon name="chevron-right" disabled={!hasNext} />
                 </Button>
             </div>
         </div>

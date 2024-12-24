@@ -5,8 +5,8 @@ export const svgs = {
     // icons
     'angle-right': lazy(() => import('@adyen/ui-assets-icons-16/svg/angle-right.svg?component')),
     checkmark: lazy(() => import('@adyen/ui-assets-icons-16/svg/checkmark.svg?component')),
-    'checkmark-small': lazy(() => import('@adyen/ui-assets-icons-16/svg/checkmark-small.svg?component')),
     'checkmark-circle-fill': lazy(() => import('@adyen/ui-assets-icons-16/svg/checkmark-circle-fill.svg?component')),
+    'checkmark-small': lazy(() => import('@adyen/ui-assets-icons-16/svg/checkmark-small.svg?component')),
     'checkmark-square-fill': lazy(() => import('@adyen/ui-assets-icons-16/svg/checkmark-square-fill.svg?component')),
     'chevron-down': lazy(() => import('@adyen/ui-assets-icons-16/svg/chevron-down.svg?component')),
     'chevron-down-small': lazy(() => import('@adyen/ui-assets-icons-16/svg/chevron-down-small.svg?component')),
@@ -29,10 +29,13 @@ export const svgs = {
 
 // TODO: see Svg.tsx, this is a temporary solution
 export const unscalableIconNames = [
+    'angle-right',
     'checkmark',
     'checkmark-circle-fill',
+    'checkmark-small',
     'checkmark-square-fill',
     'chevron-down',
+    'chevron-down-small',
     'chevron-left',
     'chevron-right',
     'chevron-up',

@@ -112,7 +112,7 @@ const SelectButton = <T extends SelectItem>(props: SelectButtonProps<T> & { appl
             )}
             {!withoutCollapseIndicator && (
                 <span className={DROPDOWN_BUTTON_COLLAPSE_INDICATOR_CLASS}>
-                    <Icon name={'chevron-down'} role="presentation" />
+                    <Icon name="chevron-down" role="presentation" />
                 </span>
             )}
         </SelectButtonElement>

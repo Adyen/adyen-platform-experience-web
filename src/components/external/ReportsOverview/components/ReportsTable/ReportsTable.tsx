@@ -92,7 +92,7 @@ export const ReportsTable: FC<ReportsTableProps> = ({
         [error, onContactSupport]
     );
 
-    const errorIcon = useMemo(() => <Icon name={'warning'} />, []);
+    const errorIcon = useMemo(() => <Icon name="warning" />, []);
 
     const onDownloadErrorAlert = useMemo(
         () => (error?: AdyenPlatformExperienceError) => {
