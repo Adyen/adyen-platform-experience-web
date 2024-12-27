@@ -132,6 +132,9 @@ export default defineConfig(async ({ mode }) => {
                 reporter: 'lcov',
                 reportsDirectory: resolve(__dirname, 'coverage'),
             },
+            sequence: {
+                hooks: 'parallel',
+            },
         },
         server: {
             host: playground.host,
