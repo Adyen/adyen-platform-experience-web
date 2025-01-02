@@ -68,59 +68,93 @@ const LIVE: PayoutsVariables = {
 
 const TEST: PayoutsVariables = {
     balanceAccountId: process.env.BALANCE_ACCOUNT || '',
-    createdSince: '2024-04-16T00:00:00.000Z',
-    createdUntil: '2024-06-19T00:00:00.000Z',
-    payoutCreationDate: '2024-05-27T00:00:00.000Z',
+    createdSince: '2024-12-03T23:00:00.000Z',
+    createdUntil: '2025-01-02T12:19:23.000Z',
+    payoutCreationDate: '2024-12-10T07:03:17.000Z',
     payouts_list_response: [
         {
             fundsCapturedAmount: {
-                value: 0,
-                currency: 'USD',
+                value: 5270,
+                currency: 'EUR',
             },
             adjustmentAmount: {
-                value: 1000,
-                currency: 'USD',
+                value: -2650,
+                currency: 'EUR',
             },
             payoutAmount: {
-                value: 1000,
-                currency: 'USD',
+                value: 2620,
+                currency: 'EUR',
             },
             unpaidAmount: {
                 value: 0,
-                currency: 'USD',
+                currency: 'EUR',
             },
-            createdAt: '2024-05-27T15:15:05.000+00:00',
+            createdAt: '2024-12-11T07:03:54.000+00:00',
+        },
+        {
+            fundsCapturedAmount: {
+                value: 7750,
+                currency: 'EUR',
+            },
+            adjustmentAmount: {
+                value: -14071,
+                currency: 'EUR',
+            },
+            payoutAmount: {
+                value: 3875,
+                currency: 'EUR',
+            },
+            unpaidAmount: {
+                value: -10196,
+                currency: 'EUR',
+            },
+            createdAt: '2024-12-10T07:03:17.000+00:00',
         },
     ],
     payout_details_response: {
         payout: {
             fundsCapturedAmount: {
-                value: 0,
-                currency: 'USD',
+                value: 7750,
+                currency: 'EUR',
             },
             adjustmentAmount: {
-                value: 1000,
-                currency: 'USD',
+                value: -14071,
+                currency: 'EUR',
             },
             payoutAmount: {
-                value: 1000,
-                currency: 'USD',
+                value: 3875,
+                currency: 'EUR',
             },
             unpaidAmount: {
-                value: 0,
-                currency: 'USD',
+                value: -10196,
+                currency: 'EUR',
             },
-            createdAt: '2024-05-27T15:15:05.000+00:00',
+            createdAt: '2024-12-10T07:03:17.000+00:00',
         },
         amountBreakdowns: {
-            fundsCapturedBreakdown: [],
+            fundsCapturedBreakdown: [
+                {
+                    amount: {
+                        value: 8800,
+                        currency: 'EUR',
+                    },
+                    category: 'capture',
+                },
+                {
+                    amount: {
+                        value: -1050,
+                        currency: 'EUR',
+                    },
+                    category: 'refund',
+                },
+            ],
             adjustmentBreakdown: [
                 {
                     amount: {
-                        value: 1000,
-                        currency: 'USD',
+                        value: -14071,
+                        currency: 'EUR',
                     },
-                    category: 'transfer',
+                    category: 'grantRepayment',
                 },
             ],
         },
