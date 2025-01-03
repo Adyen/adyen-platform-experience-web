@@ -88,13 +88,16 @@ export type DataGridCustomColumnConfig<k> = {
     flex?: number;
 };
 
+export interface BalanceAccountSelectorComponentProps {
+    balanceAccountId?: string;
+}
+
 export type CustomColumn<T extends string> = {
     [k in T]: DataGridCustomColumnConfig<k>;
 }[T];
 
-interface _DataOverviewComponentProps {
+interface _DataOverviewComponentProps extends BalanceAccountSelectorComponentProps {
     allowLimitSelection?: boolean;
-    balanceAccountId?: string;
     onFiltersChanged?: (filters: { [P in FilterParam]?: string }) => any;
     preferredLimit?: 10 | 20;
     showDetails?: boolean;
@@ -134,6 +137,7 @@ export const enum FilterParam {
 }
 
 export type ExternalComponentType =
+    | 'balanceAccountSelector'
     | 'transactions'
     | 'transactionDetails'
     | 'payouts'

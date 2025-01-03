@@ -1,7 +1,7 @@
 import { DataDetailsModal } from '../../../../internal/DataOverviewDisplay/DataDetailsModal';
 import { TransactionsTable } from '../TransactionsTable/TransactionsTable';
-import useBalanceAccountSelection from '../../../../../hooks/useBalanceAccountSelection';
-import BalanceAccountSelector from '../../../../internal/FormFields/Select/BalanceAccountSelector';
+import useBalanceAccountSelection from '../../../BalanceAccountSelector/hooks/useBalanceAccountSelection';
+import BalanceAccountSelector from '../../../BalanceAccountSelector/components/BalanceAccountSelector';
 import DateFilter from '../../../../internal/FilterBar/filters/DateFilter/DateFilter';
 import FilterBar, { FilterBarMobileSwitch, useFilterBarState } from '../../../../internal/FilterBar';
 import { TransactionOverviewComponentProps, ExternalUIComponentProps, FilterParam, CustomDataRetrieved } from '../../../../types';

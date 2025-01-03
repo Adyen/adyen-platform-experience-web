@@ -1,4 +1,4 @@
-import useBalanceAccountSelection from './useBalanceAccountSelection';
+import useBalanceAccountSelection from '../components/external/BalanceAccountSelector/hooks/useBalanceAccountSelection';
 import { MutableRef, useCallback, useEffect, useRef, useState } from 'preact/hooks';
 import { getTimeRangeSelectionDefaultPresetOptions } from '../components/internal/DatePicker/components/TimeRangeSelector';
 import { DEFAULT_TRANSACTIONS_OVERVIEW_MULTI_SELECTION_FILTER_PARAMS } from '../components/external/TransactionsOverview/components/MultiSelectionFilter';

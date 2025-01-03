@@ -90,7 +90,12 @@ export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUI
                     updateCore={updateCore}
                     externalErrorHandler={externalErrorHandler}
                 >
-                    {this.componentToRender && <div className={cx('adyen-pe-component', this.customClassNames)}>{this.componentToRender()}</div>}
+                    {this.componentToRender &&
+                        (this.displayName === 'balanceAccountSelector' ? (
+                            this.componentToRender()
+                        ) : (
+                            <div className={cx('adyen-pe-component', this.customClassNames)}>{this.componentToRender()}</div>
+                        ))}
                 </CoreProvider>
             </AuthProvider>
         );

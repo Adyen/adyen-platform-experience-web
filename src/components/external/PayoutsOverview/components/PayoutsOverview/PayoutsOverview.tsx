@@ -1,15 +1,15 @@
 import { BASE_CLASS, BASE_CLASS_DETAILS, EARLIEST_PAYOUT_SINCE_DATE } from './constants';
 import { PayoutsTable } from '../PayoutsTable/PayoutsTable';
 import FilterBar, { FilterBarMobileSwitch, useFilterBarState } from '../../../../internal/FilterBar';
-import BalanceAccountSelector from '../../../../internal/FormFields/Select/BalanceAccountSelector';
+import BalanceAccountSelector from '../../../BalanceAccountSelector/components/BalanceAccountSelector';
 import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '../../../../internal/Pagination/constants';
 import { useCursorPaginatedRecords } from '../../../../internal/Pagination/hooks';
-import useBalanceAccountSelection from '../../../../../hooks/useBalanceAccountSelection';
+import useBalanceAccountSelection from '../../../BalanceAccountSelector/hooks/useBalanceAccountSelection';
 import DateFilter from '../../../../internal/FilterBar/filters/DateFilter/DateFilter';
 import useModalDetails from '../../../../../hooks/useModalDetails/useModalDetails';
 import { IPayout } from '../../../../../types';
 import useDefaultOverviewFilterParams from '../../../../../hooks/useDefaultOverviewFilterParams';
-import { DataOverviewHeader } from '../../../../internal/DataOverviewDisplay/DataOverviewHeader/DataOverviewHeader';
+import { DataOverviewHeader } from '../../../../internal/DataOverviewDisplay/DataOverviewHeader';
 import { PayoutsOverviewComponentProps, ExternalUIComponentProps, FilterParam } from '../../../../types';
 import { useAuthContext } from '../../../../../core/Auth';
 import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatformExperienceError';
