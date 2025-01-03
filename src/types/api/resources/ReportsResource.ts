@@ -12,6 +12,13 @@ export interface paths {
      */
     get: operations["getReports"];
   };
+  "/v1/reports/download": {
+    /**
+     * Download a report
+     * @description Given a balance account, type and creation date of report, downloads the desired report
+     */
+    get: operations["downloadReport"];
+  };
 }
 
 export type webhooks = Record<string, never>;
