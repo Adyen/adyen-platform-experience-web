@@ -1,11 +1,11 @@
 import useBalanceAccounts from '../../../BalanceAccountSelector/hooks/useBalanceAccounts';
 import DataOverviewContainer from '../../../../internal/DataOverviewContainer/DataOverviewContainer';
-import type { TransactionOverviewComponentProps, ExternalUIComponentProps } from '../../../../types';
+import type { TransactionOverviewComponentProps, UIComponentProps } from '../../../../types';
 import { TransactionsOverview } from '../TransactionsOverview/TransactionsOverview';
 import { BASE_CLASS } from './constants';
 
-function TransactionsOverviewContainer({ ...props }: ExternalUIComponentProps<TransactionOverviewComponentProps>) {
-    const { balanceAccounts, isBalanceAccountIdWrong, isFetching, error } = useBalanceAccounts(props.balanceAccountId);
+function TransactionsOverviewContainer(props: UIComponentProps<TransactionOverviewComponentProps>) {
+    const { balanceAccounts, isBalanceAccountIdWrong, isFetching, error } = useBalanceAccounts(props);
 
     return (
         <DataOverviewContainer

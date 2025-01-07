@@ -19,4 +19,12 @@ export const Standalone: ElementStory<typeof BalanceAccountSelector> = {
     },
 };
 
+export const StandaloneWithID: ElementStory<typeof BalanceAccountSelector> = {
+    ...Standalone,
+    args: {
+        ...Standalone.args,
+        balanceAccountId: 'BA32272223222B5CTDQPM6W2G',
+    },
+};
+
 export default meta;

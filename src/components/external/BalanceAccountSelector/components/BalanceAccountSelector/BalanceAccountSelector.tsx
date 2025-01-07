@@ -18,7 +18,8 @@ const BalanceAccountSelector = memo(
         activeBalanceAccount,
         balanceAccountSelectionOptions,
         onBalanceAccountSelection,
-    }: Omit<ReturnType<typeof useBalanceAccountSelection>, 'resetBalanceAccountSelection'>) => {
+        hideSingleBalanceAccount = true,
+    }: Omit<ReturnType<typeof useBalanceAccountSelection>, 'resetBalanceAccountSelection'> & { hideSingleBalanceAccount?: boolean }) => {
         const isSmViewport = useResponsiveViewport(mediaQueries.down.xs);
 
         const renderListItem = useCallback<_GetRenderListItemType<typeof balanceAccountSelectionOptions>>(
@@ -34,7 +35,9 @@ const BalanceAccountSelector = memo(
             []
         );
 
-        return balanceAccountSelectionOptions && balanceAccountSelectionOptions.length > 1 ? (
+        return balanceAccountSelectionOptions &&
+            balanceAccountSelectionOptions.length &&
+            (hideSingleBalanceAccount !== true || balanceAccountSelectionOptions.length > 1) ? (
             <Select
                 popoverClassNameModifiers={[BA_SELECTOR_CLASS]}
                 onChange={onBalanceAccountSelection}
@@ -43,6 +46,7 @@ const BalanceAccountSelector = memo(
                 selected={activeBalanceAccount?.id}
                 withoutCollapseIndicator={true}
                 items={balanceAccountSelectionOptions}
+                readonly={balanceAccountSelectionOptions.length === 1}
                 renderListItem={renderListItem}
                 showOverlay={isSmViewport}
             />

@@ -12,11 +12,7 @@ export class TransactionsElement extends UIElement<TransactionOverviewComponentP
 
     public componentToRender = () => {
         return (
-            <Transactions
-                {...this.props}
-                balanceAccountId={this.props.balanceAccountId}
-                ref={(ref: UIElement<TransactionOverviewComponentProps>) => void (this.componentRef = ref)}
-            ></Transactions>
+            <Transactions {...this.props} ref={(ref: UIElement<TransactionOverviewComponentProps>) => void (this.componentRef = ref)}></Transactions>
         );
     };
 }

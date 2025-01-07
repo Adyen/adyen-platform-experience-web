@@ -13,7 +13,7 @@ const useBalanceAccountSelection = (balanceAccounts?: IBalanceAccountBase[]) => 
 
     const balanceAccountSelectionOptions = useMemo(
         () =>
-            balanceAccounts && balanceAccounts.length > 1
+            balanceAccounts && balanceAccounts.length
                 ? Object.freeze(balanceAccounts.map(({ description, id }) => ({ id, name: capitalize(description) } as SelectItem)))
                 : undefined,
         [balanceAccounts]

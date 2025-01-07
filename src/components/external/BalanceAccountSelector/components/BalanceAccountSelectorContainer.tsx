@@ -1,10 +1,10 @@
+import BalanceAccountSelector from './BalanceAccountSelector';
 import useBalanceAccounts from '../hooks/useBalanceAccounts';
 import useBalanceAccountSelection from '../hooks/useBalanceAccountSelection';
-import BalanceAccountSelector from './BalanceAccountSelector';
-import type { BalanceAccountSelectorComponentProps } from '../../../types';
+import type { BalanceAccountSelectorComponentProps, UIComponentProps } from '../../../types';
 
-export function BalanceAccountSelectorContainer(props: BalanceAccountSelectorComponentProps) {
-    const { balanceAccounts /*, isBalanceAccountIdWrong, isFetching, error */ } = useBalanceAccounts(props.balanceAccountId);
+function BalanceAccountSelectorContainer(props: UIComponentProps<BalanceAccountSelectorComponentProps>) {
+    const { balanceAccounts /*, error, isBalanceAccountIdWrong, isFetching */ } = useBalanceAccounts(props);
     const { activeBalanceAccount, balanceAccountSelectionOptions, onBalanceAccountSelection } = useBalanceAccountSelection(balanceAccounts);
 
     return (
@@ -12,7 +12,7 @@ export function BalanceAccountSelectorContainer(props: BalanceAccountSelectorCom
             activeBalanceAccount={activeBalanceAccount}
             balanceAccountSelectionOptions={balanceAccountSelectionOptions}
             onBalanceAccountSelection={onBalanceAccountSelection}
-            // ref={(ref: UIElement<BalanceAccountSelectorComponentProps>) => void (this.componentRef = ref)}
+            hideSingleBalanceAccount={false}
         />
     );
 }

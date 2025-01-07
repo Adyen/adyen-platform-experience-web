@@ -5,14 +5,13 @@ import { boolOrTrue } from '../../../../utils';
 
 const sessionReady = async (session: AuthSession) => {
     const ready = createDeferred<void>();
+    const readyPromise = ready.promise;
     const refreshInProgress = session.context.refreshing;
     let didTriggerRefresh: boolean | undefined = undefined;
     let canRefreshSession: boolean | undefined = undefined;
 
     let sessionUnsubscribe = session.subscribe(maybeUnsubscribeToken => {
         if (isWatchlistUnsubscribeToken(maybeUnsubscribeToken)) {
-            sessionUnsubscribe();
-            sessionUnsubscribe = null!;
             ready.resolve();
             return;
         }
@@ -33,7 +32,12 @@ const sessionReady = async (session: AuthSession) => {
         ready.resolve();
     });
 
-    return ready.promise;
+    readyPromise.finally(() => {
+        sessionUnsubscribe();
+        sessionUnsubscribe = null!;
+    });
+
+    return readyPromise;
 };
 
 export default sessionReady;

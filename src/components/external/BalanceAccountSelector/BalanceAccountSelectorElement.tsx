@@ -12,10 +12,7 @@ export class BalanceAccountSelectorElement extends UIElement<BalanceAccountSelec
 
     public componentToRender = () => {
         return (
-            <BalanceAccountSelector
-                {...this.props}
-                // ref={(ref: UIElement<BalanceAccountSelectorComponentProps>) => void (this.componentRef = ref)}
-            />
+            <BalanceAccountSelector {...this.props} ref={(ref: UIElement<BalanceAccountSelectorComponentProps>) => void (this.componentRef = ref)} />
         );
     };
 }

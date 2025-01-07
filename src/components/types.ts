@@ -72,6 +72,7 @@ export type BaseElementState = {
 };
 
 export type _UIComponentProps<T> = BaseElementProps & Omit<UIElementProps, 'ref'> & T & {};
+export type UIComponentProps<T> = BaseElementProps & UIElementProps & T & {};
 
 export type ExternalUIComponentProps<T> = UIElementProps & T & {};
 
