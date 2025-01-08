@@ -189,7 +189,7 @@ export const CapitalOfferSummary = ({
                             variant={TypographyVariant.CAPTION}
                             stronger
                         >
-                            {showWarningIcon ? <Icon name={'warning-filled'} /> : null}
+                            {showWarningIcon ? <Icon name="warning-filled" /> : null}
                             {val}
                         </Typography>
                     );
