@@ -1958,31 +1958,27 @@ export const DEFAULT_LINE_ITEMS: ILineItem[] = [
 
 export const DEFAULT_REFUND_STATUSES: ITransactionRefundStatus = [
     {
-        amount: { currency: 'USD', value: -1000 },
+        amount: { currency: 'USD', value: -500 },
         status: 'in_progress',
     },
     {
-        amount: { currency: 'USD', value: -2000 },
+        amount: { currency: 'USD', value: -1500 },
         status: 'in_progress',
     },
     {
-        amount: { currency: 'USD', value: -202000 },
+        amount: { currency: 'USD', value: -500 },
         status: 'completed',
     },
     {
-        amount: { currency: 'USD', value: -2000 },
-        status: 'in_progress',
-    },
-    {
-        amount: { currency: 'USD', value: -2000 },
-        status: 'completed',
-    },
-    {
-        amount: { currency: 'USD', value: -1000 },
+        amount: { currency: 'USD', value: -100 },
         status: 'failed',
     },
     {
-        amount: { currency: 'USD', value: -2000 },
+        amount: { currency: 'USD', value: -200 },
+        status: 'failed',
+    },
+    {
+        amount: { currency: 'USD', value: -200 },
         status: 'failed',
     },
 ];
