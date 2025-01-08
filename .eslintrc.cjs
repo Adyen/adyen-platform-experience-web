@@ -138,6 +138,19 @@ module.exports = {
         'jsx-a11y/no-static-element-interactions': 'error',
         'jsx-a11y/no-noninteractive-tabindex': 'error',
         'jsx-a11y/mouse-events-have-key-events': 'error',
+
+        // testing-library
+        // temporary warn for these new rules below
+        'testing-library/render-result-naming-convention': 'warn',
+        'testing-library/no-wait-for-multiple-assertions': 'warn',
+        'testing-library/prefer-screen-queries': 'warn',
+        'testing-library/no-render-in-lifecycle': 'warn',
+        'testing-library/prefer-presence-queries': 'warn',
+        'testing-library/no-container': 'warn',
+        'testing-library/prefer-find-by': 'warn',
+        'testing-library/no-node-access': 'warn',
+        'testing-library/no-await-sync-queries': 'warn',
+        'testing-library/no-manual-cleanup': 'warn',
     },
     overrides: [
         {
@@ -145,7 +158,15 @@ module.exports = {
             files: ['*.ts', '*.tsx'],
             rules: {
                 '@typescript-eslint/explicit-member-accessibility': ['error', { accessibility: 'off', overrides: { properties: 'explicit' } }],
+
             },
+        },
+        {
+            files: [
+                '**/tests/**/*.[jt]s?(x)',
+                '**/?(*.)+(spec|test).[jt]s?(x)',
+            ],
+            extends: ['plugin:testing-library/react'],
         },
     ],
 };
