@@ -20,7 +20,7 @@ const useBalanceAccountSelection = (balanceAccounts?: IBalanceAccountBase[]) => 
     );
 
     const onBalanceAccountSelection = useCallback(
-        ({ target }: any) => {
+        <T extends { target?: { value: any } }>({ target }: T) => {
             const balanceAccountId = target?.value;
             const index = balanceAccounts?.findIndex(({ id }) => id === balanceAccountId);
             if (index! >= 0) setSelectedBalanceAccountIndex(index!);

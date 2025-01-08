@@ -1,3 +1,4 @@
+export * from './BalanceAccountSelector';
 export * from './PayoutDetails';
 export * from './PayoutsOverview';
 export * from './TransactionDetails';
