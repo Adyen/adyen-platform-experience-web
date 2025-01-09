@@ -107,10 +107,12 @@ const enrichTransactionDataWithDetails = <T extends ITransaction>(
 
     switch (transaction.category) {
         case 'Payment':
-        case 'Transfer':
+        case 'Transfer': {
             transactionWithDetails = getPaymentOrTransferWithDetails(transaction, deductedAmount)!;
+            const refundedAmount = refundStatuses?.reduce((sum, refund) => sum + refund.amount.value, 0) || 0;
+            refundableAmount = originalAmount + refundedAmount;
             break;
-
+        }
         case 'Refund': {
             transactionWithDetails = getMappedValue(transaction.id, TRANSACTIONS_DETAILS_CACHE, () => {
                 const { value: amount, currency } = transaction.amount;
