@@ -1,7 +1,7 @@
 import { TransactionsOverview } from '../../src';
 import { ElementProps, ElementStory } from '../utils/types';
 import { http, HttpResponse } from 'msw';
-import { TransactionsMeta } from '../components/transactionList';
+import { TransactionsMeta } from '../components/transactionsOverview';
 import { Meta } from '@storybook/preact';
 import { endpoints } from '../../endpoints/endpoints';
 import { getMyCustomData } from './utils/customDataRequest';
