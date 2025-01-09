@@ -11,7 +11,7 @@ export type MockSessionContext = {
     session: AuthSession;
     subscribe: SpyInstance<Parameters<AuthSession['subscribe']>, ReturnType<AuthSession['subscribe']>>;
     unsubscribes: ReturnType<(typeof vi)['fn']>[];
-    untilRefreshed: () => Promise<void>;
+    untilRefreshed: (checkpointIntervalMs?: number) => Promise<void>;
 };
 
 export type SetupEndpoints = Partial<SetupEndpoint>;
@@ -60,11 +60,11 @@ export async function createMockSessionContext<Ctx extends TestContext & MockSes
 export function createUntilRefreshedFunc(session: AuthSession) {
     let untilRefreshedPromise: Promise<void>;
 
-    return function untilRefreshed() {
+    return function untilRefreshed(checkpointIntervalMs = 50) {
         if (untilRefreshedPromise === undefined) {
             untilRefreshedPromise = new Promise<void>(resolve =>
                 (function _checkpoint() {
-                    session.context.refreshing ? setTimeout(_checkpoint, 50) : resolve();
+                    session.context.refreshing ? setTimeout(_checkpoint, checkpointIntervalMs) : resolve();
                 })()
             );
             untilRefreshedPromise.finally(() => (untilRefreshedPromise = undefined!));
@@ -78,11 +78,11 @@ export function mockSessionSubscriptions(session: AuthSession) {
     const subscribe = vi.spyOn(session, 'subscribe');
     const unsubscribes: MockSessionContext['unsubscribes'] = [];
 
-    subscribe.mockImplementationOnce(function _implementation(...args: any[]) {
+    subscribe.mockImplementation((...args: any[]) => {
         const originalUnsubscribe = originalSubscribe(...args);
-        const unsubscribeIndex = unsubscribes.push(vi.fn().mockImplementationOnce(originalUnsubscribe)) - 1;
-        subscribe.mockImplementationOnce(_implementation);
-        return unsubscribes[unsubscribeIndex]!;
+        const unsubscribe = vi.fn().mockImplementationOnce(originalUnsubscribe);
+        unsubscribes.push(unsubscribe);
+        return unsubscribe;
     });
 
     return { subscribe, unsubscribes };
