@@ -5,7 +5,7 @@ import dotenv from 'dotenv';
 
 dotenv.config({ path: './envs/.env' });
 
-const COMPONENT_PREFIX = 'mocked-transactions-list';
+const COMPONENT_PREFIX = 'mocked-transactions-overview';
 
 const test = base.extend<{
     transactionListPage: TransactionListPage;
@@ -18,7 +18,7 @@ const test = base.extend<{
 
 test('cells should show correct value and open correct modal ', async ({ transactionListPage, page }) => {
     const transactionList = transactionListPage;
-    await goToPage({ page, id: `${COMPONENT_PREFIX}--basic` });
+    await goToPage({ page, id: `${COMPONENT_PREFIX}--default` });
     await transactionList.applyDateFilter('2024-01-01');
     await transactionList.getCell('amount').waitFor();
     await transactionList.firstRow.click();
@@ -29,7 +29,7 @@ test('cells should show correct value and open correct modal ', async ({ transac
 
 test.describe('Filters', () => {
     test('all filters should be attached', async ({ transactionListPage, page }) => {
-        await goToPage({ page, id: `${COMPONENT_PREFIX}--basic` });
+        await goToPage({ page, id: `${COMPONENT_PREFIX}--default` });
         const transactionList = transactionListPage;
         await expect(transactionList.filterBar).toBeAttached();
         await expect(transactionList.dateFilter).toBeAttached();
@@ -75,7 +75,7 @@ test.describe('Transaction List with custom columns', () => {
 test.describe('Transaction details modal with partial refunds', () => {
     test.beforeEach(async ({ transactionListPage, page }) => {
         const transactionList = transactionListPage;
-        await goToPage({ page, id: `${COMPONENT_PREFIX}--basic` });
+        await goToPage({ page, id: `${COMPONENT_PREFIX}--default` });
         await transactionList.applyDateFilter('2024-01-01');
         await transactionList.getCell('amount').waitFor();
         await transactionList.firstRow.click();
@@ -101,7 +101,7 @@ test.describe('Transaction details modal with partial refunds', () => {
 test.describe('Refund action modal', () => {
     test.beforeEach(async ({ transactionListPage, page }) => {
         const transactionList = transactionListPage;
-        await goToPage({ page, id: `${COMPONENT_PREFIX}--basic` });
+        await goToPage({ page, id: `${COMPONENT_PREFIX}--default` });
         await transactionList.applyDateFilter('2024-01-01');
         await transactionList.getCell('amount').waitFor();
         await transactionList.firstRow.click();

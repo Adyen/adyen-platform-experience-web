@@ -3,10 +3,10 @@ import { ElementProps, ElementStory } from '../utils/types';
 import { PayoutsMeta } from '../components/payoutList';
 import { Meta } from '@storybook/preact';
 
-const meta: Meta<ElementProps<typeof PayoutsOverview>> = { ...PayoutsMeta, title: 'Mocked/Payouts' };
+const meta: Meta<ElementProps<typeof PayoutsOverview>> = { ...PayoutsMeta, title: 'Mocked/Payouts Overview' };
 
-export const Basic: ElementStory<typeof PayoutsOverview> = {
-    name: 'Basic (Mocked)',
+export const Default: ElementStory<typeof PayoutsOverview> = {
+    name: 'Default',
     args: {
         mockedApi: true,
     },
