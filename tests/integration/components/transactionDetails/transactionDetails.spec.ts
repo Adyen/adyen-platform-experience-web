@@ -14,7 +14,7 @@ const test = base.extend<{
 });
 
 test('balance account should show correct ID', async ({ transactionDetailsPage, page }) => {
-    await goToPage({ page, id: `${COMPONENT_PREFIX}--basic` });
+    await goToPage({ page, id: `${COMPONENT_PREFIX}--default` });
     const transactionDetails = transactionDetailsPage;
 
     await expect(transactionDetails.transactionValue).toHaveText('1VVF0D5V3709DX6D');

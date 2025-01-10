@@ -11,8 +11,8 @@ import { CapitalComponentState } from '../../src/components/external/CapitalOver
 
 const meta: Meta<ElementProps<typeof CapitalOverview>> = { ...CapitalOverviewMeta, title: 'Mocked/Capital Overview' };
 
-export const PreQualified: ElementStory<typeof CapitalOverview> = {
-    name: 'Pre-qualified',
+export const Default: ElementStory<typeof CapitalOverview> = {
+    name: 'Default',
     args: {
         mockedApi: true,
     },

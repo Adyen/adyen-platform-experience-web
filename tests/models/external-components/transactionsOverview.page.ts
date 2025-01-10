@@ -5,7 +5,7 @@ import { applyDateFilter, getPagePath, getTranslatedKey } from '../../utils/util
 import DataGridPage from '../internal-components/dataGrid';
 import FilterBarPage from '../internal-components/filterBar';
 
-export class TransactionListPage extends BasePage {
+export class TransactionsOverviewPage extends BasePage {
     private readonly _applyDateFilter;
     public dataGrid: DataGridPage;
     public dataGridBody: Locator;
@@ -15,7 +15,7 @@ export class TransactionListPage extends BasePage {
     public firstRow: Locator;
 
     constructor(page: Page, rootElementSelector = '.adyen-pe-transactions-overview-container') {
-        super(page, rootElementSelector, getPagePath('transactionList'));
+        super(page, rootElementSelector, getPagePath('transactionsOverview'));
         this.dataGrid = new DataGridPage(this.rootElement);
         this.dataGridBody = this.dataGrid.gridBody;
         this.firstRow = this.dataGrid.getRow();
