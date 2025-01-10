@@ -43,7 +43,9 @@ const useButton = (
         () => getModifierClasses(defaultClassName, classNameModifiers, [defaultClassName, className]),
         [defaultClassName, classNameModifiers, className]
     );
-    console.log(classes);
+
+    if (defaultClassName === 'adyen-pe-base-button') console.log('>>>>>>>.', classes);
+
     const allProps = useMemo(
         () => ({
             ...props,
