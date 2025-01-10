@@ -6,8 +6,8 @@ import { CapitalOffer } from '../../src';
 
 const meta: Meta<ElementProps<typeof CapitalOffer>> = { ...capitalOfferMeta, title: 'Integration/Capital Offer' };
 
-export const Basic: ElementStory<typeof CapitalOffer, SessionControl> = {
-    name: 'Basic',
+export const Default: ElementStory<typeof CapitalOffer, SessionControl> = {
+    name: 'Default',
     argTypes: {
         session: { control: 'object' },
     },

@@ -6,8 +6,8 @@ import { EMPTY_SESSION_OBJECT } from '../utils/constants';
 
 const meta: Meta<ElementProps<typeof CapitalOverview>> = { ...CapitalOverviewMeta, title: 'Integration/Capital Overview' };
 
-export const Basic: ElementStory<typeof CapitalOverview, SessionControl> = {
-    name: 'Basic',
+export const Default: ElementStory<typeof CapitalOverview, SessionControl> = {
+    name: 'Default',
     argTypes: {
         session: { control: 'object' },
     },
