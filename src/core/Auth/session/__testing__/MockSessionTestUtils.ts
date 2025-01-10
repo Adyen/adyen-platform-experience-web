@@ -1,18 +1,21 @@
-import { afterAll, afterEach, beforeAll, SpyInstance, TestContext, vi } from 'vitest';
+import { afterAll, afterEach, beforeAll, Mock, SpyInstance, TestContext, vi } from 'vitest';
+import { SetupEndpoint } from '../../../../types/api/endpoints';
 import { SETUP_ENDPOINT_PATH } from '../constants';
 import { API_VERSION } from '../../../Http/constants';
 import { EMPTY_OBJECT } from '../../../../utils';
 import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
 import AuthSession from '../AuthSession';
-import { SetupEndpoint } from '../../../../types/api/endpoints';
 
-export type MockSessionContext = {
+type SessionSubscribe = AuthSession['subscribe'];
+type SessionUnsubscribe = ReturnType<SessionSubscribe>;
+
+export interface MockSessionContext {
     session: AuthSession;
-    subscribe: SpyInstance<Parameters<AuthSession['subscribe']>, ReturnType<AuthSession['subscribe']>>;
-    unsubscribes: ReturnType<(typeof vi)['fn']>[];
+    subscribe: SpyInstance<Parameters<SessionSubscribe>, SessionUnsubscribe>;
+    unsubscribes: Mock<Parameters<SessionUnsubscribe>, ReturnType<SessionUnsubscribe>>[];
     untilRefreshed: (checkpointIntervalMs?: number) => Promise<void>;
-};
+}
 
 export type SetupEndpoints = Partial<SetupEndpoint>;
 
@@ -73,6 +76,67 @@ export function createUntilRefreshedFunc(session: AuthSession) {
     };
 }
 
+/**
+ * This utility helps to create test spies for subscriptions to an `AuthSession` instance created by calling its
+ * `.subscribe()` method. The spying functionality is introduced only as an addition to the original logic for
+ * managing auth session subscriptions. Hence within any test context, the behavior of the `.subscribe()` method,
+ * as well as that of any `unsubscribe` cleanup function it returns, is retained.
+ *
+ * This utility returns an object with the following:
+ *  - `subscribe`
+ *      > A test spy for the `.subscribe()` method of the `AuthSession` instance. Use this test spy when you need
+ *      to create assertions for calls to the `.subscribe()` method.
+ *      >
+ *      > ```ts
+ *      > const session = new AuthSession();
+ *      > const sessionSubscriptionCallback = () => { ... };
+ *      > const { subscribe } = mockSessionSubscriptions(session);
+ *      >
+ *      > // session.subscribe() not called yet
+ *      > expect(subscribe).not.toHaveBeenCalled();
+ *      >
+ *      > // create a subscription by calling session.subscribe()
+ *      > const unsubscribe = session.subscribe(sessionSubscriptionCallback);
+ *      >
+ *      > expect(subscribe).toHaveBeenCalledOnce();
+ *      > expect(subscribe).toHaveBeenLastCalledWith(sessionSubscriptionCallback);
+ *      > expect(subscribe).toHaveLastReturnedWith(unsubscribe);
+ *      > ```
+ *
+ *  - `unsubscribes`
+ *      > An array of mocked `unsubscribe` functions (retaining original unsubscribe logic), one for each call to the
+ *      `.subscribe()` method, in chronological order. Thus, if the `.subscribe()` method has been called 10 times
+ *      since after mocking the `AuthSession` instance, this array should have 10 elements (1 for each returned
+ *      mocked `unsubscribe` function).
+ *      >
+ *      > ```ts
+ *      > const session = new AuthSession();
+ *      > const { unsubscribes } = mockSessionSubscriptions(session);
+ *      >
+ *      > // session.subscribe() not called yet, hence no unsubscribes
+ *      > expect(unsubscribes).toHaveLength(0);
+ *      >
+ *      > // create a subscription by calling session.subscribe()
+ *      > const unsubscribe = session.subscribe(() => { ... });
+ *      > const unsubscribe_0 = unsubscribes[0]!;
+ *      >
+ *      > expect(unsubscribe_0).toStrictEqual(unsubscribe);
+ *      > expect(unsubscribe_0).not.toHaveBeenCalled();
+ *      >
+ *      > // cancel the subscription
+ *      > unsubscribe();
+ *      >
+ *      > expect(unsubscribe_0).toHaveBeenCalledOnce();
+ *      >
+ *      > // call unsubscribe() a couple more times (redundant)
+ *      > unsubscribe();
+ *      > unsubscribe();
+ *      >
+ *      > expect(unsubscribe_0).toHaveBeenCalledTimes(3);
+ *      > ```
+ *
+ * @param session The auth session instance to mock subscriptions for
+ */
 export function mockSessionSubscriptions(session: AuthSession) {
     const originalSubscribe = session.subscribe;
     const subscribe = vi.spyOn(session, 'subscribe');
@@ -80,7 +144,7 @@ export function mockSessionSubscriptions(session: AuthSession) {
 
     subscribe.mockImplementation((...args: any[]) => {
         const originalUnsubscribe = originalSubscribe(...args);
-        const unsubscribe = vi.fn().mockImplementationOnce(originalUnsubscribe);
+        const unsubscribe = vi.fn(originalUnsubscribe);
         unsubscribes.push(unsubscribe);
         return unsubscribe;
     });
