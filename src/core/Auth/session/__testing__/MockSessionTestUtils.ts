@@ -1,11 +1,11 @@
 import { afterAll, afterEach, beforeAll, SpyInstance, TestContext, vi } from 'vitest';
-import { SETUP_ENDPOINT_PATH } from '../../constants';
-import { API_VERSION } from '../../../../Http/constants';
-import { EMPTY_OBJECT } from '../../../../../utils';
+import { SETUP_ENDPOINT_PATH } from '../constants';
+import { API_VERSION } from '../../../Http/constants';
+import { EMPTY_OBJECT } from '../../../../utils';
 import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
-import AuthSession from '../../AuthSession';
-import { SetupEndpoint } from '../../../../../types/api/endpoints';
+import AuthSession from '../AuthSession';
+import { SetupEndpoint } from '../../../../types/api/endpoints';
 
 export type MockSessionContext = {
     session: AuthSession;
