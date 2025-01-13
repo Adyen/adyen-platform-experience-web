@@ -3,7 +3,7 @@ import { ElementProps, ElementStory } from '../utils/types';
 import { Meta } from '@storybook/preact';
 import { TransactionDetailsMeta } from '../components/transactionDetails';
 
-const meta: Meta<ElementProps<typeof TransactionDetails>> = { ...TransactionDetailsMeta, title: 'Mocked/Transaction Details' };
+const meta: Meta<ElementProps<typeof TransactionDetails>> = { ...TransactionDetailsMeta('1VVF0D5V3709DX6D'), title: 'Mocked/Transaction Details' };
 
 export const Default: ElementStory<typeof TransactionDetails> = {
     name: 'Default',

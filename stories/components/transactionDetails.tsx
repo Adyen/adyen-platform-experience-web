@@ -3,27 +3,29 @@ import { enabledDisabledCallbackRadioControls } from '../utils/controls';
 import { TransactionDetails } from '../../src';
 import { ElementProps } from '../utils/types';
 
-export const TransactionDetailsMeta: Meta<ElementProps<typeof TransactionDetails>> = {
-    argTypes: {
-        onContactSupport: enabledDisabledCallbackRadioControls('onContactSupport'),
-        hideTitle: { type: 'boolean' },
-        id: { type: 'string' },
-        balanceAccountId: {
-            table: {
-                disable: true,
+export const TransactionDetailsMeta: (id: string) => Meta<ElementProps<typeof TransactionDetails>> = (id: string) => {
+    return {
+        argTypes: {
+            onContactSupport: enabledDisabledCallbackRadioControls('onContactSupport'),
+            hideTitle: { type: 'boolean' },
+            id: { type: 'string' },
+            balanceAccountId: {
+                table: {
+                    disable: true,
+                },
             },
         },
-    },
-    args: {
-        hideTitle: false,
-        onContactSupport: () => {},
-        component: TransactionDetails,
-        id: '1VVF0D5V3709DX6D',
-    },
-    parameters: {
-        controls: {
-            sort: 'alpha',
+        args: {
+            hideTitle: false,
+            onContactSupport: () => {},
+            component: TransactionDetails,
+            id: id,
         },
-    },
-    decorators: [Story => <div style={{ margin: 'auto', maxWidth: 500, width: '100%' }}>{Story()}</div>],
+        parameters: {
+            controls: {
+                sort: 'alpha',
+            },
+        },
+        decorators: [Story => <div style={{ margin: 'auto', maxWidth: 500, width: '100%' }}>{Story()}</div>],
+    };
 };
