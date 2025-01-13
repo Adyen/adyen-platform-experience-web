@@ -42,6 +42,7 @@ export const SETUP_ENDPOINT = `${BASE_URL}${SETUP_ENDPOINT_PATH}`;
  *      > Should be called with a record of `/setup` endpoints to override the default empty record. Useful for
  *      temporarily provisioning a set of endpoints for a given test case.
  *
+ * @example
  * ```ts
  * describe('my test suite', () => {
  *   const { initializeServer, mockServer, useEndpoints } = createMockServerContext();
@@ -83,6 +84,7 @@ export function createMockServerContext() {
  * fixtures that can be used for session-aware testing. The mock session context should always be used alongside a
  * mock server context ({@link createMockServerContext}).
  *
+ * @example
  * ```ts
  * describe('my test suite', () => {
  *   createMockServerContext().initializeServer();
@@ -131,6 +133,10 @@ export async function createMockSessionContext<Ctx extends TestContext & MockSes
  *  - if there is no pending refresh for the `AuthSession` instance, then it gets settled immediately
  *  - if there is a pending refresh, then it gets settled when the pending refresh is completed
  *
+ * > While this is not the most precise way to immediately know when an auth session is done refreshing (since
+ * that will require subscribing to the session), it should suffice for lots of test cases.
+ *
+ * @example
  * ```ts
  * const session = new AuthSession();
  * const untilRefreshed = createUntilRefreshedFunc(session);
@@ -138,9 +144,6 @@ export async function createMockSessionContext<Ctx extends TestContext & MockSes
  * // wait for any pending session refresh
  * await untilRefreshed();
  * ```
- *
- * > While this is not the most precise way to immediately know when an auth session is done refreshing (since
- * that will require subscribing to the session), it should suffice for lots of test cases.
  *
  * @param session The auth session instance for which to wait for refreshes
  */
@@ -170,54 +173,45 @@ export function createUntilRefreshedFunc(session: AuthSession) {
  *  - `subscribe`
  *      > A test spy for the `.subscribe()` method of the `AuthSession` instance. Use this test spy when you need
  *      to create assertions for calls to the `.subscribe()` method.
- *      >
- *      > ```ts
- *      > const session = new AuthSession();
- *      > const sessionSubscriptionCallback = () => { ... };
- *      > const { subscribe } = mockSessionSubscriptions(session);
- *      >
- *      > // session.subscribe() not called yet
- *      > expect(subscribe).not.toHaveBeenCalled();
- *      >
- *      > // create a subscription by calling session.subscribe()
- *      > const unsubscribe = session.subscribe(sessionSubscriptionCallback);
- *      >
- *      > expect(subscribe).toHaveBeenCalledOnce();
- *      > expect(subscribe).toHaveBeenLastCalledWith(sessionSubscriptionCallback);
- *      > expect(subscribe).toHaveLastReturnedWith(unsubscribe);
- *      > ```
  *
  *  - `unsubscribes`
  *      > An array of mocked `unsubscribe` functions (retaining original unsubscribe logic), one for each call to the
  *      `.subscribe()` method, in chronological order. Thus, if the `.subscribe()` method has been called 10 times
  *      since after mocking the `AuthSession` instance, this array should have 10 elements (1 for each returned
  *      mocked `unsubscribe` function).
- *      >
- *      > ```ts
- *      > const session = new AuthSession();
- *      > const { unsubscribes } = mockSessionSubscriptions(session);
- *      >
- *      > // session.subscribe() not called yet, hence no unsubscribes
- *      > expect(unsubscribes).toHaveLength(0);
- *      >
- *      > // create a subscription by calling session.subscribe()
- *      > const unsubscribe = session.subscribe(() => { ... });
- *      > const unsubscribe_0 = unsubscribes[0]!;
- *      >
- *      > expect(unsubscribe_0).toStrictEqual(unsubscribe);
- *      > expect(unsubscribe_0).not.toHaveBeenCalled();
- *      >
- *      > // cancel the subscription
- *      > unsubscribe();
- *      >
- *      > expect(unsubscribe_0).toHaveBeenCalledOnce();
- *      >
- *      > // call unsubscribe() a couple more times (redundant)
- *      > unsubscribe();
- *      > unsubscribe();
- *      >
- *      > expect(unsubscribe_0).toHaveBeenCalledTimes(3);
- *      > ```
+ *
+ * @example
+ * ```ts
+ * const session = new AuthSession();
+ * const sessionSubscriptionCallback = () => { ... };
+ * const { subscribe, unsubscribes } = mockSessionSubscriptions(session);
+ *
+ * // session.subscribe() not called yet, hence no unsubscribes
+ * expect(subscribe).not.toHaveBeenCalled();
+ * expect(unsubscribes).toHaveLength(0);
+ *
+ * // create a subscription by calling session.subscribe()
+ * const unsubscribe = session.subscribe(sessionSubscriptionCallback);
+ * const unsubscribe_0 = unsubscribes[0]!;
+ *
+ * expect(subscribe).toHaveBeenCalledOnce();
+ * expect(subscribe).toHaveBeenLastCalledWith(sessionSubscriptionCallback);
+ * expect(subscribe).toHaveLastReturnedWith(unsubscribe);
+ *
+ * expect(unsubscribe_0).toStrictEqual(unsubscribe);
+ * expect(unsubscribe_0).not.toHaveBeenCalled();
+ *
+ * // cancel the subscription
+ * unsubscribe();
+ *
+ * expect(unsubscribe_0).toHaveBeenCalledOnce();
+ *
+ * // call unsubscribe() a couple more times (redundant)
+ * unsubscribe();
+ * unsubscribe();
+ *
+ * expect(unsubscribe_0).toHaveBeenCalledTimes(3);
+ * ```
  *
  * @param session The auth session instance for which to mock subscriptions
  */
