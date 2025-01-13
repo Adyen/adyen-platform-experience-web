@@ -23,6 +23,46 @@ export const LOADING_CONTEXT = 'http://mock.test.example';
 export const BASE_URL = `${LOADING_CONTEXT}/${API_VERSION}`;
 export const SETUP_ENDPOINT = `${BASE_URL}${SETUP_ENDPOINT_PATH}`;
 
+/**
+ * Utility for creating a mock server context to use alongside with session-aware test suites. The `/setup` endpoint is
+ * mocked by default in this server context and returns an empty record of endpoints. The `useEndpoints()` function
+ * returned from this utility, can be used to temporarily override the default endpoints returned from `/setup` as
+ * needed for a given test case.
+ *
+ * This utility returns an object with the following:
+ *  - `initializeServer()`
+ *      > Should be called from within a test suite to initialize the mock server. It configures test hooks for
+ *      starting the mock server, resetting temporary handlers, and closing the mock server at the end of the suite.
+ *
+ *  - `mockServer`
+ *      > The underlying mock server instance. Could be useful for temporarily setting up additional handlers for
+ *      endpoints as needed for a given test case.
+ *
+ *  - `useEndpoints()`
+ *      > Should be called with a record of `/setup` endpoints to override the default empty record. Useful for
+ *      temporarily provisioning a set of endpoints for a given test case.
+ *
+ * ```ts
+ * describe('my test suite', () => {
+ *   const { initializeServer, mockServer, useEndpoints } = createMockServerContext();
+ *
+ *   // initialize the mock server
+ *   initializeServer();
+ *
+ *   test('setup should return endpoints', () => {
+ *      const ENDPOINTS = { ... };
+ *
+ *      // override setup endpoints for this test case
+ *      useEndpoints(ENDPOINTS);
+ *
+ *      mockServer.use(
+ *          // add some additional handlers
+ *          http.get(`${BASE_URL}/getBalanceAccounts`, () => HttpResponse.json({ ... }))
+ *       );
+ *   });
+ * });
+ * ```
+ */
 export function createMockServerContext() {
     const _serveEndpoints = (endpoints: SetupEndpoints) => () => HttpResponse.json({ endpoints });
     const useEndpoints = (endpoints: SetupEndpoints) => mockServer.use(http.post(SETUP_ENDPOINT, _serveEndpoints(endpoints)));
@@ -37,6 +77,31 @@ export function createMockServerContext() {
     return { initializeServer, mockServer, useEndpoints };
 }
 
+/**
+ * Utility for creating a mock session context to use for session-aware test cases. If a test context is provided, it
+ * is augmented with the created mock session context data, which can be very useful for extending test cases with
+ * fixtures that can be used for session-aware testing. The mock session context should always be used alongside a
+ * mock server context ({@link createMockServerContext}).
+ *
+ * ```ts
+ * describe('my test suite', () => {
+ *   createMockServerContext().initializeServer();
+ *
+ *   beforeEach<MockSessionContext>(async ctx => {
+ *      await createMockSessionContext(ctx);
+ *   });
+ *
+ *   it<MockSessionContext>('subscribe to session', async ({ session, subscribe }) => {
+ *      session.subscribe(() => { ... });
+ *
+ *      // session.subscribe() called once
+ *      expect(subscribe).toHaveBeenCalledOnce();
+ *   });
+ * });
+ * ```
+ *
+ * @param ctx Optional test context for which to augment with mock session context data
+ */
 export async function createMockSessionContext<Ctx extends TestContext & MockSessionContext>(ctx?: Ctx): Promise<MockSessionContext> {
     const session = new AuthSession();
     const untilRefreshed = createUntilRefreshedFunc(session);
@@ -44,7 +109,7 @@ export async function createMockSessionContext<Ctx extends TestContext & MockSes
     session.loadingContext = LOADING_CONTEXT;
     session.onSessionCreate = () => ({ id: 'xxxx', token: 'xxxx' });
 
-    // wait for pending session refresh
+    // wait for any pending session refresh
     await untilRefreshed();
 
     // mock session subscriptions
@@ -60,14 +125,33 @@ export async function createMockSessionContext<Ctx extends TestContext & MockSes
     return { session, subscribe, unsubscribes, untilRefreshed };
 }
 
+/**
+ * This higher-order function takes an `AuthSession` instance and returns an `untilRefreshed()` function, which when
+ * called, returns a `promise` that only gets settled in either of these cases:
+ *  - if there is no pending refresh for the `AuthSession` instance, then it gets settled immediately
+ *  - if there is a pending refresh, then it gets settled when the pending refresh is completed
+ *
+ * ```ts
+ * const session = new AuthSession();
+ * const untilRefreshed = createUntilRefreshedFunc(session);
+ *
+ * // wait for any pending session refresh
+ * await untilRefreshed();
+ * ```
+ *
+ * > While this is not the most precise way to immediately know when an auth session is done refreshing (since
+ * that will require subscribing to the session), it should suffice for lots of test cases.
+ *
+ * @param session The auth session instance for which to wait for refreshes
+ */
 export function createUntilRefreshedFunc(session: AuthSession) {
     let untilRefreshedPromise: Promise<void>;
 
-    return function untilRefreshed(checkpointIntervalMs = 50) {
+    return function untilRefreshed() {
         if (untilRefreshedPromise === undefined) {
             untilRefreshedPromise = new Promise<void>(resolve =>
                 (function _checkpoint() {
-                    session.context.refreshing ? setTimeout(_checkpoint, checkpointIntervalMs) : resolve();
+                    session.context.refreshing ? setTimeout(_checkpoint, 50) : resolve();
                 })()
             );
             untilRefreshedPromise.finally(() => (untilRefreshedPromise = undefined!));
@@ -135,7 +219,7 @@ export function createUntilRefreshedFunc(session: AuthSession) {
  *      > expect(unsubscribe_0).toHaveBeenCalledTimes(3);
  *      > ```
  *
- * @param session The auth session instance to mock subscriptions for
+ * @param session The auth session instance for which to mock subscriptions
  */
 export function mockSessionSubscriptions(session: AuthSession) {
     const originalSubscribe = session.subscribe;
