@@ -1,6 +1,7 @@
-import { afterAll, afterEach, beforeAll, Mock, SpyInstance, TestContext, vi } from 'vitest';
+import { afterAll, afterEach, beforeAll, beforeEach, Mock, SpyInstance, TestContext, vi } from 'vitest';
+import { setupTimers } from '../../../../primitives/time/__testing__/fixtures';
 import { SetupEndpoint } from '../../../../types/api/endpoints';
-import { SETUP_ENDPOINT_PATH } from '../constants';
+import { MAX_AGE_MS, SETUP_ENDPOINT_PATH } from '../constants';
 import { API_VERSION } from '../../../Http/constants';
 import { EMPTY_OBJECT } from '../../../../utils';
 import { Core } from '../../../index';
@@ -11,12 +12,19 @@ import AuthSession from '../AuthSession';
 type SessionSubscribe = AuthSession['subscribe'];
 type SessionUnsubscribe = ReturnType<SessionSubscribe>;
 
+vi.mock('../constants', async () => {
+    const constants = await vi.importActual<typeof import('../constants')>('../constants');
+    return { ...constants, MAX_AGE_MS: 100 };
+});
+
 export interface MockSessionContext {
     core: Core<any, any>;
+    expireSession(): void;
+    refreshSession(...args: Parameters<AuthSession['refresh']>): Promise<void>;
     session: AuthSession;
     subscribe: SpyInstance<Parameters<SessionSubscribe>, SessionUnsubscribe>;
     unsubscribes: Mock<Parameters<SessionUnsubscribe>, ReturnType<SessionUnsubscribe>>[];
-    untilRefreshed: (checkpointIntervalMs?: number) => Promise<void>;
+    untilSessionRefreshed(): Promise<void>;
 }
 
 export type SetupEndpoints = Partial<SetupEndpoint>;
@@ -72,6 +80,8 @@ export function createMockServerContext() {
     const mockServer = setupServer(http.post(SETUP_ENDPOINT, _serveEndpoints(EMPTY_OBJECT)));
 
     const initializeServer = () => {
+        setupTimers();
+        beforeEach(() => void vi.setSystemTime(0));
         beforeAll(() => mockServer.listen({ onUnhandledRequest: 'error' }));
         afterEach(() => mockServer.resetHandlers());
         afterAll(() => mockServer.close());
@@ -107,17 +117,26 @@ export function createMockServerContext() {
  * @param ctx Optional test context for which to augment with mock session context data
  */
 export async function createMockSessionContext<Ctx extends TestContext & MockSessionContext>(ctx?: Ctx): Promise<MockSessionContext> {
-    const session = new AuthSession();
-    const untilRefreshed = createUntilRefreshedFunc(session);
     const onSessionCreate = () => ({ id: 'xxxx', token: 'xxxx' });
-
     const core = new Core({ onSessionCreate });
+    const session = new AuthSession();
 
     session.loadingContext = LOADING_CONTEXT;
     session.onSessionCreate = onSessionCreate;
 
+    const expireSession = (): void => void vi.advanceTimersByTimeAsync(MAX_AGE_MS!);
+    const untilSessionRefreshed = createUntilSessionRefreshedFunc(session);
+
+    const refreshSession: MockSessionContext['refreshSession'] = async (...args) => {
+        session.refresh(...args);
+        await untilSessionRefreshed();
+    };
+
     // wait for any pending session refresh
-    await untilRefreshed();
+    await untilSessionRefreshed();
+
+    // initially mark session as expired
+    expireSession();
 
     // mock session subscriptions
     const { subscribe, unsubscribes } = mockSessionSubscriptions(session);
@@ -130,45 +149,47 @@ export async function createMockSessionContext<Ctx extends TestContext & MockSes
         ctx.session = session;
         ctx.subscribe = subscribe;
         ctx.unsubscribes = unsubscribes;
-        ctx.untilRefreshed = untilRefreshed;
+        ctx.expireSession = expireSession;
+        ctx.refreshSession = refreshSession;
+        ctx.untilSessionRefreshed = untilSessionRefreshed;
     }
 
-    return { core, session, subscribe, unsubscribes, untilRefreshed };
+    return { core, expireSession, refreshSession, session, subscribe, unsubscribes, untilSessionRefreshed };
 }
 
 /**
- * This higher-order function takes an `AuthSession` instance and returns an `untilRefreshed()` function, which when
- * called, returns a `promise` that only gets settled in either of these cases:
+ * This higher-order function takes an `AuthSession` instance and returns an `untilSessionRefreshed()` function, which
+ * when called, returns a `promise` that only gets settled in either of these cases:
  *  - if there is no pending refresh for the `AuthSession` instance, then it gets settled immediately
  *  - if there is a pending refresh, then it gets settled when the pending refresh is completed
- *
- * > While this is not the most precise way to immediately know when an auth session is done refreshing (since
- * that will require subscribing to the session), it should suffice for lots of test cases.
  *
  * @example
  * ```ts
  * const session = new AuthSession();
- * const untilRefreshed = createUntilRefreshedFunc(session);
+ * const untilSessionRefreshed = createUntilSessionRefreshedFunc(session);
  *
  * // wait for any pending session refresh
- * await untilRefreshed();
+ * await untilSessionRefreshed();
  * ```
  *
  * @param session The auth session instance for which to wait for refreshes
  */
-export function createUntilRefreshedFunc(session: AuthSession) {
-    let untilRefreshedPromise: Promise<void>;
+export function createUntilSessionRefreshedFunc(session: AuthSession) {
+    const subscribe = session.subscribe.bind(session);
+    let refreshedPromise: Promise<void>;
+    let unsubscribe: () => void;
 
-    return function untilRefreshed() {
-        if (untilRefreshedPromise === undefined) {
-            untilRefreshedPromise = new Promise<void>(resolve =>
-                (function _checkpoint() {
-                    session.context.refreshing ? setTimeout(_checkpoint, 50) : resolve();
-                })()
-            );
-            untilRefreshedPromise.finally(() => (untilRefreshedPromise = undefined!));
+    return function untilSessionRefreshed() {
+        if (refreshedPromise === undefined) {
+            refreshedPromise = new Promise<void>(resolve => {
+                unsubscribe = subscribe(() => void (session.context.refreshing || resolve()));
+            });
+            refreshedPromise.finally(() => {
+                refreshedPromise = undefined!;
+                unsubscribe?.();
+            });
         }
-        return untilRefreshedPromise;
+        return refreshedPromise;
     };
 }
 
