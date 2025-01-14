@@ -2,6 +2,7 @@ import { Core } from '../../../core';
 import { IBalanceAccountBase } from '../../../types';
 import { EMPTY_OBJECT, getMappedValue, isFunction } from '../../../utils';
 import sessionReady from '../../../core/Auth/session/utils/sessionReady';
+import AuthSession from '../../../core/Auth/session/AuthSession';
 
 type CoreInstance = Core<any, any>;
 type BalanceAccount = Readonly<IBalanceAccountBase>;
@@ -13,40 +14,32 @@ interface GetActiveSessionBalanceAccounts {
     (): Promise<ActiveSessionBalanceAccounts>;
 }
 
-export const EMPTY_BALANCE_ACCOUNTS: ActiveSessionBalanceAccounts = null!;
 export const ERR_BALANCE_ACCOUNTS_UNAVAILABLE = 'BALANCE_ACCOUNTS_UNAVAILABLE';
 export const ERR_GET_BALANCE_ACCOUNTS_UNAUTHORIZED = 'GET_BALANCE_ACCOUNTS_UNAUTHORIZED';
 
 const GetActiveSessionBalanceAccountsFactoriesMap = new WeakMap<CoreInstance, GetActiveSessionBalanceAccounts>();
+const EMPTY_BALANCE_ACCOUNTS: ActiveSessionBalanceAccounts = null!;
 
-export async function getActiveSessionBalanceAccounts(
-    core: CoreInstance,
-    currentBalanceAccounts = EMPTY_BALANCE_ACCOUNTS
-): Promise<ActiveSessionBalanceAccounts> {
-    async function _getActiveSessionBalanceAccounts(session: CoreInstance['session']) {
-        if (session.context.isExpired !== false) {
-            await sessionReady(session);
-        } else if (currentBalanceAccounts !== EMPTY_BALANCE_ACCOUNTS) {
-            return currentBalanceAccounts;
-        }
+export async function getActiveSessionBalanceAccounts(session: AuthSession): Promise<readonly BalanceAccount[]> {
+    await sessionReady(session);
 
-        const { getBalanceAccounts } = session.context.endpoints;
+    const { getBalanceAccounts } = session.context.endpoints;
 
-        try {
-            return Object.freeze((await getBalanceAccounts!(EMPTY_OBJECT)).data.map(Object.freeze) as BalanceAccount[]);
-        } catch {
-            if (session.context.refreshing) {
-                // Attempting to refresh session
-                // Try again after session refresh
-                return _getActiveSessionBalanceAccounts(session);
-            }
-
-            throw new Error(isFunction(getBalanceAccounts) ? ERR_BALANCE_ACCOUNTS_UNAVAILABLE : ERR_GET_BALANCE_ACCOUNTS_UNAUTHORIZED);
-        }
+    if (!isFunction(getBalanceAccounts)) {
+        throw new Error(ERR_GET_BALANCE_ACCOUNTS_UNAUTHORIZED);
     }
 
-    const balanceAccounts = await _getActiveSessionBalanceAccounts(core.session);
-    return balanceAccounts ?? undefined;
+    try {
+        const balanceAccounts: BalanceAccount[] = (await getBalanceAccounts(EMPTY_OBJECT)).data;
+        return Object.freeze(balanceAccounts.map(Object.freeze) as BalanceAccount[]);
+    } catch {
+        if (session.context.refreshing) {
+            // try again after pending session refresh
+            return getActiveSessionBalanceAccounts(session);
+        }
+
+        throw new Error(ERR_BALANCE_ACCOUNTS_UNAVAILABLE);
+    }
 }
 
 function createGetActiveSessionBalanceAccountsFactory(core: CoreInstance) {
@@ -60,7 +53,7 @@ function createGetActiveSessionBalanceAccountsFactory(core: CoreInstance) {
     const resetCurrentBalanceAccounts = () => void (currentBalanceAccounts = EMPTY_BALANCE_ACCOUNTS);
 
     async function getBalanceAccounts() {
-        currentBalanceAccounts = await getActiveSessionBalanceAccounts(core, currentBalanceAccounts);
+        currentBalanceAccounts = (await getActiveSessionBalanceAccounts(core.session)) ?? undefined;
         return currentBalanceAccounts;
     }
 
