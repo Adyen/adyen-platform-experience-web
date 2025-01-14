@@ -3,6 +3,7 @@ import { SetupEndpoint } from '../../../../types/api/endpoints';
 import { SETUP_ENDPOINT_PATH } from '../constants';
 import { API_VERSION } from '../../../Http/constants';
 import { EMPTY_OBJECT } from '../../../../utils';
+import { Core } from '../../../index';
 import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
 import AuthSession from '../AuthSession';
@@ -11,6 +12,7 @@ type SessionSubscribe = AuthSession['subscribe'];
 type SessionUnsubscribe = ReturnType<SessionSubscribe>;
 
 export interface MockSessionContext {
+    core: Core<any, any>;
     session: AuthSession;
     subscribe: SpyInstance<Parameters<SessionSubscribe>, SessionUnsubscribe>;
     unsubscribes: Mock<Parameters<SessionUnsubscribe>, ReturnType<SessionUnsubscribe>>[];
@@ -107,9 +109,12 @@ export function createMockServerContext() {
 export async function createMockSessionContext<Ctx extends TestContext & MockSessionContext>(ctx?: Ctx): Promise<MockSessionContext> {
     const session = new AuthSession();
     const untilRefreshed = createUntilRefreshedFunc(session);
+    const onSessionCreate = () => ({ id: 'xxxx', token: 'xxxx' });
+
+    const core = new Core({ onSessionCreate });
 
     session.loadingContext = LOADING_CONTEXT;
-    session.onSessionCreate = () => ({ id: 'xxxx', token: 'xxxx' });
+    session.onSessionCreate = onSessionCreate;
 
     // wait for any pending session refresh
     await untilRefreshed();
@@ -117,14 +122,18 @@ export async function createMockSessionContext<Ctx extends TestContext & MockSes
     // mock session subscriptions
     const { subscribe, unsubscribes } = mockSessionSubscriptions(session);
 
+    // bind mock session to core instance
+    vi.spyOn(core, 'session', 'get').mockReturnValue(session);
+
     if (ctx !== undefined) {
+        ctx.core = core;
         ctx.session = session;
         ctx.subscribe = subscribe;
         ctx.unsubscribes = unsubscribes;
         ctx.untilRefreshed = untilRefreshed;
     }
 
-    return { session, subscribe, unsubscribes, untilRefreshed };
+    return { core, session, subscribe, unsubscribes, untilRefreshed };
 }
 
 /**
@@ -198,7 +207,7 @@ export function createUntilRefreshedFunc(session: AuthSession) {
  * expect(subscribe).toHaveBeenLastCalledWith(sessionSubscriptionCallback);
  * expect(subscribe).toHaveLastReturnedWith(unsubscribe);
  *
- * expect(unsubscribe_0).toStrictEqual(unsubscribe);
+ * expect(unsubscribe_0).toBe(unsubscribe);
  * expect(unsubscribe_0).not.toHaveBeenCalled();
  *
  * // cancel the subscription
