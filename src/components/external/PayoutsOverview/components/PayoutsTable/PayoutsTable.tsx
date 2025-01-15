@@ -61,8 +61,8 @@ export const PayoutsTable: FC<PayoutsTableProps> = ({
             if (_isAmountFieldKey(key)) {
                 return {
                     label: data?.[0]?.[key]?.currency ? `${label} (${getCurrencyCode(data?.[0]?.[key]?.currency)})` : label,
-                    position: CellTextPosition.RIGHT,
-                };
+                    position: 'right',
+                } as const;
             }
         },
         [data, i18n]

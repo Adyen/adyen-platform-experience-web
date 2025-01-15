@@ -2,10 +2,26 @@ import DataGridCell from '../DataGridCell';
 import { DataGridColumn } from '../types';
 import { CustomCell } from '../DataGrid';
 import Icon from './Icon';
-import { CustomDataObject } from '../../../types';
+import { CustomButtonObject, CustomDataObject, CustomIconObject, CustomLinkObject } from '../../../types';
+import Button from '../../Button';
+import { JSXInternal } from 'preact/src/jsx';
+import { ButtonVariant } from '../../Button/types';
+import AnchorButton from '../../AnchorButton/AnchorButton';
 
 export const _isCustomDataObject = (item: any): item is CustomDataObject => {
     return !!item && typeof item === 'object' && 'value' in item;
+};
+
+const _isIconType = (item: any): item is CustomIconObject => {
+    return !!item && typeof item === 'object' && item.type === 'icon';
+};
+
+const _isButtonType = (item: any): item is CustomButtonObject => {
+    return !!item && typeof item === 'object' && item.type === 'button';
+};
+
+const _isLinkType = (item: any): item is CustomLinkObject => {
+    return !!item && typeof item === 'object' && item.type === 'link';
 };
 
 export const TableCells = <
@@ -43,14 +59,50 @@ export const TableCells = <
                         </DataGridCell>
                     );
 
-                // TODO: remove typecast as CustomDataObject
-                const { icon, value } = _isCustomDataObject(item[key]) ? (item[key] as CustomDataObject) : { value: item[key], icon: undefined };
+                const data = item[key] as CustomDataObject;
+
+                const { value, type } = _isCustomDataObject(data) ? data : { value: data, type: 'text' };
+
+                let icon = null;
+
+                if (_isIconType(data)) {
+                    icon = { url: data.details.url, alt: data.details.alt || data.value };
+                }
+
+                let buttonCallback = undefined;
+                if (_isButtonType(data)) {
+                    buttonCallback = (e: JSXInternal.TargetedMouseEvent<HTMLButtonElement | HTMLAnchorElement>) => {
+                        e.stopPropagation();
+                        data.details.action();
+                    };
+                }
 
                 return (
                     <DataGridCell aria-labelledby={String(key)} key={key} column={key} position={position}>
                         <div className="adyen-pe-data-grid__cell-value">
-                            {icon?.url && <Icon {...icon} />}
-                            <div>{value}</div>
+                            {_isIconType(data) && icon?.url && (
+                                <>
+                                    <Icon {...icon} />
+                                    <div>{value}</div>
+                                </>
+                            )}
+                            {type === 'text' && <div className={data?.details?.classNames}>{value}</div>}
+                            {type === 'button' && (
+                                <Button className={data.details.classNames} onClick={buttonCallback}>
+                                    {value}
+                                </Button>
+                            )}
+                            {_isLinkType(data) && (
+                                <AnchorButton
+                                    variant={ButtonVariant.LINK}
+                                    className={data.details.classNames}
+                                    href={data.details.href}
+                                    target={data.details.target}
+                                    onClick={e => e.stopPropagation()}
+                                >
+                                    {value}
+                                </AnchorButton>
+                            )}
                         </div>
                     </DataGridCell>
                 );

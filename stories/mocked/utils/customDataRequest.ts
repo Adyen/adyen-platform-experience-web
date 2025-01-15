@@ -4,7 +4,11 @@ const products = ['Coffee', 'Muffin', 'Pie', 'Tea', 'Latte', 'Brownie', 'Iced la
 const getProductById = (id: string) => {
     const numericId = id.replace(/\D/g, '');
     const index = Number(numericId[numericId.length - 1]);
-    return { value: products[index], icon: { url: 'https://img.icons8.com/?size=100&id=43184&format=png&color=000000', alt: products[index] } };
+    return {
+        value: products[index],
+        type: 'icon',
+        details: { url: 'https://img.icons8.com/?size=100&id=43184&format=png&color=000000', alt: products[index] },
+    } as const;
     // return products[index]!;
 };
 
@@ -25,10 +29,31 @@ const getStoreById = (id: string) => {
     const numericId = id.replace(/\D/g, '');
     const index = Number(numericId[numericId.length - 1]);
     const store = stores[index]!;
-    return { value: store.value, icon: { url: `https://flagicons.lipis.dev/flags/4x3/${store.flag}.svg` } };
+    return {
+        value: store.value,
+        type: 'icon',
+        details: { url: `https://flagicons.lipis.dev/flags/4x3/${store.flag}.svg` },
+    } as const;
 };
 
-const txMatcher = (data: ITransaction[]) => data.map(({ id }) => ({ id, _product: getProductById(id), _store: getStoreById(id), _reference: id }));
+const txMatcher = (data: ITransaction[]) =>
+    data.map(({ id }) => ({
+        id,
+        _product: getProductById(id),
+        _store: getStoreById(id),
+        _reference: {
+            type: 'link',
+            value: id,
+            details: { href: `http://localhost:3031/?path=/story/mocked-transactions-overview--custom-columns&reference=${id}` },
+        } as const,
+        _button: {
+            type: 'button',
+            value: 'Refund',
+            details: {
+                action: () => alert('Action'),
+            },
+        } as const,
+    }));
 
 export const getMyCustomData = async (data: ITransaction[]) => {
     const customData = txMatcher(data);

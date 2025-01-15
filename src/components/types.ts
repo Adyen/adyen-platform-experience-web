@@ -2,6 +2,7 @@ import UIElement from './external/UIElement/UIElement';
 import { Core, onErrorHandler } from '../core';
 import { TransactionsTableFields } from './external/TransactionsOverview/components/TransactionsTable/types';
 import type { ITransaction } from '../types';
+import { AnchorHTMLAttributes } from 'preact/compat';
 
 export const enum InteractionKeyCode {
     ARROW_DOWN = 'ArrowDown',
@@ -86,6 +87,7 @@ export type DataGridIcon = { url: string; alt?: string } | ((value: unknown) => 
 export type DataGridCustomColumnConfig<k> = {
     key: k;
     flex?: number;
+    align?: 'right' | 'left' | 'center';
 };
 
 export type CustomColumn<T extends string> = {
@@ -102,7 +104,35 @@ interface _DataOverviewComponentProps {
 
 export type ReportsOverviewComponentProps = Omit<_DataOverviewComponentProps, 'showDetails'>;
 
-export type CustomDataObject = { value: any; icon?: { url: string; alt?: string } };
+export type CustomDataObject = CustomIconObject | CustomTextObject | CustomLinkObject | CustomButtonObject;
+
+interface BaseCustomObject {
+    value: any;
+}
+
+type BaseDetails = {
+    classNames?: string;
+};
+
+export interface CustomIconObject extends BaseCustomObject {
+    type: 'icon';
+    details: BaseDetails & { url: string; alt?: string };
+}
+
+export interface CustomTextObject extends BaseCustomObject {
+    type: 'text';
+    details: BaseDetails;
+}
+
+export interface CustomLinkObject extends BaseCustomObject {
+    type: 'link';
+    details: BaseDetails & { href: string; target?: AnchorHTMLAttributes<any>['target'] };
+}
+
+export interface CustomButtonObject extends BaseCustomObject {
+    type: 'button';
+    details: BaseDetails & { action: () => void };
+}
 
 export type CustomDataRetrieved = { [k: string]: CustomDataObject | (string | number) };
 

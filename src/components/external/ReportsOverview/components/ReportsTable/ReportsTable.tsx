@@ -11,7 +11,6 @@ import Alert from '../../../../internal/Alert/Alert';
 import { AlertTypeOption } from '../../../../internal/Alert/types';
 import DownloadButton from '../../../../internal/Button/DownloadButton/DownloadButton';
 import DataGrid from '../../../../internal/DataGrid';
-import { CellTextPosition } from '../../../../internal/DataGrid/types';
 import { DATE_FORMAT_REPORTS } from '../../../../../constants';
 import DataOverviewError from '../../../../internal/DataOverviewError/DataOverviewError';
 import Pagination from '../../../../internal/Pagination';
@@ -71,9 +70,9 @@ export const ReportsTable: FC<ReportsTableProps> = ({
                 return {
                     key,
                     label: label,
-                    position: isXsAndDownViewport && key === 'reportFile' ? CellTextPosition.RIGHT : undefined,
+                    position: isXsAndDownViewport && key === 'reportFile' ? 'right' : undefined,
                     visible: fieldsVisibility[key],
-                };
+                } as const;
             }),
         [i18n, data, fieldsVisibility]
     );
