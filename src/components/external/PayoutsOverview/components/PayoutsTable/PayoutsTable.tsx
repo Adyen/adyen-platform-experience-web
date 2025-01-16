@@ -9,7 +9,6 @@ import { IPayout } from '../../../../../types';
 import { useCallback, useMemo } from 'preact/hooks';
 import useTimezoneAwareDateFormatting from '../../../../../hooks/useTimezoneAwareDateFormatting';
 import DataGrid from '../../../../internal/DataGrid';
-import { CellTextPosition } from '../../../../internal/DataGrid/types';
 import { DATE_FORMAT_PAYOUTS, DATE_FORMAT_PAYOUTS_MOBILE } from '../../../../../constants';
 import DataOverviewError from '../../../../internal/DataOverviewError/DataOverviewError';
 import Pagination from '../../../../internal/Pagination';

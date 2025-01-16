@@ -45,6 +45,8 @@ const TransactionDataProperties = () => {
                 .map(([key, value]) => ({
                     key: key as TranslationKey,
                     value: _isCustomDataObject(value) ? value.value : value,
+                    type: _isCustomDataObject(value) ? value.type : 'text',
+                    details: _isCustomDataObject(value) ? value.details : undefined,
                 })) || {}),
 
             // refund reason
@@ -74,9 +76,18 @@ const TransactionDataProperties = () => {
                 items={listItems}
                 layout="5-7"
                 renderLabel={label => <div className={TX_DATA_LABEL}>{label}</div>}
+                renderValue={(val, key, type, details) => {
+                    if (type === 'link')
+                        return (
+                            <a className="" href={details.href} target={details.target || '_blank'}>
+                                {val}
+                            </a>
+                        );
+                    return val;
+                }}
             />
         );
-    }, [i18n, transaction]);
+    }, [extraFields, i18n, transaction]);
 };
 
 export default TransactionDataProperties;

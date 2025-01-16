@@ -103,7 +103,6 @@ export const TransactionDataContent = ({ transaction: initialTransaction, extraF
 
     //TODO: Remove this and do not rename refundDetails from the hook when locked status returns from backend
     const refundDisabled = useMemo(() => refundDisabledMetaData || locked, [refundDisabledMetaData, locked]);
-
     const { i18n } = useCoreContext();
     const lineItems: readonly ILineItem[] = Object.freeze(transaction?.lineItems ?? EMPTY_ARRAY);
 
