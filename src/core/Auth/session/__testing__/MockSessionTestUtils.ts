@@ -1,7 +1,7 @@
-import { afterAll, afterEach, beforeAll, beforeEach, Mock, SpyInstance, TestContext, vi } from 'vitest';
-import { setupTimers } from '../../../../primitives/time/__testing__/fixtures';
+import { afterAll, afterEach, beforeAll, Mock, SpyInstance, TestContext, vi } from 'vitest';
+import { createAbortable } from '../../../../primitives/async/abortable';
 import { SetupEndpoint } from '../../../../types/api/endpoints';
-import { MAX_AGE_MS, SETUP_ENDPOINT_PATH } from '../constants';
+import { SETUP_ENDPOINT_PATH } from '../constants';
 import { API_VERSION } from '../../../Http/constants';
 import { EMPTY_OBJECT } from '../../../../utils';
 import { Core } from '../../../index';
@@ -12,9 +12,14 @@ import AuthSession from '../AuthSession';
 type SessionSubscribe = AuthSession['subscribe'];
 type SessionUnsubscribe = ReturnType<SessionSubscribe>;
 
-vi.mock('../constants', async () => {
-    const constants = await vi.importActual<typeof import('../constants')>('../constants');
-    return { ...constants, MAX_AGE_MS: 100 };
+const DeadlineAbortables = new WeakMap<any, ReturnType<typeof createAbortable>>();
+
+vi.mock('../AuthSessionSpecification', async () => {
+    const module = await vi.importActual<typeof import('../AuthSessionSpecification')>('../AuthSessionSpecification');
+    const AuthSessionSpecification = class extends module.default {
+        public readonly deadline = (session: any) => DeadlineAbortables.get(session)!.signal;
+    };
+    return { AuthSessionSpecification, default: AuthSessionSpecification };
 });
 
 export interface MockSessionContext {
@@ -29,7 +34,7 @@ export interface MockSessionContext {
 
 export type SetupEndpoints = Partial<SetupEndpoint>;
 
-export const LOADING_CONTEXT = 'http://mock.test.example';
+export const LOADING_CONTEXT = 'http://o_O.mocked';
 export const BASE_URL = `${LOADING_CONTEXT}/${API_VERSION}`;
 export const SETUP_ENDPOINT = `${BASE_URL}${SETUP_ENDPOINT_PATH}`;
 
@@ -80,8 +85,6 @@ export function createMockServerContext() {
     const mockServer = setupServer(http.post(SETUP_ENDPOINT, _serveEndpoints(EMPTY_OBJECT)));
 
     const initializeServer = () => {
-        setupTimers();
-        beforeEach(() => void vi.setSystemTime(0));
         beforeAll(() => mockServer.listen({ onUnhandledRequest: 'error' }));
         afterEach(() => mockServer.resetHandlers());
         afterAll(() => mockServer.close());
@@ -117,15 +120,24 @@ export function createMockServerContext() {
  * @param ctx Optional test context for which to augment with mock session context data
  */
 export async function createMockSessionContext<Ctx extends TestContext & MockSessionContext>(ctx?: Ctx): Promise<MockSessionContext> {
-    const onSessionCreate = () => ({ id: 'xxxx', token: 'xxxx' });
+    const abortable = createAbortable();
+    const authSession = { id: 'xxxx', token: 'xxxx' };
+    const onSessionCreate = () => authSession;
+
+    DeadlineAbortables.set(authSession, abortable);
+
     const core = new Core({ onSessionCreate });
     const session = new AuthSession();
 
     session.loadingContext = LOADING_CONTEXT;
     session.onSessionCreate = onSessionCreate;
 
-    const expireSession = (): void => void vi.advanceTimersByTimeAsync(MAX_AGE_MS!);
     const untilSessionRefreshed = createUntilSessionRefreshedFunc(session);
+
+    const expireSession = () => {
+        abortable.abort();
+        abortable.refresh();
+    };
 
     const refreshSession: MockSessionContext['refreshSession'] = async (...args) => {
         session.refresh(...args);

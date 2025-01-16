@@ -1,4 +1,3 @@
-// @vitest-environment jsdom
 import { beforeEach, describe, expect, it } from 'vitest';
 import sessionReady from './sessionReady';
 import { createMockServerContext, createMockSessionContext, MockSessionContext } from '../__testing__/MockSessionTestUtils';
