@@ -42,7 +42,7 @@ export async function getActiveSessionBalanceAccounts(session: AuthSession): Pro
     }
 }
 
-function createGetActiveSessionBalanceAccountsFactory(core: CoreInstance) {
+function createGetActiveSessionBalanceAccountsFactory({ session }: CoreInstance) {
     let currentBalanceAccounts = EMPTY_BALANCE_ACCOUNTS;
 
     const fetchBalanceAccounts = () => {
@@ -50,12 +50,22 @@ function createGetActiveSessionBalanceAccountsFactory(core: CoreInstance) {
         return getBalanceAccounts();
     };
 
-    const resetCurrentBalanceAccounts = () => void (currentBalanceAccounts = EMPTY_BALANCE_ACCOUNTS);
+    const resetCurrentBalanceAccounts = () => {
+        currentBalanceAccounts = EMPTY_BALANCE_ACCOUNTS;
+    };
 
     async function getBalanceAccounts() {
-        currentBalanceAccounts = (await getActiveSessionBalanceAccounts(core.session)) ?? undefined;
+        if (currentBalanceAccounts === EMPTY_BALANCE_ACCOUNTS) {
+            currentBalanceAccounts = (await getActiveSessionBalanceAccounts(session)) ?? undefined;
+        }
         return currentBalanceAccounts;
     }
+
+    session.subscribe(() => {
+        if (session.context.isExpired) {
+            resetCurrentBalanceAccounts();
+        }
+    });
 
     return Object.defineProperties(getBalanceAccounts as GetActiveSessionBalanceAccounts, {
         invalidate: { value: resetCurrentBalanceAccounts },

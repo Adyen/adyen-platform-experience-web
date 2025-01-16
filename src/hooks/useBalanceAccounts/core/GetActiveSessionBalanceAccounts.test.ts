@@ -1,4 +1,3 @@
-// @vitest-environment jsdom
 import { describe, expect, it } from 'vitest';
 import { BALANCE_ACCOUNTS } from '../../../../mocks/mock-data';
 import { MockSessionContext } from '../../../core/Auth/session/__testing__/MockSessionTestUtils';
@@ -68,4 +67,61 @@ describe('getActiveSessionBalanceAccounts', () => {
     });
 });
 
-describe.todo('getActiveSessionBalanceAccountsFactory', () => {});
+describe('getActiveSessionBalanceAccountsFactory', () => {
+    const { useBalanceAccounts } = setupBalanceAccountsTest();
+
+    it<MockSessionContext>('should return the same function for same core instance', ({ core }) => {
+        const getBalanceAccounts_1 = getActiveSessionBalanceAccountsFactory(core);
+        const getBalanceAccounts_2 = getActiveSessionBalanceAccountsFactory(core);
+        expect(getBalanceAccounts_1).toBe(getBalanceAccounts_2);
+    });
+
+    it<MockSessionContext>('should return function with expected methods', ({ core }) => {
+        const getBalanceAccounts = getActiveSessionBalanceAccountsFactory(core);
+
+        (['invalidate', 'refresh'] as const).forEach(method => {
+            expect(getBalanceAccounts).toHaveProperty(method);
+            expect(getBalanceAccounts[method]).toBeInstanceOf(Function);
+        });
+    });
+
+    it<MockSessionContext>('returned function should fetch balance accounts once per active session', async ({
+        core,
+        expireSession,
+        refreshSession,
+    }) => {
+        const getBalanceAccounts = getActiveSessionBalanceAccountsFactory(core);
+        let balanceAccounts: Awaited<ReturnType<typeof getBalanceAccounts>>;
+
+        const getCurrentBalanceAccounts = async () => {
+            const balanceAccounts = await getBalanceAccounts();
+            expect(balanceAccounts).toStrictEqual(BALANCE_ACCOUNTS);
+            return balanceAccounts;
+        };
+
+        const testExpectations = async () => {
+            let previousBalanceAccounts = balanceAccounts;
+
+            // fetched fresh from server (will begin a new session if necessary)
+            balanceAccounts = await getCurrentBalanceAccounts();
+
+            expect(balanceAccounts).not.toBe(previousBalanceAccounts); // fresh data
+
+            for (let i = 0; i < 3; i++) {
+                previousBalanceAccounts = balanceAccounts;
+                balanceAccounts = await getCurrentBalanceAccounts(); // skip server fetch
+                expect(balanceAccounts).toBe(previousBalanceAccounts); // same data
+            }
+        };
+
+        useBalanceAccounts(BALANCE_ACCOUNTS);
+
+        // begin new session
+        await refreshSession();
+        await testExpectations();
+
+        // expire current session
+        expireSession();
+        await testExpectations();
+    });
+});
