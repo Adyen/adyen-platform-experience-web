@@ -1,8 +1,10 @@
 import { afterAll, afterEach, beforeAll, Mock, SpyInstance, TestContext, vi } from 'vitest';
+import { createAbortable } from '../../../../primitives/async/abortable';
 import { SetupEndpoint } from '../../../../types/api/endpoints';
 import { SETUP_ENDPOINT_PATH } from '../constants';
 import { API_VERSION } from '../../../Http/constants';
 import { EMPTY_OBJECT } from '../../../../utils';
+import { Core } from '../../../index';
 import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
 import AuthSession from '../AuthSession';
@@ -10,16 +12,29 @@ import AuthSession from '../AuthSession';
 type SessionSubscribe = AuthSession['subscribe'];
 type SessionUnsubscribe = ReturnType<SessionSubscribe>;
 
+const DeadlineAbortables = new WeakMap<any, ReturnType<typeof createAbortable>>();
+
+vi.mock('../AuthSessionSpecification', async () => {
+    const module = await vi.importActual<typeof import('../AuthSessionSpecification')>('../AuthSessionSpecification');
+    const AuthSessionSpecification = class extends module.default {
+        public readonly deadline = (session: any) => DeadlineAbortables.get(session)!.signal;
+    };
+    return { AuthSessionSpecification, default: AuthSessionSpecification };
+});
+
 export interface MockSessionContext {
+    core: Core<any, any>;
+    expireSession(): void;
+    refreshSession(...args: Parameters<AuthSession['refresh']>): Promise<void>;
     session: AuthSession;
     subscribe: SpyInstance<Parameters<SessionSubscribe>, SessionUnsubscribe>;
     unsubscribes: Mock<Parameters<SessionUnsubscribe>, ReturnType<SessionUnsubscribe>>[];
-    untilRefreshed: (checkpointIntervalMs?: number) => Promise<void>;
+    untilSessionRefreshed(): Promise<void>;
 }
 
 export type SetupEndpoints = Partial<SetupEndpoint>;
 
-export const LOADING_CONTEXT = 'http://mock.test.example';
+export const LOADING_CONTEXT = 'https://o_O.mocked';
 export const BASE_URL = `${LOADING_CONTEXT}/${API_VERSION}`;
 export const SETUP_ENDPOINT = `${BASE_URL}${SETUP_ENDPOINT_PATH}`;
 
@@ -105,61 +120,88 @@ export function createMockServerContext() {
  * @param ctx Optional test context for which to augment with mock session context data
  */
 export async function createMockSessionContext<Ctx extends TestContext & MockSessionContext>(ctx?: Ctx): Promise<MockSessionContext> {
+    const abortable = createAbortable();
+    const authSession = { id: 'xxxx', token: 'xxxx' };
+    const onSessionCreate = () => authSession;
+
+    DeadlineAbortables.set(authSession, abortable);
+
+    const core = new Core({ onSessionCreate });
     const session = new AuthSession();
-    const untilRefreshed = createUntilRefreshedFunc(session);
 
     session.loadingContext = LOADING_CONTEXT;
-    session.onSessionCreate = () => ({ id: 'xxxx', token: 'xxxx' });
+    session.onSessionCreate = onSessionCreate;
+
+    const untilSessionRefreshed = createUntilSessionRefreshedFunc(session);
+
+    const expireSession = () => {
+        abortable.abort();
+        abortable.refresh();
+    };
+
+    const refreshSession: MockSessionContext['refreshSession'] = async (...args) => {
+        session.refresh(...args);
+        await untilSessionRefreshed();
+    };
 
     // wait for any pending session refresh
-    await untilRefreshed();
+    await untilSessionRefreshed();
+
+    // initially mark session as expired
+    expireSession();
 
     // mock session subscriptions
     const { subscribe, unsubscribes } = mockSessionSubscriptions(session);
 
+    // bind mock session to core instance
+    vi.spyOn(core, 'session', 'get').mockReturnValue(session);
+
     if (ctx !== undefined) {
+        ctx.core = core;
         ctx.session = session;
         ctx.subscribe = subscribe;
         ctx.unsubscribes = unsubscribes;
-        ctx.untilRefreshed = untilRefreshed;
+        ctx.expireSession = expireSession;
+        ctx.refreshSession = refreshSession;
+        ctx.untilSessionRefreshed = untilSessionRefreshed;
     }
 
-    return { session, subscribe, unsubscribes, untilRefreshed };
+    return { core, expireSession, refreshSession, session, subscribe, unsubscribes, untilSessionRefreshed };
 }
 
 /**
- * This higher-order function takes an `AuthSession` instance and returns an `untilRefreshed()` function, which when
- * called, returns a `promise` that only gets settled in either of these cases:
- *  - if there is no pending refresh for the `AuthSession` instance, then it gets settled immediately
+ * This higher-order function takes an `AuthSession` instance and returns an `untilSessionRefreshed()` function, which
+ * when called, returns a `promise` that only gets settled in either of these cases:
+ *  - if there is no pending refresh for the `AuthSession` instance, then it gets settled almost immediately
  *  - if there is a pending refresh, then it gets settled when the pending refresh is completed
- *
- * > While this is not the most precise way to immediately know when an auth session is done refreshing (since
- * that will require subscribing to the session), it should suffice for lots of test cases.
  *
  * @example
  * ```ts
  * const session = new AuthSession();
- * const untilRefreshed = createUntilRefreshedFunc(session);
+ * const untilSessionRefreshed = createUntilSessionRefreshedFunc(session);
  *
  * // wait for any pending session refresh
- * await untilRefreshed();
+ * await untilSessionRefreshed();
  * ```
  *
  * @param session The auth session instance for which to wait for refreshes
  */
-export function createUntilRefreshedFunc(session: AuthSession) {
-    let untilRefreshedPromise: Promise<void>;
+export function createUntilSessionRefreshedFunc(session: AuthSession) {
+    const subscribe = session.subscribe.bind(session);
+    let refreshedPromise: Promise<void>;
+    let unsubscribe: () => void;
 
-    return function untilRefreshed() {
-        if (untilRefreshedPromise === undefined) {
-            untilRefreshedPromise = new Promise<void>(resolve =>
-                (function _checkpoint() {
-                    session.context.refreshing ? setTimeout(_checkpoint, 50) : resolve();
-                })()
-            );
-            untilRefreshedPromise.finally(() => (untilRefreshedPromise = undefined!));
+    return function untilSessionRefreshed() {
+        if (refreshedPromise === undefined) {
+            refreshedPromise = new Promise<void>(resolve => {
+                unsubscribe = subscribe(() => void (session.context.refreshing || resolve()));
+            });
+            refreshedPromise.finally(() => {
+                refreshedPromise = undefined!;
+                unsubscribe?.();
+            });
         }
-        return untilRefreshedPromise;
+        return refreshedPromise;
     };
 }
 
@@ -198,7 +240,7 @@ export function createUntilRefreshedFunc(session: AuthSession) {
  * expect(subscribe).toHaveBeenLastCalledWith(sessionSubscriptionCallback);
  * expect(subscribe).toHaveLastReturnedWith(unsubscribe);
  *
- * expect(unsubscribe_0).toStrictEqual(unsubscribe);
+ * expect(unsubscribe_0).toBe(unsubscribe);
  * expect(unsubscribe_0).not.toHaveBeenCalled();
  *
  * // cancel the subscription
