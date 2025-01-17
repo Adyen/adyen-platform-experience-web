@@ -18,4 +18,6 @@ test('balance account should show correct ID', async ({ transactionDetailsPage, 
     const transactionDetails = transactionDetailsPage;
 
     await expect(transactionDetails.transactionValue).toHaveText('1VVF0D5V3709DX6D');
+    const copyIcon = page.getByTestId('copy-icon');
+    await expect(copyIcon).toBeVisible();
 });
