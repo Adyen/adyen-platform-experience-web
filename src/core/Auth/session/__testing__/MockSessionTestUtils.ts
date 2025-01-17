@@ -34,7 +34,7 @@ export interface MockSessionContext {
 
 export type SetupEndpoints = Partial<SetupEndpoint>;
 
-export const LOADING_CONTEXT = 'http://o_O.mocked';
+export const LOADING_CONTEXT = 'https://o_O.mocked';
 export const BASE_URL = `${LOADING_CONTEXT}/${API_VERSION}`;
 export const SETUP_ENDPOINT = `${BASE_URL}${SETUP_ENDPOINT_PATH}`;
 
@@ -172,7 +172,7 @@ export async function createMockSessionContext<Ctx extends TestContext & MockSes
 /**
  * This higher-order function takes an `AuthSession` instance and returns an `untilSessionRefreshed()` function, which
  * when called, returns a `promise` that only gets settled in either of these cases:
- *  - if there is no pending refresh for the `AuthSession` instance, then it gets settled immediately
+ *  - if there is no pending refresh for the `AuthSession` instance, then it gets settled almost immediately
  *  - if there is a pending refresh, then it gets settled when the pending refresh is completed
  *
  * @example
