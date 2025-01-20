@@ -5,8 +5,7 @@ import Icon from './Icon';
 import { CustomButtonObject, CustomDataObject, CustomIconObject, CustomLinkObject } from '../../../types';
 import Button from '../../Button';
 import { JSXInternal } from 'preact/src/jsx';
-import { ButtonVariant } from '../../Button/types';
-import AnchorButton from '../../AnchorButton/AnchorButton';
+import Link from '../../Link/Link';
 
 export const _isCustomDataObject = (item: any): item is CustomDataObject => {
     return !!item && typeof item === 'object' && 'value' in item;
@@ -93,15 +92,9 @@ export const TableCells = <
                                 </Button>
                             )}
                             {_isLinkType(data) && (
-                                <AnchorButton
-                                    variant={ButtonVariant.LINK}
-                                    className={data.details.classNames}
-                                    href={data.details.href}
-                                    target={data.details.target}
-                                    onClick={e => e.stopPropagation()}
-                                >
+                                <Link classNameModifiers={data.details.classNames} href={data.details.href} target={data.details.target}>
                                     {value}
-                                </AnchorButton>
+                                </Link>
                             )}
                         </div>
                     </DataGridCell>

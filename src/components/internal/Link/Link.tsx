@@ -1,14 +1,13 @@
 import Typography from '../Typography/Typography';
 import { TypographyElement, TypographyVariant } from '../Typography/types';
 import { LinkProps } from './types';
-import { PropsWithChildren } from 'preact/compat';
+import { PropsWithChildren, TargetedEvent } from 'preact/compat';
 import cx from 'classnames';
 import { useCallback } from 'preact/hooks';
-import { JSXInternal } from 'preact/src/jsx';
-import TargetedMouseEvent = JSXInternal.TargetedMouseEvent;
+import './Link.scss';
 
-function Link({ href, children, variant = 'default', truncate, target = '_self', ...props }: PropsWithChildren<LinkProps>) {
-    const onClick = useCallback((e: TargetedMouseEvent<HTMLAnchorElement>) => e.stopPropagation(), []);
+function Link({ href, children, variant = 'default', truncate, target = '_blank', ...props }: PropsWithChildren<LinkProps>) {
+    const onClick = useCallback((e: TargetedEvent<HTMLAnchorElement>) => e.stopPropagation(), []);
     return (
         <a
             className={cx('adyen-pe-link', {
