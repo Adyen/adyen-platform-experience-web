@@ -72,6 +72,17 @@ const config: PlaywrightTestConfig = {
             },
         },
         {
+            name: 'local-chrome-e2e',
+            testDir: 'tests/e2e',
+            use: {
+                // Use the pre-installed browser already on the machine
+                channel: 'chrome',
+                launchOptions: {
+                    args: process.env.PWDEBUG ? ['--auto-open-devtools-for-tabs'] : [],
+                },
+            },
+        },
+        {
             name: 'contract',
             testDir: 'tests/contract',
             use: {

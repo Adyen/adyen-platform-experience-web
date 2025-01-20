@@ -8,6 +8,7 @@ const meta: Meta<ElementProps<typeof TransactionDetails>> = { ...TransactionDeta
 export const Default: ElementStory<typeof TransactionDetails> = {
     name: 'Default',
     args: {
+        id: '1VVF0D5V3709DX6D',
         mockedApi: true,
     },
 };
