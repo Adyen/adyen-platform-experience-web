@@ -8,6 +8,7 @@ import StructuredList from '../../../../internal/StructuredList';
 import { StructuredListProps } from '../../../../internal/StructuredList/types';
 import { TranslationKey } from '../../../../../translations';
 import { isNullish } from '../../../../../utils';
+import Link from '../../../../internal/Link/Link';
 
 const TransactionDataProperties = () => {
     const { i18n } = useCoreContext();
@@ -79,9 +80,9 @@ const TransactionDataProperties = () => {
                 renderValue={(val, key, type, details) => {
                     if (type === 'link')
                         return (
-                            <a className="" href={details.href} target={details.target || '_blank'}>
+                            <Link href={details.href} target={details.target || '_blank'}>
                                 {val}
-                            </a>
+                            </Link>
                         );
                     return val;
                 }}
