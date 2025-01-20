@@ -1,10 +1,8 @@
-import { Core } from '../../../core';
 import { IBalanceAccountBase } from '../../../types';
 import { EMPTY_OBJECT, getMappedValue, isFunction } from '../../../utils';
 import sessionReady from '../../../core/Auth/session/utils/sessionReady';
 import AuthSession from '../../../core/Auth/session/AuthSession';
 
-type CoreInstance = Core<any, any>;
 type BalanceAccount = Readonly<IBalanceAccountBase>;
 type ActiveSessionBalanceAccounts = readonly BalanceAccount[] | undefined;
 
@@ -17,7 +15,7 @@ interface GetActiveSessionBalanceAccounts {
 export const ERR_BALANCE_ACCOUNTS_UNAVAILABLE = 'BALANCE_ACCOUNTS_UNAVAILABLE';
 export const ERR_GET_BALANCE_ACCOUNTS_UNAUTHORIZED = 'GET_BALANCE_ACCOUNTS_UNAUTHORIZED';
 
-const GetActiveSessionBalanceAccountsFactoriesMap = new WeakMap<CoreInstance, GetActiveSessionBalanceAccounts>();
+const GetActiveSessionBalanceAccountsFactoriesMap = new WeakMap<AuthSession, GetActiveSessionBalanceAccounts>();
 const EMPTY_BALANCE_ACCOUNTS: ActiveSessionBalanceAccounts = null!;
 
 /**
@@ -29,7 +27,7 @@ const EMPTY_BALANCE_ACCOUNTS: ActiveSessionBalanceAccounts = null!;
  * If the session expires while fetching the balance accounts is in progress and a new session refresh was already
  * initiated, then it waits for the pending refresh to be completed before attempting the fetch again.
  *
- * @param session
+ * @param session The `AuthSession` instance for which to get the list of balance accounts
  */
 export async function getActiveSessionBalanceAccounts(session: AuthSession): Promise<readonly BalanceAccount[]> {
     // Wait for any pending session refresh to be completed
@@ -61,7 +59,25 @@ export async function getActiveSessionBalanceAccounts(session: AuthSession): Pro
     }
 }
 
-function createGetActiveSessionBalanceAccountsFactory({ session }: CoreInstance) {
+/**
+ * Higher-order function that returns a shared `getBalanceAccounts()` function (with caching behavior) for the provided
+ * auth session. The returned `getBalanceAccounts` function, whenever called, will fetch the list the balance accounts
+ * for the associated auth session at least once per active session.
+ *
+ * By default, the returned `getBalanceAccounts` function will fetch balance accounts form the server the first time
+ * for an active session, after which it continues to return the cached result subsequently (until the session expires
+ * or the cache is invalidated).
+ *
+ * The returned `getBalanceAccounts` function exposes the following methods (for more control over caching behavior):
+ *  - `invalidate()`
+ *      > Clears the cached result, so that the next call to the function fetches directly from the server
+ *
+ *  - `refresh()`
+ *      > Always fetches directly from the server, and returns a fresh list of balance accounts
+ *
+ * @param session The `AuthSession` instance for which to get the cached getBalanceAccounts() function
+ */
+function createGetActiveSessionBalanceAccountsFactory(session: AuthSession) {
     let currentBalanceAccounts = EMPTY_BALANCE_ACCOUNTS;
 
     const fetchBalanceAccounts = () => {
@@ -92,8 +108,8 @@ function createGetActiveSessionBalanceAccountsFactory({ session }: CoreInstance)
     });
 }
 
-export function getActiveSessionBalanceAccountsFactory(core: CoreInstance) {
-    return getMappedValue(core, GetActiveSessionBalanceAccountsFactoriesMap, createGetActiveSessionBalanceAccountsFactory)!;
+export function getActiveSessionBalanceAccountsFactory(session: AuthSession) {
+    return getMappedValue(session, GetActiveSessionBalanceAccountsFactoriesMap, createGetActiveSessionBalanceAccountsFactory)!;
 }
 
 export default getActiveSessionBalanceAccounts;

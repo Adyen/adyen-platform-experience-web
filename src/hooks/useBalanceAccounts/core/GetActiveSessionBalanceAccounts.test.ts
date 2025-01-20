@@ -70,14 +70,14 @@ describe('getActiveSessionBalanceAccounts', () => {
 describe('getActiveSessionBalanceAccountsFactory', () => {
     const { useBalanceAccounts } = setupBalanceAccountsTest();
 
-    it<MockSessionContext>('should return the same function for same core instance', ({ core }) => {
-        const getBalanceAccounts_1 = getActiveSessionBalanceAccountsFactory(core);
-        const getBalanceAccounts_2 = getActiveSessionBalanceAccountsFactory(core);
+    it<MockSessionContext>('should return the same function for same core instance', ({ session }) => {
+        const getBalanceAccounts_1 = getActiveSessionBalanceAccountsFactory(session);
+        const getBalanceAccounts_2 = getActiveSessionBalanceAccountsFactory(session);
         expect(getBalanceAccounts_1).toBe(getBalanceAccounts_2);
     });
 
-    it<MockSessionContext>('should return function with expected methods', ({ core }) => {
-        const getBalanceAccounts = getActiveSessionBalanceAccountsFactory(core);
+    it<MockSessionContext>('should return function with expected methods', ({ session }) => {
+        const getBalanceAccounts = getActiveSessionBalanceAccountsFactory(session);
 
         (['invalidate', 'refresh'] as const).forEach(method => {
             expect(getBalanceAccounts).toHaveProperty(method);
@@ -86,11 +86,11 @@ describe('getActiveSessionBalanceAccountsFactory', () => {
     });
 
     it<MockSessionContext>('returned function should fetch balance accounts once per active session', async ({
-        core,
         expireSession,
         refreshSession,
+        session,
     }) => {
-        const getBalanceAccounts = getActiveSessionBalanceAccountsFactory(core);
+        const getBalanceAccounts = getActiveSessionBalanceAccountsFactory(session);
         let balanceAccounts: Awaited<ReturnType<typeof getBalanceAccounts>>;
 
         const getCurrentBalanceAccounts = async () => {
@@ -125,8 +125,11 @@ describe('getActiveSessionBalanceAccountsFactory', () => {
         await testExpectations();
     });
 
-    it<MockSessionContext>('invalidate() method should cause to fetch balance accounts afresh from the server', async ({ core, refreshSession }) => {
-        const getBalanceAccounts = getActiveSessionBalanceAccountsFactory(core);
+    it<MockSessionContext>('invalidate() method should cause to fetch balance accounts afresh from the server', async ({
+        refreshSession,
+        session,
+    }) => {
+        const getBalanceAccounts = getActiveSessionBalanceAccountsFactory(session);
         let balanceAccounts: Awaited<ReturnType<typeof getBalanceAccounts>>;
 
         const getCurrentBalanceAccounts = async () => {
@@ -158,11 +161,11 @@ describe('getActiveSessionBalanceAccountsFactory', () => {
     });
 
     it<MockSessionContext>('refresh() method should always fetch balance accounts afresh from the server', async ({
-        core,
         expireSession,
         refreshSession,
+        session,
     }) => {
-        const getBalanceAccounts = getActiveSessionBalanceAccountsFactory(core);
+        const getBalanceAccounts = getActiveSessionBalanceAccountsFactory(session);
         let balanceAccounts: Awaited<ReturnType<typeof getBalanceAccounts>>;
 
         const getCurrentBalanceAccounts = async () => {
