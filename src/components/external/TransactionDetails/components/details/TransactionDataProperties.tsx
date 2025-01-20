@@ -9,6 +9,8 @@ import { StructuredListProps } from '../../../../internal/StructuredList/types';
 import { TranslationKey } from '../../../../../translations';
 import { isNullish } from '../../../../../utils';
 import Link from '../../../../internal/Link/Link';
+import { TypographyVariant } from '../../../../internal/Typography/types';
+import Typography from '../../../../internal/Typography/Typography';
 
 const TransactionDataProperties = () => {
     const { i18n } = useCoreContext();
@@ -42,7 +44,7 @@ const TransactionDataProperties = () => {
 
             // custom data
             ...(Object.entries(extraFields || {})
-                .filter(([key]) => !TX_DETAILS_RESERVED_FIELDS_SET.has(key as any))
+                .filter(([key, value]) => !TX_DETAILS_RESERVED_FIELDS_SET.has(key as any) && _isCustomDataObject(value) && value.type !== 'button')
                 .map(([key, value]) => ({
                     key: key as TranslationKey,
                     value: _isCustomDataObject(value) ? value.value : value,
@@ -84,7 +86,7 @@ const TransactionDataProperties = () => {
                                 {val}
                             </Link>
                         );
-                    return val;
+                    return <Typography variant={TypographyVariant.BODY}> {val} </Typography>;
                 }}
             />
         );
