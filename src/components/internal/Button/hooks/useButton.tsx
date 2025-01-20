@@ -47,7 +47,7 @@ const useButton = (
     const allProps = useMemo(
         () => ({
             ...props,
-            className: cx(iconButton ? `${ICON_BUTTON_CLASSNAME} ${classes}` : classes, {
+            className: cx(classes, {
                 [ICON_BUTTON_CLASSNAME]: iconButton,
                 [BUTTON_CONDENSED_CLASSNAME]: condensed,
                 [BUTTON_FULL_WIDTH_CLASSNAME]: fullWidth,
