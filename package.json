@@ -67,6 +67,7 @@
     "test:coverage": "vitest run --config vite.config.ts --coverage",
     "test:integration": "playwright test --project local-chrome",
     "test:integration:debug": "cross-env PWDEBUG=console playwright test --debug --project local-chrome",
+    "test:e2e": "playwright test --project local-chrome-e2e",
     "type-check": "tsc --preserveWatchOutput",
     "types:watch": "tsc --preserveWatchOutput --watch && tsc --project tsconfig-build.json --watch",
     "format:all": "prettier --write 'src/**/*.{ts,js,css, scss, html}' && prettier --write 'src/**/*.{ts,js,css, scss, html}'",

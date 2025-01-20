@@ -18,7 +18,6 @@ export const TransactionDetailsMeta: Meta<ElementProps<typeof TransactionDetails
         hideTitle: false,
         onContactSupport: () => {},
         component: TransactionDetails,
-        id: '1VVF0D5V3709DX6D',
     },
     parameters: {
         controls: {
