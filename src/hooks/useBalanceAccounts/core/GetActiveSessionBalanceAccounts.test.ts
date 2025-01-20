@@ -79,7 +79,7 @@ describe('getActiveSessionBalanceAccountsFactory', () => {
     it<MockSessionContext>('should return function with expected methods', ({ session }) => {
         const getBalanceAccounts = getActiveSessionBalanceAccountsFactory(session);
 
-        (['invalidate', 'refresh'] as const).forEach(method => {
+        (['fresh', 'reset'] as const).forEach(method => {
             expect(getBalanceAccounts).toHaveProperty(method);
             expect(getBalanceAccounts[method]).toBeInstanceOf(Function);
         });
@@ -125,10 +125,40 @@ describe('getActiveSessionBalanceAccountsFactory', () => {
         await testExpectations();
     });
 
-    it<MockSessionContext>('invalidate() method should cause to fetch balance accounts afresh from the server', async ({
+    it<MockSessionContext>('fresh() method should always fetch balance accounts afresh from the server', async ({
+        expireSession,
         refreshSession,
         session,
     }) => {
+        const getBalanceAccounts = getActiveSessionBalanceAccountsFactory(session);
+        let balanceAccounts: Awaited<ReturnType<typeof getBalanceAccounts>>;
+
+        const getCurrentBalanceAccounts = async () => {
+            const balanceAccounts = await getBalanceAccounts.fresh();
+            expect(balanceAccounts).toStrictEqual(BALANCE_ACCOUNTS);
+            return balanceAccounts;
+        };
+
+        const testExpectations = async () => {
+            for (let i = 0; i < 3; i++) {
+                const previousBalanceAccounts = balanceAccounts;
+                balanceAccounts = await getCurrentBalanceAccounts(); // fetch from server (always)
+                expect(balanceAccounts).not.toBe(previousBalanceAccounts); // fresh data
+            }
+        };
+
+        useBalanceAccounts(BALANCE_ACCOUNTS);
+
+        // begin new session
+        await refreshSession();
+        await testExpectations();
+
+        // expire current session
+        expireSession();
+        await testExpectations();
+    });
+
+    it<MockSessionContext>('reset() method should cause to fetch balance accounts afresh from the server', async ({ refreshSession, session }) => {
         const getBalanceAccounts = getActiveSessionBalanceAccountsFactory(session);
         let balanceAccounts: Awaited<ReturnType<typeof getBalanceAccounts>>;
 
@@ -154,42 +184,9 @@ describe('getActiveSessionBalanceAccountsFactory', () => {
         await testExpectations();
 
         for (let i = 0; i < 3; i++) {
-            // invalidate and fetch again
-            getBalanceAccounts.invalidate();
+            // reset and fetch again
+            getBalanceAccounts.reset();
             await testExpectations();
         }
-    });
-
-    it<MockSessionContext>('refresh() method should always fetch balance accounts afresh from the server', async ({
-        expireSession,
-        refreshSession,
-        session,
-    }) => {
-        const getBalanceAccounts = getActiveSessionBalanceAccountsFactory(session);
-        let balanceAccounts: Awaited<ReturnType<typeof getBalanceAccounts>>;
-
-        const getCurrentBalanceAccounts = async () => {
-            const balanceAccounts = await getBalanceAccounts.refresh();
-            expect(balanceAccounts).toStrictEqual(BALANCE_ACCOUNTS);
-            return balanceAccounts;
-        };
-
-        const testExpectations = async () => {
-            for (let i = 0; i < 3; i++) {
-                const previousBalanceAccounts = balanceAccounts;
-                balanceAccounts = await getCurrentBalanceAccounts(); // fetch from server (always)
-                expect(balanceAccounts).not.toBe(previousBalanceAccounts); // fresh data
-            }
-        };
-
-        useBalanceAccounts(BALANCE_ACCOUNTS);
-
-        // begin new session
-        await refreshSession();
-        await testExpectations();
-
-        // expire current session
-        expireSession();
-        await testExpectations();
     });
 });

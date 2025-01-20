@@ -1,5 +1,5 @@
 import { IBalanceAccountBase } from '../../../types';
-import { EMPTY_OBJECT, getMappedValue, isFunction } from '../../../utils';
+import { EMPTY_ARRAY, EMPTY_OBJECT, getMappedValue, isFunction } from '../../../utils';
 import sessionReady from '../../../core/Auth/session/utils/sessionReady';
 import AuthSession from '../../../core/Auth/session/AuthSession';
 
@@ -7,9 +7,11 @@ type BalanceAccount = Readonly<IBalanceAccountBase>;
 type ActiveSessionBalanceAccounts = readonly BalanceAccount[] | undefined;
 
 interface GetActiveSessionBalanceAccounts {
-    invalidate(): void;
-    refresh(): Promise<ActiveSessionBalanceAccounts>;
     (): Promise<ActiveSessionBalanceAccounts>;
+    get accounts(): NonNullable<ActiveSessionBalanceAccounts>;
+    get error(): Error | undefined;
+    fresh(): Promise<ActiveSessionBalanceAccounts>;
+    reset(): void;
 }
 
 export const ERR_BALANCE_ACCOUNTS_UNAVAILABLE = 'BALANCE_ACCOUNTS_UNAVAILABLE';
@@ -60,51 +62,71 @@ export async function getActiveSessionBalanceAccounts(session: AuthSession): Pro
 }
 
 /**
- * Higher-order function that returns a shared `getBalanceAccounts()` function (with caching behavior) for the provided
- * auth session. The returned `getBalanceAccounts` function, whenever called, will fetch the list the balance accounts
- * for the associated auth session at least once per active session.
+ * Higher-order function that returns a shared `GetActiveSessionBalanceAccounts` function (with caching behavior) for
+ * the specified auth session. The returned `getBalanceAccounts` function, whenever called, will fetch the list the
+ * balance accounts for the associated auth session at least once per active session.
  *
- * By default, the returned `getBalanceAccounts` function will fetch balance accounts form the server the first time
- * for an active session, after which it continues to return the cached result subsequently (until the session expires
- * or the cache is invalidated).
+ * By default, the returned `GetActiveSessionBalanceAccounts` function will fetch balance accounts form the server the
+ * first time for an active session, after which it continues to return the cached result (until the session expires or
+ * the cache is invalidated).
  *
- * The returned `getBalanceAccounts` function exposes the following methods (for more control over caching behavior):
- *  - `invalidate()`
- *      > Clears the cached result, so that the next call to the function fetches directly from the server
+ * The returned `GetActiveSessionBalanceAccounts` function exposes the following properties and methods:
+ *  - `accounts`
+ *      > Readonly property for getting the array of balance accounts last fetched from the server. Accessing this
+ *      property always returns an array (which can be empty, especially in cases when there are no balance accounts).
  *
- *  - `refresh()`
- *      > Always fetches directly from the server, and returns a fresh list of balance accounts
+ *  - `error`
+ *      > Readonly property for getting the latest error that occurred as a result of fetching from the server. This
+ *      property is initially `null`, and is reset to this initial `null` value after every successful fetch.
  *
- * @param session The `AuthSession` instance for which to get the cached getBalanceAccounts() function
+ *  - `fresh()`
+ *      > Always fetches directly from the server, and returns a fresh list of balance accounts.
+ *
+ *  - `reset()`
+ *      > Clears the cached result, so that the next call to the function fetches directly from the server. This method
+ *      is idempotent in behavior, since calling it multiple times has only the same effect.
+ *
+ * @param session The `AuthSession` instance for which to get its associated `GetActiveSessionBalanceAccounts` function
  */
 function createGetActiveSessionBalanceAccountsFactory(session: AuthSession) {
-    let currentBalanceAccounts = EMPTY_BALANCE_ACCOUNTS;
+    let cachedBalanceAccounts: ActiveSessionBalanceAccounts = EMPTY_BALANCE_ACCOUNTS;
+    let currentBalanceAccounts: NonNullable<ActiveSessionBalanceAccounts> = EMPTY_ARRAY;
+    let currentError: Error | null = null;
 
     const fetchBalanceAccounts = () => {
-        resetCurrentBalanceAccounts();
+        resetCachedBalanceAccounts();
         return getBalanceAccounts();
     };
 
-    const resetCurrentBalanceAccounts = () => {
-        currentBalanceAccounts = EMPTY_BALANCE_ACCOUNTS;
+    const resetCachedBalanceAccounts = () => {
+        cachedBalanceAccounts = EMPTY_BALANCE_ACCOUNTS;
     };
 
     async function getBalanceAccounts() {
-        if (currentBalanceAccounts === EMPTY_BALANCE_ACCOUNTS) {
-            currentBalanceAccounts = (await getActiveSessionBalanceAccounts(session)) ?? undefined;
+        try {
+            if (cachedBalanceAccounts === EMPTY_BALANCE_ACCOUNTS) {
+                cachedBalanceAccounts = (await getActiveSessionBalanceAccounts(session)) ?? undefined;
+                currentBalanceAccounts = cachedBalanceAccounts ?? EMPTY_ARRAY;
+                currentError = null;
+            }
+        } catch (ex) {
+            currentError = ex as Error;
+            throw ex;
         }
-        return currentBalanceAccounts;
+        return cachedBalanceAccounts;
     }
 
     session.subscribe(() => {
         if (session.context.isExpired) {
-            resetCurrentBalanceAccounts();
+            resetCachedBalanceAccounts();
         }
     });
 
     return Object.defineProperties(getBalanceAccounts as GetActiveSessionBalanceAccounts, {
-        invalidate: { value: resetCurrentBalanceAccounts },
-        refresh: { value: fetchBalanceAccounts },
+        accounts: { get: () => currentBalanceAccounts },
+        error: { get: () => currentError },
+        fresh: { value: fetchBalanceAccounts },
+        reset: { value: resetCachedBalanceAccounts },
     });
 }
 
