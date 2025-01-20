@@ -20,12 +20,27 @@ export const ERR_GET_BALANCE_ACCOUNTS_UNAUTHORIZED = 'GET_BALANCE_ACCOUNTS_UNAUT
 const GetActiveSessionBalanceAccountsFactoriesMap = new WeakMap<CoreInstance, GetActiveSessionBalanceAccounts>();
 const EMPTY_BALANCE_ACCOUNTS: ActiveSessionBalanceAccounts = null!;
 
+/**
+ * Utility for fetching the list of balance accounts for the active session fresh from the backend server.
+ *
+ * If the session is expired (currently inactive), it will first initiate a session refresh or wait for any pending
+ * refresh before attempting to fetch balance accounts from the server (leveraging the `sessionReady()` utility).
+ *
+ * If the session expires while fetching the balance accounts is in progress and a new session refresh was already
+ * initiated, then it waits for the pending refresh to be completed before attempting the fetch again.
+ *
+ * @param session
+ */
 export async function getActiveSessionBalanceAccounts(session: AuthSession): Promise<readonly BalanceAccount[]> {
+    // Wait for any pending session refresh to be completed
+    // Initiates a refresh if session is already expired
     await sessionReady(session);
 
     const { getBalanceAccounts } = session.context.endpoints;
 
     if (!isFunction(getBalanceAccounts)) {
+        // The `getBalanceAccounts` endpoint was not included in the setup response
+        // The user associated with the session does not have sufficient roles/permissions
         throw new Error(ERR_GET_BALANCE_ACCOUNTS_UNAUTHORIZED);
     }
 
@@ -34,10 +49,14 @@ export async function getActiveSessionBalanceAccounts(session: AuthSession): Pro
         return Object.freeze(balanceAccounts.map(Object.freeze) as BalanceAccount[]);
     } catch {
         if (session.context.refreshing) {
-            // try again after pending session refresh
+            // Could be the case that session got expired while the fetch is in progress,
+            // and a new session refresh was already initiated by some other part of the system.
+            // Try again after the pending session refresh.
             return getActiveSessionBalanceAccounts(session);
         }
 
+        // Could not obtain balance accounts data from the server
+        // Possibly as a result of malformed data, network errors, etc.
         throw new Error(ERR_BALANCE_ACCOUNTS_UNAVAILABLE);
     }
 }
