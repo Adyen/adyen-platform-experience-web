@@ -6,6 +6,7 @@ import { CustomButtonObject, CustomDataObject, CustomIconObject, CustomLinkObjec
 import Button from '../../Button';
 import { JSXInternal } from 'preact/src/jsx';
 import Link from '../../Link/Link';
+import { ButtonVariant } from '../../Button/types';
 
 export const _isCustomDataObject = (item: any): item is CustomDataObject => {
     return !!item && typeof item === 'object' && 'value' in item;
@@ -87,7 +88,7 @@ export const TableCells = <
                             )}
                             {type === 'text' && <div className={data?.details?.classNames}>{value}</div>}
                             {type === 'button' && (
-                                <Button className={data.details.classNames} onClick={buttonCallback}>
+                                <Button className={data.details.classNames} onClick={buttonCallback} variant={ButtonVariant.SECONDARY}>
                                     {value}
                                 </Button>
                             )}

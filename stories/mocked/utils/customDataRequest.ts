@@ -1,4 +1,4 @@
-import { ITransaction } from '../../../src';
+import { IReport, ITransaction } from '../../../src';
 
 const products = ['Coffee', 'Muffin', 'Pie', 'Tea', 'Latte', 'Brownie', 'Iced latte', 'Bubble tea', 'Apple pie', 'Iced tea'];
 const getProductById = (id: string) => {
@@ -58,4 +58,27 @@ const txMatcher = (data: ITransaction[]) =>
 export const getMyCustomData = async (data: ITransaction[]) => {
     const customData = txMatcher(data);
     return customData;
+};
+
+export const getCustomReportsData = async (data: IReport[]) => {
+    return data.map(({ createdAt, type }, index) => {
+        return {
+            createdAt,
+            type,
+            _summary: {
+                type: 'link',
+                value: 'Summary',
+                details: {
+                    href: `http://localhost:3031/?path=/story/mocked-reports-overview--custom-columns&summary=${index}`,
+                },
+            },
+            _sendEmail: {
+                type: 'button',
+                value: 'Send email',
+                details: {
+                    action: () => alert('Action'),
+                },
+            },
+        } as const;
+    });
 };

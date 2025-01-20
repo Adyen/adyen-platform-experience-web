@@ -22,9 +22,13 @@ import { getLabel } from '../../../../utils/getLabel';
 import { mediaQueries, useResponsiveViewport } from '../../../../../hooks/useResponsiveViewport';
 import { BASE_CLASS, DATE_TYPE_CLASS, DATE_TYPE_DATE_SECTION_CLASS, DISABLED_BUTTONS_TIMEOUT } from './constants';
 import './ReportsTable.scss';
+import { CustomColumn } from '../../../../types';
+import { StringWithAutocompleteOptions } from '../../../../../utils/types';
+import { useTableColumns } from '../../../../../hooks/useTableColumns';
+import { getCurrencyCode } from '../../../../../core/Localization/amount/amount-util';
 
 const FIELDS = ['createdAt', 'dateAndReportType', 'reportType', 'reportFile'] as const;
-type FieldsType = (typeof FIELDS)[number];
+export type ReportsTableFields = (typeof FIELDS)[number];
 
 export interface ReportsTableProps extends WithPaginationLimitSelection<PaginationProps> {
     balanceAccountId: string | undefined;
@@ -33,6 +37,7 @@ export interface ReportsTableProps extends WithPaginationLimitSelection<Paginati
     onContactSupport?: () => void;
     showPagination: boolean;
     data: IReport[] | undefined;
+    customColumns?: CustomColumn<StringWithAutocompleteOptions<ReportsTableFields>>[] | StringWithAutocompleteOptions<ReportsTableFields>[];
 }
 
 export const ReportsTable: FC<ReportsTableProps> = ({
@@ -42,6 +47,7 @@ export const ReportsTable: FC<ReportsTableProps> = ({
     onContactSupport,
     showPagination,
     data,
+    customColumns,
     ...paginationProps
 }) => {
     const { i18n } = useCoreContext();
@@ -53,7 +59,7 @@ export const ReportsTable: FC<ReportsTableProps> = ({
     const isSmAndUpViewport = useResponsiveViewport(mediaQueries.up.sm);
     const isXsAndDownViewport = useResponsiveViewport(mediaQueries.down.xs);
 
-    const fieldsVisibility: Partial<Record<FieldsType, boolean>> = useMemo(
+    const fieldsVisibility: Partial<Record<ReportsTableFields, boolean>> = useMemo(
         () => ({
             dateAndReportType: isXsAndDownViewport,
             createdAt: isSmAndUpViewport,
@@ -63,7 +69,7 @@ export const ReportsTable: FC<ReportsTableProps> = ({
         [isXsAndDownViewport, isSmAndUpViewport]
     );
 
-    const columns = useMemo(
+    /*    const columns = useMemo(
         () =>
             FIELDS.map(key => {
                 const label = i18n.get(getLabel(key));
@@ -75,7 +81,21 @@ export const ReportsTable: FC<ReportsTableProps> = ({
                 } as const;
             }),
         [i18n, data, fieldsVisibility]
-    );
+    );*/
+
+    const columns = useTableColumns({
+        fields: FIELDS,
+        customColumns,
+        columnConfig: useMemo(
+            () => ({
+                dateAndReportType: { visible: isXsAndDownViewport },
+                createdAt: { visible: isSmAndUpViewport },
+                reportType: { visible: isSmAndUpViewport },
+                reportFile: { position: 'right' },
+            }),
+            [isSmAndUpViewport, isXsAndDownViewport]
+        ),
+    });
 
     const removeAlert = useCallback(() => {
         setAlert(null);

@@ -1,8 +1,10 @@
 import UIElement from './external/UIElement/UIElement';
 import { Core, onErrorHandler } from '../core';
 import { TransactionsTableFields } from './external/TransactionsOverview/components/TransactionsTable/types';
-import type { ITransaction } from '../types';
+import { IReport, ITransaction } from '../types';
 import { AnchorHTMLAttributes } from 'preact/compat';
+import { ReportsTableFields } from './external/ReportsOverview/components/ReportsTable/ReportsTable';
+import { StringWithAutocompleteOptions } from '../utils/types';
 
 export const enum InteractionKeyCode {
     ARROW_DOWN = 'ArrowDown',
@@ -102,8 +104,6 @@ interface _DataOverviewComponentProps {
     showDetails?: boolean;
 }
 
-export type ReportsOverviewComponentProps = Omit<_DataOverviewComponentProps, 'showDetails'>;
-
 export type CustomDataObject = CustomIconObject | CustomTextObject | CustomLinkObject | CustomButtonObject;
 
 interface BaseCustomObject {
@@ -142,6 +142,10 @@ interface _CustomizableDataOverview<Columns extends string, DataRetrieved> {
     columns?: CustomColumn<Columns>[] | Columns[];
     onDataRetrieved?: OnDataRetrievedCallback<DataRetrieved>;
 }
+
+export interface ReportsOverviewComponentProps
+    extends Omit<_DataOverviewComponentProps, 'showDetails'>,
+        _CustomizableDataOverview<StringWithAutocompleteOptions<ReportsTableFields>, IReport> {}
 
 export interface TransactionOverviewComponentProps
     extends _DataOverviewComponentProps,
