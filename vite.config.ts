@@ -16,8 +16,8 @@ import svgr from 'vite-plugin-svgr';
 const currentVersion = version();
 const externalDependencies = Object.keys(packageJson.dependencies);
 
-const playgroundDir = resolve(__dirname, 'playground/pages');
-const demoPlaygroundDir = resolve(__dirname, 'playground');
+const playgroundDir = resolve(__dirname, 'demo/pages');
+const demoPlaygroundDir = resolve(__dirname, 'demo');
 const isDevMode = (mode: any) => ['mocked', 'development', 'local-env'].includes(mode);
 
 async function getPlaygroundEntrypoints() {

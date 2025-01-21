@@ -1,0 +1,12 @@
+@import 'normalize.css/normalize.css';
+@import '@adyen/adyen-platform-experience-web/adyen-platform-experience-web.css';
+
+*,
+::before,
+::after {
+    box-sizing: border-box;
+}
+
+body {
+    padding: 50px;
+}

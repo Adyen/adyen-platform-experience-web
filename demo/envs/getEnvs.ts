@@ -22,7 +22,7 @@ const parseEnv = (env: Record<string, string | undefined>) => ({
             maxAgeMs: env.SESSION_MAX_AGE_MS,
         },
     },
-    playground: {
+    demo: {
         host: env.PLAYGROUND_HOST ?? '',
         port: parseInt(env.PLAYGROUND_PORT ?? ''),
         clientKey: env.API_KEY ?? '',
