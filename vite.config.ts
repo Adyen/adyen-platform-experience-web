@@ -3,6 +3,7 @@ import { defineConfig, type PluginOption } from 'vite';
 import { resolve } from 'node:path';
 import version from './config/version';
 import packageJson from './package.json';
+import demoPackageJson from './demo/package.json';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { visualizer } from 'rollup-plugin-visualizer';
 import { lstat, readdir } from 'node:fs/promises';
@@ -15,6 +16,7 @@ import { realApiProxies } from './endpoints/realApiProxies';
 import svgr from 'vite-plugin-svgr';
 const currentVersion = version();
 const externalDependencies = Object.keys(packageJson.dependencies);
+const externalDemoDependencies = Object.keys(demoPackageJson.dependencies);
 
 const playgroundDir = resolve(__dirname, 'demo/pages');
 const demoPlaygroundDir = resolve(__dirname, 'demo');
@@ -61,6 +63,7 @@ export default defineConfig(async ({ mode }) => {
                       target: 'esnext',
                       rollupOptions: {
                           input: await getPlaygroundEntrypoints(),
+                          external: externalDemoDependencies,
                       },
                       minify: false,
                   }

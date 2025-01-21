@@ -3,7 +3,7 @@
 
 [context."chore/level-access-demo"]
     [context."chore/level-access-demo".build]
-        command = "npm run build && cd demo && npm install && cd .. && npm run build:demo"
+        command = "npm run build && npm run build:demo"
         publish = ".demo"
 
 [[edge_functions]]
