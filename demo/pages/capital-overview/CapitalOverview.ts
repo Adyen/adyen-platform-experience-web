@@ -1,5 +1,4 @@
-import { AdyenPlatformExperience, all_locales, CapitalOverview } from '@adyen/adyen-platform-experience-web';
-
+import { AdyenPlatformExperience, all_locales, CapitalOverview } from '../../../src';
 import '../../assets/style/reset.scss';
 import sessionRequest from '../../utils/sessionRequest';
 

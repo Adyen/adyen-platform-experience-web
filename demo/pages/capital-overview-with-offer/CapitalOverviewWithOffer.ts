@@ -1,8 +1,6 @@
-import { AdyenPlatformExperience, all_locales, CapitalOverview } from '@adyen/adyen-platform-experience-web';
+import { AdyenPlatformExperience, all_locales, CapitalOverview } from '../../../src';
 import '../../assets/style/reset.scss';
 import sessionRequest from '../../utils/sessionRequest';
-import '@adyen/adyen-platform-experience-web/adyen-platform-experience-web.css';
-import '@adyen/adyen-platform-experience-web/adyen-platform-experience-web.css';
 
 const core = await AdyenPlatformExperience({
     availableTranslations: [all_locales],

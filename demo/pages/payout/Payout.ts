@@ -1,7 +1,6 @@
-import { AdyenPlatformExperience, PayoutDetails, all_locales } from '@adyen/adyen-platform-experience-web';
+import { AdyenPlatformExperience, PayoutDetails, all_locales } from '../../../src';
 import '../../assets/style/reset.scss';
 import sessionRequest from '../../utils/sessionRequest';
-import '@adyen/adyen-platform-experience-web/adyen-platform-experience-web.css';
 
 const DEFAULT_PAYOUT_DATE = '2024-11-20T10:00:00.000Z';
 const DEFAULT_PAYOUT_ID = 'BA32CKZ223227T5L6834T3LBX';

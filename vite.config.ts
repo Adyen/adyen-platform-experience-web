@@ -16,7 +16,6 @@ import { realApiProxies } from './endpoints/realApiProxies';
 import svgr from 'vite-plugin-svgr';
 const currentVersion = version();
 const externalDependencies = Object.keys(packageJson.dependencies);
-const externalDemoDependencies = Object.keys(demoPackageJson.dependencies);
 
 const playgroundDir = resolve(__dirname, 'demo/pages');
 const demoPlaygroundDir = resolve(__dirname, 'demo');
@@ -63,7 +62,6 @@ export default defineConfig(async ({ mode }) => {
                       target: 'esnext',
                       rollupOptions: {
                           input: await getPlaygroundEntrypoints(),
-                          external: externalDemoDependencies,
                       },
                       minify: false,
                   }

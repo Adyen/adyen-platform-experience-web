@@ -1,7 +1,6 @@
-import { AdyenPlatformExperience, TransactionDetails, all_locales } from '@adyen/adyen-platform-experience-web';
+import { AdyenPlatformExperience, TransactionDetails, all_locales } from '../../../src';
 import '../../assets/style/reset.scss';
 import sessionRequest from '../../utils/sessionRequest';
-import '@adyen/adyen-platform-experience-web/adyen-platform-experience-web.css';
 
 const DEFAULT_TRANSACTION_ID = 'EVJN42944223223N5LX43T4BGS52CQEUR';
 
