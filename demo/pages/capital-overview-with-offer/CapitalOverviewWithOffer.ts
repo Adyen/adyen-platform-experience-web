@@ -15,7 +15,12 @@ enableServerInMockedMode()
 
         const capitalOverviewComponent = new CapitalOverview({
             core,
-            onFundsRequest: () => {},
+            onFundsRequest: () => {
+                let currentUrl = new URL(window.location.href);
+                currentUrl.searchParams.set('alert', 'true');
+                history.pushState({}, '', currentUrl);
+                window.location.replace(currentUrl);
+            },
             onContactSupport: () => {},
         });
 

@@ -114,6 +114,11 @@ export const capitalMock = [
             });
         }
 
+        const urlSearch = new URLSearchParams(window.location.search).get('alert');
+        if (url === '/pages/capital-overview-with-offer/' && urlSearch === 'true') {
+            return HttpResponse.json({ data: [PENDING_GRANT] });
+        }
+
         return HttpResponse.json({
             data: [],
         });
