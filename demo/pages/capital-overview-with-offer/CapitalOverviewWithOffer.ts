@@ -6,7 +6,7 @@ const core = await AdyenPlatformExperience({
     availableTranslations: [all_locales],
     environment: 'test',
     async onSessionCreate() {
-        return await sessionRequest({ accountHolderId: process.env.SESSION_ACCOUNT_HOLDER_WITH_OFFER });
+        return await sessionRequest({ accountHolderId: 'AH3294C223227N5KXMG7K758H' });
     },
 });
 
