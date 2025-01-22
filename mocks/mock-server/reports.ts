@@ -69,6 +69,24 @@ export const reportsMock = [
         const url = new URL(request.url);
         const balanceAccountId = url.searchParams.get('balanceAccountId');
         const createdAt = url.searchParams.get('createdAt');
+        if (balanceAccountId === 'BA32272223222B5CTDQPM6W2G' && createdAt === '2024-12-31T15:58:50.992Z') {
+            return new HttpResponse(
+                JSON.stringify({
+                    type: 'https://docs.adyen.com/errors/forbidden',
+                    errorCode: '999_429_001',
+                    title: 'Forbidden',
+                    detail: 'Balance Account does not belong to Account Holder',
+                    requestId: '769ac4ce59f0f159ad672d38d3291e91',
+                    status: 429,
+                }),
+                {
+                    status: 429,
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                }
+            );
+        }
         const reportDate = new Date(createdAt || Date.now()).toISOString().split('T', 1)[0]?.split('-');
         const filename = `${['balanceaccount', 'payout', 'report'].concat(reportDate!).filter(Boolean).join('_')}.csv`;
 

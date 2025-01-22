@@ -18,8 +18,7 @@ enableServerInMockedMode()
             onFundsRequest: () => {
                 let currentUrl = new URL(window.location.href);
                 currentUrl.searchParams.set('alert', 'true');
-                history.pushState({}, '', currentUrl);
-                window.location.replace(currentUrl);
+                window.location.replace(currentUrl.toString());
             },
             onContactSupport: () => {},
         });

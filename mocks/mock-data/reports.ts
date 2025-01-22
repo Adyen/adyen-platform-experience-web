@@ -3,10 +3,6 @@ import { IReport } from '../../src';
 export const REPORTS: { [balanceAccountId: string]: IReport[] } = {
     BA32272223222B5CTDQPM6W2H: [
         {
-            createdAt: '2025-01-16T15:58:50.992Z',
-            type: 'payout',
-        },
-        {
             createdAt: '2025-01-17T03:10:43.543Z',
             type: 'payout',
         },
@@ -204,6 +200,10 @@ export const REPORTS: { [balanceAccountId: string]: IReport[] } = {
         },
     ],
     BA32272223222B5CTDQPM6W2G: [
+        {
+            createdAt: '2024-12-31T15:58:50.992Z',
+            type: 'payout',
+        },
         {
             createdAt: '2024-12-16T23:17:27.666Z',
             type: 'payout',
