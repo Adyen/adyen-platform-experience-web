@@ -3,28 +3,30 @@ import { AdyenPlatformExperience, TransactionsOverview, all_locales } from '../.
 import '../../assets/style/reset.scss';
 import sessionRequest from '../../utils/sessionRequest';
 
-enableServerInMockedMode().then(async () => {
-    const core = await AdyenPlatformExperience({
-        availableTranslations: [all_locales],
-        environment: 'test',
-        async onSessionCreate() {
-            return await sessionRequest();
-        },
-    });
+enableServerInMockedMode()
+    .then(async () => {
+        const core = await AdyenPlatformExperience({
+            availableTranslations: [all_locales],
+            environment: 'test',
+            async onSessionCreate() {
+                return await sessionRequest();
+            },
+        });
 
-    const transactionsComponent = new TransactionsOverview({
-        core,
-        allowLimitSelection: true,
-        onContactSupport: () => {},
-        onFiltersChanged: (/* filters */) => {
-            // do something here with the updated filters
-        },
-        onRecordSelection: ({ showModal }) => {
-            showModal();
-            // window.location.assign(`/src/pages/transaction/?id=${id}`);
-        },
-        preferredLimit: 10,
-    });
+        const transactionsComponent = new TransactionsOverview({
+            core,
+            allowLimitSelection: true,
+            onContactSupport: () => {},
+            onFiltersChanged: (/* filters */) => {
+                // do something here with the updated filters
+            },
+            onRecordSelection: ({ showModal }) => {
+                showModal();
+                // window.location.assign(`/src/pages/transaction/?id=${id}`);
+            },
+            preferredLimit: 10,
+        });
 
-    transactionsComponent.mount('.transactions-component-container');
-});
+        transactionsComponent.mount('.transactions-component-container');
+    })
+    .catch(console.error);

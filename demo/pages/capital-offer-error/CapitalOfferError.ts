@@ -1,11 +1,7 @@
 import { enableServerInMockedMode } from '../../../mocks/mock-server/utils/utils';
-import { AdyenPlatformExperience, TransactionDetails, all_locales } from '../../../src';
+import { AdyenPlatformExperience, all_locales, CapitalOffer } from '../../../src';
 import '../../assets/style/reset.scss';
 import sessionRequest from '../../utils/sessionRequest';
-
-const DEFAULT_TRANSACTION_ID = 'SRZ2J8AND6K2W3YF';
-
-const { id } = Object.fromEntries(new URLSearchParams(DEFAULT_TRANSACTION_ID).entries());
 
 enableServerInMockedMode()
     .then(async () => {
@@ -17,12 +13,14 @@ enableServerInMockedMode()
             },
         });
 
-        const transactionDetailsComponent = new TransactionDetails({
+        const capitalOfferComponentError = new CapitalOffer({
             core,
-            id: (id || DEFAULT_TRANSACTION_ID) as string,
-            onContactSupport: () => {},
+            onFundsRequest: () => {},
+            onContactSupport: () => {
+                window.open('https://www.adyen.com/', '_blank');
+            },
         });
 
-        transactionDetailsComponent.mount('.transaction-details-component-container');
+        capitalOfferComponentError.mount('.capital-offer-component-error-container');
     })
     .catch(console.error);

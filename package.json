@@ -55,6 +55,7 @@
     "playground": "vite dev --mode development --config ./vite.config.ts",
     "playground:local": "vite dev --mode local-env --config ./vite.config.ts",
     "playground:mocked": "concurrently --kill-others-on-fail 'npm run types:watch' 'vite dev --mode mocked --config vite.config.ts' --names 'lib-types,playground' -c blue,green,cyan,yellow",
+    "start:demo": "concurrently --kill-others-on-fail 'npm run types:watch' 'vite dev --mode demo --config vite.config.ts' --names 'lib-types,playground' -c blue,green,cyan,yellow",
     "build": "rm -rf ./dist && vite build --config vite.config.ts && tsc --project tsconfig-build.json",
     "build:demo": "vite build --mode demo --config vite.config.ts",
     "build:test": "npm run build && npm pack",

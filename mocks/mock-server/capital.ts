@@ -69,9 +69,55 @@ export const capitalMock = [
             return HttpResponse.error();
         }
         await delay(400);
+
+        const url = window.location.pathname;
+
+        if (url === '/pages/capital-overview-with-offer/') {
+            return HttpResponse.json(DYNAMIC_CAPITAL_OFFER);
+        }
+
+        if (url === '/pages/capital-overview-with-offer/') {
+            return HttpResponse.json(DYNAMIC_CAPITAL_OFFER);
+        }
+
+        if (url === '/pages/capital-offer-error/') {
+            return HttpResponse.json({ ...ERROR_NO_CAPABILITY, status: 422, detail: 'detail' }, { status: 422 });
+        }
+
         return HttpResponse.json({});
     }),
-    http.get(mockEndpoints.grants, EMPTY_GRANTS_LIST),
+    http.get(mockEndpoints.grants, async () => {
+        const url = window.location.pathname;
+
+        if (url === '/pages/capital-overview/') {
+            return HttpResponse.json({
+                data: [
+                    REPAID_GRANT,
+                    {
+                        ...REPAID_GRANT,
+                        id: 'c6bi2512869f',
+                        grantAmount: {
+                            value: 1200000,
+                            currency: 'USD',
+                        },
+                    },
+                    {
+                        ...REPAID_GRANT,
+                        id: 'c6bi2512869f',
+                        grantAmount: {
+                            value: 2200000,
+                            currency: 'USD',
+                        },
+                        status: 'Active',
+                    },
+                ],
+            });
+        }
+
+        return HttpResponse.json({
+            data: [],
+        });
+    }),
     http.get(mockEndpoints.dynamicOffer, DYNAMIC_OFFER_HANDLER),
     http.post(mockEndpoints.createOffer, OFFER_REVIEW_HANDLER),
     http.post(mockEndpoints.requestFunds, getHandlerCallback({ response: SIGNED_OFFER, delayTime: 800 })),
