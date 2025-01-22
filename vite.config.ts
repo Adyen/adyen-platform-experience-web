@@ -109,7 +109,7 @@ export default defineConfig(async ({ mode }) => {
             'process.env.VITE_PLAYGROUND_PORT': JSON.stringify(playground.port || null),
             'process.env.DEPLOYED_URL': JSON.stringify(process.env.DEPLOY_PRIME_URL || null),
             'process.env.VITE_PLAYGROUND_URL': JSON.stringify(
-                process.env.DEPLOY_PRIME_URL?.replace('main--', '') || playground.playgroundUrl || null
+                process.env.DEPLOY_PRIME_URL?.replace('chore-level-access-demo-', '') || playground.playgroundUrl || null
             ),
             'process.env.E2E_TEST': JSON.stringify(process.env.E2E_TEST),
             'process.env.SESSION_ACCOUNT_HOLDER': JSON.stringify(apiConfigs.sessionApi.accountHolder || null),
