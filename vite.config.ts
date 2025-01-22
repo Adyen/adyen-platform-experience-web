@@ -3,7 +3,6 @@ import { defineConfig, type PluginOption } from 'vite';
 import { resolve } from 'node:path';
 import version from './config/version';
 import packageJson from './package.json';
-import demoPackageJson from './demo/package.json';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { visualizer } from 'rollup-plugin-visualizer';
 import { lstat, readdir } from 'node:fs/promises';
@@ -138,7 +137,7 @@ export default defineConfig(async ({ mode }) => {
             host: playground.host,
             port: playground.port,
             https: false,
-            proxy: mode === 'mocked' ? undefined : realApiProxies(apiConfigs, mode),
+            proxy: (mode === 'mocked' || mode === 'demo') ? undefined : realApiProxies(apiConfigs, mode),
         },
         preview: {
             host: playground.host,
