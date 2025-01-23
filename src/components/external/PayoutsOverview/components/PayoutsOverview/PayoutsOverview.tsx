@@ -10,7 +10,7 @@ import useModalDetails from '../../../../../hooks/useModalDetails/useModalDetail
 import { IPayout } from '../../../../../types';
 import useDefaultOverviewFilterParams from '../../../../../hooks/useDefaultOverviewFilterParams';
 import { DataOverviewHeader } from '../../../../internal/DataOverviewDisplay/DataOverviewHeader/DataOverviewHeader';
-import { PayoutsOverviewComponentProps, ExternalUIComponentProps, FilterParam } from '../../../../types';
+import { PayoutsOverviewComponentProps, ExternalUIComponentProps, FilterParam , CustomDataRetrieved } from '../../../../types';
 import { useConfigContext } from '../../../../../core/ConfigContext';
 import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatformExperienceError';
 import { IBalanceAccountBase } from '../../../../../types';
@@ -18,6 +18,7 @@ import { isFunction } from '../../../../../utils';
 import { useCallback, useEffect, useMemo } from 'preact/hooks';
 import { DataDetailsModal } from '../../../../internal/DataOverviewDisplay/DataDetailsModal';
 import './PayoutsOverview.scss';
+import { useCustomColumnsData } from '../../../../../hooks/useCustomColumnsData';
 
 export const PayoutsOverview = ({
     onFiltersChanged,
@@ -29,6 +30,8 @@ export const PayoutsOverview = ({
     isLoadingBalanceAccount,
     onContactSupport,
     hideTitle,
+    onDataRetrieved,
+    columns,
 }: ExternalUIComponentProps<
     PayoutsOverviewComponentProps & { balanceAccounts: IBalanceAccountBase[] | undefined; isLoadingBalanceAccount: boolean }
 >) => {
@@ -100,6 +103,17 @@ export const PayoutsOverview = ({
         [updateDetails, activeBalanceAccount]
     );
 
+    const mergeCustomData = useCallback(
+        ({ records, retrievedData }: { records: IPayout[]; retrievedData: CustomDataRetrieved[] }) =>
+            records.map(record => {
+                const retrievedItem = retrievedData.find(item => item.createdAt === record.createdAt);
+                return { ...retrievedItem, ...record };
+            }),
+        []
+    );
+
+    const { customRecords: payouts, loadingCustomRecords } = useCustomColumnsData<IPayout>({ records, onDataRetrieved, mergeCustomData });
+
     return (
         <div className={BASE_CLASS}>
             <DataOverviewHeader hideTitle={hideTitle} titleKey="payoutsTitle" descriptionKey="payoutsNotice">
@@ -129,8 +143,8 @@ export const PayoutsOverview = ({
                 resetDetails={resetDetails}
             >
                 <PayoutsTable
-                    loading={fetching || isLoadingBalanceAccount || !balanceAccounts}
-                    data={records}
+                    loading={fetching || isLoadingBalanceAccount || !balanceAccounts || loadingCustomRecords}
+                    data={onDataRetrieved ? payouts : records}
                     showPagination={true}
                     onRowClick={onRowClick}
                     showDetails={showDetails}
@@ -139,6 +153,7 @@ export const PayoutsOverview = ({
                     onContactSupport={onContactSupport}
                     onLimitSelection={updateLimit}
                     error={error as AdyenPlatformExperienceError}
+                    customColumns={columns}
                     {...paginationProps}
                 />
             </DataDetailsModal>

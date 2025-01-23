@@ -1,4 +1,4 @@
-import { IReport, ITransaction } from '../../../src';
+import { IPayout, IReport, ITransaction } from '../../../src';
 
 const products = ['Coffee', 'Muffin', 'Pie', 'Tea', 'Latte', 'Brownie', 'Iced latte', 'Bubble tea', 'Apple pie', 'Iced tea'];
 const getProductById = (id: string) => {
@@ -65,6 +65,28 @@ export const getCustomReportsData = async (data: IReport[]) => {
         return {
             createdAt,
             type,
+            _summary: {
+                type: 'link',
+                value: 'Summary',
+                details: {
+                    href: `http://localhost:3031/?path=/story/mocked-reports-overview--custom-columns&summary=${index}`,
+                },
+            },
+            _sendEmail: {
+                type: 'button',
+                value: 'Send email',
+                details: {
+                    action: () => alert('Action'),
+                },
+            },
+        } as const;
+    });
+};
+
+export const getCustomPayoutsData = async (data: IPayout[]) => {
+    return data.map(({ createdAt }, index) => {
+        return {
+            createdAt,
             _summary: {
                 type: 'link',
                 value: 'Summary',

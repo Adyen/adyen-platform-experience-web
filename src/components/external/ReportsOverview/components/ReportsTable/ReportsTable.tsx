@@ -18,14 +18,12 @@ import { PaginationProps, WithPaginationLimitSelection } from '../../../../inter
 import Warning from '../../../../internal/SVGIcons/Warning';
 import { TypographyVariant } from '../../../../internal/Typography/types';
 import Typography from '../../../../internal/Typography/Typography';
-import { getLabel } from '../../../../utils/getLabel';
 import { mediaQueries, useResponsiveViewport } from '../../../../../hooks/useResponsiveViewport';
 import { BASE_CLASS, DATE_TYPE_CLASS, DATE_TYPE_DATE_SECTION_CLASS, DISABLED_BUTTONS_TIMEOUT } from './constants';
 import './ReportsTable.scss';
 import { CustomColumn } from '../../../../types';
 import { StringWithAutocompleteOptions } from '../../../../../utils/types';
 import { useTableColumns } from '../../../../../hooks/useTableColumns';
-import { getCurrencyCode } from '../../../../../core/Localization/amount/amount-util';
 
 const FIELDS = ['createdAt', 'dateAndReportType', 'reportType', 'reportFile'] as const;
 export type ReportsTableFields = (typeof FIELDS)[number];
@@ -58,30 +56,6 @@ export const ReportsTable: FC<ReportsTableProps> = ({
     const isLoading = useMemo(() => loading || refreshing, [loading, refreshing]);
     const isSmAndUpViewport = useResponsiveViewport(mediaQueries.up.sm);
     const isXsAndDownViewport = useResponsiveViewport(mediaQueries.down.xs);
-
-    const fieldsVisibility: Partial<Record<ReportsTableFields, boolean>> = useMemo(
-        () => ({
-            dateAndReportType: isXsAndDownViewport,
-            createdAt: isSmAndUpViewport,
-            reportType: isSmAndUpViewport,
-            reportFile: true,
-        }),
-        [isXsAndDownViewport, isSmAndUpViewport]
-    );
-
-    /*    const columns = useMemo(
-        () =>
-            FIELDS.map(key => {
-                const label = i18n.get(getLabel(key));
-                return {
-                    key,
-                    label: label,
-                    position: isXsAndDownViewport && key === 'reportFile' ? 'right' : undefined,
-                    visible: fieldsVisibility[key],
-                } as const;
-            }),
-        [i18n, data, fieldsVisibility]
-    );*/
 
     const columns = useTableColumns({
         fields: FIELDS,
