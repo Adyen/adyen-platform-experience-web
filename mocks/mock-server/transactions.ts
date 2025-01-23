@@ -307,8 +307,10 @@ export const transactionsMocks = [
     http.get(mockEndpoints.transaction, ({ params }) => fetchTransaction(params)),
 
     http.post(mockEndpoints.initiateRefund, async ({ request, params }) => {
+        const paymentId = params['id'] ?? '';
+
         try {
-            if (refundActionError) return HttpResponse.error();
+            if (refundActionError || paymentId === 'Q3PW6Y5QZ1I01Z3H') return HttpResponse.error();
 
             const transactionResponse = await fetchTransaction(params);
 
