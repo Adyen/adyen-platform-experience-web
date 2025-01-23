@@ -9,7 +9,7 @@ import './GrantAction.scss';
 import Alert from '../../../../internal/Alert/Alert';
 import { AlertTypeOption } from '../../../../internal/Alert/types';
 import Button from '../../../../internal/Button';
-import { useAuthContext } from '../../../../../core/Auth';
+import { useConfigurationContext } from '../../../../../core/ConfigurationContext';
 import { EMPTY_OBJECT } from '../../../../../utils';
 import { useFetch } from '../../../../../hooks/useFetch';
 import { useEffect } from 'preact/compat';
@@ -18,7 +18,7 @@ import { getTopWindowHref, setTopWindowHref } from './utils';
 export const GrantAction: FunctionalComponent<GrantActionProps> = ({ action, className, offerExpiresAt }) => {
     const { i18n, updateCore } = useCoreContext();
     const { dateFormat } = useTimezoneAwareDateFormatting();
-    const { signToSActionDetails } = useAuthContext().endpoints;
+    const { signToSActionDetails } = useConfigurationContext().endpoints;
     const [shouldRedirectToToS, setShouldRedirectToToS] = useState(false);
 
     const fetchCallback = useCallback(async () => {

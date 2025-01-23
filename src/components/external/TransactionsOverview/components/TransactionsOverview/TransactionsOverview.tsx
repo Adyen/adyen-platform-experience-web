@@ -6,7 +6,7 @@ import DateFilter from '../../../../internal/FilterBar/filters/DateFilter/DateFi
 import FilterBar, { FilterBarMobileSwitch, useFilterBarState } from '../../../../internal/FilterBar';
 import { TransactionOverviewComponentProps, ExternalUIComponentProps, FilterParam, CustomDataRetrieved } from '../../../../types';
 import useModalDetails from '../../../../../hooks/useModalDetails/useModalDetails';
-import { useAuthContext } from '../../../../../core/Auth';
+import { useConfigurationContext } from '../../../../../core/ConfigurationContext';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
 import { useCursorPaginatedRecords } from '../../../../internal/Pagination/hooks';
@@ -42,7 +42,7 @@ export const TransactionsOverview = ({
     TransactionOverviewComponentProps & { balanceAccounts: IBalanceAccountBase[] | undefined; isLoadingBalanceAccount: boolean }
 >) => {
     const { i18n } = useCoreContext();
-    const { getTransactions: transactionsEndpointCall } = useAuthContext().endpoints;
+    const { getTransactions: transactionsEndpointCall } = useConfigurationContext().endpoints;
     const { activeBalanceAccount, balanceAccountSelectionOptions, onBalanceAccountSelection } = useBalanceAccountSelection(balanceAccounts);
     const { defaultParams, nowTimestamp, refreshNowTimestamp } = useDefaultOverviewFilterParams('transactions', activeBalanceAccount);
 

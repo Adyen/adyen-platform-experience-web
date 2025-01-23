@@ -48,6 +48,9 @@ export interface components {
             endpoints: {
                 [key: string]: components['schemas']['SetupEndpointResponse'];
             };
+            legalEntity?: {
+                [key: string]: string;
+            };
         };
     };
     responses: never;

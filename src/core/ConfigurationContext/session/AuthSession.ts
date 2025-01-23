@@ -47,6 +47,7 @@ export class AuthSession {
 
     private readonly _watchlist = createWatchlist({
         endpoints: () => this._setupContext.endpoints,
+        configuration: () => this._setupContext.configuration,
         hasError: () => this._errorContainer.hasError,
         isExpired: () => this._sessionContext.isExpired,
         isFrozen: () => this._sessionIsFrozen,

@@ -1,6 +1,6 @@
 import './DataOverviewDetails.scss';
 import { useMemo } from 'preact/hooks';
-import { useAuthContext } from '../../../core/Auth';
+import { useConfigurationContext } from '../../../core/ConfigurationContext';
 import AdyenPlatformExperienceError from '../../../core/Errors/AdyenPlatformExperienceError';
 import { useFetch } from '../../../hooks/useFetch';
 import { IBalanceAccountBase, IPayoutDetails } from '../../../types';
@@ -26,7 +26,7 @@ const isDetailsWithId = (props: DetailsComponentProps): props is DetailsWithId =
 export default function DataOverviewDetails(props: ExternalUIComponentProps<DetailsComponentProps> & { balanceAccount?: IBalanceAccountBase }) {
     const details = useMemo(() => (isDetailsWithId(props) ? null : props.data), [props]);
     const dataId = useMemo(() => (isDetailsWithId(props) ? props.id : null), [props]);
-    const getDetail = useAuthContext().endpoints[ENDPOINTS_BY_TYPE[props.type]] as any; // [TODO]: Fix type and remove 'as any'
+    const getDetail = useConfigurationContext().endpoints[ENDPOINTS_BY_TYPE[props.type]] as any; // [TODO]: Fix type and remove 'as any'
 
     const { hideTitle, title } = useDataOverviewDetailsTitle(props);
 

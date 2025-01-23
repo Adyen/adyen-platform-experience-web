@@ -59,10 +59,16 @@ export type SessionRequest = (signal: AbortSignal) => Promised<SessionObject>;
 
 export interface SetupResponse {
     readonly endpoints: SetupEndpoint;
+    readonly legalEntity?: {
+        [key: string]: string;
+    };
 }
 
 export interface SetupContext extends Omit<SetupResponse, 'endpoints'> {
     readonly endpoints: {
         [K in EndpointName]?: EndpointHttpCallable<K>;
+    };
+    readonly legalEntity?: {
+        [key: string]: string;
     };
 }

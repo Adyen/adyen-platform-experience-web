@@ -1,4 +1,4 @@
-import { AuthProvider } from '../../../core/Auth';
+import { ConfigurationProvider } from '../../../core/ConfigurationContext';
 import CoreProvider from '../../../core/Context/CoreProvider';
 import { JSXInternal } from 'preact/src/jsx';
 import BaseElement from '../BaseElement';
@@ -83,7 +83,7 @@ export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUI
         core.session.errorHandler = externalErrorHandler;
 
         return (
-            <AuthProvider type={this.type} session={core.session} key={performance.now()}>
+            <ConfigurationProvider type={this.type} session={core.session} key={performance.now()}>
                 <CoreProvider
                     i18n={core.localization.i18n}
                     loadingContext={core.loadingContext}
@@ -92,7 +92,7 @@ export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUI
                 >
                     {this.componentToRender && <div className={cx('adyen-pe-component', this.customClassNames)}>{this.componentToRender()}</div>}
                 </CoreProvider>
-            </AuthProvider>
+            </ConfigurationProvider>
         );
     }
 }

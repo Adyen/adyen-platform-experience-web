@@ -1,10 +1,10 @@
-import { useAuthContext } from '../../../../core/Auth';
+import { useConfigurationContext } from '../../../../core/ConfigurationContext';
 import { useFetch } from '../../../../hooks/useFetch';
 import { EndpointName } from '../../../../types/api/endpoints';
 import { EMPTY_OBJECT } from '../../../../utils';
 
 const useDownload = (endpointName: EndpointName, queryParam?: any, enabled?: boolean) => {
-    const downloadEndpoint = useAuthContext().endpoints[endpointName];
+    const downloadEndpoint = useConfigurationContext().endpoints[endpointName];
 
     return useFetch({
         fetchOptions: { enabled: !!downloadEndpoint && enabled, keepPrevData: true },

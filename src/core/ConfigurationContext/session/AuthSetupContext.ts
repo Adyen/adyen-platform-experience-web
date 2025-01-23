@@ -20,7 +20,9 @@ import type { HttpMethod } from '../../Http/types';
 
 export class AuthSetupContext {
     private _endpoints: SetupContext['endpoints'] = EMPTY_OBJECT;
+    private _configuration: Omit<SetupContext, 'endpoints'> = EMPTY_OBJECT;
     private _revokeEndpointsProxy = noop;
+    private _revokeLegalEntityProxy = noop;
 
     private readonly _beforeHttp = async () => {
         // a no-op catch callback is used here (`noop`),
@@ -44,15 +46,21 @@ export class AuthSetupContext {
 
             return (_refreshPromise ??= this._refreshPromisor.promise
                 .finally(() => (_refreshPromise = undefined))
-                .then(({ endpoints }) => {
+                .then(({ endpoints, ...rest }) => {
                     this._resetEndpoints();
+                    this._resetLegalEntity();
                     ({ proxy: this._endpoints, revoke: this._revokeEndpointsProxy } = this._getEndpointsProxy(endpoints));
+                    this._configuration = Object.freeze({ ...rest });
                 }));
         };
     }
 
     get endpoints() {
         return this._endpoints;
+    }
+
+    get configuration() {
+        return this._configuration;
     }
 
     private _fetchSetupEndpoint(signal: AbortSignal) {
@@ -112,6 +120,11 @@ export class AuthSetupContext {
         this._revokeEndpointsProxy();
         this._revokeEndpointsProxy = noop;
         this._endpoints = EMPTY_OBJECT;
+    }
+
+    private _resetLegalEntity() {
+        this._revokeLegalEntityProxy();
+        this._revokeLegalEntityProxy = noop;
     }
 }
 

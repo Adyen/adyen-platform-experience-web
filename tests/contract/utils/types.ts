@@ -2,7 +2,7 @@ import { paths as BalanceAccountPaths } from '../../../src/types/api/resources/B
 import { paths as PayoutsPaths } from '../../../src/types/api/resources/PayoutsResource';
 import { paths as TransactionsPaths } from '../../../src/types/api/resources/TransactionsResource';
 import { paths as ReportsPaths } from '../../../src/types/api/resources/ReportsResource';
-import { _RequiresParameter } from '../../../src/core/Auth';
+import { _RequiresParameter } from '../../../src/core/ConfigurationContext';
 
 type _EndpointUrl = ReportsPaths & TransactionsPaths & PayoutsPaths & BalanceAccountPaths;
 
