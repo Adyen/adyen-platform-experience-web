@@ -1,10 +1,9 @@
 import { ExternalComponentType } from '../../components/types';
 import { components as SetupResource } from '../../types/api/resources/SetupResource';
-import { DeepReadonly } from '../../utils';
 import { AuthSession } from './session/AuthSession';
 import type { HttpOptions } from '../Http/types';
 import { EndpointData, EndpointName, EndpointsOperations, SetupEndpoint } from '../../types/api/endpoints';
-import type { Promised } from '../../utils/types';
+import type { DeepReadonly, Promised } from '../../utils/types';
 
 export type _Params<T extends Record<string, any>> = T['parameters'];
 type _ExcludedHttpOptions = 'loadingContext' | 'path' | 'method' | 'params';
