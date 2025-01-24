@@ -1,6 +1,6 @@
 import { WITH_ERROR_CLASS } from './constants';
 import { ErrorMessageDisplay } from '../ErrorMessageDisplay/ErrorMessageDisplay';
-import { useConfigurationContext } from '../../../core/ConfigurationContext';
+import { useConfigContext } from '../../../core/ConfigurationContext';
 import { TranslationKey } from '../../../translations';
 import cx from 'classnames';
 import { PropsWithChildren } from 'preact/compat';
@@ -23,7 +23,7 @@ function DataOverviewContainer({
     isBalanceAccountIdWrong,
     onContactSupport,
 }: DataOverviewContainerProps) {
-    const { hasError } = useConfigurationContext();
+    const { hasError } = useConfigContext();
 
     // TODO: Verify if WITH_ERROR_CLASS should appended only for session setup error
     return (

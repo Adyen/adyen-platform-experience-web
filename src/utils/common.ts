@@ -23,3 +23,13 @@ export const panic = (reason?: any) => {
 
 const _toString = fn(Object.prototype.toString);
 export const toStringTag = (value?: any) => _toString(value).slice(8, -1);
+
+export const deepFreeze = <T extends object>(obj: T) => {
+    Object.keys(obj).forEach(prop => {
+        const value = obj[prop as keyof T];
+        if (value && typeof value === 'object' && !Object.isFrozen(value)) {
+            deepFreeze(value);
+        }
+    });
+    return Object.freeze(obj);
+};

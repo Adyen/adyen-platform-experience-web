@@ -40,11 +40,11 @@ type _EndpointHttpCallable<Endpoint extends EndpointName> = (
 ) => Promise<EndpointSuccessResponse<Endpoint>>;
 
 export type EndpointHttpCallable<Endpoint extends EndpointName> = Endpoint extends Endpoint ? _EndpointHttpCallable<Endpoint> : never;
-export type EndpointHttpCallables<Endpoint extends EndpointName = EndpointName> = NonNullable<SetupContext['endpoints'][Endpoint]>;
+export type EndpointHttpCallables<Endpoint extends EndpointName = EndpointName> = NonNullable<SetupContextObject['endpoints'][Endpoint]>;
 
 export type EndpointSuccessResponse<Endpoint extends EndpointName> = Endpoint extends Endpoint ? EndpointData<Endpoint> : never;
 
-export interface AuthProviderProps {
+export interface ConfigurationProviderProps {
     children?: any;
     session: AuthSession;
     type: ExternalComponentType;
@@ -60,15 +60,12 @@ export type SessionRequest = (signal: AbortSignal) => Promised<SessionObject>;
 export interface SetupResponse {
     readonly endpoints: SetupEndpoint;
     readonly legalEntity?: {
-        [key: string]: string;
+        region?: string;
     };
 }
 
-export interface SetupContext extends Omit<SetupResponse, 'endpoints'> {
+export interface SetupContextObject extends Omit<SetupResponse, 'endpoints'> {
     readonly endpoints: {
         [K in EndpointName]?: EndpointHttpCallable<K>;
-    };
-    readonly legalEntity?: {
-        [key: string]: string;
     };
 }

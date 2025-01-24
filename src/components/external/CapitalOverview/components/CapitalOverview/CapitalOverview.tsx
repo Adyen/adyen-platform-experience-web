@@ -3,7 +3,7 @@ import { ExternalUIComponentProps } from '../../../../types';
 import { CapitalOverviewProps } from '../../types';
 import { CAPITAL_OVERVIEW_CLASS_NAMES } from '../../constants';
 import { FunctionalComponent } from 'preact';
-import { useConfigurationContext } from '../../../../../core/ConfigurationContext';
+import { useConfigContext } from '../../../../../core/ConfigurationContext';
 import { useFetch } from '../../../../../hooks/useFetch';
 import { EMPTY_OBJECT } from '../../../../../utils';
 import { CapitalHeader } from '../../../../internal/CapitalHeader';
@@ -26,8 +26,7 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
     onOfferOptionsRequest,
     skipPreQualifiedIntro,
 }) => {
-    const { getGrants: grantsEndpointCall, getDynamicGrantOffersConfiguration: dynamicConfigurationEndpointCall } =
-        useConfigurationContext().endpoints;
+    const { getGrants: grantsEndpointCall, getDynamicGrantOffersConfiguration: dynamicConfigurationEndpointCall } = useConfigContext().endpoints;
 
     const grantsQuery = useFetch({
         fetchOptions: { enabled: !!grantsEndpointCall },

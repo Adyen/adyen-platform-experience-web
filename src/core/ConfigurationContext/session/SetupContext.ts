@@ -6,6 +6,7 @@ import { createPromisor } from '../../../primitives/async/promisor';
 import {
     abortSignalForAny,
     asPlainObject,
+    deepFreeze,
     EMPTY_OBJECT,
     isAbortSignal,
     isPlainObject,
@@ -14,15 +15,14 @@ import {
     struct,
     withFreezeProxyHandlers,
 } from '../../../utils';
-import type { EndpointHttpCallables, EndpointSuccessResponse, SessionObject, SetupContext, SetupResponse } from '../types';
+import type { EndpointHttpCallables, EndpointSuccessResponse, SessionObject, SetupContextObject, SetupResponse } from '../types';
 import type { EndpointName, SetupEndpoint } from '../../../types/api/endpoints';
 import type { HttpMethod } from '../../Http/types';
 
-export class AuthSetupContext {
-    private _endpoints: SetupContext['endpoints'] = EMPTY_OBJECT;
-    private _configuration: Omit<SetupContext, 'endpoints'> = EMPTY_OBJECT;
+export class SetupContext {
+    private _endpoints: SetupContextObject['endpoints'] = EMPTY_OBJECT;
+    private _configuration: Omit<SetupContextObject, 'endpoints'> = EMPTY_OBJECT;
     private _revokeEndpointsProxy = noop;
-    private _revokeLegalEntityProxy = noop;
 
     private readonly _beforeHttp = async () => {
         // a no-op catch callback is used here (`noop`),
@@ -48,9 +48,8 @@ export class AuthSetupContext {
                 .finally(() => (_refreshPromise = undefined))
                 .then(({ endpoints, ...rest }) => {
                     this._resetEndpoints();
-                    this._resetLegalEntity();
                     ({ proxy: this._endpoints, revoke: this._revokeEndpointsProxy } = this._getEndpointsProxy(endpoints));
-                    this._configuration = Object.freeze({ ...rest });
+                    this._configuration = deepFreeze(rest);
                 }));
         };
     }
@@ -75,7 +74,7 @@ export class AuthSetupContext {
 
     private _getEndpointsProxy(endpoints: SetupEndpoint) {
         const availableEndpoints: Set<EndpointName> = new Set(Object.keys(endpoints) as (keyof typeof endpoints)[]);
-        const sessionAwareEndpoints: SetupContext['endpoints'] = struct();
+        const sessionAwareEndpoints: SetupContextObject['endpoints'] = struct();
 
         return Proxy.revocable(
             EMPTY_OBJECT as typeof sessionAwareEndpoints,
@@ -121,11 +120,6 @@ export class AuthSetupContext {
         this._revokeEndpointsProxy = noop;
         this._endpoints = EMPTY_OBJECT;
     }
-
-    private _resetLegalEntity() {
-        this._revokeLegalEntityProxy();
-        this._revokeLegalEntityProxy = noop;
-    }
 }
 
-export default AuthSetupContext;
+export default SetupContext;

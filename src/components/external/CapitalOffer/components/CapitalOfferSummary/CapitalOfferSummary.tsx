@@ -10,7 +10,7 @@ import './CapitalOfferSummary.scss';
 import Button from '../../../../internal/Button/Button';
 import { ButtonVariant } from '../../../../internal/Button/types';
 import useMutation from '../../../../../hooks/useMutation/useMutation';
-import { useConfigurationContext } from '../../../../../core/ConfigurationContext';
+import { useConfigContext } from '../../../../../core/ConfigurationContext';
 import { Tooltip } from '../../../../internal/Tooltip/Tooltip';
 import { EMPTY_OBJECT } from '../../../../../utils';
 import { AdyenErrorResponse } from '../../../../../core/Http/types';
@@ -41,7 +41,7 @@ export const CapitalOfferSummary = ({
         return date ? i18n.date(date, { month: 'long' }) : null;
     }, [grantOffer, i18n]);
 
-    const { requestFunds } = useConfigurationContext().endpoints;
+    const { requestFunds } = useConfigContext().endpoints;
 
     const requestFundsMutation = useMutation({
         queryFn: requestFunds,

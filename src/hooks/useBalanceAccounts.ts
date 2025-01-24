@@ -1,10 +1,10 @@
-import { useConfigurationContext } from '../core/ConfigurationContext';
+import { useConfigContext } from '../core/ConfigurationContext';
 import { useFetch } from './useFetch';
 import { EMPTY_OBJECT } from '../utils';
 import { useMemo } from 'preact/hooks';
 
 const useBalanceAccounts = (balanceAccountId?: string, enabled?: boolean) => {
-    const { getBalanceAccounts: balanceAccountEndpointCall } = useConfigurationContext().endpoints;
+    const { getBalanceAccounts: balanceAccountEndpointCall } = useConfigContext().endpoints;
 
     const { data, isFetching, error } = useFetch(
         useMemo(

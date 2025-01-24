@@ -6,7 +6,7 @@ import { CAPITAL_OFFER_CLASS_NAMES } from './constants';
 import { CapitalHeader } from '../../../../internal/CapitalHeader';
 import { CapitalOfferSelection } from '../CapitalOfferSelection/CapitalOfferSelection';
 import { IDynamicOffersConfig, IGrantOfferResponseDTO } from '../../../../../types';
-import { useConfigurationContext } from '../../../../../core/ConfigurationContext';
+import { useConfigContext } from '../../../../../core/ConfigurationContext';
 import { useFetch } from '../../../../../hooks/useFetch';
 import { EMPTY_OBJECT } from '../../../../../utils';
 import { CapitalOfferSummary } from '../CapitalOfferSummary/CapitalOfferSummary';
@@ -21,7 +21,7 @@ export const CapitalOffer: FunctionalComponent<ExternalUIComponentProps<CapitalO
     onOfferDismiss,
     onOfferSelect,
 }) => {
-    const { getDynamicGrantOffersConfiguration } = useConfigurationContext().endpoints;
+    const { getDynamicGrantOffersConfiguration } = useConfigContext().endpoints;
 
     const [emptyGrantOffer, setEmptyGrantOffer] = useState(false);
     const onSuccess = useCallback((data: IDynamicOffersConfig | undefined) => {
