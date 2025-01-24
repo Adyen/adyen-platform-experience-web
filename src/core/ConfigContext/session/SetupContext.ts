@@ -7,7 +7,6 @@ import {
     abortSignalForAny,
     asPlainObject,
     deepFreeze,
-    DeepReadonly,
     EMPTY_OBJECT,
     isAbortSignal,
     isPlainObject,
