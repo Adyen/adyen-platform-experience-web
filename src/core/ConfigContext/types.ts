@@ -1,4 +1,6 @@
 import { ExternalComponentType } from '../../components/types';
+import { components as SetupResource } from '../../types/api/resources/SetupResource';
+import { DeepReadonly } from '../../utils';
 import { AuthSession } from './session/AuthSession';
 import type { HttpOptions } from '../Http/types';
 import { EndpointData, EndpointName, EndpointsOperations, SetupEndpoint } from '../../types/api/endpoints';
@@ -57,11 +59,8 @@ export interface SessionObject {
 
 export type SessionRequest = (signal: AbortSignal) => Promised<SessionObject>;
 
-export interface SetupResponse {
+export interface SetupResponse extends Omit<DeepReadonly<SetupResource['schemas']['SetupResponse']>, 'endpoints'> {
     readonly endpoints: SetupEndpoint;
-    readonly legalEntity?: {
-        region?: string;
-    };
 }
 
 export interface SetupContextObject extends Omit<SetupResponse, 'endpoints'> {
