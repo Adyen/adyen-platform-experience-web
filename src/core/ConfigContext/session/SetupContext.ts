@@ -22,7 +22,7 @@ import type { HttpMethod } from '../../Http/types';
 
 export class SetupContext {
     private _endpoints: SetupContextObject['endpoints'] = EMPTY_OBJECT;
-    private _configuration: Omit<SetupResponse, 'endpoints'> = EMPTY_OBJECT;
+    private _configuration: Omit<SetupContextObject, 'endpoints'> = EMPTY_OBJECT;
     private _revokeEndpointsProxy = noop;
 
     private readonly _beforeHttp = async () => {
