@@ -3,7 +3,7 @@ import { createContext } from 'preact';
 import { useContext } from 'preact/hooks';
 import { EMPTY_ARRAY, noop } from '../../../../../utils';
 import { REFUND_REASONS } from '../constants';
-import { useConfigContext } from '../../../../../core/ConfigurationContext';
+import { useConfigContext } from '../../../../../core/ConfigContext';
 import { useRefundContextActions } from './hooks/useRefundContextActions';
 import { useRefundContextAmount } from './hooks/useRefundContextAmount';
 import { useRefundContextLineItems } from './hooks/useRefundContextLineItems';

@@ -1,4 +1,4 @@
-import { useConfigContext } from '../../../../core/ConfigurationContext';
+import { useConfigContext } from '../../../../core/ConfigContext';
 import { useFetch } from '../../../../hooks/useFetch';
 import { EndpointName } from '../../../../types/api/endpoints';
 import { EMPTY_OBJECT } from '../../../../utils';

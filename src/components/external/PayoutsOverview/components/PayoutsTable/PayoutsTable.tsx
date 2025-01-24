@@ -1,6 +1,6 @@
 import cx from 'classnames';
 import { FC } from 'preact/compat';
-import { useConfigContext } from '../../../../../core/ConfigurationContext';
+import { useConfigContext } from '../../../../../core/ConfigContext';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatformExperienceError';
 import { getCurrencyCode } from '../../../../../core/Localization/amount/amount-util';

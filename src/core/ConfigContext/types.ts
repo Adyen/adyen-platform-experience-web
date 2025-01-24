@@ -44,7 +44,7 @@ export type EndpointHttpCallables<Endpoint extends EndpointName = EndpointName> 
 
 export type EndpointSuccessResponse<Endpoint extends EndpointName> = Endpoint extends Endpoint ? EndpointData<Endpoint> : never;
 
-export interface ConfigurationProviderProps {
+export interface ConfigProviderProps {
     children?: any;
     session: AuthSession;
     type: ExternalComponentType;

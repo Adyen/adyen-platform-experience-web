@@ -1,7 +1,7 @@
 import createDuplexTransactionNavigator from './transactionNavigator/createDuplexTransactionNavigator';
 import type { TransactionDataContentProps } from '../../components/TransactionData/TransactionDataContent';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
-import { useConfigContext } from '../../../../../core/ConfigurationContext';
+import { useConfigContext } from '../../../../../core/ConfigContext';
 import { useFetch } from '../../../../../hooks/useFetch';
 import { EMPTY_OBJECT } from '../../../../../utils';
 

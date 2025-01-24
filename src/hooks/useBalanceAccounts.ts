@@ -1,4 +1,4 @@
-import { useConfigContext } from '../core/ConfigurationContext';
+import { useConfigContext } from '../core/ConfigContext';
 import { useFetch } from './useFetch';
 import { EMPTY_OBJECT } from '../utils';
 import { useMemo } from 'preact/hooks';

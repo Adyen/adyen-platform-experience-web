@@ -5,9 +5,9 @@ import { AuthSession } from './session/AuthSession';
 import { isWatchlistUnsubscribeToken } from '../../primitives/reactive/watchlist';
 import sessionAwareComponentAvailability, { componentAvailabilityErrors } from './session/utils/sessionAwareComponentAvailability';
 import { asyncNoop, EMPTY_OBJECT, isUndefined, noop } from '../../utils';
-import type { ConfigurationProviderProps } from './types';
+import type { ConfigProviderProps } from './types';
 
-const ConfigurationContext = createContext<AuthSession['context'] & Pick<AuthSession, 'http' | 'refresh'>>({
+const ConfigContext = createContext<AuthSession['context'] & Pick<AuthSession, 'http' | 'refresh'>>({
     endpoints: EMPTY_OBJECT,
     configuration: EMPTY_OBJECT,
     hasError: false,
@@ -18,7 +18,7 @@ const ConfigurationContext = createContext<AuthSession['context'] & Pick<AuthSes
     refreshing: false,
 });
 
-export const ConfigProvider = ({ children, session, type }: ConfigurationProviderProps) => {
+export const ConfigProvider = ({ children, session, type }: ConfigProviderProps) => {
     const { http, refresh } = useMemo(() => session, [session]);
     const [, setContextCounter] = useState(0);
     const [unsubscribeCounter, setUnsubscribeCounter] = useState(0);
@@ -36,7 +36,7 @@ export const ConfigProvider = ({ children, session, type }: ConfigurationProvide
     }, [unsubscribeCounter]);
 
     return (
-        <ConfigurationContext.Provider value={{ ...session.context, http, refresh }}>
+        <ConfigContext.Provider value={{ ...session.context, http, refresh }}>
             {!isUndefined(hasPermission) &&
                 (hasPermission ? (
                     toChildArray(children)
@@ -48,9 +48,9 @@ export const ConfigProvider = ({ children, session, type }: ConfigurationProvide
                         message={[componentAvailabilityErrors(type), 'contactSupportForHelp']}
                     />
                 ))}
-        </ConfigurationContext.Provider>
+        </ConfigContext.Provider>
     );
 };
 
-export const useConfigContext = () => useContext(ConfigurationContext);
+export const useConfigContext = () => useContext(ConfigContext);
 export default useConfigContext;

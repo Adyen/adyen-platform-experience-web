@@ -1,6 +1,6 @@
 import type { CoreOptions, onErrorHandler } from './types';
 import { FALLBACK_ENV, resolveEnvironment } from './utils';
-import { AuthSession } from './ConfigurationContext/session/AuthSession';
+import { AuthSession } from './ConfigContext/session/AuthSession';
 import BaseElement from '../components/external/BaseElement';
 import Localization, { TranslationSourceRecord } from './Localization';
 import { EMPTY_OBJECT } from '../utils';

@@ -1,4 +1,4 @@
-import { ConfigProvider } from '../../../core/ConfigurationContext';
+import { ConfigProvider } from '../../../core/ConfigContext';
 import CoreProvider from '../../../core/Context/CoreProvider';
 import { JSXInternal } from 'preact/src/jsx';
 import BaseElement from '../BaseElement';

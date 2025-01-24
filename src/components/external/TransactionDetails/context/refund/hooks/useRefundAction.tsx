@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'preact/hooks';
 import useCoreContext from '../../../../../../core/Context/useCoreContext';
-import AuthSession from '../../../../../../core/ConfigurationContext/session/AuthSession';
+import AuthSession from '../../../../../../core/ConfigContext/session/AuthSession';
 import Spinner from '../../../../../internal/Spinner';
 import { ActiveView } from '../../types';
 import type { ITransactionRefundContext, TransactionRefundProviderProps } from '../types';

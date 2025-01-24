@@ -1,5 +1,5 @@
 import { useMemo } from 'preact/hooks';
-import { useConfigContext } from '../../../../../core/ConfigurationContext';
+import { useConfigContext } from '../../../../../core/ConfigContext';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { boolOrFalse, isFunction, isUndefined } from '../../../../../utils';
 import { AlertTypeOption } from '../../../../internal/Alert/types';

@@ -1,6 +1,6 @@
 import './DataOverviewDetails.scss';
 import { useMemo } from 'preact/hooks';
-import { useConfigContext } from '../../../core/ConfigurationContext';
+import { useConfigContext } from '../../../core/ConfigContext';
 import AdyenPlatformExperienceError from '../../../core/Errors/AdyenPlatformExperienceError';
 import { useFetch } from '../../../hooks/useFetch';
 import { IBalanceAccountBase, IPayoutDetails } from '../../../types';

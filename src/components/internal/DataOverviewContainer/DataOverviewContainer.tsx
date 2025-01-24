@@ -1,6 +1,6 @@
 import { WITH_ERROR_CLASS } from './constants';
 import { ErrorMessageDisplay } from '../ErrorMessageDisplay/ErrorMessageDisplay';
-import { useConfigContext } from '../../../core/ConfigurationContext';
+import { useConfigContext } from '../../../core/ConfigContext';
 import { TranslationKey } from '../../../translations';
 import cx from 'classnames';
 import { PropsWithChildren } from 'preact/compat';
