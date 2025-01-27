@@ -9,14 +9,12 @@ import './FilterButton.scss';
 
 const DEFAULT_FILTER_BUTTON_CLASSNAME = 'adyen-pe-filter-button';
 
-function FilterButton(
-    { className, classNameModifiers = [], children, disabled, onClick, ...restAttributes }: FilterButtonProps,
-    ref: ForwardedRef<HTMLButtonElement>
-) {
+function FilterButton(props: FilterButtonProps, ref: ForwardedRef<HTMLButtonElement>) {
+    const { className, classNameModifiers = [], children, disabled, onClick, ...restAttributes } = props;
     const classNameValue = useMemo(() => parseClassName('', className) || '', [className]);
     const disabledValue = useMemo(() => parseBooleanProp(disabled), [disabled]);
 
-    const { classes, click } = useButton(classNameValue, classNameModifiers, DEFAULT_FILTER_BUTTON_CLASSNAME, disabledValue, onClick);
+    const { classes, click } = useButton(classNameValue, classNameModifiers, DEFAULT_FILTER_BUTTON_CLASSNAME, disabledValue, props, onClick);
 
     return (
         <button className={classes} ref={ref} onClick={click} {...restAttributes}>
