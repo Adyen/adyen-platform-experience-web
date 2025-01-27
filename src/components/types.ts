@@ -117,7 +117,7 @@ type BaseDetails = {
 
 export interface CustomIconObject extends BaseCustomObject {
     type: 'icon';
-    details: BaseDetails & { url: string; alt?: string };
+    details: BaseDetails & { src: string; alt?: string };
 }
 
 export interface CustomTextObject extends BaseCustomObject {

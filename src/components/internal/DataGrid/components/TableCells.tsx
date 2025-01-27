@@ -66,7 +66,7 @@ export const TableCells = <
                 let icon = null;
 
                 if (_isIconType(data)) {
-                    icon = { url: data.details.url, alt: data.details.alt || data.value };
+                    icon = { url: data.details.src, alt: data.details.alt || data.value };
                 }
 
                 let buttonCallback = undefined;
