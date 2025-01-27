@@ -35,7 +35,7 @@ const config: PlaywrightTestConfig = {
         baseURL: baseUrl,
 
         trace: 'on-first-retry',
-        headless: !!process.env.CI,
+        headless: !process.env.CI,
     },
 
     /* Configure projects for major browsers */
@@ -47,7 +47,7 @@ const config: PlaywrightTestConfig = {
                 // Use the pre-installed browser already on the machine
                 channel: 'chrome',
                 launchOptions: {
-                    args: process.env.PWDEBUG ? ['--auto-open-devtools-for-tabs'] : [],
+                    args: process.env.PWDEBUG ? ['--auto-open-devtools-for-tabs'] : ['--headless=new'],
                 },
             },
         },
@@ -56,6 +56,7 @@ const config: PlaywrightTestConfig = {
             testDir: 'tests/integration',
             use: {
                 ...devices['Desktop Chrome'],
+                channel: 'chromium',
                 launchOptions: {
                     args: process.env.PWDEBUG ? ['--auto-open-devtools-for-tabs'] : ['--headless=new'],
                 },
