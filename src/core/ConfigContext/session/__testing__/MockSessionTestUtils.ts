@@ -27,7 +27,7 @@ export interface MockSessionContext {
     expireSession(): void;
     refreshSession(...args: Parameters<AuthSession['refresh']>): Promise<void>;
     session: AuthSession;
-    subscribe: MockInstance<SessionUnsubscribe>;
+    subscribe: MockInstance<SessionSubscribe>;
     unsubscribes: Mock<SessionUnsubscribe>[];
     untilSessionRefreshed(): Promise<void>;
 }
