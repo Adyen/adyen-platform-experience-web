@@ -3,7 +3,7 @@ import { components as SetupResource } from '../../types/api/resources/SetupReso
 import { AuthSession } from './session/AuthSession';
 import type { HttpOptions } from '../Http/types';
 import { EndpointData, EndpointName, EndpointsOperations, SetupEndpoint } from '../../types/api/endpoints';
-import type { Promised } from '../../utils/types';
+import type { DeepReadonly, Promised } from '../../utils/types';
 
 export type _Params<T extends Record<string, any>> = T['parameters'];
 type _ExcludedHttpOptions = 'loadingContext' | 'path' | 'method' | 'params';
@@ -59,11 +59,12 @@ export interface SessionObject {
 export type SessionRequest = (signal: AbortSignal) => Promised<SessionObject>;
 
 export interface SetupResponse extends Omit<SetupResource['schemas']['SetupResponse'], 'endpoints' | 'endpointTypesExposure'> {
-    readonly endpoints: SetupEndpoint;
+    endpoints: SetupEndpoint;
 }
 
-export interface SetupContextObject extends Omit<SetupResponse, 'endpoints'> {
+export interface SetupContextObject {
     readonly endpoints: {
         [K in EndpointName]?: EndpointHttpCallable<K>;
     };
+    readonly extraConfig: DeepReadonly<Omit<SetupResponse, 'endpoints'>>;
 }
