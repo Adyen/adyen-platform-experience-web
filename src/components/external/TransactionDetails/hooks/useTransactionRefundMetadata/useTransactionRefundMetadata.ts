@@ -1,5 +1,5 @@
 import { useMemo } from 'preact/hooks';
-import { useAuthContext } from '../../../../../core/Auth';
+import { useConfigContext } from '../../../../../core/ConfigContext';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { boolOrFalse, isFunction, isUndefined } from '../../../../../utils';
 import { AlertTypeOption } from '../../../../internal/Alert/types';
@@ -21,7 +21,7 @@ export const useTransactionRefundMetadata = (transaction: TransactionDataProps['
 
     const refundableAmount = useMemo(() => (transaction ? Math.max(0, details?.refundableAmount?.value ?? 0) : 0), [details, transaction]);
 
-    const refundAuthorization = isFunction(useAuthContext().endpoints.initiateRefund);
+    const refundAuthorization = isFunction(useConfigContext().endpoints.initiateRefund);
     const refundAvailable = refundAuthorization && refundable && refundableAmount > 0;
     const refundCurrency = details?.refundableAmount?.currency ?? transaction?.amount.currency ?? '';
     const refundDisabled = !refundAvailable || refundLocked;

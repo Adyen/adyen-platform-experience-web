@@ -1,7 +1,7 @@
 import createDuplexTransactionNavigator from './transactionNavigator/createDuplexTransactionNavigator';
 import type { TransactionDataContentProps } from '../../components/TransactionData/TransactionDataContent';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
-import { useAuthContext } from '../../../../../core/Auth';
+import { useConfigContext } from '../../../../../core/ConfigContext';
 import { useFetch } from '../../../../../hooks/useFetch';
 import { EMPTY_OBJECT } from '../../../../../utils';
 
@@ -9,7 +9,7 @@ export const useTransaction = (initialTransaction: TransactionDataContentProps['
     const [transaction, setTransaction] = useState(initialTransaction);
     const [fetchTransactionId, setFetchTransactionId] = useState(initialTransaction.id);
     const [lastFetchTimestamp, setLastFetchTimestamp] = useState(performance.now());
-    const { getTransaction } = useAuthContext().endpoints;
+    const { getTransaction } = useConfigContext().endpoints;
 
     const _transactionNavigator = useRef(createDuplexTransactionNavigator());
     const transactionNavigator = _transactionNavigator.current;

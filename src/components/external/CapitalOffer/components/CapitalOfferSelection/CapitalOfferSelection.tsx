@@ -7,7 +7,7 @@ import { ButtonVariant } from '../../../../internal/Button/types';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { useCallback, useMemo, useState } from 'preact/hooks';
 import { useEffect } from 'preact/compat';
-import { useAuthContext } from '../../../../../core/Auth';
+import { useConfigContext } from '../../../../../core/ConfigContext';
 import useMutation from '../../../../../hooks/useMutation/useMutation';
 import { IDynamicOffersConfig, IGrantOfferResponseDTO } from '../../../../../types';
 import './CapitalOfferSelection.scss';
@@ -108,7 +108,7 @@ export const CapitalOfferSelection = ({
 
     const currency = useMemo(() => dynamicOffersConfig?.minAmount.currency, [dynamicOffersConfig?.minAmount.currency]);
 
-    const { createGrantOffer, getDynamicGrantOffer } = useAuthContext().endpoints;
+    const { createGrantOffer, getDynamicGrantOffer } = useConfigContext().endpoints;
     const getDynamicGrantOfferMutation = useMutation({
         queryFn: getDynamicGrantOffer,
         options: {
