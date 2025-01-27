@@ -1,4 +1,4 @@
-import { afterAll, afterEach, beforeAll, Mock, SpyInstance, TestContext, vi } from 'vitest';
+import { afterAll, afterEach, beforeAll, Mock, MockInstance, TestContext, vi } from 'vitest';
 import { createAbortable } from '../../../../primitives/async/abortable';
 import { SetupEndpoint } from '../../../../types/api/endpoints';
 import { SETUP_ENDPOINT_PATH } from '../constants';
@@ -27,8 +27,8 @@ export interface MockSessionContext {
     expireSession(): void;
     refreshSession(...args: Parameters<AuthSession['refresh']>): Promise<void>;
     session: AuthSession;
-    subscribe: SpyInstance<Parameters<SessionSubscribe>, SessionUnsubscribe>;
-    unsubscribes: Mock<Parameters<SessionUnsubscribe>, ReturnType<SessionUnsubscribe>>[];
+    subscribe: MockInstance<SessionSubscribe>;
+    unsubscribes: Mock<SessionUnsubscribe>[];
     untilSessionRefreshed(): Promise<void>;
 }
 

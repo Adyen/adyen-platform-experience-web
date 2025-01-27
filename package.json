@@ -64,7 +64,7 @@
     "start:mock:e2e": "concurrently --kill-others-on-fail 'npm run types:watch' 'cross-env E2E_TEST=true vite dev --mode mocked --config vite.config.ts' --names 'lib-types,playground' -c blue,green,cyan,yellow",
     "lint": "eslint 'src/**/*.{js,ts,tsx}' --quiet && stylelint 'src/**/*.scss' --fix",
     "test": "vitest --config vite.config.ts",
-    "test:coverage": "vitest --config vite.config.ts --coverage",
+    "test:coverage": "vitest run --config vite.config.ts --coverage",
     "test:integration": "playwright test --project local-chrome",
     "test:integration:debug": "cross-env PWDEBUG=console playwright test --debug --project local-chrome",
     "test:e2e": "playwright test --project local-chrome-e2e",
@@ -104,7 +104,7 @@
     "@adyen/bento-design-tokens": "^1.7.1",
     "@changesets/cli": "^2.27.5",
     "@changesets/get-github-info": "^0.6.0",
-    "@playwright/test": "^1.38.0",
+    "@playwright/test": "^1.48.2",
     "@preact/preset-vite": "^2.5.0",
     "@storybook/addon-a11y": "^7.0.4",
     "@storybook/addon-essentials": "^7.0.4",
@@ -119,7 +119,7 @@
     "@types/node": "^20.4.7",
     "@typescript-eslint/eslint-plugin": "^5.4.0",
     "@typescript-eslint/parser": "^5.8.1",
-    "@vitest/coverage-c8": "^0.30.1",
+    "@vitest/coverage-v8": "^2.1.4",
     "autoprefixer": "^10.4.20",
     "concurrently": "^7.0.0",
     "cross-env": "^7.0.3",
@@ -131,6 +131,7 @@
     "eslint-plugin-jsx-a11y": "^6.5.1",
     "eslint-plugin-react": "^7.26.1",
     "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-testing-library": "^7.1.1",
     "file-loader": "^6.2.0",
     "http-server": "^14.1.1",
     "husky": "^7.0.4",
@@ -156,7 +157,7 @@
     "vite-node": "^0.30.1",
     "vite-plugin-checker": "^0.5.6",
     "vite-plugin-svgr": "^4.2.0",
-    "vitest": "^0.30.1"
+    "vitest": "^2.1.4"
   },
   "msw": {
     "workerDirectory": [

@@ -16,8 +16,8 @@ export const useSpinButton = <T extends UseSpinButtonProps>({ disabled, leap, ma
         () =>
             ({
                 containerElement: (el: HTMLElement | null) => void (spinButton.containerElement = el),
-                decrementButton: (el: HTMLAnchorElement | HTMLButtonElement | null) => void (spinButton.decrementButton = el),
-                incrementButton: (el: HTMLAnchorElement | HTMLButtonElement | null) => void (spinButton.incrementButton = el),
+                decrementButton: (el: HTMLButtonElement | null) => void (spinButton.decrementButton = el),
+                incrementButton: (el: HTMLButtonElement | null) => void (spinButton.incrementButton = el),
                 valueElement: (el: HTMLElement | null) => void (spinButton.valueElement = el),
             } as const),
         []
