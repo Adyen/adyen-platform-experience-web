@@ -80,6 +80,9 @@ export const setupMock = [
                     url: 'capital/grants/missingActions/signToS',
                 },
             } satisfies Record<EndpointName, { method: HttpMethod; url: string }>,
+            legalEntity: {
+                region: 'EU',
+            },
         });
     }),
 ];

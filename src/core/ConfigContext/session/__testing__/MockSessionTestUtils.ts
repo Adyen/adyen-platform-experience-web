@@ -1,4 +1,4 @@
-import { afterAll, afterEach, beforeAll, Mock, SpyInstance, TestContext, vi } from 'vitest';
+import { afterAll, afterEach, beforeAll, Mock, MockInstance, TestContext, vi } from 'vitest';
 import { createAbortable } from '../../../../primitives/async/abortable';
 import { SetupEndpoint } from '../../../../types/api/endpoints';
 import { SETUP_ENDPOINT_PATH } from '../constants';
@@ -14,8 +14,8 @@ type SessionUnsubscribe = ReturnType<SessionSubscribe>;
 
 const DeadlineAbortables = new WeakMap<any, ReturnType<typeof createAbortable>>();
 
-vi.mock('../AuthSessionSpecification', async () => {
-    const module = await vi.importActual<typeof import('../AuthSessionSpecification')>('../AuthSessionSpecification');
+vi.mock(import('../AuthSessionSpecification'), async importOriginal => {
+    const module = await importOriginal();
     const AuthSessionSpecification = class extends module.default {
         public readonly deadline = (session: any) => DeadlineAbortables.get(session)!.signal;
     };
@@ -27,8 +27,8 @@ export interface MockSessionContext {
     expireSession(): void;
     refreshSession(...args: Parameters<AuthSession['refresh']>): Promise<void>;
     session: AuthSession;
-    subscribe: SpyInstance<Parameters<SessionSubscribe>, SessionUnsubscribe>;
-    unsubscribes: Mock<Parameters<SessionUnsubscribe>, ReturnType<SessionUnsubscribe>>[];
+    subscribe: MockInstance<SessionSubscribe>;
+    unsubscribes: Mock<SessionUnsubscribe>[];
     untilSessionRefreshed(): Promise<void>;
 }
 

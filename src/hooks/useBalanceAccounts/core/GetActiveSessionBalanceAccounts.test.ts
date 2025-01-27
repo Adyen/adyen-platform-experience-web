@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { BALANCE_ACCOUNTS } from '../../../../mocks/mock-data';
-import { MockSessionContext } from '../../../core/Auth/session/__testing__/MockSessionTestUtils';
+import { MockSessionContext } from '../../../core/ConfigContext/session/__testing__/MockSessionTestUtils';
 import setupBalanceAccountsTest from '../__testing__/SetupBalanceAccountsTest';
 import {
     ERR_BALANCE_ACCOUNTS_UNAVAILABLE,

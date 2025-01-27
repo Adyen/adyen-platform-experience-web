@@ -6,7 +6,7 @@ import {
     createMockServerContext,
     createMockSessionContext,
     MockSessionContext,
-} from '../../../core/Auth/session/__testing__/MockSessionTestUtils';
+} from '../../../core/ConfigContext/session/__testing__/MockSessionTestUtils';
 
 export function setupBalanceAccountsTest() {
     const { initializeServer, mockServer, useEndpoints } = createMockServerContext();

@@ -118,7 +118,7 @@ export default defineConfig(async ({ mode }) => {
             root: resolve(__dirname, './src'),
             setupFiles: [resolve(__dirname, './config/setupTests.ts')],
             coverage: {
-                provider: 'c8',
+                provider: 'v8',
                 all: true,
                 include: [
                     'src/components/internal/**/*.{ts,tsx}',
@@ -131,6 +131,9 @@ export default defineConfig(async ({ mode }) => {
                 exclude: ['src/**/index.{ts,tsx}', 'src/**/constants.{ts,tsx}', 'src/**/types.ts', 'node_modules'],
                 reporter: 'lcov',
                 reportsDirectory: resolve(__dirname, 'coverage'),
+            },
+            sequence: {
+                hooks: 'parallel',
             },
         },
         server: {

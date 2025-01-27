@@ -3,7 +3,7 @@ import { createContext } from 'preact';
 import { useContext } from 'preact/hooks';
 import { EMPTY_ARRAY, noop } from '../../../../../utils';
 import { REFUND_REASONS } from '../constants';
-import { useAuthContext } from '../../../../../core/Auth';
+import { useConfigContext } from '../../../../../core/ConfigContext';
 import { useRefundContextActions } from './hooks/useRefundContextActions';
 import { useRefundContextAmount } from './hooks/useRefundContextAmount';
 import { useRefundContextLineItems } from './hooks/useRefundContextLineItems';
@@ -43,7 +43,9 @@ export const TransactionRefundProvider = memo(
         setSecondaryAction,
         transactionId,
     }: TransactionRefundProviderProps) => {
-        const { isLoading: refundInProgress, mutate: refundTransaction } = useMutation({ queryFn: useAuthContext().endpoints.initiateRefund });
+        const { isLoading: refundInProgress, mutate: refundTransaction } = useMutation({
+            queryFn: useConfigContext().endpoints.initiateRefund,
+        });
         const { availableItems, clearItems, items, updateItems } = useRefundContextLineItems({ currency, lineItems });
         const interactionsDisabled = refundInProgress;
         const [refundAmount, setAmount] = useRefundContextAmount({ availableAmount, currency, interactionsDisabled, items, refundMode });

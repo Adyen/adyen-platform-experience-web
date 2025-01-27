@@ -1,7 +1,7 @@
 import { IBalanceAccountBase } from '../../../types';
 import { EMPTY_ARRAY, EMPTY_OBJECT, getMappedValue, isFunction } from '../../../utils';
-import sessionReady from '../../../core/Auth/session/utils/sessionReady';
-import AuthSession from '../../../core/Auth/session/AuthSession';
+import sessionReady from '../../../core/ConfigContext/session/utils/sessionReady';
+import AuthSession from '../../../core/ConfigContext/session/AuthSession';
 
 type BalanceAccount = Readonly<IBalanceAccountBase>;
 type ActiveSessionBalanceAccounts = readonly BalanceAccount[] | undefined;
