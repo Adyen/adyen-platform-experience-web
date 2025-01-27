@@ -17,11 +17,12 @@ import {
 } from '../../../utils';
 import type { EndpointHttpCallables, EndpointSuccessResponse, SessionObject, SetupContextObject, SetupResponse } from '../types';
 import type { EndpointName, SetupEndpoint } from '../../../types/api/endpoints';
+import type { DeepReadonly } from '../../../utils/types';
 import type { HttpMethod } from '../../Http/types';
 
 export class SetupContext {
     private _endpoints: SetupContextObject['endpoints'] = EMPTY_OBJECT;
-    private _configuration: Omit<SetupContextObject, 'endpoints'> = EMPTY_OBJECT;
+    private _configuration: DeepReadonly<Omit<SetupContextObject, 'endpoints'>> = EMPTY_OBJECT;
     private _revokeEndpointsProxy = noop;
 
     private readonly _beforeHttp = async () => {
