@@ -3,7 +3,7 @@ import UIElement from '../UIElement/UIElement';
 import { CapitalComponentState, CapitalOverviewProps } from './types';
 import { CapitalOverview } from './components/CapitalOverview/CapitalOverview';
 import { EMPTY_OBJECT, noop } from '../../../utils';
-import sessionReady from '../../../core/Auth/session/utils/sessionReady';
+import sessionReady from '../../../core/ConfigContext/session/utils/sessionReady';
 
 export class CapitalOverviewElement extends UIElement<CapitalOverviewProps> {
     public static type: ExternalComponentType = 'capitalOverview';

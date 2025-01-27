@@ -1,8 +1,9 @@
 import { ExternalComponentType } from '../../components/types';
+import { components as SetupResource } from '../../types/api/resources/SetupResource';
 import { AuthSession } from './session/AuthSession';
 import type { HttpOptions } from '../Http/types';
 import { EndpointData, EndpointName, EndpointsOperations, SetupEndpoint } from '../../types/api/endpoints';
-import type { Promised } from '../../utils/types';
+import type { DeepReadonly, Promised } from '../../utils/types';
 
 export type _Params<T extends Record<string, any>> = T['parameters'];
 type _ExcludedHttpOptions = 'loadingContext' | 'path' | 'method' | 'params';
@@ -40,11 +41,11 @@ type _EndpointHttpCallable<Endpoint extends EndpointName> = (
 ) => Promise<EndpointSuccessResponse<Endpoint>>;
 
 export type EndpointHttpCallable<Endpoint extends EndpointName> = Endpoint extends Endpoint ? _EndpointHttpCallable<Endpoint> : never;
-export type EndpointHttpCallables<Endpoint extends EndpointName = EndpointName> = NonNullable<SetupContext['endpoints'][Endpoint]>;
+export type EndpointHttpCallables<Endpoint extends EndpointName = EndpointName> = NonNullable<SetupContextObject['endpoints'][Endpoint]>;
 
 export type EndpointSuccessResponse<Endpoint extends EndpointName> = Endpoint extends Endpoint ? EndpointData<Endpoint> : never;
 
-export interface AuthProviderProps {
+export interface ConfigProviderProps {
     children?: any;
     session: AuthSession;
     type: ExternalComponentType;
@@ -57,12 +58,13 @@ export interface SessionObject {
 
 export type SessionRequest = (signal: AbortSignal) => Promised<SessionObject>;
 
-export interface SetupResponse {
-    readonly endpoints: SetupEndpoint;
+export interface SetupResponse extends Omit<SetupResource['schemas']['SetupResponse'], 'endpoints' | 'endpointTypesExposure'> {
+    endpoints: SetupEndpoint;
 }
 
-export interface SetupContext extends Omit<SetupResponse, 'endpoints'> {
+export interface SetupContextObject {
     readonly endpoints: {
         [K in EndpointName]?: EndpointHttpCallable<K>;
     };
+    readonly extraConfig: DeepReadonly<Omit<SetupResponse, 'endpoints'>>;
 }
