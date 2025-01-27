@@ -1,4 +1,14 @@
 import { IDynamicOffersConfig, IGrant } from '../../../../../types';
+import { GrantAccountTypes } from './constants';
+
+export type GrantAccountType = keyof typeof GrantAccountTypes;
+export type GrantAccountDisplayCallback = (grant: IGrant, accountType?: GrantAccountType) => void;
+
+export interface GrantAccountDisplayProps {
+    accountType: GrantAccountType;
+    grant: IGrant;
+    onDisplayClose: () => void;
+}
 
 export interface GrantListProps {
     externalDynamicOffersConfig?: IDynamicOffersConfig;

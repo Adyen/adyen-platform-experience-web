@@ -1,21 +1,43 @@
 import { IGrant } from '../../../../../types';
 import { BaseList } from '../../../../internal/BaseList/BaseList';
+import { GrantAccountDisplay } from './GrantAccountDisplay';
 import { GrantItem } from '../GrantItem/GrantItem';
 import { FunctionalComponent } from 'preact';
-import { GrantsProps } from './types';
+import { GrantAccountTypes } from './constants';
+import { GrantAccountDisplayCallback, GrantAccountType, GrantsProps } from './types';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
-import { useMemo } from 'preact/hooks';
+import { useCallback, useMemo, useState } from 'preact/hooks';
 import { CapitalHeader } from '../../../../internal/CapitalHeader';
 import Button from '../../../../internal/Button/Button';
 import { ButtonVariant } from '../../../../internal/Button/types';
 import Tabs from '../../../../internal/Tabs/Tabs';
 
 const List = ({ grants }: { grants: IGrant[] }) => {
+    const [grantAccountType, setGrantAccountType] = useState<GrantAccountType>(GrantAccountTypes.EARLY_REPAYMENT);
+    const [grantForAccountDisplay, setGrantForAccountDisplay] = useState<IGrant>();
+
+    const hideDisplayedGrantAccount = useCallback(() => setGrantForAccountDisplay(undefined), []);
+
+    const displayGrantAccount = useCallback<GrantAccountDisplayCallback>((grant, accountType = GrantAccountTypes.EARLY_REPAYMENT) => {
+        setGrantAccountType(accountType);
+        setGrantForAccountDisplay(grant);
+    }, []);
+
+    if (grantForAccountDisplay) {
+        switch (grantAccountType) {
+            case GrantAccountTypes.EARLY_REPAYMENT:
+                // case GrantAccountTypes.REVOCATION:
+                return (
+                    <GrantAccountDisplay accountType={grantAccountType} grant={grantForAccountDisplay} onDisplayClose={hideDisplayedGrantAccount} />
+                );
+        }
+    }
+
     return (
         <BaseList classNames={'adyen-pe-grant-list__items'}>
             {grants.map(grant => (
                 <li key={grant.id}>
-                    <GrantItem grant={grant} />
+                    <GrantItem grant={grant} displayAccount={displayGrantAccount.bind(null, grant)} />
                 </li>
             ))}
         </BaseList>

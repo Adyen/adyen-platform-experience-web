@@ -20,7 +20,7 @@ import { Tooltip } from '../../../../internal/Tooltip/Tooltip';
 import Alert from '../../../../internal/Alert/Alert';
 import { AlertTypeOption } from '../../../../internal/Alert/types';
 
-export const GrantItem: FunctionalComponent<GrantItemProps> = ({ grant }) => {
+export const GrantItem: FunctionalComponent<GrantItemProps> = ({ displayAccount, grant }) => {
     const { i18n } = useCoreContext();
     const { dateFormat } = useTimezoneAwareDateFormatting();
     const grantConfig = useMemo(() => getGrantConfig(grant), [grant]);
