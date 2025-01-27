@@ -1,4 +1,4 @@
-import AuthSetupContext from './AuthSetupContext';
+import SetupContext from './SetupContext';
 import AuthSessionSpecification from './AuthSessionSpecification';
 import { ERR_SESSION_REFRESH_ABORTED, EVT_SESSION_EXPIRED, EVT_SESSION_READY, SessionContext } from '../../../primitives/context/session';
 import { createErrorContainer } from '../../../primitives/auxiliary/errorContainer';
@@ -16,7 +16,7 @@ export class AuthSession {
     private readonly _errorContainer = createErrorContainer();
     private readonly _specification = new AuthSessionSpecification();
     private readonly _sessionContext = new SessionContext(this._specification);
-    private readonly _setupContext = new AuthSetupContext(this._sessionContext);
+    private readonly _setupContext = new SetupContext(this._sessionContext);
 
     private readonly _refreshPromisor = createPromisor(async (signal, skipSessionRefreshIfPossible = false) => {
         let authStateChanged = !this._refreshPromisorSignal;
@@ -47,6 +47,7 @@ export class AuthSession {
 
     private readonly _watchlist = createWatchlist({
         endpoints: () => this._setupContext.endpoints,
+        extraConfig: () => this._setupContext.extraConfig,
         hasError: () => this._errorContainer.hasError,
         isExpired: () => this._sessionContext.isExpired,
         isFrozen: () => this._sessionIsFrozen,

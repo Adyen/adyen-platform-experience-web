@@ -2,7 +2,7 @@ import cx from 'classnames';
 import type { ComponentChild } from 'preact';
 import type { PropsWithChildren } from 'preact/compat';
 import { useCallback, useLayoutEffect, useMemo, useState } from 'preact/hooks';
-import { useAuthContext } from '../../../../../core/Auth';
+import { useConfigContext } from '../../../../../core/ConfigContext';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { useFetch } from '../../../../../hooks/useFetch';
 import type { IBalanceAccountBase, ILineItem } from '../../../../../types';
@@ -115,7 +115,7 @@ export const TransactionDataContent = ({ transaction: initialTransaction, extraF
         [refundDisabled]
     );
 
-    const { getBalanceAccounts: balanceAccountEndpointCall } = useAuthContext().endpoints;
+    const { getBalanceAccounts: balanceAccountEndpointCall } = useConfigContext().endpoints;
 
     const { data: balanceAccounts } = useFetch(
         useMemo(

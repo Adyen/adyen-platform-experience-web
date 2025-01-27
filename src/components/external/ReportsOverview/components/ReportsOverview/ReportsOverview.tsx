@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo } from 'preact/hooks';
-import { useAuthContext } from '../../../../../core/Auth';
+import { useConfigContext } from '../../../../../core/ConfigContext';
 import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatformExperienceError';
 import { IBalanceAccountBase, IReport } from '../../../../../types';
 import { isFunction } from '../../../../../utils';
@@ -27,7 +27,7 @@ export const ReportsOverview = ({
 }: ExternalUIComponentProps<
     ReportsOverviewComponentProps & { balanceAccounts: IBalanceAccountBase[] | undefined; isLoadingBalanceAccount: boolean }
 >) => {
-    const { getReports: reportsEndpointCall } = useAuthContext().endpoints;
+    const { getReports: reportsEndpointCall } = useConfigContext().endpoints;
     const { activeBalanceAccount, balanceAccountSelectionOptions, onBalanceAccountSelection } = useBalanceAccountSelection(balanceAccounts);
     const { defaultParams, nowTimestamp, refreshNowTimestamp } = useDefaultOverviewFilterParams('reports', activeBalanceAccount);
 

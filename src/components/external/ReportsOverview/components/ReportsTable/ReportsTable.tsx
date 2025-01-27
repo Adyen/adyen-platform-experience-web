@@ -1,6 +1,6 @@
 import { FC } from 'preact/compat';
 import { useCallback, useMemo, useState } from 'preact/hooks';
-import { useAuthContext } from '../../../../../core/Auth';
+import { useConfigContext } from '../../../../../core/ConfigContext';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatformExperienceError';
 import { TranslationKey } from '../../../../../translations';
@@ -49,7 +49,7 @@ export const ReportsTable: FC<ReportsTableProps> = ({
     const { dateFormat } = useTimezoneAwareDateFormatting('UTC');
     const { freeze, frozen } = useFreezePeriod(DISABLED_BUTTONS_TIMEOUT);
     const [alert, setAlert] = useState<null | { title: string; description: string }>(null);
-    const { refreshing } = useAuthContext();
+    const { refreshing } = useConfigContext();
     const isLoading = useMemo(() => loading || refreshing, [loading, refreshing]);
     const isSmAndUpViewport = useResponsiveViewport(mediaQueries.up.sm);
     const isXsAndDownViewport = useResponsiveViewport(mediaQueries.down.xs);
