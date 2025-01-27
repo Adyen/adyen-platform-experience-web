@@ -113,6 +113,32 @@ export interface components {
             termEndsAt: string;
             thresholdAmount: components['schemas']['Amount'];
             totalAmount: components['schemas']['Amount'];
+
+            // [TODO]: Re-generate schemas from OpenAPI spec (when available) to automatically include these fields
+            earlyRepaymentAccounts: components['schemas']['GrantBankAccount'][];
+            revocationAccounts: components['schemas']['GrantBankAccount'][];
+        };
+        GrantBankAccountRegion: 'AU' | 'EU' | 'UK' | 'US';
+        GrantBankAccount: Partial<
+            Record<
+                | 'accountNumber'
+                | 'accountType'
+                | 'additionalBankIdentification'
+                | 'bankCode'
+                | 'bic'
+                | 'branchNumber'
+                | 'bsbCode'
+                | 'clearingNumber'
+                | 'iban'
+                | 'institutionNumber'
+                | 'ispbCode'
+                | 'routingNumber'
+                | 'sortCode'
+                | 'transitNumber',
+            string>
+        > & {
+            bankName: string;
+            region: components['schemas']['GrantBankAccountRegion'];
         };
         /** @enum {string} */
         GrantStatus: 'Pending' | 'Active' | 'Repaid' | 'Failed' | 'WrittenOff' | 'Revoked';

@@ -12,6 +12,13 @@ export const DYNAMIC_CAPITAL_OFFER = {
     step: 10000,
 } satisfies IDynamicOffersConfig;
 
+const GRANT_BANK_ACCOUNT = {
+    accountNumber: 'US11ADYB01234567890123',
+    routingNumber: '012345678',
+    region: 'US',
+    bankName: 'Adyen',
+} satisfies IGrant['earlyRepaymentAccounts'][number];
+
 export const DEFAULT_GRANT: IGrant = {
     id: '66e12a9a64a6',
     grantAmount: {
@@ -63,6 +70,8 @@ export const DEFAULT_GRANT: IGrant = {
     balanceAccountDescription: 'Primary balance account',
     status: 'Pending',
     missingActions: [],
+    earlyRepaymentAccounts: [GRANT_BANK_ACCOUNT],
+    revocationAccounts: [GRANT_BANK_ACCOUNT],
 };
 
 export const ACTIVE_GRANT: IGrant = {
