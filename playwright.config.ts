@@ -57,7 +57,7 @@ const config: PlaywrightTestConfig = {
             use: {
                 ...devices['Desktop Chrome'],
                 launchOptions: {
-                    args: process.env.PWDEBUG ? ['--auto-open-devtools-for-tabs'] : [],
+                    args: process.env.PWDEBUG ? ['--auto-open-devtools-for-tabs'] : ['--headless=new'],
                 },
             },
         },
