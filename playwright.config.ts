@@ -35,7 +35,7 @@ const config: PlaywrightTestConfig = {
         baseURL: baseUrl,
 
         trace: 'on-first-retry',
-        headless: !process.env.CI,
+        headless: !!process.env.CI,
     },
 
     /* Configure projects for major browsers */
