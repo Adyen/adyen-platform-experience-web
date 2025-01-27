@@ -9,7 +9,7 @@ import type { ConfigProviderProps } from './types';
 
 const ConfigContext = createContext<AuthSession['context'] & Pick<AuthSession, 'http' | 'refresh'>>({
     endpoints: EMPTY_OBJECT,
-    configuration: EMPTY_OBJECT,
+    extraConfig: EMPTY_OBJECT,
     hasError: false,
     http: asyncNoop,
     isExpired: undefined,

@@ -21,7 +21,7 @@ import type { HttpMethod } from '../../Http/types';
 
 export class SetupContext {
     private _endpoints: SetupContextObject['endpoints'] = EMPTY_OBJECT;
-    private _configuration: Omit<SetupContextObject, 'endpoints'> = EMPTY_OBJECT;
+    private _extraConfig: Omit<SetupContextObject, 'endpoints'> = EMPTY_OBJECT;
     private _revokeEndpointsProxy = noop;
 
     private readonly _beforeHttp = async () => {
@@ -49,7 +49,7 @@ export class SetupContext {
                 .then(({ endpoints, ...rest }) => {
                     this._resetEndpoints();
                     ({ proxy: this._endpoints, revoke: this._revokeEndpointsProxy } = this._getEndpointsProxy(endpoints));
-                    this._configuration = deepFreeze(rest);
+                    this._extraConfig = deepFreeze(rest);
                 }));
         };
     }
@@ -58,8 +58,8 @@ export class SetupContext {
         return this._endpoints;
     }
 
-    get configuration() {
-        return this._configuration;
+    get extraConfig() {
+        return this._extraConfig;
     }
 
     private _fetchSetupEndpoint(signal: AbortSignal) {
