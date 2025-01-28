@@ -3,6 +3,9 @@ import { ElementProps, ElementStory } from '../utils/types';
 import { PayoutsMeta } from '../components/payoutsOverview';
 import { Meta } from '@storybook/preact';
 import { getCustomPayoutsData } from './utils/customDataRequest';
+import { http, HttpResponse } from 'msw';
+import { endpoints } from '../../endpoints/endpoints';
+import { PAYOUTS_WITH_DETAILS } from '../../mocks/mock-data';
 
 const meta: Meta<ElementProps<typeof PayoutsOverview>> = { ...PayoutsMeta, title: 'Mocked/Payouts Overview' };
 
@@ -11,6 +14,23 @@ export const Default: ElementStory<typeof PayoutsOverview> = {
     args: {
         mockedApi: true,
     },
+};
+
+const CUSTOM_COLUMNS_MOCK_HANDLER = {
+    handlers: [
+        http.get(endpoints('mock').payouts, () => {
+            return HttpResponse.json({
+                data: [
+                    { ...PAYOUTS_WITH_DETAILS[0]?.payout, createdAt: Date.now() },
+                    { ...PAYOUTS_WITH_DETAILS[4]?.payout, createdAt: Date.now() },
+                    { ...PAYOUTS_WITH_DETAILS[6]?.payout, createdAt: Date.now() },
+                    { ...PAYOUTS_WITH_DETAILS[8]?.payout, createdAt: Date.now() },
+                    { ...PAYOUTS_WITH_DETAILS[10]?.payout, createdAt: Date.now() },
+                ],
+                _links: {},
+            });
+        }),
+    ],
 };
 
 export const CustomColumns: ElementStory<typeof PayoutsOverview> = {
@@ -41,9 +61,9 @@ export const CustomColumns: ElementStory<typeof PayoutsOverview> = {
             });
         },
     },
-    /*parameters: {
+    parameters: {
         msw: CUSTOM_COLUMNS_MOCK_HANDLER,
-    },*/
+    },
 };
 
 export default meta;
