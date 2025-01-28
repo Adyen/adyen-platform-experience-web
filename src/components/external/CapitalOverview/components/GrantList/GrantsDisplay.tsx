@@ -3,8 +3,8 @@ import { BaseList } from '../../../../internal/BaseList/BaseList';
 import { GrantAccountDisplay } from './GrantAccountDisplay';
 import { GrantItem } from '../GrantItem/GrantItem';
 import { FunctionalComponent } from 'preact';
-import { GrantAccountTypes } from './constants';
-import { GrantAccountDisplayCallback, GrantAccountType, GrantsProps } from './types';
+import { GrantDetailsView } from './constants';
+import { GrantDetailsViewCallback, GrantDetailsViewType, GrantsProps } from './types';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { useCallback, useMemo, useState } from 'preact/hooks';
 import { CapitalHeader } from '../../../../internal/CapitalHeader';
@@ -12,32 +12,12 @@ import Button from '../../../../internal/Button/Button';
 import { ButtonVariant } from '../../../../internal/Button/types';
 import Tabs from '../../../../internal/Tabs/Tabs';
 
-const List = ({ grants }: { grants: IGrant[] }) => {
-    const [grantAccountType, setGrantAccountType] = useState<GrantAccountType>(GrantAccountTypes.EARLY_REPAYMENT);
-    const [grantForAccountDisplay, setGrantForAccountDisplay] = useState<IGrant>();
-
-    const hideDisplayedGrantAccount = useCallback(() => setGrantForAccountDisplay(undefined), []);
-
-    const displayGrantAccount = useCallback<GrantAccountDisplayCallback>((grant, accountType = GrantAccountTypes.EARLY_REPAYMENT) => {
-        setGrantAccountType(accountType);
-        setGrantForAccountDisplay(grant);
-    }, []);
-
-    if (grantForAccountDisplay) {
-        switch (grantAccountType) {
-            case GrantAccountTypes.EARLY_REPAYMENT:
-                // case GrantAccountTypes.REVOCATION:
-                return (
-                    <GrantAccountDisplay accountType={grantAccountType} grant={grantForAccountDisplay} onDisplayClose={hideDisplayedGrantAccount} />
-                );
-        }
-    }
-
+const List = ({ grants, showDetailsView }: { grants: IGrant[]; showDetailsView: GrantDetailsViewCallback }) => {
     return (
         <BaseList classNames={'adyen-pe-grant-list__items'}>
             {grants.map(grant => (
                 <li key={grant.id}>
-                    <GrantItem grant={grant} displayAccount={displayGrantAccount.bind(null, grant)} />
+                    <GrantItem grant={grant} showDetailsView={showDetailsView.bind(null, grant)} />
                 </li>
             ))}
         </BaseList>
@@ -45,6 +25,8 @@ const List = ({ grants }: { grants: IGrant[] }) => {
 };
 
 export const GrantsDisplay: FunctionalComponent<GrantsProps> = ({ grantList, hideTitle, newOfferAvailable, onNewOfferRequest }) => {
+    const [selectedGrantDetailsView, setSelectedGrantDetailsView] = useState<GrantDetailsViewType>();
+    const [selectedGrant, setSelectedGrant] = useState<IGrant>();
     const { i18n } = useCoreContext();
 
     const [activeGrants, inactiveGrants] = useMemo(() => {
@@ -71,6 +53,21 @@ export const GrantsDisplay: FunctionalComponent<GrantsProps> = ({ grantList, hid
         return newOfferAvailable && !activeGrants.some(grant => grant.status === 'Pending');
     }, [activeGrants, newOfferAvailable]);
 
+    const hideGrantDetailsView = useCallback(() => setSelectedGrantDetailsView(undefined), []);
+
+    const showGrantDetailsView = useCallback<GrantDetailsViewCallback>((grant, detailsView = GrantDetailsView.DEFAULT) => {
+        setSelectedGrantDetailsView(detailsView);
+        setSelectedGrant(grant);
+    }, []);
+
+    if (selectedGrant) {
+        switch (selectedGrantDetailsView) {
+            case GrantDetailsView.EARLY_REPAYMENT:
+                // case GrantDetailsView.REVOCATION:
+                return <GrantAccountDisplay detailsView={selectedGrantDetailsView} grant={selectedGrant} onDisplayClose={hideGrantDetailsView} />;
+        }
+    }
+
     return (
         <div className="adyen-pe-grant-list">
             <div className="adyen-pe-grant-list__header-container">
@@ -82,18 +79,18 @@ export const GrantsDisplay: FunctionalComponent<GrantsProps> = ({ grantList, hid
                 ) : null}
             </div>
 
-            {displayMode === 'SingleGrant' && <List grants={grantList} />}
+            {displayMode === 'SingleGrant' && <List grants={grantList} showDetailsView={showGrantDetailsView} />}
             {displayMode === 'Tabs' && (
                 <Tabs
                     tabs={[
                         {
                             label: 'capital.inProgress',
-                            content: <List grants={activeGrants} />,
+                            content: <List grants={activeGrants} showDetailsView={showGrantDetailsView} />,
                             id: 'active',
                         },
                         {
                             label: 'capital.closed',
-                            content: <List grants={inactiveGrants} />,
+                            content: <List grants={inactiveGrants} showDetailsView={showGrantDetailsView} />,
                             id: 'inactive',
                         },
                     ]}

@@ -1,11 +1,12 @@
 import { IDynamicOffersConfig, IGrant } from '../../../../../types';
-import { GrantAccountTypes } from './constants';
+import { ValueOfRecord } from '../../../../../utils/types';
+import { GrantDetailsView } from './constants';
 
-export type GrantAccountType = keyof typeof GrantAccountTypes;
-export type GrantAccountDisplayCallback = (grant: IGrant, accountType?: GrantAccountType) => void;
+export type GrantDetailsViewType = ValueOfRecord<typeof GrantDetailsView>;
+export type GrantDetailsViewCallback = (grant: IGrant, detailsView?: GrantDetailsViewType) => void;
 
-export interface GrantAccountDisplayProps {
-    accountType: GrantAccountType;
+export interface GrantDetailsViewProps {
+    detailsView: GrantDetailsViewType;
     grant: IGrant;
     onDisplayClose: () => void;
 }

@@ -20,7 +20,7 @@ import { Tooltip } from '../../../../internal/Tooltip/Tooltip';
 import Alert from '../../../../internal/Alert/Alert';
 import { AlertTypeOption } from '../../../../internal/Alert/types';
 
-export const GrantItem: FunctionalComponent<GrantItemProps> = ({ displayAccount, grant }) => {
+export const GrantItem: FunctionalComponent<GrantItemProps> = ({ grant, showDetailsView }) => {
     const { i18n } = useCoreContext();
     const { dateFormat } = useTimezoneAwareDateFormatting();
     const grantConfig = useMemo(() => getGrantConfig(grant), [grant]);
@@ -28,7 +28,8 @@ export const GrantItem: FunctionalComponent<GrantItemProps> = ({ displayAccount,
     return (
         <div className={GRANT_ITEM_CLASS_NAMES.base}>
             <Card classNameModifiers={[GRANT_ITEM_CLASS_NAMES.overview]} filled={grantConfig.isBackgroundFilled} testId={'grant-container'}>
-                <div className={GRANT_ITEM_CLASS_NAMES.cardContent}>
+                {/* [TODO]: Make this a proper (accessible) click target and pass the handler correctly */}
+                <div className={GRANT_ITEM_CLASS_NAMES.cardContent} onClick={() => showDetailsView?.('earlyRepaymentAccounts')}>
                     <div className={GRANT_ITEM_CLASS_NAMES.statusContainer}>
                         <Typography
                             variant={TypographyVariant.CAPTION}
