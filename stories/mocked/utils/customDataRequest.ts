@@ -7,7 +7,7 @@ const getProductById = (id: string) => {
     return {
         value: products[index],
         type: 'icon',
-        details: { url: 'https://img.icons8.com/?size=100&id=43184&format=png&color=000000', alt: products[index] },
+        details: { src: 'https://img.icons8.com/?size=100&id=43184&format=png&color=000000', alt: products[index] },
     } as const;
     // return products[index]!;
 };
@@ -32,7 +32,7 @@ const getStoreById = (id: string) => {
     return {
         value: store.value,
         type: 'icon',
-        details: { url: `https://flagicons.lipis.dev/flags/4x3/${store.flag}.svg` },
+        details: { src: `https://flagicons.lipis.dev/flags/4x3/${store.flag}.svg` },
     } as const;
 };
 
