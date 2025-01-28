@@ -47,18 +47,39 @@ test.describe('Transaction List with custom columns', () => {
         await expect(transactionsOverview.getHeader('Reference')).toBeAttached();
     });
 
-    test('Extra columns values should render with string or the format {value: string}', async ({ transactionsOverviewPage, page }) => {
+    test('Extra columns values should render according to their type', async ({ transactionsOverviewPage, page, context }) => {
         await goToPage({ page, id: `${COMPONENT_PREFIX}--custom-columns` });
         const transactionsOverview = transactionsOverviewPage;
 
-        // _store: { value: string; icon: { url: string } }
+        // _store (TEXT TYPE)
+        const productFirstRow = transactionsOverview.getCell('_product', 0);
+        await expect(productFirstRow).toHaveText('Bubble tea');
+
+        // _store (ICON TYPE)
         const storeFirstRow = transactionsOverview.getCell('_store', 0);
         await expect(storeFirstRow).toHaveText('Sydney');
         await expect(storeFirstRow.getByRole('img')).toBeAttached();
 
-        // _reference: string
+        // _reference: (LINK TYPE)
         const referenceFirstRow = transactionsOverview.getCell('_reference', 0);
         await expect(referenceFirstRow).toHaveText('8W54BM75W7DYCIVK');
+
+        const [newPage] = await Promise.all([
+            context.waitForEvent('page'), // Waits for a new 'page' event in this browser context
+            referenceFirstRow.click(), // This click opens the link in a new tab
+        ]);
+        await newPage.waitForLoadState();
+        expect(newPage.url()).toContain('&reference=8W54BM75W7DYCIVK');
+
+        // _action (BUTTON TYPE)
+        const messages: string[] = [];
+        page.on('console', message => {
+            messages.push(message.text());
+        });
+        const actionFirstRow = transactionsOverview.getCell('_button', 0);
+        await actionFirstRow.getByRole('button').click();
+
+        expect(messages).toContain('Action');
     });
 
     test('Columns should be reordered', async ({ transactionsOverviewPage, page }) => {

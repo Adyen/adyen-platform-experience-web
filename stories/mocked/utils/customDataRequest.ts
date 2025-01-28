@@ -6,8 +6,7 @@ const getProductById = (id: string) => {
     const index = Number(numericId[numericId.length - 1]);
     return {
         value: products[index],
-        type: 'icon',
-        details: { src: 'https://img.icons8.com/?size=100&id=43184&format=png&color=000000', alt: products[index] },
+        type: 'text',
     } as const;
     // return products[index]!;
 };
@@ -50,7 +49,7 @@ const txMatcher = (data: ITransaction[]) =>
             type: 'button',
             value: 'Refund',
             details: {
-                action: () => alert('Action'),
+                action: () => console.log('Action'),
             },
         } as const,
     }));
@@ -76,7 +75,7 @@ export const getCustomReportsData = async (data: IReport[]) => {
                 type: 'button',
                 value: 'Send email',
                 details: {
-                    action: () => alert('Action'),
+                    action: () => console.log('Action'),
                 },
             },
         } as const;
@@ -98,7 +97,7 @@ export const getCustomPayoutsData = async (data: IPayout[]) => {
                 type: 'button',
                 value: 'Send email',
                 details: {
-                    action: () => alert('Action'),
+                    action: () => console.log('Action'),
                 },
             },
         } as const;
