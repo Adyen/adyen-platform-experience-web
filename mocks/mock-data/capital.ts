@@ -71,7 +71,7 @@ export const DEFAULT_GRANT: IGrant = {
     status: 'Pending',
     missingActions: [],
     earlyRepaymentAccounts: [GRANT_BANK_ACCOUNT],
-    revocationAccounts: [GRANT_BANK_ACCOUNT],
+    revocationAccount: GRANT_BANK_ACCOUNT,
 };
 
 export const ACTIVE_GRANT: IGrant = {

@@ -38,4 +38,17 @@
         padding-bottom: style.token(spacer-060);
         padding-top: style.token(spacer-060);
     }
+
+    &__actions-bar {
+        display: flex;
+        margin-top: style.token(spacer-060);
+    }
+
+    &__main-action-button {
+        flex: 1;
+
+        .adyen-pe-button__label {
+            justify-content: center;
+        }
+    }
 }

@@ -1,10 +1,12 @@
 import { IGrant } from '../../../../../types';
 import { BaseList } from '../../../../internal/BaseList/BaseList';
-import { GrantAccountDisplay } from './GrantAccountDisplay';
+import { GrantEarlyRepaymentDetails } from '../GrantDetails/GrantEarlyRepaymentDetails';
 import { GrantItem } from '../GrantItem/GrantItem';
+import { getGrantConfig } from '../GrantItem/utils';
 import { FunctionalComponent } from 'preact';
-import { GrantDetailsView } from './constants';
-import { GrantDetailsViewCallback, GrantDetailsViewType, GrantsProps } from './types';
+import { GRANT_DETAILS_VIEWS } from '../GrantDetails/constants';
+import { GrantDetailsView, GrantDetailsViewCallback } from '../GrantDetails/types';
+import { GrantsProps } from './types';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { useCallback, useMemo, useState } from 'preact/hooks';
 import { CapitalHeader } from '../../../../internal/CapitalHeader';
@@ -25,7 +27,7 @@ const List = ({ grants, showDetailsView }: { grants: IGrant[]; showDetailsView: 
 };
 
 export const GrantsDisplay: FunctionalComponent<GrantsProps> = ({ grantList, hideTitle, newOfferAvailable, onNewOfferRequest }) => {
-    const [selectedGrantDetailsView, setSelectedGrantDetailsView] = useState<GrantDetailsViewType>();
+    const [selectedGrantDetailsView, setSelectedGrantDetailsView] = useState<GrantDetailsView>();
     const [selectedGrant, setSelectedGrant] = useState<IGrant>();
     const { i18n } = useCoreContext();
 
@@ -53,18 +55,25 @@ export const GrantsDisplay: FunctionalComponent<GrantsProps> = ({ grantList, hid
         return newOfferAvailable && !activeGrants.some(grant => grant.status === 'Pending');
     }, [activeGrants, newOfferAvailable]);
 
+    const selectedGrantConfig = useMemo(() => selectedGrant && getGrantConfig(selectedGrant), [selectedGrant]);
+
     const hideGrantDetailsView = useCallback(() => setSelectedGrantDetailsView(undefined), []);
 
-    const showGrantDetailsView = useCallback<GrantDetailsViewCallback>((grant, detailsView = GrantDetailsView.DEFAULT) => {
+    const showGrantDetailsView = useCallback<GrantDetailsViewCallback>((grant, detailsView = GRANT_DETAILS_VIEWS.default) => {
         setSelectedGrantDetailsView(detailsView);
         setSelectedGrant(grant);
     }, []);
 
     if (selectedGrant) {
         switch (selectedGrantDetailsView) {
-            case GrantDetailsView.EARLY_REPAYMENT:
-                // case GrantDetailsView.REVOCATION:
-                return <GrantAccountDisplay detailsView={selectedGrantDetailsView} grant={selectedGrant} onDisplayClose={hideGrantDetailsView} />;
+            case GRANT_DETAILS_VIEWS.earlyRepayment: {
+                if (selectedGrantConfig?.hasEarlyRepaymentDetails) {
+                    return <GrantEarlyRepaymentDetails grant={selectedGrant} onDetailsClose={hideGrantDetailsView} />;
+                }
+                break;
+            }
+            // case GRANT_DETAILS_VIEWS.revocation:
+            //     break;
         }
     }
 

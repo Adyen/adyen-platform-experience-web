@@ -116,7 +116,7 @@ export interface components {
 
             // [TODO]: Re-generate schemas from OpenAPI spec (when available) to automatically include these fields
             earlyRepaymentAccounts: components['schemas']['GrantBankAccount'][];
-            revocationAccounts: components['schemas']['GrantBankAccount'][];
+            revocationAccount: components['schemas']['GrantBankAccount'];
         };
         GrantBankAccountRegion: 'AU' | 'EU' | 'UK' | 'US';
         GrantBankAccount: Partial<
