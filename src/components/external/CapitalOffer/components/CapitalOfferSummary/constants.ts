@@ -1,0 +1,6 @@
+export const US_SUMMARY_TITLE = 'Creditor: Adyen N.V. – San Francisco Branch, 505 Brannan Street, San Francisco, CA 94107.';
+export const US_SUMMARY_TEXT_FIRST_PART =
+    "If your application for business credit is denied, you have the right to a written statement of the specific reasons for the denial. To obtain the statement, please contact Adyen's Credit Support Team by emailing ";
+export const US_SUMMARY_TEXT_EMAIL = 'capital-support@adyen.com';
+export const US_SUMMARY_TEXT_SECOND_PART =
+    " within 60 days from the date you are notified of our decision. We will send you a written statement of reasons for the denial within 30 days of receiving your request for the statement. The Federal Equal Credit Opportunity Act prohibits creditors from discriminating against credit applicants on the basis of race, color, religion, national origin, sex, marital status, age (provided that the applicant has the legal capacity to enter into a binding contract), because all or part of the applicant's income derives from any public assistance program, or because the applicant has in good faith exercised any right under the Consumer Credit Protection Act. The federal agency that administers compliance with this law concerning this creditor is the Office of the Comptroller of the Currency (OCC), 400 7th Street, SW Washington, DC 20219.";

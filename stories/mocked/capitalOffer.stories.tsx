@@ -1,10 +1,10 @@
 import { Meta } from '@storybook/preact';
-import { ElementProps, ElementStory } from '../utils/types';
-import { capitalOfferMeta } from '../components/capitalOffer';
+import { ElementProps, ElementStory, SetupControls } from '../utils/types';
+import { capitalOfferWithSetupMeta } from '../components/capitalOffer';
 import { CapitalOffer } from '../../src';
 import { CapitalMockedResponses } from '../../mocks/mock-server/capital';
 
-const meta: Meta<ElementProps<typeof CapitalOffer>> = { ...capitalOfferMeta, title: 'Mocked/Capital Offer' };
+const meta: Meta<ElementProps<typeof CapitalOffer> & SetupControls> = { ...capitalOfferWithSetupMeta, title: 'Mocked/Capital Offer' };
 
 export const Default: ElementStory<typeof CapitalOffer> = {
     name: 'Default',
@@ -13,7 +13,7 @@ export const Default: ElementStory<typeof CapitalOffer> = {
     },
     parameters: {
         msw: {
-            handlers: CapitalMockedResponses.default,
+            handlers: [...CapitalMockedResponses.default],
         },
     },
 };

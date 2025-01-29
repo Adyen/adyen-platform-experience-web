@@ -20,3 +20,5 @@ export type ElementProps<T extends new (...args: any) => any> = Omit<Constructor
 export type ElementStory<T extends new (...args: any) => any, ExtraProps = {}> = StoryObj<ExtraProps & ElementProps<T> & GlobalStoriesProps>;
 
 export type SessionControls = { session: { roles: string[]; accountHolderId?: string } };
+
+export type SetupControls = { legalEntity: { region: string; countryCode: string } };

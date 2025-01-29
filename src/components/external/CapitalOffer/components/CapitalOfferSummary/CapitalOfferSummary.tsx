@@ -21,6 +21,7 @@ import { CapitalErrorMessageDisplay } from '../utils/CapitalErrorMessageDisplay'
 import cx from 'classnames';
 import { StructuredListItem } from '../../../../internal/StructuredList/types';
 import { CAPITAL_REPAYMENT_FREQUENCY } from '../../../../constants';
+import { CapitalOfferSummaryLegalText } from './CapitalOfferSummaryLegalText';
 
 const errorMessageWithAlert = ['30_013'];
 
@@ -225,6 +226,7 @@ export const CapitalOfferSummary = ({
                     {i18n.get(requestFundsMutation.isLoading ? 'capital.requesting' : 'capital.requestFunds')}
                 </Button>
             </div>
+            <CapitalOfferSummaryLegalText />
         </div>
     );
 };

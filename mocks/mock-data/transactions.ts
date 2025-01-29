@@ -1842,13 +1842,14 @@ export const TRANSACTIONS: ITransaction[] = [
         createdAt: '2024-06-30T05:16:44.764Z',
     },
     {
-        bankAccount: {
-            accountNumberLastFourDigits: '6890',
-        },
         id: '254X7TAUWB140HW0',
         amount: {
             currency: 'USD',
             value: 1400000,
+        },
+        paymentMethod: {
+            type: 'applepay',
+            lastFourDigits: '1234123',
         },
         category: 'Payment',
         balanceAccountId: 'BA32272223222B5CTDQPM6W2H',

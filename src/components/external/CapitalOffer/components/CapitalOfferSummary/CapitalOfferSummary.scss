@@ -46,4 +46,16 @@
     &__error-alert-button {
         margin-top: style.token(spacer-050);
     }
+
+    &__info {
+        &--email {
+            display: inline-flex;
+            text-decoration: underline;
+        }
+
+        &--text {
+            color: style.token(color-label-secondary);
+            display: inline;
+        }
+    }
 }

@@ -1,7 +1,7 @@
-import { ElementProps, ElementStory } from '../utils/types';
+import { ElementProps, ElementStory, SetupControls } from '../utils/types';
 import { Meta } from '@storybook/preact';
 import { AdyenPlatformExperience, CapitalOverview } from '../../src';
-import { CapitalOverviewMeta } from '../components/capitalOverview';
+import { CapitalOverviewWithSetupMeta } from '../components/capitalOverview';
 import { CapitalMockedResponses } from '../../mocks/mock-server/capital';
 import { useEffect } from 'preact/compat';
 import getMySessionToken from '../../playground/utils/sessionRequest';
@@ -9,7 +9,7 @@ import { ExternalPlatformElement } from '../utils/ExternalPlatformElement/Extern
 import { useState } from 'preact/hooks';
 import { CapitalComponentState } from '../../src/components/external/CapitalOverview/types';
 
-const meta: Meta<ElementProps<typeof CapitalOverview>> = { ...CapitalOverviewMeta, title: 'Mocked/Capital Overview' };
+const meta: Meta<ElementProps<typeof CapitalOverview> & SetupControls> = { ...CapitalOverviewWithSetupMeta, title: 'Mocked/Capital Overview' };
 
 export const Default: ElementStory<typeof CapitalOverview> = {
     name: 'Default',
