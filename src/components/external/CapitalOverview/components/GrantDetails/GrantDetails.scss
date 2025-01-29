@@ -26,3 +26,44 @@
         color: style.token(color-label-secondary);
     }
 }
+
+.adyen-pe-grant-early-repayment-details {
+    $adyen-icon-touch-size: style.token(spacer-110);
+    $adyen-heading-line-height: style.token(text-title-m-line-height);
+
+    align-items: flex-start;
+    align-self: stretch;
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-080);
+
+    .adyen-pe-header__controls {
+        --icon-size: 16px;
+        --offset-margin: calc(#{$adyen-heading-line-height} - #{$adyen-icon-touch-size});
+        --offset-position: calc(var(--offset-margin) * -1 / 2);
+
+        .adyen-pe-button--icon {
+            font-size: var(--icon-size);
+            margin-right: var(--offset-margin);
+            margin-top: var(--offset-margin);
+            position: relative;
+            right: var(--offset-position);
+            top: var(--offset-position);
+        }
+    }
+
+    &__repayment-account {
+        border: style.token(border-width-s) solid style.token(color-outline-primary);
+        border-radius: style.token(spacer-040);
+        padding: style.token(spacer-060) style.token(spacer-080);
+    }
+
+    &__repayment-notice {
+        margin-top: style.token(spacer-040);
+    }
+
+    &__balance-info {
+        padding: style.token(spacer-070) style.token(spacer-080);
+        width: 100%;
+    }
+}

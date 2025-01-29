@@ -26,4 +26,5 @@ export enum TypographyElement {
     DIV = 'div',
     PARAGRAPH = 'p',
     SPAN = 'span',
+    STRONG = 'strong',
 }
