@@ -28,6 +28,7 @@ export const getCapitalOfferSubtitleByLegalEntity = (legalEntity?: ILegalEntity)
     const region = legalEntity?.region;
     const countryCode = legalEntity?.countryCode;
 
+    // Check the country first because it is more specific and first handle the one with a narrow scope
     return getSubtitleByCountry(countryCode) ?? getSubtitleByRegion(region);
 };
 
