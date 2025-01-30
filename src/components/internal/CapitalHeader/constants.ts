@@ -1,8 +1,8 @@
 export const enum AllowedLocations {
     'AU' = 'AU',
-    'EU' = 'EU',
-    'UK' = 'UK',
+    'EU' = 'Europe',
+    'GB' = 'GB',
     'US' = 'US',
 }
 
-export const allowedLocations: string[] = ['AU', 'EU', 'UK', 'US'];
+export const allowedLocations: string[] = ['AU', 'Europe', 'GB', 'US'];

@@ -14,9 +14,9 @@ const getSubtitleByRegion = (region?: string) => {
 const getSubtitleByCountry = (countryCode?: string) => {
     switch (countryCode) {
         case AllowedLocations.AU:
-            return 'capital.capitalOfferSubtitleAUS';
-        case AllowedLocations.UK:
-            return 'capital.capitalOfferSubtitleUK';
+            return 'capital.capitalOfferSubtitleAU';
+        case AllowedLocations.GB:
+            return 'capital.capitalOfferSubtitleGB';
         case AllowedLocations.US:
             return 'capital.capitalOfferSubtitleUS';
         default:
