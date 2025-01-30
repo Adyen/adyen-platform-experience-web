@@ -5,4 +5,6 @@ export const enum AllowedLocations {
     'US' = 'US',
 }
 
-export const allowedLocations: string[] = ['AU', 'Europe', 'GB', 'US'];
+export const allowedCountries: string[] = ['AU', 'GB', 'US'];
+
+export const allowedRegions: string[] = ['Europe'];
