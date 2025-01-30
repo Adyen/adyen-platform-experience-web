@@ -1,57 +1,62 @@
 import useCoreContext from '../../../core/Context/useCoreContext';
-import { ComponentChildren, FunctionalComponent } from 'preact';
-import { isPlainObject, uniqueId } from '../../../utils';
-import { normalizeTranslationFill } from './utils';
+import { ComponentChildren, Fragment, FunctionalComponent } from 'preact';
+import { TranslationFill, TranslationFillFunc, TranslationProps } from './types';
+import { isFunction, uniqueId } from '../../../utils';
 import { useCallback, useMemo } from 'preact/hooks';
-import { TranslationProps } from './types';
+
+const normalizeTranslationFill = (fill: TranslationFill): TranslationFillFunc => {
+    return isFunction(fill) ? fill : () => fill;
+};
 
 export const Translation: FunctionalComponent<TranslationProps> = ({ count, defaultFill, fills, translationKey }) => {
-    const placeholder = useMemo(() => uniqueId('translation'), []);
     const { i18n } = useCoreContext();
 
-    const getTranslationFill = useMemo(() => {
+    const getTranslationFill = useMemo<(translationKey: string, index: number, repetitionIndex: number) => ComponentChildren>(() => {
         const _defaultFill = normalizeTranslationFill(defaultFill);
 
-        if (isPlainObject(fills)) {
-            return (...keysByPriority: string[]): ComponentChildren => {
+        if (fills !== undefined) {
+            return (translationKey, index, repetitionIndex) => {
+                const keysByPriority = [`${translationKey}[${repetitionIndex}]`, translationKey, `[${index}]`, index];
+
                 for (const key of keysByPriority) {
-                    const fill = normalizeTranslationFill(fills[key]);
+                    const fill = normalizeTranslationFill((fills as any)[key])(translationKey);
                     if (fill != undefined) return fill;
                 }
-                return _defaultFill;
+
+                return _defaultFill(translationKey);
             };
         }
 
-        return () => _defaultFill;
+        return _defaultFill;
     }, [fills, defaultFill]);
 
+    const translationPlaceholder = useMemo(() => uniqueId('translation'), []);
     const translationFills = useMemo<ComponentChildren[]>(() => [], [getTranslationFill]);
 
-    const values = useCallback(
-        (key: string, index: number, repetitionIndex: number) => {
-            translationFills.push(getTranslationFill(`${key}[${repetitionIndex}]`, key, `[${index}]`) ?? null);
-            return placeholder;
+    const translationFillValue = useCallback<(translationKey: string, index: number, repetitionIndex: number) => string>(
+        (...args) => {
+            translationFills.push(getTranslationFill(...args) ?? null);
+            return translationPlaceholder;
         },
-        [getTranslationFill, placeholder, translationFills]
+        [getTranslationFill, translationFills, translationPlaceholder]
     );
 
-    const translation = useMemo(() => i18n.get(translationKey, { count, values }), [translationKey, count, values]);
+    const [firstTranslationFragment, ...restTranslationFragments] = useMemo(() => {
+        const translatedString = i18n.get(translationKey, { count, values: translationFillValue });
+        return translatedString.split(translationPlaceholder);
+    }, [i18n, count, translationFillValue, translationKey, translationPlaceholder]);
 
-    return useMemo(() => {
-        const [firstFragment, ...restFragments] = translation.split(placeholder);
-        return (
-            <>
-                {firstFragment}
-                {restFragments.length > 0 &&
-                    restFragments.map((fragment, index) => (
-                        <>
-                            {translationFills[index]}
-                            {fragment}
-                        </>
-                    ))}
-            </>
-        );
-    }, [placeholder, translation, translationFills]);
+    return (
+        <>
+            {firstTranslationFragment}
+            {restTranslationFragments.map((translationFragment, index) => (
+                <Fragment key={`${translationPlaceholder}__${index}`}>
+                    {translationFills[index]}
+                    {translationFragment}
+                </Fragment>
+            ))}
+        </>
+    );
 };
 
 export default Translation;
