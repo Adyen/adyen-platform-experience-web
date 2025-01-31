@@ -11,9 +11,9 @@ import { SUMMARY_TEXT_EMAIL } from './constants';
 
 export const CapitalOfferSummaryLegalText = () => {
     const { i18n } = useCoreContext();
-    const region = useConfigContext()?.extraConfig?.legalEntity?.countryCode;
+    const countryCode = useConfigContext()?.extraConfig?.legalEntity?.countryCode;
 
-    return region === AllowedLocations.US ? (
+    return countryCode === AllowedLocations.US ? (
         <Card filled noOutline>
             <Typography variant={TypographyVariant.CAPTION} className={'adyen-pe-capital-offer-summary__legal-text--title'}>
                 {i18n.get('capital.summaryLegalTextTitle')}
