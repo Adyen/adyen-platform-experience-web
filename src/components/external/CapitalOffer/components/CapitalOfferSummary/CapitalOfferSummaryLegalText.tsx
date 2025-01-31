@@ -16,12 +16,12 @@ export const CapitalOfferSummaryLegalText = () => {
     return region === AllowedLocations.US ? (
         <Card filled noOutline>
             <Typography variant={TypographyVariant.CAPTION} className={'adyen-pe-capital-offer-summary__legal-text--title'}>
-                {i18n.get('capital.summaryTitle')}
+                {i18n.get('capital.summaryLegalTextTitle')}
             </Typography>
             <Typography variant={TypographyVariant.CAPTION} className={'adyen-pe-capital-offer-summary__legal-text--subtitle'}>
                 {
                     <Translation
-                        translationKey={'capital.summaryParagraph'}
+                        translationKey={'capital.summaryLegalText'}
                         fills={{
                             email: (
                                 <AnchorButton

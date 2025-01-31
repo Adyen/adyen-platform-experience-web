@@ -47,18 +47,6 @@
         margin-top: style.token(spacer-050);
     }
 
-    &__info {
-        &--email {
-            display: inline-flex;
-            text-decoration: underline;
-        }
-
-        &--text {
-            color: style.token(color-label-secondary);
-            display: inline;
-        }
-    }
-
     &__legal-text {
         &--title {
             color: style.token(color-label-primary);
