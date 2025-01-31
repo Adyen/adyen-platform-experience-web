@@ -2,7 +2,7 @@ import { ComponentChildren } from 'preact';
 import { TranslationKey } from '../../../translations';
 
 export type TranslationFill = ComponentChildren | TranslationFillFunc;
-export type TranslationFillFunc = (translationKey: string) => ComponentChildren;
+export type TranslationFillFunc = (placeholder: string, index: number, repetitionIndex: number) => ComponentChildren;
 
 export interface TranslationProps {
     count?: number;

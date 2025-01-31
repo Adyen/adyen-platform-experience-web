@@ -11,19 +11,19 @@ const normalizeFill = (fill: TranslationFill): TranslationFillFunc => {
 export const Translation: FunctionalComponent<TranslationProps> = ({ count, defaultFill, fills, translationKey }) => {
     const { i18n } = useCoreContext();
 
-    const getFill = useMemo<(translationKey: string, index: number, repetitionIndex: number) => ComponentChildren>(() => {
+    const getFill = useMemo<TranslationFillFunc>(() => {
         const _defaultFill = normalizeFill(defaultFill);
 
         if (fills !== undefined) {
-            return (translationKey, index, repetitionIndex) => {
-                const keysByPriority = [`${translationKey}[${repetitionIndex}]`, translationKey, `[${index}]`, index];
+            return (...args) => {
+                const [, index] = args;
 
-                for (const key of keysByPriority) {
-                    const fill = normalizeFill((fills as any)[key])(translationKey);
+                for (const lookupProperty of [translationKey, index]) {
+                    const fill = normalizeFill((fills as any)[lookupProperty])(...args);
                     if (fill != undefined) return fill;
                 }
 
-                return _defaultFill(translationKey);
+                return _defaultFill(...args);
             };
         }
 
@@ -32,20 +32,20 @@ export const Translation: FunctionalComponent<TranslationProps> = ({ count, defa
 
     return useMemo(() => {
         const fills: ComponentChildren[] = [];
-        const placeholder = uniqueId('translation');
+        const placeholderFill = uniqueId('translation');
 
-        const values = (...args: Parameters<typeof getFill>) => {
+        const values = (...args: Parameters<TranslationFillFunc>) => {
             fills.push(getFill(...args) ?? null);
-            return placeholder;
+            return placeholderFill;
         };
 
-        const [firstFragment, ...restFragments] = i18n.get(translationKey, { count, values }).split(placeholder);
+        const [firstFragment, ...restFragments] = i18n.get(translationKey, { count, values }).split(placeholderFill);
 
         return (
             <>
                 {firstFragment}
                 {restFragments.map((fragment, index) => (
-                    <Fragment key={`${placeholder}__${index}`}>
+                    <Fragment key={`${placeholderFill}__${index}`}>
                         {fills[index]}
                         {fragment}
                     </Fragment>
