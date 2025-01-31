@@ -15,15 +15,15 @@ export interface HeaderProps {
     hasDivider?: boolean;
     hideTitle?: UIElementProps['hideTitle'];
     subtitleKey?: TranslationKey;
-    subTitleVariant?: TypographyVariant;
     titleKey?: TranslationKey;
-    subTitleConfig?: {
-        subTitleVariant?: TypographyVariant;
+    subtitleConfig?: {
+        variant?: TypographyVariant;
+        typographyEl?: TypographyElement;
         classNames?: string;
     };
 }
 
-export const Header: FC<HeaderProps> = ({ baseClassName = BASE_CLASS, children, hasDivider, hideTitle, titleKey, subtitleKey, subTitleConfig }) => {
+export const Header: FC<HeaderProps> = ({ baseClassName = BASE_CLASS, children, hasDivider, hideTitle, titleKey, subtitleKey, subtitleConfig }) => {
     const { i18n } = useCoreContext();
     return (
         <header className={baseClassName}>
@@ -36,8 +36,11 @@ export const Header: FC<HeaderProps> = ({ baseClassName = BASE_CLASS, children, 
                     </div>
                 )}
                 {subtitleKey && (
-                    <div className={cx(`${baseClassName}__subtitle`, subTitleConfig?.classNames)}>
-                        <Typography el={TypographyElement.SPAN} variant={subTitleConfig?.subTitleVariant ?? TypographyVariant.BODY}>
+                    <div className={cx(`${baseClassName}__subtitle`, subtitleConfig?.classNames)}>
+                        <Typography
+                            el={subtitleConfig?.typographyEl ?? TypographyElement.SPAN}
+                            variant={subtitleConfig?.variant ?? TypographyVariant.BODY}
+                        >
                             {i18n.get(subtitleKey)}
                         </Typography>
                     </div>

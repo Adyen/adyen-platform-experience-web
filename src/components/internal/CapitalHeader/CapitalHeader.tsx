@@ -10,16 +10,12 @@ export type CapitalHeaderProps = Omit<HeaderProps, 'subtitleKey'>;
 
 export const CapitalHeader: FunctionalComponent<CapitalHeaderProps> = props => {
     const legalEntity = useConfigContext().extraConfig?.legalEntity;
-    const subTitle = useMemo(() => {
+    const subtitle = useMemo(() => {
         const subtitleKey = getCapitalOfferSubtitleByLegalEntity(legalEntity);
         return subtitleKey ? { subtitleKey } : {};
     }, [legalEntity]);
 
     return (
-        <Header
-            {...props}
-            {...subTitle}
-            subTitleConfig={{ subTitleVariant: TypographyVariant.CAPTION, classNames: 'adyen-pe-capital-header__subtitle' }}
-        />
+        <Header {...props} {...subtitle} subtitleConfig={{ variant: TypographyVariant.CAPTION, classNames: 'adyen-pe-capital-header__subtitle' }} />
     );
 };
