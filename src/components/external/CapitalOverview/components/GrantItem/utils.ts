@@ -80,6 +80,8 @@ export const getGrantConfig = (grant: IGrant) => {
         amountLabelKey: getAmountLabelKey(grant.status),
         hasAlerts: isGrantPending,
         hasDetails: getHasDetails(grant.status),
+        hasEarlyRepaymentDetails: isGrantActive && grant.earlyRepaymentAccounts?.length > 0,
+        // hasRevocationDetails: isGrantActive && grant.revocationAccount !== undefined,
         isAmountColorSecondary: !isGrantActive,
         isBackgroundFilled: getIsBackgroundFilled(grant.status),
         isGrantIdVisible: !isGrantActive,

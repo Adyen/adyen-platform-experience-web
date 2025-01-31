@@ -1,5 +1,5 @@
 import { FunctionalComponent } from 'preact';
-import { useMemo } from 'preact/hooks';
+import { useCallback, useMemo } from 'preact/hooks';
 import cx from 'classnames';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import useTimezoneAwareDateFormatting from '../../../../../hooks/useTimezoneAwareDateFormatting';
@@ -18,12 +18,15 @@ import { GrantAction } from '../GrantAction/GrantAction';
 import CopyText from '../../../../internal/CopyText/CopyText';
 import { Tooltip } from '../../../../internal/Tooltip/Tooltip';
 import Alert from '../../../../internal/Alert/Alert';
+import Button from '../../../../internal/Button';
 import { AlertTypeOption } from '../../../../internal/Alert/types';
+import { ButtonVariant } from '../../../../internal/Button/types';
 
-export const GrantItem: FunctionalComponent<GrantItemProps> = ({ grant }) => {
+export const GrantItem: FunctionalComponent<GrantItemProps> = ({ grant, showDetailsView }) => {
     const { i18n } = useCoreContext();
     const { dateFormat } = useTimezoneAwareDateFormatting();
     const grantConfig = useMemo(() => getGrantConfig(grant), [grant]);
+    const showEarlyRepaymentAccounts = useCallback(() => showDetailsView?.('earlyRepayment'), [showDetailsView]);
 
     return (
         <div className={GRANT_ITEM_CLASS_NAMES.base}>
@@ -90,6 +93,18 @@ export const GrantItem: FunctionalComponent<GrantItemProps> = ({ grant }) => {
                             <CopyText textToCopy={grant.id} buttonLabel={i18n.get('capital.grantID')} isHovered type={'Text'} />
                         </div>
                     ) : null}
+                    {grantConfig.hasEarlyRepaymentDetails && (
+                        <div className={GRANT_ITEM_CLASS_NAMES.actionsBar}>
+                            <Button
+                                onClick={showEarlyRepaymentAccounts}
+                                className={GRANT_ITEM_CLASS_NAMES.mainActionBtn}
+                                variant={ButtonVariant.SECONDARY}
+                                fullWidth
+                            >
+                                {i18n.get('capital.repayEarly')}
+                            </Button>
+                        </div>
+                    )}
                 </div>
             </Card>
             {grantConfig.hasDetails && <GrantDetails grant={grant} />}
