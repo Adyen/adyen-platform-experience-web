@@ -19,7 +19,7 @@ export type TranslationSourceRecord = {
 }[_SupportedLocale];
 
 export type TranslationOptions = {
-    values?: Record<string, any> | ((key: string, index: number, repetitionIndex: number) => any);
+    values?: Record<string, any> | ((placeholder: string, index: number, repetitionIndex: number) => any);
     count?: number;
 };
 

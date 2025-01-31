@@ -91,17 +91,17 @@ export function formatCustomTranslations(customTranslations: CustomTranslations 
 const replaceTranslationValues = (translation: string, values?: TranslationOptions['values']) => {
     if (isFunction(values)) {
         const repetitions = new Map<string, number>();
-        let keyIndex = -1;
+        let placeholderIndex = -1;
 
-        return translation.replace(/%{(\w+)}/g, (_, key) => {
-            let repetitionIndex = repetitions.get(key) ?? -1;
-            const replacementValue = values(key, ++keyIndex, ++repetitionIndex) ?? '';
-            repetitions.set(key, repetitionIndex);
+        return translation.replace(/%{(\w+)}/g, (_, placeholder) => {
+            let repetitionIndex = repetitions.get(placeholder) ?? -1;
+            const replacementValue = values(placeholder, ++placeholderIndex, ++repetitionIndex) ?? '';
+            repetitions.set(placeholder, repetitionIndex);
             return replacementValue;
         });
     }
 
-    return translation.replace(/%{(\w+)}/g, (_, key) => values?.[key] ?? '');
+    return translation.replace(/%{(\w+)}/g, (_, placeholder) => values?.[placeholder] ?? '');
 };
 
 /**

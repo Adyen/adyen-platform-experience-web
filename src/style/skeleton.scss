@@ -1,4 +1,5 @@
 @use 'sass:math';
+@use 'sass:color';
 
 //stylelint-disable
 @mixin adyen-pe-skeleton {
@@ -11,9 +12,9 @@
 }
 
 @mixin adyen-pe-skeleton-animation($end-color: hsl(220, 10%, 95%)) {
-    $hue: hue($end-color);
-    $saturation: saturation($end-color);
-    $lightness: lightness($end-color);
+    $hue: color.channel($end-color, 'hue', $space: hsl);
+    $saturation: color.channel($end-color, 'saturation', $space: hsl);
+    $lightness: color.channel($end-color, 'lightness', $space: hsl);
 
     $hue-value: math.div($hue, 1deg);
     $saturation-value: math.div($saturation, 1%);
@@ -22,6 +23,9 @@
     $start-color: hsl($hue, $saturation, 80%);
 
     $animation-name: skeleton-loading-#{floor($hue-value)}-#{floor($saturation-value)}-#{floor($lightness-value)};
+
+    animation: #{$animation-name} 0.8s linear infinite alternate;
+    background-color: inherit;
 
     @at-root {
         @keyframes #{$animation-name} {
@@ -33,7 +37,4 @@
             }
         }
     }
-
-    animation: #{$animation-name} 0.8s linear infinite alternate;
-    background-color: inherit;
 }
