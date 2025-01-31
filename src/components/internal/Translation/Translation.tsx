@@ -2,24 +2,24 @@ import useCoreContext from '../../../core/Context/useCoreContext';
 import { ComponentChildren, Fragment, FunctionalComponent } from 'preact';
 import { TranslationFill, TranslationFillFunc, TranslationProps } from './types';
 import { isFunction, uniqueId } from '../../../utils';
-import { useCallback, useMemo } from 'preact/hooks';
+import { useMemo } from 'preact/hooks';
 
-const normalizeTranslationFill = (fill: TranslationFill): TranslationFillFunc => {
+const normalizeFill = (fill: TranslationFill): TranslationFillFunc => {
     return isFunction(fill) ? fill : () => fill;
 };
 
 export const Translation: FunctionalComponent<TranslationProps> = ({ count, defaultFill, fills, translationKey }) => {
     const { i18n } = useCoreContext();
 
-    const getTranslationFill = useMemo<(translationKey: string, index: number, repetitionIndex: number) => ComponentChildren>(() => {
-        const _defaultFill = normalizeTranslationFill(defaultFill);
+    const getFill = useMemo<(translationKey: string, index: number, repetitionIndex: number) => ComponentChildren>(() => {
+        const _defaultFill = normalizeFill(defaultFill);
 
         if (fills !== undefined) {
             return (translationKey, index, repetitionIndex) => {
                 const keysByPriority = [`${translationKey}[${repetitionIndex}]`, translationKey, `[${index}]`, index];
 
                 for (const key of keysByPriority) {
-                    const fill = normalizeTranslationFill((fills as any)[key])(translationKey);
+                    const fill = normalizeFill((fills as any)[key])(translationKey);
                     if (fill != undefined) return fill;
                 }
 
@@ -30,33 +30,29 @@ export const Translation: FunctionalComponent<TranslationProps> = ({ count, defa
         return _defaultFill;
     }, [fills, defaultFill]);
 
-    const translationPlaceholder = useMemo(() => uniqueId('translation'), []);
-    const translationFills = useMemo<ComponentChildren[]>(() => [], [getTranslationFill]);
+    return useMemo(() => {
+        const fills: ComponentChildren[] = [];
+        const placeholder = uniqueId('translation');
 
-    const translationFillValue = useCallback<(translationKey: string, index: number, repetitionIndex: number) => string>(
-        (...args) => {
-            translationFills.push(getTranslationFill(...args) ?? null);
-            return translationPlaceholder;
-        },
-        [getTranslationFill, translationFills, translationPlaceholder]
-    );
+        const values = (...args: Parameters<typeof getFill>) => {
+            fills.push(getFill(...args) ?? null);
+            return placeholder;
+        };
 
-    const [firstTranslationFragment, ...restTranslationFragments] = useMemo(() => {
-        const translatedString = i18n.get(translationKey, { count, values: translationFillValue });
-        return translatedString.split(translationPlaceholder);
-    }, [i18n, count, translationFillValue, translationKey, translationPlaceholder]);
+        const [firstFragment, ...restFragments] = i18n.get(translationKey, { count, values }).split(placeholder);
 
-    return (
-        <>
-            {firstTranslationFragment}
-            {restTranslationFragments.map((translationFragment, index) => (
-                <Fragment key={`${translationPlaceholder}__${index}`}>
-                    {translationFills[index]}
-                    {translationFragment}
-                </Fragment>
-            ))}
-        </>
-    );
+        return (
+            <>
+                {firstFragment}
+                {restFragments.map((fragment, index) => (
+                    <Fragment key={`${placeholder}__${index}`}>
+                        {fills[index]}
+                        {fragment}
+                    </Fragment>
+                ))}
+            </>
+        );
+    }, [i18n, count, getFill, translationKey]);
 };
 
 export default Translation;
