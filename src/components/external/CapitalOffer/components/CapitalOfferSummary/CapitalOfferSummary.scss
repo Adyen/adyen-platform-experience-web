@@ -58,4 +58,14 @@
             display: inline;
         }
     }
+
+    &__legal-text {
+        &--title {
+            color: style.token(color-label-primary);
+        }
+
+        &--subtitle {
+            color: style.token(color-label-secondary);
+        }
+    }
 }
