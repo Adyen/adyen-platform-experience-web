@@ -2,7 +2,8 @@ import { FunctionalComponent } from 'preact';
 import { useMemo } from 'preact/hooks';
 import { getGrantConfig } from '../GrantItem/utils';
 import { GrantDetailsViewHeader } from './GrantDetailsViewHeader';
-import { EMPTY_ARRAY, uniqueId } from '../../../../../utils';
+import { Translation } from '../../../../internal/Translation';
+import { EMPTY_ARRAY } from '../../../../../utils';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import InfoBox from '../../../../internal/InfoBox';
 import type { GrantDetailsViewProps } from './types';
@@ -29,30 +30,6 @@ export const GrantEarlyRepaymentDetails: FunctionalComponent<GrantDetailsViewPro
         return i18n.amount(value, currency).replace(/\D00$/, '');
     }, [i18n, grantConfig]);
 
-    const balanceInfo = useMemo(() => {
-        const amountPlaceholder = uniqueId('amount');
-
-        const [infoBeforeAmount, infoAfterAmount] = i18n
-            .get('capital.earlyRepaymentBalance', {
-                values: { amount: amountPlaceholder },
-            })
-            .split(amountPlaceholder, 2);
-
-        return (
-            <>
-                {infoBeforeAmount}
-                {infoAfterAmount !== undefined && (
-                    <>
-                        <Typography el={TypographyElement.STRONG} variant={TypographyVariant.BODY} strongest>
-                            {formattedRemainingAmount}
-                        </Typography>
-                        {infoAfterAmount}
-                    </>
-                )}
-            </>
-        );
-    }, [i18n, formattedRemainingAmount]);
-
     return bankAccounts.length ? (
         <div className={CLASS_NAMES.base}>
             <GrantDetailsViewHeader
@@ -70,7 +47,18 @@ export const GrantEarlyRepaymentDetails: FunctionalComponent<GrantDetailsViewPro
             </div>
             {grant.status === 'Active' && (
                 <InfoBox className={CLASS_NAMES.balanceInfo}>
-                    <Typography variant={TypographyVariant.BODY}>{balanceInfo}</Typography>
+                    <Typography variant={TypographyVariant.BODY}>
+                        <Translation
+                            translationKey="capital.earlyRepaymentBalance"
+                            fills={{
+                                amount: (
+                                    <Typography el={TypographyElement.STRONG} variant={TypographyVariant.BODY} strongest>
+                                        {formattedRemainingAmount}
+                                    </Typography>
+                                ),
+                            }}
+                        />
+                    </Typography>
                 </InfoBox>
             )}
         </div>
