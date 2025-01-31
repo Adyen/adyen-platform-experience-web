@@ -16,9 +16,9 @@ export const Translation: FunctionalComponent<TranslationProps> = ({ count, defa
 
         if (fills !== undefined) {
             return (...args) => {
-                const [, index] = args;
+                const [placeholder, index] = args;
 
-                for (const lookupProperty of [translationKey, index]) {
+                for (const lookupProperty of [placeholder, index]) {
                     const fill = normalizeFill((fills as any)[lookupProperty])(...args);
                     if (fill != undefined) return fill;
                 }
