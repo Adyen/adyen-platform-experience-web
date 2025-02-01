@@ -28,8 +28,8 @@
 }
 
 .adyen-pe-grant-early-repayment-details {
-    $adyen-icon-touch-size: style.token(spacer-110);
-    $adyen-heading-line-height: style.token(text-title-m-line-height);
+    $adyen-capital-heading-title-line-height: style.token(text-title-m-line-height);
+    $adyen-icon-touch-size: 40px;
 
     align-items: flex-start;
     align-self: stretch;
@@ -39,27 +39,60 @@
 
     .adyen-pe-header__controls {
         --icon-size: 16px;
-        --offset-margin: calc(#{$adyen-heading-line-height} - #{$adyen-icon-touch-size});
-        --offset-position: calc(var(--offset-margin) * -1 / 2);
+        --right-margin-offset: calc((var(--icon-size) - #{$adyen-icon-touch-size}) / 2);
+        --top-margin-offset: calc(#{$adyen-capital-heading-title-line-height} - #{$adyen-icon-touch-size});
+        --top-position-offset: calc(var(--top-margin-offset) * -1 / 2);
 
         .adyen-pe-button--icon {
             font-size: var(--icon-size);
-            margin-right: var(--offset-margin);
-            margin-top: var(--offset-margin);
+            margin-right: var(--right-margin-offset);
+            margin-top: var(--top-margin-offset);
             position: relative;
-            right: var(--offset-position);
-            top: var(--offset-position);
+            top: var(--top-position-offset);
         }
+    }
+
+    &__account-description {
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-040);
+
+        &,
+        dd {
+            margin: 0;
+        }
+
+        .adyen-pe-copy-text__container {
+            gap: style.token(spacer-030);
+        }
+
+        .adyen-pe-copy-text__icon,
+        .adyen-pe-copy-text__text {
+            font-size: style.token(text-subtitle-font-size);
+        }
+
+        .adyen-pe-copy-text__text {
+            cursor: default;
+            font-weight: style.token(text-subtitle-stronger-font-weight);
+        }
+    }
+
+    &__account-description-label,
+    &__repayment-notice {
+        color: style.token(color-label-secondary);
+    }
+
+    &__repayment-notice {
+        margin-top: style.token(spacer-040);
     }
 
     &__repayment-account {
         border: style.token(border-width-s) solid style.token(color-outline-primary);
         border-radius: style.token(spacer-040);
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-060);
         padding: style.token(spacer-060) style.token(spacer-080);
-    }
-
-    &__repayment-notice {
-        margin-top: style.token(spacer-040);
     }
 
     &__balance-info {
