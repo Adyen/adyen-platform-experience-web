@@ -46,4 +46,14 @@
     &__error-alert-button {
         margin-top: style.token(spacer-050);
     }
+
+    &__legal-text {
+        &--title {
+            color: style.token(color-label-primary);
+        }
+
+        &--subtitle {
+            color: style.token(color-label-secondary);
+        }
+    }
 }
