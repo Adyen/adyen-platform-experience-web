@@ -1,5 +1,4 @@
 import { useConfigContext } from '../../../../../core/ConfigContext';
-import useCoreContext from '../../../../../core/Context/useCoreContext';
 import AnchorButton from '../../../../internal/AnchorButton/AnchorButton';
 import { ButtonVariant } from '../../../../internal/Button/types';
 import { AllowedLocations } from '../../../../internal/CapitalHeader/constants';
@@ -10,7 +9,6 @@ import Typography from '../../../../internal/Typography/Typography';
 import { SUMMARY_TEXT_EMAIL } from './constants';
 
 export const CapitalOfferSummaryLegalText = () => {
-    const { i18n } = useCoreContext();
     const countryCode = useConfigContext()?.extraConfig?.legalEntity?.countryCode;
 
     return countryCode === AllowedLocations.US ? (
