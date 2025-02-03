@@ -1,0 +1,30 @@
+@use '../../../../../style';
+
+.adyen-pe-capital-bank-account-description-list {
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-040);
+
+    &,
+    &__item-content {
+        margin: 0;
+    }
+
+    &__item-label {
+        color: style.token(color-label-secondary);
+    }
+
+    .adyen-pe-copy-text__container {
+        gap: style.token(spacer-030);
+    }
+
+    .adyen-pe-copy-text__icon,
+    .adyen-pe-copy-text__text {
+        font-size: style.token(text-subtitle-font-size);
+    }
+
+    .adyen-pe-copy-text__text {
+        cursor: default;
+        font-weight: style.token(text-subtitle-stronger-font-weight);
+    }
+}

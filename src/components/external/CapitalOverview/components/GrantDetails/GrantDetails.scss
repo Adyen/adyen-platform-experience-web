@@ -52,40 +52,6 @@
         }
     }
 
-    &__account-description {
-        display: flex;
-        flex-direction: column;
-        gap: style.token(spacer-040);
-
-        &,
-        dd {
-            margin: 0;
-        }
-
-        .adyen-pe-copy-text__container {
-            gap: style.token(spacer-030);
-        }
-
-        .adyen-pe-copy-text__icon,
-        .adyen-pe-copy-text__text {
-            font-size: style.token(text-subtitle-font-size);
-        }
-
-        .adyen-pe-copy-text__text {
-            cursor: default;
-            font-weight: style.token(text-subtitle-stronger-font-weight);
-        }
-    }
-
-    &__account-description-label,
-    &__repayment-notice {
-        color: style.token(color-label-secondary);
-    }
-
-    &__repayment-notice {
-        margin-top: style.token(spacer-040);
-    }
-
     &__repayment-account {
         border: style.token(border-width-s) solid style.token(color-outline-primary);
         border-radius: style.token(spacer-040);
@@ -93,6 +59,11 @@
         flex-direction: column;
         gap: style.token(spacer-060);
         padding: style.token(spacer-060) style.token(spacer-080);
+    }
+
+    &__repayment-notice {
+        color: style.token(color-label-secondary);
+        margin-top: style.token(spacer-040);
     }
 
     &__balance-info {
