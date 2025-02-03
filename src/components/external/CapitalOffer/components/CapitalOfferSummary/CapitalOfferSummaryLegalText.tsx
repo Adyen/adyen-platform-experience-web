@@ -16,8 +16,9 @@ export const CapitalOfferSummaryLegalText = () => {
     return countryCode === AllowedLocations.US ? (
         <Card filled noOutline>
             <Typography variant={TypographyVariant.CAPTION} className={'adyen-pe-capital-offer-summary__legal-text--title'}>
-                {i18n.get('capital.summaryLegalTextTitle')}
+                <Translation translationKey={'capital.summaryLegalTextTitle'} fills={{ break: <br></br> }} />
             </Typography>
+            <br />
             <Typography variant={TypographyVariant.CAPTION} className={'adyen-pe-capital-offer-summary__legal-text--subtitle'}>
                 {
                     <Translation
@@ -32,6 +33,7 @@ export const CapitalOfferSummaryLegalText = () => {
                                     {SUMMARY_TEXT_EMAIL}
                                 </AnchorButton>
                             ),
+                            break: <br />,
                         }}
                     />
                 }
