@@ -19,8 +19,10 @@ const AnchorButton = (props: AnchorButtonProps & BaseButtonProps, ref: Ref<HTMLA
         onClick
     );
 
+    const restProps = useMemo(() => ({ ...allProps, ...(props.onClick && click ? { onClick: click } : {}) }), [click, allProps, props.onClick]);
+
     return (
-        <a {...allProps} href={props.href} ref={ref as Ref<HTMLAnchorElement>} onClick={click}>
+        <a {...restProps} href={props.href} ref={ref as Ref<HTMLAnchorElement>}>
             {allChildren}
         </a>
     );
