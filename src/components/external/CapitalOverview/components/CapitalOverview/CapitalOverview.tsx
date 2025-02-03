@@ -1,5 +1,7 @@
 import { useCallback, useMemo, useState } from 'preact/hooks';
+import { hasPermissionForCapital } from '../../../../internal/CapitalHeader/helpers';
 import { ExternalUIComponentProps } from '../../../../types';
+import { CapitalErrorMessageDisplay } from '../../../CapitalOffer/components/utils/CapitalErrorMessageDisplay';
 import { CapitalOverviewProps } from '../../types';
 import { CAPITAL_OVERVIEW_CLASS_NAMES } from '../../constants';
 import { FunctionalComponent } from 'preact';
@@ -26,6 +28,8 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
     onOfferOptionsRequest,
     skipPreQualifiedIntro,
 }) => {
+    const legalEntity = useConfigContext()?.extraConfig?.legalEntity;
+
     const { getGrants: grantsEndpointCall, getDynamicGrantOffersConfiguration: dynamicConfigurationEndpointCall } = useConfigContext().endpoints;
 
     const grantsQuery = useFetch({
@@ -91,6 +95,10 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
     ]);
 
     const newOfferAvailable = useMemo(() => (!!dynamicOffer && dynamicOffer.minAmount && dynamicOffer.maxAmount ? true : false), [dynamicOffer]);
+
+    if (!hasPermissionForCapital(legalEntity)) {
+        return <CapitalErrorMessageDisplay regionError />;
+    }
 
     return (
         <div className={CAPITAL_OVERVIEW_CLASS_NAMES.base}>

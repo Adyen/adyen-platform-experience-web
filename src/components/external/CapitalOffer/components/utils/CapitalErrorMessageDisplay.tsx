@@ -13,11 +13,13 @@ export const CapitalErrorMessageDisplay = ({
     error,
     onContactSupport,
     onBack,
+    regionError,
 }: {
     emptyGrantOffer?: boolean;
     error?: Error | AdyenErrorResponse;
     onBack?: () => void;
     onContactSupport?: () => void;
+    regionError?: boolean;
 }) => {
     const { i18n } = useCoreContext();
 
@@ -38,8 +40,11 @@ export const CapitalErrorMessageDisplay = ({
         if (emptyGrantOffer) {
             return new AdyenPlatformExperienceError(ErrorTypes.ERROR, 'EmptyConfig', 'Empty Configuration', 'EMPTY_CONFIG');
         }
+        if (regionError) {
+            return new AdyenPlatformExperienceError(ErrorTypes.ERROR, 'UnsupportedRegion', 'Unsupported Region Configuration', 'UNSUPPORTED_REGION');
+        }
         return error;
-    }, [emptyGrantOffer, error]);
+    }, [emptyGrantOffer, regionError, error]);
     return (
         <ErrorMessageDisplay
             absolutePosition={false}
