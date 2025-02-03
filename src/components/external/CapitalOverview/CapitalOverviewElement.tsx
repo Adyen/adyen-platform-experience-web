@@ -1,4 +1,4 @@
-import { hasPermissionForCapital } from '../../internal/CapitalHeader/helpers';
+import { isCapitalRegionSupported } from '../../internal/CapitalHeader/helpers';
 import { _UIComponentProps, ExternalComponentType } from '../../types';
 import UIElement from '../UIElement/UIElement';
 import { CapitalComponentState, CapitalOverviewProps } from './types';
@@ -34,7 +34,7 @@ export class CapitalOverviewElement extends UIElement<CapitalOverviewProps> {
 
         let state: CapitalComponentState['state'] = 'isUnqualified';
 
-        if (!hasPermissionForCapital(legalEntity)) {
+        if (!isCapitalRegionSupported(legalEntity)) {
             state = 'hasRegionAvailabilityError';
         } else if (grants && grants.data?.length > 0) {
             state = 'hasRequestedGrants';

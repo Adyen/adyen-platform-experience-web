@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState } from 'preact/hooks';
-import { hasPermissionForCapital } from '../../../../internal/CapitalHeader/helpers';
+import { isCapitalRegionSupported } from '../../../../internal/CapitalHeader/helpers';
 import { ExternalUIComponentProps } from '../../../../types';
 import { CapitalErrorMessageDisplay } from '../../../CapitalOffer/components/utils/CapitalErrorMessageDisplay';
 import { CapitalOverviewProps } from '../../types';
@@ -96,7 +96,7 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
 
     const newOfferAvailable = useMemo(() => (!!dynamicOffer && dynamicOffer.minAmount && dynamicOffer.maxAmount ? true : false), [dynamicOffer]);
 
-    if (!hasPermissionForCapital(legalEntity)) {
+    if (!isCapitalRegionSupported(legalEntity)) {
         return <CapitalErrorMessageDisplay regionError />;
     }
 

@@ -1,6 +1,6 @@
 import { FunctionalComponent } from 'preact';
 import { useCallback, useMemo, useState } from 'preact/hooks';
-import { hasPermissionForCapital } from '../../../../internal/CapitalHeader/helpers';
+import { isCapitalRegionSupported } from '../../../../internal/CapitalHeader/helpers';
 import { ExternalUIComponentProps } from '../../../../types';
 import { CapitalOfferProps } from '../../types';
 import { CapitalErrorMessageDisplay } from '../utils/CapitalErrorMessageDisplay';
@@ -68,7 +68,7 @@ export const CapitalOffer: FunctionalComponent<ExternalUIComponentProps<CapitalO
         return 'OfferSelection';
     }, [selectedOffer]);
 
-    if (!hasPermissionForCapital(legalEntity)) {
+    if (!isCapitalRegionSupported(legalEntity)) {
         return <CapitalErrorMessageDisplay regionError />;
     }
 
