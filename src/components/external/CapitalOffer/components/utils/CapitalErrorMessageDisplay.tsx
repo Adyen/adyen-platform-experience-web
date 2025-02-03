@@ -37,11 +37,11 @@ export const CapitalErrorMessageDisplay = ({
     );
 
     const capitalError = useMemo(() => {
-        if (emptyGrantOffer) {
-            return new AdyenPlatformExperienceError(ErrorTypes.ERROR, 'EmptyConfig', 'Empty Configuration', 'EMPTY_CONFIG');
-        }
         if (regionError) {
             return new AdyenPlatformExperienceError(ErrorTypes.ERROR, 'UnsupportedRegion', 'Unsupported Region Configuration', 'UNSUPPORTED_REGION');
+        }
+        if (emptyGrantOffer) {
+            return new AdyenPlatformExperienceError(ErrorTypes.ERROR, 'EmptyConfig', 'Empty Configuration', 'EMPTY_CONFIG');
         }
         return error;
     }, [emptyGrantOffer, regionError, error]);
