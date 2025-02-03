@@ -16,7 +16,7 @@ export const CapitalOfferSummaryLegalText = () => {
     return countryCode === AllowedLocations.US ? (
         <Card filled noOutline>
             <Typography variant={TypographyVariant.CAPTION} className={'adyen-pe-capital-offer-summary__legal-text--title'}>
-                <Translation translationKey={'capital.summaryLegalTextTitle'} fills={{ break: <br></br> }} />
+                <Translation translationKey={'capital.summaryLegalTextTitle'} fills={{ break: <br /> }} />
             </Typography>
             <br />
             <Typography variant={TypographyVariant.CAPTION} className={'adyen-pe-capital-offer-summary__legal-text--subtitle'}>
