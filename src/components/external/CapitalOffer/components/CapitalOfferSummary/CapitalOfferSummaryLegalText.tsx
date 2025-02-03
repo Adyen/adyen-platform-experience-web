@@ -33,7 +33,12 @@ export const CapitalOfferSummaryLegalText = () => {
                                     {SUMMARY_TEXT_EMAIL}
                                 </AnchorButton>
                             ),
-                            break: <br />,
+                            break: (
+                                <>
+                                    <br />
+                                    <br />
+                                </>
+                            ),
                         }}
                     />
                 }
