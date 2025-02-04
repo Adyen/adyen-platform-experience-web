@@ -1,12 +1,12 @@
 import cx from 'classnames';
 import { useMemo } from 'preact/hooks';
 import { FunctionalComponent, h } from 'preact';
-import { BankAccountDescription } from './BankAccountDescription';
-import { getFormattedBankAccountNumber } from './utils';
-import { EMPTY_OBJECT } from '../../../../../utils';
-import { IGrant } from '../../../../../types';
-import useCoreContext from '../../../../../core/Context/useCoreContext';
-import './BankAccountDescriptionList.scss';
+import { AccountDescription } from './AccountDescription';
+import { EMPTY_OBJECT } from '../../../../../../utils';
+import { getFormattedAccountNumber } from './utils';
+import { IGrant } from '../../../../../../types';
+import useCoreContext from '../../../../../../core/Context/useCoreContext';
+import './AccountDescriptionList.scss';
 
 const BASE_CLASS = 'adyen-pe-capital-bank-account-description-list';
 
@@ -22,7 +22,7 @@ export type BankAccountDescriptionListProps = {
     className?: h.JSX.HTMLAttributes['className'];
 };
 
-export const BankAccountDescriptionList: FunctionalComponent<BankAccountDescriptionListProps> = ({ bankAccount, className }) => {
+export const AccountDescriptionList: FunctionalComponent<BankAccountDescriptionListProps> = ({ bankAccount, className }) => {
     const { accountNumber, routingNumber, region, bankName } = bankAccount;
     const { i18n } = useCoreContext();
 
@@ -33,17 +33,17 @@ export const BankAccountDescriptionList: FunctionalComponent<BankAccountDescript
     return (
         <dl className={cx(CLASS_NAMES.list, className)}>
             {accountNumber && (
-                <BankAccountDescription
+                <AccountDescription
                     className={CLASS_NAMES.listItem}
                     contentClassName={CLASS_NAMES.itemContent}
                     labelClassName={CLASS_NAMES.itemLabel}
                     label="capital.bankAccountNumber"
-                    content={getFormattedBankAccountNumber(accountNumber)}
+                    content={getFormattedAccountNumber(accountNumber)}
                     copyTextConfig={{ textToCopy: accountNumber }}
                 />
             )}
             {routingNumber && (
-                <BankAccountDescription
+                <AccountDescription
                     className={CLASS_NAMES.listItem}
                     contentClassName={CLASS_NAMES.itemContent}
                     labelClassName={CLASS_NAMES.itemLabel}
@@ -52,14 +52,14 @@ export const BankAccountDescriptionList: FunctionalComponent<BankAccountDescript
                     copyTextConfig={EMPTY_OBJECT}
                 />
             )}
-            <BankAccountDescription
+            <AccountDescription
                 className={CLASS_NAMES.listItem}
                 contentClassName={CLASS_NAMES.itemContent}
                 labelClassName={CLASS_NAMES.itemLabel}
                 label="capital.bankCountryOrRegion"
                 content={formattedCountryOrRegion}
             />
-            <BankAccountDescription
+            <AccountDescription
                 className={CLASS_NAMES.listItem}
                 contentClassName={CLASS_NAMES.itemContent}
                 labelClassName={CLASS_NAMES.itemLabel}
