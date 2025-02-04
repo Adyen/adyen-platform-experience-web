@@ -18,7 +18,7 @@ export const CapitalOfferLegalNotice = () => {
                 <Translation translationKey={'capital.legalNoticeTitle'} fills={{ break: <br /> }} />
             </Typography>
             <br />
-            <Typography variant={TypographyVariant.CAPTION} className={'adyen-pe-capital-offer-legal-notice--subtitle'}>
+            <Typography variant={TypographyVariant.CAPTION} className={'adyen-pe-capital-offer-legal-notice--description'}>
                 {
                     <Translation
                         translationKey={'capital.legalNoticeDescription'}
