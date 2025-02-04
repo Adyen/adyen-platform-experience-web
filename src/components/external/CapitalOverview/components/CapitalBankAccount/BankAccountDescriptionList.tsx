@@ -1,10 +1,11 @@
 import cx from 'classnames';
+import { useMemo } from 'preact/hooks';
 import { FunctionalComponent, h } from 'preact';
 import { BankAccountDescription } from './BankAccountDescription';
-import { getFormattedBankAccountNumber, getFormattedBankAccountRegion } from './utils';
+import { getFormattedBankAccountNumber } from './utils';
 import { EMPTY_OBJECT } from '../../../../../utils';
-import { TranslationKey } from '../../../../../translations';
 import { IGrant } from '../../../../../types';
+import useCoreContext from '../../../../../core/Context/useCoreContext';
 import './BankAccountDescriptionList.scss';
 
 const BASE_CLASS = 'adyen-pe-capital-bank-account-description-list';
@@ -23,6 +24,12 @@ export type BankAccountDescriptionListProps = {
 
 export const BankAccountDescriptionList: FunctionalComponent<BankAccountDescriptionListProps> = ({ bankAccount, className }) => {
     const { accountNumber, routingNumber, region, bankName } = bankAccount;
+    const { i18n } = useCoreContext();
+
+    const formattedCountryOrRegion = useMemo(() => {
+        return region === 'US' ? i18n.get('country.unitedStates') : region;
+    }, [i18n, region]);
+
     return (
         <dl className={cx(CLASS_NAMES.list, className)}>
             {accountNumber && (
@@ -30,8 +37,8 @@ export const BankAccountDescriptionList: FunctionalComponent<BankAccountDescript
                     className={CLASS_NAMES.listItem}
                     contentClassName={CLASS_NAMES.itemContent}
                     labelClassName={CLASS_NAMES.itemLabel}
-                    label={'Account number' as TranslationKey} // [TODO]: Create translation key
-                    value={getFormattedBankAccountNumber(accountNumber)}
+                    label="capital.bankAccountNumber"
+                    content={getFormattedBankAccountNumber(accountNumber)}
                     copyTextConfig={{ textToCopy: accountNumber }}
                 />
             )}
@@ -40,8 +47,8 @@ export const BankAccountDescriptionList: FunctionalComponent<BankAccountDescript
                     className={CLASS_NAMES.listItem}
                     contentClassName={CLASS_NAMES.itemContent}
                     labelClassName={CLASS_NAMES.itemLabel}
-                    label={'Routing number' as TranslationKey} // [TODO]: Create translation key
-                    value={routingNumber}
+                    label="capital.bankRoutingNumber"
+                    content={routingNumber}
                     copyTextConfig={EMPTY_OBJECT}
                 />
             )}
@@ -49,15 +56,15 @@ export const BankAccountDescriptionList: FunctionalComponent<BankAccountDescript
                 className={CLASS_NAMES.listItem}
                 contentClassName={CLASS_NAMES.itemContent}
                 labelClassName={CLASS_NAMES.itemLabel}
-                label={'Country/region' as TranslationKey} // [TODO]: Create translation key
-                value={getFormattedBankAccountRegion(region)}
+                label="capital.bankCountryOrRegion"
+                content={formattedCountryOrRegion}
             />
             <BankAccountDescription
                 className={CLASS_NAMES.listItem}
                 contentClassName={CLASS_NAMES.itemContent}
                 labelClassName={CLASS_NAMES.itemLabel}
-                label={'Bank name' as TranslationKey} // [TODO]: Create translation key
-                value={bankName}
+                label="capital.bankName"
+                content={bankName}
             />
         </dl>
     );

@@ -10,8 +10,7 @@ import type { GrantDetailsViewProps } from './types';
 import Typography from '../../../../internal/Typography/Typography';
 import { TypographyElement, TypographyVariant } from '../../../../internal/Typography/types';
 import { BankAccountDescriptionList } from '../CapitalBankAccount/BankAccountDescriptionList';
-import { TranslationKey } from '../../../../../translations';
-import './GrantDetails.scss';
+import './GrantEarlyRepaymentDetails.scss';
 
 const BASE_CLASS = 'adyen-pe-grant-early-repayment-details';
 
@@ -44,8 +43,7 @@ export const GrantEarlyRepaymentDetails: FunctionalComponent<GrantDetailsViewPro
             <div>
                 <section className={CLASS_NAMES.repaymentAccount}>
                     <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY} stronger>
-                        {/* [TODO]: Create translation key */}
-                        {i18n.get('Bank account details' as TranslationKey)}
+                        {i18n.get('capital.bankAccountDetails')}
                     </Typography>
                     <BankAccountDescriptionList bankAccount={bankAccounts[0]!} />
                 </section>

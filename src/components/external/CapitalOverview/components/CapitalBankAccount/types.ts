@@ -1,7 +1,7 @@
 export const enum BankAccountNumberFormattingSeparator {
     DASH = '-',
     NBSP = ' ',
-    SPACE = '',
+    SPACE = ' ',
 }
 
 export interface BankAccountNumberFormattingOptions {

@@ -10,28 +10,28 @@ type _ClassNameProp = h.JSX.HTMLAttributes['className'];
 
 export type BankAccountDescriptionProps = {
     className?: _ClassNameProp;
+    content?: string;
     contentClassName?: _ClassNameProp;
     copyTextConfig?: Partial<Pick<Parameters<typeof CopyText>[0], 'buttonLabel' | 'textToCopy'>>;
     label: TranslationKey;
     labelClassName?: _ClassNameProp;
-    value?: string;
 };
 
 export const BankAccountDescription: FunctionalComponent<BankAccountDescriptionProps> = ({
     className,
+    content,
     contentClassName,
     copyTextConfig,
     label,
     labelClassName,
-    value,
 }) => {
     const { i18n } = useCoreContext();
 
     const isCopyText = useMemo(() => !!copyTextConfig, [copyTextConfig]);
-    const valueText = useMemo(() => copyTextConfig?.buttonLabel ?? value, [copyTextConfig, value]);
-    const textToCopy = useMemo(() => copyTextConfig?.textToCopy ?? valueText, [copyTextConfig, valueText]);
+    const textContent = useMemo(() => copyTextConfig?.buttonLabel ?? content, [copyTextConfig, content]);
+    const textToCopy = useMemo(() => copyTextConfig?.textToCopy ?? textContent, [copyTextConfig, textContent]);
 
-    return valueText == undefined ? null : (
+    return textContent == undefined ? null : (
         <div className={className}>
             <dt className={labelClassName}>
                 <Typography el={TypographyElement.SPAN} variant={TypographyVariant.CAPTION}>
@@ -40,10 +40,10 @@ export const BankAccountDescription: FunctionalComponent<BankAccountDescriptionP
             </dt>
             <dd className={contentClassName}>
                 {isCopyText ? (
-                    <CopyText buttonLabel={valueText} textToCopy={textToCopy!} showCopyTextTooltip={false} type="Text" />
+                    <CopyText buttonLabel={textContent} textToCopy={textToCopy!} showCopyTextTooltip={false} type="Text" />
                 ) : (
                     <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY}>
-                        {valueText}
+                        {textContent}
                     </Typography>
                 )}
             </dd>
