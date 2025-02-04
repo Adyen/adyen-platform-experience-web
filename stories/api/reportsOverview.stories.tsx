@@ -4,7 +4,7 @@ import { ReportsOverview } from '../../src';
 import { ReportsMeta } from '../components/reportsOverview';
 import { EMPTY_SESSION_OBJECT } from '../utils/constants';
 
-const meta: Meta<ElementProps<typeof ReportsOverview>> = { ...ReportsMeta, title: 'Integration/Reports Overview' };
+const meta: Meta<ElementProps<typeof ReportsOverview>> = { ...ReportsMeta, title: 'API-connected/Reports Overview' };
 
 export const Default: ElementStory<typeof ReportsOverview, SessionControls> = {
     name: 'Default',
