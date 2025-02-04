@@ -59,7 +59,12 @@ export const getCapitalErrorMessage = (error: AdyenPlatformExperienceError | und
             return {
                 title: COMMON_CAPITAL_ERROR_MESSAGE.somethingWentWrong,
                 message: ['capital.weCouldNotContinueWithTheOffer', COMMON_CAPITAL_ERROR_MESSAGE.contactSupportForHelp],
-                onContactSupport,
+            };
+        }
+        case 'UNSUPPORTED_REGION': {
+            return {
+                title: 'capital.unsupportedRegionTitle',
+                message: 'capital.unsupportedRegionDescription',
             };
         }
         default:
