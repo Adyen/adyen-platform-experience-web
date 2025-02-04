@@ -7,6 +7,7 @@ import { Translation } from '../../../../internal/Translation';
 import { TypographyVariant } from '../../../../internal/Typography/types';
 import Typography from '../../../../internal/Typography/Typography';
 import { SUMMARY_TEXT_EMAIL } from '../CapitalOfferSummary/constants';
+import './CapitalOfferSummaryLegalNotice.scss';
 
 export const CapitalOfferSummaryLegalNotice = () => {
     const countryCode = useConfigContext()?.extraConfig?.legalEntity?.countryCode;
