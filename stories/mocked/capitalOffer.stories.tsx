@@ -2,7 +2,7 @@ import { Meta } from '@storybook/preact';
 import { ElementProps, ElementStory, SetupControls } from '../utils/types';
 import { capitalOfferWithSetupMeta } from '../components/capitalOffer';
 import { CapitalOffer } from '../../src';
-import { CapitalMockedResponses } from '../../mocks/mock-server/capital';
+import { CapitalOfferMockedResponses } from '../../mocks/mock-server/capital';
 
 const meta: Meta<ElementProps<typeof CapitalOffer> & SetupControls> = { ...capitalOfferWithSetupMeta, title: 'Mocked/Capital Offer' };
 
@@ -13,115 +13,115 @@ export const Default: ElementStory<typeof CapitalOffer> = {
     },
     parameters: {
         msw: {
-            handlers: [...CapitalMockedResponses.default],
+            handlers: CapitalOfferMockedResponses.default,
         },
     },
 };
 
-export const ErrorNoOfferAvailable: ElementStory<typeof CapitalOffer> = {
+export const ErrorDynamicOfferConfigNoConfig: ElementStory<typeof CapitalOffer> = {
     name: 'Error - Dynamic offer config - No config',
     args: {
         mockedApi: true,
     },
     parameters: {
         msw: {
-            handlers: CapitalMockedResponses.noOfferAvailable,
+            handlers: CapitalOfferMockedResponses.errorDynamicOfferConfigNoConfig,
         },
     },
 };
 
-export const ErrorNoCapability: ElementStory<typeof CapitalOffer> = {
+export const ErrorDynamicOfferConfigNoCapability: ElementStory<typeof CapitalOffer> = {
     name: 'Error - Dynamic offer config - No capability',
     args: {
         mockedApi: true,
     },
     parameters: {
         msw: {
-            handlers: CapitalMockedResponses.errorNoCapability,
+            handlers: CapitalOfferMockedResponses.errorDynamicOfferConfigNoCapability,
         },
     },
 };
 
-export const ErrorInactiveAH: ElementStory<typeof CapitalOffer> = {
+export const ErrorDynamicOfferConfigInactiveAccountHolder: ElementStory<typeof CapitalOffer> = {
     name: 'Error - Dynamic offer config - Inactive account holder',
     args: {
         mockedApi: true,
     },
     parameters: {
         msw: {
-            handlers: CapitalMockedResponses.errorInactiveAccountHolder,
+            handlers: CapitalOfferMockedResponses.errorDynamicOfferConfigInactiveAccountHolder,
         },
     },
 };
 
-export const ErrorExceededRetries: ElementStory<typeof CapitalOffer> = {
-    name: 'Error - Dynamic offer - Generic (after exceeded retries)',
+export const ErrorDynamicOfferExceededRetries: ElementStory<typeof CapitalOffer> = {
+    name: 'Error - Dynamic offer - Exceeded retries',
     args: {
         mockedApi: true,
     },
     parameters: {
         msw: {
-            handlers: CapitalMockedResponses.dynamicOfferExceededRetries,
+            handlers: CapitalOfferMockedResponses.errorDynamicOfferExceededRetries,
         },
     },
 };
 
-export const ErrorOnDynamicOffer: ElementStory<typeof CapitalOffer> = {
-    name: 'Error - Dynamic offer - Temporary server error',
+export const ErrorDynamicOfferTemporary: ElementStory<typeof CapitalOffer> = {
+    name: 'Error - Dynamic offer - Temporary',
     args: {
         mockedApi: true,
     },
     parameters: {
         msw: {
-            handlers: CapitalMockedResponses.dynamicOfferServerError,
+            handlers: CapitalOfferMockedResponses.errorDynamicOfferTemporary,
         },
     },
 };
 
-export const ErrorSomethingWentWrong: ElementStory<typeof CapitalOffer> = {
+export const ErrorReviewOfferGeneric: ElementStory<typeof CapitalOffer> = {
     name: 'Error - Review offer - Generic',
     args: {
         mockedApi: true,
     },
     parameters: {
         msw: {
-            handlers: CapitalMockedResponses.reviewOfferWentWrong,
+            handlers: CapitalOfferMockedResponses.errorReviewOfferGeneric,
         },
     },
 };
 
-export const ErrorGenericRequestFunds: ElementStory<typeof CapitalOffer> = {
+export const ErrorRequestFundsGeneric: ElementStory<typeof CapitalOffer> = {
     name: 'Error - Request funds - Generic',
     args: {
         mockedApi: true,
     },
     parameters: {
         msw: {
-            handlers: CapitalMockedResponses.noGrantAccountConfig,
+            handlers: CapitalOfferMockedResponses.errorRequestFundsGeneric,
         },
     },
 };
 
-export const ErrorNoGrantAccountConfig: ElementStory<typeof CapitalOffer> = {
-    name: 'Error - Request funds - No grant account',
+export const ErrorRequestFundsGenericWithCode: ElementStory<typeof CapitalOffer> = {
+    name: 'Error - Request funds - Generic with code',
     args: {
         mockedApi: true,
     },
     parameters: {
         msw: {
-            handlers: CapitalMockedResponses.noGrantAccountConfig,
+            handlers: CapitalOfferMockedResponses.errorRequestFundsGenericWithCode,
         },
     },
 };
 
-export const ErrorNoPrimaryBalanceAccount: ElementStory<typeof CapitalOffer> = {
+export const ErrorRequestFundsNoPrimaryBalanceAccount: ElementStory<typeof CapitalOffer> = {
     name: 'Error - Request funds - No primary balance account',
     args: {
         mockedApi: true,
     },
     parameters: {
         msw: {
-            handlers: CapitalMockedResponses.missingPrimaryBalanceAccount,
+            handlers: CapitalOfferMockedResponses.errorRequestFundsNoPrimaryBalanceAccount,
         },
     },
 };

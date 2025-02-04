@@ -2,269 +2,214 @@ import { ElementProps, ElementStory, SetupControls } from '../utils/types';
 import { Meta } from '@storybook/preact';
 import { AdyenPlatformExperience, CapitalOverview } from '../../src';
 import { CapitalOverviewWithSetupMeta } from '../components/capitalOverview';
-import { CapitalMockedResponses } from '../../mocks/mock-server/capital';
+import { CapitalOverviewMockedResponses } from '../../mocks/mock-server/capital';
 import { useEffect } from 'preact/compat';
 import getMySessionToken from '../../playground/utils/sessionRequest';
-import { ExternalPlatformElement } from '../utils/ExternalPlatformElement/ExternalPlatformElement';
-import { useState } from 'preact/hooks';
-import { CapitalComponentState } from '../../src/components/external/CapitalOverview/types';
 
 const meta: Meta<ElementProps<typeof CapitalOverview> & SetupControls> = { ...CapitalOverviewWithSetupMeta, title: 'Mocked/Capital Overview' };
 
-export const Default: ElementStory<typeof CapitalOverview> = {
-    name: 'Default',
+export const UnsupportedRegion: ElementStory<typeof CapitalOverview, { mountIfInUnsupportedRegion: boolean }> = {
+    name: 'Unsupported region',
     args: {
         mockedApi: true,
+        skipDecorators: true,
+        mountIfInUnsupportedRegion: true,
     },
     parameters: {
         msw: {
-            handlers: CapitalMockedResponses.prequalified,
+            handlers: CapitalOverviewMockedResponses.prequalified,
         },
     },
+    decorators: [
+        (story, context) => {
+            useEffect(() => {
+                const getAdyenPlatformExperienceComponent = async () => {
+                    const core = await AdyenPlatformExperience({
+                        onSessionCreate: getMySessionToken,
+                    });
+                    const capitalOverview = new CapitalOverview({ core });
+                    const { state } = await capitalOverview.getState();
+
+                    if (state !== 'isInUnsupportedRegion' || context.args.mountIfInUnsupportedRegion) {
+                        capitalOverview.mount('#capital-overview');
+                    }
+                };
+                void getAdyenPlatformExperienceComponent();
+            }, [context.args.mountIfInUnsupportedRegion]);
+
+            return <div className="component-wrapper" id="capital-overview"></div>;
+        },
+    ],
 };
 
-export const WithActiveGrant: ElementStory<typeof CapitalOverview> = {
-    name: 'With Active Grant',
-    args: {
-        mockedApi: true,
-    },
-    parameters: {
-        msw: CapitalMockedResponses.activeGrant,
-    },
-};
-
-export const WithFailedGrant: ElementStory<typeof CapitalOverview> = {
-    name: 'With Failed Grant',
-    args: {
-        mockedApi: true,
-    },
-    parameters: {
-        msw: CapitalMockedResponses.failedGrant,
-    },
-};
-
-export const WithPendingGrant: ElementStory<typeof CapitalOverview> = {
-    name: 'With Pending Grant',
-    args: {
-        mockedApi: true,
-    },
-    parameters: {
-        msw: CapitalMockedResponses.pendingGrant,
-    },
-};
-
-export const WithPendingGrantWithActions: ElementStory<typeof CapitalOverview> = {
-    name: 'With Pending Grant With Actions',
-    args: {
-        mockedApi: true,
-    },
-    parameters: {
-        msw: CapitalMockedResponses.pendingGrantWithActions,
-    },
-};
-
-export const WithRepaidGrant: ElementStory<typeof CapitalOverview> = {
-    name: 'With Repaid Grant',
-    args: {
-        mockedApi: true,
-    },
-    parameters: {
-        msw: CapitalMockedResponses.repaidGrant,
-    },
-};
-
-export const WithRevokedGrant: ElementStory<typeof CapitalOverview> = {
-    name: 'With Revoked Grant',
-    args: {
-        mockedApi: true,
-    },
-    parameters: {
-        msw: CapitalMockedResponses.revokedGrant,
-    },
-};
-
-export const WithWrittenOffGrant: ElementStory<typeof CapitalOverview> = {
-    name: 'With Written Off Grant',
-    args: {
-        mockedApi: true,
-    },
-    parameters: {
-        msw: CapitalMockedResponses.writtenOffGrant,
-    },
-};
-
-export const WithNewOfferAvailable: ElementStory<typeof CapitalOverview> = {
-    name: 'With New Offer Available',
-    args: {
-        mockedApi: true,
-    },
-    parameters: {
-        msw: CapitalMockedResponses.newOfferAvailable,
-    },
-};
-
-export const WithMultipleGrants: ElementStory<typeof CapitalOverview> = {
-    name: 'With Multiple Grants',
-    args: {
-        mockedApi: true,
-    },
-    parameters: {
-        msw: CapitalMockedResponses.multipleGrants,
-    },
-};
-
-export const Unqualified: ElementStory<typeof CapitalOverview> = {
+export const Unqualified: ElementStory<typeof CapitalOverview, { mountIfUnqualified: boolean }> = {
     name: 'Unqualified',
     args: {
         mockedApi: true,
-    },
-    parameters: {
-        msw: {
-            handlers: CapitalMockedResponses.unqualified,
-        },
-    },
-};
-
-export const NoRender: ElementStory<typeof CapitalOverview, { showUnqualified: boolean }> = {
-    name: 'No render unqualified',
-    args: {
-        mockedApi: true,
         skipDecorators: true,
-        showUnqualified: true,
+        mountIfUnqualified: true,
     },
     parameters: {
         msw: {
-            handlers: CapitalMockedResponses.unqualified,
+            handlers: CapitalOverviewMockedResponses.unqualified,
         },
     },
     decorators: [
         (story, context) => {
-            const [state, setState] = useState<CapitalComponentState['state']>();
-
             useEffect(() => {
                 const getAdyenPlatformExperienceComponent = async () => {
                     const core = await AdyenPlatformExperience({
                         onSessionCreate: getMySessionToken,
                     });
-                    const AdyenCapitalOffer = new CapitalOverview({ core });
+                    const capitalOverview = new CapitalOverview({ core });
+                    const { state } = await capitalOverview.getState();
 
-                    const { state } = await AdyenCapitalOffer.getState();
-
-                    state === 'hasRequestedGrants' || state === 'isPreQualified' || context.args.showUnqualified
-                        ? AdyenCapitalOffer.mount('#capital-component')
-                        : undefined;
-
-                    setState(state);
+                    if (state !== 'isUnqualified' || context.args.mountIfUnqualified) {
+                        capitalOverview.mount('#capital-overview');
+                    }
                 };
                 void getAdyenPlatformExperienceComponent();
-            }, [context.args.showUnqualified]);
+            }, [context.args.mountIfUnqualified]);
 
-            return (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 10, padding: 40 }}>
-                    <ExternalPlatformElement>{'Element A'}</ExternalPlatformElement>
-                    <div style={{ display: 'flex', gap: 10 }}>
-                        <div style={{ width: 600 }}>
-                            {state === 'isUnqualified' && !context.args.showUnqualified ? (
-                                <ExternalPlatformElement style={{ background: '#51aeff' }}>{'Element D'}</ExternalPlatformElement>
-                            ) : (
-                                <div id="capital-component"></div>
-                            )}
-                        </div>
-                        <ExternalPlatformElement>{'Element B'}</ExternalPlatformElement>
-                    </div>
-                    <ExternalPlatformElement>{'Element C'}</ExternalPlatformElement>
-                </div>
-            );
+            return <div className="component-wrapper" id="capital-overview"></div>;
         },
     ],
 };
 
-export const NoRenderIsInUnsupportedRegion: ElementStory<typeof CapitalOverview, { showUnsupportedRegion: boolean }> = {
-    name: 'No render unsupported region',
+export const Prequalified: ElementStory<typeof CapitalOverview> = {
+    name: 'Prequalified',
     args: {
         mockedApi: true,
-        skipDecorators: true,
-        showUnsupportedRegion: true,
     },
     parameters: {
         msw: {
-            handlers: CapitalMockedResponses.prequalified,
+            handlers: CapitalOverviewMockedResponses.prequalified,
         },
     },
-    decorators: [
-        (story, context) => {
-            const [state, setState] = useState<CapitalComponentState['state']>();
-
-            useEffect(() => {
-                const getAdyenPlatformExperienceComponent = async () => {
-                    const core = await AdyenPlatformExperience({
-                        onSessionCreate: getMySessionToken,
-                    });
-                    const AdyenCapitalOffer = new CapitalOverview({ core });
-
-                    const { state } = await AdyenCapitalOffer.getState();
-
-                    setState(state);
-
-                    state !== 'isInUnsupportedRegion' || context.args.showUnsupportedRegion
-                        ? AdyenCapitalOffer.mount('#capital-component')
-                        : undefined;
-                };
-                void getAdyenPlatformExperienceComponent();
-            }, [context.args.showUnsupportedRegion]);
-
-            return (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 10, padding: 40 }}>
-                    <ExternalPlatformElement>{'Element A'}</ExternalPlatformElement>
-                    <div style={{ display: 'flex', gap: 10 }}>
-                        <div style={{ width: 600 }}>
-                            {state === 'isInUnsupportedRegion' && !context.args.showUnsupportedRegion ? (
-                                <ExternalPlatformElement style={{ background: '#51aeff' }}>{'Element D'}</ExternalPlatformElement>
-                            ) : (
-                                <div id="capital-component"></div>
-                            )}
-                        </div>
-                        <ExternalPlatformElement>{'Element B'}</ExternalPlatformElement>
-                    </div>
-                    <ExternalPlatformElement>{'Element C'}</ExternalPlatformElement>
-                </div>
-            );
-        },
-    ],
 };
 
-export const ErrorNoCapability: ElementStory<typeof CapitalOverview> = {
+export const GrantPending: ElementStory<typeof CapitalOverview> = {
+    name: 'Grant: Pending',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: CapitalOverviewMockedResponses.grantPending,
+    },
+};
+
+export const GrantActions: ElementStory<typeof CapitalOverview> = {
+    name: 'Grant: Actions',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: CapitalOverviewMockedResponses.grantActions,
+    },
+};
+
+export const GrantActive: ElementStory<typeof CapitalOverview> = {
+    name: 'Grant: Active',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: CapitalOverviewMockedResponses.grantActive,
+    },
+};
+
+export const GrantFailed: ElementStory<typeof CapitalOverview> = {
+    name: 'Grant: Failed',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: CapitalOverviewMockedResponses.grantFailed,
+    },
+};
+
+export const GrantRepaid: ElementStory<typeof CapitalOverview> = {
+    name: 'Grant: Repaid',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: CapitalOverviewMockedResponses.grantRepaid,
+    },
+};
+
+export const GrantRevoked: ElementStory<typeof CapitalOverview> = {
+    name: 'Grant: Revoked',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: CapitalOverviewMockedResponses.grantRevoked,
+    },
+};
+
+export const GrantWrittenOff: ElementStory<typeof CapitalOverview> = {
+    name: 'Grant: WrittenOff',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: CapitalOverviewMockedResponses.grantWrittenOff,
+    },
+};
+
+export const NewOffer: ElementStory<typeof CapitalOverview> = {
+    name: 'New offer',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: CapitalOverviewMockedResponses.newOffer,
+    },
+};
+
+export const Grants: ElementStory<typeof CapitalOverview> = {
+    name: 'Grants',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: CapitalOverviewMockedResponses.grants,
+    },
+};
+
+export const ErrorDynamicOfferConfigNoCapability: ElementStory<typeof CapitalOverview> = {
     name: 'Error - Dynamic offer config - No capability',
     args: {
         mockedApi: true,
     },
     parameters: {
         msw: {
-            handlers: CapitalMockedResponses.errorNoCapability,
+            handlers: CapitalOverviewMockedResponses.errorDynamicOfferConfigNoCapability,
         },
     },
 };
 
-export const ErrorInactiveAH: ElementStory<typeof CapitalOverview> = {
+export const ErrorDynamicOfferConfigInactiveAccountHolder: ElementStory<typeof CapitalOverview> = {
     name: 'Error - Dynamic offer config - Inactive account holder',
     args: {
         mockedApi: true,
     },
     parameters: {
         msw: {
-            handlers: CapitalMockedResponses.errorInactiveAccountHolder,
+            handlers: CapitalOverviewMockedResponses.errorDynamicOfferConfigInactiveAccountHolder,
         },
     },
 };
 
-export const ErrorMissingActions: ElementStory<typeof CapitalOverview> = {
+export const ErrorMissingActionsGeneric: ElementStory<typeof CapitalOverview> = {
     name: 'Error - Missing actions - Generic',
     args: {
         mockedApi: true,
     },
     parameters: {
         msw: {
-            handlers: CapitalMockedResponses.missingActionsError,
+            handlers: CapitalOverviewMockedResponses.errorMissingActionsGeneric,
         },
     },
 };
