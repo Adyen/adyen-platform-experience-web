@@ -7,18 +7,18 @@ import { Translation } from '../../../../internal/Translation';
 import { TypographyVariant } from '../../../../internal/Typography/types';
 import Typography from '../../../../internal/Typography/Typography';
 import { SUMMARY_TEXT_EMAIL } from '../CapitalOfferSummary/constants';
-import './CapitalOfferSummaryLegalNotice.scss';
+import './CapitalOfferLegalNotice.scss';
 
-export const CapitalOfferSummaryLegalNotice = () => {
+export const CapitalOfferLegalNotice = () => {
     const countryCode = useConfigContext()?.extraConfig?.legalEntity?.countryCode;
 
     return countryCode === SupportedLocation.US ? (
         <Card filled noOutline>
-            <Typography variant={TypographyVariant.CAPTION} className={'adyen-pe-capital-offer-summary__legal-text--title'}>
+            <Typography variant={TypographyVariant.CAPTION} className={'adyen-pe-capital-offer-legal-notice--title'}>
                 <Translation translationKey={'capital.legalNoticeTitle'} fills={{ break: <br /> }} />
             </Typography>
             <br />
-            <Typography variant={TypographyVariant.CAPTION} className={'adyen-pe-capital-offer-summary__legal-text--subtitle'}>
+            <Typography variant={TypographyVariant.CAPTION} className={'adyen-pe-capital-offer-legal-notice--subtitle'}>
                 {
                     <Translation
                         translationKey={'capital.legalNoticeDescription'}

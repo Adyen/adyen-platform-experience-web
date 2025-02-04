@@ -1,0 +1,11 @@
+@use '../../../../../style' as style;
+
+.adyen-pe-capital-offer-legal-notice {
+    &--title {
+        color: style.token(color-label-primary);
+    }
+
+    &--subtitle {
+        color: style.token(color-label-secondary);
+    }
+}

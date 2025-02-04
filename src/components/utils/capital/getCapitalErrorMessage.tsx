@@ -64,7 +64,7 @@ export const getCapitalErrorMessage = (error: AdyenPlatformExperienceError | und
         case 'UNSUPPORTED_REGION': {
             return {
                 title: 'comingSoon',
-                message: 'capital.regionError',
+                message: 'capital.unsupportedRegion',
             };
         }
         default:
