@@ -1,7 +1,9 @@
 import { FunctionalComponent } from 'preact';
 import { useCallback, useMemo, useState } from 'preact/hooks';
+import { isCapitalRegionSupported } from '../../../../internal/CapitalHeader/helpers';
 import { ExternalUIComponentProps } from '../../../../types';
 import { CapitalOfferProps } from '../../types';
+import { CapitalErrorMessageDisplay } from '../utils/CapitalErrorMessageDisplay';
 import { CAPITAL_OFFER_CLASS_NAMES } from './constants';
 import { CapitalHeader } from '../../../../internal/CapitalHeader';
 import { CapitalOfferSelection } from '../CapitalOfferSelection/CapitalOfferSelection';
@@ -22,6 +24,7 @@ export const CapitalOffer: FunctionalComponent<ExternalUIComponentProps<CapitalO
     onOfferSelect,
 }) => {
     const { getDynamicGrantOffersConfiguration } = useConfigContext().endpoints;
+    const legalEntity = useConfigContext()?.extraConfig?.legalEntity;
 
     const [emptyGrantOffer, setEmptyGrantOffer] = useState(false);
     const onSuccess = useCallback((data: IDynamicOffersConfig | undefined) => {
@@ -64,6 +67,10 @@ export const CapitalOffer: FunctionalComponent<ExternalUIComponentProps<CapitalO
         }
         return 'OfferSelection';
     }, [selectedOffer]);
+
+    if (!isCapitalRegionSupported(legalEntity)) {
+        return <CapitalErrorMessageDisplay unsupportedRegion />;
+    }
 
     return (
         <div className={CAPITAL_OFFER_CLASS_NAMES.base}>

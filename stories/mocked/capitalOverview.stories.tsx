@@ -179,6 +179,60 @@ export const NoRender: ElementStory<typeof CapitalOverview, { showUnqualified: b
     ],
 };
 
+export const NoRenderIsInUnsupportedRegion: ElementStory<typeof CapitalOverview, { showUnsupportedRegion: boolean }> = {
+    name: 'No render unsupported region',
+    args: {
+        mockedApi: true,
+        skipDecorators: true,
+        showUnsupportedRegion: true,
+    },
+    parameters: {
+        msw: {
+            handlers: CapitalMockedResponses.prequalified,
+        },
+    },
+    decorators: [
+        (story, context) => {
+            const [state, setState] = useState<CapitalComponentState['state']>();
+
+            useEffect(() => {
+                const getAdyenPlatformExperienceComponent = async () => {
+                    const core = await AdyenPlatformExperience({
+                        onSessionCreate: getMySessionToken,
+                    });
+                    const AdyenCapitalOffer = new CapitalOverview({ core });
+
+                    const { state } = await AdyenCapitalOffer.getState();
+
+                    setState(state);
+
+                    state !== 'isInUnsupportedRegion' || context.args.showUnsupportedRegion
+                        ? AdyenCapitalOffer.mount('#capital-component')
+                        : undefined;
+                };
+                void getAdyenPlatformExperienceComponent();
+            }, [context.args.showUnsupportedRegion]);
+
+            return (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 10, padding: 40 }}>
+                    <ExternalPlatformElement>{'Element A'}</ExternalPlatformElement>
+                    <div style={{ display: 'flex', gap: 10 }}>
+                        <div style={{ width: 600 }}>
+                            {state === 'isInUnsupportedRegion' && !context.args.showUnsupportedRegion ? (
+                                <ExternalPlatformElement style={{ background: '#51aeff' }}>{'Element D'}</ExternalPlatformElement>
+                            ) : (
+                                <div id="capital-component"></div>
+                            )}
+                        </div>
+                        <ExternalPlatformElement>{'Element B'}</ExternalPlatformElement>
+                    </div>
+                    <ExternalPlatformElement>{'Element C'}</ExternalPlatformElement>
+                </div>
+            );
+        },
+    ],
+};
+
 export const ErrorNoCapability: ElementStory<typeof CapitalOverview> = {
     name: 'Error - Dynamic offer config - No capability',
     args: {

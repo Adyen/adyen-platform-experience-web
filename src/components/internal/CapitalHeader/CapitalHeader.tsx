@@ -4,14 +4,14 @@ import { useConfigContext } from '../../../core/ConfigContext';
 import { Header, HeaderProps } from '../Header';
 import { TypographyVariant } from '../Typography/types';
 import './CapitalHeader.scss';
-import { getCapitalOfferSubtitleByLegalEntity } from './helpers';
+import { getCapitalHeaderSubtitleByLegalEntity } from './helpers';
 
 export type CapitalHeaderProps = Omit<HeaderProps, 'subtitleKey'>;
 
 export const CapitalHeader: FunctionalComponent<CapitalHeaderProps> = props => {
     const legalEntity = useConfigContext().extraConfig?.legalEntity;
     const subtitle = useMemo(() => {
-        const subtitleKey = getCapitalOfferSubtitleByLegalEntity(legalEntity);
+        const subtitleKey = getCapitalHeaderSubtitleByLegalEntity(legalEntity);
         return subtitleKey ? { subtitleKey } : {};
     }, [legalEntity]);
 

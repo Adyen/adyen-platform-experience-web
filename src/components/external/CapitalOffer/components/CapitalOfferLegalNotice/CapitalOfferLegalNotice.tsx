@@ -1,26 +1,27 @@
 import { useConfigContext } from '../../../../../core/ConfigContext';
 import AnchorButton from '../../../../internal/AnchorButton/AnchorButton';
 import { ButtonVariant } from '../../../../internal/Button/types';
-import { AllowedLocations } from '../../../../internal/CapitalHeader/constants';
+import { SupportedLocation } from '../../../../internal/CapitalHeader/constants';
 import Card from '../../../../internal/Card/Card';
 import { Translation } from '../../../../internal/Translation';
 import { TypographyVariant } from '../../../../internal/Typography/types';
 import Typography from '../../../../internal/Typography/Typography';
-import { SUMMARY_TEXT_EMAIL } from './constants';
+import { SUMMARY_TEXT_EMAIL } from '../CapitalOfferSummary/constants';
+import './CapitalOfferLegalNotice.scss';
 
-export const CapitalOfferSummaryLegalText = () => {
+export const CapitalOfferLegalNotice = () => {
     const countryCode = useConfigContext()?.extraConfig?.legalEntity?.countryCode;
 
-    return countryCode === AllowedLocations.US ? (
+    return countryCode === SupportedLocation.US ? (
         <Card filled noOutline>
-            <Typography variant={TypographyVariant.CAPTION} className={'adyen-pe-capital-offer-summary__legal-text--title'}>
-                <Translation translationKey={'capital.summaryLegalTextTitle'} fills={{ break: <br /> }} />
+            <Typography variant={TypographyVariant.CAPTION} className={'adyen-pe-capital-offer-legal-notice--title'}>
+                <Translation translationKey={'capital.legalNoticeTitle'} fills={{ break: <br /> }} />
             </Typography>
             <br />
-            <Typography variant={TypographyVariant.CAPTION} className={'adyen-pe-capital-offer-summary__legal-text--subtitle'}>
+            <Typography variant={TypographyVariant.CAPTION} className={'adyen-pe-capital-offer-legal-notice--description'}>
                 {
                     <Translation
-                        translationKey={'capital.summaryLegalText'}
+                        translationKey={'capital.legalNoticeDescription'}
                         fills={{
                             email: (
                                 <AnchorButton
