@@ -35,7 +35,7 @@ export class CapitalOverviewElement extends UIElement<CapitalOverviewProps> {
         let state: CapitalComponentState['state'] = 'isUnqualified';
 
         if (!isCapitalRegionSupported(legalEntity)) {
-            state = 'hasRegionAvailabilityError';
+            state = 'isInUnsupportedRegion';
         } else if (grants && grants.data?.length > 0) {
             state = 'hasRequestedGrants';
         } else if (config && config.minAmount) {

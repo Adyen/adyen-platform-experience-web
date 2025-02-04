@@ -7,4 +7,4 @@ export interface CapitalOverviewProps {
     skipPreQualifiedIntro?: boolean;
 }
 
-export type CapitalComponentState = { state: 'isUnqualified' | 'isPreQualified' | 'hasRequestedGrants' | 'hasRegionAvailabilityError' };
+export type CapitalComponentState = { state: 'isUnqualified' | 'isPreQualified' | 'hasRequestedGrants' | 'isInUnsupportedRegion' };
