@@ -158,7 +158,6 @@ module.exports = {
             files: ['*.ts', '*.tsx'],
             rules: {
                 '@typescript-eslint/explicit-member-accessibility': ['error', { accessibility: 'off', overrides: { properties: 'explicit' } }],
-
             },
         },
         {
@@ -167,6 +166,14 @@ module.exports = {
                 '**/?(*.)+(spec|test).[jt]s?(x)',
             ],
             extends: ['plugin:testing-library/react'],
+        },
+        {
+            files: [
+                '**/tests/**/*.[jt]s?(x)',
+            ],
+            rules: {
+                'testing-library/prefer-screen-queries': 'off',
+            },
         },
     ],
 };
