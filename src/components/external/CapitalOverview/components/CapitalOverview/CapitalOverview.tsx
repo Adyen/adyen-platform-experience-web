@@ -97,7 +97,7 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
     const newOfferAvailable = useMemo(() => (!!dynamicOffer && dynamicOffer.minAmount && dynamicOffer.maxAmount ? true : false), [dynamicOffer]);
 
     if (!isCapitalRegionSupported(legalEntity)) {
-        return <CapitalErrorMessageDisplay regionError />;
+        return <CapitalErrorMessageDisplay unsupportedRegion />;
     }
 
     return (

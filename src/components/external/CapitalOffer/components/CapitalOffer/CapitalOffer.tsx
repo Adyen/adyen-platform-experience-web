@@ -69,7 +69,7 @@ export const CapitalOffer: FunctionalComponent<ExternalUIComponentProps<CapitalO
     }, [selectedOffer]);
 
     if (!isCapitalRegionSupported(legalEntity)) {
-        return <CapitalErrorMessageDisplay regionError />;
+        return <CapitalErrorMessageDisplay unsupportedRegion />;
     }
 
     return (
