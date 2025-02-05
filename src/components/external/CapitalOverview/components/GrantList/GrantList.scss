@@ -7,6 +7,11 @@
     display: flex;
     flex-direction: column;
 
+    .adyen-pe-expandable-card__container {
+        font-family: inherit;
+        width: 100%;
+    }
+
     &__header-container {
         align-items: center;
         display: flex;

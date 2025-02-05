@@ -5,7 +5,6 @@ import useCoreContext from '../../../../../core/Context/useCoreContext';
 import useTimezoneAwareDateFormatting from '../../../../../hooks/useTimezoneAwareDateFormatting';
 import Typography from '../../../../internal/Typography/Typography';
 import { TypographyElement, TypographyVariant } from '../../../../internal/Typography/types';
-import Card from '../../../../internal/Card/Card';
 import { Tag } from '../../../../internal/Tag/Tag';
 import ProgressBar from '../../../../internal/ProgressBar';
 import { DATE_FORMAT_CAPITAL_OVERVIEW } from '../../../../../constants';
@@ -19,15 +18,16 @@ import CopyText from '../../../../internal/CopyText/CopyText';
 import { Tooltip } from '../../../../internal/Tooltip/Tooltip';
 import Alert from '../../../../internal/Alert/Alert';
 import { AlertTypeOption } from '../../../../internal/Alert/types';
+import ExpandableCard from '../../../../internal/ExpandableCard/ExpandableCard';
 
 export const GrantItem: FunctionalComponent<GrantItemProps> = ({ grant }) => {
     const { i18n } = useCoreContext();
     const { dateFormat } = useTimezoneAwareDateFormatting();
     const grantConfig = useMemo(() => getGrantConfig(grant), [grant]);
 
-    return (
-        <div className={GRANT_ITEM_CLASS_NAMES.base}>
-            <Card classNameModifiers={[GRANT_ITEM_CLASS_NAMES.overview]} filled={grantConfig.isBackgroundFilled} testId={'grant-container'}>
+    const grantOverview = useMemo(
+        () => (
+            <div className={GRANT_ITEM_CLASS_NAMES.base}>
                 <div className={GRANT_ITEM_CLASS_NAMES.cardContent}>
                     <div className={GRANT_ITEM_CLASS_NAMES.statusContainer}>
                         <Typography
@@ -90,29 +90,35 @@ export const GrantItem: FunctionalComponent<GrantItemProps> = ({ grant }) => {
                             <CopyText textToCopy={grant.id} buttonLabel={i18n.get('capital.grantID')} isHovered type={'Text'} />
                         </div>
                     ) : null}
-                </div>
-            </Card>
-            {grantConfig.hasDetails && <GrantDetails grant={grant} />}
-            {grantConfig.hasAlerts && (
-                <>
-                    {grant.missingActions && grant.missingActions.length ? (
-                        grant.missingActions.map(action => (
-                            <GrantAction
-                                key={action.type}
-                                action={action}
-                                className={GRANT_ITEM_CLASS_NAMES.alert}
-                                offerExpiresAt={grant.offerExpiresAt}
-                            />
-                        ))
-                    ) : (
-                        <Alert
-                            className={GRANT_ITEM_CLASS_NAMES.alert}
-                            type={AlertTypeOption.HIGHLIGHT}
-                            title={i18n.get('capital.weReceivedYourRequestAndWeAreWorkingOnItNowCheckBackSoon')}
-                        />
+                    {grantConfig.hasAlerts && (
+                        <>
+                            {grant.missingActions && grant.missingActions.length ? (
+                                grant.missingActions.map(action => (
+                                    <GrantAction
+                                        key={action.type}
+                                        action={action}
+                                        className={GRANT_ITEM_CLASS_NAMES.alert}
+                                        offerExpiresAt={grant.offerExpiresAt}
+                                    />
+                                ))
+                            ) : (
+                                <Alert
+                                    className={GRANT_ITEM_CLASS_NAMES.alert}
+                                    type={AlertTypeOption.HIGHLIGHT}
+                                    title={i18n.get('capital.weReceivedYourRequestAndWeAreWorkingOnItNowCheckBackSoon')}
+                                />
+                            )}
+                        </>
                     )}
-                </>
-            )}
-        </div>
+                </div>
+            </div>
+        ),
+        [i18n, dateFormat, grant, grantConfig]
+    );
+
+    return (
+        <ExpandableCard renderHeader={grantOverview} filled={grantConfig.isBackgroundFilled} inFlow>
+            {grantConfig.hasDetails && <GrantDetails grant={grant} />}
+        </ExpandableCard>
     );
 };
