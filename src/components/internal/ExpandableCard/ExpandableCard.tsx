@@ -1,31 +1,35 @@
+import classNames from 'classnames';
 import { ExpandableCardProps } from './types';
 import { PropsWithChildren } from 'preact/compat';
-import classNames from 'classnames';
-import { useCallback, useEffect, useRef, useState } from 'preact/hooks';
-import './ExpandableCard.scss';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
+import { useClickOutside } from '../../../hooks/element/useClickOutside';
+import useCoreContext from '../../../core/Context/useCoreContext';
+import BaseButton from '../BaseButton';
 import ChevronUp from '../SVGIcons/ChevronUp';
 import ChevronDown from '../SVGIcons/ChevronDown';
+import './ExpandableCard.scss';
 import {
     BASE_CLASS,
+    CARD_HEIGHT_PROPERTY,
     CHEVRON_CLASS,
     CONTAINER_BUTTON_CLASS,
     CONTAINER_CLASS,
     CONTAINER_FILLED_CLASS,
     CONTAINER_HIDDEN_CLASS,
+    CONTAINER_IN_FLOW_CLASS,
     CONTAINER_OVERLAY_CLASS,
     CONTAINER_OVERLAY_ID,
     CONTENT_CLASS,
     CONTENT_EXPANDABLE_CLASS,
 } from './constants';
-import useCoreContext from '../../../core/Context/useCoreContext';
-import { useClickOutside } from '../../../hooks/element/useClickOutside';
-import BaseButton from '../BaseButton';
 
-const ExpandableCard = ({ renderHeader, children, filled, fullWidth, ...listeners }: PropsWithChildren<ExpandableCardProps>) => {
+const ExpandableCard = ({ renderHeader, children, filled, fullWidth, inFlow, ...listeners }: PropsWithChildren<ExpandableCardProps>) => {
     const { i18n } = useCoreContext();
     const [isOpen, setIsOpen] = useState(false);
+    const inNormalFlow = useMemo(() => inFlow === true, [inFlow]);
     const toggleIsOpen = useCallback(() => setIsOpen(isOpen => !isOpen), [setIsOpen]);
     const expandButtonRef = useRef<HTMLButtonElement>(null);
+    const inNormalFlowRef = useRef(inNormalFlow);
     const isClosedFromOutside = useRef(false);
     const isOpenRef = useRef(isOpen);
 
@@ -38,6 +42,25 @@ const ExpandableCard = ({ renderHeader, children, filled, fullWidth, ...listener
             }
         }, [isOpen, toggleIsOpen])
     );
+
+    const expandableCardRef = (cardElement: HTMLDivElement | null) => {
+        if (!cardElement) return;
+
+        if (inNormalFlow) {
+            if (!isOpen || inNormalFlowRef.current !== inNormalFlow) {
+                // The prefect moment to recalculate the expandable card height is either of these:
+                //   (a) the card isn't currently expanded, and the `inNormalFlow` value is currently `true`,
+                //   (b) the `inNormalFlow` value has just changed, and its value is currently `true`
+                cardElement.style.setProperty(CARD_HEIGHT_PROPERTY, `${expandButtonRef.current!.offsetHeight}px`);
+            }
+        } else if (!isOpen) {
+            // The card isn't currently expanded, and the `inNormalFlow` value is currently `false`
+            // The custom expandable card height property is no longer needed
+            cardElement.style.removeProperty(CARD_HEIGHT_PROPERTY);
+        }
+
+        inNormalFlowRef.current = inNormalFlow;
+    };
 
     useEffect(() => {
         if (isOpen) {
@@ -54,7 +77,7 @@ const ExpandableCard = ({ renderHeader, children, filled, fullWidth, ...listener
     }, [isOpen, clickOutsideRef]);
 
     return (
-        <div className={BASE_CLASS}>
+        <div ref={expandableCardRef} className={BASE_CLASS}>
             {children ? (
                 <>
                     <BaseButton
@@ -80,6 +103,7 @@ const ExpandableCard = ({ renderHeader, children, filled, fullWidth, ...listener
                         className={classNames(CONTAINER_CLASS, CONTAINER_BUTTON_CLASS, CONTAINER_OVERLAY_CLASS, {
                             [CONTAINER_FILLED_CLASS]: filled,
                             [CONTAINER_HIDDEN_CLASS]: !isOpen,
+                            [CONTAINER_IN_FLOW_CLASS]: inNormalFlow,
                         })}
                         disabled={!isOpen}
                         fullWidth={fullWidth}
