@@ -7,7 +7,14 @@ import {
     ITransactionWithDetails,
     ITransactionRefundStatus,
 } from '../../src';
-import { COMPLETED_REFUND_STATUSES, DEFAULT_REFUND_STATUSES, DEFAULT_TRANSACTION, IN_PROGRESS_REFUND_STATUSES, TRANSACTIONS } from '../mock-data';
+import {
+    COMPLETED_REFUND_STATUSES,
+    DEFAULT_REFUND_STATUSES,
+    DEFAULT_TRANSACTION,
+    FAILED_REFUND_STATUSES,
+    IN_PROGRESS_REFUND_STATUSES,
+    TRANSACTIONS,
+} from '../mock-data';
 import { clamp, EMPTY_ARRAY, getMappedValue, uuid } from '../../src/utils';
 import { compareDates, computeHash, delay, getPaginationLinks } from './utils/utils';
 import { endpoints } from '../../endpoints/endpoints';
@@ -99,7 +106,13 @@ const enrichTransactionDataWithDetails = <T extends ITransaction>(
             break;
         case 'partially_refundable_any_amount':
         case 'partially_refundable_with_line_items_required':
-            refundStatuses = DEFAULT_REFUND_STATUSES?.map(status => ({ ...status, amount: { ...status.amount, currency } }));
+            if (transaction.id === 'YVBUA4RGV6A14629') {
+                refundStatuses = FAILED_REFUND_STATUSES?.map(status => ({ ...status, amount: { value: -117500, currency } }));
+            } else if (transaction.id === '254X7TAUWB140HW0') {
+                refundStatuses = COMPLETED_REFUND_STATUSES?.map(status => ({ ...status, amount: { ...status.amount, currency } }));
+            } else {
+                refundStatuses = DEFAULT_REFUND_STATUSES?.map(status => ({ ...status, amount: { ...status.amount, currency } }));
+            }
             break;
     }
 
