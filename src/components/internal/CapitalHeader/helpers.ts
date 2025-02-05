@@ -1,10 +1,10 @@
 import { TranslationKey } from '../../../translations';
 import { ILegalEntity } from '../../../types';
-import { allowedCountries, AllowedLocations, allowedRegions } from './constants';
+import { supportedCountries, SupportedLocation, supportedRegions } from './constants';
 
 const getSubtitleByRegion = (region?: string) => {
     switch (region) {
-        case AllowedLocations.EU:
+        case SupportedLocation.EU:
             return 'capital.capitalOfferSubtitleEU';
         default:
             return null;
@@ -13,18 +13,18 @@ const getSubtitleByRegion = (region?: string) => {
 
 const getSubtitleByCountry = (countryCode?: string) => {
     switch (countryCode) {
-        case AllowedLocations.AU:
+        case SupportedLocation.AU:
             return 'capital.capitalOfferSubtitleAU';
-        case AllowedLocations.GB:
+        case SupportedLocation.GB:
             return 'capital.capitalOfferSubtitleGB';
-        case AllowedLocations.US:
+        case SupportedLocation.US:
             return 'capital.capitalOfferSubtitleUS';
         default:
             return null;
     }
 };
 
-export const getCapitalOfferSubtitleByLegalEntity = (legalEntity?: ILegalEntity): TranslationKey | null => {
+export const getCapitalHeaderSubtitleByLegalEntity = (legalEntity?: ILegalEntity): TranslationKey | null => {
     const region = legalEntity?.region;
     const countryCode = legalEntity?.countryCode;
 
@@ -32,8 +32,8 @@ export const getCapitalOfferSubtitleByLegalEntity = (legalEntity?: ILegalEntity)
     return getSubtitleByCountry(countryCode) ?? getSubtitleByRegion(region);
 };
 
-export const hasPermissionForCapital = (legalEntity?: ILegalEntity) => {
+export const isCapitalRegionSupported = (legalEntity?: ILegalEntity) => {
     const region = legalEntity?.region ?? '';
     const countryCode = legalEntity?.countryCode ?? '';
-    return allowedCountries.includes(countryCode) || allowedRegions.includes(region);
+    return supportedCountries.includes(countryCode) || supportedRegions.includes(region);
 };
