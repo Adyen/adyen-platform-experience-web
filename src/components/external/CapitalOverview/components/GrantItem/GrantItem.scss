@@ -1,6 +1,11 @@
 @use '../../../../../style';
 
 .adyen-pe-grant-item {
+    .adyen-pe-expandable-card__container {
+        font-family: inherit;
+        width: 100%;
+    }
+
     &__status-container {
         align-items: center;
         display: flex;
