@@ -11,7 +11,7 @@ export const getHumanReadableIban = (iban: string, useNonBreakingSpaces = true) 
     return ibanWithoutSpaces.replace(/([A-Z\d]{4}(?!$))/gi, `$1${spaceSeparator}`);
 };
 
-const isCopyableAccountField = (field: string, countryOrRegion?: string): boolean => {
+const isCopyableAccountField = (field: string, region?: string): boolean => {
     switch (field) {
         case 'bankName':
         case 'region':
@@ -21,36 +21,28 @@ const isCopyableAccountField = (field: string, countryOrRegion?: string): boolea
     }
 };
 
-export const getAccountFieldCopyTextConfig = (
-    field: string,
-    value: any,
-    i18n: I18n,
-    countryOrRegion?: string
-): AccountDetailProps['copyTextConfig'] => {
-    if (isCopyableAccountField(field, countryOrRegion)) {
-        const formattedValue = getAccountFieldFormattedValue(field, value, i18n, countryOrRegion);
+export const getAccountFieldCopyTextConfig = (field: string, value: any, i18n: I18n, region?: string): AccountDetailProps['copyTextConfig'] => {
+    if (isCopyableAccountField(field, region)) {
+        const formattedValue = getAccountFieldFormattedValue(field, value, i18n, region);
         return formattedValue === value ? EMPTY_OBJECT : { textToCopy: value };
     }
 };
 
-export const getAccountFieldFormattedValue = (field: string, value: any, i18n: I18n, countryOrRegion?: string) => {
+export const getAccountFieldFormattedValue = (field: string, value: any, i18n: I18n, region?: string) => {
     switch (field) {
         case 'iban':
             return getHumanReadableIban(value);
         case 'region': {
-            switch (value) {
-                case 'US':
-                    return i18n.get('country.unitedStates');
-                default:
-                    return value;
-            }
+            const translationKey = `countryOrRegion.${value}` as TranslationKey;
+            const translatedValue = i18n.get(translationKey);
+            return translatedValue && translatedValue !== translationKey ? translatedValue : value;
         }
         default:
             return value;
     }
 };
 
-export const getAccountFieldTranslationKey = (field: string, countryOrRegion?: string): TranslationKey => {
+export const getAccountFieldTranslationKey = (field: string, region?: string): TranslationKey => {
     switch (field) {
         case 'iban':
             return 'IBAN' as TranslationKey;
