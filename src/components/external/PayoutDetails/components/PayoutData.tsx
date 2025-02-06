@@ -26,8 +26,11 @@ import {
     PD_SECTION_NET_AMOUNT_CLASS,
     PD_TITLE_BA_CLASS,
     PD_TITLE_CLASS,
+    PD_TITLE_CONTAINER_CLASS,
     PD_UNPAID_AMOUNT,
 } from './constants';
+import { Tag } from '../../../internal/Tag/Tag';
+import { TagVariant } from '../../../internal/Tag/types';
 
 type Payout = components['schemas']['PayoutDTO'];
 
@@ -101,9 +104,12 @@ export const PayoutData = ({
             ) : (
                 <div className={PD_BASE_CLASS}>
                     <div className={PD_TITLE_CLASS}>
-                        <Typography variant={TypographyVariant.SUBTITLE} stronger>
-                            {i18n.get('netPayout')}
-                        </Typography>
+                        <div className={PD_TITLE_CONTAINER_CLASS}>
+                            <Typography variant={TypographyVariant.SUBTITLE} stronger>
+                                {i18n.get('netPayout')}
+                            </Typography>
+                            {payout.isSumOfSameDayPayouts && <Tag variant={TagVariant.BLUE} label={i18n.get('sumOfSameDayReports')}></Tag>}
+                        </div>
                         <Typography variant={TypographyVariant.TITLE} large>
                             {`${i18n.amount(payout.payoutAmount.value, payout.payoutAmount.currency, {
                                 hideCurrency: true,

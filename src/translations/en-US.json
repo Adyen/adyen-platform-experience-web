@@ -221,6 +221,7 @@
     "status": "Status",
     "structuredList": "Structured list",
     "subtractions": "Subtractions",
+    "sumOfSameDayReports": "Sum of same-day reports",
     "tabs": "Tabs",
     "theErrorCodeIs": "The error code is %{requestId}",
     "thereAreNoResults": "There are no results",
