@@ -3,8 +3,9 @@ import { useMemo } from 'preact/hooks';
 import { FunctionalComponent, h } from 'preact';
 import { AccountDescription } from './AccountDescription';
 import { EMPTY_OBJECT } from '../../../../../../utils';
-import { getFormattedAccountNumber } from './utils';
+import { getHumanReadableIban } from './utils';
 import { IGrant } from '../../../../../../types';
+import { TranslationKey } from '../../../../../../translations';
 import useCoreContext from '../../../../../../core/Context/useCoreContext';
 import './AccountDescriptionList.scss';
 
@@ -23,7 +24,7 @@ export type BankAccountDescriptionListProps = {
 };
 
 export const AccountDescriptionList: FunctionalComponent<BankAccountDescriptionListProps> = ({ bankAccount, className }) => {
-    const { accountNumber, routingNumber, region, bankName } = bankAccount;
+    const { accountNumber, iban, routingNumber, region, bankName } = bankAccount;
     const { i18n } = useCoreContext();
 
     const formattedCountryOrRegion = useMemo(() => {
@@ -32,14 +33,24 @@ export const AccountDescriptionList: FunctionalComponent<BankAccountDescriptionL
 
     return (
         <dl className={cx(CLASS_NAMES.list, className)}>
+            {iban && (
+                <AccountDescription
+                    className={CLASS_NAMES.listItem}
+                    contentClassName={CLASS_NAMES.itemContent}
+                    labelClassName={CLASS_NAMES.itemLabel}
+                    label={'IBAN' as TranslationKey}
+                    content={getHumanReadableIban(iban)}
+                    copyTextConfig={{ textToCopy: iban }}
+                />
+            )}
             {accountNumber && (
                 <AccountDescription
                     className={CLASS_NAMES.listItem}
                     contentClassName={CLASS_NAMES.itemContent}
                     labelClassName={CLASS_NAMES.itemLabel}
                     label="capital.bankAccountNumber"
-                    content={getFormattedAccountNumber(accountNumber)}
-                    copyTextConfig={{ textToCopy: accountNumber }}
+                    content={accountNumber}
+                    copyTextConfig={EMPTY_OBJECT}
                 />
             )}
             {routingNumber && (

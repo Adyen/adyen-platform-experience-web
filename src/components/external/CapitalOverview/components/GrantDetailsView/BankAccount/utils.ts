@@ -1,7 +1,5 @@
-import { asPlainObject, EMPTY_OBJECT } from '../../../../../../utils';
-import { AccountNumberFormattingOptions, AccountNumberFormattingSeparator } from './types';
-
-export const getFormattedAccountNumber = (accountNumber: string, formattingOptions: AccountNumberFormattingOptions = EMPTY_OBJECT) => {
-    const { separator = AccountNumberFormattingSeparator.NBSP } = asPlainObject(formattingOptions);
-    return accountNumber.replace(/([A-Z0-9]{4})/g, `$1${separator}`);
+export const getHumanReadableIban = (iban: string, useNonBreakingSpaces = true) => {
+    const spaceSeparator = (useNonBreakingSpaces as any) !== false ? ' ' : ' ';
+    const ibanWithoutSpaces = iban.replace(/\s+/g, '');
+    return ibanWithoutSpaces.replace(/([A-Z\d]{4}(?!$))/gi, `$1${spaceSeparator}`);
 };
