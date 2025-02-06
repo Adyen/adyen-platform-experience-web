@@ -1,12 +1,9 @@
 import cx from 'classnames';
-import { useMemo } from 'preact/hooks';
-import { FunctionalComponent, h } from 'preact';
+import { Fragment, FunctionalComponent, h } from 'preact';
 import { AccountDescription } from './AccountDescription';
-import { EMPTY_OBJECT } from '../../../../../../utils';
-import { getHumanReadableIban } from './utils';
-import { IGrant } from '../../../../../../types';
-import { TranslationKey } from '../../../../../../translations';
+import { getAccountFieldCopyTextConfig, getAccountFieldFormattedValue, getAccountFieldTranslationKey } from './utils';
 import useCoreContext from '../../../../../../core/Context/useCoreContext';
+import type { IGrant } from '../../../../../../types';
 import './AccountDescriptionList.scss';
 
 const BASE_CLASS = 'adyen-pe-capital-bank-account-description-list';
@@ -24,59 +21,25 @@ export type BankAccountDescriptionListProps = {
 };
 
 export const AccountDescriptionList: FunctionalComponent<BankAccountDescriptionListProps> = ({ bankAccount, className }) => {
-    const { accountNumber, iban, routingNumber, region, bankName } = bankAccount;
     const { i18n } = useCoreContext();
-
-    const formattedCountryOrRegion = useMemo(() => {
-        return region === 'US' ? i18n.get('country.unitedStates') : region;
-    }, [i18n, region]);
+    const { region } = bankAccount;
 
     return (
         <dl className={cx(CLASS_NAMES.list, className)}>
-            {iban && (
-                <AccountDescription
-                    className={CLASS_NAMES.listItem}
-                    contentClassName={CLASS_NAMES.itemContent}
-                    labelClassName={CLASS_NAMES.itemLabel}
-                    label={'IBAN' as TranslationKey}
-                    content={getHumanReadableIban(iban)}
-                    copyTextConfig={{ textToCopy: iban }}
-                />
-            )}
-            {accountNumber && (
-                <AccountDescription
-                    className={CLASS_NAMES.listItem}
-                    contentClassName={CLASS_NAMES.itemContent}
-                    labelClassName={CLASS_NAMES.itemLabel}
-                    label="capital.bankAccountNumber"
-                    content={accountNumber}
-                    copyTextConfig={EMPTY_OBJECT}
-                />
-            )}
-            {routingNumber && (
-                <AccountDescription
-                    className={CLASS_NAMES.listItem}
-                    contentClassName={CLASS_NAMES.itemContent}
-                    labelClassName={CLASS_NAMES.itemLabel}
-                    label="capital.bankRoutingNumber"
-                    content={routingNumber}
-                    copyTextConfig={EMPTY_OBJECT}
-                />
-            )}
-            <AccountDescription
-                className={CLASS_NAMES.listItem}
-                contentClassName={CLASS_NAMES.itemContent}
-                labelClassName={CLASS_NAMES.itemLabel}
-                label="capital.bankCountryOrRegion"
-                content={formattedCountryOrRegion}
-            />
-            <AccountDescription
-                className={CLASS_NAMES.listItem}
-                contentClassName={CLASS_NAMES.itemContent}
-                labelClassName={CLASS_NAMES.itemLabel}
-                label="capital.bankName"
-                content={bankName}
-            />
+            {Object.entries(bankAccount).map(([field, value]) => {
+                return field ? (
+                    <Fragment key={field}>
+                        <AccountDescription
+                            className={CLASS_NAMES.listItem}
+                            contentClassName={CLASS_NAMES.itemContent}
+                            labelClassName={CLASS_NAMES.itemLabel}
+                            label={getAccountFieldTranslationKey(field, region)}
+                            content={getAccountFieldFormattedValue(field, value, i18n, region)}
+                            copyTextConfig={getAccountFieldCopyTextConfig(field, value, i18n, region)}
+                        />
+                    </Fragment>
+                ) : null;
+            })}
         </dl>
     );
 };
