@@ -120,7 +120,7 @@ export const GrantItem: FunctionalComponent<GrantItemProps> = ({ grant, showDeta
                                 variant={ButtonVariant.SECONDARY}
                                 fullWidth
                             >
-                                {i18n.get('capital.repayEarly')}
+                                {i18n.get('capital.sendRepayment')}
                             </Button>
                         </div>
                     )

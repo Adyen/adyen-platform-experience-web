@@ -1,6 +1,6 @@
 import { IGrant } from '../../../../../types';
 import { BaseList } from '../../../../internal/BaseList/BaseList';
-import { GrantDetailsView, GrantDetailsViewCallback, GRANT_DETAILS_VIEWS, EarlyRepaymentDetails } from '../GrantDetailsView';
+import { GrantDetailsView, GrantDetailsViewCallback, GRANT_DETAILS_VIEWS, SendRepaymentDetails } from '../GrantDetailsView';
 import { GrantItem } from '../GrantItem/GrantItem';
 import { getGrantConfig } from '../GrantItem/utils';
 import { FunctionalComponent } from 'preact';
@@ -66,7 +66,7 @@ export const GrantsDisplay: FunctionalComponent<GrantsProps> = ({ grantList, hid
         switch (selectedGrantDetailsView) {
             case GRANT_DETAILS_VIEWS.earlyRepayment: {
                 if (selectedGrantConfig?.hasEarlyRepaymentDetails) {
-                    return <EarlyRepaymentDetails grant={selectedGrant} onDetailsClose={hideGrantDetailsView} />;
+                    return <SendRepaymentDetails grant={selectedGrant} onDetailsClose={hideGrantDetailsView} />;
                 }
                 break;
             }

@@ -10,9 +10,9 @@ import Typography from '../../../../../internal/Typography/Typography';
 import { TypographyElement, TypographyVariant } from '../../../../../internal/Typography/types';
 import { AccountDescriptionList } from '../BankAccount/AccountDescriptionList';
 import { GrantDetailsView } from '../GrantDetailsView';
-import './EarlyRepaymentDetails.scss';
+import './SendRepaymentDetails.scss';
 
-const BASE_CLASS = 'adyen-pe-grant-early-repayment-details';
+const BASE_CLASS = 'adyen-pe-grant-send-repayment-details';
 
 const CLASS_NAMES = {
     balanceInfo: `${BASE_CLASS}__balance-info`,
@@ -21,7 +21,7 @@ const CLASS_NAMES = {
     repaymentNotice: `${BASE_CLASS}__repayment-notice`,
 };
 
-export const EarlyRepaymentDetails: FunctionalComponent<GrantDetailsViewProps> = ({ grant, onDetailsClose }) => {
+export const SendRepaymentDetails: FunctionalComponent<GrantDetailsViewProps> = ({ grant, onDetailsClose }) => {
     const { i18n } = useCoreContext();
     const grantConfig = useMemo(() => getGrantConfig(grant), [grant]);
     const bankAccounts = useMemo(() => grant.earlyRepaymentAccounts ?? EMPTY_ARRAY, [grant.earlyRepaymentAccounts]);
@@ -37,8 +37,8 @@ export const EarlyRepaymentDetails: FunctionalComponent<GrantDetailsViewProps> =
         <GrantDetailsView
             className={BASE_CLASS}
             onDetailsClose={onDetailsClose}
-            headerTitleKey="capital.earlyRepayment"
-            headerSubtitleKey="capital.earlyRepaymentInstruction"
+            headerTitleKey="capital.sendRepayment"
+            headerSubtitleKey="capital.sendRepaymentSubtitle"
         >
             <div className={CLASS_NAMES.repaymentInfo}>
                 <section className={CLASS_NAMES.repaymentAccount}>
@@ -49,7 +49,7 @@ export const EarlyRepaymentDetails: FunctionalComponent<GrantDetailsViewProps> =
                 </section>
                 <section className={CLASS_NAMES.repaymentNotice}>
                     <Typography el={TypographyElement.PARAGRAPH} variant={TypographyVariant.CAPTION}>
-                        {i18n.get('capital.earlyRepaymentNotice')}
+                        {i18n.get('capital.sendRepaymentNotice')}
                     </Typography>
                 </section>
             </div>
@@ -57,7 +57,7 @@ export const EarlyRepaymentDetails: FunctionalComponent<GrantDetailsViewProps> =
                 <InfoBox className={CLASS_NAMES.balanceInfo}>
                     <Typography variant={TypographyVariant.BODY}>
                         <Translation
-                            translationKey="capital.earlyRepaymentBalance"
+                            translationKey="capital.repaymentBalanceInfo"
                             fills={{
                                 amount: (
                                     <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY} strongest>
