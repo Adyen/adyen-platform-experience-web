@@ -5,7 +5,6 @@ export const GRANT_ITEM_CLASS_NAMES = {
     cardContent: 'adyen-pe-grant-item__card-content',
     grantID: 'adyen-pe-grant-item__grant-id',
     mainActionBtn: 'adyen-pe-grant-item__main-action-button',
-    overview: 'adyen-pe-grant-item__overview',
     progressBar: 'adyen-pe-grant-item__progress-bar',
     statusContainer: 'adyen-pe-grant-item__status-container',
     textSecondary: 'adyen-pe-grant-item__text--secondary',

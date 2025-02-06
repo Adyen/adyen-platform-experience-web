@@ -51,7 +51,7 @@ const ExpandableCard = ({ renderHeader, children, filled, fullWidth, inFlow, ...
                 // The prefect moment to recalculate the expandable card height is either of these:
                 //   (a) the card isn't currently expanded, and the `inNormalFlow` value is currently `true`,
                 //   (b) the `inNormalFlow` value has just changed, and its value is currently `true`
-                cardElement.style.setProperty(CARD_HEIGHT_PROPERTY, `${expandButtonRef.current!.offsetHeight}px`);
+                cardElement.style.setProperty(CARD_HEIGHT_PROPERTY, `${expandButtonRef.current?.offsetHeight || 0}px`);
             }
         } else if (!isOpen) {
             // The card isn't currently expanded, and the `inNormalFlow` value is currently `false`
