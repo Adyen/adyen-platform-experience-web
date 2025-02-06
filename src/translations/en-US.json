@@ -140,6 +140,7 @@
     "nextPayouts": "Next Payouts",
     "noData": "No data",
     "noNegativeNumbersAllowed": "No negative numbers allowed",
+    "noPaymentMethod": "No payment method",
     "noPayoutsFound": "No payouts found",
     "noReportsFound": "No reports found",
     "noTransactionsFound": "No transactions found",

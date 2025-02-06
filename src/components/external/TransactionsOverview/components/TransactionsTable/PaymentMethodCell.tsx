@@ -22,19 +22,23 @@ const PaymentMethodCell = ({
     return (
         <div className={PAYMENT_METHOD_CLASS}>
             {paymentMethod || bankAccount ? (
-                <>
-                    <div className={PAYMENT_METHOD_LOGO_CONTAINER_CLASS}>
-                        <Image
-                            name={paymentMethod ? paymentMethod.type : 'bankTransfer'}
-                            alt={paymentMethod ? paymentMethod.type : 'bankTransfer'}
-                            folder={'logos/'}
-                            className={PAYMENT_METHOD_LOGO_CLASS}
-                        />
-                    </div>
-                    <Typography variant={TypographyVariant.BODY} stronger={isSmViewport}>
-                        {paymentMethod ? parsePaymentMethodType(paymentMethod) : bankAccount?.accountNumberLastFourDigits}
-                    </Typography>
-                </>
+                paymentMethod?.lastFourDigits === '' ? (
+                    <Tag label={i18n.get('noPaymentMethod')} variant={TagVariant.LIGHT_WITH_OUTLINE} />
+                ) : (
+                    <>
+                        <div className={PAYMENT_METHOD_LOGO_CONTAINER_CLASS}>
+                            <Image
+                                name={paymentMethod ? paymentMethod.type : 'bankTransfer'}
+                                alt={paymentMethod ? paymentMethod.type : 'bankTransfer'}
+                                folder={'logos/'}
+                                className={PAYMENT_METHOD_LOGO_CLASS}
+                            />
+                        </div>
+                        <Typography variant={TypographyVariant.BODY} stronger={isSmViewport}>
+                            {paymentMethod ? parsePaymentMethodType(paymentMethod) : bankAccount?.accountNumberLastFourDigits}
+                        </Typography>
+                    </>
+                )
             ) : (
                 <Tag label={i18n.get('noData')} variant={TagVariant.LIGHT_WITH_OUTLINE} />
             )}
