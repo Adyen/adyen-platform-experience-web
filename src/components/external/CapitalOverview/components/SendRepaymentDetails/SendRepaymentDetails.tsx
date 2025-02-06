@@ -1,15 +1,15 @@
 import { FunctionalComponent } from 'preact';
 import { useMemo } from 'preact/hooks';
-import { getGrantConfig } from '../../GrantItem/utils';
-import { Translation } from '../../../../../internal/Translation';
-import { EMPTY_ARRAY } from '../../../../../../utils';
-import useCoreContext from '../../../../../../core/Context/useCoreContext';
-import InfoBox from '../../../../../internal/InfoBox';
-import type { GrantDetailsViewProps } from '../types';
-import Typography from '../../../../../internal/Typography/Typography';
-import { TypographyElement, TypographyVariant } from '../../../../../internal/Typography/types';
-import { AccountDescriptionList } from '../BankAccount/AccountDescriptionList';
-import { GrantDetailsView } from '../GrantDetailsView';
+import { getGrantConfig } from '../GrantItem/utils';
+import { Translation } from '../../../../internal/Translation';
+import { EMPTY_ARRAY } from '../../../../../utils';
+import useCoreContext from '../../../../../core/Context/useCoreContext';
+import InfoBox from '../../../../internal/InfoBox';
+import type { GrantDetailsViewProps } from '../GrantDetailsView/types';
+import Typography from '../../../../internal/Typography/Typography';
+import { TypographyElement, TypographyVariant } from '../../../../internal/Typography/types';
+import { AccountDetails } from '../AccountDetails/AccountDetails';
+import { GrantDetailsView } from '../GrantDetailsView/GrantDetailsView';
 import './SendRepaymentDetails.scss';
 
 const BASE_CLASS = 'adyen-pe-grant-send-repayment-details';
@@ -45,7 +45,7 @@ export const SendRepaymentDetails: FunctionalComponent<GrantDetailsViewProps> = 
                     <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY} stronger>
                         {i18n.get('capital.bankAccountDetails')}
                     </Typography>
-                    <AccountDescriptionList bankAccount={bankAccounts[0]!} />
+                    <AccountDetails bankAccount={bankAccounts[0]!} />
                 </section>
                 <section className={CLASS_NAMES.repaymentNotice}>
                     <Typography el={TypographyElement.PARAGRAPH} variant={TypographyVariant.CAPTION}>

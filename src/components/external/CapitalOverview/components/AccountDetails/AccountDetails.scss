@@ -1,16 +1,16 @@
-@use '../../../../../../style';
+@use '../../../../../style';
 
-.adyen-pe-capital-bank-account-description-list {
+.adyen-pe-capital-account-details {
     display: flex;
     flex-direction: column;
     gap: style.token(spacer-040);
 
     &,
-    &__item-content {
+    &__detail-content {
         margin: 0;
     }
 
-    &__item-label {
+    &__detail-label {
         color: style.token(color-label-secondary);
     }
 

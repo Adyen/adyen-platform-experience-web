@@ -1,5 +1,5 @@
 import { IGrant } from '../../../../../types';
-import { GrantDetailsViewCallback } from '../GrantDetailsView';
+import { GrantDetailsViewCallback } from '../GrantDetailsView/types';
 import { ListWithoutFirst } from '../../../../../utils/types';
 
 export interface GrantItemProps {

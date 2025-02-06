@@ -1,14 +1,14 @@
 import { useMemo } from 'preact/hooks';
 import { FunctionalComponent, h } from 'preact';
-import CopyText from '../../../../../internal/CopyText/CopyText';
-import useCoreContext from '../../../../../../core/Context/useCoreContext';
-import Typography from '../../../../../internal/Typography/Typography';
-import { TypographyElement, TypographyVariant } from '../../../../../internal/Typography/types';
-import { TranslationKey } from '../../../../../../translations';
+import CopyText from '../../../../internal/CopyText/CopyText';
+import useCoreContext from '../../../../../core/Context/useCoreContext';
+import Typography from '../../../../internal/Typography/Typography';
+import { TypographyElement, TypographyVariant } from '../../../../internal/Typography/types';
+import { TranslationKey } from '../../../../../translations';
 
 type _ClassNameProp = h.JSX.HTMLAttributes['className'];
 
-export type BankAccountDescriptionProps = {
+export type AccountDetailProps = {
     className?: _ClassNameProp;
     content?: string;
     contentClassName?: _ClassNameProp;
@@ -17,7 +17,7 @@ export type BankAccountDescriptionProps = {
     labelClassName?: _ClassNameProp;
 };
 
-export const AccountDescription: FunctionalComponent<BankAccountDescriptionProps> = ({
+export const AccountDetail: FunctionalComponent<AccountDetailProps> = ({
     className,
     content,
     contentClassName,

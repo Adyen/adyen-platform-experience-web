@@ -1,7 +1,7 @@
-import useCoreContext from '../../../../../../core/Context/useCoreContext';
-import { BankAccountDescriptionProps } from './AccountDescription';
-import { TranslationKey } from '../../../../../../translations';
-import { EMPTY_OBJECT } from '../../../../../../utils';
+import useCoreContext from '../../../../../core/Context/useCoreContext';
+import { AccountDetailProps } from './AccountDetail';
+import { TranslationKey } from '../../../../../translations';
+import { EMPTY_OBJECT } from '../../../../../utils';
 
 type I18n = ReturnType<typeof useCoreContext>['i18n'];
 
@@ -26,7 +26,7 @@ export const getAccountFieldCopyTextConfig = (
     value: any,
     i18n: I18n,
     countryOrRegion?: string
-): BankAccountDescriptionProps['copyTextConfig'] => {
+): AccountDetailProps['copyTextConfig'] => {
     if (isCopyableAccountField(field, countryOrRegion)) {
         const formattedValue = getAccountFieldFormattedValue(field, value, i18n, countryOrRegion);
         return formattedValue === value ? EMPTY_OBJECT : { textToCopy: value };

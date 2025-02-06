@@ -1,10 +1,12 @@
 import { IGrant } from '../../../../../types';
 import { BaseList } from '../../../../internal/BaseList/BaseList';
-import { GrantDetailsView, GrantDetailsViewCallback, GRANT_DETAILS_VIEWS, SendRepaymentDetails } from '../GrantDetailsView';
 import { GrantItem } from '../GrantItem/GrantItem';
 import { getGrantConfig } from '../GrantItem/utils';
 import { FunctionalComponent } from 'preact';
 import { GrantsProps } from './types';
+import { GRANT_DETAILS_VIEWS } from '../GrantDetailsView/constants';
+import { GrantDetailsView, GrantDetailsViewCallback } from '../GrantDetailsView/types';
+import { SendRepaymentDetails } from '../SendRepaymentDetails/SendRepaymentDetails';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { useCallback, useMemo, useState } from 'preact/hooks';
 import { CapitalHeader } from '../../../../internal/CapitalHeader';
