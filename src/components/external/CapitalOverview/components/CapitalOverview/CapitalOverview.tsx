@@ -29,18 +29,19 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
     skipPreQualifiedIntro,
 }) => {
     const legalEntity = useConfigContext()?.extraConfig?.legalEntity;
+    const isRegionSupported = useMemo(() => isCapitalRegionSupported(legalEntity), [legalEntity]);
 
     const { getGrants: grantsEndpointCall, getDynamicGrantOffersConfiguration: dynamicConfigurationEndpointCall } = useConfigContext().endpoints;
 
     const grantsQuery = useFetch({
-        fetchOptions: { enabled: !!grantsEndpointCall },
+        fetchOptions: { enabled: !!grantsEndpointCall && isRegionSupported },
         queryFn: useCallback(async () => {
             return grantsEndpointCall?.(EMPTY_OBJECT);
         }, []),
     });
 
     const dynamicOfferQuery = useFetch({
-        fetchOptions: { enabled: !!dynamicConfigurationEndpointCall },
+        fetchOptions: { enabled: !!dynamicConfigurationEndpointCall && isRegionSupported },
         queryFn: useCallback(async () => {
             return dynamicConfigurationEndpointCall?.(EMPTY_OBJECT);
         }, []),
@@ -68,7 +69,7 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
     }, [dynamicOfferQuery.error, grantList?.length, grantsQuery.error]);
 
     const state = useMemo<CapitalOverviewState>(() => {
-        if (!isCapitalRegionSupported(legalEntity)) {
+        if (!isRegionSupported) {
             return 'UnsupportedRegion';
         } else if (showError) {
             return 'Error';
@@ -94,7 +95,7 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
         grantsQuery.isFetching,
         showError,
         skipPreQualifiedIntro,
-        legalEntity,
+        isRegionSupported,
     ]);
 
     const newOfferAvailable = useMemo(() => (!!dynamicOffer && dynamicOffer.minAmount && dynamicOffer.maxAmount ? true : false), [dynamicOffer]);
