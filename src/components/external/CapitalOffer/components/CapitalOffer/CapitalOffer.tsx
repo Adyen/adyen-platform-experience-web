@@ -69,7 +69,16 @@ export const CapitalOffer: FunctionalComponent<ExternalUIComponentProps<CapitalO
     }, [selectedOffer]);
 
     if (!isCapitalRegionSupported(legalEntity)) {
-        return <CapitalErrorMessageDisplay unsupportedRegion />;
+        return (
+            <div className={CAPITAL_OFFER_CLASS_NAMES.base}>
+                <CapitalHeader
+                    hasDivider
+                    hideTitle={hideTitle}
+                    titleKey={capitalOfferState === 'OfferSummary' ? 'capital.businessFinancingSummary' : 'capital.businessFinancingOffer'}
+                />
+                <CapitalErrorMessageDisplay unsupportedRegion />
+            </div>
+        );
     }
 
     return (
