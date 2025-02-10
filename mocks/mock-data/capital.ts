@@ -133,6 +133,8 @@ export const WRITTEN_OFF_GRANT: IGrant = {
     status: 'WrittenOff',
 };
 
+export const GRANTS: IGrant[] = [ACTIVE_GRANT, REPAID_GRANT, REVOKED_GRANT, WRITTEN_OFF_GRANT, FAILED_GRANT];
+
 export const GRANT_OFFER = {
     id: '66e12a9a64a6',
     grantAmount: {
