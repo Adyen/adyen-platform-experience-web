@@ -3,6 +3,7 @@ import { IGrant } from '../../../../../types';
 import { AccountDetail } from './AccountDetail';
 import { Fragment, FunctionalComponent, h } from 'preact';
 import { getAccountFieldCopyTextConfig, getAccountFieldFormattedValue, getAccountFieldTranslationKey } from './utils';
+import { KeyOfRecord, ValueOfRecord } from '../../../../../utils/types';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import './AccountDetails.scss';
 
@@ -13,6 +14,8 @@ const CLASS_NAMES = {
     detailContent: `${BASE_CLASS}__detail-content`,
     detailLabel: `${BASE_CLASS}__detail-label`,
 };
+
+type AccountDetailEntry = [KeyOfRecord<AccountDetailsProps['bankAccount']>, ValueOfRecord<AccountDetailsProps['bankAccount']>];
 
 export type AccountDetailsProps = {
     bankAccount: NonNullable<IGrant['earlyRepaymentAccounts']>[number];
@@ -25,8 +28,8 @@ export const AccountDetails: FunctionalComponent<AccountDetailsProps> = ({ bankA
 
     return (
         <dl className={cx(BASE_CLASS, className)}>
-            {Object.entries(bankAccount).map(([field, value]) => {
-                return field ? (
+            {(Object.entries(bankAccount) as AccountDetailEntry[]).map(([field, value]) => {
+                return field && value ? (
                     <Fragment key={field}>
                         <AccountDetail
                             className={CLASS_NAMES.detail}
