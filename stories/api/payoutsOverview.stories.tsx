@@ -4,7 +4,7 @@ import { EMPTY_SESSION_OBJECT } from '../utils/constants';
 import { PayoutsMeta } from '../components/payoutsOverview';
 import { Meta } from '@storybook/preact';
 
-const meta: Meta<ElementProps<typeof PayoutsOverview>> = { ...PayoutsMeta, title: 'Integration/Payouts Overview' };
+const meta: Meta<ElementProps<typeof PayoutsOverview>> = { ...PayoutsMeta, title: 'API-connected/Payouts Overview' };
 
 export const Default: ElementStory<typeof PayoutsOverview, SessionControl> = {
     name: 'Default',
