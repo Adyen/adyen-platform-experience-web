@@ -2,6 +2,11 @@ import { TranslationKey } from '../../../translations';
 import { ILegalEntity } from '../../../types';
 import { supportedCountries, SupportedLocation, supportedRegions } from './constants';
 
+const getCapitalRegion = (legalEntity?: ILegalEntity) => {
+    const capitalRegion = legalEntity?.regions?.find(region => region.type === 'capital');
+    return capitalRegion?.value ?? '';
+};
+
 const getSubtitleByRegion = (region?: string) => {
     switch (region) {
         case SupportedLocation.EU:
@@ -25,8 +30,7 @@ const getSubtitleByCountry = (countryCode?: string) => {
 };
 
 export const getCapitalHeaderSubtitleByLegalEntity = (legalEntity?: ILegalEntity): TranslationKey | null => {
-    const capitalRegion = legalEntity?.regions?.find(region => region.type === 'capital');
-    const region = capitalRegion?.value ?? '';
+    const region = getCapitalRegion(legalEntity);
     const countryCode = legalEntity?.countryCode;
 
     // Check the country first because it is more specific and first handle the one with a narrow scope
@@ -34,8 +38,8 @@ export const getCapitalHeaderSubtitleByLegalEntity = (legalEntity?: ILegalEntity
 };
 
 export const isCapitalRegionSupported = (legalEntity?: ILegalEntity) => {
-    const capitalRegion = legalEntity?.regions?.find(region => region.type === 'capital');
-    const region = capitalRegion?.value ?? '';
+    const region = getCapitalRegion(legalEntity);
     const countryCode = legalEntity?.countryCode ?? '';
+
     return supportedCountries.includes(countryCode) || supportedRegions.includes(region);
 };
