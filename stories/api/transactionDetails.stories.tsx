@@ -3,10 +3,7 @@ import { TransactionDetails } from '../../src';
 import { TransactionDetailsMeta } from '../components/transactionDetails';
 import { ElementProps, ElementStory } from '../utils/types';
 
-const meta: Meta<ElementProps<typeof TransactionDetails>> = {
-    ...TransactionDetailsMeta,
-    title: 'Integration/Transaction Details',
-};
+const meta: Meta<ElementProps<typeof TransactionDetails>> = { ...TransactionDetailsMeta, title: 'API-connected/Transaction Details' };
 
 export const Default: ElementStory<typeof TransactionDetails> = {
     name: 'Default',

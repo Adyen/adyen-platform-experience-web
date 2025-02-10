@@ -82,7 +82,7 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
             return 'Loading';
         } else if (grantList?.length) {
             return 'GrantList';
-        } else if (dynamicOffer?.maxAmount && dynamicOffer?.minAmount && !skipPreQualifiedIntro) {
+        } else if (dynamicOffer?.maxAmount && dynamicOffer?.minAmount) {
             return 'PreQualified';
         }
         return 'Unqualified';
