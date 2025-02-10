@@ -1,5 +1,5 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { defineConfig, type PluginOption } from 'vite';
+import { defineConfig, type PluginOption, UserConfig } from 'vite';
 import { resolve } from 'node:path';
 import version from './config/version';
 import packageJson from './package.json';
@@ -13,6 +13,7 @@ import { preact } from '@preact/preset-vite';
 import { checker } from 'vite-plugin-checker';
 import { realApiProxies } from './endpoints/realApiProxies';
 import svgr from 'vite-plugin-svgr';
+import { VitestInlineConfig } from 'vitest/dist/chunks/vite.BdBj-UWY';
 const currentVersion = version();
 const externalDependencies = Object.keys(packageJson.dependencies);
 
@@ -36,7 +37,7 @@ async function getPlaygroundEntrypoints() {
     };
 }
 
-export default defineConfig(async ({ mode }) => {
+export default defineConfig(async ({ mode }): Promise<UserConfig & { test: VitestInlineConfig }> => {
     const isAnalyseMode = mode === 'analyse';
     const { apiConfigs, playground } = getEnvironment(mode);
     return {
@@ -139,7 +140,6 @@ export default defineConfig(async ({ mode }) => {
         server: {
             host: playground.host,
             port: playground.port,
-            https: false,
             proxy: mode === 'mocked' ? undefined : realApiProxies(apiConfigs, mode),
         },
         preview: {
