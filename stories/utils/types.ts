@@ -21,4 +21,4 @@ export type ElementStory<T extends new (...args: any) => any, ExtraProps = {}> =
 
 export type SessionControls = { session: { roles: string[]; accountHolderId?: string } };
 
-export type SetupControls = { legalEntity: { region: string; countryCode: string } };
+export type SetupControls = { legalEntity: { regions: { type: string; value: string }[]; countryCode: string } };

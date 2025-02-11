@@ -12,10 +12,12 @@ export const CapitalOverviewMeta: Meta<ElementProps<typeof CapitalOverview>> = {
         onFundsRequest: enabledDisabledCallbackRadioControls('onFundsRequest'),
         onOfferDismiss: enabledDisabledCallbackRadioControls('onOfferDismiss'),
         onOfferOptionsRequest: enabledDisabledCallbackRadioControls('onOfferOptionsRequest'),
+        skipPreQualifiedIntro: { type: 'boolean' },
     },
     args: {
         hideTitle: false,
         component: CapitalOverview,
+        skipPreQualifiedIntro: false,
     },
     parameters: {
         controls: {
