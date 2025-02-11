@@ -28,7 +28,7 @@
     "capital.goToTermsAndConditions": "Label for a button that enables the user to navigate to a screen with terms and conditions",
     "capital.grantID": "Label for a loan (a.k.a grant) ID",
     "capital.inProgress": "Label for a list of grants that are in progress",
-    "capital.legalNoticeDescription": "This is a legal text for capital offer summary. Do not translate \"Adyen N.V.\", and never translate this text to Spanish, since we provide an official translation for it",
+    "capital.legalNoticeDescription": "This is a legal text for capital offer summary. Do not translate \"Adyen N.V.\" and \"Adyen Credit Support Team\", and never translate this text to Spanish, since we provide an official translation for it",
     "capital.legalNoticeTitle": "This is a legal text for capital offer summary. Do not translate \"Adyen N.V.\", and never translate this text to Spanish, since we provide an official translation for it",
     "capital.maximumRepaymentPeriod": "Label for maximum repayment period of a grant",
     "capital.minimumRepaymentToRepayTheFinancingOnTime": "Label that describes what a repayment threshold means",

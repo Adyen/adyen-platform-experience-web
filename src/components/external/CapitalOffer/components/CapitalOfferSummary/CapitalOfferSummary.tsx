@@ -211,6 +211,7 @@ export const CapitalOfferSummary = ({
                     ) : null}
                 </Alert>
             )}
+            <CapitalOfferLegalNotice />
             <div className="adyen-pe-capital-offer-summary__buttons">
                 {requestFundsMutation.error && !requestErrorAlert ? null : (
                     <Button variant={ButtonVariant.SECONDARY} onClick={onBack}>
@@ -226,7 +227,6 @@ export const CapitalOfferSummary = ({
                     {i18n.get(requestFundsMutation.isLoading ? 'capital.requesting' : 'capital.requestFunds')}
                 </Button>
             </div>
-            <CapitalOfferLegalNotice />
         </div>
     );
 };
