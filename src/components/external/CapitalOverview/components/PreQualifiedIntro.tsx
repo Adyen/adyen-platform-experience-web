@@ -8,13 +8,13 @@ import Typography from '../../../internal/Typography/Typography';
 import { TypographyVariant } from '../../../internal/Typography/types';
 
 const PreQualifiedIntro = ({
-    dynamicOffer,
-    onSeeOptions,
+    dynamicOfferConfig,
     hideTitle,
+    onOfferOptionsRequest,
 }: {
-    dynamicOffer: Required<IDynamicOffersConfig>;
-    onSeeOptions: () => void;
+    dynamicOfferConfig: Required<IDynamicOffersConfig>;
     hideTitle?: boolean;
+    onOfferOptionsRequest: () => void;
 }) => {
     const { i18n } = useCoreContext();
 
@@ -28,13 +28,15 @@ const PreQualifiedIntro = ({
                         <strong>
                             {i18n.get('capital.youHaveBeenPrequalifiedForBusinessFinancingUpToX.part2', {
                                 values: {
-                                    amount: i18n.amount(dynamicOffer.maxAmount.value, dynamicOffer.maxAmount.currency, { minimumFractionDigits: 0 }),
+                                    amount: i18n.amount(dynamicOfferConfig.maxAmount.value, dynamicOfferConfig.maxAmount.currency, {
+                                        minimumFractionDigits: 0,
+                                    }),
                                 },
                             })}
                         </strong>
                     </Typography>
                 </InfoBox>
-                <Button className={CAPITAL_OVERVIEW_CLASS_NAMES.preQualifiedGrantButton} onClick={onSeeOptions}>
+                <Button className={CAPITAL_OVERVIEW_CLASS_NAMES.preQualifiedGrantButton} onClick={onOfferOptionsRequest}>
                     {i18n.get('capital.seeOptions')}
                 </Button>
             </div>

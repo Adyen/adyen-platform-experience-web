@@ -13,9 +13,6 @@ const preview: Preview = {
         controls: {
             hideNoControlsWarning: true,
         },
-        options: {
-            storySort: { order: ['components', ['Transactions', 'Payouts']] },
-        },
     },
     argTypes: {
         mockedApi: {
