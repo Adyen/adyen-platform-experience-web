@@ -27,6 +27,10 @@ export class CapitalOverviewElement extends UIElement<CapitalOverviewProps> {
         const { getDynamicGrantOffersConfiguration, getGrants } = session.context.endpoints;
         const legalEntity = session.context.extraConfig?.legalEntity;
 
+        if (!isCapitalRegionSupported(legalEntity)) {
+            return { state: 'isInUnsupportedRegion' };
+        }
+
         const [config, grants] = await Promise.all([
             getDynamicGrantOffersConfiguration?.(EMPTY_OBJECT).catch(noop as () => undefined),
             getGrants?.(EMPTY_OBJECT).catch(noop as () => undefined),
@@ -34,9 +38,7 @@ export class CapitalOverviewElement extends UIElement<CapitalOverviewProps> {
 
         let state: CapitalComponentState['state'] = 'isUnqualified';
 
-        if (!isCapitalRegionSupported(legalEntity)) {
-            state = 'isInUnsupportedRegion';
-        } else if (grants && grants.data?.length > 0) {
+        if (grants && grants.data?.length > 0) {
             state = 'hasRequestedGrants';
         } else if (config && config.minAmount) {
             state = 'isPreQualified';

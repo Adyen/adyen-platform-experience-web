@@ -1,10 +1,10 @@
 export const enum SupportedLocation {
     'AU' = 'AU',
-    'EU' = 'Europe',
+    'EU' = 'EU',
     'GB' = 'GB',
     'US' = 'US',
 }
 
 export const supportedCountries: string[] = ['AU', 'GB', 'US'];
 
-export const supportedRegions: string[] = ['Europe'];
+export const supportedRegions: string[] = ['EU'];
