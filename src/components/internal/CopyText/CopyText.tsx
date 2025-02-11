@@ -13,6 +13,7 @@ const CopyText = ({
     buttonLabel,
     showCopyTextTooltip = true,
     type = 'Link',
+    ...restProps
 }: {
     textToCopy: string;
     isHovered?: boolean;
@@ -44,6 +45,7 @@ const CopyText = ({
             className={cx('adyen-pe-copy-text__container', {
                 ['adyen-pe-copy-text__container--information']: type === 'Link',
             })}
+            {...restProps}
         >
             {showCopyTextTooltip ? (
                 <Tooltip content={textToCopy} isContainerHovered={isHovered}>
@@ -75,6 +77,7 @@ const CopyText = ({
                     onClick={onClick}
                     onBlur={resetTooltipLabel}
                     onMouseLeaveCapture={resetTooltipLabel}
+                    data-testid="copyText"
                 >
                     <div
                         className={cx('adyen-pe-copy-text__icon', {

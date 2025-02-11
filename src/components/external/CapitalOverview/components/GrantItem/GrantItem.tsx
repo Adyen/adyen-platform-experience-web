@@ -89,7 +89,13 @@ export const GrantItem: FunctionalComponent<GrantItemProps> = ({ grant, showDeta
                 )}
                 {grantConfig.isGrantIdVisible ? (
                     <div className={GRANT_ITEM_CLASS_NAMES.grantID}>
-                        <CopyText textToCopy={grant.id} buttonLabel={i18n.get('capital.grantID')} isHovered type={'Text'} />
+                        <CopyText
+                            textToCopy={grant.id}
+                            buttonLabel={i18n.get('capital.grantID')}
+                            isHovered
+                            type={'Text'}
+                            data-testid="grant-id-copy-text"
+                        />
                     </div>
                 ) : null}
                 {grantConfig.hasAlerts ? (

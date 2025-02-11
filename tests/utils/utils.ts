@@ -86,3 +86,7 @@ export const goToStory = async (page: Page, params: { id: string; args?: Record<
     });
     await page.goto(`${baseURL}?${queryParams.toString()}`);
 };
+
+export const setTime = async (page: Page) => {
+    await page.clock.setFixedTime('2025-01-01T00:00:00');
+};
