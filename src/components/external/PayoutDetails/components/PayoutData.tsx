@@ -108,7 +108,7 @@ export const PayoutData = ({
                             <Typography variant={TypographyVariant.SUBTITLE} stronger>
                                 {i18n.get('netPayout')}
                             </Typography>
-                            {payout.isSumOfSameDayPayouts && <Tag variant={TagVariant.BLUE} label={i18n.get('sumOfSameDayReports')}></Tag>}
+                            {payout.isSumOfSameDayPayouts && <Tag variant={TagVariant.BLUE} label={i18n.get('sumOfSameDayPayouts')}></Tag>}
                         </div>
                         <Typography variant={TypographyVariant.TITLE} large>
                             {`${i18n.amount(payout.payoutAmount.value, payout.payoutAmount.currency, {
