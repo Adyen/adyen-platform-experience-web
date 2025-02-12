@@ -60,7 +60,7 @@ export interface components {
             /** @description Payment method type code of the transaction f.e. klarna, visa, mc */
             type: string;
 
-            paymentMethodDescription?: string;
+            description?: string;
         };
         RefundDetails: {
             refundLocked?: boolean;

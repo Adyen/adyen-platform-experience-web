@@ -1858,7 +1858,7 @@ export const TRANSACTIONS: ITransaction[] = [
     {
         paymentMethod: {
             type: 'klarna',
-            paymentMethodDescription: 'Klarna Pay Later',
+            description: 'Klarna Pay Later',
         },
         id: 'B78I76Y77072H126',
         amount: {
