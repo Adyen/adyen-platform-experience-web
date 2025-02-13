@@ -7,7 +7,10 @@
     $adyen-pe-box-shadow-initial-width: 1px;
     $adyen-pe-box-shadow-width: 3px;
 
+    align-items: center;
     color: style.token(color-link-primary);
+    display: flex;
+    gap: style.token(spacer-040);
     text-decoration: underline;
 
     &:hover {

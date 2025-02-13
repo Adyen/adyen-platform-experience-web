@@ -5,8 +5,9 @@ import { PropsWithChildren, TargetedEvent } from 'preact/compat';
 import cx from 'classnames';
 import { useCallback } from 'preact/hooks';
 import './Link.scss';
+import Icon from '../Icon';
 
-function Link({ href, children, variant = 'default', truncate, target = '_blank', ...props }: PropsWithChildren<LinkProps>) {
+function Link({ href, children, variant = 'default', truncate, target = '_blank', withIcon = true, ...props }: PropsWithChildren<LinkProps>) {
     const onClick = useCallback((e: TargetedEvent<HTMLAnchorElement>) => e.stopPropagation(), []);
     return (
         <a
@@ -22,6 +23,7 @@ function Link({ href, children, variant = 'default', truncate, target = '_blank'
             <Typography className="adyen-pe-link__text" el={TypographyElement.SPAN} variant={TypographyVariant.BODY}>
                 {children}
             </Typography>
+            {withIcon && <Icon name="external-link" />}
         </a>
     );
 }
