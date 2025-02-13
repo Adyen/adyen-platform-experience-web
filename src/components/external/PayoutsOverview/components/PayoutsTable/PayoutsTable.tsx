@@ -17,7 +17,7 @@ import { PaginationProps, WithPaginationLimitSelection } from '../../../../inter
 import { TypographyVariant } from '../../../../internal/Typography/types';
 import Typography from '../../../../internal/Typography/Typography';
 import { getLabel } from '../../../../utils/getLabel';
-import { mediaQueries, useResponsiveViewport } from '../../../../../hooks/useResponsiveViewport';
+import { containerQueries, useResponsiveViewport } from '../../../../../hooks/useResponsiveViewport';
 import { BASE_CLASS, NET_PAYOUT_CLASS } from './constants';
 import './PayoutsTable.scss';
 import { useTableColumns } from '../../../../../hooks/useTableColumns';
@@ -53,7 +53,7 @@ export const PayoutsTable: FC<PayoutsTableProps> = ({
     const { dateFormat } = useTimezoneAwareDateFormatting('UTC');
     const { refreshing } = useConfigContext();
     const isLoading = useMemo(() => loading || refreshing, [loading, refreshing]);
-    const isSmAndUpViewport = useResponsiveViewport(mediaQueries.up.sm);
+    const isSmAndUpViewport = useResponsiveViewport(containerQueries.up.sm);
 
     const getAmountFieldConfig = useCallback(
         (key: (typeof FIELDS)[number]) => {

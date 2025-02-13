@@ -1,4 +1,4 @@
-import { mediaQueries, useResponsiveViewport } from '../../../../../hooks/useResponsiveViewport';
+import { containerQueries, useResponsiveViewport } from '../../../../../hooks/useResponsiveViewport';
 import FilterButton from '../../components/FilterButton/FilterButton';
 import Popover from '../../../Popover/Popover';
 import { PopoverContainerPosition, PopoverContainerVariant } from '../../../Popover/types';
@@ -53,7 +53,7 @@ const renderFallback = (() => {
 })();
 
 const BaseFilter = <T extends BaseFilterProps = BaseFilterProps>({ render, ...props }: FilterProps<T>) => {
-    const isSmViewport = useResponsiveViewport(mediaQueries.down.xs);
+    const isSmViewport = useResponsiveViewport(containerQueries.down.xs);
     const [editMode, _updateEditMode] = useBooleanState(false);
     const [editModalMounting, updateEditModalMounting] = useBooleanState(false);
     const isValueEmpty = useMemo(() => props.isValueEmpty ?? isValueEmptyFallback, [props.isValueEmpty]);
@@ -110,8 +110,8 @@ const BaseFilter = <T extends BaseFilterProps = BaseFilterProps>({ render, ...pr
         committing && closeEditDialog();
         updateHasEmptyValue(hasEmptyValue);
     }, [committing, closeEditDialog, updateHasEmptyValue, hasEmptyValue]);
-    const isOnlySmDevice = useResponsiveViewport(mediaQueries.only.sm);
-    const isOnlyMdDevice = useResponsiveViewport(mediaQueries.only.md);
+    const isOnlySmDevice = useResponsiveViewport(containerQueries.only.sm);
+    const isOnlyMdDevice = useResponsiveViewport(containerQueries.only.md);
 
     return (
         <>

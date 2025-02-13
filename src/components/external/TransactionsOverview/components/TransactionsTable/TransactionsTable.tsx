@@ -12,7 +12,7 @@ import { CellTextPosition } from '../../../../internal/DataGrid/types';
 import Pagination from '../../../../internal/Pagination';
 import { TypographyVariant } from '../../../../internal/Typography/types';
 import Typography from '../../../../internal/Typography/Typography';
-import { mediaQueries, useResponsiveViewport } from '../../../../../hooks/useResponsiveViewport';
+import { containerQueries, useResponsiveViewport } from '../../../../../hooks/useResponsiveViewport';
 import { AMOUNT_CLASS, BASE_CLASS, DATE_AND_PAYMENT_METHOD_CLASS, DATE_METHOD_CLASS } from './constants';
 import './TransactionTable.scss';
 import PaymentMethodCell from './PaymentMethodCell';
@@ -42,9 +42,9 @@ export const TransactionsTable: FC<TransactionTableProps> = ({
     const { i18n } = useCoreContext();
     const { dateFormat } = useTimezoneAwareDateFormatting(activeBalanceAccount?.timeZone);
     const [hoveredRow, setHoveredRow] = useState<undefined | number>();
-    const isSmAndUpViewport = useResponsiveViewport(mediaQueries.up.sm);
-    const isMdAndUpViewport = useResponsiveViewport(mediaQueries.up.md);
-    const isXsAndDownViewport = useResponsiveViewport(mediaQueries.down.xs);
+    const isSmAndUpViewport = useResponsiveViewport(containerQueries.up.sm);
+    const isMdAndUpViewport = useResponsiveViewport(containerQueries.up.md);
+    const isXsAndDownViewport = useResponsiveViewport(containerQueries.down.xs);
 
     const amountLabel = i18n.get('amount');
     const columns = useTableColumns({

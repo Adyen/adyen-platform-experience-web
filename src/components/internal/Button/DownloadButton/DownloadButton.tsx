@@ -4,7 +4,7 @@ import { useEffect, useState } from 'preact/hooks';
 import useCoreContext from '../../../../core/Context/useCoreContext';
 import AdyenPlatformExperienceError from '../../../../core/Errors/AdyenPlatformExperienceError';
 import { EndpointName } from '../../../../types/api/endpoints';
-import { mediaQueries, useResponsiveViewport } from '../../../../hooks/useResponsiveViewport';
+import { containerQueries, useResponsiveViewport } from '../../../../hooks/useResponsiveViewport';
 import Spinner from '../../Spinner';
 import Download from '../../SVGIcons/Download';
 import Button from '../Button';
@@ -42,7 +42,7 @@ function downloadBlob({ blob, filename }: { blob: Blob; filename: string }) {
 function DownloadButton({ className, disabled, endpointName, params, setError, errorDisplay, onDownloadRequested }: DownloadButtonProps) {
     const { i18n } = useCoreContext();
     const [fetchData, setFetchData] = useState(false);
-    const isSmViewport = useResponsiveViewport(mediaQueries.down.xs);
+    const isSmViewport = useResponsiveViewport(containerQueries.down.xs);
     const { data, error, isFetching } = useDownload(endpointName, params, fetchData);
 
     useEffect(() => {

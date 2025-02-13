@@ -1,4 +1,4 @@
-import { mediaQueries, useResponsiveViewport } from '../../../hooks/useResponsiveViewport';
+import { containerQueries, useResponsiveViewport } from '../../../hooks/useResponsiveViewport';
 import Popover from '../Popover/Popover';
 import { PopoverContainerVariant } from '../Popover/types';
 import { useTooltipListeners } from './useTooltipListeners';
@@ -18,7 +18,7 @@ const isString = (content: string | VNode<any>) => {
 
 export const Tooltip = ({ content, children, triggerRef, showTooltip, position, isContainerHovered = false }: PropsWithChildren<TooltipProps>) => {
     const controllerRef = useUniqueIdentifier();
-    const isMdViewport = useResponsiveViewport(mediaQueries.down.sm);
+    const isMdViewport = useResponsiveViewport(containerQueries.down.sm);
     const { isVisible, listeners } = useTooltipListeners();
 
     if (isMdViewport) return <>{children}</>;

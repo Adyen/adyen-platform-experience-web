@@ -20,7 +20,7 @@ import Warning from '../../../../internal/SVGIcons/Warning';
 import { TypographyVariant } from '../../../../internal/Typography/types';
 import Typography from '../../../../internal/Typography/Typography';
 import { getLabel } from '../../../../utils/getLabel';
-import { mediaQueries, useResponsiveViewport } from '../../../../../hooks/useResponsiveViewport';
+import { containerQueries, useResponsiveViewport } from '../../../../../hooks/useResponsiveViewport';
 import { BASE_CLASS, DATE_TYPE_CLASS, DATE_TYPE_DATE_SECTION_CLASS, DISABLED_BUTTONS_TIMEOUT } from './constants';
 import './ReportsTable.scss';
 
@@ -51,8 +51,8 @@ export const ReportsTable: FC<ReportsTableProps> = ({
     const [alert, setAlert] = useState<null | { title: string; description: string }>(null);
     const { refreshing } = useConfigContext();
     const isLoading = useMemo(() => loading || refreshing, [loading, refreshing]);
-    const isSmAndUpViewport = useResponsiveViewport(mediaQueries.up.sm);
-    const isXsAndDownViewport = useResponsiveViewport(mediaQueries.down.xs);
+    const isSmAndUpViewport = useResponsiveViewport(containerQueries.up.sm);
+    const isXsAndDownViewport = useResponsiveViewport(containerQueries.down.xs);
 
     const fieldsVisibility: Partial<Record<FieldsType, boolean>> = useMemo(
         () => ({

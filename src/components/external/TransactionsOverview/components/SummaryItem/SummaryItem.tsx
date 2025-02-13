@@ -9,7 +9,7 @@ import useCoreContext from '../../../../../core/Context/useCoreContext';
 import classNames from 'classnames';
 import { useCallback, useEffect } from 'preact/hooks';
 import './SummaryItem.scss';
-import { mediaQueries, useResponsiveViewport } from '../../../../../hooks/useResponsiveViewport';
+import { containerQueries, useResponsiveViewport } from '../../../../../hooks/useResponsiveViewport';
 
 export const SummaryItem = ({
     columnConfigs,
@@ -34,7 +34,7 @@ export const SummaryItem = ({
 
     const getColumnStyle = (index: number) => ({ width: widths && widths[index] ? widths[index] : 'auto' });
 
-    const isXsScreen = useResponsiveViewport(mediaQueries.only.xs);
+    const isXsScreen = useResponsiveViewport(containerQueries.only.xs);
 
     const typographyVariant = useCallback(
         (config: SummaryItemColumnConfig, isLongValue: boolean) => {

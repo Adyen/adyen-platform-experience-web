@@ -22,7 +22,7 @@ import useTransactionsOverviewMultiSelectionFilters from '../../hooks/useTransac
 import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatformExperienceError';
 import { AmountFilter } from '../../../../internal/FilterBar/filters/AmountFilter/AmountFilter';
 import { BASE_CLASS, BASE_CLASS_DETAILS, MAX_TRANSACTIONS_DATE_RANGE_MONTHS, SUMMARY_CLASS, SUMMARY_ITEM_CLASS } from './constants';
-import { mediaQueries, useResponsiveViewport } from '../../../../../hooks/useResponsiveViewport';
+import { containerQueries, useResponsiveViewport } from '../../../../../hooks/useResponsiveViewport';
 import { useCustomColumnsData } from '../../../../../hooks/useCustomColumnsData';
 import './TransactionsOverview.scss';
 
@@ -119,7 +119,7 @@ export const TransactionsOverview = ({
         statusesFilter.updateSelection({ target: { value: 'Booked', name: 'status' } });
     }, [statusesFilter]);
 
-    const isNarrowViewport = useResponsiveViewport(mediaQueries.down.sm);
+    const isNarrowViewport = useResponsiveViewport(containerQueries.down.sm);
 
     const hasMultipleCurrencies = !!availableCurrencies && availableCurrencies.length > 1;
 

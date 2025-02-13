@@ -1,5 +1,5 @@
 import { useClickOutside } from '../../../hooks/element/useClickOutside';
-import { mediaQueries, useResponsiveViewport } from '../../../hooks/useResponsiveViewport';
+import { containerQueries, useResponsiveViewport } from '../../../hooks/useResponsiveViewport';
 import Button from '../Button';
 import Icon from '../Icon';
 import { ButtonVariant } from '../Button/types';
@@ -25,7 +25,7 @@ export default function Modal({
     size = 'fluid',
     ...props
 }: ModalProps) {
-    const isSmViewport = useResponsiveViewport(mediaQueries.down.xs);
+    const isSmViewport = useResponsiveViewport(containerQueries.down.xs);
     const { i18n } = useCoreContext();
     const targetElement = useClickOutside(null, onClose) as Ref<HTMLDivElement>;
 
