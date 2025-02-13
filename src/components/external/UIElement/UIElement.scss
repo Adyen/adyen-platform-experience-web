@@ -5,17 +5,14 @@
 .adyen-pe-component {
     --adyen-pe-content-padding: #{style.token(spacer-070)};
     --adyen-pe-data-details-padding: var(--adyen-pe-content-padding);
+    background: style.token(color-background-primary);
     container-type: inline-size;
+    padding: var(--adyen-pe-content-padding);
     width: 100%;
 
-    &__container {
-        @include adyen-pe-screen-sm-and-up {
-            background: style.token(color-background-primary);
-            border: style.token(border-width-s) solid style.token(color-outline-secondary);
-            border-radius: style.token(spacer-040);
-            padding: var(--adyen-pe-content-padding);
-            width: 100%;
-        }
+    @media (min-width: 480px) {
+        border: style.token(border-width-s) solid style.token(color-outline-secondary);
+        border-radius: style.token(spacer-040);
     }
 }
 

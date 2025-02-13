@@ -97,7 +97,7 @@ export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUI
                 >
                     {this.componentToRender && (
                         <div ref={this.compRef} className={cx('adyen-pe-component', this.customClassNames)}>
-                            <div className="adyen-pe-component__container">{this.componentToRender()}</div>
+                            {this.componentToRender()}
                         </div>
                     )}
                 </CoreProvider>
