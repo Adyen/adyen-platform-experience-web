@@ -5,6 +5,8 @@ import BaseElement from '../BaseElement';
 import { BaseElementProps, ExternalComponentType, IUIElement, UIElementProps, UIElementStatus } from '../../types';
 import './UIElement.scss';
 import cx from 'classnames';
+import { useRef } from 'preact/compat';
+import { createRef, RefObject } from 'preact';
 
 export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUIElement {
     protected componentRef: UIElement<P> | null = null;
@@ -13,12 +15,14 @@ export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUI
     public elementRef: UIElement<P> | null;
     public onContactSupport?: () => void;
     public customClassNames: string | undefined;
+    public compRef: RefObject<HTMLDivElement>;
 
     constructor(props: P & UIElementProps & BaseElementProps) {
         super(props);
         this.setState = this.setState.bind(this);
         this.onContactSupport = props.onContactSupport;
         this.elementRef = this;
+        this.compRef = createRef();
     }
 
     get isValid() {
@@ -89,8 +93,13 @@ export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUI
                     loadingContext={core.loadingContext}
                     updateCore={updateCore}
                     externalErrorHandler={externalErrorHandler}
+                    componentRef={this.compRef}
                 >
-                    {this.componentToRender && <div className={cx('adyen-pe-component', this.customClassNames)}>{this.componentToRender()}</div>}
+                    {this.componentToRender && (
+                        <div ref={this.compRef} className={cx('adyen-pe-component', this.customClassNames)}>
+                            <div className="adyen-pe-component__container">{this.componentToRender()}</div>
+                        </div>
+                    )}
                 </CoreProvider>
             </ConfigProvider>
         );
