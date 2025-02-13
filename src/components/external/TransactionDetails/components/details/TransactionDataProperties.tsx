@@ -11,6 +11,7 @@ import { isNullish } from '../../../../../utils';
 import Link from '../../../../internal/Link/Link';
 import { TypographyVariant } from '../../../../internal/Typography/types';
 import Typography from '../../../../internal/Typography/Typography';
+import Icon from '../../../../internal/DataGrid/components/Icon';
 
 const TransactionDataProperties = () => {
     const { i18n } = useCoreContext();
@@ -80,12 +81,22 @@ const TransactionDataProperties = () => {
                 layout="5-7"
                 renderLabel={label => <div className={TX_DATA_LABEL}>{label}</div>}
                 renderValue={(val, key, type, details) => {
-                    if (type === 'link')
+                    if (type === 'link') {
                         return (
                             <Link href={details.href} target={details.target || '_blank'}>
                                 {val}
                             </Link>
                         );
+                    }
+                    if (type === 'icon') {
+                        const icon = { url: details.src, alt: details.alt || val };
+                        return (
+                            <div className="adyen-pe-transaction-data__list-icon-value">
+                                <Icon {...icon} />
+                                <Typography variant={TypographyVariant.BODY}> {val} </Typography>
+                            </div>
+                        );
+                    }
                     return <Typography variant={TypographyVariant.BODY}> {val} </Typography>;
                 }}
             />
