@@ -2,7 +2,7 @@ import { BREAKPOINTS } from '../constants';
 import type { ValueOfRecord } from '../utils/types';
 import { useContainerQuery } from './useContainerQuery';
 
-export const mediaQueries = {
+export const containerQueries = {
     up: {
         sm: ['up', BREAKPOINTS.sm],
         md: ['up', BREAKPOINTS.md],
@@ -21,10 +21,10 @@ export const mediaQueries = {
     },
 } as const;
 
-type _MediaQueries = typeof mediaQueries;
+type _ContainerQueries = typeof containerQueries;
 
-export type ResponsiveViewportMediaQuery = ValueOfRecord<{
-    [K in keyof _MediaQueries]: ValueOfRecord<_MediaQueries[K]>;
+export type ResponsiveViewportContainerQuery = ValueOfRecord<{
+    [K in keyof _ContainerQueries]: ValueOfRecord<_ContainerQueries[K]>;
 }>;
 
-export const useResponsiveViewport = useContainerQuery<ResponsiveViewportMediaQuery>;
+export const useResponsiveViewport = useContainerQuery<ResponsiveViewportContainerQuery>;
