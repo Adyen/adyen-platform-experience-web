@@ -1,3 +1,4 @@
+import cx from 'classnames';
 import { FC } from 'preact/compat';
 import Typography from '../Typography/Typography';
 import useCoreContext from '../../../core/Context/useCoreContext';
@@ -15,9 +16,14 @@ export interface HeaderProps {
     hideTitle?: UIElementProps['hideTitle'];
     subtitleKey?: TranslationKey;
     titleKey?: TranslationKey;
+    subtitleConfig?: {
+        variant?: TypographyVariant;
+        typographyEl?: TypographyElement;
+        classNames?: string;
+    };
 }
 
-export const Header: FC<HeaderProps> = ({ baseClassName = BASE_CLASS, children, hasDivider, hideTitle, titleKey, subtitleKey }) => {
+export const Header: FC<HeaderProps> = ({ baseClassName = BASE_CLASS, children, hasDivider, hideTitle, titleKey, subtitleKey, subtitleConfig }) => {
     const { i18n } = useCoreContext();
     return (
         <header className={baseClassName}>
@@ -30,8 +36,11 @@ export const Header: FC<HeaderProps> = ({ baseClassName = BASE_CLASS, children, 
                     </div>
                 )}
                 {subtitleKey && (
-                    <div className={`${baseClassName}__subtitle`}>
-                        <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY}>
+                    <div className={cx(`${baseClassName}__subtitle`, subtitleConfig?.classNames)}>
+                        <Typography
+                            el={subtitleConfig?.typographyEl ?? TypographyElement.SPAN}
+                            variant={subtitleConfig?.variant ?? TypographyVariant.BODY}
+                        >
                             {i18n.get(subtitleKey)}
                         </Typography>
                     </div>

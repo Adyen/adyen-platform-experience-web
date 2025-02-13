@@ -21,8 +21,15 @@ export interface components {
     /** @enum {string} */
     EndpointName: "getTransactions" | "getTransaction" | "getTransactionTotals" | "getBalances" | "getBalanceAccounts" | "getPayouts" | "getPayout" | "getReports" | "downloadReport" | "getNetworkTokenActivationData" | "createNetworkTokenActivationData" | "getDynamicGrantOffersConfiguration" | "getDynamicGrantOffer" | "createGrantOffer" | "getGrants" | "requestFunds" | "signToSActionDetails" | "initiateRefund";
     LegalEntitySetupResponseDTO: {
-      region?: string;
+      countryCode: string;
+      regions: components["schemas"]["RegionDTO"][];
     };
+    RegionDTO: {
+      type: components["schemas"]["RegionType"];
+      value?: string;
+    };
+    /** @enum {string} */
+    RegionType: "capital";
     SetupEndpointResponse: {
       method?: string;
       url?: string;

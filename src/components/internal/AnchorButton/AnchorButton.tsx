@@ -10,7 +10,7 @@ const AnchorButton = (props: AnchorButtonProps & BaseButtonProps, ref: Ref<HTMLA
     const classNameValue = useMemo(() => parseClassName('', className) || '', [className]);
     const disabledValue = useMemo(() => parseBooleanProp(disabled), [disabled]);
 
-    const { allChildren, allProps } = useButton(
+    const { click, allChildren, allProps } = useButton(
         classNameValue,
         [...classNameModifiers, variant],
         `${DEFAULT_BUTTON_CLASSNAME} ${BUTTON_ANCHOR_CLASSNAME}`,
@@ -19,8 +19,10 @@ const AnchorButton = (props: AnchorButtonProps & BaseButtonProps, ref: Ref<HTMLA
         onClick
     );
 
+    const restProps = useMemo(() => ({ ...allProps, ...(props.onClick && click ? { onClick: click } : {}) }), [click, allProps, props.onClick]);
+
     return (
-        <a {...allProps} href={props.href} target={props.target || '_blank'} rel="noreferrer" ref={ref as Ref<HTMLAnchorElement>} onClick={onClick}>
+        <a {...restProps} href={props.href} ref={ref as Ref<HTMLAnchorElement>}>
             {allChildren}
         </a>
     );

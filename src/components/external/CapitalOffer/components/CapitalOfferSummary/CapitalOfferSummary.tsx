@@ -21,6 +21,7 @@ import { CapitalErrorMessageDisplay } from '../utils/CapitalErrorMessageDisplay'
 import cx from 'classnames';
 import { StructuredListItem } from '../../../../internal/StructuredList/types';
 import { CAPITAL_REPAYMENT_FREQUENCY } from '../../../../constants';
+import { CapitalOfferLegalNotice } from '../CapitalOfferLegalNotice/CapitalOfferLegalNotice';
 
 const errorMessageWithAlert = ['30_013'];
 
@@ -210,6 +211,7 @@ export const CapitalOfferSummary = ({
                     ) : null}
                 </Alert>
             )}
+            <CapitalOfferLegalNotice />
             <div className="adyen-pe-capital-offer-summary__buttons">
                 {requestFundsMutation.error && !requestErrorAlert ? null : (
                     <Button variant={ButtonVariant.SECONDARY} onClick={onBack}>

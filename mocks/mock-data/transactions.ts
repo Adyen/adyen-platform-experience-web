@@ -1576,7 +1576,7 @@ export const TRANSACTIONS: ITransaction[] = [
         id: 'HKZEDJK3D86B68B3',
         amount: {
             currency: 'EUR',
-            value: 15000,
+            value: 150000,
         },
         category: 'Payment',
         balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
@@ -1985,7 +1985,7 @@ export const DEFAULT_REFUND_STATUSES: ITransactionRefundStatus = [
 
 export const FAILED_REFUND_STATUSES: ITransactionRefundStatus = [
     {
-        amount: { currency: 'USD', value: -1400000 },
+        amount: { currency: 'USD', value: -117500 },
         status: 'failed',
     },
 ];
@@ -2003,7 +2003,11 @@ export const IN_PROGRESS_REFUND_STATUSES: ITransactionRefundStatus = [
 
 export const COMPLETED_REFUND_STATUSES: ITransactionRefundStatus = [
     {
-        amount: { currency: 'USD', value: -1400000 },
+        amount: { currency: 'USD', value: -500 },
+        status: 'completed',
+    },
+    {
+        amount: { currency: 'USD', value: -500 },
         status: 'completed',
     },
 ];

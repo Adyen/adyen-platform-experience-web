@@ -1,5 +1,7 @@
 import { useCallback, useMemo, useState } from 'preact/hooks';
+import { isCapitalRegionSupported } from '../../../../internal/CapitalHeader/helpers';
 import { ExternalUIComponentProps } from '../../../../types';
+import { CapitalErrorMessageDisplay } from '../../../CapitalOffer/components/utils/CapitalErrorMessageDisplay';
 import { CapitalOverviewProps } from '../../types';
 import { CAPITAL_OVERVIEW_CLASS_NAMES } from '../../constants';
 import { FunctionalComponent } from 'preact';
@@ -16,7 +18,7 @@ import { ErrorMessageDisplay } from '../../../../internal/ErrorMessageDisplay/Er
 import { getCapitalErrorMessage } from '../../../../utils/capital/getCapitalErrorMessage';
 import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatformExperienceError';
 
-type CapitalOverviewState = 'Loading' | 'Error' | 'Unqualified' | 'PreQualified' | 'GrantList';
+type CapitalOverviewState = 'Loading' | 'Error' | 'Unqualified' | 'PreQualified' | 'GrantList' | 'UnsupportedRegion';
 
 export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<CapitalOverviewProps>> = ({
     hideTitle,
@@ -26,17 +28,20 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
     onOfferOptionsRequest,
     skipPreQualifiedIntro,
 }) => {
+    const legalEntity = useConfigContext()?.extraConfig?.legalEntity;
+    const isRegionSupported = useMemo(() => isCapitalRegionSupported(legalEntity), [legalEntity]);
+
     const { getGrants: grantsEndpointCall, getDynamicGrantOffersConfiguration: dynamicConfigurationEndpointCall } = useConfigContext().endpoints;
 
     const grantsQuery = useFetch({
-        fetchOptions: { enabled: !!grantsEndpointCall },
+        fetchOptions: { enabled: !!grantsEndpointCall && isRegionSupported },
         queryFn: useCallback(async () => {
             return grantsEndpointCall?.(EMPTY_OBJECT);
         }, []),
     });
 
     const dynamicOfferQuery = useFetch({
-        fetchOptions: { enabled: !!dynamicConfigurationEndpointCall },
+        fetchOptions: { enabled: !!dynamicConfigurationEndpointCall && isRegionSupported },
         queryFn: useCallback(async () => {
             return dynamicConfigurationEndpointCall?.(EMPTY_OBJECT);
         }, []),
@@ -64,7 +69,9 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
     }, [dynamicOfferQuery.error, grantList?.length, grantsQuery.error]);
 
     const state = useMemo<CapitalOverviewState>(() => {
-        if (showError) {
+        if (!isRegionSupported) {
+            return 'UnsupportedRegion';
+        } else if (showError) {
             return 'Error';
         } else if (
             (!grantsEndpointCall && !dynamicConfigurationEndpointCall) ||
@@ -75,7 +82,7 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
             return 'Loading';
         } else if (grantList?.length) {
             return 'GrantList';
-        } else if (dynamicOffer?.maxAmount && dynamicOffer?.minAmount && !skipPreQualifiedIntro) {
+        } else if (dynamicOffer?.maxAmount && dynamicOffer?.minAmount) {
             return 'PreQualified';
         }
         return 'Unqualified';
@@ -88,6 +95,7 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
         grantsQuery.isFetching,
         showError,
         skipPreQualifiedIntro,
+        isRegionSupported,
     ]);
 
     const newOfferAvailable = useMemo(() => (!!dynamicOffer && dynamicOffer.minAmount && dynamicOffer.maxAmount ? true : false), [dynamicOffer]);
@@ -142,6 +150,13 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
                         );
                     case 'Unqualified':
                         return <Unqualified hideTitle={hideTitle} />;
+                    case 'UnsupportedRegion':
+                        return (
+                            <div className={CAPITAL_OVERVIEW_CLASS_NAMES.errorContainer}>
+                                <CapitalHeader hideTitle={hideTitle} titleKey={'capital.businessFinancing'} />
+                                <CapitalErrorMessageDisplay unsupportedRegion />
+                            </div>
+                        );
                     default:
                         return null;
                 }
