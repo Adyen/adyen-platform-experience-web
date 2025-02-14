@@ -221,6 +221,7 @@
     "status": "Status",
     "structuredList": "Structured list",
     "subtractions": "Subtractions",
+    "sumOfSameDayPayouts": "Sum of same-day payouts",
     "tabs": "Tabs",
     "theErrorCodeIs": "The error code is %{requestId}",
     "thereAreNoResults": "There are no results",
