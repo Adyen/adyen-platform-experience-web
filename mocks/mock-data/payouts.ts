@@ -622,7 +622,7 @@ export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string 
                 value: 90000,
                 currency: 'EUR',
             },
-            createdAt: String(new Date()),
+            createdAt: '2025-02-02T10:00:00.000Z',
             isSumOfSameDayPayouts: true,
         },
         amountBreakdowns: {
