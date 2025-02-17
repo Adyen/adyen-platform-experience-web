@@ -15,13 +15,13 @@ export const CapitalOfferLegalNotice = () => {
     return countryCode === SupportedLocation.US ? (
         <Card filled noOutline>
             <Typography variant={TypographyVariant.CAPTION} className={'adyen-pe-capital-offer-legal-notice--title'}>
-                <Translation translationKey={'capital.legalNoticeTitle'} fills={{ break: <br /> }} />
+                <Translation translationKey={'capital.offerLegalNoticeTitleUS'} fills={{ break: <br /> }} />
             </Typography>
             <br />
             <Typography variant={TypographyVariant.CAPTION} className={'adyen-pe-capital-offer-legal-notice--description'}>
                 {
                     <Translation
-                        translationKey={'capital.legalNoticeDescription'}
+                        translationKey={'capital.offerLegalNoticeDescriptionUS'}
                         fills={{
                             email: (
                                 <AnchorButton
