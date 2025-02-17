@@ -53,6 +53,7 @@ export interface components {
             fundsCapturedAmount: components['schemas']['Amount'];
             payoutAmount: components['schemas']['Amount'];
             unpaidAmount: components['schemas']['Amount'];
+            isSumOfSameDayPayouts?: boolean;
         };
         PayoutResponseDTO: {
             amountBreakdowns?: components['schemas']['AmountBreakdowns'];
