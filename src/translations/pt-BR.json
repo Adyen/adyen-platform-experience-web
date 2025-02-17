@@ -221,6 +221,7 @@
     "status": "Status",
     "structuredList": "Lista estruturada",
     "subtractions": "Subtrações",
+    "sumOfSameDayPayouts": "Soma dos pagamentos do mesmo dia",
     "tabs": "Abas",
     "theErrorCodeIs": "Código de erro: %{requestId}",
     "thereAreNoResults": "Não há resultados",

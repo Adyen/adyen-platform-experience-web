@@ -221,6 +221,7 @@
     "status": "Tila",
     "structuredList": "Jäsennetty luettelo",
     "subtractions": "Vähennykset",
+    "sumOfSameDayPayouts": "Samana päivänä suoritettujen maksujen summa",
     "tabs": "Välilehdet",
     "theErrorCodeIs": "Virhekoodi on %{requestId}",
     "thereAreNoResults": "Tuloksia ei ole",

@@ -221,6 +221,7 @@
     "status": "Status",
     "structuredList": "Gestructureerde lijst",
     "subtractions": "Aftrekkingen",
+    "sumOfSameDayPayouts": "Som van uitbetalingen op dezelfde dag",
     "tabs": "Tabs",
     "theErrorCodeIs": "De foutcode is %{requestId}",
     "thereAreNoResults": "Er zijn geen resultaten",

@@ -221,6 +221,7 @@
     "status": "Stato",
     "structuredList": "Elenco strutturato",
     "subtractions": "Sottrazioni",
+    "sumOfSameDayPayouts": "Somma dei pagamenti dello stesso giorno",
     "tabs": "Schede",
     "theErrorCodeIs": "Il codice di errore è %{requestId}",
     "thereAreNoResults": "Nessun risultato",

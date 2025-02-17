@@ -221,6 +221,7 @@
     "status": "Status",
     "structuredList": "Struktureret liste",
     "subtractions": "Subtraktioner",
+    "sumOfSameDayPayouts": "Summen af udbetalinger samme dag",
     "tabs": "Faner",
     "theErrorCodeIs": "Fejlkoden er %{requestId}",
     "thereAreNoResults": "Der er ingen resultater",
