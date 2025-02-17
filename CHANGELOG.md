@@ -1,5 +1,11 @@
 # @adyen/adyen-platform-experience-web
 
+## 1.3.1
+
+### Patch Changes
+
+-   43352e5: Fix styles import path
+
 ## 1.3.0
 
 ### Minor Changes
