@@ -44,7 +44,7 @@
         "default": "./dist/es/index.js"
       }
     },
-    "./adyen-platform-experience-web.css": "./dist/style.css"
+    "./adyen-platform-experience-web.css": "./dist/adyen-platform-experience-web.css"
   },
   "scripts": {
     "start": "npm run storybook",
