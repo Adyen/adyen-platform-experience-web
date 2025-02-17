@@ -1576,7 +1576,7 @@ export const TRANSACTIONS: ITransaction[] = [
         id: 'HKZEDJK3D86B68B3',
         amount: {
             currency: 'EUR',
-            value: 15000,
+            value: 150000,
         },
         category: 'Payment',
         balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
@@ -1855,6 +1855,21 @@ export const TRANSACTIONS: ITransaction[] = [
         status: 'Booked',
         createdAt: '2024-06-30T19:58:16.527Z',
     },
+    {
+        paymentMethod: {
+            type: 'klarna',
+            description: 'Klarna Pay Later',
+        },
+        id: 'B78I76Y77072H126',
+        amount: {
+            currency: 'USD',
+            value: 22000,
+        },
+        category: 'Payment',
+        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+        status: 'Booked',
+        createdAt: '2025-02-04T05:16:44.764Z',
+    },
 ];
 
 export const DEFAULT_LINE_ITEM_REFUND_STATUSES: ILineItemRefundStatus = [
@@ -1958,38 +1973,34 @@ export const DEFAULT_LINE_ITEMS: ILineItem[] = [
 
 export const DEFAULT_REFUND_STATUSES: ITransactionRefundStatus = [
     {
-        amount: { currency: 'USD', value: -1000 },
+        amount: { currency: 'USD', value: -500 },
         status: 'in_progress',
     },
     {
-        amount: { currency: 'USD', value: -2000 },
+        amount: { currency: 'USD', value: -1500 },
         status: 'in_progress',
     },
     {
-        amount: { currency: 'USD', value: -202000 },
+        amount: { currency: 'USD', value: -500 },
         status: 'completed',
     },
     {
-        amount: { currency: 'USD', value: -2000 },
-        status: 'in_progress',
-    },
-    {
-        amount: { currency: 'USD', value: -2000 },
-        status: 'completed',
-    },
-    {
-        amount: { currency: 'USD', value: -1000 },
+        amount: { currency: 'USD', value: -100 },
         status: 'failed',
     },
     {
-        amount: { currency: 'USD', value: -2000 },
+        amount: { currency: 'USD', value: -200 },
+        status: 'failed',
+    },
+    {
+        amount: { currency: 'USD', value: -200 },
         status: 'failed',
     },
 ];
 
 export const FAILED_REFUND_STATUSES: ITransactionRefundStatus = [
     {
-        amount: { currency: 'USD', value: -1400000 },
+        amount: { currency: 'USD', value: -117500 },
         status: 'failed',
     },
 ];
@@ -2007,7 +2018,11 @@ export const IN_PROGRESS_REFUND_STATUSES: ITransactionRefundStatus = [
 
 export const COMPLETED_REFUND_STATUSES: ITransactionRefundStatus = [
     {
-        amount: { currency: 'USD', value: -1400000 },
+        amount: { currency: 'USD', value: -500 },
+        status: 'completed',
+    },
+    {
+        amount: { currency: 'USD', value: -500 },
         status: 'completed',
     },
 ];

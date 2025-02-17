@@ -81,7 +81,7 @@ const CopyText = ({
                             ['adyen-pe-copy-text__icon--information']: type === 'Link',
                         })}
                     >
-                        <Icon name={'copy'} />
+                        <Icon name={'copy'} data-testid={'copy-icon'} />
                     </div>
                 </Button>
             </Tooltip>

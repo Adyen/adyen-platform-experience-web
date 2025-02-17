@@ -1,7 +1,7 @@
 import cx from 'classnames';
 import { Ref } from 'preact';
 import { MutableRef, useMemo } from 'preact/hooks';
-import { HTMLAttributes, PropsWithChildren } from 'preact/compat';
+import { AnchorHTMLAttributes, ButtonHTMLAttributes, HTMLAttributes, PropsWithChildren } from 'preact/compat';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import Img from '../../../Img';
 import Button from '../../../Button';
@@ -32,7 +32,12 @@ const SelectButtonElement = <T extends SelectItem>({
     filterable,
     toggleButtonRef,
     ...props
-}: PropsWithChildren<SelectButtonProps<T> & Partial<HTMLAttributes<HTMLAnchorElement | HTMLButtonElement | HTMLDivElement>>>) => {
+}: PropsWithChildren<
+    SelectButtonProps<T> &
+        (Partial<ButtonHTMLAttributes<HTMLButtonElement>> &
+            Partial<AnchorHTMLAttributes<HTMLAnchorElement>> &
+            Partial<HTMLAttributes<HTMLDivElement>>)
+>) => {
     const baseClassName = useMemo(() => (filterable ? cx(DROPDOWN_BUTTON_CLASSNAME, className) : className), [className, filterable]);
     return filterable ? (
         <div {...props} className={baseClassName} ref={toggleButtonRef as Ref<HTMLDivElement>} />
@@ -75,7 +80,7 @@ const SelectButton = <T extends SelectItem>(props: SelectButtonProps<T> & { appl
             tabIndex={0}
             title={buttonTitleText}
             toggleButtonRef={props.toggleButtonRef}
-            type={!filterable ? 'button' : ''}
+            type={!filterable ? 'button' : undefined}
             aria-describedby={props.ariaDescribedBy}
             id={props.id ?? ''}
         >

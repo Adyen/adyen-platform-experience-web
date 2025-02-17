@@ -67,7 +67,6 @@ function Tabs<T extends TabProps[]>(props: TabComponentProps<T>) {
             <div className="adyen-fp-tabpanel__wrapper">
                 {availableTabs.map((tab, index) => (
                     <section
-                        name={tab.id}
                         className="adyen-fp-tabpanel__content"
                         id={`panel-id-${tab.id}`}
                         key={`tabpanel-${tab.id}`}

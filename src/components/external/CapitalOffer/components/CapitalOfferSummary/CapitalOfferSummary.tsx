@@ -10,7 +10,7 @@ import './CapitalOfferSummary.scss';
 import Button from '../../../../internal/Button/Button';
 import { ButtonVariant } from '../../../../internal/Button/types';
 import useMutation from '../../../../../hooks/useMutation/useMutation';
-import { useAuthContext } from '../../../../../core/Auth';
+import { useConfigContext } from '../../../../../core/ConfigContext';
 import { Tooltip } from '../../../../internal/Tooltip/Tooltip';
 import { EMPTY_OBJECT } from '../../../../../utils';
 import { AdyenErrorResponse } from '../../../../../core/Http/types';
@@ -21,6 +21,7 @@ import { CapitalErrorMessageDisplay } from '../utils/CapitalErrorMessageDisplay'
 import cx from 'classnames';
 import { StructuredListItem } from '../../../../internal/StructuredList/types';
 import { CAPITAL_REPAYMENT_FREQUENCY } from '../../../../constants';
+import { CapitalOfferLegalNotice } from '../CapitalOfferLegalNotice/CapitalOfferLegalNotice';
 
 const errorMessageWithAlert = ['30_013'];
 
@@ -41,7 +42,7 @@ export const CapitalOfferSummary = ({
         return date ? i18n.date(date, { month: 'long' }) : null;
     }, [grantOffer, i18n]);
 
-    const { requestFunds } = useAuthContext().endpoints;
+    const { requestFunds } = useConfigContext().endpoints;
 
     const requestFundsMutation = useMutation({
         queryFn: requestFunds,
@@ -210,6 +211,7 @@ export const CapitalOfferSummary = ({
                     ) : null}
                 </Alert>
             )}
+            <CapitalOfferLegalNotice />
             <div className="adyen-pe-capital-offer-summary__buttons">
                 {requestFundsMutation.error && !requestErrorAlert ? null : (
                     <Button variant={ButtonVariant.SECONDARY} onClick={onBack}>
