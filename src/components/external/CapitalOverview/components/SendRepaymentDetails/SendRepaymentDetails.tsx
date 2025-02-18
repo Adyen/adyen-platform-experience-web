@@ -53,22 +53,20 @@ export const SendRepaymentDetails: FunctionalComponent<GrantDetailsViewProps> = 
                     </Typography>
                 </section>
             </div>
-            {grant.status === 'Active' && (
-                <InfoBox className={CLASS_NAMES.balanceInfo}>
-                    <Typography variant={TypographyVariant.BODY}>
-                        <Translation
-                            translationKey="capital.repaymentBalanceInfo"
-                            fills={{
-                                amount: (
-                                    <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY} strongest>
-                                        {formattedRemainingAmount}
-                                    </Typography>
-                                ),
-                            }}
-                        />
-                    </Typography>
-                </InfoBox>
-            )}
+            <InfoBox className={CLASS_NAMES.balanceInfo}>
+                <Typography variant={TypographyVariant.BODY}>
+                    <Translation
+                        translationKey="capital.repaymentBalanceInfo"
+                        fills={{
+                            amount: (
+                                <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY} strongest>
+                                    {formattedRemainingAmount}
+                                </Typography>
+                            ),
+                        }}
+                    />
+                </Typography>
+            </InfoBox>
         </GrantDetailsView>
     );
 };
