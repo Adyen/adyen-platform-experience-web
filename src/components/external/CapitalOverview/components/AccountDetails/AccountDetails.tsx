@@ -18,7 +18,7 @@ const CLASS_NAMES = {
 type AccountDetailEntry = [KeyOfRecord<AccountDetailsProps['bankAccount']>, ValueOfRecord<AccountDetailsProps['bankAccount']>];
 
 export type AccountDetailsProps = {
-    bankAccount: NonNullable<IGrant['earlyRepaymentAccounts']>[number];
+    bankAccount: NonNullable<IGrant['unscheduledRepaymentAccounts']>[number];
     className?: h.JSX.HTMLAttributes['className'];
 };
 

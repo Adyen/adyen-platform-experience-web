@@ -17,7 +17,7 @@ const GRANT_BANK_ACCOUNT = {
     routingNumber: '012345678',
     region: 'US',
     bankName: 'Adyen',
-} satisfies IGrant['earlyRepaymentAccounts'][number];
+} satisfies IGrant['unscheduledRepaymentAccounts'][number];
 
 export const DEFAULT_GRANT: IGrant = {
     id: '66e12a9a64a6',
@@ -70,7 +70,7 @@ export const DEFAULT_GRANT: IGrant = {
     balanceAccountDescription: 'Primary balance account',
     status: 'Pending',
     missingActions: [],
-    earlyRepaymentAccounts: [GRANT_BANK_ACCOUNT],
+    unscheduledRepaymentAccounts: [GRANT_BANK_ACCOUNT],
     revocationAccount: GRANT_BANK_ACCOUNT,
 };
 

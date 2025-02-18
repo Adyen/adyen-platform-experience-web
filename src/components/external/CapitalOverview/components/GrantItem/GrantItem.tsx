@@ -26,7 +26,7 @@ export const GrantItem: FunctionalComponent<GrantItemProps> = ({ grant, showDeta
     const { i18n } = useCoreContext();
     const { dateFormat } = useTimezoneAwareDateFormatting();
     const grantConfig = useMemo(() => getGrantConfig(grant), [grant]);
-    const showEarlyRepaymentAccounts = useCallback(() => showDetailsView?.('earlyRepayment'), [showDetailsView]);
+    const showUnscheduledRepaymentAccounts = useCallback(() => showDetailsView?.('unscheduledRepayment'), [showDetailsView]);
 
     const grantOverview = useMemo(
         () => (
@@ -112,10 +112,10 @@ export const GrantItem: FunctionalComponent<GrantItemProps> = ({ grant, showDeta
                         )}
                     </>
                 ) : (
-                    grantConfig.hasEarlyRepaymentDetails && (
+                    grantConfig.hasUnscheduledRepaymentDetails && (
                         <div className={GRANT_ITEM_CLASS_NAMES.actionsBar}>
                             <Button
-                                onClick={showEarlyRepaymentAccounts}
+                                onClick={showUnscheduledRepaymentAccounts}
                                 className={GRANT_ITEM_CLASS_NAMES.mainActionBtn}
                                 variant={ButtonVariant.SECONDARY}
                                 fullWidth
@@ -127,7 +127,7 @@ export const GrantItem: FunctionalComponent<GrantItemProps> = ({ grant, showDeta
                 )}
             </div>
         ),
-        [i18n, dateFormat, grant, grantConfig, showEarlyRepaymentAccounts]
+        [i18n, dateFormat, grant, grantConfig, showUnscheduledRepaymentAccounts]
     );
 
     return (

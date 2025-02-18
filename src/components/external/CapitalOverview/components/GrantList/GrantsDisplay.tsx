@@ -66,8 +66,8 @@ export const GrantsDisplay: FunctionalComponent<GrantsProps> = ({ grantList, hid
 
     if (selectedGrant) {
         switch (selectedGrantDetailsView) {
-            case GRANT_DETAILS_VIEWS.earlyRepayment: {
-                if (selectedGrantConfig?.hasEarlyRepaymentDetails) {
+            case GRANT_DETAILS_VIEWS.unscheduledRepayment: {
+                if (selectedGrantConfig?.hasUnscheduledRepaymentDetails) {
                     return <SendRepaymentDetails grant={selectedGrant} onDetailsClose={hideGrantDetailsView} />;
                 }
                 break;

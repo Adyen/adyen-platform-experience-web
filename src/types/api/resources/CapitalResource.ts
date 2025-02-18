@@ -115,7 +115,7 @@ export interface components {
             totalAmount: components['schemas']['Amount'];
 
             // [TODO]: Re-generate schemas from OpenAPI spec (when available) to automatically include these fields
-            earlyRepaymentAccounts: components['schemas']['GrantBankAccount'][];
+            unscheduledRepaymentAccounts: components['schemas']['GrantBankAccount'][];
             revocationAccount: components['schemas']['GrantBankAccount'];
         };
         GrantBankAccountRegion: 'AU' | 'EU' | 'UK' | 'US';
@@ -135,7 +135,8 @@ export interface components {
                 | 'routingNumber'
                 | 'sortCode'
                 | 'transitNumber',
-            string>
+                string
+            >
         > & {
             bankName: string;
             region: components['schemas']['GrantBankAccountRegion'];

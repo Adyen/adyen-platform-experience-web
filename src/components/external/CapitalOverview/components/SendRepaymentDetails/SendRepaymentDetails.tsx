@@ -24,7 +24,7 @@ const CLASS_NAMES = {
 export const SendRepaymentDetails: FunctionalComponent<GrantDetailsViewProps> = ({ grant, onDetailsClose }) => {
     const { i18n } = useCoreContext();
     const grantConfig = useMemo(() => getGrantConfig(grant), [grant]);
-    const bankAccounts = useMemo(() => grant.earlyRepaymentAccounts ?? EMPTY_ARRAY, [grant.earlyRepaymentAccounts]);
+    const bankAccounts = useMemo(() => grant.unscheduledRepaymentAccounts ?? EMPTY_ARRAY, [grant.unscheduledRepaymentAccounts]);
 
     const formattedRemainingAmount = useMemo(() => {
         const { currency, value } = grantConfig.amount;
