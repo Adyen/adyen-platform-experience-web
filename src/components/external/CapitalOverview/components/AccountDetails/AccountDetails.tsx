@@ -2,7 +2,7 @@ import cx from 'classnames';
 import { IGrant } from '../../../../../types';
 import { AccountDetail } from './AccountDetail';
 import { Fragment, FunctionalComponent, h } from 'preact';
-import { getAccountFieldCopyTextConfig, getAccountFieldFormattedValue, getAccountFieldTranslationKey } from './utils';
+import { getAccountFieldFormattedValue, getAccountFieldTextToCopy, getAccountFieldTranslationKey } from './utils';
 import { KeyOfRecord, ValueOfRecord } from '../../../../../utils/types';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import './AccountDetails.scss';
@@ -35,9 +35,9 @@ export const AccountDetails: FunctionalComponent<AccountDetailsProps> = ({ bankA
                             className={CLASS_NAMES.detail}
                             contentClassName={CLASS_NAMES.detailContent}
                             labelClassName={CLASS_NAMES.detailLabel}
-                            label={getAccountFieldTranslationKey(field, region)}
-                            content={getAccountFieldFormattedValue(field, value, i18n, region)}
-                            copyTextConfig={getAccountFieldCopyTextConfig(field, value, i18n, region)}
+                            label={getAccountFieldTranslationKey(field)}
+                            content={getAccountFieldFormattedValue(field, value, i18n)}
+                            textToCopy={getAccountFieldTextToCopy(field, value)}
                         />
                     </Fragment>
                 ) : null;

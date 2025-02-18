@@ -1,4 +1,3 @@
-import { useMemo } from 'preact/hooks';
 import { FunctionalComponent, h } from 'preact';
 import CopyText from '../../../../internal/CopyText/CopyText';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
@@ -10,9 +9,9 @@ type _ClassNameProp = h.JSX.HTMLAttributes['className'];
 
 export type AccountDetailProps = {
     className?: _ClassNameProp;
-    content?: string;
+    content: string;
     contentClassName?: _ClassNameProp;
-    copyTextConfig?: Partial<Pick<Parameters<typeof CopyText>[0], 'buttonLabel' | 'textToCopy'>>;
+    textToCopy?: string;
     label: TranslationKey;
     labelClassName?: _ClassNameProp;
 };
@@ -21,17 +20,12 @@ export const AccountDetail: FunctionalComponent<AccountDetailProps> = ({
     className,
     content,
     contentClassName,
-    copyTextConfig,
+    textToCopy,
     label,
     labelClassName,
 }) => {
     const { i18n } = useCoreContext();
-
-    const isCopyText = useMemo(() => !!copyTextConfig, [copyTextConfig]);
-    const textContent = useMemo(() => copyTextConfig?.buttonLabel ?? content, [copyTextConfig, content]);
-    const textToCopy = useMemo(() => copyTextConfig?.textToCopy ?? textContent, [copyTextConfig, textContent]);
-
-    return textContent == undefined ? null : (
+    return (
         <div className={className}>
             <dt className={labelClassName}>
                 <Typography el={TypographyElement.SPAN} variant={TypographyVariant.CAPTION}>
@@ -39,11 +33,11 @@ export const AccountDetail: FunctionalComponent<AccountDetailProps> = ({
                 </Typography>
             </dt>
             <dd className={contentClassName}>
-                {isCopyText ? (
-                    <CopyText buttonLabel={textContent} textToCopy={textToCopy!} showCopyTextTooltip={false} type="Text" />
+                {textToCopy ? (
+                    <CopyText buttonLabel={content} textToCopy={textToCopy} showCopyTextTooltip={false} type="Text" />
                 ) : (
                     <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY}>
-                        {textContent}
+                        {content}
                     </Typography>
                 )}
             </dd>
