@@ -59,7 +59,7 @@ export const GrantsDisplay: FunctionalComponent<GrantsProps> = ({ grantList, hid
 
     const hideGrantDetailsView = useCallback(() => setSelectedGrantDetailsView(undefined), []);
 
-    const showGrantDetailsView = useCallback<GrantDetailsViewCallback>((grant, detailsView = GRANT_DETAILS_VIEWS.default) => {
+    const showGrantDetailsView = useCallback<GrantDetailsViewCallback>((grant, detailsView) => {
         setSelectedGrantDetailsView(detailsView);
         setSelectedGrant(grant);
     }, []);

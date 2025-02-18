@@ -1,5 +1,4 @@
 export const GRANT_DETAILS_VIEWS = {
-    default: 'default',
-    unscheduledRepayment: 'unscheduledRepayment',
     revocation: 'revocation',
+    unscheduledRepayment: 'unscheduledRepayment',
 } as const;
