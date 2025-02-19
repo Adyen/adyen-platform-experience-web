@@ -17,7 +17,7 @@ export interface TransactionDetailsWithIdProps {
 
 export type DetailsWithId =
     | ((TransactionDetailsWithIdProps & { type: 'transaction' }) & DetailsWithExtraData)
-    | (PayoutDetailsWithIdProps & { type: 'payout'; balanceAccountDescription?: string });
+    | (PayoutDetailsWithIdProps & { type: 'payout'; balanceAccountDescription?: string } & DetailsWithExtraData);
 
 export type DetailsComponentProps = (TransactionDetailsWithoutIdProps & { type: 'transaction' }) | DetailsWithId;
 

@@ -20,13 +20,7 @@ const CUSTOM_COLUMNS_MOCK_HANDLER = {
     handlers: [
         http.get(endpoints('mock').payouts, () => {
             return HttpResponse.json({
-                data: [
-                    { ...PAYOUTS_WITH_DETAILS[0]?.payout, createdAt: Date.now() },
-                    { ...PAYOUTS_WITH_DETAILS[4]?.payout, createdAt: Date.now() },
-                    { ...PAYOUTS_WITH_DETAILS[6]?.payout, createdAt: Date.now() },
-                    { ...PAYOUTS_WITH_DETAILS[8]?.payout, createdAt: Date.now() },
-                    { ...PAYOUTS_WITH_DETAILS[10]?.payout, createdAt: Date.now() },
-                ],
+                data: [{ ...PAYOUTS_WITH_DETAILS[7]?.payout }],
                 _links: {},
             });
         }),
@@ -41,6 +35,7 @@ export const CustomColumns: ElementStory<typeof PayoutsOverview> = {
                 en_US: {
                     _summary: 'Summary',
                     _sendEmail: 'Action',
+                    _country: 'Country',
                 },
             },
         },
@@ -50,6 +45,7 @@ export const CustomColumns: ElementStory<typeof PayoutsOverview> = {
             { key: 'fundsCapturedAmount' },
             { key: 'adjustmentAmount' },
             { key: '_summary' },
+            { key: '_country', flex: 0.5 },
             { key: '_sendEmail', align: 'right' },
             { key: 'payoutAmount' },
         ],

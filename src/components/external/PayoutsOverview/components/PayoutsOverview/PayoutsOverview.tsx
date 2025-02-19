@@ -10,7 +10,7 @@ import useModalDetails from '../../../../../hooks/useModalDetails/useModalDetail
 import { IPayout } from '../../../../../types';
 import useDefaultOverviewFilterParams from '../../../../../hooks/useDefaultOverviewFilterParams';
 import { DataOverviewHeader } from '../../../../internal/DataOverviewDisplay/DataOverviewHeader/DataOverviewHeader';
-import { PayoutsOverviewComponentProps, ExternalUIComponentProps, FilterParam , CustomDataRetrieved } from '../../../../types';
+import { PayoutsOverviewComponentProps, ExternalUIComponentProps, FilterParam, CustomDataRetrieved } from '../../../../types';
 import { useConfigContext } from '../../../../../core/ConfigContext';
 import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatformExperienceError';
 import { IBalanceAccountBase } from '../../../../../types';
@@ -86,23 +86,6 @@ export const PayoutsOverview = ({
         [showDetails, onRecordSelection]
     );
 
-    const modalOptions = useMemo(() => ({ payout: payoutDetails }), [payoutDetails]);
-
-    const { updateDetails, resetDetails, selectedDetail } = useModalDetails(modalOptions);
-
-    const onRowClick = useCallback(
-        (value: IPayout) => {
-            updateDetails({
-                selection: {
-                    type: 'payout',
-                    data: { id: activeBalanceAccount?.id, balanceAccountDescription: activeBalanceAccount?.description || '', date: value.createdAt },
-                },
-                modalSize: 'small',
-            }).callback({ balanceAccountId: activeBalanceAccount?.id || '', date: value.createdAt });
-        },
-        [updateDetails, activeBalanceAccount]
-    );
-
     const mergeCustomData = useCallback(
         ({ records, retrievedData }: { records: IPayout[]; retrievedData: CustomDataRetrieved[] }) =>
             records.map(record => {
@@ -113,6 +96,46 @@ export const PayoutsOverview = ({
     );
 
     const { customRecords: payouts, loadingCustomRecords } = useCustomColumnsData<IPayout>({ records, onDataRetrieved, mergeCustomData });
+
+    const modalOptions = useMemo(() => ({ payout: payoutDetails }), [payoutDetails]);
+
+    const { updateDetails, resetDetails, selectedDetail } = useModalDetails(modalOptions);
+
+    const getExtraFieldsById = useCallback(
+        ({ createdAt }: { createdAt: string }) => {
+            const record = records.find(r => r.createdAt === createdAt);
+            const retrievedItem = payouts.find(item => item.createdAt === createdAt) as Record<string, any>;
+
+            if (record && retrievedItem) {
+                // Extract fields from 'retrievedItem' that are not in 'record'
+                const extraFields = Object.keys(retrievedItem).reduce((acc, key) => {
+                    if (!(key in record)) {
+                        acc[key] = retrievedItem[key];
+                    }
+                    return acc;
+                }, {} as Partial<CustomDataRetrieved>);
+                return extraFields;
+            }
+
+            // If no matching 'retrievedItem' or 'record' is found, return undefined
+            return undefined;
+        },
+        [records, payouts]
+    );
+
+    const onRowClick = useCallback(
+        (value: IPayout) => {
+            updateDetails({
+                selection: {
+                    type: 'payout',
+                    data: { id: activeBalanceAccount?.id, balanceAccountDescription: activeBalanceAccount?.description || '', date: value.createdAt },
+                    extraDetails: getExtraFieldsById({ createdAt: value.createdAt }),
+                },
+                modalSize: 'small',
+            }).callback({ balanceAccountId: activeBalanceAccount?.id || '', date: value.createdAt });
+        },
+        [updateDetails, activeBalanceAccount?.id, activeBalanceAccount?.description, getExtraFieldsById]
+    );
 
     return (
         <div className={BASE_CLASS}>

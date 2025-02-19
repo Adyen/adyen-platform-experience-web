@@ -100,6 +100,13 @@ export const getCustomPayoutsData = async (data: IPayout[]) => {
                     action: () => console.log('Action'),
                 },
             },
+            _country: {
+                type: 'icon',
+                value: '',
+                details: {
+                    src: `https://flagicons.lipis.dev/flags/4x3/es.svg`,
+                },
+            },
         } as const;
     });
 };
