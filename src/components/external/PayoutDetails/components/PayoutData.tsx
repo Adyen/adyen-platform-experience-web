@@ -29,9 +29,12 @@ import {
     PD_SECTION_NET_AMOUNT_CLASS,
     PD_TITLE_BA_CLASS,
     PD_TITLE_CLASS,
+    PD_TITLE_CONTAINER_CLASS,
     PD_TITLE_CLASS_WITH_EXTRA_DETAILS,
     PD_UNPAID_AMOUNT,
 } from './constants';
+import { Tag } from '../../../internal/Tag/Tag';
+import { TagVariant } from '../../../internal/Tag/types';
 import Link from '../../../internal/Link/Link';
 import Icon from '../../../internal/DataGrid/components/Icon';
 import { _isCustomDataObject } from '../../../internal/DataGrid/components/TableCells';
@@ -135,9 +138,12 @@ export const PayoutData = ({
                             [PD_TITLE_CLASS_WITH_EXTRA_DETAILS]: extraDetails.length,
                         })}
                     >
-                        <Typography variant={TypographyVariant.SUBTITLE} stronger>
-                            {i18n.get('netPayout')}
-                        </Typography>
+                        <div className={PD_TITLE_CONTAINER_CLASS}>
+                            <Typography variant={TypographyVariant.SUBTITLE} stronger>
+                                {i18n.get('netPayout')}
+                            </Typography>
+                            {payout.isSumOfSameDayPayouts && <Tag variant={TagVariant.BLUE} label={i18n.get('sumOfSameDayPayouts')}></Tag>}
+                        </div>
                         <Typography variant={TypographyVariant.TITLE} large>
                             {`${i18n.amount(payout.payoutAmount.value, payout.payoutAmount.currency, {
                                 hideCurrency: true,
@@ -153,33 +159,35 @@ export const PayoutData = ({
                             <Typography variant={TypographyVariant.CAPTION} className={PD_TITLE_BA_CLASS}>{`${balanceAccountId}`}</Typography>
                         </div>
                     </div>
-                    <div>
-                        <StructuredList
-                            classNames={PD_EXTRA_DETAILS_CLASS}
-                            items={extraDetails}
-                            layout="5-7"
-                            renderLabel={label => <div className={PD_EXTRA_DETAILS_LABEL}>{label}</div>}
-                            renderValue={(val, key, type, details) => {
-                                if (type === 'link') {
-                                    return (
-                                        <Link href={details.href} target={details.target || '_blank'}>
-                                            {val}
-                                        </Link>
-                                    );
-                                }
-                                if (type === 'icon') {
-                                    const icon = { url: details.src, alt: details.alt || val };
-                                    return (
-                                        <div className={PD_EXTRA_DETAILS_ICON}>
-                                            <Icon {...icon} />
-                                            <Typography variant={TypographyVariant.BODY}> {val} </Typography>
-                                        </div>
-                                    );
-                                }
-                                return <Typography variant={TypographyVariant.BODY}> {val} </Typography>;
-                            }}
-                        />
-                    </div>
+                    {extraDetails && extraDetails.length > 0 ? (
+                        <div>
+                            <StructuredList
+                                classNames={PD_EXTRA_DETAILS_CLASS}
+                                items={extraDetails}
+                                layout="5-7"
+                                renderLabel={label => <div className={PD_EXTRA_DETAILS_LABEL}>{label}</div>}
+                                renderValue={(val, key, type, details) => {
+                                    if (type === 'link') {
+                                        return (
+                                            <Link href={details.href} target={details.target || '_blank'}>
+                                                {val}
+                                            </Link>
+                                        );
+                                    }
+                                    if (type === 'icon') {
+                                        const icon = { url: details.src, alt: details.alt || val };
+                                        return (
+                                            <div className={PD_EXTRA_DETAILS_ICON}>
+                                                <Icon {...icon} />
+                                                <Typography variant={TypographyVariant.BODY}> {val} </Typography>
+                                            </div>
+                                        );
+                                    }
+                                    return <Typography variant={TypographyVariant.BODY}> {val} </Typography>;
+                                }}
+                            />
+                        </div>
+                    ) : null}
                     <div className={PD_CONTENT_CLASS}>
                         <div className={PD_SECTION_CLASS}>
                             {payout?.fundsCapturedAmount &&
@@ -279,11 +287,11 @@ export const PayoutData = ({
                             </Typography>
                         </div>
                     )}
-                    {buttonActions.length && (
+                    {buttonActions.length ? (
                         <div className={PD_BUTTON_ACTIONS}>
                             <ButtonActions actions={buttonActions} layout={ButtonActionsLayoutBasic.BUTTONS_END} />
                         </div>
-                    )}
+                    ) : null}
                 </div>
             )}
         </>

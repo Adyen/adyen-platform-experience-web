@@ -47,7 +47,6 @@ export const CustomColumns: ElementStory<typeof PayoutsOverview> = {
             { key: '_summary' },
             { key: '_country', flex: 0.5 },
             { key: '_sendEmail', align: 'right' },
-            { key: '_sendEmails', align: 'right' },
             { key: 'payoutAmount' },
         ],
         onDataRetrieved: data => {

@@ -1855,6 +1855,21 @@ export const TRANSACTIONS: ITransaction[] = [
         status: 'Booked',
         createdAt: '2024-06-30T19:58:16.527Z',
     },
+    {
+        paymentMethod: {
+            type: 'klarna',
+            description: 'Klarna Pay Later',
+        },
+        id: 'B78I76Y77072H126',
+        amount: {
+            currency: 'USD',
+            value: 22000,
+        },
+        category: 'Payment',
+        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+        status: 'Booked',
+        createdAt: '2025-02-04T05:16:44.764Z',
+    },
 ];
 
 export const DEFAULT_LINE_ITEM_REFUND_STATUSES: ILineItemRefundStatus = [

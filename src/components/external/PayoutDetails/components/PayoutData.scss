@@ -1,6 +1,11 @@
 @use '../../../../style';
 
 .adyen-pe-payout-data {
+    &__title-container {
+        display: flex;
+        gap: style.token(spacer-050);
+    }
+
     &__title {
         display: grid;
         gap: style.token(spacer-020);
