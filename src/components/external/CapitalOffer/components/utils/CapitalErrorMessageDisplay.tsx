@@ -49,6 +49,7 @@ export const CapitalErrorMessageDisplay = ({
         <ErrorMessageDisplay
             absolutePosition={false}
             withImage
+            onContactSupport={onContactSupport}
             renderSecondaryButton={renderSecondaryButton}
             outlined={false}
             {...getCapitalErrorMessage(capitalError as AdyenPlatformExperienceError, onContactSupport)}

@@ -1,5 +1,21 @@
 # @adyen/adyen-platform-experience-web
 
+## 1.3.1
+
+### Patch Changes
+
+-   43352e5: Fix styles import path
+
+## 1.3.0
+
+### Minor Changes
+
+-   865ff93: Add isInUnsupportedRegion state to getState method of Capital component.
+
+### Patch Changes
+
+-   865ff93: Add an interface for the unsupported region which will be shown by default when the user's legal entity region is unsupported for the Capital component.
+
 ## 1.2.0
 
 ### Minor Changes
