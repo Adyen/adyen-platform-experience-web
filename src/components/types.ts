@@ -122,7 +122,7 @@ export interface CustomIconObject extends BaseCustomObject {
 
 export interface CustomTextObject extends BaseCustomObject {
     type: 'text';
-    details: BaseDetails;
+    details?: BaseDetails;
 }
 
 export interface CustomLinkObject extends BaseCustomObject {

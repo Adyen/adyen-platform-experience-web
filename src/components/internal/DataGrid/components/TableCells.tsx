@@ -88,7 +88,7 @@ export const TableCells = <
                             )}
                             {type === 'text' && <div className={data?.details?.classNames}>{value}</div>}
                             {type === 'button' && (
-                                <Button className={data.details.classNames} onClick={buttonCallback} variant={ButtonVariant.SECONDARY}>
+                                <Button className={data.details?.classNames} onClick={buttonCallback} variant={ButtonVariant.SECONDARY}>
                                     {value}
                                 </Button>
                             )}

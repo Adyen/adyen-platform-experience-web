@@ -43,7 +43,7 @@ const txMatcher = (data: ITransaction[]) =>
         _reference: {
             type: 'link',
             value: id,
-            details: { href: `http://localhost:3031/?path=/story/mocked-transactions-overview--custom-columns&reference=${id}` },
+            details: { value: '', href: `${origin}?path=/story/mocked-transactions-overview--custom-columns&reference=${id}` },
         } as const,
         _button: {
             type: 'button',
@@ -59,6 +59,8 @@ export const getMyCustomData = async (data: ITransaction[]) => {
     return customData;
 };
 
+const origin = process.env.VITE_PLAYGROUND_URL;
+
 export const getCustomReportsData = async (data: IReport[]) => {
     return data.map(({ createdAt, type }, index) => {
         return {
@@ -68,7 +70,7 @@ export const getCustomReportsData = async (data: IReport[]) => {
                 type: 'link',
                 value: 'Summary',
                 details: {
-                    href: `http://localhost:3031/?path=/story/mocked-reports-overview--custom-columns&summary=${index}`,
+                    href: `${origin}?path=/story/mocked-reports-overview--custom-columns&summary=${index}`,
                 },
             },
             _sendEmail: {
@@ -90,7 +92,7 @@ export const getCustomPayoutsData = async (data: IPayout[]) => {
                 type: 'link',
                 value: 'Summary',
                 details: {
-                    href: `http://localhost:3031/?path=/story/mocked-reports-overview--custom-columns&summary=${index}`,
+                    href: `${origin}?path=/story/mocked-reports-overview--custom-columns&summary=${index}`,
                 },
             },
             _sendEmail: {
