@@ -10,9 +10,9 @@ import Typography from '../../../../internal/Typography/Typography';
 import { TypographyElement, TypographyVariant } from '../../../../internal/Typography/types';
 import { AccountDetails } from '../AccountDetails/AccountDetails';
 import { GrantDetailsView } from '../GrantDetailsView/GrantDetailsView';
-import './SendRepaymentDetails.scss';
+import './GrantRepaymentDetails.scss';
 
-const BASE_CLASS = 'adyen-pe-grant-send-repayment-details';
+const BASE_CLASS = 'adyen-pe-grant-repayment-details';
 
 const CLASS_NAMES = {
     balanceInfo: `${BASE_CLASS}__balance-info`,
@@ -21,7 +21,7 @@ const CLASS_NAMES = {
     repaymentNotice: `${BASE_CLASS}__repayment-notice`,
 };
 
-export const SendRepaymentDetails: FunctionalComponent<GrantDetailsViewProps> = ({ grant, onDetailsClose }) => {
+export const GrantRepaymentDetails: FunctionalComponent<GrantDetailsViewProps> = ({ grant, onDetailsClose }) => {
     const { i18n } = useCoreContext();
     const grantConfig = useMemo(() => getGrantConfig(grant), [grant]);
     const bankAccounts = useMemo(() => grant.unscheduledRepaymentAccounts ?? EMPTY_ARRAY, [grant.unscheduledRepaymentAccounts]);

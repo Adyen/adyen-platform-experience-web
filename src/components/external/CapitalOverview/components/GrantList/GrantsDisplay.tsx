@@ -6,7 +6,7 @@ import { FunctionalComponent } from 'preact';
 import { GrantsProps } from './types';
 import { GRANT_DETAILS_VIEWS } from '../GrantDetailsView/constants';
 import { GrantDetailsView, GrantDetailsViewCallback } from '../GrantDetailsView/types';
-import { SendRepaymentDetails } from '../SendRepaymentDetails/SendRepaymentDetails';
+import { GrantRepaymentDetails } from '../GrantRepaymentDetails/GrantRepaymentDetails';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { useCallback, useMemo, useState } from 'preact/hooks';
 import { CapitalHeader } from '../../../../internal/CapitalHeader';
@@ -68,7 +68,7 @@ export const GrantsDisplay: FunctionalComponent<GrantsProps> = ({ grantList, hid
         switch (selectedGrantDetailsView) {
             case GRANT_DETAILS_VIEWS.unscheduledRepayment: {
                 if (selectedGrantConfig?.hasUnscheduledRepaymentDetails) {
-                    return <SendRepaymentDetails grant={selectedGrant} onDetailsClose={hideGrantDetailsView} />;
+                    return <GrantRepaymentDetails grant={selectedGrant} onDetailsClose={hideGrantDetailsView} />;
                 }
                 break;
             }
