@@ -29,14 +29,14 @@ const LIVE: PayoutsVariables = {
                 currency: 'USD',
             },
             payoutAmount: {
-                value: 47,
+                value: 97,
                 currency: 'USD',
             },
             unpaidAmount: {
-                value: -47,
+                value: -97,
                 currency: 'USD',
             },
-            createdAt: '2024-05-14T11:40:13.000+00:00',
+            createdAt: '2024-05-14T00:00:00.000+00:00',
         },
     ],
     payout_details_response: {
@@ -50,14 +50,14 @@ const LIVE: PayoutsVariables = {
                 currency: 'USD',
             },
             payoutAmount: {
-                value: 47,
+                value: 97,
                 currency: 'USD',
             },
             unpaidAmount: {
-                value: -47,
+                value: -97,
                 currency: 'USD',
             },
-            createdAt: '2024-05-14T11:40:13.000+00:00',
+            createdAt: '2024-05-14T00:00:00.000+00:00',
         },
         amountBreakdowns: {
             fundsCapturedBreakdown: [],
@@ -70,7 +70,7 @@ const TEST: PayoutsVariables = {
     balanceAccountId: process.env.BALANCE_ACCOUNT || '',
     createdSince: '2024-12-03T23:00:00.000Z',
     createdUntil: '2025-01-02T12:19:23.000Z',
-    payoutCreationDate: '2024-12-10T07:03:17.000Z',
+    payoutCreationDate: '2024-12-10T00:00:00.000Z',
     payouts_list_response: [
         {
             fundsCapturedAmount: {
@@ -89,7 +89,7 @@ const TEST: PayoutsVariables = {
                 value: 0,
                 currency: 'EUR',
             },
-            createdAt: '2024-12-11T07:03:54.000+00:00',
+            createdAt: '2024-12-11T00:00:00.000+00:00',
         },
         {
             fundsCapturedAmount: {
@@ -108,7 +108,7 @@ const TEST: PayoutsVariables = {
                 value: -10196,
                 currency: 'EUR',
             },
-            createdAt: '2024-12-10T07:03:17.000+00:00',
+            createdAt: '2024-12-10T00:00:00.000+00:00',
         },
     ],
     payout_details_response: {
@@ -129,7 +129,7 @@ const TEST: PayoutsVariables = {
                 value: -10196,
                 currency: 'EUR',
             },
-            createdAt: '2024-12-10T07:03:17.000+00:00',
+            createdAt: '2024-12-10T00:00:00.000+00:00',
         },
         amountBreakdowns: {
             fundsCapturedBreakdown: [

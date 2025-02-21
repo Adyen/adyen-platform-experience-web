@@ -8,8 +8,6 @@ import { JSXInternal } from 'preact/src/jsx';
 import noResults from '../../../images/no-results.svg';
 import Button from '../Button';
 import cx from 'classnames';
-import { ButtonVariant } from '../Button/types';
-import { VNode } from 'preact';
 
 export const IMAGE_BREAKPOINT_SIZES = {
     md: 680,

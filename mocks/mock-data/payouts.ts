@@ -603,6 +603,56 @@ export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string 
             ],
         },
     },
+    {
+        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+        payout: {
+            fundsCapturedAmount: {
+                value: 30000,
+                currency: 'EUR',
+            },
+            adjustmentAmount: {
+                value: -5000,
+                currency: 'EUR',
+            },
+            payoutAmount: {
+                value: 25000,
+                currency: 'EUR',
+            },
+            unpaidAmount: {
+                value: 90000,
+                currency: 'EUR',
+            },
+            createdAt: '2025-02-02T10:00:00.000Z',
+            isSumOfSameDayPayouts: true,
+        },
+        amountBreakdowns: {
+            fundsCapturedBreakdown: [
+                {
+                    amount: {
+                        value: -1000,
+                        currency: 'EUR',
+                    },
+                    category: 'fee',
+                },
+                {
+                    amount: {
+                        value: 1500,
+                        currency: 'EUR',
+                    },
+                    category: 'correction',
+                },
+            ],
+            adjustmentBreakdown: [
+                {
+                    amount: {
+                        value: -1000,
+                        currency: 'EUR',
+                    },
+                    category: 'fee',
+                },
+            ],
+        },
+    },
 ];
 
 // TODO: Remove ts-ignore when OpenAPI contract changes payout field to non-optional
