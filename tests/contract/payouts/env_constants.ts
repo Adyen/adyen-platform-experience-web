@@ -29,11 +29,11 @@ const LIVE: PayoutsVariables = {
                 currency: 'USD',
             },
             payoutAmount: {
-                value: 47,
+                value: 97,
                 currency: 'USD',
             },
             unpaidAmount: {
-                value: -47,
+                value: -97,
                 currency: 'USD',
             },
             createdAt: '2024-05-14T00:00:00.000+00:00',
@@ -50,11 +50,11 @@ const LIVE: PayoutsVariables = {
                 currency: 'USD',
             },
             payoutAmount: {
-                value: 47,
+                value: 97,
                 currency: 'USD',
             },
             unpaidAmount: {
-                value: -47,
+                value: -97,
                 currency: 'USD',
             },
             createdAt: '2024-05-14T00:00:00.000+00:00',
