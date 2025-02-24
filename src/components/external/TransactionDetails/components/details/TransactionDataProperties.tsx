@@ -8,6 +8,10 @@ import StructuredList from '../../../../internal/StructuredList';
 import { StructuredListProps } from '../../../../internal/StructuredList/types';
 import { TranslationKey } from '../../../../../translations';
 import { isNullish } from '../../../../../utils';
+import Link from '../../../../internal/Link/Link';
+import { TypographyVariant } from '../../../../internal/Typography/types';
+import Typography from '../../../../internal/Typography/Typography';
+import Icon from '../../../../internal/DataGrid/components/Icon';
 
 const TransactionDataProperties = () => {
     const { i18n } = useCoreContext();
@@ -41,10 +45,12 @@ const TransactionDataProperties = () => {
 
             // custom data
             ...(Object.entries(extraFields || {})
-                .filter(([key]) => !TX_DETAILS_RESERVED_FIELDS_SET.has(key as any))
+                .filter(([key, value]) => !TX_DETAILS_RESERVED_FIELDS_SET.has(key as any) && _isCustomDataObject(value) && value.type !== 'button')
                 .map(([key, value]) => ({
                     key: key as TranslationKey,
                     value: _isCustomDataObject(value) ? value.value : value,
+                    type: _isCustomDataObject(value) ? value.type : 'text',
+                    details: _isCustomDataObject(value) ? value.details : undefined,
                 })) || {}),
 
             // refund reason
@@ -74,9 +80,28 @@ const TransactionDataProperties = () => {
                 items={listItems}
                 layout="5-7"
                 renderLabel={label => <div className={TX_DATA_LABEL}>{label}</div>}
+                renderValue={(val, key, type, details) => {
+                    if (type === 'link') {
+                        return (
+                            <Link href={details.href} target={details.target || '_blank'}>
+                                {val}
+                            </Link>
+                        );
+                    }
+                    if (type === 'icon') {
+                        const icon = { url: details.src, alt: details.alt || val };
+                        return (
+                            <div className="adyen-pe-transaction-data__list-icon-value">
+                                <Icon {...icon} />
+                                <Typography variant={TypographyVariant.BODY}> {val} </Typography>
+                            </div>
+                        );
+                    }
+                    return <Typography variant={TypographyVariant.BODY}> {val} </Typography>;
+                }}
             />
         );
-    }, [i18n, transaction]);
+    }, [extraFields, i18n, transaction]);
 };
 
 export default TransactionDataProperties;

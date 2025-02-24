@@ -61,7 +61,7 @@ export default function DataOverviewDetails(props: ExternalUIComponentProps<Deta
         }
     }, [error, props.onContactSupport]);
 
-    const extraDetails = isDetailsWithId(props) && props.type === 'transaction' ? props.extraDetails : EMPTY_OBJECT;
+    const extraDetails = (isDetailsWithId(props) && props.type === 'transaction') || props.type === 'payout' ? props.extraDetails : EMPTY_OBJECT;
 
     const detailsData = details ?? data;
 
@@ -102,6 +102,7 @@ export default function DataOverviewDetails(props: ExternalUIComponentProps<Deta
                     payout={detailsData as IPayoutDetails}
                     balanceAccountDescription={props?.balanceAccountDescription || balanceAccounts?.[0]?.description}
                     isFetching={isFetching}
+                    extraFields={extraDetails}
                 />
             )}
         </div>

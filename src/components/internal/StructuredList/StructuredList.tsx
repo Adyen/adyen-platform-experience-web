@@ -45,7 +45,11 @@ export default function StructuredList({
                         )}
                     </dt>
                     <dd aria-label={`${i18n.get(item.key as TranslationKey)} ${i18n.get('value')}`} className={cx(SL_CONTENT_CLASS, VALUE_COL_CLASS)}>
-                        {renderValue ? renderValue(item.value, item.key) : <Typography variant={TypographyVariant.BODY}>{item.value}</Typography>}
+                        {renderValue ? (
+                            renderValue(item.value, item.key, item.type, item.details)
+                        ) : (
+                            <Typography variant={TypographyVariant.BODY}>{item.value}</Typography>
+                        )}
                     </dd>
                 </dl>
             ))}

@@ -10,7 +10,7 @@ import useModalDetails from '../../../../../hooks/useModalDetails/useModalDetail
 import { IPayout } from '../../../../../types';
 import useDefaultOverviewFilterParams from '../../../../../hooks/useDefaultOverviewFilterParams';
 import { DataOverviewHeader } from '../../../../internal/DataOverviewDisplay/DataOverviewHeader/DataOverviewHeader';
-import { PayoutsOverviewComponentProps, ExternalUIComponentProps, FilterParam } from '../../../../types';
+import { PayoutsOverviewComponentProps, ExternalUIComponentProps, FilterParam, CustomDataRetrieved } from '../../../../types';
 import { useConfigContext } from '../../../../../core/ConfigContext';
 import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatformExperienceError';
 import { IBalanceAccountBase } from '../../../../../types';
@@ -18,6 +18,7 @@ import { isFunction } from '../../../../../utils';
 import { useCallback, useEffect, useMemo } from 'preact/hooks';
 import { DataDetailsModal } from '../../../../internal/DataOverviewDisplay/DataDetailsModal';
 import './PayoutsOverview.scss';
+import { useCustomColumnsData } from '../../../../../hooks/useCustomColumnsData';
 
 export const PayoutsOverview = ({
     onFiltersChanged,
@@ -29,6 +30,8 @@ export const PayoutsOverview = ({
     isLoadingBalanceAccount,
     onContactSupport,
     hideTitle,
+    onDataRetrieved,
+    columns,
 }: ExternalUIComponentProps<
     PayoutsOverviewComponentProps & { balanceAccounts: IBalanceAccountBase[] | undefined; isLoadingBalanceAccount: boolean }
 >) => {
@@ -83,9 +86,42 @@ export const PayoutsOverview = ({
         [showDetails, onRecordSelection]
     );
 
+    const mergeCustomData = useCallback(
+        ({ records, retrievedData }: { records: IPayout[]; retrievedData: CustomDataRetrieved[] }) =>
+            records.map(record => {
+                const retrievedItem = retrievedData.find(item => item.createdAt === record.createdAt);
+                return { ...retrievedItem, ...record };
+            }),
+        []
+    );
+
+    const { customRecords: payouts, loadingCustomRecords } = useCustomColumnsData<IPayout>({ records, onDataRetrieved, mergeCustomData });
+
     const modalOptions = useMemo(() => ({ payout: payoutDetails }), [payoutDetails]);
 
     const { updateDetails, resetDetails, selectedDetail } = useModalDetails(modalOptions);
+
+    const getExtraFieldsById = useCallback(
+        ({ createdAt }: { createdAt: string }) => {
+            const record = records.find(r => r.createdAt === createdAt);
+            const retrievedItem = payouts.find(item => item.createdAt === createdAt) as Record<string, any>;
+
+            if (record && retrievedItem) {
+                // Extract fields from 'retrievedItem' that are not in 'record'
+                const extraFields = Object.keys(retrievedItem).reduce((acc, key) => {
+                    if (!(key in record)) {
+                        acc[key] = retrievedItem[key];
+                    }
+                    return acc;
+                }, {} as Partial<CustomDataRetrieved>);
+                return extraFields;
+            }
+
+            // If no matching 'retrievedItem' or 'record' is found, return undefined
+            return undefined;
+        },
+        [records, payouts]
+    );
 
     const onRowClick = useCallback(
         (value: IPayout) => {
@@ -93,11 +129,12 @@ export const PayoutsOverview = ({
                 selection: {
                     type: 'payout',
                     data: { id: activeBalanceAccount?.id, balanceAccountDescription: activeBalanceAccount?.description || '', date: value.createdAt },
+                    extraDetails: getExtraFieldsById({ createdAt: value.createdAt }),
                 },
                 modalSize: 'small',
             }).callback({ balanceAccountId: activeBalanceAccount?.id || '', date: value.createdAt });
         },
-        [updateDetails, activeBalanceAccount]
+        [updateDetails, activeBalanceAccount?.id, activeBalanceAccount?.description, getExtraFieldsById]
     );
 
     return (
@@ -129,8 +166,8 @@ export const PayoutsOverview = ({
                 resetDetails={resetDetails}
             >
                 <PayoutsTable
-                    loading={fetching || isLoadingBalanceAccount || !balanceAccounts}
-                    data={records}
+                    loading={fetching || isLoadingBalanceAccount || !balanceAccounts || loadingCustomRecords}
+                    data={onDataRetrieved ? payouts : records}
                     showPagination={true}
                     onRowClick={onRowClick}
                     showDetails={showDetails}
@@ -139,6 +176,7 @@ export const PayoutsOverview = ({
                     onContactSupport={onContactSupport}
                     onLimitSelection={updateLimit}
                     error={error as AdyenPlatformExperienceError}
+                    customColumns={columns}
                     {...paginationProps}
                 />
             </DataDetailsModal>

@@ -51,13 +51,15 @@ const _TransactionDataContentViewWrapper = ({
     children,
     renderViewActionButtons,
     renderViewMessageBox,
-}: PropsWithChildren<{ renderViewActionButtons: () => ComponentChild; renderViewMessageBox?: () => ComponentChild }>) => (
-    <div className={TX_DATA_CLASS}>
-        {children}
-        {renderViewMessageBox && renderViewMessageBox()}
-        {renderViewActionButtons()}
-    </div>
-);
+}: PropsWithChildren<{ renderViewActionButtons: () => ComponentChild; renderViewMessageBox?: () => ComponentChild }>) => {
+    return (
+        <div className={TX_DATA_CLASS}>
+            {children}
+            {renderViewMessageBox && renderViewMessageBox()}
+            {renderViewActionButtons()}
+        </div>
+    );
+};
 
 const _RefundResponseViewWrapper = ({
     action,
@@ -103,7 +105,6 @@ export const TransactionDataContent = ({ transaction: initialTransaction, extraF
 
     //TODO: Remove this and do not rename refundDetails from the hook when locked status returns from backend
     const refundDisabled = useMemo(() => refundDisabledMetaData || locked, [refundDisabledMetaData, locked]);
-
     const { i18n } = useCoreContext();
     const lineItems: readonly ILineItem[] = Object.freeze(transaction?.lineItems ?? EMPTY_ARRAY);
 
@@ -136,13 +137,25 @@ export const TransactionDataContent = ({ transaction: initialTransaction, extraF
     );
 
     const renderViewActionButtons = useCallback(() => {
-        const actions = [primaryAction!, secondaryAction!].filter(Boolean);
+        const extraActions = extraFields
+            ? Object.values(extraFields)
+                  .filter(field => field.type === 'button')
+                  .map(action => ({ title: action.value, variant: ButtonVariant.SECONDARY, event: action.details.action }))
+            : [];
+
+        const actions = [primaryAction!, secondaryAction!, ...extraActions].filter(Boolean);
+
         return actions.length ? (
             <TransactionDetailsDataContainer className={TX_DATA_ACTION_BAR}>
+                {/*{extraActions.map(action => (
+                    <Button variant={ButtonVariant.SECONDARY} key={action.value} onClick={action.details?.action}>
+                        {action.value}
+                    </Button>
+                ))}*/}
                 <ButtonActions actions={actions} layout={ButtonActionsLayoutBasic.BUTTONS_END} />
             </TransactionDetailsDataContainer>
         ) : null;
-    }, [primaryAction, secondaryAction]);
+    }, [extraFields, primaryAction, secondaryAction]);
 
     const onRefundSuccess = useCallback(() => {
         refreshTransaction();

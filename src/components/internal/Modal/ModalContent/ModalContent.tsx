@@ -12,7 +12,7 @@ function ModalContent({ type, data, ...restData }: SelectedDetail) {
     const detailProps: DetailsComponentProps = useMemo(() => {
         switch (type) {
             case 'payout':
-                return { ...(data as PayoutDetailsWithIdProps & { balanceAccountDescription?: string }), type };
+                return { ...(data as PayoutDetailsWithIdProps & { balanceAccountDescription?: string }), type, ...restData };
             case 'transaction':
                 // [TODO]: Consider providing type information for ...restData (added here to provide extra details)
                 return { id: data, type, ...restData } as DetailsComponentProps;

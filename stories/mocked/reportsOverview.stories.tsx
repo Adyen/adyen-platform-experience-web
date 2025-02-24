@@ -2,13 +2,66 @@ import { Meta } from '@storybook/preact';
 import { ElementProps, ElementStory } from '../utils/types';
 import { ReportsOverview } from '../../src';
 import { ReportsMeta } from '../components/reportsOverview';
+import { getCustomReportsData } from './utils/customDataRequest';
+import { http, HttpResponse } from 'msw';
+import { endpoints } from '../../endpoints/endpoints';
+import { REPORTS } from '../../mocks/mock-data';
 
 const meta: Meta<ElementProps<typeof ReportsOverview>> = { ...ReportsMeta, title: 'Mocked/Reports Overview' };
+
+const CUSTOM_COLUMNS_MOCK_HANDLER = {
+    handlers: [
+        http.get(endpoints('mock').reports, () => {
+            return HttpResponse.json({
+                data: [
+                    { ...REPORTS['BA32272223222B5CTDQPM6W2H']?.[0], createdAt: Date.now() },
+                    { ...REPORTS['BA32272223222B5CTDQPM6W2H']?.[4], createdAt: Date.now() },
+                    { ...REPORTS['BA32272223222B5CTDQPM6W2H']?.[6], createdAt: Date.now() },
+                    { ...REPORTS['BA32272223222B5CTDQPM6W2H']?.[8], createdAt: Date.now() },
+                    { ...REPORTS['BA32272223222B5CTDQPM6W2H']?.[10], createdAt: Date.now() },
+                ],
+                _links: {},
+            });
+        }),
+    ],
+};
 
 export const Default: ElementStory<typeof ReportsOverview> = {
     name: 'Default',
     args: {
         mockedApi: true,
+    },
+};
+
+export const CustomColumns: ElementStory<typeof ReportsOverview> = {
+    name: 'Custom Columns',
+    args: {
+        coreOptions: {
+            translations: {
+                en_US: {
+                    _summary: 'Summary',
+                    _sendEmail: 'Action',
+                },
+            },
+        },
+        mockedApi: true,
+        columns: [
+            { key: 'createdAt' },
+            { key: 'reportType' },
+            { key: '_summary' },
+            { key: '_sendEmail', align: 'right' },
+            { key: 'reportFile', flex: 0.8 },
+        ],
+        onDataRetrieved: data => {
+            return new Promise(resolve => {
+                setTimeout(() => {
+                    resolve(getCustomReportsData(data));
+                }, 200);
+            });
+        },
+    },
+    parameters: {
+        msw: CUSTOM_COLUMNS_MOCK_HANDLER,
     },
 };
 

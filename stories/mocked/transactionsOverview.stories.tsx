@@ -40,6 +40,7 @@ export const CustomColumns: ElementStory<typeof TransactionsOverview> = {
                     _store: 'Store',
                     _product: 'Product',
                     _reference: 'Reference',
+                    _button: 'Action',
                 },
             },
         },
@@ -47,13 +48,13 @@ export const CustomColumns: ElementStory<typeof TransactionsOverview> = {
         columns: [
             {
                 key: '_store',
-                flex: 1.5,
+                flex: 0.5,
             },
             { key: '_product' },
-            { key: 'paymentMethod' },
+            { key: '_reference', flex: 1.5 },
             { key: 'createdAt' },
-            { key: '_reference' },
-            { key: 'amount', flex: 1.5 },
+            { key: 'amount' },
+            { key: '_button', flex: 1.5, align: 'right' },
         ],
         onDataRetrieved: data => {
             return new Promise(resolve => {

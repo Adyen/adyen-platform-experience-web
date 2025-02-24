@@ -1,7 +1,11 @@
 import UIElement from './external/UIElement/UIElement';
 import { Core, onErrorHandler } from '../core';
 import { TransactionsTableFields } from './external/TransactionsOverview/components/TransactionsTable/types';
-import type { ITransaction } from '../types';
+import { IPayout, IReport, ITransaction } from '../types';
+import { AnchorHTMLAttributes } from 'preact/compat';
+import { ReportsTableFields } from './external/ReportsOverview/components/ReportsTable/ReportsTable';
+import { StringWithAutocompleteOptions } from '../utils/types';
+import { PayoutsTableFields } from './external/PayoutsOverview/components/PayoutsTable/PayoutsTable';
 
 export const enum InteractionKeyCode {
     ARROW_DOWN = 'ArrowDown',
@@ -86,6 +90,7 @@ export type DataGridIcon = { url: string; alt?: string } | ((value: unknown) => 
 export type DataGridCustomColumnConfig<k> = {
     key: k;
     flex?: number;
+    align?: 'right' | 'left' | 'center';
 };
 
 export type CustomColumn<T extends string> = {
@@ -100,9 +105,35 @@ interface _DataOverviewComponentProps {
     showDetails?: boolean;
 }
 
-export type ReportsOverviewComponentProps = Omit<_DataOverviewComponentProps, 'showDetails'>;
+export type CustomDataObject = CustomIconObject | CustomTextObject | CustomLinkObject | CustomButtonObject;
 
-export type CustomDataObject = { value: any; icon?: { url: string; alt?: string } };
+interface BaseCustomObject {
+    value: any;
+}
+
+type BaseDetails = {
+    classNames?: string;
+};
+
+export interface CustomIconObject extends BaseCustomObject {
+    type: 'icon';
+    details: BaseDetails & { src: string; alt?: string };
+}
+
+export interface CustomTextObject extends BaseCustomObject {
+    type: 'text';
+    details?: BaseDetails;
+}
+
+export interface CustomLinkObject extends BaseCustomObject {
+    type: 'link';
+    details: BaseDetails & { href: string; target?: AnchorHTMLAttributes<any>['target'] };
+}
+
+export interface CustomButtonObject extends BaseCustomObject {
+    type: 'button';
+    details: BaseDetails & { action: () => void };
+}
 
 export type CustomDataRetrieved = { [k: string]: CustomDataObject | (string | number) };
 
@@ -113,6 +144,10 @@ interface _CustomizableDataOverview<Columns extends string, DataRetrieved> {
     onDataRetrieved?: OnDataRetrievedCallback<DataRetrieved>;
 }
 
+export interface ReportsOverviewComponentProps
+    extends Omit<_DataOverviewComponentProps, 'showDetails'>,
+        _CustomizableDataOverview<StringWithAutocompleteOptions<ReportsTableFields>, IReport> {}
+
 export interface TransactionOverviewComponentProps
     extends _DataOverviewComponentProps,
         _CustomizableDataOverview<TransactionsTableFields, ITransaction>,
@@ -120,6 +155,7 @@ export interface TransactionOverviewComponentProps
 
 export interface PayoutsOverviewComponentProps
     extends _DataOverviewComponentProps,
+        _CustomizableDataOverview<StringWithAutocompleteOptions<PayoutsTableFields>, IPayout>,
         _DataOverviewSelectionProps<{ balanceAccountId: string; date: string; showModal: () => void }> {}
 
 export const enum FilterParam {
