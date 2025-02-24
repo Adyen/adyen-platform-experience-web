@@ -1,9 +1,7 @@
 import useCoreContext from '../../../../../core/Context/useCoreContext';
-import { AccountDetailsProps } from './AccountDetails';
-import { KeyOfRecord } from '../../../../../utils/types';
 import { TranslationKey } from '../../../../../translations';
+import { BankAccountField } from './types';
 
-type AccountField = KeyOfRecord<AccountDetailsProps['bankAccount']>;
 type I18n = ReturnType<typeof useCoreContext>['i18n'];
 
 const getHumanReadableIban = (iban: string, useNonBreakingSpaces = true) => {
@@ -12,9 +10,8 @@ const getHumanReadableIban = (iban: string, useNonBreakingSpaces = true) => {
     return ibanWithoutSpaces.replace(/([A-Z\d]{4}(?!$))/gi, `$1${spaceSeparator}`);
 };
 
-const isCopyableAccountField = (field: AccountField): boolean => {
+const isCopyableAccountField = (field: BankAccountField): boolean => {
     switch (field) {
-        case 'bankName':
         case 'region':
             return false;
         default:
@@ -22,11 +19,11 @@ const isCopyableAccountField = (field: AccountField): boolean => {
     }
 };
 
-export const getAccountFieldTextToCopy = (field: AccountField, value: string): string | undefined => {
+export const getAccountFieldTextToCopy = (field: BankAccountField, value: string): string | undefined => {
     return isCopyableAccountField(field) ? value : undefined;
 };
 
-export const getAccountFieldFormattedValue = (field: AccountField, value: string, i18n: I18n) => {
+export const getAccountFieldFormattedValue = (field: BankAccountField, value: string, i18n: I18n) => {
     switch (field) {
         case 'iban':
             return getHumanReadableIban(value);
@@ -40,7 +37,7 @@ export const getAccountFieldFormattedValue = (field: AccountField, value: string
     }
 };
 
-export const getAccountFieldTranslationKey = (field: AccountField): TranslationKey => {
+export const getAccountFieldTranslationKey = (field: BankAccountField): TranslationKey => {
     switch (field) {
         case 'iban':
             // [TODO]: Verify if "IBAN" can and should be translated
@@ -51,8 +48,6 @@ export const getAccountFieldTranslationKey = (field: AccountField): TranslationK
             return 'capital.bankRoutingNumber';
         case 'sortCode':
             return 'capital.bankSortCode';
-        case 'bankName':
-            return 'capital.bankName';
         case 'region':
             return 'capital.bankCountryOrRegion';
         default:

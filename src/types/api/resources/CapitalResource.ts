@@ -119,26 +119,27 @@ export interface components {
             revocationAccount: components['schemas']['GrantBankAccount'];
         };
         GrantBankAccountRegion: 'AU' | 'EU' | 'UK' | 'US';
-        GrantBankAccount: Partial<
-            Record<
-                | 'accountNumber'
-                | 'accountType'
-                | 'additionalBankIdentification'
-                | 'bankCode'
-                | 'bic'
-                | 'branchNumber'
-                | 'bsbCode'
-                | 'clearingNumber'
-                | 'iban'
-                | 'institutionNumber'
-                | 'ispbCode'
-                | 'routingNumber'
-                | 'sortCode'
-                | 'transitNumber',
-                string
-            >
-        > & {
-            bankName: string;
+        GrantBankAccount: {
+            bankAccountIdentification: Partial<
+                Record<
+                    | 'accountNumber'
+                    | 'accountType'
+                    | 'additionalBankIdentification'
+                    | 'bankCode'
+                    | 'bic'
+                    | 'branchNumber'
+                    | 'bsbCode'
+                    | 'clearingNumber'
+                    | 'iban'
+                    | 'institutionNumber'
+                    | 'ispbCode'
+                    | 'routingNumber'
+                    | 'sortCode'
+                    | 'transitNumber',
+                    string
+                >
+            >;
+            currency: components['schemas']['Amount']['currency'];
             region: components['schemas']['GrantBankAccountRegion'];
         };
         /** @enum {string} */

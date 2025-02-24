@@ -13,10 +13,12 @@ export const DYNAMIC_CAPITAL_OFFER = {
 } satisfies IDynamicOffersConfig;
 
 const GRANT_BANK_ACCOUNT = {
-    accountNumber: 'US11ADYB01234567890123',
-    routingNumber: '012345678',
+    bankAccountIdentification: {
+        accountNumber: 'US11ADYB01234567890123',
+        routingNumber: '012345678',
+    },
+    currency: 'USD',
     region: 'US',
-    bankName: 'Adyen',
 } satisfies IGrant['unscheduledRepaymentAccounts'][number];
 
 export const DEFAULT_GRANT: IGrant = {

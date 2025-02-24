@@ -1,9 +1,9 @@
 import cx from 'classnames';
-import { IGrant } from '../../../../../types';
+import { useMemo } from 'preact/hooks';
 import { AccountDetail } from './AccountDetail';
 import { Fragment, FunctionalComponent, h } from 'preact';
+import { AccountDetailsProps, BankAccountField, BankAccountFieldValue } from './types';
 import { getAccountFieldFormattedValue, getAccountFieldTextToCopy, getAccountFieldTranslationKey } from './utils';
-import { KeyOfRecord, ValueOfRecord } from '../../../../../utils/types';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import './AccountDetails.scss';
 
@@ -15,18 +15,17 @@ const CLASS_NAMES = {
     detailLabel: `${BASE_CLASS}__detail-label`,
 };
 
-type AccountDetailEntry = [KeyOfRecord<AccountDetailsProps['bankAccount']>, ValueOfRecord<AccountDetailsProps['bankAccount']>];
-
-export type AccountDetailsProps = {
-    bankAccount: NonNullable<IGrant['unscheduledRepaymentAccounts']>[number];
-    className?: h.JSX.HTMLAttributes['className'];
-};
-
 export const AccountDetails: FunctionalComponent<AccountDetailsProps> = ({ bankAccount, className }) => {
     const { i18n } = useCoreContext();
+
+    const accountDetails = useMemo(() => {
+        const { bankAccountIdentification, region } = bankAccount;
+        return { ...bankAccountIdentification, region };
+    }, [bankAccount]);
+
     return (
         <dl className={cx(BASE_CLASS, className)}>
-            {(Object.entries(bankAccount) as AccountDetailEntry[]).map(([field, value]) => {
+            {(Object.entries(accountDetails) as [BankAccountField, BankAccountFieldValue][]).map(([field, value]) => {
                 return field && value ? (
                     <Fragment key={field}>
                         <AccountDetail
