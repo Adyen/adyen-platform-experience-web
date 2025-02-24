@@ -24,8 +24,6 @@ export type AccountDetailsProps = {
 
 export const AccountDetails: FunctionalComponent<AccountDetailsProps> = ({ bankAccount, className }) => {
     const { i18n } = useCoreContext();
-    const { region } = bankAccount;
-
     return (
         <dl className={cx(BASE_CLASS, className)}>
             {(Object.entries(bankAccount) as AccountDetailEntry[]).map(([field, value]) => {
