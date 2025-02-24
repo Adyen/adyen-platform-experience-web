@@ -1,8 +1,6 @@
 import { FunctionalComponent } from 'preact';
 import { useMemo } from 'preact/hooks';
-import { getGrantConfig } from '../GrantItem/utils';
 import { Translation } from '../../../../internal/Translation';
-import { EMPTY_ARRAY } from '../../../../../utils';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import InfoBox from '../../../../internal/InfoBox';
 import type { GrantDetailsViewProps } from '../GrantDetailsView/types';
@@ -23,15 +21,17 @@ const CLASS_NAMES = {
 
 export const GrantRepaymentDetails: FunctionalComponent<GrantDetailsViewProps> = ({ grant, onDetailsClose }) => {
     const { i18n } = useCoreContext();
-    const grantConfig = useMemo(() => getGrantConfig(grant), [grant]);
-    const bankAccounts = useMemo(() => grant.unscheduledRepaymentAccounts ?? EMPTY_ARRAY, [grant.unscheduledRepaymentAccounts]);
+
+    const bankAccount = useMemo(() => {
+        // There can be more than one unscheduled repayment account, however, we are only showing the first one.
+        // If there be any need to show the rest of them in the future, some updates will be required.
+        return grant.unscheduledRepaymentAccounts[0]!;
+    }, [grant.unscheduledRepaymentAccounts]);
 
     const formattedRemainingAmount = useMemo(() => {
-        const { currency, value } = grantConfig.amount;
+        const { currency, value } = grant.remainingTotalAmount;
         return i18n.amount(value, currency).replace(/\D00$/, '');
-    }, [i18n, grantConfig]);
-
-    if (!bankAccounts.length) return null;
+    }, [i18n, grant.remainingTotalAmount]);
 
     return (
         <GrantDetailsView
@@ -45,7 +45,7 @@ export const GrantRepaymentDetails: FunctionalComponent<GrantDetailsViewProps> =
                     <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY} stronger>
                         {i18n.get('capital.bankAccountDetails')}
                     </Typography>
-                    <AccountDetails bankAccount={bankAccounts[0]!} />
+                    <AccountDetails bankAccount={bankAccount} />
                 </section>
                 <section className={CLASS_NAMES.repaymentNotice}>
                     <Typography el={TypographyElement.PARAGRAPH} variant={TypographyVariant.CAPTION}>

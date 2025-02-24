@@ -72,7 +72,15 @@ export const GrantsDisplay: FunctionalComponent<GrantsProps> = ({ grantList, hid
                 }
                 break;
             }
+
+            // The grant revocation account details is currently not ready to be rendered.
+            // A future iteration of this component might include revocation account details.
+            // Only then should the following lines be uncommented.
+            //
             // case GRANT_DETAILS_VIEWS.revocation:
+            //     if (selectedGrantConfig?.hasRevocationDetails) {
+            //         return <GrantRevocationDetails grant={selectedGrant} onDetailsClose={hideGrantDetailsView} />;
+            //     }
             //     break;
         }
     }
