@@ -22,7 +22,6 @@ const isCopyableAccountField = (field: BankAccountField): boolean => {
         // Explicit list of non-copyable account fields
         // Items can be moved from this list to the list of copyable fields if necessary
         // The `region` field and other unknown fields (default case) are also considered non-copyable
-        case 'accountType':
         case 'region':
         default:
             return false;
@@ -44,8 +43,6 @@ export const getAccountFieldFormattedValue = (field: BankAccountField, value: st
             return getTranslationWithFallback(i18n, `countryOrRegion.${value}` as TranslationKey, value);
         case 'iban':
             return getHumanReadableIban(value);
-        case 'accountType':
-            return getTranslationWithFallback(i18n, `bankAccountType.${value.toLowerCase()}` as TranslationKey, value);
         default:
             return value;
     }
@@ -59,8 +56,6 @@ export const getAccountFieldTranslationKey = (field: BankAccountField): Translat
             return 'IBAN' as TranslationKey; // [TODO]: Verify if "IBAN" can and should be translated
         case 'accountNumber':
             return 'capital.bankAccountNumber';
-        case 'accountType':
-            return 'capital.bankAccountType';
         case 'routingNumber':
             return 'capital.bankRoutingNumber';
         case 'sortCode':

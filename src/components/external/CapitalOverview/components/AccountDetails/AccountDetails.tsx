@@ -21,9 +21,9 @@ export const AccountDetails: FunctionalComponent<AccountDetailsProps> = ({ bankA
 
     const accountDetails = useMemo(() => {
         const { accountIdentification = EMPTY_OBJECT as BankAccountIdentification, region } = bankAccount;
-        const { accountNumber, accountType, iban, ...restAccountDetails } = accountIdentification;
+        const { accountNumber, iban, ...restAccountDetails } = accountIdentification;
         // Minor re-ordering of displayable account fields
-        return { iban, accountNumber, ...restAccountDetails, accountType, region };
+        return { iban, accountNumber, ...restAccountDetails, region };
     }, [bankAccount]);
 
     return (
