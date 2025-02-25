@@ -1,12 +1,15 @@
-import { ElementProps, ElementStory, SetupControls } from '../utils/types';
+import { ElementProps, ElementStory, SetupControls } from '../../utils/types';
 import { Meta } from '@storybook/preact';
-import { AdyenPlatformExperience, CapitalOverview, ILegalEntity } from '../../src';
-import { CapitalOverviewWithSetupMeta } from '../components/capitalOverview';
-import { CapitalOverviewMockedResponses } from '../../mocks/mock-server/capital';
+import { AdyenPlatformExperience, CapitalOverview, ILegalEntity } from '../../../src';
+import { CapitalOverviewWithSetupMeta } from '../../components/capitalOverview';
+import { CapitalOverviewMockedResponses } from '../../../mocks/mock-server/capital';
 import { useEffect } from 'preact/compat';
-import getMySessionToken from '../../playground/utils/sessionRequest';
+import getMySessionToken from '../../../playground/utils/sessionRequest';
 
-const meta: Meta<ElementProps<typeof CapitalOverview> & SetupControls> = { ...CapitalOverviewWithSetupMeta, title: 'Mocked/Capital Overview' };
+const meta: Meta<ElementProps<typeof CapitalOverview> & SetupControls> = {
+    ...CapitalOverviewWithSetupMeta,
+    title: 'Mocked/Capital Overview',
+};
 
 export const UnsupportedRegion: ElementStory<typeof CapitalOverview, { mountIfInUnsupportedRegion: boolean; legalEntity: ILegalEntity }> = {
     name: 'Unsupported region',
@@ -87,76 +90,6 @@ export const Prequalified: ElementStory<typeof CapitalOverview> = {
     },
 };
 
-export const GrantPending: ElementStory<typeof CapitalOverview> = {
-    name: 'Grant: Pending',
-    args: {
-        mockedApi: true,
-    },
-    parameters: {
-        msw: CapitalOverviewMockedResponses.grantPending,
-    },
-};
-
-export const GrantActions: ElementStory<typeof CapitalOverview> = {
-    name: 'Grant: Actions',
-    args: {
-        mockedApi: true,
-    },
-    parameters: {
-        msw: CapitalOverviewMockedResponses.grantActions,
-    },
-};
-
-export const GrantActive: ElementStory<typeof CapitalOverview> = {
-    name: 'Grant: Active',
-    args: {
-        mockedApi: true,
-    },
-    parameters: {
-        msw: CapitalOverviewMockedResponses.grantActive,
-    },
-};
-
-export const GrantFailed: ElementStory<typeof CapitalOverview> = {
-    name: 'Grant: Failed',
-    args: {
-        mockedApi: true,
-    },
-    parameters: {
-        msw: CapitalOverviewMockedResponses.grantFailed,
-    },
-};
-
-export const GrantRepaid: ElementStory<typeof CapitalOverview> = {
-    name: 'Grant: Repaid',
-    args: {
-        mockedApi: true,
-    },
-    parameters: {
-        msw: CapitalOverviewMockedResponses.grantRepaid,
-    },
-};
-
-export const GrantRevoked: ElementStory<typeof CapitalOverview> = {
-    name: 'Grant: Revoked',
-    args: {
-        mockedApi: true,
-    },
-    parameters: {
-        msw: CapitalOverviewMockedResponses.grantRevoked,
-    },
-};
-
-export const GrantWrittenOff: ElementStory<typeof CapitalOverview> = {
-    name: 'Grant: WrittenOff',
-    args: {
-        mockedApi: true,
-    },
-    parameters: {
-        msw: CapitalOverviewMockedResponses.grantWrittenOff,
-    },
-};
-
 export const NewOffer: ElementStory<typeof CapitalOverview> = {
     name: 'New offer',
     args: {
@@ -174,42 +107,6 @@ export const Grants: ElementStory<typeof CapitalOverview> = {
     },
     parameters: {
         msw: CapitalOverviewMockedResponses.grants,
-    },
-};
-
-export const ErrorDynamicOfferConfigNoCapability: ElementStory<typeof CapitalOverview> = {
-    name: 'Error - Dynamic offer config - No capability',
-    args: {
-        mockedApi: true,
-    },
-    parameters: {
-        msw: {
-            handlers: CapitalOverviewMockedResponses.errorDynamicOfferConfigNoCapability,
-        },
-    },
-};
-
-export const ErrorDynamicOfferConfigInactiveAccountHolder: ElementStory<typeof CapitalOverview> = {
-    name: 'Error - Dynamic offer config - Inactive account holder',
-    args: {
-        mockedApi: true,
-    },
-    parameters: {
-        msw: {
-            handlers: CapitalOverviewMockedResponses.errorDynamicOfferConfigInactiveAccountHolder,
-        },
-    },
-};
-
-export const ErrorMissingActionsGeneric: ElementStory<typeof CapitalOverview> = {
-    name: 'Error - Missing actions - Generic',
-    args: {
-        mockedApi: true,
-    },
-    parameters: {
-        msw: {
-            handlers: CapitalOverviewMockedResponses.errorMissingActionsGeneric,
-        },
     },
 };
 

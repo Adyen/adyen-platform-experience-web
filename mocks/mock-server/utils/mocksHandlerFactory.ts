@@ -1,5 +1,7 @@
-import { http, HttpHandler, HttpResponse, JsonBodyType } from 'msw';
+import { DefaultBodyType, http, HttpHandler, HttpResponse, JsonBodyType, PathParams } from 'msw';
 import { delay } from './utils';
+import { ResponseResolverInfo } from 'msw/lib/core/handlers/RequestHandler';
+import { HttpRequestResolverExtras } from 'msw/lib/core/handlers/HttpHandler';
 
 type RemoveVersionFromUrl<T extends string> = T extends `${infer Prefix}/v${string}/${infer Rest}` ? `${Prefix}/${Rest}` : T;
 type PathWithBaseUrl<T extends string> = `${string}${RemoveVersionFromUrl<T>}`;
@@ -15,7 +17,7 @@ export const getHandlerCallback = <T extends JsonBodyType>({
     delayTime?: number;
     status?: number;
 }) => {
-    return async () => {
+    return async (resolver?: ResponseResolverInfo<HttpRequestResolverExtras<PathParams>, DefaultBodyType>, storybookArgs?: any) => {
         if (networkError) {
             return HttpResponse.error();
         }

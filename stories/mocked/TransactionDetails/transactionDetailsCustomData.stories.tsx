@@ -1,17 +1,9 @@
-import { TransactionDetails } from '../../src';
-import { ElementProps, ElementStory } from '../utils/types';
+import { TransactionDetails } from '../../../src';
+import { ElementProps, ElementStory } from '../../utils/types';
 import { Meta } from '@storybook/preact';
-import { TransactionDetailsMeta } from '../components/transactionDetails';
+import { TransactionDetailsMeta } from '../../components/transactionDetails';
 
-const meta: Meta<ElementProps<typeof TransactionDetails>> = { ...TransactionDetailsMeta, title: 'Mocked/Transaction Details' };
-
-export const Default: ElementStory<typeof TransactionDetails> = {
-    name: 'Default',
-    args: {
-        id: '1VVF0D5V3709DX6D',
-        mockedApi: true,
-    },
-};
+const meta: Meta<ElementProps<typeof TransactionDetails>> = { ...TransactionDetailsMeta, title: 'Mocked/Transaction Details/Custom Data' };
 
 const origin = process.env.VITE_PLAYGROUND_URL;
 

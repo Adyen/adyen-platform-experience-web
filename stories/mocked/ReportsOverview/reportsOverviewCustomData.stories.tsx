@@ -1,11 +1,11 @@
 import { Meta } from '@storybook/preact';
-import { ElementProps, ElementStory } from '../utils/types';
-import { ReportsOverview } from '../../src';
-import { ReportsMeta } from '../components/reportsOverview';
-import { getCustomReportsData } from './utils/customDataRequest';
+import { ElementProps, ElementStory } from '../../utils/types';
+import { ReportsOverview } from '../../../src';
+import { ReportsMeta } from '../../components/reportsOverview';
+import { getCustomReportsData } from '../utils/customDataRequest';
 import { http, HttpResponse } from 'msw';
-import { endpoints } from '../../endpoints/endpoints';
-import { REPORTS } from '../../mocks/mock-data';
+import { endpoints } from '../../../endpoints/endpoints';
+import { REPORTS } from '../../../mocks/mock-data';
 
 const meta: Meta<ElementProps<typeof ReportsOverview>> = { ...ReportsMeta, title: 'Mocked/Reports Overview' };
 
@@ -24,13 +24,6 @@ const CUSTOM_COLUMNS_MOCK_HANDLER = {
             });
         }),
     ],
-};
-
-export const Default: ElementStory<typeof ReportsOverview> = {
-    name: 'Default',
-    args: {
-        mockedApi: true,
-    },
 };
 
 export const CustomColumns: ElementStory<typeof ReportsOverview> = {

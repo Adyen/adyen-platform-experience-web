@@ -19,6 +19,11 @@ import { paths as CapitalPaths } from '../../src/types/api/resources/CapitalReso
 import uuid from '../../src/utils/random/uuid';
 import AdyenPlatformExperienceError from '../../src/core/Errors/AdyenPlatformExperienceError';
 import { ErrorTypes } from '../../src/core/Http/utils';
+import {
+    DYNAMIC_OFFER_CAPITAL_ERRORS,
+    DYNAMIC_OFFER_CONFIG_CAPITAL_ERRORS,
+    REQUEST_FUNDS_CAPITAL_ERRORS,
+} from '../../stories/mocked/CapitalOffer/constants';
 
 const mockEndpoints = endpoints('mock').capital;
 const networkError = false;
@@ -112,6 +117,75 @@ const capitalFactory = mocksFactory<CapitalPaths>();
 export const CapitalOfferMockedResponses = capitalFactory({
     ...commonHandlers,
     default: [{ endpoint: mockEndpoints.dynamicOfferConfig, response: DYNAMIC_CAPITAL_OFFER }],
+    dynamicOfferConfigErrors: [
+        {
+            endpoint: mockEndpoints.dynamicOfferConfig,
+            handler: async (_, storybookArgs) => {
+                switch (storybookArgs.error as keyof typeof DYNAMIC_OFFER_CONFIG_CAPITAL_ERRORS) {
+                    case 'no_config':
+                        return getHandlerCallback({ response: undefined, status: 204 })();
+                    case 'inactive_ah':
+                        return commonHandlers.errorDynamicOfferConfigInactiveAccountHolder[0]!.handler();
+                    case 'no_capability':
+                        return commonHandlers.errorDynamicOfferConfigNoCapability[0]!.handler();
+                    default:
+                        return commonHandlers.errorDynamicOfferConfigNoCapability[0]!.handler();
+                }
+            },
+        },
+    ],
+    dynamicOfferErrors: [
+        { endpoint: mockEndpoints.dynamicOfferConfig, response: DYNAMIC_CAPITAL_OFFER },
+        {
+            endpoint: mockEndpoints.dynamicOffer,
+            handler: async (req, storybookArgs) => {
+                switch (storybookArgs.error as keyof typeof DYNAMIC_OFFER_CAPITAL_ERRORS) {
+                    case 'temporary_server_error':
+                        if (retries > 1) retries = 0;
+                        return (((req: any) => DYNAMIC_OFFER_HANDLER(req, 1)) as any)(req);
+                    case 'generic':
+                    default:
+                        return (((req: any) => DYNAMIC_OFFER_HANDLER(req, 10)) as any)(req);
+                }
+            },
+        },
+    ],
+    requestFundsErrors: [
+        {
+            endpoint: mockEndpoints.requestFunds as any,
+            method: 'post',
+            handler: async (_, storybookArgs) => {
+                switch (storybookArgs.error as keyof typeof REQUEST_FUNDS_CAPITAL_ERRORS) {
+                    case 'generic':
+                        return getErrorHandler(new AdyenPlatformExperienceError(ErrorTypes.ERROR, '1234', 'Message', '500'), 500)();
+                    case 'no_grant_account':
+                        return getErrorHandler(
+                            new AdyenPlatformExperienceError(ErrorTypes.ERROR, '226ac4ce59f0f159ad672d38d3291e93', 'Message', '30_600'),
+                            500
+                        )();
+                    case 'no_primary_balance_account':
+                        return getErrorHandler(
+                            new AdyenPlatformExperienceError(ErrorTypes.ERROR, 'MissingPrimaryBalanceAccountException', 'Message', '30_013'),
+                            422
+                        )();
+                    default:
+                        return getErrorHandler(new AdyenPlatformExperienceError(ErrorTypes.ERROR, '1234', 'Message', '500'), 500)();
+                }
+            },
+        },
+        { endpoint: mockEndpoints.dynamicOfferConfig, response: DYNAMIC_CAPITAL_OFFER },
+    ],
+    reviewOfferWentWrong: [
+        { endpoint: mockEndpoints.dynamicOfferConfig, response: DYNAMIC_CAPITAL_OFFER },
+        {
+            endpoint: mockEndpoints.createOffer,
+            handler: getErrorHandler(new AdyenPlatformExperienceError(ErrorTypes.ERROR, 'Something went wrong', 'Message'), 500),
+            method: 'post',
+        },
+    ],
+    ///
+    ///
+    ///
     errorDynamicOfferConfigNoConfig: [
         { endpoint: mockEndpoints.dynamicOfferConfig, handler: getHandlerCallback({ response: undefined, status: 204 }) },
     ],

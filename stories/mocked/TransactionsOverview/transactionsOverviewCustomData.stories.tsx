@@ -1,19 +1,13 @@
-import { TransactionsOverview } from '../../src';
-import { ElementProps, ElementStory } from '../utils/types';
+import { TransactionsOverview } from '../../../src';
+import { ElementProps, ElementStory } from '../../utils/types';
 import { http, HttpResponse } from 'msw';
-import { TransactionsMeta } from '../components/transactionsOverview';
+import { TransactionsMeta } from '../../components/transactionsOverview';
 import { Meta } from '@storybook/preact';
-import { endpoints } from '../../endpoints/endpoints';
-import { getMyCustomData } from './utils/customDataRequest';
-import { TRANSACTIONS } from '../../mocks/mock-data';
+import { endpoints } from '../../../endpoints/endpoints';
+import { getMyCustomData } from '../utils/customDataRequest';
+import { TRANSACTIONS } from '../../../mocks/mock-data';
 
-const meta: Meta<ElementProps<typeof TransactionsOverview>> = { ...TransactionsMeta, title: 'Mocked/Transactions Overview' };
-export const Default: ElementStory<typeof TransactionsOverview> = {
-    name: 'Default',
-    args: {
-        mockedApi: true,
-    },
-};
+const meta: Meta<ElementProps<typeof TransactionsOverview>> = { ...TransactionsMeta, title: 'Mocked/Transactions Overview/Custom Data' };
 
 const CUSTOM_COLUMNS_MOCK_HANDLER = {
     handlers: [
