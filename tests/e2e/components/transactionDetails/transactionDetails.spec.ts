@@ -2,7 +2,7 @@ import { test as base, expect } from '@playwright/test';
 import { TransactionDetailsPage } from '../../../models/external-components/transactionDetails.page';
 import { getTranslatedKey, goToPage } from '../../../utils/utils';
 
-const COMPONENT_PREFIX = 'integration-transaction-details';
+const COMPONENT_PREFIX = 'api-connected-transaction-details';
 
 const test = base.extend<{
     transactionDetailsPage: TransactionDetailsPage;
@@ -20,7 +20,7 @@ test('should show correct balance account ID', async ({ transactionDetailsPage, 
     await expect(copyIcon).toBeVisible();
 });
 
-test('should show correct refund details', async ({ transactionDetailsPage, page }) => {
+test('should show correct refund details', async ({ page }) => {
     await goToPage({ page, id: `${COMPONENT_PREFIX}--default` });
     const refundType = page.getByText(getTranslatedKey('full'));
     await expect(refundType).toHaveText('Full');
