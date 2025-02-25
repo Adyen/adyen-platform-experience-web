@@ -3,7 +3,7 @@ import { useMemo } from 'preact/hooks';
 import { AccountDetail } from './AccountDetail';
 import { EMPTY_OBJECT } from '../../../../../utils';
 import { Fragment, FunctionalComponent, h } from 'preact';
-import { AccountDetailsProps, BankAccountField, BankAccountFieldValue } from './types';
+import { AccountDetailsProps, BankAccountField, BankAccountFieldValue, BankAccountIdentification } from './types';
 import { getAccountFieldFormattedValue, getAccountFieldTextToCopy, getAccountFieldTranslationKey } from './utils';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import './AccountDetails.scss';
@@ -20,10 +20,10 @@ export const AccountDetails: FunctionalComponent<AccountDetailsProps> = ({ bankA
     const { i18n } = useCoreContext();
 
     const accountDetails = useMemo(() => {
-        const { accountIdentification, region } = bankAccount;
-        const { accountType, ...restAccountDetails } = accountIdentification ?? (EMPTY_OBJECT as NonNullable<typeof accountIdentification>);
+        const { accountIdentification = EMPTY_OBJECT as BankAccountIdentification, region } = bankAccount;
+        const { accountNumber, accountType, iban, ...restAccountDetails } = accountIdentification;
         // Minor re-ordering of displayable account fields
-        return { ...restAccountDetails, accountType, region };
+        return { iban, accountNumber, ...restAccountDetails, accountType, region };
     }, [bankAccount]);
 
     return (
