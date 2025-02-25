@@ -1,8 +1,8 @@
 import { IGrant } from '../../../../../types';
-import { GrantDetailsViewCallback } from '../GrantDetailsView/types';
+import { GrantAdjustmentDetailCallback } from '../GrantAdjustmentDetails/types';
 import { ListWithoutFirst } from '../../../../../utils/types';
 
 export interface GrantItemProps {
     grant: IGrant;
-    showDetailsView?: (...args: ListWithoutFirst<Parameters<GrantDetailsViewCallback>>) => ReturnType<GrantDetailsViewCallback>;
+    showDetails?: (...args: ListWithoutFirst<Parameters<GrantAdjustmentDetailCallback>>) => ReturnType<GrantAdjustmentDetailCallback>;
 }

@@ -4,8 +4,8 @@ import { GrantItem } from '../GrantItem/GrantItem';
 import { getGrantConfig } from '../GrantItem/utils';
 import { FunctionalComponent } from 'preact';
 import { GrantsProps } from './types';
-import { GRANT_DETAILS_VIEWS } from '../GrantDetailsView/constants';
-import { GrantDetailsView, GrantDetailsViewCallback } from '../GrantDetailsView/types';
+import { GRANT_ADJUSTMENT_DETAILS } from '../GrantAdjustmentDetails/constants';
+import { GrantAdjustmentDetail, GrantAdjustmentDetailCallback } from '../GrantAdjustmentDetails/types';
 import { GrantRepaymentDetails } from '../GrantRepaymentDetails/GrantRepaymentDetails';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { useCallback, useMemo, useState } from 'preact/hooks';
@@ -14,12 +14,12 @@ import Button from '../../../../internal/Button/Button';
 import { ButtonVariant } from '../../../../internal/Button/types';
 import Tabs from '../../../../internal/Tabs/Tabs';
 
-const List = ({ grants, showDetailsView }: { grants: IGrant[]; showDetailsView: GrantDetailsViewCallback }) => {
+const List = ({ grants, showDetails }: { grants: IGrant[]; showDetails: GrantAdjustmentDetailCallback }) => {
     return (
         <BaseList classNames={'adyen-pe-grant-list__items'}>
             {grants.map(grant => (
                 <li key={grant.id}>
-                    <GrantItem grant={grant} showDetailsView={showDetailsView.bind(null, grant)} />
+                    <GrantItem grant={grant} showDetails={showDetails.bind(null, grant)} />
                 </li>
             ))}
         </BaseList>
@@ -27,7 +27,7 @@ const List = ({ grants, showDetailsView }: { grants: IGrant[]; showDetailsView: 
 };
 
 export const GrantsDisplay: FunctionalComponent<GrantsProps> = ({ grantList, hideTitle, newOfferAvailable, onNewOfferRequest }) => {
-    const [selectedGrantDetailsView, setSelectedGrantDetailsView] = useState<GrantDetailsView>();
+    const [selectedGrantDetail, setSelectedGrantDetail] = useState<GrantAdjustmentDetail>();
     const [selectedGrant, setSelectedGrant] = useState<IGrant>();
     const { i18n } = useCoreContext();
 
@@ -57,18 +57,18 @@ export const GrantsDisplay: FunctionalComponent<GrantsProps> = ({ grantList, hid
 
     const selectedGrantConfig = useMemo(() => selectedGrant && getGrantConfig(selectedGrant), [selectedGrant]);
 
-    const hideGrantDetailsView = useCallback(() => setSelectedGrantDetailsView(undefined), []);
+    const hideGrantDetails = useCallback(() => setSelectedGrantDetail(undefined), []);
 
-    const showGrantDetailsView = useCallback<GrantDetailsViewCallback>((grant, detailsView) => {
-        setSelectedGrantDetailsView(detailsView);
+    const showGrantDetails = useCallback<GrantAdjustmentDetailCallback>((grant, detail) => {
+        setSelectedGrantDetail(detail);
         setSelectedGrant(grant);
     }, []);
 
     if (selectedGrant) {
-        switch (selectedGrantDetailsView) {
-            case GRANT_DETAILS_VIEWS.unscheduledRepayment: {
+        switch (selectedGrantDetail) {
+            case GRANT_ADJUSTMENT_DETAILS.unscheduledRepayment: {
                 if (selectedGrantConfig?.hasUnscheduledRepaymentDetails) {
-                    return <GrantRepaymentDetails grant={selectedGrant} onDetailsClose={hideGrantDetailsView} />;
+                    return <GrantRepaymentDetails grant={selectedGrant} onDetailsClose={hideGrantDetails} />;
                 }
                 break;
             }
@@ -96,18 +96,18 @@ export const GrantsDisplay: FunctionalComponent<GrantsProps> = ({ grantList, hid
                 ) : null}
             </div>
 
-            {displayMode === 'SingleGrant' && <List grants={grantList} showDetailsView={showGrantDetailsView} />}
+            {displayMode === 'SingleGrant' && <List grants={grantList} showDetails={showGrantDetails} />}
             {displayMode === 'Tabs' && (
                 <Tabs
                     tabs={[
                         {
                             label: 'capital.inProgress',
-                            content: <List grants={activeGrants} showDetailsView={showGrantDetailsView} />,
+                            content: <List grants={activeGrants} showDetails={showGrantDetails} />,
                             id: 'active',
                         },
                         {
                             label: 'capital.closed',
-                            content: <List grants={inactiveGrants} showDetailsView={showGrantDetailsView} />,
+                            content: <List grants={inactiveGrants} showDetails={showGrantDetails} />,
                             id: 'inactive',
                         },
                     ]}

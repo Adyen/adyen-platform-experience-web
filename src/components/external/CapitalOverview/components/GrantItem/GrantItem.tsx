@@ -22,11 +22,11 @@ import { AlertTypeOption } from '../../../../internal/Alert/types';
 import { ButtonVariant } from '../../../../internal/Button/types';
 import ExpandableCard from '../../../../internal/ExpandableCard/ExpandableCard';
 
-export const GrantItem: FunctionalComponent<GrantItemProps> = ({ grant, showDetailsView }) => {
+export const GrantItem: FunctionalComponent<GrantItemProps> = ({ grant, showDetails }) => {
     const { i18n } = useCoreContext();
     const { dateFormat } = useTimezoneAwareDateFormatting();
     const grantConfig = useMemo(() => getGrantConfig(grant), [grant]);
-    const showUnscheduledRepaymentAccounts = useCallback(() => showDetailsView?.('unscheduledRepayment'), [showDetailsView]);
+    const showUnscheduledRepaymentAccounts = useCallback(() => showDetails?.('unscheduledRepayment'), [showDetails]);
 
     const grantOverview = useMemo(
         () => (

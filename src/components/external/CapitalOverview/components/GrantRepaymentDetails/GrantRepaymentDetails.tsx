@@ -3,11 +3,11 @@ import { useMemo } from 'preact/hooks';
 import { Translation } from '../../../../internal/Translation';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import InfoBox from '../../../../internal/InfoBox';
-import type { GrantDetailsViewProps } from '../GrantDetailsView/types';
+import type { GrantAdjustmentDetailsProps } from '../GrantAdjustmentDetails/types';
 import Typography from '../../../../internal/Typography/Typography';
 import { TypographyElement, TypographyVariant } from '../../../../internal/Typography/types';
 import { AccountDetails } from '../AccountDetails/AccountDetails';
-import { GrantDetailsView } from '../GrantDetailsView/GrantDetailsView';
+import { GrantAdjustmentDetails } from '../GrantAdjustmentDetails/GrantAdjustmentDetails';
 import './GrantRepaymentDetails.scss';
 
 const BASE_CLASS = 'adyen-pe-grant-repayment-details';
@@ -19,7 +19,7 @@ const CLASS_NAMES = {
     repaymentNotice: `${BASE_CLASS}__repayment-notice`,
 };
 
-export const GrantRepaymentDetails: FunctionalComponent<GrantDetailsViewProps> = ({ grant, onDetailsClose }) => {
+export const GrantRepaymentDetails: FunctionalComponent<GrantAdjustmentDetailsProps> = ({ grant, onDetailsClose }) => {
     const { i18n } = useCoreContext();
 
     const bankAccount = useMemo(() => {
@@ -34,7 +34,7 @@ export const GrantRepaymentDetails: FunctionalComponent<GrantDetailsViewProps> =
     }, [i18n, grant.remainingTotalAmount]);
 
     return bankAccount ? (
-        <GrantDetailsView
+        <GrantAdjustmentDetails
             className={BASE_CLASS}
             onDetailsClose={onDetailsClose}
             headerTitleKey="capital.sendRepayment"
@@ -67,6 +67,6 @@ export const GrantRepaymentDetails: FunctionalComponent<GrantDetailsViewProps> =
                     />
                 </Typography>
             </InfoBox>
-        </GrantDetailsView>
+        </GrantAdjustmentDetails>
     ) : null;
 };

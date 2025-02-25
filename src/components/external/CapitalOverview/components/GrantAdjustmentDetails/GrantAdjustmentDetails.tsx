@@ -1,20 +1,22 @@
 import cx from 'classnames';
 import { FunctionalComponent, h } from 'preact';
 import type { TranslationKey } from '../../../../../translations';
-import type { GrantDetailsViewProps } from './types';
-import './GrantDetailsView.scss';
+import type { GrantAdjustmentDetailsProps } from './types';
+import './GrantAdjustmentDetails.scss';
 import { Header } from '../../../../internal/Header';
 import Button from '../../../../internal/Button/Button';
 import { ButtonVariant } from '../../../../internal/Button/types';
 import Icon from '../../../../internal/Icon';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 
-export interface GrantDetailsViewComponentProps extends Pick<GrantDetailsViewProps, 'onDetailsClose'>, Pick<h.JSX.HTMLAttributes, 'className'> {
+export interface GrantAdjustmentDetailsComponentProps
+    extends Pick<GrantAdjustmentDetailsProps, 'onDetailsClose'>,
+        Pick<h.JSX.HTMLAttributes, 'className'> {
     headerTitleKey?: TranslationKey;
     headerSubtitleKey?: TranslationKey;
 }
 
-export const GrantDetailsView: FunctionalComponent<GrantDetailsViewComponentProps> = ({
+export const GrantAdjustmentDetails: FunctionalComponent<GrantAdjustmentDetailsComponentProps> = ({
     children,
     className,
     headerTitleKey,
@@ -24,7 +26,7 @@ export const GrantDetailsView: FunctionalComponent<GrantDetailsViewComponentProp
     const { i18n } = useCoreContext();
 
     return (
-        <div className={cx('adyen-pe-grant-details-view', className)}>
+        <div className={cx('adyen-pe-grant-adjustment-details', className)}>
             <Header titleKey={headerTitleKey} subtitleKey={headerSubtitleKey}>
                 <Button
                     onClick={onDetailsClose}
