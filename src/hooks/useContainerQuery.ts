@@ -22,7 +22,6 @@ export const useContainerQuery = <T extends readonly [string, number, { min?: nu
 
         resizeObserver.observe(node);
 
-        console.log(query);
         const [type, breakpoint, minMax] = query;
 
         switch (type) {
