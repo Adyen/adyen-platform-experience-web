@@ -10,7 +10,7 @@ test.describe('Grant: Revoked', () => {
 
     test('should render revoked grant', async ({ page }) => {
         await expect(page.getByText('Requested funds')).toBeVisible();
-        await expect(page.getByText('$20,000.00')).toBeVisible();
+        await expect(page.getByText('€20,000.00')).toBeVisible();
         await expect(page.getByText('Revoked')).toBeVisible();
         await expect(page.getByText('Grant ID')).toBeVisible();
         await expect(page.getByTestId('grant-id-copy-text')).toBeVisible();

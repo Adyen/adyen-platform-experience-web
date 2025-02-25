@@ -1,6 +1,5 @@
 import { test, expect } from '@playwright/test';
 import { goToStory, setTime } from '../../../utils/utils';
-import { screen } from '@testing-library/preact';
 
 const STORY_ID = 'mocked-capital-overview--grant-active';
 
@@ -14,7 +13,7 @@ test.describe('Grant: Active', () => {
         const amountLabel = page.getByTestId('grant-amount-label').first();
         await expect(amountLabel).toBeVisible();
         await expect(amountLabel).toHaveText('Remaining');
-        await expect(page.getByText('$8,220.00').first()).toBeVisible();
+        await expect(page.getByText('€8,220.00').first()).toBeVisible();
         await expect(page.getByText('Term ends: May 16, 2025').first()).toBeVisible();
         const progressBar = page.getByRole('progressbar').first();
         await expect(progressBar).toBeVisible();
@@ -26,15 +25,15 @@ test.describe('Grant: Active', () => {
 
     test('should show grant details when button for expanding is clicked', async ({ page }) => {
         await page.getByTestId('expand-button').click();
-        await expect(page.getByText('Your requested funds were: $20,000.00')).toBeVisible();
+        await expect(page.getByText('Your requested funds were: €20,000.00')).toBeVisible();
         await expect(page.getByText('Remaining amount')).toBeVisible();
-        await expect(page.getByText('$8,130.00')).toBeVisible();
+        await expect(page.getByText('€8,130.00')).toBeVisible();
         await expect(page.getByText('Remaining fees')).toBeVisible();
-        await expect(page.getByText('$90.00')).toBeVisible();
+        await expect(page.getByText('€90.00')).toBeVisible();
         await expect(page.getByText('Repaid amount')).toBeVisible();
-        await expect(page.getByText('$11,870.00')).toBeVisible();
+        await expect(page.getByText('€11,870.00')).toBeVisible();
         await expect(page.getByText('Repaid fees')).toBeVisible();
-        await expect(page.getByText('$130.00')).toBeVisible();
+        await expect(page.getByText('€130.00')).toBeVisible();
         await expect(page.getByText('Daily repayment rate')).toBeVisible();
         await expect(page.getByText('11%')).toBeVisible();
         await expect(page.getByText('Maximum repayment period')).toBeVisible();
@@ -42,9 +41,9 @@ test.describe('Grant: Active', () => {
         await expect(page.getByText('Expected repayment period')).toBeVisible();
         await expect(page.getByText('365 days (135 days left)')).toBeVisible();
         await expect(page.getByText('Total repayment amount')).toBeVisible();
-        await expect(page.getByText('$20,220.00')).toBeVisible();
+        await expect(page.getByText('€20,220.00')).toBeVisible();
         await expect(page.getByText('Repayment threshold')).toBeVisible();
-        await expect(page.getByText('$800.00')).toBeVisible();
+        await expect(page.getByText('€800.00')).toBeVisible();
         await expect(page.getByText('Grant ID')).toBeVisible();
         await expect(page.getByText('afedbe0e05e9')).toBeVisible();
         await expect(page.getByText('Account description')).toBeVisible();
@@ -57,7 +56,7 @@ test.describe('Grant: Active', () => {
     test('should hide grant details when button for collapsing is clicked', async ({ page }) => {
         await page.getByTestId('expand-button').click();
         await page.getByTestId('collapse-button').click();
-        await expect(page.getByText('Your requested funds were: $20,000.00')).toBeHidden();
+        await expect(page.getByText('Your requested funds were: €20,000.00')).toBeHidden();
     });
 
     test('should show a tooltip when "Repayment threshold" label is hovered', async ({ page }) => {

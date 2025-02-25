@@ -11,7 +11,7 @@ test.describe('Grant: Written off', () => {
     test('should render written off grant', async ({ page }) => {
         await expect(page.getByText('Written off')).toBeVisible();
         await expect(page.getByText('Requested funds')).toBeVisible();
-        await expect(page.getByText('$20,000.00')).toBeVisible();
+        await expect(page.getByText('€20,000.00')).toBeVisible();
         await expect(page.getByText('Grant ID')).toBeVisible();
         await expect(page.getByTestId('copyText')).toBeVisible();
     });

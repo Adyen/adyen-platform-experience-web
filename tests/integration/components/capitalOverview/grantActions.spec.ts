@@ -10,7 +10,7 @@ test.describe('Grant: Actions', () => {
 
     test('should render pending grant with actions', async ({ page }) => {
         await expect(page.getByText('Requested funds')).toBeVisible();
-        await expect(page.getByText('$20,000.00')).toBeVisible();
+        await expect(page.getByText('€20,000.00')).toBeVisible();
         await expect(page.getByText('Action needed')).toBeVisible();
         await expect(page.getByText('Grant ID')).toBeVisible();
         await expect(page.getByTestId('grant-id-copy-text')).toBeVisible();

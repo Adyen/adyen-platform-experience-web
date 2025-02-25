@@ -23,43 +23,43 @@ export const DEFAULT_GRANT: IGrant = {
     id: '66e12a9a64a6',
     grantAmount: {
         value: 2000000,
-        currency: 'USD',
+        currency: 'EUR',
     },
     totalAmount: {
         value: 2022000,
-        currency: 'USD',
+        currency: 'EUR',
     },
     feesAmount: {
         value: 22000,
-        currency: 'USD',
+        currency: 'EUR',
     },
     remainingGrantAmount: {
         value: 813000,
-        currency: 'USD',
+        currency: 'EUR',
     },
     remainingTotalAmount: {
         value: 2022000,
-        currency: 'USD',
+        currency: 'EUR',
     },
     remainingFeesAmount: {
         value: 9000,
-        currency: 'USD',
+        currency: 'EUR',
     },
     repaidFeesAmount: {
         value: 13000,
-        currency: 'USD',
+        currency: 'EUR',
     },
     repaidGrantAmount: {
         value: 22000,
-        currency: 'USD',
+        currency: 'EUR',
     },
     repaidTotalAmount: {
         value: 2022000,
-        currency: 'USD',
+        currency: 'EUR',
     },
     thresholdAmount: {
         value: 80000,
-        currency: 'USD',
+        currency: 'EUR',
     },
     repaymentRate: 1100,
     expectedRepaymentPeriodDays: 365,
@@ -79,20 +79,20 @@ export const ACTIVE_GRANT: IGrant = {
     id: 'afedbe0e05e9',
     repaidTotalAmount: {
         value: 1200000,
-        currency: 'USD',
+        currency: 'EUR',
     },
     repaidGrantAmount: {
         value: 1187000,
-        currency: 'USD',
+        currency: 'EUR',
     },
     repaidFeesAmount: {
         value: 13000,
-        currency: 'USD',
+        currency: 'EUR',
     },
     status: 'Active',
     remainingTotalAmount: {
         value: 822000,
-        currency: 'USD',
+        currency: 'EUR',
     },
 };
 
@@ -139,19 +139,19 @@ export const GRANT_OFFER = {
     id: '66e12a9a64a6',
     grantAmount: {
         value: 2000000,
-        currency: 'USD',
+        currency: 'EUR',
     },
     feesAmount: {
         value: 22000,
-        currency: 'USD',
+        currency: 'EUR',
     },
     totalAmount: {
         value: 2022000,
-        currency: 'USD',
+        currency: 'EUR',
     },
     thresholdAmount: {
         value: 169000,
-        currency: 'USD',
+        currency: 'EUR',
     },
     repaymentRate: 1100,
     expectedRepaymentPeriodDays: 365,
@@ -164,31 +164,31 @@ export const SIGNED_OFFER = {
     id: '66e12a9a64a6',
     grantAmount: {
         value: 2000000,
-        currency: 'USD',
+        currency: 'EUR',
     },
     repaidAmount: {
         value: 1200000,
-        currency: 'USD',
+        currency: 'EUR',
     },
     repaidGrantAmount: {
         value: 1187000,
-        currency: 'USD',
+        currency: 'EUR',
     },
     repaidFeesAmount: {
         value: 13000,
-        currency: 'USD',
+        currency: 'EUR',
     },
     feesAmount: {
         value: 22000,
-        currency: 'USD',
+        currency: 'EUR',
     },
     repaymentAmount: {
         value: 2022000,
-        currency: 'USD',
+        currency: 'EUR',
     },
     thresholdPaymentAmount: {
         value: 80000,
-        currency: 'USD',
+        currency: 'EUR',
     },
     repaymentRate: 1100,
     expectedRepaymentPeriodDays: 365,
