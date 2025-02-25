@@ -1,27 +1,33 @@
 @use '../../../../../style';
 
-.adyen-pe-grant-details-view {
-    $adyen-capital-heading-title-line-height: style.token(text-title-m-line-height);
-    $adyen-icon-touch-size: 40px;
+// [TODO]: Consider moving this Sass mixin to a shared location (for reusability)
+@mixin adyen-displace-floating-dismiss-icon($base-height: 40px, $icon-touch-size: 40px, $icon-size: 16px) {
+    --icon-size: #{$icon-size};
+    --right-margin-offset: calc((var(--icon-size) - #{$icon-touch-size}) / 2);
+    --top-margin-offset: calc(#{$base-height} - #{$icon-touch-size});
+    --top-position-offset: calc(var(--top-margin-offset) * -1 / 2);
 
+    font-size: var(--icon-size);
+    margin-right: var(--right-margin-offset);
+    margin-top: var(--top-margin-offset);
+    position: relative;
+    top: var(--top-position-offset);
+
+    @content;
+}
+
+.adyen-pe-grant-details-view {
     align-items: flex-start;
     align-self: stretch;
     display: flex;
     flex-direction: column;
 
     .adyen-pe-header__controls {
-        // [TODO]: Consider moving this displacement definitions to a Sass mixin (for reusability)
-        --icon-size: 16px;
-        --right-margin-offset: calc((var(--icon-size) - #{$adyen-icon-touch-size}) / 2);
-        --top-margin-offset: calc(#{$adyen-capital-heading-title-line-height} - #{$adyen-icon-touch-size});
-        --top-position-offset: calc(var(--top-margin-offset) * -1 / 2);
-
         .adyen-pe-button--icon {
-            font-size: var(--icon-size);
-            margin-right: var(--right-margin-offset);
-            margin-top: var(--top-margin-offset);
-            position: relative;
-            top: var(--top-position-offset);
+            @include adyen-displace-floating-dismiss-icon(
+                // $base-height => capital heading title line-height
+                $base-height: style.token(text-title-m-line-height)
+            );
         }
     }
 }
