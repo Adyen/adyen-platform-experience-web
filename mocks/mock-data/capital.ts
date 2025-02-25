@@ -13,13 +13,14 @@ export const DYNAMIC_CAPITAL_OFFER = {
 } satisfies IDynamicOffersConfig;
 
 const GRANT_BANK_ACCOUNT = {
-    bankAccountIdentification: {
-        accountNumber: 'US11ADYB01234567890123',
+    accountIdentification: {
+        accountNumber: '123456789012',
         routingNumber: '012345678',
+        accountType: 'Checking',
+        type: 'usLocal',
     },
-    currency: 'USD',
     region: 'US',
-} satisfies IGrant['unscheduledRepaymentAccounts'][number];
+} satisfies NonNullable<IGrant['unscheduledRepaymentAccounts']>[number];
 
 export const DEFAULT_GRANT: IGrant = {
     id: '66e12a9a64a6',

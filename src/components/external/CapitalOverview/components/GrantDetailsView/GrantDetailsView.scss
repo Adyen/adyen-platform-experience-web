@@ -10,6 +10,7 @@
     flex-direction: column;
 
     .adyen-pe-header__controls {
+        // [TODO]: Consider moving this displacement definitions to a Sass mixin (for reusability)
         --icon-size: 16px;
         --right-margin-offset: calc((var(--icon-size) - #{$adyen-icon-touch-size}) / 2);
         --top-margin-offset: calc(#{$adyen-capital-heading-title-line-height} - #{$adyen-icon-touch-size});

@@ -61,6 +61,20 @@ export interface components {
              */
             value: number;
         };
+        BankAccountIdentification: {
+            type?: components['schemas']['BankAccountIdentificationType'];
+            accountNumber?: string;
+            accountType?: string;
+            iban?: string;
+            routingNumber?: string;
+            sortCode?: string;
+        };
+        /** @enum {string} */
+        BankAccountIdentificationType: 'iban' | 'numberAndBic' | 'auLocal' | 'caLocal' | 'czLocal' | 'noLocal' | 'plLocal' | 'huLocal' | 'seLocal' | 'sgLocal' | 'ukLocal' | 'usLocal' | 'brLocal' | 'dkLocal' | 'nzLocal' | 'hkLocal' | 'legacy';
+        FundsCollectionDetailDTO: {
+            accountIdentification?: components['schemas']['BankAccountIdentification'];
+            region?: string;
+        };
         GrantOfferResponseDTO: {
             /** Format: int32 */
             expectedRepaymentPeriodDays: number;
@@ -108,39 +122,13 @@ export interface components {
             repaymentPeriodLeft: number;
             /** Format: int32 */
             repaymentRate: number;
+            revocationAccount?: components['schemas']['FundsCollectionDetailDTO'];
             status: components['schemas']['GrantStatus'];
             /** Format: date-time */
             termEndsAt: string;
             thresholdAmount: components['schemas']['Amount'];
             totalAmount: components['schemas']['Amount'];
-
-            // [TODO]: Re-generate schemas from OpenAPI spec (when available) to automatically include these fields
-            unscheduledRepaymentAccounts: components['schemas']['GrantBankAccount'][];
-            revocationAccount: components['schemas']['GrantBankAccount'];
-        };
-        GrantBankAccountRegion: 'AU' | 'EU' | 'UK' | 'US';
-        GrantBankAccount: {
-            bankAccountIdentification: Partial<
-                Record<
-                    | 'accountNumber'
-                    | 'accountType'
-                    | 'additionalBankIdentification'
-                    | 'bankCode'
-                    | 'bic'
-                    | 'branchNumber'
-                    | 'bsbCode'
-                    | 'clearingNumber'
-                    | 'iban'
-                    | 'institutionNumber'
-                    | 'ispbCode'
-                    | 'routingNumber'
-                    | 'sortCode'
-                    | 'transitNumber',
-                    string
-                >
-            >;
-            currency: components['schemas']['Amount']['currency'];
-            region: components['schemas']['GrantBankAccountRegion'];
+            unscheduledRepaymentAccounts?: components['schemas']['FundsCollectionDetailDTO'][];
         };
         /** @enum {string} */
         GrantStatus: 'Pending' | 'Active' | 'Repaid' | 'Failed' | 'WrittenOff' | 'Revoked';

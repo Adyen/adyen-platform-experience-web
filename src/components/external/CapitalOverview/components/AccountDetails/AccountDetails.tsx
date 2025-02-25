@@ -1,6 +1,7 @@
 import cx from 'classnames';
 import { useMemo } from 'preact/hooks';
 import { AccountDetail } from './AccountDetail';
+import { EMPTY_OBJECT } from '../../../../../utils';
 import { Fragment, FunctionalComponent, h } from 'preact';
 import { AccountDetailsProps, BankAccountField, BankAccountFieldValue } from './types';
 import { getAccountFieldFormattedValue, getAccountFieldTextToCopy, getAccountFieldTranslationKey } from './utils';
@@ -19,20 +20,31 @@ export const AccountDetails: FunctionalComponent<AccountDetailsProps> = ({ bankA
     const { i18n } = useCoreContext();
 
     const accountDetails = useMemo(() => {
-        const { bankAccountIdentification, region } = bankAccount;
-        return { ...bankAccountIdentification, region };
+        const { accountIdentification, region } = bankAccount;
+        const { accountType, ...restAccountDetails } = accountIdentification ?? (EMPTY_OBJECT as NonNullable<typeof accountIdentification>);
+        // Minor re-ordering of displayable account fields
+        return { ...restAccountDetails, accountType, region };
     }, [bankAccount]);
 
     return (
         <dl className={cx(BASE_CLASS, className)}>
             {(Object.entries(accountDetails) as [BankAccountField, BankAccountFieldValue][]).map(([field, value]) => {
-                return field && value ? (
+                // Will be `undefined` if no translation key has been registered for the account field.
+                // The existence of this value serves as a whitelisting criteria for displayable fields.
+                //
+                // To make an account field displayable, define a translation key for it.
+                // To prevent an account field from being displayed, unregister its translation key.
+                // @see {@link getAccountFieldTranslationKey}
+                const fieldLabel = getAccountFieldTranslationKey(field);
+
+                // Only render account fields with a visible label (translation key) and non-empty value
+                return fieldLabel && value ? (
                     <Fragment key={field}>
                         <AccountDetail
                             className={CLASS_NAMES.detail}
                             contentClassName={CLASS_NAMES.detailContent}
                             labelClassName={CLASS_NAMES.detailLabel}
-                            label={getAccountFieldTranslationKey(field)}
+                            label={fieldLabel}
                             content={getAccountFieldFormattedValue(field, value, i18n)}
                             textToCopy={getAccountFieldTextToCopy(field, value)}
                         />

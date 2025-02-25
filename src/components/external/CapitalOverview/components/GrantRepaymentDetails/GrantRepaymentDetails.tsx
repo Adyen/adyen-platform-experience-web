@@ -25,7 +25,7 @@ export const GrantRepaymentDetails: FunctionalComponent<GrantDetailsViewProps> =
     const bankAccount = useMemo(() => {
         // There can be more than one unscheduled repayment account, however, we are only showing the first one.
         // If there be any need to show the rest of them in the future, some updates will be required.
-        return grant.unscheduledRepaymentAccounts[0]!;
+        return grant.unscheduledRepaymentAccounts?.[0];
     }, [grant.unscheduledRepaymentAccounts]);
 
     const formattedRemainingAmount = useMemo(() => {
@@ -33,7 +33,7 @@ export const GrantRepaymentDetails: FunctionalComponent<GrantDetailsViewProps> =
         return i18n.amount(value, currency).replace(/\D00$/, '');
     }, [i18n, grant.remainingTotalAmount]);
 
-    return (
+    return bankAccount ? (
         <GrantDetailsView
             className={BASE_CLASS}
             onDetailsClose={onDetailsClose}
@@ -68,5 +68,5 @@ export const GrantRepaymentDetails: FunctionalComponent<GrantDetailsViewProps> =
                 </Typography>
             </InfoBox>
         </GrantDetailsView>
-    );
+    ) : null;
 };
