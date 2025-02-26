@@ -1,8 +1,5 @@
-import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { TranslationKey } from '../../../../../translations';
 import { BankAccountField } from './types';
-
-type I18n = ReturnType<typeof useCoreContext>['i18n'];
 
 const getHumanReadableIban = (iban: string, useNonBreakingSpaces = true) => {
     const spaceSeparator = useNonBreakingSpaces ? ' ' : ' ';
@@ -32,15 +29,8 @@ export const getAccountFieldTextToCopy = (field: BankAccountField, value: string
     return isCopyableAccountField(field) ? value : undefined;
 };
 
-const getTranslationWithFallback = (i18n: I18n, translationKey: TranslationKey, fallback: string): string => {
-    const translation = i18n.get(translationKey);
-    return translation && translation !== translationKey ? translation : fallback;
-};
-
-export const getAccountFieldFormattedValue = (field: BankAccountField, value: string, i18n: I18n) => {
+export const getAccountFieldFormattedValue = (field: BankAccountField, value: string) => {
     switch (field) {
-        case 'region':
-            return getTranslationWithFallback(i18n, `countryOrRegion.${value}` as TranslationKey, value);
         case 'iban':
             return getHumanReadableIban(value);
         default:

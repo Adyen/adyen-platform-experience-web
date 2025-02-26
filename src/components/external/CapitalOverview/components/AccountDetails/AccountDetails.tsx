@@ -5,7 +5,6 @@ import { EMPTY_OBJECT } from '../../../../../utils';
 import { Fragment, FunctionalComponent, h } from 'preact';
 import { AccountDetailsProps, BankAccountField, BankAccountFieldValue, BankAccountIdentification } from './types';
 import { getAccountFieldFormattedValue, getAccountFieldTextToCopy, getAccountFieldTranslationKey } from './utils';
-import useCoreContext from '../../../../../core/Context/useCoreContext';
 import './AccountDetails.scss';
 
 const BASE_CLASS = 'adyen-pe-capital-account-details';
@@ -17,8 +16,6 @@ const CLASS_NAMES = {
 };
 
 export const AccountDetails: FunctionalComponent<AccountDetailsProps> = ({ bankAccount, className }) => {
-    const { i18n } = useCoreContext();
-
     const accountDetails = useMemo(() => {
         const { accountIdentification = EMPTY_OBJECT as BankAccountIdentification, region } = bankAccount;
         const { accountNumber, iban, ...restAccountDetails } = accountIdentification;
@@ -45,7 +42,7 @@ export const AccountDetails: FunctionalComponent<AccountDetailsProps> = ({ bankA
                             contentClassName={CLASS_NAMES.detailContent}
                             labelClassName={CLASS_NAMES.detailLabel}
                             label={fieldLabel}
-                            content={getAccountFieldFormattedValue(field, value, i18n)}
+                            content={getAccountFieldFormattedValue(field, value)}
                             textToCopy={getAccountFieldTextToCopy(field, value)}
                         />
                     </Fragment>
