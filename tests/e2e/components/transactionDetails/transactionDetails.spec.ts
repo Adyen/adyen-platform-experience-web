@@ -2,7 +2,7 @@ import { test as base, expect } from '@playwright/test';
 import { TransactionDetailsPage } from '../../../models/external-components/transactionDetails.page';
 import { getTranslatedKey, goToStory } from '../../../utils/utils';
 
-const COMPONENT_PREFIX = 'integration-transaction-details';
+const COMPONENT_PREFIX = 'api-connected-transaction-details';
 
 const test = base.extend<{
     transactionDetailsPage: TransactionDetailsPage;

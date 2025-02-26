@@ -6,21 +6,17 @@ import { ButtonVariant } from '../Button/types';
 import Icon from '../Icon';
 import { Tooltip } from '../Tooltip/Tooltip';
 import './CopyText.scss';
+import { HTMLProps } from 'preact/compat';
 
-const CopyText = ({
-    textToCopy,
-    isHovered,
-    buttonLabel,
-    showCopyTextTooltip = true,
-    type = 'Link',
-    ...restProps
-}: {
+type CopyTextProps = {
     textToCopy: string;
     isHovered?: boolean;
     buttonLabel?: string;
     showCopyTextTooltip?: boolean;
     type?: 'Link' | 'Text' | 'Default';
-}) => {
+} & HTMLProps<HTMLSpanElement>;
+
+const CopyText = ({ textToCopy, isHovered, buttonLabel, showCopyTextTooltip = true, type = 'Link', ...restProps }: CopyTextProps) => {
     const { i18n } = useCoreContext();
 
     const [tooltipLabel, setTooltipLabel] = useState(i18n.get('copy'));
