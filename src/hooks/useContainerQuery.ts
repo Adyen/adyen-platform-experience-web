@@ -15,7 +15,7 @@ export const useContainerQuery = <T extends readonly [string, number, { min?: nu
         const resizeObserver = new ResizeObserver(entries => {
             for (const entry of entries) {
                 if (entry.target === node) {
-                    setWidth(entry.contentRect.width);
+                    setWidth(entry.borderBoxSize[0] ? entry.borderBoxSize[0].inlineSize : entry.contentRect.width);
                 }
             }
         });
