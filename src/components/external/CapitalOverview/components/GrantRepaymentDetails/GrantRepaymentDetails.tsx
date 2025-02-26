@@ -30,7 +30,7 @@ export const GrantRepaymentDetails: FunctionalComponent<GrantAdjustmentDetailsPr
 
     const formattedRemainingAmount = useMemo(() => {
         const { currency, value } = grant.remainingTotalAmount;
-        return i18n.amount(value, currency).replace(/\D00$/, '');
+        return i18n.amount(value, currency);
     }, [i18n, grant.remainingTotalAmount]);
 
     return bankAccount ? (

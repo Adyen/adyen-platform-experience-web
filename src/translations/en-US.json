@@ -20,6 +20,7 @@
     "capital.accountIsInactive": "Your account is inactive",
     "capital.actionNeeded": "Action needed",
     "capital.bankAccountDetails": "Bank account details",
+    "capital.bankAccountIban": "IBAN",
     "capital.bankAccountNumber": "Account number",
     "capital.bankCountryOrRegion": "Country/region",
     "capital.bankRoutingNumber": "Routing number",

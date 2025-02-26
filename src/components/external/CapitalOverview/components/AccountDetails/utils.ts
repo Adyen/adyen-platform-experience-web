@@ -53,7 +53,7 @@ export const getAccountFieldTranslationKey = (field: BankAccountField): Translat
         case 'region':
             return 'capital.bankCountryOrRegion';
         case 'iban':
-            return 'IBAN' as TranslationKey; // [TODO]: Verify if "IBAN" can and should be translated
+            return 'capital.bankAccountIban';
         case 'accountNumber':
             return 'capital.bankAccountNumber';
         case 'routingNumber':

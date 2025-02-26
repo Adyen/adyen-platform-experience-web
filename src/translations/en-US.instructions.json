@@ -6,6 +6,7 @@
     "capital.accountIsNotActive": "Label indicating that an account holder is inactive",
     "capital.actionNeeded": "Label indicating that the user need to take action",
     "capital.bankAccountDetails": "Displayed as title of a section showing bank account information",
+    "capital.bankAccountIban": "Label for bank account IBAN. IBAN here refers to \"International Bank Account Number\"",
     "capital.bankAccountNumber": "Label for bank account number",
     "capital.bankCountryOrRegion": "Label for bank country or region",
     "capital.bankRoutingNumber": "Label for bank account routing number",
