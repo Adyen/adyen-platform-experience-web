@@ -1,5 +1,4 @@
 import { TranslationKey } from '../../../../../translations';
-import { BankAccountField } from './types';
 
 const getHumanReadableIban = (iban: string, useNonBreakingSpaces = true) => {
     const spaceSeparator = useNonBreakingSpaces ? ' ' : ' ';
@@ -7,7 +6,7 @@ const getHumanReadableIban = (iban: string, useNonBreakingSpaces = true) => {
     return ibanWithoutSpaces.replace(/([A-Z\d]{4}(?!$))/gi, `$1${spaceSeparator}`);
 };
 
-const isCopyableAccountField = (field: BankAccountField): boolean => {
+const isCopyableAccountField = (field: string): boolean => {
     switch (field) {
         // Explicit list of copyable account fields
         case 'iban':
@@ -25,20 +24,20 @@ const isCopyableAccountField = (field: BankAccountField): boolean => {
     }
 };
 
-export const getAccountFieldTextToCopy = (field: BankAccountField, value: string): string | undefined => {
+export const getAccountFieldTextToCopy = (field: string, value?: string): string | undefined => {
     return isCopyableAccountField(field) ? value : undefined;
 };
 
-export const getAccountFieldFormattedValue = (field: BankAccountField, value: string) => {
+export const getAccountFieldFormattedValue = (field: string, value?: string) => {
     switch (field) {
         case 'iban':
-            return getHumanReadableIban(value);
+            return value && getHumanReadableIban(value);
         default:
             return value;
     }
 };
 
-export const getAccountFieldTranslationKey = (field: BankAccountField): TranslationKey | undefined => {
+export const getAccountFieldTranslationKey = (field: string): TranslationKey => {
     switch (field) {
         case 'region':
             return 'capital.bankCountryOrRegion';
@@ -51,6 +50,6 @@ export const getAccountFieldTranslationKey = (field: BankAccountField): Translat
         case 'sortCode':
             return 'capital.bankSortCode';
         default:
-            return;
+            return field as TranslationKey;
     }
 };

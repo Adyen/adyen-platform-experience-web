@@ -61,19 +61,13 @@ export interface components {
              */
             value: number;
         };
-        BankAccountIdentification: {
-            type?: components['schemas']['BankAccountIdentificationType'];
+        FundsCollectionDetailDTO: {
+            order: string[];
+            region: string;
             accountNumber?: string;
-            accountType?: string;
             iban?: string;
             routingNumber?: string;
             sortCode?: string;
-        };
-        /** @enum {string} */
-        BankAccountIdentificationType: 'iban' | 'numberAndBic' | 'auLocal' | 'caLocal' | 'czLocal' | 'noLocal' | 'plLocal' | 'huLocal' | 'seLocal' | 'sgLocal' | 'ukLocal' | 'usLocal' | 'brLocal' | 'dkLocal' | 'nzLocal' | 'hkLocal' | 'legacy';
-        FundsCollectionDetailDTO: {
-            accountIdentification?: components['schemas']['BankAccountIdentification'];
-            region?: string;
         };
         GrantOfferResponseDTO: {
             /** Format: int32 */
