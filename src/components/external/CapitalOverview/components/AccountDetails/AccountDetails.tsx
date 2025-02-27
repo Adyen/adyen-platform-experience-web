@@ -1,4 +1,5 @@
 import cx from 'classnames';
+import { useMemo } from 'preact/hooks';
 import { AccountDetail } from './AccountDetail';
 import { Fragment, FunctionalComponent, h } from 'preact';
 import { AccountDetailsProps, BankAccountField } from './types';
@@ -14,9 +15,16 @@ const CLASS_NAMES = {
 };
 
 export const AccountDetails: FunctionalComponent<AccountDetailsProps> = ({ bankAccount, className }) => {
+    const orderedBankAccountFields = useMemo(() => {
+        const { accountNumber, iban, order, region, ...accountDetails } = bankAccount;
+        const accountFields = Object.keys({ iban, accountNumber, ...accountDetails, region });
+        const orderedFields = Array.isArray(order) ? order.filter(field => accountFields.includes(field)) : accountFields;
+        return [...new Set(orderedFields)];
+    }, [bankAccount]);
+
     return (
         <dl className={cx(BASE_CLASS, className)}>
-            {bankAccount.order.map(field => {
+            {orderedBankAccountFields.map(field => {
                 const fieldValue = bankAccount[field as BankAccountField];
                 return fieldValue ? (
                     <Fragment key={field}>
