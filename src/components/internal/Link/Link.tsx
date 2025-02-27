@@ -17,13 +17,14 @@ function Link({ href, children, variant = 'default', truncate, target = '_blank'
             })}
             href={href}
             target={target}
+            rel="noopener noreferrer"
             onClick={onClick}
             {...props}
         >
             <Typography className="adyen-pe-link__text" el={TypographyElement.SPAN} variant={TypographyVariant.BODY}>
                 {children}
             </Typography>
-            {withIcon && <Icon name="external-link" />}
+            {withIcon && target === '_blank' && <Icon name="external-link" />}
         </a>
     );
 }
