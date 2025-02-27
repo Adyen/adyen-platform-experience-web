@@ -62,14 +62,15 @@ test.describe('Transaction List with custom columns', () => {
 
         // _reference: (LINK TYPE)
         const referenceFirstRow = transactionsOverview.getCell('_reference', 0);
-        await expect(referenceFirstRow).toHaveText('8W54BM75W7DYCIVK');
+        const REFERENCE = '8W54BM75W7DYCIVK';
+        await expect(referenceFirstRow).toHaveText(REFERENCE);
 
         const [newPage] = await Promise.all([
             context.waitForEvent('page'), // Waits for a new 'page' event in this browser context
             referenceFirstRow.click(), // This click opens the link in a new tab
         ]);
         await newPage.waitForLoadState();
-        expect(newPage.url()).toContain('&reference=8W54BM75W7DYCIVK');
+        expect(newPage.url()).toContain(`&reference=${REFERENCE}`);
 
         // _action (BUTTON TYPE)
         const messages: string[] = [];
