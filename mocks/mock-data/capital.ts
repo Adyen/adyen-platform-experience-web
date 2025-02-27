@@ -12,6 +12,13 @@ export const DYNAMIC_CAPITAL_OFFER = {
     step: 10000,
 } satisfies IDynamicOffersConfig;
 
+const GRANT_BANK_ACCOUNT = {
+    region: 'US',
+    accountNumber: '123456789012',
+    routingNumber: '012345678',
+    order: ['accountNumber', 'routingNumber', 'region'],
+} satisfies NonNullable<IGrant['unscheduledRepaymentAccounts']>[number];
+
 export const DEFAULT_GRANT: IGrant = {
     id: '66e12a9a64a6',
     grantAmount: {
@@ -63,6 +70,8 @@ export const DEFAULT_GRANT: IGrant = {
     balanceAccountDescription: 'Primary balance account',
     status: 'Pending',
     missingActions: [],
+    unscheduledRepaymentAccounts: [GRANT_BANK_ACCOUNT],
+    revocationAccount: GRANT_BANK_ACCOUNT,
 };
 
 export const ACTIVE_GRANT: IGrant = {

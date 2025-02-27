@@ -80,6 +80,12 @@ export const getGrantConfig = (grant: IGrant) => {
         amountLabelKey: getAmountLabelKey(grant.status),
         hasAlerts: isGrantPending,
         hasDetails: getHasDetails(grant.status),
+        hasUnscheduledRepaymentDetails: isGrantActive && grant.unscheduledRepaymentAccounts?.length! > 0,
+        // The grant revocation account details is currently not ready to be rendered.
+        // A future iteration of this component might include revocation account details.
+        // Only then should the following line be uncommented.
+        //
+        // hasRevocationDetails: isGrantActive && grant.revocationAccount !== undefined,
         isAmountColorSecondary: !isGrantActive,
         isBackgroundFilled: getIsBackgroundFilled(grant.status),
         isGrantIdVisible: !isGrantActive,
