@@ -147,11 +147,6 @@ export const TransactionDataContent = ({ transaction: initialTransaction, extraF
 
         return actions.length ? (
             <TransactionDetailsDataContainer className={TX_DATA_ACTION_BAR}>
-                {/*{extraActions.map(action => (
-                    <Button variant={ButtonVariant.SECONDARY} key={action.value} onClick={action.details?.action}>
-                        {action.value}
-                    </Button>
-                ))}*/}
                 <ButtonActions actions={actions} layout={ButtonActionsLayoutBasic.BUTTONS_END} />
             </TransactionDetailsDataContainer>
         ) : null;
