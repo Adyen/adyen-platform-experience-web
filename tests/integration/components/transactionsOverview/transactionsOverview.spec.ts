@@ -51,7 +51,7 @@ test.describe('Transaction List with custom columns', () => {
         await goToPage({ page, id: `${COMPONENT_PREFIX}--custom-columns` });
         const transactionsOverview = transactionsOverviewPage;
 
-        // _store (TEXT TYPE)
+        // _product (TEXT TYPE)
         const productFirstRow = transactionsOverview.getCell('_product', 0);
         await expect(productFirstRow).toHaveText('Bubble tea');
 
