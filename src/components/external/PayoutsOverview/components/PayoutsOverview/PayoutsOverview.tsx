@@ -95,7 +95,7 @@ export const PayoutsOverview = ({
         []
     );
 
-    const { customRecords: payouts, loadingCustomRecords } = useCustomColumnsData<IPayout>({ records, onDataRetrieved, mergeCustomData });
+    const { customRecords, loadingCustomRecords } = useCustomColumnsData<IPayout>({ records, onDataRetrieved, mergeCustomData });
 
     const modalOptions = useMemo(() => ({ payout: payoutDetails }), [payoutDetails]);
 
@@ -104,7 +104,7 @@ export const PayoutsOverview = ({
     const getExtraFieldsById = useCallback(
         ({ createdAt }: { createdAt: string }) => {
             const record = records.find(r => r.createdAt === createdAt);
-            const retrievedItem = payouts.find(item => item.createdAt === createdAt) as Record<string, any>;
+            const retrievedItem = customRecords.find(item => item.createdAt === createdAt) as Record<string, any>;
 
             if (record && retrievedItem) {
                 // Extract fields from 'retrievedItem' that are not in 'record'
@@ -120,7 +120,7 @@ export const PayoutsOverview = ({
             // If no matching 'retrievedItem' or 'record' is found, return undefined
             return undefined;
         },
-        [records, payouts]
+        [records, customRecords]
     );
 
     const onRowClick = useCallback(
@@ -167,7 +167,7 @@ export const PayoutsOverview = ({
             >
                 <PayoutsTable
                     loading={fetching || isLoadingBalanceAccount || !balanceAccounts || loadingCustomRecords}
-                    data={onDataRetrieved ? payouts : records}
+                    data={onDataRetrieved ? customRecords : records}
                     showPagination={true}
                     onRowClick={onRowClick}
                     showDetails={showDetails}
