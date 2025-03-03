@@ -30,6 +30,8 @@
 
     &__content {
         color: style.token(color-label-primary);
+        display: flex;
+        justify-content: flex-end;
         margin: 0;
         overflow-wrap: anywhere;
 

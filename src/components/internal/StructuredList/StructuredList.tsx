@@ -4,7 +4,15 @@ import useCoreContext from '../../../core/Context/useCoreContext';
 import { TranslationKey } from '../../../translations';
 import { TypographyVariant } from '../Typography/types';
 import Typography from '../Typography/Typography';
-import { SL_BASE_CLASS, SL_CONTENT_CLASS, SL_GRID_CLASS, SL_ITEM_CLASS, SL_ITEM_WITH_HIGHLIGHT_CLASS, SL_LABEL_CLASS } from './constants';
+import {
+    SL_BASE_CLASS,
+    SL_CONTENT_CLASS,
+    SL_CONTENT_WITH_START_ALIGN,
+    SL_GRID_CLASS,
+    SL_ITEM_CLASS,
+    SL_ITEM_WITH_HIGHLIGHT_CLASS,
+    SL_LABEL_CLASS,
+} from './constants';
 import { StructuredListProps } from './types';
 import './StructuredList.scss';
 import { useStructuredListItems } from './useStructuredListItem';
@@ -20,6 +28,7 @@ export default function StructuredList({
     layout = DEFAULT_LAYOUT,
     grid = true,
     classNames,
+    align,
 }: StructuredListProps) {
     const [LABEL_COL_CLASS, VALUE_COL_CLASS] = useMemo(() => {
         return layout.split('-').map(w => `${SL_GRID_CLASS}--width-${w}-of-12`);
@@ -44,7 +53,12 @@ export default function StructuredList({
                             <Typography variant={TypographyVariant.BODY}>{item.label}</Typography>
                         )}
                     </dt>
-                    <dd aria-label={`${i18n.get(item.key as TranslationKey)} ${i18n.get('value')}`} className={cx(SL_CONTENT_CLASS, VALUE_COL_CLASS)}>
+                    <dd
+                        aria-label={`${i18n.get(item.key as TranslationKey)} ${i18n.get('value')}`}
+                        className={cx(SL_CONTENT_CLASS, VALUE_COL_CLASS, {
+                            [SL_CONTENT_WITH_START_ALIGN]: align === 'start',
+                        })}
+                    >
                         {renderValue ? (
                             renderValue(item.value, item.key, item.type, item.details)
                         ) : (

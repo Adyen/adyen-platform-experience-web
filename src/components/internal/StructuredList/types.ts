@@ -23,4 +23,5 @@ export interface StructuredListProps {
     renderValue?: (val: ListValue, key: TranslationKey, type: ItemType | undefined, details: any) => ComponentChild;
     grid?: boolean;
     classNames?: string;
+    align?: 'start' | 'center' | 'end';
 }

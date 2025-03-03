@@ -164,6 +164,7 @@ export const PayoutData = ({
                             <StructuredList
                                 classNames={PD_EXTRA_DETAILS_CLASS}
                                 items={extraDetails}
+                                align="start"
                                 layout="5-7"
                                 renderLabel={label => <div className={PD_EXTRA_DETAILS_LABEL}>{label}</div>}
                                 renderValue={(val, key, type, details) => {

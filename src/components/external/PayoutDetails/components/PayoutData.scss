@@ -58,11 +58,6 @@
     }
 
     .adyen-pe-structured-list {
-        &__content {
-            display: flex;
-            justify-content: flex-end;
-        }
-
         &__item {
             padding: style.token(spacer-040) style.token(spacer-070);
         }
@@ -80,12 +75,6 @@
 
     &__extra-details {
         margin-bottom: style.token(spacer-090);
-
-        .adyen-pe-structured-list__content {
-            justify-content: start;
-            padding-bottom: style.token(spacer-030);
-            padding-top: style.token(spacer-030);
-        }
 
         .adyen-pe-structured-list__item {
             padding: style.token(spacer-000);
