@@ -64,19 +64,13 @@ export const TableCells = <
 
                 const { value, type } = _isCustomDataObject(data) ? data : { value: data, type: 'text' };
 
-                let icon = null;
-
-                if (_isIconType(data)) {
-                    icon = { url: data.details.src, alt: data.details.alt || data.value };
-                }
-
-                let buttonCallback = undefined;
-                if (_isButtonType(data)) {
-                    buttonCallback = (e: JSXInternal.TargetedMouseEvent<HTMLButtonElement | HTMLAnchorElement>) => {
-                        e.stopPropagation();
-                        data.details.action();
-                    };
-                }
+                const icon = _isIconType(data) ? { url: data.details.src, alt: data.details.alt || data.value } : undefined;
+                const buttonCallback = _isButtonType(data)
+                    ? (e: JSXInternal.TargetedMouseEvent<HTMLButtonElement | HTMLAnchorElement>) => {
+                          e.stopPropagation();
+                          data.details.action();
+                      }
+                    : undefined;
 
                 return (
                     <DataGridCell aria-labelledby={String(key)} key={key} column={key} position={position}>
