@@ -9,6 +9,10 @@ export interface LinkProps {
 
     truncate?: boolean;
 
+    /**
+     * The visual variant of the link. Defaults to `default`.
+     * Quiet variant has no underline.
+     */
     variant?: 'default' | 'quiet';
 
     classNames?: string[];
