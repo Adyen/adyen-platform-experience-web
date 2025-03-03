@@ -37,7 +37,7 @@ const getStoreById = (id: string) => {
 
 const txMatcher = (data: ITransaction[]) =>
     data.map(transaction => ({
-        id: transaction.id,
+        ...transaction,
         _product: getProductById(transaction.id),
         _store: getStoreById(transaction.id),
         _reference: {
