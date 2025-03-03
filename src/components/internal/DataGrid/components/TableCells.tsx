@@ -84,7 +84,7 @@ export const TableCells = <
                             {_isIconType(data) && icon?.url && (
                                 <>
                                     <Icon {...icon} />
-                                    <div>{value}</div>
+                                    {value.trim() && <span>{value}</span>}
                                 </>
                             )}
                             {type === 'text' && value.trim() && <span className={cx(data?.details?.classNames)}>{value}</span>}
