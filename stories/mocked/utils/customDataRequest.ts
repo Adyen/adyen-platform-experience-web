@@ -36,14 +36,14 @@ const getStoreById = (id: string) => {
 };
 
 const txMatcher = (data: ITransaction[]) =>
-    data.map(({ id }) => ({
-        id,
-        _product: getProductById(id),
-        _store: getStoreById(id),
+    data.map(transaction => ({
+        id: transaction.id,
+        _product: getProductById(transaction.id),
+        _store: getStoreById(transaction.id),
         _reference: {
             type: 'link',
-            value: id,
-            details: { value: '', href: `${origin}?path=/story/mocked-transactions-overview--custom-columns&reference=${id}` },
+            value: transaction.id,
+            details: { value: '', href: `${origin}?path=/story/mocked-transactions-overview--custom-columns&reference=${transaction.id}` },
         } as const,
         _button: {
             type: 'button',
@@ -84,9 +84,9 @@ export const getCustomReportsData = async (data: IReport[]) => {
 };
 
 export const getCustomPayoutsData = async (data: IPayout[]) => {
-    return data.map(({ createdAt }, index) => {
+    return data.map((payouts, index) => {
         return {
-            createdAt,
+            ...payouts,
             _summary: {
                 type: 'link',
                 value: 'Summary',
