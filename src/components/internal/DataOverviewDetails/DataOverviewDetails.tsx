@@ -8,7 +8,7 @@ import { EMPTY_OBJECT } from '../../../utils';
 import { PayoutData } from '../../external/PayoutDetails/components/PayoutData';
 import TransactionData from '../../external/TransactionDetails/components/TransactionData';
 import useBalanceAccounts from '../../../hooks/useBalanceAccounts';
-import { ExternalUIComponentProps } from '../../types';
+import { CustomDataObject, ExternalUIComponentProps } from '../../types';
 import { getErrorMessage } from '../../utils/getErrorMessage';
 import { ErrorMessageDisplay } from '../ErrorMessageDisplay/ErrorMessageDisplay';
 import { DetailsComponentProps, DetailsWithId, TransactionDetailData } from './types';
@@ -61,7 +61,8 @@ export default function DataOverviewDetails(props: ExternalUIComponentProps<Deta
         }
     }, [error, props.onContactSupport]);
 
-    const extraDetails = (isDetailsWithId(props) && props.type === 'transaction') || props.type === 'payout' ? props.extraDetails : EMPTY_OBJECT;
+    const extraDetails =
+        (isDetailsWithId(props) && props.type === 'transaction') || props.type === 'payout' ? props.extraDetails : (EMPTY_OBJECT as CustomDataObject);
 
     const detailsData = details ?? data;
 

@@ -25,6 +25,21 @@ const CUSTOM_COLUMNS_MOCK_HANDLER = {
                     { ...TRANSACTIONS[6], createdAt: Date.now() },
                     { ...TRANSACTIONS[8], createdAt: Date.now() },
                     { ...TRANSACTIONS[10], createdAt: Date.now() },
+                    {
+                        paymentMethod: {
+                            lastFourDigits: '4054',
+                            type: 'mc',
+                        },
+                        id: '65KA4SLZ4PUC82K0',
+                        amount: {
+                            currency: 'EUR',
+                            value: -47375,
+                        },
+                        category: 'Refund',
+                        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+                        status: 'Booked',
+                        createdAt: Date.now(),
+                    },
                 ],
                 _links: {},
             });

@@ -11,7 +11,7 @@ export interface LinkProps {
 
     variant?: 'default' | 'quiet';
 
-    classNameModifiers?: string;
+    classNames?: string[];
 
     withIcon?: boolean;
 }

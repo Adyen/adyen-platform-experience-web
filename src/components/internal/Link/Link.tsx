@@ -7,11 +7,20 @@ import { useCallback } from 'preact/hooks';
 import './Link.scss';
 import Icon from '../Icon';
 
-function Link({ href, children, variant = 'default', truncate, target = '_blank', withIcon = true, ...props }: PropsWithChildren<LinkProps>) {
+function Link({
+    href,
+    children,
+    variant = 'default',
+    truncate,
+    target = '_blank',
+    withIcon = true,
+    classNames = [],
+    ...props
+}: PropsWithChildren<LinkProps>) {
     const onClick = useCallback((e: TargetedEvent<HTMLAnchorElement>) => e.stopPropagation(), []);
     return (
         <a
-            className={cx('adyen-pe-link', [...(props.classNameModifiers ?? [])], {
+            className={cx('adyen-pe-link', [...classNames], {
                 [`adyen-pe-link--${variant}`]: variant !== 'default',
                 'adyen-pe-link--truncate': truncate,
             })}

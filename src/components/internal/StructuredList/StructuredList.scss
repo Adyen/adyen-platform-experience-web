@@ -1,3 +1,5 @@
+@use '../../../style';
+
 .adyen-pe-structured-list {
     &__grid {
         display: flex;
@@ -10,25 +12,31 @@
     }
 
     &__item {
-        font-size: var(--adyen-sdk-font-size-200);
-        font-weight: var(--adyen-sdk-font-weight-400);
-        line-height: var(--adyen-sdk-line-height-200);
+        font-size: style.token(text-body-font-size);
+        font-weight: style.token(text-body-font-weight);
+        line-height: style.token(text-body-line-height);
         margin: 0;
     }
 
     &__item--has-highlight:hover {
-        background-color: var(--adyen-sdk-color-background-primary-hover);
+        background-color: style.token(color-background-primary-hover);
         transition: background-color 0.2s cubic-bezier(0.785, 0.135, 0.15, 0.86);
     }
 
     &__label {
-        color: var(--adyen-sdk-color-label-primary);
+        color: style.token(color-label-primary);
         overflow-wrap: anywhere;
     }
 
     &__content {
-        color: var(--adyen-sdk-color-label-primary);
+        color: style.token(color-label-primary);
         margin: 0;
         overflow-wrap: anywhere;
+
+        &--start-align {
+            justify-content: start;
+            padding-bottom: style.token(spacer-030);
+            padding-top: style.token(spacer-030);
+        }
     }
 }

@@ -62,10 +62,9 @@ export const getMyCustomData = async (data: ITransaction[]) => {
 const origin = process.env.VITE_PLAYGROUND_URL;
 
 export const getCustomReportsData = async (data: IReport[]) => {
-    return data.map(({ createdAt, type }, index) => {
+    return data.map((report, index) => {
         return {
-            createdAt,
-            type,
+            ...report,
             _summary: {
                 type: 'link',
                 value: 'Summary',
