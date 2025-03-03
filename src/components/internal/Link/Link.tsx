@@ -11,7 +11,7 @@ function Link({ href, children, variant = 'default', truncate, target = '_blank'
     const onClick = useCallback((e: TargetedEvent<HTMLAnchorElement>) => e.stopPropagation(), []);
     return (
         <a
-            className={cx('adyen-pe-link', {
+            className={cx('adyen-pe-link', [...(props.classNameModifiers ?? [])], {
                 [`adyen-pe-link--${variant}`]: variant !== 'default',
                 'adyen-pe-link--truncate': truncate,
             })}

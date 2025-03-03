@@ -140,7 +140,12 @@ export const TransactionDataContent = ({ transaction: initialTransaction, extraF
         const extraActions = extraFields
             ? Object.values(extraFields)
                   .filter(field => field.type === 'button')
-                  .map(action => ({ title: action.value, variant: ButtonVariant.SECONDARY, event: action.details.action }))
+                  .map(action => ({
+                      title: action.value,
+                      variant: ButtonVariant.SECONDARY,
+                      event: action.details.action,
+                      classNames: action.classNames,
+                  }))
             : [];
 
         const actions = [primaryAction!, secondaryAction!, ...extraActions].filter(Boolean);
