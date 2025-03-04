@@ -9,7 +9,7 @@ import DateFilter from '../../../../internal/FilterBar/filters/DateFilter/DateFi
 import useModalDetails from '../../../../../hooks/useModalDetails/useModalDetails';
 import { IPayout } from '../../../../../types';
 import useDefaultOverviewFilterParams from '../../../../../hooks/useDefaultOverviewFilterParams';
-import { DataOverviewHeader } from '../../../../internal/DataOverviewDisplay/DataOverviewHeader/DataOverviewHeader';
+import { DataOverviewHeader } from '../../../../internal/DataOverviewDisplay/DataOverviewHeader';
 import { PayoutsOverviewComponentProps, ExternalUIComponentProps, FilterParam, CustomDataRetrieved } from '../../../../types';
 import { useConfigContext } from '../../../../../core/ConfigContext';
 import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatformExperienceError';
@@ -19,6 +19,7 @@ import { useCallback, useEffect, useMemo } from 'preact/hooks';
 import { DataDetailsModal } from '../../../../internal/DataOverviewDisplay/DataDetailsModal';
 import './PayoutsOverview.scss';
 import { useCustomColumnsData } from '../../../../../hooks/useCustomColumnsData';
+import mergeRecords from '../../../../utils/customData/mergeRecords';
 
 export const PayoutsOverview = ({
     onFiltersChanged,
@@ -88,10 +89,7 @@ export const PayoutsOverview = ({
 
     const mergeCustomData = useCallback(
         ({ records, retrievedData }: { records: IPayout[]; retrievedData: CustomDataRetrieved[] }) =>
-            records.map(record => {
-                const retrievedItem = retrievedData.find(item => item.createdAt === record.createdAt);
-                return { ...retrievedItem, ...record };
-            }),
+            mergeRecords(records, retrievedData, (modifiedRecord, record) => modifiedRecord.createdAt === record.createdAt),
         []
     );
 

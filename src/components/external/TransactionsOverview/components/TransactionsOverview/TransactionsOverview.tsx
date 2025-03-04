@@ -24,6 +24,7 @@ import { AmountFilter } from '../../../../internal/FilterBar/filters/AmountFilte
 import { BASE_CLASS, BASE_CLASS_DETAILS, MAX_TRANSACTIONS_DATE_RANGE_MONTHS, SUMMARY_CLASS, SUMMARY_ITEM_CLASS } from './constants';
 import { mediaQueries, useResponsiveViewport } from '../../../../../hooks/useResponsiveViewport';
 import { useCustomColumnsData } from '../../../../../hooks/useCustomColumnsData';
+import mergeRecords from '../../../../utils/customData/mergeRecords';
 import './TransactionsOverview.scss';
 
 export const TransactionsOverview = ({
@@ -135,10 +136,7 @@ export const TransactionsOverview = ({
 
     const mergeCustomData = useCallback(
         ({ records, retrievedData }: { records: ITransaction[]; retrievedData: CustomDataRetrieved[] }) =>
-            records.map(record => {
-                const retrievedItem = retrievedData.find(item => item.id === record.id);
-                return { ...retrievedItem, ...record };
-            }),
+            mergeRecords(records, retrievedData, (modifiedRecord, record) => modifiedRecord.id === record.id),
         []
     );
 

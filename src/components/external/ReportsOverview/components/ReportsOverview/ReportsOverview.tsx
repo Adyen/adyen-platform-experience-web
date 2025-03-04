@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo } from 'preact/hooks';
 import { useConfigContext } from '../../../../../core/ConfigContext';
 import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatformExperienceError';
-import { IBalanceAccountBase, IReport, ITransaction } from '../../../../../types';
+import { IBalanceAccountBase, IReport } from '../../../../../types';
 import { isFunction } from '../../../../../utils';
 import useBalanceAccountSelection from '../../../../../hooks/useBalanceAccountSelection';
 import useDefaultOverviewFilterParams from '../../../../../hooks/useDefaultOverviewFilterParams';
@@ -16,6 +16,7 @@ import { ReportsTable } from '../ReportsTable/ReportsTable';
 import { BASE_CLASS, EARLIEST_PAYOUT_SINCE_DATE } from './constants';
 import './ReportsOverview.scss';
 import { useCustomColumnsData } from '../../../../../hooks/useCustomColumnsData';
+import mergeRecords from '../../../../utils/customData/mergeRecords';
 
 export const ReportsOverview = ({
     onFiltersChanged,
@@ -72,10 +73,7 @@ export const ReportsOverview = ({
 
     const mergeCustomData = useCallback(
         ({ records, retrievedData }: { records: IReport[]; retrievedData: CustomDataRetrieved[] }) =>
-            records.map(record => {
-                const retrievedItem = retrievedData.find(item => item.createdAt === record.createdAt);
-                return { ...retrievedItem, ...record };
-            }),
+            mergeRecords(records, retrievedData, (modifiedRecord, record) => modifiedRecord.createdAt === record.createdAt),
         []
     );
 
