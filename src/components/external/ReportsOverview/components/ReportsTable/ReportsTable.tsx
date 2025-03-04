@@ -65,7 +65,7 @@ export const ReportsTable: FC<ReportsTableProps> = ({
                 dateAndReportType: { visible: isXsAndDownViewport },
                 createdAt: { visible: isSmAndUpViewport },
                 reportType: { visible: isSmAndUpViewport },
-                reportFile: { position: 'right' },
+                reportFile: { visible: true, position: isXsAndDownViewport ? 'right' : undefined },
             }),
             [isSmAndUpViewport, isXsAndDownViewport]
         ),
