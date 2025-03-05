@@ -61,6 +61,11 @@
         &__item {
             padding: style.token(spacer-040) style.token(spacer-070);
         }
+
+        &__content {
+            padding-bottom: style.token(spacer-030);
+            padding-top: style.token(spacer-030);
+        }
     }
 
     &--unpaid-amount {
