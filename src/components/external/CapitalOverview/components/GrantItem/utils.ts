@@ -1,6 +1,7 @@
 import { IGrant, IGrantStatus } from '../../../../../types';
 import { TranslationKey } from '../../../../../translations';
 import { TagVariant } from '../../../../internal/Tag/types';
+import { GrantConfig } from './types';
 
 const getHasDetails = (status: IGrantStatus) => status === 'Active';
 
@@ -71,7 +72,7 @@ export const getStatusTooltipKey = (grant: IGrant): TranslationKey | undefined =
     }
 };
 
-export const getGrantConfig = (grant: IGrant) => {
+export const getGrantConfig = (grant: IGrant): GrantConfig => {
     const isGrantActive = grant.status === 'Active';
     const isGrantPending = grant.status === 'Pending';
 
@@ -80,7 +81,7 @@ export const getGrantConfig = (grant: IGrant) => {
         amountLabelKey: getAmountLabelKey(grant.status),
         hasAlerts: isGrantPending,
         hasDetails: getHasDetails(grant.status),
-        hasUnscheduledRepaymentDetails: isGrantActive && grant.unscheduledRepaymentAccounts?.length! > 0,
+        hasUnscheduledRepaymentDetails: isGrantActive && !!grant.unscheduledRepaymentAccounts?.length,
         // The grant revocation account details is currently not ready to be rendered.
         // A future iteration of this component might include revocation account details.
         // Only then should the following line be uncommented.
