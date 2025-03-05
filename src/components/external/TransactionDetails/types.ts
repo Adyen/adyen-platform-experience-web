@@ -1,6 +1,5 @@
 import type { StrictUnion } from '../../../utils/types';
 import type { IBalanceAccountBase, ILineItem, ITransactionWithDetails } from '../../../types';
-import { CustomDataObject } from '../../types';
 
 export interface DetailsWithoutIdProps {
     data: TransactionDetailData;
@@ -11,7 +10,7 @@ export interface DetailsWithIdProps {
 }
 
 export interface DetailsWithExtraData {
-    extraDetails?: CustomDataObject; // use customdataobject
+    extraDetails?: Record<string, any>;
 }
 
 export type DetailsComponentProps = StrictUnion<DetailsWithoutIdProps | DetailsWithIdProps> & DetailsWithExtraData;
@@ -26,5 +25,5 @@ export interface TransactionDataProps {
     error?: boolean;
     isFetching?: boolean;
     transaction?: TransactionDetailData & { lineItems?: ILineItem[] };
-    extraFields: CustomDataObject | undefined; // use customdataobject
+    extraFields: Record<string, any> | undefined;
 }

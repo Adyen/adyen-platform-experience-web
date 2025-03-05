@@ -16,9 +16,9 @@ export const useCustomColumnsData = <T>({
     const mergedRecords = useCallback(
         (data: T[]) => async () => {
             try {
-                const retrievedData = onDataRetrieved ? await onDataRetrieved(data) : [];
+                const retrievedData = onDataRetrieved && (await onDataRetrieved(data));
 
-                setCustomRecords(mergeCustomData({ records, retrievedData }));
+                setCustomRecords(mergeCustomData({ records, retrievedData: retrievedData?.filter(Boolean) || [] }));
             } catch (error) {
                 setCustomRecords(records);
                 console.error(error);
@@ -26,7 +26,7 @@ export const useCustomColumnsData = <T>({
                 setLoadingCustomRecords(false);
             }
         },
-        [onDataRetrieved, records, mergeCustomData]
+        [onDataRetrieved, mergeCustomData, records]
     );
 
     useEffect(() => {

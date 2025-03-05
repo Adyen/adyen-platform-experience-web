@@ -135,7 +135,7 @@ export interface CustomButtonObject extends BaseCustomObject {
     details: BaseDetails & { action: () => void };
 }
 
-export type CustomDataRetrieved = { [k: string]: CustomDataObject | (string | number) };
+export type CustomDataRetrieved = { [k: string]: CustomDataObject | Record<any, any> | string | number };
 
 export type OnDataRetrievedCallback<DataRetrieved> = (data: DataRetrieved[]) => Promise<CustomDataRetrieved[]>;
 

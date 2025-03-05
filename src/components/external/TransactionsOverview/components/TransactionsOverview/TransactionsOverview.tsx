@@ -140,7 +140,11 @@ export const TransactionsOverview = ({
         []
     );
 
-    const { customRecords: transactions, loadingCustomRecords } = useCustomColumnsData<ITransaction>({ records, onDataRetrieved, mergeCustomData });
+    const { customRecords: transactions, loadingCustomRecords } = useCustomColumnsData<ITransaction>({
+        records,
+        onDataRetrieved,
+        mergeCustomData,
+    });
     const { updateDetails, resetDetails, selectedDetail } = useModalDetails(modalOptions);
 
     const getExtraFieldsById = useCallback(

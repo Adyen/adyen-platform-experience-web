@@ -127,7 +127,7 @@ export const PayoutsOverview = ({
                 selection: {
                     type: 'payout',
                     data: { id: activeBalanceAccount?.id, balanceAccountDescription: activeBalanceAccount?.description || '', date: value.createdAt },
-                    extraDetails: getExtraFieldsById({ createdAt: value.createdAt }),
+                    extraDetails: columns ? getExtraFieldsById({ createdAt: value.createdAt }) : undefined,
                 },
                 modalSize: 'small',
             }).callback({ balanceAccountId: activeBalanceAccount?.id || '', date: value.createdAt });

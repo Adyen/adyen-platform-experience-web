@@ -81,7 +81,7 @@ export const TableCells = <
                                     {value.trim() && <span>{value}</span>}
                                 </>
                             )}
-                            {type === 'text' && value.trim() && <span className={cx(data?.details?.classNames)}>{value}</span>}
+                            {type === 'text' && value?.trim() && <span className={cx(data?.details?.classNames)}>{value}</span>}
                             {type === 'button' && (
                                 <Button className={cx(data.details?.classNames)} onClick={buttonCallback} variant={ButtonVariant.SECONDARY}>
                                     {value}
