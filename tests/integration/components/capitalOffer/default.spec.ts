@@ -20,7 +20,7 @@ test.describe('Default', () => {
         await expect(page.getByText('max')).toBeVisible();
         await expect(page.getByText('€25,000')).toBeVisible();
         await expect(
-            page.getByText('You will need to repay a minimum of €1,156.25 every 30 days to fully pay off the funds by December 31, 2025')
+            page.getByText('You will need to repay a minimum of €1,156.25 every 30 days to fully pay off the funds by January 01, 2026')
         ).toBeVisible();
         await expect(page.getByText('Fees')).toBeVisible();
         await expect(page.getByText('€1,375.00')).toBeVisible();
@@ -51,7 +51,7 @@ test.describe('Default', () => {
         await expect(page.getByText('Loans are issued by Adyen N.V.')).toBeVisible();
         await expect(page.getByText('You’re requesting funding of €12,500.')).toBeVisible();
         await expect(
-            page.getByText('You will need to repay a minimum of €1,156.25 every 30 days to fully pay off the funds by December 31, 2025.')
+            page.getByText('You will need to repay a minimum of €1,156.25 every 30 days to fully pay off the funds by January 01, 2026.')
         ).toBeVisible();
         await expect(page.getByText('Fees')).toBeVisible();
         await expect(page.getByText('€1,375.00')).toBeVisible();

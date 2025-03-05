@@ -36,6 +36,7 @@ const config: PlaywrightTestConfig = {
 
         trace: 'on-first-retry',
         headless: !!process.env.CI,
+        timezoneId: 'UTC',
     },
 
     /* Configure projects for major browsers */
