@@ -1,11 +1,7 @@
-import { test, expect, Page } from '@playwright/test';
+import { test, expect } from '@playwright/test';
 import { goToStory, setTime } from '../../../utils/utils';
 
 const STORY_ID = 'mocked-capital-offer--default';
-
-const goToOfferSummary = async (page: Page) => {
-    await page.getByRole('button', { name: 'Review offer' }).click();
-};
 
 test.describe('Default', () => {
     test.beforeEach(async ({ page }) => {
@@ -50,7 +46,7 @@ test.describe('Default', () => {
     });
 
     test('should render offer summary screen', async ({ page }) => {
-        await goToOfferSummary(page);
+        await page.getByRole('button', { name: 'Review offer' }).click();
         await expect(page.getByText('Business financing summary')).toBeVisible();
         await expect(page.getByText('Loans are issued by Adyen N.V.')).toBeVisible();
         await expect(page.getByText('You’re requesting funding of €12,500.')).toBeVisible();
@@ -76,13 +72,13 @@ test.describe('Default', () => {
     });
 
     test('should show a tooltip when "Repayment threshold" label is hovered', async ({ page }) => {
-        await goToOfferSummary(page);
+        await page.getByRole('button', { name: 'Review offer' }).click();
         await page.getByText('Repayment threshold').hover();
         await expect(page.getByText('Minimum repayment every 30 days to repay the financing on time')).toBeVisible();
     });
 
     test('should go back to offer selection screen when "Back" button in offer summary screen is clicked', async ({ page }) => {
-        await goToOfferSummary(page);
+        await page.getByRole('button', { name: 'Review offer' }).click();
         await page.getByRole('button', { name: 'Back' }).click();
         await expect(page.getByText('Business financing offer')).toBeVisible();
     });

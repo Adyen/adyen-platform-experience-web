@@ -3,10 +3,8 @@ import { goToStory } from '../../../utils/utils';
 
 const STORY_ID = 'mocked-capital-overview--prequalified';
 
-const goToOfferSelection = async (page: Page) => await page.getByRole('button', { name: 'See options' }).click();
-
 const goToOfferSummary = async (page: Page) => {
-    await goToOfferSelection(page);
+    await page.getByRole('button', { name: 'See options' }).click();
     await page.getByRole('button', { name: 'Review offer' }).click();
 };
 
@@ -29,7 +27,7 @@ test.describe('Prequalified', () => {
     });
 
     test('should go back to prequalified intro screen when "Back" button in offer selection screen is clicked', async ({ page }) => {
-        await goToOfferSelection(page);
+        await page.getByRole('button', { name: 'See options' }).click();
         await page.getByRole('button', { name: 'Back' }).click();
         await expect(page.getByText('Need some extra money?')).toBeVisible();
     });
@@ -58,7 +56,7 @@ test.describe('onOfferDismiss argument', () => {
         page,
     }) => {
         await goToStory(page, { id: STORY_ID, args: { onOfferDismiss: 'Enabled' } });
-        await goToOfferSelection(page);
+        await page.getByRole('button', { name: 'See options' }).click();
         await page.getByRole('button', { name: 'Back' }).click();
         await expect(page.getByText('Need some extra money?')).toBeHidden();
     });
