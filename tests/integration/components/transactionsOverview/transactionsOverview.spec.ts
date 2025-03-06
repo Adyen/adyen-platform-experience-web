@@ -1,6 +1,6 @@
 import { test as base, expect } from '@playwright/test';
 import { TransactionsOverviewPage } from '../../../models/external-components/transactionsOverview.page';
-import { getTranslatedKey, goToPage } from '../../../utils/utils';
+import { getTranslatedKey, goToStory } from '../../../utils/utils';
 import dotenv from 'dotenv';
 
 dotenv.config({ path: './envs/.env' });
@@ -18,7 +18,7 @@ const test = base.extend<{
 
 test('cells should show correct value and open correct modal ', async ({ transactionsOverviewPage, page }) => {
     const transactionsOverview = transactionsOverviewPage;
-    await goToPage({ page, id: `${COMPONENT_PREFIX}--default` });
+    await goToStory(page, { id: `${COMPONENT_PREFIX}--default` });
     await transactionsOverview.applyDateFilter('2024-01-01');
     await transactionsOverview.getCell('amount').waitFor();
     await transactionsOverview.firstRow.click();
@@ -29,7 +29,7 @@ test('cells should show correct value and open correct modal ', async ({ transac
 
 test.describe('Filters', () => {
     test('all filters should be attached', async ({ transactionsOverviewPage, page }) => {
-        await goToPage({ page, id: `${COMPONENT_PREFIX}--default` });
+        await goToStory(page, { id: `${COMPONENT_PREFIX}--default` });
         const transactionsOverview = transactionsOverviewPage;
         await expect(transactionsOverview.filterBar).toBeAttached();
         await expect(transactionsOverview.dateFilter).toBeAttached();
@@ -40,7 +40,7 @@ test.describe('Filters', () => {
 
 test.describe('Transaction List with custom columns', () => {
     test('Extra columns should be rendered', async ({ transactionsOverviewPage, page }) => {
-        await goToPage({ page, id: `${COMPONENT_PREFIX}--custom-columns` });
+        await goToStory(page, { id: `${COMPONENT_PREFIX}--custom-columns` });
         const transactionsOverview = transactionsOverviewPage;
         await expect(transactionsOverview.getHeader('Store')).toBeAttached();
         await expect(transactionsOverview.getHeader('Product')).toBeAttached();
@@ -48,7 +48,7 @@ test.describe('Transaction List with custom columns', () => {
     });
 
     test('Extra columns values should render with string or the format {value: string}', async ({ transactionsOverviewPage, page }) => {
-        await goToPage({ page, id: `${COMPONENT_PREFIX}--custom-columns` });
+        await goToStory(page, { id: `${COMPONENT_PREFIX}--custom-columns` });
         const transactionsOverview = transactionsOverviewPage;
 
         // _store: { value: string; icon: { url: string } }
@@ -62,7 +62,7 @@ test.describe('Transaction List with custom columns', () => {
     });
 
     test('Columns should be reordered', async ({ transactionsOverviewPage, page }) => {
-        await goToPage({ page, id: `${COMPONENT_PREFIX}--custom-order` });
+        await goToStory(page, { id: `${COMPONENT_PREFIX}--custom-order` });
         const transactionsOverview = transactionsOverviewPage;
         const headers = transactionsOverview.dataGrid.rootElement.getByRole('columnheader');
         await expect(headers.nth(0)).toHaveText('Transaction type');
@@ -75,7 +75,7 @@ test.describe('Transaction List with custom columns', () => {
 test.describe('Transaction details modal with partial refunds', () => {
     test.beforeEach(async ({ transactionsOverviewPage, page }) => {
         const transactionsOverview = transactionsOverviewPage;
-        await goToPage({ page, id: `${COMPONENT_PREFIX}--default` });
+        await goToStory(page, { id: `${COMPONENT_PREFIX}--default` });
         await transactionsOverview.applyDateFilter('2024-01-01');
         await transactionsOverview.getCell('amount').waitFor();
         await transactionsOverview.firstRow.click();
@@ -101,7 +101,7 @@ test.describe('Transaction details modal with partial refunds', () => {
 test.describe('Refund action modal', () => {
     test.beforeEach(async ({ transactionsOverviewPage, page }) => {
         const transactionsOverview = transactionsOverviewPage;
-        await goToPage({ page, id: `${COMPONENT_PREFIX}--default` });
+        await goToStory(page, { id: `${COMPONENT_PREFIX}--default` });
         await transactionsOverview.applyDateFilter('2024-01-01');
         await transactionsOverview.getCell('amount').waitFor();
         await transactionsOverview.firstRow.click();

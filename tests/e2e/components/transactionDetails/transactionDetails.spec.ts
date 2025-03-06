@@ -1,8 +1,8 @@
 import { test as base, expect } from '@playwright/test';
 import { TransactionDetailsPage } from '../../../models/external-components/transactionDetails.page';
-import { getTranslatedKey, goToPage } from '../../../utils/utils';
+import { getTranslatedKey, goToStory } from '../../../utils/utils';
 
-const COMPONENT_PREFIX = 'integration-transaction-details';
+const COMPONENT_PREFIX = 'api-connected-transaction-details';
 
 const test = base.extend<{
     transactionDetailsPage: TransactionDetailsPage;
@@ -14,14 +14,14 @@ const test = base.extend<{
 });
 
 test('should show correct balance account ID', async ({ transactionDetailsPage, page }) => {
-    await goToPage({ page, id: `${COMPONENT_PREFIX}--default` });
+    await goToStory(page, { id: `${COMPONENT_PREFIX}--default` });
     await expect(transactionDetailsPage.transactionValue).toHaveText('EVJN42CKX223223N5LV3B7V5VK2LT8EUR');
     const copyIcon = page.getByTestId('copy-icon');
     await expect(copyIcon).toBeVisible();
 });
 
-test('should show correct refund details', async ({ transactionDetailsPage, page }) => {
-    await goToPage({ page, id: `${COMPONENT_PREFIX}--default` });
+test('should show correct refund details', async ({ page }) => {
+    await goToStory(page, { id: `${COMPONENT_PREFIX}--default` });
     const refundType = page.getByText(getTranslatedKey('full'));
     await expect(refundType).toHaveText('Full');
     const refundReason = await page.getByLabel('Reason for refund Value').innerText();
@@ -33,7 +33,7 @@ test('should show correct refund details', async ({ transactionDetailsPage, page
 });
 
 test('should go to payment details after button click', async ({ transactionDetailsPage, page }) => {
-    await goToPage({ page, id: `${COMPONENT_PREFIX}--default` });
+    await goToStory(page, { id: `${COMPONENT_PREFIX}--default` });
     const goToPayment = page.getByLabel('Go to payment');
     await goToPayment.click();
     await expect(transactionDetailsPage.transactionValue).toHaveText('EVJN4296S223223N5LQZCW83BL63NREUR');
@@ -45,7 +45,7 @@ test('should go to payment details after button click', async ({ transactionDeta
 });
 
 test('should return to refund details after button click', async ({ transactionDetailsPage, page }) => {
-    await goToPage({ page, id: `${COMPONENT_PREFIX}--default` });
+    await goToStory(page, { id: `${COMPONENT_PREFIX}--default` });
     const goToPayment = page.getByLabel('Go to payment');
     await goToPayment.click();
     const returnToRefund = page.getByLabel('Return to refund');
