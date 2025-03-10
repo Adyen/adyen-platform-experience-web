@@ -12,10 +12,11 @@ import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '../../../../internal/Paginati
 import { useCursorPaginatedRecords } from '../../../../internal/Pagination/hooks';
 import { Header } from '../../../../internal/Header';
 import { CustomDataRetrieved, ExternalUIComponentProps, FilterParam, ReportsOverviewComponentProps } from '../../../../types';
-import { ReportsTable } from '../ReportsTable/ReportsTable';
+import { FIELDS, ReportsTable } from '../ReportsTable/ReportsTable';
 import { BASE_CLASS, EARLIEST_PAYOUT_SINCE_DATE } from './constants';
 import './ReportsOverview.scss';
 import { useCustomColumnsData } from '../../../../../hooks/useCustomColumnsData';
+import hasCustomField from '../../../../utils/customData/hasCustomField';
 import mergeRecords from '../../../../utils/customData/mergeRecords';
 
 export const ReportsOverview = ({
@@ -77,7 +78,13 @@ export const ReportsOverview = ({
         []
     );
 
-    const { customRecords: reports, loadingCustomRecords } = useCustomColumnsData<IReport>({ records, onDataRetrieved, mergeCustomData });
+    const hasCustomColumn = useMemo(() => hasCustomField(columns, FIELDS), [columns]);
+    const { customRecords: reports, loadingCustomRecords } = useCustomColumnsData<IReport>({
+        records,
+        hasCustomColumn,
+        onDataRetrieved,
+        mergeCustomData,
+    });
 
     useEffect(() => {
         refreshNowTimestamp();

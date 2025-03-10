@@ -1,5 +1,5 @@
 import { DataDetailsModal } from '../../../../internal/DataOverviewDisplay/DataDetailsModal';
-import { TransactionsTable } from '../TransactionsTable/TransactionsTable';
+import { TransactionsTable, TRANSACTION_FIELDS } from '../TransactionsTable/TransactionsTable';
 import useBalanceAccountSelection from '../../../../../hooks/useBalanceAccountSelection';
 import BalanceAccountSelector from '../../../../internal/FormFields/Select/BalanceAccountSelector';
 import DateFilter from '../../../../internal/FilterBar/filters/DateFilter/DateFilter';
@@ -24,6 +24,7 @@ import { AmountFilter } from '../../../../internal/FilterBar/filters/AmountFilte
 import { BASE_CLASS, BASE_CLASS_DETAILS, MAX_TRANSACTIONS_DATE_RANGE_MONTHS, SUMMARY_CLASS, SUMMARY_ITEM_CLASS } from './constants';
 import { mediaQueries, useResponsiveViewport } from '../../../../../hooks/useResponsiveViewport';
 import { useCustomColumnsData } from '../../../../../hooks/useCustomColumnsData';
+import hasCustomField from '../../../../utils/customData/hasCustomField';
 import mergeRecords from '../../../../utils/customData/mergeRecords';
 import './TransactionsOverview.scss';
 
@@ -140,8 +141,11 @@ export const TransactionsOverview = ({
         []
     );
 
+    const hasCustomColumn = useMemo(() => hasCustomField(columns, TRANSACTION_FIELDS), [columns]);
+
     const { customRecords: transactions, loadingCustomRecords } = useCustomColumnsData<ITransaction>({
         records,
+        hasCustomColumn,
         onDataRetrieved,
         mergeCustomData,
     });

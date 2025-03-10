@@ -25,7 +25,7 @@ import { CustomColumn } from '../../../../types';
 import { StringWithAutocompleteOptions } from '../../../../../utils/types';
 import { useTableColumns } from '../../../../../hooks/useTableColumns';
 
-const FIELDS = ['createdAt', 'dateAndReportType', 'reportType', 'reportFile'] as const;
+export const FIELDS = ['createdAt', 'dateAndReportType', 'reportType', 'reportFile'] as const;
 export type ReportsTableFields = (typeof FIELDS)[number];
 
 export interface ReportsTableProps extends WithPaginationLimitSelection<PaginationProps> {

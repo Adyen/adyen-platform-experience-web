@@ -1,5 +1,5 @@
 import { BASE_CLASS, BASE_CLASS_DETAILS, EARLIEST_PAYOUT_SINCE_DATE } from './constants';
-import { PayoutsTable } from '../PayoutsTable/PayoutsTable';
+import { FIELDS, PayoutsTable } from '../PayoutsTable/PayoutsTable';
 import FilterBar, { FilterBarMobileSwitch, useFilterBarState } from '../../../../internal/FilterBar';
 import BalanceAccountSelector from '../../../../internal/FormFields/Select/BalanceAccountSelector';
 import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '../../../../internal/Pagination/constants';
@@ -19,6 +19,7 @@ import { useCallback, useEffect, useMemo } from 'preact/hooks';
 import { DataDetailsModal } from '../../../../internal/DataOverviewDisplay/DataDetailsModal';
 import './PayoutsOverview.scss';
 import { useCustomColumnsData } from '../../../../../hooks/useCustomColumnsData';
+import hasCustomField from '../../../../utils/customData/hasCustomField';
 import mergeRecords from '../../../../utils/customData/mergeRecords';
 
 export const PayoutsOverview = ({
@@ -93,7 +94,8 @@ export const PayoutsOverview = ({
         []
     );
 
-    const { customRecords, loadingCustomRecords } = useCustomColumnsData<IPayout>({ records, onDataRetrieved, mergeCustomData });
+    const hasCustomColumn = useMemo(() => hasCustomField(columns, FIELDS), [columns]);
+    const { customRecords, loadingCustomRecords } = useCustomColumnsData<IPayout>({ records, hasCustomColumn, onDataRetrieved, mergeCustomData });
 
     const modalOptions = useMemo(() => ({ payout: payoutDetails }), [payoutDetails]);
 

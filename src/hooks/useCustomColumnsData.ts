@@ -1,40 +1,41 @@
 import { useCallback, useEffect, useState } from 'preact/hooks';
 import { OnDataRetrievedCallback } from '../components/types';
+import { isFunction } from '../utils';
 
 export const useCustomColumnsData = <T>({
     records,
+    hasCustomColumn = false,
     onDataRetrieved,
     mergeCustomData,
 }: {
     records: T[];
+    hasCustomColumn?: boolean;
     onDataRetrieved: OnDataRetrievedCallback<T> | undefined;
     mergeCustomData: (args: { retrievedData: Awaited<ReturnType<OnDataRetrievedCallback<T>>>; records: T[] }) => (T & Record<string, any>)[];
 }) => {
     const [customRecords, setCustomRecords] = useState<T[] | (T & Record<string, any>)[]>(records);
     const [loadingCustomRecords, setLoadingCustomRecords] = useState(false);
 
-    const mergedRecords = useCallback(
-        (data: T[]) => async () => {
-            try {
-                const retrievedData = onDataRetrieved && (await onDataRetrieved(data));
-
+    const mergedRecords = useCallback(async () => {
+        try {
+            if (hasCustomColumn && isFunction(onDataRetrieved)) {
+                const retrievedData = await onDataRetrieved(records);
                 setCustomRecords(mergeCustomData({ records, retrievedData: retrievedData?.filter(Boolean) || [] }));
-            } catch (error) {
-                setCustomRecords(records);
-                console.error(error);
-            } finally {
-                setLoadingCustomRecords(false);
             }
-        },
-        [onDataRetrieved, mergeCustomData, records]
-    );
+        } catch (error) {
+            setCustomRecords(records);
+            console.error(error);
+        } finally {
+            setLoadingCustomRecords(false);
+        }
+    }, [hasCustomColumn, onDataRetrieved, mergeCustomData, records]);
 
     useEffect(() => {
-        if (onDataRetrieved && records.length) {
+        if (records.length) {
             setLoadingCustomRecords(true);
-            mergedRecords(records)();
+            void mergedRecords();
         }
-    }, [onDataRetrieved, mergedRecords, records]);
+    }, [mergedRecords, records]);
 
     return { customRecords, loadingCustomRecords } as const;
 };

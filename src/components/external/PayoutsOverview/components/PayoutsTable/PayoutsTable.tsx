@@ -24,7 +24,7 @@ import { CustomColumn } from '../../../../types';
 import { StringWithAutocompleteOptions } from '../../../../../utils/types';
 
 const AMOUNT_FIELDS = ['fundsCapturedAmount', 'adjustmentAmount', 'payoutAmount'] as const;
-const FIELDS = ['createdAt', ...AMOUNT_FIELDS] as const;
+export const FIELDS = ['createdAt', ...AMOUNT_FIELDS] as const;
 export type PayoutsTableFields = (typeof FIELDS)[number];
 
 const _isAmountFieldKey = (key: (typeof FIELDS)[number]): key is (typeof AMOUNT_FIELDS)[number] => {
