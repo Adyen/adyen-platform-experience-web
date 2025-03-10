@@ -47,7 +47,7 @@ test.describe('Transaction List with custom columns', () => {
         await expect(transactionsOverview.getHeader('Reference')).toBeAttached();
     });
 
-    test('Extra columns values should render according to their type', async ({ transactionsOverviewPage, page, context }) => {
+    test('Extra columns values should render with string or the format {value: string}', async ({ context, transactionsOverviewPage, page }) => {
         await goToStory(page, { id: `${COMPONENT_PREFIX}--custom-columns` });
         const transactionsOverview = transactionsOverviewPage;
 
