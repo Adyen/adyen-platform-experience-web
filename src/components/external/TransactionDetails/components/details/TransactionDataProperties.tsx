@@ -79,6 +79,7 @@ const TransactionDataProperties = () => {
                 classNames={TX_DATA_LIST}
                 items={listItems}
                 layout="5-7"
+                align="start"
                 renderLabel={label => <div className={TX_DATA_LABEL}>{label}</div>}
                 renderValue={(val, key, type, details) => {
                     if (type === 'link') {

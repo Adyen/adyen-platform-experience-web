@@ -1,6 +1,10 @@
 @use '../../../style';
 
 .adyen-pe-structured-list {
+    $adyen-pe-structured-list: &;
+
+    margin: 0;
+
     &__grid {
         display: flex;
 
@@ -15,7 +19,6 @@
         font-size: style.token(text-body-font-size);
         font-weight: style.token(text-body-font-weight);
         line-height: style.token(text-body-line-height);
-        margin: 0;
     }
 
     &__item--has-highlight:hover {
@@ -34,7 +37,7 @@
         margin: 0;
         overflow-wrap: anywhere;
 
-        &--end-align {
+        #{$adyen-pe-structured-list}--align-end & {
             justify-content: flex-end;
             text-align: end;
         }
