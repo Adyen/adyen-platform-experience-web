@@ -2,6 +2,7 @@ import useBalanceAccountSelection from '../../../../../hooks/useBalanceAccountSe
 import { memo } from 'preact/compat';
 import { useCallback } from 'preact/hooks';
 import Select from '../../Select';
+import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { mediaQueries, useResponsiveViewport } from '../../../../../hooks/useResponsiveViewport';
 import { renderDefaultSingleSelectionCheckedness } from '../components/SelectListItem';
 import { SelectItem, SelectProps } from '../types';
@@ -20,6 +21,7 @@ const BalanceAccountSelector = memo(
         onBalanceAccountSelection,
     }: Omit<ReturnType<typeof useBalanceAccountSelection>, 'resetBalanceAccountSelection'>) => {
         const isSmViewport = useResponsiveViewport(mediaQueries.down.xs);
+        const { i18n } = useCoreContext();
 
         const renderListItem = useCallback<_GetRenderListItemType<typeof balanceAccountSelectionOptions>>(
             data => (
@@ -40,6 +42,7 @@ const BalanceAccountSelector = memo(
                 onChange={onBalanceAccountSelection}
                 filterable={false}
                 multiSelect={false}
+                placeholder={activeBalanceAccount?.id || i18n.get('balanceAccount')}
                 selected={activeBalanceAccount?.id}
                 withoutCollapseIndicator={true}
                 items={balanceAccountSelectionOptions}
