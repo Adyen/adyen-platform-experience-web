@@ -6,6 +6,7 @@ import { AnchorHTMLAttributes } from 'preact/compat';
 import { ReportsTableFields } from './external/ReportsOverview/components/ReportsTable/ReportsTable';
 import { StringWithAutocompleteOptions } from '../utils/types';
 import { PayoutsTableFields } from './external/PayoutsOverview/components/PayoutsTable/PayoutsTable';
+import { TransactionDetailsFields } from './external';
 
 export const enum InteractionKeyCode {
     ARROW_DOWN = 'ArrowDown',
@@ -137,37 +138,34 @@ export interface CustomButtonObject extends BaseCustomObject {
 
 export type CustomDataRetrieved = { [k: string]: CustomDataObject | Record<any, any> | string | number | boolean };
 
-export type OnDataRetrievedCallback<DataRetrieved> = (data: DataRetrieved[]) => Promise<CustomDataRetrieved[]>;
+export type OnDataRetrievedCallback<DataRetrieved, CallbackResponse = CustomDataRetrieved[]> = (data: DataRetrieved) => Promise<CallbackResponse>;
 
-export type DataCustomizationObject<Columns extends string, DataRetrieved> = {
-    fields: CustomColumn<Columns>[] | Columns[];
-    onDataRetrieved?: OnDataRetrievedCallback<DataRetrieved>;
+export type DataCustomizationObject<Columns extends string, DataRetrieved, CallbackResponse> = {
+    fields: CustomColumn<StringWithAutocompleteOptions<Columns>>[] | StringWithAutocompleteOptions<Columns>[];
+    onDataRetrieve?: OnDataRetrievedCallback<DataRetrieved, CallbackResponse>;
 };
 
-interface _CustomizableDataOverview<CustomizationOptions extends Record<string, DataCustomizationObject<any, any>>> {
+interface _CustomizableDataOverview<CustomizationOptions extends Record<string, DataCustomizationObject<any, any, any>>> {
     dataCustomization?: CustomizationOptions;
 }
 
-type OverviewCustomizationProperties<Fields extends string, Data> = {
-    list?: {
-        fields: CustomColumn<StringWithAutocompleteOptions<Fields>>[] | StringWithAutocompleteOptions<Fields>[];
-        onDataRetrieve?: OnDataRetrievedCallback<Data>;
-    };
-    details?: any;
+type OverviewCustomizationProperties<Fields extends string, Data, DetailsFields extends string, DetailsData> = {
+    list?: DataCustomizationObject<Fields, Data[], CustomDataRetrieved[]>;
+    details?: DataCustomizationObject<DetailsFields, DetailsData, CustomDataRetrieved>;
 };
 
 export interface ReportsOverviewComponentProps
     extends Omit<_DataOverviewComponentProps, 'showDetails'>,
-        _CustomizableDataOverview<Omit<OverviewCustomizationProperties<ReportsTableFields, IReport>, 'details'>> {}
+        _CustomizableDataOverview<Omit<OverviewCustomizationProperties<ReportsTableFields, IReport, any, any>, 'details'>> {}
 
 export interface TransactionOverviewComponentProps
     extends _DataOverviewComponentProps,
-        _CustomizableDataOverview<OverviewCustomizationProperties<TransactionsTableFields, ITransaction>>,
+        _CustomizableDataOverview<OverviewCustomizationProperties<TransactionsTableFields, ITransaction, TransactionDetailsFields, any>>,
         _DataOverviewSelectionProps<{ id: string; showModal: () => void }> {}
 
 export interface PayoutsOverviewComponentProps
     extends _DataOverviewComponentProps,
-        _CustomizableDataOverview<OverviewCustomizationProperties<PayoutsTableFields, IPayout>>,
+        _CustomizableDataOverview<OverviewCustomizationProperties<PayoutsTableFields, IPayout, any, any>>,
         _DataOverviewSelectionProps<{ balanceAccountId: string; date: string; showModal: () => void }> {}
 
 export const enum FilterParam {

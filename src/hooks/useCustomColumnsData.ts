@@ -10,8 +10,8 @@ export const useCustomColumnsData = <T>({
 }: {
     records: T[];
     hasCustomColumn?: boolean;
-    onDataRetrieve: OnDataRetrievedCallback<T> | undefined;
-    mergeCustomData: (args: { retrievedData: Awaited<ReturnType<OnDataRetrievedCallback<T>>>; records: T[] }) => (T & Record<string, any>)[];
+    onDataRetrieve: OnDataRetrievedCallback<T[]> | undefined;
+    mergeCustomData: (args: { retrievedData: Awaited<ReturnType<OnDataRetrievedCallback<T[]>>>; records: T[] }) => (T & Record<string, any>)[];
 }) => {
     const [customRecords, setCustomRecords] = useState<T[] | (T & Record<string, any>)[]>(records);
     const [loadingCustomRecords, setLoadingCustomRecords] = useState(false);

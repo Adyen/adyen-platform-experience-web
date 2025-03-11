@@ -1,5 +1,6 @@
 import type { StrictUnion } from '../../../utils/types';
 import type { IBalanceAccountBase, ILineItem, ITransactionWithDetails } from '../../../types';
+import { TX_DETAILS_RESERVED_FIELDS_SET } from './components/constants';
 
 export interface DetailsWithoutIdProps {
     data: TransactionDetailData;
@@ -27,3 +28,7 @@ export interface TransactionDataProps {
     transaction?: TransactionDetailData & { lineItems?: ILineItem[] };
     extraFields: Record<string, any> | undefined;
 }
+
+const _fields = [...TX_DETAILS_RESERVED_FIELDS_SET];
+
+export type TransactionDetailsFields = (typeof _fields)[number];
