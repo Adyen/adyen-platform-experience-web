@@ -5,12 +5,12 @@ import { isFunction } from '../utils';
 export const useCustomColumnsData = <T>({
     records,
     hasCustomColumn = false,
-    onDataRetrieved,
+    onDataRetrieve,
     mergeCustomData,
 }: {
     records: T[];
     hasCustomColumn?: boolean;
-    onDataRetrieved: OnDataRetrievedCallback<T> | undefined;
+    onDataRetrieve: OnDataRetrievedCallback<T> | undefined;
     mergeCustomData: (args: { retrievedData: Awaited<ReturnType<OnDataRetrievedCallback<T>>>; records: T[] }) => (T & Record<string, any>)[];
 }) => {
     const [customRecords, setCustomRecords] = useState<T[] | (T & Record<string, any>)[]>(records);
@@ -18,8 +18,8 @@ export const useCustomColumnsData = <T>({
 
     const mergedRecords = useCallback(async () => {
         try {
-            if (hasCustomColumn && isFunction(onDataRetrieved)) {
-                const retrievedData = await onDataRetrieved(records);
+            if (hasCustomColumn && isFunction(onDataRetrieve)) {
+                const retrievedData = await onDataRetrieve(records);
                 setCustomRecords(mergeCustomData({ records, retrievedData: retrievedData?.filter(Boolean) || [] }));
             }
         } catch (error) {
@@ -28,7 +28,7 @@ export const useCustomColumnsData = <T>({
         } finally {
             setLoadingCustomRecords(false);
         }
-    }, [hasCustomColumn, onDataRetrieved, mergeCustomData, records]);
+    }, [hasCustomColumn, onDataRetrieve, mergeCustomData, records]);
 
     useEffect(() => {
         if (records.length) {

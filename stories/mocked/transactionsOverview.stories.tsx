@@ -45,35 +45,28 @@ export const CustomColumns: ElementStory<typeof TransactionsOverview> = {
             },
         },
         mockedApi: true,
-        columns: [
-            {
-                key: '_store',
-                flex: 0.5,
+        dataCustomization: {
+            list: {
+                fields: [
+                    {
+                        key: '_store',
+                        flex: 0.5,
+                    },
+                    { key: '_product' },
+                    { key: '_reference', flex: 1.5 },
+                    { key: 'createdAt' },
+                    { key: 'amount' },
+                    { key: '_button', flex: 1.5, align: 'right' },
+                ],
+                onDataRetrieve: data => {
+                    return new Promise(resolve => {
+                        setTimeout(() => {
+                            resolve(getMyCustomData(data));
+                        }, 200);
+                    });
+                },
             },
-            { key: '_product' },
-            { key: '_reference', flex: 1.5 },
-            { key: 'createdAt' },
-            { key: 'amount' },
-            { key: '_button', flex: 1.5, align: 'right' },
-        ],
-        onDataRetrieved: data => {
-            return new Promise(resolve => {
-                setTimeout(() => {
-                    resolve(getMyCustomData(data));
-                }, 200);
-            });
         },
-    },
-    parameters: {
-        msw: CUSTOM_COLUMNS_MOCK_HANDLER,
-    },
-};
-
-export const CustomOrder: ElementStory<typeof TransactionsOverview> = {
-    name: 'Custom order',
-    args: {
-        mockedApi: true,
-        columns: ['transactionType', 'paymentMethod', 'createdAt', 'amount'],
     },
     parameters: {
         msw: CUSTOM_COLUMNS_MOCK_HANDLER,

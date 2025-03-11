@@ -40,21 +40,25 @@ export const CustomColumns: ElementStory<typeof PayoutsOverview> = {
             },
         },
         mockedApi: true,
-        columns: [
-            { key: 'createdAt' },
-            { key: 'fundsCapturedAmount' },
-            { key: 'adjustmentAmount' },
-            { key: '_summary' },
-            { key: '_country', flex: 0.5 },
-            { key: '_sendEmail', align: 'right' },
-            { key: 'payoutAmount' },
-        ],
-        onDataRetrieved: data => {
-            return new Promise(resolve => {
-                setTimeout(() => {
-                    resolve(getCustomPayoutsData(data));
-                }, 200);
-            });
+        dataCustomization: {
+            list: {
+                fields: [
+                    { key: 'createdAt' },
+                    { key: 'fundsCapturedAmount' },
+                    { key: 'adjustmentAmount' },
+                    { key: '_summary' },
+                    { key: '_country', flex: 0.5 },
+                    { key: '_sendEmail', align: 'right' },
+                    { key: 'payoutAmount' },
+                ],
+                onDataRetrieve: data => {
+                    return new Promise(resolve => {
+                        setTimeout(() => {
+                            resolve(getCustomPayoutsData(data));
+                        }, 200);
+                    });
+                },
+            },
         },
     },
     parameters: {

@@ -135,27 +135,39 @@ export interface CustomButtonObject extends BaseCustomObject {
     details: BaseDetails & { action: () => void };
 }
 
-export type CustomDataRetrieved = { [k: string]: CustomDataObject | Record<any, any> | string | number };
+export type CustomDataRetrieved = { [k: string]: CustomDataObject | Record<any, any> | string | number | boolean };
 
 export type OnDataRetrievedCallback<DataRetrieved> = (data: DataRetrieved[]) => Promise<CustomDataRetrieved[]>;
 
-interface _CustomizableDataOverview<Columns extends string, DataRetrieved> {
-    columns?: CustomColumn<Columns>[] | Columns[];
+export type DataCustomizationObject<Columns extends string, DataRetrieved> = {
+    fields: CustomColumn<Columns>[] | Columns[];
     onDataRetrieved?: OnDataRetrievedCallback<DataRetrieved>;
+};
+
+interface _CustomizableDataOverview<CustomizationOptions extends Record<string, DataCustomizationObject<any, any>>> {
+    dataCustomization?: CustomizationOptions;
 }
+
+type OverviewCustomizationProperties<Fields extends string, Data> = {
+    list?: {
+        fields: CustomColumn<StringWithAutocompleteOptions<Fields>>[] | StringWithAutocompleteOptions<Fields>[];
+        onDataRetrieve?: OnDataRetrievedCallback<Data>;
+    };
+    details?: any;
+};
 
 export interface ReportsOverviewComponentProps
     extends Omit<_DataOverviewComponentProps, 'showDetails'>,
-        _CustomizableDataOverview<StringWithAutocompleteOptions<ReportsTableFields>, IReport> {}
+        _CustomizableDataOverview<Omit<OverviewCustomizationProperties<ReportsTableFields, IReport>, 'details'>> {}
 
 export interface TransactionOverviewComponentProps
     extends _DataOverviewComponentProps,
-        _CustomizableDataOverview<TransactionsTableFields, ITransaction>,
+        _CustomizableDataOverview<OverviewCustomizationProperties<TransactionsTableFields, ITransaction>>,
         _DataOverviewSelectionProps<{ id: string; showModal: () => void }> {}
 
 export interface PayoutsOverviewComponentProps
     extends _DataOverviewComponentProps,
-        _CustomizableDataOverview<StringWithAutocompleteOptions<PayoutsTableFields>, IPayout>,
+        _CustomizableDataOverview<OverviewCustomizationProperties<PayoutsTableFields, IPayout>>,
         _DataOverviewSelectionProps<{ balanceAccountId: string; date: string; showModal: () => void }> {}
 
 export const enum FilterParam {

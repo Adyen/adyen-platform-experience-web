@@ -32,8 +32,7 @@ export const PayoutsOverview = ({
     isLoadingBalanceAccount,
     onContactSupport,
     hideTitle,
-    onDataRetrieved,
-    columns,
+    dataCustomization,
 }: ExternalUIComponentProps<
     PayoutsOverviewComponentProps & { balanceAccounts: IBalanceAccountBase[] | undefined; isLoadingBalanceAccount: boolean }
 >) => {
@@ -94,8 +93,13 @@ export const PayoutsOverview = ({
         []
     );
 
-    const hasCustomColumn = useMemo(() => hasCustomField(columns, FIELDS), [columns]);
-    const { customRecords, loadingCustomRecords } = useCustomColumnsData<IPayout>({ records, hasCustomColumn, onDataRetrieved, mergeCustomData });
+    const hasCustomColumn = useMemo(() => hasCustomField(dataCustomization?.list?.fields, FIELDS), [dataCustomization?.list?.fields]);
+    const { customRecords, loadingCustomRecords } = useCustomColumnsData<IPayout>({
+        records,
+        hasCustomColumn,
+        onDataRetrieve: dataCustomization?.list?.onDataRetrieve,
+        mergeCustomData,
+    });
 
     const modalOptions = useMemo(() => ({ payout: payoutDetails }), [payoutDetails]);
 
@@ -129,12 +133,12 @@ export const PayoutsOverview = ({
                 selection: {
                     type: 'payout',
                     data: { id: activeBalanceAccount?.id, balanceAccountDescription: activeBalanceAccount?.description || '', date: value.createdAt },
-                    extraDetails: columns ? getExtraFieldsById({ createdAt: value.createdAt }) : undefined,
+                    extraDetails: dataCustomization?.list?.fields ? getExtraFieldsById({ createdAt: value.createdAt }) : undefined,
                 },
                 modalSize: 'small',
             }).callback({ balanceAccountId: activeBalanceAccount?.id || '', date: value.createdAt });
         },
-        [updateDetails, activeBalanceAccount?.id, activeBalanceAccount?.description, getExtraFieldsById]
+        [updateDetails, activeBalanceAccount?.id, activeBalanceAccount?.description, dataCustomization?.list?.fields, getExtraFieldsById]
     );
 
     return (
@@ -167,7 +171,7 @@ export const PayoutsOverview = ({
             >
                 <PayoutsTable
                     loading={fetching || isLoadingBalanceAccount || !balanceAccounts || loadingCustomRecords}
-                    data={onDataRetrieved ? customRecords : records}
+                    data={dataCustomization?.list?.onDataRetrieve ? customRecords : records}
                     showPagination={true}
                     onRowClick={onRowClick}
                     showDetails={showDetails}
@@ -176,7 +180,7 @@ export const PayoutsOverview = ({
                     onContactSupport={onContactSupport}
                     onLimitSelection={updateLimit}
                     error={error as AdyenPlatformExperienceError}
-                    customColumns={columns}
+                    customColumns={dataCustomization?.list?.fields}
                     {...paginationProps}
                 />
             </DataDetailsModal>

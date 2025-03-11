@@ -38,8 +38,7 @@ export const TransactionsOverview = ({
     isLoadingBalanceAccount,
     onContactSupport,
     hideTitle,
-    columns,
-    onDataRetrieved,
+    dataCustomization,
 }: ExternalUIComponentProps<
     TransactionOverviewComponentProps & { balanceAccounts: IBalanceAccountBase[] | undefined; isLoadingBalanceAccount: boolean }
 >) => {
@@ -141,12 +140,12 @@ export const TransactionsOverview = ({
         []
     );
 
-    const hasCustomColumn = useMemo(() => hasCustomField(columns, TRANSACTION_FIELDS), [columns]);
+    const hasCustomColumn = useMemo(() => hasCustomField(dataCustomization?.list?.fields, TRANSACTION_FIELDS), [dataCustomization?.list?.fields]);
 
     const { customRecords: transactions, loadingCustomRecords } = useCustomColumnsData<ITransaction>({
         records,
         hasCustomColumn,
-        onDataRetrieved,
+        onDataRetrieve: dataCustomization?.list?.onDataRetrieve,
         mergeCustomData,
     });
     const { updateDetails, resetDetails, selectedDetail } = useModalDetails(modalOptions);
@@ -273,8 +272,8 @@ export const TransactionsOverview = ({
                     onLimitSelection={updateLimit}
                     onRowClick={onRowClick}
                     showPagination={true}
-                    transactions={onDataRetrieved ? transactions : records}
-                    customColumns={columns}
+                    transactions={dataCustomization?.list?.onDataRetrieve ? transactions : records}
+                    customColumns={dataCustomization?.list?.fields}
                     {...paginationProps}
                 />
             </DataDetailsModal>

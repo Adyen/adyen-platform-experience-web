@@ -59,6 +59,24 @@ export const CustomColumns: ElementStory<typeof ReportsOverview> = {
                 }, 200);
             });
         },
+        dataCustomization: {
+            list: {
+                fields: [
+                    { key: 'createdAt' },
+                    { key: 'reportType' },
+                    { key: '_summary' },
+                    { key: '_sendEmail', align: 'right' },
+                    { key: 'reportFile', flex: 0.8 },
+                ],
+                onDataRetrieve: data => {
+                    return new Promise(resolve => {
+                        setTimeout(() => {
+                            resolve(getCustomReportsData(data));
+                        }, 200);
+                    });
+                },
+            },
+        },
     },
     parameters: {
         msw: CUSTOM_COLUMNS_MOCK_HANDLER,

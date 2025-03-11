@@ -27,8 +27,7 @@ export const ReportsOverview = ({
     isLoadingBalanceAccount,
     onContactSupport,
     hideTitle,
-    onDataRetrieved,
-    columns,
+    dataCustomization,
 }: ExternalUIComponentProps<
     ReportsOverviewComponentProps & { balanceAccounts: IBalanceAccountBase[] | undefined; isLoadingBalanceAccount: boolean }
 >) => {
@@ -78,11 +77,11 @@ export const ReportsOverview = ({
         []
     );
 
-    const hasCustomColumn = useMemo(() => hasCustomField(columns, FIELDS), [columns]);
+    const hasCustomColumn = useMemo(() => hasCustomField(dataCustomization?.list?.fields, FIELDS), [dataCustomization?.list?.fields]);
     const { customRecords: reports, loadingCustomRecords } = useCustomColumnsData<IReport>({
         records,
         hasCustomColumn,
-        onDataRetrieved,
+        onDataRetrieve: dataCustomization?.list?.onDataRetrieve,
         mergeCustomData,
     });
 
@@ -116,14 +115,14 @@ export const ReportsOverview = ({
             <ReportsTable
                 balanceAccountId={activeBalanceAccount?.id}
                 loading={fetching || isLoadingBalanceAccount || !balanceAccounts || !activeBalanceAccount || loadingCustomRecords}
-                data={onDataRetrieved ? reports : records}
+                data={dataCustomization?.list?.onDataRetrieve ? reports : records}
                 showPagination={true}
                 limit={limit}
                 limitOptions={limitOptions}
                 onContactSupport={onContactSupport}
                 onLimitSelection={updateLimit}
                 error={error as AdyenPlatformExperienceError}
-                customColumns={columns}
+                customColumns={dataCustomization?.list?.fields}
                 {...paginationProps}
             />
         </div>
