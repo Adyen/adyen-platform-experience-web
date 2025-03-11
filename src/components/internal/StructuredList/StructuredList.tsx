@@ -7,7 +7,7 @@ import Typography from '../Typography/Typography';
 import {
     SL_BASE_CLASS,
     SL_CONTENT_CLASS,
-    SL_CONTENT_WITH_START_ALIGN,
+    SL_CONTENT_WITH_END_ALIGN,
     SL_GRID_CLASS,
     SL_ITEM_CLASS,
     SL_ITEM_WITH_HIGHLIGHT_CLASS,
@@ -37,9 +37,9 @@ export default function StructuredList({
     const { i18n } = useCoreContext();
 
     return (
-        <div aria-label={i18n.get('structuredList')} className={cx(SL_BASE_CLASS, classNames)}>
+        <dl aria-label={i18n.get('structuredList')} className={cx(SL_BASE_CLASS, classNames)}>
             {formattedItems.map((item, index) => (
-                <dl
+                <div
                     key={`${index}_${item.id || '0'}`}
                     className={cx(SL_ITEM_CLASS, {
                         [SL_ITEM_WITH_HIGHLIGHT_CLASS]: highlightable,
@@ -56,7 +56,7 @@ export default function StructuredList({
                     <dd
                         aria-label={`${i18n.get(item.key as TranslationKey)} ${i18n.get('value')}`}
                         className={cx(SL_CONTENT_CLASS, VALUE_COL_CLASS, {
-                            [SL_CONTENT_WITH_START_ALIGN]: align === 'start',
+                            [SL_CONTENT_WITH_END_ALIGN]: align === 'end',
                         })}
                     >
                         {renderValue ? (
@@ -65,8 +65,8 @@ export default function StructuredList({
                             <Typography variant={TypographyVariant.BODY}>{item.value}</Typography>
                         )}
                     </dd>
-                </dl>
+                </div>
             ))}
-        </div>
+        </dl>
     );
 }

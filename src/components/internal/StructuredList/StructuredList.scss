@@ -30,11 +30,13 @@
 
     &__content {
         color: style.token(color-label-primary);
+        display: flex;
         margin: 0;
         overflow-wrap: anywhere;
 
-        &--start-align {
-            justify-content: start;
+        &--end-align {
+            justify-content: flex-end;
+            text-align: end;
         }
     }
 }
