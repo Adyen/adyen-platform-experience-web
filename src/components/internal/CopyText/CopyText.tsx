@@ -6,20 +6,17 @@ import { ButtonVariant } from '../Button/types';
 import Icon from '../Icon';
 import { Tooltip } from '../Tooltip/Tooltip';
 import './CopyText.scss';
+import { HTMLProps } from 'preact/compat';
 
-const CopyText = ({
-    textToCopy,
-    isHovered,
-    buttonLabel,
-    showCopyTextTooltip = true,
-    type = 'Link',
-}: {
+type CopyTextProps = {
     textToCopy: string;
     isHovered?: boolean;
     buttonLabel?: string;
     showCopyTextTooltip?: boolean;
     type?: 'Link' | 'Text' | 'Default';
-}) => {
+} & HTMLProps<HTMLSpanElement>;
+
+const CopyText = ({ textToCopy, isHovered, buttonLabel, showCopyTextTooltip = true, type = 'Link', ...restProps }: CopyTextProps) => {
     const { i18n } = useCoreContext();
 
     const [tooltipLabel, setTooltipLabel] = useState(i18n.get('copy'));
@@ -44,6 +41,7 @@ const CopyText = ({
             className={cx('adyen-pe-copy-text__container', {
                 ['adyen-pe-copy-text__container--information']: type === 'Link',
             })}
+            {...restProps}
         >
             {showCopyTextTooltip ? (
                 <Tooltip content={textToCopy} isContainerHovered={isHovered}>
@@ -75,6 +73,7 @@ const CopyText = ({
                     onClick={onClick}
                     onBlur={resetTooltipLabel}
                     onMouseLeaveCapture={resetTooltipLabel}
+                    data-testid="copyText"
                 >
                     <div
                         className={cx('adyen-pe-copy-text__icon', {
