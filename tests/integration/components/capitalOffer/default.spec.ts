@@ -82,6 +82,13 @@ test.describe('Default', () => {
         await page.getByRole('button', { name: 'Back' }).click();
         await expect(page.getByText('Business financing offer')).toBeVisible();
     });
+
+    test('should disable "Request funds" button after funds request call succeeds', async ({ page }) => {
+        await page.getByRole('button', { name: 'Review offer' }).click();
+        const requestFundsButton = page.getByRole('button', { name: 'Request funds' });
+        await requestFundsButton.click();
+        await expect(requestFundsButton).toBeDisabled();
+    });
 });
 
 test.describe('onOfferDismiss argument', () => {
