@@ -30,4 +30,5 @@ export interface BalanceAccountProps {
 export type SelectedDetail = {
     type: 'payout' | 'transaction';
     data: string | TransactionDetailData | PayoutDetailsWithIdProps;
+    dataCustomization?: any;
 };

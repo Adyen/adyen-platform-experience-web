@@ -256,6 +256,7 @@ export const TransactionsOverview = ({
             </div>
 
             <DataDetailsModal
+                dataCustomization={dataCustomization?.details}
                 selectedDetail={selectedDetail as ReturnType<typeof useModalDetails>['selectedDetail']}
                 resetDetails={resetDetails}
                 className={BASE_CLASS_DETAILS}

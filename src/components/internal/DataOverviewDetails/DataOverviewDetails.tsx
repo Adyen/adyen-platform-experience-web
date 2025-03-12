@@ -64,6 +64,8 @@ export default function DataOverviewDetails(props: ExternalUIComponentProps<Deta
     const extraDetails =
         (isDetailsWithId(props) && props.type === 'transaction') || props.type === 'payout' ? props.extraDetails : (EMPTY_OBJECT as CustomDataObject);
 
+    const extraData = (isDetailsWithId(props) && props.type === 'transaction') || props.type === 'payout' ? props.dataCustomization : undefined;
+
     const detailsData = details ?? data;
 
     return (
@@ -84,6 +86,7 @@ export default function DataOverviewDetails(props: ExternalUIComponentProps<Deta
 
             {props.type === 'transaction' && (
                 <TransactionData
+                    dataCustomization={{ details: extraData }}
                     transaction={
                         detailsData
                             ? ({

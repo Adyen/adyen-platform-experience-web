@@ -5,6 +5,7 @@ import { popoverUtil } from '../Popover/utils/popoverUtil';
 import useCoreContext from '../../../core/Context/useCoreContext';
 import useModalDetails from '../../../hooks/useModalDetails/useModalDetails';
 import ModalContent from '../Modal/ModalContent/ModalContent';
+import { DataCustomizationObject } from '../../types';
 
 export interface DataOverviewDisplayProps {
     onContactSupport?: () => void;
@@ -12,6 +13,7 @@ export interface DataOverviewDisplayProps {
     selectedDetail: ReturnType<typeof useModalDetails>['selectedDetail'];
     resetDetails: ReturnType<typeof useModalDetails>['resetDetails'];
     className: string;
+    dataCustomization?: any;
 }
 
 export const DataDetailsModal: FC<DataOverviewDisplayProps> = ({
@@ -19,6 +21,7 @@ export const DataDetailsModal: FC<DataOverviewDisplayProps> = ({
     className,
     selectedDetail,
     resetDetails,
+    dataCustomization,
 }: PropsWithChildren<DataOverviewDisplayProps>) => {
     const { i18n } = useCoreContext();
     const isModalOpen = !!selectedDetail;
@@ -42,7 +45,7 @@ export const DataDetailsModal: FC<DataOverviewDisplayProps> = ({
                     headerWithBorder={false}
                     size={selectedDetail?.modalSize ?? 'large'}
                 >
-                    {selectedDetail && <ModalContent {...selectedDetail?.selection} />}
+                    {selectedDetail && <ModalContent dataCustomization={dataCustomization} {...selectedDetail?.selection} />}
                 </Modal>
             )}
         </div>

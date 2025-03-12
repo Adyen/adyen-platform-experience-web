@@ -45,6 +45,7 @@ export interface TransactionDataContentProps {
     transaction: NonNullable<TransactionDataProps['transaction']>;
     extraFields: Record<string, any> | undefined;
     balanceAccount?: IBalanceAccountBase;
+    dataCustomization?: NonNullable<TransactionDataProps['dataCustomization']>;
 }
 
 const _TransactionDataContentViewWrapper = ({
@@ -82,12 +83,20 @@ const _RefundResponseViewWrapper = ({
     </div>
 );
 
-export const TransactionDataContent = ({ transaction: initialTransaction, extraFields }: TransactionDataContentProps) => {
+export const TransactionDataContent = ({ transaction: initialTransaction, extraFields, dataCustomization }: TransactionDataContentProps) => {
     const [activeView, _setActiveView] = useState(ActiveView.DETAILS);
     const [primaryAction, _setPrimaryAction] = useState<ButtonActionObject>();
     const [secondaryAction, _setSecondaryAction] = useState<ButtonActionObject>();
     //TODO: Remove this when locked status returns from backend
     const [locked, setLocked] = useState(false);
+
+    const extraFieldss = dataCustomization?.details?.fields.reduce((acc, field) => {
+        return field ? (acc[(field as any).key as string] = { ...(field as any) }) : acc;
+
+        ///// Should we remove the possibility to pass only string? Was useful for sorting, now it's awkward
+    }, {} as Record<string, any>);
+
+    console.log('extraFieldss', extraFieldss);
 
     const { fetchingTransaction, refreshTransaction, transaction, transactionNavigator } = useTransaction(initialTransaction);
     const {

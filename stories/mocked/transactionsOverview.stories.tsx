@@ -66,6 +66,16 @@ export const CustomColumns: ElementStory<typeof TransactionsOverview> = {
                     });
                 },
             },
+            details: {
+                fields: [{ key: '_product' }, { key: 'createdAt' }],
+                onDataRetrieve: data => {
+                    return new Promise(resolve => {
+                        setTimeout(async () => {
+                            resolve((await getMyCustomData(data))[0] as any);
+                        }, 200);
+                    });
+                },
+            },
         },
     },
     parameters: {
