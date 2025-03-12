@@ -222,7 +222,7 @@ export const CapitalOfferSummary = ({
                     variant={ButtonVariant.PRIMARY}
                     state={requestFundsMutation.isLoading ? 'loading' : undefined}
                     onClick={onRequestFundsHandler}
-                    disabled={requestFundsMutation.isLoading || !!requestFundsMutation.error}
+                    disabled={requestFundsMutation.isLoading || !!requestFundsMutation.error || !!requestFundsMutation.data}
                 >
                     {i18n.get(requestFundsMutation.isLoading ? 'capital.requesting' : 'capital.requestFunds')}
                 </Button>
