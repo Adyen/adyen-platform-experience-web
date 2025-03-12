@@ -111,7 +111,6 @@ export const ReportsOverview = ({
                     updateFilters={updateFilters}
                 />
             </FilterBar>
-
             <ReportsTable
                 balanceAccountId={activeBalanceAccount?.id}
                 loading={fetching || isLoadingBalanceAccount || !balanceAccounts || !activeBalanceAccount || loadingCustomRecords}

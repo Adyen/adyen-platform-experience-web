@@ -13,7 +13,7 @@ export interface DataOverviewDisplayProps {
     selectedDetail: ReturnType<typeof useModalDetails>['selectedDetail'];
     resetDetails: ReturnType<typeof useModalDetails>['resetDetails'];
     className: string;
-    dataCustomization?: any;
+    dataCustomization?: DataCustomizationObject<any, any, any>;
 }
 
 export const DataDetailsModal: FC<DataOverviewDisplayProps> = ({
@@ -45,7 +45,7 @@ export const DataDetailsModal: FC<DataOverviewDisplayProps> = ({
                     headerWithBorder={false}
                     size={selectedDetail?.modalSize ?? 'large'}
                 >
-                    {selectedDetail && <ModalContent dataCustomization={dataCustomization} {...selectedDetail?.selection} />}
+                    {selectedDetail && <ModalContent dataCustomization={{ details: dataCustomization }} {...selectedDetail?.selection} />}
                 </Modal>
             )}
         </div>

@@ -59,6 +59,39 @@ export const CustomColumns: ElementStory<typeof PayoutsOverview> = {
                     });
                 },
             },
+            details: {
+                fields: [{ key: '_summary' }, { key: '_country', flex: 0.5 }, { key: '_sendEmail', align: 'right' }],
+                onDataRetrieve: data => {
+                    return new Promise(resolve => {
+                        setTimeout(() => {
+                            resolve({
+                                ...data,
+                                _summary: {
+                                    type: 'link',
+                                    value: 'Summary',
+                                    details: {
+                                        href: `${origin}?path=/story/mocked-reports-overview--custom-columns&summary=${1}`,
+                                    },
+                                },
+                                _sendEmail: {
+                                    type: 'button',
+                                    value: 'Send email',
+                                    details: {
+                                        action: () => console.log('Action'),
+                                    },
+                                },
+                                _country: {
+                                    type: 'icon',
+                                    value: '',
+                                    details: {
+                                        src: `https://flagicons.lipis.dev/flags/4x3/es.svg`,
+                                    },
+                                },
+                            });
+                        }, 200);
+                    });
+                },
+            },
         },
     },
     parameters: {

@@ -59,6 +59,25 @@ export const getMyCustomData = async (data: ITransaction[]) => {
     return customData;
 };
 
+export const getCustomTransactionDataById = (id: string) => {
+    return {
+        _product: getProductById(id),
+        _store: getStoreById(id),
+        _reference: {
+            type: 'link',
+            value: id,
+            details: { value: '', href: `${origin}?path=/story/mocked-transactions-overview--custom-columns&reference=${id}` },
+        } as const,
+        _button: {
+            type: 'button',
+            value: 'Refund',
+            details: {
+                action: () => console.log('Action'),
+            },
+        },
+    };
+};
+
 const origin = process.env.VITE_PLAYGROUND_URL;
 
 export const getCustomReportsData = async (data: IReport[]) => {

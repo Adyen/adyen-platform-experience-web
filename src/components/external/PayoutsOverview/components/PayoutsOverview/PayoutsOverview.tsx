@@ -1,5 +1,5 @@
 import { BASE_CLASS, BASE_CLASS_DETAILS, EARLIEST_PAYOUT_SINCE_DATE } from './constants';
-import { FIELDS, PayoutsTable } from '../PayoutsTable/PayoutsTable';
+import { PAYOUT_TABLE_FIELDS, PayoutsTable } from '../PayoutsTable/PayoutsTable';
 import FilterBar, { FilterBarMobileSwitch, useFilterBarState } from '../../../../internal/FilterBar';
 import BalanceAccountSelector from '../../../../internal/FormFields/Select/BalanceAccountSelector';
 import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '../../../../internal/Pagination/constants';
@@ -93,7 +93,7 @@ export const PayoutsOverview = ({
         []
     );
 
-    const hasCustomColumn = useMemo(() => hasCustomField(dataCustomization?.list?.fields, FIELDS), [dataCustomization?.list?.fields]);
+    const hasCustomColumn = useMemo(() => hasCustomField(dataCustomization?.list?.fields, PAYOUT_TABLE_FIELDS), [dataCustomization?.list?.fields]);
     const { customRecords, loadingCustomRecords } = useCustomColumnsData<IPayout>({
         records,
         hasCustomColumn,
@@ -105,40 +105,17 @@ export const PayoutsOverview = ({
 
     const { updateDetails, resetDetails, selectedDetail } = useModalDetails(modalOptions);
 
-    const getExtraFieldsById = useCallback(
-        ({ createdAt }: { createdAt: string }) => {
-            const record = records.find(r => r.createdAt === createdAt);
-            const retrievedItem = customRecords.find(item => item.createdAt === createdAt) as Record<string, any>;
-
-            if (record && retrievedItem) {
-                // Extract fields from 'retrievedItem' that are not in 'record'
-                const extraFields = Object.keys(retrievedItem).reduce((acc, key) => {
-                    if (!(key in record)) {
-                        acc[key] = retrievedItem[key];
-                    }
-                    return acc;
-                }, {} as Partial<CustomDataRetrieved>);
-                return extraFields;
-            }
-
-            // If no matching 'retrievedItem' or 'record' is found, return undefined
-            return undefined;
-        },
-        [records, customRecords]
-    );
-
     const onRowClick = useCallback(
         (value: IPayout) => {
             updateDetails({
                 selection: {
                     type: 'payout',
                     data: { id: activeBalanceAccount?.id, balanceAccountDescription: activeBalanceAccount?.description || '', date: value.createdAt },
-                    extraDetails: dataCustomization?.list?.fields ? getExtraFieldsById({ createdAt: value.createdAt }) : undefined,
                 },
                 modalSize: 'small',
             }).callback({ balanceAccountId: activeBalanceAccount?.id || '', date: value.createdAt });
         },
-        [updateDetails, activeBalanceAccount?.id, activeBalanceAccount?.description, dataCustomization?.list?.fields, getExtraFieldsById]
+        [updateDetails, activeBalanceAccount?.id, activeBalanceAccount?.description]
     );
 
     return (
@@ -168,6 +145,7 @@ export const PayoutsOverview = ({
                 onContactSupport={onContactSupport}
                 selectedDetail={selectedDetail as ReturnType<typeof useModalDetails>['selectedDetail']}
                 resetDetails={resetDetails}
+                dataCustomization={dataCustomization?.details}
             >
                 <PayoutsTable
                     loading={fetching || isLoadingBalanceAccount || !balanceAccounts || loadingCustomRecords}

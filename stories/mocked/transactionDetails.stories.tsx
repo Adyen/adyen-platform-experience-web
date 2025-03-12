@@ -31,6 +31,48 @@ export const CustomData: ElementStory<typeof TransactionDetails> = {
         },
         id: '1VVF0D5V3709DX6D',
         mockedApi: true,
+        dataCustomization: {
+            details: {
+                fields: [
+                    { key: 'paymentPspReference', visible: false },
+                    { key: '_store' },
+                    { key: '_product' },
+                    { key: '_summary' },
+                    { key: '_sendEmail' },
+                    { key: '_country' },
+                ],
+                onDataRetrieve: data => {
+                    return new Promise(resolve => {
+                        return resolve({
+                            ...data,
+                            _store: 'Sydney',
+                            _product: 'Coffee',
+                            _summary: {
+                                type: 'link',
+                                value: 'Summary',
+                                details: {
+                                    href: `${origin}?path=/story/mocked-reports-overview--custom-columns&summary=${1}`,
+                                },
+                            },
+                            _sendEmail: {
+                                type: 'button',
+                                value: 'Send email',
+                                details: {
+                                    action: () => console.log('Action'),
+                                },
+                            },
+                            _country: {
+                                type: 'icon',
+                                value: '',
+                                details: {
+                                    src: `https://flagicons.lipis.dev/flags/4x3/es.svg`,
+                                },
+                            },
+                        });
+                    });
+                },
+            },
+        },
         extraDetails: {
             _store: 'Sydney',
             _product: 'Coffee',

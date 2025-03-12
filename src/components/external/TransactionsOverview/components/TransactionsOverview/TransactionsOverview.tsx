@@ -12,7 +12,7 @@ import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
 import { useCursorPaginatedRecords } from '../../../../internal/Pagination/hooks';
 import { Header } from '../../../../internal/Header';
 import { IBalanceAccountBase, ITransaction } from '../../../../../types';
-import { EMPTY_OBJECT, isFunction, isUndefined, listFrom } from '../../../../../utils';
+import { isFunction, isUndefined, listFrom } from '../../../../../utils';
 import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '../../../../internal/Pagination/constants';
 import TransactionTotals from '../TransactionTotals/TransactionTotals';
 import { Balances } from '../Balances/Balances';
@@ -150,28 +150,6 @@ export const TransactionsOverview = ({
     });
     const { updateDetails, resetDetails, selectedDetail } = useModalDetails(modalOptions);
 
-    const getExtraFieldsById = useCallback(
-        ({ id }: { id: string }) => {
-            const record = records.find(r => r.id === id);
-            const retrievedItem = transactions.find(item => item.id === id) as Record<string, any>;
-
-            if (record && retrievedItem) {
-                // Extract fields from 'retrievedItem' that are not in 'record'
-                const extraFields = Object.keys(retrievedItem).reduce((acc, key) => {
-                    if (!(key in record)) {
-                        acc[key] = retrievedItem[key];
-                    }
-                    return acc;
-                }, {} as Partial<CustomDataRetrieved>);
-                return extraFields;
-            }
-
-            // If no matching 'retrievedItem' or 'record' is found, return null or empty object
-            return null;
-        },
-        [records, transactions]
-    );
-
     const onRowClick = useCallback(
         ({ id }: ITransaction) => {
             updateDetails({
@@ -179,12 +157,11 @@ export const TransactionsOverview = ({
                     type: 'transaction',
                     data: id,
                     balanceAccount: activeBalanceAccount || '',
-                    extraDetails: getExtraFieldsById({ id }) ?? EMPTY_OBJECT,
                 },
                 modalSize: 'small',
             }).callback({ id });
         },
-        [activeBalanceAccount, updateDetails, getExtraFieldsById]
+        [activeBalanceAccount, updateDetails]
     );
 
     const sinceDate = useMemo(() => {

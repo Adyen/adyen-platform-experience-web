@@ -12,7 +12,7 @@ export interface DetailsWithIdProps {
 }
 
 export interface DetailsWithExtraData {
-    dataCustomization?: any;
+    dataCustomization?: { details?: DataCustomizationObject<TransactionDetailsFields, TransactionDetailData, CustomDataRetrieved> };
     extraDetails?: Record<string, any>;
 }
 

@@ -24,10 +24,10 @@ import { CustomColumn } from '../../../../types';
 import { StringWithAutocompleteOptions } from '../../../../../utils/types';
 
 const AMOUNT_FIELDS = ['fundsCapturedAmount', 'adjustmentAmount', 'payoutAmount'] as const;
-export const FIELDS = ['createdAt', ...AMOUNT_FIELDS] as const;
-export type PayoutsTableFields = (typeof FIELDS)[number];
+export const PAYOUT_TABLE_FIELDS = ['createdAt', ...AMOUNT_FIELDS] as const;
+export type PayoutsTableFields = (typeof PAYOUT_TABLE_FIELDS)[number];
 
-const _isAmountFieldKey = (key: (typeof FIELDS)[number]): key is (typeof AMOUNT_FIELDS)[number] => {
+const _isAmountFieldKey = (key: (typeof PAYOUT_TABLE_FIELDS)[number]): key is (typeof AMOUNT_FIELDS)[number] => {
     return AMOUNT_FIELDS.includes(key as (typeof AMOUNT_FIELDS)[number]);
 };
 
@@ -60,7 +60,7 @@ export const PayoutsTable: FC<PayoutsTableProps> = ({
     const isSmAndUpViewport = useResponsiveViewport(mediaQueries.up.sm);
 
     const getAmountFieldConfig = useCallback(
-        (key: (typeof FIELDS)[number]) => {
+        (key: (typeof PAYOUT_TABLE_FIELDS)[number]) => {
             const label = i18n.get(getLabel(key));
             if (_isAmountFieldKey(key)) {
                 return {
@@ -73,7 +73,7 @@ export const PayoutsTable: FC<PayoutsTableProps> = ({
     );
 
     const columns = useTableColumns({
-        fields: FIELDS,
+        fields: PAYOUT_TABLE_FIELDS,
         customColumns,
         columnConfig: useMemo(
             () => ({

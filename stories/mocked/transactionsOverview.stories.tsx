@@ -4,7 +4,7 @@ import { http, HttpResponse } from 'msw';
 import { TransactionsMeta } from '../components/transactionsOverview';
 import { Meta } from '@storybook/preact';
 import { endpoints } from '../../endpoints/endpoints';
-import { getMyCustomData } from './utils/customDataRequest';
+import { getCustomTransactionDataById, getMyCustomData } from './utils/customDataRequest';
 import { TRANSACTIONS } from '../../mocks/mock-data';
 
 const meta: Meta<ElementProps<typeof TransactionsOverview>> = { ...TransactionsMeta, title: 'Mocked/Transactions Overview' };
@@ -41,6 +41,8 @@ export const CustomColumns: ElementStory<typeof TransactionsOverview> = {
                     _product: 'Product',
                     _reference: 'Reference',
                     _button: 'Action',
+                    _country: 'Country',
+                    _summary: 'Summary',
                 },
             },
         },
@@ -67,12 +69,18 @@ export const CustomColumns: ElementStory<typeof TransactionsOverview> = {
                 },
             },
             details: {
-                fields: [{ key: '_product' }, { key: 'createdAt' }],
+                fields: [
+                    { key: 'paymentPspReference', visible: false },
+                    { key: '_store' },
+                    { key: '_product' },
+                    { key: '_reference', flex: 1.5 },
+                    { key: '_summary' },
+                    { key: '_button' },
+                    { key: '_country' },
+                ],
                 onDataRetrieve: data => {
                     return new Promise(resolve => {
-                        setTimeout(async () => {
-                            resolve((await getMyCustomData(data))[0] as any);
-                        }, 200);
+                        return resolve(getCustomTransactionDataById(data?.id));
                     });
                 },
             },

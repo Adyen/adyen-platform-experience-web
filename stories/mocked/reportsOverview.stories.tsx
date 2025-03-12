@@ -45,20 +45,6 @@ export const CustomColumns: ElementStory<typeof ReportsOverview> = {
             },
         },
         mockedApi: true,
-        columns: [
-            { key: 'createdAt' },
-            { key: 'reportType' },
-            { key: '_summary' },
-            { key: '_sendEmail', align: 'right' },
-            { key: 'reportFile', flex: 0.8 },
-        ],
-        onDataRetrieved: data => {
-            return new Promise(resolve => {
-                setTimeout(() => {
-                    resolve(getCustomReportsData(data));
-                }, 200);
-            });
-        },
         dataCustomization: {
             list: {
                 fields: [

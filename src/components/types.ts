@@ -92,6 +92,7 @@ export type DataGridCustomColumnConfig<k> = {
     key: k;
     flex?: number;
     align?: 'right' | 'left' | 'center';
+    visible?: boolean;
 };
 
 export type CustomColumn<T extends string> = {
@@ -141,7 +142,7 @@ export type CustomDataRetrieved = { [k: string]: CustomDataObject | Record<any, 
 export type OnDataRetrievedCallback<DataRetrieved, CallbackResponse = CustomDataRetrieved[]> = (data: DataRetrieved) => Promise<CallbackResponse>;
 
 export type DataCustomizationObject<Columns extends string, DataRetrieved, CallbackResponse> = {
-    fields: CustomColumn<StringWithAutocompleteOptions<Columns>>[] | StringWithAutocompleteOptions<Columns>[];
+    fields: CustomColumn<StringWithAutocompleteOptions<Columns>>[];
     onDataRetrieve?: OnDataRetrievedCallback<DataRetrieved, CallbackResponse>;
 };
 

@@ -1,5 +1,5 @@
 import './DataOverviewDetails.scss';
-import { useMemo } from 'preact/hooks';
+import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
 import { useConfigContext } from '../../../core/ConfigContext';
 import AdyenPlatformExperienceError from '../../../core/Errors/AdyenPlatformExperienceError';
 import { useFetch } from '../../../hooks/useFetch';
@@ -15,6 +15,8 @@ import { DetailsComponentProps, DetailsWithId, TransactionDetailData } from './t
 import Typography from '../Typography/Typography';
 import { TypographyVariant } from '../Typography/types';
 import useDataOverviewDetailsTitle from './useDataOverviewDetailsTitle';
+import { TX_DETAILS_RESERVED_FIELDS_SET } from '../../external/TransactionDetails/components/constants';
+import { PAYOUT_TABLE_FIELDS, PayoutsTableFields } from '../../external/PayoutsOverview/components/PayoutsTable/PayoutsTable';
 
 const ENDPOINTS_BY_TYPE = {
     transaction: 'getTransaction',
@@ -61,12 +63,27 @@ export default function DataOverviewDetails(props: ExternalUIComponentProps<Deta
         }
     }, [error, props.onContactSupport]);
 
-    const extraDetails =
-        (isDetailsWithId(props) && props.type === 'transaction') || props.type === 'payout' ? props.extraDetails : (EMPTY_OBJECT as CustomDataObject);
-
-    const extraData = (isDetailsWithId(props) && props.type === 'transaction') || props.type === 'payout' ? props.dataCustomization : undefined;
-
     const detailsData = details ?? data;
+
+    const [extraFields, setExtraFields] = useState<Record<string, any>>();
+
+    const getExtraFields = useCallback(async () => {
+        if (data && ((isDetailsWithId(props) && props.type === 'transaction') || props.type === 'payout')) {
+            const detailsData = await props.dataCustomization?.details?.onDataRetrieve?.(data);
+
+            setExtraFields(
+                props.dataCustomization?.details?.fields.reduce((acc, field) => {
+                    return TX_DETAILS_RESERVED_FIELDS_SET.has(field.key as any) || PAYOUT_TABLE_FIELDS.includes(field.key as any)
+                        ? acc
+                        : { ...acc, ...(detailsData?.[field.key] ? { [field.key]: detailsData[field.key] } : {}) };
+                }, {} as Record<string, any>)
+            );
+        }
+    }, [data, props]);
+
+    useEffect(() => {
+        void getExtraFields();
+    }, [data, getExtraFields, props]);
 
     return (
         <div className="adyen-pe-overview-details">
@@ -86,7 +103,6 @@ export default function DataOverviewDetails(props: ExternalUIComponentProps<Deta
 
             {props.type === 'transaction' && (
                 <TransactionData
-                    dataCustomization={{ details: extraData }}
                     transaction={
                         detailsData
                             ? ({
@@ -97,7 +113,7 @@ export default function DataOverviewDetails(props: ExternalUIComponentProps<Deta
                     }
                     error={!!(error && errorProps)}
                     isFetching={isFetching}
-                    extraFields={extraDetails}
+                    extraFields={extraFields}
                 />
             )}
             {props.type === 'payout' && detailsData && (
@@ -106,7 +122,7 @@ export default function DataOverviewDetails(props: ExternalUIComponentProps<Deta
                     payout={detailsData as IPayoutDetails}
                     balanceAccountDescription={props?.balanceAccountDescription || balanceAccounts?.[0]?.description}
                     isFetching={isFetching}
-                    extraFields={extraDetails}
+                    extraFields={extraFields}
                 />
             )}
         </div>
