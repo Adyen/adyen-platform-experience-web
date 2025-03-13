@@ -1,9 +1,9 @@
 import './DataOverviewDetails.scss';
 import { useMemo } from 'preact/hooks';
-import { useAuthContext } from '../../../core/Auth';
+import { useConfigContext } from '../../../core/ConfigContext';
 import AdyenPlatformExperienceError from '../../../core/Errors/AdyenPlatformExperienceError';
 import { useFetch } from '../../../hooks/useFetch';
-import { IPayoutDetails } from '../../../types';
+import { IBalanceAccountBase, IPayoutDetails } from '../../../types';
 import { EMPTY_OBJECT } from '../../../utils';
 import { PayoutData } from '../../external/PayoutDetails/components/PayoutData';
 import TransactionData from '../../external/TransactionDetails/components/TransactionData';
@@ -23,10 +23,10 @@ const ENDPOINTS_BY_TYPE = {
 
 const isDetailsWithId = (props: DetailsComponentProps): props is DetailsWithId => !('data' in props);
 
-export default function DataOverviewDetails(props: ExternalUIComponentProps<DetailsComponentProps>) {
+export default function DataOverviewDetails(props: ExternalUIComponentProps<DetailsComponentProps> & { balanceAccount?: IBalanceAccountBase }) {
     const details = useMemo(() => (isDetailsWithId(props) ? null : props.data), [props]);
     const dataId = useMemo(() => (isDetailsWithId(props) ? props.id : null), [props]);
-    const getDetail = useAuthContext().endpoints[ENDPOINTS_BY_TYPE[props.type]] as any; // [TODO]: Fix type and remove 'as any'
+    const getDetail = useConfigContext().endpoints[ENDPOINTS_BY_TYPE[props.type]] as any; // [TODO]: Fix type and remove 'as any'
 
     const { hideTitle, title } = useDataOverviewDetailsTitle(props);
 
@@ -51,8 +51,8 @@ export default function DataOverviewDetails(props: ExternalUIComponentProps<Deta
         )
     );
 
-    const balanceAccountId = props.type === 'payout' ? props.balanceAccountDescription : data?.balanceAccountId;
-    const hasBalanceAccountDetail = props.type === 'payout' ? props?.balanceAccountDescription : details?.balanceAccount?.description;
+    const balanceAccountId = props.type === 'payout' ? props.id : data?.balanceAccountId;
+    const hasBalanceAccountDetail = props.type === 'payout' ? props?.balanceAccountDescription : props?.balanceAccount;
     const { balanceAccounts } = useBalanceAccounts(balanceAccountId, !hasBalanceAccountDetail);
 
     const errorProps = useMemo(() => {
@@ -86,14 +86,14 @@ export default function DataOverviewDetails(props: ExternalUIComponentProps<Deta
                     transaction={
                         detailsData
                             ? ({
-                                  ...extraDetails,
                                   ...(detailsData || EMPTY_OBJECT),
-                                  balanceAccount: details?.balanceAccount || balanceAccounts?.[0],
+                                  balanceAccount: props?.balanceAccount || balanceAccounts?.[0],
                               } as TransactionDetailData)
                             : undefined
                     }
                     error={!!(error && errorProps)}
                     isFetching={isFetching}
+                    extraFields={extraDetails}
                 />
             )}
             {props.type === 'payout' && detailsData && (

@@ -133,4 +133,11 @@ export const enum FilterParam {
     MAX_AMOUNT = 'maxAmount',
 }
 
-export type ExternalComponentType = 'transactions' | 'transactionDetails' | 'payouts' | 'payoutDetails' | 'reports';
+export type ExternalComponentType =
+    | 'transactions'
+    | 'transactionDetails'
+    | 'payouts'
+    | 'payoutDetails'
+    | 'reports'
+    | 'capitalOverview'
+    | 'capitalOffer';

@@ -7,6 +7,7 @@ import './ErrorMessageDisplay.scss';
 import { JSXInternal } from 'preact/src/jsx';
 import noResults from '../../../images/no-results.svg';
 import Button from '../Button';
+import cx from 'classnames';
 
 export const IMAGE_BREAKPOINT_SIZES = {
     md: 680,
@@ -23,6 +24,9 @@ type ErrorMessageDisplayProps = {
     refreshComponent?: boolean;
     onContactSupport?: () => void;
     translationValues?: { [k in TranslationKey]?: JSXInternal.Element | null };
+    absolutePosition?: boolean;
+    outlined?: boolean;
+    renderSecondaryButton?: () => JSXInternal.Element;
 };
 
 export const ErrorMessageDisplay = ({
@@ -35,9 +39,11 @@ export const ErrorMessageDisplay = ({
     refreshComponent,
     onContactSupport,
     translationValues,
+    absolutePosition = true,
+    outlined = true,
+    renderSecondaryButton,
 }: ErrorMessageDisplayProps) => {
     const { i18n, updateCore } = useCoreContext();
-
     const renderMessage = useCallback(
         (errorMessage: TranslationKey | TranslationKey[]) => {
             if (Array.isArray(errorMessage)) {
@@ -62,7 +68,14 @@ export const ErrorMessageDisplay = ({
     );
 
     return (
-        <div className={`adyen-pe-error-message-display ${centered ? 'adyen-pe-error-message-display--centered' : ''}`}>
+        <div
+            className={cx(['adyen-pe-error-message-display'], {
+                'adyen-pe-error-message-display--absolute-position': absolutePosition,
+                'adyen-pe-error-message-display--outlined': outlined,
+                'adyen-pe-error-message-display--with-background': !outlined,
+                'adyen-pe-error-message-display--centered': centered,
+            })}
+        >
             {(imageDesktop || imageMobile || withImage) && (
                 <div className="adyen-pe-error-message-display__illustration">
                     <picture>
@@ -75,9 +88,10 @@ export const ErrorMessageDisplay = ({
             <Typography variant={TypographyVariant.TITLE}>{i18n.get(title)}</Typography>
             {message && <Typography variant={TypographyVariant.BODY}>{renderMessage(message)}</Typography>}
 
-            {(onContactSupport || refreshComponent) && (
+            {(onContactSupport || refreshComponent || renderSecondaryButton) && (
                 <div className={'adyen-pe-error-message-display__button'}>
-                    {onContactSupport && <Button onClick={onContactSupport}>{i18n.get('reachOutToSupport')}</Button>}
+                    {renderSecondaryButton && renderSecondaryButton()}
+                    {onContactSupport && <Button onClick={onContactSupport}>{i18n.get('contactSupport')}</Button>}
                     {!onContactSupport && refreshComponent && <Button onClick={updateCore}>{i18n.get('refresh')}</Button>}
                 </div>
             )}

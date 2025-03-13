@@ -1,4 +1,4 @@
-import type { SessionRequest } from './Auth';
+import type { SessionRequest } from './ConfigContext';
 import type { CustomTranslations as Translations, TranslationSourceRecord } from '../translations';
 import type { KeyOfRecord, WithReplacedUnderscoreOrDash } from '../utils/types';
 import { FALLBACK_LOCALE } from './Localization/constants/localization';

@@ -24,7 +24,7 @@ const columns = [
 
 interface DataGridTestContext {
     screen: any;
-    mockEventHandler: Mock<any, any>;
+    mockEventHandler: Mock<any>;
     user: ReturnType<(typeof userEvent)['setup']>;
     getRow: (index: number) => any;
 }

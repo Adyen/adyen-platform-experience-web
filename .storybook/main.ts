@@ -17,7 +17,7 @@ const config: StorybookConfig = {
 
         return mergeConfig(config, {
             server: {
-                proxy: realApiProxies(apiConfigs),
+                proxy: realApiProxies(apiConfigs, process.env.VITE_MODE),
             },
             plugins: [
                 process.env.VITE_MODE &&

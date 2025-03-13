@@ -80,7 +80,7 @@ function InputBase(
                 aria-describedby={isCollatingErrors ? undefined : `${uniqueId}${ARIA_ERROR_SUFFIX}`}
                 aria-invalid={isInvalid}
                 onInput={handleInput}
-                onBlur={handleBlur}
+                onBlurCapture={handleBlur}
                 onFocus={handleFocus}
                 onKeyUp={handleKeyUp}
                 disabled={disabled}

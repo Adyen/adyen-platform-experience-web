@@ -30,6 +30,11 @@
             position: absolute;
             top: 0;
             z-index: 100;
+
+            &#{$adyen-pe-expandable-card}__container--in-flow[aria-expanded='true'] {
+                margin-top: calc(var(--adyen-pe-expandable-card-height, 0) * -1);
+                position: relative;
+            }
         }
 
         &--hidden {

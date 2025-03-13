@@ -13,13 +13,13 @@ export const StructuredListLayouts = ['3-9', '4-8', '5-7', '6-6', '7-5', '8-4'] 
 
 const DEFAULT_LAYOUT = '6-6';
 export default function StructuredList({
-    className,
     items,
     highlightable,
     renderValue,
     renderLabel,
     layout = DEFAULT_LAYOUT,
     grid = true,
+    classNames,
 }: StructuredListProps) {
     const [LABEL_COL_CLASS, VALUE_COL_CLASS] = useMemo(() => {
         return layout.split('-').map(w => `${SL_GRID_CLASS}--width-${w}-of-12`);
@@ -28,7 +28,7 @@ export default function StructuredList({
     const { i18n } = useCoreContext();
 
     return (
-        <div aria-label={i18n.get('structuredList')} className={cx(SL_BASE_CLASS, className)}>
+        <div aria-label={i18n.get('structuredList')} className={cx(SL_BASE_CLASS, classNames)}>
             {formattedItems.map((item, index) => (
                 <dl
                     key={`${index}_${item.id || '0'}`}
@@ -38,10 +38,14 @@ export default function StructuredList({
                     })}
                 >
                     <dt className={cx(SL_LABEL_CLASS, LABEL_COL_CLASS)}>
-                        {renderLabel ? renderLabel(item.label) : <Typography variant={TypographyVariant.BODY}>{item.label}</Typography>}
+                        {renderLabel ? (
+                            renderLabel(item.label, items[index]!.key)
+                        ) : (
+                            <Typography variant={TypographyVariant.BODY}>{item.label}</Typography>
+                        )}
                     </dt>
                     <dd aria-label={`${i18n.get(item.key as TranslationKey)} ${i18n.get('value')}`} className={cx(SL_CONTENT_CLASS, VALUE_COL_CLASS)}>
-                        {renderValue ? renderValue(item.value) : <Typography variant={TypographyVariant.BODY}>{item.value}</Typography>}
+                        {renderValue ? renderValue(item.value, item.key) : <Typography variant={TypographyVariant.BODY}>{item.value}</Typography>}
                     </dd>
                 </dl>
             ))}

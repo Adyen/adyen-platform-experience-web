@@ -1,12 +1,12 @@
 import { AdyenPlatformExperience, TransactionDetails, all_locales } from '../../../src';
 import '../../utils/createPages';
 import '../../assets/style/style.scss';
-import { enableServerInMockedMode } from '../../../mocks/mock-server/utils';
+import { enableServerInMockedMode } from '../../../mocks/mock-server/utils/utils';
 import sessionRequest from '../../utils/sessionRequest';
 import { createLanguageButtons } from '../../utils/createLanguageButtons';
 import { getDefaultID, getSearchParameters } from '../../utils/utils';
 
-const DEFAULT_TRANSACTION_ID = getDefaultID('1VVF0D5V3709DX6D');
+const DEFAULT_TRANSACTION_ID = getDefaultID('B78I76Y77072H126');
 
 enableServerInMockedMode()
     .then(async () => {

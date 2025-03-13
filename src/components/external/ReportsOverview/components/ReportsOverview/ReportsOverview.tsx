@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo } from 'preact/hooks';
-import { useAuthContext } from '../../../../../core/Auth';
+import { useConfigContext } from '../../../../../core/ConfigContext';
 import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatformExperienceError';
 import { IBalanceAccountBase, IReport } from '../../../../../types';
 import { isFunction } from '../../../../../utils';
@@ -10,7 +10,7 @@ import DateFilter from '../../../../internal/FilterBar/filters/DateFilter/DateFi
 import BalanceAccountSelector from '../../../../internal/FormFields/Select/BalanceAccountSelector';
 import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '../../../../internal/Pagination/constants';
 import { useCursorPaginatedRecords } from '../../../../internal/Pagination/hooks';
-import { DataOverviewHeader } from '../../../../internal/DataOverviewDisplay/DataOverviewHeader';
+import { Header } from '../../../../internal/Header';
 import { ExternalUIComponentProps, FilterParam, ReportsOverviewComponentProps } from '../../../../types';
 import { ReportsTable } from '../ReportsTable/ReportsTable';
 import { BASE_CLASS, EARLIEST_PAYOUT_SINCE_DATE } from './constants';
@@ -27,7 +27,7 @@ export const ReportsOverview = ({
 }: ExternalUIComponentProps<
     ReportsOverviewComponentProps & { balanceAccounts: IBalanceAccountBase[] | undefined; isLoadingBalanceAccount: boolean }
 >) => {
-    const { getReports: reportsEndpointCall } = useAuthContext().endpoints;
+    const { getReports: reportsEndpointCall } = useConfigContext().endpoints;
     const { activeBalanceAccount, balanceAccountSelectionOptions, onBalanceAccountSelection } = useBalanceAccountSelection(balanceAccounts);
     const { defaultParams, nowTimestamp, refreshNowTimestamp } = useDefaultOverviewFilterParams('reports', activeBalanceAccount);
 
@@ -73,9 +73,9 @@ export const ReportsOverview = ({
 
     return (
         <div className={BASE_CLASS}>
-            <DataOverviewHeader hideTitle={hideTitle} titleKey="reportsTitle" descriptionKey="reportsNotice">
+            <Header hideTitle={hideTitle} titleKey="reportsTitle" subtitleKey="reportsNotice">
                 <FilterBarMobileSwitch {...filterBarState} />
-            </DataOverviewHeader>
+            </Header>
             <FilterBar {...filterBarState}>
                 <BalanceAccountSelector
                     activeBalanceAccount={activeBalanceAccount}

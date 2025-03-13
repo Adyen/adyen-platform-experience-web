@@ -1,5 +1,4 @@
 import cx from 'classnames';
-import { Ref } from 'preact';
 import { memo } from 'preact/compat';
 import Icon from '../../Icon';
 import Button from '../../Button/Button';
@@ -8,6 +7,7 @@ import { fixedForwardRef } from '../../../../utils/preact';
 import { BUTTON_CLASS, BUTTON_DECREASE_CLASS, BUTTON_INCREASE_CLASS } from '../constants';
 import { SpinButtonControl as _SpinButtonControl } from '../types';
 import { ButtonVariant } from '../../Button/types';
+import { Ref } from 'preact';
 
 export type SpinButtonControlProps = {
     control: _SpinButtonControl;

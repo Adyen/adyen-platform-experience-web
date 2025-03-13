@@ -3,7 +3,7 @@ import DataOverviewDetailsSkeleton from '../../../../internal/DataOverviewDetail
 import TransactionDataContent from './TransactionDataContent';
 import type { TransactionDataProps } from '../../types';
 
-export const TransactionData = ({ error, isFetching, transaction }: TransactionDataProps) => {
+export const TransactionData = ({ error, isFetching, transaction, extraFields }: TransactionDataProps) => {
     const isLoading = boolOrFalse(isFetching);
     const isWithoutContent = !(transaction || error);
     const showLoadingIndicator = isLoading || isWithoutContent;
@@ -13,7 +13,7 @@ export const TransactionData = ({ error, isFetching, transaction }: TransactionD
     }
 
     if (transaction) {
-        return <TransactionDataContent transaction={transaction} />;
+        return <TransactionDataContent transaction={transaction} extraFields={extraFields} />;
     }
 
     return null;

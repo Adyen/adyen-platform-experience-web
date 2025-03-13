@@ -12,7 +12,13 @@ import { SelectProps } from '../../../../internal/FormFields/Select/types';
 const TransactionRefundReason = () => {
     const { i18n } = useCoreContext();
     const { interactionsDisabled, refundReason, setRefundReason } = useTransactionRefundContext();
-    const refundReasons = useMemo(() => Object.freeze(REFUND_REASONS.map(reason => ({ id: reason, name: i18n.get(reason) }))), [i18n]);
+    const refundReasons = useMemo(
+        () =>
+            Object.freeze(
+                REFUND_REASONS.map(reason => ({ id: reason, name: i18n.has(`refundReason.${reason}`) ? i18n.get(`refundReason.${reason}`) : reason }))
+            ),
+        [i18n]
+    );
 
     const onReasonChanged = useCallback<SelectProps<{ id: RefundReason; name: string }>['onChange']>(
         evt => {

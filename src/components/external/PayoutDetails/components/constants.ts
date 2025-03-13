@@ -1,4 +1,5 @@
 export const PD_BASE_CLASS = 'adyen-pe-payout-data';
+export const PD_TITLE_CONTAINER_CLASS = `${PD_BASE_CLASS}__title-container`;
 export const PD_TITLE_CLASS = `${PD_BASE_CLASS}__title`;
 export const PD_TITLE_BA_CLASS = `${PD_BASE_CLASS}__title--ba-id`;
 export const PD_CONTENT_CLASS = `${PD_BASE_CLASS}__content`;

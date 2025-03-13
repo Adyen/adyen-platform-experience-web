@@ -7,10 +7,18 @@ export type ComponentStory<T extends ComponentType<any> | keyof JSXInternal.Intr
     | StoryObj<ComponentProps<T>>
     | StoryFn<ComponentProps<T>>;
 
-type GlobalStoriesProps = { mockedApi?: boolean; balanceAccountId?: string; component: any; coreOptions?: Partial<CoreOptions> };
+type GlobalStoriesProps = {
+    mockedApi?: boolean;
+    balanceAccountId?: string;
+    component: any;
+    coreOptions?: Partial<CoreOptions>;
+    skipDecorators?: boolean;
+};
 
 export type ElementProps<T extends new (...args: any) => any> = Omit<ConstructorParameters<T>[0] & GlobalStoriesProps, 'core'>;
 
 export type ElementStory<T extends new (...args: any) => any, ExtraProps = {}> = StoryObj<ExtraProps & ElementProps<T> & GlobalStoriesProps>;
 
 export type SessionControls = { session: { roles: string[]; accountHolderId?: string } };
+
+export type SetupControls = { legalEntity: { regions: { type: string; value: string }[]; countryCode: string } };

@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'preact/hooks';
 import { EMPTY_OBJECT } from '../../../../../utils';
-import { useAuthContext } from '../../../../../core/Auth';
+import { useConfigContext } from '../../../../../core/ConfigContext';
 import { useFetch } from '../../../../../hooks/useFetch';
 import { OperationParameters } from '../../../../../types/api/endpoints';
 import { WithPartialField } from '../../../../../utils/types';
@@ -31,7 +31,7 @@ const TransactionTotals = memo(
         currencies,
         fullWidth,
     }: WithPartialField<TransactionTotalsProps, 'balanceAccountId' | 'minAmount' | 'maxAmount'>) => {
-        const { getTransactionTotals } = useAuthContext().endpoints;
+        const { getTransactionTotals } = useConfigContext().endpoints;
 
         const fetchCallback = useCallback(async () => {
             return getTransactionTotals?.(EMPTY_OBJECT, {

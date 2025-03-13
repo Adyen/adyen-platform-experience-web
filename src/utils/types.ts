@@ -45,3 +45,11 @@ type StrictUnionHelper<T, TAll> = T extends any ? T & Partial<Record<Exclude<Key
 export type StrictUnion<T> = StrictUnionHelper<T, T>;
 
 export type StringWithAutocompleteOptions<T> = T | (string & {});
+
+type _NestedObjectProp<T extends object, K extends keyof T> = K extends K ? (T[K] extends object ? K : never) : never;
+
+type NestedObjectProp<T extends object> = Extract<keyof T, _NestedObjectProp<T, keyof T>>;
+
+export type DeepReadonly<T> = T extends object
+    ? Omit<Readonly<T>, NestedObjectProp<T>> & Readonly<{ [K in NestedObjectProp<T>]: DeepReadonly<T[K]> }>
+    : T;

@@ -1,7 +1,7 @@
-import { Ref, VNode } from 'preact';
+import { ComponentChildren, Ref } from 'preact';
 import { forwardRef } from 'preact/compat';
 
-type _RenderResult = VNode | null;
+type _RenderResult = ComponentChildren | null;
 
 /**
  * Alternative to using `forwardRef` but with fixed type inference.

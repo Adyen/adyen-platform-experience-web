@@ -2,9 +2,9 @@ import { useMemo } from 'preact/hooks';
 import useCoreContext from '../../../core/Context/useCoreContext';
 import { TranslationKey } from '../../../translations';
 import { uuid } from '../../../utils';
-import { ListValue } from './types';
+import { ListValue, StructuredListItem } from './types';
 
-export const useStructuredListItems = (items: { key: TranslationKey; value: ListValue }[]) => {
+export const useStructuredListItems = (items: StructuredListItem[]) => {
     const { i18n } = useCoreContext();
     return useMemo(() => {
         return items.map(item => {

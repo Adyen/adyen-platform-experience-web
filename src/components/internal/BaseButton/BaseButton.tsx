@@ -6,24 +6,22 @@ import { useMemo } from 'preact/hooks';
 import { ButtonProps } from './types';
 import './BaseButton.scss';
 
-function BaseButton(
-    { disabled = false, onClick, classNameModifiers = [], type = 'button', children, className, fullWidth, ...restAttributes }: ButtonProps,
-    ref: Ref<HTMLButtonElement>
-) {
-    const classNameValue = useMemo(() => parseClassName('', className) || '', [className]);
-    const disabledValue = useMemo(() => parseBooleanProp(disabled), [disabled]);
+function BaseButton(props: ButtonProps, ref: Ref<HTMLButtonElement>) {
+    const classNameValue = useMemo(() => parseClassName('', props.className) || '', [props.className]);
+    const disabledValue = useMemo(() => parseBooleanProp(props.disabled || false), [props.disabled]);
 
-    const { classes, click } = useButton(
+    const { click, allProps } = useButton(
         classNameValue,
-        [...classNameModifiers, ...(fullWidth ? ['full-width'] : [])],
+        [...(props.classNameModifiers || []), ...(props.fullWidth ? ['full-width'] : [])],
         DEFAULT_BASE_BUTTON_CLASSNAME,
         disabledValue,
-        onClick
+        props,
+        props.onClick
     );
 
     return (
-        <button className={classes} type={type} disabled={disabled} onClick={click} ref={ref} {...restAttributes}>
-            {children}
+        <button type={props.type || 'button'} onClick={click} ref={ref} {...allProps}>
+            {props.children}
         </button>
     );
 }

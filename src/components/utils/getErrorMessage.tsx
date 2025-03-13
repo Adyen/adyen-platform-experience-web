@@ -24,7 +24,7 @@ export const getErrorMessage = (
                 title: 'somethingWentWrong',
                 message: [errorMessage, secondaryErrorMessage],
                 translationValues: {
-                    [secondaryErrorMessage]: error.requestId ? <CopyText text={error.requestId} /> : null,
+                    [secondaryErrorMessage]: error.requestId ? <CopyText textToCopy={error.requestId} /> : null,
                 },
                 onContactSupport,
             };

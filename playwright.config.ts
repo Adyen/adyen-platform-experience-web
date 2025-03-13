@@ -36,6 +36,7 @@ const config: PlaywrightTestConfig = {
 
         trace: 'on-first-retry',
         headless: !!process.env.CI,
+        timezoneId: 'UTC',
     },
 
     /* Configure projects for major browsers */
@@ -47,7 +48,7 @@ const config: PlaywrightTestConfig = {
                 // Use the pre-installed browser already on the machine
                 channel: 'chrome',
                 launchOptions: {
-                    args: process.env.PWDEBUG ? ['--auto-open-devtools-for-tabs'] : [],
+                    args: process.env.PWDEBUG ? ['--auto-open-devtools-for-tabs'] : ['--headless=new'],
                 },
             },
         },
@@ -56,8 +57,9 @@ const config: PlaywrightTestConfig = {
             testDir: 'tests/integration',
             use: {
                 ...devices['Desktop Chrome'],
+                channel: 'chromium',
                 launchOptions: {
-                    args: process.env.PWDEBUG ? ['--auto-open-devtools-for-tabs'] : [],
+                    args: process.env.PWDEBUG ? ['--auto-open-devtools-for-tabs'] : ['--headless=new'],
                 },
             },
         },
@@ -68,6 +70,17 @@ const config: PlaywrightTestConfig = {
                 ...devices['Desktop Firefox'],
                 launchOptions: {
                     args: process.env.PWDEBUG ? ['--devtools'] : [],
+                },
+            },
+        },
+        {
+            name: 'local-chrome-e2e',
+            testDir: 'tests/e2e',
+            use: {
+                // Use the pre-installed browser already on the machine
+                channel: 'chrome',
+                launchOptions: {
+                    args: process.env.PWDEBUG ? ['--auto-open-devtools-for-tabs'] : [],
                 },
             },
         },

@@ -88,8 +88,20 @@ export function formatCustomTranslations(customTranslations: CustomTranslations 
     }, {} as CustomTranslations);
 }
 
-const replaceTranslationValues = (translation: string, values?: Record<string, any>) => {
-    return translation.replace(/%{(\w+)}/g, (_, k) => values?.[k] || '');
+const replaceTranslationValues = (translation: string, values?: TranslationOptions['values']) => {
+    if (isFunction(values)) {
+        const repetitions = new Map<string, number>();
+        let placeholderIndex = -1;
+
+        return translation.replace(/%{(\w+)}/g, (_, placeholder) => {
+            let repetitionIndex = repetitions.get(placeholder) ?? -1;
+            const replacementValue = values(placeholder, ++placeholderIndex, ++repetitionIndex) ?? '';
+            repetitions.set(placeholder, repetitionIndex);
+            return replacementValue;
+        });
+    }
+
+    return translation.replace(/%{(\w+)}/g, (_, placeholder) => values?.[placeholder] ?? '');
 };
 
 /**

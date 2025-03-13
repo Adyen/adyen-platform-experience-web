@@ -24,7 +24,8 @@ import { boolOrTrue, isFunction } from '../../../utils';
 import { isFocusable, SELECTORS } from '../../../primitives/dom/tabbableRoot/tabbable';
 import classNames from 'classnames';
 import { createPortal, PropsWithChildren } from 'preact/compat';
-import { Ref, useCallback, useEffect, useMemo, useRef } from 'preact/hooks';
+import { useCallback, useEffect, useMemo, useRef } from 'preact/hooks';
+import { Ref } from 'preact';
 import './Popover.scss';
 
 const findFirstFocusableElement = (root: Element) => {

@@ -31,12 +31,14 @@ const _BaseRefundAmountInput = ({
     currency,
     disabled,
     errorMessage,
+    errorMessageArg,
     onInput,
     value,
 }: {
     currency: string;
     disabled?: boolean;
     errorMessage: TranslationKey | null;
+    errorMessageArg?: string;
     onBlur?: (evt: h.JSX.TargetedEvent<HTMLInputElement>) => unknown;
     onInput?: (evt: h.JSX.TargetedEvent<HTMLInputElement>) => unknown;
     value: string | number;
@@ -44,6 +46,8 @@ const _BaseRefundAmountInput = ({
     const { i18n } = useCoreContext();
     const inputIdentifier = useRef(uniqueId());
     const labelIdentifier = useRef(uniqueId());
+
+    const error = errorMessage ? (errorMessageArg ? i18n.get(errorMessage, { values: { amount: errorMessageArg } }) : i18n.get(errorMessage)) : '';
 
     return (
         <div className={TX_DATA_CONTAINER}>
@@ -77,10 +81,10 @@ const _BaseRefundAmountInput = ({
                     />
                 </label>
                 {errorMessage && (
-                    <div className="adyen-pe-input__invalid-value" id={`${inputIdentifier.current}${ARIA_ERROR_SUFFIX}`}>
+                    <div className="adyen-pe-input__refund-invalid-value" id={`${inputIdentifier.current}${ARIA_ERROR_SUFFIX}`}>
                         <CloseCircle />
                         <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY}>
-                            {i18n.get(errorMessage)}
+                            {error}
                         </Typography>
                     </div>
                 )}
@@ -94,18 +98,18 @@ export const TransactionRefundFullAmountInput = () => {
     return <_BaseRefundAmountInput currency={currency} errorMessage={null} value={formatAmount(availableAmount, currency)} disabled />;
 };
 
-export const TransactionRefundPartialAmountInput = () => {
+export const TransactionRefundPartialAmountInput = ({ locale }: { locale: string }) => {
     const { availableAmount, currency, interactionsDisabled, setAmount } = useTransactionRefundContext();
     const [errorMessage, setErrorMessage] = useState<TranslationKey | null>(null);
     const [refundAmount, setRefundAmount] = useState(`${formatAmount(availableAmount, currency)}`);
-
+    const { i18n } = useCoreContext();
     const computeRefundAmount = useMemo(() => {
         const exponent = getCurrencyExponent(currency);
         return (value: string) => Math.trunc(+`${parseFloat(value)}e${exponent}`) || 0;
     }, [currency]);
 
     const onInput = (evt: h.JSX.TargetedEvent<HTMLInputElement>) => {
-        const value = evt.currentTarget.value.trim();
+        let value = evt.currentTarget.value.trim();
         const amount = computeRefundAmount(value);
         let message: typeof errorMessage = null;
 
@@ -113,6 +117,24 @@ export const TransactionRefundPartialAmountInput = () => {
             if (amount < 0) message = 'noNegativeNumbersAllowed';
             if (amount > availableAmount) message = 'refundAmount.excess';
         } else message = 'refundAmount.required';
+
+        // Get the decimal separator based on the user's locale
+        const decimalSeparator = 1.1.toLocaleString(locale).match(/\d(.*?)\d/)?.[1] || '.';
+        // Split the input value at the decimal separator
+        const parts = value.split(decimalSeparator);
+
+        if (parts.length === 2) {
+            const exponent = getCurrencyExponent(currency);
+
+            const integerPart = parts[0]!;
+            let decimalPart = parts[1]!;
+
+            if (decimalPart.length >= exponent) {
+                decimalPart = decimalPart.substring(0, exponent);
+                value = integerPart + decimalSeparator + decimalPart;
+                evt.currentTarget.value = value;
+            }
+        }
 
         setRefundAmount(value);
         setErrorMessage(message);
@@ -123,6 +145,7 @@ export const TransactionRefundPartialAmountInput = () => {
         <_BaseRefundAmountInput
             currency={currency}
             errorMessage={errorMessage}
+            errorMessageArg={i18n.amount(availableAmount, currency)}
             onInput={onInput}
             value={refundAmount}
             disabled={interactionsDisabled}

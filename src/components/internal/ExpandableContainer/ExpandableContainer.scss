@@ -1,0 +1,15 @@
+@use '../../../style';
+
+.adyen-pe-expandable-container {
+    &__content {
+        margin-bottom: style.token(spacer-040);
+    }
+
+    &__toggle-button-icon {
+        display: flex;
+        font-size: 16px;
+        justify-content: center;
+        line-height: 0;
+        width: 100%;
+    }
+}

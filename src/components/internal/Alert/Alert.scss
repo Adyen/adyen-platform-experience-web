@@ -8,9 +8,9 @@
     box-sizing: border-box;
     container-type: inline-size;
     display: flex;
-    gap: style.token(spacer-070);
+    gap: style.token(spacer-080);
     max-width: 700px;
-    padding: style.token(spacer-070);
+    padding: style.token(spacer-080);
     width: 100%;
 
     @container (min-width: 460px) {
@@ -51,6 +51,17 @@
 
         .adyen-pe-button--tertiary:hover {
             background-color: unset !important;
+        }
+    }
+
+    &--tip {
+        #{$adyen-pe-alert}__icon {
+            height: style.token(spacer-080);
+        }
+
+        &#{$adyen-pe-alert} {
+            gap: style.token(spacer-060);
+            padding: style.token(spacer-050) style.token(spacer-060);
         }
     }
 

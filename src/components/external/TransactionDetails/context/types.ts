@@ -1,11 +1,12 @@
-import { REFUND_REASONS } from './constants';
 import type { PropsWithChildren } from 'preact/compat';
 import type { ButtonActionObject } from '../../../internal/Button/ButtonActions/types';
-import type { ILineItem, ITransaction } from '../../../../types';
+import { ILineItem, IRefundReason } from '../../../../types';
 
 export const enum ActiveView {
     DETAILS,
     REFUND,
+    REFUND_SUCCESS,
+    REFUND_ERROR,
 }
 
 export const enum RefundedState {
@@ -32,7 +33,7 @@ export const enum RefundType {
     FULL = 'full',
 }
 
-export type RefundReason = (typeof REFUND_REASONS)[number];
+export type RefundReason = IRefundReason;
 
 type _TransactionDataContextBase<T extends TransactionDataContextProviderProps> = Omit<T, _TransactionDataContextExcludedProps> & {
     primaryAction: () => void;

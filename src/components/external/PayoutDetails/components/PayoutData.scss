@@ -1,6 +1,11 @@
 @use '../../../../style';
 
 .adyen-pe-payout-data {
+    &__title-container {
+        display: flex;
+        gap: style.token(spacer-050);
+    }
+
     &__title {
         display: grid;
         gap: style.token(spacer-020);
@@ -25,6 +30,10 @@
         background-color: style.token(color-background-secondary);
         margin: 0 calc(var(--adyen-pe-data-details-padding) * -1);
         padding: style.token(spacer-040) var(--adyen-pe-data-details-padding);
+
+        .adyen-pe-card__header {
+            background-color: style.token(color-background-secondary);
+        }
 
         &--card-title {
             color: style.token(color-label-secondary);

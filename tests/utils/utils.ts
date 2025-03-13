@@ -71,6 +71,22 @@ export const applyDateFilter = (page: Page, options?: ApplyDateFilterOptions) =>
     };
 };
 
-export const goToPage = async ({ page, id }: { page: Page; id: string }) => {
-    await page.goto(`http://localhost:${process.env.PLAYGROUND_PORT}/iframe.html?id=${id}`);
+export const goToStory = async (page: Page, params: { id: string; args?: Record<string, string> }) => {
+    const baseURL = `http://localhost:${process.env.PLAYGROUND_PORT}/iframe.html`;
+    const { args, ...restOfParams } = params;
+    const queryParams = new URLSearchParams({
+        ...restOfParams,
+        ...(args
+            ? {
+                  args: Object.entries(args)
+                      .map(entry => entry.join(':'))
+                      .join(';'),
+              }
+            : {}),
+    });
+    await page.goto(`${baseURL}?${queryParams.toString()}`);
+};
+
+export const setTime = async (page: Page) => {
+    await page.clock.setFixedTime('2025-01-01T00:00:00.00Z');
 };

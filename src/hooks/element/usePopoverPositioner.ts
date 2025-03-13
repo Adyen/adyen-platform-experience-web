@@ -1,9 +1,11 @@
 import { PopoverContainerPosition, PopoverContainerVariant } from '../../components/internal/Popover/types';
 import getIntersectionObserver from '../../components/internal/Popover/utils/utils';
-import { MutableRef, Ref, useCallback, useEffect, useRef, useState } from 'preact/hooks';
+import { MutableRef, useCallback, useEffect, useRef, useState } from 'preact/hooks';
+import { Ref } from 'preact';
 import type { Reflexable } from '../../primitives/reactive/reflex';
 import type { Nullable } from '../../utils/types';
 import useReflex from '../useReflex';
+import { isRefObject } from '../../primitives/reactive/reflex/helpers';
 
 const calculateOffset = ({
     popover,
@@ -172,7 +174,7 @@ const usePopoverPositioner = (
 
                     if (initialPosition) setInitialPosition(false);
 
-                    if (variant && variant === PopoverContainerVariant.TOOLTIP && arrowRef) {
+                    if (variant && variant === PopoverContainerVariant.TOOLTIP && arrowRef && isRefObject(arrowRef)) {
                         arrowRef.current?.setAttribute('data-popover-placement', currentPosition);
                     }
                 }

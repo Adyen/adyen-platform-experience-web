@@ -1,7 +1,7 @@
 import createDuplexTransactionNavigator from './transactionNavigator/createDuplexTransactionNavigator';
 import type { TransactionDataContentProps } from '../../components/TransactionData/TransactionDataContent';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
-import { useAuthContext } from '../../../../../core/Auth';
+import { useConfigContext } from '../../../../../core/ConfigContext';
 import { useFetch } from '../../../../../hooks/useFetch';
 import { EMPTY_OBJECT } from '../../../../../utils';
 
@@ -9,16 +9,17 @@ export const useTransaction = (initialTransaction: TransactionDataContentProps['
     const [transaction, setTransaction] = useState(initialTransaction);
     const [fetchTransactionId, setFetchTransactionId] = useState(initialTransaction.id);
     const [lastFetchTimestamp, setLastFetchTimestamp] = useState(performance.now());
-    const { getTransaction } = useAuthContext().endpoints;
+    const { getTransaction } = useConfigContext().endpoints;
 
     const _transactionNavigator = useRef(createDuplexTransactionNavigator());
     const transactionNavigator = _transactionNavigator.current;
 
+    const navigationAction = useRef(false);
     const cachedIsFetching = useRef(false);
     const cachedInitialTransaction = useRef(initialTransaction);
     const lastFetchTransactionId = useRef(fetchTransactionId);
 
-    const fetchEnabled = useMemo(() => !!getTransaction && !!fetchTransactionId, [fetchTransactionId, getTransaction]);
+    const fetchEnabled = useMemo(() => !!getTransaction && !!fetchTransactionId && navigationAction.current, [fetchTransactionId, getTransaction]);
 
     const queryFn = useCallback(
         () =>
@@ -37,7 +38,9 @@ export const useTransaction = (initialTransaction: TransactionDataContentProps['
         queryFn,
     });
 
-    const refreshTransaction = useCallback(() => setFetchTransactionId(undefined!), []);
+    const refreshTransaction = useCallback(() => {
+        return setFetchTransactionId(undefined!);
+    }, []);
 
     useEffect(() => {
         if (!fetchTransactionId) setFetchTransactionId(transaction.id);
@@ -50,12 +53,14 @@ export const useTransaction = (initialTransaction: TransactionDataContentProps['
         if (transaction.category === 'Refund') {
             navigator.reset(transaction.id, transaction.refundMetadata?.originalPaymentId);
             navigator.onNavigation = ({ to: id }) => {
+                navigationAction.current = true;
                 setLastFetchTimestamp(performance.now());
                 if (id) setFetchTransactionId(id);
             };
         }
 
         return () => {
+            navigationAction.current = false;
             navigator.onNavigation = null;
             navigator.reset();
         };

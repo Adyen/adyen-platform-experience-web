@@ -3,14 +3,19 @@
 @import '../../../style/breakpoints';
 
 .adyen-pe-component {
-    --adyen-pe-content-padding: #{style.token(spacer-040)};
+    --adyen-pe-content-padding: #{style.token(spacer-070)};
     --adyen-pe-data-details-padding: var(--adyen-pe-content-padding);
     background: style.token(color-background-primary);
-    padding: style.token(spacer-060) var(--adyen-pe-content-padding);
+    padding: var(--adyen-pe-content-padding);
+    width: 100%;
 
     @include adyen-pe-screen-sm-and-up {
-        --adyen-pe-content-padding: #{style.token(spacer-070)};
         border: style.token(border-width-s) solid style.token(color-outline-secondary);
         border-radius: style.token(spacer-040);
     }
+}
+
+.adyen-pe-capital-offer-component,
+.adyen-pe-capital-overview-component {
+    max-width: 600px;
 }

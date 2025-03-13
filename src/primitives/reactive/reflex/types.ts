@@ -1,13 +1,13 @@
 import type { Nullable } from '../../../utils/types';
 import { REF } from './constants';
 
-export type RefAsCallback<T = any> = (instance?: Nullable<T>) => any;
-export type RefAsObject<T = any> = { current: Nullable<T> };
-export type Ref<T = any> = RefAsCallback<T> | RefAsObject<T>;
+export type RefAsCallback<T = any> = (instance: T | null) => any;
+export type RefAsObject<T = any> = { current: T | null };
+export type Ref<T = any> = RefAsCallback<T> | RefAsObject<T> | null;
 
 export interface Reflex<T = any> {
-    (instance?: Nullable<T>): any;
-    current: Nullable<T>;
+    (instance?: T | null): any;
+    current: T | null;
     readonly [REF]: RefAsObject<T>;
     readonly actions: Readonly<Pick<ReflexRecord<T>[1], 'get' | 'size'>>;
 }

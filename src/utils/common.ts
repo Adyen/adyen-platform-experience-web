@@ -1,4 +1,4 @@
-import type { ListWithoutFirst } from './types';
+import type { DeepReadonly, ListWithoutFirst } from './types';
 
 type _BoundFn<T, Args extends any[]> = Args extends []
     ? T extends (this: infer ThisType, ...args: [...infer RestArgs]) => infer ReturnType
@@ -23,3 +23,13 @@ export const panic = (reason?: any) => {
 
 const _toString = fn(Object.prototype.toString);
 export const toStringTag = (value?: any) => _toString(value).slice(8, -1);
+
+export const deepFreeze = <T extends object>(obj: T): DeepReadonly<T> => {
+    Object.keys(obj).forEach(prop => {
+        const value = obj[prop as keyof T];
+        if (value && typeof value === 'object' && !Object.isFrozen(value)) {
+            deepFreeze(value);
+        }
+    });
+    return Object.freeze(obj) as DeepReadonly<T>;
+};

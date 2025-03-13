@@ -1,0 +1,7 @@
+@use '../../../../../style';
+
+.adyen-pe-grant-action {
+    &__button {
+        margin-top: style.token(spacer-030);
+    }
+}

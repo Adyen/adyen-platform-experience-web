@@ -11,7 +11,7 @@ import { SelectItem } from '../FormFields/Select/types';
 import ChevronLeft from '../SVGIcons/ChevronLeft';
 import ChevronRight from '../SVGIcons/ChevronRight';
 
-export default function Pagination({ next, hasNext, hasPrev, page, prev, limit, limitOptions, onLimitSelection }: PaginationProps) {
+export default function Pagination({ next, hasNext, hasPrev, prev, limit, limitOptions, onLimitSelection }: PaginationProps) {
     const { i18n } = useCoreContext();
 
     const _limitOptions = useMemo(

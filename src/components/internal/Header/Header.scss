@@ -1,0 +1,31 @@
+@use '../../../style';
+
+.adyen-pe-header {
+    align-items: flex-start;
+    display: flex;
+    position: relative;
+
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    &__headings {
+        flex: 1;
+    }
+
+    &__controls {
+        &:not(:empty) {
+            margin-left: style.token(spacer-060);
+        }
+    }
+
+    &__title + &__subtitle {
+        margin-top: style.token(spacer-020);
+    }
+
+    &__divider {
+        margin: style.token(spacer-080) 0;
+    }
+}

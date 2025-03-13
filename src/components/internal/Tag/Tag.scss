@@ -1,5 +1,10 @@
 @use '../../../style';
 
+@mixin adyen-pe-tag--light {
+    background: style.token(color-background-primary);
+    color: style.token(color-label-primary);
+}
+
 .adyen-pe-tag {
     align-items: center;
     border-radius: style.token(border-radius-s);
@@ -31,6 +36,15 @@
     &--warning {
         background: style.token(color-background-warning-weak);
         color: style.token(color-label-on-background-warning-weak);
+    }
+
+    &--light {
+        @include adyen-pe-tag--light;
+    }
+
+    &--light-with-outline {
+        @include adyen-pe-tag--light;
+        outline: style.token(border-width-s) solid style.token(color-outline-primary);
     }
 
     // Adopted from the latest Bento tag variants spec

@@ -6,11 +6,11 @@ import DateFilter from '../../../../internal/FilterBar/filters/DateFilter/DateFi
 import FilterBar, { FilterBarMobileSwitch, useFilterBarState } from '../../../../internal/FilterBar';
 import { TransactionOverviewComponentProps, ExternalUIComponentProps, FilterParam, CustomDataRetrieved } from '../../../../types';
 import useModalDetails from '../../../../../hooks/useModalDetails/useModalDetails';
-import { useAuthContext } from '../../../../../core/Auth';
+import { useConfigContext } from '../../../../../core/ConfigContext';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
 import { useCursorPaginatedRecords } from '../../../../internal/Pagination/hooks';
-import { DataOverviewHeader } from '../../../../internal/DataOverviewDisplay/DataOverviewHeader';
+import { Header } from '../../../../internal/Header';
 import { IBalanceAccountBase, ITransaction } from '../../../../../types';
 import { EMPTY_OBJECT, isFunction, isUndefined, listFrom } from '../../../../../utils';
 import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '../../../../internal/Pagination/constants';
@@ -42,7 +42,7 @@ export const TransactionsOverview = ({
     TransactionOverviewComponentProps & { balanceAccounts: IBalanceAccountBase[] | undefined; isLoadingBalanceAccount: boolean }
 >) => {
     const { i18n } = useCoreContext();
-    const { getTransactions: transactionsEndpointCall } = useAuthContext().endpoints;
+    const { getTransactions: transactionsEndpointCall } = useConfigContext().endpoints;
     const { activeBalanceAccount, balanceAccountSelectionOptions, onBalanceAccountSelection } = useBalanceAccountSelection(balanceAccounts);
     const { defaultParams, nowTimestamp, refreshNowTimestamp } = useDefaultOverviewFilterParams('transactions', activeBalanceAccount);
 
@@ -145,18 +145,41 @@ export const TransactionsOverview = ({
     const { customRecords: transactions, loadingCustomRecords } = useCustomColumnsData<ITransaction>({ records, onDataRetrieved, mergeCustomData });
     const { updateDetails, resetDetails, selectedDetail } = useModalDetails(modalOptions);
 
+    const getExtraFieldsById = useCallback(
+        ({ id }: { id: string }) => {
+            const record = records.find(r => r.id === id);
+            const retrievedItem = transactions.find(item => item.id === id) as Record<string, any>;
+
+            if (record && retrievedItem) {
+                // Extract fields from 'retrievedItem' that are not in 'record'
+                const extraFields = Object.keys(retrievedItem).reduce((acc, key) => {
+                    if (!(key in record)) {
+                        acc[key] = retrievedItem[key];
+                    }
+                    return acc;
+                }, {} as Partial<CustomDataRetrieved>);
+                return extraFields;
+            }
+
+            // If no matching 'retrievedItem' or 'record' is found, return null or empty object
+            return null;
+        },
+        [records, transactions]
+    );
+
     const onRowClick = useCallback(
         ({ id }: ITransaction) => {
             updateDetails({
                 selection: {
                     type: 'transaction',
                     data: id,
-                    extraDetails: transactions?.find(({ id: _id }) => _id === id) ?? EMPTY_OBJECT,
+                    balanceAccount: activeBalanceAccount || '',
+                    extraDetails: getExtraFieldsById({ id }) ?? EMPTY_OBJECT,
                 },
                 modalSize: 'small',
             }).callback({ id });
         },
-        [updateDetails, transactions]
+        [activeBalanceAccount, updateDetails, getExtraFieldsById]
     );
 
     const sinceDate = useMemo(() => {
@@ -167,9 +190,9 @@ export const TransactionsOverview = ({
 
     return (
         <div className={BASE_CLASS}>
-            <DataOverviewHeader hideTitle={hideTitle} titleKey="transactionsOverviewTitle">
+            <Header hideTitle={hideTitle} titleKey="transactionsOverviewTitle">
                 <FilterBarMobileSwitch {...filterBarState} />
-            </DataOverviewHeader>
+            </Header>
             <FilterBar {...filterBarState}>
                 <BalanceAccountSelector
                     activeBalanceAccount={activeBalanceAccount}

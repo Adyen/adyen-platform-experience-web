@@ -1,0 +1,30 @@
+@use '../../../style';
+
+.adyen-pe-capital-slider {
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-070);
+
+    &__value {
+        color: style.token(color-label-highlight);
+    }
+
+    &__labels {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: style.token(spacer-030);
+
+        label {
+            display: flex;
+            flex-direction: column;
+
+            :first-child {
+                color: style.token(color-label-secondary);
+            }
+
+            &:last-child {
+                align-items: flex-end;
+            }
+        }
+    }
+}

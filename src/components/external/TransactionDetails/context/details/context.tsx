@@ -15,6 +15,7 @@ const TransactionDetailsContext = createContext<ITransactionDetailsContext>({
     primaryAction: noop,
     secondaryAction: noop,
     transaction: EMPTY_OBJECT as ITransactionDetailsContext['transaction'],
+    extraFields: EMPTY_OBJECT,
 });
 
 const enum TransactionNavigationAction {
@@ -33,11 +34,12 @@ export const TransactionDetailsProvider = memo(
         setSecondaryAction,
         transaction,
         transactionNavigator,
+        extraFields,
     }: TransactionDetailsProviderProps) => {
         const { i18n } = useCoreContext();
         const { currentTransaction, canNavigateBackward, canNavigateForward, backward, forward } = transactionNavigator;
 
-        const primaryActionLabel = useMemo(() => i18n.get('refundAction'), [i18n]);
+        const primaryActionLabel = useMemo(() => ({ title: i18n.get('refundAction') }), [i18n]);
         const primaryActionDisabled = useMemo(() => !primaryActionAvailable || refundDisabled, [primaryActionAvailable, refundDisabled]);
 
         const primaryAction = useCallback(
@@ -63,13 +65,25 @@ export const TransactionDetailsProvider = memo(
         const secondaryActionLabel = useMemo(() => {
             switch (_secondaryAction) {
                 case TransactionNavigationAction.BACKWARD:
-                    // [TODO]: Add translation entries for the following tokens and substitute here:
-                    //    'Back to refund'
-                    return i18n.get('Back to refund' as TranslationKey);
+                    return {
+                        title: i18n.get('refund.returnToRefund' as TranslationKey),
+                        renderTitle: (title: string) => (
+                            <>
+                                <Icon style={{ transform: 'scaleX(-1)' }} name="angle-right" />
+                                <span>{title}</span>
+                            </>
+                        ),
+                    };
                 case TransactionNavigationAction.FORWARD:
-                    // [TODO]: Add translation entries for the following tokens and substitute here:
-                    //    'Go to payment'
-                    return i18n.get('Go to payment' as TranslationKey);
+                    return {
+                        title: i18n.get('refund.goToPayment' as TranslationKey),
+                        renderTitle: (title: string) => (
+                            <>
+                                <Icon name="angle-right" />
+                                <span>{title}</span>
+                            </>
+                        ),
+                    };
             }
         }, [_secondaryAction, i18n]);
 
@@ -79,8 +93,8 @@ export const TransactionDetailsProvider = memo(
                     ? Object.freeze({
                           disabled: primaryActionDisabled,
                           event: primaryAction,
-                          title: primaryActionLabel,
                           variant: ButtonVariant.PRIMARY,
+                          ...primaryActionLabel,
                       } as ButtonActionObject)
                     : undefined
             );
@@ -92,21 +106,15 @@ export const TransactionDetailsProvider = memo(
                     ? Object.freeze({
                           disabled: false,
                           event: secondaryAction,
-                          title: secondaryActionLabel,
-                          renderTitle: title => (
-                              <>
-                                  <Icon name="angle-right" />
-                                  <span>{title}</span>
-                              </>
-                          ),
                           variant: ButtonVariant.SECONDARY,
+                          ...secondaryActionLabel,
                       } as ButtonActionObject)
                     : undefined
             );
         }, [_secondaryAction, secondaryAction, secondaryActionLabel, setSecondaryAction]);
 
         return (
-            <TransactionDetailsContext.Provider value={{ availableItems: lineItems, primaryAction, secondaryAction, transaction }}>
+            <TransactionDetailsContext.Provider value={{ availableItems: lineItems, primaryAction, secondaryAction, transaction, extraFields }}>
                 {children}
             </TransactionDetailsContext.Provider>
         );

@@ -14,7 +14,9 @@ function Category({ value, isContainerHovered }: CategoryProps) {
             {i18n.has(tooltipKey) && (
                 <Tooltip content={i18n.get(tooltipKey)} isContainerHovered={isContainerHovered}>
                     <span>
-                        <Typography variant={TypographyVariant.BODY}>{value}</Typography>
+                        <Typography variant={TypographyVariant.BODY}>
+                            {i18n.has(`txType.${value}`) ? i18n.get(`txType.${value}`) : `${value}`}
+                        </Typography>
                     </span>
                 </Tooltip>
             )}

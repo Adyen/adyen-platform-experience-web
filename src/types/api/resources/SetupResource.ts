@@ -18,22 +18,31 @@ export type webhooks = Record<string, never>;
 
 export interface components {
   schemas: {
-    /**
-     * @description Always null. This field is only used to expose endpoint names in OpenApi schema. Front-end components generate types from it.
-     * @enum {string}
-     */
-    EndpointName: "downloadReport" | "getReports" | "getTransactions" | "getTransaction" | "refundTransaction" | "getTransactionTotals" | "getBalances" | "getBalanceAccounts" | "getPayouts" | "getPayout";
-    /** @description Allowed endpoints for a given session */
+    /** @enum {string} */
+    EndpointName: "getTransactions" | "getTransaction" | "getTransactionTotals" | "getBalances" | "getBalanceAccounts" | "getPayouts" | "getPayout" | "getReports" | "downloadReport" | "getNetworkTokenActivationData" | "createNetworkTokenActivationData" | "getDynamicGrantOffersConfiguration" | "getDynamicGrantOffer" | "createGrantOffer" | "getGrants" | "requestFunds" | "signToSActionDetails" | "initiateRefund";
+    LegalEntitySetupResponseDTO: {
+      countryCode: string;
+      regions: components["schemas"]["RegionDTO"][];
+    };
+    RegionDTO: {
+      type: components["schemas"]["RegionType"];
+      value?: string;
+    };
+    /** @enum {string} */
+    RegionType: "capital";
     SetupEndpointResponse: {
       method?: string;
       url?: string;
     };
     SetupResponse: {
+      /** @description Always null. This field is only used to expose endpoint names in OpenApi schema. Front-end components generate types from it. */
       endpointTypesExposure?: components["schemas"]["EndpointName"];
       /** @description Allowed endpoints for a given session */
       endpoints: {
         [key: string]: components["schemas"]["SetupEndpointResponse"];
       };
+      /** @description Legal entity information. Only for components that require it. */
+      legalEntity?: components["schemas"]["LegalEntitySetupResponseDTO"];
     };
   };
   responses: never;

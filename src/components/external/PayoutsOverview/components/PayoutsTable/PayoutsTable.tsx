@@ -1,6 +1,6 @@
 import cx from 'classnames';
 import { FC } from 'preact/compat';
-import { useAuthContext } from '../../../../../core/Auth';
+import { useConfigContext } from '../../../../../core/ConfigContext';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatformExperienceError';
 import { getCurrencyCode } from '../../../../../core/Localization/amount/amount-util';
@@ -51,7 +51,7 @@ export const PayoutsTable: FC<PayoutsTableProps> = ({
 }) => {
     const { i18n } = useCoreContext();
     const { dateFormat } = useTimezoneAwareDateFormatting('UTC');
-    const { refreshing } = useAuthContext();
+    const { refreshing } = useConfigContext();
     const isLoading = useMemo(() => loading || refreshing, [loading, refreshing]);
     const isSmAndUpViewport = useResponsiveViewport(mediaQueries.up.sm);
 
