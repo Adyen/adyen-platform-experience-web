@@ -22,9 +22,9 @@ test.describe('Grant: Active', () => {
         await expect(progressBar).toHaveAttribute('aria-valuenow', '1200000');
         await expect(progressBar).toHaveAttribute('aria-valuemax', '2022000');
 
+        // send repayment button not visible
         const sendRepaymentButton = page.getByRole('button', { name: 'Send repayment', exact: true }).first();
-        await expect(sendRepaymentButton).toBeVisible();
-        await expect(sendRepaymentButton).toHaveText('Send repayment');
+        await expect(sendRepaymentButton).toBeHidden();
 
         await expect(page.getByTestId('expand-button')).toBeVisible();
         await expect(page.getByTestId('grant-id-copy-text')).toBeHidden();
@@ -72,50 +72,5 @@ test.describe('Grant: Active', () => {
         await page.getByTestId('expand-button').click();
         await page.getByText('Repayment threshold').hover();
         await expect(page.getByText('Minimum repayment every 30 days to repay the financing on time')).toBeVisible();
-    });
-
-    test.describe('Send repayment view', () => {
-        test.beforeEach(async ({ page }) => {
-            const sendRepaymentButton = page.getByRole('button', { name: 'Send repayment', exact: true }).first();
-
-            // switching to send repayment view
-            await sendRepaymentButton.click();
-            await sendRepaymentButton.waitFor({ state: 'detached' });
-        });
-
-        test('should show repayment details after "Send repayment" button is clicked', async ({ page }) => {
-            const dismissButton = page.getByRole('button', { name: 'Dismiss', exact: true }).first();
-
-            await Promise.all([
-                expect(dismissButton).toBeVisible(),
-                expect(page.getByText('Send repayment')).toBeVisible(),
-                expect(page.getByText('Transfer money to this bank account')).toBeVisible(),
-                expect(page.getByText('Bank account details')).toBeVisible(),
-                expect(page.getByText('Country/region')).toBeVisible(),
-                expect(page.getByText('current remaining amount, including fees')).toBeVisible(),
-                expect(page.getByText('€8,220.00')).toBeVisible(),
-            ]);
-        });
-
-        test('should return to grants list when send repayment dismiss button is clicked', async ({ page }) => {
-            const dismissButton = page.getByRole('button', { name: 'Dismiss', exact: true }).first();
-
-            // closing send repayment view
-            await dismissButton.click();
-            await dismissButton.waitFor({ state: 'detached' });
-
-            // showing active grants list view
-            const amountLabel = page.getByTestId('grant-amount-label').first();
-            const progressBar = page.getByRole('progressbar').first();
-            const sendRepaymentButton = page.getByRole('button', { name: 'Send repayment', exact: true }).first();
-            const grantExpandButton = page.getByTestId('expand-button');
-
-            await Promise.all([
-                expect(amountLabel).toBeVisible(),
-                expect(progressBar).toBeVisible(),
-                expect(sendRepaymentButton).toBeVisible(),
-                expect(grantExpandButton).toBeVisible(),
-            ]);
-        });
     });
 });

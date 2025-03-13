@@ -65,7 +65,7 @@ describe('getGrantConfig', () => {
             amountLabelKey: 'capital.remaining',
             hasAlerts: false,
             hasDetails: true,
-            hasUnscheduledRepaymentDetails: true,
+            hasUnscheduledRepaymentDetails: false,
             isAmountColorSecondary: false,
             isBackgroundFilled: false,
             isGrantIdVisible: false,
