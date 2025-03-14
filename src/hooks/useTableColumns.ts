@@ -51,7 +51,7 @@ export const useTableColumns = <T extends string, C extends string>({
                 // Merge properties from current into the existing column.
                 const existing = columnMap.get(current.key)!;
                 // Current's properties will override existing ones if there are conflicts
-                columnMap.set(current.key, { ...existing, ...current });
+                columnMap.set(current.key, { ...existing, ...current, position: current.align });
             } else {
                 const { key, flex, align } = current;
                 const label = i18n.get(getLabel(key as any));

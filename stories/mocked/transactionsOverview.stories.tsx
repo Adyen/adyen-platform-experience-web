@@ -52,12 +52,12 @@ export const CustomColumns: ElementStory<typeof TransactionsOverview> = {
                 fields: [
                     {
                         key: '_store',
-                        flex: 0.5,
+                        flex: 1.5,
                     },
                     { key: '_product' },
                     { key: '_reference', flex: 1.5 },
                     { key: 'transactionType', visible: false },
-                    { key: 'amount', flex: 1 },
+                    { key: 'amount', flex: 2, align: 'center' },
                     { key: '_button', flex: 1.5, align: 'right' },
                 ],
                 onDataRetrieve: data => {
