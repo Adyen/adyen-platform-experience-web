@@ -35,7 +35,7 @@ export interface ReportsTableProps extends WithPaginationLimitSelection<Paginati
     onContactSupport?: () => void;
     showPagination: boolean;
     data: IReport[] | undefined;
-    customColumns?: CustomColumn<StringWithAutocompleteOptions<ReportsTableFields>>[] | StringWithAutocompleteOptions<ReportsTableFields>[];
+    customColumns?: CustomColumn<StringWithAutocompleteOptions<ReportsTableFields>>[];
 }
 
 export const ReportsTable: FC<ReportsTableProps> = ({

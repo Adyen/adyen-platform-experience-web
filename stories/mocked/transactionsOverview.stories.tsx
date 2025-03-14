@@ -56,8 +56,8 @@ export const CustomColumns: ElementStory<typeof TransactionsOverview> = {
                     },
                     { key: '_product' },
                     { key: '_reference', flex: 1.5 },
-                    { key: 'createdAt' },
-                    { key: 'amount' },
+                    { key: 'transactionType', visible: false },
+                    { key: 'amount', flex: 1 },
                     { key: '_button', flex: 1.5, align: 'right' },
                 ],
                 onDataRetrieve: data => {

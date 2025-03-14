@@ -3,7 +3,7 @@ import { getLabel } from '../components/utils/getLabel';
 import { CellTextPosition } from '../components/internal/DataGrid/types';
 import { CustomColumn, DataGridCustomColumnConfig } from '../components/types';
 import useCoreContext from '../core/Context/useCoreContext';
-import { EMPTY_OBJECT, isString, isUndefined } from '../utils';
+import { EMPTY_OBJECT, isUndefined } from '../utils';
 
 type Columns<k extends string> = DataGridCustomColumnConfig<k> & { label?: string; position?: CellTextPosition; visible?: boolean };
 
@@ -17,17 +17,13 @@ function removeUndefinedProperties<T extends string>(obj: Omit<Columns<T>, 'key'
     return result;
 }
 
-function _isStringArray(columns: any): columns is string[] {
-    return columns.every(isString);
-}
-
 export const useTableColumns = <T extends string, C extends string>({
     fields,
     customColumns,
     columnConfig,
 }: {
     fields: T[] | Readonly<T[]>;
-    customColumns?: CustomColumn<C>[] | C[];
+    customColumns?: CustomColumn<C>[];
     columnConfig?: { [k in T]?: Omit<Columns<k>, 'key'> };
 }) => {
     const { i18n } = useCoreContext();
@@ -35,19 +31,37 @@ export const useTableColumns = <T extends string, C extends string>({
     const tableColumns: CustomColumn<T>[] = useMemo(() => fields.map(field => ({ key: field })), [fields]);
 
     const columns = useMemo(() => {
-        const parsedCols = customColumns
-            ? _isStringArray(customColumns)
-                ? customColumns.map<CustomColumn<C>>(col => ({ key: col }))
-                : customColumns
-            : undefined;
+        const mergedColumns = [...tableColumns, ...(customColumns || [])];
 
-        return (parsedCols || tableColumns).map(({ key, flex, align }) => {
-            const label = i18n.get(getLabel(key as any));
+        const customColumnsMap =
+            customColumns?.reduce<Record<string, (typeof customColumns)[number]>>((acc, col) => {
+                acc[col.key] = col;
+                return acc;
+            }, {}) || {};
 
-            const config = removeUndefinedProperties<T>(columnConfig?.[key] || EMPTY_OBJECT);
+        // Use a Map to track columns by key.
+        const columnMap = new Map<string, { key: T; position?: 'center' | 'left' | 'right'; flex?: number; visible?: boolean; label: string }>();
 
-            return { key: key as unknown as T, label, visible: true, flex, position: align, ...(config || EMPTY_OBJECT) };
+        mergedColumns.forEach(current => {
+            // Check if there is a custom column that should be hidden
+            const hiddenColumn = customColumnsMap[current.key];
+            if (hiddenColumn?.visible === false) return;
+
+            if (columnMap.has(current.key)) {
+                // Merge properties from current into the existing column.
+                const existing = columnMap.get(current.key)!;
+                // Current's properties will override existing ones if there are conflicts
+                columnMap.set(current.key, { ...existing, ...current });
+            } else {
+                const { key, flex, align } = current;
+                const label = i18n.get(getLabel(key as any));
+                const config = removeUndefinedProperties<T>(columnConfig?.[key] || EMPTY_OBJECT);
+
+                columnMap.set(current.key, { key: key as unknown as T, label, visible: true, flex, position: align, ...config });
+            }
         });
+
+        return Array.from(columnMap.values());
     }, [columnConfig, customColumns, i18n, tableColumns]);
 
     return columns;

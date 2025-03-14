@@ -39,7 +39,7 @@ export interface PayoutsTableProps extends WithPaginationLimitSelection<Paginati
     showDetails?: boolean;
     showPagination: boolean;
     data: IPayout[] | undefined;
-    customColumns?: CustomColumn<StringWithAutocompleteOptions<PayoutsTableFields>>[] | StringWithAutocompleteOptions<PayoutsTableFields>[];
+    customColumns?: CustomColumn<StringWithAutocompleteOptions<PayoutsTableFields>>[];
 }
 
 export const PayoutsTable: FC<PayoutsTableProps> = ({
