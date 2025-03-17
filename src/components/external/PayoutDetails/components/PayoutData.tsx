@@ -172,7 +172,7 @@ export const PayoutData = ({
                                 renderValue={(val, key, type, details) => {
                                     if (type === 'link') {
                                         return (
-                                            <Link href={details.href} target={details.target || '_blank'}>
+                                            <Link classNames={[cx(details?.classNames)]} href={details.href} target={details.target || '_blank'}>
                                                 {val}
                                             </Link>
                                         );
@@ -180,13 +180,17 @@ export const PayoutData = ({
                                     if (type === 'icon') {
                                         const icon = { url: details.src, alt: details.alt || val };
                                         return (
-                                            <div className={PD_EXTRA_DETAILS_ICON}>
+                                            <div className={cx(PD_EXTRA_DETAILS_ICON, details?.classNames)}>
                                                 <Icon {...icon} />
                                                 <Typography variant={TypographyVariant.BODY}> {val} </Typography>
                                             </div>
                                         );
                                     }
-                                    return <Typography variant={TypographyVariant.BODY}> {val} </Typography>;
+                                    return (
+                                        <Typography className={cx(details?.classNames)} variant={TypographyVariant.BODY}>
+                                            {val}
+                                        </Typography>
+                                    );
                                 }}
                             />
                         </div>

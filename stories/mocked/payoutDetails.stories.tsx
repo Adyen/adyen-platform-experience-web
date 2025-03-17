@@ -47,6 +47,7 @@ export const CustomData: ElementStory<typeof PayoutDetails> = {
                                 value: 'Summary',
                                 details: {
                                     href: `${origin}?path=/story/mocked-reports-overview--custom-columns&summary=${1}`,
+                                    classNames: ['TEST'],
                                 },
                             },
                             _sendEmail: {

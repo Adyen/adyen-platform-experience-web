@@ -12,6 +12,7 @@ import Link from '../../../../internal/Link/Link';
 import { TypographyVariant } from '../../../../internal/Typography/types';
 import Typography from '../../../../internal/Typography/Typography';
 import Icon from '../../../../internal/DataGrid/components/Icon';
+import cx from 'classnames';
 
 const TransactionDataProperties = () => {
     const { i18n } = useCoreContext();
@@ -91,21 +92,25 @@ const TransactionDataProperties = () => {
                 renderValue={(val, key, type, details) => {
                     if (type === 'link') {
                         return (
-                            <Link href={details.href} target={details.target || '_blank'}>
+                            <Link classNames={[cx(details?.classNames)]} href={details.href} target={details.target || '_blank'}>
                                 {val}
                             </Link>
                         );
                     }
                     if (type === 'icon') {
-                        const icon = { url: details.src, alt: details.alt || val };
+                        const icon = { url: details?.src, alt: details.alt || val };
                         return (
-                            <div className="adyen-pe-transaction-data__list-icon-value">
+                            <div className={cx('adyen-pe-transaction-data__list-icon-value', details?.classNames)}>
                                 <Icon {...icon} />
                                 <Typography variant={TypographyVariant.BODY}> {val} </Typography>
                             </div>
                         );
                     }
-                    return <Typography variant={TypographyVariant.BODY}> {val} </Typography>;
+                    return (
+                        <Typography className={cx(details?.classNames)} variant={TypographyVariant.BODY}>
+                            {val}
+                        </Typography>
+                    );
                 }}
             />
         );

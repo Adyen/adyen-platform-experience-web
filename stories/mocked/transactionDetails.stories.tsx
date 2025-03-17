@@ -52,6 +52,7 @@ export const CustomData: ElementStory<typeof TransactionDetails> = {
                                 value: 'Summary',
                                 details: {
                                     href: `${origin}?path=/story/mocked-reports-overview--custom-columns&summary=${1}`,
+                                    classNames: ['TEST'],
                                 },
                             },
                             _sendEmail: {
@@ -73,31 +74,6 @@ export const CustomData: ElementStory<typeof TransactionDetails> = {
                 },
             },
         },
-        /*        extraDetails: {
-            _store: 'Sydney',
-            _product: 'Coffee',
-            _summary: {
-                type: 'link',
-                value: 'Summary',
-                details: {
-                    href: `${origin}?path=/story/mocked-reports-overview--custom-columns&summary=${1}`,
-                },
-            },
-            _sendEmail: {
-                type: 'button',
-                value: 'Send email',
-                details: {
-                    action: () => console.log('Action'),
-                },
-            },
-            _country: {
-                type: 'icon',
-                value: '',
-                details: {
-                    src: `https://flagicons.lipis.dev/flags/4x3/es.svg`,
-                },
-            },
-        },*/
     },
 };
 
