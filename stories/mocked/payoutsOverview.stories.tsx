@@ -20,7 +20,7 @@ const CUSTOM_COLUMNS_MOCK_HANDLER = {
     handlers: [
         http.get(endpoints('mock').payouts, () => {
             return HttpResponse.json({
-                data: [{ ...PAYOUTS_WITH_DETAILS[7]?.payout }],
+                data: [{ ...PAYOUTS_WITH_DETAILS[7]?.payout, createdAt: new Date().toISOString() }],
                 _links: {},
             });
         }),
