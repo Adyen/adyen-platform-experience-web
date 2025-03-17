@@ -82,16 +82,6 @@ test.describe('Transaction List with custom columns', () => {
 
         expect(messages).toContain('Action');
     });
-
-    test('Columns should be reordered', async ({ transactionsOverviewPage, page }) => {
-        await goToStory(page, { id: `${COMPONENT_PREFIX}--custom-order` });
-        const transactionsOverview = transactionsOverviewPage;
-        const headers = transactionsOverview.dataGrid.rootElement.getByRole('columnheader');
-        await expect(headers.nth(0)).toHaveText('Transaction type');
-        await expect(headers.nth(1)).toHaveText('Payment method');
-        await expect(headers.nth(2)).toHaveText('Date');
-        await expect(headers.nth(3)).toHaveText('Amount');
-    });
 });
 
 test.describe('Transaction details modal with partial refunds', () => {

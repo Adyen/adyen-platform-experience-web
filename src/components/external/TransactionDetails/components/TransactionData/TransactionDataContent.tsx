@@ -45,7 +45,7 @@ export interface TransactionDataContentProps {
     transaction: NonNullable<TransactionDataProps['transaction']>;
     extraFields: Record<string, any> | undefined;
     balanceAccount?: IBalanceAccountBase;
-    dataCustomization?: NonNullable<TransactionDataProps['dataCustomization']>;
+    dataCustomization?: TransactionDataProps['dataCustomization'];
 }
 
 const _TransactionDataContentViewWrapper = ({
@@ -83,7 +83,7 @@ const _RefundResponseViewWrapper = ({
     </div>
 );
 
-export const TransactionDataContent = ({ transaction: initialTransaction, extraFields }: TransactionDataContentProps) => {
+export const TransactionDataContent = ({ transaction: initialTransaction, extraFields, dataCustomization }: TransactionDataContentProps) => {
     const [activeView, _setActiveView] = useState(ActiveView.DETAILS);
     const [primaryAction, _setPrimaryAction] = useState<ButtonActionObject>();
     const [secondaryAction, _setSecondaryAction] = useState<ButtonActionObject>();
@@ -223,6 +223,7 @@ export const TransactionDataContent = ({ transaction: initialTransaction, extraF
                         }
                         transactionNavigator={transactionNavigator}
                         extraFields={extraFields}
+                        dataCustomization={dataCustomization}
                     >
                         <TransactionDetailsDataContainer className={TX_STATUS_BOX}>
                             <TransactionStatusBox transaction={transaction} refundedState={refundedState} />

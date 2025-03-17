@@ -16,6 +16,7 @@ const TransactionDetailsContext = createContext<ITransactionDetailsContext>({
     secondaryAction: noop,
     transaction: EMPTY_OBJECT as ITransactionDetailsContext['transaction'],
     extraFields: EMPTY_OBJECT,
+    dataCustomization: EMPTY_OBJECT,
 });
 
 const enum TransactionNavigationAction {
@@ -35,6 +36,7 @@ export const TransactionDetailsProvider = memo(
         transaction,
         transactionNavigator,
         extraFields,
+        dataCustomization,
     }: TransactionDetailsProviderProps) => {
         const { i18n } = useCoreContext();
         const { currentTransaction, canNavigateBackward, canNavigateForward, backward, forward } = transactionNavigator;
@@ -114,7 +116,9 @@ export const TransactionDetailsProvider = memo(
         }, [_secondaryAction, secondaryAction, secondaryActionLabel, setSecondaryAction]);
 
         return (
-            <TransactionDetailsContext.Provider value={{ availableItems: lineItems, primaryAction, secondaryAction, transaction, extraFields }}>
+            <TransactionDetailsContext.Provider
+                value={{ availableItems: lineItems, primaryAction, secondaryAction, transaction, extraFields, dataCustomization }}
+            >
                 {children}
             </TransactionDetailsContext.Provider>
         );

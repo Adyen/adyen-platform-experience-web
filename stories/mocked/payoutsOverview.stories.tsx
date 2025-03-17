@@ -43,13 +43,10 @@ export const CustomColumns: ElementStory<typeof PayoutsOverview> = {
         dataCustomization: {
             list: {
                 fields: [
-                    { key: 'createdAt' },
-                    { key: 'fundsCapturedAmount' },
-                    { key: 'adjustmentAmount' },
+                    { key: 'adjustmentAmount', visible: false },
                     { key: '_summary' },
                     { key: '_country', flex: 0.5 },
                     { key: '_sendEmail', align: 'right' },
-                    { key: 'payoutAmount' },
                 ],
                 onDataRetrieve: data => {
                     return new Promise(resolve => {

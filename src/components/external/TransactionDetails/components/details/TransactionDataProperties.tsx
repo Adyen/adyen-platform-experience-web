@@ -15,7 +15,7 @@ import Icon from '../../../../internal/DataGrid/components/Icon';
 
 const TransactionDataProperties = () => {
     const { i18n } = useCoreContext();
-    const { transaction, extraFields } = useTransactionDetailsContext();
+    const { transaction, extraFields, dataCustomization } = useTransactionDetailsContext();
 
     return useMemo(() => {
         const { balanceAccount, category, id, paymentPspReference, refundMetadata } = transaction;
@@ -37,21 +37,11 @@ const TransactionDataProperties = () => {
 
         const listItems: StructuredListProps['items'] = [
             // amounts
-            originalAmount ? { key: originalAmountKey as TranslationKey, value: originalAmount } : SKIP_ITEM,
-            deductedAmount ? { key: deductedAmountKey as TranslationKey, value: deductedAmount } : SKIP_ITEM,
+            originalAmount ? { key: originalAmountKey as TranslationKey, value: originalAmount, id: 'originalAmount' } : SKIP_ITEM,
+            deductedAmount ? { key: deductedAmountKey as TranslationKey, value: deductedAmount, id: 'deductedAmount' } : SKIP_ITEM,
 
             // balance account
-            balanceAccount?.description ? { key: 'account' as const, value: balanceAccount.description } : SKIP_ITEM,
-
-            // custom data
-            ...(Object.entries(extraFields || {})
-                .filter(([key, value]) => !TX_DETAILS_RESERVED_FIELDS_SET.has(key as any) && value.type !== 'button')
-                .map(([key, value]) => ({
-                    key: key as TranslationKey,
-                    value: _isCustomDataObject(value) ? value.value : value,
-                    type: _isCustomDataObject(value) ? value.type : 'text',
-                    details: _isCustomDataObject(value) ? value.details : undefined,
-                })) || {}),
+            balanceAccount?.description ? { key: 'account' as const, value: balanceAccount.description, id: 'description' } : SKIP_ITEM,
 
             // refund reason
             isRefundTransaction && refundMetadata?.refundReason
@@ -60,24 +50,41 @@ const TransactionDataProperties = () => {
                       value: i18n.has(`refundReason.${refundMetadata.refundReason}` as TranslationKey)
                           ? i18n.get(`refundReason.${refundMetadata.refundReason}` as TranslationKey)
                           : refundMetadata.refundReason,
+                      id: 'refundReason',
                   }
                 : SKIP_ITEM,
 
             // reference id
-            { key: 'referenceID' as const, value: <CopyText type={'Default'} textToCopy={id} showCopyTextTooltip={false} /> },
+            { key: 'referenceID' as const, value: <CopyText type={'Default'} textToCopy={id} showCopyTextTooltip={false} />, id: 'id' },
 
             isRefundTransaction && refundMetadata?.refundPspReference
-                ? { key: 'refund.refundPspReference' as TranslationKey, value: refundMetadata.refundPspReference }
+                ? { key: 'refund.refundPspReference' as TranslationKey, value: refundMetadata.refundPspReference, id: 'refundPspReference' }
                 : SKIP_ITEM,
 
             // psp reference
-            paymentPspReference ? { key: paymentReferenceKey as TranslationKey, value: paymentPspReference } : SKIP_ITEM,
-        ].filter(Boolean);
+            paymentPspReference ? { key: paymentReferenceKey as TranslationKey, value: paymentPspReference, id: 'paymentPspReference' } : SKIP_ITEM,
+        ]
+            .filter(Boolean)
+            .filter(val => !dataCustomization?.details?.fields.some(field => field.key === val.id && field.visible === false));
+
+        // Add custom data
+
+        const itemsWithExtraFields = [
+            ...listItems,
+            ...(Object.entries(extraFields || {})
+                .filter(([key, value]) => !TX_DETAILS_RESERVED_FIELDS_SET.has(key as any) && value.type !== 'button')
+                .map(([key, value]) => ({
+                    key: key as TranslationKey,
+                    value: _isCustomDataObject(value) ? value.value : value,
+                    type: _isCustomDataObject(value) ? value.type : 'text',
+                    details: _isCustomDataObject(value) ? value.details : undefined,
+                })) || {}),
+        ];
 
         return (
             <StructuredList
                 classNames={TX_DATA_LIST}
-                items={listItems}
+                items={itemsWithExtraFields}
                 layout="5-7"
                 align="start"
                 renderLabel={label => <div className={TX_DATA_LABEL}>{label}</div>}
@@ -102,7 +109,7 @@ const TransactionDataProperties = () => {
                 }}
             />
         );
-    }, [extraFields, i18n, transaction]);
+    }, [dataCustomization?.details?.fields, extraFields, i18n, transaction]);
 };
 
 export default TransactionDataProperties;

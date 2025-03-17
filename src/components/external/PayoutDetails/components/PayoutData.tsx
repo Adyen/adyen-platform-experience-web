@@ -42,6 +42,7 @@ import cx from 'classnames';
 import { ButtonVariant } from '../../../internal/Button/types';
 import { ButtonActionsLayoutBasic } from '../../../internal/Button/ButtonActions/types';
 import ButtonActions from '../../../internal/Button/ButtonActions/ButtonActions';
+import { PayoutDetailsCustomization } from '../types';
 
 export const PayoutData = ({
     balanceAccountId,
@@ -54,6 +55,7 @@ export const PayoutData = ({
     balanceAccountId: string;
     balanceAccountDescription?: string;
     extraFields?: Record<string, any> | undefined;
+    dataCustomization?: { details?: PayoutDetailsCustomization };
 }) => {
     const { payout } = payoutData ?? (EMPTY_OBJECT as NonNullable<typeof payoutData>);
     const { dateFormat } = useTimezoneAwareDateFormatting('UTC');
@@ -109,7 +111,7 @@ export const PayoutData = ({
 
     const extraDetails: StructuredListProps['items'] =
         Object.entries(extraFields || {})
-            .filter(([, value]) => _isCustomDataObject(value) && value.type !== 'button')
+            .filter(([, value]) => value.type !== 'button')
             .map(([key, value]) => ({
                 key: key as TranslationKey,
                 value: _isCustomDataObject(value) ? value.value : value,
