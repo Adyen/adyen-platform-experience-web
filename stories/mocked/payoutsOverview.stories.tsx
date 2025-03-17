@@ -43,7 +43,7 @@ export const CustomColumns: ElementStory<typeof PayoutsOverview> = {
         dataCustomization: {
             list: {
                 fields: [
-                    { key: 'adjustmentAmount', visible: false },
+                    { key: 'adjustmentAmount', visibility: 'hidden' },
                     { key: '_summary' },
                     { key: '_country', flex: 0.5 },
                     { key: '_sendEmail', align: 'right' },

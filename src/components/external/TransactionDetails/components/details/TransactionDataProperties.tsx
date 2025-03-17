@@ -66,7 +66,7 @@ const TransactionDataProperties = () => {
             paymentPspReference ? { key: paymentReferenceKey as TranslationKey, value: paymentPspReference, id: 'paymentPspReference' } : SKIP_ITEM,
         ]
             .filter(Boolean)
-            .filter(val => !dataCustomization?.details?.fields.some(field => field.key === val.id && field.visible === false));
+            .filter(val => !dataCustomization?.details?.fields.some(field => field.key === val.id && field.visibility === 'hidden'));
 
         // Add custom data
 

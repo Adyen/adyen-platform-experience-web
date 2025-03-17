@@ -49,7 +49,7 @@ export const CustomColumns: ElementStory<typeof ReportsOverview> = {
             list: {
                 fields: [
                     { key: 'createdAt' },
-                    { key: 'reportType' },
+                    { key: 'reportType', visibility: 'hidden' },
                     { key: '_summary' },
                     { key: '_sendEmail', align: 'right' },
                     { key: 'reportFile', flex: 0.8 },

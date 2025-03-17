@@ -34,7 +34,7 @@ export const CustomData: ElementStory<typeof TransactionDetails> = {
         dataCustomization: {
             details: {
                 fields: [
-                    { key: 'id', visible: false },
+                    { key: 'id', visibility: 'hidden' },
                     { key: '_store' },
                     { key: '_product' },
                     { key: '_summary' },
@@ -52,7 +52,6 @@ export const CustomData: ElementStory<typeof TransactionDetails> = {
                                 value: 'Summary',
                                 details: {
                                     href: `${origin}?path=/story/mocked-reports-overview--custom-columns&summary=${1}`,
-                                    classNames: ['TEST'],
                                 },
                             },
                             _sendEmail: {

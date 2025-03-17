@@ -4,6 +4,7 @@ import { CellTextPosition } from '../components/internal/DataGrid/types';
 import { CustomColumn, DataGridCustomColumnConfig } from '../components/types';
 import useCoreContext from '../core/Context/useCoreContext';
 import { EMPTY_OBJECT, isUndefined } from '../utils';
+import { mediaQueries, useResponsiveViewport } from './useResponsiveViewport';
 
 type Columns<k extends string> = DataGridCustomColumnConfig<k> & { label?: string; position?: CellTextPosition; visible?: boolean };
 
@@ -29,8 +30,11 @@ export const useTableColumns = <T extends string, C extends string>({
     const { i18n } = useCoreContext();
 
     const tableColumns: CustomColumn<T>[] = useMemo(() => fields.map(field => ({ key: field })), [fields]);
+    const isSmAndUpViewport = useResponsiveViewport(mediaQueries.up.sm);
 
     const columns = useMemo(() => {
+        const newFields = customColumns?.filter(cc => !fields.some(field => field === (cc.key as unknown as T))).map(colum => colum.key) || [];
+
         const mergedColumns = [...tableColumns, ...(customColumns || [])];
 
         const customColumnsMap =
@@ -45,24 +49,36 @@ export const useTableColumns = <T extends string, C extends string>({
         mergedColumns.forEach(current => {
             // Check if there is a custom column that should be hidden
             const hiddenColumn = customColumnsMap[current.key];
-            if (hiddenColumn?.visible === false) return;
+            if (hiddenColumn?.visibility === 'hidden') return;
 
             if (columnMap.has(current.key)) {
                 // Merge properties from current into the existing column.
                 const existing = columnMap.get(current.key)!;
                 // Current's properties will override existing ones if there are conflicts
-                columnMap.set(current.key, { ...existing, ...current, position: current.align });
+                columnMap.set(current.key, {
+                    ...existing,
+                    ...current,
+                    visible: current.visibility !== 'hidden',
+                    position: current.align || existing.position,
+                });
             } else {
                 const { key, flex, align } = current;
                 const label = i18n.get(getLabel(key as any));
                 const config = removeUndefinedProperties<T>(columnConfig?.[key] || EMPTY_OBJECT);
 
-                columnMap.set(current.key, { key: key as unknown as T, label, visible: true, flex, position: align, ...config });
+                columnMap.set(current.key, {
+                    key: key as unknown as T,
+                    label,
+                    visible: newFields.includes(current.key as unknown as C) ? isSmAndUpViewport : true,
+                    flex,
+                    position: align,
+                    ...config,
+                });
             }
         });
 
         return Array.from(columnMap.values());
-    }, [columnConfig, customColumns, i18n, tableColumns]);
+    }, [columnConfig, customColumns, fields, i18n, isSmAndUpViewport, tableColumns]);
 
     return columns;
 };

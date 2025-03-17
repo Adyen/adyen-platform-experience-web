@@ -56,8 +56,8 @@ export const CustomColumns: ElementStory<typeof TransactionsOverview> = {
                     },
                     { key: '_product' },
                     { key: '_reference', flex: 1.5 },
-                    { key: 'transactionType', visible: false },
-                    { key: 'amount', flex: 2, align: 'center' },
+                    { key: 'transactionType', visibility: 'hidden' },
+                    { key: 'amount', flex: 2 },
                     { key: '_button', flex: 1.5, align: 'right' },
                 ],
                 onDataRetrieve: data => {
@@ -70,7 +70,7 @@ export const CustomColumns: ElementStory<typeof TransactionsOverview> = {
             },
             details: {
                 fields: [
-                    { key: 'paymentPspReference', visible: false },
+                    { key: 'paymentPspReference', visibility: 'hidden' },
                     { key: '_store' },
                     { key: '_product' },
                     { key: '_reference', flex: 1.5 },

@@ -182,7 +182,7 @@ export const PayoutData = ({
                                         return (
                                             <div className={cx(PD_EXTRA_DETAILS_ICON, details?.classNames)}>
                                                 <Icon {...icon} />
-                                                <Typography variant={TypographyVariant.BODY}> {val} </Typography>
+                                                <Typography variant={TypographyVariant.BODY}>{val}</Typography>
                                             </div>
                                         );
                                     }

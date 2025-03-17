@@ -92,7 +92,7 @@ export type DataGridCustomColumnConfig<k> = {
     key: k;
     flex?: number;
     align?: 'right' | 'left' | 'center';
-    visible?: boolean;
+    visibility?: 'visible' | 'hidden';
 };
 
 export type CustomColumn<T extends string> = {
