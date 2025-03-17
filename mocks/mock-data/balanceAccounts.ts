@@ -13,6 +13,12 @@ export const BALANCE_ACCOUNTS: IBalanceAccountBase[] = [
         timeZone: 'America/Sao_Paulo',
         defaultCurrencyCode: 'USD',
     },
+    {
+        // One more balance account (without description) for completeness
+        id: 'BA32272223222B5CTDQPM6W2K',
+        timeZone: 'America/Sao_Paulo',
+        defaultCurrencyCode: 'USD',
+    },
 ];
 
 export const BALANCE_ACCOUNTS_SINGLE = [BALANCE_ACCOUNTS[0]];
