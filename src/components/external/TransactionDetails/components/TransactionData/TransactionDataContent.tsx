@@ -43,6 +43,7 @@ import './TransactionData.scss';
 
 export interface TransactionDataContentProps {
     transaction: NonNullable<TransactionDataProps['transaction']>;
+    // TODO - Unify this parameter with dataCustomization
     extraFields: Record<string, any> | undefined;
     balanceAccount?: IBalanceAccountBase;
     dataCustomization?: TransactionDataProps['dataCustomization'];

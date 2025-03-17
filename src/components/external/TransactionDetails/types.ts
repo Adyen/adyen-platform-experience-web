@@ -33,6 +33,7 @@ export interface TransactionDataProps {
     isFetching?: boolean;
     transaction?: TransactionDetailData & { lineItems?: ILineItem[] };
     dataCustomization?: { details?: DataCustomizationObject<TransactionDetailsFields, TransactionDetailData, CustomDataRetrieved> };
+    // TODO - Unify this parameter with dataCustomization
     extraFields: Record<string, any> | undefined;
 }
 
