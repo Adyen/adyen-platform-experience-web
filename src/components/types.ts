@@ -119,22 +119,22 @@ type BaseDetails = {
 
 export interface CustomIconObject extends BaseCustomObject {
     type: 'icon';
-    details: BaseDetails & { src: string; alt?: string };
+    config: BaseDetails & { src: string; alt?: string };
 }
 
 export interface CustomTextObject extends BaseCustomObject {
     type: 'text';
-    details?: BaseDetails;
+    config?: BaseDetails;
 }
 
 export interface CustomLinkObject extends BaseCustomObject {
     type: 'link';
-    details: BaseDetails & { href: string; target?: AnchorHTMLAttributes<any>['target'] };
+    config: BaseDetails & { href: string; target?: AnchorHTMLAttributes<any>['target'] };
 }
 
 export interface CustomButtonObject extends BaseCustomObject {
     type: 'button';
-    details: BaseDetails & { action: () => void };
+    config: BaseDetails & { action: () => void };
 }
 
 export type CustomDataRetrieved = { [k: string]: CustomDataObject | Record<any, any> | string | number | boolean };

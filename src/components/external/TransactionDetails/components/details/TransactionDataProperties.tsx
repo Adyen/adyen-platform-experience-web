@@ -78,7 +78,7 @@ const TransactionDataProperties = () => {
                     key: key as TranslationKey,
                     value: _isCustomDataObject(value) ? value.value : value,
                     type: _isCustomDataObject(value) ? value.type : 'text',
-                    details: _isCustomDataObject(value) ? value.details : undefined,
+                    config: _isCustomDataObject(value) ? value.config : undefined,
                 })) || {}),
         ];
 
@@ -89,25 +89,25 @@ const TransactionDataProperties = () => {
                 layout="5-7"
                 align="start"
                 renderLabel={label => <div className={TX_DATA_LABEL}>{label}</div>}
-                renderValue={(val, key, type, details) => {
+                renderValue={(val, key, type, config) => {
                     if (type === 'link') {
                         return (
-                            <Link classNames={[cx(details?.classNames)]} href={details.href} target={details.target || '_blank'}>
+                            <Link classNames={[cx(config?.classNames)]} href={config.href} target={config.target || '_blank'}>
                                 {val}
                             </Link>
                         );
                     }
                     if (type === 'icon') {
-                        const icon = { url: details?.src, alt: details.alt || val };
+                        const icon = { url: config?.src, alt: config.alt || val };
                         return (
-                            <div className={cx('adyen-pe-transaction-data__list-icon-value', details?.classNames)}>
+                            <div className={cx('adyen-pe-transaction-data__list-icon-value', config?.classNames)}>
                                 <Icon {...icon} />
                                 <Typography variant={TypographyVariant.BODY}> {val} </Typography>
                             </div>
                         );
                     }
                     return (
-                        <Typography className={cx(details?.classNames)} variant={TypographyVariant.BODY}>
+                        <Typography className={cx(config?.classNames)} variant={TypographyVariant.BODY}>
                             {val}
                         </Typography>
                     );

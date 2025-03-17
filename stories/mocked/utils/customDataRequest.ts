@@ -31,7 +31,7 @@ const getStoreById = (id: string) => {
     return {
         value: store.value,
         type: 'icon',
-        details: { src: `https://flagicons.lipis.dev/flags/4x3/${store.flag}.svg` },
+        config: { src: `https://flagicons.lipis.dev/flags/4x3/${store.flag}.svg` },
     } as const;
 };
 
@@ -43,12 +43,12 @@ const txMatcher = (data: ITransaction[]) =>
         _reference: {
             type: 'link',
             value: transaction.id,
-            details: { value: '', href: `${origin}?path=/story/mocked-transactions-overview--custom-columns&reference=${transaction.id}` },
+            config: { value: '', href: `${origin}?path=/story/mocked-transactions-overview--custom-columns&reference=${transaction.id}` },
         } as const,
         _button: {
             type: 'button',
             value: 'Refund',
-            details: {
+            config: {
                 action: () => console.log('Action'),
             },
         } as const,
@@ -66,12 +66,12 @@ export const getCustomTransactionDataById = (id: string) => {
         _reference: {
             type: 'link',
             value: id,
-            details: { value: '', href: `${origin}?path=/story/mocked-transactions-overview--custom-columns&reference=${id}` },
+            config: { value: '', href: `${origin}?path=/story/mocked-transactions-overview--custom-columns&reference=${id}` },
         } as const,
         _button: {
             type: 'button',
             value: 'Refund',
-            details: {
+            config: {
                 action: () => console.log('Action'),
             },
         },
@@ -87,14 +87,14 @@ export const getCustomReportsData = async (data: IReport[]) => {
             _summary: {
                 type: 'link',
                 value: 'Summary',
-                details: {
+                config: {
                     href: `${origin}?path=/story/mocked-reports-overview--custom-columns&summary=${index}`,
                 },
             },
             _sendEmail: {
                 type: 'button',
                 value: 'Send email',
-                details: {
+                config: {
                     action: () => console.log('Action'),
                 },
             },
@@ -109,21 +109,21 @@ export const getCustomPayoutsData = async (data: IPayout[]) => {
             _summary: {
                 type: 'link',
                 value: 'Summary',
-                details: {
+                config: {
                     href: `${origin}?path=/story/mocked-reports-overview--custom-columns&summary=${index}`,
                 },
             },
             _sendEmail: {
                 type: 'button',
                 value: 'Send email',
-                details: {
+                config: {
                     action: () => console.log('Action'),
                 },
             },
             _country: {
                 type: 'icon',
                 value: '',
-                details: {
+                config: {
                     src: `https://flagicons.lipis.dev/flags/4x3/es.svg`,
                 },
             },

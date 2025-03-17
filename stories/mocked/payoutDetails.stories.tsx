@@ -45,21 +45,21 @@ export const CustomData: ElementStory<typeof PayoutDetails> = {
                             _summary: {
                                 type: 'link',
                                 value: 'Summary',
-                                details: {
+                                config: {
                                     href: `${origin}?path=/story/mocked-reports-overview--custom-columns&summary=${1}`,
                                 },
                             },
                             _sendEmail: {
                                 type: 'button',
                                 value: 'Send email',
-                                details: {
+                                config: {
                                     action: () => console.log('Action'),
                                 },
                             },
                             _country: {
                                 type: 'icon',
                                 value: '',
-                                details: {
+                                config: {
                                     src: `https://flagicons.lipis.dev/flags/4x3/es.svg`,
                                 },
                             },

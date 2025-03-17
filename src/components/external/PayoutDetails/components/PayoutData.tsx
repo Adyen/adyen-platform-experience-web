@@ -116,14 +116,14 @@ export const PayoutData = ({
                 key: key as TranslationKey,
                 value: _isCustomDataObject(value) ? value.value : value,
                 type: _isCustomDataObject(value) ? value.type : 'text',
-                details: _isCustomDataObject(value) ? value.details : undefined,
+                config: _isCustomDataObject(value) ? value.config : undefined,
             })) || [];
 
     const buttonActions = useMemo(() => {
         const extraActions = extraFields
             ? Object.values(extraFields)
                   .filter(field => field.type === 'button')
-                  .map(action => ({ title: action.value, variant: ButtonVariant.SECONDARY, event: action.details.action }))
+                  .map(action => ({ title: action.value, variant: ButtonVariant.SECONDARY, event: action.config.action }))
             : [];
         const actions = [...extraActions].filter(Boolean);
         return actions;
@@ -169,25 +169,25 @@ export const PayoutData = ({
                                 align="start"
                                 layout="5-7"
                                 renderLabel={label => <div className={PD_EXTRA_DETAILS_LABEL}>{label}</div>}
-                                renderValue={(val, key, type, details) => {
+                                renderValue={(val, key, type, config) => {
                                     if (type === 'link') {
                                         return (
-                                            <Link classNames={[cx(details?.classNames)]} href={details.href} target={details.target || '_blank'}>
+                                            <Link classNames={[cx(config?.classNames)]} href={config.href} target={config.target || '_blank'}>
                                                 {val}
                                             </Link>
                                         );
                                     }
                                     if (type === 'icon') {
-                                        const icon = { url: details.src, alt: details.alt || val };
+                                        const icon = { url: config.src, alt: config.alt || val };
                                         return (
-                                            <div className={cx(PD_EXTRA_DETAILS_ICON, details?.classNames)}>
+                                            <div className={cx(PD_EXTRA_DETAILS_ICON, config?.classNames)}>
                                                 <Icon {...icon} />
                                                 <Typography variant={TypographyVariant.BODY}>{val}</Typography>
                                             </div>
                                         );
                                     }
                                     return (
-                                        <Typography className={cx(details?.classNames)} variant={TypographyVariant.BODY}>
+                                        <Typography className={cx(config?.classNames)} variant={TypographyVariant.BODY}>
                                             {val}
                                         </Typography>
                                     );

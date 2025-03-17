@@ -10,7 +10,7 @@ export type StructuredListItem = {
     value: any;
     key: TranslationKey;
     type?: ItemType;
-    details?: any;
+    config?: any;
 };
 
 export type ListValue = string | number | ComponentChild;
@@ -20,7 +20,7 @@ export interface StructuredListProps {
     layout?: (typeof StructuredListLayouts)[number];
     highlightable?: boolean;
     renderLabel?: (val: string, key: TranslationKey) => ComponentChild;
-    renderValue?: (val: ListValue, key: TranslationKey, type: ItemType | undefined, details: any) => ComponentChild;
+    renderValue?: (val: ListValue, key: TranslationKey, type: ItemType | undefined, config: any) => ComponentChild;
     grid?: boolean;
     classNames?: string;
     align?: 'start' | 'end';

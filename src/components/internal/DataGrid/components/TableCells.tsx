@@ -64,11 +64,11 @@ export const TableCells = <
 
                 const { value, type } = _isCustomDataObject(data) ? data : { value: data, type: 'text' };
 
-                const icon = _isIconType(data) ? { url: data.details.src, alt: data.details.alt || data.value } : undefined;
+                const icon = _isIconType(data) ? { url: data.config.src, alt: data.config.alt || data.value } : undefined;
                 const buttonCallback = _isButtonType(data)
                     ? (e: JSXInternal.TargetedMouseEvent<HTMLButtonElement | HTMLAnchorElement>) => {
                           e.stopPropagation();
-                          data.details.action();
+                          data.config.action();
                       }
                     : undefined;
 
@@ -81,14 +81,14 @@ export const TableCells = <
                                     {value.trim() && <span>{value}</span>}
                                 </>
                             )}
-                            {type === 'text' && <span className={cx(data?.details?.classNames)}>{value}</span>}
+                            {type === 'text' && <span className={cx(data?.config?.classNames)}>{value}</span>}
                             {type === 'button' && (
-                                <Button className={cx(data.details?.classNames)} onClick={buttonCallback} variant={ButtonVariant.SECONDARY}>
+                                <Button className={cx(data.config?.classNames)} onClick={buttonCallback} variant={ButtonVariant.SECONDARY}>
                                     {value}
                                 </Button>
                             )}
                             {_isLinkType(data) && (
-                                <Link classNames={data.details.classNames} href={data.details.href} target={data.details.target}>
+                                <Link classNames={data.config.classNames} href={data.config.href} target={data.config.target}>
                                     {value}
                                 </Link>
                             )}

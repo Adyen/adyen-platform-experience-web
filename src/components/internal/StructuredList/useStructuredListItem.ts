@@ -13,7 +13,7 @@ export const useStructuredListItems = (items: StructuredListItem[]) => {
                 id: uuid(),
                 label: i18n.get(item.key),
                 type: item.type,
-                details: item.details,
+                config: item.config,
             };
         });
     }, [i18n, items]);
