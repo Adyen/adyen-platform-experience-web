@@ -38,9 +38,9 @@ test.describe('Filters', () => {
     //TODO test('filtering by date range should work')
 });
 
-test.describe('Transaction List with custom columns', () => {
+test.describe('Transaction List with data customization', () => {
     test('Extra columns should be rendered', async ({ transactionsOverviewPage, page }) => {
-        await goToStory(page, { id: `${COMPONENT_PREFIX}--custom-columns` });
+        await goToStory(page, { id: `${COMPONENT_PREFIX}--data-customization` });
         const transactionsOverview = transactionsOverviewPage;
         await expect(transactionsOverview.getHeader('Store')).toBeAttached();
         await expect(transactionsOverview.getHeader('Product')).toBeAttached();
@@ -48,7 +48,7 @@ test.describe('Transaction List with custom columns', () => {
     });
 
     test('Extra columns values should render with string or the format {value: string}', async ({ context, transactionsOverviewPage, page }) => {
-        await goToStory(page, { id: `${COMPONENT_PREFIX}--custom-columns` });
+        await goToStory(page, { id: `${COMPONENT_PREFIX}--data-customization` });
         const transactionsOverview = transactionsOverviewPage;
 
         // _product (TEXT TYPE)

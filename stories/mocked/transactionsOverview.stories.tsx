@@ -31,8 +31,8 @@ const CUSTOM_COLUMNS_MOCK_HANDLER = {
         }),
     ],
 };
-export const CustomColumns: ElementStory<typeof TransactionsOverview> = {
-    name: 'Custom Columns',
+export const DataCustomization: ElementStory<typeof TransactionsOverview> = {
+    name: 'Data customization',
     args: {
         coreOptions: {
             translations: {

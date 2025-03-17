@@ -33,8 +33,8 @@ export const Default: ElementStory<typeof ReportsOverview> = {
     },
 };
 
-export const CustomColumns: ElementStory<typeof ReportsOverview> = {
-    name: 'Custom Columns',
+export const DataCustomization: ElementStory<typeof ReportsOverview> = {
+    name: 'Data customization',
     args: {
         coreOptions: {
             translations: {
