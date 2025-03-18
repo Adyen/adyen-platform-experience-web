@@ -6,6 +6,7 @@ import { getCustomPayoutsData } from './utils/customDataRequest';
 import { http, HttpResponse } from 'msw';
 import { endpoints } from '../../endpoints/endpoints';
 import { PAYOUTS_WITH_DETAILS } from '../../mocks/mock-data';
+import { CUSTOM_URL_EXAMPLE } from '../utils/constants';
 
 const meta: Meta<ElementProps<typeof PayoutsOverview>> = { ...PayoutsMeta, title: 'Mocked/Payouts Overview' };
 
@@ -67,7 +68,7 @@ export const DataCustomization: ElementStory<typeof PayoutsOverview> = {
                                     type: 'link',
                                     value: 'Summary',
                                     config: {
-                                        href: `${origin}?path=/story/mocked-reports-overview--custom-columns&summary=${1}`,
+                                        href: CUSTOM_URL_EXAMPLE,
                                     },
                                 },
                                 _sendEmail: {

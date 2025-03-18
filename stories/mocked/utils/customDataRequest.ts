@@ -1,4 +1,5 @@
 import { IPayout, IReport, ITransaction } from '../../../src';
+import { CUSTOM_URL_EXAMPLE } from '../../utils/constants';
 
 const products = ['Coffee', 'Muffin', 'Pie', 'Tea', 'Latte', 'Brownie', 'Iced latte', 'Bubble tea', 'Apple pie', 'Iced tea'];
 const getProductById = (id: string) => {
@@ -43,7 +44,7 @@ const txMatcher = (data: ITransaction[]) =>
         _reference: {
             type: 'link',
             value: transaction.id,
-            config: { value: '', href: `${origin}?path=/story/mocked-transactions-overview--custom-columns&reference=${transaction.id}` },
+            config: { value: '', href: CUSTOM_URL_EXAMPLE },
         } as const,
         _button: {
             type: 'button',
@@ -66,7 +67,7 @@ export const getCustomTransactionDataById = (id: string) => {
         _reference: {
             type: 'link',
             value: id,
-            config: { value: '', href: `${origin}?path=/story/mocked-transactions-overview--custom-columns&reference=${id}` },
+            config: { value: '', href: CUSTOM_URL_EXAMPLE },
         } as const,
         _button: {
             type: 'button',
@@ -78,17 +79,15 @@ export const getCustomTransactionDataById = (id: string) => {
     };
 };
 
-const origin = process.env.VITE_PLAYGROUND_URL;
-
 export const getCustomReportsData = async (data: IReport[]) => {
-    return data.map((report, index) => {
+    return data.map(report => {
         return {
             ...report,
             _summary: {
                 type: 'link',
                 value: 'Summary',
                 config: {
-                    href: `${origin}?path=/story/mocked-reports-overview--custom-columns&summary=${index}`,
+                    href: CUSTOM_URL_EXAMPLE,
                 },
             },
             _sendEmail: {
@@ -110,7 +109,7 @@ export const getCustomPayoutsData = async (data: IPayout[]) => {
                 type: 'link',
                 value: 'Summary',
                 config: {
-                    href: `${origin}?path=/story/mocked-reports-overview--custom-columns&summary=${index}`,
+                    href: CUSTOM_URL_EXAMPLE,
                 },
             },
             _sendEmail: {

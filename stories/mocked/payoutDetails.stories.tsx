@@ -2,6 +2,7 @@ import { PayoutDetails } from '../../src';
 import { ElementProps, ElementStory } from '../utils/types';
 import { Meta } from '@storybook/preact';
 import { PayoutDetailsMeta } from '../components/payoutDetails';
+import { CUSTOM_URL_EXAMPLE } from '../utils/constants';
 
 const meta: Meta<ElementProps<typeof PayoutDetails>> = { ...PayoutDetailsMeta, title: 'Mocked/Payout Details' };
 
@@ -46,7 +47,7 @@ export const CustomData: ElementStory<typeof PayoutDetails> = {
                                 type: 'link',
                                 value: 'Summary',
                                 config: {
-                                    href: `${origin}?path=/story/mocked-reports-overview--custom-columns&summary=${1}`,
+                                    href: CUSTOM_URL_EXAMPLE,
                                 },
                             },
                             _sendEmail: {
