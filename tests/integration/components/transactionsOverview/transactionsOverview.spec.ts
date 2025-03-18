@@ -2,6 +2,7 @@ import { test as base, expect } from '@playwright/test';
 import { TransactionsOverviewPage } from '../../../models/external-components/transactionsOverview.page';
 import { getTranslatedKey, goToStory } from '../../../utils/utils';
 import dotenv from 'dotenv';
+import { CUSTOM_URL_EXAMPLE } from '../../../../stories/utils/constants';
 
 dotenv.config({ path: './envs/.env' });
 
@@ -47,7 +48,7 @@ test.describe('Transaction List with data customization', () => {
         await expect(transactionsOverview.getHeader('Reference')).toBeAttached();
     });
 
-    test('Extra columns values should render with string or the format {value: string}', async ({ context, transactionsOverviewPage, page }) => {
+    test('should render extra columns', async ({ context, transactionsOverviewPage, page }) => {
         await goToStory(page, { id: `${COMPONENT_PREFIX}--data-customization` });
         const transactionsOverview = transactionsOverviewPage;
 
@@ -65,12 +66,16 @@ test.describe('Transaction List with data customization', () => {
         const REFERENCE = '8W54BM75W7DYCIVK';
         await expect(referenceFirstRow).toHaveText(REFERENCE);
 
+        //hidden column
+        const transactionTypeFirstRow = transactionsOverview.getCell('transactionType', 0);
+        await expect(transactionTypeFirstRow).not.toBeAttached();
+
         const [newPage] = await Promise.all([
             context.waitForEvent('page'), // Waits for a new 'page' event in this browser context
             referenceFirstRow.click(), // This click opens the link in a new tab
         ]);
         await newPage.waitForLoadState();
-        expect(newPage.url()).toContain(`&reference=${REFERENCE}`);
+        expect(newPage.url()).toContain(CUSTOM_URL_EXAMPLE);
 
         // _action (BUTTON TYPE)
         const messages: string[] = [];
