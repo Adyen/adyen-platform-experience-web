@@ -1,7 +1,7 @@
 import { useMemo } from 'preact/hooks';
 import CopyText from '../../../../internal/CopyText/CopyText';
 import { TX_DATA_LABEL, TX_DATA_LIST, TX_DETAILS_RESERVED_FIELDS_SET } from '../constants';
-import { _isCustomDataObject } from '../../../../internal/DataGrid/components/TableCells';
+import { isCustomDataObject } from '../../../../internal/DataGrid/components/TableCells';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import useTransactionDetailsContext from '../../context/details';
 import StructuredList from '../../../../internal/StructuredList';
@@ -76,9 +76,9 @@ const TransactionDataProperties = () => {
                 .filter(([key, value]) => !TX_DETAILS_RESERVED_FIELDS_SET.has(key as any) && value.type !== 'button')
                 .map(([key, value]) => ({
                     key: key as TranslationKey,
-                    value: _isCustomDataObject(value) ? value.value : value,
-                    type: _isCustomDataObject(value) ? value.type : 'text',
-                    config: _isCustomDataObject(value) ? value.config : undefined,
+                    value: isCustomDataObject(value) ? value.value : value,
+                    type: isCustomDataObject(value) ? value.type : 'text',
+                    config: isCustomDataObject(value) ? value.config : undefined,
                 })) || {}),
         ];
 

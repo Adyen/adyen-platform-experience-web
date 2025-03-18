@@ -9,7 +9,7 @@ import Link from '../../Link/Link';
 import { ButtonVariant } from '../../Button/types';
 import cx from 'classnames';
 
-export const _isCustomDataObject = (item: any): item is CustomDataObject => {
+export const isCustomDataObject = (item: any): item is CustomDataObject => {
     return !!item && typeof item === 'object' && 'value' in item;
 };
 
@@ -62,7 +62,7 @@ export const TableCells = <
 
                 const data = item[key] as CustomDataObject;
 
-                const { value, type } = _isCustomDataObject(data) ? data : { value: data, type: 'text' };
+                const { value, type } = isCustomDataObject(data) ? data : { value: data, type: 'text' };
 
                 const icon = _isIconType(data) ? { url: data.config.src, alt: data.config.alt || data.value } : undefined;
                 const buttonCallback = _isButtonType(data)

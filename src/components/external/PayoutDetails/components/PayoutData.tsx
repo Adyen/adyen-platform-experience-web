@@ -37,7 +37,7 @@ import { Tag } from '../../../internal/Tag/Tag';
 import { TagVariant } from '../../../internal/Tag/types';
 import Link from '../../../internal/Link/Link';
 import Icon from '../../../internal/DataGrid/components/Icon';
-import { _isCustomDataObject } from '../../../internal/DataGrid/components/TableCells';
+import { isCustomDataObject } from '../../../internal/DataGrid/components/TableCells';
 import cx from 'classnames';
 import { ButtonVariant } from '../../../internal/Button/types';
 import { ButtonActionsLayoutBasic } from '../../../internal/Button/ButtonActions/types';
@@ -114,9 +114,9 @@ export const PayoutData = ({
             .filter(([, value]) => value.type !== 'button')
             .map(([key, value]) => ({
                 key: key as TranslationKey,
-                value: _isCustomDataObject(value) ? value.value : value,
-                type: _isCustomDataObject(value) ? value.type : 'text',
-                config: _isCustomDataObject(value) ? value.config : undefined,
+                value: isCustomDataObject(value) ? value.value : value,
+                type: isCustomDataObject(value) ? value.type : 'text',
+                config: isCustomDataObject(value) ? value.config : undefined,
             })) || [];
 
     const buttonActions = useMemo(() => {
