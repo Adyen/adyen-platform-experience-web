@@ -40,14 +40,6 @@ test.describe('Filters', () => {
 });
 
 test.describe('Transaction List with data customization', () => {
-    test('Extra columns should be rendered', async ({ transactionsOverviewPage, page }) => {
-        await goToStory(page, { id: `${COMPONENT_PREFIX}--data-customization` });
-        const transactionsOverview = transactionsOverviewPage;
-        await expect(transactionsOverview.getHeader('Store')).toBeAttached();
-        await expect(transactionsOverview.getHeader('Product')).toBeAttached();
-        await expect(transactionsOverview.getHeader('Reference')).toBeAttached();
-    });
-
     test('should render extra columns', async ({ context, transactionsOverviewPage, page }) => {
         await goToStory(page, { id: `${COMPONENT_PREFIX}--data-customization` });
         const transactionsOverview = transactionsOverviewPage;
