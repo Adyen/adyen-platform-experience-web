@@ -1,7 +1,7 @@
 import { EMPTY_ARRAY } from '../../../utils';
 import type { CustomColumn } from '../../types';
 
-type _Fields<Field extends string> = readonly CustomColumn<Field>[] | readonly Field[];
+type _Fields<Field extends string> = readonly CustomColumn<Field>[];
 
 export const hasCustomField = <Field extends string, PreferredFields extends _Fields<Field>, StandardFields extends readonly string[] = string[]>(
     preferredFields?: PreferredFields,
