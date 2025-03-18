@@ -117,6 +117,26 @@ export const GrantActive: ElementStory<typeof CapitalOverview> = {
     },
 };
 
+export const GrantActiveWithGBRepaymentAccount: ElementStory<typeof CapitalOverview> = {
+    name: 'Grant: Active - With GB repayment account',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: CapitalOverviewMockedResponses.grantActiveWithGBRepaymentAccount,
+    },
+};
+
+export const GrantActiveWithUSRepaymentAccount: ElementStory<typeof CapitalOverview> = {
+    name: 'Grant: Active - With US repayment account',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: CapitalOverviewMockedResponses.grantActiveWithUSRepaymentAccount,
+    },
+};
+
 export const GrantFailed: ElementStory<typeof CapitalOverview> = {
     name: 'Grant: Failed',
     args: {
