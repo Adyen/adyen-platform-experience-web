@@ -177,4 +177,13 @@
     &:disabled {
         cursor: not-allowed;
     }
+
+    &__anchor {
+        padding: style.token(spacer-020) style.token(spacer-040);
+        transition: none;
+
+        &:hover {
+            background: style.token(color-background-secondary-hover);
+        }
+    }
 }

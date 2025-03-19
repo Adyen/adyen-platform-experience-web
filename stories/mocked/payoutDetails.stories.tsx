@@ -1,21 +1,22 @@
-import { TransactionDetails } from '../../src';
+import { PayoutDetails } from '../../src';
 import { ElementProps, ElementStory } from '../utils/types';
 import { Meta } from '@storybook/preact';
-import { TransactionDetailsMeta } from '../components/transactionDetails';
+import { PayoutDetailsMeta } from '../components/payoutDetails';
 import { CUSTOM_URL_EXAMPLE } from '../utils/constants';
 
-const meta: Meta<ElementProps<typeof TransactionDetails>> = { ...TransactionDetailsMeta, title: 'Mocked/Transaction Details' };
+const meta: Meta<ElementProps<typeof PayoutDetails>> = { ...PayoutDetailsMeta, title: 'Mocked/Payout Details' };
 
-export const Default: ElementStory<typeof TransactionDetails> = {
+export const Default: ElementStory<typeof PayoutDetails> = {
     name: 'Default',
     args: {
-        id: '1VVF0D5V3709DX6D',
+        date: '2024-05-13T10%3A00%3A00.000Z',
+        id: 'BA32272223222B5CTDQPM6W2H',
         mockedApi: true,
     },
 };
 
-export const CustomData: ElementStory<typeof TransactionDetails> = {
-    name: 'Custom Data',
+export const DataCustomization: ElementStory<typeof PayoutDetails> = {
+    name: 'Data customization',
     args: {
         coreOptions: {
             translations: {
@@ -28,18 +29,12 @@ export const CustomData: ElementStory<typeof TransactionDetails> = {
                 },
             },
         },
-        id: '1VVF0D5V3709DX6D',
+        date: '2024-05-13T10%3A00%3A00.000Z',
+        id: 'BA32272223222B5CTDQPM6W2H',
         mockedApi: true,
         dataCustomization: {
             details: {
-                fields: [
-                    { key: 'id', visibility: 'hidden' },
-                    { key: '_store' },
-                    { key: '_product' },
-                    { key: '_summary' },
-                    { key: '_sendEmail' },
-                    { key: '_country' },
-                ],
+                fields: [{ key: '_store' }, { key: '_product' }, { key: '_summary' }, { key: '_sendEmail' }, { key: '_country' }],
                 onDataRetrieve: data => {
                     return new Promise(resolve => {
                         return resolve({

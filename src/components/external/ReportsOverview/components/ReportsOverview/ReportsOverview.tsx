@@ -11,10 +11,13 @@ import BalanceAccountSelector from '../../../../internal/FormFields/Select/Balan
 import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '../../../../internal/Pagination/constants';
 import { useCursorPaginatedRecords } from '../../../../internal/Pagination/hooks';
 import { Header } from '../../../../internal/Header';
-import { ExternalUIComponentProps, FilterParam, ReportsOverviewComponentProps } from '../../../../types';
-import { ReportsTable } from '../ReportsTable/ReportsTable';
+import { CustomDataRetrieved, ExternalUIComponentProps, FilterParam, ReportsOverviewComponentProps } from '../../../../types';
+import { FIELDS, ReportsTable } from '../ReportsTable/ReportsTable';
 import { BASE_CLASS, EARLIEST_PAYOUT_SINCE_DATE } from './constants';
 import './ReportsOverview.scss';
+import { useCustomColumnsData } from '../../../../../hooks/useCustomColumnsData';
+import hasCustomField from '../../../../utils/customData/hasCustomField';
+import mergeRecords from '../../../../utils/customData/mergeRecords';
 
 export const ReportsOverview = ({
     onFiltersChanged,
@@ -24,6 +27,7 @@ export const ReportsOverview = ({
     isLoadingBalanceAccount,
     onContactSupport,
     hideTitle,
+    dataCustomization,
 }: ExternalUIComponentProps<
     ReportsOverviewComponentProps & { balanceAccounts: IBalanceAccountBase[] | undefined; isLoadingBalanceAccount: boolean }
 >) => {
@@ -67,6 +71,20 @@ export const ReportsOverview = ({
             enabled: !!activeBalanceAccount?.id && !!reportsEndpointCall,
         });
 
+    const mergeCustomData = useCallback(
+        ({ records, retrievedData }: { records: IReport[]; retrievedData: CustomDataRetrieved[] }) =>
+            mergeRecords(records, retrievedData, (modifiedRecord, record) => modifiedRecord.createdAt === record.createdAt),
+        []
+    );
+
+    const hasCustomColumn = useMemo(() => hasCustomField(dataCustomization?.list?.fields, FIELDS), [dataCustomization?.list?.fields]);
+    const { customRecords: reports, loadingCustomRecords } = useCustomColumnsData<IReport>({
+        records,
+        hasCustomColumn,
+        onDataRetrieve: dataCustomization?.list?.onDataRetrieve,
+        mergeCustomData,
+    });
+
     useEffect(() => {
         refreshNowTimestamp();
     }, [filters, refreshNowTimestamp]);
@@ -93,17 +111,17 @@ export const ReportsOverview = ({
                     updateFilters={updateFilters}
                 />
             </FilterBar>
-
             <ReportsTable
                 balanceAccountId={activeBalanceAccount?.id}
-                loading={fetching || isLoadingBalanceAccount || !balanceAccounts || !activeBalanceAccount}
-                data={records}
+                loading={fetching || isLoadingBalanceAccount || !balanceAccounts || !activeBalanceAccount || loadingCustomRecords}
+                data={dataCustomization?.list?.onDataRetrieve ? reports : records}
                 showPagination={true}
                 limit={limit}
                 limitOptions={limitOptions}
                 onContactSupport={onContactSupport}
                 onLimitSelection={updateLimit}
                 error={error as AdyenPlatformExperienceError}
+                customColumns={dataCustomization?.list?.fields}
                 {...paginationProps}
             />
         </div>

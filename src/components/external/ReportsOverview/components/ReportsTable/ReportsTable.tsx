@@ -11,7 +11,6 @@ import Alert from '../../../../internal/Alert/Alert';
 import { AlertTypeOption } from '../../../../internal/Alert/types';
 import DownloadButton from '../../../../internal/Button/DownloadButton/DownloadButton';
 import DataGrid from '../../../../internal/DataGrid';
-import { CellTextPosition } from '../../../../internal/DataGrid/types';
 import { DATE_FORMAT_REPORTS } from '../../../../../constants';
 import DataOverviewError from '../../../../internal/DataOverviewError/DataOverviewError';
 import Pagination from '../../../../internal/Pagination';
@@ -19,13 +18,15 @@ import { PaginationProps, WithPaginationLimitSelection } from '../../../../inter
 import Warning from '../../../../internal/SVGIcons/Warning';
 import { TypographyVariant } from '../../../../internal/Typography/types';
 import Typography from '../../../../internal/Typography/Typography';
-import { getLabel } from '../../../../utils/getLabel';
 import { mediaQueries, useResponsiveViewport } from '../../../../../hooks/useResponsiveViewport';
 import { BASE_CLASS, DATE_TYPE_CLASS, DATE_TYPE_DATE_SECTION_CLASS, DISABLED_BUTTONS_TIMEOUT } from './constants';
 import './ReportsTable.scss';
+import { CustomColumn } from '../../../../types';
+import { StringWithAutocompleteOptions } from '../../../../../utils/types';
+import { useTableColumns } from '../../../../../hooks/useTableColumns';
 
-const FIELDS = ['createdAt', 'dateAndReportType', 'reportType', 'reportFile'] as const;
-type FieldsType = (typeof FIELDS)[number];
+export const FIELDS = ['createdAt', 'dateAndReportType', 'reportType', 'reportFile'] as const;
+export type ReportsTableFields = (typeof FIELDS)[number];
 
 export interface ReportsTableProps extends WithPaginationLimitSelection<PaginationProps> {
     balanceAccountId: string | undefined;
@@ -34,6 +35,7 @@ export interface ReportsTableProps extends WithPaginationLimitSelection<Paginati
     onContactSupport?: () => void;
     showPagination: boolean;
     data: IReport[] | undefined;
+    customColumns?: CustomColumn<StringWithAutocompleteOptions<ReportsTableFields>>[];
 }
 
 export const ReportsTable: FC<ReportsTableProps> = ({
@@ -43,6 +45,7 @@ export const ReportsTable: FC<ReportsTableProps> = ({
     onContactSupport,
     showPagination,
     data,
+    customColumns,
     ...paginationProps
 }) => {
     const { i18n } = useCoreContext();
@@ -54,29 +57,19 @@ export const ReportsTable: FC<ReportsTableProps> = ({
     const isSmAndUpViewport = useResponsiveViewport(mediaQueries.up.sm);
     const isXsAndDownViewport = useResponsiveViewport(mediaQueries.down.xs);
 
-    const fieldsVisibility: Partial<Record<FieldsType, boolean>> = useMemo(
-        () => ({
-            dateAndReportType: isXsAndDownViewport,
-            createdAt: isSmAndUpViewport,
-            reportType: isSmAndUpViewport,
-            reportFile: true,
-        }),
-        [isXsAndDownViewport, isSmAndUpViewport]
-    );
-
-    const columns = useMemo(
-        () =>
-            FIELDS.map(key => {
-                const label = i18n.get(getLabel(key));
-                return {
-                    key,
-                    label: label,
-                    position: isXsAndDownViewport && key === 'reportFile' ? CellTextPosition.RIGHT : undefined,
-                    visible: fieldsVisibility[key],
-                };
+    const columns = useTableColumns({
+        fields: FIELDS,
+        customColumns,
+        columnConfig: useMemo(
+            () => ({
+                dateAndReportType: { visible: isXsAndDownViewport },
+                createdAt: { visible: isSmAndUpViewport },
+                reportType: { visible: isSmAndUpViewport },
+                reportFile: { visible: true, position: isXsAndDownViewport ? 'right' : undefined },
             }),
-        [i18n, data, fieldsVisibility]
-    );
+            [isSmAndUpViewport, isXsAndDownViewport]
+        ),
+    });
 
     const removeAlert = useCallback(() => {
         setAlert(null);

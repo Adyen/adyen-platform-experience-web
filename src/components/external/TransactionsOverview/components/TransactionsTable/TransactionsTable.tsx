@@ -8,7 +8,6 @@ import { getCurrencyCode } from '../../../../../core/Localization/amount/amount-
 import { TranslationKey } from '../../../../../translations';
 import useTimezoneAwareDateFormatting from '../../../../../hooks/useTimezoneAwareDateFormatting';
 import DataGrid from '../../../../internal/DataGrid';
-import { CellTextPosition } from '../../../../internal/DataGrid/types';
 import Pagination from '../../../../internal/Pagination';
 import { TypographyVariant } from '../../../../internal/Typography/types';
 import Typography from '../../../../internal/Typography/Typography';
@@ -55,7 +54,7 @@ export const TransactionsTable: FC<TransactionTableProps> = ({
                 label: hasMultipleCurrencies
                     ? undefined
                     : `${amountLabel} ${availableCurrencies && availableCurrencies[0] ? `(${getCurrencyCode(availableCurrencies[0])})` : ''}`,
-                position: CellTextPosition.RIGHT,
+                position: 'right',
                 flex: isSmAndUpViewport ? 1.5 : undefined,
             },
             transactionType: { visible: isMdAndUpViewport },
