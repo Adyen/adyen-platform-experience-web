@@ -37,4 +37,4 @@ export const TX_DETAILS_RESERVED_FIELDS_SET = new Set([
     'paymentPspReference',
     'refundDetails',
     'refundMetadata',
-]);
+] as const);

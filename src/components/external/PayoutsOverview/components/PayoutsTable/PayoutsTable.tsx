@@ -9,7 +9,6 @@ import { IPayout } from '../../../../../types';
 import { useCallback, useMemo } from 'preact/hooks';
 import useTimezoneAwareDateFormatting from '../../../../../hooks/useTimezoneAwareDateFormatting';
 import DataGrid from '../../../../internal/DataGrid';
-import { CellTextPosition } from '../../../../internal/DataGrid/types';
 import { DATE_FORMAT_PAYOUTS, DATE_FORMAT_PAYOUTS_MOBILE } from '../../../../../constants';
 import DataOverviewError from '../../../../internal/DataOverviewError/DataOverviewError';
 import Pagination from '../../../../internal/Pagination';
@@ -21,11 +20,14 @@ import { containerQueries, useResponsiveContainer } from '../../../../../hooks/u
 import { BASE_CLASS, NET_PAYOUT_CLASS } from './constants';
 import './PayoutsTable.scss';
 import { useTableColumns } from '../../../../../hooks/useTableColumns';
+import { CustomColumn } from '../../../../types';
+import { StringWithAutocompleteOptions } from '../../../../../utils/types';
 
 const AMOUNT_FIELDS = ['fundsCapturedAmount', 'adjustmentAmount', 'payoutAmount'] as const;
-const FIELDS = ['createdAt', ...AMOUNT_FIELDS] as const;
+export const PAYOUT_TABLE_FIELDS = ['createdAt', ...AMOUNT_FIELDS] as const;
+export type PayoutsTableFields = (typeof PAYOUT_TABLE_FIELDS)[number];
 
-const _isAmountFieldKey = (key: (typeof FIELDS)[number]): key is (typeof AMOUNT_FIELDS)[number] => {
+const _isAmountFieldKey = (key: (typeof PAYOUT_TABLE_FIELDS)[number]): key is (typeof AMOUNT_FIELDS)[number] => {
     return AMOUNT_FIELDS.includes(key as (typeof AMOUNT_FIELDS)[number]);
 };
 
@@ -37,6 +39,7 @@ export interface PayoutsTableProps extends WithPaginationLimitSelection<Paginati
     showDetails?: boolean;
     showPagination: boolean;
     data: IPayout[] | undefined;
+    customColumns?: CustomColumn<StringWithAutocompleteOptions<PayoutsTableFields>>[];
 }
 
 export const PayoutsTable: FC<PayoutsTableProps> = ({
@@ -47,6 +50,7 @@ export const PayoutsTable: FC<PayoutsTableProps> = ({
     showDetails,
     showPagination,
     data,
+    customColumns,
     ...paginationProps
 }) => {
     const { i18n } = useCoreContext();
@@ -56,20 +60,21 @@ export const PayoutsTable: FC<PayoutsTableProps> = ({
     const isSmAndUpContainer = useResponsiveContainer(containerQueries.up.sm);
 
     const getAmountFieldConfig = useCallback(
-        (key: (typeof FIELDS)[number]) => {
+        (key: (typeof PAYOUT_TABLE_FIELDS)[number]) => {
             const label = i18n.get(getLabel(key));
             if (_isAmountFieldKey(key)) {
                 return {
                     label: data?.[0]?.[key]?.currency ? `${label} (${getCurrencyCode(data?.[0]?.[key]?.currency)})` : label,
-                    position: CellTextPosition.RIGHT,
-                };
+                    position: 'right',
+                } as const;
             }
         },
         [data, i18n]
     );
 
     const columns = useTableColumns({
-        fields: FIELDS,
+        fields: PAYOUT_TABLE_FIELDS,
+        customColumns,
         columnConfig: useMemo(
             () => ({
                 fundsCapturedAmount: { ...getAmountFieldConfig('fundsCapturedAmount'), visible: isSmAndUpContainer },
