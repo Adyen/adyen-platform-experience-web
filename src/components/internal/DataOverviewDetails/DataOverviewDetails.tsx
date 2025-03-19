@@ -88,7 +88,7 @@ export default function DataOverviewDetails(props: ExternalUIComponentProps<Deta
 
     useEffect(() => {
         void getExtraFields();
-    }, [data, getExtraFields, props]);
+    }, [getExtraFields]);
 
     return (
         <div className="adyen-pe-overview-details">
