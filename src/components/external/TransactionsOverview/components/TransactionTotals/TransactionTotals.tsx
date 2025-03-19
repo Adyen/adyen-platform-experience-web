@@ -68,11 +68,11 @@ const TransactionTotals = memo(
         }, [availableCurrencies, data]);
 
         const totals = getTotals() ?? [];
-        const isXsScreen = useResponsiveContainer(containerQueries.only.xs);
+        const isXsContainer = useResponsiveContainer(containerQueries.only.xs);
 
         return (
             <div className={BASE_CLASS}>
-                {isXsScreen ? (
+                {isXsContainer ? (
                     <>
                         <div className={ITEM_CLASS}>
                             <TotalsCard totals={totals} isLoading={isLoading} hiddenField="expenses" fullWidth={fullWidth} />
