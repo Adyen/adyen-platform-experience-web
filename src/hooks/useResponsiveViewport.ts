@@ -15,8 +15,8 @@ export const containerQueries = {
     },
     only: {
         xs: ['only', BREAKPOINTS.sm - 1, { max: BREAKPOINTS.sm - 1 }],
-        sm: ['only', BREAKPOINTS.sm],
-        md: ['only', BREAKPOINTS.md],
+        sm: ['only', BREAKPOINTS.sm, { max: BREAKPOINTS.md - 1 }],
+        md: ['only', BREAKPOINTS.md, { max: BREAKPOINTS.lg - 1 }],
         lg: ['only', BREAKPOINTS.lg, { min: BREAKPOINTS.lg }],
     },
 } as const;

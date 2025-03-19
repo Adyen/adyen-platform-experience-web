@@ -3,50 +3,49 @@ import useCoreContext from '../core/Context/useCoreContext';
 
 export const useContainerQuery = <T extends readonly [string, number, { min?: number; max?: number }?]>(query: T) => {
     const { componentRef } = useCoreContext();
+    const [width, setWidth] = useState(componentRef.current?.offsetWidth || 0);
+    const [type, breakpoint, minMax] = query;
 
-    const [width, setWidth] = useState(componentRef.current?.clientWidth || 0);
-    const [queryMatch, setQueryMatch] = useState(false);
+    let queryMatch = false;
+
+    switch (type) {
+        case 'up':
+            queryMatch = width >= breakpoint;
+            break;
+        case 'down':
+            queryMatch = width <= breakpoint;
+            break;
+        case 'only':
+            if (minMax) {
+                const { min, max } = minMax;
+                queryMatch = max ? width <= max : min ? width >= min : false;
+            } else {
+                queryMatch = width === breakpoint;
+            }
+            break;
+    }
 
     useEffect(() => {
-        const node = componentRef.current;
-        if (!node) return;
+        const containerElement = componentRef.current;
+        if (!containerElement) return;
 
-        // Create a ResizeObserver instance to watch for changes to the container's size.
+        // ResizeObserver to watch for changes to container's size.
         const resizeObserver = new ResizeObserver(entries => {
             for (const entry of entries) {
-                if (entry.target === node) {
-                    setWidth(entry.borderBoxSize[0] ? entry.borderBoxSize[0].inlineSize : entry.contentRect.width);
+                if (entry.target === containerElement) {
+                    setWidth(containerElement.offsetWidth);
                 }
             }
         });
 
-        resizeObserver.observe(node);
+        resizeObserver.observe(containerElement);
 
-        const [type, breakpoint, minMax] = query;
-
-        switch (type) {
-            case 'up':
-                setQueryMatch(width >= breakpoint);
-                break;
-            case 'down':
-                setQueryMatch(width <= breakpoint);
-                break;
-            case 'only':
-                if (minMax) {
-                    const { min, max } = minMax;
-                    setQueryMatch(max ? width <= max : min ? width >= min : false);
-                } else setQueryMatch(width === breakpoint);
-                break;
-            default:
-                setQueryMatch(false);
-        }
-
-        // Cleanup the observer on unmount
+        // Cleanup resize observer on unmount
         return () => {
-            resizeObserver.unobserve(node);
+            resizeObserver.unobserve(containerElement);
             resizeObserver.disconnect();
         };
-    }, [componentRef, query, width]);
+    }, [componentRef]);
 
     return queryMatch;
 };
