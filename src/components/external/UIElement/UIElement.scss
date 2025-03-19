@@ -7,8 +7,11 @@
     --adyen-pe-data-details-padding: var(--adyen-pe-content-padding);
     background: style.token(color-background-primary);
     container-type: inline-size;
-    padding: var(--adyen-pe-content-padding);
     width: 100%;
+}
+
+.adyen-pe-component__container {
+    padding: var(--adyen-pe-content-padding);
 
     @media (min-width: 480px) {
         border: style.token(border-width-s) solid style.token(color-outline-secondary);

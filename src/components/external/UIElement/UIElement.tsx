@@ -5,7 +5,6 @@ import BaseElement from '../BaseElement';
 import { BaseElementProps, ExternalComponentType, IUIElement, UIElementProps, UIElementStatus } from '../../types';
 import './UIElement.scss';
 import cx from 'classnames';
-import { useRef } from 'preact/compat';
 import { createRef, RefObject } from 'preact';
 
 export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUIElement {
@@ -97,7 +96,7 @@ export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUI
                 >
                     {this.componentToRender && (
                         <div ref={this.compRef} className={cx('adyen-pe-component', this.customClassNames)}>
-                            {this.componentToRender()}
+                            <div className="adyen-pe-component__container">{this.componentToRender()}</div>
                         </div>
                     )}
                 </CoreProvider>
