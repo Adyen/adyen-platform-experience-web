@@ -14,8 +14,6 @@ export const Default: ElementStory<typeof TransactionDetails> = {
     },
 };
 
-const origin = process.env.VITE_PLAYGROUND_URL;
-
 export const CustomData: ElementStory<typeof TransactionDetails> = {
     name: 'Custom Data',
     args: {
