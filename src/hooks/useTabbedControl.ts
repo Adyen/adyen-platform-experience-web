@@ -23,7 +23,7 @@ export const useTabbedControl = <T extends TabbedControlOptions>(
     options: TabbedControlConfig<T>['options'],
     defaultOption?: TabbedControlConfig<T>['defaultOption']
 ) => {
-    const [activeIndex, setActiveIndex] = useState(findDefaultOptionIndex(options, defaultOption));
+    const [activeIndex, _setActiveIndex] = useState(findDefaultOptionIndex(options, defaultOption));
     const optionElementsRef = useRef<(HTMLButtonElement | null)[]>([]);
     const uniqueId = useRef(_uniqueId().replace(/.*?(?=\d+$)/, '')).current;
 
@@ -57,6 +57,13 @@ export const useTabbedControl = <T extends TabbedControlOptions>(
         }
         return refs;
     }, [numberOfOptions]);
+
+    const setActiveIndex = useCallback(
+        (index: number) => {
+            _setActiveIndex(activeIndex => (index >= 0 && index < numberOfOptions && Number.isInteger(index) ? index : activeIndex));
+        },
+        [numberOfOptions]
+    );
 
     return { activeIndex, setActiveIndex, onKeyDown, refs, uniqueId } as const;
 };
