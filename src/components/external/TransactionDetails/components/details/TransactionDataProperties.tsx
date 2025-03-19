@@ -73,7 +73,7 @@ const TransactionDataProperties = () => {
         const itemsWithExtraFields = [
             ...listItems,
             ...(Object.entries(extraFields || {})
-                .filter(([key, value]) => !TX_DETAILS_RESERVED_FIELDS_SET.has(key as any) && value.type !== 'button')
+                .filter(([key, value]) => !TX_DETAILS_RESERVED_FIELDS_SET.has(key as any) && value.type !== 'button' && value.visibility !== 'hidden')
                 .map(([key, value]) => ({
                     key: key as TranslationKey,
                     value: isCustomDataObject(value) ? value.value : value,
