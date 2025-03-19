@@ -20,7 +20,7 @@ import Warning from '../../../../internal/SVGIcons/Warning';
 import { TypographyVariant } from '../../../../internal/Typography/types';
 import Typography from '../../../../internal/Typography/Typography';
 import { getLabel } from '../../../../utils/getLabel';
-import { containerQueries, useResponsiveViewport } from '../../../../../hooks/useResponsiveViewport';
+import { containerQueries, useResponsiveContainer } from '../../../../../hooks/useResponsiveContainer';
 import { BASE_CLASS, DATE_TYPE_CLASS, DATE_TYPE_DATE_SECTION_CLASS, DISABLED_BUTTONS_TIMEOUT } from './constants';
 import './ReportsTable.scss';
 
@@ -51,17 +51,17 @@ export const ReportsTable: FC<ReportsTableProps> = ({
     const [alert, setAlert] = useState<null | { title: string; description: string }>(null);
     const { refreshing } = useConfigContext();
     const isLoading = useMemo(() => loading || refreshing, [loading, refreshing]);
-    const isSmAndUpViewport = useResponsiveViewport(containerQueries.up.sm);
-    const isXsAndDownViewport = useResponsiveViewport(containerQueries.down.xs);
+    const isSmAndUpContainer = useResponsiveContainer(containerQueries.up.sm);
+    const isXsAndDownContainer = useResponsiveContainer(containerQueries.down.xs);
 
     const fieldsVisibility: Partial<Record<FieldsType, boolean>> = useMemo(
         () => ({
-            dateAndReportType: isXsAndDownViewport,
-            createdAt: isSmAndUpViewport,
-            reportType: isSmAndUpViewport,
+            dateAndReportType: isXsAndDownContainer,
+            createdAt: isSmAndUpContainer,
+            reportType: isSmAndUpContainer,
             reportFile: true,
         }),
-        [isXsAndDownViewport, isSmAndUpViewport]
+        [isXsAndDownContainer, isSmAndUpContainer]
     );
 
     const columns = useMemo(
@@ -71,11 +71,11 @@ export const ReportsTable: FC<ReportsTableProps> = ({
                 return {
                     key,
                     label: label,
-                    position: isXsAndDownViewport && key === 'reportFile' ? CellTextPosition.RIGHT : undefined,
+                    position: isXsAndDownContainer && key === 'reportFile' ? CellTextPosition.RIGHT : undefined,
                     visible: fieldsVisibility[key],
                 };
             }),
-        [i18n, data, fieldsVisibility]
+        [i18n, isXsAndDownContainer, fieldsVisibility]
     );
 
     const removeAlert = useCallback(() => {
@@ -110,7 +110,7 @@ export const ReportsTable: FC<ReportsTableProps> = ({
             }
             setAlert(alertDetails as { title: string; description: string });
         },
-        [error, onContactSupport]
+        [i18n]
     );
 
     if (loading) setAlert(null);

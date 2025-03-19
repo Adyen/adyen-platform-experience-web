@@ -3,7 +3,7 @@ import { memo } from 'preact/compat';
 import { useCallback } from 'preact/hooks';
 import Select from '../../Select';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
-import { containerQueries, useResponsiveViewport } from '../../../../../hooks/useResponsiveViewport';
+import { containerQueries, useResponsiveContainer } from '../../../../../hooks/useResponsiveContainer';
 import { renderDefaultSingleSelectionCheckedness } from '../components/SelectListItem';
 import { SelectItem, SelectProps } from '../types';
 import './BalanceAccountSelector.scss';
@@ -20,7 +20,7 @@ const BalanceAccountSelector = memo(
         balanceAccountSelectionOptions,
         onBalanceAccountSelection,
     }: Omit<ReturnType<typeof useBalanceAccountSelection>, 'resetBalanceAccountSelection'>) => {
-        const isSmViewport = useResponsiveViewport(containerQueries.down.xs);
+        const isSmContainer = useResponsiveContainer(containerQueries.down.xs);
         const { i18n } = useCoreContext();
 
         const renderListItem = useCallback<_GetRenderListItemType<typeof balanceAccountSelectionOptions>>(
@@ -47,7 +47,7 @@ const BalanceAccountSelector = memo(
                 withoutCollapseIndicator={true}
                 items={balanceAccountSelectionOptions}
                 renderListItem={renderListItem}
-                showOverlay={isSmViewport}
+                showOverlay={isSmContainer}
             />
         ) : null;
     }

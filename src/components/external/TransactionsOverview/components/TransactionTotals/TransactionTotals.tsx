@@ -7,7 +7,7 @@ import { WithPartialField } from '../../../../../utils/types';
 import { BASE_CLASS, ITEM_CLASS } from './constants';
 import { memo } from 'preact/compat';
 import { ITransaction } from '../../../../../types';
-import { containerQueries, useResponsiveViewport } from '../../../../../hooks/useResponsiveViewport';
+import { containerQueries, useResponsiveContainer } from '../../../../../hooks/useResponsiveContainer';
 import './TransactionTotals.scss';
 import { TotalsCard } from './TotalsCard';
 
@@ -68,7 +68,7 @@ const TransactionTotals = memo(
         }, [availableCurrencies, data]);
 
         const totals = getTotals() ?? [];
-        const isXsScreen = useResponsiveViewport(containerQueries.only.xs);
+        const isXsScreen = useResponsiveContainer(containerQueries.only.xs);
 
         return (
             <div className={BASE_CLASS}>

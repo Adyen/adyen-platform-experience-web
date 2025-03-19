@@ -1,6 +1,6 @@
 import { memo } from 'preact/compat';
 import Select from '../../../../internal/FormFields/Select';
-import { containerQueries, useResponsiveViewport } from '../../../../../hooks/useResponsiveViewport';
+import { containerQueries, useResponsiveContainer } from '../../../../../hooks/useResponsiveContainer';
 import type { SelectProps } from '../../../../internal/FormFields/Select/types';
 import useMultiSelectionFilter from './useMultiSelectionFilter';
 
@@ -11,9 +11,9 @@ const MultiSelectionFilter = memo(
         selectionOptions,
         updateSelection,
     }: ReturnType<typeof useMultiSelectionFilter<FilterParam, FilterValue>> & Pick<SelectProps<any>, 'placeholder'>) => {
-        const isSmViewport = useResponsiveViewport(containerQueries.down.xs);
-        const isOnlySmDevice = useResponsiveViewport(containerQueries.only.sm);
-        const isOnlyMdDevice = useResponsiveViewport(containerQueries.only.md);
+        const isSmContainer = useResponsiveContainer(containerQueries.down.xs);
+        const isOnlySmContainer = useResponsiveContainer(containerQueries.only.sm);
+        const isOnlyMdContainer = useResponsiveContainer(containerQueries.only.md);
 
         return selectionOptions && selectionOptions.length > 1 ? (
             <Select
@@ -24,8 +24,8 @@ const MultiSelectionFilter = memo(
                 selected={selection}
                 withoutCollapseIndicator={true}
                 items={selectionOptions}
-                showOverlay={isSmViewport}
-                fitPosition={isOnlyMdDevice || isOnlySmDevice}
+                showOverlay={isSmContainer}
+                fitPosition={isOnlyMdContainer || isOnlySmContainer}
             />
         ) : null;
     }

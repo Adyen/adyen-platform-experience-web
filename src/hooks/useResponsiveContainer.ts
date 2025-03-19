@@ -27,4 +27,4 @@ export type ResponsiveViewportContainerQuery = ValueOfRecord<{
     [K in keyof _ContainerQueries]: ValueOfRecord<_ContainerQueries[K]>;
 }>;
 
-export const useResponsiveViewport = useContainerQuery<ResponsiveViewportContainerQuery>;
+export const useResponsiveContainer = useContainerQuery<ResponsiveViewportContainerQuery>;
