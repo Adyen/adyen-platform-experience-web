@@ -1,7 +1,7 @@
 import { http, HttpResponse } from 'msw';
 import { compareDates, delay, getPaginationLinks } from './utils/utils';
 import { endpoints } from '../../endpoints/endpoints';
-import { getDisputesByStatus } from '../mock-data/disputes';
+import { getDisputesByStatusGroup } from '../mock-data/disputes';
 
 const mockEndpoints = endpoints('mock');
 const networkError = false;
@@ -13,17 +13,16 @@ export const disputesMocks = [
             return HttpResponse.error();
         }
         const url = new URL(request.url);
-        const status = url.searchParams.get('status') ?? 'action_needed';
+        const statusGroup = (url.searchParams.get('statusGroup') as 'open' | 'closed') ?? 'open';
         const createdSince = url.searchParams.get('createdSince');
         const createdUntil = url.searchParams.get('createdUntil');
         const limit = +(url.searchParams.get('limit') ?? defaultPaginationLimit);
         const cursor = +(url.searchParams.get('cursor') ?? 0);
 
-        let disputes = getDisputesByStatus(status);
+        let disputes = getDisputesByStatusGroup(statusGroup);
         let responseDelay = 200;
 
-        // Additional filtering by createdAt dates if specified
-        if (status || createdSince || createdUntil) {
+        if (createdSince || createdUntil) {
             disputes = disputes.filter(
                 dispute =>
                     (!createdSince || compareDates(dispute.createdAt, createdSince, 'ge')) &&

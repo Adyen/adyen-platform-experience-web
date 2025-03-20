@@ -114,6 +114,8 @@
     "default": "Default",
     "description": "Description",
     "dismiss": "Dismiss",
+    "disputes.title": "Disputes",
+    "disputes.weCouldNotLoadTheDisputesOverviewComponent": "We could not load the disputes overview component",
     "download": "Download",
     "downloading": "Downloading",
     "email": "Email",
