@@ -14,7 +14,7 @@ import Pagination from '../../../../internal/Pagination';
 import { PaginationProps, WithPaginationLimitSelection } from '../../../../internal/Pagination/types';
 import { TypographyVariant } from '../../../../internal/Typography/types';
 import Typography from '../../../../internal/Typography/Typography';
-import { mediaQueries, useResponsiveViewport } from '../../../../../hooks/useResponsiveViewport';
+import { containerQueries, useResponsiveContainer } from '../../../../../hooks/useResponsiveContainer';
 import { BASE_CLASS } from './constants';
 import './DisputesTable.scss';
 import { CustomColumn } from '../../../../types';
@@ -51,8 +51,8 @@ export const DisputesTable: FC<DisputesTableProps> = ({
     const [alert, setAlert] = useState<null | { title: string; description: string }>(null);
     const { refreshing } = useConfigContext();
     const isLoading = useMemo(() => loading || refreshing, [loading, refreshing]);
-    const isSmAndUpViewport = useResponsiveViewport(mediaQueries.up.sm);
-    const isXsAndDownViewport = useResponsiveViewport(mediaQueries.down.xs);
+    const isSmAndUpViewport = useResponsiveContainer(containerQueries.up.sm);
+    const isXsAndDownViewport = useResponsiveContainer(containerQueries.down.xs);
 
     const columns = useTableColumns({
         fields: FIELDS,
