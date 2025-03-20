@@ -5,7 +5,7 @@ import { Tag } from '../../../../internal/Tag/Tag';
 import { TagVariant } from '../../../../internal/Tag/types';
 import { TypographyVariant } from '../../../../internal/Typography/types';
 import Typography from '../../../../internal/Typography/Typography';
-import { mediaQueries, useResponsiveViewport } from '../../../../../hooks/useResponsiveViewport';
+import { containerQueries, useResponsiveContainer } from '../../../../../hooks/useResponsiveContainer';
 import { parsePaymentMethodType } from '../utils';
 import { PAYMENT_METHOD_CLASS, PAYMENT_METHOD_LOGO_CLASS, PAYMENT_METHOD_LOGO_CONTAINER_CLASS } from './constants';
 
@@ -17,7 +17,7 @@ const PaymentMethodCell = ({
     bankAccount?: ITransaction['bankAccount'];
 }) => {
     const { i18n } = useCoreContext();
-    const isSmViewport = useResponsiveViewport(mediaQueries.down.xs);
+    const isSmContainer = useResponsiveContainer(containerQueries.down.xs);
 
     return (
         <div className={PAYMENT_METHOD_CLASS}>
@@ -31,7 +31,7 @@ const PaymentMethodCell = ({
                             className={PAYMENT_METHOD_LOGO_CLASS}
                         />
                     </div>
-                    <Typography variant={TypographyVariant.BODY} stronger={isSmViewport}>
+                    <Typography variant={TypographyVariant.BODY} stronger={isSmContainer}>
                         {paymentMethod ? parsePaymentMethodType(paymentMethod) : bankAccount?.accountNumberLastFourDigits}
                     </Typography>
                 </>
