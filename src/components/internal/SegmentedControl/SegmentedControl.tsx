@@ -12,7 +12,6 @@ function SegmentedControl<T extends SegmentedControlOption[]>({ defaultOption, o
         <div>
             <div role="radiogroup" className="adyen-fp-segmented-control">
                 {options.map((option, index) => {
-                    const activateOption = () => setActiveIndex(index);
                     const isActive = activeIndex === index;
                     return (
                         <button
@@ -24,8 +23,7 @@ function SegmentedControl<T extends SegmentedControlOption[]>({ defaultOption, o
                             className="adyen-fp-segmented-control__item"
                             aria-checked={isActive}
                             aria-controls={`segment:${uniqueId}-${option.id}`}
-                            onClick={isActive ? undefined : activateOption}
-                            onFocus={activateOption}
+                            onClick={isActive ? undefined : () => setActiveIndex(index)}
                             onKeyDown={onKeyDown}
                             disabled={option.disabled}
                             tabIndex={isActive ? 0 : -1}
