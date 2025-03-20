@@ -2,9 +2,22 @@
  * @vitest-environment jsdom
  */
 import { describe, expect, test } from 'vitest';
-import { act, fireEvent, render, renderHook, screen } from '@testing-library/preact';
+import { fireEvent, render, renderHook, screen } from '@testing-library/preact';
 import { TabbedControlOptions, useTabbedControl } from './useTabbedControl';
 import { InteractionKeyCode } from '../components/types';
+
+function TestComponent<T extends TabbedControlOptions>({ options }: { options: T }) {
+    const { activeIndex, onClick, onKeyDown, refs } = useTabbedControl(options);
+    return (
+        <>
+            {options.map((option, index) => (
+                <button key={index} ref={refs[index]} onClick={onClick} onKeyDown={onKeyDown} aria-checked={activeIndex === index}>
+                    {option.id}
+                </button>
+            ))}
+        </>
+    );
+}
 
 describe('useTabbedControl', () => {
     const OPTIONS = [{ id: 'option_1' }, { id: 'option_2' }, { id: 'option_3' }];
@@ -27,40 +40,16 @@ describe('useTabbedControl', () => {
         expect(result.activeIndex).toBe(0);
     });
 
-    test('should set the active index correctly', () => {
-        const result = renderHook(() => useTabbedControl(OPTIONS)).result;
-        expect(result.current.activeIndex).toBe(0);
+    test('should activate the correct option for option clicked', () => {
+        render(<TestComponent options={OPTIONS} />);
 
-        act(() => result.current.setActiveIndex(1));
-        expect(result.current.activeIndex).toBe(1);
-
-        act(() => result.current.setActiveIndex(2));
-        expect(result.current.activeIndex).toBe(2);
-
-        act(() => result.current.setActiveIndex(3.5));
-        expect(result.current.activeIndex).toBe(2);
-
-        act(() => result.current.setActiveIndex(-4));
-        expect(result.current.activeIndex).toBe(2);
-
-        act(() => result.current.setActiveIndex(0));
-        expect(result.current.activeIndex).toBe(0);
+        for (const optionButton of screen.getAllByRole('button')) {
+            fireEvent.click(optionButton);
+            expect(optionButton.getAttribute('aria-checked')).toBe('true');
+        }
     });
 
-    test('should focus on the right option for arrow keys pressed', async () => {
-        function TestComponent<T extends TabbedControlOptions>({ options }: { options: T }) {
-            const { onKeyDown, refs, setActiveIndex } = useTabbedControl(options);
-            return (
-                <>
-                    {options.map((option, index) => (
-                        <button key={index} ref={refs[index]} onKeyDown={onKeyDown}>
-                            {option.id}
-                        </button>
-                    ))}
-                </>
-            );
-        }
-
+    test('should focus on the right option for navigation key pressed', () => {
         render(<TestComponent options={OPTIONS} />);
 
         // focus on first option
@@ -68,6 +57,7 @@ describe('useTabbedControl', () => {
 
         // confirm that first option has focus
         expect(document.activeElement!.textContent).toBe('option_1');
+        expect(document.activeElement!.getAttribute('aria-checked')).toBe('true');
 
         // simulate pressing right arrow key multiple times
         for (let i = 0, j = 2; i < 5; i++, j++) {
@@ -79,6 +69,7 @@ describe('useTabbedControl', () => {
             });
 
             expect(document.activeElement!.textContent).toBe(`option_${j}`);
+            expect(document.activeElement!.getAttribute('aria-checked')).toBe('true');
         }
 
         // simulate pressing home key
@@ -89,6 +80,7 @@ describe('useTabbedControl', () => {
 
         // confirm that first option has focus
         expect(document.activeElement!.textContent).toBe('option_1');
+        expect(document.activeElement!.getAttribute('aria-checked')).toBe('true');
 
         // simulate pressing left arrow key multiple times
         for (let i = 0, j = 0; i < 5; i++, j--) {
@@ -100,6 +92,7 @@ describe('useTabbedControl', () => {
             });
 
             expect(document.activeElement!.textContent).toBe(`option_${j}`);
+            expect(document.activeElement!.getAttribute('aria-checked')).toBe('true');
         }
 
         // simulate pressing end key
@@ -110,6 +103,7 @@ describe('useTabbedControl', () => {
 
         // confirm that last option has focus
         expect(document.activeElement!.textContent).toBe('option_3');
+        expect(document.activeElement!.getAttribute('aria-checked')).toBe('true');
     });
 
     test('should have a unique id for each consumer', () => {

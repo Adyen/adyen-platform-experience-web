@@ -6,7 +6,7 @@ import Typography from '../Typography/Typography';
 import './Tabs.scss';
 
 function Tabs<T extends TabProps[]>({ defaultActiveTab, tabs }: TabComponentProps<T>) {
-    const { activeIndex, setActiveIndex, onKeyDown, refs, uniqueId } = useTabbedControl(tabs, defaultActiveTab);
+    const { activeIndex, onClick, onKeyDown, refs, uniqueId } = useTabbedControl(tabs, defaultActiveTab);
     const { i18n } = useCoreContext();
     return (
         <section aria-label={i18n.get('tabs')}>
@@ -23,7 +23,7 @@ function Tabs<T extends TabProps[]>({ defaultActiveTab, tabs }: TabComponentProp
                             className="adyen-fp-tabs__tab"
                             aria-controls={`panel:${uniqueId}-${tab.id}`}
                             aria-selected={isActive}
-                            onClick={isActive ? undefined : () => setActiveIndex(index)}
+                            onClick={isActive ? undefined : onClick}
                             onKeyDown={onKeyDown}
                             disabled={tab.disabled}
                             tabIndex={isActive ? 0 : -1}

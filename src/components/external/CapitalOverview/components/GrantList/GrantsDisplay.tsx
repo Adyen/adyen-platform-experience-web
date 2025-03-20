@@ -46,9 +46,9 @@ export const GrantsDisplay: FunctionalComponent<GrantsProps> = ({ grantList, hid
         return [active, inactive];
     }, [grantList]);
 
-    const displayMode = useMemo<'SingleGrant' | 'SegmentedGrants'>(() => {
+    const displayMode = useMemo<'UnifiedGrants' | 'SegmentedGrants'>(() => {
         if (grantList.length > 1 && activeGrants.length && inactiveGrants.length) return 'SegmentedGrants';
-        return 'SingleGrant';
+        return 'UnifiedGrants';
     }, [activeGrants.length, grantList.length, inactiveGrants.length]);
 
     const showNewOfferButton = useMemo(() => {
@@ -96,10 +96,10 @@ export const GrantsDisplay: FunctionalComponent<GrantsProps> = ({ grantList, hid
                 ) : null}
             </div>
 
-            {displayMode === 'SingleGrant' && <List grants={grantList} showDetails={showGrantDetails} />}
+            {displayMode === 'UnifiedGrants' && <List grants={grantList} showDetails={showGrantDetails} />}
             {displayMode === 'SegmentedGrants' && (
                 <SegmentedControl
-                    options={[
+                    items={[
                         {
                             label: 'capital.inProgress',
                             content: <List grants={activeGrants} showDetails={showGrantDetails} />,
@@ -111,7 +111,7 @@ export const GrantsDisplay: FunctionalComponent<GrantsProps> = ({ grantList, hid
                             id: 'inactive',
                         },
                     ]}
-                    defaultOption={'active'}
+                    defaultItem={'active'}
                 />
             )}
         </div>
