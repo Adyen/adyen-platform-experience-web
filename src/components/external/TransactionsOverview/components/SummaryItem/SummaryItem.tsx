@@ -9,7 +9,7 @@ import useCoreContext from '../../../../../core/Context/useCoreContext';
 import classNames from 'classnames';
 import { useCallback, useEffect } from 'preact/hooks';
 import './SummaryItem.scss';
-import { mediaQueries, useResponsiveViewport } from '../../../../../hooks/useResponsiveViewport';
+import { containerQueries, useResponsiveContainer } from '../../../../../hooks/useResponsiveContainer';
 
 export const SummaryItem = ({
     columnConfigs,
@@ -34,16 +34,16 @@ export const SummaryItem = ({
 
     const getColumnStyle = (index: number) => ({ width: widths && widths[index] ? widths[index] : 'auto' });
 
-    const isXsScreen = useResponsiveViewport(mediaQueries.only.xs);
+    const isXsContainer = useResponsiveContainer(containerQueries.only.xs);
 
     const typographyVariant = useCallback(
         (config: SummaryItemColumnConfig, isLongValue: boolean) => {
             if (config.valueHasLabelStyle) {
                 return TypographyVariant.CAPTION;
             }
-            return isLongValue && !isXsScreen ? TypographyVariant.BODY : TypographyVariant.TITLE;
+            return isLongValue && !isXsContainer ? TypographyVariant.BODY : TypographyVariant.TITLE;
         },
-        [isXsScreen]
+        [isXsContainer]
     );
 
     return (

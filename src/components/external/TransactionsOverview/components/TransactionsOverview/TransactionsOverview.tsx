@@ -22,7 +22,7 @@ import useTransactionsOverviewMultiSelectionFilters from '../../hooks/useTransac
 import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatformExperienceError';
 import { AmountFilter } from '../../../../internal/FilterBar/filters/AmountFilter/AmountFilter';
 import { BASE_CLASS, BASE_CLASS_DETAILS, MAX_TRANSACTIONS_DATE_RANGE_MONTHS, SUMMARY_CLASS, SUMMARY_ITEM_CLASS } from './constants';
-import { mediaQueries, useResponsiveViewport } from '../../../../../hooks/useResponsiveViewport';
+import { containerQueries, useResponsiveContainer } from '../../../../../hooks/useResponsiveContainer';
 import { useCustomColumnsData } from '../../../../../hooks/useCustomColumnsData';
 import hasCustomField from '../../../../utils/customData/hasCustomField';
 import mergeRecords from '../../../../utils/customData/mergeRecords';
@@ -120,7 +120,7 @@ export const TransactionsOverview = ({
         statusesFilter.updateSelection({ target: { value: 'Booked', name: 'status' } });
     }, [statusesFilter]);
 
-    const isNarrowViewport = useResponsiveViewport(mediaQueries.down.sm);
+    const isNarrowContainer = useResponsiveContainer(containerQueries.down.sm);
 
     const hasMultipleCurrencies = !!availableCurrencies && availableCurrencies.length > 1;
 
@@ -219,7 +219,7 @@ export const TransactionsOverview = ({
                         currencies={currenciesFilter.selection}
                         minAmount={filters[FilterParam.MIN_AMOUNT] ? parseFloat(filters[FilterParam.MIN_AMOUNT]) : undefined}
                         maxAmount={filters[FilterParam.MAX_AMOUNT] ? parseFloat(filters[FilterParam.MAX_AMOUNT]) : undefined}
-                        fullWidth={isNarrowViewport}
+                        fullWidth={isNarrowContainer}
                     />
                 </div>
                 <div className={SUMMARY_ITEM_CLASS}>
@@ -227,7 +227,7 @@ export const TransactionsOverview = ({
                         balanceAccountId={activeBalanceAccount?.id}
                         onCurrenciesChange={handleCurrenciesChange}
                         defaultCurrencyCode={activeBalanceAccount?.defaultCurrencyCode}
-                        fullWidth={isNarrowViewport}
+                        fullWidth={isNarrowContainer}
                     />
                 </div>
             </div>
