@@ -3,7 +3,8 @@ import { getLabel } from '../components/utils/getLabel';
 import { CellTextPosition } from '../components/internal/DataGrid/types';
 import { CustomColumn, DataGridCustomColumnConfig } from '../components/types';
 import useCoreContext from '../core/Context/useCoreContext';
-import { EMPTY_OBJECT, isString, isUndefined } from '../utils';
+import { EMPTY_OBJECT, isUndefined } from '../utils';
+import { containerQueries, useResponsiveContainer } from './useResponsiveContainer';
 
 type Columns<k extends string> = DataGridCustomColumnConfig<k> & { label?: string; position?: CellTextPosition; visible?: boolean };
 
@@ -17,38 +18,67 @@ function removeUndefinedProperties<T extends string>(obj: Omit<Columns<T>, 'key'
     return result;
 }
 
-function _isStringArray(columns: any): columns is string[] {
-    return columns.every(isString);
-}
-
 export const useTableColumns = <T extends string, C extends string>({
     fields,
     customColumns,
     columnConfig,
 }: {
     fields: T[] | Readonly<T[]>;
-    customColumns?: CustomColumn<C>[] | C[];
+    customColumns?: CustomColumn<C>[];
     columnConfig?: { [k in T]?: Omit<Columns<k>, 'key'> };
 }) => {
     const { i18n } = useCoreContext();
 
     const tableColumns: CustomColumn<T>[] = useMemo(() => fields.map(field => ({ key: field })), [fields]);
+    const isSmAndUpContainer = useResponsiveContainer(containerQueries.up.sm);
 
     const columns = useMemo(() => {
-        const parsedCols = customColumns
-            ? _isStringArray(customColumns)
-                ? customColumns.map<CustomColumn<C>>(col => ({ key: col }))
-                : customColumns
-            : undefined;
+        const newFields = customColumns?.filter(cc => !fields.some(field => field === (cc.key as unknown as T))).map(colum => colum.key) || [];
 
-        return (parsedCols || tableColumns).map(({ key, flex }) => {
-            const label = i18n.get(getLabel(key as any));
+        const mergedColumns = [...tableColumns, ...(customColumns || [])];
 
-            const config = removeUndefinedProperties<T>(columnConfig?.[key] || EMPTY_OBJECT);
+        const customColumnsMap =
+            customColumns?.reduce<Record<string, (typeof customColumns)[number]>>((acc, col) => {
+                acc[col.key] = col;
+                return acc;
+            }, {}) || {};
 
-            return { key: key as unknown as T, label, visible: true, flex, ...(config || EMPTY_OBJECT) };
+        // Use a Map to track columns by key.
+        const columnMap = new Map<string, { key: T; position?: 'center' | 'left' | 'right'; flex?: number; visible?: boolean; label: string }>();
+
+        mergedColumns.forEach(current => {
+            // Check if there is a custom column that should be hidden
+            const hiddenColumn = customColumnsMap[current.key];
+            if (hiddenColumn?.visibility === 'hidden') return;
+
+            if (columnMap.has(current.key)) {
+                // Merge properties from current into the existing column.
+                const existing = columnMap.get(current.key)!;
+                // Current's properties will override existing ones if there are conflicts
+                columnMap.set(current.key, {
+                    ...existing,
+                    ...current,
+                    visible: current.visibility !== 'hidden',
+                    position: current.align || existing.position,
+                });
+            } else {
+                const { key, flex, align } = current;
+                const label = i18n.get(getLabel(key as any));
+                const config = removeUndefinedProperties<T>(columnConfig?.[key] || EMPTY_OBJECT);
+
+                columnMap.set(current.key, {
+                    key: key as unknown as T,
+                    label,
+                    visible: newFields.includes(current.key as unknown as C) ? isSmAndUpContainer : true,
+                    flex,
+                    position: align,
+                    ...config,
+                });
+            }
         });
-    }, [columnConfig, customColumns, i18n, tableColumns]);
+
+        return Array.from(columnMap.values());
+    }, [columnConfig, customColumns, fields, i18n, isSmAndUpContainer, tableColumns]);
 
     return columns;
 };
