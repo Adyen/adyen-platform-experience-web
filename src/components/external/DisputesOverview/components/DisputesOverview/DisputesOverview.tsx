@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo } from 'preact/hooks';
+import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
 import { useConfigContext } from '../../../../../core/ConfigContext';
 import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatformExperienceError';
 import { IBalanceAccountBase } from '../../../../../types';
@@ -13,13 +13,21 @@ import { useCursorPaginatedRecords } from '../../../../internal/Pagination/hooks
 import { Header } from '../../../../internal/Header';
 import { CustomDataRetrieved, DisputeOverviewComponentProps, ExternalUIComponentProps, FilterParam } from '../../../../types';
 import { FIELDS } from '../DisputesTable/DisputesTable';
-import { EARLIEST_DISPUTES_SINCE_DATE, BASE_CLASS } from './constants';
+import {
+    EARLIEST_DISPUTES_SINCE_DATE,
+    BASE_CLASS,
+    DISPUTES_OVERVIEW_GROUP_SELECTOR_CLASS,
+    DISPUTES_OVERVIEW_STATUS_GROUP_ACTIVE_CLASS,
+    DISPUTES_OVERVIEW_STATUS_GROUP_CLASS,
+} from './constants';
 import './DisputesOverview.scss';
 import { useCustomColumnsData } from '../../../../../hooks/useCustomColumnsData';
 import hasCustomField from '../../../../utils/customData/hasCustomField';
 import mergeRecords from '../../../../utils/customData/mergeRecords';
 import { DisputesTable } from '../DisputesTable/DisputesTable';
 import { IDispute } from '../../../../../types/api/models/disputes';
+import useCoreContext from '../../../../../core/Context/useCoreContext';
+import cx from 'classnames';
 
 export const DisputesOverview = ({
     onFiltersChanged,
@@ -36,6 +44,7 @@ export const DisputesOverview = ({
     const { getDisputes: getDisputesCall } = useConfigContext().endpoints;
     const { activeBalanceAccount, balanceAccountSelectionOptions, onBalanceAccountSelection } = useBalanceAccountSelection(balanceAccounts);
     const { defaultParams, nowTimestamp, refreshNowTimestamp } = useDefaultOverviewFilterParams('disputes', activeBalanceAccount);
+    const [statusGroup, setStatusGroup] = useState<'open' | 'closed'>('open');
 
     const getDisputes = useCallback(
         async (pageRequestParams: Record<FilterParam | 'cursor', string>, signal?: AbortSignal) => {
@@ -44,6 +53,7 @@ export const DisputesOverview = ({
             return getDisputesCall!(requestOptions, {
                 query: {
                     ...pageRequestParams,
+                    statusGroup: statusGroup,
                     createdSince:
                         pageRequestParams[FilterParam.CREATED_SINCE] ?? defaultParams.current.defaultFilterParams[FilterParam.CREATED_SINCE],
                     createdUntil:
@@ -52,7 +62,7 @@ export const DisputesOverview = ({
                 },
             });
         },
-        [activeBalanceAccount?.id, defaultParams, getDisputesCall]
+        [activeBalanceAccount?.id, defaultParams, getDisputesCall, statusGroup]
     );
 
     // FILTERS
@@ -90,11 +100,36 @@ export const DisputesOverview = ({
         refreshNowTimestamp();
     }, [filters, refreshNowTimestamp]);
 
+    const { i18n } = useCoreContext();
+
     return (
         <div className={BASE_CLASS}>
             <Header hideTitle={hideTitle} titleKey="disputes.title">
                 <FilterBarMobileSwitch {...filterBarState} />
             </Header>
+            <div className={DISPUTES_OVERVIEW_GROUP_SELECTOR_CLASS}>
+                <button
+                    className={cx(DISPUTES_OVERVIEW_STATUS_GROUP_CLASS, {
+                        [DISPUTES_OVERVIEW_STATUS_GROUP_ACTIVE_CLASS]: statusGroup === 'open',
+                    })}
+                    type={'button'}
+                    tabIndex={0}
+                    onClick={() => setStatusGroup('open')}
+                >
+                    {i18n.get('disputes.open')}
+                </button>
+                <button
+                    className={cx(DISPUTES_OVERVIEW_STATUS_GROUP_CLASS, {
+                        [DISPUTES_OVERVIEW_STATUS_GROUP_ACTIVE_CLASS]: statusGroup === 'closed',
+                    })}
+                    type={'button'}
+                    tabIndex={0}
+                    onClick={() => setStatusGroup('closed')}
+                >
+                    {i18n.get('disputes.closed')}
+                </button>
+            </div>
+
             <FilterBar {...filterBarState}>
                 <BalanceAccountSelector
                     activeBalanceAccount={activeBalanceAccount}
@@ -112,6 +147,7 @@ export const DisputesOverview = ({
                     updateFilters={updateFilters}
                 />
             </FilterBar>
+
             <DisputesTable
                 balanceAccountId={activeBalanceAccount?.id}
                 loading={fetching || isLoadingBalanceAccount || !balanceAccounts || !activeBalanceAccount || loadingCustomRecords}

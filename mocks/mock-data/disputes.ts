@@ -14,7 +14,7 @@ export const DISPUTES = [
         createdAt: getDate(-2),
         paymentMethod: { type: 'mc', lastFourDigits: '0001', description: 'MasterCard' },
         bankAccount: { accountNumberLastFourDigits: 'B0001' },
-        reasonCode: 'RC1',
+        reasonCode: 'fraudulent',
         amount: { currency: 'EUR', value: '211100' },
     },
     {
@@ -24,7 +24,7 @@ export const DISPUTES = [
         createdAt: getDate(-2),
         paymentMethod: { type: 'visa', lastFourDigits: '0002', description: 'Visa Credit Card' },
         bankAccount: { accountNumberLastFourDigits: 'B0002' },
-        reasonCode: 'RC2',
+        reasonCode: 'fraudulent',
         amount: { currency: 'USD', value: '222200' },
     },
     {
@@ -34,7 +34,7 @@ export const DISPUTES = [
         createdAt: getDate(-2),
         paymentMethod: { type: 'paypal', lastFourDigits: '0003', description: 'PayPal' },
         bankAccount: { accountNumberLastFourDigits: 'B0003' },
-        reasonCode: 'RC3',
+        reasonCode: 'other',
         amount: { currency: 'EUR', value: '233300' },
     },
     {
@@ -44,67 +44,67 @@ export const DISPUTES = [
         createdAt: getDate(-2),
         paymentMethod: { type: 'klarna', lastFourDigits: '0004', description: 'Klarna Pay Later' },
         bankAccount: { accountNumberLastFourDigits: 'B0004' },
-        reasonCode: 'RC4',
+        reasonCode: 'consumer',
         amount: { currency: 'USD', value: '244400' },
     },
     {
         id: 'a1b2c3d4-e5f6-4789-abcd-000000000005',
         status: 'action_needed',
-        dueDate: getDate(5),
+        dueDate: getDate(11),
         createdAt: getDate(-2),
         paymentMethod: { type: 'amex', lastFourDigits: '0005', description: 'American Express' },
         bankAccount: { accountNumberLastFourDigits: 'B0005' },
-        reasonCode: 'RC5',
+        reasonCode: 'fraudulent',
         amount: { currency: 'EUR', value: '255500' },
     },
     {
         id: 'a1b2c3d4-e5f6-4789-abcd-000000000006',
         status: 'action_needed',
-        dueDate: getDate(5),
+        dueDate: getDate(11),
         createdAt: getDate(-2),
         paymentMethod: { type: 'mc', lastFourDigits: '0006', description: 'MasterCard' },
         bankAccount: { accountNumberLastFourDigits: 'B0006' },
-        reasonCode: 'RC6',
+        reasonCode: 'consumer',
         amount: { currency: 'USD', value: '266600' },
     },
     {
         id: 'a1b2c3d4-e5f6-4789-abcd-000000000007',
         status: 'action_needed',
-        dueDate: getDate(5),
+        dueDate: getDate(11),
         createdAt: getDate(-2),
         paymentMethod: { type: 'visa', lastFourDigits: '0007', description: 'Visa Credit Card' },
         bankAccount: { accountNumberLastFourDigits: 'B0007' },
-        reasonCode: 'RC7',
+        reasonCode: 'fraudulent',
         amount: { currency: 'EUR', value: '277700' },
     },
     {
         id: 'a1b2c3d4-e5f6-4789-abcd-000000000008',
         status: 'action_needed',
-        dueDate: getDate(5),
+        dueDate: getDate(11),
         createdAt: getDate(-2),
         paymentMethod: { type: 'paypal', lastFourDigits: '0008', description: 'PayPal' },
         bankAccount: { accountNumberLastFourDigits: 'B0008' },
-        reasonCode: 'RC8',
+        reasonCode: 'fraudulent',
         amount: { currency: 'USD', value: '288800' },
     },
     {
         id: 'a1b2c3d4-e5f6-4789-abcd-000000000009',
         status: 'action_needed',
-        dueDate: getDate(5),
+        dueDate: getDate(11),
         createdAt: getDate(-2),
         paymentMethod: { type: 'klarna', lastFourDigits: '0009', description: 'Klarna Pay Later' },
         bankAccount: { accountNumberLastFourDigits: 'B0009' },
-        reasonCode: 'RC9',
+        reasonCode: 'other',
         amount: { currency: 'EUR', value: '299900' },
     },
     {
         id: 'a1b2c3d4-e5f6-4789-abcd-000000000010',
         status: 'action_needed',
-        dueDate: getDate(8),
+        dueDate: getDate(11),
         createdAt: getDate(-2),
         paymentMethod: { type: 'amex', lastFourDigits: '0010', description: 'American Express' },
         bankAccount: { accountNumberLastFourDigits: 'B0010' },
-        reasonCode: 'RC10',
+        reasonCode: 'other',
         amount: { currency: 'USD', value: '311000' },
     },
     {
@@ -114,7 +114,7 @@ export const DISPUTES = [
         createdAt: getDate(-2),
         paymentMethod: { type: 'mc', lastFourDigits: '0011', description: 'MasterCard' },
         bankAccount: { accountNumberLastFourDigits: 'B0011' },
-        reasonCode: 'RC11',
+        reasonCode: 'consumer',
         amount: { currency: 'EUR', value: '322100' },
     },
     {
@@ -124,7 +124,7 @@ export const DISPUTES = [
         createdAt: getDate(-2),
         paymentMethod: { type: 'visa', lastFourDigits: '0012', description: 'Visa Credit Card' },
         bankAccount: { accountNumberLastFourDigits: 'B0012' },
-        reasonCode: 'RC12',
+        reasonCode: 'consumer',
         amount: { currency: 'USD', value: '333200' },
     },
     {
@@ -134,7 +134,7 @@ export const DISPUTES = [
         createdAt: getDate(-2),
         paymentMethod: { type: 'paypal', lastFourDigits: '0013', description: 'PayPal' },
         bankAccount: { accountNumberLastFourDigits: 'B0013' },
-        reasonCode: 'RC13',
+        reasonCode: 'other',
         amount: { currency: 'EUR', value: '344300' },
     },
     {
@@ -144,7 +144,7 @@ export const DISPUTES = [
         createdAt: getDate(-2),
         paymentMethod: { type: 'klarna', lastFourDigits: '0014', description: 'Klarna Pay Later' },
         bankAccount: { accountNumberLastFourDigits: 'B0014' },
-        reasonCode: 'RC14',
+        reasonCode: 'fraudulent',
         amount: { currency: 'USD', value: '355400' },
     },
     {
@@ -154,7 +154,7 @@ export const DISPUTES = [
         createdAt: getDate(-2),
         paymentMethod: { type: 'amex', lastFourDigits: '0015', description: 'American Express' },
         bankAccount: { accountNumberLastFourDigits: 'B0015' },
-        reasonCode: 'RC15',
+        reasonCode: 'fraudulent',
         amount: { currency: 'EUR', value: '366500' },
     },
 
@@ -164,7 +164,7 @@ export const DISPUTES = [
         createdAt: getDate(-3),
         paymentMethod: { type: 'mc', lastFourDigits: '0016', description: 'MasterCard' },
         bankAccount: { accountNumberLastFourDigits: 'B0016' },
-        reasonCode: 'RC16',
+        reasonCode: 'other',
         amount: { currency: 'USD', value: '377600' },
     },
     {
@@ -173,7 +173,7 @@ export const DISPUTES = [
         createdAt: getDate(-3),
         paymentMethod: { type: 'visa', lastFourDigits: '0017', description: 'Visa Credit Card' },
         bankAccount: { accountNumberLastFourDigits: 'B0017' },
-        reasonCode: 'RC17',
+        reasonCode: 'fraudulent',
         amount: { currency: 'EUR', value: '388700' },
     },
     {
@@ -182,7 +182,7 @@ export const DISPUTES = [
         createdAt: getDate(-3),
         paymentMethod: { type: 'paypal', lastFourDigits: '0018', description: 'PayPal' },
         bankAccount: { accountNumberLastFourDigits: 'B0018' },
-        reasonCode: 'RC18',
+        reasonCode: 'fraudulent',
         amount: { currency: 'USD', value: '399800' },
     },
     {
@@ -191,7 +191,7 @@ export const DISPUTES = [
         createdAt: getDate(-3),
         paymentMethod: { type: 'klarna', lastFourDigits: '0019', description: 'Klarna Pay Later' },
         bankAccount: { accountNumberLastFourDigits: 'B0019' },
-        reasonCode: 'RC19',
+        reasonCode: 'other',
         amount: { currency: 'EUR', value: '410900' },
     },
     {
@@ -200,7 +200,7 @@ export const DISPUTES = [
         createdAt: getDate(-5),
         paymentMethod: { type: 'amex', lastFourDigits: '0020', description: 'American Express' },
         bankAccount: { accountNumberLastFourDigits: 'B0020' },
-        reasonCode: 'RC20',
+        reasonCode: 'fraudulent',
         amount: { currency: 'USD', value: '422000' },
     },
     {
@@ -209,7 +209,7 @@ export const DISPUTES = [
         createdAt: getDate(-5),
         paymentMethod: { type: 'mc', lastFourDigits: '0021', description: 'MasterCard' },
         bankAccount: { accountNumberLastFourDigits: 'B0021' },
-        reasonCode: 'RC21',
+        reasonCode: 'consumer',
         amount: { currency: 'EUR', value: '433100' },
     },
     {
@@ -218,7 +218,7 @@ export const DISPUTES = [
         createdAt: getDate(-5),
         paymentMethod: { type: 'visa', lastFourDigits: '0022', description: 'Visa Credit Card' },
         bankAccount: { accountNumberLastFourDigits: 'B0022' },
-        reasonCode: 'RC22',
+        reasonCode: 'other',
         amount: { currency: 'USD', value: '444200' },
     },
     {
@@ -227,7 +227,7 @@ export const DISPUTES = [
         createdAt: getDate(-6),
         paymentMethod: { type: 'paypal', lastFourDigits: '0023', description: 'PayPal' },
         bankAccount: { accountNumberLastFourDigits: 'B0023' },
-        reasonCode: 'RC23',
+        reasonCode: 'fraudulent',
         amount: { currency: 'EUR', value: '455300' },
     },
     {
@@ -236,7 +236,7 @@ export const DISPUTES = [
         createdAt: getDate(-6),
         paymentMethod: { type: 'klarna', lastFourDigits: '0024', description: 'Klarna Pay Later' },
         bankAccount: { accountNumberLastFourDigits: 'B0024' },
-        reasonCode: 'RC24',
+        reasonCode: 'fraudulent',
         amount: { currency: 'USD', value: '466400' },
     },
     {
@@ -245,7 +245,7 @@ export const DISPUTES = [
         createdAt: getDate(-6),
         paymentMethod: { type: 'amex', lastFourDigits: '0025', description: 'American Express' },
         bankAccount: { accountNumberLastFourDigits: 'B0025' },
-        reasonCode: 'RC25',
+        reasonCode: 'other',
         amount: { currency: 'EUR', value: '477500' },
     },
 
@@ -255,7 +255,7 @@ export const DISPUTES = [
         createdAt: getDate(-8),
         paymentMethod: { type: 'mc', lastFourDigits: '0026', description: 'MasterCard' },
         bankAccount: { accountNumberLastFourDigits: 'B0026' },
-        reasonCode: 'RC26',
+        reasonCode: 'other',
         amount: { currency: 'USD', value: '488600' },
     },
     {
@@ -264,7 +264,7 @@ export const DISPUTES = [
         createdAt: getDate(-8),
         paymentMethod: { type: 'visa', lastFourDigits: '0027', description: 'Visa Credit Card' },
         bankAccount: { accountNumberLastFourDigits: 'B0027' },
-        reasonCode: 'RC27',
+        reasonCode: 'consumer',
         amount: { currency: 'EUR', value: '499700' },
     },
     {
@@ -273,7 +273,7 @@ export const DISPUTES = [
         createdAt: getDate(-8),
         paymentMethod: { type: 'paypal', lastFourDigits: '0028', description: 'PayPal' },
         bankAccount: { accountNumberLastFourDigits: 'B0028' },
-        reasonCode: 'RC28',
+        reasonCode: 'fraudulent',
         amount: { currency: 'USD', value: '210800' },
     },
     {
@@ -282,7 +282,7 @@ export const DISPUTES = [
         createdAt: '2025-02-04T11:00:00.000Z',
         paymentMethod: { type: 'amex', lastFourDigits: '0029', description: 'American Express' },
         bankAccount: { accountNumberLastFourDigits: 'B0029' },
-        reasonCode: 'RC29',
+        reasonCode: 'fraudulent',
         amount: { currency: 'EUR', value: '221900' },
     },
     {
@@ -291,7 +291,7 @@ export const DISPUTES = [
         createdAt: getDate(-8),
         paymentMethod: { type: 'mc', lastFourDigits: '0030', description: 'MasterCard' },
         bankAccount: { accountNumberLastFourDigits: 'B0030' },
-        reasonCode: 'RC30',
+        reasonCode: 'other',
         amount: { currency: 'USD', value: '233000' },
     },
     {
@@ -300,7 +300,7 @@ export const DISPUTES = [
         createdAt: getDate(-12),
         paymentMethod: { type: 'visa', lastFourDigits: '0031', description: 'Visa Credit Card' },
         bankAccount: { accountNumberLastFourDigits: 'B0031' },
-        reasonCode: 'RC31',
+        reasonCode: 'other',
         amount: { currency: 'EUR', value: '244100' },
     },
     {
@@ -309,7 +309,7 @@ export const DISPUTES = [
         createdAt: '2025-02-07T11:00:00.000Z',
         paymentMethod: { type: 'paypal', lastFourDigits: '0032', description: 'PayPal' },
         bankAccount: { accountNumberLastFourDigits: 'B0032' },
-        reasonCode: 'RC32',
+        reasonCode: 'consumer',
         amount: { currency: 'USD', value: '255200' },
     },
     {
@@ -318,7 +318,7 @@ export const DISPUTES = [
         createdAt: getDate(-12),
         paymentMethod: { type: 'mc', lastFourDigits: '0033', description: 'MasterCard' },
         bankAccount: { accountNumberLastFourDigits: 'B0033' },
-        reasonCode: 'RC33',
+        reasonCode: 'other',
         amount: { currency: 'EUR', value: '266300' },
     },
     {
@@ -327,7 +327,7 @@ export const DISPUTES = [
         createdAt: getDate(-12),
         paymentMethod: { type: 'visa', lastFourDigits: '0034', description: 'Visa Credit Card' },
         bankAccount: { accountNumberLastFourDigits: 'B0034' },
-        reasonCode: 'RC34',
+        reasonCode: 'fraudulent',
         amount: { currency: 'USD', value: '277400' },
     },
     {
@@ -336,7 +336,7 @@ export const DISPUTES = [
         createdAt: getDate(-12),
         paymentMethod: { type: 'paypal', lastFourDigits: '0035', description: 'PayPal' },
         bankAccount: { accountNumberLastFourDigits: 'B0035' },
-        reasonCode: 'RC35',
+        reasonCode: 'other',
         amount: { currency: 'EUR', value: '288500' },
     },
     {
@@ -345,7 +345,7 @@ export const DISPUTES = [
         createdAt: getDate(-15),
         paymentMethod: { type: 'mc', lastFourDigits: '0036', description: 'MasterCard' },
         bankAccount: { accountNumberLastFourDigits: 'B0036' },
-        reasonCode: 'RC36',
+        reasonCode: 'fraudulent',
         amount: { currency: 'USD', value: '299600' },
     },
     {
@@ -354,7 +354,7 @@ export const DISPUTES = [
         createdAt: getDate(-15),
         paymentMethod: { type: 'visa', lastFourDigits: '0037', description: 'Visa Credit Card' },
         bankAccount: { accountNumberLastFourDigits: 'B0037' },
-        reasonCode: 'RC37',
+        reasonCode: 'fraudulent',
         amount: { currency: 'EUR', value: '310700' },
     },
     {
@@ -363,7 +363,7 @@ export const DISPUTES = [
         createdAt: getDate(-15),
         paymentMethod: { type: 'paypal', lastFourDigits: '0038', description: 'PayPal' },
         bankAccount: { accountNumberLastFourDigits: 'B0038' },
-        reasonCode: 'RC38',
+        reasonCode: 'consumer',
         amount: { currency: 'USD', value: '321800' },
     },
     {
@@ -372,7 +372,7 @@ export const DISPUTES = [
         createdAt: getDate(-15),
         paymentMethod: { type: 'mc', lastFourDigits: '0039', description: 'MasterCard' },
         bankAccount: { accountNumberLastFourDigits: 'B0039' },
-        reasonCode: 'RC39',
+        reasonCode: 'fraudulent',
         amount: { currency: 'EUR', value: '332900' },
     },
     {
@@ -381,7 +381,7 @@ export const DISPUTES = [
         createdAt: getDate(-15),
         paymentMethod: { type: 'visa', lastFourDigits: '0040', description: 'Visa Credit Card' },
         bankAccount: { accountNumberLastFourDigits: 'B0040' },
-        reasonCode: 'RC40',
+        reasonCode: 'consumer',
         amount: { currency: 'USD', value: '344000' },
     },
     {
@@ -390,7 +390,7 @@ export const DISPUTES = [
         createdAt: getDate(-15),
         paymentMethod: { type: 'mc', lastFourDigits: '0041', description: 'MasterCard' },
         bankAccount: { accountNumberLastFourDigits: 'B0041' },
-        reasonCode: 'RC41',
+        reasonCode: 'fraudulent',
         amount: { currency: 'EUR', value: '355100' },
     },
     {
@@ -399,7 +399,7 @@ export const DISPUTES = [
         createdAt: getDate(-15),
         paymentMethod: { type: 'visa', lastFourDigits: '0042', description: 'Visa Credit Card' },
         bankAccount: { accountNumberLastFourDigits: 'B0042' },
-        reasonCode: 'RC42',
+        reasonCode: 'other',
         amount: { currency: 'USD', value: '366200' },
     },
     {
@@ -408,7 +408,7 @@ export const DISPUTES = [
         createdAt: getDate(-18),
         paymentMethod: { type: 'mc', lastFourDigits: '0043', description: 'MasterCard' },
         bankAccount: { accountNumberLastFourDigits: 'B0043' },
-        reasonCode: 'RC43',
+        reasonCode: 'fraudulent',
         amount: { currency: 'EUR', value: '377300' },
     },
     {
@@ -417,7 +417,7 @@ export const DISPUTES = [
         createdAt: getDate(-18),
         paymentMethod: { type: 'visa', lastFourDigits: '0044', description: 'Visa Credit Card' },
         bankAccount: { accountNumberLastFourDigits: 'B0044' },
-        reasonCode: 'RC44',
+        reasonCode: 'consumer',
         amount: { currency: 'USD', value: '388400' },
     },
     {
@@ -426,7 +426,7 @@ export const DISPUTES = [
         createdAt: getDate(-18),
         paymentMethod: { type: 'mc', lastFourDigits: '0045', description: 'MasterCard' },
         bankAccount: { accountNumberLastFourDigits: 'B0045' },
-        reasonCode: 'RC45',
+        reasonCode: 'fraudulent',
         amount: { currency: 'EUR', value: '399500' },
     },
 ] as const;

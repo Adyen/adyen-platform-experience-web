@@ -22,8 +22,10 @@ import { StringWithAutocompleteOptions } from '../../../../../utils/types';
 import { useTableColumns } from '../../../../../hooks/useTableColumns';
 import { IDispute } from '../../../../../types/api/models/disputes';
 import PaymentMethodCell from '../../../TransactionsOverview/components/TransactionsTable/PaymentMethodCell';
+import { Tag } from '../../../../internal/Tag/Tag';
+import { TagVariant } from '../../../../internal/Tag/types';
 
-export const FIELDS = ['status', 'createdAt', 'paymentMethod', 'reason', 'amount'] as const;
+export const FIELDS = ['status', 'createdAt', 'paymentMethod', 'reasonCode', 'amount'] as const;
 export type DisputesTableFields = (typeof FIELDS)[number];
 
 export interface DisputesTableProps extends WithPaginationLimitSelection<PaginationProps> {
@@ -96,6 +98,29 @@ export const DisputesTable: FC<DisputesTableProps> = ({
                 outline={false}
                 emptyTableMessage={EMPTY_TABLE_MESSAGE}
                 customCells={{
+                    status: ({ value, item }) => {
+                        if (value === 'action_needed' && item.dueDate) {
+                            const targetDate = new Date(item.dueDate);
+                            const now = Date.now();
+                            const diffMs = targetDate.getTime() - now;
+                            const seconds = Math.floor(diffMs / 1000);
+                            const minutes = Math.floor(seconds / 60);
+                            const hours = Math.floor(minutes / 60);
+                            const days = Math.floor(hours / 24);
+
+                            return <Tag variant={days >= 10 ? TagVariant.WARNING : TagVariant.ERROR} label={i18n.get('disputes.actionNeeded')} />;
+                        }
+                        return <Tag label={i18n.get('disputes.inProgress')} />;
+                    },
+                    amount: ({ value }) => {
+                        return (
+                            value && (
+                                <Typography variant={TypographyVariant.BODY}>
+                                    {i18n.amount(value.value, value.currency, { hideCurrency: true })}
+                                </Typography>
+                            )
+                        );
+                    },
                     createdAt: ({ value }) => {
                         if (!value) return null;
                         return value && <Typography variant={TypographyVariant.BODY}>{dateFormat(value, DATE_FORMAT_REPORTS)}</Typography>;
