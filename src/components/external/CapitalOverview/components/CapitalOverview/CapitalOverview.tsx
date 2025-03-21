@@ -97,7 +97,7 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
         isRegionSupported,
     ]);
 
-    const newOfferAvailable = useMemo(() => !!(!!dynamicOffer && dynamicOffer.minAmount && dynamicOffer.maxAmount), [dynamicOffer]);
+    const newOfferAvailable = useMemo(() => !!(dynamicOffer && dynamicOffer.minAmount && dynamicOffer.maxAmount), [dynamicOffer]);
 
     return (
         <div className={CAPITAL_OVERVIEW_CLASS_NAMES.base}>
