@@ -4,7 +4,7 @@ import { CellTextPosition } from '../components/internal/DataGrid/types';
 import { CustomColumn, DataGridCustomColumnConfig } from '../components/types';
 import useCoreContext from '../core/Context/useCoreContext';
 import { EMPTY_OBJECT, isUndefined } from '../utils';
-import { mediaQueries, useResponsiveViewport } from './useResponsiveViewport';
+import { containerQueries, useResponsiveContainer } from './useResponsiveContainer';
 
 type Columns<k extends string> = DataGridCustomColumnConfig<k> & { label?: string; position?: CellTextPosition; visible?: boolean };
 
@@ -30,7 +30,7 @@ export const useTableColumns = <T extends string, C extends string>({
     const { i18n } = useCoreContext();
 
     const tableColumns: CustomColumn<T>[] = useMemo(() => fields.map(field => ({ key: field })), [fields]);
-    const isSmAndUpViewport = useResponsiveViewport(mediaQueries.up.sm);
+    const isSmAndUpContainer = useResponsiveContainer(containerQueries.up.sm);
 
     const columns = useMemo(() => {
         const newFields = customColumns?.filter(cc => !fields.some(field => field === (cc.key as unknown as T))).map(colum => colum.key) || [];
@@ -69,7 +69,7 @@ export const useTableColumns = <T extends string, C extends string>({
                 columnMap.set(current.key, {
                     key: key as unknown as T,
                     label,
-                    visible: newFields.includes(current.key as unknown as C) ? isSmAndUpViewport : true,
+                    visible: newFields.includes(current.key as unknown as C) ? isSmAndUpContainer : true,
                     flex,
                     position: align,
                     ...config,
@@ -78,7 +78,7 @@ export const useTableColumns = <T extends string, C extends string>({
         });
 
         return Array.from(columnMap.values());
-    }, [columnConfig, customColumns, fields, i18n, isSmAndUpViewport, tableColumns]);
+    }, [columnConfig, customColumns, fields, i18n, isSmAndUpContainer, tableColumns]);
 
     return columns;
 };

@@ -16,7 +16,7 @@ import { PaginationProps, WithPaginationLimitSelection } from '../../../../inter
 import { TypographyVariant } from '../../../../internal/Typography/types';
 import Typography from '../../../../internal/Typography/Typography';
 import { getLabel } from '../../../../utils/getLabel';
-import { mediaQueries, useResponsiveViewport } from '../../../../../hooks/useResponsiveViewport';
+import { containerQueries, useResponsiveContainer } from '../../../../../hooks/useResponsiveContainer';
 import { BASE_CLASS, NET_PAYOUT_CLASS } from './constants';
 import './PayoutsTable.scss';
 import { useTableColumns } from '../../../../../hooks/useTableColumns';
@@ -57,7 +57,7 @@ export const PayoutsTable: FC<PayoutsTableProps> = ({
     const { dateFormat } = useTimezoneAwareDateFormatting('UTC');
     const { refreshing } = useConfigContext();
     const isLoading = useMemo(() => loading || refreshing, [loading, refreshing]);
-    const isSmAndUpViewport = useResponsiveViewport(mediaQueries.up.sm);
+    const isSmAndUpContainer = useResponsiveContainer(containerQueries.up.sm);
 
     const getAmountFieldConfig = useCallback(
         (key: (typeof PAYOUT_TABLE_FIELDS)[number]) => {
@@ -77,11 +77,11 @@ export const PayoutsTable: FC<PayoutsTableProps> = ({
         customColumns,
         columnConfig: useMemo(
             () => ({
-                fundsCapturedAmount: { ...getAmountFieldConfig('fundsCapturedAmount'), visible: isSmAndUpViewport },
-                adjustmentAmount: { ...getAmountFieldConfig('adjustmentAmount'), visible: isSmAndUpViewport },
+                fundsCapturedAmount: { ...getAmountFieldConfig('fundsCapturedAmount'), visible: isSmAndUpContainer },
+                adjustmentAmount: { ...getAmountFieldConfig('adjustmentAmount'), visible: isSmAndUpContainer },
                 payoutAmount: getAmountFieldConfig('payoutAmount'),
             }),
-            [getAmountFieldConfig, isSmAndUpViewport]
+            [getAmountFieldConfig, isSmAndUpContainer]
         ),
     });
 
@@ -109,7 +109,7 @@ export const PayoutsTable: FC<PayoutsTableProps> = ({
                 customCells={{
                     createdAt: ({ value }) => {
                         if (!value) return null;
-                        if (!isSmAndUpViewport) return dateFormat(value, DATE_FORMAT_PAYOUTS_MOBILE);
+                        if (!isSmAndUpContainer) return dateFormat(value, DATE_FORMAT_PAYOUTS_MOBILE);
                         return value && <Typography variant={TypographyVariant.BODY}>{dateFormat(value, DATE_FORMAT_PAYOUTS)}</Typography>;
                     },
                     fundsCapturedAmount: ({ value }) => {
@@ -133,8 +133,8 @@ export const PayoutsTable: FC<PayoutsTableProps> = ({
                     payoutAmount: ({ value }) => {
                         return (
                             value && (
-                                <Typography variant={TypographyVariant.BODY} className={cx({ [`${NET_PAYOUT_CLASS}--strong`]: !isSmAndUpViewport })}>
-                                    {i18n.amount(value.value, value.currency, { hideCurrency: isSmAndUpViewport })}
+                                <Typography variant={TypographyVariant.BODY} className={cx({ [`${NET_PAYOUT_CLASS}--strong`]: !isSmAndUpContainer })}>
+                                    {i18n.amount(value.value, value.currency, { hideCurrency: isSmAndUpContainer })}
                                 </Typography>
                             )
                         );

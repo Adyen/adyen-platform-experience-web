@@ -18,7 +18,8 @@ import { PaginationProps, WithPaginationLimitSelection } from '../../../../inter
 import Warning from '../../../../internal/SVGIcons/Warning';
 import { TypographyVariant } from '../../../../internal/Typography/types';
 import Typography from '../../../../internal/Typography/Typography';
-import { mediaQueries, useResponsiveViewport } from '../../../../../hooks/useResponsiveViewport';
+import { getLabel } from '../../../../utils/getLabel';
+import { containerQueries, useResponsiveContainer } from '../../../../../hooks/useResponsiveContainer';
 import { BASE_CLASS, DATE_TYPE_CLASS, DATE_TYPE_DATE_SECTION_CLASS, DISABLED_BUTTONS_TIMEOUT } from './constants';
 import './ReportsTable.scss';
 import { CustomColumn } from '../../../../types';
@@ -54,20 +55,20 @@ export const ReportsTable: FC<ReportsTableProps> = ({
     const [alert, setAlert] = useState<null | { title: string; description: string }>(null);
     const { refreshing } = useConfigContext();
     const isLoading = useMemo(() => loading || refreshing, [loading, refreshing]);
-    const isSmAndUpViewport = useResponsiveViewport(mediaQueries.up.sm);
-    const isXsAndDownViewport = useResponsiveViewport(mediaQueries.down.xs);
+    const isSmAndUpContainer = useResponsiveContainer(containerQueries.up.sm);
+    const isXsAndDownContainer = useResponsiveContainer(containerQueries.down.xs);
 
     const columns = useTableColumns({
         fields: FIELDS,
         customColumns,
         columnConfig: useMemo(
             () => ({
-                dateAndReportType: { visible: isXsAndDownViewport },
-                createdAt: { visible: isSmAndUpViewport },
-                reportType: { visible: isSmAndUpViewport },
-                reportFile: { visible: true, position: isXsAndDownViewport ? 'right' : undefined },
+                dateAndReportType: { visible: isXsAndDownContainer },
+                createdAt: { visible: isSmAndUpContainer },
+                reportType: { visible: isSmAndUpContainer },
+                reportFile: { visible: true, position: isXsAndDownContainer ? 'right' : undefined },
             }),
-            [isSmAndUpViewport, isXsAndDownViewport]
+            [isSmAndUpContainer, isXsAndDownContainer]
         ),
     });
 
@@ -103,7 +104,7 @@ export const ReportsTable: FC<ReportsTableProps> = ({
             }
             setAlert(alertDetails as { title: string; description: string });
         },
-        [error, onContactSupport]
+        [i18n]
     );
 
     if (loading) setAlert(null);

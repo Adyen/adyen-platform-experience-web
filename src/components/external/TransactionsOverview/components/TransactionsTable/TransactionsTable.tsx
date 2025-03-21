@@ -11,7 +11,7 @@ import DataGrid from '../../../../internal/DataGrid';
 import Pagination from '../../../../internal/Pagination';
 import { TypographyVariant } from '../../../../internal/Typography/types';
 import Typography from '../../../../internal/Typography/Typography';
-import { mediaQueries, useResponsiveViewport } from '../../../../../hooks/useResponsiveViewport';
+import { containerQueries, useResponsiveContainer } from '../../../../../hooks/useResponsiveContainer';
 import { AMOUNT_CLASS, BASE_CLASS, DATE_AND_PAYMENT_METHOD_CLASS, DATE_METHOD_CLASS } from './constants';
 import './TransactionTable.scss';
 import PaymentMethodCell from './PaymentMethodCell';
@@ -41,9 +41,9 @@ export const TransactionsTable: FC<TransactionTableProps> = ({
     const { i18n } = useCoreContext();
     const { dateFormat } = useTimezoneAwareDateFormatting(activeBalanceAccount?.timeZone);
     const [hoveredRow, setHoveredRow] = useState<undefined | number>();
-    const isSmAndUpViewport = useResponsiveViewport(mediaQueries.up.sm);
-    const isMdAndUpViewport = useResponsiveViewport(mediaQueries.up.md);
-    const isXsAndDownViewport = useResponsiveViewport(mediaQueries.down.xs);
+    const isSmAndUpContainer = useResponsiveContainer(containerQueries.up.sm);
+    const isMdAndUpContainer = useResponsiveContainer(containerQueries.up.md);
+    const isXsAndDownContainer = useResponsiveContainer(containerQueries.down.xs);
 
     const amountLabel = i18n.get('amount');
     const columns = useTableColumns({
@@ -55,10 +55,10 @@ export const TransactionsTable: FC<TransactionTableProps> = ({
                     ? undefined
                     : `${amountLabel} ${availableCurrencies && availableCurrencies[0] ? `(${getCurrencyCode(availableCurrencies[0])})` : ''}`,
                 position: 'right',
-                flex: isSmAndUpViewport ? 1.5 : undefined,
+                flex: isSmAndUpContainer ? 1.5 : undefined,
             },
-            transactionType: { visible: isMdAndUpViewport },
-            paymentMethod: { visible: isSmAndUpViewport },
+            transactionType: { visible: isMdAndUpContainer },
+            paymentMethod: { visible: isSmAndUpContainer },
         },
     });
 
@@ -123,7 +123,7 @@ export const TransactionsTable: FC<TransactionTableProps> = ({
                         );
                     },
                     createdAt: ({ item, value }) => {
-                        if (isXsAndDownViewport) {
+                        if (isXsAndDownContainer) {
                             return (
                                 <div className={DATE_AND_PAYMENT_METHOD_CLASS}>
                                     <PaymentMethodCell paymentMethod={item.paymentMethod} bankAccount={item.bankAccount} />

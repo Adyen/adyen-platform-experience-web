@@ -1,5 +1,5 @@
 import classnames from 'classnames';
-import { CellTextPosition, DataGridColumn } from '../types';
+import { DataGridColumn } from '../types';
 import { useDataGridContext } from '../hooks/useDataGridContext';
 import { useEffect, useRef } from 'preact/hooks';
 

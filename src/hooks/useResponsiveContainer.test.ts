@@ -3,8 +3,8 @@
  */
 import { test } from 'vitest';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { useResponsiveViewport } from './useResponsiveViewport';
+import { useResponsiveContainer } from './useResponsiveContainer';
 
-test('useResponsiveViewport', () => {
+test('useResponsiveContainer', () => {
     // Write your tests here
 });
