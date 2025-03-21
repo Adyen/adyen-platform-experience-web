@@ -62,8 +62,6 @@ npm start
 
 ## Support
 
-If you have a feature request, or spotted a bug or a technical problem, [create an issue here](https://github.com/Adyen/adyen-platform-experience-web/issues/new/choose).
-
 If you have a feature request, or spotted a bug or a technical problem, [create a GitHub issue here](https://github.com/Adyen/adyen-platform-experience-web/issues/new/choose). For other questions, contact our Support Team via [Customer Area](https://ca-live.adyen.com/ca/ca/contactUs/support.shtml) or via email: support@adyen.com
 
 ## License
