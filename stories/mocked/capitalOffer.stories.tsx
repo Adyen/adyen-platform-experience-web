@@ -26,7 +26,7 @@ export const UnsupportedRegion: ElementStory<typeof CapitalOverview, { mountIfIn
         mountIfInUnsupportedRegion: true,
         legalEntity: {
             countryCode: 'TR',
-            region: 'Middle East',
+            regions: [{ type: 'capital', value: 'Middle East' }],
         },
     },
 };

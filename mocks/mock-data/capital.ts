@@ -12,47 +12,62 @@ export const DYNAMIC_CAPITAL_OFFER = {
     step: 10000,
 } satisfies IDynamicOffersConfig;
 
+export const GRANT_US_ACCOUNT = {
+    region: 'US',
+    accountNumber: '123456789012',
+    routingNumber: '012345678',
+    order: ['accountNumber', 'routingNumber', 'region'],
+} satisfies NonNullable<IGrant['unscheduledRepaymentAccounts']>[number];
+
+export const GRANT_GB_ACCOUNT = {
+    region: 'GB',
+    accountNumber: '123456789012',
+    iban: 'GB01ADYB01234567890123',
+    sortCode: '012345678',
+    order: ['iban', 'accountNumber', 'sortCode', 'region'],
+} satisfies NonNullable<IGrant['unscheduledRepaymentAccounts']>[number];
+
 export const DEFAULT_GRANT: IGrant = {
     id: '66e12a9a64a6',
     grantAmount: {
         value: 2000000,
-        currency: 'USD',
+        currency: 'EUR',
     },
     totalAmount: {
         value: 2022000,
-        currency: 'USD',
+        currency: 'EUR',
     },
     feesAmount: {
         value: 22000,
-        currency: 'USD',
+        currency: 'EUR',
     },
     remainingGrantAmount: {
         value: 813000,
-        currency: 'USD',
+        currency: 'EUR',
     },
     remainingTotalAmount: {
         value: 2022000,
-        currency: 'USD',
+        currency: 'EUR',
     },
     remainingFeesAmount: {
         value: 9000,
-        currency: 'USD',
+        currency: 'EUR',
     },
     repaidFeesAmount: {
         value: 13000,
-        currency: 'USD',
+        currency: 'EUR',
     },
     repaidGrantAmount: {
         value: 22000,
-        currency: 'USD',
+        currency: 'EUR',
     },
     repaidTotalAmount: {
         value: 2022000,
-        currency: 'USD',
+        currency: 'EUR',
     },
     thresholdAmount: {
         value: 80000,
-        currency: 'USD',
+        currency: 'EUR',
     },
     repaymentRate: 1100,
     expectedRepaymentPeriodDays: 365,
@@ -63,6 +78,8 @@ export const DEFAULT_GRANT: IGrant = {
     balanceAccountDescription: 'Primary balance account',
     status: 'Pending',
     missingActions: [],
+    unscheduledRepaymentAccounts: [],
+    // revocationAccount: (account here),
 };
 
 export const ACTIVE_GRANT: IGrant = {
@@ -70,20 +87,20 @@ export const ACTIVE_GRANT: IGrant = {
     id: 'afedbe0e05e9',
     repaidTotalAmount: {
         value: 1200000,
-        currency: 'USD',
+        currency: 'EUR',
     },
     repaidGrantAmount: {
         value: 1187000,
-        currency: 'USD',
+        currency: 'EUR',
     },
     repaidFeesAmount: {
         value: 13000,
-        currency: 'USD',
+        currency: 'EUR',
     },
     status: 'Active',
     remainingTotalAmount: {
         value: 822000,
-        currency: 'USD',
+        currency: 'EUR',
     },
 };
 
@@ -130,19 +147,19 @@ export const GRANT_OFFER = {
     id: '66e12a9a64a6',
     grantAmount: {
         value: 2000000,
-        currency: 'USD',
+        currency: 'EUR',
     },
     feesAmount: {
         value: 22000,
-        currency: 'USD',
+        currency: 'EUR',
     },
     totalAmount: {
         value: 2022000,
-        currency: 'USD',
+        currency: 'EUR',
     },
     thresholdAmount: {
         value: 169000,
-        currency: 'USD',
+        currency: 'EUR',
     },
     repaymentRate: 1100,
     expectedRepaymentPeriodDays: 365,
@@ -155,31 +172,31 @@ export const SIGNED_OFFER = {
     id: '66e12a9a64a6',
     grantAmount: {
         value: 2000000,
-        currency: 'USD',
+        currency: 'EUR',
     },
     repaidAmount: {
         value: 1200000,
-        currency: 'USD',
+        currency: 'EUR',
     },
     repaidGrantAmount: {
         value: 1187000,
-        currency: 'USD',
+        currency: 'EUR',
     },
     repaidFeesAmount: {
         value: 13000,
-        currency: 'USD',
+        currency: 'EUR',
     },
     feesAmount: {
         value: 22000,
-        currency: 'USD',
+        currency: 'EUR',
     },
     repaymentAmount: {
         value: 2022000,
-        currency: 'USD',
+        currency: 'EUR',
     },
     thresholdPaymentAmount: {
         value: 80000,
-        currency: 'USD',
+        currency: 'EUR',
     },
     repaymentRate: 1100,
     expectedRepaymentPeriodDays: 365,

@@ -1,5 +1,5 @@
 import classnames from 'classnames';
-import { CellTextPosition, DataGridColumn } from '../types';
+import { DataGridColumn } from '../types';
 import { useDataGridContext } from '../hooks/useDataGridContext';
 import { useEffect, useRef } from 'preact/hooks';
 
@@ -21,8 +21,8 @@ export const TableHeaderCell = ({ cellKey, position, label }: DataGridColumn<Ext
             role="columnheader"
             id={String(cellKey)}
             className={classnames('adyen-pe-data-grid__cell adyen-pe-data-grid__cell--heading', {
-                'adyen-pe-data-grid__cell--right': position === CellTextPosition.RIGHT,
-                'adyen-pe-data-grid__cell--center': position === CellTextPosition.CENTER,
+                'adyen-pe-data-grid__cell--right': position === 'right',
+                'adyen-pe-data-grid__cell--center': position === 'center',
             })}
         >
             <div ref={ref} className={'adyen-pe-data-grid__cell--heading-content'}>

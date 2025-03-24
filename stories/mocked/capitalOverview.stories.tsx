@@ -16,7 +16,7 @@ export const UnsupportedRegion: ElementStory<typeof CapitalOverview, { mountIfIn
         mountIfInUnsupportedRegion: true,
         legalEntity: {
             countryCode: 'TR',
-            region: 'Middle East',
+            regions: [{ type: 'capital', value: 'Middle East' }],
         },
     },
     decorators: [
@@ -117,6 +117,26 @@ export const GrantActive: ElementStory<typeof CapitalOverview> = {
     },
 };
 
+export const GrantActiveWithGBRepaymentAccount: ElementStory<typeof CapitalOverview> = {
+    name: 'Grant: Active - With GB repayment account',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: CapitalOverviewMockedResponses.grantActiveWithGBRepaymentAccount,
+    },
+};
+
+export const GrantActiveWithUSRepaymentAccount: ElementStory<typeof CapitalOverview> = {
+    name: 'Grant: Active - With US repayment account',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: CapitalOverviewMockedResponses.grantActiveWithUSRepaymentAccount,
+    },
+};
+
 export const GrantFailed: ElementStory<typeof CapitalOverview> = {
     name: 'Grant: Failed',
     args: {
@@ -148,7 +168,7 @@ export const GrantRevoked: ElementStory<typeof CapitalOverview> = {
 };
 
 export const GrantWrittenOff: ElementStory<typeof CapitalOverview> = {
-    name: 'Grant: WrittenOff',
+    name: 'Grant: Written off',
     args: {
         mockedApi: true,
     },

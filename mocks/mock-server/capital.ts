@@ -10,6 +10,8 @@ import {
     FAILED_GRANT,
     REVOKED_GRANT,
     WRITTEN_OFF_GRANT,
+    GRANT_US_ACCOUNT,
+    GRANT_GB_ACCOUNT,
 } from '../mock-data';
 import { endpoints } from '../../endpoints/endpoints';
 import { DefaultBodyType, http, HttpResponse, StrictRequest } from 'msw';
@@ -190,6 +192,24 @@ export const CapitalOverviewMockedResponses = capitalFactory({
     grantActive: [
         { endpoint: mockEndpoints.dynamicOfferConfig, response: EMPTY_OFFER },
         { endpoint: mockEndpoints.grants, response: { data: [ACTIVE_GRANT] } },
+    ],
+    grantActiveWithGBRepaymentAccount: [
+        { endpoint: mockEndpoints.dynamicOfferConfig, response: EMPTY_OFFER },
+        {
+            endpoint: mockEndpoints.grants,
+            response: {
+                data: [{ ...ACTIVE_GRANT, unscheduledRepaymentAccounts: [GRANT_GB_ACCOUNT] }],
+            },
+        },
+    ],
+    grantActiveWithUSRepaymentAccount: [
+        { endpoint: mockEndpoints.dynamicOfferConfig, response: EMPTY_OFFER },
+        {
+            endpoint: mockEndpoints.grants,
+            response: {
+                data: [{ ...ACTIVE_GRANT, unscheduledRepaymentAccounts: [GRANT_US_ACCOUNT] }],
+            },
+        },
     ],
     grantFailed: [
         { endpoint: mockEndpoints.dynamicOfferConfig, response: EMPTY_OFFER },
