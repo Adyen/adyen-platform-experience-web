@@ -1,46 +1,53 @@
 @use '../../../style';
 
 .adyen-fp-tabs {
-    align-items: flex-start;
-    background: style.token(color-background-tertiary);
-    border-radius: style.token(border-radius-l);
     display: flex;
-    gap: style.token(spacer-020);
-    padding: style.token(spacer-020);
-    width: fit-content;
-
-    button {
-        -webkit-appearance: none;
-        -moz-appearance: none;
-        border: 0;
-        text-decoration: none;
-    }
+    gap: style.token(spacer-090);
+    margin: style.token(spacer-070) 0 style.token(spacer-030);
 
     &__tab {
-        border-radius: style.token(border-radius-m);
+        appearance: none;
+        background: none;
+        border: 0;
+        color: style.token(color-label-secondary);
         cursor: pointer;
-        padding: style.token(spacer-020) style.token(spacer-080);
+        font-size: style.token(text-body-font-size);
+        font-weight: style.token(text-body-stronger-font-weight);
+        margin: 0;
+        outline: none;
+        padding: 0 0 style.token(spacer-020) 0;
+        position: relative;
         text-align: center;
-        transition: background 150ms ease-in-out, transform 150ms ease;
+        text-decoration: none;
+
+        &::after {
+            background: style.token(color-outline-primary-active);
+            bottom: -1px;
+            content: '';
+            height: 2px;
+            left: 0;
+            opacity: 0;
+            position: absolute;
+            transition: opacity 0.25s ease-out;
+            width: 100%;
+        }
 
         &:focus,
         &:hover:not(:disabled),
         &[aria-selected='true'] {
-            background: style.token(color-background-primary);
-        }
+            color: style.token(color-label-primary);
 
-        &:disabled {
-            color: style.token(color-background-disabled);
+            &::after {
+                opacity: 1;
+            }
         }
     }
 }
 
-.adyen-fp-tabpanel {
-    &__wrapper {
-        padding-top: style.token(spacer-080);
-    }
+.adyen-fp-tabpanels {
+    padding-top: style.token(spacer-080);
 
-    &__content {
+    &__panel {
         padding: 0;
     }
 }

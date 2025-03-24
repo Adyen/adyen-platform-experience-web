@@ -28,25 +28,20 @@ function Tabs<T extends TabProps[]>({ defaultActiveTab, tabs }: TabComponentProp
                             disabled={tab.disabled}
                             tabIndex={isActive ? 0 : -1}
                         >
-                            <Typography
-                                el={TypographyElement.SPAN}
-                                variant={TypographyVariant.BODY}
-                                className="adyen-fp-tabs__tab-content-tab-label"
-                                stronger
-                            >
+                            <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY} className="adyen-fp-tabs__tab-label" stronger>
                                 {i18n.get(tab.label)}
                             </Typography>
                         </button>
                     );
                 })}
             </div>
-            <div className="adyen-fp-tabpanel__wrapper">
+            <div className="adyen-fp-tabpanels">
                 {tabs.map((tab, index) => (
                     <section
                         role="tabpanel"
-                        key={`tabpanel:${uniqueId}-${tab.id}`}
+                        key={`panel:${uniqueId}-${tab.id}`}
                         id={`panel:${uniqueId}-${tab.id}`}
-                        className="adyen-fp-tabpanel__content"
+                        className="adyen-fp-tabpanels__panel"
                         aria-labelledby={`tab:${uniqueId}-${tab.id}`}
                         hidden={activeIndex !== index}
                     >
