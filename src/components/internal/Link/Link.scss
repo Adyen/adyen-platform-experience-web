@@ -1,0 +1,84 @@
+@use '../../../style';
+
+.adyen-pe-link {
+    $adyen-pe-component-root: &;
+    $adyen-pe-transition-duration: 0.1s;
+    $adyen-pe-timing-function-ease-in-out: cubic-bezier(0.785, 0.135, 0.15, 0.86);
+    $adyen-pe-box-shadow-initial-width: 1px;
+    $adyen-pe-box-shadow-width: 3px;
+
+    align-items: center;
+    color: style.token(color-link-primary);
+    display: flex;
+    gap: style.token(spacer-030);
+    text-decoration: underline;
+
+    &:hover {
+        color: style.token(color-link-primary-hover);
+        text-decoration: none;
+    }
+
+    &:active {
+        color: style.token(color-link-primary-active);
+    }
+
+    &:focus-visible {
+        border-radius: style.token(border-radius-xs);
+        box-shadow: 0 0 0 $adyen-pe-box-shadow-initial-width #fff, 0 0 0 $adyen-pe-box-shadow-width rgba(0, 112, 245, 0.8);
+        outline: none;
+        transition: $adyen-pe-transition-duration $adyen-pe-timing-function-ease-in-out;
+    }
+
+    &--quiet {
+        color: style.token(color-link-primary);
+        text-decoration: none;
+
+        &:hover {
+            color: style.token(color-link-primary);
+            text-decoration: underline;
+        }
+
+        &:active {
+            color: style.token(color-link-primary);
+            text-decoration: underline;
+        }
+
+        &:focus-visible {
+            text-decoration: underline;
+        }
+    }
+
+    &--truncate,
+    .adyen-pe-data-grid-cell--overflow-ellipsis &:not(.b-button) {
+        display: flex;
+        max-width: fit-content;
+
+        #{$adyen-pe-component-root}__text {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+    }
+
+    /* stylelint-disable-next-line selector-nested-pattern */
+    // BentoDataGrid cell variant of link
+    .adyen-pe-data-grid__cell &:not(.adyen-pe-button) {
+        color: style.token(color-link-primary);
+        text-decoration-color: style.token(color-outline-secondary);
+
+        @media (hover: hover) {
+            &:hover {
+                color: style.token(color-link-primary);
+                text-decoration-color: inherit;
+                text-decoration-line: underline;
+            }
+        }
+
+        &:active,
+        &:focus-visible {
+            color: style.token(color-link-primary);
+            text-decoration-color: inherit;
+            text-decoration-line: underline;
+        }
+    }
+}

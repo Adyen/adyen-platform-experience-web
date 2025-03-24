@@ -4,19 +4,19 @@ $adyen-pe-breakpoint-md: 768px;
 $adyen-pe-breakpoint-lg: 1024px;
 
 @mixin adyen-pe-screen-sm-and-up {
-    @media (min-width: #{$adyen-pe-breakpoint-sm}) {
+    @container (min-width: #{$adyen-pe-breakpoint-sm}) {
         @content;
     }
 }
 
 @mixin adyen-pe-screen-md-and-up {
-    @media (min-width: #{$adyen-pe-breakpoint-md}) {
+    @container (min-width: #{$adyen-pe-breakpoint-md}) {
         @content;
     }
 }
 
 @mixin adyen-pe-screen-lg-and-up {
-    @media (min-width: #{$adyen-pe-breakpoint-lg}) {
+    @container (min-width: #{$adyen-pe-breakpoint-lg}) {
         @content;
     }
 }

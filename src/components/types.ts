@@ -1,7 +1,12 @@
 import UIElement from './external/UIElement/UIElement';
 import { Core, onErrorHandler } from '../core';
 import { TransactionsTableFields } from './external/TransactionsOverview/components/TransactionsTable/types';
-import type { ITransaction } from '../types';
+import { IPayout, IReport, ITransaction } from '../types';
+import { AnchorHTMLAttributes } from 'preact/compat';
+import { ReportsTableFields } from './external/ReportsOverview/components/ReportsTable/ReportsTable';
+import { StringWithAutocompleteOptions } from '../utils/types';
+import { PayoutsTableFields } from './external/PayoutsOverview/components/PayoutsTable/PayoutsTable';
+import { TransactionDetailsFields } from './external';
 
 export const enum InteractionKeyCode {
     ARROW_DOWN = 'ArrowDown',
@@ -86,6 +91,8 @@ export type DataGridIcon = { url: string; alt?: string } | ((value: unknown) => 
 export type DataGridCustomColumnConfig<k> = {
     key: k;
     flex?: number;
+    align?: 'right' | 'left' | 'center';
+    visibility?: 'visible' | 'hidden';
 };
 
 export type CustomColumn<T extends string> = {
@@ -100,26 +107,66 @@ interface _DataOverviewComponentProps {
     showDetails?: boolean;
 }
 
-export type ReportsOverviewComponentProps = Omit<_DataOverviewComponentProps, 'showDetails'>;
+export type CustomDataObject = CustomIconObject | CustomTextObject | CustomLinkObject | CustomButtonObject;
 
-export type CustomDataObject = { value: any; icon?: { url: string; alt?: string } };
-
-export type CustomDataRetrieved = { [k: string]: CustomDataObject | (string | number) };
-
-export type OnDataRetrievedCallback<DataRetrieved> = (data: DataRetrieved[]) => Promise<CustomDataRetrieved[]>;
-
-interface _CustomizableDataOverview<Columns extends string, DataRetrieved> {
-    columns?: CustomColumn<Columns>[] | Columns[];
-    onDataRetrieved?: OnDataRetrievedCallback<DataRetrieved>;
+interface BaseCustomObject {
+    value: any;
 }
+
+type BaseDetails = {
+    classNames?: string[];
+};
+
+export interface CustomIconObject extends BaseCustomObject {
+    type: 'icon';
+    config: BaseDetails & { src: string; alt?: string };
+}
+
+export interface CustomTextObject extends BaseCustomObject {
+    type: 'text';
+    config?: BaseDetails;
+}
+
+export interface CustomLinkObject extends BaseCustomObject {
+    type: 'link';
+    config: BaseDetails & { href: string; target?: AnchorHTMLAttributes<any>['target'] };
+}
+
+export interface CustomButtonObject extends BaseCustomObject {
+    type: 'button';
+    config: BaseDetails & { action: () => void };
+}
+
+export type CustomDataRetrieved = { [k: string]: CustomDataObject | Record<any, any> | string | number | boolean };
+
+export type OnDataRetrievedCallback<DataRetrieved, CallbackResponse = CustomDataRetrieved[]> = (data: DataRetrieved) => Promise<CallbackResponse>;
+
+export type DataCustomizationObject<Columns extends string, DataRetrieved, CallbackResponse> = {
+    fields: CustomColumn<StringWithAutocompleteOptions<Columns>>[];
+    onDataRetrieve?: OnDataRetrievedCallback<DataRetrieved, CallbackResponse>;
+};
+
+interface _CustomizableDataOverview<CustomizationOptions extends Record<string, DataCustomizationObject<any, any, any>>> {
+    dataCustomization?: CustomizationOptions;
+}
+
+type OverviewCustomizationProperties<Fields extends string, Data, DetailsFields extends string, DetailsData> = {
+    list?: DataCustomizationObject<Fields, Data[], CustomDataRetrieved[]>;
+    details?: DataCustomizationObject<DetailsFields, DetailsData, CustomDataRetrieved>;
+};
+
+export interface ReportsOverviewComponentProps
+    extends Omit<_DataOverviewComponentProps, 'showDetails'>,
+        _CustomizableDataOverview<Omit<OverviewCustomizationProperties<ReportsTableFields, IReport, any, any>, 'details'>> {}
 
 export interface TransactionOverviewComponentProps
     extends _DataOverviewComponentProps,
-        _CustomizableDataOverview<TransactionsTableFields, ITransaction>,
+        _CustomizableDataOverview<OverviewCustomizationProperties<TransactionsTableFields, ITransaction, TransactionDetailsFields, any>>,
         _DataOverviewSelectionProps<{ id: string; showModal: () => void }> {}
 
 export interface PayoutsOverviewComponentProps
     extends _DataOverviewComponentProps,
+        _CustomizableDataOverview<OverviewCustomizationProperties<PayoutsTableFields, IPayout, any, any>>,
         _DataOverviewSelectionProps<{ balanceAccountId: string; date: string; showModal: () => void }> {}
 
 export const enum FilterParam {

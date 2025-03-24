@@ -101,11 +101,9 @@ const SelectButton = <T extends SelectItem>(props: SelectButtonProps<T> & { appl
             ) : (
                 <>
                     {buttonActiveItem?.icon && (
-                        <Img className={DROPDOWN_BUTTON_ICON_CLASS} src={buttonActiveItem.icon} alt={buttonActiveItem.name.trim()} />
+                        <Img className={DROPDOWN_BUTTON_ICON_CLASS} src={buttonActiveItem.icon} alt={buttonActiveItem?.name?.trim() ?? ''} />
                     )}
-                    <span className={DROPDOWN_BUTTON_TEXT_CLASS}>
-                        {buttonActiveItem?.selectedOptionName?.trim() || buttonActiveItem?.name.trim() || placeholderText}
-                    </span>
+                    <span className={DROPDOWN_BUTTON_TEXT_CLASS}>{buttonActiveItem?.selectedOptionName?.trim() || buttonTitleText}</span>
                     {multiSelect && props.appliedFilterNumber > 0 && (
                         <div className={DROPDOWN_BUTTON_MULTI_SELECT_COUNTER_CLASS}>
                             <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY} stronger={true}>

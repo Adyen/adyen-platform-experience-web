@@ -1,4 +1,5 @@
 export const DEFAULT_BUTTON_CLASSNAME = 'adyen-pe-button';
+export const BUTTON_ANCHOR_CLASSNAME = 'adyen-pe-button__anchor';
 export const BUTTON_ACTION_CLASSNAME = `${DEFAULT_BUTTON_CLASSNAME}-actions`;
 export const ICON_BUTTON_CLASSNAME = `${DEFAULT_BUTTON_CLASSNAME}--icon`;
 export const ICON_BUTTON_CONTENT_CLASSNAME = `${DEFAULT_BUTTON_CLASSNAME}--icon-content`;

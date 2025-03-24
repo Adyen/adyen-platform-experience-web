@@ -35,6 +35,16 @@
         }
     }
 
+    &__list-icon-value {
+        align-items: center;
+        display: flex;
+        gap: style.token(spacer-030);
+
+        .adyen-pe-data-grid__icon-container {
+            width: style.token(spacer-070);
+        }
+    }
+
     &__amount {
         color: style.token(color-label-primary);
         font-size: style.token(text-title-l-font-size);

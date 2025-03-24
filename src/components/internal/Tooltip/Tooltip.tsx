@@ -1,4 +1,3 @@
-import { mediaQueries, useResponsiveViewport } from '../../../hooks/useResponsiveViewport';
 import Popover from '../Popover/Popover';
 import { PopoverContainerVariant } from '../Popover/types';
 import { useTooltipListeners } from './useTooltipListeners';
@@ -16,12 +15,24 @@ const isString = (content: string | VNode<any>) => {
     return typeof content === 'string';
 };
 
+function isTouchDevice() {
+    const hasTouchStart = 'ontouchstart' in window;
+
+    // Check for maximum touch points (standard and IE)
+    const hasTouchPoints =
+        (navigator.maxTouchPoints && navigator.maxTouchPoints > 0) ||
+        ((navigator as any).msMaxTouchPoints && (navigator as any).msMaxTouchPoints > 0);
+
+    const hasCoarsePointer = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
+
+    return hasTouchStart || hasTouchPoints || hasCoarsePointer;
+}
+
 export const Tooltip = ({ content, children, triggerRef, showTooltip, position, isContainerHovered = false }: PropsWithChildren<TooltipProps>) => {
     const controllerRef = useUniqueIdentifier();
-    const isMdViewport = useResponsiveViewport(mediaQueries.down.sm);
     const { isVisible, listeners } = useTooltipListeners();
 
-    if (isMdViewport) return <>{children}</>;
+    if (isTouchDevice()) return <>{children}</>;
 
     return (
         <>

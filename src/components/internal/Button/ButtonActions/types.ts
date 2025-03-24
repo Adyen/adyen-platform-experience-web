@@ -9,6 +9,7 @@ export interface ButtonActionObject {
     variant?: ButtonVariant;
     renderTitle?: (title: string) => ComponentChild;
     state?: 'loading' | 'default';
+    classNames?: string[];
 }
 
 export type ButtonActionsList = ButtonActionObject[] | readonly ButtonActionObject[];

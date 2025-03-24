@@ -4,7 +4,7 @@ import { useEffect, useState } from 'preact/hooks';
 import useCoreContext from '../../../../core/Context/useCoreContext';
 import AdyenPlatformExperienceError from '../../../../core/Errors/AdyenPlatformExperienceError';
 import { EndpointName } from '../../../../types/api/endpoints';
-import { mediaQueries, useResponsiveViewport } from '../../../../hooks/useResponsiveViewport';
+import { containerQueries, useResponsiveContainer } from '../../../../hooks/useResponsiveContainer';
 import Spinner from '../../Spinner';
 import Download from '../../SVGIcons/Download';
 import Button from '../Button';
@@ -42,7 +42,7 @@ function downloadBlob({ blob, filename }: { blob: Blob; filename: string }) {
 function DownloadButton({ className, disabled, endpointName, params, setError, errorDisplay, onDownloadRequested }: DownloadButtonProps) {
     const { i18n } = useCoreContext();
     const [fetchData, setFetchData] = useState(false);
-    const isSmViewport = useResponsiveViewport(mediaQueries.down.xs);
+    const isSmContainer = useResponsiveContainer(containerQueries.down.xs);
     const { data, error, isFetching } = useDownload(endpointName, params, fetchData);
 
     useEffect(() => {
@@ -62,7 +62,7 @@ function DownloadButton({ className, disabled, endpointName, params, setError, e
         if (setError && error) {
             setError(error as AdyenPlatformExperienceError);
         }
-    }, [error]);
+    }, [error, setError]);
 
     const onClick = () => {
         setFetchData(true);
@@ -71,7 +71,7 @@ function DownloadButton({ className, disabled, endpointName, params, setError, e
 
     return (
         <div className="adyen-pe-download">
-            {isSmViewport ? (
+            {isSmContainer ? (
                 <Button iconButton={true} variant={ButtonVariant.TERTIARY} onClick={onClick}>
                     {isFetching ? <Spinner size={'small'} /> : <Download />}
                 </Button>

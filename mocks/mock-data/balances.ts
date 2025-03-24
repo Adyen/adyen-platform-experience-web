@@ -21,4 +21,10 @@ export const BALANCES: Record<string, IBalance[]> = {
             currency: 'EUR',
         },
     ],
+    BA32272223222B5CTDQPM6W2K: [
+        {
+            value: 5250,
+            currency: 'USD',
+        },
+    ],
 };

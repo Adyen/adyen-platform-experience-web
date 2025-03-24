@@ -8,7 +8,7 @@ export const enabledDisabledCallbackRadioControls = (actionName: string, options
             [optionsLabels?.[1] ?? 'Disabled']: undefined,
             [optionsLabels?.[0] ?? 'Enabled']: action(actionName),
         },
-    };
+    } as const;
 };
 
 export const disableControls = {

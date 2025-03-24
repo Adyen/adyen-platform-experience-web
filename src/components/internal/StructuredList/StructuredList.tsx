@@ -4,7 +4,15 @@ import useCoreContext from '../../../core/Context/useCoreContext';
 import { TranslationKey } from '../../../translations';
 import { TypographyVariant } from '../Typography/types';
 import Typography from '../Typography/Typography';
-import { SL_BASE_CLASS, SL_CONTENT_CLASS, SL_GRID_CLASS, SL_ITEM_CLASS, SL_ITEM_WITH_HIGHLIGHT_CLASS, SL_LABEL_CLASS } from './constants';
+import {
+    SL_ALIGN_END,
+    SL_BASE_CLASS,
+    SL_CONTENT_CLASS,
+    SL_GRID_CLASS,
+    SL_ITEM_CLASS,
+    SL_ITEM_WITH_HIGHLIGHT_CLASS,
+    SL_LABEL_CLASS,
+} from './constants';
 import { StructuredListProps } from './types';
 import './StructuredList.scss';
 import { useStructuredListItems } from './useStructuredListItem';
@@ -20,6 +28,7 @@ export default function StructuredList({
     layout = DEFAULT_LAYOUT,
     grid = true,
     classNames,
+    align = 'end',
 }: StructuredListProps) {
     const [LABEL_COL_CLASS, VALUE_COL_CLASS] = useMemo(() => {
         return layout.split('-').map(w => `${SL_GRID_CLASS}--width-${w}-of-12`);
@@ -28,9 +37,9 @@ export default function StructuredList({
     const { i18n } = useCoreContext();
 
     return (
-        <div aria-label={i18n.get('structuredList')} className={cx(SL_BASE_CLASS, classNames)}>
+        <dl aria-label={i18n.get('structuredList')} className={cx(SL_BASE_CLASS, classNames, { [SL_ALIGN_END]: align === 'end' })}>
             {formattedItems.map((item, index) => (
-                <dl
+                <div
                     key={`${index}_${item.id || '0'}`}
                     className={cx(SL_ITEM_CLASS, {
                         [SL_ITEM_WITH_HIGHLIGHT_CLASS]: highlightable,
@@ -45,10 +54,14 @@ export default function StructuredList({
                         )}
                     </dt>
                     <dd aria-label={`${i18n.get(item.key as TranslationKey)} ${i18n.get('value')}`} className={cx(SL_CONTENT_CLASS, VALUE_COL_CLASS)}>
-                        {renderValue ? renderValue(item.value, item.key) : <Typography variant={TypographyVariant.BODY}>{item.value}</Typography>}
+                        {renderValue ? (
+                            renderValue(item.value, item.key, item.type, item.config)
+                        ) : (
+                            <Typography variant={TypographyVariant.BODY}>{item.value}</Typography>
+                        )}
                     </dd>
-                </dl>
+                </div>
             ))}
-        </div>
+        </dl>
     );
 }

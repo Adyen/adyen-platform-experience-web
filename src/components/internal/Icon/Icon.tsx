@@ -16,6 +16,7 @@ const icons = {
     'cross-circle-fill': () => import('../../../images/icons/cross-circle-fill.svg?component'),
     cross: () => import('../../../images/icons/cross.svg?component'),
     download: () => import('../../../images/icons/download.svg?component'),
+    'external-link': () => import('../../../images/icons/external-link.svg?component'),
     filter: () => import('../../../images/icons/filter.svg?component'),
     'info-filled': () => import('../../../images/icons/info-filled.svg?component'),
     'minus-circle-outline': () => import('../../../images/icons/minus-circle-outline.svg?component'),

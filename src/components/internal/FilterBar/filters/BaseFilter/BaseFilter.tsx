@@ -1,4 +1,4 @@
-import { mediaQueries, useResponsiveViewport } from '../../../../../hooks/useResponsiveViewport';
+import { containerQueries, useResponsiveContainer } from '../../../../../hooks/useResponsiveContainer';
 import FilterButton from '../../components/FilterButton/FilterButton';
 import Popover from '../../../Popover/Popover';
 import { PopoverContainerPosition, PopoverContainerVariant } from '../../../Popover/types';
@@ -53,7 +53,7 @@ const renderFallback = (() => {
 })();
 
 const BaseFilter = <T extends BaseFilterProps = BaseFilterProps>({ render, ...props }: FilterProps<T>) => {
-    const isSmViewport = useResponsiveViewport(mediaQueries.down.xs);
+    const isSmContainer = useResponsiveContainer(containerQueries.down.xs);
     const [editMode, _updateEditMode] = useBooleanState(false);
     const [editModalMounting, updateEditModalMounting] = useBooleanState(false);
     const isValueEmpty = useMemo(() => props.isValueEmpty ?? isValueEmptyFallback, [props.isValueEmpty]);
@@ -110,8 +110,8 @@ const BaseFilter = <T extends BaseFilterProps = BaseFilterProps>({ render, ...pr
         committing && closeEditDialog();
         updateHasEmptyValue(hasEmptyValue);
     }, [committing, closeEditDialog, updateHasEmptyValue, hasEmptyValue]);
-    const isOnlySmDevice = useResponsiveViewport(mediaQueries.only.sm);
-    const isOnlyMdDevice = useResponsiveViewport(mediaQueries.only.md);
+    const isOnlySmContainer = useResponsiveContainer(containerQueries.only.sm);
+    const isOnlyMdContainer = useResponsiveContainer(containerQueries.only.md);
 
     return (
         <>
@@ -181,8 +181,8 @@ const BaseFilter = <T extends BaseFilterProps = BaseFilterProps>({ render, ...pr
                     disableFocusTrap={false}
                     position={PopoverContainerPosition.BOTTOM}
                     containerSize={props.containerSize}
-                    showOverlay={isSmViewport}
-                    fitPosition={isOnlySmDevice || isOnlyMdDevice}
+                    showOverlay={isSmContainer}
+                    fitPosition={isOnlySmContainer || isOnlyMdContainer}
                 >
                     {renderModalBody({ ...props, editAction: commitAction, onValueUpdated })}
                 </Popover>

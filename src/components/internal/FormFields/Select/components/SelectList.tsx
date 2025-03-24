@@ -1,4 +1,4 @@
-import { mediaQueries, useResponsiveViewport } from '../../../../../hooks/useResponsiveViewport';
+import { containerQueries, useResponsiveContainer } from '../../../../../hooks/useResponsiveContainer';
 import Popover from '../../../Popover/Popover';
 import { PopoverContainerPosition, PopoverContainerSize, PopoverContainerVariant, PopoverProps } from '../../../Popover/types';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
@@ -34,7 +34,7 @@ const SelectList = fixedForwardRef(
         ref: ForwardedRef<HTMLUListElement>
     ) => {
         const { i18n } = useCoreContext();
-        const isSmViewport = useResponsiveViewport(mediaQueries.down.xs);
+        const isSmContainer = useResponsiveContainer(containerQueries.down.xs);
         const filteredItems = items.filter(item => !textFilter || item.name.toLowerCase().includes(textFilter));
         const listClassName = cx(DROPDOWN_LIST_CLASS, { [DROPDOWN_LIST_ACTIVE_CLASS]: showList });
         const noOptionsClassName = cx(DROPDOWN_ELEMENT_CLASS, DROPDOWN_ELEMENT_NO_OPTION_CLASS);
@@ -56,7 +56,7 @@ const SelectList = fixedForwardRef(
                 targetElement={toggleButtonRef as PopoverProps['targetElement']}
                 withContentPadding={false}
                 position={PopoverContainerPosition.BOTTOM}
-                showOverlay={showOverlay && isSmViewport}
+                showOverlay={showOverlay && isSmContainer}
                 fitPosition={fitPosition}
             >
                 <ul className={listClassName} id={selectListId} ref={ref} role="listbox" aria-multiselectable={multipleSelection}>
