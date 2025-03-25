@@ -73,7 +73,7 @@ export const DataCustomization: ElementStory<typeof TransactionsOverview> = {
                     { key: 'paymentPspReference', visibility: 'hidden' },
                     { key: '_store' },
                     { key: '_product' },
-                    { key: '_reference', flex: 1.5 },
+                    { key: '_reference' },
                     { key: '_summary' },
                     { key: '_button' },
                     { key: '_country' },
