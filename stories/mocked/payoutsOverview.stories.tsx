@@ -21,7 +21,7 @@ const CUSTOM_COLUMNS_MOCK_HANDLER = {
     handlers: [
         http.get(endpoints('mock').payouts, () => {
             return HttpResponse.json({
-                data: [{ ...PAYOUTS_WITH_DETAILS[7]?.payout, createdAt: new Date().toISOString() }],
+                data: [{ ...PAYOUTS_WITH_DETAILS[7]?.payout }],
                 _links: {},
             });
         }),
@@ -58,7 +58,7 @@ export const DataCustomization: ElementStory<typeof PayoutsOverview> = {
                 },
             },
             details: {
-                fields: [{ key: '_summary' }, { key: '_country', flex: 0.5 }, { key: '_sendEmail', align: 'right' }],
+                fields: [{ key: '_summary' }, { key: '_country' }, { key: '_sendEmail' }],
                 onDataRetrieve: data => {
                     return new Promise(resolve => {
                         setTimeout(() => {

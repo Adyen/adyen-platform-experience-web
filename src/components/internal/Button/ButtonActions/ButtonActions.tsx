@@ -5,6 +5,7 @@ import { ButtonVariant } from '../types';
 import './ButtonActions.scss';
 import { memo } from 'preact/compat';
 import { useMemo } from 'preact/hooks';
+import cx from 'classnames';
 
 interface ButtonActionsProps {
     actions: ButtonActionsList;
@@ -27,13 +28,13 @@ function ButtonActions({ actions, layout = ButtonActionsLayout.BUTTONS_END }: Bu
             <div className={`${BUTTON_ACTION_CONTAINER_CLASSNAME} ${conditionalClasses()}`} role="group">
                 {reversedActions.map((button, index) => (
                     <Button
+                        className={cx(button.classNames)}
                         aria-label={button.title}
                         key={`${index}_${button.title || '0'}`}
                         disabled={button.disabled}
                         variant={button.variant || generateButtonVariantByIndex(index)}
                         onClick={button.event}
                         state={button.state ?? 'default'}
-                        classNameModifiers={[...(button.classNames || [])]}
                     >
                         {button.renderTitle ? button.renderTitle(button.title) : button.title}
                     </Button>
