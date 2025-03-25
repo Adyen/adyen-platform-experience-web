@@ -146,7 +146,7 @@ export const TransactionDataContent = ({ transaction: initialTransaction, extraF
                       title: action.value,
                       variant: ButtonVariant.SECONDARY,
                       event: action.config.action,
-                      classNames: action.classNames,
+                      classNames: action.config.className ? [action.config.className] : [],
                   }))
             : [];
 

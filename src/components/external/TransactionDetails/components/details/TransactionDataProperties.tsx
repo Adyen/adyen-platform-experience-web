@@ -66,7 +66,7 @@ const TransactionDataProperties = () => {
             paymentPspReference ? { key: paymentReferenceKey as TranslationKey, value: paymentPspReference, id: 'paymentPspReference' } : SKIP_ITEM,
         ]
             .filter(Boolean)
-            .filter(val => !dataCustomization?.details?.fields.some(field => field.key === val.id && field.visibility === 'hidden'));
+            .filter(val => !dataCustomization?.details?.fields?.some(field => field.key === val.id && field.visibility === 'hidden'));
 
         // Add custom data
 
@@ -92,7 +92,7 @@ const TransactionDataProperties = () => {
                 renderValue={(val, key, type, config) => {
                     if (type === 'link') {
                         return (
-                            <Link classNames={[cx(config?.classNames)]} href={config.href} target={config.target || '_blank'}>
+                            <Link classNames={[cx(config?.className)]} href={config.href} target={config.target || '_blank'}>
                                 {val}
                             </Link>
                         );
@@ -100,14 +100,14 @@ const TransactionDataProperties = () => {
                     if (type === 'icon') {
                         const icon = { url: config?.src, alt: config.alt || val };
                         return (
-                            <div className={cx('adyen-pe-transaction-data__list-icon-value', config?.classNames)}>
+                            <div className={cx('adyen-pe-transaction-data__list-icon-value', config?.className)}>
                                 <Icon {...icon} />
                                 <Typography variant={TypographyVariant.BODY}> {val} </Typography>
                             </div>
                         );
                     }
                     return (
-                        <Typography className={cx(config?.classNames)} variant={TypographyVariant.BODY}>
+                        <Typography className={cx(config?.className)} variant={TypographyVariant.BODY}>
                             {val}
                         </Typography>
                     );

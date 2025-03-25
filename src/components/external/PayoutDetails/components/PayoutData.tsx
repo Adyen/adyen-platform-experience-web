@@ -112,6 +112,7 @@ export const PayoutData = ({
     const extraDetails: StructuredListProps['items'] =
         Object.entries(extraFields || {})
             .filter(([, value]) => value.type !== 'button')
+            .filter(([, value]) => value.visibility !== 'hidden')
             .map(([key, value]) => ({
                 key: key as TranslationKey,
                 value: isCustomDataObject(value) ? value.value : value,
@@ -123,7 +124,12 @@ export const PayoutData = ({
         const extraActions = extraFields
             ? Object.values(extraFields)
                   .filter(field => field.type === 'button')
-                  .map(action => ({ title: action.value, variant: ButtonVariant.SECONDARY, event: action.config.action }))
+                  .map(action => ({
+                      title: action.value,
+                      variant: ButtonVariant.SECONDARY,
+                      event: action.config.action,
+                      classNames: action?.config?.className ? [action?.config?.className] : [],
+                  }))
             : [];
         const actions = [...extraActions].filter(Boolean);
         return actions;
@@ -172,7 +178,7 @@ export const PayoutData = ({
                                 renderValue={(val, key, type, config) => {
                                     if (type === 'link') {
                                         return (
-                                            <Link classNames={[cx(config?.classNames)]} href={config.href} target={config.target || '_blank'}>
+                                            <Link classNames={[cx(config?.className)]} href={config.href} target={config.target || '_blank'}>
                                                 {val}
                                             </Link>
                                         );
@@ -180,14 +186,14 @@ export const PayoutData = ({
                                     if (type === 'icon') {
                                         const icon = { url: config.src, alt: config.alt || val };
                                         return (
-                                            <div className={cx(PD_EXTRA_DETAILS_ICON, config?.classNames)}>
+                                            <div className={cx(PD_EXTRA_DETAILS_ICON, config?.className)}>
                                                 <Icon {...icon} />
                                                 <Typography variant={TypographyVariant.BODY}>{val}</Typography>
                                             </div>
                                         );
                                     }
                                     return (
-                                        <Typography className={cx(config?.classNames)} variant={TypographyVariant.BODY}>
+                                        <Typography className={cx(config?.className)} variant={TypographyVariant.BODY}>
                                             {val}
                                         </Typography>
                                     );

@@ -114,7 +114,7 @@ interface BaseCustomObject {
 }
 
 type BaseDetails = {
-    classNames?: string[];
+    className?: string;
 };
 
 export interface CustomIconObject extends BaseCustomObject {
