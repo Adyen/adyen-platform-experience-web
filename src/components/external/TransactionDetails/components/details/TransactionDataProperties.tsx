@@ -90,14 +90,14 @@ const TransactionDataProperties = () => {
                 align="start"
                 renderLabel={label => <div className={TX_DATA_LABEL}>{label}</div>}
                 renderValue={(val, key, type, config) => {
-                    if (type === 'link') {
+                    if (type === 'link' && config) {
                         return (
                             <Link classNames={[cx(config?.className)]} href={config.href} target={config.target || '_blank'}>
                                 {val}
                             </Link>
                         );
                     }
-                    if (type === 'icon') {
+                    if (type === 'icon' && config) {
                         const icon = { url: config?.src, alt: config.alt || val };
                         return (
                             <div className={cx('adyen-pe-transaction-data__list-icon-value', config?.className)}>

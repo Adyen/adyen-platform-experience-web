@@ -127,7 +127,7 @@ export const PayoutData = ({
                   .map(action => ({
                       title: action.value,
                       variant: ButtonVariant.SECONDARY,
-                      event: action.config.action,
+                      event: action.config?.action,
                       classNames: action?.config?.className ? [action?.config?.className] : [],
                   }))
             : [];
@@ -176,14 +176,14 @@ export const PayoutData = ({
                                 layout="5-7"
                                 renderLabel={label => <div className={PD_EXTRA_DETAILS_LABEL}>{label}</div>}
                                 renderValue={(val, key, type, config) => {
-                                    if (type === 'link') {
+                                    if (type === 'link' && config) {
                                         return (
                                             <Link classNames={[cx(config?.className)]} href={config.href} target={config.target || '_blank'}>
                                                 {val}
                                             </Link>
                                         );
                                     }
-                                    if (type === 'icon') {
+                                    if (type === 'icon' && config) {
                                         const icon = { url: config.src, alt: config.alt || val };
                                         return (
                                             <div className={cx(PD_EXTRA_DETAILS_ICON, config?.className)}>
