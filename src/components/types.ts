@@ -1,7 +1,7 @@
 import UIElement from './external/UIElement/UIElement';
 import { Core, onErrorHandler } from '../core';
 import { TransactionsTableFields } from './external/TransactionsOverview/components/TransactionsTable/types';
-import { IPayout, IReport, ITransaction } from '../types';
+import { IPayout, IPayoutDetails, IReport, ITransaction, ITransactionWithDetails } from '../types';
 import { AnchorHTMLAttributes } from 'preact/compat';
 import { ReportsTableFields } from './external/ReportsOverview/components/ReportsTable/ReportsTable';
 import { StringWithAutocompleteOptions } from '../utils/types';
@@ -161,12 +161,14 @@ export interface ReportsOverviewComponentProps
 
 export interface TransactionOverviewComponentProps
     extends _DataOverviewComponentProps,
-        _CustomizableDataOverview<OverviewCustomizationProperties<TransactionsTableFields, ITransaction, TransactionDetailsFields, any>>,
+        _CustomizableDataOverview<
+            OverviewCustomizationProperties<TransactionsTableFields, ITransaction, TransactionDetailsFields, ITransactionWithDetails>
+        >,
         _DataOverviewSelectionProps<{ id: string; showModal: () => void }> {}
 
 export interface PayoutsOverviewComponentProps
     extends _DataOverviewComponentProps,
-        _CustomizableDataOverview<OverviewCustomizationProperties<PayoutsTableFields, IPayout, any, any>>,
+        _CustomizableDataOverview<OverviewCustomizationProperties<PayoutsTableFields, IPayout, any, IPayoutDetails>>,
         _DataOverviewSelectionProps<{ balanceAccountId: string; date: string; showModal: () => void }> {}
 
 export const enum FilterParam {
