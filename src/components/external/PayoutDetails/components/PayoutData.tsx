@@ -124,11 +124,11 @@ export const PayoutData = ({
         const extraActions = extraFields
             ? Object.values(extraFields)
                   .filter(field => field.type === 'button')
-                  .map(action => ({
-                      title: action.value,
+                  .map(field => ({
+                      title: field.value,
                       variant: ButtonVariant.SECONDARY,
-                      event: action.config?.action,
-                      classNames: action?.config?.className ? [action?.config?.className] : [],
+                      event: field.config?.action,
+                      classNames: field?.config?.className ? [field?.config?.className] : [],
                   }))
             : [];
         const actions = [...extraActions].filter(Boolean);
