@@ -64,31 +64,37 @@ export const TableCells = <
 
                 const { value, type } = isCustomDataObject(data) ? data : { value: data, type: 'text' };
 
-                const icon = _isIconType(data) ? { url: data.config.src, alt: data.config.alt || data.value } : undefined;
+                const icon = _isIconType(data)
+                    ? { url: data?.config?.src, alt: data?.config?.alt !== undefined && data?.config?.alt !== null ? data?.config?.alt : data.value }
+                    : undefined;
                 const buttonCallback = _isButtonType(data)
                     ? (e: JSXInternal.TargetedMouseEvent<HTMLButtonElement | HTMLAnchorElement>) => {
                           e.stopPropagation();
-                          data.config.action();
+                          data?.config?.action();
                       }
                     : undefined;
 
                 return (
                     <DataGridCell aria-labelledby={String(key)} key={key} column={key} position={position}>
                         <div className="adyen-pe-data-grid__cell-value">
-                            {_isIconType(data) && icon?.url && (
-                                <>
+                            {_isIconType(data) && data.config && icon?.url && (
+                                <div className={cx('adyen-pe-data-grid__icon-cell', data?.config?.className)}>
                                     <Icon {...icon} />
                                     {value.trim() && <span>{value}</span>}
-                                </>
+                                </div>
                             )}
-                            {type === 'text' && <span className={cx(data?.config?.classNames)}>{value}</span>}
-                            {type === 'button' && (
-                                <Button className={cx(data.config?.classNames)} onClick={buttonCallback} variant={ButtonVariant.SECONDARY}>
+                            {type === 'text' && <span className={cx(data?.config?.className)}>{value}</span>}
+                            {type === 'button' && data.config && buttonCallback && (
+                                <Button className={cx(data.config?.className)} onClick={buttonCallback} variant={ButtonVariant.SECONDARY}>
                                     {value}
                                 </Button>
                             )}
-                            {_isLinkType(data) && (
-                                <Link classNames={data.config.classNames} href={data.config.href} target={data.config.target}>
+                            {_isLinkType(data) && data.config && (
+                                <Link
+                                    classNames={data.config.className ? [data.config.className] : []}
+                                    href={data.config.href}
+                                    target={data.config.target}
+                                >
                                     {value}
                                 </Link>
                             )}

@@ -1,7 +1,7 @@
 import UIElement from './external/UIElement/UIElement';
 import { Core, onErrorHandler } from '../core';
 import { TransactionsTableFields } from './external/TransactionsOverview/components/TransactionsTable/types';
-import { IPayout, IReport, ITransaction } from '../types';
+import { IPayout, IPayoutDetails, IReport, ITransaction, ITransactionWithDetails } from '../types';
 import { AnchorHTMLAttributes } from 'preact/compat';
 import { ReportsTableFields } from './external/ReportsOverview/components/ReportsTable/ReportsTable';
 import { StringWithAutocompleteOptions } from '../utils/types';
@@ -114,7 +114,7 @@ interface BaseCustomObject {
 }
 
 type BaseDetails = {
-    classNames?: string[];
+    className?: string;
 };
 
 export interface CustomIconObject extends BaseCustomObject {
@@ -146,13 +146,27 @@ export type DataCustomizationObject<Columns extends string, DataRetrieved, Callb
     onDataRetrieve?: OnDataRetrievedCallback<DataRetrieved, CallbackResponse>;
 };
 
+export type DetailsCustomFieldConfig<k> = {
+    key: k;
+    visibility?: 'visible' | 'hidden';
+};
+
+export type CustomDetailsField<T extends string> = {
+    [k in T]: DetailsCustomFieldConfig<k>;
+}[T];
+
+export type DetailsDataCustomizationObject<Columns extends string, DataRetrieved, CallbackResponse> = {
+    fields: CustomDetailsField<StringWithAutocompleteOptions<Columns>>[];
+    onDataRetrieve?: OnDataRetrievedCallback<DataRetrieved, CallbackResponse>;
+};
+
 interface _CustomizableDataOverview<CustomizationOptions extends Record<string, DataCustomizationObject<any, any, any>>> {
     dataCustomization?: CustomizationOptions;
 }
 
 type OverviewCustomizationProperties<Fields extends string, Data, DetailsFields extends string, DetailsData> = {
     list?: DataCustomizationObject<Fields, Data[], CustomDataRetrieved[]>;
-    details?: DataCustomizationObject<DetailsFields, DetailsData, CustomDataRetrieved>;
+    details?: DetailsDataCustomizationObject<DetailsFields, DetailsData, CustomDataRetrieved>;
 };
 
 export interface ReportsOverviewComponentProps
@@ -161,12 +175,14 @@ export interface ReportsOverviewComponentProps
 
 export interface TransactionOverviewComponentProps
     extends _DataOverviewComponentProps,
-        _CustomizableDataOverview<OverviewCustomizationProperties<TransactionsTableFields, ITransaction, TransactionDetailsFields, any>>,
+        _CustomizableDataOverview<
+            OverviewCustomizationProperties<TransactionsTableFields, ITransaction, TransactionDetailsFields, ITransactionWithDetails>
+        >,
         _DataOverviewSelectionProps<{ id: string; showModal: () => void }> {}
 
 export interface PayoutsOverviewComponentProps
     extends _DataOverviewComponentProps,
-        _CustomizableDataOverview<OverviewCustomizationProperties<PayoutsTableFields, IPayout, any, any>>,
+        _CustomizableDataOverview<OverviewCustomizationProperties<PayoutsTableFields, IPayout, any, IPayoutDetails>>,
         _DataOverviewSelectionProps<{ balanceAccountId: string; date: string; showModal: () => void }> {}
 
 export const enum FilterParam {
