@@ -20,7 +20,10 @@ export const useCustomColumnsData = <T>({
         try {
             if (hasCustomColumn && isFunction(onDataRetrieve)) {
                 const retrievedData = await onDataRetrieve(records);
-                setCustomRecords(mergeCustomData({ records, retrievedData: retrievedData?.filter(Boolean) || [] }));
+                if (!Array.isArray(retrievedData)) throw new Error('Retrieved data should be an array');
+                else setCustomRecords(mergeCustomData({ records, retrievedData: retrievedData?.filter(Boolean) || [] }));
+            } else {
+                setCustomRecords(records);
             }
         } catch (error) {
             setCustomRecords(records);

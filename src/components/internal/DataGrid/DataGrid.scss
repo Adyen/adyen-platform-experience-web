@@ -73,6 +73,11 @@
         }
     }
 
+    &__icon-cell {
+        display: flex;
+        gap: style.token(spacer-030);
+    }
+
     #{$adyen-pe-data-grid__cell} {
         align-items: center;
         box-sizing: border-box;
