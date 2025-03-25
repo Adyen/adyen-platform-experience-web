@@ -33,9 +33,9 @@ export const useTableColumns = <T extends string, C extends string>({
     const isSmAndUpContainer = useResponsiveContainer(containerQueries.up.sm);
 
     const columns = useMemo(() => {
-        const newFields = customColumns?.filter(cc => !fields.some(field => field === (cc.key as unknown as T))).map(colum => colum.key) || [];
+        const newFields = customColumns?.filter(cc => !fields?.some(field => field === (cc.key as unknown as T))).map(colum => colum.key) || [];
 
-        const mergedColumns = [...tableColumns, ...(customColumns || [])];
+        const mergedColumns = [...tableColumns, ...(customColumns?.filter(col => col?.key) || [])];
 
         const customColumnsMap =
             customColumns?.reduce<Record<string, (typeof customColumns)[number]>>((acc, col) => {

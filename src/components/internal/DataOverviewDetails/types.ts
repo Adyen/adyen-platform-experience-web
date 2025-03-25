@@ -1,6 +1,6 @@
 import { IBalanceAccountBase, ITransactionWithDetails } from '../../../types';
 import { DetailsWithExtraData, TransactionDetailsCustomization } from '../../external';
-import { DataCustomizationObject } from '../../types';
+import { DetailsDataCustomizationObject } from '../../types';
 import { PayoutDetailsCustomization } from '../../external/PayoutDetails/types';
 
 //TODO: Revisit those types to find the most appropriate file
@@ -32,5 +32,5 @@ export interface BalanceAccountProps {
 export type SelectedDetail = {
     type: 'payout' | 'transaction';
     data: string | TransactionDetailData | PayoutDetailsWithIdProps;
-    dataCustomization?: { details?: DataCustomizationObject<any, any, any> };
+    dataCustomization?: { details?: DetailsDataCustomizationObject<any, any, any> };
 };
