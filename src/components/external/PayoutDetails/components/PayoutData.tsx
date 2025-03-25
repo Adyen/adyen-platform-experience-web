@@ -111,8 +111,7 @@ export const PayoutData = ({
 
     const extraDetails: StructuredListProps['items'] =
         Object.entries(extraFields || {})
-            .filter(([, value]) => value.type !== 'button')
-            .filter(([, value]) => value.visibility !== 'hidden')
+            .filter(([, field]) => field.type !== 'button' && field.visibility !== 'hidden')
             .map(([key, value]) => ({
                 key: key as TranslationKey,
                 value: isCustomDataObject(value) ? value.value : value,
