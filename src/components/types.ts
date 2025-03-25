@@ -146,13 +146,27 @@ export type DataCustomizationObject<Columns extends string, DataRetrieved, Callb
     onDataRetrieve?: OnDataRetrievedCallback<DataRetrieved, CallbackResponse>;
 };
 
+export type DetailsCustomFieldConfig<k> = {
+    key: k;
+    visibility?: 'visible' | 'hidden';
+};
+
+export type CustomDetailsField<T extends string> = {
+    [k in T]: DetailsCustomFieldConfig<k>;
+}[T];
+
+export type DetailsDataCustomizationObject<Columns extends string, DataRetrieved, CallbackResponse> = {
+    fields: CustomDetailsField<StringWithAutocompleteOptions<Columns>>[];
+    onDataRetrieve?: OnDataRetrievedCallback<DataRetrieved, CallbackResponse>;
+};
+
 interface _CustomizableDataOverview<CustomizationOptions extends Record<string, DataCustomizationObject<any, any, any>>> {
     dataCustomization?: CustomizationOptions;
 }
 
 type OverviewCustomizationProperties<Fields extends string, Data, DetailsFields extends string, DetailsData> = {
     list?: DataCustomizationObject<Fields, Data[], CustomDataRetrieved[]>;
-    details?: DataCustomizationObject<DetailsFields, DetailsData, CustomDataRetrieved>;
+    details?: DetailsDataCustomizationObject<DetailsFields, DetailsData, CustomDataRetrieved>;
 };
 
 export interface ReportsOverviewComponentProps
