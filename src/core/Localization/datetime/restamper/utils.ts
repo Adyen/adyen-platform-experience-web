@@ -3,7 +3,7 @@ import { REGEX_TZ_OFFSET, SYSTEM_TIMEZONE_FORMATTER } from './constants';
 import type { RestampContext, Restamper, RestampResult } from './types';
 
 const REGEX_GMT_OFFSET_UNWANTED_SUBSTRINGS = /\+(?=-)|([+-]00:00)/g;
-const REGEX_TZ_SINGLE_DIGIT_OFFSET = /(?<=^\D?)(\d)$/;
+const REGEX_TZ_SINGLE_DIGIT_OFFSET = /^(?:\D)?(\d)$/;
 
 export const computeTimezoneOffsetInMinutes = ([offsetHours, offsetMinutes]: readonly [number, number]) =>
     (Math.abs(offsetHours * 60) + offsetMinutes) * (offsetHours < 0 ? -1 : 1);
