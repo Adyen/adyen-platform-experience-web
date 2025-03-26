@@ -8,7 +8,7 @@ import useTimezoneAwareDateFormatting from '../../../../../hooks/useTimezoneAwar
 import Alert from '../../../../internal/Alert/Alert';
 import { AlertTypeOption } from '../../../../internal/Alert/types';
 import DataGrid from '../../../../internal/DataGrid';
-import { DATE_FORMAT_REPORTS } from '../../../../../constants';
+import { DATE_FORMAT_DISPUTES, DATE_FORMAT_DISPUTES_TAG } from '../../../../../constants';
 import DataOverviewError from '../../../../internal/DataOverviewError/DataOverviewError';
 import Pagination from '../../../../internal/Pagination';
 import { PaginationProps, WithPaginationLimitSelection } from '../../../../internal/Pagination/types';
@@ -24,6 +24,9 @@ import { IDispute } from '../../../../../types/api/models/disputes';
 import PaymentMethodCell from '../../../TransactionsOverview/components/TransactionsTable/PaymentMethodCell';
 import { Tag } from '../../../../internal/Tag/Tag';
 import { TagVariant } from '../../../../internal/Tag/types';
+import Icon from '../../../../internal/Icon';
+import { Tooltip } from '../../../../internal/Tooltip/Tooltip';
+import { getTranslation } from '../../../../../core/Localization/utils';
 
 export const FIELDS = ['status', 'createdAt', 'paymentMethod', 'reasonCode', 'amount'] as const;
 export type DisputesTableFields = (typeof FIELDS)[number];
@@ -58,15 +61,21 @@ export const DisputesTable: FC<DisputesTableProps> = ({
 
     const columns = useTableColumns({
         fields: FIELDS,
+        fieldsKeys: {
+            amount: 'disputes.disputedAmount',
+            reasonCode: 'disputes.reason',
+            paymentMethod: 'disputes.paymentMethod',
+            createdAt: 'disputes.openedOn',
+            status: 'disputes.status',
+        },
         customColumns,
         columnConfig: useMemo(
             () => ({
-                dateAndReportType: { visible: isXsAndDownViewport },
-                createdAt: { visible: isSmAndUpViewport },
-                reportType: { visible: isSmAndUpViewport },
-                reportFile: { visible: true, position: isXsAndDownViewport ? 'right' : undefined },
+                amount: {
+                    position: 'right',
+                },
             }),
-            [isSmAndUpViewport, isXsAndDownViewport]
+            []
         ),
     });
 
@@ -86,9 +95,16 @@ export const DisputesTable: FC<DisputesTableProps> = ({
 
     if (loading) setAlert(null);
 
+    const dateTranslations = {
+        'disputes.daysToRespond__plural': 'disputes.daysToRespond__plural',
+        'disputes.daysToRespond': 'disputes.daysToRespond__singular',
+    };
+
+    console.log(columns);
+
     return (
         <div className={BASE_CLASS}>
-            {alert && <Alert onClose={removeAlert} type={AlertTypeOption.WARNING} className={'adyen-pe-reports-table-alert'} {...alert} />}
+            {alert && <Alert onClose={removeAlert} type={AlertTypeOption.WARNING} className={'adyen-pe-disputes-table-alert'} {...alert} />}
             <DataGrid
                 errorDisplay={errorDisplay}
                 error={error}
@@ -99,6 +115,13 @@ export const DisputesTable: FC<DisputesTableProps> = ({
                 emptyTableMessage={EMPTY_TABLE_MESSAGE}
                 customCells={{
                     status: ({ value, item }) => {
+                        if (value === 'won') {
+                            return <Tag variant={TagVariant.SUCCESS} label={i18n.get('disputes.won')} />;
+                        }
+                        if (value === 'lost') {
+                            return <Tag label={i18n.get('disputes.lost')} />;
+                        }
+
                         if (value === 'action_needed' && item.dueDate) {
                             const targetDate = new Date(item.dueDate);
                             const now = Date.now();
@@ -108,9 +131,40 @@ export const DisputesTable: FC<DisputesTableProps> = ({
                             const hours = Math.floor(minutes / 60);
                             const days = Math.floor(hours / 24);
 
-                            return <Tag variant={days >= 10 ? TagVariant.WARNING : TagVariant.ERROR} label={i18n.get('disputes.actionNeeded')} />;
+                            const isUrgent = days < 10;
+
+                            const formattedDueDate = dateFormat(item.dueDate, DATE_FORMAT_DISPUTES_TAG);
+
+                            return (
+                                <Tooltip
+                                    content={
+                                        !isUrgent
+                                            ? formattedDueDate
+                                            : hours <= 24
+                                            ? i18n.get('disputes.respondToday', { values: { date: formattedDueDate } })
+                                            : i18n.get(
+                                                  getTranslation(dateTranslations, 'disputes.daysToRespond', { count: days }) as TranslationKey,
+                                                  {
+                                                      values: { date: formattedDueDate, days },
+                                                  }
+                                              )
+                                    }
+                                >
+                                    <div>
+                                        <Tag variant={isUrgent ? TagVariant.ERROR : TagVariant.WARNING}>
+                                            <div className={'adyen-pe-disputes-table__tag-content'}>
+                                                {i18n.get('disputes.actionNeeded')}
+                                                {isUrgent ? <Icon name={'warning-filled'} /> : null}
+                                            </div>
+                                        </Tag>
+                                    </div>
+                                </Tooltip>
+                            );
                         }
-                        return <Tag label={i18n.get('disputes.inProgress')} />;
+                        if (value === 'under_review' || value === 'docs_submitted') {
+                            return <Tag label={i18n.get('disputes.inProgress')} />;
+                        }
+                        return <Tag label={i18n.get('noData')} />;
                     },
                     amount: ({ value }) => {
                         return (
@@ -123,7 +177,7 @@ export const DisputesTable: FC<DisputesTableProps> = ({
                     },
                     createdAt: ({ value }) => {
                         if (!value) return null;
-                        return value && <Typography variant={TypographyVariant.BODY}>{dateFormat(value, DATE_FORMAT_REPORTS)}</Typography>;
+                        return value && <Typography variant={TypographyVariant.BODY}>{dateFormat(value, DATE_FORMAT_DISPUTES)}</Typography>;
                     },
                     paymentMethod: ({ item }) => <PaymentMethodCell paymentMethod={item.paymentMethod} bankAccount={item.bankAccount} />,
                 }}

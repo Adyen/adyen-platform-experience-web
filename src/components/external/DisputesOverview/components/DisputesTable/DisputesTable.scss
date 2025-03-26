@@ -1,6 +1,6 @@
 @use '../../../../../style';
 
-.adyen-pe-reports-table {
+.adyen-pe-disputes-table {
     &-alert {
         border: 0;
         position: absolute;
@@ -17,6 +17,12 @@
         &--date {
             color: style.token(color-label-secondary);
         }
+    }
+
+    &__tag-content {
+        align-items: center;
+        display: flex;
+        gap: style.token(spacer-030);
     }
 
     .adyen-pe-download {

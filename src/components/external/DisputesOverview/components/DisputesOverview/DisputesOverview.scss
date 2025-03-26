@@ -19,6 +19,10 @@
         outline: none;
         padding: 0 0 style.token(spacer-020) 0;
 
+        &:focus {
+            outline: 2px auto -webkit-focus-ring-color;
+        }
+
         &--active {
             border-bottom: 2px solid style.token(color-outline-primary-active);
             color: style.token(color-label-primary);

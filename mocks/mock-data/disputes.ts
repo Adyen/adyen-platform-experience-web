@@ -10,7 +10,7 @@ export const DISPUTES = [
     {
         id: 'a1b2c3d4-e5f6-4789-abcd-000000000001',
         status: 'action_needed',
-        dueDate: new Date(todayDate.setHours(6)).toISOString(),
+        dueDate: new Date(todayDate.setHours(23)).toISOString(),
         createdAt: getDate(-2),
         paymentMethod: { type: 'mc', lastFourDigits: '0001', description: 'MasterCard' },
         bankAccount: { accountNumberLastFourDigits: 'B0001' },
@@ -20,7 +20,7 @@ export const DISPUTES = [
     {
         id: 'a1b2c3d4-e5f6-4789-abcd-000000000002',
         status: 'action_needed',
-        dueDate: new Date(todayDate.setHours(3)).toISOString(),
+        dueDate: new Date(todayDate.setHours(20)).toISOString(),
         createdAt: getDate(-2),
         paymentMethod: { type: 'visa', lastFourDigits: '0002', description: 'Visa Credit Card' },
         bankAccount: { accountNumberLastFourDigits: 'B0002' },
@@ -50,7 +50,7 @@ export const DISPUTES = [
     {
         id: 'a1b2c3d4-e5f6-4789-abcd-000000000005',
         status: 'action_needed',
-        dueDate: getDate(11),
+        dueDate: getDate(5),
         createdAt: getDate(-2),
         paymentMethod: { type: 'amex', lastFourDigits: '0005', description: 'American Express' },
         bankAccount: { accountNumberLastFourDigits: 'B0005' },
@@ -60,7 +60,7 @@ export const DISPUTES = [
     {
         id: 'a1b2c3d4-e5f6-4789-abcd-000000000006',
         status: 'action_needed',
-        dueDate: getDate(11),
+        dueDate: getDate(9),
         createdAt: getDate(-2),
         paymentMethod: { type: 'mc', lastFourDigits: '0006', description: 'MasterCard' },
         bankAccount: { accountNumberLastFourDigits: 'B0006' },
@@ -251,7 +251,7 @@ export const DISPUTES = [
 
     {
         id: 'a1b2c3d4-e5f6-4789-abcd-000000000026',
-        status: 'closed',
+        status: 'won',
         createdAt: getDate(-8),
         paymentMethod: { type: 'mc', lastFourDigits: '0026', description: 'MasterCard' },
         bankAccount: { accountNumberLastFourDigits: 'B0026' },
@@ -260,7 +260,7 @@ export const DISPUTES = [
     },
     {
         id: 'a1b2c3d4-e5f6-4789-abcd-000000000027',
-        status: 'closed',
+        status: 'lost',
         createdAt: getDate(-8),
         paymentMethod: { type: 'visa', lastFourDigits: '0027', description: 'Visa Credit Card' },
         bankAccount: { accountNumberLastFourDigits: 'B0027' },
@@ -269,7 +269,7 @@ export const DISPUTES = [
     },
     {
         id: 'a1b2c3d4-e5f6-4789-abcd-000000000028',
-        status: 'closed',
+        status: 'lost',
         createdAt: getDate(-8),
         paymentMethod: { type: 'paypal', lastFourDigits: '0028', description: 'PayPal' },
         bankAccount: { accountNumberLastFourDigits: 'B0028' },
@@ -278,7 +278,7 @@ export const DISPUTES = [
     },
     {
         id: getDate(-8),
-        status: 'closed',
+        status: 'lost',
         createdAt: '2025-02-04T11:00:00.000Z',
         paymentMethod: { type: 'amex', lastFourDigits: '0029', description: 'American Express' },
         bankAccount: { accountNumberLastFourDigits: 'B0029' },
@@ -287,7 +287,7 @@ export const DISPUTES = [
     },
     {
         id: 'a1b2c3d4-e5f6-4789-abcd-000000000030',
-        status: 'closed',
+        status: 'won',
         createdAt: getDate(-8),
         paymentMethod: { type: 'mc', lastFourDigits: '0030', description: 'MasterCard' },
         bankAccount: { accountNumberLastFourDigits: 'B0030' },
@@ -296,7 +296,7 @@ export const DISPUTES = [
     },
     {
         id: 'a1b2c3d4-e5f6-4789-abcd-000000000031',
-        status: 'closed',
+        status: 'won',
         createdAt: getDate(-12),
         paymentMethod: { type: 'visa', lastFourDigits: '0031', description: 'Visa Credit Card' },
         bankAccount: { accountNumberLastFourDigits: 'B0031' },
@@ -305,7 +305,7 @@ export const DISPUTES = [
     },
     {
         id: 'a1b2c3d4-e5f6-4789-abcd-000000000032',
-        status: 'closed',
+        status: 'won',
         createdAt: '2025-02-07T11:00:00.000Z',
         paymentMethod: { type: 'paypal', lastFourDigits: '0032', description: 'PayPal' },
         bankAccount: { accountNumberLastFourDigits: 'B0032' },
@@ -314,7 +314,7 @@ export const DISPUTES = [
     },
     {
         id: 'a1b2c3d4-e5f6-4789-abcd-000000000033',
-        status: 'closed',
+        status: 'lost',
         createdAt: getDate(-12),
         paymentMethod: { type: 'mc', lastFourDigits: '0033', description: 'MasterCard' },
         bankAccount: { accountNumberLastFourDigits: 'B0033' },
@@ -323,7 +323,7 @@ export const DISPUTES = [
     },
     {
         id: 'a1b2c3d4-e5f6-4789-abcd-000000000034',
-        status: 'closed',
+        status: 'won',
         createdAt: getDate(-12),
         paymentMethod: { type: 'visa', lastFourDigits: '0034', description: 'Visa Credit Card' },
         bankAccount: { accountNumberLastFourDigits: 'B0034' },
@@ -332,7 +332,7 @@ export const DISPUTES = [
     },
     {
         id: 'a1b2c3d4-e5f6-4789-abcd-000000000035',
-        status: 'closed',
+        status: 'won',
         createdAt: getDate(-12),
         paymentMethod: { type: 'paypal', lastFourDigits: '0035', description: 'PayPal' },
         bankAccount: { accountNumberLastFourDigits: 'B0035' },
@@ -341,7 +341,7 @@ export const DISPUTES = [
     },
     {
         id: 'a1b2c3d4-e5f6-4789-abcd-000000000036',
-        status: 'closed',
+        status: 'won',
         createdAt: getDate(-15),
         paymentMethod: { type: 'mc', lastFourDigits: '0036', description: 'MasterCard' },
         bankAccount: { accountNumberLastFourDigits: 'B0036' },
@@ -350,7 +350,7 @@ export const DISPUTES = [
     },
     {
         id: 'a1b2c3d4-e5f6-4789-abcd-000000000037',
-        status: 'closed',
+        status: 'won',
         createdAt: getDate(-15),
         paymentMethod: { type: 'visa', lastFourDigits: '0037', description: 'Visa Credit Card' },
         bankAccount: { accountNumberLastFourDigits: 'B0037' },
@@ -359,7 +359,7 @@ export const DISPUTES = [
     },
     {
         id: 'a1b2c3d4-e5f6-4789-abcd-000000000038',
-        status: 'closed',
+        status: 'lost',
         createdAt: getDate(-15),
         paymentMethod: { type: 'paypal', lastFourDigits: '0038', description: 'PayPal' },
         bankAccount: { accountNumberLastFourDigits: 'B0038' },
@@ -368,7 +368,7 @@ export const DISPUTES = [
     },
     {
         id: 'a1b2c3d4-e5f6-4789-abcd-000000000039',
-        status: 'closed',
+        status: 'lost',
         createdAt: getDate(-15),
         paymentMethod: { type: 'mc', lastFourDigits: '0039', description: 'MasterCard' },
         bankAccount: { accountNumberLastFourDigits: 'B0039' },
@@ -377,7 +377,7 @@ export const DISPUTES = [
     },
     {
         id: 'a1b2c3d4-e5f6-4789-abcd-000000000040',
-        status: 'closed',
+        status: 'lost',
         createdAt: getDate(-15),
         paymentMethod: { type: 'visa', lastFourDigits: '0040', description: 'Visa Credit Card' },
         bankAccount: { accountNumberLastFourDigits: 'B0040' },
@@ -386,7 +386,7 @@ export const DISPUTES = [
     },
     {
         id: 'a1b2c3d4-e5f6-4789-abcd-000000000041',
-        status: 'closed',
+        status: 'lost',
         createdAt: getDate(-15),
         paymentMethod: { type: 'mc', lastFourDigits: '0041', description: 'MasterCard' },
         bankAccount: { accountNumberLastFourDigits: 'B0041' },
@@ -395,7 +395,7 @@ export const DISPUTES = [
     },
     {
         id: 'a1b2c3d4-e5f6-4789-abcd-000000000042',
-        status: 'closed',
+        status: 'lost',
         createdAt: getDate(-15),
         paymentMethod: { type: 'visa', lastFourDigits: '0042', description: 'Visa Credit Card' },
         bankAccount: { accountNumberLastFourDigits: 'B0042' },
@@ -404,7 +404,7 @@ export const DISPUTES = [
     },
     {
         id: 'a1b2c3d4-e5f6-4789-abcd-000000000043',
-        status: 'closed',
+        status: 'lost',
         createdAt: getDate(-18),
         paymentMethod: { type: 'mc', lastFourDigits: '0043', description: 'MasterCard' },
         bankAccount: { accountNumberLastFourDigits: 'B0043' },
@@ -413,7 +413,7 @@ export const DISPUTES = [
     },
     {
         id: 'a1b2c3d4-e5f6-4789-abcd-000000000044',
-        status: 'closed',
+        status: 'lost',
         createdAt: getDate(-18),
         paymentMethod: { type: 'visa', lastFourDigits: '0044', description: 'Visa Credit Card' },
         bankAccount: { accountNumberLastFourDigits: 'B0044' },
@@ -422,7 +422,7 @@ export const DISPUTES = [
     },
     {
         id: 'a1b2c3d4-e5f6-4789-abcd-000000000045',
-        status: 'closed',
+        status: 'won',
         createdAt: getDate(-18),
         paymentMethod: { type: 'mc', lastFourDigits: '0045', description: 'MasterCard' },
         bankAccount: { accountNumberLastFourDigits: 'B0045' },
@@ -433,6 +433,8 @@ export const DISPUTES = [
 
 export const getDisputesByStatusGroup = (status: 'open' | 'closed') => {
     return DISPUTES.filter(dispute =>
-        status === 'open' ? dispute.status === 'action_needed' || dispute.status === 'under_review' : dispute.status === 'closed'
+        status === 'open'
+            ? dispute.status === 'action_needed' || dispute.status === 'under_review'
+            : dispute.status === 'won' || dispute.status === 'lost'
     );
 };
