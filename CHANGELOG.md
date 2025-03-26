@@ -2,15 +2,11 @@
 
 ## 1.4.1
 
-### Patch Changes
+### Fixed
 
--   0e82e44: ### Fixed
+-   Browser fix: Replaced unsupported regex lookbehind patterns causing older browsers to crash.
 
-    Browser Fix: Removed unsupported regex lookbehind to prevent crashes in older browsers.
-
-    Timezone Correction: Adjusted regex and logic to properly format DST timezone offsets.
-
-    Impact: Eliminates crashes for users on older browsers and ensures correct timezone offset display.
+-   Impact: Eliminates crashes for users on older browsers.
 
 ## 1.4.0
 
