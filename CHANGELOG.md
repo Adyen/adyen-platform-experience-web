@@ -1,17 +1,27 @@
 # @adyen/adyen-platform-experience-web
 
+## 1.4.1
+
+### Fixed
+
+-   Replaced unsupported regex lookbehind patterns causing app to crash for older browsers.
+
+
 ## 1.4.0
 
 ### New
-- In the Capital Overview component, you can now view bank account details needed to send [unscheduled repayments](https://docs.adyen.com/platforms/capital/capital-components/#capital-overview-component), such as early repayments or to catch up if behind schedule.
-- You can now add custom data in your [transaction](https://docs.adyen.com/platforms/build-user-dashboards/transaction-components/), [payout](https://docs.adyen.com/platforms/build-user-dashboards/payout-components/), and [report](https://docs.adyen.com/platforms/build-user-dashboards/reports-component/) components, such as your own fields, icons, links, and buttons. Additionally, you have control over the field settings, including their names and visibility.
+
+-   In the Capital Overview component, you can now view bank account details needed to send [unscheduled repayments](https://docs.adyen.com/platforms/capital/capital-components/#capital-overview-component), such as early repayments or to catch up if behind schedule.
+-   You can now add custom data in your [transaction](https://docs.adyen.com/platforms/build-user-dashboards/transaction-components/), [payout](https://docs.adyen.com/platforms/build-user-dashboards/payout-components/), and [report](https://docs.adyen.com/platforms/build-user-dashboards/reports-component/) components, such as your own fields, icons, links, and buttons. Additionally, you have control over the field settings, including their names and visibility.
 
 ### Improved
-- In the Capital Offer component, the Request Funds button is now disabled after a successful funds request.
-- We improved responsiveness of the components by swapping all media queries with container queries.
+
+-   In the Capital Offer component, the Request Funds button is now disabled after a successful funds request.
+-   We improved responsiveness of the components by swapping all media queries with container queries.
 
 ### Fixed
-- We fixed the issue where the balance account selector in the Payouts, Reports, and Transactions Overview components failed to load if no balance account descriptions were provided.
+
+-   We fixed the issue where the balance account selector in the Payouts, Reports, and Transactions Overview components failed to load if no balance account descriptions were provided.
 
 ## 1.3.1
 
