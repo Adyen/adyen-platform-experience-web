@@ -3,7 +3,7 @@ import { REGEX_TZ_OFFSET, SYSTEM_TIMEZONE_FORMATTER } from './constants';
 import type { RestampContext, Restamper, RestampResult } from './types';
 
 const REGEX_GMT_OFFSET_UNWANTED_SUBSTRINGS = /\+(?=-)|([+-]00:00)/g;
-const REGEX_TZ_SINGLE_DIGIT_OFFSET = /(?<=^\D?)(\d)$/;
+const REGEX_TZ_SINGLE_DIGIT_OFFSET = /(^\D?)(\d)$/;
 
 export const computeTimezoneOffsetInMinutes = ([offsetHours, offsetMinutes]: readonly [number, number]) =>
     (Math.abs(offsetHours * 60) + offsetMinutes) * (offsetHours < 0 ? -1 : 1);
@@ -22,7 +22,7 @@ export const parseTimezoneOffset = (offset: string | number) => parseInt(offset 
  */
 export const getGMTSuffixForTimezoneOffset = (timezoneOffset: RestampResult['offset']): string => {
     const offsets = computeTimezoneOffsetsFromMinutes(timezoneOffset);
-    const offsetString = offsets.map(offset => `${offset}`.replace(REGEX_TZ_SINGLE_DIGIT_OFFSET, '0$1')).join(':');
+    const offsetString = offsets.map(offset => `${offset}`.replace(REGEX_TZ_SINGLE_DIGIT_OFFSET, '$10$2')).join(':');
     return `GMT+${offsetString}`.replace(REGEX_GMT_OFFSET_UNWANTED_SUBSTRINGS, '');
 };
 
@@ -37,7 +37,7 @@ export const getSystemTimezoneGMTSuffixFromTimezoneOffsets = (
 ): string => getGMTSuffixForTimezoneOffset(timezoneOffset - timezoneOffsetRelativeToSystem);
 
 export const getTimezoneOffsetFromFormattedDateString = (date?: string): number => {
-    const offsets = date?.match(REGEX_TZ_OFFSET)?.[0].split(':', 2).map(parseTimezoneOffset) ?? (EMPTY_ARRAY as readonly number[]);
+    const offsets = date?.match(REGEX_TZ_OFFSET)?.[0].replace('GMT', '').split(':', 2).map(parseTimezoneOffset) ?? (EMPTY_ARRAY as readonly number[]);
     return computeTimezoneOffsetInMinutes(offsets.concat(0, 0).slice(0, 2) as [number, number]);
 };
 
