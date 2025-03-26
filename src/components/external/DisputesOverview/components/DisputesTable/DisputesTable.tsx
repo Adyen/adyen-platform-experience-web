@@ -100,8 +100,6 @@ export const DisputesTable: FC<DisputesTableProps> = ({
         'disputes.daysToRespond': 'disputes.daysToRespond__singular',
     };
 
-    console.log(columns);
-
     return (
         <div className={BASE_CLASS}>
             {alert && <Alert onClose={removeAlert} type={AlertTypeOption.WARNING} className={'adyen-pe-disputes-table-alert'} {...alert} />}

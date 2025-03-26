@@ -267,8 +267,6 @@ export const transactionsMocks = [
 
         await delay(responseDelay);
 
-        console.log('cursor', cursor);
-
         return HttpResponse.json({
             data: transactions.slice(cursor, cursor + limit).map(tx => {
                 const { deductedAmount: deduction } = getTransactionMetadata(tx);
