@@ -4,9 +4,8 @@
 
 ### Fixed
 
--   Browser fix: Replaced unsupported regex lookbehind patterns causing older browsers to crash.
+-   Replaced unsupported regex lookbehind patterns causing app to crash for older browsers.
 
--   Impact: Eliminates crashes for users on older browsers.
 
 ## 1.4.0
 
