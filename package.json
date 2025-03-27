@@ -102,7 +102,7 @@
   },
   "devDependencies": {
     "@adyen/bento-design-tokens": "^1.7.1",
-    "@changesets/cli": "^2.27.5",
+    "@changesets/cli": "^2.28.1",
     "@changesets/get-github-info": "^0.6.0",
     "@playwright/test": "^1.48.2",
     "@preact/preset-vite": "^2.9.3",
