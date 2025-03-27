@@ -7,12 +7,12 @@ import { GrantsProps } from './types';
 import { GRANT_ADJUSTMENT_DETAILS } from '../GrantAdjustmentDetails/constants';
 import { GrantAdjustmentDetail, GrantAdjustmentDetailCallback } from '../GrantAdjustmentDetails/types';
 import { GrantRepaymentDetails } from '../GrantRepaymentDetails/GrantRepaymentDetails';
+import SegmentedControl from '../../../../internal/SegmentedControl/SegmentedControl';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { useCallback, useMemo, useState } from 'preact/hooks';
 import { CapitalHeader } from '../../../../internal/CapitalHeader';
 import Button from '../../../../internal/Button/Button';
 import { ButtonVariant } from '../../../../internal/Button/types';
-import Tabs from '../../../../internal/Tabs/Tabs';
 
 const List = ({ grants, showDetails }: { grants: IGrant[]; showDetails: GrantAdjustmentDetailCallback }) => {
     return (
@@ -46,9 +46,9 @@ export const GrantsDisplay: FunctionalComponent<GrantsProps> = ({ grantList, hid
         return [active, inactive];
     }, [grantList]);
 
-    const displayMode = useMemo<'SingleGrant' | 'Tabs'>(() => {
-        if (grantList.length > 1 && activeGrants.length && inactiveGrants.length) return 'Tabs';
-        return 'SingleGrant';
+    const displayMode = useMemo<'UnifiedGrants' | 'SegmentedGrants'>(() => {
+        if (grantList.length > 1 && activeGrants.length && inactiveGrants.length) return 'SegmentedGrants';
+        return 'UnifiedGrants';
     }, [activeGrants.length, grantList.length, inactiveGrants.length]);
 
     const showNewOfferButton = useMemo(() => {
@@ -96,10 +96,10 @@ export const GrantsDisplay: FunctionalComponent<GrantsProps> = ({ grantList, hid
                 ) : null}
             </div>
 
-            {displayMode === 'SingleGrant' && <List grants={grantList} showDetails={showGrantDetails} />}
-            {displayMode === 'Tabs' && (
-                <Tabs
-                    tabs={[
+            {displayMode === 'UnifiedGrants' && <List grants={grantList} showDetails={showGrantDetails} />}
+            {displayMode === 'SegmentedGrants' && (
+                <SegmentedControl
+                    items={[
                         {
                             label: 'capital.inProgress',
                             content: <List grants={activeGrants} showDetails={showGrantDetails} />,
@@ -111,7 +111,7 @@ export const GrantsDisplay: FunctionalComponent<GrantsProps> = ({ grantList, hid
                             id: 'inactive',
                         },
                     ]}
-                    defaultActiveTab={'active'}
+                    defaultItem={'active'}
                 />
             )}
         </div>
