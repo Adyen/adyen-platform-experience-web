@@ -37,14 +37,14 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
         fetchOptions: { enabled: !!grantsEndpointCall && isRegionSupported },
         queryFn: useCallback(async () => {
             return grantsEndpointCall?.(EMPTY_OBJECT);
-        }, []),
+        }, [grantsEndpointCall]),
     });
 
     const dynamicOfferQuery = useFetch({
         fetchOptions: { enabled: !!dynamicConfigurationEndpointCall && isRegionSupported },
         queryFn: useCallback(async () => {
             return dynamicConfigurationEndpointCall?.(EMPTY_OBJECT);
-        }, []),
+        }, [dynamicConfigurationEndpointCall]),
     });
 
     const dynamicOffer = dynamicOfferQuery.data;
@@ -55,7 +55,7 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
         [grantsQuery.data?.data, requestedGrant]
     );
 
-    const handleFundsRequest = useCallback(
+    const handlePreQualifiedFundsRequest = useCallback(
         (data: IGrant) => {
             onFundsRequest ? onFundsRequest(data) : setRequestedGrant(data);
         },
@@ -94,11 +94,10 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
         grantsEndpointCall,
         grantsQuery.isFetching,
         showError,
-        skipPreQualifiedIntro,
         isRegionSupported,
     ]);
 
-    const newOfferAvailable = useMemo(() => (!!dynamicOffer && dynamicOffer.minAmount && dynamicOffer.maxAmount ? true : false), [dynamicOffer]);
+    const newOfferAvailable = useMemo(() => !!(dynamicOffer && dynamicOffer.minAmount && dynamicOffer.maxAmount), [dynamicOffer]);
 
     return (
         <div className={CAPITAL_OVERVIEW_CLASS_NAMES.base}>
@@ -132,7 +131,8 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
                                     grantList={grantList}
                                     hideTitle={hideTitle}
                                     newOfferAvailable={newOfferAvailable}
-                                    onFundsRequest={handleFundsRequest}
+                                    onFundsRequest={onFundsRequest}
+                                    onGrantListUpdateRequest={setRequestedGrant}
                                     onOfferDismiss={onOfferDismiss}
                                 />
                             )
@@ -145,7 +145,7 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
                                 skipPreQualifiedIntro={skipPreQualifiedIntro}
                                 hideTitle={hideTitle}
                                 dynamicOffer={dynamicOffer!}
-                                onFundsRequest={handleFundsRequest}
+                                onFundsRequest={handlePreQualifiedFundsRequest}
                             />
                         );
                     case 'Unqualified':

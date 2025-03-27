@@ -102,7 +102,7 @@ export const getCustomReportsData = async (data: IReport[]) => {
 };
 
 export const getCustomPayoutsData = async (data: IPayout[]) => {
-    return data.map((payouts, index) => {
+    return data.map(payouts => {
         return {
             ...payouts,
             _summary: {
@@ -124,6 +124,7 @@ export const getCustomPayoutsData = async (data: IPayout[]) => {
                 value: '',
                 config: {
                     src: `https://flagicons.lipis.dev/flags/4x3/es.svg`,
+                    alt: '',
                 },
             },
         } as const;

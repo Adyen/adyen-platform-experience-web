@@ -11,7 +11,7 @@ export interface FilterBarProps extends FilterBarState {
 }
 
 export interface FilterBarState {
-    isMobileViewport?: boolean;
+    isMobileContainer?: boolean;
     showingFilters?: boolean;
     setShowingFilters?: Dispatch<StateUpdater<boolean>>;
 }
