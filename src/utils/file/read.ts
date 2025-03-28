@@ -1,8 +1,9 @@
 export const ERR_READ_ABORTED = 'ERR_READ_ABORTED';
 export const ERR_READ_FAILED = 'ERR_READ_FAILED';
 
-export const getAsBase64 = (file: Blob): Promise<string> => {
-    return getAsDataURL(file).then(content => content.split(';base64,')[0]!);
+export const getAsBase64 = async (file: Blob): Promise<string> => {
+    const dataUrl = await getAsDataURL(file);
+    return dataUrl.split(';base64,')[1]!;
 };
 
 export const getAsDataURL = (file: Blob): Promise<string> => {
