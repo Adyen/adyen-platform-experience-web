@@ -1,4 +1,4 @@
-import { clamp } from '../../../../../utils';
+import { clamp } from '../value/number';
 
 export const enum ByteScale {
     BYTES = 0,
@@ -7,7 +7,7 @@ export const enum ByteScale {
     GB = 3,
 }
 
-export type FileSize = {
+export type Size = {
     /**
      * Byte scale of file.
      * Maximum byte scale is {@link MAX_BYTE_SCALE}.
@@ -59,7 +59,7 @@ export const getByteScale = (bytes: number): ByteScale => {
  *
  * @param bytes - Number of bytes
  */
-export const getFileSize = (bytes: number): Readonly<FileSize> => {
+export const getFileSize = (bytes: number): Readonly<Size> => {
     let scale = ByteScale.BYTES;
 
     // Clamp number of bytes to zero (0) minimum.

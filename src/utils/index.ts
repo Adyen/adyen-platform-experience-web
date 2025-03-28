@@ -5,6 +5,9 @@ export * from './collection/main';
 export * from './common';
 export * from './datetime/main';
 
+export * from './file/read';
+export * from './file/size';
+
 export * from './random/uniqueId';
 export * from './random/uuid';
 

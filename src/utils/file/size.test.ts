@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { ByteScale, getByteScale, getFileSize, getHumanReadableFileSize } from './filesize';
+import { ByteScale, getByteScale, getFileSize, getHumanReadableFileSize } from './size';
 
 describe('getByteScale', () => {
     test('should return NaN for NaN values', () => {
