@@ -3,7 +3,7 @@ import DataOverviewContainer from '../../../../internal/DataOverviewContainer/Da
 import { DisputeOverviewComponentProps, ExternalUIComponentProps } from '../../../../types';
 import { DisputesOverview } from '../DisputesOverview/DisputesOverview';
 
-function ReportsOverviewContainer({ ...props }: ExternalUIComponentProps<DisputeOverviewComponentProps>) {
+function DisputesOverviewContainer({ ...props }: ExternalUIComponentProps<DisputeOverviewComponentProps>) {
     const { balanceAccounts, isBalanceAccountIdWrong, isFetching, error } = useBalanceAccounts(props.balanceAccountId);
 
     return (
@@ -18,4 +18,4 @@ function ReportsOverviewContainer({ ...props }: ExternalUIComponentProps<Dispute
         </DataOverviewContainer>
     );
 }
-export default ReportsOverviewContainer;
+export default DisputesOverviewContainer;
