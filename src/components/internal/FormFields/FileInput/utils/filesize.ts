@@ -1,24 +1,24 @@
 import { clamp } from '../../../../../utils';
 
-export type ByteScale = FileSize['scale'];
+export const enum ByteScale {
+    BYTES = 0,
+    KB = 1,
+    MB = 2,
+    GB = 3,
+}
 
 export type FileSize = {
     /**
      * Byte scale of file.
      * Maximum byte scale is {@link MAX_BYTE_SCALE}.
-     *
-     * - Scale 0 => Bytes
-     * - Scale 1 => KB
-     * - Scale 2 => MB
-     * - Scale 3 => GB
      */
-    scale: 0 | 1 | 2 | 3;
+    scale: ByteScale;
 
     /**
      * Approximate (low precision) size of file at the given byte scale.
      * @example
-     * { scale: 1, size: 34 } // approx. 34 KB
-     * { scale: 2, size: 4.5 } // approx. 4.5 MB
+     * { scale: ByteScale.KB, size: 34 } // approx. 34 KB
+     * { scale: ByteScale.MB, size: 4.5 } // approx. 4.5 MB
      */
     size: number;
 };
@@ -27,7 +27,7 @@ export type FileSize = {
  * Represents the maximum byte scale for file sizes.
  * Not expecting bytes beyond the GB (Scale 3) range.
  */
-const MAX_BYTE_SCALE = 3 satisfies ByteScale;
+const MAX_BYTE_SCALE = ByteScale.GB satisfies ByteScale;
 
 /**
  * Given a number of bytes, will compute and return the corresponding {@link ByteScale byte scale}.
@@ -42,8 +42,8 @@ export const getByteScale = (bytes: number): ByteScale => {
     // The required computation is: floor( log1024(bytes) )
 
     // Logarithms are positive for values > 1, and not defined for values <= 0.
-    // Hence, for values <= 1, the byte scale is the zero (0) minimum.
-    if (bytes <= 1) return 0;
+    // Hence, for values <= 1, the byte scale is the zero (0) minimum (ByteScale.BYTES)
+    if (bytes <= 1) return ByteScale.BYTES;
 
     // Changing to base 2 for computation since log2(1024) is 10 (because 2^10 => 1024).
     // Changing of base: log1024(x) => log2(x) / log2(1024) => log2(x) / 10
@@ -60,7 +60,7 @@ export const getByteScale = (bytes: number): ByteScale => {
  * @param bytes - Number of bytes
  */
 export const getFileSize = (bytes: number): Readonly<FileSize> => {
-    let scale: ByteScale = 0;
+    let scale = ByteScale.BYTES;
 
     // Clamp number of bytes to zero (0) minimum.
     // Ignore negligible fractional bytes.
@@ -70,7 +70,7 @@ export const getFileSize = (bytes: number): Readonly<FileSize> => {
         // For sizes < 1024, the byte scale will be zero (0).
         // To approximate those sizes in KB (Scale 1) instead of bytes (Scale 0),
         // clamp the actual byte scale using 1 as the minimum byte scale.
-        scale = clamp(1, getByteScale(size), MAX_BYTE_SCALE) as ByteScale;
+        scale = clamp<ByteScale>(1, getByteScale(size), MAX_BYTE_SCALE);
 
         // Given the byte scale, the corresponding size is derived by: size / (1024 ^ scale)
         // For lower precision approximation of the size, only 3 significant digits is needed.
@@ -90,13 +90,13 @@ export const getFileSize = (bytes: number): Readonly<FileSize> => {
 export const getHumanReadableFileSize = (bytes: number): string => {
     const { scale, size } = getFileSize(bytes);
     switch (scale) {
-        case 0:
+        case ByteScale.BYTES:
             return `${size} byte${size === 1 ? '' : 's'}`;
-        case 1:
+        case ByteScale.KB:
             return `${size} KB`;
-        case 2:
+        case ByteScale.MB:
             return `${size} MB`;
-        case 3:
+        case ByteScale.GB:
             return `${size} GB`;
     }
 };
