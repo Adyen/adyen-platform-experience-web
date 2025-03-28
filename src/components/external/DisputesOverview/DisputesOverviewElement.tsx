@@ -3,7 +3,7 @@ import Disputes from './components/DisputesContainer/DisputesContainer';
 import UIElement from '../UIElement/UIElement';
 
 export class DisputesElement extends UIElement<DisputeOverviewComponentProps> {
-    public static type: ExternalComponentType = 'transactions';
+    public static type: ExternalComponentType = 'disputes';
 
     constructor(props: _UIComponentProps<DisputeOverviewComponentProps>) {
         super(props);
