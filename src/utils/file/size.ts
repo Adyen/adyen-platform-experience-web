@@ -7,7 +7,7 @@ export const enum ByteScale {
     GB = 3,
 }
 
-export type Size = {
+export type FileSize = {
     /**
      * Byte scale of file.
      * Maximum byte scale is {@link MAX_BYTE_SCALE}.
@@ -45,10 +45,9 @@ export const getByteScale = (bytes: number): ByteScale => {
     // Hence, for values <= 1, the byte scale is the zero (0) minimum (ByteScale.BYTES)
     if (bytes <= 1) return ByteScale.BYTES;
 
-    // Changing to base 2 for computation since log2(1024) is 10 (because 2^10 => 1024).
-    // Changing of base: log1024(x) => log2(x) / log2(1024) => log2(x) / 10
-    // The required computation becomes: floor( log2(bytes) / 10 )
-    return Math.floor(Math.log2(bytes) / 10) as ByteScale;
+    // Change base for computation using natural logarithms: log1024(x) => log(x) / log(1024)
+    // The required computation becomes: floor( log(bytes) / log(1024) )
+    return Math.floor(Math.log(bytes) / Math.log(1024)) as ByteScale;
 };
 
 /**
@@ -59,12 +58,12 @@ export const getByteScale = (bytes: number): ByteScale => {
  *
  * @param bytes - Number of bytes
  */
-export const getFileSize = (bytes: number): Readonly<Size> => {
+export const getFileSize = (bytes: number): Readonly<FileSize> => {
     let scale = ByteScale.BYTES;
 
     // Clamp number of bytes to zero (0) minimum.
-    // Ignore negligible fractional bytes.
-    let size = Math.max(0, Math.trunc(bytes));
+    // Round fractional bytes to the nearest integer.
+    let size = Math.max(0, Math.round(bytes));
 
     if (size > 999) {
         // For sizes < 1024, the byte scale will be zero (0).
@@ -74,7 +73,7 @@ export const getFileSize = (bytes: number): Readonly<Size> => {
 
         // Given the byte scale, the corresponding size is derived by: size / (1024 ^ scale)
         // For lower precision approximation of the size, only 3 significant digits is needed.
-        // Finally, a small correction for floating-point precision: round( approx_size * 10 ) / 10
+        // Finally, ensure a maximum precision of 1 decimal place: round( approx_size * 10 ) / 10
         size = Math.round(Number((size / 1024 ** scale).toPrecision(3)) * 10) / 10;
     }
 

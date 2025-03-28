@@ -46,10 +46,10 @@ describe('getFileSize', () => {
         expect(getFileSize(-Infinity)).toMatchObject({ scale: ByteScale.BYTES, size: 0 });
     });
 
-    test('should ignore fractional bytes in file size', () => {
-        expect(getFileSize(5.0333)).toMatchObject({ scale: ByteScale.BYTES, size: 5 });
+    test('should round fractional bytes in file size to the nearest integer', () => {
+        expect(getFileSize(5.8333)).toMatchObject({ scale: ByteScale.BYTES, size: 6 });
         expect(getFileSize(120.45)).toMatchObject({ scale: ByteScale.BYTES, size: 120 });
-        expect(getFileSize(899.0001)).toMatchObject({ scale: ByteScale.BYTES, size: 899 });
+        expect(getFileSize(899.5001)).toMatchObject({ scale: ByteScale.BYTES, size: 900 });
     });
 
     test('should return the expected approximate file size and scale', () => {
