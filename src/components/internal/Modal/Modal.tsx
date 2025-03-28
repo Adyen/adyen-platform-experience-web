@@ -1,5 +1,5 @@
 import { useClickOutside } from '../../../hooks/element/useClickOutside';
-import { mediaQueries, useResponsiveViewport } from '../../../hooks/useResponsiveViewport';
+import { containerQueries, useResponsiveContainer } from '../../../hooks/useResponsiveContainer';
 import Button from '../Button';
 import Icon from '../Icon';
 import { ButtonVariant } from '../Button/types';
@@ -25,7 +25,7 @@ export default function Modal({
     size = 'fluid',
     ...props
 }: ModalProps) {
-    const isSmViewport = useResponsiveViewport(mediaQueries.down.xs);
+    const isSmContainer = useResponsiveContainer(containerQueries.down.xs);
     const { i18n } = useCoreContext();
     const targetElement = useClickOutside(null, onClose) as Ref<HTMLDivElement>;
 
@@ -68,7 +68,7 @@ export default function Modal({
                                 'adyen-pe-modal--small': size === 'small',
                                 'adyen-pe-modal--large': size === 'large',
                                 'adyen-pe-modal--extra-large': size === 'extra-large',
-                                'adyen-pe-modal--full-screen': size === 'full-screen' || isSmViewport,
+                                'adyen-pe-modal--full-screen': size === 'full-screen' || isSmContainer,
                             })}
                             ref={targetElement}
                         >

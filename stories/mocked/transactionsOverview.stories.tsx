@@ -4,7 +4,7 @@ import { http, HttpResponse } from 'msw';
 import { TransactionsMeta } from '../components/transactionsOverview';
 import { Meta } from '@storybook/preact';
 import { endpoints } from '../../endpoints/endpoints';
-import { getMyCustomData } from './utils/customDataRequest';
+import { getCustomTransactionDataById, getMyCustomData } from './utils/customDataRequest';
 import { TRANSACTIONS } from '../../mocks/mock-data';
 
 const meta: Meta<ElementProps<typeof TransactionsOverview>> = { ...TransactionsMeta, title: 'Mocked/Transactions Overview' };
@@ -31,8 +31,8 @@ const CUSTOM_COLUMNS_MOCK_HANDLER = {
         }),
     ],
 };
-export const CustomColumns: ElementStory<typeof TransactionsOverview> = {
-    name: 'Custom Columns',
+export const DataCustomization: ElementStory<typeof TransactionsOverview> = {
+    name: 'Data customization',
     args: {
         coreOptions: {
             translations: {
@@ -40,39 +40,51 @@ export const CustomColumns: ElementStory<typeof TransactionsOverview> = {
                     _store: 'Store',
                     _product: 'Product',
                     _reference: 'Reference',
+                    _button: 'Action',
+                    _country: 'Country',
+                    _summary: 'Summary',
                 },
             },
         },
         mockedApi: true,
-        columns: [
-            {
-                key: '_store',
-                flex: 1.5,
+        dataCustomization: {
+            list: {
+                fields: [
+                    {
+                        key: '_store',
+                        flex: 1.5,
+                    },
+                    { key: '_product' },
+                    { key: '_reference', flex: 1.5 },
+                    { key: 'transactionType', visibility: 'hidden' },
+                    { key: 'amount', flex: 2 },
+                    { key: '_button', flex: 1.5, align: 'right' },
+                ],
+                onDataRetrieve: data => {
+                    return new Promise(resolve => {
+                        setTimeout(() => {
+                            resolve(getMyCustomData(data));
+                        }, 200);
+                    });
+                },
             },
-            { key: '_product' },
-            { key: 'paymentMethod' },
-            { key: 'createdAt' },
-            { key: '_reference' },
-            { key: 'amount', flex: 1.5 },
-        ],
-        onDataRetrieved: data => {
-            return new Promise(resolve => {
-                setTimeout(() => {
-                    resolve(getMyCustomData(data));
-                }, 200);
-            });
+            details: {
+                fields: [
+                    { key: 'paymentPspReference', visibility: 'hidden' },
+                    { key: '_store' },
+                    { key: '_product' },
+                    { key: '_reference' },
+                    { key: '_summary' },
+                    { key: '_button' },
+                    { key: '_country' },
+                ],
+                onDataRetrieve: data => {
+                    return new Promise(resolve => {
+                        return resolve(getCustomTransactionDataById(data?.id));
+                    });
+                },
+            },
         },
-    },
-    parameters: {
-        msw: CUSTOM_COLUMNS_MOCK_HANDLER,
-    },
-};
-
-export const CustomOrder: ElementStory<typeof TransactionsOverview> = {
-    name: 'Custom order',
-    args: {
-        mockedApi: true,
-        columns: ['transactionType', 'paymentMethod', 'createdAt', 'amount'],
     },
     parameters: {
         msw: CUSTOM_COLUMNS_MOCK_HANDLER,

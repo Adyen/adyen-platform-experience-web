@@ -1,40 +1,44 @@
 import { useCallback, useEffect, useState } from 'preact/hooks';
 import { OnDataRetrievedCallback } from '../components/types';
+import { isFunction } from '../utils';
 
 export const useCustomColumnsData = <T>({
     records,
-    onDataRetrieved,
+    hasCustomColumn = false,
+    onDataRetrieve,
     mergeCustomData,
 }: {
     records: T[];
-    onDataRetrieved: OnDataRetrievedCallback<T> | undefined;
-    mergeCustomData: (args: { retrievedData: Awaited<ReturnType<OnDataRetrievedCallback<T>>>; records: T[] }) => (T & Record<string, any>)[];
+    hasCustomColumn?: boolean;
+    onDataRetrieve: OnDataRetrievedCallback<T[]> | undefined;
+    mergeCustomData: (args: { retrievedData: Awaited<ReturnType<OnDataRetrievedCallback<T[]>>>; records: T[] }) => (T & Record<string, any>)[];
 }) => {
     const [customRecords, setCustomRecords] = useState<T[] | (T & Record<string, any>)[]>(records);
     const [loadingCustomRecords, setLoadingCustomRecords] = useState(false);
 
-    const mergedRecords = useCallback(
-        (data: T[]) => async () => {
-            try {
-                const retrievedData = onDataRetrieved ? await onDataRetrieved(data) : [];
-
-                setCustomRecords(mergeCustomData({ records, retrievedData }));
-            } catch (error) {
+    const mergedRecords = useCallback(async () => {
+        try {
+            if (hasCustomColumn && isFunction(onDataRetrieve)) {
+                const retrievedData = await onDataRetrieve(records);
+                if (!Array.isArray(retrievedData)) throw new Error('Retrieved data should be an array');
+                else setCustomRecords(mergeCustomData({ records, retrievedData: retrievedData?.filter(Boolean) || [] }));
+            } else {
                 setCustomRecords(records);
-                console.error(error);
-            } finally {
-                setLoadingCustomRecords(false);
             }
-        },
-        [onDataRetrieved, records, mergeCustomData]
-    );
+        } catch (error) {
+            setCustomRecords(records);
+            console.error(error);
+        } finally {
+            setLoadingCustomRecords(false);
+        }
+    }, [hasCustomColumn, onDataRetrieve, mergeCustomData, records]);
 
     useEffect(() => {
-        if (onDataRetrieved && records.length) {
+        if (records.length) {
             setLoadingCustomRecords(true);
-            mergedRecords(records)();
+            void mergedRecords();
         }
-    }, [onDataRetrieved, mergedRecords, records]);
+    }, [mergedRecords, records]);
 
     return { customRecords, loadingCustomRecords } as const;
 };

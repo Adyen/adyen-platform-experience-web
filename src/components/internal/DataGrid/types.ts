@@ -1,13 +1,9 @@
 import { ComponentChildren, VNode } from 'preact';
 import { CustomCell } from './DataGrid';
 import { TranslationKey } from '../../../translations';
-import { DataGridIcon } from '../../types';
 import { StringWithAutocompleteOptions } from '../../../utils/types';
 
-export enum CellTextPosition {
-    CENTER = 'center',
-    RIGHT = 'right',
-}
+export type CellTextPosition = 'center' | 'right' | 'left';
 
 export interface DataGridColumn<Item> {
     label: string;

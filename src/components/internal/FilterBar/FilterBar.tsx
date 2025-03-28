@@ -6,25 +6,24 @@ import { ButtonVariant } from '../Button/types';
 import { PropsWithChildren } from 'preact/compat';
 import { useEffect, useState } from 'preact/hooks';
 import useCoreContext from '../../../core/Context/useCoreContext';
-import { mediaQueries, useResponsiveViewport } from '../../../hooks/useResponsiveViewport';
+import { containerQueries, useResponsiveContainer } from '../../../hooks/useResponsiveContainer';
 import type { FilterBarMobileSwitchProps, FilterBarProps } from './types';
 import './FilterBar.scss';
 
 const MOBILE_SWITCH_CLASS = 'adyen-pe-filter-bar-mobile-switch';
 
 export const useFilterBarState = () => {
-    const isMobileViewport = useResponsiveViewport(mediaQueries.down.xs);
-    const [showingFilters, setShowingFilters] = useState(!isMobileViewport);
-
+    const isMobileContainer = useResponsiveContainer(containerQueries.down.xs);
+    const [showingFilters, setShowingFilters] = useState(!isMobileContainer);
     useEffect(() => {
-        setShowingFilters(!isMobileViewport);
-    }, [isMobileViewport]);
+        setShowingFilters(!isMobileContainer);
+    }, [isMobileContainer]);
 
-    return { isMobileViewport, showingFilters, setShowingFilters } as const;
+    return { isMobileContainer, showingFilters, setShowingFilters } as const;
 };
 
-export const FilterBarMobileSwitch = ({ isMobileViewport, showingFilters, setShowingFilters }: FilterBarMobileSwitchProps) => {
-    return isMobileViewport ? (
+export const FilterBarMobileSwitch = ({ isMobileContainer, showingFilters, setShowingFilters }: FilterBarMobileSwitchProps) => {
+    return isMobileContainer ? (
         <div className={MOBILE_SWITCH_CLASS}>
             <Button
                 iconButton
@@ -44,7 +43,7 @@ export const FilterBar = (props: PropsWithChildren<FilterBarProps>) => {
     return props.showingFilters ? (
         <div
             aria-label={i18n.get('filterBar')}
-            className={cx('adyen-pe-filter-bar', { 'adyen-pe-filter-bar__content--mobile': props.isMobileViewport })}
+            className={cx('adyen-pe-filter-bar', { 'adyen-pe-filter-bar__content--mobile': props.isMobileContainer })}
         >
             {props.children}
             {props.canResetFilters && !!props.resetFilters && (

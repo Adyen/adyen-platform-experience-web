@@ -1,5 +1,5 @@
 import './DataOverviewDetails.scss';
-import { useMemo } from 'preact/hooks';
+import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
 import { useConfigContext } from '../../../core/ConfigContext';
 import AdyenPlatformExperienceError from '../../../core/Errors/AdyenPlatformExperienceError';
 import { useFetch } from '../../../hooks/useFetch';
@@ -8,13 +8,17 @@ import { EMPTY_OBJECT } from '../../../utils';
 import { PayoutData } from '../../external/PayoutDetails/components/PayoutData';
 import TransactionData from '../../external/TransactionDetails/components/TransactionData';
 import useBalanceAccounts from '../../../hooks/useBalanceAccounts';
-import { ExternalUIComponentProps } from '../../types';
+import { CustomColumn, ExternalUIComponentProps } from '../../types';
 import { getErrorMessage } from '../../utils/getErrorMessage';
 import { ErrorMessageDisplay } from '../ErrorMessageDisplay/ErrorMessageDisplay';
 import { DetailsComponentProps, DetailsWithId, TransactionDetailData } from './types';
 import Typography from '../Typography/Typography';
 import { TypographyVariant } from '../Typography/types';
 import useDataOverviewDetailsTitle from './useDataOverviewDetailsTitle';
+import { TX_DETAILS_RESERVED_FIELDS_SET } from '../../external/TransactionDetails/components/constants';
+import { PAYOUT_TABLE_FIELDS } from '../../external/PayoutsOverview/components/PayoutsTable/PayoutsTable';
+import { TransactionDetailsCustomization } from '../../external';
+import { PayoutDetailsCustomization } from '../../external/PayoutDetails/types';
 
 const ENDPOINTS_BY_TYPE = {
     transaction: 'getTransaction',
@@ -61,9 +65,32 @@ export default function DataOverviewDetails(props: ExternalUIComponentProps<Deta
         }
     }, [error, props.onContactSupport]);
 
-    const extraDetails = isDetailsWithId(props) && props.type === 'transaction' ? props.extraDetails : EMPTY_OBJECT;
-
     const detailsData = details ?? data;
+
+    const [extraFields, setExtraFields] = useState<Record<string, any>>();
+
+    const getExtraFields = useCallback(async () => {
+        if (data && ((isDetailsWithId(props) && props.type === 'transaction') || props.type === 'payout')) {
+            const detailsData = await props.dataCustomization?.details?.onDataRetrieve?.(data);
+
+            setExtraFields(
+                props.dataCustomization?.details?.fields.reduce((acc, field) => {
+                    return TX_DETAILS_RESERVED_FIELDS_SET.has(field.key as any) ||
+                        PAYOUT_TABLE_FIELDS.includes(field.key as any) ||
+                        field?.visibility === 'hidden'
+                        ? acc
+                        : { ...acc, ...(detailsData?.[field.key] ? { [field.key]: detailsData[field.key] } : {}) };
+                }, {} as CustomColumn<any>)
+            );
+        }
+    }, [data, props]);
+
+    const dataCustomization =
+        (isDetailsWithId(props) && props.type === 'transaction') || props.type === 'payout' ? props.dataCustomization : undefined;
+
+    useEffect(() => {
+        void getExtraFields();
+    }, [getExtraFields]);
 
     return (
         <div className="adyen-pe-overview-details">
@@ -93,7 +120,8 @@ export default function DataOverviewDetails(props: ExternalUIComponentProps<Deta
                     }
                     error={!!(error && errorProps)}
                     isFetching={isFetching}
-                    extraFields={extraDetails}
+                    extraFields={extraFields}
+                    dataCustomization={dataCustomization as { details?: TransactionDetailsCustomization }}
                 />
             )}
             {props.type === 'payout' && detailsData && (
@@ -102,6 +130,8 @@ export default function DataOverviewDetails(props: ExternalUIComponentProps<Deta
                     payout={detailsData as IPayoutDetails}
                     balanceAccountDescription={props?.balanceAccountDescription || balanceAccounts?.[0]?.description}
                     isFetching={isFetching}
+                    extraFields={extraFields}
+                    dataCustomization={dataCustomization as { details?: PayoutDetailsCustomization }}
                 />
             )}
         </div>

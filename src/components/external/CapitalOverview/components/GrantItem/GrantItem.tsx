@@ -1,5 +1,5 @@
 import { FunctionalComponent } from 'preact';
-import { useMemo } from 'preact/hooks';
+import { useCallback, useMemo } from 'preact/hooks';
 import cx from 'classnames';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import useTimezoneAwareDateFormatting from '../../../../../hooks/useTimezoneAwareDateFormatting';
@@ -17,13 +17,16 @@ import { GrantAction } from '../GrantAction/GrantAction';
 import CopyText from '../../../../internal/CopyText/CopyText';
 import { Tooltip } from '../../../../internal/Tooltip/Tooltip';
 import Alert from '../../../../internal/Alert/Alert';
+import Button from '../../../../internal/Button';
 import { AlertTypeOption } from '../../../../internal/Alert/types';
+import { ButtonVariant } from '../../../../internal/Button/types';
 import ExpandableCard from '../../../../internal/ExpandableCard/ExpandableCard';
 
-export const GrantItem: FunctionalComponent<GrantItemProps> = ({ grant }) => {
+export const GrantItem: FunctionalComponent<GrantItemProps> = ({ grant, showDetails }) => {
     const { i18n } = useCoreContext();
     const { dateFormat } = useTimezoneAwareDateFormatting();
     const grantConfig = useMemo(() => getGrantConfig(grant), [grant]);
+    const showUnscheduledRepaymentAccounts = useCallback(() => showDetails?.('unscheduledRepayment'), [showDetails]);
 
     const grantOverview = useMemo(
         () => (
@@ -86,10 +89,16 @@ export const GrantItem: FunctionalComponent<GrantItemProps> = ({ grant }) => {
                 )}
                 {grantConfig.isGrantIdVisible ? (
                     <div className={GRANT_ITEM_CLASS_NAMES.grantID}>
-                        <CopyText textToCopy={grant.id} buttonLabel={i18n.get('capital.grantID')} isHovered type={'Text'} />
+                        <CopyText
+                            textToCopy={grant.id}
+                            buttonLabel={i18n.get('capital.grantID')}
+                            isHovered
+                            type={'Text'}
+                            data-testid="grant-id-copy-text"
+                        />
                     </div>
                 ) : null}
-                {grantConfig.hasAlerts && (
+                {grantConfig.hasAlerts ? (
                     <>
                         {grant.missingActions && grant.missingActions.length ? (
                             grant.missingActions.map(action => (
@@ -108,10 +117,23 @@ export const GrantItem: FunctionalComponent<GrantItemProps> = ({ grant }) => {
                             />
                         )}
                     </>
+                ) : (
+                    grantConfig.hasUnscheduledRepaymentDetails && (
+                        <div className={GRANT_ITEM_CLASS_NAMES.actionsBar}>
+                            <Button
+                                onClick={showUnscheduledRepaymentAccounts}
+                                className={GRANT_ITEM_CLASS_NAMES.mainActionBtn}
+                                variant={ButtonVariant.SECONDARY}
+                                fullWidth
+                            >
+                                {i18n.get('capital.sendRepayment')}
+                            </Button>
+                        </div>
+                    )
                 )}
             </div>
         ),
-        [i18n, dateFormat, grant, grantConfig]
+        [i18n, dateFormat, grant, grantConfig, showUnscheduledRepaymentAccounts]
     );
 
     return (

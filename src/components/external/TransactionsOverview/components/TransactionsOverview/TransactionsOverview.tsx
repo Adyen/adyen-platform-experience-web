@@ -1,5 +1,5 @@
 import { DataDetailsModal } from '../../../../internal/DataOverviewDisplay/DataDetailsModal';
-import { TransactionsTable } from '../TransactionsTable/TransactionsTable';
+import { TransactionsTable, TRANSACTION_FIELDS } from '../TransactionsTable/TransactionsTable';
 import useBalanceAccountSelection from '../../../../../hooks/useBalanceAccountSelection';
 import BalanceAccountSelector from '../../../../internal/FormFields/Select/BalanceAccountSelector';
 import DateFilter from '../../../../internal/FilterBar/filters/DateFilter/DateFilter';
@@ -12,7 +12,7 @@ import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
 import { useCursorPaginatedRecords } from '../../../../internal/Pagination/hooks';
 import { Header } from '../../../../internal/Header';
 import { IBalanceAccountBase, ITransaction } from '../../../../../types';
-import { EMPTY_OBJECT, isFunction, isUndefined, listFrom } from '../../../../../utils';
+import { isFunction, isUndefined, listFrom } from '../../../../../utils';
 import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '../../../../internal/Pagination/constants';
 import TransactionTotals from '../TransactionTotals/TransactionTotals';
 import { Balances } from '../Balances/Balances';
@@ -22,8 +22,10 @@ import useTransactionsOverviewMultiSelectionFilters from '../../hooks/useTransac
 import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatformExperienceError';
 import { AmountFilter } from '../../../../internal/FilterBar/filters/AmountFilter/AmountFilter';
 import { BASE_CLASS, BASE_CLASS_DETAILS, MAX_TRANSACTIONS_DATE_RANGE_MONTHS, SUMMARY_CLASS, SUMMARY_ITEM_CLASS } from './constants';
-import { mediaQueries, useResponsiveViewport } from '../../../../../hooks/useResponsiveViewport';
+import { containerQueries, useResponsiveContainer } from '../../../../../hooks/useResponsiveContainer';
 import { useCustomColumnsData } from '../../../../../hooks/useCustomColumnsData';
+import hasCustomField from '../../../../utils/customData/hasCustomField';
+import mergeRecords from '../../../../utils/customData/mergeRecords';
 import './TransactionsOverview.scss';
 
 export const TransactionsOverview = ({
@@ -36,8 +38,7 @@ export const TransactionsOverview = ({
     isLoadingBalanceAccount,
     onContactSupport,
     hideTitle,
-    columns,
-    onDataRetrieved,
+    dataCustomization,
 }: ExternalUIComponentProps<
     TransactionOverviewComponentProps & { balanceAccounts: IBalanceAccountBase[] | undefined; isLoadingBalanceAccount: boolean }
 >) => {
@@ -119,7 +120,7 @@ export const TransactionsOverview = ({
         statusesFilter.updateSelection({ target: { value: 'Booked', name: 'status' } });
     }, [statusesFilter]);
 
-    const isNarrowViewport = useResponsiveViewport(mediaQueries.down.sm);
+    const isNarrowContainer = useResponsiveContainer(containerQueries.down.sm);
 
     const hasMultipleCurrencies = !!availableCurrencies && availableCurrencies.length > 1;
 
@@ -135,37 +136,19 @@ export const TransactionsOverview = ({
 
     const mergeCustomData = useCallback(
         ({ records, retrievedData }: { records: ITransaction[]; retrievedData: CustomDataRetrieved[] }) =>
-            records.map(record => {
-                const retrievedItem = retrievedData.find(item => item.id === record.id);
-                return { ...retrievedItem, ...record };
-            }),
+            mergeRecords(records, retrievedData, (modifiedRecord, record) => modifiedRecord.id === record.id),
         []
     );
 
-    const { customRecords: transactions, loadingCustomRecords } = useCustomColumnsData<ITransaction>({ records, onDataRetrieved, mergeCustomData });
+    const hasCustomColumn = useMemo(() => hasCustomField(dataCustomization?.list?.fields, TRANSACTION_FIELDS), [dataCustomization?.list?.fields]);
+
+    const { customRecords: transactions, loadingCustomRecords } = useCustomColumnsData<ITransaction>({
+        records,
+        hasCustomColumn,
+        onDataRetrieve: dataCustomization?.list?.onDataRetrieve,
+        mergeCustomData,
+    });
     const { updateDetails, resetDetails, selectedDetail } = useModalDetails(modalOptions);
-
-    const getExtraFieldsById = useCallback(
-        ({ id }: { id: string }) => {
-            const record = records.find(r => r.id === id);
-            const retrievedItem = transactions.find(item => item.id === id) as Record<string, any>;
-
-            if (record && retrievedItem) {
-                // Extract fields from 'retrievedItem' that are not in 'record'
-                const extraFields = Object.keys(retrievedItem).reduce((acc, key) => {
-                    if (!(key in record)) {
-                        acc[key] = retrievedItem[key];
-                    }
-                    return acc;
-                }, {} as Partial<CustomDataRetrieved>);
-                return extraFields;
-            }
-
-            // If no matching 'retrievedItem' or 'record' is found, return null or empty object
-            return null;
-        },
-        [records, transactions]
-    );
 
     const onRowClick = useCallback(
         ({ id }: ITransaction) => {
@@ -174,12 +157,11 @@ export const TransactionsOverview = ({
                     type: 'transaction',
                     data: id,
                     balanceAccount: activeBalanceAccount || '',
-                    extraDetails: getExtraFieldsById({ id }) ?? EMPTY_OBJECT,
                 },
                 modalSize: 'small',
             }).callback({ id });
         },
-        [activeBalanceAccount, updateDetails, getExtraFieldsById]
+        [activeBalanceAccount, updateDetails]
     );
 
     const sinceDate = useMemo(() => {
@@ -237,7 +219,7 @@ export const TransactionsOverview = ({
                         currencies={currenciesFilter.selection}
                         minAmount={filters[FilterParam.MIN_AMOUNT] ? parseFloat(filters[FilterParam.MIN_AMOUNT]) : undefined}
                         maxAmount={filters[FilterParam.MAX_AMOUNT] ? parseFloat(filters[FilterParam.MAX_AMOUNT]) : undefined}
-                        fullWidth={isNarrowViewport}
+                        fullWidth={isNarrowContainer}
                     />
                 </div>
                 <div className={SUMMARY_ITEM_CLASS}>
@@ -245,12 +227,13 @@ export const TransactionsOverview = ({
                         balanceAccountId={activeBalanceAccount?.id}
                         onCurrenciesChange={handleCurrenciesChange}
                         defaultCurrencyCode={activeBalanceAccount?.defaultCurrencyCode}
-                        fullWidth={isNarrowViewport}
+                        fullWidth={isNarrowContainer}
                     />
                 </div>
             </div>
 
             <DataDetailsModal
+                dataCustomization={dataCustomization?.details}
                 selectedDetail={selectedDetail as ReturnType<typeof useModalDetails>['selectedDetail']}
                 resetDetails={resetDetails}
                 className={BASE_CLASS_DETAILS}
@@ -267,8 +250,8 @@ export const TransactionsOverview = ({
                     onLimitSelection={updateLimit}
                     onRowClick={onRowClick}
                     showPagination={true}
-                    transactions={onDataRetrieved ? transactions : records}
-                    customColumns={columns}
+                    transactions={dataCustomization?.list?.onDataRetrieve ? transactions : records}
+                    customColumns={dataCustomization?.list?.fields}
                     {...paginationProps}
                 />
             </DataDetailsModal>

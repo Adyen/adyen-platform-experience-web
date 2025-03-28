@@ -8,4 +8,5 @@ export const CoreContext = createContext<CoreProviderProps & { i18n: Localizatio
     loadingContext: '',
     commonProps: {} as CommonPropsTypes,
     updateCore: noop,
+    componentRef: { current: null },
 });
