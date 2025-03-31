@@ -38,7 +38,8 @@ export interface components {
             | 'signToSActionDetails'
             | 'initiateRefund'
             | 'getDisputes'
-            | 'getDispute';
+            | 'getDisputeDetail'
+            | 'getApplicableDefenseDocuments';
         LegalEntitySetupResponseDTO: {
             countryCode: string;
             regions: components['schemas']['RegionDTO'][];

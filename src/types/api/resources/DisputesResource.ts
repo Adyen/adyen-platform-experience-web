@@ -4,12 +4,13 @@
  */
 
 export interface paths {
-    '/v1/disputes': {
-        /**
-         * Get reports
-         * @description Given filters, provides list of reports for a balance account
-         */
-        get: operations['getDisputes'];
+    '/v1/disputes/{disputePspReference}/documents/required': {
+        /** @description Add @Operation annotation to provide a description */
+        get: operations['getApplicableDefenseDocuments'];
+    };
+    '/v1/disputes/{disputePspReference}': {
+        /** @description Add @Operation annotation to provide a description */
+        get: operations['getDisputeDetail'];
     };
 }
 
@@ -17,28 +18,74 @@ export type webhooks = Record<string, never>;
 
 export interface components {
     schemas: {
+        ApplicableDefenseDocument: {
+            documentTypeCode?: string;
+            requirementLevel?: string;
+        };
+        Amount: {
+            /** @description The three-character [ISO currency code](https://docs.adyen.com/development-resources/currency-codes#currency-codes). */
+            currency: string;
+            /**
+             * Format: int64
+             * @description The amount of the transaction, in [minor units](https://docs.adyen.com/development-resources/currency-codes#minor-units).
+             */
+            value: number;
+        };
+        /** @enum {string} */
+        Defensability: 'can_do_first_defense' | 'can_do_subsequent_defense' | 'not_defendable';
+        Defense: {
+            /** Format: date-time */
+            defendedOn?: string;
+            reason?: string;
+            suppliedDocuments?: string[];
+        };
         Dispute: {
-            id: string;
-            status: 'action_needed' | 'won' | 'lost' | 'docs_submitted' | 'under_review';
+            amount: components['schemas']['Amount'];
+            /** Format: date-time */
             createdAt: string;
+            /** Format: date-time */
             dueDate?: string;
-            paymentMethod: {
-                /** @description Last four digits of the card */
-                lastFourDigits?: string;
-                /** @description Payment method type code of the transaction f.e. klarna, visa, mc */
-                type: string;
-
-                description?: string;
-            };
+            id: string;
             bankAccount: {
                 /** @description Last four digits of the account number or IBAN. */
                 accountNumberLastFourDigits: string;
             };
+            paymentMerchantReference?: string;
+            paymentMethod?: components['schemas']['PaymentMethod'];
             reasonCode: string;
-            amount: {
-                currency: string;
-                value: number;
-            };
+            reasonGroup: string;
+            status: components['schemas']['DisputeStatus'];
+        };
+        DisputeDetailResponse: {
+            allowedDefenseReasons?: string[];
+            amount: components['schemas']['Amount'];
+            /** Format: date-time */
+            createdAt: string;
+            defensability: components['schemas']['Defensability'];
+            /** Format: date-time */
+            dueDate?: string;
+            id: string;
+            latestDefense?: components['schemas']['Defense'];
+            paymentMerchantReference?: string;
+            paymentMethod?: components['schemas']['PaymentMethod'];
+            paymentPspReference: string;
+            reasonCode: string;
+            reasonGroup: string;
+            status: components['schemas']['DisputeStatus'];
+        };
+        /** @enum {string} */
+        DisputeStatus: 'action_needed' | 'won' | 'lost' | 'docs_submitted' | 'under_review';
+        DisputesListResponseDTO: {
+            _links?: components['schemas']['Links'];
+            data: components['schemas']['Dispute'][];
+        };
+        PaymentMethod: {
+            /** @description Payment method name, such as PayPal, Mastercard etc. */
+            description?: string;
+            /** @description Last four digits of the payment method used (e.g. a credit card, a debit card, an IBAN) */
+            lastFourDigits?: string;
+            /** @description Payment method type code of the transaction, e.g. 'klarna', 'visa', 'mc' */
+            type: string;
         };
         Link: {
             /** @description Cursor for a different page */
@@ -49,10 +96,6 @@ export interface components {
             next: components['schemas']['Link'];
             /** @description Link to a different page */
             prev: components['schemas']['Link'];
-        };
-        DisputesListResponseDTO: {
-            _links?: components['schemas']['Links'];
-            data: components['schemas']['Dispute'][];
         };
     };
     responses: never;
@@ -67,10 +110,41 @@ export type $defs = Record<string, never>;
 export type external = Record<string, never>;
 
 export interface operations {
-    /**
-     * Get reports
-     * @description Given filters, provides list of reports for a balance account
-     */
+    /** @description Add @Operation annotation to provide a description */
+    getApplicableDefenseDocuments: {
+        parameters: {
+            query: {
+                defenseReason: string;
+            };
+            path: {
+                disputePspReference: string;
+            };
+        };
+        responses: {
+            /** @description OK - the request has succeeded. */
+            200: {
+                content: {
+                    'application/json': components['schemas']['ApplicableDefenseDocument'][];
+                };
+            };
+        };
+    };
+    /** @description Add @Operation annotation to provide a description */
+    getDisputeDetail: {
+        parameters: {
+            path: {
+                disputePspReference: string;
+            };
+        };
+        responses: {
+            /** @description OK - the request has succeeded. */
+            200: {
+                content: {
+                    'application/json': components['schemas']['DisputeDetailResponse'];
+                };
+            };
+        };
+    };
     getDisputes: {
         parameters: {
             query: {
@@ -88,21 +162,6 @@ export interface operations {
             200: {
                 content: {
                     'application/json': components['schemas']['DisputesListResponseDTO'];
-                };
-            };
-        };
-    };
-    getDispute: {
-        parameters: {
-            path: {
-                disputeId: string;
-            };
-        };
-        responses: {
-            /** @description OK - the request has succeeded. */
-            200: {
-                content: {
-                    'application/json': components['schemas']['Dispute'];
                 };
             };
         };

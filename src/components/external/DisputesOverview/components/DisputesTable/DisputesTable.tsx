@@ -14,7 +14,6 @@ import Pagination from '../../../../internal/Pagination';
 import { PaginationProps, WithPaginationLimitSelection } from '../../../../internal/Pagination/types';
 import { TypographyVariant } from '../../../../internal/Typography/types';
 import Typography from '../../../../internal/Typography/Typography';
-import { containerQueries, useResponsiveContainer } from '../../../../../hooks/useResponsiveContainer';
 import { BASE_CLASS } from './constants';
 import './DisputesTable.scss';
 import { CustomColumn } from '../../../../types';
