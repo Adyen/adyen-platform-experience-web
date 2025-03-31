@@ -73,6 +73,10 @@ export const setupBasicResponse = {
             method: 'GET',
             url: 'capital/grants/missingActions/signToS',
         },
+        getDisputes: {
+            method: 'GET',
+            url: 'disputes',
+        },
     } satisfies Record<EndpointName, { method: HttpMethod; url: string }>,
 };
 
