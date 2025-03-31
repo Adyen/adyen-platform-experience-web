@@ -46,10 +46,6 @@ export interface components {
             /** Format: date-time */
             dueDate?: string;
             id: string;
-            bankAccount: {
-                /** @description Last four digits of the account number or IBAN. */
-                accountNumberLastFourDigits: string;
-            };
             paymentMerchantReference?: string;
             paymentMethod?: components['schemas']['PaymentMethod'];
             reasonCode: string;

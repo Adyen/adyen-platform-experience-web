@@ -177,7 +177,7 @@ export const DisputesTable: FC<DisputesTableProps> = ({
                         if (!value) return null;
                         return value && <Typography variant={TypographyVariant.BODY}>{dateFormat(value, DATE_FORMAT_DISPUTES)}</Typography>;
                     },
-                    paymentMethod: ({ item }) => <PaymentMethodCell paymentMethod={item.paymentMethod} bankAccount={item.bankAccount} />,
+                    paymentMethod: ({ item }) => <PaymentMethodCell paymentMethod={item.paymentMethod} />,
                 }}
             >
                 {showPagination && (
