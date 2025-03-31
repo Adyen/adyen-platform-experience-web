@@ -149,6 +149,7 @@ export const DisputesOverview = ({
             </FilterBar>
 
             <DisputesTable
+                activeBalanceAccount={activeBalanceAccount}
                 balanceAccountId={activeBalanceAccount?.id}
                 loading={fetching || isLoadingBalanceAccount || !balanceAccounts || !activeBalanceAccount || loadingCustomRecords}
                 data={dataCustomization?.list?.onDataRetrieve ? customRecords : records}

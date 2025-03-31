@@ -27,6 +27,7 @@ import { TagVariant } from '../../../../internal/Tag/types';
 import Icon from '../../../../internal/Icon';
 import { Tooltip } from '../../../../internal/Tooltip/Tooltip';
 import { getTranslation } from '../../../../../core/Localization/utils';
+import type { IBalanceAccountBase } from '../../../../../types';
 
 export const FIELDS = ['status', 'createdAt', 'paymentMethod', 'reasonCode', 'amount'] as const;
 export type DisputesTableFields = (typeof FIELDS)[number];
@@ -38,6 +39,7 @@ export interface DisputesTableProps extends WithPaginationLimitSelection<Paginat
     onContactSupport?: () => void;
     showPagination: boolean;
     data: IDispute[] | undefined;
+    activeBalanceAccount?: IBalanceAccountBase;
     customColumns?: CustomColumn<StringWithAutocompleteOptions<DisputesTableFields>>[];
 }
 
@@ -49,10 +51,11 @@ export const DisputesTable: FC<DisputesTableProps> = ({
     showPagination,
     data,
     customColumns,
+    activeBalanceAccount,
     ...paginationProps
 }) => {
     const { i18n } = useCoreContext();
-    const { dateFormat } = useTimezoneAwareDateFormatting('UTC');
+    const { dateFormat } = useTimezoneAwareDateFormatting(activeBalanceAccount?.timeZone);
     const [alert, setAlert] = useState<null | { title: string; description: string }>(null);
     const { refreshing } = useConfigContext();
     const isLoading = useMemo(() => loading || refreshing, [loading, refreshing]);
