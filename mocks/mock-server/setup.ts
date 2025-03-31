@@ -77,6 +77,10 @@ export const setupBasicResponse = {
             method: 'GET',
             url: 'disputes',
         },
+        getDispute: {
+            method: 'GET',
+            url: 'disputes/{disputeId}',
+        },
     } satisfies Record<EndpointName, { method: HttpMethod; url: string }>,
 };
 

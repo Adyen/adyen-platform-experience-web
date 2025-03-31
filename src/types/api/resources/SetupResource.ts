@@ -37,7 +37,8 @@ export interface components {
             | 'requestFunds'
             | 'signToSActionDetails'
             | 'initiateRefund'
-            | 'getDisputes';
+            | 'getDisputes'
+            | 'getDispute';
         LegalEntitySetupResponseDTO: {
             countryCode: string;
             regions: components['schemas']['RegionDTO'][];

@@ -92,4 +92,19 @@ export interface operations {
             };
         };
     };
+    getDispute: {
+        parameters: {
+            path: {
+                disputeId: string;
+            };
+        };
+        responses: {
+            /** @description OK - the request has succeeded. */
+            200: {
+                content: {
+                    'application/json': components['schemas']['Dispute'];
+                };
+            };
+        };
+    };
 }

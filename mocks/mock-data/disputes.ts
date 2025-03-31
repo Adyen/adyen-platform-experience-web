@@ -438,3 +438,35 @@ export const getDisputesByStatusGroup = (status: 'open' | 'closed') => {
             : dispute.status === 'won' || dispute.status === 'lost'
     );
 };
+
+export const DISPUTE_DETAIL_CAN_DO_FIRST_DEFENSE = {
+    paymentPspReference: 'KLAHFUW1329523KKL',
+    defensibility: 'can_do_first_defense',
+    allowedDefenseReasons: ['AirlineCompellingEvidence'],
+};
+
+export const DISPUTE_DETAIL_CAN_DO_SUBSEQUENT_DEFENSE = {
+    paymentPspReference: 'KLAHFUW1329523KKL',
+    latestDefense: {
+        defendedOn: '2019-08-24T14:15:22Z',
+        reason: '4852',
+        suppliedDocuments: ['CompellingEvidence', 'FlightTicket'],
+    },
+    defensibility: 'can_do_subsequent_defense',
+    allowedDefenseReasons: ['AirlineCompellingEvidence'],
+};
+
+export const DISPUTE_DETAIL_NOT_DEFENDABLE = {
+    paymentPspReference: 'KLAHFUW1329523KKL',
+    latestDefense: {
+        defendedOn: '2019-08-24T14:15:22Z',
+        reason: '4853',
+        suppliedDocuments: ['GoodsOrServicesProvided'],
+    },
+    defensibility: 'not_defendable',
+    allowedDefenseReasons: [],
+};
+
+export const DISPUTE_DETAIL_DEFAULT = {
+    ...DISPUTE_DETAIL_CAN_DO_FIRST_DEFENSE,
+};
