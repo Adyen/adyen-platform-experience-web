@@ -77,7 +77,7 @@ export const calculateGrant = (amount: number | string, currency: string) => {
     const totalAmount = Number(amount) + feesAmount;
 
     const repaymentFrequencyDays = 30;
-    const numberOfRepayments = Math.floor(365 / repaymentFrequencyDays);
+    const numberOfRepayments = Math.floor(180 / repaymentFrequencyDays);
     const minimumRepayment = Number(totalAmount / numberOfRepayments);
 
     const response = {
@@ -98,7 +98,7 @@ export const calculateGrant = (amount: number | string, currency: string) => {
             currency: currency,
         },
         repaymentRate: 1100,
-        expectedRepaymentPeriodDays: 365,
+        expectedRepaymentPeriodDays: 180,
         maximumRepaymentPeriodDays: 540,
         id: uuid(),
     } satisfies IGrantOfferResponseDTO;
