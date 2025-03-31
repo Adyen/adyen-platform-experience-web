@@ -1,0 +1,46 @@
+@use '../../../style';
+
+.adyen-fp-segmented-control {
+    align-items: flex-start;
+    background: style.token(color-background-tertiary);
+    border: 0;
+    border-radius: style.token(border-radius-l);
+    display: flex;
+    gap: style.token(spacer-020);
+    margin: 0;
+    padding: style.token(spacer-020);
+    width: fit-content;
+
+    button {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        border: 0;
+        text-decoration: none;
+    }
+
+    &__item {
+        border-radius: style.token(border-radius-m);
+        cursor: pointer;
+        padding: style.token(spacer-020) style.token(spacer-080);
+        text-align: center;
+        transition: background 150ms ease-in-out, transform 150ms ease;
+
+        &:focus,
+        &:hover:not(:disabled),
+        &[aria-checked='true'] {
+            background: style.token(color-background-primary);
+        }
+
+        &:disabled {
+            color: style.token(color-background-disabled);
+        }
+    }
+}
+
+.adyen-fp-segmented-content-container {
+    padding-top: style.token(spacer-080);
+}
+
+.adyen-fp-segmented-content {
+    padding: 0;
+}

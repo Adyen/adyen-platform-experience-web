@@ -11,12 +11,12 @@ test.describe('Grants', () => {
     test('should render grants screen with tabs', async ({ page }) => {
         await expect(page.getByText('Business financing')).toBeVisible();
         await expect(page.getByText('Loans are issued by Adyen N.V.')).toBeVisible();
-        await expect(page.getByRole('tab', { name: 'In progress' })).toBeVisible();
-        await expect(page.getByRole('tab', { name: 'Closed' })).toBeVisible();
+        await expect(page.getByRole('radio', { name: 'In progress' })).toBeVisible();
+        await expect(page.getByRole('radio', { name: 'Closed' })).toBeVisible();
     });
 
     test('should render closed grants when "Closed" tab is clicked', async ({ page }) => {
-        await page.getByRole('tab', { name: 'Closed' }).click();
+        await page.getByRole('radio', { name: 'Closed' }).click();
         await expect(page.getByText('Fully repaid')).toBeVisible();
         await expect(page.getByText('Revoked')).toBeVisible();
         await expect(page.getByText('Written off')).toBeVisible();
@@ -24,8 +24,8 @@ test.describe('Grants', () => {
     });
 
     test('should render in-progress grants when "In progress" tab is clicked', async ({ page }) => {
-        await page.getByRole('tab', { name: 'Closed' }).click();
-        await page.getByRole('tab', { name: 'In progress' }).click();
+        await page.getByRole('radio', { name: 'Closed' }).click();
+        await page.getByRole('radio', { name: 'In progress' }).click();
         await expect(page.getByText('Term ends:').first()).toBeVisible();
     });
 });
