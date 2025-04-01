@@ -3,6 +3,7 @@ import { useState } from 'preact/hooks';
 import { DropzoneProps } from '../types';
 import { TranslationKey } from '../../../../../translations';
 import { TypographyElement, TypographyVariant } from '../../../Typography/types';
+import useFocusVisibility from '../../../../../hooks/element/useFocusVisibility';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import Typography from '../../../Typography/Typography';
 import Icon from '../../../Icon';
@@ -18,8 +19,9 @@ export function Dropzone({
     allowedFileTypes,
     updateFiles,
 }: DropzoneProps) {
-    const { i18n } = useCoreContext();
     const [dragHover, setDragHover] = useState(false);
+    const { hasVisibleFocus, ref: inputRef } = useFocusVisibility<HTMLInputElement>();
+    const { i18n } = useCoreContext();
 
     const handleDragOver = (event: DragEvent) => {
         const hasFiles = Array.from(event.dataTransfer?.types ?? []).some(type => type === 'Files');
@@ -52,7 +54,10 @@ export function Dropzone({
             onDragLeave={disabled ? undefined : handleDragLeave}
             onDrop={disabled ? undefined : handleDrop}
         >
-            <label className="adyen-pe-file-input__label" htmlFor="input-field-id">
+            <label
+                className={cx('adyen-pe-file-input__label', { 'adyen-pe-file-input__label--with-focus-ring': hasVisibleFocus })}
+                htmlFor="input-field-id"
+            >
                 <i className="adyen-pe-file-input__label-icon">
                     <Icon name="upload" />
                 </i>
@@ -68,6 +73,7 @@ export function Dropzone({
                     type="file"
                     id="input-field-id"
                     className="adyen-pe-file-input__field adyen-pe-visually-hidden"
+                    ref={inputRef}
                     disabled={disabled}
                     multiple={false}
                     accept={String(allowedFileTypes)}

@@ -71,7 +71,7 @@
             position: absolute;
         }
 
-        &:has(.adyen-pe-file-input__field:focus-visible)::before {
+        &--with-focus-ring::before {
             opacity: 1;
         }
     }
