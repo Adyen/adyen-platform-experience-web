@@ -15,6 +15,7 @@ const componentAvailabilityRegistry: ExternalComponentAvailabilityRegistry = {
     capitalOverview: context => getComponentAvailabilityFromEndpoint(context, 'getDynamicGrantOffersConfiguration'),
     capitalOffer: context => getComponentAvailabilityFromEndpoint(context, 'getDynamicGrantOffer'),
     disputes: context => getComponentAvailabilityFromEndpoint(context, 'getDisputes'),
+    disputesManagement: context => getComponentAvailabilityFromEndpoint(context, 'getDisputeDetail'),
 };
 
 export default componentAvailabilityRegistry;
