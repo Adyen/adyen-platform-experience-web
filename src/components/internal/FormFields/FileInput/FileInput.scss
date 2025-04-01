@@ -1,0 +1,86 @@
+@use '../../../../style';
+
+.adyen-pe-visually-hidden {
+    border: 0;
+    clip: rect(0 0 0 0);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute !important;
+    white-space: nowrap;
+    width: 1px;
+}
+
+.adyen-pe-file-input {
+    svg {
+        color: style.token(color-label-primary);
+        display: block;
+        font-size: 16px;
+    }
+
+    &__file {
+        background: style.token(color-background-secondary);
+        border-radius: style.token(border-radius-m);
+        display: flex;
+        gap: style.token(spacer-060);
+        padding: style.token(spacer-040) style.token(spacer-060);
+    }
+
+    &__file-details {
+        align-items: center;
+        display: flex;
+        flex: 1;
+        font-variant-numeric: style.token(text-font-variant-numeric);
+        gap: style.token(spacer-040);
+    }
+
+    &__file-icon {
+        font-style: normal;
+
+        svg {
+            color: style.token(color-label-success);
+        }
+    }
+
+    &__dropzone {
+        border: style.token(border-width-s) dashed style.token(color-outline-tertiary);
+        border-radius: style.token(border-radius-m);
+        box-sizing: border-box;
+        padding: style.token(spacer-020) style.token(spacer-060);
+
+        &--drag-hover {
+            border: style.token(border-width-s) solid style.token(color-outline-secondary-active);
+            box-shadow: style.token(shadow-medium);
+        }
+    }
+
+    &__label {
+        align-items: center;
+        cursor: pointer;
+        display: flex;
+        gap: style.token(spacer-060);
+        position: relative;
+        width: 100%;
+
+        &::before {
+            content: '';
+            inset: 0 calc(#{style.token(spacer-040)} * -1);
+            opacity: 0;
+            outline: auto;
+            position: absolute;
+        }
+
+        &:has(.adyen-pe-file-input__field:focus-visible)::before {
+            opacity: 1;
+        }
+    }
+
+    &__label-icon {
+        background: style.token(color-background-tertiary);
+        border-radius: 100%;
+        font-style: normal;
+        margin: style.token(spacer-020) 0;
+        padding: style.token(spacer-030);
+    }
+}
