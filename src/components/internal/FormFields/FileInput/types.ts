@@ -1,6 +1,21 @@
-export interface FileSource {
-    files: DataTransfer['files'] | null;
-    items?: DataTransfer['items'];
+import { Dispatch, StateUpdater } from 'preact/hooks';
+
+export interface BaseFileInputProps {
+    name: string;
+    id?: string;
+    label?: string;
+    disabled?: boolean;
+    required?: boolean;
+    maxFileSize?: number;
+    allowedFileTypes?: readonly string[];
+}
+
+export interface DropzoneProps extends BaseFileInputProps {
+    setFiles: Dispatch<StateUpdater<File[]>>;
+}
+
+export interface FileInputProps extends BaseFileInputProps {
+    onChange?: (files: File[]) => void;
 }
 
 export interface UploadedFileProps {
@@ -8,21 +23,7 @@ export interface UploadedFileProps {
     file: File;
 }
 
-export interface BaseFileInputProps {
-    name: string;
-    id?: string;
-    label?: string;
-    disabled: boolean;
-    required: boolean;
-    allowedFileTypes: readonly string[];
-}
-
-export interface DropzoneProps extends BaseFileInputProps {
-    updateFiles: <T extends FileSource>(source?: T | null) => void;
-}
-
-export interface FileInputProps extends Partial<BaseFileInputProps> {
-    name: string;
-    maxSize?: number;
-    onChange?: (files: File[]) => void;
+export interface FileSource {
+    files: DataTransfer['files'] | null;
+    items?: DataTransfer['items'];
 }

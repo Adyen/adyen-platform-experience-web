@@ -1,6 +1,8 @@
 import cx from 'classnames';
-import { useState } from 'preact/hooks';
-import { DropzoneProps } from '../types';
+import { useCallback, useState } from 'preact/hooks';
+import { DEFAULT_FILE_TYPES, DEFAULT_MAX_FILE_SIZE } from '../constants';
+import { DropzoneProps, FileSource } from '../types';
+import { getFilesFromSource } from '../utils';
 import { TranslationKey } from '../../../../../translations';
 import { TypographyElement, TypographyVariant } from '../../../Typography/types';
 import useFocusVisibility from '../../../../../hooks/element/useFocusVisibility';
@@ -14,10 +16,11 @@ export function Dropzone({
     // id,
     // name,
     // label = '',
-    disabled,
-    required,
-    allowedFileTypes,
-    updateFiles,
+    disabled = false,
+    required = false,
+    maxFileSize = DEFAULT_MAX_FILE_SIZE,
+    allowedFileTypes = DEFAULT_FILE_TYPES,
+    setFiles,
 }: DropzoneProps) {
     const [dragHover, setDragHover] = useState(false);
     const { hasVisibleFocus, ref: inputRef } = useFocusVisibility<HTMLInputElement>();
@@ -45,6 +48,16 @@ export function Dropzone({
     const handleFileChange = (event: Event) => {
         updateFiles(event.target as HTMLInputElement);
     };
+
+    const updateFiles = useCallback(
+        <T extends FileSource>(source?: T | null) => {
+            const allowedFiles = getFilesFromSource(source).filter(file => {
+                return file.size <= maxFileSize && allowedFileTypes.includes(file.type);
+            });
+            setFiles(allowedFiles.slice(0, 1));
+        },
+        [allowedFileTypes, maxFileSize, setFiles]
+    );
 
     return (
         <div
