@@ -26,6 +26,7 @@ export const endpoints = (mode: 'netlify' | 'viteDev' | 'mock') => {
         },
         disputes: {
             list: `${baseUrl}/disputes`,
+            details: `${baseUrl}/disputes/${matchVariable}`,
         },
     } as const;
 };
