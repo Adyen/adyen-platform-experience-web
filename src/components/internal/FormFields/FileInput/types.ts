@@ -22,8 +22,3 @@ export interface UploadedFileProps {
     deleteFile: () => any;
     file: File;
 }
-
-export interface FileSource {
-    files: DataTransfer['files'] | null;
-    items?: DataTransfer['items'];
-}

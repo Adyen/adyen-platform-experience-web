@@ -1,13 +1,13 @@
 import cx from 'classnames';
 import { useCallback, useState } from 'preact/hooks';
-import { DEFAULT_FILE_TYPES, DEFAULT_MAX_FILE_SIZE } from '../constants';
-import { DropzoneProps, FileSource } from '../types';
-import { getFilesFromSource } from '../utils';
-import { TranslationKey } from '../../../../../translations';
-import { TypographyElement, TypographyVariant } from '../../../Typography/types';
-import useFocusVisibility from '../../../../../hooks/element/useFocusVisibility';
-import useCoreContext from '../../../../../core/Context/useCoreContext';
 import Typography from '../../../Typography/Typography';
+import useCoreContext from '../../../../../core/Context/useCoreContext';
+import useFocusVisibility from '../../../../../hooks/element/useFocusVisibility';
+import { getUploadedFilesFromSource, UploadedFileSource } from '../../../../../utils';
+import { TypographyElement, TypographyVariant } from '../../../Typography/types';
+import { DEFAULT_FILE_TYPES, DEFAULT_MAX_FILE_SIZE } from '../constants';
+import { TranslationKey } from '../../../../../translations';
+import { DropzoneProps } from '../types';
 import Icon from '../../../Icon';
 import '../FileInput.scss';
 
@@ -50,8 +50,8 @@ export function Dropzone({
     };
 
     const updateFiles = useCallback(
-        <T extends FileSource>(source?: T | null) => {
-            const allowedFiles = getFilesFromSource(source).filter(file => {
+        <T extends UploadedFileSource>(source?: T | null) => {
+            const allowedFiles = getUploadedFilesFromSource(source).filter(file => {
                 return file.size <= maxFileSize && allowedFileTypes.includes(file.type);
             });
             setFiles(allowedFiles.slice(0, 1));

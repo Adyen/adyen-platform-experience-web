@@ -7,6 +7,7 @@ export * from './datetime/main';
 
 export * from './file/read';
 export * from './file/size';
+export * from './file/upload';
 
 export * from './random/uniqueId';
 export * from './random/uuid';
