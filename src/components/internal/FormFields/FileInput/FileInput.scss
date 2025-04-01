@@ -56,12 +56,8 @@
     }
 
     &__label {
-        align-items: center;
-        cursor: pointer;
         display: flex;
-        gap: style.token(spacer-060);
         position: relative;
-        width: 100%;
 
         &::before {
             content: '';
@@ -74,6 +70,15 @@
         &--with-focus-ring::before {
             opacity: 1;
         }
+    }
+
+    &__label-content {
+        align-items: center;
+        cursor: pointer;
+        display: flex;
+        gap: style.token(spacer-060);
+        position: relative;
+        width: 100%;
     }
 
     &__label-icon {

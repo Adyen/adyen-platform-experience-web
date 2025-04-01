@@ -71,17 +71,17 @@ export function Dropzone({
                 className={cx('adyen-pe-file-input__label', { 'adyen-pe-file-input__label--with-focus-ring': hasVisibleFocus })}
                 htmlFor="input-field-id"
             >
-                <i className="adyen-pe-file-input__label-icon">
-                    <Icon name="upload" />
-                </i>
-                <Typography
-                    className="adyen-pe-file-input__label-text adyen-pe-button adyen-pe-button--tertiary"
-                    el={TypographyElement.SPAN}
-                    variant={TypographyVariant.BODY}
-                >
-                    {/* [TODO]: Add translation key entry for this literal string: 'Browse files' */}
-                    {i18n.get('Browse files' as TranslationKey)}
-                </Typography>
+                <div className="adyen-pe-file-input__label-content">
+                    <Icon name="upload" className="adyen-pe-file-input__label-icon" />
+                    <Typography
+                        className="adyen-pe-file-input__label-text adyen-pe-button adyen-pe-button--tertiary"
+                        el={TypographyElement.SPAN}
+                        variant={TypographyVariant.BODY}
+                    >
+                        {/* [TODO]: Add translation key entry for this literal string: 'Browse files' */}
+                        {i18n.get('Browse files' as TranslationKey)}
+                    </Typography>
+                </div>
                 <input
                     type="file"
                     id="input-field-id"
