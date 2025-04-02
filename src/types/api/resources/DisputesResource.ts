@@ -162,4 +162,19 @@ export interface operations {
             };
         };
     };
+    acceptDispute: {
+        parameters: {
+            path: {
+                disputePspReference: string;
+            };
+        };
+        responses: {
+            /** @description OK - the request has succeeded. */
+            200: {
+                content: {
+                    'application/json': {};
+                };
+            };
+        };
+    };
 }

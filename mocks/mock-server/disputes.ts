@@ -45,4 +45,8 @@ export const disputesMocks = [
         await delay(1000);
         return HttpResponse.json({ ...matchingMock, ...DISPUTE_DETAIL_DEFAULT });
     }),
+    http.post(mockEndpoints.accept, async () => {
+        await delay(1000);
+        return HttpResponse.json('ok');
+    }),
 ];
