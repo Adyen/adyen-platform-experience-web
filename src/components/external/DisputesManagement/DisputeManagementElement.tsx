@@ -1,6 +1,6 @@
+import DataOverviewDetails from '../../internal/DataOverviewDetails/DataOverviewDetails';
 import { _UIComponentProps, ExternalComponentType } from '../../types';
 import UIElement from '../UIElement/UIElement';
-import { DisputeManagement } from './components/DisputeManagement';
 import { DisputesManagementProps } from './types';
 
 export class DisputeManagementElement extends UIElement<DisputesManagementProps> {
@@ -12,7 +12,7 @@ export class DisputeManagementElement extends UIElement<DisputesManagementProps>
     }
 
     public componentToRender = () => {
-        return <DisputeManagement {...this.props}></DisputeManagement>;
+        return <DataOverviewDetails {...this.props} type={'dispute'} />;
     };
 }
 

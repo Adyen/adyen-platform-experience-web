@@ -122,6 +122,7 @@
     "dispute.merchantReference": "Merchant reference",
     "dispute.paymentReference": "Payment reference",
     "dispute.reasonCode": "Reason Code",
+    "disputeDetails": "Dispute management",
     "disputes.accept": "Accept",
     "disputes.actionNeeded": "Action needed",
     "disputes.closed": "Closed",

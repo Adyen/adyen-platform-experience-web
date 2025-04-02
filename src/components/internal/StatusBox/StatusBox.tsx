@@ -1,6 +1,6 @@
-import { TranslationKey } from '../../../translations';
 import { ITransaction } from '../../../types';
-import { IDispute, IDisputeDetail } from '../../../types/api/models/disputes';
+import { IDisputeDetail } from '../../../types/api/models/disputes';
+import DisputeStatusTag from '../../external/DisputesOverview/components/DisputesTable/DisputeStatusTag';
 import {
     TX_DATA_AMOUNT,
     TX_DATA_LABEL,
@@ -27,14 +27,6 @@ import { RefundedState, RefundType } from '../../external/TransactionDetails/con
 import { Image } from '../Image/Image';
 import { TagVariant } from '../Tag/types';
 import { Tag } from '../Tag/Tag';
-
-const TagTranslations = {
-    action_needed: 'disputes.actionNeeded',
-    won: 'disputes.won',
-    lost: 'disputes.lost',
-    docs_submitted: 'disputes.docsSubmitted',
-    under_review: 'disputes.underReview',
-};
 
 type TransactionStatusBoxProps = Pick<TransactionDataContentProps, 'transaction'> & { refundedState: RefundedState; type: 'transaction' };
 type DisputesStatusBoxProps = { dispute: IDisputeDetail; type: 'dispute' };
@@ -79,7 +71,7 @@ const StatusBox = ({ ...props }: StatusBoxProps) => {
                 {/*{status && <Tag label={i18n.get(status)} variant={getTagVariantForTransaction(transaction)} />}*/}
                 {category && <Tag label={i18n.get(`txType.${category}`)} variant={TagVariant.DEFAULT} />}
                 {statusBoxOptions?.dispute?.status && (
-                    <Tag label={i18n.get(TagTranslations[statusBoxOptions.dispute.status] as TranslationKey)} variant={TagVariant.ERROR} />
+                    <DisputeStatusTag value={statusBoxOptions?.dispute?.status} item={statusBoxOptions?.dispute}></DisputeStatusTag>
                 )}
 
                 {/* refund type: only available for transaction.category == Refund */}

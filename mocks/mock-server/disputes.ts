@@ -36,6 +36,7 @@ export const disputesMocks = [
         await delay(responseDelay);
         return HttpResponse.json({ data, _links: getPaginationLinks(cursor, limit, disputes.length) });
     }),
+
     http.get(mockEndpoints.details, async ({ params }) => {
         const matchingMock = DISPUTES.find(mock => mock.id === params.id);
 

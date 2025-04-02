@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
 import { useConfigContext } from '../../../../../core/ConfigContext';
 import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatformExperienceError';
+import useModalDetails from '../../../../../hooks/useModalDetails';
 import { IBalanceAccountBase } from '../../../../../types';
 import { isFunction } from '../../../../../utils';
 import useBalanceAccountSelection from '../../../../../hooks/useBalanceAccountSelection';
@@ -12,6 +13,7 @@ import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '../../../../internal/Paginati
 import { useCursorPaginatedRecords } from '../../../../internal/Pagination/hooks';
 import { Header } from '../../../../internal/Header';
 import { CustomDataRetrieved, DisputeOverviewComponentProps, ExternalUIComponentProps, FilterParam } from '../../../../types';
+import { BASE_CLASS_DETAILS } from '../../../TransactionsOverview/components/TransactionsOverview/constants';
 import { FIELDS } from '../DisputesTable/DisputesTable';
 import {
     EARLIEST_DISPUTES_SINCE_DATE,
@@ -28,6 +30,7 @@ import { DisputesTable } from '../DisputesTable/DisputesTable';
 import { IDispute } from '../../../../../types/api/models/disputes';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import cx from 'classnames';
+import { DataDetailsModal } from '../../../../internal/DataOverviewDisplay/DataDetailsModal';
 
 export const DisputesOverview = ({
     onFiltersChanged,
@@ -37,6 +40,8 @@ export const DisputesOverview = ({
     isLoadingBalanceAccount,
     onContactSupport,
     hideTitle,
+    onRecordSelection,
+    showDetails,
     dataCustomization,
 }: ExternalUIComponentProps<
     DisputeOverviewComponentProps & { balanceAccounts: IBalanceAccountBase[] | undefined; isLoadingBalanceAccount: boolean }
@@ -45,6 +50,16 @@ export const DisputesOverview = ({
     const { activeBalanceAccount, balanceAccountSelectionOptions, onBalanceAccountSelection } = useBalanceAccountSelection(balanceAccounts);
     const { defaultParams, nowTimestamp, refreshNowTimestamp } = useDefaultOverviewFilterParams('disputes', activeBalanceAccount);
     const [statusGroup, setStatusGroup] = useState<'open' | 'closed'>('open');
+
+    const disputeDetails = useMemo(
+        () => ({
+            showDetails: showDetails ?? true,
+            callback: onRecordSelection,
+        }),
+        [showDetails, onRecordSelection]
+    );
+
+    const modalOptions = useMemo(() => ({ dispute: disputeDetails }), [disputeDetails]);
 
     const getDisputes = useCallback(
         async (pageRequestParams: Record<FilterParam | 'cursor', string>, signal?: AbortSignal) => {
@@ -95,6 +110,21 @@ export const DisputesOverview = ({
         onDataRetrieve: dataCustomization?.list?.onDataRetrieve,
         mergeCustomData,
     });
+
+    const { updateDetails, resetDetails, selectedDetail } = useModalDetails(modalOptions);
+
+    const onRowClick = useCallback(
+        ({ id }: IDispute) => {
+            updateDetails({
+                selection: {
+                    type: 'dispute',
+                    data: id,
+                },
+                modalSize: 'small',
+            }).callback({ id });
+        },
+        [updateDetails]
+    );
 
     useEffect(() => {
         refreshNowTimestamp();
@@ -148,20 +178,28 @@ export const DisputesOverview = ({
                 />
             </FilterBar>
 
-            <DisputesTable
-                activeBalanceAccount={activeBalanceAccount}
-                balanceAccountId={activeBalanceAccount?.id}
-                loading={fetching || isLoadingBalanceAccount || !balanceAccounts || !activeBalanceAccount || loadingCustomRecords}
-                data={dataCustomization?.list?.onDataRetrieve ? customRecords : records}
-                showPagination={true}
-                limit={limit}
-                limitOptions={limitOptions}
-                onContactSupport={onContactSupport}
-                onLimitSelection={updateLimit}
-                error={error as AdyenPlatformExperienceError}
-                customColumns={dataCustomization?.list?.fields}
-                {...paginationProps}
-            />
+            <DataDetailsModal
+                dataCustomization={dataCustomization?.details}
+                selectedDetail={selectedDetail as ReturnType<typeof useModalDetails>['selectedDetail']}
+                resetDetails={resetDetails}
+                className={BASE_CLASS_DETAILS}
+            >
+                <DisputesTable
+                    activeBalanceAccount={activeBalanceAccount}
+                    balanceAccountId={activeBalanceAccount?.id}
+                    loading={fetching || isLoadingBalanceAccount || !balanceAccounts || !activeBalanceAccount || loadingCustomRecords}
+                    data={dataCustomization?.list?.onDataRetrieve ? customRecords : records}
+                    showPagination={true}
+                    limit={limit}
+                    limitOptions={limitOptions}
+                    onContactSupport={onContactSupport}
+                    onLimitSelection={updateLimit}
+                    error={error as AdyenPlatformExperienceError}
+                    onRowClick={onRowClick}
+                    customColumns={dataCustomization?.list?.fields}
+                    {...paginationProps}
+                />
+            </DataDetailsModal>
         </div>
     );
 };
