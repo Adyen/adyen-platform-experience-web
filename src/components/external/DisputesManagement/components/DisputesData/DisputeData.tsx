@@ -2,7 +2,7 @@ import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { IDisputeDetail } from '../../../../../types/api/models/disputes';
 import ButtonActions from '../../../../internal/Button/ButtonActions/ButtonActions';
 import StatusBox from '../../../../internal/StatusBox/StatusBox';
-import { DISPUTE_DATA_CONTAINER, DISPUTE_STATUS_BOX } from './constants';
+import { DISPUTE_DATA_ACTION_BAR, DISPUTE_DATA_CONTAINER, DISPUTE_STATUS_BOX } from './constants';
 import DisputeDataProperties from './DisputeDataProperties';
 import './DisputeData.scss';
 
@@ -19,7 +19,11 @@ export const DisputeData = ({ dispute, isFetching }: { dispute: IDisputeDetail; 
 
             <DisputeDataProperties dispute={dispute} />
 
-            {dispute?.status === 'action_needed' ? <ButtonActions actions={[{ title: i18n.get('disputes.accept'), event: () => {} }]} /> : null}
+            {dispute?.status === 'action_needed' ? (
+                <div className={DISPUTE_DATA_ACTION_BAR}>
+                    <ButtonActions actions={[{ title: i18n.get('disputes.accept'), event: () => {} }]} />
+                </div>
+            ) : null}
         </div>
     );
 };
