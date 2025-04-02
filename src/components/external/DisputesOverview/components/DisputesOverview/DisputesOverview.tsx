@@ -13,6 +13,7 @@ import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '../../../../internal/Paginati
 import { useCursorPaginatedRecords } from '../../../../internal/Pagination/hooks';
 import { Header } from '../../../../internal/Header';
 import { CustomDataRetrieved, DisputeOverviewComponentProps, ExternalUIComponentProps, FilterParam } from '../../../../types';
+import { DISPUTE_DETAILS_CLASS } from '../../../DisputesManagement/components/DisputesData/constants';
 import { BASE_CLASS_DETAILS } from '../../../TransactionsOverview/components/TransactionsOverview/constants';
 import { FIELDS } from '../DisputesTable/DisputesTable';
 import {
@@ -182,7 +183,7 @@ export const DisputesOverview = ({
                 dataCustomization={dataCustomization?.details}
                 selectedDetail={selectedDetail as ReturnType<typeof useModalDetails>['selectedDetail']}
                 resetDetails={resetDetails}
-                className={BASE_CLASS_DETAILS}
+                className={DISPUTE_DETAILS_CLASS}
             >
                 <DisputesTable
                     activeBalanceAccount={activeBalanceAccount}

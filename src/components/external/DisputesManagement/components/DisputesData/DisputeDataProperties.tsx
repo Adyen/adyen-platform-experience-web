@@ -80,7 +80,6 @@ const DisputeDataProperties = ({ dispute, dataCustomization, extraFields }: Disp
             .filter(val => !dataCustomization?.details?.fields?.some(field => field.key === val.id && field.visibility === 'hidden'));
 
         // Add custom data
-
         const itemsWithExtraFields = [
             ...listItems,
             ...(Object.entries(extraFields || {})
