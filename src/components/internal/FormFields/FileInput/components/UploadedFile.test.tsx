@@ -14,9 +14,9 @@ describe('UploadedFile', () => {
 
         const fileName = screen.getByText('hello.txt');
         const fileSize = screen.getByText(/bytes$/);
-        const deleteButton = screen.getByRole('button', { name: /hello\.txt/ });
+        const fileDeleteButton = screen.getByRole('button', { name: /hello\.txt/ });
 
-        [fileName, fileSize, deleteButton].forEach(elem => {
+        [fileName, fileSize, fileDeleteButton].forEach(elem => {
             expect(elem).toBeInTheDocument();
             expect(elem).toBeVisible();
         });
@@ -29,13 +29,13 @@ describe('UploadedFile', () => {
         render(<UploadedFile file={MOCK_FILE} deleteFile={deleteFile} />);
         expect(deleteFile).not.toHaveBeenCalled();
 
-        const deleteButton = screen.getByRole('button', { name: /hello\.txt/ });
+        const fileDeleteButton = screen.getByRole('button', { name: /hello\.txt/ });
 
-        await user.click(deleteButton);
+        await user.click(fileDeleteButton);
         expect(deleteFile).toHaveBeenCalledOnce();
 
-        await user.click(deleteButton);
-        await user.click(deleteButton);
+        await user.click(fileDeleteButton);
+        await user.click(fileDeleteButton);
         expect(deleteFile).toHaveBeenCalledTimes(3);
     });
 });

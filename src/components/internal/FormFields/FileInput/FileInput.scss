@@ -20,6 +20,7 @@
     }
 
     &__file {
+        align-items: center;
         background: style.token(color-background-secondary);
         border-radius: style.token(border-radius-m);
         display: flex;
@@ -35,9 +36,14 @@
         gap: style.token(spacer-040);
     }
 
-    &__file-icon {
-        font-style: normal;
+    &__file-button {
+        --file-button-padding: #{style.token(spacer-040)};
+        border-radius: 100%;
+        margin: calc(var(--file-button-padding) * -1);
+        padding: var(--file-button-padding);
+    }
 
+    &__file-icon {
         svg {
             color: style.token(color-label-success);
         }
@@ -84,7 +90,6 @@
     &__label-icon {
         background: style.token(color-background-tertiary);
         border-radius: 100%;
-        font-style: normal;
         margin: style.token(spacer-020) 0;
         padding: style.token(spacer-030);
     }

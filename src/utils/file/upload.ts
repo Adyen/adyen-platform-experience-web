@@ -6,7 +6,7 @@ export interface UploadedFileSource {
 export const getUploadedFilesFromSource = <T extends UploadedFileSource>(uploadedFileSource?: T | null): File[] => {
     const uploadedFiles: File[] = [];
 
-    if (uploadedFileSource?.items instanceof DataTransferItemList) {
+    if (uploadedFileSource?.items) {
         for (const item of uploadedFileSource.items) {
             if (item.kind !== 'file') continue;
             const file = item.getAsFile();
