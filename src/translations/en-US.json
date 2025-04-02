@@ -130,6 +130,7 @@
     "disputes.daysToRespond__plural": "%{days} days to respond (%{date})",
     "disputes.daysToRespond__singular": "%{days} day to respond (%{date})",
     "disputes.disputedAmount": "Disputed amount",
+    "disputes.disputeManagementTitle": "Dispute management",
     "disputes.docsSubmitted": "Docs Submitted",
     "disputes.expired": "Expired",
     "disputes.inProgress": "In progress",

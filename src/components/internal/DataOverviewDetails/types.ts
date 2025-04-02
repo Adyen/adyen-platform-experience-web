@@ -1,6 +1,5 @@
 import { IBalanceAccountBase, ITransactionWithDetails } from '../../../types';
 import { DetailsWithExtraData, TransactionDetailsCustomization } from '../../external';
-import { DisputeDetailsCustomization, DisputeDetailsProps } from '../../external/DisputesManagement';
 import { DetailsDataCustomizationObject } from '../../types';
 import { PayoutDetailsCustomization } from '../../external/PayoutDetails/types';
 
@@ -20,8 +19,7 @@ export interface TransactionDetailsWithIdProps {
 
 export type DetailsWithId =
     | ((TransactionDetailsWithIdProps & { type: 'transaction' }) & DetailsWithExtraData<TransactionDetailsCustomization>)
-    | (PayoutDetailsWithIdProps & { type: 'payout'; balanceAccountDescription?: string } & DetailsWithExtraData<PayoutDetailsCustomization>)
-    | (DisputeDetailsProps & { type: 'dispute' } & DetailsWithExtraData<DisputeDetailsCustomization>);
+    | (PayoutDetailsWithIdProps & { type: 'payout'; balanceAccountDescription?: string } & DetailsWithExtraData<PayoutDetailsCustomization>);
 
 export type DetailsComponentProps = (TransactionDetailsWithoutIdProps & { type: 'transaction' }) | DetailsWithId;
 
@@ -32,7 +30,7 @@ export interface BalanceAccountProps {
 }
 
 export type SelectedDetail = {
-    type: 'payout' | 'transaction' | 'dispute';
+    type: 'payout' | 'transaction';
     data: string | TransactionDetailData | PayoutDetailsWithIdProps;
     dataCustomization?: { details?: DetailsDataCustomizationObject<any, any, any> };
 };
