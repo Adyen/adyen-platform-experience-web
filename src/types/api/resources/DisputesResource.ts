@@ -172,7 +172,11 @@ export interface operations {
         };
         responses: {
             /** @description OK - the request has succeeded. */
-            200: {};
+            200: {
+                content: {
+                    'application/json': {};
+                };
+            };
         };
     };
 }
