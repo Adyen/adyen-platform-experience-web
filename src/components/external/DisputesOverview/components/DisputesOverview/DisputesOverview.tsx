@@ -42,6 +42,7 @@ export const DisputesOverview = ({
     onRecordSelection,
     showDetails,
     dataCustomization,
+    onAcceptDispute,
 }: ExternalUIComponentProps<
     DisputeOverviewComponentProps & { balanceAccounts: IBalanceAccountBase[] | undefined; isLoadingBalanceAccount: boolean }
 >) => {
@@ -181,6 +182,7 @@ export const DisputesOverview = ({
                 dataCustomization={dataCustomization?.details && { details: dataCustomization?.details }}
                 selectedDetail={selectedDetail as ReturnType<typeof useModalDetails>['selectedDetail']}
                 resetDetails={resetDetails}
+                onAcceptDispute={onAcceptDispute}
             >
                 <DisputesTable
                     activeBalanceAccount={activeBalanceAccount}

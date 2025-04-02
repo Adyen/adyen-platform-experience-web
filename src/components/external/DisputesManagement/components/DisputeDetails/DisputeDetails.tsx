@@ -14,10 +14,11 @@ export const DisputeDetails = (props: ExternalUIComponentProps<DisputeManagement
     const setDisputeCallback = useCallback((dispute: IDisputeDetail) => {
         setDispute(dispute);
     }, []);
+
     return (
         <DisputeFlowContext.Provider value={{ flowState, setFlowState, goBack, dispute: dispute, setDispute: setDisputeCallback }}>
             <div className="adyen-pe-dispute-management__container">
-                <DisputeDetailsContainer disputeId={props.id} />
+                <DisputeDetailsContainer disputeId={props.id} onAcceptDispute={props.onAcceptDispute} />
             </div>
         </DisputeFlowContext.Provider>
     );
