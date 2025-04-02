@@ -1,4 +1,4 @@
-import { useEffect } from 'preact/hooks';
+import { useCallback, useEffect } from 'preact/hooks';
 import { FC, PropsWithChildren } from 'preact/compat';
 import Modal from '../../../../internal/Modal';
 import { DisputeDetailsCustomization } from '../../../DisputesManagement';
@@ -12,6 +12,7 @@ export interface DisputeManagementModalProps {
     selectedDetail: ReturnType<typeof useModalDetails>['selectedDetail'];
     resetDetails: ReturnType<typeof useModalDetails>['resetDetails'];
     dataCustomization?: { details: DisputeDetailsCustomization };
+    onAcceptDispute?: () => void;
 }
 
 export const DisputeManagementModal: FC<DisputeManagementModalProps> = ({
@@ -19,6 +20,7 @@ export const DisputeManagementModal: FC<DisputeManagementModalProps> = ({
     selectedDetail,
     resetDetails,
     dataCustomization,
+    onAcceptDispute,
 }: PropsWithChildren<DisputeManagementModalProps>) => {
     const { i18n } = useCoreContext();
     const isModalOpen = !!selectedDetail;
@@ -29,6 +31,9 @@ export const DisputeManagementModal: FC<DisputeManagementModalProps> = ({
         }
     }, [isModalOpen]);
 
+    const onAcceptDisputeCallback = useCallback(() => {
+        onAcceptDispute?.();
+    }, [onAcceptDispute]);
     return (
         <div>
             {children}
@@ -42,7 +47,11 @@ export const DisputeManagementModal: FC<DisputeManagementModalProps> = ({
                     size={selectedDetail.modalSize || 'large'}
                 >
                     <div className="adyen-pe-dispute-management-modal-content">
-                        <DisputeDetails id={selectedDetail.selection.data} dataCustomization={dataCustomization} />
+                        <DisputeDetails
+                            id={selectedDetail.selection.data}
+                            dataCustomization={dataCustomization}
+                            onAcceptDispute={onAcceptDisputeCallback}
+                        />
                     </div>
                 </Modal>
             )}

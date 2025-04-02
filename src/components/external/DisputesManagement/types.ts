@@ -5,4 +5,4 @@ import { IDisputeDetail } from '../../../types/api/models/disputes';
 //TODO - Define DisputeDetailsFields
 export type DisputeDetailsCustomization = DetailsDataCustomizationObject<TransactionDetailsFields, IDisputeDetail, CustomDataRetrieved>;
 
-export type DisputeManagementProps = { id: string } & DetailsWithExtraData<DisputeDetailsCustomization>;
+export type DisputeManagementProps = { id: string; onAcceptDispute?: () => void } & DetailsWithExtraData<DisputeDetailsCustomization>;
