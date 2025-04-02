@@ -1,18 +1,39 @@
+import { DISPUTE_DATA_ACTION_BAR, DISPUTE_DATA_CLASS, DISPUTE_STATUS_BOX } from './constants';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
-import { IDisputeDetail } from '../../../../../types/api/models/disputes';
-import ButtonActions from '../../../../internal/Button/ButtonActions/ButtonActions';
 import StatusBox from '../../../../internal/StatusBox/StatusBox';
-import { DISPUTE_DATA_ACTION_BAR, DISPUTE_DATA_CONTAINER, DISPUTE_STATUS_BOX } from './constants';
 import DisputeDataProperties from './DisputeDataProperties';
+import ButtonActions from '../../../../internal/Button/ButtonActions/ButtonActions';
+import { useConfigContext } from '../../../../../core/ConfigContext';
+import { useFetch } from '../../../../../hooks/useFetch';
+import { useMemo } from 'preact/hooks';
+import { EMPTY_OBJECT } from '../../../../../utils';
 import './DisputeData.scss';
 
-export const DisputeData = ({ dispute, isFetching }: { dispute: IDisputeDetail; isFetching: boolean }) => {
+export const DisputeData = ({ disputeId }: { disputeId: string }) => {
     const { i18n } = useCoreContext();
 
-    if (!dispute || isFetching) return null;
+    const { getDisputeDetail } = useConfigContext().endpoints;
+
+    const { data: dispute, isFetching } = useFetch(
+        useMemo(
+            () => ({
+                fetchOptions: { enabled: !!disputeId && !!getDisputeDetail },
+                queryFn: async () => {
+                    return getDisputeDetail!(EMPTY_OBJECT, {
+                        path: {
+                            disputePspReference: disputeId,
+                        },
+                    });
+                },
+            }),
+            [getDisputeDetail, disputeId]
+        )
+    );
+
+    if (!dispute || isFetching) return null; // TODO - Add skeleton
 
     return (
-        <div className={DISPUTE_DATA_CONTAINER}>
+        <div className={DISPUTE_DATA_CLASS}>
             <div className={DISPUTE_STATUS_BOX}>
                 <StatusBox type={'dispute'} dispute={dispute}></StatusBox>
             </div>

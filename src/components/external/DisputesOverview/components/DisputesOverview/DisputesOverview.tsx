@@ -30,7 +30,7 @@ import { DisputesTable } from '../DisputesTable/DisputesTable';
 import { IDispute } from '../../../../../types/api/models/disputes';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import cx from 'classnames';
-import { DataDetailsModal } from '../../../../internal/DataOverviewDisplay/DataDetailsModal';
+import { DisputeManagementModal } from '../DisputeManagementModal/DisputeManagementModal';
 
 export const DisputesOverview = ({
     onFiltersChanged,
@@ -178,11 +178,10 @@ export const DisputesOverview = ({
                 />
             </FilterBar>
 
-            <DataDetailsModal
-                dataCustomization={dataCustomization?.details}
+            <DisputeManagementModal
+                dataCustomization={dataCustomization?.details && { details: dataCustomization?.details }}
                 selectedDetail={selectedDetail as ReturnType<typeof useModalDetails>['selectedDetail']}
                 resetDetails={resetDetails}
-                className={BASE_CLASS_DETAILS}
             >
                 <DisputesTable
                     activeBalanceAccount={activeBalanceAccount}
@@ -199,7 +198,7 @@ export const DisputesOverview = ({
                     customColumns={dataCustomization?.list?.fields}
                     {...paginationProps}
                 />
-            </DataDetailsModal>
+            </DisputeManagementModal>
         </div>
     );
 };
