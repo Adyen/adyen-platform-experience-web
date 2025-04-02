@@ -5,19 +5,23 @@ import DisputeDataProperties from './DisputeDataProperties';
 import ButtonActions from '../../../../internal/Button/ButtonActions/ButtonActions';
 import { useConfigContext } from '../../../../../core/ConfigContext';
 import { useFetch } from '../../../../../hooks/useFetch';
-import { useMemo } from 'preact/hooks';
+import { useCallback, useMemo } from 'preact/hooks';
 import { EMPTY_OBJECT } from '../../../../../utils';
 import './DisputeData.scss';
+import { useDisputeFlow } from '../../hooks/useDisputeFlow';
 
 export const DisputeData = ({ disputeId }: { disputeId: string }) => {
     const { i18n } = useCoreContext();
+    const { setDispute, setFlowState } = useDisputeFlow();
 
     const { getDisputeDetail } = useConfigContext().endpoints;
 
     const { data: dispute, isFetching } = useFetch(
         useMemo(
             () => ({
-                fetchOptions: { enabled: !!disputeId && !!getDisputeDetail },
+                fetchOptions: {
+                    enabled: !!disputeId && !!getDisputeDetail,
+                },
                 queryFn: async () => {
                     return getDisputeDetail!(EMPTY_OBJECT, {
                         path: {
@@ -29,6 +33,11 @@ export const DisputeData = ({ disputeId }: { disputeId: string }) => {
             [getDisputeDetail, disputeId]
         )
     );
+
+    const onAcceptClick = useCallback(() => {
+        dispute && setDispute(dispute);
+        setFlowState('accept');
+    }, [dispute, setDispute, setFlowState]);
 
     if (!dispute || isFetching) return null; // TODO - Add skeleton
 
@@ -42,7 +51,14 @@ export const DisputeData = ({ disputeId }: { disputeId: string }) => {
 
             {dispute?.status === 'action_needed' ? (
                 <div className={DISPUTE_DATA_ACTION_BAR}>
-                    <ButtonActions actions={[{ title: i18n.get('disputes.accept'), event: () => {} }]} />
+                    <ButtonActions
+                        actions={[
+                            {
+                                title: i18n.get('disputes.accept'),
+                                event: onAcceptClick,
+                            },
+                        ]}
+                    />
                 </div>
             ) : null}
         </div>

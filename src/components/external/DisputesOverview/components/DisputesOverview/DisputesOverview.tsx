@@ -13,7 +13,6 @@ import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '../../../../internal/Paginati
 import { useCursorPaginatedRecords } from '../../../../internal/Pagination/hooks';
 import { Header } from '../../../../internal/Header';
 import { CustomDataRetrieved, DisputeOverviewComponentProps, ExternalUIComponentProps, FilterParam } from '../../../../types';
-import { BASE_CLASS_DETAILS } from '../../../TransactionsOverview/components/TransactionsOverview/constants';
 import { FIELDS } from '../DisputesTable/DisputesTable';
 import {
     EARLIEST_DISPUTES_SINCE_DATE,
