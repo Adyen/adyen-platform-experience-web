@@ -8,6 +8,7 @@ import { getHumanReadableFileSize } from '../../../../../utils';
 import { ButtonVariant } from '../../../Button/types';
 import { UploadedFileProps } from '../types';
 import { BASE_CLASS } from '../constants';
+import { useMemo } from 'preact/hooks';
 import '../FileInput.scss';
 
 const classes = {
@@ -21,19 +22,24 @@ const classes = {
 
 export function UploadedFile({ file, deleteFile }: UploadedFileProps) {
     const { i18n } = useCoreContext();
+    const fileSize = useMemo(() => getHumanReadableFileSize(file.size), [file.size]);
     return (
         <div className={classes.base}>
             <div className={classes.fileDetails}>
                 <Icon name="checkmark-circle-fill" className={classes.fileIcon} />
-                <Typography className={classes.fileName} el={TypographyElement.SPAN} variant={TypographyVariant.BODY} stronger>
-                    {file.name}
-                </Typography>
+                <div className={classes.fileName} title={file.name}>
+                    <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY} stronger>
+                        {file.name}
+                    </Typography>
+                </div>
                 <Typography className={classes.fileSize} el={TypographyElement.SPAN} variant={TypographyVariant.BODY}>
-                    {getHumanReadableFileSize(file.size)}
+                    {fileSize}
                 </Typography>
             </div>
             <Button className={classes.fileButton} variant={ButtonVariant.TERTIARY} onClick={deleteFile}>
                 <Icon name="trash-can" />
+                {/* The content of this span is used as accessible name for the delete (icon) button. */}
+                {/* However, it is visually hidden (not visible on screen), but available to screen readers */}
                 <span className="adyen-pe-visually-hidden">
                     {/* [TODO]: Add translation key entry for this literal string: 'Delete [fileName] file' */}
                     {i18n.get(`Discard ${file.name} file` as TranslationKey)}

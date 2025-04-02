@@ -82,6 +82,7 @@ export function Dropzone({
                 <div className={classes.labelContent}>
                     <Icon name="upload" className={classes.labelIcon} />
                     <Typography
+                        /* Using the styles for the tertiary button here to have the same look and feel */
                         className={cx(classes.labelText, 'adyen-pe-button', 'adyen-pe-button--tertiary')}
                         el={TypographyElement.SPAN}
                         variant={TypographyVariant.BODY}
@@ -90,6 +91,9 @@ export function Dropzone({
                         {i18n.get('Browse files' as TranslationKey)}
                     </Typography>
                 </div>
+
+                {/* Using nested input in label element technique here to expose interaction surface for the file input. */}
+                {/* The input element itself is visually hidden (not visible on screen), but available to screen readers. */}
                 <input
                     type="file"
                     id="input-field-id"
@@ -100,7 +104,7 @@ export function Dropzone({
                     accept={String(allowedFileTypes)}
                     onChange={handleFileChange}
                     aria-required={required}
-                    data-testId="file-input-field"
+                    data-testId="dropzone-input"
                 />
             </label>
         </div>

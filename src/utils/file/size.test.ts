@@ -69,22 +69,22 @@ describe('getFileSize', () => {
 
 describe('getHumanReadableFileSize', () => {
     test('should return formatted file size with correct bytes pluralization', () => {
-        expect(getHumanReadableFileSize(0)).toBe('0 bytes');
-        expect(getHumanReadableFileSize(1)).toBe('1 byte');
-        expect(getHumanReadableFileSize(100)).toBe('100 bytes');
+        expect(getHumanReadableFileSize(0)).toBe('0 bytes');
+        expect(getHumanReadableFileSize(1)).toBe('1 byte');
+        expect(getHumanReadableFileSize(100)).toBe('100 bytes');
     });
 
     test('should return the expected formatted file size', () => {
-        expect(getHumanReadableFileSize(512)).toBe('512 bytes');
-        expect(getHumanReadableFileSize(1_008)).toBe('1 KB');
-        expect(getHumanReadableFileSize(7_552)).toBe('7.4 KB');
-        expect(getHumanReadableFileSize(19_117)).toBe('18.7 KB');
-        expect(getHumanReadableFileSize(463_187)).toBe('452 KB');
-        expect(getHumanReadableFileSize(2_305_510)).toBe('2.2 MB');
-        expect(getHumanReadableFileSize(20_423_894)).toBe('19.5 MB');
-        expect(getHumanReadableFileSize(359_602_348)).toBe('343 MB');
-        expect(getHumanReadableFileSize(4_735_845_924)).toBe('4.4 GB');
-        expect(getHumanReadableFileSize(801_328_977_208)).toBe('746 GB');
-        expect(getHumanReadableFileSize(1_801_328_977_208)).toBe('1680 GB');
+        expect(getHumanReadableFileSize(512)).toBe('512 bytes');
+        expect(getHumanReadableFileSize(1_008)).toBe('1 KB');
+        expect(getHumanReadableFileSize(7_552)).toBe('7.4 KB');
+        expect(getHumanReadableFileSize(19_117)).toBe('18.7 KB');
+        expect(getHumanReadableFileSize(463_187)).toBe('452 KB');
+        expect(getHumanReadableFileSize(2_305_510)).toBe('2.2 MB');
+        expect(getHumanReadableFileSize(20_423_894)).toBe('19.5 MB');
+        expect(getHumanReadableFileSize(359_602_348)).toBe('343 MB');
+        expect(getHumanReadableFileSize(4_735_845_924)).toBe('4.4 GB');
+        expect(getHumanReadableFileSize(801_328_977_208)).toBe('746 GB');
+        expect(getHumanReadableFileSize(1_801_328_977_208)).toBe('1680 GB');
     });
 });

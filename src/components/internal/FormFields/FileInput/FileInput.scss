@@ -34,16 +34,31 @@
         flex: 1;
         font-variant-numeric: style.token(text-font-variant-numeric);
         gap: style.token(spacer-040);
+        overflow: hidden;
+    }
+
+    &__file-name {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    &__file-size {
+        flex: none;
     }
 
     &__file-button {
         --file-button-padding: #{style.token(spacer-040)};
         border-radius: 100%;
+        flex: none;
         margin: calc(var(--file-button-padding) * -1);
+        margin-left: 0;
         padding: var(--file-button-padding);
     }
 
     &__file-icon {
+        flex: none;
+
         svg {
             color: style.token(color-label-success);
         }

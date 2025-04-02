@@ -90,12 +90,12 @@ export const getHumanReadableFileSize = (bytes: number): string => {
     const { scale, size } = getFileSize(bytes);
     switch (scale) {
         case ByteScale.BYTES:
-            return `${size} byte${size === 1 ? '' : 's'}`;
+            return `${size} byte${size === 1 ? '' : 's'}`;
         case ByteScale.KB:
-            return `${size} KB`;
+            return `${size} KB`;
         case ByteScale.MB:
-            return `${size} MB`;
+            return `${size} MB`;
         case ByteScale.GB:
-            return `${size} GB`;
+            return `${size} GB`;
     }
 };

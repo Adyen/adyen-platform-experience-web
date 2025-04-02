@@ -13,7 +13,7 @@ describe('FileInput', () => {
         render(<FileInput name="upload_file" />);
 
         const dropzone = screen.getByRole('region');
-        const fileInput = within(dropzone).getByTestId('file-input-field');
+        const fileInput = within(dropzone).getByTestId('dropzone-input');
 
         [dropzone, fileInput].forEach(elem => {
             expect(elem).toBeInTheDocument();
@@ -27,7 +27,7 @@ describe('FileInput', () => {
         render(<FileInput name="upload_file" />);
 
         const dropzone = screen.getByRole('region');
-        const fileInput = within(dropzone).getByTestId('file-input-field');
+        const fileInput = within(dropzone).getByTestId('dropzone-input');
 
         await act(async () => {
             await user.upload(fileInput, MOCK_FILE);
@@ -54,7 +54,7 @@ describe('FileInput', () => {
 
         await act(async () => {
             const dropzone = screen.getByRole('region');
-            const fileInput = within(dropzone).getByTestId('file-input-field');
+            const fileInput = within(dropzone).getByTestId('dropzone-input');
             await user.upload(fileInput, MOCK_FILE);
         });
 
@@ -65,7 +65,7 @@ describe('FileInput', () => {
         });
 
         const dropzone = screen.getByRole('region');
-        const fileInput = within(dropzone).getByTestId('file-input-field');
+        const fileInput = within(dropzone).getByTestId('dropzone-input');
 
         expect(fileDeleteButton).not.toBeInTheDocument();
 
@@ -83,7 +83,7 @@ describe('FileInput', () => {
 
         await act(async () => {
             const dropzone = screen.getByRole('region');
-            const fileInput = within(dropzone).getByTestId('file-input-field');
+            const fileInput = within(dropzone).getByTestId('dropzone-input');
             await user.upload(fileInput, MOCK_FILE);
         });
 
@@ -108,7 +108,7 @@ describe('FileInput', () => {
 
         await act(async () => {
             const dropzone = screen.getByRole('region');
-            const fileInput = within(dropzone).getByTestId('file-input-field');
+            const fileInput = within(dropzone).getByTestId('dropzone-input');
             await user.upload(fileInput, MOCK_FILE);
         });
 
