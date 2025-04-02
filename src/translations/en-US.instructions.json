@@ -99,6 +99,8 @@
     "reportsNotice": "The generation of reports happens at midnight (12:00 AM) in UTC timezone. UTC here refers to the Coordinated Universal Time, which is the reference origin (0) for other timezones.",
     "reportsTitle": "Will be displayed as title text (heading) for the reports overview widget.",
     "reportType.payout": "Used as label for \"payout\" reports. Payout, in this context, refers to a user's money that gets paid into their designated bank account.",
+    "uploadedFile.remove": "Used as assistive technology button label for a button that removes an uploaded file. The filename placeholder will be replaced with the name of the file to be deleted (e.g: photo.png).",
+    "uploadFile.browse": "Used as button label for a file upload widget which enables the user to select one or more files to be uploaded.",
     "weCouldNotLoadTheReportsOverview": "Will be displayed if the reports overview widget cannot be rendered because the user's authorization could not be determined at a given moment.",
     "weCouldNotLoadYourReports": "Will be displayed if a network or server error occurs while trying to fetch reports data."
 }

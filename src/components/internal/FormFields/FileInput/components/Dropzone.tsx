@@ -6,7 +6,6 @@ import useFocusVisibility from '../../../../../hooks/element/useFocusVisibility'
 import { BASE_CLASS, DEFAULT_FILE_TYPES, DEFAULT_MAX_FILE_SIZE } from '../constants';
 import { getUploadedFilesFromSource, UploadedFileSource } from '../../../../../utils';
 import { TypographyElement, TypographyVariant } from '../../../Typography/types';
-import { TranslationKey } from '../../../../../translations';
 import { DropzoneProps } from '../types';
 import Icon from '../../../Icon';
 import '../FileInput.scss';
@@ -87,8 +86,7 @@ export function Dropzone({
                         el={TypographyElement.SPAN}
                         variant={TypographyVariant.BODY}
                     >
-                        {/* [TODO]: Add translation key entry for this literal string: 'Browse files' */}
-                        {i18n.get('Browse files' as TranslationKey)}
+                        {i18n.get('uploadFile.browse')}
                     </Typography>
                 </div>
 

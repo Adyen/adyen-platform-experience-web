@@ -88,6 +88,12 @@ export const getFileSize = (bytes: number): Readonly<FileSize> => {
  */
 export const getHumanReadableFileSize = (bytes: number): string => {
     const { scale, size } = getFileSize(bytes);
+    /*
+     * The human-readable file size string is formed by joining the approximate file size and the byte scale
+     * unit (Bytes, KB, MB, etc.), both of which are separated by a non-breaking whitespace. Non-breaking
+     * whitespace is used here instead of the regular whitespace to ensure that the human-readable file size
+     * string is presented without any line breaks (whenever possible).
+     */
     switch (scale) {
         case ByteScale.BYTES:
             return `${size} byte${size === 1 ? '' : 's'}`;

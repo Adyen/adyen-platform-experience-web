@@ -1,11 +1,10 @@
 import Icon from '../../../Icon';
 import Button from '../../../Button/Button';
 import Typography from '../../../Typography/Typography';
-import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { TypographyElement, TypographyVariant } from '../../../Typography/types';
-import { TranslationKey } from '../../../../../translations';
 import { getHumanReadableFileSize } from '../../../../../utils';
 import { ButtonVariant } from '../../../Button/types';
+import { Translation } from '../../../Translation';
 import { UploadedFileProps } from '../types';
 import { BASE_CLASS } from '../constants';
 import { useMemo } from 'preact/hooks';
@@ -21,7 +20,6 @@ const classes = {
 };
 
 export function UploadedFile({ file, deleteFile }: UploadedFileProps) {
-    const { i18n } = useCoreContext();
     const fileSize = useMemo(() => getHumanReadableFileSize(file.size), [file.size]);
     return (
         <div className={classes.base}>
@@ -41,8 +39,7 @@ export function UploadedFile({ file, deleteFile }: UploadedFileProps) {
                 {/* The content of this span is used as accessible name for the delete (icon) button. */}
                 {/* However, it is visually hidden (not visible on screen), but available to screen readers */}
                 <span className="adyen-pe-visually-hidden">
-                    {/* [TODO]: Add translation key entry for this literal string: 'Delete [fileName] file' */}
-                    {i18n.get(`Discard ${file.name} file` as TranslationKey)}
+                    <Translation translationKey="uploadedFile.remove" fills={{ filename: file.name }} />
                 </span>
             </Button>
         </div>
