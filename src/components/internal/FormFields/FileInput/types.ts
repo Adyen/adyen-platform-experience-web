@@ -1,21 +1,20 @@
+import { PropsWithChildren } from 'preact/compat';
 import { Dispatch, StateUpdater } from 'preact/hooks';
-import { TranslationKey } from '../../../../translations';
 
 export interface BaseFileInputProps {
-    name: string;
+    name?: string;
     id?: string;
-    label?: TranslationKey;
     disabled?: boolean;
     required?: boolean;
     maxFileSize?: number;
     allowedFileTypes?: readonly string[];
 }
 
-export interface DropzoneProps extends BaseFileInputProps {
+export interface DropzoneProps extends PropsWithChildren<BaseFileInputProps> {
     setFiles: Dispatch<StateUpdater<File[]>>;
 }
 
-export interface FileInputProps extends BaseFileInputProps {
+export interface FileInputProps extends PropsWithChildren<BaseFileInputProps> {
     onChange?: (files: File[]) => void;
 }
 

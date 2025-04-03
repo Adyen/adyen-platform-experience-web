@@ -77,10 +77,8 @@
 
     &__label {
         --file-input-padding: #{style.token(spacer-040)};
-        align-items: center;
         cursor: pointer;
         display: flex;
-        gap: style.token(spacer-060);
         margin: 0 calc(var(--file-input-padding) * -1);
         outline: none;
         padding: 0 var(--file-input-padding);
@@ -88,6 +86,12 @@
         &--with-focus {
             outline: auto;
         }
+    }
+
+    &__label-default-content {
+        align-items: center;
+        display: flex;
+        gap: style.token(spacer-060);
     }
 
     &__label-icon {

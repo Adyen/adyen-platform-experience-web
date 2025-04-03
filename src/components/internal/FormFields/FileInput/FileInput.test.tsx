@@ -10,7 +10,7 @@ const MOCK_FILE = new File(['image'], 'photo.png', { type: 'image/png' });
 
 describe('FileInput', () => {
     test('should render file input (dropzone) if files are yet to be uploaded', () => {
-        render(<FileInput name="upload_file" />);
+        render(<FileInput />);
 
         const dropzone = screen.getByRole('region');
         const fileInput = within(dropzone).getByTestId('dropzone-input');
@@ -24,7 +24,7 @@ describe('FileInput', () => {
     test('should render uploaded file details if file has been uploaded', async () => {
         const user = userEvent.setup();
 
-        render(<FileInput name="upload_file" />);
+        render(<FileInput />);
 
         const dropzone = screen.getByRole('region');
         const fileInput = within(dropzone).getByTestId('dropzone-input');
@@ -50,7 +50,7 @@ describe('FileInput', () => {
     test('should render file input (dropzone) again after removing uploaded file', async () => {
         const user = userEvent.setup();
 
-        render(<FileInput name="upload_file" />);
+        render(<FileInput />);
 
         await act(async () => {
             const dropzone = screen.getByRole('region');
@@ -79,7 +79,7 @@ describe('FileInput', () => {
         const user = userEvent.setup();
         const onChange = vi.fn();
 
-        render(<FileInput name="upload_file" onChange={onChange} />);
+        render(<FileInput onChange={onChange} />);
 
         await act(async () => {
             const dropzone = screen.getByRole('region');
@@ -102,7 +102,7 @@ describe('FileInput', () => {
         const user = userEvent.setup();
         const onChange = vi.fn();
 
-        const { rerender } = render(<FileInput name="upload_file" onChange={onChange} />);
+        const { rerender } = render(<FileInput onChange={onChange} />);
 
         expect(onChange).not.toHaveBeenCalled();
 
@@ -117,7 +117,7 @@ describe('FileInput', () => {
 
         const onChange2 = vi.fn();
 
-        rerender(<FileInput name="upload_file" onChange={onChange2} />);
+        rerender(<FileInput onChange={onChange2} />);
 
         expect(onChange2).not.toHaveBeenCalled();
 

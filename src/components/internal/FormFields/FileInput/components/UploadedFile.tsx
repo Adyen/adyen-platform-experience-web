@@ -37,7 +37,7 @@ export function UploadedFile({ file, deleteFile }: UploadedFileProps) {
             <Button className={classes.fileButton} variant={ButtonVariant.TERTIARY} onClick={deleteFile}>
                 <Icon name="trash-can" />
                 {/* The content of this span is used as accessible name for the delete (icon) button. */}
-                {/* However, it is visually hidden (not visible), but available to assistive technology */}
+                {/* However, it is visually hidden (not visible), but available to assistive technology. */}
                 <span className="adyen-pe-visually-hidden">
                     <Translation translationKey="uploadedFile.remove" fills={{ filename: file.name }} />
                 </span>

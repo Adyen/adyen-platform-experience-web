@@ -2,7 +2,6 @@
  * @vitest-environment jsdom
  */
 import { describe, expect, test, vi } from 'vitest';
-import { TranslationKey } from '../../../../../translations';
 import { act, fireEvent, render, screen, within } from '@testing-library/preact';
 import { userEvent } from '@testing-library/user-event';
 import Dropzone from './Dropzone';
@@ -18,32 +17,48 @@ const DISALLOWED_FILE = new File(['Hello world!!!'], 'hello.txt', { type: 'text/
 describe('Dropzone', () => {
     // Rendering tests
     test('should render correctly', () => {
-        render(<Dropzone name="upload_file" setFiles={vi.fn()} />);
+        const { rerender } = render(<Dropzone setFiles={vi.fn()} />);
 
         const dropzone = screen.getByRole('region');
         const fileInput: HTMLInputElement = within(dropzone).getByTestId('dropzone-input');
-        const labelElement = within(dropzone).getByLabelText(/Browse files/);
+        const labelElement = within(dropzone)
+            .getByText(/Browse files/)
+            .closest('label')!;
 
         [dropzone, fileInput, labelElement].forEach(elem => {
             expect(elem).toBeInTheDocument();
             expect(elem).toBeVisible();
         });
 
+        expect(fileInput.name).toBe('');
+
+        rerender(<Dropzone name="upload_file" setFiles={vi.fn()} />);
+
         expect(fileInput.name).toBe('upload_file');
     });
 
-    test('should render label element with correct label when provided', () => {
-        render(<Dropzone name="upload_file" label={'Choose document' as TranslationKey} setFiles={vi.fn()} />);
+    test('should render label element with correct child content when provided', () => {
+        render(
+            <Dropzone setFiles={vi.fn()}>
+                <span>Choose document</span>
+            </Dropzone>
+        );
 
         const dropzone = screen.getByRole('region');
-        const labelElement = within(dropzone).getByLabelText(/Choose document/);
+        const childElement = within(dropzone).getByText(/Choose document/);
+        const labelElement = childElement.closest('label')!;
 
-        expect(labelElement).toBeInTheDocument();
-        expect(labelElement).toBeVisible();
+        [childElement, labelElement].forEach(elem => {
+            expect(elem).toBeInTheDocument();
+            expect(elem).toBeVisible();
+        });
+
+        expect(childElement.nodeName).toBe('SPAN');
+        expect(childElement.textContent).toBe('Choose document');
     });
 
     test('should render file input element with id when provided', () => {
-        render(<Dropzone name="upload_file" id="input-id" setFiles={vi.fn()} />);
+        render(<Dropzone id="input-id" setFiles={vi.fn()} />);
 
         const dropzone = screen.getByRole('region');
         const fileInput: HTMLInputElement = within(dropzone).getByTestId('dropzone-input');
@@ -52,7 +67,7 @@ describe('Dropzone', () => {
     });
 
     test('should render file input element with unique id if not provided', () => {
-        const { rerender } = render(<Dropzone name="upload_file" setFiles={vi.fn()} />);
+        const { rerender } = render(<Dropzone setFiles={vi.fn()} />);
 
         const dropzone = screen.getByRole('region');
         const fileInput: HTMLInputElement = within(dropzone).getByTestId('dropzone-input');
@@ -61,7 +76,7 @@ describe('Dropzone', () => {
         expect(fileInput.id).toBeTypeOf('string');
         expect(fileInput.id).not.toBe('');
 
-        rerender(<Dropzone name="upload_file" setFiles={vi.fn()} />);
+        rerender(<Dropzone setFiles={vi.fn()} />);
 
         expect(fileInput.id).toBe(previousInputId);
     });
@@ -71,7 +86,7 @@ describe('Dropzone', () => {
         const user = userEvent.setup();
         const setFilesMock = vi.fn();
 
-        render(<Dropzone name="upload_file" setFiles={setFilesMock} />);
+        render(<Dropzone setFiles={setFilesMock} />);
 
         const dropzone = screen.getByRole('region');
         const fileInput: HTMLInputElement = within(dropzone).getByTestId('dropzone-input');
@@ -91,7 +106,7 @@ describe('Dropzone', () => {
         const user = userEvent.setup();
         const setFilesMock = vi.fn();
 
-        render(<Dropzone name="upload_file" setFiles={setFilesMock} />);
+        render(<Dropzone setFiles={setFilesMock} />);
 
         const dropzone = screen.getByRole('region');
         const fileInput: HTMLInputElement = within(dropzone).getByTestId('dropzone-input');
@@ -109,7 +124,7 @@ describe('Dropzone', () => {
         const user = userEvent.setup();
         const setFilesMock = vi.fn();
 
-        render(<Dropzone name="upload_file" setFiles={setFilesMock} />);
+        render(<Dropzone setFiles={setFilesMock} />);
 
         const dropzone = screen.getByRole('region');
         const fileInput: HTMLInputElement = within(dropzone).getByTestId('dropzone-input');
@@ -125,7 +140,7 @@ describe('Dropzone', () => {
         const setFilesMock = vi.fn();
         const maxFileSize = 1;
 
-        render(<Dropzone name="upload_file" setFiles={setFilesMock} maxFileSize={maxFileSize} />);
+        render(<Dropzone setFiles={setFilesMock} maxFileSize={maxFileSize} />);
 
         const dropzone = screen.getByRole('region');
         const fileInput: HTMLInputElement = within(dropzone).getByTestId('dropzone-input');
@@ -144,7 +159,7 @@ describe('Dropzone', () => {
         const user = userEvent.setup();
         const setFilesMock = vi.fn();
 
-        render(<Dropzone name="upload_file" setFiles={setFilesMock} disabled />);
+        render(<Dropzone setFiles={setFilesMock} disabled />);
 
         const dropzone = screen.getByRole('region');
         const fileInput: HTMLInputElement = within(dropzone).getByTestId('dropzone-input');
@@ -159,7 +174,7 @@ describe('Dropzone', () => {
     test('should drop one file at a time', async () => {
         const setFilesMock = vi.fn();
 
-        render(<Dropzone name="upload_file" setFiles={setFilesMock} />);
+        render(<Dropzone setFiles={setFilesMock} />);
 
         const dropzone = screen.getByRole('region');
 
@@ -180,7 +195,7 @@ describe('Dropzone', () => {
     test('should not drop multiple files at a time', async () => {
         const setFilesMock = vi.fn();
 
-        render(<Dropzone name="upload_file" setFiles={setFilesMock} />);
+        render(<Dropzone setFiles={setFilesMock} />);
 
         const dropzone = screen.getByRole('region');
 
@@ -197,7 +212,7 @@ describe('Dropzone', () => {
     test('should not drop file of disallowed type', async () => {
         const setFilesMock = vi.fn();
 
-        render(<Dropzone name="upload_file" setFiles={setFilesMock} />);
+        render(<Dropzone setFiles={setFilesMock} />);
 
         const dropzone = screen.getByRole('region');
 
@@ -216,7 +231,7 @@ describe('Dropzone', () => {
         const setFilesMock = vi.fn();
         const maxFileSize = 1;
 
-        render(<Dropzone name="upload_file" setFiles={setFilesMock} maxFileSize={maxFileSize} />);
+        render(<Dropzone setFiles={setFilesMock} maxFileSize={maxFileSize} />);
 
         const dropzone = screen.getByRole('region');
         const file = FILES[0]!;
@@ -235,7 +250,7 @@ describe('Dropzone', () => {
     test('should not drop file if disabled', async () => {
         const setFilesMock = vi.fn();
 
-        render(<Dropzone name="upload_file" setFiles={setFilesMock} disabled />);
+        render(<Dropzone setFiles={setFilesMock} disabled />);
 
         const dropzone = screen.getByRole('region');
         const file = FILES[0];
