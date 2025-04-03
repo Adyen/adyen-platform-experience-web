@@ -1,10 +1,9 @@
 /**
  * @vitest-environment jsdom
  */
-import { test } from 'vitest';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { describe, expect, test, vi } from 'vitest';
 import Dropzone from './Dropzone';
 
-test('Dropzone', () => {
+describe('Dropzone', () => {
     // Write your tests here
 });

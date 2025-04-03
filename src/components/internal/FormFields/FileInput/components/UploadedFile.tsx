@@ -11,7 +11,7 @@ import { useMemo } from 'preact/hooks';
 import '../FileInput.scss';
 
 const classes = {
-    base: `${BASE_CLASS}__file`,
+    fileBase: `${BASE_CLASS}__file`,
     fileButton: `${BASE_CLASS}__file-button`,
     fileDetails: `${BASE_CLASS}__file-details`,
     fileIcon: `${BASE_CLASS}__file-icon`,
@@ -22,7 +22,7 @@ const classes = {
 export function UploadedFile({ file, deleteFile }: UploadedFileProps) {
     const fileSize = useMemo(() => getHumanReadableFileSize(file.size), [file.size]);
     return (
-        <div className={classes.base}>
+        <div className={classes.fileBase}>
             <div className={classes.fileDetails}>
                 <Icon name="checkmark-circle-fill" className={classes.fileIcon} />
                 <div className={classes.fileName} title={file.name}>
@@ -37,7 +37,7 @@ export function UploadedFile({ file, deleteFile }: UploadedFileProps) {
             <Button className={classes.fileButton} variant={ButtonVariant.TERTIARY} onClick={deleteFile}>
                 <Icon name="trash-can" />
                 {/* The content of this span is used as accessible name for the delete (icon) button. */}
-                {/* However, it is visually hidden (not visible on screen), but available to screen readers */}
+                {/* However, it is visually hidden (not visible), but available to assistive technology */}
                 <span className="adyen-pe-visually-hidden">
                     <Translation translationKey="uploadedFile.remove" fills={{ filename: file.name }} />
                 </span>

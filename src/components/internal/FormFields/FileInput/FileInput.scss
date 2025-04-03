@@ -7,7 +7,7 @@
     margin: -1px;
     overflow: hidden;
     padding: 0;
-    position: absolute !important;
+    position: absolute;
     white-space: nowrap;
     width: 1px;
 }
@@ -48,7 +48,7 @@
     }
 
     &__file-button {
-        --file-button-padding: #{style.token(spacer-040)};
+        --file-button-padding: #{style.token(spacer-020)};
         border-radius: 100%;
         flex: none;
         margin: calc(var(--file-button-padding) * -1);
@@ -67,39 +67,27 @@
     &__dropzone {
         border: style.token(border-width-s) dashed style.token(color-outline-tertiary);
         border-radius: style.token(border-radius-m);
-        box-sizing: border-box;
         padding: style.token(spacer-020) style.token(spacer-060);
 
-        &--drag-hover {
+        &--hover {
             border: style.token(border-width-s) solid style.token(color-outline-secondary-active);
             box-shadow: style.token(shadow-medium);
         }
     }
 
     &__label {
-        display: flex;
-        position: relative;
-
-        &::before {
-            content: '';
-            inset: 0 calc(#{style.token(spacer-040)} * -1);
-            opacity: 0;
-            outline: auto;
-            position: absolute;
-        }
-
-        &--with-focus-ring::before {
-            opacity: 1;
-        }
-    }
-
-    &__label-content {
+        --file-input-padding: #{style.token(spacer-040)};
         align-items: center;
         cursor: pointer;
         display: flex;
         gap: style.token(spacer-060);
-        position: relative;
-        width: 100%;
+        margin: 0 calc(var(--file-input-padding) * -1);
+        outline: none;
+        padding: 0 var(--file-input-padding);
+
+        &--with-focus {
+            outline: auto;
+        }
     }
 
     &__label-icon {
