@@ -70,7 +70,7 @@ export const DEFAULT_GRANT: IGrant = {
         currency: 'EUR',
     },
     repaymentRate: 1100,
-    expectedRepaymentPeriodDays: 365,
+    expectedRepaymentPeriodDays: 180,
     maximumRepaymentPeriodDays: 540,
     repaymentPeriodLeft: 135,
     termEndsAt: '2025-02-15',
@@ -162,7 +162,7 @@ export const GRANT_OFFER = {
         currency: 'EUR',
     },
     repaymentRate: 1100,
-    expectedRepaymentPeriodDays: 365,
+    expectedRepaymentPeriodDays: 180,
     maximumRepaymentPeriodDays: 540,
 };
 
@@ -199,7 +199,7 @@ export const SIGNED_OFFER = {
         currency: 'EUR',
     },
     repaymentRate: 1100,
-    expectedRepaymentPeriodDays: 365,
+    expectedRepaymentPeriodDays: 180,
     maximumRepaymentPeriodDays: 540,
     repaymentPeriodLeft: 135,
     status: 'Pending',
