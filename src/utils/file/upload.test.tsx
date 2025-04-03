@@ -72,4 +72,9 @@ describe('getUploadedFilesFromSource', () => {
         const dataTransfer = await getDataTransferWithFiles(FILES);
         expect(getUploadedFilesFromSource(dataTransfer)).toMatchObject(FILES);
     });
+
+    test('should return array with unique files', async () => {
+        const dataTransfer = await getDataTransferWithFiles([...FILES, ...FILES]);
+        expect(getUploadedFilesFromSource(dataTransfer)).toMatchObject(FILES);
+    });
 });
