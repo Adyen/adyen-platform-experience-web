@@ -1,10 +1,10 @@
 import cx from 'classnames';
-import { useCallback, useState } from 'preact/hooks';
+import { useCallback, useMemo, useState } from 'preact/hooks';
 import Typography from '../../../Typography/Typography';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import useFocusVisibility from '../../../../../hooks/element/useFocusVisibility';
 import { BASE_CLASS, DEFAULT_FILE_TYPES, DEFAULT_MAX_FILE_SIZE } from '../constants';
-import { getUploadedFilesFromSource, UploadedFileSource } from '../../../../../utils';
+import { getUploadedFilesFromSource, uniqueId, UploadedFileSource } from '../../../../../utils';
 import { TypographyElement, TypographyVariant } from '../../../Typography/types';
 import { DropzoneProps } from '../types';
 import Icon from '../../../Icon';
@@ -20,19 +20,20 @@ const classes = {
 };
 
 export function Dropzone({
-    // [TODO]: Apply these ignored props to the file input element
-    // id,
-    // name,
-    // label = '',
+    id,
+    name,
+    label,
     disabled = false,
     required = false,
     maxFileSize = DEFAULT_MAX_FILE_SIZE,
     allowedFileTypes = DEFAULT_FILE_TYPES,
     setFiles,
 }: DropzoneProps) {
-    const [zoneHover, setZoneHover] = useState(false);
-    const { hasVisibleFocus, ref: inputRef } = useFocusVisibility<HTMLInputElement>();
     const { i18n } = useCoreContext();
+    const { hasVisibleFocus, ref: inputRef } = useFocusVisibility<HTMLInputElement>();
+    const [zoneHover, setZoneHover] = useState(false);
+
+    const inputId = useMemo(() => id || uniqueId(), [id]);
 
     const handleDragOver = (event: DragEvent) => {
         const hasFiles = Array.from(event.dataTransfer?.types ?? []).some(type => type === 'Files');
@@ -77,7 +78,7 @@ export function Dropzone({
         >
             {/* Using the label element here to expose sufficient interaction surface for the file input element. */}
             {/* The input element itself is visually hidden (not visible), but available to assistive technology. */}
-            <label className={cx(classes.label, { [classes.labelWithFocus]: hasVisibleFocus })} htmlFor="input-field-id">
+            <label className={cx(classes.label, { [classes.labelWithFocus]: hasVisibleFocus })} htmlFor={inputId}>
                 <Icon name="upload" className={classes.labelIcon} />
                 <Typography
                     /* Using the styles for the tertiary button here to have the same look and feel */
@@ -85,13 +86,14 @@ export function Dropzone({
                     el={TypographyElement.SPAN}
                     variant={TypographyVariant.BODY}
                 >
-                    {i18n.get('uploadFile.browse')}
+                    {i18n.get(label || 'uploadFile.browse')}
                 </Typography>
             </label>
 
             <input
                 type="file"
-                id="input-field-id"
+                name={name}
+                id={inputId}
                 className="adyen-pe-visually-hidden"
                 ref={inputRef}
                 disabled={disabled}

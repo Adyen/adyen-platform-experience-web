@@ -1,9 +1,10 @@
 import { Dispatch, StateUpdater } from 'preact/hooks';
+import { TranslationKey } from '../../../../translations';
 
 export interface BaseFileInputProps {
     name: string;
     id?: string;
-    label?: string;
+    label?: TranslationKey;
     disabled?: boolean;
     required?: boolean;
     maxFileSize?: number;
