@@ -272,6 +272,8 @@
     "txType.Refund": "Refund",
     "txType.Transfer": "Transfer",
     "type": "Type",
+    "uploadedFile.remove": "Delete %{filename} file",
+    "uploadFile.browse": "Browse files",
     "value": "Value",
     "weCouldNotLoadThePayoutsOverview": "We couldn't load the payouts overview.",
     "weCouldNotLoadTheReportsOverview": "We couldn't load the reports overview.",
