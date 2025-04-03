@@ -15,11 +15,11 @@ const DATE_TRANSLATIONS = {
     'disputes.daysToRespond': 'disputes.daysToRespond__singular',
 };
 
-const DisputeStatusTag = ({ item, activeBalanceAccount }: { item: IDispute; activeBalanceAccount?: IBalanceAccountBase }) => {
+const DisputeStatusTag = ({ dispute, activeBalanceAccount }: { dispute: IDispute; activeBalanceAccount?: IBalanceAccountBase }) => {
     const { i18n } = useCoreContext();
     const { dateFormat } = useTimezoneAwareDateFormatting(activeBalanceAccount?.timeZone);
 
-    const value = item.status;
+    const value = dispute.status;
 
     if (value === 'won') {
         return <Tag variant={TagVariant.SUCCESS} label={i18n.get('disputes.won')} />;
@@ -28,8 +28,8 @@ const DisputeStatusTag = ({ item, activeBalanceAccount }: { item: IDispute; acti
         return <Tag label={i18n.get('disputes.lost')} />;
     }
 
-    if (value === 'action_needed' && item.dueDate) {
-        const targetDate = new Date(item.dueDate);
+    if (value === 'action_needed' && dispute.dueDate) {
+        const targetDate = new Date(dispute.dueDate);
         const now = Date.now();
         const diffMs = targetDate.getTime() - now;
         const seconds = Math.floor(diffMs / 1000);
@@ -39,7 +39,7 @@ const DisputeStatusTag = ({ item, activeBalanceAccount }: { item: IDispute; acti
 
         const isUrgent = days < 10;
 
-        const formattedDueDate = dateFormat(item.dueDate, DATE_FORMAT_DISPUTES_TAG);
+        const formattedDueDate = dateFormat(dispute.dueDate, DATE_FORMAT_DISPUTES_TAG);
 
         return (
             <Tooltip
