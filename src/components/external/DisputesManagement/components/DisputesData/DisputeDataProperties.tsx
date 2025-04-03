@@ -1,52 +1,50 @@
 import cx from 'classnames';
 import { useMemo } from 'preact/hooks';
+import { DATE_FORMAT_DISPUTES_TAG } from '../../../../../constants';
+import useTimezoneAwareDateFormatting from '../../../../../hooks/useTimezoneAwareDateFormatting';
 import { TranslationKey } from '../../../../../translations';
 import { IDisputeDetail } from '../../../../../types/api/models/disputes';
+import Button from '../../../../internal/Button';
+import { ButtonVariant } from '../../../../internal/Button/types';
 import CopyText from '../../../../internal/CopyText/CopyText';
 import Icon from '../../../../internal/DataGrid/components/Icon';
 import { isCustomDataObject } from '../../../../internal/DataGrid/components/TableCells';
 import Link from '../../../../internal/Link/Link';
 import StructuredList from '../../../../internal/StructuredList';
 import { StructuredListProps } from '../../../../internal/StructuredList/types';
+import Download from '../../../../internal/SVGIcons/Download';
+import { Tag } from '../../../../internal/Tag/Tag';
 import { TypographyVariant } from '../../../../internal/Typography/types';
 import Typography from '../../../../internal/Typography/Typography';
-import type { TransactionDataProps } from '../../../TransactionDetails';
-import { TX_DATA_LABEL, TX_DATA_LIST, TX_DETAILS_RESERVED_FIELDS_SET } from '../../../TransactionDetails/components/constants';
+import { DisputeDataProps } from '../../types';
+import { DISPUTE_DATA_LABEL, DISPUTE_DATA_LIST, DISPUTE_DETAILS_RESERVED_FIELDS_SET } from './constants';
 
 type DisputeDataPropertiesProps = {
     dispute: IDisputeDetail;
-    dataCustomization?: TransactionDataProps['dataCustomization'];
+    dataCustomization?: DisputeDataProps['dataCustomization'];
     extraFields?: Record<any, any>;
 };
 
 const DisputeDataProperties = ({ dispute, dataCustomization, extraFields }: DisputeDataPropertiesProps) => {
+    const { dateFormat } = useTimezoneAwareDateFormatting(dispute?.balanceAccount?.timeZone);
+
     return useMemo(() => {
         const { paymentPspReference, latestDefense, reasonCode, paymentMerchantReference, reasonGroup } = dispute;
         const SKIP_ITEM: StructuredListProps['items'][number] = null!;
-
-        const disputeReasonKey = 'dispute.disputeReason';
-        const reasonCodeKey = 'dispute.reasonCode';
-        // const accountKey = 'dispute.account';
-        const disputeReferenceKey = 'dispute.disputeReference';
-        const paymentReferenceKey = 'dispute.paymentReference';
-        const merchantReferenceKey = 'dispute.merchantReference';
-        const defenseReasonKey = 'dispute.merchantReference';
-        const defendedOnKey = 'dispute.defendedOn';
-        const evidenceKey = 'dispute.evidence';
 
         const listItems: StructuredListProps['items'] = [
             // balance account
             // balanceAccount?.description ? { key: 'accountKey' as const, value: balanceAccount.description, id: 'description' } : SKIP_ITEM,
 
             // disputeReason
-            disputeReasonKey ? { key: disputeReasonKey as TranslationKey, value: reasonGroup, id: 'reasonGroup' } : SKIP_ITEM,
+            reasonGroup ? { key: 'dispute.disputeReason' as TranslationKey, value: reasonGroup, id: 'reasonGroup' } : SKIP_ITEM,
 
             // reasonCode
-            reasonCode ? { key: reasonCodeKey as TranslationKey, value: reasonCode, id: 'reasonCode' } : SKIP_ITEM,
+            reasonCode ? { key: 'dispute.reasonCode' as TranslationKey, value: reasonCode, id: 'reasonCode' } : SKIP_ITEM,
 
             // disputeReference
             {
-                key: disputeReferenceKey as TranslationKey,
+                key: 'dispute.disputeReference' as TranslationKey,
                 value: <CopyText type={'Default'} textToCopy={dispute.id} showCopyTextTooltip={false} />,
                 id: 'id',
             },
@@ -54,7 +52,7 @@ const DisputeDataProperties = ({ dispute, dataCustomization, extraFields }: Disp
             // psp reference
             paymentPspReference
                 ? {
-                      key: paymentReferenceKey as TranslationKey,
+                      key: 'dispute.paymentReference' as TranslationKey,
                       value: <CopyText type={'Default'} textToCopy={paymentPspReference} showCopyTextTooltip={false} />,
                       id: 'paymentPspReference',
                   }
@@ -62,18 +60,39 @@ const DisputeDataProperties = ({ dispute, dataCustomization, extraFields }: Disp
 
             // merchant reference
             paymentMerchantReference
-                ? { key: merchantReferenceKey as TranslationKey, value: paymentMerchantReference, id: 'paymentMerchantReference' }
+                ? { key: 'dispute.merchantReference' as TranslationKey, value: paymentMerchantReference, id: 'paymentMerchantReference' }
                 : SKIP_ITEM,
 
             //defense reason
-            latestDefense?.reason ? { key: defenseReasonKey as TranslationKey, value: latestDefense.reason, id: 'defenseReason' } : SKIP_ITEM,
+            latestDefense?.reason
+                ? { key: 'dispute.merchantReference' as TranslationKey, value: latestDefense.reason, id: 'defenseReason' }
+                : SKIP_ITEM,
 
-            //defended on
-            latestDefense?.defendedOn ? { key: defendedOnKey as TranslationKey, value: latestDefense.defendedOn, id: 'defenseReason' } : SKIP_ITEM,
+            //TODO: Clarify if it will be possible to get balance account from backend
+            latestDefense?.defendedOn
+                ? {
+                      key: 'dispute.defendedOn' as TranslationKey,
+                      value: dateFormat(latestDefense.defendedOn, DATE_FORMAT_DISPUTES_TAG),
+                      id: 'defenseReason',
+                  }
+                : SKIP_ITEM,
 
-            //evidence
+            //TODO: Change this when download endpoint is ready
             latestDefense?.suppliedDocuments
-                ? { key: evidenceKey as TranslationKey, value: latestDefense.suppliedDocuments, id: 'defenseReason' }
+                ? {
+                      key: 'dispute.evidence' as TranslationKey,
+                      value: (
+                          <>
+                              {latestDefense.suppliedDocuments.map(document => (
+                                  <Button variant={ButtonVariant.TERTIARY} key={`button-${document}`} onClick={() => {}}>
+                                      <Tag>{document}</Tag>
+                                      <Download />
+                                  </Button>
+                              ))}
+                          </>
+                      ),
+                      id: 'defenseReason',
+                  }
                 : SKIP_ITEM,
         ]
             .filter(Boolean)
@@ -83,7 +102,9 @@ const DisputeDataProperties = ({ dispute, dataCustomization, extraFields }: Disp
         const itemsWithExtraFields = [
             ...listItems,
             ...(Object.entries(extraFields || {})
-                .filter(([key, value]) => !TX_DETAILS_RESERVED_FIELDS_SET.has(key as any) && value.type !== 'button' && value.visibility !== 'hidden')
+                .filter(
+                    ([key, value]) => !DISPUTE_DETAILS_RESERVED_FIELDS_SET.has(key as any) && value.type !== 'button' && value.visibility !== 'hidden'
+                )
                 .map(([key, value]) => ({
                     key: key as TranslationKey,
                     value: isCustomDataObject(value) ? value.value : value,
@@ -94,11 +115,11 @@ const DisputeDataProperties = ({ dispute, dataCustomization, extraFields }: Disp
 
         return (
             <StructuredList
-                classNames={TX_DATA_LIST}
+                classNames={DISPUTE_DATA_LIST}
                 items={itemsWithExtraFields}
                 layout="5-7"
                 align="start"
-                renderLabel={label => <div className={TX_DATA_LABEL}>{label}</div>}
+                renderLabel={label => <div className={DISPUTE_DATA_LABEL}>{label}</div>}
                 renderValue={(val, key, type, config) => {
                     if (type === 'link' && config) {
                         return (
@@ -110,7 +131,7 @@ const DisputeDataProperties = ({ dispute, dataCustomization, extraFields }: Disp
                     if (type === 'icon' && config) {
                         const icon = { url: config?.src, alt: config.alt || val };
                         return (
-                            <div className={cx('adyen-pe-transaction-data__list-icon-value', config?.className)}>
+                            <div className={cx('adyen-pe-dispute-data__list-icon-value', config?.className)}>
                                 <Icon {...icon} />
                                 <Typography variant={TypographyVariant.BODY}> {val} </Typography>
                             </div>
@@ -124,7 +145,7 @@ const DisputeDataProperties = ({ dispute, dataCustomization, extraFields }: Disp
                 }}
             />
         );
-    }, [dispute, dataCustomization?.details?.fields, extraFields]);
+    }, [dispute, dateFormat, dataCustomization?.details?.fields, extraFields]);
 };
 
 export default DisputeDataProperties;

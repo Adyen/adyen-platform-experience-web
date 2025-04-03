@@ -10,22 +10,16 @@ import { Tag } from '../../../../internal/Tag/Tag';
 import { TagVariant } from '../../../../internal/Tag/types';
 import { Tooltip } from '../../../../internal/Tooltip/Tooltip';
 
-const DisputeStatusTag = ({
-    value,
-    item,
-    activeBalanceAccount,
-}: {
-    value: IDispute['status'];
-    item: IDispute;
-    activeBalanceAccount?: IBalanceAccountBase;
-}) => {
+const DATE_TRANSLATIONS = {
+    'disputes.daysToRespond__plural': 'disputes.daysToRespond__plural',
+    'disputes.daysToRespond': 'disputes.daysToRespond__singular',
+};
+
+const DisputeStatusTag = ({ item, activeBalanceAccount }: { item: IDispute; activeBalanceAccount?: IBalanceAccountBase }) => {
     const { i18n } = useCoreContext();
     const { dateFormat } = useTimezoneAwareDateFormatting(activeBalanceAccount?.timeZone);
 
-    const dateTranslations = {
-        'disputes.daysToRespond__plural': 'disputes.daysToRespond__plural',
-        'disputes.daysToRespond': 'disputes.daysToRespond__singular',
-    };
+    const value = item.status;
 
     if (value === 'won') {
         return <Tag variant={TagVariant.SUCCESS} label={i18n.get('disputes.won')} />;
@@ -54,7 +48,7 @@ const DisputeStatusTag = ({
                         ? formattedDueDate
                         : hours <= 24
                         ? i18n.get('disputes.respondToday', { values: { date: formattedDueDate } })
-                        : i18n.get(getTranslation(dateTranslations, 'disputes.daysToRespond', { count: days }) as TranslationKey, {
+                        : i18n.get(getTranslation(DATE_TRANSLATIONS, 'disputes.daysToRespond', { count: days }) as TranslationKey, {
                               values: { date: formattedDueDate, days },
                           })
                 }

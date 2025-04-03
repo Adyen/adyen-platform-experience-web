@@ -1,7 +1,7 @@
 import { http, HttpResponse } from 'msw';
 import { compareDates, delay, getPaginationLinks } from './utils/utils';
 import { endpoints } from '../../endpoints/endpoints';
-import { DISPUTE_DETAIL_DEFAULT, DISPUTES, getDisputesByStatusGroup } from '../mock-data/disputes';
+import { DISPUTES, getDisputeDetailByStatus, getDisputesByStatusGroup } from '../mock-data/disputes';
 
 const mockEndpoints = endpoints('mock').disputes;
 const networkError = false;
@@ -43,6 +43,6 @@ export const disputesMocks = [
         if (!matchingMock) return HttpResponse.text('Cannot find matching dispute mock', { status: 404 });
 
         await delay(1000);
-        return HttpResponse.json({ ...matchingMock, ...DISPUTE_DETAIL_DEFAULT });
+        return HttpResponse.json({ ...matchingMock, ...getDisputeDetailByStatus(matchingMock.status) });
     }),
 ];

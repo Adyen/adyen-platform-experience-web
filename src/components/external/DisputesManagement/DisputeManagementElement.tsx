@@ -1,12 +1,12 @@
 import DataOverviewDetails from '../../internal/DataOverviewDetails/DataOverviewDetails';
 import { _UIComponentProps, ExternalComponentType } from '../../types';
 import UIElement from '../UIElement/UIElement';
-import { DisputesManagementProps } from './types';
+import { DisputeDetailsProps } from './types';
 
-export class DisputeManagementElement extends UIElement<DisputesManagementProps> {
+export class DisputeManagementElement extends UIElement<DisputeDetailsProps> {
     public static type: ExternalComponentType = 'disputesManagement';
 
-    constructor(props: _UIComponentProps<DisputesManagementProps>) {
+    constructor(props: _UIComponentProps<DisputeDetailsProps>) {
         super(props);
         this.componentToRender = this.componentToRender.bind(this);
     }

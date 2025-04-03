@@ -1,6 +1,6 @@
 import { IBalanceAccountBase, ITransactionWithDetails } from '../../../types';
 import { DetailsWithExtraData, TransactionDetailsCustomization } from '../../external';
-import { DisputesManagementProps } from '../../external/DisputesManagement';
+import { DisputeDetailsCustomization, DisputeDetailsProps } from '../../external/DisputesManagement';
 import { DetailsDataCustomizationObject } from '../../types';
 import { PayoutDetailsCustomization } from '../../external/PayoutDetails/types';
 
@@ -21,7 +21,7 @@ export interface TransactionDetailsWithIdProps {
 export type DetailsWithId =
     | ((TransactionDetailsWithIdProps & { type: 'transaction' }) & DetailsWithExtraData<TransactionDetailsCustomization>)
     | (PayoutDetailsWithIdProps & { type: 'payout'; balanceAccountDescription?: string } & DetailsWithExtraData<PayoutDetailsCustomization>)
-    | (DisputesManagementProps & { type: 'dispute' } & DetailsWithExtraData<TransactionDetailsCustomization>);
+    | (DisputeDetailsProps & { type: 'dispute' } & DetailsWithExtraData<DisputeDetailsCustomization>);
 
 export type DetailsComponentProps = (TransactionDetailsWithoutIdProps & { type: 'transaction' }) | DetailsWithId;
 

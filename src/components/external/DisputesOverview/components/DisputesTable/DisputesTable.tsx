@@ -107,7 +107,7 @@ export const DisputesTable: FC<DisputesTableProps> = ({
                 emptyTableMessage={EMPTY_TABLE_MESSAGE}
                 customCells={{
                     status: ({ value, item }) => {
-                        return <DisputeStatusTag value={value} item={item} activeBalanceAccount={activeBalanceAccount} />;
+                        return <DisputeStatusTag item={item} activeBalanceAccount={activeBalanceAccount} />;
                     },
                     amount: ({ value }) => {
                         return (

@@ -32,4 +32,14 @@
         padding: style.token(spacer-060);
         width: max-content;
     }
+
+    &__list {
+        .adyen-pe-structured-list {
+            &__label,
+            &__content {
+                padding-bottom: style.token(spacer-030);
+                padding-top: style.token(spacer-030);
+            }
+        }
+    }
 }

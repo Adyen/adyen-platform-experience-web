@@ -70,9 +70,7 @@ const StatusBox = ({ ...props }: StatusBoxProps) => {
             <div className={TX_DATA_TAGS}>
                 {/*{status && <Tag label={i18n.get(status)} variant={getTagVariantForTransaction(transaction)} />}*/}
                 {category && <Tag label={i18n.get(`txType.${category}`)} variant={TagVariant.DEFAULT} />}
-                {statusBoxOptions?.dispute?.status && (
-                    <DisputeStatusTag value={statusBoxOptions?.dispute?.status} item={statusBoxOptions?.dispute}></DisputeStatusTag>
-                )}
+                {statusBoxOptions?.dispute?.status && <DisputeStatusTag item={statusBoxOptions?.dispute}></DisputeStatusTag>}
 
                 {/* refund type: only available for transaction.category == Refund */}
                 {refundType && (
