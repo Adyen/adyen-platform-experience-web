@@ -465,12 +465,17 @@ export const DISPUTE_DETAIL_NOT_DEFENDABLE = {
     latestDefense: {
         defendedOn: '2019-08-24T14:15:22Z',
         reason: '4853',
-        suppliedDocuments: ['GoodsOrServicesProvided'],
+        suppliedDocuments: ['goodsOrServicesProvided', 'writtenrebuttal'],
     },
     defensability: 'not_defendable',
     allowedDefenseReasons: [],
 } satisfies additional_dispute_details;
 
-export const DISPUTE_DETAIL_DEFAULT = {
-    ...DISPUTE_DETAIL_CAN_DO_FIRST_DEFENSE,
+export const getDisputeDetailByStatus = (status: IDispute['status']) => {
+    switch (status) {
+        case 'action_needed':
+            return DISPUTE_DETAIL_CAN_DO_FIRST_DEFENSE;
+        default:
+            return DISPUTE_DETAIL_NOT_DEFENDABLE;
+    }
 };

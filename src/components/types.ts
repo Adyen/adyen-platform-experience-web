@@ -211,4 +211,5 @@ export type ExternalComponentType =
     | 'reports'
     | 'capitalOverview'
     | 'capitalOffer'
-    | 'disputes';
+    | 'disputes'
+    | 'disputesManagement';
