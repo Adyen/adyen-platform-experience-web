@@ -70,6 +70,7 @@
     "copy": "will be displayed in a tooltip when a user hovers over a copy icon to let them know that clicking it will copy the text next to it",
     "dispute.account": "Label for a balance account",
     "dispute.defendedOn": "Label for a defense date",
+    "dispute.defenseReason": "Label for a dispute defense reason",
     "dispute.disputeReason": "Label for a dispute reason",
     "dispute.disputeReference": "Label for a dispute reference",
     "dispute.evidence": "Label for the submitted documents of to defend the dispute",
