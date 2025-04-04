@@ -24,5 +24,9 @@ export const endpoints = (mode: 'netlify' | 'viteDev' | 'mock') => {
             requestFunds: `${baseUrl}/capital/grants/${matchVariable}`,
             signToS: `${baseUrl}/capital/grants/missingActions/signToS`,
         },
+        disputes: {
+            list: `${baseUrl}/disputes`,
+            details: `${baseUrl}/disputes/${matchVariable}`,
+        },
     } as const;
 };

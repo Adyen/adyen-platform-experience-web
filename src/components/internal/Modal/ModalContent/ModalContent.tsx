@@ -16,6 +16,8 @@ function ModalContent({ type, data, dataCustomization, ...restData }: SelectedDe
             case 'transaction':
                 // [TODO]: Consider providing type information for ...restData (added here to provide extra details)
                 return { id: data, type, ...restData } as DetailsComponentProps;
+            case 'dispute':
+                return { id: data, type } as DetailsComponentProps;
             default:
                 return { data, type } as DetailsComponentProps;
         }

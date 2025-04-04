@@ -4,7 +4,9 @@ import { useConfigContext } from '../../../core/ConfigContext';
 import AdyenPlatformExperienceError from '../../../core/Errors/AdyenPlatformExperienceError';
 import { useFetch } from '../../../hooks/useFetch';
 import { IBalanceAccountBase, IPayoutDetails } from '../../../types';
+import { IDisputeDetail } from '../../../types/api/models/disputes';
 import { EMPTY_OBJECT } from '../../../utils';
+import DisputeData from '../../external/DisputesManagement/components/DisputesData/DisputeData';
 import { PayoutData } from '../../external/PayoutDetails/components/PayoutData';
 import TransactionData from '../../external/TransactionDetails/components/TransactionData';
 import useBalanceAccounts from '../../../hooks/useBalanceAccounts';
@@ -23,6 +25,7 @@ import { PayoutDetailsCustomization } from '../../external/PayoutDetails/types';
 const ENDPOINTS_BY_TYPE = {
     transaction: 'getTransaction',
     payout: 'getPayout',
+    dispute: 'getDisputeDetail',
 } as const;
 
 const isDetailsWithId = (props: DetailsComponentProps): props is DetailsWithId => !('data' in props);
@@ -39,15 +42,20 @@ export default function DataOverviewDetails(props: ExternalUIComponentProps<Deta
             () => ({
                 fetchOptions: { enabled: !!dataId && !!getDetail },
                 queryFn: async () => {
-                    const queryParam =
-                        props.type === 'transaction'
-                            ? {
-                                  path: { transactionId: dataId },
-                              }
-                            : {
-                                  query: { balanceAccountId: dataId, createdAt: props.date },
-                              };
-
+                    let queryParam = null;
+                    switch (props.type) {
+                        case 'transaction':
+                            queryParam = { path: { transactionId: dataId } };
+                            break;
+                        case 'payout':
+                            queryParam = { query: { balanceAccountId: dataId, createdAt: props.date } };
+                            break;
+                        case 'dispute':
+                            queryParam = { path: { disputePspReference: props.id } };
+                            break;
+                        default:
+                            break;
+                    }
                     return getDetail!(EMPTY_OBJECT, { ...queryParam });
                 },
             }),
@@ -134,6 +142,8 @@ export default function DataOverviewDetails(props: ExternalUIComponentProps<Deta
                     dataCustomization={dataCustomization as { details?: PayoutDetailsCustomization }}
                 />
             )}
+
+            {props.type === 'dispute' && detailsData && <DisputeData dispute={detailsData as IDisputeDetail} isFetching={isFetching} />}
         </div>
     );
 }

@@ -35,7 +35,7 @@ import {
 } from '../constants';
 import TransactionDataProperties from '../details/TransactionDataProperties';
 import TransactionDetailsDataContainer from '../details/TransactionDetailsDataContainer';
-import TransactionStatusBox from '../details/TransactionStatusBox';
+import TransactionStatusBox from '../../../../internal/StatusBox/StatusBox';
 import { TransactionRefundFullAmountInput, TransactionRefundPartialAmountInput } from '../refund/TransactionRefundAmount';
 import TransactionRefundNotice from '../refund/TransactionRefundNotice';
 import TransactionRefundReason from '../refund/TransactionRefundReason';
@@ -227,7 +227,7 @@ export const TransactionDataContent = ({ transaction: initialTransaction, extraF
                         dataCustomization={dataCustomization}
                     >
                         <TransactionDetailsDataContainer className={TX_STATUS_BOX}>
-                            <TransactionStatusBox transaction={transaction} refundedState={refundedState} />
+                            <TransactionStatusBox type={'transaction'} transaction={transaction} refundedState={refundedState} />
                         </TransactionDetailsDataContainer>
 
                         <TransactionDataProperties />

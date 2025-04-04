@@ -11,6 +11,7 @@ type _BaseUseDataOverviewDetailsTitleProps = Pick<ExternalUIComponentProps<Detai
 export const TITLES_BY_TYPE = {
     transaction: 'transactionDetails',
     payout: 'payoutDetails',
+    dispute: 'disputeDetails',
 } as const satisfies Record<_BaseUseDataOverviewDetailsTitleProps['type'], TranslationKey>;
 
 export const useDataOverviewDetailsTitle = <T extends _BaseUseDataOverviewDetailsTitleProps>({ hideTitle: _hideTitle, type }: T) => {
