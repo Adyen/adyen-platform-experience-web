@@ -25,6 +25,17 @@ type DisputeDataPropertiesProps = {
     extraFields?: Record<any, any>;
 };
 
+const disputeDataKeys = {
+    defendedOn: 'dispute.defendedOn',
+    defenseReason: 'dispute.defenseReason',
+    disputeEvidence: 'dispute.evidence',
+    disputeReason: 'dispute.disputeReason',
+    disputeReference: 'dispute.disputeReference',
+    merchantReference: 'dispute.merchantReference',
+    paymentReference: 'dispute.paymentReference',
+    reasonCode: 'dispute.reasonCode',
+} satisfies Record<string, TranslationKey>;
+
 const DisputeDataProperties = ({ dispute, dataCustomization, extraFields }: DisputeDataPropertiesProps) => {
     const { dateFormat } = useTimezoneAwareDateFormatting(dispute?.balanceAccount?.timeZone);
 
@@ -36,23 +47,23 @@ const DisputeDataProperties = ({ dispute, dataCustomization, extraFields }: Disp
             // balance account
             // balanceAccount?.description ? { key: 'accountKey' as const, value: balanceAccount.description, id: 'description' } : SKIP_ITEM,
 
-            // disputeReason
-            reasonGroup ? { key: 'dispute.disputeReason' as TranslationKey, value: reasonGroup, id: 'reasonGroup' } : SKIP_ITEM,
+            // dispute reason
+            reasonGroup ? { key: disputeDataKeys.disputeReason, value: reasonGroup, id: 'reasonGroup' } : SKIP_ITEM,
 
-            // reasonCode
-            reasonCode ? { key: 'dispute.reasonCode' as TranslationKey, value: reasonCode, id: 'reasonCode' } : SKIP_ITEM,
+            // reason code
+            reasonCode ? { key: disputeDataKeys.reasonCode, value: reasonCode, id: 'reasonCode' } : SKIP_ITEM,
 
-            // disputeReference
+            // dispute reference
             {
-                key: 'dispute.disputeReference' as TranslationKey,
+                key: disputeDataKeys.disputeReference,
                 value: <CopyText type={'Default'} textToCopy={dispute.id} showCopyTextTooltip={false} />,
                 id: 'id',
             },
 
-            // psp reference
+            //psp reference
             paymentPspReference
                 ? {
-                      key: 'dispute.paymentReference' as TranslationKey,
+                      key: disputeDataKeys.paymentReference,
                       value: <CopyText type={'Default'} textToCopy={paymentPspReference} showCopyTextTooltip={false} />,
                       id: 'paymentPspReference',
                   }
@@ -60,27 +71,29 @@ const DisputeDataProperties = ({ dispute, dataCustomization, extraFields }: Disp
 
             // merchant reference
             paymentMerchantReference
-                ? { key: 'dispute.merchantReference' as TranslationKey, value: paymentMerchantReference, id: 'paymentMerchantReference' }
+                ? {
+                      key: disputeDataKeys.merchantReference,
+                      value: <CopyText type={'Default'} textToCopy={paymentMerchantReference} showCopyTextTooltip={false} />,
+                      id: 'paymentMerchantReference',
+                  }
                 : SKIP_ITEM,
 
-            //defense reason
-            latestDefense?.reason
-                ? { key: 'dispute.merchantReference' as TranslationKey, value: latestDefense.reason, id: 'defenseReason' }
-                : SKIP_ITEM,
+            // defense reason
+            latestDefense?.reason ? { key: disputeDataKeys.defenseReason, value: latestDefense.reason, id: 'defenseReason' } : SKIP_ITEM,
 
             //TODO: Clarify if it will be possible to get balance account from backend
             latestDefense?.defendedOn
                 ? {
-                      key: 'dispute.defendedOn' as TranslationKey,
+                      key: disputeDataKeys.defendedOn,
                       value: dateFormat(latestDefense.defendedOn, DATE_FORMAT_DISPUTES_TAG),
-                      id: 'defenseReason',
+                      id: 'defendedOn',
                   }
                 : SKIP_ITEM,
 
             //TODO: Change this when download endpoint is ready
             latestDefense?.suppliedDocuments
                 ? {
-                      key: 'dispute.evidence' as TranslationKey,
+                      key: disputeDataKeys.disputeEvidence,
                       value: (
                           <>
                               {latestDefense.suppliedDocuments.map(document => (
@@ -91,7 +104,7 @@ const DisputeDataProperties = ({ dispute, dataCustomization, extraFields }: Disp
                               ))}
                           </>
                       ),
-                      id: 'defenseReason',
+                      id: 'disputeEvidence',
                   }
                 : SKIP_ITEM,
         ]

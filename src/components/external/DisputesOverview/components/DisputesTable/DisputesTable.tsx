@@ -24,7 +24,7 @@ import PaymentMethodCell from '../../../TransactionsOverview/components/Transact
 import type { IBalanceAccountBase } from '../../../../../types';
 import DisputeStatusTag from './DisputeStatusTag';
 
-export const FIELDS = ['status', 'createdAt', 'paymentMethod', 'reasonCode', 'amount'] as const;
+export const FIELDS = ['status', 'createdAt', 'paymentMethod', 'reasonGroup', 'amount'] as const;
 export type DisputesTableFields = (typeof FIELDS)[number];
 
 export interface DisputesTableProps extends WithPaginationLimitSelection<PaginationProps> {
@@ -61,7 +61,7 @@ export const DisputesTable: FC<DisputesTableProps> = ({
         fields: FIELDS,
         fieldsKeys: {
             amount: 'disputes.disputedAmount',
-            reasonCode: 'disputes.reason',
+            reasonGroup: 'disputes.reason',
             paymentMethod: 'disputes.paymentMethod',
             createdAt: 'disputes.openedOn',
             status: 'disputes.status',

@@ -1,22 +1,19 @@
 import { Meta } from '@storybook/preact';
-import { ElementProps } from '../utils/types';
-import { DisputesOverview } from '../../src';
+import DisputeManagementElement from '../../src/components/external/DisputesManagement/DisputeManagementElement';
 import { enabledDisabledCallbackRadioControls } from '../utils/controls';
+import { ElementProps } from '../utils/types';
 
-export const DisputesOverviewMeta: Meta<ElementProps<typeof DisputesOverview>> = {
-    title: 'screens/Reports',
+export const DisputesManagementMeta: Meta<ElementProps<typeof DisputeManagementElement>> = {
     argTypes: {
+        id: { type: 'string' },
         onContactSupport: enabledDisabledCallbackRadioControls('onContactSupport'),
-        preferredLimit: { type: 'number', min: 1, max: 100 },
         hideTitle: { type: 'boolean' },
-        allowLimitSelection: { type: 'boolean' },
     },
     args: {
-        preferredLimit: 10,
-        allowLimitSelection: true,
+        id: 'a1b2c3d4-e5f6-4789-abcd-000000000001',
         hideTitle: false,
         onContactSupport: () => {},
-        component: DisputesOverview,
+        component: DisputeManagementElement,
     },
     parameters: {
         controls: {
