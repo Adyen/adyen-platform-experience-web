@@ -16,12 +16,12 @@ import Download from '../../../../internal/SVGIcons/Download';
 import { Tag } from '../../../../internal/Tag/Tag';
 import { TypographyVariant } from '../../../../internal/Typography/types';
 import Typography from '../../../../internal/Typography/Typography';
-import { DisputeDataProps } from '../../types';
+import { DisputeDetailsCustomization } from '../../types';
 import { DISPUTE_DATA_LABEL, DISPUTE_DATA_LIST, DISPUTE_DETAILS_RESERVED_FIELDS_SET } from './constants';
 
 type DisputeDataPropertiesProps = {
     dispute: IDisputeDetail;
-    dataCustomization?: DisputeDataProps['dataCustomization'];
+    dataCustomization?: { details?: DisputeDetailsCustomization };
     extraFields?: Record<any, any>;
 };
 
