@@ -42,8 +42,12 @@ function FileInput({ onChange, ...restProps }: FileInputProps) {
 
     return (
         <div className={BASE_CLASS}>
-            {uploadedFile && <UploadedFile file={uploadedFile} deleteFile={() => deleteFile(uploadedFile)} />}
-            {files.length === 0 && <Dropzone {...restProps} setFiles={setFiles} />}
+            {
+                // prettier-ignore
+                uploadedFile
+                    ? <UploadedFile file={uploadedFile} deleteFile={() => deleteFile(uploadedFile)} />
+                    : <Dropzone {...restProps} setFiles={setFiles} />
+            }
         </div>
     );
 }
