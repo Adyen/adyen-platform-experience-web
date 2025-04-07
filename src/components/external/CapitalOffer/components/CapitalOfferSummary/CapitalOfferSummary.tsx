@@ -21,6 +21,7 @@ import { CapitalErrorMessageDisplay } from '../utils/CapitalErrorMessageDisplay'
 import cx from 'classnames';
 import { StructuredListItem } from '../../../../internal/StructuredList/types';
 import { CAPITAL_REPAYMENT_FREQUENCY } from '../../../../constants';
+import { CapitalOfferLegalNotice } from '../CapitalOfferLegalNotice/CapitalOfferLegalNotice';
 
 const errorMessageWithAlert = ['30_013'];
 
@@ -189,7 +190,7 @@ export const CapitalOfferSummary = ({
                             variant={TypographyVariant.CAPTION}
                             stronger
                         >
-                            {showWarningIcon ? <Icon name={'warning-filled'} /> : null}
+                            {showWarningIcon ? <Icon name={'warning-filled'} data-testid={'primary-account-warning-icon'} /> : null}
                             {val}
                         </Typography>
                     );
@@ -210,6 +211,7 @@ export const CapitalOfferSummary = ({
                     ) : null}
                 </Alert>
             )}
+            <CapitalOfferLegalNotice />
             <div className="adyen-pe-capital-offer-summary__buttons">
                 {requestFundsMutation.error && !requestErrorAlert ? null : (
                     <Button variant={ButtonVariant.SECONDARY} onClick={onBack}>
@@ -220,7 +222,7 @@ export const CapitalOfferSummary = ({
                     variant={ButtonVariant.PRIMARY}
                     state={requestFundsMutation.isLoading ? 'loading' : undefined}
                     onClick={onRequestFundsHandler}
-                    disabled={requestFundsMutation.isLoading || !!requestFundsMutation.error}
+                    disabled={requestFundsMutation.isLoading || !!requestFundsMutation.error || !!requestFundsMutation.data}
                 >
                     {i18n.get(requestFundsMutation.isLoading ? 'capital.requesting' : 'capital.requestFunds')}
                 </Button>

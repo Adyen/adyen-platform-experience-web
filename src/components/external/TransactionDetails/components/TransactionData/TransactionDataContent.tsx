@@ -43,21 +43,25 @@ import './TransactionData.scss';
 
 export interface TransactionDataContentProps {
     transaction: NonNullable<TransactionDataProps['transaction']>;
+    // TODO - Unify this parameter with dataCustomization
     extraFields: Record<string, any> | undefined;
     balanceAccount?: IBalanceAccountBase;
+    dataCustomization?: TransactionDataProps['dataCustomization'];
 }
 
 const _TransactionDataContentViewWrapper = ({
     children,
     renderViewActionButtons,
     renderViewMessageBox,
-}: PropsWithChildren<{ renderViewActionButtons: () => ComponentChild; renderViewMessageBox?: () => ComponentChild }>) => (
-    <div className={TX_DATA_CLASS}>
-        {children}
-        {renderViewMessageBox && renderViewMessageBox()}
-        {renderViewActionButtons()}
-    </div>
-);
+}: PropsWithChildren<{ renderViewActionButtons: () => ComponentChild; renderViewMessageBox?: () => ComponentChild }>) => {
+    return (
+        <div className={TX_DATA_CLASS}>
+            {children}
+            {renderViewMessageBox && renderViewMessageBox()}
+            {renderViewActionButtons()}
+        </div>
+    );
+};
 
 const _RefundResponseViewWrapper = ({
     action,
@@ -80,7 +84,7 @@ const _RefundResponseViewWrapper = ({
     </div>
 );
 
-export const TransactionDataContent = ({ transaction: initialTransaction, extraFields }: TransactionDataContentProps) => {
+export const TransactionDataContent = ({ transaction: initialTransaction, extraFields, dataCustomization }: TransactionDataContentProps) => {
     const [activeView, _setActiveView] = useState(ActiveView.DETAILS);
     const [primaryAction, _setPrimaryAction] = useState<ButtonActionObject>();
     const [secondaryAction, _setSecondaryAction] = useState<ButtonActionObject>();
@@ -103,7 +107,6 @@ export const TransactionDataContent = ({ transaction: initialTransaction, extraF
 
     //TODO: Remove this and do not rename refundDetails from the hook when locked status returns from backend
     const refundDisabled = useMemo(() => refundDisabledMetaData || locked, [refundDisabledMetaData, locked]);
-
     const { i18n } = useCoreContext();
     const lineItems: readonly ILineItem[] = Object.freeze(transaction?.lineItems ?? EMPTY_ARRAY);
 
@@ -136,13 +139,25 @@ export const TransactionDataContent = ({ transaction: initialTransaction, extraF
     );
 
     const renderViewActionButtons = useCallback(() => {
-        const actions = [primaryAction!, secondaryAction!].filter(Boolean);
+        const extraActions = extraFields
+            ? Object.values(extraFields)
+                  .filter(field => field.type === 'button')
+                  .map(action => ({
+                      title: action.value,
+                      variant: ButtonVariant.SECONDARY,
+                      event: action.config?.action,
+                      classNames: action.config?.className ? [action.config.className] : [],
+                  }))
+            : [];
+
+        const actions = [primaryAction!, secondaryAction!, ...extraActions].filter(Boolean);
+
         return actions.length ? (
             <TransactionDetailsDataContainer className={TX_DATA_ACTION_BAR}>
                 <ButtonActions actions={actions} layout={ButtonActionsLayoutBasic.BUTTONS_END} />
             </TransactionDetailsDataContainer>
         ) : null;
-    }, [primaryAction, secondaryAction]);
+    }, [extraFields, primaryAction, secondaryAction]);
 
     const onRefundSuccess = useCallback(() => {
         refreshTransaction();
@@ -209,6 +224,7 @@ export const TransactionDataContent = ({ transaction: initialTransaction, extraF
                         }
                         transactionNavigator={transactionNavigator}
                         extraFields={extraFields}
+                        dataCustomization={dataCustomization}
                     >
                         <TransactionDetailsDataContainer className={TX_STATUS_BOX}>
                             <TransactionStatusBox transaction={transaction} refundedState={refundedState} />

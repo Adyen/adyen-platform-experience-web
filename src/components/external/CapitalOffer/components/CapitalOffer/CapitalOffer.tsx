@@ -1,7 +1,9 @@
 import { FunctionalComponent } from 'preact';
 import { useCallback, useMemo, useState } from 'preact/hooks';
+import { isCapitalRegionSupported } from '../../../../internal/CapitalHeader/helpers';
 import { ExternalUIComponentProps } from '../../../../types';
 import { CapitalOfferProps } from '../../types';
+import { CapitalErrorMessageDisplay } from '../utils/CapitalErrorMessageDisplay';
 import { CAPITAL_OFFER_CLASS_NAMES } from './constants';
 import { CapitalHeader } from '../../../../internal/CapitalHeader';
 import { CapitalOfferSelection } from '../CapitalOfferSelection/CapitalOfferSelection';
@@ -10,6 +12,7 @@ import { useConfigContext } from '../../../../../core/ConfigContext';
 import { useFetch } from '../../../../../hooks/useFetch';
 import { EMPTY_OBJECT } from '../../../../../utils';
 import { CapitalOfferSummary } from '../CapitalOfferSummary/CapitalOfferSummary';
+import './CapitalOffer.scss';
 
 type CapitalOfferState = 'OfferSelection' | 'OfferSummary';
 
@@ -22,6 +25,9 @@ export const CapitalOffer: FunctionalComponent<ExternalUIComponentProps<CapitalO
     onOfferSelect,
 }) => {
     const { getDynamicGrantOffersConfiguration } = useConfigContext().endpoints;
+    const legalEntity = useConfigContext()?.extraConfig?.legalEntity;
+
+    const isRegionSupported = useMemo(() => isCapitalRegionSupported(legalEntity), [legalEntity]);
 
     const [emptyGrantOffer, setEmptyGrantOffer] = useState(false);
     const onSuccess = useCallback((data: IDynamicOffersConfig | undefined) => {
@@ -32,7 +38,7 @@ export const CapitalOffer: FunctionalComponent<ExternalUIComponentProps<CapitalO
 
     const { data: internalDynamicOffersConfig, error: dynamicOffersConfigError } = useFetch({
         fetchOptions: {
-            enabled: !externalDynamicOffersConfig && !!getDynamicGrantOffersConfiguration,
+            enabled: !externalDynamicOffersConfig && !!getDynamicGrantOffersConfiguration && isRegionSupported,
             onSuccess: onSuccess,
         },
         queryFn: useCallback(async () => {
@@ -64,6 +70,15 @@ export const CapitalOffer: FunctionalComponent<ExternalUIComponentProps<CapitalO
         }
         return 'OfferSelection';
     }, [selectedOffer]);
+
+    if (!isRegionSupported) {
+        return (
+            <div className={CAPITAL_OFFER_CLASS_NAMES.errorContainer}>
+                <CapitalHeader hideTitle={hideTitle} titleKey={'capital.businessFinancing'} />
+                <CapitalErrorMessageDisplay unsupportedRegion />
+            </div>
+        );
+    }
 
     return (
         <div className={CAPITAL_OFFER_CLASS_NAMES.base}>

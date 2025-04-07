@@ -19,8 +19,10 @@ function Button(props: RegularButtonProps, ref: Ref<HTMLButtonElement> | undefin
         props,
         props.onClick
     );
+
+    const { classNameModifiers, ...restOfAllProps } = allProps;
     return (
-        <button {...allProps} ref={ref as Ref<HTMLButtonElement>} type={props.type || 'button'} onClick={click}>
+        <button {...restOfAllProps} ref={ref as Ref<HTMLButtonElement>} type={props.type || 'button'} onClick={click}>
             {allChildren}
         </button>
     );

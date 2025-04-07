@@ -1,3 +1,4 @@
+import { isCapitalRegionSupported } from '../../internal/CapitalHeader/helpers';
 import { _UIComponentProps, ExternalComponentType } from '../../types';
 import UIElement from '../UIElement/UIElement';
 import { CapitalComponentState, CapitalOverviewProps } from './types';
@@ -24,13 +25,24 @@ export class CapitalOverviewElement extends UIElement<CapitalOverviewProps> {
         await sessionReady(session);
 
         const { getDynamicGrantOffersConfiguration, getGrants } = session.context.endpoints;
+        const legalEntity = session.context.extraConfig?.legalEntity;
+
+        if (!isCapitalRegionSupported(legalEntity)) {
+            return { state: 'isInUnsupportedRegion' };
+        }
 
         const [config, grants] = await Promise.all([
             getDynamicGrantOffersConfiguration?.(EMPTY_OBJECT).catch(noop as () => undefined),
             getGrants?.(EMPTY_OBJECT).catch(noop as () => undefined),
         ]);
 
-        const state = grants && grants.data?.length > 0 ? 'hasRequestedGrants' : config && config.minAmount ? 'isPreQualified' : 'isUnqualified';
+        let state: CapitalComponentState['state'] = 'isUnqualified';
+
+        if (grants && grants.data?.length > 0) {
+            state = 'hasRequestedGrants';
+        } else if (config && config.minAmount) {
+            state = 'isPreQualified';
+        }
 
         return { state };
     }

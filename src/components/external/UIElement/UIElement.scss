@@ -6,10 +6,14 @@
     --adyen-pe-content-padding: #{style.token(spacer-070)};
     --adyen-pe-data-details-padding: var(--adyen-pe-content-padding);
     background: style.token(color-background-primary);
-    padding: var(--adyen-pe-content-padding);
+    container-type: inline-size;
     width: 100%;
+}
 
-    @include adyen-pe-screen-sm-and-up {
+.adyen-pe-component__container {
+    padding: var(--adyen-pe-content-padding);
+
+    @media (min-width: #{$adyen-pe-breakpoint-sm}) {
         border: style.token(border-width-s) solid style.token(color-outline-secondary);
         border-radius: style.token(spacer-040);
     }

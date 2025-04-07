@@ -36,6 +36,7 @@ const config: PlaywrightTestConfig = {
 
         trace: 'on-first-retry',
         headless: !!process.env.CI,
+        timezoneId: 'UTC',
     },
 
     /* Configure projects for major browsers */
@@ -47,7 +48,7 @@ const config: PlaywrightTestConfig = {
                 // Use the pre-installed browser already on the machine
                 channel: 'chrome',
                 launchOptions: {
-                    args: process.env.PWDEBUG ? ['--auto-open-devtools-for-tabs'] : ['--headless=new'],
+                    args: process.env.PWDEBUG ? ['--auto-open-devtools-for-tabs'] : [process.env.CI ? '--headless=new' : ''],
                 },
             },
         },

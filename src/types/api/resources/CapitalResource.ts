@@ -61,6 +61,14 @@ export interface components {
              */
             value: number;
         };
+        FundsCollectionDetailDTO: {
+            order: string[];
+            region: string;
+            accountNumber?: string;
+            iban?: string;
+            routingNumber?: string;
+            sortCode?: string;
+        };
         GrantOfferResponseDTO: {
             /** Format: int32 */
             expectedRepaymentPeriodDays: number;
@@ -108,11 +116,13 @@ export interface components {
             repaymentPeriodLeft: number;
             /** Format: int32 */
             repaymentRate: number;
+            revocationAccount?: components['schemas']['FundsCollectionDetailDTO'];
             status: components['schemas']['GrantStatus'];
             /** Format: date-time */
             termEndsAt: string;
             thresholdAmount: components['schemas']['Amount'];
             totalAmount: components['schemas']['Amount'];
+            unscheduledRepaymentAccounts?: components['schemas']['FundsCollectionDetailDTO'][];
         };
         /** @enum {string} */
         GrantStatus: 'Pending' | 'Active' | 'Repaid' | 'Failed' | 'WrittenOff' | 'Revoked';

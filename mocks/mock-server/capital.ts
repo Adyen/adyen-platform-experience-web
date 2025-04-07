@@ -1,15 +1,17 @@
 import {
-    ACTIVE_GRANT,
     DYNAMIC_CAPITAL_OFFER,
-    FAILED_GRANT,
-    GRANT_OFFER,
-    PENDING_GRANT,
+    GRANTS,
     PENDING_GRANT_WITH_ACTIONS,
     REPAID_GRANT,
-    REVOKED_GRANT,
     SIGNED_OFFER,
     SIGN_TOS_ACTION_DETAILS,
+    PENDING_GRANT,
+    ACTIVE_GRANT,
+    FAILED_GRANT,
+    REVOKED_GRANT,
     WRITTEN_OFF_GRANT,
+    GRANT_US_ACCOUNT,
+    GRANT_GB_ACCOUNT,
 } from '../mock-data';
 import { endpoints } from '../../endpoints/endpoints';
 import { DefaultBodyType, http, HttpResponse, StrictRequest } from 'msw';
@@ -76,7 +78,6 @@ export const capitalMock = [
     http.post(mockEndpoints.createOffer, OFFER_REVIEW_HANDLER),
     http.post(mockEndpoints.requestFunds, getHandlerCallback({ response: SIGNED_OFFER, delayTime: 800 })),
 ];
-const capitalFactory = mocksFactory<CapitalPaths>();
 
 const getErrorHandler = (error: AdyenPlatformExperienceError, status = 500) => {
     return async () => {
@@ -85,117 +86,73 @@ const getErrorHandler = (error: AdyenPlatformExperienceError, status = 500) => {
     };
 };
 
-const ERROR_NO_CAPABILITY = new AdyenPlatformExperienceError(ErrorTypes.ERROR, '825ac4ce59f0f159ad672d38d3291i55', 'Message', '30_016');
+const genericError = new AdyenPlatformExperienceError(ErrorTypes.ERROR, 'Something went wrong', 'Message');
 
-const ERROR_INACTIVE_AH = new AdyenPlatformExperienceError(ErrorTypes.ERROR, '769ac4ce59f0f159ad672d38d3291e92', 'Message', '30_011');
-
-const ERROR_OFFER_REVIEW_WENT_WRONG = new AdyenPlatformExperienceError(ErrorTypes.ERROR, 'Something went wrong', 'Message');
-const ERROR_NO_GRANT_ACCOUNT_CONFIG = new AdyenPlatformExperienceError(ErrorTypes.ERROR, '226ac4ce59f0f159ad672d38d3291e93', 'Message', '30_600');
-const ERROR_NO_PRIMARY_BALANCE_ACCOUNT = new AdyenPlatformExperienceError(
-    ErrorTypes.ERROR,
-    'MissingPrimaryBalanceAccountException',
-    'Message',
-    '30_013'
-);
-const ERROR_EXCEEDED_GRANT_LIMIT = new AdyenPlatformExperienceError(ErrorTypes.ERROR, 'MissingPrimaryBalanceAccountException', 'Message');
-const ERROR_MISSING_ACTIONS = new AdyenPlatformExperienceError(ErrorTypes.ERROR, 'Something went wrong', 'Message');
-
-export const CapitalMockedResponses = capitalFactory({
-    default: [
-        { endpoint: mockEndpoints.dynamicOfferConfig, response: DYNAMIC_CAPITAL_OFFER },
-        { endpoint: mockEndpoints.grants, handler: EMPTY_GRANTS_LIST },
-    ],
-    unqualified: [
-        { endpoint: mockEndpoints.dynamicOfferConfig, handler: EMPTY_OFFER },
-        { endpoint: mockEndpoints.grants, handler: EMPTY_GRANTS_LIST },
-    ],
-    prequalified: [
-        { endpoint: mockEndpoints.dynamicOfferConfig, response: DYNAMIC_CAPITAL_OFFER },
-        { endpoint: mockEndpoints.grants, handler: EMPTY_GRANTS_LIST },
-    ],
-    activeGrant: [
-        { endpoint: mockEndpoints.dynamicOfferConfig, handler: EMPTY_OFFER },
-        { endpoint: mockEndpoints.grants, response: { data: [ACTIVE_GRANT] } },
-    ],
-    failedGrant: [
-        { endpoint: mockEndpoints.dynamicOfferConfig, handler: EMPTY_OFFER },
-        { endpoint: mockEndpoints.grants, response: { data: [FAILED_GRANT] } },
-    ],
-    pendingGrant: [
-        { endpoint: mockEndpoints.dynamicOfferConfig, handler: EMPTY_OFFER },
-        { endpoint: mockEndpoints.grants, response: { data: [PENDING_GRANT] } },
-    ],
-    pendingGrantWithActions: [
-        { endpoint: mockEndpoints.dynamicOfferConfig, handler: EMPTY_OFFER },
-        { endpoint: mockEndpoints.grants, response: { data: [PENDING_GRANT_WITH_ACTIONS] } },
-        { endpoint: mockEndpoints.signToS, response: SIGN_TOS_ACTION_DETAILS },
-    ],
-    repaidGrant: [
-        { endpoint: mockEndpoints.dynamicOfferConfig, handler: EMPTY_OFFER },
-        { endpoint: mockEndpoints.grants, response: { data: [REPAID_GRANT] } },
-    ],
-    multipleGrants: [
-        { endpoint: mockEndpoints.dynamicOfferConfig, response: DYNAMIC_CAPITAL_OFFER },
-        {
-            endpoint: mockEndpoints.grants,
-            response: {
-                data: [
-                    REPAID_GRANT,
-                    {
-                        ...REPAID_GRANT,
-                        id: 'c6bi2512869f',
-                        grantAmount: {
-                            value: 1200000,
-                            currency: 'USD',
-                        },
-                    },
-                    {
-                        ...REPAID_GRANT,
-                        id: 'c6bi2512869f',
-                        grantAmount: {
-                            value: 2200000,
-                            currency: 'USD',
-                        },
-                        status: 'Active',
-                    },
-                ],
-            },
-        },
-    ],
-    newOfferAvailable: [
-        { endpoint: mockEndpoints.dynamicOfferConfig, response: DYNAMIC_CAPITAL_OFFER },
-        { endpoint: mockEndpoints.grants, response: { data: [REPAID_GRANT] } },
-    ],
-    revokedGrant: [
-        { endpoint: mockEndpoints.dynamicOfferConfig, handler: EMPTY_OFFER },
-        { endpoint: mockEndpoints.grants, response: { data: [REVOKED_GRANT] } },
-    ],
-    writtenOffGrant: [
-        { endpoint: mockEndpoints.dynamicOfferConfig, handler: EMPTY_OFFER },
-        { endpoint: mockEndpoints.grants, response: { data: [WRITTEN_OFF_GRANT] } },
-    ],
-    grantOffer: [{ endpoint: mockEndpoints.dynamicOffer, response: GRANT_OFFER }],
-    errorNoCapability: [
+const commonHandlers = {
+    errorDynamicOfferConfigNoCapability: [
         {
             endpoint: mockEndpoints.dynamicOfferConfig,
-            handler: getErrorHandler(ERROR_NO_CAPABILITY, 422),
+            handler: getErrorHandler(
+                new AdyenPlatformExperienceError(ErrorTypes.ERROR, '825ac4ce59f0f159ad672d38d3291i55', 'Message', '30_016'),
+                422
+            ),
         },
     ],
-    errorInactiveAccountHolder: [
+    errorDynamicOfferConfigInactiveAccountHolder: [
         {
             endpoint: mockEndpoints.dynamicOfferConfig,
-            handler: getErrorHandler(ERROR_INACTIVE_AH, 422),
+            handler: getErrorHandler(
+                new AdyenPlatformExperienceError(ErrorTypes.ERROR, '769ac4ce59f0f159ad672d38d3291e92', 'Message', '30_011'),
+                422
+            ),
         },
     ],
-    reviewOfferWentWrong: [
+};
+
+const capitalFactory = mocksFactory<CapitalPaths>();
+
+export const CapitalOfferMockedResponses = capitalFactory({
+    ...commonHandlers,
+    default: [{ endpoint: mockEndpoints.dynamicOfferConfig, response: DYNAMIC_CAPITAL_OFFER }],
+    errorDynamicOfferConfigNoConfig: [
+        { endpoint: mockEndpoints.dynamicOfferConfig, handler: getHandlerCallback({ response: undefined, status: 204 }) },
+    ],
+    errorDynamicOfferExceededRetries: [
+        { endpoint: mockEndpoints.dynamicOfferConfig, response: DYNAMIC_CAPITAL_OFFER },
+        { endpoint: mockEndpoints.dynamicOffer, handler: ((req: any) => DYNAMIC_OFFER_HANDLER(req, 10)) as any },
+    ],
+    errorDynamicOfferTemporary: [
+        { endpoint: mockEndpoints.dynamicOfferConfig, response: DYNAMIC_CAPITAL_OFFER },
+        { endpoint: mockEndpoints.dynamicOffer, handler: ((req: any) => DYNAMIC_OFFER_HANDLER(req, 1)) as any },
+    ],
+    errorReviewOfferGeneric: [
         { endpoint: mockEndpoints.dynamicOfferConfig, response: DYNAMIC_CAPITAL_OFFER },
         {
             endpoint: mockEndpoints.createOffer,
-            handler: getErrorHandler(ERROR_OFFER_REVIEW_WENT_WRONG, 500),
+            handler: getErrorHandler(genericError, 500),
             method: 'post',
         },
     ],
-    missingPrimaryBalanceAccount: [
+    errorRequestFundsGeneric: [
+        { endpoint: mockEndpoints.dynamicOfferConfig, response: DYNAMIC_CAPITAL_OFFER },
+        {
+            endpoint: mockEndpoints.requestFunds as any,
+            handler: getErrorHandler(genericError, 500),
+            method: 'post',
+        },
+    ],
+    errorRequestFundsGenericWithCode: [
+        { endpoint: mockEndpoints.dynamicOfferConfig, response: DYNAMIC_CAPITAL_OFFER },
+        {
+            endpoint: mockEndpoints.requestFunds as any,
+            handler: getErrorHandler(
+                new AdyenPlatformExperienceError(ErrorTypes.ERROR, '226ac4ce59f0f159ad672d38d3291e93', 'Message', '30_600'),
+                500
+            ),
+            method: 'post',
+        },
+    ],
+    errorRequestFundsNoPrimaryBalanceAccount: [
         { endpoint: mockEndpoints.dynamicOfferConfig, response: DYNAMIC_CAPITAL_OFFER },
         {
             endpoint: mockEndpoints.createOffer,
@@ -204,46 +161,86 @@ export const CapitalMockedResponses = capitalFactory({
         },
         {
             endpoint: mockEndpoints.requestFunds as any,
-            handler: getErrorHandler(ERROR_NO_PRIMARY_BALANCE_ACCOUNT, 422),
+            handler: getErrorHandler(
+                new AdyenPlatformExperienceError(ErrorTypes.ERROR, 'MissingPrimaryBalanceAccountException', 'Message', '30_013'),
+                422
+            ),
             method: 'post',
         },
     ],
-    noGrantAccountConfig: [
+});
+
+export const CapitalOverviewMockedResponses = capitalFactory({
+    ...commonHandlers,
+    unqualified: [
+        { endpoint: mockEndpoints.dynamicOfferConfig, handler: EMPTY_OFFER },
+        { endpoint: mockEndpoints.grants, handler: EMPTY_GRANTS_LIST },
+    ],
+    prequalified: [
         { endpoint: mockEndpoints.dynamicOfferConfig, response: DYNAMIC_CAPITAL_OFFER },
-        {
-            endpoint: mockEndpoints.requestFunds as any,
-            handler: getErrorHandler(ERROR_NO_GRANT_ACCOUNT_CONFIG, 500),
-            method: 'post',
-        },
+        { endpoint: mockEndpoints.grants, handler: EMPTY_GRANTS_LIST },
     ],
-    requestFundGenericError: [
-        {
-            endpoint: mockEndpoints.requestFunds as any,
-            handler: getErrorHandler(new AdyenPlatformExperienceError(ErrorTypes.ERROR, '1234', 'Message', '500'), 500),
-            method: 'post',
-        },
+    grantPending: [
+        { endpoint: mockEndpoints.dynamicOfferConfig, response: EMPTY_OFFER },
+        { endpoint: mockEndpoints.grants, response: { data: [PENDING_GRANT] } },
     ],
-    exceededGrantLimit: [
-        { endpoint: mockEndpoints.dynamicOfferConfig, response: DYNAMIC_CAPITAL_OFFER },
-        {
-            endpoint: mockEndpoints.requestFunds as any,
-            handler: getErrorHandler(ERROR_EXCEEDED_GRANT_LIMIT, 422),
-            method: 'post',
-        },
-    ],
-    noOfferAvailable: [{ endpoint: mockEndpoints.dynamicOfferConfig, handler: getHandlerCallback({ response: undefined, status: 204 }) }],
-    hasActiveGrants: [{ endpoint: mockEndpoints.dynamicOfferConfig, handler: getHandlerCallback({ response: undefined, status: 204 }) }],
-    dynamicOfferServerError: [
-        { endpoint: mockEndpoints.dynamicOfferConfig, response: DYNAMIC_CAPITAL_OFFER },
-        { endpoint: mockEndpoints.dynamicOffer, handler: ((req: any) => DYNAMIC_OFFER_HANDLER(req, 1)) as any },
-    ],
-    dynamicOfferExceededRetries: [
-        { endpoint: mockEndpoints.dynamicOfferConfig, response: DYNAMIC_CAPITAL_OFFER },
-        { endpoint: mockEndpoints.dynamicOffer, handler: ((req: any) => DYNAMIC_OFFER_HANDLER(req, 10)) as any },
-    ],
-    missingActionsError: [
+    grantActions: [
         { endpoint: mockEndpoints.dynamicOfferConfig, handler: EMPTY_OFFER },
         { endpoint: mockEndpoints.grants, response: { data: [PENDING_GRANT_WITH_ACTIONS] } },
-        { endpoint: mockEndpoints.signToS, handler: getErrorHandler(ERROR_MISSING_ACTIONS, 500) },
+        { endpoint: mockEndpoints.signToS, response: SIGN_TOS_ACTION_DETAILS },
+    ],
+    grantActive: [
+        { endpoint: mockEndpoints.dynamicOfferConfig, response: EMPTY_OFFER },
+        { endpoint: mockEndpoints.grants, response: { data: [ACTIVE_GRANT] } },
+    ],
+    grantActiveWithGBRepaymentAccount: [
+        { endpoint: mockEndpoints.dynamicOfferConfig, response: EMPTY_OFFER },
+        {
+            endpoint: mockEndpoints.grants,
+            response: {
+                data: [{ ...ACTIVE_GRANT, unscheduledRepaymentAccounts: [GRANT_GB_ACCOUNT] }],
+            },
+        },
+    ],
+    grantActiveWithUSRepaymentAccount: [
+        { endpoint: mockEndpoints.dynamicOfferConfig, response: EMPTY_OFFER },
+        {
+            endpoint: mockEndpoints.grants,
+            response: {
+                data: [{ ...ACTIVE_GRANT, unscheduledRepaymentAccounts: [GRANT_US_ACCOUNT] }],
+            },
+        },
+    ],
+    grantFailed: [
+        { endpoint: mockEndpoints.dynamicOfferConfig, response: EMPTY_OFFER },
+        { endpoint: mockEndpoints.grants, response: { data: [FAILED_GRANT] } },
+    ],
+    grantRepaid: [
+        { endpoint: mockEndpoints.dynamicOfferConfig, response: EMPTY_OFFER },
+        { endpoint: mockEndpoints.grants, response: { data: [REPAID_GRANT] } },
+    ],
+    grantRevoked: [
+        { endpoint: mockEndpoints.dynamicOfferConfig, response: EMPTY_OFFER },
+        { endpoint: mockEndpoints.grants, response: { data: [REVOKED_GRANT] } },
+    ],
+    grantWrittenOff: [
+        { endpoint: mockEndpoints.dynamicOfferConfig, response: EMPTY_OFFER },
+        { endpoint: mockEndpoints.grants, response: { data: [WRITTEN_OFF_GRANT] } },
+    ],
+    newOffer: [
+        { endpoint: mockEndpoints.dynamicOfferConfig, response: DYNAMIC_CAPITAL_OFFER },
+        { endpoint: mockEndpoints.grants, response: { data: [REPAID_GRANT] } },
+    ],
+    grants: [
+        { endpoint: mockEndpoints.dynamicOfferConfig, response: EMPTY_OFFER },
+        { endpoint: mockEndpoints.grants, response: { data: GRANTS } },
+    ],
+    errorMissingActionsGeneric: [
+        { endpoint: mockEndpoints.dynamicOfferConfig, handler: EMPTY_OFFER },
+        { endpoint: mockEndpoints.grants, response: { data: [PENDING_GRANT_WITH_ACTIONS] } },
+        {
+            endpoint: mockEndpoints.signToS,
+            handler: getErrorHandler(new AdyenPlatformExperienceError(ErrorTypes.ERROR, 'Something went wrong', 'Message'), 500),
+        },
     ],
 });
