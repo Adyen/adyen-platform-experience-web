@@ -1,9 +1,10 @@
 import cx from 'classnames';
-import { useCallback, useMemo, useState } from 'preact/hooks';
+import { RefObject } from 'preact';
+import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
 import Typography from '../../../Typography/Typography';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import useFocusVisibility from '../../../../../hooks/element/useFocusVisibility';
-import { BASE_CLASS, DEFAULT_FILE_TYPES, DEFAULT_MAX_FILE_SIZE } from '../constants';
+import { BASE_CLASS, DEFAULT_FILE_TYPES, DEFAULT_MAX_FILE_SIZE, validationErrors } from '../constants';
 import { getUploadedFilesFromSource, uniqueId, UploadedFileSource } from '../../../../../utils';
 import { TypographyElement, TypographyVariant } from '../../../Typography/types';
 import { DropzoneProps } from '../types';
@@ -32,6 +33,7 @@ export function Dropzone({
 }: DropzoneProps) {
     const { i18n } = useCoreContext();
     const { hasVisibleFocus, ref: inputRef } = useFocusVisibility<HTMLInputElement>();
+    const [inputError, setInputError] = useState('');
     const [zoneHover, setZoneHover] = useState(false);
 
     const inputId = useMemo(() => id || uniqueId(), [id]);
@@ -60,15 +62,47 @@ export function Dropzone({
         updateFiles(event.target as HTMLInputElement);
     };
 
+    const handleInputBlur = (event: FocusEvent) => {
+        (event.target as HTMLInputElement)?.checkValidity();
+    };
+
+    const handleInputInvalid = (event: Event) => {
+        const inputElement = event.target as HTMLInputElement;
+        // [TODO]: Trigger some error handler instead
+        console.log(inputElement.validationMessage);
+    };
+
     const updateFiles = useCallback(
         <T extends UploadedFileSource>(source?: T | null) => {
-            const allowedFiles = getUploadedFilesFromSource(source).filter(file => {
-                return file.size <= maxFileSize && allowedFileTypes.includes(file.type);
-            });
-            setFiles(allowedFiles.slice(0, 1));
+            const uploadedFiles = getUploadedFilesFromSource(source);
+
+            if (uploadedFiles.length > 1) {
+                return void setInputError(validationErrors.TOO_MANY_FILES);
+            }
+
+            try {
+                const allowedFiles = uploadedFiles.filter(file => {
+                    if (!allowedFileTypes.includes(file.type)) throw validationErrors.UNEXPECTED_FILE;
+                    if (file.size > maxFileSize) throw validationErrors.VERY_LARGE_FILE;
+                    return true;
+                });
+
+                setFiles(allowedFiles);
+            } catch (ex) {
+                switch (ex) {
+                    case validationErrors.UNEXPECTED_FILE:
+                    case validationErrors.VERY_LARGE_FILE:
+                        return void setInputError(ex);
+                }
+            }
         },
         [allowedFileTypes, maxFileSize, setFiles]
     );
+
+    useEffect(() => {
+        const inputElement = (inputRef as RefObject<HTMLInputElement>).current;
+        inputElement?.setCustomValidity(inputError);
+    }, [inputError, inputRef]);
 
     return (
         <div
@@ -103,9 +137,11 @@ export function Dropzone({
                 ref={inputRef}
                 name={inputName}
                 disabled={disabled}
+                required={required}
                 accept={String(allowedFileTypes)}
+                onBlur={handleInputBlur}
                 onChange={handleFileChange}
-                aria-required={required}
+                onInvalid={handleInputInvalid}
                 data-testId="dropzone-input"
             />
         </div>

@@ -149,10 +149,7 @@ describe('Dropzone', () => {
         await user.upload(fileInput, file);
 
         expect(file.size).toBeGreaterThan(maxFileSize);
-
-        expect(setFilesMock).toHaveBeenCalledOnce();
-        expect(setFilesMock).not.toHaveBeenLastCalledWith([file]);
-        expect(setFilesMock).toHaveBeenLastCalledWith([]);
+        expect(setFilesMock).not.toHaveBeenCalled();
     });
 
     test('should not upload file if disabled', async () => {
@@ -205,8 +202,7 @@ describe('Dropzone', () => {
             });
         });
 
-        expect(setFilesMock).not.toHaveBeenLastCalledWith(FILES);
-        expect(setFilesMock).toHaveBeenLastCalledWith([FILES[0]]);
+        expect(setFilesMock).not.toHaveBeenCalled();
     });
 
     test('should not drop file of disallowed type', async () => {
@@ -222,9 +218,7 @@ describe('Dropzone', () => {
             });
         });
 
-        expect(setFilesMock).toHaveBeenCalledOnce();
-        expect(setFilesMock).not.toHaveBeenLastCalledWith([DISALLOWED_FILE]);
-        expect(setFilesMock).toHaveBeenLastCalledWith([]);
+        expect(setFilesMock).not.toHaveBeenCalled();
     });
 
     test('should not drop file larger than the maximum file size', async () => {
@@ -242,9 +236,7 @@ describe('Dropzone', () => {
             });
         });
 
-        expect(setFilesMock).toHaveBeenCalledOnce();
-        expect(setFilesMock).not.toHaveBeenLastCalledWith([file]);
-        expect(setFilesMock).toHaveBeenLastCalledWith([]);
+        expect(setFilesMock).not.toHaveBeenCalled();
     });
 
     test('should not drop file if disabled', async () => {
