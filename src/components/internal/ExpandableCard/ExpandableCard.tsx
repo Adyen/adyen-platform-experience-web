@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import { ExpandableCardProps } from './types';
 import { PropsWithChildren } from 'preact/compat';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { useClickOutside } from '../../../hooks/element/useClickOutside';
 import useCoreContext from '../../../core/Context/useCoreContext';
 import BaseButton from '../BaseButton';
@@ -26,10 +26,11 @@ import {
 const ExpandableCard = ({ renderHeader, children, filled, fullWidth, inFlow, ...listeners }: PropsWithChildren<ExpandableCardProps>) => {
     const { i18n } = useCoreContext();
     const [isOpen, setIsOpen] = useState(false);
+    const [collapsedCardHeight, setCollapsedCardHeight] = useState(0);
     const inNormalFlow = useMemo(() => inFlow === true, [inFlow]);
     const toggleIsOpen = useCallback(() => setIsOpen(isOpen => !isOpen), [setIsOpen]);
     const expandButtonRef = useRef<HTMLButtonElement>(null);
-    const inNormalFlowRef = useRef(inNormalFlow);
+    const expandableCardRef = useRef<HTMLDivElement>(null);
     const isClosedFromOutside = useRef(false);
     const isOpenRef = useRef(isOpen);
 
@@ -43,24 +44,41 @@ const ExpandableCard = ({ renderHeader, children, filled, fullWidth, inFlow, ...
         }, [isOpen, toggleIsOpen])
     );
 
-    const expandableCardRef = (cardElement: HTMLDivElement | null) => {
+    useLayoutEffect(() => {
+        const cardElement = expandableCardRef.current;
         if (!cardElement) return;
 
         if (inNormalFlow) {
-            if (!isOpen || inNormalFlowRef.current !== inNormalFlow) {
-                // The prefect moment to recalculate the expandable card height is either of these:
-                //   (a) the card isn't currently expanded, and the `inNormalFlow` value is currently `true`,
-                //   (b) the `inNormalFlow` value has just changed, and its value is currently `true`
-                cardElement.style.setProperty(CARD_HEIGHT_PROPERTY, `${expandButtonRef.current?.offsetHeight || 0}px`);
-            }
+            // The inNormalFlow value is currently `true`,
+            // Ensure the collapsed card height property is up-to-date
+            cardElement.style.setProperty(CARD_HEIGHT_PROPERTY, `${collapsedCardHeight}px`);
         } else if (!isOpen) {
-            // The card isn't currently expanded, and the `inNormalFlow` value is currently `false`
-            // The custom expandable card height property is no longer needed
+            // The card isn't currently expanded, and the inNormalFlow value is currently `false`
+            // The collapsed card height property is no longer needed
             cardElement.style.removeProperty(CARD_HEIGHT_PROPERTY);
         }
+    }, [collapsedCardHeight, inNormalFlow, isOpen]);
 
-        inNormalFlowRef.current = inNormalFlow;
-    };
+    useEffect(() => {
+        if (!inNormalFlow) return void setCollapsedCardHeight(0);
+
+        const element = expandButtonRef.current;
+        if (!element) return;
+
+        const resizeObserver = new ResizeObserver(entries => {
+            for (const entry of entries) {
+                if (entry.target !== element) continue;
+                setCollapsedCardHeight(element.offsetHeight || 0);
+            }
+        });
+
+        resizeObserver.observe(element);
+
+        return () => {
+            resizeObserver.unobserve(element);
+            resizeObserver.disconnect();
+        };
+    }, [inNormalFlow]);
 
     useEffect(() => {
         if (isOpen) {
