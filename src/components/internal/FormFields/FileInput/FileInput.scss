@@ -13,10 +13,13 @@
 }
 
 .adyen-pe-file-input {
-    svg {
-        color: style.token(color-label-primary);
-        display: block;
-        font-size: 16px;
+    &,
+    &__error-icon {
+        svg {
+            color: style.token(color-label-primary);
+            display: block;
+            font-size: 16px;
+        }
     }
 
     &__file {
@@ -73,6 +76,11 @@
             border: style.token(border-width-s) solid style.token(color-outline-secondary-active);
             box-shadow: style.token(shadow-medium);
         }
+
+        &--error {
+            background: style.token(color-background-critical-weak);
+            border: style.token(border-width-m) solid style.token(color-outline-critical);
+        }
     }
 
     &__label {
@@ -89,9 +97,9 @@
     }
 
     &__label-default-content {
-        align-items: center;
         display: flex;
         gap: style.token(spacer-060);
+        width: 100%;
     }
 
     &__label-icon {
@@ -99,5 +107,37 @@
         border-radius: 100%;
         margin: style.token(spacer-020) 0;
         padding: style.token(spacer-030);
+
+        .adyen-pe-file-input__dropzone--error & {
+            background: style.token(color-background-critical-strong);
+
+            svg {
+                color: style.token(color-label-on-color);
+            }
+        }
+    }
+
+    // Using :nth-child(n) pseudo-class here for specificity boost
+    &__label-text:nth-child(n) {
+        background: transparent;
+        flex: 1;
+        justify-content: flex-start;
+    }
+
+    &__error {
+        align-items: center;
+        display: flex;
+        gap: style.token(spacer-040);
+        margin-top: style.token(spacer-040);
+    }
+
+    &__error-icon {
+        svg {
+            color: style.token(color-label-critical);
+        }
+    }
+
+    &__error-text {
+        color: style.token(color-label-critical);
     }
 }
