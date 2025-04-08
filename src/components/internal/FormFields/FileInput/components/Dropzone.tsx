@@ -81,7 +81,7 @@ export function Dropzone({
         updateFiles(event.target as HTMLInputElement);
     };
 
-    const handleInputBlur = async (event: FocusEvent) => {
+    const handleInputBlur = (event: FocusEvent) => {
         if (inputError) return;
 
         if (required && (event.target as HTMLInputElement)?.validity.valueMissing) {
