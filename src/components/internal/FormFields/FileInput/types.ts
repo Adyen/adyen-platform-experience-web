@@ -1,5 +1,7 @@
 import { PropsWithChildren } from 'preact/compat';
-import { Dispatch, StateUpdater } from 'preact/hooks';
+import { TranslationKey } from '../../../../translations';
+import { ValueOfRecord } from '../../../../utils/types';
+import { validationErrors } from './constants';
 
 export interface BaseFileInputProps {
     name?: string;
@@ -8,10 +10,11 @@ export interface BaseFileInputProps {
     required?: boolean;
     maxFileSize?: number;
     allowedFileTypes?: readonly string[];
+    mapError?: (error: ValidationError) => TranslationKey;
 }
 
 export interface DropzoneProps extends PropsWithChildren<BaseFileInputProps> {
-    setFiles: Dispatch<StateUpdater<File[]>>;
+    uploadFiles: (files: File[]) => void;
 }
 
 export interface FileInputProps extends PropsWithChildren<BaseFileInputProps> {
@@ -22,3 +25,5 @@ export interface UploadedFileProps {
     deleteFile: () => any;
     file: File;
 }
+
+export type ValidationError = ValueOfRecord<typeof validationErrors>;

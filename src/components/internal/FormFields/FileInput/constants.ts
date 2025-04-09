@@ -7,4 +7,4 @@ export const validationErrors = {
     TOO_MANY_FILES: 'too_many_files',
     UNEXPECTED_FILE: 'unexpected_file',
     VERY_LARGE_FILE: 'very_large_file',
-};
+} as const;

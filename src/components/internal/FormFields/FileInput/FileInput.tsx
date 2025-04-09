@@ -28,6 +28,18 @@ function FileInput({ onChange, ...restProps }: FileInputProps) {
         });
     }, []);
 
+    const uploadFiles = useCallback((files: File[]) => {
+        setFiles(currentFiles => {
+            if (currentFiles.length === 0 && files.length === 0) {
+                // No uploaded files currently, and no files will be uploaded,
+                // Nothing to upload, return currentFiles (state did not change)
+                return currentFiles;
+            } else {
+                return files;
+            }
+        });
+    }, []);
+
     useEffect(() => {
         // Skip calling onChange callback if the uploaded files haven't changed
         if (uploadedFiles.current === files) return;
@@ -46,7 +58,7 @@ function FileInput({ onChange, ...restProps }: FileInputProps) {
                 // prettier-ignore
                 uploadedFile
                     ? <UploadedFile file={uploadedFile} deleteFile={() => deleteFile(uploadedFile)} />
-                    : <Dropzone {...restProps} setFiles={setFiles} />
+                    : <Dropzone {...restProps} uploadFiles={uploadFiles} />
             }
         </div>
     );

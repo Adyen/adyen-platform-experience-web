@@ -5,10 +5,10 @@ import Typography from '../../../Typography/Typography';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import useFocusVisibility from '../../../../../hooks/element/useFocusVisibility';
 import { BASE_CLASS, DEFAULT_FILE_TYPES, DEFAULT_MAX_FILE_SIZE, validationErrors } from '../constants';
-import { getUploadedFilesFromSource, uniqueId, UploadedFileSource } from '../../../../../utils';
+import { getUploadedFilesFromSource, isFunction, uniqueId, UploadedFileSource } from '../../../../../utils';
 import { TypographyElement, TypographyVariant } from '../../../Typography/types';
 import { TranslationKey } from '../../../../../translations';
-import { DropzoneProps } from '../types';
+import { DropzoneProps, ValidationError } from '../types';
 import Icon from '../../../Icon';
 import '../FileInput.scss';
 
@@ -34,29 +34,17 @@ export function Dropzone({
     required = false,
     maxFileSize = DEFAULT_MAX_FILE_SIZE,
     allowedFileTypes = DEFAULT_FILE_TYPES,
-    setFiles,
+    mapError,
+    uploadFiles,
 }: DropzoneProps) {
     const { i18n } = useCoreContext();
     const { hasVisibleFocus, ref: inputRef } = useFocusVisibility<HTMLInputElement>();
-    const [inputError, setInputError] = useState('');
+    const [inputError, setInputError] = useState<ValidationError | ''>('');
     const [zoneHover, setZoneHover] = useState(false);
 
     const isInvalid = !!inputError;
     const inputName = name?.trim();
     const inputId = useMemo(() => id || uniqueId(), [id]);
-
-    const inputValidationError = useMemo(() => {
-        switch (inputError) {
-            case validationErrors.MISSING_FILE:
-            case validationErrors.TOO_MANY_FILES:
-            case validationErrors.UNEXPECTED_FILE:
-            case validationErrors.VERY_LARGE_FILE:
-                // [TODO]: Define translations for validation error messages
-                return i18n.get('Upload at least one supporting document to continue' as TranslationKey);
-            default:
-                return inputError;
-        }
-    }, [i18n, inputError]);
 
     const handleDragOver = (event: DragEvent) => {
         const hasFiles = Array.from(event.dataTransfer?.types ?? []).some(type => type === 'Files');
@@ -81,19 +69,31 @@ export function Dropzone({
         updateFiles(event.target as HTMLInputElement);
     };
 
-    const handleInputBlur = (event: FocusEvent) => {
-        if (inputError) return;
+    const handleInputBlur = async (event: FocusEvent) => {
+        if (event.target === document.activeElement) return;
 
-        if (required && (event.target as HTMLInputElement)?.validity.valueMissing) {
+        if (!inputError && (event.target as HTMLInputElement).validity.valueMissing) {
+            // Since there is currently no other custom input validation message,
+            // Replace the default "required" constraint validation message (if necessary)
             updateInputValidationError(validationErrors.MISSING_FILE);
         }
     };
 
     const updateInputValidationError = useCallback((error: string) => {
         const inputElement = (inputRef as RefObject<HTMLInputElement>).current;
-        inputElement?.setCustomValidity(error);
-        inputElement?.checkValidity();
-        setInputError(inputElement?.validationMessage ?? '');
+
+        if (inputElement) {
+            const currentRequired = inputElement.required;
+
+            // Temporarily mark input as optional before accessing validation message,
+            // to evade the default "required" constraint validation message.
+            inputElement.required = false;
+            inputElement.setCustomValidity(error);
+            setInputError((inputElement.validationMessage as ValidationError) ?? '');
+
+            // Restore the required state of the input
+            inputElement.required = currentRequired;
+        }
     }, []);
 
     const updateFiles = useCallback(
@@ -115,7 +115,8 @@ export function Dropzone({
                     return true;
                 });
 
-                setFiles(allowedFiles);
+                updateInputValidationError('');
+                uploadFiles(allowedFiles);
             } catch (ex) {
                 switch (ex) {
                     case validationErrors.UNEXPECTED_FILE:
@@ -124,7 +125,7 @@ export function Dropzone({
                 }
             }
         },
-        [allowedFileTypes, maxFileSize, setFiles, updateInputValidationError]
+        [allowedFileTypes, maxFileSize, updateInputValidationError, uploadFiles]
     );
 
     return (
@@ -169,8 +170,8 @@ export function Dropzone({
                     disabled={disabled}
                     required={required}
                     accept={String(allowedFileTypes)}
-                    onBlur={handleInputBlur}
                     onChange={handleFileChange}
+                    onBlur={handleInputBlur}
                     aria-invalid={isInvalid}
                     data-testId="dropzone-input"
                 />
@@ -179,7 +180,7 @@ export function Dropzone({
                 <div className={classes.error}>
                     <Icon name="cross-circle-fill" className={classes.errorIcon} />
                     <Typography className={classes.errorText} el={TypographyElement.SPAN} variant={TypographyVariant.BODY}>
-                        {inputValidationError}
+                        {i18n.get(isFunction(mapError) ? mapError(inputError) : (inputError as TranslationKey))}
                     </Typography>
                 </div>
             )}
