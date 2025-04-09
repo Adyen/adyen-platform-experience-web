@@ -1,6 +1,6 @@
 import classNames from 'classnames';
 import { VNode } from 'preact';
-import { useEffect, useState } from 'preact/hooks';
+import { useCallback, useEffect, useState } from 'preact/hooks';
 import useCoreContext from '../../../../core/Context/useCoreContext';
 import AdyenPlatformExperienceError from '../../../../core/Errors/AdyenPlatformExperienceError';
 import { EndpointName } from '../../../../types/api/endpoints';
@@ -13,7 +13,8 @@ import useDownload from './useDownload';
 import './DownloadButton.scss';
 
 interface DownloadButtonProps {
-    params: any;
+    requestParams: any;
+    iconButton?: boolean;
     endpointName: EndpointName;
     className?: string;
     disabled?: boolean;
@@ -39,11 +40,20 @@ function downloadBlob({ blob, filename }: { blob: Blob; filename: string }) {
     a.click();
 }
 
-function DownloadButton({ className, disabled, endpointName, params, setError, errorDisplay, onDownloadRequested }: DownloadButtonProps) {
+function DownloadButton({
+    className,
+    disabled,
+    endpointName,
+    requestParams,
+    setError,
+    errorDisplay,
+    onDownloadRequested,
+    iconButton = false,
+}: DownloadButtonProps) {
     const { i18n } = useCoreContext();
     const [fetchData, setFetchData] = useState(false);
     const isSmContainer = useResponsiveContainer(containerQueries.down.xs);
-    const { data, error, isFetching } = useDownload(endpointName, params, fetchData);
+    const { data, error, isFetching } = useDownload(endpointName, requestParams, fetchData);
 
     useEffect(() => {
         if (fetchData) {
@@ -69,21 +79,33 @@ function DownloadButton({ className, disabled, endpointName, params, setError, e
         onDownloadRequested?.();
     };
 
+    const getButtonLabel = useCallback(() => (isFetching ? `${i18n.get('downloading')}..` : i18n.get('download')), [isFetching]);
+    const getButtonIcon = useCallback(() => (isFetching ? <Spinner size={'small'} /> : <Download />), [isFetching]);
+
     return (
-        <div className="adyen-pe-download">
+        <div
+            className={classNames('adyen-pe-download', {
+                'adyen-pe-download-button-container': !iconButton,
+                'adyen-pe-download-icon-button-container': iconButton,
+            })}
+        >
             {isSmContainer ? (
                 <Button iconButton={true} variant={ButtonVariant.TERTIARY} onClick={onClick}>
                     {isFetching ? <Spinner size={'small'} /> : <Download />}
                 </Button>
             ) : (
                 <Button
-                    className={classNames('adyen-pe-download__button', { 'adyen-pe-download__button--loading': isFetching }, className)}
+                    className={classNames(
+                        'adyen-pe-download__button',
+                        { 'adyen-pe-download__button--loading': isFetching, 'adyen-pe-download__button--icon': iconButton },
+                        className
+                    )}
                     disabled={disabled || isFetching}
                     variant={ButtonVariant.SECONDARY}
                     onClick={onClick}
-                    iconLeft={isFetching ? <Spinner size={'small'} /> : <Download />}
+                    {...(!iconButton && { iconLeft: isFetching ? <Spinner size={'small'} /> : <Download /> })}
                 >
-                    {isFetching ? `${i18n.get('downloading')}..` : i18n.get('download')}
+                    {iconButton ? getButtonIcon() : getButtonLabel()}
                 </Button>
             )}
             {error && errorDisplay && <div className={'adyen-pe-download__error'}>{errorDisplay}</div>}

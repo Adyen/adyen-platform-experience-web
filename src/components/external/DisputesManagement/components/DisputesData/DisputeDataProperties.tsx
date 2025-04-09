@@ -4,20 +4,18 @@ import { DATE_FORMAT_DISPUTES_TAG } from '../../../../../constants';
 import useTimezoneAwareDateFormatting from '../../../../../hooks/useTimezoneAwareDateFormatting';
 import { TranslationKey } from '../../../../../translations';
 import { IDisputeDetail } from '../../../../../types/api/models/disputes';
-import Button from '../../../../internal/Button';
-import { ButtonVariant } from '../../../../internal/Button/types';
+import DownloadButton from '../../../../internal/Button/DownloadButton/DownloadButton';
 import CopyText from '../../../../internal/CopyText/CopyText';
 import Icon from '../../../../internal/DataGrid/components/Icon';
 import { isCustomDataObject } from '../../../../internal/DataGrid/components/TableCells';
 import Link from '../../../../internal/Link/Link';
 import StructuredList from '../../../../internal/StructuredList';
 import { StructuredListProps } from '../../../../internal/StructuredList/types';
-import Download from '../../../../internal/SVGIcons/Download';
 import { Tag } from '../../../../internal/Tag/Tag';
 import { TypographyVariant } from '../../../../internal/Typography/types';
 import Typography from '../../../../internal/Typography/Typography';
 import { DisputeDetailsCustomization } from '../../types';
-import { DISPUTE_DATA_LABEL, DISPUTE_DATA_LIST, DISPUTE_DETAILS_RESERVED_FIELDS_SET } from './constants';
+import { DISPUTE_DATA_LABEL, DISPUTE_DATA_LIST, DISPUTE_DATA_LIST_EVIDENCE, DISPUTE_DETAILS_RESERVED_FIELDS_SET } from './constants';
 
 type DisputeDataPropertiesProps = {
     dispute: IDisputeDetail;
@@ -96,12 +94,25 @@ const DisputeDataProperties = ({ dispute, dataCustomization, extraFields }: Disp
                       key: disputeDataKeys.disputeEvidence,
                       value: (
                           <>
-                              {latestDefense.suppliedDocuments.map(document => (
-                                  <Button variant={ButtonVariant.TERTIARY} key={`button-${document}`} onClick={() => {}}>
-                                      <Tag>{document}</Tag>
-                                      <Download />
-                                  </Button>
-                              ))}
+                              {latestDefense.suppliedDocuments.map((document, index) => {
+                                  const queryParam = {
+                                      path: { id: dispute.id },
+                                      query: { documentType: document },
+                                  };
+                                  return (
+                                      <div key={`${document}-${index}`} className={DISPUTE_DATA_LIST_EVIDENCE}>
+                                          <Tag label={document} />
+                                          <DownloadButton
+                                              className={'adyen-pe-dispute-document-download'}
+                                              endpointName={'downloadDisputeFile'}
+                                              disabled={false}
+                                              requestParams={queryParam}
+                                              iconButton={true}
+                                              onDownloadRequested={() => {}}
+                                          />
+                                      </div>
+                                  );
+                              })}
                           </>
                       ),
                       id: 'disputeEvidence',

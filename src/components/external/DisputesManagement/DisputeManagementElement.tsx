@@ -12,7 +12,7 @@ export class DisputeManagementElement extends UIElement<DisputeManagementProps> 
     }
 
     public componentToRender = () => {
-        return <DisputeDetails {...this.props} />;
+        return <DisputeDetails {...this.props} ref={(ref: UIElement<DisputeManagementProps>) => void (this.componentRef = ref)} />;
     };
 }
 

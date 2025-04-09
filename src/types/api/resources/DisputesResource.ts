@@ -17,6 +17,13 @@ export interface paths {
         /** @description Add @Operation annotation to provide a description */
         get: operations['acceptDispute'];
     };
+    '/v1/dispute/{id}/documents/download': {
+        /**
+         * Download a report
+         * @description Given a balance account, type and creation date of report, downloads the desired report
+         */
+        get: operations["downloadDisputeFile"];
+    };
 }
 
 export type webhooks = Record<string, never>;
@@ -99,6 +106,7 @@ export interface components {
             /** @description Link to a different page */
             prev: components['schemas']['Link'];
         };
+        DownloadDisputeFileResponseDTO: Uint8Array;
     };
     responses: never;
     parameters: never;
@@ -183,4 +191,22 @@ export interface operations {
             };
         };
     };
+    downloadDisputeFile: {
+        parameters: {
+            path: {
+                id: string;
+            }
+            query: {
+                documentType: string;
+            };
+        };
+        responses: {
+            /** @description OK - the request has succeeded. */
+            200: {
+                content: {
+                    "text/csv": components["schemas"]["DownloadDisputeFileResponseDTO"];
+                };
+            };
+        };
+    }
 }

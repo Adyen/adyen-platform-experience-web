@@ -1,3 +1,7 @@
+import { IAmount } from '../../../../../types';
+import DataOverviewDetailsSkeleton from '../../../../internal/DataOverviewDetails/DataOverviewDetailsSkeleton';
+import useStatusBoxData from '../../../../internal/StatusBox/useStatusBox';
+import DisputeStatusTag from '../../../DisputesOverview/components/DisputesTable/DisputeStatusTag';
 import { DISPUTE_DATA_ACTION_BAR, DISPUTE_DATA_CLASS, DISPUTE_STATUS_BOX } from './constants';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import StatusBox from '../../../../internal/StatusBox/StatusBox';
@@ -38,17 +42,28 @@ export const DisputeData = ({ disputeId }: { disputeId: string }) => {
         )
     );
 
+    const statusBoxProps = {
+        timezone: dispute?.balanceAccount?.timeZone,
+        createdAt: dispute?.createdAt,
+        amountData: dispute?.amount,
+        paymentMethodData: dispute?.paymentMethod,
+    } as const;
+
+    const statusBoxOptions = useStatusBoxData(statusBoxProps);
+
     const onAcceptClick = useCallback(() => {
         dispute && setDispute(dispute);
         setFlowState('accept');
     }, [dispute, setDispute, setFlowState]);
 
-    if (!dispute || isFetching) return null;
+    if (!dispute || isFetching) {
+        return <DataOverviewDetailsSkeleton skeletonRowNumber={5} />;
+    }
 
     return (
         <div className={DISPUTE_DATA_CLASS}>
             <div className={DISPUTE_STATUS_BOX}>
-                <StatusBox type={'dispute'} dispute={dispute}></StatusBox>
+                <StatusBox {...statusBoxOptions} tag={<DisputeStatusTag dispute={dispute} />} />
             </div>
 
             <DisputeDataProperties dispute={dispute} />
@@ -57,6 +72,10 @@ export const DisputeData = ({ disputeId }: { disputeId: string }) => {
                 <div className={DISPUTE_DATA_ACTION_BAR}>
                     <ButtonActions
                         actions={[
+                            {
+                                title: i18n.get('dispute.defendDispute'),
+                                event: () => {},
+                            },
                             {
                                 title: i18n.get('disputes.accept'),
                                 event: onAcceptClick,
