@@ -176,8 +176,6 @@ export const TransactionDataContent = ({ transaction: initialTransaction, extraF
         bankAccount: transaction.bankAccount,
     } as const;
 
-    console.log('hey ', statusBoxProps);
-
     const statusBoxOptions = useStatusBoxData(statusBoxProps);
 
     const renderMessages = useCallback(() => {
