@@ -1,4 +1,3 @@
-import classNames from 'classnames';
 import cx from 'classnames';
 import { memo } from 'preact/compat';
 import './StatusBox.scss';
