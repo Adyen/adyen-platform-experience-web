@@ -75,7 +75,7 @@ export function Dropzone({
         if (!inputError && (event.target as HTMLInputElement).validity.valueMissing) {
             // Since there is currently no other custom input validation message,
             // Replace the default "required" constraint validation message (if necessary)
-            updateInputValidationError(validationErrors.MISSING_FILE);
+            updateInputValidationError(validationErrors.FILE_REQUIRED);
         }
     };
 
@@ -107,7 +107,7 @@ export function Dropzone({
             try {
                 const allowedFiles = uploadedFiles.filter(file => {
                     if (!allowedFileTypes.includes(file.type)) {
-                        throw validationErrors.UNEXPECTED_FILE;
+                        throw validationErrors.DISALLOWED_FILE_TYPE;
                     }
                     if (file.size > maxFileSize) {
                         throw validationErrors.VERY_LARGE_FILE;
@@ -119,7 +119,7 @@ export function Dropzone({
                 uploadFiles(allowedFiles);
             } catch (ex) {
                 switch (ex) {
-                    case validationErrors.UNEXPECTED_FILE:
+                    case validationErrors.DISALLOWED_FILE_TYPE:
                     case validationErrors.VERY_LARGE_FILE:
                         return updateInputValidationError(ex);
                 }
@@ -132,7 +132,10 @@ export function Dropzone({
         <>
             <div
                 role="region"
-                className={cx(classes.dropzone, { [classes.dropzoneHover]: zoneHover, [classes.dropzoneError]: isInvalid })}
+                className={cx(classes.dropzone, {
+                    [classes.dropzoneError]: isInvalid,
+                    [classes.dropzoneHover]: zoneHover,
+                })}
                 onDragOver={disabled ? undefined : handleDragOver}
                 onDragLeave={disabled ? undefined : handleDragLeave}
                 onDrop={disabled ? undefined : handleDrop}

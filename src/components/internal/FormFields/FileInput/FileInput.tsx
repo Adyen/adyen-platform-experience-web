@@ -1,14 +1,18 @@
-import { useCallback, useEffect, useRef, useState } from 'preact/hooks';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
+import defaultMapError from './helpers/defaultMapError';
 import UploadedFile from './components/UploadedFile';
 import Dropzone from './components/Dropzone';
+import { isFunction } from '../../../../utils';
 import { BASE_CLASS } from './constants';
 import { FileInputProps } from './types';
 import './FileInput.scss';
 
-function FileInput({ onChange, ...restProps }: FileInputProps) {
+export function FileInput({ onChange, mapError, ...restProps }: FileInputProps) {
     const [files, setFiles] = useState<File[]>([]);
     const uploadedFiles = useRef(files);
     const uploadedFile = files[0];
+
+    const mapErrorWithFallback = useMemo(() => (isFunction(mapError) ? mapError : defaultMapError), [mapError]);
 
     const deleteFile = useCallback((fileToDelete: File) => {
         setFiles(currentFiles => {
@@ -58,7 +62,7 @@ function FileInput({ onChange, ...restProps }: FileInputProps) {
                 // prettier-ignore
                 uploadedFile
                     ? <UploadedFile file={uploadedFile} deleteFile={() => deleteFile(uploadedFile)} />
-                    : <Dropzone {...restProps} uploadFiles={uploadFiles} />
+                    : <Dropzone {...restProps} mapError={mapErrorWithFallback} uploadFiles={uploadFiles} />
             }
         </div>
     );

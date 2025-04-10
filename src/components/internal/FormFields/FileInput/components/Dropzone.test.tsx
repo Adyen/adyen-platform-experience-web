@@ -95,7 +95,7 @@ describe('Dropzone', () => {
             fileInput.blur();
         });
 
-        const inputError = screen.getByText(validationErrors.MISSING_FILE);
+        const inputError = screen.getByText(validationErrors.FILE_REQUIRED);
 
         expect(inputError).toBeInTheDocument();
         expect(inputError).toBeVisible();
@@ -250,7 +250,7 @@ describe('Dropzone', () => {
 
         expect(uploadFilesMock).not.toHaveBeenCalled();
 
-        const inputError = screen.getByText(validationErrors.UNEXPECTED_FILE);
+        const inputError = screen.getByText(validationErrors.DISALLOWED_FILE_TYPE);
 
         expect(inputError).toBeInTheDocument();
         expect(inputError).toBeVisible();
