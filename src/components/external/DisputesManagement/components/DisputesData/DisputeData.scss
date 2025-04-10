@@ -35,8 +35,15 @@
             }
         }
 
-        &--evidence:not(:first-child) {
-            margin: style.token(spacer-030) 0;
+        &--evidence {
+            align-items: center;
+            display: flex;
+            gap: style.token(spacer-030);
+            justify-content: center;
+
+            &:not(:first-child) {
+                margin: style.token(spacer-030) 0;
+            }
         }
     }
 

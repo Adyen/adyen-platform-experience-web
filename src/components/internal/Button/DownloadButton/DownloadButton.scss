@@ -26,7 +26,10 @@
     }
 
     &-icon-button-container {
-        display: inline-block;
+        display: inline-flex;
+        height: style.token(spacer-080);
+        justify-content: center;
+        width: style.token(spacer-080);
 
         .adyen-pe-button--secondary:disabled,
         .adyen-pe-button--secondary:disabled:not(:focus) {

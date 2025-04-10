@@ -101,7 +101,7 @@ function DownloadButton({
                         className
                     )}
                     disabled={disabled || isFetching}
-                    variant={ButtonVariant.SECONDARY}
+                    variant={iconButton ? ButtonVariant.TERTIARY : ButtonVariant.SECONDARY}
                     onClick={onClick}
                     {...(!iconButton && { iconLeft: isFetching ? <Spinner size={'small'} /> : <Download /> })}
                 >
