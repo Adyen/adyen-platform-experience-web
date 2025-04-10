@@ -13,6 +13,10 @@ export interface paths {
         /** @description Add @Operation annotation to provide a description */
         get: operations['getDisputeDetail'];
     };
+    '/v1/disputes/{disputePspReference}/defend': {
+        /** @description Add @Operation annotation to provide a description */
+        get: operations['defendDispute'];
+    };
 }
 
 export type webhooks = Record<string, never>;
@@ -95,6 +99,14 @@ export interface components {
             /** @description Link to a different page */
             prev: components['schemas']['Link'];
         };
+        DisputeDefenseDocument: {
+            type: NonNullable<components['schemas']['Defense']['suppliedDocuments']>[number];
+            content: string;
+        };
+        DisputeDefenseRequest: {
+            defenseReason: string;
+            documents: components['schemas']['DisputeDefenseDocument'][];
+        };
     };
     responses: never;
     parameters: never;
@@ -160,6 +172,27 @@ export interface operations {
             200: {
                 content: {
                     'application/json': components['schemas']['DisputesListResponseDTO'];
+                };
+            };
+        };
+    };
+    /** @description Add @Operation annotation to provide a description */
+    defendDispute: {
+        parameters: {
+            path: {
+                disputePspReference: string;
+            };
+        };
+        requestBody: {
+            content: {
+                'application/json': components['schemas']['DisputeDefenseRequest'];
+            };
+        };
+        responses: {
+            /** @description OK - the request has succeeded. */
+            200: {
+                content: {
+                    'application/json': {};
                 };
             };
         };
