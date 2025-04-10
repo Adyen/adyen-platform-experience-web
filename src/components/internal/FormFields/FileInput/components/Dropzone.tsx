@@ -14,6 +14,7 @@ import '../FileInput.scss';
 
 const classes = {
     dropzone: `${BASE_CLASS}__dropzone`,
+    dropzoneDisabled: `${BASE_CLASS}__dropzone--disabled`,
     dropzoneError: `${BASE_CLASS}__dropzone--error`,
     dropzoneHover: `${BASE_CLASS}__dropzone--hover`,
     label: `${BASE_CLASS}__label`,
@@ -133,6 +134,7 @@ export function Dropzone({
             <div
                 role="region"
                 className={cx(classes.dropzone, {
+                    [classes.dropzoneDisabled]: disabled,
                     [classes.dropzoneError]: isInvalid,
                     [classes.dropzoneHover]: zoneHover,
                 })}

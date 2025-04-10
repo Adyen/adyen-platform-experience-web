@@ -13,6 +13,11 @@
 }
 
 .adyen-pe-file-input {
+    $adyen-pe-self: &;
+    $adyen-pe-dropzone: #{$adyen-pe-self}__dropzone;
+    $adyen-pe-dropzone-disabled: #{$adyen-pe-dropzone}--disabled;
+    $adyen-pe-dropzone-error: #{$adyen-pe-dropzone}--error;
+
     &,
     &__error-icon {
         svg {
@@ -81,6 +86,11 @@
             background: style.token(color-background-critical-weak);
             border: style.token(border-width-m) solid style.token(color-outline-critical);
         }
+
+        &--disabled {
+            background: style.token(color-background-disabled);
+            border-color: style.token(color-outline-disabled);
+        }
     }
 
     &__label {
@@ -93,6 +103,11 @@
 
         &--with-focus {
             outline: auto;
+        }
+
+        #{$adyen-pe-dropzone-disabled} & {
+            cursor: default;
+            outline: none;
         }
     }
 
@@ -108,20 +123,36 @@
         margin: style.token(spacer-020) 0;
         padding: style.token(spacer-030);
 
-        .adyen-pe-file-input__dropzone--error & {
+        #{$adyen-pe-dropzone-error} & {
             background: style.token(color-background-critical-strong);
 
             svg {
                 color: style.token(color-label-on-color);
             }
         }
+
+        #{$adyen-pe-dropzone-disabled} & {
+            background: style.token(color-background-disabled);
+
+            svg {
+                color: style.token(color-label-disabled);
+            }
+        }
     }
 
-    // Using :nth-child(n) pseudo-class here for specificity boost
-    &__label-text:nth-child(n) {
-        background: transparent;
-        flex: 1;
-        justify-content: flex-start;
+    &__label-text {
+        // Using :nth-child(n) pseudo-class here for specificity boost
+        &:nth-child(n) {
+            background: transparent;
+            cursor: inherit;
+            flex: 1;
+            justify-content: flex-start;
+        }
+
+        #{$adyen-pe-dropzone-disabled} & {
+            color: style.token(color-label-disabled);
+            text-decoration: none;
+        }
     }
 
     &__error {
