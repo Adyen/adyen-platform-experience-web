@@ -5,7 +5,7 @@ import { DISPUTES, getDisputeDetailByStatus, getDisputesByStatusGroup } from '..
 
 const mockEndpoints = endpoints('mock').disputes;
 const networkError = false;
-const downloadFileError = true;
+const downloadFileError = false;
 const defaultPaginationLimit = 10;
 
 export const disputesMocks = [
