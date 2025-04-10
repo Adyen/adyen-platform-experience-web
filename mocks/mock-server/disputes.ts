@@ -5,6 +5,7 @@ import { DISPUTES, getDisputeDetailByStatus, getDisputesByStatusGroup } from '..
 
 const mockEndpoints = endpoints('mock').disputes;
 const networkError = false;
+const downloadFileError = true;
 const defaultPaginationLimit = 10;
 
 export const disputesMocks = [
@@ -52,7 +53,9 @@ export const disputesMocks = [
     http.get(mockEndpoints.download, async ({ request }) => {
         await delay(1000);
 
-        console.log('hey');
+        if (downloadFileError) {
+            return HttpResponse.error();
+        }
 
         const url = new URL(request.url);
         const filename = url.searchParams.get('documentType');

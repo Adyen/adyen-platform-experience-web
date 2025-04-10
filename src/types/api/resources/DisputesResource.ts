@@ -83,7 +83,7 @@ export interface components {
             status: components['schemas']['DisputeStatus'];
         };
         /** @enum {string} */
-        DisputeStatus: 'action_needed' | 'won' | 'lost' | 'docs_submitted' | 'under_review';
+        DisputeStatus: 'action_needed' | 'won' | 'lost' | 'docs_submitted' | 'under_review' | 'expired';
         DisputesListResponseDTO: {
             _links?: components['schemas']['Links'];
             data: components['schemas']['Dispute'][];
