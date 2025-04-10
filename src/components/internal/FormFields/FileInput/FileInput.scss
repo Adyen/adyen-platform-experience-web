@@ -1,0 +1,174 @@
+@use '../../../../style';
+
+.adyen-pe-visually-hidden {
+    border: 0;
+    clip: rect(0 0 0 0);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    white-space: nowrap;
+    width: 1px;
+}
+
+.adyen-pe-file-input {
+    $adyen-pe-self: &;
+    $adyen-pe-dropzone: #{$adyen-pe-self}__dropzone;
+    $adyen-pe-dropzone-disabled: #{$adyen-pe-dropzone}--disabled;
+    $adyen-pe-dropzone-error: #{$adyen-pe-dropzone}--error;
+
+    &,
+    &__error-icon {
+        svg {
+            color: style.token(color-label-primary);
+            display: block;
+            font-size: 16px;
+        }
+    }
+
+    &__file {
+        align-items: center;
+        background: style.token(color-background-secondary);
+        border-radius: style.token(border-radius-m);
+        display: flex;
+        gap: style.token(spacer-060);
+        padding: style.token(spacer-040) style.token(spacer-060);
+    }
+
+    &__file-details {
+        align-items: center;
+        display: flex;
+        flex: 1;
+        font-variant-numeric: style.token(text-font-variant-numeric);
+        gap: style.token(spacer-040);
+        overflow: hidden;
+    }
+
+    &__file-name {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    &__file-size {
+        flex: none;
+    }
+
+    &__file-button {
+        --file-button-padding: #{style.token(spacer-020)};
+        border-radius: 100%;
+        flex: none;
+        margin: calc(var(--file-button-padding) * -1);
+        margin-left: 0;
+        padding: var(--file-button-padding);
+    }
+
+    &__file-icon {
+        flex: none;
+
+        svg {
+            color: style.token(color-label-success);
+        }
+    }
+
+    &__dropzone {
+        border: style.token(border-width-s) dashed style.token(color-outline-tertiary);
+        border-radius: style.token(border-radius-m);
+        padding: style.token(spacer-020) style.token(spacer-060);
+
+        &--hover {
+            border: style.token(border-width-s) solid style.token(color-outline-secondary-active);
+            box-shadow: style.token(shadow-medium);
+        }
+
+        &--error {
+            background: style.token(color-background-critical-weak);
+            border: style.token(border-width-m) solid style.token(color-outline-critical);
+        }
+
+        &--disabled {
+            background: style.token(color-background-disabled);
+            border-color: style.token(color-outline-disabled);
+        }
+    }
+
+    &__label {
+        --file-input-padding: #{style.token(spacer-040)};
+        cursor: pointer;
+        display: flex;
+        margin: 0 calc(var(--file-input-padding) * -1);
+        outline: none;
+        padding: 0 var(--file-input-padding);
+
+        &--with-focus {
+            outline: auto;
+        }
+
+        #{$adyen-pe-dropzone-disabled} & {
+            cursor: default;
+            outline: none;
+        }
+    }
+
+    &__label-default-content {
+        display: flex;
+        gap: style.token(spacer-060);
+        width: 100%;
+    }
+
+    &__label-icon {
+        background: style.token(color-background-tertiary);
+        border-radius: 100%;
+        margin: style.token(spacer-020) 0;
+        padding: style.token(spacer-030);
+
+        #{$adyen-pe-dropzone-error} & {
+            background: style.token(color-background-critical-strong);
+
+            svg {
+                color: style.token(color-label-on-color);
+            }
+        }
+
+        #{$adyen-pe-dropzone-disabled} & {
+            background: style.token(color-background-disabled);
+
+            svg {
+                color: style.token(color-label-disabled);
+            }
+        }
+    }
+
+    &__label-text {
+        // Using :nth-child(n) pseudo-class here for specificity boost
+        &:nth-child(n) {
+            background: transparent;
+            cursor: inherit;
+            flex: 1;
+            justify-content: flex-start;
+        }
+
+        #{$adyen-pe-dropzone-disabled} & {
+            color: style.token(color-label-disabled);
+            text-decoration: none;
+        }
+    }
+
+    &__error {
+        align-items: center;
+        display: flex;
+        gap: style.token(spacer-040);
+        margin-top: style.token(spacer-040);
+    }
+
+    &__error-icon {
+        svg {
+            color: style.token(color-label-critical);
+        }
+    }
+
+    &__error-text {
+        color: style.token(color-label-critical);
+    }
+}
