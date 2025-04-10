@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
+import { fixedForwardRef } from '../../../../utils/preact';
 import defaultMapError from './helpers/defaultMapError';
 import UploadedFile from './components/UploadedFile';
 import Dropzone from './components/Dropzone';
@@ -7,7 +8,7 @@ import { BASE_CLASS } from './constants';
 import { FileInputProps } from './types';
 import './FileInput.scss';
 
-export function FileInput({ onChange, mapError, ...restProps }: FileInputProps) {
+export const FileInput = fixedForwardRef<FileInputProps, HTMLInputElement>(({ onChange, mapError, ...restProps }, ref) => {
     const [files, setFiles] = useState<File[]>([]);
     const uploadedFiles = useRef(files);
     const uploadedFile = files[0];
@@ -62,10 +63,10 @@ export function FileInput({ onChange, mapError, ...restProps }: FileInputProps) 
                 // prettier-ignore
                 uploadedFile
                     ? <UploadedFile file={uploadedFile} deleteFile={() => deleteFile(uploadedFile)} />
-                    : <Dropzone {...restProps} mapError={mapErrorWithFallback} uploadFiles={uploadFiles} />
+                    : <Dropzone {...restProps} ref={ref} mapError={mapErrorWithFallback} uploadFiles={uploadFiles} />
             }
         </div>
     );
-}
+});
 
 export default FileInput;

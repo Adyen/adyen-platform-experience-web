@@ -1,5 +1,6 @@
-import { Ref } from 'preact';
+import { Ref, RefCallback } from 'preact';
 import { useMemo, useState } from 'preact/hooks';
+import { isFunction, noop } from '../../utils';
 import useReflex from '../useReflex';
 
 const FOCUS_EVENTS = ['focus', 'blur'] as const;
@@ -30,11 +31,17 @@ const FOCUS_EVENTS = ['focus', 'blur'] as const;
  *     );
  * }
  */
-export const useFocusVisibility = <Elem extends HTMLElement>() => {
+export const useFocusVisibility = <Elem extends HTMLElement>(elemRef?: Ref<Elem>) => {
     const [hasVisibleFocus, setHasVisibleFocus] = useState(false);
 
     const ref: Ref<Elem> = useReflex<Elem>(
         useMemo(() => {
+            // [TODO]: Consider updating the useReflex hook to enable current value updates tracking refs
+            // prettier-ignore
+            const updateElemRef: RefCallback<Elem> = elemRef
+                ? isFunction(elemRef) ? elemRef : el => void (elemRef.current = el)
+                : noop;
+
             const updateFocusVisibility = (event: FocusEvent) => {
                 const element = event.target as HTMLElement;
                 setHasVisibleFocus(!!element?.matches(':focus-visible'));
@@ -51,8 +58,9 @@ export const useFocusVisibility = <Elem extends HTMLElement>() => {
                         current.addEventListener(event, updateFocusVisibility, false);
                     });
                 }
+                updateElemRef(current ?? null);
             };
-        }, [])
+        }, [elemRef])
     );
 
     return { hasVisibleFocus, ref } as const;

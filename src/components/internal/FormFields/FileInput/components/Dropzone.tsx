@@ -1,6 +1,7 @@
 import cx from 'classnames';
 import { RefObject } from 'preact';
 import { useCallback, useMemo, useState } from 'preact/hooks';
+import { fixedForwardRef } from '../../../../../utils/preact';
 import Typography from '../../../Typography/Typography';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import useFocusVisibility from '../../../../../hooks/element/useFocusVisibility';
@@ -27,19 +28,21 @@ const classes = {
     errorText: `${BASE_CLASS}__error-text`,
 };
 
-export function Dropzone({
-    id,
-    name,
-    children,
-    disabled = false,
-    required = false,
-    maxFileSize = DEFAULT_MAX_FILE_SIZE,
-    allowedFileTypes = DEFAULT_FILE_TYPES,
-    mapError,
-    uploadFiles,
-}: DropzoneProps) {
+export const Dropzone = fixedForwardRef<DropzoneProps, HTMLInputElement>((props, ref) => {
+    const {
+        id,
+        name,
+        children,
+        disabled = false,
+        required = false,
+        maxFileSize = DEFAULT_MAX_FILE_SIZE,
+        allowedFileTypes = DEFAULT_FILE_TYPES,
+        mapError,
+        uploadFiles,
+    } = props;
+
     const { i18n } = useCoreContext();
-    const { hasVisibleFocus, ref: inputRef } = useFocusVisibility<HTMLInputElement>();
+    const { hasVisibleFocus, ref: inputRef } = useFocusVisibility(ref);
     const [inputError, setInputError] = useState<ValidationError | ''>('');
     const [zoneHover, setZoneHover] = useState(false);
 
@@ -71,8 +74,12 @@ export function Dropzone({
     };
 
     const handleInputBlur = async (event: FocusEvent) => {
-        if (event.target === document.activeElement) return;
+        if (event.target !== document.activeElement) {
+            (event.target as HTMLInputElement)?.checkValidity();
+        }
+    };
 
+    const handleInputInvalid = async (event: Event) => {
         if (!inputError && (event.target as HTMLInputElement).validity.valueMissing) {
             // Since there is currently no other custom input validation message,
             // Replace the default "required" constraint validation message (if necessary)
@@ -175,8 +182,9 @@ export function Dropzone({
                     disabled={disabled}
                     required={required}
                     accept={String(allowedFileTypes)}
-                    onChange={handleFileChange}
                     onBlur={handleInputBlur}
+                    onChange={handleFileChange}
+                    onInvalid={handleInputInvalid}
                     aria-invalid={isInvalid}
                     data-testId="dropzone-input"
                 />
@@ -191,6 +199,6 @@ export function Dropzone({
             )}
         </>
     );
-}
+});
 
 export default Dropzone;
