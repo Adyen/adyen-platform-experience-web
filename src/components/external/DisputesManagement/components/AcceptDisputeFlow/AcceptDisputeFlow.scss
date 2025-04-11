@@ -1,0 +1,67 @@
+@use '../../../../../style';
+@use '../../../../../style/accesibility' as accesibility;
+
+.adyen-pe-accept-dispute {
+    &__container {
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-070);
+        padding-top: style.token(spacer-070);
+        width: 100%;
+    }
+
+    &__success-icon {
+        color: style.token(color-background-success-strong);
+        height: style.token(spacer-100);
+        width: style.token(spacer-100);
+
+        svg {
+            height: inherit;
+            width: inherit;
+        }
+    }
+
+    &__title {
+        color: #000;
+        font-weight: 700;
+    }
+
+    &__input {
+        display: flex;
+        gap: style.token(spacer-070);
+
+        .adyen-pe-icon {
+            display: flex;
+        }
+
+        input {
+            @include accesibility.adyen-pe-visually-hidden-element();
+        }
+
+        /* stylelint-disable */
+        input:focus-visible + label > .adyen-pe-icon {
+            outline: -webkit-focus-ring-color auto 1px;
+        }
+
+        input,
+        .adyen-pe-icon,
+        label {
+            cursor: pointer;
+        }
+    }
+
+    &__label {
+        align-items: center;
+        display: flex;
+        gap: style.token(spacer-070);
+    }
+
+    &__success {
+        align-items: center;
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-070);
+        height: 218px;
+        justify-content: center;
+    }
+}
