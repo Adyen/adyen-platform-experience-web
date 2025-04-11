@@ -13,6 +13,10 @@ export interface paths {
         /** @description Add @Operation annotation to provide a description */
         get: operations['getDisputeDetail'];
     };
+    '/v1/disputes/{disputePspReference}/accept': {
+        /** @description Add @Operation annotation to provide a description */
+        get: operations['getDisputeDetail'];
+    };
 }
 
 export type webhooks = Record<string, never>;
