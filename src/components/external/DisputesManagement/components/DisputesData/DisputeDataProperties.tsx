@@ -48,7 +48,7 @@ const DisputeDataProperties = ({ dispute, dataCustomization }: DisputeDataProper
 
             setExtraFields(
                 dataCustomization?.details?.fields.reduce((acc, field) => {
-                    return TX_DETAILS_RESERVED_FIELDS_SET.has(field.key as any) ||
+                    return DISPUTE_DETAILS_RESERVED_FIELDS_SET.has(field.key as any) ||
                         PAYOUT_TABLE_FIELDS.includes(field.key as any) ||
                         field?.visibility === 'hidden'
                         ? acc
@@ -80,7 +80,7 @@ const DisputeDataProperties = ({ dispute, dataCustomization }: DisputeDataProper
             {
                 key: disputeDataKeys.disputeReference,
                 value: <CopyText type={'Default'} textToCopy={dispute.id} showCopyTextTooltip={false} />,
-                id: 'id',
+                id: 'disputeId',
             },
 
             //psp reference
