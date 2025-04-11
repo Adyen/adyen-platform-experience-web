@@ -9,6 +9,7 @@ import { useCallback, useMemo } from 'preact/hooks';
 import { EMPTY_OBJECT } from '../../../../../utils';
 import './DisputeData.scss';
 import { useDisputeFlow } from '../../hooks/useDisputeFlow';
+import cx from 'classnames';
 
 export const DisputeData = ({ disputeId }: { disputeId: string }) => {
     const { i18n } = useCoreContext();
@@ -39,7 +40,30 @@ export const DisputeData = ({ disputeId }: { disputeId: string }) => {
         setFlowState('accept');
     }, [dispute, setDispute, setFlowState]);
 
-    if (!dispute || isFetching) return null; // TODO - Add skeleton
+    if (!dispute || isFetching) {
+        const statusSkeletonRows = Array.from({ length: 4 });
+        const skeletonClassName = cx('adyen-pe-dispute-data__skeleton adyen-pe-dispute-data__skeleton--loading-content');
+
+        return (
+            <div className="adyen-pe-dispute-data__skeleton-container">
+                <div className={'adyen-pe-dispute-data__status-skeleton'}>
+                    <span className={skeletonClassName} />
+                    <span className={skeletonClassName} />
+                    <span className={skeletonClassName} />
+                </div>
+                <div className={'adyen-pe-dispute-data__details-skeleton-container'}>
+                    {statusSkeletonRows.map((_, index) => {
+                        return (
+                            <div className="adyen-pe-dispute-data__details-skeleton" key={`details-skeleton-${index}`}>
+                                <span className={skeletonClassName} key={`status-skeleton-${index}`} />
+                                <span className={skeletonClassName} key={`status-skeleton-${index}`} />
+                            </div>
+                        );
+                    })}
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className={DISPUTE_DATA_CLASS}>
