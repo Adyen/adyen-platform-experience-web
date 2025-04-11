@@ -13,8 +13,6 @@ import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '../../../../internal/Paginati
 import { useCursorPaginatedRecords } from '../../../../internal/Pagination/hooks';
 import { Header } from '../../../../internal/Header';
 import { CustomDataRetrieved, DisputeOverviewComponentProps, ExternalUIComponentProps, FilterParam } from '../../../../types';
-import { DISPUTE_DETAILS_CLASS } from '../../../DisputesManagement/components/DisputesData/constants';
-import { BASE_CLASS_DETAILS } from '../../../TransactionsOverview/components/TransactionsOverview/constants';
 import { FIELDS } from '../DisputesTable/DisputesTable';
 import {
     EARLIEST_DISPUTES_SINCE_DATE,
@@ -31,7 +29,7 @@ import { DisputesTable } from '../DisputesTable/DisputesTable';
 import { IDispute } from '../../../../../types/api/models/disputes';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import cx from 'classnames';
-import { DataDetailsModal } from '../../../../internal/DataOverviewDisplay/DataDetailsModal';
+import { DisputeManagementModal } from '../DisputeManagementModal/DisputeManagementModal';
 
 export const DisputesOverview = ({
     onFiltersChanged,
@@ -44,6 +42,7 @@ export const DisputesOverview = ({
     onRecordSelection,
     showDetails,
     dataCustomization,
+    onAcceptDispute,
 }: ExternalUIComponentProps<
     DisputeOverviewComponentProps & { balanceAccounts: IBalanceAccountBase[] | undefined; isLoadingBalanceAccount: boolean }
 >) => {
@@ -179,11 +178,11 @@ export const DisputesOverview = ({
                 />
             </FilterBar>
 
-            <DataDetailsModal
-                dataCustomization={dataCustomization?.details}
+            <DisputeManagementModal
+                dataCustomization={dataCustomization?.details && { details: dataCustomization?.details }}
                 selectedDetail={selectedDetail as ReturnType<typeof useModalDetails>['selectedDetail']}
                 resetDetails={resetDetails}
-                className={DISPUTE_DETAILS_CLASS}
+                onAcceptDispute={onAcceptDispute}
             >
                 <DisputesTable
                     activeBalanceAccount={activeBalanceAccount}
@@ -200,7 +199,7 @@ export const DisputesOverview = ({
                     customColumns={dataCustomization?.list?.fields}
                     {...paginationProps}
                 />
-            </DataDetailsModal>
+            </DisputeManagementModal>
         </div>
     );
 };

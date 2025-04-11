@@ -13,6 +13,10 @@ export interface paths {
         /** @description Add @Operation annotation to provide a description */
         get: operations['getDisputeDetail'];
     };
+    '/v1/disputes/{disputePspReference}/accept': {
+        /** @description Add @Operation annotation to provide a description */
+        get: operations['acceptDispute'];
+    };
 }
 
 export type webhooks = Record<string, never>;
@@ -160,6 +164,21 @@ export interface operations {
             200: {
                 content: {
                     'application/json': components['schemas']['DisputesListResponseDTO'];
+                };
+            };
+        };
+    };
+    acceptDispute: {
+        parameters: {
+            path: {
+                disputePspReference: string;
+            };
+        };
+        responses: {
+            /** @description OK - the request has succeeded. */
+            200: {
+                content: {
+                    'application/json': {};
                 };
             };
         };

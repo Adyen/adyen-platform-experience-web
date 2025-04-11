@@ -4,9 +4,7 @@ import { useConfigContext } from '../../../core/ConfigContext';
 import AdyenPlatformExperienceError from '../../../core/Errors/AdyenPlatformExperienceError';
 import { useFetch } from '../../../hooks/useFetch';
 import { IBalanceAccountBase, IPayoutDetails } from '../../../types';
-import { IDisputeDetail } from '../../../types/api/models/disputes';
 import { EMPTY_OBJECT } from '../../../utils';
-import DisputeData from '../../external/DisputesManagement/components/DisputesData/DisputeData';
 import { PayoutData } from '../../external/PayoutDetails/components/PayoutData';
 import TransactionData from '../../external/TransactionDetails/components/TransactionData';
 import useBalanceAccounts from '../../../hooks/useBalanceAccounts';
@@ -49,9 +47,6 @@ export default function DataOverviewDetails(props: ExternalUIComponentProps<Deta
                             break;
                         case 'payout':
                             queryParam = { query: { balanceAccountId: dataId, createdAt: props.date } };
-                            break;
-                        case 'dispute':
-                            queryParam = { path: { disputePspReference: props.id } };
                             break;
                         default:
                             break;
@@ -142,8 +137,6 @@ export default function DataOverviewDetails(props: ExternalUIComponentProps<Deta
                     dataCustomization={dataCustomization as { details?: PayoutDetailsCustomization }}
                 />
             )}
-
-            {props.type === 'dispute' && detailsData && <DisputeData dispute={detailsData as IDisputeDetail} isFetching={isFetching} />}
         </div>
     );
 }

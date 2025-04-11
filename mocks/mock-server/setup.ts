@@ -85,6 +85,10 @@ export const setupBasicResponse = {
             method: 'GET',
             url: 'disputes/{disputePspReference}',
         },
+        acceptDispute: {
+            method: 'POST',
+            url: 'disputes/{disputePspReference}/accept',
+        },
     } satisfies Record<EndpointName, { method: HttpMethod; url: string }>,
 };
 

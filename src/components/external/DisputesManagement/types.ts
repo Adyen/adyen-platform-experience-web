@@ -1,19 +1,8 @@
-import { IDisputeDetail } from '../../../types/api/models/disputes';
+import { DetailsWithExtraData, TransactionDetailsFields } from '../TransactionDetails';
 import { CustomDataRetrieved, DetailsDataCustomizationObject } from '../../types';
-import { DisputesTableFields } from '../DisputesOverview/components/DisputesTable/DisputesTable';
-import { DetailsWithExtraData } from '../TransactionDetails';
+import { IDisputeDetail } from '../../../types/api/models/disputes';
 
-export type DetailsPropsWithId = { id: string };
+//TODO - Define DisputeDetailsFields
+export type DisputeDetailsCustomization = DetailsDataCustomizationObject<TransactionDetailsFields, IDisputeDetail, CustomDataRetrieved>;
 
-export type DisputeDetailsCustomization = DetailsDataCustomizationObject<DisputesTableFields, IDisputeDetail, CustomDataRetrieved>;
-
-export type DisputeDetailsProps = DetailsPropsWithId & DetailsWithExtraData<DisputeDetailsCustomization>;
-
-export interface DisputeDataProps {
-    error?: boolean;
-    isFetching?: boolean;
-    dispute?: IDisputeDetail;
-    dataCustomization?: { details?: DisputeDetailsCustomization };
-    // TODO - Unify this parameter with dataCustomization
-    extraFields: Record<string, any> | undefined;
-}
+export type DisputeManagementProps = { id: string; onAcceptDispute?: () => void } & DetailsWithExtraData<DisputeDetailsCustomization>;
