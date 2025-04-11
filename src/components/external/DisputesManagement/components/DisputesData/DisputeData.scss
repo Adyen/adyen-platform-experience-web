@@ -36,44 +36,4 @@
             }
         }
     }
-
-    &__skeleton-container {
-        display: flex;
-        flex-direction: column;
-        gap: 30px;
-        margin-bottom: style.token(spacer-060);
-    }
-
-    &__status-skeleton {
-        display: flex;
-        flex-direction: column;
-        gap: style.token(spacer-050);
-
-        span:nth-child(3) {
-            width: 250px;
-        }
-    }
-
-    &__details-skeleton-container {
-        display: flex;
-        flex-direction: column;
-        gap: style.token(spacer-060);
-    }
-
-    &__details-skeleton {
-        display: flex;
-        gap: style.token(spacer-060);
-    }
-
-    &__skeleton {
-        @include skeleton.adyen-pe-skeleton();
-        display: block;
-        height: style.token(spacer-070);
-        margin: 0;
-        width: 150px;
-
-        &--loading-content {
-            @include skeleton.adyen-pe-skeleton-animation();
-        }
-    }
 }

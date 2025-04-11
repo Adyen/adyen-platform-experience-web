@@ -9,12 +9,11 @@ import { useCallback, useMemo } from 'preact/hooks';
 import { EMPTY_OBJECT } from '../../../../../utils';
 import './DisputeData.scss';
 import { useDisputeFlow } from '../../hooks/useDisputeFlow';
-import cx from 'classnames';
 import { IDisputeDetail } from '../../../../../types/api/models/disputes';
 
 export const DisputeData = ({ disputeId }: { disputeId: string }) => {
     const { i18n } = useCoreContext();
-    const { setDispute, setFlowState, dispute: cachedDispute } = useDisputeFlow();
+    const { setDispute, setFlowState } = useDisputeFlow();
 
     const { getDisputeDetail } = useConfigContext().endpoints;
 
@@ -22,7 +21,7 @@ export const DisputeData = ({ disputeId }: { disputeId: string }) => {
         useMemo(
             () => ({
                 fetchOptions: {
-                    enabled: !!disputeId && !!getDisputeDetail && !cachedDispute,
+                    enabled: !!disputeId && !!getDisputeDetail,
                     onSuccess: ((dispute: IDisputeDetail) => {
                         setDispute(dispute);
                     }) as any,
@@ -35,7 +34,7 @@ export const DisputeData = ({ disputeId }: { disputeId: string }) => {
                     });
                 },
             }),
-            [disputeId, getDisputeDetail, cachedDispute, setDispute]
+            [disputeId, getDisputeDetail, setDispute]
         )
     );
 
@@ -44,40 +43,17 @@ export const DisputeData = ({ disputeId }: { disputeId: string }) => {
         setFlowState('accept');
     }, [dispute, setDispute, setFlowState]);
 
-    if ((!dispute || isFetching) && !cachedDispute) {
-        const statusSkeletonRows = Array.from({ length: 4 });
-        const skeletonClassName = cx('adyen-pe-dispute-data__skeleton adyen-pe-dispute-data__skeleton--loading-content');
-
-        return (
-            <div className="adyen-pe-dispute-data__skeleton-container">
-                <div className={'adyen-pe-dispute-data__status-skeleton'}>
-                    <span className={skeletonClassName} />
-                    <span className={skeletonClassName} />
-                    <span className={skeletonClassName} />
-                </div>
-                <div className={'adyen-pe-dispute-data__details-skeleton-container'}>
-                    {statusSkeletonRows.map((_, index) => {
-                        return (
-                            <div className="adyen-pe-dispute-data__details-skeleton" key={`details-skeleton-${index}`}>
-                                <span className={skeletonClassName} key={`status-skeleton-${index}`} />
-                                <span className={skeletonClassName} key={`status-skeleton-${index}`} />
-                            </div>
-                        );
-                    })}
-                </div>
-            </div>
-        );
-    }
+    if (!dispute || isFetching) return null;
 
     return (
         <div className={DISPUTE_DATA_CLASS}>
             <div className={DISPUTE_STATUS_BOX}>
-                <StatusBox type={'dispute'} dispute={cachedDispute || dispute!}></StatusBox>
+                <StatusBox type={'dispute'} dispute={dispute}></StatusBox>
             </div>
 
-            <DisputeDataProperties dispute={cachedDispute || dispute!} />
+            <DisputeDataProperties dispute={dispute} />
 
-            {(cachedDispute || dispute)?.status === 'action_needed' ? (
+            {dispute?.status === 'action_needed' ? (
                 <div className={DISPUTE_DATA_ACTION_BAR}>
                     <ButtonActions
                         actions={[
