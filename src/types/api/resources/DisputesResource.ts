@@ -15,7 +15,7 @@ export interface paths {
     };
     '/v1/disputes/{disputePspReference}/accept': {
         /** @description Add @Operation annotation to provide a description */
-        get: operations['getDisputeDetail'];
+        get: operations['acceptDispute'];
     };
 }
 
