@@ -86,9 +86,10 @@ const StatusBox = ({ ...props }: StatusBoxProps) => {
 
             {formattedAmount && (
                 <div
-                    className={cx(TX_DATA_AMOUNT, {
-                        [`${TX_DATA_AMOUNT}--${getAmountStyleForTransaction(statusBoxOptions?.transaction as ITransaction)}`]: isTransaction(props),
-                    })}
+                    className={cx(
+                        TX_DATA_AMOUNT,
+                        `${TX_DATA_AMOUNT}--${getAmountStyleForTransaction(statusBoxOptions?.transaction as ITransaction)}`
+                    )}
                 >
                     {formattedAmount}
                 </div>
