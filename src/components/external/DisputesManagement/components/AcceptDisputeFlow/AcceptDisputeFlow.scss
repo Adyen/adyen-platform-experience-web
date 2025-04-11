@@ -39,7 +39,7 @@
         }
 
         /* stylelint-disable */
-        input:focus + label > .adyen-pe-icon {
+        input:focus-visible + label > .adyen-pe-icon {
             outline: -webkit-focus-ring-color auto 1px;
         }
 
