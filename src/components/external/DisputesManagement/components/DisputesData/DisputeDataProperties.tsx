@@ -1,5 +1,5 @@
 import cx from 'classnames';
-import { useMemo } from 'preact/hooks';
+import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
 import { DATE_FORMAT_DISPUTES_TAG } from '../../../../../constants';
 import useTimezoneAwareDateFormatting from '../../../../../hooks/useTimezoneAwareDateFormatting';
 import { TranslationKey } from '../../../../../translations';
@@ -14,6 +14,9 @@ import { StructuredListProps } from '../../../../internal/StructuredList/types';
 import { Tag } from '../../../../internal/Tag/Tag';
 import { TypographyVariant } from '../../../../internal/Typography/types';
 import Typography from '../../../../internal/Typography/Typography';
+import { CustomColumn } from '../../../../types';
+import { PAYOUT_TABLE_FIELDS } from '../../../PayoutsOverview/components/PayoutsTable/PayoutsTable';
+import { TX_DETAILS_RESERVED_FIELDS_SET } from '../../../TransactionDetails/components/constants';
 import { DisputeDetailsCustomization } from '../../types';
 import { DISPUTE_DATA_LABEL, DISPUTE_DATA_LIST, DISPUTE_DATA_LIST_EVIDENCE, DISPUTE_DETAILS_RESERVED_FIELDS_SET } from './constants';
 
@@ -34,8 +37,30 @@ const disputeDataKeys = {
     reasonCode: 'dispute.reasonCode',
 } satisfies Record<string, TranslationKey>;
 
-const DisputeDataProperties = ({ dispute, dataCustomization, extraFields }: DisputeDataPropertiesProps) => {
+const DisputeDataProperties = ({ dispute, dataCustomization }: DisputeDataPropertiesProps) => {
     const { dateFormat } = useTimezoneAwareDateFormatting(dispute?.balanceAccount?.timeZone);
+
+    const [extraFields, setExtraFields] = useState<Record<string, any>>();
+
+    const getExtraFields = useCallback(async () => {
+        if (dispute) {
+            const detailsData = await dataCustomization?.details?.onDataRetrieve?.(dispute);
+
+            setExtraFields(
+                dataCustomization?.details?.fields.reduce((acc, field) => {
+                    return TX_DETAILS_RESERVED_FIELDS_SET.has(field.key as any) ||
+                        PAYOUT_TABLE_FIELDS.includes(field.key as any) ||
+                        field?.visibility === 'hidden'
+                        ? acc
+                        : { ...acc, ...(detailsData?.[field.key] ? { [field.key]: detailsData[field.key] } : {}) };
+                }, {} as CustomColumn<any>)
+            );
+        }
+    }, [dispute, dataCustomization]);
+
+    useEffect(() => {
+        void getExtraFields();
+    }, [getExtraFields]);
 
     return useMemo(() => {
         const { paymentPspReference, latestDefense, reasonCode, paymentMerchantReference, reasonGroup } = dispute;

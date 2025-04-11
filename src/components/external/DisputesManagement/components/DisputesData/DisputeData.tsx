@@ -1,6 +1,6 @@
-import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { useCallback, useMemo } from 'preact/hooks';
 import { useConfigContext } from '../../../../../core/ConfigContext';
+import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { useFetch } from '../../../../../hooks/useFetch';
 import { IDispute } from '../../../../../types/api/models/disputes';
 import { EMPTY_OBJECT } from '../../../../../utils';
@@ -15,6 +15,7 @@ import useStatusBoxData from '../../../../internal/StatusBox/useStatusBox';
 import { Translation } from '../../../../internal/Translation';
 import DisputeStatusTag from '../../../DisputesOverview/components/DisputesTable/DisputeStatusTag';
 import { useDisputeFlow } from '../../hooks/useDisputeFlow';
+import { DisputeDetailsCustomization } from '../../types';
 import { IDisputeDetail } from '../../../../../types/api/models/disputes';
 import { DISPUTE_DATA_ACTION_BAR, DISPUTE_DATA_CLASS, DISPUTE_DATA_CONTACT_SUPPORT, DISPUTE_STATUS_BOX } from './constants';
 import DisputeDataProperties from './DisputeDataProperties';
@@ -55,7 +56,13 @@ const DisputeDataAlert = ({
     }
 };
 
-export const DisputeData = ({ disputeId }: { disputeId: string }) => {
+export const DisputeData = ({
+    disputeId,
+    dataCustomization,
+}: {
+    disputeId: string;
+    dataCustomization?: { details?: DisputeDetailsCustomization };
+}) => {
     const { i18n } = useCoreContext();
     const { setDispute, setFlowState } = useDisputeFlow();
 
@@ -106,7 +113,7 @@ export const DisputeData = ({ disputeId }: { disputeId: string }) => {
                 <StatusBox {...statusBoxOptions} tag={<DisputeStatusTag dispute={dispute} />} />
             </div>
 
-            <DisputeDataProperties dispute={dispute} />
+            <DisputeDataProperties dispute={dispute} dataCustomization={dataCustomization} />
 
             {/*TODO: add logic for isReasonCodeSupported*/}
             <DisputeDataAlert
