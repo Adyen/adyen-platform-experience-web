@@ -1,7 +1,9 @@
+import cx from 'classnames';
 import { useCallback, useMemo } from 'preact/hooks';
 import { useConfigContext } from '../../../../../core/ConfigContext';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { useFetch } from '../../../../../hooks/useFetch';
+import { containerQueries, useResponsiveContainer } from '../../../../../hooks/useResponsiveContainer';
 import { IDispute } from '../../../../../types/api/models/disputes';
 import { EMPTY_OBJECT } from '../../../../../utils';
 import './DisputeData.scss';
@@ -17,7 +19,13 @@ import DisputeStatusTag from '../../../DisputesOverview/components/DisputesTable
 import { useDisputeFlow } from '../../hooks/useDisputeFlow';
 import { DisputeDetailsCustomization } from '../../types';
 import { IDisputeDetail } from '../../../../../types/api/models/disputes';
-import { DISPUTE_DATA_ACTION_BAR, DISPUTE_DATA_CLASS, DISPUTE_DATA_CONTACT_SUPPORT, DISPUTE_STATUS_BOX } from './constants';
+import {
+    DISPUTE_DATA_ACTION_BAR,
+    DISPUTE_DATA_CLASS,
+    DISPUTE_DATA_CONTACT_SUPPORT,
+    DISPUTE_DATA_MOBILE_CLASS,
+    DISPUTE_STATUS_BOX,
+} from './constants';
 import DisputeDataProperties from './DisputeDataProperties';
 
 const DisputeDataAlert = ({
@@ -67,6 +75,7 @@ export const DisputeData = ({
     const { setDispute, setFlowState } = useDisputeFlow();
 
     const { getDisputeDetail } = useConfigContext().endpoints;
+    const isSmAndUpContainer = useResponsiveContainer(containerQueries.up.sm);
 
     const { data: dispute, isFetching } = useFetch(
         useMemo(
@@ -108,7 +117,7 @@ export const DisputeData = ({
     }
 
     return (
-        <div className={DISPUTE_DATA_CLASS}>
+        <div className={cx(DISPUTE_DATA_CLASS, { [DISPUTE_DATA_MOBILE_CLASS]: !isSmAndUpContainer })}>
             <div className={DISPUTE_STATUS_BOX}>
                 <StatusBox {...statusBoxOptions} tag={<DisputeStatusTag dispute={dispute} />} />
             </div>

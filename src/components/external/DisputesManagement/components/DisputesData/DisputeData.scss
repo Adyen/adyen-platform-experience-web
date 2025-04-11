@@ -6,6 +6,12 @@
     gap: style.token(spacer-080);
     width: 100%;
 
+    &--mobile {
+        .adyen-pe-structured-list__item {
+            flex-direction: column;
+        }
+    }
+
     &__action-bar {
         flex-direction: row;
         width: 100%;
