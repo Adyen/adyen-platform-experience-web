@@ -1,2 +1,2 @@
-export { default as DisputesManagementElement } from './DisputeManagementElement';
+export { default as DisputeManagementElement } from './DisputeManagementElement';
 export * from './types';

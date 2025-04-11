@@ -10,7 +10,7 @@ export type EndpointsOperations = BalanceAccountOps & CapitalOps & PayoutsOps & 
 
 export type EndpointName = Extract<keyof EndpointsOperations, SetupResource['schemas']['EndpointName']>;
 
-type CSVEndpoints = 'downloadReport';
+type CSVEndpoints = 'downloadReport' | 'downloadDisputeFile';
 
 type JSONEndpoints = Exclude<EndpointName, CSVEndpoints>;
 

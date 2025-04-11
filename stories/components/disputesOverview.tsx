@@ -4,7 +4,7 @@ import { DisputesOverview } from '../../src';
 import { enabledDisabledCallbackRadioControls } from '../utils/controls';
 
 export const DisputesOverviewMeta: Meta<ElementProps<typeof DisputesOverview>> = {
-    title: 'screens/Reports',
+    title: 'screens/DisputesOverview',
     argTypes: {
         onContactSupport: enabledDisabledCallbackRadioControls('onContactSupport'),
         preferredLimit: { type: 'number', min: 1, max: 100 },

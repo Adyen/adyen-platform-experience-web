@@ -5,6 +5,7 @@ import { DISPUTES, getDisputeDetailByStatus, getDisputesByStatusGroup } from '..
 
 const mockEndpoints = endpoints('mock').disputes;
 const networkError = false;
+const downloadFileError = false;
 const defaultPaginationLimit = 10;
 
 export const disputesMocks = [
@@ -48,5 +49,25 @@ export const disputesMocks = [
     http.post(mockEndpoints.accept, async () => {
         await delay(1000);
         return HttpResponse.json('ok');
+    }),
+    http.get(mockEndpoints.download, async ({ request }) => {
+        await delay(1000);
+
+        if (downloadFileError) {
+            return HttpResponse.error();
+        }
+
+        const url = new URL(request.url);
+        const filename = url.searchParams.get('documentType');
+
+        const buffer = await fetch(`/mockFiles/report.csv`).then(response => response.arrayBuffer());
+
+        return new HttpResponse(buffer, {
+            headers: {
+                'Content-Disposition': `attachment; filename=${filename}`,
+                'Content-Type': 'text/csv',
+            },
+            status: 200,
+        });
     }),
 ];

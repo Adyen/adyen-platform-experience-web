@@ -34,6 +34,7 @@ export const DisputeManagementModal: FC<DisputeManagementModalProps> = ({
     const onAcceptDisputeCallback = useCallback(() => {
         onAcceptDispute?.();
     }, [onAcceptDispute]);
+
     return (
         <div>
             {children}
