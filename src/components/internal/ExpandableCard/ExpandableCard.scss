@@ -1,17 +1,7 @@
 @use '../../../style';
+@use '../../../style/accessibility';
 //stylelint-disable no-invalid-position-at-import-rule
 @import '../../../style/breakpoints.scss';
-
-// TODO: Move this to an accessibility mixin
-.adyen-pe-sr-only {
-    clip: rect(0 0 0 0);
-    height: 1px;
-    margin: -1px;
-    overflow: hidden;
-    padding: 0;
-    position: absolute !important;
-    width: 1px;
-}
 
 .adyen-pe-expandable-card {
     $adyen-pe-expandable-card: &;

@@ -1,10 +1,9 @@
 import cx from 'classnames';
-import { RefObject } from 'preact';
 import { useCallback, useMemo, useState } from 'preact/hooks';
 import { fixedForwardRef } from '../../../../../utils/preact';
 import Typography from '../../../Typography/Typography';
+import useTrackedRef from '../../../../../hooks/useTrackedRef';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
-import useFocusVisibility from '../../../../../hooks/element/useFocusVisibility';
 import { BASE_CLASS, DEFAULT_FILE_TYPES, DEFAULT_MAX_FILE_SIZE, validationErrors } from '../constants';
 import { getUploadedFilesFromSource, isFunction, uniqueId, UploadedFileSource } from '../../../../../utils';
 import { TypographyElement, TypographyVariant } from '../../../Typography/types';
@@ -22,7 +21,6 @@ const classes = {
     labelDefault: `${BASE_CLASS}__label-default-content`,
     labelIcon: `${BASE_CLASS}__label-icon`,
     labelText: `${BASE_CLASS}__label-text`,
-    labelWithFocus: `${BASE_CLASS}__label--with-focus`,
     error: `${BASE_CLASS}__error`,
     errorIcon: `${BASE_CLASS}__error-icon`,
     errorText: `${BASE_CLASS}__error-text`,
@@ -42,13 +40,13 @@ export const Dropzone = fixedForwardRef<DropzoneProps, HTMLInputElement>((props,
     } = props;
 
     const { i18n } = useCoreContext();
-    const { hasVisibleFocus, ref: inputRef } = useFocusVisibility(ref);
     const [inputError, setInputError] = useState<ValidationError | ''>('');
     const [zoneHover, setZoneHover] = useState(false);
 
     const isInvalid = !!inputError;
     const inputName = name?.trim();
     const inputId = useMemo(() => id || uniqueId(), [id]);
+    const inputRef = useTrackedRef(ref);
 
     const handleDragOver = (event: DragEvent) => {
         const hasFiles = Array.from(event.dataTransfer?.types ?? []).some(type => type === 'Files');
@@ -88,7 +86,7 @@ export const Dropzone = fixedForwardRef<DropzoneProps, HTMLInputElement>((props,
     };
 
     const updateInputValidationError = useCallback((error: string) => {
-        const inputElement = (inputRef as RefObject<HTMLInputElement>).current;
+        const inputElement = inputRef.current;
 
         if (inputElement) {
             const currentRequired = inputElement.required;
@@ -149,9 +147,26 @@ export const Dropzone = fixedForwardRef<DropzoneProps, HTMLInputElement>((props,
                 onDragLeave={disabled ? undefined : handleDragLeave}
                 onDrop={disabled ? undefined : handleDrop}
             >
+                <input
+                    type="file"
+                    className="adyen-pe-visually-hidden"
+                    id={inputId}
+                    ref={inputRef}
+                    name={inputName}
+                    disabled={disabled}
+                    required={required}
+                    accept={String(allowedFileTypes)}
+                    onBlur={handleInputBlur}
+                    onChange={handleFileChange}
+                    onInvalid={handleInputInvalid}
+                    aria-invalid={isInvalid}
+                    data-testId="dropzone-input"
+                />
+
                 {/* Using the label element here to expose a user interaction surface for the file input element. */}
                 {/* The input element itself is visually hidden (not visible), but available to assistive technology. */}
-                <label className={cx(classes.label, { [classes.labelWithFocus]: hasVisibleFocus })} htmlFor={inputId}>
+                {/* To preserve proper focus styling, this label element should always come after the input element. */}
+                <label className={classes.label} htmlFor={inputId}>
                     {children ?? (
                         <div className={cx(classes.labelDefault)}>
                             {
@@ -172,22 +187,6 @@ export const Dropzone = fixedForwardRef<DropzoneProps, HTMLInputElement>((props,
                         </div>
                     )}
                 </label>
-
-                <input
-                    type="file"
-                    className="adyen-pe-visually-hidden"
-                    id={inputId}
-                    ref={inputRef}
-                    name={inputName}
-                    disabled={disabled}
-                    required={required}
-                    accept={String(allowedFileTypes)}
-                    onBlur={handleInputBlur}
-                    onChange={handleFileChange}
-                    onInvalid={handleInputInvalid}
-                    aria-invalid={isInvalid}
-                    data-testId="dropzone-input"
-                />
             </div>
             {isInvalid && (
                 <div className={classes.error}>
