@@ -65,12 +65,10 @@ export const AcceptDisputeFlow = ({
                         {i18n.get('disputes.acceptDisputeDisclaimer')}
                     </Typography>
                     <div className="adyen-pe-accept-dispute__input">
-                        <input type="checkbox" id={termsAgreementInputId} onInput={toggleTermsAgreement} hidden />
-                        <span role="option" aria-selected={termsAgreed} tabIndex={-1} onClick={toggleTermsAgreement}>
-                            {termsAgreed ? <Icon name="checkmark-square-fill" /> : <Icon name="square" />}
-                        </span>
+                        <input type="checkbox" id={termsAgreementInputId} onInput={toggleTermsAgreement} />
 
-                        <label htmlFor={termsAgreementInputId}>
+                        <label className="adyen-pe-accept-dispute__label" htmlFor={termsAgreementInputId}>
+                            {termsAgreed ? <Icon name="checkmark-square-fill" /> : <Icon name="square" />}
                             <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY}>
                                 {i18n.get('disputes.iAgree')}
                             </Typography>
