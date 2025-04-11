@@ -10,10 +10,11 @@ import { EMPTY_OBJECT } from '../../../../../utils';
 import './DisputeData.scss';
 import { useDisputeFlow } from '../../hooks/useDisputeFlow';
 import cx from 'classnames';
+import { IDisputeDetail } from '../../../../../types/api/models/disputes';
 
 export const DisputeData = ({ disputeId }: { disputeId: string }) => {
     const { i18n } = useCoreContext();
-    const { setDispute, setFlowState } = useDisputeFlow();
+    const { setDispute, setFlowState, dispute: cachedDispute } = useDisputeFlow();
 
     const { getDisputeDetail } = useConfigContext().endpoints;
 
@@ -21,7 +22,10 @@ export const DisputeData = ({ disputeId }: { disputeId: string }) => {
         useMemo(
             () => ({
                 fetchOptions: {
-                    enabled: !!disputeId && !!getDisputeDetail,
+                    enabled: !!disputeId && !!getDisputeDetail && !cachedDispute,
+                    onSuccess: ((dispute: IDisputeDetail) => {
+                        setDispute(dispute);
+                    }) as any,
                 },
                 queryFn: async () => {
                     return getDisputeDetail!(EMPTY_OBJECT, {
@@ -31,7 +35,7 @@ export const DisputeData = ({ disputeId }: { disputeId: string }) => {
                     });
                 },
             }),
-            [getDisputeDetail, disputeId]
+            [disputeId, getDisputeDetail, cachedDispute, setDispute]
         )
     );
 
@@ -40,7 +44,7 @@ export const DisputeData = ({ disputeId }: { disputeId: string }) => {
         setFlowState('accept');
     }, [dispute, setDispute, setFlowState]);
 
-    if (!dispute || isFetching) {
+    if ((!dispute || isFetching) && !cachedDispute) {
         const statusSkeletonRows = Array.from({ length: 4 });
         const skeletonClassName = cx('adyen-pe-dispute-data__skeleton adyen-pe-dispute-data__skeleton--loading-content');
 
@@ -68,12 +72,12 @@ export const DisputeData = ({ disputeId }: { disputeId: string }) => {
     return (
         <div className={DISPUTE_DATA_CLASS}>
             <div className={DISPUTE_STATUS_BOX}>
-                <StatusBox type={'dispute'} dispute={dispute}></StatusBox>
+                <StatusBox type={'dispute'} dispute={cachedDispute || dispute!}></StatusBox>
             </div>
 
-            <DisputeDataProperties dispute={dispute} />
+            <DisputeDataProperties dispute={cachedDispute || dispute!} />
 
-            {dispute?.status === 'action_needed' ? (
+            {(cachedDispute || dispute)?.status === 'action_needed' ? (
                 <div className={DISPUTE_DATA_ACTION_BAR}>
                     <ButtonActions
                         actions={[
