@@ -22,7 +22,7 @@ export interface FileInputProps extends PropsWithChildren<BaseFileInputProps> {
 }
 
 export interface UploadedFileProps {
-    deleteFile: () => any;
+    deleteFile: () => void;
     file: File;
 }
 

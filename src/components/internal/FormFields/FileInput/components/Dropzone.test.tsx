@@ -4,8 +4,8 @@
 import { describe, expect, test, vi } from 'vitest';
 import { act, fireEvent, render, screen, within } from '@testing-library/preact';
 import { userEvent } from '@testing-library/user-event';
-import Dropzone from './Dropzone';
 import { validationErrors } from '../constants';
+import Dropzone from './Dropzone';
 
 // prettier-ignore
 const FILES = [

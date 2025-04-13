@@ -15,8 +15,8 @@ import '../FileInput.scss';
 const classes = {
     dropzone: `${BASE_CLASS}__dropzone`,
     dropzoneDisabled: `${BASE_CLASS}__dropzone--disabled`,
+    dropzoneDragOver: `${BASE_CLASS}__dropzone--dragover`,
     dropzoneError: `${BASE_CLASS}__dropzone--error`,
-    dropzoneHover: `${BASE_CLASS}__dropzone--hover`,
     label: `${BASE_CLASS}__label`,
     labelDefault: `${BASE_CLASS}__label-default-content`,
     labelIcon: `${BASE_CLASS}__label-icon`,
@@ -41,7 +41,7 @@ export const Dropzone = fixedForwardRef<DropzoneProps, HTMLInputElement>((props,
 
     const { i18n } = useCoreContext();
     const [inputError, setInputError] = useState<ValidationError | ''>('');
-    const [zoneHover, setZoneHover] = useState(false);
+    const [dragOver, setDragOver] = useState(false);
 
     const isInvalid = !!inputError;
     const inputName = name?.trim();
@@ -52,18 +52,18 @@ export const Dropzone = fixedForwardRef<DropzoneProps, HTMLInputElement>((props,
         const hasFiles = Array.from(event.dataTransfer?.types ?? []).some(type => type === 'Files');
         if (hasFiles) {
             event.preventDefault();
-            setZoneHover(true);
+            setDragOver(true);
         }
     };
 
     const handleDragLeave = (event: DragEvent) => {
         event.preventDefault();
-        setZoneHover(false);
+        setDragOver(false);
     };
 
     const handleDrop = (event: DragEvent) => {
         event.preventDefault();
-        setZoneHover(false);
+        setDragOver(false);
         updateFiles(event.dataTransfer);
     };
 
@@ -140,8 +140,8 @@ export const Dropzone = fixedForwardRef<DropzoneProps, HTMLInputElement>((props,
                 role="region"
                 className={cx(classes.dropzone, {
                     [classes.dropzoneDisabled]: disabled,
+                    [classes.dropzoneDragOver]: dragOver,
                     [classes.dropzoneError]: isInvalid,
-                    [classes.dropzoneHover]: zoneHover,
                 })}
                 onDragOver={disabled ? undefined : handleDragOver}
                 onDragLeave={disabled ? undefined : handleDragLeave}
@@ -175,13 +175,7 @@ export const Dropzone = fixedForwardRef<DropzoneProps, HTMLInputElement>((props,
                                     ? <Icon name="warning-filled" className={classes.labelIcon} />
                                     : <Icon name="upload" className={classes.labelIcon} />
                             }
-                            <Typography
-                                /* Using the styles for the tertiary button here to have the same look and feel */
-                                className={cx(classes.labelText, 'adyen-pe-button', 'adyen-pe-button--tertiary')}
-                                el={TypographyElement.SPAN}
-                                variant={TypographyVariant.BODY}
-                                stronger
-                            >
+                            <Typography className={classes.labelText} el={TypographyElement.SPAN} variant={TypographyVariant.BODY} stronger>
                                 {i18n.get('uploadFile.browse')}
                             </Typography>
                         </div>
