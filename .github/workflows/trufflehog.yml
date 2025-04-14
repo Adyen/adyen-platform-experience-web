@@ -6,16 +6,19 @@ on:
     branches:
       - "main"
       - "develop"
+      -
+permissions:
+  contents: read
+
 jobs:
   trufflehog:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      pull-requests: write
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout full history
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
       - name: Run TruffleHog
         uses: trufflesecurity/trufflehog@v3.62.0
         with:
