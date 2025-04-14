@@ -9,6 +9,9 @@ jobs:
     if: github.event_name == 'workflow_dispatch' && (github.ref_name == 'develop' || startsWith(github.ref_name, 'group/'))
     runs-on: ubuntu-latest
     environment: smartling-translations # provides Smartling credentials
+    permissions:
+      contents: write
+
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v3
