@@ -7,9 +7,6 @@ on:
         description: 'Dry-run the write steps (do not actually commit or publish to NPM)'
         type: boolean
         default: false
-
-  # we can't use the release:created trigger because it doesn't trigger on releases created by github-actions bot
-  # so instead, this has to be directly called by `tag-and-release.yml`
   workflow_call:
     inputs:
       called-from-other-workflow:
@@ -39,19 +36,23 @@ jobs:
         run: |
           echo "PACKAGE_VERSION=$(jq -r .version package.json)" >> $GITHUB_ENV
 
-      - name: Download build artifacts (from previous workflow)
-        run: |
-          gh run download -n adyen-adyen-platform-experience-web-${{ env.PACKAGE_VERSION }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create a temporary directory for artifacts
+        run: mkdir -p ${{ runner.temp }}/artifacts/
 
-      - name: Expand build artifacts archive to get `./dist`
+      - name: Download build artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: adyen-adyen-platform-experience-web-${{ env.PACKAGE_VERSION }}
+          path: ${{ runner.temp }}/artifacts/
+
+      - name: Expand build artifact to trusted directory
         run: |
-          tar -xzf adyen-adyen-platform-experience-web-${{ env.PACKAGE_VERSION }}.tgz --strip-components=1 package
+          mkdir -p trusted-dir
+          tar -xzf ${{ runner.temp }}/artifacts/adyen-adyen-platform-experience-web-${{ env.PACKAGE_VERSION }}.tgz --strip-components=1 -C trusted-dir
 
       - name: Check that `dist` directory is present and not empty
         run: |
-          [ -d ./dist ] && [ ! -z "$(ls -A ./dist)" ]
+          [ -d trusted-dir/dist ] && [ ! -z "$(ls -A trusted-dir/dist)" ]
 
       - name: Publish to the NPM registry (dry run)
         if: github.event.inputs.dry-run-publish == 'true'
