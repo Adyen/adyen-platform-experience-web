@@ -10,8 +10,12 @@ on:
       - develop
       - group/*
 
+permissions: read-all
 jobs:
   is-pr-approved:
+    permissions:
+      contents: read
+      pull-requests: read
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -31,6 +35,8 @@ jobs:
   e2e-local-mocked-api:
     needs: is-pr-approved
     if: needs.is-pr-approved.outputs.approved == 'true'
+    permissions:
+      contents: read
     runs-on: ubuntu-latest
     timeout-minutes: 15
     env:

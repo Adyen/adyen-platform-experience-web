@@ -11,6 +11,8 @@ on:
       - README.md
       - LICENSE
       - .gitignore
+
+permissions: read-all
 jobs:
   build:
     runs-on: ubuntu-latest

@@ -3,11 +3,16 @@ name: Version bump
 on:
   workflow_dispatch:
 
+permissions: read-all
+
 jobs:
   create-version-bump-pr:
     if: startsWith(github.ref_name, 'main') && github.repository == 'adyen/adyen-platform-experience-web'
     name: Create version bump PR
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
     steps:
       - name: Commit message
         run: |

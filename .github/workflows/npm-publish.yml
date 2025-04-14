@@ -1,5 +1,7 @@
 name: NPM publish package
 
+permissions: read-all
+
 on:
   workflow_dispatch:
     inputs:
@@ -22,6 +24,9 @@ jobs:
   npm-publish:
     runs-on: ubuntu-latest
     environment: publish-package  # contains NPM_PLATFORM_EXPERIENCE_TOKEN
+    permissions:
+      contents: read
+      actions: write
 
     steps:
       - name: Checkout the repo

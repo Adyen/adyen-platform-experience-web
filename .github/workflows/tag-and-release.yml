@@ -12,8 +12,13 @@ on:
       - 'releases/**'
       - 'main'
 
+permissions: read-all
+
 jobs:
   create-github-release:
+    permissions:
+      contents: write
+      actions: write
     runs-on: ubuntu-latest
     if: github.event_name == 'workflow_dispatch' || (github.event.pull_request.merged == true && (startsWith(github.head_ref, 'bump/') || startsWith(github.head_ref, 'changeset-release/')))
     steps:

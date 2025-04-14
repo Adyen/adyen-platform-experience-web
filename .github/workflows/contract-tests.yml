@@ -5,6 +5,7 @@ on:
     - cron: '0 14 * * *'
   workflow_dispatch:  # This allows manual triggering of the workflow
 
+permissions: read-all
 jobs:
   contract-tests:
     runs-on: ubuntu-latest
@@ -37,6 +38,8 @@ jobs:
     needs: contract-tests
     runs-on: ubuntu-latest
     if: always()
+    permissions:
+      contents: read
     steps:
       - name: Notify Mattermost
         env:
