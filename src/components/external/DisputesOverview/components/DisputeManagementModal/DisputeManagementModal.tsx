@@ -1,11 +1,11 @@
 import { useCallback, useEffect } from 'preact/hooks';
 import { FC, PropsWithChildren } from 'preact/compat';
 import Modal from '../../../../internal/Modal';
-import { DisputeDetailsCustomization } from '../../../DisputesManagement';
+import { DisputeDetailsCustomization } from '../../../DisputeManagement';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { popoverUtil } from '../../../../internal/Popover/utils/popoverUtil';
 import useModalDetails from '../../../../../hooks/useModalDetails';
-import { DisputeDetails } from '../../../DisputesManagement/components/DisputeDetails/DisputeDetails';
+import { DisputeDetails } from '../../../DisputeManagement/components/DisputeDetails/DisputeDetails';
 import './DisputeManagementModal.scss';
 
 export interface DisputeManagementModalProps {

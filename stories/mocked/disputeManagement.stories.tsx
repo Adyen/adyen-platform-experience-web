@@ -1,5 +1,5 @@
 import { Meta } from '@storybook/preact';
-import DisputeManagementElement from '../../src/components/external/DisputesManagement/DisputeManagementElement';
+import DisputeManagementElement from '../../src/components/external/DisputeManagement/DisputeManagementElement';
 import { DisputeManagementMeta } from '../components/disputeManagement';
 import { CUSTOM_URL_EXAMPLE } from '../utils/constants';
 import { ElementProps, ElementStory } from '../utils/types';
