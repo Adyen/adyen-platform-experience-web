@@ -3,8 +3,6 @@ name: Version bump
 on:
   workflow_dispatch:
 
-permissions: read-all
-
 jobs:
   create-version-bump-pr:
     if: startsWith(github.ref_name, 'main') && github.repository == 'adyen/adyen-platform-experience-web'

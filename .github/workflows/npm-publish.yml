@@ -1,7 +1,5 @@
 name: NPM publish package
 
-permissions: read-all
-
 on:
   workflow_dispatch:
     inputs:

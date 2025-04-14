@@ -7,7 +7,7 @@ on:
       - develop
       - group/*
       -
-permissions: read-all
+
 jobs:
   is-pr-approved:
     permissions:

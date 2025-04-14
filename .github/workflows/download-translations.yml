@@ -3,8 +3,6 @@ name: Download translations
 on:
   workflow_dispatch:
 
-permissions: read-all
-
 jobs:
   download-files:
     name: Download completed translation files

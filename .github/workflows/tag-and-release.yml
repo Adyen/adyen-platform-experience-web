@@ -8,8 +8,6 @@ on:
     types: [closed]
     branches: ['main', 'releases/**', 'changeset-release/**']
 
-permissions: read-all
-
 jobs:
   create-github-release:
     permissions:

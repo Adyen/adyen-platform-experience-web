@@ -8,8 +8,6 @@ on:
         type: boolean
         default: false
 
-permissions: read-all
-
 jobs:
   upload-files:
     name: Upload translation source files
