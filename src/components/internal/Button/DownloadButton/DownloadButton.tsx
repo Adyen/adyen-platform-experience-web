@@ -1,6 +1,6 @@
 import classNames from 'classnames';
 import { VNode } from 'preact';
-import { useCallback, useEffect, useState } from 'preact/hooks';
+import { useEffect, useMemo, useState } from 'preact/hooks';
 import useCoreContext from '../../../../core/Context/useCoreContext';
 import AdyenPlatformExperienceError from '../../../../core/Errors/AdyenPlatformExperienceError';
 import { EndpointName } from '../../../../types/api/endpoints';
@@ -79,8 +79,8 @@ function DownloadButton({
         onDownloadRequested?.();
     };
 
-    const getButtonLabel = useCallback(() => (isFetching ? `${i18n.get('downloading')}..` : i18n.get('download')), [isFetching]);
-    const getButtonIcon = useCallback(() => (isFetching ? <Spinner size={'small'} /> : <Download />), [isFetching]);
+    const getButtonLabel = useMemo(() => (isFetching ? `${i18n.get('downloading')}..` : i18n.get('download')), [i18n, isFetching]);
+    const getButtonIcon = useMemo(() => (isFetching ? <Spinner size={'small'} /> : <Download />), [isFetching]);
 
     return (
         <div
@@ -105,7 +105,7 @@ function DownloadButton({
                     onClick={onClick}
                     {...(!iconButton && { iconLeft: isFetching ? <Spinner size={'small'} /> : <Download /> })}
                 >
-                    {iconButton ? getButtonIcon() : getButtonLabel()}
+                    {iconButton ? getButtonIcon : getButtonLabel}
                 </Button>
             )}
             {error && errorDisplay && <div className={'adyen-pe-download__error'}>{errorDisplay}</div>}
