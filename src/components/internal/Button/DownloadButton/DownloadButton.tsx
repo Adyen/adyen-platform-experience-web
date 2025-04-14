@@ -79,13 +79,15 @@ function DownloadButton({
         onDownloadRequested?.();
     };
 
+    const buttonIcon = useMemo(() => (isFetching ? <Spinner size={'small'} /> : <Download />), [isFetching]);
+
     const buttonLabel = useMemo(() => {
         if (iconButton) {
-            return isFetching ? <Spinner size={'small'} /> : <Download />;
+            return buttonIcon;
         } else {
             return isFetching ? `${i18n.get('downloading')}..` : i18n.get('download');
         }
-    }, [i18n, isFetching, iconButton]);
+    }, [buttonIcon, i18n, isFetching, iconButton]);
 
     return (
         <div
@@ -108,7 +110,7 @@ function DownloadButton({
                     disabled={disabled || isFetching}
                     variant={iconButton ? ButtonVariant.TERTIARY : ButtonVariant.SECONDARY}
                     onClick={onClick}
-                    {...(!iconButton && { iconLeft: isFetching ? <Spinner size={'small'} /> : <Download /> })}
+                    {...(!iconButton && { iconLeft: buttonIcon })}
                 >
                     {buttonLabel}
                 </Button>
