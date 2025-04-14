@@ -79,8 +79,13 @@ function DownloadButton({
         onDownloadRequested?.();
     };
 
-    const getButtonLabel = useMemo(() => (isFetching ? `${i18n.get('downloading')}..` : i18n.get('download')), [i18n, isFetching]);
-    const getButtonIcon = useMemo(() => (isFetching ? <Spinner size={'small'} /> : <Download />), [isFetching]);
+    const buttonLabel = useMemo(() => {
+        if (iconButton) {
+            return isFetching ? <Spinner size={'small'} /> : <Download />;
+        } else {
+            return isFetching ? `${i18n.get('downloading')}..` : i18n.get('download');
+        }
+    }, [i18n, isFetching, iconButton]);
 
     return (
         <div
@@ -105,7 +110,7 @@ function DownloadButton({
                     onClick={onClick}
                     {...(!iconButton && { iconLeft: isFetching ? <Spinner size={'small'} /> : <Download /> })}
                 >
-                    {iconButton ? getButtonIcon : getButtonLabel}
+                    {buttonLabel}
                 </Button>
             )}
             {error && errorDisplay && <div className={'adyen-pe-download__error'}>{errorDisplay}</div>}
