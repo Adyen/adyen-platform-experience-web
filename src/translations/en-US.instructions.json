@@ -77,7 +77,7 @@
     "dispute.disputeReference": "Label for a dispute reference",
     "dispute.evidence": "Label for the submitted documents of to defend the dispute",
     "dispute.merchantReference": "Label for merchant reference of dispute",
-    "dispute.notDefended": "Label that indicates the chargeback has not been defended and it is expired or lost",
+    "dispute.notDefended": "Label that indicates the chargeback has not been defended and it is lost",
     "dispute.paymentReference": "Label for dispute payment reference",
     "dispute.reasonCode": "Label for dispute reason code",
     "disputeDetails": "Title of a dispute management component",
