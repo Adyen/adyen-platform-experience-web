@@ -4,10 +4,6 @@ on:
   schedule:
     - cron: '0 8 * * 1'  # Runs at 8 AM UTC every Monday
 
-permissions:
-  issues: write
-  pull-requests: write
-
 jobs:
   close_stale_issues_and_prs:
     runs-on: ubuntu-latest

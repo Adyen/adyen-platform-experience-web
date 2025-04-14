@@ -6,7 +6,6 @@ on:
       - main
       - develop
       - group/*
-      -
 
 jobs:
   is-pr-approved:
