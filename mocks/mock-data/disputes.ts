@@ -451,21 +451,15 @@ export const DISPUTE_DEFENSE_DOCUMENTS = [
     { type: 'goodsOrServicesProvided', requirement: 'optional' } as const,
 ] satisfies IDisputeDefenseDocument[];
 
-export const DISPUTE_DETAIL_CAN_DO_FIRST_DEFENSE = {
+export const DISPUTE_DETAIL_DEFENDABLE = {
     paymentPspReference: 'KLAHFUW1329523KKL',
-    defensability: 'can_do_first_defense',
+    defensibility: 'defendable',
     allowedDefenseReasons: ['AirlineCompellingEvidence'],
 } satisfies additional_dispute_details;
 
-export const DISPUTE_DETAIL_CAN_DO_SUBSEQUENT_DEFENSE = {
+export const DISPUTE_EXTERNALLY_DEFENDABLE = {
     paymentPspReference: 'KLAHFUW1329523KKL',
-    latestDefense: {
-        defendedOn: '2019-08-24T14:15:22Z',
-        reason: '4852',
-        suppliedDocuments: ['CompellingEvidence', 'FlightTicket'],
-    },
-    defensability: 'can_do_subsequent_defense',
-    allowedDefenseReasons: ['AirlineCompellingEvidence'],
+    defensibility: 'defendable_externally',
 } satisfies additional_dispute_details;
 
 export const DISPUTE_DETAIL_NOT_DEFENDABLE = {
@@ -475,14 +469,17 @@ export const DISPUTE_DETAIL_NOT_DEFENDABLE = {
         reason: '4853',
         suppliedDocuments: ['goodsOrServicesProvided', 'writtenrebuttal'],
     },
-    defensability: 'not_defendable',
+    defensibility: 'not_defendable',
     allowedDefenseReasons: [],
 } satisfies additional_dispute_details;
 
-export const getDisputeDetailByStatus = (status: IDispute['status']) => {
+export const getDisputeDetailByStatus = (id: IDispute['id'], status: IDispute['status']) => {
     switch (status) {
         case 'action_needed':
-            return DISPUTE_DETAIL_CAN_DO_FIRST_DEFENSE;
+            if (id === 'a1b2c3d4-e5f6-4789-abcd-000000000009') {
+                return DISPUTE_EXTERNALLY_DEFENDABLE;
+            }
+            return DISPUTE_DETAIL_DEFENDABLE;
         default:
             return DISPUTE_DETAIL_NOT_DEFENDABLE;
     }

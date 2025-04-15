@@ -5,6 +5,7 @@ import { DISPUTE_DEFENSE_DOCUMENTS, DISPUTES, getDisputeDetailByStatus, getDispu
 
 const mockEndpoints = endpoints('mock').disputes;
 const networkError = false;
+const downloadFileError = false;
 const defaultPaginationLimit = 10;
 
 export const disputesMocks = [
@@ -43,7 +44,7 @@ export const disputesMocks = [
         if (!matchingMock) return HttpResponse.text('Cannot find matching dispute mock', { status: 404 });
 
         await delay(1000);
-        return HttpResponse.json({ ...matchingMock, ...getDisputeDetailByStatus(matchingMock.status) });
+        return HttpResponse.json({ ...matchingMock, ...getDisputeDetailByStatus(matchingMock.id, matchingMock.status) });
     }),
 
     http.get(mockEndpoints.documents, async ({ params }) => {
@@ -99,5 +100,26 @@ export const disputesMocks = [
             // This request is most likely not a multipart/form-data request (it is a bad request)
             return HttpResponse.json('', { status: 415 });
         }
+    }),
+
+    http.get(mockEndpoints.download, async ({ request }) => {
+        await delay(1000);
+
+        if (downloadFileError) {
+            return HttpResponse.error();
+        }
+
+        const url = new URL(request.url);
+        const filename = url.searchParams.get('documentType');
+
+        const buffer = await fetch(`/mockFiles/report.csv`).then(response => response.arrayBuffer());
+
+        return new HttpResponse(buffer, {
+            headers: {
+                'Content-Disposition': `attachment; filename=${filename}`,
+                'Content-Type': 'text/csv',
+            },
+            status: 200,
+        });
     }),
 ];

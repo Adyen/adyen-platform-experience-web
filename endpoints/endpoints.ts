@@ -30,6 +30,7 @@ export const endpoints = (mode: 'netlify' | 'viteDev' | 'mock') => {
             accept: `${baseUrl}/disputes/${matchVariable}/accept`,
             defend: `${baseUrl}/disputes/${matchVariable}/defend`,
             documents: `${baseUrl}/disputes/${matchVariable}/documents`,
+            download: `${baseUrl}/disputes/${matchVariable}/documents/download`,
         },
     } as const;
 };

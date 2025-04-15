@@ -93,6 +93,10 @@ export const setupBasicResponse = {
             method: 'POST',
             url: 'disputes/{disputePspReference}/defend',
         },
+        downloadDisputeFile: {
+            method: 'GET',
+            url: 'disputes/{disputePspReference}/documents/download',
+        },
     } satisfies Record<EndpointName, { method: HttpMethod; url: string }>,
 };
 

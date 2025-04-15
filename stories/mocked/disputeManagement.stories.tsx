@@ -1,42 +1,35 @@
 import { Meta } from '@storybook/preact';
+import DisputeManagementElement from '../../src/components/external/DisputeManagement/DisputeManagementElement';
+import { DisputeManagementMeta } from '../components/disputeManagement';
 import { CUSTOM_URL_EXAMPLE } from '../utils/constants';
 import { ElementProps, ElementStory } from '../utils/types';
-import { DisputesOverview } from '../../src';
-import { DisputesOverviewMeta } from '../components/disputesOverview';
-import { getCustomDisputesData } from './utils/customDataRequest';
 
-const meta: Meta<ElementProps<typeof DisputesOverview>> = { ...DisputesOverviewMeta, title: 'Mocked/Disputes Overview' };
+const meta: Meta<ElementProps<typeof DisputeManagementElement>> = { ...DisputeManagementMeta, title: 'Mocked/Dispute Management' };
 
-export const Default: ElementStory<typeof DisputesOverview> = {
+export const Default: ElementStory<typeof DisputeManagementElement> = {
     name: 'Default',
     args: {
         mockedApi: true,
     },
 };
 
-export const DataCustomization: ElementStory<typeof DisputesOverview> = {
-    name: 'Data customization',
+export const CustomData: ElementStory<typeof DisputeManagementElement> = {
+    name: 'Custom Data',
     args: {
         coreOptions: {
             translations: {
                 en_US: {
+                    _store: 'Store',
+                    _product: 'Product',
                     _summary: 'Summary',
-                    _sendEmail: 'Action',
+                    _sendEmail: 'Email',
+                    _country: 'Country',
                 },
             },
         },
+        id: 'a1b2c3d4-e5f6-4789-abcd-000000000001',
         mockedApi: true,
         dataCustomization: {
-            list: {
-                fields: [{ key: 'createdAt' }, { key: '_summary' }, { key: '_sendEmail', align: 'right' }],
-                onDataRetrieve: data => {
-                    return new Promise(resolve => {
-                        setTimeout(() => {
-                            resolve(getCustomDisputesData(data));
-                        }, 200);
-                    });
-                },
-            },
             details: {
                 fields: [
                     { key: 'id', visibility: 'hidden' },
