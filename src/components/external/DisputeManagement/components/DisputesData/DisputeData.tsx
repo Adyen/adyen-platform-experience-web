@@ -5,7 +5,7 @@ import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { useFetch } from '../../../../../hooks/useFetch';
 import { containerQueries, useResponsiveContainer } from '../../../../../hooks/useResponsiveContainer';
 import { IDispute } from '../../../../../types/api/models/disputes';
-import { EMPTY_OBJECT } from '../../../../../utils';
+import { EMPTY_OBJECT, isFunction } from '../../../../../utils';
 import './DisputeData.scss';
 import Alert from '../../../../internal/Alert/Alert';
 import { AlertTypeOption, AlertVariantOption } from '../../../../internal/Alert/types';
@@ -43,6 +43,7 @@ const DisputeDataAlert = ({
         return <Alert type={AlertTypeOption.SUCCESS} variant={AlertVariantOption.TIP} description={i18n.get('dispute.notDefended')} />;
     }
     if (status === 'action_needed' && showContactSupport) {
+        //TODO: Change with tech writers since interpolating with another translated phrase can break meaning
         const contactSupportLabel = i18n.get('contactSupport');
         return (
             <Alert
@@ -63,6 +64,8 @@ const DisputeDataAlert = ({
             />
         );
     }
+
+    return null;
 };
 
 export const DisputeData = ({
@@ -76,6 +79,9 @@ export const DisputeData = ({
     const { setDispute, setFlowState } = useDisputeFlow();
 
     const { getDisputeDetail } = useConfigContext().endpoints;
+
+    //TODO: Also check if /defend endpoint has been returned from setup call which relates to submit button action
+    const defendAuthorization = isFunction(useConfigContext().endpoints.getApplicableDefenseDocuments);
     const isSmAndUpContainer = useResponsiveContainer(containerQueries.up.sm);
 
     const { data: dispute, isFetching } = useFetch(
@@ -118,7 +124,7 @@ export const DisputeData = ({
     }
 
     const showContactSupport = dispute.defensibility === 'defendable_externally';
-    const isDefendable = dispute?.defensibility === 'defendable';
+    const isDefendable = dispute.defensibility === 'defendable' && defendAuthorization;
 
     const actionButtons = useMemo(() => {
         const ctaButtons = [
