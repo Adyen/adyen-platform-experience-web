@@ -37,7 +37,7 @@ export interface components {
             value: number;
         };
         /** @enum {string} */
-        Defensability: 'can_do_first_defense' | 'can_do_subsequent_defense' | 'not_defendable';
+        Defensibility: 'can_do_first_defense' | 'can_do_subsequent_defense' | 'not_defendable';
         Defense: {
             /** Format: date-time */
             defendedOn?: string;
@@ -63,7 +63,7 @@ export interface components {
             amount: components['schemas']['Amount'];
             /** Format: date-time */
             createdAt: string;
-            defensability: components['schemas']['Defensability'];
+            defensibility: components['schemas']['Defensibility'];
             /** Format: date-time */
             dueDate?: string;
             id: string;
@@ -150,7 +150,7 @@ export interface operations {
     getDisputes: {
         parameters: {
             query: {
-                statusGroup?: 'closed' | 'open';
+                statusGroup?: 'NEW_CHARGEBACKS' | 'ALL_DISPUTES' | 'FRAUD_ALERTS';
                 balanceAccountId?: string;
                 createdSince?: string;
                 createdUntil?: string;

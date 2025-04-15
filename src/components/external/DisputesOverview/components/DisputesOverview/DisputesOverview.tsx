@@ -49,7 +49,7 @@ export const DisputesOverview = ({
     const { getDisputes: getDisputesCall } = useConfigContext().endpoints;
     const { activeBalanceAccount, balanceAccountSelectionOptions, onBalanceAccountSelection } = useBalanceAccountSelection(balanceAccounts);
     const { defaultParams, nowTimestamp, refreshNowTimestamp } = useDefaultOverviewFilterParams('disputes', activeBalanceAccount);
-    const [statusGroup, setStatusGroup] = useState<'open' | 'closed'>('open');
+    const [statusGroup, setStatusGroup] = useState<'NEW_CHARGEBACKS' | 'ALL_DISPUTES' | 'FRAUD_ALERTS'>('NEW_CHARGEBACKS');
 
     const disputeDetails = useMemo(
         () => ({
@@ -140,23 +140,33 @@ export const DisputesOverview = ({
             <div className={DISPUTES_OVERVIEW_GROUP_SELECTOR_CLASS}>
                 <button
                     className={cx(DISPUTES_OVERVIEW_STATUS_GROUP_CLASS, {
-                        [DISPUTES_OVERVIEW_STATUS_GROUP_ACTIVE_CLASS]: statusGroup === 'open',
+                        [DISPUTES_OVERVIEW_STATUS_GROUP_ACTIVE_CLASS]: statusGroup === 'NEW_CHARGEBACKS',
                     })}
                     type={'button'}
                     tabIndex={0}
-                    onClick={() => setStatusGroup('open')}
+                    onClick={() => setStatusGroup('NEW_CHARGEBACKS')}
                 >
-                    {i18n.get('disputes.open')}
+                    {i18n.get('disputes.newChargebacks')}
                 </button>
                 <button
                     className={cx(DISPUTES_OVERVIEW_STATUS_GROUP_CLASS, {
-                        [DISPUTES_OVERVIEW_STATUS_GROUP_ACTIVE_CLASS]: statusGroup === 'closed',
+                        [DISPUTES_OVERVIEW_STATUS_GROUP_ACTIVE_CLASS]: statusGroup === 'ALL_DISPUTES',
                     })}
                     type={'button'}
                     tabIndex={0}
-                    onClick={() => setStatusGroup('closed')}
+                    onClick={() => setStatusGroup('ALL_DISPUTES')}
                 >
-                    {i18n.get('disputes.closed')}
+                    {i18n.get('disputes.allDisputes')}
+                </button>
+                <button
+                    className={cx(DISPUTES_OVERVIEW_STATUS_GROUP_CLASS, {
+                        [DISPUTES_OVERVIEW_STATUS_GROUP_ACTIVE_CLASS]: statusGroup === 'FRAUD_ALERTS',
+                    })}
+                    type={'button'}
+                    tabIndex={0}
+                    onClick={() => setStatusGroup('FRAUD_ALERTS')}
+                >
+                    {i18n.get('disputes.fraudAlerts')}
                 </button>
             </div>
 

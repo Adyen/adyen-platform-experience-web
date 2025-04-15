@@ -445,7 +445,7 @@ type additional_dispute_details = Omit<IDisputeDetail, keyof IDispute>;
 
 export const DISPUTE_DETAIL_CAN_DO_FIRST_DEFENSE = {
     paymentPspReference: 'KLAHFUW1329523KKL',
-    defensability: 'can_do_first_defense',
+    defensibility: 'can_do_first_defense',
     allowedDefenseReasons: ['AirlineCompellingEvidence'],
 } satisfies additional_dispute_details;
 
@@ -456,7 +456,7 @@ export const DISPUTE_DETAIL_CAN_DO_SUBSEQUENT_DEFENSE = {
         reason: '4852',
         suppliedDocuments: ['CompellingEvidence', 'FlightTicket'],
     },
-    defensability: 'can_do_subsequent_defense',
+    defensibility: 'can_do_subsequent_defense',
     allowedDefenseReasons: ['AirlineCompellingEvidence'],
 } satisfies additional_dispute_details;
 
@@ -467,7 +467,7 @@ export const DISPUTE_DETAIL_NOT_DEFENDABLE = {
         reason: '4853',
         suppliedDocuments: ['goodsOrServicesProvided', 'writtenrebuttal'],
     },
-    defensability: 'not_defendable',
+    defensibility: 'not_defendable',
     allowedDefenseReasons: [],
 } satisfies additional_dispute_details;
 
