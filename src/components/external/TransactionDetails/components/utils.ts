@@ -26,16 +26,6 @@ export const getTagVariantForTransaction = (transaction: TransactionDetailData) 
     }
 };
 
-export const getPaymentMethodTypeForTransaction = (transaction: TransactionDetailData) => {
-    return transaction?.paymentMethod ? transaction.paymentMethod.type : transaction?.bankAccount ? 'bankTransfer' : null;
-};
-
-export const getDisplayablePaymentMethodForTransaction = (transaction: TransactionDetailData) => {
-    return transaction?.paymentMethod
-        ? parsePaymentMethodType(transaction.paymentMethod, 'detail')
-        : transaction?.bankAccount?.accountNumberLastFourDigits;
-};
-
 export const getRefundTypeForTransaction = (transaction: TransactionDetailData) => {
     if (transaction.category === 'Refund') {
         const { refundType } = transaction.refundMetadata ?? (EMPTY_OBJECT as NonNullable<TransactionDetailData['refundMetadata']>);

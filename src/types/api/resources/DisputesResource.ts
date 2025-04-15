@@ -17,6 +17,13 @@ export interface paths {
         /** @description Add @Operation annotation to provide a description */
         get: operations['acceptDispute'];
     };
+    '/v1/dispute/{id}/documents/download': {
+        /**
+         * Download a report
+         * @description Given a balance account, type and creation date of report, downloads the desired report
+         */
+        get: operations["downloadDisputeFile"];
+    };
 }
 
 export type webhooks = Record<string, never>;
@@ -37,7 +44,7 @@ export interface components {
             value: number;
         };
         /** @enum {string} */
-        Defensability: 'can_do_first_defense' | 'can_do_subsequent_defense' | 'not_defendable';
+        Defensibility: 'not_defendable' | 'defendable' | 'defendable_externally';
         Defense: {
             /** Format: date-time */
             defendedOn?: string;
@@ -63,7 +70,7 @@ export interface components {
             amount: components['schemas']['Amount'];
             /** Format: date-time */
             createdAt: string;
-            defensability: components['schemas']['Defensability'];
+            defensibility: components['schemas']['Defensibility'];
             /** Format: date-time */
             dueDate?: string;
             id: string;
@@ -76,7 +83,7 @@ export interface components {
             status: components['schemas']['DisputeStatus'];
         };
         /** @enum {string} */
-        DisputeStatus: 'action_needed' | 'won' | 'lost' | 'docs_submitted' | 'under_review';
+        DisputeStatus: 'action_needed' | 'won' | 'lost' | 'docs_submitted' | 'under_review' | 'expired';
         DisputesListResponseDTO: {
             _links?: components['schemas']['Links'];
             data: components['schemas']['Dispute'][];
@@ -99,6 +106,7 @@ export interface components {
             /** @description Link to a different page */
             prev: components['schemas']['Link'];
         };
+        DownloadDisputeFileResponseDTO: Uint8Array;
     };
     responses: never;
     parameters: never;
@@ -183,4 +191,22 @@ export interface operations {
             };
         };
     };
+    downloadDisputeFile: {
+        parameters: {
+            path: {
+                id: string;
+            }
+            query: {
+                documentType: string;
+            };
+        };
+        responses: {
+            /** @description OK - the request has succeeded. */
+            200: {
+                content: {
+                    "text/csv": components["schemas"]["DownloadDisputeFileResponseDTO"];
+                };
+            };
+        };
+    }
 }
