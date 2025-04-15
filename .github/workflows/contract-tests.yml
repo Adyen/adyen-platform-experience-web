@@ -37,6 +37,8 @@ jobs:
     needs: contract-tests
     runs-on: ubuntu-latest
     if: always()
+    permissions:
+      contents: read
     steps:
       - name: Notify Mattermost
         env:
@@ -47,4 +49,4 @@ jobs:
           else
             STATUS="@here Contract tests failed ❌❌"
           fi
-          curl -X POST -H 'Content-Type: application/json' --data "{\"text\":\"$STATUS\n\nWorkflow: ${{ github.workflow }}\n\nSee details: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\"}" $MATTERMOST_WEBHOOK_URL
+          curl -X POST -H 'Content-Type: application/json' --data "{\"text\":\"$STATUS\n\nWorkflow: ${{ github.workflow }}\n\nSee [details](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})\"}" $MATTERMOST_WEBHOOK_URL
