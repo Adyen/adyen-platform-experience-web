@@ -1,7 +1,7 @@
 import { http, HttpResponse } from 'msw';
 import { compareDates, delay, getPaginationLinks } from './utils/utils';
 import { endpoints } from '../../endpoints/endpoints';
-import { DISPUTES, getDisputeDetailByStatus, getDisputesByStatusGroup } from '../mock-data/disputes';
+import { DISPUTE_DEFENSE_DOCUMENTS, DISPUTES, getDisputeDetailByStatus, getDisputesByStatusGroup } from '../mock-data/disputes';
 
 const mockEndpoints = endpoints('mock').disputes;
 const networkError = false;
@@ -44,6 +44,15 @@ export const disputesMocks = [
 
         await delay(1000);
         return HttpResponse.json({ ...matchingMock, ...getDisputeDetailByStatus(matchingMock.status) });
+    }),
+
+    http.get(mockEndpoints.documents, async ({ params }) => {
+        const matchingMock = DISPUTES.find(mock => mock.id === params.id);
+
+        if (!matchingMock) return HttpResponse.text('Cannot find matching dispute mock', { status: 404 });
+
+        await delay(400);
+        return HttpResponse.json({ data: DISPUTE_DEFENSE_DOCUMENTS });
     }),
 
     http.post(mockEndpoints.accept, async () => {

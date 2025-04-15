@@ -83,7 +83,7 @@ export const setupBasicResponse = {
         },
         getApplicableDefenseDocuments: {
             method: 'GET',
-            url: 'disputes/{disputePspReference}',
+            url: 'disputes/{disputePspReference}/documents',
         },
         acceptDispute: {
             method: 'POST',
