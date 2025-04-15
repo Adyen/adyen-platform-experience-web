@@ -47,7 +47,7 @@ test.describe('Grant: Active', () => {
             expect(page.getByText('Maximum repayment period')).toBeVisible(),
             expect(page.getByText('18 months')).toBeVisible(),
             expect(page.getByText('Expected repayment period')).toBeVisible(),
-            expect(page.getByText('365 days (135 days left)')).toBeVisible(),
+            expect(page.getByText('180 days (135 days left)')).toBeVisible(),
             expect(page.getByText('Total repayment amount')).toBeVisible(),
             expect(page.getByText('€20,220.00')).toBeVisible(),
             expect(page.getByText('Repayment threshold')).toBeVisible(),
