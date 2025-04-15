@@ -104,14 +104,6 @@ export interface components {
             /** @description Link to a different page */
             prev: components['schemas']['Link'];
         };
-        DisputeDefenseDocument: {
-            type: NonNullable<components['schemas']['Defense']['suppliedDocuments']>[number];
-            content: string;
-        };
-        DisputeDefenseRequest: {
-            defenseReason: string;
-            documents: components['schemas']['DisputeDefenseDocument'][];
-        };
     };
     responses: never;
     parameters: never;
@@ -206,7 +198,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                'application/json': components['schemas']['DisputeDefenseRequest'];
+                'multipart/form-data': FormData;
             };
         };
         responses: {
