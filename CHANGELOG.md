@@ -4,7 +4,7 @@
 
 ### Fixed
 
--   We fixed an issue where the expandable card component showed the content for expanded and collapsed state at the same time. 
+-   We fixed an issue in the Capital Overview component area where the expandable card displayed content from both the expanded and collapsed states at the same time. 
 
 ## 1.4.1
 
