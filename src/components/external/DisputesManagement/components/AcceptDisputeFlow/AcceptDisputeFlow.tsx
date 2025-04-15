@@ -65,7 +65,7 @@ export const AcceptDisputeFlow = ({
                         {i18n.get('disputes.acceptDisputeDisclaimer')}
                     </Typography>
                     <div className="adyen-pe-accept-dispute__input">
-                        <input type="checkbox" id={termsAgreementInputId} onInput={toggleTermsAgreement} />
+                        <input type="checkbox" className="adyen-pe-visually-hidden" id={termsAgreementInputId} onInput={toggleTermsAgreement} />
 
                         <label className="adyen-pe-accept-dispute__label" htmlFor={termsAgreementInputId}>
                             {termsAgreed ? <Icon name="checkmark-square-fill" /> : <Icon name="square" />}
