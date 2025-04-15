@@ -5,17 +5,17 @@ on:
   workflow_dispatch:
 
   pull_request:
-    types:
-      - closed
-    branches:
-      - 'changeset-release/**'
-      - 'releases/**'
-      - 'main'
+    types: [closed]
+    branches: ['main', 'releases/**', 'changeset-release/**']
 
 jobs:
   create-github-release:
+    permissions:
+      contents: write
+      actions: write
     runs-on: ubuntu-latest
-    if: github.event_name == 'workflow_dispatch' || (github.event.pull_request.merged == true && (startsWith(github.head_ref, 'bump/') || startsWith(github.head_ref, 'changeset-release/')))
+    if: (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main')
+      || (github.event.pull_request.merged == true && startsWith(github.head_ref, 'bump/'))
     steps:
       - name: Checkout the repo
         uses: actions/checkout@v4

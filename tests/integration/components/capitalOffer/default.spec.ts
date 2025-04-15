@@ -20,14 +20,14 @@ test.describe('Default', () => {
         await expect(page.getByText('max')).toBeVisible();
         await expect(page.getByText('€25,000')).toBeVisible();
         await expect(
-            page.getByText('You will need to repay a minimum of €1,156.25 every 30 days to fully pay off the funds by January 01, 2026')
+            page.getByText('You will need to repay a minimum of €2,312.50 every 30 days to fully pay off the funds by June 30, 2025.')
         ).toBeVisible();
         await expect(page.getByText('Fees')).toBeVisible();
         await expect(page.getByText('€1,375.00')).toBeVisible();
         await expect(page.getByText('Daily repayment rate')).toBeVisible();
         await expect(page.getByText('11%')).toBeVisible();
         await expect(page.getByText('Expected repayment period')).toBeVisible();
-        await expect(page.getByText('365 days')).toBeVisible();
+        await expect(page.getByText('180 days')).toBeVisible();
         await expect(page.getByRole('button', { name: 'Back' })).toBeHidden();
         await expect(page.getByRole('button', { name: 'Review offer' })).toBeVisible();
     });
@@ -36,7 +36,7 @@ test.describe('Default', () => {
         const slider = page.getByRole('slider');
         await slider.dragTo(slider, { targetPosition: { x: 0, y: 0 } });
         await expect(page.getByRole('status')).toHaveText('€1,000');
-        await expect(page.getByText('€92.50')).toBeVisible();
+        await expect(page.getByText('€185.00')).toBeVisible();
         await expect(page.getByText('€110.00')).toBeVisible();
     });
 
@@ -51,20 +51,20 @@ test.describe('Default', () => {
         await expect(page.getByText('Loans are issued by Adyen N.V.')).toBeVisible();
         await expect(page.getByText('You’re requesting funding of €12,500.')).toBeVisible();
         await expect(
-            page.getByText('You will need to repay a minimum of €1,156.25 every 30 days to fully pay off the funds by January 01, 2026.')
+            page.getByText('You will need to repay a minimum of €2,312.50 every 30 days to fully pay off the funds by June 30, 2025.')
         ).toBeVisible();
         await expect(page.getByText('Fees')).toBeVisible();
         await expect(page.getByText('€1,375.00')).toBeVisible();
         await expect(page.getByText('Total repayment amount')).toBeVisible();
         await expect(page.getByText('€13,875.00')).toBeVisible();
         await expect(page.getByText('Repayment threshold')).toBeVisible();
-        await expect(page.getByText('€1,156.25', { exact: true })).toBeVisible();
+        await expect(page.getByText('€2,312.50', { exact: true })).toBeVisible();
         await expect(page.getByText('Daily repayment rate')).toBeVisible();
         await expect(page.getByText('11%')).toBeVisible();
         await expect(page.getByText('Maximum repayment period')).toBeVisible();
         await expect(page.getByText('18 months')).toBeVisible();
         await expect(page.getByText('Expected repayment period')).toBeVisible();
-        await expect(page.getByText('365 days')).toBeVisible();
+        await expect(page.getByText('180 days')).toBeVisible();
         await expect(page.getByText('Account', { exact: true })).toBeVisible();
         await expect(page.getByText('Primary account')).toBeVisible();
         await expect(page.getByRole('button', { name: 'Back' })).toBeVisible();
