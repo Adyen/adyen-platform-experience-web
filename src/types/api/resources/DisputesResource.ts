@@ -44,7 +44,7 @@ export interface components {
             value: number;
         };
         /** @enum {string} */
-        Defensability: 'can_do_first_defense' | 'can_do_subsequent_defense' | 'not_defendable';
+        Defensibility: 'not_defendable' | 'defendable' | 'defendable_externally';
         Defense: {
             /** Format: date-time */
             defendedOn?: string;
@@ -70,7 +70,7 @@ export interface components {
             amount: components['schemas']['Amount'];
             /** Format: date-time */
             createdAt: string;
-            defensability: components['schemas']['Defensability'];
+            defensibility: components['schemas']['Defensibility'];
             /** Format: date-time */
             dueDate?: string;
             id: string;

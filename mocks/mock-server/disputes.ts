@@ -44,7 +44,7 @@ export const disputesMocks = [
         if (!matchingMock) return HttpResponse.text('Cannot find matching dispute mock', { status: 404 });
 
         await delay(1000);
-        return HttpResponse.json({ ...matchingMock, ...getDisputeDetailByStatus(matchingMock.status) });
+        return HttpResponse.json({ ...matchingMock, ...getDisputeDetailByStatus(matchingMock.id, matchingMock.status) });
     }),
     http.post(mockEndpoints.accept, async () => {
         await delay(1000);

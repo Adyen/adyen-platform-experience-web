@@ -12,7 +12,7 @@ export const DISPUTE_DETAILS_RESERVED_FIELDS_SET = new Set([
     'balanceAccount',
     'amount',
     'createdAt',
-    'defensability',
+    'defensibility',
     'dueDate',
     'id',
     'latestDefense',

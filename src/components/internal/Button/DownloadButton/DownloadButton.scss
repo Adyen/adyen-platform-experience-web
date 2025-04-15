@@ -1,27 +1,25 @@
 @use '../../../../style';
 
 .adyen-pe-download {
-    &-button-container {
-        --offset-margin: calc(1rem - #{style.token(spacer-110)});
-        --offset-position: calc(var(--offset-margin) * -1 / 2);
-        align-items: center;
-        cursor: pointer;
-        display: flex;
-        left: 0;
-        margin-top: var(--offset-margin);
-        position: relative;
-        top: var(--offset-position);
+    --offset-margin: calc(1rem - #{style.token(spacer-110)});
+    --offset-position: calc(var(--offset-margin) * -1 / 2);
+    align-items: center;
+    cursor: pointer;
+    display: flex;
+    left: 0;
+    margin-top: var(--offset-margin);
+    position: relative;
+    top: var(--offset-position);
 
-        .adyen-pe-download__button--loading {
-            &:disabled {
-                background-color: style.token(color-background-tertiary);
-                color: style.token(color-label-primary);
-            }
+    .adyen-pe-download__button--loading {
+        &:disabled {
+            background-color: style.token(color-background-tertiary);
+            color: style.token(color-label-primary);
+        }
 
-            .adyen-pe-spinner {
-                border-color: currentColor;
-                border-top-color: transparent;
-            }
+        .adyen-pe-spinner {
+            border-color: currentColor;
+            border-top-color: transparent;
         }
     }
 
@@ -34,6 +32,12 @@
         .adyen-pe-button--secondary:disabled,
         .adyen-pe-button--secondary:disabled:not(:focus) {
             box-shadow: unset;
+        }
+
+        .adyen-pe-download__button--loading {
+            &:disabled {
+                background-color: transparent;
+            }
         }
     }
 

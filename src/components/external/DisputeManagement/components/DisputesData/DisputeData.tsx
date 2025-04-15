@@ -31,18 +31,19 @@ import DisputeDataProperties from './DisputeDataProperties';
 const DisputeDataAlert = ({
     status,
     isDefended,
-    isReasonCodeSupported = true,
+    showContactSupport = true,
 }: {
     status: IDispute['status'];
     isDefended: boolean;
-    isReasonCodeSupported: boolean;
+    showContactSupport: boolean;
 }) => {
     const { i18n } = useCoreContext();
 
     if ((status === 'lost' && !isDefended) || status === 'expired') {
         return <Alert type={AlertTypeOption.SUCCESS} variant={AlertVariantOption.TIP} description={i18n.get('dispute.notDefended')} />;
     }
-    if (status === 'action_needed' && !isReasonCodeSupported) {
+    if (status === 'action_needed' && showContactSupport) {
+        const contactSupportLabel = i18n.get('contactSupport');
         return (
             <Alert
                 type={AlertTypeOption.WARNING}
@@ -53,7 +54,7 @@ const DisputeDataAlert = ({
                         fills={{
                             contactSupport: (
                                 <Link classNames={[DISPUTE_DATA_CONTACT_SUPPORT]} withIcon={false} href={'https://www.adyen.com/'}>
-                                    {i18n.get('contactSupport')}
+                                    {contactSupportLabel}
                                 </Link>
                             ),
                         }}
@@ -116,6 +117,24 @@ export const DisputeData = ({
         return <DataOverviewDetailsSkeleton skeletonRowNumber={5} />;
     }
 
+    const showContactSupport = dispute.defensibility === 'defendable_externally';
+    const isDefendable = dispute?.defensibility === 'defendable';
+
+    const actionButtons = useMemo(() => {
+        const ctaButtons = [
+            {
+                title: i18n.get('disputes.accept'),
+                event: onAcceptClick,
+            },
+        ];
+        if (isDefendable)
+            ctaButtons.push({
+                title: i18n.get('dispute.defendDispute'),
+                event: () => {},
+            });
+        return ctaButtons;
+    }, [isDefendable]);
+
     return (
         <div className={cx(DISPUTE_DATA_CLASS, { [DISPUTE_DATA_MOBILE_CLASS]: !isSmAndUpContainer })}>
             <div className={DISPUTE_STATUS_BOX}>
@@ -124,27 +143,15 @@ export const DisputeData = ({
 
             <DisputeDataProperties dispute={dispute} dataCustomization={dataCustomization} />
 
-            {/*TODO: add logic for isReasonCodeSupported*/}
             <DisputeDataAlert
                 status={dispute.status}
                 isDefended={!!dispute?.latestDefense && !!dispute?.latestDefense?.defendedOn}
-                isReasonCodeSupported={true}
+                showContactSupport={showContactSupport}
             />
 
             {dispute?.status === 'action_needed' ? (
                 <div className={DISPUTE_DATA_ACTION_BAR}>
-                    <ButtonActions
-                        actions={[
-                            {
-                                title: i18n.get('dispute.defendDispute'),
-                                event: () => {},
-                            },
-                            {
-                                title: i18n.get('disputes.accept'),
-                                event: onAcceptClick,
-                            },
-                        ]}
-                    />
+                    <ButtonActions actions={actionButtons} />
                 </div>
             ) : null}
         </div>

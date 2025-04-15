@@ -92,7 +92,6 @@ function DownloadButton({
     return (
         <div
             className={classNames('adyen-pe-download', {
-                'adyen-pe-download-button-container': !iconButton,
                 'adyen-pe-download-icon-button-container': iconButton,
             })}
         >
