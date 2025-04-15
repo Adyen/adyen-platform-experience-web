@@ -1,11 +1,16 @@
 # @adyen/adyen-platform-experience-web
 
+## 1.4.2
+
+### Fixed
+
+-   We fixed an issue where the expandable card component showed the content for expanded and collapsed state at the same time. 
+
 ## 1.4.1
 
 ### Fixed
 
 -   Replaced unsupported regex lookbehind patterns causing app to crash for older browsers.
-
 
 ## 1.4.0
 
