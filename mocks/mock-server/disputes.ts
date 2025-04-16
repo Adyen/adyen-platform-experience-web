@@ -1,7 +1,7 @@
 import { http, HttpResponse, PathParams } from 'msw';
 import { compareDates, delay, getPaginationLinks } from './utils/utils';
 import { endpoints } from '../../endpoints/endpoints';
-import { DISPUTE_DEFENSE_DOCUMENTS, DISPUTES, getAdditionalDisputeDetails, getDisputesByStatusGroup } from '../mock-data/disputes';
+import { DISPUTES, getAdditionalDisputeDetails, getApplicableDisputeDefenseDocuments, getDisputesByStatusGroup } from '../mock-data/disputes';
 
 const mockEndpoints = endpoints('mock').disputes;
 const networkError = false;
@@ -51,14 +51,15 @@ export const disputesMocks = [
         return HttpResponse.json({ ...dispute, ...getAdditionalDisputeDetails(dispute) });
     }),
 
-    http.get(mockEndpoints.documents, async ({ params }) => {
+    http.get(mockEndpoints.documents, async ({ params, request }) => {
         if (networkError) return HttpResponse.error();
 
-        getDisputeForRequestPathParams(params);
-        await delay(400);
+        const dispute = getDisputeForRequestPathParams(params);
+        const defenseReason = new URL(request.url).searchParams.get('defenseReason')?.trim();
+        const defenseDocuments = getApplicableDisputeDefenseDocuments(dispute, defenseReason!) ?? [];
 
-        // Return the same list of applicable documents for all disputes
-        return HttpResponse.json({ data: DISPUTE_DEFENSE_DOCUMENTS });
+        await delay(400);
+        return HttpResponse.json({ data: defenseDocuments });
     }),
 
     http.post(mockEndpoints.accept, async ({ params }) => {
@@ -72,7 +73,7 @@ export const disputesMocks = [
     http.post(mockEndpoints.defend, async ({ params, request }) => {
         if (networkError) return HttpResponse.error();
 
-        getDisputeForRequestPathParams(params);
+        const dispute = getDisputeForRequestPathParams(params);
 
         try {
             // Expects a multipart/form-data request
@@ -86,18 +87,38 @@ export const disputesMocks = [
                 return HttpResponse.json({ error: 'Missing defense reason' }, { status: 400 });
             }
 
-            // Check through the applicable defense documents for the specified defense reason
-            for (const applicableDocument of DISPUTE_DEFENSE_DOCUMENTS) {
+            const defenseDocuments = getApplicableDisputeDefenseDocuments(dispute, defenseReason.trim()) ?? [];
+
+            // Some defense reasons require that at least one of certain types of documents be provided
+            // Initially check to see if the current defense reason is one of such
+            let missingOneOrMoreDocuments = defenseDocuments.some(({ requirement }) => requirement === 'one_or_more');
+
+            for (const applicableDocument of defenseDocuments) {
+                // Check through the applicable defense documents
                 const file = formData.get(applicableDocument.type);
 
-                // A file was uploaded for the corresponding form data field (everything is good)
-                if (file instanceof File) continue;
+                if (file instanceof File) {
+                    // A file was uploaded for the corresponding form data field
+
+                    if (applicableDocument.requirement === 'one_or_more') {
+                        // Since a file has been uploaded for at least one of some expected types of documents,
+                        // mark as no longer missing the expected documents
+                        missingOneOrMoreDocuments = false;
+                    }
+
+                    // everything is good (continue to next applicable document)
+                    continue;
+                }
 
                 if (applicableDocument.requirement === 'required') {
                     // No file was uploaded for the corresponding form data field
                     // Since this document is required (this is definitely a bad request)
                     return HttpResponse.json({ error: `Missing ${applicableDocument.type} document` }, { status: 400 });
                 }
+            }
+
+            if (missingOneOrMoreDocuments) {
+                return HttpResponse.json({ error: 'Missing one or more expected documents' }, { status: 400 });
             }
 
             await delay(1000);
