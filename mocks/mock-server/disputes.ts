@@ -91,16 +91,16 @@ export const disputesMocks = [
 
             // Some defense reasons require that at least one of certain types of documents be provided
             // Initially check to see if the current defense reason is one of such
-            let missingOneOrMoreDocuments = defenseDocuments.some(({ requirement }) => requirement === 'one_or_more');
+            let missingOneOrMoreDocuments = defenseDocuments.some(({ requirementLevel }) => requirementLevel === 'ONE_OR_MORE');
 
             for (const applicableDocument of defenseDocuments) {
                 // Check through the applicable defense documents
-                const file = formData.get(applicableDocument.type);
+                const file = formData.get(applicableDocument.documentTypeCode);
 
                 if (file instanceof File) {
                     // A file was uploaded for the corresponding form data field
 
-                    if (applicableDocument.requirement === 'one_or_more') {
+                    if (applicableDocument.requirementLevel === 'ONE_OR_MORE') {
                         // Since a file has been uploaded for at least one of some expected types of documents,
                         // mark as no longer missing the expected documents
                         missingOneOrMoreDocuments = false;
@@ -110,10 +110,10 @@ export const disputesMocks = [
                     continue;
                 }
 
-                if (applicableDocument.requirement === 'required') {
+                if (applicableDocument.requirementLevel === 'REQUIRED') {
                     // No file was uploaded for the corresponding form data field
                     // Since this document is required (this is definitely a bad request)
-                    return HttpResponse.json({ error: `Missing ${applicableDocument.type} document` }, { status: 400 });
+                    return HttpResponse.json({ error: `Missing ${applicableDocument.documentTypeCode} document` }, { status: 400 });
                 }
             }
 
