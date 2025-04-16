@@ -1,0 +1,31 @@
+@use '../../../../../style';
+
+.adyen-pe-disputes-overview {
+    &__group-selector {
+        display: flex;
+        gap: style.token(spacer-090);
+        margin: style.token(spacer-070) 0 style.token(spacer-030);
+    }
+
+    &__status-group {
+        appearance: none;
+        background: none;
+        border: 0;
+        color: style.token(color-label-secondary);
+        cursor: pointer;
+        font-size: style.token(text-body-font-size);
+        font-weight: style.token(text-body-stronger-font-weight);
+        margin: 0;
+        outline: none;
+        padding: 0 0 style.token(spacer-020) 0;
+
+        &:focus {
+            outline: 2px auto -webkit-focus-ring-color;
+        }
+
+        &--active {
+            border-bottom: 2px solid style.token(color-outline-primary-active);
+            color: style.token(color-label-primary);
+        }
+    }
+}

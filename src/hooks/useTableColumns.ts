@@ -5,6 +5,7 @@ import { CustomColumn, DataGridCustomColumnConfig } from '../components/types';
 import useCoreContext from '../core/Context/useCoreContext';
 import { EMPTY_OBJECT, isUndefined } from '../utils';
 import { containerQueries, useResponsiveContainer } from './useResponsiveContainer';
+import { TranslationKey } from '../translations';
 
 type Columns<k extends string> = DataGridCustomColumnConfig<k> & { label?: string; position?: CellTextPosition; visible?: boolean };
 
@@ -22,10 +23,12 @@ export const useTableColumns = <T extends string, C extends string>({
     fields,
     customColumns,
     columnConfig,
+    fieldsKeys,
 }: {
     fields: T[] | Readonly<T[]>;
     customColumns?: CustomColumn<C>[];
     columnConfig?: { [k in T]?: Omit<Columns<k>, 'key'> };
+    fieldsKeys?: { [k in T]?: TranslationKey };
 }) => {
     const { i18n } = useCoreContext();
 
@@ -63,7 +66,7 @@ export const useTableColumns = <T extends string, C extends string>({
                 });
             } else {
                 const { key, flex, align } = current;
-                const label = i18n.get(getLabel(key as any));
+                const label = i18n.get(getLabel(fieldsKeys?.[key] || (key as any)));
                 const config = removeUndefinedProperties<T>(columnConfig?.[key] || EMPTY_OBJECT);
 
                 columnMap.set(current.key, {

@@ -14,6 +14,9 @@ export type ITransactionRefundPayload = Schema<components, 'RefundRequest'>;
 export type ITransactionRefundResponse = Schema<components, 'RefundResponse'>;
 export type ITransactionRefundDetails = Schema<components, 'RefundDetails'>;
 export type ITransactionRefundStatus = ITransactionRefundDetails['refundStatuses'];
+export type IPaymentMethod = components['schemas']['PaymentMethod'];
+export type IBankAccount = components['schemas']['BankAccount'];
+export type IAmount = components['schemas']['Amount'];
 
 type TransactionLineItemRefundStatus = {
     quantity: number;
